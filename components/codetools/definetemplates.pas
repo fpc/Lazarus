@@ -794,6 +794,7 @@ type
     ConfigFiles: TPCConfigFileStateList;
     UnitPaths: TStrings;
     IncludePaths: TStrings;
+    UnitScopes: TStrings;
     Defines: TStringToStringTree; // macro to value
     Undefines: TStringToStringTree; // macro
     Units: TStringToStringTree; // unit name to file name
@@ -1081,13 +1082,15 @@ function ParseFPCVerbose(List: TStrings; // fpc -va output
                          out ConfigFiles: TStrings; // prefix '-' for file not found, '+' for found and read
                          out RealCompilerFilename: string; // what compiler is used by fpc
                          out UnitPaths: TStrings; // unit search paths
-                         out IncludePaths: TStrings; // inc search paths
+                         out IncludePaths: TStrings; // include search paths
+                         out UnitScopes: TStrings; // unit scopes/namespaces
                          out Defines, Undefines: TStringToStringTree): boolean;
 function RunFPCVerbose(const CompilerFilename, TestFilename: string;
                        out ConfigFiles: TStrings;
                        out RealCompilerFilename: string;
                        out UnitPaths: TStrings;
                        out IncludePaths: TStrings;
+                       out UnitScopes: TStrings; // unit scopes/namespaces
                        out Defines, Undefines: TStringToStringTree;
                        const Options: string = ''): boolean;
 procedure GatherUnitsInSearchPaths(SearchUnitPaths, SearchIncludePaths: TStrings;
@@ -1588,8 +1591,8 @@ end;
 
 function ParseFPCVerbose(List: TStrings; const WorkDir: string; out
   ConfigFiles: TStrings; out RealCompilerFilename: string; out
-  UnitPaths: TStrings; out IncludePaths: TStrings; out Defines,
-  Undefines: TStringToStringTree): boolean;
+  UnitPaths: TStrings; out IncludePaths: TStrings; out UnitScopes: TStrings; out
+  Defines, Undefines: TStringToStringTree): boolean;
 
   procedure UndefineSymbol(const MacroName: string);
   begin
@@ -1722,6 +1725,13 @@ function ParseFPCVerbose(List: TStrings; const WorkDir: string; out
         DebugLn('Using include path: "',NewPath,'"');
         {$ENDIF}
         IncludePaths.Add(NewPath);
+      end else if (StrLComp(@UpLine[CurPos], 'USING UNIT SCOPE: ', 18) = 0) then begin
+        Inc(CurPos, 18);
+        NewPath:=Trim(copy(Line,CurPos,len));
+        {$IFDEF VerboseFPCSrcScan}
+        DebugLn('Using unit scope: "',NewPath,'"');
+        {$ENDIF}
+        UnitScopes.Add(NewPath);
       end;
     end;
   end;
@@ -1734,6 +1744,7 @@ begin
   RealCompilerFilename:='';
   UnitPaths:=TStringList.Create;
   IncludePaths:=TStringList.Create;
+  UnitScopes:=TStringList.Create;
   Defines:=TStringToStringTree.Create(false);
   Undefines:=TStringToStringTree.Create(false);
   try
@@ -1745,15 +1756,16 @@ begin
       FreeAndNil(ConfigFiles);
       FreeAndNil(UnitPaths);
       FreeAndNil(IncludePaths);
+      FreeAndNil(UnitScopes);
       FreeAndNil(Undefines);
       FreeAndNil(Defines);
     end;
   end;
 end;
 
-function RunFPCVerbose(const CompilerFilename, TestFilename: string;
-  out ConfigFiles: TStrings; out RealCompilerFilename: string;
-  out UnitPaths: TStrings; out IncludePaths: TStrings;
+function RunFPCVerbose(const CompilerFilename, TestFilename: string; out
+  ConfigFiles: TStrings; out RealCompilerFilename: string; out
+  UnitPaths: TStrings; out IncludePaths: TStrings; out UnitScopes: TStrings;
   out Defines, Undefines: TStringToStringTree; const Options: string): boolean;
 var
   Params: String;
@@ -1794,7 +1806,7 @@ begin
       exit;
     end;
     Result:=ParseFPCVerbose(List,WorkDir,ConfigFiles,RealCompilerFilename,
-                            UnitPaths,IncludePaths,Defines,Undefines);
+                            UnitPaths,IncludePaths,UnitScopes,Defines,Undefines);
   finally
     List.Free;
     DeleteFileUTF8(TestFilename);
@@ -8411,6 +8423,7 @@ begin
   FreeAndNil(Undefines);
   FreeAndNil(UnitPaths);
   FreeAndNil(IncludePaths);
+  FreeAndNil(UnitScopes);
   FreeAndNil(Units);
   FreeAndNil(Includes);
 end;
@@ -8470,6 +8483,7 @@ begin
   if not CompareStringTrees(Undefines,Item.Undefines) then exit;
   if not CompareStrings(UnitPaths,Item.UnitPaths) then exit;
   if not CompareStrings(IncludePaths,Item.IncludePaths) then exit;
+  if not CompareStrings(UnitScopes,Item.UnitScopes) then exit;
   if not CompareStringTrees(Units,Item.Units) then exit;
   if not CompareStringTrees(Includes,Item.Includes) then exit;
   Result:=true;
@@ -8523,6 +8537,7 @@ begin
     AssignStringTree(Undefines,Item.Undefines);
     AssignStringList(UnitPaths,Item.UnitPaths);
     AssignStringList(IncludePaths,Item.IncludePaths);
+    AssignStringList(UnitScopes,Item.UnitScopes);
     AssignStringTree(Units,Item.Units);
     AssignStringTree(Includes,Item.Includes);
 
@@ -8534,21 +8549,12 @@ end;
 
 procedure TPCTargetConfigCache.LoadFromXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
-var
-  Cnt: integer;
-  SubPath: String;
-  DefineName, DefineValue: String;
-  s: String;
-  i: Integer;
-  p: Integer;
-  StartPos: Integer;
-  Filename: String;
 
   procedure LoadPathsFor(out ADest: TStrings; const ASubPath: string);
   var
     i: Integer;
     List: TStringList;
-    BaseDir: String;
+    BaseDir, s: String;
   begin
     // Paths: format: semicolon separated compressed list
     List:=TStringList.Create;
@@ -8574,19 +8580,33 @@ var
     end;
   end;
 
+  procedure LoadSemicolonList(UnitScopes: TStrings; const ASubPath: string);
+  var
+    s, Scope: String;
+    p: Integer;
+  begin
+    s:=XMLConfig.GetValue(Path+ASubPath,'');
+    p:=1;
+    while p<=length(s) do begin
+      Scope:=GetNextDelimitedItem(s,';',p);
+      if Scope<>'' then
+        UnitScopes.Add(Scope);
+    end;
+  end;
+
   procedure LoadFilesFor(var ADest: TStringToStringTree; const ASubPath: string);
   var
     i: Integer;
     List: TStringList;
-    File_Name: String;
+    File_Name, CurPath, s, Filename: String;
     FileList: TStringList;
   begin
     // files: format: ASubPath+Values semicolon separated list of compressed filename
     List:=TStringList.Create;
     FileList:=nil;
     try
-      SubPath:=Path+ASubPath+'Value';
-      s:=XMLConfig.GetValue(SubPath,'');
+      CurPath:=Path+ASubPath+'Value';
+      s:=XMLConfig.GetValue(CurPath,'');
       List.Delimiter:=';';
       List.StrictDelimiter:=true;
       List.DelimitedText:=s;
@@ -8595,7 +8615,7 @@ var
         Filename:=TrimFilename(FileList[i]);
         File_Name:=ExtractFileNameOnly(Filename);
         if (File_Name='') or not IsDottedIdentifier(File_Name) then begin
-          DebugLn(['Warning: [TPCTargetConfigCache.LoadFromXMLConfig] invalid filename "',File_Name,'" in "',XMLConfig.Filename,'" at "',SubPath,'"']);
+          DebugLn(['Warning: [TPCTargetConfigCache.LoadFromXMLConfig] invalid filename "',File_Name,'" in "',XMLConfig.Filename,'" at "',CurPath,'"']);
           continue;
         end;
         if ADest=nil then
@@ -8608,6 +8628,15 @@ var
     end;
   end;
 
+var
+  Cnt: integer;
+  SubPath: String;
+  DefineName, DefineValue: String;
+  s: String;
+  i: Integer;
+  p: Integer;
+  StartPos: Integer;
+  Filename: String;
 begin
   Clear;
 
@@ -8662,6 +8691,9 @@ begin
   LoadPathsFor(UnitPaths,'UnitPaths/');
   LoadPathsFor(IncludePaths,'IncludePaths/');
 
+  // Unit scopes
+  LoadSemicolonList(UnitScopes, 'UnitScopes');
+
   // Files
   LoadFilesFor(Units,'Units/');
   LoadFilesFor(Includes,'Includes/');
@@ -8669,18 +8701,12 @@ end;
 
 procedure TPCTargetConfigCache.SaveToXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
-var
-  Node: TAVLTreeNode;
-  Item: PStringToStringItem;
-  Cnt: Integer;
-  SubPath: String;
-  s: String;
 
   procedure SavePathsFor(const ASource: TStrings; const ASubPath: string);
   var
     List: TStringList;
     RelativeUnitPaths: TStringList;
-    BaseDir: string;
+    BaseDir, s: string;
   begin
     // Paths: write as semicolon separated compressed list
     s:='';
@@ -8704,11 +8730,25 @@ var
     XMLConfig.SetDeleteValue(Path+ASubPath+'Value',s,'');
   end;
 
+  procedure SaveSemicolonList(List: TStrings; const ASubPath: string);
+  var
+    i: Integer;
+    s: String;
+  begin
+    s:='';
+    for i:=0 to List.Count-1 do
+      s:=s+';'+List[i];
+    delete(s,1,1);
+    XMLConfig.SetDeleteValue(Path+ASubPath+'Value',s,'');
+  end;
+
   procedure SaveFilesFor(const ASource: TStringToStringTree; const ASubPath: string);
   var
     List: TStringList;
     FileList: TStringList;
-    Filename: String;
+    Filename, s: String;
+    Node: TAVLTreeNode;
+    Item: PStringToStringItem;
   begin
     // Files: ASubPath+Values semicolon separated list of compressed filenames
     // Files contains thousands of file names. This needs compression.
@@ -8739,9 +8779,15 @@ var
       List.Free;
       FileList.Free;
     end;
-    XMLConfig.SetDeleteValue(Path+ASubPath+'Value',s,'');
+    XMLConfig.SetDeleteValue(Path+ASubPath,s,'');
   end;
 
+var
+  Node: TAVLTreeNode;
+  Item: PStringToStringItem;
+  Cnt: Integer;
+  SubPath: String;
+  s: String;
 begin
   XMLConfig.SetDeleteValue(Path+'Kind',PascalCompilerNames[Kind],PascalCompilerNames[pcFPC]);
   XMLConfig.SetDeleteValue(Path+'TargetOS',TargetOS,'');
@@ -8793,6 +8839,9 @@ begin
   // Paths
   SavePathsFor(UnitPaths, 'UnitPaths/');
   SavePathsFor(IncludePaths, 'IncludePaths/');
+
+  // Unit scopes
+  SaveSemicolonList(UnitScopes, 'UnitScopes');
 
   // Files
   SaveFilesFor(Units, 'Units/');
@@ -8896,6 +8945,16 @@ end;
 
 function TPCTargetConfigCache.Update(TestFilename: string;
   ExtraOptions: string; const OnProgress: TDefinePoolProgress): boolean;
+
+  procedure PreparePaths(APaths: TStrings);
+  var
+    i: Integer;
+  begin
+    if APaths<>nil then
+      for i:=0 to APaths.Count-1 do
+        APaths[i]:=ChompPathDelim(TrimFilename(APaths[i]));
+  end;
+
 var
   i: Integer;
   OldOptions: TPCTargetConfigCache;
@@ -8908,16 +8967,6 @@ var
   InfoTypes: TFPCInfoTypes;
   BaseDir: String;
   FullFilename: String;
-
-  procedure PreparePaths(APaths: TStrings);
-  var
-    i: Integer;
-  begin
-    if APaths<>nil then
-      for i:=0 to APaths.Count-1 do
-        APaths[i]:=ChompPathDelim(TrimFilename(APaths[i]));
-  end;
-
 begin
   OldOptions:=TPCTargetConfigCache.Create(nil);
   CfgFiles:=nil;
@@ -8953,7 +9002,7 @@ begin
       // run fpc and parse output
       HasPPUs:=false;
       RunFPCVerbose(Compiler,TestFilename,CfgFiles,RealCompiler,UnitPaths,
-                    IncludePaths,Defines,Undefines,ExtraOptions);
+                    IncludePaths,UnitScopes,Defines,Undefines,ExtraOptions);
       PreparePaths(UnitPaths);
       PreparePaths(IncludePaths);
       // store the real compiler file and date
