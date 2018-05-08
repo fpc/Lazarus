@@ -336,6 +336,13 @@ type
 
   { TDragImageList }
 
+  TImageListHelper = class helper for TCustomImageList
+  private
+    function GetResolutionForControl(AImageWidth: Integer; AControl: TControl): TScaledImageListResolution;
+  public
+    property ResolutionForControl[AImageWidth: Integer; AControl: TControl]: TScaledImageListResolution read GetResolutionForControl;
+  end;
+
   TDragImageList = class;
 
   TDragImageListResolution = class(TCustomImageListResolution)

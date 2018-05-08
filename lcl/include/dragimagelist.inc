@@ -281,4 +281,12 @@ begin
   RegisterDragImageListResolution;
 end;
 
+{ TImageListHelper }
+
+function TImageListHelper.GetResolutionForControl(AImageWidth: Integer;
+  AControl: TControl): TScaledImageListResolution;
+begin
+  Result := ResolutionForPPI[AImageWidth, AControl.Font.PixelsPerInch, AControl.GetCanvasScaleFactor];
+end;
+
 // included by controls.pp
