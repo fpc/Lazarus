@@ -721,7 +721,7 @@ begin
   if Trim(JSON) = '' then
     Exit(False);
   Result := True;
-  Parser := TJSONParser.Create(JSON);
+  Parser := TJSONParser.Create(JSON){%H-};
   try
     Data := Parser.Parse;
     try
@@ -929,7 +929,7 @@ begin
   if Trim(JSON) = '' then
     Exit(False);
   Result := True;
-  Parser := TJSONParser.Create(JSON);
+  Parser := TJSONParser.Create(JSON){%H-};
   try
     Data := Parser.Parse;
     try

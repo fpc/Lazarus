@@ -14,7 +14,8 @@
 {$mode objfpc}
 {$h+}
 unit opkman_zip;
-
+{$warnings off}
+{$hints off}
 Interface
 
 Uses
@@ -71,7 +72,6 @@ Type
    Local_File_Header_Type = Packed Record //1 per zipped file
      Signature              :  LongInt; //4 bytes
      Extract_Version_Reqd   :  Word; //if zip64: >= 45
-     {$warning TODO implement EFS/language enooding using UTF-8}
      Bit_Flag               :  Word; //"General purpose bit flag in PKZip appnote
      Compress_Method        :  Word;
      Last_Mod_Time          :  Word;
