@@ -354,10 +354,13 @@ type
     procedure RemoveFilterMsgTypeClick(Sender: TObject);
     procedure WndStayOnTopMenuItemClick(Sender: TObject);
   private
+    FImages: TLCLGlyphs;
     function AllMessagesAsString(const OnlyShown: boolean): String;
     function GetAboutView: TLMsgWndView;
     function GetViews(Index: integer): TLMsgWndView;
     procedure HideSearch;
+    procedure ImagesGetWidthForPPI(Sender: TCustomImageList; AImageWidth,
+      APPI: Integer; var AResultWidth: Integer);
     procedure SaveClicked(OnlyShown: boolean);
     procedure CopyAllClicked(OnlyShown: boolean);
     procedure CopyMsgToClipboard(OnlyFilename: boolean);
@@ -1612,9 +1615,9 @@ begin
       ImgIndex:=fUrgencyStyles[Line.Urgency].ImageIndex;
       if (Images<>nil) and (mcoShowMsgIcons in Options)
       and (ImgIndex>=0) and (ImgIndex<Images.Count) then begin
-        Images.Draw(Canvas,
+        Images.DrawForControl(Canvas,
           NodeRect.Left + 1, (NodeRect.Top + NodeRect.Bottom - Images.Height) div 2,
-          ImgIndex, gdeNormal);
+          ImgIndex, 0, Self, gdeNormal);
         inc(NodeRect.Left,Images.Width+2);
       end;
       // message text
@@ -3173,6 +3176,13 @@ begin
   HideSearch;
 end;
 
+procedure TMessagesFrame.ImagesGetWidthForPPI(Sender: TCustomImageList;
+  AImageWidth, APPI: Integer; var AResultWidth: Integer);
+begin
+  if (16<=AResultWidth) and (AResultWidth<=20) then
+    AResultWidth := 16;
+end;
+
 procedure TMessagesFrame.MoreOptionsMenuItemClick(Sender: TObject);
 begin
   LazarusIDE.DoOpenIDEOptions(TMsgWndOptionsFrame);
@@ -3443,12 +3453,18 @@ begin
   inherited Create(TheOwner);
 
   MessagesCtrl:=TMessagesCtrl.Create(Self);
-  ImgIDInfo:=IDEImages.LoadImage('state_information', 12);
-  ImgIDHint:=IDEImages.LoadImage('state_hint', 12);
-  ImgIDNote:=IDEImages.LoadImage('state_note', 12);
-  ImgIDWarning:=IDEImages.LoadImage('state_warning', 12);
-  ImgIDError:=IDEImages.LoadImage('state_error', 12);
-  ImgIDFatal:=IDEImages.LoadImage('state_fatal', 12);
+  FImages := TLCLGlyphs.Create(Self);
+  FImages.Width := 12;
+  FImages.Height := 12;
+  FImages.Suffix100Scale := 16;
+  FImages.RegisterResolutions([12, 16, 24]);
+  FImages.OnGetWidthForPPI := @ImagesGetWidthForPPI;
+  ImgIDInfo:=FImages.GetImageIndex('state_information');
+  ImgIDHint:=FImages.GetImageIndex('state_hint');
+  ImgIDNote:=FImages.GetImageIndex('state_note');
+  ImgIDWarning:=FImages.GetImageIndex('state_warning');
+  ImgIDError:=FImages.GetImageIndex('state_error');
+  ImgIDFatal:=FImages.GetImageIndex('state_fatal');
   with MessagesCtrl do begin
     Name:='MessagesCtrl';
     Align:=alClient;
@@ -3479,7 +3495,7 @@ begin
       EnvironmentOptions.MsgColors[mluFatal]);
     UrgencyStyles[mluPanic].SetValues(lisPanic, ImgIDFatal,
       EnvironmentOptions.MsgColors[mluPanic]);
-    Images:=IDEImages.Images_12;
+    Images:=FImages;
     PopupMenu:=MsgCtrlPopupMenu;
   end;
   MessagesCtrl.SourceMarks:=ExtToolsMarks;
