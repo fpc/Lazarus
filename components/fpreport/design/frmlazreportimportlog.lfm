@@ -1,0 +1,37 @@
+object ReportImportLogForm: TReportImportLogForm
+  Left = 491
+  Height = 240
+  Top = 180
+  Width = 320
+  Caption = 'Report import log'
+  ClientHeight = 240
+  ClientWidth = 320
+  OnClose = FormClose
+  Position = poOwnerFormCenter
+  LCLVersion = '1.9.0.0'
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 42
+    Top = 192
+    Width = 308
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 0
+    ShowButtons = [pbClose]
+  end
+  object MLog: TMemo
+    Left = 0
+    Height = 186
+    Top = 0
+    Width = 320
+    Align = alClient
+    ScrollBars = ssAutoBoth
+    TabOrder = 1
+  end
+end

@@ -21,7 +21,7 @@ interface
 
 uses
   Classes, SysUtils, fpreport, forms, db, fpreportdesignobjectlist,
-  fpreportdata, fpreportdesignreportdata;
+  fpreportdata;
 
 Type
   { TReportEditorForm }
@@ -110,6 +110,12 @@ Type
   end;
   TBaseReportVariablesFormClass = Class of TBaseReportVariablesForm;
 
+  TBaseImportReportForm = Class(TForm)
+  Public
+    Procedure Log(Const Msg : String); virtual; abstract;
+  end;
+  TBaseImportReportFormClass = Class of TBaseImportReportForm;
+
 Var
   ReportDataFormClass : TBaseReportDataFormClass;
   ReportResizeFormClass : TBaseReportResizeFormClass;
@@ -117,6 +123,7 @@ Var
   ReportDataPreviewClass : TBaseReportDataPreviewFormClass;
   ReportVariablesFormClass : TBaseReportVariablesFormClass;
   ReportPropertiesFormClass : TBaseReportEditorFormClass;
+  ReportImportFormClass : TBaseImportReportFormClass;
 
 implementation
 

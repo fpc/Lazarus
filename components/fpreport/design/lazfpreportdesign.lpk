@@ -11,7 +11,7 @@
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
     </CompilerOptions>
-    <Files Count="40">
+    <Files Count="41">
       <Item1>
         <Filename Value="fpreportdesignreportdata.pp"/>
         <UnitName Value="fpreportdesignreportdata"/>
@@ -172,6 +172,10 @@
         <Filename Value="frmfpreportvariables.lfm"/>
         <Type Value="LFM"/>
       </Item40>
+      <Item41>
+        <Filename Value="frmlazreportimportlog.pp"/>
+        <UnitName Value="frmlazreportimportlog"/>
+      </Item41>
     </Files>
     <RequiredPkgs Count="5">
       <Item1>

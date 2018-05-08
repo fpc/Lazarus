@@ -34,7 +34,8 @@ type
                            rdoAllowNew,        // Allow user to start new report
                            rdoAllowPreview,    // Allow user to ask report preview
                            rdoAllowBands,      // Allow user to add/remove bands
-                           rdoAllowFileDrop    // Allow user to drop files on designer, so they will be loaded.
+                           rdoAllowFileDrop,   // Allow user to drop files on designer, so they will be loaded.
+                           rdoAllowImport      // Allow import of other formats (needs rdoAllowLoad as well)
                            );
   TFPReportDesignOptions = set of TFPReportDesignOption;
 
@@ -85,6 +86,7 @@ type
     AAlign: TAction;
     ACopy: TAction;
     ABringToFront: TAction;
+    AImportLazreport: TAction;
     ASendToBack: TAction;
     AEditElement: TAction;
     AFileOpenNewWindow: TAction;
@@ -120,6 +122,7 @@ type
     MenuItem2: TMenuItem;
     MenuItem3: TMenuItem;
     MenuItem4: TMenuItem;
+    MIImportLazReport: TMenuItem;
     MIBringToFront: TMenuItem;
     MISendToBack: TMenuItem;
     MIEditElement: TMenuItem;
@@ -140,6 +143,7 @@ type
     MFrames: TMenuItem;
     MIRecent: TMenuItem;
     MIAddPage: TMenuItem;
+    ODImport: TOpenDialog;
     PMRecent: TPopupMenu;
     PSDesign: TIniPropStorage;
     MIAlign: TMenuItem;
@@ -276,6 +280,8 @@ type
     procedure AFileSaveUpdate(Sender: TObject);
     procedure AFrameExecute(Sender: TObject);
     procedure AFrameUpdate(Sender: TObject);
+    procedure AImportLazreportExecute(Sender: TObject);
+    procedure AImportLazreportUpdate(Sender: TObject);
     procedure ANewExecute(Sender: TObject);
     procedure ANewNewWindowExecute(Sender: TObject);
     procedure APasteExecute(Sender: TObject);
@@ -326,6 +332,7 @@ type
     FOnOpenReport: TNotifyEvent;
     FOnSaveReport: TNotifyEvent;
     FReportDesignData : TDesignReportDataManager;
+    FImportForm: TForm;
 {$IFDEF USEDEMOREPORT}
     lReportData : TFPReportUserData;
     sl: TStringList;
@@ -345,6 +352,7 @@ type
     procedure CheckLoadInitialFile;
     function CreateDesignPopupMenu(aOWner: TComponent): TPopupMenu;
     function CreateNewPage: TFPReportCustomPage;
+    procedure DoImportLog(Sender: TOBject; const Msg: String);
     procedure DoPaste(Sender: TObject);
     procedure DoReportChangedByDesigner(Sender: TObject);
     procedure DoSelectionModifiedByOI(Sender: TObject);
@@ -356,6 +364,7 @@ type
     procedure ActivateDesignerForElement(AElement: TFPReportElement);
     function GetPageCopyAction(aCount: Integer): TPageCopyAction;
     function GetBandCopyAction(aCount: Integer): TBandCopyAction;
+    procedure ImportLazReport;
     procedure MaybeAddFirstPage;
     procedure OpenInNewWindow(aFileName: string);
     procedure PasteBand(aControl: TFPReportDesignerControl; aAction: TBandCopyAction; var aBand: TFPReportCustomBand);
@@ -417,7 +426,7 @@ type
 
 Const
   AllReportDesignOptions = [rdoManageData,rdoManageVariables,rdoAllowLoad,rdoAllowSave,rdoAllowProperties,
-                            rdoAllowPageAdd,rdoAllowNew, rdoAllowPreview, rdoAllowBands,rdoAllowFileDrop];
+                            rdoAllowPageAdd,rdoAllowNew, rdoAllowPreview, rdoAllowBands,rdoAllowFileDrop,rdoAllowImport];
 
 
 implementation
@@ -429,6 +438,7 @@ uses
   fpttf,
   fpreportstreamer,
   fpjson,
+  fplazreport,
   Clipbrd,
   jsonparser;
 
@@ -1058,6 +1068,17 @@ begin
   Result.StartDesigning;
 end;
 
+procedure TFPReportDesignerForm.DoImportLog(Sender: TOBject; const Msg: String);
+begin
+  if not Assigned(FImportForm) and Assigned(ReportImportFormClass) then
+     begin
+     FImportForm:=ReportImportFormClass.Create(Self);
+     FImportForm.Show;
+     end;
+  if Assigned(FImportForm) and (FImportForm is TBaseImportReportForm)  then
+    TBaseImportReportForm(FImportForm).Log(Msg);
+end;
+
 Function TFPReportDesignerForm.GetPageCopyAction(aCount : Integer) : TPageCopyAction;
 
 Var
@@ -1530,6 +1551,59 @@ end;
 procedure TFPReportDesignerForm.AFrameUpdate(Sender: TObject);
 begin
   (Sender as TAction).Enabled:=Assigned(CurrentDesigner) and CurrentDesigner.Objects.HaveSelection;
+end;
+
+procedure TFPReportDesignerForm.AImportLazreportExecute(Sender: TObject);
+begin
+  if CheckSaved('import lazreport') then
+    ImportLazReport;
+end;
+
+procedure TFPReportDesignerForm.AImportLazreportUpdate(Sender: TObject);
+
+Const
+   Ops = [rdoAllowImport,rdoAllowLoad];
+
+begin
+  (Sender as TAction).Enabled:=(Ops * DesignOptions)=Ops;
+end;
+
+Procedure TFPReportDesignerForm.ImportLazReport;
+
+Var
+  FN,OFN : String;
+  R : TFPLazReport;
+  S : TFPReportJSONStreamer;
+  J : TJSONStringType;
+
+begin
+  With ODImport do
+    If Execute then
+      FN:=FileName
+    else
+      exit;
+  OFN:=ChangeFileExt(FN,'.json');
+  R:=TFPLazReport.Create(Self);
+  try
+    // Reset.
+    FImportForm:=Nil;
+    R.OnLog:=@DoImportLog;
+    R.LoadFromFile(FN);
+    S:=TFPReportJSONStreamer.Create(Self);
+    R.WriteElement(S,Nil);
+    S.JSON.Add('DesignData',TJSONObject.Create);
+    J:=S.JSON.FormatJSON( );
+    With TFileStream.Create(OFN,fmCreate) do
+      try
+        WriteBuffer(J[1],Length(J));
+      finally
+        Free;
+      end;
+  finally
+    R.Free;
+  end;
+  LoadReportFromFile(OFN);
+  DesignReport;
 end;
 
 function TFPReportDesignerForm.GetModified: boolean;

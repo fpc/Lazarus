@@ -11,6 +11,7 @@ uses
   sqldb,
   reportconns,
   fpreport,
+  fplazreport,
   fpreportdb,
   fpreportbarcode,
   fpreportqrcode,
@@ -42,6 +43,7 @@ uses
   frmfpreportvariables,
   frmfpreportproperties,
   frmfpreportpreviewdata,
+  frmlazreportimportlog,
   cfgfpreportpdfexport,
   cfgfpreportimageexport,
   cfgfpreporthtmlexport;

@@ -385,6 +385,9 @@ object FPReportDesignerForm: TFPReportDesignerForm
       object MISaveAs: TMenuItem
         Action = AFileSaveAs
       end
+      object MIImportLazReport: TMenuItem
+        Action = AImportLazreport
+      end
       object MIRecent: TMenuItem
         Caption = 'Recent'
       end
@@ -1001,6 +1004,11 @@ object FPReportDesignerForm: TFPReportDesignerForm
       ImageIndex = 41
       OnExecute = ABringToFrontExecute
       OnUpdate = ASendToBackFrontUpdate
+    end
+    object AImportLazreport: TAction
+      Caption = 'Import Lazreport...'
+      OnExecute = AImportLazreportExecute
+      OnUpdate = AImportLazreportUpdate
     end
   end
   object SDReport: TSaveDialog
@@ -2427,5 +2435,11 @@ object FPReportDesignerForm: TFPReportDesignerForm
   object PMRecent: TPopupMenu
     left = 467
     top = 209
+  end
+  object ODImport: TOpenDialog
+    Filter = 'LazReport reports|*.lrf|All files|*.*'
+    Options = [ofFileMustExist, ofEnableSizing, ofViewDetail]
+    left = 483
+    top = 120
   end
 end

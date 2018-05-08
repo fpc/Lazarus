@@ -12,7 +12,7 @@ uses
   frafpreportdbfdata, frafpreportjsondata, frafpreportdata, fraReportObjectInspector, frafpreportsqldbdata, 
   frmfpreportalignelements, frmconfigreportdata, frmfpreportdataconnectioneditor, frmfpreportdesignermain, frmfpreportimageedit, 
   frmfpreportmemoedit, frmfpreportpreviewdata, frmfpreportproperties, frmfpreportshapeedit, frmfpreportvariables, 
-  frmfprdresizeelements, regfpdesigner, FPReportDesigner, LazarusPackageIntf;
+  frmfprdresizeelements, regfpdesigner, FPReportDesigner, frmlazreportimportlog, LazarusPackageIntf;
 
 implementation
 
