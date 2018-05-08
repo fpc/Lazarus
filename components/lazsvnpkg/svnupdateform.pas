@@ -85,7 +85,7 @@ begin
 
   ButtonPanel.OKButton.OnClick := @OKButtonClick;
   ButtonPanel.HelpButton.Caption := rsShowLog;
-  TIDEImages.AssignImage(ButtonPanel.HelpButton.Glyph, 'tsynsyncroedit');
+  IDEImages.AssignImage(ButtonPanel.HelpButton, 'tsynsyncroedit');
   mnuShowDiff.Caption:=rsShowDiff;
 end;
 

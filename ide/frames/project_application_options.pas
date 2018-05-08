@@ -258,7 +258,7 @@ begin
   // Darwin specific, Application Bundle
   DarwinDividerBevel.Caption := lisForMacOSDarwin;
   CreateAppBundleButton.Caption := dlgPOCreateAppBundle;
-  TIDEImages.AssignImage(CreateAppBundleButton.Glyph, 'pkg_compile');
+  IDEImages.AssignImage(CreateAppBundleButton, 'pkg_compile');
 
   // Icon
   IconLabel.Caption := dlgPOIcon;
@@ -268,11 +268,11 @@ begin
   ClearIconButton.Caption := dlgPOClearIcon;
   LoadIconButton.LoadGlyphFromStock(idButtonOpen);
   if LoadIconButton.Glyph.Empty then
-    TIDEImages.AssignImage(LoadIconButton.Glyph, 'laz_open');
+    IDEImages.AssignImage(LoadIconButton, 'laz_open');
   SaveIconButton.LoadGlyphFromStock(idButtonSave);
   if SaveIconButton.Glyph.Empty then
-    TIDEImages.AssignImage(SaveIconButton.Glyph, 'laz_save');
-  TIDEImages.AssignImage(ClearIconButton.Glyph, 'menu_clean');
+    IDEImages.AssignImage(SaveIconButton, 'laz_save');
+  IDEImages.AssignImage(ClearIconButton, 'menu_clean');
   IconImage.KeepOriginXWhenClipped := True;
   IconImage.KeepOriginYWhenClipped := True;
   IconImagePictureChanged(nil);

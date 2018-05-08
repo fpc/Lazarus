@@ -475,18 +475,18 @@ procedure TMenuDesignerForm.LoadVariableButtonGlyphs(isInMenubar: boolean);
 begin
   if isInMenubar then
   begin
-    TIDEImages.AssignImage(MoveItemUpButton.Glyph, 'arrow_left');
-    TIDEImages.AssignImage(MoveItemDownButton.Glyph, 'arrow_right');
-    TIDEImages.AssignImage(AddItemAboveButton.Glyph, 'add_item_left', 24);
-    TIDEImages.AssignImage(AddItemBelowButton.Glyph, 'add_item_right', 24);
-    TIDEImages.AssignImage(AddSubMenuButton.Glyph, 'add_submenu_below', 24);
+    IDEImages.AssignImage(MoveItemUpButton, 'arrow_left');
+    IDEImages.AssignImage(MoveItemDownButton, 'arrow_right');
+    IDEImages.AssignImage(AddItemAboveButton, 'add_item_left', 24);
+    IDEImages.AssignImage(AddItemBelowButton, 'add_item_right', 24);
+    IDEImages.AssignImage(AddSubMenuButton, 'add_submenu_below', 24);
   end else
   begin
-    TIDEImages.AssignImage(MoveItemUpButton.Glyph, 'arrow_up');
-    TIDEImages.AssignImage(MoveItemDownButton.Glyph, 'arrow_down');
-    TIDEImages.AssignImage(AddItemAboveButton.Glyph, 'add_item_above', 24);
-    TIDEImages.AssignImage(AddItemBelowButton.Glyph, 'add_item_below', 24);
-    TIDEImages.AssignImage(AddSubMenuButton.Glyph, 'add_submenu_right', 24);
+    IDEImages.AssignImage(MoveItemUpButton, 'arrow_up');
+    IDEImages.AssignImage(MoveItemDownButton, 'arrow_down');
+    IDEImages.AssignImage(AddItemAboveButton, 'add_item_above', 24);
+    IDEImages.AssignImage(AddItemBelowButton, 'add_item_below', 24);
+    IDEImages.AssignImage(AddSubMenuButton, 'add_submenu_right', 24);
   end;
   UpdateSubmenuGroupBox(nil, nil);
   FDesigner.VariableGlyphsInMenuBar:=isInMenubar;
@@ -494,9 +494,9 @@ end;
 
 procedure TMenuDesignerForm.LoadFixedButtonGlyphs;
 begin
-  TIDEImages.AssignImage(DeleteItemButton.Glyph, 'laz_delete');
-  TIDEImages.AssignImage(AddSeparatorAboveButton.Glyph, 'add_sep_above', 24);
-  TIDEImages.AssignImage(AddSeparatorBelowButton.Glyph, 'add_sep_below', 24);
+  IDEImages.AssignImage(DeleteItemButton, 'laz_delete');
+  IDEImages.AssignImage(AddSeparatorAboveButton, 'add_sep_above', 24);
+  IDEImages.AssignImage(AddSeparatorBelowButton, 'add_sep_below', 24);
   HelpButton.Hint:=lisMenuEditorGetHelpToUseThisEditor;
 end;
 

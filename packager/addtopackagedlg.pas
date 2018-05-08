@@ -718,7 +718,7 @@ begin
   
   with FilesDirButton do begin
     Caption:=lisAddFilesInDirectory;
-    TIDEImages.AssignImage(Glyph, 'pkg_files');
+    IDEImages.AssignImage(FilesDirButton, 'pkg_files');
   end;
 
   with FilesShortenButton do begin
@@ -731,7 +731,7 @@ begin
     Caption:=lisDelete;
     ShowHint:=true;
     Hint:=lisDeleteSelectedFiles;
-    TIDEImages.AssignImage(Glyph, 'laz_delete');
+    IDEImages.AssignImage(FilesDeleteButton, 'laz_delete');
   end;
 
   LabelIconInfo.Caption:=lisNoneClickToChooseOne;

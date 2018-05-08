@@ -590,26 +590,26 @@ var
   r: TRect;
   TextSize: TSize;
   TextPoint, AddBmpPoint: TPoint;
-  AddBmp: TCustomBitmap;
+  AddBmp: TImageIndex;
+  IL: TLCLGlyphs;
+  Res: TScaledImageListResolution;
 begin
   r:=ClientRect;
   Canvas.FillRect(r);
   Canvas.RoundRect(r, 3, 3);
-  try
-    AddBmp:=TIDEImages.CreateImage('laz_add');
-    TextSize:=Canvas.TextExtent(Caption);
-    TextPoint.y:=(r.Bottom - r.Top - TextSize.cy) div 2;
-    if (TextPoint.y < 1) then
-      TextPoint.y:=1;
-    TextPoint.x:=(r.Right - r.Left - TextSize.cx + AddBmp.Width) div 2;
-    Canvas.TextRect(r, TextPoint.x, TextPoint.y, Caption);
+  IL:=IDEImages.Images_16;
+  AddBmp:=IL.GetImageIndex('laz_add');
+  Res:=IL.ResolutionForControl[0, Self];
+  TextSize:=Canvas.TextExtent(Caption);
+  TextPoint.y:=(r.Bottom - r.Top - TextSize.cy) div 2;
+  if (TextPoint.y < 1) then
+    TextPoint.y:=1;
+  TextPoint.x:=(r.Right - r.Left - TextSize.cx + Res.Width) div 2;
+  Canvas.TextRect(r, TextPoint.x, TextPoint.y, Caption);
 
-    AddBmpPoint.x:=(TextPoint.x - AddBmp.Width) div 2;
-    AddBmpPoint.y:=(r.Bottom - r.Top - AddBmp.Height) div 2;
-    Canvas.Draw(AddBmpPoint.x, AddBmpPoint.y, AddBmp);
-  finally
-    AddBmp.Free;
-  end;
+  AddBmpPoint.x:=(TextPoint.x - Res.Width) div 2;
+  AddBmpPoint.y:=(r.Bottom - r.Top - Res.Height) div 2;
+  Res.Draw(Canvas, AddBmpPoint.x, AddBmpPoint.y, AddBmp);
 end;
 
 procedure TFake.Refresh;

@@ -353,14 +353,14 @@ begin
   end;
 
   // buttons
-  TIDEImages.AssignImage(CancelScanningButton.Glyph, 'btn_cancel');
+  IDEImages.AssignImage(CancelScanningButton, 'btn_cancel');
   CloseButton.Caption:=lisClose;
   OpenInEditorButton.Caption:=lisDiffDlgOpenDiffInEditor;
   HelpButton.Caption:=lisMenuHelp;
 
   OpenInEditorButton.LoadGlyphFromStock(idButtonOpen);
   if OpenInEditorButton.Glyph.Empty then
-    TIDEImages.AssignImage(OpenInEditorButton.Glyph, 'laz_open');
+    IDEImages.AssignImage(OpenInEditorButton, 'laz_open');
   
   // dialogs
   dlgOpen.Title:=lisOpenExistingFile;

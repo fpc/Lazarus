@@ -109,15 +109,15 @@ begin
   PopupMenu1.Images:=IDEImages.Images_16;
   ActivateMenuItem.ImageIndex:=IDEImages.LoadImage('laz_open');
   CloseMenuItem.ImageIndex:=IDEImages.LoadImage('menu_close');
-  TIDEImages.AssignImage(CloseCheckedButton.Glyph, 'menu_close_all');
-  TIDEImages.AssignImage(SaveCheckedButton.Glyph, 'menu_save_all');
-  TIDEImages.AssignImage(MoveUpBtn.Glyph, 'arrow_up');
-  TIDEImages.AssignImage(MoveDownBtn.Glyph, 'arrow_down');
+  IDEImages.AssignImage(CloseCheckedButton, 'menu_close_all');
+  IDEImages.AssignImage(SaveCheckedButton, 'menu_save_all');
+  IDEImages.AssignImage(MoveUpBtn, 'arrow_up');
+  IDEImages.AssignImage(MoveDownBtn, 'arrow_down');
   // Buttons on FilterPanel
-  TIDEImages.AssignImage(OpenButton.Glyph, 'laz_open');
+  IDEImages.AssignImage(OpenButton, 'laz_open');
   OpenButton.Hint:=lisActivateSelected;
   SortAlphabeticallyButton.Hint:=lisPESortFilesAlphabetically;
-  TIDEImages.AssignImage(SortAlphabeticallyButton.Glyph, 'pkg_sortalphabetically');
+  IDEImages.AssignImage(SortAlphabeticallyButton, 'pkg_sortalphabetically');
 end;
 
 procedure TEditorFileManagerForm.CheckListBox1Click(Sender: TObject);

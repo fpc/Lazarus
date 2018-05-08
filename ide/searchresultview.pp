@@ -318,7 +318,6 @@ begin
   ClosePageButton.ImageIndex := IDEImages.LoadImage('menu_close');
   ActionList.Images := IDEImages.Images_16;
   actClosePage.ImageIndex := IDEImages.LoadImage('menu_close');
-  TIDEImages.AssignImage(SearchInListEdit.Glyph, 'btnfiltercancel');
 end;
 
 procedure TSearchResultsView.FormClose(Sender: TObject; var CloseAction: TCloseAction);

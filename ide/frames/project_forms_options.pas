@@ -186,10 +186,10 @@ begin
   FormsAvailFormsLabel.Caption := dlgAvailableForms;
   FormsAvailFormsListBox.Hint := dlgAvailableFormsHint;
   FormsAutoCreateNewFormsCheckBox.Caption := dlgAutoCreateNewForms;
-  TIDEImages.AssignImage(FormsMoveAutoCreatedFormUpBtn.Glyph, 'arrow_up');
-  TIDEImages.AssignImage(FormsMoveAutoCreatedFormsDownBtn.Glyph, 'arrow_down');
-  TIDEImages.AssignImage(FormsAddToAutoCreatedFormsBtn.Glyph, 'arrow_left');
-  TIDEImages.AssignImage(FormsRemoveFromAutoCreatedFormsBtn.Glyph, 'arrow_right');
+  IDEImages.AssignImage(FormsMoveAutoCreatedFormUpBtn, 'arrow_up');
+  IDEImages.AssignImage(FormsMoveAutoCreatedFormsDownBtn, 'arrow_down');
+  IDEImages.AssignImage(FormsAddToAutoCreatedFormsBtn, 'arrow_left');
+  IDEImages.AssignImage(FormsRemoveFromAutoCreatedFormsBtn, 'arrow_right');
 end;
 
 procedure TProjectFormsOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);

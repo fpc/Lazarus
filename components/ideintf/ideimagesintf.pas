@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LCLType, ImgList, Controls, Graphics, LResources,
-  Math;
+  Math, Buttons;
 
 type
 
@@ -37,6 +37,8 @@ type
     FImages_12: TLCLGlyphs;
     FImages_16: TLCLGlyphs;
     FImages_24: TLCLGlyphs;
+    procedure FImages_24_GetWidthForPPI(Sender: TCustomImageList; AImageWidth,
+      APPI: Integer; var AResultWidth: Integer);
     function GetImages(Size: Integer): TLCLGlyphs;
   protected
     function GetImages_12: TLCLGlyphs;
@@ -54,6 +56,10 @@ type
     class function CreateImage(ImageSize: Integer; ImageName: String): TCustomBitmap; deprecated 'Use the other overload instead.';
     class function CreateImage(ImageName: String; ImageSize: Integer = 16): TCustomBitmap;
     class procedure AssignImage(const ABitmap: TCustomBitmap; ImageName: String;
+      ImageSize: Integer = 16); deprecated 'Use the other overloads instead.';
+    procedure AssignImage(const ABitBtn: TCustomBitBtn; ImageName: String;
+      ImageSize: Integer = 16);
+    procedure AssignImage(const ASpeedButton: TCustomSpeedButton; ImageName: String;
       ImageSize: Integer = 16);
     class function AddImageToImageList(const AImageList: TImageList;
       ImageName: String; ImageSize: Integer = 16): Integer;
@@ -84,9 +90,9 @@ begin
   if FImages_12 = nil then
   begin
     FImages_12 := TLCLGlyphs.Create(nil);
-    FImages_12.RegisterResolutions([12, 16, 24]);
     FImages_12.Width := 12;
     FImages_12.Height := FImages_12.Width;
+    FImages_12.RegisterResolutions([12, 16, 24]);
   end;
   Result := FImages_12;
 end;
@@ -96,9 +102,9 @@ begin
   if FImages_16 = nil then
   begin
     FImages_16 := TLCLGlyphs.Create(nil);
-    FImages_16.RegisterResolutions([16, 24, 32]);
     FImages_16.Width := 16;
     FImages_16.Height := FImages_16.Width;
+    FImages_16.RegisterResolutions([16, 24, 32]);
   end;
   Result := FImages_16;
 end;
@@ -108,9 +114,9 @@ begin
   if FImages_24 = nil then
   begin
     FImages_24 := TLCLGlyphs.Create(nil);
-    FImages_24.RegisterResolutions([24, 32, 48]);
     FImages_24.Width := 24;
     FImages_24.Height := FImages_24.Width;
+    FImages_24.RegisterResolutions([24, 36, 48]);
   end;
   Result := FImages_24;
 end;
@@ -165,6 +171,13 @@ begin
   inherited Destroy;
 end;
 
+procedure TIDEImages.FImages_24_GetWidthForPPI(Sender: TCustomImageList;
+  AImageWidth, APPI: Integer; var AResultWidth: Integer);
+begin
+  if (30<=AResultWidth) and (AResultWidth<=40) then
+    AResultWidth := 32;
+end;
+
 class procedure TIDEImages.AssignImage(const ABitmap: TCustomBitmap;
   ImageName: String; ImageSize: Integer);
 var
@@ -190,6 +203,28 @@ begin
   finally
     xBmp.Free;
   end;
+end;
+
+procedure TIDEImages.AssignImage(const ABitBtn: TCustomBitBtn;
+  ImageName: String; ImageSize: Integer);
+var
+  IL: TLCLGlyphs;
+begin
+  IL := Images[ImageSize];
+  if IL=nil then Exit;
+  ABitBtn.Images := IL;
+  ABitBtn.ImageIndex := IL.GetImageIndex(ImageName);
+end;
+
+procedure TIDEImages.AssignImage(const ASpeedButton: TCustomSpeedButton;
+  ImageName: String; ImageSize: Integer);
+var
+  IL: TLCLGlyphs;
+begin
+  IL := Images[ImageSize];
+  if IL=nil then Exit;
+  ASpeedButton.Images := IL;
+  ASpeedButton.ImageIndex := IL.GetImageIndex(ImageName);
 end;
 
 class function TIDEImages.ScaledSize(ImageSize: Integer): Integer;

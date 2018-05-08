@@ -883,11 +883,11 @@ begin
   // File system scanning
   ScanLabel.Caption := lisScanParentDir;
   StopScanButton.Caption:=lisStop;
-  TIDEImages.AssignImage(StopScanButton.Glyph, 'menu_stop');
+  IDEImages.AssignImage(StopScanButton, 'menu_stop');
   // Unit Replacements
   UnitReplaceDivider.Caption:=lisConvUnitReplacements;
   UnitReplaceButton.Caption:=lisEdit;    // Recycled string.
-  TIDEImages.AssignImage(UnitReplaceButton.Glyph, 'laz_edit');
+  IDEImages.AssignImage(UnitReplaceButton, 'laz_edit');
   UnitReplaceDivider.Hint:=lisConvUnitReplHint;
   UnitReplaceButton.Hint:=lisConvUnitReplHint;
   UnitReplaceComboBox.Items.Add(lisDisabled);    // 'Disabled'
@@ -901,7 +901,7 @@ begin
   // Type Replacements
   TypeReplaceDivider.Caption:=lisConvTypeReplacements;
   TypeReplaceButton.Caption:=lisEdit;
-  TIDEImages.AssignImage(TypeReplaceButton.Glyph, 'laz_edit');
+  IDEImages.AssignImage(TypeReplaceButton, 'laz_edit');
   TypeReplaceDivider.Hint:=lisConvTypeReplHint;
   TypeReplaceButton.Hint:=lisConvTypeReplHint;
   TypeReplaceComboBox.Items.Add(lisInteractive);
@@ -909,7 +909,7 @@ begin
   // Func Replacements
   FuncReplaceDivider.Caption:=lisConvFuncReplacements;
   FuncReplaceButton.Caption:=lisEdit;
-  TIDEImages.AssignImage(FuncReplaceButton.Glyph, 'laz_edit');
+  IDEImages.AssignImage(FuncReplaceButton, 'laz_edit');
   FuncReplaceDivider.Hint:=lisConvFuncReplHint;
   FuncReplaceButton.Hint:=lisConvFuncReplHint;
   FuncReplaceComboBox.Items.Add(lisDisabled);
@@ -918,7 +918,7 @@ begin
   // Coordinate Offsets
   CoordOffsDivider.Caption:=lisConvCoordOffs;
   CoordOffsButton.Caption:=lisEdit;
-  TIDEImages.AssignImage(CoordOffsButton.Glyph, 'laz_edit');
+  IDEImages.AssignImage(CoordOffsButton, 'laz_edit');
   CoordOffsDivider.Hint:=lisConvCoordHint;
   CoordOffsButton.Hint:=lisConvCoordHint;
   CoordOffsComboBox.Items.Add(lisDisabled);

@@ -1126,7 +1126,7 @@ begin
   end;
 
   FHintManager := THintWindowManager.Create;
-  FActiveRowBmp := TIDEImages.CreateImage('pg_active_row', 9);
+  FActiveRowBmp := TIDEImages.CreateImage('pg_active_row', 9); // todo: replace with image list
 
   FDefaultItemHeight:=DefItemHeight;
 

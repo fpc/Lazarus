@@ -182,7 +182,7 @@ begin
   ButtonPanel1.CloseButton.Kind := bkCustom;
   ButtonPanel1.CloseButton.LoadGlyphFromStock(idButtonSave);
   if ButtonPanel1.CloseButton.Glyph.Empty then
-    TIDEImages.AssignImage(ButtonPanel1.CloseButton.Glyph, 'laz_save');
+    IDEImages.AssignImage(ButtonPanel1.CloseButton, 'laz_save');
   ButtonPanel1.CloseButton.OnClick := @SaveSettingsButtonCLICK;
 
   ButtonPanel1.HelpButton.OnClick := @HelpButtonClick;

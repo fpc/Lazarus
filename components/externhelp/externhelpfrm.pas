@@ -1132,8 +1132,8 @@ constructor TExternHelpGeneralOptsFrame.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FOptions:=TExternHelpOptions.Create;
-  TIDEImages.AssignImage(AddSpeedButton.Glyph, 'laz_add');
-  TIDEImages.AssignImage(DeleteSpeedButton.Glyph, 'laz_delete');
+  IDEImages.AssignImage(AddSpeedButton, 'laz_add');
+  IDEImages.AssignImage(DeleteSpeedButton, 'laz_delete');
 end;
 
 destructor TExternHelpGeneralOptsFrame.Destroy;

@@ -123,8 +123,8 @@ begin
   BtnLoad.Caption := sccsTrEdtLoad;
   BtnSave.Caption := sccsTrEdtSave;
   BtnApply.Caption := sccsTrEdtApply;
-  TIDEImages.AssignImage(MoveUpBtn.Glyph, 'arrow_up');
-  TIDEImages.AssignImage(MoveDownBtn.Glyph, 'arrow_down');
+  IDEImages.AssignImage(MoveUpBtn, 'arrow_up');
+  IDEImages.AssignImage(MoveDownBtn, 'arrow_down');
   MoveUpBtn.Hint:=rscdMoveUp;
   MoveDownBtn.Hint:=rscdMoveDown;
 

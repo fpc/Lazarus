@@ -82,9 +82,9 @@ begin
   Caption := lisLazBuildDefines;
   gbNewDefine.Caption := lisCodeToolsDefsDefine;
   AddBtn.Caption := lisBtnAdd;
-  TIDEImages.AssignImage(AddBtn.Glyph, 'laz_add');
+  IDEImages.AssignImage(AddBtn, 'laz_add');
   RemoveBtn.Caption := lisBtnRemove;
-  TIDEImages.AssignImage(RemoveBtn.Glyph, 'laz_delete');
+  IDEImages.AssignImage(RemoveBtn, 'laz_delete');
 end;
 
 procedure TDefinesGuiForm.FormShow(Sender: TObject);

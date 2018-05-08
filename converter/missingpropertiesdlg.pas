@@ -741,7 +741,7 @@ begin
   PropertiesText.Caption:=lisProperties;
   TypesText.Caption:=lisTypes;
   ReplaceAllButton.Caption:=lisReplaceRemoveUnknown;
-  TIDEImages.AssignImage(ReplaceAllButton.Glyph, 'laz_refresh');
+  IDEImages.AssignImage(ReplaceAllButton, 'laz_refresh');
   EditorOpts.GetHighlighterSettings(SynLFMSyn1);
   EditorOpts.GetSynEditSettings(LFMSynEdit);
 end;

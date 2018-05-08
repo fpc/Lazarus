@@ -132,10 +132,10 @@ begin
     MissingUnitsGroupBox.Caption:=lisTheseUnitsWereNotFound;
     ChoicesLabel.Caption:=lisMissingUnitsChoices;
     SearchButton.Caption:=lisMissingUnitsSearch;
-    TIDEImages.AssignImage(SearchButton.Glyph, 'menu_search_find');
+    IDEImages.AssignImage(SearchButton, 'menu_search_find');
     SkipButton.Caption:=lisMissingUnitsSkip;
-    TIDEImages.AssignImage(SkipButton.Glyph, 'debugger_current_line_breakpoint');
-    TIDEImages.AssignImage(CommentButton.Glyph, 'menu_comment'); // or insertremark
+    IDEImages.AssignImage(SkipButton, 'debugger_current_line_breakpoint');
+    IDEImages.AssignImage(CommentButton, 'menu_comment'); // or insertremark
     if ATargetDelphi then begin
       CommentButton.Caption:=lisMissingUnitsForDelphi;
       Info1Label.Caption:=lisMissingUnitsInfo1b;

@@ -173,11 +173,11 @@ begin
   pnlButtons.Color := clBtnFace;
   lblSelect.Caption := '';
   // load button images
-  TIDEImages.AssignImage(btnAdd.Glyph, 'arrow__darkgreen_right');
-  TIDEImages.AssignImage(btnRemove.Glyph, 'arrow__darkred_left');
-  TIDEImages.AssignImage(btnMoveUp.Glyph, 'arrow__darkgreen_up');
-  TIDEImages.AssignImage(btnMoveDown.Glyph, 'arrow__darkgreen_down');
-  //TIDEImages.AssignImage(btnAddDivider.Glyph, 'menu_divider16');  // uncomment if 'menu_divider16' exists (currently not)
+  IDEImages.AssignImage(btnAdd, 'arrow__darkgreen_right');
+  IDEImages.AssignImage(btnRemove, 'arrow__darkred_left');
+  IDEImages.AssignImage(btnMoveUp, 'arrow__darkgreen_up');
+  IDEImages.AssignImage(btnMoveDown, 'arrow__darkgreen_down');
+  //IDEImages.AssignImage(btnAddDivider, 'menu_divider16');  // uncomment if 'menu_divider16' exists (currently not)
 
   btnAddDivider.Caption := '---';
   btnAdd.Hint       := lisCoolBarAddSelected;

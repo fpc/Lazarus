@@ -287,7 +287,7 @@ begin
     OKButton.Caption:=lisIECOLoadFromFile;
     OKButton.LoadGlyphFromStock(idButtonOpen);
     if OKButton.Glyph.Empty then
-      TIDEImages.AssignImage(OKButton.Glyph, 'laz_open');
+      IDEImages.AssignImage(OKButton, 'laz_open');
     OKButton.Enabled:=False;
     OKButton.OnClick:=@OpenButtonCLICK;
   end;
@@ -308,7 +308,7 @@ begin
     OKButton.Caption:=lisIECOSaveToFile;
     OKButton.LoadGlyphFromStock(idButtonSave);
     if OKButton.Glyph.Empty then
-      TIDEImages.AssignImage(OKButton.Glyph, 'laz_save');
+      IDEImages.AssignImage(OKButton, 'laz_save');
     OKButton.Enabled:=False;
     OKButton.OnClick:=@SaveButtonCLICK;
   end;

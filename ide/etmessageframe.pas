@@ -3487,11 +3487,11 @@ begin
   // search
   SearchPanel.Visible:=false; // by default the search is hidden
   HideSearchSpeedButton.Hint:=lisHideSearch;
-  TIDEImages.AssignImage(HideSearchSpeedButton.Glyph, 'debugger_power_grey');
+  IDEImages.AssignImage(HideSearchSpeedButton, 'debugger_power_grey');
   SearchNextSpeedButton.Hint:=lisUDSearchNextOccurrenceOfThisPhrase;
-  TIDEImages.AssignImage(SearchNextSpeedButton.Glyph, 'callstack_bottom');
+  IDEImages.AssignImage(SearchNextSpeedButton, 'callstack_bottom');
   SearchPrevSpeedButton.Hint:=lisUDSearchPreviousOccurrenceOfThisPhrase;
-  TIDEImages.AssignImage(SearchPrevSpeedButton.Glyph, 'callstack_top');
+  IDEImages.AssignImage(SearchPrevSpeedButton, 'callstack_top');
   SearchEdit.TextHint:=lisUDSearch;
 end;
 

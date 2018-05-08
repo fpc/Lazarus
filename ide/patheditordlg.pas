@@ -450,13 +450,13 @@ begin
   OpenDialog1.Filter:=Filt;
   SaveDialog1.Filter:=Filt;
 
-  TIDEImages.AssignImage(MoveUpButton.Glyph, 'arrow_up');
-  TIDEImages.AssignImage(MoveDownButton.Glyph, 'arrow_down');
-  TIDEImages.AssignImage(ReplaceButton.Glyph, 'menu_reportingbug');
-  TIDEImages.AssignImage(AddButton.Glyph, 'laz_add');
-  TIDEImages.AssignImage(DeleteButton.Glyph, 'laz_delete');
-  TIDEImages.AssignImage(DeleteInvalidPathsButton.Glyph, 'menu_clean');
-  TIDEImages.AssignImage(AddTemplateButton.Glyph, 'laz_add');
+  IDEImages.AssignImage(MoveUpButton, 'arrow_up');
+  IDEImages.AssignImage(MoveDownButton, 'arrow_down');
+  IDEImages.AssignImage(ReplaceButton, 'menu_reportingbug');
+  IDEImages.AssignImage(AddButton, 'laz_add');
+  IDEImages.AssignImage(DeleteButton, 'laz_delete');
+  IDEImages.AssignImage(DeleteInvalidPathsButton, 'menu_clean');
+  IDEImages.AssignImage(AddTemplateButton, 'laz_add');
 end;
 
 procedure TPathEditorDialog.FormDestroy(Sender: TObject);

@@ -76,7 +76,7 @@ begin
   POOutDirEdit.Text := FLazPackage.POOutputDirectory;
   PoForFormsCheckBox.Checked:=FLazPackage.EnableI18NForLFM;
 
-  TIDEImages.AssignImage(POOutDirEdit.Button.Glyph, ResBtnSelDir); //DirectoryEdit
+  IDEImages.AssignImage(POOutDirEdit.Button, ResBtnSelDir); //DirectoryEdit
 end;
 
 procedure TPackageI18NOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);

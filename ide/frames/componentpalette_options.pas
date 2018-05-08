@@ -152,12 +152,12 @@ begin
   // Component pages
   PagesGroupBox.Caption := lisCmpPages;
   AddPageButton.Caption := lisBtnDlgAdd;
-  TIDEImages.AssignImage(AddPageButton.Glyph, 'laz_add');
+  IDEImages.AssignImage(AddPageButton, 'laz_add');
   RestoreButton.Caption := lisCmpRestoreDefaults;
   ImportDividerBevel.Caption := lisExportImport;
-  TIDEImages.AssignImage(ImportButton.Glyph, 'laz_open');
+  IDEImages.AssignImage(ImportButton, 'laz_open');
   ImportButton.Caption := lisDlgImport;
-  TIDEImages.AssignImage(ExportButton.Glyph, 'laz_save');
+  IDEImages.AssignImage(ExportButton, 'laz_save');
   ExportButton.Caption := lisDlgExport;
   // File dialogs
   ImportDialog.Title := lisImport;
@@ -171,13 +171,13 @@ begin
   ComponentsListView.Column[3].Caption := lisUnit;
   ComponentsListView.SmallImages := IDEImages.Images_24;
   // Arrow buttons for pages
-  TIDEImages.AssignImage(PageMoveUpBtn.Glyph, 'arrow_up');
-  TIDEImages.AssignImage(PageMoveDownBtn.Glyph, 'arrow_down');
+  IDEImages.AssignImage(PageMoveUpBtn, 'arrow_up');
+  IDEImages.AssignImage(PageMoveDownBtn, 'arrow_down');
   PageMoveUpBtn.Hint := lisMoveSelectedUp;
   PageMoveDownBtn.Hint := lisMoveSelectedDown;
   // Arrow buttons for components
-  TIDEImages.AssignImage(CompMoveUpBtn.Glyph, 'arrow_up');
-  TIDEImages.AssignImage(CompMoveDownBtn.Glyph, 'arrow_down');
+  IDEImages.AssignImage(CompMoveUpBtn, 'arrow_up');
+  IDEImages.AssignImage(CompMoveDownBtn, 'arrow_down');
   CompMoveUpBtn.Hint := lisMoveSelectedUp;
   CompMoveDownBtn.Hint := lisMoveSelectedDown;
 

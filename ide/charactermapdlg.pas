@@ -127,7 +127,7 @@ begin
   RangeLabel.Caption := lisRange;
   SortUniRangeListButton.Flat:=True;
   SortUniRangeListButton.Hint:=lisSortUnicodeRangeListAlphabetically;
-  TIDEImages.AssignImage(SortUniRangeListButton.Glyph, 'pkg_sortalphabetically');
+  IDEImages.AssignImage(SortUniRangeListButton, 'pkg_sortalphabetically');
   ButtonPanel.HelpButton.Caption:=lisMenuHelp;
   ButtonPanel.CloseButton.Caption:=lisBtnClose;
 

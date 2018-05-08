@@ -749,7 +749,7 @@ begin
   ErrorsGroupBox.Caption:=lisErrors;
   LFMGroupBox.Caption:=lisLFMFile;
   RemoveAllButton.Caption:=lisRemoveAllInvalidProperties;
-  TIDEImages.AssignImage(RemoveAllButton.Glyph, 'laz_delete');
+  IDEImages.AssignImage(RemoveAllButton, 'laz_delete');
   CancelButton.Caption:=lisCancel;
   EditorOpts.GetHighlighterSettings(SynLFMSyn1);
   EditorOpts.GetSynEditSettings(LFMSynEdit);

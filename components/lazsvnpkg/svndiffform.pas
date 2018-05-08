@@ -110,7 +110,7 @@ procedure TSVNDiffFrm.FormCreate(Sender: TObject);
 begin
   ButtonPanel.HelpButton.Enabled := False;
   ButtonPanel.HelpButton.Caption := rsSave;
-  TIDEImages.AssignImage(ButtonPanel.HelpButton.Glyph, 'laz_save');
+  IDEImages.AssignImage(ButtonPanel.HelpButton, 'laz_save');
 end;
 
 procedure TSVNDiffFrm.FormClose(Sender: TObject; var CloseAction: TCloseAction);

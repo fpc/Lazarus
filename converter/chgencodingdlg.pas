@@ -116,9 +116,9 @@ begin
   CloseButton.Caption:=lisClose;
   ApplyButton.Caption:=lisConvert;
   HelpButton.Caption:=lisHelp;
-  TIDEImages.AssignImage(CloseButton.Glyph, 'btn_close');
-  TIDEImages.AssignImage(ApplyButton.Glyph, 'btn_ok');
-  TIDEImages.AssignImage(HelpButton.Glyph, 'btn_help');
+  IDEImages.AssignImage(CloseButton, 'btn_close');
+  IDEImages.AssignImage(ApplyButton, 'btn_ok');
+  IDEImages.AssignImage(HelpButton, 'btn_help');
 
   PreviewGroupBox.Caption:=dlgWRDPreview;
   PreviewListView.Column[0].Caption:=dlgEnvFiles;

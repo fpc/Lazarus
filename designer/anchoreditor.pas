@@ -466,18 +466,18 @@ end;
 
 procedure TAnchorDesigner.LoadGlyphs;
 begin
-  TIDEImages.AssignImage(LeftRefLeftSpeedButton.Glyph, 'anchor_left_left');
-  TIDEImages.AssignImage(LeftRefCenterSpeedButton.Glyph, 'anchor_left_center');
-  TIDEImages.AssignImage(LeftRefRightSpeedButton.Glyph, 'anchor_left_right');
-  TIDEImages.AssignImage(RightRefLeftSpeedButton.Glyph, 'anchor_right_left');
-  TIDEImages.AssignImage(RightRefCenterSpeedButton.Glyph, 'anchor_right_center');
-  TIDEImages.AssignImage(RightRefRightSpeedButton.Glyph, 'anchor_right_right');
-  TIDEImages.AssignImage(TopRefTopSpeedButton.Glyph, 'anchor_top_top');
-  TIDEImages.AssignImage(TopRefCenterSpeedButton.Glyph, 'anchor_top_center');
-  TIDEImages.AssignImage(TopRefBottomSpeedButton.Glyph, 'anchor_top_bottom');
-  TIDEImages.AssignImage(BottomRefTopSpeedButton.Glyph, 'anchor_bottom_top');
-  TIDEImages.AssignImage(BottomRefCenterSpeedButton.Glyph, 'anchor_bottom_center');
-  TIDEImages.AssignImage(BottomRefBottomSpeedButton.Glyph, 'anchor_bottom_bottom');
+  IDEImages.AssignImage(LeftRefLeftSpeedButton, 'anchor_left_left');
+  IDEImages.AssignImage(LeftRefCenterSpeedButton, 'anchor_left_center');
+  IDEImages.AssignImage(LeftRefRightSpeedButton, 'anchor_left_right');
+  IDEImages.AssignImage(RightRefLeftSpeedButton, 'anchor_right_left');
+  IDEImages.AssignImage(RightRefCenterSpeedButton, 'anchor_right_center');
+  IDEImages.AssignImage(RightRefRightSpeedButton, 'anchor_right_right');
+  IDEImages.AssignImage(TopRefTopSpeedButton, 'anchor_top_top');
+  IDEImages.AssignImage(TopRefCenterSpeedButton, 'anchor_top_center');
+  IDEImages.AssignImage(TopRefBottomSpeedButton, 'anchor_top_bottom');
+  IDEImages.AssignImage(BottomRefTopSpeedButton, 'anchor_bottom_top');
+  IDEImages.AssignImage(BottomRefCenterSpeedButton, 'anchor_bottom_center');
+  IDEImages.AssignImage(BottomRefBottomSpeedButton, 'anchor_bottom_bottom');
 end;
 
 procedure TAnchorDesigner.CreateSideControls;

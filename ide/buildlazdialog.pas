@@ -1036,13 +1036,13 @@ begin
   ConfirmBuildCheckBox.Hint := lisLazBuildShowConfirmationDialogWhenBuilding;
 
   CompileButton.Caption := lisBuild;
-  TIDEImages.AssignImage(CompileButton.Glyph, 'menu_build');
+  IDEImages.AssignImage(CompileButton, 'menu_build');
   CompileAdvancedButton.Caption := lisLazBuildBuildMany;
-  TIDEImages.AssignImage(CompileAdvancedButton.Glyph, 'menu_build_all');
+  IDEImages.AssignImage(CompileAdvancedButton, 'menu_build_all');
   SaveSettingsButton.Caption := lisSaveSettings;
   SaveSettingsButton.LoadGlyphFromStock(idButtonSave);
   if SaveSettingsButton.Glyph.Empty then
-    TIDEImages.AssignImage(SaveSettingsButton.Glyph, 'laz_save');
+    IDEImages.AssignImage(SaveSettingsButton, 'laz_save');
   CancelButton.Caption := lisCancel;
   HelpButton.Caption := lisMenuHelp;
 

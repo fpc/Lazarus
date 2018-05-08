@@ -49,8 +49,8 @@ begin
   Caption:=peFilterEditor;
   StringGrid1.Cells[0, 0] := peFilterName;
   StringGrid1.Cells[1, 0] := peFilter;
-  TIDEImages.AssignImage(MoveUpBtn.Glyph, 'arrow_up');
-  TIDEImages.AssignImage(MoveDownBtn.Glyph, 'arrow_down');
+  IDEImages.AssignImage(MoveUpBtn, 'arrow_up');
+  IDEImages.AssignImage(MoveDownBtn, 'arrow_down');
   MoveUpBtn.Hint := rscdMoveUp;
   MoveDownBtn.Hint := rscdMoveDown;
   IDEDialogLayoutList.ApplyLayout(Self);

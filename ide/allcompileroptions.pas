@@ -85,7 +85,7 @@ procedure TfrmAllCompilerOptions.FormCreate(Sender: TObject);
 begin
   Caption:=lisAllOptions;
   edOptionsFilter.Hint := lisFilterTheAvailableOptionsList;
-  TIDEImages.AssignImage(btnResetOptionsFilter.Glyph, ResBtnListFilter);
+  IDEImages.AssignImage(btnResetOptionsFilter, ResBtnListFilter);
   btnResetOptionsFilter.Enabled := False;
   btnResetOptionsFilter.Hint := lisClearTheFilterForOptions;
   cbShowModified.Caption:=lisShowOnlyModified;

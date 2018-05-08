@@ -518,7 +518,7 @@ begin
       Btn.Name:='CopyAllSpeedButton'+IntToStr(i+1);
       Btn.OnClick:=@CopyAllBtnClick;
       Btn.Visible:=false;
-      TIDEImages.AssignImage(Btn.Glyph, 'laz_copy');
+      IDEImages.AssignImage(Btn, 'laz_copy');
       Btn.Flat:=true;
       Btn.Parent:=Self;
       FHints.Add(Item);

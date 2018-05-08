@@ -721,10 +721,10 @@ procedure TCodeExplorerView.AssignAllImages;
 var
   ImageSize: Integer;
 begin
-  TIDEImages.AssignImage(CodeRefreshSpeedButton.Glyph, 'laz_refresh');
-  TIDEImages.AssignImage(CodeOptionsSpeedButton.Glyph, 'menu_environment_options');
-  TIDEImages.AssignImage(DirRefreshSpeedButton.Glyph, 'laz_refresh');
-  TIDEImages.AssignImage(DirOptionsSpeedButton.Glyph, 'menu_environment_options');
+  IDEImages.AssignImage(CodeRefreshSpeedButton, 'laz_refresh');
+  IDEImages.AssignImage(CodeOptionsSpeedButton, 'menu_environment_options');
+  IDEImages.AssignImage(DirRefreshSpeedButton, 'laz_refresh');
+  IDEImages.AssignImage(DirOptionsSpeedButton, 'menu_environment_options');
 
   ImageSize := TIDEImages.ScaledSize;
   Imagelist1.Width := ImageSize;
@@ -1964,11 +1964,11 @@ procedure TCodeExplorerView.UpdateMode;
 begin
   if FMode=cemCategory
   then begin
-    TIDEImages.AssignImage(CodeModeSpeedButton.Glyph, 'show_category');
+    IDEImages.AssignImage(CodeModeSpeedButton, 'show_category');
     CodeModeSpeedButton.Hint:=lisCEModeShowSourceNodes;
   end
   else begin
-    TIDEImages.AssignImage(CodeModeSpeedButton.Glyph, 'show_source');
+    IDEImages.AssignImage(CodeModeSpeedButton, 'show_source');
     CodeModeSpeedButton.Hint:=lisCEModeShowCategories;
   end;
   Refresh(true);

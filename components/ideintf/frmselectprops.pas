@@ -76,11 +76,11 @@ implementation
 procedure TSelectPropertiesForm.SelectPropertiesFormCreate(Sender: TObject);
 begin
   BAdd.Caption:=ilesAdd;
-  TIDEImages.AssignImage(BAdd.Glyph, 'laz_add');
+  IDEImages.AssignImage(BAdd, 'laz_add');
   BDelete.Caption:=oisDelete;
-  TIDEImages.AssignImage(BDelete.Glyph, 'laz_delete');
+  IDEImages.AssignImage(BDelete, 'laz_delete');
   BClear.Caption:=oisClear;
-  TIDEImages.AssignImage(BClear.Glyph, 'menu_clean');
+  IDEImages.AssignImage(BClear, 'menu_clean');
   LComponents.Caption:=oisBtnComponents;
   LProperties.Caption:=oisBtnProperties;
   LLBSelected.Caption:=oisSelectedProperties;

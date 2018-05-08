@@ -55,7 +55,7 @@ begin
   fActionBtn.BorderSpacing.Left := 6;
   fActionBtn.BorderSpacing.Right := 6;
   if aResourceGlyphName <> '' then
-    TIDEImages.AssignImage(fActionBtn.Glyph, aResourceGlyphName);
+    IDEImages.AssignImage(fActionBtn, aResourceGlyphName);
   fActionBtn.AutoSize := True;
   fActionBtn.Parent := ButtonPanel1;
 end;

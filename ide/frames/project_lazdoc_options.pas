@@ -53,8 +53,8 @@ begin
   SearchPathsGroupBox.Caption := lisSearchPaths2;
   AddPathButton.Caption := lisCodeHelpAddPathButton;
   DeletePathButton.Caption := lisCodeHelpDeletePathButton;
-  TIDEImages.AssignImage(DeletePathButton.Glyph, 'laz_delete');
-  TIDEImages.AssignImage(AddPathButton.Glyph, 'laz_add');
+  IDEImages.AssignImage(DeletePathButton, 'laz_delete');
+  IDEImages.AssignImage(AddPathButton, 'laz_add');
 
   PathEdit.Clear;
 end;

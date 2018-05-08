@@ -1965,16 +1965,16 @@ begin
   mnuAddNewReqr.Caption := lisProjAddNewRequirement;
 
   // Buttons on FilterPanel
-  TIDEImages.AssignImage(OpenButton.Glyph, 'laz_open');
+  IDEImages.AssignImage(OpenButton, 'laz_open');
   OpenButton.Hint:=lisOpenFile2;
   SortAlphabeticallyButton.Hint:=lisPESortFilesAlphabetically;
-  TIDEImages.AssignImage(SortAlphabeticallyButton.Glyph, 'pkg_sortalphabetically');
+  IDEImages.AssignImage(SortAlphabeticallyButton, 'pkg_sortalphabetically');
   DirectoryHierarchyButton.Hint:=lisPEShowDirectoryHierarchy;
-  TIDEImages.AssignImage(DirectoryHierarchyButton.Glyph, 'pkg_hierarchical');
+  IDEImages.AssignImage(DirectoryHierarchyButton, 'pkg_hierarchical');
 
   // Up / Down buttons
-  TIDEImages.AssignImage(MoveUpBtn.Glyph, 'arrow_up');
-  TIDEImages.AssignImage(MoveDownBtn.Glyph, 'arrow_down');
+  IDEImages.AssignImage(MoveUpBtn, 'arrow_up');
+  IDEImages.AssignImage(MoveDownBtn, 'arrow_down');
   MoveUpBtn.Hint:=lisMoveSelectedUp;
   MoveDownBtn.Hint:=lisMoveSelectedDown;
 

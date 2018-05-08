@@ -95,9 +95,9 @@ begin
   DeleteSetButton.Caption:=lisDelete;
   FilterSetGroupBox.Caption:=lisFilterSets;
 
-  TIDEImages.AssignImage(AddNewSetButton.Glyph, 'laz_add');
-  TIDEImages.AssignImage(DeleteSetButton.Glyph, 'laz_delete');
-  TIDEImages.AssignImage(RenameSetButton.Glyph, 'laz_edit');
+  IDEImages.AssignImage(AddNewSetButton, 'laz_add');
+  IDEImages.AssignImage(DeleteSetButton, 'laz_delete');
+  IDEImages.AssignImage(RenameSetButton, 'laz_edit');
 end;
 
 procedure TMsgViewEditorDlg.DeleteSetButtonClick(Sender: TObject);

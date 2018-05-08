@@ -232,11 +232,11 @@ begin
   FirstLabel.Caption := lisFirstTest;
   SecondLabel.Caption := lisSecondTest;
   AddBtn.Caption := lisBtnAdd;
-  TIDEImages.AssignImage(AddBtn.Glyph, 'laz_add');
+  IDEImages.AssignImage(AddBtn, 'laz_add');
   AddInverse.Caption := rsAddInverse;
-  TIDEImages.AssignImage(AddInverse.Glyph, 'pkg_issues');
+  IDEImages.AssignImage(AddInverse, 'pkg_issues');
   RemoveBtn.Caption := lisBtnRemove;
-  TIDEImages.AssignImage(RemoveBtn.Glyph, 'laz_delete');
+  IDEImages.AssignImage(RemoveBtn, 'laz_delete');
   ButtonPanel1.CloseButton.Caption := lisSave;
   ButtonPanel1.OKButton.Caption := lisOk;
   //ButtonPanel1.CloseButton.LoadGlyphFromStock(idButtonSave);

@@ -699,9 +699,9 @@ begin
 
   SetupLocalPage;
   SetupEnvironmentPage;
-  TIDEImages.AssignImage(UserOverridesAddButton.Glyph, 'laz_add');
-  TIDEImages.AssignImage(UserOverridesEditButton.Glyph, 'laz_edit');
-  TIDEImages.AssignImage(UserOverridesDeleteButton.Glyph, 'laz_delete');
+  IDEImages.AssignImage(UserOverridesAddButton, 'laz_add');
+  IDEImages.AssignImage(UserOverridesEditButton, 'laz_edit');
+  IDEImages.AssignImage(UserOverridesDeleteButton, 'laz_delete');
 end;
 
 procedure TRunParamsOptsDlg.NewModeButtonClick(Sender: TObject);

@@ -139,9 +139,9 @@ begin
   GlobalDesignHook.AddHandlerDeletePersistent(@OnDeletePersistent);
   GlobalDesignHook.AddHandlerSetSelection(@OnSetSelection);
 
-  TIDEImages.AssignImage(ArrowDown.Glyph, 'arrow_down');
-  TIDEImages.AssignImage(ArrowUp.Glyph, 'arrow_up');
-  TIDEImages.AssignImage(SortByPositionButton.Glyph, 'menu_edit_sort');
+  IDEImages.AssignImage(ArrowDown, 'arrow_down');
+  IDEImages.AssignImage(ArrowUp, 'arrow_up');
+  IDEImages.AssignImage(SortByPositionButton, 'menu_edit_sort');
 
   ArrowDown.Hint:=lisTabOrderDownHint;
   ArrowUp.Hint:=lisTabOrderUpHint;

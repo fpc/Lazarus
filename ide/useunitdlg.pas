@@ -194,7 +194,6 @@ begin
   ButtonPanel1.OKButton.Caption:=lisMenuOk;
   ButtonPanel1.CancelButton.Caption:=lisCancel;
   UnitImgInd := IDEImages.LoadImage('item_unit');
-  TIDEImages.AssignImage(FilterEdit.Glyph, 'btnfiltercancel');
   FProjUnits:=TStringList.Create;
 end;
 

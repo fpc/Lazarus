@@ -3985,7 +3985,7 @@ var
   ResName: String;
 begin
   ResName := ComponentClass.ClassName;
-  Result := TIDEImages.CreateImage(ResName, 24);
+  Result := TIDEImages.CreateImage(ResName, 24); // todo: use image list
 
   if Result = nil then
     Result := CreateBitmapFromResourceName(HInstance, 'default')

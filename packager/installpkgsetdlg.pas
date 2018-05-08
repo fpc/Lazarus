@@ -222,10 +222,10 @@ begin
   ExportButton.Caption:=lisExportList;
   ImportButton.Caption:=lisImportList;
   UninstallButton.Caption:=lisUninstallSelection;
-  TIDEImages.AssignImage(UninstallButton.Glyph, 'arrow_right');
+  IDEImages.AssignImage(UninstallButton, 'arrow_right');
   InstallPkgGroupBox.Caption:=lisPckEditInstall;
   AddToInstallButton.Caption:=lisInstallSelection;
-  TIDEImages.AssignImage(AddToInstallButton.Glyph, 'arrow_left');
+  IDEImages.AssignImage(AddToInstallButton, 'arrow_left');
   PkgInfoGroupBox.Caption := lisPackageInfo;
   SaveAndRebuildButton.Caption:=lisSaveAndRebuildIDE;
   SaveAndExitButton.Caption:=lisSaveAndExitDialog;

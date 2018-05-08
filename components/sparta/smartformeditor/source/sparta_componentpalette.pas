@@ -528,7 +528,7 @@ procedure TComponentsPalette.UpdateComponentsList;
     LButton := TSpeedButton.Create(LPage);
     with LButton do
     begin
-      TIDEImages.AssignImage(Glyph, 'tmouse');
+      IDEImages.AssignImage(LButton, 'tmouse');
       Hint := 'Selection tool';
 
       ShowHint := True;

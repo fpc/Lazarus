@@ -77,8 +77,8 @@ begin
   btnContinue.Caption := lisMenuContinue;
   cbIgnoreExceptionType.Caption := lisIgnoreExceptionType;
 
-  TIDEImages.AssignImage(btnBreak.Glyph, 'menu_pause');
-  TIDEImages.AssignImage(btnContinue.Glyph, 'menu_run');
+  IDEImages.AssignImage(btnBreak, 'menu_pause');
+  IDEImages.AssignImage(btnContinue, 'menu_run');
 
   DefaultControl := btnBreak;
   CancelControl := btnContinue;

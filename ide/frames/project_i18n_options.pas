@@ -126,7 +126,7 @@ begin
   ExcludedIdentifiersLabel.ParentFont := True;
   ExcludedOriginalsLabel.ParentFont := True;
   ForceUpdatePoFilesCheckBox.ParentFont := True;
-  TIDEImages.AssignImage(POOutDirEdit.Button.Glyph, ResBtnSelDir); //DirectoryEdit
+  IDEImages.AssignImage(POOutDirEdit.Button, ResBtnSelDir); //DirectoryEdit
 end;
 
 procedure TProjectI18NOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);

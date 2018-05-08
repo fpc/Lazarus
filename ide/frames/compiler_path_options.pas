@@ -636,7 +636,7 @@ begin
 
   // register special buttons in the dialog itself
   btnShowOptions := CreateButton(dlgCOShowOptions);
-  TIDEImages.AssignImage(btnShowOptions.Glyph, 'menu_compiler_options');
+  IDEImages.AssignImage(btnShowOptions, 'menu_compiler_options');
   btnShowOptions.OnClick := @DoShowOptions;
   // Check
   btnCheck := CreateButton(lisCompTest);
@@ -657,7 +657,7 @@ begin
   btnLoadSave.Hint := dlgCOLoadSaveHint;
   btnLoadSave.LoadGlyphFromStock(idButtonOpen);
   if btnLoadSave.Glyph.Empty then
-    TIDEImages.AssignImage(btnLoadSave.Glyph, 'laz_save');
+    IDEImages.AssignImage(btnLoadSave, 'laz_save');
 
   ADialog.AddButtonSeparator;
 

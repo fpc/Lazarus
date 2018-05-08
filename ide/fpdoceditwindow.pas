@@ -293,14 +293,14 @@ begin
 
   Name := NonModalIDEWindowNames[nmiwFPDocEditorName];
 
-  TIDEImages.AssignImage(BoldFormatButton.Glyph, 'formatbold');
-  TIDEImages.AssignImage(UnderlineFormatButton.Glyph, 'formatunderline');
-  TIDEImages.AssignImage(ItalicFormatButton.Glyph, 'formatitalic');
-  TIDEImages.AssignImage(InsertVarTagButton.Glyph, 'insertvartag');
-  TIDEImages.AssignImage(InsertCodeTagButton.Glyph, 'insertcodetag');
-  TIDEImages.AssignImage(InsertRemarkButton.Glyph, 'insertremark');
-  TIDEImages.AssignImage(InsertURLTagSpeedButton.Glyph, 'formatunderline');
-  TIDEImages.AssignImage(SaveButton.Glyph, 'laz_save');
+  IDEImages.AssignImage(BoldFormatButton, 'formatbold');
+  IDEImages.AssignImage(UnderlineFormatButton, 'formatunderline');
+  IDEImages.AssignImage(ItalicFormatButton, 'formatitalic');
+  IDEImages.AssignImage(InsertVarTagButton, 'insertvartag');
+  IDEImages.AssignImage(InsertCodeTagButton, 'insertcodetag');
+  IDEImages.AssignImage(InsertRemarkButton, 'insertremark');
+  IDEImages.AssignImage(InsertURLTagSpeedButton, 'formatunderline');
+  IDEImages.AssignImage(SaveButton, 'laz_save');
 
   SourceEditorManagerIntf.RegisterChangeEvent(semEditorActivate, @DoEditorUpdate);
   SourceEditorManagerIntf.RegisterChangeEvent(semEditorStatus, @DoEditorUpdate);

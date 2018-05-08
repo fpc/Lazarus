@@ -489,7 +489,7 @@ begin
   ImgIDError := Imagelist1.AddResourceName(HInstance, 'state_error');
   ImgIDWarning := Imagelist1.AddResourceName(HInstance, 'state_warning');
 
-  TIDEImages.AssignImage(StopScanButton.Glyph, 'menu_stop');
+  IDEImages.AssignImage(StopScanButton, 'menu_stop');
 
   UpdateCaptions;
 
