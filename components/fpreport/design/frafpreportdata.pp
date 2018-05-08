@@ -203,8 +203,7 @@ Const
   end;
 
 Var
-  DN,N : TTreeNode;
-  D : TFPReportData;
+  N : TTreeNode;
   S,A : String;
   I,J : integer;
   ID : TFPBuiltInExprIdentifierDef;

@@ -19,7 +19,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, EditBtn, StdCtrls, Buttons, ActnList, SynEdit, SynHighlighterSQL,
-  fpreportdesignreportdata, fpjson,  db, sqldb, fpreportdatasqldb, dialogs;
+  fpreportdesignreportdata, fpjson, sqldb, fpreportdatasqldb, dialogs;
 
 type
   TFrame = TReportDataConfigFrame;

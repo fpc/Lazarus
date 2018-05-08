@@ -5,6 +5,7 @@ object ReportDataDisplay: TReportDataDisplay
   Width = 327
   ClientHeight = 277
   ClientWidth = 327
+  LCLVersion = '1.9.0.0'
   TabOrder = 0
   DesignLeft = 658
   DesignTop = 245

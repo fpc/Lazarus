@@ -19,7 +19,7 @@ unit frafpreportdbfdata;
 interface
 
 uses
-  Classes, SysUtils, dbf, FileUtil, Forms, Controls, EditBtn, StdCtrls, fpjson, fpreportdesignreportdata, db;
+  Classes, SysUtils, dbf, FileUtil, Forms, Controls, EditBtn, StdCtrls, fpjson, fpreportdesignreportdata;
 
 type
   TFrame = TReportDataConfigFrame;

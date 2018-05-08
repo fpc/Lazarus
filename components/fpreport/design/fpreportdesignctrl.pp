@@ -541,7 +541,6 @@ Var
   I : Integer;
   A : TReportObjectArray;
   O : TReportObject;
-  B : TFPReportCustomBand;
   P : TPoint;
 
 begin
