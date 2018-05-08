@@ -969,6 +969,7 @@ components/codetools/tests/testcodecompletion.pas svneol=native#text/plain
 components/codetools/tests/testcompleteblock.pas svneol=native#text/plain
 components/codetools/tests/testcompreaderwriterpas.pas svneol=native#text/plain
 components/codetools/tests/testcth2pas.pas svneol=native#text/pascal
+components/codetools/tests/testctpas2js.pas svneol=native#text/plain
 components/codetools/tests/testctrangescan.pas svneol=native#text/plain
 components/codetools/tests/testctxmlfixfragments.pas svneol=native#text/pascal
 components/codetools/tests/testfinddeclaration.pas svneol=native#text/plain
