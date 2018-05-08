@@ -1550,6 +1550,7 @@ var
   FirstLineIsNotSelectedMessage: Boolean;
   SecondLineIsNotSelectedMessage: Boolean;
   col: TColor;
+  ImgRes: TScaledImageListResolution;
 begin
   if Focused then
     Include(FStates,mcsFocused)
@@ -1615,10 +1616,11 @@ begin
       ImgIndex:=fUrgencyStyles[Line.Urgency].ImageIndex;
       if (Images<>nil) and (mcoShowMsgIcons in Options)
       and (ImgIndex>=0) and (ImgIndex<Images.Count) then begin
-        Images.DrawForControl(Canvas,
+        ImgRes := Images.ResolutionForControl[0, Self];
+        ImgRes.Draw(Canvas,
           NodeRect.Left + 1, (NodeRect.Top + NodeRect.Bottom - Images.Height) div 2,
-          ImgIndex, 0, Self, gdeNormal);
-        inc(NodeRect.Left,Images.Width+2);
+          ImgIndex, gdeNormal);
+        inc(NodeRect.Left, ImgRes.Width+2);
       end;
       // message text
       col:=UrgencyStyles[Line.Urgency].Color;
@@ -3495,7 +3497,7 @@ begin
       EnvironmentOptions.MsgColors[mluFatal]);
     UrgencyStyles[mluPanic].SetValues(lisPanic, ImgIDFatal,
       EnvironmentOptions.MsgColors[mluPanic]);
-    Images:=FImages;
+    Images:=Self.FImages;
     PopupMenu:=MsgCtrlPopupMenu;
   end;
   MessagesCtrl.SourceMarks:=ExtToolsMarks;
