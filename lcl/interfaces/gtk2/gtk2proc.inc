@@ -2362,7 +2362,7 @@ begin
     if AHandleDown then
     begin
       {$IFDEF VerboseKeyboard}
-      DebugLn('[HandleGTKKeyUpDown] GDK_KEY_PRESS VKey=',dbgs(VKey),' SysKey=',dbgs(SysKey));
+      DebugLn('[HandleGTKKeyUpDown] GDK_KEY_PRESS VKey=',dbgs(VKey),' SysKey=',dbgs(SysKey),' Shift=',dbgs(Shift),' KCInfo=Key1=',KCInfo.VKey1,',Key2=',KCInfo.VKey2,',Flags=',hexstr(KCInfo.Flags,2));
       {$ENDIF}
 
       Msg.CharCode := VKey;
@@ -2418,19 +2418,19 @@ begin
     if ABeforeEvent then
     begin
       // try to get the UTF8 representation of the key
-        if im_context_string <> '' then
-        begin
-          Character := UTF8Copy(im_context_string,1,1);
-          im_context_string:='';// clear, to avoid sending again
-        end
+      if im_context_string <> '' then
+      begin
+        Character := UTF8Copy(im_context_string,1,1);
+        im_context_string:='';// clear, to avoid sending again
+      end
+      else
+      begin
+        KeyPressesChar := GetSpecialChar;
+        if KeyPressesChar <> #0 then
+          Character := KeyPressesChar
         else
-        begin
-          KeyPressesChar := GetSpecialChar;
-          if KeyPressesChar <> #0 then
-            Character := KeyPressesChar
-          else
-            Character := '';
-        end;
+          Character := '';
+      end;
 
       {$IFDEF VerboseKeyboard}
       debugln('[HandleGTKKeyUpDown] GDK_KEY_PRESS UTF8="',DbgStr(Character),'"',
