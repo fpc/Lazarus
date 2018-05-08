@@ -340,6 +340,11 @@ type
   private
     function GetResolutionForControl(AImageWidth: Integer; AControl: TControl): TScaledImageListResolution;
   public
+    procedure DrawForControl(ACanvas: TCanvas; AX, AY, AIndex, AImageWidthAt96PPI: Integer;
+      AControl: TControl; AEnabled: Boolean = True); overload;
+    procedure DrawForControl(ACanvas: TCanvas; AX, AY, AIndex, AImageWidthAt96PPI: Integer;
+      AControl: TControl; ADrawEffect: TGraphicsDrawEffect); overload;
+
     property ResolutionForControl[AImageWidth: Integer; AControl: TControl]: TScaledImageListResolution read GetResolutionForControl;
   end;
 
