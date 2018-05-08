@@ -42,12 +42,19 @@ begin
   Result := GLCLGlyphs;
 end;
 
-function GetDefaultGlyph(ResourceName: string; ScalePercent: Integer = 100): TCustomBitmap;
+function GetDefaultGlyph(ResourceName: string; ScalePercent: Integer;
+  IgnoreMissingResource: Boolean): TCustomBitmap;
 begin
-  Result := TPortableNetworkGraphic.Create;
   if ScalePercent<>100 then
     ResourceName := ResourceName+'_'+IntToStr(ScalePercent);
-  Result.LoadFromResourceName(hInstance, ResourceName);
+  Result := TPortableNetworkGraphic.Create;
+  if IgnoreMissingResource
+  and (FindResource(HInstance, PChar(ResourceName), Result.GetResourceType)=0) then
+  begin
+    FreeAndNil(Result);
+    Exit;
+  end else
+    Result.LoadFromResourceName(hInstance, ResourceName);
 end;
 
 {------------------------------------------------------------------------------
@@ -2726,26 +2733,29 @@ end;
 
 function TLCLGlyphs.GetImageIndex(const AResourceName: string): Integer;
 
-  function AddBtnImage(ResolutionWidth: Integer): Integer;
+  function AddNewBtnImage(ResolutionWidth: Integer): Integer;
   var
     G: TCustomBitmap;
   begin
-    if FIgnoreMissingResources and (ResolutionWidth<>Width)
-    and (FindResource(HInstance, PChar(AResourceName), RT_RCDATA)=0) then
-      Exit;
-
-    G := GetDefaultGlyph(AResourceName, MulDiv(ResolutionWidth, 100, 16));
+    G := GetDefaultGlyph(AResourceName, MulDiv(ResolutionWidth, 100, 16), False);
     try
-      if ResolutionWidth=Width then
-        Result := AddSliceCentered(G)
-      else
-      begin
-        Result := Count-1;
-        ReplaceSliceCentered(Result, ResolutionWidth, G, False);
-      end;
+      Result := AddSliceCentered(G);
     finally
       G.Free;
     end;
+  end;
+
+  procedure AddBtnImageRes(ImageIndex, ResolutionWidth: Integer);
+  var
+    G: TCustomBitmap;
+  begin
+    G := GetDefaultGlyph(AResourceName, MulDiv(ResolutionWidth, 100, 16), FIgnoreMissingResources);
+    if G<>nil then
+      try
+        ReplaceSliceCentered(ImageIndex, ResolutionWidth, G, False);
+      finally
+        G.Free;
+      end;
   end;
 
 var
@@ -2763,10 +2773,10 @@ begin
   begin
     E := TEntry.Create;
     E.GlyphName := AResourceName;
-    E.ImageIndex := AddBtnImage(Width);
+    E.ImageIndex := AddNewBtnImage(Width);
     for I := Low(FLoadResolutions) to High(FLoadResolutions) do
       if FLoadResolutions[I]<>Width then
-        AddBtnImage(FLoadResolutions[I]);
+        AddBtnImageRes(E.ImageIndex, FLoadResolutions[I]);
     FImageIndexes.Add(E);
     Result := E.ImageIndex;
   end;

@@ -447,7 +447,8 @@ type
   end;
 
 function LCLGlyphs: TLCLGlyphs;
-function GetDefaultGlyph(ResourceName: string; ScalePercent: Integer = 100): TCustomBitmap;
+function GetDefaultGlyph(ResourceName: string; ScalePercent: Integer = 100;
+  IgnoreMissingResource: Boolean = False): TCustomBitmap;
 
 implementation
 
