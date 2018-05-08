@@ -977,6 +977,7 @@ type
     procedure IncreaseChangeStamp;
     function GetUnitSetID: string;
     function GetFirstFPCCfg: string;
+    function GetUnitScopes: string;
   end;
 
   { TCompilerDefinesCache }
@@ -8636,7 +8637,6 @@ var
   i: Integer;
   p: Integer;
   StartPos: Integer;
-  Filename: String;
 begin
   Clear;
 
@@ -10378,17 +10378,39 @@ function TFPCUnitSetCache.GetFirstFPCCfg: string;
 var
   Cfg: TPCTargetConfigCache;
   i: Integer;
+  Files: TPCConfigFileStateList;
 begin
   Result:='';
   Cfg:=GetConfigCache(false);
   if Cfg=nil then exit;
-  if Cfg.ConfigFiles=nil then exit;
-  for i:=0 to Cfg.ConfigFiles.Count-1 do begin
-    if Cfg.ConfigFiles[i].FileExists then begin
-      Result:=Cfg.ConfigFiles[i].Filename;
+  Files:=Cfg.ConfigFiles;
+  if Files=nil then exit;
+  for i:=0 to Files.Count-1 do begin
+    if Files[i].FileExists then begin
+      Result:=Files[i].Filename;
       exit;
     end;
   end;
+end;
+
+function TFPCUnitSetCache.GetUnitScopes: string;
+var
+  Cfg: TPCTargetConfigCache;
+  Scopes: TStrings;
+  Scope: String;
+  i: Integer;
+begin
+  Result:='';
+  Cfg:=GetConfigCache(false);
+  if Cfg=nil then exit;
+  Scopes:=Cfg.UnitScopes;
+  if Scopes=nil then exit;
+  for i:=0 to Scopes.Count-1 do begin
+    Scope:=Scopes[i];
+    if Scope='' then continue;
+    Result:=Result+';'+Scope;
+  end;
+  Delete(Result,1,1);
 end;
 
 initialization

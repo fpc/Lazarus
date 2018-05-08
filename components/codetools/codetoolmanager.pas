@@ -43,6 +43,7 @@ uses
   Classes, SysUtils, contnrs, TypInfo, types, Laz_AVL_Tree,
   // LazUtils
   LazFileUtils, LazFileCache, LazMethodList, LazDbgLog, AvgLvlTree,
+  LazUtilities,
   // Codetools
   FileProcs, BasicCodeTools, CodeToolsStrConsts,
   EventCodeTool, CodeTree, CodeAtom, SourceChanger, DefineTemplates, CodeCache,
@@ -1702,6 +1703,7 @@ function TCodeToolManager.GetNamespacesForDirectory(const Directory: string;
 var
   Evaluator: TExpressionEvaluator;
   FPCFullVersion: LongInt;
+  UnitSet: TFPCUnitSetCache;
 begin
   if UseCache then begin
     Result:=DirectoryCachePool.GetString(Directory,ctdcsNamespaces,true)
@@ -1716,6 +1718,10 @@ begin
       if FPCFullVersion>=30101 then
         Result:=Evaluator[NamespacesMacroName];
     end;
+    // add default unit scopes from compiler cfg
+    UnitSet:=GetUnitSetForDirectory(Directory);
+    if UnitSet<>nil then
+      Result:=MergeWithDelimiter(Result,UnitSet.GetUnitScopes,';');
   end;
 end;
 
