@@ -2763,9 +2763,10 @@ begin
   begin
     E := TEntry.Create;
     E.GlyphName := AResourceName;
-    E.ImageIndex := AddBtnImage(FLoadResolutions[Low(FLoadResolutions)]);
-    for I := Low(FLoadResolutions)+1 to High(FLoadResolutions) do
-      AddBtnImage(FLoadResolutions[I]);
+    E.ImageIndex := AddBtnImage(Width);
+    for I := Low(FLoadResolutions) to High(FLoadResolutions) do
+      if FLoadResolutions[I]<>Width then
+        AddBtnImage(FLoadResolutions[I]);
     FImageIndexes.Add(E);
     Result := E.ImageIndex;
   end;
