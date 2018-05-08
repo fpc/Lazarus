@@ -338,7 +338,15 @@ begin
       if CfgCache.Undefines<>nil then begin
         sl.Add(CfgCache.Undefines.AsText);
       end;
-      sl.Add('UnitPaths:');
+      sl.Add('Include Paths:');
+      if CfgCache.IncludePaths<>nil then begin
+        sl.AddStrings(CfgCache.IncludePaths);
+      end;
+      sl.Add('Unit Scopes:');
+      if CfgCache.UnitScopes<>nil then begin
+        sl.AddStrings(CfgCache.UnitScopes);
+      end;
+      sl.Add('Unit Paths:');
       if CfgCache.UnitPaths<>nil then begin
         sl.AddStrings(CfgCache.UnitPaths);
       end;
