@@ -233,12 +233,14 @@ var
     nTokenLen: integer;
     Attr: TSynHighlightElement;
     CurForeground: TColor;
+    LeftText: string;
   begin
     if MeasureOnly then begin
       Inc(Result.X,ACanvas.TextWidth(s));
       exit;
     end;
     if (Highlighter<>nil) and AllowFontColor then begin
+      LeftText := '';
       Highlighter.ResetRange;
       Highlighter.SetLine(s,0);
       while not Highlighter.GetEol do begin
@@ -251,8 +253,8 @@ var
           if CurForeground=clNone then
             CurForeground:=TColor(ForegroundColor);
           SetFontColor(CurForeground);
-          ACanvas.TextOut(x+1,y,s);
-          inc(x,ACanvas.TextWidth(s));
+          ACanvas.TextOut(x+1+ACanvas.TextWidth(LeftText),y,s);
+          LeftText += s;
         end;
         Highlighter.Next;
       end;
