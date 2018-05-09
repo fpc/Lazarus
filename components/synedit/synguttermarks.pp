@@ -76,12 +76,18 @@ function TSynGutterMarks.GetImgListRes(const ACanvas: TCanvas;
   const AImages: TCustomImageList): TScaledImageListResolution;
 var
   Scale: Double;
+  PPI: Integer;
 begin
   if ACanvas is TControlCanvas then
-    Scale := TControlCanvas(ACanvas).Control.GetCanvasScaleFactor
-  else
+  begin
+    Scale := TControlCanvas(ACanvas).Control.GetCanvasScaleFactor;
+    PPI := TControlCanvas(ACanvas).Control.Font.PixelsPerInch;
+  end else
+  begin
     Scale := 1;
-  Result := AImages.ResolutionForPPI[0, ACanvas.Font.PixelsPerInch, Scale];
+    PPI := ACanvas.Font.PixelsPerInch;
+  end;
+  Result := AImages.ResolutionForPPI[0, PPI, Scale];
 end;
 
 function TSynGutterMarks.PaintMarks(aScreenLine: Integer; Canvas : TCanvas;
