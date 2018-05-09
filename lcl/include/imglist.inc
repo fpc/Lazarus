@@ -44,11 +44,19 @@ end;
 
 function GetDefaultGlyph(ResourceName: string; ScalePercent: Integer;
   IgnoreMissingResource: Boolean): TCustomBitmap;
+var
+  LRes: TLResource;
 begin
   if ScalePercent<>100 then
     ResourceName := ResourceName+'_'+IntToStr(ScalePercent);
 
   Result := CreateBitmapFromResourceName(HINSTANCE, ResourceName);
+  if Result=nil then
+  begin
+    LRes := LazarusResources.Find(ResourceName);
+    if LRes<>nil then
+      Result := CreateBitmapFromLazarusResource(LRes);
+  end;
   if (Result=nil) and not IgnoreMissingResource then
     raise EResNotFound.CreateFmt(SResNotFound,[ResourceName]);
 end;
