@@ -6665,7 +6665,8 @@ begin
           case Command of
             ecWordEndLeft, ecSelWordEndLeft:   CaretNew := PrevWordLogicalPos(swbWordEnd);
             ecHalfWordLeft, ecSelHalfWordLeft: CaretNew := PrevWordLogicalPos(swbCaseChange);
-            else                               CaretNew := PrevWordLogicalPos;
+            ecWordLeft:                        CaretNew := PrevWordLogicalPos(swbWordSmart);
+            ecSelWordLeft, ecColSelWordLeft:   CaretNew := PrevWordLogicalPos(swbWordSmart);
           end;
           if FFoldedLinesView.FoldedAtTextIndex[CaretNew.Y - 1] then begin
             CY := FindNextUnfoldedLine(CaretNew.Y, False);
@@ -6679,7 +6680,8 @@ begin
           case Command of
             ecWordEndRight, ecSelWordEndRight:   CaretNew := NextWordLogicalPos(swbWordEnd);
             ecHalfWordRight, ecSelHalfWordRight: CaretNew := NextWordLogicalPos(swbCaseChange);
-            else                                 CaretNew := NextWordLogicalPos;
+            ecWordRight:                         CaretNew := NextWordLogicalPos(swbWordSmart);
+            ecSelWordRight, ecColSelWordRight:   CaretNew := NextWordLogicalPos(swbWordEnd);
           end;
           if FFoldedLinesView.FoldedAtTextIndex[CaretNew.Y - 1] then
             CaretNew := Point(1, FindNextUnfoldedLine(CaretNew.Y, True));
