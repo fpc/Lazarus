@@ -422,7 +422,8 @@ type
     swbTokenBegin,
     swbTokenEnd,
     swbCaseChange,
-    swbWordSmart // begin or end of word with smart gaps (1 char)
+    swbWordSmart, // begin or end of word with smart gaps (1 char)
+    swbWordSmartSel // the same as swbWordSmart but optimized for selection
   );
 
   { TCustomSynEdit }
@@ -4053,14 +4054,17 @@ begin
         CX := WordBreaker.NextWordEnd(Line,  CX);
         if (CX <= 0) then CX := LineLen + 1;
       end;
-    swbWordSmart: begin
+    swbWordSmart, swbWordSmartSel: begin
+        if ABoundary=swbWordSmartSel then
+          Inc(CX);
         NX := WordBreaker.NextWordEnd(Line, CX);
         if (NX <= 0) then NX := LineLen + 1;
         CX := WordBreaker.NextWordStart(Line, CX, InclCurrent);
         if (CX <= 0) and not InclCurrent then CX := LineLen + 1;
         if (CX <= 0) and InclCurrent then CX := 1;
 
-        if (NX<CX-1) then // step over 1 char gap
+        if ((ABoundary=swbWordSmart) and (NX<CX-1)) // step over 1 char gap
+        or ((ABoundary=swbWordSmartSel) and (NX<CX)) then // no gap
           CX := NX;
       end;
     swbTokenBegin: begin
@@ -4167,22 +4171,15 @@ begin
         CX := WordBreaker.PrevWordEnd(Line,  Min(CX, Length(Line) + 1));
         CheckLineStart(CX, CY);
       end;
-    swbWordSmart: begin
-        {if CX=1 then
-        begin
-          CX := -1;
-          CheckLineStart(CX, CY);
-        end else}
-        begin
-          if CX>1 then // step over 1 char gap
-            Dec(CX);
-          NX := WordBreaker.PrevWordStart(Line,  Min(CX, Length(Line) + 1));
-          CX := WordBreaker.PrevWordEnd(Line,  Min(CX, Length(Line) + 1));
+    swbWordSmart, swbWordSmartSel: begin
+        if CX>1 then // step over 1 char gap
+          Dec(CX);
+        NX := WordBreaker.PrevWordStart(Line,  Min(CX, Length(Line) + 1));
+        CX := WordBreaker.PrevWordEnd(Line,  Min(CX, Length(Line) + 1));
 
-          if (NX>CX-1) then // select the nearest
-            CX := NX;
-          CheckLineStart(CX, CY);
-        end;
+        if (NX>CX-1) then // select the nearest
+          CX := NX;
+        CheckLineStart(CX, CY);
     end;
     swbTokenBegin: begin
         CX := WordBreaker.PrevBoundary(Line,  Min(CX, Length(Line) + 1));
@@ -6666,7 +6663,7 @@ begin
             ecWordEndLeft, ecSelWordEndLeft:   CaretNew := PrevWordLogicalPos(swbWordEnd);
             ecHalfWordLeft, ecSelHalfWordLeft: CaretNew := PrevWordLogicalPos(swbCaseChange);
             ecWordLeft:                        CaretNew := PrevWordLogicalPos(swbWordSmart);
-            ecSelWordLeft, ecColSelWordLeft:   CaretNew := PrevWordLogicalPos(swbWordSmart);
+            ecSelWordLeft, ecColSelWordLeft:   CaretNew := PrevWordLogicalPos(swbWordSmartSel);
           end;
           if FFoldedLinesView.FoldedAtTextIndex[CaretNew.Y - 1] then begin
             CY := FindNextUnfoldedLine(CaretNew.Y, False);
@@ -6681,7 +6678,7 @@ begin
             ecWordEndRight, ecSelWordEndRight:   CaretNew := NextWordLogicalPos(swbWordEnd);
             ecHalfWordRight, ecSelHalfWordRight: CaretNew := NextWordLogicalPos(swbCaseChange);
             ecWordRight:                         CaretNew := NextWordLogicalPos(swbWordSmart);
-            ecSelWordRight, ecColSelWordRight:   CaretNew := NextWordLogicalPos(swbWordEnd);
+            ecSelWordRight, ecColSelWordRight:   CaretNew := NextWordLogicalPos(swbWordSmartSel);
           end;
           if FFoldedLinesView.FoldedAtTextIndex[CaretNew.Y - 1] then
             CaretNew := Point(1, FindNextUnfoldedLine(CaretNew.Y, True));
