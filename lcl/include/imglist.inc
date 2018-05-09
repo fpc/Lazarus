@@ -2729,11 +2729,11 @@ end;
 
 function TLCLGlyphs.GetImageIndex(const AResourceName: string): Integer;
 
-  function AddNewBtnImage(ResolutionWidth: Integer): Integer;
+  function AddNewBtnImage(Resolution: TResolution): Integer;
   var
     G: TCustomBitmap;
   begin
-    G := GetDefaultGlyph(AResourceName, MulDiv(ResolutionWidth, 100, RealSuffix100Scale), FIgnoreMissingResources);
+    G := GetDefaultGlyph(AResourceName, Resolution.ScaleSuffix, FIgnoreMissingResources);
     if G=nil then
       Exit(-1);
     try
@@ -2743,14 +2743,14 @@ function TLCLGlyphs.GetImageIndex(const AResourceName: string): Integer;
     end;
   end;
 
-  procedure AddBtnImageRes(ImageIndex, ResolutionWidth: Integer);
+  procedure AddBtnImageRes(ImageIndex: Integer; Resolution: TResolution);
   var
     G: TCustomBitmap;
   begin
-    G := GetDefaultGlyph(AResourceName, MulDiv(ResolutionWidth, 100, RealSuffix100Scale), FIgnoreMissingResources);
+    G := GetDefaultGlyph(AResourceName, Resolution.ScaleSuffix, FIgnoreMissingResources);
     if G<>nil then
       try
-        ReplaceSliceCentered(ImageIndex, ResolutionWidth, G, False);
+        ReplaceSliceCentered(ImageIndex, Resolution.Width, G, False);
       finally
         G.Free;
       end;
@@ -2771,22 +2771,31 @@ begin
   begin
     E := TEntry.Create;
     E.GlyphName := AResourceName;
-    E.ImageIndex := AddNewBtnImage(Width);
+    E.ImageIndex := -1;
+    for I := Low(FLoadResolutions) to High(FLoadResolutions) do
+      if FLoadResolutions[I].Width=Width then
+      begin
+        E.ImageIndex := AddNewBtnImage(FLoadResolutions[I]);
+        break;
+      end;
     if E.ImageIndex>=0 then
       for I := Low(FLoadResolutions) to High(FLoadResolutions) do
-        if FLoadResolutions[I]<>Width then
+        if FLoadResolutions[I].Width<>Width then
           AddBtnImageRes(E.ImageIndex, FLoadResolutions[I]);
     FImageIndexes.Add(E);
     Result := E.ImageIndex;
   end;
 end;
 
-function TLCLGlyphs.RealSuffix100Scale: Integer;
+procedure TLCLGlyphs.RegisterResolutions(const AResolutionWidths,
+  AResolutionScaleSuffixes: array of Integer);
+var
+  I: Integer;
 begin
-  if FSuffix100Scale=0 then
-    Result := Width
-  else
-    Result := FSuffix100Scale;
+  RegisterResolutions(AResolutionWidths);
+
+  for I := Low(FLoadResolutions) to High(FLoadResolutions) do
+    FLoadResolutions[I].ScaleSuffix := AResolutionScaleSuffixes[I];
 end;
 
 procedure TLCLGlyphs.RegisterResolutions(
@@ -2798,7 +2807,18 @@ begin
 
   SetLength(FLoadResolutions, Length(AResolutionWidths));
   for I := Low(FLoadResolutions) to High(FLoadResolutions) do
-    FLoadResolutions[I] := AResolutionWidths[I];
+  begin
+    FLoadResolutions[I].Width := AResolutionWidths[I];
+    FLoadResolutions[I].ScaleSuffix := MulDiv(FLoadResolutions[I].Width, 100, Width);
+  end;
+end;
+
+procedure TLCLGlyphs.SetWidth100Suffix(const AWidth100Suffix: Integer);
+var
+  I: Integer;
+begin
+  for I := 0 to High(FLoadResolutions) do
+    FLoadResolutions[I].ScaleSuffix := MulDiv(FLoadResolutions[I].Width, 100, AWidth100Suffix);
 end;
 
 procedure InterfaceFinal;

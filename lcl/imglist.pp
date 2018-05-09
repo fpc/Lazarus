@@ -432,22 +432,26 @@ type
       // value
       ImageIndex: Integer; // the image index in TLCLGlyphs
     end;
+    TResolution = record
+      Width: Integer;
+      ScaleSuffix: Integer;
+    end;
+
   private
     FIgnoreMissingResources: Boolean;
     FImageIndexes: TAvgLvlTree;
-    FLoadResolutions: array of Integer;
+    FLoadResolutions: array of TResolution;
     FSuffix100Scale: Integer;
-
-    function RealSuffix100Scale: Integer;
   public
     function GetImageIndex(const AResourceName: string): Integer;
     procedure RegisterResolutions(const AResolutionWidths: array of Integer); override;
+    procedure RegisterResolutions(const AResolutionWidths, AResolutionScaleSuffixes: array of Integer); overload;
+    procedure SetWidth100Suffix(const AWidth100Suffix: Integer);
 
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
     property IgnoreMissingResources: Boolean read FIgnoreMissingResources write FIgnoreMissingResources;
-    property Suffix100Scale: Integer read FSuffix100Scale write FSuffix100Scale;
   end;
 
 function LCLGlyphs: TLCLGlyphs;
