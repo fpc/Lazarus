@@ -10,7 +10,7 @@ object DlgCompPagesPopup: TDlgCompPagesPopup
   OnCreate = FormCreate
   OnDeactivate = FormDeactivate
   OnShow = FormShow
-  LCLVersion = '1.5'
+  LCLVersion = '1.9.0.0'
   object Panel1: TPanel
     Left = 0
     Height = 536
@@ -30,9 +30,8 @@ object DlgCompPagesPopup: TDlgCompPagesPopup
       Width = 289
       Align = alClient
       BackgroundColor = clDefault
-      DefaultItemHeight = 18
+      Color = clDefault
       HotTrack = True
-      Images = ImageList1
       ReadOnly = True
       ScrollBars = ssAutoVertical
       TabOrder = 0
@@ -54,19 +53,15 @@ object DlgCompPagesPopup: TDlgCompPagesPopup
       ParentFont = False
       TabOrder = 1
       object cBtnClose: TSpeedButton
-        Left = 269
+        Left = 285
         Height = 16
         Top = 0
-        Width = 20
+        Width = 4
         Align = alRight
         AutoSize = True
         Flat = True
         OnClick = cBtnCloseClick
       end
     end
-  end
-  object ImageList1: TImageList
-    left = 240
-    top = 40
   end
 end

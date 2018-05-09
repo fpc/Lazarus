@@ -53,8 +53,8 @@ type
     class function GetScalePercent: Integer;
     class function ScaleImage(const AImage: TGraphic; out ANewInstance: Boolean;
       TargetWidth, TargetHeight: Integer; const AFactor: Double): TCustomBitmap;
-    class function CreateImage(ImageSize: Integer; ImageName: String): TCustomBitmap; deprecated 'Use the other overload instead.';
-    class function CreateImage(ImageName: String; ImageSize: Integer = 16): TCustomBitmap;
+    class function CreateImage(ImageSize: Integer; ImageName: String): TCustomBitmap; deprecated 'Don''t use this, use image lists instead.';
+    class function CreateImage(ImageName: String; ImageSize: Integer = 16): TCustomBitmap; deprecated 'Don''t use this, use image lists instead.';
     class procedure AssignImage(const ABitmap: TCustomBitmap; ImageName: String;
       ImageSize: Integer = 16); deprecated 'Use the other overloads instead.';
     procedure AssignImage(const ABitBtn: TCustomBitBtn; ImageName: String;
@@ -62,8 +62,8 @@ type
     procedure AssignImage(const ASpeedButton: TCustomSpeedButton; ImageName: String;
       ImageSize: Integer = 16);
     class function AddImageToImageList(const AImageList: TImageList;
-      ImageName: String; ImageSize: Integer = 16): Integer;
-    class function ScaledSize(ImageSize: Integer = 16): Integer;
+      ImageName: String; ImageSize: Integer = 16): Integer; deprecated 'Don''t use this, use image lists instead.';
+    class function ScaledSize(ImageSize: Integer = 16): Integer; deprecated 'Don''t use this, use image lists instead.';
 
     function LoadImage(ImageSize: Integer; ImageName: String): Integer; deprecated 'Use the other overload instead.';
     function LoadImage(ImageName: String; ImageSize: Integer = 16): Integer;
@@ -183,7 +183,7 @@ class procedure TIDEImages.AssignImage(const ABitmap: TCustomBitmap;
 var
   xBmp: TCustomBitmap;
 begin
-  xBmp := TIDEImages.CreateImage(ImageName, ImageSize);
+  xBmp := CreateImage(ImageName, ImageSize);
   try
     ABitmap.Assign(xBmp);
   finally

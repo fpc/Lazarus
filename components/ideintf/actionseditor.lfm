@@ -93,7 +93,6 @@ object ActionListEditor: TActionListEditor
     EdgeBorders = []
     EdgeInner = esNone
     EdgeOuter = esNone
-    Images = ImageList1
     ParentShowHint = False
     ShowHint = True
     TabOrder = 4
@@ -128,8 +127,8 @@ object ActionListEditor: TActionListEditor
     end
   end
   object ActionListSelf: TActionList
-    left = 56
-    top = 260
+    Left = 56
+    Top = 260
     object ActDelete: TAction
       Category = 'AddDelete'
       OnExecute = ActDeleteExecute
@@ -174,8 +173,8 @@ object ActionListEditor: TActionListEditor
     end
   end
   object PopMenuActions: TPopupMenu
-    left = 56
-    top = 216
+    Left = 56
+    Top = 216
     object mItemActListNewAction: TMenuItem
       Action = ActNew
       Caption = 'New Action'
@@ -221,8 +220,8 @@ object ActionListEditor: TActionListEditor
     end
   end
   object PopMenuToolBarActions: TPopupMenu
-    left = 56
-    top = 164
+    Left = 56
+    Top = 164
     object mItemToolBarNewAction: TMenuItem
       Action = ActNew
       Default = True
@@ -232,10 +231,5 @@ object ActionListEditor: TActionListEditor
       Action = ActNewStd
       OnClick = ActNewStdExecute
     end
-  end
-  object ImageList1: TImageList
-    AllocBy = 8
-    left = 56
-    top = 116
   end
 end

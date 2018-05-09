@@ -718,43 +718,38 @@ begin
 end;
 
 procedure TCodeExplorerView.AssignAllImages;
-var
-  ImageSize: Integer;
 begin
   IDEImages.AssignImage(CodeRefreshSpeedButton, 'laz_refresh');
   IDEImages.AssignImage(CodeOptionsSpeedButton, 'menu_environment_options');
   IDEImages.AssignImage(DirRefreshSpeedButton, 'laz_refresh');
   IDEImages.AssignImage(DirOptionsSpeedButton, 'menu_environment_options');
 
-  ImageSize := TIDEImages.ScaledSize;
-  Imagelist1.Width := ImageSize;
-  Imagelist1.Height := ImageSize;
-  Imagelist1.Scaled := False;
-  ImgIDDefault := TIDEImages.AddImageToImageList(Imagelist1, 'ce_default');
-  ImgIDProgram := TIDEImages.AddImageToImageList(Imagelist1, 'ce_program');
-  ImgIDUnit := TIDEImages.AddImageToImageList(Imagelist1, 'cc_unit');
-  ImgIDInterface := TIDEImages.AddImageToImageList(Imagelist1, 'ce_interface');
-  ImgIDImplementation := TIDEImages.AddImageToImageList(Imagelist1, 'ce_implementation');
-  ImgIDInitialization := TIDEImages.AddImageToImageList(Imagelist1, 'ce_initialization');
-  ImgIDFinalization := TIDEImages.AddImageToImageList(Imagelist1, 'ce_finalization');
-  ImgIDType := TIDEImages.AddImageToImageList(Imagelist1, 'cc_type');
-  ImgIDVariable := TIDEImages.AddImageToImageList(Imagelist1, 'cc_variable');
-  ImgIDConst := TIDEImages.AddImageToImageList(Imagelist1, 'cc_constant');
-  ImgIDClass := TIDEImages.AddImageToImageList(Imagelist1, 'cc_class');
-  ImgIDClassInterface := TIDEImages.AddImageToImageList(Imagelist1, 'ce_classinterface');
-  ImgIDHelper := TIDEImages.AddImageToImageList(Imagelist1, 'ce_helper');
-  ImgIDRecord := TIDEImages.AddImageToImageList(Imagelist1, 'cc_record');
-  ImgIDEnum := TIDEImages.AddImageToImageList(Imagelist1, 'cc_enum');
-  ImgIDProcedure := TIDEImages.AddImageToImageList(Imagelist1, 'cc_procedure');
-  ImgIDFunction := TIDEImages.AddImageToImageList(Imagelist1, 'cc_function');
-  ImgIDConstructor := TIDEImages.AddImageToImageList(Imagelist1, 'cc_constructor');
-  ImgIDDestructor := TIDEImages.AddImageToImageList(Imagelist1, 'cc_destructor');
-  ImgIDLabel := TIDEImages.AddImageToImageList(Imagelist1, 'cc_label');
-  ImgIDProperty := TIDEImages.AddImageToImageList(Imagelist1, 'cc_property');
-  ImgIDPropertyReadOnly := TIDEImages.AddImageToImageList(Imagelist1, 'cc_property_ro');
+  CodeTreeview.Images := IDEImages.Images_16;
+  ImgIDDefault := IDEImages.GetImageIndex('ce_default');
+  ImgIDProgram := IDEImages.GetImageIndex('ce_program');
+  ImgIDUnit := IDEImages.GetImageIndex('cc_unit');
+  ImgIDInterface := IDEImages.GetImageIndex('ce_interface');
+  ImgIDImplementation := IDEImages.GetImageIndex('ce_implementation');
+  ImgIDInitialization := IDEImages.GetImageIndex('ce_initialization');
+  ImgIDFinalization := IDEImages.GetImageIndex('ce_finalization');
+  ImgIDType := IDEImages.GetImageIndex('cc_type');
+  ImgIDVariable := IDEImages.GetImageIndex('cc_variable');
+  ImgIDConst := IDEImages.GetImageIndex('cc_constant');
+  ImgIDClass := IDEImages.GetImageIndex('cc_class');
+  ImgIDClassInterface := IDEImages.GetImageIndex('ce_classinterface');
+  ImgIDHelper := IDEImages.GetImageIndex('ce_helper');
+  ImgIDRecord := IDEImages.GetImageIndex('cc_record');
+  ImgIDEnum := IDEImages.GetImageIndex('cc_enum');
+  ImgIDProcedure := IDEImages.GetImageIndex('cc_procedure');
+  ImgIDFunction := IDEImages.GetImageIndex('cc_function');
+  ImgIDConstructor := IDEImages.GetImageIndex('cc_constructor');
+  ImgIDDestructor := IDEImages.GetImageIndex('cc_destructor');
+  ImgIDLabel := IDEImages.GetImageIndex('cc_label');
+  ImgIDProperty := IDEImages.GetImageIndex('cc_property');
+  ImgIDPropertyReadOnly := IDEImages.GetImageIndex('cc_property_ro');
   // sections
-  ImgIDSection := TIDEImages.AddImageToImageList(Imagelist1, 'ce_section');
-  ImgIDHint := TIDEImages.AddImageToImageList(Imagelist1, 'state_hint');
+  ImgIDSection := IDEImages.GetImageIndex('ce_section');
+  ImgIDHint := IDEImages.GetImageIndex('state_hint');
 end;
 
 function TCodeExplorerView.GetCodeNodeDescription(ACodeTool: TCodeTool;

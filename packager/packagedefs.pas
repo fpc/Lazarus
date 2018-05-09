@@ -50,7 +50,8 @@ uses
   PackageDependencyIntf, PackageIntf, IDEDialogs, ComponentReg, IDEImagesIntf,
   // IDE
   EditDefineTree, CompilerOptions, CompOptsModes, IDEOptionDefs, ProjPackCommon,
-  LazarusIDEStrConsts, IDEProcs, TransferMacros, FileReferenceList, PublishModule;
+  LazarusIDEStrConsts, IDEProcs, TransferMacros, FileReferenceList,
+  PublishModule, ImgList;
 
 type
   TLazPackage = class;
@@ -94,8 +95,8 @@ type
     function GetUnitName: string; override;
     function GetPriority: TComponentPriority; override;
     procedure ConsistencyCheck; override;
-    function Icon: TCustomBitmap;
-    function GetIconCopy: TCustomBitmap;
+    function ImageIndex: TImageIndex;
+    class function Images: TCustomImageList;
     function HasIcon: boolean;
     function CanBeCreatedInDesigner: boolean; override;
   public
@@ -3970,33 +3971,21 @@ begin
     RaiseGDBException('TIDEComponent.ConsistencyCheck PkgFile.FComponents.IndexOf(Self)<0');
 end;
 
-function TPkgComponent.Icon: TCustomBitmap;
+class function TPkgComponent.Images: TCustomImageList;
 begin
-  if not fIconLoaded
-  then begin
-    fIcon:=GetIconCopy;
-    fIconLoaded:=true;
-  end;
-  Result:=FIcon;
-end;
-
-function TPkgComponent.GetIconCopy: TCustomBitMap;
-var
-  ResName: String;
-begin
-  ResName := ComponentClass.ClassName;
-  Result := TIDEImages.CreateImage(ResName, 24); // todo: use image list
-
-  if Result = nil then
-    Result := CreateBitmapFromResourceName(HInstance, 'default')
-  else
-  if Result is TBitmap then
-    Result.Transparent := True;
+  Result := IDEImages.Images_24;
 end;
 
 function TPkgComponent.HasIcon: boolean;
 begin
   Result:=RealPage.PageName<>'';
+end;
+
+function TPkgComponent.ImageIndex: TImageIndex;
+begin
+  Result := IDEImages.GetImageIndex(ComponentClass.ClassName, 24);
+  if Result=-1 then
+    Result := IDEImages.GetImageIndex('default', 24);
 end;
 
 function TPkgComponent.CanBeCreatedInDesigner: boolean;

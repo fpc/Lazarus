@@ -44,7 +44,6 @@ type
 
   TDlgCompPagesPopup = class(TForm)
     cBtnClose: TSpeedButton;
-    ImageList1: TImageList;
     Panel1: TPanel;
     Panel2: TPanel;
     TreeView1: TTreeView;
@@ -111,11 +110,9 @@ procedure TDlgCompPagesPopup.FormCreate(Sender: TObject);
 begin
   IDEImages.AssignImage(cBtnClose, 'menu_close');
 
-  ImageList1.Width := TIDEImages.ScaledSize;
-  ImageList1.Height := TIDEImages.ScaledSize;
-  ImageList1.Scaled := False;
-  TIDEImages.AddImageToImageList(ImageList1, 'item_package');
-  TIDEImages.AddImageToImageList(ImageList1, 'pkg_open');
+  TreeView1.Images := IDEImages.Images_16;
+  {TIDEImages.AddImageToImageList(ImageList1, 'item_package');
+  TIDEImages.AddImageToImageList(ImageList1, 'pkg_open');}
 end;
 
 procedure TDlgCompPagesPopup.DoClose(var CloseAction: TCloseAction);
@@ -222,7 +219,7 @@ begin
     end;
   end;
   ItemNode:=TreeView1.Items.AddChild(GroupNode, aPageCapt);
-  ItemNode.ImageIndex:=0;
+  ItemNode.ImageIndex:=IDEImages.GetImageIndex('item_package');
   ItemNode.SelectedIndex:=0;
 end;
 

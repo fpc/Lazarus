@@ -46,7 +46,7 @@ uses
   // IdeIntf
   MenuIntf, SrcEditorIntf, IDEExternToolIntf, IDEImagesIntf,
   // IDE
-  etSrcEditMarks;
+  etSrcEditMarks, ImgList;
   
 type
   TAdditionalHilightAttribute =
@@ -198,7 +198,7 @@ type
     FExtToolsMarks: TETMarks;
     fPendingBreakPointImg: Integer;
     FSourceLineImg: Integer;
-    FImgList: TImageList;
+    FImgList: TLCLGlyphs;
     fInactiveBreakPointImg: Integer;
     fInvalidBreakPointImg: Integer;
     fInvalidDisabledBreakPointImg: Integer;
@@ -233,7 +233,7 @@ type
     procedure GetMarksForLine(ASrcEdit: TSourceEditorBase; ALine: integer;
                               out Marks: PSourceMark; out MarkCount: integer);
   public
-    property ImgList: TImageList read FImgList;
+    property ImgList: TLCLGlyphs read FImgList;
     property Items[Index: integer]: TSourceMark read GetItems; default;
     property OnAction: TMarksActionEvent read FOnAction write FOnAction;
     property ExtToolsMarks: TETMarks read FExtToolsMarks;
@@ -547,14 +547,12 @@ var
   ImgIDWarning: Integer;
   ImgIDNote: Integer;
   ImgIDHint: Integer;
-  ImgListSize: Integer;
 begin
   // create default mark icons
-  FImgList:=TImageList.Create(Self);
-  ImgListSize := TIDEImages.ScaledSize(11);
-  ImgList.Width := ImgListSize;
-  ImgList.Height := ImgListSize;
-  ImgList.Scaled := False;
+  FImgList:=TLCLGlyphs.Create(Self);
+  FImgList.Width := 11;
+  FImgList.Height := 11;
+  FImgList.RegisterResolutions([11, 16, 22], [100, 150, 200]);
 
   // synedit expects the first 10 icons for the bookmarks
   for i := 0 to 9 do
@@ -817,7 +815,7 @@ end;
 
 function TSourceMarks.AddImage(const ResName: string): integer;
 begin
-  Result := TIDEImages.AddImageToImageList(ImgList, Resname, 11);
+  Result := FImgList.GetImageIndex(Resname);
 end;
 
 initialization

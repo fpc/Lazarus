@@ -3458,8 +3458,8 @@ begin
   FImages := TLCLGlyphs.Create(Self);
   FImages.Width := 12;
   FImages.Height := 12;
-  FImages.Suffix100Scale := 16;
   FImages.RegisterResolutions([12, 16, 24]);
+  FImages.SetWidth100Suffix(16);
   FImages.OnGetWidthForPPI := @ImagesGetWidthForPPI;
   ImgIDInfo:=FImages.GetImageIndex('state_information');
   ImgIDHint:=FImages.GetImageIndex('state_hint');

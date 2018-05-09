@@ -46,9 +46,9 @@ uses
   NewItemIntf, IDEWindowIntf, IDEDialogs, ComponentReg,
   // IDE
   MainBase, IDEProcs, LazarusIDEStrConsts, IDEDefs, CompilerOptions,
-  EnvironmentOpts, DialogProcs, InputHistory,
-  PackageDefs, AddToPackageDlg, AddPkgDependencyDlg, ProjPackChecks,
-  PkgVirtualUnitEditor, MissingPkgFilesDlg, PackageSystem, CleanPkgDeps;
+  EnvironmentOpts, DialogProcs, InputHistory, PackageDefs, AddToPackageDlg,
+  AddPkgDependencyDlg, ProjPackChecks, PkgVirtualUnitEditor, MissingPkgFilesDlg,
+  PackageSystem, CleanPkgDeps, ImgList;
   
 const
   PackageEditorMenuRootName = 'PackageEditor';
@@ -1265,9 +1265,11 @@ var
   CurStr: string;
   CurObject: TObject;
   TxtH: Integer;
-  CurIcon: TCustomBitmap;
   IconWidth: Integer;
   IconHeight: Integer;
+  IL: TCustomImageList;
+  II: TImageIndex;
+  Res: TScaledImageListResolution;
 begin
   //DebugLn('TPackageEditorForm.RegisteredListBoxDrawItem START');
   if LazPackage=nil then exit;
@@ -1284,14 +1286,17 @@ begin
         CurStr:=CurComponent.ComponentClass.ClassName;
       TxtH:=TextHeight(CurStr);
       FillRect(ARect);
-      CurIcon:=CurComponent.Icon;
+      IL:=CurComponent.Images;
+      II:=CurComponent.ImageIndex;
       //DebugLn('TPackageEditorForm.RegisteredListBoxDrawItem ',DbgSName(CurIcon),' ',CurComponent.ComponentClass.ClassName);
-      if CurIcon<>nil then begin
-        IconWidth:=CurIcon.Width;
-        IconHeight:=CurIcon.Height;
-        Draw(ARect.Left+(25-IconWidth) div 2,
+      if (IL<>nil) and (II>=0) then begin
+        Res := IL.ResolutionForControl[0, Self];
+        IconWidth:=Res.Width;
+        IconHeight:=Res.Height;
+        Res.Draw(RegisteredListBox.Canvas,
+             ARect.Left+(25-IconWidth) div 2,
              ARect.Top+(ARect.Bottom-ARect.Top-IconHeight) div 2,
-             CurIcon);
+             II);
       end;
       TextOut(ARect.Left+25,
               ARect.Top+(ARect.Bottom-ARect.Top-TxtH) div 2,

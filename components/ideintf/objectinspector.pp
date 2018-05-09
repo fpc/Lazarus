@@ -43,7 +43,7 @@ uses
   // IdeIntf
   IDEImagesIntf, IDEHelpIntf, ObjInspStrConsts,
   PropEdits, PropEditUtils, ComponentTreeView, OIFavoriteProperties,
-  ComponentEditors, ChangeParentDlg;
+  ComponentEditors, ChangeParentDlg, ImgList;
 
 const
   OIOptionsFileVersion = 3;
@@ -306,7 +306,7 @@ type
     FStates: TOIPropertyGridStates;
     FTopY: integer;
     FDrawHorzGridLines: Boolean;
-    FActiveRowBmp: TCustomBitmap;
+    FActiveRowImages: TLCLGlyphs;
     FFirstClickTime: DWORD;
     FKeySearchText: string;
     FHideClassNames: Boolean;
@@ -328,6 +328,8 @@ type
     {$ENDIF}
     ValueButton: TSpeedButton;
 
+    procedure ActiveRowImagesGetWidthForPPI(Sender: TCustomImageList;
+      AImageWidth, APPI: Integer; var AResultWidth: Integer);
     procedure HintMouseLeave(Sender: TObject);
     procedure HintTimer(Sender: TObject);
     procedure ResetLongHintTimer;
@@ -1126,11 +1128,23 @@ begin
   end;
 
   FHintManager := THintWindowManager.Create;
-  FActiveRowBmp := TIDEImages.CreateImage('pg_active_row', 9); // todo: replace with image list
+  FActiveRowImages := TLCLGlyphs.Create(Self);
+  FActiveRowImages.Width := 9;
+  FActiveRowImages.Height := 9;
+  FActiveRowImages.RegisterResolutions([9, 13, 18], [100, 150, 200]);
+  FActiveRowImages.OnGetWidthForPPI := @ActiveRowImagesGetWidthForPPI;
 
   FDefaultItemHeight:=DefItemHeight;
 
   BuildPropertyList;
+end;
+
+procedure TOICustomPropertyGrid.ActiveRowImagesGetWidthForPPI(
+  Sender: TCustomImageList; AImageWidth, APPI: Integer;
+  var AResultWidth: Integer);
+begin
+  if (12<=AResultWidth) and (AResultWidth<=16) then
+    AResultWidth := 13;
 end;
 
 constructor TOICustomPropertyGrid.Create(TheOwner: TComponent);
@@ -1157,7 +1171,6 @@ begin
   FreeAndNil(FLongHintTimer);
   FreeAndNil(FHintManager);
   FreeAndNil(FNewComboBoxItems);
-  FreeAndNil(FActiveRowBmp);
   inherited Destroy;
 end;
 
@@ -2924,6 +2937,7 @@ var
     Details: TThemedElementDetails;
     sz: TSize;
     IconY: integer;
+    Res: TScaledImageListResolution;
   begin
     if CurRow.Expanded then
       Details := ThemeServices.GetElementDetails(ttGlyphOpened)
@@ -2938,8 +2952,10 @@ var
     end else
     if (ARow = FItemIndex) then
     begin
-      IconY:=((NameRect.Bottom - NameRect.Top - FActiveRowBmp.Height) div 2) + NameRect.Top;
-      Canvas.Draw(IconX, IconY, FActiveRowBmp);
+      Res := FActiveRowImages.ResolutionForControl[0, Self];
+
+      IconY:=((NameRect.Bottom - NameRect.Top - Res.Height) div 2) + NameRect.Top;
+      Res.Draw(Canvas, IconX, IconY, FActiveRowImages.GetImageIndex('pg_active_row'));
     end;
   end;
 

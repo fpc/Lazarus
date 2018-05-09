@@ -46,7 +46,8 @@ uses
   // IdeIntf
   FormEditingIntf, LazIDEIntf, IDEImagesIntf, PropEdits, ComponentReg,
   // IDE
-  MainBase, LazarusIDEStrConsts, DesignerProcs, PackageDefs, EnvironmentOpts;
+  MainBase, LazarusIDEStrConsts, DesignerProcs, PackageDefs, EnvironmentOpts,
+  ImgList;
 
 const
   CompPalSelectionToolBtnPrefix = 'PaletteSelectBtn';
@@ -102,7 +103,6 @@ type
     FOnOpenPackage: TNotifyEvent;
     FOnOpenUnit: TNotifyEvent;
     FOnChangeActivePage: TNotifyEvent;
-    fUnregisteredIcon: TCustomBitmap;
     fSelectButtonIcon: TCustomBitmap;
     fUpdatingPageControl: boolean;
     // Used by UpdateNoteBookButtons
@@ -127,7 +127,7 @@ type
     procedure CreatePopupMenu;
     procedure UnselectAllButtons;
     procedure SelectionWasChanged;
-    function GetUnregisteredIcon: TCustomBitmap;
+    procedure GetUnregisteredIcon(var ImageList: TCustomImageList; var ImageIndex: TImageIndex);
     function GetSelectButtonIcon: TCustomBitmap;
     function SelectAButton(Button: TSpeedButton): boolean;
     procedure ComponentWasAdded({%H-}ALookupRoot, {%H-}AComponent: TComponent;
@@ -137,7 +137,7 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure OnGetNonVisualCompIcon(Sender: TObject;
-                                     AComponent: TComponent; var Icon: TCustomBitmap);
+      AComponent: TComponent; var ImageList: TCustomImageList; var ImageIndex: TImageIndex);
     procedure Update(ForceUpdateAll: Boolean); override;
   public
     property PageControl: TPageControl read FPageControl write SetPageControl;
@@ -443,7 +443,8 @@ begin
       Btn.Name := CompPaletteCompBtnPrefix + aButtonUniqueName + CompCN;
       // Left and Top will be set in ReAlignButtons.
       Btn.SetBounds(Btn.Left,Btn.Top,aScrollBox.Scale96ToForm(ComponentPaletteBtnWidth),aScrollBox.Scale96ToForm(ComponentPaletteBtnHeight));
-      Btn.Glyph.Assign(aComp.Icon);
+      Btn.Images := aComp.Images;
+      Btn.ImageIndex := aComp.ImageIndex;
       Btn.GroupIndex := 1;
       Btn.Flat := true;
       Btn.OnMouseDown := @Pal.ComponentBtnMouseDown;
@@ -861,7 +862,6 @@ begin
   for i := 0 to fComponentButtons.Count-1 do
     fComponentButtons.Data[i].Free;
   FreeAndNil(fComponentButtons);
-  FreeAndNil(fUnregisteredIcon);
   FreeAndNil(fSelectButtonIcon);
   FreeAndNil(PopupMenu);
   FreeAndNil(PalettePopupMenu);
@@ -882,15 +882,16 @@ begin
     FPageControl.EnableAlign;
 end;
 
-function TComponentPalette.GetUnregisteredIcon: TCustomBitmap;
+procedure TComponentPalette.GetUnregisteredIcon(
+  var ImageList: TCustomImageList; var ImageIndex: TImageIndex);
+var
+  IL: TLCLGlyphs;
 begin
-  if fUnregisteredIcon = nil then 
-  begin
-    fUnregisteredIcon := CreateBitmapFromResourceName(hInstance, 'unregisteredcomponent');
-    if fUnregisteredIcon = nil then
-      fUnregisteredIcon := CreateBitmapFromResourceName(hInstance, 'default');
-  end;
-  Result := fUnregisteredIcon;
+  IL := IDEImages.Images_24;
+  ImageList := IL;
+  ImageIndex := IL.GetImageIndex('unregisteredcomponent');
+  if ImageIndex<0 then
+    ImageIndex := IL.GetImageIndex('default');
 end;
 
 function TComponentPalette.GetSelectButtonIcon: TCustomBitmap;
@@ -1025,7 +1026,8 @@ begin
 end;
 
 procedure TComponentPalette.OnGetNonVisualCompIcon(Sender: TObject;
-  AComponent: TComponent; var Icon: TCustomBitmap);
+  AComponent: TComponent; var ImageList: TCustomImageList;
+  var ImageIndex: TImageIndex);
 var
   ARegComp: TRegisteredComponent;
 begin
@@ -1034,9 +1036,13 @@ begin
   else
     ARegComp:=nil;
   if ARegComp<>nil then
-    Icon:=TPkgComponent(ARegComp).Icon
-  else
-    Icon:=GetUnregisteredIcon;
+  begin
+    ImageList := TPkgComponent(ARegComp).Images;
+    ImageIndex := TPkgComponent(ARegComp).ImageIndex;
+  end else
+  begin
+    GetUnregisteredIcon(ImageList, ImageIndex);
+  end;
 end;
 
 function TComponentPalette.IndexOfPageComponent(AComponent: TComponent): integer;

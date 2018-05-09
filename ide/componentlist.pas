@@ -35,7 +35,7 @@ uses
   Classes, SysUtils, LCLType, Forms, Controls, Graphics, StdCtrls, ExtCtrls,
   ComCtrls, Menus, Dialogs, LazarusIDEStrConsts, ComponentReg, PackageDefs,
   IDEImagesIntf, TreeFilterEdit, FormEditingIntf, PropEdits, IDEOptionDefs,
-  EnvironmentOpts, Designer;
+  EnvironmentOpts, Designer, ImgList;
 
 type
 
@@ -43,8 +43,6 @@ type
 
   TComponentListForm = class(TForm)
     chbKeepOpen: TCheckBox;
-    imListPalette: TImageList;
-    imInheritance: TImageList;
     ListTree: TTreeView;
     ButtonPanel: TPanel;
     miCollapse: TMenuItem;
@@ -136,16 +134,9 @@ begin
   OKButton.Caption := lisUse;
   chbKeepOpen.Caption := lisKeepOpen;
 
-  imListPalette.Width  := MulDiv(ComponentPaletteImageWidth, TIDEImages.GetScalePercent, 100);
-  imListPalette.Height := MulDiv(ComponentPaletteImageHeight, TIDEImages.GetScalePercent, 100);
-  imListPalette.Scaled := False;
-  imInheritance.Width  := MulDiv(ComponentPaletteImageWidth, TIDEImages.GetScalePercent, 100);
-  imInheritance.Height := MulDiv(ComponentPaletteImageHeight, TIDEImages.GetScalePercent, 100);
-  imInheritance.Scaled := False;
-
-  ListTree.Images := imListPalette;
-  PalletteTree.Images := imListPalette;
-  InheritanceTree.Images := imInheritance;
+  ListTree.Images := TPkgComponent.Images;
+  PalletteTree.Images := TPkgComponent.Images;
+  InheritanceTree.Images := TPkgComponent.Images;
   PrevPageIndex := -1;
   PageControl.ActivePage := TabSheetList;
   if Assigned(IDEComponentPalette) then
@@ -324,7 +315,7 @@ var
   Node: TTreeNode;
   ClssName: string;
   i, Ind: Integer;
-  CurIcon: TCustomBitmap;
+  II: TImageIndex;
 begin
   PalList := TStringList.Create;
   try
@@ -354,12 +345,12 @@ begin
         begin
           Node := InheritanceTree.Items.AddChildObject(Node, ClssName, Comp);
           if Comp is TPkgComponent then
-            CurIcon := TPkgComponent(Comp).Icon
+            II := TPkgComponent(Comp).ImageIndex
           else
-            CurIcon := nil;
-          if Assigned(CurIcon) then
+            II := -1;
+          if II>=0 then
           begin
-            Node.ImageIndex := imInheritance.Add(CurIcon, nil);
+            Node.ImageIndex := II;
             Node.SelectedIndex := Node.ImageIndex;
           end;
         end;
@@ -381,7 +372,7 @@ var
   AListNode: TTreeNode;
   APaletteNode: TTreeNode;
   i, j: Integer;
-  CurIcon: TCustomBitmap;
+  CurIcon: TImageIndex;
 begin
   if [csDestroying,csLoading]*ComponentState<>[] then exit;
   Screen.Cursor := crHourGlass;
@@ -413,12 +404,12 @@ begin
         // Palette layout item
         APaletteNode := PalletteTree.Items.AddChildObject(ParentNode, Comps[j], Comp);
         if Comp is TPkgComponent then
-          CurIcon := TPkgComponent(Comp).Icon
+          CurIcon := TPkgComponent(Comp).ImageIndex
         else
-          CurIcon := nil;
-        if Assigned(CurIcon) then
+          CurIcon := -1;
+        if CurIcon>=0 then
         begin
-          AListNode.ImageIndex := imListPalette.Add(CurIcon, nil);
+          AListNode.ImageIndex := CurIcon;
           AListNode.SelectedIndex := AListNode.ImageIndex;
           APaletteNode.ImageIndex := AListNode.ImageIndex;
           APaletteNode.SelectedIndex := AListNode.ImageIndex;

@@ -9,7 +9,7 @@ object CodeExplorerView: TCodeExplorerView
   KeyPreview = True
   OnCreate = CodeExplorerViewCREATE
   OnDestroy = CodeExplorerViewDestroy
-  LCLVersion = '1.5'
+  LCLVersion = '1.9.0.0'
   object MainNotebook: TPageControl
     Left = 0
     Height = 517
@@ -31,7 +31,6 @@ object CodeExplorerView: TCodeExplorerView
         Width = 212
         Align = alClient
         BorderSpacing.Top = 1
-        DefaultItemHeight = 18
         HideSelection = False
         Images = Imagelist1
         PopupMenu = TreePopupmenu
@@ -184,7 +183,6 @@ object CodeExplorerView: TCodeExplorerView
         Align = alBottom
         Anchors = [akTop, akLeft, akRight, akBottom]
         BorderSpacing.Top = 1
-        DefaultItemHeight = 18
         PopupMenu = TreePopupmenu
         ReadOnly = True
         TabOrder = 1
@@ -198,13 +196,13 @@ object CodeExplorerView: TCodeExplorerView
   object Imagelist1: TImageList
     Height = 18
     Width = 18
-    left = 64
-    top = 64
+    Left = 64
+    Top = 64
   end
   object TreePopupmenu: TPopupMenu
     OnPopup = TreePopupmenuPopup
-    left = 64
-    top = 128
+    Left = 64
+    Top = 128
     object MenuItem1: TMenuItem
       Caption = 'New Item1'
       Visible = False
@@ -214,7 +212,7 @@ object CodeExplorerView: TCodeExplorerView
     AutoEnabled = True
     Interval = 500
     OnTimer = IdleTimer1Timer
-    left = 64
-    top = 192
+    Left = 64
+    Top = 192
   end
 end

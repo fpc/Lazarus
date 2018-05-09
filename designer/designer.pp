@@ -50,8 +50,8 @@ uses
   // IDE
   LazarusIDEStrConsts, EnvironmentOpts, EditorOptions, SourceEditor,
   // Designer
-  AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg, DesignerProcs,
-  CustomFormEditor, AskCompNameDlg, ControlSelection, ChangeClassDialog;
+  AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg, DesignerProcs, CustomFormEditor,
+  AskCompNameDlg, ControlSelection, ChangeClassDialog, ImgList;
 
 type
   TDesigner = class;
@@ -67,7 +67,7 @@ type
   TOnPersistentDeleted = procedure(Sender: TObject; APersistent: TPersistent)
     of object;
   TOnGetNonVisualCompIcon = procedure(Sender: TObject;
-    AComponent: TComponent; var Icon: TCustomBitmap) of object;
+    AComponent: TComponent; var ImageList: TCustomImageList; var ImageIndex: TImageIndex) of object;
   TOnRenameComponent = procedure(Designer: TDesigner; AComponent: TComponent;
     const NewName: string) of object;
   TOnProcessCommand = procedure(Sender: TObject; Command: word;
@@ -3465,13 +3465,17 @@ end;
 
 procedure TDesigner.DrawNonVisualComponent(AComponent: TComponent);
 var
-  Icon: TBitmap;
   ItemLeft, ItemTop, ItemRight, ItemBottom: integer;
   Diff, ItemLeftTop: TPoint;
   OwnerRect, IconRect, TextRect: TRect;
   TextSize: TSize;
   IsSelected: Boolean;
   RGN: HRGN;
+  IL: TCustomImageList;
+  II: TImageIndex;
+  Res: TScaledImageListResolution;
+  Icon: TBitmap;
+  ScaleFactor: Double;
 begin
   if (AComponent is TControl)
   and (csNoDesignVisible in TControl(AComponent).ControlStyle) then
@@ -3517,6 +3521,10 @@ begin
   Diff := FDDC.FormOrigin;
   //DebugLn(['FDDC.FormOrigin - ', Diff.X, ' : ' ,Diff.Y]);
   // non-visual component
+  if FDDC.Form<>nil then
+    ScaleFactor := FDDC.Form.GetCanvasScaleFactor
+  else
+    ScaleFactor := 1;
   ItemLeftTop := NonVisualComponentLeftTop(AComponent);
   ItemLeft := ItemLeftTop.X - Diff.X;
   ItemTop := ItemLeftTop.Y - Diff.Y;
@@ -3530,12 +3538,14 @@ begin
   if FSurface = nil then
   begin
     FSurface := TBitmap.Create;
-    FSurface.SetSize(NonVisualCompWidth, NonVisualCompWidth);
+    FSurface.SetSize(Round(NonVisualCompWidth*ScaleFactor),
+      Round(NonVisualCompWidth*ScaleFactor));
     FSurface.Canvas.Brush.Color := clBtnFace;
     FSurface.Canvas.Pen.Width := 1;
   end;
 
-  IconRect := Rect(0, 0, NonVisualCompWidth, NonVisualCompWidth);
+  IconRect := Rect(0, 0, Round(NonVisualCompWidth*ScaleFactor),
+    Round(NonVisualCompWidth*ScaleFactor));
   FSurface.Canvas.Frame3D(IconRect, 1, bvRaised);
   FSurface.Canvas.FillRect(IconRect);
 
@@ -3569,16 +3579,17 @@ begin
   if Assigned(FOnGetNonVisualCompIcon) then
   begin
     Icon := nil;
-    FOnGetNonVisualCompIcon(Self, AComponent, Icon);
-    if Icon <> nil then
+    FOnGetNonVisualCompIcon(Self, AComponent, IL{%H-}, II{%H-});
+    if (IL<>nil) and (II>=0) then
     begin
+      Res := IL.ResolutionForPPI[0, FDDC.Canvas.Font.PixelsPerInch, ScaleFactor];
       InflateRect(IconRect,
-        - (IconRect.Right-IconRect.Left-Icon.Width) div 2,
-        - (IconRect.Bottom-IconRect.Top-Icon.Height) div 2);
-      FSurface.Canvas.StretchDraw(IconRect, Icon);
+        - (IconRect.Right-IconRect.Left-Res.Resolution.Width) div 2,
+        - (IconRect.Bottom-IconRect.Top-Res.Resolution.Height) div 2);
+      Res.StretchDraw(FSurface.Canvas, II, IconRect);
     end;
   end;
-  FDDC.Canvas.Draw(ItemLeft, ItemTop, FSurface);
+  FDDC.Canvas.StretchDraw(Rect(ItemLeft, ItemTop, ItemRight, ItemBottom), FSurface);
   if (Selection.Count > 1) and IsSelected then
     Selection.DrawMarkerAt(FDDC,
       ItemLeft, ItemTop, NonVisualCompWidth, NonVisualCompWidth);

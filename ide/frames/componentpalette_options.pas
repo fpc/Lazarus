@@ -29,7 +29,7 @@ uses
   ComCtrls, ExtCtrls, FileUtil, LCLProc, LCLType, Menus, IDEProcs, Laz2_XMLCfg,
   EnvironmentOpts, LazarusIDEStrConsts, IDEOptionsIntf,
   IDEImagesIntf, DividerBevel, ComponentReg, IDEOptionDefs,
-  PackageDefs;
+  PackageDefs, ImgList;
 
 type
   { TCompPaletteOptionsFrame }
@@ -619,15 +619,22 @@ procedure TCompPaletteOptionsFrame.ComponentsListViewCustomDrawItem(Sender: TCus
 var
   Comp: TRegisteredComponent;
   ARect: TRect;
-  CurIcon: TCustomBitmap;
+  IL: TCustomImageList;
+  II: TImageIndex;
+  Res: TScaledImageListResolution;
 begin
   Comp := TRegisteredComponent(Item.Data);
   ARect := Item.DisplayRect(drIcon);
   if Comp is TPkgComponent then begin
-    CurIcon := TPkgComponent(Comp).Icon;
-    if CurIcon<>nil then
-      Sender.Canvas.Draw(ARect.Left+(25-CurIcon.Width) div 2,
-               ARect.Top+(ARect.Bottom-ARect.Top-CurIcon.Height) div 2, CurIcon);
+    IL := TPkgComponent(Comp).Images;
+    II := TPkgComponent(Comp).ImageIndex;
+    if (IL<>nil) and (II>=0) then
+    begin
+      Res := IL.ResolutionForControl[0, Sender];
+      Res.Draw(Sender.Canvas,
+               ARect.Left+(25-Res.Width) div 2,
+               ARect.Top+(ARect.Bottom-ARect.Top-Res.Height) div 2, II);
+    end;
   end;
 end;
 
