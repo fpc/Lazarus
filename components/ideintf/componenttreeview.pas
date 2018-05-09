@@ -698,7 +698,7 @@ begin
       // first add the lookup root
       RootNode := Items.Add(nil, CreateNodeCaption(RootObject));
       RootNode.Data := RootObject;
-      RootNode.ImageIndex := 0;
+      RootNode.ImageIndex := ImgIndexForm;
       RootNode.SelectedIndex := RootNode.ImageIndex;
       RootNode.MultiSelected := Selection.IndexOf(RootObject) >= 0;
 
