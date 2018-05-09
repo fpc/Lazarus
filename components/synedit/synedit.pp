@@ -6657,13 +6657,15 @@ begin
         end;
 // word selection
       ecWordLeft, ecSelWordLeft, ecColSelWordLeft,
-      ecWordEndLeft, ecSelWordEndLeft, ecHalfWordLeft, ecSelHalfWordLeft:
+      ecWordEndLeft, ecSelWordEndLeft, ecHalfWordLeft, ecSelHalfWordLeft,
+      ecSmartWordLeft, ecSelSmartWordLeft:
         begin
           case Command of
             ecWordEndLeft, ecSelWordEndLeft:   CaretNew := PrevWordLogicalPos(swbWordEnd);
             ecHalfWordLeft, ecSelHalfWordLeft: CaretNew := PrevWordLogicalPos(swbCaseChange);
-            ecWordLeft:                        CaretNew := PrevWordLogicalPos(swbWordSmart);
-            ecSelWordLeft, ecColSelWordLeft:   CaretNew := PrevWordLogicalPos(swbWordSmartSel);
+            ecSmartWordLeft:                   CaretNew := PrevWordLogicalPos(swbWordSmart);
+            ecSelSmartWordLeft:                CaretNew := PrevWordLogicalPos(swbWordSmartSel);
+            else                               CaretNew := PrevWordLogicalPos;
           end;
           if FFoldedLinesView.FoldedAtTextIndex[CaretNew.Y - 1] then begin
             CY := FindNextUnfoldedLine(CaretNew.Y, False);
@@ -6672,13 +6674,15 @@ begin
           FCaret.LineBytePos := CaretNew;
         end;
       ecWordRight, ecSelWordRight, ecColSelWordRight,
-      ecWordEndRight, ecSelWordEndRight, ecHalfWordRight, ecSelHalfWordRight:
+      ecWordEndRight, ecSelWordEndRight, ecHalfWordRight, ecSelHalfWordRight,
+      ecSmartWordRight, ecSelSmartWordRight:
         begin
           case Command of
             ecWordEndRight, ecSelWordEndRight:   CaretNew := NextWordLogicalPos(swbWordEnd);
             ecHalfWordRight, ecSelHalfWordRight: CaretNew := NextWordLogicalPos(swbCaseChange);
-            ecWordRight:                         CaretNew := NextWordLogicalPos(swbWordSmart);
-            ecSelWordRight, ecColSelWordRight:   CaretNew := NextWordLogicalPos(swbWordSmartSel);
+            ecSmartWordRight:                    CaretNew := NextWordLogicalPos(swbWordSmart);
+            ecSelSmartWordRight:                 CaretNew := NextWordLogicalPos(swbWordSmartSel);
+            else                                 CaretNew := NextWordLogicalPos;
           end;
           if FFoldedLinesView.FoldedAtTextIndex[CaretNew.Y - 1] then
             CaretNew := Point(1, FindNextUnfoldedLine(CaretNew.Y, True));

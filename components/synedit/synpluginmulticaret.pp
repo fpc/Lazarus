@@ -2460,7 +2460,7 @@ procedure TSynCustomPluginMultiCaret.ProcessAllSynCommand(Sender: TObject; After
       Include(FStateFlags, sfProcessingRepeat);
       case Command of
         ecLeft, ecUp, ecWordLeft, ecLineStart, ecPageUp, ecPageLeft,
-        ecPageTop, ecLineTextStart, ecWordEndLeft, ecHalfWordLeft:
+        ecPageTop, ecLineTextStart, ecWordEndLeft, ecHalfWordLeft, ecSmartWordLeft:
           begin
             Carets.StartIteratorAtFirst;
             while Carets.IterateNextUp do begin
@@ -2646,7 +2646,7 @@ begin
         Include(FStateFlags, sfSkipUndoCarets);
         Include(FStateFlags, sfExtendingColumnSel);
       end;
-    ecLeft..ecHalfWordRight: begin
+    ecLeft..ecSmartWordRight: begin
         Include(FStateFlags, sfSkipUndoCarets);
         if ActiveMode = mcmMoveAllCarets then begin
           Include(FStateFlags, sfProcessingCmd);
