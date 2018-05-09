@@ -339,6 +339,8 @@ begin
     ecWordEndRight            : Result:= srkmecWordEndRight;
     ecHalfWordLeft            : Result:= srkmecHalfWordLeft;
     ecHalfWordRight           : Result:= srkmecHalfWordRight;
+    ecSmartWordLeft           : Result:= srkmecSmartWordLeft;
+    ecSmartWordRight          : Result:= srkmecSmartWordRight;
     ecLineStart               : Result:= srkmecLineStart;
     ecLineEnd                 : Result:= srkmecLineEnd;
     ecPageUp                  : Result:= srkmecPageUp;
@@ -365,6 +367,8 @@ begin
     ecSelWordEndRight         : Result:= srkmecWordEndRight;
     ecSelHalfWordLeft         : Result:= srkmecHalfWordLeft;
     ecSelHalfWordRight        : Result:= srkmecHalfWordRight;
+    ecSelSmartWordLeft        : Result:= srkmecSmartWordLeft;
+    ecSelSmartWordRight       : Result:= srkmecSmartWordRight;
     ecSelLineStart            : Result:= srkmecSelLineStart;
     ecSelLineEnd              : Result:= srkmecSelLineEnd;
     ecSelPageUp               : Result:= srkmecSelPageUp;
@@ -2610,6 +2614,8 @@ begin
   AddDefault(C, 'Move cursor word end right', srkmecWordEndRight, ecWordEndRight);
   AddDefault(C, 'Move cursor half word left', srkmecHalfWordLeft, ecHalfWordLeft);
   AddDefault(C, 'Move cursor half word right', srkmecHalfWordRight, ecHalfWordRight);
+  AddDefault(C, 'Move cursor left to either current word start or previous word end', srkmecSmartWordLeft, ecSmartWordLeft);
+  AddDefault(C, 'Move cursor right to either current word end or next word start', srkmecSmartWordRight, ecSmartWordRight);
   AddDefault(C, 'Move cursor to line start', srkmecLineStart, ecLineStart);
   AddDefault(C, 'Move cursor to text start in line', srkmecLineTextStart, ecLineTextStart);
   AddDefault(C, 'Move cursor to line end', srkmecLineEnd, ecLineEnd);
@@ -2659,6 +2665,8 @@ begin
   AddDefault(C, 'Select word end right', srkmecSelWordEndRight, ecSelWordEndRight);
   AddDefault(C, 'Select half word left', srkmecSelHalfWordLeft, ecSelHalfWordLeft);
   AddDefault(C, 'Select half word right', srkmecSelHalfWordRight, ecSelHalfWordRight);
+  AddDefault(C, 'Select left to either current word start or previous word end', srkmecSelSmartWordLeft, ecSelSmartWordLeft);
+  AddDefault(C, 'Select right to either current word end or next word start', srkmecSelSmartWordRight, ecSelSmartWordRight);
   AddDefault(C, 'Select line start', lisKMSelectLineStart, ecSelLineStart);
   AddDefault(C, 'Select to text start in line', srkmecSelLineTextStart, ecSelLineTextStart);
   AddDefault(C, 'Select line end', lisKMSelectLineEnd, ecSelLineEnd);
