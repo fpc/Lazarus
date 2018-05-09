@@ -2733,7 +2733,9 @@ function TLCLGlyphs.GetImageIndex(const AResourceName: string): Integer;
   var
     G: TCustomBitmap;
   begin
-    G := GetDefaultGlyph(AResourceName, MulDiv(ResolutionWidth, 100, RealSuffix100Scale), False);
+    G := GetDefaultGlyph(AResourceName, MulDiv(ResolutionWidth, 100, RealSuffix100Scale), FIgnoreMissingResources);
+    if G=nil then
+      Exit(-1);
     try
       Result := AddSliceCentered(G);
     finally
@@ -2770,9 +2772,10 @@ begin
     E := TEntry.Create;
     E.GlyphName := AResourceName;
     E.ImageIndex := AddNewBtnImage(Width);
-    for I := Low(FLoadResolutions) to High(FLoadResolutions) do
-      if FLoadResolutions[I]<>Width then
-        AddBtnImageRes(E.ImageIndex, FLoadResolutions[I]);
+    if E.ImageIndex>=0 then
+      for I := Low(FLoadResolutions) to High(FLoadResolutions) do
+        if FLoadResolutions[I]<>Width then
+          AddBtnImageRes(E.ImageIndex, FLoadResolutions[I]);
     FImageIndexes.Add(E);
     Result := E.ImageIndex;
   end;
