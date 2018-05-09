@@ -44,7 +44,7 @@ interface
 uses
   LCLIntf, LCLType, LCLProc,
   Classes, Graphics, Controls, SysUtils, Clipbrd, SynEditHighlighter,
-  SynEditMiscProcs, SynEditTypes, LazSynEditText, SynEditPointClasses;
+  SynEditMiscProcs, SynEditTypes, LazSynEditText, SynEditPointClasses, ImgList;
 
 type
 
@@ -350,7 +350,7 @@ type
 
   TSynBookMarkOpt = class(TPersistent)
   private
-    fBookmarkImages: TImageList;
+    fBookmarkImages: TCustomImageList;
     fDrawBookmarksFirst: boolean;                                               //mh 2000-10-12
     fEnableKeys: Boolean;
     fGlyphsVisible: Boolean;
@@ -358,7 +358,7 @@ type
     fOwner: TComponent;
     fXoffset: integer;
     fOnChange: TNotifyEvent;
-    procedure SetBookmarkImages(const Value: TImageList);
+    procedure SetBookmarkImages(const Value: TCustomImageList);
     procedure SetDrawBookmarksFirst(Value: boolean);                            //mh 2000-10-12
     procedure SetGlyphsVisible(Value: Boolean);
     procedure SetLeftMargin(Value: Integer);
@@ -366,7 +366,7 @@ type
   public
     constructor Create(AOwner: TComponent);
   published
-    property BookmarkImages: TImageList
+    property BookmarkImages: TCustomImageList
       read fBookmarkImages write SetBookmarkImages;
     property DrawBookmarksFirst: boolean read fDrawBookmarksFirst               //mh 2000-10-12
       write SetDrawBookmarksFirst default True;
@@ -1336,7 +1336,7 @@ begin
   fXOffset := 12;
 end;
 
-procedure TSynBookMarkOpt.SetBookmarkImages(const Value: TImageList);
+procedure TSynBookMarkOpt.SetBookmarkImages(const Value: TCustomImageList);
 begin
   if fBookmarkImages <> Value then begin
     if Assigned(fBookmarkImages) then fBookmarkImages.RemoveFreeNotification(fOwner);
