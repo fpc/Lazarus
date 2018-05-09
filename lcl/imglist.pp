@@ -53,7 +53,7 @@ uses
   // LCL
   LCLStrConsts, LCLIntf, LResources, LCLType, LCLProc, Graphics, GraphType,
   LCLClasses, IntfGraphics,
-  WSReferences;
+  WSReferences, RtlConsts;
 
 type
   TImageIndex = type integer;

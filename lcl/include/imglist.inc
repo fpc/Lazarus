@@ -47,14 +47,10 @@ function GetDefaultGlyph(ResourceName: string; ScalePercent: Integer;
 begin
   if ScalePercent<>100 then
     ResourceName := ResourceName+'_'+IntToStr(ScalePercent);
-  Result := TPortableNetworkGraphic.Create;
-  if IgnoreMissingResource
-  and (FindResource(HInstance, PChar(ResourceName), Result.GetResourceType)=0) then
-  begin
-    FreeAndNil(Result);
-    Exit;
-  end else
-    Result.LoadFromResourceName(hInstance, ResourceName);
+
+  Result := CreateBitmapFromResourceName(HINSTANCE, ResourceName);
+  if (Result=nil) and not IgnoreMissingResource then
+    raise EResNotFound.CreateFmt(SResNotFound,[ResourceName]);
 end;
 
 {------------------------------------------------------------------------------
