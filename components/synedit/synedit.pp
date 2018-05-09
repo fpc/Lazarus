@@ -421,7 +421,8 @@ type
     swbWordEnd,
     swbTokenBegin,
     swbTokenEnd,
-    swbCaseChange
+    swbCaseChange,
+    swbWordSmart // begin or end of word with smart gaps (1 char)
   );
 
   { TCustomSynEdit }
@@ -4052,6 +4053,16 @@ begin
         CX := WordBreaker.NextWordEnd(Line,  CX);
         if (CX <= 0) then CX := LineLen + 1;
       end;
+    swbWordSmart: begin
+        NX := WordBreaker.NextWordEnd(Line, CX);
+        if (NX <= 0) then NX := LineLen + 1;
+        CX := WordBreaker.NextWordStart(Line, CX, InclCurrent);
+        if (CX <= 0) and not InclCurrent then CX := LineLen + 1;
+        if (CX <= 0) and InclCurrent then CX := 1;
+
+        if (NX<CX-1) then // step over 1 char gap
+          CX := NX;
+      end;
     swbTokenBegin: begin
         if not (   InclCurrent and
                    ((CX <= 1) or (Line[CX-1] in FWordBreaker.WhiteChars)) and
@@ -4156,6 +4167,23 @@ begin
         CX := WordBreaker.PrevWordEnd(Line,  Min(CX, Length(Line) + 1));
         CheckLineStart(CX, CY);
       end;
+    swbWordSmart: begin
+        {if CX=1 then
+        begin
+          CX := -1;
+          CheckLineStart(CX, CY);
+        end else}
+        begin
+          if CX>1 then // step over 1 char gap
+            Dec(CX);
+          NX := WordBreaker.PrevWordStart(Line,  Min(CX, Length(Line) + 1));
+          CX := WordBreaker.PrevWordEnd(Line,  Min(CX, Length(Line) + 1));
+
+          if (NX>CX-1) then // select the nearest
+            CX := NX;
+          CheckLineStart(CX, CY);
+        end;
+    end;
     swbTokenBegin: begin
         CX := WordBreaker.PrevBoundary(Line,  Min(CX, Length(Line) + 1));
         if (CX > 0) and (Line[CX] in FWordBreaker.WhiteChars) then
