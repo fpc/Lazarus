@@ -23,6 +23,8 @@ type
     FBookMarkOpt: TSynBookMarkOpt;
     procedure Init; override;
     function  PreferedWidth: Integer; override;
+    function GetImgListRes(const ACanvas: TCanvas;
+      const AImages: TCustomImageList): TScaledImageListResolution;
     // PaintMarks: True, if it has any Mark, that is *not* a bookmark
     function  PaintMarks(aScreenLine: Integer; Canvas : TCanvas; AClip : TRect;
                        var aFirstCustomColumnIdx: integer): Boolean;
@@ -70,6 +72,18 @@ begin
   inherited Destroy;
 end;
 
+function TSynGutterMarks.GetImgListRes(const ACanvas: TCanvas;
+  const AImages: TCustomImageList): TScaledImageListResolution;
+var
+  Scale: Double;
+begin
+  if ACanvas is TControlCanvas then
+    Scale := TControlCanvas(ACanvas).Control.GetCanvasScaleFactor
+  else
+    Scale := 1;
+  Result := AImages.ResolutionForPPI[0, ACanvas.Font.PixelsPerInch, Scale];
+end;
+
 function TSynGutterMarks.PaintMarks(aScreenLine: Integer; Canvas : TCanvas;
   AClip : TRect; var aFirstCustomColumnIdx: integer): Boolean;
 var
@@ -77,7 +91,7 @@ var
 
   procedure DoPaintMark(CurMark: TSynEditMark; aRect: TRect);
   var
-    img: TCustomImageList;
+    img: TScaledImageListResolution;
   begin
     if CurMark.InternalImage or
        ( (not assigned(FBookMarkOpt.BookmarkImages)) and
@@ -100,9 +114,9 @@ var
     else begin
       // draw from ImageList
       if assigned(CurMark.ImageList) then
-        img := CurMark.ImageList
+        img := GetImgListRes(Canvas, CurMark.ImageList)
       else
-        img := FBookMarkOpt.BookmarkImages;
+        img := GetImgListRes(Canvas, FBookMarkOpt.BookmarkImages);
 
       if (CurMark.ImageIndex <= img.Count) and (CurMark.ImageIndex >= 0) then begin
         if LineHeight > img.Height then
@@ -195,7 +209,7 @@ begin
   LCLIntf.SetBkColor(Canvas.Handle, TColorRef(Canvas.Brush.Color));
 
   if assigned(FBookMarkOpt) and assigned(FBookMarkOpt.BookmarkImages) then
-    FColumnWidth := FBookMarkOpt.BookmarkImages.Width
+    FColumnWidth := GetImgListRes(Canvas, FBookMarkOpt.BookmarkImages).Width
   else
     FColumnWidth := Width;
   FColumnCount := Max((Width+1) div FColumnWidth, 1); // full columns
