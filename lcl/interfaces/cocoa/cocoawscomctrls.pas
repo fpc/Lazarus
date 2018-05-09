@@ -494,7 +494,7 @@ var
   lTabPage: NSTabViewItem;
   lClientPos: NSPoint;
 begin
-  Result := 0;
+  Result := -1;
   if not Assigned(ATabControl) or not ATabControl.HandleAllocated then Exit;
   lTabControl := TCocoaTabControl(ATabControl.Handle);
 
@@ -506,6 +506,8 @@ begin
   else
     lClientPos := LCLToNSPoint(AClientPos, lTabControl.frame.size.height);
   lTabPage := lTabControl.tabViewItemAtPoint(lClientPos);
+  if not Assigned(lTabPage) then
+    Exit;
   Result := lTabControl.indexOfTabViewItem(lTabPage);
 end;
 
