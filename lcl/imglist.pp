@@ -192,6 +192,7 @@ type
     FHeight: Integer;
     function GetCount: Integer;
     function GetSize: TSize;
+    function GetValid: Boolean;
   public
     class function Create(AResolution: TCustomImageListResolution;
       const AScaleFactor: Double): TScaledImageListResolution; static; // FPC record constructor bug
@@ -217,6 +218,7 @@ type
     property Size: TSize read GetSize;
     property Resolution: TCustomImageListResolution read FResolution;
     property Count: Integer read GetCount;
+    property Valid: Boolean read GetValid;
   end;
 
   TCustomImageListResolutionClass = class of TCustomImageListResolution;

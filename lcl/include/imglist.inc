@@ -175,6 +175,11 @@ begin
   Result.cy := Height;
 end;
 
+function TScaledImageListResolution.GetValid: Boolean;
+begin
+  Result := Assigned(FResolution);
+end;
+
 procedure TScaledImageListResolution.DrawOverlay(ACanvas: TCanvas; AX, AY,
   AIndex: Integer; AOverlay: TOverlay; ADrawingStyle: TDrawingStyle;
   AImageType: TImageType; ADrawEffect: TGraphicsDrawEffect);
