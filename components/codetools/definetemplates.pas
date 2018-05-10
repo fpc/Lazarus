@@ -1596,30 +1596,53 @@ function ParseFPCVerbose(List: TStrings; const WorkDir: string; out
   UnitPaths: TStrings; out IncludePaths: TStrings; out UnitScopes: TStrings; out
   Defines, Undefines: TStringToStringTree): boolean;
 
+  function DeQuote(const s: string): string;
+  begin
+    if (length(s)>1) and (s[1]='"') and (s[length(s)]='"') then
+      Result:=AnsiDequotedStr(s,'"')
+    else
+      Result:=s;
+  end;
+
   procedure UndefineSymbol(const MacroName: string);
   begin
-    //DebugLn(['UndefineSymbol ',MacroName]);
+    {$IFDEF VerboseFPCSrcScan}
+    DebugLn(['UndefineSymbol ',MacroName]);
+    {$ENDIF}
     Defines.Remove(MacroName);
     Undefines[MacroName]:='';
   end;
 
   procedure DefineSymbol(const MacroName, Value: string);
   begin
-    //DebugLn(['DefineSymbol ',MacroName]);
+    {$IFDEF VerboseFPCSrcScan}
+    if Value='' then
+      DebugLn(['DefineSymbol ',MacroName])
+    else
+      DebugLn(['DefineSymbol ',MacroName,':=',Value]);
+    {$ENDIF}
     Undefines.Remove(MacroName);
     Defines[MacroName]:=Value;
   end;
 
   function ExpFile(const aFilename: string): string;
   begin
-    Result:=aFilename;
+    Result:=DeQuote(aFilename);
     if FilenameIsAbsolute(Result) then exit;
     Result:=AppendPathDelim(WorkDir)+Result;
   end;
 
   procedure ProcessOutputLine(Line: string);
   var
-    SymbolName, SymbolValue, UpLine, NewPath: string;
+    UpLine: string;
+
+    function IsUpLine(p: integer; const s: string): boolean;
+    begin
+      Result:=StrLComp(@UpLine[p], PChar(s), length(s)) = 0;
+    end;
+
+  var
+    SymbolName, SymbolValue, NewPath: string;
     i, len, CurPos: integer;
     Filename: String;
     p: SizeInt;
@@ -1641,44 +1664,50 @@ function ParseFPCVerbose(List: TStrings; const WorkDir: string; out
     end;
 
     UpLine:=UpperCaseStr(Line);
-
     case UpLine[CurPos] of
-    'C':
-      if StrLComp(@UpLine[CurPos], 'CONFIGFILE SEARCH: ', 19) = 0 then
-      begin
-        // skip keywords
-        Inc(CurPos, 19);
-        Filename:=ExpFile(GetForcedPathDelims(copy(Line,CurPos,length(Line))));
-        ConfigFiles.Add('-'+Filename);
-      end else if StrLComp(@UpLine[CurPos], 'COMPILER: ', 10) = 0 then begin
-        // skip keywords
-        Inc(CurPos, 10);
-        RealCompilerFilename:=ExpFile(copy(Line,CurPos,length(Line)));
-      end;
+    'I':
+      if IsUpLine(CurPos,'INFO: ') then
+        inc(CurPos,6);
     'E':
-      if StrLComp(@UpLine[CurPos], 'ERROR: ', 7) = 0 then begin
+      if IsUpLine(CurPos,'ERROR: ') then begin
         inc(CurPos,7);
         if RealCompilerFilename='' then begin
           p:=Pos(' returned an error exitcode',Line);
           if p>0 then
             RealCompilerFilename:=copy(Line,CurPos,p-CurPos);
         end;
+        exit;
+      end;
+    end;
+
+    case UpLine[CurPos] of
+    'C':
+      if IsUpLine(CurPos,'CONFIGFILE SEARCH: ') then
+      begin
+        // skip keywords
+        Inc(CurPos, 19);
+        Filename:=ExpFile(GetForcedPathDelims(copy(Line,CurPos,length(Line))));
+        ConfigFiles.Add('-'+Filename);
+      end else if IsUpLine(CurPos,'COMPILER: ') then begin
+        // skip keywords
+        Inc(CurPos, 10);
+        RealCompilerFilename:=ExpFile(copy(Line,CurPos,length(Line)));
       end;
     'M':
-      if StrLComp(@UpLine[CurPos], 'MACRO ', 6) = 0 then begin
+      if IsUpLine(CurPos,'MACRO ') then begin
         // skip keyword macro
         Inc(CurPos, 6);
 
-        if (StrLComp(@UpLine[CurPos], 'DEFINED: ', 9) = 0) then begin
+        if IsUpLine(CurPos,'DEFINED: ') then begin
           Inc(CurPos, 9);
-          SymbolName:=copy(UpLine, CurPos, len);
+          SymbolName:=copy(Line, CurPos, len);
           DefineSymbol(SymbolName,'');
           Exit;
         end;
 
-        if (StrLComp(@UpLine[CurPos], 'UNDEFINED: ', 11) = 0) then begin
+        if IsUpLine(CurPos,'UNDEFINED: ') then begin
           Inc(CurPos, 11);
-          SymbolName:=copy(UpLine,CurPos,len);
+          SymbolName:=copy(Line,CurPos,len);
           UndefineSymbol(SymbolName);
           Exit;
         end;
@@ -1686,17 +1715,18 @@ function ParseFPCVerbose(List: TStrings; const WorkDir: string; out
         // MACRO something...
         i := CurPos;
         while (i <= len) and (Line[i]<>' ') do inc(i);
-        SymbolName:=copy(UpLine,CurPos,i-CurPos);
+        SymbolName:=copy(Line,CurPos,i-CurPos);
         CurPos := i + 1; // skip space
 
-        if StrLComp(@UpLine[CurPos], 'SET TO ', 7) = 0 then begin
+        if IsUpLine(CurPos,'SET TO ') then begin
+          // MACRO name SET TO
           Inc(CurPos, 7);
-          SymbolValue:=copy(Line, CurPos, len);
+          SymbolValue:=DeQuote(copy(Line, CurPos, len));
           DefineSymbol(SymbolName, SymbolValue);
         end;
       end;
     'R':
-      if StrLComp(@UpLine[CurPos], 'READING OPTIONS FROM FILE ', 26) = 0 then
+      if IsUpLine(CurPos,'READING OPTIONS FROM FILE ') then
       begin
         // skip keywords
         Inc(CurPos, 26);
@@ -1704,32 +1734,31 @@ function ParseFPCVerbose(List: TStrings; const WorkDir: string; out
         if (ConfigFiles.Count>0)
         and (ConfigFiles[ConfigFiles.Count-1]='-'+Filename) then
           ConfigFiles.Delete(ConfigFiles.Count-1);
+        {$IFDEF VerboseFPCSrcScan}
+        DebugLn('Used options file: "',Filename,'"');
+        {$ENDIF}
         ConfigFiles.Add('+'+Filename);
       end;
     'U':
-      if (StrLComp(@UpLine[CurPos], 'USING UNIT PATH: ', 17) = 0) then begin
+      if IsUpLine(CurPos,'USING UNIT PATH: ') then begin
         Inc(CurPos, 17);
-        NewPath:=GetForcedPathDelims(copy(Line,CurPos,len));
-        if not FilenameIsAbsolute(NewPath) then
-          NewPath:=ExpFile(NewPath);
+        NewPath:=ExpFile(GetForcedPathDelims(DeQuote(copy(Line,CurPos,len))));
         NewPath:=ChompPathDelim(TrimFilename(NewPath));
         {$IFDEF VerboseFPCSrcScan}
         DebugLn('Using unit path: "',NewPath,'"');
         {$ENDIF}
         UnitPaths.Add(NewPath);
-      end else if (StrLComp(@UpLine[CurPos], 'USING INCLUDE PATH: ', 20) = 0) then begin
+      end else if IsUpLine(CurPos,'USING INCLUDE PATH: ') then begin
         Inc(CurPos, 20);
-        NewPath:=GetForcedPathDelims(copy(Line,CurPos,len));
-        if not FilenameIsAbsolute(NewPath) then
-          NewPath:=ExpFile(NewPath);
+        NewPath:=ExpFile(GetForcedPathDelims(DeQuote(copy(Line,CurPos,len))));
         NewPath:=ChompPathDelim(TrimFilename(NewPath));
         {$IFDEF VerboseFPCSrcScan}
         DebugLn('Using include path: "',NewPath,'"');
         {$ENDIF}
         IncludePaths.Add(NewPath);
-      end else if (StrLComp(@UpLine[CurPos], 'USING UNIT SCOPE: ', 18) = 0) then begin
+      end else if IsUpLine(CurPos,'USING UNIT SCOPE: ') then begin
         Inc(CurPos, 18);
-        NewPath:=Trim(copy(Line,CurPos,len));
+        NewPath:=Trim(DeQuote(copy(Line,CurPos,len)));
         {$IFDEF VerboseFPCSrcScan}
         DebugLn('Using unit scope: "',NewPath,'"');
         {$ENDIF}
@@ -9014,6 +9043,11 @@ begin
       HasPPUs:=false;
       RunFPCVerbose(Compiler,TestFilename,CfgFiles,RealCompiler,UnitPaths,
                     IncludePaths,UnitScopes,Defines,Undefines,ExtraOptions);
+
+      //debugln(['TPCTargetConfigCache.Update UnitPaths="',UnitPaths.Text,'"']);
+      //debugln(['TPCTargetConfigCache.Update UnitScopes="',UnitScopes.Text,'"']);
+      //debugln(['TPCTargetConfigCache.Update IncludePaths="',IncludePaths.Text,'"']);
+
       if Defines.Contains('PAS2JS') and Defines.Contains('PAS2JS_FULLVERSION') then
         Kind:=pcPas2js
       else
@@ -9023,7 +9057,7 @@ begin
       // store the real compiler file and date
       if (RealCompiler<>'') and FileExistsCached(RealCompiler) then begin
         RealCompilerDate:=FileAgeCached(RealCompiler);
-      end else begin
+      end else if Kind=pcFPC then begin
         if CTConsoleVerbosity>=-1 then
           debugln(['Warning: [TPCTargetConfigCache.Update] invalid compiler: Compiler="'+Compiler+'" Options="'+ExtraOptions+'" RealCompiler="',RealCompiler,'"']);
       end;
@@ -9052,6 +9086,17 @@ begin
       end;
       // check if the system ppu exists
       HasPPUs:=(Kind=pcFPC) and (CompareFileExt(Units['system'],'ppu',false)=0);
+      if CTConsoleVerbosity>=-1 then begin
+        case Kind of
+          pcFPC:
+            if not Defines.Contains('FPC_FULLVERSION') then
+              debugln(['Warning: [TPCTargetConfigCache.Update] invalid fpc: Compiler="'+Compiler+'" Options="'+ExtraOptions+'" RealCompiler="',RealCompiler,'" missing FPC_FULLVERSION']);
+          pcDelphi: ;
+          pcPas2js:
+            if not Defines.Contains('PAS2JS_FULLVERSION') then
+              debugln(['Warning: [TPCTargetConfigCache.Update] invalid pas2js: Compiler="'+Compiler+'" Options="'+ExtraOptions+'" missing PAS2JS_FULLVERSION']);
+        end;
+      end;
     end;
     // check for changes
     if not Equals(OldOptions) then begin
@@ -9106,6 +9151,7 @@ var
   Postfix: String;
 begin
   Result:='';
+  if Kind<>pcFPC then exit;
 
   CompiledTargetCPU:=GetCompiledTargetCPU;
   if aTargetCPU='' then
