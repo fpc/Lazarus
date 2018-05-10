@@ -72,7 +72,7 @@ begin
   Result:=GetEnvironmentVariable('PAS2JS');
   if Result<>'' then begin
     if not FileExistsUTF8(Result) then
-      Fail('Environment variable PAS2JS has non existing "'+Result+'"');
+      Fail('Environment variable PAS2JS is non existing file "'+Result+'"');
     exit;
   end;
   ShortFilename:='pas2js'+ExeExt;
