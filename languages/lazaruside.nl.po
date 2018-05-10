@@ -21465,6 +21465,14 @@ msgstr "Selecteer pagina omhoog"
 msgid "Select Right"
 msgstr "SelRechts"
 
+#: lazarusidestrconsts.srkmecselsmartwordleft
+msgid "Select left to either current word start or previous word end"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecselsmartwordright
+msgid "Select right to either current word end or next word start"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecselsticky
 msgid "Start sticky selecting"
 msgstr ""
@@ -21530,6 +21538,14 @@ msgstr "Toon code samenhang"
 
 #: lazarusidestrconsts.srkmecshowexecutionpoint
 msgid "show execution point"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsmartwordleft
+msgid "Move cursor left to either current word start or previous word end"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsmartwordright
+msgid "Move cursor right to either current word end or next word start"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecstopprogram

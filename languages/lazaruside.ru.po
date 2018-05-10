@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-04-11 01:52+0300\n"
+"PO-Revision-Date: 2018-05-11 01:30+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -20579,6 +20579,14 @@ msgstr "Выделить страницу сверху"
 msgid "Select Right"
 msgstr "Выделить справа"
 
+#: lazarusidestrconsts.srkmecselsmartwordleft
+msgid "Select left to either current word start or previous word end"
+msgstr "Выделить слева до начала текущего слова либо конца предыдущего"
+
+#: lazarusidestrconsts.srkmecselsmartwordright
+msgid "Select right to either current word end or next word start"
+msgstr "Выделить справа до конца текущего слова либо начала следующего"
+
 #: lazarusidestrconsts.srkmecselsticky
 msgid "Start sticky selecting"
 msgstr "Начать выделение с привязкой"
@@ -20641,6 +20649,14 @@ msgstr "Показать контекст кода"
 #: lazarusidestrconsts.srkmecshowexecutionpoint
 msgid "show execution point"
 msgstr "показать точку исполнения"
+
+#: lazarusidestrconsts.srkmecsmartwordleft
+msgid "Move cursor left to either current word start or previous word end"
+msgstr "Переместить курсор влево на начало текущего слова либо конец предыдущего"
+
+#: lazarusidestrconsts.srkmecsmartwordright
+msgid "Move cursor right to either current word end or next word start"
+msgstr "Переместить курсор вправо на конец текущего слова либо начало следующего"
 
 #: lazarusidestrconsts.srkmecstopprogram
 msgid "stop program"

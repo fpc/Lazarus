@@ -20583,6 +20583,14 @@ msgstr "Вибрати сторінку вгорі"
 msgid "Select Right"
 msgstr "Вибрати справа"
 
+#: lazarusidestrconsts.srkmecselsmartwordleft
+msgid "Select left to either current word start or previous word end"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecselsmartwordright
+msgid "Select right to either current word end or next word start"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecselsticky
 msgid "Start sticky selecting"
 msgstr "Почати вибір з прив'язкою"
@@ -20645,6 +20653,14 @@ msgstr "Показати контекст коду"
 #: lazarusidestrconsts.srkmecshowexecutionpoint
 msgid "show execution point"
 msgstr "показати точку виконання"
+
+#: lazarusidestrconsts.srkmecsmartwordleft
+msgid "Move cursor left to either current word start or previous word end"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsmartwordright
+msgid "Move cursor right to either current word end or next word start"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecstopprogram
 msgid "stop program"

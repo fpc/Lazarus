@@ -20601,6 +20601,14 @@ msgstr "ページの上方を選択"
 msgid "Select Right"
 msgstr "右側選択"
 
+#: lazarusidestrconsts.srkmecselsmartwordleft
+msgid "Select left to either current word start or previous word end"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecselsmartwordright
+msgid "Select right to either current word end or next word start"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecselsticky
 msgid "Start sticky selecting"
 msgstr "粘着性選択を開始"
@@ -20663,6 +20671,14 @@ msgstr "コードの内容を表示"
 #: lazarusidestrconsts.srkmecshowexecutionpoint
 msgid "show execution point"
 msgstr "実行位置を表示"
+
+#: lazarusidestrconsts.srkmecsmartwordleft
+msgid "Move cursor left to either current word start or previous word end"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsmartwordright
+msgid "Move cursor right to either current word end or next word start"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecstopprogram
 msgid "stop program"

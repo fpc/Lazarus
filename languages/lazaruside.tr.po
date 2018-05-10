@@ -20958,6 +20958,14 @@ msgstr "Sayfa Yukarı Seç"
 msgid "Select Right"
 msgstr "Doğru Seç"
 
+#: lazarusidestrconsts.srkmecselsmartwordleft
+msgid "Select left to either current word start or previous word end"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecselsmartwordright
+msgid "Select right to either current word end or next word start"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecselsticky
 msgid "Start sticky selecting"
 msgstr "Yapışkan seçmeye başla"
@@ -21022,6 +21030,14 @@ msgstr "Kod Bağlamını Göster"
 #: lazarusidestrconsts.srkmecshowexecutionpoint
 msgid "show execution point"
 msgstr "Yürütme noktasını göster"
+
+#: lazarusidestrconsts.srkmecsmartwordleft
+msgid "Move cursor left to either current word start or previous word end"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecsmartwordright
+msgid "Move cursor right to either current word end or next word start"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecstopprogram
 msgid "stop program"
