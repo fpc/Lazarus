@@ -28,7 +28,7 @@ uses
   Classes, SysUtils, Graphics, Forms, Controls, StdCtrls, Dialogs, Buttons,
   ComCtrls, ExtCtrls, FileUtil, LCLProc, LCLType, Menus, IDEProcs, Laz2_XMLCfg,
   EnvironmentOpts, LazarusIDEStrConsts, IDEOptionsIntf,
-  IDEImagesIntf, DividerBevel, ComponentReg, IDEOptionDefs,
+  IDEImagesIntf, DividerBevel, ComponentReg, FormEditingIntf, IDEOptionDefs,
   PackageDefs, ImgList;
 
 type
@@ -632,7 +632,7 @@ begin
     begin
       Res := IL.ResolutionForControl[0, Sender];
       Res.Draw(Sender.Canvas,
-               ARect.Left+(25-Res.Width) div 2,
+               ARect.Left+(Scale96ToFont(ComponentPaletteImageWidth)-Res.Width) div 2 + 2,
                ARect.Top+(ARect.Bottom-ARect.Top-Res.Height) div 2, II);
     end;
   end;
