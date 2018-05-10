@@ -1289,7 +1289,6 @@ begin
       Bmp := TBitmap.Create;
       try
         ImgListRes.GetBitmap(AImageIndex, Bmp);
-        Application.MainForm.Caption := Format('%d:%d', [Bmp.Width, Bmp.Height]);
         if LWI <> nil then
           QListWidgetItem_setIcon(LWI, TQtImage(Bmp.Handle).AsIcon)
         else
