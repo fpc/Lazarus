@@ -1439,11 +1439,6 @@ begin
 
     QtTreeWidget.setItemData(TWI, 0, AItem);
 
-    //if Assigned(TCustomListViewHack(ALV).SmallImages) then
-    //  AIconWidth := TCustomListViewHack(ALV).SmallImages.Width
-    //else
-    //  AIconWidth := 0;
-
     for i := 0 to AItem.SubItems.Count - 1 do
     begin
       AAlignment := QtAlignLeft or QtAlignVCenter;
@@ -1555,10 +1550,12 @@ var
   IconRect, ChkBoxRect: TRect;
   i: Integer;
   APixelMetric: Integer;
+  ImgListRes: TScaledImageListResolution;
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemDisplayRect') then
     Exit;
 
+  GetCurrentImages(ALV, ImgListRes);
   if IsIconView(ALV) then
   begin
     QtListWidget := TQtListWidget(ALV.Handle);
@@ -1583,8 +1580,8 @@ begin
           QIcon_actualSize(AIcon, @Size, @Size);
           if (Size.cx = 0) or (Size.cy = 0) then
           begin
-            if Assigned(TCustomListViewHack(ALV).SmallImages) then
-              IconRect.Right := IconRect.Left + TCustomListViewHack(ALV).SmallImages.Width;
+            if ImgListRes.Valid then
+              IconRect.Right := IconRect.Left + ImgListRes.Width;
           end else
           begin
             IconRect.Right := IconRect.Left + Size.cx;
@@ -1645,8 +1642,8 @@ begin
           QIcon_actualSize(AIcon, @Size, @Size);
           if (Size.cx = 0) or (Size.cy = 0) then
           begin
-            if Assigned(TCustomListViewHack(ALV).SmallImages) then
-              IconRect.Right := IconRect.Left + TCustomListViewHack(ALV).SmallImages.Width;
+            if ImgListRes.Valid then
+              IconRect.Right := IconRect.Left + ImgListRes.Width;
           end else
           begin
             IconRect.Right := IconRect.Left + Size.cx;
@@ -1682,10 +1679,10 @@ begin
     end else
     if ACode in [drIcon] then
     begin
-      if IsRectEmpty(IconRect) and Assigned(TCustomListViewHack(ALV).SmallImages) and
+      if IsRectEmpty(IconRect) and ImgListRes.Valid and
         (QtTreeWidget.OwnerData or QtTreeWidget.OwnerDrawn) then
       begin
-        IconRect := Rect(0, 0, TCustomListViewHack(ALV).SmallImages.Width, TCustomListViewHack(ALV).SmallImages.Height);
+        IconRect := Rect(0, 0, ImgListRes.Width, ImgListRes.Height);
         OffsetRect(IconRect, Result.Left, Result.Top + APixelMetric);
       end;
       IconRect.Left += APixelMetric + (ChkBoxRect.Right - ChkBoxRect.Left);
