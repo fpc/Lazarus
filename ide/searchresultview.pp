@@ -162,6 +162,7 @@ type
     procedure mniCopySelectedClick(Sender: TObject);
     procedure mniExpandAllClick(Sender: TObject);
     procedure mniCollapseAllClick(Sender: TObject);
+    procedure ResultsNoteBookChanging(Sender: TObject; var AllowChange: Boolean);
     procedure ResultsNoteBookMouseDown(Sender: TObject; Button: TMouseButton;
       {%H-}Shift: TShiftState; X, Y: Integer);
     procedure TreeViewKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -182,6 +183,8 @@ type
       Shift: TShiftState; X, Y: Integer);
   private
     FMaxItems: integer;
+    FFocusTreeViewInOnChange: Boolean;
+    FFocusTreeViewInEndUpdate: Boolean;
     FWorkedSearchText: string;
     FOnSelectionChanged: TNotifyEvent;
     FMouseOverIndex: integer;
@@ -192,6 +195,8 @@ type
     function GetItems(Index: integer): TStrings;
     procedure SetMaxItems(const AValue: integer);
     procedure UpdateToolbar;
+  protected
+    procedure Loaded; override;
   public
     function AddSearch(const ResultsName: string;
                        const SearchText: string;
@@ -485,7 +490,7 @@ begin
   end;
 end;
 
-procedure TSearchResultsView.ResultsNoteBookPageChanged (Sender: TObject );
+procedure TSearchResultsView.ResultsNoteBookPageChanged(Sender: TObject);
 var
   CurrentTV: TLazSearchResultTV;
 begin
@@ -493,6 +498,8 @@ begin
   if Assigned(CurrentTV) and not (csDestroying in CurrentTV.ComponentState) then begin
     SearchInListEdit.FilteredTreeview := CurrentTV;
     SearchInListEdit.Filter := CurrentTV.SearchInListPhrases;
+    if FFocusTreeViewInOnChange then
+      ActiveControl := CurrentTV;
   end;
   UpdateToolbar;
 end;
@@ -621,6 +628,11 @@ begin
     end;
   end;
   UpdateToolbar;
+  if FFocusTreeViewInEndUpdate and Assigned(CurrentTV) then
+    ActiveControl := CurrentTV
+  else
+  if SearchInListEdit.CanFocus then
+    ActiveControl := SearchInListEdit;
 end;
 
 procedure TSearchResultsView.Parse_Search_Phrases(var slPhrases: TStrings);
@@ -646,6 +658,15 @@ begin
       sPhrase := sPhrase + sPhrases[i];
     end;//End if ((sPhrases[i] = ' ') or (sPhrases[i] = ','))
   end;//End for-loop i
+end;
+
+procedure TSearchResultsView.ResultsNoteBookChanging(Sender: TObject;
+  var AllowChange: Boolean);
+var
+  CurrentTV: TLazSearchResultTV;
+begin
+  CurrentTV := GetTreeView(ResultsNoteBook.PageIndex);
+  FFocusTreeViewInOnChange := Assigned(CurrentTV) and CurrentTV.Focused;
 end;
 
 procedure TSearchResultsView.ClosePage(PageIndex: integer);
@@ -764,6 +785,8 @@ var
 begin
   Result:= nil;
   if Assigned(ResultsNoteBook) then
+  begin
+    FFocusTreeViewInEndUpdate := not (Assigned(ActiveControl) and SearchInListEdit.IsParentOf(ActiveControl));
     with ResultsNoteBook do
     begin
       FWorkedSearchText:=BeautifyPageName(ResultsName);
@@ -808,6 +831,7 @@ begin
       SearchInListEdit.Filter:='';
       SearchInListEdit.FilteredTreeview := NewTreeView;
     end;//with
+  end;
 end;//AddResult
 
 procedure TSearchResultsView.LazTVShowHint(Sender: TObject; HintInfo: PHintInfo);
@@ -837,6 +861,13 @@ begin
     end;//with
   end;//if
 end;//LazTVShowHint
+
+procedure TSearchResultsView.Loaded;
+begin
+  inherited Loaded;
+
+  ActiveControl := ResultsNoteBook;
+end;
 
 procedure TSearchResultsView.TreeViewAdvancedCustomDrawItem(
   Sender: TCustomTreeView; Node: TTreeNode; State: TCustomDrawState;

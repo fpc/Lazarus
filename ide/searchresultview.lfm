@@ -23,6 +23,7 @@ object SearchResultsView: TSearchResultsView
     MultiLine = True
     TabOrder = 1
     OnChange = ResultsNoteBookPageChanged
+    OnChanging = ResultsNoteBookChanging
     OnCloseTabClicked = ResultsNoteBookClosetabclicked
     OnMouseDown = ResultsNoteBookMouseDown
     Options = [nboShowCloseButtons, nboMultiLine]
@@ -68,9 +69,9 @@ object SearchResultsView: TSearchResultsView
     Top = 0
     Width = 738
     ButtonWidth = 23
-    NumGlyphs = 1
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
+    NumGlyphs = 1
     MaxLength = 0
     TabOrder = 0
     OnChange = SearchInListChange
