@@ -110,6 +110,8 @@ type
   protected
     class function IsIconView(const AList: TCustomListView): boolean;
     class procedure InternalUpdateItems(const AList: TCustomListView);
+    class procedure GetCurrentImages(const ALV: TCustomListView;
+      out AImgListRes: TScaledImageListResolution);
   published
     class function CreateHandle(const AWinControl: TWinControl;
      const AParams: TCreateParams): TLCLIntfHandle; override;
@@ -962,7 +964,7 @@ var
   QtTreeWidget: TQtTreeWidget;
   TWI: QTreeWidgetItemH;
   Bmp: TBitmap;
-  ImgList: TImageList;
+  ImgListRes: TScaledImageListResolution;
 begin
   if not WSCheckHandleAllocated(ALV, 'ColumnSetImage') then
     Exit;
@@ -975,29 +977,17 @@ begin
   TWI := QtTreeWidget.headerItem;
   if TWI <> NiL then
   begin
-    ImgList := TImageList.Create(nil);
-    try
-      if (TCustomListViewHack(ALV).ViewStyle = vsIcon) and
-        Assigned(TCustomListViewHack(ALV).LargeImages) then
-        ImgList.Assign(TCustomListViewHack(ALV).LargeImages);
-
-      if (TCustomListViewHack(ALV).ViewStyle in [vsSmallIcon, vsReport, vsList]) and
-        Assigned(TCustomListViewHack(ALV).SmallImages) then
-        ImgList.Assign(TCustomListViewHack(ALV).SmallImages);
-
-      if (ImgList.Count > 0) and
-        ((AImageIndex >= 0) and (AImageIndex < ImgList.Count)) then
-      begin
-        Bmp := TBitmap.Create;
-        try
-          ImgList.GetBitmap(AImageIndex, Bmp);
-          QTreeWidgetItem_setIcon(TWI, AIndex, TQtImage(Bmp.Handle).AsIcon);
-        finally
-          Bmp.Free;
-        end;
+    GetCurrentImages(ALV, ImgListRes);
+    if ImgListRes.Valid and (ImgListRes.Count > 0) and
+      ((AImageIndex >= 0) and (AImageIndex < ImgListRes.Count)) then
+    begin
+      Bmp := TBitmap.Create;
+      try
+        ImgListRes.GetBitmap(AImageIndex, Bmp);
+        QTreeWidgetItem_setIcon(TWI, AIndex, TQtImage(Bmp.Handle).AsIcon);
+      finally
+        Bmp.Free;
       end;
-    finally
-      ImgList.Free;
     end;
   end;
 end;
@@ -1267,7 +1257,7 @@ var
   QtTreeWidget: TQtTreeWidget;
   TWI: QTreeWidgetItemH;
   Bmp: TBitmap;
-  ImgList: TImageList;
+  ImgListRes: TScaledImageListResolution;
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemSetImage') then
     Exit;
@@ -1290,41 +1280,28 @@ begin
   end;
   if (TWI <> nil) or (LWI <> nil) then
   begin
-    // issue #33719, exit imediatelly if AImageIndex < 0
-    if (AImageIndex < 0) then
+    GetCurrentImages(ALV, ImgListRes);
+
+    if ImgListRes.Valid and
+      ((AImageIndex >= 0) and (AImageIndex < ImgListRes.Count)) then
+    begin
+      Bmp := TBitmap.Create;
+      try
+        ImgListRes.GetBitmap(AImageIndex, Bmp);
+        Application.MainForm.Caption := Format('%d:%d', [Bmp.Width, Bmp.Height]);
+        if LWI <> nil then
+          QListWidgetItem_setIcon(LWI, TQtImage(Bmp.Handle).AsIcon)
+        else
+          QTreeWidgetItem_setIcon(TWI, ASubIndex, TQtImage(Bmp.Handle).AsIcon);
+      finally
+        Bmp.Free;
+      end;
+    end else
     begin
       if LWI <> nil then
         QListWidgetItem_setIcon(LWI, nil)
       else
         QTreeWidgetItem_setIcon(TWI, ASubIndex, nil);
-      exit;
-    end;
-
-    ImgList := TImageList.Create(nil);
-    try
-      if (TCustomListViewHack(ALV).ViewStyle = vsIcon) and
-        Assigned(TCustomListViewHack(ALV).LargeImages) then
-        ImgList.Assign(TCustomListViewHack(ALV).LargeImages);
-
-      if (TCustomListViewHack(ALV).ViewStyle in [vsSmallIcon, vsReport, vsList]) and
-        Assigned(TCustomListViewHack(ALV).SmallImages) then
-        ImgList.Assign(TCustomListViewHack(ALV).SmallImages);
-
-      if (ImgList.Count > 0) and (AImageIndex < ImgList.Count) then
-      begin
-        Bmp := TBitmap.Create;
-        try
-          ImgList.GetBitmap(AImageIndex, Bmp);
-          if LWI <> nil then
-            QListWidgetItem_setIcon(LWI, TQtImage(Bmp.Handle).AsIcon)
-          else
-            QTreeWidgetItem_setIcon(TWI, ASubIndex, TQtImage(Bmp.Handle).AsIcon);
-        finally
-          Bmp.Free;
-        end;
-      end;
-    finally
-      ImgList.Free;
     end;
   end;
 end;
@@ -1876,25 +1853,17 @@ class procedure TQtWSCustomListView.InternalUpdateItems(
   const AList: TCustomListView);
 var
   QtTreeWidget: TQtTreeWidget;
-  i: Integer;
-  j: Integer;
+  i, j: Integer;
   AItem: TListItem;
   WStr: WideString;
   Item: QTreeWidgetItemH;
   AAlignment: QtAlignment;
-  ImgList: TImageList;
   Bmp: TBitmap;
+  ImgListRes: TScaledImageListResolution;
 begin
   QtTreeWidget := TQtTreeWidget(AList.Handle);
-  ImgList := TImageList.Create(nil);
 
-  if (TCustomListViewHack(AList).ViewStyle = vsIcon) and
-    Assigned(TCustomListViewHack(AList).LargeImages) then
-    ImgList.Assign(TCustomListViewHack(AList).LargeImages);
-
-  if (TCustomListViewHack(AList).ViewStyle in [vsSmallIcon, vsReport, vsList]) and
-    Assigned(TCustomListViewHack(AList).SmallImages) then
-    ImgList.Assign(TCustomListViewHack(AList).SmallImages);
+  GetCurrentImages(AList, ImgListRes);
 
   BeginUpdate(AList);
   try
@@ -1913,12 +1882,12 @@ begin
           QTreeWidgetItem_setCheckState(Item, 0, QtUnChecked);
       end;
 
-      if (ImgList.Count > 0) and
-        ((AItem.ImageIndex >= 0) and (AItem.ImageIndex < ImgList.Count)) then
+      if ImgListRes.Valid and (ImgListRes.Count > 0) and
+        ((AItem.ImageIndex >= 0) and (AItem.ImageIndex < ImgListRes.Count)) then
       begin
         Bmp := TBitmap.Create;
         try
-          ImgList.GetBitmap(AItem.ImageIndex, Bmp);
+          ImgListRes.GetBitmap(AItem.ImageIndex, Bmp);
           QTreeWidgetItem_setIcon(Item, 0, TQtImage(Bmp.Handle).AsIcon);
         finally
           Bmp.Free;
@@ -1939,9 +1908,37 @@ begin
     end;
 
   finally
-    ImgList.Free;
     EndUpdate(AList);
   end;
+end;
+
+class procedure TQtWSCustomListView.GetCurrentImages(
+  const ALV: TCustomListView; out AImgListRes: TScaledImageListResolution);
+var
+  LV: TCustomListViewHack;
+  AImgList: TCustomImageList;
+  AImgListWidth: Integer;
+begin
+  LV := TCustomListViewHack(ALV);
+  case LV.ViewStyle of
+    vsIcon:
+    begin
+      AImgList := LV.LargeImages;
+      AImgListWidth := LV.LargeImagesWidth;
+    end;
+    vsSmallIcon, vsReport, vsList:
+    begin
+      AImgList := LV.SmallImages;
+      AImgListWidth := LV.SmallImagesWidth;
+    end;
+  else
+    AImgList := nil;
+    AImgListWidth := 0;
+  end;
+  if AImgList<>nil then
+    AImgListRes := AImgList.ResolutionForControl[AImgListWidth, ALV]
+  else
+    AImgListRes := TScaledImageListResolution.Create(nil, 0);
 end;
 
 {------------------------------------------------------------------------------
@@ -2218,6 +2215,7 @@ var
   Size: TSize;
   x: Integer;
   j: Integer;
+  ImgListRes: TScaledImageListResolution;
 begin
   if not WSCheckHandleAllocated(ALV, 'SetViewStyle') then
     Exit;
@@ -2231,57 +2229,39 @@ begin
 
   if IsIconView(ALV) then
   begin
+    QtTreeWidget := Nil; // Suppress compiler warning.
     QtListWidget := TQtListWidget(ALV.Handle);
     ItemViewWidget := QListWidgetH(QtListWidget.Widget);
     QtListWidget.OwnerDrawn := False;
   end else
   begin
+    QtListWidget := Nil; // Suppress compiler warning.
     QtTreeWidget := TQtTreeWidget(ALV.Handle);
     ItemViewWidget := QTreeWidgetH(QtTreeWidget.Widget);
     with QtTreeWidget do
       setHeaderVisible(TCustomListViewHack(ALV).ShowColumnHeaders and (AValue = vsReport)
         and (TCustomListViewHack(ALV).Columns.Count > 0) );
   end;
-  case AValue of
-    vsIcon:
-       begin
-        x := GetPixelMetric(QStylePM_IconViewIconSize, nil, ItemViewWidget);
-        Size.cx := x;
-        Size.cy := x;
-        if Assigned(TCustomListViewHack(ALV).LargeImages) then
-        begin
-          Size.cy := TCustomListViewHack(ALV).LargeImages.Height;
-          Size.cx := TCustomListViewHack(ALV).LargeImages.Width;
-        end;
-      end;
-    vsSmallIcon:
-      begin
-        x := GetPixelMetric(QStylePM_ListViewIconSize, nil, ItemViewWidget);
-        Size.cx := x;
-        Size.cy := x;
-        if Assigned(TCustomListViewHack(ALV).SmallImages) then
-        begin
-          Size.cy := TCustomListViewHack(ALV).SmallImages.Height;
-          Size.cx := TCustomListViewHack(ALV).SmallImages.Width;
-        end;
-      end;
-    vsList, vsReport:
-      begin
-        x := 0;
-        Size.cx := x;
-        Size.cy := x;
-        if Assigned(TCustomListViewHack(ALV).SmallImages) then
-        begin
-          Size.cy := TCustomListViewHack(ALV).SmallImages.Height;
-          Size.cx := TCustomListViewHack(ALV).SmallImages.Width;
-        end;
-        TQtAbstractItemView(ALV.Handle).OwnerDrawn :=
-          TCustomListViewHack(ALV).IsCustomDrawn(dtControl, cdPrePaint) or
-          (TCustomListViewHack(ALV).OwnerDraw and
-          (TCustomListViewHack(ALV).ViewStyle = vsReport));
-      end;
+  GetCurrentImages(ALV, ImgListRes);
+  if ImgListRes.Valid then
+  begin
+    Size.cy := ImgListRes.Height;
+    Size.cx := ImgListRes.Width;
+  end else
+  begin
+    case AValue of
+      vsIcon: Size.cx := GetPixelMetric(QStylePM_IconViewIconSize, nil, ItemViewWidget);
+      vsSmallIcon: Size.cx := GetPixelMetric(QStylePM_ListViewIconSize, nil, ItemViewWidget);
+    else
+      Size.cx := 0;
+    end;
+    Size.cy := Size.cx;
   end;
-
+  if AValue in [vsList, vsReport] then
+    TQtAbstractItemView(ALV.Handle).OwnerDrawn :=
+      TCustomListViewHack(ALV).IsCustomDrawn(dtControl, cdPrePaint) or
+      (TCustomListViewHack(ALV).OwnerDraw and
+      (TCustomListViewHack(ALV).ViewStyle = vsReport));
   TQtAbstractItemView(ALV.Handle).IconSize := Size;
 
   if IsIconView(ALV) then
