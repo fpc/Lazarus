@@ -979,7 +979,7 @@ begin
 
   NodesTreeView.Images:=IDEImages.Images_16;
   FImgIndexDB:=IDEImages.LoadImage('item_package');
-  FImgIndexNode:=IDEImages.LoadImage('menu_help');
+  FImgIndexNode:=IDEImages.LoadImage('btn_help');
 end;
 
 function THelpSelectorDialog.GetSelectedNodeQuery: THelpNodeQuery;

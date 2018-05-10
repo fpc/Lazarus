@@ -7813,7 +7813,6 @@ images/menu/menu_goto_bookmark9_200.png -text
 images/menu/menu_goto_line.png -text svneol=unset#image/png
 images/menu/menu_goto_line_150.png -text
 images/menu/menu_goto_line_200.png -text
-images/menu/menu_help.png -text svneol=unset#image/png
 images/menu/menu_indent.png -text svneol=unset#image/png
 images/menu/menu_indent_150.png -text
 images/menu/menu_indent_200.png -text

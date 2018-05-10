@@ -1444,7 +1444,7 @@ begin
     ParentMI:=itmOnlineHelps;
 
     CreateMenuItem(ParentMI,itmHelpOnlineHelp,'itmHelpOnlineHelp',
-                   lisMenuOnlineHelp, 'menu_help');
+                   lisMenuOnlineHelp, 'btn_help');
     CreateMenuItem(ParentMI,itmHelpReportingBug,'itmHelpReportingBug',
                    lisMenuReportingBug, 'menu_reportingbug');
 

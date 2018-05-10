@@ -356,7 +356,6 @@ menu/menu_goto_bookmark9_200.png
 menu/menu_goto_line.png
 menu/menu_goto_line_150.png
 menu/menu_goto_line_200.png
-menu/menu_help.png
 menu/menu_indent.png
 menu/menu_indent_150.png
 menu/menu_indent_200.png
