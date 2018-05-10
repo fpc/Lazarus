@@ -85,8 +85,6 @@ type
   TPkgComponent = class(TRegisteredComponent)
   private
     FPkgFile: TPkgFile;
-    FIcon: TCustomBitmap;
-    FIconLoaded: boolean;
     procedure SetPkgFile(const AValue: TPkgFile);
   public
     constructor Create(ThePkgFile: TPkgFile; TheComponentClass: TComponentClass;
@@ -3930,11 +3928,6 @@ end;
 destructor TPkgComponent.Destroy;
 begin
   PkgFile:=nil;
-  if fIconLoaded then begin
-    FIcon.Free;
-    FIcon:=nil;
-    fIconLoaded:=false;
-  end;
   inherited Destroy;
 end;
 
