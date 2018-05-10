@@ -1290,6 +1290,16 @@ begin
   end;
   if (TWI <> nil) or (LWI <> nil) then
   begin
+    // issue #33719, exit imediatelly if AImageIndex < 0
+    if (AImageIndex < 0) then
+    begin
+      if LWI <> nil then
+        QListWidgetItem_setIcon(LWI, nil)
+      else
+        QTreeWidgetItem_setIcon(TWI, ASubIndex, nil);
+      exit;
+    end;
+
     ImgList := TImageList.Create(nil);
     try
       if (TCustomListViewHack(ALV).ViewStyle = vsIcon) and
@@ -1300,8 +1310,7 @@ begin
         Assigned(TCustomListViewHack(ALV).SmallImages) then
         ImgList.Assign(TCustomListViewHack(ALV).SmallImages);
 
-      if (ImgList.Count > 0) and
-        ((AImageIndex >= 0) and (AImageIndex < ImgList.Count)) then
+      if (ImgList.Count > 0) and (AImageIndex < ImgList.Count) then
       begin
         Bmp := TBitmap.Create;
         try
@@ -1313,13 +1322,6 @@ begin
         finally
           Bmp.Free;
         end;
-      end else
-      if (AImageIndex < 0) then
-      begin
-        if LWI <> nil then
-          QListWidgetItem_setIcon(LWI, nil)
-        else
-          QTreeWidgetItem_setIcon(TWI, ASubIndex, nil);
       end;
     finally
       ImgList.Free;
