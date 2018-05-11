@@ -370,6 +370,7 @@ type
                                         UseCache: boolean = true): string;// value of macro #FPCUnitPath
     procedure GetFPCVersionForDirectory(const Directory: string;
                                  out FPCVersion, FPCRelease, FPCPatch: integer);
+    function GetPCVersionForDirectory(const Directory: string): integer;
     function GetNamespacesForDirectory(const Directory: string;
                           UseCache: boolean = true): string;// value of macro #Namespaces
 
@@ -1696,6 +1697,23 @@ begin
   FPCVersion:=FPCFullVersion div 10000;
   FPCRelease:=(FPCFullVersion div 100) mod 100;
   FPCPatch:=FPCFullVersion mod 100;
+end;
+
+function TCodeToolManager.GetPCVersionForDirectory(const Directory: string
+  ): integer;
+var
+  Evaluator: TExpressionEvaluator;
+  s: String;
+begin
+  Result:=0;
+  Evaluator:=DefineTree.GetDefinesForDirectory(Directory,true);
+  if Evaluator=nil then exit;
+  s:=Evaluator['FPC_FULLVERSION'];
+  if s<>'' then
+    exit(StrToIntDef(s,0));
+  s:=Evaluator['PAS2JS_FULLVERSION'];
+  if s<>'' then
+    exit(StrToIntDef(s,0));
 end;
 
 function TCodeToolManager.GetNamespacesForDirectory(const Directory: string;

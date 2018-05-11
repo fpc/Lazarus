@@ -111,7 +111,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function LoadCurrentEnglishFile(UpdateFromDisk: boolean;
-      AThread: TThread): TFPCMsgFilePoolItem; // don't forget UnloadFile
+      AThread: TThread): TFPCMsgFilePoolItem; virtual; // don't forget UnloadFile
     function LoadFile(aFilename: string; UpdateFromDisk: boolean;
       AThread: TThread): TFPCMsgFilePoolItem; // don't forget UnloadFile
     procedure UnloadFile(var aFile: TFPCMsgFilePoolItem);
@@ -214,6 +214,8 @@ type
     function ReverseInstantFPCCacheDir(var aFilename: string; aSynchronized: boolean): boolean;
     function ReverseTestBuildDir(MsgLine: TMessageLine; var aFilename: string): boolean;
     function LongenFilename(MsgLine: TMessageLine; aFilename: string): string; // (worker thread)
+  protected
+    function GetDefaultPCFullVersion: LongWord; virtual;
   public
     DirectoryStack: TStrings;
     MsgFilename: string; // e.g. /path/to/fpcsrc/compiler/msg/errore.msg
@@ -223,7 +225,7 @@ type
     InstantFPCCache: string; // with trailing pathdelim
     TestBuildDir: string; // with trailing pathdelim
     VirtualProjectFiles: TFilenameToPointerTree;
-    FPC_FullVersion: cardinal;
+    PC_FullVersion: LongWord;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Init; override; // called after macros resolved, before starting thread (main thread)
@@ -247,6 +249,7 @@ type
     class function GetFPCMsgPattern(Msg: TMessageLine): string; override;
     class function GetFPCMsgValue1(Msg: TMessageLine): string; override;
     class function GetFPCMsgValues(Msg: TMessageLine; out Value1, Value2: string): boolean; override;
+    class function MsgFilePool: TFPCMsgFilePool; virtual;
   end;
 
 var
@@ -1072,9 +1075,9 @@ begin
   FreeAndNil(fFileExists);
   FreeAndNil(fCurSource);
   if TranslationFile<>nil then
-    FPCMsgFilePool.UnloadFile(TranslationFile);
+    MsgFilePool.UnloadFile(TranslationFile);
   if MsgFile<>nil then
-    FPCMsgFilePool.UnloadFile(MsgFile);
+    MsgFilePool.UnloadFile(MsgFile);
   FreeAndNil(DirectoryStack);
   FreeAndNil(fLineToMsgID);
   inherited Destroy;
@@ -1089,7 +1092,7 @@ procedure TIDEFPCParser.Init;
       debugln(['WARNING: TFPCParser.Init missing msg file'])
     else if (aFilename<>'') and (List=nil) then begin
       try
-        List:=FPCMsgFilePool.LoadFile(aFilename,true,nil);
+        List:=MsgFilePool.LoadFile(aFilename,true,nil);
         {$IFDEF VerboseExtToolThread}
         debugln(['LoadMsgFile successfully read ',aFilename]);
         {$ENDIF}
@@ -1107,20 +1110,14 @@ var
   p: PChar;
   aTargetOS: String;
   aTargetCPU: String;
-  FPCVersion: integer;
-  FPCRelease: integer;
-  FPCPatch: integer;
   aProject: TLazProject;
   aProjFile: TLazProjectFile;
 begin
   inherited Init;
 
-  // get FPC version
-  CodeToolBoss.GetFPCVersionForDirectory(Tool.WorkerDirectory, FPCVersion,
-    FPCRelease, FPCPatch);
-  FPC_FullVersion:=FPCVersion*10000+FPCRelease*100+FPCPatch;
+  PC_FullVersion:=GetDefaultPCFullVersion;
 
-  if FPCMsgFilePool<>nil then begin
+  if MsgFilePool<>nil then begin
     aTargetOS:='';
     aTargetCPU:='';
     for i:=0 to Tool.Process.Parameters.Count-1 do begin
@@ -1133,7 +1130,7 @@ begin
       else if p[1]='P' then
         aTargetCPU:=copy(Param,3,255);
     end;
-    FPCMsgFilePool.GetMsgFileNames(Tool.Process.Executable,aTargetOS,aTargetCPU,
+    MsgFilePool.GetMsgFileNames(Tool.Process.Executable,aTargetOS,aTargetCPU,
       MsgFilename,TranslationFilename);
   end;
 
@@ -1541,7 +1538,7 @@ end;
 function TIDEFPCParser.CheckForInfos(p: PChar): boolean;
 
   function ReadFPCLogo(PatternItem: PPatternToMsgID;
-    out FPCVersionAsInt: cardinal): boolean;
+    out FPCVersionAsInt: LongWord): boolean;
   var
     Line: string;
     Ranges: TFPCMsgRanges;
@@ -1580,7 +1577,7 @@ var
   MsgLine: TMessageLine;
   MsgType: TMessageLineUrgency;
   PatternItem: PPatternToMsgID;
-  aFPCVersion: cardinal;
+  aFPCVersion: LongWord;
 begin
   Result:=false;
   PatternItem:=fLineToMsgID.LineToPattern(p);
@@ -1601,10 +1598,10 @@ begin
   MsgLine.SubTool:=SubToolFPC;
   MsgLine.Urgency:=MsgType;
   if (fMsgID=FPCMsgIDLogo) and ReadFPCLogo(PatternItem,aFPCVersion) then begin
-    if aFPCVersion<>FPC_FullVersion then begin
+    if aFPCVersion<>PC_FullVersion then begin
       // unexpected FPC version => always show
       MsgLine.Urgency:=mluImportant;
-      FPC_FullVersion:=aFPCVersion;
+      PC_FullVersion:=aFPCVersion;
     end;
   end;
   AddMsgLine(MsgLine);
@@ -2589,7 +2586,7 @@ begin
   FFilesToIgnoreUnitNotUsed:=TStringList.Create;
   HideHintsSenderNotUsed:=true;
   HideHintsUnitNotUsedInMainSource:=true;
-  FPC_FullVersion:=GetCompiledFPCVersion;
+  PC_FullVersion:=GetCompiledFPCVersion;
 end;
 
 function TIDEFPCParser.FileExists(const Filename: string; aSynchronized: boolean
@@ -2897,7 +2894,7 @@ var
   p: PChar;
 begin
   if Line='' then exit;
-  if FPC_FullVersion>=20701 then
+  if PC_FullVersion>=20701 then
     Line:=ConsoleToUTF8(Line)
   else begin
     {$IFDEF MSWINDOWS}
@@ -3063,6 +3060,12 @@ begin
   MsgLine.Attribute[FPCMsgAttrWorkerDirectory]:=Tool.WorkerDirectory;
 end;
 
+function TIDEFPCParser.GetDefaultPCFullVersion: LongWord;
+begin
+  // get FPC version
+  Result:=LongWord(CodeToolBoss.GetPCVersionForDirectory(Tool.WorkerDirectory));
+end;
+
 procedure TIDEFPCParser.ImproveMessages(aPhase: TExtToolParserSyncPhase);
 var
   i: Integer;
@@ -3220,15 +3223,15 @@ var
   MsgItem: TFPCMsgItem;
 begin
   Result:='';
-  if CompareText(SubTool,SubToolFPC)=0 then begin
-    CurMsgFile:=FPCMsgFilePool.LoadCurrentEnglishFile(false,nil);
+  if CompareText(SubTool,DefaultSubTool)=0 then begin
+    CurMsgFile:=MsgFilePool.LoadCurrentEnglishFile(false,nil);
     if CurMsgFile=nil then exit;
     try
       MsgItem:=CurMsgFile.GetMsg(MsgID);
       if MsgItem=nil then exit;
       Result:=MsgItem.GetTrimmedComment(false,true);
     finally
-      FPCMsgFilePool.UnloadFile(CurMsgFile);
+      MsgFilePool.UnloadFile(CurMsgFile);
     end;
   end;
 end;
@@ -3241,9 +3244,9 @@ var
 begin
   Result:='';
   Urgency:=mluNone;
-  if CompareText(SubTool,SubToolFPC)=0 then begin
-    if FPCMsgFilePool=nil then exit;
-    CurMsgFile:=FPCMsgFilePool.LoadCurrentEnglishFile(false,nil);
+  if CompareText(SubTool,DefaultSubTool)=0 then begin
+    if MsgFilePool=nil then exit;
+    CurMsgFile:=MsgFilePool.LoadCurrentEnglishFile(false,nil);
     if CurMsgFile=nil then exit;
     try
       MsgItem:=CurMsgFile.GetMsg(MsgID);
@@ -3251,7 +3254,7 @@ begin
       Result:=MsgItem.Pattern;
       Urgency:=FPCMsgToMsgUrgency(MsgItem);
     finally
-      FPCMsgFilePool.UnloadFile(CurMsgFile);
+      MsgFilePool.UnloadFile(CurMsgFile);
     end;
   end;
 end;
@@ -3284,7 +3287,7 @@ begin
   Value1:='';
   Value2:='';
   if Msg=nil then exit(false);
-  if Msg.SubTool<>SubToolFPC then exit(false);
+  if Msg.SubTool<>DefaultSubTool then exit(false);
   if (Msg.MsgID<>MsgId)
   and (Msg.MsgID<>0) then exit(false);
   Result:=true;
@@ -3330,7 +3333,7 @@ class function TIDEFPCParser.GetFPCMsgValue1(Msg: TMessageLine): string;
 begin
   Result:='';
   if Msg.MsgID<=0 then exit;
-  if Msg.SubTool<>SubToolFPC then exit;
+  if Msg.SubTool<>DefaultSubTool then exit;
   if not etFPCMsgParser.GetFPCMsgValue1(Msg.Msg,GetFPCMsgPattern(Msg),Result) then
     Result:='';
 end;
@@ -3340,14 +3343,19 @@ class function TIDEFPCParser.GetFPCMsgValues(Msg: TMessageLine; out Value1,
 begin
   Result:=false;
   if Msg.MsgID<=0 then exit;
-  if Msg.SubTool<>SubToolFPC then exit;
+  if Msg.SubTool<>DefaultSubTool then exit;
   Result:=etFPCMsgParser.GetFPCMsgValues2(Msg.Msg,GetFPCMsgPattern(Msg),Value1,Value2);
+end;
+
+class function TIDEFPCParser.MsgFilePool: TFPCMsgFilePool;
+begin
+  Result:=FPCMsgFilePool;
 end;
 
 initialization
   IDEFPCParser:=TIDEFPCParser;
 finalization
-  FreeAndNil(FPCMsgFilePool)
+  FreeAndNil(FPCMsgFilePool);
 
 end.
 

@@ -30,6 +30,9 @@ const
   SubToolFPCWindRes = 'FPCWindRes';
   SubToolFPCAssembler = 'FPCAssembler';
 
+  SubToolPas2js = 'Pas2JS';
+  SubToolPas2jsPriority = 101;
+
   SubToolMake = 'make';
   SubToolMakePriority = 1000; // higher than FPC
 
@@ -347,6 +350,7 @@ type
   TFPCParserClass = class of TFPCParser;
 var
   IDEFPCParser: TFPCParserClass = nil;
+  IDEPas2jsParser: TFPCParserClass = nil;
 
 type
   { TMakeParser - standard parser for 'make' messages, implemented by IDE }

@@ -1,0 +1,43 @@
+# pas2js messages used by the IDE in fpc msg format
+#
+# Author: Mattias Gaertner
+#
+# The constants are build in the following order:
+# <part>_<type>_<txtidentifier>
+#
+# <part> is the part of the compiler the message is used
+#   asmr_     assembler parsing
+#   asmw_     assembler writing/binary writers
+#   unit_     unit handling
+#   option_   command line parameter parsing
+#   scan_     scanner
+#   parser_   parser
+#   type_     type checking
+#   general_  general info
+#   exec_     calls to assembler, external linker, binder
+#   link_     internal linker
+#   package_  package handling
+#
+# <type> the type of the message it should normally used for
+#   f_   fatal error
+#   e_   error
+#   w_   warning
+#   n_   note
+#   h_   hint
+#   i_   info
+#   l_   add linenumber
+#   u_   used
+#   t_   tried
+#   c_   conditional
+#   d_   debug message
+#   x_   executable informations
+#   o_   normal (e.g., "press enter to continue")
+#
+# <type> can contain a minus sign at the beginning to mark that
+# the message is off by default. Look at type_w_explicit_string_cast
+# for example.
+
+parser_i_compiling=03104_I_Compiling $1 ...
+% When you turn on information messages (\var{-vi}), the compiler tells you
+% what units it is recompiling.
+

@@ -51,7 +51,7 @@ uses
   IDECmdLine, LazarusIDEStrConsts, DialogProcs, IDEProcs, IDEUtils,
   InputHistory, EditDefineTree, ProjectResources, MiscOptions, LazConf,
   EnvironmentOpts, TransferMacros, CompilerOptions,
-  ExtTools, etMakeMsgParser, etFPCMsgParser,
+  ExtTools, etMakeMsgParser, etFPCMsgParser, etPas2jsMsgParser,
   Compiler, FPCSrcScan, PackageDefs, PackageSystem, Project, ProjectIcon,
   ModeMatrixOpts, BaseBuildManager, ApplicationBundle, RunParamsOpts;
   
@@ -529,6 +529,7 @@ begin
   ExternalToolList.RegisterParser(TDefaultParser);
 
   FPCMsgFilePool:=TFPCMsgFilePool.Create(nil);
+  Pas2jsMsgFilePool:=TPas2jsMsgFilePool.Create(nil);
 end;
 
 procedure TBuildManager.SetupCompilerInterface;

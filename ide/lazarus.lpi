@@ -65,7 +65,7 @@
         <PackageName Value="SynEdit"/>
       </Item7>
     </RequiredPackages>
-    <Units Count="242">
+    <Units Count="243">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -1258,6 +1258,7 @@
         <Filename Value="searchresultview.pp"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
+        <UnitName Value="SearchResultView"/>
       </Unit211>
       <Unit212>
         <Filename Value="invertassigntool.pas"/>
@@ -1412,6 +1413,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="ProjectDescriptors"/>
       </Unit241>
+      <Unit242>
+        <Filename Value="etpas2jsmsgparser.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="etPas2jsMsgParser"/>
+      </Unit242>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
