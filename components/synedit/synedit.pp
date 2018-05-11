@@ -422,8 +422,7 @@ type
     swbTokenBegin,
     swbTokenEnd,
     swbCaseChange,
-    swbWordSmart, // begin or end of word with smart gaps (1 char)
-    swbWordSmartSel // the same as swbWordSmart but optimized for selection
+    swbWordSmart // begin or end of word with smart gaps (1 char)
   );
 
   { TCustomSynEdit }
@@ -4054,17 +4053,14 @@ begin
         CX := WordBreaker.NextWordEnd(Line,  CX);
         if (CX <= 0) then CX := LineLen + 1;
       end;
-    swbWordSmart, swbWordSmartSel: begin
-        if ABoundary=swbWordSmartSel then
-          Inc(CX);
+    swbWordSmart: begin
         NX := WordBreaker.NextWordEnd(Line, CX);
         if (NX <= 0) then NX := LineLen + 1;
         CX := WordBreaker.NextWordStart(Line, CX, InclCurrent);
         if (CX <= 0) and not InclCurrent then CX := LineLen + 1;
         if (CX <= 0) and InclCurrent then CX := 1;
 
-        if ((ABoundary=swbWordSmart) and (NX<CX-1)) // step over 1 char gap
-        or ((ABoundary=swbWordSmartSel) and (NX<CX)) then // no gap
+        if ((ABoundary=swbWordSmart) and (NX<CX-1)) then // step over 1 char gap
           CX := NX;
       end;
     swbTokenBegin: begin
@@ -4171,7 +4167,7 @@ begin
         CX := WordBreaker.PrevWordEnd(Line,  Min(CX, Length(Line) + 1));
         CheckLineStart(CX, CY);
       end;
-    swbWordSmart, swbWordSmartSel: begin
+    swbWordSmart: begin
         Dec(CX); // step over 1 char gap
         if WordBreaker.IsAtWordStart(Line, CX) then
           NX := CX
@@ -6663,11 +6659,10 @@ begin
       ecSmartWordLeft, ecSelSmartWordLeft:
         begin
           case Command of
-            ecWordEndLeft, ecSelWordEndLeft:   CaretNew := PrevWordLogicalPos(swbWordEnd);
-            ecHalfWordLeft, ecSelHalfWordLeft: CaretNew := PrevWordLogicalPos(swbCaseChange);
-            ecSmartWordLeft:                   CaretNew := PrevWordLogicalPos(swbWordSmart);
-            ecSelSmartWordLeft:                CaretNew := PrevWordLogicalPos(swbWordSmartSel);
-            else                               CaretNew := PrevWordLogicalPos;
+            ecWordEndLeft, ecSelWordEndLeft:     CaretNew := PrevWordLogicalPos(swbWordEnd);
+            ecHalfWordLeft, ecSelHalfWordLeft:   CaretNew := PrevWordLogicalPos(swbCaseChange);
+            ecSmartWordLeft, ecSelSmartWordLeft: CaretNew := PrevWordLogicalPos(swbWordSmart);
+            else                                 CaretNew := PrevWordLogicalPos;
           end;
           if FFoldedLinesView.FoldedAtTextIndex[CaretNew.Y - 1] then begin
             CY := FindNextUnfoldedLine(CaretNew.Y, False);
@@ -6680,11 +6675,10 @@ begin
       ecSmartWordRight, ecSelSmartWordRight:
         begin
           case Command of
-            ecWordEndRight, ecSelWordEndRight:   CaretNew := NextWordLogicalPos(swbWordEnd);
-            ecHalfWordRight, ecSelHalfWordRight: CaretNew := NextWordLogicalPos(swbCaseChange);
-            ecSmartWordRight:                    CaretNew := NextWordLogicalPos(swbWordSmart);
-            ecSelSmartWordRight:                 CaretNew := NextWordLogicalPos(swbWordSmartSel);
-            else                                 CaretNew := NextWordLogicalPos;
+            ecWordEndRight, ecSelWordEndRight:     CaretNew := NextWordLogicalPos(swbWordEnd);
+            ecHalfWordRight, ecSelHalfWordRight:   CaretNew := NextWordLogicalPos(swbCaseChange);
+            ecSmartWordRight, ecSelSmartWordRight: CaretNew := NextWordLogicalPos(swbWordSmart);
+            else                                   CaretNew := NextWordLogicalPos;
           end;
           if FFoldedLinesView.FoldedAtTextIndex[CaretNew.Y - 1] then
             CaretNew := Point(1, FindNextUnfoldedLine(CaretNew.Y, True));
