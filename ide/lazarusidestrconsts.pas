@@ -2952,8 +2952,8 @@ resourcestring
   srkmecWordEndRight          = 'Move cursor word-end right';
   srkmecHalfWordLeft          = 'Move cursor part-word left (e.g. CamelCase)';
   srkmecHalfWordRight         = 'Move cursor part-word right (e.g. CamelCase)';
-  srkmecSmartWordLeft         = 'Move cursor left to either current word start or previous word end';
-  srkmecSmartWordRight        = 'Move cursor right to either current word end or next word start';
+  srkmecSmartWordLeft         = 'Smart move cursor left (start/end of word)';
+  srkmecSmartWordRight        = 'Smart move cursor right (start/end of word)';
   srkmecLineStart             = 'Move cursor to line start';
   srkmecLineEnd               = 'Move cursor to line end';
   srkmecPageUp                = 'Move cursor up one page';
@@ -2980,8 +2980,8 @@ resourcestring
   srkmecSelWordEndRight       = 'Select word-end right';
   srkmecSelHalfWordLeft       = 'Select part-word left (e.g. CamelCase)';
   srkmecSelHalfWordRight      = 'Select part-word right (e.g. CamelCase)';
-  srkmecSelSmartWordLeft      = 'Select left to either current word start or previous word end';
-  srkmecSelSmartWordRight     = 'Select right to either current word end or next word start';
+  srkmecSelSmartWordLeft      = 'Smart select word left (start/end of word)';
+  srkmecSelSmartWordRight     = 'Smart select word right (start/end of word)';
   srkmecSelLineStart          = 'Select Line Start';
   srkmecSelLineEnd            = 'Select Line End';
   srkmecSelPageUp             = 'Select Page Up';
