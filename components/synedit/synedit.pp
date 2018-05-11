@@ -4172,9 +4172,11 @@ begin
         CheckLineStart(CX, CY);
       end;
     swbWordSmart, swbWordSmartSel: begin
-        if CX>1 then // step over 1 char gap
-          Dec(CX);
-        NX := WordBreaker.PrevWordStart(Line,  Min(CX, Length(Line) + 1));
+        Dec(CX); // step over 1 char gap
+        if WordBreaker.IsAtWordStart(Line, CX) then
+          NX := CX
+        else
+          NX := WordBreaker.PrevWordStart(Line,  Min(CX, Length(Line) + 1));
         CX := WordBreaker.PrevWordEnd(Line,  Min(CX, Length(Line) + 1));
 
         if (NX>CX-1) then // select the nearest
