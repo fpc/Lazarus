@@ -849,9 +849,9 @@ msgstr "测试: 检查编译器日期..."
 msgid "Test: Compiling an empty file ..."
 msgstr "测试: 编译空文件..."
 
-#: lazarusidestrconsts.dlgccotestmissingppu
-msgid "Test: Checking missing fpc ppu ..."
-msgstr "测试: 检查缺少的 FPC ppu ..."
+#: lazarusidestrconsts.dlgccotestrtlunits
+msgid "Test: Checking RTL units ..."
+msgstr ""
 
 #: lazarusidestrconsts.dlgccotestsrcinppupaths
 msgid "Test: Checking sources in fpc ppu search paths ..."
@@ -5331,9 +5331,9 @@ msgstr "无效的测试目录"
 msgid "Missing unit"
 msgstr "缺少单元"
 
-#: lazarusidestrconsts.lisccomsgppunotfound
-msgid "compiled FPC unit not found: %s.ppu"
-msgstr "编译的 FPC 单元文件没有找到: %s.ppu"
+#: lazarusidestrconsts.lisccomsgrtlunitnotfound
+msgid "RTL unit not found: %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisccomultiplecfgfound
 msgid "multiple compiler configs found: "
@@ -5351,13 +5351,13 @@ msgstr "非ASCII"
 msgid "ppu exists twice: %s, %s"
 msgstr "ppu存在双份: %s, %s"
 
-#: lazarusidestrconsts.lisccoppunotfounddetailed
-msgid "The compiled FPC unit %s.ppu was not found.%sThis typically means your fpc.cfg has a bug. Or your FPC installation is broken."
-msgstr "编译后的 FPC 单元 %s.ppu 没有找到.%s 典型的原因是 fpc.cfg 有问题. 或者你的 FPC 安装被破坏."
-
 #: lazarusidestrconsts.lisccoppuolderthancompiler
 msgid "There is a .ppu file older than the compiler itself:%s%s"
 msgstr "这里有个.ppu文件旧于编译器本身的文件:%s%s"
+
+#: lazarusidestrconsts.lisccortlunitnotfounddetailed
+msgid "The RTL unit %s was not found.%sThis typically means your %s has wrong unit paths. Or your installation is broken."
+msgstr ""
 
 #: lazarusidestrconsts.lisccoseveralcompilers
 msgid "There are several Free Pascal Compilers in your path.%s%s%sMaybe you forgot to delete an old compiler?"
@@ -6800,6 +6800,10 @@ msgstr "编译工程"
 #: lazarusidestrconsts.liscompiler
 msgid "Compiler"
 msgstr "编译器"
+
+#: lazarusidestrconsts.liscompilercfgismissing
+msgid "%s is missing."
+msgstr ""
 
 #: lazarusidestrconsts.liscompilerdoesnotsupporttarget
 msgid "Compiler \"%s\" does not support target %s-%s"
@@ -9718,10 +9722,6 @@ msgstr "对于Windows"
 #: lazarusidestrconsts.lisfoundversionexpected
 msgid "Found version %s, expected %s"
 msgstr "找到版本%s,要求 %s"
-
-#: lazarusidestrconsts.lisfpccfgismissing
-msgid "fpc.cfg is missing."
-msgstr "fpc.cfg丢失"
 
 #: lazarusidestrconsts.lisfpcfullversioneg20701
 msgid "FPC version as one number (e.g. 20701)"
@@ -20975,11 +20975,11 @@ msgid "Select Right"
 msgstr " "
 
 #: lazarusidestrconsts.srkmecselsmartwordleft
-msgid "Select left to either current word start or previous word end"
+msgid "Smart select word left (start/end of word)"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecselsmartwordright
-msgid "Select right to either current word end or next word start"
+msgid "Smart select word right (start/end of word)"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecselsticky
@@ -21050,11 +21050,11 @@ msgid "show execution point"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecsmartwordleft
-msgid "Move cursor left to either current word start or previous word end"
+msgid "Smart move cursor left (start/end of word)"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecsmartwordright
-msgid "Move cursor right to either current word end or next word start"
+msgid "Smart move cursor right (start/end of word)"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecstopprogram

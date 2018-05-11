@@ -868,8 +868,8 @@ msgstr ""
 msgid "Test: Compiling an empty file ..."
 msgstr ""
 
-#: lazarusidestrconsts.dlgccotestmissingppu
-msgid "Test: Checking missing fpc ppu ..."
+#: lazarusidestrconsts.dlgccotestrtlunits
+msgid "Test: Checking RTL units ..."
 msgstr ""
 
 #: lazarusidestrconsts.dlgccotestsrcinppupaths
@@ -5468,8 +5468,8 @@ msgstr ""
 msgid "Missing unit"
 msgstr "Brakujące moduły"
 
-#: lazarusidestrconsts.lisccomsgppunotfound
-msgid "compiled FPC unit not found: %s.ppu"
+#: lazarusidestrconsts.lisccomsgrtlunitnotfound
+msgid "RTL unit not found: %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisccomultiplecfgfound
@@ -5488,12 +5488,12 @@ msgstr ""
 msgid "ppu exists twice: %s, %s"
 msgstr ""
 
-#: lazarusidestrconsts.lisccoppunotfounddetailed
-msgid "The compiled FPC unit %s.ppu was not found.%sThis typically means your fpc.cfg has a bug. Or your FPC installation is broken."
-msgstr ""
-
 #: lazarusidestrconsts.lisccoppuolderthancompiler
 msgid "There is a .ppu file older than the compiler itself:%s%s"
+msgstr ""
+
+#: lazarusidestrconsts.lisccortlunitnotfounddetailed
+msgid "The RTL unit %s was not found.%sThis typically means your %s has wrong unit paths. Or your installation is broken."
 msgstr ""
 
 #: lazarusidestrconsts.lisccoseveralcompilers
@@ -6935,6 +6935,10 @@ msgstr "Kompilowany projekt"
 #: lazarusidestrconsts.liscompiler
 msgid "Compiler"
 msgstr "Kompilator"
+
+#: lazarusidestrconsts.liscompilercfgismissing
+msgid "%s is missing."
+msgstr ""
 
 #: lazarusidestrconsts.liscompilerdoesnotsupporttarget
 msgid "Compiler \"%s\" does not support target %s-%s"
@@ -9870,10 +9874,6 @@ msgstr ""
 #: lazarusidestrconsts.lisfoundversionexpected
 msgid "Found version %s, expected %s"
 msgstr ""
-
-#: lazarusidestrconsts.lisfpccfgismissing
-msgid "fpc.cfg is missing."
-msgstr "Brak pliku fpc.cfg"
 
 #: lazarusidestrconsts.lisfpcfullversioneg20701
 msgid "FPC version as one number (e.g. 20701)"
@@ -21042,11 +21042,11 @@ msgid "Select Right"
 msgstr "WybWPrawo"
 
 #: lazarusidestrconsts.srkmecselsmartwordleft
-msgid "Select left to either current word start or previous word end"
+msgid "Smart select word left (start/end of word)"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecselsmartwordright
-msgid "Select right to either current word end or next word start"
+msgid "Smart select word right (start/end of word)"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecselsticky
@@ -21117,11 +21117,11 @@ msgid "show execution point"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecsmartwordleft
-msgid "Move cursor left to either current word start or previous word end"
+msgid "Smart move cursor left (start/end of word)"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecsmartwordright
-msgid "Move cursor right to either current word end or next word start"
+msgid "Smart move cursor right (start/end of word)"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecstopprogram

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-05-11 01:30+0300\n"
+"PO-Revision-Date: 2018-05-12 01:30+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -850,9 +850,9 @@ msgstr "Тест: проверка даты компилятора ..."
 msgid "Test: Compiling an empty file ..."
 msgstr "Тест: компиляция пустого файла ..."
 
-#: lazarusidestrconsts.dlgccotestmissingppu
-msgid "Test: Checking missing fpc ppu ..."
-msgstr "Тест: поиск отсутствующих ppu компилятора ..."
+#: lazarusidestrconsts.dlgccotestrtlunits
+msgid "Test: Checking RTL units ..."
+msgstr "Тест: проверка модулей RTL ..."
 
 #: lazarusidestrconsts.dlgccotestsrcinppupaths
 msgid "Test: Checking sources in fpc ppu search paths ..."
@@ -5246,9 +5246,9 @@ msgstr "Неверный каталог для сборки пробных пр�
 msgid "Missing unit"
 msgstr "Модуль отсутствует"
 
-#: lazarusidestrconsts.lisccomsgppunotfound
-msgid "compiled FPC unit not found: %s.ppu"
-msgstr "откомпилированный модуль FPC не найден: %s.ppu"
+#: lazarusidestrconsts.lisccomsgrtlunitnotfound
+msgid "RTL unit not found: %s"
+msgstr "модуль RTL не найден: %s"
 
 #: lazarusidestrconsts.lisccomultiplecfgfound
 msgid "multiple compiler configs found: "
@@ -5266,13 +5266,13 @@ msgstr "символы не-ASCII"
 msgid "ppu exists twice: %s, %s"
 msgstr "дублирующиеся ppu: %s, %s"
 
-#: lazarusidestrconsts.lisccoppunotfounddetailed
-msgid "The compiled FPC unit %s.ppu was not found.%sThis typically means your fpc.cfg has a bug. Or your FPC installation is broken."
-msgstr "Откомпилированный модуль FPC %s.ppu не найден.%sОбычно это означает, что ваш fpc.cfg имеет ошибку, или FPC неверно установлен."
-
 #: lazarusidestrconsts.lisccoppuolderthancompiler
 msgid "There is a .ppu file older than the compiler itself:%s%s"
 msgstr "Имеется более старый, чем компилятор, файл .ppu:%s%s"
+
+#: lazarusidestrconsts.lisccortlunitnotfounddetailed
+msgid "The RTL unit %s was not found.%sThis typically means your %s has wrong unit paths. Or your installation is broken."
+msgstr "Модуль RTL %s не найден.%sОбычно это означает, что в вашем %s содержатся неверные пути к модулям либо была некорректно выполнена установка."
 
 #: lazarusidestrconsts.lisccoseveralcompilers
 msgid "There are several Free Pascal Compilers in your path.%s%s%sMaybe you forgot to delete an old compiler?"
@@ -6690,6 +6690,10 @@ msgstr "Компиляция проекта"
 #: lazarusidestrconsts.liscompiler
 msgid "Compiler"
 msgstr "Компилятор"
+
+#: lazarusidestrconsts.liscompilercfgismissing
+msgid "%s is missing."
+msgstr "%s отсутствует."
 
 #: lazarusidestrconsts.liscompilerdoesnotsupporttarget
 msgid "Compiler \"%s\" does not support target %s-%s"
@@ -9589,10 +9593,6 @@ msgstr "Для Windows"
 #: lazarusidestrconsts.lisfoundversionexpected
 msgid "Found version %s, expected %s"
 msgstr "Найдена версия %s, хотя ожидалась %s"
-
-#: lazarusidestrconsts.lisfpccfgismissing
-msgid "fpc.cfg is missing."
-msgstr "отсутствует файл fpc.cfg."
 
 #: lazarusidestrconsts.lisfpcfullversioneg20701
 msgid "FPC version as one number (e.g. 20701)"
@@ -20580,12 +20580,12 @@ msgid "Select Right"
 msgstr "Выделить справа"
 
 #: lazarusidestrconsts.srkmecselsmartwordleft
-msgid "Select left to either current word start or previous word end"
-msgstr "Выделить слева до начала текущего слова либо конца предыдущего"
+msgid "Smart select word left (start/end of word)"
+msgstr "Умно выделить слово слева (начало/конец слова)"
 
 #: lazarusidestrconsts.srkmecselsmartwordright
-msgid "Select right to either current word end or next word start"
-msgstr "Выделить справа до конца текущего слова либо начала следующего"
+msgid "Smart select word right (start/end of word)"
+msgstr "Умно выделить слово справа (начало/конец слова)"
 
 #: lazarusidestrconsts.srkmecselsticky
 msgid "Start sticky selecting"
@@ -20651,12 +20651,12 @@ msgid "show execution point"
 msgstr "показать точку исполнения"
 
 #: lazarusidestrconsts.srkmecsmartwordleft
-msgid "Move cursor left to either current word start or previous word end"
-msgstr "Переместить курсор влево на начало текущего слова либо конец предыдущего"
+msgid "Smart move cursor left (start/end of word)"
+msgstr "Умно переместить курсор влево (начало/конец слова)"
 
 #: lazarusidestrconsts.srkmecsmartwordright
-msgid "Move cursor right to either current word end or next word start"
-msgstr "Переместить курсор вправо на конец текущего слова либо начало следующего"
+msgid "Smart move cursor right (start/end of word)"
+msgstr "Умно переместить курсор вправо (начало/конец слова)"
 
 #: lazarusidestrconsts.srkmecstopprogram
 msgid "stop program"

@@ -851,9 +851,9 @@ msgstr "Probando: Comprobando fecha del compilador ..."
 msgid "Test: Compiling an empty file ..."
 msgstr "Probando: Compilando un archivo vacío ..."
 
-#: lazarusidestrconsts.dlgccotestmissingppu
-msgid "Test: Checking missing fpc ppu ..."
-msgstr "Probando: Comprobando ppu de fpc desaparecida ..."
+#: lazarusidestrconsts.dlgccotestrtlunits
+msgid "Test: Checking RTL units ..."
+msgstr ""
 
 #: lazarusidestrconsts.dlgccotestsrcinppupaths
 msgid "Test: Checking sources in fpc ppu search paths ..."
@@ -5311,9 +5311,9 @@ msgstr "Directorio de pruebas no válido"
 msgid "Missing unit"
 msgstr "Unidad desaparecida"
 
-#: lazarusidestrconsts.lisccomsgppunotfound
-msgid "compiled FPC unit not found: %s.ppu"
-msgstr "Unidad compilada FPC no encontrada: %s.ppu"
+#: lazarusidestrconsts.lisccomsgrtlunitnotfound
+msgid "RTL unit not found: %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisccomultiplecfgfound
 msgid "multiple compiler configs found: "
@@ -5331,13 +5331,13 @@ msgstr "no ASCII"
 msgid "ppu exists twice: %s, %s"
 msgstr "ppu existe dos veces: %s, %s"
 
-#: lazarusidestrconsts.lisccoppunotfounddetailed
-msgid "The compiled FPC unit %s.ppu was not found.%sThis typically means your fpc.cfg has a bug. Or your FPC installation is broken."
-msgstr "La unidad FPC %s.ppu compilada no ha sido encontrada.%sEsto normalmente significa que hay un error en su fichero fpc.cfg. O su instalación de FPC es incorrecta."
-
 #: lazarusidestrconsts.lisccoppuolderthancompiler
 msgid "There is a .ppu file older than the compiler itself:%s%s"
 msgstr "Hay un archivo .ppu más antiguo que el compilador mismo:%s%s"
+
+#: lazarusidestrconsts.lisccortlunitnotfounddetailed
+msgid "The RTL unit %s was not found.%sThis typically means your %s has wrong unit paths. Or your installation is broken."
+msgstr ""
 
 #: lazarusidestrconsts.lisccoseveralcompilers
 msgid "There are several Free Pascal Compilers in your path.%s%s%sMaybe you forgot to delete an old compiler?"
@@ -6759,6 +6759,10 @@ msgstr "Compilar proyecto"
 #: lazarusidestrconsts.liscompiler
 msgid "Compiler"
 msgstr "Compilador"
+
+#: lazarusidestrconsts.liscompilercfgismissing
+msgid "%s is missing."
+msgstr ""
 
 #: lazarusidestrconsts.liscompilerdoesnotsupporttarget
 msgid "Compiler \"%s\" does not support target %s-%s"
@@ -9679,10 +9683,6 @@ msgstr "Para Windows"
 #: lazarusidestrconsts.lisfoundversionexpected
 msgid "Found version %s, expected %s"
 msgstr "Encontrada version %s, pero se esperaba %s"
-
-#: lazarusidestrconsts.lisfpccfgismissing
-msgid "fpc.cfg is missing."
-msgstr "fpc.cfg falta"
 
 #: lazarusidestrconsts.lisfpcfullversioneg20701
 msgid "FPC version as one number (e.g. 20701)"
@@ -20867,11 +20867,11 @@ msgid "Select Right"
 msgstr "Seleccionar Derecho"
 
 #: lazarusidestrconsts.srkmecselsmartwordleft
-msgid "Select left to either current word start or previous word end"
+msgid "Smart select word left (start/end of word)"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecselsmartwordright
-msgid "Select right to either current word end or next word start"
+msgid "Smart select word right (start/end of word)"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecselsticky
@@ -20940,11 +20940,11 @@ msgid "show execution point"
 msgstr "ver punto de ejecución"
 
 #: lazarusidestrconsts.srkmecsmartwordleft
-msgid "Move cursor left to either current word start or previous word end"
+msgid "Smart move cursor left (start/end of word)"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecsmartwordright
-msgid "Move cursor right to either current word end or next word start"
+msgid "Smart move cursor right (start/end of word)"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecstopprogram

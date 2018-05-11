@@ -851,9 +851,9 @@ msgstr "Test: Kontrola data překladače..."
 msgid "Test: Compiling an empty file ..."
 msgstr "Test: Překládání prázdného souboru..."
 
-#: lazarusidestrconsts.dlgccotestmissingppu
-msgid "Test: Checking missing fpc ppu ..."
-msgstr "Test: Kontrola chybějících fpc ppu..."
+#: lazarusidestrconsts.dlgccotestrtlunits
+msgid "Test: Checking RTL units ..."
+msgstr ""
 
 #: lazarusidestrconsts.dlgccotestsrcinppupaths
 msgid "Test: Checking sources in fpc ppu search paths ..."
@@ -5270,9 +5270,9 @@ msgstr "Neplatný testovací adresář"
 msgid "Missing unit"
 msgstr "Chybějící jednotka"
 
-#: lazarusidestrconsts.lisccomsgppunotfound
-msgid "compiled FPC unit not found: %s.ppu"
-msgstr "nenalezena přeložená FPC jednotka: %s.ppu"
+#: lazarusidestrconsts.lisccomsgrtlunitnotfound
+msgid "RTL unit not found: %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisccomultiplecfgfound
 msgid "multiple compiler configs found: "
@@ -5290,13 +5290,13 @@ msgstr "ne ASCII"
 msgid "ppu exists twice: %s, %s"
 msgstr "ppu existuje dvakrát: %s, %s"
 
-#: lazarusidestrconsts.lisccoppunotfounddetailed
-msgid "The compiled FPC unit %s.ppu was not found.%sThis typically means your fpc.cfg has a bug. Or your FPC installation is broken."
-msgstr "Přeložená jednotka FPC %s.ppu nebyla nalezena.%sTo zpravidla znamená, že fpc.cfg obsahuje chybu nebo je instalace FPC poškozená."
-
 #: lazarusidestrconsts.lisccoppuolderthancompiler
 msgid "There is a .ppu file older than the compiler itself:%s%s"
 msgstr "Existující soubor .ppu je starší než překladač samotný:%s%s"
+
+#: lazarusidestrconsts.lisccortlunitnotfounddetailed
+msgid "The RTL unit %s was not found.%sThis typically means your %s has wrong unit paths. Or your installation is broken."
+msgstr ""
 
 #: lazarusidestrconsts.lisccoseveralcompilers
 msgid "There are several Free Pascal Compilers in your path.%s%s%sMaybe you forgot to delete an old compiler?"
@@ -6720,6 +6720,10 @@ msgstr "Přeložit projekt"
 #: lazarusidestrconsts.liscompiler
 msgid "Compiler"
 msgstr "Překladač"
+
+#: lazarusidestrconsts.liscompilercfgismissing
+msgid "%s is missing."
+msgstr ""
 
 #: lazarusidestrconsts.liscompilerdoesnotsupporttarget
 msgid "Compiler \"%s\" does not support target %s-%s"
@@ -9627,10 +9631,6 @@ msgstr "Pro Windows"
 #: lazarusidestrconsts.lisfoundversionexpected
 msgid "Found version %s, expected %s"
 msgstr "Nalezena verze %s, očekávána %s"
-
-#: lazarusidestrconsts.lisfpccfgismissing
-msgid "fpc.cfg is missing."
-msgstr "chybí fpc.cfg"
 
 #: lazarusidestrconsts.lisfpcfullversioneg20701
 msgid "FPC version as one number (e.g. 20701)"
@@ -20725,11 +20725,11 @@ msgid "Select Right"
 msgstr "Vybrat vpravo"
 
 #: lazarusidestrconsts.srkmecselsmartwordleft
-msgid "Select left to either current word start or previous word end"
+msgid "Smart select word left (start/end of word)"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecselsmartwordright
-msgid "Select right to either current word end or next word start"
+msgid "Smart select word right (start/end of word)"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecselsticky
@@ -20798,11 +20798,11 @@ msgid "show execution point"
 msgstr "ukázat bod vykonávání"
 
 #: lazarusidestrconsts.srkmecsmartwordleft
-msgid "Move cursor left to either current word start or previous word end"
+msgid "Smart move cursor left (start/end of word)"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecsmartwordright
-msgid "Move cursor right to either current word end or next word start"
+msgid "Smart move cursor right (start/end of word)"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecstopprogram

@@ -869,9 +869,9 @@ msgstr "בדיקה: בודק תאריך מהדר ..."
 msgid "Test: Compiling an empty file ..."
 msgstr "בדיקה: מהדר קובץ ריק ..."
 
-#: lazarusidestrconsts.dlgccotestmissingppu
-msgid "Test: Checking missing fpc ppu ..."
-msgstr "בדיקה: ppu חסר של fpc ..."
+#: lazarusidestrconsts.dlgccotestrtlunits
+msgid "Test: Checking RTL units ..."
+msgstr ""
 
 #: lazarusidestrconsts.dlgccotestsrcinppupaths
 msgid "Test: Checking sources in fpc ppu search paths ..."
@@ -5579,9 +5579,9 @@ msgstr "ספריית בדיקות שגויה"
 msgid "Missing unit"
 msgstr "יחידה חסרה"
 
-#: lazarusidestrconsts.lisccomsgppunotfound
-msgid "compiled FPC unit not found: %s.ppu"
-msgstr "לא נמצאה היחידה המהודרת של FPC: %s.ppu"
+#: lazarusidestrconsts.lisccomsgrtlunitnotfound
+msgid "RTL unit not found: %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisccomultiplecfgfound
 msgid "multiple compiler configs found: "
@@ -5599,15 +5599,14 @@ msgstr "לא ASCII"
 msgid "ppu exists twice: %s, %s"
 msgstr "קובץ ה ppu קיים פעמיים: %s, %s"
 
-#: lazarusidestrconsts.lisccoppunotfounddetailed
-#, fuzzy,badformat
-msgid "The compiled FPC unit %s.ppu was not found.%sThis typically means your fpc.cfg has a bug. Or your FPC installation is broken."
-msgstr "היחידה s%.ppu המהודרת של FPC לא נמצאה. בדרך כלל זה אומר שיש באג בקובץ fpc.cfg, או שההתקנה של FPC שבורה."
-
 #: lazarusidestrconsts.lisccoppuolderthancompiler
 #, fuzzy,badformat
 msgid "There is a .ppu file older than the compiler itself:%s%s"
 msgstr "יש קובץ ppu. ישן יותר מהמהדר עצמו:s%s%"
+
+#: lazarusidestrconsts.lisccortlunitnotfounddetailed
+msgid "The RTL unit %s was not found.%sThis typically means your %s has wrong unit paths. Or your installation is broken."
+msgstr ""
 
 #: lazarusidestrconsts.lisccoseveralcompilers
 #, fuzzy,badformat
@@ -7106,6 +7105,10 @@ msgstr ""
 #: lazarusidestrconsts.liscompiler
 msgid "Compiler"
 msgstr "מהדר"
+
+#: lazarusidestrconsts.liscompilercfgismissing
+msgid "%s is missing."
+msgstr ""
 
 #: lazarusidestrconsts.liscompilerdoesnotsupporttarget
 msgid "Compiler \"%s\" does not support target %s-%s"
@@ -10158,10 +10161,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisfoundversionexpected
 msgid "Found version %s, expected %s"
-msgstr ""
-
-#: lazarusidestrconsts.lisfpccfgismissing
-msgid "fpc.cfg is missing."
 msgstr ""
 
 #: lazarusidestrconsts.lisfpcfullversioneg20701
@@ -22121,11 +22120,11 @@ msgid "Select Right"
 msgstr "בחר ימינה"
 
 #: lazarusidestrconsts.srkmecselsmartwordleft
-msgid "Select left to either current word start or previous word end"
+msgid "Smart select word left (start/end of word)"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecselsmartwordright
-msgid "Select right to either current word end or next word start"
+msgid "Smart select word right (start/end of word)"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecselsticky
@@ -22200,11 +22199,11 @@ msgid "show execution point"
 msgstr "הצג נקודת ריצה"
 
 #: lazarusidestrconsts.srkmecsmartwordleft
-msgid "Move cursor left to either current word start or previous word end"
+msgid "Smart move cursor left (start/end of word)"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecsmartwordright
-msgid "Move cursor right to either current word end or next word start"
+msgid "Smart move cursor right (start/end of word)"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecstopprogram

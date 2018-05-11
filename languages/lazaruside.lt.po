@@ -851,9 +851,9 @@ msgstr "Testas: tikrinama kompiliatoriaus data…"
 msgid "Test: Compiling an empty file ..."
 msgstr "Testas: kompiliuojamas tuščias failas…"
 
-#: lazarusidestrconsts.dlgccotestmissingppu
-msgid "Test: Checking missing fpc ppu ..."
-msgstr "Testas: tikrinama ar trūksta FPC ppu…"
+#: lazarusidestrconsts.dlgccotestrtlunits
+msgid "Test: Checking RTL units ..."
+msgstr ""
 
 #: lazarusidestrconsts.dlgccotestsrcinppupaths
 msgid "Test: Checking sources in fpc ppu search paths ..."
@@ -5262,9 +5262,9 @@ msgstr "Klaidingas testo projektų aplankas"
 msgid "Missing unit"
 msgstr "Trūksta modulio"
 
-#: lazarusidestrconsts.lisccomsgppunotfound
-msgid "compiled FPC unit not found: %s.ppu"
-msgstr "Nerastas sukompiliuotas FPC modulis: %s.ppu"
+#: lazarusidestrconsts.lisccomsgrtlunitnotfound
+msgid "RTL unit not found: %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisccomultiplecfgfound
 msgid "multiple compiler configs found: "
@@ -5282,13 +5282,13 @@ msgstr "ne ASCII"
 msgid "ppu exists twice: %s, %s"
 msgstr "ppu dubliuojasi: %s, %s"
 
-#: lazarusidestrconsts.lisccoppunotfounddetailed
-msgid "The compiled FPC unit %s.ppu was not found.%sThis typically means your fpc.cfg has a bug. Or your FPC installation is broken."
-msgstr "Nerastas sukompiliuotas FPC modulis „%s.ppu“.%sGreičiausiai, „fpc.cfg“ faile yra klaida. Arba sugadintas įdiegtasis FPC."
-
 #: lazarusidestrconsts.lisccoppuolderthancompiler
 msgid "There is a .ppu file older than the compiler itself:%s%s"
 msgstr "Rastas „.ppu“failas, kuris yra senesnis už patį kompiliatorių:%s%s"
+
+#: lazarusidestrconsts.lisccortlunitnotfounddetailed
+msgid "The RTL unit %s was not found.%sThis typically means your %s has wrong unit paths. Or your installation is broken."
+msgstr ""
 
 #: lazarusidestrconsts.lisccoseveralcompilers
 msgid "There are several Free Pascal Compilers in your path.%s%s%sMaybe you forgot to delete an old compiler?"
@@ -6710,6 +6710,10 @@ msgstr "Kompiliuoti projektą"
 #: lazarusidestrconsts.liscompiler
 msgid "Compiler"
 msgstr "Kompiliatorius"
+
+#: lazarusidestrconsts.liscompilercfgismissing
+msgid "%s is missing."
+msgstr ""
 
 #: lazarusidestrconsts.liscompilerdoesnotsupporttarget
 msgid "Compiler \"%s\" does not support target %s-%s"
@@ -9611,10 +9615,6 @@ msgstr "Dėl „Windows“"
 #: lazarusidestrconsts.lisfoundversionexpected
 msgid "Found version %s, expected %s"
 msgstr "Rasta versija „%s“, tikėtasi „%s“"
-
-#: lazarusidestrconsts.lisfpccfgismissing
-msgid "fpc.cfg is missing."
-msgstr "Trūksta „fpc.cfg“."
 
 #: lazarusidestrconsts.lisfpcfullversioneg20701
 msgid "FPC version as one number (e.g. 20701)"
@@ -20624,11 +20624,11 @@ msgid "Select Right"
 msgstr "Žymėti simboliu dešiniau"
 
 #: lazarusidestrconsts.srkmecselsmartwordleft
-msgid "Select left to either current word start or previous word end"
+msgid "Smart select word left (start/end of word)"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecselsmartwordright
-msgid "Select right to either current word end or next word start"
+msgid "Smart select word right (start/end of word)"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecselsticky
@@ -20695,11 +20695,11 @@ msgid "show execution point"
 msgstr "Rodyti vykdymo tašką"
 
 #: lazarusidestrconsts.srkmecsmartwordleft
-msgid "Move cursor left to either current word start or previous word end"
+msgid "Smart move cursor left (start/end of word)"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecsmartwordright
-msgid "Move cursor right to either current word end or next word start"
+msgid "Smart move cursor right (start/end of word)"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecstopprogram
