@@ -8754,11 +8754,12 @@ function TMainIDE.DoJumpToSearchResult(FocusEditor: boolean): boolean;
 var
   AFileName: string;
   SearchedFilename: string;
-  LogCaretXY: TPoint;
+  LogCaretXY, JumpPointCaretXY: TPoint;
   OpenFlags: TOpenFlags;
-  SrcEdit: TSourceEditor;
+  SrcEdit, JumpPointEditor: TSourceEditor;
   AnUnitInfo: TUnitInfo;
   AnEditorInfo: TUnitEditorInfo;
+  JumpPointTopLine: Integer;
 begin
   Result:=false;
   AFileName:= SearchResultsView.GetSourceFileName;
@@ -8773,6 +8774,12 @@ begin
       SearchedFilename := FindUnitFile(AFilename);
     end;
     if SearchedFilename<>'' then begin
+      JumpPointEditor := SourceEditorManager.ActiveEditor;
+      if JumpPointEditor<>nil then
+      begin
+        JumpPointCaretXY := JumpPointEditor.EditorComponent.LogicalCaretXY;
+        JumpPointTopLine := JumpPointEditor.EditorComponent.TopLine;
+      end;
       // open the file in the source editor
       AnUnitInfo := nil;
       if Project1<>nil then
@@ -8787,7 +8794,8 @@ begin
         Result:=(DoOpenEditorFile(SearchedFilename,-1,-1,OpenFlags)=mrOk);
       if Result then begin
         // set caret position
-        SourceEditorManager.AddJumpPointClicked(Self);
+        if JumpPointEditor<>nil then
+          SourceEditorManager.AddCustomJumpPoint(JumpPointCaretXY, JumpPointTopLine, JumpPointEditor, True);
         SrcEdit:=SourceEditorManager.ActiveEditor;
         if LogCaretXY.Y>SrcEdit.EditorComponent.Lines.Count then
           LogCaretXY.Y:=SrcEdit.EditorComponent.Lines.Count;

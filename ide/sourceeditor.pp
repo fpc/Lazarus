@@ -1118,6 +1118,8 @@ type
     procedure JumpBackClicked(Sender: TObject);
     procedure JumpForwardClicked(Sender: TObject);
     procedure AddJumpPointClicked(Sender: TObject);
+    procedure AddCustomJumpPoint(ACaretXY: TPoint; ATopLine: integer;
+                  AEditor: TSourceEditor; DeleteForwardHistory: boolean);
     procedure DeleteLastJumpPointClicked(Sender: TObject);
     procedure ViewJumpHistoryClicked(Sender: TObject);
   protected
@@ -9744,6 +9746,13 @@ begin
 
   Result := CreateNewWindow(True);
   ActiveSourceWindow := Result;
+end;
+
+procedure TSourceEditorManager.AddCustomJumpPoint(ACaretXY: TPoint;
+  ATopLine: integer; AEditor: TSourceEditor; DeleteForwardHistory: boolean);
+begin
+  if Assigned(OnAddJumpPoint) then
+    OnAddJumpPoint(ACaretXY, ATopLine, AEditor, DeleteForwardHistory);
 end;
 
 function TSourceEditorManager.NewSourceWindow: TSourceNotebook;
