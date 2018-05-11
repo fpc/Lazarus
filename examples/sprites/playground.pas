@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs,
-  LMessages, LCLType, ExtCtrls, StdCtrls;
+  LMessages, LCLType, LCLIntf, ExtCtrls, StdCtrls;
 
 type
 
@@ -48,6 +48,8 @@ type
     procedure PictureControlKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure Timer1Timer(Sender: TObject);
   private
+    FXIntertia: Double;
+    FYIntertia: Double;
     FSpritePos: TPoint;
     FSpritePosChange: TPoint;
     FSpritePosInit: Boolean;
@@ -89,6 +91,9 @@ begin
   BufferImg.Width:=BackgroundImg.Width;
   BufferImg.Height:=BackgroundImg.Height;
 
+  FXIntertia := 0;
+  FYIntertia := 0;
+
   Timer1.Enabled := Combobox1.ItemIndex = 0;
   
   UpdateImage;
@@ -115,7 +120,7 @@ end;
 
 procedure TPlayGroundForm.ComboBox1Change(Sender: TObject);
 begin
-  Timer1.Enabled := Combobox1.ItemIndex in [0, 2];
+  Timer1.Enabled := Combobox1.ItemIndex in [0, 1, 3, 4];
   PictureControl.SetFocus;
 end;
 
@@ -124,6 +129,7 @@ procedure TPlayGroundForm.PictureControlKeyDown(Sender: TObject;
 const
   DELTA = 20;
 begin
+  if ComboBox1.ItemIndex = 3 then Exit; // for smooth arrow key input
   case Key of
     VK_LEFT  : FSpritePosChange := Point(-DELTA, 0);
     VK_RIGHT : FSpritePosChange := Point( DELTA, 0);
@@ -197,12 +203,6 @@ begin
          FSpritePos.Y := CenterY + round(sin(t*0.7)*CenterY*2/3) - SpriteImg.Height div 2;
        end;
     1: begin
-         // Movement of sprite by keyboard: UP/DOWN/LEFT/RIGHT arrows advance
-         // the sprite position by a given amount
-         FSpritePos.X := FSpritePos.X + FSpritePosChange.X;
-         FSpritePos.Y := FSpritePos.Y + FSpritePosChange.Y;
-       end;
-    2: begin
          // Movement of sprite by mouse: the sprite follows the mouse
          // Convert screen coordinates to images coordinates
          MousePos := PictureControl.ScreenToClient(Mouse.CursorPos);
@@ -212,6 +212,36 @@ begin
          dy := AdjustStep(FSpritePos.Y, MousePos.Y, 5);
          FSpritePos.X := FSpritePos.X + dx;
          FSpritePos.Y := FSpritePos.Y + dy;
+       end;
+    2: begin
+         // Movement of sprite by keyboard: UP/DOWN/LEFT/RIGHT arrows advance
+         // the sprite position by a given amount
+         FSpritePos.X := FSpritePos.X + FSpritePosChange.X;
+         FSpritePos.Y := FSpritePos.Y + FSpritePosChange.Y;
+       end;
+    3: begin
+         // Movement of sprite by keyboard: UP/DOWN/LEFT/RIGHT arrows advance smooth version
+         if (GetKeyState(VK_LEFT) < 0) then FSpritePos.X := FSpritePos.X - 10;
+         if (GetKeyState(VK_RIGHT) < 0) then FSpritePos.X := FSpritePos.X + 10;
+         if (GetKeyState(VK_UP) < 0) then FSpritePos.Y := FSpritePos.Y - 10;
+         if (GetKeyState(VK_DOWN) < 0) then FSpritePos.Y := FSpritePos.Y + 10;
+       end;
+    4: begin
+         // Movement of sprite by keyboard: UP/DOWN/LEFT/RIGHT arrows advance with inertia
+         if (GetKeyState(VK_LEFT) < 0) then FXIntertia := FXIntertia - 0.5;
+         if (GetKeyState(VK_RIGHT) < 0) then FXIntertia := FXIntertia + 0.5;
+         if (GetKeyState(VK_UP) < 0) then FYIntertia := FYIntertia - 0.5;
+         if (GetKeyState(VK_DOWN) < 0) then FYIntertia := FYIntertia + 0.5;
+         if (FXIntertia > 6) then FXIntertia := 6;
+         if (FXIntertia < -6) then FXIntertia := -6;
+         if (FYIntertia > 6) then FYIntertia := 6;
+         if (FYIntertia < -6) then FYIntertia := -6;
+         if (FXIntertia > 0) then FXIntertia := FXIntertia - 0.2;
+         if (FXIntertia < 0) then FXIntertia := FXIntertia + 0.2;
+         if (FYIntertia > 0) then FYIntertia := FYIntertia - 0.2;
+         if (FYIntertia < 0) then FYIntertia := FYIntertia + 0.2;
+         FSpritePos.X := FSpritePos.X + round(FXIntertia);
+         FSpritePos.Y := FSpritePos.Y + round(FYIntertia);
        end;
   end;
 

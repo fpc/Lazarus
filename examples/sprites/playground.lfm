@@ -66,8 +66,10 @@ object PlayGroundForm: TPlayGroundForm
       ItemIndex = 0
       Items.Strings = (
         'code'
-        'arrow keys'
         'mouse'
+        'arrow keys'
+        'arrow keys (smooth)'
+        'arrow keys with inertia'
       )
       OnChange = ComboBox1Change
       Style = csDropDownList
@@ -77,7 +79,7 @@ object PlayGroundForm: TPlayGroundForm
   end
   object Timer1: TTimer
     Enabled = False
-    Interval = 100
+    Interval = 40
     OnTimer = Timer1Timer
     left = 164
     top = 49
