@@ -2460,7 +2460,7 @@ resourcestring
   lisCCOMsgRTLUnitNotFound = 'RTL unit not found: %s';
   lisCCOMissingUnit = 'Missing unit';
   lisCCORTLUnitNotFoundDetailed = 'The RTL unit %s was not found.%s'
-    +'This typically means your %s has has wrong unit paths. Or your installation is broken.';
+    +'This typically means your %s has wrong unit paths. Or your installation is broken.';
   dlgCCOTestRTLUnits = 'Test: Checking RTL units ...';
   dlgCCOTestCompilerDate = 'Test: Checking compiler date ...';
   lisCCOErrorCaption = 'Error';
