@@ -162,7 +162,7 @@ type
     procedure mniCopySelectedClick(Sender: TObject);
     procedure mniExpandAllClick(Sender: TObject);
     procedure mniCollapseAllClick(Sender: TObject);
-    procedure ResultsNoteBookChanging(Sender: TObject; var AllowChange: Boolean);
+    procedure ResultsNoteBookChanging(Sender: TObject; var {%H-}AllowChange: Boolean);
     procedure ResultsNoteBookMouseDown(Sender: TObject; Button: TMouseButton;
       {%H-}Shift: TShiftState; X, Y: Integer);
     procedure TreeViewKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -629,10 +629,10 @@ begin
   end;
   UpdateToolbar;
   if FFocusTreeViewInEndUpdate and Assigned(CurrentTV) then
-    ActiveControl := CurrentTV
+    GetParentForm(Self).ActiveControl := CurrentTV
   else
   if SearchInListEdit.CanFocus then
-    ActiveControl := SearchInListEdit;
+    GetParentForm(Self).ActiveControl := SearchInListEdit;
 end;
 
 procedure TSearchResultsView.Parse_Search_Phrases(var slPhrases: TStrings);
