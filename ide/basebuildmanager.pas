@@ -56,6 +56,7 @@ type
     function GetLCLWidgetType: string; virtual; abstract;
     function GetRunCommandLine: string; virtual; abstract;
 
+    function GetCompilerFilename: string; virtual; abstract;
     function GetFPCompilerFilename: string; virtual; abstract;
     function GetFPCFrontEndOptions: string; virtual; abstract;
     function GetProjectPublishDir: string; virtual; abstract;

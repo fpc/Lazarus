@@ -38,7 +38,7 @@ uses
   // LazUtils
   LazFileCache, FileUtil, LazFileUtils, LazUTF8, AvgLvlTree,
   // Codetools
-  CodeToolManager, FileProcs, DefineTemplates,
+  CodeToolManager, FileProcs, DefineTemplates, LinkScanner,
   // IDEIntf
   ProjectIntf, MacroIntf, IDEExternToolIntf, LazIDEIntf, IDEDialogs,
   PackageIntf, IDEMsgIntf,
@@ -51,7 +51,7 @@ type
     cotNone,
     cotCheckCompilerExe,
     cotCheckAmbiguousFPCCfg,
-    cotCheckMissingFPCPPUs,
+    cotCheckRTLUnits,
     cotCheckCompilerDate,
     cotCheckCompilerConfig, // e.g. fpc.cfg
     cotCheckAmbiguousPPUsInUnitPath,
@@ -94,7 +94,7 @@ type
     function CheckCompilerExecutable(const CompilerFilename: string): TModalResult;
     function CheckCompilerConfig(CfgCache: TPCTargetConfigCache): TModalResult;
     function FindAllPPUFiles(const AnUnitPath: string): TStrings;
-    function CheckMissingFPCPPUs(CfgCache: TPCTargetConfigCache): TModalResult;
+    function CheckRTLUnits(CfgCache: TPCTargetConfigCache): TModalResult;
     function CheckCompilerDate(CfgCache: TPCTargetConfigCache): TModalResult;
     function CheckForAmbiguousPPUs(SearchForPPUs: TStrings;
                                    SearchInPPUs: TStrings = nil): TModalResult;
@@ -482,40 +482,57 @@ begin
   end;
 end;
 
-function TCheckCompilerOptsDlg.CheckMissingFPCPPUs(
+function TCheckCompilerOptsDlg.CheckRTLUnits(
   CfgCache: TPCTargetConfigCache): TModalResult;
   
   function Check(const TheUnitname: string; Severity: TCompilerCheckMsgLvl
     ): Boolean;
+  var
+    CurUnitFile, Cfg: String;
   begin
     if (CfgCache.Units<>nil)
     and (CfgCache.Units.Contains(TheUnitname)) then exit(true);
-    AddMsg(Severity,Format(lisCCOMsgPPUNotFound,[TheUnitname]));
+    if CfgCache.Kind=pcPas2js then
+    begin
+      CurUnitFile:=TheUnitname+'.pas';
+      Cfg:='pas2js.cfg';
+    end
+    else begin
+      CurUnitFile:=TheUnitname+'.ppu';
+      Cfg:='fpc.cfg';
+    end;
+    AddMsg(Severity,Format(lisCCOMsgRTLUnitNotFound,[CurUnitFile]));
     Result:=ord(Severity)>=ord(ccmlError);
     if not Result then begin
       if IDEMessageDialog(lisCCOMissingUnit,
-        Format(lisCCOPPUNotFoundDetailed,[TheUnitname, LineEnding]),
+        Format(lisCCORTLUnitNotFoundDetailed,[CurUnitFile, LineEnding, Cfg]),
         mtError,[mbIgnore,mbAbort])=mrIgnore then
           Result:=true;
     end;
   end;
   
 begin
-  FTest:=cotCheckMissingFPCPPUs;
-  LabelTest.Caption:=dlgCCOTestMissingPPU;
+  FTest:=cotCheckRTLUnits;
+  LabelTest.Caption:=dlgCCOTestRTLUnits;
 
   Result:=mrCancel;
 
   if not Check('system',ccmlError) then exit;
-  if not Check('objpas',ccmlError) then exit;
-
-  if CfgCache.TargetCPU='jvm' then begin
-    if not Check('uuchar',ccmlError) then exit;
-  end else begin
-    if not Check('sysutils',ccmlError) then exit;
+  if CfgCache.Kind=pcPas2js then
+  begin
+    if not Check('js',ccmlError) then exit;
     if not Check('classes',ccmlError) then exit;
-    if not Check('avl_tree',ccmlError) then exit;
-    if not Check('zstream',ccmlError) then exit;
+    if not Check('sysutils',ccmlError) then exit;
+  end else begin
+    if not Check('objpas',ccmlError) then exit;
+    if CfgCache.TargetCPU='jvm' then begin
+      if not Check('uuchar',ccmlError) then exit;
+    end else begin
+      if not Check('sysutils',ccmlError) then exit;
+      if not Check('classes',ccmlError) then exit;
+      if not Check('avl_tree',ccmlError) then exit;
+      if not Check('zstream',ccmlError) then exit;
+    end;
   end;
 
   Result:=mrOk;
@@ -565,56 +582,60 @@ begin
   LabelTest.Caption:=dlgCCOTestCompilerDate;
 
   Result:=mrCancel;
-  
+
   CompilerDate:=CfgCache.CompilerDate;
 
-  // first check some rtl and fcl units
-  // They are normally installed in one step, so the dates should be nearly
-  // the same. If not, then probably two different installations are mixed up.
-  MinPPUDate:=-1;
-  MinPPU:='';
-  MaxPPUDate:=-1;
-  MaxPPU:='';
-  CheckFileAgeOfUnit('system');
-  CheckFileAgeOfUnit('sysutils');
-  CheckFileAgeOfUnit('classes');
-  CheckFileAgeOfUnit('base64');
-  CheckFileAgeOfUnit('avl_tree');
-  CheckFileAgeOfUnit('fpimage');
-  
-  //DebugLn(['TCheckCompilerOptsDlg.CheckCompilerDate MinPPUDate=',MinPPUDate,' MaxPPUDate=',MaxPPUDate,' compdate=',CompilerDate]);
+  if CfgCache.Kind=pcFPC then
+  begin
 
-  if MinPPU<>'' then begin
-    if MaxPPUDate-MinPPUDate>3600 then begin
-      // the FPC .ppu files dates differ more than one hour
-      Result:=MessageDlg(lisCCOWarningCaption,
-        Format(lisCCODatesDiffer,[LineEnding,LineEnding,MinPPU,LineEnding,MaxPPU]),
-        mtError,[mbIgnore,mbAbort],0);
-      if Result<>mrIgnore then
-        exit;
+    // first check some rtl and fcl units
+    // They are normally installed in one step, so the dates should be nearly
+    // the same. If not, then probably two different installations are mixed up.
+    MinPPUDate:=-1;
+    MinPPU:='';
+    MaxPPUDate:=-1;
+    MaxPPU:='';
+    CheckFileAgeOfUnit('system');
+    CheckFileAgeOfUnit('sysutils');
+    CheckFileAgeOfUnit('classes');
+    CheckFileAgeOfUnit('base64');
+    CheckFileAgeOfUnit('avl_tree');
+    CheckFileAgeOfUnit('fpimage');
+
+    //DebugLn(['TCheckCompilerOptsDlg.CheckCompilerDate MinPPUDate=',MinPPUDate,' MaxPPUDate=',MaxPPUDate,' compdate=',CompilerDate]);
+
+    if MinPPU<>'' then begin
+      if MaxPPUDate-MinPPUDate>3600 then begin
+        // the FPC .ppu files dates differ more than one hour
+        Result:=MessageDlg(lisCCOWarningCaption,
+          Format(lisCCODatesDiffer,[LineEnding,LineEnding,MinPPU,LineEnding,MaxPPU]),
+          mtError,[mbIgnore,mbAbort],0);
+        if Result<>mrIgnore then
+          exit;
+      end;
     end;
-  end;
 
-  // check file dates of all .ppu
-  // if a .ppu is much older than the compiler itself, then the ppu is probably
-  // a) a leftover from a installation
-  // b) not updated
-  Node:=CfgCache.Units.Tree.FindLowest;
-  while Node<>nil do begin
-    Item:=PStringToStringItem(Node.Data);
-    if (Item^.Value<>'') and (CompareFileExt(Item^.Value,'.ppu',false)=0) then
-      CheckFileAge(Item^.Value);
-    Node:=CfgCache.Units.Tree.FindSuccessor(Node);
-  end;
+    // check file dates of all .ppu
+    // if a .ppu is much older than the compiler itself, then the ppu is probably
+    // a) a leftover from a installation
+    // b) not updated
+    Node:=CfgCache.Units.Tree.FindLowest;
+    while Node<>nil do begin
+      Item:=PStringToStringItem(Node.Data);
+      if (Item^.Value<>'') and (CompareFileExt(Item^.Value,'.ppu',false)=0) then
+        CheckFileAge(Item^.Value);
+      Node:=CfgCache.Units.Tree.FindSuccessor(Node);
+    end;
 
-  if MinPPU<>'' then begin
-    if CompilerDate-MinPPUDate>300 then begin
-      // the compiler is more than 5 minutes newer than one of the ppu files
-      Result:=MessageDlg(lisCCOWarningCaption,
-        Format(lisCCOPPUOlderThanCompiler, [LineEnding, MinPPU]),
-        mtError,[mbIgnore,mbAbort],0);
-      if Result<>mrIgnore then
-        exit;
+    if MinPPU<>'' then begin
+      if CompilerDate-MinPPUDate>300 then begin
+        // the compiler is more than 5 minutes newer than one of the ppu files
+        Result:=MessageDlg(lisCCOWarningCaption,
+          Format(lisCCOPPUOlderThanCompiler, [LineEnding, MinPPU]),
+          mtError,[mbIgnore,mbAbort],0);
+        if Result<>mrIgnore then
+          exit;
+      end;
     end;
   end;
 
@@ -902,22 +923,25 @@ begin
     if not (Result in [mrOk,mrIgnore]) then exit;
 
     // check if compiler paths include base units
-    Result:=CheckMissingFPCPPUs(CfgCache);
+    Result:=CheckRTLUnits(CfgCache);
     if not (Result in [mrOk,mrIgnore]) then exit;
 
     // check if compiler is older than fpc ppu
     Result:=CheckCompilerDate(CfgCache);
     if not (Result in [mrOk,mrIgnore]) then exit;
 
-    // check if there are ambiguous fpc ppu
-    FPCCfgUnitPath:=CfgCache.GetUnitPaths;
-    FPC_PPUs:=FindAllPPUFiles(FPCCfgUnitPath);
-    Result:=CheckForAmbiguousPPUs(FPC_PPUs);
-    if not (Result in [mrOk,mrIgnore]) then exit;
+    if CfgCache.Kind=pcFPC then
+    begin
+      // check if there are ambiguous fpc ppu
+      FPCCfgUnitPath:=CfgCache.GetUnitPaths;
+      FPC_PPUs:=FindAllPPUFiles(FPCCfgUnitPath);
+      Result:=CheckForAmbiguousPPUs(FPC_PPUs);
+      if not (Result in [mrOk,mrIgnore]) then exit;
 
-    // check if FPC unit paths contain sources
-    Result:=CheckFPCUnitPathsContainSources(FPCCfgUnitPath);
-    if not (Result in [mrOk,mrIgnore]) then exit;
+      // check if FPC unit paths contain sources
+      Result:=CheckFPCUnitPathsContainSources(FPCCfgUnitPath);
+      if not (Result in [mrOk,mrIgnore]) then exit;
+    end;
 
     if Options is TPkgCompilerOptions then begin
       // check if package has no separate output directory
@@ -925,21 +949,24 @@ begin
       if not (Result in [mrOk,mrIgnore]) then exit;
     end;
 
-    // gather PPUs in project/package unit search paths
-    TargetUnitPath:=Options.GetUnitPath(false);
-    Target_PPUs:=FindAllPPUFiles(TargetUnitPath);
+    if CfgCache.Kind=pcFPC then
+    begin
+      // gather PPUs in project/package unit search paths
+      TargetUnitPath:=Options.GetUnitPath(false);
+      Target_PPUs:=FindAllPPUFiles(TargetUnitPath);
 
-    // check if there are ambiguous ppu in project/package unit path
-    Result:=CheckForAmbiguousPPUs(Target_PPUs);
-    if not (Result in [mrOk,mrIgnore]) then exit;
+      // check if there are ambiguous ppu in project/package unit path
+      Result:=CheckForAmbiguousPPUs(Target_PPUs);
+      if not (Result in [mrOk,mrIgnore]) then exit;
 
-    // check if there are ambiguous ppu in fpc and project/package unit path
-    Result:=CheckForAmbiguousPPUs(FPC_PPUs,Target_PPUs);
-    if not (Result in [mrOk,mrIgnore]) then exit;
+      // check if there are ambiguous ppu in fpc and project/package unit path
+      Result:=CheckForAmbiguousPPUs(FPC_PPUs,Target_PPUs);
+      if not (Result in [mrOk,mrIgnore]) then exit;
 
-    // check that all ppu in the output directory have sources in project/package
-    Result:=CheckOrphanedPPUs(Options);
-    if not (Result in [mrOk,mrIgnore]) then exit;
+      // check that all ppu in the output directory have sources in project/package
+      Result:=CheckOrphanedPPUs(Options);
+      if not (Result in [mrOk,mrIgnore]) then exit;
+    end;
 
     // compile bogus file
     Result:=CheckCompileBogusFile(CompilerFilename);

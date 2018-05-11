@@ -121,7 +121,7 @@ begin
 
     TargetOS:=BuildBoss.GetTargetOS;
     TargetCPU:=BuildBoss.GetTargetCPU;
-    CompilerFilename:=LazarusIDE.GetFPCompilerFilename;
+    CompilerFilename:=LazarusIDE.GetCompilerFilename;
     FPCSrcDir:=EnvironmentOptions.GetParsedFPCSourceDirectory; // needs FPCVer macro
     UnitSetCache:=CodeToolBoss.CompilerDefinesCache.FindUnitSet(
       CompilerFilename,TargetOS,TargetCPU,'',FPCSrcDir,true);
@@ -152,7 +152,7 @@ begin
   List:=nil;
   try
     sl.Add('The IDE asks the compiler with the following command for the real OS/CPU:');
-    CompilerFilename:=LazarusIDE.GetFPCompilerFilename;
+    CompilerFilename:=LazarusIDE.GetCompilerFilename;
     CompilerOptions:='';
     if Project1<>nil then
     begin

@@ -105,6 +105,7 @@ var
   OldParams: string;
   Combo: TComboBox;
   ok: Boolean;
+  Kind: TPascalCompiler;
 begin
   OpenDialog:=TOpenDialog.Create(nil);
   try
@@ -144,10 +145,14 @@ begin
           ok:=true;
         end;
       else
-        if IsFPCExecutable(NewFilename,s) then begin
-          // check fpc
-          Quality:=CheckCompilerQuality(NewFilename,Note,
-                                     CodeToolBoss.CompilerDefinesCache.TestFilename);
+        if IsCompilerExecutable(NewFilename,s,Kind) then begin
+          // check compiler
+          if Kind=pcPas2js then
+            Quality:=CheckPas2jsQuality(NewFilename,Note,
+                                 CodeToolBoss.CompilerDefinesCache.TestFilename)
+          else
+            Quality:=CheckFPCExeQuality(NewFilename,Note,
+                                CodeToolBoss.CompilerDefinesCache.TestFilename);
           if not ShowQuality(Quality,NewFilename,Note) then exit;
           ok:=true;
         end;

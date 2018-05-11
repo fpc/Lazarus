@@ -88,11 +88,11 @@ function SearchLazarusDirectoryCandidates(StopIfFits: boolean): TSDFileInfoList;
 procedure SetupLazarusDirectory;
 
 // FreePascal Compiler
-function CheckCompilerQuality(AFilename: string; out Note: string;
+function CheckFPCExeQuality(AFilename: string; out Note: string;
   TestSrcFilename: string): TSDFilenameQuality;
-function SearchCompilerCandidates(StopIfFits: boolean;
+function SearchFPCExeCandidates(StopIfFits: boolean;
   const TestSrcFilename: string): TSDFileInfoList;
-procedure SetupCompilerFilename;
+procedure SetupFPCExeFilename;
 
 // Pas2js compiler
 function CheckPas2jsQuality(AFilename: string; out Note: string;
@@ -313,7 +313,7 @@ begin
   end;
 end;
 
-function CheckCompilerQuality(AFilename: string; out Note: string;
+function CheckFPCExeQuality(AFilename: string; out Note: string;
   TestSrcFilename: string): TSDFilenameQuality;
 var
   CfgCache: TPCTargetConfigCache;
@@ -369,7 +369,7 @@ begin
     i:=CfgCache.IndexOfUsedCfgFile;
     if i<0 then
     begin
-      Note:=lisFpcCfgIsMissing;
+      Note:=SafeFormat(lisCompilerCfgIsMissing,['fpc.cfg']);
       exit;
     end;
     if not CfgCache.HasPPUs then
@@ -389,7 +389,7 @@ begin
   Result:=sddqCompatible;
 end;
 
-function SearchCompilerCandidates(StopIfFits: boolean;
+function SearchFPCExeCandidates(StopIfFits: boolean;
   const TestSrcFilename: string): TSDFileInfoList;
 var
   ShortCompFile: String;
@@ -414,7 +414,7 @@ var
     if List=nil then
       List:=TSDFileInfoList.create(true);
     Item:=List.AddNewItem(RealFilename, AFilename);
-    Item.Quality:=CheckCompilerQuality(RealFilename, Item.Note, TestSrcFilename);
+    Item.Quality:=CheckFPCExeQuality(RealFilename, Item.Note, TestSrcFilename);
     Result:=(Item.Quality=sddqCompatible) and StopIfFits;
   end;
 
@@ -529,14 +529,14 @@ begin
   end;
 end;
 
-procedure SetupCompilerFilename;
+procedure SetupFPCExeFilename;
 var
   Filename, Note: String;
   Quality: TSDFilenameQuality;
   List: TSDFileInfoList;
 begin
   Filename:=EnvironmentOptions.GetParsedCompilerFilename;
-  Quality:=CheckCompilerQuality(Filename,Note,'');
+  Quality:=CheckFPCExeQuality(Filename,Note,'');
   if Quality<>sddqInvalid then exit;
   // bad compiler
   dbgout('SetupCompilerFilename:');
@@ -550,7 +550,7 @@ begin
   end else begin
     debugln(' Searching compiler ...');
   end;
-  List:=SearchCompilerCandidates(true, CodeToolBoss.CompilerDefinesCache.TestFilename);
+  List:=SearchFPCExeCandidates(true, CodeToolBoss.CompilerDefinesCache.TestFilename);
   try
     if (List=nil) or (List.BestDir.Quality=sddqInvalid) then begin
       debugln(['SetupCompilerFilename: no proper compiler found.']);
@@ -629,7 +629,7 @@ begin
     i:=CfgCache.IndexOfUsedCfgFile;
     if i<0 then
     begin
-      Note:=lisFpcCfgIsMissing;
+      Note:=SafeFormat(lisCompilerCfgIsMissing,['pas2js.cfg']);
       exit;
     end;
     //if not CheckPas('classes') then exit;

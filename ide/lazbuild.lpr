@@ -1152,7 +1152,7 @@ begin
   LoadMiscellaneousOptions;
   SetupLazarusDirectory;
   SetupCodetools;
-  SetupCompilerFilename;
+  SetupFPCExeFilename;
   SetupPackageSystem;
   MainBuildBoss.SetupExternalTools;
   ExtToolConsole:=TLazExtToolConsole.Create(nil);

@@ -49,7 +49,7 @@ uses
   FileUtil, LazFileUtils, LazUTF8, Laz2_XMLCfg, Laz2_DOM, LazUtilities,
   // CodeTools
   FileProcs, DefineTemplates, CodeToolsCfgScript, CodeToolManager,
-  KeywordFuncLists, BasicCodeTools,
+  KeywordFuncLists, BasicCodeTools, LinkScanner,
   // IDEIntf
   ProjectIntf, MacroIntf, IDEExternToolIntf, SrcEditorIntf, CompOptsIntf,
   IDEOptionsIntf,
@@ -496,7 +496,7 @@ type
     procedure SetAlternativeCompile(const Command: string; ScanFPCMsgs: boolean); override;
 
     function MakeOptionsString(Flags: TCompilerCmdLineOptions): String; virtual;
-    function GetSyntaxOptionsString: string; virtual;
+    function GetSyntaxOptionsString(Kind: TPascalCompiler): string; virtual;
     function CreatePPUFilename(const SourceFileName: string): string; override;
     function CreateTargetFilename: string; virtual;
     function GetTargetFileExt: string; virtual;
@@ -2492,7 +2492,7 @@ function TBaseCompilerOptions.GetOptionsForCTDefines: string;
 
 begin
   Result:=GetCustomOptions(coptParsed);
-  Add(GetSyntaxOptionsString);
+  Add(GetSyntaxOptionsString(pcFPC));
 end;
 
 procedure TBaseCompilerOptions.RenameMacro(const OldName, NewName: string;
@@ -2594,10 +2594,11 @@ var
   CompilerFilename: String;
   DefaultTargetOS: string;
   DefaultTargetCPU: string;
-  FPCompilerFilename: String;
+  RealCompilerFilename: String;
   s, CurNamespaces: string;
   CurFPCMsgFile: TFPCMsgFilePoolItem;
   Quiet: Boolean;
+  Kind: TPascalCompiler;
 
   procedure EnableDisableVerbosityFlag(Enable: boolean; c: char);
   begin
@@ -2870,6 +2871,14 @@ begin
   }
   Quiet:=ConsoleVerbosity<=-3; // lazbuild -q -q, lazarus -q -q -q
 
+  CompilerFilename:=ParsedOpts.GetParsedValue(pcosCompilerPath);
+  if IsCompilerExecutable(CompilerFilename,s,Kind) then
+    RealCompilerFilename:=CompilerFilename
+  else begin
+    RealCompilerFilename:=EnvironmentOptions.GetParsedCompilerFilename;
+    Kind:=pcFPC;
+  end;
+
   CurTargetOS:='';
   CurTargetCPU:='';
   if not (ccloNoMacroParams in Flags) then
@@ -2883,13 +2892,8 @@ begin
   end;
   CurSrcOS:=GetDefaultSrcOSForTargetOS(CurTargetOS);
 
-  CompilerFilename:=ParsedOpts.GetParsedValue(pcosCompilerPath);
-  if IsFPCExecutable(CompilerFilename,s) then
-    FPCompilerFilename:=CompilerFilename
-  else
-    FPCompilerFilename:=EnvironmentOptions.GetParsedCompilerFilename;
   CodeToolBoss.CompilerDefinesCache.ConfigCaches.GetDefaultCompilerTarget(
-    FPCompilerFilename,'',DefaultTargetOS,DefaultTargetCPU);
+    RealCompilerFilename,'',DefaultTargetOS,DefaultTargetCPU);
 
   { ------------------ Target --------------------- }
 
@@ -2915,7 +2919,7 @@ begin
   end;
 
   // Syntax Options
-  tempsw:=GetSyntaxOptionsString;
+  tempsw:=GetSyntaxOptionsString(Kind);
   if (tempsw <> '') then
     switches := switches + ' ' + tempsw;
 
@@ -2946,9 +2950,8 @@ begin
   if VerifyObjMethodCall then
     tempsw := tempsw + 'R';
 
-  if (tempsw <> '') then begin
+  if (tempsw <> '') then
     switches := switches + ' -C' + tempsw;
-  end;
 
   { Heap Size }
   if (HeapSize > 0) then
@@ -2969,25 +2972,28 @@ begin
     switches := switches + ' -O'+OptimizeSwitches;
 
   // uncertain
-  if (UncertainOptimizations) then
+  if UncertainOptimizations then
     Switches := Switches + ' -OoUNCERTAIN';
 
   // registers
-  if (VariablesInRegisters) then
+  if VariablesInRegisters then
     Switches := Switches + ' -OoREGVAR';
 
   { --------------- Linking Tab ------------------- }
 
   { Debugging }
   { Debug Info for GDB }
-  if (GenerateDebugInfo) then begin
+  if GenerateDebugInfo then begin
 
     dit := DebugInfoType;
     case dit of
-      dsAuto:      if (not (ccloNoMacroParams in Flags))  and (CurTargetOS='darwin') then
-                     switches += ' -gw'
-                   else
-                     switches += ' -g';
+      dsAuto:
+        if Kind=pcFPC then begin
+          if (not (ccloNoMacroParams in Flags)) and (CurTargetOS='darwin') then
+            switches += ' -gw'
+          else
+            switches += ' -g';
+        end;
       dsStabs:     switches := switches + ' -gs';
       dsDwarf2:    switches := switches + ' -gw2';
       dsDwarf2Set: switches := switches + ' -gw2 -godwarfsets';
@@ -2995,18 +3001,18 @@ begin
     end;
 
     { Line Numbers in Run-time Error Backtraces - Use LineInfo Unit }
-    if (UseLineInfoUnit) then
+    if UseLineInfoUnit then
       switches := switches + ' -gl';
 
     { Use Heaptrc Unit }
-    if (UseHeaptrc) and (not (ccloNoLinkerOpts in Flags)) then
+    if UseHeaptrc and (not (ccloNoLinkerOpts in Flags)) then
       switches := switches + ' -gh';
 
     { Generate code for Valgrind }
-    if (UseValgrind) and (not (ccloNoLinkerOpts in Flags)) then
+    if UseValgrind and (not (ccloNoLinkerOpts in Flags)) then
       switches := switches + ' -gv';
 
-    if (UseExternalDbgSyms) then
+    if UseExternalDbgSyms then
       switches := switches + ' -Xg';
 
   end
@@ -3019,15 +3025,15 @@ begin
   end;
 
   { Trash variables }
-  if (TrashVariables) then
+  if TrashVariables then
     switches := switches + ' -gt';
 
   { Generate code gprof }
-  if (GenGProfCode) then
+  if GenGProfCode then
     switches := switches + ' -pg';
 
   { Strip Symbols }
-  if (StripSymbols) and (not (ccloNoLinkerOpts in Flags)) then
+  if StripSymbols and (not (ccloNoLinkerOpts in Flags)) then
     switches := switches + ' -Xs';
 
   { Link Style
@@ -3038,7 +3044,6 @@ begin
 
   if (not (ccloNoLinkerOpts in Flags)) and LinkSmart then
     switches := switches + ' -XX';
-
 
   // additional Linker options
   if (not (ccloNoLinkerOpts in Flags))
@@ -3090,7 +3095,7 @@ begin
   EnableVerbosityFlag(ShowCond,'c');
   EnableVerbosityFlag(ShowExecInfo,'x');
 
-  if (ShowAll and not (Quiet)) or (ccloAddVerboseAll in Flags) then
+  if (ShowAll and not Quiet) or (ccloAddVerboseAll in Flags) then
     tempsw := 'a';
   tempsw := tempsw + 'bq'; // b = full file names, q = message ids
 
@@ -3099,7 +3104,7 @@ begin
   if (quietsw <> '') then
     switches := switches + ' -v' + quietsw;
 
-// -vm flags allow to enable/disable types of messages
+  // -vm flags allow to enable/disable types of messages
   // Passing a -vm ID, unknown by the current compiler will create an error
   // => check the compiler message file
   if IDEMessageFlags.Count>0 then begin
@@ -3232,7 +3237,8 @@ begin
   Result := switches;
 end;
 
-function TBaseCompilerOptions.GetSyntaxOptionsString: string;
+function TBaseCompilerOptions.GetSyntaxOptionsString(Kind: TPascalCompiler
+  ): string;
 var
   tempsw: String;
 begin
@@ -3247,18 +3253,20 @@ begin
     tempsw := tempsw + 'c';
   if (IncludeAssertionCode) then
     tempsw := tempsw + 'a';
-  if (AllowLabel) then
-    tempsw := tempsw + 'g';
-  if (UseAnsiStrings) then
-    tempsw := tempsw + 'h';
-  if (CPPInline) then
-    tempsw := tempsw + 'i';
-  if (CStyleMacros) then
-    tempsw := tempsw + 'm';
-  if (InitConstructor) then
-    tempsw := tempsw + 's';
-  if (StaticKeyword) then
-    tempsw := tempsw + 't';
+  if Kind=pcFPC then begin
+    if (AllowLabel) then
+      tempsw := tempsw + 'g';
+    if (UseAnsiStrings) then
+      tempsw := tempsw + 'h';
+    if (CPPInline) then
+      tempsw := tempsw + 'i';
+    if (CStyleMacros) then
+      tempsw := tempsw + 'm';
+    if (InitConstructor) then
+      tempsw := tempsw + 's';
+    if (StaticKeyword) then
+      tempsw := tempsw + 't';
+  end;
 
   if (tempsw <> '') then begin
     if Result<>'' then

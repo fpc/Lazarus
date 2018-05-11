@@ -493,7 +493,7 @@ begin
   Result:=false;
   EnvironmentOptions.CompilerFilename:=CompilerPathComboBox.Text;
   NewCompilerFilename:=EnvironmentOptions.GetParsedCompilerFilename;
-  Quality:=CheckCompilerQuality(NewCompilerFilename,Note,
+  Quality:=CheckFPCExeQuality(NewCompilerFilename,Note,
                                 CodeToolBoss.CompilerDefinesCache.TestFilename);
   if Quality<>sddqCompatible then
   begin

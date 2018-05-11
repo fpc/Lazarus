@@ -935,6 +935,7 @@ type
 
     // methods for debugging, compiling and external tools
     function GetTestBuildDirectory: string; override;
+    function GetCompilerFilename: string; override;
     function GetFPCompilerFilename: string; override;
     function GetFPCFrontEndOptions: string; override;
     procedure GetIDEFileState(Sender: TObject; const AFilename: string;
@@ -1387,7 +1388,7 @@ begin
 
   // check compiler
   if (not ShowSetupDialog)
-  and (CheckCompilerQuality(EnvironmentOptions.GetParsedCompilerFilename,Note,
+  and (CheckFPCExeQuality(EnvironmentOptions.GetParsedCompilerFilename,Note,
                        CodeToolBoss.CompilerDefinesCache.TestFilename)=sddqInvalid)
   then begin
     debugln(['Warning: (lazarus) invalid compiler: ',EnvironmentOptions.GetParsedCompilerFilename]);
@@ -8853,6 +8854,11 @@ end;
 function TMainIDE.GetTestBuildDirectory: string;
 begin
   Result:=MainBuildBoss.GetTestBuildDirectory;
+end;
+
+function TMainIDE.GetCompilerFilename: string;
+begin
+  Result:=MainBuildBoss.GetCompilerFilename;
 end;
 
 function TMainIDE.GetFPCompilerFilename: string;

@@ -845,7 +845,7 @@ var
   Files: TSDFileInfoList;
 begin
   Exclude(FFlags,sdfCompilerFilenameNeedsUpdate);
-  Files:=SearchCompilerCandidates(false,CodeToolBoss.CompilerDefinesCache.TestFilename);
+  Files:=SearchFPCExeCandidates(false,CodeToolBoss.CompilerDefinesCache.TestFilename);
   FreeAndNil(FCandidates[sddtCompilerFilename]);
   FCandidates[sddtCompilerFilename]:=Files;
   FillComboboxWithFileInfoList(CompilerComboBox,Files);
@@ -979,7 +979,7 @@ begin
   fLastParsedCompiler:=EnvironmentOptions.GetParsedCompilerFilename;
   //debugln(['TInitialSetupDialog.UpdateCompilerNote ',fLastParsedCompiler]);
 
-  Quality:=CheckCompilerQuality(fLastParsedCompiler,Note,
+  Quality:=CheckFPCExeQuality(fLastParsedCompiler,Note,
                                 CodeToolBoss.CompilerDefinesCache.TestFilename);
   if Quality<>sddqInvalid then begin
     CodeToolBoss.CompilerDefinesCache.ConfigCaches.Find(

@@ -251,43 +251,57 @@ end;
 procedure TCompilerConfigTargetFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 var
   s: ShortString;
+  List: TStringList;
 begin
-  //debugln(['TCompilerConfigTargetFrame.Setup ']);
-  FDialog := ADialog;
-  // Config
-  grbConfigFile.Caption := dlgConfigFiles;
-  chkConfigFile.Caption := dlgUseFpcCfg + ' ('+lisIfNotChecked+' -n)';
-  chkCustomConfigFile.Caption := dlgUseCustomConfig + ' (@)';
-  edtConfigPath.Text := '';
+  List:=TStringList.Create;
+  try
+    //debugln(['TCompilerConfigTargetFrame.Setup ']);
+    FDialog := ADialog;
+    // Config
+    grbConfigFile.Caption := dlgConfigFiles;
+    chkConfigFile.Caption := dlgUseFpcCfg + ' ('+lisIfNotChecked+' -n)';
+    chkCustomConfigFile.Caption := dlgUseCustomConfig + ' (@)';
+    edtConfigPath.Text := '';
 
-  // Target platform
-  grbTargetPlatform.Caption := dlgTargetPlatform;
-  lblTargetOS.Caption := dlgTargetOS + ' (-T)';
-  with TargetOSComboBox do
-  begin
-    Items.Add('(' + lisDefault + ')');
+    // Target platform
+    grbTargetPlatform.Caption := dlgTargetPlatform;
+    lblTargetOS.Caption := dlgTargetOS + ' (-T)';
+    List.Clear;
+    List.Add('(' + lisDefault + ')');
     for s in FPCOperatingSystemCaptions do
-      Items.Add(s);
-    ItemIndex := 0;
-  end;
+      List.Add(s);
+    for s in Pas2jsPlatformNames do
+      List.Add(s);
+    with TargetOSComboBox do
+    begin
+      Items.Assign(List);
+      ItemIndex := 0;
+    end;
 
-  // Target CPU
-  lblTargetCPU.Caption := dlgTargetCPUFamily + ' (-P)';
-  with TargetCPUComboBox do
-  begin
-    Items.Add('(' + lisDefault + ')');
+    // Target CPU
+    lblTargetCPU.Caption := dlgTargetCPUFamily + ' (-P)';
+    List.Clear;
+    List.Add('(' + lisDefault + ')');
     for s in FPCProcessorNames do
-      Items.Add(s);
-    ItemIndex := 0;
-  end;
+      List.Add(s);
+    for s in Pas2jsProcessorNames do
+      List.Add(s);
+    with TargetCPUComboBox do
+    begin
+      Items.Assign(List);
+      ItemIndex := 0;
+    end;
 
-  // Target CPU
-  lblTargetProc.Caption := dlgTargetProc+' (-Cp)';
-  // Target-specific options
-  grbTargetOptions.Caption := dlgTargetSpecificOptions;
-  chkWin32GraphicApp.Caption := dlgWin32GUIApp + ' (-WG)';
-  // WidgetSet
-  LCLWidgetTypeLabel.Caption := lisSelectAnotherLCLWidgetSet;
+    // Target CPU
+    lblTargetProc.Caption := dlgTargetProc+' (-Cp)';
+    // Target-specific options
+    grbTargetOptions.Caption := dlgTargetSpecificOptions;
+    chkWin32GraphicApp.Caption := dlgWin32GUIApp + ' (-WG)';
+    // WidgetSet
+    LCLWidgetTypeLabel.Caption := lisSelectAnotherLCLWidgetSet;
+  finally
+    List.Free;
+  end;
 end;
 
 procedure TCompilerConfigTargetFrame.ReadSettings(AOptions: TAbstractIDEOptions);

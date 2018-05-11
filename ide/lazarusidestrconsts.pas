@@ -2457,11 +2457,11 @@ resourcestring
   lisCCOUnableToCreateTestPascalFile = 'Unable to create Test Pascal file "%s".';
   dlgCCOTestToolCompilingEmptyFile = 'Test: Compiling an empty file';
   dlgCCOTestCheckingCompilerConfig = 'Test: Checking compiler configuration ...';
-  lisCCOMsgPPUNotFound = 'compiled FPC unit not found: %s.ppu';
+  lisCCOMsgRTLUnitNotFound = 'RTL unit not found: %s';
   lisCCOMissingUnit = 'Missing unit';
-  lisCCOPPUNotFoundDetailed = 'The compiled FPC unit %s.ppu was not found.%s'
-    +'This typically means your fpc.cfg has a bug. Or your FPC installation is broken.';
-  dlgCCOTestMissingPPU = 'Test: Checking missing fpc ppu ...';
+  lisCCORTLUnitNotFoundDetailed = 'The RTL unit %s was not found.%s'
+    +'This typically means your %s has has wrong unit paths. Or your installation is broken.';
+  dlgCCOTestRTLUnits = 'Test: Checking RTL units ...';
   dlgCCOTestCompilerDate = 'Test: Checking compiler date ...';
   lisCCOErrorCaption = 'Error';
   lisFatal = 'Fatal';
@@ -6128,7 +6128,7 @@ resourcestring
     +'together with the FPC compiler.';
   lisUnusualCompilerFileNameUsuallyItStartsWithFpcPpcOr = 'Unusual compiler '
     +'file name. Usually it starts with fpc, ppc or ppcross.';
-  lisFpcCfgIsMissing = 'fpc.cfg is missing.';
+  lisCompilerCfgIsMissing = '%s is missing.';
   lisSystemPpuNotFoundCheckYourFpcCfg = 'system.ppu not found. Check your fpc.cfg.';
   lisWelcomeToLazarusIDE = 'Welcome to Lazarus IDE %s';
   lisStartIDE = 'Start IDE';

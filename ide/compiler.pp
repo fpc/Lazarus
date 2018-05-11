@@ -1426,7 +1426,7 @@ procedure TCompilerOptThread.StartParsing;
 begin
   if fStartedOnce then
     WaitFor;
-  fReader.CompilerExecutable:=LazarusIDE.GetFPCompilerFilename;
+  fReader.CompilerExecutable:=LazarusIDE.GetCompilerFilename;
   fReader.UpdateTargetParam;
   Start;
   fStartedOnce:=true;

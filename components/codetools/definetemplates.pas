@@ -204,6 +204,15 @@ const
     'FPC', 'ObjFPC', 'Delphi', 'TP', 'MacPas', 'ISO'
     );
 
+  Pas2jsPlatformNames: array[1..2] of shortstring = (
+    'Browser',
+    'NodeJS'
+    );
+  Pas2jsProcessorNames: array[1..2] of shortstring = (
+    'ECMAScript5',
+    'ECMAScript6'
+    );
+
   Lazarus_CPU_OS_Widget_Combinations: array[1..91] of shortstring = (
     'i386-linux-gtk',
     'i386-linux-gtk2',
@@ -1038,9 +1047,11 @@ function GetCompiledTargetOS: string;
 function GetCompiledTargetCPU: string;
 function GetDefaultCompilerFilename(const TargetCPU: string = ''; Cross: boolean = false): string;
 procedure GetTargetProcessors(const TargetCPU: string; aList: TStrings);
-function GetFPCTargetOS(TargetOS: string): string;
-function GetFPCTargetCPU(TargetCPU: string): string;
+function GetFPCTargetOS(TargetOS: string): string; // normalize
+function GetFPCTargetCPU(TargetCPU: string): string; // normalize
 function GetPascalCompilerFromExeName(Filename: string): TPascalCompiler;
+function IsCTExecutable(AFilename: string; out ErrorMsg: string): boolean; // not thread-safe
+function IsCompilerExecutable(AFilename: string; out ErrorMsg: string; out Kind: TPascalCompiler): boolean; // not thread-safe
 function IsFPCExecutable(AFilename: string; out ErrorMsg: string): boolean; // not thread-safe
 function IsPas2JSExecutable(AFilename: string; out ErrorMsg: string): boolean; // not thread-safe
 
@@ -1072,6 +1083,7 @@ type
 const
   AllFPCFrontEndParams = [low(TFPCFrontEndParam)..high(TFPCFrontEndParam)];
 
+function GuessCompilerType(Filename: string): TPascalCompiler;
 function ParseFPCInfo(FPCInfo: string; InfoTypes: TFPCInfoTypes;
                       out Infos: TFPCInfoStrings): boolean;
 function RunFPCInfo(const CompilerFilename: string;
@@ -1486,6 +1498,14 @@ begin
   finally
     ParamList.Free;
   end;
+end;
+
+function GuessCompilerType(Filename: string): TPascalCompiler;
+begin
+  Filename:=ExtractFileNameOnly(Filename);
+  if Pos('pas2js',lowercase(Filename))>0 then
+    exit(pcPas2js);
+  Result:=pcFPC;
 end;
 
 function ParseFPCInfo(FPCInfo: string; InfoTypes: TFPCInfoTypes;
@@ -3721,9 +3741,7 @@ begin
   Result:=pcFPC;
 end;
 
-function IsFPCExecutable(AFilename: string; out ErrorMsg: string): boolean;
-var
-  ShortFilename: String;
+function IsCTExecutable(AFilename: string; out ErrorMsg: string): boolean;
 begin
   Result:=false;
   AFilename:=ResolveDots(aFilename);
@@ -3750,6 +3768,44 @@ begin
     exit;
   end;
   ErrorMsg:='';
+  Result:=true;
+end;
+
+function IsCompilerExecutable(AFilename: string; out ErrorMsg: string; out
+  Kind: TPascalCompiler): boolean;
+var
+  ShortFilename: String;
+begin
+  Result:=IsCTExecutable(AFilename,ErrorMsg);
+  if not Result then exit;
+  Kind:=pcFPC;
+
+  // allow scripts like fpc.sh and fpc.bat
+  ShortFilename:=ExtractFileNameOnly(AFilename);
+  //debugln(['IsFPCompiler Short=',ShortFilename]);
+  if CompareFilenames(ShortFilename,'fpc')=0 then
+    exit(true);
+
+  // allow ppcxxx.exe
+  if (CompareFilenames(LeftStr(ShortFilename,3),'ppc')=0)
+  and ((ExeExt='') or (CompareFileExt(AFilename,ExeExt)=0))
+  then
+    exit(true);
+
+  if CompareText(LeftStr(ShortFilename,6),'pas2js')=0 then begin
+    Kind:=pcPas2js;
+    exit(true);
+  end;
+
+  ErrorMsg:='fpc executable should start with fpc or ppc';
+end;
+
+function IsFPCExecutable(AFilename: string; out ErrorMsg: string): boolean;
+var
+  ShortFilename: String;
+begin
+  Result:=IsCTExecutable(AFilename,ErrorMsg);
+  if not Result then exit;
 
   // allow scripts like fpc.sh and fpc.bat
   ShortFilename:=ExtractFileNameOnly(AFilename);
@@ -3770,29 +3826,8 @@ function IsPas2JSExecutable(AFilename: string; out ErrorMsg: string): boolean;
 var
   ShortFilename: String;
 begin
-  Result:=false;
-  AFilename:=ResolveDots(aFilename);
-  if aFilename='' then begin
-    ErrorMsg:='missing file name';
-    exit;
-  end;
-  if not FilenameIsAbsolute(AFilename) then begin
-    ErrorMsg:='file missing path';
-    exit;
-  end;
-  if not FileExistsCached(AFilename) then begin
-    ErrorMsg:='file not found';
-    exit;
-  end;
-  if DirPathExistsCached(AFilename) then begin
-    ErrorMsg:='file is a directory';
-    exit;
-  end;
-  if not FileIsExecutableCached(AFilename) then begin
-    ErrorMsg:='file is not executable';
-    exit;
-  end;
-  ErrorMsg:='';
+  Result:=IsCTExecutable(AFilename,ErrorMsg);
+  if not Result then exit;
 
   // allow scripts like pas2js*
   ShortFilename:=ExtractFileNameOnly(AFilename);
@@ -8913,6 +8948,7 @@ var
   AFilename: String;
 begin
   Result:=true;
+
   if (not FileExistsCached(Compiler)) then begin
     if CTConsoleVerbosity>0 then
       debugln(['Hint: [TPCTargetConfigCache.NeedsUpdate] TargetOS="',TargetOS,'" TargetCPU="',TargetCPU,'" Options="',CompilerOptions,'" compiler file missing "',Compiler,'"']);
@@ -9000,7 +9036,7 @@ var
   Infos: TFPCInfoStrings;
   InfoTypes: TFPCInfoTypes;
   BaseDir: String;
-  FullFilename, ShortCompiler: String;
+  FullFilename: String;
 begin
   OldOptions:=TPCTargetConfigCache.Create(nil);
   CfgFiles:=nil;
@@ -9017,9 +9053,7 @@ begin
       BaseDir:='';
 
       // kind
-      ShortCompiler:=lowercase(ExtractFileName(Compiler));
-      if Pos('pas2js',ShortCompiler)>0 then
-        Kind:=pcPas2js;
+      Kind:=GuessCompilerType(Compiler);
 
       // get version and real OS and CPU
       InfoTypes:=[fpciTargetOS,fpciTargetProcessor,fpciFullVersion];
@@ -9059,7 +9093,7 @@ begin
         RealCompilerDate:=FileAgeCached(RealCompiler);
       end else if Kind=pcFPC then begin
         if CTConsoleVerbosity>=-1 then
-          debugln(['Warning: [TPCTargetConfigCache.Update] invalid compiler: Compiler="'+Compiler+'" Options="'+ExtraOptions+'" RealCompiler="',RealCompiler,'"']);
+          debugln(['Warning: [TPCTargetConfigCache.Update] cannot find real compiler for this platform: Compiler="'+Compiler+'" Options="'+ExtraOptions+'" RealCompiler="',RealCompiler,'"']);
       end;
       // store the list of tried and read cfg files
       if CfgFiles<>nil then
@@ -9186,9 +9220,11 @@ function TPCTargetConfigCache.GetFPCVerNumbers(out FPCVersion, FPCRelease,
 var
   v: string;
 begin
+  // get default FPC version
   v:={$I %FPCVERSION%};
   Result:=SplitFPCVersion(v,FPCVersion,FPCRelease,FPCPatch);
   if Defines<>nil then begin
+    // use defines
     FPCVersion:=StrToIntDef(Defines['FPC_VERSION'],FPCVersion);
     FPCRelease:=StrToIntDef(Defines['FPC_RELEASE'],FPCRelease);
     FPCPatch:=StrToIntDef(Defines['FPC_PATCH'],FPCPatch);
