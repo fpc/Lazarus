@@ -213,43 +213,12 @@ var
     end;
   end;
 
-  function OwnMouseUpNeeded(ALV: TCustomListViewAccess): Boolean;
-  var
-    LVInfo: PWin32WindowInfo;
-    ListItem: TListItem;
-  begin
-    LVInfo:= GetWin32WindowInfo(ALV.Handle);
-    ListItem := ALV.GetItemAt(LVInfo^.MouseX, LVInfo^.MouseY);
-    Result := Assigned(ListItem);
-  end;
-
-var
-  Pos: TSmallPoint;
 begin
   Result := False;
   case Msg of
     WM_NOTIFY:
     begin
       case PNMHdr(LParam)^.code of
-        NM_CLICK, NM_RCLICK:
-          if OwnMouseUpNeeded(TCustomListViewAccess(AWinControl)) then
-          begin
-            // A listview doesn't get a WM_LBUTTONUP, WM_RBUTTONUP message,
-            // because it keeps the message in its own event loop,
-            // see msdn article about "Default List-View Message Processing"
-            // therefore we take this notification and create a
-            // LM_LBUTTONUP, LM_RBUTTONUP message out of it
-            WinProcess := False;
-            if PNMHdr(LParam)^.code = NM_CLICK then
-              Msg := LM_LBUTTONUP
-            else
-              Msg := LM_RBUTTONUP;
-            Pos := GetClientCursorPos(PNMHdr(LParam)^.hwndFrom);
-            // to make correct event sequence in LCL we should postpone this message
-            // since we are here after call of CallDefaultWindowProc
-            PostMessage(PNMHdr(LParam)^.hwndFrom, Msg, 0, MakeLParam(Pos.x, Pos.y));
-            Result := True;
-          end;
         LVN_GETDISPINFOA, LVN_GETDISPINFOW:
           HandleListViewOwnerData(TCustomListViewAccess(AWinControl));
         NM_CUSTOMDRAW:
@@ -746,6 +715,49 @@ begin
   ItemMsg := CN_DRAWITEM;
 end;
 
+function ListViewProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
+    LParam: Windows.LParam): LResult; stdcall;
+var
+  WindowInfo: PWin32WindowInfo;
+  ListItem: TListItem;
+  ListView: TCustomListView;
+  AMsg: UINT;
+begin
+  case Msg of
+    WM_NCHITTEST, WM_SETCURSOR, WM_MOUSEMOVE:;
+    WM_LBUTTONDOWN, WM_RBUTTONDOWN, WM_LBUTTONDBLCLK:
+      begin
+        // A ListView doesn't get a WM_LBUTTONUP, WM_RBUTTONUP message,
+        // because it keeps the message in its own event loop,
+        // see msdn article about "Default List-View Message Processing"
+        // therefore we take this notification and create a
+        // LM_LBUTTONUP, LM_RBUTTONUP message out of it
+
+        WindowInfo := GetWin32WindowInfo(Window);
+        ListView := TListView(WindowInfo^.WinControl);
+        ListItem := ListView.GetItemAt(WindowInfo^.MouseX, WindowInfo^.MouseY);
+
+        if Msg = WM_LBUTTONDOWN
+        then AMsg := LM_LBUTTONUP
+        else AMsg := LM_RBUTTONUP;
+
+        // for multiselected listbox the message has to be send after current
+        // message or the list item selecting does not work, also see issue #33330
+        if ListView.MultiSelect then
+        begin
+          Result := WindowProc(Window, Msg, WParam, LParam);
+          if not (Msg = WM_LBUTTONDBLCLK) or Assigned(ListItem) then
+            PostMessage(Window, AMsg, 0, MakeLParam(WindowInfo^.MouseX, WindowInfo^.MouseY));
+          Exit;
+        end;
+
+        if Assigned(ListItem) then
+          PostMessage(Window, AMsg, 0, MakeLParam(WindowInfo^.MouseX, WindowInfo^.MouseY));
+      end;
+  end;
+  Result := WindowProc(Window, Msg, WParam, LParam);
+end;
+
 class function TWin32WSCustomListView.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 const
@@ -760,6 +772,7 @@ begin
   with Params do
   begin
     pClassName := WC_LISTVIEW;
+    SubClassWndProc := @ListViewProc;
     WindowTitle := StrCaption;
     Flags := Flags or LISTVIEWSTYLES[TListView(AWinControl).ViewStyle] or
       LVS_SINGLESEL or LVS_SHAREIMAGELISTS or
