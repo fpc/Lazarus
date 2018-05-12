@@ -831,7 +831,7 @@ begin
   Result:=nil;
   GetMsgFileNames(EnvironmentOptions.GetParsedCompilerFilename,'','',
     anEnglishFile,aTranslationFile);
-  writeln('TFPCMsgFilePool.LoadCurrentEnglishFile ',anEnglishFile);
+  //writeln('TFPCMsgFilePool.LoadCurrentEnglishFile ',anEnglishFile);
   if not FilenameIsAbsolute(anEnglishFile) then exit;
   Result:=LoadFile(anEnglishFile,UpdateFromDisk,AThread);
 end;
