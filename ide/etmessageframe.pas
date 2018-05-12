@@ -359,8 +359,8 @@ type
     function GetAboutView: TLMsgWndView;
     function GetViews(Index: integer): TLMsgWndView;
     procedure HideSearch;
-    procedure ImagesGetWidthForPPI(Sender: TCustomImageList; AImageWidth,
-      APPI: Integer; var AResultWidth: Integer);
+    procedure ImagesGetWidthForPPI(Sender: TCustomImageList; {%H-}AImageWidth,
+      {%H-}APPI: Integer; var AResultWidth: Integer);
     procedure SaveClicked(OnlyShown: boolean);
     procedure CopyAllClicked(OnlyShown: boolean);
     procedure CopyMsgToClipboard(OnlyFilename: boolean);

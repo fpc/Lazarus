@@ -31,7 +31,7 @@ const
   SubToolFPCAssembler = 'FPCAssembler';
 
   SubToolPas2js = 'Pas2JS';
-  SubToolPas2jsPriority = 101;
+  SubToolPas2jsPriority = 99;
 
   SubToolMake = 'make';
   SubToolMakePriority = 1000; // higher than FPC

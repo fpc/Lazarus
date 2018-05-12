@@ -40,10 +40,11 @@ type
 
   TPas2jsMsgFilePool = class(TFPCMsgFilePool)
   public
+    destructor Destroy; override;
     function LoadCurrentEnglishFile(UpdateFromDisk: boolean; AThread: TThread
       ): TFPCMsgFilePoolItem; override;
     procedure GetMsgFileNames({%H-}CompilerFilename, {%H-}TargetOS, {%H-}TargetCPU: string;
-      out anEnglishFile, aTranslationFile: string);
+      out anEnglishFile, aTranslationFile: string); override;
   end;
 
   { TIDEPas2jsParser }
@@ -59,9 +60,23 @@ type
 var
   Pas2jsMsgFilePool: TFPCMsgFilePool = nil;
 
+procedure RegisterPas2jsParser;
+
 implementation
 
+procedure RegisterPas2jsParser;
+begin
+  ExternalToolList.RegisterParser(TIDEPas2jsParser);
+end;
+
 { TPas2jsMsgFilePool }
+
+destructor TPas2jsMsgFilePool.Destroy;
+begin
+  inherited Destroy;
+  if Pas2jsMsgFilePool=Self then
+    Pas2jsMsgFilePool:=nil;
+end;
 
 function TPas2jsMsgFilePool.LoadCurrentEnglishFile(UpdateFromDisk: boolean;
   AThread: TThread): TFPCMsgFilePoolItem;
@@ -100,7 +115,7 @@ end;
 
 class function TIDEPas2jsParser.MsgFilePool: TFPCMsgFilePool;
 begin
-  Result:=inherited MsgFilePool;
+  Result:=Pas2jsMsgFilePool;
 end;
 
 initialization

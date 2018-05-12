@@ -525,6 +525,7 @@ begin
   ExternalTools:=TExternalTools.Create(Self);
   EnvOptsChanged;
   RegisterFPCParser;
+  RegisterPas2jsParser;
   RegisterMakeParser;
   ExternalToolList.RegisterParser(TDefaultParser);
 

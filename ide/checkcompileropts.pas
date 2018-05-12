@@ -334,7 +334,10 @@ begin
     CompileTool:=ExternalToolList.Add(dlgCCOTestToolCompilingEmptyFile);
     CompileTool.Reference(Self,ClassName);
     try
-      CompileTool.AddParsers(SubToolFPC);
+      if GuessCompilerType(CompilerFilename)=pcPas2js then
+        CompileTool.AddParsers(SubToolPas2js)
+      else
+        CompileTool.AddParsers(SubToolFPC);
       CompileTool.AddParsers(SubToolMake);
       CompileTool.Process.CurrentDirectory:=TestDir;
       CompileTool.Process.Executable:=CompilerFilename;

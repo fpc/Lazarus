@@ -118,7 +118,7 @@ type
     procedure EnterCriticalsection;
     procedure LeaveCriticalSection;
     procedure GetMsgFileNames(CompilerFilename, TargetOS, TargetCPU: string;
-      out anEnglishFile, aTranslationFile: string); // (main thread)
+      out anEnglishFile, aTranslationFile: string); virtual; // (main thread)
     property DefaultEnglishFile: string read FDefaultEnglishFile write SetDefaultEnglishFile;
     property DefaulTranslationFile: string read FDefaultTranslationFile write SetDefaultTranslationFile;
     property OnLoadFile: TETLoadFileEvent read FOnLoadFile write FOnLoadFile; // (main or workerthread)
@@ -831,6 +831,7 @@ begin
   Result:=nil;
   GetMsgFileNames(EnvironmentOptions.GetParsedCompilerFilename,'','',
     anEnglishFile,aTranslationFile);
+  writeln('TFPCMsgFilePool.LoadCurrentEnglishFile ',anEnglishFile);
   if not FilenameIsAbsolute(anEnglishFile) then exit;
   Result:=LoadFile(anEnglishFile,UpdateFromDisk,AThread);
 end;
@@ -1255,7 +1256,7 @@ begin
   end;
   MsgLine:=CreateMsgLine;
   MsgLine.Urgency:=mluProgress;
-  MsgLine.SubTool:=SubToolFPC;
+  MsgLine.SubTool:=DefaultSubTool;
   MsgLine.Filename:=AFilename;
   MsgLine.Msg:=OldP;
   inherited AddMsgLine(MsgLine);
@@ -1273,7 +1274,7 @@ begin
   if (not Result) and (not CompStr('Assembling ',p)) then exit;
   MsgLine:=CreateMsgLine;
   MsgLine.Urgency:=mluProgress;
-  MsgLine.SubTool:=SubToolFPC;
+  MsgLine.SubTool:=DefaultSubTool;
   MsgLine.Urgency:=mluProgress;
   MsgLine.Msg:=OldP;
   inherited AddMsgLine(MsgLine);
@@ -1390,7 +1391,7 @@ begin
   end;
   MsgLine:=CreateMsgLine;
   MsgLine.Urgency:=MsgType;
-  MsgLine.SubTool:=SubToolFPC;
+  MsgLine.SubTool:=DefaultSubTool;
   MsgLine.Msg:=p;
   MsgLine.TranslatedMsg:=TranslatedMsg;
   AddMsgLine(MsgLine);
@@ -1411,7 +1412,7 @@ begin
   if not ReadNumberWithThousandSep(p) then exit;
   if not ReadChar(p,' ') then exit;
   MsgLine:=CreateMsgLine;
-  MsgLine.SubTool:=SubToolFPC;
+  MsgLine.SubTool:=DefaultSubTool;
   MsgLine.Urgency:=mluProgress;
   MsgLine.Msg:=OldP;
   inherited AddMsgLine(MsgLine);
@@ -1433,7 +1434,7 @@ begin
   end;
   Result:=true;
   MsgLine:=CreateMsgLine;
-  MsgLine.SubTool:=SubToolFPC;
+  MsgLine.SubTool:=DefaultSubTool;
   if ShowLinesCompiled then
     MsgLine.Urgency:=mluImportant
   else
@@ -1469,7 +1470,7 @@ begin
   end;
   Result:=true;
   MsgLine:=CreateMsgLine;
-  MsgLine.SubTool:=SubToolFPC;
+  MsgLine.SubTool:=DefaultSubTool;
   MsgLine.Urgency:=mluProgress;
   MsgLine.Msg:=OldStart;
   inherited AddMsgLine(MsgLine);
@@ -1595,7 +1596,7 @@ begin
   if MsgType=mluNone then
     MsgType:=mluVerbose;
   MsgLine:=CreateMsgLine;
-  MsgLine.SubTool:=SubToolFPC;
+  MsgLine.SubTool:=DefaultSubTool;
   MsgLine.Urgency:=MsgType;
   if (fMsgID=FPCMsgIDLogo) and ReadFPCLogo(PatternItem,aFPCVersion) then begin
     if aFPCVersion<>PC_FullVersion then begin
@@ -1730,7 +1731,7 @@ begin
   if MsgLine.MsgID=MsgID then exit(true);
   Result:=false;
   if MsgLine.MsgID<>0 then exit;
-  if MsgLine.SubTool<>SubToolFPC then exit;
+  if MsgLine.SubTool<>DefaultSubTool then exit;
   if Item=nil then begin
     Item:=MsgFile.GetMsg(MsgID);
     if Item=nil then
@@ -2480,7 +2481,7 @@ begin
   //debugln(['TIDEFPCParser.FindSrcViaPPU i=',i,' PPUFilename="',PPUFilename,'" Filename="',aFilename,'"']);
   if (i>0) then begin
     PrevMsgLine:=Tool.WorkerMessages[i-1];
-    if (PrevMsgLine.SubTool=SubToolFPC)
+    if (PrevMsgLine.SubTool=DefaultSubTool)
     and (CompareFilenames(PPUFilename,PrevMsgLine.Attribute['PPU'])=0)
     and FilenameIsAbsolute(PrevMsgLine.Filename)
     and (CompareFilenames(ExtractFilename(PrevMsgLine.Filename),ExtractFilename(aFilename))=0)
@@ -2685,7 +2686,7 @@ begin
     if ShowLinesCompiled then MsgUrgency:=mluImportant;
   end;
   MsgLine:=CreateMsgLine;
-  MsgLine.SubTool:=SubToolFPC;
+  MsgLine.SubTool:=DefaultSubTool;
   MsgLine.Urgency:=MsgUrgency;
   MsgLine.Msg:=Msg;
   MsgLine.TranslatedMsg:=TranslatedMsg;
@@ -2821,10 +2822,10 @@ begin
           MsgItem:=MsgFile.GetMsg(fMsgID);
         Translate(p,MsgItem,TranslatedItem,TranslatedMsg,MsgType);
         if (TranslatedItem=nil) and (MsgItem=nil) then begin
-          if ConsoleVerbosity>=0 then
+          if ConsoleVerbosity>=1 then
             debugln(['TFPCParser.CheckForFileLineColMessage msgid not found: ',fMsgID]);
         end else if MsgType=mluNone then begin
-          if ConsoleVerbosity>=0 then
+          if ConsoleVerbosity>=1 then
             debugln(['TFPCParser.CheckForFileLineColMessage msgid has no type: ',fMsgID]);
         end;
       end;
@@ -2836,7 +2837,7 @@ begin
     Column:=0;
 
   MsgLine:=CreateMsgLine;
-  MsgLine.SubTool:=SubToolFPC;
+  MsgLine.SubTool:=DefaultSubTool;
   MsgLine.Urgency:=MsgType;
   aFilename:=GetString(FileStartPos,FileEndPos-FileStartPos);
   if PPUFileStartPos<>nil then
@@ -2868,7 +2869,7 @@ begin
     if not ReadString(p,') unit ') then exit;
   end;
   MsgLine:=CreateMsgLine;
-  MsgLine.SubTool:=SubToolFPC;
+  MsgLine.SubTool:=DefaultSubTool;
   MsgLine.Urgency:=mluProgress;
   MsgLine.Msg:=OldP;
   AddMsgLine(MsgLine);
@@ -3088,7 +3089,7 @@ begin
     Y:=MsgLine.Line;
     X:=MsgLine.Column;
     if (Y>0) and (X>0)
-    and (MsgLine.SubTool=SubToolFPC) and (MsgLine.Filename<>'')
+    and (MsgLine.SubTool=DefaultSubTool) and (MsgLine.Filename<>'')
     then begin
       if mlfTestBuildFile in MsgLine.Flags then
         aFilename:=MsgLine.Attribute[MsgAttrDiskFilename]
@@ -3106,7 +3107,7 @@ begin
         // short file name => 1. search the full file name in previous message
         if i>0 then begin
           PrevMsgLine:=Tool.WorkerMessages[i-1];
-          if (PrevMsgLine.SubTool=SubToolFPC)
+          if (PrevMsgLine.SubTool=DefaultSubTool)
           and FilenameIsAbsolute(PrevMsgLine.Filename)
           and (CompareFilenames(ExtractFilename(PrevMsgLine.Filename),ExtractFilename(aFilename))=0)
           then begin

@@ -295,7 +295,7 @@ begin
   MsgID:=0;
   Tool:=nil;
   if (Msg.Urgency>=mluError)
-  or (Msg.SubTool<>SubToolFPC)
+  or ((Msg.SubTool<>SubToolFPC) and (Msg.SubTool<>SubToolPas2js))
   or (Msg.MsgID=0)
   then exit;
   MsgID:=Msg.MsgID;
@@ -371,7 +371,8 @@ var
   Code: TCodeBuffer;
 begin
   Result:=false;
-  if (Msg=nil) or (Msg.SubTool<>SubToolFPC) or (Msg.MsgID<1)
+  if (Msg=nil) or (Msg.MsgID<1)
+  or ((Msg.SubTool<>SubToolFPC) and (Msg.SubTool<>SubToolPas2js))
   or (not Msg.HasSourcePosition) then exit;
 
   // Check: Local variable "$1" does not seem to be initialized
@@ -512,7 +513,7 @@ begin
   ToolData:=nil;
   IDETool:=nil;
   if (Msg.Urgency>=mluError)
-  or (Msg.SubTool<>SubToolFPC)
+  or ((Msg.SubTool<>SubToolFPC) and (Msg.SubTool<>SubToolPas2js))
   or (Msg.MsgID=0)
   then exit;
   ToolData:=Msg.GetToolData;
@@ -578,7 +579,7 @@ begin
     CurMsg:=Msg.Lines[i];
     if (CurMsg.MsgID<>Msg.MsgID)
     or (CurMsg.Urgency>=mluError)
-    or (CurMsg.SubTool<>SubToolFPC)
+    or ((CurMsg.SubTool<>SubToolFPC) and (CurMsg.SubTool<>SubToolPas2js))
     then continue;
     CurMsg.MarkFixed;
   end;
@@ -597,7 +598,10 @@ var
 begin
   Result:=false;
   // Check: Local variable "$1" not used
-  if not TIDEFPCParser.MsgLineIsId(Msg,5025,Identifier,Dummy) then
+  if IDEFPCParser.MsgLineIsId(Msg,5025,Identifier,Dummy)
+  or IDEPas2jsParser.MsgLineIsId(Msg,5025,Identifier,Dummy) then
+    // ok
+  else
     exit;
   if not Msg.HasSourcePosition or not IsValidIdent(Identifier) then exit;
 
@@ -676,10 +680,12 @@ var
 begin
   Result:=false;
   if (not Msg.HasSourcePosition) then exit;
-  if IDEFPCParser.MsgLineIsId(Msg,4046,aClassname,Dummy) then begin
+  if IDEFPCParser.MsgLineIsId(Msg,4046,aClassname,Dummy)
+  or IDEPas2jsParser.MsgLineIsId(Msg,4046,aClassname,Dummy) then begin
     // Constructing a class "$1" with abstract method "$2"
     Result:=true;
-  end else if IDEFPCParser.MsgLineIsId(Msg,5042,MissingMethod,Dummy) then begin
+  end else if IDEFPCParser.MsgLineIsId(Msg,5042,MissingMethod,Dummy)
+  or IDEFPCParser.MsgLineIsId(Msg,5042,MissingMethod,Dummy) then begin
     // No matching implementation for interface method "$1" found
     // The position is on the 'class' keyword
     // The MissingMethod is 'interfacename.procname'
@@ -765,12 +771,23 @@ function TQuickFixUnitNotFound_Remove.IsApplicable(Msg: TMessageLine; out
 begin
   Result:=false;
   if Msg=nil then exit;
-  if (Msg.SubTool<>SubToolFPC)
-  or (not Msg.HasSourcePosition)
-  or ((Msg.MsgID<>5023) // Unit "$1" not used in $2
-  and (Msg.MsgID<>FPCMsgIDCantFindUnitUsedBy) // Can't find unit $1 used by $2
-  and (Msg.MsgID<>10023)) // Unit $1 was not found but $2 exists
-  then exit;
+  if (Msg.SubTool=SubToolFPC) then begin
+    if Msg.HasSourcePosition
+    and ((Msg.MsgID=5023) // Unit "$1" not used in $2
+      or (Msg.MsgID=FPCMsgIDCantFindUnitUsedBy) // Can't find unit $1 used by $2
+      or (Msg.MsgID=10023)) // Unit $1 was not found but $2 exists
+    then
+      // ok
+    else exit;
+  end else if (Msg.SubTool=SubToolPas2js) then begin
+    if Msg.HasSourcePosition
+    and ((Msg.MsgID=5023) // Unit "$1" not used in $2
+      or (Msg.MsgID=3073)) // Can't find unit $1
+    then
+      // ok
+    else exit;
+  end else
+    exit;
 
   MissingUnitName:=Msg.Attribute[FPCMsgAttrMissingUnit];
   UsedByUnit:=Msg.Attribute[FPCMsgAttrUsedByUnit];
@@ -849,7 +866,10 @@ begin
   Result:=false;
   Identifier:='';
   // check: identifier not found "$1"
-  if not IDEFPCParser.MsgLineIsId(Msg,5000,Identifier,Dummy) then
+  if IDEFPCParser.MsgLineIsId(Msg,5000,Identifier,Dummy)
+  or IDEPas2jsParser.MsgLineIsId(Msg,3001,Identifier,Dummy) then
+    // ok
+  else
     exit;
   if not Msg.HasSourcePosition or not IsValidIdent(Identifier) then exit;
 
@@ -997,7 +1017,7 @@ function TQuickFix_HideWithIDEDirective.IsApplicable(Msg: TMessageLine): boolean
 begin
   Result:=false;
   if (Msg.Urgency>=mluError)
-  or (Msg.SubTool<>SubToolFPC)
+  or ((Msg.SubTool<>SubToolFPC) and (Msg.SubTool<>SubToolPas2js))
   or (not Msg.HasSourcePosition)
   or (mlfHiddenByIDEDirective in Msg.Flags)
   then exit;
