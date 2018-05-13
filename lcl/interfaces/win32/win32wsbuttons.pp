@@ -296,23 +296,20 @@ begin
   BitBtnHandle := BitBtn.Handle;
   ASpacing := BitBtn.Spacing;
 
-  {set spacing to LCL's default if bitbtn does not have glyph.issue #23255}
-  if not BitBtn.CanShowGlyph then
-    ASpacing := 0;
-
-  if BitBtn.CanShowGlyph then
+  if BitBtn.CanShowGlyph(True) then
   begin
     TBitBtnAceess(BitBtn).FButtonGlyph.GetImageIndexAndEffect(Low(TButtonState), BitBtn.Font.PixelsPerInch, 1,
       AImageRes, AIndex, AEffect);
     srcWidth := AImageRes.Width;
     srcHeight := AImageRes.Height;
-    if (srcWidth = 0) or (srcHeight = 0) then
-      ASpacing := 0;
   end else
   begin
     srcWidth := 0;
     srcHeight := 0;
   end;
+  {set spacing to LCL's default if bitbtn does not have glyph.issue #23255}
+  if (srcWidth = 0) or (srcHeight = 0) then
+    ASpacing := 0;
   newWidth := 0;
   newHeight := 0;
   BitBtnLayout := BidiAdjustButtonLayout(BitBtn.UseRightToLeftReading, BitBtn.Layout);
@@ -553,20 +550,18 @@ end;
 class procedure TWin32WSBitBtn.GetPreferredSize(const AWinControl: TWinControl;
   var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
 var
-  BitmapInfo: BITMAP; // Buffer for bitmap
   BitBtn: TBitBtn absolute AWinControl;
-  Glyph: TBitmap;
-  spacing, srcWidth: integer;
+  spacing, srcWidth, AIndex: integer;
+  AImageRes: TScaledImageListResolution;
+  AEffect: TGraphicsDrawEffect;
 begin
   if MeasureText(AWinControl, AWinControl.Caption, PreferredWidth, PreferredHeight) then
   begin
-    if BitBtn.CanShowGlyph then
+    if BitBtn.CanShowGlyph(True) then
     begin
-      Glyph := BitBtn.Glyph;
-      Windows.GetObject(Glyph.Handle, sizeof(BitmapInfo), @BitmapInfo);
-      srcWidth := BitmapInfo.bmWidth;
-      if BitBtn.NumGlyphs > 1 then
-        srcWidth := srcWidth div BitBtn.NumGlyphs;
+      TBitBtnAceess(BitBtn).FButtonGlyph.GetImageIndexAndEffect(Low(TButtonState), BitBtn.Font.PixelsPerInch, 1,
+        AImageRes, AIndex, AEffect);
+      srcWidth := AImageRes.Width;
       if BitBtn.Spacing = -1 then
         spacing := 8
       else
@@ -574,10 +569,10 @@ begin
       if BitBtn.Layout in [blGlyphLeft, blGlyphRight] then
       begin
         Inc(PreferredWidth, spacing + srcWidth);
-        if BitmapInfo.bmHeight > PreferredHeight then
-          PreferredHeight := BitmapInfo.bmHeight;
+        if AImageRes.Height > PreferredHeight then
+          PreferredHeight := AImageRes.Height;
       end else begin
-        Inc(PreferredHeight, spacing + BitmapInfo.bmHeight);
+        Inc(PreferredHeight, spacing + AImageRes.Height);
         if srcWidth > PreferredWidth then
           PreferredWidth := srcWidth;
       end;
