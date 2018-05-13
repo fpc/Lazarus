@@ -6396,6 +6396,7 @@ resourcestring
     +'s off} to unit "%s"';
   lisAddModifierOverload = 'Add modifier "overload"';
   lisAddModifierReintroduce = 'Add modifier "reintroduce"';
+  lisAddModifierOverride = 'Add modifier "override"';
   lisHideWithProjectOptionVm = 'Hide with project option (-vm%s)';
   lisHideWithPackageOptionVm = 'Hide with package option (-vm%s)';
   lisRemoveLocalVariable3 = 'Remove local variable "%s"';

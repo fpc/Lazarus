@@ -44,15 +44,38 @@ general_i_abslines_compiled=01008_I_$1 lines compiled, $2 sec$3
 general_f_compilation_aborted=01018_F_Compilation aborted
 % Compilation was aborted.
 
+sym_e_id_not_found=03001_E_Identifier not found "$1"
+% The compiler doesn't know this symbol. Usually happens when you misspell
+% the name of a variable or procedure, or when you forget to declare a
+% variable.
+parser_h_function_hides_nonvirtualproc=03021_H_function hides identifier at "$1". Use overload or reintroduce
+% A function hides an identifier.
+parser_w_method_hides_virtualmethod=03077_W_Method "$1" hides method of base type "$2" at $3
+% A method that is declared \var{virtual} in a parent class, should be
+% overridden in the descendant class with the \var{override} directive. If you
+% don't specify the \var{override} directive, you will hide the parent method;
+% you will not override it.
 parser_i_compiling=03104_I_Compiling $1 ...
 % When you turn on information messages (\var{-vi}), the compiler tells you
-% what units it is recompiling.
+% what units it is (re)compiling.
+
+type_w_instance_with_abstract=Constructing a class "$1" with abstract method "$2"
+% An instance of a class is created which contains non-implemented abstract
+% methods. This will probably lead to a runtime error 211 in the code if that
+% routine is ever called. All abstract methods should be overridden.
+
+sym_h_local_identifier_not_used=05025_H_Local variable "$1" not used
+% You have declared, but not used, a variable in a procedure or function
+% implementation.
+sym_e_no_matching_implementation_found=05042_E_No matching implementation for interface method "$1" found
+% There was no matching method found which could implement the interface
+% method. Check argument types and result type of the methods.
 
 #
 # Logo (option -l)
 #
 option_logo=11023_[
-Pas2JS Compiler version $PAS2JSFULLVERSION [$FPCDATE] for $FPCCPU
+Pas2JS Compiler version $PAS2JSVERSIONTXT [$PAS2JSDATE] for $PAS2JSSRCOS-$PAS2JSSRCCPU
 Copyright (c) 2016-2018 by Mattias Gaertner and others
 ]
 

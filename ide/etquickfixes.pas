@@ -310,6 +310,10 @@ begin
     // function hides identifier at "$1". Use overload or reintroduce
     MsgID:=3021;
     Result:=true;
+  end else if IDEPas2jsParser.MsgLineIsId(Msg,3077,Value1,Value2) then begin
+    // Method "$1" hides method of base type "$2" at $3
+    MsgID:=3077;
+    Result:=true;
   end;
 end;
 
@@ -318,15 +322,15 @@ procedure TQuickFixInheritedMethodIsHidden_AddModifier.CreateMenuItems(
 var
   i, MsgID: Integer;
   Msg: TMessageLine;
-  aCaption: String;
 begin
   for i:=0 to Fixes.LineCount-1 do begin
     Msg:=Fixes.Lines[i];
     if not IsApplicable(Msg,MsgID) then continue;
-    aCaption:=lisAddModifierOverload;
-    Fixes.AddMenuItem(Self,Msg,aCaption,1);
-    aCaption:=lisAddModifierReintroduce;
-    Fixes.AddMenuItem(Self,Msg,aCaption,2);
+    if ((Msg.SubTool=SubToolFPC) and (MsgID=3057))
+    or ((Msg.SubTool=SubToolPas2js) and (MsgID=3077)) then
+      Fixes.AddMenuItem(Self, Msg, lisAddModifierOverride, 3);
+    Fixes.AddMenuItem(Self,Msg,lisAddModifierOverload,1);
+    Fixes.AddMenuItem(Self,Msg,lisAddModifierReintroduce,2);
   end;
 end;
 
@@ -354,10 +358,11 @@ begin
   OldChange:=LazarusIDE.OpenEditorsOnCodeToolChange;
   LazarusIDE.OpenEditorsOnCodeToolChange:=true;
   try
-    if Fixes.CurrentCommand.Tag=2 then
-      aModifier:='reintroduce'
-    else
-      aModifier:='overload';
+    case Fixes.CurrentCommand.Tag of
+    2: aModifier:='reintroduce';
+    3: aModifier:='override';
+    else aModifier:='overload';
+    end;
 
     if not CodeToolBoss.AddProcModifier(Code,Msg.Column,Msg.Line,aModifier) then
     begin
