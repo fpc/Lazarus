@@ -128,7 +128,7 @@ var
 begin
   //WriteLn('[TCocoaWSBitBtn.SetGlyph]');
   Img := nil;
-  if ABitBtn.CanShowGlyph then
+  if ABitBtn.CanShowGlyph(True) then
   begin
     AGlyph := TBitmap.Create;
     AValue.GetImageIndexAndEffect(bsUp, ABitBtn.Font.PixelsPerInch,
@@ -158,7 +158,7 @@ var
   ImagePos: NSCellImagePosition;
 begin
 
-  if (ABitBtn.CanShowGlyph) then
+  if ABitBtn.CanShowGlyph(True) then
     ImagePos := LCLGlyphPosToCocoa(AValue)
   else
     ImagePos := NSNoImage;
