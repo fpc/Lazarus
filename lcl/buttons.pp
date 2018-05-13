@@ -199,7 +199,7 @@ type
     procedure LoadGlyphFromResourceName(Instance: THandle; const AName: String);
     procedure LoadGlyphFromLazarusResource(const AName: String);
     procedure LoadGlyphFromStock(idButton: Integer);
-    function CanShowGlyph: Boolean;
+    function CanShowGlyph(const AWithShowMode: Boolean = False): Boolean;
   public
     property Caption stored IsCaptionStored;
     property DefaultCaption: Boolean read FDefaultCaption write FDefaultCaption default False;

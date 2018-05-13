@@ -90,9 +90,11 @@ begin
     Images := nil;
 end;
 
-function TCustomBitBtn.CanShowGlyph: Boolean;
+function TCustomBitBtn.CanShowGlyph(const AWithShowMode: Boolean): Boolean;
 begin
   Result := FButtonGlyph.CanShowGlyph;
+  if AWithShowMode then
+    Result := Result and FButtonGlyph.CanShow;
 end;
 
 function TCustomBitBtn.GetGlyph : TBitmap;

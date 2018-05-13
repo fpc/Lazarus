@@ -99,7 +99,7 @@ begin
 
   TQtBitBtn(ABitBtn.Handle).GlyphLayout := Ord(ABitBtn.Layout);
   AIcon := QIcon_create();
-  if ABitBtn.CanShowGlyph then
+  if ABitBtn.CanShowGlyph(True) then
   begin
     AGlyph := TBitmap.Create;
     APixmap := QPixmap_create();
