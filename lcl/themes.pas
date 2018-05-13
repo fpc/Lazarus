@@ -487,7 +487,8 @@ type
       AContentRect: PRect = nil); virtual;
     procedure DrawElement(DC: HDC; Details: TThemedElementDetails; const R: TRect; ClipRect: PRect = nil); virtual;
     procedure DrawIcon(DC: HDC; Details: TThemedElementDetails; const R: TRect; himl: HIMAGELIST; Index: Integer); virtual; overload;
-    procedure DrawIcon(ACanvas: TPersistent; Details: TThemedElementDetails; const P: TPoint; AImageList: TPersistent; Index: Integer); virtual; overload;
+    procedure DrawIcon(ACanvas: TPersistent; Details: TThemedElementDetails; const P: TPoint; AImageList: TPersistent; Index: Integer;
+      AImageWidth: Integer = 0; ARefControl: TPersistent = nil); virtual; overload;
     procedure DrawParentBackground(Window: HWND; Target: HDC; Details: PThemedElementDetails; OnlyIfTransparent: Boolean;
       Bounds: PRect = nil);
     procedure DrawText(DC: HDC; Details: TThemedElementDetails; const S: String; R: TRect; Flags, Flags2: Cardinal); virtual; overload;
@@ -514,7 +515,8 @@ const
   ThemeManagerCopyright: string = 'Theme manager © 2001-2005 Mike Lischke';
 type
   TThemesImageDrawEvent = procedure(AImageList: TPersistent; ACanvas: TPersistent;
-                     AX, AY, AIndex: Integer; ADrawEffect: TGraphicsDrawEffect);
+                     AX, AY, AIndex: Integer; ADrawEffect: TGraphicsDrawEffect;
+                     AImageWidth: Integer; ARefControl: TPersistent);
 var
   ThemesImageDrawEvent: TThemesImageDrawEvent = nil; // set by unit ImgList if used
 
@@ -2266,7 +2268,7 @@ end;
 
 procedure TThemeServices.DrawIcon(ACanvas: TPersistent;
   Details: TThemedElementDetails; const P: TPoint; AImageList: TPersistent;
-  Index: Integer);
+  Index: Integer; AImageWidth: Integer; ARefControl: TPersistent);
 var
   AEffect: TGraphicsDrawEffect;
 begin
@@ -2281,7 +2283,7 @@ begin
     AEffect := gdeHighlighted
   else
     AEffect := gdeNormal;
-  ThemesImageDrawEvent(AImageList, ACanvas, P.X, P.Y, Index, AEffect);
+  ThemesImageDrawEvent(AImageList, ACanvas, P.X, P.Y, Index, AEffect, AImageWidth, ARefControl);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------

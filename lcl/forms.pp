@@ -2247,12 +2247,17 @@ end;
 //==============================================================================
 
 procedure ImageDrawEvent(AImageList: TPersistent; ACanvas: TPersistent;
-                     AX, AY, AIndex: Integer; ADrawEffect: TGraphicsDrawEffect);
+                     AX, AY, AIndex: Integer; ADrawEffect: TGraphicsDrawEffect;
+                     AImageWidth: Integer; ARefControl: TPersistent);
 var
   ImageList: TCustomImageList absolute AImageList;
   Canvas: TCanvas absolute ACanvas;
+  RefControl: TControl absolute ARefControl;
 begin
-  ImageList.Draw(Canvas,AX,AY,AIndex,ADrawEffect);
+  if (RefControl<>nil) and ImageList.Scaled then
+    ImageList.DrawForControl(Canvas,AX,AY,AIndex,AImageWidth,RefControl,ADrawEffect)
+  else
+    ImageList.Draw(Canvas,AX,AY,AIndex,ADrawEffect)
 end;
 
 function IsFormDesignFunction(AForm: TWinControl): boolean;
