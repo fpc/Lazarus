@@ -197,6 +197,7 @@ type
     procedure UpdateToolbar;
   protected
     procedure Loaded; override;
+    procedure ActivateControl(aWinControl: TWinControl);
   public
     function AddSearch(const ResultsName: string;
                        const SearchText: string;
@@ -499,7 +500,7 @@ begin
     SearchInListEdit.FilteredTreeview := CurrentTV;
     SearchInListEdit.Filter := CurrentTV.SearchInListPhrases;
     if FFocusTreeViewInOnChange then
-      ActiveControl := CurrentTV;
+      ActivateControl(CurrentTV);
   end;
   UpdateToolbar;
 end;
@@ -629,10 +630,10 @@ begin
   end;
   UpdateToolbar;
   if FFocusTreeViewInEndUpdate and Assigned(CurrentTV) then
-    GetParentForm(Self).ActiveControl := CurrentTV
+    ActivateControl(CurrentTV)
   else
   if SearchInListEdit.CanFocus then
-    GetParentForm(Self).ActiveControl := SearchInListEdit;
+    ActivateControl(SearchInListEdit);
 end;
 
 procedure TSearchResultsView.Parse_Search_Phrases(var slPhrases: TStrings);
@@ -786,7 +787,8 @@ begin
   Result:= nil;
   if Assigned(ResultsNoteBook) then
   begin
-    FFocusTreeViewInEndUpdate := not (Assigned(ActiveControl) and SearchInListEdit.IsParentOf(ActiveControl));
+    FFocusTreeViewInEndUpdate := not (Assigned(ResultsNoteBook.ActivePage)
+      and SearchInListEdit.IsParentOf(ResultsNoteBook.ActivePage));
     with ResultsNoteBook do
     begin
       FWorkedSearchText:=BeautifyPageName(ResultsName);
@@ -867,6 +869,19 @@ begin
   inherited Loaded;
 
   ActiveControl := ResultsNoteBook;
+end;
+
+procedure TSearchResultsView.ActivateControl(aWinControl: TWinControl);
+var
+  aForm: TCustomForm;
+begin
+  if not aWinControl.CanFocus then exit;
+  if Parent=nil then
+    ActiveControl:=aWinControl
+  else begin
+    aForm:=GetParentForm(Self);
+    if aForm<>nil then aForm.ActiveControl:=aWinControl;
+  end;
 end;
 
 procedure TSearchResultsView.TreeViewAdvancedCustomDrawItem(
