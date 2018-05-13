@@ -5,7 +5,8 @@ unit pjsprojectoptions;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, StdCtrls, ExtCtrls, Spin, projectintf, CompOptsIntf, IDEOptionsIntf;
+  Classes, SysUtils, Forms, Controls, StdCtrls, ExtCtrls, Spin, projectintf,
+  CompOptsIntf, IDEOptionsIntf, LazLoggerBase;
 
 type
 
@@ -77,31 +78,53 @@ begin
   RunParams.LaunchingApplicationPathPlusParams:='$(Pas2JSNodeJS) "$MakeDir($(ProjPath))$NameOnly($(ProjFile)).js"';
 end;
 
-Procedure SetPasJSCompileOptions(CompOpts: TLazCompilerOptions; Opts : String);
+Procedure SetPasJSCompileOptions(CompOpts: TLazCompilerOptions;
+  TargetOS, CustomOpts : String);
 
 Var
   Compiler : String;
 
 begin
-  CompOpts.Win32GraphicApp:=false;
+  DebugLn(['SetPasJSCompileOptions START']);
   CompOpts.UnitOutputDirectory:='js';
-  if Length(PJSOptions.CompilerFilename)=0 then
-     Compiler:='$MakeExe(pas2js)'
+
+  CompOpts.TargetFileExt:='.js';
+  CompOpts.TargetOS:=TargetOS;
+
+  CompOpts.AllowLabel:=false;
+  CompOpts.UseAnsiStrings:=false;
+
+  CompOpts.IOChecks:=false;
+  CompOpts.StackChecks:=false;
+  CompOpts.SmartLinkUnit:=false;
+
+  CompOpts.GenerateDebugInfo:=false;
+  CompOpts.DebugInfoType:=dsAuto;
+  CompOpts.UseLineInfoUnit:=false;
+  CompOpts.UseHeaptrc:=false;
+  CompOpts.Win32GraphicApp:=false;
+
+  CompOpts.WriteFPCLogo:=true;
+  CompOpts.CustomOptions:=CustomOpts;
+
+  if PJSOptions.CompilerFilename='' then
+    Compiler:='$MakeExe(pas2js)'
   else
-     Compiler:=AnsiQuotedStr(PJSOptions.CompilerFilename, '"');
-  CompOpts.SetAlternativeCompile(Compiler+' '+Opts,true);
+    Compiler:=PJSOptions.CompilerFilename;
+  CompOpts.CompilerPath:=Compiler;
+  debugln(['Hint: (lazarus) [pjsprojectoptions.SetPasJSCompileOptions] Compiler=',CompOpts.CompilerPath,' TargetOS=',CompOpts.TargetOS,' Custom="',CompOpts.CustomOptions,'"']);
 end;
 
 Procedure SetDefaultWebCompileOptions(CompOpts: TLazCompilerOptions);
 
 begin
-  SetPasJSCompileOptions(CompOpts,'-Jirtl.js -Jc -Jminclude -Tbrowser "-Fu$(ProjUnitPath)" $Name($(ProjFile))');
+  SetPasJSCompileOptions(CompOpts,'browser','-Jeutf-8 -Jirtl.js -Jc -Jminclude');
 end;
 
 Procedure SetDefaultNodeJSCompileOptions(CompOpts: TLazCompilerOptions);
 
 begin
-  SetPasJSCompileOptions(CompOpts,'-Jc -Jminclude -Tnodejs "-Fu$(ProjUnitPath)" $Name($(ProjFile))');
+  SetPasJSCompileOptions(CompOpts,'nodejs','-Jeutf-8 -Jminclude');
 end;
 
 {$R *.lfm}
