@@ -350,14 +350,14 @@ var
   AEffect: TGraphicsDrawEffect;
   AImageRes: TScaledImageListResolution;
 begin
-  ShowGlyph := ABitBtn.CanShowGlyph;
+  ShowGlyph := ABitBtn.CanShowGlyph(True);
   if ShowGlyph then
   begin
     ImageWidget := BitBtnInfo^.ImageWidget;
     AGlyph := TBitmap.Create;
     AValue.GetImageIndexAndEffect(AButtonState, ABitBtn.Font.PixelsPerInch,
       ABitBtn.GetCanvasScaleFactor, AImageRes, AIndex, AEffect);
-    if (AIndex <> -1) and (AImageRes.Resolution <> nil) then
+    if (AIndex <> -1) and AImageRes.Valid then
       AImageRes.GetBitmap(AIndex, AGlyph, AEffect);
     ShowGlyph := not AGlyph.Empty;
     if ShowGlyph then
