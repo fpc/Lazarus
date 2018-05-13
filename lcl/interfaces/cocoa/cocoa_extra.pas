@@ -27,6 +27,14 @@ uses
   MacOSAll, CocoaAll;
 
 type
+  NSImageScaling = NSUInteger;
+const // NSImageScaling values
+  NSImageScaleProportionallyDown = 0;
+  NSImageScaleAxesIndependently = 1;
+  NSImageScaleNone = 2;
+  NSImageScaleProportionallyUpOrDown = 3;
+
+type
   NSMenuFix = objccategory external (NSMenu)
     function itemAtIndex(index: NSInteger): NSMenuItem; message 'itemAtIndex:';
   end;
@@ -38,6 +46,7 @@ type
 
   NSButtonSoundExtensionsCategory = objccategory external (NSButton)
     function intrinsicContentSize(): NSSize; message 'intrinsicContentSize';
+    procedure setImageScaling(aScaling: NSImageScaling); message 'setImageScaling:';
   end;
 
   // The following dummy categories fix bugs in the Cocoa bindings available in FPC

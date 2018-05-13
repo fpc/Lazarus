@@ -125,6 +125,7 @@ var
   AIndex: Integer;
   AEffect: TGraphicsDrawEffect;
   AImgRes: TScaledImageListResolution;
+  ImgSize: NSSize;
 begin
   //WriteLn('[TCocoaWSBitBtn.SetGlyph]');
   Img := nil;
@@ -132,13 +133,20 @@ begin
   begin
     AGlyph := TBitmap.Create;
     AValue.GetImageIndexAndEffect(bsUp, ABitBtn.Font.PixelsPerInch,
-      1{To-Do: ABitBtn.GetCanvasScaleFactor}, AImgRes, AIndex, AEffect);
+      ABitBtn.GetCanvasScaleFactor, AImgRes, AIndex, AEffect);
     AImgRes.GetBitmap(AIndex, AGlyph, AEffect);
     Img := TCocoaBitmap(AGlyph.Handle).image;
+    if AImgRes.Resolution.ImageList.Scaled then // resize only if the image list is scaled
+    begin
+      ImgSize := Img.size;
+      ImgSize.height := ImgSize.height / ABitBtn.GetCanvasScaleFactor;
+      ImgSize.width := ImgSize.width / ABitBtn.GetCanvasScaleFactor;
+      Img.setSize(ImgSize);
+    end;
     lButtonHandle := TCocoaButton(ABitBtn.Handle);
     lButtonHandle.setImage(Img);
     lButtonHandle.setImagePosition(LCLGlyphPosToCocoa(ABitBtn.Layout));
-    //To-Do: tell Cocoa lButtonHandle should not scale the image (and enable ABitBtn.GetCanvasScaleFactor above)
+    lButtonHandle.setImageScaling(NSImageScaleNone); // do not scale - retina scaling is done above with Img.setSize
     if Assigned(lButtonHandle.Glyph) then
       FreeAndNil(lButtonHandle.Glyph);
     lButtonHandle.Glyph := AGlyph;
