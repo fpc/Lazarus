@@ -346,9 +346,6 @@ begin
   if FCount = 0 then Exit;
   if HandleAllocated
   then TWSCustomImageListResolutionClass(WidgetSetClass).Clear(Self);
-  {$ifdef windows}
-  DestroyReference; //Issue #0029905: images added after clear aren't shown if width or height changed
-  {$endif}
   SetLength(FData, 0);
   FAllocCount := 0;
 end;
