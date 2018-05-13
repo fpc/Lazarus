@@ -79,7 +79,7 @@ type
     function UsedInSelection: boolean;
   end;
 
-  { TExtractProcTool }
+  { TExtractCodeTool }
   
   TExtractProcType = (
     eptProcedure,
@@ -92,7 +92,7 @@ type
     eptPublishedMethod
     );
 
-  TExtractProcTool = class(TCodeCompletionCodeTool)
+  TExtractCodeTool = class(TCodeCompletionCodeTool)
   protected
     function ScanNodesForVariables(const StartPos, EndPos: TCodeXYPosition;
         out BlockStartPos, BlockEndPos: integer; // the selection
@@ -191,9 +191,9 @@ begin
   Result:=ReadInSelection or WriteInSelection;
 end;
 
-{ TExtractProcTool }
+{ TExtractCodeTool }
 
-function TExtractProcTool.InitExtractProc(const StartPos,
+function TExtractCodeTool.InitExtractProc(const StartPos,
   EndPos: TCodeXYPosition; out MethodPossible, SubProcPossible,
   SubProcSameLvlPossible: boolean): boolean;
 var
@@ -238,7 +238,7 @@ begin
   Result:=true;
 end;
 
-function TExtractProcTool.CheckExtractProc(const StartPos,
+function TExtractCodeTool.CheckExtractProc(const StartPos,
   EndPos: TCodeXYPosition; out MethodPossible, SubProcPossible,
   SubProcSameLvlPossible: boolean; out MissingIdentifiers: TAVLTree;
   VarTree: TAVLTree): boolean;
@@ -263,7 +263,7 @@ begin
   Result:=true;
 end;
 
-function TExtractProcTool.ExtractProc(const StartPos, EndPos: TCodeXYPosition;
+function TExtractCodeTool.ExtractProc(const StartPos, EndPos: TCodeXYPosition;
   ProcType: TExtractProcType; const ProcName: string;
   IgnoreIdentifiers: TAVLTree; out NewPos: TCodeXYPosition; out NewTopLine,
   BlockTopLine, BlockBottomLine: integer;
@@ -1084,7 +1084,7 @@ begin
   Result:=true;
 end;
 
-function TExtractProcTool.RemoveWithBlock(const CursorPos: TCodeXYPosition;
+function TExtractCodeTool.RemoveWithBlock(const CursorPos: TCodeXYPosition;
   SourceChangeCache: TSourceChangeCache): boolean;
 type
   TWithVarCache = record
@@ -1520,7 +1520,7 @@ begin
   end;
 end;
 
-function TExtractProcTool.AddWithBlock(const StartPos, EndPos: TCodeXYPosition;
+function TExtractCodeTool.AddWithBlock(const StartPos, EndPos: TCodeXYPosition;
   const WithExpr: string; Candidates: TStrings;
   SourceChangeCache: TSourceChangeCache): boolean;
 var
@@ -1696,12 +1696,12 @@ begin
   Result:=true;
 end;
 
-procedure TExtractProcTool.CalcMemSize(Stats: TCTMemStats);
+procedure TExtractCodeTool.CalcMemSize(Stats: TCTMemStats);
 begin
   inherited CalcMemSize(Stats);
 end;
 
-function TExtractProcTool.ScanNodesForVariables(const StartPos,
+function TExtractCodeTool.ScanNodesForVariables(const StartPos,
   EndPos: TCodeXYPosition; out BlockStartPos, BlockEndPos: integer;
   out BlockNode: TCodeTreeNode;
   VarTree: TAVLTree;  // tree of TExtractedProcVariable
@@ -1973,7 +1973,7 @@ begin
   Result:=true;
 end;
 
-function TExtractProcTool.CheckIfRangeOnSameLevel(const StartPos,
+function TExtractCodeTool.CheckIfRangeOnSameLevel(const StartPos,
   EndPos: TCodeXYPosition; out CleanStartPos, CleanEndPos: integer; out
   StartNode: TCodeTreeNode): boolean;
 var

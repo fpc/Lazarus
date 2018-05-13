@@ -147,7 +147,7 @@ type
     function ExtractProcHeadWithGroup(ProcNode: TCodeTreeNode;
         Attr: TProcHeadAttributes): TPascalMethodHeader;
     function ExtractProcedureHeader(CursorPos: TCodeXYPosition;
-      Attributes: TProcHeadAttributes; var ProcHead: string): boolean;
+      Attributes: TProcHeadAttributes; out ProcHead: string): boolean;
     function ExtractClassNameOfProcNode(ProcNode: TCodeTreeNode;
         AddParentClasses: boolean = true; KeepGeneric: boolean = false): string;
     function ProcNodeHasSpecifier(ProcNode: TCodeTreeNode;
@@ -821,7 +821,7 @@ begin
 end;
 
 function TPascalReaderTool.ExtractProcedureHeader(CursorPos: TCodeXYPosition;
-  Attributes: TProcHeadAttributes; var ProcHead: string): boolean;
+  Attributes: TProcHeadAttributes; out ProcHead: string): boolean;
 var
   CleanCursorPos: integer;
   ANode: TCodeTreeNode;

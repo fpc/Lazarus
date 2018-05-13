@@ -298,8 +298,10 @@ type
       ClearNicePos: boolean = true); virtual;
     procedure RaiseExceptionFmt(id: int64; const AMessage: string;
       const args: array of const; ClearNicePos: boolean = true);
+    procedure RaiseExceptionAtCleanPos(id: int64; const AMessage: string;
+      CleanPos: integer); virtual;
     procedure RaiseExceptionAtErrorPos(id: int64; const AMessage: string;
-      ClearNicePos: boolean = true); virtual;
+      ClearNicePos: boolean = true); virtual; // set ErrorPosition before calling this
     // permanent errors, that the parser will raise again
     procedure SaveRaiseException(id: int64; const AMessage: string;
       ClearNicePos: boolean = true); virtual;
@@ -403,6 +405,13 @@ procedure TCustomCodeTool.RaiseExceptionFmt(id: int64; const AMessage: string;
   const args: array of const; ClearNicePos: boolean);
 begin
   RaiseException(id,Format(AMessage,args),ClearNicePos);
+end;
+
+procedure TCustomCodeTool.RaiseExceptionAtCleanPos(id: int64;
+  const AMessage: string; CleanPos: integer);
+begin
+  MoveCursorToCleanPos(CleanPos);
+  RaiseException(id,AMessage);
 end;
 
 procedure TCustomCodeTool.RaiseExceptionAtErrorPos(id: int64;

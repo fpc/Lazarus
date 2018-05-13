@@ -504,7 +504,9 @@ type
     function FindCodeContext(Code: TCodeBuffer; X,Y: integer;
           out CodeContexts: TCodeContextInfo): boolean;
     function ExtractProcedureHeader(Code: TCodeBuffer; X,Y: integer;
-          Attributes: TProcHeadAttributes; var ProcHead: string): boolean;
+          Attributes: TProcHeadAttributes; out ProcHead: string): boolean;
+    function HasInterfaceRegisterProc(Code: TCodeBuffer;
+          out HasRegisterProc: boolean): boolean;
 
     // gather identifiers (i.e. all visible)
     function GatherUnitNames(Code: TCodeBuffer): Boolean;
@@ -656,6 +658,10 @@ type
     function InsertStatements(InsertPos: TInsertStatementPosDescription;
           const Statements: string): boolean;
 
+    // alter proc
+    function AddProcModifier(Code: TCodeBuffer;  X, Y: integer;
+          const aModifier: string): boolean;
+
     // extract proc (creates a new procedure from code in selection)
     function CheckExtractProc(Code: TCodeBuffer;
           const StartPoint, EndPoint: TPoint;
@@ -670,7 +676,7 @@ type
           FunctionResultVariableStartPos: integer = 0
           ): boolean;
 
-    // Assign method
+    // 'Assign' method
     function FindAssignMethod(Code: TCodeBuffer; X, Y: integer;
           out Tool: TCodeTool; out ClassNode: TCodeTreeNode;
           out AssignDeclNode: TCodeTreeNode;
@@ -758,10 +764,6 @@ type
                        {%H-}LFMNode: TLFMTreeNode;
                        const IdentName: string; var IsDefined: boolean);
 
-    // register proc
-    function HasInterfaceRegisterProc(Code: TCodeBuffer;
-          out HasRegisterProc: boolean): boolean;
-          
     // Delphi to Lazarus conversion
     function ConvertDelphiToLazarusSource(Code: TCodeBuffer;
           AddLRSCode: boolean): boolean;
@@ -829,7 +831,7 @@ type
           out ListOfPInstancePropInfo: TFPList;
           const OverrideGetMethodName: TOnGetMethodname = nil): boolean;
 
-    // functions for events in the object inspector
+    // utilities for the object inspector
     function GetCompatiblePublishedMethods(Code: TCodeBuffer;
           const AClassName: string;
           PropInstance: TPersistent; const PropName: string;
@@ -2388,7 +2390,7 @@ begin
 end;
 
 function TCodeToolManager.ExtractProcedureHeader(Code: TCodeBuffer; X,
-  Y: integer; Attributes: TProcHeadAttributes; var ProcHead: string): boolean;
+  Y: integer; Attributes: TProcHeadAttributes; out ProcHead: string): boolean;
 var
   CursorPos: TCodeXYPosition;
 begin
@@ -2408,6 +2410,22 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.ExtractProcedureHeader END ');
   {$ENDIF}
+end;
+
+function TCodeToolManager.HasInterfaceRegisterProc(Code: TCodeBuffer;
+  out HasRegisterProc: boolean): boolean;
+begin
+  Result:=false;
+  HasRegisterProc:=false;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.HasInterfaceRegisterProc A ',Code.Filename);
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.HasInterfaceRegisterProc(HasRegisterProc);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
 end;
 
 function TCodeToolManager.GatherUnitNames(Code: TCodeBuffer): Boolean;
@@ -3151,6 +3169,26 @@ begin
   if not InitCurCodeTool(InsertPos.CodeXYPos.Code) then exit;
   try
     Result:=FCurCodeTool.InsertStatements(InsertPos,Statements,SourceChangeCache);
+  except
+    on e: Exception do HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.AddProcModifier(Code: TCodeBuffer; X, Y: integer;
+  const aModifier: string): boolean;
+var
+  CursorPos: TCodeXYPosition;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.ExtractOperand A ',Code.Filename);
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  CursorPos.X:=X;
+  CursorPos.Y:=Y;
+  CursorPos.Code:=Code;
+  try
+    Result:=FCurCodeTool.AddProcModifier(CursorPos,aModifier,SourceChangeCache);
   except
     on e: Exception do HandleException(e);
   end;
@@ -5742,22 +5780,6 @@ begin
     Result:=FCurCodeTool.FindDanglingComponentEvents(AClassName,RootComponent,
                               ExceptionOnClassNotFound,SearchInAncestors,
                               ListOfPInstancePropInfo,OverrideGetMethodName);
-  except
-    on e: Exception do Result:=HandleException(e);
-  end;
-end;
-
-function TCodeToolManager.HasInterfaceRegisterProc(Code: TCodeBuffer;
-  out HasRegisterProc: boolean): boolean;
-begin
-  Result:=false;
-  HasRegisterProc:=false;
-  {$IFDEF CTDEBUG}
-  DebugLn('TCodeToolManager.HasInterfaceRegisterProc A ',Code.Filename);
-  {$ENDIF}
-  if not InitCurCodeTool(Code) then exit;
-  try
-    Result:=FCurCodeTool.HasInterfaceRegisterProc(HasRegisterProc);
   except
     on e: Exception do Result:=HandleException(e);
   end;
