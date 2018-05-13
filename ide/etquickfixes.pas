@@ -160,7 +160,6 @@ type
   { TQuickFixInheritedMethodIsHidden_AddModifier - add proc modifier 'overload' or 'reintroduce' }
 
   TQuickFixInheritedMethodIsHidden_AddModifier = class(TMsgQuickFix)
-    //blaunit.pas(23,15) Warning: (3057) An inherited method is hidden by "DoIt(LongInt);"
     function IsApplicable(Msg: TMessageLine; out MsgID: integer): boolean;
     procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
     procedure QuickFix({%H-}Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
@@ -306,11 +305,12 @@ begin
     MsgID:=3057;
     Result:=true
   end
-  else if IDEPas2jsParser.MsgLineIsId(Msg,3021,Value1,Value2) then begin
+  else if (Msg.SubTool=SubToolPas2js) and (Msg.MsgID=3021) then begin
     // function hides identifier at "$1". Use overload or reintroduce
     MsgID:=3021;
     Result:=true;
-  end else if IDEPas2jsParser.MsgLineIsId(Msg,3077,Value1,Value2) then begin
+  end
+  else if (Msg.SubTool=SubToolPas2js) and (Msg.MsgID=3077) then begin
     // Method "$1" hides method of base type "$2" at $3
     MsgID:=3077;
     Result:=true;
