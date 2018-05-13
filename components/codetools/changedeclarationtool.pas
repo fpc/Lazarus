@@ -964,10 +964,16 @@ begin
       if (CurPos.Flag=cafEdgedBracketOpen) then begin
         ReadTilBracketClose(false);
         ReadNextAtom;
-      end else if UpAtomIs('MESSAGE') then begin
+      end else if UpAtomIs('MESSAGE') or UpAtomIs('DISPID') or UpAtomIs('ENUMERATOR')
+      or UpAtomIs('DEPRECATED') then begin
         ReadNextAtom;
         ReadConstant(true,false,[]);
-      end else if UpAtomIs('EXTERNAL') then begin
+      end else if UpAtomIs('IS') then begin
+        ReadNextAtom;
+        if UpAtomIs('NESTED') then
+          ReadNextAtom;
+      end else if UpAtomIs('EXTERNAL') or UpAtomIs('WEAKEXTERNAL')
+      or UpAtomIs('PUBLIC')  then begin
         ReadNextAtom;
         if CurPos.Flag<>cafSemicolon then begin
           if not UpAtomIs('NAME') then
@@ -976,6 +982,8 @@ begin
             ReadNextAtom;
             ReadConstant(true,false,[]);
           end;
+          if UpAtomIs('DELAYED') then
+            ReadNextAtom;
         end;
       end else begin
         ReadNextAtom;
@@ -995,6 +1003,7 @@ begin
           InsertFromPos:=CurPos.StartPos;
           NeedLeftSemicolon:=true;
         end;
+        NeedRightSemicolon:=true;
       end;
     end;
   end;
