@@ -1065,6 +1065,9 @@ begin
   txt := TCocoaTextView.alloc.initwithframe(nr);
   // setting up a default system font (to be consistent with other widgetsets)
   txt.setFont( NSFont.systemFontOfSize( NSFont.systemFontSizeForControlSize(NSRegularControlSize) ));
+  txt.setRichText(false);
+  txt.setImportsGraphics(false);
+  txt.setUsesRuler(false);
 
   // this is necessary for Ward Wrap disabled, so NSViewText
   // doesn't have a constraint to resize
