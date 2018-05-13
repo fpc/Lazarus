@@ -519,6 +519,7 @@ var
   lNSWin: TCocoaWindow absolute lNSObj;
 begin
   Result := False;
+  Exit; // todo: the whole function might need to go away
   {$ifndef COCOA_USE_NATIVE_MODAL}
   if CurModalForm = nil then Exit;
   lNSObj := NSWindow(AControl.window());

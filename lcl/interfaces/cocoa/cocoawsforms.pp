@@ -659,6 +659,18 @@ begin
     lWinContent.resolvePopupParent();
 
   CocoaWidgetSet.CurModalForm := ACustomForm;
+  // LCL initialization code would cause the custom form to be disabled
+  // (due to the fact, ShowModal() has not been called yet, and a previous form
+  // might be disabled at the time.
+  // ...
+  // The fact there's a single global variable is used to indicate, that there's
+  // a modal form (neglecting the need for stack of modal forms)
+  // makes a developer want to rewrite the whole approach for something more
+  // Cocoa and good-practicies friendly.
+  // ...
+  // At this point of time, we simply force enabling of the new modal form
+  // (which is happening in LCL code, but at the wrong time)
+  NSObject(ACustomForm.Handle).lclSetEnabled(true);
 
   // Another possible implementation is using a session, but this requires
   //  disabling the other windows ourselves
