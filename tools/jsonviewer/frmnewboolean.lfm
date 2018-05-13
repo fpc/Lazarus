@@ -11,11 +11,11 @@ object NewBooleanForm: TNewBooleanForm
   ClientWidth = 387
   OnCloseQuery = FormCloseQuery
   Position = poMainFormCenter
-  LCLVersion = '1.5'
+  LCLVersion = '1.9.0.0'
   object BPNewBoolean: TButtonPanel
     Left = 6
-    Height = 37
-    Top = 81
+    Height = 42
+    Top = 76
     Width = 375
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -34,16 +34,16 @@ object NewBooleanForm: TNewBooleanForm
     Left = 8
     Height = 17
     Top = 12
-    Width = 97
+    Width = 83
     Caption = '&Member name'
     FocusControl = Ename
     ParentColor = False
   end
   object CBValue: TCheckBox
     Left = 128
-    Height = 24
+    Height = 22
     Top = 44
-    Width = 97
+    Width = 82
     Caption = 'Set to true'
     TabOrder = 1
   end

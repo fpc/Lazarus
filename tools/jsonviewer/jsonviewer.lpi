@@ -85,6 +85,7 @@
         <Filename Value="frmcreatecode.pp"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="CreateCodeForm"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
       </Unit6>
     </Units>

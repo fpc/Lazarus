@@ -101,6 +101,14 @@ msgstr "Objektas (narių: %d)"
 msgid "Save the changes"
 msgstr "Įrašyti pakeitimus"
 
+#: msgjsonviewer.stabcaptionraw
+msgid "Raw"
+msgstr ""
+
+#: msgjsonviewer.stabcaptionvisual
+msgid "Visual"
+msgstr ""
+
 #: tcreatecodeform.caption
 msgctxt "tcreatecodeform.caption"
 msgid "Create pascal code"

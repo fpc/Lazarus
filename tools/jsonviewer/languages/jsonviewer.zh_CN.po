@@ -101,6 +101,14 @@ msgstr "对象(%d members成员"
 msgid "Save the changes"
 msgstr "保存更改"
 
+#: msgjsonviewer.stabcaptionraw
+msgid "Raw"
+msgstr ""
+
+#: msgjsonviewer.stabcaptionvisual
+msgid "Visual"
+msgstr ""
+
 #: tcreatecodeform.caption
 msgctxt "tcreatecodeform.caption"
 msgid "Create pascal code"

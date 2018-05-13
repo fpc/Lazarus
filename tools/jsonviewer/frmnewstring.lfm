@@ -11,7 +11,7 @@ object NewStringForm: TNewStringForm
   ClientWidth = 320
   OnCloseQuery = FormCloseQuery
   Position = poMainFormCenter
-  LCLVersion = '1.5'
+  LCLVersion = '1.9.0.0'
   object EName: TEdit
     Left = 88
     Height = 27
@@ -30,7 +30,7 @@ object NewStringForm: TNewStringForm
     Left = 8
     Height = 17
     Top = 16
-    Width = 40
+    Width = 34
     Alignment = taRightJustify
     Caption = '&Name'
     FocusControl = EName
@@ -41,7 +41,7 @@ object NewStringForm: TNewStringForm
     Left = 8
     Height = 17
     Top = 49
-    Width = 38
+    Width = 31
     Alignment = taRightJustify
     Caption = '&Value'
     FocusControl = EValue
@@ -50,8 +50,8 @@ object NewStringForm: TNewStringForm
   end
   object BPNewString: TButtonPanel
     Left = 6
-    Height = 37
-    Top = 97
+    Height = 42
+    Top = 92
     Width = 308
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True

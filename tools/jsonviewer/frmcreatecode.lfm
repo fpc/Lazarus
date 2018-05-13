@@ -816,6 +816,7 @@ object CreateCodeForm: TCreateCodeForm
     ShowButtons = [pbOK, pbCancel]
   end
   object SynFPC: TSynFreePascalSyn
+    Enabled = False
     CompilerMode = pcmObjFPC
     NestedComments = True
     left = 127

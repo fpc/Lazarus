@@ -29,7 +29,8 @@ Resourcestring
   SSaveData = 'Save the changes';
   SCancelClose = 'Do not close the window';
   SCancelPaste = 'Do not paste the new data';
-
+  STabCaptionRaw = 'Raw';
+  STabCaptionVisual = 'Visual';
 implementation
 
 end.

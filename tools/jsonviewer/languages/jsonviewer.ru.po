@@ -96,6 +96,14 @@ msgstr "Объект (%d элементов)"
 msgid "Save the changes"
 msgstr "Сохранить изменения"
 
+#: msgjsonviewer.stabcaptionraw
+msgid "Raw"
+msgstr ""
+
+#: msgjsonviewer.stabcaptionvisual
+msgid "Visual"
+msgstr ""
+
 #: tcreatecodeform.caption
 msgctxt "tcreatecodeform.caption"
 msgid "Create pascal code"

@@ -11,11 +11,11 @@ object NewNumberForm: TNewNumberForm
   ClientWidth = 305
   OnCloseQuery = FormCloseQuery
   Position = poMainFormCenter
-  LCLVersion = '1.5'
+  LCLVersion = '1.9.0.0'
   object BPNewNumber: TButtonPanel
     Left = 6
-    Height = 37
-    Top = 197
+    Height = 42
+    Top = 192
     Width = 293
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -52,8 +52,8 @@ object NewNumberForm: TNewNumberForm
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 86
-    ClientWidth = 181
+    ClientHeight = 87
+    ClientWidth = 183
     Items.Strings = (
       'Float'
       'Integer'
@@ -72,7 +72,7 @@ object NewNumberForm: TNewNumberForm
     Left = 12
     Height = 17
     Top = 10
-    Width = 40
+    Width = 34
     Caption = '&Name'
     FocusControl = EName
     ParentColor = False
@@ -81,7 +81,7 @@ object NewNumberForm: TNewNumberForm
     Left = 12
     Height = 17
     Top = 159
-    Width = 38
+    Width = 31
     Caption = 'Value'
     ParentColor = False
   end

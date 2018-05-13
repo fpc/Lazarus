@@ -99,6 +99,14 @@ msgstr ""
 msgid "Save the changes"
 msgstr "Änderungen speichern"
 
+#: msgjsonviewer.stabcaptionraw
+msgid "Raw"
+msgstr ""
+
+#: msgjsonviewer.stabcaptionvisual
+msgid "Visual"
+msgstr ""
+
 #: tcreatecodeform.caption
 msgctxt "tcreatecodeform.caption"
 msgid "Create pascal code"

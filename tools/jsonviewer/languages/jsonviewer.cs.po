@@ -101,6 +101,14 @@ msgstr "Objekt (%d prvků)"
 msgid "Save the changes"
 msgstr "Uložit změny"
 
+#: msgjsonviewer.stabcaptionraw
+msgid "Raw"
+msgstr ""
+
+#: msgjsonviewer.stabcaptionvisual
+msgid "Visual"
+msgstr ""
+
 #: tcreatecodeform.caption
 msgctxt "tcreatecodeform.caption"
 msgid "Create pascal code"

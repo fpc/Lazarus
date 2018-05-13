@@ -97,6 +97,14 @@ msgstr "Objet (%d membres)"
 msgid "Save the changes"
 msgstr "Enregistrer les changements"
 
+#: msgjsonviewer.stabcaptionraw
+msgid "Raw"
+msgstr ""
+
+#: msgjsonviewer.stabcaptionvisual
+msgid "Visual"
+msgstr ""
+
 #: tcreatecodeform.caption
 msgctxt "tcreatecodeform.caption"
 msgid "Create pascal code"

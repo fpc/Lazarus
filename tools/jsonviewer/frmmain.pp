@@ -27,7 +27,7 @@ interface
 uses
   Classes, SysUtils, fpJSON, jsonscanner, JSONParser,
   Forms, Controls, Dialogs, ActnList, Menus, ComCtrls, IniPropStorage, PropertyStorage,
-  DefaultTranslator;
+  DefaultTranslator, SynEdit, SynHighlighterJScript;
 
 type
 
@@ -55,6 +55,10 @@ type
     FModified: Boolean;
     FOptions: TViewerOptions;
     FTreeView: TTreeview;
+    FPageControl : TPageControl;
+    FSyn : TSynEdit;
+    procedure CreatePageControl;
+    procedure DoTabChange(Sender: TObject);
     procedure SetCurrentFind(AValue: TTreeNode);
     procedure SetFileName(AValue: String);
     procedure SetJSONData(AValue: TJSONData);
@@ -66,6 +70,7 @@ type
     Destructor Destroy; override;
     procedure ShowJSONData(AParent: TTreeNode; Data: TJSONData);
     procedure ShowJSONDocument;
+    Procedure ShowJSONDocumentText;
     Property FileName : String read FFileName Write SetFileName;
     Property TVJSON : TTreeview Read FTreeView;
     // We own JSON
@@ -317,14 +322,48 @@ begin
   FCurrentFind:=AValue;
 end;
 
+procedure TJSONTab.DoTabChange(Sender: TObject);
+begin
+  If (PageControl.ActivePageIndex=1) then
+    ShowJSONDocumentText;
+end;
+
 constructor TJSONTab.Create(AOwner: TComponent);
 
 begin
   inherited Create(AOwner);
-  FTreeView:=TTreeview.Create(Self);
-  FTreeView.Parent:=Self;
+  CreatePageControl;
+end;
+
+
+Procedure TJSONTab.CreatePageControl;
+
+Var
+  TS : TTabSheet;
+
+begin
+  FPageControl:=TPageControl.Create(Self.Owner);
+  FPageControl.Parent:=Self;
+  FPageControl.Align:=alClient;
+  FPageControl.TabPosition:=tpBottom;
+  FPageControl.OnChange:=@DoTabChange;
+  // Visual
+  TS:=TTabsheet.Create(Self.Owner);
+  TS.Caption:=STabCaptionVisual;
+  TS.Parent:=FPageControl;
+  FTreeView:=TTreeview.Create(Self.Owner);
+  FTreeView.Parent:=TS;
   FTreeView.Options:= [tvoAutoItemHeight,tvoKeepCollapsedNodes,tvoRightClickSelect,tvoShowButtons,tvoShowLines,tvoShowRoot,tvoToolTips,tvoThemedDraw];
   FTreeView.Align:=alClient;
+  // Raw
+  TS:=TTabsheet.Create(Self.Owner);
+  TS.Caption:=STabCaptionRaw;
+  TS.Parent:=FPageControl;
+  FSyn:=TSynEdit.Create(Self.Owner);
+  FSyn.align:=alClient;
+  FSyn.Parent:=TS;
+  FSyn.Highlighter:=TSynJScriptSyn.Create(Self.Owner);
+  FSyn.ReadOnly:=True;
   SetCaption;
 end;
 
@@ -1150,7 +1189,8 @@ procedure TMainForm.AOpenExecute(Sender: TObject);
 begin
   With ODJSON do
     begin
-    FileName:=CurrentJSONTab.FileName;
+    if Assigned(CurrentJSONTab) then
+      FileName:=CurrentJSONTab.FileName;
     If Execute then
       OpenFile(FileName)
     end;
@@ -1285,8 +1325,8 @@ procedure TMainForm.FormShow(Sender: TObject);
 begin
   if (ParamCount>0)  and FileExists(ParamStr(1)) then
     OpenFile(ParamStr(1))
-  else
-    NewDocument;
+//  else
+//    NewDocument;
 end;
 
 procedure TMainForm.HaveData(Sender: TObject);
@@ -1372,8 +1412,12 @@ begin
   finally
     S.Free;
   end;
-  NewDocument.FileName:=AFileName;
-  NewDocument.Root:=D;
+  With NewDocument do
+      begin
+      FileName:=AFileName;
+      Root:=D;
+      Modified:=False;
+      end;
   SetCaption;
 //  NewDocument.ShowJSONDocument;
 end;
@@ -1381,6 +1425,7 @@ end;
 procedure TJSONTab.ShowJSONDocument;
 
 begin
+  ShowJSONDocumentText;
   With TVJSON.Items do
     begin
     BeginUpdate;
@@ -1397,6 +1442,11 @@ begin
       EndUpdate;
     end;
     end;
+end;
+
+procedure TJSONTab.ShowJSONDocumentText;
+begin
+  FSyn.Text:=Root.FormatJSON();
 end;
 
 procedure TJSONTab.ShowJSONData(AParent : TTreeNode; Data : TJSONData);
