@@ -103,22 +103,29 @@ begin
   Result := True;
 end;
 
+type
+  TFontIsMonoSpaceRec = record
+    Name: string;
+    Result: Boolean;
+  end;
+  PFontIsMonoSpaceRec = ^TFontIsMonoSpaceRec;
+
 function EnumFontsCallBack(
   var LogFont: TEnumLogFontEx;
   var Metric: TNewTextMetricEx;
   FontType: Longint;
   Data: LParam):LongInt; stdcall;
 var
-  L: TStringList;
-  S: String;
+  R: PFontIsMonoSpaceRec;
 begin
-  L := TStringList(PtrInt(Data));
-  S := LogFont.elfLogFont.lfFaceName;
-  if ((logfont.elfLogFont.lfPitchAndFamily and FIXED_PITCH) = FIXED_PITCH) then
+  R := PFontIsMonoSpaceRec(Data);
+  if ((logfont.elfLogFont.lfPitchAndFamily and FIXED_PITCH) = FIXED_PITCH)
+  and SameStr(R^.Name, LogFont.elfLogFont.lfFaceName) then
   begin
-    L.Add(S);
-  end;
-  result := 1;
+    R^.Result := True;
+    Result := 0 // we found it -> stop enumeration
+  end else
+    Result := 1;
 end;
 
 
@@ -126,9 +133,8 @@ function TWin32WidgetSet.FontIsMonoSpace(Font: HFont): boolean;
 var
   LF: LogFontA;
   Res: LongInt;
-  List: TStringList;
-  FontName: String;
   DC: HDC;
+  Rec: TFontIsMonoSpaceRec;
 begin
   Result := False;
   FillChar(LF{%H-}, SizeOf(LogFontA), #0);
@@ -139,16 +145,15 @@ begin
     Exit;
   LF.lfCharSet := DEFAULT_CHARSET;
   LF.lfPitchAndFamily := 0;
-  FontName := LF.lfFaceName;
+  Rec.Name := LF.lfFaceName;
+  Rec.Result := False;
   DC := GetDC(0);
-  List := TStringList.Create;
   try
-    EnumFontFamiliesEX(DC, @LF, @EnumFontsCallback, PtrInt(List), 0);
-    Result := (List.IndexOf(FontName) > -1);
+    EnumFontFamiliesEX(DC, @LF, @EnumFontsCallback, LPARAM(@Rec), 0);
   finally
     ReleaseDC(0, DC);
-    List.Free;
   end;
+  Result := Rec.Result;
 end;
 
 procedure TWin32WidgetSet.HandleProcessEvent(AData: PtrInt; AFlags: dword);
