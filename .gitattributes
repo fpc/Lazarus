@@ -8366,15 +8366,6 @@ lcl/images/cursors/cur_18.cur -text svneol=unset#image/x-cursor
 lcl/images/cursors/cur_20.cur -text svneol=unset#image/x-cursor
 lcl/images/cursors/cur_21.cur -text svneol=unset#image/x-cursor
 lcl/images/cursors/cur_22.cur -text svneol=unset#image/x-cursor
-lcl/images/dbgridcheckedcb.png -text svneol=unset#image/png
-lcl/images/dbgridcheckedcb_150.png -text svneol=unset#image/png
-lcl/images/dbgridcheckedcb_200.png -text svneol=unset#image/png
-lcl/images/dbgridgrayedcb.png -text svneol=unset#image/png
-lcl/images/dbgridgrayedcb_150.png -text svneol=unset#image/png
-lcl/images/dbgridgrayedcb_200.png -text svneol=unset#image/png
-lcl/images/dbgriduncheckedcb.png -text svneol=unset#image/png
-lcl/images/dbgriduncheckedcb_150.png -text svneol=unset#image/png
-lcl/images/dbgriduncheckedcb_200.png -text svneol=unset#image/png
 lcl/images/dbnavigator/dbnavcancel.png -text svneol=unset#image/png
 lcl/images/dbnavigator/dbnavcancel_150.png -text svneol=unset#image/png
 lcl/images/dbnavigator/dbnavcancel_200.png -text svneol=unset#image/png
@@ -8424,8 +8415,6 @@ lcl/images/dock/lcl_dock_to_left.png -text svneol=unset#image/png
 lcl/images/dock/lcl_dock_to_page.png -text svneol=unset#image/png
 lcl/images/dock/lcl_dock_to_right.png -text svneol=unset#image/png
 lcl/images/dock/lcl_dock_to_top.png -text svneol=unset#image/png
-lcl/images/lcl_dbgrid_images.bat svneol=native#text/x-msdos-program
-lcl/images/lcl_dbgrid_images_list.txt svneol=native#text/plain
 lcl/images/lcl_edbtnimg.bat svneol=native#text/x-msdos-program
 lcl/images/lcl_edbtnimg.sh svneol=native#text/x-sh
 lcl/images/lcl_edbtnimg_list.txt svneol=native#text/plain
@@ -10023,7 +10012,6 @@ lcl/lazhelphtml.pas svneol=native#text/pascal
 lcl/lazhelpintf.pas svneol=native#text/pascal
 lcl/lazregions.pas svneol=native#text/pascal
 lcl/lcl_calc_images.res -text
-lcl/lcl_dbgrid_images.res -text
 lcl/lcl_dbnav_images.res -text
 lcl/lcl_dock_images.res -text
 lcl/lcl_dock_to_images.res -text

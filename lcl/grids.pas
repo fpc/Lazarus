@@ -1869,7 +1869,6 @@ procedure Register;
 implementation
 
 {$R lcl_grid_images.res}
-{$R lcl_dbgrid_images.res}
 
 uses
   WSGrids;
@@ -4534,7 +4533,7 @@ begin
   ChkII := -1;
   ChkBitmap := nil;
 
-  if (TitleStyle=tsNative) and not Assigned(OnUserCheckboxBitmap) then
+  if not Assigned(OnUserCheckboxBitmap) then
   begin
     Details := ThemeServices.GetElementDetails(arrtb[AState]);
     CSize := ThemeServices.GetDetailSize(Details);
@@ -5447,18 +5446,7 @@ end;
 procedure TCustomGrid.GetImageForCheckBox(const aCol, aRow: Integer;
   CheckBoxView: TCheckBoxState; var ImageList: TCustomImageList;
   var ImageIndex: TImageIndex; var Bitmap: TBitmap);
-var
-  ResName: string;
 begin
-  if CheckboxView=cbUnchecked then
-    ResName := 'dbgriduncheckedcb'
-  else if CheckboxView=cbChecked then
-    ResName := 'dbgridcheckedcb'
-  else
-    ResName := 'dbgridgrayedcb';
-  ImageList := LCLGlyphs;
-  ImageIndex := LCLGlyphs.GetImageIndex(ResName);
-
   if Assigned(OnUserCheckboxBitmap) then
     OnUserCheckboxBitmap(Self, aCol, aRow, CheckBoxView, Bitmap);
 end;

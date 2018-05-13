@@ -1,1 +1,0 @@
-..\..\tools\lazres ..\lcl_dbgrid_images.res @lcl_dbgrid_images_list.txt
