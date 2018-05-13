@@ -39,7 +39,7 @@ uses
   TestBasicCodetools, TestCTRangeScan, TestPascalParser, TestMethodJumpTool,
   TestStdCodetools, TestFindDeclaration, TestIdentCompletion, TestCompleteBlock,
   TestRefactoring, TestCodeCompletion, TestCompReaderWriterPas,
-  fdt_arrays, TestCTPas2js;
+  fdt_arrays, TestCTPas2js, testchangedeclaration;
 
 const
   ConfigFilename = 'codetools.config';
