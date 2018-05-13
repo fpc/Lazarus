@@ -157,6 +157,15 @@ type
     procedure QuickFix({%H-}Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
   end;
 
+  { TQuickFixInheritedMethodIsHidden_AddModifier - add proc modifier 'overload' or 'reintroduce' }
+
+  TQuickFixInheritedMethodIsHidden_AddModifier = class(TMsgQuickFix)
+    //blaunit.pas(23,15) Warning: (3057) An inherited method is hidden by "DoIt(LongInt);"
+    function IsApplicable(Msg: TMessageLine; out MsgID: integer): boolean;
+    procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
+    procedure QuickFix({%H-}Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
+  end;
+
   { TIDEQuickFixes }
 
   TIDEQuickFixes = class(TMsgQuickFixes)
@@ -280,6 +289,88 @@ var
 begin
   Result:=GetMsgSrcPosOfIdentifier(Msg,CurIdentifier,Code,Tool,CleanPos,Node)
      and (CompareIdentifiers(PChar(CurIdentifier),PChar(Identifier))=0);
+end;
+
+{ TQuickFixInheritedMethodIsHidden_AddModifier }
+
+function TQuickFixInheritedMethodIsHidden_AddModifier.IsApplicable(
+  Msg: TMessageLine; out MsgID: integer): boolean;
+var
+  Value1, Value2: string;
+begin
+  Result:=false;
+  MsgID:=0;
+  if (not Msg.HasSourcePosition) then exit;
+  if IDEFPCParser.MsgLineIsId(Msg,3057,Value1,Value2) then begin
+    // An inherited method is hidden by "$1;"
+    MsgID:=3057;
+    Result:=true
+  end
+  else if IDEPas2jsParser.MsgLineIsId(Msg,3021,Value1,Value2) then begin
+    // function hides identifier at "$1". Use overload or reintroduce
+    MsgID:=3021;
+    Result:=true;
+  end;
+end;
+
+procedure TQuickFixInheritedMethodIsHidden_AddModifier.CreateMenuItems(
+  Fixes: TMsgQuickFixes);
+var
+  i, MsgID: Integer;
+  Msg: TMessageLine;
+  aCaption: String;
+begin
+  for i:=0 to Fixes.LineCount-1 do begin
+    Msg:=Fixes.Lines[i];
+    if not IsApplicable(Msg,MsgID) then continue;
+    aCaption:=lisAddModifierOverload;
+    Fixes.AddMenuItem(Self,Msg,aCaption,1);
+    aCaption:=lisAddModifierReintroduce;
+    Fixes.AddMenuItem(Self,Msg,aCaption,2);
+  end;
+end;
+
+procedure TQuickFixInheritedMethodIsHidden_AddModifier.QuickFix(
+  Fixes: TMsgQuickFixes; Msg: TMessageLine);
+var
+  MsgID: integer;
+  Code: TCodeBuffer;
+  OldChange: Boolean;
+  aModifier: String;
+begin
+  if not IsApplicable(Msg,MsgID) then begin
+    debugln(['TQuickFixInheritedMethodIsHidden_AddOverload.QuickFix invalid message ',Msg.Msg]);
+    exit;
+  end;
+
+  if not LazarusIDE.BeginCodeTools then begin
+    DebugLn(['TQuickFixInheritedMethodIsHidden_AddOverload failed because IDE busy']);
+    exit;
+  end;
+
+  Code:=CodeToolBoss.LoadFile(Msg.GetFullFilename,true,false);
+  if Code=nil then exit;
+
+  OldChange:=LazarusIDE.OpenEditorsOnCodeToolChange;
+  LazarusIDE.OpenEditorsOnCodeToolChange:=true;
+  try
+    if Fixes.CurrentCommand.Tag=2 then
+      aModifier:='reintroduce'
+    else
+      aModifier:='overload';
+
+    if not CodeToolBoss.AddProcModifier(Code,Msg.Column,Msg.Line,aModifier) then
+    begin
+      DebugLn(['TQuickFixInheritedMethodIsHidden_AddOverload AddProcModifier failed']);
+      LazarusIDE.DoJumpToCodeToolBossError;
+      exit;
+    end;
+
+    // success
+    Msg.MarkFixed;
+  finally
+    LazarusIDE.OpenEditorsOnCodeToolChange:=OldChange;
+  end;
 end;
 
 { TQuickFix_HideWithCompilerDirective }
@@ -1083,6 +1174,8 @@ begin
   Cmd:=Sender as TIDEMenuCommand;
   Info:=TMenuItemInfo(fMenuItemToInfo[Cmd]);
   if Info=nil then exit;
+  FCurrentSender:=Sender;
+  FCurrentCommand:=Cmd;
   try
     Info.Fix.QuickFix(Self,Info.Msg);
   finally
@@ -1096,6 +1189,8 @@ begin
       for i:=0 to ListsMsgLines.Count-1 do
         TMessageLines(ListsMsgLines[i]).ApplyFixedMarks;
     finally
+      FCurrentSender:=nil;
+      FCurrentCommand:=nil;
       ListsMsgLines.Free;
     end;
   end;
@@ -1116,6 +1211,7 @@ begin
   IDEQuickFixes.RegisterQuickFix(TQuickFixUnitNotFound_Remove.Create);
   IDEQuickFixes.RegisterQuickFix(TQuickFixClassWithAbstractMethods.Create);
   IDEQuickFixes.RegisterQuickFix(TQuickFixSrcPathOfPkgContains_OpenPkg.Create);
+  IDEQuickFixes.RegisterQuickFix(TQuickFixInheritedMethodIsHidden_AddModifier.Create);
 
   // add as last (no fix, just hide message)
   IDEQuickFixes.RegisterQuickFix(TQuickFix_HideWithIDEDirective.Create);

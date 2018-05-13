@@ -6394,6 +6394,8 @@ resourcestring
   lisPositionOutsideOfSource = '%s (position outside of source)';
   lisHideMessageByInsertingWarnOffToUnit = 'Hide message by inserting {$warn %'
     +'s off} to unit "%s"';
+  lisAddModifierOverload = 'Add modifier "overload"';
+  lisAddModifierReintroduce = 'Add modifier "reintroduce"';
   lisHideWithProjectOptionVm = 'Hide with project option (-vm%s)';
   lisHideWithPackageOptionVm = 'Hide with package option (-vm%s)';
   lisRemoveLocalVariable3 = 'Remove local variable "%s"';
