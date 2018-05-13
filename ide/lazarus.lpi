@@ -748,6 +748,7 @@
       <Unit109>
         <Filename Value="lazconf.pp"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="LazConf"/>
       </Unit109>
       <Unit110>
         <Filename Value="initialsetupdlgs.pas"/>

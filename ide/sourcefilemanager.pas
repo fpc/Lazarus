@@ -3924,7 +3924,8 @@ begin
   try
     Project1.BeginUpdate(true);
     try
-      Project1.CompilerOptions.CompilerPath:=DefaultCompilerPath;
+      if Project1.CompilerOptions.CompilerPath='' then
+        Project1.CompilerOptions.CompilerPath:=DefaultCompilerPath;
       if pfUseDefaultCompilerOptions in Project1.Flags then begin
         MainIDE.DoMergeDefaultProjectOptions(Project1);
         Project1.Flags:=Project1.Flags-[pfUseDefaultCompilerOptions];

@@ -37,7 +37,22 @@
 # the message is off by default. Look at type_w_explicit_string_cast
 # for example.
 
+general_i_abslines_compiled=01008_I_$1 lines compiled, $2 sec$3
+% When the \var{-vi} switch is used, the compiler reports the number
+% of lines compiled, and the time it took to compile them (real time,
+% not program time).
+general_f_compilation_aborted=01018_F_Compilation aborted
+% Compilation was aborted.
+
 parser_i_compiling=03104_I_Compiling $1 ...
 % When you turn on information messages (\var{-vi}), the compiler tells you
 % what units it is recompiling.
+
+#
+# Logo (option -l)
+#
+option_logo=11023_[
+Pas2JS Compiler version $PAS2JSFULLVERSION [$FPCDATE] for $FPCCPU
+Copyright (c) 2016-2018 by Mattias Gaertner and others
+]
 

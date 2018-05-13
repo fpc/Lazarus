@@ -50,6 +50,8 @@ type
   { TIDEPas2jsParser }
 
   TIDEPas2jsParser = class(TIDEFPCParser)
+  protected
+    function ToUTF8(const Line: string): string; override;
   public
     class function CanParseSubTool(const SubTool: string): boolean; override;
     class function DefaultSubTool: string; override;
@@ -97,6 +99,11 @@ begin
 end;
 
 { TIDEPas2jsParser }
+
+function TIDEPas2jsParser.ToUTF8(const Line: string): string;
+begin
+  Result:=Line;
+end;
 
 class function TIDEPas2jsParser.CanParseSubTool(const SubTool: string): boolean;
 begin

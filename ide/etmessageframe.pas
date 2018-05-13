@@ -678,7 +678,7 @@ begin
       // parser did not add an error message
       // => add an error message
       // add the last 3 lines of output with fatal urgency
-      Tool.EnterCriticalSection; // Note: always lock Tool before View
+      Tool.EnterCriticalSection; // Note: always lock Tool *before* View
       try
         EnterCriticalSection;
         try

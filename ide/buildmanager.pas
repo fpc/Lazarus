@@ -639,9 +639,11 @@ var
   Kind: TPascalCompiler;
 begin
   Result:='';
+  //debugln(['TBuildManager.GetCompilerFilename START FBuildTarget=',DbgSName(FBuildTarget)]);
   if FBuildTarget<>nil then
   begin
     Opts:=FBuildTarget.CompilerOptions;
+    //debugln(['TBuildManager.GetCompilerFilename FBuildTarget=',DbgSName(FBuildTarget),' Path=',Opts.CompilerPath,' Build=',[crCompile,crBuild]*Opts.CompileReasons<>[],' Parsing=',Opts.ParsedOpts.Values[pcosCompilerPath].Parsing]);
     if ([crCompile,crBuild]*Opts.CompileReasons<>[])
     and (Opts.CompilerPath<>'')
     and (not Opts.ParsedOpts.Values[pcosCompilerPath].Parsing) then
@@ -660,7 +662,7 @@ begin
     end;
   end;
   if not IsCompilerExecutable(Result,s,Kind) then begin
-    //if Result<>'' then debugln(['TBuildManager.GetFPCompilerFilename project compiler NOT fpc: "',Result,'"']);
+    //debugln(['TBuildManager.GetFPCompilerFilename project compiler IS NOT a pascal compiler: "',Result,'"']);
     Result:=EnvironmentOptions.GetParsedCompilerFilename;
     if Kind=pcFPC then ;
   end;

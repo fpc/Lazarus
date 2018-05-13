@@ -242,6 +242,7 @@ type
     FWin32GraphicApp: boolean;
     FExecutableType: TCompilationExecutableType;
     FUseExternalDbgSyms : Boolean;
+    fTargetFileExt: string;
     fTargetFilename: string;
     FTargetFilenameAppplyConventions: boolean;
 
@@ -273,6 +274,7 @@ type
     fConfigFilePath: String;
     fUseCommentsInCustomOptions: Boolean;
   protected
+    function GetCompilerPath: String; virtual; abstract;
     function GetCustomOptions: string; virtual; abstract;
     function GetDebugPath: string; virtual; abstract;
     function GetIncludePaths: String; virtual; abstract;
@@ -295,6 +297,7 @@ type
     procedure SetObjectPath(const AValue: string); virtual; abstract;
     procedure SetSrcPath(const AValue: string); virtual; abstract;
     procedure SetTargetCPU(const AValue: string); virtual; abstract;
+    procedure SetTargetFileExt(const AValue: String); virtual; abstract;
     procedure SetTargetFilename(const AValue: String); virtual; abstract;
     procedure SetTargetOS(const AValue: string); virtual; abstract;
     procedure SetTargetProc(const AValue: string); virtual; abstract;
@@ -355,7 +358,8 @@ type
     property BuildMacros: TLazBuildMacros read fBuildMacros;
 
     // target:
-    property TargetFilename: String read fTargetFilename write SetTargetFilename;
+    property TargetFileExt: string read FTargetFileExt write SetTargetFileExt; // empty for default
+    property TargetFilename: string read fTargetFilename write SetTargetFilename; // empty for default
     property TargetFilenameApplyConventions: boolean read FTargetFilenameAppplyConventions write SetTargetFilenameAppplyConventions;
 
     // parsing:
@@ -442,7 +446,8 @@ type
     property UseCommentsInCustomOptions: Boolean read fUseCommentsInCustomOptions
                                                 write SetUseCommentsInCustomOptions;
 
-    // execute other
+    // execute
+    property CompilerPath: String read GetCompilerPath write SetCompilerPath;
     procedure SetAlternativeCompile(const Command: string; ScanFPCMsgs: boolean); virtual; abstract; // disable normal compile and call this instead
   end;
 

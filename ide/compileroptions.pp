@@ -440,7 +440,7 @@ type
     procedure OnItemChanged(Sender: TObject);
     procedure SetCreateMakefileOnBuild(AValue: boolean);
   protected
-    function GetCompilerPath: String;
+    function GetCompilerPath: String; override;
     function GetBaseDirectory: string;
     function GetCustomOptions: string; override;
     function GetDebugPath: string; override;
@@ -467,6 +467,7 @@ type
     procedure SetTargetCPU(const AValue: string); override;
     procedure SetTargetProc(const AValue: string); override;
     procedure SetTargetOS(const AValue: string); override;
+    procedure SetTargetFileExt(const AValue: String); override;
     procedure SetTargetFilename(const AValue: String); override;
   protected
     function GetModified: boolean; override;
@@ -476,7 +477,7 @@ type
   public
     constructor Create(const AOwner: TObject); override;
     constructor Create(const AOwner: TObject;
-                  const AToolClass: TCompilationToolClass);
+                       const AToolClass: TCompilationToolClass);
     destructor Destroy; override;
     procedure Clear; virtual;
     class function GetInstance: TAbstractIDEOptions; override;
@@ -583,7 +584,6 @@ type
     property OtherDefines: TStrings read FOtherDefines;
 
     // compilation
-    property CompilerPath: String read GetCompilerPath write SetCompilerPath;
     property ExecuteBefore: TCompilationToolOptions read fExecuteBefore;
     property ExecuteAfter: TCompilationToolOptions read fExecuteAfter;
     property CreateMakefileOnBuild: boolean read FCreateMakefileOnBuild
@@ -1293,6 +1293,16 @@ begin
   IncreaseChangeStamp;
 end;
 
+procedure TBaseCompilerOptions.SetTargetFileExt(const AValue: String);
+begin
+  if fTargetFileExt=AValue then exit;
+  fTargetFileExt:=AValue;
+  {$IFDEF VerboseIDEModified}
+  debugln(['TBaseCompilerOptions.SetTargetFileExt ',AValue]);
+  {$ENDIF}
+  IncreaseChangeStamp;
+end;
+
 procedure TBaseCompilerOptions.SetTargetFilename(const AValue: String);
 begin
   if fTargetFilename=AValue then exit;
@@ -1561,6 +1571,7 @@ begin
 
   { Target }
   p:=Path+'Target/';
+  TargetFileExt := f(aXMLConfig.GetValue(p+'FileExt', ''));
   TargetFilename := f(aXMLConfig.GetValue(p+'Filename/Value', ''));
   TargetFilenameApplyConventions := aXMLConfig.GetValue(p+'Filename/ApplyConventions', true);
 
@@ -1794,6 +1805,7 @@ begin
 
   { Target }
   p:=Path+'Target/';
+  aXMLConfig.SetDeleteValue(p+'FileExt', f(TargetFileExt),'');
   aXMLConfig.SetDeleteValue(p+'Filename/Value', f(TargetFilename),'');
   aXMLConfig.SetDeleteValue(p+'Filename/ApplyConventions', TargetFilenameApplyConventions,true);
 
@@ -1985,8 +1997,8 @@ function TBaseCompilerOptions.CreateTargetFilename: string;
     aSrcOS: String;
   begin
     //debugln ( 'Filename result is ',Result, ' in PrependDefaultType' );
-    if (ExtractFileName(Result)='') or
-    (CompareText(copy(ExtractFileName(Result),1,3), 'lib') = 0) then exit;
+    if (ExtractFileName(Result)='')
+    or (CompareText(copy(ExtractFileName(Result),1,3), 'lib') = 0) then exit;
     Prefix:=GetTargetFilePrefix;
     if Prefix<>'' then begin
       FileName := ExtractFileName(Result);
@@ -2058,7 +2070,8 @@ end;
 
 function TBaseCompilerOptions.GetTargetFileExt: string;
 begin
-  Result:='';
+  Result:=TargetFileExt;
+  if Result<>'' then exit;
   case ExecutableType of
   cetProgram:
     Result:=GetExecutableExt(fTargetOS);
@@ -3554,6 +3567,7 @@ begin
                             PathDelimSwitchToDelim[CompOpts.FStorePathDelim])) then exit;
 
   // target
+  if Done(Tool.AddDiff('TargetFileExt',fTargetFileExt,CompOpts.fTargetFileExt)) then exit;
   if Done(Tool.AddDiff('TargetFilename',fTargetFilename,CompOpts.fTargetFilename)) then exit;
   if Done(Tool.AddDiff('TargetFilenameAppplyConventions',FTargetFilenameAppplyConventions,CompOpts.FTargetFilenameAppplyConventions)) then exit;
 
@@ -4072,7 +4086,7 @@ function TParsedCompilerOptions.DoParseOption(const OptionText: string;
 
 var
   s: String;
-  BaseDirectory: String;
+  BaseDirectory, h: String;
 begin
   s:=OptionText;
 
@@ -4102,6 +4116,10 @@ begin
   else if Option in ParsedCompilerFilenames then
   begin
     // make filename absolute
+    if ExtractFilePath(s)='' then begin
+      h:=FileUtil.FindDefaultExecutablePath(s,GetBaseDir);
+      if h<>'' then s:=h;
+    end;
     MakeFilenameAbsolute(s);
   end
   else if Option in ParsedCompilerDirectories then

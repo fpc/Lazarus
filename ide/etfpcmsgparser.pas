@@ -216,6 +216,7 @@ type
     function LongenFilename(MsgLine: TMessageLine; aFilename: string): string; // (worker thread)
   protected
     function GetDefaultPCFullVersion: LongWord; virtual;
+    function ToUTF8(const Line: string): string; virtual;
   public
     DirectoryStack: TStrings;
     MsgFilename: string; // e.g. /path/to/fpcsrc/compiler/msg/errore.msg
@@ -1378,7 +1379,7 @@ begin
           TranslatedItem:=TranslationFile.GetMsg(fMsgID);
         Translate(p,MsgItem,TranslatedItem,TranslatedMsg,MsgType);
         if (TranslatedItem=nil) and (MsgItem=nil) then begin
-          if ConsoleVerbosity>=0 then
+          if ConsoleVerbosity>=1 then
             debugln(['TFPCParser.CheckForGeneralMessage msgid not found: ',fMsgID]);
         end;
       end;
@@ -2778,7 +2779,9 @@ begin
   if not ReadChar(p,')') then exit;
   if not ReadChar(p,' ') then exit;
   MsgType:=mluNote;
-  if ReadString(p,'Hint:') then begin
+  if ReadString(p,'Info:') then begin
+    MsgType:=mluVerbose;
+  end else if ReadString(p,'Hint:') then begin
     MsgType:=mluHint;
   end else if ReadString(p,'Note:') then begin
     MsgType:=mluNote;
@@ -2820,13 +2823,15 @@ begin
           TranslatedItem:=TranslationFile.GetMsg(fMsgID);
         if (MsgFile<>nil) then
           MsgItem:=MsgFile.GetMsg(fMsgID);
-        Translate(p,MsgItem,TranslatedItem,TranslatedMsg,MsgType);
         if (TranslatedItem=nil) and (MsgItem=nil) then begin
           if ConsoleVerbosity>=1 then
             debugln(['TFPCParser.CheckForFileLineColMessage msgid not found: ',fMsgID]);
-        end else if MsgType=mluNone then begin
-          if ConsoleVerbosity>=1 then
-            debugln(['TFPCParser.CheckForFileLineColMessage msgid has no type: ',fMsgID]);
+        end else begin
+          Translate(p,MsgItem,TranslatedItem,TranslatedMsg,MsgType);
+          if MsgType=mluNone then begin
+            if ConsoleVerbosity>=1 then
+              debugln(['TFPCParser.CheckForFileLineColMessage msgid has no type: ',fMsgID]);
+          end;
         end;
       end;
     end;
@@ -2895,15 +2900,7 @@ var
   p: PChar;
 begin
   if Line='' then exit;
-  if PC_FullVersion>=20701 then
-    Line:=ConsoleToUTF8(Line)
-  else begin
-    {$IFDEF MSWINDOWS}
-    Line:=WinCPToUTF8(Line);
-    {$ELSE}
-    Line:=SysToUTF8(Line);
-    {$ENDIF}
-  end;
+  Line:=ToUTF8(Line);
   p:=PChar(Line);
   fOutputIndex:=OutputIndex;
   fMsgID:=0;
@@ -3065,6 +3062,19 @@ function TIDEFPCParser.GetDefaultPCFullVersion: LongWord;
 begin
   // get FPC version
   Result:=LongWord(CodeToolBoss.GetPCVersionForDirectory(Tool.WorkerDirectory));
+end;
+
+function TIDEFPCParser.ToUTF8(const Line: string): string;
+begin
+  if PC_FullVersion>=20701 then
+    Result:=ConsoleToUTF8(Line)
+  else begin
+    {$IFDEF MSWINDOWS}
+    Result:=WinCPToUTF8(Line);
+    {$ELSE}
+    Result:=SysToUTF8(Line);
+    {$ENDIF}
+  end;
 end;
 
 procedure TIDEFPCParser.ImproveMessages(aPhase: TExtToolParserSyncPhase);
