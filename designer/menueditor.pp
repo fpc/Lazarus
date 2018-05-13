@@ -2285,7 +2285,7 @@ var
       x:=(r.Right - r.Left - sz.cx) div 2;
       if FRealItem.HasIcon and (FRealItem.ImageIndex > -1) and (FShadowMenu.FMenu.Images <> nil) then begin
         pt:=GetIconTopLeft;
-        FShadowMenu.FMenu.Images.Draw(Canvas, 0, pt.y, FRealItem.ImageIndex);
+        FShadowMenu.FMenu.Images.DrawForControl(Canvas, 0, pt.y, FRealItem.ImageIndex, FShadowMenu.FMenu.ImagesWidth, Self);
         Inc(x, MenuBar_Text_Offset);
       end
       else if (FRealItem.Bitmap <> nil) and not FRealItem.Bitmap.Empty then begin
@@ -2312,7 +2312,7 @@ var
       end;
       ThemeServices.DrawElement(Canvas.Handle, dets, r);
       if FRealItem.HasIcon and (FRealItem.ImageIndex > -1) and (FShadowMenu.FMenu.Images <> nil) then
-        ThemeServices.DrawIcon(Canvas, dets, Point(0,0), FShadowMenu.FMenu.Images, FRealItem.ImageIndex)
+        ThemeServices.DrawIcon(Canvas, dets, Point(0,0), FShadowMenu.FMenu.Images, FRealItem.ImageIndex, 0, Self)
       else if (FRealItem.Bitmap <> nil) and not FRealItem.Bitmap.Empty then begin
         pt:=GetBitmapLeftTop;
         Canvas.Draw(pt.x, pt.y, RealItem.Bitmap);
@@ -2387,13 +2387,13 @@ var
         (FRealItem.ImageIndex > -1) and (FShadowMenu.FMenu.Images <> nil) and
         (FRealItem.ImageIndex < FShadowMenu.FMenu.Images.Count) then
           ThemeServices.DrawIcon(Canvas, dets, GetIconTopLeft,
-                                 FShadowMenu.FMenu.Images, FRealItem.ImageIndex)
+                                 FShadowMenu.FMenu.Images, FRealItem.ImageIndex, 0, Self)
       else
         if (FRealItem.ImageIndex > -1) and (FParentBox.Level > 0) and
           (FRealItem.Parent.SubMenuImages <> nil) and
           (FRealItem.ImageIndex < FRealItem.Parent.SubMenuImages.Count) then
             ThemeServices.DrawIcon(Canvas, dets, GetSubImagesIconTopLeft,
-                                   RealItem.Parent.SubMenuImages, RealItem.ImageIndex)
+                                   RealItem.Parent.SubMenuImages, RealItem.ImageIndex, 0, Self)
         else if FRealItem.HasBitmap and not FRealItem.Bitmap.Empty then begin
   	  pt:=GetBitmapLeftTop;
   	  Canvas.Draw(pt.x, pt.y, RealItem.Bitmap);
