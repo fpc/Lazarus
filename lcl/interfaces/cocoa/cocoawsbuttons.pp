@@ -126,21 +126,23 @@ var
   AEffect: TGraphicsDrawEffect;
   AImgRes: TScaledImageListResolution;
   ImgSize: NSSize;
+  ScaleFactor: Double;
 begin
   //WriteLn('[TCocoaWSBitBtn.SetGlyph]');
   Img := nil;
   if ABitBtn.CanShowGlyph(True) then
   begin
     AGlyph := TBitmap.Create;
+    ScaleFactor := ABitBtn.GetCanvasScaleFactor;
     AValue.GetImageIndexAndEffect(bsUp, ABitBtn.Font.PixelsPerInch,
-      ABitBtn.GetCanvasScaleFactor, AImgRes, AIndex, AEffect);
+      ScaleFactor, AImgRes, AIndex, AEffect);
     AImgRes.GetBitmap(AIndex, AGlyph, AEffect);
     Img := TCocoaBitmap(AGlyph.Handle).image;
-    if AImgRes.Resolution.ImageList.Scaled then // resize only if the image list is scaled
+    if AImgRes.Resolution.ImageList.Scaled and not SameValue(ScaleFactor, 1) then // resize only if the image list is scaled
     begin
       ImgSize := Img.size;
-      ImgSize.height := ImgSize.height / ABitBtn.GetCanvasScaleFactor;
-      ImgSize.width := ImgSize.width / ABitBtn.GetCanvasScaleFactor;
+      ImgSize.height := ImgSize.height / ScaleFactor;
+      ImgSize.width := ImgSize.width / ScaleFactor;
       Img.setSize(ImgSize);
     end;
     lButtonHandle := TCocoaButton(ABitBtn.Handle);
