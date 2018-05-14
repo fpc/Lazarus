@@ -150,19 +150,23 @@ begin
   end;
 end;
 
-procedure TToolBar.ControlsAligned;
+procedure TToolBar.AlignControls(AControl: TControl;
+  var RemainingClientRect: TRect);
 var
   NewWidth, NewHeight: integer;
 begin
   if tbfPlacingControls in FToolBarFlags then exit;
   Include(FToolBarFlags, tbfPlacingControls);
+  DisableAlign;
   try
+    AdjustClientRect(RemainingClientRect);
     if IsVertical then
       WrapButtons(Height, NewWidth, NewHeight, False)
     else
       WrapButtons(Width, NewWidth, NewHeight, False);
   finally
     Exclude(FToolBarFlags, tbfPlacingControls);
+    EnableAlign;
   end;
 end;
 
