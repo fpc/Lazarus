@@ -98,11 +98,11 @@ msgstr "Сохранить изменения"
 
 #: msgjsonviewer.stabcaptionraw
 msgid "Raw"
-msgstr ""
+msgstr "Исходное представление"
 
 #: msgjsonviewer.stabcaptionvisual
 msgid "Visual"
-msgstr ""
+msgstr "Визуальное представление"
 
 #: tcreatecodeform.caption
 msgctxt "tcreatecodeform.caption"
