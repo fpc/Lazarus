@@ -4395,6 +4395,18 @@ msgstr "Lisäykset"
 msgid "Add keyword \"do\""
 msgstr "Lisää avainsana \"do\""
 
+#: lazarusidestrconsts.lisaddmodifieroverload
+msgid "Add modifier \"overload\""
+msgstr ""
+
+#: lazarusidestrconsts.lisaddmodifieroverride
+msgid "Add modifier \"override\""
+msgstr ""
+
+#: lazarusidestrconsts.lisaddmodifierreintroduce
+msgid "Add modifier \"reintroduce\""
+msgstr ""
+
 #: lazarusidestrconsts.lisaddnewbuildmodecopyingsettingsfrom
 msgid "Add new build mode, copying settings from \"%s\""
 msgstr "Lisää uusi koontamoodi, kopioi asetukset täältä: \"%s\""

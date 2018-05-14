@@ -4476,6 +4476,18 @@ msgstr "Adiciones"
 msgid "Add keyword \"do\""
 msgstr "Añadir palabra clave \"do\""
 
+#: lazarusidestrconsts.lisaddmodifieroverload
+msgid "Add modifier \"overload\""
+msgstr ""
+
+#: lazarusidestrconsts.lisaddmodifieroverride
+msgid "Add modifier \"override\""
+msgstr ""
+
+#: lazarusidestrconsts.lisaddmodifierreintroduce
+msgid "Add modifier \"reintroduce\""
+msgstr ""
+
 #: lazarusidestrconsts.lisaddnewbuildmodecopyingsettingsfrom
 msgid "Add new build mode, copying settings from \"%s\""
 msgstr "Añadir un modo nuevo de construcción, copiando los ajustes de \"%s\""

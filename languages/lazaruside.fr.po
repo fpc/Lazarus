@@ -4418,6 +4418,18 @@ msgstr "Ajouts"
 msgid "Add keyword \"do\""
 msgstr "Ajouter le mot-clé \"do\""
 
+#: lazarusidestrconsts.lisaddmodifieroverload
+msgid "Add modifier \"overload\""
+msgstr ""
+
+#: lazarusidestrconsts.lisaddmodifieroverride
+msgid "Add modifier \"override\""
+msgstr ""
+
+#: lazarusidestrconsts.lisaddmodifierreintroduce
+msgid "Add modifier \"reintroduce\""
+msgstr ""
+
 #: lazarusidestrconsts.lisaddnewbuildmodecopyingsettingsfrom
 msgid "Add new build mode, copying settings from \"%s\""
 msgstr "Ajouter un nouveau mode de création en copiant les paramètres de \"%s\""

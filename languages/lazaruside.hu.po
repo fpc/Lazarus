@@ -4418,6 +4418,18 @@ msgstr "Kiegészítések"
 msgid "Add keyword \"do\""
 msgstr "A \"do\" kulcsszó hozzáadása"
 
+#: lazarusidestrconsts.lisaddmodifieroverload
+msgid "Add modifier \"overload\""
+msgstr ""
+
+#: lazarusidestrconsts.lisaddmodifieroverride
+msgid "Add modifier \"override\""
+msgstr ""
+
+#: lazarusidestrconsts.lisaddmodifierreintroduce
+msgid "Add modifier \"reintroduce\""
+msgstr ""
+
 #: lazarusidestrconsts.lisaddnewbuildmodecopyingsettingsfrom
 msgid "Add new build mode, copying settings from \"%s\""
 msgstr "Új építési mód hozzáadása, átmásolva a beállításokat innen: \"%s\""

@@ -4426,6 +4426,18 @@ msgstr "Priedėliai"
 msgid "Add keyword \"do\""
 msgstr "Įdėti raktažodį „do“"
 
+#: lazarusidestrconsts.lisaddmodifieroverload
+msgid "Add modifier \"overload\""
+msgstr ""
+
+#: lazarusidestrconsts.lisaddmodifieroverride
+msgid "Add modifier \"override\""
+msgstr ""
+
+#: lazarusidestrconsts.lisaddmodifierreintroduce
+msgid "Add modifier \"reintroduce\""
+msgstr ""
+
 #: lazarusidestrconsts.lisaddnewbuildmodecopyingsettingsfrom
 msgid "Add new build mode, copying settings from \"%s\""
 msgstr "Įdėti naują darymo veikseną, nuostatos kopijuojamos iš „%s“"
