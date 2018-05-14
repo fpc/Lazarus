@@ -27,6 +27,7 @@ C_EXPORT int QPaintDevice_logicalDpiY(QPaintDeviceH handle);
 C_EXPORT int QPaintDevice_physicalDpiX(QPaintDeviceH handle);
 C_EXPORT int QPaintDevice_physicalDpiY(QPaintDeviceH handle);
 C_EXPORT int QPaintDevice_devicePixelRatio(QPaintDeviceH handle);
+C_EXPORT qreal QPaintDevice_devicePixelRatioF(QPaintDeviceH handle);
 C_EXPORT int QPaintDevice_colorCount(QPaintDeviceH handle);
 C_EXPORT int QPaintDevice_depth(QPaintDeviceH handle);
 

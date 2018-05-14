@@ -71,6 +71,12 @@ int QPaintDevice_devicePixelRatio(QPaintDeviceH handle)
 	return (int) ((QPaintDevice *)handle)->devicePixelRatio();
 }
 
+qreal QPaintDevice_devicePixelRatioF(QPaintDeviceH handle)
+{
+	return (qreal) ((QPaintDevice *)handle)->devicePixelRatioF();
+}
+
+
 int QPaintDevice_colorCount(QPaintDeviceH handle)
 {
 	return (int) ((QPaintDevice *)handle)->colorCount();
