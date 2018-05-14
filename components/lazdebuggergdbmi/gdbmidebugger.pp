@@ -12154,7 +12154,7 @@ var
           FpDir := 1;
           FpDiff := ParentFpNum - FpNum;
         end;
-        if (LastFpDiff <> 0) and (FpDir >= LastFpDiff) then
+        if (LastFpDiff <> 0) and (FpDiff >= LastFpDiff) then
           Exit(False);
 
         LastFpDiff := FpDiff;
