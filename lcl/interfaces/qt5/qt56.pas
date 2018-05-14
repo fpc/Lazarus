@@ -7379,6 +7379,7 @@ function QPaintDevice_logicalDpiY(handle: QPaintDeviceH): Integer; cdecl; extern
 function QPaintDevice_physicalDpiX(handle: QPaintDeviceH): Integer; cdecl; external Qt5PasLib name 'QPaintDevice_physicalDpiX';
 function QPaintDevice_physicalDpiY(handle: QPaintDeviceH): Integer; cdecl; external Qt5PasLib name 'QPaintDevice_physicalDpiY';
 function QPaintDevice_devicePixelRatio(handle: QPaintDeviceH): Integer; cdecl; external Qt5PasLib name 'QPaintDevice_devicePixelRatio';
+function QPaintDevice_devicePixelRatioF(handle: QPaintDeviceH): double; cdecl; external Qt5PasLib name 'QPaintDevice_devicePixelRatioF';
 function QPaintDevice_colorCount(handle: QPaintDeviceH): Integer; cdecl; external Qt5PasLib name 'QPaintDevice_colorCount';
 function QPaintDevice_depth(handle: QPaintDeviceH): Integer; cdecl; external Qt5PasLib name 'QPaintDevice_depth';
 
