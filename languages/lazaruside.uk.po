@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-04-25 18:25+0200\n"
+"PO-Revision-Date: 2018-05-14 23:02+0200\n"
 "Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -854,7 +854,7 @@ msgstr "Тест: компілюю порожній файл ..."
 
 #: lazarusidestrconsts.dlgccotestrtlunits
 msgid "Test: Checking RTL units ..."
-msgstr ""
+msgstr "Тест: перевіряю  модулі RTL ..."
 
 #: lazarusidestrconsts.dlgccotestsrcinppupaths
 msgid "Test: Checking sources in fpc ppu search paths ..."
@@ -2356,7 +2356,7 @@ msgstr " 0 (без оптимізації)"
 
 #: lazarusidestrconsts.dlglinesplitting
 msgid "Line Splitting"
-msgstr "Розчіплювання рядка"
+msgstr "Розривання рядків"
 
 #: lazarusidestrconsts.dlglinksmart
 msgid "Link smart"
@@ -5262,7 +5262,7 @@ msgstr "Втрачений модуль"
 
 #: lazarusidestrconsts.lisccomsgrtlunitnotfound
 msgid "RTL unit not found: %s"
-msgstr ""
+msgstr "Модуль RTL не знайдено: %s"
 
 #: lazarusidestrconsts.lisccomultiplecfgfound
 msgid "multiple compiler configs found: "
@@ -5286,7 +5286,7 @@ msgstr "Існує .ppu файл старший самого компілято�
 
 #: lazarusidestrconsts.lisccortlunitnotfounddetailed
 msgid "The RTL unit %s was not found.%sThis typically means your %s has wrong unit paths. Or your installation is broken."
-msgstr ""
+msgstr "Модуль RTL %s не знайдено.%sЗазвичай це означає, що %s має хибні шляхи модулів. Або встановлену систему пошкоджено."
 
 #: lazarusidestrconsts.lisccoseveralcompilers
 msgid "There are several Free Pascal Compilers in your path.%s%s%sMaybe you forgot to delete an old compiler?"
@@ -6573,7 +6573,7 @@ msgstr "Помилка запису"
 
 #: lazarusidestrconsts.liscodetoolsoptsat
 msgid "At"
-msgstr "Біля"
+msgstr "Оператор @"
 
 #: lazarusidestrconsts.liscodetoolsoptsbracket
 msgid "Bracket"
@@ -6710,7 +6710,7 @@ msgstr "Компілятор"
 
 #: lazarusidestrconsts.liscompilercfgismissing
 msgid "%s is missing."
-msgstr ""
+msgstr "%s відсутній."
 
 #: lazarusidestrconsts.liscompilerdoesnotsupporttarget
 msgid "Compiler \"%s\" does not support target %s-%s"
@@ -20597,11 +20597,11 @@ msgstr "Вибрати справа"
 
 #: lazarusidestrconsts.srkmecselsmartwordleft
 msgid "Smart select word left (start/end of word)"
-msgstr ""
+msgstr "Розумний вибір слова ліворуч (початок/кінець слова)"
 
 #: lazarusidestrconsts.srkmecselsmartwordright
 msgid "Smart select word right (start/end of word)"
-msgstr ""
+msgstr "Розумний вибір слова праворуч (початок/кінець слова)"
 
 #: lazarusidestrconsts.srkmecselsticky
 msgid "Start sticky selecting"
@@ -20668,11 +20668,11 @@ msgstr "показати точку виконання"
 
 #: lazarusidestrconsts.srkmecsmartwordleft
 msgid "Smart move cursor left (start/end of word)"
-msgstr ""
+msgstr "Розумне переміщення курсора ліворуч (початок/кінець слова)"
 
 #: lazarusidestrconsts.srkmecsmartwordright
 msgid "Smart move cursor right (start/end of word)"
-msgstr ""
+msgstr "Розумне переміщення курсора праворуч (початок/кінець слова)"
 
 #: lazarusidestrconsts.srkmecstopprogram
 msgid "stop program"
