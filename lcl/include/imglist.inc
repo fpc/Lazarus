@@ -471,7 +471,7 @@ var
   ListImg, DeviceImg: TLazIntfImage;
   ImgHandle, MskHandle: HBitmap;
 begin
-  if (FCount = 0) or (Image = nil) then Exit;
+  if (Index < 0) or (Index >= FCount) or (Image = nil) then Exit;
 
   GetRawImage(Index, RawImg);
 
