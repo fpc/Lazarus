@@ -724,8 +724,7 @@ var
   AMsg: UINT;
 begin
   case Msg of
-    WM_NCHITTEST, WM_SETCURSOR, WM_MOUSEMOVE:;
-    WM_LBUTTONDOWN, WM_RBUTTONDOWN, WM_LBUTTONDBLCLK:
+    WM_LBUTTONDOWN, WM_RBUTTONDOWN:
       begin
         // A ListView doesn't get a WM_LBUTTONUP, WM_RBUTTONUP message,
         // because it keeps the message in its own event loop,
