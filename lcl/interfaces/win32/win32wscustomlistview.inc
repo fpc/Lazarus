@@ -742,7 +742,7 @@ begin
 
         // for multiselected listbox the message has to be send after current
         // message or the list item selecting does not work, also see issue #33330
-        if ListView.MultiSelect then
+        if ListView.MultiSelect and (Msg = WM_LBUTTONDOWN) then
         begin
           Result := WindowProc(Window, Msg, WParam, LParam);
           if not (Msg = WM_LBUTTONDBLCLK) or Assigned(ListItem) then
