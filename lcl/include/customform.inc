@@ -2054,7 +2054,7 @@ begin
     begin
       Include(FFormState, fsCreating);
       try
-         ProcessResource;
+        ProcessResource;
       finally
         Exclude(FFormState, fsCreating);
       end;
@@ -2067,11 +2067,11 @@ end;
 procedure TCustomForm.ProcessResource;
 begin
   if not InitResourceComponent(Self, TForm) then
-  if RequireDerivedFormResource then
-    raise EResNotFound.CreateFmt(
-      rsFormResourceSNotFoundForResourcelessFormsCreateNew, [ClassName])
-  else
-    DebugLn(Format(rsFormResourceSNotFoundForResourcelessFormsCreateNew, [ClassName]));
+    if RequireDerivedFormResource then
+      raise EResNotFound.CreateFmt(
+        rsFormResourceSNotFoundForResourcelessFormsCreateNew, [ClassName])
+    else
+      DebugLn(Format(rsFormResourceSNotFoundForResourcelessFormsCreateNew, [ClassName]));
 end;
 
 {------------------------------------------------------------------------------
