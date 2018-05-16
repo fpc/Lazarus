@@ -677,6 +677,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomForm.Activate;
 begin
+  SetCaptureControl(nil);
   if Assigned(FOnActivate) then FOnActivate(Self);
 end;
 
