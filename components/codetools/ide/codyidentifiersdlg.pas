@@ -1373,7 +1373,7 @@ var
   NewY: integer;
   NewTopLine: integer;
   CurUnit: TUDUnit;
-  MainPath: String;
+  NewUnitDir: String;
 
   function OpenDependency: boolean;
   // returns false to abort
@@ -1455,6 +1455,8 @@ begin
   Pkg:=nil;
   PkgDependencyAdded:=false;
 
+  debugln(['TCodyIdentifiersDlg.UseIdentifier CurUnitName="',CurUnitName,'" NewUnitName="',NewUnitName,'"']);
+
   SameUnitName:=CompareDottedIdentifiers(PChar(CurUnitName),PChar(NewUnitName))=0;
   if SameUnitName and (CompareFilenames(CurMainFilename,NewUnitFilename)<>0)
   then begin
@@ -1465,26 +1467,27 @@ begin
     exit;
   end;
 
+  debugln(['TCodyIdentifiersDlg.UseIdentifier CurMainFilename="',CurMainFilename,'" NewUnitFilename="',NewUnitFilename,'"']);
   if CompareFilenames(CurMainFilename,NewUnitFilename)=0 then begin
     // same file
     NewUnitInPath:=true;
-    debugln(['TCodyIdentifiersDlg.UseIdentifier same unit']);
+    debugln(['TCodyIdentifiersDlg.UseIdentifier same unit CurMainFilename="',CurMainFilename,'" NewUnitFilename="',NewUnitFilename,'"']);
   end
   else if (CompareFilenames(ExtractFilePath(CurMainFilename),
                         ExtractFilePath(NewUnitFilename))=0)
   then begin
     // same directory
-    debugln(['TCodyIdentifiersDlg.UseIdentifier same directory']);
+    debugln(['TCodyIdentifiersDlg.UseIdentifier same directory CurMainFilename="',CurMainFilename,'" NewUnitFilename="',NewUnitFilename,'"']);
     NewUnitInPath:=true;
   end
   else if (CurUnitPath<>'')
-  and FilenameIsAbsolute(CurMainFilename) then begin
-    MainPath:=ExtractFilePath(CurMainFilename);
-    if (FindPathInSearchPath(PChar(MainPath),length(MainPath),
+  and FilenameIsAbsolute(NewUnitName) then begin
+    NewUnitDir:=ExtractFilePath(NewUnitName);
+    if (FindPathInSearchPath(PChar(NewUnitDir),length(NewUnitDir),
                              PChar(CurUnitPath),length(CurUnitPath))<>nil)
     then begin
       // in unit search path
-      debugln(['TCodyIdentifiersDlg.UseIdentifier in unit search path of owner']);
+      debugln(['TCodyIdentifiersDlg.UseIdentifier in unit search path of owner MainPath="',NewUnitDir,'" CurUnitPath="',CurUnitPath,'"']);
       NewUnitInPath:=true;
     end;
   end;
