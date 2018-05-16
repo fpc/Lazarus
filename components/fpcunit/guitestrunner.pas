@@ -135,8 +135,8 @@ type
     procedure TestTreeChange(Sender: TObject; Node: TTreeNode);
     procedure TestTreeCreateNodeClass(Sender: TCustomTreeView;
       var NodeClass: TTreeNodeClass);
-    procedure TestTreeMouseDown(Sender: TOBject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
+    procedure TestTreeMouseDown(Sender: TObject; {%H-}Button: TMouseButton;
+      {%H-}Shift: TShiftState; X, Y: Integer);
     procedure TestTreeSelectionChanged(Sender: TObject);
     procedure ActCopyErrorMsgExecute(Sender: TObject);
     procedure ActCopyErrorMsgUpdate(Sender: TObject);
@@ -179,7 +179,7 @@ type
     procedure StartTest(ATest: TTest);
     procedure EndTest(ATest: TTest);
     procedure RunTest(ATest: TTest); virtual;
-    procedure StartTestSuite(ATestSuite: TTestSuite);
+    procedure StartTestSuite({%H-}ATestSuite: TTestSuite);
     procedure EndTestSuite(ATestSuite: TTestSuite);
     procedure NextError;
     procedure PrevError;
@@ -679,7 +679,7 @@ var
   i: integer;
 begin
   rootNode.StateIndex := Ord(tsChecked);
-  for i := 0 to ASuite.Tests.Count - 1 do
+  for i := 0 to ASuite.ChildTestCount - 1 do
   begin
     node := TestTree.Items.AddChildObject(rootNode, ASuite.Test[i].TestName, ASuite.Test[i]);
     if ASuite.Test[i] is TTestSuite then
