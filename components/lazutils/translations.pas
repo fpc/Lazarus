@@ -138,7 +138,6 @@ type
     FNrTranslated: Integer;
     FNrUntranslated: Integer;
     FNrFuzzy: Integer;
-    FNrErrors: Integer;
     function Remove(Index: Integer): TPOFileItem;
     procedure UpdateCounters(Item: TPOFileItem; Removed: Boolean);
     // used by pochecker
@@ -185,7 +184,6 @@ type
     property NrTranslated: Integer read FNrTranslated;
     property NrUntranslated: Integer read FNrUntranslated;
     property NrFuzzy: Integer read FNrFuzzy;
-    property NrErrors: Integer read FNrErrors;
     function FindPoItem(const Identifier: String): TPoFileItem;
     function OriginalToItem(const Data: String): TPoFileItem;
     property PoItems[Index: Integer]: TPoFileItem read GetPoItem;
@@ -746,8 +744,6 @@ begin
   //AllowChangeFuzzyFlag allows not to change fuzzy flag for items with bad format arguments,
   //so there can be arguments with only badformat flag set. This is needed for POChecker.
   FAllowChangeFuzzyFlag := AllowChangeFuzzyFlag;
-
-  FNrErrors := 0;
 
   ReadPOText(AStream);
 
@@ -1552,7 +1548,6 @@ procedure TPOFile.FillItem(var CurrentItem: TPOFileItem; Identifier, Original,
       Result := CompareFormatArgs(Item.Original,Item.Translation);
       if not Result then
       begin
-        inc(FNrErrors);
         if pos(sFuzzyFlag, Item.Flags) = 0 then
         begin
           if FAllowChangeFuzzyFlag = true then
