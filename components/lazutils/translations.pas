@@ -6,32 +6,10 @@
   for details about the license.
  *****************************************************************************
 
-  Author: Mattias Gaertner
-
-  Author of SimplePoFiles: Bart Broersma
-
-  Merge by: Giuliano Colla
+  Initial authors: Mattias Gaertner, Bart Broersma, Giuliano Colla
 
   Abstract:
-    Methods and classes for loading translations/localizations from po files.
-
-    This unit is a merge of the Translations unit by Mattias Gaertner and the
-    SimplePoFiles unit by Bart Broersma. Its purpose is to provide a single unit
-    for easier maintenance.
-    In addition the traditional functions, it provides facilities for checking and
-    maintaining translations.
-
-    A number of new properties and methods have been introduced, or exposed, namely:
-
-    in TPOFileItem - Property LineNr
-                     Property Identifier (deprecated but left in for compatibility)
-
-    in TPOFile - Method CheckFormatArguments
-                 Method CleanUp
-                 Method FindPoItem
-                 Property PoName
-                 Property FormatChecked
-    and many more - see the type declaration for details
+    Methods and classes for loading/checking/maintaining translations from po files.
 
   Example 1: Load a specific .po file:
 
