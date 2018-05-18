@@ -705,9 +705,9 @@ var
   NrTranslated, NrUntranslated, NrFuzzy, NrTotal: Integer;
 begin
   //debugln('TPoFamily.CheckStatistics');
-  NrTranslated := FChild.NrTranslated;
-  NrUntranslated := FChild.NrUntranslated;
-  NrFuzzy := FChild.NrFuzzy;
+  NrTranslated := FChild.Statistics.Translated;
+  NrUntranslated := FChild.Statistics.Untranslated;
+  NrFuzzy := FChild.Statistics.Fuzzy;
   NrTotal := NrTranslated + NrUntranslated + NrFuzzy;
   if (NrTotal > 0) then
   begin
@@ -857,9 +857,9 @@ begin
       end;
 
       //Always run this as the last test please
-      TranslatedCount := FChild.NrTranslated;
-      UntranslatedCount := FChild.NrUntranslated;
-      FuzzyCount := FChild.NrFuzzy;
+      TranslatedCount := FChild.Statistics.Translated;
+      UntranslatedCount := FChild.Statistics.Untranslated;
+      FuzzyCount := FChild.Statistics.Fuzzy;
       CheckStatistics(ThisErrCnt);
        {
         if (ptt in FTestTypes) then

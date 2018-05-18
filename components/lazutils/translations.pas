@@ -98,6 +98,12 @@ type
     );
   TTranslateUnitResult = (turOK, turNoLang, turNoFBLang, turEmptyParam);
 
+  TTranslationStatistics = record
+    Translated: Integer;
+    Untranslated: Integer;
+    Fuzzy: Integer;
+  end;
+
 type
   { TPOFileItem }
 
@@ -123,6 +129,9 @@ type
   TPOFile = class
   private
     FAllowChangeFuzzyFlag: boolean;
+    FStatisticsUpdated: boolean;
+    FStatistics: TTranslationStatistics;
+    function GetStatistics: TTranslationStatistics;
   protected
     FItems: TFPList;// list of TPOFileItem
     FIdentifierLowToItem: TStringToPointerTree; // lowercase identifier to TPOFileItem
@@ -135,11 +144,7 @@ type
     FHelperList: TStringList;
     // New fields
     FPoName: string;
-    FNrTranslated: Integer;
-    FNrUntranslated: Integer;
-    FNrFuzzy: Integer;
     function Remove(Index: Integer): TPOFileItem;
-    procedure UpdateCounters(Item: TPOFileItem; Removed: Boolean);
     // used by pochecker
     function GetCount: Integer;
     procedure SetCharSet(const AValue: String);
@@ -181,9 +186,7 @@ type
     procedure CleanUp; // removes previous ID from non-fuzzy entries
     property PoName: String read FPoName;
     property PoRename: String write FPoName;
-    property NrTranslated: Integer read FNrTranslated;
-    property NrUntranslated: Integer read FNrUntranslated;
-    property NrFuzzy: Integer read FNrFuzzy;
+    property Statistics: TTranslationStatistics read GetStatistics;
     function FindPoItem(const Identifier: String): TPoFileItem;
     function OriginalToItem(const Data: String): TPoFileItem;
     property PoItems[Index: Integer]: TPoFileItem read GetPoItem;
@@ -749,6 +752,7 @@ begin
 
   if AllowChangeFuzzyFlag then
     CleanUp; // Removes previous ID from non-fuzzy entries (not needed for POChecker)
+  FStatisticsUpdated := false;
 end;
 
 destructor TPOFile.Destroy;
@@ -1016,29 +1020,40 @@ begin
     end;
 end;
 
+function TPOFile.GetStatistics: TTranslationStatistics;
+var
+  Item: TPOFileItem;
+  i: Integer;
+begin
+  if FStatisticsUpdated = false then
+  begin
+    FStatistics.Translated := 0;
+    FStatistics.Untranslated := 0;
+    FStatistics.Fuzzy := 0;
+    for i:=0 to Items.Count-1 do
+    begin
+      Item := TPOFileItem(FItems[i]);
+      if Item.Translation = '' then
+        Inc(FStatistics.Untranslated)
+      else
+        if Pos(sFuzzyFlag, Item.Flags)<>0 then
+          Inc(FStatistics.Fuzzy)
+        else
+          Inc(FStatistics.Translated);
+    end;
+    FStatisticsUpdated := true;
+  end;
+  Result.Translated := FStatistics.Translated;
+  Result.Untranslated := FStatistics.Untranslated;
+  Result.Fuzzy := FStatistics.Fuzzy;
+end;
+
 function TPOFile.Remove(Index: Integer): TPOFileItem;
 begin
   Result := TPOFileItem(FItems[Index]);
   FOriginalToItem.Remove(Result.Original, Result);
   FIdentifierLowToItem.Remove(Result.IdentifierLow);
   FItems.Delete(Index);
-  UpdateCounters(Result, True);
-end;
-
-procedure TPOFile.UpdateCounters(Item: TPOFileItem; Removed: Boolean);
-var
-  IncrementBy: Integer;
-begin
-  if Removed then
-    IncrementBy := -1
-  else
-    IncrementBy := 1;
-  if Item.Translation = '' then
-    Inc(FNrUntranslated, IncrementBy)
-  else if Pos(sFuzzyFlag, Item.Flags)<>0 then
-    Inc(FNrFuzzy, IncrementBy)
-  else
-    Inc(FNrTranslated, IncrementBy);
 end;
 
 function TPOFile.Translate(const Identifier, OriginalValue: String): String;
@@ -1552,8 +1567,6 @@ procedure TPOFile.FillItem(var CurrentItem: TPOFileItem; Identifier, Original,
         begin
           if FAllowChangeFuzzyFlag = true then
           begin
-            inc(FNrFuzzy);
-            dec(FNrTranslated);
             Item.ModifyFlag(sFuzzyFlag, true);
             FModified := true;
           end;
@@ -1634,8 +1647,6 @@ begin
 
   if NewItem = true then
   begin
-    UpdateCounters(CurrentItem, False);
-
     FItems.Add(CurrentItem);
 
     //debugln(['TPOFile.FillItem Identifier=',Identifier,' Orig="',dbgstr(OriginalValue),'" Transl="',dbgstr(TranslatedValue),'"']);
@@ -1667,6 +1678,7 @@ begin
     UpdateItem(Item.IdentifierLow, Item.Original);
   end;
   RemoveTaggedItems(0); // get rid of any item not existing in BasePOFile
+  FStatisticsUpdated := false;
 end;
 
 procedure TPOFile.UntagAll;
