@@ -7891,7 +7891,8 @@ begin
     Name:='FKeyComboBox';
     AutoSize:=true;
     Items.BeginUpdate;
-    for i:=0 to VK_SCROLL do
+    AddKeyToCombobox(0);
+    for i:=VK_BACK to VK_SCROLL do
       AddKeyToCombobox(i);
     for i:=VK_BROWSER_BACK to VK_OEM_8 do
       AddKeyToCombobox(i);
