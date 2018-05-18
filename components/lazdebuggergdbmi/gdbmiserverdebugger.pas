@@ -79,6 +79,7 @@ type
     //property WarnOnSetBreakpointError;
     property CaseSensitivity;
     property GdbValueMemLimit;
+    property AssemblerStyle;
   end;
 
 procedure Register;

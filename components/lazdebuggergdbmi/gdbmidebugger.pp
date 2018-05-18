@@ -144,6 +144,9 @@ type
   TGDBMIDebuggerCaseSensitivity = (
     gdcsSmartOff, gdcsAlwaysOff, gdcsAlwaysOn, gdcsGdbDefault
   );
+  TGDBMIDebuggerAssemblerStyle = (
+    gdasDefault, gdasIntel, gdasATT
+  );
 
   {$scopedenums on}
   TGDBMIDebuggerShowWarning = ( // need true/false to read old config
@@ -155,6 +158,7 @@ type
 
   TGDBMIDebuggerPropertiesBase = class(TDebuggerProperties)
   private
+    FAssemblerStyle: TGDBMIDebuggerAssemblerStyle;
     FCaseSensitivity: TGDBMIDebuggerCaseSensitivity;
     FDisableForcedBreakpoint: Boolean;
     FDisableLoadSymbolsForLibraries: Boolean;
@@ -207,6 +211,7 @@ type
     property WarnOnSetBreakpointError: TGDBMIWarnOnSetBreakpointError read FWarnOnSetBreakpointError
              write FWarnOnSetBreakpointError default gdbwAll;
     property GdbValueMemLimit: Integer read FGdbValueMemLimit write FGdbValueMemLimit default $60000000;
+    property AssemblerStyle: TGDBMIDebuggerAssemblerStyle read FAssemblerStyle write FAssemblerStyle default gdasDefault;
   end;
 
   TGDBMIDebuggerProperties = class(TGDBMIDebuggerPropertiesBase)
@@ -229,6 +234,7 @@ type
     //property WarnOnSetBreakpointError;
     property CaseSensitivity;
     property GdbValueMemLimit;
+    property AssemblerStyle;
   end;
 
   TGDBMIDebugger = class;
@@ -496,6 +502,7 @@ type
     function DoSetPascal: Boolean;
     function DoSetCaseSensitivity: Boolean;
     function DoSetMaxValueMemLimit: Boolean;
+    function DoSetAssemblerStyle: Boolean;
   end;
 
   { TGDBMIDebuggerCommandChangeFilename }
@@ -1884,6 +1891,15 @@ begin
   else
   if i = 0 then
     ExecuteCommand('set max-value-size unlimited', [], []);
+  Result:=true;
+end;
+
+function TGDBMIDebuggerChangeFilenameBase.DoSetAssemblerStyle: Boolean;
+begin
+  case TGDBMIDebuggerProperties(FTheDebugger.GetProperties).AssemblerStyle of
+    gdasIntel: ExecuteCommand('-gdb-set disassembly-flavor intel', [], []);
+    gdasATT: ExecuteCommand('-gdb-set disassembly-flavor att', [], []);
+  end;
   Result:=true;
 end;
 
@@ -5105,6 +5121,7 @@ begin
     ExecuteCommand('-gdb-set language pascal', [cfCheckError]);
     DoSetCaseSensitivity();
     DoSetMaxValueMemLimit();
+    DoSetAssemblerStyle();
 
     CheckAvailableTypes;
     CommonInit;
@@ -5396,6 +5413,7 @@ begin
   DoSetPascal;
   DoSetCaseSensitivity();
   DoSetMaxValueMemLimit();
+  DoSetAssemblerStyle();
 
   if (FTheDebugger.FileName <> '') and (pos('READING SYMBOLS FROM', UpperCase(CmdResp)) < 1) then begin
     ExecuteCommand('ptype TObject', [], R);
@@ -5405,6 +5423,7 @@ begin
       DoSetPascal;
       DoSetCaseSensitivity();
       DoSetMaxValueMemLimit();
+      DoSetAssemblerStyle();
     end;
   end;
 
@@ -7275,6 +7294,7 @@ begin
   FWarnOnSetBreakpointError := gdbwAll;
   FCaseSensitivity := gdcsSmartOff;
   FGdbValueMemLimit := $60000000;
+  FAssemblerStyle := gdasDefault;
   inherited;
 end;
 
@@ -7299,6 +7319,7 @@ begin
   FWarnOnSetBreakpointError := TGDBMIDebuggerPropertiesBase(Source).FWarnOnSetBreakpointError;
   FCaseSensitivity := TGDBMIDebuggerPropertiesBase(Source).FCaseSensitivity;
   FGdbValueMemLimit := TGDBMIDebuggerPropertiesBase(Source).FGdbValueMemLimit;
+  FAssemblerStyle := TGDBMIDebuggerPropertiesBase(Source).FAssemblerStyle;
 end;
 
 
