@@ -162,6 +162,7 @@ type
     FCaseSensitivity: TGDBMIDebuggerCaseSensitivity;
     FDisableForcedBreakpoint: Boolean;
     FDisableLoadSymbolsForLibraries: Boolean;
+    FDisableStartupShell: Boolean;
     FEncodeCurrentDirPath: TGDBMIDebuggerFilenameEncoding;
     FEncodeExeFileName: TGDBMIDebuggerFilenameEncoding;
     {$IFDEF UNIX}
@@ -212,6 +213,8 @@ type
              write FWarnOnSetBreakpointError default gdbwAll;
     property GdbValueMemLimit: Integer read FGdbValueMemLimit write FGdbValueMemLimit default $60000000;
     property AssemblerStyle: TGDBMIDebuggerAssemblerStyle read FAssemblerStyle write FAssemblerStyle default gdasDefault;
+    property DisableStartupShell: Boolean read FDisableStartupShell
+             write FDisableStartupShell default False;
   end;
 
   TGDBMIDebuggerProperties = class(TGDBMIDebuggerPropertiesBase)
@@ -235,6 +238,7 @@ type
     property CaseSensitivity;
     property GdbValueMemLimit;
     property AssemblerStyle;
+    property DisableStartupShell;
   end;
 
   TGDBMIDebugger = class;
@@ -503,6 +507,7 @@ type
     function DoSetCaseSensitivity: Boolean;
     function DoSetMaxValueMemLimit: Boolean;
     function DoSetAssemblerStyle: Boolean;
+    function DoSetDisableStartupShell: Boolean;
   end;
 
   { TGDBMIDebuggerCommandChangeFilename }
@@ -1900,6 +1905,13 @@ begin
     gdasIntel: ExecuteCommand('-gdb-set disassembly-flavor intel', [], []);
     gdasATT: ExecuteCommand('-gdb-set disassembly-flavor att', [], []);
   end;
+  Result:=true;
+end;
+
+function TGDBMIDebuggerChangeFilenameBase.DoSetDisableStartupShell: Boolean;
+begin
+  if TGDBMIDebuggerProperties(FTheDebugger.GetProperties).DisableStartupShell then
+    ExecuteCommand('set startup-with-shell off', [], []);
   Result:=true;
 end;
 
@@ -5119,6 +5131,7 @@ begin
     {$ENDIF}
 
     ExecuteCommand('-gdb-set language pascal', [cfCheckError]);
+    DoSetDisableStartupShell();
     DoSetCaseSensitivity();
     DoSetMaxValueMemLimit();
     DoSetAssemblerStyle();
@@ -5411,6 +5424,7 @@ begin
   TargetInfo^.TargetPID := NewPID;
 
   DoSetPascal;
+  DoSetDisableStartupShell();
   DoSetCaseSensitivity();
   DoSetMaxValueMemLimit();
   DoSetAssemblerStyle();
@@ -7295,6 +7309,7 @@ begin
   FCaseSensitivity := gdcsSmartOff;
   FGdbValueMemLimit := $60000000;
   FAssemblerStyle := gdasDefault;
+  FDisableStartupShell := False;
   inherited;
 end;
 
@@ -7320,6 +7335,7 @@ begin
   FCaseSensitivity := TGDBMIDebuggerPropertiesBase(Source).FCaseSensitivity;
   FGdbValueMemLimit := TGDBMIDebuggerPropertiesBase(Source).FGdbValueMemLimit;
   FAssemblerStyle := TGDBMIDebuggerPropertiesBase(Source).FAssemblerStyle;
+  FDisableStartupShell := TGDBMIDebuggerPropertiesBase(Source).FDisableStartupShell;
 end;
 
 

@@ -94,6 +94,7 @@ type
     property CaseSensitivity;
     property GdbValueMemLimit;
     property AssemblerStyle;
+    property DisableStartupShell;
   end;
 
 procedure Register;
