@@ -4030,7 +4030,11 @@ begin
       end;
     end else begin
       UndoReadNextAtom;
-      SaveRaiseCharExpectedButAtomFound(20180507200240,'=');
+      if (CurNode.Parent.Desc=ctnConstSection)
+      and (CurNode.Parent.Parent.Desc in AllClassBaseSections) then
+        // ok
+      else
+        SaveRaiseCharExpectedButAtomFound(20180507200240,'=');
     end;
   end else
     ReadConstExpr;

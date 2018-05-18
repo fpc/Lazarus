@@ -1664,8 +1664,8 @@ begin
           NewItem.IdentifierStartInUnitName := 1;
         {$IFDEF VerboseICGatherUnitNames}
         //debugln(['TIdentCompletionTool.GatherUnitnames Add ',UnitFileInfo.FileUnitName,' NewCount=',CurrentIdentifierList]);
-        CurrentIdentifierList.Add(NewItem);
         {$ENDIF}
+        CurrentIdentifierList.Add(NewItem);
       end;
     end;
     if FIDTTreeOfNamespaces<>nil then
