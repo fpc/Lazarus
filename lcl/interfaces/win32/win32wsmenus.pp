@@ -245,7 +245,7 @@ begin
     Result := Result + Spacing + MenuItemShortCut(AMenuItem);
 end;
 
-(* Item with external string caption *)
+(* Idem with external string caption *)
 function CompleteMenuItemStringCaption(const AMenuItem: TMenuItem; ACaption: String; Spacing: String): string;
 begin
   Result := ACaption;
