@@ -265,7 +265,7 @@ type
   public
     // searching
     function CheckIfPackageCanBeClosed(APackage: TLazPackage): boolean;
-    function CreateUniquePkgName(const Prefix: string;
+    function CreateUniquePkgName(Prefix: string;
                                  IgnorePackage: TLazPackage): string;
     function CreateUniqueUnitName(const Prefix: string): string;
     function DependencyExists(Dependency: TPkgDependency;
@@ -1778,11 +1778,13 @@ begin
   Result:=false;
 end;
 
-function TLazPackageGraph.CreateUniquePkgName(const Prefix: string;
+function TLazPackageGraph.CreateUniquePkgName(Prefix: string;
   IgnorePackage: TLazPackage): string;
 var
   i: Integer;
 begin
+  if not IsValidPkgName(Prefix) then
+    RaiseException('invalid pkg name "'+Prefix+'"');
   // try Prefix alone
   if not PackageNameExists(Prefix,IgnorePackage) then begin
     Result:=Prefix;

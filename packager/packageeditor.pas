@@ -377,6 +377,7 @@ type
     function DoOpenPkgFile(PkgFile: TPkgFile): TModalResult;
     function ShowAddDialog(var DlgPage: TAddToPkgType): TModalResult;
     function ShowAddDepDialog: TModalResult;
+    function PkgNameToFormName(const PkgName: string): string;
   public
     // IFilesEditorInterface
     function FilesEditTreeView: TTreeView;
@@ -1879,8 +1880,7 @@ procedure TPackageEditorForm.SetLazPackage(const AValue: TLazPackage);
 begin
   //force editor name change when package name changed!
   if (FLazPackage=Nil)
-  and ( (AValue=Nil) or (Name=PackageEditorWindowPrefix
-                            +StringReplace(AValue.Name,'.','_',[rfReplaceAll])) )
+  and ( (AValue=Nil) or (Name=PkgNameToFormName(AValue.Name)) )
   then
     exit;
   if FLazPackage<>nil then
@@ -2077,7 +2077,7 @@ procedure TPackageEditorForm.UpdateAll(Immediately: boolean);
 begin
   if csDestroying in ComponentState then exit;
   if LazPackage=nil then exit;
-  Name:=PackageEditorWindowPrefix + StringReplace(LazPackage.Name,'.','_',[rfReplaceAll]);
+  Name:=PkgNameToFormName(LazPackage.Name);
   if fForcedFlags<>[] then
     fFlags:=fFlags+fForcedFlags  // Flags forcing a partial update
   else
@@ -2290,6 +2290,11 @@ begin
   finally
     Deps.Free;
   end;
+end;
+
+function TPackageEditorForm.PkgNameToFormName(const PkgName: string): string;
+begin
+  Result:=PackageEditorWindowPrefix+StringReplace(PkgName,'.','_',[rfReplaceAll]);
 end;
 
 procedure TPackageEditorForm.BeginUpdate;

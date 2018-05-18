@@ -61,15 +61,15 @@ uses
   IDEMsgIntf, SrcEditorIntf, ComponentReg, PropEdits, IDEDialogs, UnitResources,
   // IDE
   PkgRegisterBase, IDECmdLine, LazarusIDEStrConsts, IDEProcs, ObjectLists,
-  DialogProcs, IDECommands, IDEOptionDefs, EnvironmentOpts, MiscOptions,
-  InputHistory, Project, PackageEditor, AddToPackageDlg,
+  DialogProcs, IDECommands, IDEOptionDefs, EnvironmentOpts,
+  MiscOptions, InputHistory, Project, PackageEditor, AddToPackageDlg,
   PackageDefs, PackageLinks, PackageSystem, OpenInstalledPkgDlg,
-  PkgGraphExplorer, BrokenDependenciesDlg, CompilerOptions,
-  IDETranslations, TransferMacros, BuildLazDialog, NewDialog, FindInFilesDlg,
-  ProjectInspector, SourceEditor, ProjPackChecks, AddFileToAPackageDlg,
-  LazarusPackageIntf, PublishProjectDlg, PkgLinksDlg,
-  InterPkgConflictFiles, InstallPkgSetDlg, ConfirmPkgListDlg, NewPkgComponentDlg,
-  BaseBuildManager, BasePkgManager, MainBar, MainIntf, MainBase, ModeMatrixOpts;
+  PkgGraphExplorer, BrokenDependenciesDlg, CompilerOptions, IDETranslations,
+  TransferMacros, BuildLazDialog, NewDialog, FindInFilesDlg, ProjectInspector,
+  SourceEditor, ProjPackChecks, AddFileToAPackageDlg, LazarusPackageIntf,
+  PublishProjectDlg, PkgLinksDlg, InterPkgConflictFiles, InstallPkgSetDlg,
+  ConfirmPkgListDlg, NewPkgComponentDlg, BaseBuildManager, BasePkgManager,
+  MainBar, MainIntf, MainBase, ModeMatrixOpts;
 
 type
   { TPkgManager }
@@ -3509,7 +3509,7 @@ var
 begin
   Result:=mrCancel;
   // create a new package with standard dependencies
-  NewPackage:=PackageGraph.CreateNewPackage(lisPkgMangNewPackage);
+  NewPackage:=PackageGraph.CreateNewPackage(ExtractPasIdentifier(lisPkgMangNewPackage,true));
   PackageGraph.AddDependencyToPackage(NewPackage,
                 PackageGraph.FCLPackage.CreateDependencyWithOwner(NewPackage));
   NewPackage.Modified:=false;
@@ -5229,7 +5229,7 @@ begin
   if APackage=nil then begin
     // create new package
     // create a new package with standard dependencies
-    APackage:=PackageGraph.CreateNewPackage(lisPkgMangNewPackage);
+    APackage:=PackageGraph.CreateNewPackage(ExtractPasIdentifier(lisPkgMangNewPackage,true));
     PackageGraph.AddDependencyToPackage(APackage,
                   PackageGraph.IDEIntfPackage.CreateDependencyWithOwner(APackage));
     APackage.Modified:=false;
