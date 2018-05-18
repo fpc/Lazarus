@@ -3208,6 +3208,7 @@ var
   Tool: TAbstractExternalTool;
   Proc: TProcessUTF8;
   Memo: TMemo;
+  i: Integer;
 begin
   View:=GetAboutView;
   if View=nil then exit;
@@ -3237,6 +3238,17 @@ begin
       s+=Proc.Parameters.Text+LineEnding;
       s+='Command Line:'+LineEnding;
       s+=Tool.Process.Executable+' '+Tool.CmdLineParams+LineEnding+LineEnding;
+      s+='Parsers: ';
+      if Tool.ParserCount=0 then
+        s+='none'
+      else begin
+        for i:=0 to Tool.ParserCount-1 do begin
+          if i>0 then s+=', ';
+          s+=Tool.Parsers[i].GetLocalizedParserName;
+        end;
+      end;
+      s+=LineEnding+LineEnding;
+
       s+='ProcessID:'+LineEnding+IntToStr(Proc.ProcessID)+LineEnding+LineEnding;
       if Tool.Terminated then
         s+='Terminated'+LineEnding+LineEnding
