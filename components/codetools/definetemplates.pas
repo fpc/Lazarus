@@ -9037,6 +9037,7 @@ var
   InfoTypes: TFPCInfoTypes;
   BaseDir: String;
   FullFilename: String;
+  e: PStringToStringItem;
 begin
   OldOptions:=TPCTargetConfigCache.Create(nil);
   CfgFiles:=nil;
@@ -9114,6 +9115,11 @@ begin
         end;
       // gather all units and include files in search paths
       GatherUnitsInSearchPaths(UnitPaths,IncludePaths,OnProgress,Units,Includes,true);
+      //if Kind=pcPas2js then begin
+      //  debugln(['TPCTargetConfigCache.Update Units:']);
+      //  for e in Units do
+      //    debugln(['  ',E^.Name,' ',E^.Value]);
+      //end;
       if (UnitPaths.Count=0) then begin
         if CTConsoleVerbosity>=-1 then
           debugln(['Warning: [TPCTargetConfigCache.Update] no unit paths: ',Compiler,' ',ExtraOptions]);

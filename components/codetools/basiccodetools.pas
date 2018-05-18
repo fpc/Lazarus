@@ -5873,11 +5873,9 @@ begin
   if not IsDottedIdentifier(UnitName) then exit;
   FileAndNameSpaceFits(UnitName, FileNameFits, NameSpaceFits);
   if FileNameFits then
-    AddToTreeOfUnitFiles(TreeOfUnitFiles,FileName,UnitName,
-                       KeepDoubles);
+    AddToTreeOfUnitFiles(TreeOfUnitFiles,FileName,UnitName,KeepDoubles);
   if NameSpaceFits then
-    AddToTreeOfNamespaces(TreeOfNamespaces,UnitName,NameSpacePath,
-                          KeepDoubles)
+    AddToTreeOfNamespaces(TreeOfNamespaces,UnitName,NameSpacePath,KeepDoubles)
 end;
 
 function GatherUnitFiles(const BaseDir, SearchPath, Extensions,

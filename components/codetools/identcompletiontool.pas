@@ -43,6 +43,7 @@ interface
 { $DEFINE ShowFilteredIdents}
 { $DEFINE ShowHistory}
 { $DEFINE VerboseCodeContext}
+{ $DEFINE VerboseICGatherUnitNames}
 
 uses
   {$IFDEF MEM_CHECK}
@@ -1620,21 +1621,30 @@ begin
     // search in unitpath
     FIDTTreeOfUnitFiles_CaseInsensitive := true;
     FIDTTreeOfUnitFiles_NamespacePath := NameSpacePath;
-    UnitExt:='pp;pas;ppu';
+    {$IFDEF VerboseICGatherUnitNames}
+    FIDTTreeOfUnitFiles:=TAVLTree.Create(@CompareUnitFileInfos);
+    {$ENDIF}
+
+    UnitExt:=PascalCompilerUnitExt[Scanner.PascalCompiler];
     if Scanner.CompilerMode=cmMacPas then
       UnitExt:=UnitExt+';p';
     GatherUnitFiles(BaseDir,UnitPath,UnitExt,NameSpacePath,false,true,FIDTTreeOfUnitFiles, FIDTTreeOfNamespaces);
-    //debugln(['TIdentCompletionTool.GatherUnitnames UnitPath ',FIDTTreeOfUnitFiles.Count]);
+    {$IFDEF VerboseICGatherUnitNames}
+    debugln(['TIdentCompletionTool.GatherUnitnames UnitPath ',FIDTTreeOfUnitFiles.Count]);
+    {$ENDIF}
     // search in srcpath
-    SrcExt:='pp;pas';
+    SrcExt:=PascalCompilerSrcExt[Scanner.PascalCompiler];
     if Scanner.CompilerMode=cmMacPas then
       SrcExt:=SrcExt+';p';
     GatherUnitFiles(BaseDir,SrcPath,SrcExt,NameSpacePath,false,true,FIDTTreeOfUnitFiles, FIDTTreeOfNamespaces);
-    //debugln(['TIdentCompletionTool.GatherUnitnames Plus SrcPath ',FIDTTreeOfUnitFiles.Count]);
-    // add unitlinks
-    if Scanner.PascalCompiler=pcFPC then
-      GatherUnitsFromSet;
-    //debugln(['TIdentCompletionTool.GatherUnitnames Plus FPC units ',FIDTTreeOfUnitFiles.Count]);
+    {$IFDEF VerboseICGatherUnitNames}
+    debugln(['TIdentCompletionTool.GatherUnitnames Plus SrcPath ',FIDTTreeOfUnitFiles.Count]);
+    {$ENDIF}
+    // add default units
+    GatherUnitsFromSet;
+    {$IFDEF VerboseICGatherUnitNames}
+    debugln(['TIdentCompletionTool.GatherUnitnames Plus FPC units ',FIDTTreeOfUnitFiles.Count]);
+    {$ENDIF}
     // create list
     if FIDTTreeOfUnitFiles<>nil then
     begin
@@ -1652,8 +1662,10 @@ begin
             0,nil,nil,ctnUnit, PChar(UnitFileInfo.FileUnitName), UnitFileInfo.IdentifierStartInUnitName);
         if NewItem.IdentifierStartInUnitName < 1 then
           NewItem.IdentifierStartInUnitName := 1;
+        {$IFDEF VerboseICGatherUnitNames}
         //debugln(['TIdentCompletionTool.GatherUnitnames Add ',UnitFileInfo.FileUnitName,' NewCount=',CurrentIdentifierList]);
         CurrentIdentifierList.Add(NewItem);
+        {$ENDIF}
       end;
     end;
     if FIDTTreeOfNamespaces<>nil then
