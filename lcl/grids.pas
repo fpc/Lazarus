@@ -4117,7 +4117,6 @@ end;
 procedure TCustomGrid.DrawColumnText(aCol, aRow: Integer; aRect: TRect;
   aState: TGridDrawState);
 begin
-  DrawColumnTitleImage(aRect, aCol);
   DrawCellText(aCol,aRow,aRect,aState,GetColumnTitle(aCol));
 end;
 
