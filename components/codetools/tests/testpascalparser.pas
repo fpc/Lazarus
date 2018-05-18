@@ -456,6 +456,11 @@ begin
   'program test1;',
   'const NaN: double; external;',
   'const nan: double; external name ''NaN'';',
+  '{$modeswitch externalclass}',
+  'type',
+  '  TExtA = class external name ''ExtA''',
+  '    const id;',
+  '  end;',
   'begin']);
   ParseModule;
 end;
