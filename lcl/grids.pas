@@ -120,8 +120,7 @@ type
 
   TGridOption2 = (
     goScrollToLastCol,  // allow scrolling to last column (so that last column can be leftcol)
-    goScrollToLastRow,  // allow scrolling to last row (so that last row can be toprow)
-    goShowSortArrows    // show arrows in header when column is sorted
+    goScrollToLastRow   // allow scrolling to last row (so that last row can be toprow)
   );
   TGridOptions2 = set of TGridOption2;
 
@@ -4117,6 +4116,7 @@ end;
 procedure TCustomGrid.DrawColumnText(aCol, aRow: Integer; aRect: TRect;
   aState: TGridDrawState);
 begin
+  DrawColumnTitleImage(aRect, aCol);
   DrawCellText(aCol,aRow,aRect,aState,GetColumnTitle(aCol));
 end;
 
@@ -4133,7 +4133,7 @@ var
   Details: TThemedElementDetails;
   NativeSortGlyphs: Boolean;
 begin
-  if (FSortColumn = AColumnIndex) and (goShowSortArrows in FOptions2) then
+  if FSortColumn = AColumnIndex then
   begin
     GetSortTitleImageInfo(AColumnIndex, ImgList, ImgIndex, ImgListWidth, NativeSortGlyphs);
     if NativeSortGlyphs then// draw native sort buttons
@@ -4490,13 +4490,6 @@ begin
   case Canvas.TextStyle.Layout of
     tlTop: Inc(ARect.Top, varCellPadding);
     tlBottom: Dec(ARect.Bottom, varCellPadding);
-  end;
-
-  if (gdFixed in aState) and (FSortColumn = aCol) and
-    (goShowSortArrows in FOptions2) then
-  begin
-    DrawColumnTitleImage(aRect, FSortColumn);
-    dec(ARect.Right, 2*varCellPadding);
   end;
 
   if ARect.Right<ARect.Left then
@@ -9265,7 +9258,6 @@ begin
   Cfg.SetValue(Path+'goRowHighlight/value', goRowHighlight in Options);
   Cfg.SetValue(Path+'goScrollToLastCol/value', goScrollToLastCol in Options2);
   Cfg.SetValue(Path+'goScrollToLastRow/value', goScrollToLastRow in Options2);
-  Cfg.SetValue(Path+'goShowSortArrows/value', goShowSortArrows in Options2);
 end;
 
 procedure TCustomGrid.LoadColumns(cfg: TXMLConfig; Version: integer);
@@ -9462,7 +9454,6 @@ begin
   end;
   GetValue2('goScrollToLastRow',goScrollToLastRow);
   GetValue2('goScrollToLastCol',goScrollToLastCol);
-  GetValue2('goShowSortArrows',goShowSortArrows);
 
   Options:=Opt;
   Options2:=Opt2;
@@ -9505,8 +9496,9 @@ begin
   FAutoEdit := True;
   FFocusRectVisible := True;
   FDefaultDrawing := True;
-  FOptions := DefaultGridOptions;
-  FOptions2 := DefaultGridOptions2;
+  FOptions:=
+    [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect,
+     goSmoothScroll ];
   FScrollbars:=ssAutoBoth;
   fGridState:=gsNormal;
   FDefColWidth:=-1;
