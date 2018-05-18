@@ -236,7 +236,8 @@ type
     pgsBuildPropertyListNeeded,
     pgsGetComboItemsCalled,
     pgsIdleEnabled,
-    pgsCallingEdit   // calling property editor Edit
+    pgsCallingEdit,                 // calling property editor Edit
+    pgsFocusPropertyEditorDisabled  // by building PropertyList no editor should be focused
     );
   TOIPropertyGridStates = set of TOIPropertyGridState;
 
@@ -472,7 +473,7 @@ type
     function PropertyPath(Index: integer):string;
     function PropertyPath(Row: TOIPropertyGridRow):string;
     function TopMax: integer;
-    procedure BuildPropertyList(OnlyIfNeeded: boolean = False);
+    procedure BuildPropertyList(OnlyIfNeeded: Boolean = False; FocusEditor: Boolean = True);
     procedure Clear;
     procedure Paint; override;
     procedure PropEditLookupRootChange;
@@ -669,6 +670,7 @@ type
     FInfoBoxHeight: integer;
     FLastActiveRowName: String;
     FPropertyEditorHook: TPropertyEditorHook;
+    FPropFilterUpdating: Boolean;
     FRefreshingSelectionCount: integer;
     FRestricted: TOIRestrictedProperties;
     FSelection: TPersistentSelectionList;
@@ -1928,6 +1930,7 @@ begin
       FCurrentEdit.Visible:=true;
       if (FDragging=false) and FCurrentEdit.Showing and FCurrentEdit.Enabled
       and (not NewRow.IsReadOnly) and CanFocus and (Column=oipgcValue)
+      and not (pgsFocusPropertyEditorDisabled in FStates)
       then
         SetActiveControl(FCurrentEdit);
     end;
@@ -1954,7 +1957,8 @@ begin
   Result:=FRows.Count;
 end;
 
-procedure TOICustomPropertyGrid.BuildPropertyList(OnlyIfNeeded: boolean);
+procedure TOICustomPropertyGrid.BuildPropertyList(OnlyIfNeeded: Boolean;
+  FocusEditor: Boolean);
 var
   a: integer;
   CurRow: TOIPropertyGridRow;
@@ -1962,7 +1966,7 @@ var
 begin
   if OnlyIfNeeded and (not (pgsBuildPropertyListNeeded in FStates)) then exit;
   Exclude(FStates,pgsBuildPropertyListNeeded);
-
+  if not FocusEditor then Include(FStates, pgsFocusPropertyEditorDisabled);
   OldSelectedRowPath:=PropertyPath(ItemIndex);
   // unselect
   ItemIndex:=-1;
@@ -2001,6 +2005,7 @@ begin
   CurRow:=GetRowByPath(OldSelectedRowPath);
   if CurRow<>nil then
     ItemIndex:=CurRow.Index;
+  Exclude(FStates, pgsFocusPropertyEditorDisabled);
   // paint
   Invalidate;
 end;
@@ -4250,6 +4255,7 @@ begin
   FShowRestricted := False;
   FShowStatusBar := True;
   FInfoBoxHeight := 80;
+  FPropFilterUpdating := False;
   FShowInfoBox := True;
   FComponentEditor := nil;
   FFilter := DefaultOITypeKinds;
@@ -4446,9 +4452,10 @@ end;
 
 procedure TObjectInspectorDlg.PropFilterEditAfterFilter(Sender: TObject);
 begin
+  FPropFilterUpdating := True;
   GetActivePropertyGrid.PropNameFilter := PropFilterEdit.Filter;
   RebuildPropertyLists;
-  PropFilterEdit.SetFocus;
+  FPropFilterUpdating := False;
 end;
 
 procedure TObjectInspectorDlg.PropFilterEditResize(Sender: TObject);
@@ -4869,7 +4876,7 @@ begin
     Exclude(FFLags,oifRebuildPropListsNeeded);
     for Page:=Low(TObjectInspectorPage) to High(TObjectInspectorPage) do
       if GridControl[Page]<>nil then
-        GridControl[Page].BuildPropertyList;
+        GridControl[Page].BuildPropertyList(False, not FPropFilterUpdating);
   end;
 end;
 
