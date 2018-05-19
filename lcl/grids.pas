@@ -4152,10 +4152,15 @@ begin
       w := Scale96ToFont(s.cx);
       h := Scale96ToFont(s.cy);
 
-      Dec(ARect.Right, w);
-      r.Left := ARect.Right - DEFIMAGEPADDING;
-      r.Top := ARect.Top + (ARect.Bottom - ARect.Top - h) div 2;
+      if IsRightToLeft then begin
+        r.Left := ARect.Left + DEFIMAGEPADDING;
+        Inc(ARect.Left, w + DEFIMAGEPADDING);
+      end else begin
+        Dec(ARect.Right, w + DEFIMAGEPADDING);
+        r.Left := ARect.Right - DEFIMAGEPADDING;
+      end;
       r.Right := r.Left + w;
+      r.Top := ARect.Top + (ARect.Bottom - ARect.Top - h) div 2;
       r.Bottom := r.Top + h;
 
       ThemeServices.DrawElement(Canvas.Handle, Details, r, nil);
@@ -4165,8 +4170,13 @@ begin
       w := ImgRes.Width;
       h := ImgRes.Height;
 
-      Dec(ARect.Right, w);
-      p.X := ARect.Right - DEFIMAGEPADDING;
+      if IsRightToLeft then begin
+        P.X := ARect.Left + DEFIMAGEPADDING;
+        Inc(ARect.Left, w + DEFIMAGEPADDING);
+      end else begin
+        Dec(ARect.Right, w + DEFIMAGEPADDING);
+        p.X := ARect.Right - DEFIMAGEPADDING;
+      end;
       p.Y := ARect.Top + (ARect.Bottom - ARect.Top - h) div 2;
 
       ImgRes.Draw(Canvas, p.X, p.Y, ImgIndex);
