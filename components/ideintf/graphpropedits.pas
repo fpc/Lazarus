@@ -17,7 +17,7 @@ interface
 
 uses
   Classes, TypInfo, SysUtils, LCLProc, Forms, Controls, LCLType, GraphType,
-  LazFileUtils, Graphics, Buttons, Menus, ExtCtrls, Dialogs,
+  LazFileUtils, Graphics, Buttons, Menus, ExtCtrls, Dialogs, Grids,
   LCLIntf, PropEdits, PropEditUtils, ImgList, EditBtn, Math,
   GraphicPropEdit; // defines TGraphicPropertyEditorForm
 
@@ -140,6 +140,14 @@ type
       ACanvas:TCanvas; var AHeight: Integer); override;
     procedure ListDrawValue(const CurValue: ansistring; Index:integer;
       ACanvas: TCanvas;  const ARect: TRect; AState: TPropEditDrawState); override;
+  end;
+
+{ TGridImageIndexPropertyEditor
+  ImageIndex property editor specialized for a grid's title and sort images. }
+
+  TGridImageIndexPropertyEditor = class(TImageIndexPropertyEditor)
+  protected
+    function GetImageList: TCustomImageList; override;
   end;
 
 //==============================================================================
@@ -751,6 +759,29 @@ begin
   inherited ListDrawValue(CurValue, Index, ACanvas, R, AState);
 end;
 
+{ TGridImageIndexPropertyEditor }
+
+type
+  TCustomGridOpener = class(TCustomGrid);
+
+function TGridImageIndexPropertyEditor.GetImagelist: TCustomImagelist;
+var
+  grid: TComponent;
+  p: TPersistent;
+begin
+  Result := nil;
+  p := GetComponent(0);
+  if (p is TGridColumnTitle) then begin
+    p := TGridColumnTitle(p).Column;
+    if not (p is TGridColumn) then exit;
+    p := TGridColumn(p).Collection;
+    if not (p is TGridColumns) then exit;
+    p := TGridColumns(p).Grid;
+  end;
+  if p is TCustomGrid then
+    Result := TCustomGridOpener(p).TitleImageList
+end;
+
 initialization
   RegisterPropertyEditor(TypeInfo(TGraphicsColor), nil, '', TColorPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TPenStyle), nil, '', TPenStylePropertyEditor);
@@ -758,8 +789,9 @@ initialization
   RegisterPropertyEditor(TypeInfo(AnsiString), TFont, 'Name', TFontNamePropertyEditor);
   RegisterPropertyEditor(TypeInfo(TFontCharset), nil, 'CharSet', TFontCharsetPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TImageIndex), TPersistent, 'ImageIndex', TImageIndexPropertyEditor);
-  RegisterPropertyEditor(TypeInfo(TImageIndex), TComponent, 'ImageIndexSortAsc', TImageIndexPropertyEditor);
-  RegisterPropertyEditor(TypeInfo(TImageIndex), TComponent, 'ImageIndexSortDesc', TImageIndexPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TImageIndex), TGridColumnTitle, 'ImageIndex', TGridImageIndexPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TImageIndex), TCustomGrid, 'ImageIndexSortAsc', TGridImageIndexPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TImageIndex), TCustomGrid, 'ImageIndexSortDesc', TGridImageIndexPropertyEditor);
   RegisterPropertyEditor(ClassTypeInfo(TFont), nil,'',TFontPropertyEditor);
   RegisterPropertyEditor(ClassTypeInfo(TGraphic), nil,'',TGraphicPropertyEditor);
   RegisterPropertyEditor(ClassTypeInfo(TPicture), nil,'',TPicturePropertyEditor);
