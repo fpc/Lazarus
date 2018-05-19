@@ -1,3 +1,9 @@
+lazarus (1.8.5) unstable; urgency=low
+
+  * Bugfix release
+
+ -- Mattias Gaertner <mattias@freepascal.org>  Sat, 19 May 2018 12:46:22 +0200
+
 lazarus (1.8.4) stable; urgency=low
 
   * Bugfix release

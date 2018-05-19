@@ -25,9 +25,9 @@
       <UseVersionInfo Value="True"/>
       <MajorVersionNr Value="1"/>
       <MinorVersionNr Value="8"/>
-      <BuildNr Value="5"/>
+      <RevisionNr Value="5"/>
       <CharSet Value="04B0"/>
-      <StringTable ProductName="Lazarus IDE" ProductVersion="1.8.0.2"/>
+      <StringTable ProductName="Lazarus IDE" ProductVersion="1.8.5"/>
     </VersionInfo>
     <BuildModes Count="1">
       <Item1 Name="default" Default="True"/>
