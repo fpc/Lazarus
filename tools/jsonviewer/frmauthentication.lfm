@@ -1,0 +1,77 @@
+object AuthenticationForm: TAuthenticationForm
+  Left = 491
+  Height = 123
+  Top = 180
+  Width = 332
+  Caption = 'HTTP Authentication'
+  ClientHeight = 123
+  ClientWidth = 332
+  SessionProperties = 'EPassword.Text;CBUserName.Items'
+  LCLVersion = '1.9.0.0'
+  object BPHeader: TButtonPanel
+    Left = 0
+    Height = 42
+    Top = 81
+    Width = 332
+    BorderSpacing.Around = 0
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object CBUserName: TComboBox
+    Left = 96
+    Height = 29
+    Top = 8
+    Width = 216
+    Anchors = [akTop, akLeft, akRight]
+    AutoComplete = True
+    AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
+    ItemHeight = 0
+    TabOrder = 1
+  end
+  object LEPassword: TLabel
+    Left = 19
+    Height = 25
+    Top = 40
+    Width = 69
+    Alignment = taRightJustify
+    AutoSize = False
+    Caption = '&Password'
+    Layout = tlCenter
+    ParentColor = False
+  end
+  object LCBUserName: TLabel
+    Left = 16
+    Height = 25
+    Top = 8
+    Width = 72
+    Alignment = taRightJustify
+    AutoSize = False
+    Caption = '&Username'
+    FocusControl = CBUserName
+    Layout = tlCenter
+    ParentColor = False
+  end
+  object EPassword: TEdit
+    Left = 96
+    Height = 27
+    Top = 40
+    Width = 216
+    EchoMode = emPassword
+    PasswordChar = '*'
+    TabOrder = 2
+    Text = 'EPassword'
+  end
+  object PSHeaders: TIniPropStorage
+    StoredValues = <>
+    left = 128
+    top = 80
+  end
+end

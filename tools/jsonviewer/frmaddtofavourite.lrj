@@ -1,0 +1,5 @@
+{"version":1,"strings":[
+{"hash":47394245,"name":"tsaverequestdataform.caption","sourcebytes":[83,97,118,101,32,114,101,113,117,101,115,116,32,100,97,116,97,32,97,115,32,102,97,118,111,117,114,105,116,101],"value":"Save request data as favourite"},
+{"hash":346165,"name":"tsaverequestdataform.label1.caption","sourcebytes":[78,97,109,101],"value":"Name"},
+{"hash":171864420,"name":"tsaverequestdataform.cbsavecontent.caption","sourcebytes":[83,97,118,101,32,114,101,113,117,101,115,116,32,99,111,110,116,101,110,116],"value":"Save request content"}
+]}

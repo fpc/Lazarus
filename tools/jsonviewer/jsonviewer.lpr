@@ -7,7 +7,8 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, frmmain, frmNewBoolean, frmnewinteger, frmnewstring, msgjsonviewer, frmcreatecode
+  Forms, frmmain, frmNewBoolean, frmnewinteger, frmnewstring, msgjsonviewer, frmcreatecode, frarest, frmheader, frmauthentication,
+  frmaddtofavourite
   { you can add units after this };
 
 {$R *.res}
@@ -19,6 +20,9 @@ begin
   Application.CreateForm(TNewBooleanForm, NewBooleanForm);
   Application.CreateForm(TNewNumberForm, NewNumberForm);
   Application.CreateForm(TNewStringForm, NewStringForm);
+  Application.CreateForm(THeaderForm, HeaderForm);
+  Application.CreateForm(TAuthenticationForm, AuthenticationForm);
+  Application.CreateForm(TSaveRequestDataForm, SaveRequestDataForm);
   Application.Run;
 end.
 

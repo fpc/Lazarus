@@ -1,0 +1,86 @@
+object HeaderForm: THeaderForm
+  Left = 491
+  Height = 138
+  Top = 180
+  Width = 318
+  ActiveControl = CBName
+  BorderStyle = bsDialog
+  Caption = 'Request header'
+  ClientHeight = 138
+  ClientWidth = 318
+  OnClose = FormClose
+  OnCloseQuery = FormCloseQuery
+  OnShow = FormShow
+  SessionProperties = 'CBName.Items;CBValue.Items'
+  LCLVersion = '1.9.0.0'
+  object LCBName: TLabel
+    Left = 16
+    Height = 25
+    Top = 8
+    Width = 40
+    Alignment = taRightJustify
+    AutoSize = False
+    Caption = '&Name'
+    FocusControl = CBName
+    Layout = tlCenter
+    ParentColor = False
+  end
+  object LCBValue: TLabel
+    Left = 19
+    Height = 25
+    Top = 40
+    Width = 37
+    Alignment = taRightJustify
+    AutoSize = False
+    Caption = '&Value'
+    FocusControl = CBValue
+    Layout = tlCenter
+    ParentColor = False
+  end
+  object BPHeader: TButtonPanel
+    Left = 0
+    Height = 42
+    Top = 96
+    Width = 318
+    BorderSpacing.Around = 0
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object CBName: TComboBox
+    Left = 64
+    Height = 29
+    Top = 8
+    Width = 236
+    Anchors = [akTop, akLeft, akRight]
+    AutoComplete = True
+    AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
+    ItemHeight = 0
+    OnChange = CBNameChange
+    TabOrder = 1
+  end
+  object CBValue: TComboBox
+    Left = 64
+    Height = 29
+    Top = 40
+    Width = 236
+    Anchors = [akTop, akLeft, akRight]
+    AutoComplete = True
+    AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
+    ItemHeight = 0
+    OnChange = CBValueChange
+    TabOrder = 2
+  end
+  object PSHeaders: TIniPropStorage
+    StoredValues = <>
+    left = 111
+    top = 80
+  end
+end

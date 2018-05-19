@@ -1,0 +1,18 @@
+{"version":1,"strings":[
+{"hash":13689332,"name":"trestframe.cbusecurrenttabcontent.caption","sourcebytes":[85,115,101,32,99,117,114,114,101,110,116,32,116,97,98,32,97,115,32,99,111,110,116,101,110,116],"value":"Use current tab as content"},
+{"hash":101405235,"name":"trestframe.tsheaders.caption","sourcebytes":[82,101,113,117,101,115,116,32,104,101,97,100,101,114,115],"value":"Request headers"},
+{"hash":49895156,"name":"trestframe.tsrequestcontent.caption","sourcebytes":[82,101,113,117,101,115,116,32,99,111,110,116,101,110,116],"value":"Request content"},
+{"hash":185034196,"name":"trestframe.tsresult.caption","sourcebytes":[82,101,113,117,101,115,116,32,114,101,115,117,108,116],"value":"Request result"},
+{"hash":317840,"name":"trestframe.lhttpstatus.caption","sourcebytes":[72,84,84,80],"value":"HTTP"},
+{"hash":82772130,"name":"trestframe.aaddheader.caption","sourcebytes":[65,100,100,32,72,101,97,100,101,114],"value":"Add Header"},
+{"hash":82772130,"name":"trestframe.aaddheader.hint","sourcebytes":[65,100,100,32,72,101,97,100,101,114],"value":"Add Header"},
+{"hash":77646498,"name":"trestframe.aeditheader.caption","sourcebytes":[69,100,105,116,32,72,101,97,100,101,114],"value":"Edit Header"},
+{"hash":77646498,"name":"trestframe.aeditheader.hint","sourcebytes":[69,100,105,116,32,72,101,97,100,101,114],"value":"Edit Header"},
+{"hash":237613298,"name":"trestframe.adeleteheader.caption","sourcebytes":[68,101,108,101,116,101,32,72,101,97,100,101,114],"value":"Delete Header"},
+{"hash":237613298,"name":"trestframe.adeleteheader.hint","sourcebytes":[68,101,108,101,116,101,32,72,101,97,100,101,114],"value":"Delete Header"},
+{"hash":2858052,"name":"trestframe.asend.caption","sourcebytes":[38,83,101,110,100],"value":"&Send"},
+{"hash":223673044,"name":"trestframe.asend.hint","sourcebytes":[83,101,110,100,32,114,101,113,117,101,115,116],"value":"Send request"},
+{"hash":53981310,"name":"trestframe.aauthentication.caption","sourcebytes":[65,65,117,116,104,101,110,116,105,99,97,116,105,111,110],"value":"AAuthentication"},
+{"hash":103840190,"name":"trestframe.aauthentication.hint","sourcebytes":[72,84,84,80,32,66,97,115,105,99,32,97,117,116,104,101,110,116,105,99,97,116,105,111,110],"value":"HTTP Basic authentication"},
+{"hash":104897198,"name":"trestframe.aaddtofavourites.caption","sourcebytes":[65,100,100,32,116,111,32,102,97,118,111,117,114,105,116,101,115,46,46,46],"value":"Add to favourites..."}
+]}

@@ -43,7 +43,7 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="7">
+    <Units Count="11">
       <Unit0>
         <Filename Value="jsonviewer.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -88,6 +88,33 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
       </Unit6>
+      <Unit7>
+        <Filename Value="frarest.pp"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="RestFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="frmheader.pp"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="HeaderForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="frmauthentication.pp"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="AuthenticationForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="frmaddtofavourite.pp"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="SaveRequestDataForm"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit10>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

@@ -1,0 +1,5 @@
+{"version":1,"strings":[
+{"hash":174109986,"name":"theaderform.caption","sourcebytes":[82,101,113,117,101,115,116,32,104,101,97,100,101,114],"value":"Request header"},
+{"hash":2836533,"name":"theaderform.lcbname.caption","sourcebytes":[38,78,97,109,101],"value":"&Name"},
+{"hash":45908917,"name":"theaderform.lcbvalue.caption","sourcebytes":[38,86,97,108,117,101],"value":"&Value"}
+]}

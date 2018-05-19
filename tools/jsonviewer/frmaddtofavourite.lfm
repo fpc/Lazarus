@@ -1,0 +1,51 @@
+object SaveRequestDataForm: TSaveRequestDataForm
+  Left = 489
+  Height = 125
+  Top = 180
+  Width = 424
+  BorderStyle = bsDialog
+  Caption = 'Save request data as favourite'
+  ClientHeight = 125
+  ClientWidth = 424
+  Position = poMainFormCenter
+  LCLVersion = '1.9.0.0'
+  object EName: TEdit
+    Left = 80
+    Height = 27
+    Top = 6
+    Width = 328
+    TabOrder = 0
+  end
+  object Label1: TLabel
+    Left = 32
+    Height = 17
+    Top = 8
+    Width = 34
+    Caption = 'Name'
+    ParentColor = False
+  end
+  object CBSaveContent: TCheckBox
+    Left = 80
+    Height = 22
+    Top = 40
+    Width = 142
+    Caption = 'Save request content'
+    TabOrder = 1
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 42
+    Top = 77
+    Width = 412
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 2
+    ShowButtons = [pbOK, pbCancel]
+  end
+end
