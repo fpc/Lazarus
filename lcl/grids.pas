@@ -1685,6 +1685,7 @@ type
     procedure DoCutToClipboard; override;
     procedure DoPasteFromClipboard; override;
     procedure DoCellProcess(aCol, aRow: Integer; processType: TCellProcessType; var aValue: string); virtual;
+    procedure DrawColumnText(aCol, aRow: Integer; aRect: TRect; aState: TGridDrawState); override;
     procedure DrawTextInCell(aCol,aRow: Integer; aRect: TRect; aState: TGridDrawState); override;
     procedure DrawCellAutonumbering(aCol,aRow: Integer; aRect: TRect; const aValue: string); override;
     //procedure EditordoGetValue; override;
@@ -4117,7 +4118,7 @@ procedure TCustomGrid.DrawColumnText(aCol, aRow: Integer; aRect: TRect;
   aState: TGridDrawState);
 begin
   DrawColumnTitleImage(aRect, aCol);
-  DrawCellText(aCol,aRow,aRect,aState,GetColumnTitle(aCol));
+  DrawCellText(aCol,aRow,aRect,aState,GetColumnTitle(aCol))
 end;
 
 procedure TCustomGrid.DrawColumnTitleImage(
@@ -5287,7 +5288,8 @@ end;
 
 function TCustomGrid.GetIsCellTitle(aCol, aRow: Integer): boolean;
 begin
-  result := (FixedRows>0) and (aRow=0) and Columns.Enabled and (aCol>=FirstGridColumn)
+  result := (FixedRows>0) and (aRow=0) {and Columns.Enabled} and (aCol>=FirstGridColumn);
+    // Columns.Enabled removed in order to allow sort arrows also without columns
 end;
 
 function TCustomGrid.GetIsCellSelected(aCol, aRow: Integer): boolean;
@@ -11195,6 +11197,17 @@ procedure TCustomStringGrid.DrawCellAutonumbering(aCol, aRow: Integer;
 begin
   if Cells[aCol,aRow]='' then
     inherited DrawCellAutoNumbering(aCol,aRow,aRect,aValue);
+end;
+
+procedure TCustomStringGrid.DrawColumnText(aCol, aRow: Integer; aRect: TRect;
+  aState: TGridDrawState);
+begin
+  if Columns.Enabled then
+    inherited
+  else begin
+    DrawColumnTitleImage(aRect, aCol);
+    DrawCellText(aCol,aRow,aRect,aState,Cells[aCol,aRow])
+  end;
 end;
 
 procedure TCustomStringGrid.GetCheckBoxState(const aCol, aRow: Integer;
