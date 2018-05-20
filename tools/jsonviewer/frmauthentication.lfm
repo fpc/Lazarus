@@ -10,8 +10,8 @@ object AuthenticationForm: TAuthenticationForm
   LCLVersion = '1.9.0.0'
   object BPHeader: TButtonPanel
     Left = 0
-    Height = 42
-    Top = 81
+    Height = 34
+    Top = 89
     Width = 332
     BorderSpacing.Around = 0
     OKButton.Name = 'OKButton'
@@ -27,13 +27,13 @@ object AuthenticationForm: TAuthenticationForm
   end
   object CBUserName: TComboBox
     Left = 96
-    Height = 29
+    Height = 23
     Top = 8
     Width = 216
     Anchors = [akTop, akLeft, akRight]
     AutoComplete = True
     AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
-    ItemHeight = 0
+    ItemHeight = 15
     TabOrder = 1
   end
   object LEPassword: TLabel
@@ -61,13 +61,12 @@ object AuthenticationForm: TAuthenticationForm
   end
   object EPassword: TEdit
     Left = 96
-    Height = 27
+    Height = 23
     Top = 40
     Width = 216
     EchoMode = emPassword
     PasswordChar = '*'
     TabOrder = 2
-    Text = 'EPassword'
   end
   object PSHeaders: TIniPropStorage
     StoredValues = <>
