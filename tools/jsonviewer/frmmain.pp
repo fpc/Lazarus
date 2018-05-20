@@ -223,7 +223,6 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure HaveData(Sender: TObject);
-    procedure MFavouritesClick(Sender: TObject);
     procedure MIAllowTrailingCommaClick(Sender: TObject);
     procedure MIAllowCommentsClick(Sender: TObject);
     procedure MICompactClick(Sender: TObject);
@@ -1536,10 +1535,6 @@ begin
     A[i]:=M;
     end;
   MFavourites.Add(A);
-end;
-
-procedure TMainForm.MFavouritesClick(Sender: TObject);
-begin
 end;
 
 procedure TMainForm.MIAllowTrailingCommaClick(Sender: TObject);

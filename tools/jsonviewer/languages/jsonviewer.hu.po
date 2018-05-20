@@ -113,11 +113,6 @@ msgctxt "tauthenticationform.caption"
 msgid "HTTP Authentication"
 msgstr ""
 
-#: tauthenticationform.epassword.text
-msgctxt "tauthenticationform.epassword.text"
-msgid "EPassword"
-msgstr ""
-
 #: tauthenticationform.lcbusername.caption
 msgctxt "tauthenticationform.lcbusername.caption"
 msgid "&Username"
@@ -179,27 +174,6 @@ msgstr ""
 #: tcreatecodeform.tsoptions.caption
 msgid "Options"
 msgstr ""
-
-#: tform1.caption
-msgctxt "tform1.caption"
-msgid "AuthenticationForm"
-msgstr ""
-
-#: tform1.epassword.text
-msgctxt "tform1.epassword.text"
-msgid "EPassword"
-msgstr ""
-
-#: tform1.lcbusername.caption
-msgctxt "tform1.lcbusername.caption"
-msgid "&Username"
-msgstr ""
-
-#: tform1.lcbvalue.caption
-#, fuzzy
-msgctxt "tform1.lcbvalue.caption"
-msgid "&Value"
-msgstr "É&rték"
 
 #: theaderform.caption
 msgid "Request header"
@@ -449,7 +423,7 @@ msgid "TBJSON"
 msgstr "TBJSON"
 
 #: tmainform.tbshowrest.caption
-msgid "TBShowRest"
+msgid "Show &REST query"
 msgstr ""
 
 #: tmainform.toolbutton1.caption
@@ -518,10 +492,12 @@ msgid "Add to favourites..."
 msgstr ""
 
 #: trestframe.aauthentication.caption
-msgid "AAuthentication"
+msgctxt "trestframe.aauthentication.caption"
+msgid "HTTP Basic authentication"
 msgstr ""
 
 #: trestframe.aauthentication.hint
+msgctxt "trestframe.aauthentication.hint"
 msgid "HTTP Basic authentication"
 msgstr ""
 

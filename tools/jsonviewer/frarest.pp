@@ -86,8 +86,6 @@ type
     procedure ASendExecute(Sender: TObject);
     procedure ASendUpdate(Sender: TObject);
     procedure CBURLKeyPress(Sender: TObject; var Key: char);
-    procedure FrameClick(Sender: TObject);
-    procedure PCRestChange(Sender: TObject);
   private
     FFavourites: TRequestDataList;
     FOnContentReceived: TRestRequest;
@@ -201,16 +199,6 @@ procedure TRestFrame.CBURLKeyPress(Sender: TObject; var Key: char);
 begin
   if Key=#13 then
     ExecuteRequest;
-end;
-
-procedure TRestFrame.FrameClick(Sender: TObject);
-begin
-
-end;
-
-procedure TRestFrame.PCRestChange(Sender: TObject);
-begin
-
 end;
 
 Function TRestFrame.GetURL : String;

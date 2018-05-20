@@ -4,7 +4,7 @@ object MainForm: TMainForm
   Top = 125
   Width = 695
   Caption = 'JSON Viewer'
-  ClientHeight = 486
+  ClientHeight = 489
   ClientWidth = 695
   Icon.Data = {
     7E04000000000100010010100000010020006804000016000000280000001000
@@ -140,7 +140,7 @@ object MainForm: TMainForm
     object TBShowRest: TToolButton
       Left = 293
       Top = 2
-      Caption = 'TBShowRest'
+      Caption = 'Show &REST query'
       ImageIndex = 18
       OnClick = TBShowRestClick
       Style = tbsCheck
@@ -148,7 +148,7 @@ object MainForm: TMainForm
   end
   object PCJSON: TPageControl
     Left = 0
-    Height = 460
+    Height = 463
     Top = 26
     Width = 695
     Align = alClient
@@ -468,7 +468,6 @@ object MainForm: TMainForm
     object MFavourites: TMenuItem
       Caption = 'Favourites'
       Visible = False
-      OnClick = MFavouritesClick
       object MenuItem15: TMenuItem
         Action = AAddToFavourites
       end

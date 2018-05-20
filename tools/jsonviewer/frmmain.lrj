@@ -3,7 +3,7 @@
 {"hash":92731454,"name":"tmainform.tbjson.caption","sourcebytes":[84,66,74,83,79,78],"value":"TBJSON"},
 {"hash":160486420,"name":"tmainform.toolbutton4.caption","sourcebytes":[84,111,111,108,66,117,116,116,111,110,52],"value":"ToolButton4"},
 {"hash":160486417,"name":"tmainform.toolbutton1.caption","sourcebytes":[84,111,111,108,66,117,116,116,111,110,49],"value":"ToolButton1"},
-{"hash":258542388,"name":"tmainform.tbshowrest.caption","sourcebytes":[84,66,83,104,111,119,82,101,115,116],"value":"TBShowRest"},
+{"hash":257313145,"name":"tmainform.tbshowrest.caption","sourcebytes":[83,104,111,119,32,38,82,69,83,84,32,113,117,101,114,121],"value":"Show &REST query"},
 {"hash":177351,"name":"tmainform.anew.caption","sourcebytes":[38,78,101,119],"value":"&New"},
 {"hash":158092548,"name":"tmainform.anew.hint","sourcebytes":[67,114,101,97,116,101,32,110,101,119,32,74,83,79,78,32,100,111,99,117,109,101,110,116],"value":"Create new JSON document"},
 {"hash":2844350,"name":"tmainform.aopen.caption","sourcebytes":[38,79,112,101,110],"value":"&Open"},

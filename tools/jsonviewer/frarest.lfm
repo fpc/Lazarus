@@ -6,16 +6,15 @@ object RestFrame: TRestFrame
   ClientHeight = 209
   ClientWidth = 568
   Constraints.MinHeight = 180
-  OnClick = FrameClick
   TabOrder = 0
   DesignLeft = 524
   DesignTop = 266
   object CBMethod: TComboBox
     Left = 72
-    Height = 29
+    Height = 23
     Top = 4
     Width = 100
-    ItemHeight = 0
+    ItemHeight = 15
     Items.Strings = (
       'GET'
       'POST'
@@ -30,19 +29,19 @@ object RestFrame: TRestFrame
   end
   object CBURL: TComboBox
     Left = 176
-    Height = 29
+    Height = 23
     Top = 4
     Width = 350
     Anchors = [akTop, akLeft, akRight]
-    ItemHeight = 0
+    ItemHeight = 15
     OnKeyPress = CBURLKeyPress
     TabOrder = 1
   end
   object CBUseCurrentTabContent: TCheckBox
     Left = 8
-    Height = 22
-    Top = 180
-    Width = 172
+    Height = 19
+    Top = 183
+    Width = 158
     Anchors = [akLeft, akBottom]
     Caption = 'Use current tab as content'
     TabOrder = 2
@@ -60,25 +59,23 @@ object RestFrame: TRestFrame
     Height = 140
     Top = 36
     Width = 518
-    ActivePage = TSRequestContent
+    ActivePage = TSHeaders
     Anchors = [akTop, akLeft, akRight, akBottom]
-    TabIndex = 1
+    TabIndex = 0
     TabOrder = 4
-    OnChange = PCRestChange
     object TSHeaders: TTabSheet
       Caption = 'Request headers'
-      ClientHeight = 105
-      ClientWidth = 512
+      ClientHeight = 112
+      ClientWidth = 510
       object LBHeaders: TListBox
         Left = 40
-        Height = 97
+        Height = 104
         Top = 4
-        Width = 481
+        Width = 479
         Anchors = [akTop, akLeft, akRight, akBottom]
         ItemHeight = 0
         ScrollWidth = 479
         TabOrder = 0
-        TopIndex = -1
       end
       object SBAdd: TSpeedButton
         Left = 7
@@ -127,13 +124,13 @@ object RestFrame: TRestFrame
     end
     object TSRequestContent: TTabSheet
       Caption = 'Request content'
-      ClientHeight = 105
-      ClientWidth = 512
+      ClientHeight = 112
+      ClientWidth = 510
       inline SERequestContent: TSynEdit
         Left = 0
-        Height = 105
+        Height = 112
         Top = 0
-        Width = 512
+        Width = 510
         Align = alClient
         Font.Height = 13
         Font.Name = 'DejaVu Sans Mono'
@@ -142,7 +139,7 @@ object RestFrame: TRestFrame
         ParentColor = False
         ParentFont = False
         TabOrder = 0
-        Gutter.Width = 57
+        Gutter.Width = 55
         Gutter.MouseActions = <>
         RightGutter.Width = 0
         RightGutter.MouseActions = <>
@@ -599,7 +596,7 @@ object RestFrame: TRestFrame
             MouseActions = <>
           end
           object SynGutterLineNumber1: TSynGutterLineNumber
-            Width = 17
+            Width = 15
             MouseActions = <>
             MarkupInfo.Background = clBtnFace
             MarkupInfo.Foreground = clNone
@@ -643,7 +640,6 @@ object RestFrame: TRestFrame
         ItemHeight = 0
         ScrollWidth = 510
         TabOrder = 0
-        TopIndex = -1
       end
       object LHTTPStatus: TLabel
         Left = 0
@@ -703,7 +699,7 @@ object RestFrame: TRestFrame
     end
     object AAuthentication: TAction
       Category = 'Headers'
-      Caption = 'AAuthentication'
+      Caption = 'HTTP Basic authentication'
       Hint = 'HTTP Basic authentication'
       ImageIndex = 3
       OnExecute = AAuthenticationExecute
