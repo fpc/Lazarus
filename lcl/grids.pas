@@ -5408,6 +5408,12 @@ begin
     ImgIndex := -1;
     ImgLayout := blGlyphRight;
   end;
+  if IsRightToLeft then begin
+    if ImgLayout = blGlyphRight then
+      ImgLayout := blGlyphLeft
+    else if ImgLayout = blGlyphLeft then
+      ImgLayout := blGlyphRight;
+  end;
 end;
 
 procedure TCustomGrid.GetSortTitleImageInfo(aColumnIndex: Integer; out
