@@ -62,15 +62,16 @@ type
     AddToInstallButton: TBitBtn;
     AvailableTreeView: TTreeView;
     AvailablePkgGroupBox: TGroupBox;
+    MiddleBevel: TBevel;
     HelpButton: TBitBtn;
     CancelButton: TBitBtn;
     ExportButton: TButton;
     BtnPanel: TPanel;
     InstallTreeView: TTreeView;
-    lblMiddle: TLabel;
     AvailableFilterEdit: TTreeFilterEdit;
     LPKParsingTimer: TTimer;
     NoteLabel: TLabel;
+    Panel1: TPanel;
     PkgInfoMemo: TMemo;
     PkgInfoGroupBox: TGroupBox;
     ImportButton: TButton;
@@ -78,6 +79,7 @@ type
     InstallPkgGroupBox: TGroupBox;
     SaveAndRebuildButton: TBitBtn;
     InstalledFilterEdit: TTreeFilterEdit;
+    Splitter1: TSplitter;
     UninstallButton: TBitBtn;
     procedure AddToInstallButtonClick(Sender: TObject);
     function FilterEditGetImageIndex({%H-}Str: String; {%H-}Data: TObject;
@@ -171,6 +173,18 @@ implementation
 
 {$R *.lfm}
 
+procedure SetControlsWidthOnMax(AControls: array of TControl);
+var
+  i, MaxWidth: Integer;
+begin
+  MaxWidth:=0;
+  for i:=Low(AControls) to High(AControls) do
+    if AControls[i].Width>MaxWidth then
+      MaxWidth:=AControls[i].Width;
+  for i:=Low(AControls) to High(AControls) do
+    AControls[i].Constraints.MinWidth:=MaxWidth;  // AutoSize=True
+end;
+
 function ShowEditInstallPkgsDialog(OldInstalledPackages: TPkgDependency;
   CheckInstallPackageList: TOnCheckInstallPackageList;
   var NewInstalledPackages: TObjectList; // list of TLazPackageID
@@ -222,10 +236,10 @@ begin
   ExportButton.Caption:=lisExportList;
   ImportButton.Caption:=lisImportList;
   UninstallButton.Caption:=lisUninstallSelection;
-  IDEImages.AssignImage(UninstallButton, 'arrow_right');
+  IDEImages.AssignImage(UninstallButton, 'arrow__darkred_right');
   InstallPkgGroupBox.Caption:=lisPckEditInstall;
   AddToInstallButton.Caption:=lisInstallSelection;
-  IDEImages.AssignImage(AddToInstallButton, 'arrow_left');
+  IDEImages.AssignImage(AddToInstallButton, 'arrow__darkgreen_left');
   PkgInfoGroupBox.Caption := lisPackageInfo;
   SaveAndRebuildButton.Caption:=lisSaveAndRebuildIDE;
   SaveAndExitButton.Caption:=lisSaveAndExitDialog;
@@ -253,6 +267,7 @@ procedure TInstallPkgSetDialog.InstallPkgSetDialogShow(Sender: TObject);
 begin
   InstalledFilterEdit.Filter:='';    // (filter) - text is shown after this.
   AvailableFilterEdit.Filter:='';
+  SetControlsWidthOnMax([UninstallButton, ImportButton, ExportButton, AddToInstallButton]);
 end;
 
 procedure TInstallPkgSetDialog.SaveAndRebuildButtonClick(Sender: TObject);
