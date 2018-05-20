@@ -165,6 +165,7 @@ type
     property PoName: String read FPoName;
     property PoRename: String write FPoName;
     property Statistics: TTranslationStatistics read GetStatistics;
+    procedure InvalidateStatistics;
     function FindPoItem(const Identifier: String): TPoFileItem;
     function OriginalToItem(const Data: String): TPoFileItem;
     property PoItems[Index: Integer]: TPoFileItem read GetPoItem;
@@ -730,7 +731,7 @@ begin
 
   if AllowChangeFuzzyFlag then
     CleanUp; // Removes previous ID from non-fuzzy entries (not needed for POChecker)
-  FStatisticsUpdated := false;
+  InvalidateStatistics;
 end;
 
 destructor TPOFile.Destroy;
@@ -1656,7 +1657,7 @@ begin
     UpdateItem(Item.IdentifierLow, Item.Original);
   end;
   RemoveTaggedItems(0); // get rid of any item not existing in BasePOFile
-  FStatisticsUpdated := false;
+  InvalidateStatistics;
 end;
 
 procedure TPOFile.UntagAll;
@@ -1686,6 +1687,11 @@ begin
         FModified := true;
       end;
   end;
+end;
+
+procedure TPOFile.InvalidateStatistics;
+begin
+  FStatisticsUpdated := false;
 end;
 
 function TPOFile.FindPoItem(const Identifier: String): TPoFileItem;
