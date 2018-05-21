@@ -1,3 +1,5 @@
+{ For license see registeranchordocking.pas
+}
 unit AnchorDesktopOptions;
 
 {$mode objfpc}{$H+}
@@ -51,14 +53,14 @@ implementation
 
 procedure TAnchorDesktopOpt.Assign(Source: TAbstractDesktopDockingOpt);
 var
-  xSource: TAnchorDesktopOpt;
+  ADOpts: TAnchorDesktopOpt;
 begin
   if Source is TAnchorDesktopOpt then
   begin
-    xSource := TAnchorDesktopOpt(Source);
-    FTree.Assign(xSource.FTree);
-    FRestoreLayouts.Assign(xSource.FRestoreLayouts);
-    FSettings.Assign(xSource.FSettings);
+    ADOpts := TAnchorDesktopOpt(Source);
+    FTree.Assign(ADOpts.FTree);
+    FRestoreLayouts.Assign(ADOpts.FRestoreLayouts);
+    FSettings.Assign(ADOpts.FSettings);
   end;
 end;
 
