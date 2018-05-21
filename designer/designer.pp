@@ -1274,7 +1274,7 @@ end;
 function TDesigner.DoInsertFromStream(s: TStream;
   PasteParent: TWinControl; PasteFlags: TComponentPasteSelectionFlags): Boolean;
 var
-  NewSelection: TControlSelection;
+  NewSelection: TPersistentSelectionList;
   NewComponents: TFPList;
 
   procedure FindUniquePosition(AComponent: TComponent);
@@ -1336,7 +1336,7 @@ begin
 
   //debugln('TDesigner.DoInsertFromStream B s.Size=',dbgs(s.Size),' S.Position=',dbgs(S.Position));
   if PasteParent=nil then PasteParent:=GetPasteParent;
-  NewSelection:=TControlSelection.Create;
+  NewSelection:=TPersistentSelectionList.Create;
   NewComponents:=TFPList.Create;
   try
     Form.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TDesigner.DoInsertFromStream'){$ENDIF};
@@ -1373,7 +1373,7 @@ begin
   finally
     NewComponents.Free;
     if NewSelection.Count>0 then
-      Selection.Assign(NewSelection);
+      Selection.AssignSelection(NewSelection);
     NewSelection.Free;
   end;
   Result:=true;
@@ -1494,17 +1494,21 @@ begin
   if (IsActUndo and (FUndoList[FUndoCurr].opType in [uopAdd])) or
     (not IsActUndo and (FUndoList[FUndoCurr].opType in [uopDelete])) then
   begin
-    SaveControlSelection := TControlSelection.Create;
+    Selection.BeginUpdate;
     try
-      Inc(FUndoLock);
-      SaveControlSelection.Assign(Selection);
-      Selection.Clear;
-      Selection.Add(FForm.FindComponent(FUndoList[FUndoCurr].compName));
-      DeleteSelection;
+      SaveControlSelection := TControlSelection.Create;
+      try
+        Inc(FUndoLock);
+        SaveControlSelection.Assign(Selection);
+        Selection.AssignPersistent(FForm.FindComponent(FUndoList[FUndoCurr].compName));
+        DeleteSelection;
+      finally
+        Dec(FUndoLock);
+        Selection.Assign(SaveControlSelection);
+        SaveControlSelection.Free;
+      end;
     finally
-      Dec(FUndoLock);
-      Selection.Assign(SaveControlSelection);
-      SaveControlSelection.Free;
+      Selection.EndUpdate;
     end;
   end;
 
@@ -1803,21 +1807,25 @@ begin
 
     if (aOpType in [uopAdd, uopDelete]) and (FForm <> aPersistent) then
     begin
-      SaveControlSelection := TControlSelection.Create;
+      Selection.BeginUpdate;
       try
-        SaveControlSelection.Assign(Selection);
-        AStream := TStringStream.Create('');
+        SaveControlSelection := TControlSelection.Create;
         try
-          Selection.Clear;
-          Selection.Add(aPersistent);
-          CopySelectionToStream(AStream);
-          FUndoList[FUndoCurr].obj := AStream.DataString;
+          SaveControlSelection.Assign(Selection);
+          AStream := TStringStream.Create('');
+          try
+            Selection.AssignPersistent(aPersistent);
+            CopySelectionToStream(AStream);
+            FUndoList[FUndoCurr].obj := AStream.DataString;
+          finally
+            AStream.Free;
+          end;
         finally
-          AStream.Free;
+          Selection.Assign(SaveControlSelection);
+          SaveControlSelection.Free;
         end;
       finally
-        Selection.Assign(SaveControlSelection);
-        SaveControlSelection.Free;
+        Selection.EndUpdate;
       end;
     end;
 

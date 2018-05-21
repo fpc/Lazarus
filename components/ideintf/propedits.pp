@@ -6531,13 +6531,13 @@ begin
   LookupRoot:=NewLookupRoot;
   // set selection
   if ASelection=nil then exit;
-  //writeln('TPropertyEditorHook.SetSelection A ASelection.Count=',ASelection.Count);
+  //debulgn(['TPropertyEditorHook.SetSelection A ASelection.Count=',ASelection.Count]);
   i:=GetHandlerCount(htSetSelectedPersistents);
   while GetNextHandlerIndex(htSetSelectedPersistents,i) do begin
     Handler:=TPropHookSetSelection(FHandlers[htSetSelectedPersistents][i]);
     Handler(ASelection);
   end;
-  //writeln('TPropertyEditorHook.SetSelection END ASelection.Count=',ASelection.Count);
+  //debugln(['TPropertyEditorHook.SetSelection END ASelection.Count=',ASelection.Count]);
 end;
 
 procedure TPropertyEditorHook.Unselect(const APersistent: TPersistent);
