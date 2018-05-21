@@ -11,65 +11,15 @@ object AnchorDockOptionsFrame: TAnchorDockOptionsFrame
   DesignTop = 189
   object DragThresholdLabel: TLabel
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = HeaderStyleComboBox
-    AnchorSideTop.Side = asrBottom
+    AnchorSideTop.Control = Owner
     Left = 10
     Height = 13
-    Top = 39
+    Top = 10
     Width = 111
     BorderSpacing.Left = 10
+    BorderSpacing.Top = 10
     Caption = 'DragThresholdLabel'
     ParentColor = False
-  end
-  object HeaderAlignTopLabel: TLabel
-    AnchorSideLeft.Control = DragThresholdLabel
-    AnchorSideTop.Control = HighlightFocused
-    AnchorSideTop.Side = asrBottom
-    Left = 10
-    Height = 13
-    Top = 349
-    Width = 117
-    BorderSpacing.Top = 10
-    Caption = 'HeaderAlignTopLabel'
-    ParentColor = False
-  end
-  object HeaderAlignLeftLabel: TLabel
-    AnchorSideLeft.Control = DragThresholdLabel
-    AnchorSideTop.Control = HeaderAlignLeftTrackBar
-    AnchorSideTop.Side = asrCenter
-    Left = 10
-    Height = 13
-    Top = 426
-    Width = 120
-    BorderSpacing.Top = 10
-    Caption = 'HeaderAlignLeftLabel'
-    ParentColor = False
-  end
-  object SplitterWidthLabel: TLabel
-    AnchorSideLeft.Control = DragThresholdLabel
-    AnchorSideTop.Control = DragThresholdTrackBar
-    AnchorSideTop.Side = asrBottom
-    Left = 10
-    Height = 13
-    Top = 108
-    Width = 103
-    BorderSpacing.Top = 10
-    Caption = 'SplitterWidthLabel'
-    ParentColor = False
-  end
-  object ScaleOnResizeCheckBox: TCheckBox
-    AnchorSideLeft.Control = DragThresholdLabel
-    AnchorSideTop.Control = SplitterWidthTrackBar
-    AnchorSideTop.Side = asrBottom
-    Left = 10
-    Height = 24
-    Top = 171
-    Width = 160
-    BorderSpacing.Top = 4
-    Caption = 'ScaleOnResizeCheckBox'
-    ParentShowHint = False
-    ShowHint = True
-    TabOrder = 0
   end
   object DragThresholdTrackBar: TTrackBar
     AnchorSideLeft.Control = DragThresholdLabel
@@ -79,7 +29,7 @@ object AnchorDockOptionsFrame: TAnchorDockOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 10
     Height = 46
-    Top = 52
+    Top = 23
     Width = 396
     Max = 20
     OnChange = DragThresholdTrackBarChange
@@ -90,47 +40,31 @@ object AnchorDockOptionsFrame: TAnchorDockOptionsFrame
     ShowHint = True
     TabOrder = 1
   end
-  object HeaderAlignTopTrackBar: TTrackBar
-    AnchorSideLeft.Control = HeaderAlignTopLabel
+  object DragThresholdSpinEdit: TSpinEdit
+    AnchorSideLeft.Control = DragThresholdLabel
     AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = HeaderAlignTopLabel
-    AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = DragThresholdTrackBar
-    AnchorSideRight.Side = asrBottom
-    Left = 127
-    Height = 47
-    Top = 362
-    Width = 279
-    Frequency = 10
-    Max = 150
-    OnChange = HeaderAlignTopTrackBarChange
-    PageSize = 10
-    Position = 0
-    Anchors = [akTop, akLeft, akRight]
-    ParentShowHint = False
-    ShowHint = True
-    TabOrder = 2
-  end
-  object HeaderAlignLeftTrackBar: TTrackBar
-    AnchorSideLeft.Control = HeaderAlignLeftLabel
-    AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = HeaderAlignTopTrackBar
-    AnchorSideTop.Side = asrBottom
+    AnchorSideTop.Control = DragThresholdLabel
+    AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    Left = 130
-    Height = 47
-    Top = 409
-    Width = 286
-    Frequency = 10
-    Max = 200
-    OnChange = HeaderAlignLeftTrackBarChange
-    PageSize = 10
-    Position = 0
-    Anchors = [akTop, akLeft, akRight]
-    ParentShowHint = False
-    ShowHint = True
-    TabOrder = 3
+    Left = 127
+    Height = 23
+    Top = 5
+    Width = 50
+    BorderSpacing.Left = 6
+    TabOrder = 0
+    Visible = False
+  end
+  object SplitterWidthLabel: TLabel
+    AnchorSideLeft.Control = DragThresholdLabel
+    AnchorSideTop.Control = DragThresholdTrackBar
+    AnchorSideTop.Side = asrBottom
+    Left = 10
+    Height = 13
+    Top = 79
+    Width = 103
+    BorderSpacing.Top = 10
+    Caption = 'SplitterWidthLabel'
+    ParentColor = False
   end
   object SplitterWidthTrackBar: TTrackBar
     AnchorSideLeft.Control = DragThresholdTrackBar
@@ -140,7 +74,7 @@ object AnchorDockOptionsFrame: TAnchorDockOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 10
     Height = 46
-    Top = 121
+    Top = 92
     Width = 396
     Min = 1
     OnChange = SplitterWidthTrackBarChange
@@ -148,7 +82,35 @@ object AnchorDockOptionsFrame: TAnchorDockOptionsFrame
     Anchors = [akTop, akLeft, akRight]
     ParentShowHint = False
     ShowHint = True
+    TabOrder = 3
+  end
+  object ScaleOnResizeCheckBox: TCheckBox
+    AnchorSideLeft.Control = DragThresholdLabel
+    AnchorSideTop.Control = SplitterWidthTrackBar
+    AnchorSideTop.Side = asrBottom
+    Left = 10
+    Height = 24
+    Top = 142
+    Width = 160
+    BorderSpacing.Top = 4
+    Caption = 'ScaleOnResizeCheckBox'
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 4
+  end
+  object ShowHeaderCheckBox: TCheckBox
+    AnchorSideLeft.Control = ScaleOnResizeCheckBox
+    AnchorSideTop.Control = ScaleOnResizeCheckBox
+    AnchorSideTop.Side = asrBottom
+    Left = 10
+    Height = 24
+    Top = 166
+    Width = 149
+    Caption = 'ShowHeaderCheckBox'
+    OnChange = ShowHeaderCheckBoxChange
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 5
   end
   object ShowHeaderCaptionCheckBox: TCheckBox
     AnchorSideLeft.Control = ScaleOnResizeCheckBox
@@ -156,7 +118,7 @@ object AnchorDockOptionsFrame: TAnchorDockOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 25
     Height = 24
-    Top = 219
+    Top = 190
     Width = 191
     BorderSpacing.Left = 15
     Caption = 'ShowHeaderCaptionCheckBox'
@@ -170,23 +132,9 @@ object AnchorDockOptionsFrame: TAnchorDockOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 25
     Height = 24
-    Top = 243
+    Top = 214
     Width = 249
     Caption = 'HideHeaderCaptionForFloatingCheckBox'
-    ParentShowHint = False
-    ShowHint = True
-    TabOrder = 5
-  end
-  object ShowHeaderCheckBox: TCheckBox
-    AnchorSideLeft.Control = ScaleOnResizeCheckBox
-    AnchorSideTop.Control = ScaleOnResizeCheckBox
-    AnchorSideTop.Side = asrBottom
-    Left = 10
-    Height = 24
-    Top = 195
-    Width = 149
-    Caption = 'ShowHeaderCheckBox'
-    OnChange = ShowHeaderCheckBoxChange
     ParentShowHint = False
     ShowHint = True
     TabOrder = 7
@@ -194,28 +142,29 @@ object AnchorDockOptionsFrame: TAnchorDockOptionsFrame
   object HeaderStyleComboBox: TComboBox
     AnchorSideLeft.Control = HeaderStyleLabel
     AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = Owner
+    AnchorSideTop.Control = FilledHeaders
+    AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 112
+    Left = 122
     Height = 27
-    Top = 6
-    Width = 294
+    Top = 286
+    Width = 284
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Right = 4
-    BorderSpacing.Around = 6
+    BorderSpacing.Left = 6
+    BorderSpacing.Right = 10
     ItemHeight = 0
     OnDrawItem = HeaderStyleComboBoxDrawItem
     Style = csDropDownList
-    TabOrder = 8
+    TabOrder = 10
   end
   object HeaderStyleLabel: TLabel
-    AnchorSideLeft.Control = Owner
+    AnchorSideLeft.Control = ShowHeaderCheckBox
     AnchorSideTop.Control = HeaderStyleComboBox
     AnchorSideTop.Side = asrCenter
-    Left = 10
+    Left = 20
     Height = 13
-    Top = 13
+    Top = 293
     Width = 96
     BorderSpacing.Left = 10
     Caption = 'HeaderStyleLabel'
@@ -227,12 +176,12 @@ object AnchorDockOptionsFrame: TAnchorDockOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 25
     Height = 24
-    Top = 267
+    Top = 238
     Width = 110
     Caption = 'FlattenHeaders'
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 9
+    TabOrder = 8
   end
   object FilledHeaders: TCheckBox
     AnchorSideLeft.Control = FlattenHeaders
@@ -240,24 +189,129 @@ object AnchorDockOptionsFrame: TAnchorDockOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 25
     Height = 24
-    Top = 291
+    Top = 262
     Width = 100
     Caption = 'FilledHeaders'
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 10
+    TabOrder = 9
   end
   object HighlightFocused: TCheckBox
-    AnchorSideLeft.Control = FlattenHeaders
-    AnchorSideTop.Control = FilledHeaders
+    AnchorSideLeft.Control = FilledHeaders
+    AnchorSideTop.Control = HeaderStyleComboBox
     AnchorSideTop.Side = asrBottom
     Left = 25
     Height = 24
-    Top = 315
+    Top = 313
     Width = 121
     Caption = 'HighlightFocused'
     ParentShowHint = False
     ShowHint = True
     TabOrder = 11
+  end
+  object SplitterWidthSpinEdit: TSpinEdit
+    AnchorSideLeft.Control = SplitterWidthLabel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = SplitterWidthLabel
+    AnchorSideTop.Side = asrCenter
+    Left = 119
+    Height = 23
+    Top = 74
+    Width = 50
+    BorderSpacing.Left = 6
+    TabOrder = 2
+    Visible = False
+  end
+  object HeaderAlignTopLabel: TLabel
+    AnchorSideLeft.Control = DragThresholdLabel
+    AnchorSideTop.Control = HighlightFocused
+    AnchorSideTop.Side = asrBottom
+    Left = 10
+    Height = 13
+    Top = 347
+    Width = 117
+    BorderSpacing.Top = 10
+    Caption = 'HeaderAlignTopLabel'
+    ParentColor = False
+  end
+  object HeaderAlignTopTrackBar: TTrackBar
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = HeaderAlignTopLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = DragThresholdTrackBar
+    AnchorSideRight.Side = asrBottom
+    Left = 10
+    Height = 47
+    Top = 360
+    Width = 396
+    Frequency = 10
+    Max = 150
+    OnChange = HeaderAlignTopTrackBarChange
+    PageSize = 10
+    Position = 0
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 10
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 13
+  end
+  object HeaderAlignTopSpinEdit: TSpinEdit
+    AnchorSideLeft.Control = HeaderAlignTopLabel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = HeaderAlignTopLabel
+    AnchorSideTop.Side = asrCenter
+    Left = 133
+    Height = 23
+    Top = 342
+    Width = 50
+    BorderSpacing.Left = 6
+    TabOrder = 12
+    Visible = False
+  end
+  object HeaderAlignLeftLabel: TLabel
+    AnchorSideLeft.Control = DragThresholdLabel
+    AnchorSideTop.Control = HeaderAlignTopTrackBar
+    AnchorSideTop.Side = asrBottom
+    Left = 10
+    Height = 13
+    Top = 417
+    Width = 120
+    BorderSpacing.Top = 10
+    Caption = 'HeaderAlignLeftLabel'
+    ParentColor = False
+  end
+  object HeaderAlignLeftTrackBar: TTrackBar
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = HeaderAlignLeftLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = DragThresholdTrackBar
+    AnchorSideRight.Side = asrBottom
+    Left = 10
+    Height = 47
+    Top = 430
+    Width = 396
+    Frequency = 10
+    Max = 200
+    OnChange = HeaderAlignLeftTrackBarChange
+    PageSize = 10
+    Position = 0
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 10
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 15
+  end
+  object HeaderAlignLeftSpinEdit: TSpinEdit
+    AnchorSideLeft.Control = HeaderAlignLeftLabel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = HeaderAlignLeftLabel
+    AnchorSideTop.Side = asrCenter
+    Left = 136
+    Height = 23
+    Top = 412
+    Width = 50
+    BorderSpacing.Left = 6
+    TabOrder = 14
+    Visible = False
   end
 end

@@ -8,7 +8,7 @@ interface
 
 uses
   Classes, SysUtils, types,
-  Forms, Controls, ButtonPanel, StdCtrls, ComCtrls,
+  Forms, Controls, ButtonPanel, StdCtrls, ComCtrls, ExtCtrls, Spin,
   AnchorDocking, AnchorDockStr;
 
 type
@@ -20,6 +20,9 @@ type
   { TAnchorDockOptionsFrame }
 
   TAnchorDockOptionsFrame = class(TFrame)
+    DragThresholdSpinEdit: TSpinEdit;
+    HeaderAlignLeftSpinEdit: TSpinEdit;
+    HeaderAlignTopSpinEdit: TSpinEdit;
     HighlightFocused: TCheckBox;
     FlattenHeaders: TCheckBox;
     FilledHeaders: TCheckBox;
@@ -36,6 +39,7 @@ type
     ShowHeaderCaptionCheckBox: TCheckBox;
     ShowHeaderCheckBox: TCheckBox;
     SplitterWidthLabel: TLabel;
+    SplitterWidthSpinEdit: TSpinEdit;
     SplitterWidthTrackBar: TTrackBar;
     procedure FrameClick(Sender: TObject);
     procedure HeaderStyleComboBoxDrawItem(Control: TWinControl; Index: Integer;
