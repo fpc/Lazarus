@@ -298,6 +298,7 @@ begin
   FilledHeadersCheckBox.Enabled:=HasHeaders;
   HeaderStyleLabel.Enabled:=HasHeaders;
   HeaderStyleComboBox.Enabled:=HasHeaders;
+  HighlightFocusedCheckBox.Enabled:=HasHeaders;
 end;
 
 constructor TAnchorDockOptionsFrame.Create(TheOwner: TComponent);
