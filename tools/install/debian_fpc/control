@@ -5,8 +5,8 @@ Priority: optional
 Maintainer: Mattias Gaertner <mattias@freepascal.org>
 Architecture: ARCH 
 Pre-Depends: binutils
-Replaces: fpc, fp-compiler, fp-compiler-FPCVERSION, fp-utils, fp-ide, fp-units-rtl, fp-units-base, fp-units-fcl, fp-units-fv, fp-units-gtk, fp-units-gtk2, fp-units-gnome1, fp-units-db, fp-units-gfx, fp-units-net, fp-units-math, fp-units-misc, fp-units-multimedia
-Conflicts: fpc, fp-compiler, fp-compiler-FPCVERSION, fp-utils, fp-ide, fp-units-rtl, fp-units-base, fp-units-fcl, fp-units-fv, fp-units-gtk, fp-units-gtk2, fp-units-gnome1, fp-units-db, fp-units-gfx, fp-units-net, fp-units-math, fp-units-misc, fp-units-multimedia
+Replaces: fp-compiler, fp-compiler-FPCVERSION, fp-utils, fp-ide, fp-units-rtl, fp-units-base, fp-units-fcl, fp-units-fv, fp-units-gtk, fp-units-gtk2, fp-units-gnome1, fp-units-db, fp-units-gfx, fp-units-net, fp-units-math, fp-units-misc, fp-units-multimedia
+Conflicts: fp-compiler, fp-compiler-FPCVERSION, fp-utils, fp-ide, fp-units-rtl, fp-units-base, fp-units-fcl, fp-units-fv, fp-units-gtk, fp-units-gtk2, fp-units-gnome1, fp-units-db, fp-units-gfx, fp-units-net, fp-units-math, fp-units-misc, fp-units-multimedia
 Installed-Size: DEBSIZE
 Description: Free Pascal Compiler
  Freepascal is a free 32/64bit Pascal Compiler. It comes with a
