@@ -544,18 +544,27 @@ end;
 
 procedure TCustomFormEditor.SetSelection(const ASelection: TPersistentSelectionList);
 begin
+  if FSelection.IsEqual(ASelection) then exit;
   FSelection.Assign(ASelection);
-  if Obj_Inspector=nil then exit;
-  if FSelection.Count>0 then
-    Obj_Inspector.PropertyEditorHook.LookupRoot:=GetLookupRootForComponent(FSelection[0]);
-  Obj_Inspector.Selection := FSelection;
+  if Obj_Inspector=nil then
+  begin
+    GlobalDesignHook.SetSelection(FSelection);
+  end else begin
+    if FSelection.Count>0 then
+      Obj_Inspector.PropertyEditorHook.LookupRoot:=GetLookupRootForComponent(FSelection[0]);
+    Obj_Inspector.Selection := FSelection;
+  end;
 end;
 
 function TCustomFormEditor.AddSelected(Value: TComponent): Integer;
 Begin
   Result := FSelection.Add(Value) + 1;
   if Obj_Inspector<>nil then
+  begin
+    if not Obj_Inspector.Selection.IsEqual(FSelection) then
     Obj_Inspector.Selection := FSelection;
+  end else
+    GlobalDesignHook.SetSelection(FSelection);
 end;
 
 procedure TCustomFormEditor.DeleteComponent(AComponent: TComponent; FreeComponent: boolean);
