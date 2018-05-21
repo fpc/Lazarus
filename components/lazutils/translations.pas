@@ -1575,10 +1575,7 @@ procedure TPOFile.FillItem(var CurrentItem: TPOFileItem; Identifier, Original,
 
 var
   FoundItem: TPOFileItem;
-  NewItem: boolean;
 begin
-  NewItem := false;
-
   FoundItem := TPOFileItem(FOriginalToItem.Data[Original]);
 
   if CurrentItem = nil then
@@ -1591,7 +1588,9 @@ begin
     CurrentItem.Flags := lowercase(Flags);
     CurrentItem.PreviousID := PreviousID;
     CurrentItem.LineNr := LineNr;
-    NewItem := true;
+    FItems.Add(CurrentItem);
+    //debugln(['TPOFile.FillItem Identifier=',Identifier,' Orig="',dbgstr(OriginalValue),'" Transl="',dbgstr(TranslatedValue),'"']);
+    FIdentifierLowToItem[CurrentItem.IdentifierLow]:=CurrentItem;
   end;
 
   CurrentItem.Tag := FTag;
@@ -1623,14 +1622,6 @@ begin
   end;
 
   VerifyItemFormatting(CurrentItem);
-
-  if NewItem = true then
-  begin
-    FItems.Add(CurrentItem);
-
-    //debugln(['TPOFile.FillItem Identifier=',Identifier,' Orig="',dbgstr(OriginalValue),'" Transl="',dbgstr(TranslatedValue),'"']);
-    FIdentifierLowToItem[CurrentItem.IdentifierLow]:=CurrentItem;
-  end;
 
   if Original <> '' then
   begin
