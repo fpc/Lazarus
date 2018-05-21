@@ -18,7 +18,7 @@
 "/>
     <License Value="GPL2 as the IDE
 "/>
-    <Version Minor="5"/>
+    <Version Major="1"/>
     <Files Count="3">
       <Item1>
         <Filename Value="registeranchordocking.pas"/>

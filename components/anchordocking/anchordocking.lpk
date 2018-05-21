@@ -18,7 +18,7 @@
 "/>
     <License Value="modified LGPL-2 like LCL
 "/>
-    <Version Minor="6"/>
+    <Version Major="1"/>
     <Files Count="8">
       <Item1>
         <Filename Value="anchordockpkg.pas"/>
