@@ -1058,7 +1058,7 @@ end;
 Function TFPReportDesignerForm.CreateNewPage: TFPReportCustomPage;
 
 begin
-  Result:=gBandFactory.PageClass.Create(FReport);
+  Result:=gElementFactory.PageClass.Create(FReport);
   Result.PageSize.PaperName := 'A4';
   { page margins }
   Result.Margins.Left := 30;
@@ -1370,7 +1370,7 @@ begin
     exit;
   if (CurrentDesigner=Nil) then
     Exit;
-  CurrentDesigner.AddBand(gBandFactory.BandClasses[TFPReportBandType(T)]);
+  CurrentDesigner.AddBand(gElementFactory.BandClasses[TFPReportBandType(T)]);
 end;
 
 procedure TFPReportDesignerForm.AAddBandUpdate(Sender: TObject);
