@@ -156,10 +156,8 @@ msgid "Highlight focused"
 msgstr "Выделять объект в фокусе"
 
 #: anchordockstr.adrshighlightfocusedhint
-#, fuzzy
-#| msgid "Highlight focused docked controls"
 msgid "Highlight header of focused docked control"
-msgstr "Выделять пристыкованный объект в фокусе"
+msgstr "Выделять заголовок пристыкованного объекта в фокусе"
 
 #: anchordockstr.adrsleft
 msgid "left"
