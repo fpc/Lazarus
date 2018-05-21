@@ -809,16 +809,17 @@ end;
 function TIDEOptionsEditorList.Add(AEditorClass: TAbstractIDEOptionsEditorClass;
   AIndex, AParent: Integer): PIDEOptionsEditorRec;
 begin
-  Result := GetByIndex(AIndex);
-  if Result = nil then
-  begin
-    New(Result);
-    Result^.Index := AIndex;
-    Result^.Parent := AParent;
-    Result^.Collapsed := AEditorClass.DefaultCollapseChildNodes;
-    Result^.DefaultCollapsed := AEditorClass.DefaultCollapseChildNodes;
-    inherited Add(Result);
-  end;
+  repeat
+    Result := GetByIndex(AIndex);
+    if Result = nil then break;
+    inc(AIndex);
+  until false;
+  New(Result);
+  Result^.Index := AIndex;
+  Result^.Parent := AParent;
+  Result^.Collapsed := AEditorClass.DefaultCollapseChildNodes;
+  Result^.DefaultCollapsed := AEditorClass.DefaultCollapseChildNodes;
+  inherited Add(Result);
 
   Result^.EditorClass := AEditorClass;
 end;
