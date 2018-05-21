@@ -95,7 +95,7 @@ resourcestring
   adrsFilledHeaders = 'Fill headers';
   adrsFilledHeadersHint = 'Fill headers of docked controls';
   adrsHighlightFocused = 'Highlight focused';
-  adrsHighlightFocusedHint = 'Highlight focused docked controls';
+  adrsHighlightFocusedHint = 'Highlight header of focused docked control';
 
 implementation
 

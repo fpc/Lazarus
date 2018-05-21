@@ -192,7 +192,7 @@ end;
 constructor TIDEAnchorDockMaster.Create;
 begin
   inherited Create;
-  DefaultAnchorDockOptionFlags:=[adofShow_ShowHeader];
+  DefaultAnchorDockOptionFlags:=[adofShow_ShowHeader,adofSpinEdits];
 
   IDEAnchorDockMaster:=Self;
   DockMaster.OnCreateControl:=@DockMasterCreateControl;

@@ -51,6 +51,7 @@ object AnchorDockOptionsFrame: TAnchorDockOptionsFrame
     Top = 5
     Width = 50
     BorderSpacing.Left = 6
+    MaxValue = 20
     TabOrder = 0
     Visible = False
   end
@@ -142,7 +143,7 @@ object AnchorDockOptionsFrame: TAnchorDockOptionsFrame
   object HeaderStyleComboBox: TComboBox
     AnchorSideLeft.Control = HeaderStyleLabel
     AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = FilledHeaders
+    AnchorSideTop.Control = FilledHeadersCheckBox
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
@@ -170,41 +171,41 @@ object AnchorDockOptionsFrame: TAnchorDockOptionsFrame
     Caption = 'HeaderStyleLabel'
     ParentColor = False
   end
-  object FlattenHeaders: TCheckBox
+  object FlattenHeadersCheckBox: TCheckBox
     AnchorSideLeft.Control = HideHeaderCaptionForFloatingCheckBox
     AnchorSideTop.Control = HideHeaderCaptionForFloatingCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 25
     Height = 24
     Top = 238
-    Width = 110
-    Caption = 'FlattenHeaders'
+    Width = 164
+    Caption = 'FlattenHeadersCheckBox'
     ParentShowHint = False
     ShowHint = True
     TabOrder = 8
   end
-  object FilledHeaders: TCheckBox
-    AnchorSideLeft.Control = FlattenHeaders
-    AnchorSideTop.Control = FlattenHeaders
+  object FilledHeadersCheckBox: TCheckBox
+    AnchorSideLeft.Control = FlattenHeadersCheckBox
+    AnchorSideTop.Control = FlattenHeadersCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 25
     Height = 24
     Top = 262
-    Width = 100
-    Caption = 'FilledHeaders'
+    Width = 154
+    Caption = 'FilledHeadersCheckBox'
     ParentShowHint = False
     ShowHint = True
     TabOrder = 9
   end
-  object HighlightFocused: TCheckBox
-    AnchorSideLeft.Control = FilledHeaders
+  object HighlightFocusedCheckBox: TCheckBox
+    AnchorSideLeft.Control = FilledHeadersCheckBox
     AnchorSideTop.Control = HeaderStyleComboBox
     AnchorSideTop.Side = asrBottom
     Left = 25
     Height = 24
     Top = 313
-    Width = 121
-    Caption = 'HighlightFocused'
+    Width = 175
+    Caption = 'HighlightFocusedCheckBox'
     ParentShowHint = False
     ShowHint = True
     TabOrder = 11
@@ -219,12 +220,15 @@ object AnchorDockOptionsFrame: TAnchorDockOptionsFrame
     Top = 74
     Width = 50
     BorderSpacing.Left = 6
+    MaxValue = 10
+    MinValue = 1
     TabOrder = 2
+    Value = 1
     Visible = False
   end
   object HeaderAlignTopLabel: TLabel
     AnchorSideLeft.Control = DragThresholdLabel
-    AnchorSideTop.Control = HighlightFocused
+    AnchorSideTop.Control = HighlightFocusedCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 10
     Height = 13
@@ -265,6 +269,7 @@ object AnchorDockOptionsFrame: TAnchorDockOptionsFrame
     Top = 342
     Width = 50
     BorderSpacing.Left = 6
+    MaxValue = 150
     TabOrder = 12
     Visible = False
   end
@@ -311,6 +316,7 @@ object AnchorDockOptionsFrame: TAnchorDockOptionsFrame
     Top = 412
     Width = 50
     BorderSpacing.Left = 6
+    MaxValue = 200
     TabOrder = 14
     Visible = False
   end
