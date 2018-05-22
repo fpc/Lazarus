@@ -1371,7 +1371,7 @@ msgstr "Índice \"ImageList\" inválido"
 
 #: lclstrconsts.smaskeditnomatch
 msgid "The current text does not match the specified mask."
-msgstr "O texto atuak não coincide com a máscara especificada."
+msgstr "O texto atual não coincide com a máscara especificada."
 
 #: lclstrconsts.smenuindexerror
 msgid "Menu index out of range"
