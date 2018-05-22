@@ -2085,6 +2085,7 @@ end;
 procedure TMainIDE.SetupFormEditor;
 begin
   GlobalDesignHook:=TPropertyEditorHook.Create(nil);
+  GlobalDesignHook.ComponentPropertyOnlyDesign:=true;
   GlobalDesignHook.GetPrivateDirectory:=AppendPathDelim(GetPrimaryConfigPath);
   GlobalDesignHook.AddHandlerGetMethodName(@PropHookGetMethodName);
   GlobalDesignHook.AddHandlerGetCompatibleMethods(@PropHookGetCompatibleMethods);

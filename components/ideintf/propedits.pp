@@ -1372,6 +1372,7 @@ type
 
   TPropertyEditorHook = class(TComponent)
   private
+    FComponentPropertyOnlyDesign: boolean;
     FHandlers: array[TPropHookType] of TMethodList;
     // lookup root
     FLookupRoot: TPersistent;
@@ -1446,6 +1447,7 @@ type
     procedure Modified(Sender: TObject; PropName: ShortString = '');
     procedure Revert(Instance: TPersistent; PropInfo: PPropInfo);
     procedure RefreshPropertyValues;
+    property ComponentPropertyOnlyDesign: boolean read FComponentPropertyOnlyDesign write FComponentPropertyOnlyDesign;
     // dependencies
     procedure AddDependency(const AClass: TClass; const AnUnitname: shortstring);
     // other
@@ -3024,11 +3026,12 @@ end;
 function TPropertyEditor.GetVisualValue: ansistring;
 begin
   if AllEqual then
-    {$IFDEF LCLCarbon}
-    Result:=StringReplace(GetValue,LineEnding,LineFeedSymbolUTF8,[rfReplaceAll])
-    {$ELSE}
+  begin
     Result:=GetValue
+    {$IFDEF LCLCarbon}
+    Result:=StringReplace(Result,LineEnding,LineFeedSymbolUTF8,[rfReplaceAll])
     {$ENDIF}
+  end
   else
     Result:='';
 end;
@@ -4937,7 +4940,10 @@ begin
     for I := 1 to PropCount - 1 do
       if TComponent(GetObjectValueAt(I)) <> AComponent then
         Exit;
-  Result:=true;
+  if (PropertyHook<>nil) and PropertyHook.ComponentPropertyOnlyDesign then
+    Result:=(AComponent=nil) or (csDesigning in AComponent.ComponentState)
+  else
+    Result:=true;
 end;
 
 function TPersistentPropertyEditor.AllEqual: Boolean;
@@ -5094,7 +5100,10 @@ begin
     for I := 1 to PropCount - 1 do
       if GetComponent(GetIntfValueAt(I)) <> Component then
         Exit;
-  Result := True;
+  if (PropertyHook<>nil) and PropertyHook.ComponentPropertyOnlyDesign then
+    Result:=(Component=nil) or (csDesigning in Component.ComponentState)
+  else
+    Result := True;
 end;
 
 procedure TInterfacePropertyEditor.Edit;
