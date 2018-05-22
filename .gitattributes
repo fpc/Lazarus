@@ -540,6 +540,13 @@ components/anchordocking/restoredebugger/ADRestoreDebugger.lpr svneol=native#tex
 components/anchordocking/restoredebugger/adlayoutviewer.pas svneol=native#text/plain
 components/anchordocking/restoredebugger/mainunit.lfm svneol=native#text/plain
 components/anchordocking/restoredebugger/mainunit.pas svneol=native#text/plain
+components/anchordocking/tests/TestAnchorDocking.ico -text svneol=unset#image/ico
+components/anchordocking/tests/TestAnchorDocking.lpi svneol=native#text/plain
+components/anchordocking/tests/TestAnchorDocking.lpr svneol=native#text/plain
+components/anchordocking/tests/TestAnchorDocking.res -text
+components/anchordocking/tests/simplefrm.lfm svneol=native#text/plain
+components/anchordocking/tests/simplefrm.pas svneol=native#text/plain
+components/anchordocking/tests/testadrestore.pas svneol=native#text/plain
 components/cairocanvas/Makefile svneol=native#text/plain
 components/cairocanvas/Makefile.compiled svneol=native#text/plain
 components/cairocanvas/Makefile.fpc svneol=native#text/plain
