@@ -1512,7 +1512,6 @@ begin
   Item:=TPOFileItem(FIdentifierLowToItem[lowercase(Identifier)]);
   if Item<>nil then begin
     // found, update item value
-
     if CompareMultilinedStrings(Item.Original, Original)<>0 then begin
       FModified := True;
       if Item.Translation <> '' then begin
@@ -1520,8 +1519,8 @@ begin
           Item.PreviousID:=Item.Original;
         Item.ModifyFlag(sFuzzyFlag, true);
       end;
+      Item.Original:=Original;
     end;
-    Item.Original:=Original;
   end
   else // in this case new item will be added
     FModified := true;
