@@ -330,7 +330,7 @@ type
     ValueButton: TSpeedButton;
 
     procedure ActiveRowImagesGetWidthForPPI(Sender: TCustomImageList;
-      AImageWidth, APPI: Integer; var AResultWidth: Integer);
+      {%H-}AImageWidth, {%H-}APPI: Integer; var AResultWidth: Integer);
     procedure HintMouseLeave(Sender: TObject);
     procedure HintTimer(Sender: TObject);
     procedure ResetLongHintTimer;
@@ -2223,7 +2223,7 @@ begin
   // check if circling
   if (Row.Editor is TPersistentPropertyEditor) then begin
     if (Row.Editor is TInterfacePropertyEditor) then
-      AnObject:=TPersistent(Row.Editor.GetIntfValue)
+      AnObject:={%H-}TPersistent(Row.Editor.GetIntfValue)
     else
       AnObject:=TPersistent(Row.Editor.GetObjectValue);
     if FSelection.IndexOf(AnObject)>=0 then exit;

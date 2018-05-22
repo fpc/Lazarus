@@ -766,7 +766,6 @@ type
 
 function TGridImageIndexPropertyEditor.GetImagelist: TCustomImagelist;
 var
-  grid: TComponent;
   p: TPersistent;
 begin
   Result := nil;

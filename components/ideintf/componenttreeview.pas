@@ -98,8 +98,6 @@ type
     Added: boolean;
   end;
 
-  TGetPersistentProc = procedure(APersistent: TPersistent; PropName: string) of object;
-
   { TComponentWalker }
 
   TComponentWalker = class

@@ -708,14 +708,18 @@ type
   with the property being edited (e.g. the ActiveControl property). }
 
   TComponentOneFormPropertyEditor = class(TPersistentPropertyEditor)
-  private
+  protected
     fIgnoreClass: TControlClass;
   public
     function AllEqual: Boolean; override;
     procedure GetValues(Proc: TGetStrProc); override;
   end;
 
-  { TCoolBarControlPropertyEditor }
+{ TCoolBarControlPropertyEditor -
+  An editor for TComponents. It allows the user to set the value of this
+  property to point to a component in the same form that is type compatible
+  with the property being edited and is not a TCustomCoolBar
+  (e.g. the TCoolBand.Control property).}
 
   TCoolBarControlPropertyEditor = class(TComponentOneFormPropertyEditor)
   public
@@ -5048,7 +5052,7 @@ procedure TComponentOneFormPropertyEditor.GetValues(Proc: TGetStrProc);
     i: integer;
   begin
     for i := 0 to Root.ComponentCount - 1 do
-      if not (Root.Components[i] is fIgnoreClass) then
+      if (fIgnoreClass=nil) or not (Root.Components[i] is fIgnoreClass) then
         Proc(Root.Components[i].Name);
   end;
 
