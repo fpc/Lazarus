@@ -4937,8 +4937,7 @@ begin
     for I := 1 to PropCount - 1 do
       if TComponent(GetObjectValueAt(I)) <> AComponent then
         Exit;
-  if AComponent=nil then Exit(True);
-  Result:=csDesigning in AComponent.ComponentState;
+  Result:=true;
 end;
 
 function TPersistentPropertyEditor.AllEqual: Boolean;
@@ -5095,10 +5094,7 @@ begin
     for I := 1 to PropCount - 1 do
       if GetComponent(GetIntfValueAt(I)) <> Component then
         Exit;
-  if Assigned(Component) then
-    Result := csDesigning in Component.ComponentState
-  else
-    Result := True;
+  Result := True;
 end;
 
 procedure TInterfacePropertyEditor.Edit;
