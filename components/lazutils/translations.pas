@@ -1505,9 +1505,6 @@ procedure TPOFile.UpdateItem(const Identifier: string; Original: string);
 var
   Item: TPOFileItem;
 begin
-  if FHelperList=nil then
-    FHelperList := TStringList.Create;
-
   // try to find PO entry by identifier
   Item:=TPOFileItem(FIdentifierLowToItem[lowercase(Identifier)]);
   if Item<>nil then begin
