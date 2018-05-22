@@ -4,7 +4,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-05-14 23:21+0200\n"
+"PO-Revision-Date: 2018-05-22 10:49+0200\n"
 "Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "MIME-Version: 1.0\n"
@@ -109,16 +109,16 @@ msgstr "Візуальний"
 #: tauthenticationform.caption
 msgctxt "tauthenticationform.caption"
 msgid "HTTP Authentication"
-msgstr ""
+msgstr "Автентифікація HTTP"
 
 #: tauthenticationform.lcbusername.caption
 msgctxt "tauthenticationform.lcbusername.caption"
 msgid "&Username"
-msgstr ""
+msgstr "&Ім'я користувача"
 
 #: tauthenticationform.lepassword.caption
 msgid "&Password"
-msgstr ""
+msgstr "&Пароль"
 
 #: tcreatecodeform.caption
 msgctxt "tcreatecodeform.caption"
@@ -175,23 +175,21 @@ msgstr "Параметри"
 
 #: theaderform.caption
 msgid "Request header"
-msgstr ""
+msgstr "Заголовок запиту"
 
 #: theaderform.lcbname.caption
-#, fuzzy
 msgctxt "theaderform.lcbname.caption"
 msgid "&Name"
 msgstr "&Назва"
 
 #: theaderform.lcbvalue.caption
-#, fuzzy
 msgctxt "theaderform.lcbvalue.caption"
 msgid "&Value"
 msgstr "&Значення"
 
 #: tmainform.aaddtofavourites.caption
 msgid "Add request to favourites"
-msgstr ""
+msgstr "Додати запит до обраних"
 
 #: tmainform.aclose.caption
 msgid "&Close"
@@ -365,7 +363,7 @@ msgstr "&Редагувати"
 
 #: tmainform.mfavourites.caption
 msgid "Favourites"
-msgstr ""
+msgstr "Обрані"
 
 #: tmainform.mfile.caption
 msgid "&File"
@@ -422,7 +420,7 @@ msgstr "TBJSON"
 
 #: tmainform.tbshowrest.caption
 msgid "Show &REST query"
-msgstr ""
+msgstr "Показати запит &REST"
 
 #: tmainform.toolbutton1.caption
 msgid "ToolButton1"
@@ -478,85 +476,85 @@ msgstr "&Значення"
 #: trestframe.aaddheader.caption
 msgctxt "trestframe.aaddheader.caption"
 msgid "Add Header"
-msgstr ""
+msgstr "Додати заголовок"
 
 #: trestframe.aaddheader.hint
 msgctxt "trestframe.aaddheader.hint"
 msgid "Add Header"
-msgstr ""
+msgstr "Додати заголовок"
 
 #: trestframe.aaddtofavourites.caption
 msgid "Add to favourites..."
-msgstr ""
+msgstr "Додати до обраних..."
 
 #: trestframe.aauthentication.caption
 msgctxt "trestframe.aauthentication.caption"
 msgid "HTTP Basic authentication"
-msgstr ""
+msgstr "Базова автентифікація HTTP"
 
 #: trestframe.aauthentication.hint
 msgctxt "trestframe.aauthentication.hint"
 msgid "HTTP Basic authentication"
-msgstr ""
+msgstr "Базова автентифікація HTTP"
 
 #: trestframe.adeleteheader.caption
 msgctxt "trestframe.adeleteheader.caption"
 msgid "Delete Header"
-msgstr ""
+msgstr "Видалити заголовок"
 
 #: trestframe.adeleteheader.hint
 msgctxt "trestframe.adeleteheader.hint"
 msgid "Delete Header"
-msgstr ""
+msgstr "Видалити заголовок"
 
 #: trestframe.aeditheader.caption
 msgctxt "trestframe.aeditheader.caption"
 msgid "Edit Header"
-msgstr ""
+msgstr "Змінити заголовок"
 
 #: trestframe.aeditheader.hint
 msgctxt "trestframe.aeditheader.hint"
 msgid "Edit Header"
-msgstr ""
+msgstr "Змінити заголовок"
 
 #: trestframe.asend.caption
 msgid "&Send"
-msgstr ""
+msgstr "&Надіслати"
 
 #: trestframe.asend.hint
 msgid "Send request"
-msgstr ""
+msgstr "Надіслати запит"
 
 #: trestframe.cbusecurrenttabcontent.caption
 msgctxt "trestframe.cbusecurrenttabcontent.caption"
 msgid "Use current tab as content"
-msgstr ""
+msgstr "Використати поточну вкладку як вміст"
 
 #: trestframe.lhttpstatus.caption
 msgid "HTTP"
-msgstr ""
+msgstr "HTTP"
 
 #: trestframe.tsheaders.caption
 msgid "Request headers"
-msgstr ""
+msgstr "Заголовки запиту"
 
 #: trestframe.tsrequestcontent.caption
 msgid "Request content"
-msgstr ""
+msgstr "Вміст запиту"
 
 #: trestframe.tsresult.caption
 msgid "Request result"
-msgstr ""
+msgstr "Результат запиту"
 
 #: tsaverequestdataform.caption
 msgid "Save request data as favourite"
-msgstr ""
+msgstr "Зберегти дані запиту як обране"
 
 #: tsaverequestdataform.cbsavecontent.caption
 msgid "Save request content"
-msgstr ""
+msgstr "Зберегти вміст запиту"
 
 #: tsaverequestdataform.label1.caption
 msgid "Name"
-msgstr ""
+msgstr "Назва"
 
