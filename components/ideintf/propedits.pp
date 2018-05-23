@@ -3027,7 +3027,7 @@ function TPropertyEditor.GetVisualValue: ansistring;
 begin
   if AllEqual then
   begin
-    Result:=GetValue
+    Result:=GetValue;
     {$IFDEF LCLCarbon}
     Result:=StringReplace(Result,LineEnding,LineFeedSymbolUTF8,[rfReplaceAll])
     {$ENDIF}
