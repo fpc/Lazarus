@@ -2092,8 +2092,8 @@ const
     );
 
 var
-  PropertyEditorMapperList:TList;
-  PropertyClassList:TList;
+  PropertyEditorMapperList:TFPList;
+  PropertyClassList:TFPList;
 
 type
   PPropertyClassRec=^TPropertyClassRec;
@@ -2272,7 +2272,7 @@ var
 begin
   if PropertyType=nil then exit;
   if PropertyClassList=nil then
-    PropertyClassList:=TList.Create;
+    PropertyClassList:=TFPList.Create;
   New(P);
   P^.PropertyType:=PropertyType;
   P^.PersistentClass:=PersistentClass;
@@ -2286,7 +2286,7 @@ var
   P:PPropertyEditorMapperRec;
 begin
   if PropertyEditorMapperList=nil then
-    PropertyEditorMapperList:=TList.Create;
+    PropertyEditorMapperList:=TFPList.Create;
   New(P);
   P^.Mapper:=Mapper;
   PropertyEditorMapperList.Insert(0,P);
