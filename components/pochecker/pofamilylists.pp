@@ -9,10 +9,6 @@ Uses
   //{$IFDEF UNIX}{$IFNDEF DisableCWString}, cwstring{$ENDIF}{$ENDIF},
   PoFamilies, PoCheckerConsts;
 
-const
-  langAll = '*';
-
-
 type
 
   { TPoFamilyList }
