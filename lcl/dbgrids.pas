@@ -132,6 +132,33 @@ type
 
 type
 
+  TBookmarkList = class;
+  TBookmarkedRecordEnumeratorOptions = set of
+      (
+        breDisableDataset,
+        breStopOnInvalidBookmark,
+        breRestoreCurrent
+      );
+
+  { TBookmarkedRecordEnumerator }
+
+  TBookmarkedRecordEnumerator = class
+  private
+    fBookmarkList: TBookmarkList;
+    fBookmarkIndex: Integer;
+    fCurrent, fBook: TBookmark;
+    fDataset: TDataset;
+    fOptions: TBookmarkedRecordEnumeratorOptions;
+  public
+    constructor Create(bookList: TBookmarkList; aGrid: TCustomDbGrid;
+        anOptions: TBookmarkedRecordEnumeratorOptions);
+    destructor Destroy; override;
+    function MoveNext: boolean;
+    function GetEnumerator: TBookmarkedRecordEnumerator;
+    property Current: TBookmark read fCurrent;
+    property Options: TBookmarkedRecordEnumeratorOptions read fOptions write fOptions;
+  end;
+
   { TBookmarkList }
 
   TBookmarkList = class
@@ -155,6 +182,8 @@ type
     function  Find(const Item: TBookmark; var AIndex: Integer): boolean;
     function  IndexOf(const Item: TBookmark): Integer;
     function  Refresh: boolean;
+    function  GetEnumerator(opt: TBookmarkedRecordEnumeratorOptions =
+                [breDisableDataset, breRestoreCurrent]): TBookmarkedRecordEnumerator;
 
     property Count: integer read GetCount;
     property CurrentRowSelected: boolean
@@ -751,6 +780,56 @@ begin
   finally
     ALookupField.LookupDataSet.EnableControls;
   end;
+end;
+
+{ TBookmarkedRecordEnumerator }
+
+constructor TBookmarkedRecordEnumerator.Create(bookList: TBookmarkList;
+  aGrid: TCustomDbGrid; anOptions: TBookmarkedRecordEnumeratorOptions);
+begin
+  inherited Create;
+  fBookmarkList := bookList;
+  fBookmarkIndex := -1;
+  fDataset := aGrid.Datasource.dataset;
+  fOptions := anOptions;
+end;
+
+destructor TBookmarkedRecordEnumerator.Destroy;
+begin
+  if breRestoreCurrent in fOptions then begin
+    if fDataset.BookmarkValid(fBook) then
+      fDataset.GotoBookmark(fBook);
+    fDataset.FreeBookmark(fBook);
+  end;
+  if breDisableDataset in fOptions then
+    fDataset.EnableControls;
+  inherited Destroy;
+end;
+
+function TBookmarkedRecordEnumerator.MoveNext: boolean;
+begin
+  inc(fBookmarkIndex);
+
+  if fBookmarkIndex=0 then begin
+    if breDisableDataset in fOptions then
+      fDataset.DisableControls;
+    if breRestoreCurrent in fOptions then
+      fBook := fDataset.GetBookmark;
+  end;
+
+  result := fBookmarkIndex<fBookmarkList.Count;
+  if result then begin
+    fCurrent := fBookmarkList[fBookmarkIndex];
+    if fDataset.BookmarkValid(fCurrent) then
+      fDataSet.GotoBookmark(fCurrent)
+    else if breStopOnInvalidBookmark in fOptions then
+      result := false;
+  end;
+end;
+
+function TBookmarkedRecordEnumerator.GetEnumerator: TBookmarkedRecordEnumerator;
+begin
+  result := self;
 end;
 
 { TCustomDBGrid }
@@ -4557,7 +4636,13 @@ begin
   end;
 end;
 
-constructor TBookmarkList.Create(AGrid: TCustomDBGrid);
+function TBookmarkList.GetEnumerator(opt: TBookmarkedRecordEnumeratorOptions
+  ): TBookmarkedRecordEnumerator;
+begin
+  result := TBookmarkedRecordEnumerator.Create(self, fGrid, opt);
+end;
+
+constructor TBookmarkList.Create(AGrid: TCustomDbGrid);
 begin
   inherited Create;
   FGrid := AGrid;
