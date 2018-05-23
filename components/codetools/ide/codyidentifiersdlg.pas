@@ -42,7 +42,7 @@ uses
   Forms, Controls, Dialogs, ButtonPanel, StdCtrls, ExtCtrls, LCLType, Buttons, Menus,
   // IdeIntf
   PackageIntf, LazIDEIntf, SrcEditorIntf, ProjectIntf,
-  CompOptsIntf, IDEDialogs, IDEMsgIntf, IDEExternToolIntf,
+  CompOptsIntf, IDEDialogs, IDEMsgIntf, IDEExternToolIntf, ProjPackIntf,
   // Codetools
   CodeCache, BasicCodeTools, CustomCodeTool, CodeToolManager, UnitDictionary,
   CodeTree, LinkScanner, DefineTemplates, FindDeclarationTool,
@@ -218,7 +218,8 @@ type
     CurInImplementation: Boolean;
 
     CurOwner: TObject; // only valid after UpdateCurOwnerOfUnit and till next event
-    CurUnitPath: String; // depends on CurOwner
+    CurUnitPath: string; // depends on CurOwner
+    CurOwnerDir: string; // depends on CurOwner
 
     NewIdentifier: string;
     NewUnitFilename: string;
@@ -1491,7 +1492,7 @@ begin
   // do some sanity checks
   NewUnitInPath:=false;
   UnitPathAdd:=ChompPathDelim(
-    CreateRelativePath(ExtractFilePath(CurMainFilename),
+    CreateRelativePath(CurOwnerDir,
                        ExtractFilePath(NewUnitFilename)));
   CurUnitName:=ExtractFileNameOnly(CurMainFilename);
   NewUnitName:=ExtractFileNameOnly(NewUnitFilename);
@@ -1525,18 +1526,16 @@ begin
     NewUnitInPath:=true;
   end
   else if (CurUnitPath<>'')
-//  and FilenameIsAbsolute(CurMainFilename) then begin
-//    MainPath:=ExtractFilePath(CurMainFilename);
-//    if (FindPathInSearchPath(PChar(MainPath),length(MainPath),
-  and FilenameIsAbsolute(NewUnitName) then begin
-    NewUnitDir:=ExtractFilePath(NewUnitName);
+  and FilenameIsAbsolute(NewUnitFilename) then begin
+    NewUnitDir:=ExtractFilePath(NewUnitFilename);
     if (FindPathInSearchPath(PChar(NewUnitDir),length(NewUnitDir),
                              PChar(CurUnitPath),length(CurUnitPath))<>nil)
     then begin
       // in unit search path
       debugln(['TCodyIdentifiersDlg.UseIdentifier in unit search path of owner NewUnitDir="',NewUnitDir,'" CurUnitPath="',CurUnitPath,'"']);
       NewUnitInPath:=true;
-    end;
+    end else
+      debugln(['TCodyIdentifiersDlg.UseIdentifier not in unitpath: NewUnitDir="',NewUnitDir,'"']);
   end;
   if not NewUnitInPath then
     debugln(['TCodyIdentifiersDlg.UseIdentifier not in unit path: CurMainFilename="',CurMainFilename,'" NewUnitFilename="',NewUnitFilename,'" CurUnitPath="',CurUnitPath,'"']);
@@ -1744,6 +1743,7 @@ var
 begin
   CurOwner:=nil;
   CurUnitPath:='';
+  CurOwnerDir:='';
   if CurMainFilename='' then exit;
   GetBest(PackageEditingInterface.GetOwnersOfUnit(CurMainFilename));
   if CurOwner=nil then
@@ -1753,6 +1753,8 @@ begin
     CompOpts:=GetCurOwnerCompilerOptions;
     if CompOpts<>nil then
       CurUnitPath:=CompOpts.GetUnitPath(false);
+    if CurOwner is TIDEProjPackBase then
+      CurOwnerDir:= TIDEProjPackBase(CurOwner).Directory;
   end;
 end;
 
