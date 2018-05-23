@@ -398,7 +398,7 @@ type
     constructor Create(AOwner: TComponent); override;
     function EditorsCount: integer; deprecated; // use EditorCount
     procedure AddCharAtCursor(AUtf8Char: TUTF8Char);
-    procedure DeleteCharBeforoCursor;
+    procedure DeleteCharBeforeCursor;
   published
     property ShortCut: TShortCut read FShortCut write SetShortCut;
     property EndOfTokenChr: string read FEndOfTokenChr write FEndOfTokenChr;
@@ -1970,7 +1970,7 @@ begin
   Form.AddCharAtCursor(AUtf8Char);
 end;
 
-procedure TSynCompletion.DeleteCharBeforoCursor;
+procedure TSynCompletion.DeleteCharBeforeCursor;
 begin
   Form.DeleteCharBeforeCursor;
 end;
