@@ -3512,15 +3512,18 @@ begin
     else
       result := true;  // field is nil so it's readonly
 
-    EditingColumn(Col, not Result);
   end;
 end;
 
 procedure TCustomDBGrid.EditorTextChanged(const aCol, aRow: Integer;
   const aText: string);
+var
+  isReadOnly: Boolean;
 begin
-  if not EditorIsReadonly then
+  isReadOnly := EditorIsReadonly;
+  if not isReadOnly then
     SetEditText(aCol, aRow, aText);
+  EditingColumn(Col, not isReadOnly);
 end;
 
 procedure TCustomDBGrid.HeaderSized(IsColumn: Boolean; Index: Integer);
