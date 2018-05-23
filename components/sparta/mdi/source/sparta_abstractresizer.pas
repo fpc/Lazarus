@@ -58,7 +58,7 @@ type
     sbH: TScrollBar;
     bR: TButton;
 
-    constructor Create(AParent: TWinControl; AResizerFrameClass: TResizerFrameClass); virtual;
+    constructor Create(AParent: TWinControl; AResizerFrameClass: TResizerFrameClass); virtual; reintroduce;
     property DesignScrollRight: Boolean index SB_Vert read FDesignScroll[SB_Vert] write SetDesignScroll;
     property DesignScrollBottom: Boolean index SB_Horz read FDesignScroll[SB_Horz] write SetDesignScroll;
 
