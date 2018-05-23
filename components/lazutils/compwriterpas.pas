@@ -1387,7 +1387,7 @@ var
 begin
   // remove unneeded leading 0 of exponent
   p:=Pos('E',s);
-  if p<1 then exit;
+  if p<1 then exit(s);
   i:=p;
   if s[i+1]='+' then inc(i);
   while (i<length(s)) and (s[i+1]='0') do
