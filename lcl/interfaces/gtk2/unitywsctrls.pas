@@ -12,6 +12,13 @@ uses
   Classes, SysUtils, dynlibs,
   Graphics, Controls, Forms, ExtCtrls, WSExtCtrls, LCLType, LazUTF8;
 
+{ Very minor changes suggested May 2018 so that -
+  1. Tries a later version of libappindicator library if old one not present
+  2. Now defaults to try and use this unit if above lib is present.
+  3. Still resorts to System Tray model if all else fails.
+  DRB
+}
+
 { TUnityWSCustomTrayIcon is the class for tray icons on systems
   running the Unity desktop environment.
 
@@ -49,7 +56,8 @@ function UnityAppIndicatorInit: Boolean;
 implementation
 
 const
-  libappindicator = 'libappindicator.so.1';
+  libappindicator_1 = 'libappindicator.so.1';
+  libappindicator_3 = 'libappindicator3.so.1';
 
 {const
   APP_INDICATOR_SIGNAL_NEW_ICON = 'new-icon';
@@ -258,16 +266,20 @@ begin
   if Loaded then
     Exit(Initialized);
   Loaded:= True;
-  if GetEnvironmentVariableUTF8('XDG_CURRENT_DESKTOP') <> 'Unity' then
+{  if GetEnvironmentVariableUTF8('XDG_CURRENT_DESKTOP') <> 'Unity' then
   begin
     Initialized := False;
     Exit;
-  end;
+  end;        }
   if Initialized then
     Exit(True);
-  Module := LoadLibrary(libappindicator);
-  if Module = 0 then
-    Exit;
+  // we'll reject if _3 not present or if both present, accept if ONLY _3 is present.
+  Module := LoadLibrary(libappindicator_1);
+  if Module <> 0 then       // if _1 present, will probably work with old SystemTray
+     exit;                  // and may not work with this Unit. So let SystemTray do it.
+  Module := LoadLibrary(libappindicator_3);        // thats the one we want here.
+  if Module = 0 then                               // no libappindicator ....
+     Exit;                                         // hope SystemTray can help you ....
   Result :=
     TryLoad('app_indicator_get_type', @app_indicator_get_type) and
     TryLoad('app_indicator_new', @app_indicator_new) and
