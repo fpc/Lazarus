@@ -98,9 +98,12 @@ After obtaining a CGImageRef, the next step to implement the RawImage_fromDevice
 		<issue name="TColorDialog.Title">
 			<short>Color dialog title is not supported</short>
 		</issue>
+		<issue name="TListView.StateImages">
+			<short>StateImages property is not supported</short>
+		</issue>
 		<issue name="TStatusBar.Color">
 			<short>TStatusBar color is not supported.It's always transparent.</short>
-		</issue>		
+		</issue>
 		<issue name="TTrackBar.LineSize">
 			<short>Track bar line size is not supported</short>
 		</issue>
@@ -143,12 +146,12 @@ After obtaining a CGImageRef, the next step to implement the RawImage_fromDevice
 		</issue>
 		<issue name="TMenu.OwnerDraw">
 			<short>not supported</short>
-		</issue>		
+		</issue>
 		<issue name="TMenu.OnDrawItem">
 			<short>not supported</short>
-		</issue>		
+		</issue>
 		<issue name="TMenu.OnMeasureItem">
 			<short>not supported</short>
-		</issue>		
+		</issue>
 	</widgetset>
 </package>

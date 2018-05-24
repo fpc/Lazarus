@@ -56,21 +56,24 @@
 		</issue>
 		<issue name="TListView.Columns">
 			<short>Multiple columns then ViewStyle=vsList is not supported</short>
-		</issue>		
+		</issue>
+		<issue name="TListView.StateImages">
+			<short>StateImages property is not supported</short>
+		</issue>
 		<issue name="TStatusPanel.Alignment">
 			<short>not supported</short>
-		</issue>		
+		</issue>
 		<issue name="TStatusPanel.Bevel">
 			<short>not supported</short>
-		</issue>		
+		</issue>
 		<issue name="TMenu.OwnerDraw">
 			<short>not supported</short>
-		</issue>		
+		</issue>
 		<issue name="TMenu.OnDrawItem">
 			<short>not supported</short>
-		</issue>		
+		</issue>
 		<issue name="TMenu.OnMeasureItem">
 			<short>not supported</short>
-		</issue>		
+		</issue>
 	</widgetset>
 </package>

@@ -14,13 +14,16 @@
 		</issue>
 		<issue name="TListView.HideSelection">
 			<short>HideSelection property is not supported</short>
-		</issue>		
+		</issue>
+		<issue name="TListView.StateImages">
+			<short>StateImages property is not supported</short>
+		</issue>
 		<issue name="TMemo.HideSelection">
 			<short>HideSelection property is not supported</short>
 		</issue>
 		<issue name="TMenuItem.RightJustify">
 			<short>RightJustify property is not supported</short>
-		</issue>		
+		</issue>
 		<issue name="TPageControl.MultiLine">
 			<short>MultiLine property is not supported</short>
 		</issue>
@@ -35,12 +38,12 @@
 		</issue>
 		<issue name="TMenu.OwnerDraw">
 			<short>not supported</short>
-		</issue>		
+		</issue>
 		<issue name="TMenu.OnDrawItem">
 			<short>not supported</short>
-		</issue>		
+		</issue>
 		<issue name="TMenu.OnMeasureItem">
 			<short>not supported</short>
-		</issue>		
+		</issue>
 	</widgetset>
 </package>
