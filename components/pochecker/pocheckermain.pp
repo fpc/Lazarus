@@ -96,14 +96,11 @@ type
   published
     UnselectAllTestsBtn: TButton;
     SelectAllTestsBtn: TButton;
-    SelectBasicTestsBtn: TButton;
-    Button3: TButton;
     SelectTestLabel: TLabel;
     TestListBox: TCheckListBox;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure SelectAllTestsBtnClick(Sender: TObject);
-    procedure SelectBasicTestsBtnClick(Sender: TObject);
     procedure UnselectAllTestsBtnClick(Sender: TObject);
   end;
 
@@ -156,16 +153,6 @@ end;
 procedure TPoCheckerForm.SelectAllTestsBtnClick(Sender: TObject);
 begin
   TestListBox.CheckAll(cbChecked, False, False);
-end;
-
-
-procedure TPoCheckerForm.SelectBasicTestsBtnClick(Sender: TObject);
-var
-  i: integer;
-begin
-  // Set / reset "basic" CheckListBox items.
-  for i := 0 to TestListBox.Count - 2 do
-    TestListBox.Checked[i] := True;
 end;
 
 procedure TPoCheckerForm.UnselectAllTestsBtnClick(Sender: TObject);
@@ -583,7 +570,6 @@ begin
       ResultDlg.Log.Assign(SL);
       ResultDlg.StatLog.Assign(StatL);
 
-      ResultDlg.ResultPageControl.Pages[2].TabVisible := pttCheckDuplicateOriginals in TestTypes;
       ResultDlg.DupLog.Assign(DupL);
 
       ResultDlg.PoFamilyList := PoFamilyList;
@@ -610,7 +596,6 @@ begin
   RunToolButton.Enabled := HasSelection;
   TestListBox.Enabled := HasSelection;
   SelectAllTestsBtn.Enabled := HasSelection;
-  SelectBasicTestsBtn.Enabled := HasSelection;
   UnselectAllTestsBtn.Enabled := HasSelection;
   UnselectAllMasterFilesBtn.Enabled := HasSelection;
   ClearMasterFilesBtn.Enabled := (MasterPoListBox.Items.Count > 0);
@@ -929,7 +914,6 @@ begin
   SelectAllMasterFilesBtn.Caption := sSelectAllListBox;
   LangFilter.Items[0] := sAllLanguages;
   SelectAllTestsBtn.Caption := sSelectAllTests;
-  SelectBasicTestsBtn.Caption := sSelectBasicTests;
   UnselectAllTestsBtn.Caption := sUnselectAllTests;
 end;
 

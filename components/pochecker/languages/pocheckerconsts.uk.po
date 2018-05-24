@@ -124,10 +124,6 @@ msgstr "Всі мови"
 msgid "Cannot write file%s%s%s%sYou can press \"Retry\" to refresh this translation family again and continue."
 msgstr "Неможливо записати файл%s%s%s%sВи можете натиснути \"Повтор\", щоб знову спробувати оновити цю родину перекладів і продовжити."
 
-#: pocheckerconsts.scheckforduplicateuntranslatedvalues
-msgid "Check for duplicate originals"
-msgstr "Перевірити на повтори оригіналів"
-
 #: pocheckerconsts.scheckforincompatibleformatarguments
 msgid "Check for incompatible format arguments"
 msgstr "Перевірити на несумісні аргументи формату"
@@ -381,10 +377,6 @@ msgstr "Вибрати всі файли"
 #: pocheckerconsts.sselectalltests
 msgid "Select &All"
 msgstr "Вибрати &всі"
-
-#: pocheckerconsts.sselectbasictests
-msgid "Select &Basic"
-msgstr "Вибрати &базові"
 
 #: pocheckerconsts.sselecttesttypes
 msgid "Select test types"

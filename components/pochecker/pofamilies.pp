@@ -18,7 +18,7 @@ uses
 Type
 
   TPoTestType = (pttCheckNrOfItems, pttCheckFormatArgs, pttCheckMissingIdentifiers,
-                 pttCheckMismatchedOriginals, pttCheckDuplicateOriginals);
+                 pttCheckMismatchedOriginals);
   TPoTestTypes = Set of TPoTestType;
 
   TPoTestOption = (ptoFindAllChildren);
@@ -31,8 +31,7 @@ const
       sCheckNumberOfItems,
       sCheckForIncompatibleFormatArguments,
       sCheckMissingIdentifiers,
-      sCheckForMismatchesInUntranslatedStrings,
-      sCheckForDuplicateUntranslatedValues
+      sCheckForMismatchesInUntranslatedStrings
     );
 
 Type
@@ -239,7 +238,6 @@ begin
   PoTestTypeNames[pttCheckFormatArgs] := sCheckForIncompatibleFormatArguments;
   PoTestTypeNames[pttCheckMissingIdentifiers] := sCheckMissingIdentifiers;
   PoTestTypeNames[pttCheckMismatchedOriginals] := sCheckForMismatchesInUntranslatedStrings;
-  PoTestTypeNames[pttCheckDuplicateOriginals] := sCheckForDuplicateUntranslatedValues;
 end;
 
 { TStat }
@@ -649,7 +647,6 @@ var
   LastHash, CurHash: Cardinal;
 begin
   //debugln('TPoFamily.CheckMismatchedOriginals');
-  DoTestStart(PoTestTypeNames[pttCheckDuplicateOriginals], ShortMasterName);
   WarningCount := 0;
 
   DupItemsList := TStringHashList.Create(true);
@@ -696,7 +693,6 @@ begin
 
   DupItemsList.Free;
 
-  DoTestEnd(PoTestTypeNames[pttCheckDuplicateOriginals], WarningCount);
   //debugln('TPoFamily.CheckDuplicateOriginals: ',Dbgs(WarningCount),' Errors');
 end;
 
@@ -762,13 +758,6 @@ begin
       Exit;
     end
   end;
-  if not Assigned(FChild) and not ((pttCheckDuplicateOriginals in FTesttypes) or (ptoFindAllChildren in FTestOptions)) then
-  begin
-    {$ifdef DebugSimplePoFiles}
-    Debugln('TPoFamily.RunTests: no child assigned for ',ShortMasterName);
-    {$endif}
-    Exit;
-  end;
 
   if (ptoFindAllChildren in FTestOptions) then
   begin
@@ -797,22 +786,18 @@ begin
   try
 
     //First run checks that are Master-only
-    if (pttCheckDuplicateOriginals in FTestTypes) then
-    begin
-      CheckDuplicateOriginals(CurrWarnCnt, DupLog);
-      WarningCount := CurrWarnCnt + WarningCount;
-    end;
+    CheckDuplicateOriginals(CurrWarnCnt, DupLog);
+    WarningCount := CurrWarnCnt + WarningCount;
 
     {$ifdef DebugSimplePoFiles}
     Debugln('TPoFamily.RunTests: number of childs for testing = ',DbgS(Sl.Count));
     {$endif}
 
-    if (FTestTypes - [pttCheckDuplicateOriginals] <> []) and (Sl.Count = 0) then
+    if (FTestTypes <> []) and (Sl.Count = 0) then
     begin
       {$ifdef DebugSimplePoFiles}
       Debugln('TPoFamily.RunTests: Warning: No child selected or found for selected tests');
       {$endif}
-      Inc(WarningCount);
       ErrorLog.Add(Divider);
       ErrorLog.Add('Warning: No child selected (or found) for selected tests.');
       ErrorLog.Add(Divider);

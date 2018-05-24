@@ -123,12 +123,6 @@ msgstr "Alle Sprachen"
 msgid "Cannot write file%s%s%s%sYou can press \"Retry\" to refresh this translation family again and continue."
 msgstr "Kann Datei%s%s%s%snicht schreiben. Sie können auf \"Wiederholen\" klicken, um diese Übersetzungsfamilie erneut zu aktualisieren und fortzusetzen."
 
-#: pocheckerconsts.scheckforduplicateuntranslatedvalues
-#, fuzzy
-#| msgid "Check for duplicate untranslated values"
-msgid "Check for duplicate originals"
-msgstr "Prüfung auf mehrfache, nicht übersetzte Werte"
-
 #: pocheckerconsts.scheckforincompatibleformatarguments
 msgid "Check for incompatible format arguments"
 msgstr "Prüfung auf inkompatible Format-Argumente"
@@ -386,10 +380,6 @@ msgstr "Alle Dateien auswählen"
 #: pocheckerconsts.sselectalltests
 msgid "Select &All"
 msgstr "&Alle auswählen"
-
-#: pocheckerconsts.sselectbasictests
-msgid "Select &Basic"
-msgstr "&Basistests auswähl."
 
 #: pocheckerconsts.sselecttesttypes
 msgid "Select test types"

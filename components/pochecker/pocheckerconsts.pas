@@ -9,7 +9,6 @@ Uses Controls;
 resourcestring
   //Main form
   rsPoChecker = 'Check PO Files ...';
-  sSelectBasicTests = 'Select &Basic';
   sSelectAllTests = 'Select &All';
   sUnselectAllTests = '&Unselect All';
   sGUIPoFileCheckingTool = 'GUI Po-file checking tool';
@@ -85,7 +84,6 @@ resourcestring
     +'arguments';
   sCheckMissingIdentifiers = 'Check missing identifiers';
   sCheckForMismatchesInUntranslatedStrings = 'Check for mismatches of originals';
-  sCheckForDuplicateUntranslatedValues = 'Check for duplicate originals';
   sIncompatibleFormatArgs = '[Line: %d] Incompatible and/or invalid format() arguments for:' ;
 
   sNrErrorsFound = 'Found %d errors.';

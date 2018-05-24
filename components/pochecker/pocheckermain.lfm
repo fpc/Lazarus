@@ -34,12 +34,11 @@ object PoCheckerForm: TPoCheckerForm
       'sCheckForIncompatibleFormatArguments'
       'sCheckMissingIdentifiers'
       'sCheckForMismatchesInUntranslatedStrings'
-      'sCheckForDuplicateUntranslatedValues'
     )
     ItemHeight = 17
     TabOrder = 1
     Data = {
-      050000000000000000
+      0400000000000000
     }
   end
   object SelectTestLabel: TLabel
@@ -56,41 +55,26 @@ object PoCheckerForm: TPoCheckerForm
     ParentColor = False
     ParentFont = False
   end
-  object SelectBasicTestsBtn: TButton
+  object SelectAllTestsBtn: TButton
     AnchorSideLeft.Control = TestListBox
     AnchorSideTop.Control = TestListBox
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 25
     Top = 230
-    Width = 117
-    AutoSize = True
-    BorderSpacing.Top = 6
-    Caption = 'Select Basic Tests'
-    Enabled = False
-    OnClick = SelectBasicTestsBtnClick
-    TabOrder = 2
-  end
-  object SelectAllTestsBtn: TButton
-    AnchorSideLeft.Control = SelectBasicTestsBtn
-    AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = SelectBasicTestsBtn
-    Left = 129
-    Height = 25
-    Top = 230
     Width = 104
     AutoSize = True
-    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
     Caption = 'Select All Tests'
     Enabled = False
     OnClick = SelectAllTestsBtnClick
-    TabOrder = 3
+    TabOrder = 2
   end
   object UnselectAllTestsBtn: TButton
     AnchorSideLeft.Control = SelectAllTestsBtn
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = SelectAllTestsBtn
-    Left = 239
+    Left = 116
     Height = 25
     Top = 230
     Width = 118
@@ -99,7 +83,7 @@ object PoCheckerForm: TPoCheckerForm
     Caption = 'Unselect All Tests'
     Enabled = False
     OnClick = UnselectAllTestsBtnClick
-    TabOrder = 4
+    TabOrder = 3
   end
   object StatusBar: TStatusBar
     Left = 0
@@ -110,7 +94,7 @@ object PoCheckerForm: TPoCheckerForm
   end
   object MasterPoListBox: TListBox
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = SelectBasicTestsBtn
+    AnchorSideTop.Control = SelectAllTestsBtn
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
@@ -132,7 +116,7 @@ object PoCheckerForm: TPoCheckerForm
     ScrollWidth = 630
     Sorted = True
     Style = lbOwnerDrawFixed
-    TabOrder = 5
+    TabOrder = 4
   end
   object LangFilter: TComboBox
     AnchorSideLeft.Control = MasterPoListBox
@@ -176,7 +160,7 @@ object PoCheckerForm: TPoCheckerForm
     )
     OnChange = LangFilterChange
     Style = csDropDownList
-    TabOrder = 6
+    TabOrder = 5
     Text = 'All languages'
   end
   object ClearMasterFilesBtn: TButton
@@ -192,7 +176,7 @@ object PoCheckerForm: TPoCheckerForm
     BorderSpacing.Bottom = 6
     Caption = 'Clear'
     OnClick = ClearMasterFilesBtnClick
-    TabOrder = 7
+    TabOrder = 6
   end
   object UnselectAllMasterFilesBtn: TButton
     AnchorSideLeft.Control = SelectAllMasterFilesBtn
@@ -209,7 +193,7 @@ object PoCheckerForm: TPoCheckerForm
     Caption = 'Unselect all files'
     Enabled = False
     OnClick = UnselectAllMasterFilesBtnClick
-    TabOrder = 9
+    TabOrder = 8
   end
   object SelectAllMasterFilesBtn: TButton
     AnchorSideLeft.Control = ClearMasterFilesBtn
@@ -225,7 +209,7 @@ object PoCheckerForm: TPoCheckerForm
     BorderSpacing.Bottom = 6
     Caption = 'Select all files'
     OnClick = SelectAllMasterFilesBtnClick
-    TabOrder = 8
+    TabOrder = 7
   end
   object MainToolBar: TToolBar
     Left = 0
