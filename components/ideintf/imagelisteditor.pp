@@ -86,6 +86,7 @@ type
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure btnApplyClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
     procedure ImageListBoxDrawItem(Control: TWinControl; Index: Integer;
       ARect: TRect; {%H-}State: TOwnerDrawState);
     procedure btnAddNewResolutionClick(Sender: TObject);
@@ -134,6 +135,23 @@ type
 implementation
 
 {$R *.lfm}
+
+procedure AlignButtons(AButtons: array of TControl);
+var
+  Button: TControl;
+  MaxWidth: Integer;
+begin
+  // In designer:
+  // Left sides of buttons anchored to TListBox
+  // Right sides of buttons are not anchored
+  // Buttons, GroupBox: AutoSize=True
+  MaxWidth:=0;
+  for Button in AButtons do
+    if Button.Width > MaxWidth then
+      MaxWidth:=Button.Width;
+  for Button in AButtons do
+    Button.Constraints.MinWidth:=MaxWidth;
+end;
 
 function EditImageList(AImageList: TImageList): Boolean;
 var
@@ -592,6 +610,23 @@ end;
 procedure TImageListEditorDlg.btnApplyClick(Sender: TObject);
 begin
   SaveToImageList;
+end;
+
+procedure TImageListEditorDlg.FormShow(Sender: TObject);
+begin
+  AlignButtons([
+    BtnAdd,
+    BtnAddMoreResolutions,
+    BtnReplace,
+    BtnReplaceAll,
+    BtnDelete,
+    BtnClear,
+    BtnMoveUp,
+    BtnMoveDown,
+    BtnSave,
+    btnSaveAll,
+    btnAddNewResolution,
+    btnDeleteResolution]);
 end;
 
 procedure TImageListEditorDlg.UpdatePreviewImage;
