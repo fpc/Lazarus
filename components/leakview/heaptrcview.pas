@@ -5,7 +5,7 @@ unit HeapTrcView;
 interface
 
 uses
-  Classes, SysUtils, XMLConf, contnrs, Clipbrd, LCLProc, LCLType,
+  Classes, SysUtils, XMLConf, DOM, contnrs, Clipbrd, LCLProc, LCLType,
   LResources, Forms, Controls, Graphics, Dialogs, StdCtrls, ComCtrls, ExtCtrls,
   // LazUtils
   FileUtil, LazFileUtils,
@@ -437,7 +437,7 @@ begin
   cfg.SetValue('bottom', b.Bottom);
   cfg.CloseKey;
   for i:=0 to edtTrcFileName.Items.Count-1 do
-    cfg.SetValue('path'+IntToStr(i), UTF8Decode(edtTrcFileName.Items[i]) );
+    cfg.SetValue(DOMString('path'+IntToStr(i)), UTF8Decode(edtTrcFileName.Items[i]) );
 end;
 
 function PointInRect(p: TPoint; const r: TRect): Boolean;
@@ -491,7 +491,7 @@ begin
     if b.Bottom-b.Top<=0 then b.Bottom:=b.Top+40;
 
     for i:=0 to 7 do begin
-      s:=cfg.GetValue('path'+IntToStr(i), '');
+      s:=cfg.GetValue(DOMString('path'+IntToStr(i)), '');
       if s<>'' then st.Add(UTF8Encode(s));
     end;
 
