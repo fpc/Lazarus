@@ -69,6 +69,7 @@ type
     procedure Clear;
     procedure Assign(Source: TBaseCompPaletteOptions);
     procedure AssignComponentPage(aPageName: string; aList: TStringList);
+    function Equals(Obj: TObject): boolean; override;
   public
     property PageNames: TStringList read FPageNames;
     property ComponentPages: TStringList read FComponentPages;
@@ -80,6 +81,7 @@ type
   private
     // Pages removed or renamed. They must be hidden in the palette.
     FHiddenPageNames: TStringList;
+    FName: string;
     FVisible: boolean;
   public
     constructor Create;
@@ -89,15 +91,19 @@ type
     function IsDefault: Boolean;
     procedure Load(XMLConfig: TXMLConfig; Path: String);
     procedure Save(XMLConfig: TXMLConfig; Path: String);
+    function Equals(Obj: TObject): boolean; override;
   public
+    property Name: string read FName write FName;
     property HiddenPageNames: TStringList read FHiddenPageNames;
     property Visible: boolean read FVisible write FVisible;
   end;
 
   { TCompPaletteUserOrder }
 
-  // Like TCompPaletteOptions but collects all pages and components,
-  //  including the original ones. The palette is later synchronized with this.
+  // Only used by the component palette options to show all available pages.
+  // It's like TCompPaletteOptions but collects all pages and components,
+  //  including the original ones and the newly installed ones.
+  //  The active palette is later synchronized with this.
   TCompPaletteUserOrder = class(TBaseCompPaletteOptions)
   private
     fPalette: TBaseComponentPalette;
@@ -109,6 +115,7 @@ type
     procedure Clear;
     function SortPagesAndCompsUserOrder: Boolean;
   public
+    property ComponentPages; // all pages, ordered first by Options, then by default priority
     property Options: TCompPaletteOptions read fOptions write fOptions;
   end;
 
@@ -136,7 +143,7 @@ type
     property ComponentClass: TComponentClass read FComponentClass;
     property OnGetCreationClass: TOnGetCreationClass read FOnGetCreationClass
                                                      write FOnGetCreationClass;
-    property OrigPageName: string read FOrigPageName;
+    property OrigPageName: string read FOrigPageName; // case sensitive
     property RealPage: TBaseComponentPage read FRealPage write FRealPage;
     property Visible: boolean read FVisible write SetVisible;
   end;
@@ -362,8 +369,8 @@ end;
 
 destructor TBaseCompPaletteOptions.Destroy;
 begin
-  FComponentPages.Free;
-  FPageNames.Free;
+  FreeAndNil(FComponentPages);
+  FreeAndNil(FPageNames);
   inherited Destroy;
 end;
 
@@ -393,6 +400,30 @@ begin
   FComponentPages.AddObject(aPageName, sl);
 end;
 
+function TBaseCompPaletteOptions.Equals(Obj: TObject): boolean;
+var
+  Source: TBaseCompPaletteOptions;
+  i, j: Integer;
+  MyList, SrcList: TStringList;
+begin
+  if Obj is TBaseCompPaletteOptions then
+  begin
+    Source:=TBaseCompPaletteOptions(Obj);
+    if (not FPageNames.Equals(Source.FPageNames))
+    or (FComponentPages.Count<>Source.FComponentPages.Count) then exit(false);
+    for i:=0 to Source.FComponentPages.Count-1 do
+    begin
+      MyList:=TStringList(FComponentPages[i]);
+      SrcList:=TStringList(Source.FComponentPages[i]);
+      if not MyList.Equals(SrcList) then exit(false);
+      for j:=0 to MyList.Count-1 do
+        if MyList.Objects[j]<>SrcList.Objects[j] then exit(false);
+    end;
+    Result:=true;
+  end else
+    Result:=inherited Equals(Obj);
+end;
+
 { TCompPaletteOptions }
 
 constructor TCompPaletteOptions.Create;
@@ -419,6 +450,7 @@ begin
   inherited Assign(Source);
   FHiddenPageNames.Assign(Source.FHiddenPageNames);
   FVisible := Source.FVisible;
+  // Name: do not assign name
 end;
 
 function TCompPaletteOptions.IsDefault: Boolean;
@@ -438,6 +470,7 @@ var
 begin
   Path := Path + BasePath;
   try
+    FName:=XMLConfig.GetValue(Path+'Name/Value','');
     FVisible:=XMLConfig.GetValue(Path+'Visible/Value',true);
 
     // Pages
@@ -491,6 +524,7 @@ var
 begin
   try
     Path := Path + BasePath;
+    XMLConfig.SetDeleteValue(Path+'Name/Value', FName,'');
     XMLConfig.SetDeleteValue(Path+'Visible/Value', FVisible,true);
 
     SubPath:=Path+'Pages/';
@@ -521,6 +555,21 @@ begin
       DebugLn('ERROR: TCompPaletteOptions.Save: ',E.Message);
       exit;
     end;
+  end;
+end;
+
+function TCompPaletteOptions.Equals(Obj: TObject): boolean;
+var
+  Source: TCompPaletteOptions;
+begin
+  Result:=inherited Equals(Obj);
+  if not Result then exit;
+  if Obj is TCompPaletteOptions then
+  begin
+    Source:=TCompPaletteOptions(Obj);
+    // Name: do not check Name
+    if Visible<>Source.Visible then exit(false);
+    if not FHiddenPageNames.Equals(Source.FHiddenPageNames) then exit(false);
   end;
 end;
 
@@ -735,7 +784,7 @@ begin
     // Find all components for this page and add them to cache.
     for CompI := 0 to fComps.Count-1 do begin
       Comp := fComps[CompI];
-      if Comp.OrigPageName = PgName then //if SameText(Comp.OrigPageName, PgName) then
+      if Comp.OrigPageName = PgName then // case sensitive!
         sl.AddObject(Comp.ComponentClass.ClassName, Comp);
     end;
   end;

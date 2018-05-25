@@ -32,15 +32,21 @@ uses
   PackageDefs, ImgList;
 
 type
+
   { TCompPaletteOptionsFrame }
 
   TCompPaletteOptionsFrame = class(TAbstractIDEOptionsEditor)
     AddPageButton: TBitBtn;
     cbPaletteVisible: TCheckBox;
+    CompPalModeDeleteButton: TButton;
+    CompPalModeAddButton: TButton;
+    CompPalModeComboBox: TComboBox;
+    CompPalModeRenameButton: TButton;
     ImportButton: TBitBtn;
     ComponentsListView: TListView;
     CompMoveDownBtn: TSpeedButton;
     DeleteMenuItem: TMenuItem;
+    CompPalModeGroupBox: TGroupBox;
     RenameMenuItem: TMenuItem;
     PagesPopupMenu: TPopupMenu;
     ExportButton: TBitBtn;
@@ -69,6 +75,10 @@ type
     procedure ComponentsListViewItemChecked(Sender: TObject; {%H-}Item: TListItem);
     procedure ComponentsListViewKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure CompMoveDownBtnClick(Sender: TObject);
+    procedure CompPalModeAddButtonClick(Sender: TObject);
+    procedure CompPalModeComboBoxChange(Sender: TObject);
+    procedure CompPalModeDeleteButtonClick(Sender: TObject);
+    procedure CompPalModeRenameButtonClick(Sender: TObject);
     procedure ImportButtonClick(Sender: TObject);
     procedure ExportButtonClick(Sender: TObject);
     procedure PageMoveDownBtnClick(Sender: TObject);
@@ -291,6 +301,7 @@ begin
     PagesListBox.Items.Objects[i].Free;
   PagesListBox.Clear;
   PagesListBox.Items.Add(lis_All_);
+  // then add all pages
   for i := 0 to fLocalUserOrder.ComponentPages.Count-1 do
   begin
     PgName := fLocalUserOrder.ComponentPages[i];
@@ -722,6 +733,28 @@ begin
     UpdateCompMoveButtons(i+1);
     MarkAsChanged;
   end;
+end;
+
+procedure TCompPaletteOptionsFrame.CompPalModeAddButtonClick(Sender: TObject);
+begin
+
+end;
+
+procedure TCompPaletteOptionsFrame.CompPalModeComboBoxChange(Sender: TObject);
+begin
+
+end;
+
+procedure TCompPaletteOptionsFrame.CompPalModeDeleteButtonClick(Sender: TObject
+  );
+begin
+
+end;
+
+procedure TCompPaletteOptionsFrame.CompPalModeRenameButtonClick(Sender: TObject
+  );
+begin
+
 end;
 
 procedure TCompPaletteOptionsFrame.MarkAsChanged;
