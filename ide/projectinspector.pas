@@ -836,7 +836,7 @@ var
   TVNode: TTreeNode;
   NodeData: TPENodeData;
   Item: TObject;
-  Msg: String;
+  Msg, Cap: String;
   DeleteCount: Integer;
   CurFile: TUnitInfo;
 begin
@@ -867,7 +867,11 @@ begin
     if DeleteCount=0 then exit;
     if DeleteCount>1 then
       Msg:=Format(lisProjInspRemoveItemsF, [IntToStr(DeleteCount)]);
-    if IDEMessageDialog(lisProjInspConfirmDeletingDependency,
+    if CurFile<>nil then
+      Cap:=lisProjInspConfirmRemovingFile
+    else
+      Cap:=lisProjInspConfirmDeletingDependency;
+    if IDEMessageDialog(Cap,
       Msg, mtConfirmation,[mbYes,mbNo])<>mrYes then exit;
 
     // delete
