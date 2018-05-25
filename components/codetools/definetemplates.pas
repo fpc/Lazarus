@@ -9037,7 +9037,6 @@ var
   InfoTypes: TFPCInfoTypes;
   BaseDir: String;
   FullFilename: String;
-  e: PStringToStringItem;
 begin
   OldOptions:=TPCTargetConfigCache.Create(nil);
   CfgFiles:=nil;
