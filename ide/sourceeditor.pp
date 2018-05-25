@@ -2211,7 +2211,7 @@ Begin
   // set colors
   if (Editor<>nil) and (TheForm<>nil) then begin
     with TheForm as TSourceEditCompletionForm do begin
-      DrawBorderColor       := FActiveEditBorderColor;
+      DrawBorderColor   := FActiveEditBorderColor;
       BackgroundColor   := FActiveEditBackgroundColor;
       clSelect          := FActiveEditBackgroundSelectedColor;
       TextColor         := FActiveEditTextColor;

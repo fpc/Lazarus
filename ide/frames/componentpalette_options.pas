@@ -18,7 +18,7 @@
  *                                                                         *
  ***************************************************************************
 }
-unit componentpalette_options;
+unit ComponentPalette_Options;
 
 {$mode objfpc}{$H+}
 
@@ -38,15 +38,10 @@ type
   TCompPaletteOptionsFrame = class(TAbstractIDEOptionsEditor)
     AddPageButton: TBitBtn;
     cbPaletteVisible: TCheckBox;
-    CompPalModeDeleteButton: TButton;
-    CompPalModeAddButton: TButton;
-    CompPalModeComboBox: TComboBox;
-    CompPalModeRenameButton: TButton;
     ImportButton: TBitBtn;
     ComponentsListView: TListView;
     CompMoveDownBtn: TSpeedButton;
     DeleteMenuItem: TMenuItem;
-    CompPalModeGroupBox: TGroupBox;
     RenameMenuItem: TMenuItem;
     PagesPopupMenu: TPopupMenu;
     ExportButton: TBitBtn;

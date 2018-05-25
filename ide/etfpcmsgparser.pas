@@ -1499,12 +1499,12 @@ end;
 
 function TIDEFPCParser.CheckForLinkerErrors(p: PChar): boolean;
 const
-  pat: String = 'Undefined symbols for architecture';
+  patUndefinedSymbol: String = 'Undefined symbols for architecture';
+  patLD: String = '/usr/bin/ld: ';
 var
   MsgLine: TMessageLine;
 begin
-  Result:=CompareMem(PChar(pat),p,length(pat));
-  if Result then
+  if CompareMem(PChar(patUndefinedSymbol),p,length(patUndefinedSymbol)) then
   begin
     MsgLine:=CreateMsgLine;
     MsgLine.MsgID:=0;
@@ -1512,7 +1512,19 @@ begin
     MsgLine.Urgency:=mluError;
     MsgLine.Msg:='linker: '+p;
     inherited AddMsgLine(MsgLine);
+    exit(true);
   end;
+  if CompareMem(PChar(patLD),p,length(patLD)) then
+  begin
+    MsgLine:=CreateMsgLine;
+    MsgLine.MsgID:=0;
+    MsgLine.SubTool:=SubToolFPCLinker;
+    MsgLine.Urgency:=mluVerbose;
+    MsgLine.Msg:='linker: '+p;
+    inherited AddMsgLine(MsgLine);
+    exit(true);
+  end;
+  Result:=false;
 end;
 
 function TIDEFPCParser.CheckForAssemblerErrors(p: PChar): boolean;
@@ -1651,6 +1663,15 @@ For example:
         _COCOAINT_TCOCOAWIDGETSET_$__GETKEYSTATE$LONGINT$$SMALLINT in cocoaint.o
   ld: symbol(s) not found for architecture x86_64
   An error occurred while linking
+
+  Linking IDE:
+  (9015) Linking ../lazarus
+  /usr/bin/ld: cannot find -lGL
+  make[2]: *** [lazarus] Error 1
+  make[1]: *** [idepkg] Error 2
+  make: *** [idepkg] Error 2
+  /home/mattias/pascal/wichtig/lazarus/ide/lazarus.pp(161,1) Error: (9013) Error while linking
+
 }
 var
   i: Integer;
@@ -1660,6 +1681,7 @@ begin
   i:=Tool.WorkerMessages.Count-1;
   while i>=0 do begin
     MsgLine:=Tool.WorkerMessages[i];
+    //debugln(['TIDEFPCParser.AddLinkingMessages ',i,' ',dbgs(MsgLine.Urgency),' ',MsgLine.Msg]);
     if MsgLine.Urgency<mluHint then
       MsgLine.Urgency:=mluImportant
     else
@@ -1671,6 +1693,7 @@ begin
   i:=Tool.WorkerMessages.Count-1;
   if i<0 then exit;
   MsgLine:=Tool.WorkerMessages[i];
+  //debugln(['TIDEFPCParser.AddLinkingMessages MsgLine.OutputIndex=',MsgLine.OutputIndex,' fOutputIndex=',fOutputIndex]);
   for i:=MsgLine.OutputIndex+1 to fOutputIndex-1 do begin
     MsgLine:=inherited CreateMsgLine(i);
     MsgLine.MsgID:=0;

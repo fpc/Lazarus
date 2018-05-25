@@ -46,6 +46,7 @@ uses
   // IdeIntf
   FormEditingIntf, LazIDEIntf, IDEImagesIntf, PropEdits, ComponentReg,
   // IDE
+  ComponentPalette_Options,
   MainBase, LazarusIDEStrConsts, DesignerProcs, PackageDefs, EnvironmentOpts,
   ImgList;
 
@@ -149,7 +150,7 @@ type
 function CompareControlsWithTag(Control1, Control2: Pointer): integer;
 
 implementation
-uses componentpalette_options;
+
 {$R ../images/components_images.res}
 {$DEFINE USE_PageIndex}
 
