@@ -4887,8 +4887,12 @@ begin
   if not GetSmoothScroll(SB_Vert) then
     FGCache.TLRowOff := 0;
 
-  if not PointIgual(OldTopleft,FTopLeft) then
+  if not PointIgual(OldTopleft,FTopLeft) then begin
     TopLeftChanged;
+    if goScrollKeepVisible in Options then
+      MoveNextSelectable(False, FTopLeft.x - oldTopLeft.x + col,
+                                FTopLeft.y - oldTopLeft.y + row);
+  end;
 
   NewTopLeftXY := GetPxTopLeft;
   ScrollBy((OldTopLeftXY.x-NewTopLeftXY.x)*RTLSign, OldTopLeftXY.y-NewTopLeftXY.y);
