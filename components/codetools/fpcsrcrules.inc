@@ -11,6 +11,7 @@ Add('packages/ncurses');  // better than packages/palmunits (unit from)
 Add('packages/hash');  // better than packages/palmunits (unit crc)
 
 Score:=-10;
+Add('tests');
 Add('packages/libgbafpc/examples');
 Add('packages/ptc/examples');
 Add('packages/ncurses/examples');
