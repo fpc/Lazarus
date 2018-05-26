@@ -1031,8 +1031,12 @@ resourcestring
   lisTheProjectUsesFPCResourcesWhichRequireAtLeast = 'The project uses '
     +'FPC resources, which require at least FPC 2.4';
   lisCreateDirectory = 'Create directory?';
+  lisFileFound = 'File found';
+  lisTheTargetDirectoryIsAFile = 'The target directory is a file:%s';
   lisTheOutputDirectoryIsMissing = 'The output directory "%s" is missing.';
   lisCreateIt = 'Create it';
+  lisInvalidFileName = 'Invalid file name';
+  lisTheTargetFileNameIsADirectory = 'The target file name is a directory';
 
   // file dialogs
   lisOpenFile = 'Open File';

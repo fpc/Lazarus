@@ -6594,7 +6594,7 @@ var
   TargetExeName: String;
   TargetExeDirectory: String;
   FPCVersion, FPCRelease, FPCPatch: integer;
-  aCompileHint: String;
+  aCompileHint, ShortFilename: String;
   OldToolStatus: TIDEToolStatus;
   IsComplete: Boolean;
   StartTime: TDateTime;
@@ -6784,20 +6784,38 @@ begin
       // create target output directory
       TargetExeName := Project1.CompilerOptions.CreateTargetFilename;
       TargetExeDirectory:=ExtractFilePath(TargetExeName);
-      if (FilenameIsAbsolute(TargetExeDirectory))
-      and (not DirPathExistsCached(TargetExeDirectory)) then begin
-        if not FileIsInPath(TargetExeDirectory,WorkingDir) then begin
-          Result:=IDEQuestionDialog(lisCreateDirectory,
-              Format(lisTheOutputDirectoryIsMissing, [TargetExeDirectory]),
-              mtConfirmation, [mrYes, lisCreateIt,
-                               mrCancel]);
-          if Result<>mrYes then exit;
+      if FilenameIsAbsolute(TargetExeDirectory) then begin
+        if FileExistsCached(TargetExeDirectory) then begin
+          if not DirPathExistsCached(TargetExeDirectory) then begin
+            Result:=IDEQuestionDialog(lisFileFound,
+                Format(lisTheTargetDirectoryIsAFile, [sLineBreak
+                +TargetExeDirectory]),
+                mtWarning, [mrCancel,mrIgnore]);
+            if Result<>mrIgnore then exit(mrCancel);
+          end;
+        end else begin
+          if not FileIsInPath(TargetExeDirectory,WorkingDir) then begin
+            Result:=IDEQuestionDialog(lisCreateDirectory,
+                Format(lisTheOutputDirectoryIsMissing, [TargetExeDirectory]),
+                mtConfirmation, [mrYes, lisCreateIt,
+                                 mrCancel]);
+            if Result<>mrYes then exit;
+          end;
+          Result:=ForceDirectoryInteractive(TargetExeDirectory,[mbRetry]);
+          if Result<>mrOk then begin
+            debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] ForceDirectoryInteractive "',TargetExeDirectory,'" failed']);
+            exit;
+          end;
         end;
-        Result:=ForceDirectoryInteractive(TargetExeDirectory,[mbRetry]);
-        if Result<>mrOk then begin
-          debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] ForceDirectoryInteractive "',TargetExeDirectory,'" failed']);
-          exit;
-        end;
+      end;
+      ShortFilename:=ExtractFileName(TargetExeName);
+      if (ShortFilename='') or (ShortFilename='.') or (ShortFilename='..')
+      or (FilenameIsAbsolute(TargetExeName) and DirPathExistsCached(TargetExeName)) then
+      begin
+        Result:=IDEQuestionDialog(lisInvalidFileName,
+            lisTheTargetFileNameIsADirectory,
+            mtWarning, [mrCancel,mrIgnore]);
+        if Result<>mrIgnore then exit(mrCancel);
       end;
 
       // create application bundle
