@@ -3193,9 +3193,9 @@ begin
         CurOutputDir:=CreateRelativePath(CurOutputDir,BaseDirectory,true);
     end;
     if CurOutputDir<>'' then
+      // ToDo: do not pass -FU if -FE is the same
       switches := switches + ' '+PrepareCmdLineOption('-FU'+CurOutputDir);
   end;
-
 
   // append -o Option if neccessary
   {   * -o to define the target file name.
@@ -3213,14 +3213,20 @@ begin
       if not (ccloAbsolutePaths in Flags) then
         NewTargetFilename := CreateRelativePath(NewTargetFilename, BaseDirectory);
       NewTargetDirectory := ExtractFilePath(NewTargetFilename);
-      if (NewTargetDirectory <> '')
-      and (CompareFilenames(ChompPathDelim(NewTargetDirectory),ChompPathDelim(BaseDirectory))=0)
-      then begin
-        // if target file is in the base directory, do not use -FE switch
-        // Without -FE and -FU switch the compiler puts .ppu files in the source
-        // directories, which is Delphi compatible.
-        // See bug http://bugs.freepascal.org/view.php?id=15535
-        NewTargetDirectory:='';
+      if NewTargetDirectory<>'' then begin
+        if (CurOutputDir='') // no -FU
+        and (CompareFilenames(ChompPathDelim(NewTargetDirectory),ChompPathDelim(BaseDirectory))=0)
+        then begin
+          // if target file is in the base directory, do not use -FE switch
+          // Without -FE and -FU switch the compiler puts .ppu files in the source
+          // directories, which is Delphi compatible.
+          // See bug http://bugs.freepascal.org/view.php?id=15535
+          NewTargetDirectory:='';
+        end else if CompareFilenames(ChompPathDelim(CurOutputDir),ChompPathDelim(NewTargetDirectory))=0 then
+        begin
+          // -FU and -FE are the same: do not add -FE  ToDo: do not add -FU instead
+          NewTargetDirectory:='';
+        end;
       end;
       if NewTargetDirectory <> '' then
         switches := switches + ' '+PrepareCmdLineOption('-FE' + NewTargetDirectory);
