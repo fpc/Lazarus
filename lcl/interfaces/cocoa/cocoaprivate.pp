@@ -5306,7 +5306,6 @@ var
   lValid: Boolean = False;
   lValue: String;
   lFloat: Double;
-  iv    : Double;
 begin
   lValue := CocoaUtils.NSStringToString(stringValue());
   lValid := SysUtils.TryStrToFloat(lValue, lFloat);
