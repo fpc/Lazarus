@@ -1982,7 +1982,7 @@ function TBaseCompilerOptions.CreateTargetFilename: string;
     if (ExtractFileName(Result)='') then exit;
     Ext:=GetTargetFileExt;
     if Ext<>'' then begin
-      Result:=Result+Ext;
+      Result:=ChangeFileExt(Result,Ext);
       //debugln ( 'Filename result is ',Result,' in AppendDefaultExt' );
       exit;
     end;
