@@ -1,19 +1,20 @@
 object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
-  Left = 952
+  Left = 431
   Height = 344
-  Top = 271
+  Top = 310
   Width = 426
   Caption = 'Pas2JS Browser project options'
   ClientHeight = 344
   ClientWidth = 426
   OnCreate = FormCreate
   OnShow = FormShow
+  Position = poScreenCenter
   LCLVersion = '1.9.0.0'
   object CBCreateHTML: TCheckBox
     Left = 16
-    Height = 22
+    Height = 24
     Top = 8
-    Width = 162
+    Width = 160
     Caption = 'Create initial HTML page'
     Checked = True
     OnChange = CBCreateHTMLChange
@@ -25,8 +26,8 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
     AnchorSideTop.Control = CBRunOnReady
     AnchorSideTop.Side = asrBottom
     Left = 16
-    Height = 22
-    Top = 78
+    Height = 24
+    Top = 84
     Width = 198
     BorderSpacing.Top = 2
     Caption = 'Use Browser Application object'
@@ -37,17 +38,17 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
     AnchorSideTop.Control = CBUseBrowserApp
     AnchorSideTop.Side = asrBottom
     Left = 16
-    Height = 22
-    Top = 102
-    Width = 312
+    Height = 24
+    Top = 110
+    Width = 313
     BorderSpacing.Top = 2
     Caption = 'Use Browser Console unit to display writeln() output'
     TabOrder = 2
   end
   object BPHelpOptions: TButtonPanel
     Left = 6
-    Height = 42
-    Top = 296
+    Height = 36
+    Top = 302
     Width = 414
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -65,8 +66,8 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
     AnchorSideTop.Control = RBStartServerAt
     AnchorSideTop.Side = asrBottom
     Left = 80
-    Height = 27
-    Top = 174
+    Height = 23
+    Top = 188
     Width = 75
     BorderSpacing.Left = 32
     BorderSpacing.Top = 2
@@ -80,9 +81,9 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
     AnchorSideTop.Control = CBUseBrowserConsole
     AnchorSideTop.Side = asrBottom
     Left = 16
-    Height = 22
-    Top = 126
-    Width = 183
+    Height = 24
+    Top = 136
+    Width = 182
     BorderSpacing.Top = 2
     Caption = 'Project needs a HTTP Server'
     OnChange = CBUseHTTPServerChange
@@ -93,9 +94,9 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
     AnchorSideTop.Control = CBUseHTTPServer
     AnchorSideTop.Side = asrBottom
     Left = 48
-    Height = 22
-    Top = 150
-    Width = 167
+    Height = 24
+    Top = 162
+    Width = 168
     BorderSpacing.Left = 32
     BorderSpacing.Top = 2
     Caption = 'Start HTTP Server on port'
@@ -108,8 +109,8 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
     AnchorSideTop.Control = SEPort
     AnchorSideTop.Side = asrBottom
     Left = 48
-    Height = 22
-    Top = 203
+    Height = 24
+    Top = 213
     Width = 161
     BorderSpacing.Top = 2
     Caption = 'Use this URL to start app'
@@ -122,8 +123,8 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 80
-    Height = 29
-    Top = 227
+    Height = 27
+    Top = 239
     Width = 334
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 2
@@ -136,9 +137,9 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
     AnchorSideTop.Control = CBCreateHTML
     AnchorSideTop.Side = asrBottom
     Left = 16
-    Height = 22
-    Top = 32
-    Width = 140
+    Height = 24
+    Top = 34
+    Width = 137
     BorderSpacing.Top = 2
     Caption = 'Maintain HTML Page'
     TabOrder = 9
@@ -148,9 +149,9 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
     AnchorSideTop.Control = CBMaintainPage
     AnchorSideTop.Side = asrBottom
     Left = 16
-    Height = 22
-    Top = 54
-    Width = 288
+    Height = 24
+    Top = 58
+    Width = 287
     Caption = 'Run rtl when all page resources are fully loaded'
     TabOrder = 10
   end

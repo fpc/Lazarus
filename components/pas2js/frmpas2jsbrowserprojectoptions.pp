@@ -35,7 +35,6 @@ type
     procedure SetB(AIndex: Integer; AValue: Boolean);
     procedure SetServerPort(AValue: Word);
     procedure SetURL(AValue: String);
-
   public
     property CreateHTML : Boolean Index 0 read GetB Write SetB;
     property MaintainHTML : Boolean Index 1 read GetB Write SetB;
