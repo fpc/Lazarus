@@ -499,6 +499,7 @@ begin
   AProject.AddFile(MainFile,false);
   AProject.MainFileID:=0;
   SetDefaultWebCompileOptions(AProject.LazCompilerOptions);
+  AProject.LazCompilerOptions.TargetFilename:='project1';
   SetDefaultWebRunParams(AProject.RunParameters.GetOrCreate('Default'));
   AProject.MainFile.SetSourceText(CreateProjectSource,true);
   AProject.CustomData.Values[PJSProjectWebBrowser]:='1';

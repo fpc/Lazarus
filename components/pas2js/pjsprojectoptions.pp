@@ -108,7 +108,7 @@ begin
   CompOpts.CustomOptions:=CustomOpts;
 
   if PJSOptions.CompilerFilename='' then
-    Compiler:='$MakeExe(pas2js)'
+    Compiler:='$MakeExe(IDE,pas2js)'
   else
     Compiler:=PJSOptions.CompilerFilename;
   CompOpts.CompilerPath:=Compiler;
