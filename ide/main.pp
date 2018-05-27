@@ -1201,8 +1201,10 @@ var
   IsUpgrade: boolean;
   MsgResult: TModalResult;
   CurPrgName: String;
-  AltPrgName: String;
+  AltPrgName, PCP: String;
 begin
+  PCP:=AppendPathDelim(GetPrimaryConfigPath);
+
   with EnvironmentOptions do
   begin
     EnvOptsCfgExisted := FileExistsCached(GetDefaultConfigFilename);
@@ -1236,7 +1238,7 @@ begin
   // check if this PCP was used by another lazarus exe
   s := ExtractFileName(ParamStrUTF8(0));
   CurPrgName := NormalizeLazExe(AppendPathDelim(ProgramDirectory(False)) + s);
-  AltPrgName := NormalizeLazExe(AppendPathDelim(AppendPathDelim(GetPrimaryConfigPath) + 'bin') + s);
+  AltPrgName := NormalizeLazExe(AppendPathDelim(PCP + 'bin') + s);
   LastCalled := NormalizeLazExe(EnvironmentOptions.LastCalledByLazarusFullPath);
 
   if (LastCalled = '') then
@@ -1268,7 +1270,7 @@ begin
     debugln(['Hint: (lazarus) AltPrgName="',AltPrgName,'"']);
     MsgResult := IDEQuestionDialog(lisIncorrectConfigurationDirectoryFound,
         SimpleFormat(lisIDEConficurationFoundMayBelongToOtherLazarus,
-            [LineEnding, GetSecondConfDirWarning, GetPrimaryConfigPath,
+            [LineEnding, GetSecondConfDirWarning, ChompPathDelim(PCP),
              EnvironmentOptions.LastCalledByLazarusFullPath, CurPrgName]),
         mtWarning, [mrOK, lisUpdateInfo,
                     mrIgnore,
@@ -1300,7 +1302,7 @@ begin
     if OldVer='' then
       OldVer:=SimpleFormat(lisPrior, [GetLazarusVersionString]);
     s:=SimpleFormat(lisWelcomeToLazarusThereIsAlreadyAConfigurationFromVe,
-      [GetLazarusVersionString, LineEnding+LineEnding, OldVer, LineEnding, GetPrimaryConfigPath+LineEnding] );
+      [GetLazarusVersionString, LineEnding+LineEnding, OldVer, LineEnding, ChompPathDelim(PCP)+LineEnding] );
     if IsUpgrade then
       s+=lisTheOldConfigurationWillBeUpgraded
     else
@@ -1320,6 +1322,14 @@ begin
       Application.Terminate;
       exit;
     end;
+
+    // clear users/fallback ppu cache .lazarus/bin, units
+    if not DeleteDirectory(PCP+'bin',false) then
+      if ConsoleVerbosity>0 then
+        debugln(['Warning: (lazarus) unable to delete directory "'+PCP+'bin"']);
+    if not DeleteDirectory(PCP+'units',false) then
+      if ConsoleVerbosity>0 then
+        debugln(['Warning: (lazarus) unable to delete directory "'+PCP+'units"']);
   end;
 
   UpdateDefaultPasFileExt;
