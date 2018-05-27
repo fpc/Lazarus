@@ -1,10 +1,10 @@
 object Form1: TForm1
-  Left = 233
+  Left = 277
   Height = 384
-  Top = 275
+  Top = 89
   Width = 958
   Caption = 'Form1'
-  ClientHeight = 364
+  ClientHeight = 384
   ClientWidth = 958
   Menu = MainMenu1
   LCLVersion = '1.9.0.0'
@@ -103,8 +103,8 @@ object Form1: TForm1
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 2
-    ClientHeight = 27
-    ClientWidth = 300
+    ClientHeight = 25
+    ClientWidth = 296
     Columns = 2
     ItemIndex = 0
     Items.Strings = (
@@ -126,9 +126,9 @@ object Form1: TForm1
   end
   object SpeedButton1: TSpeedButton
     Left = 104
-    Height = 30
-    Top = 309
-    Width = 30
+    Height = 51
+    Top = 288
+    Width = 80
     Images = ImageList1
     ImageIndex = 3
     ImageWidth = 24
@@ -136,8 +136,8 @@ object Form1: TForm1
   object ImageList1: TImageList
     Scaled = True
     OnGetWidthForPPI = ImageList1GetWidthForPPI
-    Left = 680
-    Top = 296
+    left = 680
+    top = 296
     Bitmap = {
       4C69050000001000000010000000000000000000000078483671784836FE7848
       36FD784836FD784836FD784836FC784836FC794937E55EACB1084FE9FC2F53E9
@@ -1357,8 +1357,8 @@ object Form1: TForm1
   end
   object MainMenu1: TMainMenu
     Images = ImageList1
-    Left = 720
-    Top = 296
+    left = 816
+    top = 296
     object MenuItem1: TMenuItem
       Caption = 'MenuItem1'
       SubMenuImages = ImageList1

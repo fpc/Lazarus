@@ -6436,6 +6436,9 @@ resourcestring
   lisUnableToRun2 = 'Unable to run "%s"';
 
   lisSelectFrame = 'Select Frame';
+  lisDsgToggleShowingNonVisualComponents = 'Toggle showing non visual '
+    +'components';
+  lisDsgShowNonVisualComponents = 'Show non visual components';
 implementation
 
 end.

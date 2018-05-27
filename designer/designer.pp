@@ -82,6 +82,7 @@ type
     dfDuringPaintControl,
     dfShowEditorHints,
     dfShowComponentCaptions,
+    dfShowNonVisualComponents,
     dfDestroyingForm,
     dfNeedPainting
     );
@@ -194,6 +195,8 @@ type
     procedure HandlePopupMenu(Sender: TControl; var Message: TLMContextMenu);
     procedure GetMouseMsgShift(TheMessage: TLMMouse; out Shift: TShiftState;
                                out Button: TMouseButton);
+    function GetShowNonVisualComponents: boolean; override;
+    procedure SetShowNonVisualComponents(AValue: boolean); override;
 
     // procedures for working with components and persistents
     function GetDesignControl(AControl: TControl): TControl;
@@ -256,6 +259,7 @@ type
     procedure OnSelectAllMenuClick(Sender: TObject);
     procedure OnChangeClassMenuClick(Sender: TObject);
     procedure OnChangeParentMenuClick(Sender: TObject);
+    procedure OnShowNonVisualComponentsMenuClick(Sender: TObject);
     procedure OnSnapToGridOptionMenuClick(Sender: TObject);
     procedure OnShowOptionsMenuItemClick(Sender: TObject);
     procedure OnSnapToGuideLinesOptionMenuClick(Sender: TObject);
@@ -394,6 +398,7 @@ type
     property ShowEditorHints: boolean read GetShowEditorHints write SetShowEditorHints;
     property ShowComponentCaptions: boolean read GetShowComponentCaptions
                                            write SetShowComponentCaptions;
+    property ShowNonVisualComponents: boolean read GetShowNonVisualComponents write SetShowNonVisualComponents;
     property SnapToGrid: boolean read GetSnapToGrid write SetSnapToGrid;
     property TheFormEditor: TCustomFormEditor read FTheFormEditor write FTheFormEditor;
     property DefaultFormBounds: TRect read FDefaultFormBounds write SetDefaultFormBounds;
@@ -428,6 +433,7 @@ var
   DesignerMenuSaveAsXML: TIDEMenuCommand;
   DesignerMenuCenterForm: TIDEMenuCommand;
 
+  DesignerMenuShowNonVisualComponents: TIDEMenuCommand;
   DesignerMenuSnapToGridOption: TIDEMenuCommand;
   DesignerMenuSnapToGuideLinesOption: TIDEMenuCommand;
   DesignerMenuShowOptions: TIDEMenuCommand;
@@ -456,6 +462,7 @@ type
     MinClass: TComponentClass;
     IgnoreHidden: boolean;
     OnlyNonVisual: boolean;
+    IgnoreNonVisual: boolean;
     Mediator: TDesignerMediator;
     Root: TComponent;
     procedure Gather(Child: TComponent);
@@ -497,9 +504,12 @@ begin
   else
     IsNonVisual := DesignerProcs.ComponentIsNonVisual(Child);
 
-  if IsNonVisual and Assigned(IDEComponentsMaster) then
-    if not IDEComponentsMaster.DrawNonVisualComponents(Root) then
+  if IsNonVisual then begin
+    if IgnoreNonVisual then exit;
+    if Assigned(IDEComponentsMaster)
+    and not IDEComponentsMaster.DrawNonVisualComponents(Root) then
       Exit;
+  end;
 
   if Child.InheritsFrom(MinClass) and (IsNonVisual or not OnlyNonVisual) then
   begin
@@ -624,6 +634,10 @@ begin
 
   // register options section
   DesignerMenuSectionOptions:=RegisterIDEMenuSection(DesignerMenuRoot,'Options section');
+    DesignerMenuShowNonVisualComponents:=RegisterIDEMenuCommand(DesignerMenuSectionMisc,
+                                                'Show non visual components',
+                                                  lisDsgShowNonVisualComponents);
+    DesignerMenuShowNonVisualComponents.ShowAlwaysCheckable:=true;
     DesignerMenuSnapToGridOption:=RegisterIDEMenuCommand(DesignerMenuSectionOptions,
                                             'Snap to grid',fdmSnapToGridOption);
     DesignerMenuSnapToGuideLinesOption:=RegisterIDEMenuCommand(DesignerMenuSectionOptions,
@@ -658,7 +672,7 @@ begin
     FLookupRoot := FForm;
 
   Selection := AControlSelection;
-  FFlags := [];
+  FFlags := [dfShowNonVisualComponents];
   FGridColor := clGray;
 
   FHintTimer := TTimer.Create(nil);
@@ -1735,6 +1749,7 @@ begin
     ecDesignerMoveToBack   : DoChangeZOrder(1);
     ecDesignerForwardOne   : DoChangeZOrder(2);
     ecDesignerBackOne      : DoChangeZOrder(3);
+    ecDesignerToggleNonVisComps: ShowNonVisualComponents:=not ShowNonVisualComponents;
   else
     Exit;
   end;
@@ -3318,6 +3333,11 @@ begin
     OnChangeParent(Self);
 end;
 
+procedure TDesigner.OnShowNonVisualComponentsMenuClick(Sender: TObject);
+begin
+  ShowNonVisualComponents:=not ShowNonVisualComponents;
+end;
+
 procedure TDesigner.OnSnapToGridOptionMenuClick(Sender: TObject);
 begin
   EnvironmentOptions.SnapToGrid := not EnvironmentOptions.SnapToGrid;
@@ -3399,6 +3419,11 @@ begin
   Result:=EnvironmentOptions.ShowGrid;
 end;
 
+function TDesigner.GetShowNonVisualComponents: boolean;
+begin
+  Result:=dfShowNonVisualComponents in FFlags;
+end;
+
 function TDesigner.GetGridSizeX: integer;
 begin
   Result:=EnvironmentOptions.GridSizeX;
@@ -3431,6 +3456,38 @@ begin
   if ShowGrid=AValue then exit;
   EnvironmentOptions.ShowGrid:=AValue;
   Form.Invalidate;
+end;
+
+procedure TDesigner.SetShowNonVisualComponents(AValue: boolean);
+var
+  i: Integer;
+  SelControl: TSelectedControl;
+  Changed: Boolean;
+begin
+  if ShowNonVisualComponents=AValue then exit;
+  if AValue then begin
+    Include(FFlags,dfShowNonVisualComponents);
+    Form.Invalidate;
+  end else begin
+    Exclude(FFlags,dfShowNonVisualComponents);
+    try
+      Changed:=false;
+      for i:=Selection.Count-1 downto 0 do begin
+        SelControl:=Selection[i];
+        if not SelControl.IsNonVisualComponent then continue;
+        if not Changed then begin
+          Selection.BeginUpdate;
+          Changed:=true;
+        end;
+        Selection.Delete(i);
+      end;
+    finally
+      if Changed then begin
+        Selection.EndUpdate;
+        Form.Invalidate;
+      end;
+    end;
+  end;
 end;
 
 procedure TDesigner.SetGridSizeX(const AValue: integer);
@@ -3610,12 +3667,12 @@ end;
 
 procedure TDesigner.DrawNonVisualComponents(aDDC: TDesignerDeviceContext);
 begin
+  if not ShowNonVisualComponents then exit;
   FSurface := nil;
   FDDC := aDDC;
   DrawNonVisualComponent(FLookupRoot);
   FDDC := nil;
-  if FSurface <> nil then
-    FSurface.Free;
+  FreeAndNil(FSurface);
 end;
 
 procedure TDesigner.DrawDesignerItems(OnlyIfNeeded: boolean);
@@ -3760,6 +3817,7 @@ function TDesigner.NonVisualComponentAtPos(X, Y: integer): TComponent;
 var
   s: TComponentSearch;
 begin
+  // Note: Do not check ShowNonVisualComponents
   s := TComponentSearch.Create(nil);
   try
     s.MinClass := TComponent;
@@ -3796,7 +3854,8 @@ begin
 end;
 
 function TDesigner.ComponentClassAtPos(const AClass: TComponentClass;
-  const APos: TPoint; const UseRootAsDefault, IgnoreHidden: boolean): TComponent;
+  const APos: TPoint; const UseRootAsDefault, IgnoreHidden: boolean
+  ): TComponent;
 var
   s: TComponentSearch;
   MediatorFlags: TDMCompAtPosFlags;
@@ -3815,6 +3874,7 @@ begin
       s.AtPos := APos;
       s.MinClass := AClass;
       s.IgnoreHidden := IgnoreHidden;
+      s.IgnoreNonVisual := not ShowNonVisualComponents;
       s.Search(FLookupRoot);
       s.Mediator := Mediator;
       Result := s.Best;
@@ -3921,6 +3981,8 @@ begin
   DesignerMenuSaveAsXML.OnClick:=@OnSaveAsXMLMenuClick;
   DesignerMenuCenterForm.OnClick:=@OnCenterFormMenuClick;
 
+  DesignerMenuShowNonVisualComponents.OnClick:=@OnShowNonVisualComponentsMenuClick;
+  DesignerMenuShowNonVisualComponents.ShowAlwaysCheckable:=true;
   DesignerMenuSnapToGridOption.OnClick:=@OnSnapToGridOptionMenuClick;
   DesignerMenuSnapToGridOption.ShowAlwaysCheckable:=true;
   DesignerMenuSnapToGuideLinesOption.OnClick:=@OnSnapToGuideLinesOptionMenuClick;
@@ -3991,6 +4053,7 @@ begin
   DesignerMenuViewLFM.Enabled := not UnitIsVirtual;
   DesignerMenuChangeParent.Enabled := HasChangeParentCandidates;
   DesignerMenuSnapToGridOption.Checked := EnvironmentOptions.SnapToGrid;
+  DesignerMenuShowNonVisualComponents.Checked := ShowNonVisualComponents;
   DesignerMenuSnapToGuideLinesOption.Checked := EnvironmentOptions.SnapToGuideLines;
 end;
 

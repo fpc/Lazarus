@@ -357,6 +357,7 @@ const
   ecDesignerMoveToBack      = ecFirstLazarus + 1005;
   ecDesignerForwardOne      = ecFirstLazarus + 1006;
   ecDesignerBackOne         = ecFirstLazarus + 1007;
+  ecDesignerToggleNonVisComps= ecFirstLazarus + 1008;
 
 
   (* SynEdit Plugins
@@ -1914,7 +1915,7 @@ begin
 end;
 
 const
-  IDEEditorCommandStrs: array[0..316] of TIdentMapEntry = (
+  IDEEditorCommandStrs: array[0..317] of TIdentMapEntry = (
   // search
     (Value: ecFind;                                   Name: 'ecFind'),
     (Value: ecFindAgain;                              Name: 'ecFindAgain'),
@@ -2218,6 +2219,7 @@ const
     (Value: ecDesignerMoveToBack;                     Name: 'ecDesignerMoveToBack'),
     (Value: ecDesignerForwardOne;                     Name: 'ecDesignerForwardOne'),
     (Value: ecDesignerBackOne;                        Name: 'ecDesignerBackOne'),
+    (Value: ecDesignerToggleNonVisComps;              Name: 'ecDesignerToggleNonVisComps'),
 
   // TSynPluginTemplateEdit - In cell
     (Value: ecIdePTmplEdNextCell;                     Name: 'ecIdePTmplEdNextCell'),

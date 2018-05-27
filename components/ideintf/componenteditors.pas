@@ -64,6 +64,8 @@ type
     function GetHandlerCount(HookType: TComponentEditorDesignerHookType): integer;
     procedure AddHandler(HookType: TComponentEditorDesignerHookType; const Handler: TMethod);
     procedure RemoveHandler(HookType: TComponentEditorDesignerHookType; const Handler: TMethod);
+    function GetShowNonVisualComponents: boolean; virtual; abstract;
+    procedure SetShowNonVisualComponents(AValue: boolean); virtual; abstract;
   public
     FUndoState: TUndoCompState;
 
@@ -101,6 +103,7 @@ type
       const NewComponentClass: TComponentClass); virtual; abstract;
 
     procedure DrawDesignerItems(OnlyIfNeeded: boolean); virtual; abstract;
+    property ShowNonVisualComponents: boolean read GetShowNonVisualComponents write SetShowNonVisualComponents;
     function CreateUniqueComponentName(const AClassName: string
                                        ): string; virtual; abstract;
     property PropertyEditorHook: TPropertyEditorHook read GetPropertyEditorHook;

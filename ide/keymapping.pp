@@ -1381,6 +1381,7 @@ begin
   ecDesignerMoveToBack:  SetSingle(VK_NEXT,[ssShift]);
   ecDesignerForwardOne:  SetSingle(VK_PRIOR,[XCtrl]);
   ecDesignerBackOne:     SetSingle(VK_NEXT,[XCtrl]);
+  ecDesignerToggleNonVisComps: SetSingle(VK_UNKNOWN,[]);
 
   // macro
   ecSynMacroRecord:      SetSingle(VK_R,[ssShift, XCtrl]);
@@ -1820,6 +1821,7 @@ begin
   ecDesignerMoveToBack:  SetSingle(VK_NEXT,[ssShift]);
   ecDesignerForwardOne:  SetSingle(VK_PRIOR,[ssCtrl]);
   ecDesignerBackOne:     SetSingle(VK_NEXT,[ssCtrl]);
+  ecDesignerToggleNonVisComps: SetSingle(VK_UNKNOWN,[]);
 
   // macro
   ecSynMacroRecord:      SetSingle(VK_R,[ssShift, ssCtrl]);
@@ -2446,6 +2448,7 @@ begin
   ecDesignerMoveToBack:  SetSingle(VK_NEXT,[ssShift]);
   ecDesignerForwardOne:  SetSingle(VK_PRIOR,[ssMeta]);
   ecDesignerBackOne:     SetSingle(VK_NEXT,[ssMeta]);
+  ecDesignerToggleNonVisComps: SetSingle(VK_UNKNOWN,[]);
 
   // macro
   ecSynMacroRecord:      SetSingle(VK_R,[ssShift, ssCtrl]);
@@ -3162,6 +3165,8 @@ begin
   AddDefault(C, 'Move component to back', lisDsgOrderMoveToBack, ecDesignerMoveToBack);
   AddDefault(C, 'Move component one forward', lisDsgOrderForwardOne, ecDesignerForwardOne);
   AddDefault(C, 'Move component one back', lisDsgOrderBackOne, ecDesignerBackOne);
+  AddDefault(C, 'Toggle showing non visual components',
+    lisDsgToggleShowingNonVisualComponents, ecDesignerToggleNonVisComps);
 
   // object inspector - without menu items in the IDE bar (at least no direct)
   C:=Categories[AddCategory('Object Inspector',lisKeyCatObjInspector,IDECmdScopeObjectInspectorOnly)];

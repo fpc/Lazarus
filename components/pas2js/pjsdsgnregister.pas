@@ -491,6 +491,7 @@ function TProjectPas2JSWebApp.InitProject(AProject: TLazProject): TModalResult;
 var
   MainFile,
   HTMLFile : TLazProjectFile;
+  CompOpts: TLazCompilerOptions;
 
 begin
   Result:=inherited InitProject(AProject);
@@ -498,8 +499,9 @@ begin
   MainFile.IsPartOfProject:=true;
   AProject.AddFile(MainFile,false);
   AProject.MainFileID:=0;
-  SetDefaultWebCompileOptions(AProject.LazCompilerOptions);
-  AProject.LazCompilerOptions.TargetFilename:='project1';
+  CompOpts:=AProject.LazCompilerOptions;
+  SetDefaultWebCompileOptions(CompOpts);
+  CompOpts.TargetFilename:='project1';
   SetDefaultWebRunParams(AProject.RunParameters.GetOrCreate('Default'));
   AProject.MainFile.SetSourceText(CreateProjectSource,true);
   AProject.CustomData.Values[PJSProjectWebBrowser]:='1';
