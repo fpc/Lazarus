@@ -516,11 +516,11 @@ begin
     AProject.CustomData.Remove(PJSProjectURL);
     end;
   With AProject.CustomData do
-     begin
-     DebugLN([PJSProjectWebBrowser,': ',Values[PJSProjectWebBrowser]]);
-     DebugLN([PJSProjectPort,': ',Values[PJSProjectPort]]);
-     DebugLN([PJSProjectURL,': ',Values[PJSProjectURL]]);
-     end;
+    begin
+    DebugLn([PJSProjectWebBrowser,': ',Values[PJSProjectWebBrowser]]);
+    DebugLn([PJSProjectPort,': ',Values[PJSProjectPort]]);
+    DebugLn([PJSProjectURL,': ',Values[PJSProjectURL]]);
+    end;
   // create html source
   if baoCreateHtml in Options then
     begin
