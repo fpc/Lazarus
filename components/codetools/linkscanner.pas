@@ -219,8 +219,7 @@ type
     cmsISOLike_Mod,        { mod operation as it is required by an iso compatible compiler }
     cmsPrefixedAttributes, { allow Delphi attributes, disable FPC [] proc modifier }
     cmsExternalClass,      { pas2js: allow  class external [pkgname] name [symbol] }
-    cmsIgnoreAttributes,   { pas2js: ignore attributes }
-    cmsIgnoreInterfaces    { pas2js: ignore class interfaces }
+    cmsIgnoreAttributes    { pas2js: ignore attributes }
     );
   TCompilerModeSwitches = set of TCompilerModeSwitch;
 const
