@@ -1975,20 +1975,20 @@ end;
 ------------------------------------------------------------------------------}
 function TBaseCompilerOptions.CreateTargetFilename: string;
 
-  procedure AppendDefaultExt;
+  procedure AppendDefaultExt(var aFilename: string);
   var
     Ext: String;
   begin
-    if (ExtractFileName(Result)='') then exit;
+    if (ExtractFileName(aFilename)='') then exit;
     Ext:=GetTargetFileExt;
     if Ext<>'' then begin
-      Result:=ChangeFileExt(Result,Ext);
-      //debugln ( 'Filename result is ',Result,' in AppendDefaultExt' );
+      aFilename:=ChangeFileExt(aFilename,Ext);
+      //debugln ( 'Filename is ',AFilename,' in AppendDefaultExt' );
       exit;
     end;
   end;
 
-  procedure PrependDefaultType;
+  procedure PrependDefaultType(var AFilename: string);
   var
     Prefix: String;
     FileName: String;
@@ -1996,24 +1996,24 @@ function TBaseCompilerOptions.CreateTargetFilename: string;
     CurTargetOS: String;
     aSrcOS: String;
   begin
-    //debugln ( 'Filename result is ',Result, ' in PrependDefaultType' );
-    if (ExtractFileName(Result)='')
-    or (CompareText(copy(ExtractFileName(Result),1,3), 'lib') = 0) then exit;
+    //debugln ( 'Filename AFilename is ',AFilename, ' in PrependDefaultType' );
+    if (ExtractFileName(AFilename)='')
+    or (CompareText(copy(ExtractFileName(AFilename),1,3), 'lib') = 0) then exit;
     Prefix:=GetTargetFilePrefix;
     if Prefix<>'' then begin
-      FileName := ExtractFileName(Result);
-      PathName := ExtractFilePath(Result);
+      FileName := ExtractFileName(AFilename);
+      PathName := ExtractFilePath(AFilename);
       //debugln ( 'Filename is ',FileName, ' in PrependDefaultType' );
       CurTargetOS:=TargetOS;
       if CurTargetOS='' then CurTargetOS:=GetCompiledTargetOS;
       aSrcOS:=GetDefaultSrcOSForTargetOS(CurTargetOS);
       if (CompareText(aSrcOS, 'unix') = 0)
       then begin
-        Result:=PathName+Prefix+UTF8LowerCase(FileName);
+        AFilename:=PathName+Prefix+UTF8LowerCase(FileName);
       end else begin
-        Result:=PathName+Prefix+FileName;
+        AFilename:=PathName+Prefix+FileName;
       end;
-      //debugln ( 'Result is ',Result, ' in PrependDefaultType' );
+      //debugln ( 'AFilename is ',AFilename, ' in PrependDefaultType' );
       exit;
     end;
   end;
@@ -2063,8 +2063,8 @@ begin
   end;
   Result:=TrimFilename(Result);
   if TargetFilenameApplyConventions then begin
-    AppendDefaultExt;
-    PrependDefaultType;
+    AppendDefaultExt(Result);
+    PrependDefaultType(Result);
   end;
 end;
 
@@ -2588,8 +2588,8 @@ function TBaseCompilerOptions.MakeOptionsString(
 var
   switches, tempsw, quietsw, t: String;
   InhLinkerOpts: String;
-  NewTargetFilename: String;
-  NewTargetDirectory: String;
+  CurTargetFilename: String;
+  CurTargetDirectory: String;
   CurIncludePath: String;
   CurLibraryPath: String;
   CurUnitPath: String;
@@ -3192,56 +3192,53 @@ begin
       if not (ccloAbsolutePaths in Flags) then
         CurOutputDir:=CreateRelativePath(CurOutputDir,BaseDirectory,true);
     end;
-    if CurOutputDir<>'' then
-      // ToDo: do not pass -FU if -FE is the same
-      switches := switches + ' '+PrepareCmdLineOption('-FU'+CurOutputDir);
   end;
 
   // append -o Option if neccessary
   {   * -o to define the target file name.
+      * -FU if the unit output directory is not empty
       * -FE if the target file name is not in the project directory (where the lpi file is)
-      * -FU if the unit output directory is not empty }
+       }
   CurMainSrcFile:=GetDefaultMainSourceFileName;
+  CurTargetFilename:='';
+  CurTargetDirectory:='';
   //DebugLn(['TBaseCompilerOptions.MakeOptionsString ',DbgSName(Self),' ',ccloDoNotAppendOutFileOption in Flags,' TargetFilename="',TargetFilename,'" CurMainSrcFile="',CurMainSrcFile,'" CurOutputDir="',CurOutputDir,'"']);
   if (not (ccloDoNotAppendOutFileOption in Flags))
     and (not (ccloNoMacroParams in Flags))
     and ((TargetFilename<>'') or (CurMainSrcFile<>'') or (CurOutputDir<>'')) then
   begin
-    NewTargetFilename := CreateTargetFilename;
-    if (NewTargetFilename<>'') then
+    CurTargetFilename := CreateTargetFilename;
+    if CurTargetFilename<>'' then
     begin
-      if not (ccloAbsolutePaths in Flags) then
-        NewTargetFilename := CreateRelativePath(NewTargetFilename, BaseDirectory);
-      NewTargetDirectory := ExtractFilePath(NewTargetFilename);
-      if NewTargetDirectory<>'' then begin
+      CurTargetDirectory := ExtractFilePath(CurTargetFilename);
+      if CurTargetDirectory<>'' then begin
         if (CurOutputDir='') // no -FU
-        and (CompareFilenames(ChompPathDelim(NewTargetDirectory),ChompPathDelim(BaseDirectory))=0)
+        and (CompareFilenames(ChompPathDelim(CurTargetDirectory),ChompPathDelim(BaseDirectory))=0)
         then begin
           // if target file is in the base directory, do not use -FE switch
           // Without -FE and -FU switch the compiler puts .ppu files in the source
           // directories, which is Delphi compatible.
           // See bug http://bugs.freepascal.org/view.php?id=15535
-          NewTargetDirectory:='';
-        end else if CompareFilenames(ChompPathDelim(CurOutputDir),ChompPathDelim(NewTargetDirectory))=0 then
+          CurTargetDirectory:='';
+        end else if CompareFilenames(ChompPathDelim(CurOutputDir),ChompPathDelim(CurTargetDirectory))=0 then
         begin
-          // -FU and -FE are the same: do not add -FE  ToDo: do not add -FU instead
-          NewTargetDirectory:='';
+          // -FU and -FE are the same: do not add -FU
+          CurOutputDir:='';
         end;
       end;
-      if NewTargetDirectory <> '' then
-        switches := switches + ' '+PrepareCmdLineOption('-FE' + NewTargetDirectory);
-      NewTargetFileName := ExtractFileName(NewTargetFilename);
-      if (NewTargetFilename<>'') then
-      begin
-        if (not TargetFilenameApplyConventions)
-        or (NewTargetFilename<>ChangeFileExt(ExtractFileName(CurMainSrcFile),GetTargetFileExt))
-        then begin
-          // custom target => pass -o
-          switches := switches + ' '+PrepareCmdLineOption('-o' + NewTargetFileName);
-        end;
-      end;
+
+      if (not (ccloAbsolutePaths in Flags)) and FilenameIsAbsolute(CurTargetFilename) then
+        CurTargetFilename := CreateRelativePath(CurTargetFilename, BaseDirectory);
     end;
   end;
+
+  if CurOutputDir<>'' then
+    switches := switches + ' '+PrepareCmdLineOption('-FU' + CurOutputDir);
+  if CurTargetDirectory <> '' then
+    switches := switches + ' '+PrepareCmdLineOption('-FE' + CurTargetDirectory);
+  if (CurTargetFilename<>'') and (TargetFilename<>'') then
+    // custom target => pass -o
+    switches := switches + ' '+PrepareCmdLineOption('-o' + CurTargetFilename);
 
   // append custom options as last, so they can override
   if not (ccloNoMacroParams in Flags) then
