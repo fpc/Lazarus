@@ -75,7 +75,7 @@ type
     FOnChangesList: TStringList;
 
     procedure DoPageCtrlChanged(Sender: TObject);
-    procedure DoPageCtrlChanging(Sender: TObject; var AllowChange: Boolean);
+    procedure DoPageCtrlChanging(Sender: TObject; var {%H-}AllowChange: Boolean);
   protected
     property  Form: TForm read FForm;
     property  PageControl: TTestPage read FPageControl;

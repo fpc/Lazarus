@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="10"/>
+    <Version Value="11"/>
     <PathDelim Value="\"/>
     <General>
       <Flags>
@@ -22,9 +22,16 @@
     </PublishOptions>
     <RunParams>
       <local>
-        <FormatVersion Value="1"/>
         <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
+      <FormatVersion Value="2"/>
+      <Modes Count="1">
+        <Mode0 Name="default">
+          <local>
+            <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
+          </local>
+        </Mode0>
+      </Modes>
     </RunParams>
     <RequiredPackages Count="6">
       <Item1>
@@ -54,6 +61,7 @@
       <Unit1>
         <Filename Value="testlpi.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="TestLpi"/>
       </Unit1>
       <Unit2>
         <Filename Value="testglobals.pas"/>
@@ -74,6 +82,7 @@
       <Unit6>
         <Filename Value="bugtestcase.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="BugTestCase"/>
       </Unit6>
       <Unit7>
         <Filename Value="lcltests\testpen.pas"/>

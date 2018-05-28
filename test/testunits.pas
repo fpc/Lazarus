@@ -35,7 +35,7 @@ uses
   testpen, TestPreferredSize, TestTextStrings
   {$IFNDEF NoSemiAutomatedTests}
   // semi-automatic tests
-  , testpagecontrol, semiautotest, idesemiautotests, lclsemiautotests
+  , testpagecontrol, idesemiautotests, lclsemiautotests
   {$endif}
   ;
 
