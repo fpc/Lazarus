@@ -125,7 +125,7 @@ var
   TimeStep: Integer;
   X, Y: Integer;
   Start: TPoint;
-  S: LongWord;
+  S: QWord;
 begin
   Start := Mouse.CursorPos;
   
@@ -133,8 +133,9 @@ begin
   begin
     TimeStep := Min(Interval, Duration);
 
-    S := GetTickCount;
-    while GetTickCount - S < TimeStep do Application.ProcessMessages;
+    S := GetTickCount64;
+    while GetTickCount64 - S < TimeStep do
+      Application.ProcessMessages;
     
     X := Start.X + ((ScreenX - Start.X) * TimeStep) div Duration;
     Y := Start.Y + ((ScreenY - Start.Y) * TimeStep) div Duration;
