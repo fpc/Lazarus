@@ -1267,7 +1267,7 @@ begin
     Add('EXCLUDE'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('EXIT'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('FINALIZE'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('GET_FRAME'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('GET_FRAME'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('HI'          ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('HIGH'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('INC'         ,{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -1291,6 +1291,7 @@ begin
     Add('TYPEOF'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('WRITE'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('WRITELN'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('WRITESTR'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
   WordIsTermOperator:=TKeyWordFunctionList.Create('WordIsTermOperator');
