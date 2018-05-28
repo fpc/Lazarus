@@ -1036,7 +1036,7 @@ resourcestring
   lisTheOutputDirectoryIsMissing = 'The output directory "%s" is missing.';
   lisCreateIt = 'Create it';
   lisInvalidFileName = 'Invalid file name';
-  lisTheTargetFileNameIsADirectory = 'The target file name is a directory';
+  lisTheTargetFileNameIsADirectory = 'The target file name is a directory.';
 
   // file dialogs
   lisOpenFile = 'Open File';
@@ -1464,7 +1464,7 @@ resourcestring
   dlgRuberbandCreationColor = 'Rubberband Creation';
   dlgRubberbandSelectsGrandChildren = 'Select grandchildren';
   dlgSelectAllChildControls = 'Select all child controls together with their parent.';
-  dlgShowCaptionsOfNonVisuals = 'Show captions of non-visual components';
+  dlgShowCaptionsOfNonVisuals = 'Show captions of nonvisual components';
   dlgDrawComponentsNameBelowIt = 'Draw the component''s name below it.';
   dlgShowDesignerHints = 'Show designer hints';
   dlgShowDesignerHintsHint = 'Hint shows control''s position or size while moving or resizing it.';
@@ -3708,7 +3708,7 @@ resourcestring
   lisCodeToolsDefsnoneSelected = 'none selected';
   lisCodeToolsDefsInvalidParent = 'Invalid parent';
   lisACanNotHoldTControlsYouCanOnlyPutNonVisualComponen = 'A %s cannot hold '
-    +'TControls.%sYou can only put non visual components on it.';
+    +'TControls.%sYou can only put nonvisual components on it.';
   lisUpdateReferences = 'Update references?';
   lisTheUnitIsUsedByOtherFilesUpdateReferencesAutomatic = 'The unit %s is '
     +'used by other files.%sUpdate references automatically?';
@@ -6436,9 +6436,9 @@ resourcestring
   lisUnableToRun2 = 'Unable to run "%s"';
 
   lisSelectFrame = 'Select Frame';
-  lisDsgToggleShowingNonVisualComponents = 'Toggle showing non visual '
+  lisDsgToggleShowingNonVisualComponents = 'Toggle showing nonvisual '
     +'components';
-  lisDsgShowNonVisualComponents = 'Show non visual components';
+  lisDsgShowNonVisualComponents = 'Show nonvisual components';
 implementation
 
 end.
