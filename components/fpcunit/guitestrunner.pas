@@ -679,7 +679,7 @@ var
   i: integer;
 begin
   rootNode.StateIndex := Ord(tsChecked);
-  for i := 0 to ASuite.{$IF FPC_FULLVERSION<30300}CountTestCases{$ELSE}ChildTestCount{$ENDIF} - 1 do
+  for i := 0 to ASuite.ChildTestCount - 1 do
   begin
     node := TestTree.Items.AddChildObject(rootNode, ASuite.Test[i].TestName, ASuite.Test[i]);
     if ASuite.Test[i] is TTestSuite then
