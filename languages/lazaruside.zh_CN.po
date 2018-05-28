@@ -3510,7 +3510,7 @@ msgid "Show all units"
 msgstr "显示所有单元"
 
 #: lazarusidestrconsts.dlgshowcaptionsofnonvisuals
-msgid "Show captions of non-visual components"
+msgid "Show captions of nonvisual components"
 msgstr ""
 
 #: lazarusidestrconsts.dlgshowcompiledprocedures
@@ -4389,7 +4389,9 @@ msgid "Official:"
 msgstr "官方网站:"
 
 #: lazarusidestrconsts.lisacannotholdtcontrolsyoucanonlyputnonvisualcomponen
-msgid "A %s cannot hold TControls.%sYou can only put non visual components on it."
+#, fuzzy
+#| msgid "A %s cannot hold TControls.%sYou can only put non visual components on it."
+msgid "A %s cannot hold TControls.%sYou can only put nonvisual components on it."
 msgstr "%s不能包含TControls.%s你只能在上面放置非可见组件. "
 
 #: lazarusidestrconsts.lisacknowledgements
@@ -8677,6 +8679,14 @@ msgstr "从剪切板粘贴组件"
 msgid "Select parent component"
 msgstr "选择父组件"
 
+#: lazarusidestrconsts.lisdsgshownonvisualcomponents
+msgid "Show nonvisual components"
+msgstr ""
+
+#: lazarusidestrconsts.lisdsgtoggleshowingnonvisualcomponents
+msgid "Toggle showing nonvisual components"
+msgstr ""
+
 #: lazarusidestrconsts.lisduplicate
 msgid "Duplicate"
 msgstr ""
@@ -9464,6 +9474,10 @@ msgstr "设置默认"
 
 #: lazarusidestrconsts.lisfilefilterstitle
 msgid "These are file filters that will appear in all File Open dialogs"
+msgstr ""
+
+#: lazarusidestrconsts.lisfilefound
+msgid "File found"
 msgstr ""
 
 #: lazarusidestrconsts.lisfilehaschangedsave
@@ -10654,6 +10668,10 @@ msgstr "无效的表达式:%s%s%s%s"
 #: lazarusidestrconsts.lisinvalidexpressionhintthemakeresourcestringfunction
 msgid "Invalid expression.%sHint: The \"Make Resourcestring\" function expects a string constant in a single file. Please select the expression and try again."
 msgstr "无效的表达式.%s提示: 编译资源功能要求在一个独立的文件中包含连续的字符串."
+
+#: lazarusidestrconsts.lisinvalidfilename
+msgid "Invalid file name"
+msgstr ""
 
 #: lazarusidestrconsts.lisinvalidfilter
 msgid "Invalid filter"
@@ -18312,6 +18330,14 @@ msgstr "这些单元没有找到:"
 
 #: lazarusidestrconsts.listhesourcesofthefreepascalpackagesarerequiredforbro
 msgid "The sources of the Free Pascal packages are required for browsing and code completion. For example it has the file \"%s\"."
+msgstr ""
+
+#: lazarusidestrconsts.listhetargetdirectoryisafile
+msgid "The target directory is a file:%s"
+msgstr ""
+
+#: lazarusidestrconsts.listhetargetfilenameisadirectory
+msgid "The target file name is a directory."
 msgstr ""
 
 #: lazarusidestrconsts.listhetargetisnotwritable

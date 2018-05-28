@@ -3480,7 +3480,9 @@ msgid "Show all units"
 msgstr "Minden unit megjelenítése"
 
 #: lazarusidestrconsts.dlgshowcaptionsofnonvisuals
-msgid "Show captions of non-visual components"
+#, fuzzy
+#| msgid "Show captions of non-visual components"
+msgid "Show captions of nonvisual components"
 msgstr "Nem látható komponensek feliratának megjelenítése"
 
 #: lazarusidestrconsts.dlgshowcompiledprocedures
@@ -4322,7 +4324,9 @@ msgid "Official:"
 msgstr "Hivatalos:"
 
 #: lazarusidestrconsts.lisacannotholdtcontrolsyoucanonlyputnonvisualcomponen
-msgid "A %s cannot hold TControls.%sYou can only put non visual components on it."
+#, fuzzy
+#| msgid "A %s cannot hold TControls.%sYou can only put non visual components on it."
+msgid "A %s cannot hold TControls.%sYou can only put nonvisual components on it."
 msgstr "Egy %s nem tartalmazhat TControl-okat.%sCsak nem-vizuális elemek helyezhetők el rajta."
 
 #: lazarusidestrconsts.lisacknowledgements
@@ -8567,6 +8571,14 @@ msgstr "Kijelölt komponensek beillesztése a vágólapról"
 msgid "Select parent component"
 msgstr "Szülő komponens kijelölése"
 
+#: lazarusidestrconsts.lisdsgshownonvisualcomponents
+msgid "Show nonvisual components"
+msgstr ""
+
+#: lazarusidestrconsts.lisdsgtoggleshowingnonvisualcomponents
+msgid "Toggle showing nonvisual components"
+msgstr ""
+
 #: lazarusidestrconsts.lisduplicate
 msgid "Duplicate"
 msgstr "Ismétlés"
@@ -9345,6 +9357,10 @@ msgstr "Alapértelmezések beállítása"
 #: lazarusidestrconsts.lisfilefilterstitle
 msgid "These are file filters that will appear in all File Open dialogs"
 msgstr "E fájlszűrők jelennek majd meg a Fájl megnyitása párbeszédben"
+
+#: lazarusidestrconsts.lisfilefound
+msgid "File found"
+msgstr ""
 
 #: lazarusidestrconsts.lisfilehaschangedsave
 msgid "File \"%s\" has changed. Save?"
@@ -10561,6 +10577,10 @@ msgstr "Érvénytelen kifejezés:%s%s%s%s"
 #: lazarusidestrconsts.lisinvalidexpressionhintthemakeresourcestringfunction
 msgid "Invalid expression.%sHint: The \"Make Resourcestring\" function expects a string constant in a single file. Please select the expression and try again."
 msgstr "Érvénytelen kifejezés.%sTipp: A \"ResourceString létrehozása\" művelethez egy karakterlánc konstansra van szükség egyetlen fájlban. Válassza ki a kifejezést és próbálja újra!"
+
+#: lazarusidestrconsts.lisinvalidfilename
+msgid "Invalid file name"
+msgstr ""
 
 #: lazarusidestrconsts.lisinvalidfilter
 msgid "Invalid filter"
@@ -17998,6 +18018,14 @@ msgstr "E unit-ok nem találhatók:"
 #: lazarusidestrconsts.listhesourcesofthefreepascalpackagesarerequiredforbro
 msgid "The sources of the Free Pascal packages are required for browsing and code completion. For example it has the file \"%s\"."
 msgstr "A Free Pascal csomag forrásaira szükség van a böngészéshez és a kódkiegészítéshez. Az tartalmazza például a(z) \"%s\" fájlt."
+
+#: lazarusidestrconsts.listhetargetdirectoryisafile
+msgid "The target directory is a file:%s"
+msgstr ""
+
+#: lazarusidestrconsts.listhetargetfilenameisadirectory
+msgid "The target file name is a directory."
+msgstr ""
 
 #: lazarusidestrconsts.listhetargetisnotwritable
 msgid "The target %s is not writable."

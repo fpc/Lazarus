@@ -3481,7 +3481,9 @@ msgid "Show all units"
 msgstr "Показати всі модулі"
 
 #: lazarusidestrconsts.dlgshowcaptionsofnonvisuals
-msgid "Show captions of non-visual components"
+#, fuzzy
+#| msgid "Show captions of non-visual components"
+msgid "Show captions of nonvisual components"
 msgstr "Показувати підписи невізуальних компонентів"
 
 #: lazarusidestrconsts.dlgshowcompiledprocedures
@@ -4323,7 +4325,9 @@ msgid "Official:"
 msgstr "Офіційний сайт:"
 
 #: lazarusidestrconsts.lisacannotholdtcontrolsyoucanonlyputnonvisualcomponen
-msgid "A %s cannot hold TControls.%sYou can only put non visual components on it."
+#, fuzzy
+#| msgid "A %s cannot hold TControls.%sYou can only put non visual components on it."
+msgid "A %s cannot hold TControls.%sYou can only put nonvisual components on it."
 msgstr "%s не може містити компоненти TControl.%sУ ньому можна розміщувати тільки невізуальні компоненти."
 
 #: lazarusidestrconsts.lisacknowledgements
@@ -8565,6 +8569,14 @@ msgstr "Вставити вибрані компоненти з буфера"
 msgid "Select parent component"
 msgstr "Вибрати компонент-предок"
 
+#: lazarusidestrconsts.lisdsgshownonvisualcomponents
+msgid "Show nonvisual components"
+msgstr ""
+
+#: lazarusidestrconsts.lisdsgtoggleshowingnonvisualcomponents
+msgid "Toggle showing nonvisual components"
+msgstr ""
+
 #: lazarusidestrconsts.lisduplicate
 msgid "Duplicate"
 msgstr "Дублікат"
@@ -9341,6 +9353,10 @@ msgstr "Задати типові"
 #: lazarusidestrconsts.lisfilefilterstitle
 msgid "These are file filters that will appear in all File Open dialogs"
 msgstr "Це фільтри файлів, які з'являться в усіх діалогах відкриття файлів"
+
+#: lazarusidestrconsts.lisfilefound
+msgid "File found"
+msgstr ""
 
 #: lazarusidestrconsts.lisfilehaschangedsave
 msgid "File \"%s\" has changed. Save?"
@@ -10557,6 +10573,10 @@ msgstr "Неприпустимий вираз:%s%s%s%s"
 #: lazarusidestrconsts.lisinvalidexpressionhintthemakeresourcestringfunction
 msgid "Invalid expression.%sHint: The \"Make Resourcestring\" function expects a string constant in a single file. Please select the expression and try again."
 msgstr "Неправильний вираз.%sДовідка: функція \"Створити рядок ресурсів\" вимагає рядкової константи в одному файлі. Виберіть вираз і спробуйте ще раз."
+
+#: lazarusidestrconsts.lisinvalidfilename
+msgid "Invalid file name"
+msgstr ""
 
 #: lazarusidestrconsts.lisinvalidfilter
 msgid "Invalid filter"
@@ -17988,6 +18008,14 @@ msgstr "Ці модулі не були знайдені:"
 #: lazarusidestrconsts.listhesourcesofthefreepascalpackagesarerequiredforbro
 msgid "The sources of the Free Pascal packages are required for browsing and code completion. For example it has the file \"%s\"."
 msgstr "Сирці пакунків Free Pascal необхідні для перегляду і завершення коду. Наприклад, вони мають файл \"%s\"."
+
+#: lazarusidestrconsts.listhetargetdirectoryisafile
+msgid "The target directory is a file:%s"
+msgstr ""
+
+#: lazarusidestrconsts.listhetargetfilenameisadirectory
+msgid "The target file name is a directory."
+msgstr ""
 
 #: lazarusidestrconsts.listhetargetisnotwritable
 msgid "The target %s is not writable."

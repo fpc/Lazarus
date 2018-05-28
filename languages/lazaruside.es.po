@@ -3534,7 +3534,9 @@ msgid "Show all units"
 msgstr "Mostrar todas las unidades"
 
 #: lazarusidestrconsts.dlgshowcaptionsofnonvisuals
-msgid "Show captions of non-visual components"
+#, fuzzy
+#| msgid "Show captions of non-visual components"
+msgid "Show captions of nonvisual components"
 msgstr "Mostrar texto de componentes no visuales"
 
 #: lazarusidestrconsts.dlgshowcompiledprocedures
@@ -4379,7 +4381,9 @@ msgid "Official:"
 msgstr "Oficial:"
 
 #: lazarusidestrconsts.lisacannotholdtcontrolsyoucanonlyputnonvisualcomponen
-msgid "A %s cannot hold TControls.%sYou can only put non visual components on it."
+#, fuzzy
+#| msgid "A %s cannot hold TControls.%sYou can only put non visual components on it."
+msgid "A %s cannot hold TControls.%sYou can only put nonvisual components on it."
 msgstr "Un %s no puede contener TControls.%sSólo puede colocar componentes no visuales en él."
 
 #: lazarusidestrconsts.lisacknowledgements
@@ -8642,6 +8646,14 @@ msgstr "Pegar componentes seleccionados desde el portapapeles"
 msgid "Select parent component"
 msgstr "Seleccionar componente padre"
 
+#: lazarusidestrconsts.lisdsgshownonvisualcomponents
+msgid "Show nonvisual components"
+msgstr ""
+
+#: lazarusidestrconsts.lisdsgtoggleshowingnonvisualcomponents
+msgid "Toggle showing nonvisual components"
+msgstr ""
+
 #: lazarusidestrconsts.lisduplicate
 msgid "Duplicate"
 msgstr "Duplicar"
@@ -9426,6 +9438,10 @@ msgstr "Establecer por defecto"
 #: lazarusidestrconsts.lisfilefilterstitle
 msgid "These are file filters that will appear in all File Open dialogs"
 msgstr "Estos son filtros de archivos que van a aparecer en todos los cuadros de diálogo de Apertura de Archivos"
+
+#: lazarusidestrconsts.lisfilefound
+msgid "File found"
+msgstr ""
 
 #: lazarusidestrconsts.lisfilehaschangedsave
 msgid "File \"%s\" has changed. Save?"
@@ -10666,6 +10682,10 @@ msgstr "Expresión no válida:%s%s%s%s"
 #: lazarusidestrconsts.lisinvalidexpressionhintthemakeresourcestringfunction
 msgid "Invalid expression.%sHint: The \"Make Resourcestring\" function expects a string constant in a single file. Please select the expression and try again."
 msgstr "Expresión no válida.%Sugerencia: La función \"Crear Resourcestring\" espera una constante de cadena en un único archivo. Por favor seleccione la expresión e inténtelo de nuevo."
+
+#: lazarusidestrconsts.lisinvalidfilename
+msgid "Invalid file name"
+msgstr ""
 
 #: lazarusidestrconsts.lisinvalidfilter
 msgid "Invalid filter"
@@ -18243,6 +18263,14 @@ msgstr "Estas unidades no se han encontrado:"
 #: lazarusidestrconsts.listhesourcesofthefreepascalpackagesarerequiredforbro
 msgid "The sources of the Free Pascal packages are required for browsing and code completion. For example it has the file \"%s\"."
 msgstr "Las fuentes de los paquetes de Free Pascal son necesarios para la navegación y el autocompletado de código. Por ejemplo, se tiene el archivo \"%s\"."
+
+#: lazarusidestrconsts.listhetargetdirectoryisafile
+msgid "The target directory is a file:%s"
+msgstr ""
+
+#: lazarusidestrconsts.listhetargetfilenameisadirectory
+msgid "The target file name is a directory."
+msgstr ""
 
 #: lazarusidestrconsts.listhetargetisnotwritable
 msgid "The target %s is not writable."

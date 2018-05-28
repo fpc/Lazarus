@@ -3485,7 +3485,9 @@ msgid "Show all units"
 msgstr "すべてのユニットを表示"
 
 #: lazarusidestrconsts.dlgshowcaptionsofnonvisuals
-msgid "Show captions of non-visual components"
+#, fuzzy
+#| msgid "Show captions of non-visual components"
+msgid "Show captions of nonvisual components"
 msgstr "非ビジュアルコンポーネントのキャプションを表示"
 
 #: lazarusidestrconsts.dlgshowcompiledprocedures
@@ -4329,7 +4331,9 @@ msgid "Official:"
 msgstr "公式："
 
 #: lazarusidestrconsts.lisacannotholdtcontrolsyoucanonlyputnonvisualcomponen
-msgid "A %s cannot hold TControls.%sYou can only put non visual components on it."
+#, fuzzy
+#| msgid "A %s cannot hold TControls.%sYou can only put non visual components on it."
+msgid "A %s cannot hold TControls.%sYou can only put nonvisual components on it."
 msgstr "%sはTControlsを保持できません。%s非ビジュアルコンポーネントのみ置くことができます。"
 
 #: lazarusidestrconsts.lisacknowledgements
@@ -8577,6 +8581,14 @@ msgstr "クリップボードから選択されたコンポーネントを貼り
 msgid "Select parent component"
 msgstr "親コンポーネントを選択"
 
+#: lazarusidestrconsts.lisdsgshownonvisualcomponents
+msgid "Show nonvisual components"
+msgstr ""
+
+#: lazarusidestrconsts.lisdsgtoggleshowingnonvisualcomponents
+msgid "Toggle showing nonvisual components"
+msgstr ""
+
 #: lazarusidestrconsts.lisduplicate
 msgid "Duplicate"
 msgstr "重複"
@@ -9356,6 +9368,10 @@ msgstr "既定値を設定"
 #: lazarusidestrconsts.lisfilefilterstitle
 msgid "These are file filters that will appear in all File Open dialogs"
 msgstr "これらはファイルを開くダイアログに表示されるフィルタです"
+
+#: lazarusidestrconsts.lisfilefound
+msgid "File found"
+msgstr ""
 
 #: lazarusidestrconsts.lisfilehaschangedsave
 msgid "File \"%s\" has changed. Save?"
@@ -10548,6 +10564,10 @@ msgstr "無効な式：%s%s%s%s"
 #: lazarusidestrconsts.lisinvalidexpressionhintthemakeresourcestringfunction
 msgid "Invalid expression.%sHint: The \"Make Resourcestring\" function expects a string constant in a single file. Please select the expression and try again."
 msgstr "無効な式。%sヒント：「リソース文字列作成」機能は 1 つのファイル内で文字列を宣言された定数として扱います。文字列表現を選択し、再び試してみて下さい。"
+
+#: lazarusidestrconsts.lisinvalidfilename
+msgid "Invalid file name"
+msgstr ""
 
 #: lazarusidestrconsts.lisinvalidfilter
 msgid "Invalid filter"
@@ -17997,6 +18017,14 @@ msgstr "それらのユニットは見つかりませんでした。"
 #: lazarusidestrconsts.listhesourcesofthefreepascalpackagesarerequiredforbro
 msgid "The sources of the Free Pascal packages are required for browsing and code completion. For example it has the file \"%s\"."
 msgstr "Free Pascalパッケージのソースはブラウザとコード補完に必要です。例えばそれはファイル\"%s\"を持ちます。"
+
+#: lazarusidestrconsts.listhetargetdirectoryisafile
+msgid "The target directory is a file:%s"
+msgstr ""
+
+#: lazarusidestrconsts.listhetargetfilenameisadirectory
+msgid "The target file name is a directory."
+msgstr ""
 
 #: lazarusidestrconsts.listhetargetisnotwritable
 msgid "The target %s is not writable."

@@ -3488,7 +3488,9 @@ msgid "Show all units"
 msgstr "Tüm birimleri göster"
 
 #: lazarusidestrconsts.dlgshowcaptionsofnonvisuals
-msgid "Show captions of non-visual components"
+#, fuzzy
+#| msgid "Show captions of non-visual components"
+msgid "Show captions of nonvisual components"
 msgstr "Görsel olmayan bileşenler başlıklar göster"
 
 #: lazarusidestrconsts.dlgshowcompiledprocedures
@@ -4343,7 +4345,9 @@ msgid "Official:"
 msgstr "Resmi:"
 
 #: lazarusidestrconsts.lisacannotholdtcontrolsyoucanonlyputnonvisualcomponen
-msgid "A %s cannot hold TControls.%sYou can only put non visual components on it."
+#, fuzzy
+#| msgid "A %s cannot hold TControls.%sYou can only put non visual components on it."
+msgid "A %s cannot hold TControls.%sYou can only put nonvisual components on it."
 msgstr " %s TControl'leri tutamıyor %sSadece görsel olmayan bileşenleri koyabilirsiniz."
 
 #: lazarusidestrconsts.lisacknowledgements
@@ -8660,6 +8664,14 @@ msgstr "Seçilen bileşenleri panodan yapıştırın"
 msgid "Select parent component"
 msgstr "Üst bileşen seç"
 
+#: lazarusidestrconsts.lisdsgshownonvisualcomponents
+msgid "Show nonvisual components"
+msgstr ""
+
+#: lazarusidestrconsts.lisdsgtoggleshowingnonvisualcomponents
+msgid "Toggle showing nonvisual components"
+msgstr ""
+
 #: lazarusidestrconsts.lisduplicate
 msgid "Duplicate"
 msgstr "Çift"
@@ -9462,6 +9474,10 @@ msgstr "Varsayılanları ayarla"
 #: lazarusidestrconsts.lisfilefilterstitle
 msgid "These are file filters that will appear in all File Open dialogs"
 msgstr "Bunlar, tüm Dosya Aç iletişim kutularında görünecek dosya filtreleridir"
+
+#: lazarusidestrconsts.lisfilefound
+msgid "File found"
+msgstr ""
 
 #: lazarusidestrconsts.lisfilehaschangedsave
 msgid "File \"%s\" has changed. Save?"
@@ -10667,6 +10683,10 @@ msgstr "Geçersiz ifade: %s %s %s %s"
 #, fuzzy,badformat
 msgid "Invalid expression.%sHint: The \"Make Resourcestring\" function expects a string constant in a single file. Please select the expression and try again."
 msgstr "Geçersiz ifade.% SHint: \" Resourcestring \\ \"işlevi si'de bir dizge sabiti bekle"
+
+#: lazarusidestrconsts.lisinvalidfilename
+msgid "Invalid file name"
+msgstr ""
 
 #: lazarusidestrconsts.lisinvalidfilter
 msgid "Invalid filter"
@@ -18301,6 +18321,14 @@ msgstr "Bu birimler bulunamadı:"
 #, fuzzy,badformat
 msgid "The sources of the Free Pascal packages are required for browsing and code completion. For example it has the file \"%s\"."
 msgstr "Tarama ve kod tamamlama için Free Pascal paketlerinin kaynakları gereklidir. Örnek içi"
+
+#: lazarusidestrconsts.listhetargetdirectoryisafile
+msgid "The target directory is a file:%s"
+msgstr ""
+
+#: lazarusidestrconsts.listhetargetfilenameisadirectory
+msgid "The target file name is a directory."
+msgstr ""
 
 #: lazarusidestrconsts.listhetargetisnotwritable
 msgid "The target %s is not writable."

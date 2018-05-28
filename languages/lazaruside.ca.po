@@ -3585,7 +3585,7 @@ msgid "Show all units"
 msgstr ""
 
 #: lazarusidestrconsts.dlgshowcaptionsofnonvisuals
-msgid "Show captions of non-visual components"
+msgid "Show captions of nonvisual components"
 msgstr ""
 
 #: lazarusidestrconsts.dlgshowcompiledprocedures
@@ -4507,7 +4507,7 @@ msgstr ""
 #: lazarusidestrconsts.lisacannotholdtcontrolsyoucanonlyputnonvisualcomponen
 #, fuzzy
 #| msgid "A %s can not hold TControls.%sYou can only put non visual components on it."
-msgid "A %s cannot hold TControls.%sYou can only put non visual components on it."
+msgid "A %s cannot hold TControls.%sYou can only put nonvisual components on it."
 msgstr "Un %s no pot manegar TControls. %sNomés hi podeu posar components no visuals."
 
 #: lazarusidestrconsts.lisacknowledgements
@@ -8838,6 +8838,14 @@ msgstr "Enganxa els components seleccionats des del porta-retalls"
 msgid "Select parent component"
 msgstr "Selecciona el component pare"
 
+#: lazarusidestrconsts.lisdsgshownonvisualcomponents
+msgid "Show nonvisual components"
+msgstr ""
+
+#: lazarusidestrconsts.lisdsgtoggleshowingnonvisualcomponents
+msgid "Toggle showing nonvisual components"
+msgstr ""
+
 #: lazarusidestrconsts.lisduplicate
 msgid "Duplicate"
 msgstr ""
@@ -9624,6 +9632,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisfilefilterstitle
 msgid "These are file filters that will appear in all File Open dialogs"
+msgstr ""
+
+#: lazarusidestrconsts.lisfilefound
+msgid "File found"
 msgstr ""
 
 #: lazarusidestrconsts.lisfilehaschangedsave
@@ -10816,6 +10828,10 @@ msgstr ""
 #: lazarusidestrconsts.lisinvalidexpressionhintthemakeresourcestringfunction
 msgid "Invalid expression.%sHint: The \"Make Resourcestring\" function expects a string constant in a single file. Please select the expression and try again."
 msgstr "L'expressió no és vàlida.%sSuggeriment: La funció de la cadena del recurs espera una constant de cadena en un sol fitxer. Si us plau, seleccioneu l'expressió i torneu-ho a provar."
+
+#: lazarusidestrconsts.lisinvalidfilename
+msgid "Invalid file name"
+msgstr ""
 
 #: lazarusidestrconsts.lisinvalidfilter
 msgid "Invalid filter"
@@ -18622,6 +18638,14 @@ msgstr ""
 
 #: lazarusidestrconsts.listhesourcesofthefreepascalpackagesarerequiredforbro
 msgid "The sources of the Free Pascal packages are required for browsing and code completion. For example it has the file \"%s\"."
+msgstr ""
+
+#: lazarusidestrconsts.listhetargetdirectoryisafile
+msgid "The target directory is a file:%s"
+msgstr ""
+
+#: lazarusidestrconsts.listhetargetfilenameisadirectory
+msgid "The target file name is a directory."
 msgstr ""
 
 #: lazarusidestrconsts.listhetargetisnotwritable

@@ -3486,7 +3486,9 @@ msgid "Show all units"
 msgstr "Rodyti visus modulius"
 
 #: lazarusidestrconsts.dlgshowcaptionsofnonvisuals
-msgid "Show captions of non-visual components"
+#, fuzzy
+#| msgid "Show captions of non-visual components"
+msgid "Show captions of nonvisual components"
 msgstr "Rodyti nevizualinių komponenčių antraštes"
 
 #: lazarusidestrconsts.dlgshowcompiledprocedures
@@ -4330,7 +4332,9 @@ msgid "Official:"
 msgstr "Oficialu:"
 
 #: lazarusidestrconsts.lisacannotholdtcontrolsyoucanonlyputnonvisualcomponen
-msgid "A %s cannot hold TControls.%sYou can only put non visual components on it."
+#, fuzzy
+#| msgid "A %s cannot hold TControls.%sYou can only put non visual components on it."
+msgid "A %s cannot hold TControls.%sYou can only put nonvisual components on it."
 msgstr "%s negali turėti „TControl“ klasių.%sĮ jį galima dėti tik ne vizualines komponentes."
 
 #: lazarusidestrconsts.lisacknowledgements
@@ -8580,6 +8584,14 @@ msgstr "Įterpti pažymėtas komponentes iš iškarpinės"
 msgid "Select parent component"
 msgstr "Pažymėti tėvinę komponentę"
 
+#: lazarusidestrconsts.lisdsgshownonvisualcomponents
+msgid "Show nonvisual components"
+msgstr ""
+
+#: lazarusidestrconsts.lisdsgtoggleshowingnonvisualcomponents
+msgid "Toggle showing nonvisual components"
+msgstr ""
+
 #: lazarusidestrconsts.lisduplicate
 msgid "Duplicate"
 msgstr "Dublikatas"
@@ -9358,6 +9370,10 @@ msgstr "Nustatyti numatytus"
 #: lazarusidestrconsts.lisfilefilterstitle
 msgid "These are file filters that will appear in all File Open dialogs"
 msgstr "Tai yra filtrai, kurie bus visuose failo atvėrimo dialoguose"
+
+#: lazarusidestrconsts.lisfilefound
+msgid "File found"
+msgstr ""
 
 #: lazarusidestrconsts.lisfilehaschangedsave
 msgid "File \"%s\" has changed. Save?"
@@ -10574,6 +10590,10 @@ msgstr "Klaidingas reiškinys: %s%s%s%s"
 #: lazarusidestrconsts.lisinvalidexpressionhintthemakeresourcestringfunction
 msgid "Invalid expression.%sHint: The \"Make Resourcestring\" function expects a string constant in a single file. Please select the expression and try again."
 msgstr "Klaidingas reiškinys.%sUžuomina: funkcijai „Kurti išteklių eilutę“ reikia eilutės konstantos, kuri yra tik viename faile. Pažymėkite reiškinį ir bandykite vėl."
+
+#: lazarusidestrconsts.lisinvalidfilename
+msgid "Invalid file name"
+msgstr ""
 
 #: lazarusidestrconsts.lisinvalidfilter
 msgid "Invalid filter"
@@ -18024,6 +18044,14 @@ msgstr "Šių modulių nepavyko rasti:"
 #: lazarusidestrconsts.listhesourcesofthefreepascalpackagesarerequiredforbro
 msgid "The sources of the Free Pascal packages are required for browsing and code completion. For example it has the file \"%s\"."
 msgstr "Free Pascal pirminis kodas būtinas naršant ir kodo užbaigimui. Pavyzdžiui, jis turi failą „%s“."
+
+#: lazarusidestrconsts.listhetargetdirectoryisafile
+msgid "The target directory is a file:%s"
+msgstr ""
+
+#: lazarusidestrconsts.listhetargetfilenameisadirectory
+msgid "The target file name is a directory."
+msgstr ""
 
 #: lazarusidestrconsts.listhetargetisnotwritable
 msgid "The target %s is not writable."

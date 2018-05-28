@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-05-15 01:18+0300\n"
+"PO-Revision-Date: 2018-05-29 00:56+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -3479,7 +3479,7 @@ msgid "Show all units"
 msgstr "Показывать все модули"
 
 #: lazarusidestrconsts.dlgshowcaptionsofnonvisuals
-msgid "Show captions of non-visual components"
+msgid "Show captions of nonvisual components"
 msgstr "Показывать заголовки невизуальных компонентов"
 
 #: lazarusidestrconsts.dlgshowcompiledprocedures
@@ -4321,7 +4321,7 @@ msgid "Official:"
 msgstr "Официальный сайт:"
 
 #: lazarusidestrconsts.lisacannotholdtcontrolsyoucanonlyputnonvisualcomponen
-msgid "A %s cannot hold TControls.%sYou can only put non visual components on it."
+msgid "A %s cannot hold TControls.%sYou can only put nonvisual components on it."
 msgstr "%s не может содержать компоненты TControl.%sВ него можно помещать только невизуальные компоненты."
 
 #: lazarusidestrconsts.lisacknowledgements
@@ -8560,6 +8560,14 @@ msgstr "Вставить выбранные компоненты из буфер
 msgid "Select parent component"
 msgstr "Выбрать родительский компонент"
 
+#: lazarusidestrconsts.lisdsgshownonvisualcomponents
+msgid "Show nonvisual components"
+msgstr "Показывать невизуальные компоненты"
+
+#: lazarusidestrconsts.lisdsgtoggleshowingnonvisualcomponents
+msgid "Toggle showing nonvisual components"
+msgstr "Показать или скрыть невизуальные компоненты"
+
 #: lazarusidestrconsts.lisduplicate
 msgid "Duplicate"
 msgstr "Дубликат"
@@ -9336,6 +9344,10 @@ msgstr "Установить значения по умолчанию"
 #: lazarusidestrconsts.lisfilefilterstitle
 msgid "These are file filters that will appear in all File Open dialogs"
 msgstr "Эти файловые фильтры появятся во всех диалогах открытия файлов"
+
+#: lazarusidestrconsts.lisfilefound
+msgid "File found"
+msgstr "Найден файл"
 
 #: lazarusidestrconsts.lisfilehaschangedsave
 msgid "File \"%s\" has changed. Save?"
@@ -10552,6 +10564,10 @@ msgstr "Неверное выражение:%s%s%s%s"
 #: lazarusidestrconsts.lisinvalidexpressionhintthemakeresourcestringfunction
 msgid "Invalid expression.%sHint: The \"Make Resourcestring\" function expects a string constant in a single file. Please select the expression and try again."
 msgstr "Неверное выражение.%sПодсказка: функция \"Создать строку ресурсов\" требует строковую константу в одном файле. Выделите выражение и попробуйте ещё."
+
+#: lazarusidestrconsts.lisinvalidfilename
+msgid "Invalid file name"
+msgstr "Некорректное имя файла"
 
 #: lazarusidestrconsts.lisinvalidfilter
 msgid "Invalid filter"
@@ -17984,6 +18000,14 @@ msgstr "Эти модули не были найдены:"
 #: lazarusidestrconsts.listhesourcesofthefreepascalpackagesarerequiredforbro
 msgid "The sources of the Free Pascal packages are required for browsing and code completion. For example it has the file \"%s\"."
 msgstr "Исходный код пакетов Free Pascal требуется для обеспечения работы функций навигации по коду и его завершения. Каталог с исходным кодом FPC содержит, например, файл \"%s\"."
+
+#: lazarusidestrconsts.listhetargetdirectoryisafile
+msgid "The target directory is a file:%s"
+msgstr "Целевой каталог является файлом:%s"
+
+#: lazarusidestrconsts.listhetargetfilenameisadirectory
+msgid "The target file name is a directory."
+msgstr "Целевой файл является каталогом."
 
 #: lazarusidestrconsts.listhetargetisnotwritable
 msgid "The target %s is not writable."

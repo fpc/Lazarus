@@ -3480,7 +3480,9 @@ msgid "Show all units"
 msgstr "Montrer toutes les unités"
 
 #: lazarusidestrconsts.dlgshowcaptionsofnonvisuals
-msgid "Show captions of non-visual components"
+#, fuzzy
+#| msgid "Show captions of non-visual components"
+msgid "Show captions of nonvisual components"
 msgstr "Afficher les étiquettes des composants non visuels"
 
 #: lazarusidestrconsts.dlgshowcompiledprocedures
@@ -4322,7 +4324,9 @@ msgid "Official:"
 msgstr "Site officiel :"
 
 #: lazarusidestrconsts.lisacannotholdtcontrolsyoucanonlyputnonvisualcomponen
-msgid "A %s cannot hold TControls.%sYou can only put non visual components on it."
+#, fuzzy
+#| msgid "A %s cannot hold TControls.%sYou can only put non visual components on it."
+msgid "A %s cannot hold TControls.%sYou can only put nonvisual components on it."
 msgstr "Un %s ne peut contenir de TControls.%sVous pouvez seulement y placer des composants non visuels."
 
 #: lazarusidestrconsts.lisacknowledgements
@@ -8564,6 +8568,14 @@ msgstr "Coller les composants sélectionnés depuis le presse-papiers"
 msgid "Select parent component"
 msgstr "Sélectionner le composant parent"
 
+#: lazarusidestrconsts.lisdsgshownonvisualcomponents
+msgid "Show nonvisual components"
+msgstr ""
+
+#: lazarusidestrconsts.lisdsgtoggleshowingnonvisualcomponents
+msgid "Toggle showing nonvisual components"
+msgstr ""
+
 #: lazarusidestrconsts.lisduplicate
 msgid "Duplicate"
 msgstr "Doublon"
@@ -9340,6 +9352,10 @@ msgstr "Définir les valeurs par défaut"
 #: lazarusidestrconsts.lisfilefilterstitle
 msgid "These are file filters that will appear in all File Open dialogs"
 msgstr "Ce sont les filtres de fichiers qui apparaîtront dans toutes les boîtes de dialogue d'ouverture de fichiers"
+
+#: lazarusidestrconsts.lisfilefound
+msgid "File found"
+msgstr ""
 
 #: lazarusidestrconsts.lisfilehaschangedsave
 msgid "File \"%s\" has changed. Save?"
@@ -10557,6 +10573,10 @@ msgstr "Expression incorrecte :%s%s%s%s"
 #: lazarusidestrconsts.lisinvalidexpressionhintthemakeresourcestringfunction
 msgid "Invalid expression.%sHint: The \"Make Resourcestring\" function expects a string constant in a single file. Please select the expression and try again."
 msgstr "Expression incorrecte.%sConseil : la fonction \"Make Resourcestring\" s'attend à une constante de type chaîne dans un fichier unique. Veuillez choisir l'expression avant de réessayer."
+
+#: lazarusidestrconsts.lisinvalidfilename
+msgid "Invalid file name"
+msgstr ""
 
 #: lazarusidestrconsts.lisinvalidfilter
 msgid "Invalid filter"
@@ -17992,6 +18012,14 @@ msgstr "Ces unités n'ont pas été trouvées :"
 #: lazarusidestrconsts.listhesourcesofthefreepascalpackagesarerequiredforbro
 msgid "The sources of the Free Pascal packages are required for browsing and code completion. For example it has the file \"%s\"."
 msgstr "Les codes sources des paquets Free Pascal sont nécessaires pour la navigation et la complétion de code. Par exemple y figure le fichier \"%s\"."
+
+#: lazarusidestrconsts.listhetargetdirectoryisafile
+msgid "The target directory is a file:%s"
+msgstr ""
+
+#: lazarusidestrconsts.listhetargetfilenameisadirectory
+msgid "The target file name is a directory."
+msgstr ""
 
 #: lazarusidestrconsts.listhetargetisnotwritable
 msgid "The target %s is not writable."
