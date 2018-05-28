@@ -6793,7 +6793,7 @@ begin
 
       // create target output directory
       TargetExeName := Project1.CompilerOptions.CreateTargetFilename;
-      TargetExeDirectory:=ExtractFilePath(TargetExeName);
+      TargetExeDirectory:=ChompPathDelim(ExtractFilePath(TargetExeName)); // Note: chomp is needed by FileExistsCached under Windows
       if FilenameIsAbsolute(TargetExeDirectory) then begin
         if FileExistsCached(TargetExeDirectory) then begin
           if not DirPathExistsCached(TargetExeDirectory) then begin
