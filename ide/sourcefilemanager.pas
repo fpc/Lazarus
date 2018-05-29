@@ -8091,7 +8091,9 @@ begin
       Ext := ExtractFileExt(AFilename);
       SaveDialog.Title := Format(lisSaveProject, [Project1.GetTitleOrName, Ext]);
       SaveDialog.FileName := AFilename;
-      SaveDialog.Filter := '*' + Ext + '|' + '*' + Ext;
+      // Note: add *.* filter, so users can see the files in the target directory
+      SaveDialog.Filter := '*' + Ext + '|' + '*' + Ext
+         + '|' + dlgFilterAll + ' (' + GetAllFilesMask + ')|' + GetAllFilesMask;
       SaveDialog.DefaultExt := ExtractFileExt(AFilename);
       if not Project1.IsVirtual then
         SaveDialog.InitialDir := Project1.Directory;
