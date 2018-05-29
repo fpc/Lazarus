@@ -11,23 +11,6 @@ uses
 
 type
 
-  { TTestStorageMem }
-
-  TTestStorageMem = class(TTestCase)
-  published
-    procedure TestMem;
-    procedure TestMemSpecialized;
-    procedure TestMemRound;
-    procedure TestMemRoundSpecialized;
-    procedure TestMemPaged;
-    procedure TestMemClass;
-    procedure TestMemSpecializedClass;
-  end;
-
-implementation
-
-type
-
   { TTestLazMemWrapper }
 
   generic TTestLazMemWrapper<T> = object
@@ -40,20 +23,28 @@ type
     constructor Create;
     destructor destroy;
     function Insert(Avalue: Integer): Integer;
-    procedure Insert(AnIndex: Integer; Avalues: array of Integer);
+    function Insert(AnIndex: Integer; Avalue: Integer): PInteger;
+    function Insert(AnIndex: Integer; Avalues: array of Integer): PInteger;
+    procedure InsertExpected(AnIndex: Integer; Avalue: Integer);
+    procedure InsertExpected(AnIndex: Integer; Avalues: array of Integer);
+    procedure MoveRows(AFromIndex, AToIndex, ACount: Integer);
     procedure Delete(AIndex, ACount: Integer);
     procedure Clear;
-    procedure AssertExp(AName: String; Caller: TTestStorageMem);
+    procedure AssertExp(AName: String; Caller: TTestCase);
 
-    procedure InsertRows(AIndex, ACount: Integer); inline;
-    procedure DeleteRows(AIndex, ACount: Integer); inline;
+    function TestInsertRows(AIndex, ACount: Integer): PInteger; inline;
+    procedure TestDeleteRows(AIndex, ACount: Integer); inline;
     function Count: Integer;
+    function ItemPointer(AIndex: Integer): PInteger;
     property Items[AnIndex: Integer]: Integer read GetItems write SetItems;
+    property Tested: T read FTested;
   end;
 
-  { TTestLazDualCapacityListMem }
+  { TTestLazShiftBufferListObj }
 
-  TTestLazDualCapacityListMem = object(TLazDualCapacityListMem)
+  TTestLazShiftBufferListObj = object(TLazShiftBufferListObj)
+  protected
+    const TEST_MAX_CNT = {$IFnDEF TEST_SKIP_SLOW} 20 {$ELSE} 17 {$ENDIF};
   protected
     FGrowStep: Integer;
     FShrinkStep: Integer;
@@ -61,26 +52,30 @@ type
     function ShrinkCapacity(ARequired: Integer): Integer;
   public
     constructor Create;
-    procedure InsertRows(AIndex, ACount: Integer); inline;
-    procedure DeleteRows(AIndex, ACount: Integer); inline;
+    function TestInsertRows(AIndex, ACount: Integer): PInteger; inline;
+    procedure TestDeleteRows(AIndex, ACount: Integer); inline;
   end;
 
-  { TTestLazGenDualCapacityListMem }
+  { TTestLazGenLazShiftBufferListObj }
 
-  TTestLazGenDualCapacityListMem = object(specialize TLazGenDualCapacityListMem<Integer>)
+  TTestLazGenLazShiftBufferListObj = object(specialize TLazShiftBufferListObjGen<Integer>)
+  protected
+    const TEST_MAX_CNT = {$IFnDEF TEST_SKIP_SLOW} 20 {$ELSE} 15 {$ENDIF};
   protected
     FGrowStep: Integer;
     FShrinkStep: Integer;
     function GrowCapacity(ARequired: Integer): Integer;
     function ShrinkCapacity(ARequired: Integer): Integer;
   public
-    procedure InsertRows(AIndex, ACount: Integer); inline;
-    procedure DeleteRows(AIndex, ACount: Integer); inline;
+    function  TestInsertRows(AIndex, ACount: Integer): PInteger; inline;
+    procedure TestDeleteRows(AIndex, ACount: Integer); inline;
   end;
 
   { TTestLazRoundBufferListMem }
 
-  TTestLazRoundBufferListMem = object(TLazRoundBufferListMem)
+  TTestLazRoundBufferListMem = object(TLazRoundBufferListObj)
+  protected
+    const TEST_MAX_CNT = {$IFnDEF TEST_SKIP_SLOW} 20 {$ELSE} 17 {$ENDIF};
   protected
     FGrowStep: Integer;
     FShrinkStep: Integer;
@@ -88,76 +83,103 @@ type
     function ShrinkCapacity(ARequired: Integer): Integer;
   public
     constructor Create;
-    procedure InsertRows(AIndex, ACount: Integer); inline;
-    procedure DeleteRows(AIndex, ACount: Integer); inline;
+    function  TestInsertRows(AIndex, ACount: Integer): PInteger; inline;
+    procedure TestDeleteRows(AIndex, ACount: Integer); inline;
   end;
 
   { TTestLazGenRoundBufferListMem }
 
-  TTestLazGenRoundBufferListMem = object(specialize TLazGenRoundBufferListMem<Integer>)
+  TTestLazGenRoundBufferListMem = object(specialize TLazRoundBufferListObjGen<Integer>)
+  protected
+    const TEST_MAX_CNT = {$IFnDEF TEST_SKIP_SLOW} 20 {$ELSE} 15 {$ENDIF};
   protected
     FGrowStep: Integer;
     FShrinkStep: Integer;
     function GrowCapacity(ARequired: Integer): Integer;
     function ShrinkCapacity(ARequired: Integer): Integer;
   public
-    procedure InsertRows(AIndex, ACount: Integer); inline;
-    procedure DeleteRows(AIndex, ACount: Integer); inline;
+    function  TestInsertRows(AIndex, ACount: Integer): PInteger; inline;
+    procedure TestDeleteRows(AIndex, ACount: Integer); inline;
   end;
 
   { TTestLazPagedListMem }
-  TTestLazPagedListMem = object(TLazPagedListMem)
+  TTestLazPagedListMem = object(TLazPagedListObj)
   protected
     FGrowStep: Integer;
     FShrinkStep: Integer;
     function GrowCapacity(ARequired: Integer): Integer;
     function ShrinkCapacity(ARequired: Integer): Integer;
   public
-    procedure InsertRows(AIndex, ACount: Integer);
-    procedure DeleteRows(AIndex, ACount: Integer);
+    function  TestInsertRows(AIndex, ACount: Integer): PInteger;
+    procedure TestDeleteRows(AIndex, ACount: Integer);
   end;
 
   { TTestLazPagedListMem0 }
 
   TTestLazPagedListMem0 = object(TTestLazPagedListMem)
+  protected
+    const TEST_MAX_CNT = {$IFnDEF TEST_SKIP_SLOW} 15 {$ELSE} 11 {$ENDIF};
+  public
     constructor Create;
   end;
 
   { TTestLazPagedListMem1 }
 
   TTestLazPagedListMem1 = object(TTestLazPagedListMem)
+  protected
+    const TEST_MAX_CNT = {$IFnDEF TEST_SKIP_SLOW} 25 {$ELSE} 19 {$ENDIF};
+  public
     constructor Create;
   end;
 
   { TTestLazPagedListMem2 }
 
   TTestLazPagedListMem2 = object(TTestLazPagedListMem)
+  protected
+    const TEST_MAX_CNT = {$IFnDEF TEST_SKIP_SLOW} 25 {$ELSE} 19 {$ENDIF};
+  public
     constructor Create;
   end;
 
   { TTestLazPagedListMem3 }
 
   TTestLazPagedListMem3 = object(TTestLazPagedListMem)
+  protected
+    const TEST_MAX_CNT = {$IFnDEF TEST_SKIP_SLOW} 35 {$ELSE} 25 {$ENDIF};
+  public
     constructor Create;
   end;
 
 
+  TTestProc = procedure(name: string) of object;
+
   { TTestRunnerList }
 
-  generic TTestRunnerList<TListTypeX> = object
-  type TListType = specialize TTestLazMemWrapper<TListTypeX>;
-  public
-    Caller: TTestStorageMem;
+  generic TTestRunnerList<TListTypeX> = class(TTestCase)
+  protected type TListType = specialize TTestLazMemWrapper<TListTypeX>;
+  protected
+    Caller: TTestCase;
     GrowStep: Integer;
     ShrinkStep: Integer;
-    procedure TestNew(name: string);
+    procedure TestNew({%H-}name: string);
+    procedure TestMove({%H-}name: string);
     procedure TestSequence(name: string; a: Array of Integer); // Old test from a previous version
     procedure TestSequenceEx(n: string; a: Array of Integer);
-    procedure RunTest(ACaller: TTestStorageMem);
+
+    procedure RunSeq({%H-}name: string);
+    procedure RunSeqEx({%H-}name: string);
+    procedure RunTests(AProc: TTestProc);
+  published
+    procedure TestCreate;
+    procedure TestMove;
+    procedure TestShrink;
+    procedure TestSeq;
+    procedure TestSeqEx;
   end;
 
-  TTestListMem = specialize TTestRunnerList<TTestLazDualCapacityListMem>;
-  TTestListMemSpecialized = specialize TTestRunnerList<TTestLazGenDualCapacityListMem>;
+
+  TTestListMem = specialize TTestRunnerList<TTestLazShiftBufferListObj>;
+  TTestListMemSpecialized = specialize TTestRunnerList<TTestLazGenLazShiftBufferListObj>;
   TTestListRoundMem = specialize TTestRunnerList<TTestLazRoundBufferListMem>;
   TTestListRoundMemSpecialized = specialize TTestRunnerList<TTestLazGenRoundBufferListMem>;
   TTestListPagedMem0 = specialize TTestRunnerList<TTestLazPagedListMem0>;
@@ -165,11 +187,18 @@ type
   TTestListPagedMem2 = specialize TTestRunnerList<TTestLazPagedListMem2>;
   TTestListPagedMem3 = specialize TTestRunnerList<TTestLazPagedListMem3>;
 
+
   TIntArray = Array of Integer;
 
 function CreateArray(ALow,ACount: integer): TIntArray;
+function JoinArrays(a,b: array of integer): TIntArray;
+function JoinArrays(a,b,c: array of integer): TIntArray;
+
+implementation
+
+function CreateArray(ALow,ACount: integer): TIntArray;
 var
-  i,j: Integer;
+  i: Integer;
 begin
   SetLength(Result, ACount);
   for i := 0 to ACount - 1 do
@@ -232,16 +261,21 @@ begin
     if (Items[Result] > Avalue) then break;
     inc(Result);
   end;
-  FTested.InsertRows(Result, 1);
+  FTested.TestInsertRows(Result, 1);
   Items[Result] := Avalue;
 end;
 
-procedure TTestLazMemWrapper.Insert(AnIndex: Integer; Avalues: array of Integer);
+function TTestLazMemWrapper.Insert(AnIndex: Integer; Avalue: Integer): PInteger;
+begin
+  Result := Insert(AnIndex, CreateArray(Avalue, 1));
+end;
+
+function TTestLazMemWrapper.Insert(AnIndex: Integer; Avalues: array of Integer): PInteger;
 var
   i: Integer;
 begin
   //debugln(['TTestLazMemWrapper.Insert ',AnIndex,'  ',Length(Avalues)]);
-  FTested.InsertRows(AnIndex, length(Avalues));
+  Result := FTested.TestInsertRows(AnIndex, length(Avalues));
   for i := 0 to high(Avalues) do
     Items[i+AnIndex] := Avalues[i];
   if FExpected = nil then
@@ -251,10 +285,42 @@ begin
     {$POP}
 end;
 
+procedure TTestLazMemWrapper.InsertExpected(AnIndex: Integer; Avalue: Integer);
+begin
+  InsertExpected(AnIndex, CreateArray(Avalue, 1));
+end;
+
+procedure TTestLazMemWrapper.InsertExpected(AnIndex: Integer; Avalues: array of Integer);
+begin
+  if FExpected = nil then
+    FExpected := JoinArrays(Avalues, [])
+  else {$PUSH}{$R-}
+    FExpected := JoinArrays(FExpected[0..(AnIndex-1)], Avalues, FExpected[AnIndex..high(FExpected)]);
+    {$POP}
+end;
+
+procedure TTestLazMemWrapper.MoveRows(AFromIndex, AToIndex, ACount: Integer);
+var
+  i: Integer;
+begin
+  FTested.MoveRows(AFromIndex, AToIndex, ACount);
+  move(FExpected[AFromIndex], FExpected[AToIndex], ACount * SizeOf(FExpected[0]));
+  if AFromIndex < AToIndex then
+    for i := AFromIndex to AToIndex-1 do begin
+      Items[i] := -99;
+      FExpected[i] := -99;
+    end
+  else
+    for i := AToIndex+ACount to AFromIndex+ACount-1 do begin
+      Items[i] := -99;
+      FExpected[i] := -99;
+    end;
+end;
+
 procedure TTestLazMemWrapper.Delete(AIndex, ACount: Integer);
 begin
   //debugln(['TTestLazMemWrapper.Delete ',AIndex,'  ',ACount]);
-  DeleteRows(AIndex, ACount);
+  TestDeleteRows(AIndex, ACount);
   {$PUSH}{$R-}
   FExpected := JoinArrays(FExpected[0..AIndex-1], FExpected[(AIndex+ACount)..High(FExpected)]);
   {$POP}
@@ -262,30 +328,43 @@ end;
 
 procedure TTestLazMemWrapper.Clear;
 begin
-  FTested.DeleteRows(0, FTested.Count);
+  FTested.TestDeleteRows(0, FTested.Count);
   FTested.Capacity := 0;
   FExpected := nil;
   Assert(0 = FTested.Count);
   Assert(0 = FTested.Capacity);
 end;
 
-procedure TTestLazMemWrapper.AssertExp(AName: String; Caller: TTestStorageMem);
+procedure TTestLazMemWrapper.AssertExp(AName: String; Caller: TTestCase);
 var
   i: Integer;
+  s: String;
 begin
-  Caller.AssertEquals(Format(AName+' Expect Count %d, %d', [Length(FExpected), Count]), Length(FExpected), Count);
-  for i := 0 to FTested.Count-1 do
-    Caller.AssertEquals(Format(AName+' Test %d / %d, %d', [i, FExpected[i], Items[i]]), FExpected[i], Items[i]);
+  try
+    Caller.AssertEquals(Format(AName+' Expect Count %d, %d', [Length(FExpected), Count]), Length(FExpected), Count);
+    for i := 0 to FTested.Count-1 do
+      Caller.AssertEquals(Format(AName+' Test %d / %d, %d', [i, FExpected[i], Items[i]]), FExpected[i], Items[i]);
+  except
+    on e: Exception do begin
+      FTested.DebugDump;
+      dbgout(['EXPECTED ', length(FExpected), ': ']);
+      s :='';
+      for i := 0 to length(FExpected) - 1 do s := s + dbgs(FExpected[i])+ ', ';
+      debugln(s);
+
+      raise e;
+    end;
+  end;
 end;
 
-procedure TTestLazMemWrapper.InsertRows(AIndex, ACount: Integer);
+function TTestLazMemWrapper.TestInsertRows(AIndex, ACount: Integer): PInteger;
 begin
-  FTested.InsertRows(AIndex, ACount);
+  Result := FTested.TestInsertRows(AIndex, ACount);
 end;
 
-procedure TTestLazMemWrapper.DeleteRows(AIndex, ACount: Integer);
+procedure TTestLazMemWrapper.TestDeleteRows(AIndex, ACount: Integer);
 begin
-  FTested.DeleteRows(AIndex, ACount);
+  FTested.TestDeleteRows(AIndex, ACount);
 end;
 
 function TTestLazMemWrapper.Count: Integer;
@@ -293,61 +372,66 @@ begin
   result := FTested.Count;
 end;
 
-{ TTestLazDualCapacityListMem }
-
-function TTestLazDualCapacityListMem.GrowCapacity(ARequired: Integer): Integer;
+function TTestLazMemWrapper.ItemPointer(AIndex: Integer): PInteger;
 begin
-  assert(FGrowStep >= 0, 'TTestLazDualCapacityListMem.GrowCapacity: FGrowStep >= 0');
+  Result := PInteger(FTested.ItemPointer[AIndex]);
+end;
+
+{ TTestLazShiftBufferListObj }
+
+function TTestLazShiftBufferListObj.GrowCapacity(ARequired: Integer): Integer;
+begin
+  assert(FGrowStep >= 0, 'TTestLazShiftBufferListObj.GrowCapacity: FGrowStep >= 0');
   Result := ARequired + FGrowStep;
 end;
 
-function TTestLazDualCapacityListMem.ShrinkCapacity(ARequired: Integer): Integer;
+function TTestLazShiftBufferListObj.ShrinkCapacity(ARequired: Integer): Integer;
 begin
   if FShrinkStep < 0 then exit(-1);
-  if ARequired - Count > FShrinkStep then
-    Result := Count
+  if Capacity - FShrinkStep >  ARequired then
+    Result := ARequired
   else
     Result := -1;
 end;
 
-constructor TTestLazDualCapacityListMem.Create;
+constructor TTestLazShiftBufferListObj.Create;
 begin
   inherited Create(SizeOf(Integer));
 end;
 
-procedure TTestLazDualCapacityListMem.InsertRows(AIndex, ACount: Integer);
+function TTestLazShiftBufferListObj.TestInsertRows(AIndex, ACount: Integer): PInteger;
 begin
-  InsertRowsEx(AIndex, ACount, @GrowCapacity);
+  Result := InsertRowsEx(AIndex, ACount, @GrowCapacity);
 end;
 
-procedure TTestLazDualCapacityListMem.DeleteRows(AIndex, ACount: Integer);
+procedure TTestLazShiftBufferListObj.TestDeleteRows(AIndex, ACount: Integer);
 begin
   DeleteRowsEx(AIndex, ACount, @ShrinkCapacity);
 end;
 
-{ TTestLazGenDualCapacityListMem }
+{ TTestLazGenLazShiftBufferListObj }
 
-function TTestLazGenDualCapacityListMem.GrowCapacity(ARequired: Integer): Integer;
+function TTestLazGenLazShiftBufferListObj.GrowCapacity(ARequired: Integer): Integer;
 begin
-  assert(FGrowStep >= 0, 'TTestLazGenDualCapacityListMem.GrowCapacity: FGrowStep >= 0');
+  assert(FGrowStep >= 0, 'TTestLazGenLazShiftBufferListObj.GrowCapacity: FGrowStep >= 0');
   Result := ARequired + FGrowStep;
 end;
 
-function TTestLazGenDualCapacityListMem.ShrinkCapacity(ARequired: Integer): Integer;
+function TTestLazGenLazShiftBufferListObj.ShrinkCapacity(ARequired: Integer): Integer;
 begin
   if FShrinkStep < 0 then exit(-1);
-  if ARequired - Count > FShrinkStep then
-    Result := Count
+  if Capacity - FShrinkStep >  ARequired then
+    Result := ARequired
   else
     Result := -1;
 end;
 
-procedure TTestLazGenDualCapacityListMem.InsertRows(AIndex, ACount: Integer);
+function TTestLazGenLazShiftBufferListObj.TestInsertRows(AIndex, ACount: Integer): PInteger;
 begin
-  InsertRowsEx(AIndex, ACount, @GrowCapacity);
+  Result := InsertRowsEx(AIndex, ACount, @GrowCapacity);
 end;
 
-procedure TTestLazGenDualCapacityListMem.DeleteRows(AIndex, ACount: Integer);
+procedure TTestLazGenLazShiftBufferListObj.TestDeleteRows(AIndex, ACount: Integer);
 begin
   DeleteRowsEx(AIndex, ACount, @ShrinkCapacity);
 end;
@@ -363,8 +447,8 @@ end;
 function TTestLazRoundBufferListMem.ShrinkCapacity(ARequired: Integer): Integer;
 begin
   if FShrinkStep < 0 then exit(-1);
-  if ARequired - Count > FShrinkStep then
-    Result := Count
+  if Capacity - FShrinkStep >  ARequired then
+    Result := ARequired
   else
     Result := -1;
 end;
@@ -374,12 +458,12 @@ begin
   inherited Create(SizeOf(Integer));
 end;
 
-procedure TTestLazRoundBufferListMem.InsertRows(AIndex, ACount: Integer);
+function TTestLazRoundBufferListMem.TestInsertRows(AIndex, ACount: Integer): PInteger;
 begin
-  InsertRowsEx(AIndex, ACount, @GrowCapacity);
+  Result := InsertRowsEx(AIndex, ACount, @GrowCapacity);
 end;
 
-procedure TTestLazRoundBufferListMem.DeleteRows(AIndex, ACount: Integer);
+procedure TTestLazRoundBufferListMem.TestDeleteRows(AIndex, ACount: Integer);
 begin
   DeleteRowsEx(AIndex, ACount, @ShrinkCapacity);
 end;
@@ -388,25 +472,25 @@ end;
 
 function TTestLazGenRoundBufferListMem.GrowCapacity(ARequired: Integer): Integer;
 begin
-  assert(FGrowStep >= 0, 'TTestLazGenDualCapacityListMem.GrowCapacity: FGrowStep >= 0');
+  assert(FGrowStep >= 0, 'TTestLazGenLazShiftBufferListObj.GrowCapacity: FGrowStep >= 0');
   Result := ARequired + FGrowStep;
 end;
 
 function TTestLazGenRoundBufferListMem.ShrinkCapacity(ARequired: Integer): Integer;
 begin
   if FShrinkStep < 0 then exit(-1);
-  if ARequired - Count > FShrinkStep then
-    Result := Count
+  if Capacity - FShrinkStep >  ARequired then
+    Result := ARequired
   else
     Result := -1;
 end;
 
-procedure TTestLazGenRoundBufferListMem.InsertRows(AIndex, ACount: Integer);
+function TTestLazGenRoundBufferListMem.TestInsertRows(AIndex, ACount: Integer): PInteger;
 begin
-  InsertRowsEx(AIndex, ACount, @GrowCapacity);
+  Result := InsertRowsEx(AIndex, ACount, @GrowCapacity);
 end;
 
-procedure TTestLazGenRoundBufferListMem.DeleteRows(AIndex, ACount: Integer);
+procedure TTestLazGenRoundBufferListMem.TestDeleteRows(AIndex, ACount: Integer);
 begin
   DeleteRowsEx(AIndex, ACount, @ShrinkCapacity);
 end;
@@ -415,26 +499,27 @@ end;
 
 function TTestLazPagedListMem.GrowCapacity(ARequired: Integer): Integer;
 begin
-  assert(FGrowStep >= 0, 'TTestLazDualCapacityListMem.GrowCapacity: FGrowStep >= 0');
+  assert(FGrowStep >= 0, 'TTestLazShiftBufferListObj.GrowCapacity: FGrowStep >= 0');
   Result := ARequired + FGrowStep;
 end;
 
 function TTestLazPagedListMem.ShrinkCapacity(ARequired: Integer): Integer;
 begin
   if FShrinkStep < 0 then exit(-1);
-  if ARequired - Count > FShrinkStep then
-    Result := Count
+  if Capacity - FShrinkStep >  ARequired then
+    Result := ARequired
   else
     Result := -1;
 end;
 
-procedure TTestLazPagedListMem.InsertRows(AIndex, ACount: Integer);
+function TTestLazPagedListMem.TestInsertRows(AIndex, ACount: Integer): PInteger;
 begin
   inherited InsertRows(AIndex, ACount);
   //InsertRowsEx(AIndex, ACount, @GrowCapacity);
+  Result := PInteger(ItemPointer[AIndex]);
 end;
 
-procedure TTestLazPagedListMem.DeleteRows(AIndex, ACount: Integer);
+procedure TTestLazPagedListMem.TestDeleteRows(AIndex, ACount: Integer);
 begin
   inherited DeleteRows(AIndex, ACount);
   //DeleteRowsEx(AIndex, ACount, @ShrinkCapacity);
@@ -472,157 +557,290 @@ end;
 
 procedure TTestRunnerList.TestNew(name: string);
 var
-  c, c2: TListType;
+  ListWrapper, ListWrapper2: TListType;
   i, j, k: Integer;
+  p: PInteger;
 begin
-  c.Create;
-  c.FTested.FGrowStep := GrowStep;
-  c.FTested.FShrinkStep := ShrinkStep;
-  c2.Create;
-  c2.FTested.FGrowStep := GrowStep;
-  c2.FTested.FShrinkStep := ShrinkStep;
+  ListWrapper.Create;
+  ListWrapper.FTested.FGrowStep := GrowStep;
+  ListWrapper.FTested.FShrinkStep := ShrinkStep;
+  ListWrapper2.Create;
+  ListWrapper2.FTested.FGrowStep := GrowStep;
+  ListWrapper2.FTested.FShrinkStep := ShrinkStep;
 
   for i := 1 to 25 do begin
-    c.Insert(0, CreateArray(1, i));
-    c.AssertExp(format('Insert %d at 0', [i]), Caller);
+    p := ListWrapper.Insert(0, CreateArray(1, i));
+    Caller.AssertEquals('', {%H-}PtrInt(ListWrapper.ItemPointer(0)), {%H-}PtrInt(p));
+    ListWrapper.AssertExp(format('Insert %d at 0', [i]), Caller);
 
     for j := 0 to i do
     for k := 1 to 25 do begin
-      c.Insert(j, CreateArray(100*k, k));
-      c.AssertExp(format('Insert %d at %d', [k, j]), Caller);
+      p := ListWrapper.Insert(j, CreateArray(100*k, k));
+      Caller.AssertEquals('', {%H-}PtrInt(ListWrapper.ItemPointer(j)), {%H-}PtrInt(p));
+      ListWrapper.AssertExp(format('Insert %d at %d', [k, j]), Caller);
 
-      c.Delete(j, k);
-      c.AssertExp(format('Delete %d at %d', [k, j]), Caller);
+      ListWrapper.Delete(j, k);
+      ListWrapper.AssertExp(format('Delete %d at %d', [k, j]), Caller);
 
-      Caller.AssertEquals('', i, c.Count);
+      Caller.AssertEquals('', i, ListWrapper.Count);
 
       // start form empty, may have different free-at-start
-      c2.Clear;
-      c2.Insert(0, CreateArray(k, i));
-      c2.AssertExp(format('Insert %d at 0', [i]), Caller);
+      ListWrapper2.Clear;
+      p := ListWrapper2.Insert(0, CreateArray(k, i));
+      ListWrapper2.AssertExp(format('Insert %d at 0', [i]), Caller);
 
-      c2.Insert(j, CreateArray(100*k, k));
-      c2.AssertExp(format('c2 Insert %d at %d', [k, j]), Caller);
-      c2.Delete(j, k);
-      c2.AssertExp(format('c2 Delete %d at %d', [k, j]), Caller);
-      Caller.AssertEquals('', i, c.Count);
+      p := ListWrapper2.Insert(j, CreateArray(100*k, k));
+      Caller.AssertEquals('', {%H-}PtrInt(ListWrapper2.ItemPointer(j)), {%H-}PtrInt(p));
+      ListWrapper2.AssertExp(format('ListWrapper2 Insert %d at %d', [k, j]), Caller);
+      ListWrapper2.Delete(j, k);
+      ListWrapper2.AssertExp(format('ListWrapper2 Delete %d at %d', [k, j]), Caller);
+      Caller.AssertEquals('', i, ListWrapper.Count);
+
+      if  byte(k) in [1,9,10,11,20] then begin
+        // test with space at start
+        ListWrapper2.Clear;
+        p := ListWrapper2.Insert(0, CreateArray(k, i+10));
+        ListWrapper2.Delete(0, 10);
+        ListWrapper2.AssertExp(format('Insert %d at 0', [i]), Caller);
+
+        p := ListWrapper2.Insert(j, CreateArray(100*k, k));
+        Caller.AssertEquals('', {%H-}PtrInt(ListWrapper2.ItemPointer(j)), {%H-}PtrInt(p));
+        ListWrapper2.AssertExp(format('ListWrapper2 Insert %d at %d', [k, j]), Caller);
+        ListWrapper2.Delete(j, k);
+        ListWrapper2.AssertExp(format('ListWrapper2 Delete %d at %d', [k, j]), Caller);
+        Caller.AssertEquals('', i, ListWrapper.Count);
+
+        // test with space at end
+        ListWrapper2.Clear;
+        p := ListWrapper2.Insert(0, CreateArray(k, i+10));
+        ListWrapper2.Delete(i, 10);
+        ListWrapper2.AssertExp(format('Insert %d at 0', [i]), Caller);
+
+        p := ListWrapper2.Insert(j, CreateArray(100*k, k));
+        Caller.AssertEquals('', {%H-}PtrInt(ListWrapper2.ItemPointer(j)), {%H-}PtrInt(p));
+        ListWrapper2.AssertExp(format('ListWrapper2 Insert %d at %d', [k, j]), Caller);
+        ListWrapper2.Delete(j, k);
+        ListWrapper2.AssertExp(format('ListWrapper2 Delete %d at %d', [k, j]), Caller);
+        Caller.AssertEquals('', i, ListWrapper.Count);
+
+      end;
+
     end;
+
+
+    for k := 1 to (i div 2) - 1 do begin
+      ListWrapper2.Clear;
+      p := ListWrapper2.Insert(0, CreateArray(k, i));
+      ListWrapper2.Delete(i-k, k);
+      ListWrapper2.Delete(0, k);
+      ListWrapper2.AssertExp(format('ListWrapper2 Delete %d at %d', [i, k]), Caller);
+
+      p := ListWrapper2.Insert((i-(2*k)) div 2, CreateArray(90*k, 2*k));
+      Caller.AssertEquals('', {%H-}PtrInt(ListWrapper2.ItemPointer((i-(2*k)) div 2)), {%H-}PtrInt(p));
+      ListWrapper2.AssertExp(format('ListWrapper2 Delete %d at %d', [i, k]), Caller);
+    end;
+
 
     for j := 0 to i-1 do
     for k := 1 to i-j do begin
-      c2.Clear;
-      c2.Insert(0, CreateArray(1, i));
-      c2.Delete(j, k);
-      c2.AssertExp(format('c2 Delete(2) %d at %d', [k, j]), Caller);
+      ListWrapper2.Clear;
+      p := ListWrapper2.Insert(0, CreateArray(1, i));
+      ListWrapper2.Delete(j, k);
+      ListWrapper2.AssertExp(format('ListWrapper2 Delete(2) %d at %d', [k, j]), Caller);
     end;
 
-    c.Clear;
+    ListWrapper.Clear;
   end;
 
-  c.destroy;
-  c2.destroy;
+  ListWrapper.destroy;
+  ListWrapper2.destroy;
+end;
+
+procedure TTestRunnerList.TestMove(name: string);
+var
+  ListWrapper: TListType;
+  InitCnt, FromPos, ToPos, MoveLen, DelCnt, InsCnt: Integer;
+begin
+  ListWrapper.Create;
+  ListWrapper.FTested.FGrowStep := GrowStep;
+  ListWrapper.FTested.FShrinkStep := ShrinkStep;
+
+  for InitCnt := 2 to ListWrapper.FTested.TEST_MAX_CNT do
+    for FromPos := 0 to InitCnt-1 do // from
+    for ToPos := 0 to InitCnt-1 do // to
+    for MoveLen := 1 to InitCnt-Max(FromPos,ToPos)-1 do // len
+    begin
+      if FromPos=ToPos then continue;
+//debugln(['>>>>>>>>>> TestMoveA ',InitCnt,',',FromPos,',',ToPos,',',MoveLen]);
+      ListWrapper.Insert(0, CreateArray(1, InitCnt));
+      //ListWrapper.AssertExp(format('Insert %d at 0', [InitCnt]), Caller);
+
+      ListWrapper.MoveRows(FromPos,ToPos,MoveLen);
+      ListWrapper.AssertExp(format('MOV %d / %d %d %d ', [InitCnt,FromPos,ToPos,MoveLen]), Caller);
+      ListWrapper.Clear;
+
+
+      if (FromPos < min(8, ListWrapper.FTested.TEST_MAX_CNT div 4)) or
+         (ToPos < min(8, ListWrapper.FTested.TEST_MAX_CNT div 4)) or
+         (FromPos > ListWrapper.FTested.TEST_MAX_CNT - min(5, ListWrapper.FTested.TEST_MAX_CNT div 6)) or
+         (ToPos > ListWrapper.FTested.TEST_MAX_CNT - min(5, ListWrapper.FTested.TEST_MAX_CNT div 6))
+      then begin
+        // vary the GAP at start
+        for DelCnt := 1 to min(7, ListWrapper.FTested.TEST_MAX_CNT div 4) do begin
+          ListWrapper.Create;
+          ListWrapper.FTested.FGrowStep := GrowStep;
+          ListWrapper.FTested.FShrinkStep := ShrinkStep;
+          ListWrapper.Insert(0, CreateArray(1, InitCnt+DelCnt));
+          ListWrapper.Delete(0, DelCnt);
+          ListWrapper.AssertExp(format('Insert %d at 0', [InitCnt]), Caller);
+
+          ListWrapper.MoveRows(FromPos,ToPos,MoveLen);
+          ListWrapper.AssertExp(format('MOV %d / %d %d %d ', [InitCnt,FromPos,ToPos,MoveLen]), Caller);
+          ListWrapper.Clear;
+        end;
+
+        for InsCnt := 1 to min(4, InitCnt-1) do begin
+          ListWrapper.Create;
+          ListWrapper.FTested.FGrowStep := GrowStep;
+          ListWrapper.FTested.FShrinkStep := ShrinkStep;
+          ListWrapper.Insert(0, CreateArray(1, InitCnt-InsCnt));
+          ListWrapper.Insert(0, CreateArray(100, InsCnt));
+          ListWrapper.AssertExp(format('Insert %d at 0', [InitCnt]), Caller);
+
+          ListWrapper.MoveRows(FromPos,ToPos,MoveLen);
+          ListWrapper.AssertExp(format('MOV %d / %d %d %d ', [InitCnt,FromPos,ToPos,MoveLen]), Caller);
+          ListWrapper.Clear;
+        end;
+      end;
+
+    end;
+  ListWrapper.destroy;
+
+
+  for InitCnt := 3 to 10 do
+    for FromPos := 0 to InitCnt-1 do // from
+    for ToPos := 0 to InitCnt-1 do // to
+    for DelCnt := 1 to min(InitCnt-2, 5) do // del
+    for MoveLen := 1 to InitCnt-Max(FromPos,ToPos)-1 do // len
+    begin
+      if FromPos=ToPos then continue;
+      ListWrapper.Create;
+      ListWrapper.FTested.FGrowStep := GrowStep;
+      ListWrapper.FTested.FShrinkStep := ShrinkStep;
+
+      ListWrapper.Insert(0, CreateArray(1, InitCnt));
+      ListWrapper.Delete(0, DelCnt);
+      ListWrapper.Insert(InitCnt-DelCnt, CreateArray(100, DelCnt)); // fill roundbuffer
+      ListWrapper.AssertExp(format('Insert %d at 0', [InitCnt]), Caller);
+
+      ListWrapper.MoveRows(FromPos,ToPos,MoveLen);
+      ListWrapper.AssertExp(format('MOV3 %d / %d %d %d ', [InitCnt,FromPos,ToPos,MoveLen]), Caller);
+      ListWrapper.Clear;
+      ListWrapper.destroy;
+    end;
+
 end;
 
 procedure TTestRunnerList.TestSequence(name: string; a: array of Integer);
 var
-  c: TListType;
+  ListWrapper: TListType;
   i, j, k, n, m, o: Integer;
 begin
-  c.Create;
-  c.FTested.FGrowStep := GrowStep;
-  c.FTested.FShrinkStep := ShrinkStep;
+  ListWrapper.Create;
+  ListWrapper.FTested.FGrowStep := GrowStep;
+  ListWrapper.FTested.FShrinkStep := ShrinkStep;
 
   for i := 0 to high(a) do begin
-    c.Insert(a[i]);
-    Caller.AssertTrue(Format(name+' Test Cnt %d %d ', [i, c.Count]), c.Count = i+1);
-//for j := 0 to c.Count-1 do dbgout([c.Items[j],', ']); debugln(' <<<');
-    for j := 1 to c.Count-1 do
-      Caller.AssertTrue(Format(name+' Test %d %d / %d, %d', [i, j, c.Items[j], c.Items[j-1]]), c.Items[j] > c.Items[j-1]);
+    ListWrapper.Insert(a[i]);
+    Caller.AssertTrue(Format(name+' Test Cnt %d %d ', [i, ListWrapper.Count]), ListWrapper.Count = i+1);
+//for j := 0 to ListWrapper.Count-1 do dbgout([ListWrapper.Items[j],', ']); debugln(' <<<');
+    for j := 1 to ListWrapper.Count-1 do
+      Caller.AssertTrue(Format(name+' Test %d %d / %d, %d', [i, j, ListWrapper.Items[j], ListWrapper.Items[j-1]]), ListWrapper.Items[j] > ListWrapper.Items[j-1]);
   end;
-  while c.count> 0 do begin
-    c.DeleteRows(c.count-1, 1);
-    for j := 1 to c.Count-1 do
-      Caller.AssertTrue(Format(name+' Test %d %d', [i, j]), c.Items[j] > c.Items[j-1]);
+  while ListWrapper.count> 0 do begin
+    ListWrapper.TestDeleteRows(ListWrapper.count-1, 1);
+    for j := 1 to ListWrapper.Count-1 do
+      Caller.AssertTrue(Format(name+' Test %d %d', [i, j]), ListWrapper.Items[j] > ListWrapper.Items[j-1]);
   end;
 
-  c.Clear;
+  ListWrapper.Clear;
   for i := 0 to high(a) do begin
-    k := c.Insert(a[i]);
-    Caller.AssertEquals(Format(name+' Test %d %d', [i, j]),a[i], c.Items[k]);
-    for j := 1 to c.Count-1 do
-      Caller.AssertTrue(Format(name+' Test %d %d', [i, j]), c.Items[j] > c.Items[j-1]);
+    k := ListWrapper.Insert(a[i]);
+    Caller.AssertEquals(Format(name+' Test %d %d', [i, j]),a[i], ListWrapper.Items[k]);
+    for j := 1 to ListWrapper.Count-1 do
+      Caller.AssertTrue(Format(name+' Test %d %d', [i, j]), ListWrapper.Items[j] > ListWrapper.Items[j-1]);
   end;
-  while c.count> 1 do begin
-    c.DeleteRows(c.count-2, 2);
-    for j := 1 to c.Count-1 do
-      Caller.AssertTrue(Format(name+' Test %d %d', [i, j]), c.Items[j] > c.Items[j-1]);
+  while ListWrapper.count> 1 do begin
+    ListWrapper.TestDeleteRows(ListWrapper.count-2, 2);
+    for j := 1 to ListWrapper.Count-1 do
+      Caller.AssertTrue(Format(name+' Test %d %d', [i, j]), ListWrapper.Items[j] > ListWrapper.Items[j-1]);
   end;
 
-  c.Clear;
+  ListWrapper.Clear;
   for i := 0 to high(a) do begin
-    c.Insert(a[i]);
+    ListWrapper.Insert(a[i]);
   end;
-  for j := 1 to c.Count-1 do
-    Caller.AssertTrue(Format(name+' Test %d %d', [i, j]), c.Items[j] > c.Items[j-1]);
-  while c.count> 0 do begin
-    c.DeleteRows(0, 1);
-    for j := 1 to c.Count-1 do
-      Caller.AssertTrue(Format(name+' Test %d %d', [i, j]), c.Items[j] > c.Items[j-1]);
+  for j := 1 to ListWrapper.Count-1 do
+    Caller.AssertTrue(Format(name+' Test %d %d', [i, j]), ListWrapper.Items[j] > ListWrapper.Items[j-1]);
+  while ListWrapper.count> 0 do begin
+    ListWrapper.TestDeleteRows(0, 1);
+    for j := 1 to ListWrapper.Count-1 do
+      Caller.AssertTrue(Format(name+' Test %d %d', [i, j]), ListWrapper.Items[j] > ListWrapper.Items[j-1]);
   end;
 
-  c.Clear;
+  ListWrapper.Clear;
   for i := high(a) downto 0 do begin
-    k := c.Insert(a[i]);
-    Caller.AssertEquals(Format(name+' Test idx %d %d / %d %d', [i, j, k, c.Items[k]]),a[i], c.Items[k]);
-    for j := 1 to c.Count-1 do
-      Caller.AssertTrue(Format(name+' Test %d %d /  / %d %d', [i, j, c.Items[j], c.Items[j-1]]), c.Items[j] > c.Items[j-1]);
+    k := ListWrapper.Insert(a[i]);
+    Caller.AssertEquals(Format(name+' Test idx %d %d / %d %d', [i, j, k, ListWrapper.Items[k]]),a[i], ListWrapper.Items[k]);
+    for j := 1 to ListWrapper.Count-1 do
+      Caller.AssertTrue(Format(name+' Test %d %d /  / %d %d', [i, j, ListWrapper.Items[j], ListWrapper.Items[j-1]]), ListWrapper.Items[j] > ListWrapper.Items[j-1]);
   end;
-  while c.count> 0 do begin
-    c.DeleteRows(0, Min(c.count, 2));
-    for j := 1 to c.Count-1 do
-      Caller.AssertTrue(Format(name+' Test %d %d', [i, j]), c.Items[j] > c.Items[j-1]);
+  while ListWrapper.count> 0 do begin
+    ListWrapper.TestDeleteRows(0, Min(ListWrapper.count, 2));
+    for j := 1 to ListWrapper.Count-1 do
+      Caller.AssertTrue(Format(name+' Test %d %d', [i, j]), ListWrapper.Items[j] > ListWrapper.Items[j-1]);
   end;
 
-  c.Clear;
+  ListWrapper.Clear;
   for i := high(a) downto 0 do begin
-    k := c.Insert(a[i]);
+    k := ListWrapper.Insert(a[i]);
   end;
-  while c.count> 0 do begin
-    c.DeleteRows(c.count div 2, 1);
-    for j := 1 to c.Count-1 do
-      Caller.AssertTrue(Format(name+' Test %d %d', [i, j]), c.Items[j] > c.Items[j-1]);
+  while ListWrapper.count> 0 do begin
+    ListWrapper.TestDeleteRows(ListWrapper.count div 2, 1);
+    for j := 1 to ListWrapper.Count-1 do
+      Caller.AssertTrue(Format(name+' Test %d %d', [i, j]), ListWrapper.Items[j] > ListWrapper.Items[j-1]);
   end;
 
 
   for m := 0 to length(a)-1 do begin
     for n := 0 to m do begin
-      c.Clear;
+      ListWrapper.Clear;
       for i := 0 to m do begin
-        k := c.Insert(a[i]);
-        Caller.AssertEquals(Format(name+' Test %d %d', [n, i]),a[i], c.Items[k]);
+        k := ListWrapper.Insert(a[i]);
+        Caller.AssertEquals(Format(name+' Test %d %d', [n, i]),a[i], ListWrapper.Items[k]);
       end;
-      for j := 1 to c.Count-1 do
-        Caller.AssertTrue(Format(name+' Test %d %d', [n, j]), c.Items[j] > c.Items[j-1]);
-      k := c.Items[n];
-      c.DeleteRows(n, 1);
-      for j := 1 to c.Count-1 do
-        Caller.AssertTrue(Format(name+' Test %d %d %d %d', [n, j, c.Items[j], c.Items[j-1]]), c.Items[j] > c.Items[j-1]);
-      for j := 0 to c.Count-1 do
-        Caller.AssertTrue(Format(name+' Test %d %d - idx %d <> %d', [n, j, k, c.Items[j]]), c.Items[j] <> k);
-      while c.count > 1 do begin
-        o := Max(0,Min(c.count-2, n));
-        k := c.Items[o];
-        c.DeleteRows(o, 2);
-        for j := 1 to c.Count-1 do begin
-          Caller.AssertTrue(Format(name+' Test %d %d', [i, j]), c.Items[j] > c.Items[j-1]);
-          Caller.AssertTrue(Format(name+' Test %d %d', [i, j]), c.Items[j] <> k);
+      for j := 1 to ListWrapper.Count-1 do
+        Caller.AssertTrue(Format(name+' Test %d %d', [n, j]), ListWrapper.Items[j] > ListWrapper.Items[j-1]);
+      k := ListWrapper.Items[n];
+      ListWrapper.TestDeleteRows(n, 1);
+      for j := 1 to ListWrapper.Count-1 do
+        Caller.AssertTrue(Format(name+' Test %d %d %d %d', [n, j, ListWrapper.Items[j], ListWrapper.Items[j-1]]), ListWrapper.Items[j] > ListWrapper.Items[j-1]);
+      for j := 0 to ListWrapper.Count-1 do
+        Caller.AssertTrue(Format(name+' Test %d %d - idx %d <> %d', [n, j, k, ListWrapper.Items[j]]), ListWrapper.Items[j] <> k);
+      while ListWrapper.count > 1 do begin
+        o := Max(0,Min(ListWrapper.count-2, n));
+        k := ListWrapper.Items[o];
+        ListWrapper.TestDeleteRows(o, 2);
+        for j := 1 to ListWrapper.Count-1 do begin
+          Caller.AssertTrue(Format(name+' Test %d %d', [i, j]), ListWrapper.Items[j] > ListWrapper.Items[j-1]);
+          Caller.AssertTrue(Format(name+' Test %d %d', [i, j]), ListWrapper.Items[j] <> k);
         end;
       end;
 
     end;
   end;
 
-  c.Destroy;
+  ListWrapper.Destroy;
 end;
 
 procedure TTestRunnerList.TestSequenceEx(n: string; a: array of Integer);
@@ -654,28 +872,17 @@ begin
   end;
 end;
 
-procedure TTestRunnerList.RunTest(ACaller: TTestStorageMem);
-var
-  i1, i2: Integer;
+procedure TTestRunnerList.RunSeq(name: string);
 begin
-  Caller := ACaller;
-  for i1 := 0 to 2 do begin
-    for i2 := 0 to 3 do begin
-      GrowStep := i1 * 4;
-      case i2 of
-        0: ShrinkStep := -1;
-        1: ShrinkStep :=  1;
-        2: ShrinkStep :=  4;
-        3: ShrinkStep := 99;
-      end;
-
-      TestNew('');
-      //(*
       TestSequence('XXX', [3,2,1,12,11,10,9,8,7,6,5,4]);
       TestSequence('XXX', [4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2, 3]);
+end;
 
+procedure TTestRunnerList.RunSeqEx(name: string);
+begin
       TestSequenceEx('1', [1,2]);
       TestSequenceEx('1', [1,2,3,4,5,6,7,8,9,10,11,12]);
+//GrowStep := 1 * 4;
       TestSequenceEx('1', [1,99,2,98,3,97,4,96,5,95,6,94]);
       TestSequenceEx('1', [1,2,3,4,5,6,7,8,9,10,11,12,-1]);
       {$IFnDEF TEST_SKIP_SLOW}
@@ -688,89 +895,85 @@ begin
       TestSequenceEx('1', [1,2,3,4,5,-1]);
       TestSequenceEx('1', [1,2,3,4,-1]);
       {$ENDIF}
-//      *)
+end;
+
+procedure TTestRunnerList.RunTests(AProc: TTestProc);
+var
+  i1, i2: Integer;
+begin
+  Caller := self;
+  for i1 := 0 to 2 do begin
+    for i2 := 0 to 3 do begin
+      GrowStep := i1 * 4;
+      case i2 of
+        0: ShrinkStep := -1;
+        1: ShrinkStep :=  1;
+        2: ShrinkStep :=  4;
+        3: ShrinkStep := 99;
+      end;
+
+      AProc('');
     end;
   end;
 end;
 
-procedure TTestStorageMem.TestMem;
-var t: TTestListMem;
+procedure TTestRunnerList.TestCreate;
 begin
-  t.RunTest(Self);
+  RunTests(@TestNew);
 end;
 
-procedure TTestStorageMem.TestMemSpecialized;
-var t: TTestListMemSpecialized;
+procedure TTestRunnerList.TestMove;
 begin
-  t.RunTest(Self);
+  RunTests(@TestMove);
 end;
 
-procedure TTestStorageMem.TestMemRound;
-var t: TTestListRoundMem;
-begin
-  t.RunTest(Self);
-end;
-
-procedure TTestStorageMem.TestMemRoundSpecialized;
-var t: TTestListRoundMemSpecialized;
-begin
-  t.RunTest(Self);
-end;
-
-procedure TTestStorageMem.TestMemPaged;
+procedure TTestRunnerList.TestShrink;
 var
-  t0: TTestListPagedMem0;
-  t1: TTestListPagedMem1;
-  t2: TTestListPagedMem2;
-  t3: TTestListPagedMem3;
+  ListWrapper: TListType;
 begin
-  t1.RunTest(Self);
-  t2.RunTest(Self);
-  t3.RunTest(Self);
-  t0.RunTest(Self);
+  ListWrapper.Create;
+  ListWrapper.FTested.InsertRows(0, 1000);
+  AssertTrue('grow '+IntToStr(ListWrapper.FTested.Capacity), ListWrapper.FTested.Capacity >= 1000);
+
+  ListWrapper.FTested.DeleteRows(2, 997);
+  AssertTrue('shrink '+IntToStr(ListWrapper.FTested.Capacity), ListWrapper.FTested.Capacity < 100);
+
+  ListWrapper.destroy;
+
+
+  // test internal
+  ListWrapper.Create;
+  ListWrapper.FTested.FGrowStep := GrowStep;
+  ListWrapper.FTested.FShrinkStep := ShrinkStep;
+  ListWrapper.Insert(0, CreateArray(1, 1000));
+  AssertTrue('internal grow '+IntToStr(ListWrapper.FTested.Capacity), ListWrapper.FTested.Capacity >= 1000);
+
+  ListWrapper.Delete(2, 997);
+  AssertTrue('internal shrink '+IntToStr(ListWrapper.FTested.Capacity), ListWrapper.FTested.Capacity < 100);
+
+  ListWrapper.destroy;
 end;
 
-procedure TTestStorageMem.TestMemClass;
-const
-  TestVal: array[0..2] of Integer = (11, 22, 33);
-var
-  list: TLazDualCapacityList;
+procedure TTestRunnerList.TestSeq;
 begin
-  list := TLazDualCapacityList.Create(SizeOf(Integer));
-  list.Add(@TestVal[0]);
-  list.Insert(1, @TestVal[1]);
-  list.Insert(0, @TestVal[2]);
-
-  AssertEquals('', 33, PInteger(list.ItemPointer[0])^);
-  AssertEquals('', 11, PInteger(list.ItemPointer[1])^);
-  AssertEquals('', 22, PInteger(list.ItemPointer[2])^);
-
-  list.Free;
+  RunTests(@RunSeq);
 end;
 
-type
-  TTestClass = specialize TLazGenDualCapacityList<Integer>;
-procedure TTestStorageMem.TestMemSpecializedClass;
-var
-  list: TTestClass;
+procedure TTestRunnerList.TestSeqEx;
 begin
-  list := TTestClass.Create;
-  list.Add(11);
-  list.Insert(1, 22);
-  list.Insert(0, 33);
-
-  AssertEquals('', 33, list.Items[0]);
-  AssertEquals('', 11, list.Items[1]);
-  AssertEquals('', 22, list.Items[2]);
-
-  list.Free;
-
+  RunTests(@RunSeqEx);
 end;
-
-
 
 initialization
 
-  RegisterTest(TTestStorageMem);
+  RegisterTest(TTestListMem );
+  RegisterTest(TTestListMemSpecialized );
+  RegisterTest(TTestListRoundMem );
+  RegisterTest(TTestListRoundMemSpecialized );
+  RegisterTest(TTestListPagedMem0 );
+  RegisterTest(TTestListPagedMem1 );
+  RegisterTest(TTestListPagedMem2 );
+  RegisterTest(TTestListPagedMem3 );
+
 end.
 
