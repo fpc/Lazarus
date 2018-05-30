@@ -520,13 +520,20 @@ object MainFrm: TMainFrm
     object miSep2: TMenuItem
       Caption = '-'
     end
-    object miSaveChecks: TMenuItem
-      Caption = 'Save checks'
-      OnClick = miSaveChecksClick
+    object miSave: TMenuItem
+      Caption = 'Save packages'
+      object miSaveChecked: TMenuItem
+        Caption = 'Checked'
+        OnClick = miSaveCheckedClick
+      end
+      object miSaveInstalled: TMenuItem
+        Caption = 'Installed'
+        OnClick = miSaveInstalledClick
+      end
     end
-    object miLoadChecks: TMenuItem
-      Caption = 'Load checks'
-      OnClick = miLoadChecksClick
+    object miLoad: TMenuItem
+      Caption = 'Load packages'
+      OnClick = miLoadClick
     end
   end
   object pmMemo: TPopupMenu

@@ -54,14 +54,16 @@ type
     cbPackageState: TComboBox;
     cbPackageType: TComboBox;
     imTBDis: TImageList;
+    miSaveChecked: TMenuItem;
     miFromExteranlSource: TMenuItem;
     miFromRepository: TMenuItem;
+    miSaveInstalled: TMenuItem;
     miSep2: TMenuItem;
     miSep3: TMenuItem;
     miSep1: TMenuItem;
     miCreateRepository: TMenuItem;
-    miLoadChecks: TMenuItem;
-    miSaveChecks: TMenuItem;
+    miLoad: TMenuItem;
+    miSave: TMenuItem;
     miDateDsc: TMenuItem;
     miDateAsc: TMenuItem;
     miNameDsc: TMenuItem;
@@ -116,10 +118,11 @@ type
     procedure miCreateRepositoryPackageClick(Sender: TObject);
     procedure miFromExteranlSourceClick(Sender: TObject);
     procedure miFromRepositoryClick(Sender: TObject);
-    procedure miLoadChecksClick(Sender: TObject);
+    procedure miLoadClick(Sender: TObject);
     procedure miNameAscClick(Sender: TObject);
     procedure miResetRatingClick(Sender: TObject);
-    procedure miSaveChecksClick(Sender: TObject);
+    procedure miSaveCheckedClick(Sender: TObject);
+    procedure miSaveInstalledClick(Sender: TObject);
     procedure miSaveToFileClick(Sender: TObject);
     procedure pnToolBarResize(Sender: TObject);
     procedure tbCleanUpClick(Sender: TObject);
@@ -1114,7 +1117,7 @@ begin
   end;
 end;
 
-procedure TMainFrm.miSaveChecksClick(Sender: TObject);
+procedure TMainFrm.miSaveCheckedClick(Sender: TObject);
 var
   Node: PVirtualNode;
   Data: PData;
@@ -1149,7 +1152,39 @@ begin
   end;
 end;
 
-procedure TMainFrm.miLoadChecksClick(Sender: TObject);
+procedure TMainFrm.miSaveInstalledClick(Sender: TObject);
+var
+  Node: PVirtualNode;
+  Data: PData;
+  SL: TStringList;
+begin
+  SD.DefaultExt := '.*.opm';
+  SD.Filter := '*.opm|*.opm';
+
+  SL := TStringList.Create;
+  try
+    Node := VisualTree.VST.GetFirst;
+    while Node <> nil do
+    begin
+      Data := VisualTree.VST.GetNodeData(Node);
+      if (Data^.DataType = 2) and (Data^.InstalledVersion <> '') then
+        SL.Add(Data^.LazarusPackageName);
+      Node := VisualTree.VST.GetNext(Node);
+    end;
+    if Trim(SL.Text) = '' then
+      MessageDlgEx(rsMainFrm_rsMessageNothingInstalled, mtInformation, [mbOk], Self)
+    else
+      if SD.Execute then
+      begin
+         SL.SaveToFile(SD.FileName);
+         MessageDlgEx(Format(rsMainFrm_resMessageChecksSaved, [IntToStr(SL.Count)]), mtInformation, [mbOk], Self)
+      end;
+  finally
+    SL.Free;
+  end;
+end;
+
+procedure TMainFrm.miLoadClick(Sender: TObject);
 var
   SL: TStringList;
   I: Integer;
@@ -1333,9 +1368,10 @@ begin
   miSaveToFile.Caption := rsMainFrm_miSaveToFile;
   miCopyToClpBrd.Caption := rsMainFrm_miCopyToClpBrd;
   miResetRating.Caption := rsMainFrm_miResetRating;
-  miSaveChecks.Caption := rsMainFrm_miSaveChecks;
-  miLoadChecks.Caption := rsMainFrm_miLoadChecks;
-
+  miSave.Caption := rsMainFrm_miSave;
+  miSaveChecked.Caption := rsMainFrm_miSaveChecked;
+  miSaveInstalled.Caption := rsMainFrm_miLoadInstalled;
+  miLoad.Caption := rsMainFrm_miLoad;
   edFilter.Hint := rsMainFrm_edFilter_Hint;
   spClear.Hint := rsMainFrm_spClear_Hint;
   cbFilterBy.Top := (pnTop.Height - cbFilterBy.Height) div 2;
