@@ -1456,6 +1456,8 @@ var
   end;
 
   function DsPos: boolean;
+  var
+    oldMaxPos: Integer;
   begin
     result := false;
     aPos := Message.Pos;
@@ -1463,12 +1465,22 @@ var
       result := true;
       exit;
     end;
-    if aPos>=MaxPos then
+    oldMaxPos := MaxPos;
+    if aPos>=oldMaxPos then
       dsGoto(False)
     else if aPos<=0 then
       dsGoto(True)
-    else if IsSeq then
-      FDatalink.DataSet.RecNo := aPos + 1
+    else if IsSeq then begin
+      FDatalink.DataSet.RecNo := aPos + 1;
+      {$IFDEF MSWINDOWS}
+      // Workaround for scrollbar range not being updated
+      // probably only needed under windows, issue 33799
+      if oldMaxPos<>MaxPos then begin
+        ScrollBarShow(SB_VERT, false);
+        ScrollBarShow(SB_VERT, true);
+      end;
+      {$ENDIF}
+    end
     else begin
       DeltaRec := Message.Pos - FOldPosition;
       if DeltaRec=0 then begin
