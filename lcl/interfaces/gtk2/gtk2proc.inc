@@ -2325,6 +2325,9 @@ begin
   else begin
     KCInfo := MKeyCodeInfo[KeyCode];
 
+    {$IFDEF VerboseKeyboard}
+    debugln(['HandleGTKKeyUpDown AEvent^.hardware_keycode=',AEvent^.hardware_keycode,',keyval=',AEvent^.keyval,',group=',AEvent^.group,' KeyCode=',KeyCode,' ',dbgs(ShiftState),' KCInfo.VKey1=',KCInfo.VKey1,',VKey2=',KCInfo.VKey2]);
+    {$ENDIF}
     if (KCInfo.Flags and KCINFO_FLAG_SHIFT_XOR_NUM <> 0)
     and ((ssShift in ShiftState) xor (ssNum in ShiftState))
     then VKey := KCInfo.VKey2
@@ -2614,6 +2617,14 @@ const
     VK_X, //GDK_KEY_Cyrillic_CAPITAL_CHE = $6fe;
     0 ////Ord(']') //GDK_KEY_Cyrillic_CAPITAL_HARDSIGN = $6ff;
     );
+
+function gdkKeyMapChanged(aKeymap: PGdkKeymap; Data: gPointer) : GBoolean; cdecl;
+begin
+  Result:=CallBackDefaultReturn;
+  if aKeymap=nil then ;
+  if Data=nil then ;
+  InitKeyboardTables;
+end;
 
 {------------------------------------------------------------------------------
   Procedure: InitKeyboardTables
@@ -3283,7 +3294,6 @@ type
 const
   // first OEM specific VK
   VK_FIRST_OEM = $92;
-
 var
   KeySyms: array of guint;
   KeyVals: Pguint = nil;
@@ -3295,8 +3305,9 @@ var
   KeySymCharLen: Integer;
 
 {$ifdef HasX}
-  XDisplay: Pointer;
+  XDisplay: PDisplay;
   ModMap: TModMap;
+  NewKeyMap: PGdkKeymap;
 {$endif}
 {$ifdef UseOwnShiftState}
   KeyStateMapIndex: Integer;
@@ -3312,10 +3323,22 @@ begin
 {$ifdef HasX}
   XDisplay := gdk_display;
   if XDisplay = nil then Exit;
-
   FillByte(MKeyStateMap, SizeOF(MKeyStateMap), 0);
   SetupModifiers(XDisplay, ModMap{%H-});
 {$endif}
+
+  NewKeyMap:=gdk_keymap_get_for_display(gdk_display_get_default);
+  if NewKeyMap<>GdkKeymap then begin
+    if GdkKeymap<>nil then
+      DisconnectGdkKeymapChangedSignal;
+    GdkKeymap:=NewKeyMap;
+    if GdkKeymap<>nil then
+      GdkKeyMapChangedID:=g_signal_connect_after(GdkKeymap, 'keys-changed',
+                                        TGTKSignalFunc(@gdkKeyMapChanged), nil);
+  end;
+
+  FillChar(MKeyCodeInfo, SizeOf(MKeyCodeInfo), $FF);
+  FillChar(MVKeyInfo, SizeOf(MVKeyInfo), 0);
 
   LoKey := 0;
   HiKey := 255;
@@ -3326,8 +3349,8 @@ begin
   FreeVK := VK_FIRST_OEM;
   for KeyCode := LoKey to HiKey do
   begin
-
-    if not gdk_keymap_get_entries_for_keycode(nil, KeyCode, KeymapKeys, KeyVals, @KeySymCount) then Continue;
+     if not gdk_keymap_get_entries_for_keycode(GdkKeymap, KeyCode, KeymapKeys, KeyVals, @KeySymCount) then
+       Continue;
     SetLength(KeySyms, KeySymCount);
     Move(KeyVals^, KeySyms[0], SizeOf(KeySyms[0]) * KeySymCount);
     g_free(KeymapKeys); // unused but we cannot pass a nil as param
@@ -3440,6 +3463,7 @@ procedure DoneKeyboardTables;
 var
   i: Integer;
 begin
+  DisconnectGdkKeymapChangedSignal;
   if LCLHandledKeyEvents<>nil then begin
     for i:=0 to LCLHandledKeyEvents.Count-1 do
       TObject(LCLHandledKeyEvents[i]).Free;
@@ -3452,6 +3476,13 @@ begin
     LCLHandledKeyAfterEvents.Free;
     LCLHandledKeyAfterEvents:=nil;
   end;
+end;
+
+procedure DisconnectGdkKeymapChangedSignal;
+begin
+  if GdkKeymap=nil then exit;
+  g_signal_handler_disconnect(GdkKeymap, GdkKeyMapChangedID);
+  GdkKeyMapChangedID:=0;
 end;
 
 {------------------------------------------------------------------------------

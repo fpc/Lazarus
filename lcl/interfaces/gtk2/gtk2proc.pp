@@ -431,8 +431,12 @@ type
     KeyChar: array[0..3] of TVKeyUTF8Char;
   end;
 
+const
+  GdkKeymap: PGdkKeymap = nil;
+  GdkKeyMapChangedID: gulong = 0;
 procedure InitKeyboardTables;
 procedure DoneKeyboardTables;
+procedure DisconnectGdkKeymapChangedSignal;
 function GetVKeyInfo(const AVKey: Byte): TVKeyInfo;
 function GTKEventStateToShiftState(KeyState: LongWord): TShiftState;
 procedure gdk_event_key_get_string(Event: PGDKEventKey; var theString: Pointer);
