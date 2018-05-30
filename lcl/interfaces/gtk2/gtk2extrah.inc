@@ -178,39 +178,6 @@ procedure gtk_im_context_get_preedit_string_laz(context:PGtkIMContext; str:PPgch
 
 // - - - - - - - - - gdk extras - - - - - - - - -
 
-// ----------------- this gdk symbols can be removed after fpc 2.2.4
-{$IF FPC_FULLVERSION<20600}
-type
-  PGdkPangoRenderer = pointer;
-// gdk 2.2
-function gdk_event_new(_type: TGdkEventType): PGdkEvent; cdecl; external gdklib;
-
-procedure gdk_display_get_pointer(display : PGdkDisplay; screen :PGdkScreen; x :Pgint; y : Pgint; mask : PGdkModifierType); cdecl; external gdklib;
-function gdk_display_get_default:PGdkDisplay; cdecl; external gdklib;
-
-procedure gdk_draw_pixbuf(drawable : PGdkDrawable; gc : PGdkGC; pixbuf : PGdkPixbuf; src_x, src_y, dest_x, dest_y, width, height : gint;
-                                             dither : TGdkRgbDither; x_dither, y_dither : gint); cdecl; external gdklib;
-function gdk_screen_get_default: PGdkScreen; cdecl; external gdklib;
-function gdk_screen_get_rgb_colormap(screen: PGdkScreen): PGdkColormap; cdecl; external gdklib;
-function gdk_x11_get_default_xdisplay: pointer; cdecl; external gdklib;
-function gdk_x11_get_default_root_xwindow: guint; cdecl; external gdklib;
-
-// gdk 2.4
-function gdk_cursor_new_from_pixbuf(display: PGdkDisplay; pixbuf: PGdkPixbuf; x, y: gint): PGdkCursor; cdecl; external gdklib name 'gdk_cursor_new_from_pixbuf';
-function gdk_display_get_default_cursor_size(display: PGdkDisplay): guint; cdecl; external gdklib;
-procedure gdk_display_get_maximal_cursor_size(display: PGdkDisplay; w, h: pguint); cdecl; external gdklib;
-
-// gdk 2.6
-function gdk_pango_renderer_get_default(screen: PGdkScreen): PPangoRenderer; cdecl; external gdklib;
-procedure gdk_pango_renderer_set_drawable(gdk_renderer: PGdkPangoRenderer; drawable: PGdkDrawable); cdecl; external gdklib;
-procedure gdk_pango_renderer_set_gc(gdk_renderer: PGdkPangoRenderer; gc: PGdkGC); cdecl; external gdklib;
-procedure gdk_pango_renderer_set_override_color(gdk_renderer: PGdkPangoRenderer; part: TPangoRenderPart; color: PGdkColor); cdecl; external gdklib;
-// ------------------end of symbold to remove --------------------------
-
-// gdk-pixbuf 2.6
-function gdk_pixbuf_flip(src: PGdkPixbuf; horizontal: gboolean): PGdkPixbuf; cdecl; external gdkpixbuflib;
-{$ENDIF}
-
 {$ifdef GTK_2_8}
 // gdk 2.8
 procedure gdk_display_warp_pointer(display: PGdkDisplay; screen: PGdkScreen; x, y: gint); cdecl; external gdklib;
