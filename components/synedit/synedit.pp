@@ -4543,6 +4543,7 @@ begin
     inherited CreateHandle;   //SizeOrFontChanged will be called
     FLeftGutter.RecalcBounds;
     FRightGutter.RecalcBounds;
+    fStateFlags := fStateFlags - [sfHorizScrollbarVisible, sfVertScrollbarVisible];
     UpdateScrollBars;
   finally
     DoDecPaintLock(nil);
