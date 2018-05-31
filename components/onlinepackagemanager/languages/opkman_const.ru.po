@@ -646,27 +646,17 @@ msgstr "Показать JSON"
 msgid "Sort"
 msgstr "Сортировать"
 
-#: opkman_const.rsmainfrm_miload
-msgid "Load packages"
-msgstr ""
-
-#: opkman_const.rsmainfrm_miloadinstalled
-#, fuzzy
-msgctxt "opkman_const.rsmainfrm_miloadinstalled"
-msgid "Installed"
-msgstr "Установлен"
+#: opkman_const.rsmainfrm_miloadchecks
+msgid "Load checked packages"
+msgstr "Загрузить отмеченные пакеты"
 
 #: opkman_const.rsmainfrm_miresetrating
 msgid "Reset rating"
 msgstr "Сбросить рейтинг"
 
-#: opkman_const.rsmainfrm_misave
-msgid "Save packages"
-msgstr ""
-
-#: opkman_const.rsmainfrm_misavechecked
-msgid "Checked"
-msgstr ""
+#: opkman_const.rsmainfrm_misavechecks
+msgid "Save checked packages"
+msgstr "Сохранить отмеченные пакеты"
 
 #: opkman_const.rsmainfrm_misavetofile
 msgid "Save to file"
@@ -747,10 +737,6 @@ msgstr ""
 #: opkman_const.rsmainfrm_rsmessagenothingchacked
 msgid "Please check at least one package!"
 msgstr "Следует отметить хотя бы один пакет!"
-
-#: opkman_const.rsmainfrm_rsmessagenothinginstalled
-msgid "No packages are installed. Please install at least one package first."
-msgstr ""
 
 #: opkman_const.rsmainfrm_rsmessageparsingjson
 msgid "Parsing JSON. Please wait..."
