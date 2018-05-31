@@ -1700,8 +1700,11 @@ procedure TApplication.ControlKeyUp(Sender: TObject; var Key: Word;
 var
   AControl: TWinControl;
   AIndex: Integer;
+  AKey: Word;
 begin
   if Key = VK_UNKNOWN then exit;
+
+  AKey := Key;
 
   try
     if Sender is TWinControl then
@@ -1732,7 +1735,7 @@ begin
       DoEscapeKey(AControl, Key, Shift);
     end;
   finally
-    AIndex := FLastKeyDownKeys.IndexOf(Key);
+    AIndex := FLastKeyDownKeys.IndexOf(AKey);
     if AIndex <> -1 then
       FLastKeyDownKeys.Delete(AIndex);
   end;
