@@ -3189,16 +3189,15 @@ begin
     { Unit output directory }
     if (UnitOutputDirectory<>'') then begin
       CurOutputDir:=ParsedOpts.GetParsedValue(pcosOutputDir);
-      if not (ccloAbsolutePaths in Flags) then
-        CurOutputDir:=CreateRelativePath(CurOutputDir,BaseDirectory,true);
     end;
   end;
 
-  // append -o Option if neccessary
-  {   * -o to define the target file name.
-      * -FU if the unit output directory is not empty
-      * -FE if the target file name is not in the project directory (where the lpi file is)
-       }
+  // output options -o, -FU, and -FE
+  //  * -o to define the target file name.
+  //  * -FU if the unit output directory is not empty
+  //  * -FE if the target file name is not in the project directory (where the lpi file is)
+  //  * if neither -FU nor -FE is passed fpc creates the ppu in the source directories
+
   CurMainSrcFile:=GetDefaultMainSourceFileName;
   CurTargetFilename:='';
   CurTargetDirectory:='';
@@ -3226,19 +3225,25 @@ begin
           CurOutputDir:='';
         end;
       end;
-
-      if (not (ccloAbsolutePaths in Flags)) and FilenameIsAbsolute(CurTargetFilename) then
-        CurTargetFilename := CreateRelativePath(CurTargetFilename, BaseDirectory);
     end;
   end;
 
-  if CurOutputDir<>'' then
+  if CurOutputDir<>'' then begin
+    if not (ccloAbsolutePaths in Flags) then
+      CurOutputDir:=CreateRelativePath(CurOutputDir,BaseDirectory,true);
     switches := switches + ' '+PrepareCmdLineOption('-FU' + CurOutputDir);
-  if CurTargetDirectory <> '' then
+  end;
+  if CurTargetDirectory <> '' then begin
+    if not (ccloAbsolutePaths in Flags) then
+      CurOutputDir:=CreateRelativePath(CurOutputDir,BaseDirectory,true);
     switches := switches + ' '+PrepareCmdLineOption('-FE' + CurTargetDirectory);
-  if (CurTargetFilename<>'') and (TargetFilename<>'') then
-    // custom target => pass -o
-    switches := switches + ' '+PrepareCmdLineOption('-o' + CurTargetFilename);
+  end;
+  if (CurTargetFilename<>'') then begin
+    if not (ccloAbsolutePaths in Flags) then
+      CurTargetFilename := CreateRelativePath(CurTargetFilename, BaseDirectory);
+    if CurTargetFilename<>'' then
+      switches := switches + ' '+PrepareCmdLineOption('-o' + CurTargetFilename);
+  end;
 
   // append custom options as last, so they can override
   if not (ccloNoMacroParams in Flags) then

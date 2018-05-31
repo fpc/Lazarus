@@ -647,17 +647,27 @@ msgstr "Montrer le JSON"
 msgid "Sort"
 msgstr "Trier"
 
-#: opkman_const.rsmainfrm_miloadchecks
-msgid "Load checked packages"
-msgstr "Charger les paquets cochés"
+#: opkman_const.rsmainfrm_miload
+msgid "Load packages"
+msgstr ""
+
+#: opkman_const.rsmainfrm_miloadinstalled
+#, fuzzy
+msgctxt "opkman_const.rsmainfrm_miloadinstalled"
+msgid "Installed"
+msgstr "Installé"
 
 #: opkman_const.rsmainfrm_miresetrating
 msgid "Reset rating"
 msgstr "Réinitialiser l'évaluation"
 
-#: opkman_const.rsmainfrm_misavechecks
-msgid "Save checked packages"
-msgstr "Enregistrer les paquets cochés"
+#: opkman_const.rsmainfrm_misave
+msgid "Save packages"
+msgstr ""
+
+#: opkman_const.rsmainfrm_misavechecked
+msgid "Checked"
+msgstr ""
 
 #: opkman_const.rsmainfrm_misavetofile
 msgid "Save to file"
@@ -738,6 +748,10 @@ msgstr ""
 #: opkman_const.rsmainfrm_rsmessagenothingchacked
 msgid "Please check at least one package!"
 msgstr "Veuillez cocher au moins un paquet !"
+
+#: opkman_const.rsmainfrm_rsmessagenothinginstalled
+msgid "No packages are installed. Please install at least one package first."
+msgstr ""
 
 #: opkman_const.rsmainfrm_rsmessageparsingjson
 msgid "Parsing JSON. Please wait..."
