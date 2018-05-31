@@ -286,7 +286,11 @@ end;               *)
 function TProjectPas2JSWebApp.GetNextPort : Word;
 
 begin
-  Result:=PJSOptions.StartAtPort+1;
+  Result:=PJSOptions.StartAtPort;
+  if Result>=$ffff then
+    Result:=1024
+  else
+    inc(Result);
   PJSOptions.StartAtPort:=Result;
   PJSOptions.Save;
 end;
