@@ -91,7 +91,7 @@ end;
 
 destructor TOPMInterfaceEx.Destroy;
 begin
-  if PackageDownloader.DownloadingJSON then
+  if (PackageDownloader<>nil) and PackageDownloader.DownloadingJSON then
     PackageDownloader.Cancel;
   FWaitForIDE.StopTimer;
   FWaitForIDE.Terminate;
