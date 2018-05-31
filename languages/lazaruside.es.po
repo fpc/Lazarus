@@ -17330,6 +17330,10 @@ msgstr "Mostrar ventana de información"
 msgid "Show Message Type ID"
 msgstr "Mostrar Tipo de ID de Mensaje"
 
+#: lazarusidestrconsts.lisshowmultiplelines
+msgid "Show multiple lines"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowonlymodified
 msgid "Show only modified"
 msgstr "Mostrar solo modificados"

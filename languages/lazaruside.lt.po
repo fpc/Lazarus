@@ -17118,6 +17118,10 @@ msgstr "Rodyti informacijos laukelį"
 msgid "Show Message Type ID"
 msgstr "Rodyti pranešimo tipo identifikatorių"
 
+#: lazarusidestrconsts.lisshowmultiplelines
+msgid "Show multiple lines"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowonlymodified
 msgid "Show only modified"
 msgstr "Rodyti tik pakeistus"

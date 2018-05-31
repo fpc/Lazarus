@@ -17082,6 +17082,10 @@ msgstr "Показувати панель інформації"
 msgid "Show Message Type ID"
 msgstr "Виводити ідентифікатор типу повідомлення"
 
+#: lazarusidestrconsts.lisshowmultiplelines
+msgid "Show multiple lines"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowonlymodified
 msgid "Show only modified"
 msgstr "Показати лише змінене"

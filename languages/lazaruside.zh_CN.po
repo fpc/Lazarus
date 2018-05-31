@@ -17360,6 +17360,10 @@ msgstr "显示信息框"
 msgid "Show Message Type ID"
 msgstr "选择消息类型ID"
 
+#: lazarusidestrconsts.lisshowmultiplelines
+msgid "Show multiple lines"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowonlymodified
 msgid "Show only modified"
 msgstr "显示仅修改"

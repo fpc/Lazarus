@@ -17340,6 +17340,10 @@ msgstr "Bilgi kutusunu göster"
 msgid "Show Message Type ID"
 msgstr "Mesaj Tip Kimliğini Göster"
 
+#: lazarusidestrconsts.lisshowmultiplelines
+msgid "Show multiple lines"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowonlymodified
 msgid "Show only modified"
 msgstr "Sadece değişiklik göster"

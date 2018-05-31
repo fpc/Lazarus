@@ -17083,6 +17083,10 @@ msgstr "Infobox anzeigen"
 msgid "Show Message Type ID"
 msgstr "Zeige Nachrichtentyp-ID"
 
+#: lazarusidestrconsts.lisshowmultiplelines
+msgid "Show multiple lines"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowonlymodified
 msgid "Show only modified"
 msgstr "Nur geänderte anzeigen"

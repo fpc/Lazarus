@@ -17090,6 +17090,10 @@ msgstr "情報ボックスを表示"
 msgid "Show Message Type ID"
 msgstr "メッセージ型IDを表示"
 
+#: lazarusidestrconsts.lisshowmultiplelines
+msgid "Show multiple lines"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowonlymodified
 msgid "Show only modified"
 msgstr "修正されたもののみ表示"

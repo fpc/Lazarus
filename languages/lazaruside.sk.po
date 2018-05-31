@@ -17978,6 +17978,10 @@ msgstr ""
 msgid "Show Message Type ID"
 msgstr ""
 
+#: lazarusidestrconsts.lisshowmultiplelines
+msgid "Show multiple lines"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowonlymodified
 msgid "Show only modified"
 msgstr ""
