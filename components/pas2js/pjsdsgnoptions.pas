@@ -301,12 +301,15 @@ end;
 Procedure DonePSJOptions;
 
 begin
-  try
-    if PJSOptions.Modified then
-       PJSOptions.Save;
-  except
+  if PJSOptions<>nil then
+  begin
+    try
+      if PJSOptions.Modified then
+        PJSOptions.Save;
+    except
+    end;
+    FreeAndNil(PJSOptions);
   end;
-  FreeAndNil(PJSOptions);
 end;
 
 
