@@ -19,18 +19,16 @@ msgstr "Cancelar"
 
 #: opkman_const.rsaddrepositorypackagefrm_bcancel_hint
 msgid "Close the dialog"
-msgstr "Cerrar diálogo"
+msgstr "Cerrar el diálogo"
 
 #: opkman_const.rsaddrepositorypackagefrm_bok_caption
-#, fuzzy
-#| msgid "Ok"
 msgctxt "opkman_const.rsaddrepositorypackagefrm_bok_caption"
 msgid "OK"
 msgstr "OK"
 
 #: opkman_const.rsaddrepositorypackagefrm_bok_hint
 msgid "Close the dialog and create the package"
-msgstr "Cerrar diálogo y crear paquete"
+msgstr "Cerrar el diálogo y crear el paquete"
 
 #: opkman_const.rsaddrepositorypackagefrm_caption
 msgid "Add repository package"
@@ -38,7 +36,7 @@ msgstr "Agregar paquete de repositorio"
 
 #: opkman_const.rsaddrepositorypackagefrm_rbaddexisting_caption
 msgid "Add existing repository package from file"
-msgstr "Agregar paquete de repositorio existente desde archivo"
+msgstr "Agregar paquete de repositorio existente desde el archivo"
 
 #: opkman_const.rsaddrepositorypackagefrm_rbcreatenew_caption
 msgid "Create a new repository package"
@@ -92,11 +90,11 @@ msgstr "Ayuda"
 
 #: opkman_const.rscreatejsonforupdatesfrm_btest_caption
 msgid "Test"
-msgstr "Probar"
+msgstr "Prueba"
 
 #: opkman_const.rscreatejsonforupdatesfrm_caption
 msgid "Create update JSON for package:"
-msgstr "Crear actualización JSON para paquete:"
+msgstr "Crear actualización JSON para el paquete:"
 
 #: opkman_const.rscreatejsonforupdatesfrm_column0_text
 msgid "PackageFileName"
@@ -118,31 +116,31 @@ msgstr "Versión interna"
 
 #: opkman_const.rscreatejsonforupdatesfrm_error1
 msgid "Cannot create JSON for updates! Error message:"
-msgstr "¡No se puede crear JSON para actualizaciones! Mensaje error:"
+msgstr "¡Crear actualización JSON para el paquete! Mensaje de error:"
 
 #: opkman_const.rscreatejsonforupdatesfrm_lblinktozip_caption
 msgid "Link to the package zip file"
-msgstr "Enlazar al archivo zip del paquete"
+msgstr "Enlace al archivo zip del paquete"
 
 #: opkman_const.rscreatejsonforupdatesfrm_message0
 msgid "Please check a repository package!"
-msgstr "¡Por favor compruebe un paquete de repositorio!"
+msgstr "¡Por favor selecciona un paquete de repositorio!"
 
 #: opkman_const.rscreatejsonforupdatesfrm_message1
 msgid "Please check only one repository package!"
-msgstr "¡Por favor compruebe solo un paquete de repositorio!"
+msgstr "¡Por favor selecciona solo un paquete de repositorio!"
 
 #: opkman_const.rscreatejsonforupdatesfrm_message2
 msgid "Please enter a valid URL!"
-msgstr "¡Por favor ingrese una URL válida!"
+msgstr "¡Por favor ingresa una URL válida!"
 
 #: opkman_const.rscreatejsonforupdatesfrm_message3
 msgid "Please check at least one package file!"
-msgstr "¡Por favor compruebe al menos un archivo del paquete!"
+msgstr "¡Por favor selecciona al menos un archivo del paquete!"
 
 #: opkman_const.rscreatejsonforupdatesfrm_message4
 msgid "JSON for updates successfully created."
-msgstr "JSON para actualizaciones creadas correctamente."
+msgstr "Actualizaciones JSON creadas correctamente."
 
 #: opkman_const.rscreaterepositoryfrm_badd_caption
 msgctxt "opkman_const.rscreaterepositoryfrm_badd_caption"
@@ -182,7 +180,7 @@ msgstr "Eliminar"
 
 #: opkman_const.rscreaterepositoryfrm_bdelete_hint
 msgid "Delete package from the current repository"
-msgstr "Eliminar paquete del repositorio actual"
+msgstr "Eliminar paquete desde el repositorio actual"
 
 #: opkman_const.rscreaterepositoryfrm_bopen_caption
 msgctxt "opkman_const.rscreaterepositoryfrm_bopen_caption"
@@ -200,18 +198,18 @@ msgstr "Crear/Editar repositorio privado"
 
 #: opkman_const.rscreaterepositoryfrm_conf1
 msgid "Are you sure you wish to delete package: \"%s\"?"
-msgstr "Seguro desea eliminar el paquete: \"%s\"?"
+msgstr "¿Seguro que deseas eliminar el paquete: \"%s\"?"
 
 #: opkman_const.rscreaterepositoryfrm_conf2
 msgid "The following file: \"%s\" already exists in the current repository. Overwrite?"
-msgstr "El siguiente archivo: \"%s\" ya existe en el repositorio actual. Sobrescribe?"
+msgstr "El siguiente archivo: \"%s\" ya existe en el repositorio actual. ¿Sobrescribe?"
 
 #: opkman_const.rscreaterepositoryfrm_error1
 msgid ""
 "Cannot open private repository: \"%s\". Error message: \n"
 "\"%s\"\n"
 msgstr ""
-"No se puede abrir el repositorio privado: \"%s\". Mensaje error: \n"
+"No se puede abrir el repositorio privado: \"%s\". Mensaje de error: \n"
 "\"%s\"\n"
 
 #: opkman_const.rscreaterepositoryfrm_error3
@@ -219,16 +217,16 @@ msgid ""
 "Cannot save private repository: \"%s\". Error message: \n"
 "\"%s\"\n"
 msgstr ""
-"No se puede guardar el repositorio privado: \"%s\". Mensaje error: \n"
+"No se puede guardar el repositorio privado: \"%s\". Mensaje de error: \n"
 "\"%s\"\n"
 
 #: opkman_const.rscreaterepositoryfrm_error4
 msgid "Cannot add package to repository!"
-msgstr "¡No se puede agregar paquete al repositorio!"
+msgstr "¡No se puede agregar el paquete al repositorio!"
 
 #: opkman_const.rscreaterepositoryfrm_error5
 msgid "Cannot delete package: \"%s\"!"
-msgstr "¡No se puede eliminar paquete: \"%s\"!"
+msgstr "¡No se puede eliminar el paquete: \"%s\"!"
 
 #: opkman_const.rscreaterepositoryfrm_info1
 msgid ""
@@ -236,7 +234,7 @@ msgid ""
 "It's recommended to save the repository to an empty directory. Continue?\n"
 msgstr ""
 "El siguiente directorio: \"%s\" no está vacío.\n"
-"Se recomienda guardar el repositorio en un directorio vacío. Continua?\n"
+"Se recomienda guardar el repositorio en un directorio vacío. ¿Continua?\n"
 
 #: opkman_const.rscreaterepositoryfrm_info3
 msgid ""
@@ -256,7 +254,7 @@ msgstr ""
 
 #: opkman_const.rscreaterepositoryfrm_info7
 msgid "Package successfully added to repository."
-msgstr "Paquete agregado correctamente al repositorio."
+msgstr "Paquete correctamente agregado al repositorio."
 
 #: opkman_const.rscreaterepositoryfrm_mirepdetails_caption
 msgid "Edit repository details"
@@ -339,6 +337,7 @@ msgid "Lazarus compatibility"
 msgstr "Compatibilidad con Lazarus"
 
 #: opkman_const.rscreaterepositoryfrm_vsttext_license
+#, fuzzy
 msgctxt "opkman_const.rscreaterepositoryfrm_vsttext_license"
 msgid "License"
 msgstr "Licencia"
@@ -457,7 +456,7 @@ msgstr "Opciones"
 
 #: opkman_const.rscreaterepositorypackagefrm_boptions_hint
 msgid "Open options dialog"
-msgstr "Abrir diálogo de opciones"
+msgstr "Abrir el diálogo de opciones"
 
 #: opkman_const.rscreaterepositorypackagefrm_bsubmit_caption
 msgid "Submit"
@@ -486,19 +485,23 @@ msgstr "No se puede crear archivo JSON:"
 
 #: opkman_const.rscreaterepositorypackagefrm_error3
 msgid "Cannot send file: \"%s\""
-msgstr "No se puede enviar archivo: \"%s\""
+msgstr "No se puede enviar el archivo: \"%s\""
 
 #: opkman_const.rscreaterepositorypackagefrm_lbcategory_caption
 msgid "Category:"
 msgstr "Categoría:"
 
 #: opkman_const.rscreaterepositorypackagefrm_lbdisplayname_caption
+#, fuzzy
+#| msgid "Display name"
 msgid "Display name:"
-msgstr "Nombre a mostrar"
+msgstr "Nombre a mostar"
 
 #: opkman_const.rscreaterepositorypackagefrm_lbdownloadurl_caption
+#, fuzzy
+#| msgid "Update link(JSON):"
 msgid "Update link (JSON):"
-msgstr "Enlace de descarga (JSON):"
+msgstr "Enlace de descarga:"
 
 #: opkman_const.rscreaterepositorypackagefrm_lbfpccompatibility_caption
 msgid "FPC compatibility:"
@@ -513,17 +516,23 @@ msgid "Lazarus compatibility:"
 msgstr "Compatibilidad con Lazarus:"
 
 #: opkman_const.rscreaterepositorypackagefrm_lbpackagedir_caption
+#, fuzzy
+#| msgid "Select package directory:"
 msgid "Package directory:"
-msgstr "Directorio del paquete:"
+msgstr "Seleccionar directorio de paquete:"
 
 #: opkman_const.rscreaterepositorypackagefrm_lbsupportedwidgetset_caption
+#, fuzzy
+#| msgid "Supported widgetset:"
 msgid "Supported widgetsets:"
-msgstr "Widgetsets soportado:"
+msgstr "Widgetset soportado:"
 
 #: opkman_const.rscreaterepositorypackagefrm_lbsvnurl_caption
+#, fuzzy
+#| msgid "SVN"
 msgctxt "opkman_const.rscreaterepositorypackagefrm_lbsvnurl_caption"
 msgid "SVN:"
-msgstr "SVN:"
+msgstr "SVN"
 
 #: opkman_const.rscreaterepositorypackagefrm_message0
 msgid "Please select a category for package:"
@@ -537,7 +546,7 @@ msgstr "Por favor ingrese las versiones de Lazarus soportadas por el paquete:"
 
 #: opkman_const.rscreaterepositorypackagefrm_message10
 msgid "Cancelling upload. Please wait..."
-msgstr "Cancelando la carga. Por favor espere..."
+msgstr "Cancelando la carga. Por favor espera..."
 
 #: opkman_const.rscreaterepositorypackagefrm_message2
 msgid "Please enter supported FPC versions for package:"
@@ -556,9 +565,11 @@ msgid "Creating JSON. Please wait..."
 msgstr "Creando JSON. Por favor espera..."
 
 #: opkman_const.rscreaterepositorypackagefrm_message6
+#, fuzzy
+#| msgid "Repository package successfully created."
 msgctxt "opkman_const.rscreaterepositorypackagefrm_message6"
 msgid "Creating JSON for updates. Please wait..."
-msgstr "Creando JSON para actualizaciones. Por favor espere..."
+msgstr "Paquete de repositorio creado correctamente."
 
 #: opkman_const.rscreaterepositorypackagefrm_message7
 #, fuzzy
@@ -569,7 +580,7 @@ msgstr "Paquete de repositorio creado correctamente."
 
 #: opkman_const.rscreaterepositorypackagefrm_message8
 msgid "Sending files (\"%s\"). Please wait..."
-msgstr "Enviando archivos (\"%s\"). Por favor espere..."
+msgstr "Enviando archivos (\"%s\"). Por favor espera..."
 
 #: opkman_const.rscreaterepositorypackagefrm_message9
 msgid ""
@@ -577,7 +588,7 @@ msgid ""
 "Your request will be processed in 24 hours.\n"
 msgstr ""
 "Archivos enviados correctamente. ¡Gracias por enviar paquetes!\n"
-"Su solicitud será procesada en 24 horas.\n"
+"Tu solicitud será procesada en 24 horas.\n"
 
 #: opkman_const.rscreaterepositorypackagefrm_nopackage
 msgid "No packages found!"
@@ -603,7 +614,7 @@ msgstr "Por favor espera..."
 
 #: opkman_const.rscreaterepositorypackagefrm_sddtitledst
 msgid "Save repository package to..."
-msgstr "Guardar paquete de repositorio a..."
+msgstr "Guardar paquete de repositorio en..."
 
 #: opkman_const.rscreaterepositorypackagefrm_sddtitlesrc
 msgid "Select package directory"
@@ -627,7 +638,7 @@ msgstr "Filtrar lista de paquetes por:"
 
 #: opkman_const.rsmainfrm_edfilter_hint
 msgid "Type filter text"
-msgstr "Texto de filtro de tipo"
+msgstr "Escriba el texto del filtro."
 
 #: opkman_const.rsmainfrm_lbfilter_caption
 msgid "Filter by:"
@@ -661,7 +672,7 @@ msgstr "Crear repositorio privado"
 #: opkman_const.rsmainfrm_micreaterepositorypackage
 msgctxt "opkman_const.rsmainfrm_micreaterepositorypackage"
 msgid "Create repository package"
-msgstr "Crear paquete del repositorio"
+msgstr "Crear paquete de repositorio"
 
 #: opkman_const.rsmainfrm_midescendent
 msgid "Descendent"
@@ -699,7 +710,7 @@ msgstr "Instalado"
 
 #: opkman_const.rsmainfrm_miresetrating
 msgid "Reset rating"
-msgstr "Restablecer clasificación"
+msgstr "Restablecer calificación"
 
 #: opkman_const.rsmainfrm_misave
 msgid "Save packages"
@@ -711,7 +722,7 @@ msgstr ""
 
 #: opkman_const.rsmainfrm_misavetofile
 msgid "Save to file"
-msgstr "Guardar a archivo"
+msgstr "Guardar en archivo"
 
 #: opkman_const.rsmainfrm_packagealreadydownloaded
 #, fuzzy
@@ -720,8 +731,10 @@ msgid "The following repository packages already exist in the target folder. Con
 msgstr "Los siguientes paquetes del repositorio ya existen en la carpeta de destino ¿Continuar?"
 
 #: opkman_const.rsmainfrm_packagealreadyinstalled
+#, fuzzy
+#| msgid "The following packages are alrady installed. Continue with install?"
 msgid "The following packages are already installed. Continue anyway?"
-msgstr "Los siguientes paquetes ya están instalados ¿Continuar de todos modos?"
+msgstr "Los siguientes paquetes ya están instalados ¿Continuar con la instalación?"
 
 #: opkman_const.rsmainfrm_packagenamealreadyexists
 msgid "A package with the same name already exists!"
@@ -729,15 +742,15 @@ msgstr "¡Un paquete con el mismo nombre ya existe!"
 
 #: opkman_const.rsmainfrm_packageupdate0
 #, fuzzy
-#| msgid "The following repository packages are not installed or don't have a valid external download link. The packages will be skipped. Continue?"
+#| msgid "The following repository packages don't have a valid external download link. The packages will be skipped. Continue?"
 msgid "The following repository packages are not available externally. The packages will be skipped. Continue?"
-msgstr "Los siguientes paquetes de repositorio no están instalados o no tienen un vínculo de descarga externo válido. Los paquetes se omitirán. Continuar?"
+msgstr "Los siguientes paquetes del repositorio no tienen un enlace externo de descarga. Esos paquetes van a ser omitidos. ¿Continuar?"
 
 #: opkman_const.rsmainfrm_packageupdate1
 #, fuzzy
-#| msgid "None of the checked repository packages is installed or has a valid external download link."
+#| msgid "None of the checked repository packages are installed or has a valid external download link."
 msgid "None of the checked repository packages are available externally."
-msgstr "Ninguno de los repositorios marcados tiene un enlace externo de descarga válido."
+msgstr "Ninguno de los repositorios marcados tiene un link externo de descarga válido."
 
 #: opkman_const.rsmainfrm_packageupdatewarning
 #, fuzzy
@@ -753,11 +766,11 @@ msgstr ""
 
 #: opkman_const.rsmainfrm_resmessagechecksloaded
 msgid "%s packages successfully loaded from file!"
-msgstr "%s ¡paquetes cargados correctamente desde archivo!"
+msgstr "%s paquetes correctamente cargados desde archivo!"
 
 #: opkman_const.rsmainfrm_resmessagecheckssaved
 msgid "%s packages successfully saved to file!"
-msgstr "%s ¡paquetes correctamente guardados en archivo!"
+msgstr "%s paquetes correctamente guardados en archivo!"
 
 #: opkman_const.rsmainfrm_rsdestdirerror
 msgid "Cannot create directory \"%s\". Operation aborted."
@@ -765,7 +778,7 @@ msgstr ""
 
 #: opkman_const.rsmainfrm_rsmessagechangingrepository
 msgid "Changing repository. Please wait..."
-msgstr "Cambiando repositorio. Por favor espere..."
+msgstr "Cambiando repositorio. Por favor espera..."
 
 #: opkman_const.rsmainfrm_rsmessagedownload
 msgid "Downloading package list. Please wait..."
@@ -788,16 +801,16 @@ msgid "No packages to show."
 msgstr "No hay paquetes para mostrar."
 
 #: opkman_const.rsmainfrm_rsmessagenorepository0
+#, fuzzy
+#| msgid "Remote package repository not configured."
 msgid ""
 "Remote package repository not configured.\n"
 "Do you wish to configure it now?\n"
-msgstr ""
-"Repositorio de paquetes remoto no configurado.\n"
-"¿Desea configurarlo ahora?\n"
+msgstr "Repositorio externo de paquetes sin configurar."
 
 #: opkman_const.rsmainfrm_rsmessagenothingchacked
 msgid "Please check at least one package!"
-msgstr "¡Por favor revise al menos un paquete!"
+msgstr "¡Por favor selecciona al menos un paquete!"
 
 #: opkman_const.rsmainfrm_rsmessagenothinginstalled
 msgid "No packages are installed. Please install at least one package first."
@@ -812,42 +825,46 @@ msgid "Please check one or more packages!"
 msgstr "¡Por favor marca uno o mas paquetes!"
 
 #: opkman_const.rsmainfrm_rspackagedependency0
+#, fuzzy,badformat
+#| msgid "depends on package:"
 msgid "Package \"%s\" depends on package \"%s\". Resolve dependency?"
-msgstr "El paquete \"%s\" tiene dependencia en el paquete \"%s\". Resolver dependencia?"
+msgstr "depende del paquete:"
 
 #: opkman_const.rsmainfrm_rspackagedependency1
 #, fuzzy
-#| msgid "Not resolving dependencies might lead to install failure!"
+#| msgid "Resolve dependency?"
 msgid "Not resolving dependencies might lead to install failure! Continue?"
-msgstr "¡No resolver dependencias puede llevar a la instalación de fallas!"
+msgstr "¿Resolver dependencia?"
 
 #: opkman_const.rsmainfrm_rspackagerating
 msgid "Your vote for package \"%s\" is: %s. Thank you for voting!"
-msgstr "Su voto para el paquete \"%s\" es: %s. ¡Gracias por su voto!"
+msgstr "Tu voto para el paquete \"%s\" es: %s. ¡Gracias por votar!"
 
 #: opkman_const.rsmainfrm_rsrepositorycleanup0
 msgid "This will delete all non-installed packages from local repository. Continue?"
 msgstr "Esto va a eliminar todos los paquetes no instalados del repositorio local. ¿Continuar?"
 
 #: opkman_const.rsmainfrm_rsrepositorycleanup1
+#, fuzzy,badformat
+#| msgid "packages deleted!"
 msgid "%s packages deleted!"
-msgstr "%s paquetes eliminados!"
+msgstr "paquetes eliminados!"
 
 #: opkman_const.rsmainfrm_rsuninstall
 msgid ""
 "%sAre you sure you wish to uninstall the checked packages?\n"
 "Please note: in order for the changes to take effect you must rebuid the IDE.\n"
 msgstr ""
-"%s¿Seguro desea desinstalar los paquete marcados?\n"
-"Tenga en cuenta: para que los cambios tengan efecto, debe reconstruir el IDE.\n"
+"%s ¿Seguro que deseas desinstalar los paquetes seleccionados?\n"
+"Atención: para que los cambios tengan efecto debes reconstruir el IDE.\n"
 
 #: opkman_const.rsmainfrm_rsuninstall_error
 msgid "Cannot uninstall package \"%s\"!"
-msgstr "¡No se puede desinstalar el paquete \"%s\"!"
+msgstr "No se puede desinstalar el paquete \"%s\"!"
 
 #: opkman_const.rsmainfrm_rsuninstall_nothing
 msgid "None of the checked packages are installed. Nothing to uninstall."
-msgstr "Ninguno de los paquetes marcardos está instalado. Nada que desinstalar."
+msgstr "Ninguno de los paquetes seleccionados están instalados. Nada para desinstalar"
 
 #: opkman_const.rsmainfrm_spclear_hint
 msgid "Clear filter text"
@@ -874,8 +891,10 @@ msgid "Download"
 msgstr "Descargar"
 
 #: opkman_const.rsmainfrm_tbdownload_hint
+#, fuzzy
+#| msgid "Download packages to..."
 msgid "Download packages"
-msgstr "Descargar paquetes"
+msgstr "Descargar paquetes a..."
 
 #: opkman_const.rsmainfrm_tbhelp_caption
 msgctxt "opkman_const.rsmainfrm_tbhelp_caption"
@@ -884,7 +903,7 @@ msgstr "Ayuda"
 
 #: opkman_const.rsmainfrm_tbhelp_hint
 msgid "Help (http://wiki.freepascal.org/Online_Package_Manager)"
-msgstr "Ayuda (http://wiki.freepascal.org/Online_Package_Manager)"
+msgstr "Ayuda"
 
 #: opkman_const.rsmainfrm_tbinstall_caption
 msgid "Install"
@@ -1007,10 +1026,10 @@ msgstr "Descripción"
 
 #: opkman_const.rsmainfrm_vsttext_downloadurl
 #, fuzzy
-#| msgid "Update link (JSON)"
+#| msgid "Update link(JSON)"
 msgctxt "opkman_const.rsmainfrm_vsttext_downloadurl"
 msgid "External link (JSON)"
-msgstr "Actualizar enlace (JSON)"
+msgstr "Enlace de actualización"
 
 #: opkman_const.rsmainfrm_vsttext_fpccompatibility
 msgctxt "opkman_const.rsmainfrm_vsttext_fpccompatibility"
@@ -1102,7 +1121,7 @@ msgstr "Paneles"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory19
 msgid "Reporting"
-msgstr "Reporte"
+msgstr "Reportes"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory2
 msgid "DataControls"
@@ -1364,11 +1383,11 @@ msgstr "Usar proxy"
 
 #: opkman_const.rsoptions_cbregular_caption
 msgid "Show regular icon for newly added packages after install"
-msgstr "Mostrar icono regular para paquetes recién agregados después de instalar"
+msgstr "Mostrar icono regular para paquetes recién añadidos después de instalar"
 
 #: opkman_const.rsoptions_cbselectprofile_hint
 msgid "Choose a profile that best fits you"
-msgstr "Elige un perfil que mejor se adapte a ti"
+msgstr "Elegir un perfil que mejor se adapte a ti"
 
 #: opkman_const.rsoptions_cbselectprofile_item0
 msgctxt "opkman_const.rsoptions_cbselectprofile_item0"
@@ -1378,11 +1397,11 @@ msgstr "Usuario regular"
 #: opkman_const.rsoptions_cbselectprofile_item1
 msgctxt "opkman_const.rsoptions_cbselectprofile_item1"
 msgid "Package maintainer"
-msgstr "Mantenedor de paquetes"
+msgstr "Mantenedor de paquete"
 
 #: opkman_const.rsoptions_cbusedefaulttheme_caption
 msgid "Use default theme manager"
-msgstr "Utilizar el gestor de temas predeterminado"
+msgstr "Usar gestor de temas predeterminado"
 
 #: opkman_const.rsoptions_edlocalrepositoryarchive_hint
 msgid "The folder where the zip files are downloaded from the remote repository"
@@ -1411,27 +1430,27 @@ msgstr "Agregar nueva exclusión"
 
 #: opkman_const.rsoptions_inputbox_conf0
 msgid "Delete selected extension (\"%s\")?"
-msgstr "¿desea eliminar la extensión seleccionada (\"%s\")?"
+msgstr "¿Eliminar extensión seleccionada (\"%s\")?"
 
 #: opkman_const.rsoptions_inputbox_conf1
 msgid "Delete selected folder (\"%s\")?"
-msgstr "Eliminar carpeta seleccionada (\"%s\")?"
+msgstr "¿Eliminar carpeta seleccionada (\"%s\")?"
 
 #: opkman_const.rsoptions_inputbox_info0
 msgid "Please select a file extension!"
-msgstr "Por favor seleccione un extensión de archivo"
+msgstr "¡Por favor selecciona una extensión de archivo!"
 
 #: opkman_const.rsoptions_inputbox_info1
 msgid "Please select a folder!"
-msgstr "¡Por favor seleccione una carpeta!"
+msgstr "¡Por favor selecciona una carpeta!"
 
 #: opkman_const.rsoptions_inputbox_text0
 msgid "Type the extension name:"
-msgstr "Escriba el nombre de la extensión:"
+msgstr "Escribe el nombre de la extensión:"
 
 #: opkman_const.rsoptions_inputbox_text1
 msgid "Type the folder name:"
-msgstr "Escriba el nombre de la carpeta:"
+msgstr "Escribe el nombre de la carpeta:"
 
 #: opkman_const.rsoptions_invaliddirectory_info
 #, fuzzy
@@ -1442,11 +1461,11 @@ msgstr "Por favor ingresa un directorio válido"
 #: opkman_const.rsoptions_lastupdate_never
 msgctxt "opkman_const.rsoptions_lastupdate_never"
 msgid "never"
-msgstr "nunca"
+msgstr "Nunca"
 
 #: opkman_const.rsoptions_lbcheckforupdates_caption
 msgid "Check for package updates"
-msgstr "Comprobar actualizaciones de paquetes"
+msgstr "Comprobar actualizaciones del paquete"
 
 #: opkman_const.rsoptions_lbcontimeout_caption
 msgid "Connection timeout (seconds):"
@@ -1454,21 +1473,21 @@ msgstr "Tiempo de espera de conexión (segundos):"
 
 #: opkman_const.rsoptions_lbcontimeout_hint
 msgid "The number of seconds after which package manager drops connection"
-msgstr "Número de segundos después del cual el gestor de paquetes abandona la conexión"
+msgstr "El número de segundos después del cual el gestor de paquetes finaliza la conexión"
 
 #: opkman_const.rsoptions_lbdaystoshownewpackages_caption
 msgid "Show different icon for newly added packages for (days):"
-msgstr "Mostrar icono diferente para paquetes recién agregados por (días):"
+msgstr "Mostrar icono diferente para paquetes recién añadidos para (días):"
 
 #: opkman_const.rsoptions_lbexcludefiles_hint
 msgctxt "opkman_const.rsoptions_lbexcludefiles_hint"
 msgid "These files will be excluded from repository packages (see: \"Create repository package\")"
-msgstr "Estos archivos se excluirán del paquete de repositorios (consulte: \"Create repository package\")"
+msgstr "Estos archivos se excluirán de los paquetes de repositorios (consulte: \"Create repository package\")"
 
 #: opkman_const.rsoptions_lbexcludefolders_hint
 msgctxt "opkman_const.rsoptions_lbexcludefolders_hint"
 msgid "These folders will be excluded from repository packages (see: \"Create repository package\")"
-msgstr "Estas carpetas se excluirán del paquete de repositorios (consulte: \"Create repository package\")"
+msgstr "Estas carpetas se excluirán de los paquetes de repositorios (consulte: \"Create repository package\")"
 
 #: opkman_const.rsoptions_lbfilterdirs_caption
 msgid "Excluded folders (packages)"
@@ -1595,7 +1614,7 @@ msgstr "Actualizar lista de paquetes"
 
 #: opkman_const.rspackagesfound
 msgid "(%s repository packages found, containing %s lpk files, total size %s)"
-msgstr "(%s paquetes de repositorios encontrados, contienen %s archivos lpk, tamaño total %s)"
+msgstr "(%s paquetes de repositorios encontrados, conteniendo %s archivos lpk , tamaño total %s)"
 
 #: opkman_const.rsprogressfrm_caption0
 msgid "Downloading packages"
@@ -1650,14 +1669,18 @@ msgid "Cannot install package:"
 msgstr "No se puede instalar el paquete:"
 
 #: opkman_const.rsprogressfrm_error4
+#, fuzzy,badformat
+#| msgid "Dependecy"
 msgctxt "opkman_const.rsprogressfrm_error4"
 msgid "Dependency \"%s\" not found!"
-msgstr "¡Dependencia \"%s\" no encontrada!"
+msgstr "Dependencia"
 
 #: opkman_const.rsprogressfrm_error5
+#, fuzzy
+#| msgid "not found!"
 msgctxt "opkman_const.rsprogressfrm_error5"
 msgid "Cannot contact download site"
-msgstr "No se puede contactar el sitio de descarga"
+msgstr "¡No encontrada!"
 
 #: opkman_const.rsprogressfrm_error6
 msgid "No valid download link found."
@@ -1686,8 +1709,10 @@ msgid "Success."
 msgstr "Éxito."
 
 #: opkman_const.rsprogressfrm_info2
+#, fuzzy,badformat
+#| msgid "Contacting download site for \"%s\" ( %s)"
 msgid "Contacting download site for \"%s\" (%s)"
-msgstr "Contactando sitio de descarga para  \"%s\" (%s)"
+msgstr "Contactando sitio de descarga para"
 
 #: opkman_const.rsprogressfrm_info3
 msgid "Preparing to download. Please wait..."
@@ -1778,11 +1803,11 @@ msgstr "Repositorios"
 
 #: opkman_const.rsrepositories_confirmation0
 msgid "Delete selected repository \"%s\"?"
-msgstr "¿Eliminar los repositorios seleccionados \"%s\"?"
+msgstr "¿Elimina el repositorio seleccionado \"%s\"?"
 
 #: opkman_const.rsrepositories_info1
 msgid "The following repository: \"%s\" is already in the list."
-msgstr "Los siguientes repositorios: \"%s\" ya están en la lista."
+msgstr "El siguiente repositorio: \"%s\" ya está en la lista."
 
 #: opkman_const.rsrepositories_inputbox_caption0
 msgid "Add repository"
@@ -1794,7 +1819,7 @@ msgstr "Editar repositorio"
 
 #: opkman_const.rsrepositories_inputbox_text
 msgid "Type the repository address:"
-msgstr "Escriba la dirección del repositorio:"
+msgstr "Escribe la dirección del repositorio"
 
 #: opkman_const.rsrepositories_vst_headercolumn
 msgid "Repository Address"
@@ -1808,7 +1833,7 @@ msgstr "Cancelar"
 
 #: opkman_const.rsrepositorydetailsfrm_bcancel_hint
 msgid "Close the dialog without saving"
-msgstr "Cerrar el cuadro de diálogo sin guardar"
+msgstr "Cerrar el diálogo sin guardar"
 
 #: opkman_const.rsrepositorydetailsfrm_bok_caption
 msgctxt "opkman_const.rsrepositorydetailsfrm_bok_caption"
@@ -1817,7 +1842,7 @@ msgstr "OK"
 
 #: opkman_const.rsrepositorydetailsfrm_bok_hint
 msgid "Save and close the dialog"
-msgstr "Guardar y cerrar el cuadro de diálogo"
+msgstr "Guardar y cerrar el diálogo"
 
 #: opkman_const.rsrepositorydetailsfrm_caption
 msgid "Repository details"
@@ -1825,15 +1850,15 @@ msgstr "Detalles del repositorio"
 
 #: opkman_const.rsrepositorydetailsfrm_edaddress_hint
 msgid "Enter the repository address (e.g.: \"http://localhost/packages/\")"
-msgstr "Ingrese la dirección del repositorio (ej.: \"http://localhost/packages/\")"
+msgstr "Ingresa la dirección del repositorio (ej.: \"http://localhost/packages/\")"
 
 #: opkman_const.rsrepositorydetailsfrm_edname_hint
 msgid "Enter the repository name"
-msgstr "Ingrese el nombre del repositorio"
+msgstr "Ingresa el nombre del repositorio"
 
 #: opkman_const.rsrepositorydetailsfrm_info1
 msgid "Please enter the repository name."
-msgstr "Por favor ingrese el nombre del repositorio."
+msgstr "Por favor ingresa el nombre del repositorio."
 
 #: opkman_const.rsrepositorydetailsfrm_lbaddress_caption
 msgctxt "opkman_const.rsrepositorydetailsfrm_lbaddress_caption"
@@ -1852,5 +1877,5 @@ msgstr "Nombre"
 
 #: opkman_const.rsrepositorydetailsfrm_mdescription_hint
 msgid "Enter the repository description"
-msgstr "Ingrese la descripción del repositorio"
+msgstr "Ingresa la descripción del repositorio"
 
