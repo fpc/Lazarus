@@ -5288,6 +5288,7 @@ resourcestring
   lisFPCMessagesAppendix = 'FPC messages: Appendix';
   lisRelativePaths = 'Relative paths';
   lisInheritedParameters = 'Inherited parameters';
+  lisShowMultipleLines = 'Show multiple lines';
   lisShowRelativePaths = 'Show relative paths';
   lisCommandLineParameters = 'Command line parameters';
   liswlWatchList = 'Watches';

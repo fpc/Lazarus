@@ -60,12 +60,14 @@ type
     InhItemMemo: TMemo;
     InhSplitter: TSplitter;
     InhTreeView: TTreeView;
+    MultilineCheckBox: TCheckBox;
     PageControl1: TPageControl;
     RelativePathsCheckBox: TCheckBox;
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure InhTreeViewSelectionChanged(Sender: TObject);
+    procedure MultilineCheckBoxChange(Sender: TObject);
     procedure RelativePathsCheckBoxChange(Sender: TObject);
   private
     FCompilerOpts: TBaseCompilerOptions;
@@ -166,6 +168,11 @@ begin
   end;
 end;
 
+procedure TShowCompilerOptionsDlg.MultilineCheckBoxChange(Sender: TObject);
+begin
+  UpdateMemo;
+end;
+
 procedure TShowCompilerOptionsDlg.FormCreate(Sender: TObject);
 begin
   ImageIndexPackage := IDEImages.LoadImage('item_package');
@@ -178,6 +185,8 @@ begin
   CmdLineParamsTabSheet.Caption:=lisCommandLineParameters;
   RelativePathsCheckBox.Caption:=lisShowRelativePaths;
   RelativePathsCheckBox.Checked:=not MiscellaneousOptions.ShowCompOptFullFilenames;
+  MultilineCheckBox.Caption:=lisShowMultipleLines;
+  MultilineCheckBox.Checked:=not MiscellaneousOptions.ShowCompOptMultiLine;
 
   InheritedParamsTabSheet.Caption:=lisInheritedParameters;
   InhTreeView.Images := IDEImages.Images_16;
@@ -190,6 +199,7 @@ procedure TShowCompilerOptionsDlg.FormClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
   MiscellaneousOptions.ShowCompOptFullFilenames:=not RelativePathsCheckBox.Checked;
+  MiscellaneousOptions.ShowCompOptMultiLine:=MultilineCheckBox.Checked;
   MiscellaneousOptions.Save;
 end;
 
@@ -211,12 +221,24 @@ procedure TShowCompilerOptionsDlg.UpdateMemo;
 var
   Flags: TCompilerCmdLineOptions;
   CurOptions: String;
+  ParamList: TStrings;
 begin
   if CompilerOpts=nil then exit;
   Flags:=CompilerOpts.DefaultMakeOptionsFlags;
   if not RelativePathsCheckBox.Checked then
     Include(Flags,ccloAbsolutePaths);
   CurOptions := CompilerOpts.MakeOptionsString(Flags);
+  if MultilineCheckBox.Checked then begin
+    ParamList:=TStringList.Create;
+    try
+      SplitCmdLineParams(CurOptions,ParamList);
+      CurOptions:=ParamList.Text;
+    finally
+      ParamList.Free;
+    end;
+    CmdLineMemo.ScrollBars:=ssAutoBoth;
+  end else
+    CmdLineMemo.ScrollBars:=ssAutoVertical;
   CmdLineMemo.Lines.Text:=CurOptions;
 end;
 
