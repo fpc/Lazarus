@@ -3235,7 +3235,7 @@ begin
   end;
   if CurTargetDirectory <> '' then begin
     if not (ccloAbsolutePaths in Flags) then
-      CurOutputDir:=CreateRelativePath(CurOutputDir,BaseDirectory,true);
+      CurTargetDirectory:=CreateRelativePath(CurTargetDirectory,BaseDirectory,true);
     switches := switches + ' '+PrepareCmdLineOption('-FE' + CurTargetDirectory);
   end;
   if (CurTargetFilename<>'') then begin
