@@ -1193,11 +1193,6 @@ procedure TApplication.HandleException(Sender: TObject);
     Buf: ShortString;
   begin
     SetLength(Buf,ExceptionErrorMessage(ExObject,ExAddr,@Buf[1],255));
-    {$IFDEF DebugInvalidExceptions}
-    DebugLn('TApplication.HandleException Strange Exception');
-    DebugLn(Buf);
-    DumpExceptionBackTrace;
-    {$ENDIF}
     if Assigned(SysUtils.OnShowException) then
       SysUtils.OnShowException(Buf);
   end;
