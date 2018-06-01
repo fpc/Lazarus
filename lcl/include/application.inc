@@ -1187,6 +1187,21 @@ end;
 
  ------------------------------------------------------------------------------}
 procedure TApplication.HandleException(Sender: TObject);
+  procedure ShowInvalidException(ExObject: TObject; ExAddr: Pointer);
+  // use shortstring. On exception, the heap may be corrupt.
+  var
+    Buf: ShortString;
+  begin
+    SetLength(Buf,ExceptionErrorMessage(ExObject,ExAddr,@Buf[1],255));
+    {$IFDEF DebugInvalidExceptions}
+    DebugLn('TApplication.HandleException Strange Exception');
+    DebugLn(Buf);
+    DumpExceptionBackTrace;
+    {$ENDIF}
+    if Assigned(SysUtils.OnShowException) then
+      SysUtils.OnShowException(Buf);
+  end;
+
 var
   i: LongInt;
   Skip: Boolean;
@@ -1213,22 +1228,6 @@ begin
 
   Skip := ExceptObject is EAbort;
 
-  if not (AppNoExceptionMessages in FFlags) then
-  begin
-    // before we do anything, write it down
-    if ExceptObject is Exception then
-    begin
-      if not Skip then
-      begin
-        DebugLn('TApplication.HandleException ',Exception(ExceptObject).Message);
-        DumpExceptionBackTrace;
-      end;
-    end else
-    begin
-      DebugLn('TApplication.HandleException Strange Exception ');
-      DumpExceptionBackTrace;
-    end;
-  end;
   // release capture and hide all forms with stay on top, so that
   // a message can be shown
   if GetCapture <> 0 then SendMessage(GetCapture, LM_CANCELMODE, 0, 0);
@@ -1252,7 +1251,7 @@ begin
     end;
   end
   else
-    SysUtils.ShowException(ExceptObject, ExceptAddr);
+    ShowInvalidException(ExceptObject, ExceptAddr);
   if not Skip then
     RestoreStayOnTop(True);
   Exclude(FFlags, AppHandlingException);
