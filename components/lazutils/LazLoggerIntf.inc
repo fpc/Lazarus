@@ -109,3 +109,4 @@ function dbghex(i: Int64): string; overload;
 function dbgMemRange(P: Pointer; Count: integer; Width: integer = 0): string; overload;
 function dbgMemStream(MemStream: TCustomMemoryStream; Count: integer): string; overload;
 
+procedure DumpExceptionBackTrace;

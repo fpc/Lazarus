@@ -580,3 +580,11 @@ begin
 end;
 
 
+procedure DumpExceptionBackTrace;
+begin
+  {$IFnDEF USED_BY_LAZLOGGER_DUMMY}
+  DebugLogger.DebugLn('  Stack trace:');
+  DebugLogger.DumpExceptionBackTrace;
+  {$ENDIF}
+end;
+
