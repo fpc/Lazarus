@@ -1539,6 +1539,7 @@ var
   Widget: TMUIObject absolute Handle;
   Sc: TMUIScrollbar;
 begin
+  //writeln('-->SetScrollInfo');
   Result := 0;
   //writeln(' Set ScrollInfo ',SBStyle,' m:', ScrollInfo.NMax, ' page:', ScrollInfo.nPage, ' pos:', ScrollInfo.nPos);
   if (ScrollInfo.NMax = 0) and (ScrollInfo.NPage = 0) and (ScrollInfo.NMin = 0) then
@@ -1547,9 +1548,15 @@ begin
   begin
     //if not Assigned(Widget.VScroll) or not Assigned(Widget.HScroll) then
     //  Widget.CreateScrollbars;
+    //writeln('SetScrollInfo ', Widget.classname,' ', SBStyle,' ', HexStr(Pointer(ScrollInfo.fMask)));
     if not Widget.Visible then
       Exit;
     Sc := nil;
+    if SBStyle = SB_CTL then
+    begin
+      SC := TMUIScrollbar(Widget);
+    end
+    else
     if SBStyle = SB_Vert then
     begin
       SC := TMUIScrollbar(Widget.VScroll);
@@ -1568,21 +1575,29 @@ begin
     if not Assigned(SC) then
       Exit;
     //
-    if ((SIF_PAGE and ScrollInfo.fMask) <> 0) and (SC.PageSize <> ScrollInfo.nPage) then
+    if ((SIF_PAGE and ScrollInfo.fMask) <> 0) and (SC.PageSize <> ScrollInfo.nPage) and (ScrollInfo.nPage <> 0) then
+    begin
+      //writeln('Set Page ', ScrollInfo.nPage);
       SC.PageSize := ScrollInfo.nPage;
+    end;
     if (SIF_RANGE and ScrollInfo.fMask) <> 0 then
     begin
+      //writeln('->Set min max ', ScrollInfo.nMin, ' max: ', ScrollInfo.nMax);
       if SC.MinValue <> ScrollInfo.nMin then
         SC.MinValue := ScrollInfo.nMin;
       if SC.MaxValue <> ScrollInfo.nMax then
         SC.MaxValue := ScrollInfo.nMax;
+      //writeln('<-Set min max ', ScrollInfo.nMin, ' max: ', ScrollInfo.nMax);
     end;
     if ((SIF_POS and ScrollInfo.fMask) <> 0) and (SC.Position <> ScrollInfo.nPos) then
+    begin
       SC.Position := ScrollInfo.nPos;
+    end;
     if not SC.Visible then
       SC.Visible := True;
     Result := SC.Position;
   end;
+  //writeln('<--SetScrollInfo');
 end;
 
 function TMUIWidgetSet.SetTextColor(DC: HDC; Color: TColorRef): TColorRef;
