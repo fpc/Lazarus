@@ -125,6 +125,7 @@ type
     procedure SetToolStatus(const AValue: TIDEToolStatus); override;
 
     procedure DoMnuWindowClicked(Sender: TObject);
+    procedure ShowMainIDEBar(Center: boolean);
     procedure mnuOpenProjectClicked(Sender: TObject); virtual; abstract;
     procedure mnuOpenRecentClicked(Sender: TObject);
     procedure mnuWindowItemClick(Sender: TObject); virtual;
@@ -651,8 +652,14 @@ end;
 { TMainIDEBase }
 
 procedure TMainIDEBase.mnuWindowItemClick(Sender: TObject);
+var
+  Form: TCustomForm;
 begin
-  IDEWindowCreators.ShowForm(TCustomForm(TIDEMenuCommand(Sender).UserTag), true);
+  Form:=TCustomForm(TIDEMenuCommand(Sender).UserTag);
+  if Form=MainIDEBar then
+    ShowMainIDEBar(false)
+  else
+    IDEWindowCreators.ShowForm(Form, true);
 end;
 
 procedure TMainIDEBase.mnuCenterWindowItemClick(Sender: TObject);
@@ -661,6 +668,12 @@ var
   Form: TCustomForm;
   r, NewBounds: TRect;
 begin
+  Form:=TCustomForm(TIDEMenuCommand(Sender).UserTag);
+  if Form=MainIDEBar then begin
+    ShowMainIDEBar(true);
+    exit;
+  end;
+
   i:=Screen.CustomFormCount-1;
   while (i>=0) do begin
     Form:=Screen.CustomForms[i];
@@ -898,6 +911,50 @@ end;
 procedure TMainIDEBase.DoMnuWindowClicked(Sender: TObject);
 begin
   UpdateWindowMenu;
+end;
+
+procedure TMainIDEBase.ShowMainIDEBar(Center: boolean);
+var
+  NewBounds, WorkArea: TRect;
+  aMonitor: TMonitor;
+  x, y: LongInt;
+begin
+  debugln(['TMainIDEBase.ShowMainIDEBar Center=',Center]);
+  NewBounds:=MainIDEBar.BoundsRect;
+  aMonitor:=MainIDEBar.Monitor;
+  if aMonitor=nil then
+    aMonitor:=Screen.PrimaryMonitor;
+  WorkArea:=aMonitor.WorkareaRect;
+
+  // for experimental or buggy widgetsets: sanity check workarea
+  WorkArea.Right:=Max(WorkArea.Right,WorkArea.Left+400);
+  WorkArea.Bottom:=Max(WorkArea.Bottom,WorkArea.Top+400);
+
+  if NewBounds.Left<WorkArea.Left then begin
+    // move right
+    OffsetRect(NewBounds,WorkArea.Left-NewBounds.Left,0);
+    NewBounds.Right:=Min(NewBounds.Right,WorkArea.Right);
+  end else if NewBounds.Right>WorkArea.Right then begin
+    // move left
+    NewBounds.Left:=Max(NewBounds.Left-(NewBounds.Right-WorkArea.Right),WorkArea.Left);
+  end;
+  if NewBounds.Top<WorkArea.Top then begin
+    // move down
+    OffsetRect(NewBounds,0,WorkArea.Top-NewBounds.Top);
+    NewBounds.Bottom:=Min(NewBounds.Bottom,WorkArea.Bottom);
+  end else if NewBounds.Bottom>WorkArea.Bottom then begin
+    // move up
+    NewBounds.Top:=Max(NewBounds.Top-(NewBounds.Bottom-WorkArea.Bottom),WorkArea.Top);
+  end;
+  if Center then begin
+    x:=(WorkArea.Right-WorkArea.Left-(NewBounds.Right-NewBounds.Left)) div 2;
+    y:=(WorkArea.Bottom-WorkArea.Top-(NewBounds.Bottom-NewBounds.Top)) div 2;
+    OffsetRect(NewBounds,x-NewBounds.Left,y-NewBounds.Top);
+  end;
+
+  MainIDEBar.BoundsRect:=NewBounds;
+  MainIDEBar.WindowState:=wsNormal;
+  MainIDEBar.BringToFront;
 end;
 
 procedure TMainIDEBase.SetDisplayState(AValue: TDisplayState);
@@ -1744,7 +1801,7 @@ end;
 
 procedure TMainIDEBase.UpdateWindowMenu;
 
-  function GetMenuItem(Index: Integer; ASection: TIDEMenuSection): TIDEMenuItem; inline;
+  function GetMenuItem(Index: Integer; ASection: TIDEMenuSection): TIDEMenuItem;
   begin
     if ASection.Count > Index then
       Result := ASection.Items[Index]
@@ -1755,7 +1812,7 @@ procedure TMainIDEBase.UpdateWindowMenu;
     end;
   end;
 
-  procedure ClearMenuItem(ARemainCount: Integer; ASection: TIDEMenuSection); inline;
+  procedure ClearMenuItem(ARemainCount: Integer; ASection: TIDEMenuSection);
   begin
     with ASection do
       while Count > ARemainCount do
@@ -1780,6 +1837,10 @@ begin
     WindowsList.Add(SourceEditorManager.SourceWindows[i]);
   if (ObjectInspector1<>nil) and (ObjectInspector1.Visible) then
     WindowsList.Add(ObjectInspector1);
+  {$IFNDEF MSWindows}
+  if MainIDEBar.Parent=nil then
+    WindowsList.Add(MainIDEBar);
+  {$ENDIF}
   // add special IDE windows
   for i:=0 to Screen.FormCount-1 do begin
     AForm:=Screen.Forms[i];
@@ -1811,7 +1872,7 @@ begin
     and IsFormDesign(TWinControl(WindowsList[i])) then
       CurMenuItem.Caption:=TCustomForm(WindowsList[i]).Name
     else
-       CurMenuItem.Caption:=TCustomForm(WindowsList[i]).Caption;
+      CurMenuItem.Caption:=TCustomForm(WindowsList[i]).Caption;
     CurMenuItem.Checked := WindowMenuActiveForm = TCustomForm(WindowsList[i]);
     CurMenuItem.UserTag := {%H-}PtrUInt(WindowsList[i]);
     CurMenuItem.OnClick:=@mnuWindowItemClick;
@@ -1822,6 +1883,7 @@ begin
       CurMenuItem.Caption:=TCustomForm(WindowsList[i]).Name
     else
       CurMenuItem.Caption:=TCustomForm(WindowsList[i]).Caption;
+    CurMenuItem.UserTag := {%H-}PtrUInt(WindowsList[i]);
     CurMenuItem.OnClick:=@mnuCenterWindowItemClick;
   end;
   //create source page menuitems
