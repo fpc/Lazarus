@@ -124,7 +124,7 @@ var
 implementation
 
 uses
-  MUIWSFactory, MUIWSForms, VInfo, muistdctrls, lazlogger;
+  MUIWSFactory, MUIWSForms, VInfo, muistdctrls, lazloggerbase;
 
 
 {$I muiwinapi.inc}

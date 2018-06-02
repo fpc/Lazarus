@@ -29,7 +29,7 @@ uses
   Classes, SysUtils, Math, TypInfo, Types, Laz_AVL_Tree,
   // LazUtils
   FPCAdds, LazFileUtils, LazMethodList, LazUTF8, LazUTF8Classes,
-  {$IFnDEF WithOldDebugln} LazLogger, {$ENDIF}
+  {$IFnDEF WithOldDebugln} LazLoggerBase, {$ENDIF}
   // LCL
   LCLStrConsts, LCLType;
 
@@ -1028,7 +1028,7 @@ end;
 
 procedure DumpExceptionBackTrace;
 begin
-  LazLogger.DumpExceptionBackTrace;
+  LazLoggerBase.DumpExceptionBackTrace;
 end;
 
 function GetStackTrace(UseCache: boolean): string;
@@ -2072,102 +2072,102 @@ end;
 
 function ConvertLineEndings(const s: string): string;
 begin
-  Result:=LazLogger.ConvertLineEndings(s);
+  Result:=LazLoggerBase.ConvertLineEndings(s);
 end;
 
 function DbgS(const c: cardinal): string;
 begin
-  Result:=LazLogger.DbgS(c);
+  Result:=LazLoggerBase.DbgS(c);
 end;
 
 function DbgS(const i: longint): string;
 begin
-  Result:=LazLogger.DbgS(i);
+  Result:=LazLoggerBase.DbgS(i);
 end;
 
 function DbgS(const i: int64): string;
 begin
-  Result:=LazLogger.DbgS(i);
+  Result:=LazLoggerBase.DbgS(i);
 end;
 
 function DbgS(const q: qword): string;
 begin
-  Result:=LazLogger.DbgS(q);
+  Result:=LazLoggerBase.DbgS(q);
 end;
 
 function DbgS(const r: TRect): string;
 begin
-  Result:=LazLogger.DbgS(r);
+  Result:=LazLoggerBase.DbgS(r);
 end;
 
 function DbgS(const p: TPoint): string;
 begin
-  Result:=LazLogger.DbgS(p);
+  Result:=LazLoggerBase.DbgS(p);
 end;
 
 function DbgS(const p: pointer): string;
 begin
-  Result:=LazLogger.DbgS(p);
+  Result:=LazLoggerBase.DbgS(p);
 end;
 
 function DbgS(const e: extended; MaxDecimals: integer): string;
 begin
-  Result:=LazLogger.DbgS(e,MaxDecimals);
+  Result:=LazLoggerBase.DbgS(e,MaxDecimals);
 end;
 
 function DbgS(const b: boolean): string;
 begin
-  Result:=LazLogger.DbgS(b);
+  Result:=LazLoggerBase.DbgS(b);
 end;
 
 function DbgS(const s: TComponentState): string;
 begin
-  Result:=LazLogger.DbgS(s);
+  Result:=LazLoggerBase.DbgS(s);
 end;
 
 function DbgS(const m: TMethod): string;
 begin
-  Result:=LazLogger.DbgS(m);
+  Result:=LazLoggerBase.DbgS(m);
 end;
 
 function DbgSName(const p: TObject): string;
 begin
-  Result:=LazLogger.DbgSName(p);
+  Result:=LazLoggerBase.DbgSName(p);
 end;
 
 function DbgSName(const p: TClass): string;
 begin
-  Result:=LazLogger.DbgSName(p);
+  Result:=LazLoggerBase.DbgSName(p);
 end;
 
 function DbgStr(const StringWithSpecialChars: string): string;
 begin
-  Result:=LazLogger.DbgStr(StringWithSpecialChars);
+  Result:=LazLoggerBase.DbgStr(StringWithSpecialChars);
 end;
 
 function DbgWideStr(const StringWithSpecialChars: widestring): string;
 begin
-  Result:=LazLogger.DbgWideStr(StringWithSpecialChars);
+  Result:=LazLoggerBase.DbgWideStr(StringWithSpecialChars);
 end;
 
 function dbgMemRange(P: PByte; Count: integer; Width: integer): string;
 begin
-  Result:=LazLogger.dbgMemRange(P,Count,Width);
+  Result:=LazLoggerBase.dbgMemRange(P,Count,Width);
 end;
 
 function dbgMemStream(MemStream: TCustomMemoryStream; Count: integer): string;
 begin
-  Result:=LazLogger.dbgMemStream(MemStream,Count);
+  Result:=LazLoggerBase.dbgMemStream(MemStream,Count);
 end;
 
 function dbgObjMem(AnObject: TObject): string;
 begin
-  Result:=LazLogger.dbgObjMem(AnObject);
+  Result:=LazLoggerBase.dbgObjMem(AnObject);
 end;
 
 function dbghex(i: Int64): string;
 begin
-  Result:=LazLogger.dbghex(i);
+  Result:=LazLoggerBase.dbghex(i);
 end;
 
 function DbgSWindowPosFlags(Flags: UInt): String;
@@ -2209,12 +2209,12 @@ end;
 
 function DbgS(const i1, i2, i3, i4: integer): string;
 begin
-  Result:=LazLogger.DbgS(i1,i2,i3,i4);
+  Result:=LazLoggerBase.DbgS(i1,i2,i3,i4);
 end;
 
 function DbgS(const Shift: TShiftState): string;
 begin
-  Result:=LazLogger.DbgS(Shift);
+  Result:=LazLoggerBase.DbgS(Shift);
 end;
 
 function DbgsVKCode(c: word): string;
@@ -2396,7 +2396,7 @@ end;
 
 function DbgS(const ASize: TSize): string;
 begin
-  Result:=LazLogger.DbgS(ASize);
+  Result:=LazLoggerBase.DbgS(ASize);
 end;
 
 function DbgS(const ATM: TTextMetric): string;

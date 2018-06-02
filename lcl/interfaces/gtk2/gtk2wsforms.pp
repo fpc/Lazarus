@@ -31,7 +31,7 @@ uses
   Gtk2Int, Gtk2Proc, Gtk2Def, Gtk2Extra, Gtk2Globals, Gtk2WSControls,
   WSForms, WSProc,
   // LazUtils
-  LazLogger;
+  LazLoggerBase;
 
 type
 
