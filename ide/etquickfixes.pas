@@ -57,7 +57,7 @@ uses
   // LCL
   Menus, Dialogs, Controls,
   // LazUtils
-  LazLogger, AvgLvlTree, LazFileUtils, LazUTF8,
+  LazLoggerBase, AvgLvlTree, LazFileUtils, LazUTF8,
   // Codetools
   CodeToolManager, CodeCache, CodeTree, CodeAtom, BasicCodeTools, KeywordFuncLists,
   // IdeIntf

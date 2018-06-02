@@ -26,7 +26,7 @@ uses
   cthreads,
   {$ENDIF}
   Classes, SysUtils, Unix, MTProcs,
-  LazFileUtils, LazUTF8, LazUTF8Classes, LazLogger, LConvEncoding;
+  LazFileUtils, LazUTF8, LazUTF8Classes, LazLoggerBase, LConvEncoding;
 
 var
   FromEncoding: String;

@@ -33,7 +33,7 @@ interface
 uses
   Classes, SysUtils,
   // LazUtils
-  Laz2_XMLCfg, LazLogger, LazFileUtils, LazUTF8,
+  Laz2_XMLCfg, LazLoggerBase, LazFileUtils, LazUTF8,
   // LCL
   Forms, Controls, Dialogs, ExtCtrls, StdCtrls, ComCtrls, Contnrs, ButtonPanel,
   InterfaceBase, LCLPlatformDef,

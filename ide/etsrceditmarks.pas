@@ -36,7 +36,7 @@ uses
   // LCL
   Graphics, Controls, Forms, ImgList,
   // LazUtils
-  LazLogger, LazFileUtils,
+  LazLoggerBase, LazFileUtils,
   // Codetools
   KeywordFuncLists,
   // SynEdit

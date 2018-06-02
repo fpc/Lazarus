@@ -30,7 +30,7 @@ uses
   // LCL
   Controls, LCLType, LCLIntf, Grids, Graphics, StdCtrls, Menus,
   // LazUtils
-  LazLogger,
+  LazLoggerBase,
   // Codetools
   FileProcs,
   // IdeIntf

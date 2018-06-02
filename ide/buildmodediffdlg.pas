@@ -34,7 +34,7 @@ uses
   // LCL
   StdCtrls, ComCtrls, Forms, ButtonPanel,
   // LazUtils
-  LazUTF8, LazLogger, AvgLvlTree,
+  LazUTF8, LazLoggerBase, AvgLvlTree,
   // IDE
   LazarusIDEStrConsts, EnvironmentOpts, Project, ModeMatrixOpts, CompOptsModes;
 

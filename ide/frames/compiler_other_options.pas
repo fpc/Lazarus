@@ -32,7 +32,7 @@ uses
   // LCL
   Forms, Controls, Graphics, Dialogs, StdCtrls, ComCtrls, ExtCtrls, Buttons, LCLType,
   // LazUtils
-  LazUTF8, LazLogger,
+  LazUTF8, LazLoggerBase,
   // Codetools
   CodeToolsCfgScript, KeywordFuncLists,
   // IdeIntf

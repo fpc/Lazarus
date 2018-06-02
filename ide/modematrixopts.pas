@@ -28,7 +28,7 @@ interface
 uses
   Classes, SysUtils, contnrs,
   // LazUtils
-  LazConfigStorage, Laz2_XMLCfg, LazLogger, LazUTF8,
+  LazConfigStorage, Laz2_XMLCfg, LazLoggerBase, LazUTF8,
   // Codetools
   FileProcs, KeywordFuncLists, CodeToolsCfgScript,
   // IDE

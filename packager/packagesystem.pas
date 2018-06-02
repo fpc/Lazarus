@@ -49,7 +49,7 @@ uses
   // LCL
   Forms, Controls, Dialogs, LCLProc,
   // LazUtils
-  FileUtil, LazFileCache, LazLogger, LazFileUtils, LazUTF8,
+  FileUtil, LazFileCache, LazLoggerBase, LazFileUtils, LazUTF8,
   Laz2_XMLCfg, laz2_XMLRead, AvgLvlTree,
   // codetools
   FileProcs, DefineTemplates, CodeToolManager, CodeCache, DirectoryCacher,

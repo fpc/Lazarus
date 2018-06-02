@@ -51,7 +51,7 @@ uses
   LCLProc, Forms, Controls, LCLType, StdCtrls, ExtCtrls, Buttons, Dialogs,
   LCLPlatformDef, CheckLst, Menus, ComCtrls,
   // LazUtils
-  FileUtil, LazFileUtils, LazUTF8, LazLogger, lazutf8classes, LazFileCache,
+  FileUtil, LazFileUtils, LazUTF8, LazLoggerBase, lazutf8classes, LazFileCache,
   // LazControls
   DividerBevel,
   // Codetools

@@ -37,7 +37,7 @@ uses
   // LCL
   Forms, Controls, Dialogs, ButtonPanel, ExtCtrls,
   // LazUtils
-  LazLogger,
+  LazLoggerBase,
   // Codetools
   CodeToolManager, CodeCache, StdCodeTools,
   // IdeIntf

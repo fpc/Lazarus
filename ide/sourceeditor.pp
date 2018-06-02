@@ -53,7 +53,7 @@ uses
   ExtendedNotebook,
   // LazUtils
   LConvEncoding, LazUTF8Classes, LazFileCache, LazUTF8,
-  LazLoggerBase, LazLogger, Translations,
+  LazLoggerBase, LazLoggerBase, Translations,
   // codetools
   BasicCodeTools, CodeBeautifier, CodeToolManager, CodeCache, SourceLog,
   LinkScanner, CodeTree, SourceChanger,

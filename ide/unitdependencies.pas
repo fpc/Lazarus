@@ -43,7 +43,7 @@ uses
   CodeToolManager, DefineTemplates, CTUnitGraph, CTUnitGroupGraph,
   FileProcs, CodeCache, AvgLvlTree,
   // LazUtils
-  LazLogger, LazFileUtils, LazFileCache, LazUtilities, LazUTF8, LvlGraphCtrl,
+  LazLoggerBase, LazFileUtils, LazFileCache, LazUtilities, LazUTF8, LvlGraphCtrl,
   // IDE interface
   LazIDEIntf, ProjectIntf, IDEWindowIntf, PackageIntf, SrcEditorIntf, IDEImagesIntf,
   IDEMsgIntf, IDEExternToolIntf, IDECommands, IDEDialogs,
