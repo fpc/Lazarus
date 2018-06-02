@@ -10027,6 +10027,7 @@ lcl/lcl_edbtnimg.res -text
 lcl/lcl_grid_images.res -text
 lcl/lclbase.lpk svneol=native#text/plain
 lcl/lclclasses.pp svneol=native#text/pascal
+lcl/lclexceptionstacktrace.pas svneol=native#text/pascal
 lcl/lclintf.pas svneol=native#text/pascal
 lcl/lclmemmanager.pas svneol=native#text/pascal
 lcl/lclmessageglue.pas svneol=native#text/pascal

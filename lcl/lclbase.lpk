@@ -27,7 +27,7 @@
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Minor="9"/>
-    <Files Count="287">
+    <Files Count="288">
       <Item1>
         <Filename Value="checklst.pas"/>
         <UnitName Value="CheckLst"/>
@@ -58,7 +58,7 @@
       </Item7>
       <Item8>
         <Filename Value="dbctrls.pp"/>
-        <UnitName Value="DbCtrls"/>
+        <UnitName Value="DBCtrls"/>
       </Item8>
       <Item9>
         <Filename Value="dbgrids.pas"/>
@@ -1180,6 +1180,10 @@
         <Filename Value="include/comboex.inc"/>
         <Type Value="Include"/>
       </Item287>
+      <Item288>
+        <Filename Value="lclexceptionstacktrace.pas"/>
+        <UnitName Value="LCLExceptionStacktrace"/>
+      </Item288>
     </Files>
     <LazDoc Paths="../docs/xml/lcl"/>
     <i18n>
