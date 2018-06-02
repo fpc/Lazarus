@@ -2889,7 +2889,10 @@ begin
   end;
 
   if Handled then
+  begin
     TheMessage.CharCode := 0;
+    TheMessage.Result := 1;
+  end;
 end;
 
 
