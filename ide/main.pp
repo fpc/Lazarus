@@ -71,7 +71,7 @@ uses
   // LazUtils
   // use lazutf8, lazfileutils and lazfilecache after FileProcs and FileUtil
   FileUtil, LazFileUtils, LazFileCache, LazUTF8, LazUTF8Classes, UTF8Process,
-  LConvEncoding, Laz2_XMLCfg, LazLogger, AvgLvlTree,
+  LConvEncoding, Laz2_XMLCfg, LazLogger, AvgLvlTree, LCLExceptionStacktrace,
   // SynEdit
   SynEdit, AllSynEdit, SynEditKeyCmds, SynEditMarks, SynEditHighlighter,
   // IDE interface
