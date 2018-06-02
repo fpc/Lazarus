@@ -20,7 +20,7 @@ interface
 uses
   Classes, SysUtils, typinfo, Laz_AVL_Tree,
   // LazUtils
-  LazLogger, AvgLvlTree;
+  LazLoggerBase, AvgLvlTree;
   
 type
   { TConfigStorage }

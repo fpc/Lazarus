@@ -65,7 +65,7 @@ uses
   Classes, SysUtils,
   {$IF FPC_FULLVERSION>=30001}jsonscanner,{$ENDIF} jsonparser, fpjson,
   // LazUtils
-  FileUtil, LazFileUtils, LazUTF8, LazUTF8Classes, LConvEncoding, LazLogger,
+  FileUtil, LazFileUtils, LazUTF8, LazUTF8Classes, LConvEncoding, LazLoggerBase,
   AvgLvlTree, StringHashList;
 
 type
