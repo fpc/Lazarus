@@ -6931,10 +6931,7 @@ begin
       exit;
     end;
   end;
-  if Assigned(Parent) then
-    SetBoundsKeepBase(Message.XPos, Message.YPos, NewWidth, NewHeight)
-  else
-    SetBounds(Message.XPos, Message.YPos, NewWidth, NewHeight);
+  SetBounds(Message.XPos, Message.YPos, NewWidth, NewHeight);
 end;
 
 {------------------------------------------------------------------------------
