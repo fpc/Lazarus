@@ -1187,48 +1187,50 @@ end;
 
  ------------------------------------------------------------------------------}
 procedure TApplication.HandleException(Sender: TObject);
+  procedure ShowInvalidException(ExObject: TObject; ExAddr: Pointer);
+  // use shortstring. On exception, the heap may be corrupt.
+  var
+    Buf: ShortString;
+  begin
+    if Assigned(SysUtils.OnShowException) then
+    begin
+      SetLength(Buf,ExceptionErrorMessage(ExObject,ExAddr,@Buf[1],255));
+      SysUtils.OnShowException(Buf);
+    end;
+  end;
+
 var
   i: LongInt;
   Skip: Boolean;
 begin
   if Self = nil then
     Exit;
-  if AppHandlingException in FFlags then
+  if FExceptionCounter>1 then
+  begin
+    // multiple exception circle, just exit
+    Exit;
+  end;
+  if FExceptionCounter=1 then
   begin
     // there was an exception during showing the exception -> break the circle
-    DebugLn('TApplication.HandleException: ',
-      'there was another exception during showing the first exception');
-
-    if Assigned(OnCircularException) and (ExceptObject is Exception) then
-      OnCircularException(Sender, Exception(ExceptObject));
+    Inc(FExceptionCounter);
+    if ExceptObject is Exception then
+    begin
+      if Assigned(OnCircularException) then
+        OnCircularException(Sender, Exception(ExceptObject));
+    end else
+      ShowInvalidException(ExceptObject, ExceptAddr);
 
     HaltingProgram:=true;
-    DumpExceptionBackTrace;
     Halt;
   end;
-  Include(FFlags,AppHandlingException);
+  Inc(FExceptionCounter);
   
   if StopOnException then
     inherited Terminate;
 
   Skip := ExceptObject is EAbort;
 
-  if not (AppNoExceptionMessages in FFlags) then
-  begin
-    // before we do anything, write it down
-    if ExceptObject is Exception then
-    begin
-      if not Skip then
-      begin
-        DebugLn('TApplication.HandleException ',Exception(ExceptObject).Message);
-        DumpExceptionBackTrace;
-      end;
-    end else
-    begin
-      DebugLn('TApplication.HandleException Strange Exception ');
-      DumpExceptionBackTrace;
-    end;
-  end;
   // release capture and hide all forms with stay on top, so that
   // a message can be shown
   if GetCapture <> 0 then SendMessage(GetCapture, LM_CANCELMODE, 0, 0);
@@ -1252,10 +1254,10 @@ begin
     end;
   end
   else
-    SysUtils.ShowException(ExceptObject, ExceptAddr);
+    ShowInvalidException(ExceptObject, ExceptAddr);
   if not Skip then
     RestoreStayOnTop(True);
-  Exclude(FFlags, AppHandlingException);
+  Dec(FExceptionCounter);
 end;
 
 {------------------------------------------------------------------------------

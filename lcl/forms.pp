@@ -1238,7 +1238,6 @@ type
   TApplicationFlag = (
     AppWaiting,
     AppIdleEndSent,
-    AppHandlingException,
     AppNoExceptionMessages,
     AppActive, // application has focus
     AppDestroying,
@@ -1403,6 +1402,7 @@ type
     FTaskBarBehavior: TTaskBarBehavior;
     FUpdateFormatSettings: Boolean;
     FRemoveStayOnTopCounter: Integer;
+    FExceptionCounter: Byte;
     procedure DoOnIdleEnd;
     function GetActive: boolean;
     function GetCurrentHelpFile: string;
