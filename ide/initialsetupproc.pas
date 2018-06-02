@@ -38,7 +38,7 @@ uses
   DefineTemplates, CodeToolManager, FileProcs,
   // LazUtils
   LazFileCache, LazUTF8, LazUTF8Classes, LazFileUtils,
-  LazLoggerBase, LazLoggerBase, Laz2_XMLCfg,
+  LazLoggerBase, Laz2_XMLCfg,
   // IDE
   LazarusIDEStrConsts, LazConf, EnvironmentOpts, IDEProcs;
 

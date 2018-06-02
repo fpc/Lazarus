@@ -40,7 +40,7 @@ interface
 uses 
   Classes, SysUtils,
   // LazUtils
-  FileUtil, LazFileUtils, LazUTF8, LazUTF8Classes, LazLoggerBase,
+  FileUtil, LazFileUtils, LazUTF8, LazUTF8Classes, LazLogger,
   // LCL
   LCLProc,
   // IDE
@@ -365,7 +365,7 @@ begin
   for i:= 1 to ParamsAndCfgCount do
   begin
     if ParamIsOptionPlusValue(i, DebugLogOpt, AValue) then
-      LazLoggerBase.DebugLogger.LogName := AValue;
+      LazLogger.DebugLogger.LogName := AValue;
   end;
 end;
 
