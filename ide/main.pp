@@ -174,7 +174,6 @@ type
     procedure MainIDEFormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure MainIDEFormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure HandleApplicationUserInput(Sender: TObject; {%H-}Msg: Cardinal);
-    procedure HandleApplicationException(Sender: TObject; E: Exception);
     procedure HandleApplicationIdle(Sender: TObject; var {%H-}Done: Boolean);
     procedure HandleApplicationActivate(Sender: TObject);
     procedure HandleApplicationDeActivate(Sender: TObject);
@@ -997,13 +996,6 @@ begin
   end;
 end;
 
-procedure HandleOnShowException(Msg: ShortString);
-begin
-  DebugLn('TApplication.HandleException Strange Exception');
-  DebugLn(Msg);
-  DumpExceptionBackTrace;
-end;
-
 { TMainIDE }
 
 {-------------------------------------------------------------------------------
@@ -1602,8 +1594,6 @@ procedure TMainIDE.StartIDE;
 begin
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.StartIDE START');{$ENDIF}
   // set Application handlers
-  SysUtils.OnShowException := @HandleOnShowException;
-  Application.AddOnExceptionHandler(@HandleApplicationException);
   Application.AddOnUserInputHandler(@HandleApplicationUserInput);
   Application.AddOnIdleHandler(@HandleApplicationIdle);
   Application.AddOnActivateHandler(@HandleApplicationActivate);
@@ -11950,16 +11940,6 @@ end;
 procedure TMainIDE.HandleApplicationEndSession(Sender: TObject);
 begin
   QuitIDE;
-end;
-
-procedure TMainIDE.HandleApplicationException(Sender: TObject; E: Exception);
-begin
-  if not (E is EAbort) then
-  begin
-    DebugLn('TApplication.HandleException ',E.Message);
-    DumpExceptionBackTrace;
-    Application.ShowException(E);
-  end;
 end;
 
 procedure TMainIDE.HandleScreenChangedForm(Sender: TObject; Form: TCustomForm);
