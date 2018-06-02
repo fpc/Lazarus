@@ -22,7 +22,8 @@ procedure TEventContainer.HandleApplicationException(Sender: TObject;
 begin
   if not (E is EAbort) then
   begin
-    DebugLn('TApplication.HandleException ',E.Message);
+    DebugLn('TApplication.HandleException: ',E.ClassName);
+    DebugLn(E.Message);
     DumpExceptionBackTrace;
     Application.ShowException(E);
   end;
@@ -30,7 +31,7 @@ end;
 
 procedure HandleOnShowException(Msg: ShortString);
 begin
-  DebugLn('TApplication.HandleException Strange Exception');
+  DebugLn('TApplication.HandleException: Strange Exception');
   DebugLn(Msg);
   DumpExceptionBackTrace;
 end;
