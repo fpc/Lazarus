@@ -269,6 +269,7 @@
         <ComponentName Value="ComponentListForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="ComponentList"/>
       </Unit31>
       <Unit32>
         <Filename Value="frames/codeexplorer_update_options.pas"/>
