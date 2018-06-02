@@ -21,7 +21,7 @@ interface
 
 uses
   Classes, SysUtils, LazHelpIntf, LazConfigStorage, HelpIntfs,
-  Dialogs, Forms, LazLogger, FileUtil, LazFileUtils, LHelpControl, LResources;
+  Dialogs, Forms, LazLoggerBase, FileUtil, LazFileUtils, LHelpControl, LResources;
 
 const
   CHMMimeType = 'application/chm';

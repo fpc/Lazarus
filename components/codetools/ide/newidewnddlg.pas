@@ -5,7 +5,7 @@ unit NewIDEWndDlg;
 interface
 
 uses
-  Classes, SysUtils, LazFileUtils, LazLogger, LazUTF8, CodeCache, CodeToolManager,
+  Classes, SysUtils, LazFileUtils, LazLoggerBase, LazUTF8, CodeCache, CodeToolManager,
   Forms, Controls, Graphics, Dialogs, StdCtrls, ProjectIntf, MacroIntf,
   IDEDialogs, CodyStrConsts;
 

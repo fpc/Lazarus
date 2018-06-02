@@ -36,7 +36,7 @@ unit CodetoolGDBTracer;
 interface
 
 uses
-  Classes, SysUtils, LazLogger, KeywordFuncLists, contnrs;
+  Classes, SysUtils, LazLoggerBase, KeywordFuncLists, contnrs;
 
 type
   TCTGDBMangledItemKind = (

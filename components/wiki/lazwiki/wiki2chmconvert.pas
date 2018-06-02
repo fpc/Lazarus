@@ -40,7 +40,7 @@ uses
   chmwriter, chmfilewriter, chmsitemap,
   {$ENDIF}
   // LazUtils
-  LazLogger, LazUTF8, LazFileUtils, AvgLvlTree,
+  LazLoggerBase, LazUTF8, LazFileUtils, AvgLvlTree,
   // LazWiki
   Wiki2HTMLConvert, Wiki2XHTMLConvert;
 

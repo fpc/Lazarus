@@ -17,7 +17,7 @@ interface
 
 uses
 // UsesStart
-  Classes, SysUtils, LazLogger, FileUtil, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, LazLoggerBase, FileUtil, Forms, Controls, Graphics, Dialogs,
   LCLType, IDECommands, IDEWindowIntf, LazIDEIntf, MenuIntf
 // UsesEnd
   ;

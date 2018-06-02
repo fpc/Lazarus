@@ -8,7 +8,7 @@ interface
 
 uses
   Classes, SysUtils, IDEOptionsIntf, PackageIntf, ProjectIntf, LazFileUtils,
-  LazFileCache, LazMethodList, LazLogger;
+  LazFileCache, LazMethodList, LazLoggerBase;
 
 Type
   TPGTargetType = (

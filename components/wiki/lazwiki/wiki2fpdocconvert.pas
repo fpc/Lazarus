@@ -84,7 +84,7 @@ interface
 
 uses
   Classes, SysUtils, WikiParser, laz2_DOM, LazFileUtils, laz2_XMLRead,
-  laz2_XMLWrite, LazLogger, WikiFormat;
+  laz2_XMLWrite, LazLoggerBase, WikiFormat;
 
 type
 

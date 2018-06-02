@@ -44,7 +44,7 @@ uses
   // CodeTools
   CodeToolsStrConsts,
   // LazUtils
-  LazUtilities, LazLogger, LazFileCache, LazFileUtils, LazUTF8, LazUTF8Classes;
+  LazUtilities, LazLoggerBase, LazFileCache, LazFileUtils, LazUTF8, LazUTF8Classes;
 
 type
   TFPCStreamSeekType = int64;
@@ -1481,113 +1481,113 @@ end;
 
 procedure DebugLn(Args: array of const);
 begin
-  LazLogger.Debugln(Args);
+  LazLoggerBase.Debugln(Args);
 end;
 
 procedure DebugLn(const S: String; Args: array of const);
 begin
-  LazLogger.DebugLn(Format(S, Args));
+  LazLoggerBase.DebugLn(Format(S, Args));
 end;
 
 procedure DebugLn;
 begin
-  LazLogger.DebugLn('');
+  LazLoggerBase.DebugLn('');
 end;
 
 procedure DebugLn(const s: string);
 begin
-  LazLogger.Debugln(s);
+  LazLoggerBase.Debugln(s);
 end;
 
 procedure DebugLn(const s1, s2: string);
 begin
-  LazLogger.Debugln(s1,s2);
+  LazLoggerBase.Debugln(s1,s2);
 end;
 
 procedure DebugLn(const s1, s2, s3: string);
 begin
-  LazLogger.Debugln(s1,s2,s3);
+  LazLoggerBase.Debugln(s1,s2,s3);
 end;
 
 procedure DebugLn(const s1, s2, s3, s4: string);
 begin
-  LazLogger.Debugln(s1,s2,s3,s4);
+  LazLoggerBase.Debugln(s1,s2,s3,s4);
 end;
 
 procedure DebugLn(const s1, s2, s3, s4, s5: string);
 begin
-  LazLogger.Debugln(s1,s2,s3,s4,s5);
+  LazLoggerBase.Debugln(s1,s2,s3,s4,s5);
 end;
 
 procedure DebugLn(const s1, s2, s3, s4, s5, s6: string);
 begin
-  LazLogger.Debugln(s1,s2,s3,s4,s5,s6);
+  LazLoggerBase.Debugln(s1,s2,s3,s4,s5,s6);
 end;
 
 procedure DebugLn(const s1, s2, s3, s4, s5, s6, s7: string);
 begin
-  LazLogger.Debugln(s1,s2,s3,s4,s5,s6,s7);
+  LazLoggerBase.Debugln(s1,s2,s3,s4,s5,s6,s7);
 end;
 
 procedure DebugLn(const s1, s2, s3, s4, s5, s6, s7, s8: string);
 begin
-  LazLogger.Debugln(s1,s2,s3,s4,s5,s6,s7,s8);
+  LazLoggerBase.Debugln(s1,s2,s3,s4,s5,s6,s7,s8);
 end;
 
 procedure DebugLn(const s1, s2, s3, s4, s5, s6, s7, s8, s9: string);
 begin
-  LazLogger.Debugln(s1,s2,s3,s4,s5,s6,s7,s8,s9);
+  LazLoggerBase.Debugln(s1,s2,s3,s4,s5,s6,s7,s8,s9);
 end;
 
 procedure DebugLn(const s1, s2, s3, s4, s5, s6, s7, s8, s9, s10: string);
 begin
-  LazLogger.Debugln(s1,s2,s3,s4,s5,s6,s7,s8,s9,s10);
+  LazLoggerBase.Debugln(s1,s2,s3,s4,s5,s6,s7,s8,s9,s10);
 end;
 
 procedure DebugLn(const s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11: string);
 begin
-  LazLogger.Debugln(s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11);
+  LazLoggerBase.Debugln(s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11);
 end;
 
 procedure DebugLn(const s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11,
   s12: string);
 begin
-  LazLogger.Debugln(s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12);
+  LazLoggerBase.Debugln(s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12);
 end;
 
 procedure DbgOut(Args: array of const);
 begin
-  LazLogger.DbgOut(dbgs(Args));
+  LazLoggerBase.DbgOut(dbgs(Args));
 end;
 
 procedure DbgOut(const s: string);
 begin
-  LazLogger.DbgOut(s);
+  LazLoggerBase.DbgOut(s);
 end;
 
 procedure DbgOut(const s1, s2: string);
 begin
-  LazLogger.DbgOut(s1,s2);
+  LazLoggerBase.DbgOut(s1,s2);
 end;
 
 procedure DbgOut(const s1, s2, s3: string);
 begin
-  LazLogger.DbgOut(s1,s2,s3);
+  LazLoggerBase.DbgOut(s1,s2,s3);
 end;
 
 procedure DbgOut(const s1, s2, s3, s4: string);
 begin
-  LazLogger.DbgOut(s1,s2,s3,s4);
+  LazLoggerBase.DbgOut(s1,s2,s3,s4);
 end;
 
 procedure DbgOut(const s1, s2, s3, s4, s5: string);
 begin
-  LazLogger.DbgOut(s1,s2,s3,s4,s5);
+  LazLoggerBase.DbgOut(s1,s2,s3,s4,s5);
 end;
 
 procedure DbgOut(const s1, s2, s3, s4, s5, s6: string);
 begin
-  LazLogger.DbgOut(s1,s2,s3,s4,s5,s6);
+  LazLoggerBase.DbgOut(s1,s2,s3,s4,s5,s6);
 end;
 
 function DbgS(Args: array of const): string;
@@ -1637,52 +1637,52 @@ end;
 
 function DbgS(const c: cardinal): string;
 begin
-  Result:=LazLogger.DbgS(c);
+  Result:=LazLoggerBase.DbgS(c);
 end;
 
 function DbgS(const i: integer): string;
 begin
-  Result:=LazLogger.DbgS(i);
+  Result:=LazLoggerBase.DbgS(i);
 end;
 
 function DbgS(const i: QWord): string;
 begin
-  Result:=LazLogger.DbgS(i);
+  Result:=LazLoggerBase.DbgS(i);
 end;
 
 function DbgS(const i: int64): string;
 begin
-  Result:=LazLogger.DbgS(i);
+  Result:=LazLoggerBase.DbgS(i);
 end;
 
 function DbgS(const r: TRect): string;
 begin
-  Result:=LazLogger.DbgS(r);
+  Result:=LazLoggerBase.DbgS(r);
 end;
 
 function DbgS(const p: TPoint): string;
 begin
-  Result:=LazLogger.DbgS(p);
+  Result:=LazLoggerBase.DbgS(p);
 end;
 
 function DbgS(const p: pointer): string;
 begin
-  Result:=LazLogger.DbgS(p);
+  Result:=LazLoggerBase.DbgS(p);
 end;
 
 function DbgS(const e: extended; MaxDecimals: integer = 999): string;
 begin
-  Result:=LazLogger.DbgS(e,MaxDecimals);
+  Result:=LazLoggerBase.DbgS(e,MaxDecimals);
 end;
 
 function DbgS(const b: boolean): string;
 begin
-  Result:=LazLogger.DbgS(b);
+  Result:=LazLoggerBase.DbgS(b);
 end;
 
 function DbgS(const i1, i2, i3, i4: integer): string;
 begin
-  Result:=LazLogger.DbgS(i1,i2,i3,i4);
+  Result:=LazLoggerBase.DbgS(i1,i2,i3,i4);
 end;
 
 function DbgS(const ms: TCustomMemoryStream; Count: PtrInt): string;
@@ -1692,17 +1692,17 @@ end;
 
 function DbgSName(const p: TObject): string;
 begin
-  Result:=LazLogger.DbgSName(p);
+  Result:=LazLoggerBase.DbgSName(p);
 end;
 
 function DbgSName(const p: TClass): string;
 begin
-  Result:=LazLogger.DbgSName(p);
+  Result:=LazLoggerBase.DbgSName(p);
 end;
 
 function dbgMemRange(P: PByte; Count: integer; Width: integer): string;
 begin
-  Result:=LazLogger.dbgMemRange(P,Count,Width);
+  Result:=LazLoggerBase.dbgMemRange(P,Count,Width);
 end;
 
 function DbgStr(const StringWithSpecialChars: string): string;

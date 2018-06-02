@@ -25,7 +25,7 @@ unit Wiki2HTMLConvert;
 interface
 
 uses
-  Classes, SysUtils, Wiki2XHTMLConvert, WikiParser, LazLogger, laz2_DOM,
+  Classes, SysUtils, Wiki2XHTMLConvert, WikiParser, LazLoggerBase, laz2_DOM,
   LazUTF8;
 
 type

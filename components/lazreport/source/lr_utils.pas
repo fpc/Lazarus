@@ -20,7 +20,7 @@ uses
   {$IFDEF WIN32}
   Windows,
   {$ENDIF}
-  LCLType, LCLIntf, LConvEncoding, LazFileUtils, LazUTF8, LazLogger;
+  LCLType, LCLIntf, LConvEncoding, LazFileUtils, LazUTF8, LazLoggerBase;
 
 type
   TUTF8Item=packed record

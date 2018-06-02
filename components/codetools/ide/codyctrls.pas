@@ -31,7 +31,7 @@ interface
 
 uses
   types, math, typinfo, contnrs, Classes, SysUtils, FPCanvas, FPimage,
-  LazLogger, ComCtrls, Controls, Graphics, LCLType, Forms, LCLIntf, GraphType;
+  LazLoggerBase, ComCtrls, Controls, Graphics, LCLType, Forms, LCLIntf, GraphType;
 
 type
 

@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, MacroIntf, MacroDefIntf, forms, Controls, lazideintf,
-  lazlogger, process ;
+  LazLoggerBase, process ;
 
 Type
 

@@ -15,7 +15,7 @@ uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ComCtrls, Menus,
   ActnList, LCLProc, Clipbrd, LazIDEIntf, PackageIntf, ProjectIntf,
   ProjectGroupIntf, MenuIntf, IDEDialogs, IDEWindowIntf, LazFileUtils,
-  LazLogger, LazFileCache, ProjectGroupStrConst, ProjectGroup;
+  LazLoggerBase, LazFileCache, ProjectGroupStrConst, ProjectGroup;
 
 type
   TNodeType = (

@@ -34,7 +34,7 @@ unit WikiParser;
 interface
 
 uses
-  Classes, SysUtils, laz2_XMLRead, laz2_DOM, LazLogger, LazUTF8,
+  Classes, SysUtils, laz2_XMLRead, laz2_DOM, LazLoggerBase, LazUTF8,
   BasicCodeTools, KeywordFuncLists;
 
 const

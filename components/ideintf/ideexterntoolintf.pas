@@ -20,7 +20,7 @@ uses
   // LazUtils
   UTF8Process, LazFileUtils, LazFileCache,
   // IdeIntf
-  ObjInspStrConsts, LazLogger, Menus;
+  ObjInspStrConsts, LazLoggerBase, Menus;
 
 const
   SubToolFPC = 'FPC';

@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, types, math, Controls, Graphics, ComCtrls, LCLType,
-  LMessages, LCLIntf, AnchorDockStorage, LazLogger;
+  LMessages, LCLIntf, AnchorDockStorage, LazLoggerBase;
 
 type
   TADLTVMonitor = class

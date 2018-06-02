@@ -15,7 +15,7 @@ uses
   fpjson,
   jsonparser,
   BaseUnix,
-  LazLogger,
+  LazLoggerBase,
   process,
   dialogs,
   syncobjs,

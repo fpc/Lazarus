@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, ProjectIntf, CompOptsIntf, LazIDEIntf, IDEOptionsIntf,
-  PJSDsgnOptions, PJSDsgnOptsFrame, LazLogger;
+  PJSDsgnOptions, PJSDsgnOptsFrame, LazLoggerBase;
 
 const
   ProjDescNamePas2JSWebApp = 'Web Application';

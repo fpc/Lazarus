@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils,
-  LazLogger,
+  LazLoggerBase,
   Controls, Forms,
   LazIDEIntf, MenuIntf, IDECommands, IDEWindowIntf, BaseIDEIntf,
   frmFileBrowser, frmConfigFileBrowser;
