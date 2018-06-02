@@ -1,4 +1,4 @@
-unit LCLExceptionStacktrace;
+unit LCLExceptionStackTrace;
 
 {$mode objfpc}{$H+}
 
