@@ -742,10 +742,10 @@ begin
 
         // for multiselected listbox the message has to be send after current
         // message or the list item selecting does not work, also see issue #33330
-        if ListView.MultiSelect and (Msg = WM_LBUTTONDOWN) then
+        if not Assigned(ListItem) and ListView.MultiSelect then
         begin
           Result := WindowProc(Window, Msg, WParam, LParam);
-          if not (Msg = WM_LBUTTONDBLCLK) or Assigned(ListItem) then
+          if not (Msg = WM_LBUTTONDBLCLK) and ((Msg = WM_LBUTTONDOWN) or not Assigned(ListView.PopupMenu)) then
             PostMessage(Window, AMsg, 0, MakeLParam(WindowInfo^.MouseX, WindowInfo^.MouseY));
           Exit;
         end;
