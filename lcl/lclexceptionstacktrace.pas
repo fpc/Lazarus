@@ -5,7 +5,7 @@ unit LCLExceptionStackTrace;
 interface
 
 uses
-  SysUtils, LazLoggerBase, Forms, LCLProc;
+  SysUtils, LazLoggerBase, Forms;
 
 implementation
 
