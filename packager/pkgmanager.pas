@@ -5657,15 +5657,15 @@ var
   var
     i: Integer;
     PkgID: TLazPackageID;
+    PkgName: string;
   begin
+    PkgName := ADependency.PackageName; // DeleteDependencyInList destroys ADependency -> don't use it anymore!
     DeleteDependencyInList(ADependency,NewFirstAutoInstallDependency,pdlRequires);
     if piiifRemoveConflicts in Flags then
       for i:=PkgIDList.Count-1 downto 0 do begin
         PkgID:=TLazPackageID(PkgIDList[i]);
-        if SysUtils.CompareText(PkgID.Name,ADependency.PackageName)=0 then begin
-          PkgIDList.Delete(i);
-          PkgID.Free;
-        end;
+        if SysUtils.CompareText(PkgID.Name,PkgName)=0 then
+          PkgIDList.Delete(i); // PkgID is automatically destroyed
       end;
   end;
 
