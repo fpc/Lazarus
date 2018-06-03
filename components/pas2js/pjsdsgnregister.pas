@@ -108,7 +108,6 @@ begin
   RegisterIdeMenuCommand(itmViewDebugWindows,'Pas2JSWebservers',SPasJSWebserversCaption,nil,@ShowServerDialog);
   // Add project options frame
   RegisterIDEOptionsEditor(GroupProject,TPas2JSProjectOptionsFrame, Pas2JSOptionsIndex);
-
 end;
 
 { TProjectPas2JSNodeJSApp }
@@ -256,9 +255,9 @@ begin
   // create program source
   AProject.MainFile.SetSourceText(CreateProjectSource,true);
 
-  AProject.AddPackageDependency('pas2js_rtl');
-  if naoUseNodeJSApp in Options then
-    AProject.AddPackageDependency('fcl_base_pas2js');
+  //AProject.AddPackageDependency('pas2js_rtl');
+  //if naoUseNodeJSApp in Options then
+  //  AProject.AddPackageDependency('fcl_base_pas2js');
 end;
 
 function TProjectPas2JSNodeJSApp.CreateStartFiles(AProject: TLazProject
@@ -276,12 +275,6 @@ begin
   Name:=ProjDescNamePas2JSWebApp;
   Flags:=DefaultProjectNoApplicationFlags-[pfRunnable];
 end;
-
-(*function TProjectPas2JSWebApp.GetBrowserCommand(AFileName : string): String;
-
-begin
-  Result:='$(Pas2JSBrowser) $(Pas2JSProjectURL)'
-end;               *)
 
 function TProjectPas2JSWebApp.GetNextPort : Word;
 
@@ -537,9 +530,9 @@ begin
     if baoRunOnReady in options then
       AProject.CustomData[PJSProjectRunAtReady]:='1';
     end;
-  AProject.AddPackageDependency('pas2js_rtl');
-  if baoUseBrowserApp in Options then
-    AProject.AddPackageDependency('fcl_base_pas2js');
+  //AProject.AddPackageDependency('pas2js_rtl');
+  //if baoUseBrowserApp in Options then
+  //  AProject.AddPackageDependency('fcl_base_pas2js');
 end;
 
 function TProjectPas2JSWebApp.CreateStartFiles(AProject: TLazProject

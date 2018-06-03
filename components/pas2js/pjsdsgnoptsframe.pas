@@ -37,7 +37,7 @@ Type
     procedure NodeJSBrowseButtonClick(Sender: TObject);
     procedure Pas2jsPathBrowseButtonClick(Sender: TObject);
   private
-    function CheckCompiler(Buttons: TMsgDlgButtons): boolean;
+    function CheckCompiler({%H-}Buttons: TMsgDlgButtons): boolean;
   public
     function GetTitle: String; override;
     procedure Setup({%H-}ADialog: TAbstractOptionsEditorDialog); override;

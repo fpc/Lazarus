@@ -52,9 +52,10 @@ Type
   Private
     FOnRefresh: TNotifyEvent;
     FServerInstances: TServerInstanceList;
-    function GetPasJSBrowser(const s: string; const {%H-}Data: PtrInt; var Abort: boolean): string;
-    function GetPasJSNodeJS(const s: string; const {%H-}Data: PtrInt; var Abort: boolean): string;
-    function GetProjectURL(const s: string; const {%H-}Data: PtrInt; var Abort: boolean): string;
+    function GetPas2JSPath(const s: string; const {%H-}Data: PtrInt; var Abort: boolean): string;
+    function GetPas2JSBrowser(const s: string; const {%H-}Data: PtrInt; var Abort: boolean): string;
+    function GetPas2JSNodeJS(const s: string; const {%H-}Data: PtrInt; var Abort: boolean): string;
+    function GetPas2jsProjectURL(const s: string; const {%H-}Data: PtrInt; var Abort: boolean): string;
     function MaybeStartServer(Sender: TObject; var Handled: boolean): TModalResult;
   Public
     Constructor Create;
@@ -189,42 +190,62 @@ end;
 
 { TPJSController }
 
-function TPJSController.GetPasJSBrowser(const s: string; const Data: PtrInt; var Abort: boolean): string;
+function TPJSController.GetPas2JSPath(const s: string; const Data: PtrInt;
+  var Abort: boolean): string;
+begin
+  Abort:=False;
+  if (s<>'') and (ConsoleVerbosity>=0) then
+    debugln(['Hint: (lazarus) [TPJSController.GetPas2JSPath] ignoring macro Pas2JS parameter "',s,'"']);
+  Result:=PJSOptions.CompilerFilename;
+  if Result='' then
+    Result:='pas2js'+GetExeExt
+  else
+    IdeMacros.SubstituteMacros(Result);
+  if (Result<>'') and (ExtractFilePath(Result)='') then
+    Result:=FindDefaultExecutablePath(Result);
+  if (Result<>'') and not FilenameIsAbsolute(Result) then begin
+    if ConsoleVerbosity>=0 then
+      debugln(['Hint: (lazarus) [TPJSController.GetPas2JSPath] invalid pas2js filename "',Result,'"']);
+    Result:='';
+  end;
+end;
+
+function TPJSController.GetPas2JSBrowser(const s: string; const Data: PtrInt; var Abort: boolean): string;
 
 begin
   Abort:=False;
+  if (s<>'') and (ConsoleVerbosity>=0) then
+    debugln(['Hint: (lazarus) [TPJSController.GetPas2JSBrowser] ignoring macro Pas2JSBrowser parameter "',s,'"']);
   Result:=PJSOptions.BrowserFileName;
   if Result='' then
     Result:=GetStandardBrowser;
   IdeMacros.SubstituteMacros(Result);
   if (Result<>'') and not FilenameIsAbsolute(Result) then
     Result:=FindDefaultExecutablePath(Result);
-  if (s<>'') and (ConsoleVerbosity>=0) then
-    debugln(['Hint: (lazarus) [TPJSController.GetPasJSBrowser] ignoring macro Pas2JSBrowser parameter "',s,'"']);
 end;
 
-function TPJSController.GetPasJSNodeJS(const s: string; const Data: PtrInt; var Abort: boolean): string;
+function TPJSController.GetPas2JSNodeJS(const s: string; const Data: PtrInt; var Abort: boolean): string;
 
 begin
   Abort:=False;
+  if (s<>'') and (ConsoleVerbosity>=0) then
+    debugln(['Hint: (lazarus) [TPJSController.GetPas2JSNodeJS] ignoring macro Pas2JSNodeJS parameter "',s,'"']);
   Result:=PJSOptions.NodeJSFileName;
   if Result='' then
     Result:=GetStandardNodeJS;
   IdeMacros.SubstituteMacros(Result);
   if (Result<>'') and not FilenameIsAbsolute(Result) then
     Result:=FindDefaultExecutablePath(Result);
-  if (s<>'') and (ConsoleVerbosity>=0) then
-    debugln(['Hint: (lazarus) [TPJSController.GetPasJSNodeJS] ignoring macro Pas2JSNodeJS parameter "',s,'"']);
 end;
 
-function TPJSController.GetProjectURL(const s: string; const Data: PtrInt; var Abort: boolean): string;
+function TPJSController.GetPas2jsProjectURL(const s: string; const Data: PtrInt; var Abort: boolean): string;
 
 Var
   FN : String;
 
 begin
   if (s<>'') and (ConsoleVerbosity>=0) then
-    debugln(['Hint: (lazarus) [TPJSController.GetProjectURL] ignoring macro Pas2JSProjectURL parameter "',s,'"']);
+    debugln(['Hint: (lazarus) [TPJSController.GetPas2jsProjectURL] ignoring macro Pas2JSProjectURL parameter "',s,'"']);
 
   if ConsoleVerbosity>0 then
     DebugLN(['LazarusIDE.ActiveProject.CustomData[PJSProjectWebBrowser]: ',LazarusIDE.ActiveProject.CustomData[PJSProjectWebBrowser]]);
@@ -253,7 +274,7 @@ begin
     end;
   Abort:=(Result='');
   if ConsoleVerbosity>0 then
-    DebugLN(['GetProjectURL : ',Result]);
+    DebugLN(['GetPas2jsProjectURL : ',Result]);
 end;
 
 function TPJSController.MaybeStartServer(Sender: TObject; var Handled: boolean): TModalResult;
@@ -320,9 +341,10 @@ end;
 
 procedure TPJSController.Hook;
 begin
-  IDEMacros.Add(TTransferMacro.Create('Pas2JSBrowser','','Pas2JS selected Browser executable',@GetPasJSBrowser,[]));
-  IDEMacros.Add(TTransferMacro.Create('Pas2JSNodeJS','','Pas2JS selected NodeJS xecutable',@GetPasJSNodeJS,[]));
-  IDEMacros.Add(TTransferMacro.Create('Pas2JSProjectURL','','Pas2JS current project URL',@GetProjectURL,[]));
+  IDEMacros.Add(TTransferMacro.Create('Pas2JS','','Pas2JS executable',@GetPas2JSPath,[]));
+  IDEMacros.Add(TTransferMacro.Create('Pas2JSBrowser','','Pas2JS selected Browser executable',@GetPas2JSBrowser,[]));
+  IDEMacros.Add(TTransferMacro.Create('Pas2JSNodeJS','','Pas2JS selected NodeJS excutable',@GetPas2JSNodeJS,[]));
+  IDEMacros.Add(TTransferMacro.Create('Pas2JSProjectURL','','Pas2JS current project URL',@GetPas2jsProjectURL,[]));
   LazarusIDE.AddHandlerOnRunWithoutDebugInit(@MaybeStartServer);
 end;
 

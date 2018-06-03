@@ -107,10 +107,7 @@ begin
   CompOpts.WriteFPCLogo:=true;
   CompOpts.CustomOptions:=CustomOpts;
 
-  if PJSOptions.CompilerFilename='' then
-    Compiler:='$MakeExe(IDE,pas2js)'
-  else
-    Compiler:=PJSOptions.CompilerFilename;
+  Compiler:='$(pas2js)';
   CompOpts.CompilerPath:=Compiler;
   debugln(['Hint: (lazarus) [pjsprojectoptions.SetPasJSCompileOptions] Compiler=',CompOpts.CompilerPath,' TargetOS=',CompOpts.TargetOS,' Custom="',CompOpts.CustomOptions,'"']);
 end;

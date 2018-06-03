@@ -17,7 +17,7 @@ const
   PJSDsgnOptsFile = 'pas2jsdsgnoptions.xml';
   PJSDefaultCompiler = '$MakeExe(IDE,pas2js)';
   PJSDefaultHTTPServer = '$MakeExe(IDE,simpleserver)';
-  PJSDefaultStartAtPort = 3000; // Simpleserver default
+  PJSDefaultStartAtPort = 4000; // Simpleserver default
   PJSDefaultBrowser = '$MakeExe(IDE,firefox)';
   PJSDefaultNodeJS = '$MakeExe(IDE,nodejs)';
 
@@ -75,7 +75,7 @@ implementation
 
 function GetStandardPas2jsExe: string;
 begin
-  Result:='$MakeExe(IDE,pas2js)';
+  Result:=PJSDefaultCompiler;
   if not IDEMacros.SubstituteMacros(Result) then
     Result:='pas2js';
 end;
@@ -83,7 +83,7 @@ end;
 function GetStandardNodeJS: string;
 
 begin
-  Result:='$MakeExe(IDE,nodejs)';
+  Result:=PJSDefaultNodeJS;
   if not IDEMacros.SubstituteMacros(Result) then
     Result:='nodejs';
 end;
@@ -91,7 +91,7 @@ end;
 function GetStandardHTTPServer: string;
 
 begin
-  Result:='$MakeExe(IDE,simpleserver)';
+  Result:=PJSDefaultHTTPServer;
   if not IDEMacros.SubstituteMacros(Result) then
     Result:='simpleserver';
 end;
@@ -233,7 +233,7 @@ Const
 procedure TPas2jsOptions.LoadFromConfig(Cfg: TConfigStorage);
 
 begin
-  CompilerFilename:=Cfg.GetValue(KeyCompiler ,PJSDefaultCompiler);
+  CompilerFilename:=Cfg.GetValue(KeyCompiler,PJSDefaultCompiler);
   HTTPServerFileName:=Cfg.GetValue(KeyHTTPServer,PJSDefaultHTTPServer);
   BrowserFileName:=Cfg.GetValue(KeyBrowser,PJSDefaultBrowser);
   NodeJSFileName:=Cfg.GetValue(KeyNodeJS,PJSDefaultNodeJS);
