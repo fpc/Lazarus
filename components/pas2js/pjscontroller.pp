@@ -196,18 +196,7 @@ begin
   Abort:=False;
   if (s<>'') and (ConsoleVerbosity>=0) then
     debugln(['Hint: (lazarus) [TPJSController.GetPas2JSPath] ignoring macro Pas2JS parameter "',s,'"']);
-  Result:=PJSOptions.CompilerFilename;
-  if Result='' then
-    Result:='pas2js'+GetExeExt
-  else
-    IdeMacros.SubstituteMacros(Result);
-  if (Result<>'') and (ExtractFilePath(Result)='') then
-    Result:=FindDefaultExecutablePath(Result);
-  if (Result<>'') and not FilenameIsAbsolute(Result) then begin
-    if ConsoleVerbosity>=0 then
-      debugln(['Hint: (lazarus) [TPJSController.GetPas2JSPath] invalid pas2js filename "',Result,'"']);
-    Result:='';
-  end;
+  Result:=PJSOptions.GetParsedCompilerFilename;
 end;
 
 function TPJSController.GetPas2JSBrowser(const s: string; const Data: PtrInt; var Abort: boolean): string;
@@ -216,12 +205,7 @@ begin
   Abort:=False;
   if (s<>'') and (ConsoleVerbosity>=0) then
     debugln(['Hint: (lazarus) [TPJSController.GetPas2JSBrowser] ignoring macro Pas2JSBrowser parameter "',s,'"']);
-  Result:=PJSOptions.BrowserFileName;
-  if Result='' then
-    Result:=GetStandardBrowser;
-  IdeMacros.SubstituteMacros(Result);
-  if (Result<>'') and not FilenameIsAbsolute(Result) then
-    Result:=FindDefaultExecutablePath(Result);
+  Result:=PJSOptions.GetParsedBrowserFilename;
 end;
 
 function TPJSController.GetPas2JSNodeJS(const s: string; const Data: PtrInt; var Abort: boolean): string;
@@ -230,12 +214,7 @@ begin
   Abort:=False;
   if (s<>'') and (ConsoleVerbosity>=0) then
     debugln(['Hint: (lazarus) [TPJSController.GetPas2JSNodeJS] ignoring macro Pas2JSNodeJS parameter "',s,'"']);
-  Result:=PJSOptions.NodeJSFileName;
-  if Result='' then
-    Result:=GetStandardNodeJS;
-  IdeMacros.SubstituteMacros(Result);
-  if (Result<>'') and not FilenameIsAbsolute(Result) then
-    Result:=FindDefaultExecutablePath(Result);
+  Result:=PJSOptions.GetParsedNodeJSFilename;
 end;
 
 function TPJSController.GetPas2jsProjectURL(const s: string; const Data: PtrInt; var Abort: boolean): string;

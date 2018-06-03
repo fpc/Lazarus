@@ -25,8 +25,8 @@ type
     FBaseTimeStamp: integer;
     FGraphTimeStamp: integer;
   public
-    property BaseTimeStamp: integer read FBaseTimeStamp;
-    property GraphTimeStamp: integer read FGraphTimeStamp;
+    property BaseTimeStamp: integer read FBaseTimeStamp; // macro value changed
+    property GraphTimeStamp: integer read FGraphTimeStamp; // package dependency changed
     procedure IncreaseBaseStamp;
     procedure IncreaseGraphStamp;
     function StrHasMacros(const s: string): boolean; virtual; abstract;
@@ -37,7 +37,10 @@ type
                                       const BaseDirectory: string): boolean;
     procedure Add(NewMacro: TTransferMacro); virtual; abstract;
   end;
-  
+
+const
+  InvalidIDEMacroStamp = low(integer);
+
 var
   // the global IDE values
   IDEMacros: TIDEMacros = nil; // set by the IDE
