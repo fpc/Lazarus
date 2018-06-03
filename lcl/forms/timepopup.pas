@@ -20,7 +20,7 @@ interface
 
 uses
   Classes, SysUtils, DateUtils, FileUtil, LCLType, Forms, Controls,
-  Graphics, Dialogs, Grids, ExtCtrls, Buttons, StdCtrls, ActnList;
+  Graphics, Dialogs, Grids, ExtCtrls, Buttons, StdCtrls, ActnList, WSForms;
 
 type
   TReturnTimeEvent = procedure (Sender: TObject; const ATime: TDateTime) of object;
@@ -239,9 +239,7 @@ end;
 
 procedure TTimePopupForm.ActivateDoubleBuffered;
 begin
-  Self.DoubleBuffered := True;
-  HoursGrid.DoubleBuffered := True;
-  MinutesGrid.DoubleBuffered := True;
+  DoubleBuffered := TWSCustomFormClass(WidgetSetClass).GetDefaultDoubleBuffered;
 end;
 
 procedure TTimePopupForm.CalcGridHeights;
