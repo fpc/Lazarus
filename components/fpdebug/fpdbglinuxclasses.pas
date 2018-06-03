@@ -210,6 +210,7 @@ const
   EFL      = 14;
   UESP     = 15;
   XSS      = 16;
+  __WALL   = $40000000;
 
   NT_PRSTATUS    = 1;
   NT_PRFPREG     = 2;
@@ -250,6 +251,7 @@ type
     FIsTerminating: boolean;
     FExceptionSignal: PtrUInt;
     FMasterPtyFd: cint;
+    FCurrentThreadId: THandle;
     {$ifndef VER2_6}
     procedure OnForkEvent(Sender : TObject);
     {$endif}
@@ -308,6 +310,9 @@ procedure OnForkEvent;
 var
   ConsoleTtyFd: cint;
 begin
+  if fpPTrace(PTRACE_TRACEME, 0, nil, nil) <> 0 then
+    writeln('Failed to start trace of process. Errcode: '+inttostr(fpgeterrno));
+
   if GConsoleTty<>'' then
     begin
     ConsoleTtyFd:=FpOpen(GConsoleTty,O_RDWR+O_NOCTTY);
@@ -333,8 +338,6 @@ begin
       writeln('Failed to login to tty. Errcode: '+inttostr(fpgeterrno)+' - '+inttostr(GSlavePTyFd));
     end;
 
-  if fpPTrace(PTRACE_TRACEME, 0, nil, nil) <> 0 then
-    writeln('Failed to start trace of process. Errcode: '+inttostr(fpgeterrno));
 end;
 
 function TDbgLinuxThread.GetDebugRegOffset(ind: byte): pointer;
@@ -359,7 +362,7 @@ var
   e: integer;
 begin
   fpseterrno(0);
-  AVal := PtrUInt(fpPTrace(PTRACE_PEEKUSR, Process.ProcessID, GetDebugRegOffset(ind), nil));
+  AVal := PtrUInt(fpPTrace(PTRACE_PEEKUSR, ID, GetDebugRegOffset(ind), nil));
   e := fpgeterrno;
   if e <> 0 then
     begin
@@ -372,7 +375,7 @@ end;
 
 function TDbgLinuxThread.WriteDebugReg(ind: byte; AVal: PtrUInt): boolean;
 begin
-  if fpPTrace(PTRACE_POKEUSR, Process.ProcessID, GetDebugRegOffset(ind), pointer(AVal)) = -1 then
+  if fpPTrace(PTRACE_POKEUSR, ID, GetDebugRegOffset(ind), pointer(AVal)) = -1 then
     begin
     log('Failed to write dr'+inttostr(ind)+'-debug register. Errcode: '+inttostr(fpgeterrno));
     result := false;
@@ -389,9 +392,9 @@ begin
   result := true;
   io.iov_base:=@(FUserRegs.regs32[0]);
   io.iov_len:= sizeof(FUserRegs);
-  if fpPTrace(PTRACE_GETREGSET, Process.ProcessID, pointer(PtrUInt(NT_PRSTATUS)), @io) <> 0 then
+  if fpPTrace(PTRACE_GETREGSET, ID, pointer(PtrUInt(NT_PRSTATUS)), @io) <> 0 then
     begin
-    log('Failed to read thread registers from processid '+inttostr(Process.ProcessID)+'. Errcode: '+inttostr(fpgeterrno));
+    log('Failed to read thread registers from threadid '+inttostr(ID)+'. Errcode: '+inttostr(fpgeterrno));
     result := false;
     end;
   FUserRegsChanged:=false;
@@ -494,7 +497,7 @@ begin
     io.iov_base:=@(FUserRegs.regs64[0]);
     io.iov_len:= sizeof(FUserRegs);
 
-    if fpPTrace(PTRACE_SETREGSET, Process.ProcessID, pointer(PtrUInt(NT_PRSTATUS)), @io) <> 0 then
+    if fpPTrace(PTRACE_SETREGSET, ID, pointer(PtrUInt(NT_PRSTATUS)), @io) <> 0 then
       begin
       log('Failed to set thread registers. Errcode: '+inttostr(fpgeterrno));
       end;
@@ -563,9 +566,12 @@ end;
 
 function TDbgLinuxProcess.CreateThread(AthreadIdentifier: THandle; out IsMainThread: boolean): TDbgThread;
 begin
-  IsMainThread:=true;
+  IsMainThread:=False;
   if AthreadIdentifier>-1 then
+    begin
+    IsMainThread := AthreadIdentifier=ProcessID;
     result := TDbgLinuxThread.Create(Self, AthreadIdentifier, AthreadIdentifier)
+    end
   else
     result := nil;
 end;
@@ -661,11 +667,11 @@ var
     e: integer;
   begin
     errno := 0;
-    AVal := TDbgPtr(fpPTrace(PTRACE_PEEKDATA, Process.ProcessID, pointer(Adr), nil));
+    AVal := TDbgPtr(fpPTrace(PTRACE_PEEKDATA, FCurrentThreadId, pointer(Adr), nil));
     e := fpgeterrno;
     if e <> 0 then
       begin
-      log('Failed to read data at address '+FormatAddress(Adr)+' from processid '+inttostr(Process.ProcessID)+'. Errcode: '+inttostr(e));
+      log('Failed to read data at address '+FormatAddress(Adr)+' from processid '+inttostr(FCurrentThreadId)+'. Errcode: '+inttostr(e));
       result := false;
       end
     else
@@ -738,7 +744,7 @@ begin
     if ASize<WordSize then
       begin
       fpseterrno(0);
-      pi := TDbgPtr(fpPTrace(PTRACE_PEEKDATA, Process.ProcessID, pointer(AAdress), nil));
+      pi := TDbgPtr(fpPTrace(PTRACE_PEEKDATA, FCurrentThreadId, pointer(AAdress), nil));
       e := fpgeterrno;
       if e <> 0 then
         begin
@@ -749,7 +755,7 @@ begin
       end;
     move(AData, pi, ASize);
 
-    fpPTrace(PTRACE_POKEDATA, Process.ProcessID, pointer(AAdress), pointer(pi));
+    fpPTrace(PTRACE_POKEDATA, FCurrentThreadId, pointer(AAdress), pointer(pi));
     e := fpgeterrno;
     if e <> 0 then
       begin
@@ -848,11 +854,11 @@ begin
   AThread.NextIsSingleStep:=SingleStep;
   AThread.BeforeContinue;
   if SingleStep or assigned(FCurrentBreakpoint) then
-    fpPTrace(PTRACE_SINGLESTEP, ProcessID, pointer(1), pointer(FExceptionSignal))
+    fpPTrace(PTRACE_SINGLESTEP, AThread.ID, pointer(1), pointer(FExceptionSignal))
   else if FIsTerminating then
-    fpPTrace(PTRACE_KILL, ProcessID, pointer(1), nil)
+    fpPTrace(PTRACE_KILL, AThread.ID, pointer(1), nil)
   else
-    fpPTrace(PTRACE_CONT, ProcessID, pointer(1), pointer(FExceptionSignal));
+    fpPTrace(PTRACE_CONT, AThread.ID, pointer(1), pointer(FExceptionSignal));
   e := fpgeterrno;
   if e <> 0 then
     begin
@@ -864,36 +870,75 @@ begin
 end;
 
 function TDbgLinuxProcess.WaitForDebugEvent(out ProcessIdentifier, ThreadIdentifier: THandle): boolean;
+var
+  PID: THandle;
 begin
-  ThreadIdentifier:=1;
+  ThreadIdentifier:=-1;
+  ProcessIdentifier:=-1;
 
-  ProcessIdentifier:=FpWaitPid(-1, FStatus, 0);
+  PID:=FpWaitPid(-1, FStatus, __WALL);
 
-  result := ProcessIdentifier<>-1;
+  result := PID<>-1;
   if not result then
-    Log('Failed to wait for debug event. Errcode: %d', [fpgeterrno]);
+    Log('Failed to wait for debug event. Errcode: %d', [fpgeterrno], dllError)
+  else
+    begin
+    ThreadIdentifier := PID;
+    FCurrentThreadId := PID;
+
+    if not FProcessStarted and (PID <> ProcessID) then
+      Log('ThreadID of main thread does not match the ProcessID', dllDebug);
+
+    ProcessIdentifier := ProcessID;
+    end;
 end;
 
 function TDbgLinuxProcess.AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent;
 
+//var
+//  NewThreadID: culong;
 begin
   FExceptionSignal:=0;
   if wifexited(FStatus) or wifsignaled(FStatus) then
     begin
-    SetExitCode(wexitStatus(FStatus));
-
-    result := deExitProcess
+    if AThread.ID=ProcessID then
+      begin
+      // Main thread stop -> application exited
+      SetExitCode(wexitStatus(FStatus));
+      result := deExitProcess
+      end
+    else
+      begin
+      // Thread stopped, just continue
+      // ToDo: Remove thread from administration
+      result := deInternalContinue;
+      end;
     end
   else if WIFSTOPPED(FStatus) then
     begin
     //log('Stopped ',FStatus, ' signal: ',wstopsig(FStatus));
     TDbgLinuxThread(AThread).ReadThreadState;
+
+    if (FStatus >> 8) = (SIGTRAP or (PTRACE_EVENT_CLONE << 8)) then
+      begin
+      // New thread started (stopped in 'parent' thread)
+      Result := deInternalContinue;
+
+      // Usefull in case of debugging:
+      //if fpPTrace(PTRACE_GETEVENTMSG, AThread.ID, nil, @NewThreadID) = -1 then
+      //  Log('Failed to retrieve ThreadId of new thread. Errcode: %d', [fpgeterrno], dllInfo);
+      Exit;
+      end;
+
     case wstopsig(FStatus) of
       SIGTRAP:
-        begin        if not FProcessStarted then
+        begin
+        if not FProcessStarted then
           begin
           result := deCreateProcess;
           FProcessStarted:=true;
+          if fpPTrace(PTRACE_SETOPTIONS, ProcessID, nil,  Pointer( PTRACE_O_TRACEFORK or PTRACE_O_TRACEVFORK or PTRACE_O_TRACECLONE) ) <> 0 then
+            writeln('Failed to set set trace options. Errcode: '+inttostr(fpgeterrno));
           end
         else
           result := deBreakpoint;
@@ -932,6 +977,11 @@ begin
           result := deException;
           end;
         end;
+      SIGSTOP:
+        begin
+          // New thread (stopped within the new thread)
+          result := deInternalContinue;
+        end
       else
         begin
         ExceptionClass:='Unknown exception code '+inttostr(wstopsig(FStatus));

@@ -25,8 +25,23 @@ const
   PTRACE_SETREGS                               = 13;
   PTRACE_GETFPREGS                             = 14;
   PTRACE_SETFPREGS                             = 15;
+  PTRACE_SETOPTIONS                            = $4200;
+  PTRACE_GETEVENTMSG                           = $4201;
   PTRACE_GETREGSET                             = $4204;
   PTRACE_SETREGSET                             = $4205;
+
+  PTRACE_EVENT_FORK                            = 1;
+  PTRACE_EVENT_VFORK                           = 2;
+  PTRACE_EVENT_CLONE                           = 3;
+  PTRACE_EVENT_EXEC                            = 4;
+  PTRACE_EVENT_VFORK_DONE                      = 5;
+  PTRACE_EVENT_EXIT                            = 6;
+  PTRACE_EVENT_SECCOMP                         = 7;
+  PTRACE_EVENT_STOP                            = 128;
+
+  PTRACE_O_TRACEFORK                           = 1 << PTRACE_EVENT_FORK;
+  PTRACE_O_TRACEVFORK                          = 1 << PTRACE_EVENT_VFORK;
+  PTRACE_O_TRACECLONE                          = 1 << PTRACE_EVENT_CLONE;
 {$endif linux}
   PTRACE_ATTACH                                = 16;
 
