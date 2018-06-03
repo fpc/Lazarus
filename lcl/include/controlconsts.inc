@@ -79,7 +79,6 @@ const
   CM_HINTSHOWPAUSE        = CM_BASE + 65;
   CM_DOCKNOTIFICATION     = CM_BASE + 66;
   CM_MOUSEWHEEL           = CM_BASE + 67;
-  // unsupported at the moment
   CM_ISSHORTCUT                  = CM_BASE + 68 unimplemented;
   CM_UPDATEACTIONS               = CM_BASE + 69 unimplemented;
   CM_INVALIDATEDOCKHOST          = CM_BASE + 70 unimplemented;
@@ -91,8 +90,8 @@ const
   CM_CONTROLLISTCHANGING         = CM_BASE + 76 unimplemented;
   CM_BUFFEREDPRINTCLIENT         = CM_BASE + 77 unimplemented;
   CM_UNTHEMECONTROL              = CM_BASE + 78 unimplemented;
-  CM_DOUBLEBUFFEREDCHANGED       = CM_BASE + 79 unimplemented;
-  CM_PARENTDOUBLEBUFFEREDCHANGED = CM_BASE + 80 unimplemented;
+  CM_DOUBLEBUFFEREDCHANGED       = CM_BASE + 79;
+  CM_PARENTDOUBLEBUFFEREDCHANGED = CM_BASE + 80;
   CM_THEMECHANGED                = CM_BASE + 81 unimplemented;
   CM_GESTURE                     = CM_BASE + 82 unimplemented;
   CM_CUSTOMGESTURESCHANGED       = CM_BASE + 83 unimplemented;

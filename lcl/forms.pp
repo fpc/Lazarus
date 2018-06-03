@@ -792,6 +792,7 @@ type
     property DefaultMonitor;
     property DesignTimePPI;
     property DockSite;
+    property DoubleBuffered;
     property DragKind;
     property DragMode;
     property Enabled;
@@ -845,6 +846,7 @@ type
     property OnUTF8KeyPress;
     property OnWindowStateChange;
     property ParentBiDiMode;
+    property ParentDoubleBuffered;
     property ParentFont;
     property PixelsPerInch;
     property PopupMenu;
@@ -1324,6 +1326,11 @@ type
                     // Some Linux window managers do not support it. For example Cinnamon.
   );
 
+  TApplicationDoubleBuffered = ( // what Forms.DoubleBuffered with ParentDoubleBuffered=True will gain when created
+    dbDefault, // widgetset dependent (LCLWin32: True unless in remote desktop connection; other WSs: False)
+    dbFalse,   // False
+    dbTrue);   // True
+
   { TApplication }
 
   TApplication = class(TCustomApplication)
@@ -1334,6 +1341,7 @@ type
     FComponentsToRelease: TFPList;
     FComponentsReleasing: TFPList;
     FCreatingForm: TForm;// currently created form (CreateForm), candidate for MainForm
+    FDoubleBuffered: TApplicationDoubleBuffered;
     FExceptionDialog: TApplicationExceptionDlg;
     FExtendedKeysSupport: Boolean;
     FFindGlobalComponentEnabled: boolean;
@@ -1576,6 +1584,7 @@ type
     property BidiMode: TBiDiMode read FBidiMode write SetBidiMode;
     property CaptureExceptions: boolean read FCaptureExceptions
                                         write SetCaptureExceptions;
+    property DoubleBuffered: TApplicationDoubleBuffered read FDoubleBuffered write FDoubleBuffered default dbDefault;
     property ExtendedKeysSupport: Boolean read FExtendedKeysSupport write FExtendedKeysSupport; // See VK_LSHIFT in LCLType for more details
     property ExceptionDialog: TApplicationExceptionDlg read FExceptionDialog write FExceptionDialog;
     property FindGlobalComponentEnabled: boolean read FFindGlobalComponentEnabled

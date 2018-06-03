@@ -1236,12 +1236,15 @@ begin
 
   if FParentFont then
   begin
-    Font.BeginUpdate;
-    try
-      Font.PixelsPerInch := FParent.Font.PixelsPerInch; // PixelsPerInch isn't assigned
-      Font := FParent.Font;
-    finally
-      Font.EndUpdate;
+    if Assigned(FParent) then
+    begin
+      Font.BeginUpdate;
+      try
+        Font.PixelsPerInch := FParent.Font.PixelsPerInch; // PixelsPerInch isn't assigned
+        Font := FParent.Font;
+      finally
+        Font.EndUpdate;
+      end;
     end;
     FParentFont := True;
   end;

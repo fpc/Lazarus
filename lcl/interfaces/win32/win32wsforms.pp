@@ -66,6 +66,7 @@ type
   published
     class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
+    class function GetDefaultDoubleBuffered: Boolean; override;
     class procedure SetAllowDropFiles(const AForm: TCustomForm; AValue: Boolean); override;
     class procedure SetAlphaBlend(const ACustomForm: TCustomForm; const AlphaBlend: Boolean;
       const Alpha: Byte); override;
@@ -479,6 +480,11 @@ begin
   if WindowsVersion >= wv2000 then
     Windows.SendMessage(Result, WM_CHANGEUISTATE,
       MakeWParam(UIS_INITIALIZE, UISF_HIDEFOCUS or UISF_HIDEACCEL), 0)
+end;
+
+class function TWin32WSCustomForm.GetDefaultDoubleBuffered: Boolean;
+begin
+  Result := GetSystemMetrics(SM_REMOTESESSION)=0;
 end;
 
 class procedure TWin32WSCustomForm.SetAllowDropFiles(const AForm: TCustomForm;

@@ -91,6 +91,7 @@ type
     class procedure SetShowInTaskbar(const AForm: TCustomForm; const AValue: TShowInTaskbar); virtual;
     class procedure SetZPosition(const AWinControl: TWinControl; const APosition: TWSZPosition); virtual;
     class function GetDefaultColor(const AControl: TControl; const ADefaultColorType: TDefaultColorType): TColor; override;
+    class function GetDefaultDoubleBuffered: Boolean; virtual;
 
     {mdi support}
     class function ActiveMDIChild(const AForm: TCustomForm): TCustomForm; virtual;
@@ -186,6 +187,11 @@ const
   );
 begin
   Result := DefColors[ADefaultColorType];
+end;
+
+class function TWSCustomForm.GetDefaultDoubleBuffered: Boolean;
+begin
+  Result := False;
 end;
 
 class procedure TWSCustomForm.ShowModal(const ACustomForm: TCustomForm);

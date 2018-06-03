@@ -2017,6 +2017,7 @@ type
     FOnExit: TNotifyEvent;
     FOnUnDock: TUnDockEvent;
     FOnUTF8KeyPress: TUTF8KeyPressEvent;
+    FParentDoubleBuffered: Boolean;
     FParentWindow: HWND;
     FRealizeBoundsLockCount: integer;
     FHandle: HWND;
@@ -2025,11 +2026,11 @@ type
     // keep small variables together to save some bytes
     FTabStop: Boolean;
     FShowing: Boolean;
-    FDoubleBuffered: Boolean;
     FDockSite: Boolean;
     FUseDockManager: Boolean;
     FDesignerDeleting: Boolean;
     procedure AlignControl(AControl: TControl);
+    function DoubleBufferedIsStored: Boolean;
     function GetBrush: TBrush;
     function GetControl(const Index: Integer): TControl;
     function GetControlCount: Integer;
@@ -2041,8 +2042,10 @@ type
     function GetVisibleDockClientCount: Integer;
     procedure SetChildSizing(const AValue: TControlChildSizing);
     procedure SetDockSite(const NewDockSite: Boolean);
+    procedure SetDoubleBuffered(Value: Boolean);
     procedure SetHandle(NewHandle: HWND);
     procedure SetBorderWidth(Value: TBorderWidth);
+    procedure SetParentDoubleBuffered(Value: Boolean);
     procedure SetParentWindow(const AValue: HWND);
     procedure SetTabOrder(NewTabOrder: TTabOrder);
     procedure SetTabStop(NewTabStop: Boolean);
@@ -2054,6 +2057,7 @@ type
     procedure AlignNonAlignedControls(ListOfControls: TFPList;
                                       var BoundsModified: Boolean);
   protected
+    FDoubleBuffered: Boolean;
     FWinControlFlags: TWinControlFlags;
     class procedure WSRegisterClass; override;
     procedure AdjustClientRect(var ARect: TRect); virtual;
@@ -2101,7 +2105,9 @@ type
     // messages
     procedure CMBiDiModeChanged(var Message: TLMessage); message CM_BIDIMODECHANGED;
     procedure CMBorderChanged(var Message: TLMessage); message CM_BORDERCHANGED;
+    procedure CMDoubleBufferedChanged(var Message: TLMessage); message CM_DOUBLEBUFFEREDCHANGED;
     procedure CMEnabledChanged(var Message: TLMessage); message CM_ENABLEDCHANGED;
+    procedure CMParentDoubleBufferedChanged(var Message: TLMessage); message CM_PARENTDOUBLEBUFFEREDCHANGED;
     procedure CMShowingChanged(var Message: TLMessage); message CM_SHOWINGCHANGED; // called by TWinControl.UpdateShowing
     procedure CMShowHintChanged(var Message: TLMessage); message CM_SHOWHINTCHANGED;
     procedure CMVisibleChanged(var Message: TLMessage); message CM_VISIBLECHANGED;
@@ -2241,7 +2247,7 @@ type
     property DockClients[Index: Integer]: TControl read GetDockClients;
     property DockManager: TDockManager read FDockManager write SetDockManager;
     property DockSite: Boolean read FDockSite write SetDockSite default False;
-    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered default False;
+    property DoubleBuffered: Boolean read FDoubleBuffered write SetDoubleBuffered stored DoubleBufferedIsStored;
     property Handle: HWND read GetHandle write SetHandle;
     property IsFlipped: Boolean read FFlipped;
     property IsResizing: Boolean read GetIsResizing;
@@ -2258,6 +2264,7 @@ type
     property OnKeyUp: TKeyEvent read FOnKeyUp write FOnKeyUp;
     property OnUnDock: TUnDockEvent read FOnUnDock write FOnUnDock;
     property OnUTF8KeyPress: TUTF8KeyPressEvent read FOnUTF8KeyPress write FOnUTF8KeyPress;
+    property ParentDoubleBuffered: Boolean read FParentDoubleBuffered write SetParentDoubleBuffered default True;
     property ParentWindow: HWND read FParentWindow write SetParentWindow;
     property Showing: Boolean read FShowing; // handle visible
     property UseDockManager: Boolean read FUseDockManager

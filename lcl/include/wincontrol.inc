@@ -3831,6 +3831,11 @@ begin
   Exclude(FWinControlFlags,wcfAdjustedLogicalClientRectValid);
 end;
 
+function TWinControl.DoubleBufferedIsStored: Boolean;
+begin
+  Result := not FParentDoubleBuffered;
+end;
+
 {------------------------------------------------------------------------------
   TWinControl EnableAlign
 ------------------------------------------------------------------------------}
@@ -6324,6 +6329,7 @@ begin
       AControl.Perform(CM_PARENTSHOWHINTCHANGED, 0, 0);
       AControl.Perform(CM_PARENTBIDIMODECHANGED, 0, 0);
       AControl.Perform(CM_PARENTFONTCHANGED, 0, 0);
+      AControl.Perform(CM_PARENTDOUBLEBUFFEREDCHANGED, 0, 0);
       AControl.UpdateBaseBounds(false,true,false);
       if AControl is TWinControl then
         TWinControl(AControl).UpdateControlState
@@ -6527,6 +6533,16 @@ begin
   Invalidate;
 end;
 
+procedure TWinControl.SetParentDoubleBuffered(Value: Boolean);
+begin
+  if FParentDoubleBuffered <> Value then
+  begin
+    FParentDoubleBuffered := Value;
+    if Assigned(FParent) and not (csReading in ComponentState) then
+      Perform(CM_PARENTDOUBLEBUFFEREDCHANGED, 0, 0);
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Method: TWinControl.Create
   Params:  None
@@ -6541,6 +6557,7 @@ begin
   // use property that bsNone is zero
   //FBorderStyle := bsNone;
   inherited Create(TheOwner);
+  FParentDoubleBuffered := True;
   FCompStyle := csWinControl;
   FChildSizing:=TControlChildSizing.Create(Self);
   FChildSizing.OnChange:=@DoChildSizingChange;
@@ -6723,6 +6740,12 @@ procedure TWinControl.CMBorderChanged(var Message: TLMessage);
 begin
   DoAdjustClientRectChange;
   AdjustSize;
+  Invalidate;
+end;
+
+procedure TWinControl.CMDoubleBufferedChanged(var Message: TLMessage);
+begin
+  NotifyControls(CM_PARENTDOUBLEBUFFEREDCHANGED);
   Invalidate;
 end;
 
@@ -8010,6 +8033,17 @@ begin
   end;
 end;
 
+procedure TWinControl.SetDoubleBuffered(Value: Boolean);
+var
+  AChanged: Boolean;
+begin
+  AChanged := FDoubleBuffered <> Value;
+  FDoubleBuffered := Value;
+  FParentDoubleBuffered := False;
+  if AChanged then
+    Perform(CM_DOUBLEBUFFEREDCHANGED, 0, 0);
+end;
+
 function TWinControl.DoDockClientMsg(DragDockObject: TDragDockObject;
   aPosition: TPoint): boolean;
 var
@@ -8347,6 +8381,16 @@ end;
 procedure TWinControl.CMExit(var Message: TLMessage);
 begin
   DoExit;
+end;
+
+procedure TWinControl.CMParentDoubleBufferedChanged(var Message: TLMessage);
+begin
+  if FParentDoubleBuffered then
+  begin
+    if Assigned(FParent) then
+      DoubleBuffered := FParent.DoubleBuffered; // call CM_DOUBLEBUFFEREDCHANGED
+    FParentDoubleBuffered := True;
+  end;
 end;
 
 procedure TWinControl.WMContextMenu(var Message: TLMContextMenu);
