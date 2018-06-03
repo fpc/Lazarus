@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ComCtrls, ButtonPanel,
-  Buttons, CheckLst, EditBtn, ExtCtrls, IDEIntf, MenuIntf, LazLoggerBase, LazLoggerBase;
+  Buttons, CheckLst, EditBtn, ExtCtrls, IDEIntf, MenuIntf, LazLoggerBase, LazLogger;
 
 type
 
