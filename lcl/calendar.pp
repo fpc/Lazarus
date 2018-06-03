@@ -122,6 +122,7 @@ type
     property Constraints;
     property DateTime;
     property DisplaySettings;
+    property DoubleBuffered;
     property Hint;
     property OnChange;
     property OnChangeBounds;
@@ -145,6 +146,7 @@ type
     property OnResize;
     property OnUTF8KeyPress;
     property OnYearChanged;
+    property ParentDoubleBuffered;
     property PopupMenu;
     property ShowHint;
     property TabOrder;

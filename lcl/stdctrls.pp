@@ -123,6 +123,7 @@ type
     property BidiMode;
     property BorderSpacing;
     property Constraints;
+    property DoubleBuffered;
     property DragCursor;
     property DragKind;
     property DragMode;
@@ -133,6 +134,7 @@ type
     property Min;
     property PageSize;
     property ParentBidiMode;
+    property ParentDoubleBuffered;
     property ParentShowHint;
     property PopupMenu;
     property Position;
@@ -185,6 +187,7 @@ type
     property Color;
     property Constraints;
     property DockSite;
+    property DoubleBuffered;
     property DragCursor;
     property DragKind;
     property DragMode;
@@ -192,6 +195,7 @@ type
     property Font;
     property ParentBidiMode;
     property ParentColor;
+    property ParentDoubleBuffered;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -427,6 +431,7 @@ type
     property CharCase;
     property Color;
     property Constraints;
+    property DoubleBuffered;
     property DragCursor;
     property DragKind;
     property DragMode;
@@ -470,6 +475,7 @@ type
     property OnUTF8KeyPress;
     property ParentBidiMode;
     property ParentColor;
+    property ParentDoubleBuffered;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -655,6 +661,7 @@ type
     property Color;
     property Columns;
     property Constraints;
+    property DoubleBuffered;
     property DragCursor;
     property DragKind;
     property DragMode;
@@ -696,6 +703,7 @@ type
     property Options;
     property ParentBidiMode;
     property ParentColor;
+    property ParentDoubleBuffered;
     property ParentShowHint;
     property ParentFont;
     property PopupMenu;
@@ -918,6 +926,7 @@ type
     property CharCase;
     property Color;
     property Constraints;
+    property DoubleBuffered;
     property DragCursor;
     property DragKind;
     property DragMode;
@@ -954,6 +963,7 @@ type
     property OnStartDrag;
     property OnUTF8KeyPress;
     property ParentColor;
+    property ParentDoubleBuffered;
     property ParentFont;
     property ParentShowHint;
     property PasswordChar;
@@ -981,6 +991,7 @@ type
     property CharCase;
     property Color;
     property Constraints;
+    property DoubleBuffered;
     property DragCursor;
     property DragKind;
     property DragMode;
@@ -1014,6 +1025,7 @@ type
     property OnUTF8KeyPress;
     property ParentBidiMode;
     property ParentColor;
+    property ParentDoubleBuffered;
     property ParentFont;
     property PopupMenu;
     property ParentShowHint;
@@ -1077,6 +1089,7 @@ type
     property Caption;
     property Color nodefault;
     property Constraints;
+    property DoubleBuffered;
     property DragCursor;
     property DragKind;
     property DragMode;
@@ -1103,6 +1116,7 @@ type
     property ParentBidiMode;
     property ParentFont;
     property ParentColor;
+    property ParentDoubleBuffered;
     property ParentShowHint;
     property PopupMenu;
     property ShowAccelChar;
@@ -1219,6 +1233,7 @@ type
     property Color;
     property Constraints;
     property Default;
+    property DoubleBuffered;
     property DragCursor;
     property DragKind;
     property DragMode;
@@ -1248,6 +1263,7 @@ type
     property OnResize;
     property OnStartDrag;
     property OnUTF8KeyPress;
+    property ParentDoubleBuffered;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -1323,6 +1339,7 @@ type
     property Checked;
     property Color nodefault;
     property Constraints;
+    property DoubleBuffered;
     property DragCursor;
     property DragKind;
     property DragMode;
@@ -1354,6 +1371,7 @@ type
     property OnStartDrag;
     property OnUTF8KeyPress;
     property ParentColor;
+    property ParentDoubleBuffered;
     property ParentFont;
     property ParentShowHint;
     property ParentBidiMode;
@@ -1386,6 +1404,7 @@ type
     property Checked;
     property Color;
     property Constraints;
+    property DoubleBuffered;
     property DragCursor;
     property DragKind;
     property DragMode;
@@ -1409,6 +1428,7 @@ type
     property OnMouseWheelUp;
     property OnStartDrag;
     property ParentBidiMode;
+    property ParentDoubleBuffered;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -1443,6 +1463,7 @@ type
     property Checked;
     property Color;
     property Constraints;
+    property DoubleBuffered;
     property DragCursor;
     property DragKind;
     property DragMode;
@@ -1473,6 +1494,7 @@ type
     property OnStartDrag;
     property ParentBidiMode;
     property ParentColor;
+    property ParentDoubleBuffered;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;

@@ -785,7 +785,6 @@ begin
   RegisterPropertyToSkip(TCustomMemo, 'BevelOuter', 'VCL compatibility property', '');
   RegisterPropertyToSkip(TCustomMemo, 'BevelEdges', 'VCL compatibility property', '');
   RegisterPropertyToSkip(TCustomMemo, 'Margins',    'VCL compatibility property', '');
-  RegisterPropertyToSkip(TCustomMemo, 'DoubleBuffered', 'VCL compatibility property', '');
 //  if not WSRegisterCustomMemo then
 //    RegisterWSComponent(TCustomMemo, TWSCustomMemo);
   Done := True;

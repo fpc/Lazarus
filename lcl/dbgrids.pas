@@ -600,6 +600,7 @@ type
     property DataSource;
     property DefaultDrawing;
     property DefaultRowHeight;
+    property DoubleBuffered;
     property DragCursor;
     //property DragKind;
     property DragMode;
@@ -618,6 +619,7 @@ type
     property OptionsExtra;
     property ParentBiDiMode;
     property ParentColor default false;
+    property ParentDoubleBuffered;
     property ParentFont;
     //property ParentShowHint;
     property PopupMenu;

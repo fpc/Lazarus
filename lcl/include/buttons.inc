@@ -242,7 +242,6 @@ class procedure TCustomButton.WSRegisterClass;
 begin
   inherited WSRegisterClass;
   RegisterCustomButton;
-  RegisterPropertyToSkip(TCustomButton, 'DoubleBuffered',     'VCL compatibility property', '');
   RegisterPropertyToSkip(TCustomButton, 'ElevationRequired',  'VCL compatibility property', '');
   RegisterPropertyToSkip(TCustomButton, 'ImageAlignment',     'VCL compatibility property', '');
   RegisterPropertyToSkip(TCustomButton, 'ImageMargins',       'VCL compatibility property', '');

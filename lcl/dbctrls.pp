@@ -218,6 +218,7 @@ Type
     property CharCase;
     property Color;
     property Constraints;
+    property DoubleBuffered;
     property DragCursor;
     property DragKind;
     property DragMode;
@@ -227,6 +228,7 @@ Type
     property MaxLength;
     property ParentBiDiMode;
     property ParentColor;
+    property ParentDoubleBuffered;
     property ParentFont;
     property ParentShowHint;
     property PasswordChar;
@@ -387,6 +389,7 @@ Type
     property Constraints;
     property DataField;
     property DataSource;
+    property DoubleBuffered;
     property DragCursor;
     property DragKind;
     property DragMode;
@@ -420,6 +423,7 @@ Type
     property OnUTF8KeyPress;
     property Options;
     property ParentBiDiMode;
+    property ParentDoubleBuffered;
     property ParentShowHint;
     property PopupMenu;
     property ReadOnly;
@@ -476,6 +480,7 @@ Type
     property Constraints;
     property DataField;
     property DataSource;
+    property DoubleBuffered;
     property DragCursor;
     property DragKind;
     property DragMode;
@@ -515,6 +520,7 @@ Type
     property OnUTF8KeyPress;
     property Options;
     property ParentBiDiMode;
+    property ParentDoubleBuffered;
     property ParentShowHint;
     property PopupMenu;
     property ReadOnly;
@@ -581,6 +587,7 @@ Type
     property Constraints;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
+    property DoubleBuffered;
     property DragCursor;
     property DragMode;
     property Enabled;
@@ -604,6 +611,7 @@ Type
     property OnStartDrag;
     property ParentBiDiMode;
     property ParentColor;
+    property ParentDoubleBuffered;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -660,6 +668,7 @@ Type
     property Color;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
+    property DoubleBuffered;
     property DragCursor;
     property DragKind;
     property DragMode;
@@ -684,6 +693,7 @@ Type
     property OnStartDrag;
     property ParentBiDiMode;
     property ParentColor;
+    property ParentDoubleBuffered;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -758,6 +768,7 @@ Type
     property Color;
     property DataField;
     property DataSource;
+    property DoubleBuffered;
     property DragCursor;
     property DragKind;
     property DragMode;
@@ -797,6 +808,7 @@ Type
     property OnUTF8KeyPress;
     property ParentBiDiMode;
     property ParentColor;
+    property ParentDoubleBuffered;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -862,6 +874,7 @@ Type
     property Constraints;
     property DataField;
     property DataSource;
+    property DoubleBuffered;
     property DragCursor;
     property DragKind;
     property DragMode;
@@ -906,6 +919,7 @@ Type
     property OnUTF8KeyPress;
     property ParentBiDiMode;
     property ParentColor;
+    property ParentDoubleBuffered;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -966,6 +980,7 @@ Type
     property Constraints;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
+    property DoubleBuffered;
     property DragCursor;
     property DragKind;
     property DragMode;
@@ -996,6 +1011,7 @@ Type
     property OnStartDrag;
     property OnUTF8KeyPress;
     property ParentBiDiMode;
+    property ParentDoubleBuffered;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -1044,6 +1060,7 @@ Type
     property Cursor;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
+    property DoubleBuffered;
     property DragCursor;
     property DragKind;
     property DragMode;
@@ -1072,6 +1089,7 @@ Type
     property OnUTF8KeyPress;
     property ParentBiDiMode;
     property ParentColor;
+    property ParentDoubleBuffered;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -1206,8 +1224,10 @@ Type
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
 
     property DisplaySettings stored False;
+    property DoubleBuffered;
     property DragCursor;
     property DragMode;
+    property ParentDoubleBuffered;
     property Visible;
     property OnClick;
     property OnDragDrop;
@@ -1394,6 +1414,7 @@ type
     property ConfirmDelete;
     property DataSource;
     property Direction;
+    property DoubleBuffered;
     property DragCursor;
     property DragMode;
     property Enabled;
@@ -1420,6 +1441,7 @@ type
     property Options;
     property ParentBidiMode;
     property ParentColor;
+    property ParentDoubleBuffered;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;

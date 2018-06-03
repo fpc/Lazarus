@@ -1534,6 +1534,7 @@ type
     property DefaultColWidth;
     property DefaultDrawing;
     property DefaultRowHeight;
+    property DoubleBuffered;
     property DragCursor;
     property DragKind;
     property DragMode;
@@ -1554,6 +1555,7 @@ type
     property Options2;
     //property ParentBiDiMode;
     property ParentColor default false;
+    property ParentDoubleBuffered;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
@@ -1765,6 +1767,7 @@ type
     property DefaultColWidth;
     property DefaultDrawing;
     property DefaultRowHeight;
+    property DoubleBuffered;
     property DragCursor;
     property DragKind;
     property DragMode;
@@ -1785,6 +1788,7 @@ type
     property Options2;
     property ParentBiDiMode;
     property ParentColor default false;
+    property ParentDoubleBuffered;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
