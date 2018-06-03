@@ -1772,33 +1772,8 @@ end;
 
 procedure TCustomImageList.GetBitmap(Index: Integer; Image: TCustomBitmap;
   AEffect: TGraphicsDrawEffect);
-var
-  RawImg: TRawImage;
-  ListImg, DeviceImg: TLazIntfImage;
-  ImgHandle, MskHandle: HBitmap;
 begin
-  if (Count = 0) or (Image = nil) then Exit;
-
-  GetRawImage(Index, RawImg);
-  
-  RawImg.PerformEffect(AEffect, True);
-
-  MskHandle := 0;
-  if not CreateCompatibleBitmaps(RawImg, ImgHandle, MskHandle, True)
-  then begin
-    // bummer, the widgetset doesn't support our 32bit format, try device
-    ListImg := TLazIntfImage.Create(RawImg, False);
-    DeviceImg := TLazIntfImage.Create(0,0,[]);
-    DeviceImg.DataDescription := GetDescriptionFromDevice(0, FWidth, FHeight);
-    DeviceImg.CopyPixels(ListImg);
-    DeviceImg.GetRawImage(RawImg);
-    RawImage_CreateBitmaps(RawImg, ImgHandle, MskHandle);
-    DeviceImg.Free;
-    ListImg.Free;
-  end;
-  Image.SetHandles(ImgHandle, MskHandle);
-
-  RawImg.FreeData;
+  GetResolution(FWidth).GetBitmap(Index, Image, AEffect);
 end;
 
 function TCustomImageList.GetCount: Integer;
