@@ -2090,9 +2090,9 @@ begin
   FAlphaBlend := False;
   FAlphaBlendValue := 255;
   case Application.DoubleBuffered of
-    dbDefault: FDoubleBuffered := TWSCustomFormClass(WidgetSetClass).GetDefaultDoubleBuffered;
-    dbTrue: FDoubleBuffered := True;
-    dbFalse: FDoubleBuffered := False;
+    adbDefault: FDoubleBuffered := TWSCustomFormClass(WidgetSetClass).GetDefaultDoubleBuffered;
+    adbTrue: FDoubleBuffered := True;
+    adbFalse: FDoubleBuffered := False;
   end;
   // set border style before handle is allocated
   if not (fsBorderStyleChanged in FFormState) then

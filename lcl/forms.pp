@@ -1327,9 +1327,9 @@ type
   );
 
   TApplicationDoubleBuffered = ( // what Forms.DoubleBuffered with ParentDoubleBuffered=True will gain when created
-    dbDefault, // widgetset dependent (LCLWin32: True unless in remote desktop connection; other WSs: False)
-    dbFalse,   // False
-    dbTrue);   // True
+    adbDefault, // widgetset dependent (LCLWin32: True unless in remote desktop connection; other WSs: False)
+    adbFalse,   // False
+    adbTrue);   // True
 
   { TApplication }
 
@@ -1584,7 +1584,7 @@ type
     property BidiMode: TBiDiMode read FBidiMode write SetBidiMode;
     property CaptureExceptions: boolean read FCaptureExceptions
                                         write SetCaptureExceptions;
-    property DoubleBuffered: TApplicationDoubleBuffered read FDoubleBuffered write FDoubleBuffered default dbDefault;
+    property DoubleBuffered: TApplicationDoubleBuffered read FDoubleBuffered write FDoubleBuffered default adbDefault;
     property ExtendedKeysSupport: Boolean read FExtendedKeysSupport write FExtendedKeysSupport; // See VK_LSHIFT in LCLType for more details
     property ExceptionDialog: TApplicationExceptionDlg read FExceptionDialog write FExceptionDialog;
     property FindGlobalComponentEnabled: boolean read FFindGlobalComponentEnabled
