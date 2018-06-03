@@ -1308,8 +1308,6 @@ constructor TSynChildWinControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   BorderStyle := bsNone;
-  if AOwner is TWinControl then
-    DoubleBuffered := TWinControl(AOwner).DoubleBuffered;
 end;
 
 { TSynGutterLineOverview }
@@ -1321,7 +1319,6 @@ begin
   TSynEditStringList(TextBuffer).AddNotifyHandler(senrTextBufferChanged, @BufferChanged);
   FWinControl := TSynChildWinControl.Create(Self);
   FWinControl.Parent := SynEdit;
-  FWinControl.DoubleBuffered := SynEdit.DoubleBuffered;
   FWinControl.OnPaint := @PaintWinControl;
 
   FLineMarks := TSynGutterLOvLineMarksList.Create;

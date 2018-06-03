@@ -607,7 +607,6 @@ begin
   KeyPreview:= True;
   // we have no resource => must be constructed using CreateNew
   inherited CreateNew(AOwner, 1);
-  DoubleBuffered := GetSystemMetrics(SM_REMOTESESSION)=0;
   FItemList := TStringList.Create;
   Scroll := TSynBaseCompletionFormScrollBar.Create(self);
   Scroll.Kind := sbVertical;
