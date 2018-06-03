@@ -3639,7 +3639,7 @@ begin
       Icon.Canvas.FillRect(TextRect);
       DrawText(Icon.Canvas.Handle, PChar(AComponent.Name), -1, TextRect,
         DT_CENTER or DT_VCENTER or DT_SINGLELINE or DT_NOCLIP);
-      TextRect.Left := (ItemLeft + ItemRight - Round(TextSize.cx/ScaleFactor)) div 2;
+      TextRect.Left := (ItemLeft + ItemRight - LongInt(Round(TextSize.cx/ScaleFactor))) div 2;
       TextRect.Top := (ItemBottom + NonVisualCompBorder + 2);
       TextRect.Right := TextRect.Left + Round(TextSize.cx/ScaleFactor);
       TextRect.Bottom := TextRect.Top + Round(TextSize.cy/ScaleFactor);
