@@ -5210,6 +5210,9 @@ components/turbopower_ipro/tiphttpdataprovider_200.png -text
 components/turbopower_ipro/turbopoweripro.lpk svneol=native#text/pascal
 components/turbopower_ipro/turbopoweripro.pas svneol=native#text/plain
 components/virtualtreeview/CHANGES.txt svneol=native#text/plain
+components/virtualtreeview/Makefile svneol=native#text/plain
+components/virtualtreeview/Makefile.compiled svneol=native#text/plain
+components/virtualtreeview/Makefile.fpc svneol=native#text/plain
 components/virtualtreeview/VTAccessibility.pas svneol=native#text/pascal
 components/virtualtreeview/VTAccessibilityFactory.pas svneol=native#text/pascal
 components/virtualtreeview/VTConfig.inc svneol=native#text/plain
