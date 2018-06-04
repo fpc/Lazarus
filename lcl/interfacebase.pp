@@ -160,7 +160,7 @@ type
     // create and destroy
     function CreateTimer(Interval: integer; TimerProc: TWSTimerProc): THandle; virtual; abstract;
     function DestroyTimer(TimerHandle: THandle): boolean; virtual; abstract;
-    property AppHandle: THandle read GetAppHandle write SetAppHandle;
+    property AppHandle: THandle read GetAppHandle write SetAppHandle; platform;
 
     {$DEFINE IF_BASE_MEMBER}
     {$I winapih.inc}
