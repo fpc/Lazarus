@@ -11,7 +11,7 @@
       <SearchPaths>
         <IncludeFiles Value="vst\include\intf\$(LCLWidgetType);vst\include\$(LCLWidgetType)"/>
         <OtherUnitFiles Value="vst;vst\units\$(LCLWidgetType);fpcmod;frames"/>
-        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\$(LCLWidgetType)"/>
       </SearchPaths>
       <Other>
         <CompilerMessages>
