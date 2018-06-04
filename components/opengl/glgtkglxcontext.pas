@@ -107,7 +107,7 @@ function gdk_x11_get_default_xdisplay:PDisplay;cdecl;external;
 function gdk_x11_get_default_screen:gint;cdecl;external;
 {$ENDIF}
 
-procedure LOpenGLViewport(Handle: HWND; Left, Top, Width, Height: integer);
+procedure LOpenGLViewport({%H-}Handle: HWND; Left, Top, Width, Height: integer);
 procedure LOpenGLSwapBuffers(Handle: HWND);
 function LOpenGLMakeCurrent(Handle: HWND): boolean;
 function LOpenGLReleaseContext({%H-}Handle: HWND): boolean;
