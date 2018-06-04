@@ -296,6 +296,7 @@ type
     FFpDebugDebugger: TFpDebugDebugger;
   protected
     function GetDbgProcess: TDbgProcess; override;
+    function GetDbgThread(AContext: TFpDbgAddressContext): TDbgThread; override;
   public
     constructor create(AFpDebugDebuger: TFpDebugDebugger);
     function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
@@ -391,6 +392,15 @@ begin
   result := FFpDebugDebugger.FDbgController.CurrentProcess;
 end;
 
+function TFpDbgMemReader.GetDbgThread(AContext: TFpDbgAddressContext): TDbgThread;
+var
+  Process: TDbgProcess;
+begin
+  Process := GetDbgProcess;
+  if not Process.GetThread(AContext.ThreadId, Result) then
+    Result := FFpDebugDebugger.FDbgController.CurrentThread;
+end;
+
 constructor TFpDbgMemReader.create(AFpDebugDebuger: TFpDebugDebugger);
 begin
   FFpDebugDebugger := AFpDebugDebuger;
@@ -417,10 +427,9 @@ end;
 procedure TFPCallStackSupplier.DoStateLeavePause;
 begin
   if (TFpDebugDebugger(Debugger).FDbgController <> nil) and
-     (TFpDebugDebugger(Debugger).FDbgController.CurrentProcess <> nil) and
-     (TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.MainThread <> nil)
+     (TFpDebugDebugger(Debugger).FDbgController.CurrentThread <> nil)
   then
-    TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.MainThread.ClearCallStack;
+    TFpDebugDebugger(Debugger).FDbgController.CurrentThread.ClearCallStack;
   inherited DoStateLeavePause;
 end;
 
@@ -446,7 +455,7 @@ begin
     exit;
   end;
   TFpDebugDebugger(Debugger).PrepareCallStackEntryList;
-  ThreadCallStack := TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.MainThread.CallStackEntryList;
+  ThreadCallStack := TFpDebugDebugger(Debugger).FDbgController.CurrentThread.CallStackEntryList;
   if ThreadCallStack = nil then
     exit;
 
@@ -482,8 +491,8 @@ begin
   //CurThreadId := FpDebugger.Threads.CurrentThreads.CurrentThreadId;
   //ThreadCallStack := FpDebugger.Threads.CurrentThreads.Entries[CurThreadId].CallStackEntryList;
 
-  CurThreadId := FpDebugger.FDbgController.CurrentProcess.MainThread.ID;
-  ThreadCallStack := FpDebugger.FDbgController.CurrentProcess.MainThread.CallStackEntryList;
+  CurThreadId := FpDebugger.FDbgController.CurrentThread.ID;
+  ThreadCallStack := FpDebugger.FDbgController.CurrentThread.CallStackEntryList;
 
   if not It.Locate(ACallstack.LowestUnknown )
   then if not It.EOM
@@ -503,7 +512,7 @@ begin
       params := '';
       if (ProcVal <> nil) then begin
         if e.Index = 0 then
-          RegList := AController.CurrentProcess.MainThread.RegisterValueList
+          RegList := AController.CurrentThread.RegisterValueList
         else
           RegList := ThreadCallStack[e.Index].RegisterValueList;
         if AController.CurrentProcess.Mode=dm32 then
@@ -603,8 +612,8 @@ begin
 
   if CurStackFrame > 0 then
     begin
-    AController.CurrentProcess.MainThread.PrepareCallStackEntryList(CurStackFrame);
-    AFrame := AController.CurrentProcess.MainThread.CallStackEntryList[CurStackFrame];
+    AController.CurrentThread.PrepareCallStackEntryList(CurStackFrame);
+    AFrame := AController.CurrentThread.CallStackEntryList[CurStackFrame];
     if AFrame = nil then
       begin
       ALocals.SetDataValidity(ddsInvalid);
@@ -613,7 +622,7 @@ begin
     RegList := AFrame.RegisterValueList;
     end
   else
-    RegList := AController.CurrentProcess.MainThread.RegisterValueList;
+    RegList := AController.CurrentThread.RegisterValueList;
   if AController.CurrentProcess.Mode=dm32 then
     Reg := RegList.FindRegisterByDwarfIndex(8)
   else
@@ -922,7 +931,7 @@ begin
   if (Debugger = nil) or not(Debugger.State in [dsPause, dsStop]) then
     exit;
 
-  ARegisterList := TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.MainThread.RegisterValueList;
+  ARegisterList := TFpDebugDebugger(Debugger).FDbgController.CurrentThread.RegisterValueList;
   for i := 0 to ARegisterList.Count-1 do
     begin
     ARegisterValue := ARegisters.EntriesByName[ARegisterList[i].Name];
@@ -1211,8 +1220,8 @@ begin
 
   if StackFrame > 0 then
     begin
-    FDbgController.CurrentProcess.MainThread.PrepareCallStackEntryList(StackFrame);
-    AFrame := FDbgController.CurrentProcess.MainThread.CallStackEntryList[StackFrame];
+    FDbgController.CurrentThread.PrepareCallStackEntryList(StackFrame);
+    AFrame := FDbgController.CurrentThread.CallStackEntryList[StackFrame];
     if AFrame = nil then
       begin
       if AWatchValue <> nil then
@@ -1222,7 +1231,7 @@ begin
     RegList := AFrame.RegisterValueList;
     end
   else
-    RegList := AController.CurrentProcess.MainThread.RegisterValueList;
+    RegList := AController.CurrentThread.RegisterValueList;
   if AController.CurrentProcess.Mode = dm32 then
     Reg := RegList.FindRegisterByDwarfIndex(8)
   else
@@ -1470,8 +1479,8 @@ begin
   else
     RegDxDwarfIndex:=1;
 
-  AnExceptionLocation:=GetLocationRec(FDbgController.CurrentProcess.MainThread.RegisterValueList.FindRegisterByDwarfIndex(RegDxDwarfIndex).NumValue);
-  AnExceptionObjectLocation:=FDbgController.CurrentProcess.MainThread.RegisterValueList.FindRegisterByDwarfIndex(0).NumValue;
+  AnExceptionLocation:=GetLocationRec(FDbgController.CurrentThread.RegisterValueList.FindRegisterByDwarfIndex(RegDxDwarfIndex).NumValue);
+  AnExceptionObjectLocation:=FDbgController.CurrentThread.RegisterValueList.FindRegisterByDwarfIndex(0).NumValue;
   ExceptionClass := GetClassInstanceName(AnExceptionObjectLocation);
   ExceptionMessage := ReadAnsiString(AnExceptionObjectLocation+DBGPTRSIZE[FDbgController.CurrentProcess.Mode]);
 
@@ -1913,7 +1922,7 @@ begin
     result.SrcLine:=0;
 
     if AnAddress=0 then
-      result.Address := FDbgController.CurrentProcess.GetInstructionPointerRegisterValue
+      result.Address := FDbgController.CurrentThread.GetInstructionPointerRegisterValue
     else
       result.Address := AnAddress;
 

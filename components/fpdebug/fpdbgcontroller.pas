@@ -244,13 +244,13 @@ begin
   if not FInfoStored then
   begin
     FInfoStored:=true;
-    FStoredStackFrame:=AProcess.GetStackBasePointerRegisterValue;
+    FStoredStackFrame:=AThread.GetStackBasePointerRegisterValue;
     AThread.StoreStepInfo;
   end;
 
   if not FInto then
   begin
-    if AProcess.ReadData(aProcess.GetInstructionPointerRegisterValue,sizeof(CodeBin),CodeBin) then
+    if AProcess.ReadData(AThread.GetInstructionPointerRegisterValue,sizeof(CodeBin),CodeBin) then
     begin
       p := @CodeBin;
       Disassemble(p, AProcess.Mode=dm64, ADump, AStatement);
@@ -259,7 +259,7 @@ begin
         FInto := true;
         FInstCount := 0;
 
-        ALocation := AProcess.GetInstructionPointerRegisterValue+(PtrUInt(p)-PtrUInt(@codebin));
+        ALocation := AThread.GetInstructionPointerRegisterValue+(PtrUInt(p)-PtrUInt(@codebin));
         if not AProcess.HasBreak(ALocation) then
           FHiddenBreakpoint := AProcess.AddBreak(ALocation);
 
@@ -301,8 +301,8 @@ begin
   if (FHiddenWatchpointOutStackbase<>-1) and FController.FCurrentThread.RemoveWatchpoint(FHiddenWatchpointOutStackbase) then
     FHiddenWatchpointOutStackbase:=-1;
 
-  AStackPointerValue:=FController.CurrentProcess.GetStackPointerRegisterValue;
-  AStackBasePointerValue:=FController.CurrentProcess.GetStackBasePointerRegisterValue;
+  AStackPointerValue:=FController.CurrentThread.GetStackPointerRegisterValue;
+  AStackBasePointerValue:=FController.CurrentThread.GetStackBasePointerRegisterValue;
 
   Handled := false;
   Finished := not (AnEvent in [deInternalContinue, deLoadLibrary]);
@@ -365,7 +365,7 @@ begin
   begin
     FInfoStored:=true;
     AThread.StoreStepInfo;
-    FStoredStackFrame:=AProcess.GetStackBasePointerRegisterValue;
+    FStoredStackFrame:=AThread.GetStackBasePointerRegisterValue;
   end;
 
   inherited DoContinue(AProcess, AThread);
@@ -378,7 +378,7 @@ begin
   begin
     if (FController.FCurrentThread.CompareStepInfo<>dcsiNewLine) or
       (not FController.FCurrentThread.IsAtStartOfLine and
-       (FController.NextOnlyStopOnStartLine or (FStoredStackFrame < FController.CurrentProcess.GetStackBasePointerRegisterValue))) then
+       (FController.NextOnlyStopOnStartLine or (FStoredStackFrame < FController.CurrentThread.GetStackBasePointerRegisterValue))) then
     begin
       AnEvent:=deInternalContinue;
       FHiddenBreakpoint:=nil;
@@ -407,7 +407,7 @@ begin
   else
   begin
     CallInstr:=false;
-    if AProcess.ReadData(aProcess.GetInstructionPointerRegisterValue,sizeof(CodeBin),CodeBin) then
+    if AProcess.ReadData(AThread.GetInstructionPointerRegisterValue,sizeof(CodeBin),CodeBin) then
     begin
       p := @CodeBin;
       Disassemble(p, AProcess.Mode=dm64, ADump, AStatement);
@@ -417,7 +417,7 @@ begin
 
     if CallInstr then
     begin
-      ALocation := AProcess.GetInstructionPointerRegisterValue+(PtrUInt(p)-PtrUInt(@codebin));
+      ALocation := AThread.GetInstructionPointerRegisterValue+(PtrUInt(p)-PtrUInt(@codebin));
       if not AProcess.HasBreak(ALocation) then
         FHiddenBreakpoint := AProcess.AddBreak(ALocation);
     end;

@@ -123,6 +123,7 @@ type
   TDbgMemReader = class(TFpDbgMemReaderBase)
   protected
     function GetDbgProcess: TDbgProcess; virtual; abstract;
+    function GetDbgThread(AContext: TFpDbgAddressContext): TDbgThread; virtual;
   public
     function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
     function ReadMemoryEx(AnAddress, AnAddressSpace: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
@@ -158,6 +159,11 @@ type
     function AddWatchpoint(AnAddr: TDBGPtr): integer; virtual;
     function RemoveWatchpoint(AnId: integer): boolean; virtual;
     function DetectHardwareWatchpoint: integer; virtual;
+
+    function GetInstructionPointerRegisterValue: TDbgPtr; virtual; abstract;
+    function GetStackBasePointerRegisterValue: TDbgPtr; virtual; abstract;
+    function GetStackPointerRegisterValue: TDbgPtr; virtual; abstract;
+
     procedure PrepareCallStackEntryList(AFrameRequired: Integer = -1); virtual;
     procedure ClearCallStack;
     destructor Destroy; override;
@@ -334,10 +340,6 @@ type
 
     function WriteData(const AAdress: TDbgPtr; const ASize: Cardinal; const AData): Boolean; virtual;
 
-    function GetInstructionPointerRegisterValue: TDbgPtr; virtual; abstract;
-    function GetStackBasePointerRegisterValue: TDbgPtr; virtual; abstract;
-    function GetStackPointerRegisterValue: TDbgPtr; virtual; abstract;
-
     procedure TerminateProcess; virtual; abstract;
 
     property Handle: THandle read GetHandle;
@@ -453,7 +455,7 @@ begin
   if assigned(ProcSymbol) then begin
     ProcVal := ProcSymbol.Value;
     if (ProcVal <> nil) then begin
-      InstrPointerValue := FThread.Process.GetInstructionPointerRegisterValue;
+      InstrPointerValue := FThread.GetInstructionPointerRegisterValue;
       if InstrPointerValue <> 0 then begin
         AContext := FThread.Process.DbgInfo.FindContext(FThread.ID, Index, InstrPointerValue);
         if AContext <> nil then begin
@@ -519,6 +521,15 @@ end;
 
 { TDbgMemReader }
 
+function TDbgMemReader.GetDbgThread(AContext: TFpDbgAddressContext): TDbgThread;
+var
+  Process: TDbgProcess;
+begin
+  Process := GetDbgProcess;
+  if not Process.GetThread(AContext.ThreadId, Result) then
+    Result := Process.MainThread;
+end;
+
 function TDbgMemReader.ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean;
 begin
   result := GetDbgProcess.ReadData(AnAddress, ASize, ADest^);
@@ -543,12 +554,12 @@ begin
     StackFrame := 0;
   if StackFrame = 0 then
     begin
-    ARegister:=GetDbgProcess.MainThread.RegisterValueList.FindRegisterByDwarfIndex(ARegNum);
+    ARegister:=GetDbgThread(AContext).RegisterValueList.FindRegisterByDwarfIndex(ARegNum);
     end
   else
     begin
-    GetDbgProcess.MainThread.PrepareCallStackEntryList(StackFrame);
-    AFrame := GetDbgProcess.MainThread.CallStackEntryList[StackFrame];
+    GetDbgThread(AContext).PrepareCallStackEntryList(StackFrame);
+    AFrame := GetDbgThread(AContext).CallStackEntryList[StackFrame];
     if AFrame <> nil then
       ARegister:=AFrame.RegisterValueList.FindRegisterByDwarfIndex(ARegNum)
     else
@@ -750,7 +761,7 @@ var
 begin
   Result := OSDbgClasses.DbgBreakpointClass.Create(Self, ALocation);
   // TODO: empty breakpoint (all address failed to set) = nil
-  ip := GetInstructionPointerRegisterValue;
+  ip := FMainThread.GetInstructionPointerRegisterValue;
   if not assigned(FCurrentBreakpoint) then
     for a in ALocation do
       if ip=a then begin
@@ -938,24 +949,24 @@ begin
     end;
 
     // Determine the address where the execution has stopped
-    CurrentAddr:=GetInstructionPointerRegisterValue;
+    CurrentAddr:=AThread.GetInstructionPointerRegisterValue;
     FCurrentWatchpoint:=AThread.DetectHardwareWatchpoint;
-    if not (FMainThread.NextIsSingleStep or assigned(FCurrentBreakpoint) or (FCurrentWatchpoint>-1)) then
+    if not (AThread.NextIsSingleStep or assigned(FCurrentBreakpoint) or (FCurrentWatchpoint>-1)) then
     begin
       // The debugger did not stop due to single-stepping or a watchpoint,
       // so a breakpoint has been hit. But breakpoints stop *after* they
       // have been hit. So decrement the CurrentAddr.
-      FMainThread.FNeedIPDecrement:=true;
+      AThread.FNeedIPDecrement:=true;
       dec(CurrentAddr);
     end
     else
-      FMainThread.FNeedIPDecrement:=false;
+      AThread.FNeedIPDecrement:=false;
     FCurrentBreakpoint:=nil;
     AThread.NextIsSingleStep:=false;
 
     // Whatever reason there was to change the result to deInternalContinue,
     // if a breakpoint has been hit, always trigger it...
-    if DoBreak(CurrentAddr, FMainThread.ID) then
+    if DoBreak(CurrentAddr, AThread.ID) then
       result := deBreakpoint;
   end
 end;
@@ -1128,7 +1139,7 @@ var
   AnAddr: TDBGPtr;
   Sym: TFpDbgSymbol;
 begin
-  AnAddr := FProcess.GetInstructionPointerRegisterValue;
+  AnAddr := GetInstructionPointerRegisterValue;
   sym := FProcess.FindSymbol(AnAddr);
   if assigned(sym) then
   begin
@@ -1152,7 +1163,7 @@ var
   CU: TDwarfCompilationUnit;
   a: TDBGPtrArray;
 begin
-  AnAddr := FProcess.GetInstructionPointerRegisterValue;
+  AnAddr := GetInstructionPointerRegisterValue;
   sym := FProcess.FindSymbol(AnAddr);
   if (sym is TDbgDwarfSymbolBase) then
   begin
@@ -1174,8 +1185,8 @@ var
   AnAddr: TDBGPtr;
   Sym: TFpDbgSymbol;
 begin
-  FStoreStepStackFrame := FProcess.GetStackBasePointerRegisterValue;
-  AnAddr := FProcess.GetInstructionPointerRegisterValue;
+  FStoreStepStackFrame := GetStackBasePointerRegisterValue;
+  AnAddr := GetInstructionPointerRegisterValue;
   sym := FProcess.FindSymbol(AnAddr);
   if assigned(sym) then
   begin
@@ -1240,8 +1251,8 @@ begin
   // TODO: remove, using AFrameRequired
   if FCallStackEntryList.Count > 0 then exit; // already done
 
-  Address := Process.GetInstructionPointerRegisterValue;
-  Frame := Process.GetStackBasePointerRegisterValue;
+  Address := GetInstructionPointerRegisterValue;
+  Frame := GetStackBasePointerRegisterValue;
   Size := sizeof(pointer); // TODO: Context.AddressSize
 
   FCallStackEntryList.FreeObjects:=true;

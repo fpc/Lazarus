@@ -239,6 +239,10 @@ type
     function DetectHardwareWatchpoint: integer; override;
     procedure BeforeContinue; override;
     procedure LoadRegisterValues; override;
+
+    function GetInstructionPointerRegisterValue: TDbgPtr; override;
+    function GetStackBasePointerRegisterValue: TDbgPtr; override;
+    function GetStackPointerRegisterValue: TDbgPtr; override;
   end;
 
   { TDbgLinuxProcess }
@@ -271,9 +275,6 @@ type
     function GetConsoleOutput: string; override;
     procedure SendConsoleInput(AString: string); override;
 
-    function GetInstructionPointerRegisterValue: TDbgPtr; override;
-    function GetStackPointerRegisterValue: TDbgPtr; override;
-    function GetStackBasePointerRegisterValue: TDbgPtr; override;
     procedure TerminateProcess; override;
     function Pause: boolean; override;
 
@@ -557,6 +558,30 @@ begin
   FRegisterValueListValid:=true;
 end;
 
+function TDbgLinuxThread.GetInstructionPointerRegisterValue: TDbgPtr;
+begin
+  if Process.Mode=dm32 then
+    result := FUserRegs.regs32[eip]
+  else
+    result := FUserRegs.regs64[rip];
+end;
+
+function TDbgLinuxThread.GetStackBasePointerRegisterValue: TDbgPtr;
+begin
+  if Process.Mode=dm32 then
+    result := FUserRegs.regs32[ebp]
+  else
+    result := FUserRegs.regs64[rbp];
+end;
+
+function TDbgLinuxThread.GetStackPointerRegisterValue: TDbgPtr;
+begin
+  if Process.Mode=dm32 then
+    result := FUserRegs.regs32[UESP]
+  else
+    result := FUserRegs.regs64[rsp];
+end;
+
 { TDbgLinuxProcess }
 
 procedure TDbgLinuxProcess.InitializeLoaders;
@@ -801,30 +826,6 @@ procedure TDbgLinuxProcess.SendConsoleInput(AString: string);
 begin
   if FpWrite(FMasterPtyFd, AString[1], length(AString)) <> Length(AString) then
     Log('Failed to send input to console.', dllDebug);
-end;
-
-function TDbgLinuxProcess.GetInstructionPointerRegisterValue: TDbgPtr;
-begin
-  if Mode=dm32 then
-    result := TDbgLinuxThread(FMainThread).FUserRegs.regs32[eip]
-  else
-    result := TDbgLinuxThread(FMainThread).FUserRegs.regs64[rip];
-end;
-
-function TDbgLinuxProcess.GetStackPointerRegisterValue: TDbgPtr;
-begin
-  if Mode=dm32 then
-    result := TDbgLinuxThread(FMainThread).FUserRegs.regs32[UESP]
-  else
-    result := TDbgLinuxThread(FMainThread).FUserRegs.regs64[rsp];
-end;
-
-function TDbgLinuxProcess.GetStackBasePointerRegisterValue: TDbgPtr;
-begin
-  if Mode=dm32 then
-    result := TDbgLinuxThread(FMainThread).FUserRegs.regs32[ebp]
-  else
-    result := TDbgLinuxThread(FMainThread).FUserRegs.regs64[rbp];
 end;
 
 procedure TDbgLinuxProcess.TerminateProcess;

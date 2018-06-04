@@ -117,6 +117,10 @@ type
     function DetectHardwareWatchpoint: integer; override;
     procedure BeforeContinue; override;
     procedure LoadRegisterValues; override;
+
+    function GetInstructionPointerRegisterValue: TDbgPtr; override;
+    function GetStackPointerRegisterValue: TDbgPtr; override;
+    function GetStackBasePointerRegisterValue: TDbgPtr; override;
   end;
 
   { TDbgDarwinProcess }
@@ -151,9 +155,6 @@ type
     function GetConsoleOutput: string; override;
     procedure SendConsoleInput(AString: string); override;
 
-    function GetInstructionPointerRegisterValue: TDbgPtr; override;
-    function GetStackPointerRegisterValue: TDbgPtr; override;
-    function GetStackBasePointerRegisterValue: TDbgPtr; override;
     procedure TerminateProcess; override;
 
     function Continue(AProcess: TDbgProcess; AThread: TDbgThread; SingleStep: boolean): boolean; override;
@@ -601,6 +602,30 @@ begin
   FRegisterValueListValid:=true;
 end;
 
+function TDbgDarwinThread.GetInstructionPointerRegisterValue: TDbgPtr;
+begin
+  if Process.Mode=dm32 then
+    result := FThreadState32.__eip
+  else
+    result := FThreadState64.__rip;
+end;
+
+function TDbgDarwinThread.GetStackPointerRegisterValue: TDbgPtr;
+begin
+  if Process.Mode=dm32 then
+    result := FThreadState32.__esp
+  else
+    result := FThreadState64.__rsp;
+end;
+
+function TDbgDarwinThread.GetStackBasePointerRegisterValue: TDbgPtr;
+begin
+  if Process.Mode=dm32 then
+    result := FThreadState32.__ebp
+  else
+    result := FThreadState64.__rbp;
+end;
+
 { TDbgDarwinProcess }
 
 function TDbgDarwinProcess.GetDebugAccessRights: boolean;
@@ -852,30 +877,6 @@ procedure TDbgDarwinProcess.SendConsoleInput(AString: string);
 begin
   if FpWrite(FMasterPtyFd, AString[1], length(AString)) <> Length(AString) then
     Log('Failed to send input to console.', dllDebug);
-end;
-
-function TDbgDarwinProcess.GetInstructionPointerRegisterValue: TDbgPtr;
-begin
-  if Mode=dm32 then
-    result := TDbgDarwinThread(FMainThread).FThreadState32.__eip
-  else
-    result := TDbgDarwinThread(FMainThread).FThreadState64.__rip;
-end;
-
-function TDbgDarwinProcess.GetStackPointerRegisterValue: TDbgPtr;
-begin
-  if Mode=dm32 then
-    result := TDbgDarwinThread(FMainThread).FThreadState32.__esp
-  else
-    result := TDbgDarwinThread(FMainThread).FThreadState64.__rsp;
-end;
-
-function TDbgDarwinProcess.GetStackBasePointerRegisterValue: TDbgPtr;
-begin
-  if Mode=dm32 then
-    result := TDbgDarwinThread(FMainThread).FThreadState32.__ebp
-  else
-    result := TDbgDarwinThread(FMainThread).FThreadState64.__rbp;
 end;
 
 procedure TDbgDarwinProcess.TerminateProcess;

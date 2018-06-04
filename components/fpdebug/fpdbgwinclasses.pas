@@ -66,6 +66,10 @@ type
     procedure BeforeContinue; override;
     function ResetInstructionPointerAfterBreakpoint: boolean; override;
     function ReadThreadState: boolean;
+
+    function GetInstructionPointerRegisterValue: TDbgPtr; override;
+    function GetStackBasePointerRegisterValue: TDbgPtr; override;
+    function GetStackPointerRegisterValue: TDbgPtr; override;
   end;
 
 
@@ -113,9 +117,6 @@ type
 
     procedure StartProcess(const AThreadID: DWORD; const AInfo: TCreateProcessDebugInfo);
 
-    function GetInstructionPointerRegisterValue: TDbgPtr; override;
-    function GetStackBasePointerRegisterValue: TDbgPtr; override;
-    function GetStackPointerRegisterValue: TDbgPtr; override;
     function Pause: boolean; override;
 
     procedure TerminateProcess; override;
@@ -886,33 +887,6 @@ begin
   then SetFileName(s);
 end;
 
-function TDbgWinProcess.GetInstructionPointerRegisterValue: TDbgPtr;
-begin
-{$ifdef cpui386}
-  Result := GCurrentContext^.Eip;
-{$else}
-  Result := GCurrentContext^.Rip;
-{$endif}
-end;
-
-function TDbgWinProcess.GetStackBasePointerRegisterValue: TDbgPtr;
-begin
-{$ifdef cpui386}
-  Result := GCurrentContext^.Ebp;
-{$else}
-  Result := GCurrentContext^.Rbp;
-{$endif}
-end;
-
-function TDbgWinProcess.GetStackPointerRegisterValue: TDbgPtr;
-begin
-{$ifdef cpui386}
-  Result := GCurrentContext^.Esp;
-{$else}
-  Result := GCurrentContext^.Rsp;
-{$endif}
-end;
-
 function DebugBreakProcess(Process:HANDLE): WINBOOL; external 'kernel32' name 'DebugBreakProcess';
 var
   DebugBreakAddr: Pointer = nil;
@@ -1206,6 +1180,33 @@ begin
   SetLastError(0);
   result := GetThreadContext(Handle, GCurrentContext^);
   FRegisterValueListValid:=False;
+end;
+
+function TDbgWinThread.GetInstructionPointerRegisterValue: TDbgPtr;
+begin
+{$ifdef cpui386}
+  Result := GCurrentContext^.Eip;
+{$else}
+  Result := GCurrentContext^.Rip;
+{$endif}
+end;
+
+function TDbgWinThread.GetStackBasePointerRegisterValue: TDbgPtr;
+begin
+{$ifdef cpui386}
+  Result := GCurrentContext^.Ebp;
+{$else}
+  Result := GCurrentContext^.Rbp;
+{$endif}
+end;
+
+function TDbgWinThread.GetStackPointerRegisterValue: TDbgPtr;
+begin
+{$ifdef cpui386}
+  Result := GCurrentContext^.Esp;
+{$else}
+  Result := GCurrentContext^.Rsp;
+{$endif}
 end;
 
 end.
