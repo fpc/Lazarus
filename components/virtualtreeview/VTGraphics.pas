@@ -20,7 +20,7 @@ type
 
 procedure AlphaBlend(Source, Destination: HDC; const R: TRect; const Target: TPoint; Mode: TBlendMode; ConstantAlpha, Bias: Integer);
 
-function CalculateScanline(Bits: Pointer; Width, Height, Row: Integer): Pointer;
+function CalculateScanline(Bits: Pointer; Width, {%H-}Height, Row: Integer): Pointer;
 
 function GetBitmapBitsFromBitmap(Bitmap: HBITMAP): Pointer;
 

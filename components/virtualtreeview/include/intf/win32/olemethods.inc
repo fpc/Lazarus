@@ -66,7 +66,7 @@ var
   VCLStream: TStream;
   
 begin
-  FillChar(Medium, SizeOf(Medium), 0);
+  FillChar({%H-}Medium, SizeOf(Medium), 0);
   // We can render the native clipboard format in two different storage media.
   if (FormatEtcIn.cfFormat = CF_VIRTUALTREE) and (FormatEtcIn.tymed and (TYMED_HGLOBAL or TYMED_ISTREAM) <> 0) then
   begin
@@ -130,7 +130,7 @@ type
   // needed to handle OLE global memory objects
   TOLEMemoryStream = class(TCustomMemoryStream)
   public
-    function Write(const Buffer; Count: Integer): Longint; override;
+    function Write(const {%H-}Buffer; {%H-}Count: Integer): Longint; override;
   end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -139,6 +139,7 @@ function TOLEMemoryStream.Write(const Buffer; Count: Integer): Integer;
 
 begin
   //raise EStreamError.CreateRes(PResStringRec(@SCantWriteResourceStreamError));
+  Result := 0;
   raise EStreamError.Create(SCantWriteResourceStreamError);
 end;
 

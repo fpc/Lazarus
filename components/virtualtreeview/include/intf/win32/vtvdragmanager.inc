@@ -54,7 +54,7 @@ begin
     CopyCount := celt;
   if CopyCount > 0 then
   begin
-    Move(FFormatEtcArray[FCurrentIndex], elt, CopyCount * SizeOf(TFormatEtc));
+    Move(FFormatEtcArray[FCurrentIndex], {%H-}elt, CopyCount * SizeOf(TFormatEtc));
     Inc(FCurrentIndex, CopyCount);
     Result := S_OK;
   end;

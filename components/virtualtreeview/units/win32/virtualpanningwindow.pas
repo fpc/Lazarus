@@ -32,7 +32,7 @@ uses
   vtlogger;
 {$endif}
 
-function PanningWindowProc(Window: HWnd; Msg: UInt;WPara: WParam; LPara: LParam): LResult; stdcall;
+function {%H-}PanningWindowProc(Window: HWnd; Msg: UInt;WPara: WParam; LPara: LParam): LResult; stdcall;
 var
   PanningObject: TVirtualPanningWindow;
 begin
@@ -66,7 +66,7 @@ procedure TVirtualPanningWindow.HandlePaintMessage;
 var
   PS: PaintStruct;
 begin
-  BeginPaint(FHandle, PS);
+  BeginPaint(FHandle, {%H-}PS);
   BitBlt(PS.hdc,0,0,FImage.Width,FImage.Height,FImage.Canvas.Handle,0,0,SRCCOPY);
   EndPaint(FHandle, PS);
 end;
@@ -77,7 +77,7 @@ var
   TempClass: TWndClass;
 begin
   // Register the helper window class.
-  if not GetClassInfo(HInstance, PanningWindowClass.lpszClassName, TempClass) then
+  if not GetClassInfo(HInstance, PanningWindowClass.lpszClassName, {%H-}TempClass) then
   begin
     PanningWindowClass.hInstance := HInstance;
     Windows.RegisterClass(PanningWindowClass);
