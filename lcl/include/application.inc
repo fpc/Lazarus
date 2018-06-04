@@ -251,6 +251,11 @@ Begin
   Result := ParamStrUTF8(0);
 end;
 
+function TApplication.GetHandle: THandle;
+begin
+  Result := WidgetSet.AppHandle;
+end;
+
 function TApplication.GetMainFormHandle: HWND;
 var
   i: Integer;
@@ -548,6 +553,11 @@ procedure TApplication.SetFlags(const AValue: TApplicationFlags);
 begin
   { Only allow AppNoExceptionMessages to be changed }
   FFlags := Flags - [AppNoExceptionMessages] + AValue*[AppNoExceptionMessages];
+end;
+
+procedure TApplication.SetHandle(const AHandle: THandle);
+begin
+  WidgetSet.AppHandle := AHandle;
 end;
 
 procedure TApplication.SetMainFormOnTaskBar(const AValue: Boolean);

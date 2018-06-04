@@ -1415,6 +1415,7 @@ type
     function GetActive: boolean;
     function GetCurrentHelpFile: string;
     function GetExename: String;
+    function GetHandle: THandle;
     function GetMainFormHandle: HWND;
     function GetTitle: string;
     procedure FreeIconHandles;
@@ -1429,6 +1430,7 @@ type
     procedure UpdateMouseControl(NewMouseControl: TControl);
     procedure UpdateMouseHint(CurrentControl: TControl);
     procedure SetCaptureExceptions(const AValue: boolean);
+    procedure SetHandle(const AHandle: THandle);
     procedure SetHint(const AValue: string);
     procedure SetHintColor(const AValue: TColor);
     procedure SetIcon(AValue: TIcon);
@@ -1591,6 +1593,7 @@ type
                                                write FFindGlobalComponentEnabled;
     property Flags: TApplicationFlags read FFlags write SetFlags;
     //property HelpSystem : IHelpSystem read FHelpSystem;
+    property Handle: THandle read GetHandle write SetHandle; platform;
     property Hint: string read FHint write SetHint;
     property HintColor: TColor read FHintColor write SetHintColor;
     property HintHidePause: Integer read FHintHidePause write FHintHidePause;
