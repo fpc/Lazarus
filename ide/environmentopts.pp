@@ -330,6 +330,7 @@ type
   private
     FComponentTreeHeight: integer;
     FInfoBoxHeight: integer;
+    FShowComponentTree: Boolean;
     FShowInfoBox: boolean;
     FSplitterX: array[TObjectInspectorPage] of Integer;
 
@@ -346,6 +347,7 @@ type
     procedure Load(XMLConfig: TXMLConfig; Path: String);
     procedure Save(XMLConfig: TXMLConfig; Path: String);
 
+    property ShowComponentTree: Boolean read FShowComponentTree write FShowComponentTree;
     property ComponentTreeHeight: integer read FComponentTreeHeight write FComponentTreeHeight;
     property SplitterX[const APage: TObjectInspectorPage]: Integer read GetSplitterX write SetSplitterX;
     property ShowInfoBox: boolean read FShowInfoBox write FShowInfoBox;
@@ -1102,6 +1104,7 @@ begin
       DDest.SplitterX[I] := SplitterX[I];
     DDest.ShowInfoBox := ShowInfoBox;
     DDest.ComponentTreeHeight := ComponentTreeHeight;
+    DDest.ShowComponentTree := ShowComponentTree;
     DDest.InfoBoxHeight := InfoBoxHeight;
   end else
     inherited AssignTo(Dest);
@@ -1125,6 +1128,7 @@ begin
 
   ShowInfoBox := o.ShowInfoBox;
   ComponentTreeHeight := o.ComponentTreeHeight;
+  ShowComponentTree := o.ShowComponentTree;
   InfoBoxHeight := o.InfoBoxHeight;
 end;
 
@@ -1132,24 +1136,26 @@ procedure TDesktopOIOptions.Load(XMLConfig: TXMLConfig; Path: String);
 var
   I: TObjectInspectorPage;
 begin
-  Path := Path + 'ObjectInspector';
+  Path := Path + 'ObjectInspectorOptions/';
   for I in TObjectInspectorPage do
     FSplitterX[I] := XMLConfig.GetValue(Path+'SplitterX/'+DefaultOIPageNames[I]+'/Value',-1);
-  ShowInfoBox := XMLConfig.GetValue(Path+'ShowInfoBox/Value',True);
-  ComponentTreeHeight := XMLConfig.GetValue(Path+'ComponentTreeHeight/Value',-1);
-  InfoBoxHeight := XMLConfig.GetValue(Path+'InfoBoxHeight/Value',-1);
+  ShowComponentTree := XMLConfig.GetValue(Path+'ComponentTree/Show/Value',True);
+  ComponentTreeHeight := XMLConfig.GetValue(Path+'ComponentTree/Height/Value',-1);
+  ShowInfoBox := XMLConfig.GetValue(Path+'InfoBox/Show/Value',True);
+  InfoBoxHeight := XMLConfig.GetValue(Path+'InfoBox/Height/Value',-1);
 end;
 
 procedure TDesktopOIOptions.Save(XMLConfig: TXMLConfig; Path: String);
 var
   I: TObjectInspectorPage;
 begin
-  Path := Path + 'ObjectInspector';
+  Path := Path + 'ObjectInspectorOptions/';
   for I in TObjectInspectorPage do
     XMLConfig.SetDeleteValue(Path+'SplitterX/'+DefaultOIPageNames[I]+'/Value',FSplitterX[I],-1);
-  XMLConfig.SetDeleteValue(Path+'ShowInfoBox/Value',ShowInfoBox,True);
-  XMLConfig.SetDeleteValue(Path+'ComponentTreeHeight/Value',ComponentTreeHeight,-1);
-  XMLConfig.SetDeleteValue(Path+'InfoBoxHeight/Value',InfoBoxHeight,-1);
+  XMLConfig.SetDeleteValue(Path+'ComponentTree/Show/Value',ShowComponentTree,True);
+  XMLConfig.SetDeleteValue(Path+'ComponentTree/Height/Value',ComponentTreeHeight,-1);
+  XMLConfig.SetDeleteValue(Path+'InfoBox/Show/Value',ShowInfoBox,True);
+  XMLConfig.SetDeleteValue(Path+'InfoBox/Height/Value',InfoBoxHeight,-1);
 end;
 
 procedure TDesktopOIOptions.SetSplitterX(const APage: TObjectInspectorPage;
@@ -1170,6 +1176,7 @@ begin
       o.GridSplitterX[I] := Max(10, FSplitterX[I]);
 
   o.ShowInfoBox := ShowInfoBox;
+  o.ShowComponentTree := ShowComponentTree;
   if ComponentTreeHeight>=0 then
     o.ComponentTreeHeight := Max(10, ComponentTreeHeight);
   if InfoBoxHeight>=0 then
@@ -1478,8 +1485,8 @@ begin
   FIDETitleIncludesBuildMode:=FXMLCfg.GetValue(Path+'IDETitleIncludesBuildMode/Value',false);
   FIDEProjectDirectoryInIdeTitle:=FXMLCfg.GetValue(Path+'IDEProjectDirectoryInIdeTitle/Value',false);
   // CompletionWindow
-  FCompletionWindowWidth:=FXMLCfg.GetValue(Path+'CompletionWindowWidth/Value', FCompletionWindowWidth);
-  FCompletionWindowHeight:=FXMLCfg.GetValue(Path+'CompletionWindowHeight/Value', 6);
+  FCompletionWindowWidth:=FXMLCfg.GetValue(Path+'CompletionWindowOptions/Width/Value', FCompletionWindowWidth);
+  FCompletionWindowHeight:=FXMLCfg.GetValue(Path+'CompletionWindowOptions/Height/Value', 6);
 
   if not FXMLCfg.HasPath(Path+'IDECoolBarOptions/', True) then
     Path := '';             // Toolbars and palette were at the top level in XML.
@@ -1540,8 +1547,8 @@ begin
   FXMLCfg.SetDeleteValue(Path+'IDETitleIncludesBuildMode/Value',FIDETitleIncludesBuildMode,false);
   FXMLCfg.SetDeleteValue(Path+'IDEProjectDirectoryInIdeTitle/Value',FIDEProjectDirectoryInIdeTitle,false);
   // CompletionWindow
-  FXMLCfg.SetValue(Path+'CompletionWindowWidth/Value',FCompletionWindowWidth);
-  FXMLCfg.SetDeleteValue(Path+'CompletionWindowHeight/Value',FCompletionWindowHeight, 6);
+  FXMLCfg.SetValue(Path+'CompletionWindowOptions/Width/Value',FCompletionWindowWidth);
+  FXMLCfg.SetDeleteValue(Path+'CompletionWindowOptions/Height/Value',FCompletionWindowHeight, 6);
   // IDE Coolbar
   FIDECoolBarOptions.Save(FXMLCfg, Path);
   // Editor Toolbar
