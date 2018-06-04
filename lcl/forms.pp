@@ -1586,7 +1586,7 @@ type
     property BidiMode: TBiDiMode read FBidiMode write SetBidiMode;
     property CaptureExceptions: boolean read FCaptureExceptions
                                         write SetCaptureExceptions;
-    property DoubleBuffered: TApplicationDoubleBuffered read FDoubleBuffered write FDoubleBuffered default adbDefault;
+    property DoubleBuffered: TApplicationDoubleBuffered read FDoubleBuffered write FDoubleBuffered default adbDefault; platform;
     property ExtendedKeysSupport: Boolean read FExtendedKeysSupport write FExtendedKeysSupport; // See VK_LSHIFT in LCLType for more details
     property ExceptionDialog: TApplicationExceptionDlg read FExceptionDialog write FExceptionDialog;
     property FindGlobalComponentEnabled: boolean read FFindGlobalComponentEnabled
