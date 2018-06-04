@@ -2701,7 +2701,7 @@ begin
 
   FImageIndexes := TAvgLvlTree.Create(@TLCLGlyphs_TEntry_Compare);
   Scaled := True;
-  FIgnoreMissingResources := True;
+  FMissingResources := gmrOneMustExist;
 end;
 
 destructor TLCLGlyphs.Destroy;
@@ -2718,7 +2718,7 @@ function TLCLGlyphs.GetImageIndex(const AResourceName: string): Integer;
   var
     G: TCustomBitmap;
   begin
-    G := GetDefaultGlyph(AResourceName, Resolution.ScaleSuffix, FIgnoreMissingResources);
+    G := GetDefaultGlyph(AResourceName, Resolution.ScaleSuffix, True);
     if G=nil then
       Exit(-1);
     try
@@ -2732,7 +2732,7 @@ function TLCLGlyphs.GetImageIndex(const AResourceName: string): Integer;
   var
     G: TCustomBitmap;
   begin
-    G := GetDefaultGlyph(AResourceName, Resolution.ScaleSuffix, FIgnoreMissingResources);
+    G := GetDefaultGlyph(AResourceName, Resolution.ScaleSuffix, FMissingResources in [gmrIgnoreAll, gmrOneMustExist]);
     if G<>nil then
       try
         ReplaceSliceCentered(ImageIndex, Resolution.Width, G, False);
@@ -2745,7 +2745,7 @@ var
   K: TEntryKey;
   ANode: TAVLTreeNode;
   E: TEntry;
-  I: Integer;
+  I, FirstLoadedResolutionI: Integer;
 begin
   K.GlyphName := AResourceName;
 
@@ -2754,21 +2754,29 @@ begin
     Result := TEntry(ANode.Data).ImageIndex
   else
   begin
-    E := TEntry.Create;
-    E.GlyphName := AResourceName;
-    E.ImageIndex := -1;
-    for I := Low(FLoadResolutions) to High(FLoadResolutions) do
-      if FLoadResolutions[I].Width=Width then
+    Result := -1;
+    FirstLoadedResolutionI := Low(FLoadResolutions)-1;
+    for I := High(FLoadResolutions) downto Low(FLoadResolutions) do // start with the biggest one
+    begin
+      Result := AddNewBtnImage(FLoadResolutions[I]);
+      if Result>=0 then
       begin
-        E.ImageIndex := AddNewBtnImage(FLoadResolutions[I]);
+        FirstLoadedResolutionI := I;
         break;
       end;
-    if E.ImageIndex>=0 then
-      for I := Low(FLoadResolutions) to High(FLoadResolutions) do
-        if FLoadResolutions[I].Width<>Width then
-          AddBtnImageRes(E.ImageIndex, FLoadResolutions[I]);
+    end;
+    if (Result>=0) and (FirstLoadedResolutionI>=Low(FLoadResolutions)) then
+    begin
+      for I := FirstLoadedResolutionI-1 downto Low(FLoadResolutions) do // load the smaller ones
+        AddBtnImageRes(Result, FLoadResolutions[I]);
+    end else
+    if FMissingResources in [gmrAllMustExist, gmrOneMustExist] then
+      raise EResNotFound.CreateFmt(SResNotFound,[AResourceName]);
+
+    E := TEntry.Create;
     FImageIndexes.Add(E);
-    Result := E.ImageIndex;
+    E.GlyphName := AResourceName;
+    E.ImageIndex := Result;
   end;
 end;
 
@@ -2786,13 +2794,17 @@ end;
 procedure TLCLGlyphs.RegisterResolutions(
   const AResolutionWidths: array of Integer);
 var
-  I: Integer;
+  I, LastWidth: Integer;
 begin
   inherited RegisterResolutions(AResolutionWidths);
 
   SetLength(FLoadResolutions, Length(AResolutionWidths));
+  LastWidth := 0;
   for I := Low(FLoadResolutions) to High(FLoadResolutions) do
   begin
+    if AResolutionWidths[I]<=LastWidth then
+      raise Exception.Create('AResolutionWidths not sorted.');
+    LastWidth := AResolutionWidths[I];
     FLoadResolutions[I].Width := AResolutionWidths[I];
     FLoadResolutions[I].ScaleSuffix := MulDiv(FLoadResolutions[I].Width, 100, Width);
   end;

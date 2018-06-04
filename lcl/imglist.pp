@@ -419,6 +419,11 @@ type
     property OnGetWidthForPPI: TCustomImageListGetWidthForPPI read FOnGetWidthForPPI write FOnGetWidthForPPI;
   end;
 
+  TLCLGlyphsMissingResources = (
+    gmrAllMustExist, // Show exception if any image/resolution is not found
+    gmrOneMustExist, // Show exception if no resolution is found. Missing resolutions will be auto-generated from the biggest one.
+    gmrIgnoreAll);   // Ignore all missing resources. No image will be added if no resolution is found.
+
   TLCLGlyphs = class(TCustomImageList)
   private type
     TEntryKey = record
@@ -440,20 +445,23 @@ type
     end;
 
   private
-    FIgnoreMissingResources: Boolean;
+    FMissingResources: TLCLGlyphsMissingResources;
     FImageIndexes: TAvgLvlTree;
     FLoadResolutions: array of TResolution;
     FSuffix100Scale: Integer;
   public
     function GetImageIndex(const AResourceName: string): Integer;
+
+    // AResolutionWidths must be sorted from smallest to biggest
     procedure RegisterResolutions(const AResolutionWidths: array of Integer); override;
     procedure RegisterResolutions(const AResolutionWidths, AResolutionScaleSuffixes: array of Integer); overload;
+
     procedure SetWidth100Suffix(const AWidth100Suffix: Integer);
 
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-    property IgnoreMissingResources: Boolean read FIgnoreMissingResources write FIgnoreMissingResources;
+    property MissingResources: TLCLGlyphsMissingResources read FMissingResources write FMissingResources;
   end;
 
 function LCLGlyphs: TLCLGlyphs;
