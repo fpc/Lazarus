@@ -620,6 +620,7 @@ type
     ComponentPanel: TPanel;
     CompFilterLabel: TLabel;
     CompFilterEdit: TTreeFilterEdit;
+    PnlClient: TPanel;
     StatusBar: TStatusBar;
     procedure MainPopupMenuClose(Sender: TObject);
     procedure MainPopupMenuPopup(Sender: TObject);
@@ -4378,7 +4379,7 @@ begin
     Constraints.MinHeight := 8;
     Caption := '';
     Height := InfoBoxHeight;
-    Parent := Self;
+    Parent := PnlClient;
     BevelOuter := bvNone;
     BevelInner := bvNone;
     Align := alBottom;
@@ -4397,7 +4398,7 @@ begin
   begin
     Name := 'PropertyPanel';
     Caption := '';
-    Parent := self;
+    Parent := PnlClient;
     BevelOuter := bvNone;
     BevelInner := bvNone;
     Align := alClient;
@@ -5365,7 +5366,7 @@ begin
   with Splitter1 do
   begin
     Name := 'Splitter1';
-    Parent := Self;
+    Parent := PnlClient;
     Align := alTop;
     Top := ComponentPanelHeight;
     Height := 5;
@@ -5410,7 +5411,7 @@ begin
   with Splitter2 do
   begin
     Name := 'Splitter2';
-    Parent := Self;
+    Parent := PnlClient;
     Align := alBottom;
     Top := InfoPanel.Top - 1;
     Height := 5;
