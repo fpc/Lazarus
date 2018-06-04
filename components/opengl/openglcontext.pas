@@ -125,7 +125,6 @@ type
     FAutoResizeViewport: boolean;
     FCanvas: TCanvas; // only valid at designtime
     FDebugContext: boolean;
-    FDoubleBuffered: boolean;
     FFrameDiffTime: integer;
     FOnMakeCurrent: TOpenGlCtrlMakeCurrentEvent;
     FOnPaint: TNotifyEvent;
@@ -144,7 +143,6 @@ type
     function GetSharingControls(Index: integer): TCustomOpenGLControl;
     procedure SetAutoResizeViewport(const AValue: boolean);
     procedure SetDebugContext(AValue: boolean);
-    procedure SetDoubleBuffered(const AValue: boolean);
     procedure SetOpenGLMajorVersion(AValue: Cardinal);
     procedure SetOpenGLMinorVersion(AValue: Cardinal);
     procedure SetOptions(AValue: TOpenGLControlOptions);
@@ -166,6 +164,7 @@ type
     procedure WMSize(var Message: TLMSize); message LM_SIZE;
     procedure UpdateFrameTimeDiff;
     procedure OpenGLAttributesChanged;
+    procedure CMDoubleBufferedChanged(var Message: TLMessage); message CM_DOUBLEBUFFEREDCHANGED;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -189,7 +188,8 @@ type
                                                  write SetSharedControl;
     property AutoResizeViewport: boolean read FAutoResizeViewport
                                          write SetAutoResizeViewport default false;
-    property DoubleBuffered: boolean read FDoubleBuffered write SetDoubleBuffered default true;
+    property DoubleBuffered stored True default True;
+    property ParentDoubleBuffered default False;
     property DebugContext: boolean read FDebugContext write SetDebugContext default false; // create context with debugging enabled. Requires OpenGLMajorVersion!
     property RGBA: boolean read FRGBA write SetRGBA default true;
     {$IFDEF HasRGBBits}
@@ -320,10 +320,9 @@ begin
   OpenGLAttributesChanged;
 end;
 
-procedure TCustomOpenGLControl.SetDoubleBuffered(const AValue: boolean);
+procedure TCustomOpenGLControl.CMDoubleBufferedChanged(var Message: TLMessage);
 begin
-  if FDoubleBuffered=AValue then exit;
-  FDoubleBuffered:=AValue;
+  inherited;
   OpenGLAttributesChanged;
 end;
 
@@ -523,6 +522,7 @@ end;
 constructor TCustomOpenGLControl.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
+  ParentDoubleBuffered:=False;
   FDoubleBuffered:=true;
   FRGBA:=true;
   {$IFDEF HasRGBBits}
