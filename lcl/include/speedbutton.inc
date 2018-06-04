@@ -595,8 +595,6 @@ begin
   // compute size of glyph
   GlyphSize := GetGlyphSize(Draw,PaintRect);
   GlyphWidth := GlyphSize.CX;
-  if TButtonGlyph(FGlyph).NumGlyphs > 1 then
-    GlyphWidth:=GlyphWidth div NumGlyphs;
   GlyphHeight := GlyphSize.CY;
   HasGlyph:=(GlyphWidth<>0) and (GlyphHeight<>0);
   //debugln(['TCustomSpeedButton.MeasureDraw Step2 ',DbgSName(Self),' PaintRect=',dbgs(PaintRect),' GlyphSize=',GlyphWidth,'x',GlyphHeight]);
