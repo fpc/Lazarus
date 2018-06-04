@@ -10,8 +10,9 @@ aggpas
     with the exception of aggpas/gpc/gpc.pas which has a "not free for commercial use".
   
 anchordocking
-  ?
-  
+  Docking manager for LCL aplications.
+  License: modified LGPL-2, same as LCL
+
 cairocanvas
   ?
 
@@ -20,6 +21,7 @@ chmhelp
 
 codetools
   The builtin Pascal parser and Pascal completion/refactoring tools of the IDE.
+  License: GPL-2
 
 compilers
   Work in progress. Packages to extend the IDE for other languages.
@@ -51,11 +53,13 @@ debuggerintf
   ?
 
 educationlaz
-  Extends/configures the IDE for education, training, courses
+  Extends/configures the IDE for education, training, courses.
+  License: GPL-2
 
 externhelp
-  External help (via website) for Lazarus IDE
-  
+  External help (via website) for Lazarus IDE.
+  License: same as LCL
+
 filebrowser
   A file browser window for the IDE.
 

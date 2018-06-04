@@ -134,6 +134,9 @@ BIG_IDE_OPTIONS=-dBigIDE $(DEFAULT_IDE_OPTIONS) \
   -Fu../components/externhelp/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
   -Fu../components/PascalScript/Source/lib/$(CPU_TARGET)-$(OS_TARGET) \
   -Fu../components/macroscript/lib/$(CPU_TARGET)-$(OS_TARGET) \
+  -Fu../components/lclextensions/lib/$(CPU_TARGET)-$(OS_TARGET)-$(LCL_PLATFORM) \
+  -Fu../components/virtualtreeview/lib/$(CPU_TARGET)-$(OS_TARGET)-$(LCL_PLATFORM) \
+  -Fu../components/onlinepackagemanager/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
 
 #
 # Options for compiling lazbuild

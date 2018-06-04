@@ -73,7 +73,10 @@ uses
     TurboPowerIPro, TurboPowerIProDsgn,
     jcfidelazarus, chmhelppkg,
     FPCUnitTestRunner, FPCUnitIDE, ProjTemplates, TAChartLazarusPkg,
-    TodoListLaz, DateTimeCtrls, SQLDBLaz, DBFLaz, pascalscript, EditorMacroScript,
+    TodoListLaz, DateTimeCtrls, SQLDBLaz, DBFLaz, pascalscript,
+    EditorMacroScript,
+    RegisterVirtualTreeView,
+    OnlinePackageManager,
   {$ENDIF}
   MainBase;
 

@@ -72,6 +72,9 @@ bigide:
 	$(MAKE) -C sqldb
 	$(MAKE) -C PascalScript/Source
 	$(MAKE) -C macroscript
+	$(MAKE) -C lclextensions
+	$(MAKE) -C virtualtreeview
+	$(MAKE) -C onlinepackagemanager
 
 all: base bigide
 
@@ -110,6 +113,9 @@ clean:
 	$(MAKE) -C sqldb clean
 	$(MAKE) -C PascalScript/Source clean
 	$(MAKE) -C macroscript clean
+	$(MAKE) -C lclextensions clean
+	$(MAKE) -C virtualtreeview clean
+	$(MAKE) -C onlinepackagemanager clean
 
 cleanall: clean
 
@@ -148,4 +154,7 @@ distclean:
 	$(MAKE) -C sqldb distclean
 	$(MAKE) -C PascalScript/Source distclean
 	$(MAKE) -C macroscript distclean
+	$(MAKE) -C lclextensions distclean
+	$(MAKE) -C virtualtreeview distclean
+	$(MAKE) -C onlinepackagemanager distclean
 
