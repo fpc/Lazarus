@@ -57,6 +57,13 @@ begin
     if LRes<>nil then
       Result := CreateBitmapFromLazarusResource(LRes);
   end;
+  if (Result is TBitmap) and not Result.Transparent // BMP left-bottom transparency
+  and (Result.Width>0) and (Result.Height>0) then
+  begin
+    Result.Transparent := True;
+    Result.TransparentMode := tmFixed;
+    Result.TransparentColor := Result.Canvas.Pixels[0, Result.Height-1];
+  end;
   if (Result=nil) and not IgnoreMissingResource then
     raise EResNotFound.CreateFmt(SResNotFound,[ResourceName]);
 end;
