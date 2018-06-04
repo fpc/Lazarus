@@ -1,4 +1,5 @@
-
+{$warnings off}
+{$hints off}
 
 {fake unit just to compile - not used under non windows}
 

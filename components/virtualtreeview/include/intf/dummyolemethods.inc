@@ -1,3 +1,5 @@
+{$warnings off}
+{$hints off}
 function TBaseVirtualTree.GetTreeFromDataObject(const DataObject: IDataObject): TBaseVirtualTree;
 
 // Returns the owner/sender of the given data object by means of a special clipboard format
