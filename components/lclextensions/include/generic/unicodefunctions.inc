@@ -17,7 +17,7 @@ begin
   WideCount := Min(WideCount, StrLen);
   while (CharCount < WideCount) do
   begin
-    CharLen := UTF8CharacterLength(P);
+    CharLen := UTF8CodepointSize(P);
     Inc(P, CharLen);
     Inc(Result, CharLen);
     Inc(CharCount);
@@ -52,7 +52,7 @@ var
 begin
   TempStr := UTF8Encode(WideString(Str));
   Result := GetTextExtentPoint(DC, PChar(TempStr),
-    GetUTF8ByteCount(TempStr, Count), Size);
+    GetUTF8ByteCount(TempStr, Count), {%H-}Size);
 end;
 
 function GetTextExtentExPointW(DC: HDC; Str: PWideChar;
@@ -72,7 +72,7 @@ var
 begin
   TempStr := UTF8Encode(WideString(Str));
   Result := GetTextExtentPoint(DC, PChar(TempStr),
-    GetUTF8ByteCount(TempStr, Count), Size);
+    GetUTF8ByteCount(TempStr, Count), {%H-}Size);
 end;
 
 function TextOutW(DC: HDC; X,Y : Integer; Str : PWideChar; Count: Integer) : Boolean;

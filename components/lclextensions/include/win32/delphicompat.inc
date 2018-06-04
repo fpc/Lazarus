@@ -162,12 +162,12 @@ end;
 
 function GetTextExtentPoint32W(DC: HDC; Str: PWideChar; Count: Integer; out Size: TSize): Boolean;
 begin
-  Result := Windows.GetTextExtentPointW(DC, Str, Count, Size);
+  Result := Windows.GetTextExtentPointW(DC, Str, Count, {%H-}Size);
 end;
 
 function GetTextExtentPointW(DC: HDC; Str: PWideChar; Count: Integer; out Size: TSize): Boolean;
 begin
-  Result := Windows.GetTextExtentPointW(DC, Str, Count, Size);
+  Result := Windows.GetTextExtentPointW(DC, Str, Count, {%H-}Size);
 end;
 
 function GetWindowDC(hWnd: THandle): HDC;
@@ -346,7 +346,7 @@ type
 function SetTimer64(hWnd: HWND; nIDEvent: UINT_PTR; uElapse: UINT; lpTimerFunc: TIMERPROC64): UINT_PTR; stdcall external 'user32' name 'SetTimer';
 function KillTimer64(hWnd: HWND; uIDEvent: UINT_PTR):WINBOOL;  stdcall external 'user32' name 'KillTimer';
 
-procedure TimerCallBack(Handle: hWnd; Msg: UINT; idEvent: UINT_PTR; dwTime: DWORD); stdcall;
+procedure TimerCallBack(Handle: hWnd; {%H-}Msg: UINT; idEvent: UINT_PTR; {%H-}dwTime: DWORD); stdcall;
 var
   TimerInfo: PTimerRecord;
 begin

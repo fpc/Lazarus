@@ -103,7 +103,7 @@ end;
 
 function InvertRect(DC: HDC; const lprc: TRect): Boolean;
 var
-  DCOrigin: TQtPoint;
+  {%H-}DCOrigin: TQtPoint;
 begin
   //todo: see the windows result when rect is invalid
   Result := QtWidgetSet.IsValidDC(DC) and (lprc.Bottom > lprc.Top)
@@ -225,7 +225,7 @@ begin
     QObject_hook_hook_destroyed(FWidgetHook, @signalWidgetDestroyed);
   end;
   //very big ultra extreme hack to get the app from QtWidgetset
-  TheObject := QTimer_create(TQtWidgetSetHack(QtWidgetSet).App);
+  TheObject := QTimer_create({%H-}TQtWidgetSetHack(QtWidgetSet).App);
   AName := 'tqttimerex';
   QObject_setObjectName(TheObject, @AName);
 

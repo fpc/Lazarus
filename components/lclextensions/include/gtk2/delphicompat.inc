@@ -69,7 +69,7 @@ begin
   //fix position under gtk (lcl bug 8565)
   if (uFormat and DT_VCENTER) > 0 then
   begin
-    GetTextMetrics(hDC, TM);
+    GetTextMetrics(hDC, TM{%H-});
     //gtk overestimate height
     TextHeight := TM.tmHeight - 2;
     TempRect.Top := (TempRect.Top + TempRect.Bottom - TextHeight) div 2;
@@ -95,10 +95,10 @@ begin
   with TGtk2DeviceContext(hdc) do
   begin
     case uObjectType of
-      OBJ_BITMAP: Result := HGDIOBJ(CurrentBitmap);
-      OBJ_BRUSH: Result := HGDIOBJ(CurrentBrush);
-      OBJ_FONT: Result := HGDIOBJ(CurrentFont);
-      OBJ_PEN: Result := HGDIOBJ(CurrentPen);
+      OBJ_BITMAP: Result := {%H-}HGDIOBJ(CurrentBitmap);
+      OBJ_BRUSH: Result := {%H-}HGDIOBJ(CurrentBrush);
+      OBJ_FONT: Result := {%H-}HGDIOBJ(CurrentFont);
+      OBJ_PEN: Result := {%H-}HGDIOBJ(CurrentPen);
     end;
   end;
 end;
@@ -222,7 +222,7 @@ type
 var
   FTimerList: TTimerList;
 
-function gtkWidgetDestroyCB(Widget: PGtkWidget; Timer: TGtk2Timer): GBoolean; cdecl;
+function gtkWidgetDestroyCB({%H-}Widget: PGtkWidget; Timer: TGtk2Timer): GBoolean; cdecl;
 begin
   Result := GdkFalse;
   Timer.Stop;
@@ -257,8 +257,8 @@ begin
   //todo: make a custom GetLCLObject
   if hWnd <> 0 then
   begin
-    FControl := TControl(GetLCLObject(PGtkWidget(hWnd)));
-    g_signal_connect(PGObject(hWnd), 'destroy', gtk_Signal_Func(@gtkWidgetDestroyCB), Self);
+    FControl := TControl(GetLCLObject({%H-}PGtkWidget(hWnd)));
+    g_signal_connect({%H-}PGObject(hWnd), 'destroy', gtk_Signal_Func(@gtkWidgetDestroyCB), Self);
   end
   else
     FControl := nil;
