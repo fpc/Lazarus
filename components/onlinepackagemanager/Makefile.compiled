@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Makefile Value="2"/>
+  <Params Value=" -Fuvst;vst/units/$(LCL_PLATFORM);fpcmod;frames;../../packager/units/$(CPU_TARGET)-$(OS_TARGET);../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET);../../lcl/units/$(CPU_TARGET)-$(OS_TARGET);../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM);../lazcontrols/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM);../lclextensions/lib/$(CPU_TARGET)-$(OS_TARGET)-$(LCL_PLATFORM);../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM);../virtualtreeview/lib/$(CPU_TARGET)-$(OS_TARGET)-$(LCL_PLATFORM);. -Fivst/include/intf/$(LCL_PLATFORM);vst/include/$(LCL_PLATFORM)  -MObjFPC -Scghi -O1 -g -gl -l -vewnhibq -vm5024 -dLCL -dLCL$(LCL_PLATFORM) onlinepackagemanager.pas"/>
+</CONFIG>
