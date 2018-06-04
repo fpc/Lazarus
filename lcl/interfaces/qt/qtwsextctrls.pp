@@ -315,7 +315,7 @@ begin
       SystemTrayIcon.setIcon(TQtImage(ATrayIcon.Icon.BitmapHandle).AsIcon)
     else
     // normal
-    if (ATrayIcon.Icon.HandleAllocated) then
+    if (ATrayIcon.Icon.Handle <> 0) then
       SystemTrayIcon.setIcon(TQtIcon(ATrayIcon.Icon.Handle).Handle)
     else
     begin
