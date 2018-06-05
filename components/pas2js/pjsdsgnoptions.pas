@@ -215,13 +215,16 @@ begin
 end;
 
 constructor TPas2jsOptions.Create;
-
+var
+  o: TPas2jsCachedOption;
 begin
   FChangeStamp:=LUInvalidChangeStamp64;
   FCachedOptions[p2jcoCompilerFilename].RawValue:=PJSDefaultCompiler;
   FCachedOptions[p2jcoHTTPServerFilename].RawValue:=PJSDefaultHTTPServer;
   FCachedOptions[p2jcoNodeJSFilename].RawValue:=PJSDefaultNodeJS;
   FCachedOptions[p2jcoBrowserFilename].RawValue:=PJSDefaultBrowser;
+  for o in TPas2jsCachedOption do
+    FCachedOptions[o].Stamp:=LUInvalidChangeStamp64;
 end;
 
 destructor TPas2jsOptions.Destroy;
