@@ -99,11 +99,9 @@ begin
       Down := True;
       AllowAllUp := True;
       Images := IDEImages.Images_16;
-      try
-        ImageIndex := IDEImages.LoadImage('issue_'+LCLPlatformDirNames[P]);
-      except
+      ImageIndex := IDEImages.LoadImage('issue_'+LCLPlatformDirNames[P]);
+      if ImageIndex<0 then
         DebugLn('Restriction Browser: Unable to load image for ' + LCLPlatformDirNames[P] + '!');
-      end;
       ShowHint := True;
       Hint := LCLPlatformDisplayNames[P];
       OnClick := @NameFilterEditChange;
