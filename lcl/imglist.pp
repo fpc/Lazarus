@@ -422,7 +422,7 @@ type
   TLCLGlyphsMissingResources = (
     gmrAllMustExist, // Show exception if any image/resolution is not found
     gmrOneMustExist, // Show exception if no resolution is found. Missing resolutions will be auto-generated from the biggest one.
-    gmrIgnoreAll);   // Ignore all missing resources. No image will be added if no resolution is found.
+    gmrIgnoreAll);   // Ignore all missing resources. No image will be added and TLCLGlyphs.GetImageIndex Result is -1 if no resolution is found.
 
   TLCLGlyphs = class(TCustomImageList)
   private type

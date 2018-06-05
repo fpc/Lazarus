@@ -2708,7 +2708,7 @@ begin
 
   FImageIndexes := TAvgLvlTree.Create(@TLCLGlyphs_TEntry_Compare);
   Scaled := True;
-  FMissingResources := gmrOneMustExist;
+  FMissingResources := gmrIgnoreAll;
 end;
 
 destructor TLCLGlyphs.Destroy;
