@@ -1431,10 +1431,10 @@ begin
   // if no preferred size is valid use the class defaults
   if not IsPrefWidthValid then
     PreferredSize[asboHorizontal]:=
-      Control.Constraints.MinMaxWidth(Control.GetScaledControlClassDefaultSize.CX);
+      Control.Constraints.MinMaxWidth(Control.Scale96ToFont(Control.GetControlClassDefaultSize.CX));
   if not IsPrefHeightValid then
     PreferredSize[asboVertical]:=
-      Control.Constraints.MinMaxHeight(Control.GetScaledControlClassDefaultSize.CY);
+      Control.Constraints.MinMaxHeight(Control.Scale96ToFont(Control.GetControlClassDefaultSize.CY));
 
   //DebugLn(['TAutoSizeBox.SetControl ',DbgSName(Control),' ',PreferredSize[asboHorizontal]]);
   Control.BorderSpacing.GetSpaceAround(Border);

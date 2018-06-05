@@ -1474,7 +1474,6 @@ type
     procedure DoContextPopup(MousePos: TPoint; var Handled: Boolean); virtual;
     procedure SetZOrder(TopMost: Boolean); virtual;
     class function GetControlClassDefaultSize: TSize; virtual;
-    function GetScaledControlClassDefaultSize: TSize;
     function ColorIsStored: boolean; virtual;
     procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
       const AXProportion, AYProportion: Double); virtual;

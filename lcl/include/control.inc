@@ -1409,13 +1409,6 @@ begin
   Result := ColorToRGB(GetColorResolvingParent());
 end;
 
-function TControl.GetScaledControlClassDefaultSize: TSize;
-begin
-  Result := GetControlClassDefaultSize;
-  Result.cx := Scale96ToFont(Result.cx);
-  Result.cy := Scale96ToFont(Result.cy);
-end;
-
 {------------------------------------------------------------------------------
        TControl.DoConstrainedResize
 ------------------------------------------------------------------------------}
@@ -5577,14 +5570,14 @@ function TControl.GetDefaultWidth: integer;
 begin
   if WidthIsAnchored then
     // if width is anchored the read and base bounds were changed at designtime
-    Result := GetScaledControlClassDefaultSize.cx
+    Result := Scale96ToFont(GetControlClassDefaultSize.cx)
   else if cfBaseBoundsValid in FControlFlags then
     Result := FBaseBounds.Right - FBaseBounds.Left
   else
   if cfWidthLoaded in FControlFlags then
     Result := FReadBounds.Right - FReadBounds.Left
   else
-    Result := GetScaledControlClassDefaultSize.cx;
+    Result := Scale96ToFont(GetControlClassDefaultSize.cx);
 end;
 
 {------------------------------------------------------------------------------
@@ -5597,14 +5590,14 @@ function TControl.GetDefaultHeight: integer;
 begin
   if HeightIsAnchored then
     // if height is anchored the read and base bounds were changed at designtime
-    Result := GetScaledControlClassDefaultSize.cy
+    Result := Scale96ToFont(GetControlClassDefaultSize.cy)
   else if cfBaseBoundsValid in FControlFlags then
     Result := BaseBounds.Bottom - BaseBounds.Top
   else
   if cfHeightLoaded in FControlFlags then
     Result := FReadBounds.Bottom - FReadBounds.Top
   else
-    Result := GetScaledControlClassDefaultSize.cy;
+    Result := Scale96ToFont(GetControlClassDefaultSize.cy);
 end;
 
 {------------------------------------------------------------------------------
