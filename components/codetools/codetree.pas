@@ -165,6 +165,8 @@ const
   ctnAttribute          =123; // children are ctnAttribParam
   ctnAttribParam        =124; // 1st child: ctnIdentifier, optional 2nd: ctnParamsRound
 
+  ctnUser               =1000; // user constants start here
+
   // combined values
   AllSourceTypes =
      [ctnProgram,ctnPackage,ctnLibrary,ctnUnit];

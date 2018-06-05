@@ -40,7 +40,7 @@ type
     property WordBufferCapacity:integer
        read GetWordBufferCapacity write SetWordBufferCapacity;
     procedure GetWordList(AWordList:TStrings; const Prefix:String;
-       CaseSensitive:boolean; MaxResults:integer);
+       CaseSensitive:boolean; MaxResults:integer; OnlyCurrentUnit: Boolean = False);
     procedure CompletePrefix(const Prefix: string; var CompletedPrefix: string;
        CaseSensitive:boolean);
   public
@@ -70,8 +70,9 @@ end;
 
 { TWordCompletion }
 
-procedure TWordCompletion.GetWordList(AWordList:TStrings; const Prefix:String;
-  CaseSensitive:boolean; MaxResults:integer);
+procedure TWordCompletion.GetWordList(AWordList: TStrings;
+  const Prefix: String; CaseSensitive: boolean; MaxResults: integer;
+  OnlyCurrentUnit: Boolean);
 var i, j, Line, x, PrefixLen, MaxHash, LineLen: integer;
   UpPrefix, LineText, UpLineText, NewWord: string;
   SourceText: TStringList;
@@ -183,6 +184,8 @@ begin
         end;
         inc(SourceTextIndex);
         SourceText:=nil;
+        if OnlyCurrentUnit then
+          break;
         FOnGetSource(SourceText,SourceTextIndex);
       until SourceText=nil;
     end;

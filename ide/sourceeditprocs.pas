@@ -118,6 +118,13 @@ function GetIdentCompletionValue(aCompletion : TSynCompletion;
   out ValueType: TIdentComplValue; out CursorToLeft: integer): string;
 function BreakLinesInText(const s: string; MaxLineLength: integer): string;
 
+const
+  ctnWord = ctnUser + 1;
+  // make sure words are added last if sorting is in place
+  WordCompatibility = icompUnknown;
+  WordHistoryIndex = High(Integer);
+  WordLevel = High(Integer);
+
 implementation
 
 var
@@ -473,6 +480,12 @@ begin
             AColor:=clBlack;
             s:='namespace';
           end;
+      end;
+
+    ctnWord:
+      begin
+        AColor:=clGray;
+        s:='word';
       end;
 
     ctnNone:

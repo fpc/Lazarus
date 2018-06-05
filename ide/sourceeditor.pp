@@ -574,7 +574,8 @@ type
   TOnCloseSrcEditor = procedure(Sender: TObject; InvertedClose: boolean) of object;
   TOnShowHintForSource = procedure(SrcEdit: TSourceEditor;
                                    CaretPos: TPoint; AutoShown: Boolean) of object;
-  TOnInitIdentCompletion = procedure(Sender: TObject; JumpToError: boolean;
+  TOnInitIdentCompletion = procedure(Sender: TObject; const Prefix: string;
+                                     JumpToError: boolean;
                                      out Handled, Abort: boolean) of object;
   TSrcEditPopupMenuEvent = procedure(const AddMenuItemProc: TAddMenuItemProc
                                      ) of object;
@@ -1402,6 +1403,9 @@ var
   EnglishModifiedLGPLNotice: string;
   EnglishMITNotice: string;
 
+var
+  AWordCompletion: TWordCompletion = nil;
+
 implementation
 
 {$R *.lfm}
@@ -1423,7 +1427,6 @@ const
 var
   AutoStartCompletionBoxTimer: TIdleTimer = nil;
   SourceCompletionCaretXY: TPoint;
-  AWordCompletion: TWordCompletion = nil;
   PasBeautifier: TSynBeautifierPascal;
 
 function dbgs(AFlag: TSourceNotebookUpdateFlag): string; overload;
@@ -2672,7 +2675,7 @@ begin
   end
   else if Assigned(Manager.OnInitIdentCompletion) then
   begin
-    Manager.OnInitIdentCompletion(Self, FIdentCompletionJumpToError, Handled, Abort);
+    Manager.OnInitIdentCompletion(Self, Prefix, FIdentCompletionJumpToError, Handled, Abort);
     if Handled then begin
       if Abort then exit;
       // add one entry per item

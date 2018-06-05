@@ -67,7 +67,7 @@ uses
   // CodeTools
   FileProcs, FindDeclarationTool, LinkScanner, BasicCodeTools, CodeToolsStructs,
   CodeToolManager, CodeCache, DefineTemplates, KeywordFuncLists, CodeTree,
-  StdCodeTools, EventCodeTool, CodeCreationDlg,
+  StdCodeTools, EventCodeTool, CodeCreationDlg, IdentCompletionTool,
   // LazUtils
   // use lazutf8, lazfileutils and lazfilecache after FileProcs and FileUtil
   FileUtil, LazFileUtils, LazFileCache, LazUTF8, LazUTF8Classes, UTF8Process,
@@ -170,6 +170,7 @@ type
 
   TMainIDE = class(TMainIDEBase)
   private
+    FIdentCompletionWords: TStringList;
     // event handlers
     procedure MainIDEFormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure MainIDEFormCloseQuery(Sender: TObject; var CanClose: boolean);
@@ -475,7 +476,7 @@ type
     procedure SrcNotebookFileSaveAs(Sender: TObject);
     procedure SrcNotebookFileClose(Sender: TObject; InvertedClose: boolean);
     procedure SrcNotebookFindDeclaration(Sender: TObject);
-    procedure SrcNotebookInitIdentCompletion(Sender: TObject;
+    procedure SrcNotebookInitIdentCompletion(Sender: TObject; const Prefix: string;
       JumpToError: boolean; out Handled, Abort: boolean);
     procedure SrcNotebookShowCodeContext(JumpToError: boolean; out Abort: boolean);
     procedure SrcNotebookJumpToHistoryPoint(out NewCaretXY: TPoint;
@@ -653,6 +654,7 @@ type
     procedure RenameInheritedMethods(AnUnitInfo: TUnitInfo; List: TStrings);
     function OIHelpProvider: TAbstractIDEHTMLProvider;
     // form editor and designer
+    procedure DoAddWordsToIdentCompletion(const Prefix: string);
     procedure DoBringToFrontFormOrUnit;
     procedure DoBringToFrontFormOrInspector(ForceInspector: boolean);
     procedure DoShowSourceOfActiveDesignerForm;
@@ -905,7 +907,7 @@ type
     function DoRemoveUnusedUnits: TModalResult;
     function DoUseUnitDlg(DlgType: TUseUnitDialogType): TModalResult;
     function DoFindOverloads: TModalResult;
-    function DoInitIdentCompletion(JumpToError: boolean): boolean;
+    function DoInitIdentCompletion(const Prefix: string; JumpToError: boolean): boolean;
     function DoShowCodeContext(JumpToError: boolean): boolean;
     procedure DoCompleteCodeAtCursor(Interactive: Boolean);
     procedure DoExtractProcFromSelection;
@@ -3165,10 +3167,10 @@ begin
 end;
 
 procedure TMainIDE.SrcNotebookInitIdentCompletion(Sender: TObject;
-  JumpToError: boolean; out Handled, Abort: boolean);
+  const Prefix: string; JumpToError: boolean; out Handled, Abort: boolean);
 begin
   Handled:=true;
-  Abort:=not DoInitIdentCompletion(JumpToError);
+  Abort:=not DoInitIdentCompletion(Prefix, JumpToError);
 end;
 
 procedure TMainIDE.SrcNotebookShowCodeContext(JumpToError: boolean; out Abort: boolean);
@@ -6431,6 +6433,25 @@ function TMainIDE.DoAddUnitToProject(AEditor: TSourceEditorInterface
   ): TModalResult;
 begin
   Result := SourceFileMgr.AddUnitToProject(AEditor);
+end;
+
+procedure TMainIDE.DoAddWordsToIdentCompletion(const Prefix: string);
+var
+  New: TIdentifierListItem;
+  I: Integer;
+begin
+  if FIdentCompletionWords=nil then
+    FIdentCompletionWords:=TStringList.Create
+  else
+    FIdentCompletionWords.Clear;
+  AWordCompletion.GetWordList(FIdentCompletionWords, '', False, 10000, True); // do not get words with prefix because the identifier list isn't reloaded when prefix changes
+  for I := FIdentCompletionWords.Count-1 downto 0 do
+    if FIdentCompletionWords[I]<>Prefix then // ignore prefix
+    begin
+      New := CIdentifierListItem.Create(WordCompatibility, False, WordHistoryIndex,
+        PChar(FIdentCompletionWords[I]), WordLevel, nil, nil, ctnWord);
+      CodeToolBoss.IdentifierList.Add(New);
+    end;
 end;
 
 function TMainIDE.DoRemoveFromProjectDialog: TModalResult;
@@ -10122,7 +10143,8 @@ begin
   Result:=ShowFindOverloadsDialog;
 end;
 
-function TMainIDE.DoInitIdentCompletion(JumpToError: boolean): boolean;
+function TMainIDE.DoInitIdentCompletion(const Prefix: string;
+  JumpToError: boolean): boolean;
 var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
@@ -10138,6 +10160,8 @@ begin
   LogCaretXY:=ActiveSrcEdit.EditorComponent.LogicalCaretXY;
   Result:=CodeToolBoss.GatherIdentifiers(ActiveUnitInfo.Source,
                                          LogCaretXY.X,LogCaretXY.Y);
+  DoAddWordsToIdentCompletion(Prefix);
+
   if not Result then begin
     if JumpToError then
       DoJumpToCodeToolBossError
