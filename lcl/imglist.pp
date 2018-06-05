@@ -298,6 +298,7 @@ type
       const ACanvasScaleFactor: Double): TScaledImageListResolution;
     function GetWidthForPPI(AImageWidth, APPI: Integer): Integer;
     function GetHeightForPPI(AImageWidth, APPI: Integer): Integer;
+    function GetHeightForWidth(AWidth: Integer): Integer;
     function GetCount: Integer;
     function GetSizeForPPI(AImageWidth, APPI: Integer): TSize;
     function GetBestIconIndexForSize(AIcon: TCustomIcon; AWidth: Integer): Integer; // the icon must be sorted
@@ -400,6 +401,7 @@ type
     property DrawingStyle: TDrawingStyle read FDrawingStyle write SetDrawingStyle default dsNormal;
     property Height: Integer read FHeight write SetHeight default 16;
     property HeightForPPI[AImageWidth, APPI: Integer]: Integer read GetHeightForPPI;
+    property HeightForWidth[AWidth: Integer]: Integer read GetHeightForWidth;
     property Width: Integer read FWidth write SetWidth default 16;
     property WidthForPPI[AImageWidth, APPI: Integer]: Integer read GetWidthForPPI;
     property SizeForPPI[AImageWidth, APPI: Integer]: TSize read GetSizeForPPI;

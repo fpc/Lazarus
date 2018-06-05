@@ -1183,7 +1183,7 @@ begin
     Result.FImageList := FImageList;
     Result.FWidth := AImageWidth;
     if FImageList.Width<>0 then
-      Result.FHeight := FImageList.Height * AImageWidth div FImageList.Width
+      Result.FHeight := FImageList.GetHeightForWidth(AImageWidth)
     else
       Result.FHeight := 0;
     Result.FAutoCreatedInDesignTime := AutoCreatedInDesignTime and (AImageWidth<>FImageList.Width);
@@ -1804,12 +1804,15 @@ begin
   if FData.Find(AImageWidth, I) then
     Result := FData[I].Height
   else
-  begin
-    if FWidth<>0 then
-      Result := AImageWidth * FHeight div FWidth
-    else
-      Result := 0;
-  end;
+    Result := GetHeightForWidth(AImageWidth)
+end;
+
+function TCustomImageList.GetHeightForWidth(AWidth: Integer): Integer;
+begin
+  if FWidth<>0 then
+    Result := AWidth * FHeight div FWidth
+  else
+    Result := 0;
 end;
 
 procedure TCustomImageList.GetIcon(Index: Integer; Image: TIcon; AEffect: TGraphicsDrawEffect);
@@ -2724,12 +2727,15 @@ function TLCLGlyphs.GetImageIndex(const AResourceName: string): Integer;
   function AddNewBtnImage(Resolution: TResolution): Integer;
   var
     G: TCustomBitmap;
+    ImageRect: TRect;
   begin
     G := GetDefaultGlyph(AResourceName, Resolution.ScaleSuffix, True);
     if G=nil then
       Exit(-1);
     try
-      Result := AddSliceCentered(G);
+      ImageRect := Rect(0, 0, Resolution.Width, GetHeightForWidth(Resolution.Width));
+      OffsetRect(ImageRect, (G.Width-ImageRect.Right) div 2, (G.Height-ImageRect.Bottom) div 2);
+      Result := AddSlice(G, ImageRect);
     finally
       G.Free;
     end;
