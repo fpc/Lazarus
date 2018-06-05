@@ -325,7 +325,8 @@ type
     ccloAddVerboseAll,  // add -va
     ccloDoNotAppendOutFileOption, // do not add -o option
     ccloAbsolutePaths,
-    ccloNoMacroParams // no search paths, no linker options, no custom options
+    ccloNoMacroParams, // no search paths, no linker options, no custom options
+    ccloAddCompilerPath
     );
   TCompilerCmdLineOptions = set of TCompilerCmdLineOption;
 
@@ -2891,6 +2892,9 @@ begin
     RealCompilerFilename:=EnvironmentOptions.GetParsedCompilerFilename;
     Kind:=pcFPC;
   end;
+
+  if ccloAddCompilerPath in Flags then
+    switches:=ConvertOptionsToCmdLine('',RealCompilerFilename);
 
   CurTargetOS:='';
   CurTargetCPU:='';

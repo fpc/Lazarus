@@ -293,10 +293,11 @@ begin
   begin
     if ItemSelected then
     begin
-      ForegroundColor := ColorToRGB(Colors^.TextSelectedColor);
-      AllowFontColor := ForegroundColor=clNone;
-      if ForegroundColor=clNone then
-        ForegroundColor := Colors^.TextColor;
+      AllowFontColor := Colors^.TextSelectedColor=clNone;
+      if AllowFontColor then
+        ForegroundColor := ColorToRGB(Colors^.TextColor)
+      else
+        ForegroundColor := ColorToRGB(Colors^.TextSelectedColor);
       BackgroundColor:=ColorToRGB(Colors^.BackgroundSelectedColor);
     end else
     begin

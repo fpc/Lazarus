@@ -224,7 +224,8 @@ var
   ParamList: TStrings;
 begin
   if CompilerOpts=nil then exit;
-  Flags:=CompilerOpts.DefaultMakeOptionsFlags;
+
+  Flags:=CompilerOpts.DefaultMakeOptionsFlags+[ccloAddCompilerPath];
   if not RelativePathsCheckBox.Checked then
     Include(Flags,ccloAbsolutePaths);
   CurOptions := CompilerOpts.MakeOptionsString(Flags);

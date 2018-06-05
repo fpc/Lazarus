@@ -6937,7 +6937,7 @@ begin
           debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] Compile failed']);
           exit;
         end;
-        // compilation succeded -> write state file
+        // compilation succeeded -> write state file
         IsComplete:=[pbfSkipLinking,pbfSkipAssembler,pbfSkipTools]*Flags=[];
         Result:=Project1.SaveStateFile(CompilerFilename,CompilerParams,IsComplete);
         if Result<>mrOk then begin
