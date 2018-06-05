@@ -475,7 +475,7 @@ type
     procedure SrcNotebookFileSaveAs(Sender: TObject);
     procedure SrcNotebookFileClose(Sender: TObject; InvertedClose: boolean);
     procedure SrcNotebookFindDeclaration(Sender: TObject);
-    procedure SrcNotebookInitIdentCompletion(Sender: TObject; const Prefix: string;
+    procedure SrcNotebookInitIdentCompletion(Sender: TObject;
       JumpToError: boolean; out Handled, Abort: boolean);
     procedure SrcNotebookShowCodeContext(JumpToError: boolean; out Abort: boolean);
     procedure SrcNotebookJumpToHistoryPoint(out NewCaretXY: TPoint;
@@ -659,7 +659,7 @@ type
     procedure IdentifierWordCompletionGetSource(var Source: TStrings;
       var SourceTopLine,SourceBottomLine: integer;
       var IgnoreWordEndPos: TPoint; SourceIndex: integer);
-    procedure DoAddWordsToIdentCompletion(const Prefix: string);
+    procedure DoAddWordsToIdentCompletion;
     // form editor and designer
     procedure DoBringToFrontFormOrUnit;
     procedure DoBringToFrontFormOrInspector(ForceInspector: boolean);
@@ -913,7 +913,7 @@ type
     function DoRemoveUnusedUnits: TModalResult;
     function DoUseUnitDlg(DlgType: TUseUnitDialogType): TModalResult;
     function DoFindOverloads: TModalResult;
-    function DoInitIdentCompletion(const Prefix: string; JumpToError: boolean): boolean;
+    function DoInitIdentCompletion(JumpToError: boolean): boolean;
     function DoShowCodeContext(JumpToError: boolean): boolean;
     procedure DoCompleteCodeAtCursor(Interactive: Boolean);
     procedure DoExtractProcFromSelection;
@@ -3175,10 +3175,10 @@ begin
 end;
 
 procedure TMainIDE.SrcNotebookInitIdentCompletion(Sender: TObject;
-  const Prefix: string; JumpToError: boolean; out Handled, Abort: boolean);
+  JumpToError: boolean; out Handled, Abort: boolean);
 begin
   Handled:=true;
-  Abort:=not DoInitIdentCompletion(Prefix, JumpToError);
+  Abort:=not DoInitIdentCompletion(JumpToError);
 end;
 
 procedure TMainIDE.SrcNotebookShowCodeContext(JumpToError: boolean; out Abort: boolean);
@@ -6463,7 +6463,7 @@ begin
   Result := SourceFileMgr.AddUnitToProject(AEditor);
 end;
 
-procedure TMainIDE.DoAddWordsToIdentCompletion(const Prefix: string);
+procedure TMainIDE.DoAddWordsToIdentCompletion;
 var
   New: TIdentifierListItem;
   I: Integer;
@@ -10176,8 +10176,7 @@ begin
   Result:=ShowFindOverloadsDialog;
 end;
 
-function TMainIDE.DoInitIdentCompletion(const Prefix: string;
-  JumpToError: boolean): boolean;
+function TMainIDE.DoInitIdentCompletion(JumpToError: boolean): boolean;
 var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
@@ -10193,7 +10192,7 @@ begin
   LogCaretXY:=ActiveSrcEdit.EditorComponent.LogicalCaretXY;
   Result:=CodeToolBoss.GatherIdentifiers(ActiveUnitInfo.Source,
                                          LogCaretXY.X,LogCaretXY.Y);
-  DoAddWordsToIdentCompletion(Prefix);
+  DoAddWordsToIdentCompletion;
 
   if not Result then begin
     if JumpToError then
