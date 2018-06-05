@@ -1837,21 +1837,30 @@ var
   Node: TCodeTreeNode;
   SubNode: TCodeTreeNode;
   NodeInFront: TCodeTreeNode;
-  p: Integer;
+  p, AtomStartPos: Integer;
   NodeBehind, LastChild: TCodeTreeNode;
 begin
   try
     Node:=Context.Node;
-    //debugln(['TIdentCompletionTool.GatherContextKeywords ',Node.DescAsString]);
+    if Node<>nil then begin
+      MoveCursorToNearestAtom(CleanPos);
+      AtomStartPos:=CurPos.StartPos;
+      if (AtomStartPos=Node.StartPos) and (Node.Parent<>nil) then
+        // at the start of the node -> the node is created by the atom at cursor
+        // use parent as context
+        Node:=Node.Parent;
+    end else
+      AtomStartPos:=CleanPos;
+    //debugln(['TIdentCompletionTool.GatherContextKeywords Node=',Node.DescAsString]);
 
-    ReadPriorAtomSafe(CleanPos);
-    //debugln(['TIdentCompletionTool.GatherContextKeywords prioratom=',CleanPosToStr(CurPos.StartPos),'=',GetAtom(CurPos)]);
+    ReadPriorAtomSafe(AtomStartPos);
+    //debugln(['TIdentCompletionTool.GatherContextKeywords prioratom=',CleanPosToStr(CurPos.StartPos),'="',GetAtom(CurPos),'"']);
     NodeInFront:=nil;
     if CurPos.StartPos>0 then
       NodeInFront:=FindDeepestNodeAtPos(CurPos.StartPos,false);
 
     NodeBehind:=nil;
-    MoveCursorToCleanPos(CleanPos);
+    MoveCursorToCleanPos(AtomStartPos);
     ReadNextAtom;
     //debugln(['TIdentCompletionTool.GatherContextKeywords nextatom=',CleanPosToStr(CurPos.StartPos),'=',GetAtom(CurPos)]);
     if CurPos.StartPos>CleanPos then
