@@ -1666,6 +1666,7 @@ begin
   FreeThenNil(SearchResultsView);
   FreeThenNil(ObjectInspector1);
   FreeThenNil(SourceEditorManagerIntf);
+  FreeAndNil(FIdentCompletionWords);
 
   // disconnect handlers
   Application.RemoveAllHandlersOfObject(Self);
