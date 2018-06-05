@@ -1764,6 +1764,7 @@ type
     FOnBreakPointHit: TDebuggerBreakPointHitEvent;
     FWorkingDir: String;
     FDestroyNotificationList: array [TDebuggerNotifyReason] of TMethodList;
+    FReleaseLock: Integer;
     procedure DebuggerEnvironmentChanged(Sender: TObject);
     procedure EnvironmentChanged(Sender: TObject);
     //function GetUnitInfoProvider: TDebuggerUnitInfoProvider;
@@ -1809,6 +1810,9 @@ type
     procedure SetState(const AValue: TDBGState);
     procedure SetErrorState(const AMsg: String; const AInfo: String = '');
     procedure DoRelease; virtual;
+    // prevent destruction while nested in any call
+    procedure LockRelease; virtual;
+    procedure UnlockRelease; virtual;
   public
     class function Caption: String; virtual;         // The name of the debugger as shown in the debuggeroptions
     class function ExePaths: String; virtual;        // The default locations of the exe
@@ -1883,7 +1887,7 @@ type
     property State: TDBGState read FState;                                       // The current state of the debugger
     property SupportedCommands: TDBGCommands read GetSupportedCommands;          // All available commands of the debugger
     property TargetWidth: Byte read GetTargetWidth;                              // Currently only 32 or 64
-    property Waiting: Boolean read GetWaiting;                                   // Set when the debugger is wating for a command to complete
+    //property Waiting: Boolean read GetWaiting;                                   // Set when the debugger is wating for a command to complete
     property Watches: TWatchesSupplier read FWatches;                                 // list of all watches etc
     property Threads: TThreadsSupplier read FThreads;
     property WorkingDir: String read FWorkingDir write FWorkingDir;              // The working dir of the exe being debugged
@@ -6095,7 +6099,23 @@ end;
 
 procedure TDebuggerIntf.DoRelease;
 begin
+  SetState(dsDestroying);
+  if FReleaseLock > 0
+  then exit;
+
   Self.Free;
+end;
+
+procedure TDebuggerIntf.LockRelease;
+begin
+  inc(FReleaseLock);
+end;
+
+procedure TDebuggerIntf.UnlockRelease;
+begin
+  dec(FReleaseLock);
+  if (FReleaseLock = 0) and (State = dsDestroying)
+  then Release;
 end;
 
 procedure TDebuggerIntf.StepInto;

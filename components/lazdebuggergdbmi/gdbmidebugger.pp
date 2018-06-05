@@ -763,7 +763,6 @@ type
     FRunQueueOnUnlock: Boolean;
     FDebuggerFlags: TGDBMIDebuggerFlags;
     FSourceNames: TStringList; // Objects[] -> TMap[Integer|Integer] -> TDbgPtr
-    FReleaseLock: Integer;
     FInProcessStopped: Boolean; // paused, but maybe state run
     FCommandNoneMiState: Array [TGDBMIExecCommandType] of Boolean;
     FCommandAsyncState: Array [TGDBMIExecCommandType] of Boolean;
@@ -813,10 +812,6 @@ type
                              out ADump, AStatement, AFile: String; out ALine: Integer): Boolean;
               deprecated;
     function  GDBSourceAdress(const ASource: String; ALine, {%H-}AColumn: Integer; out AAddr: TDbgPtr): Boolean;
-
-    // prevent destruction while nested in any call
-    procedure LockRelease;
-    procedure UnlockRelease;
 
     // ---
     procedure ClearSourceInfo;
@@ -885,7 +880,6 @@ type
     property  TargetFlags: TGDBMITargetFlags read FTargetInfo.TargetFlags write FTargetInfo.TargetFlags;
     property  PauseWaitState: TGDBMIPauseWaitState read FPauseWaitState;
     property  DebuggerFlags: TGDBMIDebuggerFlags read FDebuggerFlags;
-    procedure DoRelease; override;   // Destroy self (or schedule)
     procedure DoUnknownException(Sender: TObject; AnException: Exception);
 
     procedure DoNotifyAsync(Line: String);
@@ -7383,8 +7377,6 @@ end;
 
 constructor TGDBMIDebugger.Create(const AExternalDebugger: String);
 begin
-  FReleaseLock := 0;
-
   FMainAddrBreak   := TGDBMIInternalBreakPoint.Create('main');
   FBreakErrorBreak := TGDBMIInternalBreakPoint.Create('FPC_BREAK_ERROR');
   FRunErrorBreak   := TGDBMIInternalBreakPoint.Create('FPC_RUNERROR');
@@ -7681,15 +7673,6 @@ begin
   TGDBMICallstack(CallStack).DoThreadChanged;
   if Registers.CurrentRegistersList <> nil then
     Registers.CurrentRegistersList.Clear;
-end;
-
-procedure TGDBMIDebugger.DoRelease;
-begin
-  SetState(dsDestroying);
-  if FReleaseLock > 0
-  then exit;
-
-  inherited DoRelease;
 end;
 
 procedure TGDBMIDebugger.DoUnknownException(Sender: TObject; AnException: Exception);
@@ -8533,18 +8516,6 @@ begin
   end;
   LineList.Free;
   LinesList.Free;
-end;
-
-procedure TGDBMIDebugger.LockRelease;
-begin
-  inc(FReleaseLock);
-end;
-
-procedure TGDBMIDebugger.UnlockRelease;
-begin
-  dec(FReleaseLock);
-  if (FReleaseLock = 0) and (State = dsDestroying)
-  then Release;
 end;
 
 function TGDBMIDebugger.GDBStepInto: Boolean;
