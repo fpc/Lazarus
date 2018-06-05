@@ -126,6 +126,7 @@ type
 
     function CreateLineInfo: TDBGLineInfo; override;
     function CreateWatches: TWatchesSupplier; override;
+    function CreateThreads: TThreadsSupplier; override;
     function CreateLocals: TLocalsSupplier; override;
     function  CreateRegisters: TRegisterSupplier; override;
     function CreateCallStack: TCallStackSupplier; override;
@@ -240,6 +241,13 @@ type
     procedure RequestData(ARegisters: TRegisters); override;
   end;
 
+  { TFPThreads }
+
+  TFPThreads = class(TThreadsSupplier)
+  public
+    procedure RequestMasterData; override;
+  end;
+
   { TFPDBGDisassembler }
 
   TFPDBGDisassembler = class(TDBGDisassembler)
@@ -320,6 +328,61 @@ type
 procedure Register;
 begin
   RegisterDebugger(TFpDebugDebugger);
+end;
+
+{ TFPThreads }
+
+procedure TFPThreads.RequestMasterData;
+var
+  ThreadArray: TFPDThreadArray;
+  ThreadEntry: TThreadEntry;
+  CallStack: TDbgCallstackEntryList;
+  i: Integer;
+  FunctionName, SourceFile, State: String;
+  AnAddress: TDBGPtr;
+  Line: LongInt;
+begin
+  if Monitor = nil then exit;
+  if CurrentThreads = nil then exit;
+
+  CurrentThreads.Clear;
+  ThreadArray := TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.GetThreadArray;
+  for i := 0 to high(ThreadArray) do
+    begin
+    CallStack := ThreadArray[i].CallStackEntryList;
+    if ThreadArray[i].ID = TFpDebugDebugger(Debugger).FDbgController.CurrentThread.ID then
+      State := 'stopped'
+    else
+      State := 'running';
+    if Assigned(CallStack) and (CallStack.Count > 0) then
+      begin
+      AnAddress := CallStack.Items[0].AnAddress;
+      FunctionName := CallStack.Items[0].FunctionName;
+      SourceFile := CallStack.Items[0].SourceFile;
+      Line := CallStack.Items[0].Line;
+      end
+    else
+      begin
+      AnAddress := 0;
+      FunctionName := '';
+      SourceFile := '';
+      Line := 0;
+      end;
+    ThreadEntry := CurrentThreads.CreateEntry(
+      AnAddress,
+      nil,
+      FunctionName,
+      SourceFile,
+      '',
+      Line,
+      ThreadArray[i].ID,
+      'Thread ' + IntToStr(ThreadArray[i].ID),
+      State);
+    CurrentThreads.Add(ThreadEntry);
+    end;
+
+  CurrentThreads.CurrentThreadId := TFpDebugDebugger(Debugger).FDbgController.CurrentThread.ID;
+  CurrentThreads.SetValidity(ddsValid);
 end;
 
 { TFpDebugDebuggerProperties }
@@ -1300,6 +1363,11 @@ end;
 function TFpDebugDebugger.CreateWatches: TWatchesSupplier;
 begin
   Result := TFPWatches.Create(Self);
+end;
+
+function TFpDebugDebugger.CreateThreads: TThreadsSupplier;
+begin
+  Result := TFPThreads.Create(Self);
 end;
 
 function TFpDebugDebugger.CreateLocals: TLocalsSupplier;

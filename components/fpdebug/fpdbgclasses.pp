@@ -86,6 +86,7 @@ type
 
   { TDbgCallstackEntry }
   TDbgThread = class;
+  TFPDThreadArray = array of TDbgThread;
 
   TDbgCallstackEntry = class
   private
@@ -336,6 +337,7 @@ type
     procedure SendConsoleInput(AString: string); virtual;
 
     function AddThread(AThreadIdentifier: THandle): TDbgThread;
+    function GetThreadArray: TFPDThreadArray;
     procedure LoadInfo; override;
 
     function WriteData(const AAdress: TDbgPtr; const ASize: Cardinal; const AData): Boolean; virtual;
@@ -1002,6 +1004,29 @@ begin
   end
   else
     Log('Unknown thread ID %u for process %u', [AThreadIdentifier, ProcessID]);
+end;
+
+function TDbgProcess.GetThreadArray: TFPDThreadArray;
+var
+  Iterator: TMapIterator;
+  Thread: TDbgThread;
+  I: Integer;
+begin
+  SetLength(Result, FThreadMap.Count);
+  Iterator := TMapIterator.Create(FThreadMap);
+  try
+    Iterator.First;
+    I := 0;
+    while not Iterator.EOM do
+    begin
+      Iterator.GetData(Thread);
+      Result[I] := Thread;
+      Inc(I);
+      iterator.Next;
+    end;
+  finally
+    Iterator.Free;
+  end;
 end;
 
 function TDbgProcess.RemoveBreak(const ABreakPoint: TFpInternalBreakpoint
