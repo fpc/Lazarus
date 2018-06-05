@@ -161,9 +161,9 @@ var
   BGGreen: Integer;
   BGBlue: Integer;
   TokenStart: Integer;
-  BackgroundColor: TColorRef;
-  ForegroundColor: TColorRef;
-  TextHilightColor: TColorRef;
+  BackgroundColor: TColor;
+  ForegroundColor: TColor;
+  TextHilightColor: TColor;
   AllowFontColor: Boolean;
 
   procedure SetFontColor(NewColor: TColor; Force: boolean = false);
