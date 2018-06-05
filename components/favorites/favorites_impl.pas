@@ -110,6 +110,8 @@ begin
 end;
 
 procedure TOpenFileFavToolButton.DoOnAdded;
+var
+  xGlyphs: TLCLGlyphs;
 begin
   inherited DoOnAdded;
 
@@ -122,11 +124,10 @@ begin
 
   if DropdownMenu.Images=nil then
     DropdownMenu.Images := LCLGlyphs;
-  if DropdownMenu.Images<>LCLGlyphs then
-    raise Exception.Create('Favorites internal error 20180605093914');
+  xGlyphs := DropdownMenu.Images as TLCLGlyphs;
 
-  FAddImageIndex := LCLGlyphs.GetImageIndex('laz_add');
-  FRemoveImageIndex := LCLGlyphs.GetImageIndex('laz_delete');
+  FAddImageIndex := xGlyphs.GetImageIndex('laz_add');
+  FRemoveImageIndex := xGlyphs.GetImageIndex('laz_delete');
 
   FOrigOnPopup := DropdownMenu.OnPopup;
   DropdownMenu.OnPopup := @RefreshMenu;
