@@ -23,7 +23,7 @@ uses
 type
   TWordCompletionGetSource =
     procedure(var Source:TStrings; var TopLine, BottomLine: Integer;
-      SourceIndex:integer) of object;
+      var IgnoreWordEndPos: TPoint; SourceIndex:integer) of object;
 
   TWordCompletion = class
   private
@@ -79,6 +79,7 @@ var i, j, Line, x, PrefixLen, MaxHash, LineLen: integer;
   HashList: ^integer;// index list. Every entry points to a word in the AWordList
   SourceTextIndex, SourceTopLine, SourceBottomLine:integer;
   LastCharType:TCharType;
+  IgnoreWordEndPos: TPoint;
   
   procedure Add(const AWord:string);
   // if AWord is not already in list then add it to AWordList
@@ -128,8 +129,7 @@ begin
         if copy(NewWord,1,PrefixLen)=Prefix then
           Add(NewWord);
       end else if CompareText(copy(NewWord,1,PrefixLen),UpPrefix)=0 then begin
-        if NewWord<>Prefix then
-          Add(NewWord)
+        Add(NewWord)
       end;
       dec(i);
     end;
@@ -140,7 +140,8 @@ begin
       SourceText:=nil;
       SourceTopLine:=0;
       SourceBottomLine:=-1;
-      FOnGetSource(SourceText,SourceTopLine,SourceBottomLine,SourceTextIndex);
+      IgnoreWordEndPos:=Point(-1,-1);
+      FOnGetSource(SourceText,SourceTopLine,SourceBottomLine,IgnoreWordEndPos,SourceTextIndex);
       repeat
         if SourceText<>nil then begin
           Line:=SourceTopLine;
@@ -167,13 +168,13 @@ begin
                     j:=1;
                     while (j<=PrefixLen) and (Prefix[j]=LineText[x+j-1]) do
                       inc(j);
-                    if (j>PrefixLen) and (copy(LineText,x,i-x)<>Prefix) then
+                    if (j>PrefixLen) and (Line<>IgnoreWordEndPos.Y) and (i<>IgnoreWordEndPos.X) then
                       Add(copy(LineText,x,i-x));
                   end else begin
                     j:=1;
                     while (j<=PrefixLen) and (UpPrefix[j]=UpLineText[x+j-1]) do
                       inc(j);
-                    if (j>PrefixLen) and (copy(LineText,x,i-x)<>Prefix) then
+                    if (j>PrefixLen) and (Line<>IgnoreWordEndPos.Y) and (i<>IgnoreWordEndPos.X) then
                       Add(copy(LineText,x,i-x))
                   end;
                   if AWordList.Count>=MaxResults then exit;
@@ -190,7 +191,8 @@ begin
         SourceText:=nil;
         SourceTopLine:=0;
         SourceBottomLine:=-1;
-        FOnGetSource(SourceText,SourceTopLine,SourceBottomLine,SourceTextIndex);
+        IgnoreWordEndPos:=Point(-1,-1);
+        FOnGetSource(SourceText,SourceTopLine,SourceBottomLine,IgnoreWordEndPos,SourceTextIndex);
       until SourceText=nil;
     end;
   finally

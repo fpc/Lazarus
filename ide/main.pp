@@ -657,7 +657,8 @@ type
     procedure RenameInheritedMethods(AnUnitInfo: TUnitInfo; List: TStrings);
     function OIHelpProvider: TAbstractIDEHTMLProvider;
     procedure IdentifierWordCompletionGetSource(var Source: TStrings;
-      var SourceTopLine,SourceBottomLine: integer; SourceIndex: integer);
+      var SourceTopLine,SourceBottomLine: integer;
+      var IgnoreWordEndPos: TPoint; SourceIndex: integer);
     procedure DoAddWordsToIdentCompletion(const Prefix: string);
     // form editor and designer
     procedure DoBringToFrontFormOrUnit;
@@ -3400,7 +3401,8 @@ begin
 end;
 
 procedure TMainIDE.IdentifierWordCompletionGetSource(var Source: TStrings;
-  var SourceTopLine, SourceBottomLine: integer; SourceIndex: integer);
+  var SourceTopLine, SourceBottomLine: integer; var IgnoreWordEndPos: TPoint;
+  SourceIndex: integer);
 var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
@@ -3414,6 +3416,8 @@ begin
   Source := ActiveSrcEdit.Source;
   SourceTopLine := Max(0, ActiveSrcEdit.EditorComponent.CaretY-LinesAround);
   SourceBottomLine := Min(Source.Count-1, ActiveSrcEdit.EditorComponent.CaretY+LinesAround);
+  IgnoreWordEndPos := ActiveSrcEdit.EditorComponent.LogicalCaretXY;
+  Dec(IgnoreWordEndPos.Y); // LogicalCaretXY starts with 1 as top line
 end;
 
 function TMainIDE.IDEQuestionDialogHandler(const aCaption, aMsg: string;
@@ -6476,12 +6480,11 @@ begin
 
   FIdentifierWordCompletion.GetWordList(FIdentifierWordCompletionWordList, '', False, 1000); // do not get words with prefix because the identifier list isn't reloaded when prefix changes
   for I := FIdentifierWordCompletionWordList.Count-1 downto 0 do
-    if FIdentifierWordCompletionWordList[I]<>Prefix then // ignore prefix
-    begin
-      New := CIdentifierListItem.Create(WordCompatibility, False, WordHistoryIndex,
-        PChar(FIdentifierWordCompletionWordList[I]), WordLevel, nil, nil, ctnWord);
-      CodeToolBoss.IdentifierList.Add(New);
-    end;
+  begin
+    New := CIdentifierListItem.Create(WordCompatibility, False, WordHistoryIndex,
+      PChar(FIdentifierWordCompletionWordList[I]), WordLevel, nil, nil, ctnWord);
+    CodeToolBoss.IdentifierList.Add(New);
+  end;
 end;
 
 function TMainIDE.DoRemoveFromProjectDialog: TModalResult;

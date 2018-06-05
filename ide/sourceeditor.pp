@@ -1193,7 +1193,8 @@ type
   protected
     procedure CodeToolsToSrcEditTimerTimer(Sender: TObject);
     procedure OnWordCompletionGetSource(var Source: TStrings;
-      var {%H-}SourceTopLine,{%H-}SourceBottomLine: integer; SourceIndex: integer);
+      var {%H-}SourceTopLine,{%H-}SourceBottomLine: integer;
+      var IgnoreWordEndPos: TPoint; SourceIndex: integer);
     procedure OnSourceCompletionTimer(Sender: TObject);
     // marks
     procedure OnSourceMarksAction(AMark: TSourceMark; {%H-}AAction: TMarksAction);
@@ -10779,7 +10780,8 @@ begin
 end;
 
 procedure TSourceEditorManager.OnWordCompletionGetSource(var Source: TStrings;
-  var SourceTopLine, SourceBottomLine: integer; SourceIndex: integer);
+  var SourceTopLine, SourceBottomLine: integer; var IgnoreWordEndPos: TPoint;
+  SourceIndex: integer);
 var
   TempEditor: TSourceEditor;
   i:integer;
@@ -10787,6 +10789,8 @@ begin
   TempEditor:=GetActiveSE;
   if (SourceIndex=0) and (TempEditor<>nil) then begin
     Source:=TempEditor.EditorComponent.Lines;
+    IgnoreWordEndPos:=TempEditor.EditorComponent.LogicalCaretXY;
+    Dec(IgnoreWordEndPos.Y); // LogicalCaretXY starts with 1 as top line
   end else begin
     i:=0;
     while (i < SourceEditorCount) do begin
