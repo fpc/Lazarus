@@ -1192,7 +1192,8 @@ type
                                        Index: integer);
   protected
     procedure CodeToolsToSrcEditTimerTimer(Sender: TObject);
-    procedure OnWordCompletionGetSource(var Source: TStrings; SourceIndex: integer);
+    procedure OnWordCompletionGetSource(var Source: TStrings;
+      var {%H-}SourceTopLine,{%H-}SourceBottomLine: integer; SourceIndex: integer);
     procedure OnSourceCompletionTimer(Sender: TObject);
     // marks
     procedure OnSourceMarksAction(AMark: TSourceMark; {%H-}AAction: TMarksAction);
@@ -1403,9 +1404,6 @@ var
   EnglishModifiedLGPLNotice: string;
   EnglishMITNotice: string;
 
-var
-  AWordCompletion: TWordCompletion = nil;
-
 implementation
 
 {$R *.lfm}
@@ -1425,6 +1423,7 @@ const
   SoftCenterMaximum = 8;
 
 var
+  AWordCompletion: TWordCompletion = nil;
   AutoStartCompletionBoxTimer: TIdleTimer = nil;
   SourceCompletionCaretXY: TPoint;
   PasBeautifier: TSynBeautifierPascal;
@@ -10780,7 +10779,7 @@ begin
 end;
 
 procedure TSourceEditorManager.OnWordCompletionGetSource(var Source: TStrings;
-  SourceIndex: integer);
+  var SourceTopLine, SourceBottomLine: integer; SourceIndex: integer);
 var
   TempEditor: TSourceEditor;
   i:integer;

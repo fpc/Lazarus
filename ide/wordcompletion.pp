@@ -22,7 +22,8 @@ uses
 
 type
   TWordCompletionGetSource =
-    procedure(var Source:TStrings; SourceIndex:integer) of object;
+    procedure(var Source:TStrings; var TopLine, BottomLine: Integer;
+      SourceIndex:integer) of object;
 
   TWordCompletion = class
   private
@@ -40,7 +41,7 @@ type
     property WordBufferCapacity:integer
        read GetWordBufferCapacity write SetWordBufferCapacity;
     procedure GetWordList(AWordList:TStrings; const Prefix:String;
-       CaseSensitive:boolean; MaxResults:integer; OnlyCurrentUnit: Boolean = False);
+       CaseSensitive:boolean; MaxResults:integer);
     procedure CompletePrefix(const Prefix: string; var CompletedPrefix: string;
        CaseSensitive:boolean);
   public
@@ -71,13 +72,12 @@ end;
 { TWordCompletion }
 
 procedure TWordCompletion.GetWordList(AWordList: TStrings;
-  const Prefix: String; CaseSensitive: boolean; MaxResults: integer;
-  OnlyCurrentUnit: Boolean);
+  const Prefix: String; CaseSensitive: boolean; MaxResults: integer);
 var i, j, Line, x, PrefixLen, MaxHash, LineLen: integer;
   UpPrefix, LineText, UpLineText, NewWord: string;
   SourceText: TStringList;
   HashList: ^integer;// index list. Every entry points to a word in the AWordList
-  SourceTextIndex:integer;
+  SourceTextIndex, SourceTopLine, SourceBottomLine:integer;
   LastCharType:TCharType;
   
   procedure Add(const AWord:string);
@@ -138,12 +138,16 @@ begin
     SourceTextIndex:=0;
     if Assigned(FOnGetSource) then begin
       SourceText:=nil;
-      FOnGetSource(SourceText,SourceTextIndex);
+      SourceTopLine:=0;
+      SourceBottomLine:=-1;
+      FOnGetSource(SourceText,SourceTopLine,SourceBottomLine,SourceTextIndex);
       repeat
         if SourceText<>nil then begin
-          Line:=0;
+          Line:=SourceTopLine;
+          if SourceBottomLine<0 then
+            SourceBottomLine := SourceText.Count-1;
           UpLineText:='';
-          while (Line<SourceText.Count) do begin
+          while (Line<=SourceBottomLine) do begin
             LineText:=SourceText[line];
             LineLen:=length(LineText);
             if not CaseSensitive then
@@ -184,9 +188,9 @@ begin
         end;
         inc(SourceTextIndex);
         SourceText:=nil;
-        if OnlyCurrentUnit then
-          break;
-        FOnGetSource(SourceText,SourceTextIndex);
+        SourceTopLine:=0;
+        SourceBottomLine:=-1;
+        FOnGetSource(SourceText,SourceTopLine,SourceBottomLine,SourceTextIndex);
       until SourceText=nil;
     end;
   finally

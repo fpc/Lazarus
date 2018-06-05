@@ -155,7 +155,7 @@ uses
   CleanDirDlg, CodeContextForm, AboutFrm, CompatibilityRestrictions,
   RestrictionBrowser, ProjectWizardDlg, IDECmdLine, IDEGuiCmdLine, CodeExplOpts,
   EditorMacroListViewer, SourceFileManager, EditorToolbarStatic,
-  IDEInstances, NotifyProcessEnd,
+  IDEInstances, NotifyProcessEnd, WordCompletion,
   // main ide
   MainBar, MainIntf, MainBase;
 
@@ -170,7 +170,6 @@ type
 
   TMainIDE = class(TMainIDEBase)
   private
-    FIdentCompletionWords: TStringList;
     // event handlers
     procedure MainIDEFormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure MainIDEFormCloseQuery(Sender: TObject; var CanClose: boolean);
@@ -650,11 +649,17 @@ type
     FFixingGlobalComponentLock: integer;
     OldCompilerFilename, OldLanguage: String;
     OIChangedTimer: TIdleTimer;
+
+    FIdentifierWordCompletionWordList: TStringList;
+    FIdentifierWordCompletion: TWordCompletion;
+
     procedure DoDropFilesAsync(Data: PtrInt);
     procedure RenameInheritedMethods(AnUnitInfo: TUnitInfo; List: TStrings);
     function OIHelpProvider: TAbstractIDEHTMLProvider;
-    // form editor and designer
+    procedure IdentifierWordCompletionGetSource(var Source: TStrings;
+      var SourceTopLine,SourceBottomLine: integer; SourceIndex: integer);
     procedure DoAddWordsToIdentCompletion(const Prefix: string);
+    // form editor and designer
     procedure DoBringToFrontFormOrUnit;
     procedure DoBringToFrontFormOrInspector(ForceInspector: boolean);
     procedure DoShowSourceOfActiveDesignerForm;
@@ -1666,7 +1671,8 @@ begin
   FreeThenNil(SearchResultsView);
   FreeThenNil(ObjectInspector1);
   FreeThenNil(SourceEditorManagerIntf);
-  FreeAndNil(FIdentCompletionWords);
+  FreeAndNil(FIdentifierWordCompletionWordList);
+  FreeAndNil(FIdentifierWordCompletion);
 
   // disconnect handlers
   Application.RemoveAllHandlersOfObject(Self);
@@ -3391,6 +3397,23 @@ function TMainIDE.IDEMessageDialogHandler(const aCaption, aMsg: string;
 begin
   Result:=MessageDlg{ !!! DO NOT REPLACE WITH IDEMessageDialog }
             (aCaption,aMsg,DlgType,Buttons,HelpKeyword);
+end;
+
+procedure TMainIDE.IdentifierWordCompletionGetSource(var Source: TStrings;
+  var SourceTopLine, SourceBottomLine: integer; SourceIndex: integer);
+var
+  ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+const
+  LinesAround = 100;
+begin
+  if SourceIndex<>0 then
+    Exit;
+  GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
+  if ActiveSrcEdit=nil then exit;
+  Source := ActiveSrcEdit.Source;
+  SourceTopLine := Max(0, ActiveSrcEdit.EditorComponent.CaretY-LinesAround);
+  SourceBottomLine := Min(Source.Count-1, ActiveSrcEdit.EditorComponent.CaretY+LinesAround);
 end;
 
 function TMainIDE.IDEQuestionDialogHandler(const aCaption, aMsg: string;
@@ -6441,16 +6464,22 @@ var
   New: TIdentifierListItem;
   I: Integer;
 begin
-  if FIdentCompletionWords=nil then
-    FIdentCompletionWords:=TStringList.Create
+  if FIdentifierWordCompletionWordList=nil then
+    FIdentifierWordCompletionWordList:=TStringList.Create
   else
-    FIdentCompletionWords.Clear;
-  AWordCompletion.GetWordList(FIdentCompletionWords, '', False, 10000, True); // do not get words with prefix because the identifier list isn't reloaded when prefix changes
-  for I := FIdentCompletionWords.Count-1 downto 0 do
-    if FIdentCompletionWords[I]<>Prefix then // ignore prefix
+    FIdentifierWordCompletionWordList.Clear;
+  if FIdentifierWordCompletion=nil then
+  begin
+    FIdentifierWordCompletion := TWordCompletion.Create;
+    FIdentifierWordCompletion.OnGetSource := @IdentifierWordCompletionGetSource;
+  end;
+
+  FIdentifierWordCompletion.GetWordList(FIdentifierWordCompletionWordList, '', False, 1000); // do not get words with prefix because the identifier list isn't reloaded when prefix changes
+  for I := FIdentifierWordCompletionWordList.Count-1 downto 0 do
+    if FIdentifierWordCompletionWordList[I]<>Prefix then // ignore prefix
     begin
       New := CIdentifierListItem.Create(WordCompatibility, False, WordHistoryIndex,
-        PChar(FIdentCompletionWords[I]), WordLevel, nil, nil, ctnWord);
+        PChar(FIdentifierWordCompletionWordList[I]), WordLevel, nil, nil, ctnWord);
       CodeToolBoss.IdentifierList.Add(New);
     end;
 end;
