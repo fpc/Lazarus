@@ -102,7 +102,7 @@ type
     BackgroundSelectedColor: TColor;
     TextColor: TColor;
     TextSelectedColor: TColor;
-    TextHighLightColor: TColor;
+    TextHilightColor: TColor;
   end;
   PPaintCompletionItemColors = ^TPaintCompletionItemColors;
 
@@ -163,6 +163,7 @@ var
   TokenStart: Integer;
   BackgroundColor: TColorRef;
   ForegroundColor: TColorRef;
+  TextHilightColor: TColorRef;
   AllowFontColor: Boolean;
 
   procedure SetFontColor(NewColor: TColor; Force: boolean = false);
@@ -292,22 +293,24 @@ begin
   begin
     if ItemSelected then
     begin
-      ForegroundColor := Colors^.TextSelectedColor;
+      ForegroundColor := ColorToRGB(Colors^.TextSelectedColor);
       AllowFontColor := ForegroundColor=clNone;
       if ForegroundColor=clNone then
         ForegroundColor := Colors^.TextColor;
       BackgroundColor:=ColorToRGB(Colors^.BackgroundSelectedColor);
     end else
     begin
-      ForegroundColor := Colors^.TextColor;
+      ForegroundColor := ColorToRGB(Colors^.TextColor);
       AllowFontColor := True;
       BackgroundColor:=ColorToRGB(Colors^.BackgroundColor);
     end;
+    TextHilightColor:=ColorToRGB(Colors^.TextHilightColor);
   end else
   begin
     ForegroundColor := clBlack;
     AllowFontColor := True;
     BackgroundColor:=ColorToRGB(ACanvas.Brush.Color);
+    TextHilightColor := clWhite;
   end;
 
   BGRed:=(BackgroundColor shr 16) and $ff;
@@ -538,7 +541,7 @@ begin
     else begin
       //DebugLn(['PaintCompletionItem ',x,',',y,' ',s]);
       // highlighting the prefix
-      if (Colors<>nil) and (Colors^.TextHighLightColor<>clNone)
+      if (Colors<>nil) and (TextHilightColor<>clNone)
       and (aCompletion.CurrentString<>'') then
       begin
         PrefixPosition := Pos(LowerCase(aCompletion.CurrentString), LowerCase(s));
@@ -548,7 +551,7 @@ begin
           Token := Copy(s, 1, PrefixPosition-1);
           ACanvas.TextOut(x+1,y,Token);
           // paint highlight prefix
-          SetFontColor(ColorToRGB(Colors^.TextHighLightColor));
+          SetFontColor(TextHilightColor);
           Token := Copy(s, PrefixPosition, Length(aCompletion.CurrentString));
           ACanvas.TextOut(x+1+ACanvas.TextWidth(Copy(s, 1, PrefixPosition-1)),y,Token);
           // paint after prefix

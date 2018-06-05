@@ -2415,7 +2415,7 @@ begin
   Colors.BackgroundSelectedColor := FActiveEditBackgroundSelectedColor;
   Colors.TextColor := FActiveEditTextColor;
   Colors.TextSelectedColor := FActiveEditTextSelectedColor;
-  Colors.TextHighLightColor := FActiveEditTextHighLightColor;
+  Colors.TextHilightColor := FActiveEditTextHighLightColor;
   MaxX:=TheForm.ClientWidth;
   t:=CurrentCompletionType;
   if Manager.ActiveCompletionPlugin<>nil then
