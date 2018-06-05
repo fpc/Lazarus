@@ -110,8 +110,6 @@ begin
 end;
 
 procedure TOpenFileFavToolButton.DoOnAdded;
-var
-  xImg: TCustomBitmap;
 begin
   inherited DoOnAdded;
 
@@ -123,21 +121,12 @@ begin
     DropdownMenu := TPopupMenu.Create(Self);
 
   if DropdownMenu.Images=nil then
-  begin
-    DropdownMenu.Images := TCustomImageList.Create(Self);
-    DropdownMenu.Images.Width := 16;
-    DropdownMenu.Images.Height := 16;
-  end;
+    DropdownMenu.Images := LCLGlyphs;
+  if DropdownMenu.Images<>LCLGlyphs then
+    raise Exception.Create('Favorites internal error 20180605093914');
 
-  xImg := TBitmap.Create;
-  try
-    IDEImages.Images_16.GetBitmap(IDEImages.LoadImage('laz_add'), xImg);
-    FAddImageIndex := DropdownMenu.Images.Add(xImg, nil);
-    IDEImages.Images_16.GetBitmap(IDEImages.LoadImage('laz_delete'), xImg);
-    FRemoveImageIndex := DropdownMenu.Images.Add(xImg, nil);
-  finally
-    xImg.Free;
-  end;
+  FAddImageIndex := LCLGlyphs.GetImageIndex('laz_add');
+  FRemoveImageIndex := LCLGlyphs.GetImageIndex('laz_delete');
 
   FOrigOnPopup := DropdownMenu.OnPopup;
   DropdownMenu.OnPopup := @RefreshMenu;
