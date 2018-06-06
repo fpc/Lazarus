@@ -2244,7 +2244,12 @@ begin
 
   {$IF defined(VerboseKeyboard) or defined(LCLGtk2Fix30544)}
   DebugLn(['[HandleGTKKeyUpDown] START ',DbgSName(TControl(AData)),
-    ' ',(AEvent^. _Type),' Widget=',GetWidgetClassName(AWidget),
+    ' _Type=',(AEvent^._Type),
+    ' state=',(AEvent^.state),
+    ' keyval=',(AEvent^.keyval),
+    ' hardware_keycode=',(AEvent^.hardware_keycode),
+    ' group=',(AEvent^.group),
+    ' Widget=',GetWidgetClassName(AWidget),
     ' Before=',ABeforeEvent,' Down=',AHandleDown,' HandledByLCL=',HandledByLCL]);
   {$ENDIF}
   
@@ -2623,6 +2628,9 @@ begin
   Result:=CallBackDefaultReturn;
   if aKeymap=nil then ;
   if Data=nil then ;
+  {$IFDEF LCLGtk2Fix30544}
+  debugln(['gdkKeyMapChanged']);
+  {$ENDIF}
   InitKeyboardTables;
 end;
 
@@ -3220,7 +3228,7 @@ type
   
   procedure UpdateModifierMap(const AModMap: TModMap; AKeyCode: Byte; AKeySym: Cardinal);
   var
-  {$ifdef VerboseModifiermap}
+  {$if defined(VerboseModifiermap) or defined(LCLGtk2Fix30544)}
     s: string;
   {$endif}
     ShiftState: TShiftStateEnum;
@@ -3256,9 +3264,9 @@ type
     MModifiers[ShiftState].Mask := AModMap[AKeyCode];
     MModifiers[ShiftState].UseValue := False;
     
-    {$ifdef VerboseModifiermap}
+    {$if defined(VerboseModifiermap) or defined(LCLGtk2Fix30544)}
     WriteStr(s, ShiftState);
-    DebugLn('Mapped keycode=%u, keysym=$%x, modifier=$%2.2x to shiftstate %s',
+    DebugLn('UpdateModifierMap Mapped keycode=%u, keysym=$%x, modifier=$%2.2x to shiftstate %s',
             [AKeyCode, AKeySym, AModMap[AKeyCode], s]);
     {$endif}
 
@@ -3268,23 +3276,36 @@ type
   procedure UpdateKeyStateMap(var AIndex: integer; AKeyCode: Byte; AKeySym: Cardinal);
   var
     Enum: TShiftStateEnum;
+    {$IFDEF LCLGtk2Fix30544}
+    s: string;
+    {$ENDIF}
   begin
     case AKeySym of
       GDK_KEY_Alt_L, GDK_KEY_Alt_R:     Enum := ssAlt;
       GDK_KEY_Meta_L, GDK_KEY_Meta_R:   Enum := ssMeta;
       GDK_KEY_Super_L, GDK_KEY_Super_R: Enum := ssSuper;
       GDK_KEY_Hyper_L, GDK_KEY_Hyper_R: Enum := ssHyper;
-      GDK_KEY_ISO_Level3_Shift:         Enum := ssAltGr;
+      GDK_KEY_Mode_switch,
+      GDK_KEY_ISO_Level3_Shift,
+      GDK_KEY_ISO_Level3_Latch,
+      GDK_KEY_ISO_Level3_Lock,
+      GDK_KEY_ISO_Level5_Shift,
+      GDK_KEY_ISO_Level5_Latch,
+      GDK_KEY_ISO_Level5_Lock:         Enum := ssAltGr;
     else
       Exit;
     end;
 
     if High(MKeyStateMap) < AIndex
-    then SetLength(MKeyStateMap, AIndex + 8);
+    then SetLength(MKeyStateMap, AIndex + 16);
 
     MKeyStateMap[AIndex].Index := AKeyCode shr 3;
     MKeyStateMap[AIndex].Mask := 1 shl (AKeyCode and 7);
     MKeyStateMap[AIndex].Enum := Enum;
+    {$IFDEF LCLGtk2Fix30544}
+    writestr(s,Enum);
+    debugln(['UpdateKeyStateMap AKeySym=$',HexStr(AKeySym,4),'=',AKeySym,' ShiftState=',s,' Index=',MKeyStateMap[AIndex].Index,' Mask=',HexStr(MKeyStateMap[AIndex].Mask,4)]);
+    {$ENDIF}
     Inc(AIndex)
   end;
   {$endif UseOwnShiftState}
@@ -3519,7 +3540,6 @@ function GTKEventStateToShiftState(KeyState: LongWord): TShiftState;
     begin
       if Ord(Keys[MKeyStateMap[n].Index]) and MKeyStateMap[n].Mask = 0 then Continue;
       Include(Result, MKeyStateMap[n].Enum);
-      Break;
     end;
   end;
   {$else}
@@ -3546,6 +3566,10 @@ begin
   {$else}
   Result := [];
   {$endif}
+  {$IFDEF LCLGtk2Fix30544}
+  if (KeyState<>0) or (Result-[ssLeft,ssRight]<>[]) then
+    debugln(['GTKEventStateToShiftState KeyState=',HexStr(KeyState,8),' X-State=',dbgs(Result)]);
+  {$ENDIF}
   for State := Low(State) to High(State) do
   begin
     if MModifiers[State].Mask = 0 then Continue;

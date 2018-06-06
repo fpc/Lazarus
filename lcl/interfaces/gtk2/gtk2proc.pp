@@ -885,9 +885,6 @@ begin
   // event^.length ?
   // event^._string ?
   hardware_keycode:=event^.hardware_keycode;
-  {$IFDEF LCLGtk2Fix30544}
-  debugln(['TLCLHandledKeyEvent.Create thetype=',thetype,' window=',dbgs(Pointer(window)),' send_event=',send_event,' time=',time,' state=',state,' keyval=',keyval,' hardware_keycode=',hardware_keycode]);
-  {$ENDIF}
 end;
 
 function TLCLHandledKeyEvent.IsEqual(Event: PGdkEventKey): boolean;

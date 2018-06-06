@@ -45,6 +45,10 @@ const
   GTK_RESPONSE_LCL_IGNORE = -13;
   GTK_RESPONSE_LCL_NOTOALL = -14;
 
+  GDK_KEY_ISO_Level5_Shift = $FE11;
+  GDK_KEY_ISO_Level5_Latch = $FE12;
+  GDK_KEY_ISO_Level5_Lock = $FE13;
+
 {$IF FPC_FULLVERSION<20600}
 // missing declarations in fpc 2.2
 const
