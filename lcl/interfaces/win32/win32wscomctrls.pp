@@ -243,7 +243,6 @@ type
     class procedure InsertToolButton(const AToolBar: TToolbar; const AControl: TControl); override;
     class procedure DeleteToolButton(const AToolBar: TToolbar; const AControl: TControl); override;
 {$endif}
-    class function GetDoubleBuffered(const AWinControl: TWinControl): Boolean; override;
   end;
 
   { TWin32WSTrackBar }
@@ -829,12 +828,6 @@ begin
 end;
 
 {$endif}
-
-class function TWin32WSToolBar.GetDoubleBuffered(
-  const AWinControl: TWinControl): Boolean;
-begin
-  Result := GetWin32ThemedDoubleBuffered(AWinControl);
-end;
 
 function TrackBarParentMsgHandler(const AWinControl: TWinControl; Window: HWnd;
       Msg: UInt; WParam: Windows.WParam; LParam: Windows.LParam;
