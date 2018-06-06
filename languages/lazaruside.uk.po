@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-05-22 10:42+0200\n"
+"PO-Revision-Date: 2018-06-05 22:23+0200\n"
 "Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -3481,8 +3481,6 @@ msgid "Show all units"
 msgstr "Показати всі модулі"
 
 #: lazarusidestrconsts.dlgshowcaptionsofnonvisuals
-#, fuzzy
-#| msgid "Show captions of non-visual components"
 msgid "Show captions of nonvisual components"
 msgstr "Показувати підписи невізуальних компонентів"
 
@@ -4325,8 +4323,6 @@ msgid "Official:"
 msgstr "Офіційний сайт:"
 
 #: lazarusidestrconsts.lisacannotholdtcontrolsyoucanonlyputnonvisualcomponen
-#, fuzzy
-#| msgid "A %s cannot hold TControls.%sYou can only put non visual components on it."
 msgid "A %s cannot hold TControls.%sYou can only put nonvisual components on it."
 msgstr "%s не може містити компоненти TControl.%sУ ньому можна розміщувати тільки невізуальні компоненти."
 
@@ -8571,11 +8567,11 @@ msgstr "Вибрати компонент-предок"
 
 #: lazarusidestrconsts.lisdsgshownonvisualcomponents
 msgid "Show nonvisual components"
-msgstr ""
+msgstr "Показати невізуальні компоненти"
 
 #: lazarusidestrconsts.lisdsgtoggleshowingnonvisualcomponents
 msgid "Toggle showing nonvisual components"
-msgstr ""
+msgstr "Перемикання показу невізуальних компонентів"
 
 #: lazarusidestrconsts.lisduplicate
 msgid "Duplicate"
@@ -9356,7 +9352,7 @@ msgstr "Це фільтри файлів, які з'являться в усіх
 
 #: lazarusidestrconsts.lisfilefound
 msgid "File found"
-msgstr ""
+msgstr "Файл знайдено"
 
 #: lazarusidestrconsts.lisfilehaschangedsave
 msgid "File \"%s\" has changed. Save?"
@@ -10576,7 +10572,7 @@ msgstr "Неправильний вираз.%sДовідка: функція \"�
 
 #: lazarusidestrconsts.lisinvalidfilename
 msgid "Invalid file name"
-msgstr ""
+msgstr "Некоректна назва файла"
 
 #: lazarusidestrconsts.lisinvalidfilter
 msgid "Invalid filter"
@@ -17084,7 +17080,7 @@ msgstr "Виводити ідентифікатор типу повідомле�
 
 #: lazarusidestrconsts.lisshowmultiplelines
 msgid "Show multiple lines"
-msgstr ""
+msgstr "Показати декілька рядків"
 
 #: lazarusidestrconsts.lisshowonlymodified
 msgid "Show only modified"
@@ -18015,11 +18011,11 @@ msgstr "Сирці пакунків Free Pascal необхідні для пер
 
 #: lazarusidestrconsts.listhetargetdirectoryisafile
 msgid "The target directory is a file:%s"
-msgstr ""
+msgstr "Цільова тека є файлом:%s"
 
 #: lazarusidestrconsts.listhetargetfilenameisadirectory
 msgid "The target file name is a directory."
-msgstr ""
+msgstr "Зазначений цільовий файл є текою."
 
 #: lazarusidestrconsts.listhetargetisnotwritable
 msgid "The target %s is not writable."

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
-"PO-Revision-Date: 2018-04-25 18:28+0200\n"
+"PO-Revision-Date: 2018-06-05 22:18+0200\n"
 "Project-Id-Version: \n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -649,10 +649,9 @@ msgstr "Упорядкувати"
 
 #: opkman_const.rsmainfrm_miload
 msgid "Load packages"
-msgstr ""
+msgstr "Завантажити пакунки"
 
 #: opkman_const.rsmainfrm_miloadinstalled
-#, fuzzy
 msgctxt "opkman_const.rsmainfrm_miloadinstalled"
 msgid "Installed"
 msgstr "Встановлено"
@@ -663,11 +662,11 @@ msgstr "Скинути рейтинг"
 
 #: opkman_const.rsmainfrm_misave
 msgid "Save packages"
-msgstr ""
+msgstr "Зберегти пакунки"
 
 #: opkman_const.rsmainfrm_misavechecked
 msgid "Checked"
-msgstr ""
+msgstr "Позначено"
 
 #: opkman_const.rsmainfrm_misavetofile
 msgid "Save to file"
@@ -751,7 +750,7 @@ msgstr "Слід позначити принаймні один пакунок!"
 
 #: opkman_const.rsmainfrm_rsmessagenothinginstalled
 msgid "No packages are installed. Please install at least one package first."
-msgstr ""
+msgstr "Пакунки не встановлено. Слід позначити хоча б один пакунок."
 
 #: opkman_const.rsmainfrm_rsmessageparsingjson
 msgid "Parsing JSON. Please wait..."
