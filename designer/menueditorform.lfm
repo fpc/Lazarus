@@ -256,10 +256,11 @@ object MenuDesignerForm: TMenuDesignerForm
       AnchorSideBottom.Control = LeftPanel
       AnchorSideBottom.Side = asrBottom
       Left = 7
-      Height = 25
-      Top = 368
-      Width = 75
+      Height = 26
+      Top = 367
+      Width = 71
       Anchors = [akLeft, akBottom]
+      AutoSize = True
       BorderSpacing.Around = 6
       DefaultCaption = True
       Kind = bkHelp
