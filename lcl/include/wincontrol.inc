@@ -6816,7 +6816,7 @@ begin
 
   //if Name='GroupBox1' then
   //  debugln(['TWinControl.WMPaint ',DbgSName(Self),' DoubleBuffered=',DoubleBuffered,' Msg.DC=',dbgs(Msg.DC),' csCustomPaint=',csCustomPaint in ControlState,' ControlCount=',ControlCount,' ClientRect=',dbgs(ClientRect)]);
-  if (Msg.DC <> 0) or not DoubleBuffered then
+  if (Msg.DC <> 0) or not TWSWinControlClass(WidgetSetClass).GetDoubleBuffered(Self) then
   begin
     if not (csCustomPaint in ControlState) and (ControlCount = 0) then
       begin
