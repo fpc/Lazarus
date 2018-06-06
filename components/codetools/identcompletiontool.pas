@@ -375,6 +375,9 @@ type
   //----------------------------------------------------------------------------
   // TIdentCompletionTool
 
+  TOnGatherUserIdentifiers = procedure(Sender: TIdentCompletionTool;
+    const ContextFlags: TIdentifierListContextFlags) of object;
+
   TIdentCompletionTool = class(TFindDeclarationTool)
   private
     FBeautifier: TBeautifyCodeOptions;
@@ -388,6 +391,7 @@ type
     FIDTTreeOfUnitFiles_NamespacePath: string;
     FIDTTreeOfUnitFiles_CaseInsensitive: Boolean;
     FIDTTreeOfNamespaces: TAVLTree;// tree of TNameSpaceInfo
+    FOnGatherUserIdentifiers: TOnGatherUserIdentifiers;
     procedure AddToTreeOfUnitFileInfo(const AFilename: string);
     procedure AddBaseConstant(const BaseName: PChar);
     procedure AddBaseType(const BaseName: PChar);
@@ -408,6 +412,7 @@ type
     procedure GatherSourceNames(const Context: TFindContext);
     procedure GatherContextKeywords(const Context: TFindContext;
       CleanPos: integer; BeautifyCodeOptions: TBeautifyCodeOptions);
+    procedure GatherUserIdentifiers(const ContextFlags: TIdentifierListContextFlags);
     procedure InitCollectIdentifiers(const CursorPos: TCodeXYPosition;
       var IdentifierList: TIdentifierList);
     function ParseSourceTillCollectionStart(const CursorPos: TCodeXYPosition;
@@ -442,6 +447,8 @@ type
     property Beautifier: TBeautifyCodeOptions read FBeautifier write FBeautifier;
 
     procedure CalcMemSize(Stats: TCTMemStats); override;
+
+    property OnGatherUserIdentifiers: TOnGatherUserIdentifiers read FOnGatherUserIdentifiers write FOnGatherUserIdentifiers;
   end;
 
 function dbgs(Flag: TIdentifierListContextFlag): string; overload;
@@ -1588,6 +1595,13 @@ begin
       AddPropertyProc(PropertyName+Beautifier.PropertyStoredIdentPostfix);
     end;
   end;
+end;
+
+procedure TIdentCompletionTool.GatherUserIdentifiers(
+  const ContextFlags: TIdentifierListContextFlags);
+begin
+  if Assigned(FOnGatherUserIdentifiers) then
+    FOnGatherUserIdentifiers(Self, ContextFlags);
 end;
 
 procedure TIdentCompletionTool.GatherUnitnames(const NameSpacePath: string);
@@ -3057,6 +3071,7 @@ begin
         DebugLn('TIdentCompletionTool.GatherIdentifiers G');
         {$ENDIF}
         GatherUsefulIdentifiers(IdentStartPos,CursorContext,GatherContext);
+        GatherUserIdentifiers(CurrentIdentifierList.ContextFlags);
       end;
 
       Result:=true;

@@ -125,6 +125,7 @@ type
     FOnGatherExternalChanges: TOnGatherExternalChanges;
     FOnFindDefinePropertyForContext: TOnFindDefinePropertyForContext;
     FOnFindDefineProperty: TOnFindDefineProperty;
+    FOnGatherUserIdentifiers: TOnGatherUserIdentifiers;
     FOnGetIndenterExamples: TOnGetFABExamples;
     FOnGetMethodName: TOnGetMethodname;
     FOnRescanFPCDirectoryCache: TNotifyEvent;
@@ -144,6 +145,8 @@ type
     FWriteLockStep: integer; // current write lock ID
     FHandlers: array[TCodeToolManagerHandler] of TMethodList;
     FErrorDbgMsg: string;
+    procedure DoOnGatherUserIdentifiers(Sender: TIdentCompletionTool;
+      const ContextFlags: TIdentifierListContextFlags);
     procedure DoOnRescanFPCDirectoryCache(Sender: TObject);
     function GetBeautifier: TBeautifyCodeOptions; inline;
     function DoOnScannerGetInitValues(Scanner: TLinkScanner; Code: Pointer;
@@ -379,6 +382,8 @@ type
                                                write FOnGetMethodName;
     property OnGetIndenterExamples: TOnGetFABExamples
                        read FOnGetIndenterExamples write FOnGetIndenterExamples;
+    property OnGatherUserIdentifiers: TOnGatherUserIdentifiers
+      read FOnGatherUserIdentifiers write FOnGatherUserIdentifiers;
 
     // data function
     procedure FreeListOfPCodeXYPosition(var List: TFPList);
@@ -5811,6 +5816,14 @@ begin
     Result:=nil;
 end;
 
+procedure TCodeToolManager.DoOnGatherUserIdentifiers(
+  Sender: TIdentCompletionTool; const ContextFlags: TIdentifierListContextFlags
+  );
+begin
+  if Assigned(FOnGatherUserIdentifiers) then
+    FOnGatherUserIdentifiers(Sender, ContextFlags);
+end;
+
 function TCodeToolManager.DoOnGetSrcPathForCompiledUnit(Sender: TObject;
   const AFilename: string): string;
 begin
@@ -6122,6 +6135,7 @@ begin
     TCodeTool(Result).OnGetSrcPathForCompiledUnit:=@DoOnGetSrcPathForCompiledUnit;
     TCodeTool(Result).OnGetMethodName:=@DoOnInternalGetMethodName;
     TCodeTool(Result).OnRescanFPCDirectoryCache:=@DoOnRescanFPCDirectoryCache;
+    TCodeTool(Result).OnGatherUserIdentifiers:=@DoOnGatherUserIdentifiers;
     TCodeTool(Result).DirectoryCache:=
       DirectoryCachePool.GetCache(ExtractFilePath(Code.Filename),
                                   true,true);

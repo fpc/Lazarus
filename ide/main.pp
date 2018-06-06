@@ -617,6 +617,8 @@ type
                 );
     procedure CodeToolBossFindFPCMangledSource(Sender: TObject;
       SrcType: TCodeTreeNodeDesc; const SrcName: string; out SrcFilename: string);
+    procedure CodeToolBossGatherUserIdentifiers(Sender: TIdentCompletionTool;
+      const ContextFlags: TIdentifierListContextFlags);
 
     function CTMacroFunctionProject(Data: Pointer): boolean;
     procedure CompilerParseStampIncHandler;
@@ -2024,6 +2026,14 @@ begin
   end;
   // not found
   SrcFilename:='';
+end;
+
+procedure TMainIDE.CodeToolBossGatherUserIdentifiers(
+  Sender: TIdentCompletionTool; const ContextFlags: TIdentifierListContextFlags
+  );
+begin
+  if not (ilcfStartIsSubIdent in ContextFlags) then
+    DoAddWordsToIdentCompletion;
 end;
 
 {------------------------------------------------------------------------------}
@@ -9314,6 +9324,7 @@ begin
     OnGetIndenterExamples:=@CodeToolBossGetIndenterExamples;
     OnScannerInit:=@CodeToolBossScannerInit;
     OnFindFPCMangledSource:=@CodeToolBossFindFPCMangledSource;
+    OnGatherUserIdentifiers:=@CodeToolBossGatherUserIdentifiers;
   end;
 
   CodeToolsOpts.AssignGlobalDefineTemplatesToTree(CodeToolBoss.DefineTree);
@@ -10192,7 +10203,6 @@ begin
   LogCaretXY:=ActiveSrcEdit.EditorComponent.LogicalCaretXY;
   Result:=CodeToolBoss.GatherIdentifiers(ActiveUnitInfo.Source,
                                          LogCaretXY.X,LogCaretXY.Y);
-  DoAddWordsToIdentCompletion;
 
   if not Result then begin
     if JumpToError then
