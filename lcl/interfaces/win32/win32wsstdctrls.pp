@@ -77,6 +77,7 @@ type
           const AParams: TCreateParams): HWND; override;
     class procedure AdaptBounds(const AWinControl: TWinControl;
           var Left, Top, Width, Height: integer; var SuppressMove: boolean); override;
+    class function GetDoubleBuffered(const AWinControl: TWinControl): Boolean; override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
       var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
     class function GetDroppedDown(const ACustomComboBox: TCustomComboBox): Boolean; override;
@@ -401,7 +402,7 @@ begin
     WM_ERASEBKGND:
       begin
         WindowInfo := GetWin32WindowInfo(Window);
-        if not WindowInfo^.WinControl.DoubleBuffered then
+        if not TWSWinControlClass(WindowInfo^.WinControl.WidgetSetClass).GetDoubleBuffered(WindowInfo^.WinControl) then
         begin
           LMessage.msg := Msg;
           LMessage.wParam := WParam;
@@ -984,6 +985,12 @@ begin
       BuddyWindowInfo:=nil;
   end;
   Result := Params.Window;
+end;
+
+class function TWin32WSCustomComboBox.GetDoubleBuffered(
+  const AWinControl: TWinControl): Boolean;
+begin
+  Result := False; // force DoubleBuffered False, see #33831
 end;
 
 class procedure TWin32WSCustomComboBox.AdaptBounds(const AWinControl: TWinControl;
