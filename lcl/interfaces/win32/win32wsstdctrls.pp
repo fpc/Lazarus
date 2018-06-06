@@ -257,6 +257,7 @@ type
   published
     class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
+    class function GetDoubleBuffered(const AWinControl: TWinControl): Boolean; override;
     class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
     class procedure SetShortCut(const AButton: TCustomButton; const ShortCutK1, ShortCutK2: TShortCut); override;
   end;
@@ -441,7 +442,7 @@ begin
     WM_ERASEBKGND:
       begin
         Control := GetWin32WindowInfo(Window)^.WinControl;
-        if not Control.DoubleBuffered then
+        if not TWSWinControlClass(Control.WidgetSetClass).GetDoubleBuffered(Control) then
         begin
           LMessage.msg := Msg;
           LMessage.wParam := WParam;
@@ -1782,7 +1783,7 @@ begin
     WM_ERASEBKGND:
       begin
         Control := GetWin32WindowInfo(Window)^.WinControl;
-        if not Control.DoubleBuffered then
+        if not TWSWinControlClass(Control.WidgetSetClass).GetDoubleBuffered(Control) then
         begin
           LMessage.msg := Msg;
           LMessage.wParam := WParam;
@@ -1819,6 +1820,12 @@ begin
   Result := Params.Window;
 end;
 
+class function TWin32WSButton.GetDoubleBuffered(
+  const AWinControl: TWinControl): Boolean;
+begin
+  Result := GetWin32NativeDoubleBuffered(AWinControl);
+end;
+
 class procedure TWin32WSButton.SetDefault(const AButton: TCustomButton; ADefault: Boolean);
 var
   WindowStyle: dword;
@@ -1853,6 +1860,7 @@ begin
   with Params do
   begin
     pClassName := @ButtonClsName[0];
+    SubClassWndProc := @ButtonWndProc;
     WindowTitle := StrCaption;
   end;
   // create window
@@ -1863,7 +1871,7 @@ end;
 class function TWin32WSCustomCheckBox.GetDoubleBuffered(
   const AWinControl: TWinControl): Boolean;
 begin
-  Result := GetWin32ThemedDoubleBuffered(AWinControl);
+  Result := GetWin32NativeDoubleBuffered(AWinControl);
 end;
 
 class procedure TWin32WSCustomCheckBox.GetPreferredSize(const AWinControl: TWinControl;
@@ -1971,6 +1979,7 @@ begin
   with Params do
   begin
     pClassName := @ButtonClsName[0];
+    SubClassWndProc := @ButtonWndProc;
     WindowTitle := StrCaption;
   end;
   // create window

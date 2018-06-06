@@ -41,18 +41,11 @@ type
     class procedure SendCharToEditor(AEditor:TWinControl; Ch: TUTF8Char); override;
     class function GetEditorBoundsFromCellRect(ACanvas: TCanvas;
       const ACellRect: TRect; const AColumnLayout: TTextLayout): TRect; override;
-    class function GetDoubleBuffered(const AWinControl: TWinControl): Boolean; override;
   end;
 
 implementation
 
 { TWin32WSCustomGrid }
-
-class function TWin32WSCustomGrid.GetDoubleBuffered(
-  const AWinControl: TWinControl): Boolean;
-begin
-  Result := GetWin32ThemedDoubleBuffered(AWinControl);
-end;
 
 class function TWin32WSCustomGrid.GetEditorBoundsFromCellRect(ACanvas: TCanvas;
   const ACellRect: TRect; const AColumnLayout: TTextLayout): TRect;

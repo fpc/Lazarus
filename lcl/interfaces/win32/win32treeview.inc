@@ -9,9 +9,3 @@
 }
 
 { TWin32WSCustomTreeView }
-
-class function TWin32WSCustomTreeView.GetDoubleBuffered(
-  const AWinControl: TWinControl): Boolean;
-begin
-  Result := GetWin32ThemedDoubleBuffered(AWinControl);
-end;

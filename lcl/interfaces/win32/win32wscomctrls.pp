@@ -65,7 +65,6 @@ type
     class procedure RemovePage(const ATabControl: TCustomTabControl;
       const AIndex: integer); override;
 
-    class function GetDoubleBuffered(const AWinControl: TWinControl): Boolean; override;
     class function GetNotebookMinTabHeight(const AWinControl: TWinControl): integer; override;
     class function GetNotebookMinTabWidth(const AWinControl: TWinControl): integer; override;
     class function GetTabIndexAtPos(const ATabControl: TCustomTabControl; const AClientPos: TPoint): integer; override;
@@ -97,7 +96,6 @@ type
     class procedure SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer); override;
     class procedure SetSizeGrip(const AStatusBar: TStatusBar; SizeGrip: Boolean); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
-    class function GetDoubleBuffered(const AWinControl: TWinControl): Boolean; override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
                         var PreferredWidth, PreferredHeight: integer;
                         WithThemeSpace: Boolean); override;
@@ -263,7 +261,6 @@ type
 
   TWin32WSCustomTreeView = class(TWSCustomTreeView)
   published
-    class function GetDoubleBuffered(const AWinControl: TWinControl): Boolean; override;
   end;
 
   { TWin32WSTreeView }
@@ -487,12 +484,6 @@ begin
         UpdateStatusBarPanel(AStatusBar.Panels[PanelIndex]);
       end;
   end;
-end;
-
-class function TWin32WSStatusBar.GetDoubleBuffered(
-  const AWinControl: TWinControl): Boolean;
-begin
-  Result := GetWin32ThemedDoubleBuffered(AWinControl);
 end;
 
 class function TWin32WSStatusBar.CreateHandle(const AWinControl: TWinControl;

@@ -87,7 +87,7 @@ function GetLCLClientBoundsOffset(Handle: HWnd; out Rect: TRect): boolean;
 procedure LCLBoundsToWin32Bounds(Sender: TObject; var Left, Top, Width, Height: Integer);
 procedure Win32PosToLCLPos(Sender: TObject; var Left, Top: SmallInt);
 procedure GetWin32ControlPos(Window, Parent: HWND; var Left, Top: integer);
-function GetWin32ThemedDoubleBuffered(Sender: TWinControl): boolean;
+function GetWin32NativeDoubleBuffered(Sender: TWinControl): boolean;
 
 procedure UpdateWindowStyle(Handle: HWnd; Style: integer; StyleMask: integer);
 
@@ -784,12 +784,12 @@ begin
   Top := winRect.Top - parRect.Top;
 end;
 
-function GetWin32ThemedDoubleBuffered(Sender: TWinControl): boolean;
+function GetWin32NativeDoubleBuffered(Sender: TWinControl): boolean;
 begin
-  // force double buffering when themes are enabled and there is no remote session
+  // disable auto-DoubleBuffered to allow animations, see #33832
   Result :=
-       Sender.DoubleBuffered
-    or (ThemeServices.ThemesEnabled and (GetSystemMetrics(SM_REMOTESESSION)=0));
+    Sender.DoubleBuffered
+    and not(ThemeServices.ThemesEnabled and (Application.DoubleBuffered=adbDefault) and Sender.ParentDoubleBuffered);
 end;
 
 {

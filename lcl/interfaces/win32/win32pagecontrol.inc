@@ -655,12 +655,6 @@ begin
   Result := (AIndex <> -1) and (AIndex <> ACurIndex);
 end;
 
-class function TWin32WSCustomTabControl.GetDoubleBuffered(
-  const AWinControl: TWinControl): Boolean;
-begin
-  Result := GetWin32ThemedDoubleBuffered(AWinControl);
-end;
-
 class procedure TWin32WSCustomTabControl.SetTabSize(
   const ATabControl: TCustomTabControl;
   const ATabWidth, ATabHeight: integer);
