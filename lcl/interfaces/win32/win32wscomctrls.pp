@@ -766,7 +766,7 @@ var
   Params: TCreateWindowExParams;
 begin
   // general initialization of Params
-  PrepareCreateWindow(AWinControl, Params);
+  PrepareCreateWindow(AWinControl, AParams, Params);
   // customization of Params
   with Params do
   begin
@@ -778,7 +778,7 @@ begin
   Result := Params.Window;
 end;
 
-function  TWin32WSToolbar.GetButtonCount(const AToolBar: TToolBar): integer;
+class function TWin32WSToolbar.GetButtonCount(const AToolBar: TToolBar): integer;
 begin
   Result := SendMessage(AToolbar.Handle, TB_BUTTONCOUNT, 0, 0)
 end;
