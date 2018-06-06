@@ -938,7 +938,7 @@ begin
           begin
           result := deCreateProcess;
           FProcessStarted:=true;
-          if fpPTrace(PTRACE_SETOPTIONS, ProcessID, nil,  Pointer( PTRACE_O_TRACEFORK or PTRACE_O_TRACEVFORK or PTRACE_O_TRACECLONE) ) <> 0 then
+          if fpPTrace(PTRACE_SETOPTIONS, ProcessID, nil,  Pointer( PTRACE_O_TRACECLONE) ) <> 0 then
             writeln('Failed to set set trace options. Errcode: '+inttostr(fpgeterrno));
           end
         else
