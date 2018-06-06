@@ -1397,7 +1397,7 @@ type
   TBandInfoEvent = procedure (Sender: TObject; Control: TControl;
     var Insets: TRect; var PreferredSize, RowCount: Integer) of object;
   TBandMoveEvent = procedure (Sender: TObject; Control: TControl; var ARect: TRect) of object;
-  TBandPaintEvent = procedure (Sender: TObject; Control: TControl; Canvas: TCanvas;
+  TBandPaintEvent = procedure (Sender: TObject; Control: TControl; ACanvas: TCanvas;
     var ARect: TRect; var Options: TBandPaintOptions) of object;
 
   TRowSize = 1..MaxInt;
