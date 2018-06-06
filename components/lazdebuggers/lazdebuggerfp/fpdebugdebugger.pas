@@ -345,7 +345,12 @@ begin
   if Monitor = nil then exit;
   if CurrentThreads = nil then exit;
 
+  if Debugger = nil then Exit;
+
   CurrentThreads.Clear;
+
+  if not (Debugger.State in [dsPause, dsInternalPause, dsRun]) then Exit;
+
   ThreadArray := TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.GetThreadArray;
   for i := 0 to high(ThreadArray) do
     begin
@@ -378,7 +383,11 @@ begin
       ThreadArray[i].ID,
       'Thread ' + IntToStr(ThreadArray[i].ID),
       State);
-    CurrentThreads.Add(ThreadEntry);
+    try
+      CurrentThreads.Add(ThreadEntry);
+    finally
+      ThreadEntry.Free;
+    end;
     end;
 
   CurrentThreads.CurrentThreadId := TFpDebugDebugger(Debugger).FDbgController.CurrentThread.ID;
