@@ -660,9 +660,6 @@ type
     procedure DoDropFilesAsync(Data: PtrInt);
     procedure RenameInheritedMethods(AnUnitInfo: TUnitInfo; List: TStrings);
     function OIHelpProvider: TAbstractIDEHTMLProvider;
-    procedure IdentifierWordCompletionGetSource(var Source: TStrings;
-      var SourceTopLine,SourceBottomLine: integer;
-      var IgnoreWordEndPos: TPoint; SourceIndex: integer);
     procedure DoAddWordsToIdentCompletion(Sender: TIdentifierList;
       FilteredList: TFPList; PriorityCount: Integer);
     // form editor and designer
@@ -3416,26 +3413,6 @@ function TMainIDE.IDEMessageDialogHandler(const aCaption, aMsg: string;
 begin
   Result:=MessageDlg{ !!! DO NOT REPLACE WITH IDEMessageDialog }
             (aCaption,aMsg,DlgType,Buttons,HelpKeyword);
-end;
-
-procedure TMainIDE.IdentifierWordCompletionGetSource(var Source: TStrings;
-  var SourceTopLine, SourceBottomLine: integer; var IgnoreWordEndPos: TPoint;
-  SourceIndex: integer);
-var
-  ActiveSrcEdit: TSourceEditor;
-  ActiveUnitInfo: TUnitInfo;
-const
-  LinesAround = 100;
-begin
-  if SourceIndex<>0 then
-    Exit;
-  GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
-  if ActiveSrcEdit=nil then exit;
-  Source := ActiveSrcEdit.Source;
-  SourceTopLine := Max(0, ActiveSrcEdit.EditorComponent.CaretY-LinesAround);
-  SourceBottomLine := Min(Source.Count-1, ActiveSrcEdit.EditorComponent.CaretY+LinesAround);
-  IgnoreWordEndPos := ActiveSrcEdit.EditorComponent.LogicalCaretXY;
-  Dec(IgnoreWordEndPos.Y); // LogicalCaretXY starts with 1 as top line
 end;
 
 function TMainIDE.IDEQuestionDialogHandler(const aCaption, aMsg: string;
