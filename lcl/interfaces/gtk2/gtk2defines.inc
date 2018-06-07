@@ -83,7 +83,9 @@
    keyboardlayouts are used. With UseOwnShiftState we keep track of the shiftate
    ourself
   *)
-  {$define UseOwnShiftState}
+  {$ifndef DisableUseOwnShiftState}
+    {$define UseOwnShiftState}
+  {$endif}
 {$endif}
 
 // see http://bugs.freepascal.org/view.php?id=12145.

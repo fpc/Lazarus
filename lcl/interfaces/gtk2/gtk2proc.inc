@@ -2248,6 +2248,8 @@ begin
     ' state=',(AEvent^.state),
     ' keyval=',(AEvent^.keyval),
     ' hardware_keycode=',(AEvent^.hardware_keycode),
+    ' length=',(AEvent^.length),
+    ' _string="',dbgMemRange(AEvent^._string,AEvent^.length),'"',
     ' group=',(AEvent^.group),
     ' Widget=',GetWidgetClassName(AWidget),
     ' Before=',ABeforeEvent,' Down=',AHandleDown,' HandledByLCL=',HandledByLCL]);
@@ -2306,7 +2308,7 @@ begin
 
   gdk_event_key_get_string(AEvent, EventString{%H-});
   {$IFDEF VerboseKeyboard}
-  DebugLn(['HandleGTKKeyUpDown EVENTSTRING TargetWidget=',GetWidgetDebugReport(TargetWidget),' "',DbgStr(EventString),'" state=',AEvent^.state,' keyval=',AEvent^.keyval]);
+  DebugLn(['HandleGTKKeyUpDown EVENTSTRING "',DbgStr(EventString),'" TargetWidget=',GetWidgetDebugReport(TargetWidget),' state=',AEvent^.state,' keyval=',AEvent^.keyval]);
   {$ENDIF}
 
   {$IfDef Gtk2LatinAccents}
@@ -2344,7 +2346,10 @@ begin
 
     // ssAlt + a key pressed is always a syskey
     // ssAltGr + a key is only a syskey when the key pressed has no levelshift or when ssShift is pressed too
-    SysKey := (ssAlt in ShiftState);
+    if ssAltGr in ShiftState then
+      SysKey := ssAlt in ShiftState
+    else
+      SysKey := [ssAlt,ssCtrl]*ShiftState=[ssAlt]; // Alt+Ctrl = AltGr, on Windows and on Linux via VNC, see bug 30544
     if not SysKey then
     begin
       // Check ssAltGr
@@ -3181,7 +3186,7 @@ const
 {
  Starting gdk 2.10 Alt, meta, hyper are reported by a own mask. Since we support
  older versions, we need to create the modifiermap ourselves for X and we cannot
- ise them
+ use them
 }
 type
   TModMap = array[Byte] of Cardinal;
@@ -3281,6 +3286,10 @@ type
     {$ENDIF}
   begin
     case AKeySym of
+      {$if defined(LCLGtk2Fix30544)}
+      GDK_KEY_Control_L,
+      GDK_KEY_Control_R: Enum := ssCtrl;
+      {$endif}
       GDK_KEY_Alt_L, GDK_KEY_Alt_R:     Enum := ssAlt;
       GDK_KEY_Meta_L, GDK_KEY_Meta_R:   Enum := ssMeta;
       GDK_KEY_Super_L, GDK_KEY_Super_R: Enum := ssSuper;
@@ -3370,6 +3379,7 @@ begin
   FreeVK := VK_FIRST_OEM;
   for KeyCode := LoKey to HiKey do
   begin
+    // get all values for this keycode for all groups and level
     if not gdk_keymap_get_entries_for_keycode(GdkKeymap, KeyCode, KeymapKeys, KeyVals, @KeySymCount) then
       Continue;
     SetLength(KeySyms, KeySymCount);
@@ -3380,7 +3390,8 @@ begin
     //DebugLn(['InitKeyboardTables ',KeyCode,' ',HasKey,' ',KeySyms[0]]);
 
   {$ifdef HasX}
-    // Check if this keycode is in the modifiers map
+    // Check if this keycode is a modifier
+    // and if yes add it to modifiers map
     // loop through all keysyms till one found.
     // Some maps have a modifier with an undefined first keysym. It is checked for
     // modifiers, but not for vkeys
@@ -3428,7 +3439,7 @@ begin
 
     if VKey = VK_UNDEFINED
     then begin
-      MKeyCodeInfo[KeyCode].Flags := $FF
+      MKeyCodeInfo[KeyCode].Flags := $FF;
     end
     else begin
       MKeyCodeInfo[KeyCode].Flags := EXTFLAG[Extended] or MULTIFLAG[HasMultiVK];
@@ -3446,7 +3457,7 @@ begin
         if m >= 2 then Break; // Only process shift
 
         // The keypadkeys have 2 VK_keycodes :(
-        // In that case we have to FIndKeyInfo for every keysym
+        // In that case we have to FindKeyInfo for every keysym
         if m = 1
         then begin
           FindVKeyInfo(KeySyms[m], VKey, Extended, DummyBool, DummyBool{%H-});
@@ -3583,6 +3594,10 @@ begin
       then Include(Result, State);
     end;
   end;
+  {$IFDEF LCLGtk2Fix30544}
+  if (KeyState<>0) or (Result-[ssLeft,ssRight]<>[]) then
+    debugln(['GTKEventStateToShiftState KeyState=',HexStr(KeyState,8),' Result=',dbgs(Result)]);
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------

@@ -843,11 +843,12 @@ var
 {$ifdef UseOwnShiftState}
 {$ifdef HasX}
   // KeyStateMap is a quick index to scan the results of a XQueryKeymap
+  // which returns for the 256 possible keycodes a boolean bit array (32 bytes)
   // Shift is set when the mask for the Keymapkeys_return[index] is set
 var
   MKeyStateMap: array of record
-    Index: Byte;
-    Mask: Byte;
+    Index: Byte; // KeyCode shr 3
+    Mask: Byte;  // 1 shl (KeyCode and 7);
     Enum: TShiftStateEnum;
   end;
 {$endif}
