@@ -71,6 +71,74 @@ end;
 
 { TWordCompletion }
 
+// fast pos functions used in GetWordList
+
+function MyPos(const SubStr, S: string; Offset, LastPos: SizeInt): SizeInt;
+var
+  i,MaxLen, SubLen : SizeInt;
+  SubFirst: Char;
+  pc: pchar;
+begin
+  Result:=0;
+  SubLen := Length(SubStr);
+  if (SubLen > 0) and (Offset > 0) and (Offset <= Cardinal(Length(S))) then
+   begin
+    MaxLen := Length(S)- SubLen;
+    SubFirst := SubStr[1];
+    i := IndexByte(S[Offset],LastPos - Offset + 1, Byte(SubFirst));
+    while (i >= 0) and ((i + sizeint(Offset) - 1) <= MaxLen) do
+    begin
+      pc := @S[i+SizeInt(Offset)];
+      //we know now that pc^ = SubFirst, because indexbyte returned a value > -1
+      if (CompareByte(Substr[1],pc^,SubLen) = 0) then
+        Exit(i + SizeInt(Offset));
+      //point Offset to next char in S
+      Offset := sizeuint(i) + Offset + 1;
+      i := IndexByte(S[Offset],Length(S) - Offset + 1, Byte(SubFirst));
+    end;
+  end;
+end;
+
+function IndexByteI(S: PChar; MaxLen: Integer; CharUp, CharLo: Char): Integer;
+begin
+  Result := 0;
+  while Result<MaxLen do
+  begin
+    if (S^=CharUp) or (S^=CharLo) then
+      Exit;
+    Inc(Result);
+    Inc(S);
+  end;
+  Result := -1;
+end;
+
+function MyPosI(const SubStrUp, S: string; Offset, LastPos: SizeInt): SizeInt;
+var
+  i,MaxLen, SubLen : SizeInt;
+  SubFirst, SubFirstLo: Char;
+  pc: pchar;
+begin
+  Result:=0;
+  SubLen := Length(SubStrUp);
+  if (SubLen > 0) and (Offset > 0) and (Offset <= Cardinal(Length(S))) then
+   begin
+    MaxLen := Length(S)- SubLen;
+    SubFirst := SubStrUp[1];
+    SubFirstLo := LowerCase(SubStrUp[1]);
+    i := IndexByteI(PChar(@S[Offset]),LastPos - Offset + 1, SubFirst, SubFirstLo);
+    while (i >= 0) and ((i + sizeint(Offset) - 1) <= MaxLen) do
+    begin
+      pc := @S[i+SizeInt(Offset)];
+      //we know now that pc^ = SubFirst, because indexbyte returned a value > -1
+      if strlicomp(pchar(SubStrUp),pchar(pc),SubLen) = 0 then
+        Exit(i + SizeInt(Offset));
+      //point Offset to next char in S
+      Offset := sizeuint(i) + Offset + 1;
+      i := IndexByte(S[Offset],Length(S) - Offset + 1, Byte(SubFirst));
+    end;
+  end;
+end;
+
 procedure TWordCompletion.GetWordList(AWordList: TStrings;
   const Filter: String; ContainsFilter, CaseSensitive: boolean;
   MaxResults: integer);
@@ -111,26 +179,25 @@ var i, j, Line, x, FilterLen, MaxHash, LineLen: integer;
     end;
   end;
 
-  procedure AddIfMatch(const AWord:string);
+  procedure AddIfMatch(const ALine:string; const AFirstPos, ALength: Integer);
+  var
+    AAdd: Boolean;
   begin
+    AAdd := False;
     if CaseSensitive then begin
       if ContainsFilter then
-      begin
-        if pos(Filter, AWord)>0 then
-          Add(NewWord);
-      end else
-        if copy(AWord,1,FilterLen)=Filter then
-          Add(NewWord);
+        AAdd := mypos(Filter, ALine, AFirstPos, AFirstPos+ALength-1)>0
+      else
+        AAdd := strlcomp(PChar(@ALine[AFirstPos]),PChar(Filter),FilterLen)=0;
     end else
     begin
       if ContainsFilter then
-      begin
-        if pos(UpFilter, UpperCase(AWord))>0 then
-          Add(AWord);
-      end else
-        if CompareText(copy(NewWord,1,FilterLen),UpFilter)=0 then
-          Add(NewWord)
+        AAdd := myposi(UpFilter, ALine, AFirstPos, AFirstPos+ALength-1)>0
+      else
+        AAdd := strlicomp(PChar(@ALine[AFirstPos]),PChar(Filter),FilterLen)=0;
     end;
+    if AAdd then
+      Add(Copy(ALine, AFirstPos, ALength));
   end;
 
 // TWordCompletion.GetWordList
@@ -147,7 +214,7 @@ begin
     // first add all recently used words
     i:=FWordBuffer.Count-1;
     while (i>=0) and (AWordList.Count<MaxResults) do begin
-      AddIfMatch(FWordBuffer[i]);
+      AddIfMatch(FWordBuffer[i], 1, Length(FWordBuffer[i]));
       dec(i);
     end;
     if AWordList.Count>=MaxResults then exit;
@@ -181,7 +248,7 @@ begin
                   inc(i);
                 until (i>LineLen) or (CharTable[LineText[i]]=ctNone);
                 if (i-x>=FilterLen) and (Line<>IgnoreWordEndPos.Y) and (i<>IgnoreWordEndPos.X) then begin
-                  AddIfMatch(copy(LineText,x,i-x));
+                  AddIfMatch(LineText,x,i-x);
                   if AWordList.Count>=MaxResults then exit;
                 end;
                 x:=i;
