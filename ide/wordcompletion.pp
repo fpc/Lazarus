@@ -81,9 +81,9 @@ var
 begin
   Result:=0;
   SubLen := Length(SubStr);
-  if (SubLen > 0) and (Offset > 0) and (Offset <= Cardinal(Length(S))) then
+  if (SubLen > 0) and (Offset > 0) and (Offset <= Cardinal(LastPos)) then
    begin
-    MaxLen := Length(S)- SubLen;
+    MaxLen := LastPos- SubLen;
     SubFirst := SubStr[1];
     i := IndexByte(S[Offset],LastPos - Offset + 1, Byte(SubFirst));
     while (i >= 0) and ((i + sizeint(Offset) - 1) <= MaxLen) do
@@ -94,7 +94,7 @@ begin
         Exit(i + SizeInt(Offset));
       //point Offset to next char in S
       Offset := sizeuint(i) + Offset + 1;
-      i := IndexByte(S[Offset],Length(S) - Offset + 1, Byte(SubFirst));
+      i := IndexByte(S[Offset],LastPos - Offset + 1, Byte(SubFirst));
     end;
   end;
 end;
@@ -120,9 +120,9 @@ var
 begin
   Result:=0;
   SubLen := Length(SubStrUp);
-  if (SubLen > 0) and (Offset > 0) and (Offset <= Cardinal(Length(S))) then
+  if (SubLen > 0) and (Offset > 0) and (Offset <= Cardinal(LastPos)) then
    begin
-    MaxLen := Length(S)- SubLen;
+    MaxLen := LastPos- SubLen;
     SubFirst := SubStrUp[1];
     SubFirstLo := LowerCase(SubStrUp[1]);
     i := IndexByteI(PChar(@S[Offset]),LastPos - Offset + 1, SubFirst, SubFirstLo);
@@ -134,7 +134,7 @@ begin
         Exit(i + SizeInt(Offset));
       //point Offset to next char in S
       Offset := sizeuint(i) + Offset + 1;
-      i := IndexByte(S[Offset],Length(S) - Offset + 1, Byte(SubFirst));
+      i := IndexByte(S[Offset],LastPos - Offset + 1, Byte(SubFirst));
     end;
   end;
 end;
