@@ -120,10 +120,7 @@ function BreakLinesInText(const s: string; MaxLineLength: integer): string;
 
 const
   ctnWord = ctnUser + 1;
-  // make sure words are added last if sorting is in place
   WordCompatibility = icompUnknown;
-  WordHistoryIndex = High(Integer);
-  WordLevel = High(Integer);
 
 implementation
 

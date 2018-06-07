@@ -6495,14 +6495,21 @@ begin
     FIdentifierWordCompletionWordList.Clear;
 
   AWordCompletion.GetWordList(FIdentifierWordCompletionWordList, Sender.Prefix, Sender.ContainsFilter, False, 100);
-  for I := FIdentifierWordCompletionWordList.Count-1 downto 0 do
+  FilteredList.Capacity := FilteredList.Count+FIdentifierWordCompletionWordList.Count;
+  for I := 0 to FIdentifierWordCompletionWordList.Count-1 do
   begin
     if Sender.FindIdentifier(PChar(FIdentifierWordCompletionWordList[I]))=nil then
     begin
-      New := CIdentifierListItem.Create(WordCompatibility, False, WordHistoryIndex,
-        PChar(FIdentifierWordCompletionWordList[I]), WordLevel, nil, nil, ctnWord);
+      New := CIdentifierListItem.Create(WordCompatibility, False, 0,
+        PChar(FIdentifierWordCompletionWordList[I]), 0, nil, nil, ctnWord);
       FIdentifierWordCompletionWordList.Objects[I] := New;
-      FilteredList.Add(New);
+      if Sender.ContainsFilter and (Sender.Prefix<>'')
+      and (strlicomp(PChar(Sender.Prefix), PChar(FIdentifierWordCompletionWordList[I]), Length(Sender.Prefix))=0) then
+      begin
+        FilteredList.Insert(PriorityCount, New);
+        Inc(PriorityCount);
+      end else
+        FilteredList.Add(New);
     end;
   end;
 end;
