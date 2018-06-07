@@ -1193,7 +1193,7 @@ type
     procedure CodeToolsToSrcEditTimerTimer(Sender: TObject);
     procedure OnWordCompletionGetSource(var Source: TStrings;
       var {%H-}SourceTopLine,{%H-}SourceBottomLine: integer;
-      var IgnoreWordEndPos: TPoint; SourceIndex: integer);
+      var IgnoreWordPos: TPoint; SourceIndex: integer);
     procedure OnSourceCompletionTimer(Sender: TObject);
     // marks
     procedure OnSourceMarksAction(AMark: TSourceMark; {%H-}AAction: TMarksAction);
@@ -2604,6 +2604,7 @@ begin
   if LogCaret.X>length(Line) then exit;
   CharLen:=UTF8CodepointSize(@Line[LogCaret.X]);
   AddPrefix:=copy(Line,LogCaret.X,CharLen);
+  if not Editor.IsIdentChar(AddPrefix) then exit;
   NewPrefix:=CurrentString+AddPrefix;
   //debugln('TSourceNotebook.OnSynCompletionNextChar NewPrefix="',NewPrefix,'" LogCaret.X=',dbgs(LogCaret.X));
   inc(LogCaret.X);
@@ -10781,7 +10782,7 @@ begin
 end;
 
 procedure TSourceEditorManager.OnWordCompletionGetSource(var Source: TStrings;
-  var SourceTopLine, SourceBottomLine: integer; var IgnoreWordEndPos: TPoint;
+  var SourceTopLine, SourceBottomLine: integer; var IgnoreWordPos: TPoint;
   SourceIndex: integer);
 var
   TempEditor: TSourceEditor;
@@ -10790,8 +10791,8 @@ begin
   TempEditor:=GetActiveSE;
   if (SourceIndex=0) and (TempEditor<>nil) then begin
     Source:=TempEditor.EditorComponent.Lines;
-    IgnoreWordEndPos:=TempEditor.EditorComponent.LogicalCaretXY;
-    Dec(IgnoreWordEndPos.Y); // LogicalCaretXY starts with 1 as top line
+    IgnoreWordPos:=TempEditor.EditorComponent.LogicalCaretXY;
+    Dec(IgnoreWordPos.Y); // LogicalCaretXY starts with 1 as top line
   end else begin
     i:=0;
     while (i < SourceEditorCount) do begin

@@ -23,7 +23,7 @@ uses
 type
   TWordCompletionGetSource =
     procedure(var Source:TStrings; var TopLine, BottomLine: Integer;
-      var IgnoreWordEndPos: TPoint; SourceIndex:integer) of object;
+      var IgnoreWordPos: TPoint; SourceIndex:integer) of object;
 
   TWordCompletion = class
   private
@@ -108,7 +108,7 @@ var i, Line, x, FilterLen, MaxHash, LineLen: integer;
   HashList: ^integer;// index list. Every entry points to a word in the AWordList
   SourceTextIndex, SourceTopLine, SourceBottomLine:integer;
   LastCharType:TCharType;
-  IgnoreWordEndPos: TPoint;
+  IgnoreWordPos: TPoint;
   
   procedure Add(const AWord:string);
   // if AWord is not already in list then add it to AWordList
@@ -187,8 +187,8 @@ begin
       SourceText:=nil;
       SourceTopLine:=0;
       SourceBottomLine:=-1;
-      IgnoreWordEndPos:=Point(-1,-1);
-      FOnGetSource(SourceText,SourceTopLine,SourceBottomLine,IgnoreWordEndPos,SourceTextIndex);
+      IgnoreWordPos:=Point(-1,-1);
+      FOnGetSource(SourceText,SourceTopLine,SourceBottomLine,IgnoreWordPos,SourceTextIndex);
       UpLineText:='';
       repeat
         if SourceText<>nil then begin
@@ -210,7 +210,7 @@ begin
                 repeat
                   inc(i);
                 until (i>LineLen) or (CharTable[LineText[i]]=ctNone);
-                if (i-x>=FilterLen) and (Line<>IgnoreWordEndPos.Y) and (i<>IgnoreWordEndPos.X) then begin
+                if (i-x>=FilterLen) and not ((Line=IgnoreWordPos.Y) and (x<=IgnoreWordPos.X) and (IgnoreWordPos.X<=i)) then begin
                   AddIfMatch(LineText,UpLineText,x,i-x);
                   if AWordList.Count>=MaxResults then exit;
                 end;
@@ -226,8 +226,8 @@ begin
         SourceText:=nil;
         SourceTopLine:=0;
         SourceBottomLine:=-1;
-        IgnoreWordEndPos:=Point(-1,-1);
-        FOnGetSource(SourceText,SourceTopLine,SourceBottomLine,IgnoreWordEndPos,SourceTextIndex);
+        IgnoreWordPos:=Point(-1,-1);
+        FOnGetSource(SourceText,SourceTopLine,SourceBottomLine,IgnoreWordPos,SourceTextIndex);
       until SourceText=nil;
     end;
   finally
