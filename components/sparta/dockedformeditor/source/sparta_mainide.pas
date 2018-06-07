@@ -445,6 +445,10 @@ procedure TDesignFormData.WndMethod(var Msg: TLMessage);
   var
     i: Integer;
   begin
+    // Just do it for new created forms or the last loaded form becomes the active
+    // source editor after reopening a project.
+    if Form.Form.Designer <> SourceEditorManagerIntf.ActiveEditor.GetDesigner(True) then Exit;
+
     SourceEditorManagerIntf.ActiveEditor := nil;
     for i := 0 to SourceEditorManagerIntf.UniqueSourceEditorCount - 1 do
       if Form.Form.Designer = SourceEditorManagerIntf.UniqueSourceEditors[i].GetDesigner(True) then
@@ -465,8 +469,7 @@ begin
       KillTimer(FForm.Form.Handle, WM_SETNOFRAME);
       ShowWindow(Form.Form.Handle, SW_HIDE);
       FHiding := False;
-      if Form.Form = LazarusIDE.LastFormActivated then
-        FixF12_ActiveEditor;
+      FixF12_ActiveEditor;
       if Form.Form is TFakeForm then
         RepaintFormImages;
       Exit;
