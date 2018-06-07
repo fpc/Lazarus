@@ -2249,7 +2249,7 @@ begin
     ' keyval=',(AEvent^.keyval),
     ' hardware_keycode=',(AEvent^.hardware_keycode),
     ' length=',(AEvent^.length),
-    ' _string="',dbgMemRange(AEvent^._string,AEvent^.length),'"',
+    ' _string="',dbgMemRange(PByte(AEvent^._string),AEvent^.length),'"',
     ' group=',(AEvent^.group),
     ' Widget=',GetWidgetClassName(AWidget),
     ' Before=',ABeforeEvent,' Down=',AHandleDown,' HandledByLCL=',HandledByLCL]);
