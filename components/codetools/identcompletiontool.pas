@@ -222,12 +222,16 @@ type
     ilcfDontAllowProcedures// context doesn't allow procedures (e.g. in function parameter, after other operator, in if codition etc. - Delphi mode supports assignment of procedures!)
     );
   TIdentifierListContextFlags = set of TIdentifierListContextFlag;
+
+  TOnGatherUserIdentifiersToFilteredList = procedure(Sender: TIdentifierList;
+    FilteredList: TFPList; PriorityCount: Integer) of object;
   
   TIdentifierList = class
   private
     FContext: TFindContext;
     FNewMemberVisibility: TCodeTreeNodeDesc;
     FContextFlags: TIdentifierListContextFlags;
+    FOnGatherUserIdentifiersToFilteredList: TOnGatherUserIdentifiersToFilteredList;
     FSortForHistory: boolean;
     FSortForScope: boolean;
     FStartAtom: TAtomPosition;
@@ -263,6 +267,7 @@ type
     function HasIdentifier(Identifier: PChar; const ParamList: string): boolean;
     function FindIdentifier(Identifier: PChar; const ParamList: string): TIdentifierListItem;
     function FindIdentifier(Identifier: PChar; PreferProc: boolean): TIdentifierListItem;
+    function FindIdentifier(Identifier: PChar): TIdentifierListItem;
     function FindCreatedIdentifier(const Ident: string): integer;
     function CreateIdentifier(const Ident: string): PChar;
     function StartUpAtomInFrontIs(const s: string): boolean;
@@ -290,6 +295,8 @@ type
     property StartContextPos: TCodeXYPosition
                                    read FStartContextPos write FStartContextPos;
     property ContainsFilter: Boolean read FContainsFilter write FContainsFilter;
+    property OnGatherUserIdentifiersToFilteredList: TOnGatherUserIdentifiersToFilteredList
+      read FOnGatherUserIdentifiersToFilteredList write FOnGatherUserIdentifiersToFilteredList;
   end;
   
   //----------------------------------------------------------------------------
@@ -667,6 +674,8 @@ begin
     end;
     AnAVLNode:=FItems.FindSuccessor(AnAVLNode);
   end;
+  if Assigned(FOnGatherUserIdentifiersToFilteredList) then
+    FOnGatherUserIdentifiersToFilteredList(Self, FFilteredList, cPriorityCount);
   {$IFDEF CTDEBUG}
   DebugLn(['TIdentifierList.UpdateFilteredList ',dbgs(FFilteredList.Count),' of ',dbgs(FItems.Count)]);
   {$ENDIF}
@@ -864,6 +873,19 @@ begin
   end else begin
     Result:=-1;
   end;
+end;
+
+function TIdentifierList.FindIdentifier(Identifier: PChar): TIdentifierListItem;
+var
+  Node: TAVLTreeNode;
+begin
+  FIdentSearchItem.Identifier:=Identifier;
+  // ignore ParamList
+  Node:=FIdentView.FindKey(FIdentSearchItem,@CompareIdentListSearchWithItemsWithoutParams);
+  if Assigned(Node) then
+    Result := TIdentifierListItem(Node.Data)
+  else
+    Result := nil;
 end;
 
 function TIdentifierList.CreateIdentifier(const Ident: string): PChar;

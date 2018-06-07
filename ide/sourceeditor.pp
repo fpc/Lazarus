@@ -1404,6 +1404,9 @@ var
   EnglishModifiedLGPLNotice: string;
   EnglishMITNotice: string;
 
+var
+  AWordCompletion: TWordCompletion = nil;
+
 implementation
 
 {$R *.lfm}
@@ -1423,7 +1426,6 @@ const
   SoftCenterMaximum = 8;
 
 var
-  AWordCompletion: TWordCompletion = nil;
   AutoStartCompletionBoxTimer: TIdleTimer = nil;
   SourceCompletionCaretXY: TPoint;
   PasBeautifier: TSynBeautifierPascal;
@@ -2532,7 +2534,7 @@ begin
         CurStr:=CurrentString;
         SL:=TStringList.Create;
         try
-          aWordCompletion.GetWordList(SL, CurStr, false, 100);
+          aWordCompletion.GetWordList(SL, CurStr, CodeToolBoss.IdentifierList.ContainsFilter, false, 100);
           ItemList:=SL;
         finally
           SL.Free;
@@ -2577,7 +2579,7 @@ begin
     if CurrentCompletionType=ctWordCompletion then begin
       SL:=TStringList.Create;
       try
-        aWordCompletion.GetWordList(SL, NewPrefix, false, 100);
+        aWordCompletion.GetWordList(SL, NewPrefix, CodeToolBoss.IdentifierList.ContainsFilter, false, 100);
         ItemList:=SL;
       finally
         SL.Free;

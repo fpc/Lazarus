@@ -619,6 +619,8 @@ type
       SrcType: TCodeTreeNodeDesc; const SrcName: string; out SrcFilename: string);
     procedure CodeToolBossGatherUserIdentifiers(Sender: TIdentCompletionTool;
       const ContextFlags: TIdentifierListContextFlags);
+    procedure CodeToolBossGatherUserIdentifiersToFilteredList(
+      Sender: TIdentifierList; FilteredList: TFPList; PriorityCount: Integer);
 
     function CTMacroFunctionProject(Data: Pointer): boolean;
     procedure CompilerParseStampIncHandler;
@@ -653,7 +655,7 @@ type
     OIChangedTimer: TIdleTimer;
 
     FIdentifierWordCompletionWordList: TStringList;
-    FIdentifierWordCompletion: TWordCompletion;
+    FIdentifierWordCompletionEnabled: Boolean;
 
     procedure DoDropFilesAsync(Data: PtrInt);
     procedure RenameInheritedMethods(AnUnitInfo: TUnitInfo; List: TStrings);
@@ -661,7 +663,8 @@ type
     procedure IdentifierWordCompletionGetSource(var Source: TStrings;
       var SourceTopLine,SourceBottomLine: integer;
       var IgnoreWordEndPos: TPoint; SourceIndex: integer);
-    procedure DoAddWordsToIdentCompletion;
+    procedure DoAddWordsToIdentCompletion(Sender: TIdentifierList;
+      FilteredList: TFPList; PriorityCount: Integer);
     // form editor and designer
     procedure DoBringToFrontFormOrUnit;
     procedure DoBringToFrontFormOrInspector(ForceInspector: boolean);
@@ -1675,7 +1678,6 @@ begin
   FreeThenNil(ObjectInspector1);
   FreeThenNil(SourceEditorManagerIntf);
   FreeAndNil(FIdentifierWordCompletionWordList);
-  FreeAndNil(FIdentifierWordCompletion);
 
   // disconnect handlers
   Application.RemoveAllHandlersOfObject(Self);
@@ -2032,8 +2034,14 @@ procedure TMainIDE.CodeToolBossGatherUserIdentifiers(
   Sender: TIdentCompletionTool; const ContextFlags: TIdentifierListContextFlags
   );
 begin
-  if not (ilcfStartIsSubIdent in ContextFlags) then
-    DoAddWordsToIdentCompletion;
+  FIdentifierWordCompletionEnabled := not (ilcfStartIsSubIdent in ContextFlags);
+end;
+
+procedure TMainIDE.CodeToolBossGatherUserIdentifiersToFilteredList(
+  Sender: TIdentifierList; FilteredList: TFPList; PriorityCount: Integer);
+begin
+  if FIdentifierWordCompletionEnabled then
+    DoAddWordsToIdentCompletion(Sender, FilteredList, PriorityCount);
 end;
 
 {------------------------------------------------------------------------------}
@@ -6473,27 +6481,29 @@ begin
   Result := SourceFileMgr.AddUnitToProject(AEditor);
 end;
 
-procedure TMainIDE.DoAddWordsToIdentCompletion;
+procedure TMainIDE.DoAddWordsToIdentCompletion(Sender: TIdentifierList;
+  FilteredList: TFPList; PriorityCount: Integer);
 var
   New: TIdentifierListItem;
   I: Integer;
 begin
   if FIdentifierWordCompletionWordList=nil then
-    FIdentifierWordCompletionWordList:=TStringList.Create
-  else
-    FIdentifierWordCompletionWordList.Clear;
-  if FIdentifierWordCompletion=nil then
   begin
-    FIdentifierWordCompletion := TWordCompletion.Create;
-    FIdentifierWordCompletion.OnGetSource := @IdentifierWordCompletionGetSource;
-  end;
+    FIdentifierWordCompletionWordList:=TStringList.Create;
+    FIdentifierWordCompletionWordList.OwnsObjects := True;
+  end else
+    FIdentifierWordCompletionWordList.Clear;
 
-  FIdentifierWordCompletion.GetWordList(FIdentifierWordCompletionWordList, '', False, 1000); // do not get words with prefix because the identifier list isn't reloaded when prefix changes
+  AWordCompletion.GetWordList(FIdentifierWordCompletionWordList, Sender.Prefix, Sender.ContainsFilter, False, 100);
   for I := FIdentifierWordCompletionWordList.Count-1 downto 0 do
   begin
-    New := CIdentifierListItem.Create(WordCompatibility, False, WordHistoryIndex,
-      PChar(FIdentifierWordCompletionWordList[I]), WordLevel, nil, nil, ctnWord);
-    CodeToolBoss.IdentifierList.Add(New);
+    if Sender.FindIdentifier(PChar(FIdentifierWordCompletionWordList[I]))=nil then
+    begin
+      New := CIdentifierListItem.Create(WordCompatibility, False, WordHistoryIndex,
+        PChar(FIdentifierWordCompletionWordList[I]), WordLevel, nil, nil, ctnWord);
+      FIdentifierWordCompletionWordList.Objects[I] := New;
+      FilteredList.Add(New);
+    end;
   end;
 end;
 
@@ -9284,6 +9294,7 @@ begin
   CodeToolBoss.DefineTree.OnGetVirtualDirectoryDefines:=
     @CodeToolBossGetVirtualDirectoryDefines;
   CodeToolBoss.DefineTree.OnPrepareTree:=@CodeToolBossPrepareTree;
+  CodeToolBoss.IdentifierList.OnGatherUserIdentifiersToFilteredList := @CodeToolBossGatherUserIdentifiersToFilteredList;
 
   CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
     'PROJECT',nil,@CTMacroFunctionProject);

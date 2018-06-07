@@ -40,8 +40,8 @@ type
     procedure AddWord(const AWord:string);
     property WordBufferCapacity:integer
        read GetWordBufferCapacity write SetWordBufferCapacity;
-    procedure GetWordList(AWordList:TStrings; const Prefix:String;
-       CaseSensitive:boolean; MaxResults:integer);
+    procedure GetWordList(AWordList:TStrings; const Filter: String;
+      ContainsFilter, CaseSensitive:boolean; MaxResults:integer);
     procedure CompletePrefix(const Prefix: string; var CompletedPrefix: string;
        CaseSensitive:boolean);
   public
@@ -72,9 +72,10 @@ end;
 { TWordCompletion }
 
 procedure TWordCompletion.GetWordList(AWordList: TStrings;
-  const Prefix: String; CaseSensitive: boolean; MaxResults: integer);
-var i, j, Line, x, PrefixLen, MaxHash, LineLen: integer;
-  UpPrefix, LineText, UpLineText, NewWord: string;
+  const Filter: String; ContainsFilter, CaseSensitive: boolean;
+  MaxResults: integer);
+var i, j, Line, x, FilterLen, MaxHash, LineLen: integer;
+  UpFilter, LineText, UpLineText, NewWord: string;
   SourceText: TStringList;
   HashList: ^integer;// index list. Every entry points to a word in the AWordList
   SourceTextIndex, SourceTopLine, SourceBottomLine:integer;
@@ -110,6 +111,28 @@ var i, j, Line, x, PrefixLen, MaxHash, LineLen: integer;
     end;
   end;
 
+  procedure AddIfMatch(const AWord:string);
+  begin
+    if CaseSensitive then begin
+      if ContainsFilter then
+      begin
+        if pos(Filter, AWord)>0 then
+          Add(NewWord);
+      end else
+        if copy(AWord,1,FilterLen)=Filter then
+          Add(NewWord);
+    end else
+    begin
+      if ContainsFilter then
+      begin
+        if pos(UpFilter, UpperCase(AWord))>0 then
+          Add(AWord);
+      end else
+        if CompareText(copy(NewWord,1,FilterLen),UpFilter)=0 then
+          Add(NewWord)
+    end;
+  end;
+
 // TWordCompletion.GetWordList
 begin
   AWordList.Clear;
@@ -118,19 +141,13 @@ begin
   GetMem(HashList,MaxHash*SizeOf(Integer));
   try
     for i:=0 to MaxHash-1 do HashList[i]:=-1;
-    PrefixLen:=length(Prefix);
+    FilterLen:=length(Filter);
     AWordList.Capacity:=MaxResults;
-    UpPrefix:=uppercase(Prefix);
+    UpFilter:=uppercase(Filter);
     // first add all recently used words
     i:=FWordBuffer.Count-1;
     while (i>=0) and (AWordList.Count<MaxResults) do begin
-      NewWord:=FWordBuffer[i];
-      if CaseSensitive then begin
-        if copy(NewWord,1,PrefixLen)=Prefix then
-          Add(NewWord);
-      end else if CompareText(copy(NewWord,1,PrefixLen),UpPrefix)=0 then begin
-        Add(NewWord)
-      end;
+      AddIfMatch(FWordBuffer[i]);
       dec(i);
     end;
     if AWordList.Count>=MaxResults then exit;
@@ -163,20 +180,8 @@ begin
                 repeat
                   inc(i);
                 until (i>LineLen) or (CharTable[LineText[i]]=ctNone);
-                if i-x>=PrefixLen then begin
-                  if CaseSensitive then begin
-                    j:=1;
-                    while (j<=PrefixLen) and (Prefix[j]=LineText[x+j-1]) do
-                      inc(j);
-                    if (j>PrefixLen) and (Line<>IgnoreWordEndPos.Y) and (i<>IgnoreWordEndPos.X) then
-                      Add(copy(LineText,x,i-x));
-                  end else begin
-                    j:=1;
-                    while (j<=PrefixLen) and (UpPrefix[j]=UpLineText[x+j-1]) do
-                      inc(j);
-                    if (j>PrefixLen) and (Line<>IgnoreWordEndPos.Y) and (i<>IgnoreWordEndPos.X) then
-                      Add(copy(LineText,x,i-x))
-                  end;
+                if (i-x>=FilterLen) and (Line<>IgnoreWordEndPos.Y) and (i<>IgnoreWordEndPos.X) then begin
+                  AddIfMatch(copy(LineText,x,i-x));
                   if AWordList.Count>=MaxResults then exit;
                 end;
                 x:=i;
@@ -213,7 +218,7 @@ begin
   WordList:=TStringList.Create;
   try
     // fetch all words with Prefix
-    GetWordList(WordList,Prefix,CaseSensitive,10000);
+    GetWordList(WordList,Prefix,False,CaseSensitive,10000);
     if WordList.Count=0 then exit;
     // find the biggest prefix of all available words
     CompletedPrefix:=WordList[0];
