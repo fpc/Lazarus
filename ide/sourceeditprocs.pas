@@ -489,7 +489,7 @@ begin
     ctnWord:
       begin
         AColor:=clGray;
-        s:='undefined';
+        s:='text';
       end;
 
     ctnNone:
