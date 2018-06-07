@@ -465,7 +465,8 @@ begin
       KillTimer(FForm.Form.Handle, WM_SETNOFRAME);
       ShowWindow(Form.Form.Handle, SW_HIDE);
       FHiding := False;
-      FixF12_ActiveEditor;
+      if Form.Form = LazarusIDE.LastFormActivated then
+        FixF12_ActiveEditor;
       if Form.Form is TFakeForm then
         RepaintFormImages;
       Exit;
