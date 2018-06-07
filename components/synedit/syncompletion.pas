@@ -155,6 +155,7 @@ type
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: char); override;
     procedure AddCharAtCursor(AUtf8Char: TUTF8Char); virtual;
+    procedure DeleteCharAfterCursor; virtual;
     procedure DeleteCharBeforeCursor; virtual;
     procedure Paint; override;
     procedure AppDeactivated(Sender: TObject); // Because Form.Deactivate isn't called
@@ -254,6 +255,7 @@ type
   TSynCompletionForm = class(TSynBaseCompletionForm)
   protected
     procedure AddCharAtCursor(AUtf8Char: TUTF8Char); override;
+    procedure DeleteCharAfterCursor; override;
     procedure DeleteCharBeforeCursor; override;
   end;
 
@@ -500,6 +502,13 @@ begin
   inherited AddCharAtCursor(AUtf8Char);
   if CurrentEditor <> nil then
     (CurrentEditor as TCustomSynEdit).CommandProcessor(ecChar, AUtf8Char, nil);
+end;
+
+procedure TSynCompletionForm.DeleteCharAfterCursor;
+begin
+  if CurrentEditor <> nil then
+    (CurrentEditor as TCustomSynEdit).CommandProcessor(ecDeleteChar, #0, nil);
+  inherited DeleteCharAfterCursor;
 end;
 
 procedure TSynCompletionForm.DeleteCharBeforeCursor;
@@ -814,6 +823,11 @@ begin
       if (Shift = []) and (Length(CurrentString) > 0) then begin
         if Assigned(OnKeyDelete) then OnKeyDelete(Self);
         DeleteCharBeforeCursor;
+      end;
+    VK_DELETE:
+      begin
+        if Assigned(OnKeyDelete) then OnKeyDelete(Self);
+        DeleteCharAfterCursor;
       end;
     VK_TAB:
       begin
@@ -1299,6 +1313,11 @@ begin
   dec(FHintLock);
   if FHintLock = 0 then
     ShowItemHint(Position);
+end;
+
+procedure TSynBaseCompletionForm.DeleteCharAfterCursor;
+begin
+  // do nothing
 end;
 
 procedure TSynBaseCompletionForm.DoOnDragResize(Sender: TObject);
