@@ -3464,31 +3464,22 @@ end;
 procedure TDesigner.SetShowNonVisualComponents(AValue: boolean);
 var
   i: Integer;
-  SelControl: TSelectedControl;
-  Changed: Boolean;
 begin
   if ShowNonVisualComponents=AValue then exit;
+
   if AValue then begin
     Include(FFlags,dfShowNonVisualComponents);
     Form.Invalidate;
   end else begin
     Exclude(FFlags,dfShowNonVisualComponents);
+    Selection.BeginUpdate;
     try
-      Changed:=false;
-      for i:=Selection.Count-1 downto 0 do begin
-        SelControl:=Selection[i];
-        if not SelControl.IsNonVisualComponent then continue;
-        if not Changed then begin
-          Selection.BeginUpdate;
-          Changed:=true;
-        end;
-        Selection.Delete(i);
-      end;
+      for i:=Selection.Count-1 downto 0 do
+        if Selection[i].IsNonVisualComponent then
+          Selection.Delete(i);
     finally
-      if Changed then begin
-        Selection.EndUpdate;
-        Form.Invalidate;
-      end;
+      Selection.EndUpdate;
+      Form.Invalidate;
     end;
   end;
 end;
