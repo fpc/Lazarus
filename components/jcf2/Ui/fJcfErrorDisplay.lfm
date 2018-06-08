@@ -7,28 +7,34 @@ object ExceptionDialog: TExceptionDialog
   Caption = 'JCF Exception'
   ClientHeight = 180
   ClientWidth = 420
-  Font.CharSet = ANSI_CHARSET
-  Font.Height = -15
-  Font.Name = 'Segoe UI'
   OnCreate = FormCreate
   OnResize = FormResize
-  LCLVersion = '0.9.27'
-  object btnOk: TButton
-    Left = 155
-    Height = 34
-    Top = 133
-    Width = 100
-    Caption = '&OK'
-    Default = True
-    OnClick = btnOkClick
+  LCLVersion = '1.9.0.0'
+  object mExceptionMessage: TMemo
+    Left = 6
+    Height = 133
+    Top = 6
+    Width = 408
+    Align = alClient
+    BorderSpacing.Around = 6
+    ReadOnly = True
     TabOrder = 0
   end
-  object mExceptionMessage: TMemo
-    Left = 0
-    Height = 124
-    Top = 0
-    Width = 409
-    ReadOnly = True
+  object BtnPanel: TButtonPanel
+    Left = 6
+    Height = 29
+    Top = 145
+    Width = 408
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     TabOrder = 1
+    ShowButtons = [pbOK]
+    ShowBevel = False
   end
 end

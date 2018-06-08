@@ -59,8 +59,8 @@ begin
   else
   begin
     // MS Shell Dlg
-    AObjectFont.Name := 'MS Sans Serif';
-    AObjectFont.Size := 8;
+    AObjectFont.Name := 'default';
+    AObjectFont.Size := 10;
   end;
 end;
 
@@ -80,8 +80,8 @@ begin
   else
   begin
     // MS Shell Dlg
-    AObjectFont.Name := 'Courrier New';
-    AObjectFont.Size := 8;
+    AObjectFont.Name := 'default';
+    AObjectFont.Size := 10;
   end;
 end;
 
@@ -91,6 +91,10 @@ var
   AObjectFont: TFont;
   AFontType:   TFontType;
 begin
+  {$ifdef FPC}
+  exit; // Lazarus forms have "default" font set
+  {$endif}
+
   if (AObject.ClassType = TFont) then
     AObjectFont := TFont(AObject)
   else
