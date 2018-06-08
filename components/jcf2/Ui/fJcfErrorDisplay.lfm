@@ -8,7 +8,6 @@ object ExceptionDialog: TExceptionDialog
   ClientHeight = 180
   ClientWidth = 420
   OnCreate = FormCreate
-  OnResize = FormResize
   LCLVersion = '1.9.0.0'
   object mExceptionMessage: TMemo
     Left = 6
