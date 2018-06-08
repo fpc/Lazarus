@@ -75,5 +75,8 @@
 		<issue name="TMenu.OnMeasureItem">
 			<short>not supported</short>
 		</issue>
+		<issue name="TMenuItem.Default">
+			<short>Default property is not supported</short>
+		</issue>
 	</widgetset>
 </package>

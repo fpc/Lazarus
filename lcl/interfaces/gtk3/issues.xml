@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package name="lcl">
+	<widgetset name="gtk3">
+		<issue name="TMenuItem.Default">
+			<short>Default property is not supported</short>
+		</issue>
+	</widgetset>
+</package>
