@@ -2238,6 +2238,8 @@ begin
   IDECmdScopeSrcEdit.AddWindowClass(nil);
   IDECmdScopeSrcEditOnly.AddWindowClass(TSourceEditorWindowInterface);
 
+  IDECmdScopeSrcEditOnlyMultiCaret.AddWindowClass(TLazSynPluginTemplateMultiCaret);
+
   IDECmdScopeSrcEditOnlyTmplEdit.AddWindowClass(TLazSynPluginTemplateEditForm);
   IDECmdScopeSrcEditOnlyTmplEditOff.AddWindowClass(TLazSynPluginTemplateEditFormOff);
 

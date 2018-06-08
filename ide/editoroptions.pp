@@ -79,6 +79,7 @@ type
   TSynHighlightElement = TSynHighlighterAttributes;
   TCustomSynClass = class of TSrcIDEHighlighter;
 
+  TLazSynPluginTemplateMultiCaret = class(TForm)     end;
   TLazSynPluginTemplateEditForm = class(TForm)     end;
   TLazSynPluginTemplateEditFormOff = class(TForm)  end;
   TLazSynPluginSyncroEditFormSel = class(TForm)    end;
@@ -5209,6 +5210,19 @@ begin
                         TLazSynPluginSyncroEditForm, ecIdePSyncroOffset);
         KeyMap.AssignTo(TSynPluginSyncroEdit(ASynEdit.Plugin[c]).KeystrokesOffCell,
                         TLazSynPluginSyncroEditFormOff, ecIdePSyncroOutOffset);
+      end;
+    end;
+
+    if (ASynEdit.Plugin[c] is TSynPluginMultiCaret) then begin
+      // Only ecPluginMultiCaretClearAll
+      // the others are handled in SynEdit.Keystrokes
+      TSynPluginMultiCaret(ASynEdit.Plugin[c]).Keystrokes.Clear;
+      if i >= 0 then begin
+        TSynPluginMultiCaret(ASynEdit.Plugin[c]).Keystrokes.Assign(
+                               TSynPluginMultiCaret(SimilarEdit.Plugin[i]).KeyStrokes);
+      end else begin
+        KeyMap.AssignTo(TSynPluginMultiCaret(ASynEdit.Plugin[c]).Keystrokes,
+                        TLazSynPluginTemplateMultiCaret, 0); //ecIdePTmplOffset);
       end;
     end;
 

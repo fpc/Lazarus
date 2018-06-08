@@ -2335,6 +2335,7 @@ begin
         ActiveMode := mcmAddingCarets;
       end;
     ecPluginMultiCaretClearAll: begin
+      Handled := FCarets.Count > 0;
       ClearCarets;
       if not SelectionObj.SelAvail then
         SelectionObj.Clear; // clear invisibel selection
