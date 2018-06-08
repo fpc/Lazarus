@@ -42,7 +42,6 @@ type
     FLogText: Text;
     FLogTextInUse, FLogTextFailed: Boolean;
     FUseStdOut: Boolean;
-    FWriteToFileLock: TRTLCriticalSection;
     procedure DoOpenFile;
     procedure DoCloseFile;
     function GetWriteTarget: TLazLoggerWriteTarget;
@@ -54,8 +53,8 @@ type
     procedure OpenFile;
     procedure CloseFile;
 
-    procedure WriteToFile(const s: string); inline;
-    procedure WriteLnToFile(const s: string); inline;
+    procedure WriteToFile(const s: string); virtual;
+    procedure WriteLnToFile(const s: string); virtual;
 
     property  LogName: String read FLogName write SetLogName;
     property  UseStdOut: Boolean read FUseStdOut write FUseStdOut;
@@ -63,6 +62,46 @@ type
     property  WriteTarget: TLazLoggerWriteTarget read GetWriteTarget;
     property  ActiveLogText: PText read FActiveLogText;
   end;
+
+  { TLazLoggerFileHandleThreadSave
+    file operations in critical section
+  }
+
+  TLazLoggerFileHandleThreadSave = class (TLazLoggerFileHandle)
+  private
+    FWriteToFileLock: TRTLCriticalSection;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure WriteToFile(const s: string); override;
+    procedure WriteLnToFile(const s: string); override;
+  end;
+
+  { TLazLoggerFileHandleMainThread
+    file operations queued for main thread
+  }
+
+  TLazLoggerFileHandleMainThread = class (TLazLoggerFileHandle)
+  private
+  type
+    PWriteListEntry = ^TWriteListEntry;
+    TWriteListEntry = record
+      Next: PWriteListEntry;
+      Data: String;
+      Ln: Boolean;
+    end;
+  private
+    FWriteToFileLock: TRTLCriticalSection;
+    FFirst, FLast: PWriteListEntry;
+
+    procedure MainThreadWrite;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure WriteToFile(const s: string); override;
+    procedure WriteLnToFile(const s: string); override;
+  end;
+
 
   { TLazLoggerFile }
 
@@ -174,6 +213,119 @@ begin
   LazLoggerBase.DebugLogger := ALogger;
 end;
 
+{ TLazLoggerFileHandleMainThread }
+
+procedure TLazLoggerFileHandleMainThread.MainThreadWrite;
+var
+  Data, NextData: PWriteListEntry;
+begin
+  EnterCriticalsection(FWriteToFileLock);
+  try
+    Data := FFirst;
+    FFirst := nil;
+    FLast := nil;
+  finally
+    LeaveCriticalsection(FWriteToFileLock);
+  end;
+
+  while Data <> nil do begin
+    NextData := Data^.Next;
+    if Data^.Ln
+    then inherited WriteLnToFile(Data^.Data)
+    else inherited WriteToFile(Data^.Data);
+    Dispose(Data);
+    Data := NextData;
+  end;
+end;
+
+constructor TLazLoggerFileHandleMainThread.Create;
+begin
+  InitCriticalSection(FWriteToFileLock);
+  inherited;
+end;
+
+destructor TLazLoggerFileHandleMainThread.Destroy;
+begin
+  inherited Destroy;
+  DoneCriticalsection(FWriteToFileLock);
+end;
+
+procedure TLazLoggerFileHandleMainThread.WriteToFile(const s: string);
+var
+  Data: PWriteListEntry;
+begin
+  New(Data);
+  Data^.Data := s;
+  Data^.Ln := False;
+  EnterCriticalsection(FWriteToFileLock);
+  try
+    if FLast = nil then
+      FFirst := Data
+    else
+      FLast^.Next := Data;
+    Data^.Next := FLast;
+    FLast := Data;
+  finally
+    LeaveCriticalsection(FWriteToFileLock);
+  end;
+  TThread.Queue(nil, @MainThreadWrite);
+end;
+
+procedure TLazLoggerFileHandleMainThread.WriteLnToFile(const s: string);
+var
+  Data: PWriteListEntry;
+begin
+  New(Data);
+  Data^.Data := s;
+  Data^.Ln := True;
+  EnterCriticalsection(FWriteToFileLock);
+  try
+    if FLast = nil then
+      FFirst := Data
+    else
+      FLast^.Next := Data;
+    Data^.Next := FLast;
+    FLast := Data;
+  finally
+    LeaveCriticalsection(FWriteToFileLock);
+  end;
+  TThread.Queue(nil, @MainThreadWrite);
+end;
+
+{ TLazLoggerFileHandleThreadSave }
+
+constructor TLazLoggerFileHandleThreadSave.Create;
+begin
+  InitCriticalSection(FWriteToFileLock);
+  inherited;
+end;
+
+destructor TLazLoggerFileHandleThreadSave.Destroy;
+begin
+  inherited Destroy;
+  DoneCriticalsection(FWriteToFileLock);
+end;
+
+procedure TLazLoggerFileHandleThreadSave.WriteToFile(const s: string);
+begin
+  EnterCriticalsection(FWriteToFileLock);
+  try
+    inherited WriteToFile(s);
+  finally
+    LeaveCriticalsection(FWriteToFileLock);
+  end;
+end;
+
+procedure TLazLoggerFileHandleThreadSave.WriteLnToFile(const s: string);
+begin
+  EnterCriticalsection(FWriteToFileLock);
+  try
+    inherited WriteLnToFile(s);
+  finally
+    LeaveCriticalsection(FWriteToFileLock);
+  end;
+end;
+
 (* ArgV *)
 
 
@@ -268,7 +420,6 @@ end;
 
 constructor TLazLoggerFileHandle.Create;
 begin
-  InitCriticalSection(FWriteToFileLock);
   FLogTextInUse := False;
   FLogTextFailed := False;
   {$ifdef WinCE}
@@ -286,7 +437,6 @@ destructor TLazLoggerFileHandle.Destroy;
 begin
   inherited Destroy;
   DoCloseFile;
-  DoneCriticalsection(FWriteToFileLock);
 end;
 
 procedure TLazLoggerFileHandle.OpenFile;
@@ -303,8 +453,6 @@ end;
 
 procedure TLazLoggerFileHandle.WriteToFile(const s: string);
 begin
-  EnterCriticalsection(FWriteToFileLock);
-  try
   DoOpenFile;
   if FActiveLogText = nil then exit;
 
@@ -312,15 +460,10 @@ begin
 
   if FCloseLogFileBetweenWrites then
     DoCloseFile;
-  finally
-    LeaveCriticalsection(FWriteToFileLock);
-  end;
 end;
 
 procedure TLazLoggerFileHandle.WriteLnToFile(const s: string);
 begin
-  EnterCriticalsection(FWriteToFileLock);
-  try
   DoOpenFile;
   if FActiveLogText = nil then exit;
 
@@ -328,9 +471,6 @@ begin
 
   if FCloseLogFileBetweenWrites then
     DoCloseFile;
-  finally
-    LeaveCriticalsection(FWriteToFileLock);
-  end;
 end;
 
 { TLazLoggerFile }
@@ -338,7 +478,7 @@ end;
 function TLazLoggerFile.GetFileHandle: TLazLoggerFileHandle;
 begin
   if FFileHandle = nil then
-    FFileHandle := TLazLoggerFileHandle.Create;
+    FFileHandle := TLazLoggerFileHandleMainThread.Create;
   Result := FFileHandle;
 end;
 
