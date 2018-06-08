@@ -25,8 +25,8 @@ unit editor_general_options;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LCLType, StdCtrls, Controls, ExtCtrls, Graphics,
-  EditorOptions, LazarusIDEStrConsts, IDEProcs, IDEOptionsIntf,
+  Classes, SysUtils, math, LCLProc, LCLType, StdCtrls, Controls, ExtCtrls,
+  Graphics, EditorOptions, LazarusIDEStrConsts, IDEProcs, IDEOptionsIntf,
   IDEUtils, SynEdit, SynHighlighterPas, SynPluginMultiCaret, DividerBevel;
 
 type
@@ -83,6 +83,8 @@ type
     function DefaultBookmarkImages: TImageList;
     procedure SetExtendedKeywordsMode(const AValue: Boolean);
     procedure SetStringKeywordMode(const AValue: TSynPasStringMode);
+  protected
+    procedure CreateHandle; override;
   public
     PreviewEdits: array of TPreviewEditor;
     procedure AddPreviewEdit(AEditor: TPreviewEditor);
@@ -410,6 +412,21 @@ begin
   if FPasStringKeywordMode = AValue then exit;
   FPasStringKeywordMode := AValue;
   UpdatePrevieEdits;
+end;
+
+procedure TEditorGeneralOptionsFrame.CreateHandle;
+var
+  i, w: Integer;
+  c: TControl;
+begin
+  inherited;
+  w := 150;
+  for i := 0 to ControlCount - 1 do begin
+    c := Controls[i];
+    if not (c is TCheckBox) then Continue;
+    w := Max(w, Canvas.TextExtent(c.Caption).cx);
+  end;
+  Constraints.MinWidth := 2 * w + 60;
 end;
 
 procedure TEditorGeneralOptionsFrame.AddPreviewEdit(AEditor: TPreviewEditor);
