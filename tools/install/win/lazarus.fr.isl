@@ -6,7 +6,7 @@
 DelUserConf=Supprimer tous les fichiers de configuration de l'utilisateur provenant d'installations précédentes
 CleanUp=Nettoyer: 
 
-InstallQt=Installer la DLL de l'interface QT
+InstallQt=Installer la DLL de l'interface QT globalement
 InstallChm=Installer les fichiers d'aide CHM
 AssociateGroup=Associer les extensions de fichiers
 

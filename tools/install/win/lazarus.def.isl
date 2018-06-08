@@ -6,7 +6,7 @@
 DelUserConf=Delete all user configuration files from previous installs
 CleanUp=Clean up:
 
-InstallQt=Install Qt interface DLL
+InstallQt=Globally install Qt interface DLL
 InstallChm=Install CHM help files
 AssociateGroup=Associate file extensions
 

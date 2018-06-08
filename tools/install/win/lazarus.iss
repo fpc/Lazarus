@@ -112,6 +112,7 @@ Source: {#QtInfDir}\*.dll; DestDir: {sys}; Flags: sharedfile replacesameversion
 #else
 Source: {#QtInfDir}\*.dll; DestDir: {sys}; Flags: sharedfile replacesameversion; Components: installqtintfdll; Tasks: 
 #endif
+Source: {#QtInfDir}\*.dll; DestDir: {app} 
 #if FPCVersion=="2.2.0"
 Source: {#BuildDir}\fpc\{#FPCVersion}\bin\{#FPCFullTarget}\cpp.exe; DestDir: {app}\ide; MinVersion: 1,0
 #endif

@@ -6,7 +6,7 @@
 DelUserConf=Lösche alle Benutzer-Konfigurationsdateien von vorherigen Installationen
 CleanUp=Aufräumen
 
-InstallQt=QT-Interface-DLL installieren
+InstallQt=QT-Interface-DLL global installieren
 InstallChm=CHM-Hilfedateien installieren
 AssociateGroup=Dateierweiterungen registrieren
 
