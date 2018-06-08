@@ -1349,9 +1349,9 @@
           </p>
           <ul>
             <li>
-              dmDesktop - on the full desktop
+              dmDesktop - no attempt to choose specific monitor.
             </li><li>
-              dmPrimary - on the primary monitor
+              dmPrimary - on the primary monitor.
             </li><li>
               dmMainForm - on the same monitor as the main form. If there is no main form then use dmPrimary behavior.
             </li><li>
@@ -1510,13 +1510,13 @@
           </p>
           <ul>
             <li>
-              caNone: do nothing (don't close)
+              caNone: do nothing (don't close).
             </li><li>
-              caHide: hide the form (default for modal forms)
+              caHide: hide the form (default for modal forms).
             </li><li>
-              caFree: destroy the form
+              caFree: destroy the form.
             </li><li>
-              caMinimize: minimize the form (MDI child default)
+              caMinimize: minimize the form (MDI child default).
             </li>
           </ul>
           <p>
@@ -3315,8 +3315,7 @@ ShowModal creates its own event loop calling ProcessMessages.
       <!-- property Visibility: public -->
       <element name="TCustomForm.DefaultControl">
         <short>The control associated with the default action for this form.</short>
-        <descr>
-&#x9;&#x9;      This is typically a button such as 'Accept'
+        <descr>This is typically a button such as 'Accept'
           which is highlighted in some way on-screen to indicate
           that this is the default action,
           and is selected either by hitting 'Return' or 'Enter'
@@ -3325,8 +3324,19 @@ ShowModal creates its own event loop calling ProcessMessages.
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.DefaultMonitor">
-        <short>The monitor type on which the form shall appear.</short>
-        <descr>
+        <short>The monitor on which the form will appear.</short>
+        <descr>Possible values:
+          <ul>
+            <li>
+              dmDesktop - no attempt to choose specific monitor.
+            </li><li>
+              dmPrimary - on the primary monitor.
+            </li><li>
+              dmMainForm - on the same monitor as the main form. If there is no main form then use dmPrimary behavior.
+            </li><li>
+              dmActiveForm - on the same monitor as the currently active form. If there is no active form use dmMainForm behavior.
+            </li>
+          </ul>
         </descr>
         <seealso>
         </seealso>
@@ -3349,9 +3359,18 @@ ShowModal creates its own event loop calling ProcessMessages.
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.FormStyle">
-        <short>Determines the <link id="#lcl.Controls.TFormStyle">Style</link> of the form (MDI, splash...).
+        <short>Determines the style of the form.
         </short>
         <descr>
+          Possible values:
+          <ul>
+            <li>fsNormal - usual style.</li>
+            <li>fsStayOnTop - form is positioned above all application's forms, except those which have fsStayOnTop style.</li>
+            <li>fsSystemStayOnTop - form is positioned above all OS windows, except other OS top-level windows.</li>
+            <li>fsSplash - form is border-less.</li>
+            <li>fsMDIForm - MDI parent form.</li>
+            <li>fsMDIChild - MDI child form.</li>
+          </ul>
         </descr>
         <seealso>
           <link id="#lcl.Controls.TFormStyle"/>
@@ -9261,10 +9280,10 @@ ShowModal creates its own event loop calling ProcessMessages.
           For creating forms without resources you have 3 options:
           </p>
           <ul>
-            <li>Create a TForm class (not a descendant)</li>
+            <li>Create a TForm class (not a descendant).</li>
             <li>Construct your form using the CreateNew() constructor.</li>
             <li>It is also possible to disable the exception by setting the global
-               variable RequireDerivedFormResource to False. </li>
+               variable RequireDerivedFormResource to False.</li>
           </ul>
           <p>
           History:
