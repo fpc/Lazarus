@@ -7,8 +7,8 @@ object EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
   ClientWidth = 434
   TabOrder = 0
   Visible = False
-  DesignLeft = 295
-  DesignTop = 212
+  DesignLeft = 399
+  DesignTop = 233
   object UndoLimitLabel: TLabel
     AnchorSideLeft.Control = UndoLimitComboBox
     AnchorSideLeft.Side = asrBottom
@@ -201,7 +201,7 @@ object EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 19
-    Top = 292
+    Top = 319
     Width = 152
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
@@ -215,7 +215,7 @@ object EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 218
     Height = 19
-    Top = 292
+    Top = 319
     Width = 152
     BorderSpacing.Top = 6
     Caption = 'OverwriteBlockCheckBox'
@@ -296,7 +296,7 @@ object EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 15
-    Top = 271
+    Top = 298
     Width = 434
     Caption = 'BlockGroupDivider'
     Anchors = [akTop, akLeft, akRight]
@@ -317,13 +317,14 @@ object EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
   end
   object MultiCaretOnColumnSelection: TCheckBox
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = ScrollPastEndLineCheckBox
+    AnchorSideTop.Control = MultiCaretGroupDivider
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 19
-    Top = 227
+    Top = 254
     Width = 183
     BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
     Caption = 'MultiCaretOnColumnSelection'
     TabOrder = 17
   end
@@ -332,7 +333,7 @@ object EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideTop.Control = MultiCaretOnColumnSelection
     Left = 218
     Height = 19
-    Top = 227
+    Top = 254
     Width = 169
     Caption = 'chkMultiCaretColumnMode'
     TabOrder = 18
@@ -343,10 +344,26 @@ object EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 19
-    Top = 246
+    Top = 273
     Width = 126
     BorderSpacing.Left = 6
     Caption = 'chkMultiCaretMode'
     TabOrder = 19
+  end
+  object MultiCaretGroupDivider: TDividerBevel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ScrollPastEndLineCheckBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 15
+    Top = 233
+    Width = 434
+    Caption = 'MultiCaretGroupDivider'
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
+    Font.Style = [fsBold]
+    ParentFont = False
   end
 end

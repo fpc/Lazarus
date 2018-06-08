@@ -1622,7 +1622,8 @@ resourcestring
   dlgIndentsTabsGroupOptions = 'Tabs';
   dlgIndentsIndentGroupOptions = 'Indent';
   dlgCommentIndentGroupOptions = 'Comments';
-  dlgCursorGroupOptions = 'Cursor';
+  dlgCaretGroupOptions = 'Cursor';
+  dlgMultiCaretGroupOptions = 'Multi-caret';
   dlgBlockGroupOptions = 'Selection';
   dlgAlwaysVisibleCursor = 'Always visible cursor';
   dlgAutoIndent = 'Auto indent';
@@ -1848,9 +1849,9 @@ resourcestring
   dlgCopyWordAtCursorOnCopyNone = 'Copy word on copy none';
   dlgHomeKeyJumpsToNearestStart = 'Home key jumps to nearest start';
   dlgEndKeyJumpsToNearestStart = 'End key jumps to nearest end';
-  dlgMultiCaretOnColumnSelection = 'Enable multi caret for column selection';
-  dlgMultiCaretColumnMode = 'Multi-caret (column-select) move with cursor';
-  dlgMultiCaretMode = 'Multi-caret move with cursor';
+  dlgMultiCaretOnColumnSelection = 'Enable multi-caret for column selection';
+  dlgMultiCaretColumnMode = 'Navigation keys move all carets (column-select)';
+  dlgMultiCaretMode = 'Navigation keys move all carets';
   dlgColorLink = '(Edit Color)';
   dlgKeyLink = '(Edit Key)';
   dlgBracketHighlight = 'Bracket highlight';

@@ -36,6 +36,7 @@ type
   TEditorGeneralOptionsFrame = class(TAbstractIDEOptionsEditor)
     chkMultiCaretColumnMode: TCheckBox;
     chkMultiCaretMode: TCheckBox;
+    MultiCaretGroupDivider: TDividerBevel;
     MultiCaretOnColumnSelection: TCheckBox;
     CursorSkipsTabCheckBox: TCheckBox;
     CaretGroupDivider: TDividerBevel;
@@ -133,7 +134,7 @@ begin
 
 
   // caret + key navigation
-  CaretGroupDivider.Caption := dlgCursorGroupOptions;
+  CaretGroupDivider.Caption := dlgCaretGroupOptions;
   KeepCursorXCheckBox.Caption := dlgKeepCursorX;
   PersistentCursorCheckBox.Caption := dlgPersistentCursor;
   AlwaysVisibleCursorCheckBox.Caption := dlgAlwaysVisibleCursor;
@@ -141,6 +142,9 @@ begin
   CursorSkipsTabCheckBox.Caption := dlgCursorSkipsTab;
   HomeKeyJumpsToNearestStartCheckBox.Caption := dlgHomeKeyJumpsToNearestStart;
   EndKeyJumpsToNearestStartCheckBox.Caption := dlgEndKeyJumpsToNearestStart;
+
+  // multi caret
+  MultiCaretGroupDivider.Caption := dlgMultiCaretGroupOptions;
   MultiCaretOnColumnSelection.Caption := dlgMultiCaretOnColumnSelection;
   chkMultiCaretColumnMode.Caption := dlgMultiCaretColumnMode;
   chkMultiCaretMode.Caption := dlgMultiCaretMode;
