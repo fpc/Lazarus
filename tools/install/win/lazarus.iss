@@ -62,6 +62,8 @@ UsePreviousTasks=no
 ; since appid can change, UsePreviousLanguage must be off
 UsePreviousLanguage=no
 UninstallDisplayIcon={app}\lazarus.exe
+DisableWelcomePage=no
+DisableDirPage=no
 
 [Tasks]
 Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:AdditionalIcons}; Flags: unchecked
