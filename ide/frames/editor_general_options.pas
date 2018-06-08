@@ -36,6 +36,7 @@ type
   TEditorGeneralOptionsFrame = class(TAbstractIDEOptionsEditor)
     chkMultiCaretColumnMode: TCheckBox;
     chkMultiCaretMode: TCheckBox;
+    chkMultiCaretDelSkipCr: TCheckBox;
     MultiCaretGroupDivider: TDividerBevel;
     MultiCaretOnColumnSelection: TCheckBox;
     CursorSkipsTabCheckBox: TCheckBox;
@@ -150,6 +151,7 @@ begin
   MultiCaretOnColumnSelection.Caption := dlgMultiCaretOnColumnSelection;
   chkMultiCaretColumnMode.Caption := dlgMultiCaretColumnMode;
   chkMultiCaretMode.Caption := dlgMultiCaretMode;
+  chkMultiCaretDelSkipCr.Caption := dlgMultiCaretDelSkipCr;
 
   // Block
   BlockGroupDivider.Caption := dlgBlockGroupOptions;
@@ -186,6 +188,7 @@ begin
     MultiCaretOnColumnSelection.Checked := MultiCaretOnColumnSelect;
     chkMultiCaretColumnMode.Checked := MultiCaretDefaultColumnSelectMode = mcmMoveAllCarets;
     chkMultiCaretMode.Checked := MultiCaretDefaultMode = mcmMoveAllCarets;
+    chkMultiCaretDelSkipCr.Checked := MultiCaretDeleteSkipLineBreak;
 
     // block
     PersistentBlockCheckBox.Checked := eoPersistentBlock in SynEditOptions2;
@@ -254,7 +257,7 @@ begin
       MultiCaretDefaultMode := mcmMoveAllCarets
     else
       MultiCaretDefaultMode := mcmCancelOnCaretMove;
-
+    MultiCaretDeleteSkipLineBreak := chkMultiCaretDelSkipCr.Checked;
 
     // block
     UpdateOptionFromBool(PersistentBlockCheckBox.Checked, eoPersistentBlock);

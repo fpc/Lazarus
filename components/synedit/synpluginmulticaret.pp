@@ -289,6 +289,11 @@ type
   );
   TSynPluginMultiCaretStateFlags = set of TSynPluginMultiCaretStateFlag;
 
+  TSynMultiCaretOption = (
+    smcoDeleteSkipLineBreak      // ecDeleteChar will not join lines
+  );
+  TSynMultiCaretOptions = set of TSynMultiCaretOption;
+
   { TSynEditUndoMultiCaret }
 
   TSynEditUndoMultiCaret = class(TSynEditUndoItem)
@@ -319,6 +324,7 @@ type
     FEnableWithColumnSelection: Boolean;
     FKeyStrokes: TSynPluginMultiCaretKeyStrokes;
     FOnBeforeCommand: TSynMultiCaretBeforeCommand;
+    FOptions: TSynMultiCaretOptions;
     FStateFlags: TSynPluginMultiCaretStateFlags;
     FMouseActions: TSynPluginMultiCaretMouseActions;
     FSelY1, FSelY2, FSelX: Integer;
@@ -391,6 +397,7 @@ type
     property DefaultMode: TSynPluginMultiCaretDefaultMode read FDefaultMode write SetDefaultMode default mcmMoveAllCarets;
     property DefaultColumnSelectMode: TSynPluginMultiCaretDefaultMode
       read FDefaultColumnSelectMode write SetDefaultColumnSelectMode default mcmCancelOnCaretMove;
+    property Options: TSynMultiCaretOptions read FOptions write FOptions;
     property OnBeforeCommand: TSynMultiCaretBeforeCommand read FOnBeforeCommand write FOnBeforeCommand;
   end;
 
@@ -2352,7 +2359,7 @@ procedure TSynCustomPluginMultiCaret.ProcessAllSynCommand(Sender: TObject; After
   var Handled: boolean; var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer;
   HandlerData: pointer);
 
-  procedure ExecCommandRepeated(AOnePerLine: Boolean = False);
+  procedure ExecCommandRepeated(AOnePerLine: Boolean = False; AForceAll: Boolean = False);
   var
     i, y: Integer;
     p: TLogCaretPoint;
@@ -2377,7 +2384,7 @@ procedure TSynCustomPluginMultiCaret.ProcessAllSynCommand(Sender: TObject; After
       noChange := sfNoChangeIndicator in FStateFlags;
       Exclude(FStateFlags, sfNoChangeIndicator);
 
-      if noChange then begin
+      if noChange and not AForceAll then begin
         if Carets.MainCaretIndex >= 0 then
           RemoveCaret(Carets.MainCaretIndex)
         else
@@ -2544,15 +2551,16 @@ begin
     exit;
 
 
+  Action := ccaDefaultAction;
   case Command of
     ecCopy, ecCut:                  Action := ccaNoneRepeatCommand;
     ecGotoMarker0..ecGotoMarker9:   Action := ccaClearCarets;
     ecSelectAll:                    Action := ccaClearCarets;
+    ecDeleteChar:                   if smcoDeleteSkipLineBreak in Options then
+                                      Command := ecDeleteCharNoCrLf;
     else
       if Command >= ecUserFirst then
-        Action := ccaNoneRepeatCommand
-      else
-        Action := ccaDefaultAction;
+        Action := ccaNoneRepeatCommand;
   end;
   Flags := [];
   if FOnBeforeCommand <> nil then
@@ -2585,12 +2593,12 @@ begin
 
   case Command of
   // TODO: delete and smColumn -- only delete once
-    ecDeleteLastChar..ecDeleteLine,
+    ecDeleteLastChar..ecDeleteLine, ecDeleteCharNoCrLf,
     ecLineBreak..ecChar:
       begin
         StartEditing;
         if Editor.ReadOnly then exit;
-        ExecCommandRepeated;
+        ExecCommandRepeated(False, Command = ecDeleteCharNoCrLf);
       end;
     ecPaste:
       begin

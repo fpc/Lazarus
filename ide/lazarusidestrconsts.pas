@@ -1852,6 +1852,7 @@ resourcestring
   dlgMultiCaretOnColumnSelection = 'Enable multi-caret for column selection';
   dlgMultiCaretColumnMode = 'Navigation keys move all carets (column-select)';
   dlgMultiCaretMode = 'Navigation keys move all carets';
+  dlgMultiCaretDelSkipCr = 'Skip delete key at EOL (do not join lines)';
   dlgColorLink = '(Edit Color)';
   dlgKeyLink = '(Edit Key)';
   dlgBracketHighlight = 'Bracket highlight';

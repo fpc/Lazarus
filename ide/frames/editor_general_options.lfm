@@ -366,4 +366,15 @@ object EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Font.Style = [fsBold]
     ParentFont = False
   end
+  object chkMultiCaretDelSkipCr: TCheckBox
+    AnchorSideLeft.Control = chkMultiCaretColumnMode
+    AnchorSideTop.Control = MultiCaretOnColumnSelection
+    AnchorSideTop.Side = asrBottom
+    Left = 218
+    Height = 19
+    Top = 273
+    Width = 146
+    Caption = 'chkMultiCaretDelSkipCr'
+    TabOrder = 20
+  end
 end

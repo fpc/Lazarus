@@ -5084,6 +5084,7 @@ begin
       Application.AddOnIdleHandler(@IdleScanRanges, False);
     exit;
   end;
+//TODO: exit if in paintlock ???
   if not assigned(FHighlighter) then begin
     if ATextChanged then begin
       fMarkupManager.TextChanged(FChangedLinesStart, FChangedLinesEnd, FChangedLinesDiff);
@@ -6738,7 +6739,7 @@ begin
             end;
           end;
         end;
-      ecDeleteChar:
+      ecDeleteChar, ecDeleteCharNoCrLf:
         if not ReadOnly then begin
           if SelAvail and (not FBlockSelection.Persistent) and (eoOverwriteBlock in fOptions2) then
             SetSelTextExternal('')
@@ -6752,7 +6753,9 @@ begin
               Counter:=GetCharLen(Temp,LogCaretXY.X);
               FTheLinesView.EditDelete(LogCaretXY.X, CaretY, Counter);
               SetLogicalCaretXY(LogCaretXY);
-            end else begin
+            end
+            else
+            if Command = ecDeleteChar then begin
               // join line with the line after
               if CaretY < FTheLinesView.Count then begin
                 Helper := StringOfChar(' ', LogCaretXY.X - 1 - Len);

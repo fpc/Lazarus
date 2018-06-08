@@ -1343,6 +1343,7 @@ type
     FCompletionLongLineHintType: TSynCompletionLongHintType;
     FMultiCaretDefaultColumnSelectMode: TSynPluginMultiCaretDefaultMode;
     FMultiCaretDefaultMode: TSynPluginMultiCaretDefaultMode;
+    FMultiCaretDeleteSkipLineBreak: Boolean;
     FPasExtendedKeywordsMode: Boolean;
     FHideSingleTabInWindow: Boolean;
     FPasStringKeywordMode: TSynPasStringMode;
@@ -1664,6 +1665,8 @@ type
       read FMultiCaretOnColumnSelect write FMultiCaretOnColumnSelect default True;
     property MultiCaretDefaultMode: TSynPluginMultiCaretDefaultMode
              read FMultiCaretDefaultMode write FMultiCaretDefaultMode default mcmMoveAllCarets;
+    property MultiCaretDeleteSkipLineBreak: Boolean
+             read FMultiCaretDeleteSkipLineBreak write FMultiCaretDeleteSkipLineBreak default False;
     property MultiCaretDefaultColumnSelectMode: TSynPluginMultiCaretDefaultMode
              read FMultiCaretDefaultColumnSelectMode write FMultiCaretDefaultColumnSelectMode default mcmCancelOnCaretMove;
 
@@ -4523,6 +4526,7 @@ begin
   FMultiCaretOnColumnSelect := True;
   FMultiCaretDefaultMode := mcmMoveAllCarets;
   FMultiCaretDefaultColumnSelectMode := mcmCancelOnCaretMove;
+  FMultiCaretDeleteSkipLineBreak := False;
 
   // Display options
   fEditorFont := SynDefaultFontName;
@@ -5756,6 +5760,9 @@ begin
       TIDESynEditor(ASynEdit).MultiCaret.EnableWithColumnSelection := MultiCaretOnColumnSelect;
       TIDESynEditor(ASynEdit).MultiCaret.DefaultMode := FMultiCaretDefaultMode;
       TIDESynEditor(ASynEdit).MultiCaret.DefaultColumnSelectMode := FMultiCaretDefaultColumnSelectMode;
+      if FMultiCaretDeleteSkipLineBreak
+      then TIDESynEditor(ASynEdit).MultiCaret.Options := TIDESynEditor(ASynEdit).MultiCaret.Options + [smcoDeleteSkipLineBreak]
+      else TIDESynEditor(ASynEdit).MultiCaret.Options := TIDESynEditor(ASynEdit).MultiCaret.Options - [smcoDeleteSkipLineBreak];
     end;
     {$ENDIF}
 
