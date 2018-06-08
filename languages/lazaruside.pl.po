@@ -645,7 +645,9 @@ msgid "Alphabetically"
 msgstr "Alfabetycznie"
 
 #: lazarusidestrconsts.dlgalwaysvisiblecursor
-msgid "Always visible cursor"
+#, fuzzy
+#| msgid "Always visible cursor"
+msgid "Always keep Caret in visible area of editor"
 msgstr "Zawsze widoczny kursor"
 
 #: lazarusidestrconsts.dlgambigfileact
@@ -828,6 +830,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgcannotusedockedundockeddesktop
 msgid "You cannot use docked desktop in undocked environment and vice versa."
+msgstr ""
+
+#: lazarusidestrconsts.dlgcaretgroupoptions
+msgid "Caret (Text Cursor)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcasesensitive
@@ -1325,18 +1331,16 @@ msgstr ""
 msgid "Cursor beyond EOL"
 msgstr "Kursor poza końcem linii"
 
-#: lazarusidestrconsts.dlgcursorgroupoptions
-#, fuzzy
-#| msgid "Cursor:"
-msgid "Cursor"
-msgstr "Kursor"
-
 #: lazarusidestrconsts.dlgcursorskipsselection
-msgid "Cursor skips selection"
+#, fuzzy
+#| msgid "Cursor skips selection"
+msgid "Caret skips selection"
 msgstr "Kursor przeskakuje zaznaczenie"
 
 #: lazarusidestrconsts.dlgcursorskipstab
-msgid "Cursor skips tabs"
+#, fuzzy
+#| msgid "Cursor skips tabs"
+msgid "Caret skips tabs"
 msgstr "Kursor przeskakuje tabulację"
 
 #: lazarusidestrconsts.dlgcustomext
@@ -2238,11 +2242,15 @@ msgid "Highlight Font Color"
 msgstr "Kolor czcionki podświetlenia"
 
 #: lazarusidestrconsts.dlghighlightleftofcursor
-msgid "Left Of Cursor"
+#, fuzzy
+#| msgid "Left Of Cursor"
+msgid "Left Of Caret"
 msgstr "Po lewej stronie kursora"
 
 #: lazarusidestrconsts.dlghighlightrightofcursor
-msgid "Right Of Cursor"
+#, fuzzy
+#| msgid "Right Of Cursor"
+msgid "Right Of Caret"
 msgstr "Po prawej stronie kursora"
 
 #: lazarusidestrconsts.dlghintsparametersendernotused
@@ -2385,7 +2393,9 @@ msgid "Jump directly to method body"
 msgstr ""
 
 #: lazarusidestrconsts.dlgkeepcursorx
-msgid "Keep cursor X position"
+#, fuzzy
+#| msgid "Keep cursor X position"
+msgid "Keep caret X position when navigating up/down"
 msgstr "Zachowaj pozycję X kursora"
 
 #: lazarusidestrconsts.dlgkeylink
@@ -3010,15 +3020,23 @@ msgid "Warning"
 msgstr "Ostrzeżenie"
 
 #: lazarusidestrconsts.dlgmulticaretcolumnmode
-msgid "Multi-caret (column-select) move with cursor"
+msgid "Navigation keys move all carets (column-select)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmulticaretdelskipcr
+msgid "Skip delete key at EOL (do not join lines)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmulticaretgroupoptions
+msgid "Multi-caret"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmulticaretmode
-msgid "Multi-caret move with cursor"
+msgid "Navigation keys move all carets"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmulticaretoncolumnselection
-msgid "Enable multi caret for column selection"
+msgid "Enable multi-caret for column selection"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmultipleinstances
@@ -3222,7 +3240,9 @@ msgid "Persistent block"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpersistentcursor
-msgid "Persistent cursor"
+#, fuzzy
+#| msgid "Persistent cursor"
+msgid "Visible caret in unfocused editor"
 msgstr "Niezmienny kursor"
 
 #: lazarusidestrconsts.dlgpoapplication
@@ -3563,7 +3583,7 @@ msgid "Scroll past end of file"
 msgstr "Przewijaj poza końcem pliku"
 
 #: lazarusidestrconsts.dlgscrollpastendline
-msgid "Caret past end of line"
+msgid "Allow caret to move past end of line"
 msgstr ""
 
 #: lazarusidestrconsts.dlgseachdirectorynotfound

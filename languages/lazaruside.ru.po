@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-06-01 00:51+0300\n"
+"PO-Revision-Date: 2018-06-09 01:22+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -634,8 +634,8 @@ msgid "Alphabetically"
 msgstr "По алфавиту"
 
 #: lazarusidestrconsts.dlgalwaysvisiblecursor
-msgid "Always visible cursor"
-msgstr "Всегда видимый курсор"
+msgid "Always keep Caret in visible area of editor"
+msgstr "Всегда держать курсор в видимой части редактора"
 
 #: lazarusidestrconsts.dlgambigfileact
 msgid "Ambiguous file action:"
@@ -811,6 +811,10 @@ msgstr "Парные скобки"
 #: lazarusidestrconsts.dlgcannotusedockedundockeddesktop
 msgid "You cannot use docked desktop in undocked environment and vice versa."
 msgstr "Невозможно использовать стыкуемый рабочий стол в нестыкуемом окружении, и наоборот."
+
+#: lazarusidestrconsts.dlgcaretgroupoptions
+msgid "Caret (Text Cursor)"
+msgstr "Курсор (в тексте)"
 
 #: lazarusidestrconsts.dlgcasesensitive
 msgctxt "lazarusidestrconsts.dlgcasesensitive"
@@ -1267,16 +1271,12 @@ msgstr "Параметр оказывает влияние на окно соо�
 msgid "Cursor beyond EOL"
 msgstr "Допускать установку курсора вне конца строки"
 
-#: lazarusidestrconsts.dlgcursorgroupoptions
-msgid "Cursor"
-msgstr "Курсор"
-
 #: lazarusidestrconsts.dlgcursorskipsselection
-msgid "Cursor skips selection"
+msgid "Caret skips selection"
 msgstr "Курсор пропускает выделенное"
 
 #: lazarusidestrconsts.dlgcursorskipstab
-msgid "Cursor skips tabs"
+msgid "Caret skips tabs"
 msgstr "Курсор пропускает ТАБы"
 
 #: lazarusidestrconsts.dlgcustomext
@@ -2151,11 +2151,11 @@ msgid "Highlight Font Color"
 msgstr "Шрифт выделенного"
 
 #: lazarusidestrconsts.dlghighlightleftofcursor
-msgid "Left Of Cursor"
+msgid "Left Of Caret"
 msgstr "Слева от курсора"
 
 #: lazarusidestrconsts.dlghighlightrightofcursor
-msgid "Right Of Cursor"
+msgid "Right Of Caret"
 msgstr "Справа от курсора"
 
 #: lazarusidestrconsts.dlghintsparametersendernotused
@@ -2292,8 +2292,8 @@ msgid "Jump directly to method body"
 msgstr "Переходить непосредственно к телу метода"
 
 #: lazarusidestrconsts.dlgkeepcursorx
-msgid "Keep cursor X position"
-msgstr "Сохранять позицию курсора по оси X"
+msgid "Keep caret X position when navigating up/down"
+msgstr "Сохранять позицию курсора по оси X при перемещении вверх/вниз"
 
 #: lazarusidestrconsts.dlgkeylink
 msgid "(Edit Key)"
@@ -2889,15 +2889,23 @@ msgid "Warning"
 msgstr "Предупреждение"
 
 #: lazarusidestrconsts.dlgmulticaretcolumnmode
-msgid "Multi-caret (column-select) move with cursor"
+msgid "Navigation keys move all carets (column-select)"
 msgstr "Перемещать все курсоры за основным при выделении столбца"
 
+#: lazarusidestrconsts.dlgmulticaretdelskipcr
+msgid "Skip delete key at EOL (do not join lines)"
+msgstr "Не удалять конец строки клавишей Delete (не объединять строки)"
+
+#: lazarusidestrconsts.dlgmulticaretgroupoptions
+msgid "Multi-caret"
+msgstr "Многокурсорность"
+
 #: lazarusidestrconsts.dlgmulticaretmode
-msgid "Multi-caret move with cursor"
+msgid "Navigation keys move all carets"
 msgstr "Перемещать все курсоры за основным"
 
 #: lazarusidestrconsts.dlgmulticaretoncolumnselection
-msgid "Enable multi caret for column selection"
+msgid "Enable multi-caret for column selection"
 msgstr "Включить несколько курсоров при выделении столбца"
 
 #: lazarusidestrconsts.dlgmultipleinstances
@@ -3085,8 +3093,8 @@ msgid "Persistent block"
 msgstr "Постоянное выделение"
 
 #: lazarusidestrconsts.dlgpersistentcursor
-msgid "Persistent cursor"
-msgstr "Постоянный курсор"
+msgid "Visible caret in unfocused editor"
+msgstr "Показывать курсор в неактивном редакторе"
 
 #: lazarusidestrconsts.dlgpoapplication
 msgid "Application"
@@ -3407,8 +3415,8 @@ msgid "Scroll past end of file"
 msgstr "Прокручивать за конец файла"
 
 #: lazarusidestrconsts.dlgscrollpastendline
-msgid "Caret past end of line"
-msgstr "Прокручивать за конец строки"
+msgid "Allow caret to move past end of line"
+msgstr "Разрешать перемещение курсора за конец строки"
 
 #: lazarusidestrconsts.dlgseachdirectorynotfound
 msgid "Search directory \"%s\" not found."

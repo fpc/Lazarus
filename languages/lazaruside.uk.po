@@ -636,7 +636,9 @@ msgid "Alphabetically"
 msgstr "За алфавітом"
 
 #: lazarusidestrconsts.dlgalwaysvisiblecursor
-msgid "Always visible cursor"
+#, fuzzy
+#| msgid "Always visible cursor"
+msgid "Always keep Caret in visible area of editor"
 msgstr "Завжди видимий курсор"
 
 #: lazarusidestrconsts.dlgambigfileact
@@ -813,6 +815,10 @@ msgstr "Підбір пар дужок"
 #: lazarusidestrconsts.dlgcannotusedockedundockeddesktop
 msgid "You cannot use docked desktop in undocked environment and vice versa."
 msgstr "Неможливо використати стільницю зі стикуванням в оточенні без стикування, і навпаки."
+
+#: lazarusidestrconsts.dlgcaretgroupoptions
+msgid "Caret (Text Cursor)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgcasesensitive
 msgctxt "lazarusidestrconsts.dlgcasesensitive"
@@ -1269,16 +1275,16 @@ msgstr "Наразі впливає на вікно повідомлень, іс
 msgid "Cursor beyond EOL"
 msgstr "Курсор за межею рядка"
 
-#: lazarusidestrconsts.dlgcursorgroupoptions
-msgid "Cursor"
-msgstr "Курсор"
-
 #: lazarusidestrconsts.dlgcursorskipsselection
-msgid "Cursor skips selection"
+#, fuzzy
+#| msgid "Cursor skips selection"
+msgid "Caret skips selection"
 msgstr "Курсор пропускає вибране"
 
 #: lazarusidestrconsts.dlgcursorskipstab
-msgid "Cursor skips tabs"
+#, fuzzy
+#| msgid "Cursor skips tabs"
+msgid "Caret skips tabs"
 msgstr "Курсор пропускає Таби"
 
 #: lazarusidestrconsts.dlgcustomext
@@ -2153,11 +2159,15 @@ msgid "Highlight Font Color"
 msgstr "Підсвічувати Колір Шрифту"
 
 #: lazarusidestrconsts.dlghighlightleftofcursor
-msgid "Left Of Cursor"
+#, fuzzy
+#| msgid "Left Of Cursor"
+msgid "Left Of Caret"
 msgstr "Зліва від курсору"
 
 #: lazarusidestrconsts.dlghighlightrightofcursor
-msgid "Right Of Cursor"
+#, fuzzy
+#| msgid "Right Of Cursor"
+msgid "Right Of Caret"
 msgstr "Справа від курсору"
 
 #: lazarusidestrconsts.dlghintsparametersendernotused
@@ -2294,7 +2304,9 @@ msgid "Jump directly to method body"
 msgstr "Переходити прямо до тіла методу"
 
 #: lazarusidestrconsts.dlgkeepcursorx
-msgid "Keep cursor X position"
+#, fuzzy
+#| msgid "Keep cursor X position"
+msgid "Keep caret X position when navigating up/down"
 msgstr "Зберігати позицію курсору по осі X"
 
 #: lazarusidestrconsts.dlgkeylink
@@ -2891,15 +2903,29 @@ msgid "Warning"
 msgstr "Попередження"
 
 #: lazarusidestrconsts.dlgmulticaretcolumnmode
-msgid "Multi-caret (column-select) move with cursor"
+#, fuzzy
+#| msgid "Multi-caret (column-select) move with cursor"
+msgid "Navigation keys move all carets (column-select)"
 msgstr "При виборі стовпця рухати всі курсори за основним"
 
+#: lazarusidestrconsts.dlgmulticaretdelskipcr
+msgid "Skip delete key at EOL (do not join lines)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmulticaretgroupoptions
+msgid "Multi-caret"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmulticaretmode
-msgid "Multi-caret move with cursor"
+#, fuzzy
+#| msgid "Multi-caret move with cursor"
+msgid "Navigation keys move all carets"
 msgstr "Переміщувати всі курсори за основним"
 
 #: lazarusidestrconsts.dlgmulticaretoncolumnselection
-msgid "Enable multi caret for column selection"
+#, fuzzy
+#| msgid "Enable multi caret for column selection"
+msgid "Enable multi-caret for column selection"
 msgstr "При виборі стовпців увімкнути декілька курсорів"
 
 #: lazarusidestrconsts.dlgmultipleinstances
@@ -3087,7 +3113,9 @@ msgid "Persistent block"
 msgstr "Постійний блок"
 
 #: lazarusidestrconsts.dlgpersistentcursor
-msgid "Persistent cursor"
+#, fuzzy
+#| msgid "Persistent cursor"
+msgid "Visible caret in unfocused editor"
 msgstr "Постійний курсор"
 
 #: lazarusidestrconsts.dlgpoapplication
@@ -3409,7 +3437,9 @@ msgid "Scroll past end of file"
 msgstr "Прокрутити до кінця файлу"
 
 #: lazarusidestrconsts.dlgscrollpastendline
-msgid "Caret past end of line"
+#, fuzzy
+#| msgid "Caret past end of line"
+msgid "Allow caret to move past end of line"
 msgstr "Каретку в кінець рядка"
 
 #: lazarusidestrconsts.dlgseachdirectorynotfound

@@ -631,7 +631,9 @@ msgid "Alphabetically"
 msgstr "アルファベット順に"
 
 #: lazarusidestrconsts.dlgalwaysvisiblecursor
-msgid "Always visible cursor"
+#, fuzzy
+#| msgid "Always visible cursor"
+msgid "Always keep Caret in visible area of editor"
 msgstr "常にカーソルを表示"
 
 #: lazarusidestrconsts.dlgambigfileact
@@ -808,6 +810,10 @@ msgstr "括弧のペアを揃える"
 #: lazarusidestrconsts.dlgcannotusedockedundockeddesktop
 msgid "You cannot use docked desktop in undocked environment and vice versa."
 msgstr "非ドック環境でドックデスクトップを使用したりその逆を行ったりはできません。"
+
+#: lazarusidestrconsts.dlgcaretgroupoptions
+msgid "Caret (Text Cursor)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgcasesensitive
 msgctxt "lazarusidestrconsts.dlgcasesensitive"
@@ -1266,16 +1272,16 @@ msgstr "現在メッセージウィンドウ、ジャンプ履歴および検索
 msgid "Cursor beyond EOL"
 msgstr "EOL（ファイル終端）を越えたカーソル"
 
-#: lazarusidestrconsts.dlgcursorgroupoptions
-msgid "Cursor"
-msgstr "カーソル"
-
 #: lazarusidestrconsts.dlgcursorskipsselection
-msgid "Cursor skips selection"
+#, fuzzy
+#| msgid "Cursor skips selection"
+msgid "Caret skips selection"
 msgstr "カーソルは選択部分をスキップ"
 
 #: lazarusidestrconsts.dlgcursorskipstab
-msgid "Cursor skips tabs"
+#, fuzzy
+#| msgid "Cursor skips tabs"
+msgid "Caret skips tabs"
 msgstr "カーソルはタブをスキップ"
 
 #: lazarusidestrconsts.dlgcustomext
@@ -2153,11 +2159,15 @@ msgid "Highlight Font Color"
 msgstr "強調フォント色"
 
 #: lazarusidestrconsts.dlghighlightleftofcursor
-msgid "Left Of Cursor"
+#, fuzzy
+#| msgid "Left Of Cursor"
+msgid "Left Of Caret"
 msgstr "カーソルの左"
 
 #: lazarusidestrconsts.dlghighlightrightofcursor
-msgid "Right Of Cursor"
+#, fuzzy
+#| msgid "Right Of Cursor"
+msgid "Right Of Caret"
 msgstr "カーソルの右"
 
 #: lazarusidestrconsts.dlghintsparametersendernotused
@@ -2294,7 +2304,9 @@ msgid "Jump directly to method body"
 msgstr "メソッドの本体に直接移動"
 
 #: lazarusidestrconsts.dlgkeepcursorx
-msgid "Keep cursor X position"
+#, fuzzy
+#| msgid "Keep cursor X position"
+msgid "Keep caret X position when navigating up/down"
 msgstr "カーソルのX座標を保持"
 
 #: lazarusidestrconsts.dlgkeylink
@@ -2893,15 +2905,29 @@ msgid "Warning"
 msgstr "警告"
 
 #: lazarusidestrconsts.dlgmulticaretcolumnmode
-msgid "Multi-caret (column-select) move with cursor"
+#, fuzzy
+#| msgid "Multi-caret (column-select) move with cursor"
+msgid "Navigation keys move all carets (column-select)"
 msgstr "複数キャレット（列選択）をカーソルとともに移動"
 
+#: lazarusidestrconsts.dlgmulticaretdelskipcr
+msgid "Skip delete key at EOL (do not join lines)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmulticaretgroupoptions
+msgid "Multi-caret"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmulticaretmode
-msgid "Multi-caret move with cursor"
+#, fuzzy
+#| msgid "Multi-caret move with cursor"
+msgid "Navigation keys move all carets"
 msgstr "複数キャレットをカーソルとともに移動"
 
 #: lazarusidestrconsts.dlgmulticaretoncolumnselection
-msgid "Enable multi caret for column selection"
+#, fuzzy
+#| msgid "Enable multi caret for column selection"
+msgid "Enable multi-caret for column selection"
 msgstr "列選択のために複数キャレットを可能にする"
 
 #: lazarusidestrconsts.dlgmultipleinstances
@@ -3089,7 +3115,9 @@ msgid "Persistent block"
 msgstr "固着ブロック"
 
 #: lazarusidestrconsts.dlgpersistentcursor
-msgid "Persistent cursor"
+#, fuzzy
+#| msgid "Persistent cursor"
+msgid "Visible caret in unfocused editor"
 msgstr "固着カーソル"
 
 #: lazarusidestrconsts.dlgpoapplication
@@ -3413,7 +3441,9 @@ msgid "Scroll past end of file"
 msgstr "ファイル末までスクロール"
 
 #: lazarusidestrconsts.dlgscrollpastendline
-msgid "Caret past end of line"
+#, fuzzy
+#| msgid "Caret past end of line"
+msgid "Allow caret to move past end of line"
 msgstr "行末までスクロール"
 
 #: lazarusidestrconsts.dlgseachdirectorynotfound

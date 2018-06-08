@@ -639,7 +639,7 @@ msgid "Alphabetically"
 msgstr "هجائيّا"
 
 #: lazarusidestrconsts.dlgalwaysvisiblecursor
-msgid "Always visible cursor"
+msgid "Always keep Caret in visible area of editor"
 msgstr ""
 
 #: lazarusidestrconsts.dlgambigfileact
@@ -813,6 +813,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgcannotusedockedundockeddesktop
 msgid "You cannot use docked desktop in undocked environment and vice versa."
+msgstr ""
+
+#: lazarusidestrconsts.dlgcaretgroupoptions
+msgid "Caret (Text Cursor)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcasesensitive
@@ -1274,16 +1278,12 @@ msgstr ""
 msgid "Cursor beyond EOL"
 msgstr ""
 
-#: lazarusidestrconsts.dlgcursorgroupoptions
-msgid "Cursor"
-msgstr "المؤشّر"
-
 #: lazarusidestrconsts.dlgcursorskipsselection
-msgid "Cursor skips selection"
+msgid "Caret skips selection"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcursorskipstab
-msgid "Cursor skips tabs"
+msgid "Caret skips tabs"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcustomext
@@ -2159,11 +2159,11 @@ msgid "Highlight Font Color"
 msgstr ""
 
 #: lazarusidestrconsts.dlghighlightleftofcursor
-msgid "Left Of Cursor"
+msgid "Left Of Caret"
 msgstr ""
 
 #: lazarusidestrconsts.dlghighlightrightofcursor
-msgid "Right Of Cursor"
+msgid "Right Of Caret"
 msgstr ""
 
 #: lazarusidestrconsts.dlghintsparametersendernotused
@@ -2298,7 +2298,7 @@ msgid "Jump directly to method body"
 msgstr ""
 
 #: lazarusidestrconsts.dlgkeepcursorx
-msgid "Keep cursor X position"
+msgid "Keep caret X position when navigating up/down"
 msgstr ""
 
 #: lazarusidestrconsts.dlgkeylink
@@ -2894,15 +2894,23 @@ msgid "Warning"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmulticaretcolumnmode
-msgid "Multi-caret (column-select) move with cursor"
+msgid "Navigation keys move all carets (column-select)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmulticaretdelskipcr
+msgid "Skip delete key at EOL (do not join lines)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmulticaretgroupoptions
+msgid "Multi-caret"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmulticaretmode
-msgid "Multi-caret move with cursor"
+msgid "Navigation keys move all carets"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmulticaretoncolumnselection
-msgid "Enable multi caret for column selection"
+msgid "Enable multi-caret for column selection"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmultipleinstances
@@ -3088,7 +3096,7 @@ msgid "Persistent block"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpersistentcursor
-msgid "Persistent cursor"
+msgid "Visible caret in unfocused editor"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpoapplication
@@ -3408,7 +3416,7 @@ msgid "Scroll past end of file"
 msgstr ""
 
 #: lazarusidestrconsts.dlgscrollpastendline
-msgid "Caret past end of line"
+msgid "Allow caret to move past end of line"
 msgstr ""
 
 #: lazarusidestrconsts.dlgseachdirectorynotfound

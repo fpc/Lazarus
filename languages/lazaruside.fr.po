@@ -635,7 +635,9 @@ msgid "Alphabetically"
 msgstr "Par ordre alphabétique"
 
 #: lazarusidestrconsts.dlgalwaysvisiblecursor
-msgid "Always visible cursor"
+#, fuzzy
+#| msgid "Always visible cursor"
+msgid "Always keep Caret in visible area of editor"
 msgstr "Curseur toujours visible"
 
 #: lazarusidestrconsts.dlgambigfileact
@@ -812,6 +814,10 @@ msgstr "Parenthèses appariées"
 #: lazarusidestrconsts.dlgcannotusedockedundockeddesktop
 msgid "You cannot use docked desktop in undocked environment and vice versa."
 msgstr "Vous ne pouvez pas utiliser un bureau ancré dans un environnement non ancré et vice versa."
+
+#: lazarusidestrconsts.dlgcaretgroupoptions
+msgid "Caret (Text Cursor)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgcasesensitive
 msgctxt "lazarusidestrconsts.dlgcasesensitive"
@@ -1268,16 +1274,16 @@ msgstr "Actuellement respectés par la fenêtre des messages, sauter l'historiqu
 msgid "Cursor beyond EOL"
 msgstr "Curseur au-delà de la fin de ligne"
 
-#: lazarusidestrconsts.dlgcursorgroupoptions
-msgid "Cursor"
-msgstr "Curseur"
-
 #: lazarusidestrconsts.dlgcursorskipsselection
-msgid "Cursor skips selection"
+#, fuzzy
+#| msgid "Cursor skips selection"
+msgid "Caret skips selection"
 msgstr "Le curseur saute la sélection"
 
 #: lazarusidestrconsts.dlgcursorskipstab
-msgid "Cursor skips tabs"
+#, fuzzy
+#| msgid "Cursor skips tabs"
+msgid "Caret skips tabs"
 msgstr "Le curseur saute les tabulations"
 
 #: lazarusidestrconsts.dlgcustomext
@@ -2152,11 +2158,15 @@ msgid "Highlight Font Color"
 msgstr "Couleur de surlignage de la police"
 
 #: lazarusidestrconsts.dlghighlightleftofcursor
-msgid "Left Of Cursor"
+#, fuzzy
+#| msgid "Left Of Cursor"
+msgid "Left Of Caret"
 msgstr "Gauche du curseur"
 
 #: lazarusidestrconsts.dlghighlightrightofcursor
-msgid "Right Of Cursor"
+#, fuzzy
+#| msgid "Right Of Cursor"
+msgid "Right Of Caret"
 msgstr "Droite du curseur"
 
 #: lazarusidestrconsts.dlghintsparametersendernotused
@@ -2293,7 +2303,9 @@ msgid "Jump directly to method body"
 msgstr "Aller directement au corps de la méthode"
 
 #: lazarusidestrconsts.dlgkeepcursorx
-msgid "Keep cursor X position"
+#, fuzzy
+#| msgid "Keep cursor X position"
+msgid "Keep caret X position when navigating up/down"
 msgstr "Préserver la position X du curseur"
 
 #: lazarusidestrconsts.dlgkeylink
@@ -2890,15 +2902,29 @@ msgid "Warning"
 msgstr "Avertissement"
 
 #: lazarusidestrconsts.dlgmulticaretcolumnmode
-msgid "Multi-caret (column-select) move with cursor"
+#, fuzzy
+#| msgid "Multi-caret (column-select) move with cursor"
+msgid "Navigation keys move all carets (column-select)"
 msgstr "Les curseurs multiples (sélection de colonne) se déplacent avec le curseur principal"
 
+#: lazarusidestrconsts.dlgmulticaretdelskipcr
+msgid "Skip delete key at EOL (do not join lines)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmulticaretgroupoptions
+msgid "Multi-caret"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmulticaretmode
-msgid "Multi-caret move with cursor"
+#, fuzzy
+#| msgid "Multi-caret move with cursor"
+msgid "Navigation keys move all carets"
 msgstr "Les curseurs multiples se déplacent avec le curseur principal"
 
 #: lazarusidestrconsts.dlgmulticaretoncolumnselection
-msgid "Enable multi caret for column selection"
+#, fuzzy
+#| msgid "Enable multi caret for column selection"
+msgid "Enable multi-caret for column selection"
 msgstr "Activer les curseurs multiples pour la sélection de colonne"
 
 #: lazarusidestrconsts.dlgmultipleinstances
@@ -3086,7 +3112,9 @@ msgid "Persistent block"
 msgstr "Bloc persistant"
 
 #: lazarusidestrconsts.dlgpersistentcursor
-msgid "Persistent cursor"
+#, fuzzy
+#| msgid "Persistent cursor"
+msgid "Visible caret in unfocused editor"
 msgstr "Curseur persistant"
 
 #: lazarusidestrconsts.dlgpoapplication
@@ -3408,7 +3436,9 @@ msgid "Scroll past end of file"
 msgstr "Défilement après la fin du fichier"
 
 #: lazarusidestrconsts.dlgscrollpastendline
-msgid "Caret past end of line"
+#, fuzzy
+#| msgid "Caret past end of line"
+msgid "Allow caret to move past end of line"
 msgstr "Curseur après la fin de ligne"
 
 #: lazarusidestrconsts.dlgseachdirectorynotfound
