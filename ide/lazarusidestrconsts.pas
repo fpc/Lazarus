@@ -1632,7 +1632,7 @@ resourcestring
   dlgGroupUndo = 'Group Undo';
   dlgHalfPageScroll = 'Half page scroll';
   dlgKeepCursorX = 'Keep caret X position when navigating up/down';
-  dlgPersistentCursor = 'Visible caret in none focused editor';
+  dlgPersistentCursor = 'Visible caret in unfocused editor';
   dlgPersistentBlock = 'Persistent block';
   dlgOverwriteBlock = 'Overwrite block';
   dlgCursorSkipsSelection = 'Caret skips selection';
