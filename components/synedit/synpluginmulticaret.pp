@@ -2324,7 +2324,7 @@ begin
       end;
     ecPluginMultiCaretToggleCaret: begin
         i := Carets.FindCaretIdx(CaretObj.BytePos, CaretObj.LinePos, CaretObj.BytePosOffset);
-        if (i > 0) or (sfCreateCaretAtCurrentPos in FStateFlags) then begin
+        if (i >= 0) or (sfCreateCaretAtCurrentPos in FStateFlags) then begin
           exclude(FStateFlags, sfCreateCaretAtCurrentPos);
           if i >= 0 then
             RemoveCaret(i);
