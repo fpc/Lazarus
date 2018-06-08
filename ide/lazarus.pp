@@ -101,6 +101,9 @@ begin
   // end of build flags
   
   LazarusRevisionStr:=RevisionStr;
+  {$IFDEF LCLGtk2Fix30544}
+  writeln('[20180608074905] lazarus.pp ide/revision.inc: ',LazarusRevisionStr);
+  {$ENDIF}
   Application.Title:='Lazarus';
   Application.Scaled := True;
   OnGetApplicationName:=@GetLazarusApplicationName;
