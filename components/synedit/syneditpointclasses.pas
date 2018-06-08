@@ -1939,7 +1939,8 @@ var
             FInternalCaret.LineCharPos := Point(l, y);
             xb := FInternalCaret.BytePos;
             FInternalCaret.LineCharPos := Point(r, y);
-            xe := Min(FInternalCaret.BytePos, 1 + length(FInternalCaret.LineText));
+//            xe := Min(FInternalCaret.BytePos, 1 + length(FInternalCaret.LineText));
+            xe := FInternalCaret.BytePos;
             if xe > xb then
               FLines.EditDelete(xb, y, xe - xb);
           end;
