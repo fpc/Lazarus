@@ -783,6 +783,7 @@ var
 var
   IDECmdScopeSrcEdit: TIDECommandScope;
   IDECmdScopeSrcEditOnly: TIDECommandScope;
+  IDECmdScopeSrcEditOnlyMultiCaret: TIDECommandScope;
   IDECmdScopeSrcEditOnlyTmplEdit: TIDECommandScope;
   IDECmdScopeSrcEditOnlyTmplEditOff: TIDECommandScope;
   IDECmdScopeSrcEditOnlySyncroEditSel: TIDECommandScope;
@@ -884,6 +885,7 @@ begin
   IDECommandScopes:=TIDECommandScopes.Create;
   IDECmdScopeSrcEdit:=RegisterIDECommandScope('SourceEditor');
   IDECmdScopeSrcEditOnly:=RegisterIDECommandScope('SourceEditorOnly');
+  IDECmdScopeSrcEditOnlyMultiCaret:=RegisterIDECommandScope('IDECmdScopeSrcEditOnlyMultiCaret');
   IDECmdScopeSrcEditOnlyTmplEdit:=RegisterIDECommandScope('SourceEditorOnlyTemplateEdit');
   IDECmdScopeSrcEditOnlyTmplEditOff:=RegisterIDECommandScope('SourceEditorOnlyTemplateEditOff');
   IDECmdScopeSrcEditOnlySyncroEditSel:=RegisterIDECommandScope('SourceEditorOnlySyncroEditSel');
