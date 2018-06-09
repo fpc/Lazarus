@@ -1,14 +1,14 @@
 object Form1: TForm1
-  Left = 589
-  Height = 442
-  Top = 267
-  Width = 619
+  Left = 432
+  Height = 440
+  Top = 211
+  Width = 643
   Caption = 'test fp'
-  ClientHeight = 442
-  ClientWidth = 619
+  ClientHeight = 440
+  ClientWidth = 643
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '1.3'
+  LCLVersion = '1.9.0.0'
   object FileNameEdit1: TFileNameEdit
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -16,7 +16,7 @@ object Form1: TForm1
     Left = 3
     Height = 23
     Top = 3
-    Width = 500
+    Width = 524
     FilterIndex = 0
     HideDirectories = False
     ButtonWidth = 23
@@ -33,7 +33,7 @@ object Form1: TForm1
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 541
+    Left = 565
     Height = 25
     Top = 2
     Width = 75
@@ -47,13 +47,12 @@ object Form1: TForm1
   end
   object CompUnitListBox: TListBox
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = btnShowUnit
+    AnchorSideTop.Control = btnLines
     AnchorSideTop.Side = asrBottom
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
+    AnchorSideBottom.Control = StatusBar1
     Left = 3
-    Height = 375
-    Top = 64
+    Height = 322
+    Top = 92
     Width = 244
     Anchors = [akTop, akLeft, akBottom]
     BorderSpacing.Top = 3
@@ -71,7 +70,7 @@ object Form1: TForm1
     Top = 33
     Width = 79
     BorderSpacing.Around = 3
-    Caption = 'Show unit'
+    Caption = 'Show Symbols'
     OnClick = btnShowUnitClick
     TabOrder = 3
   end
@@ -80,48 +79,67 @@ object Form1: TForm1
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = btnShowUnit
     AnchorSideTop.Side = asrCenter
-    Left = 94
+    AnchorSideRight.Control = CompUnitListBox
+    AnchorSideRight.Side = asrBottom
+    Left = 166
     Height = 25
     Top = 33
     Width = 75
+    Anchors = [akTop, akRight]
     BorderSpacing.Left = 6
     BorderSpacing.Around = 6
     Caption = 'Copy'
     OnClick = btnCopyOneClick
     TabOrder = 4
   end
-  object TreeView1: TTreeView
-    AnchorSideLeft.Control = CompUnitListBox
-    AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = btnLoad
-    AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 253
-    Height = 406
-    Top = 33
-    Width = 363
-    Anchors = [akTop, akLeft, akRight, akBottom]
-    BorderSpacing.Left = 3
-    BorderSpacing.Top = 3
-    BorderSpacing.Around = 3
-    DefaultItemHeight = 18
-    TabOrder = 5
-  end
   object btnCopyAll: TButton
     AnchorSideLeft.Control = btnCopyOne
     AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = btnShowUnit
-    AnchorSideTop.Side = asrCenter
-    Left = 175
+    AnchorSideTop.Control = btnCopyOne
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = CompUnitListBox
+    AnchorSideRight.Side = asrBottom
+    Left = 166
     Height = 25
-    Top = 33
+    Top = 64
     Width = 75
+    Anchors = [akTop, akRight]
     BorderSpacing.Around = 6
     Caption = 'Copy Incl'
     OnClick = btnCopyAllClick
-    TabOrder = 6
+    TabOrder = 5
+  end
+  object StatusBar1: TStatusBar
+    Left = 0
+    Height = 23
+    Top = 417
+    Width = 643
+    Panels = <>
+  end
+  object TreeView1: TTreeView
+    AnchorSideLeft.Control = CompUnitListBox
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = StatusBar1
+    Left = 253
+    Height = 384
+    Top = 33
+    Width = 390
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    TabOrder = 7
+  end
+  object btnLines: TButton
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = btnShowUnit
+    AnchorSideTop.Side = asrBottom
+    Left = 3
+    Height = 25
+    Top = 61
+    Width = 75
+    BorderSpacing.Around = 3
+    Caption = 'Show Lines'
+    OnClick = btnLinesClick
+    TabOrder = 8
   end
 end
