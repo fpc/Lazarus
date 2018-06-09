@@ -5,9 +5,13 @@ unit project_forms_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, Buttons, IDEOptionsIntf, PackageDefs, ProjectIntf, Project,
-  LazarusIDEStrConsts, IDEImagesIntf, CodeToolManager;
+  Classes, SysUtils,
+  // LCL
+  Forms, Controls, Graphics, Dialogs, StdCtrls, Buttons,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf, ProjectIntf, IDEImagesIntf,
+  // IDE
+  PackageDefs, Project, LazarusIDEStrConsts;
 
 type
 

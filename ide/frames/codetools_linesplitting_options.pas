@@ -25,8 +25,17 @@ unit codetools_linesplitting_options;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, StdCtrls, SynEdit,
-  SourceChanger, IDEOptionsIntf, EditorOptions, atom_checkboxes_options;
+  Classes, SysUtils,
+  // LCL
+  StdCtrls,
+  // CodeTools
+  SourceChanger,
+  // SynEdit
+  SynEdit,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf,
+  // IDE
+  EditorOptions, atom_checkboxes_options;
 
 type
   { TCodetoolsLineSplittingOptionsFrame }

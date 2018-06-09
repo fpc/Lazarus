@@ -5,13 +5,21 @@ unit editor_markup_userdefined;
 interface
 
 uses
-  Classes, StdCtrls, ComCtrls, Graphics, sysutils, math, EditorOptions,
+  Classes, sysutils, math,
+  // LCL
+  LCLType, StdCtrls, ComCtrls, Graphics, EditorOptions, Spin, ExtCtrls,
+  Menus, Grids, Controls, Dialogs, Buttons,
+  // LazControls
+  DividerBevel,
+  // LazUtils
+  LazLoggerBase,
+  // SynEdit
+  SynEditKeyCmds, SynEditMarkupHighAll,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf, IDECommands, IDEDialogs,
+  // IDE
   LazarusIDEStrConsts, SynColorAttribEditor, KeyMapping, KeyMapShortCutDlg,
-  IDEOptionsIntf, IDECommands, IDEDialogs, Spin, ExtCtrls,
-  editor_color_options, editor_general_options, editor_keymapping_options,
-  SynEdit, SynCompletion, SynHighlighterPas, SynEditKeyCmds,
-  SynEditMarkupHighAll, DividerBevel, LazLoggerBase, LCLType, Menus, Grids,
-  Controls, Dialogs, Buttons;
+  editor_keymapping_options;
 
 type
 

@@ -25,8 +25,17 @@ unit codetools_codecreation_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, ExtCtrls, StdCtrls, Dialogs, EditBtn,
-  SourceChanger, CodeToolsOptions, LazarusIDEStrConsts, IDEOptionsIntf;
+  SysUtils,
+  // LazUtils
+  FileUtil,
+  // LCL
+  StdCtrls, Dialogs, EditBtn,
+  // CodeTools
+  SourceChanger,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf,
+  // IDE
+  CodeToolsOptions, LazarusIDEStrConsts;
 
 type
 

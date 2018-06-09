@@ -18,8 +18,15 @@ unit EduPkgSystem;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, StdCtrls, EduOptions,
-  LazConfigStorage, IDEOptionsIntf;
+  SysUtils,
+  // LCL
+  LResources, Forms, Controls, StdCtrls,
+  // LazUtils
+  LazConfigStorage,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf,
+  // Education
+  EduOptions;
 
 type
 

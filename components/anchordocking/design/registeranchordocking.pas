@@ -42,7 +42,7 @@ uses
   // LazUtils
   LazFileCache, LazFileUtils,
   // IdeIntf
-  LCLIntf, IDEWindowIntf, IDEOptionsIntf, LazIDEIntf,
+  LCLIntf, IDEWindowIntf, IDEOptionsIntf, IDEOptEditorIntf, LazIDEIntf,
   // AnchorDocking
   AnchorDockStr, AnchorDocking, AnchorDesktopOptions, AnchorDockOptionsDlg;
 

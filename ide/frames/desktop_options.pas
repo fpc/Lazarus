@@ -25,9 +25,17 @@ unit desktop_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, StdCtrls, Dialogs, LCLProc, ExtCtrls,
-  Buttons, EnvironmentOpts, LazarusIDEStrConsts, IDETranslations, InputHistory,
-  IDEProcs, IDEOptionsIntf, IDEWindowIntf, IDEUtils, DividerBevel;
+  Classes, SysUtils,
+  // LazUtils
+  FileUtil,
+  // LCL
+  Forms, StdCtrls, Dialogs, LCLProc, ExtCtrls,
+  // LazControls
+  DividerBevel,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf, IDEWindowIntf, IDEUtils,
+  // IDE
+  EnvironmentOpts, LazarusIDEStrConsts, IDETranslations, InputHistory, IDEProcs;
 
 type
 

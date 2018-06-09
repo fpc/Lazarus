@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, StdCtrls, Spin,
-  IDEOptionsIntf;
+  IDEOptionsIntf, IDEOptEditorIntf;
 
 type
 

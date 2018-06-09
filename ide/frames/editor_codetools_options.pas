@@ -25,10 +25,15 @@ unit editor_codetools_options;
 interface
 
 uses
-  Classes, StdCtrls, ComCtrls, Graphics, sysutils,
-  EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, ExtCtrls,
-  editor_color_options, editor_general_options,
-  SynEdit, SynCompletion, LCLType;
+  sysutils,
+  // LCL
+  StdCtrls, ComCtrls, ExtCtrls,
+  // SynEdit
+  SynCompletion,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf,
+  // IDE
+  EditorOptions, LazarusIDEStrConsts;
 
 type
   { TEditorCodetoolsOptionsFrame }

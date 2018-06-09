@@ -5,8 +5,13 @@ unit compiler_codegen_options;
 interface
 
 uses
-  SysUtils, StdCtrls, IDEOptionsIntf, CompilerOptions, PackageDefs,
-  LazarusIDEStrConsts;
+  SysUtils,
+  // LCL
+  StdCtrls,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf,
+  // IDE
+  CompilerOptions, LazarusIDEStrConsts;
 
 type
 

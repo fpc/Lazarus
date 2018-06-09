@@ -46,7 +46,7 @@ uses
   // LazUtils
   LazFileUtils, LazFileCache, LazUTF8, AvgLvlTree,
   // IDEIntf
-  PropEdits, LazIDEIntf, MacroIntf, MacroDefIntf, IDEOptionsIntf,
+  PropEdits, LazIDEIntf, MacroIntf, MacroDefIntf, IDEOptionsIntf, IDEOptEditorIntf,
   PackageDependencyIntf, PackageIntf, IDEDialogs, ComponentReg, IDEImagesIntf,
   // IDE
   EditDefineTree, CompilerOptions, CompOptsModes, IDEOptionDefs, ProjPackCommon,

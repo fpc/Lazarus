@@ -45,7 +45,7 @@ uses
   // CodeTools
   FileProcs, SourceChanger, CodeCompletionTool,
   // IDEIntf
-  ProjectIntf, ObjectInspector, IDEWindowIntf, IDEOptionsIntf,
+  ProjectIntf, ObjectInspector, IDEWindowIntf, IDEOptionsIntf, IDEOptEditorIntf,
   ComponentReg, IDEExternToolIntf, MacroDefIntf, SrcEditorIntf,
   // DebuggerIntf
   DbgIntfDebuggerBase,

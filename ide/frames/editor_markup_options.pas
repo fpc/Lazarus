@@ -27,13 +27,13 @@ interface
 uses
   Classes, sysutils,
   // LCL
-  LCLType, CheckLst, Controls, StdCtrls, ComCtrls, Graphics, Spin, ExtCtrls,
+  LCLType, CheckLst, Controls, StdCtrls, ComCtrls, Graphics, Spin,
   // LazControls
   DividerBevel,
   // IDEIntf
-  EditorSyntaxHighlighterDef, IDEOptionsIntf,
+  EditorSyntaxHighlighterDef, IDEOptionsIntf, IDEOptEditorIntf,
   // SynEdit
-  SynEdit, SynCompletion, SynHighlighterPas, SynEditKeyCmds, SynEditHighlighterFoldBase,
+  SynEdit, SynHighlighterPas, SynEditKeyCmds, SynEditHighlighterFoldBase,
   // IDE
   EditorOptions, LazarusIDEStrConsts, SourceMarks, SynEditMarkupBracket,
   editor_color_options, editor_general_options, editor_keymapping_options,

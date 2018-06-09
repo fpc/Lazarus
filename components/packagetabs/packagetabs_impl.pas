@@ -30,10 +30,17 @@ unit packagetabs_impl;
 interface
 
 uses
-  Classes, SysUtils, Types, Contnrs, Controls, SrcEditorIntf, StdCtrls, Buttons,
-  ComCtrls, Forms, LazFileUtils, PackageIntf, Graphics, Menus, LazIDEIntf,
-  ExtCtrls, IDEImagesIntf, Laz2_XMLCfg, IDECommands, LCLIntf,
-  IDEOptionsIntf, ProjectIntf, packagetabsstr, Clipbrd, LCLProc;
+  Classes, SysUtils, Types, Contnrs,
+  // LCL
+  LCLProc, LCLIntf, Forms, Controls, StdCtrls, Buttons, ComCtrls, ExtCtrls,
+  Graphics, Menus, Clipbrd,
+  // LazUtils
+  LazFileUtils, Laz2_XMLCfg,
+  // IdeIntf
+  SrcEditorIntf, PackageIntf, LazIDEIntf, IDEImagesIntf, IDECommands,
+  IDEOptEditorIntf, ProjectIntf,
+  // PackageTabs
+  packagetabsstr;
 
 type
   TPackageTabButton = class(TSpeedButton)
@@ -589,8 +596,7 @@ end;
 
 { TPackageTabPanel }
 
-constructor TPackageTabPanel.Create(AParentWindow: TSourceEditorWindowInterface
-  );
+constructor TPackageTabPanel.Create(AParentWindow: TSourceEditorWindowInterface);
 begin
   inherited Create(nil);
 

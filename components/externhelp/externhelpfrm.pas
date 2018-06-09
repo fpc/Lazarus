@@ -35,10 +35,15 @@ unit ExternHelpFrm;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, FileUtil, LResources, Forms, Controls, Graphics,
-  Dialogs, LazConfigStorage, LazFileUtils, ComCtrls, Buttons, StdCtrls,
-  ExtCtrls, ButtonPanel, LazHelpIntf, PackageIntf, MacroIntf, IDEOptionsIntf,
-  LazIDEIntf, BaseIDEIntf, IDEDialogs, HelpIntfs, IDEImagesIntf, SrcEditorIntf;
+  Classes, SysUtils,
+  // LazUtils
+  FileUtil, LazFileUtils, LazConfigStorage,
+  // LCL
+  LCLProc, LResources, Forms, Controls, Graphics, Dialogs, ComCtrls, Buttons, StdCtrls,
+  ExtCtrls, ButtonPanel, HelpIntfs,
+  // IdeIntf
+  LazHelpIntf, PackageIntf, MacroIntf, IDEOptionsIntf, IDEOptEditorIntf,
+  LazIDEIntf, BaseIDEIntf, IDEDialogs, IDEImagesIntf, SrcEditorIntf;
 
 const
   ExternHelpConfigVersion = 1;

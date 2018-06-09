@@ -25,8 +25,15 @@ unit codetools_wordpolicy_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, ExtCtrls, StdCtrls,
-  SourceChanger, CodeToolsOptions, LazarusIDEStrConsts, IDEOptionsIntf;
+  SysUtils,
+  // LCL
+  ExtCtrls, StdCtrls,
+  // CodeTools
+  SourceChanger,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf,
+  // IDE
+  CodeToolsOptions, LazarusIDEStrConsts;
 
 type
 

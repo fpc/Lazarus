@@ -40,8 +40,17 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, Forms, Project, SourceMarks, DbgIntfBaseTypes, DbgIntfDebuggerBase,
-  Debugger, ProjectDefs, IDEOptionsIntf, LazarusIDEStrConsts, Laz2_XMLCfg;
+  Classes, SysUtils,
+  // LCL
+  Forms,
+  // LazUtils
+  Laz2_XMLCfg,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf,
+  // DebuggerIntf
+  DbgIntfBaseTypes, DbgIntfDebuggerBase,
+  // IDE
+  Debugger, SourceMarks, Project, ProjectDefs, LazarusIDEStrConsts;
 
 type
   TDebugDialogType = (

@@ -25,11 +25,18 @@ unit debugger_general_options;
 interface
 
 uses
-  Classes, SysUtils, TypInfo, Forms, Controls, StdCtrls,
-  ExtCtrls, Buttons, Dialogs, LCLProc, FileUtil, LazFileUtils, LazFileCache, PropEdits,
-  ObjectInspector, TransferMacros, LazarusIDEStrConsts, IDEOptionsIntf, IDEUtils,
-  DbgIntfDebuggerBase, PathEditorDlg, InputHistory, IDEProcs, DialogProcs,
-  EnvironmentOpts, BaseDebugManager, Debugger;
+  Classes, SysUtils, TypInfo,
+  // LCL
+  Forms, Controls, StdCtrls, ExtCtrls, Buttons, Dialogs, LCLProc,
+  // LazUtils
+  FileUtil, LazFileUtils, LazFileCache,
+  // DebuggerIntf
+  DbgIntfDebuggerBase,
+  // IdeIntf
+  PropEdits, ObjectInspector, IDEOptionsIntf, IDEOptEditorIntf, IDEUtils,
+  // IDE
+  TransferMacros, LazarusIDEStrConsts, PathEditorDlg, IDEProcs, DialogProcs,
+  InputHistory, EnvironmentOpts, BaseDebugManager, Debugger;
 
 type
 

@@ -25,9 +25,13 @@ unit debugger_signals_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, StdCtrls, Menus,
-  ComCtrls, Buttons,
-  LazarusIDEStrConsts, IDEOptionsIntf, IDEImagesIntf, Debugger, BaseDebugManager;
+  Classes, SysUtils,
+  // LCL
+  Forms, StdCtrls, Menus, ComCtrls, Buttons,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf, IDEImagesIntf,
+  // IDE
+  LazarusIDEStrConsts, Debugger, BaseDebugManager;
 type
 
   { TDebuggerSignalsOptions }

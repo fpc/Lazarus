@@ -25,8 +25,13 @@ unit naming_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, ExtCtrls, StdCtrls,
-  EnvironmentOpts, LazarusIDEStrConsts, IDEOptionsIntf;
+  SysUtils,
+  // LCL
+  Forms, ExtCtrls, StdCtrls,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf,
+  // IDE
+  EnvironmentOpts, LazarusIDEStrConsts;
 
 type
 

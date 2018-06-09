@@ -5,8 +5,13 @@ unit RegisterEMS;
 interface
 
 uses
-  Classes, SysUtils, SrcEditorIntf, IDEOptionsIntf, EMScriptMacro, EMSSelfTest,
-  EMSIdeOptions, EMSStrings, Dialogs;
+  Classes, SysUtils,
+  // LCL
+  Dialogs,
+  // IdeIntf
+  SrcEditorIntf, IDEOptionsIntf, IDEOptEditorIntf,
+  // MacroScript
+  EMScriptMacro, EMSSelfTest, EMSIdeOptions, EMSStrings;
 
 procedure Register;
 

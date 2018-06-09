@@ -5,9 +5,13 @@ unit help_general_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, StdCtrls, ExtCtrls, EditBtn,
-  IDEOptionsIntf, HelpOptions, LazarusIDEStrConsts, EnvironmentOpts,
-  ObjectInspector, LazHelpIntf;
+  Classes, SysUtils,
+  // LCL
+  Forms, Controls, StdCtrls, ExtCtrls, EditBtn,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf, ObjectInspector, LazHelpIntf,
+  // IDE
+  HelpOptions, LazarusIDEStrConsts, EnvironmentOpts;
 
 type
 

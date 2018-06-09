@@ -31,7 +31,8 @@ interface
 { preprocessor symbols }
 
 uses
-  Classes, StdCtrls, IDEOptionsIntf;
+  Classes, StdCtrls,
+  IDEOptionsIntf, IDEOptEditorIntf;
 
 type
 

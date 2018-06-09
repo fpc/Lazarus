@@ -28,9 +28,15 @@ unit editortoolbar_options;
 interface
 
 uses
-  Classes, SysUtils, ExtCtrls, Buttons, Controls, StdCtrls, DividerBevel,
-  LazarusIDEStrConsts, LCLProc, IDEOptionsIntf, EnvironmentOpts,
-  EditorToolbarStatic, ToolbarConfig;
+  Classes, SysUtils,
+  // LCL
+  LCLProc, ExtCtrls, Buttons, Controls, StdCtrls,
+  // LazControls
+  DividerBevel,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf,
+  // IDE
+  LazarusIDEStrConsts, EnvironmentOpts, EditorToolbarStatic, ToolbarConfig;
 
 type
 

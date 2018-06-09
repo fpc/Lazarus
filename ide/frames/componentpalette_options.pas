@@ -25,11 +25,18 @@ unit ComponentPalette_Options;
 interface
 
 uses
-  Classes, SysUtils, Graphics, Forms, Controls, StdCtrls, Dialogs, Buttons,
-  ComCtrls, ExtCtrls, FileUtil, LCLProc, LCLType, Menus, IDEProcs, Laz2_XMLCfg,
-  EnvironmentOpts, LazarusIDEStrConsts, IDEOptionsIntf,
-  IDEImagesIntf, DividerBevel, ComponentReg, FormEditingIntf, IDEOptionDefs,
-  PackageDefs, ImgList;
+  Classes, SysUtils,
+  // LCL
+  LCLProc, LCLType, Forms, Controls, StdCtrls, ComCtrls, ExtCtrls,
+  Dialogs, Buttons, Menus, Graphics,
+  // LazControls
+  DividerBevel,
+  // LazUtils
+  FileUtil, Laz2_XMLCfg, ImgList,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf, IDEImagesIntf, FormEditingIntf, ComponentReg,
+  // IDE
+  IDEProcs, EnvironmentOpts, LazarusIDEStrConsts, IDEOptionDefs, PackageDefs;
 
 type
 

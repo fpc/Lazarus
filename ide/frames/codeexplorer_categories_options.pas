@@ -25,8 +25,13 @@ unit codeexplorer_categories_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, ExtCtrls,
-  IDEOptionsIntf, LazarusIDEStrConsts, CodeExplOpts;
+  SysUtils,
+  // LCL
+  ExtCtrls,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf,
+  // IDE
+  LazarusIDEStrConsts, CodeExplOpts;
 
 type
 

@@ -30,10 +30,16 @@ unit CodyRegistration;
 interface
 
 uses
-  Classes, SysUtils, LazUTF8, LResources, LCLProc, Controls, Forms,
-  MenuIntf, IDEWindowIntf, SrcEditorIntf, IDEOptionsIntf, ProjectIntf,
-  IDECommands, NewIDEWndDlg,
-  CodeToolManager,
+  Classes, SysUtils,
+  // LazUtils
+  LazUTF8,
+  // LCL
+  LResources, LCLProc, Controls, Forms,
+  // IdeIntf
+  MenuIntf, IDEWindowIntf, SrcEditorIntf, IDEOptionsIntf, IDEOptEditorIntf,
+  ProjectIntf, IDECommands,
+  // CodeTools
+  NewIDEWndDlg, CodeToolManager,
   CodyStrConsts, CodyUtils, CodyCtrls, CodyOpts,
   PPUListDlg, AddAssignMethodDlg, AddWithBlockDlg, CodyFindOverloads,
   {$IFDEF EnableCodyExperiments}

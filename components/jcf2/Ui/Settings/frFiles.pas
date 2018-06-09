@@ -30,10 +30,9 @@ unit frFiles;
 interface
 
 uses
-  { delphi }
-  SysUtils, Classes, Controls, Forms, StdCtrls, Graphics,
-  { lazarus }
-  IDEOptionsIntf, dialogs;
+  SysUtils,
+  Controls, StdCtrls, Graphics, Dialogs,
+  IDEOptionsIntf, IDEOptEditorIntf;
 
 type
 

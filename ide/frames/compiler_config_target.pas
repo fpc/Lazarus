@@ -28,10 +28,18 @@ unit compiler_config_target;
 interface
 
 uses
-  Classes, SysUtils, strutils, Controls, Dialogs, Graphics, StdCtrls,
-  LCLProc, LazFileUtils, DefineTemplates, IDEOptionsIntf, MacroIntf,
-  IDEDialogs, CompilerOptions, LazarusIDEStrConsts,
-  TransferMacros, PackageDefs, Project, compiler_parsing_options;
+  Classes, SysUtils, strutils,
+  // LCL
+  LCLProc, Controls, Dialogs, Graphics, StdCtrls,
+  // LazUtils
+  LazFileUtils,
+  // CodeTools
+  DefineTemplates,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf, MacroIntf, IDEDialogs,
+  // IDE
+  CompilerOptions, LazarusIDEStrConsts, TransferMacros, PackageDefs, Project,
+  compiler_parsing_options;
 
 type
 

@@ -25,7 +25,13 @@ unit atom_checkboxes_options;
 interface
 
 uses
-  Classes, IDEOptionsIntf, SourceChanger, StdCtrls;
+  Classes,
+  // LCL
+  StdCtrls,
+  // CodeTools
+  SourceChanger,
+  // IdeIntf
+  IDEOptEditorIntf;
 
 type
   { TCodetoolsAtomCheckboxesOptionsFrame }

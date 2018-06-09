@@ -5,8 +5,13 @@ unit EMSIdeOptions;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, StdCtrls, IDEOptionsIntf,
-  SrcEditorIntf, EMScriptMacro, EMSStrings;
+  SysUtils,
+  // LCL
+  StdCtrls,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf, SrcEditorIntf,
+  // MacroScript
+  EMScriptMacro, EMSStrings;
 
 type
 

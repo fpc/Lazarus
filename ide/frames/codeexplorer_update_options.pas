@@ -25,8 +25,13 @@ unit codeexplorer_update_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, ExtCtrls, StdCtrls,
-  IDEOptionsIntf, LazarusIDEStrConsts, CodeExplOpts;
+  SysUtils,
+  // LCL
+  Forms, ExtCtrls, StdCtrls,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf,
+  // IDE
+  LazarusIDEStrConsts, CodeExplOpts;
 
 type
 

@@ -43,7 +43,7 @@ uses
   // LazUtils
   AvgLvlTree, Laz2_XMLCfg, LazFileUtils, LazFileCache,
   // IDEIntf
-  IDEOptionsIntf,
+  IDEOptionsIntf, IDEOptEditorIntf,
   // IDE
   LazConf, IDEProcs, LazarusIDEStrConsts;
 

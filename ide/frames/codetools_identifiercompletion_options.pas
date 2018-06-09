@@ -25,8 +25,15 @@ unit codetools_identifiercompletion_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, StdCtrls,
-  CodeToolsOptions, LazarusIDEStrConsts, IDEOptionsIntf, DividerBevel;
+  SysUtils,
+  // LCL
+  Forms, StdCtrls,
+  // LazControls
+  DividerBevel,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf,
+  // IDE
+  CodeToolsOptions, LazarusIDEStrConsts;
 
 type
 

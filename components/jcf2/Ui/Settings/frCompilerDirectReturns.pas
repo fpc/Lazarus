@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
-  IDEOptionsIntf;
+  IDEOptionsIntf, IDEOptEditorIntf;
 
 type
 

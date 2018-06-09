@@ -5,8 +5,15 @@ unit compiler_parsing_options;
 interface
 
 uses
-  ExtCtrls, StdCtrls, SysUtils, IDEOptionsIntf, CompilerOptions,
-  LinkScanner, PackageDefs, LazarusIDEStrConsts;
+  SysUtils,
+  // LCL
+  ExtCtrls, StdCtrls,
+  // CodeTools
+  LinkScanner,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf,
+  // IDE
+  CompilerOptions, PackageDefs, LazarusIDEStrConsts;
 
 type
 

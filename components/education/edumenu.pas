@@ -24,7 +24,7 @@ uses
   // LazUtils
   AvgLvlTree, LazConfigStorage,
   // IdeIntf
-  IDEOptionsIntf, MenuIntf, IDEImagesIntf,
+  IDEOptionsIntf, IDEOptEditorIntf, MenuIntf, IDEImagesIntf,
   // Education
   EduOptions;
 

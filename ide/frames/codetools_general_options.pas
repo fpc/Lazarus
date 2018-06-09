@@ -25,9 +25,13 @@ unit codetools_general_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, StdCtrls, Buttons,
-  Dialogs, ExtCtrls, Graphics, EditBtn, Spin,
-  CodeToolsOptions, LazarusIDEStrConsts, IDEOptionsIntf;
+  SysUtils,
+  // LCL
+  Forms, StdCtrls, Dialogs, Graphics, EditBtn, Spin,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf,
+  // IDE
+  CodeToolsOptions, LazarusIDEStrConsts;
 
 type
 

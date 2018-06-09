@@ -25,9 +25,13 @@ unit debugger_language_exceptions_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, StdCtrls, CheckLst,
-  Buttons, Dialogs,
-  LazarusIDEStrConsts, IDEImagesIntf, IDEOptionsIntf, Debugger, BaseDebugManager;
+  Classes, SysUtils,
+  // LCL
+  Forms, Controls, StdCtrls, CheckLst, Buttons, Dialogs,
+  // IdeIntf
+  IDEImagesIntf, IDEOptionsIntf, IDEOptEditorIntf,
+  // IDE
+  LazarusIDEStrConsts, Debugger, BaseDebugManager;
 
 type
 

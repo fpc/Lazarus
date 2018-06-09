@@ -25,11 +25,18 @@ unit editor_indent_options;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LCLType, StdCtrls, Controls, ExtCtrls, Graphics,
-  Forms, ComCtrls, Spin, EditorOptions, LazarusIDEStrConsts, IDEProcs,
-  KeyMapping, editor_keymapping_options, editor_general_options, IDEOptionsIntf,
-  IDEUtils, SynEdit, SynBeautifier, SynHighlighterPas, SynEditKeyCmds,
-  DividerBevel;
+  Classes, SysUtils,
+  // LCL
+  LCLProc, LCLType, StdCtrls, Controls, ExtCtrls, Graphics, ComCtrls, Spin,
+  // LazControls
+  DividerBevel,
+  // SynEdit
+  SynEdit, SynBeautifier, SynHighlighterPas, SynEditKeyCmds,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf, IDEUtils,
+  // IDE
+  EditorOptions, LazarusIDEStrConsts, IDEProcs, KeyMapping,
+  editor_keymapping_options, editor_general_options;
 
 type
   TPreviewEditor = TSynEdit;

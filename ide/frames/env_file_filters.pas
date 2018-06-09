@@ -5,9 +5,14 @@ unit env_file_filters;
 interface
 
 uses
-  Classes, SysUtils, LazFileUtils, LResources, Forms, Grids, Dialogs, Controls,
-  LCLProc, LCLType, Menus, StdCtrls, LazConfigStorage,
-  IDEOptionsIntf, BaseIDEIntf, IDEDialogs,
+  Classes, SysUtils,
+  // LazUtils
+  LazFileUtils, LazConfigStorage,
+  // LCL
+  LCLProc, LCLType, LResources, Forms, Grids, Dialogs, Controls, StdCtrls, Menus,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf, BaseIDEIntf, IDEDialogs,
+  // IDE
   EnvironmentOpts, IDEOptionDefs, LazarusIDEStrConsts;
 
 const

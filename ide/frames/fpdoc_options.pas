@@ -25,8 +25,13 @@ unit fpdoc_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Dialogs, StdCtrls, EditBtn,
-  EnvironmentOpts, LazarusIDEStrConsts, IDEProcs, IDEOptionsIntf;
+  SysUtils,
+  // LCL
+  Dialogs, StdCtrls, EditBtn,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf,
+  // IDE
+  EnvironmentOpts, LazarusIDEStrConsts, IDEProcs;
 
 type
 

@@ -5,10 +5,17 @@ unit CodyMiscOptsFrame;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, DividerBevel, LResources, Forms, Controls,
-  StdCtrls, ComCtrls, FileProcs,
-  IDEOptionsIntf, LazIDEIntf,
-  CodyOpts, CodyIdentifiersDlg, CodyStrConsts;
+  Classes, SysUtils,
+  // LazUtils
+  FileUtil,
+  // LCL
+  LResources, Forms, Controls, StdCtrls, ComCtrls,
+  // LazControls
+  DividerBevel,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf, LazIDEIntf,
+  // CodeTools
+  FileProcs, CodyOpts, CodyIdentifiersDlg, CodyStrConsts;
 
 type
   { TCodyMiscOptionsFrame }

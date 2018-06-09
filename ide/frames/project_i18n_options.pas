@@ -5,8 +5,15 @@ unit project_i18n_options;
 interface
 
 uses
-  StdCtrls, EditBtn, ExtCtrls, LazFileUtils, Project, IDEOptionsIntf,
-  LazarusIDEStrConsts, IDEDialogs, IDEImagesIntf, Classes, Graphics;
+  Classes,
+  // LCL
+  StdCtrls, EditBtn, ExtCtrls, Graphics,
+  // LazUtils
+  LazFileUtils,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf, IDEImagesIntf, IDEDialogs,
+  // IDE
+  Project, LazarusIDEStrConsts;
 
 type
 

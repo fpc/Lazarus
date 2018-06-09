@@ -5,8 +5,15 @@ unit PJSDsgnRegister;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, ProjectIntf, CompOptsIntf, LazIDEIntf, IDEOptionsIntf,
-  PJSDsgnOptions, PJSDsgnOptsFrame, LazLoggerBase;
+  Classes, SysUtils,
+  // LCL
+  Forms, Controls,
+  // LazUtils
+  LazLoggerBase,
+  // IdeIntf
+  ProjectIntf, CompOptsIntf, LazIDEIntf, IDEOptionsIntf, IDEOptEditorIntf,
+  // Pas2js
+  PJSDsgnOptions, PJSDsgnOptsFrame;
 
 const
   ProjDescNamePas2JSWebApp = 'Web Application';

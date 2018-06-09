@@ -22,8 +22,8 @@ uses
   // LazUtils
   LazMethodList,
   // IdeIntf
-  PropEdits, IDEOptionsIntf, CompOptsIntf, ProjectIntf, IDEExternToolIntf,
-  SrcEditorIntf, IDEWindowIntf;
+  PropEdits, IDEOptionsIntf, IDEOptEditorIntf, CompOptsIntf, ProjectIntf,
+  IDEExternToolIntf, SrcEditorIntf, IDEWindowIntf;
 
 type
   TIDEDirective = (

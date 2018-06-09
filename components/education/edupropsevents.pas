@@ -18,8 +18,15 @@ unit EduPropsEvents;
 interface
 
 uses
-  Classes, LResources, Forms, StdCtrls, ExtCtrls, LazConfigStorage, IDEOptionsIntf, EduOptions,
-  ObjectInspector;
+  Classes,
+  // LCL
+  LResources, Forms, StdCtrls, ExtCtrls,
+  // LazUtils
+  LazConfigStorage,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf,
+  // Education
+  EduOptions;
 
 type
 

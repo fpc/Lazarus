@@ -35,9 +35,17 @@ unit CodeToolsOptions;
 interface
 
 uses
-  Classes, SysUtils, LazConf, LazFileUtils, Laz2_XMLCfg, LazUTF8, LazUTF8Classes,
-  LazFileCache, LclProc, LCLType, CodeToolManager, DefineTemplates, SourceChanger,
-  IDEOptionsIntf, MacroIntf, LazarusIDEStrConsts, IDEProcs;
+  Classes, SysUtils,
+  // LazUtils
+  LazFileUtils, Laz2_XMLCfg, LazUTF8, LazUTF8Classes, LazFileCache,
+  // LCL
+  LCLProc, LCLType,
+  // CodeTools
+  CodeToolManager, DefineTemplates, SourceChanger,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf, MacroIntf,
+  // IDE
+  LazConf, LazarusIDEStrConsts, IDEProcs;
 
 const
   DefaultIndentationFilename = 'laz_indentation.pas'; // in directory GetPrimaryConfigPath

@@ -5,8 +5,13 @@ unit compiler_verbosity_options;
 interface
 
 uses
-  SysUtils, ExtCtrls, StdCtrls, IDEOptionsIntf, CompilerOptions,
-  LazarusIDEStrConsts;
+  SysUtils,
+  // LCL
+  ExtCtrls, StdCtrls,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf,
+  // IDE
+  CompilerOptions, LazarusIDEStrConsts;
 
 type
 

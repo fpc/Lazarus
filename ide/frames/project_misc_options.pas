@@ -5,9 +5,14 @@ unit project_misc_options;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, FileUtil, Forms, Controls, Graphics, Dialogs,
-  ExtCtrls, StdCtrls,
-  ProjectIntf, IDEOptionsIntf,
+  SysUtils,
+  // LCL
+  LCLProc, Forms, Dialogs, ExtCtrls, StdCtrls,
+  // LazUtils
+  FileUtil,
+  // IdeIntf
+  ProjectIntf, IDEOptionsIntf, IDEOptEditorIntf,
+  // IDE
   IDEProcs, Project, LazarusIDEStrConsts;
 
 type

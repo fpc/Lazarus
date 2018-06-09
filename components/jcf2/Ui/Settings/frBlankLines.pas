@@ -29,8 +29,9 @@ unit frBlankLines;
 interface
 
 uses
-  Classes, Math, StdCtrls, Spin,
-  IDEOptionsIntf;
+  Classes, Math,
+  StdCtrls, Spin,
+  IDEOptionsIntf, IDEOptEditorIntf;
 
 
 type

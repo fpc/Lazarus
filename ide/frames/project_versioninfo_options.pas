@@ -5,9 +5,15 @@ unit project_versioninfo_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Spin, Buttons, Grids, CheckLst, LazUTF8,
-  Project, IDEOptionsIntf, LazarusIDEStrConsts, W32VersionInfo;
+  Classes, SysUtils,
+  // LCL
+  Forms, Dialogs, StdCtrls, Spin, Grids, CheckLst,
+  // LazUtils
+  LazUTF8,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf,
+  // IDE
+  Project, LazarusIDEStrConsts, W32VersionInfo;
 
 type
 

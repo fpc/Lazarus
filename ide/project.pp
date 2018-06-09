@@ -59,7 +59,7 @@ uses
   // IDEIntf
   PropEdits, UnitResources, EditorSyntaxHighlighterDef,
   CompOptsIntf, ProjectIntf, MacroIntf, MacroDefIntf, SrcEditorIntf,
-  IDEOptionsIntf, IDEDialogs, LazIDEIntf, PackageIntf,
+  IDEOptionsIntf, IDEOptEditorIntf, IDEDialogs, LazIDEIntf, PackageIntf,
   // IDE
   CompOptsModes, ProjectResources, LazConf, ProjectIcon,
   IDECmdLine, IDEProcs, CompilerOptions, RunParamsOpts, ModeMatrixOpts,

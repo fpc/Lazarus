@@ -25,7 +25,7 @@ uses
   // LazUtils
   LazConfigStorage, AvgLvlTree,
   // IdeIntf
-  FormEditingIntf, IDEOptionsIntf, ComponentReg, IDEImagesIntf,
+  FormEditingIntf, IDEOptionsIntf, IDEOptEditorIntf, ComponentReg, IDEImagesIntf,
   // Education
   EduOptions;
 

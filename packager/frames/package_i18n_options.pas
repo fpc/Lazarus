@@ -5,9 +5,15 @@ unit package_i18n_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, StdCtrls, EditBtn,
-  IDEOptionsIntf, LazarusIDEStrConsts, PackageDefs, IDEDialogs,
-  IDEImagesIntf;
+  SysUtils,
+  // LazUtils
+  FileUtil,
+  // LCL
+  Forms, StdCtrls, EditBtn,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf, IDEImagesIntf, IDEDialogs,
+  // IDE
+  LazarusIDEStrConsts, PackageDefs;
 
 type
 

@@ -30,12 +30,15 @@ unit IDEOptionsDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc,
-  LCLType, Controls, Forms, ComCtrls, Buttons, ButtonPanel, ExtCtrls, StdCtrls,
-  Dialogs, TreeFilterEdit,
+  Classes, SysUtils,
+  // LCL
+  LCLProc, LCLType, Controls, Forms, ComCtrls, Buttons, ButtonPanel,
+  ExtCtrls, StdCtrls, Dialogs,
+  // LazControls
+  TreeFilterEdit,
   // IdeIntf
-  IDEWindowIntf, IDEOptionsIntf, IDECommands, IDEHelpIntf, ProjectIntf,
-  IDEImagesIntf,
+  IDEWindowIntf, IDEOptionsIntf, IDEOptEditorIntf, IDECommands, IDEHelpIntf,
+  ProjectIntf, IDEImagesIntf,
   // IDE
   EnvironmentOpts, EditorOptions, BuildModesManager, Compiler_ModeMatrix,
   Project, LazarusIDEStrConsts,

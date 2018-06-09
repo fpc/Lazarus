@@ -25,8 +25,15 @@ unit codetools_classcompletion_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, ExtCtrls, StdCtrls, Buttons, Dialogs,
-  SourceChanger, CodeToolsOptions, LazarusIDEStrConsts, IDEOptionsIntf;
+  SysUtils,
+  // LCL
+  Forms, ExtCtrls, StdCtrls, Dialogs,
+  // CodeTools
+  SourceChanger,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf,
+  // IDE
+  CodeToolsOptions, LazarusIDEStrConsts;
 
 type
 

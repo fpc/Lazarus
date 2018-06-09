@@ -30,7 +30,7 @@ interface
 
 uses
   Classes, Controls, Forms, StdCtrls,
-  IDEOptionsIntf;
+  IDEOptionsIntf, IDEOptEditorIntf;
 
 type
 

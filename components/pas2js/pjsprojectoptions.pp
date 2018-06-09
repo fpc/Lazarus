@@ -5,8 +5,13 @@ unit pjsprojectoptions;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, StdCtrls, ExtCtrls, Spin, projectintf,
-  CompOptsIntf, IDEOptionsIntf, LazLoggerBase;
+  Classes, SysUtils,
+  // LCL
+  StdCtrls, Spin,
+  // LazUtils
+  LazLoggerBase,
+  // IdeIntf
+  LazIDEIntf, ProjectIntf, CompOptsIntf, IDEOptionsIntf, IDEOptEditorIntf;
 
 type
 
@@ -54,7 +59,7 @@ Procedure SetDefaultNodeJSCompileOptions(CompOpts: TLazCompilerOptions);
 
 implementation
 
-uses ideintf, lazideintf, pjsdsgnoptions, pjscontroller;
+uses pjsdsgnoptions, pjscontroller;
 
 Procedure ResetRunParams(RunParams : TAbstractRunParamsOptionsMode);
 

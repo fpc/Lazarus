@@ -25,11 +25,16 @@ unit editor_display_options;
 interface
 
 uses
-  Classes, SysUtils, Graphics, Dialogs, StdCtrls, Spin, LCLType, Controls, LCLProc, SynEdit,
-  SynEditMouseCmds, EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf,
-  IDEUtils, editor_general_options, editor_color_options, IDEProcs,
-  SynGutterLineNumber, SynGutterLineOverview, SynGutter, SourceSynEditor,
-  SourceMarks;
+  Classes, SysUtils,
+  // LCL
+  Graphics, Dialogs, StdCtrls, Spin, LCLType, Controls, LCLProc,
+  // SynEdit
+  SynEdit, SynEditMouseCmds, SynGutterLineNumber, SynGutterLineOverview, SynGutter,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf, IDEUtils,
+  // IDE
+  EditorOptions, LazarusIDEStrConsts, editor_general_options, editor_color_options,
+  IDEProcs, SourceSynEditor, SourceMarks;
 
 type
   { TEditorDisplayOptionsFrame }

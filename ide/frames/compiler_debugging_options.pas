@@ -5,8 +5,14 @@ unit compiler_debugging_options;
 interface
 
 uses
-  StdCtrls, IDEOptionsIntf, CompilerOptions, CompOptsIntf, LazLoggerBase,
-  LazarusIDEStrConsts;
+  // LCL
+  StdCtrls,
+  // LazUtils
+  LazLoggerBase,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf, CompOptsIntf,
+  // IDE
+  CompilerOptions, LazarusIDEStrConsts;
 
 type
 

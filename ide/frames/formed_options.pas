@@ -25,8 +25,13 @@ unit formed_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Graphics, Forms, StdCtrls, Dialogs, Spin,
-  ColorBox, EnvironmentOpts, LazarusIDEStrConsts, IDEProcs, IDEOptionsIntf;
+  Classes, SysUtils,
+  // LCL
+  Graphics, Forms, StdCtrls, Dialogs, Spin, ColorBox,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf,
+  // IDE
+  EnvironmentOpts, LazarusIDEStrConsts, IDEProcs;
 
 type
   TDesignerColor = (

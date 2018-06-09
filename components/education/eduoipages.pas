@@ -18,8 +18,14 @@ unit EduOIPages;
 interface
 
 uses
-  Classes, Forms, LCLProc, StdCtrls, ExtCtrls, LazConfigStorage,
-  ObjectInspector, ObjInspStrConsts, IDEOptionsIntf, FormEditingIntf,
+  Classes,
+  // LCL
+  LCLProc, Forms, StdCtrls, ExtCtrls,
+  // LazUtils
+  LazConfigStorage,
+  // IdeIntf
+  ObjectInspector, ObjInspStrConsts, IDEOptionsIntf, IDEOptEditorIntf, FormEditingIntf,
+  // Education
   EduOptions;
 
 type

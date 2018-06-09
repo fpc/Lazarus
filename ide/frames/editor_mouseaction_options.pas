@@ -25,8 +25,17 @@ unit editor_mouseaction_options;
 interface
 
 uses
-  math, sysutils, EditorOptions, LazarusIDEStrConsts, IDEOptionsIntf, SynEdit, DividerBevel, StdCtrls,
-  ExtCtrls, Classes, LCLProc, editor_mouseaction_options_advanced, Controls, Forms, ComCtrls;
+  sysutils, math,
+  // LCL
+  LCLProc, StdCtrls, ExtCtrls, Classes, Forms, ComCtrls,
+  // LazControls
+  DividerBevel,
+  // SynEdit
+  SynEdit,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf,
+  // IDE
+  EditorOptions, LazarusIDEStrConsts, editor_mouseaction_options_advanced;
 
 type
 

@@ -25,8 +25,13 @@ unit codeobserver_options;
 interface
 
 uses
-  Classes, Graphics, SysUtils, FileUtil, Forms,
-  IDEOptionsIntf, LazarusIDEStrConsts, CodeExplOpts, ExtCtrls, Spin, StdCtrls;
+  Classes, SysUtils,
+  // LCL
+  Forms, Graphics, ExtCtrls, Spin, StdCtrls,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf,
+  // IDE
+  LazarusIDEStrConsts, CodeExplOpts;
 
 type
 

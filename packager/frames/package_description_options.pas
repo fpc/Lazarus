@@ -9,7 +9,7 @@ uses
   // LCL
   Forms, Controls, StdCtrls, Spin, LCLProc,
   // IdeIntf
-  PackageDependencyIntf, IDEOptionsIntf,
+  PackageDependencyIntf, IDEOptionsIntf, IDEOptEditorIntf,
   // IDE
   LazarusIDEStrConsts, PackageDefs, PackageSystem, BrokenDependenciesDlg;
 

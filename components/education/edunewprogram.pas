@@ -19,10 +19,20 @@ unit EduNewProgram;
 interface
 
 uses
-  Classes, LCLProc, SysUtils, FileUtil, LResources, Forms, StdCtrls, ExtCtrls,
-  SynEdit, SynHighlighterPas, BasicCodeTools, ComCtrls, Dialogs, Controls,
-  LazConfigStorage, IDEOptionsIntf, MenuIntf, IDEImagesIntf, LazIDEIntf,
-  IDEDialogs, ProjectIntf, IDECommands, EduOptions;
+  Classes, SysUtils,
+  // LazUtils
+  FileUtil, LazConfigStorage,
+  // LCL
+  LCLProc, LResources, Forms, Controls, StdCtrls, ExtCtrls, ComCtrls, Dialogs,
+  // SynEdit
+  SynEdit, SynHighlighterPas,
+  // CodeTools
+  BasicCodeTools,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf, MenuIntf, IDEImagesIntf, LazIDEIntf, ProjectIntf,
+  IDECommands, IDEDialogs,
+  // Education
+  EduOptions;
 
 const
   FileDescNameSingleFileProgram = 'Single file program for education';

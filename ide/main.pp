@@ -80,7 +80,7 @@ uses
   MacroIntf, IDECommands, IDEWindowIntf, ComponentReg,
   SrcEditorIntf, NewItemIntf, IDEExternToolIntf, IDEMsgIntf,
   PackageIntf, ProjectIntf, CompOptsIntf, MenuIntf, LazIDEIntf, IDEDialogs,
-  IDEOptionsIntf, IDEImagesIntf, ComponentEditors, ToolBarIntf,
+  IDEOptionsIntf, IDEOptEditorIntf, IDEImagesIntf, ComponentEditors, ToolBarIntf,
   // protocol
   IDEProtocol,
   // compile

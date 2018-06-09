@@ -5,8 +5,13 @@ unit Package_Provides_Options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, StdCtrls,
-  IDEOptionsIntf, LazarusIDEStrConsts, PackageDefs;
+  SysUtils,
+  // LCL
+  StdCtrls,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf,
+  // IDE
+  LazarusIDEStrConsts, PackageDefs;
 
 type
 

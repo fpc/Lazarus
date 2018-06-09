@@ -40,7 +40,7 @@ uses
   SetComments, SetCaps, SetWordList,
   SetAlign, SetReplace, SetUses, SetPreProcessor,
   SettingsStream, SetTransform,  SetAsm,
-  JcfVersionConsts, IDEOptionsIntf;
+  JcfVersionConsts, IDEOptionsIntf, IDEOptEditorIntf;
 
 type
 

@@ -29,7 +29,7 @@ uses
   // LCL
   StdCtrls, ExtCtrls, Graphics, Spin, ColorBox, CheckLst, LCLType,
   // IdeIntf
-  EditorSyntaxHighlighterDef, IDEOptionsIntf,
+  EditorSyntaxHighlighterDef, IDEOptionsIntf, IDEOptEditorIntf,
   // SynEdit
   SynEditHighlighter,
   // IDE

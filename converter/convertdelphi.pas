@@ -41,12 +41,11 @@ uses
   // LazUtils
   LConvEncoding, FileUtil, LazFileUtils, LazUTF8, LazUTF8Classes, AvgLvlTree,
   // IDEIntf
-  ComponentReg, IDEDialogs,
-  LazIDEIntf, PackageIntf, ProjectIntf, IDEExternToolIntf, IDEOptionsIntf,
+  ComponentReg, IDEDialogs, LazIDEIntf, PackageIntf, ProjectIntf,
+  IDEExternToolIntf, IDEOptEditorIntf,
   // IDE
-  IDEProcs, DialogProcs, CompilerOptions,
-  ProjPackCommon, Project, ProjectDefs, PackageDefs, PackageSystem, PackageEditor,
-  BasePkgManager, LazarusIDEStrConsts, ProjectDescriptors,
+  IDEProcs, DialogProcs, CompilerOptions, ProjPackCommon, Project, ProjectDescriptors,
+  PackageDefs, PackageSystem, PackageEditor, BasePkgManager, LazarusIDEStrConsts,
   // Converter
   ConverterTypes, ConvertSettings, ConvCodeTool, MissingUnits, MissingPropertiesDlg,
   UsedUnits;

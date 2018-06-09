@@ -49,7 +49,7 @@ uses
   CodeCache, CodeTree, CodeToolManager, FindDeclarationTool,
   // IDEIntf
   PropEdits, PropEditUtils, ObjectInspector, FormEditingIntf, ComponentReg,
-  UnitResources, IDEOptionsIntf, IDEDialogs, ComponentEditors,
+  UnitResources, IDEOptEditorIntf, IDEDialogs, ComponentEditors,
   // IDE
   LazarusIDEStrConsts, EditorOptions, EnvironmentOpts, IDEProcs, Project, MainIntf,
   PackageDefs,

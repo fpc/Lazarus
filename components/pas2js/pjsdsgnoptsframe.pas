@@ -16,7 +16,7 @@ uses
   // LazUtils
   LazFileCache, LazFileUtils,
   // IdeIntf
-  IDEOptionsIntf, IDEUtils,
+  IDEOptionsIntf, IDEOptEditorIntf, IDEUtils,
   // Pas2Js
   PJSDsgnOptions;
 

@@ -5,9 +5,13 @@ unit project_lazdoc_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, EditBtn, Project, IDEOptionsIntf, LazarusIDEStrConsts, IDEProcs,
-  IDEImagesIntf, CodeHelp;
+  SysUtils,
+  // LCL
+  Forms, Dialogs, StdCtrls, Buttons, EditBtn,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf, IDEImagesIntf,
+  // IDE
+  Project, LazarusIDEStrConsts, IDEProcs, CodeHelp;
 
 type
 

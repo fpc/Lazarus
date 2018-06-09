@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, StdCtrls, ExtCtrls,
-  IDEOptionsIntf;
+  IDEOptionsIntf, IDEOptEditorIntf;
 
 type
   { TfObfuscateSettings }

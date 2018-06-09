@@ -27,13 +27,11 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  LCLType, Forms, StdCtrls, ExtCtrls, Graphics, Controls, CheckLst, Buttons,
-  // LazUtils
-  FileUtil,
+  LCLType, Forms, StdCtrls, ExtCtrls, Graphics, CheckLst,
   // IdeIntf
-  EditorSyntaxHighlighterDef, IDEOptionsIntf,
+  EditorSyntaxHighlighterDef, IDEOptionsIntf, IDEOptEditorIntf,
   // SynEdit
-  SynEditHighlighter, SynEditHighlighterFoldBase,
+  SynEditHighlighterFoldBase,
   // IDE
   EditorOptions, LazarusIDEStrConsts;
 

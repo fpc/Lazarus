@@ -30,10 +30,17 @@ unit MsgWnd_Options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LazLoggerBase, SynEdit, Forms,
-  Controls, Graphics, Dialogs, StdCtrls, ColorBox, ExtCtrls, Spin, ComCtrls,
-  IDEOptionsIntf, IDEExternToolIntf,
-  LazarusIDEStrConsts, EnvironmentOpts, editor_general_options, EditorOptions;
+  Classes, SysUtils,
+  // LazUtils
+  FileUtil, LazLoggerBase,
+  // LCL
+  Forms, Controls, Graphics, Dialogs, StdCtrls, ColorBox, ExtCtrls, Spin, ComCtrls,
+  // SynEdit
+  SynEdit,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf, IDEExternToolIntf,
+  // IDE
+  LazarusIDEStrConsts, EnvironmentOpts, EditorOptions, editor_general_options;
 
 type
 

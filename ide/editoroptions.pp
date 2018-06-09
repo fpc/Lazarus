@@ -65,7 +65,8 @@ uses
   // codetools
   LinkScanner, CodeToolManager,
   // IDEIntf
-  IDECommands, SrcEditorIntf, IDEOptionsIntf, IDEDialogs, EditorSyntaxHighlighterDef,
+  IDECommands, SrcEditorIntf, IDEOptionsIntf, IDEOptEditorIntf, IDEDialogs,
+  EditorSyntaxHighlighterDef,
   // IDE
   SourceMarks, LazarusIDEStrConsts, IDEProcs, KeyMapping, LazConf;
 

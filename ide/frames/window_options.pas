@@ -25,10 +25,15 @@ unit window_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, StdCtrls, ExtCtrls,
-  LCLProc, ObjectInspector, IDEOptionsIntf,
-  IDEWindowIntf, DividerBevel, EnvironmentOpts, IDEOptionDefs, InterfaceBase,
-  LazarusIDEStrConsts;
+  SysUtils,
+  // LCL
+  Forms, StdCtrls, InterfaceBase,
+  // LazControls
+  DividerBevel,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf,
+  // IDE
+  EnvironmentOpts, LazarusIDEStrConsts;
 
 type
   { TWindowOptionsFrame }

@@ -37,7 +37,7 @@ uses
   SynEditTypes, SynGutterChanges, SynEditMouseCmds, SynEditHighlighter,
   SynColorAttribEditor,
   // IdeIntf
-  IDEOptionsIntf, IDEImagesIntf, IDEUtils,
+  IDEOptionsIntf, IDEOptEditorIntf, IDEImagesIntf, IDEUtils,
   // IDE
   EditorOptions, editor_general_options, LazarusIDEStrConsts, IDEProcs, LazConf,
   SourceMarks;

@@ -25,9 +25,15 @@ unit debugger_eventlog_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Graphics, Forms, StdCtrls, Spin, CheckLst,
-  ComCtrls, LCLType, LCLIntf, ColorBox, Debugger, LazarusIDEStrConsts,
-  IDEOptionsIntf, DbgIntfDebuggerBase, EnvironmentOpts, BaseDebugManager;
+  Classes, SysUtils,
+  // LCL
+  LCLType, LCLIntf, Forms, StdCtrls, Spin, CheckLst, ComCtrls, ColorBox, Graphics,
+  // DebuggerIntf
+  DbgIntfDebuggerBase,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf,
+  // IDE
+  Debugger, LazarusIDEStrConsts, EnvironmentOpts, BaseDebugManager;
 
 type
   { TDebuggerEventLogOptionsFrame }

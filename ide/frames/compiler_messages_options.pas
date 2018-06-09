@@ -5,10 +5,20 @@ unit compiler_messages_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LazFileCache, LazLoggerBase, ListFilterEdit,
-  StdCtrls, CheckLst, Dialogs, IDEOptionsIntf, IDEExternToolIntf,
-  IDEDialogs, CompOptsIntf, IDEImagesIntf, CodeToolsFPCMsgs, CompilerOptions,
-  LazarusIDEStrConsts, etFPCMsgParser;
+  Classes, SysUtils,
+  // LCL
+  StdCtrls, CheckLst, Dialogs,
+  // LazUtils
+  FileUtil, LazFileCache, LazLoggerBase,
+  // LazControls
+  ListFilterEdit,
+  // CodeTools
+  CodeToolsFPCMsgs,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf, IDEExternToolIntf, CompOptsIntf, IDEImagesIntf,
+  IDEDialogs,
+  // IDE
+  CompilerOptions, LazarusIDEStrConsts, etFPCMsgParser;
 
 type
 

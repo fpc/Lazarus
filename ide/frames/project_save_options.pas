@@ -5,9 +5,15 @@ unit project_save_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, ExtCtrls, Project, IDEOptionsIntf, ProjectIntf, LCLProc, IDEProcs,
-  LazarusIDEStrConsts;
+  SysUtils,
+  // LazUtils
+  FileUtil,
+  // LCL
+  LCLProc, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf, ProjectIntf,
+  // IDE
+  Project, IDEProcs, LazarusIDEStrConsts;
 
 type
 

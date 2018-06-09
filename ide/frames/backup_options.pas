@@ -25,8 +25,13 @@ unit Backup_Options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, StdCtrls, ExtCtrls,
-  EnvironmentOpts, LazarusIDEStrConsts, IDEProcs, IDEOptionsIntf, IDEUtils;
+  SysUtils,
+  // LCL
+  StdCtrls, ExtCtrls,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf, IDEUtils,
+  // IDE
+  EnvironmentOpts, LazarusIDEStrConsts, IDEProcs;
 
 type
 

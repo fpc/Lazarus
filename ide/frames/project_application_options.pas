@@ -5,10 +5,19 @@ unit project_application_options;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, FileUtil, Forms, Controls, Graphics, Dialogs,
-  ExtCtrls, StdCtrls, Buttons, ComCtrls, ExtDlgs, Math, LCLType, IDEOptionsIntf,
-  LazIDEIntf, IDEImagesIntf, IDEDialogs, DividerBevel, Project, LazarusIDEStrConsts,
-  EnvironmentOpts, ApplicationBundle, ProjectIcon, W32Manifest, CompilerOptions;
+  Classes, SysUtils, Math,
+  // LazUtils
+  FileUtil,
+  // LCL
+  LCLProc, LCLType, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls, Buttons,
+  ComCtrls, ExtDlgs,
+  // LazControls
+  DividerBevel,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf, LazIDEIntf, IDEImagesIntf, IDEDialogs,
+  // IDE
+  LazarusIDEStrConsts, Project, ProjectIcon, CompilerOptions,
+  ApplicationBundle, W32Manifest;
 
 type
 

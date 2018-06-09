@@ -30,8 +30,9 @@ unit frClarify;
 interface
 
 uses
-  Classes, StdCtrls, ExtCtrls,
-  IDEOptionsIntf;
+  Classes,
+  StdCtrls, ExtCtrls,
+  IDEOptionsIntf, IDEOptEditorIntf;
 
 type
 

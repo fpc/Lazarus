@@ -25,8 +25,13 @@ unit editor_multiwindow_options;
 interface
 
 uses
-  Classes, SysUtils, StdCtrls, ExtCtrls, LCLType, EditorOptions, LazarusIDEStrConsts,
-  SourceEditor, IDEOptionsIntf, CheckLst, ComCtrls;
+  Classes, SysUtils,
+  // LCL
+  LCLType, StdCtrls, ExtCtrls, CheckLst, ComCtrls,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf,
+  // IDE
+  EditorOptions, LazarusIDEStrConsts, SourceEditor;
 
 type
 

@@ -36,7 +36,7 @@ uses
   // Codetools
   CodeToolsCfgScript, KeywordFuncLists,
   // IdeIntf
-  IDEOptionsIntf, CompOptsIntf, IDECommands,
+  IDEOptionsIntf, IDEOptEditorIntf, CompOptsIntf, IDECommands,
   // SynEdit
   SynEdit, SynEditKeyCmds, SynCompletion,
   // IDE

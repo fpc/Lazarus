@@ -5,9 +5,15 @@ unit Package_Usage_Options;
 interface
 
 uses
-  SysUtils, LazFileUtils, Forms, Controls, StdCtrls, Dialogs,
-  PathEditorDlg, IDEOptionsIntf, MacroIntf,
-  LazarusIDEStrConsts, IDEProcs, PackageDefs;
+  SysUtils,
+  // LazUtils
+  LazFileUtils,
+  // LCL
+  Forms, Controls, StdCtrls, Dialogs,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf, MacroIntf,
+  // IDE
+  PathEditorDlg, LazarusIDEStrConsts, IDEProcs, PackageDefs;
 
 type
 

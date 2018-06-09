@@ -27,11 +27,15 @@ unit Compiler_BuildMacro_Options;
 interface
 
 uses
-  Classes, SysUtils, Controls, Forms, StdCtrls, Buttons, ExtCtrls, Dialogs,
-  ComCtrls,
+  Classes, SysUtils,
+  // LCL
+  Controls, Forms, StdCtrls, Buttons, ExtCtrls, Dialogs, ComCtrls,
+  // CodeTools
   KeywordFuncLists, CodeToolsCfgScript,
-  IDEImagesIntf, IDEOptionsIntf, MacroIntf, CompOptsIntf,
-  CompilerOptions, IDEDialogs, LazarusIDEStrConsts, PackageDefs;
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf, CompOptsIntf, MacroIntf, IDEImagesIntf, IDEDialogs,
+  // IDE
+  CompilerOptions, LazarusIDEStrConsts, PackageDefs;
 
 type
   TCBMNodeType = (

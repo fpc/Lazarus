@@ -18,9 +18,14 @@ unit EduEnvOptsFrame;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, FileUtil, LResources, Forms, Controls, Graphics,
-  Dialogs, ExtCtrls, StdCtrls,
-  LazConfigStorage, IDEOptionsIntf, IDEImagesIntf, LazIDEIntf,
+  Classes, SysUtils,
+  // LazUtils
+  LazConfigStorage,
+  // LCL
+  LCLProc, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
+  // IdeIntf
+  IDEOptionsIntf, IDEOptEditorIntf, LazIDEIntf,
+  // Education
   EduOptions;
 
 const

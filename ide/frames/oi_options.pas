@@ -28,9 +28,13 @@ unit OI_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, StdCtrls, Dialogs, Spin, LCLProc,
-  ObjectInspector, LazarusIDEStrConsts, EnvironmentOpts, IDEOptionsIntf,
-  ColorBox, Graphics;
+  Classes, SysUtils,
+  // LCL
+  LCLProc, Forms, StdCtrls, Dialogs, Spin, ColorBox, Graphics,
+  // IdeIntf
+  ObjectInspector, IDEOptionsIntf, IDEOptEditorIntf,
+  // IDE
+  LazarusIDEStrConsts, EnvironmentOpts;
 
 type
   TOIColor = (
