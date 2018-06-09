@@ -425,8 +425,8 @@ function TCmdLineDebugger.ReadLine(const APeek: Boolean; ATimeOut: Integer = -1)
   var
     S: String;
   begin
-    SetLength(S, 1024);
-    Result := AStream.Read(S[1], 1024);
+    SetLength(S, 8192);
+    Result := AStream.Read(S[1], 8192);
     if Result > 0
     then begin
       SetLength(S, Result);
