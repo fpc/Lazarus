@@ -1381,7 +1381,8 @@ begin
     FDirectivesSorted[i]:=@FDirectives[i];
   for i:=FDirectivesCount to FDirectivesCapacity-1 do
     FDirectivesSorted[i]:=nil;
-  MergeSort(PPointer(FDirectivesSorted),FDirectivesCount,@CompareLSDirectiveCodeSrcPosCleanPos);
+  MergeSortWithLen(PPointer(FDirectivesSorted),FDirectivesCount,
+                   @CompareLSDirectiveCodeSrcPosCleanPos);
 end;
 
 procedure TLinkScanner.AddLink(ASrcPos: integer; ACode: Pointer;

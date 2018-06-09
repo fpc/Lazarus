@@ -38,10 +38,10 @@ uses
   KeywordFuncLists, CodeToolsFPCMsgs, CodeCache, FileProcs,
   CodeToolManager, DirectoryCacher, BasicCodeTools, DefineTemplates, SourceLog,
   // LazUtils
-  LConvEncoding, LazUTF8, FileUtil, LazFileUtils, AvgLvlTree,
+  LConvEncoding, LazUTF8, FileUtil, LazFileUtils, LazFileCache, LazUtilities,
+  AvgLvlTree,
   // IDEIntf
-  IDEExternToolIntf, PackageIntf, LazIDEIntf, ProjectIntf, MacroIntf,
-  IDEUtils, LazFileCache,
+  IDEExternToolIntf, PackageIntf, LazIDEIntf, ProjectIntf, MacroIntf, IDEUtils,
   // IDE
   IDECmdLine, LazarusIDEStrConsts, EnvironmentOpts, LazConf, TransferMacros,
   etMakeMsgParser;

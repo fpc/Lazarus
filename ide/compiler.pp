@@ -38,10 +38,17 @@ unit Compiler;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, contnrs, strutils,
-  IDEExternToolIntf, IDEMsgIntf, LazIDEIntf, MacroIntf, LazUTF8,
-  IDECmdLine, LazarusIDEStrConsts, CompilerOptions, Project,
-  DefineTemplates, LinkScanner, TransferMacros, EnvironmentOpts, LazFileUtils;
+  Classes, SysUtils, contnrs, strutils,
+  // LazUtils
+  LazUTF8, LazUtilities, LazFileUtils,
+  // LCL
+  LCLProc, Forms, Controls,
+  // Codetools
+  DefineTemplates, LinkScanner, TransferMacros,
+  // IdeIntf
+  IDEExternToolIntf, IDEMsgIntf, LazIDEIntf,
+  // IDE
+  IDECmdLine, LazarusIDEStrConsts, CompilerOptions, Project, EnvironmentOpts;
 
 type
   TOnCmdLineCreate = procedure(var CmdLine: string; var Abort:boolean) of object;

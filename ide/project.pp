@@ -54,13 +54,13 @@ uses
   CodeToolsConfig, ExprEval, DefineTemplates, BasicCodeTools, CodeToolsCfgScript,
   LinkScanner, CodeToolManager, CodeCache, FileProcs,
   // LazUtils
-  FPCAdds, FileUtil, LazFileUtils, LazFileCache, LazUTF8, Laz2_XMLCfg, Maps,
+  FPCAdds, LazUtilities, FileUtil, LazFileUtils, LazFileCache, LazUTF8, Laz2_XMLCfg, Maps,
   // IDEIntf
   PropEdits, UnitResources, EditorSyntaxHighlighterDef,
   CompOptsIntf, ProjectIntf, MacroIntf, MacroDefIntf, SrcEditorIntf,
-  IDEOptionsIntf, IDEDialogs, LazIDEIntf, ProjPackIntf, PackageIntf,
+  IDEOptionsIntf, IDEDialogs, LazIDEIntf, PackageIntf,
   // IDE
-  CompOptsModes, ProjectResources, LazConf, W32Manifest, ProjectIcon,
+  CompOptsModes, ProjectResources, LazConf, ProjectIcon,
   IDECmdLine, IDEProcs, CompilerOptions, RunParamsOpts, ModeMatrixOpts,
   TransferMacros, ProjectDefs, FileReferenceList, EditDefineTree,
   LazarusIDEStrConsts, ProjPackCommon, PackageDefs, PackageSystem;

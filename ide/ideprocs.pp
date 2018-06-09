@@ -35,8 +35,8 @@ uses
   // CodeTools
   BasicCodeTools, SourceLog, FileProcs, CodeToolManager, CodeToolsConfig, CodeCache,
   // LazUtils
-  FileUtil, LazFileUtils, LazFileCache, LazUTF8, lazutf8classes, Laz2_XMLCfg,
-  AvgLvlTree, MacroIntf,
+  FileUtil, LazFileUtils, LazUtilities, LazFileCache, LazUTF8, LazUTF8Classes,
+  Laz2_XMLCfg, AvgLvlTree,
   // IDE
   IDECmdLine, LazConf;
 

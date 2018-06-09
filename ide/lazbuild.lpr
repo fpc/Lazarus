@@ -38,7 +38,7 @@ uses
   MacroIntf, PackageIntf, IDEDialogs, ProjectIntf, IDEExternToolIntf,
   CompOptsIntf, IDEOptionsIntf, LazIDEIntf,
   // LazUtils
-  Masks, LConvEncoding, Laz2_XMLCfg, FileUtil, LazFileUtils, LazUTF8,
+  Masks, LConvEncoding, Laz2_XMLCfg, FileUtil, LazFileUtils, LazUtilities, LazUTF8,
   // IDE
   IDEProcs, IDEUtils, InitialSetupProc, ExtTools, CompilerOptions,
   ApplicationBundle, TransferMacros, EnvironmentOpts, IDETranslations,

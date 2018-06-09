@@ -44,7 +44,7 @@ uses
   // CodeTools
   FileProcs,
   // LazUtils
-  FileUtil, AvgLvlTree, LazFileUtils, UTF8Process, LazUTF8,
+  FileUtil, LazFileUtils, LazUtilities, UTF8Process, LazUTF8, AvgLvlTree,
   // IDEIntf
   IDEExternToolIntf, BaseIDEIntf, MacroIntf, IDEMsgIntf, IDEDialogs,
   PackageIntf, LazIDEIntf,

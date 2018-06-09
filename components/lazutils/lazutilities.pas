@@ -17,11 +17,11 @@ uses
 
 function ComparePointers(p1, p2: Pointer): integer; inline;
 
-{ MergeSort:
+{ MergeSortWithLen:
   sort ascending, e.g. Compare(List[0],List[1])<0
   keeping order (for each i<j and Compare(List[i],List[j])=0) }
-procedure MergeSort(List: PPointer; ListLength: PtrInt;
-                    const Compare: TListSortCompare);
+procedure MergeSortWithLen(List: PPointer; ListLength: PtrInt;
+                           const Compare: TListSortCompare);
 
 function GetNextDelimitedItem(const List: string; Delimiter: char;
                               var Position: integer): string;
@@ -30,6 +30,9 @@ function HasDelimitedItem(const List: string; Delimiter: char; FindItem: string
 function FindNextDelimitedItem(const List: string; Delimiter: char;
                                var Position: integer; FindItem: string): string;
 function MergeWithDelimiter(const a, b: string; Delimiter: char): string;
+
+var
+  ConsoleVerbosity: integer = 0; // 0=normal, -1=quiet, 1=verbose, 2=very verbose
 
 implementation
 
@@ -43,7 +46,7 @@ begin
     Result:=0;
 end;
 
-procedure MergeSort(List: PPointer; ListLength: PtrInt;
+procedure MergeSortWithLen(List: PPointer; ListLength: PtrInt;
   const Compare: TListSortCompare);
 var
   MergeList: PPointer;

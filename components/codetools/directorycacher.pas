@@ -660,7 +660,7 @@ begin
     GetMem(SortMap,WorkingListingCount*SizeOf(Pointer));
     for i:=0 to WorkingListingCount-1 do
       SortMap[i]:=@WorkingListing[i];
-    MergeSort(PPointer(SortMap),WorkingListingCount,@CompareWorkFileInfos);
+    MergeSortWithLen(PPointer(SortMap),WorkingListingCount,@CompareWorkFileInfos);
 
     // create listing
     TotalLen:=0;

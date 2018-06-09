@@ -52,7 +52,7 @@ uses
   // LazControls
   ExtendedNotebook,
   // LazUtils
-  LConvEncoding, LazUTF8Classes, LazFileCache, LazUTF8,
+  LConvEncoding, LazUtilities, LazFileCache, LazUTF8Classes, LazUTF8,
   LazLoggerBase, Translations,
   // codetools
   BasicCodeTools, CodeBeautifier, CodeToolManager, CodeCache, SourceLog,
@@ -66,12 +66,12 @@ uses
   SynExportHTML, SynHighlighterPas, SynEditMarkup, SynEditMarkupIfDef,
   // IdeIntf
   SrcEditorIntf, MenuIntf, LazIDEIntf, PackageIntf, IDEHelpIntf, IDEImagesIntf,
-  IDEWindowIntf, ProjectIntf, MacroDefIntf, ToolBarIntf, IDEDialogs,
+  IDEWindowIntf, ProjectIntf, MacroDefIntf, ToolBarIntf, IDEDialogs, IDECommands,
   EditorSyntaxHighlighterDef,
   // DebuggerIntf
   DbgIntfDebuggerBase,
   // IDE units
-  IDECmdLine, LazarusIDEStrConsts, IDECommands, MacroIntf, EditorOptions,
+  IDECmdLine, LazarusIDEStrConsts, EditorOptions,
   EnvironmentOpts, WordCompletion, FindReplaceDialog, IDEProcs, IDEOptionDefs,
   IDEHelpManager, MacroPromptDlg, TransferMacros, CodeContextForm,
   SrcEditHintFrm, etMessagesWnd, etSrcEditMarks, CodeMacroPrompt,

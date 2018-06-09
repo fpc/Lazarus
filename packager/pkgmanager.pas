@@ -50,17 +50,18 @@ uses
   // LCL
   LCLProc, Forms, Controls, Dialogs, Menus, ComCtrls, LResources,
   // LazUtils
-  LazUTF8, Laz2_XMLCfg, lazutf8classes, LazFileUtils, LazFileCache, StringHashList,
-  Translations, AvgLvlTree, Laz_AVL_Tree,
+  LazUTF8, Laz2_XMLCfg, LazUTF8Classes, LazUtilities, LazFileUtils, LazFileCache,
+  StringHashList, Translations, AvgLvlTree, Laz_AVL_Tree,
   // Codetools
   CodeToolsConfig, CodeToolManager, CodeCache, BasicCodeTools,
   FileProcs, CodeTree, CTUnitGraph,
   // IDE Interface
-  NewItemIntf, ProjPackIntf, ProjectIntf, PackageIntf, PackageDependencyIntf, PackageLinkIntf,
+  NewItemIntf, ProjPackIntf, ProjectIntf,
+  PackageIntf, PackageDependencyIntf, PackageLinkIntf,
   CompOptsIntf, MenuIntf, IDEWindowIntf, IDEExternToolIntf, MacroIntf, LazIDEIntf,
   IDEMsgIntf, SrcEditorIntf, ComponentReg, PropEdits, IDEDialogs, UnitResources,
   // IDE
-  PkgRegisterBase, IDECmdLine, LazarusIDEStrConsts, IDEProcs, ObjectLists,
+  IDECmdLine, LazarusIDEStrConsts, IDEProcs, ObjectLists,
   DialogProcs, IDECommands, IDEOptionDefs, EnvironmentOpts,
   MiscOptions, InputHistory, Project, PackageEditor, AddToPackageDlg,
   PackageDefs, PackageLinks, PackageSystem, OpenInstalledPkgDlg,

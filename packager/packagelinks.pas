@@ -43,11 +43,12 @@ uses
   // LCL
   Forms, LCLProc,
   // LazUtils
-  Laz2_XMLCfg, LazFileCache, AvgLvlTree, LazUTF8Classes, LazFileUtils, FileUtil,
+  Laz2_XMLCfg, LazFileCache, LazUTF8Classes, LazFileUtils, FileUtil,
+  LazUtilities, AvgLvlTree,
   // Codetools
   FileProcs, CodeToolManager,
   // IdeIntf
-  MacroIntf, PackageDependencyIntf, PackageLinkIntf, PackageIntf,
+  PackageDependencyIntf, PackageLinkIntf, PackageIntf, MacroIntf,
   // IDE
   IDEProcs, EnvironmentOpts, LazConf, IDECmdLine, PackageDefs;
   

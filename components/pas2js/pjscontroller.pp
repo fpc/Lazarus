@@ -5,8 +5,13 @@ unit pjscontroller;
 interface
 
 uses
-  Classes, SysUtils, MacroIntf, MacroDefIntf, forms, Controls, lazideintf,
-  LazLoggerBase, process ;
+  Classes, SysUtils, process,
+  // LazUtils
+  LazLoggerBase, LazUtilities,
+  // LCL
+  Forms, Controls,
+  // IdeIntf
+  MacroIntf, MacroDefIntf, LazIDEIntf;
 
 Type
 

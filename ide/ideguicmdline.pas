@@ -40,8 +40,15 @@ unit IDEGuiCmdLine;
 interface
 
 uses
-  Classes, SysUtils, math, lazutf8classes, LazConf, LCLProc,
-  FileProcs, LazFileUtils, MacroIntf, IDECmdLine;
+  Classes, SysUtils, math,
+  // LazUtils
+  LazUTF8Classes, LazUtilities, LazFileUtils,
+  // LCL
+  LCLProc,
+  // Codetools
+  FileProcs,
+  // IDE
+  LazConf, IDECmdLine;
 
 procedure ParseGuiCmdLineParams(var SkipAutoLoadingLastProject,
                                     StartedByStartLazarus,

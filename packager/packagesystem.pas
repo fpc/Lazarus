@@ -49,18 +49,19 @@ uses
   // LCL
   Forms, Controls, Dialogs, LCLProc,
   // LazUtils
-  FileUtil, LazFileCache, LazLoggerBase, LazFileUtils, LazUTF8,
+  FileUtil, LazFileCache, LazLoggerBase, LazUtilities, LazFileUtils, LazUTF8,
   Laz2_XMLCfg, laz2_XMLRead, AvgLvlTree,
   // codetools
   FileProcs, DefineTemplates, CodeToolManager, CodeCache, DirectoryCacher,
   BasicCodeTools, NonPascalCodeTools, SourceChanger,
   // IDEIntf,
-  IDEExternToolIntf, IDEDialogs, IDEMsgIntf, CompOptsIntf, LazIDEIntf, MacroDefIntf,
-  ProjectIntf, PackageDependencyIntf, PackageLinkIntf, PackageIntf, LazarusPackageIntf,
+  IDEExternToolIntf, IDEDialogs, IDEMsgIntf, CompOptsIntf, LazIDEIntf,
+  MacroDefIntf, ProjectIntf,
+  PackageDependencyIntf, PackageLinkIntf, PackageIntf, LazarusPackageIntf,
   // IDE
   LazarusIDEStrConsts, IDECmdLine, EnvironmentOpts, IDEProcs, LazConf,
   TransferMacros, DialogProcs, IDETranslations, CompilerOptions, PackageLinks,
-  PackageDefs, ComponentReg, MacroIntf;
+  PackageDefs, ComponentReg;
   
 const
   MakefileCompileVersion = 2;
