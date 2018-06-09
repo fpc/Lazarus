@@ -30,8 +30,13 @@ unit IDECommands;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, LCLType, Menus, PropEdits, IDEImagesIntf,
-  ExtCtrls, LCLIntf;
+  Classes, SysUtils,
+  // LCL
+  LCLProc, LCLType, LCLIntf, Forms, Menus,
+  // LazUtils
+  LazMethodList,
+  // IdeIntf
+  PropEdits, IDEImagesIntf;
   
 const
   { editor commands constants. see syneditkeycmds.pp for more

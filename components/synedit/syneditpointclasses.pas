@@ -36,11 +36,16 @@ unit SynEditPointClasses;
 interface
 
 uses
-  Classes, SysUtils, Controls, LCLProc, LCLType, LCLIntf, ExtCtrls, Graphics, Forms,
+  Classes, SysUtils,
+  // LCL
+  Controls, LCLProc, LCLType, LCLIntf, ExtCtrls, Graphics, Forms,
   {$IFDEF SYN_MBCSSUPPORT}
   Imm,
   {$ENDIF}
-  LazSynEditText, SynEditTypes, SynEditMiscProcs;//, SynEditTextBuffer;
+  // LazUtils
+  LazMethodList,
+  // SynEdit
+  LazSynEditText, SynEditTypes, SynEditMiscProcs;
 
 type
 

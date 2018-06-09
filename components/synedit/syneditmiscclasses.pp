@@ -42,9 +42,13 @@ unit SynEditMiscClasses;
 interface
 
 uses
-  LCLIntf, LCLType, LCLProc,
-  Classes, Graphics, Controls, SysUtils, Clipbrd, SynEditHighlighter,
-  SynEditMiscProcs, SynEditTypes, LazSynEditText, SynEditPointClasses, ImgList;
+  Classes, SysUtils,
+  // LazUtils
+  LazMethodList,
+  // LCL
+  LCLIntf, LCLType, LCLProc, Graphics, Controls, Clipbrd, ImgList,
+  // SynEdit
+  SynEditHighlighter, SynEditMiscProcs, SynEditTypes, LazSynEditText, SynEditPointClasses;
 
 type
 

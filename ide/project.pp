@@ -54,7 +54,8 @@ uses
   CodeToolsConfig, ExprEval, DefineTemplates, BasicCodeTools, CodeToolsCfgScript,
   LinkScanner, CodeToolManager, CodeCache, FileProcs,
   // LazUtils
-  FPCAdds, LazUtilities, FileUtil, LazFileUtils, LazFileCache, LazUTF8, Laz2_XMLCfg, Maps,
+  FPCAdds, LazUtilities, FileUtil, LazFileUtils, LazFileCache, LazMethodList,
+  LazUTF8, Laz2_XMLCfg, Maps,
   // IDEIntf
   PropEdits, UnitResources, EditorSyntaxHighlighterDef,
   CompOptsIntf, ProjectIntf, MacroIntf, MacroDefIntf, SrcEditorIntf,

@@ -20,7 +20,7 @@ uses
   // LCL
   LCLProc, Forms,
   // LazUtils
-  LazConfigStorage,
+  LazConfigStorage, LazMethodList,
   // IdeIntf
   NewItemIntf, ProjPackIntf, PackageDependencyIntf;
   

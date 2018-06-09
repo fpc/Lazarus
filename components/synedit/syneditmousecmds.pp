@@ -35,8 +35,13 @@ unit SynEditMouseCmds;
 interface
 
 uses
-  LazSynEditMouseCmdsTypes, Classes, Controls, SysUtils, SynEditStrConst, SynEditPointClasses,
-  SynEditKeyCmds, Dialogs, LCLProc, Menus;
+  Classes, SysUtils,
+  // LCL
+  LCLProc, Controls, Dialogs, Menus,
+  // LazUtils
+  LazMethodList,
+  // SynEdit
+  LazSynEditMouseCmdsTypes, SynEditStrConst, SynEditPointClasses, SynEditKeyCmds;
 
 type
 

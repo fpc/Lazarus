@@ -5,8 +5,13 @@ unit SynGutterBase;
 interface
 
 uses
-  Classes, SysUtils, Graphics, Controls, Menus, math, LCLProc, SynEditMarks,
-  SynEditMiscClasses, SynTextDrawer, SynEditMouseCmds, SynEditFoldedView;
+  Classes, SysUtils, math,
+  // LCL
+  LCLProc, Graphics, Controls, Menus,
+  // LazUtils
+  LazMethodList,
+  // SynEdit
+  SynEditMarks, SynEditMiscClasses, SynTextDrawer, SynEditMouseCmds, SynEditFoldedView;
 
 type
 

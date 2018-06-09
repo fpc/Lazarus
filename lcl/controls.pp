@@ -39,7 +39,9 @@ uses
   // LCL
   LCLStrConsts, LCLType, LCLProc, GraphType, Graphics, LMessages, LCLIntf,
   InterfaceBase, ImgList, PropertyStorage, Menus, ActnList, LCLClasses,
-  LResources, LCLPlatformDef;
+  LResources, LCLPlatformDef,
+  // LazUtils
+  LazMethodList;
 
 {$I controlconsts.inc}
 

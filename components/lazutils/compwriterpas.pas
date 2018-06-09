@@ -232,11 +232,6 @@ begin
   end;
 end;
 
-function CompareMethods(const m1, m2: TMethod): boolean;
-begin
-  Result:=(m1.Code=m2.Code) and (m1.Data=m2.Data);
-end;
-
 procedure RegisterDefinePropertiesPas(aClass: TPersistentClass;
   const OnDefineProperties: TCWPDefinePropertiesProc);
 var

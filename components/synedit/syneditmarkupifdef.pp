@@ -23,10 +23,15 @@ unit SynEditMarkupIfDef;
 interface
 
 uses
-  SysUtils, Classes, SynEditMiscClasses, SynHighlighterPas, SynEditMarkupHighAll,
+  SysUtils, Classes,
+  // LCL
+  Graphics, LCLProc,
+  // LazUtils
+  LazClasses, LazLoggerBase, LazMethodList,
+  // SynEdit
+  SynEditMiscClasses, SynHighlighterPas, SynEditMarkupHighAll,
   SynEditHighlighterFoldBase, SynEditFoldedView, LazSynEditText, SynEditMiscProcs,
-  SynEditMarkup, SynEditPointClasses, SynEditHighlighter, LazClasses, LazLoggerBase, Graphics,
-  LCLProc;
+  SynEditMarkup, SynEditPointClasses, SynEditHighlighter;
 
 type
 

@@ -6,7 +6,12 @@ unit LazSynTextArea;
 interface
 
 uses
-  Classes, SysUtils, Graphics, Controls, LCLType, LCLIntf, LCLProc,
+  Classes, SysUtils,
+  // LCL
+  Graphics, Controls, LCLType, LCLIntf, LCLProc,
+  // LazUtils
+  LazMethodList,
+  // SynEdit
   SynEditTypes, SynEditMiscProcs, SynEditMiscClasses, LazSynEditText,
   SynEditMarkup, SynEditHighlighter, SynTextDrawer;
 

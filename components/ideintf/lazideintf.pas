@@ -16,9 +16,14 @@ unit LazIDEIntf;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, Dialogs, PropEdits, LazHelpHTML,
-  IDEOptionsIntf, CompOptsIntf, ProjectIntf,
-  IDEExternToolIntf, SrcEditorIntf, IDEWindowIntf;
+  Classes, SysUtils,
+  // LCL
+  LCLProc, Forms, Controls, Dialogs, LazHelpHTML,
+  // LazUtils
+  LazMethodList,
+  // IdeIntf
+  PropEdits, IDEOptionsIntf, CompOptsIntf, ProjectIntf, IDEExternToolIntf,
+  SrcEditorIntf, IDEWindowIntf;
 
 type
   TIDEDirective = (

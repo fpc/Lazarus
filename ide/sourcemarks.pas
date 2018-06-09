@@ -41,6 +41,8 @@ uses
   Classes, SysUtils, Laz_AVL_Tree,
   // LCL
   Graphics, Controls, LCLProc,
+  // LazUtils
+  LazMethodList,
   // SynEdit
   SynEdit, SynEditMarks, SynEditMarkupGutterMark,
   // IdeIntf

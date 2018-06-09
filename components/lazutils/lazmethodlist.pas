@@ -62,7 +62,15 @@ type
     property AllowDuplicates: boolean read FAllowDuplicates write SetAllowDuplicates; // default false, changed in Lazarus 1.3
   end;
 
+function CompareMethods(const m1, m2: TMethod): boolean;
+
+
 implementation
+
+function CompareMethods(const m1, m2: TMethod): boolean;
+begin
+  Result:=(m1.Code=m2.Code) and (m1.Data=m2.Data);
+end;
 
 { TMethodList.TItemsEnumerator }
 

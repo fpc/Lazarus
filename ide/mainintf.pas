@@ -64,6 +64,8 @@ uses
   LCLType, Buttons, Controls, Graphics, Dialogs, Forms, LCLProc,
   // Codetools
   CodeCache,
+  // LazUtils
+  LazMethodList,
   // IDEIntf
   PropEdits, ObjectInspector, MenuIntf, SrcEditorIntf, ProjectIntf,
   CompOptsIntf, LazIDEIntf, IDEWindowIntf,

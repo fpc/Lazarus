@@ -18,7 +18,9 @@ uses
   Classes, SysUtils, Types, Math,
   // LCL
   Controls, StdCtrls, Graphics, ActnList, Forms,
-  LCLIntf, LMessages, LCLProc, LCLType, Themes;
+  LCLIntf, LMessages, LCLProc, LCLType, Themes,
+  // LazUtils
+  LazMethodList;
 
 type
   TCustomCheckBoxThemed = class;

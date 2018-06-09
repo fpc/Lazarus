@@ -29,7 +29,7 @@ uses
   // LCL
   LCLProc, Controls, Buttons, Forms, StdCtrls, Graphics, ComCtrls, Grids,
   // LazUtils
-  Laz2_XMLCfg,
+  Laz2_XMLCfg, LazMethodList,
   // IdeIntf
   EditorSyntaxHighlighterDef;
 

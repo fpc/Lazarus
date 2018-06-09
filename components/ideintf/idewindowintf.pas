@@ -17,8 +17,13 @@ unit IDEWindowIntf;
 interface
 
 uses
-  Math, Classes, SysUtils, LCLProc, LazConfigStorage, LazUTF8, Forms, Controls,
-  LCLIntf, IDEOptionsIntf;
+  Math, Classes, SysUtils,
+  // LCL
+  LCLProc, LCLIntf, Forms, Controls,
+  // LazUtils
+  LazConfigStorage, LazUTF8, LazMethodList,
+  // IdeIntf
+  IDEOptionsIntf;
 
 const
   IDEWndCfgFileVersion = 2;

@@ -16,7 +16,10 @@ unit CompOptsIntf;
 interface
 
 uses
-  Classes, SysUtils, LCLProc,
+  Classes, SysUtils,
+  // LazUtils
+  LazMethodList,
+  // IdeIntf
   IDEOptionsIntf;
 
 type

@@ -18,7 +18,7 @@ uses
   // LCL
   LCLProc,
   // LazUtils
-  UTF8Process, LazFileUtils, LazFileCache,
+  UTF8Process, LazFileUtils, LazFileCache, LazMethodList,
   // IdeIntf
   ObjInspStrConsts, LazLoggerBase, Menus;
 

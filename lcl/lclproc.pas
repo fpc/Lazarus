@@ -28,7 +28,7 @@ uses
   {$IFDEF Darwin}MacOSAll, {$ENDIF}
   Classes, SysUtils, Math, TypInfo, Types, Laz_AVL_Tree,
   // LazUtils
-  FPCAdds, LazFileUtils, LazMethodList, LazUTF8, LazUTF8Classes,
+  FPCAdds, LazFileUtils, LazUtilities, LazMethodList, LazUTF8, LazUTF8Classes,
   {$IFnDEF WithOldDebugln} LazLoggerBase, {$ENDIF}
   // LCL
   LCLStrConsts, LCLType;
@@ -141,11 +141,11 @@ procedure CalculateLeftTopWidthHeight(X1,Y1,X2,Y2: integer;
 function DeleteAmpersands(var Str : String) : Longint;
 function BreakString(const s: string; MaxLineLength, Indent: integer): string;
 
-function ComparePointers(p1, p2: Pointer): integer;
+function ComparePointers(p1, p2: Pointer): integer; inline;
 function CompareHandles(h1, h2: THandle): integer;
 function CompareRect(R1, R2: PRect): Boolean;
 function ComparePoints(const p1, p2: TPoint): integer;
-function CompareMethods(const m1, m2: TMethod): boolean;
+function CompareMethods(const m1, m2: TMethod): boolean; inline;
 
 function RoundToInt(const e: Extended): integer;
 function RoundToCardinal(const e: Extended): cardinal;
@@ -1270,12 +1270,7 @@ end;
 
 function ComparePointers(p1, p2: Pointer): integer;
 begin
-  if p1>p2 then
-    Result:=1
-  else if p1<p2 then
-    Result:=-1
-  else
-    Result:=0;
+  Result:=LazUtilities.ComparePointers(p1, p2);
 end;
 
 function CompareHandles(h1, h2: THandle): integer;
@@ -1314,7 +1309,7 @@ end;
 
 function CompareMethods(const m1, m2: TMethod): boolean;
 begin
-  Result:=(m1.Code=m2.Code) and (m1.Data=m2.Data);
+  Result:=LazMethodList.CompareMethods(m1, m2);
 end;
 
 function RoundToInt(const e: Extended): integer;

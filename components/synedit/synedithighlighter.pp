@@ -32,8 +32,12 @@ unit SynEditHighlighter;
 interface
 
 uses
-  SysUtils, Classes,
-  Graphics, LazUTF8, LCLProc, LCLIntf, LCLType, Registry, IniFiles,
+  SysUtils, Classes, Registry, IniFiles,
+  // LCL
+  LCLProc, LCLIntf, LCLType, Graphics,
+  // LazUtils
+  LazUTF8, LazMethodList,
+  // SynEdit
   SynEditTypes, SynEditTextBase;
 
 type

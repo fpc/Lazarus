@@ -38,8 +38,12 @@ interface
 {$endif}
 
 uses
-  Types, Classes, SysUtils, LCLStrConsts, LCLType, LCLProc, LCLIntf, InterfaceBase,
-  LResources, LMessages, ActnList, Graphics, ImgList, LCLClasses, Themes;
+  Types, Classes, SysUtils,
+  // LCL
+  LCLStrConsts, LCLType, LCLProc, LCLIntf, LCLClasses, LResources, LMessages,
+  ActnList, Graphics, ImgList, Themes,
+  // LazUtils
+  LazMethodList;
 
 type
   TMenu = class;

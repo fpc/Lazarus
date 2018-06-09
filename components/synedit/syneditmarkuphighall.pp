@@ -26,9 +26,14 @@ unit SynEditMarkupHighAll;
 interface
 
 uses
-  Classes, SysUtils, ExtCtrls, SynEditMarkup, SynEditTypes, SynEditSearch,
-  SynEditMiscClasses, Controls, LCLProc, SynEditHighlighter, SynEditPointClasses,
-  SynEditMiscProcs, SynEditFoldedView, SynEditTextBase, LazClasses, LazUTF8;
+  Classes, SysUtils,
+  // LCL
+  LCLProc, Controls, ExtCtrls,
+  // LazUtils
+  LazClasses, LazUTF8, LazMethodList,
+  // SynEdit
+  SynEditMarkup, SynEditTypes, SynEditSearch, SynEditMiscClasses, SynEditHighlighter,
+  SynEditPointClasses, SynEditMiscProcs, SynEditFoldedView, SynEditTextBase;
 
 type
 

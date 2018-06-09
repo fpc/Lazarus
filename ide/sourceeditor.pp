@@ -52,7 +52,7 @@ uses
   // LazControls
   ExtendedNotebook,
   // LazUtils
-  LConvEncoding, LazUtilities, LazFileCache, LazUTF8Classes, LazUTF8,
+  LConvEncoding, LazUtilities, LazFileCache, LazUTF8Classes, LazUTF8, LazMethodList,
   LazLoggerBase, Translations,
   // codetools
   BasicCodeTools, CodeBeautifier, CodeToolManager, CodeCache, SourceLog,

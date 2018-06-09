@@ -67,7 +67,12 @@ unit SynTextDrawer;
 interface
 
 uses
-  Classes, Types, SysUtils, LCLProc, LCLType, LCLIntf, Graphics, GraphUtil,
+  Classes, Types, SysUtils,
+  // LCL
+  LCLProc, LCLType, LCLIntf, Graphics, GraphUtil,
+  // LazUtils
+  LazMethodList,
+  // SynEdit
   SynEditTypes, SynEditMiscProcs;
 
 type

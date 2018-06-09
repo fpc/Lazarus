@@ -37,7 +37,13 @@ unit SynEditTextBase;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, SynEditMiscProcs, SynEditKeyCmds;
+  Classes, SysUtils,
+  // LCL
+  LCLProc,
+  // LazUtils
+  LazMethodList,
+  // SynEdit
+  SynEditMiscProcs, SynEditKeyCmds;
 
 type
 
