@@ -6473,6 +6473,7 @@ begin
   end else
     FIdentifierWordCompletionWordList.Clear;
 
+  PriorityCount := FilteredList.Count;
   AWordCompletion.GetWordList(FIdentifierWordCompletionWordList, Sender.Prefix, Sender.ContainsFilter, False, 100);
   FilteredList.Capacity := FilteredList.Count+FIdentifierWordCompletionWordList.Count;
   for I := 0 to FIdentifierWordCompletionWordList.Count-1 do
