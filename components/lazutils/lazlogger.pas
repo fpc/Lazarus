@@ -38,10 +38,12 @@ type
   private
     FActiveLogText: PText; // may point to stdout
     FCloseLogFileBetweenWrites: Boolean;
+    FLastWriteFailed: Boolean;
     FLogName: String;
     FLogText: Text;
     FLogTextInUse, FLogTextFailed: Boolean;
     FUseStdOut: Boolean;
+    FWriteFailedCount: Integer;
     procedure DoOpenFile;
     procedure DoCloseFile;
     function GetWriteTarget: TLazLoggerWriteTarget;
@@ -52,6 +54,7 @@ type
     destructor Destroy; override;
     procedure OpenFile;
     procedure CloseFile;
+    procedure ResetWriteFailedCounter;
 
     procedure WriteToFile(const s: string); virtual;
     procedure WriteLnToFile(const s: string); virtual;
@@ -61,6 +64,8 @@ type
     property  CloseLogFileBetweenWrites: Boolean read FCloseLogFileBetweenWrites write SetCloseLogFileBetweenWrites;
     property  WriteTarget: TLazLoggerWriteTarget read GetWriteTarget;
     property  ActiveLogText: PText read FActiveLogText;
+    property  WriteFailedCount: Integer read FWriteFailedCount;
+    property  LastWriteFailed: Boolean read FLastWriteFailed;
   end;
 
   { TLazLoggerFileHandleThreadSave
@@ -451,8 +456,14 @@ begin
   FLogTextFailed := False;
 end;
 
+procedure TLazLoggerFileHandle.ResetWriteFailedCounter;
+begin
+  FWriteFailedCount := 0;
+end;
+
 procedure TLazLoggerFileHandle.WriteToFile(const s: string);
 begin
+  try
   DoOpenFile;
   if FActiveLogText = nil then exit;
 
@@ -460,10 +471,16 @@ begin
 
   if FCloseLogFileBetweenWrites then
     DoCloseFile;
+    FLastWriteFailed := False;
+  except
+    inc(FWriteFailedCount);
+    FLastWriteFailed := True;
+  end;
 end;
 
 procedure TLazLoggerFileHandle.WriteLnToFile(const s: string);
 begin
+  try
   DoOpenFile;
   if FActiveLogText = nil then exit;
 
@@ -471,6 +488,11 @@ begin
 
   if FCloseLogFileBetweenWrites then
     DoCloseFile;
+    FLastWriteFailed := False;
+  except
+    inc(FWriteFailedCount);
+    FLastWriteFailed := True;
+  end;
 end;
 
 { TLazLoggerFile }
