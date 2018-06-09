@@ -69,7 +69,7 @@ uses
   // Codetools
   CodeCache, CodeToolManager, BasicCodeTools, FileProcs,
   // IDEIntf
-  LazIDEIntf, IDEImagesIntf, PackageIntf, ProjectIntf, IDEUtils,
+  LazIDEIntf, IDEImagesIntf, PackageIntf, ProjectIntf, PackageDependencyIntf,
   // ToDoList
   ToDoListStrConsts;
 

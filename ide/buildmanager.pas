@@ -46,9 +46,9 @@ uses
   LazUtilities, LazMethodList,
   // IDEIntf
   IDEOptionsIntf, ProjectIntf, MacroIntf, IDEDialogs, IDEExternToolIntf,
-  CompOptsIntf, LazIDEIntf, MacroDefIntf, IDEMsgIntf,
+  CompOptsIntf, LazIDEIntf, MacroDefIntf, IDEMsgIntf, PackageDependencyIntf,
   // IDE
-  IDECmdLine, LazarusIDEStrConsts, DialogProcs, IDEProcs, IDEUtils,
+  IDECmdLine, LazarusIDEStrConsts, DialogProcs, IDEProcs,
   InputHistory, EditDefineTree, ProjectResources, MiscOptions, LazConf,
   EnvironmentOpts, TransferMacros, CompilerOptions,
   ExtTools, etMakeMsgParser, etFPCMsgParser, etPas2jsMsgParser,

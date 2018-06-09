@@ -32,15 +32,15 @@ uses
   Interfaces, // this includes the NoGUI widgetset
   // LCL
   LCLPlatformDef, LCLProc, Controls, Dialogs, Forms,
-  // codetools
+  // Codetools
   CodeCache, CodeToolManager, DefineTemplates, FileProcs,
   // IDEIntf
   MacroIntf, PackageIntf, IDEDialogs, ProjectIntf, IDEExternToolIntf,
-  CompOptsIntf, IDEOptionsIntf, LazIDEIntf,
+  CompOptsIntf, IDEOptionsIntf, LazIDEIntf, PackageDependencyIntf,
   // LazUtils
   Masks, LConvEncoding, Laz2_XMLCfg, FileUtil, LazFileUtils, LazUtilities, LazUTF8,
   // IDE
-  IDEProcs, IDEUtils, InitialSetupProc, ExtTools, CompilerOptions,
+  IDEProcs, InitialSetupProc, ExtTools, CompilerOptions,
   ApplicationBundle, TransferMacros, EnvironmentOpts, IDETranslations,
   LazarusIDEStrConsts, IDECmdLine, MiscOptions, Project, LazConf, PackageDefs,
   PackageLinks, PackageSystem, InterPkgConflictFiles, BuildLazDialog,

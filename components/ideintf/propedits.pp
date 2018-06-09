@@ -34,7 +34,7 @@ uses
   FileUtil, StringHashList, LazMethodList, ModalResultDef,
   FPCAdds, // for StrToQWord in older fpc versions
   // IdeIntf
-  ObjInspStrConsts, PropEditUtils, IDEUtils,
+  ObjInspStrConsts, PropEditUtils, PackageDependencyIntf,
   // Forms with .lfm files
   FrmSelectProps, StringsPropEditDlg, KeyValPropEditDlg, CollectionPropEditForm,
   FileFilterPropEditor, PagesPropEditDlg, IDEWindowIntf;
