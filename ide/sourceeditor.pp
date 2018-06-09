@@ -965,16 +965,18 @@ type
     FCompletionPlugins: TFPList;
     FDefaultCompletionForm: TSourceEditCompletion;
     FActiveCompletionPlugin: TSourceEditorCompletionPlugin;
-    function GetDefaultCompletionForm: TSourceEditCompletion;
-    procedure  FreeCompletionPlugins;
+    function  GetDefaultCompletionForm: TSourceEditCompletion;
+    procedure FreeCompletionPlugins;
     function  GetScreenRectForToken(AnEditor: TCustomSynEdit; PhysColumn, PhysRow, EndColumn: Integer): TRect;
   protected
     CodeToolsToSrcEditTimer: TTimer;
     function  GetActiveCompletionPlugin: TSourceEditorCompletionPlugin; override;
     function  GetCompletionBoxPosition: integer; override;
     function  GetCompletionPlugins(Index: integer): TSourceEditorCompletionPlugin; override;
-    function GetDefaultSynCompletionForm: TCustomForm; override;
-    function  FindIdentCompletionPlugin(SrcEdit: TSourceEditor; JumpToError: boolean;
+    function  GetDefaultSynCompletionForm: TCustomForm; override;
+    function  GetSynCompletionLinesInWindow: integer; override;
+    procedure SetSynCompletionLinesInWindow(LineCnt: integer); override;
+    function FindIdentCompletionPlugin(SrcEdit: TSourceEditor; JumpToError: boolean;
                                var s: string; var BoxX, BoxY: integer;
                                var UseWordCompletion: boolean): boolean;
     property DefaultCompletionForm: TSourceEditCompletion
@@ -9282,6 +9284,26 @@ begin
     Result := GetDefaultCompletionForm.TheForm
   else
     Result := nil;
+end;
+
+function TSourceEditorManagerBase.GetSynCompletionLinesInWindow: integer;
+var
+  ComplForm: TCustomForm;
+begin
+  ComplForm := GetDefaultSynCompletionForm;
+  if Assigned(ComplForm) then
+    Result := TSynBaseCompletionForm(ComplForm).NbLinesInWindow
+  else
+    Result := -1;
+end;
+
+procedure TSourceEditorManagerBase.SetSynCompletionLinesInWindow(LineCnt: integer);
+var
+  ComplForm: TCustomForm;
+begin
+  ComplForm := GetDefaultSynCompletionForm;
+  if Assigned(ComplForm) then
+    TSynBaseCompletionForm(ComplForm).NbLinesInWindow := LineCnt;
 end;
 
 procedure TSourceEditorManagerBase.FreeCompletionPlugins;

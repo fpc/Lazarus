@@ -37,11 +37,11 @@ uses
 {$ifdef Windows}
   ShlObj,
 {$endif}
-  Classes, SysUtils, TypInfo, contnrs, Graphics, Controls, Forms, Dialogs,
-  LCLProc,
+  Classes, SysUtils, TypInfo, contnrs, math,
+  // LCL
+  Graphics, Controls, Forms, Dialogs, LCLProc,
   // LazUtils
-  LazFileUtils, LazFileCache, LazConfigStorage,
-  Laz2_XMLCfg, LazUTF8, Laz2_DOM,
+  LazFileUtils, LazFileCache, LazConfigStorage, Laz2_XMLCfg, LazUTF8, Laz2_DOM,
   // CodeTools
   FileProcs, SourceChanger, CodeCompletionTool,
   // IDEIntf
@@ -52,7 +52,7 @@ uses
   // IDE
   IDEProcs, DialogProcs, LazarusIDEStrConsts, IDETranslations, LazConf,
   IDEOptionDefs, TransferMacros, ModeMatrixOpts, Debugger,
-  IdeCoolbarData, EditorToolbarStatic, math, SynCompletion;
+  IdeCoolbarData, EditorToolbarStatic;
 
 const
   EnvOptsVersion: integer = 110;
@@ -1576,10 +1576,8 @@ begin
   begin
     ComplForm := SourceEditorManagerIntf.DefaultSynCompletionForm;
     if Assigned(ComplForm) then
-    begin
       ComplForm.Width := Max(50, CompletionWindowWidth);
-      (ComplForm as TSynBaseCompletionForm).NbLinesInWindow := Max(3, CompletionWindowHeight);
-    end;
+    SourceEditorManagerIntf.SynCompletionLinesInWindow := Max(3, CompletionWindowHeight);
   end;
 end;
 

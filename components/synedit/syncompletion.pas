@@ -222,8 +222,7 @@ type
     property OnCancel: TNotifyEvent read FOnCancel write FOnCancel;
     property ItemList: TStrings read FItemList write SetItemList;
     property Position: Integer read FPosition write SetPosition;
-    property NbLinesInWindow: Integer read FNbLinesInWindow
-      write SetNbLinesInWindow;
+    property NbLinesInWindow: Integer read FNbLinesInWindow write SetNbLinesInWindow;
     property ClSelect: TColor read FClSelect write FClSelect;
     property CaseSensitive: boolean read FCaseSensitive write FCaseSensitive;
     property FontHeight:integer read FFontHeight;

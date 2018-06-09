@@ -317,16 +317,20 @@ type
     function Beautify(const Src: string): string; virtual; abstract;
   protected
     // Completion Plugins
-    function GetActiveCompletionPlugin: TSourceEditorCompletionPlugin; virtual; abstract;
-    function GetCompletionBoxPosition: integer; virtual; abstract;
-    function GetCompletionPlugins(Index: integer): TSourceEditorCompletionPlugin; virtual; abstract;
-    function GetDefaultSynCompletionForm: TCustomForm; virtual; abstract;
+    function  GetActiveCompletionPlugin: TSourceEditorCompletionPlugin; virtual; abstract;
+    function  GetCompletionBoxPosition: integer; virtual; abstract;
+    function  GetCompletionPlugins(Index: integer): TSourceEditorCompletionPlugin; virtual; abstract;
+    function  GetDefaultSynCompletionForm: TCustomForm; virtual; abstract;
+    function  GetSynCompletionLinesInWindow: integer; virtual; abstract;
+    procedure SetSynCompletionLinesInWindow(LineCnt: integer); virtual; abstract;
   public
     // Completion Plugins
     function CompletionPluginCount: integer; virtual; abstract;
     property CompletionPlugins[Index: integer]: TSourceEditorCompletionPlugin
                  read GetCompletionPlugins;
     property DefaultSynCompletionForm: TCustomForm read GetDefaultSynCompletionForm;
+    property SynCompletionLinesInWindow: integer read GetSynCompletionLinesInWindow
+                                                write SetSynCompletionLinesInWindow;
     procedure DeactivateCompletionForm; virtual; abstract;
     property ActiveCompletionPlugin: TSourceEditorCompletionPlugin read GetActiveCompletionPlugin;
     property CompletionBoxPosition: integer read GetCompletionBoxPosition;
