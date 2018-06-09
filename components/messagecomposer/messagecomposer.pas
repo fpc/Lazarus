@@ -26,8 +26,13 @@ unit MessageComposer;
 interface
 
 uses
-  Classes, SysUtils, LResources, LCLType, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils,
+  // LCL
+  LResources, LCLType, Forms, Controls, Graphics, Dialogs,
   StdCtrls, ExtCtrls, Spin, Grids, ActnList, Buttons, EditBtn,
+  // LazUtils
+  ModalResultDef,
+  // IdeIntf
   IDECommands, MenuIntf, LazIDEIntf, SrcEditorIntf;
 
 type
@@ -114,9 +119,9 @@ type
     procedure TestExecute(Sender: TObject);
     procedure UpdateQuestioDlgResultExecute(Sender: TObject);
   private
-    { private declarations }
+
   public
-    { public declarations }
+
   end;
 
 procedure Register;

@@ -29,10 +29,14 @@ uses
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
 // rtl
-  Windows, shlobj, ShellApi, ActiveX, SysUtils, Classes,
-  CommDlg,
+  Windows, shlobj, ShellApi, ActiveX, SysUtils, Classes, CommDlg,
 // lcl
-  LCLProc, LCLType, LazUTF8, Dialogs, Controls, Graphics, Forms, LazFileUtils, Masks,
+  LCLProc, LCLType, Dialogs, Controls, Graphics, Forms, Masks,
+  // LazUtils
+  {$ifdef DebugCommonDialogEvents}
+  ModalResultDef,
+  {$endif}
+  LazFileUtils, LazUTF8,
 // ws
   WSDialogs, WSLCLClasses, Win32Extra, Win32Int, InterfaceBase,
   Win32Proc;

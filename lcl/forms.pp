@@ -39,7 +39,7 @@ uses
   LResources, GraphType, Graphics, Menus, LMessages, CustomTimer, ActnList,
   ClipBrd, HelpIntfs, Controls, ImgList, Themes,
   // LazUtils
-  LazFileUtils, LazUTF8, Maps, IntegerList, LazMethodList
+  LazFileUtils, LazUTF8, Maps, IntegerList, LazMethodList, ModalResultDef
   {$ifndef wince},gettext{$endif}// remove ifdefs when gettext is fixed and a new fpc is released
   ;
 
@@ -413,8 +413,8 @@ type
     );
   TFormState = set of TFormStateType;
 
-  TModalResult = low(Integer)..high(Integer);
-  PModalResult = ^TModalResult;
+  TModalResult = ModalResultDef.TModalResult;
+  PModalResult = ^ModalResultDef.TModalResult;
 
   TFormHandlerType = (
     fhtFirstShow,

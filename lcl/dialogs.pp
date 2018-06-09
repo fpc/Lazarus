@@ -28,6 +28,9 @@ uses
   Forms, Controls, Themes, GraphType, Graphics, Buttons, ButtonPanel, StdCtrls,
   ExtCtrls, LCLClasses, ClipBrd, Menus, LCLTaskDialog,
   // LazUtils
+  {$ifdef DebugCommonDialogEvents}
+  ModalResultDef,
+  {$endif}
   FileUtil, LazFileUtils;
 
 
