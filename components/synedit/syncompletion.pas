@@ -667,6 +667,7 @@ begin
   FHint.OnMouseDown :=@HintWindowMouseDown;
   {$ENDIF}
   FHintTimer := TTimer.Create(nil);
+  FHintTimer.Enabled := False;
   FHintTimer.OnTimer := @OnHintTimer;
   FHintTimer.Interval := 0;
   FLongLineHintTime := 0;
