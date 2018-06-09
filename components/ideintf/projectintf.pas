@@ -17,10 +17,13 @@ interface
 
 uses
   Classes, SysUtils, Contnrs,
+  // LazUtils
   FileUtil, LazFileUtils, LazFileCache, LazMethodList, AvgLvlTree,
+  // LCL
   Controls, Forms, ImgList, Graphics,
-  IDEOptionsIntf, NewItemIntf, ProjPackIntf, CompOptsIntf, ObjInspStrConsts,
-  IDEImagesIntf;
+  // IdeIntf
+  IDEOptionsIntf, NewItemIntf, ProjPackIntf, CompOptsIntf, IDEImagesIntf,
+  ObjInspStrConsts;
 
 const
   FileDescGroupName = 'File';

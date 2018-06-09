@@ -16,8 +16,13 @@ unit IDEMsgIntf;
 interface
 
 uses
-  Classes, SysUtils, contnrs, Forms, Menus,
-  IDECommands, IDEExternToolIntf, MenuIntf, LazFileUtils, LazLoggerBase;
+  Classes, SysUtils, contnrs,
+  // LCL
+  Forms, Menus,
+  // LazUtils
+  IDEExternToolIntf, LazFileUtils, LazLoggerBase,
+  // IdeIntf
+  MenuIntf;
 
 type
   TMsgQuickFixes = class;

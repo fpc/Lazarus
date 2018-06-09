@@ -5,8 +5,8 @@ unit PackageLinkIntf;
 interface
 
 uses
-  SysUtils,
-  Classes,
+  SysUtils, Classes,
+  // LCL
   Forms,
   // LazUtils
   LazFileUtils,

@@ -14,7 +14,11 @@ unit IDEUtils;
 interface
 
 uses
-  Classes, SysUtils, StdCtrls, LazUTF8, LazFileUtils;
+  Classes, SysUtils,
+  // LCL
+  StdCtrls,
+  // LazUtils
+  LazUTF8, LazFileUtils;
 
 type
   TCmpStrType = (

@@ -10,8 +10,13 @@ unit PJSDsgnOptions;
 interface
 
 uses
-  Classes, SysUtils, LazFileCache, LazConfigStorage, LazFileUtils, FileUtil,
-  MacroIntf, BaseIDEIntf, IDEUtils, DefineTemplates;
+  Classes, SysUtils,
+  // LazUtils
+  LazFileCache, LazConfigStorage, LazFileUtils, FileUtil,
+  // Codetools
+  DefineTemplates,
+  // IdeIntf
+  MacroIntf, BaseIDEIntf;
 
 const
   PJSDsgnOptsFile = 'pas2jsdsgnoptions.xml';

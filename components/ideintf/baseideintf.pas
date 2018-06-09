@@ -16,7 +16,11 @@ unit BaseIDEIntf;
 interface
 
 uses
-  Classes, SysUtils, LazUTF8, LazConfigStorage, Dialogs, MacroIntf;
+  Classes, SysUtils,
+  // LazUtils
+  LazUTF8, LazConfigStorage,
+  // IdeIntf
+  MacroIntf;
   
 type
   TGetIDEConfigStorage = function(const Filename: string; LoadFromDisk: Boolean

@@ -11,8 +11,12 @@ unit ColumnDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs, LResources,
-  ComCtrls, StdCtrls, Buttons, ExtCtrls, ObjInspStrConsts;
+  Classes, SysUtils,
+  // LCL
+  LCLProc, Forms, Controls, Graphics, Dialogs, LResources,
+  ComCtrls, StdCtrls, Buttons, ExtCtrls,
+  // IdeIntf
+  ObjInspStrConsts;
 
 type
   // TODO create more generic collection editor.

@@ -10,9 +10,15 @@ unit PJSDsgnOptsFrame;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, StdCtrls, Dialogs, Spin, IDEOptionsIntf,
-  IDEUtils, LazFileCache, PJSDsgnOptions,
-  LazFileUtils;
+  Classes, SysUtils,
+  // LCL
+  Forms, StdCtrls, Dialogs, Spin,
+  // LazUtils
+  LazFileCache, LazFileUtils,
+  // IdeIntf
+  IDEOptionsIntf, IDEUtils,
+  // Pas2Js
+  PJSDsgnOptions;
 
 Type
   { TPas2jsOptionsFrame }

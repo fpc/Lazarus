@@ -7,12 +7,17 @@ unit BuildFileDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LCLType, Forms, Controls, Graphics, ComCtrls,
-  Dialogs, Buttons, ExtCtrls, StdCtrls, LazFileUtils, ButtonPanel,
+  Classes, SysUtils,
+  // LCL
+  LCLProc, LCLType, Forms, Controls, Graphics, ComCtrls, Dialogs, StdCtrls, ButtonPanel,
+  // LazUtils
+  LazFileUtils,
+  // CodeTools
   BasicCodeTools,
-  IDEHelpIntf,
-  IDEProcs, InputHistory, LazarusIDEStrConsts, EnvironmentOpts, TransferMacros,
-  MacroDefIntf, IDEUtils, LazIDEIntf;
+  // IdeIntf
+  IDEHelpIntf, MacroDefIntf, LazIDEIntf, IDEUtils,
+  // IDE
+  IDEProcs, InputHistory, LazarusIDEStrConsts, EnvironmentOpts, TransferMacros;
 
 type
 

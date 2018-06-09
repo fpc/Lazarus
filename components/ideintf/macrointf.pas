@@ -15,7 +15,11 @@ unit MacroIntf;
 interface
 
 uses
-  Classes, SysUtils, LazFileUtils, MacroDefIntf;
+  Classes, SysUtils,
+  // LazUtils
+  LazFileUtils,
+  // IdeIntf
+  MacroDefIntf;
 
 type
   { TIDEMacros - macros for paths and compiler settings }

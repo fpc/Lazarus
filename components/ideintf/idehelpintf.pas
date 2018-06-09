@@ -19,8 +19,7 @@ interface
 uses
   Classes, Types, SysUtils,
   // LCL
-  LMessages, LCLType, LCLProc, Forms, Controls, Graphics,
-  HelpIntfs, LazHelpIntf, LCLIntf,
+  LMessages, LCLType, LCLIntf, Forms, Controls, Graphics, HelpIntfs, LazHelpIntf,
   // IdeIntf
   TextTools;
 

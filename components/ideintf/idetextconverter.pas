@@ -21,8 +21,13 @@ unit IDETextConverter;
 interface
 
 uses
-  Classes, SysUtils, TypInfo, LCLProc, Controls, Forms, FileUtil, LazFileUtils,
-  LazUTF8, LazUTF8Classes, SrcEditorIntf, PropEdits, ObjInspStrConsts;
+  Classes, SysUtils, TypInfo,
+  // LCL
+  LCLProc, Controls, Forms,
+  // LazUtils
+  FileUtil, LazFileUtils, LazUTF8, LazUTF8Classes,
+  // IdeIntf
+  SrcEditorIntf, PropEdits, ObjInspStrConsts;
   
 type
   TCustomTextConverterTool = class;

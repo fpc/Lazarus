@@ -15,12 +15,10 @@ interface
 
 uses
   Classes, SysUtils, Math, Laz_AVL_Tree,
-  // LCL
-  LCLProc,
   // LazUtils
-  UTF8Process, LazFileUtils, LazFileCache, LazMethodList,
+  UTF8Process, LazFileUtils, LazFileCache, LazMethodList, LazLoggerBase,
   // IdeIntf
-  ObjInspStrConsts, LazLoggerBase, Menus;
+  ObjInspStrConsts;
 
 const
   SubToolFPC = 'FPC';
