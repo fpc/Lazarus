@@ -165,20 +165,26 @@ type
     FDisableStartupShell: Boolean;
     FEncodeCurrentDirPath: TGDBMIDebuggerFilenameEncoding;
     FEncodeExeFileName: TGDBMIDebuggerFilenameEncoding;
+    FGdbLocalsValueMemLimit: Integer;
     {$IFDEF UNIX}
     FConsoleTty: String;
     {$ENDIF}
     FGDBOptions: String;
     FGdbValueMemLimit: Integer;
     FInternalStartBreak: TGDBMIDebuggerStartBreak;
+    FMaxDisplayLengthForStaticArray: Integer;
     FMaxDisplayLengthForString: Integer;
+    FMaxLocalsLengthForStaticArray: Integer;
     FTimeoutForEval: Integer;
     FUseAsyncCommandMode: Boolean;
     FUseNoneMiRunCommands: TGDBMIUseNoneMiRunCmdsState;
     FWarnOnSetBreakpointError: TGDBMIWarnOnSetBreakpointError;
     FWarnOnInternalError: TGDBMIDebuggerShowWarning;
     FWarnOnTimeOut: Boolean;
+    procedure SetGdbLocalsValueMemLimit(AValue: Integer);
+    procedure SetMaxDisplayLengthForStaticArray(AValue: Integer);
     procedure SetMaxDisplayLengthForString(AValue: Integer);
+    procedure SetMaxLocalsLengthForStaticArray(AValue: Integer);
     procedure SetTimeoutForEval(const AValue: Integer);
     procedure SetWarnOnTimeOut(const AValue: Boolean);
   public
@@ -189,7 +195,9 @@ type
     {$IFDEF UNIX}
     property ConsoleTty: String read FConsoleTty write FConsoleTty;
     {$ENDIF}
-    property MaxDisplayLengthForString: Integer read FMaxDisplayLengthForString write SetMaxDisplayLengthForString;
+    property MaxDisplayLengthForString: Integer read FMaxDisplayLengthForString write SetMaxDisplayLengthForString default 2500;
+    property MaxDisplayLengthForStaticArray: Integer read FMaxDisplayLengthForStaticArray write SetMaxDisplayLengthForStaticArray default 500;
+    property MaxLocalsLengthForStaticArray: Integer read FMaxLocalsLengthForStaticArray write SetMaxLocalsLengthForStaticArray default 25;
     property TimeoutForEval: Integer read FTimeoutForEval write SetTimeoutForEval;
     property WarnOnTimeOut: Boolean  read FWarnOnTimeOut write SetWarnOnTimeOut;
     property WarnOnInternalError: TGDBMIDebuggerShowWarning
@@ -212,6 +220,7 @@ type
     property WarnOnSetBreakpointError: TGDBMIWarnOnSetBreakpointError read FWarnOnSetBreakpointError
              write FWarnOnSetBreakpointError default gdbwAll;
     property GdbValueMemLimit: Integer read FGdbValueMemLimit write FGdbValueMemLimit default $60000000;
+    property GdbLocalsValueMemLimit: Integer read FGdbLocalsValueMemLimit write SetGdbLocalsValueMemLimit default 32000;
     property AssemblerStyle: TGDBMIDebuggerAssemblerStyle read FAssemblerStyle write FAssemblerStyle default gdasDefault;
     property DisableStartupShell: Boolean read FDisableStartupShell
              write FDisableStartupShell default False;
@@ -224,6 +233,8 @@ type
     property ConsoleTty;
     {$ENDIF}
     property MaxDisplayLengthForString;
+    property MaxDisplayLengthForStaticArray;
+    property MaxLocalsLengthForStaticArray;
     property TimeoutForEval;
     property WarnOnTimeOut;
     property WarnOnInternalError;
@@ -237,6 +248,7 @@ type
     //property WarnOnSetBreakpointError;
     property CaseSensitivity;
     property GdbValueMemLimit;
+    property GdbLocalsValueMemLimit;
     property AssemblerStyle;
     property DisableStartupShell;
   end;
@@ -7273,6 +7285,30 @@ begin
   FMaxDisplayLengthForString := AValue;
 end;
 
+procedure TGDBMIDebuggerPropertiesBase.SetMaxDisplayLengthForStaticArray(AValue: Integer);
+begin
+  if FMaxDisplayLengthForStaticArray = AValue then Exit;
+  if AValue < 0 then
+    AValue := 0;
+  FMaxDisplayLengthForStaticArray := AValue;
+end;
+
+procedure TGDBMIDebuggerPropertiesBase.SetGdbLocalsValueMemLimit(AValue: Integer);
+begin
+  if FGdbLocalsValueMemLimit = AValue then Exit;
+  if AValue < 0 then
+    AValue := 0;
+  FGdbLocalsValueMemLimit := AValue;
+end;
+
+procedure TGDBMIDebuggerPropertiesBase.SetMaxLocalsLengthForStaticArray(AValue: Integer);
+begin
+  if FMaxLocalsLengthForStaticArray = AValue then Exit;
+  if AValue < 0 then
+    AValue := 0;
+  FMaxLocalsLengthForStaticArray := AValue;
+end;
+
 procedure TGDBMIDebuggerPropertiesBase.SetWarnOnTimeOut(const AValue: Boolean);
 begin
   if FWarnOnTimeOut = AValue then exit;
@@ -7285,6 +7321,8 @@ begin
   FConsoleTty := '';
   {$ENDIF}
   FMaxDisplayLengthForString := 2500;
+  FMaxDisplayLengthForStaticArray := 500;
+  FMaxLocalsLengthForStaticArray := 25;
   {$IFDEF darwin}
   FTimeoutForEval := 250;
   {$ELSE darwin}
@@ -7302,6 +7340,7 @@ begin
   FWarnOnSetBreakpointError := gdbwAll;
   FCaseSensitivity := gdcsSmartOff;
   FGdbValueMemLimit := $60000000;
+  FGdbLocalsValueMemLimit := 32000;
   FAssemblerStyle := gdasDefault;
   FDisableStartupShell := False;
   inherited;
@@ -7315,6 +7354,8 @@ begin
   FConsoleTty := TGDBMIDebuggerPropertiesBase(Source).FConsoleTty;
   {$ENDIF}
   FMaxDisplayLengthForString := TGDBMIDebuggerPropertiesBase(Source).FMaxDisplayLengthForString;
+  FMaxDisplayLengthForStaticArray := TGDBMIDebuggerPropertiesBase(Source).FMaxDisplayLengthForStaticArray;
+  FMaxLocalsLengthForStaticArray := TGDBMIDebuggerPropertiesBase(Source).FMaxLocalsLengthForStaticArray;
   FTimeoutForEval := TGDBMIDebuggerPropertiesBase(Source).FTimeoutForEval;
   FWarnOnTimeOut  := TGDBMIDebuggerPropertiesBase(Source).FWarnOnTimeOut;
   FWarnOnInternalError  := TGDBMIDebuggerPropertiesBase(Source).FWarnOnInternalError;
@@ -7328,6 +7369,7 @@ begin
   FWarnOnSetBreakpointError := TGDBMIDebuggerPropertiesBase(Source).FWarnOnSetBreakpointError;
   FCaseSensitivity := TGDBMIDebuggerPropertiesBase(Source).FCaseSensitivity;
   FGdbValueMemLimit := TGDBMIDebuggerPropertiesBase(Source).FGdbValueMemLimit;
+  FGdbLocalsValueMemLimit := TGDBMIDebuggerPropertiesBase(Source).FGdbLocalsValueMemLimit;
   FAssemblerStyle := TGDBMIDebuggerPropertiesBase(Source).FAssemblerStyle;
   FDisableStartupShell := TGDBMIDebuggerPropertiesBase(Source).FDisableStartupShell;
 end;
@@ -10486,6 +10528,30 @@ begin
                  ContextStackFrame, [], ATimeOut);
     Instr.AddReference;
     Instr.Cmd := Self;
+
+  if (pos('-stack-list-', ACommand) = 1) or
+     (pos('-thread-info', ACommand) = 1)
+  then begin
+    // includes locals
+    Instr.ApplyMemLimit(DebuggerProperties.GdbLocalsValueMemLimit);
+    if FTheDebugger.FGDBVersionMajor >= 7 then
+      Instr.ApplyArrayLenLimit(DebuggerProperties.MaxLocalsLengthForStaticArray);
+  end
+  else
+  if not( (pos('-exec-', ACommand) = 1) or
+          (pos('-break-', ACommand) = 1) or
+          (pos('-data-list-register-', ACommand) = 1) or
+          (pos('-data-list-changed-registers', ACommand) = 1) or
+          (pos('-data-disassemble', ACommand) = 1) or
+          (pos('-data-read-memory', ACommand) = 1) or
+          (pos('-gdb-exit', ACommand) = 1)
+        )
+  then begin
+    Instr.ApplyMemLimit(DebuggerProperties.GdbValueMemLimit);
+    if FTheDebugger.FGDBVersionMajor >= 7 then
+      Instr.ApplyArrayLenLimit(DebuggerProperties.MaxDisplayLengthForStaticArray);
+  end;
+
     FTheDebugger.FInstructionQueue.RunInstruction(Instr);
 
     Result := Instr.IsSuccess and Instr.FHasResult;

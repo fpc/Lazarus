@@ -22,7 +22,9 @@ type
 
   TGDBInstructionFlag = (
     ifRequiresThread,
-    ifRequiresStackFrame
+    ifRequiresStackFrame,
+    ifRequiresMemLimit,
+    ifRequiresArrayLimit
   );
   TGDBInstructionFlags = set of TGDBInstructionFlag;
 
@@ -51,8 +53,10 @@ type
 
   TGDBInstruction = class(TRefCountedObject)
   private
+    FArrayLenLimit: Integer;
     FCommand: String;
     FFlags: TGDBInstructionFlags;
+    FMemLimit: Integer;
     FStackFrame: Integer;
     FThreadId: Integer;
   protected
@@ -84,6 +88,8 @@ type
                        AOtherFlags: TGDBInstructionFlags = [];
                        ATimeOut: Integer = 0
                       );
+    procedure ApplyArrayLenLimit(ALimit: Integer);
+    procedure ApplyMemLimit(ALimit: Integer);
     function IsSuccess: Boolean;
     function IsCompleted: boolean; virtual;                                        // No more InputFromGdb required
 
@@ -100,6 +106,8 @@ type
     property Command: String read FCommand;
     property ThreadId: Integer read FThreadId;
     property StackFrame: Integer read FStackFrame;
+    property ArrayLenLimit: Integer read FArrayLenLimit;
+    property MemLimit: Integer read FMemLimit;
     property Flags: TGDBInstructionFlags read FFlags;
     property ResultFlags: TGDBInstructionResultFlags read FResultFlags;
     property ErrorFlags: TGDBInstructionErrorFlags read FErrorFlags;
@@ -137,6 +145,40 @@ type
     procedure HandleReadError; override;
     procedure HandleTimeOut; override;
     procedure HandleNoGdbRunning; override;
+  end;
+
+  { TGDBInstructionChangeMemLimit }
+
+  TGDBInstructionChangeMemLimit = class(TGDBInstruction)
+  private
+    FNewLimit: Integer;
+    FQueue: TGDBInstructionQueue;
+    //FDone: Boolean;
+  protected
+    procedure SendCommandDataToGDB(AQueue: TGDBInstructionQueue); override;
+    function ProcessInputFromGdb(const AData: String): Boolean; override;
+    function DebugText: String;
+  public
+    constructor Create(AQueue: TGDBInstructionQueue; ANewLimit: Integer);
+//    procedure HandleError(AnError: TGDBInstructionErrorFlag; AMarkAsFailed: Boolean = True);   override;
+  end;
+
+  { TGDBInstructionChangeArrayLimit }
+
+  TGDBInstructionChangeArrayLimit = class(TGDBInstruction)
+  private
+    FNewLimit: Integer;
+    FQueue: TGDBInstructionQueue;
+    //FDone: Boolean;
+  protected
+    procedure SendCommandDataToGDB(AQueue: TGDBInstructionQueue); override;
+    function ProcessInputFromGdb(const AData: String): Boolean; override;
+    function DebugText: String;
+  public
+    constructor Create(AQueue: TGDBInstructionQueue; ANewLimit: Integer);
+
+    procedure HandleError(AnError: TGDBInstructionErrorFlag; AMarkAsFailed: Boolean = True);
+      override;
   end;
 
   { TGDBInstructionChangeThread }
@@ -187,6 +229,8 @@ type
     FCurrentInstruction: TGDBInstruction;
     FCurrentStackFrame: Integer;
     FCurrentThreadId: Integer;
+    FCurrentArrayLimit: Integer;
+    FCurrentMemLimit: Integer;
     FExeCurInstructionStamp: Int64;
     FDebugger: TGDBMICmdLineDebugger;
     FFlags: TGDBInstructionQueueFlags;
@@ -278,6 +322,90 @@ begin
         Result := Result + ', ' +dbgs(i);
   if Result <> '' then
     Result := '[' + Result + ']';
+end;
+
+{ TGDBInstructionChangeMemLimit }
+
+procedure TGDBInstructionChangeMemLimit.SendCommandDataToGDB(AQueue: TGDBInstructionQueue);
+begin
+  if FNewLimit > 0 then
+    AQueue.SendDataToGDB(Self, 'set max-value-size %d', [FNewLimit])
+  else
+  if FNewLimit = 0 then
+    AQueue.SendDataToGDB(Self, 'set max-value-size unlimited');
+end;
+
+function TGDBInstructionChangeMemLimit.ProcessInputFromGdb(const AData: String): Boolean;
+begin
+  Result := False;
+  if (AData = '(gdb) ') then begin
+    Result := True;
+    MarkAsSuccess;
+    FQueue.FCurrentMemLimit := FNewLimit;
+  end
+
+  else
+  begin
+    debugln(DBG_VERBOSE, ['GDBMI TGDBInstructionChangeArrayLimit ignoring: ', AData]);
+  end;
+end;
+
+function TGDBInstructionChangeMemLimit.DebugText: String;
+begin
+  Result := ClassName;
+end;
+
+constructor TGDBInstructionChangeMemLimit.Create(AQueue: TGDBInstructionQueue;
+  ANewLimit: Integer);
+begin
+  inherited Create('', [], TIMEOUT_FOR_QUEUE_INSTR);
+  FQueue := AQueue;
+//  FDone := False;
+  FNewLimit := ANewLimit;
+end;
+
+{ TGDBInstructionChangeArrayLimit }
+
+procedure TGDBInstructionChangeArrayLimit.SendCommandDataToGDB(AQueue: TGDBInstructionQueue);
+begin
+  AQueue.SendDataToGDB(Self, 'set print elements %d', [FNewLimit]);
+end;
+
+function TGDBInstructionChangeArrayLimit.ProcessInputFromGdb(const AData: String): Boolean;
+begin
+  Result := False;
+  if (AData = '(gdb) ') then begin
+    Result := True;
+      MarkAsSuccess;
+      FQueue.FCurrentArrayLimit := FNewLimit;
+  end
+
+  else
+  begin
+    debugln(DBG_VERBOSE, ['GDBMI TGDBInstructionChangeArrayLimit ignoring: ', AData]);
+  end;
+end;
+
+function TGDBInstructionChangeArrayLimit.DebugText: String;
+begin
+  Result := ClassName;
+end;
+
+constructor TGDBInstructionChangeArrayLimit.Create(AQueue: TGDBInstructionQueue;
+  ANewLimit: Integer);
+begin
+  inherited Create('', [], TIMEOUT_FOR_QUEUE_INSTR);
+  FQueue := AQueue;
+//  FDone := False;
+  FNewLimit := ANewLimit;
+end;
+
+procedure TGDBInstructionChangeArrayLimit.HandleError(AnError: TGDBInstructionErrorFlag;
+  AMarkAsFailed: Boolean);
+begin
+  inherited HandleError(AnError, AMarkAsFailed);
+//  FQueue.FCurrentArrayLimit := -2;
+  FQueue.FCurrentArrayLimit := FNewLimit; // ignore error
 end;
 
 { TGDBMICmdLineDebugger }
@@ -406,6 +534,18 @@ begin
   InternalCreate(ACommand, AThread, AFrame,
                  AOtherFlags + [ifRequiresThread, ifRequiresStackFrame], ATimeOut);
   Init;
+end;
+
+procedure TGDBInstruction.ApplyArrayLenLimit(ALimit: Integer);
+begin
+  FFlags := FFlags + [ifRequiresArrayLimit];
+  FArrayLenLimit := ALimit;
+end;
+
+procedure TGDBInstruction.ApplyMemLimit(ALimit: Integer);
+begin
+  FFlags := FFlags + [ifRequiresMemLimit];
+  FMemLimit := ALimit;
 end;
 
 function TGDBInstruction.IsSuccess: Boolean;
@@ -729,6 +869,18 @@ end;
 { TGDBInstructionQueue }
 
 procedure TGDBInstructionQueue.ExecuteCurrentInstruction;
+  function RunHelpInstruction(AnHelpInstr: TGDBInstruction): boolean;
+  begin
+    AnHelpInstr.AddReference;
+    try
+      FCurrentInstruction := AnHelpInstr;
+      FCurrentInstruction.SendCommandDataToGDB(Self);
+      FinishCurrentInstruction;
+      Result := AnHelpInstr.IsSuccess;
+    finally
+      AnHelpInstr.ReleaseReference;
+    end;
+  end;
 var
   ExeInstr, HelpInstr: TGDBInstruction;
   CurStamp: Int64;
@@ -747,23 +899,25 @@ begin
     while true do begin
       CurStamp := FExeCurInstructionStamp;
 
+      If (ifRequiresMemLimit in ExeInstr.Flags) and (FCurrentMemLimit <> ExeInstr.MemLimit) then begin
+        HelpInstr := TGDBInstructionChangeMemLimit.Create(Self, ExeInstr.MemLimit);
+        RunHelpInstruction(HelpInstr); // ignore result
+      end;
+
+      If (ifRequiresArrayLimit in ExeInstr.Flags) and (FCurrentArrayLimit <> ExeInstr.ArrayLenLimit) then begin
+        HelpInstr := TGDBInstructionChangeArrayLimit.Create(Self, ExeInstr.ArrayLenLimit);
+        RunHelpInstruction(HelpInstr); // ignore result
+      end;
+
       if not HasCorrectThreadIdFor(ExeInstr) then begin
         HelpInstr := GetSelectThreadInstruction(ExeInstr.ThreadId);
         DebugLn(DBG_THREAD_AND_FRAME, ['TGDB_IQ: Changing Thread from: ', FCurrentThreadId, ' - ', dbgs(FFlags),
           ' to ', ExeInstr.ThreadId, ' using [', HelpInstr.DebugText, '] for [', ExeInstr.DebugText, ']']);
-        HelpInstr.AddReference;
-        try
-          FCurrentInstruction := HelpInstr;
-          FCurrentInstruction.SendCommandDataToGDB(Self);
-          FinishCurrentInstruction;
-          if not HelpInstr.IsSuccess then begin
-            DebugLn(DBG_THREAD_AND_FRAME, ['TGDB_IQ: Changing Thread FAILED']);
-            ExeInstr.HandleError(ifeInvalidThreadId);
-            exit;
-          end;
-        finally
-          HelpInstr.ReleaseReference;
-        end;
+        if not RunHelpInstruction(HelpInstr) then begin
+          DebugLn(DBG_THREAD_AND_FRAME, ['TGDB_IQ: Changing Thread FAILED']);
+          ExeInstr.HandleError(ifeInvalidThreadId);
+          exit;
+        end
       end;
 
       if not HasCorrectThreadIdFor(ExeInstr) then begin
@@ -782,18 +936,10 @@ begin
         HelpInstr := GetSelectFrameInstruction(ExeInstr.StackFrame);
         DebugLn(DBG_THREAD_AND_FRAME, ['TGDB_IQ: Changing Stack from: ', FCurrentStackFrame, ' - ', dbgs(FFlags),
           ' to ', ExeInstr.StackFrame, ' using [', HelpInstr.DebugText, '] for [', ExeInstr.DebugText, ']']);
-        HelpInstr.AddReference;
-        try
-          FCurrentInstruction := HelpInstr;
-          FCurrentInstruction.SendCommandDataToGDB(Self);
-          FinishCurrentInstruction;
-          if not HelpInstr.IsSuccess then begin
-            DebugLn(DBG_THREAD_AND_FRAME, ['TGDB_IQ: Changing Stackframe FAILED']);
-            ExeInstr.HandleError(ifeInvalidStackFrame);
-            exit;
-          end;
-        finally
-          HelpInstr.ReleaseReference;
+        if not RunHelpInstruction(HelpInstr) then begin
+          DebugLn(DBG_THREAD_AND_FRAME, ['TGDB_IQ: Changing Stackframe FAILED']);
+          ExeInstr.HandleError(ifeInvalidStackFrame);
+          exit;
         end;
       end;
 
