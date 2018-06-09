@@ -1292,8 +1292,14 @@ begin
     if not Process.ReadData(Frame + Size, Size, Address) or (Address = 0) then Break;
     if not Process.ReadData(Frame, Size, Frame) then Break;
     AnEntry := TDbgCallstackEntry.create(Self, MaxFrames+1-Count, Frame, Address);
-    AnEntry.RegisterValueList.DbgRegisterAutoCreate['eip'].SetValue(Address, IntToStr(Address),Size,8);
-    AnEntry.RegisterValueList.DbgRegisterAutoCreate['ebp'].SetValue(Frame, IntToStr(Frame),Size,5);
+    if Process.Mode=dm32 then begin
+      AnEntry.RegisterValueList.DbgRegisterAutoCreate['eip'].SetValue(Address, IntToStr(Address),Size,8);
+      AnEntry.RegisterValueList.DbgRegisterAutoCreate['ebp'].SetValue(Frame, IntToStr(Frame),Size,5);
+    end
+    else begin
+      AnEntry.RegisterValueList.DbgRegisterAutoCreate['rip'].SetValue(Address, IntToStr(Address),Size,16);
+      AnEntry.RegisterValueList.DbgRegisterAutoCreate['rbp'].SetValue(Frame, IntToStr(Frame),Size,6);
+    end;
     FCallStackEntryList.Add(AnEntry);
     Dec(count);
     if Count <= 0 then Break;
