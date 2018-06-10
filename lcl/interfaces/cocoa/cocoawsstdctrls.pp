@@ -812,6 +812,10 @@ end;
 function TCocoaMemoStrings.GetTextStr: string;
 begin
   Result := NSStringToString(FTextView.string_);
+  Result := StringReplace( StringReplace(
+    StringReplace(Result, #10#13, LineEnding, [rfReplaceAll])
+    , #13#10, LineEnding, [rfReplaceAll])
+    , #13, LineEnding, [rfReplaceAll]);
 end;
 
 procedure TCocoaMemoStrings.SetTextStr(const Value: string);
