@@ -401,6 +401,8 @@ begin
   CheckControl(FrameColorUseDefaultCheckBox);
 
   ColumnPosBevel.AnchorSide[akLeft].Control := MinAnchor;
+  Constraints.MinHeight := pnlItalic.Top + pnlItalic.Height;
+  Constraints.MinWidth := BackPriorSpin.Left + BackPriorSpin.Width;
 end;
 
 procedure TSynColorAttrEditor.TextStyleRadioOnChange(Sender: TObject);
