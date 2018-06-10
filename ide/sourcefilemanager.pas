@@ -3059,6 +3059,7 @@ var
 var
   SearchPath: String;
   SearchFile: String;
+  ProjFile: TLazProjectFile;
 begin
   {$IFDEF VerboseFindSourceFile}
   debugln(['TLazSourceFileManager.FindSourceFile Filename="',AFilename,'" BaseDirectory="',BaseDirectory,'"']);
@@ -3091,15 +3092,23 @@ begin
   BaseDir:=AppendPathDelim(TrimFilename(BaseDir));
 
   // search file in base directory
-  Result:=TrimFilename(BaseDir+AFilename);
-  {$IFDEF VerboseFindSourceFile}
-  debugln(['TLazSourceFileManager.FindSourceFile trying Base "',Result,'"']);
-  {$ENDIF}
-  if FileExistsCached(Result) then exit;
-  MarkPathAsSearched(BaseDir);
+  if FilenameIsAbsolute(BaseDir) then begin
+    Result:=TrimFilename(BaseDir+AFilename);
+    {$IFDEF VerboseFindSourceFile}
+    debugln(['TLazSourceFileManager.FindSourceFile trying Base "',Result,'"']);
+    {$ENDIF}
+    if FileExistsCached(Result) then exit;
+    MarkPathAsSearched(BaseDir);
+  end else if Project1<>nil then begin
+    // search in virtual files
+    Result:=TrimFilename(BaseDir+AFilename);
+    ProjFile:=Project1.FindFile(Result,[pfsfOnlyVirtualFiles]);
+    if ProjFile<>nil then
+      exit;
+  end;
 
   // search file in debug path
-  if fsfUseDebugPath in Flags then begin
+  if (fsfUseDebugPath in Flags) and (Project1<>nil) then begin
     SearchPath:=EnvironmentOptions.GetParsedDebuggerSearchPath;
     SearchPath:=MergeSearchPaths(Project1.CompilerOptions.GetDebugPath(false),
                                  SearchPath);
