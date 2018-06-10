@@ -2367,7 +2367,7 @@ begin
       end;
     end;
 
-    if SysKey then
+    if SysKey or (ssAlt in ShiftState) then
       Flags := Flags or KF_ALTDOWN;
 
     CommonKeyData := KeyCode shl 16; // Not really scancode, but will do
