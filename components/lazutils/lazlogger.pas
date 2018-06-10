@@ -262,13 +262,13 @@ begin
   New(Data);
   Data^.Data := s;
   Data^.Ln := False;
+  Data^.Next := nil;
   EnterCriticalsection(FWriteToFileLock);
   try
     if FLast = nil then
       FFirst := Data
     else
       FLast^.Next := Data;
-    Data^.Next := FLast;
     FLast := Data;
   finally
     LeaveCriticalsection(FWriteToFileLock);
@@ -283,13 +283,13 @@ begin
   New(Data);
   Data^.Data := s;
   Data^.Ln := True;
+  Data^.Next := nil;
   EnterCriticalsection(FWriteToFileLock);
   try
     if FLast = nil then
       FFirst := Data
     else
       FLast^.Next := Data;
-    Data^.Next := FLast;
     FLast := Data;
   finally
     LeaveCriticalsection(FWriteToFileLock);
