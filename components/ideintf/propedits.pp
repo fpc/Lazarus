@@ -7681,7 +7681,7 @@ begin
   FGrabForm.OnKeyDown:=@OnGrabFormKeyDown;
   FGrabForm.Caption:=oisPressAKey;
   with TLabel.Create(Self) do begin
-    Caption:=oisPressAKey;
+    Caption:=oisPressAKeyEGCtrlP;
     BorderSpacing.Around:=50;
     Parent:=FGrabForm;
   end;

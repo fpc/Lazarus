@@ -740,6 +740,10 @@ msgstr "图片保存为"
 msgid "Press a key ..."
 msgstr "按一个键..."
 
+#: objinspstrconsts.oispressakeyegctrlp
+msgid "Press a key, e.g. Ctrl+P ..."
+msgstr ""
+
 #: objinspstrconsts.oisproperties
 msgid "Properties"
 msgstr "属性"

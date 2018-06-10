@@ -738,6 +738,10 @@ msgstr "Enregistrer l'image sous"
 msgid "Press a key ..."
 msgstr "Appuyez sur une touche..."
 
+#: objinspstrconsts.oispressakeyegctrlp
+msgid "Press a key, e.g. Ctrl+P ..."
+msgstr ""
+
 #: objinspstrconsts.oisproperties
 msgid "Properties"
 msgstr "Propriétés"

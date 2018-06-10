@@ -738,6 +738,10 @@ msgstr "Įrašyti paveikslą taip"
 msgid "Press a key ..."
 msgstr "Spustelkite klavišą…"
 
+#: objinspstrconsts.oispressakeyegctrlp
+msgid "Press a key, e.g. Ctrl+P ..."
+msgstr ""
+
 #: objinspstrconsts.oisproperties
 msgid "Properties"
 msgstr "Savybės"
