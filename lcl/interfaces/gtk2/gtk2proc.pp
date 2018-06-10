@@ -894,13 +894,7 @@ begin
       and (window=Event^.window)
       and (send_event=Event^.send_event)
       and (time=Event^.time)
-      {$IFDEF LCLGtk2Fix30544}
-      and (state=Event^.state) // bug 30544
-      {$ENDIF}
       and (keyval=Event^.keyval)
-      {$IFDEF LCLGtk2Fix30544}
-      and (hardware_keycode=Event^.hardware_keycode) // bug 30544
-      {$ENDIF}
       ;
 end;
 
