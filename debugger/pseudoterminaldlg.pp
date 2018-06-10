@@ -5,7 +5,7 @@ unit PseudoTerminalDlg;
 interface
 
 uses
-  IDEWindowIntf, Classes,
+  IDEWindowIntf, Classes, Graphics,
   Forms, StdCtrls, DebuggerDlg, BaseDebugManager, LazarusIDEStrConsts, LCLType;
 
 type
@@ -52,6 +52,7 @@ end;
 constructor TPseudoConsoleDlg.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
+  font.Name := 'monospace';
   Caption:= lisDbgTerminal;
 end;
 
