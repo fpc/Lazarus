@@ -1876,6 +1876,8 @@ begin
   if not FinishComboOnly then
     FKeyStrokes.ResetKeyCombo;
   Command := FKeyStrokes.FindKeycodeEx(Code, SState, Data, IsStartOfCombo, FinishComboOnly, ComboKeyStrokes);
+  if (Command = ecPluginMultiCaretClearAll) and (FCarets.Count = 0) then
+    Command := ecNone;
 
   Handled := (Command <> ecNone) or IsStartOfCombo;
 end;
