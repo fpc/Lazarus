@@ -60,6 +60,23 @@ type
     procedure ResolveEvent(var AnEvent: TFPDEvent; out Handled, Finished: boolean); override;
   end;
 
+  { TDbgControllerStepOutInstructionCmd }
+
+  TDbgControllerStepOutInstructionCmd = class(TDbgControllerCmd)
+  private
+    FHiddenBreakpoint: TFpInternalBreakpoint;
+    FIsSet: boolean;
+    FProcess: TDbgProcess;
+    FThread: TDbgThread;
+    FStepCount: Integer;
+    FStepOut: Boolean;
+  protected
+    procedure SetReturnAdressBreakpoint(AProcess: TDbgProcess);
+  public
+    procedure DoContinue(AProcess: TDbgProcess; AThread: TDbgThread); override;
+    procedure ResolveEvent(var AnEvent: TFPDEvent; out Handled, Finished: boolean); override;
+  end;
+
   { TDbgControllerStepOverLineCmd }
 
   TDbgControllerStepOverLineCmd = class(TDbgControllerStepOverInstructionCmd)
@@ -179,6 +196,101 @@ type
   end;
 
 implementation
+
+{ TDbgControllerStepOutInstructionCmd }
+
+procedure TDbgControllerStepOutInstructionCmd.SetReturnAdressBreakpoint(AProcess: TDbgProcess);
+var
+  AStackPointerValue, StepOutStackPos, ReturnAddress: TDBGPtr;
+begin
+  AStackPointerValue:=FController.CurrentThread.GetStackBasePointerRegisterValue;
+  StepOutStackPos:=AStackPointerValue+DBGPTRSIZE[FController.FCurrentProcess.Mode];
+
+  if AProcess.ReadAddress(StepOutStackPos, ReturnAddress) then
+  begin
+    FProcess := AProcess;
+    if not AProcess.HasBreak(ReturnAddress) then
+      FHiddenBreakpoint := AProcess.AddBreak(ReturnAddress)
+  end
+  else
+  begin
+    AProcess.Log('Failed to read return-address from stack');
+  end;
+
+  FIsSet:=true;
+end;
+
+procedure TDbgControllerStepOutInstructionCmd.DoContinue(AProcess: TDbgProcess; AThread: TDbgThread);
+var
+  CodeBin: array[0..20] of byte;
+  p: pointer;
+  ADump,
+  AStatement: string;
+begin
+  FThread := AThread;
+  FProcess := AProcess;
+  if FIsSet then
+    // When a breanpoint has already been set on the return-adress, just continue
+    AProcess.Continue(AProcess, AThread, false)
+  else if FStepCount < 12 then
+  begin
+    // During the prologue and epiloge of a procedure the call-stack might not been
+    // setup already. To avoid problems in these cases, start with a few (max
+    // 12) single steps.
+    Inc(FStepCount);
+    if AProcess.ReadData(AThread.GetInstructionPointerRegisterValue,sizeof(CodeBin),CodeBin) then
+    begin
+      p := @CodeBin;
+      Disassemble(p, AProcess.Mode=dm64, ADump, AStatement);
+      if (copy(AStatement,1,4)='call') then
+      begin
+        // Stop with the single-steps, set an hidden breakpoint at the return
+        // address and continue.
+        SetReturnAdressBreakpoint(AProcess);
+        AProcess.Continue(AProcess, AThread, False);
+      end
+      else if (copy(AStatement,1,3)='ret') then
+      begin
+        // Do one more single-step, and we're finished.
+        FStepOut := True;
+        AProcess.Continue(AProcess, AThread, True);
+      end
+      else
+        AProcess.Continue(AProcess, AThread, True);
+    end
+    else
+      AProcess.Continue(AProcess, AThread, True);
+  end
+  else
+  begin
+    // Enough with the single-stepping, set an hidden breakpoint at the return
+    // address, and continue.
+    SetReturnAdressBreakpoint(AProcess);
+    AProcess.Continue(AProcess, AThread, False);
+  end;
+end;
+
+procedure TDbgControllerStepOutInstructionCmd.ResolveEvent(var AnEvent: TFPDEvent; out Handled, Finished: boolean);
+begin
+  Handled := false;
+  Finished := false;
+
+  if FStepOut then
+    // During single-stepping a 'ret' instruction was encountered. So we're just
+    // finished.
+    Finished := true
+  else if FIsSet then
+    Finished := not (AnEvent in [deInternalContinue, deLoadLibrary])
+  else if (AnEvent in [deBreakpoint]) and not FProcess.HasBreak(FThread.GetInstructionPointerRegisterValue) then
+    // Single-stepping, so continue silently.
+    AnEvent := deInternalContinue;
+
+  if Finished and Assigned(FHiddenBreakpoint) then
+  begin
+    FProcess.RemoveBreak(FHiddenBreakpoint);
+    FHiddenBreakpoint.Free;
+  end;
+end;
 
 { TDbgControllerRunToCmd }
 
@@ -588,7 +700,7 @@ end;
 
 procedure TDbgController.StepOut;
 begin
-  //FCurrentThread.StepOut;
+  InitializeCommand(TDbgControllerStepOutInstructionCmd.Create(self));
 end;
 
 function TDbgController.Pause: boolean;
