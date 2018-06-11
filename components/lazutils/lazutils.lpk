@@ -406,8 +406,8 @@
         <UnitName Value="LazVersion"/>
       </Item97>
       <Item98>
-        <Filename Value="modalresultdef.pas"/>
-        <UnitName Value="ModalResultDef"/>
+        <Filename Value="uitypes.pas"/>
+        <UnitName Value="UITypes"/>
       </Item98>
     </Files>
     <LazDoc Paths="../../docs/xml/lazutils"/>

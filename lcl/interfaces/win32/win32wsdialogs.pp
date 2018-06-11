@@ -34,7 +34,7 @@ uses
   LCLProc, LCLType, Dialogs, Controls, Graphics, Forms, Masks,
   // LazUtils
   {$ifdef DebugCommonDialogEvents}
-  ModalResultDef,
+  UITypes,
   {$endif}
   LazFileUtils, LazUTF8,
 // ws

@@ -31,7 +31,7 @@ uses
   LResources, LCLType, Forms, Controls, Graphics, Dialogs,
   StdCtrls, ExtCtrls, Spin, Grids, ActnList, Buttons, EditBtn,
   // LazUtils
-  ModalResultDef,
+  UITypes,
   // IdeIntf
   IDECommands, MenuIntf, LazIDEIntf, SrcEditorIntf;
 

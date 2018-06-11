@@ -28,21 +28,36 @@ uses
   Forms, Controls, Themes, GraphType, Graphics, Buttons, ButtonPanel, StdCtrls,
   ExtCtrls, LCLClasses, ClipBrd, Menus, LCLTaskDialog,
   // LazUtils
-  {$ifdef DebugCommonDialogEvents}
-  ModalResultDef,
-  {$endif}
-  FileUtil, LazFileUtils;
-
+  UITypes, FileUtil, LazFileUtils;
 
 type
-  TMsgDlgType    = (mtWarning, mtError, mtInformation, mtConfirmation,
-                    mtCustom);
-  TMsgDlgBtn     = (mbYes, mbNo, mbOK, mbCancel, mbAbort, mbRetry, mbIgnore,
-                    mbAll, mbNoToAll, mbYesToAll, mbHelp, mbClose);
-  TMsgDlgButtons = set of TMsgDlgBtn;
+  // Aliases for types in UITypes.
+  TMsgDlgType    = UITypes.TMsgDlgType;
+  TMsgDlgBtn     = UITypes.TMsgDlgBtn;
+  TMsgDlgButtons = UITypes.TMsgDlgButtons;
 
-   
 const
+  // Aliases for enum values in UITypes.
+  mtWarning      = UITypes.TMsgDlgType.mtWarning;
+  mtError        = UITypes.TMsgDlgType.mtError;
+  mtInformation  = UITypes.TMsgDlgType.mtInformation;
+  mtConfirmation = UITypes.TMsgDlgType.mtConfirmation;
+  mtCustom       = UITypes.TMsgDlgType.mtCustom;
+
+  mbYes      = UITypes.TMsgDlgBtn.mbYes;
+  mbNo       = UITypes.TMsgDlgBtn.mbNo;
+  mbOK       = UITypes.TMsgDlgBtn.mbOK;
+  mbCancel   = UITypes.TMsgDlgBtn.mbCancel;
+  mbAbort    = UITypes.TMsgDlgBtn.mbAbort;
+  mbRetry    = UITypes.TMsgDlgBtn.mbRetry;
+  mbIgnore   = UITypes.TMsgDlgBtn.mbIgnore;
+  mbAll      = UITypes.TMsgDlgBtn.mbAll;
+  mbNoToAll  = UITypes.TMsgDlgBtn.mbNoToAll;
+  mbYesToAll = UITypes.TMsgDlgBtn.mbYesToAll;
+  mbHelp     = UITypes.TMsgDlgBtn.mbHelp;
+  mbClose    = UITypes.TMsgDlgBtn.mbClose;
+
+  // Combinations of buttons.
   mbYesNoCancel = [mbYes, mbNo, mbCancel];
   mbYesNo = [mbYes, mbNo];
   mbOKCancel = [mbOK, mbCancel];

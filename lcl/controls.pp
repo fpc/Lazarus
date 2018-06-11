@@ -41,26 +41,31 @@ uses
   InterfaceBase, ImgList, PropertyStorage, Menus, ActnList, LCLClasses,
   LResources, LCLPlatformDef,
   // LazUtils
-  LazMethodList, ModalResultDef;
+  LazMethodList, UITypes;
 
 {$I controlconsts.inc}
 
 const
   // Used for ModalResult
-  mrNone    = ModalResultDef.mrNone;
-  mrOK      = ModalResultDef.mrOK;
-  mrCancel  = ModalResultDef.mrCancel;
-  mrAbort   = ModalResultDef.mrAbort;
-  mrRetry   = ModalResultDef.mrRetry;
-  mrIgnore  = ModalResultDef.mrIgnore;
-  mrYes     = ModalResultDef.mrYes;
-  mrNo      = ModalResultDef.mrNo;
-  mrAll     = ModalResultDef.mrAll;
-  mrNoToAll = ModalResultDef.mrNoToAll;
-  mrYesToAll= ModalResultDef.mrYesToAll;
-  mrClose   = ModalResultDef.mrClose;
-  mrLast    = ModalResultDef.mrLast;
+  mrNone    = UITypes.mrNone;
+  mrOK      = UITypes.mrOK;
+  mrCancel  = UITypes.mrCancel;
+  mrAbort   = UITypes.mrAbort;
+  mrRetry   = UITypes.mrRetry;
+  mrIgnore  = UITypes.mrIgnore;
+  mrYes     = UITypes.mrYes;
+  mrNo      = UITypes.mrNo;
+  mrAll     = UITypes.mrAll;
+  mrNoToAll = UITypes.mrNoToAll;
+  mrYesToAll= UITypes.mrYesToAll;
+  mrClose   = UITypes.mrClose;
+  mrLast    = UITypes.mrLast;
 
+function GetModalResultStr(ModalResult: TModalResult): ShortString;
+  deprecated 'Use the ModalResultStr array from unit UITypes directly.';
+property ModalResultStr[ModalResult: TModalResult]: shortstring read GetModalResultStr;
+
+const
   // define aliases for Delphi compatibility
   fsSurface = GraphType.fsSurface;
   fsBorder = GraphType.fsBorder;
@@ -3002,6 +3007,11 @@ begin
       Result:=Result+dbgs(cst);
     end;
   Result:='['+Result+']';
+end;
+
+function GetModalResultStr(ModalResult: TModalResult): ShortString;
+begin
+  Result := UITypes.ModalResultStr[ModalResult];
 end;
 
 {------------------------------------------------------------------------------

@@ -1,4 +1,4 @@
-unit ModalResultDef;
+unit UITypes;
 
 {$mode objfpc}{$H+}
 
@@ -8,6 +8,13 @@ uses
   Classes, SysUtils;
 
 type
+  // Message dialog related
+  TMsgDlgType    = (mtWarning, mtError, mtInformation, mtConfirmation, mtCustom);
+  TMsgDlgBtn     = (mbYes, mbNo, mbOK, mbCancel, mbAbort, mbRetry, mbIgnore,
+                    mbAll, mbNoToAll, mbYesToAll, mbHelp, mbClose);
+  TMsgDlgButtons = set of TMsgDlgBtn;
+
+  // ModalResult
   TModalResult = low(Integer)..high(Integer);
   PModalResult = ^TModalResult;
 
