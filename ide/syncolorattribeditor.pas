@@ -9,7 +9,7 @@ uses
   ColorBox, LCLProc, LCLType, LCLIntf, Dialogs, Menus, Forms, Spin, SynEdit,
   SynGutterCodeFolding, SynEditTypes,
   SynEditMouseCmds, SynEditHighlighter, SynTextDrawer,
-  EditorOptions, IDEOptionsIntf,
+  EditorOptions,
   editor_general_options, IDEImagesIntf, LazarusIDEStrConsts, IDEProcs, typinfo,
   LazConf, SourceMarks, types, math, FPCanvas;
 
