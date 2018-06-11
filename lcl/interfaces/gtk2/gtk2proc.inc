@@ -2246,7 +2246,7 @@ begin
   DebugLn(['[HandleGTKKeyUpDown] START ',DbgSName(TControl(AData)),
     ' _Type=',(AEvent^._Type),
     ' state=',(AEvent^.state),
-    ' keyval=',(AEvent^.keyval),
+    ' keyval=',(AEvent^.keyval),'=$',hexstr(AEvent^.keyval,4),
     ' hardware_keycode=',(AEvent^.hardware_keycode),
     ' length=',(AEvent^.length),
     ' _string="',dbgMemRange(PByte(AEvent^._string),AEvent^.length),'"',
@@ -2879,7 +2879,9 @@ procedure InitKeyboardTables;
       GDK_Key_Cancel:       AVKey := VK_CANCEL;
       GDK_Key_Help:         AVKey := VK_HELP;
       GDK_Key_Break:        AVKey := VK_CANCEL;
-      GDK_Key_Mode_switch:  AVKey := VK_MODECHANGE;
+      GDK_Key_Mode_switch,
+      GDK_KEY_ISO_Level3_Shift,
+      GDK_KEY_ISO_Level5_Shift:  AVKey := VK_MODECHANGE;
       GDK_Key_Caps_Lock:    AVKey := VK_CAPITAL;
       GDK_Key_Shift_L:      AVKey := VK_SHIFT;
       GDK_Key_Shift_R:
