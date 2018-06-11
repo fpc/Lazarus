@@ -560,6 +560,7 @@ type
     procedure CheckAvailableTypes;
     procedure DetectForceableBreaks;
     procedure CommonInit;  // Before any run/exec
+    procedure DetectTargetPid(InAttach: Boolean = False); virtual;
   end;
 
   { TGDBMIDebuggerCommandStartDebugging }
@@ -2522,6 +2523,75 @@ begin
       ExecuteCommand('set auto-solib-add on', [cfscIgnoreState, cfscIgnoreError]);
     FTheDebugger.FWasDisableLoadSymbolsForLibraries := False;
   end;
+end;
+
+procedure TGDBMIDebuggerCommandStartBase.DetectTargetPid(InAttach: Boolean);
+var
+  R: TGDBMIExecResult;
+  s: String;
+  List: TGDBMINameValueList;
+begin
+  if TargetInfo^.TargetPID <> 0 then
+    exit;
+    (* PID via "info program"
+
+       Somme linux, gdb 7.1
+         ~"\tUsing the running image of child Thread 0xb7fd8820 (LWP 2125).\n"
+
+       On FreeBSD LWP may differ from PID
+       FreeBSD 9.0 GDB 6.1 (modified ?, supplied by FreeBSD)
+       PID is not equal to LWP.
+         Using the running image of child Thread 807407400 (LWP 100229/project1).
+
+       Win GDB 7.4
+         ~"\tUsing the running image of child Thread 8876.0x21c0.\n"
+*)
+    if not InAttach then begin
+      // "info program" may crash after attach
+      if ExecuteCommand('info program', [], R, [cfCheckState])
+      then begin
+        s := GetPart(['child process ', 'child thread ', 'lwp '], [' ', '.', ')'],
+                     R.Values, True);
+        TargetInfo^.TargetPID := StrToIntDef(s, 0);
+        if TargetInfo^.TargetPID <> 0 then exit;
+      end;
+    end;
+
+    // apple
+    if ExecuteCommand('info pid', [], R, [cfCheckState]) and (R.State <> dsError)
+    then begin
+      List := TGDBMINameValueList.Create(R);
+      TargetInfo^.TargetPID := StrToIntDef(List.Values['process-id'], 0);
+      List.Free;
+      if TargetInfo^.TargetPID <> 0 then exit;
+    end;
+
+    if not InAttach then begin
+      // gdb server
+      if ExecuteCommand('info proc', [], R, [cfCheckState]) and (R.State <> dsError)
+      then begin
+        s := GetPart(['process '], [#10,#13#10], R.Values, True);
+        TargetInfo^.TargetPID := StrToIntDef(s, 0);
+        if TargetInfo^.TargetPID <> 0 then exit;
+      end;
+    end;
+
+    // apple / MacPort 7.1 / 32 bit dwarf
+    if ExecuteCommand('info threads', [], R, [cfCheckState]) and (R.State <> dsError)
+    then begin
+      s := GetPart(['of process '], [' '], R.Values, True);
+      TargetInfo^.TargetPID := StrToIntDef(s, 0);
+      if TargetInfo^.TargetPID <> 0 then exit;
+
+      // returned by gdb server (maybe others)
+      s := GetPart(['Thread '], [' ', '.'], R.Values, True);
+      TargetInfo^.TargetPID := StrToIntDef(s, 0);
+      if TargetInfo^.TargetPID <> 0 then exit;
+    end;
+
+    // no PID found
+    if not InAttach then
+      SetDebuggerErrorState(Format(gdbmiCommandStartMainRunNoPIDError, [LineEnding]));
 end;
 
 { TGDBMIDebuggerCommandExecuteBase }
@@ -5029,59 +5099,7 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
     if TargetInfo^.TargetPID <> 0 then
       exit;
 
-    (* PID via "info program"
-
-       Somme linux, gdb 7.1
-         ~"\tUsing the running image of child Thread 0xb7fd8820 (LWP 2125).\n"
-
-       On FreeBSD LWP may differ from PID
-       FreeBSD 9.0 GDB 6.1 (modified ?, supplied by FreeBSD)
-       PID is not equal to LWP.
-         Using the running image of child Thread 807407400 (LWP 100229/project1).
-
-       Win GDB 7.4
-         ~"\tUsing the running image of child Thread 8876.0x21c0.\n"
-*)
-    if ExecuteCommand('info program', [], R, [cfCheckState])
-    then begin
-      s := GetPart(['child process ', 'child thread ', 'lwp '], [' ', '.', ')'],
-                   R.Values, True);
-      TargetInfo^.TargetPID := StrToIntDef(s, 0);
-      if TargetInfo^.TargetPID <> 0 then exit;
-    end;
-
-    // apple
-    if ExecuteCommand('info pid', [], R, [cfCheckState]) and (R.State <> dsError)
-    then begin
-      List := TGDBMINameValueList.Create(R);
-      TargetInfo^.TargetPID := StrToIntDef(List.Values['process-id'], 0);
-      List.Free;
-      if TargetInfo^.TargetPID <> 0 then exit;
-    end;
-
-    // gdb server
-    if ExecuteCommand('info proc', [], R, [cfCheckState]) and (R.State <> dsError)
-    then begin
-      s := GetPart(['process '], [#10,#13#10], R.Values, True);
-      TargetInfo^.TargetPID := StrToIntDef(s, 0);
-      if TargetInfo^.TargetPID <> 0 then exit;
-    end;
-
-    // apple / MacPort 7.1 / 32 bit dwarf
-    if ExecuteCommand('info threads', [], R, [cfCheckState]) and (R.State <> dsError)
-    then begin
-      s := GetPart(['of process '], [' '], R.Values, True);
-      TargetInfo^.TargetPID := StrToIntDef(s, 0);
-      if TargetInfo^.TargetPID <> 0 then exit;
-
-      // returned by gdb server (maybe others)
-      s := GetPart(['Thread '], [' ', '.'], R.Values, True);
-      TargetInfo^.TargetPID := StrToIntDef(s, 0);
-      if TargetInfo^.TargetPID <> 0 then exit;
-    end;
-
-    // no PID found
-    SetDebuggerErrorState(Format(gdbmiCommandStartMainRunNoPIDError, [LineEnding]));
+    DetectTargetPid; // will set dsError
   end;
 
 var
@@ -5191,14 +5209,6 @@ begin
     then begin
       Result := False;
       FSuccess := False;
-      Exit;
-    end;
-
-    if TargetInfo^.TargetPID = 0
-    then begin
-      Result := False;
-      FSuccess := False;
-      SetDebuggerState(dsError);
       Exit;
     end;
 
@@ -5403,31 +5413,14 @@ begin
     NewPID := StrToIntDef(FProcessID, 0);
   end;
 
-  // "info program" may crash after attach
-  if NewPID = 0 then begin
-    if ExecuteCommand('info pid', [], R, [cfCheckState]) and (R.State <> dsError)
-    then begin
-      List := TGDBMINameValueList.Create(R);
-      NewPID := StrToIntDef(List.Values['process-id'], 0);
-      List.Free;
-    end;
-  end;
+  TargetInfo^.TargetPID := NewPID;
 
-  if NewPID = 0 then begin
-    if ExecuteCommand('info threads', [], R, [cfCheckState]) and (R.State <> dsError)
-    then begin
-      s := GetPart(['of process '], [' '], R.Values, True);
-      NewPID := StrToIntDef(s, 0);
-    end;
-  end;
-
-  if NewPID = 0 then begin
+  DetectTargetPid(True);
+  if TargetInfo^.TargetPID = 0 then begin
     ExecuteCommand('detach', [], R);
     SetDebuggerErrorState(Format(gdbmiCommandStartMainRunNoPIDError, [LineEnding]));
     exit;
   end;
-
-  TargetInfo^.TargetPID := NewPID;
 
   DoSetPascal;
   DoSetDisableStartupShell();
