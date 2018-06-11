@@ -107,6 +107,7 @@ type
   TGDBMIServerDebuggerCommandStartDebugging = class(TGDBMIDebuggerCommandStartDebugging)
   protected
     function GdbRunCommand: String; override;
+    procedure DetectTargetPid(InAttach: Boolean = False); override;
   end;
 
 { TGDBMIServerDebuggerCommandStartDebugging }
@@ -114,6 +115,11 @@ type
 function TGDBMIServerDebuggerCommandStartDebugging.GdbRunCommand: String;
 begin
   Result := '-exec-continue';
+end;
+
+procedure TGDBMIServerDebuggerCommandStartDebugging.DetectTargetPid(InAttach: Boolean);
+begin
+  // do nothing // prevent dsError in inherited
 end;
 
 { TGDBMIServerDebuggerCommandInitDebugger }
