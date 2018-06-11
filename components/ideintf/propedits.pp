@@ -7662,6 +7662,9 @@ begin
   if FKey=AValue then exit;
   FKey:=AValue;
   s:=KeyAndShiftStateToKeyString(FKey,[]);
+  {$IFDEF VerboseKeyboard}
+  debugln(['TCustomShortCutGrabBox.SetKey ',Key,' "',s,'"']);
+  {$ENDIF}
   i:=KeyComboBox.Items.IndexOf(s);
   if i>=0 then
     KeyComboBox.ItemIndex:=i
@@ -7710,11 +7713,16 @@ end;
 procedure TCustomShortCutGrabBox.OnGrabFormKeyDown(Sender: TObject;
   var AKey: Word; AShift: TShiftState);
 begin
-  //DebugLn(['TCustomShortCutGrabBox.OnGrabFormKeyDown ',AKey,' ',dbgs(AShift)]);
+  {$IFDEF VerboseKeyboard}
+  DebugLn(['TCustomShortCutGrabBox.OnGrabFormKeyDown ',AKey,' ',dbgs(AShift)]);
+  DumpStack;
+  {$ENDIF}
   if not (AKey in [VK_CONTROL, VK_LCONTROL, VK_RCONTROL,
              VK_SHIFT, VK_LSHIFT, VK_RSHIFT,
              VK_MENU, VK_LMENU, VK_RMENU,
              VK_LWIN, VK_RWIN,
+             VK_PROCESSKEY,
+             VK_MODECHANGE,
              VK_UNKNOWN, VK_UNDEFINED])
   then begin
     if (AKey=VK_ESCAPE) and (AShift=[]) then begin
@@ -7904,7 +7912,7 @@ begin
     AddKeyToCombobox(0);
     for i:=VK_BACK to VK_SCROLL do
       AddKeyToCombobox(i);
-    for i:=VK_BROWSER_BACK to VK_OEM_8 do
+    for i:=VK_BROWSER_BACK to VK_OEM_CLEAR do
       AddKeyToCombobox(i);
     Items.EndUpdate;
     OnEditingDone:=@OnKeyComboboxEditingDone;
