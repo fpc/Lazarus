@@ -656,7 +656,7 @@ begin
         Filename := TrimFilename(AUnitinfo.LocationName);
         Filename := MainIDE.FindSourceFile(Filename, Project1.Directory,
                       [fsfSearchForProject, fsfUseIncludePaths, fsfUseDebugPath,
-                       fsfMapTempToVirtualFiles, fsfSkipPackages]);
+                       {fsfMapTempToVirtualFiles,} fsfSkipPackages]);
         Result := Filename <> '';
         if not Result then
           Result := ResolveFromDbg;
@@ -694,8 +694,14 @@ begin
   // => fix that
   Filename := TrimFilename(Filename);
   SrcFile := MainIDE.FindSourceFile(Filename, Project1.Directory,
-                      [fsfSearchForProject, fsfUseIncludePaths, fsfUseDebugPath,
-                       fsfMapTempToVirtualFiles]);
+                      [fsfSearchForProject, fsfUseIncludePaths, fsfUseDebugPath{,
+                       fsfMapTempToVirtualFiles}]);
+  if (SrcFile <> '') and (not FilenameIsAbsolute(SrcFile)) and
+     (Project1.IsVirtual) and
+     FileExistsUTF8(AppendPathDelim(LazarusIDE.GetTestBuildDirectory)+SrcFile)
+  then
+    SrcFile := AppendPathDelim(LazarusIDE.GetTestBuildDirectory)+SrcFile;
+
   if SrcFile = '' then
     SrcFile := Filename;
   SrcFN := ExtractFilenameOnly(SrcFile);
