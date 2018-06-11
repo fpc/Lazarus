@@ -120,7 +120,7 @@ var
 begin
   R := PFontIsMonoSpaceRec(Data);
   if ((logfont.elfLogFont.lfPitchAndFamily and FIXED_PITCH) = FIXED_PITCH)
-  and SameStr(R^.Name, LogFont.elfLogFont.lfFaceName) then
+  and (CompareStr(R^.Name, LogFont.elfLogFont.lfFaceName) = 0) then
   begin
     R^.Result := True;
     Result := 0 // we found it -> stop enumeration
