@@ -3652,7 +3652,7 @@ end;
 
 procedure TControl.WMCancelMode(var Message: TLMessage);
 begin
-  MouseCapture := False;
+  SetCaptureControl(nil);
 end;
 
 function TControl.IsEnabledStored: Boolean;
