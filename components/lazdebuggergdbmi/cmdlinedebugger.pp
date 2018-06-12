@@ -613,7 +613,7 @@ begin
 end;
 
 initialization
-  DBG_CMD_ECHO      := DebugLogger.RegisterLogGroup('DBG_CMD_ECHO' {$IF defined(DBG_VERBOSE) or defined(DBG_CMD_ECHO)} , True {$ENDIF} );
-  DBG_CMD_ECHO_FULL := DebugLogger.RegisterLogGroup('DBG_CMD_ECHO_FULL' {$IF defined(DBG_VERBOSE_FULL_DATA) or defined(DBG_CMD_ECHO_FULL)} , True {$ENDIF} );
+  DBG_CMD_ECHO      := DebugLogger.FindOrRegisterLogGroup('DBG_CMD_ECHO' {$IF defined(DBG_VERBOSE) or defined(DBG_CMD_ECHO)} , True {$ENDIF} );
+  DBG_CMD_ECHO_FULL := DebugLogger.FindOrRegisterLogGroup('DBG_CMD_ECHO_FULL' {$IF defined(DBG_VERBOSE_FULL_DATA) or defined(DBG_CMD_ECHO_FULL)} , True {$ENDIF} );
 
 end.
