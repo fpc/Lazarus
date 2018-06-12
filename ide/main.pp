@@ -10963,6 +10963,113 @@ begin
     CodeExplorerView.CurrentCodeBufferChanged;
 end;
 
+type
+
+  { TSrcNotebookHintCallback
+    ONLY used by SrcNotebookShowHintForSource
+  }
+
+  TSrcNotebookHintCallback = class
+  private
+    FExpression, FBaseURL, FSmartHintStr, FDebugResText: string;
+    FAutoShown: Boolean;
+    FSrcEdit: TSourceEditor;
+    FCaretPos: TPoint;
+    procedure ShowHint;
+  public
+    constructor Create(SrcEdit: TSourceEditor; CaretPos: TPoint; AnExpression, ABaseURL, ASmartHintStr: string; AAutoShown: Boolean);
+    procedure AddDebuggerResult(Sender: TObject; ASuccess: Boolean; ResultText: String; ResultDBGType: TDBGType);
+    procedure AddDebuggerResultDeref(Sender: TObject; ASuccess: Boolean; ResultText: String; ResultDBGType: TDBGType);
+  end;
+
+{ TSrcNotebookHintCallback }
+
+procedure TSrcNotebookHintCallback.ShowHint;
+var
+  AtomStartPos, AtomEndPos: integer;
+  p: SizeInt;
+  AtomRect: TRect;
+begin
+  FExpression := FExpression + ' = ' + FDebugResText;
+  if FSmartHintStr<>'' then
+  begin
+    p:=System.Pos('<body>',lowercase(FSmartHintStr));
+    if p>0 then
+      Insert('<div class="debuggerhint">'+CodeHelpBoss.TextToHTML(FExpression)+'</div><br>',
+             FSmartHintStr, p+length('<body>'))
+    else
+      FSmartHintStr:=FExpression+LineEnding+LineEnding+FSmartHintStr;
+  end else
+    FSmartHintStr:=FExpression;
+
+  AtomRect := Rect(-1,-1,-1,-1);
+  FSrcEdit.EditorComponent.GetWordBoundsAtRowCol(FCaretPos, AtomStartPos, AtomEndPos);
+  AtomRect.TopLeft := FSrcEdit.EditorComponent.RowColumnToPixels(Point(AtomStartPos, FCaretPos.y));
+  AtomRect.BottomRight := FSrcEdit.EditorComponent.RowColumnToPixels(Point(AtomEndPos, FCaretPos.y+1));
+
+  FSrcEdit.ActivateHint(AtomRect, FBaseURL, FSmartHintStr, FAutoShown, False);
+  Destroy;
+end;
+
+constructor TSrcNotebookHintCallback.Create(SrcEdit: TSourceEditor;
+  CaretPos: TPoint; AnExpression, ABaseURL, ASmartHintStr: string;
+  AAutoShown: Boolean);
+begin
+  FExpression := AnExpression;
+  FSrcEdit := SrcEdit;
+  FCaretPos := CaretPos;
+  FBaseURL := ABaseURL;
+  FSmartHintStr := ASmartHintStr;
+  FAutoShown := AAutoShown;
+end;
+
+procedure TSrcNotebookHintCallback.AddDebuggerResult(Sender: TObject;
+  ASuccess: Boolean; ResultText: String; ResultDBGType: TDBGType);
+var
+  Opts: TDBGEvaluateFlags;
+begin
+  if not ASuccess then begin
+    FDebugResText := '???';
+  end
+  else begin
+    // deference a pointer - maybe it is a class
+    if ASuccess and Assigned(ResultDBGType) and (ResultDBGType.Kind in [skPointer]) and
+       not( StringCase(Lowercase(ResultDBGType.TypeName), ['char', 'character', 'ansistring']) in [0..2] )
+    then
+    begin
+      if ResultDBGType.Value.AsPointer <> nil then
+      begin
+        Opts := [];
+        if EditorOpts.DbgHintAutoTypeCastClass
+        then Opts := [defClassAutoCast];
+
+        FDebugResText := ResultText;
+
+        if DebugBoss.Evaluate('('+FExpression + ')^', @AddDebuggerResultDeref, Opts) then
+          exit;
+      end;
+    end else
+      FDebugResText := DebugBoss.FormatValue(ResultDBGType, ResultText);
+
+    FreeAndNil(ResultDBGType);
+  end;
+  ShowHint;
+end;
+
+procedure TSrcNotebookHintCallback.AddDebuggerResultDeref(Sender: TObject;
+  ASuccess: Boolean; ResultText: String; ResultDBGType: TDBGType);
+begin
+  if ASuccess and Assigned(ResultDBGType) and
+    ( (ResultDBGType.Kind <> skPointer) or
+      (StringCase(Lowercase(ResultDBGType.TypeName), ['char', 'character', 'ansistring']) in [0..2])
+    )
+  then
+    FDebugResText := FDebugResText + LineEnding + LineEnding + '(' + FExpression + ')^ = ' + DebugBoss.FormatValue(ResultDBGType, ResultText);
+
+  FreeAndNil(ResultDBGType);
+  ShowHint;
+end;
+
 procedure TMainIDE.SrcNotebookShowHintForSource(SrcEdit: TSourceEditor;
   CaretPos: TPoint; AutoShown: Boolean);
 
@@ -10998,6 +11105,7 @@ var
   Opts: TDBGEvaluateFlags;
   AtomStartPos, AtomEndPos: integer;
   AtomRect: TRect;
+  DebugHint: TSrcNotebookHintCallback;
 begin
   //DebugLn(['TMainIDE.OnSrcNotebookShowHintForSource START']);
   if (SrcEdit=nil) then exit;
@@ -11032,53 +11140,20 @@ begin
     end
     else
       Expression := SrcEdit.GetOperandFromCaret(CaretPos);
-    if Expression='' then exit;
     //DebugLn(['TMainIDE.OnSrcNotebookShowHintForSource Expression="',Expression,'"']);
-    DBGType:=nil;
-    DBGTypeDerefer:=nil;
-    Opts := [];
-    if EditorOpts.DbgHintAutoTypeCastClass
-    then Opts := [defClassAutoCast];
-    DebugEval:='';
-    if DebugBoss.Evaluate(Expression, DebugEval, DBGType, Opts) and not (DebugEval = '') then
-    begin
-      // deference a pointer - maybe it is a class
-      if Assigned(DBGType) and (DBGType.Kind in [skPointer]) and
-         not( StringCase(Lowercase(DBGType.TypeName), ['char', 'character', 'ansistring']) in [0..2] )
-      then
-      begin
-        if DBGType.Value.AsPointer <> nil then
-        begin
-          DebugEvalDerefer:='';
-          if DebugBoss.Evaluate(Expression + '^', DebugEvalDerefer, DBGTypeDerefer, Opts) then
-          begin
-            if Assigned(DBGTypeDerefer) and
-              ( (DBGTypeDerefer.Kind <> skPointer) or
-                (StringCase(Lowercase(DBGTypeDerefer.TypeName), ['char', 'character', 'ansistring']) in [0..2])
-              )
-            then
-              DebugEval := DebugEval + LineEnding + LineEnding + '(' + Expression + ')^ = ' + DebugEvalDerefer;
-          end;
-        end;
-      end else
-        DebugEval := DebugBoss.FormatValue(DBGType, DebugEval);
-    end else
-      DebugEval := '???';
 
-    FreeAndNil(DBGType);
-    FreeAndNil(DBGTypeDerefer);
-    HasHint:=true;
-    Expression := Expression + ' = ' + DebugEval;
-    if SmartHintStr<>'' then
-    begin
-      p:=System.Pos('<body>',lowercase(SmartHintStr));
-      if p>0 then
-        Insert('<div class="debuggerhint">'+CodeHelpBoss.TextToHTML(Expression)+'</div><br>',
-               SmartHintStr, p+length('<body>'))
-      else
-        SmartHintStr:=Expression+LineEnding+LineEnding+SmartHintStr;
-    end else
-      SmartHintStr:=Expression;
+    if Expression <> '' then begin
+      Opts := [];
+      if EditorOpts.DbgHintAutoTypeCastClass
+      then Opts := [defClassAutoCast];
+
+      DebugHint := TSrcNotebookHintCallback.Create(SrcEdit, CaretPos, Expression, BaseURL, SmartHintStr, AutoShown);
+      if DebugBoss.Evaluate(Expression, @DebugHint.AddDebuggerResult, Opts) then
+        exit;
+
+      DebugHint.Free; // eval not available
+      // Add note to SmartHintStr: no debug result for expression
+    end;
   end;
 
   if HasHint then

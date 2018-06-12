@@ -39,7 +39,7 @@ interface
 uses
   Classes, SysUtils, LCLType, Forms,
   IDEWindowIntf, IDEImagesIntf, DbgIntfDebuggerBase, LazarusIDEStrConsts,
-  ComCtrls, StdCtrls, Menus, Dialogs, DebuggerDlg, BaseDebugManager,
+  ComCtrls, StdCtrls, Menus, Dialogs, Controls, DebuggerDlg, BaseDebugManager,
   InputHistory, IDEProcs, Debugger, DebuggerStrConst;
 
 type
@@ -87,6 +87,8 @@ type
     
   private
     fHistDirection:TEvalHistDirection;
+    procedure EvaluateCallback(Sender: TObject; ASuccess: Boolean;
+      ResultText: String; ResultDBGType: TDBGType);
     function GetFindText: string;
     procedure SetFindText(const NewFindText: string);
     procedure Evaluate;
@@ -142,49 +144,58 @@ begin
   mnuHistory.Items[2].Caption:=dsrEvalHistoryDown;
 end;
 
-procedure TEvaluateDlg.Evaluate;
+procedure TEvaluateDlg.EvaluateCallback(Sender: TObject; ASuccess: Boolean;
+  ResultText: String; ResultDBGType: TDBGType);
 var
-  S, R: String;
-  DBGType: TDBGType;
-  Opts: TDBGEvaluateFlags;
+  S: TCaption;
 begin
   S := cmbExpression.Text;
-  InputHistories.HistoryLists.Add(ClassName, S,rltCaseSensitive);
-  DBGType:=nil;
-  Opts := [];
-  if chkTypeCast.Checked then
-    Opts := [defClassAutoCast];
-  R:='';
-  if DebugBoss.Evaluate(S, R, DBGType, Opts)
-  then begin
+
+  if ASuccess then begin
     if cmbExpression.Items.IndexOf(S) = -1
     then cmbExpression.Items.Insert(0, S);
     tbModify.Enabled := True;
 
-    if (DBGType <> nil) and (DBGType.Attributes * [saArray, saDynArray] <> []) and (DBGType.Len >= 0)
-    then R := Format(drsLen, [DBGType.Len]) + LineEnding + R;
+    if (ResultDBGType <> nil) and (ResultDBGType.Attributes * [saArray, saDynArray] <> []) and (ResultDBGType.Len >= 0)
+    then ResultText := Format(drsLen, [ResultDBGType.Len]) + LineEnding + ResultText;
 
   end
   else
     tbModify.Enabled := False;
-  FreeAndNil(DBGType);
+
+  FreeAndNil(ResultDBGType);
   if fHistDirection<>EHDNone then
     begin
     if txtResult.Lines.Text='' then
-      txtResult.Lines.Text := RESULTEVAL+ S+':'+LineEnding+ R + LineEnding
+      txtResult.Lines.Text := RESULTEVAL+ S+':'+LineEnding+ ResultText + LineEnding
     else
       if fHistDirection=EHDUp then
-        txtResult.Lines.Text := RESULTEVAL+ S+':'+LineEnding+ R + LineEnding
+        txtResult.Lines.Text := RESULTEVAL+ S+':'+LineEnding+ ResultText + LineEnding
            + RESULTSEPARATOR + LineEnding + txtResult.Lines.Text
       else
         begin
         txtResult.Lines.Text := txtResult.Lines.Text + RESULTSEPARATOR + LineEnding
-           + RESULTEVAL+ S+':'+LineEnding+ R+LineEnding;
+           + RESULTEVAL+ S+':'+LineEnding+ ResultText+LineEnding;
         txtResult.SelStart:=length(txtResult.Lines.Text);
         end;
     end
   else
-    txtResult.Lines.Text := R;
+    txtResult.Lines.Text := ResultText;
+end;
+
+procedure TEvaluateDlg.Evaluate;
+var
+  S: String;
+  Opts: TDBGEvaluateFlags;
+begin
+  S := cmbExpression.Text;
+  InputHistories.HistoryLists.Add(ClassName, S,rltCaseSensitive);
+  Opts := [];
+  if chkTypeCast.Checked then
+    Opts := [defClassAutoCast];
+  if not DebugBoss.Evaluate(S, @EvaluateCallback, Opts)
+  then
+    EvaluateCallback(nil, false, '', nil);
 end;
 
 procedure TEvaluateDlg.cmbExpressionChange(Sender: TObject);
@@ -248,8 +259,7 @@ end;
 
 procedure TEvaluateDlg.Modify;
 var
-  S, V, R: String;
-  DBGType: TDBGType;
+  S, V: String;
 begin
   S := Trim(cmbExpression.Text);
   if S = '' then Exit;
@@ -263,27 +273,7 @@ begin
   if cmbNewValue.Items.IndexOf(V) = -1
   then cmbNewValue.Items.Insert(0, V);
 
-  DBGType:=nil;
-  R:='';
-  if not DebugBoss.Evaluate(S, R, DBGType) then Exit;
-  FreeAndNil(DBGType);
-  if fHistDirection<>EHDNone then
-    begin
-    if txtResult.Lines.Text='' then
-      txtResult.Lines.Text := RESULTMOD+ S+':'+LineEnding+ R + LineEnding
-    else
-      if fHistDirection=EHDUp then
-        txtResult.Lines.Text := RESULTMOD+ S+':'+LineEnding+ R + LineEnding
-           + RESULTSEPARATOR + LineEnding + txtResult.Lines.Text
-      else
-        begin
-        txtResult.Lines.Text := txtResult.Lines.Text + RESULTSEPARATOR + LineEnding
-           + RESULTMOD+ S+':'+LineEnding+ R+LineEnding;
-        txtResult.SelStart:=length(txtResult.Lines.Text);
-        end;
-    end
-  else
-    txtResult.Lines.Text := R;
+  Evaluate;
 end;
 
 procedure TEvaluateDlg.FormClose(Sender: TObject; var CloseAction: TCloseAction);

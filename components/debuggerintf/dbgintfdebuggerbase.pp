@@ -1710,6 +1710,8 @@ type
                                AType: TDBGFeedbackType; AButtons: TDBGFeedbackResults
                               ): TDBGFeedbackResult of object;
 
+  TDBGEvaluateResultCallback = procedure(Sender: TObject; ASuccess: Boolean; ResultText: String;
+    ResultDBGType: TDBGType) of object;
 
   TDebuggerNotifyReason = (dnrDestroy);
 
@@ -1770,8 +1772,11 @@ type
     //function GetUnitInfoProvider: TDebuggerUnitInfoProvider;
     function  GetState: TDBGState;
     function  ReqCmd(const ACommand: TDBGCommand;
-                     const AParams: array of const): Boolean;
-    procedure SetDebuggerEnvironment (const AValue: TStrings );
+                     const AParams: array of const): Boolean; overload;
+    function  ReqCmd(const ACommand: TDBGCommand;
+                     const AParams: array of const;
+                     const ACallback: TMethod): Boolean;
+    procedure SetDebuggerEnvironment (const AValue: TStrings ); overload;
     procedure SetEnvironment(const AValue: TStrings);
     procedure SetFileName(const AValue: String);
   protected
@@ -1804,7 +1809,8 @@ type
     function  GetWaiting: Boolean; virtual;
     function  GetIsIdle: Boolean; virtual;
     function  RequestCommand(const ACommand: TDBGCommand;
-                             const AParams: array of const): Boolean;
+                             const AParams: array of const;
+                             const ACallback: TMethod): Boolean;
                              virtual; abstract; // True if succesful
     procedure SetExitCode(const AValue: Integer);
     procedure SetState(const AValue: TDBGState);
@@ -1853,8 +1859,7 @@ type
     procedure Attach(AProcessID: String);
     procedure Detach;
     procedure SendConsoleInput(AText: String);
-    function  Evaluate(const AExpression: String; var AResult: String;
-                       var ATypeInfo: TDBGType;
+    function  Evaluate(const AExpression: String; ACallback: TDBGEvaluateResultCallback;
                        EvalFlags: TDBGEvaluateFlags = []): Boolean;                     // Evaluates the given expression, returns true if valid
     function GetProcessList({%H-}AList: TRunningProcessInfoList): boolean; virtual;
     function  Modify(const AExpression, AValue: String): Boolean;                // Modifies the given expression, returns true if valid
@@ -5837,11 +5842,10 @@ begin
   Result := False;
 end;
 
-function TDebuggerIntf.Evaluate(const AExpression: String; var AResult: String;
-  var ATypeInfo: TDBGType; EvalFlags: TDBGEvaluateFlags = []): Boolean;
+function TDebuggerIntf.Evaluate(const AExpression: String;
+  ACallback: TDBGEvaluateResultCallback; EvalFlags: TDBGEvaluateFlags): Boolean;
 begin
-  FreeAndNIL(ATypeInfo);
-  Result := ReqCmd(dcEvaluate, [AExpression, @AResult, @ATypeInfo, Integer(EvalFlags)]);
+  Result := ReqCmd(dcEvaluate, [AExpression, Integer(EvalFlags)], TMethod(ACallback));
 end;
 
 function TDebuggerIntf.GetProcessList(AList: TRunningProcessInfoList): boolean;
@@ -5894,6 +5898,16 @@ end;
 function TDebuggerIntf.GetState: TDBGState;
 begin
   Result := FState;
+end;
+
+function TDebuggerIntf.ReqCmd(const ACommand: TDBGCommand;
+  const AParams: array of const): Boolean;
+var
+  dummy: TMethod;
+begin
+  dummy.Code := nil;
+  dummy.Data := nil;
+  ReqCmd(ACommand, AParams, dummy);
 end;
 
 function TDebuggerIntf.GetSupportedCommands: TDBGCommands;
@@ -5951,12 +5965,12 @@ begin
 end;
 
 function TDebuggerIntf.ReqCmd(const ACommand: TDBGCommand;
-  const AParams: array of const): Boolean;
+  const AParams: array of const; const ACallback: TMethod): Boolean;
 begin
   if FState = dsNone then Init;
   if ACommand in Commands
   then begin
-    Result := RequestCommand(ACommand, AParams);
+    Result := RequestCommand(ACommand, AParams, ACallback);
     if not Result then begin
       DebugLn(DBG_WARNINGS, 'TDebuggerIntf.ReqCmd failed: ',dbgs(ACommand));
     end;

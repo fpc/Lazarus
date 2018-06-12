@@ -84,7 +84,9 @@ type
     function  HasDwarf: Boolean;
     procedure LoadDwarf;
     procedure UnLoadDwarf;
-    function  RequestCommand(const ACommand: TDBGCommand; const AParams: array of const): Boolean; override;
+    function  RequestCommand(const ACommand: TDBGCommand;
+              const AParams: array of const;
+              const ACallback: TMethod): Boolean; override;
     procedure QueueCommand(const ACommand: TGDBMIDebuggerCommand; ForceQueue: Boolean = False);
 
     procedure GetCurrentContext(out AThreadId, AStackFrame: Integer);
@@ -779,26 +781,31 @@ begin
 end;
 
 function TFpGDBMIDebugger.RequestCommand(const ACommand: TDBGCommand;
-  const AParams: array of const): Boolean;
+  const AParams: array of const; const ACallback: TMethod): Boolean;
 var
   EvalFlags: TDBGEvaluateFlags;
+  ResText: String;
+  ResType: TDBGType;
 begin
   if (ACommand = dcEvaluate) then begin
     EvalFlags := [];
-    EvalFlags := TDBGEvaluateFlags(AParams[3].VInteger);
+    EvalFlags := TDBGEvaluateFlags(AParams[1].VInteger);
     Result := False;
     if (HasDwarf) and (not UseGDB) then begin
       Result := EvaluateExpression(nil, String(AParams[0].VAnsiString),
-        String(AParams[1].VPointer^), TDBGType(AParams[2].VPointer^),
-        EvalFlags);
+        ResText, ResType, EvalFlags);
+      if EvalFlags * [defNoTypeInfo, defSimpleTypeInfo, defFullTypeInfo] = [defNoTypeInfo]
+      then FreeAndNil(ResType);
+      TDBGEvaluateResultCallback(ACallback)(Self, Result, ResText, ResType);
+      Result := True;
     end;
     if not Result then begin
-      Result := inherited RequestCommand(ACommand, AParams);
+      Result := inherited RequestCommand(ACommand, AParams, ACallback);
       String(AParams[1].VPointer^) := '{GDB:}'+String(AParams[1].VPointer^);
     end;
   end
   else
-    Result := inherited RequestCommand(ACommand, AParams);
+    Result := inherited RequestCommand(ACommand, AParams, ACallback);
 end;
 
 procedure TFpGDBMIDebugger.QueueCommand(const ACommand: TGDBMIDebuggerCommand;

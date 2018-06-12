@@ -326,7 +326,9 @@ type
     function CreateRegisters: TRegisterSupplier; override;
     function CreateCallStack: TCallStackSupplier; override;
     function CreateDisassembler: TDBGDisassembler; override;
-    function RequestCommand(const ACommand: TDBGCommand; const AParams: array of const): Boolean; override;
+    function RequestCommand(const ACommand: TDBGCommand;
+             const AParams: array of const;
+             const ACallback: TMethod = nil): Boolean; override;
     // These methods are called by several TFPDSendCommands after success or failure of a command. (Most common
     // because the TFPDSendCommands do not have access to TFPDServerDebugger's protected methods theirself)
     procedure DoOnRunFailed;
@@ -1428,7 +1430,8 @@ begin
   Result:=TFPDBGDisassembler.Create(Self);
 end;
 
-function TFPDServerDebugger.RequestCommand(const ACommand: TDBGCommand; const AParams: array of const): Boolean;
+function TFPDServerDebugger.RequestCommand(const ACommand: TDBGCommand;
+  const AParams: array of const; const ACallback: TMethod): Boolean;
 var
   ASendCommand: TFPDSendEvaluateCommand;
   tc: qword;
@@ -1494,8 +1497,8 @@ begin
       sleep(5);
       Application.ProcessMessages;
       until (ASendCommand.Validity<>ddsRequested) or ((GetTickCount64-tc)>2000);
-      String(AParams[1].VPointer^) := ASendCommand.Message;
-      TDBGType(AParams[2].VPointer^) := nil;
+      ACallback(Self, True, ASendCommand.Message, nil);
+      Result := True;
       ASendCommand.Free;
       end
     else

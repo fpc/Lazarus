@@ -805,8 +805,9 @@ type
     procedure DoPseudoTerminalRead(Sender: TObject);
     // Implementation of external functions
     function  GDBEnvironment(const AVariable: String; const ASet: Boolean): Boolean;
-    function  GDBEvaluate(const AExpression: String; var AResult: String;
-      out ATypeInfo: TGDBType; EvalFlags: TDBGEvaluateFlags): Boolean;
+    function  GDBEvaluate(const AExpression: String; EvalFlags: TDBGEvaluateFlags; ACallback: TDBGEvaluateResultCallback): Boolean;
+    procedure GDBEvaluateCommandCancelled(Sender: TObject);
+    procedure GDBEvaluateCommandExecuted(Sender: TObject);
     function  GDBModify(const AExpression, ANewValue: String): Boolean;
     procedure GDBModifyDone(const {%H-}AResult: TGDBMIExecResult; const {%H-}ATag: PtrInt);
     function  GDBRun: Boolean;
@@ -877,7 +878,7 @@ type
     function  ParseInitialization: Boolean; virtual;
     function  CreateCommandInit: TGDBMIDebuggerCommandInitDebugger; virtual;
     function  CreateCommandStartDebugging(AContinueCommand: TGDBMIDebuggerCommand): TGDBMIDebuggerCommandStartDebugging; virtual;
-    function  RequestCommand(const ACommand: TDBGCommand; const AParams: array of const): Boolean; override;
+    function  RequestCommand(const ACommand: TDBGCommand; const AParams: array of const; const ACallback: TMethod): Boolean; override;
     property  CurrentCmdIsAsync: Boolean read FCurrentCmdIsAsync;
     property  CurrentCommand: TGDBMIDebuggerCommand read FCurrentCommand;
 
@@ -1204,6 +1205,8 @@ type
     FParsedExpression: String;
     FCurrentCmd: TGDBMIDebuggerCommandBreakPointBase;
     FUpdateFlags: TGDBMIBreakPointUpdateFlags;
+    procedure DoLogExpressionCallback(Sender: TObject; ASuccess: Boolean;
+      ResultText: String; ResultDBGType: TDBGType);
     procedure SetBreakPoint;
     procedure ReleaseBreakPoint;
     procedure UpdateProperties(AFlags: TGDBMIBreakPointUpdateFlags);
@@ -1275,6 +1278,7 @@ type
 
   TGDBMIDebuggerCommandEvaluate = class(TGDBMIDebuggerCommand)
   private
+    FCallback: TDBGEvaluateResultCallback;
     FEvalFlags: TDBGEvaluateFlags;
     FExpression: String;
     FDisplayFormat: TWatchDisplayFormat;
@@ -1305,6 +1309,7 @@ type
     property TextValue: String read FTextValue;
     property TypeInfo: TGDBType read GetTypeInfo;
     property TypeInfoAutoDestroy: Boolean read FTypeInfoAutoDestroy write FTypeInfoAutoDestroy;
+    property Callback: TDBGEvaluateResultCallback read FCallback write FCallback;
   end;
 
   {%endregion   ^^^^^  Watches  ^^^^^   }
@@ -8352,22 +8357,35 @@ begin
   end;
 end;
 
-function TGDBMIDebugger.GDBEvaluate(const AExpression: String; var AResult: String;
-  out ATypeInfo: TGDBType; EvalFlags: TDBGEvaluateFlags): Boolean;
+procedure TGDBMIDebugger.GDBEvaluateCommandCancelled(Sender: TObject);
+begin
+  TGDBMIDebuggerCommandEvaluate(Sender).Callback(Self, False, '', nil);
+end;
+
+procedure TGDBMIDebugger.GDBEvaluateCommandExecuted(Sender: TObject);
+begin
+  if TGDBMIDebuggerCommandEvaluate(Sender).EvalFlags * [defNoTypeInfo, defSimpleTypeInfo, defFullTypeInfo] = [defNoTypeInfo]
+  then FreeAndNil(TGDBMIDebuggerCommandEvaluate(Sender).FTypeInfo);
+  with TGDBMIDebuggerCommandEvaluate(Sender) do
+    Callback(Self, True, TextValue, TypeInfo);
+end;
+
+function TGDBMIDebugger.GDBEvaluate(const AExpression: String;
+  EvalFlags: TDBGEvaluateFlags; ACallback: TDBGEvaluateResultCallback): Boolean;
 var
   CommandObj: TGDBMIDebuggerCommandEvaluate;
+  TypeInfo: TGDBType;
 begin
   CommandObj := TGDBMIDebuggerCommandEvaluate.Create(Self, AExpression, wdfDefault);
   CommandObj.EvalFlags := EvalFlags;
   CommandObj.AddReference;
   CommandObj.Priority := GDCMD_PRIOR_IMMEDIATE; // try run imediately
+  CommandObj.Callback := ACallback;
+  CommandObj.OnExecuted := @GDBEvaluateCommandExecuted;
+  CommandObj.OnCancel := @GDBEvaluateCommandCancelled;
   QueueCommand(CommandObj);
-  Result := CommandObj.State in [dcsExecuting, dcsFinished];
-  AResult := CommandObj.TextValue;
-  ATypeInfo := CommandObj.TypeInfo;
-  if EvalFlags * [defNoTypeInfo, defSimpleTypeInfo, defFullTypeInfo] = [defNoTypeInfo]
-  then FreeAndNil(ATypeInfo);
   CommandObj.ReleaseReference;
+  Result := true;
 end;
 
 function TGDBMIDebugger.GDBModify(const AExpression, ANewValue: String): Boolean;
@@ -8866,7 +8884,8 @@ begin
     mtInformation, [mbOK], 0);
 end;
 
-function TGDBMIDebugger.RequestCommand(const ACommand: TDBGCommand; const AParams: array of const): Boolean;
+function TGDBMIDebugger.RequestCommand(const ACommand: TDBGCommand;
+  const AParams: array of const; const ACallback: TMethod): Boolean;
 var
   EvalFlags: TDBGEvaluateFlags;
 begin
@@ -8885,11 +8904,10 @@ begin
       dcDetach:      Result := GDBDetach;
       dcEvaluate:    begin
                        EvalFlags := [];
-                       if high(AParams) >= 3 then
-                         EvalFlags := TDBGEvaluateFlags(AParams[3].VInteger);
+                       if high(AParams) >= 1 then
+                         EvalFlags := TDBGEvaluateFlags(AParams[1].VInteger);
                        Result := GDBEvaluate(String(AParams[0].VAnsiString),
-                         String(AParams[1].VPointer^), TGDBType(AParams[2].VPointer^),
-                         EvalFlags);
+                         EvalFlags, TDBGEvaluateResultCallback(ACallback));
                      end;
       dcModify:      Result := GDBModify(String(AParams[0].VAnsiString), String(AParams[1].VAnsiString));
       dcEnvironment: Result := GDBEnvironment(String(AParams[0].VAnsiString), AParams[1].VBoolean);
@@ -9448,16 +9466,16 @@ begin
   end;
 end;
 
-procedure TGDBMIBreakPoint.DoLogExpression(const AnExpression: String);
-var
-  s: String;
-  t: TGDBType;
+procedure TGDBMIBreakPoint.DoLogExpressionCallback(Sender: TObject;
+  ASuccess: Boolean; ResultText: String; ResultDBGType: TDBGType);
 begin
-  s:='';
-  if TGDBMIDebugger(Debugger).GDBEvaluate(AnExpression, s, t, [defNoTypeInfo])
-  then begin
-    TGDBMIDebugger(Debugger).DoDbgEvent(ecBreakpoint, etBreakpointEvaluation, s);
-  end;
+  if ASuccess then
+    TGDBMIDebugger(Sender).DoDbgEvent(ecBreakpoint, etBreakpointEvaluation, ResultText);
+end;
+
+procedure TGDBMIBreakPoint.DoLogExpression(const AnExpression: String);
+begin
+  TGDBMIDebugger(Debugger).GDBEvaluate(AnExpression, [defNoTypeInfo], @DoLogExpressionCallback);
 end;
 
 procedure TGDBMIBreakPoint.MakeInvalid;

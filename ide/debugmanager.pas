@@ -211,8 +211,7 @@ type
     function FillProcessList(AList: TRunningProcessInfoList): boolean; override;
     procedure Detach; override;
 
-    function Evaluate(const AExpression: String; var AResult: String;
-                      var ATypeInfo: TDBGType;
+    function Evaluate(const AExpression: String; ACallback: TDBGEvaluateResultCallback;
                       EvalFlags: TDBGEvaluateFlags = []): Boolean; override;
     function Modify(const AExpression, ANewValue: String): Boolean; override;
 
@@ -2732,13 +2731,13 @@ begin
 end;
 
 function TDebugManager.Evaluate(const AExpression: String;
-  var AResult: String; var ATypeInfo: TDBGType;EvalFlags: TDBGEvaluateFlags = []): Boolean;
+  ACallback: TDBGEvaluateResultCallback; EvalFlags: TDBGEvaluateFlags): Boolean;
 begin
   Result := (not Destroying)
         and (MainIDE.ToolStatus = itDebugger)
         and (FDebugger <> nil)
         and (dcEvaluate in FDebugger.Commands)
-        and FDebugger.Evaluate(AExpression, AResult, ATypeInfo, EvalFlags);
+        and FDebugger.Evaluate(AExpression, ACallback, EvalFlags);
 end;
 
 function TDebugManager.Modify(const AExpression, ANewValue: String): Boolean;

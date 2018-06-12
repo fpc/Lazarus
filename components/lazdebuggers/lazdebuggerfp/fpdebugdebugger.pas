@@ -133,7 +133,8 @@ type
     function CreateDisassembler: TDBGDisassembler; override;
     function CreateBreakPoints: TDBGBreakPoints; override;
     function  RequestCommand(const ACommand: TDBGCommand;
-                             const AParams: array of const): Boolean; override;
+                             const AParams: array of const;
+                             const ACallback: TMethod): Boolean; override;
     function ChangeFileName: Boolean; override;
 
     procedure OnLog(const AString: string; const ALogLevel: TFPDLogLevel);
@@ -1625,11 +1626,12 @@ begin
 end;
 
 function TFpDebugDebugger.RequestCommand(const ACommand: TDBGCommand;
-  const AParams: array of const): Boolean;
+  const AParams: array of const; const ACallback: TMethod): Boolean;
 var
   EvalFlags: TDBGEvaluateFlags;
-  AConsoleTty: string;
+  AConsoleTty, ResText: string;
   addr: TDBGPtrArray;
+  ResType: TDBGType;
 begin
   result := False;
   if assigned(FDbgController) then
@@ -1737,11 +1739,13 @@ begin
       end;
     dcEvaluate:
       begin
-        EvalFlags := TDBGEvaluateFlags(AParams[3].VInteger);
-        Result := False;
+        EvalFlags := TDBGEvaluateFlags(AParams[1].VInteger);
         Result := EvaluateExpression(nil, String(AParams[0].VAnsiString),
-          String(AParams[1].VPointer^), TDBGType(AParams[2].VPointer^),
-          EvalFlags);
+          ResText, ResType, EvalFlags);
+        if EvalFlags * [defNoTypeInfo, defSimpleTypeInfo, defFullTypeInfo] = [defNoTypeInfo]
+        then FreeAndNil(ResType);
+        TDBGEvaluateResultCallback(ACallback)(Self, Result, ResText, ResType);
+        Result := True;
       end;
     dcSendConsoleInput:
       begin
