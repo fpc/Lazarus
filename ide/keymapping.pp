@@ -2963,7 +2963,7 @@ begin
   AddDefault(C, 'Edit Syncro (sel) Start', srkmecSynPSyncroEdStart, ecIdePSyncroEdSelStart);
 
   // source notebook - without menu items in the IDE bar
-  C:=Categories[AddCategory('SourceNotebook',srkmCatSrcNoteBook,IDECmdScopeSrcEdit)];
+  C:=Categories[AddCategory('SourceNotebook',srkmCatSrcNoteBook,IDECmdScopeSrcEditOnly)];
   AddDefault(C, 'Go to next editor', srkmecNextEditor, ecNextEditor);
   AddDefault(C, 'Go to prior editor', srkmecPrevEditor, ecPrevEditor);
   AddDefault(C, 'Go to previous editor in history', srkmecPrevEditorInHistory, ecPrevEditorInHistory);
