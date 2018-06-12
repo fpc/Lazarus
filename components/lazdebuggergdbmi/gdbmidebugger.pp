@@ -10007,7 +10007,7 @@ var
   i: Integer;
 begin
   for i := 0 to FCommandList.Count-1 do
-    with TGDBMIDebuggerCommandStack(FCommandList[i]) do begin
+    with TGDBMIDebuggerCommandEvaluate(FCommandList[i]) do begin
       OnExecuted := nil;
       OnDestroy := nil;
       Cancel;
