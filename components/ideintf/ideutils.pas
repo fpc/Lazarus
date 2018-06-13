@@ -16,7 +16,7 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  StdCtrls,
+  StdCtrls, ImgList, Graphics,
   // LazUtils
   LazUTF8, LazFileUtils;
 
@@ -30,6 +30,9 @@ type
 function IndexInStringList(List: TStrings; Cmp: TCmpStrType; s: string): integer;
 procedure SetComboBoxText(AComboBox: TComboBox; const AText: String;
                           Cmp: TCmpStrType; MaxCount: integer = 1000);
+function LoadProjectIconIntoImages(const ProjFile: string;
+  const Images: TCustomImageList; const Index: TStringList): Integer;
+
 
 implementation
 
@@ -66,6 +69,51 @@ begin
     end;
   end;
   AComboBox.Text := AText;
+end;
+
+type
+  TLoadProjectIconIntoImagesObject = class
+    ImageIndex: Integer;
+  end;
+
+function LoadProjectIconIntoImages(const ProjFile: string;
+  const Images: TCustomImageList; const Index: TStringList): Integer;
+var
+  xIconFile: String;
+  xIcon: TIcon;
+  I: Integer;
+  xObj: TLoadProjectIconIntoImagesObject;
+begin
+  //ToDo: better index
+
+  I := Index.IndexOf(ProjFile);
+  if I >= 0 then
+    Exit(TLoadProjectIconIntoImagesObject(Index.Objects[I]).ImageIndex);
+
+  if not Index.Sorted or (Index.Count = 0) then
+  begin // initialize index
+    Index.Sorted := True;
+    Index.Duplicates := dupIgnore;
+    Index.CaseSensitive := False;
+    Index.OwnsObjects := True;
+  end;
+
+  Result := -1;
+  xIconFile := ChangeFileExt(ProjFile, '.ico');
+  if FileExists(xIconFile) then
+  begin
+    xIcon := TIcon.Create;
+    try
+      xIcon.LoadFromFile(xIconFile);
+      Result := Images.AddIcon(xIcon);
+    finally
+      xIcon.Free;
+    end;
+  end;
+
+  xObj := TLoadProjectIconIntoImagesObject.Create;
+  xObj.ImageIndex := Result;
+  Index.AddObject(ProjFile, xObj);
 end;
 
 end.

@@ -30,9 +30,16 @@ unit favorites_impl;
 interface
 
 uses
-  Classes, SysUtils, ToolBarIntf, IDEImagesIntf, Graphics, PackageIntf,
-  Menus, LazIDEIntf, ProjectIntf, Laz2_XMLCfg, IDEOptionsIntf,
-  IDECommands, ComCtrls, favoritesstr, ImgList, LazFileUtils;
+  Classes, SysUtils,
+  // LCL
+  Graphics, ComCtrls, Menus, ImgList,
+  // LazUtils
+  LazFileUtils, Laz2_XMLCfg,
+  // IdeIntf
+  ToolBarIntf, IDEImagesIntf, LazIDEIntf, ProjectIntf, IDEOptionsIntf,
+  IDECommands, IDEUtils,
+  // Favorites
+  favoritesstr;
 
 type
   TFavoritesHandler = class

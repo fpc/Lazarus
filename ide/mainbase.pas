@@ -67,7 +67,7 @@ uses
   // IDEIntf
   IDEImagesIntf, SrcEditorIntf, LazIDEIntf, MenuIntf, NewItemIntf, PackageIntf,
   IDECommands, IDEWindowIntf, ProjectIntf, ToolBarIntf, ObjectInspector,
-  PropEdits, IDEDialogs, EditorSyntaxHighlighterDef,
+  PropEdits, IDEDialogs, IDEUtils, EditorSyntaxHighlighterDef,
   // IDE
   LazConf, LazarusIDEStrConsts, Project, BuildManager, IDEProcs,
   EnvironmentOpts, EditorOptions, CompilerOptions, SourceEditor, SourceSynEditor,
