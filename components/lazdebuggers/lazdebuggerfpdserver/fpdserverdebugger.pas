@@ -328,7 +328,7 @@ type
     function CreateDisassembler: TDBGDisassembler; override;
     function RequestCommand(const ACommand: TDBGCommand;
              const AParams: array of const;
-             const ACallback: TMethod = nil): Boolean; override;
+             const ACallback: TMethod): Boolean; override;
     // These methods are called by several TFPDSendCommands after success or failure of a command. (Most common
     // because the TFPDSendCommands do not have access to TFPDServerDebugger's protected methods theirself)
     procedure DoOnRunFailed;
