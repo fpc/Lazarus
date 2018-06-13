@@ -47,13 +47,12 @@ uses
   Classes, SysUtils, StrUtils, types, Math, RegExpr, Laz_AVL_Tree,
   // LCL
   Controls, Forms, ComCtrls, StdCtrls, Graphics, Dialogs, Extctrls, Menus,
-  LCLProc, LCLType, LCLIntf, FileUtil, LazFileUtils,
-  ClipBrd, HelpIntfs, Messages, LMessages,
+  LCLProc, LCLType, LCLIntf, ClipBrd, HelpIntfs, Messages, LMessages,
   // LazControls
   ExtendedNotebook,
   // LazUtils
-  LConvEncoding, LazUtilities, LazFileCache, LazUTF8Classes, LazUTF8, LazMethodList,
-  LazLoggerBase, Translations,
+  LConvEncoding, FileUtil, LazFileUtils, LazFileCache, LazUTF8, LazUTF8Classes,
+  LazMethodList, LazLoggerBase, LazLogger, Translations, LazUtilities,
   // codetools
   BasicCodeTools, CodeBeautifier, CodeToolManager, CodeCache, SourceLog,
   LinkScanner, CodeTree, SourceChanger,
@@ -4363,7 +4362,7 @@ var
   Txt: string;
 begin
   if ReadOnly then Exit;
-  Txt:=CommentText(LCLProc.BreakString(Notice, FEditor.RightEdge-2,0),CommentType);
+  Txt:=CommentText(BreakString(Notice, FEditor.RightEdge-2,0),CommentType);
   FEditor.InsertTextAtCaret(Txt);
 end;
 

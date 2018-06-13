@@ -40,9 +40,9 @@ interface
 uses
   Classes, SysUtils, contnrs, strutils,
   // LazUtils
-  LazUTF8, LazUtilities, LazFileUtils,
+  LazUTF8, LazFileUtils, LazUtilities, LazLoggerBase,
   // LCL
-  LCLProc, Forms, Controls,
+  Forms, Controls,
   // Codetools
   DefineTemplates, LinkScanner, TransferMacros,
   // IdeIntf

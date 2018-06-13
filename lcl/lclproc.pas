@@ -29,14 +29,12 @@ uses
   Classes, SysUtils, Math, TypInfo, Types, Laz_AVL_Tree,
   // LazUtils
   FPCAdds, LazFileUtils, LazUtilities, LazMethodList, LazUTF8, LazUTF8Classes,
-  {$IFnDEF WithOldDebugln} LazLoggerBase, {$ENDIF}
+  LazLoggerBase,
   // LCL
   LCLStrConsts, LCLType;
 
 type
   TMethodList = LazMethodList.TMethodList;
-
-  TStackTracePointers = array of Pointer;
 
   { TDebugLCLItemInfo }
 
@@ -70,12 +68,6 @@ type
     property Name: string read FName;
   end;
 
-  TLineInfoCacheItem = record
-    Addr: Pointer;
-    Info: string;
-  end;
-  PLineInfoCacheItem = ^TLineInfoCacheItem;
-
 {$IFDEF DebugLCLComponents}
 var
   DebugLCLComponents: TDebugLCLItems = nil;
@@ -83,9 +75,6 @@ var
 
 function CompareDebugLCLItemInfos(Data1, Data2: Pointer): integer;
 function CompareItemWithDebugLCLItemInfo(Item, DebugItemInfo: Pointer): integer;
-
-function CompareLineInfoCacheItems(Data1, Data2: Pointer): integer;
-function CompareAddrWithLineInfoCacheItem(Addr, Item: Pointer): integer;
 
 
 type
@@ -139,7 +128,6 @@ procedure CalculateLeftTopWidthHeight(X1,Y1,X2,Y2: integer;
   out Left,Top,Width,Height: integer);
 
 function DeleteAmpersands(var Str : String) : Longint;
-function BreakString(const s: string; MaxLineLength, Indent: integer): string;
 
 function ComparePointers(p1, p2: Pointer): integer; inline;
 function CompareHandles(h1, h2: THandle): integer;
@@ -153,19 +141,8 @@ function TruncToInt(const e: Extended): integer;
 function TruncToCardinal(const e: Extended): cardinal;
 function StrToDouble(const s: string): double;
 
-
-// debugging
+// Call debugging procedure in LazLoggerBase.
 procedure RaiseGDBException(const Msg: string);
-procedure RaiseAndCatchException;
-procedure DumpExceptionBackTrace;
-{$IFnDEF WithOldDebugln}
-procedure DumpStack; inline;
-{$ENDIF}
-function GetStackTrace(UseCache: boolean): string;
-procedure GetStackTracePointers(var AStack: TStackTracePointers);
-function StackTraceAsString(const AStack: TStackTracePointers;
-                            UseCache: boolean): string;
-function GetLineInfo(Addr: Pointer; UseCache: boolean): string;
 
 {$IFnDEF WithOldDebugln}
 procedure DbgOut(const s: string = ''); inline; overload;
@@ -374,7 +351,6 @@ var
   DebugNestPrefix: PChar = nil;
   DebugNestAtBOL: Boolean;
   {$ENDIF}
-  LineInfoCache: TAvlTree = nil;
 
 function DeleteAmpersands(var Str : String) : Longint;
 // Replace all &x with x
@@ -741,17 +717,6 @@ begin
   Result:=ComparePointers(Item,TDebugLCLItemInfo(DebugItemInfo).Item);
 end;
 
-function CompareLineInfoCacheItems(Data1, Data2: Pointer): integer;
-begin
-  Result:=ComparePointers(PLineInfoCacheItem(Data1)^.Addr,
-                          PLineInfoCacheItem(Data2)^.Addr);
-end;
-
-function CompareAddrWithLineInfoCacheItem(Addr, Item: Pointer): integer;
-begin
-  Result:=ComparePointers(Addr,PLineInfoCacheItem(Item)^.Addr);
-end;
-
 function GetEnumValueDef(TypeInfo: PTypeInfo; const Name: string;
   const DefaultValue: Integer): Integer;
 begin
@@ -962,11 +927,7 @@ end;
 
 procedure FreeThenNil(var obj);
 begin
-  if Pointer(obj) <> nil then 
-  begin
-    TObject(obj).Free;
-    Pointer(obj) := nil;
-  end;
+  LazUtilities.FreeThenNil(obj);
 end;
 
 procedure RegisterInterfaceInitializationHandler(p: TProcedure);
@@ -993,130 +954,6 @@ var
 begin
   for i:=InterfaceFinalizationHandlers.Count-1 downto 0 do
     TProcedure(InterfaceFinalizationHandlers[i])();
-end;
-
-{------------------------------------------------------------------------------
-  procedure RaiseGDBException(const Msg: string);
-
-  Raises an exception.
-  Normally gdb does not catch fpc Exception objects, therefore this procedure
-  raises a standard "division by zero" exception which is catched by gdb.
-  This allows one to stop a program, without extra gdb configuration.
- ------------------------------------------------------------------------------}
-procedure RaiseGDBException(const Msg: string);
-begin
-  debugln(rsERRORInLCL, Msg);
-  // creates an exception, that gdb catches:
-  debugln(rsCreatingGdbCatchableError);
-  DumpStack;
-  {$ifndef HASAMIGA} // On Amiga Division by 0 is not catchable, just crash
-  if (length(Msg) div (length(Msg) div 10000))=0 then ;
-  {$endif}
-end;
-
-procedure RaiseAndCatchException;
-begin
-  try
-    {$ifndef HASAMIGA} // On Amiga Division by 0 is not catchable, just crash
-    if (length(rsERRORInLCL) div (length(rsERRORInLCL) div 10000))=0 then ;
-    {$else}
-    DumpStack;
-    {$endif}
-  except
-  end;
-end;
-
-procedure DumpExceptionBackTrace;
-begin
-  LazLoggerBase.DumpExceptionBackTrace;
-end;
-
-function GetStackTrace(UseCache: boolean): string;
-var
-  bp: Pointer;
-  addr: Pointer;
-  oldbp: Pointer;
-  CurAddress: Shortstring;
-begin
-  Result:='';
-  { retrieve backtrace info }
-  bp:=get_caller_frame(get_frame);
-  while bp<>nil do begin
-    addr:=get_caller_addr(bp);
-    CurAddress:=GetLineInfo(addr,UseCache);
-    //DebugLn('GetStackTrace ',CurAddress);
-    Result:=Result+CurAddress+LineEnding;
-    oldbp:=bp;
-    bp:=get_caller_frame(bp);
-    if (bp<=oldbp) or (bp>(StackBottom + StackLength)) then
-      bp:=nil;
-  end;
-end;
-
-procedure GetStackTracePointers(var AStack: TStackTracePointers);
-var
-  Depth: Integer;
-  bp: Pointer;
-  oldbp: Pointer;
-begin
-  // get stack depth
-  Depth:=0;
-  bp:=get_caller_frame(get_frame);
-  while bp<>nil do begin
-    inc(Depth);
-    oldbp:=bp;
-    bp:=get_caller_frame(bp);
-    if (bp<=oldbp) or (bp>(StackBottom + StackLength)) then
-      bp:=nil;
-  end;
-  SetLength(AStack,Depth);
-  if Depth>0 then begin
-    Depth:=0;
-    bp:=get_caller_frame(get_frame);
-    while bp<>nil do begin
-      AStack[Depth]:=get_caller_addr(bp);
-      inc(Depth);
-      oldbp:=bp;
-      bp:=get_caller_frame(bp);
-      if (bp<=oldbp) or (bp>(StackBottom + StackLength)) then
-        bp:=nil;
-    end;
-  end;
-end;
-
-function StackTraceAsString(const AStack: TStackTracePointers;
-  UseCache: boolean): string;
-var
-  i: Integer;
-  CurAddress: String;
-begin
-  Result:='';
-  for i:=0 to length(AStack)-1 do begin
-    CurAddress:=GetLineInfo(AStack[i],UseCache);
-    Result:=Result+CurAddress+LineEnding;
-  end;
-end;
-
-function GetLineInfo(Addr: Pointer; UseCache: boolean): string;
-var
-  ANode: TAvlTreeNode;
-  Item: PLineInfoCacheItem;
-begin
-  if UseCache then begin
-    if LineInfoCache=nil then
-      LineInfoCache:=TAvlTree.Create(@CompareLineInfoCacheItems);
-    ANode:=LineInfoCache.FindKey(Addr,@CompareAddrWithLineInfoCacheItem);
-    if ANode=nil then begin
-      Result:=BackTraceStrFunc(Addr);
-      New(Item);
-      Item^.Addr:=Addr;
-      Item^.Info:=Result;
-      LineInfoCache.Add(Item);
-    end else begin
-      Result:=PLineInfoCacheItem(ANode.Data)^.Info;
-    end;
-  end else
-    Result:=BackTraceStrFunc(Addr);
 end;
 
 procedure MoveRect(var ARect: TRect; x, y: Integer);
@@ -1187,85 +1024,6 @@ begin
     Top := Y2;
     Height := Y1 - Y2;
   end;
-end;
-
-function BreakString(const s: string; MaxLineLength, Indent: integer): string;
-var
-  SrcLen: Integer;
-  APos: Integer;
-  Src: String;
-  SplitPos: Integer;
-  CurMaxLineLength: Integer;
-begin
-  Result:='';
-  Src:=s;
-  CurMaxLineLength:=MaxLineLength;
-  if Indent>MaxLineLength-2 then Indent:=MaxLineLength-2;
-  if Indent<0 then MaxLineLength:=0;
-  repeat
-    SrcLen:=length(Src);
-    if SrcLen<=CurMaxLineLength then begin
-      Result:=Result+Src;
-      break;
-    end;
-    // split line
-    SplitPos:=0;
-    // search new line chars
-    APos:=1;
-    while (APos<=CurMaxLineLength) do begin
-      if Src[APos] in [#13,#10] then begin
-        SplitPos:=APos;
-        break;
-      end;
-      inc(APos);
-    end;
-    // search a space boundary
-    if SplitPos=0 then begin
-      APos:=CurMaxLineLength;
-      while APos>1 do begin
-        if (Src[APos-1] in [' ',#9])
-        and (not (Src[APos] in [' ',#9])) then begin
-          SplitPos:=APos;
-          break;
-        end;
-        dec(APos);
-      end;
-    end;
-    // search a word boundary
-    if SplitPos=0 then begin
-      APos:=CurMaxLineLength;
-      while APos>1 do begin
-        if (Src[APos] in ['A'..'Z','a'..'z'])
-        and (not (Src[APos-1] in ['A'..'Z','a'..'z'])) then begin
-          SplitPos:=APos;
-          break;
-        end;
-        dec(APos);
-      end;
-    end;
-    if SplitPos=0 then begin
-      // no word boundary found -> split chars
-      SplitPos:=CurMaxLineLength;
-    end;
-    // append part and newline
-    if (SplitPos<=SrcLen) and (Src[SplitPos] in [#10,#13]) then begin
-      // there is already a new line char at position
-      inc(SplitPos);
-      if (SplitPos<=SrcLen) and (Src[SplitPos] in [#10,#13])
-      and (Src[SplitPos]<>Src[SplitPos-1]) then
-        inc(SplitPos);
-      Result:=Result+copy(Src,1,SplitPos-1);
-    end else begin
-      Result:=Result+copy(Src,1,SplitPos-1)+LineEnding;
-    end;
-    // append indent
-    if Indent>0 then
-      Result:=Result+StringOfChar(' ',Indent);
-    // calculate new LineLength
-    CurMaxLineLength:=MaxLineLength-Indent;
-    // cut string
-    Src:=copy(Src,SplitPos,length(Src)-SplitPos+1);
-  until false;
 end;
 
 function ComparePointers(p1, p2: Pointer): integer;
@@ -1532,12 +1290,12 @@ end;
 
 // Debug funcs :
 
-{$IFnDEF WithOldDebugln}
-procedure DumpStack;
+procedure RaiseGDBException(const Msg: string);
 begin
-  DebugLogger.DebuglnStack;
+  LazLoggerBase.RaiseGDBException(Msg);
 end;
 
+{$IFnDEF WithOldDebugln}
 procedure CloseDebugOutput;
 begin
   DebugLogger.Finish;
@@ -2859,22 +2617,6 @@ begin
   Result := CompareText(AName, 'default') = 0;
 end;
 
-procedure FreeLineInfoCache;
-var
-  ANode: TAvlTreeNode;
-  Item: PLineInfoCacheItem;
-begin
-  if LineInfoCache=nil then exit;
-  ANode:=LineInfoCache.FindLowest;
-  while ANode<>nil do begin
-    Item:=PLineInfoCacheItem(ANode.Data);
-    Dispose(Item);
-    ANode:=LineInfoCache.FindSuccessor(ANode);
-  end;
-  LineInfoCache.Free;
-  LineInfoCache:=nil;
-end;
-
 { TDebugLCLItems }
 
 constructor TDebugLCLItems.Create(const TheName: string);
@@ -3053,7 +2795,6 @@ finalization
   DebugLCLComponents.Free;
   DebugLCLComponents:=nil;
   {$ENDIF}
-  FreeLineInfoCache;
   {$IFDEF WithOldDebugln}
   FinalizeDebugOutput;
   DebugLnNestFreePrefix;

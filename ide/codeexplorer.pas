@@ -40,6 +40,8 @@ interface
 uses
   // RTL+FCL
   Classes, SysUtils, types, Laz_AVL_Tree,
+  // LazUtils
+  LazLoggerBase,
   // LCL
   LCLProc, LCLType, Forms, Controls, Dialogs, Buttons, ComCtrls, Menus, StdCtrls, ExtCtrls,
   // CodeTools

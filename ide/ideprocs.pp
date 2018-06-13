@@ -30,13 +30,15 @@ unit IDEProcs;
 interface
 
 uses
-  // RTL + LCL
-  Classes, SysUtils, LCLProc, StdCtrls, ExtCtrls, Laz_AVL_Tree,
-  // CodeTools
-  BasicCodeTools, SourceLog, FileProcs, CodeToolManager, CodeToolsConfig, CodeCache,
+  // RTL
+  Classes, SysUtils, Laz_AVL_Tree,
   // LazUtils
   FileUtil, LazFileUtils, LazUtilities, LazFileCache, LazUTF8, LazUTF8Classes,
   Laz2_XMLCfg, AvgLvlTree,
+  // LCL
+  StdCtrls, ExtCtrls,
+  // CodeTools
+  BasicCodeTools, SourceLog, FileProcs, CodeToolManager, CodeToolsConfig, CodeCache,
   // IDE
   IDECmdLine, LazConf;
 
@@ -2663,11 +2665,6 @@ end;
 function CheckGroupItemChecked(CheckGroup: TCheckGroup; const Caption: string): Boolean;
 begin
   Result := CheckGroup.Checked[CheckGroup.Items.IndexOf(Caption)];
-end;
-
-procedure CTDbgOut(const s: string);
-begin
-  LCLProc.DbgOut(s);
 end;
 
 end.

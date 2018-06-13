@@ -56,7 +56,7 @@ uses
   FPReadGif,
   {$ENDIF}
   // LazUtils
-  FPCAdds, LazUTF8Classes,
+  FPCAdds, LazUTF8Classes, LazLoggerBase, LazUtilities,
   // LCL
   LCLVersion, LCLStrConsts, LCLType, LCLProc, LMessages, LResources, LCLResCache,
   IntfGraphics, GraphType, IcnsTypes, GraphMath, WSReferences;

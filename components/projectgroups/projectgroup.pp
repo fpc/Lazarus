@@ -33,11 +33,18 @@ unit ProjectGroup;
 interface
 
 uses
-  Classes, SysUtils, contnrs, Laz2_XMLCfg, Controls, Forms, Dialogs, LCLProc,
-  LazFileUtils, LazFileCache, LazConfigStorage, FileUtil, PackageIntf,
-  ProjectIntf, MenuIntf, LazIDEIntf, IDEDialogs, CompOptsIntf, BaseIDEIntf,
-  IDECommands, IDEExternToolIntf, MacroIntf, IDEMsgIntf, ProjectGroupIntf,
-  ProjectGroupStrConst, FileProcs, CodeToolManager, CodeCache;
+  Classes, SysUtils, contnrs,
+  // LazUtils
+  LazFileUtils, FileUtil, LazFileCache, LazConfigStorage, Laz2_XMLCfg, LazLoggerBase,
+  // LCL
+  Controls, Forms, Dialogs,
+  // CodeTools
+  FileProcs, CodeToolManager, CodeCache,
+  // IdeIntf
+  PackageIntf, ProjectIntf, MenuIntf, LazIDEIntf, IDEDialogs, CompOptsIntf,
+  BaseIDEIntf, IDECommands, IDEExternToolIntf, MacroIntf, IDEMsgIntf,
+  // ProjectGroups
+  ProjectGroupIntf, ProjectGroupStrConst;
 
 const
   PGOptionsFileName = 'projectgroupsoptions.xml';

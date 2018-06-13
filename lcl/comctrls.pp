@@ -31,7 +31,7 @@ interface
 uses
   SysUtils, Types, Classes, Math, Laz_AVL_Tree,
   // LazUtils
-  LazUTF8, LazUTF8Classes,
+  LazUTF8, LazUTF8Classes, LazLoggerBase, LazUtilities,
   // LCL
   LCLStrConsts, LResources, LCLIntf, LCLType, LMessages, WSLCLClasses,
   WSReferences, LCLProc, GraphType, Graphics, ImgList, ActnList, Themes, Menus,

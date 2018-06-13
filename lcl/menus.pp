@@ -43,7 +43,7 @@ uses
   LCLStrConsts, LCLType, LCLProc, LCLIntf, LCLClasses, LResources, LMessages,
   ActnList, Graphics, ImgList, Themes,
   // LazUtils
-  LazMethodList;
+  LazMethodList, LazLoggerBase;
 
 type
   TMenu = class;

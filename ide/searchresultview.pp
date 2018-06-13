@@ -44,7 +44,7 @@ uses
   // LazControls
   TreeFilterEdit,
   // LazUtils
-  LazUTF8, LazFileUtils,
+  LazUTF8, LazFileUtils, LazLoggerBase,
   // IDE
   IDEOptionDefs, LazarusIDEStrConsts, EnvironmentOpts, InputHistory, IDEProcs,
   Project, MainIntf, IDECommands, IDEImagesIntf;

@@ -49,7 +49,7 @@ uses
   LResources, Controls, Forms, Buttons, Menus, StdCtrls, ComCtrls, ExtCtrls,
   Dialogs, ExtDlgs, ImgList, LCLMessageGlue,
   // LazUtils
-  Masks, FileUtil, LazFileUtils, LazUTF8, DynHashArray,
+  Masks, FileUtil, LazFileUtils, LazLoggerBase, LazUTF8, DynHashArray,
   // Gtk2
   Gtk2FontCache, Gtk2Globals, Gtk2Def, Gtk2Extra, {%H-}Gtk2Debug;
 

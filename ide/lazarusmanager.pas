@@ -91,10 +91,18 @@ uses
 {$IFDEF unix}
   BaseUnix,
 {$ENDIF}
-  Classes, SysUtils, Process, Forms, Controls, Dialogs, LCLProc,
-  UTF8Process, FileUtil, FileProcs, LazUTF8, LazFileUtils,
-  IDECmdLine, LazConf, Splash, BaseIDEIntf, IDEInstances;
-  
+  Classes, SysUtils, Process,
+  // LCL
+  Forms, Controls, Dialogs,
+  // LazUtils
+  UTF8Process, FileUtil, LazFileUtils, LazUtilities, LazUTF8,
+  // CodeTools
+  FileProcs,
+  // IdeIntf
+  BaseIDEIntf,
+  // IDE
+  IDECmdLine, LazConf, Splash, IDEInstances;
+
 type
 
   { TLazarusProcess }

@@ -30,9 +30,9 @@ interface
 uses
   Classes, SysUtils, strutils,
   // LCL
-  LCLProc, Controls, Dialogs, Graphics, StdCtrls,
+  Controls, Dialogs, Graphics, StdCtrls,
   // LazUtils
-  LazFileUtils,
+  LazFileUtils, LazUtilities,
   // CodeTools
   DefineTemplates,
   // IdeIntf

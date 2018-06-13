@@ -44,14 +44,23 @@ unit CodeToolsDefines;
 interface
 
 uses
-  Classes, SysUtils, Math, LCLIntf, Forms, Controls, Buttons, StdCtrls,
-  ComCtrls,  LCLType, ExtCtrls, Menus, LCLProc, Graphics, Dialogs, ButtonPanel,
+  //Classes, SysUtils, Math, LCLIntf, Forms, Controls, Buttons, StdCtrls,
+  //ComCtrls,  LCLType, ExtCtrls, Menus, LCLProc, Graphics, Dialogs, ButtonPanel,
+  Classes, SysUtils, Math,
+  // LCL
+  LCLType, LCLIntf, Forms, Controls, Buttons, StdCtrls,
+  ComCtrls, ExtCtrls, Menus, Graphics, Dialogs, ButtonPanel,
+  // LazUtils
+  LazFileUtils, LazLogger, LazUtilities,
+  // SynEdit
   SynEdit,
+  // Codetools
   CodeToolManager, DefineTemplates,
-  IDEWindowIntf, IDEImagesIntf, IDEDialogs, LazFileUtils,
+  // IdeIntf
+  IDEWindowIntf, IDEImagesIntf, IDEDialogs,
+  // IDE
   LazarusIDEStrConsts, CodeToolsOptions, CodeToolsDefPreview, TransferMacros,
-  EditorOptions, InputFileDialog, IDEOptionDefs, LazConf, IDEProcs,
-  EditDefineTree, CompilerOptions;
+  EditorOptions, InputFileDialog, LazConf, IDEProcs, EditDefineTree, CompilerOptions;
 
 type
 

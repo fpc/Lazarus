@@ -46,12 +46,12 @@ uses
   MemCheck,
   {$ENDIF}
   // RTL, FCL
-  TypInfo, math, Classes, SysUtils, contnrs,
+  TypInfo, math, Classes, SysUtils, contnrs, Laz_AVL_Tree,
   // LCL
-  LCLProc, Forms, Controls, Dialogs, Menus, ComCtrls, LResources,
+  Forms, Controls, Dialogs, Menus, ComCtrls, LResources,
   // LazUtils
-  LazUTF8, Laz2_XMLCfg, LazUTF8Classes, LazUtilities, LazFileUtils, LazFileCache,
-  StringHashList, Translations, AvgLvlTree, Laz_AVL_Tree,
+  LazUTF8, Laz2_XMLCfg, LazUTF8Classes, LazLoggerBase, LazUtilities,
+  LazFileUtils, LazFileCache, StringHashList, Translations, AvgLvlTree,
   // Codetools
   CodeToolsConfig, CodeToolManager, CodeCache, BasicCodeTools,
   FileProcs, CodeTree, CTUnitGraph,

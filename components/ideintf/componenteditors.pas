@@ -24,7 +24,7 @@ uses
   LCLProc, LResources, Forms, Controls, Menus, ExtCtrls, CustomTimer, Graphics,
   Grids, CheckLst, Buttons, ComCtrls, Dialogs, GraphType,
   // LazUtils
-  Maps, LazMethodList,
+  Maps, LazMethodList, LazLoggerBase,
   // IdeIntf
   LazStringGridEdit, CheckListboxEditorDlg, CheckGroupEditorDlg,
   PropEdits, PropEditUtils, ComponentReg,

@@ -7,9 +7,9 @@ interface
 uses
   SysUtils,
   // LazUtils
-  FileUtil,
+  FileUtil, LazLoggerBase,
   // LCL
-  LCLProc, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
+  Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, ProjectIntf,
   // IDE

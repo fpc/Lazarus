@@ -41,8 +41,6 @@ uses
   Classes, SysUtils,
   // LazUtils
   FileUtil, LazFileUtils, LazUTF8, LazUTF8Classes, LazLogger,
-  // LCL
-  LCLProc,
   // IDE
   LazConf;
 

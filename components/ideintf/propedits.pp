@@ -31,7 +31,7 @@ uses
   // LazControls
   {$IFnDEF UseOINormalCheckBox} CheckBoxThemed, {$ENDIF}
   // LazUtils
-  FileUtil, StringHashList, LazMethodList, UITypes,
+  FileUtil, StringHashList, LazMethodList, LazLoggerBase, LazUtilities, UITypes,
   FPCAdds, // for StrToQWord in older fpc versions
   // IdeIntf
   ObjInspStrConsts, PropEditUtils, PackageDependencyIntf,

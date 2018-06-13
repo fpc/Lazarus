@@ -39,12 +39,14 @@ interface
 uses
   Classes, SysUtils, contnrs, Laz_AVL_Tree,
   // LCL
-  LCLProc, Forms, Controls, ComCtrls, StdCtrls, Menus,
-  LCLType, ExtCtrls, ButtonPanel, LCLIntf,
-  // IdeIntf
-  IDECommands, PackageIntf, IDEImagesIntf,
+  LCLType, LCLIntf, Forms, Controls, ComCtrls, StdCtrls, ExtCtrls,
+  Menus, ButtonPanel,
+  // LazUtils
+  LazLoggerBase, LazUtilities,
   // LazControls
   LvlGraphCtrl,
+  // IdeIntf
+  IDECommands, PackageIntf, IDEImagesIntf,
   // IDE
   LazarusIDEStrConsts, IDEProcs, IDEOptionDefs,
   Project, PackageDefs, PackageSystem, PackageEditor, CleanPkgDeps;

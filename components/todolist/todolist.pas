@@ -65,7 +65,7 @@ uses
   LCLProc, LCLType, LclIntf, Forms, Controls, StdCtrls, Dialogs, ComCtrls,
   ActnList, XMLPropStorage,
   // LazUtils
-  LazUTF8Classes, LazFileUtils, LazFileCache,
+  LazUTF8Classes, LazFileUtils, LazFileCache, LazLoggerBase,
   // Codetools
   CodeCache, CodeToolManager, BasicCodeTools, FileProcs,
   // IDEIntf

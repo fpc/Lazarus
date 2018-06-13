@@ -24,9 +24,12 @@ unit LDockTree;
 interface
 
 uses
-  Math, Types, Classes, SysUtils, LCLProc, LCLType, LCLStrConsts,
-  Graphics, Controls, ExtCtrls, Forms, Menus, Themes, LCLIntf,
-  ComCtrls, LMessages, LResources, typinfo;
+  Math, Types, Classes, SysUtils, typinfo,
+  // LazUtils
+  LazLoggerBase,
+  // LCL
+  LCLProc, LCLType, LCLIntf, LCLStrConsts, Graphics, Controls, ExtCtrls, Forms,
+  Menus, Themes, ComCtrls, LMessages, LResources;
 
 type
   TLazDockPages = class;

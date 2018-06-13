@@ -22,12 +22,12 @@ interface
 
 uses
   // RTL
-  glib2, gdk2, gtk2,
-  Classes,
+  Classes, Types, glib2, gdk2, gtk2,
+  // LazUtils
+  LazLoggerBase,
   // LCL
   Gtk2Int, Gtk2Proc, Gtk2Globals, Gtk2Def, Gtk2Extra,
-  InterfaceBase, Types, LCLProc, LCLType, WSMenus, WSLCLClasses,
-  LMessages, Graphics, Menus, Forms, LCLIntf;
+  LCLType, LCLIntf, InterfaceBase, WSMenus, LMessages, Graphics, Menus, Forms;
 
 type
 

@@ -82,8 +82,13 @@ uses
   {$IFDEF WithSynExperimentalCharWidth}
   SynEditTextSystemCharWidth,
   {$ENDIF}
-  Types, LCLIntf, LCLType, LMessages, LazUTF8, LCLProc, LazMethodList, LazLoggerBase,
-  SysUtils, Classes, Messages, Controls, Graphics, Forms, StdCtrls, ExtCtrls, Menus,
+  Types, SysUtils, Classes,
+  // LCL
+  LCLProc, LCLIntf, LCLType, LMessages, LResources, Messages, Controls, Graphics,
+  Forms, StdCtrls, ExtCtrls, Menus, Clipbrd, StdActns,
+  // LazUtils
+  LazMethodList, LazLoggerBase, LazUTF8,
+  // SynEdit
   SynEditTypes, SynEditSearch, SynEditKeyCmds, SynEditMouseCmds, SynEditMiscProcs,
   SynEditPointClasses, SynBeautifier, SynEditMarks,
   // Markup
@@ -97,8 +102,8 @@ uses
   // Gutter
   SynGutterBase, SynGutter, SynGutterCodeFolding, SynGutterChanges,
   SynGutterLineNumber, SynGutterMarks, SynGutterLineOverview,
-  SynEditMiscClasses, SynEditHighlighter, LazSynTextArea, SynTextDrawer, SynEditTextBidiChars,
-  LResources, Clipbrd, StdActns;
+  SynEditMiscClasses, SynEditHighlighter, LazSynTextArea, SynTextDrawer,
+  SynEditTextBidiChars;
 
 const
   ScrollBarWidth=0;

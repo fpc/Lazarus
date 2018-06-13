@@ -31,13 +31,14 @@ unit SearchFrm;
 interface
 
 uses
-  // RTL + FCL + LCL
-  Classes, SysUtils, types, RegExpr, LCLProc, LCLIntf, Forms, Controls,
-  ComCtrls, Dialogs, ExtCtrls, StdCtrls, Buttons,
-  // SynEdit, CodeTools
+  // RTL + FCL
+  Classes, SysUtils, types, RegExpr,
+  // LCL
+  LCLIntf, Forms, Controls, ComCtrls, Dialogs, ExtCtrls, StdCtrls, Buttons,
+  // CodeTools
   SourceLog, KeywordFuncLists, BasicCodeTools, FileProcs,
   // LazUtils
-  FileUtil, LazFileUtils, LazFileCache,
+  FileUtil, LazFileUtils, LazFileCache, LazLoggerBase,
   // IDEIntf
   IDEWindowIntf, LazIDEIntf, SrcEditorIntf, IDEDialogs,
   // ide

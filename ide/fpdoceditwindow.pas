@@ -32,15 +32,15 @@ interface
 uses
   // FCL
   Classes, SysUtils,
-  Laz2_DOM, Laz2_XMLRead,
+  // LazUtils
+  Laz2_DOM, Laz2_XMLRead, LazLoggerBase,
   // LCL
-  LCLProc, LResources, StdCtrls, Buttons, ComCtrls, Controls, Dialogs,
+  LResources, StdCtrls, Buttons, ComCtrls, Controls, Dialogs,
   ExtCtrls, Forms, Graphics, LCLType,
   // Synedit
   SynEdit, SynHighlighterXML,
   // codetools
-  FileProcs, CodeCache, CodeToolManager,
-  CTXMLFixFragment,
+  FileProcs, CodeCache, CodeToolManager, CTXMLFixFragment,
   // IDEIntf
   IDEWindowIntf, ProjectIntf, LazIDEIntf, IDEHelpIntf, Menus,
   SrcEditorIntf, IDEDialogs, LazFileUtils, IDEImagesIntf,

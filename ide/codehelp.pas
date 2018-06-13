@@ -49,7 +49,7 @@ uses
   FileProcs, DefineTemplates,
   // LazUtils
   AvgLvlTree, FileUtil, LazFileUtils, LazUTF8, LazFileCache, LazMethodList,
-  Laz2_DOM, Laz2_XMLRead, Laz2_XMLWrite,
+  LazLoggerBase, Laz2_DOM, Laz2_XMLRead, Laz2_XMLWrite,
   // SynEdit
   SynHighlighterPas,
   // IDEIntf

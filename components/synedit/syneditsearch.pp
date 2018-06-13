@@ -43,7 +43,12 @@ interface
 
 uses
   Classes, SysUtils, RegExpr,
-  LCLIntf, LCLType, LCLProc, LazUTF8, SynEditMiscProcs, SynEditTypes;
+  // LCL
+  LCLIntf, LCLType,
+  // LazUtils
+  LazUTF8, LazLoggerBase,
+  // SynEdit
+  SynEditMiscProcs, SynEditTypes;
 
 procedure MakeCompTable;
 

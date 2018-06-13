@@ -21,11 +21,13 @@ unit Gtk2WSComCtrls;
 interface
 
 uses
-  // libs
+  // RTL, FCL, libs
   Math, Sysutils, Classes, GLib2, Gtk2, Gdk2, Gdk2pixbuf,
-  // RTL, FCL, LCL
-  ComCtrls, LCLType, LMessages, Controls, Graphics,
-  StdCtrls, Forms, LCLProc, LCLIntf, ImgList, InterfaceBase,
+  // LazUtils
+  LazLoggerBase,
+  // LCL
+  LCLType, LCLIntf, LMessages, Controls, Graphics, ComCtrls, StdCtrls, Forms,
+  ImgList, InterfaceBase,
   // widgetset
   WSComCtrls, WSLCLClasses, WSControls, WSProc,
   // GtkWidgetset

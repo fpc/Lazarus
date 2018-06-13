@@ -24,7 +24,6 @@ unit Buttons;
 
 {$mode objfpc}{$H+}
 
-
 interface
 
 {$ifdef Trace}
@@ -32,9 +31,13 @@ interface
 {$endif}
 
 uses
-  Types, Classes, SysUtils, Math, LCLType, LCLProc, LCLIntf, LCLStrConsts,
+  Types, Classes, SysUtils, Math,
+  // LCL
+  LCLType, LCLProc, LCLIntf, LCLStrConsts,
   GraphType, Graphics, ImgList, ActnList, Controls, StdCtrls, LMessages, Forms,
-  Themes, Menus, LResources, ImageListCache;
+  Themes, Menus, LResources, ImageListCache,
+  // LazUtils
+  LazUtilities;
 
 type
   TButtonLayout =

@@ -37,7 +37,7 @@ uses
   // LCL
   LCLProc, LCLStrConsts,
   // LazUtils
-  LazConfigStorage, FPCAdds, DynQueue, LazUTF8, LazUTF8Classes;
+  LazConfigStorage, FPCAdds, DynQueue, LazUTF8, LazUTF8Classes, LazLoggerBase;
 
 {$DEFINE UseLRS}
 {$DEFINE UseRES}

@@ -37,10 +37,10 @@ uses
   // RTL + FCL
   Classes, SysUtils, math, process, Pipes, Laz_AVL_Tree,
   // LCL
-  LCLIntf, Forms, Dialogs,
   {$IFDEF VerboseExtToolThread}
   LCLProc,
   {$ENDIF}
+  LCLIntf, Forms, Dialogs,
   // CodeTools
   FileProcs,
   // LazUtils

@@ -47,10 +47,8 @@ interface
 
 uses
   SysUtils, Classes,
-  // LCL
-  LCLProc,
   // LazUtils
-  FileUtil, LazFileUtils, LazUTF8, LazUTF8Classes,
+  FileUtil, LazFileUtils, LazUTF8, LazUTF8Classes, LazLoggerBase,
   // Codetools
   DefineTemplates;
 

@@ -41,10 +41,10 @@ uses
   // RTL+FCL
   Classes, SysUtils, TypInfo, Math, Laz_AVL_Tree,
   // LCL
-  LCLIntf, LCLType, LCLProc, LResources, LCLMemManager, Controls, Graphics,
+  LCLIntf, LCLType, LResources, LCLMemManager, Controls, Graphics,
   Forms, Menus, Dialogs,
   // LazUtils
-  FileUtil, LazFileUtils, LazFileCache, CompWriterPas,
+  FileUtil, LazFileUtils, LazFileCache, CompWriterPas, LazLoggerBase,
   // Codetools
   CodeCache, CodeTree, CodeToolManager, FindDeclarationTool,
   // IDEIntf

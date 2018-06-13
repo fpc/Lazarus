@@ -61,7 +61,7 @@ uses
   // LCL
   LCLProc,
   // LazUtils
-  LazClasses,
+  LazClasses, LazLoggerBase,
   // SynEdit
   SynEditHighlighter, SynEditTypes, LazSynEditText;
 

@@ -29,7 +29,7 @@ uses
   LCLStrConsts, LCLType, LCLProc, LCLIntf, LMessages, LResources, Graphics,
   ActnList, Controls, Forms, Menus, Themes,
   // LazUtils
-  TextStrings, ExtendedStrings, LazUTF8, LazMethodList;
+  TextStrings, ExtendedStrings, LazUTF8, LazMethodList, LazLoggerBase, LazUtilities;
 
 type
 

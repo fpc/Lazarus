@@ -15,6 +15,8 @@ interface
 uses
   // RTL
   Classes, SysUtils, glib2, pango, Laz_AVL_Tree,
+  // LazUtils
+  LazLoggerBase, LazUtilities,
   // LCL
   LCLProc, LCLType, Gtk2Def, LCLResCache;
   

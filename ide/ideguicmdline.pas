@@ -43,8 +43,6 @@ uses
   Classes, SysUtils, math,
   // LazUtils
   LazUTF8Classes, LazUtilities, LazFileUtils,
-  // LCL
-  LCLProc,
   // Codetools
   FileProcs,
   // IDE

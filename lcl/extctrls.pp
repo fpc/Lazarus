@@ -26,9 +26,13 @@ interface
 {$endif}
 
 uses
-  SysUtils, Types, Classes, LCLStrConsts, LCLType, LCLProc, LResources, Controls,
-  Forms, StdCtrls, lMessages, GraphType, Graphics, LCLIntf, CustomTimer, Themes,
-  LCLClasses, Menus, PopupNotifier, ImgList, contnrs, FGL;
+  SysUtils, Types, Classes, contnrs, FGL,
+  // LCL
+  LCLStrConsts, LCLType, LCLProc, LResources, LMessages, Controls, Forms,
+  StdCtrls, GraphType, Graphics, LCLIntf, CustomTimer, Themes, LCLClasses, Menus,
+  PopupNotifier, ImgList,
+  // LazUtils
+  LazLoggerBase, LazUtilities;
 
 type
 

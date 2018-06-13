@@ -41,7 +41,7 @@ uses
   InterfaceBase, ImgList, PropertyStorage, Menus, ActnList, LCLClasses,
   LResources, LCLPlatformDef,
   // LazUtils
-  LazMethodList, UITypes;
+  LazMethodList, LazLoggerBase, LazUtilities, UITypes;
 
 {$I controlconsts.inc}
 

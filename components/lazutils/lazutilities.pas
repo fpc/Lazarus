@@ -15,6 +15,7 @@ interface
 uses
   Classes, SysUtils;
 
+procedure FreeThenNil(var obj);
 function ComparePointers(p1, p2: Pointer): integer; inline;
 
 { MergeSortWithLen:
@@ -30,11 +31,21 @@ function HasDelimitedItem(const List: string; Delimiter: char; FindItem: string
 function FindNextDelimitedItem(const List: string; Delimiter: char;
                                var Position: integer; FindItem: string): string;
 function MergeWithDelimiter(const a, b: string; Delimiter: char): string;
+function BreakString(const s: string; MaxLineLength, Indent: integer): string;
 
 var
   ConsoleVerbosity: integer = 0; // 0=normal, -1=quiet, 1=verbose, 2=very verbose
 
 implementation
+
+procedure FreeThenNil(var obj);
+begin
+  if Pointer(obj) <> nil then
+  begin
+    TObject(obj).Free;
+    Pointer(obj) := nil;
+  end;
+end;
 
 function ComparePointers(p1, p2: Pointer): integer;
 begin
@@ -158,6 +169,87 @@ begin
       Result:=a;
   end else
     Result:=b;
+end;
+
+function BreakString(const s: string; MaxLineLength, Indent: integer): string;
+var
+  SrcLen: Integer;
+  APos: Integer;
+  Src: String;
+  SplitPos: Integer;
+  CurMaxLineLength: Integer;
+begin
+  Result:='';
+  Src:=s;
+  CurMaxLineLength:=MaxLineLength;
+  if Indent>MaxLineLength-2 then
+    Indent:=MaxLineLength-2;
+  if Indent<0 then
+    MaxLineLength:=0;
+  repeat
+    SrcLen:=length(Src);
+    if SrcLen<=CurMaxLineLength then begin
+      Result:=Result+Src;
+      break;
+    end;
+    // split line
+    SplitPos:=0;
+    // search new line chars
+    APos:=1;
+    while (APos<=CurMaxLineLength) do begin
+      if Src[APos] in [#13,#10] then begin
+        SplitPos:=APos;
+        break;
+      end;
+      inc(APos);
+    end;
+    // search a space boundary
+    if SplitPos=0 then begin
+      APos:=CurMaxLineLength;
+      while APos>1 do begin
+        if (Src[APos-1] in [' ',#9])
+        and (not (Src[APos] in [' ',#9])) then begin
+          SplitPos:=APos;
+          break;
+        end;
+        dec(APos);
+      end;
+    end;
+    // search a word boundary
+    if SplitPos=0 then begin
+      APos:=CurMaxLineLength;
+      while APos>1 do begin
+        if (Src[APos] in ['A'..'Z','a'..'z'])
+        and (not (Src[APos-1] in ['A'..'Z','a'..'z'])) then begin
+          SplitPos:=APos;
+          break;
+        end;
+        dec(APos);
+      end;
+    end;
+    if SplitPos=0 then begin
+      // no word boundary found -> split chars
+      SplitPos:=CurMaxLineLength;
+    end;
+    // append part and newline
+    if (SplitPos<=SrcLen) and (Src[SplitPos] in [#10,#13]) then begin
+      // there is already a new line char at position
+      inc(SplitPos);
+      if (SplitPos<=SrcLen) and (Src[SplitPos] in [#10,#13])
+      and (Src[SplitPos]<>Src[SplitPos-1]) then
+        inc(SplitPos);
+      Result:=Result+copy(Src,1,SplitPos-1);
+    end else begin
+      Result:=Result+copy(Src,1,SplitPos-1)+LineEnding;
+    end;
+    // append indent
+    if Indent>0 then
+      Result:=Result+StringOfChar(' ',Indent);
+    // calculate new LineLength
+    CurMaxLineLength:=MaxLineLength-Indent;
+    // cut string
+    Src:=copy(Src,SplitPos,length(Src)-SplitPos+1);
+  until false;
 end;
 
 end.

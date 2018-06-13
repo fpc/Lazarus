@@ -22,7 +22,7 @@ uses
   // LCL
   LCLType, LCLProc, Menus, ImgList, Graphics,
   // LazUtils
-  LazMethodList,
+  LazMethodList, LazLoggerBase,
   // IdeIntf
   IDECommands, IDEImagesIntf;
   

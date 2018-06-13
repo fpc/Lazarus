@@ -39,7 +39,7 @@ uses
   {$EndIf}
   gdk2pixbuf, gtk2, gdk2, glib2, Pango,
   // LazUtils
-  LazFileUtils, LazUTF8, DynHashArray, Maps, IntegerList,
+  LazFileUtils, LazUTF8, DynHashArray, Maps, IntegerList, LazLoggerBase, LazUtilities,
   // LCL
   Dialogs, Controls, Forms, LCLStrConsts,
   LMessages, LCLProc, LCLIntf, LCLType, GraphType, GraphMath,

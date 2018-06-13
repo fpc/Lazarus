@@ -13,7 +13,9 @@ unit LazClasses;
 interface
 
 uses
-  sysutils, Classes, LazMethodList;
+  sysutils, Classes,
+  // LazUtils
+  LazMethodList;
 
 type
 

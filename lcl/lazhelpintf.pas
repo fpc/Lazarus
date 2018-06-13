@@ -27,7 +27,7 @@ interface
 uses
   Classes, SysUtils,
   // LazUtils
-  FileUtil, LazFileUtils, LazUTF8, LazConfigStorage, Masks,
+  FileUtil, LazFileUtils, LazUtilities, LazUTF8, LazConfigStorage, Masks,
   // LCL
   LCLProc, LCLStrConsts, Dialogs, HelpIntfs;
 

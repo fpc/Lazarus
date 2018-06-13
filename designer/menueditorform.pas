@@ -26,10 +26,13 @@ unit MenuEditorForm;
 interface
 
 uses
-  // FCL + LCL
+  // FCL
   Classes, SysUtils, Types, typinfo, math,
+  // LazUtils
+  LazLoggerBase,
+  // LCL
   Controls, StdCtrls, ExtCtrls, Forms, Graphics, Buttons, Menus, ButtonPanel,
-  ImgList, Themes, LCLintf, LCLProc,
+  ImgList, Themes, LCLintf,
   // IdeIntf
   FormEditingIntf, PropEdits, ObjectInspector, IDEImagesIntf,
   // IDE

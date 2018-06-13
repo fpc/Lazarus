@@ -25,6 +25,8 @@ interface
 
 uses
   Classes, SysUtils, TypInfo, Laz_AVL_Tree,
+  // LazUtils
+  LazLoggerBase, LazUtilities,
   // LCL
   LCLProc, Dialogs, Controls, ComCtrls, Graphics,
   // IdeIntf

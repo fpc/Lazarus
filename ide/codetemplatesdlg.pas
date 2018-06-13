@@ -31,9 +31,12 @@ unit CodeTemplatesDlg;
 interface
 
 uses
-  Classes, SysUtils, RegExpr, LCLProc, Forms, Controls, Dialogs,
-  ClipBrd, StdCtrls, ExtCtrls, Menus, FileUtil, LazFileUtils, lazutf8classes,
+  Classes, SysUtils, RegExpr,
+  // LCL
+  LCLProc, Forms, Controls, Dialogs, ClipBrd, StdCtrls, ExtCtrls, Menus,
   ButtonPanel, EditBtn,
+  // LazUtils
+  FileUtil, LazFileUtils, LazUTF8Classes, LazLoggerBase,
   // synedit
   SynEdit, SynHighlighterPas, SynEditAutoComplete,
   // codetools

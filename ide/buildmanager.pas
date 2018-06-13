@@ -37,7 +37,7 @@ uses
   // RTL + FCL
   Classes, SysUtils, Laz_AVL_Tree,
   // LCL
-  InterfaceBase, LCLPlatformDef, LCLProc, Dialogs, Forms, Controls,
+  InterfaceBase, LCLPlatformDef, Dialogs, Forms, Controls,
   // CodeTools
   ExprEval, BasicCodeTools, CodeToolManager, DefineTemplates, CodeCache,
   FileProcs, CodeToolsCfgScript, LinkScanner,

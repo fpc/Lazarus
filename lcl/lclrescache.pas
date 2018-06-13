@@ -21,9 +21,9 @@ interface
 uses
   Classes, SysUtils, Types, Laz_AVL_Tree,
   // LazUtils
-  FPCAdds,
+  FPCAdds, LazLoggerBase,
   // LCL
-  LCLType, LCLProc, WSReferences,
+  LCLType, WSReferences,
   syncobjs; // This FCL unit must be in the end.
   
 {off $DEFINE CheckResCacheConsistency}

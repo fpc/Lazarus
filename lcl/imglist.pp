@@ -47,9 +47,9 @@ interface
 uses
   // RTL + FCL
   Types, math, SysUtils, Classes, FPReadBMP, FPimage, FPImgCanv, FPCanvas,
-  Contnrs, zstream,
+  Contnrs, zstream, Laz_AVL_Tree,
   // LazUtils
-  FPCAdds, Laz_AVL_Tree, AvgLvlTree,
+  FPCAdds, LazLoggerBase, LazUtilities, AvgLvlTree,
   // LCL
   LCLStrConsts, LCLIntf, LResources, LCLType, LCLProc, Graphics, GraphType,
   LCLClasses, IntfGraphics,

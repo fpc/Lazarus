@@ -44,9 +44,9 @@ interface
 uses
   Classes, SysUtils, Laz_AVL_Tree,
   // LCL
-  InterfaceBase, Forms, Controls, LCLProc,
+  InterfaceBase, Forms, Controls,
   // LazUtils
-  FileUtil, LazFileUtils, LazUTF8, Laz2_XMLCfg, Laz2_DOM, LazUtilities,
+  FileUtil, LazFileUtils, LazUTF8, Laz2_XMLCfg, Laz2_DOM, LazUtilities, LazLoggerBase,
   // CodeTools
   FileProcs, DefineTemplates, CodeToolsCfgScript, CodeToolManager,
   KeywordFuncLists, BasicCodeTools, LinkScanner,

@@ -30,10 +30,12 @@ unit DBCtrls;
 interface          
 
 uses
-  Types, Classes, SysUtils, DB,
-  LCLStrConsts, LCLProc, LMessages, LCLType, LResources, GraphType,
-  Controls, Graphics, Dialogs, StdCtrls, Buttons, MaskEdit, ExtCtrls,
-  Calendar, Variants, ImgList;
+  Types, Classes, SysUtils, DB, Variants,
+  // LazUtils
+  LazLoggerBase, LazUtilities,
+  // LCL
+  LCLStrConsts, LMessages, LCLType, LResources, GraphType, Controls, Graphics,
+  Dialogs, StdCtrls, Buttons, MaskEdit, ExtCtrls, Calendar, ImgList;
 
 Type
   { TFieldDataLink }

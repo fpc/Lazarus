@@ -5,8 +5,11 @@ unit MenuEditor;
 interface
 
 uses
-  // FCL + LCL
+  // FCL
   Classes, SysUtils, Types, typinfo,
+  // LazUtils
+  LazLogger,
+  // LCL
   ActnList, Controls, Dialogs, StdCtrls, ExtCtrls, Menus,
   Forms, Graphics, ImgList, Themes, LCLType, LCLIntf, LCLProc,
   // IdeIntf

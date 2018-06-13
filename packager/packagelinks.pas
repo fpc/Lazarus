@@ -41,10 +41,10 @@ interface
 uses
   Classes, SysUtils, Laz_AVL_Tree,
   // LCL
-  Forms, LCLProc,
+  Forms,
   // LazUtils
   Laz2_XMLCfg, LazFileCache, LazUTF8Classes, LazFileUtils, FileUtil,
-  LazUtilities, AvgLvlTree,
+  LazLoggerBase, LazUtilities, AvgLvlTree,
   // Codetools
   FileProcs, CodeToolManager,
   // IdeIntf

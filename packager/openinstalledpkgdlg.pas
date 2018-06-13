@@ -32,9 +32,15 @@ interface
 
 uses
   SysUtils,
-  Forms, Controls, ComCtrls, StdCtrls, ExtCtrls, LCLType, LCLProc, ButtonPanel,
+  // LCL
+  Forms, Controls, ComCtrls, StdCtrls, ExtCtrls, LCLType, ButtonPanel,
+  // LazUtils
+  LazUtilities,
+  // LazControls
   ListViewFilterEdit,
+  // IdeIntf
   IDEHelpIntf, IDEWindowIntf, PackageIntf,
+  // IDE
   PackageDefs, LazarusIDEStrConsts, PackageSystem;
 
 type

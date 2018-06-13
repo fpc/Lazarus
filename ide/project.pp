@@ -55,7 +55,7 @@ uses
   LinkScanner, CodeToolManager, CodeCache, FileProcs,
   // LazUtils
   FPCAdds, LazUtilities, FileUtil, LazFileUtils, LazFileCache, LazMethodList,
-  LazUTF8, Laz2_XMLCfg, Maps,
+  LazLoggerBase, LazUTF8, Laz2_XMLCfg, Maps,
   // IDEIntf
   PropEdits, UnitResources, EditorSyntaxHighlighterDef,
   CompOptsIntf, ProjectIntf, MacroIntf, MacroDefIntf, SrcEditorIntf,

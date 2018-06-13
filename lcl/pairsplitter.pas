@@ -30,8 +30,11 @@ interface
 
 uses
   Types, Classes, SysUtils,
-  LCLType, LCLProc, LMessages, Graphics, GraphType, LCLIntf, Controls, ExtCtrls;
-  
+  // LazUtils
+  LazLoggerBase,
+  // LCL
+  LCLType, LCLIntf, LMessages, Graphics, Controls, ExtCtrls;
+
 type
   TCustomPairSplitter = class;
 

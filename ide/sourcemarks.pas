@@ -40,9 +40,9 @@ interface
 uses
   Classes, SysUtils, Laz_AVL_Tree,
   // LCL
-  Graphics, Controls, LCLProc,
+  Graphics, Controls,
   // LazUtils
-  LazMethodList,
+  LazMethodList, LazLoggerBase, LazUtilities,
   // SynEdit
   SynEdit, SynEditMarks, SynEditMarkupGutterMark,
   // IdeIntf

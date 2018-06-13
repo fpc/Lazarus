@@ -24,8 +24,10 @@ uses
   // RTL
   glib2,  gdk2, gtk2,
   Classes, SysUtils, Math,
+  // LazUtils
+  LazLoggerBase,
   // LCL
-  Controls, Graphics, StdCtrls, LMessages, LCLType, LCLProc, LazUtf8Classes, LazUTF8,
+  Controls, Graphics, StdCtrls, LMessages, LCLType, LazUtf8Classes, LazUTF8,
   // Widgetset
   WSControls, WSProc, WSStdCtrls, Gtk2Int, Gtk2Def,
   Gtk2CellRenderer, Gtk2Globals, Gtk2Proc, InterfaceBase,

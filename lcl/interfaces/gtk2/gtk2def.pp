@@ -28,7 +28,7 @@ uses
   // RTL
   Classes, SysUtils, glib2, gdk2pixbuf, pango, gdk2, gtk2,
   // LazUtils
-  DynHashArray,
+  DynHashArray, LazLoggerBase,
   // LCL
   Gtk2Extra,
   LCLIntf, LCLProc, LCLType, LCLMemManager,

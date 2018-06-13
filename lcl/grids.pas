@@ -36,11 +36,11 @@ uses
   // RTL + FCL
   Classes, SysUtils, Types, TypInfo, Math, FPCanvas,
   // LCL
-  LCLStrConsts, LCLProc, LCLType, LCLIntf, Controls, Graphics, Forms,
+  LCLStrConsts, LCLType, LCLIntf, Controls, Graphics, Forms,
   LMessages, StdCtrls, LResources, MaskEdit, Buttons, Clipbrd, Themes, imglist,
   // LazUtils
   LazFileUtils, DynamicArray, Maps, LazUTF8, LazUtf8Classes, Laz2_XMLCfg,
-  LCSVUtils, IntegerList
+  LazLoggerBase, LazUtilities, LCSVUtils, IntegerList
 {$ifdef WINDOWS}
   ,messages
 {$endif}

@@ -42,7 +42,8 @@ uses
 ////////////////////////////////////////////////////
   Menus, Graphics,
 ////////////////////////////////////////////////////
-  WSLCLClasses, LCLType, LCLProc, WSFactory;
+  WSLCLClasses, LCLType, WSFactory,
+  LazUtilities, LazLogger;
 
 type
   { TWSMenuItem }

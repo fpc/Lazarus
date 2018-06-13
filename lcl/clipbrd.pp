@@ -119,9 +119,9 @@ interface
 uses
   Classes, SysUtils, fasthtmlparser,
   // LCL
-  LCLproc, LCLType, LCLIntf, LResources, Graphics,
+  LCLType, LCLIntf, LResources, Graphics,
   // LazUtils
-  FPCAdds, LazUTF8;
+  FPCAdds, LazUTF8, LazLoggerBase;
 
 { for delphi compatibility:
 

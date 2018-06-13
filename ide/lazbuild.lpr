@@ -30,15 +30,16 @@ uses
   {$ENDIF}
   Classes, SysUtils, math, CustApp,
   Interfaces, // this includes the NoGUI widgetset
+  // LazUtils
+  Masks, LConvEncoding, FileUtil, LazFileUtils, LazLoggerBase, LazUtilities,
+  LazUTF8, Laz2_XMLCfg,
   // LCL
-  LCLPlatformDef, LCLProc, Controls, Dialogs, Forms,
+  LCLPlatformDef, Controls, Dialogs, Forms,
   // Codetools
   CodeCache, CodeToolManager, DefineTemplates, FileProcs,
   // IDEIntf
   MacroIntf, PackageIntf, IDEDialogs, ProjectIntf, IDEExternToolIntf,
   CompOptsIntf, IDEOptionsIntf, LazIDEIntf, PackageDependencyIntf,
-  // LazUtils
-  Masks, LConvEncoding, Laz2_XMLCfg, FileUtil, LazFileUtils, LazUtilities, LazUTF8,
   // IDE
   IDEProcs, InitialSetupProc, ExtTools, CompilerOptions,
   ApplicationBundle, TransferMacros, EnvironmentOpts, IDETranslations,

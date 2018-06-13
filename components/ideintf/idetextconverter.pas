@@ -25,7 +25,7 @@ uses
   // LCL
   LCLProc, Controls, Forms,
   // LazUtils
-  FileUtil, LazFileUtils, LazUTF8, LazUTF8Classes,
+  FileUtil, LazFileUtils, LazUTF8, LazUTF8Classes, LazLoggerBase,
   // IdeIntf
   SrcEditorIntf, PropEdits, ObjInspStrConsts;
   

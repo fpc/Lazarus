@@ -34,10 +34,11 @@ interface
 uses
   Classes, SysUtils, typinfo, math, fpjson, Laz_AVL_Tree,
   // LCL
-  Controls, Forms, Dialogs, LCLIntf, LCLType, LCLProc, LclStrConsts,
+  Controls, Forms, Dialogs, LCLIntf, LCLType, LclStrConsts,
   LResources, LCLMemManager,
   // LazUtils
-  LConvEncoding, LazFileCache, FileUtil, LazFileUtils, LazUTF8, AvgLvlTree,
+  LConvEncoding, LazFileCache, FileUtil, LazFileUtils, LazLoggerBase, LazUtilities,
+  LazUTF8, AvgLvlTree,
   // Codetools
   BasicCodeTools, CodeToolsStructs, CodeToolManager, FileProcs, DefineTemplates,
   CodeCache, CodeTree, FindDeclarationTool, KeywordFuncLists,
