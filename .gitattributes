@@ -2528,6 +2528,10 @@ components/lazdebuggergdbmi/test/testexception.pas svneol=native#text/pascal
 components/lazdebuggergdbmi/test/testgdbtype.pas svneol=native#text/pascal
 components/lazdebuggergdbmi/test/testinstructionqueue.pas svneol=native#text/pascal
 components/lazdebuggergdbmi/test/testwatches.pas svneol=native#text/pascal
+components/lazdebuggers/cmdlinedebuggerbase/cmdlinedebuggerbase.lpk svneol=native#text/plain
+components/lazdebuggers/cmdlinedebuggerbase/cmdlinedebuggerbase.pas svneol=native#text/plain
+components/lazdebuggers/cmdlinedebuggerbase/debuginstructions.pas svneol=native#text/plain
+components/lazdebuggers/cmdlinedebuggerbase/debugprocess.pas svneol=native#text/plain
 components/lazdebuggers/lazdebuggerfp/fpdebugdebugger.pas svneol=native#text/plain
 components/lazdebuggers/lazdebuggerfp/lazdebuggerfp.lpk svneol=native#text/plain
 components/lazdebuggers/lazdebuggerfp/lazdebuggerfp.pas svneol=native#text/plain
@@ -2548,6 +2552,11 @@ components/lazdebuggers/lazdebuggerfpgdbmi/test/TestFpGdbmi.lpr svneol=native#te
 components/lazdebuggers/lazdebuggerfpgdbmi/test/fpclist.txt.sample svneol=native#text/plain
 components/lazdebuggers/lazdebuggerfpgdbmi/test/gdblist.txt.sample svneol=native#text/plain
 components/lazdebuggers/lazdebuggerfpgdbmi/test/testwatches.pas svneol=native#text/pascal
+components/lazdebuggers/lazdebuggerlldb/lazdebuggerlldb.lpk svneol=native#text/plain
+components/lazdebuggers/lazdebuggerlldb/lazdebuggerlldb.pas svneol=native#text/plain
+components/lazdebuggers/lazdebuggerlldb/lldbdebugger.pas svneol=native#text/plain
+components/lazdebuggers/lazdebuggerlldb/lldbhelper.pas svneol=native#text/plain
+components/lazdebuggers/lazdebuggerlldb/lldbinstructions.pas svneol=native#text/plain
 components/lazreport/doc/contributors.txt svneol=native#text/plain
 components/lazreport/doc/fr_eng.odt -text
 components/lazreport/doc/fr_eng.pdf -text
