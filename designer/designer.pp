@@ -760,7 +760,7 @@ begin
 
   if EnvironmentOptions.CreateComponentFocusNameProperty then
     // ask user for name
-    NewComponent.Name:=ShowComponentNameDialog(LookupRoot,NewComponent);
+    ShowComponentNameDialog(LookupRoot,NewComponent);
 
   // tell IDE about the new component (e.g. add it to the source)
   NotifyPersistentAdded(NewComponent);
@@ -2782,7 +2782,7 @@ var
   Command: word;
   Handled: boolean;
   Current: TComponent;
-  NewName: String;
+  NameRes: TAskCompNameDialogResult;
   UTF8Char: TUTF8Char;
 
   procedure Nudge(x, y: integer);
@@ -2875,12 +2875,13 @@ begin
       VK_F2:
         if (Selection.Count=1) and Selection[0].IsTComponent then begin
           Current := TComponent(Selection[0].Persistent);
-          NewName := ShowComponentNameDialog(LookupRoot, Current);
-          if NewName <> Current.Name then begin
-            Current.Name:=NewName;
+          NameRes := ShowComponentNameDialog(LookupRoot, Current);
+          if NameRes.NameChanged then
             GlobalDesignHook.ComponentRenamed(Current);
+          if NameRes.TextChanged then
+            GlobalDesignHook.Modified(Current, NameRes.TextPropertyName);
+          if NameRes.Changed then
             Modified;
-          end;
         end; // don't forget the semicolon before else !!!
 
       else

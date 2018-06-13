@@ -21,12 +21,14 @@
 unit AskCompNameDlg;
 
 {$mode objfpc}{$H+}
+{$modeswitch advancedrecords}
 
 interface
 
 uses
   Classes, SysUtils, LCLProc, FileUtil, Forms, Controls, Graphics,
-  Dialogs, StdCtrls, ButtonPanel, ExtCtrls, PropEdits, LazarusIDEStrConsts;
+  Dialogs, StdCtrls, ButtonPanel, ExtCtrls, PropEdits, LazarusIDEStrConsts,
+  TypInfo;
 
 type
 
@@ -34,54 +36,176 @@ type
 
   TAskCompNameDialog = class(TForm)
     ButtonPanel1: TButtonPanel;
+    TextMemo: TMemo;
     InfoPanel: TPanel;
+    TextLabel: TLabel;
     NameEdit: TEdit;
-    Label1: TLabel;
+    NameLabel: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure NameEditChange(Sender: TObject);
   private
     FLookupRoot: TComponent;
     FNewComponent: TComponent;
+    FNewTextPropertyName: string;
+    function GetNewText: string;
+    function GetNewTextEnabled: Boolean;
     function GetNewName: TComponentName;
-    procedure SetNewName(const AValue: TComponentName);
+    procedure SetNewComponent(const ANewComponent: TComponent);
   public
     function IsValidName(AName: TComponentName; out ErrorMsg: string): boolean;
     property LookupRoot: TComponent read FLookupRoot write FLookupRoot;
-    property NewName: TComponentName read GetNewName write SetNewName;
-    property NewComponent: TComponent read FNewComponent write FNewComponent;
-  end; 
+    property NewName: TComponentName read GetNewName;
+    property NewText: string read GetNewText;
+    property NewTextPropertyName: string read FNewTextPropertyName;
+    property NewTextEnabled: Boolean read GetNewTextEnabled;
+    property NewComponent: TComponent read FNewComponent write SetNewComponent;
+  end;
 
-function ShowComponentNameDialog(ALookupRoot: TComponent; ANewComponent: TComponent): string;
+  TAskCompNameDialogResult = record
+    NameChanged: Boolean;
+    TextChanged: Boolean;
+    TextPropertyName: string;
+
+    function Changed: Boolean;
+  end;
+
+function ShowComponentNameDialog(ALookupRoot: TComponent; ANewComponent: TComponent): TAskCompNameDialogResult;
 
 implementation
 
 {$R *.lfm}
 
-function ShowComponentNameDialog(ALookupRoot: TComponent; ANewComponent: TComponent): string;
+function TryGetComponentText(AComponent: TComponent; out AText, ATextPropertyName: string): Boolean;
+var
+  PInfo: PPropInfo;
+  Lines: TObject;
+const
+  StringProperties: array[0..0] of string = ('Caption');
+  TStringsProperties: array[0..2] of string = ('Lines', 'Items', 'SQL');
 begin
+  // first check simple string properties
+  for ATextPropertyName in StringProperties do
+  begin
+    PInfo := GetPropInfo(AComponent, ATextPropertyName);
+    Result := (PInfo<>nil) and (PInfo^.SetProc<>nil) and (PInfo^.PropType^.Kind in [tkSString,tkLString,tkAString,tkWString]);
+    if Result then
+    begin
+      AText := GetPropValue(AComponent, PInfo, True);
+      Exit;
+    end;
+  end;
+
+  // then check TStrings properties
+  for ATextPropertyName in TStringsProperties do
+  begin
+    PInfo := GetPropInfo(AComponent, ATextPropertyName);
+    Result := (PInfo<>nil) and (PInfo^.SetProc<>nil) and (PInfo^.PropType^.Kind in [tkClass]);
+    if Result then
+    begin
+      Lines := GetObjectProp(AComponent, PInfo);
+      Result := Lines is TStrings;
+      if Result then
+      begin
+        AText := TStrings(Lines).Text;
+        Exit;
+      end;
+    end;
+  end;
+
+  // add more properties here
+
+  ATextPropertyName := '';
+  AText := '';
+end;
+
+procedure SetComponentText(AComponent: TComponent; AText, ATextPropertyName: string);
+var
+  PInfo: PPropInfo;
+  Obj: TObject;
+  StrL: TStringList;
+begin
+  PInfo := GetPropInfo(AComponent, ATextPropertyName);
+  case PInfo^.PropType^.Kind of
+    tkSString,tkLString,tkAString,tkWString: SetPropValue(AComponent, PInfo, AText);
+    tkClass:
+    begin
+      Obj := GetObjectProp(AComponent, PInfo);
+      if Obj is TStrings then
+      begin
+        StrL := TStringList.Create;
+        try
+          StrL.Text := AText;
+          SetObjectProp(AComponent, PInfo, StrL);
+        finally
+          StrL.Free;
+        end;
+      end else
+        raise Exception.CreateFmt('Unhandled object %s', [Obj.ClassName]);
+    end;
+  else
+    raise Exception.CreateFmt('Unhandled property type %d', [PInfo^.PropType^.Kind]);
+  end;
+end;
+
+function ShowComponentNameDialog(ALookupRoot: TComponent; ANewComponent: TComponent): TAskCompNameDialogResult;
+var
+  OldName: TComponentName;
+  OldText: string;
+begin
+  Result := Default(TAskCompNameDialogResult);
   with TAskCompNameDialog.Create(nil) do
   try
     LookupRoot:=ALookupRoot;
     NewComponent:=ANewComponent;
-    NewName:=NewComponent.Name;
-    Result:=NewComponent.Name; // Default name is the component's current name.
+    OldName := NewName;
+    OldText := NewText;
     if ShowModal=mrOk then
-      Result:=NewName;
+    begin
+      if OldName<>NewName then
+      begin
+        Result.NameChanged := True;
+        ANewComponent.Name := NewName;
+      end;
+      if NewTextEnabled and (OldText<>NewText) then
+      begin
+        Result.TextChanged := True;
+        Result.TextPropertyName := NewTextPropertyName;
+        SetComponentText(ANewComponent, NewText, NewTextPropertyName);
+      end;
+    end;
   finally
     Free;
   end;
+end;
+
+{ TAskCompNameDialogResult }
+
+function TAskCompNameDialogResult.Changed: Boolean;
+begin
+  Result := NameChanged or TextChanged;
 end;
 
 { TAskCompNameDialog }
 
 procedure TAskCompNameDialog.FormCreate(Sender: TObject);
 begin
-  Caption:=lisChooseName;
-  Label1.Caption:=lisChooseANameForTheComponent;
+  Caption:=lisChooseNameAndText;
+  NameLabel.Caption:=lisChooseANameForTheComponent;
   NameEdit.Hint:=lisTheComponentNameMustBeUniqueInAllComponentsOnTheFo;
+  TextLabel.Caption:=lisMenuEditorCaption;
   ButtonPanel1.OKButton.Caption:=lisOk;
   ButtonPanel1.CancelButton.Caption:=lisCancel;
   ButtonPanel1.OKButton.Enabled:=false;
+end;
+
+function TAskCompNameDialog.GetNewText: string;
+begin
+  Result := TextMemo.Text;
+end;
+
+function TAskCompNameDialog.GetNewTextEnabled: Boolean;
+begin
+  Result := TextMemo.Enabled;
 end;
 
 procedure TAskCompNameDialog.NameEditChange(Sender: TObject);
@@ -100,10 +224,22 @@ begin
   Result:=NameEdit.Text;
 end;
 
-procedure TAskCompNameDialog.SetNewName(const AValue: TComponentName);
+procedure TAskCompNameDialog.SetNewComponent(const ANewComponent: TComponent);
+var
+  ReadText: string;
 begin
-  NameEdit.Text:=AValue;
+  if FNewComponent = ANewComponent then Exit;
+  FNewComponent := ANewComponent;
+  NameEdit.Text := FNewComponent.Name;
   NameEditChange(nil);
+  TextMemo.Enabled := TryGetComponentText(FNewComponent, ReadText, FNewTextPropertyName);
+  TextLabel.Enabled := TextMemo.Enabled;
+  if TextMemo.Enabled then
+  begin
+    TextMemo.Text := ReadText;
+    TextLabel.Caption:=FNewTextPropertyName;
+  end else
+    TextMemo.Text := '';
 end;
 
 function TAskCompNameDialog.IsValidName(AName: TComponentName; out

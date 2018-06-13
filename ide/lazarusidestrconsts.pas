@@ -5864,7 +5864,7 @@ resourcestring
   lisTheOwnerHasThisName = 'The owner has this name';
   lisTheOwnerClassHasThisName = 'The owner class has this name';
   lisTheUnitHasThisName = 'The unit has this name';
-  lisChooseName = 'Choose name';
+  lisChooseNameAndText = 'Choose name and text';
   lisTheComponentNameMustBeUniqueInAllComponentsOnTheFo = 'The component name '
     +'must be unique in all components on the form/datamodule.The name is '
     +'compared case insensitive like a normal Pascal identifier.';
