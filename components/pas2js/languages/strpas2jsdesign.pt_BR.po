@@ -12,71 +12,66 @@ msgstr ""
 "X-Generator: Poedit 1.8.13\n"
 
 #: strpas2jsdesign.pjsdnodejsappdescription
-#, fuzzy
 msgctxt "strpas2jsdesign.pjsdnodejsappdescription"
 msgid "A pas2js program running in node.js"
 msgstr "Um programa pas2js executando em node.js"
 
 #: strpas2jsdesign.pjsdnodejsapplication
-#, fuzzy
 msgctxt "strpas2jsdesign.pjsdnodejsapplication"
 msgid "Node.js Application"
 msgstr "Aplicação Node.js"
 
 #: strpas2jsdesign.pjsdwebappdescription
-#, fuzzy
 msgctxt "strpas2jsdesign.pjsdwebappdescription"
 msgid "A pas2js program running in the browser"
 msgstr "Um programa pas2js executando no navegador"
 
 #: strpas2jsdesign.pjsdwebapplication
-#, fuzzy
-#| msgid "Web Application"
 msgctxt "strpas2jsdesign.pjsdwebapplication"
 msgid "Web Browser Application"
-msgstr "Aplicação Web"
+msgstr "Aplicação navegador web"
 
 #: strpas2jsdesign.spasjswebserverscaption
 msgid "Pas2JS WebServers"
-msgstr ""
+msgstr "Pas2JS WebServers"
 
 #: strpas2jsdesign.sstatuserror
 msgid "Error starting"
-msgstr ""
+msgstr "Erro ao iniciar"
 
 #: strpas2jsdesign.sstatusrunning
 msgid "Running"
-msgstr ""
+msgstr "Executando"
 
 #: strpas2jsdesign.sstatusstopped
 msgid "Stopped"
-msgstr ""
+msgstr "Parado"
 
 #: strpas2jsdesign.swebserversbasedir
 msgid "Root directory"
-msgstr ""
+msgstr "Diretório raiz"
 
 #: strpas2jsdesign.swebserverscaption
 msgid "Web server processes"
-msgstr ""
+msgstr "Processos servidores web"
 
 #: strpas2jsdesign.swebserverscount
 msgid "Number of webserver processes:"
-msgstr ""
+msgstr "Número de processos servidores web:"
 
 #: strpas2jsdesign.swebserversextra
 msgid "Additional info"
-msgstr ""
+msgstr "Info adicional"
 
 #: strpas2jsdesign.swebserversport
 msgid "Port"
-msgstr ""
+msgstr "Porta"
 
 #: strpas2jsdesign.swebserversproject
 msgid "Project"
-msgstr ""
+msgstr "Projeto"
 
 #: strpas2jsdesign.swebserversstatus
 msgid "Status"
-msgstr ""
+msgstr "Estado"
 

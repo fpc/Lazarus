@@ -476,7 +476,7 @@ msgstr "FRAC(<Valor>)/Retorna a parte fracionária do <Valor> de ponto flutuante
 
 #: lr_const.sdescriptionif
 msgid "IF(<expression>, <Value1>, <Value2>)/Returns <Value1>, if <expression> is true; otherwise returns <Value2>."
-msgstr ""
+msgstr "IF(<expressão>, <Valor1>, <Valor2>)/Retorna <Valor1>, se <expressão> for verdadeira; caso contrário retorna <Valor2>."
 
 #: lr_const.sdescriptioninc
 msgid "INC(<Value>)/Increment <Value>."

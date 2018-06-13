@@ -738,8 +738,10 @@ msgid "Press a key ..."
 msgstr "Pressione uma tecla ..."
 
 #: objinspstrconsts.oispressakeyegctrlp
+#, fuzzy
+#| msgid "Press a key, e.g. Ctrl+P ..."
 msgid "You can press e.g. Ctrl+P ..."
-msgstr ""
+msgstr "Pressione uma tecla, ex. Ctrl+P ..."
 
 #: objinspstrconsts.oisproperties
 msgid "Properties"
@@ -1315,11 +1317,11 @@ msgstr "&Adicionar ..."
 
 #: objinspstrconsts.sccsiledtaddmoreresolutions
 msgid "Add more resolutions ..."
-msgstr ""
+msgstr "Adicionar mais resoluções ..."
 
 #: objinspstrconsts.sccsiledtaddnewresolution
 msgid "New resolution ..."
-msgstr ""
+msgstr "Nova resolução ..."
 
 #: objinspstrconsts.sccsiledtadjustment
 msgid "Adjustment"
@@ -1332,7 +1334,7 @@ msgstr "&Aplicar"
 
 #: objinspstrconsts.sccsiledtcannotdeleteresolution
 msgid "Cannot delete default resolution."
-msgstr ""
+msgstr "Incapaz de excluir a resolução padrão."
 
 #: objinspstrconsts.sccsiledtcaption
 msgid "ImageList Editor"
@@ -1358,11 +1360,11 @@ msgstr "&Excluir"
 
 #: objinspstrconsts.sccsiledtdeleteresolution
 msgid "Delete resolution ..."
-msgstr ""
+msgstr "Excluir resolução ..."
 
 #: objinspstrconsts.sccsiledtdeleteresolutionconfirmation
 msgid "Select the resolution to delete."
-msgstr ""
+msgstr "Selecionar a resolução para exclusão."
 
 #: objinspstrconsts.sccsiledtgrplcaption
 msgid "Images"
@@ -1374,7 +1376,7 @@ msgstr "Imagem Selecionada"
 
 #: objinspstrconsts.sccsiledtimagewidthofnewresolution
 msgid "Image width of the new resolution:"
-msgstr ""
+msgstr "Largura da imagem da nova resolução:"
 
 #: objinspstrconsts.sccsiledtmovedown
 msgctxt "objinspstrconsts.sccsiledtmovedown"
@@ -1408,7 +1410,7 @@ msgstr "S&ubstituir"
 
 #: objinspstrconsts.sccsiledtreplaceallresolutions
 msgid "Replace all resolutions ..."
-msgstr ""
+msgstr "Substituir todas as resoluções ..."
 
 #: objinspstrconsts.sccsiledtsave
 msgctxt "objinspstrconsts.sccsiledtsave"

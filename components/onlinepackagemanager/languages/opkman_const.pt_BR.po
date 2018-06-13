@@ -627,11 +627,11 @@ msgstr "Descendente"
 
 #: opkman_const.rsmainfrm_mifromexternalsource
 msgid "From external source"
-msgstr ""
+msgstr "De fonte externa"
 
 #: opkman_const.rsmainfrm_mifromrepository
 msgid "From repository"
-msgstr ""
+msgstr "Do repositório"
 
 #: opkman_const.rsmainfrm_mijsonhide
 msgid "Hide JSON"
@@ -647,10 +647,9 @@ msgstr "Classificar"
 
 #: opkman_const.rsmainfrm_miload
 msgid "Load packages"
-msgstr ""
+msgstr "Carregar pacotes"
 
 #: opkman_const.rsmainfrm_miloadinstalled
-#, fuzzy
 msgctxt "opkman_const.rsmainfrm_miloadinstalled"
 msgid "Installed"
 msgstr "Instalado"
@@ -661,11 +660,11 @@ msgstr "Redefinir avaliação"
 
 #: opkman_const.rsmainfrm_misave
 msgid "Save packages"
-msgstr ""
+msgstr "Salvar pacotes"
 
 #: opkman_const.rsmainfrm_misavechecked
 msgid "Checked"
-msgstr ""
+msgstr "Verificado"
 
 #: opkman_const.rsmainfrm_misavetofile
 msgid "Save to file"
@@ -684,28 +683,20 @@ msgid "A package with the same name already exists!"
 msgstr "Um pacote com o mesmo nome já existe!"
 
 #: opkman_const.rsmainfrm_packageupdate0
-#, fuzzy
-#| msgid "The following repository packages are not installed or don't have a valid external download link. The packages will be skipped. Continue?"
 msgid "The following repository packages are not available externally. The packages will be skipped. Continue?"
-msgstr "Os seguintes repositórios de pacotes não estão instalados ou não têm um vínculo externo para baixar válido. Os pacotes serão ignorados. Continuar?"
+msgstr "Os seguintes repositórios de pacotes não estão disponíveis externamente. Os pacotes serão ignorados. Continuar?"
 
 #: opkman_const.rsmainfrm_packageupdate1
-#, fuzzy
-#| msgid "None of the checked repository packages is installed or has a valid external download link."
 msgid "None of the checked repository packages are available externally."
-msgstr "Nenhum dos repositórios de pacotes marcados estão instalados ou têm um vínculo externo para baixar válido."
+msgstr "Nenhum dos repositórios de pacotes marcados estão disponíveis externamente."
 
 #: opkman_const.rsmainfrm_packageupdatewarning
-#, fuzzy
-#| msgid ""
-#| "Updating packages from external link is not without a risk!\n"
-#| "Only update if you trust the package maintainer. Continue?\n"
 msgid ""
 "Installing packages from external link is not without a risk!\n"
 "Only install if you trust the package maintainer. Continue?\n"
 msgstr ""
 "Atualizar pacotes de um vínculo externo possui riscos!\n"
-"Apenas atualize se confiar no mantenedor do pacote. Continuar?\n"
+"Apenas instale se confiar no mantenedor do pacote. Continuar?\n"
 
 #: opkman_const.rsmainfrm_resmessagechecksloaded
 msgid "%s packages successfully loaded from file!"
@@ -757,7 +748,7 @@ msgstr "Favor marcar ao menos um pacote!"
 
 #: opkman_const.rsmainfrm_rsmessagenothinginstalled
 msgid "No packages are installed. Please install at least one package first."
-msgstr ""
+msgstr "Nenhum pacote está instalado. Favor instalar primeiro ao menos um pacote."
 
 #: opkman_const.rsmainfrm_rsmessageparsingjson
 msgid "Parsing JSON. Please wait..."
@@ -849,11 +840,9 @@ msgid "Install packages"
 msgstr "Instalar pacotes"
 
 #: opkman_const.rsmainfrm_tbopenrepo_caption
-#, fuzzy
-#| msgid "Open"
 msgctxt "opkman_const.rsmainfrm_tbopenrepo_caption"
 msgid "Local repo"
-msgstr "Abrir"
+msgstr "Repositório local"
 
 #: opkman_const.rsmainfrm_tbopenrepo_hint
 msgid "Open local repository"
@@ -929,11 +918,9 @@ msgid "Repository"
 msgstr "Repositório"
 
 #: opkman_const.rsmainfrm_vstheadercolumn_update
-#, fuzzy
-#| msgid "Update"
 msgctxt "opkman_const.rsmainfrm_vstheadercolumn_update"
 msgid "External"
-msgstr "Atualizar"
+msgstr "Externo"
 
 #: opkman_const.rsmainfrm_vsttext_author
 msgctxt "opkman_const.rsmainfrm_vsttext_author"
@@ -960,11 +947,9 @@ msgid "Description"
 msgstr "Descrição"
 
 #: opkman_const.rsmainfrm_vsttext_downloadurl
-#, fuzzy
-#| msgid "Update link (JSON)"
 msgctxt "opkman_const.rsmainfrm_vsttext_downloadurl"
 msgid "External link (JSON)"
-msgstr "Vínculo atualização (JSON)"
+msgstr "Vínculo externo (JSON)"
 
 #: opkman_const.rsmainfrm_vsttext_fpccompatibility
 msgctxt "opkman_const.rsmainfrm_vsttext_fpccompatibility"
@@ -1147,15 +1132,13 @@ msgid "Up to date"
 msgstr "Atualizado"
 
 #: opkman_const.rsmainfrm_vsttext_packagestate6
-#, fuzzy
-#| msgid "New updates available"
 msgctxt "opkman_const.rsmainfrm_vsttext_packagestate6"
 msgid "New version available"
-msgstr "Novas atualizações disponíveis"
+msgstr "Nova versão disponível"
 
 #: opkman_const.rsmainfrm_vsttext_packagestate7
 msgid "Ahead of OPM"
-msgstr ""
+msgstr "Além do GPO"
 
 #: opkman_const.rsmainfrm_vsttext_packagestatus
 msgid "Package status"

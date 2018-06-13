@@ -164,18 +164,14 @@ msgid "The GNU debugger through SSH allows to remote debug via a SSH connection.
 msgstr "O depurador GNU através de SSH permite depurar remotamente via conexão SSH. Veja docs/RemoteDebugginf.txt para detalhes. O caminho deve conter o cliente SSH. Use SSH_Startup_Options para o nome do servidor e nome de usuário opcional. Use Remote_GDB_Exe para o nome de arquivo do GDB no computador remoto."
 
 #: gdbmistringconstants.lisresponsecontinue
-#, fuzzy
-#| msgid "Response: %sContinue ?"
 msgid "Response: %sContinue?"
 msgstr "Resposta: %sContinuar ?"
 
 #: gdbmistringconstants.lissshdebuggertimeout
 msgid "Timeout has occurred:"
-msgstr ""
+msgstr "Tempo limite ocorreu:"
 
 #: gdbmistringconstants.lisunexpectedresultthedebuggerwillterminate
-#, fuzzy
-#| msgid "Unexpected result:%sThe debugger will terminate"
 msgid "Unexpected result:%sThe debugger will terminate."
 msgstr "Resultado inesperado:%sO depurador irá finalizar"
 

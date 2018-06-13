@@ -156,10 +156,8 @@ msgid "Highlight focused"
 msgstr "Realçar focados"
 
 #: anchordockstr.adrshighlightfocusedhint
-#, fuzzy
-#| msgid "Highlight focused docked controls"
 msgid "Highlight header of focused docked control"
-msgstr "Realçar controles ancorados focados"
+msgstr "Realçar cabeçalho do controles ancorado focado"
 
 #: anchordockstr.adrsleft
 msgid "left"

@@ -37,15 +37,11 @@ msgid "JSON document modified"
 msgstr "Documento JSON modificado"
 
 #: msgjsonviewer.sdocumentmodifiedaction
-#, fuzzy,badformat
-#| msgid ""
-#| "The JSON data was changed but not saved.\n"
-#| "What do want to do ?\n"
 msgid ""
 "The JSON data in \"%s\" was changed but not saved.\n"
 "What do want to do ?\n"
 msgstr ""
-"Os dados JSON foram alterados mas não salvos.\n"
+"Os dados JSON em \"%s\" foram alterados mas não salvos.\n"
 "O que deseja fazer ?\n"
 
 #: msgjsonviewer.sduplicatemembername
@@ -54,7 +50,7 @@ msgstr "Nome membro duplicado \"%s\"."
 
 #: msgjsonviewer.sefilenameneeded
 msgid "Filename needed for generated code"
-msgstr ""
+msgstr "Nome de arquivo necessário para código gerado"
 
 #: msgjsonviewer.selement
 msgid "Element nr. %d"
@@ -102,102 +98,100 @@ msgstr "Salvar as alterações"
 
 #: msgjsonviewer.stabcaptionraw
 msgid "Raw"
-msgstr ""
+msgstr "Bruto"
 
 #: msgjsonviewer.stabcaptionvisual
 msgid "Visual"
-msgstr ""
+msgstr "Visual"
 
 #: tauthenticationform.caption
 msgctxt "tauthenticationform.caption"
 msgid "HTTP Authentication"
-msgstr ""
+msgstr "Autenticação HTTP"
 
 #: tauthenticationform.lcbusername.caption
 msgctxt "tauthenticationform.lcbusername.caption"
 msgid "&Username"
-msgstr ""
+msgstr "Nome &usuário"
 
 #: tauthenticationform.lepassword.caption
 msgid "&Password"
-msgstr ""
+msgstr "&Senha"
 
 #: tcreatecodeform.caption
 msgctxt "tcreatecodeform.caption"
 msgid "Create pascal code"
-msgstr ""
+msgstr "Criar código pascal"
 
 #: tcreatecodeform.cgoptions.caption
 msgid "Other options"
-msgstr ""
+msgstr "Outras opções"
 
 #: tcreatecodeform.eextraunitnames.texthint
 msgid "Unit names, separated by commas"
-msgstr ""
+msgstr "Nomes de unidade, separadas por vírgulas"
 
 #: tcreatecodeform.leconstructorargslabel1.caption
 msgid "Constructor arguments"
-msgstr ""
+msgstr "Argumentos construtor"
 
 #: tcreatecodeform.lepropertytypesuffix.caption
 msgid "Property type suffix"
-msgstr ""
+msgstr "Sufixo tipo de propriedade"
 
 #: tcreatecodeform.leunitname.caption
 msgid "Unit name"
-msgstr ""
+msgstr "Nome unidade"
 
 #: tcreatecodeform.leunitname1.caption
 msgid "Field Prefix"
-msgstr ""
+msgstr "Prefixo campo"
 
 #: tcreatecodeform.lextraunitnames.caption
 msgid "Extra units in uses"
-msgstr ""
+msgstr "Unidades extras no \"uses\""
 
 #: tcreatecodeform.lfecode.caption
 msgid "File"
-msgstr ""
+msgstr "Arquivo"
 
 #: tcreatecodeform.lparentname.caption
 msgid "Object Parent class"
-msgstr ""
+msgstr "Classe pai objeto"
 
 #: tcreatecodeform.lseindent.caption
 msgid "Indent"
-msgstr ""
+msgstr "Identar"
 
 #: tcreatecodeform.tscode.caption
 msgid "Preview"
-msgstr ""
+msgstr "Visualizar"
 
 #: tcreatecodeform.tsoptions.caption
 msgid "Options"
-msgstr ""
+msgstr "Opções"
 
 #: theaderform.caption
 msgid "Request header"
-msgstr ""
+msgstr "Cabeçalho requisição"
 
 #: theaderform.lcbname.caption
-#, fuzzy
 msgctxt "theaderform.lcbname.caption"
 msgid "&Name"
 msgstr "&Nome"
 
 #: theaderform.lcbvalue.caption
-#, fuzzy
 msgctxt "theaderform.lcbvalue.caption"
 msgid "&Value"
 msgstr "&Valor"
 
 #: tmainform.aaddtofavourites.caption
 msgid "Add request to favourites"
-msgstr ""
+msgstr "Adicionar requisição aos favoritos"
 
 #: tmainform.aclose.caption
 msgid "&Close"
-msgstr ""
+msgstr "&Fechar"
 
 #: tmainform.acopy.caption
 msgid "&Copy"
@@ -210,7 +204,7 @@ msgstr "Copiar nó selecionado para área transf. como JSON"
 #: tmainform.acreatecode.caption
 msgctxt "tmainform.acreatecode.caption"
 msgid "Create pascal code"
-msgstr ""
+msgstr "Criar código pascal"
 
 #: tmainform.acut.caption
 msgid "C&ut"
@@ -367,7 +361,7 @@ msgstr "&Editar"
 
 #: tmainform.mfavourites.caption
 msgid "Favourites"
-msgstr ""
+msgstr "Favoritos"
 
 #: tmainform.mfile.caption
 msgid "&File"
@@ -423,7 +417,7 @@ msgstr "TBJSON"
 
 #: tmainform.tbshowrest.caption
 msgid "Show &REST query"
-msgstr ""
+msgstr "Exibir pergunta &REST"
 
 #: tmainform.toolbutton1.caption
 msgid "ToolButton1"
@@ -479,85 +473,85 @@ msgstr "&Valor"
 #: trestframe.aaddheader.caption
 msgctxt "trestframe.aaddheader.caption"
 msgid "Add Header"
-msgstr ""
+msgstr "Adicionar cabeçalho"
 
 #: trestframe.aaddheader.hint
 msgctxt "trestframe.aaddheader.hint"
 msgid "Add Header"
-msgstr ""
+msgstr "Adicionar cabeçalho"
 
 #: trestframe.aaddtofavourites.caption
 msgid "Add to favourites..."
-msgstr ""
+msgstr "Adicionar aos favoritos..."
 
 #: trestframe.aauthentication.caption
 msgctxt "trestframe.aauthentication.caption"
 msgid "HTTP Basic authentication"
-msgstr ""
+msgstr "Autenticação básica HTTP"
 
 #: trestframe.aauthentication.hint
 msgctxt "trestframe.aauthentication.hint"
 msgid "HTTP Basic authentication"
-msgstr ""
+msgstr "Autenticação básica HTTP"
 
 #: trestframe.adeleteheader.caption
 msgctxt "trestframe.adeleteheader.caption"
 msgid "Delete Header"
-msgstr ""
+msgstr "Excluir cabeçalho"
 
 #: trestframe.adeleteheader.hint
 msgctxt "trestframe.adeleteheader.hint"
 msgid "Delete Header"
-msgstr ""
+msgstr "Excluir cabeçalho"
 
 #: trestframe.aeditheader.caption
 msgctxt "trestframe.aeditheader.caption"
 msgid "Edit Header"
-msgstr ""
+msgstr "Editar cabeçalho"
 
 #: trestframe.aeditheader.hint
 msgctxt "trestframe.aeditheader.hint"
 msgid "Edit Header"
-msgstr ""
+msgstr "Editar cabeçalho"
 
 #: trestframe.asend.caption
 msgid "&Send"
-msgstr ""
+msgstr "&Enviar"
 
 #: trestframe.asend.hint
 msgid "Send request"
-msgstr ""
+msgstr "Enviar requisição"
 
 #: trestframe.cbusecurrenttabcontent.caption
 msgctxt "trestframe.cbusecurrenttabcontent.caption"
 msgid "Use current tab as content"
-msgstr ""
+msgstr "Usar aba atual como conteúdo"
 
 #: trestframe.lhttpstatus.caption
 msgid "HTTP"
-msgstr ""
+msgstr "HTTP"
 
 #: trestframe.tsheaders.caption
 msgid "Request headers"
-msgstr ""
+msgstr "Cabeçalhos requisição"
 
 #: trestframe.tsrequestcontent.caption
 msgid "Request content"
-msgstr ""
+msgstr "Conteúdo requisição"
 
 #: trestframe.tsresult.caption
 msgid "Request result"
-msgstr ""
+msgstr "Resultado requisição"
 
 #: tsaverequestdataform.caption
 msgid "Save request data as favourite"
-msgstr ""
+msgstr "Salvar dados requisição como favorito"
 
 #: tsaverequestdataform.cbsavecontent.caption
 msgid "Save request content"
-msgstr ""
+msgstr "Salvar conteúdo requisição"
 
 #: tsaverequestdataform.label1.caption
 msgid "Name"
-msgstr ""
+msgstr "Nome"
 

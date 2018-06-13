@@ -12,50 +12,42 @@ msgstr ""
 "X-Generator: Poedit 1.8.13\n"
 
 #: virtualtrees.scannotsetuserdata
-#, fuzzy
 msgctxt "virtualtrees.scannotsetuserdata"
 msgid "Cannot set initial user data because there is not enough user data space allocated."
 msgstr "Impossível configurar dados de usuário iniciais porque não há espaço suficiente de dados de usuário alocado."
 
 #: virtualtrees.sclipboardfailed
-#, fuzzy
 msgctxt "virtualtrees.sclipboardfailed"
 msgid "Clipboard operation failed."
 msgstr "Operação área de transferência falhou."
 
 #: virtualtrees.scorruptstream1
-#, fuzzy
 msgctxt "virtualtrees.scorruptstream1"
 msgid "Stream data corrupt. A node's anchor chunk is missing."
-msgstr "Dados stream corrompidos. Um fragmento de âncora de nó está faltando."
+msgstr "Dados stream corrompidos. Um fragmento de nó âncora está faltando."
 
 #: virtualtrees.scorruptstream2
-#, fuzzy
 msgctxt "virtualtrees.scorruptstream2"
 msgid "Stream data corrupt. Unexpected data after node's end position."
-msgstr "Dados stream corrompidos. Dados inesperados após a posição final do nó."
+msgstr "Stream data corrupt. Unexpected data after node's end position."
 
 #: virtualtrees.sstreamtoosmall
-#, fuzzy
 msgctxt "virtualtrees.sstreamtoosmall"
 msgid "Unable to load tree structure, not enough data available."
 msgstr "Incapaz de carregar a estrutura de árvore, dados insuficientes disponíveis."
 
 #: virtualtrees.swrongmoveerror
-#, fuzzy
 msgctxt "virtualtrees.swrongmoveerror"
 msgid "Target node cannot be a child node of the node to be moved."
-msgstr "Nó alvo não pode ser um nó filho do nó a ser movido."
+msgstr "Target node cannot be a child node of the node to be moved."
 
 #: virtualtrees.swrongstreamformat
-#, fuzzy
 msgctxt "virtualtrees.swrongstreamformat"
 msgid "Unable to load tree structure, the format is wrong."
-msgstr "Incapaz de carregar a estrutura de árvore, formato errado."
+msgstr "Unable to load tree structure, the format is wrong."
 
 #: virtualtrees.swrongstreamversion
-#, fuzzy
 msgctxt "virtualtrees.swrongstreamversion"
 msgid "Unable to load tree structure, the version is unknown."
-msgstr "Incapaz de carregar a estrutura de árvore, versão desconhecida."
+msgstr "Unable to load tree structure, the version is unknown."
 
