@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-06-09 01:34+0300\n"
+"PO-Revision-Date: 2018-06-14 01:17+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -5822,9 +5822,9 @@ msgstr "Выберите каталог Lazarus"
 msgid "Choose \"make\" executable"
 msgstr "Выберите исполнимый файл \"Make\""
 
-#: lazarusidestrconsts.lischoosename
-msgid "Choose name"
-msgstr "Выберите имя"
+#: lazarusidestrconsts.lischoosenameandtext
+msgid "Choose name and text"
+msgstr "Выберите имя и текст"
 
 #: lazarusidestrconsts.lischooseoneoftheseitemstocreateanewfile
 msgid "Choose one of these items to create a new File"

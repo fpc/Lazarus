@@ -5907,9 +5907,9 @@ msgstr "Lazarus Dizini Seç"
 msgid "Choose \"make\" executable"
 msgstr "\" make \\ \"yürütülebilir"
 
-#: lazarusidestrconsts.lischoosename
-msgid "Choose name"
-msgstr "Adı seç"
+#: lazarusidestrconsts.lischoosenameandtext
+msgid "Choose name and text"
+msgstr ""
 
 #: lazarusidestrconsts.lischooseoneoftheseitemstocreateanewfile
 msgid "Choose one of these items to create a new File"

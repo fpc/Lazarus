@@ -5846,9 +5846,9 @@ msgstr "Виберіть теку Lazarus"
 msgid "Choose \"make\" executable"
 msgstr "Виберіть виконуваний файл \"make\""
 
-#: lazarusidestrconsts.lischoosename
-msgid "Choose name"
-msgstr "Виберіть назву"
+#: lazarusidestrconsts.lischoosenameandtext
+msgid "Choose name and text"
+msgstr ""
 
 #: lazarusidestrconsts.lischooseoneoftheseitemstocreateanewfile
 msgid "Choose one of these items to create a new File"

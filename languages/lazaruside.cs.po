@@ -5874,9 +5874,9 @@ msgstr "Vyberte adresář Lazarusu"
 msgid "Choose \"make\" executable"
 msgstr "Vybrat \"make\" spustitelné"
 
-#: lazarusidestrconsts.lischoosename
-msgid "Choose name"
-msgstr "Vyberte jméno"
+#: lazarusidestrconsts.lischoosenameandtext
+msgid "Choose name and text"
+msgstr ""
 
 #: lazarusidestrconsts.lischooseoneoftheseitemstocreateanewfile
 msgid "Choose one of these items to create a new File"

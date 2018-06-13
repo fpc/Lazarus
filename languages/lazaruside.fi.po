@@ -5823,9 +5823,9 @@ msgstr "Valitse Lazaruksen kansio"
 msgid "Choose \"make\" executable"
 msgstr "Valitse \"make\" ohjelma"
 
-#: lazarusidestrconsts.lischoosename
-msgid "Choose name"
-msgstr "Valitse nimi"
+#: lazarusidestrconsts.lischoosenameandtext
+msgid "Choose name and text"
+msgstr ""
 
 #: lazarusidestrconsts.lischooseoneoftheseitemstocreateanewfile
 msgid "Choose one of these items to create a new File"

@@ -5852,9 +5852,9 @@ msgstr "Válasszon Lazarus könyvtárat!"
 msgid "Choose \"make\" executable"
 msgstr "Válasszon \"make\" programot!"
 
-#: lazarusidestrconsts.lischoosename
-msgid "Choose name"
-msgstr "Válasszon nevet!"
+#: lazarusidestrconsts.lischoosenameandtext
+msgid "Choose name and text"
+msgstr ""
 
 #: lazarusidestrconsts.lischooseoneoftheseitemstocreateanewfile
 msgid "Choose one of these items to create a new File"

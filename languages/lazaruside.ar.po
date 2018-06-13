@@ -5831,8 +5831,8 @@ msgstr ""
 msgid "Choose \"make\" executable"
 msgstr ""
 
-#: lazarusidestrconsts.lischoosename
-msgid "Choose name"
+#: lazarusidestrconsts.lischoosenameandtext
+msgid "Choose name and text"
 msgstr ""
 
 #: lazarusidestrconsts.lischooseoneoftheseitemstocreateanewfile

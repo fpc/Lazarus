@@ -5865,9 +5865,9 @@ msgstr "Nurodykite Lazarus aplanką"
 msgid "Choose \"make\" executable"
 msgstr "Parinkite „make“ vykdomąjį failą"
 
-#: lazarusidestrconsts.lischoosename
-msgid "Choose name"
-msgstr "Suteikite pavadinimą"
+#: lazarusidestrconsts.lischoosenameandtext
+msgid "Choose name and text"
+msgstr ""
 
 #: lazarusidestrconsts.lischooseoneoftheseitemstocreateanewfile
 msgid "Choose one of these items to create a new File"

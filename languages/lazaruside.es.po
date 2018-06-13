@@ -5910,9 +5910,9 @@ msgstr "Escoja Directorio de Lazarus"
 msgid "Choose \"make\" executable"
 msgstr "Escoge ejecutable para \"make\""
 
-#: lazarusidestrconsts.lischoosename
-msgid "Choose name"
-msgstr "Escoja un nombre"
+#: lazarusidestrconsts.lischoosenameandtext
+msgid "Choose name and text"
+msgstr ""
 
 #: lazarusidestrconsts.lischooseoneoftheseitemstocreateanewfile
 msgid "Choose one of these items to create a new File"
