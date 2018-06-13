@@ -1090,8 +1090,8 @@ type
     procedure AdjustPosition(Column: TVirtualTreeColumn; Position: Cardinal);
     function CanSplitterResize(P: TPoint; Column: TColumnIndex): Boolean;
     procedure DoCanSplitterResize(P: TPoint; Column: TColumnIndex; var Allowed: Boolean); virtual;
-    procedure DrawButtonText(DC: HDC; Caption: String; Bounds: TRect; Enabled, Hot: Boolean; DrawFormat: Cardinal;
-      WrapCaption: Boolean);
+    procedure DrawButtonText(Canvas: TCanvas; Caption: String; Bounds: TRect; Enabled, Hot: Boolean; DrawFormat: Cardinal;
+      WrapCaption: Boolean); virtual;
     procedure FixPositions;
     function GetColumnAndBounds(const P: TPoint; var ColumnLeft, ColumnRight: Integer; Relative: Boolean = True): Integer;
     function GetOwner: TPersistent; override;
@@ -8043,15 +8043,18 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TVirtualTreeColumns.DrawButtonText(DC: HDC; Caption: String; Bounds: TRect; Enabled, Hot: Boolean;
-    DrawFormat: Cardinal; WrapCaption: Boolean);
+procedure TVirtualTreeColumns.DrawButtonText(Canvas: TCanvas; Caption: String;
+  Bounds: TRect; Enabled, Hot: Boolean; DrawFormat: Cardinal;
+  WrapCaption: Boolean);
 
 var
   TextSpace: Integer;
   TextColor: TColor;
   Size: TSize;
+  DC: HDC;
 
 begin
+  DC := Canvas.Handle;
   if not WrapCaption then
   begin
     // Do we need to shorten the caption due to limited space?
@@ -9284,7 +9287,7 @@ var
           else
             DrawHot := (IsHoverIndex and (hoHotTrack in FHeader.FOptions) and not(tsUseThemes in FHeader.Treeview.FStates));
           if not(hpeText in ActualElements) and (Length(Text) > 0) then
-            DrawButtonText(TargetCanvas.Handle, String(ColCaptionText), TextRectangle, IsEnabled, DrawHot, DrawFormat, WrapCaption);
+            DrawButtonText(TargetCanvas, String(ColCaptionText), TextRectangle, IsEnabled, DrawHot, DrawFormat, WrapCaption);
 
         // sort glyph
         if not (hpeSortGlyph in ActualElements) and ShowSortGlyph then
