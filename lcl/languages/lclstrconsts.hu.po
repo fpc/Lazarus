@@ -378,10 +378,6 @@ msgstr "'%s' nem szülője ennek: '%s'"
 msgid "Cream"
 msgstr "Krém"
 
-#: lclstrconsts.rscreatinggdbcatchableerror
-msgid "Creating gdb catchable error:"
-msgstr "GDB által feldolgozható hiba készítése:"
-
 #: lclstrconsts.rscursor
 msgid "Cursor"
 msgstr "Kurzor"
@@ -447,10 +443,6 @@ msgstr "Hiba"
 #: lclstrconsts.rserrorcreatingdevicecontext
 msgid "Error creating device context for %s.%s"
 msgstr "Hiba az eszköz-környezet létrhozásakor a(z) %s.%s számára"
-
-#: lclstrconsts.rserrorinlcl
-msgid "ERROR in LCL: "
-msgstr "HIBA az LCL-ben:"
 
 #: lclstrconsts.rserroroccurredinataddressframe
 msgid "Error occurred in %s at %sAddress %s%s Frame %s"

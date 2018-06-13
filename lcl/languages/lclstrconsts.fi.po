@@ -376,10 +376,6 @@ msgstr "'%s' ei ole '%s':n emo"
 msgid "Cream"
 msgstr "Kerma"
 
-#: lclstrconsts.rscreatinggdbcatchableerror
-msgid "Creating gdb catchable error:"
-msgstr "Luodaan kiinninapattava virhe gdb:lle:"
-
 #: lclstrconsts.rscursor
 msgid "Cursor"
 msgstr "Kursori"
@@ -445,10 +441,6 @@ msgstr "Virhe"
 #: lclstrconsts.rserrorcreatingdevicecontext
 msgid "Error creating device context for %s.%s"
 msgstr "Virhe luotaessa laiteympäristöä: %s.%s"
-
-#: lclstrconsts.rserrorinlcl
-msgid "ERROR in LCL: "
-msgstr "VIRHE LCL:ssä"
 
 #: lclstrconsts.rserroroccurredinataddressframe
 msgid "Error occurred in %s at %sAddress %s%s Frame %s"

@@ -380,10 +380,6 @@ msgstr "\"%s\" není předchůdcem \"%s\""
 msgid "Cream"
 msgstr "Krémová"
 
-#: lclstrconsts.rscreatinggdbcatchableerror
-msgid "Creating gdb catchable error:"
-msgstr "Vytvářím zachytitelnou chybu gdb:"
-
 #: lclstrconsts.rscursor
 msgid "Cursor"
 msgstr "Ukazatel"
@@ -449,10 +445,6 @@ msgstr "Chyba"
 #: lclstrconsts.rserrorcreatingdevicecontext
 msgid "Error creating device context for %s.%s"
 msgstr "Chyba vytváření kontextu zařízení %s.%s"
-
-#: lclstrconsts.rserrorinlcl
-msgid "ERROR in LCL: "
-msgstr "CHYBA v LCL:"
 
 #: lclstrconsts.rserroroccurredinataddressframe
 msgid "Error occurred in %s at %sAddress %s%s Frame %s"

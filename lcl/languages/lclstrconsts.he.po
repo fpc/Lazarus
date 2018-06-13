@@ -388,10 +388,6 @@ msgstr ""
 msgid "Cream"
 msgstr "קרמי"
 
-#: lclstrconsts.rscreatinggdbcatchableerror
-msgid "Creating gdb catchable error:"
-msgstr "יצירת שגיאה שנלכדת ע\"י gdb:"
-
 #: lclstrconsts.rscursor
 msgid "Cursor"
 msgstr "סמן"
@@ -457,10 +453,6 @@ msgstr "שגיאה"
 #: lclstrconsts.rserrorcreatingdevicecontext
 msgid "Error creating device context for %s.%s"
 msgstr "שגיאה ביצירת הקשר התקן עבור %s.%s"
-
-#: lclstrconsts.rserrorinlcl
-msgid "ERROR in LCL: "
-msgstr "שגיאה ב LCL:"
 
 #: lclstrconsts.rserroroccurredinataddressframe
 #, fuzzy,badformat

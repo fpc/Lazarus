@@ -383,10 +383,6 @@ msgstr ""
 msgid "Cream"
 msgstr ""
 
-#: lclstrconsts.rscreatinggdbcatchableerror
-msgid "Creating gdb catchable error:"
-msgstr "创建gdb可捕捉的错误:"
-
 #: lclstrconsts.rscursor
 msgid "Cursor"
 msgstr "光标"
@@ -452,10 +448,6 @@ msgstr "错误"
 #: lclstrconsts.rserrorcreatingdevicecontext
 msgid "Error creating device context for %s.%s"
 msgstr ""
-
-#: lclstrconsts.rserrorinlcl
-msgid "ERROR in LCL: "
-msgstr "错误在LCL: "
 
 #: lclstrconsts.rserroroccurredinataddressframe
 msgid "Error occurred in %s at %sAddress %s%s Frame %s"

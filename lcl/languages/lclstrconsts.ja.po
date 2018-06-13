@@ -378,10 +378,6 @@ msgstr "'%s' は '%s' の親ではありません"
 msgid "Cream"
 msgstr "クリーム色"
 
-#: lclstrconsts.rscreatinggdbcatchableerror
-msgid "Creating gdb catchable error:"
-msgstr "gdb で捕捉可能なエラーを生成："
-
 #: lclstrconsts.rscursor
 msgid "Cursor"
 msgstr "カーソルファイル"
@@ -447,10 +443,6 @@ msgstr "エラー"
 #: lclstrconsts.rserrorcreatingdevicecontext
 msgid "Error creating device context for %s.%s"
 msgstr "%s.%s のデバイスコンテキスト生成中のエラー"
-
-#: lclstrconsts.rserrorinlcl
-msgid "ERROR in LCL: "
-msgstr "LCL 内エラー："
 
 #: lclstrconsts.rserroroccurredinataddressframe
 msgid "Error occurred in %s at %sAddress %s%s Frame %s"

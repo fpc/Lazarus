@@ -379,10 +379,6 @@ msgstr ""
 msgid "Cream"
 msgstr "Cremefarbig"
 
-#: lclstrconsts.rscreatinggdbcatchableerror
-msgid "Creating gdb catchable error:"
-msgstr "Erzeuge GDB-fangbaren Fehler:"
-
 #: lclstrconsts.rscursor
 msgid "Cursor"
 msgstr "Zeiger"
@@ -448,10 +444,6 @@ msgstr "Fehler"
 #: lclstrconsts.rserrorcreatingdevicecontext
 msgid "Error creating device context for %s.%s"
 msgstr "Fehler beim Erzeugen des Gerätekontexts für %s.%s"
-
-#: lclstrconsts.rserrorinlcl
-msgid "ERROR in LCL: "
-msgstr "FEHLER in der LCL:"
 
 #: lclstrconsts.rserroroccurredinataddressframe
 msgid "Error occurred in %s at %sAddress %s%s Frame %s"

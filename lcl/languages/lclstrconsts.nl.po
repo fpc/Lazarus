@@ -387,10 +387,6 @@ msgstr "'%s' is geen ouder van '%s'"
 msgid "Cream"
 msgstr "Cream"
 
-#: lclstrconsts.rscreatinggdbcatchableerror
-msgid "Creating gdb catchable error:"
-msgstr "Maak een fout die door gdb opgevangen kan worden"
-
 #: lclstrconsts.rscursor
 msgid "Cursor"
 msgstr "Cursor"
@@ -456,10 +452,6 @@ msgstr "Fout"
 #: lclstrconsts.rserrorcreatingdevicecontext
 msgid "Error creating device context for %s.%s"
 msgstr "Fout tijdens het maken van een DC voor %s.%s"
-
-#: lclstrconsts.rserrorinlcl
-msgid "ERROR in LCL: "
-msgstr "FOUT in LCL"
 
 #: lclstrconsts.rserroroccurredinataddressframe
 msgid "Error occurred in %s at %sAddress %s%s Frame %s"

@@ -392,10 +392,6 @@ msgstr ""
 msgid "Cream"
 msgstr ""
 
-#: lclstrconsts.rscreatinggdbcatchableerror
-msgid "Creating gdb catchable error:"
-msgstr "gdb catchable yaratma hatası:"
-
 #: lclstrconsts.rscursor
 msgid "Cursor"
 msgstr ""
@@ -462,10 +458,6 @@ msgstr "Hata"
 #: lclstrconsts.rserrorcreatingdevicecontext
 msgid "Error creating device context for %s.%s"
 msgstr "%s için aygıt bağlamı oluşturulurken hata.%s"
-
-#: lclstrconsts.rserrorinlcl
-msgid "ERROR in LCL: "
-msgstr "LCL'de HATA:"
 
 #: lclstrconsts.rserroroccurredinataddressframe
 msgid "Error occurred in %s at %sAddress %s%s Frame %s"

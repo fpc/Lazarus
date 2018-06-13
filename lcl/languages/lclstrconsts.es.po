@@ -376,10 +376,6 @@ msgstr "'%s' no es un padre de '%s'"
 msgid "Cream"
 msgstr "Crema"
 
-#: lclstrconsts.rscreatinggdbcatchableerror
-msgid "Creating gdb catchable error:"
-msgstr "Creando un error capturable por gdb:"
-
 #: lclstrconsts.rscursor
 msgid "Cursor"
 msgstr "Cursor"
@@ -445,10 +441,6 @@ msgstr "Error"
 #: lclstrconsts.rserrorcreatingdevicecontext
 msgid "Error creating device context for %s.%s"
 msgstr "Error creando contexto de dispositivo para %s.%s"
-
-#: lclstrconsts.rserrorinlcl
-msgid "ERROR in LCL: "
-msgstr "ERROR en LCL"
 
 #: lclstrconsts.rserroroccurredinataddressframe
 msgid "Error occurred in %s at %sAddress %s%s Frame %s"

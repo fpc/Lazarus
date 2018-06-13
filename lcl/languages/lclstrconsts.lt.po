@@ -380,10 +380,6 @@ msgstr "„%s“ nėra „%s“ tėvas"
 msgid "Cream"
 msgstr "Kreminė"
 
-#: lclstrconsts.rscreatinggdbcatchableerror
-msgid "Creating gdb catchable error:"
-msgstr "Kuriama GDB aptinkama klaida:"
-
 #: lclstrconsts.rscursor
 msgid "Cursor"
 msgstr "Žymeklis"
@@ -449,10 +445,6 @@ msgstr "Klaida"
 #: lclstrconsts.rserrorcreatingdevicecontext
 msgid "Error creating device context for %s.%s"
 msgstr "Įvyko klaida kuriant įrenginio kontekstą, skirtą %s.%s"
-
-#: lclstrconsts.rserrorinlcl
-msgid "ERROR in LCL: "
-msgstr "LCL klaida:"
 
 #: lclstrconsts.rserroroccurredinataddressframe
 msgid "Error occurred in %s at %sAddress %s%s Frame %s"

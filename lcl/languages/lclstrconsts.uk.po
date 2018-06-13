@@ -381,10 +381,6 @@ msgstr "'%s' не є предком '%s'"
 msgid "Cream"
 msgstr "Кремовий"
 
-#: lclstrconsts.rscreatinggdbcatchableerror
-msgid "Creating gdb catchable error:"
-msgstr "Створення помилки кешування gdb:"
-
 #: lclstrconsts.rscursor
 msgid "Cursor"
 msgstr "Курсор"
@@ -450,10 +446,6 @@ msgstr "Помилка"
 #: lclstrconsts.rserrorcreatingdevicecontext
 msgid "Error creating device context for %s.%s"
 msgstr "Помилка створення контексту пристроїв для %s.%s"
-
-#: lclstrconsts.rserrorinlcl
-msgid "ERROR in LCL: "
-msgstr "ПОМИЛКА в LCL:"
 
 #: lclstrconsts.rserroroccurredinataddressframe
 msgid "Error occurred in %s at %sAddress %s%s Frame %s"

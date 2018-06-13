@@ -393,10 +393,6 @@ msgstr ""
 msgid "Cream"
 msgstr ""
 
-#: lclstrconsts.rscreatinggdbcatchableerror
-msgid "Creating gdb catchable error:"
-msgstr "Pembuatan cachable salah: "
-
 #: lclstrconsts.rscursor
 msgid "Cursor"
 msgstr ""
@@ -463,10 +459,6 @@ msgstr "Salah"
 #: lclstrconsts.rserrorcreatingdevicecontext
 msgid "Error creating device context for %s.%s"
 msgstr "Kesalahan pembuatan konteks device untuk %s.%s"
-
-#: lclstrconsts.rserrorinlcl
-msgid "ERROR in LCL: "
-msgstr "KESALAHAN dalam LCL: "
 
 #: lclstrconsts.rserroroccurredinataddressframe
 msgid "Error occurred in %s at %sAddress %s%s Frame %s"
