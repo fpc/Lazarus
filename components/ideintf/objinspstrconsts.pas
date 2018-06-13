@@ -357,7 +357,7 @@ resourcestring
   oisInvalidPropertyValue = 'Invalid property value';
   oisNone = '(none)';
   oisPressAKey = 'Press a key ...';
-  oisPressAKeyEGCtrlP = 'Press a key, e.g. Ctrl+P ...';
+  oisPressAKeyEGCtrlP = 'You can press e.g. Ctrl+P ...';
   oisSelectShortCut = 'Select short cut';
   srGrabKey = 'Grab key';
   oisComponentNameIsNotAValidIdentifier = 'Component name "%s" is not a valid identifier';

@@ -741,7 +741,7 @@ msgid "Press a key ..."
 msgstr "按一个键..."
 
 #: objinspstrconsts.oispressakeyegctrlp
-msgid "Press a key, e.g. Ctrl+P ..."
+msgid "You can press e.g. Ctrl+P ..."
 msgstr ""
 
 #: objinspstrconsts.oisproperties

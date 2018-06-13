@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-06-14 01:24+0300\n"
+"PO-Revision-Date: 2018-06-14 01:33+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -738,7 +738,7 @@ msgid "Press a key ..."
 msgstr "Нажмите клавишу ..."
 
 #: objinspstrconsts.oispressakeyegctrlp
-msgid "Press a key, e.g. Ctrl+P ..."
+msgid "You can press e.g. Ctrl+P ..."
 msgstr "Можно нажать, например, Ctrl+P ..."
 
 #: objinspstrconsts.oisproperties
