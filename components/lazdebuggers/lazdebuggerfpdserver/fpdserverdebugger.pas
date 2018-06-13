@@ -1497,7 +1497,7 @@ begin
       sleep(5);
       Application.ProcessMessages;
       until (ASendCommand.Validity<>ddsRequested) or ((GetTickCount64-tc)>2000);
-      ACallback(Self, True, ASendCommand.Message, nil);
+      TDBGEvaluateResultCallback(ACallback)(Self, True, ASendCommand.Message, nil);
       Result := True;
       ASendCommand.Free;
       end
