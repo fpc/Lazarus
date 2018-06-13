@@ -10,8 +10,8 @@ interface
 uses
   CheckLst, Clipbrd, ColorBox, ComCtrls, Controls, CustomTimer, DBActns, 
   DBCtrls, DBGrids, DefaultTranslator, Dialogs, ExtCtrls, ExtDlgs, 
-  ExtGraphics, FileCtrl, Forms, Graphics, GraphMath, GraphType, GraphUtil, 
-  Grids, HelpIntfs, IcnsTypes, ImageListCache, ImgList, IniPropStorage, 
+  ExtGraphics, FileCtrl, Forms, Graphics, GraphMath, GraphUtil, Grids, 
+  HelpIntfs, IcnsTypes, ImageListCache, ImgList, IniPropStorage, 
   InterfaceBase, IntfGraphics, LazHelpHTML, LazHelpIntf, LCLClasses, LCLIntf, 
   LCLMemManager, LCLMessageGlue, LCLProc, LCLResCache, LCLStrConsts, LCLType, 
   Menus, LCLUnicodeData, LCLVersion, LMessages, LResources, MaskEdit, 
@@ -27,7 +27,7 @@ uses
   LazDeviceApis, LDockTree, LazFreeTypeIntfDrawer, CustomDrawn_WinXP, 
   CustomDrawn_Android, Arrow, EditBtn, ComboEx, DBExtCtrls, CustomDrawn_Mac, 
   CalcForm, LCLTranslator, GroupedEdit, LCLTaskDialog, WSLazDeviceAPIS, 
-  LCLPlatformDef, IndustrialBase, JSONPropStorage, LCLExceptionStacktrace, 
+  LCLPlatformDef, IndustrialBase, JSONPropStorage, LCLExceptionStackTrace, 
   LazarusPackageIntf;
 
 implementation

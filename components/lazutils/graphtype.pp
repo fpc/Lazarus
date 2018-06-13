@@ -10,7 +10,7 @@
  ***************************************************************************/
 
  *****************************************************************************
-  This file is part of the Lazarus Component Library (LCL)
+  This file is part of LazUtils.
 
   See the file COPYING.modifiedLGPL.txt, included in this distribution,
   for details about the license.
@@ -25,9 +25,7 @@ interface
 uses
   Classes, SysUtils, Types, Math,
   // LazUtils
-  FPCAdds,
-  // LCL
-  LCLType, LCLProc;
+  FPCAdds, LazLoggerBase;
 
 {$ifdef Trace}
 {$ASSERTIONS ON}
@@ -1594,6 +1592,16 @@ begin
   if ALine = 0 then Exit;
   Inc(Result, ALine * Description.BytesPerLine);
 end;
+
+type
+  // This is identical with TRGBAQuad defined in unit LCLType.
+  TRGBAQuad = record
+    Blue:  Byte;
+    Green: Byte;
+    Red:   Byte;
+    Alpha: Byte;
+  end;
+  PRGBAQuad = ^TRGBAQuad;
 
 procedure TRawImage.PerformEffect(const ADrawEffect: TGraphicsDrawEffect;
   CreateNewData: Boolean; FreeOldData: boolean);
