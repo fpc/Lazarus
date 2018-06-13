@@ -37,6 +37,14 @@ msgstr "boleano"
 msgid "can not execute %s"
 msgstr "no se puede ejecutar %s"
 
+#: lazutilsstrconsts.lrscreatinggdbcatchableerror
+msgid "Creating gdb catchable error:"
+msgstr ""
+
+#: lazutilsstrconsts.lrserrorinlib
+msgid "ERROR in libraries: "
+msgstr ""
+
 #: lazutilsstrconsts.lrsevalinvalidargcount
 msgid "Invalid number of function arguments"
 msgstr "Número de argumentos de función no válido"

@@ -40,6 +40,14 @@ msgstr "логічний тип"
 msgid "can not execute %s"
 msgstr "неможливо виконати %s"
 
+#: lazutilsstrconsts.lrscreatinggdbcatchableerror
+msgid "Creating gdb catchable error:"
+msgstr ""
+
+#: lazutilsstrconsts.lrserrorinlib
+msgid "ERROR in libraries: "
+msgstr ""
+
 #: lazutilsstrconsts.lrsevalinvalidargcount
 msgid "Invalid number of function arguments"
 msgstr "Неправильне число аргументів функції"

@@ -39,6 +39,14 @@ msgstr "логический тип"
 msgid "can not execute %s"
 msgstr "невозможно выполнить %s"
 
+#: lazutilsstrconsts.lrscreatinggdbcatchableerror
+msgid "Creating gdb catchable error:"
+msgstr "Создание ошибки, захватываемой GDB:"
+
+#: lazutilsstrconsts.lrserrorinlib
+msgid "ERROR in libraries: "
+msgstr "ОШИБКА в библиотеках: "
+
 #: lazutilsstrconsts.lrsevalinvalidargcount
 msgid "Invalid number of function arguments"
 msgstr "Неверное количество аргументов функции"

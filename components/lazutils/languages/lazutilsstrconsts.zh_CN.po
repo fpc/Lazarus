@@ -40,6 +40,14 @@ msgstr "布尔"
 msgid "can not execute %s"
 msgstr "不能执行%s"
 
+#: lazutilsstrconsts.lrscreatinggdbcatchableerror
+msgid "Creating gdb catchable error:"
+msgstr ""
+
+#: lazutilsstrconsts.lrserrorinlib
+msgid "ERROR in libraries: "
+msgstr ""
+
 #: lazutilsstrconsts.lrsevalinvalidargcount
 msgid "Invalid number of function arguments"
 msgstr "无效的函数参数数量(number)"

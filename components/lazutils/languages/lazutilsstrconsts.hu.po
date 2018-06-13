@@ -39,6 +39,14 @@ msgstr "logikai"
 msgid "can not execute %s"
 msgstr "nem futtatható: %s"
 
+#: lazutilsstrconsts.lrscreatinggdbcatchableerror
+msgid "Creating gdb catchable error:"
+msgstr ""
+
+#: lazutilsstrconsts.lrserrorinlib
+msgid "ERROR in libraries: "
+msgstr ""
+
 #: lazutilsstrconsts.lrsevalinvalidargcount
 msgid "Invalid number of function arguments"
 msgstr "Az eljárás paramétereinek száma nem megfelelő"
