@@ -1824,14 +1824,17 @@ begin
     // first atom of node is behind CleanPos => try prior node
     Node:=Node.Prior;
   until false;
-  if CurPos.EndPos>=CleanPos then begin
+  if CurPos.EndPos>CleanPos then begin
     CurPos:=CleanAtomPosition;
     exit;
   end;
+  if CurPos.EndPos=CleanPos then
+    exit;
   repeat
     ReadNextAtom;
     if CurPos.EndPos>=CleanPos then begin
-      UndoReadNextAtom;
+      if CurPos.EndPos>CleanPos then
+        UndoReadNextAtom;
       exit;
     end;
   until false;
