@@ -284,7 +284,7 @@ begin
     Checked[Items.IndexOf('Info')] := llInfo in LazPkgOptions.Verbosity;
     Checked[Items.IndexOf('Commands')] := llCommands in LazPkgOptions.Verbosity;
     Checked[Items.IndexOf('Debug')] := llDebug in LazPkgOptions.Verbosity;
-    Checked[Items.IndexOf('Progress')] := llProgress in LazPkgOptions.Verbosity;
+    Checked[Items.IndexOf('Progress')] := llProgres in LazPkgOptions.Verbosity;
   end;
 end;
 
@@ -307,7 +307,7 @@ begin
     if Checked[Items.IndexOf('Debug')] then
       LazPkgOptions.Verbosity := LazPkgOptions.Verbosity + [llDebug];
     if Checked[Items.IndexOf('Progress')] then
-      LazPkgOptions.Verbosity := LazPkgOptions.Verbosity + [llProgress];
+      LazPkgOptions.Verbosity := LazPkgOptions.Verbosity + [llProgres];
   end;
 
   Close;
