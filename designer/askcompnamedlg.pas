@@ -128,7 +128,12 @@ var
 begin
   PInfo := GetPropInfo(AComponent, ATextPropertyName);
   case PInfo^.PropType^.Kind of
-    tkSString,tkLString,tkAString,tkWString: SetPropValue(AComponent, PInfo, AText);
+    tkSString,tkLString,tkAString,tkWString:
+    begin
+      while (AText<>'') and (AText[Length(AText)] in [#13, #10]) do // remove new lines from the end
+        SetLength(AText, Length(AText)-1);
+      SetPropValue(AComponent, PInfo, AText);
+    end;
     tkClass:
     begin
       Obj := GetObjectProp(AComponent, PInfo);
