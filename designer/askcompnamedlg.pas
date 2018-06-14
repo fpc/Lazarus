@@ -82,7 +82,7 @@ var
   PInfo: PPropInfo;
   Lines: TObject;
 const
-  StringProperties: array[0..0] of string = ('Caption');
+  StringProperties: array[0..1] of string = ('Caption', 'Text');
   TStringsProperties: array[0..2] of string = ('Lines', 'Items', 'SQL');
 begin
   // first check simple string properties
