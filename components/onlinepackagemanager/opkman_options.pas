@@ -31,7 +31,7 @@ uses
   // LazUtils
   Laz2_XMLCfg, LazFileUtils,
   // IdeIntf
-  LazIDEIntf,
+  LazIDEIntf,MacroIntf,
   // OpkMan
   opkman_const;
 
@@ -76,7 +76,7 @@ type
     FLocalPackagesDefault: String;
     FLocalArchiveDefault: String;
     FLocalUpdateDefault: String;
-    // Actual local repositories.
+    // Actual local repositories in macro format.
     FLocalRepositoryPackages: String;
     FLocalRepositoryArchive: String;
     FLocalRepositoryUpdate: String;
@@ -84,6 +84,9 @@ type
     FExcludedFiles: String;
     FExcludedFolders: String;
     procedure CheckColors;
+    function GetLocalRepositoryArchiveExpanded:string;
+    function GetLocalRepositoryPackagesExpanded:string;
+    function GetLocalRepositoryUpdateExpanded:string;
   public
     constructor Create(const AFileName: String);
     destructor Destroy; override;
@@ -91,6 +94,9 @@ type
     procedure Save;
     procedure LoadDefault;
     procedure CreateMissingPaths;
+    property LocalRepositoryPackagesExpanded:string read GetLocalRepositoryPackagesExpanded;
+    property LocalRepositoryArchiveExpanded:string read GetLocalRepositoryArchiveExpanded;
+    property LocalRepositoryUpdateExpanded:string read GetLocalRepositoryUpdateExpanded;
   published
     property Changed: Boolean read FChanged write FChanged;
     property RemoteRepository: TStringList read FRemoteRepository write FRemoteRepository;
@@ -288,12 +294,12 @@ end;
 
 procedure TOptions.CreateMissingPaths;
 begin
-  if not DirectoryExists(FLocalRepositoryPackages) then
-    CreateDir(FLocalRepositoryPackages);
-  if not DirectoryExists(FLocalRepositoryArchive) then
-    CreateDir(FLocalRepositoryArchive);
-  if not DirectoryExists(FLocalRepositoryUpdate) then
-    CreateDir(FLocalRepositoryUpdate);
+  if not DirectoryExists(LocalRepositoryPackagesExpanded) then
+    CreateDir(LocalRepositoryPackagesExpanded);
+  if not DirectoryExists(LocalRepositoryArchiveExpanded) then
+    CreateDir(LocalRepositoryArchiveExpanded);
+  if not DirectoryExists(LocalRepositoryUpdateExpanded) then
+    CreateDir(LocalRepositoryUpdateExpanded);
 end;
 
 procedure TOptions.CheckColors;
@@ -307,6 +313,26 @@ begin
   end
 end;
 
+function TOptions.GetLocalRepositoryArchiveExpanded:string;
+begin
+  result:=FLocalRepositoryArchive;
+  IDEMacros.SubstituteMacros(result);
+  Result:=AppendPathDelim(result);
+end;
+
+function TOptions.GetLocalRepositoryPackagesExpanded:string;
+begin
+  result:=FLocalRepositoryPackages;
+  IDEMacros.SubstituteMacros(result);
+  Result:=AppendPathDelim(result);
+end;
+
+function TOptions.GetLocalRepositoryUpdateExpanded:string;
+begin
+  result:=FLocalRepositoryUpdate;
+  IDEMacros.SubstituteMacros(result);
+  Result:=AppendPathDelim(result);
+end;
 
 end.
 

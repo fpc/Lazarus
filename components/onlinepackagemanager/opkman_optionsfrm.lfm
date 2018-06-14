@@ -1,7 +1,7 @@
 object OptionsFrm: TOptionsFrm
-  Left = 428
+  Left = 338
   Height = 556
-  Top = 141
+  Top = 131
   Width = 635
   BorderIcons = [biSystemMenu]
   Caption = 'Options'
@@ -52,10 +52,10 @@ object OptionsFrm: TOptionsFrm
     Height = 498
     Top = 6
     Width = 623
-    ActivePage = tsGeneral
+    ActivePage = tsFolders
     Align = alClient
     BorderSpacing.Around = 6
-    TabIndex = 0
+    TabIndex = 2
     TabOrder = 0
     object tsGeneral: TTabSheet
       Caption = 'General'
@@ -504,17 +504,17 @@ object OptionsFrm: TOptionsFrm
     end
     object tsFolders: TTabSheet
       Caption = 'Folders'
-      ClientHeight = 484
-      ClientWidth = 570
+      ClientHeight = 470
+      ClientWidth = 615
       object pnFolders: TPanel
         Left = 0
-        Height = 484
+        Height = 470
         Top = 0
-        Width = 570
+        Width = 615
         Align = alClient
         BevelOuter = bvNone
-        ClientHeight = 484
-        ClientWidth = 570
+        ClientHeight = 470
+        ClientWidth = 615
         ParentColor = False
         TabOrder = 0
         object lbLocalRepositoryPackages: TLabel
@@ -561,7 +561,7 @@ object OptionsFrm: TOptionsFrm
           Left = 8
           Height = 23
           Top = 35
-          Width = 556
+          Width = 601
           Directory = 'edLocalRepositoryPackages'
           ShowHidden = False
           ButtonWidth = 50
@@ -573,6 +573,7 @@ object OptionsFrm: TOptionsFrm
           ParentShowHint = False
           ShowHint = True
           TabOrder = 0
+          OnButtonClick = edLocalRepositoryPackagesButtonClick
           Text = 'edLocalRepositoryPackages'
         end
         object edLocalRepositoryArchive: TDirectoryEdit
@@ -585,7 +586,7 @@ object OptionsFrm: TOptionsFrm
           Left = 8
           Height = 23
           Top = 89
-          Width = 556
+          Width = 601
           ShowHidden = False
           ButtonWidth = 50
           NumGlyphs = 1
@@ -595,6 +596,7 @@ object OptionsFrm: TOptionsFrm
           ParentShowHint = False
           ShowHint = True
           TabOrder = 1
+          OnButtonClick = edLocalRepositoryPackagesButtonClick
         end
         object edLocalRepositoryUpdate: TDirectoryEdit
           Tag = 2
@@ -606,7 +608,7 @@ object OptionsFrm: TOptionsFrm
           Left = 8
           Height = 23
           Top = 143
-          Width = 556
+          Width = 601
           ShowHidden = False
           ButtonWidth = 50
           NumGlyphs = 1
@@ -616,6 +618,7 @@ object OptionsFrm: TOptionsFrm
           ParentShowHint = False
           ShowHint = True
           TabOrder = 2
+          OnButtonClick = edLocalRepositoryPackagesButtonClick
         end
       end
     end

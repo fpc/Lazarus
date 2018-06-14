@@ -649,7 +649,7 @@ begin
   fPackageZipper := TPackageZipper.Create;
   fPackageZipper.OnZipError := @DoOnZippError;
   fPackageZipper.OnZipCompleted := @DoOnZipCompleted;
-  FDestDir := Options.LocalRepositoryUpdate;
+  FDestDir := Options.LocalRepositoryUpdateExpanded;
   RootNode := FVSTPackages.GetFirst;
   RootData := FVSTPackages.GetNodeData(RootNode);
   if RootData^.FDisplayName <> '' then

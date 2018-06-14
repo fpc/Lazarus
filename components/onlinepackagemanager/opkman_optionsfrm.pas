@@ -31,6 +31,8 @@ interface
 
 uses
   SysUtils, Math, Graphics, Classes,
+  // ideintf
+  MacroIntf,
   // LCL
   Forms, Controls, Dialogs, StdCtrls, ExtCtrls, Spin, ComCtrls, EditBtn, Menus,
   ButtonPanel, Buttons,
@@ -115,6 +117,7 @@ type
     procedure bOpenClick(Sender: TObject);
     procedure cbProxyChange(Sender: TObject);
     procedure cbSelectProfileChange(Sender: TObject);
+    procedure edLocalRepositoryPackagesButtonClick(Sender:TObject);
     procedure edRemoteRepositoryKeyPress(Sender: TObject; var Key: char);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -322,6 +325,16 @@ begin
   pnProfilesMain.Visible := cbSelectProfile.ItemIndex = 1;
 end;
 
+procedure TOptionsFrm.edLocalRepositoryPackagesButtonClick(Sender:TObject);
+var Sendert:TDirectoryEdit;
+    d:string;
+begin
+  Sendert:=sender as TDirectoryEdit;
+  d:=Sendert.Directory;
+  IDEMacros.SubstituteMacros(d);
+  Sendert.Directory:=d;
+end;
+
 procedure TOptionsFrm.edRemoteRepositoryKeyPress(Sender: TObject; var Key: char);
 begin
   if Key = #13 then
@@ -418,15 +431,15 @@ begin
   Options.ProxyUser := edProxyUser.Text;
   Options.ProxyPassword := edProxyPassword.Text;
 
-  Options.LocalRepositoryPackages := AppendPathDelim(edLocalRepositoryPackages.Text);
-  Options.LocalRepositoryArchive := AppendPathDelim(edLocalRepositoryArchive.Text);
-  Options.LocalRepositoryUpdate := AppendPathDelim(edLocalRepositoryUpdate.Text);
-  if not DirectoryExists(Options.LocalRepositoryPackages) then
-    ForceDirectories(Options.LocalRepositoryPackages);
-  if not DirectoryExists(Options.LocalRepositoryArchive) then
-    ForceDirectories(Options.LocalRepositoryArchive);
-  if not DirectoryExists(Options.LocalRepositoryUpdate) then
-    ForceDirectories(Options.LocalRepositoryUpdate);
+  Options.LocalRepositoryPackages := edLocalRepositoryPackages.Text;
+  Options.LocalRepositoryArchive := edLocalRepositoryArchive.Text;
+  Options.LocalRepositoryUpdate := edLocalRepositoryUpdate.Text;
+  if not DirectoryExists(Options.LocalRepositoryPackagesExpanded) then
+    ForceDirectories(Options.LocalRepositoryPackagesExpanded);
+  if not DirectoryExists(Options.LocalRepositoryArchiveExpanded) then
+    ForceDirectories(Options.LocalRepositoryArchiveExpanded);
+  if not DirectoryExists(Options.LocalRepositoryUpdateExpanded) then
+    ForceDirectories(Options.LocalRepositoryUpdateExpanded);
 
   Options.UserProfile := cbSelectProfile.ItemIndex;
   for I := 0 to lbExcludeFiles.Items.Count - 1 do

@@ -1026,7 +1026,7 @@ function TSerializablePackages.IsPackageDownloaded(const AMetaPackage: TMetaPack
 var
   FileName: String;
 begin
-  FileName := Options.LocalRepositoryArchive + AMetaPackage.RepositoryFileName;
+  FileName := Options.LocalRepositoryArchiveExpanded + AMetaPackage.RepositoryFileName;
   Result := (FileExists(FileName)) and
 //            (MD5Print(MD5File(FileName)) = AMetaPackage.RepositoryFileHash) and
             (FileUtil.FileSize(FileName) = AMetaPackage.RepositoryFileSize);
@@ -1041,7 +1041,7 @@ begin
   for I := 0 to AMetaPackage.FLazarusPackages.Count - 1 do
   begin
     LazarusPkg := TLazarusPackage(AMetaPackage.FLazarusPackages.Items[I]);
-    LazarusPkg.FPackageAbsolutePath := Options.LocalRepositoryPackages + AMetaPackage.PackageBaseDir
+    LazarusPkg.FPackageAbsolutePath := Options.LocalRepositoryPackagesExpanded + AMetaPackage.PackageBaseDir
                                       + LazarusPkg.FPackageRelativePath + LazarusPkg.Name;
     if not FileExists(LazarusPkg.FPackageAbsolutePath) then
     begin
@@ -1153,7 +1153,7 @@ begin
     lptRunTime, lptRunTimeOnly:
       begin
         FileName := StringReplace(ALazarusPkg.Name, '.lpk', '.opkman', [rfIgnoreCase]);
-        RepoPath := Options.LocalRepositoryPackages + APackageBaseDir + ALazarusPkg.PackageRelativePath;
+        RepoPath := Options.LocalRepositoryPackagesExpanded + APackageBaseDir + ALazarusPkg.PackageRelativePath;
         Result := (psExtracted in ALazarusPkg.PackageStates) and FileExists(RepoPath + FileName);
         if Result then
         begin
@@ -1402,7 +1402,7 @@ begin
              (LazarusPkg.PackageType in [lptRunTime, lptRunTimeOnly]) then
       begin
         FileName := StringReplace(LazarusPkg.Name, '.lpk', '.opkman', [rfIgnoreCase]);
-        FileCreate(Options.LocalRepositoryPackages + Items[I].PackageBaseDir + LazarusPkg.PackageRelativePath + FileName);
+        FileCreate(Options.LocalRepositoryPackagesExpanded + Items[I].PackageBaseDir + LazarusPkg.PackageRelativePath + FileName);
       end;
     end;
   end;
@@ -1436,7 +1436,7 @@ begin
       AlreadyCounted := False;
       if IsPackageDownloaded(Items[I]) then
       begin
-        if DeleteFile(Options.LocalRepositoryArchive + Items[I].RepositoryFileName) then
+        if DeleteFile(Options.LocalRepositoryArchiveExpanded + Items[I].RepositoryFileName) then
         begin
           Inc(Result);
           AlreadyCounted := True;
@@ -1444,9 +1444,9 @@ begin
       end;
       if IsPackageExtracted(Items[I]) then
       begin
-        if DirectoryExists(Options.LocalRepositoryPackages + Items[I].PackageBaseDir) then
+        if DirectoryExists(Options.LocalRepositoryPackagesExpanded + Items[I].PackageBaseDir) then
         begin
-          DeleteDirectory(Options.LocalRepositoryPackages + Items[I].PackageBaseDir, False);
+          DeleteDirectory(Options.LocalRepositoryPackagesExpanded + Items[I].PackageBaseDir, False);
           if not AlreadyCounted then
             Inc(Result);
         end;
@@ -1465,12 +1465,12 @@ begin
       paInstall:
         begin
           if IsPackageDownloaded(Items[I]) then
-            DeleteFile(Options.LocalRepositoryArchive + Items[I].RepositoryFileName)
+            DeleteFile(Options.LocalRepositoryArchiveExpanded + Items[I].RepositoryFileName)
         end;
       paUpdate:
         begin
-          if FileExists(Options.LocalRepositoryUpdate + Items[I].RepositoryFileName) then
-            DeleteFile(Options.LocalRepositoryUpdate + Items[I].RepositoryFileName)
+          if FileExists(Options.LocalRepositoryUpdateExpanded + Items[I].RepositoryFileName) then
+            DeleteFile(Options.LocalRepositoryUpdateExpanded + Items[I].RepositoryFileName)
         end;
     end;
   end;

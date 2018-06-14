@@ -768,7 +768,7 @@ begin
     if SerializablePackages.DownloadCount > 0 then
     begin
       DoExtract := True;
-      CanGo := UpdateP(Options.LocalRepositoryUpdate, DoExtract) = mrOK;
+      CanGo := UpdateP(Options.LocalRepositoryUpdateExpanded, DoExtract) = mrOK;
       VisualTree.UpdatePackageStates;
     end;
 
@@ -777,7 +777,7 @@ begin
       if SerializablePackages.ExtractCount > 0 then
       begin
         DoOpen := False;
-        CanGo := Extract(Options.LocalRepositoryUpdate, Options.LocalRepositoryPackages, DoOpen, True) = mrOk;
+        CanGo := Extract(Options.LocalRepositoryUpdateExpanded, Options.LocalRepositoryPackagesExpanded, DoOpen, True) = mrOk;
         VisualTree.UpdatePackageStates;
       end;
 
@@ -880,8 +880,8 @@ begin
           lptRunTime, lptRunTimeOnly:
           begin
             FileName := StringReplace(LazarusPackage.Name, '.lpk', '.opkman', [rfIgnoreCase]);
-            if FileExists(Options.LocalRepositoryPackages + SerializablePackages.Items[I].PackageBaseDir + LazarusPackage.PackageRelativePath + FileName) then
-              DeleteFile(Options.LocalRepositoryPackages + SerializablePackages.Items[I].PackageBaseDir + LazarusPackage.PackageRelativePath + FileName);
+            if FileExists(Options.LocalRepositoryPackagesExpanded + SerializablePackages.Items[I].PackageBaseDir + LazarusPackage.PackageRelativePath + FileName) then
+              DeleteFile(Options.LocalRepositoryPackagesExpanded + SerializablePackages.Items[I].PackageBaseDir + LazarusPackage.PackageRelativePath + FileName);
             NeedToRebuild := True;
           end;
           lptDesignTime, lptRunAndDesignTime:
@@ -940,7 +940,7 @@ begin
     if SerializablePackages.DownloadCount > 0 then
     begin
       DoExtract := True;
-      CanGo := Download(Options.LocalRepositoryArchive, DoExtract) = mrOK;
+      CanGo := Download(Options.LocalRepositoryArchiveExpanded, DoExtract) = mrOK;
       VisualTree.UpdatePackageStates;
     end;
 
@@ -949,7 +949,7 @@ begin
       if SerializablePackages.ExtractCount > 0 then
       begin
         DoOpen := False;
-        CanGo := Extract(Options.LocalRepositoryArchive, Options.LocalRepositoryPackages, DoOpen) = mrOk;
+        CanGo := Extract(Options.LocalRepositoryArchiveExpanded, Options.LocalRepositoryPackagesExpanded, DoOpen) = mrOk;
         VisualTree.UpdatePackageStates;
       end;
 
@@ -993,7 +993,7 @@ end;
 
 procedure TMainFrm.tbOpenRepoClick(Sender: TObject);
 begin
-  OpenDocument(Options.LocalRepositoryPackages);
+  OpenDocument(Options.LocalRepositoryPackagesExpanded);
 end;
 
 procedure TMainFrm.tbCleanUpClick(Sender: TObject);

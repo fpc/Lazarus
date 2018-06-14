@@ -191,7 +191,7 @@ begin
       for J := 0 to MetaPackage.LazarusPackages.Count - 1 do
       begin
         LazPackage := TLazarusPackage(MetaPackage.LazarusPackages.Items[J]);
-        FileName := Options.LocalRepositoryPackages + MetaPackage.PackageBaseDir + LazPackage.PackageRelativePath + LazPackage.Name;
+        FileName := Options.LocalRepositoryPackagesExpanded + MetaPackage.PackageBaseDir + LazPackage.PackageRelativePath + LazPackage.Name;
         Name := StringReplace(LazPackage.Name, '.lpk', '', [rfReplaceAll, rfIgnoreCase]);
         URL := Options.RemoteRepository[Options.ActiveRepositoryIndex] + MetaPackage.RepositoryFileName;
         PackageLink := FindOnlineLink(Name);
@@ -433,7 +433,7 @@ begin
   PackageAction := paInstall;
   if SerializablePackages.DownloadCount > 0 then
   begin
-    Result := Download(Options.LocalRepositoryArchive);
+    Result := Download(Options.LocalRepositoryArchiveExpanded);
     SerializablePackages.GetPackageStates;
   end;
 
@@ -441,7 +441,7 @@ begin
   begin
     if SerializablePackages.ExtractCount > 0 then
     begin
-      Result := Extract(Options.LocalRepositoryArchive, Options.LocalRepositoryPackages);
+      Result := Extract(Options.LocalRepositoryArchiveExpanded, Options.LocalRepositoryPackagesExpanded);
       SerializablePackages.GetPackageStates;
     end;
 
@@ -489,7 +489,7 @@ begin
   PackageAction := paInstall;
   if SerializablePackages.DownloadCount > 0 then
   begin
-    Result := Download(Options.LocalRepositoryArchive);
+    Result := Download(Options.LocalRepositoryArchiveExpanded);
     SerializablePackages.GetPackageStates;
   end;
 
@@ -497,7 +497,7 @@ begin
   begin
     if SerializablePackages.ExtractCount > 0 then
     begin
-      Result := Extract(Options.LocalRepositoryArchive, Options.LocalRepositoryPackages);
+      Result := Extract(Options.LocalRepositoryArchiveExpanded, Options.LocalRepositoryPackagesExpanded);
       SerializablePackages.GetPackageStates;
     end;
 
