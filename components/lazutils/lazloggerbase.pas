@@ -22,7 +22,7 @@ interface
 uses
   Classes, SysUtils, types, math,
   // LazUtils
-  LazClasses, LazUtilities, LazUTF8;
+  LazClasses, LazUTF8;
 
 type
 
