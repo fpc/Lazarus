@@ -4024,7 +4024,8 @@ end;
 function TSetElementPropertyEditor.GetVisualValue: ansistring;
 begin
   Result := inherited GetVisualValue;
-  Assert(Result <> '', 'TSetElementPropertyEditor.GetVisualValue: Result="".');
+  if Result = '' then
+    Result := oisMixed;
 end;
 
 procedure TSetElementPropertyEditor.GetValues(Proc: TGetStrProc);
