@@ -2079,7 +2079,7 @@ procedure TApplication.DoArrowKey(AControl: TWinControl; var Key: Word;
 begin
   if (Key in [VK_LEFT, VK_RIGHT, VK_UP, VK_DOWN]) and (Shift = []) and
      (AControl.Perform(CM_WANTSPECIALKEY, Key, 0) = 0) and
-     (AControl.Perform(LM_GETDLGCODE, 0, 0) and DLGC_WANTARROWS = 0) and
+     (AControl.Perform(LM_GETDLGCODE, Key, 0) and DLGC_WANTARROWS = 0) and
      (anoArrowToSelectNextInParent in Navigation) and AControl.Focused and
      Assigned(AControl.Parent)  then
   begin
@@ -2140,7 +2140,7 @@ var
 begin
   if (Shift = []) and (Key = VK_ESCAPE) and
      (AControl.Perform(CM_WANTSPECIALKEY, Key, 0) = 0) and
-     (AControl.Perform(LM_GETDLGCODE, 0, 0) and DLGC_WANTALLKEYS = 0) and
+     (AControl.Perform(LM_GETDLGCODE, Key, 0) and DLGC_WANTALLKEYS = 0) and
      (anoEscapeForCancelControl in Navigation) then
   begin
     Form := GetParentForm(AControl);
@@ -2169,7 +2169,7 @@ var
 begin
   if (Shift = []) and (Key = VK_RETURN) and
      (AControl.Perform(CM_WANTSPECIALKEY, Key, 0) = 0) and
-     (AControl.Perform(LM_GETDLGCODE, 0, 0) and DLGC_WANTALLKEYS = 0) and
+     (AControl.Perform(LM_GETDLGCODE, Key, 0) and DLGC_WANTALLKEYS = 0) and
      (anoReturnForDefaultControl in Navigation) then
   begin
     //DebugLn(['TApplication.DoReturnKey ',DbgSName(AControl)]);
@@ -2202,7 +2202,7 @@ procedure TApplication.DoTabKey(AControl: TWinControl; var Key: Word;
 begin
   if (Key = VK_TAB) and ((Shift - [ssShift]) = []) and
      (AControl.Perform(CM_WANTSPECIALKEY, Key, 0) = 0) and
-     (AControl.Perform(LM_GETDLGCODE, 0, 0) and DLGC_WANTTAB = 0) and
+     (AControl.Perform(LM_GETDLGCODE, Key, 0) and DLGC_WANTTAB = 0) and
      (anoTabToSelectNext in Navigation) and AControl.Focused then
   begin
     // traverse tabstop controls inside form

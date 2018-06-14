@@ -2222,7 +2222,7 @@ begin
           WM_CHAR:
           begin
             // if want chars, then handled already
-            PLMsg^.Result := CallDefaultWindowProc(Window, WM_GETDLGCODE, 0, 0) and DLGC_WANTCHARS;
+            PLMsg^.Result := CallDefaultWindowProc(Window, WM_GETDLGCODE, WParam, 0) and DLGC_WANTCHARS;
             LMChar.CharCode := Word(WParam);
             LMChar.Msg := LM_CHAR;
           end;

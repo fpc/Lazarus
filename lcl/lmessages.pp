@@ -331,6 +331,22 @@ type
   TLMSysKeyUp = TLMKey;
   TCMWantSpecialKey = TLMKey;
 
+  TLMGetDlgCode = record
+    Msg: Cardinal;
+{$ifdef cpu64}
+    UnusedMsg: Cardinal;
+{$endif}
+{$IFDEF FPC_LITTLE_ENDIAN}
+    CharCode: Word; // VK_XXX constants
+    Unused: Word;
+{$ELSE}
+    Unused: Word;
+    CharCode: Word; // VK_XXX constants
+{$ENDIF}
+    UnusedL: LPARAM;
+    Result: LRESULT;
+  end;
+
 
   TLMCut = TLMNoParams;
   TLMCopy = TLMNoParams;
