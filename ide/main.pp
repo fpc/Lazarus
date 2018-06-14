@@ -6484,9 +6484,14 @@ begin
       New := CIdentifierListItem.Create(WordCompatibility, False, 0,
         PChar(FIdentifierWordCompletionWordList[I]), 0, nil, nil, ctnWord);
       FIdentifierWordCompletionWordList.Objects[I] := New;
+      if SameText(Sender.Prefix, FIdentifierWordCompletionWordList[I]) then
+      begin // show exact match at top
+        FilteredList.Insert(0, New);
+        Inc(PriorityCount);
+      end else
       if Sender.ContainsFilter and (Sender.Prefix<>'')
       and (strlicomp(PChar(Sender.Prefix), PChar(FIdentifierWordCompletionWordList[I]), Length(Sender.Prefix))=0) then
-      begin
+      begin // show start-match before other matches
         FilteredList.Insert(PriorityCount, New);
         Inc(PriorityCount);
       end else
