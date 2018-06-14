@@ -26,6 +26,7 @@ type
   TLldbDebuggerCommandQueue = class(TRefCntObjList)
   private
     FDebugger: TLldbDebugger;
+    FLockQueueRun: Integer;
     function Get(Index: Integer): TLldbDebuggerCommand;
     procedure Put(Index: Integer; const AValue: TLldbDebuggerCommand);
   private
@@ -36,6 +37,8 @@ type
   public
     constructor Create(ADebugger: TLldbDebugger);
     destructor Destroy; override;
+    procedure LockQueueRun;
+    procedure UnLockQueueRun;
     property Items[Index: Integer]: TLldbDebuggerCommand read Get write Put; default;
     procedure QueueCommand(AValue: TLldbDebuggerCommand);
   end;
@@ -46,11 +49,11 @@ type
   private
     FOwner: TLldbDebugger;
     function GetDebuggerState: TDBGState;
-    procedure Finished;
     function GetCommandQueue: TLldbDebuggerCommandQueue;
     function GetInstructionQueue: TLldbInstructionQueue;
   protected
     procedure DoExecute; virtual; abstract;
+    procedure Finished;
 
     procedure InstructionSucceeded(AnInstruction: TObject);
     procedure InstructionFailed(AnInstruction: TObject);
@@ -128,19 +131,25 @@ type
 
     procedure DoAfterLineReceived(var ALine: String);
     procedure DoBeforeLineReceived(var ALine: String);
-    procedure DoBeginReceivingLines(Sender: TObject);
     procedure DoCmdLineDebuggerTerminated(Sender: TObject);
-    procedure DoEndReceivingLines(Sender: TObject);
     function  LldbRun: Boolean;
     function  LldbStep(AStepAction: TLldbInstructionProcessStepAction): Boolean;
     function  LldbStop: Boolean;
     function  LldbEvaluate(const AExpression: String; EvalFlags: TDBGEvaluateFlags; ACallback: TDBGEvaluateResultCallback): Boolean;
   protected
+    procedure DoBeginReceivingLines(Sender: TObject);
+    procedure DoEndReceivingLines(Sender: TObject);
     procedure LockRelease; override;
     procedure UnlockRelease; override;
+    procedure QueueCommand(const ACommand: TLldbDebuggerCommand);
     procedure SetState(const AValue: TDBGState);
     //procedure DoState(const OldState: TDBGState); override;
     //procedure DoBeforeState(const OldState: TDBGState); override;
+    property CurrentThreadId: Integer read FCurrentThreadId;
+    property CurrentStackFrame: Integer read FCurrentStackFrame;
+    property CurrentLocation: TDBGLocationRec read FCurrentLocation;
+    property DebugInstructionQueue: TLldbInstructionQueue read FDebugInstructionQueue;
+    property CommandQueue: TLldbDebuggerCommandQueue read FCommandQueue;
   protected
     function  CreateBreakPoints: TDBGBreakPoints; override;
     //function  CreateLocals: TLocalsSupplier; override;
@@ -168,13 +177,6 @@ type
 
     function GetLocation: TDBGLocationRec; override;
 //    function GetProcessList({%H-}AList: TRunningProcessInfoList): boolean; override;
-
-//    //LockCommandProcessing is more than just QueueExecuteLock
-//    //LockCommandProcessing also takes care to run the queue, if unlocked and not already running
-//    procedure LockCommandProcessing; override;
-//    procedure UnLockCommandProcessing; override;
-
-
 //    function NeedReset: Boolean; override;
   end;
 
@@ -354,7 +356,7 @@ var
   Cmd: TLldbDebuggerCommandEvaluate;
 begin
   Cmd := TLldbDebuggerCommandEvaluate.Create(TLldbDebugger(Debugger), AWatchValue);
-  TLldbDebugger(Debugger).FCommandQueue.QueueCommand(Cmd);
+  TLldbDebugger(Debugger).QueueCommand(Cmd);
   Cmd.ReleaseReference;
 end;
 
@@ -374,7 +376,7 @@ debugln(['TLldbBreakPoint.SetBreakPoint ']);
     s := Source;
   Instr := TLldbInstructionBreakSet.Create(s, Line);
   Instr.OnFinish := @BreakInstructionFinished;
-//  TLldbDebugger(Debugger).FCommandQueue.QueueCommand();
+//  TLldbDebugger(Debugger).QueueCommand();
   TLldbDebugger(Debugger).FDebugInstructionQueue.QueueInstruction(Instr);
   Instr.ReleaseReference;
 end;
@@ -442,13 +444,14 @@ end;
 
 procedure TLldbDebuggerCommandQueue.QueueCommand(AValue: TLldbDebuggerCommand);
 begin
+debugln(['CommandQueue.QueueCommand ', AValue.ClassName]);
   Insert(Count, AValue);
   Run;
 end;
 
 procedure TLldbDebuggerCommandQueue.Run;
 begin
-  if FRunningCommand <> nil then
+  if (FRunningCommand <> nil) or (FLockQueueRun > 0) then
     exit;
   if Count = 0 then
     exit;
@@ -488,6 +491,19 @@ DebugLnExit(['<<< CommandQueue.Run (Destroy)', FRunningCommand.ClassName, ', ', 
     ReleaseRefAndNil(FRunningCommand);
   end;
   inherited Destroy;
+end;
+
+procedure TLldbDebuggerCommandQueue.LockQueueRun;
+begin
+  inc(FLockQueueRun);
+  debugln(['TLldbDebuggerCommandQueue.LockQueueRun ',FLockQueueRun]);
+end;
+
+procedure TLldbDebuggerCommandQueue.UnLockQueueRun;
+begin
+  debugln(['TLldbDebuggerCommandQueue.UnLockQueueRun ',FLockQueueRun]);
+  dec(FLockQueueRun);
+  if FLockQueueRun = 0 then Run;
 end;
 
 { TLldbDebuggerCommand }
@@ -698,7 +714,7 @@ begin
     SetState(dsInit);
 
   Cmd := TLldbDebuggerCommandRun.Create(Self);
-  FCommandQueue.QueueCommand(Cmd);
+  QueueCommand(Cmd);
   Cmd.ReleaseReference;
 end;
 
@@ -785,7 +801,7 @@ begin
   Result := True;
 
   Cmd := TLldbDebuggerCommandStop.Create(Self);
-  FCommandQueue.QueueCommand(Cmd);
+  QueueCommand(Cmd);
   Cmd.ReleaseReference;
 end;
 
@@ -795,7 +811,7 @@ var
   Cmd: TLldbDebuggerCommandEvaluate;
 begin
   Cmd := TLldbDebuggerCommandEvaluate.Create(Self, AExpression, EvalFlags, ACallback);
-  FCommandQueue.QueueCommand(Cmd);
+  QueueCommand(Cmd);
   Cmd.ReleaseReference;
   Result := True;
 end;
@@ -808,6 +824,11 @@ end;
 procedure TLldbDebugger.UnlockRelease;
 begin
   inherited UnlockRelease;
+end;
+
+procedure TLldbDebugger.QueueCommand(const ACommand: TLldbDebuggerCommand);
+begin
+  FCommandQueue.QueueCommand(ACommand);
 end;
 
 procedure TLldbDebugger.SetState(const AValue: TDBGState);
@@ -917,7 +938,7 @@ begin
   inherited Init;
 
   Cmd := TLldbDebuggerCommandInit.Create(Self);
-  FCommandQueue.QueueCommand(Cmd);
+  QueueCommand(Cmd);
   Cmd.ReleaseReference;
   DebugLnExit('*** Init');
 end;

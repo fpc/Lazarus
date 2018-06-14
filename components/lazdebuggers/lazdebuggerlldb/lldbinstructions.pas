@@ -5,8 +5,8 @@ unit LldbInstructions;
 interface
 
 uses
-  SysUtils, math, LazLoggerBase, DbgIntfDebuggerBase, DebugInstructions,
-  LldbHelper;
+  SysUtils, math, Classes, LazLoggerBase, DbgIntfDebuggerBase, DbgIntfBaseTypes,
+  DebugInstructions, LldbHelper;
 
 type
 
@@ -147,6 +147,37 @@ type
   public
     constructor Create(AnExpression: String; AThread, AFrame: Integer);
     property Res: String read FRes;
+  end;
+
+  { TLldbInstructionMemory }
+
+  TArrayOfByte = array of byte;
+
+  TLldbInstructionMemory = class(TLldbInstruction)
+  private
+    FRes: TArrayOfByte;
+    FReading: Boolean;
+  protected
+    function ProcessInputFromDbg(const AData: String): Boolean; override;
+    procedure SendCommandDataToDbg(); override;
+  public
+    constructor Create(AnAddress: TDBGPtr; ALen: Cardinal);
+    property Res: TArrayOfByte read FRes;
+  end;
+
+  { TLldbInstructionRegister }
+
+  TLldbInstructionRegister = class(TLldbInstruction)
+  private
+    FRes: TStringList;
+    FReading: Boolean;
+  protected
+    procedure DoFree; override;
+    function ProcessInputFromDbg(const AData: String): Boolean; override;
+    procedure SendCommandDataToDbg(); override;
+  public
+    constructor Create(AThread, AFrame: Integer);
+    property Res: TStringList read FRes;
   end;
 
   { TLldbInstructionStackTrace }
@@ -498,6 +529,141 @@ constructor TLldbInstructionExpression.Create(AnExpression: String; AThread,
 begin
 //  inherited Create(Format('expression -R -- %s', [UpperCase(AnExpression)]));
   inherited Create(Format('expression -T -- %s', [UpperCase(AnExpression)]), AThread, AFrame);
+end;
+
+{ TLldbInstructionMemory }
+
+function TLldbInstructionMemory.ProcessInputFromDbg(const AData: String
+  ): Boolean;
+var
+  found: TStringArray;
+  n, l, i: Integer;
+  s: String;
+begin
+  Result := False;
+  if StrStartsWith(AData, Command) then begin
+    FReading := True;
+  end;
+
+  if not FReading then
+    exit;
+
+  Result := True;
+  if CheckForIgnoredError(AData) then
+    exit;
+
+
+
+  if StrMatches(AData, ['0x', ': ', ''], found) then begin
+    // todo check the address
+    l := Length(FRes);
+    s := found[1];
+    n := (Length(s)+1) div 5;
+    SetLength(FRes, l+n);
+    for i := l to l + n-1 do begin
+      FRes[i] := StrToIntDef(copy(s,1,4), 0);
+      delete(s,1,5);
+    end;
+    exit;
+  end;
+//<< << TCmdLineDebugger.ReadLn "0x005ff280: 0x60 0x10 0x77 0x04"
+
+
+  if StrMatches(AData, ['(', ')', ' = ', '112234', '']) then begin
+    MarkAsSuccess;
+    Exit;
+  end;
+
+  Result := inherited ProcessInputFromDbg(AData);
+end;
+
+procedure TLldbInstructionMemory.SendCommandDataToDbg();
+begin
+  inherited SendCommandDataToDbg();
+  Queue.SendDataToDBG(Self, 'p 112234'); // end marker // do not sent before new prompt
+end;
+
+constructor TLldbInstructionMemory.Create(AnAddress: TDBGPtr; ALen: Cardinal);
+begin
+  inherited Create(Format('memory read --force --size 1 --format x --count %u %u', [ALen, AnAddress]));
+end;
+
+{ TLldbInstructionRegister }
+
+procedure TLldbInstructionRegister.DoFree;
+begin
+  FreeAndNil(FRes);
+  inherited DoFree;
+end;
+
+function TLldbInstructionRegister.ProcessInputFromDbg(const AData: String
+  ): Boolean;
+var
+  found: TStringArray;
+  i: Integer;
+  s, reg, val: String;
+begin
+  Result := False;
+  if StrStartsWith(AData, Command) then begin
+    FReading := True;
+  end;
+
+  if not FReading then
+    exit;
+
+  Result := True;
+  if CheckForIgnoredError(AData) then
+    exit;
+
+  if StrStartsWith(AData, 'General Purpose Registers:') then
+    exit;
+
+  if StrMatches(AData, ['  ', ' = ', ''], found) then begin
+    if FRes = nil then FRes := TStringList.Create;
+      reg := UpperCase(trim(found[0]));
+      i := pos(' ', found[1]);
+      if i < 1 then i := Length(found[1]);
+      val := copy(found[1], 1, i);
+      FRes.Values[reg] := val;
+    exit;
+  end;
+
+  if StrMatches(AData, ['(', ')', ' = ', '112235', '']) then begin
+    MarkAsSuccess;
+    Exit;
+  end;
+
+  Result := inherited ProcessInputFromDbg(AData);
+
+(*
+   << Finished Instruction: register read --all // True
+  << Current Instruction:
+  TDBGInstructionQueue.RunQueue nil / nil
+  << << TCmdLineDebugger.ReadLn "General Purpose Registers:"
+  << << TCmdLineDebugger.ReadLn "       eax = 0x00000000"
+  << << TCmdLineDebugger.ReadLn "       ebx = 0x005AF750  VMT_$UNIT1_$$_TFORM1"
+  << << TCmdLineDebugger.ReadLn "       ecx = 0x04696C7C"
+  << << TCmdLineDebugger.ReadLn "       edx = 0x00000002"
+  << << TCmdLineDebugger.ReadLn "       edi = 0x005AF750  VMT_$UNIT1_$$_TFORM1"
+  << << TCmdLineDebugger.ReadLn "       esi = 0x046F1060"
+  << << TCmdLineDebugger.ReadLn "       ebp = 0x0262FDF8"
+  << << TCmdLineDebugger.ReadLn "       esp = 0x0262FDA8"
+  << << TCmdLineDebugger.ReadLn "       eip = 0x004294A8  project1.exe`FORMCREATE + 104 at unit1.pas:39"
+  << << TCmdLineDebugger.ReadLn "    eflags = 0b00000000000000000000001001000110"
+  << << TCmdLineDebugger.ReadLn ""
+< TLldbDebugger.UnlockRelease 1
+*)
+end;
+
+procedure TLldbInstructionRegister.SendCommandDataToDbg();
+begin
+  inherited SendCommandDataToDbg();
+  Queue.SendDataToDBG(Self, 'p 112235'); // end marker // do not sent before new prompt
+end;
+
+constructor TLldbInstructionRegister.Create(AThread, AFrame: Integer);
+begin
+  inherited Create('register read --all', AThread, AFrame);
 end;
 
 { TLldbInstructionStackTrace }
