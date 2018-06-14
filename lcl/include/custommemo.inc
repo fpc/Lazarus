@@ -239,18 +239,22 @@ end;
 procedure TCustomMemo.WMGetDlgCode(var Message: TLMGetDlgCode);
 begin
   inherited;
-  if Message.CharCode = VK_TAB then
-  begin
-    if WantTabs then
-      Message.Result := Message.Result or (DLGC_WANTTAB or DLGC_WANTALLKEYS)
-    else
-      Message.Result := Message.Result and not (DLGC_WANTTAB or DLGC_WANTALLKEYS);
-  end;
-  if Message.CharCode = VK_RETURN then
-  begin
-    if WantReturns then
-      Message.Result := Message.Result or DLGC_WANTALLKEYS
-    else
+  case Message.CharCode of
+    VK_TAB:
+    begin
+      if WantTabs then
+        Message.Result := Message.Result or (DLGC_WANTTAB or DLGC_WANTALLKEYS)
+      else
+        Message.Result := Message.Result and not (DLGC_WANTTAB or DLGC_WANTALLKEYS);
+    end;
+    VK_RETURN:
+    begin
+      if WantReturns then
+        Message.Result := Message.Result or DLGC_WANTALLKEYS
+      else
+        Message.Result := Message.Result and not DLGC_WANTALLKEYS;
+    end;
+    VK_ESCAPE:
       Message.Result := Message.Result and not DLGC_WANTALLKEYS;
   end;
 end;
