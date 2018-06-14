@@ -6464,7 +6464,7 @@ procedure TMainIDE.DoAddWordsToIdentCompletion(Sender: TIdentifierList;
   FilteredList: TFPList; PriorityCount: Integer);
 var
   New: TIdentifierListItem;
-  I: Integer;
+  I, OldPriorityCount: Integer;
 begin
   if not(
     FIdentifierWordCompletionEnabled and (
@@ -6480,6 +6480,7 @@ begin
   end else
     FIdentifierWordCompletionWordList.Clear;
 
+  OldPriorityCount := PriorityCount;
   PriorityCount := FilteredList.Count;
   AWordCompletion.GetWordList(FIdentifierWordCompletionWordList, Sender.Prefix, Sender.ContainsFilter, False, 100);
   FilteredList.Capacity := FilteredList.Count+FIdentifierWordCompletionWordList.Count;
@@ -6491,8 +6492,8 @@ begin
         PChar(FIdentifierWordCompletionWordList[I]), 0, nil, nil, ctnWord);
       FIdentifierWordCompletionWordList.Objects[I] := New;
       if SameText(Sender.Prefix, FIdentifierWordCompletionWordList[I]) then
-      begin // show exact match at top
-        FilteredList.Insert(0, New);
+      begin // show exact match between exact matches and in-word-matches
+        FilteredList.Insert(OldPriorityCount, New);
         Inc(PriorityCount);
       end else
       if Sender.ContainsFilter and (Sender.Prefix<>'')
