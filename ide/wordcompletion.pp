@@ -143,18 +143,23 @@ var i, Line, x, FilterLen, MaxHash, LineLen: integer;
   var
     AAdd: Boolean;
   begin
-    AAdd := False;
-    if CaseSensitive then begin
-      if ContainsFilter then
-        AAdd := MyPos(Filter, ALine, AFirstPos, AFirstPos+ALength-1)>0
-      else
-        AAdd := strlcomp(PChar(@ALine[AFirstPos]),PChar(Filter),FilterLen)=0;
-    end else
+    if FilterLen=0 then
+      AAdd := True
+    else
     begin
-      if ContainsFilter then
-        AAdd := MyPos(UpFilter, ALineUp, AFirstPos, AFirstPos+ALength-1)>0
-      else
-        AAdd := strlcomp(PChar(@ALineUp[AFirstPos]),PChar(UpFilter),FilterLen)=0;
+      AAdd := False;
+      if CaseSensitive then begin
+        if ContainsFilter then
+          AAdd := MyPos(Filter, ALine, AFirstPos, AFirstPos+ALength-1)>0
+        else
+          AAdd := strlcomp(PChar(@ALine[AFirstPos]),PChar(Filter),FilterLen)=0;
+      end else
+      begin
+        if ContainsFilter then
+          AAdd := MyPos(UpFilter, ALineUp, AFirstPos, AFirstPos+ALength-1)>0
+        else
+          AAdd := strlcomp(PChar(@ALineUp[AFirstPos]),PChar(UpFilter),FilterLen)=0;
+      end;
     end;
     if AAdd then
       Add(Copy(ALine, AFirstPos, ALength));
