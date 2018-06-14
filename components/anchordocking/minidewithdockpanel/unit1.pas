@@ -5,9 +5,14 @@ unit Unit1;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Menus, ExtCtrls, Buttons, ComCtrls, XMLPropStorage, LazFileUtils, SimpleFrm,
-  AnchorDocking, AnchorDockStorage, AnchorDockOptionsDlg, AnchorDockPanel;
+  Classes, SysUtils,
+  // LCL
+  LCLProc, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  Menus, Buttons, ComCtrls, XMLPropStorage,
+  // LazUtils
+  LazFileUtils,
+  // AnchorDocking
+  SimpleFrm, AnchorDocking, AnchorDockStorage, AnchorDockOptionsDlg, AnchorDockPanel;
 
 type
 

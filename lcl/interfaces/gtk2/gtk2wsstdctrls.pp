@@ -25,7 +25,7 @@ uses
   glib2,  gdk2, gtk2,
   Classes, SysUtils, Math,
   // LazUtils
-  LazLoggerBase,
+  LazLoggerBase, LazTracer,
   // LCL
   Controls, Graphics, StdCtrls, LMessages, LCLType, LazUtf8Classes, LazUTF8,
   // Widgetset

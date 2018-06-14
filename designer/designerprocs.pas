@@ -35,7 +35,7 @@ interface
 uses
   Classes, SysUtils, Types, typinfo,
   // LazUtils
-  LazLoggerBase,
+  LazLoggerBase, LazTracer,
   // LCL
   LCLIntf, LCLType, Forms, Controls, Graphics,
   // IdeIntf

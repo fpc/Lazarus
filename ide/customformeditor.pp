@@ -44,7 +44,7 @@ uses
   LCLIntf, LCLType, LResources, LCLMemManager, Controls, Graphics,
   Forms, Menus, Dialogs,
   // LazUtils
-  FileUtil, LazFileUtils, LazFileCache, CompWriterPas, LazLoggerBase,
+  FileUtil, LazFileUtils, LazFileCache, CompWriterPas, LazLoggerBase, LazTracer,
   // Codetools
   CodeCache, CodeTree, CodeToolManager, FindDeclarationTool,
   // IDEIntf

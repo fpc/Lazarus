@@ -32,7 +32,7 @@ interface
 uses
   Types, Classes, SysUtils, DB, Variants,
   // LazUtils
-  LazLoggerBase, LazUtilities,
+  LazTracer, LazUtilities,
   // LCL
   LCLStrConsts, LMessages, LCLType, LResources, GraphType, Controls, Graphics,
   Dialogs, StdCtrls, Buttons, MaskEdit, ExtCtrls, Calendar, ImgList;

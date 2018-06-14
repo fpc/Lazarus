@@ -35,7 +35,7 @@ interface
 uses
   Classes, SysUtils, contnrs,
   // LazUtils
-  LazFileUtils, FileUtil, LazFileCache, LazConfigStorage, Laz2_XMLCfg, LazLoggerBase,
+  LazFileUtils, FileUtil, LazFileCache, LazConfigStorage, Laz2_XMLCfg, LazTracer,
   // LCL
   Controls, Forms, Dialogs,
   // CodeTools

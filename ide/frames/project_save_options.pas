@@ -7,7 +7,7 @@ interface
 uses
   SysUtils,
   // LazUtils
-  FileUtil, LazLoggerBase,
+  LazTracer,
   // LCL
   Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
   // IdeIntf

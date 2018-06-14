@@ -46,7 +46,7 @@ uses
   // LCL
   LCLIntf, LCLType,
   // LazUtils
-  LazUTF8, LazLoggerBase,
+  LazUTF8, LazTracer,
   // SynEdit
   SynEditMiscProcs, SynEditTypes;
 

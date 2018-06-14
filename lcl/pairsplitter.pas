@@ -31,7 +31,7 @@ interface
 uses
   Types, Classes, SysUtils,
   // LazUtils
-  LazLoggerBase,
+  LazTracer,
   // LCL
   LCLType, LCLIntf, LMessages, Graphics, Controls, ExtCtrls;
 

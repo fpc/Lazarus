@@ -50,7 +50,7 @@ uses
   // LCL
   Forms, Controls, Dialogs, Menus, ComCtrls, LResources,
   // LazUtils
-  LazUTF8, Laz2_XMLCfg, LazUTF8Classes, LazLoggerBase, LazUtilities,
+  LazUTF8, Laz2_XMLCfg, LazUTF8Classes, LazTracer, LazUtilities,
   LazFileUtils, LazFileCache, StringHashList, Translations, AvgLvlTree,
   // Codetools
   CodeToolsConfig, CodeToolManager, CodeCache, BasicCodeTools,

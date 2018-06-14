@@ -121,7 +121,7 @@ uses
   // LCL
   LCLType, LCLIntf, LResources, Graphics,
   // LazUtils
-  FPCAdds, LazUTF8, LazLoggerBase;
+  FPCAdds, LazUTF8, LazTracer;
 
 { for delphi compatibility:
 

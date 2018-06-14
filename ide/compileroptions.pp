@@ -46,7 +46,7 @@ uses
   // LCL
   InterfaceBase, Forms, Controls,
   // LazUtils
-  FileUtil, LazFileUtils, LazUTF8, Laz2_XMLCfg, Laz2_DOM, LazUtilities, LazLoggerBase,
+  FileUtil, LazFileUtils, LazUTF8, Laz2_XMLCfg, Laz2_DOM, LazUtilities, LazTracer,
   // CodeTools
   FileProcs, DefineTemplates, CodeToolsCfgScript, CodeToolManager,
   KeywordFuncLists, BasicCodeTools, LinkScanner,

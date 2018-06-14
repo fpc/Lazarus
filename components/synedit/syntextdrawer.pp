@@ -71,7 +71,7 @@ uses
   // LCL
   LCLType, LCLIntf, Graphics, GraphUtil,
   // LazUtils
-  LazMethodList, LazLoggerBase,
+  LazMethodList, LazLoggerBase, LazTracer,
   // SynEdit
   SynEditTypes, SynEditMiscProcs;
 

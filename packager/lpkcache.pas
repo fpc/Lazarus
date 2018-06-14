@@ -53,7 +53,7 @@ interface
 uses
   Classes, SysUtils, Laz_AVL_Tree,
   // LazUtils
-  LazFileUtils, Laz2_XMLCfg, LazLoggerBase, LazMethodList,
+  LazFileUtils, Laz2_XMLCfg, LazLoggerBase, LazTracer, LazMethodList,
   // IdeIntf
   PackageDependencyIntf, PackageIntf, PackageLinkIntf,
   // IDE

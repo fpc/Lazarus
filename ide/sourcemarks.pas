@@ -42,7 +42,7 @@ uses
   // LCL
   Graphics, Controls,
   // LazUtils
-  LazMethodList, LazLoggerBase, LazUtilities,
+  LazMethodList, LazTracer, LazUtilities,
   // SynEdit
   SynEdit, SynEditMarks, SynEditMarkupGutterMark,
   // IdeIntf

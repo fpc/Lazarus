@@ -44,7 +44,7 @@ uses
   Forms,
   // LazUtils
   Laz2_XMLCfg, LazFileCache, LazUTF8Classes, LazFileUtils, FileUtil,
-  LazLoggerBase, LazUtilities, AvgLvlTree,
+  LazTracer, LazUtilities, AvgLvlTree,
   // Codetools
   FileProcs, CodeToolManager,
   // IdeIntf

@@ -7,8 +7,12 @@ Unit AnchorDockStorage;
 interface
 
 uses
-  Math, Classes, SysUtils, LCLProc, ExtCtrls, ComCtrls, Forms, Controls,
-  AvgLvlTree, LazConfigStorage, Laz2_XMLCfg,
+  Classes, SysUtils, Math,
+  // LCL
+  LCLProc, ExtCtrls, ComCtrls, Forms, Controls,
+  // LazUtils
+  AvgLvlTree, LazConfigStorage, Laz2_XMLCfg, LazLoggerBase, LazTracer,
+  // AnchorDocking
   AnchorDockStr;
 
 const

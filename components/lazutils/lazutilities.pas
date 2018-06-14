@@ -32,6 +32,7 @@ function FindNextDelimitedItem(const List: string; Delimiter: char;
                                var Position: integer; FindItem: string): string;
 function MergeWithDelimiter(const a, b: string; Delimiter: char): string;
 function BreakString(const s: string; MaxLineLength, Indent: integer): string;
+function ConvertLineEndings(const s: string): string;
 
 var
   ConsoleVerbosity: integer = 0; // 0=normal, -1=quiet, 1=verbose, 2=very verbose
@@ -250,6 +251,31 @@ begin
     // cut string
     Src:=copy(Src,SplitPos,length(Src)-SplitPos+1);
   until false;
+end;
+
+function ConvertLineEndings(const s: string): string;
+var
+  i: Integer;
+  EndingStart: LongInt;
+begin
+  Result:=s;
+  i:=1;
+  while (i<=length(Result)) do begin
+    if Result[i] in [#10,#13] then begin
+      EndingStart:=i;
+      inc(i);
+      if (i<=length(Result)) and (Result[i] in [#10,#13])
+      and (Result[i]<>Result[i-1]) then
+        inc(i);
+      if (length(LineEnding)<>i-EndingStart)
+      or (LineEnding<>copy(Result,EndingStart,length(LineEnding))) then begin
+        // line end differs => replace with current LineEnding
+        Result:=copy(Result,1,EndingStart-1)+LineEnding+copy(Result,i,length(Result));
+        i:=EndingStart+length(LineEnding);
+      end;
+    end else
+      inc(i);
+  end;
 end;
 
 end.

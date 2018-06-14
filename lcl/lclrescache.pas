@@ -21,7 +21,7 @@ interface
 uses
   Classes, SysUtils, Types, Laz_AVL_Tree,
   // LazUtils
-  FPCAdds, LazLoggerBase,
+  FPCAdds, LazLoggerBase, LazTracer,
   // LCL
   LCLType, WSReferences,
   syncobjs; // This FCL unit must be in the end.

@@ -24,7 +24,7 @@ uses
   // RTL, FCL, libs
   Math, Sysutils, Classes, GLib2, Gtk2, Gdk2, Gdk2pixbuf,
   // LazUtils
-  LazLoggerBase,
+  LazTracer,
   // LCL
   LCLType, LCLIntf, LMessages, Controls, Graphics, ComCtrls, StdCtrls, Forms,
   ImgList, InterfaceBase,

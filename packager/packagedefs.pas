@@ -41,10 +41,11 @@ uses
   Classes, SysUtils, contnrs, typinfo, Laz_AVL_Tree,
   LCLType, LResources, Graphics, Controls, Forms, Dialogs,
   // Codetools
-  FileProcs, FileUtil, LazConfigStorage, Laz2_XMLCfg, BasicCodeTools,
-  DefineTemplates, CodeToolManager, CodeCache, CodeToolsCfgScript, CodeToolsStructs,
+  FileProcs, LazConfigStorage, BasicCodeTools, DefineTemplates, CodeToolManager,
+  CodeCache, CodeToolsCfgScript, CodeToolsStructs,
   // LazUtils
-  LazFileUtils, LazFileCache, LazUTF8, LazLoggerBase, LazUtilities, AvgLvlTree,
+  FileUtil, LazFileUtils, LazFileCache, LazUTF8, LazTracer, LazUtilities,
+  Laz2_XMLCfg, AvgLvlTree,
   // IDEIntf
   PropEdits, LazIDEIntf, MacroIntf, MacroDefIntf, IDEOptionsIntf, IDEOptEditorIntf,
   PackageDependencyIntf, PackageIntf, IDEDialogs, ComponentReg, IDEImagesIntf,

@@ -29,7 +29,7 @@ uses
   Classes, SysUtils, Math, TypInfo, Types, Laz_AVL_Tree,
   // LazUtils
   FPCAdds, LazFileUtils, LazUtilities, LazMethodList, LazUTF8, LazUTF8Classes,
-  LazLoggerBase,
+  LazLoggerBase, LazTracer,
   // LCL
   LCLStrConsts, LCLType;
 
@@ -142,7 +142,7 @@ function TruncToCardinal(const e: Extended): cardinal;
 function StrToDouble(const s: string): double;
 
 // Call debugging procedure in LazLoggerBase.
-procedure RaiseGDBException(const Msg: string);
+procedure RaiseGDBException(const Msg: string); inline;
 
 {$IFnDEF WithOldDebugln}
 procedure DbgOut(const s: string = ''); inline; overload;
@@ -1292,7 +1292,7 @@ end;
 
 procedure RaiseGDBException(const Msg: string);
 begin
-  LazLoggerBase.RaiseGDBException(Msg);
+  LazTracer.RaiseGDBException(Msg);
 end;
 
 {$IFnDEF WithOldDebugln}
@@ -1825,7 +1825,7 @@ end;
 
 function ConvertLineEndings(const s: string): string;
 begin
-  Result:=LazLoggerBase.ConvertLineEndings(s);
+  Result:=LazUtilities.ConvertLineEndings(s);
 end;
 
 function DbgS(const c: cardinal): string;

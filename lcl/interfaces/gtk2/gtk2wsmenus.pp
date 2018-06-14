@@ -24,7 +24,7 @@ uses
   // RTL
   Classes, Types, glib2, gdk2, gtk2,
   // LazUtils
-  LazLoggerBase,
+  LazTracer,
   // LCL
   Gtk2Int, Gtk2Proc, Gtk2Globals, Gtk2Def, Gtk2Extra,
   LCLType, LCLIntf, InterfaceBase, WSMenus, LMessages, Graphics, Menus, Forms;

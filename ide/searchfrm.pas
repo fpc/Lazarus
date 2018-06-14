@@ -38,7 +38,7 @@ uses
   // CodeTools
   SourceLog, KeywordFuncLists, BasicCodeTools, FileProcs,
   // LazUtils
-  FileUtil, LazFileUtils, LazFileCache, LazLoggerBase,
+  FileUtil, LazFileUtils, LazFileCache, LazTracer,
   // IDEIntf
   IDEWindowIntf, LazIDEIntf, SrcEditorIntf, IDEDialogs,
   // ide

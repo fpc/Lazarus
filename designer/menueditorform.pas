@@ -29,7 +29,7 @@ uses
   // FCL
   Classes, SysUtils, Types, typinfo, math,
   // LazUtils
-  LazLoggerBase,
+  LazTracer,
   // LCL
   Controls, StdCtrls, ExtCtrls, Forms, Graphics, Buttons, Menus, ButtonPanel,
   ImgList, Themes, LCLintf,

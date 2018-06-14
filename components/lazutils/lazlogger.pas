@@ -15,7 +15,7 @@ interface
 uses
   Classes, SysUtils, types, math,
   // LazUtils
-  LazLoggerBase, LazClasses, LazFileUtils, LazUTF8;
+  LazLoggerBase, LazClasses, LazFileUtils, LazUtilities, LazUTF8;
 
 type
 
@@ -29,8 +29,6 @@ function DbgStr(const StringWithSpecialChars: string): string; overload;
 function DbgStr(const StringWithSpecialChars: string; StartPos, Len: PtrInt): string; overload;
 function DbgStr(const p: PChar; Len: PtrInt): string; overload;
 function DbgWideStr(const StringWithSpecialChars: widestring): string; overload;
-
-function ConvertLineEndings(const s: string): string;
 
 type
 
@@ -857,11 +855,6 @@ end;
 function DbgWideStr(const StringWithSpecialChars: widestring): string;
 begin
   Result := LazLoggerBase.DbgWideStr(StringWithSpecialChars);
-end;
-
-function ConvertLineEndings(const s: string): string;
-begin
-  Result := LazLoggerBase.ConvertLineEndings(s);
 end;
 
 initialization
