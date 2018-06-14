@@ -11059,8 +11059,10 @@ begin
 
         FDebugResText := ResultText;
 
-        if DebugBoss.Evaluate('('+FExpression + ')^', @AddDebuggerResultDeref, Opts) then
+        if DebugBoss.Evaluate('('+FExpression + ')^', @AddDebuggerResultDeref, Opts) then begin
+          FreeAndNil(ResultDBGType);
           exit;
+        end;
       end;
     end else
       FDebugResText := DebugBoss.FormatValue(ResultDBGType, ResultText);
