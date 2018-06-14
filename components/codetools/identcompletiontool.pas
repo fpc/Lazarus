@@ -44,6 +44,7 @@ interface
 { $DEFINE ShowHistory}
 { $DEFINE VerboseCodeContext}
 { $DEFINE VerboseICGatherUnitNames}
+{ $DEFINE VerboseICGatherKeywords}
 
 uses
   {$IFDEF MEM_CHECK}
@@ -1870,39 +1871,63 @@ type
   end;
 
 var
-  Node: TCodeTreeNode;
-  SubNode: TCodeTreeNode;
-  NodeInFront: TCodeTreeNode;
-  p, AtomStartPos: Integer;
+  Node, SubNode, NodeInFront: TCodeTreeNode;
+  p, AtomStartPos, AtomEndPos: Integer;
   NodeBehind, LastChild: TCodeTreeNode;
 begin
   try
+    AtomStartPos:=CleanPos;
+    AtomEndPos:=CleanPos;
+    NodeInFront:=nil;
+
     Node:=Context.Node;
     if Node<>nil then begin
       MoveCursorToNearestAtom(CleanPos);
+      {$IFDEF VerboseICGatherKeywords}
+      debugln(['TIdentCompletionTool.GatherContextKeywords MoveCursorToNearestAtom Node=',Node.DescAsString,' Atom="',GetAtom,'"']);
+      {$ENDIF}
+      ReadNextAtom;
+      {$IFDEF VerboseICGatherKeywords}
+      debugln(['TIdentCompletionTool.GatherContextKeywords MoveCursorToNearestAtom+ReadNextAtom Node=',Node.DescAsString,' Atom="',GetAtom,'"']);
+      {$ENDIF}
       AtomStartPos:=CurPos.StartPos;
-      if (AtomStartPos=Node.StartPos) and (Node.Parent<>nil) then
-        // at the start of the node -> the node is created by the atom at cursor
-        // use parent as context
-        Node:=Node.Parent;
-    end else
-      AtomStartPos:=CleanPos;
-    //debugln(['TIdentCompletionTool.GatherContextKeywords Node=',Node.DescAsString]);
+      AtomEndPos:=CurPos.EndPos;
+      if CleanPos<=AtomEndPos then begin
+        // CleanPos is within an atom
+        while (Node.Parent<>nil)
+        and (AtomStartPos=Node.StartPos) do
+          // at the start of the node -> the node is created by the atom at cursor
+          // use parent as context
+          Node:=Node.Parent;
 
-    ReadPriorAtomSafe(AtomStartPos);
-    //debugln(['TIdentCompletionTool.GatherContextKeywords prioratom=',CleanPosToStr(CurPos.StartPos),'="',GetAtom(CurPos),'"']);
-    NodeInFront:=nil;
-    if CurPos.StartPos>0 then
-      NodeInFront:=FindDeepestNodeAtPos(CurPos.StartPos,false);
+        // get node in front
+        ReadPriorAtomSafe(AtomStartPos);
+        {$IFDEF VerboseICGatherKeywords}
+        debugln(['TIdentCompletionTool.GatherContextKeywords prioratom=',CleanPosToStr(CurPos.StartPos),'="',GetAtom(CurPos),'"']);
+        {$ENDIF}
+        if CurPos.StartPos>0 then
+          NodeInFront:=FindDeepestNodeAtPos(CurPos.StartPos,false);
+      end else begin
+        // CleanPos is between an atom
+        NodeInFront:=FindDeepestNodeAtPos(AtomEndPos,false);
+      end;
+    end;
+    {$IFDEF VerboseICGatherKeywords}
+    debugln(['TIdentCompletionTool.GatherContextKeywords Node=',Node.DescAsString,' Atom="',GetAtom,'"']);
+    {$ENDIF}
 
     NodeBehind:=nil;
     MoveCursorToCleanPos(AtomStartPos);
     ReadNextAtom;
-    //debugln(['TIdentCompletionTool.GatherContextKeywords nextatom=',CleanPosToStr(CurPos.StartPos),'=',GetAtom(CurPos)]);
+    {$IFDEF VerboseICGatherKeywords}
+    debugln(['TIdentCompletionTool.GatherContextKeywords nextatom=',CleanPosToStr(CurPos.StartPos),'=',GetAtom(CurPos)]);
+    {$ENDIF}
     if CurPos.StartPos>CleanPos then
       NodeBehind:=FindDeepestNodeAtPos(CurPos.StartPos,false);
 
-    //debugln(['TIdentCompletionTool.GatherContextKeywords Node=',Node.DescAsString,' NodeInFront=',NodeInFront.DescAsString,' NodeBehind=',NodeBehind.DescAsString]);
+    {$IFDEF VerboseICGatherKeywords}
+    debugln(['TIdentCompletionTool.GatherContextKeywords CASE Node=',Node.DescAsString,' NodeInFront=',NodeInFront.DescAsString,' NodeBehind=',NodeBehind.DescAsString]);
+    {$ENDIF}
 
     case Node.Desc of
     ctnClass,ctnObject,ctnRecordType,ctnObjCCategory,ctnObjCClass,
@@ -1927,7 +1952,9 @@ begin
         if (LastChild<>nil) and (CleanPos>LastChild.StartPos)
         and (LastChild.EndPos>LastChild.StartPos)
         and (LastChild.EndPos<Srclen) then begin
-          //debugln(['TIdentCompletionTool.GatherContextKeywords end of class section ',dbgstr(copy(Src,Node.LastChild.EndPos-10,10))]);
+          {$IFDEF VerboseICGatherKeywords}
+          debugln(['TIdentCompletionTool.GatherContextKeywords end of class section ',dbgstr(copy(Src,Node.LastChild.EndPos-10,10))]);
+          {$ENDIF}
           SubNode:=LastChild;
           if SubNode.Desc=ctnProperty then begin
             CheckProperty(SubNode);
@@ -2042,21 +2069,38 @@ begin
     end;
 
     if NodeInFront<>nil then begin
-      if NodeInFront.Desc=ctnProcedureHead then begin
-        // procedure head postfix modifiers
-        //debugln(['TIdentCompletionTool.GatherContextKeywords NodeInFront.Parent=',NodeInFront.Parent.DescAsString]);
-        if NodeInFront.Parent.Desc=ctnProcedure then begin
-          //debugln(['TIdentCompletionTool.GatherContextKeywords NodeInFront.Parent.Parent=',NodeInFront.Parent.Parent.DescAsString]);
-          case NodeInFront.Parent.Parent.Desc of
-          ctnClass,ctnObject,ctnObjCCategory,ctnObjCClass,
-          ctnClassHelper, ctnRecordHelper, ctnTypeHelper,
-          ctnClassPrivate,ctnClassProtected,ctnClassPublic,ctnClassPublished:
-            AddMethodSpecifiers;
-          else
-            AddProcSpecifiers;
+      {$IFDEF VerboseICGatherKeywords}
+      debugln(['TIdentCompletionTool.GatherContextKeywords Check NodeInFront=',NodeInFront.DescAsString]);
+      {$ENDIF}
+      SubNode:=NodeInFront;
+      while (SubNode<>nil) and (SubNode.EndPos<=CleanPos) do begin
+        {$IFDEF VerboseICGatherKeywords}
+        debugln(['TIdentCompletionTool.GatherContextKeywords Check NodeInFront SubNode=',SubNode.DescAsString]);
+        {$ENDIF}
+        if (SubNode.Desc=ctnProcedureHead) then begin
+          // e.g. in interface: procedure DoIt; v|
+          // procedure head postfix modifiers
+          {$IFDEF VerboseICGatherKeywords}
+          debugln(['TIdentCompletionTool.GatherContextKeywords SubNode.Parent=',SubNode.Parent.DescAsString]);
+          {$ENDIF}
+          if SubNode.Parent.Desc=ctnProcedure then begin
+            {$IFDEF VerboseICGatherKeywords}
+            debugln(['TIdentCompletionTool.GatherContextKeywords SubNode.Parent.Parent=',SubNode.Parent.Parent.DescAsString]);
+            {$ENDIF}
+            if SubNode.Parent.Parent.Desc in (AllClasses+AllClassBaseSections) then
+              AddMethodSpecifiers
+            else
+              AddProcSpecifiers;
+          end else if SubNode.Parent.Desc=ctnProcedureType then begin
+            AddProcTypeSpecifiers;
           end;
-        end else if NodeInFront.Parent.Desc=ctnProcedureType then
-          AddProcTypeSpecifiers;
+          break;
+        end;
+        SubNode:=SubNode.Parent;
+        {$IFDEF VerboseICGatherKeywords}
+        if (SubNode<>nil) and (SubNode.EndPos>CleanPos) then
+          debugln(['TIdentCompletionTool.GatherContextKeywords EndOfCheck NodeInFront SubNode=',SubNode.DescAsString]);
+        {$ENDIF}
       end;
     end;
   except
