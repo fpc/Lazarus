@@ -889,7 +889,7 @@ type
     procedure SetScrollBars(const Value: TScrollStyle);
     procedure Loaded; override;
     procedure CMWantSpecialKey(var Message: TCMWantSpecialKey); message CM_WANTSPECIALKEY;
-    procedure WMGetDlgCode(var Message: TLMNoParams); message LM_GETDLGCODE;
+    procedure WMGetDlgCode(var Message: TLMGetDlgCode); message LM_GETDLGCODE;
     class function GetControlClassDefaultSize: TSize; override;
     procedure UTF8KeyPress(var UTF8Key: TUTF8Char); override;
     function CanShowEmulatedTextHint: Boolean; override;
