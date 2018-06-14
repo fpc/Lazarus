@@ -2038,8 +2038,7 @@ end;
 procedure TMainIDE.CodeToolBossGatherUserIdentifiersToFilteredList(
   Sender: TIdentifierList; FilteredList: TFPList; PriorityCount: Integer);
 begin
-  if FIdentifierWordCompletionEnabled then
-    DoAddWordsToIdentCompletion(Sender, FilteredList, PriorityCount);
+  DoAddWordsToIdentCompletion(Sender, FilteredList, PriorityCount);
 end;
 
 {------------------------------------------------------------------------------}
@@ -6467,6 +6466,13 @@ var
   New: TIdentifierListItem;
   I: Integer;
 begin
+  if not(
+    FIdentifierWordCompletionEnabled and (
+         (Sender.Prefix<>'')      // gather words only if prefix is not empty
+      or (FilteredList.Count=0))) // or if identifer completion didn't find anything (e.g. because of a syntax error)
+  then
+    Exit;
+
   if FIdentifierWordCompletionWordList=nil then
   begin
     FIdentifierWordCompletionWordList:=TStringList.Create;
@@ -10199,6 +10205,7 @@ var
 begin
   ActiveSrcEdit:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit(false);
+  FIdentifierWordCompletionEnabled := True;
   {$IFDEF IDE_DEBUG}
   debugln('');
   debugln('[TMainIDE.DoInitIdentCompletion] ************');
@@ -10212,8 +10219,10 @@ begin
     if JumpToError then
       DoJumpToCodeToolBossError
     else
+    begin
       DoShowCodeToolBossError;
-    exit;
+      Result := True; // proceed and show ident completion (add words from word completion)
+    end;
   end;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoInitIdentCompletion B');{$ENDIF}
 end;
