@@ -28,7 +28,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, FileUtil, Forms, Controls, Graphics,
   Dialogs, StdCtrls, ButtonPanel, ExtCtrls, PropEdits, LazarusIDEStrConsts,
-  TypInfo;
+  TypInfo, LCLType;
 
 type
 
@@ -42,7 +42,9 @@ type
     NameEdit: TEdit;
     NameLabel: TLabel;
     procedure FormCreate(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure NameEditChange(Sender: TObject);
+    procedure TextMemoEnter(Sender: TObject);
   private
     FLookupRoot: TComponent;
     FNewComponent: TComponent;
@@ -198,6 +200,13 @@ begin
   ButtonPanel1.OKButton.Enabled:=false;
 end;
 
+procedure TAskCompNameDialog.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key=VK_RETURN) and (ssCtrl in Shift) then
+    ButtonPanel1.OKButton.Click;
+end;
+
 function TAskCompNameDialog.GetNewText: string;
 begin
   Result := TextMemo.Text;
@@ -240,6 +249,11 @@ begin
     TextLabel.Caption:=FNewTextPropertyName;
   end else
     TextMemo.Text := '';
+end;
+
+procedure TAskCompNameDialog.TextMemoEnter(Sender: TObject);
+begin
+  TextMemo.SelectAll;
 end;
 
 function TAskCompNameDialog.IsValidName(AName: TComponentName; out

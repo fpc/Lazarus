@@ -8,7 +8,9 @@ object AskCompNameDialog: TAskCompNameDialog
   Caption = 'AskCompNameDialog'
   ClientHeight = 224
   ClientWidth = 393
+  KeyPreview = True
   OnCreate = FormCreate
+  OnKeyDown = FormKeyDown
   Position = poScreenCenter
   LCLVersion = '1.9.0.0'
   object NameLabel: TLabel
@@ -101,6 +103,7 @@ object AskCompNameDialog: TAskCompNameDialog
     BorderSpacing.Top = 6
     BorderSpacing.Bottom = 6
     OnChange = NameEditChange
+    OnEnter = TextMemoEnter
     ParentShowHint = False
     ScrollBars = ssAutoBoth
     ShowHint = True
