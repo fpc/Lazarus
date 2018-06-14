@@ -204,7 +204,10 @@ procedure TAskCompNameDialog.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if (Key=VK_RETURN) and (ssCtrl in Shift) then
+  begin
+    Key := 0;
     ButtonPanel1.OKButton.Click;
+  end;
 end;
 
 function TAskCompNameDialog.GetNewText: string;
