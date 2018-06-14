@@ -62,7 +62,7 @@ var
 
 function SetupMainIDEInstance: boolean; // false if this is a secondary instance
 function GetPidFile: string;
-function IsLazarusPIDRunning(aPID: int64): boolean;
+function IsLazarusPIDRunning({%H-}aPID: int64): boolean;
 function GetRemoteControlFilename: string;
 procedure CleanUpPIDFile;
 

@@ -11112,10 +11112,8 @@ procedure TMainIDE.SrcNotebookShowHintForSource(SrcEdit: TSourceEditor;
 
 var
   ActiveUnitInfo: TUnitInfo;
-  BaseURL, SmartHintStr, Expression, DebugEval, DebugEvalDerefer: String;
-  DBGType,DBGTypeDerefer: TDBGType;
+  BaseURL, SmartHintStr, Expression: String;
   HasHint: Boolean;
-  p: SizeInt;
   Opts: TDBGEvaluateFlags;
   AtomStartPos, AtomEndPos: integer;
   AtomRect: TRect;

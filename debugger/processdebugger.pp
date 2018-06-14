@@ -54,7 +54,8 @@ type
     function  ProcessStop: Boolean;
   protected
     function  GetSupportedCommands: TDBGCommands; override;
-    function  RequestCommand(const ACommand: TDBGCommand; const AParams: array of const; const ACallback: TMethod): Boolean; override;
+    function  RequestCommand(const ACommand: TDBGCommand; const AParams: array of const;
+      const {%H-}ACallback: TMethod): Boolean; override;
   public
     class function Caption: String; override;
     class function NeedsExePath: boolean; override;

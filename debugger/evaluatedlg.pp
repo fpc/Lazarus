@@ -108,7 +108,6 @@ var
 const
   RESULTSEPARATOR='-----------';
   RESULTEVAL='>>>> ';
-  RESULTMOD='<<>> ';
 
 { TEvaluateDlg }
 

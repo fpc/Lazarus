@@ -83,14 +83,14 @@ type
     FGridData: TStringGrid;
     FGridMethods: TStringGrid;
     FUpdateLock, FUpdateNeeded: Boolean;
-    FTestUpdateLock, FTestUpdateNeeded: Boolean;
+    FTestUpdateLock: Boolean;
     FRowClicked: Integer;
     FHistory: TStringList;
     FHistoryIndex: Integer;
     procedure EvaluateCallback(Sender: TObject; ASuccess: Boolean;
       ResultText: String; ResultDBGType: TDBGType);
     procedure EvaluateTestCallback(Sender: TObject; ASuccess: Boolean;
-      ResultText: String; ResultDBGType: TDBGType);
+      {%H-}ResultText: String; ResultDBGType: TDBGType);
     procedure Localize;
     function  ShortenedExpression: String;
     procedure ContextChanged(Sender: TObject);
