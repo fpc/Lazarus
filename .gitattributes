@@ -8203,16 +8203,6 @@ images/states/state_unit_circular_reference.png -text svneol=unset#image/png
 images/states/state_unknown.png -text svneol=unset#image/png
 images/states/state_warning.png -text svneol=unset#image/png
 images/states/state_warning_75.png -text
-images/svg/debugger/debugger_current_line.svg svneol=native#text/plain
-images/svg/debugger/debugger_current_line_breakpoint.svg svneol=native#text/plain
-images/svg/debugger/debugger_current_line_disabled_breakpoint.svg svneol=native#text/plain
-images/svg/sourceeditor/ActiveBreakPoint.svg svneol=native#text/plain
-images/svg/sourceeditor/InactiveBreakPoint.svg svneol=native#text/plain
-images/svg/sourceeditor/InvalidBreakPoint.svg svneol=native#text/plain
-images/svg/sourceeditor/InvalidDisabledBreakPoint.svg svneol=native#text/plain
-images/svg/sourceeditor/PendingBreakPoint.svg svneol=native#text/plain
-images/svg/sourceeditor/UnknownBreakPoint.svg svneol=native#text/plain
-images/svg/sourceeditor/UnknownDisabledBreakPoint.svg svneol=native#text/plain
 images/template.png -text svneol=unset#image/png
 images/vase_trans.xpm -text svneol=native#image/x-xpixmap
 images/windows/win_formeditor.ico -text
