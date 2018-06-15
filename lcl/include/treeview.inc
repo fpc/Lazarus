@@ -5407,8 +5407,11 @@ procedure TCustomTreeView.Change(Node: TTreeNode);
 begin
   if Assigned(FOnChange) then begin
     FCallingOnChange := True;
-    FOnChange(Self, Node);
-    FCallingOnChange := False;
+    try
+      FOnChange(Self, Node);
+    finally
+      FCallingOnChange := False;
+    end;
   end;
 end;
 
