@@ -84,6 +84,7 @@ type
     property GdbLocalsValueMemLimit;
     property AssemblerStyle;
     property DisableStartupShell;
+    property FixStackFrameForFpcAssert;
   end;
 
 procedure Register;

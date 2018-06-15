@@ -165,6 +165,7 @@ type
     FDisableStartupShell: Boolean;
     FEncodeCurrentDirPath: TGDBMIDebuggerFilenameEncoding;
     FEncodeExeFileName: TGDBMIDebuggerFilenameEncoding;
+    FFixStackFrameForFpcAssert: Boolean;
     FGdbLocalsValueMemLimit: Integer;
     {$IFDEF UNIX}
     FConsoleTty: String;
@@ -224,6 +225,8 @@ type
     property AssemblerStyle: TGDBMIDebuggerAssemblerStyle read FAssemblerStyle write FAssemblerStyle default gdasDefault;
     property DisableStartupShell: Boolean read FDisableStartupShell
              write FDisableStartupShell default False;
+    property FixStackFrameForFpcAssert: Boolean read FFixStackFrameForFpcAssert
+             write FFixStackFrameForFpcAssert default True;
   end;
 
   TGDBMIDebuggerProperties = class(TGDBMIDebuggerPropertiesBase)
@@ -251,6 +254,7 @@ type
     property GdbLocalsValueMemLimit;
     property AssemblerStyle;
     property DisableStartupShell;
+    property FixStackFrameForFpcAssert;
   end;
 
   TGDBMIDebugger = class;
@@ -5536,6 +5540,7 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
     S: String;
     FP: TDBGPtr;
     i, cnt: longint;
+    Frame: TGDBMINameValueList;
   begin
     FTheDebugger.QueueExecuteLock;
     try
@@ -5559,6 +5564,17 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
         if i >= 0 then begin
           FTheDebugger.FCurrentStackFrame := i;
           DebugLn(DBG_THREAD_AND_FRAME, ['ProcessStopped GetLocation found fp Stack(Internal) = ', FTheDebugger.FCurrentStackFrame]);
+        end;
+
+        if (FTheDebugger.FCurrentStackFrame > 3) and // must be 2 below fpc_assert, and that again must be below raise_except
+           TGDBMIDebuggerPropertiesBase(FTheDebugger.GetProperties).FixStackFrameForFpcAssert then begin
+          s := GetFrame(FTheDebugger.FCurrentStackFrame - 2);
+          if s <> '' then begin
+            Frame := TGDBMINameValueList.Create(S);
+            if Frame.Values['func'] = 'fpc_assert' then
+              FTheDebugger.FCurrentStackFrame := FTheDebugger.FCurrentStackFrame - 1;
+            Frame.Free;
+          end;
         end;
 
         if FTheDebugger.FCurrentStackFrame <> 0
@@ -7341,6 +7357,7 @@ begin
   FGdbLocalsValueMemLimit := 32000;
   FAssemblerStyle := gdasDefault;
   FDisableStartupShell := False;
+  FFixStackFrameForFpcAssert := True;
   inherited;
 end;
 
@@ -7370,6 +7387,7 @@ begin
   FGdbLocalsValueMemLimit := TGDBMIDebuggerPropertiesBase(Source).FGdbLocalsValueMemLimit;
   FAssemblerStyle := TGDBMIDebuggerPropertiesBase(Source).FAssemblerStyle;
   FDisableStartupShell := TGDBMIDebuggerPropertiesBase(Source).FDisableStartupShell;
+  FFixStackFrameForFpcAssert := TGDBMIDebuggerPropertiesBase(Source).FFixStackFrameForFpcAssert;
 end;
 
 
