@@ -4275,7 +4275,12 @@ procedure TCustomTreeView.OnChangeTimer(Sender: TObject);
 begin
   FChangeTimer.Enabled := False;
   //debugln('TCustomTreeView.OnChangeTimer');
-  Change(FSelectedNode);
+  FCallingChange := True;
+  try
+    Change(FSelectedNode);
+  finally
+    FCallingChange := False;
+  end;
 end;
 
 procedure TCustomTreeView.UpdateScrollbars;
@@ -5405,14 +5410,8 @@ end;
 
 procedure TCustomTreeView.Change(Node: TTreeNode);
 begin
-  if Assigned(FOnChange) then begin
-    FCallingOnChange := True;
-    try
-      FOnChange(Self, Node);
-    finally
-      FCallingOnChange := False;
-    end;
-  end;
+  if Assigned(FOnChange) then
+    FOnChange(Self, Node);
 end;
 
 procedure TCustomTreeView.Delete(Node: TTreeNode);
@@ -6044,7 +6043,7 @@ begin
     Exclude(FStates, tvsSelectionChanged);
     DoSelectionChanged;
     FChangeTimer.Enabled := False;
-    if not FCallingOnChange then  // Prevent recursive loop from OnChange handler.
+    if not FCallingChange then  // Prevent recursive loop from OnChange handler.
       FChangeTimer.Enabled := True;
   end;
 end;

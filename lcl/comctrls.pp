@@ -3300,7 +3300,7 @@ type
   private
     FAccessibilityOn: Boolean;
     FBottomItem: TTreeNode;
-    FCallingOnChange: Boolean;
+    FCallingChange: Boolean;
     FEditingItem: TTreeNode;
     FExpandSignType: TTreeViewExpandSignType;
     FExpandSignSize: integer;
