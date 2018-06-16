@@ -2928,10 +2928,8 @@ begin
 
   // first call our own OnClick if it differs from Action.OnExecute
   if Assigned(FOnClick)
-  and ((not CallAction) or (not OnClickIsActionExecute)) then begin
+  and ((not CallAction) or (not OnClickIsActionExecute)) then
     FOnClick(Self);
-    exit;
-  end;
   // then trigger the Action
   if CallAction then
     ActionLink.Execute(Self);
