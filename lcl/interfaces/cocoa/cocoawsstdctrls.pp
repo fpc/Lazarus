@@ -137,6 +137,11 @@ type
     class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
+
+    class procedure Cut(const ACustomEdit: TCustomEdit); override;
+    class procedure Copy(const ACustomEdit: TCustomEdit); override;
+    class procedure Paste(const ACustomEdit: TCustomEdit); override;
+    class procedure Undo(const ACustomEdit: TCustomEdit); override;
   end;
   
   { TCocoaMemoStrings }
@@ -799,6 +804,30 @@ begin
   lRange := curEditor.selectedRange;
   lRange.length := NewLength;
   curEditor.setSelectedRange(lRange);
+end;
+
+class procedure TCocoaWSCustomEdit.Cut(const ACustomEdit: TCustomEdit);
+begin
+  if not Assigned(ACustomEdit) or not (ACustomEdit.HandleAllocated) then Exit;
+  NSApplication(NSApp).sendAction_to_from(objcselector('cut:'), nil, id(ACustomEdit.Handle));
+end;
+
+class procedure TCocoaWSCustomEdit.Copy(const ACustomEdit: TCustomEdit);
+begin
+  if not Assigned(ACustomEdit) or not (ACustomEdit.HandleAllocated) then Exit;
+  NSApplication(NSApp).sendAction_to_from(objcselector('copy:'), nil, id(ACustomEdit.Handle));
+end;
+
+class procedure TCocoaWSCustomEdit.Paste(const ACustomEdit: TCustomEdit);
+begin
+  if not Assigned(ACustomEdit) or not (ACustomEdit.HandleAllocated) then Exit;
+  NSApplication(NSApp).sendAction_to_from(objcselector('paste:'), nil, id(ACustomEdit.Handle));
+end;
+
+class procedure TCocoaWSCustomEdit.Undo(const ACustomEdit: TCustomEdit);
+begin
+  if not Assigned(ACustomEdit) or not (ACustomEdit.HandleAllocated) then Exit;
+  NSApplication(NSApp).sendAction_to_from(objcselector('undo:'), nil, id(ACustomEdit.Handle));
 end;
 
 { TCocoaMemoStrings }
