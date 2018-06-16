@@ -396,29 +396,26 @@ begin
 
   lDataType := ccdtNonStandard;
   // See PredefinedClipboardMimeTypes for the most common mime-types
-  {$IF not defined(MAC_OS_X_VERSION_MIN_REQUIRED) or (MAC_OS_X_VERSION_MIN_REQUIRED >= 1060)}
   case AMimeType of
   'text/plain':
   begin
-    lNSStr := NSPasteboardTypeString;
-    lNSStr.retain;
+    //hack: the name of constants is a hack
+    //      should be replaced with either weaklinking
+    //      or dynamic loading (dlsym)
+    lNSStr := NSSTR('public.utf8-plain-text'); // NSPasteboardTypeString; // commented out for OSX < 10.6  see #33672
     lDataType := ccdtText;
   end;
   'image/png':
   begin
-    lNSStr := NSPasteboardTypePNG;
-    lNSStr.retain;
+    lNSStr := NSSTR('public.png'); // NSPasteboardTypePNG
     lDataType := ccdtCocoaStandard;
   end;
   'image/bmp':
   begin
-    lNSStr := NSPasteboardTypePNG;
+    lNSStr := NSSTR('public.png'); // NSPasteboardTypePNG
     lDataType := ccdtBitmap;
   end;
   else
-  {$ELSE}
-  begin
-  {$ENDIF}
     lNSStr := NSStringUtf8(AMimeType);
     lDataType := ccdtNonStandard;
   end;
