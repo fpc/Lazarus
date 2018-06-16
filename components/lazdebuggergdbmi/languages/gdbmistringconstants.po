@@ -137,6 +137,10 @@ msgstr ""
 msgid "Unexpected result:%sThe debugger will terminate."
 msgstr ""
 
+#: gdbmistringconstants.synffailedtodownloadapplicationexecutable
+msgid "Failed to download application executable"
+msgstr ""
+
 #: gdbmistringconstants.synffailedtoinitializedebugger
 msgid "Failed to initialize debugger"
 msgstr ""

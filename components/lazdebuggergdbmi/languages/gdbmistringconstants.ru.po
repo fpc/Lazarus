@@ -175,6 +175,10 @@ msgstr "Время ожидания истекло:"
 msgid "Unexpected result:%sThe debugger will terminate."
 msgstr "Неожиданный результат:%sОтладчик прервёт работу."
 
+#: gdbmistringconstants.synffailedtodownloadapplicationexecutable
+msgid "Failed to download application executable"
+msgstr ""
+
 #: gdbmistringconstants.synffailedtoinitializedebugger
 msgid "Failed to initialize debugger"
 msgstr "Не удалось инициализировать отладчик"

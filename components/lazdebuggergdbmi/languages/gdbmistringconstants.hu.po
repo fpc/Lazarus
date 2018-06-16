@@ -151,6 +151,10 @@ msgstr ""
 msgid "Unexpected result:%sThe debugger will terminate."
 msgstr "Váratlan eredmény:%sA hibakereső leállni"
 
+#: gdbmistringconstants.synffailedtodownloadapplicationexecutable
+msgid "Failed to download application executable"
+msgstr ""
+
 #: gdbmistringconstants.synffailedtoinitializedebugger
 msgid "Failed to initialize debugger"
 msgstr "A hibakereső előkészítése nem sikerült"

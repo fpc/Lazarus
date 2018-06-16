@@ -180,6 +180,10 @@ msgstr ""
 msgid "Unexpected result:%sThe debugger will terminate."
 msgstr "Netikėtas rezultatas:%sDerintuvė nutrauks savo darbą"
 
+#: gdbmistringconstants.synffailedtodownloadapplicationexecutable
+msgid "Failed to download application executable"
+msgstr ""
+
 #: gdbmistringconstants.synffailedtoinitializedebugger
 msgid "Failed to initialize debugger"
 msgstr "Derintuvės nepavyko paruošti darbui"

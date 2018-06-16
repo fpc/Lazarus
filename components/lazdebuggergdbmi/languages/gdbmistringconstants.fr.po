@@ -148,6 +148,10 @@ msgstr "Une temporisation est survenue :"
 msgid "Unexpected result:%sThe debugger will terminate."
 msgstr "Résultat inattendu :%sLe débogueur va s'arrêter."
 
+#: gdbmistringconstants.synffailedtodownloadapplicationexecutable
+msgid "Failed to download application executable"
+msgstr ""
+
 #: gdbmistringconstants.synffailedtoinitializedebugger
 msgid "Failed to initialize debugger"
 msgstr "Échec de l'initialisation du débogueur"

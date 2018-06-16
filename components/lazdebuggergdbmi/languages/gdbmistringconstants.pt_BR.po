@@ -175,6 +175,10 @@ msgstr "Tempo limite ocorreu:"
 msgid "Unexpected result:%sThe debugger will terminate."
 msgstr "Resultado inesperado:%sO depurador irá finalizar"
 
+#: gdbmistringconstants.synffailedtodownloadapplicationexecutable
+msgid "Failed to download application executable"
+msgstr ""
+
 #: gdbmistringconstants.synffailedtoinitializedebugger
 msgid "Failed to initialize debugger"
 msgstr "Falha ao inicializar o depurador"

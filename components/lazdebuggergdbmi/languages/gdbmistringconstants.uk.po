@@ -176,6 +176,10 @@ msgstr "Час вийшов:"
 msgid "Unexpected result:%sThe debugger will terminate."
 msgstr "Неочікуваний результат:%sЗневаджувач завершить роботу."
 
+#: gdbmistringconstants.synffailedtodownloadapplicationexecutable
+msgid "Failed to download application executable"
+msgstr ""
+
 #: gdbmistringconstants.synffailedtoinitializedebugger
 msgid "Failed to initialize debugger"
 msgstr "Не вдалося ініціалізувати зневаджувач"

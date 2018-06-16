@@ -153,6 +153,10 @@ msgstr ""
 msgid "Unexpected result:%sThe debugger will terminate."
 msgstr "意外结果:%s调试器将终止"
 
+#: gdbmistringconstants.synffailedtodownloadapplicationexecutable
+msgid "Failed to download application executable"
+msgstr ""
+
 #: gdbmistringconstants.synffailedtoinitializedebugger
 msgid "Failed to initialize debugger"
 msgstr "初始化debugger失败"

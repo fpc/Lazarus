@@ -79,6 +79,7 @@ resourcestring
   lisSSHDebuggerTimeout = 'Timeout has occurred:';
   lisResponseContinue = 'Response: %sContinue?';
   dlgGroupDebugger = 'Debugger';
+  synfFailedToDownloadApplicationExecutable = 'Failed to download application executable';
   synfFailedToLoadApplicationExecutable = 'Failed to load application executable';
   synfFailedToInitializeTheDebuggerSetPascalFailed = 'Failed to initialize the debugger (set '
     +'pascal failed)';

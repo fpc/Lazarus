@@ -177,6 +177,10 @@ msgstr ""
 msgid "Unexpected result:%sThe debugger will terminate."
 msgstr "Resultado inexperado:%sEl depurador finalizará ahora"
 
+#: gdbmistringconstants.synffailedtodownloadapplicationexecutable
+msgid "Failed to download application executable"
+msgstr ""
+
 #: gdbmistringconstants.synffailedtoinitializedebugger
 msgid "Failed to initialize debugger"
 msgstr "Fallo al iniciar el depurador"
