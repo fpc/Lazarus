@@ -202,6 +202,8 @@ type
   private
     FCarets: TSynPluginMultiCaretList;
     FColor: TColor;
+    FRestoreSingleCaretPainter: Boolean;
+    FSingleCaretClass: TSynEditScreenCaretPainterClass;
     FUsedList: TSynPluginMultiCaretVisualList;
     FUnUsedList: TSynPluginMultiCaretVisualList;
     FInPaint: Boolean;
@@ -234,6 +236,7 @@ type
     function CreateVisual: TSynPluginMultiCaretVisual; virtual;
     function GetVisual: TSynPluginMultiCaretVisual;
   protected
+    procedure UpdateMainCaret;
     function  AddCaret(X, Y, Offs: Integer; flags: TCaretFlags = []; PhysX: Integer = -1): Integer;
     procedure RemoveCaret(Index: Integer);
     procedure UpdateCaretsPos;
@@ -254,6 +257,7 @@ type
 
     procedure SetCaretTypeSize(AType: TSynCaretType; AWidth, AHeight, AXOffs, AYOffs: Integer; AFlags: TSynCustomCaretSizeFlags);
     property Color: TColor read FColor write SetColor;
+    property RestoreSingleCaretPainter: Boolean read FRestoreSingleCaretPainter write FRestoreSingleCaretPainter;
   end;
 
   { TSynPluginMultiCaretMouseActions }
@@ -1381,7 +1385,7 @@ begin
   Carets.FindAndRemoveMergedCarets;
   i := Carets.FindCaretIdx(CaretObj.BytePos, CaretObj.LinePos, CaretObj.BytePosOffset);
   if i >= 0 then
-    Carets.RemoveCaret(i);
+    RemoveCaret(i);
 end;
 
 function TSynPluginMultiCaretBase.IsCaretMergeRequested: Boolean;
@@ -1435,6 +1439,32 @@ begin
   for i := low(TSynCaretType) to high(TSynCaretType) do
     Result.SetCaretTypeSize(i, FCustomPixelWidth[i], FCustomPixelHeight[i], FCustomOffsetX[i], FCustomOffsetY[i], FCustomFlags[i]);
   TSynEditScreenCaretPainterInternal(Result.Painter).Color := FColor;
+end;
+
+procedure TSynPluginMultiCaretBase.UpdateMainCaret;
+begin
+  if not FRestoreSingleCaretPainter then begin
+    // always set internal painter
+    if ScreenCaret.Painter.ClassType <> TSynEditScreenCaretPainterInternal then
+      ScreenCaret.ChangePainter(TSynEditScreenCaretPainterInternal);
+    exit;
+  end;
+
+  if Carets = nil then exit;
+
+  if Carets.Count = 0 then begin
+    if (ScreenCaret.Painter.ClassType = TSynEditScreenCaretPainterInternal) and
+       (ScreenCaret.Painter.ClassType <> FSingleCaretClass) then
+      ScreenCaret.ChangePainter(FSingleCaretClass);
+    FSingleCaretClass := nil;
+  end
+  else begin
+    // store current class
+    if FSingleCaretClass = nil then
+      FSingleCaretClass := TSynEditScreenCaretPainterClass(ScreenCaret.Painter.ClassType);
+    if ScreenCaret.Painter.ClassType <> TSynEditScreenCaretPainterInternal then
+      ScreenCaret.ChangePainter(TSynEditScreenCaretPainterInternal);
+  end;
 end;
 
 procedure TSynPluginMultiCaretBase.DoTextSizeChanged(Sender: TObject);
@@ -1572,6 +1602,8 @@ var
   y1, y2: Integer;
 begin
   Result := Carets.AddCaret(x,y, Offs, flags, PhysX);
+  UpdateMainCaret;
+
   if cfNoneVisual in flags then
     exit;
 
@@ -1607,6 +1639,7 @@ end;
 procedure TSynPluginMultiCaretBase.RemoveCaret(Index: Integer);
 begin
   Carets.RemoveCaret(Index);
+  UpdateMainCaret;
 end;
 
 procedure TSynPluginMultiCaretBase.UpdateCaretsPos;
@@ -1648,8 +1681,10 @@ begin
       if Carets.Visual[i] = nil then
         Carets.Visual[i] := GetVisual;
       x := ViewedTextBuffer.LogPhysConvertor.LogicalToPhysical(ToIdx(y), x, o);
+      Carets.Visual[i].Lock;
       Carets.Visual[i].DisplayPos := TextArea.RowColumnToPixels(Point(x, y1));
       Carets.Visual[i].Visible := vis;
+      Carets.Visual[i].UnLock;
 //todo: remove if duplicate
       // check if offs was adjusted
       //if o <> Carets.CaretOffs[i] then
@@ -1663,6 +1698,7 @@ end;
 procedure TSynPluginMultiCaretBase.ClearCarets;
 begin
   Carets.Clear(True);
+  UpdateMainCaret;
   FUsedList.Clear;
   FUnUsedList.Clear;
   DoCleared;
@@ -1718,14 +1754,15 @@ begin
     TextArea.AddTextSizeChangeHandler(@DoTextSizeChanged);
     TextArea.AddBoundsChangeHandler(@DoBoundsChanged);
 
-    if ScreenCaret.Painter.ClassType = TSynEditScreenCaretPainterSystem then
-      ScreenCaret.ChangePainter(TSynEditScreenCaretPainterInternal);
+    FSingleCaretClass := TSynEditScreenCaretPainterClass(ScreenCaret.Painter.ClassType);
+    UpdateMainCaret;
   end;
   inherited DoEditorAdded(AValue);
 end;
 
 constructor TSynPluginMultiCaretBase.Create(AOwner: TComponent);
 begin
+  FRestoreSingleCaretPainter := True;
   inherited Create(AOwner);
   FColor := clBlack;
   FCarets := TSynPluginMultiCaretList.Create;
@@ -1914,7 +1951,7 @@ begin
        (  ((y = be.y) or (sm = smColumn)) and (x >= be.x)  )
     then
       Continue;
-    Carets.RemoveCaret(i);
+    RemoveCaret(i);
   end;
 end;
 
@@ -2178,7 +2215,7 @@ procedure TSynCustomPluginMultiCaret.DoSelectionChanged(Sender: TObject);
     if i >= 0 then begin
       while Carets.CaretY[i] <= EndY do begin
         if (Carets.CaretX[i] = XLog) and (Carets.CaretOffs[i] = Offs) then
-          Carets.RemoveCaret(i)
+          RemoveCaret(i)
         else
           inc(i);
         if i >= CaretsCount then
@@ -2275,7 +2312,7 @@ begin
 
   i := Carets.FindCaretIdx(CaretObj.BytePos, CaretObj.LinePos, CaretObj.BytePosOffset);
   if i >= 0 then
-    Carets.RemoveCaret(i);
+    RemoveCaret(i);
 
   if ActiveMode = mcmNoCarets then
     ActiveMode := DefaultColumnSelectMode;

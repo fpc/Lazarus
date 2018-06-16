@@ -3091,7 +3091,7 @@ end;
 
 procedure TSynEditScreenCaret.ChangePainter(APainterClass: TSynEditScreenCaretPainterClass);
 begin
-  DestroyCaret;
+  DestroyCaret(True);
   FreeAndNil(FCaretPainter);
   FCaretPainter := APainterClass.Create(FHandleOwner, Self);
   UpdateDisplay;
