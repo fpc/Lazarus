@@ -177,6 +177,8 @@ type
 
     // WSControl functions
     class procedure SetColor(const AWinControl: TWinControl); override;
+    class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
+    class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
 
     // WSEdit functions
     //class function GetCanUndo(const ACustomEdit: TCustomEdit): Boolean; override;
@@ -1149,6 +1151,34 @@ begin
     txt.setBackgroundColor( NSColor.textBackgroundColor )
   else
     txt.setBackgroundColor( ColorToNSColor(ColorToRGB(AWinControl.Color)));
+end;
+
+class procedure TCocoaWSCustomMemo.SetSelStart(const ACustomEdit: TCustomEdit;
+  NewStart: integer);
+var
+  lRange: NSRange;
+  txt: TCocoaTextView;
+begin
+  txt := GetTextView(ACustomEdit);
+  if not Assigned(txt) then Exit;
+
+  lRange := txt.selectedRange;
+  lRange.location := NewStart;
+  txt.setSelectedRange(lRange);
+end;
+
+class procedure TCocoaWSCustomMemo.SetSelLength(const ACustomEdit: TCustomEdit;
+  NewLength: integer);
+var
+  lRange: NSRange;
+  txt: TCocoaTextView;
+begin
+  txt := GetTextView(ACustomEdit);
+  if not Assigned(txt) then Exit;
+
+  lRange := txt.selectedRange;
+  lRange.length := NewLength;
+  txt.setSelectedRange(lRange);
 end;
 
 class function TCocoaWSCustomMemo.GetCaretPos(const ACustomEdit: TCustomEdit): TPoint;
