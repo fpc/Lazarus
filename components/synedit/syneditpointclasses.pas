@@ -36,6 +36,9 @@ unit SynEditPointClasses;
 interface
 
 uses
+  {$IFDEF windows}
+  windows,
+  {$ENDIF}
   Classes, SysUtils,
   // LCL
   Controls, LCLProc, LCLType, LCLIntf, ExtCtrls, Graphics, Forms,
@@ -2505,12 +2508,20 @@ begin
 end;
 
 constructor TSynEditScreenCaretTimer.Create;
+var
+  i: UINT;
 begin
   FTimerList := TMethodList.Create;
   FAfterPaintList := TMethodList.Create;
   FTimer := TTimer.Create(nil);
   FTimer.Enabled := False;
+  {$IFDEF windows}
+  i := GetCaretBlinkTime;
+  if (i = high(i)) or (i = 0) then i := 500; // TODO: none blinking caret. Not yet supported
+  FTimer.Interval := i;
+  {$ELSE}
   FTimer.Interval := 500;
+  {$ENDIF}
   FTimer.OnTimer := @DoTimer;
 end;
 
