@@ -576,6 +576,7 @@ type
   protected
     function  DoExecute: Boolean; override;
     function  GdbRunCommand: String; virtual;
+    function  DoTargetDownload: boolean; virtual;
   public
     constructor Create(AOwner: TGDBMIDebugger; AContinueCommand: TGDBMIDebuggerCommand);
     destructor Destroy; override;
@@ -5133,6 +5134,12 @@ begin
       SetDebuggerErrorState(synfFailedToLoadApplicationExecutable, FErrorMsg);
       exit;
     end;
+
+    if not DoTargetDownload then begin
+      SetDebuggerErrorState(synfFailedToDownloadApplicationExecutable, FErrorMsg);
+      exit;
+    end;
+
     if not DoSetPascal then begin
       SetDebuggerErrorState(synfFailedToInitializeTheDebuggerSetPascalFailed,
         FLastExecResult.Values);
@@ -5315,6 +5322,11 @@ end;
 function TGDBMIDebuggerCommandStartDebugging.GdbRunCommand: String;
 begin
   Result := '-exec-run';
+end;
+
+function TGDBMIDebuggerCommandStartDebugging.DoTargetDownload: boolean;
+begin
+  result := true;
 end;
 
 constructor TGDBMIDebuggerCommandStartDebugging.Create(AOwner: TGDBMIDebugger;
