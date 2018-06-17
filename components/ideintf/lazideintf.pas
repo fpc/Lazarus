@@ -570,6 +570,7 @@ type
     function GetTabDisplayState: TTabDisplayState; virtual; abstract;
     function GetTabDisplayStateEditor(Index: TSourceEditorInterface): TTabDisplayState; virtual; abstract;
   public
+    function AutoSizeInShowDesigner(AForm: TCustomForm): Boolean; virtual; abstract;
     procedure ToggleFormUnit; virtual; abstract;
     procedure JumpToCompilerMessage(ASourceEditor: TSourceEditorInterface); virtual; abstract;
 

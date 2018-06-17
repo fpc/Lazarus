@@ -3551,9 +3551,12 @@ begin
     AForm.WindowState := wsMinimized;
     exit;
   end;
-  // do not call 'AForm.Show', because it will set Visible to true
-  AForm.BringToFront;
-  LCLIntf.ShowWindow(AForm.Handle,SW_SHOWNORMAL);
+  if IDETabMaster = nil then
+  begin
+    // do not call 'AForm.Show', because it will set Visible to true
+    AForm.BringToFront;
+    LCLIntf.ShowWindow(AForm.Handle,SW_SHOWNORMAL);
+  end;
 end;
 
 procedure TMainIDE.DoViewAnchorEditor(State: TIWGetFormState);

@@ -21,7 +21,7 @@ uses
   {$IFDEF USE_GENERICS_COLLECTIONS}
     Generics.Collections, Generics.Defaults,
   {$ELSE}
-    ghashmap, sparta_HashUtils, gvector,
+    ghashmap, sparta_HashUtils, gvector, contnrs,
   {$ENDIF}
   // LCL
   LCLIntf, LCLType, LMessages, ComCtrls, Controls, Forms, ExtCtrls, Graphics,
@@ -121,10 +121,16 @@ type
   { TDTXTabMaster }
 
   TDTXTabMaster = class(TIDETabMaster)
+  private
+    FAutoSizeFormList: TObjectList;
   protected
     function GetTabDisplayState: TTabDisplayState; override;
     function GetTabDisplayStateEditor(Index: TSourceEditorInterface): TTabDisplayState; override;
   public
+    constructor Create;
+    destructor Destroy; override;
+    function AutoSizeInShowDesigner(AForm: TCustomForm): Boolean; override;
+    procedure EnableAutoSizing(AForm: TCustomForm);
     procedure ToggleFormUnit; override;
     procedure JumpToCompilerMessage(ASourceEditor: TSourceEditorInterface); override;
 
@@ -787,6 +793,36 @@ begin
   end;
 end;
 
+constructor TDTXTabMaster.Create;
+begin
+  FAutoSizeFormList := TObjectList.Create(False);
+end;
+
+destructor TDTXTabMaster.Destroy;
+begin
+  FAutoSizeFormList.Free;
+  inherited Destroy;
+end;
+
+function TDTXTabMaster.AutoSizeInShowDesigner(AForm: TCustomForm): Boolean;
+begin
+  FAutoSizeFormList.Add(AForm);
+  Result := True;
+end;
+
+procedure TDTXTabMaster.EnableAutoSizing(AForm: TCustomForm);
+var
+  AIndex: Integer;
+begin
+  AIndex := FAutoSizeFormList.IndexOf(AForm);
+  if Assigned(AForm) and (AIndex >= 0) and IsFormDesign(AForm)
+  and (not (AForm is TNonControlProxyDesignerForm)) and (not (AForm is TFrameProxyDesignerForm)) then
+  begin
+    FAutoSizeFormList.Delete(AIndex);
+    AForm.EnableAutoSizing;
+  end;
+end;
+
 procedure TDTXTabMaster.ToggleFormUnit;
 begin
   case TabDisplayState of
@@ -816,6 +852,8 @@ end;
 procedure TDTXTabMaster.ShowDesigner(ASourceEditor: TSourceEditorInterface; AIndex: Integer);
 var
   LPageCtrl: TModulePageControl;
+  Designer: TIDesigner;
+  Form: TCustomForm;
 begin
   if ASourceEditor = nil then
     Exit;
@@ -1439,6 +1477,8 @@ begin
             end;
 
             LSourceWndData.ActiveDesignFormData := LFormData;
+            // enable autosizing after creating a new form, see issue #32207
+            TDTXTabMaster(IDETabMaster).EnableAutoSizing(LFormData.Form.Form);
             // to handle windows with different size
             LPageCtrl.BoundToDesignTabSheet;
           end;

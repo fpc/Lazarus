@@ -2077,6 +2077,7 @@ var
   Src: String;
   i: Integer;
   LFindDesignerBaseClassByName: Boolean = True;
+  PreventAutoSize: Boolean;  
 begin
   //debugln('TLazSourceFileManager.NewFile A NewFilename=',NewFilename);
   // empty NewFilename is ok, it will be auto generated
@@ -2291,7 +2292,15 @@ begin
                                 DisableAutoSize);
         if DisableAutoSize and (NewUnitInfo.Component<>nil)
         and (NewUnitInfo.Component is TControl) then
-          TControl(NewUnitInfo.Component).EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockMaster Delayed'){$ENDIF};
+        begin
+          // disable autosizing for docked form editor forms, see issue #32207
+          PreventAutoSize := (IDETabMaster <> nil)
+                             and (NewUnitInfo.Component is TCustomForm)
+                             and (IsFormDesign(NewUnitInfo.Component as TCustomForm))
+                             and IDETabMaster.AutoSizeInShowDesigner(NewUnitInfo.Component as TCustomForm);
+          if not PreventAutoSize then
+            TControl(NewUnitInfo.Component).EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockMaster Delayed'){$ENDIF};
+        end;
       end;
       if Result<>mrOk then
       begin
