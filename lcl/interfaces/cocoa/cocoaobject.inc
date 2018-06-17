@@ -106,6 +106,10 @@ begin
         NSApp.sendEvent(event);
       NSApp.updateWindows;
     end;
+
+    SyncClipboard(); // NSPasteboard doesn't provide any notifications regarding the change
+                     // Thus we have to check the clipboard on every loop
+
     pool.release;
   until event = nil;
 end;
@@ -130,6 +134,9 @@ begin
       NSApp.sendEvent(event);
     NSApp.updateWindows;
   end;
+
+  SyncClipboard(); // NSPasteboard doesn't provide any notifications regarding the change
+                   // Thus we have to check the clipboard on every loop
   pool.release;
 end;
 

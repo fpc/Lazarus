@@ -163,6 +163,27 @@ begin
   ClipboardFormats.Free;
 end;
 
+procedure TCocoaWidgetSet.SyncClipboard();
+var
+  ct : TClipboardType;
+  pb : NSPasteboard;
+begin
+  for ct := low(TClipboardType) to high(TClipboardType) do begin
+    if not Pasteboards[ct].isOwned then Continue;
+
+    pb := Pasteboards[ct].pasteboard;
+    if not Assigned(pb) then Continue;
+
+    if (pb.changeCount <> Pasteboards[ct].changeCount) then
+    begin
+      Pasteboards[ct].isOwned:=false;
+      if Assigned(Pasteboards[ct].dataProc) then
+        // notifying about the loss of ownership
+        Pasteboards[ct].dataProc(0, nil);
+    end;
+  end;
+end;
+
 function TCocoaWidgetSet.GetClipboardDataForFormat(AFormat: TClipboardFormat): TCocoaClipboardData;
 begin
   Result := TCocoaClipboardData(AFormat);

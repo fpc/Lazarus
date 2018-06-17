@@ -361,6 +361,16 @@ begin
     DataStream.Free;
   end;
 
+  Pasteboards[ClipboardType].pasteboard:=pasteboard;
+  Pasteboards[ClipboardType].dataProc:=OnRequestProc;
+  if Assigned(pasteboard) then
+  begin
+    Pasteboards[ClipboardType].changeCount:=pasteboard.changeCount;
+    Pasteboards[ClipboardType].isOwned:=true;
+  end else
+    Pasteboards[ClipboardType].isOwned:=false;
+
+
   Result := True;
 end;
 

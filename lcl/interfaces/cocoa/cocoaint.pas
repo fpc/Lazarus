@@ -85,6 +85,13 @@ type
     procedure sendEvent(theEvent: NSEvent); override;
   end;
 
+  TCocoaPasteboardsRef = record
+    pasteboard : NSPasteboard;
+    changeCount: NSInteger;
+    dataProc   : TClipboardRequestEvent;
+    isOwned    : Boolean;
+  end;
+
   { TCocoaWidgetSet }
 
   TCocoaWidgetSet = class(TWidgetSet)
@@ -118,9 +125,12 @@ type
     PrimarySelection: NSPasteboard;
     SecondarySelection: NSPasteboard;
     ClipboardFormats: TFPObjectList; // of TCocoaClipboardData
+    ClipboardChangeCount: NSInteger;
+    Pasteboards: array [TClipboardType] of TCocoaPasteboardsRef;
 
     procedure InitClipboard();
     procedure FreeClipboard();
+    procedure SyncClipboard();
     function GetClipboardDataForFormat(AFormat: TClipboardFormat): TCocoaClipboardData;
 
     function PromptUser(const DialogCaption, DialogMessage: String;
