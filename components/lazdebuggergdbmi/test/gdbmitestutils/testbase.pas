@@ -5,9 +5,9 @@ unit TestBase;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, fpcunit, testutils, testregistry, LCLProc, LazLogger,
-  LazFileUtils, DbgIntfDebuggerBase, CompileHelpers, Dialogs, TestGDBMIControl,
-  RegExpr, GDBMIDebugger; // , FpGdbmiDebugger;
+  Classes, SysUtils, FileUtil, fpcunit, testutils, testregistry, LCLProc,
+  LazLogger, LazFileUtils, DbgIntfDebuggerBase, CompileHelpers, Dialogs, Forms,
+  TestGDBMIControl, RegExpr, GDBMIDebugger; // , FpGdbmiDebugger;
   // EnvironmentOpts, ExtToolDialog, TransferMacros,
 
 (*
@@ -320,6 +320,24 @@ type
     property CompilerInfo: TCompilerInfo read GetCompilerInfo;
   end;
 
+  { TGDBMIDebuggerForTest }
+  var
+    FEvalDone: Boolean;
+    FEvalRes: String;
+    FEvalResType: TDBGType;
+
+  type
+
+  TGDBMIDebuggerForTest = class helper for TGDBMIDebugger
+  private
+    procedure EvalCallBack(Sender: TObject; ASuccess: Boolean;
+      ResultText: String; ResultDBGType: TDBGType);
+  public
+    function EvaluateWait(const AExpression: String; var ARes: String;
+      var AResType: TDBGType; EvalFlags: TDBGEvaluateFlags = []): Boolean;
+  end;
+
+
   { TGDBTestCase }
 
   TGDBTestResult = class(TTestResult)
@@ -428,6 +446,7 @@ type
     property Threads: TTestThreadsMonitor read FThreads;
   end;
 
+
 function GetCompilers: TCompilerList;
 function GetDebuggers: TDebuggerList;
 
@@ -509,6 +528,30 @@ begin
   //if (Result.Count = 0) and (EnvironmentOptions.GetParsedDebuggerFilename <> '') then
   //  Result.Add('gdb from conf', EnvironmentOptions.GetParsedDebuggerFilename);
   Debuggers := Result;
+end;
+
+{ TGDBMIDebuggerForTest }
+
+procedure TGDBMIDebuggerForTest.EvalCallBack(Sender: TObject;
+  ASuccess: Boolean; ResultText: String; ResultDBGType: TDBGType);
+begin
+  FEvalRes := ResultText;
+  FEvalResType := ResultDBGType;
+  FEvalDone := true;
+end;
+
+function TGDBMIDebuggerForTest.EvaluateWait(const AExpression: String;
+  var ARes: String; var AResType: TDBGType; EvalFlags: TDBGEvaluateFlags
+  ): Boolean;
+begin
+  FEvalDone := false;
+  inherited Evaluate(AExpression, @EvalCallBack, EvalFlags);
+  while not FEvalDone do begin
+    Application.ProcessMessages;
+    sleep(5);
+  end;
+  ARes := FEvalRes;
+  AResType := FEvalResType;
 end;
 
 { TTestThreads }
