@@ -294,6 +294,22 @@ begin
 
   DataStream := TMemoryStream.Create;
   try
+    FormatToOwnArray := nil;
+    if FormatCount>0 then
+    begin
+      FormatToOwnArray := NSArray(NSMutableArray.array_);
+      for i := 0 to FormatCount-1 do
+      begin
+        lCurFormat := TCocoaClipboardData(Formats[i]);
+        if lCurFormat = nil then Continue;
+        FormatToOwn := lCurFormat.CocoaFormat;
+        NSMutableArray(FormatToOwnArray).addObject(FormatToOwn);
+      end;
+    end;
+
+    if Assigned(FormatToOwnArray) and (FormatToOwnArray.count>0) then
+      pasteboard.declareTypes_owner(FormatToOwnArray, nil);
+
     for i := 0 to FormatCount-1 do
     begin
       lCurFormat := TCocoaClipboardData(Formats[i]);
@@ -305,34 +321,22 @@ begin
       case lCurFormat.DataType of
       ccdtText:
       begin
-        FormatToOwn := lCurFormat.CocoaFormat;
-        FormatToOwnArray := NSArray.arrayWithObjects_count(@FormatToOwn, 1);
-
         DataStream.Position := 0;
         SetLength(lText, DataStream.Size);
         DataStream.Read(lText[1], DataStream.Size);
         lNSText := NSStringUtf8(lText);
 
-        pasteboard.declareTypes_owner(FormatToOwnArray, nil);
         pasteboard.setString_forType(lNSText, lCurFormat.CocoaFormat);
       end;
       ccdtCocoaStandard, ccdtNonStandard:
       begin
-        FormatToOwn := lCurFormat.CocoaFormat;
-        FormatToOwnArray := NSArray.arrayWithObjects_count(@FormatToOwn, 1);
-
         DataStream.Position := 0;
         lNSData := NSData.dataWithBytes_length(DataStream.Memory, DataStream.Size);
 
-        pasteboard.declareTypes_owner(FormatToOwnArray, nil);
         pasteboard.setData_forType(lNSData, lCurFormat.CocoaFormat);
-        //lNSData.release; // this causes a crash
       end;
       ccdtBitmap:
       begin
-        FormatToOwn := lCurFormat.CocoaFormat;
-        FormatToOwnArray := NSArray.arrayWithObjects_count(@FormatToOwn, 1);
-
         Image := TFPMemoryImage.Create(10, 10);
         Reader := TFPReaderBMP.Create;
         Writer := TFPWriterPNG.Create;
@@ -343,9 +347,7 @@ begin
           Image.SaveToStream(lTmpStream, Writer);
           lTmpStream.Position := 0;
           lNSData := NSData.dataWithBytes_length(lTmpStream.Memory, lTmpStream.Size);
-          pasteboard.declareTypes_owner(FormatToOwnArray, nil);
           pasteboard.setData_forType(lNSData, lCurFormat.CocoaFormat);
-          //lNSData.release;
         finally
           Image.Free;
           Reader.Free;
