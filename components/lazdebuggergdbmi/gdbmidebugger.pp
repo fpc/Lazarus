@@ -3007,10 +3007,6 @@ function TGDBMIDebuggerCommandChangeFilename.DoExecute: Boolean;
 begin
   Result := True;
   FSuccess := DoChangeFilename;
-  if not FSuccess then exit;
-
-  if FFileName = '' then exit;
-  FSuccess := DoSetPascal;
 end;
 
 constructor TGDBMIDebuggerCommandChangeFilename.Create(AOwner: TGDBMIDebugger;
@@ -5170,7 +5166,6 @@ begin
     InitConsole;
     {$ENDIF}
 
-    ExecuteCommand('-gdb-set language pascal', [cfCheckError]);
     DoSetDisableStartupShell();
     DoSetCaseSensitivity();
     DoSetMaxValueMemLimit();
@@ -5444,7 +5439,6 @@ begin
   end;
 
   DoSetPascal;
-  DoSetDisableStartupShell();
   DoSetCaseSensitivity();
   DoSetMaxValueMemLimit();
   DoSetAssemblerStyle();
@@ -5454,12 +5448,11 @@ begin
     if pos('NO SYMBOL TABLE IS LOADED', UpperCase(FFullCmdReply)) > 0 then begin
       ExecuteCommand('-file-exec-and-symbols %s',
                      [FTheDebugger.ConvertToGDBPath(FTheDebugger.FileName, cgptExeName)], R);
-      DoSetPascal;
+      DoSetPascal; // TODO: check with ALL versions of gdb, if that value needs to be refreshed or not.
       DoSetCaseSensitivity();
-      DoSetMaxValueMemLimit();
-      DoSetAssemblerStyle();
     end;
   end;
+
 
   // Tnit (StartDebugging)
   //   check if the exe is compiled with FPC >= 1.9.2
