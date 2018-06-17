@@ -177,7 +177,7 @@ msgstr "Неожиданный результат:%sОтладчик прерв�
 
 #: gdbmistringconstants.synffailedtodownloadapplicationexecutable
 msgid "Failed to download application executable"
-msgstr ""
+msgstr "Не удалось передать исполнимый файл приложения"
 
 #: gdbmistringconstants.synffailedtoinitializedebugger
 msgid "Failed to initialize debugger"
