@@ -4,6 +4,8 @@ unit FpImgReaderBase;
 {$modeswitch advancedrecords}
 
 interface
+{$ifdef CD_Cocoa}{$DEFINE MacOS}{$ENDIF}
+{$IFDEF Darwin}{$DEFINE MacOS}{$ENDIF}
 
 uses
   {$ifdef windows}
@@ -142,12 +144,23 @@ end;
 { TDbgFileLoader }
 
 constructor TDbgFileLoader.Create(AFileName: String);
+{$IFDEF MacOS}
+var
+  s: String;
+{$ENDIF}
 begin
   {$ifdef USE_WIN_FILE_MAPPING}
   FFileHandle := CreateFile(PChar(AFileName), GENERIC_READ, FILE_SHARE_READ, nil, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
   Create(FFileHandle);
   {$else}
   FList := TList.Create;
+  {$IFDEF MacOS}
+  if (RightStr(AFileName,4) = '.app') then begin
+    s := ExtractFileName(AFileName);
+    s := AFileName + PathDelim + 'Contents' + PathDelim + 'MacOs' + PathDelim + copy(s, 1, Length(s) - 4);
+    if (FileExists(s)) then AFileName := s
+  end;
+  {$ENDIF}
   FStream := TFileStreamUTF8.Create(AFileName, fmOpenRead or fmShareDenyNone);
   inherited Create;
   {$endif}
