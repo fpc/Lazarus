@@ -933,7 +933,7 @@ var
   si: TShadowItemBase;
 begin
   sb:=GetParentBoxForMenuItem(aMI);
-  sb.DisableAutoSizing;
+  sb.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TShadowMenu.DeleteBox'){$ENDIF};
   for i:=aMI.Count-1 downto 0 do
     DeleteBox(aMI.Items[i]);
   Assert(sb<>nil,'TShadowMenu.DeleteBox: internal error');

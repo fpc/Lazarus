@@ -819,7 +819,7 @@ begin
   and (not (AForm is TNonControlProxyDesignerForm)) and (not (AForm is TFrameProxyDesignerForm)) then
   begin
     FAutoSizeFormList.Delete(AIndex);
-    AForm.EnableAutoSizing;
+    AForm.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockMaster Delayed'){$ENDIF};
   end;
 end;
 
