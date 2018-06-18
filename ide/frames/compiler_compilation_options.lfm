@@ -27,14 +27,14 @@ object CompilerCompilationOptionsFrame: TCompilerCompilationOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 108
-    Top = 225
+    Height = 166
+    Top = 283
     Width = 741
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'ExecuteAfterGroupBox'
-    ClientHeight = 88
+    ClientHeight = 146
     ClientWidth = 737
     TabOrder = 3
     object lblRunIfExecAfter: TLabel
@@ -135,40 +135,27 @@ object CompilerCompilationOptionsFrame: TCompilerCompilationOptionsFrame
     end
     object ExecAfterParsersLabel: TLabel
       AnchorSideLeft.Control = ExecuteAfterGroupBox
-      AnchorSideTop.Control = ExecAfterParsersCheckComboBox
-      AnchorSideTop.Side = asrCenter
+      AnchorSideTop.Control = ExecAfterParsersCheckListBox
       Left = 6
       Height = 15
-      Top = 64
+      Top = 63
       Width = 114
       BorderSpacing.Left = 6
+      BorderSpacing.Top = 3
       Caption = 'ExecAfterParsersLabel'
       ParentColor = False
     end
-    object ExecAfterParsersSumLabel: TLabel
-      AnchorSideLeft.Control = ExecAfterParsersCheckComboBox
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = ExecAfterParsersCheckComboBox
-      AnchorSideTop.Side = asrCenter
-      Left = 307
-      Height = 15
-      Top = 64
-      Width = 138
-      Caption = 'ExecAfterParsersSumLabel'
-      ParentColor = False
-    end
-    object ExecAfterParsersCheckComboBox: TCheckComboBox
+    object ExecAfterParsersCheckListBox: TCheckListBox
       AnchorSideLeft.Control = ExecAfterParsersLabel
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = ExecuteAfterCommandComboBox
       AnchorSideTop.Side = asrBottom
       Left = 126
-      Height = 22
+      Height = 80
       Top = 60
-      Width = 175
+      Width = 180
       BorderSpacing.Around = 6
-      ItemHeight = 16
-      OnItemChange = ExecAfterParsersCheckComboBoxItemChange
+      ItemHeight = 0
       TabOrder = 5
     end
   end
@@ -180,7 +167,7 @@ object CompilerCompilationOptionsFrame: TCompilerCompilationOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 80
-    Top = 139
+    Top = 197
     Width = 741
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -295,14 +282,14 @@ object CompilerCompilationOptionsFrame: TCompilerCompilationOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 108
+    Height = 166
     Top = 25
     Width = 741
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'ExecuteBeforeGroupBox'
-    ClientHeight = 88
+    ClientHeight = 146
     ClientWidth = 737
     TabOrder = 1
     object lblRunIfExecBefore: TLabel
@@ -402,43 +389,29 @@ object CompilerCompilationOptionsFrame: TCompilerCompilationOptionsFrame
       OnClick = CompCmdBrowseButtonClick
       TabOrder = 4
     end
-    object ExecBeforeParsersCheckComboBox: TCheckComboBox
+    object ExecBeforeParsersLabel: TLabel
+      AnchorSideTop.Control = ExecBeforeParsersCheckListBox
+      Left = 6
+      Height = 15
+      Top = 63
+      Width = 122
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 3
+      Caption = 'ExecBeforeParsersLabel'
+      ParentColor = False
+    end
+    object ExecBeforeParsersCheckListBox: TCheckListBox
       AnchorSideLeft.Control = ExecBeforeParsersLabel
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = ExecuteBeforeCommandComboBox
       AnchorSideTop.Side = asrBottom
       Left = 134
-      Height = 22
+      Height = 80
       Top = 60
-      Width = 182
+      Width = 180
       BorderSpacing.Around = 6
-      ItemHeight = 16
-      OnItemChange = ExecBeforeParsersCheckComboBoxItemChange
+      ItemHeight = 0
       TabOrder = 5
-    end
-    object ExecBeforeParsersLabel: TLabel
-      AnchorSideTop.Control = ExecBeforeParsersCheckComboBox
-      AnchorSideTop.Side = asrCenter
-      Left = 6
-      Height = 15
-      Top = 64
-      Width = 122
-      BorderSpacing.Left = 6
-      Caption = 'ExecBeforeParsersLabel'
-      ParentColor = False
-    end
-    object ExecBeforeParsersSumLabel: TLabel
-      AnchorSideLeft.Control = ExecBeforeParsersCheckComboBox
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = ExecBeforeParsersCheckComboBox
-      AnchorSideTop.Side = asrCenter
-      Left = 322
-      Height = 15
-      Top = 64
-      Width = 146
-      BorderSpacing.Left = 6
-      Caption = 'ExecBeforeParsersSumLabel'
-      ParentColor = False
     end
   end
 end
