@@ -199,7 +199,7 @@ begin
   Caption:=lisChooseNameAndText;
   NameLabel.Caption:=lisChooseANameForTheComponent;
   NameEdit.Hint:=lisTheComponentNameMustBeUniqueInAllComponentsOnTheFo;
-  TextLabel.Caption:=lisMenuEditorCaption;
+  TextLabel.Caption:=Format(lisProperty, ['Caption']);
   ButtonPanel1.OKButton.Caption:=lisOk;
   ButtonPanel1.CancelButton.Caption:=lisCancel;
   ButtonPanel1.OKButton.Enabled:=false;
@@ -254,7 +254,7 @@ begin
   if TextMemo.Enabled then
   begin
     TextMemo.Text := ReadText;
-    TextLabel.Caption:=FNewTextPropertyName;
+    TextLabel.Caption:=Format(lisProperty, [FNewTextPropertyName]);
   end else
     TextMemo.Text := '';
 end;

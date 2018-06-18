@@ -5874,6 +5874,7 @@ resourcestring
     +'must be unique in all components on the form/datamodule.The name is '
     +'compared case insensitive like a normal Pascal identifier.';
   lisChooseANameForTheComponent = 'Choose a name for the component';
+  lisProperty = '%s property';
   lisAskForFileNameOnNewFile = 'Ask for file name on new file';
   lisSuggestDefaultNameOfNewFileInLowercase = 'Suggest default name of new '
     +'file in lowercase';
