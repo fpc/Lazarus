@@ -1256,7 +1256,10 @@ begin
       0: if LDesignFormData <> nil then LDesignFormData.Form.HideWindow;
       1:
         begin
-          LazarusIDE.DoShowDesignerFormOfSrc(LSourceEditorWindow.ActiveEditor);
+          // Michl: I comment the next line, as it breaks other editors
+          // (like Actionlist Editor). Imho in all cases all designer
+          // were already active, so it isn't needed. See issue #33872
+          // LazarusIDE.DoShowDesignerFormOfSrc(LSourceEditorWindow.ActiveEditor);
 
           // for lfm edition...
           with LDesignFormData as IDesignedForm do
