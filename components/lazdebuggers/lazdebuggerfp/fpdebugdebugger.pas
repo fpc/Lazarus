@@ -245,6 +245,8 @@ type
   { TFPThreads }
 
   TFPThreads = class(TThreadsSupplier)
+  protected
+    procedure DoStateEnterPause; override;
   public
     procedure RequestMasterData; override;
   end;
@@ -332,6 +334,12 @@ begin
 end;
 
 { TFPThreads }
+
+procedure TFPThreads.DoStateEnterPause;
+begin
+  inherited DoStateEnterPause;
+  Changed;
+end;
 
 procedure TFPThreads.RequestMasterData;
 var
