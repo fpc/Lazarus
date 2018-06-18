@@ -1,4 +1,6 @@
 sourceeditor/ActiveBreakPoint.png
+sourceeditor/ActiveBreakPoint_150.png
+sourceeditor/ActiveBreakPoint_200.png
 sourceeditor/bookmark0.png
 sourceeditor/bookmark0_150.png
 sourceeditor/bookmark0_200.png
@@ -30,8 +32,14 @@ sourceeditor/bookmark9.png
 sourceeditor/bookmark9_150.png
 sourceeditor/bookmark9_200.png
 sourceeditor/InactiveBreakPoint.png
+sourceeditor/InactiveBreakPoint_150.png
+sourceeditor/InactiveBreakPoint_200.png
 sourceeditor/InvalidBreakPoint.png
+sourceeditor/InvalidBreakPoint_150.png
+sourceeditor/InvalidBreakPoint_200.png
 sourceeditor/InvalidDisabledBreakPoint.png
+sourceeditor/InvalidDisabledBreakPoint_150.png
+sourceeditor/InvalidDisabledBreakPoint_200.png
 sourceeditor/MultiBreakPoint.png
 sourceeditor/Record.png
 sourceeditor/state11x11_error.png
@@ -42,6 +50,12 @@ sourceeditor/state11x11_note.png
 sourceeditor/state11x11_unknown.png
 sourceeditor/state11x11_warning.png
 sourceeditor/tsynsyncroedit.png
-sourceeditor/UnknownBreakPoint.png
-sourceeditor/UnknownDisabledBreakPoint.png
 sourceeditor/PendingBreakPoint.png
+sourceeditor/PendingBreakPoint_150.png
+sourceeditor/PendingBreakPoint_200.png
+sourceeditor/UnknownBreakPoint.png
+sourceeditor/UnknownBreakPoint_150.png
+sourceeditor/UnknownBreakPoint_200.png
+sourceeditor/UnknownDisabledBreakPoint.png
+sourceeditor/UnknownDisabledBreakPoint_150.png
+sourceeditor/UnknownDisabledBreakPoint_200.png
