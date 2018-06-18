@@ -34,6 +34,9 @@ type
     procedure SetWordBufferCapacity(NewCapacity: integer);
     function CaseInsensitiveIndexOf(const AWord: string):integer;
     function CaseSensitiveIndexOf(const AWord: string):integer;
+  protected
+    procedure DoGetSource(var Source:TStrings; var TopLine, BottomLine: Integer;
+      var IgnoreWordPos: TPoint; SourceIndex:integer); virtual;
   public
     constructor Create;
     destructor Destroy; override;
@@ -104,7 +107,7 @@ procedure TWordCompletion.GetWordList(AWordList: TStrings;
   MaxResults: integer);
 var i, Line, x, FilterLen, MaxHash, LineLen: integer;
   UpFilter, LineText, UpLineText, UpWordBuffer: string;
-  SourceText: TStringList;
+  SourceText: TStrings;
   HashList: ^integer;// index list. Every entry points to a word in the AWordList
   SourceTextIndex, SourceTopLine, SourceBottomLine:integer;
   LastCharType:TCharType;
@@ -188,53 +191,52 @@ begin
     if AWordList.Count>=MaxResults then exit;
     // then search in all sources for more words that could fit
     SourceTextIndex:=0;
-    if Assigned(FOnGetSource) then begin
+
+    SourceText:=nil;
+    SourceTopLine:=0;
+    SourceBottomLine:=-1;
+    IgnoreWordPos:=Point(-1,-1);
+    DoGetSource(SourceText,SourceTopLine,SourceBottomLine,IgnoreWordPos,SourceTextIndex);
+    UpLineText:='';
+    repeat
+      if SourceText<>nil then begin
+        Line:=SourceTopLine;
+        if SourceBottomLine<0 then
+          SourceBottomLine := SourceText.Count-1;
+        while (Line<=SourceBottomLine) do begin
+          LineText:=SourceText[line];
+          LineLen:=length(LineText);
+          if not CaseSensitive then
+            UpLineText:=uppercase(LineText);
+          x:=1;
+          LastCharType:=ctNone;
+          while (x<=LineLen) do begin
+            if (LastCharType=ctNone) and (CharTable[LineText[x]]=ctWordBegin)
+            then begin
+              // word found
+              i:=x;
+              repeat
+                inc(i);
+              until (i>LineLen) or (CharTable[LineText[i]]=ctNone);
+              if (i-x>=FilterLen) and not ((Line=IgnoreWordPos.Y) and (x<=IgnoreWordPos.X) and (IgnoreWordPos.X<=i)) then begin
+                AddIfMatch(LineText,UpLineText,x,i-x);
+                if AWordList.Count>=MaxResults then exit;
+              end;
+              x:=i;
+            end else
+              inc(x);
+            LastCharType:=CharTable[LineText[x-1]];
+          end;
+          inc(line);
+        end;
+      end;
+      inc(SourceTextIndex);
       SourceText:=nil;
       SourceTopLine:=0;
       SourceBottomLine:=-1;
       IgnoreWordPos:=Point(-1,-1);
-      FOnGetSource(SourceText,SourceTopLine,SourceBottomLine,IgnoreWordPos,SourceTextIndex);
-      UpLineText:='';
-      repeat
-        if SourceText<>nil then begin
-          Line:=SourceTopLine;
-          if SourceBottomLine<0 then
-            SourceBottomLine := SourceText.Count-1;
-          while (Line<=SourceBottomLine) do begin
-            LineText:=SourceText[line];
-            LineLen:=length(LineText);
-            if not CaseSensitive then
-              UpLineText:=uppercase(LineText);
-            x:=1;
-            LastCharType:=ctNone;
-            while (x<=LineLen) do begin
-              if (LastCharType=ctNone) and (CharTable[LineText[x]]=ctWordBegin)
-              then begin
-                // word found
-                i:=x;
-                repeat
-                  inc(i);
-                until (i>LineLen) or (CharTable[LineText[i]]=ctNone);
-                if (i-x>=FilterLen) and not ((Line=IgnoreWordPos.Y) and (x<=IgnoreWordPos.X) and (IgnoreWordPos.X<=i)) then begin
-                  AddIfMatch(LineText,UpLineText,x,i-x);
-                  if AWordList.Count>=MaxResults then exit;
-                end;
-                x:=i;
-              end else
-                inc(x);
-              LastCharType:=CharTable[LineText[x-1]];
-            end;
-            inc(line);
-          end;
-        end;
-        inc(SourceTextIndex);
-        SourceText:=nil;
-        SourceTopLine:=0;
-        SourceBottomLine:=-1;
-        IgnoreWordPos:=Point(-1,-1);
-        FOnGetSource(SourceText,SourceTopLine,SourceBottomLine,IgnoreWordPos,SourceTextIndex);
-      until SourceText=nil;
-    end;
+      DoGetSource(SourceText,SourceTopLine,SourceBottomLine,IgnoreWordPos,SourceTextIndex);
+    until SourceText=nil;
   finally
     FreeMem(HashList);
   end;
@@ -296,6 +298,13 @@ destructor TWordCompletion.Destroy;
 begin
   FWordBuffer.Free;
   inherited Destroy;
+end;
+
+procedure TWordCompletion.DoGetSource(var Source: TStrings; var TopLine,
+  BottomLine: Integer; var IgnoreWordPos: TPoint; SourceIndex: integer);
+begin
+  if Assigned(FOnGetSource) then
+    FOnGetSource(Source,TopLine,BottomLine,IgnoreWordPos,SourceIndex);
 end;
 
 function TWordCompletion.GetWordBufferCapacity:integer;

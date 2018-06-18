@@ -655,6 +655,7 @@ type
     OldCompilerFilename, OldLanguage: String;
     OIChangedTimer: TIdleTimer;
 
+    FIdentifierWordCompletion: TSourceEditorWordCompletion;
     FIdentifierWordCompletionWordList: TStringList;
     FIdentifierWordCompletionEnabled: Boolean;
 
@@ -1676,6 +1677,7 @@ begin
   FreeThenNil(ObjectInspector1);
   FreeThenNil(SourceEditorManagerIntf);
   FreeAndNil(FIdentifierWordCompletionWordList);
+  FreeAndNil(FIdentifierWordCompletion);
 
   // disconnect handlers
   Application.RemoveAllHandlersOfObject(Self);
@@ -6482,10 +6484,13 @@ begin
     FIdentifierWordCompletionWordList.OwnsObjects := True;
   end else
     FIdentifierWordCompletionWordList.Clear;
+  if FIdentifierWordCompletion=nil then
+    FIdentifierWordCompletion := TSourceEditorWordCompletion.Create;
 
   OldPriorityCount := PriorityCount;
   PriorityCount := FilteredList.Count;
-  AWordCompletion.GetWordList(FIdentifierWordCompletionWordList, Sender.Prefix, Sender.ContainsFilter, False, 100);
+  FIdentifierWordCompletion.IncludeWords := CodeToolsOpts.IdentComplIncludeWords;
+  FIdentifierWordCompletion.GetWordList(FIdentifierWordCompletionWordList, Sender.Prefix, Sender.ContainsFilter, False, 100);
   FilteredList.Capacity := FilteredList.Count+FIdentifierWordCompletionWordList.Count;
   for I := 0 to FIdentifierWordCompletionWordList.Count-1 do
   begin

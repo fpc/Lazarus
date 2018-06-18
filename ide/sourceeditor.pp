@@ -44,7 +44,7 @@ uses
   {$ENDIF}
   SynEditMouseCmds,
   // RTL + FCL
-  Classes, SysUtils, StrUtils, types, Math, RegExpr, Laz_AVL_Tree,
+  Classes, SysUtils, StrUtils, Types, Contnrs, Math, RegExpr, Laz_AVL_Tree,
   // LCL
   Controls, Forms, ComCtrls, StdCtrls, Graphics, Dialogs, Extctrls, Menus,
   LCLProc, LCLType, LCLIntf, ClipBrd, HelpIntfs, Messages, LMessages,
@@ -1192,9 +1192,6 @@ type
                                        Index: integer);
   protected
     procedure CodeToolsToSrcEditTimerTimer(Sender: TObject);
-    procedure OnWordCompletionGetSource(var Source: TStrings;
-      var {%H-}SourceTopLine,{%H-}SourceBottomLine: integer;
-      var IgnoreWordPos: TPoint; SourceIndex: integer);
     procedure OnSourceCompletionTimer(Sender: TObject);
     // marks
     procedure OnSourceMarksAction(AMark: TSourceMark; {%H-}AAction: TMarksAction);
@@ -1306,6 +1303,26 @@ type
              read FOnPackageForSourceEditor write FOnPackageForSourceEditor;
   end;
 
+  TSourceEditorWordCompletion = class(TWordCompletion)
+  private type
+    TSourceListItem = class
+      Source: TStrings;
+      IgnoreWordPos: TPoint;
+    end;
+  private
+    FIncludeWords: TIdentComplIncludeWords;
+    FSourceList: TObjectList;
+    procedure ReloadSourceList;
+  protected
+    procedure DoGetSource(var Source: TStrings; var {%H-}TopLine,
+      {%H-}BottomLine: Integer; var IgnoreWordPos: TPoint; SourceIndex: integer); override;
+  public
+    constructor Create;
+    destructor Destroy; override;
+  public
+    property IncludeWords: TIdentComplIncludeWords read FIncludeWords write FIncludeWords;
+  end;
+
 function SourceEditorManager: TSourceEditorManager; inline;
 
 
@@ -1405,13 +1422,13 @@ var
   EnglishModifiedLGPLNotice: string;
   EnglishMITNotice: string;
 
-var
-  AWordCompletion: TWordCompletion = nil;
-
 implementation
 
 {$R *.lfm}
 {$R ../images/bookmark.res}
+
+var
+  AWordCompletion: TWordCompletion = nil;
 
 var
   SRCED_LOCK, SRCED_OPEN, SRCED_CLOSE, SRCED_PAGES: PLazLoggerLogGroup;
@@ -1772,6 +1789,89 @@ var
   SE1: TSourceEditorInterface absolute SrcEdit;
 begin
   Result:=CompareFilenames(AnsiString(FileNameStr),SE1.FileName);
+end;
+
+{ TSourceEditorWordCompletion }
+
+constructor TSourceEditorWordCompletion.Create;
+begin
+  inherited Create;
+
+  FSourceList := TObjectList.Create;
+  FIncludeWords := icwIncludeFromAllUnits;
+end;
+
+destructor TSourceEditorWordCompletion.Destroy;
+begin
+  FSourceList.Free;
+
+  inherited Destroy;
+end;
+
+procedure TSourceEditorWordCompletion.DoGetSource(var Source: TStrings;
+  var TopLine, BottomLine: Integer; var IgnoreWordPos: TPoint;
+  SourceIndex: integer);
+var
+  SourceItem: TSourceListItem;
+begin
+  if SourceIndex=0 then
+    ReloadSourceList;
+
+  if SourceIndex>=FSourceList.Count then
+    Exit;
+
+  SourceItem := FSourceList[SourceIndex] as TSourceListItem;
+  Source := SourceItem.Source;
+  IgnoreWordPos := SourceItem.IgnoreWordPos;
+end;
+
+procedure TSourceEditorWordCompletion.ReloadSourceList;
+var
+  CurEditor, TempEditor: TSourceEditor;
+  I: integer;
+  Mng: TSourceEditorManager;
+  New: TSourceListItem;
+  AddedFileNames: TStringList;
+begin
+  FSourceList.Clear;
+  if FIncludeWords=icwDontInclude then
+    Exit;
+
+  Mng := SourceEditorManager;
+  CurEditor:=Mng.GetActiveSE;
+  if (CurEditor<>nil) then
+  begin
+    New := TSourceListItem.Create;
+    New.Source:=CurEditor.EditorComponent.Lines;
+    New.IgnoreWordPos:=CurEditor.EditorComponent.LogicalCaretXY;
+    Dec(New.IgnoreWordPos.Y); // LogicalCaretXY starts with 1 as top line
+    FSourceList.Add(New);
+  end;
+
+  if FIncludeWords=icwIncludeFromAllUnits then
+  begin
+    AddedFileNames := TStringList.Create;
+    try
+      AddedFileNames.Sorted := True;
+      AddedFileNames.Duplicates := dupIgnore;
+      for I := 0 to Mng.SourceEditorCount-1 do
+      begin
+        TempEditor := Mng.SourceEditors[I];
+        if ( TempEditor<>CurEditor)
+        and (TempEditor.FileName<>CurEditor.FileName)
+        and (AddedFileNames.IndexOf(TempEditor.FileName)=-1) then
+        begin
+          New := TSourceListItem.Create;
+          New.Source:=TempEditor.EditorComponent.Lines;
+          New.IgnoreWordPos:=Point(-1,-1);
+          FSourceList.Add(New);
+          AddedFileNames.Add(TempEditor.FileName);
+        end;
+      end;
+    finally
+      AddedFileNames.Free;
+    end;
+  end;
 end;
 
 { TBrowseEditorTabHistoryDialog }
@@ -10802,32 +10902,6 @@ begin
   end;
 end;
 
-procedure TSourceEditorManager.OnWordCompletionGetSource(var Source: TStrings;
-  var SourceTopLine, SourceBottomLine: integer; var IgnoreWordPos: TPoint;
-  SourceIndex: integer);
-var
-  TempEditor: TSourceEditor;
-  i:integer;
-begin
-  TempEditor:=GetActiveSE;
-  if (SourceIndex=0) and (TempEditor<>nil) then begin
-    Source:=TempEditor.EditorComponent.Lines;
-    IgnoreWordPos:=TempEditor.EditorComponent.LogicalCaretXY;
-    Dec(IgnoreWordPos.Y); // LogicalCaretXY starts with 1 as top line
-  end else begin
-    i:=0;
-    while (i < SourceEditorCount) do begin
-      if SourceEditors[i] <> TempEditor then dec(SourceIndex);
-      if SourceIndex <= 0 then begin
-        Source := SourceEditors[i].EditorComponent.Lines;
-        exit;
-      end;
-      inc(i);
-    end;
-    Source := nil;
-  end;
-end;
-
 procedure TSourceEditorManager.OnSourceCompletionTimer(Sender: TObject);
 
   function CheckStartIdentCompletion: boolean;
@@ -10955,11 +11029,8 @@ begin
 
   // word completion
   if aWordCompletion=nil then begin
-    aWordCompletion:=TWordCompletion.Create;
-    with AWordCompletion do begin
-      WordBufferCapacity:=100;
-      OnGetSource:=@OnWordCompletionGetSource;
-    end;
+    AWordCompletion:=TSourceEditorWordCompletion.Create;
+    AWordCompletion.WordBufferCapacity:=100;
   end;
 
   // timer for auto start identifier completion
