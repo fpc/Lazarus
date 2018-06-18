@@ -123,7 +123,7 @@ resourcestring
   lisRunButtonHint = 'Run';
   lisPause = 'Pause';
   lisStop = 'Stop';
-  lisContent = 'Content';
+  lisContents = 'Contents';
   lisSorting = 'Sorting';
   lisAppearance = 'Appearance';
   lisBuilding = 'Building';

@@ -103,7 +103,7 @@ begin
   ICSortForScopeCheckBox.Caption:=lisSortForScope;
   ICSortForScopeCheckBox.Hint:=lisForExampleShowAtTopTheLocalVariablesThenTheMembers;
 
-  ICContentDividerBevel.Caption:=lisContent;
+  ICContentDividerBevel.Caption:=lisContents;
   ICContainsFilterCheckBox.Caption := dlgIncludeIdentifiersContainingPrefix;
   ICIncludeWordsLabel.Caption := dlgIncludeWordsToIdentCompl;
   ICAddWordsComboBox.Items.Text:=
