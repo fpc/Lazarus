@@ -4972,19 +4972,9 @@ resourcestring
   lisMenuEditorYouMustEnterTextForTheCaption = 'You must enter text for the Caption';
 
   // Standard File menu
-  lisMenuTemplateDescriptionStandardFileMenu = 'Standard File Menu';
   lisKMNewUnit = 'New Unit';
-  lisMenuTemplateOpenRecent = 'Open Recent';
-
-  // Standard Edit menu
-  lisMenuTemplateDescriptionStandardEditMenu = 'Standard Edit Menu';
-  lisMenuTemplateFind = 'Find';
-  lisMenuTemplateFindNext = 'Find Next';
 
   // Standard Help menu
-  lisMenuTemplateDescriptionStandardHelpMenu = 'Standard Help Menu';
-  lisMenuTemplateContents = 'Contents';
-  lisMenuTemplateTutorial = 'Tutorial';
   lisMenuTemplateAbout = 'About';
   lisContributors = 'Contributors';
   lisAcknowledgements = 'Acknowledgements';
