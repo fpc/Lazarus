@@ -123,6 +123,7 @@ resourcestring
   lisRunButtonHint = 'Run';
   lisPause = 'Pause';
   lisStop = 'Stop';
+  lisContent = 'Content';
   lisSorting = 'Sorting';
   lisAppearance = 'Appearance';
   lisBuilding = 'Building';
@@ -1979,6 +1980,10 @@ resourcestring
   lisAutomaticFeatures = 'Completion and Hints';
   lisAutoMarkup = 'Markup and Matches';
   dlgUseIconsInCompletionBox = 'Icons in code completion box';
+  dlgIncludeWordsToIdentCompl = 'Include words';
+  dlgIncludeWordsToIdentCompl_IncludeFromAllUnits = 'from all units';
+  dlgIncludeWordsToIdentCompl_IncludeFromCurrentUnit = 'from current unit';
+  dlgIncludeWordsToIdentCompl_DontInclude = 'don''t include';
 
   dlgMarkupUserDefined = 'User defined markup';
   dlgMarkupUserDefinedNoLists = 'No lists';
