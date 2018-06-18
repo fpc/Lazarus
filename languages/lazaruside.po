@@ -2215,6 +2215,22 @@ msgstr ""
 msgid "Include system variables"
 msgstr ""
 
+#: lazarusidestrconsts.dlgincludewordstoidentcompl
+msgid "Include words"
+msgstr ""
+
+#: lazarusidestrconsts.dlgincludewordstoidentcompl_dontinclude
+msgid "don't include"
+msgstr ""
+
+#: lazarusidestrconsts.dlgincludewordstoidentcompl_includefromallunits
+msgid "from all units"
+msgstr ""
+
+#: lazarusidestrconsts.dlgincludewordstoidentcompl_includefromcurrentunit
+msgid "from current unit"
+msgstr ""
+
 #: lazarusidestrconsts.dlgindentsindentgroupoptions
 msgid "Indent"
 msgstr ""
@@ -6887,6 +6903,11 @@ msgstr ""
 
 #: lazarusidestrconsts.liscontains
 msgid "contains"
+msgstr ""
+
+#: lazarusidestrconsts.liscontents
+msgctxt "lazarusidestrconsts.liscontents"
+msgid "Contents"
 msgstr ""
 
 #: lazarusidestrconsts.liscontextsensitive
@@ -13046,41 +13067,6 @@ msgctxt "lazarusidestrconsts.lismenutemplateabout"
 msgid "About"
 msgstr ""
 
-#: lazarusidestrconsts.lismenutemplatecontents
-msgid "Contents"
-msgstr ""
-
-#: lazarusidestrconsts.lismenutemplatedescriptionstandardeditmenu
-msgid "Standard Edit Menu"
-msgstr ""
-
-#: lazarusidestrconsts.lismenutemplatedescriptionstandardfilemenu
-msgid "Standard File Menu"
-msgstr ""
-
-#: lazarusidestrconsts.lismenutemplatedescriptionstandardhelpmenu
-msgid "Standard Help Menu"
-msgstr ""
-
-#: lazarusidestrconsts.lismenutemplatefind
-msgctxt "lazarusidestrconsts.lismenutemplatefind"
-msgid "Find"
-msgstr ""
-
-#: lazarusidestrconsts.lismenutemplatefindnext
-msgctxt "lazarusidestrconsts.lismenutemplatefindnext"
-msgid "Find Next"
-msgstr ""
-
-#: lazarusidestrconsts.lismenutemplateopenrecent
-msgctxt "lazarusidestrconsts.lismenutemplateopenrecent"
-msgid "Open Recent"
-msgstr ""
-
-#: lazarusidestrconsts.lismenutemplatetutorial
-msgid "Tutorial"
-msgstr ""
-
 #: lazarusidestrconsts.lismenutogglecomment
 msgid "Toggle Comment in Selection"
 msgstr ""
@@ -16071,6 +16057,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisproperties
 msgid "Properties (replace or remove)"
+msgstr ""
+
+#: lazarusidestrconsts.lisproperty
+msgid "%s property"
 msgstr ""
 
 #: lazarusidestrconsts.lisprotected
