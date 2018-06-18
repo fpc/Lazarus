@@ -2508,8 +2508,10 @@ begin
 end;
 
 constructor TSynEditScreenCaretTimer.Create;
+{$IFDEF windows}
 var
   i: UINT;
+{$ENDIF}
 begin
   FTimerList := TMethodList.Create;
   FAfterPaintList := TMethodList.Create;
@@ -2517,8 +2519,14 @@ begin
   FTimer.Enabled := False;
   {$IFDEF windows}
   i := GetCaretBlinkTime;
-  if (i = high(i)) or (i = 0) then i := 500; // TODO: none blinking caret. Not yet supported
-  FTimer.Interval := i;
+  if (i = high(i)) or (i = 0) then begin
+    FTimer.Enabled := False;
+    FDisplayCycle := True;
+    FTimer.Interval := 0;
+  end
+  else begin
+    FTimer.Interval := i;
+  end;
   {$ELSE}
   FTimer.Interval := 500;
   {$ENDIF}
@@ -2595,6 +2603,11 @@ begin
     include(FLocFlags, lfRestart);
     exit;
   end;
+  if FTimer.Interval = 0 then begin
+    FTimerList.CallNotifyEvents(Self);
+    exit;
+  end;
+
   if FTimerList.Count = 0 then exit;
   FTimer.Enabled := False;
   FDisplayCycle := False;
