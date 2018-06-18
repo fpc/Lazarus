@@ -1257,7 +1257,7 @@ const
   PreferredDistanceMax = 250;
 var
   NewJITIndex: Integer;
-  CompLeft, CompTop, CompWidth, CompHeight, NewPPI: integer;
+  CompLeft, CompTop, CompWidth, CompHeight, NewPPI, OldPPI: integer;
   NewComponent: TComponent;
   OwnerComponent: TComponent;
   JITList: TJITComponentList;
@@ -1271,6 +1271,7 @@ var
   Mediator: TDesignerMediator;
   FreeMediator: Boolean;
   MediatorClass: TDesignerMediatorClass;
+  ParentDesigner: TCustomDesignControl;
 
   function ActiveMonitor: TMonitor;
   begin
@@ -1394,18 +1395,23 @@ begin
       if NewComponent is TControl then
       begin
         AControl := TControl(NewComponent);
+        if AControl is TCustomDesignControl then
+          OldPPI := TCustomDesignControl(AControl).DesignTimePPI
+        else
+          OldPPI := 96;
+        ParentDesigner := GetParentDesignControl(AParent);
         // calc bounds
         if CompWidth <= 0 then
         begin
           CompWidth := Max(5, AControl.Width);
-          if AParent<>nil then
-            CompWidth := AParent.Scale96ToForm(CompWidth);
+          if ParentDesigner<>nil then
+            CompWidth := MulDiv(CompWidth, OldPPI, ParentDesigner.PixelsPerInch);
         end;
         if CompHeight <= 0 then
         begin
           CompHeight := Max(5, AControl.Height);
-          if AParent<>nil then
-            CompHeight := AParent.Scale96ToForm(CompHeight);
+          if ParentDesigner<>nil then
+            CompHeight := MulDiv(CompHeight, OldPPI, ParentDesigner.PixelsPerInch);
         end;
         MonitorBounds := ActiveMonitor.BoundsRect;
         if (CompLeft < 0) and (AParent <> nil) then
@@ -1427,15 +1433,15 @@ begin
         if CompTop < 0 then
           CompTop := 0;
 
-        if AParent<>nil then
-          NewPPI := NeedParentDesignControl(AParent).PixelsPerInch
+        if ParentDesigner<>nil then
+          NewPPI := ParentDesigner.PixelsPerInch
         else
         if (AControl is TCustomForm) then
           NewPPI := TCustomForm(AControl).Monitor.PixelsPerInch
         else
           NewPPI := 0;
         if NewPPI > 0 then
-          AControl.AutoAdjustLayout(lapAutoAdjustForDPI, 96, NewPPI, 0, 0);
+          AControl.AutoAdjustLayout(lapAutoAdjustForDPI, OldPPI, NewPPI, 0, 0);
 
         if (AParent <> nil) or (AControl is TCustomForm) then
         begin
