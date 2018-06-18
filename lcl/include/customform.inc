@@ -3055,11 +3055,7 @@ begin
         SetActiveWindow(ActiveWindow);
       Exclude(FFormState, fsModal);
       if ((PopupMode = pmNone) and HandleAllocated) and not (csDestroying in ComponentState) then
-      begin
-        // need to refresh handle for pmNone because ParentWindow changes if (fsModal in FFormState) - see GetRealPopupParent
-        MouseCapture := False;
-        RecreateWnd(Self);
-      end;
+        RecreateWnd(Self); // need to refresh handle for pmNone because ParentWindow changes if (fsModal in FFormState) - see GetRealPopupParent
     end;
   finally
     Application.ModalFinished;

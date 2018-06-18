@@ -7864,6 +7864,8 @@ begin
       // again. To propely initialize control after we need to restore color
       // and font. Request update.
       FWinControlFlags := FWinControlFlags + [wcfColorChanged, wcfFontChanged];
+      if (CaptureControl=Self) then
+        SetCaptureControl(nil);
     finally
       EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TWinControl.DestroyWnd'){$ENDIF};
     end;
