@@ -4142,7 +4142,7 @@ procedure TIdeThreadsMonitor.DoStateEnterPause;
 begin
   inherited DoStateEnterPause;
   if (CurrentThreads = nil) then Exit;
-  CurrentThreads.SetValidity(ddsUnknown);
+  CurrentThreads.SetValidity(ddsUnknown); // TODO: this may be wrong, for any debugger that keeps threads updated while running
   CurrentThreads.Paused := True;
 end;
 

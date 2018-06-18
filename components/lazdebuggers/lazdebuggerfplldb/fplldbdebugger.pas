@@ -563,7 +563,7 @@ begin
   if FEvaluationCmdObj <> nil then exit;
 
   FpDebugger.Threads.CurrentThreads.Count; // trigger threads, in case
-  if     FpDebugger.Registers.CurrentRegistersList[FpDebugger.CurrentThreadId, FpDebugger.CurrentStackFrame].Count = 0 then   // trigger register, in case
+  if FpDebugger.Registers.CurrentRegistersList[FpDebugger.CurrentThreadId, FpDebugger.CurrentStackFrame].Count = 0 then   // trigger register, in case
     FNeedRegValues := True
   else
   begin

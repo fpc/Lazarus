@@ -31,7 +31,7 @@ type
     procedure Put(Index: Integer; const AValue: TLldbDebuggerCommand);
   private
     FRunningCommand: TLldbDebuggerCommand;
-    procedure Run;
+    procedure Run; // Call Debugger.OnIdle // set IsIdle
   protected
     procedure CommandFinished(ACommand: TLldbDebuggerCommand);
   public
@@ -158,7 +158,7 @@ type
     function  CreateCallStack: TCallStackSupplier; override;
     //function  CreateDisassembler: TDBGDisassembler; override;
     function  CreateWatches: TWatchesSupplier; override;
-    //function  CreateThreads: TThreadsSupplier; override;
+    function  CreateThreads: TThreadsSupplier; override;
 
     function  GetSupportedCommands: TDBGCommands; override;
     //function  GetCommands: TDBGCommands; override;
@@ -186,6 +186,37 @@ procedure Register;
 implementation
 
 type
+
+  {%region
+    *****
+    *****     Threads
+    ***** }
+
+  { TLldbDebuggerCommandThreads }
+
+  TLldbDebuggerCommandThreads = class(TLldbDebuggerCommand)
+  private
+    FCurrentThreads: TThreads;
+    procedure ThreadInstructionSucceeded(Sender: TObject);
+    //procedure StopInstructionSucceeded(Sender: TObject);
+  protected
+    procedure DoExecute; override;
+  public
+    property  CurrentThreads: TThreads read FCurrentThreads write FCurrentThreads;
+  end;
+
+  { TLldbThreads }
+
+  TLldbThreads = class(TThreadsSupplier)
+  private
+  protected
+    procedure DoStateEnterPause; override;
+  public
+    procedure RequestMasterData; override;
+    procedure ChangeCurrentThread(ANewId: Integer); override;
+  end;
+
+  {%endregion   ^^^^^  Threads  ^^^^^   }
 
   { TLldbCallStack }
 
@@ -235,6 +266,150 @@ type
   protected
 //    function FindById(AnId: Integer): TGDBMIBreakPoint;
   end;
+
+{%region
+  *****
+  *****     Threads
+  ***** }
+
+{ TLldbDebuggerCommandThreads }
+
+procedure TLldbDebuggerCommandThreads.ThreadInstructionSucceeded(Sender: TObject
+  );
+var
+  Instr: TLldbInstructionThreadList absolute Sender;
+  i, j, line: Integer;
+  s, func, filename, name: String;
+  found, foundFunc, foundArg: TStringArray;
+  TId, CurThrId, addr: LongInt;
+  CurThr: Boolean;
+  Arguments: TStringList;
+begin
+  CurrentThreads.Clear;
+  for i := 0 to Length(Instr.Res) - 1 do begin
+    CurThr := False;
+    s := Instr.Res[i];
+    if (Length(s) > 1) and (s[1] = '*') then begin
+      s[1] := ' ';
+      CurThr := True;
+    end;
+    j := pos(', stop reason', s);
+    if j > 0 then s := copy(s, 1, j-1);
+
+    TId := 0;
+    addr := 0;
+    func := s;
+    filename := '';
+    line := 0;
+    name := '';
+    if StrMatches(s, ['  thread #'{id}, ': '{}, ''], found) then begin
+      TId := StrToIntDef(found[0], -1);
+      s := found[1];
+    end;
+
+    Arguments := nil;
+    if StrMatches(s, ['tid = '{}, ', '{addr}, ' '{exe}, '`'{remainder}, ''], found) then begin
+      if CurThr then begin
+        CurThrId := TId;
+        DebugLn(['Parsing threads, new current ',TId, ' dbg has ', Debugger.FCurrentThreadId]);
+        Debugger.FCurrentThreadId := TId;
+      end;
+      name := found[0];
+      addr := StrToIntDef(found[1], 0);
+
+      if StrMatches(found[3], [''{func}, '',' at '{file}, ':'{line}, ''], foundFunc) then begin
+          Arguments := TStringList.Create;
+          if StrMatches(foundFunc[0], ['', '(', '',')'], foundArg) then begin
+            Arguments.CommaText := foundArg[1];
+            foundFunc[0] := foundArg[0];
+          end;
+          func := foundFunc[0];
+          line := StrToIntDef(foundFunc[2], 0);
+          filename := foundFunc[1];
+      end
+      else begin
+        func := found[2]+' '+found[3];
+      end;
+    end;
+
+    CurrentThreads.Add(
+      CurrentThreads.CreateEntry(
+        addr,
+        Arguments,
+        func,
+        filename, '',
+        line,
+        TId, name, ''
+      )
+    );
+
+    Arguments.Free;
+  end;
+
+  CurrentThreads.CurrentThreadId := CurThrId;
+  CurrentThreads.SetValidity(ddsValid);
+
+  Finished;
+
+  (*
+"(lldb) thread list"
+"Process 11984 stopped"
+"* thread #1: tid = 0x1a1c, 0x0042951d project1.exe`FORMCREATE(this=0x00151060, SENDER=0x00151060) at unit1.pas:59, stop reason = breakpoint 2.1"
+"  thread #2: tid = 0x16ac, 0x7700eb6c ntdll.dll`NtDelayExecution + 12"
+"  thread #3: tid = 0x2930, 0x7700eb6c ntdll.dll`NtDelayExecution + 12"
+"  thread #4: tid = 0x2bf8, 0x770104bc ntdll.dll`NtWaitForWorkViaWorkerFactory + 12"
+"(lldb) p 112236"
+"(int) $1 = 112236"
+  *)
+
+end;
+
+procedure TLldbDebuggerCommandThreads.DoExecute;
+var
+  Instr: TLldbInstructionThreadList;
+begin
+  Instr := TLldbInstructionThreadList.Create();
+  Instr.OnFinish := @ThreadInstructionSucceeded;
+  InstructionQueue.QueueInstruction(Instr);
+  Instr.ReleaseReference;
+end;
+
+{ TLldbThreads }
+
+procedure TLldbThreads.DoStateEnterPause;
+begin
+  inherited DoStateEnterPause;
+  Changed;
+end;
+
+procedure TLldbThreads.RequestMasterData;
+var
+  Cmd: TLldbDebuggerCommandThreads;
+begin
+  if not (Debugger.State in [dsPause, dsInternalPause]) then
+    exit;
+
+  Cmd := TLldbDebuggerCommandThreads.Create(TLldbDebugger(Debugger));
+  Cmd.CurrentThreads := CurrentThreads;
+  TLldbDebugger(Debugger).QueueCommand(Cmd);
+  Cmd.ReleaseReference;
+end;
+
+procedure TLldbThreads.ChangeCurrentThread(ANewId: Integer);
+begin
+  if Debugger = nil then Exit;
+  if not(Debugger.State in [dsPause, dsInternalPause]) then exit;
+
+  if CurrentThreads <> nil
+  then CurrentThreads.CurrentThreadId := ANewId;
+end;
+
+{%endregion   ^^^^^  Threads  ^^^^^   }
+
+{%region
+  *****
+  *****     CallStack
+  ***** }
 
 { TLldbCallStack }
 
@@ -348,6 +523,8 @@ begin
   TLldbDebugger(Debugger).FDebugInstructionQueue.QueueInstruction(Instr);
   Instr.ReleaseReference;
 end;
+
+{%endregion   ^^^^^  CallStack  ^^^^^   }
 
 { TLldbWatches }
 
@@ -726,6 +903,14 @@ begin
   if ALine = '' then
     exit;
 
+  if StrMatches(ALine, ['* thread #', ', stop reason = ', ''], found) then begin
+    FCurrentThreadId := StrToIntDef(found[0], 0);
+    FCurrentStackFrame := 0;
+    FDebugInstructionQueue.SetKnownThreadAndFrame(FCurrentThreadId, 0);
+    SetState(dsPause);
+    ALine := '';
+  end;
+
   // Process 8888 exited with status = 0 (0x00000000)
   if (LeftStr(ALine, 8) = 'Process ') and (pos('exited with status = ', ALine) > 0) then begin
 // todo: target delete
@@ -749,18 +934,8 @@ begin
 end;
 
 procedure TLldbDebugger.DoBeforeLineReceived(var ALine: String);
-var
-  found: TStringArray;
 begin
-  if StrMatches(ALine, ['Process ', ' stopped']) then begin
-    ALine := '';
-  end;
-
-  if StrMatches(ALine, ['* thread #', ', stop reason = ', ''], found) then begin
-    FCurrentThreadId := StrToIntDef(found[0], 0);
-    FCurrentStackFrame := 0;
-    FDebugInstructionQueue.SetKnownThreadAndFrame(FCurrentThreadId, 0);
-    SetState(dsPause);
+  if StrMatches(ALine, ['Process ', ' stopped']) then begin // TODO: needed?
     ALine := '';
   end;
 end;
@@ -849,6 +1024,11 @@ end;
 function TLldbDebugger.CreateWatches: TWatchesSupplier;
 begin
   Result := TLldbWatches.Create(Self);
+end;
+
+function TLldbDebugger.CreateThreads: TThreadsSupplier;
+begin
+  Result := TLldbThreads.Create(Self);
 end;
 
 function TLldbDebugger.GetSupportedCommands: TDBGCommands;

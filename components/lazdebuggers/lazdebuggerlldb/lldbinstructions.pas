@@ -180,6 +180,20 @@ type
     property Res: TStringList read FRes;
   end;
 
+  { TLldbInstructionThreadList }
+
+  TLldbInstructionThreadList = class(TLldbInstruction)
+  private
+    FRes: TStringArray;
+    FReading: Boolean;
+  protected
+    procedure SendCommandDataToDbg(); override;
+    function ProcessInputFromDbg(const AData: String): Boolean; override;
+  public
+    constructor Create();
+    property Res: TStringArray read FRes;
+  end;
+
   { TLldbInstructionStackTrace }
 
   TLldbInstructionStackTrace = class(TLldbInstruction)
@@ -666,6 +680,57 @@ begin
   inherited Create('register read --all', AThread, AFrame);
 end;
 
+{ TLldbInstructionThreadList }
+
+procedure TLldbInstructionThreadList.SendCommandDataToDbg();
+begin
+  inherited SendCommandDataToDbg();
+  Queue.SendDataToDBG(Self, 'p 112236'); // end marker // do not sent before new prompt
+end;
+
+function TLldbInstructionThreadList.ProcessInputFromDbg(const AData: String
+  ): Boolean;
+var
+  l: Integer;
+begin
+  Result := False;
+  if StrStartsWith(AData, Command) then begin
+    FReading := True;
+    exit;
+  end;
+
+  if not FReading then
+    exit;
+
+  Result := True;
+  if CheckForIgnoredError(AData) then
+    exit;
+
+  if StrStartsWith(AData, 'Process ') then
+    exit;
+
+
+  if StrStartsWith(AData, '* thread #') or StrStartsWith(AData, '  thread #') then begin
+DebugLn(['######### add ',AData]);
+    l := Length(FRes);
+    SetLength(FRes, l+1);
+    FRes[l] := AData;
+    exit;
+  end;
+
+  if StrMatches(AData, ['(', ')', ' = ', '112236', '']) then begin
+    MarkAsSuccess;
+    Exit;
+  end;
+
+  Result := inherited ProcessInputFromDbg(AData);
+end;
+
+constructor TLldbInstructionThreadList.Create();
+begin
+  inherited Create('thread list');
+end;
+
 { TLldbInstructionStackTrace }
 
 procedure TLldbInstructionStackTrace.SendCommandDataToDbg();
@@ -682,6 +747,7 @@ begin
   Result := False;
   if StrStartsWith(AData, Command) then begin
     FReading := True;
+    exit;
   end;
 
   if not FReading then
