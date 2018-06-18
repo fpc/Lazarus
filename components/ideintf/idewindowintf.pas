@@ -19,7 +19,7 @@ interface
 uses
   Math, Classes, SysUtils,
   // LCL
-  LCLProc, LCLIntf, Forms, Controls,
+  LCLProc, LCLIntf, Forms, Controls, LCLType,
   // LazUtils
   LazConfigStorage, LazUTF8, LazMethodList,
   // IdeIntf
@@ -265,6 +265,7 @@ type
                            AMoveToVisbleMode: TLayoutMoveToVisbleMode = vmOnlyMoveOffScreenToVisible);
     procedure StoreWindowPositions;
     procedure SetDefaultPosition(const AForm: TCustomForm);
+    procedure MoveToTop(const AFormID: string);
     procedure CopyItemsFrom(SrcList: TSimpleWindowLayoutList);
     function Add(ALayout: TSimpleWindowLayout): integer;
     function CreateWindowLayout(const TheFormID: string): TSimpleWindowLayout;
@@ -382,7 +383,6 @@ type
   TIDEWindowCreatorList = class
   private
     fItems: TFPList; // list of TIDEWindowCreator
-    FScreenMaxSizeForDefaults: TPoint;
     FSimpleLayoutStorage: TSimpleWindowLayoutList;
     FOnLayoutChanged: TMethodList;
     procedure LayoutChanged;
@@ -423,8 +423,6 @@ type
     procedure AddLayoutChangedHandler(const aEvent: TNotifyEvent);
     procedure RemoveLayoutChangedHandler(const aEvent: TNotifyEvent);
 
-    property ScreenMaxSizeForDefaults: TPoint read FScreenMaxSizeForDefaults
-                                              write FScreenMaxSizeForDefaults; // on big screens: do not span the whole screen
     function GetScreenrectForDefaults: TRect;
   end;
 
@@ -1571,6 +1569,15 @@ begin
     Items[i].LoadFromConfig(Config,Path,FileVersion);
 end;
 
+procedure TSimpleWindowLayoutList.MoveToTop(const AFormID: string);
+var
+  I: Integer;
+begin
+  I := IndexOf(AFormID);
+  if I>=0 then
+    fItems.Move(I, fItems.Count-1);
+end;
+
 procedure TSimpleWindowLayoutList.SaveToConfig(Config: TConfigStorage; const Path: string);
 var
   i: integer;
@@ -2071,7 +2078,6 @@ constructor TIDEWindowCreatorList.Create;
 begin
   fItems:=TFPList.Create;
   FSimpleLayoutStorage:=TSimpleWindowLayoutList.Create(True);
-  FScreenMaxSizeForDefaults:=Point(1200,900);
   FOnLayoutChanged:=TMethodList.Create;
 end;
 
@@ -2305,10 +2311,10 @@ begin
   if (Result.Right-Result.Left<10)
   or (Result.Bottom-Result.Top<10) then begin
     // screen not recognized
-    Result:=Rect(0,0,Max(Screen.Width,600),Max(Screen.Height,400));
+    Result:=Rect(0,0,
+      Max(Screen.Width,MulDiv(600, Screen.PixelsPerInch, 96)),
+      Max(Screen.Height,MulDiv(400, Screen.PixelsPerInch, 96)));
   end;
-  Result.Right:=Min(Result.Right,Result.Left+IDEWindowCreators.ScreenMaxSizeForDefaults.X);
-  Result.Bottom:=Min(Result.Bottom,Result.Top+IDEWindowCreators.ScreenMaxSizeForDefaults.Y);
 end;
 
 { TIDEDockMaster }

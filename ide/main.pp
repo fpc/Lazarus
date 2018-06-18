@@ -2458,6 +2458,7 @@ begin
     nil,@CreateIDEWindow,'250','250','','');
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwEditorFileManager],
     nil,@CreateIDEWindow,'200','200','','');
+  IDEWindowCreators.SimpleLayoutStorage.MoveToTop('MainIDE');
 end;
 
 procedure TMainIDE.RestoreIDEWindows;
@@ -12353,8 +12354,9 @@ begin
     // place object inspector below main bar
     ScreenR:=IDEWindowCreators.GetScreenrectForDefaults;
     aBounds:=Rect(ScreenR.Left,
-       Min(MainIDEBar.Top+MainIDEBar.Height+25,200),ScreenR.Left+230,
-       ScreenR.Bottom-ScreenR.Top-150);
+       MainIDEBar.Top+MainIDEBar.Height+MainIDEBar.Scale96ToForm(35),
+       ScreenR.Left+MainIDEBar.Scale96ToForm(230),
+       ScreenR.Bottom-MainIDEBar.Scale96ToForm(50));
     // do not dock object inspector, because this would hide the floating designers
   end
   else if (aFormName=NonModalIDEWindowNames[nmiwMessagesViewName]) then begin
@@ -12363,10 +12365,14 @@ begin
     if SourceEditorManager.SourceWindowCount>0 then begin
       SrcEditWnd:=SourceEditorManager.SourceWindows[0];
       aBounds:=GetParentForm(SrcEditWnd).BoundsRect;
-      aBounds.Top:=aBounds.Bottom+25;
-      aBounds.Bottom:=aBounds.Top+100;
+      aBounds.Top:=aBounds.Bottom+MainIDEBar.Scale96ToForm(35);
+      aBounds.Bottom:=ScreenR.Bottom-MainIDEBar.Scale96ToForm(50);
     end else begin
-      aBounds:=Rect(ScreenR.Left+250,ScreenR.Bottom-200,ScreenR.Right-250,100);
+      aBounds:=Rect(
+        ScreenR.Left+MainIDEBar.Scale96ToForm(250),
+        ScreenR.Bottom-MainIDEBar.Scale96ToForm(200),
+        ScreenR.Right-MainIDEBar.Scale96ToForm(250),
+        ScreenR.Bottom-MainIDEBar.Scale96ToForm(50));
     end;
     if IDEDockMaster<>nil then begin
       DockSibling:=NonModalIDEWindowNames[nmiwSourceNoteBookName];

@@ -9909,7 +9909,6 @@ procedure TSourceEditorManager.GetDefaultLayout(Sender: TObject; aFormName: stri
   out aBounds: TRect; out DockSibling: string; out DockAlign: TAlign);
 var
   i: LongInt;
-  p: Integer;
   ScreenR: TRect;
 begin
   DockSibling:='';
@@ -9921,14 +9920,20 @@ begin
   debugln(['TSourceEditorManager.GetDefaultLayout ',aFormName,' i=',i]);
   {$ENDIF}
   ScreenR:=IDEWindowCreators.GetScreenrectForDefaults;
-  if Application.MainForm<>nil then
-    p:=Min(ScreenR.Left+200,Application.MainForm.Top+Application.MainForm.Height+25)
+  if ObjectInspector1<>nil then
+  begin
+    aBounds.Left := ObjectInspector1.Left + ObjectInspector1.Width + ObjectInspector1.Scale96ToForm(5);
+    aBounds.Top := ObjectInspector1.Top;
+  end
   else
-    p:=120;
-  inc(p,30*i);
-  aBounds:=Rect(ScreenR.Left+250+30*i,p,
-                Min(1000,ScreenR.Right-ScreenR.Left),
-                ScreenR.Bottom-ScreenR.Top-200);
+  begin
+    aBounds.Left := ScreenR.Left+MulDiv(200, Screen.PixelsPerInch, 96);
+    aBounds.Top := ScreenR.Top+MulDiv(120, Screen.PixelsPerInch, 96);
+  end;
+  Inc(aBounds.Left,MulDiv(30, Screen.PixelsPerInch, 96)*i);
+  Inc(aBounds.Top, MulDiv(30, Screen.PixelsPerInch, 96)*i);
+  aBounds.Right:=ScreenR.Right-MulDiv(30, Screen.PixelsPerInch, 96);
+  aBounds.Bottom:=ScreenR.Bottom-MulDiv(200, Screen.PixelsPerInch, 96);
   if (i=0) and (IDEDockMaster<>nil) then begin
     DockSibling:=NonModalIDEWindowNames[nmiwMainIDEName];
     DockAlign:=alBottom;
