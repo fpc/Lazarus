@@ -510,21 +510,23 @@ begin
     B := AItem.Checked
   else
     B := False;
+
+  // apply texts
   ItemSetText(ALV, AIndex, AItem, 0, AItem.Caption);
   for i := 0 to AItem.SubItems.Count - 1 do
     ItemSetText(ALV, AIndex, AItem, i + 1, AItem.SubItems[i]);
+  // make sure no texts are left over
+  for i := AItem.SubItems.Count to ALV.ColumnCount-1 do
+    ItemSetText(ALV, AIndex, AItem, i + 1, '');
 
-  // set state images
-  if Assigned(TListView(ALV).StateImages) then
-    ItemSetStateImage(ALV, AIndex,AItem,0, AItem.StateIndex);
+  // set state image
+  ItemSetStateImage(ALV, AIndex,AItem,0, AItem.StateIndex);
 
-  // set images
-  if AItem.ImageIndex >= 0 then
-    ItemSetImage(ALV, AIndex, AItem, 0, AItem.ImageIndex);
+  // set image
+  ItemSetImage(ALV, AIndex, AItem, 0, AItem.ImageIndex);
 
-  // apply checkbox states
-  if ALV.Checkboxes then
-    ItemSetChecked(ALV, AIndex, AItem, B);
+  // apply checkbox state
+  ItemSetChecked(ALV, AIndex, AItem, B);
 end;
 
 class procedure TWin32WSCustomListView.ItemExchange(const ALV: TCustomListView;
