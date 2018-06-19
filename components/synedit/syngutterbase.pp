@@ -57,7 +57,6 @@ type
     procedure SetVisible(const AValue: boolean);
     procedure SetWidth(Value: integer);
   protected
-    procedure DoAutoSize;
     procedure SetChildBounds;
     procedure DoChange(Sender: TObject);
     procedure DoResize(Sender: TObject);
@@ -77,6 +76,7 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure RecalcBounds;
     procedure ScalePPI(const AScaleFactor: Double);
+    procedure DoAutoSize;
     function MaybeHandleMouseAction(var AnInfo: TSynEditMouseActionInfo;
                  HandleActionProc: TSynEditMouseActionHandler): Boolean; virtual;
     procedure ResetMouseActions; virtual; // set mouse-actions according to current Options / may clear them
@@ -436,7 +436,11 @@ begin
   NewWidth := FLeftOffset + FRightOffset;
   for i := PartCount-1 downto 0 do
     if Parts[i].Visible then
+    begin
+      if Parts[i].AutoSize then
+        Parts[i].DoAutoSize;
       NewWidth := NewWidth + Parts[i].Width;
+    end;
 
   if FWidth = NewWidth then exit;
 
@@ -672,7 +676,6 @@ begin
   FVisible := True;
   FAutoSize := True;
   Inherited Create(AOwner); // Todo: Lock the DoChange from RegisterItem, and call DoChange at the end (after/in autosize)
-  DoAutoSize; // Calls PreferedWidth(), must be after Init();
 end;
 
 procedure TSynGutterPartBase.Init;

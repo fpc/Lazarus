@@ -1740,12 +1740,18 @@ end;
 
 function TCustomSynEdit.GetCharsInWindow: Integer;
 begin
-  Result := FTextArea.CharsInWindow;
+  if not Assigned(FTextArea) then
+    Result := -1
+  else
+    Result := FTextArea.CharsInWindow;
 end;
 
 function TCustomSynEdit.GetCharWidth: integer;
 begin
-  Result := FTextArea.CharWidth;
+  if not Assigned(FTextArea) then
+    Result := -1
+  else
+    Result := FTextArea.CharWidth;
 end;
 
 function TCustomSynEdit.GetDefSelectionMode: TSynSelectionMode;
@@ -1770,17 +1776,26 @@ end;
 
 function TCustomSynEdit.GetLeftChar: Integer;
 begin
-  Result := FTextArea.LeftChar;
+  if not Assigned(FTextArea) then
+    Result := -1
+  else
+    Result := FTextArea.LeftChar;
 end;
 
 function TCustomSynEdit.GetLineHeight: integer;
 begin
-  Result := FTextArea.LineHeight;
+  if not Assigned(FTextArea) then
+    Result := -1
+  else
+    Result := FTextArea.LineHeight;
 end;
 
 function TCustomSynEdit.GetLinesInWindow: Integer;
 begin
-  Result := FTextArea.LinesInWindow;
+  if not Assigned(FTextArea) then
+    Result := -1
+  else
+    Result := FTextArea.LinesInWindow;
 end;
 
 function TCustomSynEdit.GetModified: Boolean;
@@ -1815,12 +1830,18 @@ end;
 
 function TCustomSynEdit.GetRightEdge: Integer;
 begin
-  Result := FTextArea.RightEdgeColumn;
+  if not Assigned(FTextArea) then
+    Result := -1
+  else
+    Result := FTextArea.RightEdgeColumn;
 end;
 
 function TCustomSynEdit.GetRightEdgeColor: TColor;
 begin
-  Result := FTextArea.RightEdgeColor;
+  if not Assigned(FTextArea) then
+    Result := clNone
+  else
+    Result := FTextArea.RightEdgeColor;
 end;
 
 function TCustomSynEdit.GetTextBetweenPoints(aStartPoint, aEndPoint: TPoint): String;
@@ -1833,7 +1854,10 @@ end;
 
 function TCustomSynEdit.GetTopLine: Integer;
 begin
-  Result := FFoldedLinesView.ViewPosToTextIndex(FTextArea.TopLine) + 1;
+  if not Assigned(FTextArea) then
+    Result := -1
+  else
+    Result := FFoldedLinesView.ViewPosToTextIndex(FTextArea.TopLine) + 1;
 end;
 
 procedure TCustomSynEdit.SetBlockTabIndent(AValue: integer);
@@ -2121,9 +2145,11 @@ begin
   FLeftGutter := CreateGutter(self, gsLeft, FTextDrawer);
   FLeftGutter.RegisterChangeHandler(@GutterChanged);
   FLeftGutter.RegisterResizeHandler(@GutterResized);
+  FLeftGutter.DoAutoSize;
   FRightGutter := CreateGutter(self, gsRight, FTextDrawer);
   FRightGutter.RegisterChangeHandler(@GutterChanged);
   FRightGutter.RegisterResizeHandler(@GutterResized);
+  FRightGutter.DoAutoSize;
 
   ControlStyle := ControlStyle + [csOpaque, csSetCaption, csTripleClicks, csQuadClicks];
   Height := 150;
