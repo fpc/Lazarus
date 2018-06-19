@@ -70,7 +70,7 @@ type
     FIsReadOnly: Boolean;
     FLayout: TLeftRight;
     FSpacing: Integer;
-    //Forwarded events from FButton
+    //Forwarded events from FBuddy
     FOnBuddyClick: TNotifyEvent;
     //Forwarded events from FEdit
     FOnEditClick: TNotifyEvent;

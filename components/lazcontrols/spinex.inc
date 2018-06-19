@@ -66,8 +66,6 @@ begin
   end;
 end;
 
-
-
 procedure TSpinEditExBase.UpDownChangingEx(Sender: TObject;
   var AllowChange: Boolean; NewValue: SmallInt; Direction: TUpDownDirection);
 begin
@@ -83,13 +81,10 @@ begin
   BuddyClick;
 end;
 
-
 function TSpinEditExBase.GetBuddyClassType: TControlClass;
 begin
   Result := TUpDown;
 end;
-
-
 
 procedure TSpinEditExBase.DoEnter;
 begin
@@ -259,7 +254,6 @@ begin
   Result := IsLimited and ((AValue < MinValue) or (AValue > MaxValue));
 end;
 
-
 function TSpinEditExBase.GetEdit: TGEEdit;
 begin
   Result := BaseEditor;
@@ -273,6 +267,13 @@ begin
     UpDown.MinRepeatInterval := FMinRepeatValue;
 end;
 
+procedure TSpinEditExBase.SetUpDownVisible(AValue: Boolean);
+begin
+  if FUpDownVisible=AValue then Exit;
+  FUpDownVisible:=AValue;
+  UpDown.Visible:=AValue;
+  UpdateSpacing;
+end;
 
 procedure TSpinEditExBase.SpinUpDown(Up: Boolean);
 var
@@ -317,6 +318,7 @@ begin
   inherited Create(TheOwner);
 
   FArrowKeys := True;
+  FUpDownVisible := True;
   FIncrement := DefIncrement;
   FMaxValue := DefMaxValue;
   FUpdatePending := True;
