@@ -256,7 +256,7 @@ type
   end;
   
 var
-  SourceEditorMarks: TSourceMarks;
+  SourceEditorMarks: TSourceMarks = nil;
   
 implementation
 
@@ -635,6 +635,8 @@ end;
 
 destructor TSourceMarks.Destroy;
 begin
+  if SourceEditorMarks=Self then
+    SourceEditorMarks:=nil;
   Clear;
   FreeAndNil(FExtToolsMarks);
   FreeThenNil(FItems);
@@ -819,9 +821,6 @@ function TSourceMarks.AddImage(const ResName: string): integer;
 begin
   Result := FImgList.GetImageIndex(Resname);
 end;
-
-initialization
-  SourceEditorMarks:=nil;
 
 end.
 
