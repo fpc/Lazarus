@@ -48,7 +48,7 @@ uses
   {$ENDIF}
   Classes, SysUtils,
   // LCL
-  Controls, LCLProc, LCLType, Graphics, Menus,
+  Controls, LCLProc, LCLType, Graphics, Menus, ImgList,
   // synedit
   SynEdit, SynEditMiscClasses, SynGutter, SynGutterBase, SynEditMarks,
   SynEditTypes, SynGutterLineNumber, SynGutterCodeFolding, SynGutterMarks,
@@ -2232,6 +2232,7 @@ var
   var
     itop : Longint;
     LineHeight: LongInt;
+    img: TScaledImageListResolution;
   begin
     if Line < 0 then Exit;
     if Assigned(FBookMarkOpt.BookmarkImages) and
@@ -2239,11 +2240,12 @@ var
        (DebugMarksImageIndex >= 0) then
     begin
       LineHeight := TSynEdit(SynEdit).LineHeight;
+      img := GetImgListRes(Canvas, FBookMarkOpt.BookmarkImages);
       iTop := 0;
-      if LineHeight > FBookMarkOpt.BookmarkImages.Height then
-        iTop := (LineHeight - FBookMarkOpt.BookmarkImages.Height) div 2;
+      if LineHeight > img.Height then
+        iTop := (LineHeight - img.Height) div 2;
 
-      FBookMarkOpt.BookmarkImages.Draw
+      img.Draw
         (Canvas, AClip.Left + FBookMarkOpt.LeftMargin + aGutterOffs * ColumnWidth,
          AClip.Top + iTop, DebugMarksImageIndex, True);
     end
