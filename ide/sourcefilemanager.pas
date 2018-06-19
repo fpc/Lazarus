@@ -2295,9 +2295,9 @@ begin
         begin
           // disable autosizing for docked form editor forms, see issue #32207
           PreventAutoSize := (IDETabMaster <> nil)
-                             and (NewUnitInfo.Component is TCustomForm)
-                             and (IsFormDesign(NewUnitInfo.Component as TCustomForm))
-                             and IDETabMaster.AutoSizeInShowDesigner(NewUnitInfo.Component as TCustomForm);
+                             and ((NewUnitInfo.Component is TCustomForm)
+                             or (NewUnitInfo.Component is TCustomFrame))
+                             and IDETabMaster.AutoSizeInShowDesigner(TControl(NewUnitInfo.Component));
           if not PreventAutoSize then
             TControl(NewUnitInfo.Component).EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockMaster Delayed'){$ENDIF};
         end;

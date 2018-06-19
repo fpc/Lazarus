@@ -122,15 +122,15 @@ type
 
   TDTXTabMaster = class(TIDETabMaster)
   private
-    FAutoSizeFormList: TObjectList;
+    FAutoSizeControlList: TObjectList;
   protected
     function GetTabDisplayState: TTabDisplayState; override;
     function GetTabDisplayStateEditor(Index: TSourceEditorInterface): TTabDisplayState; override;
   public
     constructor Create;
     destructor Destroy; override;
-    function AutoSizeInShowDesigner(AForm: TCustomForm): Boolean; override;
-    procedure EnableAutoSizing(AForm: TCustomForm);
+    function AutoSizeInShowDesigner(AControl: TControl): Boolean; override;
+    procedure EnableAutoSizing(AControl: TControl);
     procedure ToggleFormUnit; override;
     procedure JumpToCompilerMessage(ASourceEditor: TSourceEditorInterface); override;
 
@@ -795,31 +795,42 @@ end;
 
 constructor TDTXTabMaster.Create;
 begin
-  FAutoSizeFormList := TObjectList.Create(False);
+  FAutoSizeControlList := TObjectList.Create(False);
 end;
 
 destructor TDTXTabMaster.Destroy;
 begin
-  FAutoSizeFormList.Free;
+  FAutoSizeControlList.Free;
   inherited Destroy;
 end;
 
-function TDTXTabMaster.AutoSizeInShowDesigner(AForm: TCustomForm): Boolean;
+function TDTXTabMaster.AutoSizeInShowDesigner(AControl: TControl): Boolean;
 begin
-  FAutoSizeFormList.Add(AForm);
+  FAutoSizeControlList.Add(AControl);
   Result := True;
 end;
 
-procedure TDTXTabMaster.EnableAutoSizing(AForm: TCustomForm);
+procedure TDTXTabMaster.EnableAutoSizing(AControl: TControl);
 var
   AIndex: Integer;
+  AutoSizeControl: TControl;
 begin
-  AIndex := FAutoSizeFormList.IndexOf(AForm);
-  if Assigned(AForm) and (AIndex >= 0) and IsFormDesign(AForm)
-  and (not (AForm is TNonControlProxyDesignerForm)) and (not (AForm is TFrameProxyDesignerForm)) then
+  if not Assigned(AControl) then Exit;
+  AutoSizeControl := nil;
+
+  if AControl is TNonFormProxyDesignerForm then
   begin
-    FAutoSizeFormList.Delete(AIndex);
-    AForm.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockMaster Delayed'){$ENDIF};
+    if (TNonFormProxyDesignerForm(AControl).LookupRoot is TControl) then
+      AutoSizeControl := TControl(TNonFormProxyDesignerForm(AControl).LookupRoot);
+  end
+  else
+    AutoSizeControl := AControl;
+
+  AIndex := FAutoSizeControlList.IndexOf(AutoSizeControl);
+  if (AIndex >= 0) then
+  begin
+    FAutoSizeControlList.Delete(AIndex);
+    AutoSizeControl.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockMaster Delayed'){$ENDIF};
   end;
 end;
 
@@ -880,8 +891,7 @@ end;
 
 { TDTXComponentsMaster }
 
-function TDTXComponentsMaster.DrawNonVisualComponents(ALookupRoot: TComponent
-  ): Boolean;
+function TDTXComponentsMaster.DrawNonVisualComponents(ALookupRoot: TComponent): Boolean;
 var
   LFormData: TDesignFormData;
   LPageCtrl: TModulePageControl;
