@@ -1,5 +1,4 @@
 (*
-  settings set prompt ((lldb)) \r\n
   settings set target.output-path /tmp/out.txt
 *)
 unit LldbDebugger;
@@ -9,8 +8,9 @@ unit LldbDebugger;
 interface
 
 uses
-  Classes, SysUtils, math, DbgIntfDebuggerBase, LazLoggerBase, LazClasses,
-  LazFileUtils, Maps, strutils, DebugProcess, LldbInstructions, LldbHelper;
+  Classes, SysUtils, math, DbgIntfDebuggerBase, DbgIntfBaseTypes, LazLoggerBase,
+  LazClasses, LazFileUtils, Maps, strutils, DebugProcess, LldbInstructions,
+  LldbHelper;
 
 type
 
@@ -279,58 +279,19 @@ procedure TLldbDebuggerCommandThreads.ThreadInstructionSucceeded(Sender: TObject
 var
   Instr: TLldbInstructionThreadList absolute Sender;
   i, j, line: Integer;
-  s, func, filename, name: String;
+  s, func, filename, name, d: String;
   found, foundFunc, foundArg: TStringArray;
-  TId, CurThrId, addr: LongInt;
+  TId, CurThrId: LongInt;
   CurThr: Boolean;
   Arguments: TStringList;
+  addr: TDBGPtr;
 begin
   CurrentThreads.Clear;
   for i := 0 to Length(Instr.Res) - 1 do begin
-    CurThr := False;
     s := Instr.Res[i];
-    if (Length(s) > 1) and (s[1] = '*') then begin
-      s[1] := ' ';
-      CurThr := True;
-    end;
-    j := pos(', stop reason', s);
-    if j > 0 then s := copy(s, 1, j-1);
-
-    TId := 0;
-    addr := 0;
-    func := s;
-    filename := '';
-    line := 0;
-    name := '';
-    if StrMatches(s, ['  thread #'{id}, ': '{}, ''], found) then begin
-      TId := StrToIntDef(found[0], -1);
-      s := found[1];
-    end;
-
-    Arguments := nil;
-    if StrMatches(s, ['tid = '{}, ', '{addr}, ' '{exe}, '`'{remainder}, ''], found) then begin
-      if CurThr then begin
-        CurThrId := TId;
-        DebugLn(['Parsing threads, new current ',TId, ' dbg has ', Debugger.FCurrentThreadId]);
-        Debugger.FCurrentThreadId := TId;
-      end;
-      name := found[0];
-      addr := StrToIntDef(found[1], 0);
-
-      if StrMatches(found[3], [''{func}, '',' at '{file}, ':'{line}, ''], foundFunc) then begin
-          Arguments := TStringList.Create;
-          if StrMatches(foundFunc[0], ['', '(', '',')'], foundArg) then begin
-            Arguments.CommaText := foundArg[1];
-            foundFunc[0] := foundArg[0];
-          end;
-          func := foundFunc[0];
-          line := StrToIntDef(foundFunc[2], 0);
-          filename := foundFunc[1];
-      end
-      else begin
-        func := found[2]+' '+found[3];
-      end;
-    end;
+    ParseThreadLocation(s, TId, CurThr, name, addr, func, Arguments, filename, line, d);
+    if CurThr then
+      CurThrId := TId;
 
     CurrentThreads.Add(
       CurrentThreads.CreateEntry(
@@ -350,18 +311,6 @@ begin
   CurrentThreads.SetValidity(ddsValid);
 
   Finished;
-
-  (*
-"(lldb) thread list"
-"Process 11984 stopped"
-"* thread #1: tid = 0x1a1c, 0x0042951d project1.exe`FORMCREATE(this=0x00151060, SENDER=0x00151060) at unit1.pas:59, stop reason = breakpoint 2.1"
-"  thread #2: tid = 0x16ac, 0x7700eb6c ntdll.dll`NtDelayExecution + 12"
-"  thread #3: tid = 0x2930, 0x7700eb6c ntdll.dll`NtDelayExecution + 12"
-"  thread #4: tid = 0x2bf8, 0x770104bc ntdll.dll`NtWaitForWorkViaWorkerFactory + 12"
-"(lldb) p 112236"
-"(int) $1 = 112236"
-  *)
-
 end;
 
 procedure TLldbDebuggerCommandThreads.DoExecute;
@@ -400,6 +349,8 @@ begin
   if Debugger = nil then Exit;
   if not(Debugger.State in [dsPause, dsInternalPause]) then exit;
 
+  TLldbDebugger(Debugger).FCurrentThreadId := ANewId;
+
   if CurrentThreads <> nil
   then CurrentThreads.CurrentThreadId := ANewId;
 end;
@@ -416,50 +367,27 @@ end;
 procedure TLldbCallStack.StackInstructionFinished(Sender: TObject);
 var
   Instr: TLldbInstructionStackTrace absolute Sender;
-  i: Integer;
+  i, FId, line: Integer;
   e: TCallStackEntry;
   found, foundArg: TStringArray;
   Arguments: TStringList;
   It: TMapIterator;
-  s: String;
+  s, func, filename, d: String;
   frame: LongInt;
+  IsCur: Boolean;
+  addr: TDBGPtr;
 begin
   It := TMapIterator.Create(Instr.Callstack.RawEntries);
 
   for i := 0 to Length(Instr.Res) - 1 do begin
     s := Instr.Res[i];
-    if (Length(s) > 3) and (s[3] = '*') then s[3] := ' ';
-    if StrMatches(s, ['    frame #'{id}, ': '{addr}, ' '{exe}, '`'{func}, '',' at '{file}, ':'{line}, ''], found) then begin
-      frame := StrToIntDef(found[0], -1);
-      if It.Locate(frame) then begin
-        Arguments := TStringList.Create;
-        if StrMatches(found[3], ['', '(', '',')'], foundArg) then begin
-          Arguments.CommaText := foundArg[1];
-          found[3] := foundArg[0];
-        end;
-
-        e := TCallStackEntry(It.DataPtr^);
-        e.Init(StrToInt64Def(found[1],0), Arguments, found[3], found[4], '', StrToIntDef(found[5], -1));
-        Arguments.Free;
-      end;
+    ParseFrameLocation(s, FId, IsCur, addr, func, Arguments, filename, line, d);
+    if It.Locate(FId) then begin
+      e := TCallStackEntry(It.DataPtr^);
+      e.Init(addr, Arguments, func, filename, '', line);
     end;
   end;
   It.Free;
-
-
-{
-<< << TCmdLineDebugger.ReadLn "  * frame #0: 0x00429258 project1.exe`
-FORMCREATE(this=0x04a91060, SENDER=0x04a91060) at unit1.pas:39"
-<< << TCmdLineDebugger.ReadLn "    frame #1: 0x0041ab6f project1.exe`DOCREATE(this=0x04a91060) at customform.inc:939"
-<< << TCmdLineDebugger.ReadLn "    frame #2: 0x00418bd8 project1.exe`AFTERCONSTRUCTION(this=0x04a91060) at customform.inc:149"
-<< << TCmdLineDebugger.ReadLn "    frame #3: 0x0042023a project1.exe`CREATE(this=0x000000c7, vmt=0x04a91060, THEOWNER=0x04a91060) at customform.inc:3184"
-<< << TCmdLineDebugger.ReadLn "    frame #4: 0x0042746e project1.exe`CREATEFORM(this=0x000000c7, INSTANCECLASS=0x04a91060, REFERENCE=<unavailable>) at application.inc:2241"
-<< << TCmdLineDebugger.ReadLn "    frame #5: 0x00402a42 project1.exe`main at project1.lpr:19"
-    procedure Init(const AnAddress: TDbgPtr;
-                   const AnArguments: TStrings; const AFunctionName: String;
-                   const {%H-}FileName, {%H-}FullName: String;
-                   const ALine: Integer; AState: TDebuggerDataState = ddsValid); virtual;
-}
 
   inherited RequestEntries(Instr.Callstack);
 end;
@@ -472,7 +400,7 @@ begin
     Exit;
   end;
 
-  ACallstack.Count := ARequiredMinCount + 1;
+  ACallstack.Count := ARequiredMinCount + 1; // TODO: get data, and return correct result
   ACallstack.SetCountValidity(ddsValid);
 end;
 
@@ -485,7 +413,7 @@ begin
     exit;
   end;
 
-  tid := 0; // Debugger.Threads.CurrentThreads.CurrentThreadId; // FCurrentThreadId ?
+  tid := Debugger.Threads.CurrentThreads.CurrentThreadId; // FCurrentThreadId ?
   cs := TCallStackBase(CurrentCallStackList.EntriesForThreads[tid]);
   idx := cs.NewCurrentIndex;  // NEW-CURRENT
 
@@ -756,6 +684,10 @@ begin
   Instr.ReleaseReference;
 
   Instr := TLldbInstructionSettingSet.Create('stop-line-count-before', '0');
+  QueueInstruction(Instr);
+  Instr.ReleaseReference;
+
+  Instr := TLldbInstructionSettingSet.Create('stop-disassembly-count', '0');
   Instr.OnFinish := @InstructionSucceeded;
   QueueInstruction(Instr);
   Instr.ReleaseReference;
@@ -899,6 +831,11 @@ procedure TLldbDebugger.DoAfterLineReceived(var ALine: String);
 var
   Instr: TLldbInstructionTargetDelete;
   found: TStringArray;
+  AnId, SrcLine: Integer;
+  AnIsCurrent: Boolean;
+  AnAddr: TDBGPtr;
+  AFuncName, AFile, AReminder: String;
+  AnArgs: TStringList;
 begin
   if ALine = '' then
     exit;
@@ -907,6 +844,7 @@ begin
     FCurrentThreadId := StrToIntDef(found[0], 0);
     FCurrentStackFrame := 0;
     FDebugInstructionQueue.SetKnownThreadAndFrame(FCurrentThreadId, 0);
+    Threads.CurrentThreads.CurrentThreadId := FCurrentThreadId;
     SetState(dsPause);
     ALine := '';
   end;
@@ -923,11 +861,13 @@ begin
     Instr.ReleaseReference;
   end;
 
-  if StrMatches(ALine, ['    frame #0: ' {addr}, ' ' {}, '`' {fname}, '(', '',' at ', ':', ''], found) then begin
-    FCurrentLocation.Address := StrToInt64Def(found[0], 0);
-    FCurrentLocation.FuncName := found[2];
-    FCurrentLocation.SrcFile := found[4];
-    FCurrentLocation.SrcLine := StrToIntDef(found[5], -1);
+  if ParseFrameLocation(ALine, AnId, AnIsCurrent, AnAddr, AFuncName, AnArgs,
+    AFile, SrcLine, AReminder)
+  then begin
+    FCurrentLocation.Address := AnAddr;
+    FCurrentLocation.FuncName := AFuncName;
+    FCurrentLocation.SrcFile := AFile;
+    FCurrentLocation.SrcLine := SrcLine;
     DoCurrent(FCurrentLocation);
     ALine := '';
   end;

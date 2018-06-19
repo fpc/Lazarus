@@ -5,7 +5,7 @@ unit LldbHelper;
 interface
 
 uses
-  Classes, SysUtils, strutils;
+  Classes, SysUtils, math, DbgIntfBaseTypes, strutils;
 
 function LastPos(ASearch, AString: string): Integer;
 
@@ -13,6 +13,15 @@ function StrStartsWith(AString, AStart: string): Boolean;
 function StrContains(AString, AFind: string): Boolean;
 function StrMatches(AString: string; AFind: array of string): Boolean;
 function StrMatches(AString: string; AFind: array of string; out AGapsContent: TStringArray): Boolean;
+
+function ParseThreadLocation(AnInput: String; out AnId: Integer;
+  out AnIsCurrent: Boolean; out AName: String; out AnAddr: TDBGPtr;
+  out AFuncName: String; out AnArgs: TStringList; out AFile: String;
+  out ALine: Integer; out AReminder: String): Boolean;
+function ParseFrameLocation(AnInput: String; out AnId: Integer;
+  out AnIsCurrent: Boolean; out AnAddr: TDBGPtr; out AFuncName: String;
+  out AnArgs: TStringList; out AFile: String; out ALine: Integer;
+  out AReminder: String): Boolean;
 
 implementation
 
@@ -93,6 +102,130 @@ begin
   else
     Result := AString = '';
   SetLength(AGapsContent, ResIdx);
+end;
+
+(* Examples
+"* thread #1: tid = 0x1a1c, 0x0042951d project1.exe`FORMCREATE(this=0x00151060, SENDER=0x00151060) at unit1.pas:59, stop reason = breakpoint 2.1"
+"  thread #2: tid = 0x16ac, 0x7700eb6c ntdll.dll`NtDelayExecution + 12"
+
+"  * frame #0: 0x7700eb6c ntdll.dll`NtDelayExecution + 12"
+"    frame #1: 0x767a5f5b KernelBase.dll`SleepEx + 155"
+"    frame #3: 0x004521c9 project1.exe"
+"    frame #7: 0x761a8654 kernel32.dll`BaseThreadInitThunk + 36"
+"    frame #2: 0x048fa158"
+"    frame #1: 0x0041ab6f project1.exe`DOCREATE(this=0x04a91060) at customform.inc:939"
+"    frame #5: 0x00402a42 project1.exe`main at project1.lpr:19"
+*)
+
+procedure ParseLocation(AnInput: String; out AnAddr: TDBGPtr; out AFuncName: String;
+  out AnArgs: TStringList; out AFile: String; out ALine: Integer; out AReminder: String);
+var
+  found: TStringArray;
+  i, j, k: Integer;
+begin
+  if pos(' ', AnInput) = 0 then begin
+    AnAddr := StrToInt64Def(AnInput, 0);
+    AnInput := '';
+  end
+  else
+  if StrMatches(AnInput, [''{addr}, ' '{remainder}, ''], found) then begin
+    AnAddr := StrToInt64Def(found[0], 0);
+    AnInput := found[1];
+  end
+  else
+    AnAddr := 0;
+
+  AnArgs := nil;
+  AFile := '';
+  ALine := 0;
+  AReminder := '';
+  if StrMatches(AnInput, [''{exe}, '`'{remainder}, ''], found) then begin
+    AnInput := found[1];
+    i := pos(' ', AnInput);
+    j := pos('(', AnInput);
+    k := pos(')', AnInput);
+    if ((i = 0) or (i > j)) and (j > 1) and (k > j) then begin
+      AFuncName := Copy(AnInput, 1, j-1);
+      AnArgs := TStringList.Create;
+      AnArgs.CommaText := copy(AnInput, j+1, k-j-1);
+      AnInput := Copy(AnInput, k+1, Length(AnInput));
+    end
+    else begin
+      i := Max(i, pos(', ', AnInput));
+      if i = 0 then i := Length(AnInput) + 1;
+      AFuncName := Copy(AnInput, 1, i-1);
+      AnInput := Copy(AnInput, i, Length(AnInput));
+    end;
+
+    if StrMatches(AnInput, [' at ', ':', ''], found) then begin
+      AFile := found[0];
+      i := pos(', ', found[1]);
+      if i = 0 then i := Length(found[1]) + 1;
+      ALine := StrToIntDef(copy(found[1], 1, i-1), 0);
+      AReminder := copy(found[1], i, Length(found[1]));
+    end
+    else
+      AReminder := AnInput;
+  end
+  else begin
+    AFuncName := AnInput;
+  end;
+end;
+
+function ParseThreadLocation(AnInput: String; out AnId: Integer; out
+  AnIsCurrent: Boolean; out AName: String; out AnAddr: TDBGPtr; out
+  AFuncName: String; out AnArgs: TStringList; out AFile: String; out
+  ALine: Integer; out AReminder: String): Boolean;
+var
+  found: TStringArray;
+begin
+  Result := False;
+  AnIsCurrent := (Length(AnInput) > 1) and (AnInput[1] = '*');
+  if AnIsCurrent then AnInput[1] := ' ';
+
+  if not StrMatches(AnInput, ['  thread #'{id}, ': '{}, ''], found) then begin
+    AnId := -1;
+    AName := '';
+    ParseLocation('', AnAddr, AFuncName, AnArgs, AFile, ALine, AReminder);
+    exit;
+  end;
+
+  AnId := StrToIntDef(found[0], -1);
+  AnInput := found[1];
+  Result := True;
+
+  if StrMatches(AnInput, ['tid = '{tid}, ', '{}, ''], found) then begin
+    AName := found[0];
+    AnInput := found[1];
+  end
+  else
+    AName := '';
+
+  ParseLocation(AnInput, AnAddr, AFuncName, AnArgs, AFile, ALine, AReminder);
+end;
+
+function ParseFrameLocation(AnInput: String; out AnId: Integer; out
+  AnIsCurrent: Boolean; out AnAddr: TDBGPtr; out AFuncName: String; out
+  AnArgs: TStringList; out AFile: String; out ALine: Integer; out
+  AReminder: String): Boolean;
+var
+  found: TStringArray;
+begin
+  Result := False;
+  AnIsCurrent := (Length(AnInput) > 3) and (AnInput[3] = '*');
+  if AnIsCurrent then AnInput[3] := ' ';
+
+  if not StrMatches(AnInput, ['    frame #'{id}, ': '{}, ''], found) then begin
+    AnId := -1;
+    ParseLocation('', AnAddr, AFuncName, AnArgs, AFile, ALine, AReminder);
+    exit;
+  end;
+
+  AnId := StrToIntDef(found[0], -1);
+  AnInput := found[1];
+  Result := True;
+
+  ParseLocation(AnInput, AnAddr, AFuncName, AnArgs, AFile, ALine, AReminder);
 end;
 
 end.

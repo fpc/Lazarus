@@ -24,7 +24,7 @@ type
     procedure DoBeforeHandleLineReceived(var ALine: String); override;
 
     function GetSelectFrameInstruction(AFrame: Integer): TDBGInstruction; override;
-    //function GetSelectThreadInstruction(AThreadId: Integer): TDBGInstruction; override;
+    function GetSelectThreadInstruction(AThreadId: Integer): TDBGInstruction; override;
   public
     procedure CancelAllForCommand(ACommand: TObject); // Does NOT include the current or running instruction
   end;
@@ -123,6 +123,17 @@ type
     function ProcessInputFromDbg(const AData: String): Boolean; override;
   public
     constructor Create(AnId: Integer);
+  end;
+
+  { TLldbInstructionThreadSelect }
+
+  TLldbInstructionThreadSelect = class(TLldbInstruction)
+  private
+    FIndex: Integer;
+  protected
+    function ProcessInputFromDbg(const AData: String): Boolean; override;
+  public
+    constructor Create(AnIndex: Integer);
   end;
 
   { TLldbInstructionFrameSelect }
@@ -236,6 +247,12 @@ function TLldbInstructionQueue.GetSelectFrameInstruction(AFrame: Integer
   ): TDBGInstruction;
 begin
   Result := TLldbInstructionFrameSelect.Create(AFrame);
+end;
+
+function TLldbInstructionQueue.GetSelectThreadInstruction(AThreadId: Integer
+  ): TDBGInstruction;
+begin
+  Result := TLldbInstructionThreadSelect.Create(AThreadId);
 end;
 
 procedure TLldbInstructionQueue.CancelAllForCommand(ACommand: TObject);
@@ -469,6 +486,26 @@ begin
   inherited Create(Format('breakpoint delete %d', [AnId]));
 end;
 
+{ TLldbInstructionThreadSelect }
+
+function TLldbInstructionThreadSelect.ProcessInputFromDbg(const AData: String
+  ): Boolean;
+begin
+  Result := inherited ProcessInputFromDbg(AData);
+
+  if not Result then begin // if Result=true then self is destroyed;
+    Queue.SetKnownThread(FIndex);
+    MarkAsSuccess;
+  end;
+  Result := true;
+end;
+
+constructor TLldbInstructionThreadSelect.Create(AnIndex: Integer);
+begin
+  FIndex := AnIndex;
+  inherited Create(Format('thread select %d', [AnIndex]));
+end;
+
 { TLldbInstructionFrameSelect }
 
 function TLldbInstructionFrameSelect.ProcessInputFromDbg(const AData: String
@@ -481,6 +518,13 @@ begin
     MarkAsSuccess;
   end;
   Result := true;
+(* TODO: ?
+ReadLn "* thread #3"
+ReadLn "    frame #0: 0x7700eb6c ntdll.dll`NtDelayExecution + 12"
+
+This falls through to TLldbDebugger.DoAfterLineReceived
+and sets the current location in the editor.
+*)
 end;
 
 constructor TLldbInstructionFrameSelect.Create(AnIndex: Integer);
@@ -780,7 +824,7 @@ constructor TLldbInstructionStackTrace.Create(FrameCount: Integer;
   ACallstack: TCallStackBase);
 begin
   FCallstack := ACallstack;
-  inherited Create(Format('bt %d', [FrameCount]));
+  inherited Create(Format('bt %d', [FrameCount]), ACallstack.ThreadId);
 end;
 
 end.
