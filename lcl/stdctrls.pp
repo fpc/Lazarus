@@ -768,7 +768,7 @@ type
     procedure Change; virtual;
     procedure DoEnter; override;
     procedure DoExit; override;
-    procedure DoEditingDone; override;
+    procedure EditingDone; override;
     function GetCaretPos: TPoint; virtual;
     function GetNumbersOnly: Boolean; virtual;
     function GetReadOnly: Boolean; virtual;

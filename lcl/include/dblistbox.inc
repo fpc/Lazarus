@@ -54,9 +54,9 @@ begin
     FDataLink.Field.Text := Items[ItemIndex];
 end;
 
-procedure TDBListBox.DoEditingDone;
+procedure TDBListBox.EditingDone;
 begin
   FDataLink.UpdateRecord;
-  inherited DoEditingDone;
+  inherited EditingDone;
 end;
 

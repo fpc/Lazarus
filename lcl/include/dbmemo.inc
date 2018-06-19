@@ -119,11 +119,11 @@ begin
   FDataLink.OnUpdateData:=@UpdateData;
 end;
 
-procedure TDBMemo.DoEditingDone;
+procedure TDBMemo.EditingDone;
 begin
   if FDataLink.CanModify and FDatalink.Editing then begin
     FDataLink.UpdateRecord;
-    inherited DoEditingDone;
+    inherited EditingDone;
   end else
     FDatalink.Reset;
 end;

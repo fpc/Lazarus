@@ -379,7 +379,8 @@ Type
     procedure DataChange(Sender: TObject); override;
     procedure DoSelectionChange(User: Boolean); override;
     procedure UpdateData(Sender: TObject); override;
-    procedure DoEditingDone; override;
+  public
+    procedure EditingDone; override;
   published
     property Align;
     property Anchors;
@@ -564,10 +565,10 @@ Type
     property DataLink: TFieldDataLink read FDataLink;
     function GetButtonValue(Index: Integer): string;
     procedure UpdateRadioButtonStates; override;
-    procedure DoEditingDone; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    procedure EditingDone; override;
     function ExecuteAction(AAction: TBasicAction): Boolean; override;
     function UpdateAction(AAction: TBasicAction): Boolean; override;
     property Field: TField read GetField;
@@ -728,12 +729,12 @@ Type
     procedure Change; override;
     procedure UpdateData(Sender: TObject); virtual; abstract;
     procedure WndProc(var Message: TLMessage); override;
-    procedure DoEditingDone; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     function ExecuteAction(AAction: TBasicAction): Boolean; override;
     function UpdateAction(AAction: TBasicAction): Boolean; override;
+    procedure EditingDone; override;
     property Field: TField read GetField;
     property Text;
     property ItemIndex;
@@ -960,10 +961,10 @@ Type
     procedure KeyPress(var Key:Char); override;
     procedure WndProc(var Message : TLMessage); override;
     class procedure WSRegisterClass; override;
-    procedure DoEditingDone; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    procedure EditingDone; override;
     procedure LoadMemo; virtual;
     function ExecuteAction(AAction: TBasicAction): Boolean; override;
     function UpdateAction(AAction: TBasicAction): Boolean; override;
@@ -1206,12 +1207,12 @@ Type
     procedure SetDataSource(Value: TDataSource);
     procedure UpdateDate(const AValue: string);
     procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
-    procedure DoEditingDone; override;
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    procedure EditingDone; override;
     function ExecuteAction(AAction: TBasicAction): Boolean; override;
     function UpdateAction(AAction: TBasicAction): Boolean; override;
 
