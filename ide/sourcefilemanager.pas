@@ -2295,8 +2295,7 @@ begin
         begin
           // disable autosizing for docked form editor forms, see issue #32207
           PreventAutoSize := (IDETabMaster <> nil)
-                             and ((NewUnitInfo.Component is TCustomForm)
-                             or (NewUnitInfo.Component is TCustomFrame))
+                             and (NewUnitInfo.Component is TCustomDesignControl)
                              and IDETabMaster.AutoSizeInShowDesigner(TControl(NewUnitInfo.Component));
           if not PreventAutoSize then
             TControl(NewUnitInfo.Component).EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockMaster Delayed'){$ENDIF};
@@ -6340,6 +6339,7 @@ var
   NestedClassName: string;
   NestedClass: TComponentClass;
   DisableAutoSize: Boolean;
+  PreventAutoSize: Boolean;
   NewControl: TControl;
   ARestoreVisible: Boolean;
   AncestorClass: TComponentClass;
@@ -6522,7 +6522,13 @@ begin
           if ofLoadHiddenResource in OpenFlags then
             NewControl.ControlStyle:=NewControl.ControlStyle+[csNoDesignVisible];
           if DisableAutoSize then
-            NewControl.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockMaster Delayed'){$ENDIF};
+          begin
+            PreventAutoSize := (IDETabMaster <> nil)
+                               and (NewControl is TCustomDesignControl)
+                               and IDETabMaster.AutoSizeInShowDesigner(NewControl);
+            if not PreventAutoSize then
+              NewControl.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockMaster Delayed'){$ENDIF};
+          end;
         end;
 
         if NewComponent is TCustomDesignControl then
@@ -6655,7 +6661,8 @@ begin
       DesignerForm.Visible := ARestoreVisible;
       DesignerForm.WindowState := wsMinimized;
     end else
-      LCLIntf.ShowWindow(DesignerForm.Handle, ShowCommands[AnUnitInfo.ComponentState]);
+      if IDETabMaster = nil then
+        LCLIntf.ShowWindow(DesignerForm.Handle, ShowCommands[AnUnitInfo.ComponentState]);
     MainIDE.LastFormActivated := DesignerForm;
   end;
 
