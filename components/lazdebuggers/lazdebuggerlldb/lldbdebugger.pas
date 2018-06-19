@@ -218,14 +218,30 @@ type
 
   {%endregion   ^^^^^  Threads  ^^^^^   }
 
+  {%region
+    *****
+    *****     CallStack
+    ***** }
+
+  { TLldbDebuggerCommandCallStack }
+
+  TLldbDebuggerCommandCallStack = class(TLldbDebuggerCommand)
+  private
+    FCurrentCallStack: TCallStackBase;
+    procedure StackInstructionFinished(Sender: TObject);
+  protected
+    procedure DoExecute; override;
+  public
+    property  CurrentCallStack: TCallStackBase read FCurrentCallStack write FCurrentCallStack;
+  end;
+
   { TLldbCallStack }
 
   TLldbCallStack = class(TCallStackSupplier)
-  private
-    procedure StackInstructionFinished(Sender: TObject);
   protected
     //procedure Clear;
     //procedure DoThreadChanged;
+    procedure ParentRequestEntries(ACallstack: TCallStackBase);
   public
     procedure RequestAtLeastCount(ACallstack: TCallStackBase;
       ARequiredMinCount: Integer); override;
@@ -233,6 +249,8 @@ type
     procedure RequestCurrent(ACallstack: TCallStackBase); override;
     procedure RequestEntries(ACallstack: TCallStackBase); override;
   end;
+
+  {%endregion   ^^^^^  CallStack  ^^^^^   }
 
   { TLldbWatches }
 
@@ -362,9 +380,10 @@ end;
   *****     CallStack
   ***** }
 
-{ TLldbCallStack }
+{ TLldbDebuggerCommandCallStack }
 
-procedure TLldbCallStack.StackInstructionFinished(Sender: TObject);
+procedure TLldbDebuggerCommandCallStack.StackInstructionFinished(Sender: TObject
+  );
 var
   Instr: TLldbInstructionStackTrace absolute Sender;
   i, FId, line: Integer;
@@ -389,7 +408,30 @@ begin
   end;
   It.Free;
 
-  inherited RequestEntries(Instr.Callstack);
+  TLldbCallStack(Debugger.CallStack).ParentRequestEntries(Instr.Callstack);
+
+  Finished;
+end;
+
+procedure TLldbDebuggerCommandCallStack.DoExecute;
+var
+  StartIdx, EndIdx: Integer;
+  Instr: TLldbInstructionStackTrace;
+begin
+  StartIdx := Max(FCurrentCallStack.LowestUnknown, 0);
+  EndIdx   := FCurrentCallStack.HighestUnknown;
+
+  Instr := TLldbInstructionStackTrace.Create(EndIdx, FCurrentCallStack);
+  Instr.OnFinish := @StackInstructionFinished;
+  QueueInstruction(Instr);
+  Instr.ReleaseReference;
+end;
+
+{ TLldbCallStack }
+
+procedure TLldbCallStack.ParentRequestEntries(ACallstack: TCallStackBase);
+begin
+  inherited RequestEntries(ACallstack);
 end;
 
 procedure TLldbCallStack.RequestAtLeastCount(ACallstack: TCallStackBase;
@@ -440,16 +482,15 @@ end;
 
 procedure TLldbCallStack.RequestEntries(ACallstack: TCallStackBase);
 var
-  StartIdx, EndIdx: Integer;
-  Instr: TLldbInstructionStackTrace;
+  Cmd: TLldbDebuggerCommandCallStack;
 begin
-  StartIdx := Max(ACallstack.LowestUnknown, 0);
-  EndIdx   := ACallstack.HighestUnknown;
+  if not (Debugger.State in [dsPause, dsInternalPause]) then
+    exit;
 
-  Instr := TLldbInstructionStackTrace.Create(EndIdx, ACallstack);
-  Instr.OnFinish := @StackInstructionFinished;
-  TLldbDebugger(Debugger).FDebugInstructionQueue.QueueInstruction(Instr);
-  Instr.ReleaseReference;
+  Cmd := TLldbDebuggerCommandCallStack.Create(TLldbDebugger(Debugger));
+  Cmd.CurrentCallStack := ACallstack;
+  TLldbDebugger(Debugger).QueueCommand(Cmd);
+  Cmd.ReleaseReference;
 end;
 
 {%endregion   ^^^^^  CallStack  ^^^^^   }
