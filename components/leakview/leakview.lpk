@@ -3,10 +3,11 @@
   <Package Version="4">
     <PathDelim Value="\"/>
     <Name Value="leakview"/>
+    <Type Value="RunAndDesignTime"/>
     <AddToProjectUsesSection Value="True"/>
     <Author Value="Dmitry 'skalogryz' Boyarintsev"/>
     <CompilerOptions>
-      <Version Value="12"/>
+      <Version Value="11"/>
       <PathDelim Value="\"/>
       <SearchPaths>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\$(LCLWidgetType)"/>
@@ -24,7 +25,7 @@
         </Debugging>
       </Linking>
       <Other>
-        <CompilerPath Value="$(CompPath)"/>
+        <CustomOptions Value="$(IDEBuildOptions)"/>
       </Other>
     </CompilerOptions>
     <Description Value="Leak View. allows fast navigation trough HeapTrc (and other?) leaks."/>
@@ -52,17 +53,19 @@
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
     </i18n>
-    <Type Value="RunAndDesignTime"/>
-    <RequiredPkgs Count="2">
+    <RequiredPkgs Count="3">
       <Item1>
-        <PackageName Value="CodeTools"/>
+        <PackageName Value="LazDebuggerLldb"/>
       </Item1>
       <Item2>
-        <PackageName Value="IDEIntf"/>
+        <PackageName Value="CodeTools"/>
       </Item2>
+      <Item3>
+        <PackageName Value="IDEIntf"/>
+      </Item3>
     </RequiredPkgs>
     <UsageOptions>
-      <UnitPath Value="$(PkgOutDir)\"/>
+      <UnitPath Value="$(PkgOutDir)"/>
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>
