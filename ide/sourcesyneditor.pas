@@ -92,8 +92,11 @@ type
   { TSourceLazSynSurfaceGutter }
 
   TSourceLazSynSurfaceGutter = class(TLazSynGutterArea)
+  private
+    procedure TextSizeChanged(Sender: TObject);
   protected
     procedure DoPaint(ACanvas: TCanvas; AClip: TRect); override;
+    procedure SetTextArea(const ATextArea: TLazSynTextArea); override;
   end;
 
   { TSourceLazSynSurfaceManager }
@@ -275,7 +278,6 @@ type
     function CreateGutter(AOwner : TSynEditBase; ASide: TSynGutterSide;
                           ATextDrawer: TheTextDrawer): TSynGutter; override;
     procedure SetHighlighter(const Value: TSynCustomHighlighter); override;
-    procedure FontChanged(Sender: TObject); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -1245,6 +1247,18 @@ begin
   Gutter.Paint(ACanvas, Self, AClip, 0, -1);
 end;
 
+procedure TSourceLazSynSurfaceGutter.SetTextArea(
+  const ATextArea: TLazSynTextArea);
+begin
+  inherited SetTextArea(ATextArea);
+  ATextArea.AddTextSizeChangeHandler(@TextSizeChanged);
+end;
+
+procedure TSourceLazSynSurfaceGutter.TextSizeChanged(Sender: TObject);
+begin
+  Gutter.DoAutoSize;
+end;
+
 { TSourceLazSynSurfaceManager }
 
 procedure TSourceLazSynSurfaceManager.SetTopLineCount(AValue: Integer);
@@ -1540,13 +1554,6 @@ begin
   if Changes * [scCaretX, scCaretY, scSelection] <> []then
     Inc(FCaretStamp);
   {$pop}
-end;
-
-procedure TIDESynEditor.FontChanged(Sender: TObject);
-begin
-  FLeftGutterArea.Gutter.DoAutoSize;
-  FRightGutterArea.Gutter.DoAutoSize;
-  inherited FontChanged(Sender);
 end;
 
 procedure TIDESynEditor.GetTopInfoMarkupForLine(Sender: TObject; Line: integer;
