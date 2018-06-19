@@ -543,8 +543,6 @@ begin
 
   LVItemAssign(ALV, AItem1, AIndex2);
   LVItemAssign(ALV, AItem2, AIndex1);
-  ItemSetImage(ALV, AIndex1, AItem2, 0, AItem2.ImageIndex);
-  ItemSetImage(ALV, AIndex2, AItem1, 0, AItem1.ImageIndex);
 end;
 
 class procedure TWin32WSCustomListView.ItemMove(const ALV: TCustomListView;
