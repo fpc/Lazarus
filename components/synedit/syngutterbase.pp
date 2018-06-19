@@ -609,6 +609,8 @@ var
   NewWidth: Integer;
 begin
   NewWidth := PreferedWidth;
+  if FSynEdit<>nil then
+    NewWidth := FSynEdit.Scale96ToFont(NewWidth);
   if FWidth = NewWidth then exit;
   FWidth := NewWidth;
   VisibilityOrSize;
@@ -762,7 +764,10 @@ end;
 
 procedure TSynGutterPartBase.ScalePPI(const AScaleFactor: Double);
 begin
-  Width := Round(Width*AScaleFactor);
+  if not FAutoSize then
+    Width := Round(Width*AScaleFactor)
+  else
+    DoAutoSize;
 end;
 
 procedure TSynGutterPartBase.DoOnGutterClick(X, Y : integer);
