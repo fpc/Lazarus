@@ -307,7 +307,7 @@ begin
     if Checked[Items.IndexOf('Debug')] then
       LazPkgOptions.Verbosity := LazPkgOptions.Verbosity + [llDebug];
     if Checked[Items.IndexOf('Progress')] then
-      LazPkgOptions.Verbosity := LazPkgOptions.Verbosity + [llProgres];
+      LazPkgOptions.Verbosity := LazPkgOptions.Verbosity + [llProgress];
   end;
 
   Close;
