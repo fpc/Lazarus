@@ -15,7 +15,7 @@ uses
   // IDEIntf
   TextTools,
   // LeakView
-  DbgInfoReader;
+  DbgInfoReader, DbgIntfBaseTypes, LldbHelper;
 
 type
   { TStackLine }
@@ -324,6 +324,8 @@ begin
     Result := Result or CheckOnlyLineStart;
   end else if IsGDBLine(s) then begin
     Result := true;
+  end else if pos('frame #', s) > 0 then begin
+    Result := True;
   end else begin
     // heaptrc line?
     i := 1;
@@ -448,6 +450,29 @@ end;
 
 procedure THeapTrcInfo.ParseTraceLine(s: string; var line: TStackLine);
 
+  procedure ReadLLDBLine;
+  var
+    AnId, SrcX, SrcY, SrcTopLine: Integer;
+    AnIsCurrent, Complete: Boolean;
+    AFuncName, AFile, AReminder, TheErrorMsg: String;
+    AnArgs: TStringList;
+    SrcCode: TCodeBuffer;
+  begin
+    ParseFrameLocation(s, AnId, AnIsCurrent, TDBGPtr(line.Addr), AFuncName,
+      AnArgs, line.FileName, line.LineNum, AReminder);
+    AnArgs.Free;
+
+    if (line.FileName = '') and (AFuncName <> '') then begin
+      CodeToolBoss.FindFPCMangledIdentifier(AFuncName,Complete,TheErrorMsg,nil,
+        SrcCode,SrcX,SrcY,SrcTopLine);
+      if SrcCode<>nil then begin
+        line.FileName:=SrcCode.Filename;
+        line.LineNum:=SrcY;
+        line.Column:=SrcX;
+      end;
+    end;
+  end;
+
   procedure ReadGDBLine;
   var
     p: PChar;
@@ -534,6 +559,15 @@ begin
     //   #4  0x007489de in EXTTOOLEDITDLG_TEXTERNALTOOLMENUITEMS_$__LOAD$TCONFIGSTORAGE$$TMODALRESULT ()
     Delete(s,1,1);
     ReadGDBLine;
+  end
+  else
+  // lldb
+  if pos('frame #', s) > 0 then begin
+    if s[1] = '*' then
+      s := '  ' + s // restore spaces
+    else
+      s := '    ' + s; // restore spaces
+    ReadLLDBLine;
   end else begin
     i := Pos('$', s);
     if i > 0 then begin
