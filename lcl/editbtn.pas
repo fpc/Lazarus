@@ -239,7 +239,7 @@ type
     procedure DestroyWnd; override;
     procedure EditKeyDown(var Key: Word; Shift: TShiftState); override;
     procedure EditChange; override;
-    procedure ButtonClick; override;
+    procedure BuddyClick; override;
     procedure SortAndFilter; virtual; abstract;
     procedure ApplyFilter(Immediately: Boolean = False);
     procedure ApplyFilterCore; virtual; abstract;
@@ -1221,7 +1221,7 @@ begin
   inherited;
 end;
 
-procedure TCustomControlFilterEdit.ButtonClick;
+procedure TCustomControlFilterEdit.BuddyClick;
 begin
   Text:='';
   Filter:='';
