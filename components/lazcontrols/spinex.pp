@@ -112,11 +112,9 @@ type
     FNullValueBehaviour: TNullValueBehaviour;
     FValue: T;
     FUpdatePending: Boolean;
-    FUpDownVisible: Boolean;
     FSettingValue: Boolean;
     function GetEdit: TGEEdit;
     procedure SetMinRepeatValue(AValue: Byte);
-    procedure SetUpDownVisible(AValue: Boolean);
     procedure SpinUpDown(Up: Boolean);
     function GetNullValue: T;
     function GetUpDown: TUpDown;
@@ -153,7 +151,7 @@ type
     property ArrowKeys: Boolean read FArrowKeys write FArrowKeys default True;
     property Edit: TGEEdit read GetEdit;
     property UpDown: TUpDown read GetUpDown;
-    property UpDownVisible: Boolean read FUpDownVisible write SetUpDownVisible;
+    property UpDownVisible: Boolean read GetBuddyVisible write SetBuddyVisible default True;
     property MinRepeatValue: Byte read FMinRepeatValue write SetMinRepeatValue default DefMinRepeatValue;
   public
     constructor Create(TheOwner: TComponent); override;

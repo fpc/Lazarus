@@ -192,10 +192,12 @@ type
     function GetBuddyCursor: TCursor;
     function GetBuddyHint: TTranslateString;
     function GetBuddyWidth: Integer;
+    function GetBuddyVisible: Boolean;
     procedure SetBuddyCaption(AValue: TCaption);
     procedure SetBuddyCursor(AValue: TCursor);
     procedure SetBuddyHint(AValue: TTranslateString);
     procedure SetBuddyWidth(AValue: Integer);
+    procedure SetBuddyVisible(AValue: Boolean);
 
     procedure BuddyClick; virtual;
 
@@ -549,12 +551,6 @@ begin
   EditStartDrag(DragObject);
 end;
 
-
-function TCustomAbstractGroupedEdit.GetBuddyWidth: Integer;
-begin
-  Result := FBuddy.Width;
-end;
-
 function TCustomAbstractGroupedEdit.GetCanUndo: Boolean;
 begin
   Result := FEdit.CanUndo;
@@ -583,7 +579,6 @@ begin
     PreferredHeight := EditPreferredHeight;
   PreferredWidth := 0;
 end;
-
 
 function TCustomAbstractGroupedEdit.GetReadOnly: Boolean;
 begin
@@ -639,7 +634,6 @@ begin
   Result := FEdit.Alignment;
 end;
 
-
 function TCustomAbstractGroupedEdit.GetAutoSelect: Boolean;
 begin
   Result := FEdit.AutoSelect;
@@ -648,11 +642,6 @@ end;
 function TCustomAbstractGroupedEdit.GetAutoSelected: Boolean;
 begin
   Result := FEdit.AutoSelected;
-end;
-
-function TCustomAbstractGroupedEdit.GetBuddyHint: TTranslateString;
-begin
-  Result := FBuddy.Hint;
 end;
 
 function TCustomAbstractGroupedEdit.GetBuddyCaption: TCaption;
@@ -665,16 +654,34 @@ begin
   Result := FBuddy.Cursor;
 end;
 
+function TCustomAbstractGroupedEdit.GetBuddyHint: TTranslateString;
+begin
+  Result := FBuddy.Hint;
+end;
+
+function TCustomAbstractGroupedEdit.GetBuddyWidth: Integer;
+begin
+  Result := FBuddy.Width;
+end;
+
+function TCustomAbstractGroupedEdit.GetBuddyVisible: Boolean;
+begin
+  Result := FBuddy.Visible;
+end;
 
 procedure TCustomAbstractGroupedEdit.SetBuddyHint(AValue: TTranslateString);
 begin
   FBuddy.Hint := AValue;
 end;
 
-
 procedure TCustomAbstractGroupedEdit.SetBuddyWidth(AValue: Integer);
 begin
   FBuddy.Width := AValue;
+end;
+
+procedure TCustomAbstractGroupedEdit.SetBuddyVisible(AValue: Boolean);
+begin
+  FBuddy.Visible := AValue;
 end;
 
 procedure TCustomAbstractGroupedEdit.SetCaretPos(AValue: TPoint);
@@ -712,7 +719,6 @@ begin
   Result := FEdit.Color;
 end;
 
-
 function TCustomAbstractGroupedEdit.GetHideSelection: Boolean;
 begin
   Result := FEdit.HideSelection;
@@ -722,7 +728,6 @@ function TCustomAbstractGroupedEdit.GetIsMasked: Boolean;
 begin
   Result := FEdit.IsMasked;
 end;
-
 
 function TCustomAbstractGroupedEdit.GetMaxLength: Integer;
 begin

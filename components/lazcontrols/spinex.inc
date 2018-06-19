@@ -163,7 +163,6 @@ begin
   UpdateControl;
 end;
 
-
 procedure TSpinEditExBase.SetIncrement(const AIncrement: T);
 begin
   if AIncrement = FIncrement then Exit;
@@ -172,7 +171,6 @@ begin
   else
     FIncrement := -AIncrement;
 end;
-
 
 procedure TSpinEditExBase.InitializeWnd;
 begin
@@ -192,7 +190,6 @@ begin
   Result := not SameValue(FMaxValue, DefMaxValue);
 end;
 
-
 procedure TSpinEditExBase.EditMouseWheelUp(Shift: TShiftState;
   MousePos: TPoint; var Handled: Boolean);
 begin
@@ -208,7 +205,6 @@ begin
   if not Handled then
     SpinUpDown(False);
 end;
-
 
 procedure TSpinEditExBase.SetValue(const AValue: T);
 var
@@ -267,14 +263,6 @@ begin
     UpDown.MinRepeatInterval := FMinRepeatValue;
 end;
 
-procedure TSpinEditExBase.SetUpDownVisible(AValue: Boolean);
-begin
-  if FUpDownVisible=AValue then Exit;
-  FUpDownVisible:=AValue;
-  UpDown.Visible:=AValue;
-  UpdateSpacing;
-end;
-
 procedure TSpinEditExBase.SpinUpDown(Up: Boolean);
 var
   OldValue, NewValue: T;
@@ -318,7 +306,6 @@ begin
   inherited Create(TheOwner);
 
   FArrowKeys := True;
-  FUpDownVisible := True;
   FIncrement := DefIncrement;
   FMaxValue := DefMaxValue;
   FUpdatePending := True;
@@ -326,6 +313,7 @@ begin
   FNullValueBehaviour := nvbMinValue;
   FMinRepeatValue := DefMinRepeatValue;
 
+  UpDown.ControlStyle := UpDown.ControlStyle + [csNoDesignVisible];
   Edit.Alignment := taRightJustify;
 
   {
