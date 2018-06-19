@@ -422,15 +422,6 @@ var
 begin
   Result := False;
 
-  InStr := TLldbInstructionRegister.Create(AContext.ThreadId, AContext.StackFrame);
-  InStr.AddReference;
-  FDebugger.DebugInstructionQueue.QueueInstruction(InStr);
-  while not InStr.IsCompleted do begin
-    Application.ProcessMessages;
-    sleep(30);
-  end;
-
-
   // WINDOWS gdb dwarf names
   {$IFDEF cpu64}
   case ARegNum of
@@ -471,11 +462,25 @@ begin
   {$ENDIF}
   assert(AContext <> nil, 'TFpLldbDbgMemReader.ReadRegister: AContext <> nil');
 
-  v := InStr.Res.Values[rname];
-  InStr.ReleaseReference;
-
-  AValue := StrToQWordDef(v, 0);
-  Result := True;
+  Reg := FDebugger.Registers.CurrentRegistersList[AContext.ThreadId, AContext.StackFrame];
+  for i := 0 to Reg.Count - 1 do
+    if UpperCase(Reg[i].Name) = rname then
+      begin
+        RegVObj := Reg[i].ValueObjFormat[rdDefault];
+        if RegVObj <> nil then
+          v := RegVObj.Value[rdDefault]
+        else
+          v := '';
+        if pos(' ', v) > 1 then v := copy(v, 1, pos(' ', v)-1);
+debugln(FPGDBDBG_VERBOSE, ['TFpGDBMIDbgMemReader.ReadRegister ',rname, '  ', v]);
+        Result := true;
+        try
+          AValue := StrToQWord(v);
+        except
+          Result := False;
+        end;
+        exit;
+      end;
 end;
 
 function TFpLldbDbgMemReader.RegisterSize(ARegNum: Cardinal): Integer;

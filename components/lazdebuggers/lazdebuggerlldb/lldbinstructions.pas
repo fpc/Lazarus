@@ -209,16 +209,14 @@ type
 
   TLldbInstructionStackTrace = class(TLldbInstruction)
   private
-    FCallstack: TCallStackBase;
     FRes: TStringArray;
     FReading: Boolean;
   protected
     procedure SendCommandDataToDbg(); override;
     function ProcessInputFromDbg(const AData: String): Boolean; override;
   public
-    constructor Create(FrameCount: Integer; ACallstack: TCallStackBase);
+    constructor Create(FrameCount: Integer; AThread: Integer);
     property Res: TStringArray read FRes;
-    property Callstack: TCallStackBase read FCallstack;
   end;
 
 implementation
@@ -821,10 +819,9 @@ begin
 end;
 
 constructor TLldbInstructionStackTrace.Create(FrameCount: Integer;
-  ACallstack: TCallStackBase);
+  AThread: Integer);
 begin
-  FCallstack := ACallstack;
-  inherited Create(Format('bt %d', [FrameCount]), ACallstack.ThreadId);
+  inherited Create(Format('bt %d', [FrameCount]), AThread);
 end;
 
 end.

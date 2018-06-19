@@ -154,7 +154,7 @@ type
     function  CreateBreakPoints: TDBGBreakPoints; override;
     //function  CreateLocals: TLocalsSupplier; override;
     //function  CreateLineInfo: TDBGLineInfo; override;
-    //function  CreateRegisters: TRegisterSupplier; override;
+    function  CreateRegisters: TRegisterSupplier; override;
     function  CreateCallStack: TCallStackSupplier; override;
     //function  CreateDisassembler: TDBGDisassembler; override;
     function  CreateWatches: TWatchesSupplier; override;
@@ -228,11 +228,13 @@ type
   TLldbDebuggerCommandCallStack = class(TLldbDebuggerCommand)
   private
     FCurrentCallStack: TCallStackBase;
+    procedure DoCallstackFreed(Sender: TObject);
     procedure StackInstructionFinished(Sender: TObject);
   protected
     procedure DoExecute; override;
   public
-    property  CurrentCallStack: TCallStackBase read FCurrentCallStack write FCurrentCallStack;
+    property  CurrentCallStack: TCallStackBase read FCurrentCallStack;
+    constructor Create(AOwner: TLldbDebugger; ACurrentCallStack: TCallStackBase);
   end;
 
   { TLldbCallStack }
@@ -252,6 +254,11 @@ type
 
   {%endregion   ^^^^^  CallStack  ^^^^^   }
 
+  {%region
+    *****
+    *****     Watches
+    ***** }
+
   { TLldbWatches }
 
   TLldbWatches = class(TWatchesSupplier)
@@ -260,6 +267,13 @@ type
     procedure InternalRequestData(AWatchValue: TWatchValue); override;
   public
   end;
+
+  {%endregion   ^^^^^  Watches  ^^^^^   }
+
+  {%region
+    *****
+    *****     BreakPoint
+    ***** }
 
   { TLldbBreakPoint }
 
@@ -284,6 +298,37 @@ type
   protected
 //    function FindById(AnId: Integer): TGDBMIBreakPoint;
   end;
+
+  {%endregion   ^^^^^  BreakPoint  ^^^^^   }
+
+  {%region
+    *****
+    *****     Register
+    ***** }
+
+  { TLldbDebuggerCommandRegister }
+
+  TLldbDebuggerCommandRegister = class(TLldbDebuggerCommand)
+  private
+    FRegisters: TRegisters;
+    procedure RegisterInstructionFinished(Sender: TObject);
+  protected
+    procedure DoExecute; override;
+  public
+    constructor Create(AOwner: TLldbDebugger; ARegisters: TRegisters);
+    destructor Destroy; override;
+    property Registers: TRegisters read FRegisters;
+  end;
+
+  { TLldbRegisterSupplier }
+
+  TLldbRegisterSupplier = class(TRegisterSupplier)
+  public
+    procedure Changed;
+    procedure RequestData(ARegisters: TRegisters); override;
+  end;
+
+  {%endregion   ^^^^^  Register  ^^^^^   }
 
 {%region
   *****
@@ -396,7 +441,12 @@ var
   IsCur: Boolean;
   addr: TDBGPtr;
 begin
-  It := TMapIterator.Create(Instr.Callstack.RawEntries);
+  if FCurrentCallStack = nil then begin
+    Finished;
+    exit;
+  end;
+
+  It := TMapIterator.Create(FCurrentCallStack.RawEntries);
 
   for i := 0 to Length(Instr.Res) - 1 do begin
     s := Instr.Res[i];
@@ -408,9 +458,15 @@ begin
   end;
   It.Free;
 
-  TLldbCallStack(Debugger.CallStack).ParentRequestEntries(Instr.Callstack);
+  TLldbCallStack(Debugger.CallStack).ParentRequestEntries(FCurrentCallStack);
 
   Finished;
+end;
+
+procedure TLldbDebuggerCommandCallStack.DoCallstackFreed(Sender: TObject);
+begin
+  FCurrentCallStack := nil;
+  //cancel
 end;
 
 procedure TLldbDebuggerCommandCallStack.DoExecute;
@@ -418,13 +474,26 @@ var
   StartIdx, EndIdx: Integer;
   Instr: TLldbInstructionStackTrace;
 begin
+  if FCurrentCallStack = nil then begin
+    Finished;
+    exit;
+  end;
+
   StartIdx := Max(FCurrentCallStack.LowestUnknown, 0);
   EndIdx   := FCurrentCallStack.HighestUnknown;
 
-  Instr := TLldbInstructionStackTrace.Create(EndIdx, FCurrentCallStack);
+  Instr := TLldbInstructionStackTrace.Create(EndIdx, FCurrentCallStack.ThreadId);
   Instr.OnFinish := @StackInstructionFinished;
   QueueInstruction(Instr);
   Instr.ReleaseReference;
+end;
+
+constructor TLldbDebuggerCommandCallStack.Create(AOwner: TLldbDebugger;
+  ACurrentCallStack: TCallStackBase);
+begin
+  inherited Create(AOwner);
+  FCurrentCallStack := ACurrentCallStack;
+  FCurrentCallStack.AddFreeNotification(@DoCallstackFreed);
 end;
 
 { TLldbCallStack }
@@ -487,8 +556,7 @@ begin
   if not (Debugger.State in [dsPause, dsInternalPause]) then
     exit;
 
-  Cmd := TLldbDebuggerCommandCallStack.Create(TLldbDebugger(Debugger));
-  Cmd.CurrentCallStack := ACallstack;
+  Cmd := TLldbDebuggerCommandCallStack.Create(TLldbDebugger(Debugger), ACallstack);
   TLldbDebugger(Debugger).QueueCommand(Cmd);
   Cmd.ReleaseReference;
 end;
@@ -574,6 +642,87 @@ begin
   if Debugger.State in [dsPause, dsInternalPause, dsRun] then
     SetBreakPoint;
 end;
+
+  {%region
+    *****
+    *****     Register
+    ***** }
+
+{ TLldbDebuggerCommandRegister }
+
+procedure TLldbDebuggerCommandRegister.RegisterInstructionFinished(
+  Sender: TObject);
+var
+  Instr: TLldbInstructionRegister absolute Sender;
+  RegVal: TRegisterValue;
+  n: String;
+  i: Integer;
+begin
+  if not Instr.IsSuccess then begin
+    if FRegisters.DataValidity in [ddsRequested, ddsEvaluating] then
+      FRegisters.DataValidity := ddsInvalid;
+    exit;
+  end;
+
+  FRegisters.DataValidity := ddsEvaluating;
+
+  for i := 0 to Instr.Res.Count - 1 do begin
+    n := Instr.Res.Names[i];
+    RegVal := FRegisters.EntriesByName[n];
+    RegVal.Value := Instr.Res.Values[n];
+    RegVal.DataValidity := ddsValid;
+  end;
+
+  FRegisters.DataValidity := ddsValid;
+  Finished;
+end;
+
+procedure TLldbDebuggerCommandRegister.DoExecute;
+var
+  Instr: TLldbInstructionRegister;
+begin
+  // TODO: store thread/frame when command is created
+  Instr := TLldbInstructionRegister.Create(Debugger.FCurrentThreadId, Debugger.FCurrentStackFrame);
+  Instr.OnFinish := @RegisterInstructionFinished;
+  QueueInstruction(Instr);
+  Instr.ReleaseReference;
+end;
+
+constructor TLldbDebuggerCommandRegister.Create(AOwner: TLldbDebugger;
+  ARegisters: TRegisters);
+begin
+  FRegisters := ARegisters;
+  FRegisters.AddReference;
+  inherited Create(AOwner);
+end;
+
+destructor TLldbDebuggerCommandRegister.Destroy;
+begin
+  ReleaseRefAndNil(FRegisters);
+  inherited Destroy;
+end;
+
+{ TLldbRegisterSupplier }
+
+procedure TLldbRegisterSupplier.Changed;
+begin
+  if CurrentRegistersList <> nil
+  then CurrentRegistersList.Clear;
+end;
+
+procedure TLldbRegisterSupplier.RequestData(ARegisters: TRegisters);
+var
+  Cmd: TLldbDebuggerCommandRegister;
+begin
+  if (Debugger = nil) or not(Debugger.State in [dsPause, dsStop]) then
+    exit;
+
+  Cmd := TLldbDebuggerCommandRegister.Create(TLldbDebugger(Debugger), ARegisters);
+  TLldbDebugger(Debugger).QueueCommand(Cmd);
+  Cmd.ReleaseReference;
+end;
+
+  {%endregion   ^^^^^  Register  ^^^^^   }
 
 { TLldbDebuggerCommandQueue }
 
@@ -995,6 +1144,11 @@ end;
 function TLldbDebugger.CreateBreakPoints: TDBGBreakPoints;
 begin
   Result := TLldbBreakPoints.Create(Self, TLldbBreakPoint);
+end;
+
+function TLldbDebugger.CreateRegisters: TRegisterSupplier;
+begin
+  Result := TLldbRegisterSupplier.Create(Self);
 end;
 
 function TLldbDebugger.CreateCallStack: TCallStackSupplier;
