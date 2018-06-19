@@ -81,10 +81,10 @@ begin
   end;
 end;
 
-procedure TCustomDBComboBox.EditingDone;
+procedure TCustomDBComboBox.DoEditingDone;
 begin
   FDataLink.UpdateRecord;
-  inherited EditingDone;
+  inherited DoEditingDone;
 end;
 
 procedure TCustomDBComboBox.WndProc(var Message: TLMessage);

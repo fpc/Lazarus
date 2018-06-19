@@ -96,10 +96,10 @@ begin
   end;
 end;
 
-procedure TDBCalendar.EditingDone;
+procedure TDBCalendar.DoEditingDone;
 begin
   FDataLink.UpdateRecord;
-  inherited EditingDone;
+  inherited DoEditingDone;
 end;
 
 function TDBCalendar.ExecuteAction(AAction: TBasicAction): Boolean;

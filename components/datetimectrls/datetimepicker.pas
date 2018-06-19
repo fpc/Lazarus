@@ -288,6 +288,7 @@ type
     procedure ConfirmChanges; virtual;
     procedure UndoChanges; virtual;
 
+    procedure DoEditingDone; override;
     function GetCheckBoxRect(IgnoreRightToLeft: Boolean = False): TRect;
     function GetDateTimePartFromTextPart(TextPart: TTextPart): TDateTimePart;
     function GetSelectedDateTimePart: TDateTimePart;
@@ -427,8 +428,6 @@ type
     procedure RemoveAllHandlersOfObject(AnObject: TObject); override;
 
     procedure Paint; override;
-    procedure EditingDone; override;
-
   published
     //
   end;
@@ -3163,12 +3162,12 @@ begin
   inherited Paint;
 end;
 
-procedure TCustomDateTimePicker.EditingDone;
+procedure TCustomDateTimePicker.DoEditingDone;
 begin
   if FNoEditingDone <= 0 then begin
     ConfirmChanges;
 
-    inherited EditingDone;
+    inherited DoEditingDone;
   end;
 end;
 

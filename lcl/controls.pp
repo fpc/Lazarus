@@ -949,7 +949,8 @@ type
     cfProcessingWMPaint,
     cfKillChangeBounds,
     cfKillInvalidatePreferredSize,
-    cfKillAdjustSize
+    cfKillAdjustSize,
+    cfEditingDoneChanged
     );
   TControlFlags = set of TControlFlag;
 
@@ -1407,6 +1408,7 @@ type
     procedure MouseLeave; virtual;
     function  DialogChar(var Message: TLMKey): boolean; virtual;
     procedure UpdateMouseCursor(X, Y: integer);
+    procedure DoEditingDone; virtual;
   protected
     procedure Changed;
     function  GetPalette: HPalette; virtual;
@@ -1607,7 +1609,7 @@ type
     constructor Create(TheOwner: TComponent);override;
     destructor Destroy; override;
     procedure BeforeDestruction; override;
-    procedure EditingDone; virtual;
+    procedure EditingDone;
     procedure ExecuteDefaultAction; virtual;
     procedure ExecuteCancelAction; virtual;
     procedure BeginDrag(Immediate: Boolean; Threshold: Integer = -1);

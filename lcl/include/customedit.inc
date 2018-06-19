@@ -671,10 +671,10 @@ begin
   inherited DoExit;
 end;
 
-procedure TCustomEdit.EditingDone;
+procedure TCustomEdit.DoEditingDone;
 begin
   if not ReadOnly then
-    inherited EditingDone;
+    inherited DoEditingDone;
 end;
 
 procedure TCustomEdit.FontChanged(Sender: TObject);

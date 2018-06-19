@@ -154,10 +154,10 @@ begin
   end;
 end;
 
-procedure TDBRadioGroup.EditingDone;
+procedure TDBRadioGroup.DoEditingDone;
 begin
   FDataLink.UpdateRecord;
-  inherited EditingDone;
+  inherited DoEditingDone;
 end;
 
 function TDBRadioGroup.ExecuteAction(AAction: TBasicAction): Boolean;

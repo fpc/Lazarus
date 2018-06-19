@@ -244,9 +244,9 @@ type
     procedure msg_SelectAll(var Msg: TGridMessage); message GM_SELECTALL;
     procedure msg_SetPos(var Msg: TGridMessage); message GM_SETPOS;
     procedure msg_GetGrid(var Msg: TGridMessage); message GM_GETGRID;
+    procedure DoEditingDone; override;
   public
     constructor Create(Aowner : TComponent); override;
-    procedure EditingDone; override;
     property EditText;
     property OnEditingDone;
   end;
@@ -286,8 +286,8 @@ type
     procedure msg_SetValue(var Msg: TGridMessage); message GM_SETVALUE;
     procedure msg_SetPos(var Msg: TGridMessage); message GM_SETPOS;
     procedure msg_GetGrid(var Msg: TGridMessage); message GM_GETGRID;
+    procedure DoEditingDone; override;
   public
-    procedure EditingDone; override;
     property BorderStyle;
     property OnEditingDone;
   end;
@@ -971,6 +971,7 @@ type
     function  DoCompareCells(Acol,ARow,Bcol,BRow: Integer): Integer; virtual;
     procedure DoCopyToClipboard; virtual;
     procedure DoCutToClipboard; virtual;
+    procedure DoEditingDone; override;
     procedure DoEditButtonClick(const ACol,ARow: Integer); virtual;
     procedure DoEditorHide; virtual;
     procedure DoEditorShow; virtual;
@@ -1258,7 +1259,6 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Invalidate; override;
-    procedure EditingDone; override;
 
     { Exposed procs }
     procedure AdjustInnerCellRect(var ARect: TRect);
@@ -8146,10 +8146,10 @@ begin
   end;
 end;
 
-procedure TCustomGrid.EditingDone;
+procedure TCustomGrid.DoEditingDone;
 begin
   if not FEditorShowing then
-    inherited EditingDone;
+    inherited DoEditingDone;
 end;
 
 function TCustomGrid.EditorGetValue(validate:boolean=false): boolean;
@@ -10083,9 +10083,9 @@ begin
   {$IfDef DbgGrid} DebugLn('TStringCellEditor.Change END');{$ENDIF}
 end;
 
-procedure TStringCellEditor.EditingDone;
+procedure TStringCellEditor.DoEditingDone;
 begin
-  inherited EditingDone;
+  inherited DoEditingDone;
   if FGrid<>nil then
     FGrid.EditingDone;
 end;
@@ -12834,10 +12834,10 @@ begin
   {$Endif}
 end;
 
-procedure TPickListCellEditor.EditingDone;
+procedure TPickListCellEditor.DoEditingDone;
 begin
   {$ifdef dbgGrid}DebugLn('TPickListCellEditor.EditingDone INIT');{$ENDIF}
-  inherited EditingDone;
+  inherited DoEditingDone;
   if FGrid<>nil then
     FGrid.EditingDone;
   {$ifdef dbgGrid}DebugLn('TPickListCellEditor.EditingDone END');{$ENDIF}

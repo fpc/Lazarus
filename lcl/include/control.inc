@@ -576,7 +576,11 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.EditingDone;
 begin
-  if Assigned(OnEditingDone) then OnEditingDone(Self);
+  if cfEditingDoneChanged in FControlFlags then
+  begin
+    DoEditingDone;
+    Exclude(FControlFlags, cfEditingDoneChanged);
+  end;
 end;
 
 procedure TControl.FontChanged(Sender: TObject);
@@ -1739,6 +1743,11 @@ begin
           DragDrop(GetDragObject, P.X, P.Y);
       end;
   end;
+end;
+
+procedure TControl.DoEditingDone;
+begin
+  if Assigned(OnEditingDone) then OnEditingDone(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -5879,6 +5888,7 @@ end;
 
 procedure TControl.CMChanged(var Message: TLMessage);
 begin
+  Include(FControlFlags, cfEditingDoneChanged);
   if FParent<>nil then
     FParent.WindowProc(Message);
 end;
