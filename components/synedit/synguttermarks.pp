@@ -24,7 +24,7 @@ type
     procedure Init; override;
     function  PreferedWidth: Integer; override;
     function GetImgListRes(const ACanvas: TCanvas;
-      const AImages: TCustomImageList): TScaledImageListResolution;
+      const AImages: TCustomImageList): TScaledImageListResolution; virtual;
     // PaintMarks: True, if it has any Mark, that is *not* a bookmark
     function  PaintMarks(aScreenLine: Integer; Canvas : TCanvas; AClip : TRect;
                        var aFirstCustomColumnIdx: integer): Boolean;
