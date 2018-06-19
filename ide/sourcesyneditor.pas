@@ -2330,7 +2330,7 @@ end;
 function TIDESynGutterMarks.GetImgListRes(const ACanvas: TCanvas;
   const AImages: TCustomImageList): TScaledImageListResolution;
 const
-  AllowedHeights: array[0..5] of Integer = (5, 8, 11, 16, 22, 33, 44);
+  AllowedHeights: array[0..6] of Integer = (5, 8, 11, 16, 22, 33, 44);
 var
   Scale: Double;
   PPI, LineHeight, I, ImageHeight: Integer;
