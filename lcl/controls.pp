@@ -1153,7 +1153,6 @@ type
     FOnDblClick: TNotifyEvent;
     FOnDragDrop: TDragDropEvent;
     FOnDragOver: TDragOverEvent;
-    FOnEditingDone: TNotifyEvent;
     FOnEndDock: TEndDragEvent;
     FOnEndDrag: TEndDragEvent;
     FOnMouseDown: TMouseEvent;
@@ -1408,7 +1407,6 @@ type
     procedure MouseLeave; virtual;
     function  DialogChar(var Message: TLMKey): boolean; virtual;
     procedure UpdateMouseCursor(X, Y: integer);
-    procedure DoEditingDone; virtual;
   protected
     procedure Changed;
     function  GetPalette: HPalette; virtual;
@@ -1512,7 +1510,6 @@ type
     property OnMouseWheelRight: TMouseWheelUpDownEvent read FOnMouseWheelRight write FOnMouseWheelRight;
     property OnStartDock: TStartDockEvent read FOnStartDock write FOnStartDock;
     property OnStartDrag: TStartDragEvent read FOnStartDrag write FOnStartDrag;
-    property OnEditingDone: TNotifyEvent read FOnEditingDone write FOnEditingDone;
   public
     FCompStyle: Byte; // DEPRECATED. Enables (valid) use of 'IN' operator (this
       // is a hack for speed. It will be replaced by the use of the widgetset
@@ -1609,7 +1606,6 @@ type
     constructor Create(TheOwner: TComponent);override;
     destructor Destroy; override;
     procedure BeforeDestruction; override;
-    procedure EditingDone;
     procedure ExecuteDefaultAction; virtual;
     procedure ExecuteCancelAction; virtual;
     procedure BeginDrag(Immediate: Boolean; Threshold: Integer = -1);
@@ -2007,6 +2003,7 @@ type
     FOnKeyDown: TKeyEvent;
     FOnKeyPress: TKeyPressEvent;
     FOnKeyUp: TKeyEvent;
+    FOnEditingDone: TNotifyEvent;
     FOnEnter: TNotifyEvent;
     FOnExit: TNotifyEvent;
     FOnUnDock: TUnDockEvent;
@@ -2158,6 +2155,7 @@ type
     procedure DoGetDockCaption(AControl: TControl; var ACaption: String); virtual;
   protected
     // mouse and keyboard
+    procedure DoEditingDone; virtual;
     procedure DoEnter; virtual;
     procedure DoExit; virtual;
     function  DoKeyDownBeforeInterface(var Message: TLMKey; IsRecurseCall: Boolean): Boolean;
@@ -2223,6 +2221,7 @@ type
     property WindowHandle: HWND read FHandle write FHandle;
     // properties which are not supported by all descendents
     property BorderStyle: TBorderStyle read GetBorderStyle write SetBorderStyle default bsNone;
+    property OnEditingDone: TNotifyEvent read FOnEditingDone write FOnEditingDone;
     property OnGetSiteInfo: TGetSiteInfoEvent read FOnGetSiteInfo write FOnGetSiteInfo;
     property OnGetDockCaption: TGetDockCaptionEvent read FOnGetDockCaption write FOnGetDockCaption;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
@@ -2242,6 +2241,7 @@ type
     property DockManager: TDockManager read FDockManager write SetDockManager;
     property DockSite: Boolean read FDockSite write SetDockSite default False;
     property DoubleBuffered: Boolean read FDoubleBuffered write SetDoubleBuffered stored DoubleBufferedIsStored;
+    procedure EditingDone;
     property Handle: HWND read GetHandle write SetHandle;
     property IsFlipped: Boolean read FFlipped;
     property IsResizing: Boolean read GetIsResizing;

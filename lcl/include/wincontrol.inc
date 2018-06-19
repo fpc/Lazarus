@@ -6645,6 +6645,30 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  TWinControl.EditingDone
+
+  Called when user has finished editing. This procedure can be used by data
+  links to commit the changes.
+  For example:
+  - When focus switches to another control (default)
+  - When user selected another item
+  It's totally up to the control, what events will commit.
+------------------------------------------------------------------------------}
+procedure TWinControl.EditingDone;
+begin
+  if cfEditingDoneChanged in FControlFlags then
+  begin
+    DoEditingDone;
+    Exclude(FControlFlags, cfEditingDoneChanged);
+  end;
+end;
+
+procedure TWinControl.DoEditingDone;
+begin
+  if Assigned(OnEditingDone) then OnEditingDone(Self);
+end;
+
+{------------------------------------------------------------------------------
   Method: TWinControl.DoEnter
   Params: none
   Returns: Nothing
