@@ -157,6 +157,12 @@ begin
       AnInput := Copy(AnInput, i, Length(AnInput));
     end;
 
+    if StrStartsWith(AnInput, ' + ') and (Length(AnInput) >= 4) and (AnInput[4] in ['0'..'9']) then begin
+      i := 4;
+      while (Length(AnInput) > i) and (AnInput[i+1] in ['0'..'9']) do inc(i);
+      delete(AnInput, 1, i);
+    end;
+
     if StrMatches(AnInput, [' at ', ':', ''], found) then begin
       AFile := found[0];
       i := pos(', ', found[1]);
