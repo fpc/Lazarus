@@ -47,6 +47,8 @@ uses
   qtproc;
 
 type
+  TSysColorBrushes = array[0..MAX_SYS_COLORS] of HBrush;
+
   { TQtWidgetSet }
 
   TQtWidgetSet = Class(TWidgetSet)
@@ -88,7 +90,7 @@ type
     FDragHotSpot: TPoint;
     FDragImageLock: Boolean;
     FCachedColors: array[0..MAX_SYS_COLORS] of PLongWord;
-    FSysColorBrushes: array[0..MAX_SYS_COLORS] of HBrush;
+    FSysColorBrushes: TSysColorBrushes;
 
     {$IFDEF HASX11}
     SavedHintHandlesList: TFPList;
@@ -236,6 +238,10 @@ type
     {$ENDIF}
     {$I qtwinapih.inc}
     {$I qtlclintfh.inc}
+
+    {$IFDEF EnableQTAppH}
+    property AppH: QApplicationH read App;
+    {$ENDIF}
   end;
 
 
