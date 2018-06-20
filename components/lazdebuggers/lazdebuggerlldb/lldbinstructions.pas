@@ -173,6 +173,7 @@ type
     procedure SendCommandDataToDbg(); override;
   public
     constructor Create(AnAddress: TDBGPtr; ALen: Cardinal);
+    destructor Destroy; override;
     property Res: TArrayOfByte read FRes;
   end;
 
@@ -188,6 +189,7 @@ type
     procedure SendCommandDataToDbg(); override;
   public
     constructor Create(AThread, AFrame: Integer);
+    destructor Destroy; override;
     property Res: TStringList read FRes;
   end;
 
@@ -202,6 +204,7 @@ type
     function ProcessInputFromDbg(const AData: String): Boolean; override;
   public
     constructor Create();
+    destructor Destroy; override;
     property Res: TStringArray read FRes;
   end;
 
@@ -216,6 +219,7 @@ type
     function ProcessInputFromDbg(const AData: String): Boolean; override;
   public
     constructor Create(FrameCount: Integer; AThread: Integer);
+    destructor Destroy; override;
     property Res: TStringArray read FRes;
   end;
 
@@ -477,6 +481,9 @@ begin
   if not Result then // if Result=true then self is destroyed;
     MarkAsSuccess;
   Result := true;
+
+  //TODO: "error: No breakpoints exist to be deleted."
+  // prevent from failing other instruction
 end;
 
 constructor TLldbInstructionBreakDelete.Create(AnId: Integer);
@@ -644,6 +651,12 @@ begin
   inherited Create(Format('memory read --force --size 1 --format x --count %u %u', [ALen, AnAddress]));
 end;
 
+destructor TLldbInstructionMemory.Destroy;
+begin
+  inherited Destroy;
+  FRes := nil;
+end;
+
 { TLldbInstructionRegister }
 
 procedure TLldbInstructionRegister.DoFree;
@@ -722,6 +735,12 @@ begin
   inherited Create('register read --all', AThread, AFrame);
 end;
 
+destructor TLldbInstructionRegister.Destroy;
+begin
+  inherited Destroy;
+  FRes.Free;
+end;
+
 { TLldbInstructionThreadList }
 
 procedure TLldbInstructionThreadList.SendCommandDataToDbg();
@@ -773,6 +792,12 @@ begin
   inherited Create('thread list');
 end;
 
+destructor TLldbInstructionThreadList.Destroy;
+begin
+  inherited Destroy;
+  FRes := nil;
+end;
+
 { TLldbInstructionStackTrace }
 
 procedure TLldbInstructionStackTrace.SendCommandDataToDbg();
@@ -822,6 +847,12 @@ constructor TLldbInstructionStackTrace.Create(FrameCount: Integer;
   AThread: Integer);
 begin
   inherited Create(Format('bt %d', [FrameCount]), AThread);
+end;
+
+destructor TLldbInstructionStackTrace.Destroy;
+begin
+  inherited Destroy;
+  FRes := nil;
 end;
 
 end.

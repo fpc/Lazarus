@@ -348,6 +348,7 @@ var
   CurThr: Boolean;
   Arguments: TStringList;
   addr: TDBGPtr;
+  te: TThreadEntry;
 begin
   CurrentThreads.Clear;
   for i := 0 to Length(Instr.Res) - 1 do begin
@@ -356,16 +357,16 @@ begin
     if CurThr then
       CurThrId := TId;
 
-    CurrentThreads.Add(
-      CurrentThreads.CreateEntry(
-        addr,
-        Arguments,
-        func,
-        filename, '',
-        line,
-        TId, name, ''
-      )
+    te := CurrentThreads.CreateEntry(
+      addr,
+      Arguments,
+      func,
+      filename, '',
+      line,
+      TId, name, ''
     );
+    CurrentThreads.Add(te);
+    te.Free;
 
     Arguments.Free;
   end;
@@ -455,6 +456,7 @@ begin
       e := TCallStackEntry(It.DataPtr^);
       e.Init(addr, Arguments, func, filename, '', line);
     end;
+    Arguments.Free;
   end;
   It.Free;
 
@@ -1057,6 +1059,7 @@ begin
   if ParseFrameLocation(ALine, AnId, AnIsCurrent, AnAddr, AFuncName, AnArgs,
     AFile, SrcLine, AReminder)
   then begin
+    AnArgs.Free;
     FCurrentLocation.Address := AnAddr;
     FCurrentLocation.FuncName := AFuncName;
     FCurrentLocation.SrcFile := AFile;
