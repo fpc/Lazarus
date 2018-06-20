@@ -754,7 +754,7 @@ begin
   FRunningCommand := Items[0];
   FRunningCommand.AddReference;
   Delete(0);
-DebugLnEnter(['>>> CommandQueue.Run ', FRunningCommand.ClassName, ', ', fDebugger.State]);
+DebugLnEnter(['||||||||>>> CommandQueue.Run ', FRunningCommand.ClassName, ', ', dbgs(fDebugger.State)]);
   FRunningCommand.Execute;
   // debugger and queue may get destroyed at the end of execute
 end;
@@ -763,10 +763,10 @@ procedure TLldbDebuggerCommandQueue.CommandFinished(
   ACommand: TLldbDebuggerCommand);
 begin
   if FRunningCommand = ACommand then begin
-DebugLnExit(['<<< CommandQueue.Run ', FRunningCommand.ClassName, ', ', fDebugger.State]);
+DebugLnExit(['||||||||<<< CommandQueue.Run ', FRunningCommand.ClassName, ', ', dbgs(fDebugger.State)]);
     ReleaseRefAndNil(FRunningCommand);
   end//;
-else DebugLn('TLldbDebuggerCommandQueue.CommandFinished >> unknown ???');
+else DebugLn('|||||||| TLldbDebuggerCommandQueue.CommandFinished >> unknown ???');
   if not(FDebugger.State in [dsError, dsDestroying, dsNone]) then
     Run;
 end;
@@ -854,12 +854,15 @@ begin
 end;
 
 procedure TLldbDebuggerCommand.Execute;
+var
+  d: TLldbDebugger;
 begin
+  d := Debugger;
   try
-    Debugger.LockRelease;
-    DoExecute;
+    d.LockRelease;
+    DoExecute;  // may call Finished and Destroy Self
   finally
-    Debugger.UnlockRelease;
+    d.UnlockRelease;
   end;
 end;
 

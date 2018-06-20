@@ -553,6 +553,7 @@ begin
 //  FEvaluationCmdObj.Properties := [dcpCancelOnRun];
   // If a ExecCmd is running, then defer exec until the exec cmd is done
   FpDebugger.QueueCommand(FEvaluationCmdObj);
+  FEvaluationCmdObj.ReleaseReference;
 end;
 
 procedure TFPLldbWatches.InternalRequestData(AWatchValue: TWatchValue);
@@ -922,6 +923,7 @@ var
   NameLen: QWord;
 begin
   Result := False;
+
   ATypeInfo := nil;
   AResText := '';
   if AWatchValue <> nil then begin
