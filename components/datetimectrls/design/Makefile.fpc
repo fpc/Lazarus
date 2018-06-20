@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for DateTimeCtrlsDsgn 1.5.1
 #
-#   This file was generated on 16.12.2016
+#   This file was generated on 20-6-18
 
 [package]
 name=datetimectrlsdsgn
@@ -12,7 +12,7 @@ version=1.5.1
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
 unitdir=. ../../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../lazcontrols/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
 includedir=.
-options= -MObjFPC -Scghi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
+options= -MObjFPC -Scghi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) -dEnableQTAppH $(DBG_OPTIONS)
 
 [target]
 units=datetimectrlsdsgn.pas

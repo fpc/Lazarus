@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for lclextensions_package 0.6.1
 #
-#   This file was generated on 04.06.2018
+#   This file was generated on 20-6-18
 
 [package]
 name=lclextensions_package
@@ -12,7 +12,7 @@ version=0.6.1
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)-$(LCL_PLATFORM)
 unitdir=../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) .
 includedir=include/$(LCL_PLATFORM)
-options= -MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
+options= -MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) -dEnableQTAppH $(DBG_OPTIONS)
 
 [target]
 units=lclextensions_package.pas

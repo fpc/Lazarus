@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for FCL 1.0.1
 #
-#   This file was generated on 1-10-15
+#   This file was generated on 20-6-18
 
 [package]
 name=fcl
@@ -11,7 +11,7 @@ version=1.0.1
 [compiler]
 unittargetdir=../units/$(CPU_TARGET)-$(OS_TARGET)
 unitdir=.
-options= -MObjFPC -Scghi -O1 -g -gl -l -vewnhibq $(DBG_OPTIONS)
+options= -MObjFPC -Scghi -O1 -g -gl -l -vewnhibq -dEnableQTAppH $(DBG_OPTIONS)
 
 [target]
 units=fcllaz.pas
@@ -24,6 +24,7 @@ files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
       $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) \
       $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) \
       $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+
 [prerules]
 # LCL Platform
 ifndef LCL_PLATFORM

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <Makefile Value="2"/>
-  <Params Value=" -Fu../../../packager/units/$(CPU_TARGET)-$(OS_TARGET);../../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET);../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET);../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM);../../cairocanvas/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM);../../lazcontrols/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM);../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM);../lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM);.  -MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) printers4lazide.pas"/>
+  <Params Value=" -Fu../../../packager/units/$(CPU_TARGET)-$(OS_TARGET);../../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET);../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET);../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM);../../cairocanvas/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM);../../lazcontrols/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM);../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM);../lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM);.  -MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) -dEnableQTAppH printers4lazide.pas"/>
 </CONFIG>

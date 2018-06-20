@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for LazDebuggerLldb 0.0
 #
-#   This file was generated on 20/06/2018
+#   This file was generated on 20-6-18
 
 [package]
 name=lazdebuggerlldb
@@ -11,7 +11,7 @@ version=0.0
 [compiler]
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)
 unitdir=../../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../cmdlinedebuggerbase/lib/$(CPU_TARGET)-$(OS_TARGET) ../../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) .
-options= -MObjFPC -Scghi -CR -O1 -g -gl -l -vewnhibq $(DBG_OPTIONS)
+options= -MObjFPC -Scghi -O1 -g -gl -l -vewnhibq -dEnableQTAppH $(DBG_OPTIONS)
 
 [target]
 units=lazdebuggerlldb.pas

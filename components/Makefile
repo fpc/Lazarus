@@ -1656,6 +1656,7 @@ bigide:
 	$(MAKE) -C fpcunit
 	$(MAKE) -C fpcunit/ide
 	$(MAKE) -C projecttemplates
+	$(MAKE) -C lazdebuggers
 	$(MAKE) -C leakview
 	$(MAKE) -C memds
 	$(MAKE) -C sdf
@@ -1695,6 +1696,7 @@ clean:
 	$(MAKE) -C fpcunit clean
 	$(MAKE) -C fpcunit/ide clean
 	$(MAKE) -C projecttemplates clean
+	$(MAKE) -C lazdebuggers clean
 	$(MAKE) -C leakview clean
 	$(MAKE) -C memds clean
 	$(MAKE) -C sdf clean
@@ -1734,6 +1736,7 @@ distclean:
 	$(MAKE) -C fpcunit distclean
 	$(MAKE) -C fpcunit/ide distclean
 	$(MAKE) -C projecttemplates distclean
+	$(MAKE) -C lazdebuggers distclean
 	$(MAKE) -C leakview distclean
 	$(MAKE) -C memds distclean
 	$(MAKE) -C sdf distclean

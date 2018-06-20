@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <Makefile Value="2"/>
-  <Params Value=" -Fu.;../../../packager/units/$(CPU_TARGET)-$(OS_TARGET);../../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET);../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET);../lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM);../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM);../../lazcontrols/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM);../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) -Fi.  -MObjFPC -Scghi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) datetimectrlsdsgn.pas"/>
+  <Params Value=" -Fu.;../../../packager/units/$(CPU_TARGET)-$(OS_TARGET);../../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET);../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET);../lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM);../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM);../../lazcontrols/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM);../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) -Fi.  -MObjFPC -Scghi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) -dEnableQTAppH datetimectrlsdsgn.pas"/>
 </CONFIG>
