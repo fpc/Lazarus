@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-02-03 10:36+0200\n"
+"PO-Revision-Date: 2018-06-19 21:32+0200\n"
 "Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -53,7 +53,7 @@ msgstr "Допомога"
 #: objinspstrconsts.cactionlisteditormovedownaction
 msgctxt "objinspstrconsts.cactionlisteditormovedownaction"
 msgid "Move Down"
-msgstr "Перемістити Вниз"
+msgstr "Перемістити вниз"
 
 #: objinspstrconsts.cactionlisteditormoveupaction
 msgctxt "objinspstrconsts.cactionlisteditormoveupaction"
@@ -62,11 +62,11 @@ msgstr "Перемістити вгору"
 
 #: objinspstrconsts.cactionlisteditornewaction
 msgid "New Action"
-msgstr "Нова Дія"
+msgstr "Нова дія"
 
 #: objinspstrconsts.cactionlisteditornewstdaction
 msgid "New Standard Action"
-msgstr "Нова Стандартна Дія"
+msgstr "Нова стандартна дія"
 
 #: objinspstrconsts.cactionlisteditorpaneldescrriptions
 msgid "Panel Descriptions"
@@ -742,7 +742,7 @@ msgstr "Натисніть клавішу ..."
 
 #: objinspstrconsts.oispressakeyegctrlp
 msgid "You can press e.g. Ctrl+P ..."
-msgstr ""
+msgstr "Можна, наприклад, натиснути Ctrl+P ..."
 
 #: objinspstrconsts.oisproperties
 msgid "Properties"

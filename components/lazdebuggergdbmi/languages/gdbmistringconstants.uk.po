@@ -1,7 +1,7 @@
 # Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2017, 2018.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2018-02-21 19:54+0200\n"
+"PO-Revision-Date: 2018-06-19 21:39+0200\n"
 "Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
 "Language: uk\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -178,7 +178,7 @@ msgstr "Неочікуваний результат:%sЗневаджувач з�
 
 #: gdbmistringconstants.synffailedtodownloadapplicationexecutable
 msgid "Failed to download application executable"
-msgstr ""
+msgstr "Не вдалось завантажити виконуваний файл застосунку"
 
 #: gdbmistringconstants.synffailedtoinitializedebugger
 msgid "Failed to initialize debugger"

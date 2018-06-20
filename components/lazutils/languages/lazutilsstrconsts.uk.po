@@ -1,15 +1,15 @@
-# Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2017.
+# Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2017, 2018.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2017-03-02 23:31+0200\n"
-"Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
+"PO-Revision-Date: 2018-06-19 21:48+0200\n"
+"Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
 "Language: uk\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Lokalize 1.5\n"
+"X-Generator: Lokalize 2.0\n"
 "Project-Id-Version: \n"
-"Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
+"Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "MIME-Version: 1.0\n"
 
 #: lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml
@@ -42,11 +42,11 @@ msgstr "неможливо виконати %s"
 
 #: lazutilsstrconsts.lrscreatinggdbcatchableerror
 msgid "Creating gdb catchable error:"
-msgstr ""
+msgstr "Створення помилки, яку може виловити gdb:"
 
 #: lazutilsstrconsts.lrserrorinlib
 msgid "ERROR in libraries: "
-msgstr ""
+msgstr "ПОМИЛКА в бібліотеках: "
 
 #: lazutilsstrconsts.lrsevalinvalidargcount
 msgid "Invalid number of function arguments"
