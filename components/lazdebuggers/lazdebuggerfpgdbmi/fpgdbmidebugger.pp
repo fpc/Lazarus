@@ -374,7 +374,7 @@ begin
   {$IFdef MSWindows}
   Result := ReadProcessMemory(
     hProcess,
-    Pointer(AnAddress),
+    {%H-}Pointer(AnAddress),
     ADest, ASize,
     BytesRead) and
   (BytesRead = ASize);
