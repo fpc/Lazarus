@@ -1,0 +1,55 @@
+#   $Id: Makefile.fpc 58118 2018-06-04 09:14:21Z mattias $
+#
+#   Makefile.fpc for Lazarus for Free Pascal
+#
+
+[target]
+dirs=
+
+[clean]
+files=$(wildcard ./units/*$(OEXT)) \
+      $(wildcard ./units/*$(PPUEXT)) \
+      $(wildcard ./units/*$(RSTEXT)) \
+      $(wildcard ./units/$(CPU_TARGET)-$(OS_TARGET)/*$(OEXT)) \
+      $(wildcard ./units/$(CPU_TARGET)-$(OS_TARGET)/*$(PPUEXT)) \
+      $(wildcard ./units/$(CPU_TARGET)-$(OS_TARGET)/*$(RSTEXT)) \
+      $(wildcard ./custom/*$(OEXT)) \
+      $(wildcard ./custom/*$(PPUEXT)) \
+      $(wildcard ./custom/*$(RSTEXT))
+
+[rules]
+.PHONY: help clean cleanall base bigide all
+
+#-----------------------------------------------------------------------------
+help:
+	@$(ECHO)
+	@$(ECHO) " Targets"
+	@$(ECHO) "   all         same as base + bigide"
+	@$(ECHO) "   clean       deletes output files of base and bigide components"
+	@$(ECHO) "   base        build cmdlinedebuggerbase"
+	@$(ECHO) "   bigide      build the extra packages for the bigide"
+	@$(ECHO) "               requires base"
+
+#-----------------------------------------------------------------------------
+# build base packages
+base:
+	$(MAKE) -C cmdlinedebuggerbase
+
+#-----------------------------------------------------------------------------
+# build the extra packages needed by the bigide
+bigide:
+	$(MAKE) -C cmdlinedebuggerbase
+	$(MAKE) -C lazdebuggerlldb
+
+all: base bigide
+
+clean:
+	$(MAKE) -C cmdlinedebuggerbase clean
+	$(MAKE) -C lazdebuggerlldb clean
+
+cleanall: clean
+
+distclean:
+	$(MAKE) -C cmdlinedebuggerbase distclean
+	$(MAKE) -C lazdebuggerlldb distclean
+
