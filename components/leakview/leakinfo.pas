@@ -515,7 +515,7 @@ procedure THeapTrcInfo.ParseTraceLine(s: string; var line: TStackLine);
     i := pos(' (', s);
     if i < 3 then exit;
     fn := copy(s,1,i-1);
-    Delete(s, 1, i);
+    Delete(s, 1, i+1);
 
     i := pos(':', s);
     if i < 3 then exit;
