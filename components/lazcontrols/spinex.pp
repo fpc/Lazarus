@@ -297,6 +297,8 @@ type
 
   TSpinEditEx = class(TCustomSpinEditEx)
   public
+    constructor Create(TheOwner: TComponent); override;
+  public
     property AutoSelected;
   published
     //From TCustomEdit

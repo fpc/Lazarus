@@ -27,6 +27,15 @@ begin
   Result := NvbStrings[ANvb];
 end;
 
+{ TSpinEditEx }
+
+constructor TSpinEditEx.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+
+  NumbersOnly := True;
+end;
+
 
 procedure TSpinEditExBase.UpdateControl;
 var
