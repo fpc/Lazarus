@@ -908,7 +908,7 @@ begin
   Addr := GetLocationForContext(AThreadId, AStackFrame);
 
   if Addr = 0 then begin
-    debugln(DBG_VERBOSE, ['GetInfoContextForContext NOT FOUND for ', AThreadId, ', ', AStackFrame]);
+    debugln(DBG_VERBOSE, ['GetInfoContextForContext ADDR NOT FOUND for ', AThreadId, ', ', AStackFrame]);
     Result := nil;
     exit;
   end;
@@ -929,6 +929,11 @@ begin
 
   DebugLn(DBG_VERBOSE, ['* FDwarfInfo.FindContext ', dbgs(Addr)]);
   Result := FDwarfInfo.FindContext(AThreadId, AStackFrame, Addr);
+
+  if Result = nil then begin
+    debugln(DBG_VERBOSE, ['GetInfoContextForContext CTX NOT FOUND for ', AThreadId, ', ', AStackFrame]);
+    exit;
+  end;
 
   ReleaseRefAndNil(FLastContext[MAX_CTX_CACHE-1]);
   move(FLastContext[0], FLastContext[1], (MAX_CTX_CACHE-1) + SizeOf(FLastContext[0]));

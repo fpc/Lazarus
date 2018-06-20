@@ -378,22 +378,25 @@ begin
   Result := False;
   InStr := TLldbInstructionMemory.Create(AnAddress, ASize);
   InStr.AddReference;
-  FDebugger.DebugInstructionQueue.QueueInstruction(InStr);
-  while not InStr.IsCompleted do begin
-    Application.ProcessMessages;
-    sleep(30);
+  try
+    FDebugger.DebugInstructionQueue.QueueInstruction(InStr);
+    while not InStr.IsCompleted do begin
+      Application.ProcessMessages;
+      sleep(30);
+    end;
+
+    debugln(['TFpLldbDbgMemReader.ReadMemory  got mem ', AnAddress, ' ', ASize, ' ', Length(InStr.Res)]);
+
+    if Length(InStr.Res) <> ASize then
+      exit;
+
+    for i := 0 to ASize - 1 do begin
+      PByte(ADest + i)^ := InStr.Res[i];
+    end;
+
+  finally
+    InStr.ReleaseReference;
   end;
-
-  debugln(['TFpLldbDbgMemReader.ReadMemory  got mem ', AnAddress, ' ', ASize, ' ', Length(InStr.Res)]);
-
-  if Length(InStr.Res) <> ASize then
-    exit;
-
-  for i := 0 to ASize - 1 do begin
-    PByte(ADest + i)^ := InStr.Res[i];
-  end;
-
-  InStr.ReleaseReference;
   Result := True;
 
 debugln(DBG_VERBOSE, ['TFpLldbDbgMemReader.ReadMemory ', dbgs(AnAddress), '  ', dbgMemRange(ADest, ASize)]);
@@ -413,7 +416,6 @@ var
   i: Integer;
   Reg: TRegisters;
   RegVObj: TRegisterDisplayValue;
-  InStr: TLldbInstructionRegister;
 begin
   Result := False;
 
@@ -855,7 +857,7 @@ begin
   Addr := GetLocationForContext(AThreadId, AStackFrame);
 
   if Addr = 0 then begin
-    debugln(DBG_VERBOSE, ['GetInfoContextForContext NOT FOUND for ', AThreadId, ', ', AStackFrame]);
+    debugln(DBG_VERBOSE, ['GetInfoContextForContext ADDR NOT FOUND for ', AThreadId, ', ', AStackFrame]);
     Result := nil;
     exit;
   end;
@@ -876,6 +878,11 @@ begin
 
   DebugLn(DBG_VERBOSE, ['* FDwarfInfo.FindContext ', dbgs(Addr)]);
   Result := FDwarfInfo.FindContext(AThreadId, AStackFrame, Addr);
+
+  if Result = nil then begin
+    debugln(DBG_VERBOSE, ['GetInfoContextForContext CTX NOT FOUND for ', AThreadId, ', ', AStackFrame]);
+    exit;
+  end;
 
   ReleaseRefAndNil(FLastContext[MAX_CTX_CACHE-1]);
   move(FLastContext[0], FLastContext[1], (MAX_CTX_CACHE-1) + SizeOf(FLastContext[0]));
