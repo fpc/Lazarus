@@ -287,7 +287,6 @@ type
   public
     function ValueToStr(const AValue: Int64): String; override;
     function StrToValue(const S: String): Int64; override;
-    constructor Create(TheOwner: TComponent); override;
   public
     property Increment default 1;
   end;
@@ -296,8 +295,6 @@ type
   { TSpinEdit }
 
   TSpinEditEx = class(TCustomSpinEditEx)
-  public
-    constructor Create(TheOwner: TComponent); override;
   public
     property AutoSelected;
   published
@@ -324,7 +321,7 @@ type
     property Hint;
     property Layout;
     property MaxLength;
-    property NumbersOnly default True;
+    property NumbersOnly;
     property ParentBiDiMode;
     property ParentColor;
     property ParentFont;
