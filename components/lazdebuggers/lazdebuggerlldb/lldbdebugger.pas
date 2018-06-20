@@ -1268,8 +1268,14 @@ procedure TLldbDebugger.Done;
 begin
   DebugLnEnter('!!! TLldbDebugger.Done;');
   // TODO: cancel all commands
-  FDebugInstructionQueue.OnDebuggerTerminated := nil;
+  if FDebugProcess.DebugProcessRunning then begin
+    FDebugProcess.SendCmdLn('process kill');
+    FDebugProcess.SendCmdLn('quit');
+  end;
+
+  FDebugInstructionQueue.OnDebuggerTerminated := nil;  // TODO: use a flag to prevent this
   FDebugProcess.StopDebugProcess;
+  FDebugInstructionQueue.OnDebuggerTerminated := @DoCmdLineDebuggerTerminated;
   inherited Done;
   DebugLnExit('!!! TLldbDebugger.Done;');
 end;

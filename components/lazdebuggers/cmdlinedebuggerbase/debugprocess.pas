@@ -318,6 +318,9 @@ begin
   if FReadThread <> nil then begin
     FReadThread.Terminate;
     FinishedReadingOutput;
+debugln(['DESTROY thread destroying']);
+    FreeAndNil(FReadThread);
+debugln(['DESTROY thread destroyed']);
   end;
   {$ENDIF}
   Result := inherited Terminate(AExitCode);
@@ -479,6 +482,12 @@ destructor TDebugProcess.Destroy;
 begin
   if DebugProcessRunning then
     StopDebugProcess;  // calls  FDbgProcess.Release;
+
+  try
+    FDbgProcess.Destroy;
+  except
+    on E: Exception do DebugLn(DBG_WARNINGS, 'Exception while freeing debugger: ', E.Message);
+  end;
   inherited Destroy;
 end;
 
@@ -486,11 +495,11 @@ function TDebugProcess.CreateDebugProcess(const AOptions: String;
   AnEnvironment: TStrings): Boolean;
 begin
   Result := False;
+
   if FDbgProcess = nil
   then begin
     FDbgProcess := TDebugAsyncProcess.Create(nil);
     try
-      FDbgProcess.ParseCmdLine(FExternalDebugger + ' ' + AOptions);
       FDbgProcess.Options:= [poUsePipes, poNoConsole, poStdErrToOutPut, poNewProcessGroup];
       {$if defined(windows) and not defined(wince)}
       // under win9x and winMe should be created with console,
@@ -499,13 +508,14 @@ begin
         FDbgProcess.Options:= [poUsePipes, poNewConsole, poStdErrToOutPut, poNewProcessGroup];
       {$endif windows}
       FDbgProcess.ShowWindow := swoNone;
-      FDbgProcess.Environment:= AnEnvironment;
     except
       FreeAndNil(FDbgProcess);
     end;
   end;
   if FDbgProcess = nil then exit;
 
+  FDbgProcess.ParseCmdLine(FExternalDebugger + ' ' + AOptions);
+  FDbgProcess.Environment:= AnEnvironment;
   FDbgProcess.OnReadData := @DoReadData;
   FDbgProcess.OnTerminate := @DoTerminate;
 
@@ -531,12 +541,6 @@ debugln(['TDebugProcess.StopDebugProcess FDbgProcess = nil ',FDbgProcess = nil])
   if FDbgProcess = nil then exit;
 
   FDbgProcess.Terminate(0);
-  try
-    FDbgProcess.Destroy;
-  except
-    on E: Exception do DebugLn(DBG_WARNINGS, 'Exception while freeing debugger: ', E.Message);
-  end;
-  FDbgProcess := nil;
 end;
 
 procedure TDebugProcess.SendCmdLn(const ACommand: String);
