@@ -114,7 +114,7 @@ type
 
     function PosInTrc(const SubStr: string; CaseSensetive: Boolean = false): Boolean;
     function IsTraceLine(const SubStr: string; CheckOnlyLineStart: Boolean = False): Boolean;
-    function IsHeaderLine(const SubStr: string): Boolean;
+    function IsHeaderLine(Idx: integer; NoneStrict: Boolean = False): Boolean;
     function TrcNumberAfter(var Num: Int64; const AfterSub: string): Boolean;
     function TrcNumberAfter(var Num: Integer; const AfterSub: string): Boolean;
     function TrcNumFirstAndAfter(var FirstNum, AfterNum: Int64; const AfterSub: string): Boolean;
@@ -283,6 +283,37 @@ begin
     Result := Pos(UpperCase(SubStr), UpperCase(Trc[TrcIndex]))>0;
 end;
 
+function IsValgrindLine(s: String): Boolean;
+var
+  i: Integer;
+begin
+  Result := False;
+  if pos('==', s) <> 1 then exit;
+  i := 3;
+  while (i<=Length(s)) and (s[i] in ['0'..'9']) do inc(i);
+  if (i+2 < Length(s)) and (s[i] = '=') and (s[i+1] = '=')  and (s[i+2] = ' ') then
+    Result := true;
+end;
+
+function IsValgrindTraceLine(s: String; RequireAT: boolean = false): Boolean;
+var
+  i: Integer;
+begin
+  Result := False;
+  if pos('==', s) <> 1 then exit;
+  i := 3;
+  while (i<=Length(s)) and (s[i] in ['0'..'9']) do inc(i);
+  if (i+2 < Length(s)) and (s[i] = '=') and (s[i+1] = '=')  and (s[i+2] = ' ') then i := i + 3;
+  while (i<=Length(s)) and (s[i] = ' ') do inc(i);
+
+  if (i+2 < Length(s)) and
+     ( (copy(s, i, 3) = 'at ') or
+       ( (copy(s, i, 3) = 'by ') and not RequireAT )
+     )
+  then
+    Result := true;
+end;
+
 function THeapTrcInfo.IsTraceLine(const SubStr: string; CheckOnlyLineStart: Boolean): Boolean;
 
   function IsGDBLine(s: string): boolean;
@@ -326,6 +357,8 @@ begin
     Result := true;
   end else if pos('frame #', s) > 0 then begin
     Result := True;
+  end else if IsValgrindTraceLine(s) then begin
+    Result := True;
   end else begin
     // heaptrc line?
     i := 1;
@@ -342,10 +375,22 @@ begin
   end;
 end;
 
-function THeapTrcInfo.IsHeaderLine(const SubStr: string): Boolean;
+function THeapTrcInfo.IsHeaderLine(Idx: integer; NoneStrict: Boolean): Boolean;
 var
   i: Integer;
+  SubStr: String;
 begin
+  SubStr := Trc[Idx];
+  if (pos('==', SubStr) = 1) and (Idx<Trc.Count-1) and IsValgrindTraceLine(Trc[Idx+1], True) then begin
+    Result := True;
+    exit;
+  end;
+
+  if NoneStrict and (  PosInTrc(RawTracePrefix) or PosInTrc(CallTracePrefix) ) then begin
+    Result := True;
+    exit;
+  end;
+
   i := 1;
   while (i < length(SubStr)) and (SubStr[i] in [' ', #9, '#', '~', '"', '''']) do inc(i);
   Result := (pos(UpperCase(CallTracePrefix), UpperCase(SubStr)) = i) or
@@ -384,22 +429,13 @@ begin
   TraceInfo.ExeName := Trc[TrcIndex];
 
   while (TrcIndex < Trc.Count)
-    and (not (PosInTrc('Heap dump') or  PosInTrc(RawTracePrefix) or
-              PosInTrc(CallTracePrefix) or IsTraceLine(Trc[TrcIndex]) ))
+    and not( PosInTrc('Heap dump') or  IsHeaderLine(TrcIndex, True) or IsTraceLine(Trc[TrcIndex]) )
   do
     inc(TrcIndex);
 
   if TrcIndex >= Trc.Count then Exit;
 
-  if PosInTrc(RawTracePrefix) or IsTraceLine(Trc[TrcIndex]) then begin
-    if not Assigned(traces) then Exit;
-    st := TStackTrace.Create;
-    ParseStackTrace(st); // changes TrcIndex
-    Traces.Add(st);
-    exit;
-  end;
-
-  if not PosInTrc(CallTracePrefix) then begin
+  if PosInTrc('Heap dump') then begin
     inc(TrcIndex);
     with TraceInfo do begin
       TrcNumFirstAndAfter(AllocBlocks, AllocSize, ': '); inc(TrcIndex);
@@ -418,7 +454,10 @@ begin
   if not Assigned(traces) then Exit;
 
   while TrcIndex < Trc.Count do begin
-    if PosInTrc(CallTracePrefix) then begin
+    if PosInTrc(CallTracePrefix) or
+       ( (TrcIndex < Trc.Count-1) and IsHeaderLine(TrcIndex) and IsTraceLine(Trc[TrcIndex+1]) ) or
+       IsTraceLine(Trc[TrcIndex])
+    then begin
       st := TStackTrace.Create;
       ParseStackTrace(st); // changes TrcIndex
       Traces.Add(st);
@@ -449,6 +488,55 @@ begin
 end;
 
 procedure THeapTrcInfo.ParseTraceLine(s: string; var line: TStackLine);
+
+  procedure ReadValgrindLine;
+  var
+    i, SrcX, SrcY, SrcTopLine: Integer;
+    fn, TheErrorMsg: String;
+    Complete: boolean;
+    SrcCode: TCodeBuffer;
+  begin
+    i := 3;
+    while (i<=Length(s)) and (s[i] in ['0'..'9']) do inc(i);
+    if (i+2 < Length(s)) and (s[i] = '=') and (s[i+1] = '=')  and (s[i+2] = ' ')
+    then i := i + 3
+    else exit;
+    while (i<=Length(s)) and (s[i] = ' ') do inc(i);
+    if (i+2 < Length(s)) and ( (copy(s, i, 3) = 'at ') or (copy(s, i, 3) = 'by ') )
+    then i := i + 3
+    else exit;
+    Delete(s, 1, i-1);
+
+    i := pos(' ', s);
+    if i < 3 then exit;
+    line.Addr := StrToInt64Def(copy(s,1,i-1), 0);
+    Delete(s, 1, i);
+
+    i := pos(' (', s);
+    if i < 3 then exit;
+    fn := copy(s,1,i-1);
+    Delete(s, 1, i);
+
+    i := pos(':', s);
+    if i < 3 then exit;
+    line.FileName := copy(s,1,i-1);
+    Delete(s, 1, i);
+
+    i := pos(')', s);
+    if i < 3 then exit;
+    line.LineNum := StrToIntDef(copy(s,1,i-1), 0);
+    Delete(s, 1, i);
+
+    if (fn <> '') and (line.FileName = '') then begin
+      CodeToolBoss.FindFPCMangledIdentifier(fn ,Complete,TheErrorMsg,nil,
+         SrcCode,SrcX,SrcY,SrcTopLine);
+      if SrcCode<>nil then begin
+        line.FileName:=SrcCode.Filename;
+        line.LineNum:=SrcY;
+        line.Column:=SrcX;
+      end;
+    end;
+  end;
 
   procedure ReadLLDBLine;
   var
@@ -568,6 +656,10 @@ begin
     else
       s := '    ' + s; // restore spaces
     ReadLLDBLine;
+  end
+  else // valgrind
+  if IsValgrindTraceLine(s) then begin
+    ReadValgrindLine;
   end else begin
     i := Pos('$', s);
     if i > 0 then begin
@@ -642,9 +734,12 @@ var
   s: String;
 begin
   i := Pos(RawTracePrefix, Trc[TrcIndex]);
-  if (i <= 0) and not IsTraceLine(Trc[TrcIndex]) then begin
+  if (i <= 0) and (not IsTraceLine(Trc[TrcIndex])) and (not IsValgrindLine(Trc[TrcIndex])) then begin
     i := Pos(CallTracePrefix, Trc[TrcIndex]);
-    if i <= 0 then Exit;
+    if i <= 0 then begin
+      inc(TrcIndex);
+      Exit;
+    end;
 
     trace.RawStackData := Trc[TrcIndex]; // raw stack trace data
 
@@ -659,16 +754,24 @@ begin
     trace.BlockSize := 0;
   end;
 
-  if not IsTraceLine(Trc[TrcIndex]) then
+  if IsValgrindLine(Trc[TrcIndex]) and IsHeaderLine(TrcIndex)  // add valgrind headers
+  then begin
+    NewLine := TStackLine.Create; // No reference
+    trace.Add(NewLine);
+    NewLine.RawLineData := Trc[Trcindex]; // raw stack line data
+    inc(Trcindex);
+  end
+  else
+  if (not IsTraceLine(Trc[TrcIndex])) then
     inc(TrcIndex);
-  while (TrcIndex < Trc.Count) and (Pos(CallTracePrefix, Trc[TrcIndex]) = 0) and
-        (Pos(RawTracePrefix, Trc[TrcIndex]) = 0)
+
+  while (TrcIndex < Trc.Count) and (not IsHeaderLine(TrcIndex, True))
   do begin
     NewLine := TStackLine.Create; // No reference
     trace.Add(NewLine);
     s := Trc[Trcindex];
     if (TrcIndex < Trc.Count-1) and (not IsTraceLine(Trc[Trcindex+1], True)) and
-       (not IsHeaderLine(Trc[Trcindex+1]))
+       (not IsHeaderLine(Trcindex+1))
     then begin
       // join next line, as there may be a linewrap
       while (length(s) > 0) and (s[length(s)] in [#10,#13]) do delete(s, length(s), 1);
