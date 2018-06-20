@@ -73,7 +73,6 @@ type
     FMemReader: TFpGDBMIDbgMemReader;
     FMemManager: TFpDbgMemManager;
     // cache last context
-    FlastStackFrame, FLastThread: Integer;
     FLastContext: array [0..MAX_CTX_CACHE-1] of TFpDbgInfoContext;
   protected
     function CreateCommandStartDebugging(AContinueCommand: TGDBMIDebuggerCommand): TGDBMIDebuggerCommandStartDebugging; override;
@@ -115,7 +114,7 @@ procedure Register;
 implementation
 
 var
-  FPGDBDBG_VERBOSE, FPGDBDBG_ERROR: PLazLoggerLogGroup;
+  DBG_VERBOSE, DBG_ERRORS: PLazLoggerLogGroup;
 
 type
 
@@ -388,7 +387,7 @@ end;
 procedure TFpGDBMIAndWin32DbgMemReader.OpenProcess(APid: Cardinal);
 begin
   {$IFdef MSWindows}
-  debugln(FPGDBDBG_VERBOSE, ['OPEN process ',APid]);
+  debugln(DBG_VERBOSE, ['OPEN process ',APid]);
   if APid <> 0 then
     hProcess := windows.OpenProcess(PROCESS_CREATE_THREAD or PROCESS_QUERY_INFORMATION or PROCESS_VM_OPERATION or PROCESS_VM_WRITE or PROCESS_VM_READ, False, APid);
   {$ENDIF}
@@ -440,7 +439,7 @@ begin
   MemDump.Free;
   Result := True;
 
-debugln(FPGDBDBG_VERBOSE, ['TFpGDBMIDbgMemReader.ReadMemory ', dbgs(AnAddress), '  ', dbgMemRange(ADest, ASize)]);
+debugln(DBG_VERBOSE, ['TFpGDBMIDbgMemReader.ReadMemory ', dbgs(AnAddress), '  ', dbgMemRange(ADest, ASize)]);
 end;
 
 function TFpGDBMIDbgMemReader.ReadMemoryEx(AnAddress, AnAddressSpace: TDbgPtr;
@@ -508,7 +507,7 @@ begin
         else
           v := '';
         if pos(' ', v) > 1 then v := copy(v, 1, pos(' ', v)-1);
-debugln(FPGDBDBG_VERBOSE, ['TFpGDBMIDbgMemReader.ReadRegister ',rname, '  ', v]);
+debugln(DBG_VERBOSE, ['TFpGDBMIDbgMemReader.ReadRegister ',rname, '  ', v]);
         Result := true;
         try
           AValue := StrToQWord(v);
@@ -747,7 +746,7 @@ var
   AnImageLoader: TDbgImageLoader;
 begin
   UnLoadDwarf;
-  debugln(FPGDBDBG_VERBOSE, ['TFpGDBMIDebugger.LoadDwarf ']);
+  debugln(DBG_VERBOSE, ['TFpGDBMIDebugger.LoadDwarf ']);
   AnImageLoader := TDbgImageLoader.Create(FileName);
   if not AnImageLoader.IsValid then begin
     FreeAndNil(AnImageLoader);
@@ -770,7 +769,7 @@ end;
 
 procedure TFpGDBMIDebugger.UnLoadDwarf;
 begin
-  debugln(FPGDBDBG_VERBOSE, ['TFpGDBMIDebugger.UnLoadDwarf ']);
+  debugln(DBG_VERBOSE, ['TFpGDBMIDebugger.UnLoadDwarf ']);
   FreeAndNil(FDwarfInfo);
   FreeAndNil(FImageLoaderList);
   FreeAndNil(FMemReader);
@@ -867,7 +866,7 @@ begin
 
   t := Threads.CurrentThreads.EntryById[AThreadId];
   if t = nil then begin
-    DebugLn(FPGDBDBG_ERROR, ['NO Threads']);
+    DebugLn(DBG_ERRORS, ['NO Threads']);
     exit;
   end;
   if AStackFrame = 0 then begin
@@ -878,12 +877,12 @@ begin
 
   s := CallStack.CurrentCallStackList.EntriesForThreads[AThreadId];
   if s = nil then begin
-    DebugLn(FPGDBDBG_ERROR, ['NO Stackframe list for thread']);
+    DebugLn(DBG_ERRORS, ['NO Stackframe list for thread']);
     exit;
   end;
   f := s.Entries[AStackFrame];
   if f = nil then begin
-    DebugLn(FPGDBDBG_ERROR, ['NO Stackframe']);
+    DebugLn(DBG_ERRORS, ['NO Stackframe']);
     exit;
   end;
 
@@ -909,29 +908,32 @@ begin
   Addr := GetLocationForContext(AThreadId, AStackFrame);
 
   if Addr = 0 then begin
+    debugln(DBG_VERBOSE, ['GetInfoContextForContext NOT FOUND for ', AThreadId, ', ', AStackFrame]);
     Result := nil;
     exit;
   end;
 
-  i := AStackFrame - FlastStackFrame;
-  if (i >= 0) and
-     (i < MAX_CTX_CACHE) and
-     (FLastContext[i] <> nil) and
-     (FLastContext[i].Address = Addr) and
-     (FLastContext[i].ThreadId = AThreadId) and
-     (FLastContext[i].StackFrame = AStackFrame)
-  then begin
-    Result := FLastContext[AStackFrame - FlastStackFrame];
+  i := MAX_CTX_CACHE - 1;
+  while (i >= 0) and
+    ( (FLastContext[i] = nil) or
+      (FLastContext[i].ThreadId <> AThreadId) or (FLastContext[i].StackFrame <> AStackFrame)
+    )
+  do
+    dec(i);
+
+  if i >= 0 then begin
+    Result := FLastContext[i];
+    // TODO Result.AddReference;
     exit;
   end;
 
-  DebugLn(FPGDBDBG_VERBOSE, ['* FDwarfInfo.FindContext ', dbgs(Addr)]);
+  DebugLn(DBG_VERBOSE, ['* FDwarfInfo.FindContext ', dbgs(Addr)]);
   Result := FDwarfInfo.FindContext(AThreadId, AStackFrame, Addr);
 
-  FLastThread := AThreadId;
-  FlastStackFrame := AStackFrame;
-  FLastContext[0].ReleaseReference;
+  ReleaseRefAndNil(FLastContext[MAX_CTX_CACHE-1]);
+  move(FLastContext[0], FLastContext[1], (MAX_CTX_CACHE-1) + SizeOf(FLastContext[0]));
   FLastContext[0] := Result;
+  // TODO Result.AddReference;
 end;
 
 type
@@ -1006,7 +1008,7 @@ begin
     if not IsWatchValueAlive then exit;
 
     if not PasExpr.Valid then begin
-DebugLn(FPGDBDBG_VERBOSE, [ErrorHandler.ErrorAsString(PasExpr.Error)]);
+DebugLn(DBG_VERBOSE, [ErrorHandler.ErrorAsString(PasExpr.Error)]);
       if ErrorCode(PasExpr.Error) <> fpErrAnyError then begin
         Result := True;
         AResText := ErrorHandler.ErrorAsString(PasExpr.Error);;
@@ -1095,7 +1097,7 @@ DebugLn(FPGDBDBG_VERBOSE, [ErrorHandler.ErrorAsString(PasExpr.Error)]);
 
     if (ATypeInfo <> nil) or (AResText <> '') then begin
       Result := True;
-      debugln(FPGDBDBG_VERBOSE, ['TFPGDBMIWatches.InternalRequestData   GOOOOOOD ', AExpression]);
+      debugln(DBG_VERBOSE, ['TFPGDBMIWatches.InternalRequestData   GOOOOOOD ', AExpression]);
       if AWatchValue <> nil then begin
         AWatchValue.Value    := AResText;
         AWatchValue.TypeInfo := ATypeInfo;
@@ -1164,7 +1166,7 @@ begin
 end;
 
 initialization
-  FPGDBDBG_VERBOSE       := DebugLogger.FindOrRegisterLogGroup('FPGDBDBG_VERBOSE' {$IFDEF FPGDBDBG_VERBOSE} , True {$ENDIF} );
-  FPGDBDBG_ERROR         := DebugLogger.FindOrRegisterLogGroup('FPGDBDBG_ERROR' {$IFDEF FPGDBDBG_ERROR} , True {$ENDIF} );
+  DBG_VERBOSE       := DebugLogger.FindOrRegisterLogGroup('DBG_VERBOSE' {$IFDEF DBG_VERBOSE} , True {$ENDIF} );
+  DBG_ERRORS         := DebugLogger.FindOrRegisterLogGroup('DBG_ERRORS' {$IFDEF DBG_ERRORS} , True {$ENDIF} );
 end.
 
