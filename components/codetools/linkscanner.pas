@@ -217,6 +217,8 @@ type
     cmsISOlike_IO,         { I/O as it required by an ISO compatible compiler }
     cmsISOLike_Program_Para, { program parameters as it required by an ISO compatible compiler }
     cmsISOLike_Mod,        { mod operation as it is required by an iso compatible compiler }
+    cmsArrayOperators,     { use Delphi compatible array operators instead of custom ones ("+") }
+    // not yet in FPC, supported by pas2js:
     cmsPrefixedAttributes, { allow Delphi attributes, disable FPC [] proc modifier }
     cmsExternalClass,      { pas2js: allow  class external [pkgname] name [symbol] }
     cmsIgnoreAttributes    { pas2js: ignore attributes }
@@ -228,20 +230,20 @@ const
     // cmFPC
     [cmsString_pchar,cmsNested_comment,cmsRepeat_forward,cmsCvar_support,
      cmsInitfinal,cmsHintdirective,cmsProperty,cmsDefault_inline,
-     cmsResult],
+     cmsResult,cmsArrayOperators],
     // cmDELPHI
     [cmsClass,cmsObjpas,cmsResult,cmsString_pchar,
      cmsPointer_2_procedure,cmsAutoderef,cmsTp_procvar,cmsInitfinal,cmsDefault_ansistring,
      cmsOut,cmsDefault_para,cmsDuplicate_names,cmsHintdirective,
      cmsProperty,cmsDefault_inline,cmsExcept,cmsAdvancedRecords,
-     cmsPrefixedAttributes],
+     cmsPrefixedAttributes,cmsArrayOperators],
     // cmDELPHIUNICODE
     [cmsClass,cmsObjpas,cmsResult,cmsString_pchar,
      cmsPointer_2_procedure,cmsAutoderef,cmsTp_procvar,cmsInitfinal,
      cmsOut,cmsDefault_para,cmsDuplicate_names,cmsHintdirective,
      cmsProperty,cmsDefault_inline,cmsExcept,cmsAdvancedRecords,
      cmsSystemcodepage,cmsDefault_unicodestring,
-     cmsPrefixedAttributes],
+     cmsPrefixedAttributes,cmsArrayOperators],
     // cmGPC
     [cmsTp_procvar],
     // cmTP
@@ -249,10 +251,10 @@ const
     // cmOBJFPC
     [cmsClass,cmsObjpas,cmsResult,cmsString_pchar,cmsNested_comment,
      cmsRepeat_forward,cmsCvar_support,cmsInitfinal,cmsOut,cmsDefault_para,
-     cmsHintdirective,cmsProperty,cmsDefault_inline,cmsExcept],
+     cmsHintdirective,cmsProperty,cmsDefault_inline,cmsExcept,cmsArrayOperators],
     // cmMacPas
     [cmsCvar_support,cmsMac_procvar,cmsNestedProcVars,
-     cmsNonLocalGoto,cmsISOLike_unary_minus,cmsDefault_inline],
+     cmsNonLocalGoto,cmsISOLike_unary_minus,cmsDefault_inline,cmsArrayOperators],
     // cmISO
     [cmsTp_procvar,cmsDuplicate_names,cmsNestedProcVars,cmsNonLocalGoto,
      cmsISOLike_unary_minus],
@@ -301,6 +303,7 @@ const
     'ISOIO',
     'ISOPROGRAMPARAS',
     'ISOMOD',
+    'ARRAYOPERATORS',
     'PREFIXEDATTRIBUTES',
     'EXTERNALCLASS',
     'IGNOREATTRIBUTES'
