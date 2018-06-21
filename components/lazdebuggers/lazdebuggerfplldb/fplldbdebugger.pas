@@ -823,8 +823,7 @@ begin
     exit;
   end;
 
-//  s := CallStack.CurrentCallStackList.EntriesForThreads[AThreadId];
-  s := CallStack.CurrentCallStackList.EntriesForThreads[0];
+  s := CallStack.CurrentCallStackList.EntriesForThreads[AThreadId];
   if s = nil then begin
     DebugLn(DBG_ERRORS, ['NO Stackframe list for thread']);
     exit;
