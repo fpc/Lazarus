@@ -4561,8 +4561,9 @@ begin
   end;
   It.Free;
 
-  if Monitor <> nil
-  then Monitor.DoModified;
+  if Monitor <> nil then
+    ACallstack.DoEntriesUpdated; // calls Monitor.DoModified;
+  //Monitor.DoModified;
 end;
 
 //procedure TCallStackSupplier.CurrentChanged;
