@@ -4619,9 +4619,13 @@ end;
 
 procedure TProject.GetAllRequiredPackages(var List: TFPList;
   ReqFlags: TPkgIntfRequiredFlags; MinPolicy: TPackageUpdatePolicy);
+var
+  FPMakeList: TFPList;
 begin
-  if Assigned(OnGetAllRequiredPackages) then
-    OnGetAllRequiredPackages(nil,FirstRequiredDependency,List,ReqFlags,MinPolicy);
+  if Assigned(OnGetAllRequiredPackages) then begin
+    OnGetAllRequiredPackages(nil,FirstRequiredDependency,List,FPMakeList,ReqFlags,MinPolicy);
+    FPMakeList.Free;
+  end;
 end;
 
 procedure TProject.AddPackageDependency(const PackageName: string);
@@ -4631,6 +4635,7 @@ begin
   if FindDependencyByNameInList(FirstRequiredDependency,pdlRequires,PackageName)
   <>nil then exit;
   PkgDependency:=TPkgDependency.Create;
+  PkgDependency.DependencyType:=pdtLazarus;
   PkgDependency.PackageName:=PackageName;
   AddRequiredDependency(PkgDependency);
 end;

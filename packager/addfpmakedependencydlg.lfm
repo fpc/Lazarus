@@ -1,0 +1,85 @@
+object AddFPMakeDependencyDialog: TAddFPMakeDependencyDialog
+  Left = 1470
+  Height = 300
+  Top = 366
+  Width = 450
+  Caption = 'AddFPMakeDependencyDialog'
+  ClientHeight = 300
+  ClientWidth = 450
+  LCLVersion = '1.9.0.0'
+  object BP: TButtonPanel
+    Left = 6
+    Height = 46
+    Top = 248
+    Width = 438
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    OKButton.OnClick = OKButtonClick
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.Caption = 'Install'
+    CloseButton.DefaultCaption = False
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+    ShowGlyphs = []
+  end
+  object DependPkgNameLabel: TLabel
+    AnchorSideTop.Control = DependPkgNameFilter
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = DependPkgNameFilter
+    Left = -22
+    Height = 20
+    Top = 15
+    Width = 145
+    Anchors = [akTop, akRight]
+    BorderSpacing.Top = 3
+    BorderSpacing.Right = 6
+    BorderSpacing.CellAlignHorizontal = ccaLeftTop
+    BorderSpacing.CellAlignVertical = ccaCenter
+    Caption = 'DependPkgNameLabel'
+    ParentColor = False
+    ParentFont = False
+  end
+  object DependPkgNameFilter: TListFilterEdit
+    AnchorSideLeft.Control = DependPkgNameListBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 129
+    Height = 37
+    Top = 7
+    Width = 313
+    ButtonWidth = 23
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 3
+    BorderSpacing.Right = 8
+    NumGlyphs = 1
+    MaxLength = 0
+    ParentFont = False
+    TabOrder = 1
+    FilteredListbox = DependPkgNameListBox
+  end
+  object DependPkgNameListBox: TListBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = DependPkgNameFilter
+    AnchorSideRight.Side = asrBottom
+    Left = 129
+    Height = 200
+    Top = 44
+    Width = 313
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Top = 6
+    BorderSpacing.Bottom = 6
+    ItemHeight = 16
+    MultiSelect = True
+    Options = []
+    ParentFont = False
+    ScrollWidth = 311
+    Style = lbOwnerDrawVariable
+    TabOrder = 2
+    TopIndex = -1
+  end
+end

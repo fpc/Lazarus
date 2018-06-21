@@ -61,8 +61,8 @@ uses
   // IDE
   LazarusIDEStrConsts, IDECmdLine, EnvironmentOpts, IDEProcs, LazConf,
   TransferMacros, DialogProcs, IDETranslations, CompilerOptions, PackageLinks,
-  PackageDefs, ComponentReg;
-  
+  PackageDefs, ComponentReg, ExtTools, FppkgHelper;
+
 const
   MakefileCompileVersion = 2;
   // 2 : changed macro format from %() to $()
@@ -340,10 +340,16 @@ type
     procedure GetPackagesChangedOnDisk(out ListOfPackages: TStringList; IgnoreModifiedFlag: boolean = False); // returns list of new filename and TLazPackage
     procedure GetAllRequiredPackages(APackage: TLazPackage; // if not nil then ignore FirstDependency and do not add APackage to Result
                                      FirstDependency: TPkgDependency;
+                                     out List, FPMakeList: TFPList;
+                                     Flags: TPkgIntfRequiredFlags = [];
+                                     MinPolicy: TPackageUpdatePolicy = low(TPackageUpdatePolicy)
+                                     ); overload; // for single search use FindDependencyRecursively
+    procedure GetAllRequiredPackages(APackage: TLazPackage; // if not nil then ignore FirstDependency and do not add APackage to Result
+                                     FirstDependency: TPkgDependency;
                                      out List: TFPList;
                                      Flags: TPkgIntfRequiredFlags = [];
                                      MinPolicy: TPackageUpdatePolicy = low(TPackageUpdatePolicy)
-                                     ); // for single search use FindDependencyRecursively
+                                     ); overload;
     procedure SortDependencyListTopologicallyOld(
                    var FirstDependency: TPkgDependency; TopLevelFirst: boolean);
     procedure IterateAllComponentClasses(Event: TIterateComponentClassesEvent);
@@ -1474,7 +1480,7 @@ function TLazPackageGraph.FindDependencyRecursively(
         Result:=CurDependency;
         exit;
       end;
-      if CurDependency.LoadPackageResult=lprSuccess then begin
+      if (CurDependency.DependencyType=pdtLazarus) and (CurDependency.LoadPackageResult=lprSuccess) then begin
         RequiredPackage:=CurDependency.RequiredPackage;
         if (not (lpfVisited in RequiredPackage.Flags)) then begin
           RequiredPackage.Flags:=RequiredPackage.Flags+[lpfVisited];
@@ -1541,7 +1547,7 @@ function TLazPackageGraph.FindConflictRecursively(
       end;
       if CurDependency.LoadPackageResult=lprSuccess then begin
         RequiredPackage:=CurDependency.RequiredPackage;
-        if (not (lpfVisited in RequiredPackage.Flags)) then begin
+        if Assigned(RequiredPackage) and (not (lpfVisited in RequiredPackage.Flags)) then begin
           RequiredPackage.Flags:=RequiredPackage.Flags+[lpfVisited];
           Result:=Find(RequiredPackage.FirstRequiredDependency);
           if Result<>nil then exit;
@@ -2192,6 +2198,7 @@ procedure TLazPackageGraph.LoadStaticBasePackages;
     Dependency:=TPkgDependency.Create;
     Dependency.Owner:=Self;
     Dependency.PackageName:=PkgName;
+    Dependency.DependencyType:=pdtLazarus;
     Dependency.AddToList(FirstAutoInstallDependency,pdlRequires);
     Quiet:=false;
     OpenInstalledDependency(Dependency,pitStatic,Quiet);
@@ -2230,6 +2237,7 @@ begin
     if Dependency<>nil then continue;
     Dependency:=TPkgDependency.Create;
     Dependency.Owner:=Self;
+    Dependency.DependencyType:=pdtLazarus;
     Dependency.PackageName:=PackageName;
     Dependency.AddToList(FirstAutoInstallDependency,pdlRequires);
     if OpenDependency(Dependency,false)<>lprSuccess then begin
@@ -2422,15 +2430,17 @@ function TLazPackageGraph.FindBrokenDependencyPath(APackage: TLazPackage;
     while Dependency<>nil do begin
       if Dependency.LoadPackageResult=lprSuccess then begin
         // dependency ok
-        RequiredPackage:=Dependency.RequiredPackage;
-        if not (lpfVisited in RequiredPackage.Flags) then begin
-          RequiredPackage.Flags:=RequiredPackage.Flags+[lpfVisited];
-          FindBroken(RequiredPackage.FirstRequiredDependency,PathList);
-          if PathList<>nil then begin
-            // broken dependency found
-            // -> add current package to list
-            PathList.Insert(0,RequiredPackage);
-            exit;
+        if Dependency.DependencyType=pdtLazarus then begin
+          RequiredPackage:=Dependency.RequiredPackage;
+          if not (lpfVisited in RequiredPackage.Flags) then begin
+            RequiredPackage.Flags:=RequiredPackage.Flags+[lpfVisited];
+            FindBroken(RequiredPackage.FirstRequiredDependency,PathList);
+            if PathList<>nil then begin
+              // broken dependency found
+              // -> add current package to list
+              PathList.Insert(0,RequiredPackage);
+              exit;
+            end;
           end;
         end;
       end else begin
@@ -2467,10 +2477,12 @@ function TLazPackageGraph.FindAllBrokenDependencies(APackage: TLazPackage;
     while Dependency<>nil do begin
       if Dependency.LoadPackageResult=lprSuccess then begin
         // dependency ok
-        RequiredPackage:=Dependency.RequiredPackage;
-        if not (lpfVisited in RequiredPackage.Flags) then begin
-          RequiredPackage.Flags:=RequiredPackage.Flags+[lpfVisited];
-          FindBroken(RequiredPackage.FirstRequiredDependency,DepList);
+        if Dependency.DependencyType=pdtLazarus then begin
+          RequiredPackage:=Dependency.RequiredPackage;
+          if not (lpfVisited in RequiredPackage.Flags) then begin
+            RequiredPackage.Flags:=RequiredPackage.Flags+[lpfVisited];
+            FindBroken(RequiredPackage.FirstRequiredDependency,DepList);
+          end;
         end;
       end else begin
         // broken dependency found
@@ -2506,22 +2518,24 @@ function TLazPackageGraph.FindCycleDependencyPath(APackage: TLazPackage;
       if Dependency.LoadPackageResult=lprSuccess then begin
         // dependency ok
         RequiredPackage:=Dependency.RequiredPackage;
-        if lpfCycle in RequiredPackage.Flags then begin
-          // cycle detected
-          PathList:=TFPList.Create;
-          PathList.Add(RequiredPackage);
-          exit;
-        end;
-        if not (lpfVisited in RequiredPackage.Flags) then begin
-          RequiredPackage.Flags:=RequiredPackage.Flags+[lpfVisited,lpfCycle];
-          FindCycle(RequiredPackage.FirstRequiredDependency,PathList);
-          if PathList<>nil then begin
+        if Dependency.DependencyType=pdtLazarus then begin
+          if lpfCycle in RequiredPackage.Flags then begin
             // cycle detected
-            // -> add current package to list
-            PathList.Insert(0,RequiredPackage);
+            PathList:=TFPList.Create;
+            PathList.Add(RequiredPackage);
             exit;
           end;
-          RequiredPackage.Flags:=RequiredPackage.Flags-[lpfCycle];
+          if not (lpfVisited in RequiredPackage.Flags) then begin
+            RequiredPackage.Flags:=RequiredPackage.Flags+[lpfVisited,lpfCycle];
+            FindCycle(RequiredPackage.FirstRequiredDependency,PathList);
+            if PathList<>nil then begin
+              // cycle detected
+              // -> add current package to list
+              PathList.Insert(0,RequiredPackage);
+              exit;
+            end;
+            RequiredPackage.Flags:=RequiredPackage.Flags-[lpfCycle];
+          end;
         end;
       end;
       Dependency:=Dependency.NextRequiresDependency;
@@ -2634,7 +2648,7 @@ var
     RequiredPackage: TLazPackage;
   begin
     while Dependency<>nil do begin
-      if Dependency.LoadPackageResult=lprSuccess then begin
+      if (Dependency.DependencyType=pdtLazarus) and (Dependency.LoadPackageResult=lprSuccess) then begin
         RequiredPackage:=Dependency.RequiredPackage;
         if not (lpfVisited in RequiredPackage.Flags) then begin
           if CheckPkg(RequiredPackage,PathList) then exit;
@@ -3365,7 +3379,10 @@ begin
   while Dependency<>nil do begin
     if (Dependency.LoadPackageResult=lprSuccess) then begin
       RequiredPackage:=Dependency.RequiredPackage;
-      if SkipDesignTimePackages and (RequiredPackage.PackageType=lptDesignTime)
+      if Dependency.DependencyType=pdtFPMake
+      then begin
+        // skip
+      end else if SkipDesignTimePackages and (RequiredPackage.PackageType=lptDesignTime)
       then begin
         // skip
       end else begin
@@ -3824,6 +3841,7 @@ var
 
 var
   PkgList: TFPList;
+  FPMakeList: TFPList;
   i: Integer;
   Flags: TPkgCompileFlags;
   ReqFlags: TPkgIntfRequiredFlags;
@@ -3843,99 +3861,101 @@ begin
   ReqFlags:=[pirCompileOrder];
   if SkipDesignTimePackages then
     Include(ReqFlags,pirSkipDesignTimeOnly);
-  GetAllRequiredPackages(APackage,FirstDependency,PkgList,ReqFlags,Policy);
-  if PkgList<>nil then begin
+  GetAllRequiredPackages(APackage,FirstDependency,PkgList,FPMakeList,ReqFlags,Policy);
+  if (PkgList<>nil) or (FPMakeList<>nil) then begin
     //DebugLn('TLazPackageGraph.CompileRequiredPackages B Count=',IntToStr(PkgList.Count));
     BuildItems:=nil;
     ToolGroup:=nil;
     BeginUpdate(false);
     try
-      for i:=PkgList.Count-1 downto 0 do begin
-        CurPkg:=TLazPackage(PkgList[i]);
-        if SkipDesignTimePackages and (CurPkg.PackageType=lptDesignTime) then
-          PkgList.Delete(i);
-        CurPkg.Flags:=CurPkg.Flags-[lpfNeedGroupCompile];
-      end;
-      if Assigned(OnBeforeCompilePackages) then
-      begin
-        Result:=OnBeforeCompilePackages(PkgList);
-        if Result<>mrOk then exit;
-      end;
-
-      // prepare output directories, basic checks
-      Flags:=[pcfDoNotCompileDependencies,pcfDoNotSaveEditorFiles,pcfGroupCompile];
-      if SkipDesignTimePackages then
-        Include(Flags,pcfSkipDesignTimePackages);
-      if Policy=pupAsNeeded then
-        Include(Flags,pcfOnlyIfNeeded)
-      else
-        Include(Flags,pcfCleanCompile);
-      repeat
-        BuildItems:=TObjectList.Create(true);
-        for i:=0 to PkgList.Count-1 do begin
+      if (PkgList<>nil) then begin
+        for i:=PkgList.Count-1 downto 0 do begin
           CurPkg:=TLazPackage(PkgList[i]);
-          BuildItem:=TLazPkgGraphBuildItem.Create(nil);
-          BuildItem.LazPackage:=CurPkg;
-          BuildItems.Add(BuildItem);
-          Result:=CompilePackage(CurPkg,Flags,false,BuildItem);
-          if Result<>mrOk then exit;
-
-          if (BuildItem<>nil) and (not (lpfNeedGroupCompile in CurPkg.Flags))
-          then begin
-            // package is up-to-date
-            //debugln(['TLazPackageGraph.CompileRequiredPackages no build needed: pkg=',CurPkg.Name]);
-            BuildItems.Remove(BuildItem);
-          end;
+          if SkipDesignTimePackages and (CurPkg.PackageType=lptDesignTime) then
+            PkgList.Delete(i);
+          CurPkg.Flags:=CurPkg.Flags-[lpfNeedGroupCompile];
         end;
-
-        if FirstDependency<>nil then
+        if Assigned(OnBeforeCompilePackages) then
         begin
-          if not OnCheckInterPkgFiles(FirstDependency.Owner,PkgList,FilesChanged)
-          then exit(mrCancel);
-          if FilesChanged then
-            FreeAndNil(BuildItems);
+          Result:=OnBeforeCompilePackages(PkgList);
+          if Result<>mrOk then exit;
         end;
-      until BuildItems<>nil;
 
-      // add tool dependencies
-      for i:=0 to BuildItems.Count-1 do begin
-        BuildItem:=TLazPkgGraphBuildItem(BuildItems[i]);
-        CurPkg:=BuildItem.LazPackage;
-        if BuildItem.Count=0 then continue;
+        // prepare output directories, basic checks
+        Flags:=[pcfDoNotCompileDependencies,pcfDoNotSaveEditorFiles,pcfGroupCompile];
+        if SkipDesignTimePackages then
+          Include(Flags,pcfSkipDesignTimePackages);
+        if Policy=pupAsNeeded then
+          Include(Flags,pcfOnlyIfNeeded)
+        else
+          Include(Flags,pcfCleanCompile);
+        repeat
+          BuildItems:=TObjectList.Create(true);
+          for i:=0 to PkgList.Count-1 do begin
+            CurPkg:=TLazPackage(PkgList[i]);
+            BuildItem:=TLazPkgGraphBuildItem.Create(nil);
+            BuildItem.LazPackage:=CurPkg;
+            BuildItems.Add(BuildItem);
+            Result:=CompilePackage(CurPkg,Flags,false,BuildItem);
+            if Result<>mrOk then exit;
 
-        // add tools to ToolGroup
-        if ToolGroup=nil then
-          ToolGroup:=TExternalToolGroup.Create(nil);
-        for j:=0 to BuildItem.Count-1 do
-          BuildItem[j].Group:=ToolGroup;
-
-        // estimate load
-        for j:=0 to BuildItem.Count-1 do begin
-          Tool1:=BuildItem[j];
-          if Tool1.Data is TLazPkgGraphExtToolData then begin
-            Tool1.EstimatedLoad:=EstimateCompileLoad(CurPkg);
-            //debugln(['TLazPackageGraph.CompileRequiredPackages ',CurPkg.Name,' EstimatedLoad=',Tool1.EstimatedLoad]);
+            if (BuildItem<>nil) and (not (lpfNeedGroupCompile in CurPkg.Flags))
+            then begin
+              // package is up-to-date
+              //debugln(['TLazPackageGraph.CompileRequiredPackages no build needed: pkg=',CurPkg.Name]);
+              BuildItems.Remove(BuildItem);
+            end;
           end;
-        end;
 
-        // add dependencies between tools of this package (execute before, compile, after)
-        for j:=1 to BuildItem.Count-1 do begin
-          Tool1:=BuildItem[j-1];
-          Tool2:=BuildItem[j];
-          Tool2.AddExecuteBefore(Tool1);
-        end;
+          if FirstDependency<>nil then
+          begin
+            if not OnCheckInterPkgFiles(FirstDependency.Owner,PkgList,FilesChanged)
+            then exit(mrCancel);
+            if FilesChanged then
+              FreeAndNil(BuildItems);
+          end;
+        until BuildItems<>nil;
 
-        // add dependencies between packages
-        aDependency:=CurPkg.FirstRequiredDependency;
-        while aDependency<>nil do begin
-          RequiredBuildItem:=PkgToBuildItem(aDependency.RequiredPackage);
-          aDependency:=aDependency.NextRequiresDependency;
-          if RequiredBuildItem=nil then continue;
-          if not (lpfNeedGroupCompile in RequiredBuildItem.LazPackage.Flags) then
-            continue;
-          Tool1:=BuildItem.GetFirstOrDummy;
-          Tool2:=RequiredBuildItem.GetLastOrDummy;
-          Tool1.AddExecuteBefore(Tool2);
+        // add tool dependencies
+        for i:=0 to BuildItems.Count-1 do begin
+          BuildItem:=TLazPkgGraphBuildItem(BuildItems[i]);
+          CurPkg:=BuildItem.LazPackage;
+          if BuildItem.Count=0 then continue;
+
+          // add tools to ToolGroup
+          if ToolGroup=nil then
+            ToolGroup:=TExternalToolGroup.Create(nil);
+          for j:=0 to BuildItem.Count-1 do
+            BuildItem[j].Group:=ToolGroup;
+
+          // estimate load
+          for j:=0 to BuildItem.Count-1 do begin
+            Tool1:=BuildItem[j];
+            if Tool1.Data is TLazPkgGraphExtToolData then begin
+              Tool1.EstimatedLoad:=EstimateCompileLoad(CurPkg);
+              //debugln(['TLazPackageGraph.CompileRequiredPackages ',CurPkg.Name,' EstimatedLoad=',Tool1.EstimatedLoad]);
+            end;
+          end;
+
+          // add dependencies between tools of this package (execute before, compile, after)
+          for j:=1 to BuildItem.Count-1 do begin
+            Tool1:=BuildItem[j-1];
+            Tool2:=BuildItem[j];
+            Tool2.AddExecuteBefore(Tool1);
+          end;
+
+          // add dependencies between packages
+          aDependency:=CurPkg.FirstRequiredDependency;
+          while aDependency<>nil do begin
+            RequiredBuildItem:=PkgToBuildItem(aDependency.RequiredPackage);
+            aDependency:=aDependency.NextRequiresDependency;
+            if RequiredBuildItem=nil then continue;
+            if not (lpfNeedGroupCompile in RequiredBuildItem.LazPackage.Flags) then
+              continue;
+            Tool1:=BuildItem.GetFirstOrDummy;
+            Tool2:=RequiredBuildItem.GetLastOrDummy;
+            Tool1.AddExecuteBefore(Tool2);
+          end;
         end;
       end;
 
@@ -3952,6 +3972,7 @@ begin
       FreeAndNil(ToolGroup);
       FreeAndNil(BuildItems);
       FreeAndNil(PkgList);
+      FreeAndNil(FPMakeList);
       EndUpdate;
     end;
   end;
@@ -5306,7 +5327,7 @@ var
 begin
   GetAllRequiredPackages(nil,FirstDependency,List);
   List.Free;
-  
+
   // Bucket sort dependencies
   MaxLvl:=0;
   Dependency:=FirstDependency;
@@ -5493,6 +5514,7 @@ var
   NewDependency: TPkgDependency;
 begin
   NewDependency:=TPkgDependency.Create;
+  NewDependency.DependencyType:=pdtLazarus;
   NewDependency.PackageName:=RequiredPackage.Name;
   AddDependencyToPackage(APackage,NewDependency);
 end;
@@ -5588,65 +5610,73 @@ begin
       APackage:=FindPackageWithName(Dependency.PackageName,nil);
       if APackage=nil then begin
         // no package with same name open
-        // -> try package links
-        IgnoreFiles:=nil;
-        try
-          repeat
-            PkgLink:=LazPackageLinks.FindLinkWithDependencyWithIgnore(Dependency,IgnoreFiles);
-            if (PkgLink=nil) then break;
-            //debugln(['TLazPackageGraph.OpenDependency PkgLink=',PkgLink.GetEffectiveFilename,' global=',PkgLink.Origin=ploGlobal]);
-            PkgLink.Reference;
-            try
-              MsgResult:=OpenDependencyWithPackageLink(Dependency,PkgLink,ShowAbort);
-              if MsgResult=mrOk then break;
-              if IgnoreFiles=nil then
-                IgnoreFiles:=TFilenameToStringTree.Create(false);
-              IgnoreFiles[PkgLink.GetEffectiveFilename]:='1';
-              LazPackageLinks.RemoveUserLink(PkgLink);
-            finally
-              PkgLink.Release;
-            end;
-          until MsgResult=mrAbort;
-        finally
-          IgnoreFiles.Free;
-        end;
-        // try defaultfilename
-        if (Dependency.LoadPackageResult=lprNotFound)
-        and (Dependency.DefaultFilename<>'') then begin
-          AFilename:=Dependency.FindDefaultFilename;
-          if AFilename<>'' then begin
-            if pvPkgSearch in Verbosity then
-              debugln(['Info: (lazarus) Open dependency ['+Dependency.PackageName+']: trying resolved default filename: "'+PreferredFilename+'" ...']);
-            OpenFile(AFilename);
+        if Dependency.DependencyType=pdtLazarus then begin
+          // -> try package links
+          IgnoreFiles:=nil;
+          try
+            repeat
+              PkgLink:=LazPackageLinks.FindLinkWithDependencyWithIgnore(Dependency,IgnoreFiles);
+              if (PkgLink=nil) then break;
+              //debugln(['TLazPackageGraph.OpenDependency PkgLink=',PkgLink.GetEffectiveFilename,' global=',PkgLink.Origin=ploGlobal]);
+              PkgLink.Reference;
+              try
+                MsgResult:=OpenDependencyWithPackageLink(Dependency,PkgLink,ShowAbort);
+                if MsgResult=mrOk then break;
+                if IgnoreFiles=nil then
+                  IgnoreFiles:=TFilenameToStringTree.Create(false);
+                IgnoreFiles[PkgLink.GetEffectiveFilename]:='1';
+                LazPackageLinks.RemoveUserLink(PkgLink);
+              finally
+                PkgLink.Release;
+              end;
+            until MsgResult=mrAbort;
+          finally
+            IgnoreFiles.Free;
           end;
-        end;
-        // try in owner directory (some projects put all their packages into
-        //   one directory)
-        if Dependency.LoadPackageResult=lprNotFound then begin
-          CurDir:=GetDependencyOwnerDirectory(Dependency);
-          if (CurDir<>'') then begin
-            if pvPkgSearch in Verbosity then
-              debugln(['Info: (lazarus) Open dependency ['+Dependency.PackageName+']: trying in owner directory "'+AppendPathDelim(CurDir)+'" ...']);
-            AFilename:=CodeToolBoss.DirectoryCachePool.FindDiskFilename(
-                         AppendPathDelim(CurDir)+Dependency.PackageName+'.lpk');
-            if FileExistsCached(AFilename) then begin
+          // try defaultfilename
+          if (Dependency.LoadPackageResult=lprNotFound)
+          and (Dependency.DefaultFilename<>'') then begin
+            AFilename:=Dependency.FindDefaultFilename;
+            if AFilename<>'' then begin
+              if pvPkgSearch in Verbosity then
+                debugln(['Info: (lazarus) Open dependency ['+Dependency.PackageName+']: trying resolved default filename: "'+PreferredFilename+'" ...']);
               OpenFile(AFilename);
             end;
           end;
-        end;
-        // try a package that provides this package
-        if Dependency.LoadPackageResult=lprNotFound then begin
-          for i:=0 to Count-1 do begin
-            APackage:=Packages[i];
-            if APackage=Dependency.Owner then continue;
-            if APackage.ProvidesPackage(Dependency.PackageName) then begin
-              Dependency.RequiredPackage:=APackage;
-              Dependency.LoadPackageResult:=lprSuccess;
+          // try in owner directory (some projects put all their packages into
+          //   one directory)
+          if Dependency.LoadPackageResult=lprNotFound then begin
+            CurDir:=GetDependencyOwnerDirectory(Dependency);
+            if (CurDir<>'') then begin
               if pvPkgSearch in Verbosity then
-                debugln(['Info: (lazarus) Open dependency ['+Dependency.PackageName+']: Success. Package "'+APackage.IDAsString+'" provides '+Dependency.AsString]);
-              break;
+                debugln(['Info: (lazarus) Open dependency ['+Dependency.PackageName+']: trying in owner directory "'+AppendPathDelim(CurDir)+'" ...']);
+              AFilename:=CodeToolBoss.DirectoryCachePool.FindDiskFilename(
+                           AppendPathDelim(CurDir)+Dependency.PackageName+'.lpk');
+              if FileExistsCached(AFilename) then begin
+                OpenFile(AFilename);
+              end;
             end;
           end;
+          // try a package that provides this package
+          if Dependency.LoadPackageResult=lprNotFound then begin
+            for i:=0 to Count-1 do begin
+              APackage:=Packages[i];
+              if APackage=Dependency.Owner then continue;
+              if APackage.ProvidesPackage(Dependency.PackageName) then begin
+                Dependency.RequiredPackage:=APackage;
+                Dependency.LoadPackageResult:=lprSuccess;
+                if pvPkgSearch in Verbosity then
+                  debugln(['Info: (lazarus) Open dependency ['+Dependency.PackageName+']: Success. Package "'+APackage.IDAsString+'" provides '+Dependency.AsString]);
+                break;
+              end;
+            end;
+          end;
+        end else begin
+          // FPMake-dependency
+          if TFppkgHelper.Instance.HasPackage(Dependency.PackageName) then
+            Dependency.LoadPackageResult:=lprSuccess
+          else
+            Dependency.LoadPackageResult:=lprNotFound;
         end;
       end else begin
         // there is already a package with this name, but wrong version open
@@ -5966,7 +5996,7 @@ begin
 end;
 
 procedure TLazPackageGraph.GetAllRequiredPackages(APackage: TLazPackage;
-  FirstDependency: TPkgDependency; out List: TFPList;
+  FirstDependency: TPkgDependency; out List, FPMakeList: TFPList;
   Flags: TPkgIntfRequiredFlags; MinPolicy: TPackageUpdatePolicy);
 // returns packages in topological order, beginning with the top level package
 
@@ -5984,28 +6014,35 @@ procedure TLazPackageGraph.GetAllRequiredPackages(APackage: TLazPackage;
       //debugln('TLazPackageGraph.GetAllRequiredPackages A ',Dependency.AsString,' ',dbgs(ord(Dependency.LoadPackageResult)),' ',dbgs(ord(lprSuccess)));
       if Dependency.LoadPackageResult<>lprSuccess then continue;
       //debugln('TLazPackageGraph.GetAllRequiredPackages B ',Dependency.AsString);
-      RequiredPackage:=Dependency.RequiredPackage;
-      if (lpfVisited in RequiredPackage.Flags) then begin
-        // already visited
-        if HighestLevel<RequiredPackage.TopologicalLevel then
-          HighestLevel:=RequiredPackage.TopologicalLevel;
-        continue;
-      end;
-      RequiredPackage.Flags:=RequiredPackage.Flags+[lpfVisited];
-      if ord(RequiredPackage.AutoUpdate)<ord(MinPolicy) then
-        continue; // skip manually updated packages
-      if (pirSkipDesignTimeOnly in Flags)
-      and (RequiredPackage.PackageType=lptDesignTime) then
-        continue; // skip designtime (only) packages
-      if not (pirNotRecursive in Flags) then begin
-        GetTopologicalOrder(RequiredPackage.FirstRequiredDependency,DepLevel);
-        RequiredPackage.TopologicalLevel:=DepLevel+1;
-        if HighestLevel<RequiredPackage.TopologicalLevel then
-          HighestLevel:=RequiredPackage.TopologicalLevel;
+      if Dependency.DependencyType=pdtLazarus then begin
+        RequiredPackage:=Dependency.RequiredPackage;
+        if (lpfVisited in RequiredPackage.Flags) then begin
+          // already visited
+          if HighestLevel<RequiredPackage.TopologicalLevel then
+            HighestLevel:=RequiredPackage.TopologicalLevel;
+          continue;
+        end;
+        RequiredPackage.Flags:=RequiredPackage.Flags+[lpfVisited];
+        if ord(RequiredPackage.AutoUpdate)<ord(MinPolicy) then
+          continue; // skip manually updated packages
+        if (pirSkipDesignTimeOnly in Flags)
+        and (RequiredPackage.PackageType=lptDesignTime) then
+          continue; // skip designtime (only) packages
+        if not (pirNotRecursive in Flags) then begin
+          GetTopologicalOrder(RequiredPackage.FirstRequiredDependency,DepLevel);
+          RequiredPackage.TopologicalLevel:=DepLevel+1;
+          if HighestLevel<RequiredPackage.TopologicalLevel then
+            HighestLevel:=RequiredPackage.TopologicalLevel;
+        end;
+        if List=nil then List:=TFPList.Create;
+        List.Add(RequiredPackage);
+      end else begin
+        // FPMake dependency
+        // ToDo: Handle package-dependencies (or not?) and version-checks
+        if FPMakeList=nil then FPMakeList := TFPList.Create;
+        FPMakeList.Add(Dependency);
       end;
       // add package behind its requirements
-      if List=nil then List:=TFPList.Create;
-      List.Add(RequiredPackage);
     end;
   end;
 
@@ -6015,6 +6052,7 @@ var
   DepLevel: integer;
 begin
   List:=nil;
+  FPMakeList:=nil;
   MarkAllPackagesAsNotVisited;
   if APackage<>nil then begin
     FirstDependency:=APackage.FirstRequiredDependency;
@@ -6036,6 +6074,20 @@ begin
   end;
   //for i:=0 to List.Count-1 do
   //  debugln(['TLazPackageGraph.GetAllRequiredPackages ',i,'/',List.Count-1,' ',TLazPackage(List[i]).Name,' ',TLazPackage(List[i]).TopologicalLevel]);
+end;
+
+procedure TLazPackageGraph.GetAllRequiredPackages(APackage: TLazPackage;
+  FirstDependency: TPkgDependency; out List: TFPList;
+  Flags: TPkgIntfRequiredFlags; MinPolicy: TPackageUpdatePolicy);
+var
+  FPMakeList: TFPList;
+begin
+  FPMakeList := nil;
+  try
+    GetAllRequiredPackages(APackage, FirstDependency, List, FPMakeList, Flags, MinPolicy);
+  finally
+    FPMakeList.Free;
+  end;
 end;
 
 procedure TLazPackageGraph.GetConnectionsTree(FirstDependency: TPkgDependency;

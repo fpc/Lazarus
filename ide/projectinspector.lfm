@@ -163,5 +163,9 @@ object ProjectInspectorForm: TProjectInspectorForm
       Caption = 'Add requirement'
       OnClick = mnuAddReqClick
     end
+    object mnuAddFPMakeReq: TMenuItem
+      Caption = 'Add FPMake requirement'
+      OnClick = mnuAddFPMakeReqClick
+    end
   end
 end

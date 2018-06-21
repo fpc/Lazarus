@@ -641,6 +641,7 @@ begin
     NewDependency:=TPkgDependency.Create;
     try
       NewDependency.PackageName:=APackageName;
+      NewDependency.DependencyType:=pdtLazarus;
       LoadResult:=PackageGraph.OpenDependency(NewDependency,false);
       if LoadResult<>lprSuccess then exit;
     finally
@@ -1592,6 +1593,7 @@ begin
   //DebugLn('TPkgManager.LoadInstalledPackage PackageName="',PackageName,'" Quiet=',Quiet);
   NewDependency:=TPkgDependency.Create;
   NewDependency.Owner:=Self;
+  NewDependency.DependencyType:=pdtLazarus;
   NewDependency.PackageName:=PackageName;
   PackageGraph.OpenInstalledDependency(NewDependency,pitStatic,Quiet);
   Result:=NewDependency.RequiredPackage;
@@ -5351,6 +5353,7 @@ end;
 function TPkgManager.DoInstallPackage(APackage: TLazPackage): TModalResult;
 var
   PkgList: TFPList;
+  FPMakeList: TFPList;
   
   function GetPkgListIndex(APackage: TLazPackage): integer;
   begin
@@ -5432,6 +5435,7 @@ begin
 
     PackageGraph.BeginUpdate(true);
     PkgList:=nil;
+    FPMakeList:=nil;
     try
 
       // check if package is designtime package
@@ -5470,7 +5474,7 @@ begin
       if Result<>mrOk then exit;
 
       // get all required packages, which will also be auto installed
-      APackage.GetAllRequiredPackages(PkgList,false);
+      APackage.GetAllRequiredPackages(PkgList,FPMakeList,false);
       if PkgList=nil then PkgList:=TFPList.Create;
 
       // remove packages already marked for installation
@@ -5526,6 +5530,7 @@ begin
     finally
       PackageGraph.EndUpdate;
       PkgList.Free;
+      FPMakeList.Free;
     end;
 
     if NeedSaving then begin
