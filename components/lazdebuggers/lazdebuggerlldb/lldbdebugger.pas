@@ -483,8 +483,12 @@ begin
 
   StartIdx := Max(FCurrentCallStack.LowestUnknown, 0);
   EndIdx   := FCurrentCallStack.HighestUnknown;
+  if EndIdx < StartIdx then begin
+    Finished;
+    exit;
+  end;
 
-  Instr := TLldbInstructionStackTrace.Create(EndIdx, FCurrentCallStack.ThreadId);
+  Instr := TLldbInstructionStackTrace.Create(EndIdx+1, FCurrentCallStack.ThreadId);
   Instr.OnFinish := @StackInstructionFinished;
   QueueInstruction(Instr);
   Instr.ReleaseReference;
