@@ -179,6 +179,8 @@ DebugLn('TTTTT data avail continue');
 
   end;
 DebugLn(['TTTTT loop end ', Terminated]);
+  RemoveQueuedEvents(Self, FOnDataAvail);
+  RemoveQueuedEvents(Self, FOnPipeError);
 end;
 
 constructor TDebugProcessReadThread.Create(CreateSuspended: Boolean;
