@@ -1325,6 +1325,8 @@ begin
     while (i < c) do
     begin
       StackEntry := CallStack.CurrentCallStackList.EntriesForThreads[TId].Entries[i];
+      if StackEntry.Validity = ddsRequested then // not yet available
+        break;
       if StackEntry.Line > 0
       then begin
         CurrentSourceUnitInfo := StackEntry.UnitInfo;
