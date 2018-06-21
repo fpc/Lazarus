@@ -230,7 +230,7 @@ const
     // cmFPC
     [cmsString_pchar,cmsNested_comment,cmsRepeat_forward,cmsCvar_support,
      cmsInitfinal,cmsHintdirective,cmsProperty,cmsDefault_inline,
-     cmsResult,cmsArrayOperators],
+     cmsResult],
     // cmDELPHI
     [cmsClass,cmsObjpas,cmsResult,cmsString_pchar,
      cmsPointer_2_procedure,cmsAutoderef,cmsTp_procvar,cmsInitfinal,cmsDefault_ansistring,
@@ -251,10 +251,10 @@ const
     // cmOBJFPC
     [cmsClass,cmsObjpas,cmsResult,cmsString_pchar,cmsNested_comment,
      cmsRepeat_forward,cmsCvar_support,cmsInitfinal,cmsOut,cmsDefault_para,
-     cmsHintdirective,cmsProperty,cmsDefault_inline,cmsExcept,cmsArrayOperators],
+     cmsHintdirective,cmsProperty,cmsDefault_inline,cmsExcept],
     // cmMacPas
     [cmsCvar_support,cmsMac_procvar,cmsNestedProcVars,
-     cmsNonLocalGoto,cmsISOLike_unary_minus,cmsDefault_inline,cmsArrayOperators],
+     cmsNonLocalGoto,cmsISOLike_unary_minus,cmsDefault_inline],
     // cmISO
     [cmsTp_procvar,cmsDuplicate_names,cmsNestedProcVars,cmsNonLocalGoto,
      cmsISOLike_unary_minus],
