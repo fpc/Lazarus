@@ -1090,8 +1090,8 @@ type
     procedure AdjustPosition(Column: TVirtualTreeColumn; Position: Cardinal);
     function CanSplitterResize(P: TPoint; Column: TColumnIndex): Boolean;
     procedure DoCanSplitterResize(P: TPoint; Column: TColumnIndex; var Allowed: Boolean); virtual;
-    procedure DrawButtonText(Canvas: TCanvas; Caption: String; Bounds: TRect; Enabled, Hot: Boolean; DrawFormat: Cardinal;
-      WrapCaption: Boolean); virtual;
+    procedure DrawButtonText(DC: HDC; Caption: String; Bounds: TRect; Enabled, Hot: Boolean; DrawFormat: Cardinal;
+      WrapCaption: Boolean);
     procedure FixPositions;
     function GetColumnAndBounds(const P: TPoint; var ColumnLeft, ColumnRight: Integer; Relative: Boolean = True): Integer;
     function GetOwner: TPersistent; override;
@@ -2544,7 +2544,6 @@ type
     procedure Change(Node: PVirtualNode); virtual;
     procedure ChangeScale(M, D: Integer); override;
     function CheckParentCheckState(Node: PVirtualNode; NewCheckState: TCheckState): Boolean; virtual;
-    procedure ClearSelection(pFireChangeEvent: Boolean); overload; virtual;
     procedure ClearTempCache; virtual;
     function ColumnIsEmpty(Node: PVirtualNode; Column: TColumnIndex): Boolean; virtual;
     function ComputeRTLOffset(ExcludeScrollBar: Boolean = False): Integer; virtual;
@@ -3006,7 +3005,7 @@ type
     function CanEdit(Node: PVirtualNode; Column: TColumnIndex): Boolean; virtual;
     procedure Clear; virtual;
     procedure ClearChecked;
-    procedure ClearSelection; overload;
+    procedure ClearSelection;
     function CopyTo(Source: PVirtualNode; Tree: TBaseVirtualTree; Mode: TVTNodeAttachMode;
       ChildrenOnly: Boolean): PVirtualNode; overload;
     function CopyTo(Source, Target: PVirtualNode; Mode: TVTNodeAttachMode;
@@ -8044,18 +8043,15 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TVirtualTreeColumns.DrawButtonText(Canvas: TCanvas; Caption: String;
-  Bounds: TRect; Enabled, Hot: Boolean; DrawFormat: Cardinal;
-  WrapCaption: Boolean);
+procedure TVirtualTreeColumns.DrawButtonText(DC: HDC; Caption: String; Bounds: TRect; Enabled, Hot: Boolean;
+    DrawFormat: Cardinal; WrapCaption: Boolean);
 
 var
   TextSpace: Integer;
   TextColor: TColor;
   Size: TSize;
-  DC: HDC;
 
 begin
-  DC := Canvas.Handle;
   if not WrapCaption then
   begin
     // Do we need to shorten the caption due to limited space?
@@ -9288,7 +9284,7 @@ var
           else
             DrawHot := (IsHoverIndex and (hoHotTrack in FHeader.FOptions) and not(tsUseThemes in FHeader.Treeview.FStates));
           if not(hpeText in ActualElements) and (Length(Text) > 0) then
-            DrawButtonText(TargetCanvas, String(ColCaptionText), TextRectangle, IsEnabled, DrawHot, DrawFormat, WrapCaption);
+            DrawButtonText(TargetCanvas.Handle, String(ColCaptionText), TextRectangle, IsEnabled, DrawHot, DrawFormat, WrapCaption);
 
         // sort glyph
         if not (hpeSortGlyph in ActualElements) and ShowSortGlyph then
@@ -16725,7 +16721,7 @@ begin
         ForceSelection := False;
         if ClearPending and ((LastFocused <> FFocusedNode) or (FSelectionCount <> 1)) then
         begin
-          ClearSelection(False);
+          ClearSelection;
           ForceSelection := True;
         end;
 
@@ -22298,7 +22294,7 @@ begin
       end;
     end
     else if not ((hiNowhere in HitInfo.HitPositions) and (toAlwaysSelectNode in Self.TreeOptions.SelectionOptions)) then // When clicking in the free space we don't want the selection to be cleared in case toAlwaysSelectNode is set
-      ClearSelection(False);
+      ClearSelection;
   end;
 
   // pending node edit
@@ -22362,9 +22358,6 @@ begin
       DoFocusChange(FFocusedNode, FFocusedColumn);
     end;
   end;
-
-  if SelectedCount = 0 then
-    Change(nil);
 
   // Drag'n drop initiation
   // If we lost focus in the interim the button states would be cleared in WM_KILLFOCUS.
@@ -25604,7 +25597,7 @@ procedure TBaseVirtualTree.AutoScale();
 var
   lTextHeight: Cardinal;
 begin
-  if (toAutoChangeScale in TreeOptions.AutoOptions) and HandleAllocated then
+  if (toAutoChangeScale in TreeOptions.AutoOptions) then
   begin
     Canvas.Font.Assign(Self.Font);
     lTextHeight := Canvas.TextHeight('Tg');
@@ -25814,7 +25807,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TBaseVirtualTree.ClearSelection(pFireChangeEvent: Boolean);
+procedure TBaseVirtualTree.ClearSelection;
 
 var
   Node: PVirtualNode;
@@ -25851,17 +25844,8 @@ begin
     end;
 
     InternalClearSelection;
-    if pFireChangeEvent then
-      Change(nil);
+    Change(nil);
   end;
-end;
-
-//----------------------------------------------------------------------------------------------------------------------
-
-procedure TBaseVirtualTree.ClearSelection;
-
-begin
-  ClearSelection(True);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
