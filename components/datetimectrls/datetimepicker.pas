@@ -3859,6 +3859,7 @@ begin
   FNoEditingDone := 0;
   FArrowShape := asTheme;
   FAllowDroppingCalendar := True;
+  FChecked := True;
 
   FOnDropDown := nil;
   FOnCloseUp := nil;
