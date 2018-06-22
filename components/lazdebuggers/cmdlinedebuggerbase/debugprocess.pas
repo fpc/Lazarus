@@ -259,6 +259,8 @@ begin
   if FReadThread <> nil then begin
     FReadThread.Terminate;
     FinishedReadingOutput;
+    RemoveQueuedEvents(FReadThread, FOnDataAvail);
+    RemoveQueuedEvents(FReadThread, FOnPipeError);
   end;
   {$ENDIF}
 end;
@@ -272,6 +274,8 @@ begin
   if FReadThread <> nil then begin
     FReadThread.Terminate;
     FinishedReadingOutput;
+    RemoveQueuedEvents(FReadThread, FOnDataAvail);
+    RemoveQueuedEvents(FReadThread, FOnPipeError);
   end;
   {$ENDIF}
 end;
@@ -303,6 +307,9 @@ begin
   if FReadThread <> nil then begin
     FReadThread.Terminate;
     FinishedReadingOutput; // make sure destroy will not wait forever
+    RemoveQueuedEvents(FReadThread, FOnDataAvail);
+    RemoveQueuedEvents(FReadThread, FOnPipeError);
+    FReadThread.WaitFor;
 debugln(['DESTROY thread destroying']);
     FreeAndNil(FReadThread);
 debugln(['DESTROY thread destroyed']);
@@ -320,6 +327,9 @@ begin
   if FReadThread <> nil then begin
     FReadThread.Terminate;
     FinishedReadingOutput;
+    RemoveQueuedEvents(FReadThread, FOnDataAvail);
+    RemoveQueuedEvents(FReadThread, FOnPipeError);
+    FReadThread.WaitFor;
 debugln(['DESTROY thread destroying']);
     FreeAndNil(FReadThread);
 debugln(['DESTROY thread destroyed']);
