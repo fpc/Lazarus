@@ -233,8 +233,9 @@ type
   protected
     procedure DoExecute; override;
   public
-    property  CurrentCallStack: TCallStackBase read FCurrentCallStack;
     constructor Create(AOwner: TLldbDebugger; ACurrentCallStack: TCallStackBase);
+    destructor Destroy; override;
+    property  CurrentCallStack: TCallStackBase read FCurrentCallStack;
   end;
 
   { TLldbCallStack }
@@ -500,6 +501,12 @@ begin
   inherited Create(AOwner);
   FCurrentCallStack := ACurrentCallStack;
   FCurrentCallStack.AddFreeNotification(@DoCallstackFreed);
+end;
+
+destructor TLldbDebuggerCommandCallStack.Destroy;
+begin
+  FCurrentCallStack.RemoveFreeeNotification(@DoCallstackFreed);
+  inherited Destroy;
 end;
 
 { TLldbCallStack }
