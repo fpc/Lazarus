@@ -375,5 +375,9 @@ object PackageEditorForm: TPackageEditorForm
       Caption = 'New requirement...'
       OnClick = mnuAddNewReqrClick
     end
+    object mnuAddFPMakeReq: TMenuItem
+      Caption = 'New FPMake requirement...'
+      OnClick = mnuAddFPMakeReqClick
+    end
   end
 end

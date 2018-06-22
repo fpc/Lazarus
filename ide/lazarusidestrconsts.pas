@@ -4004,6 +4004,7 @@ resourcestring
     +'already exists in the selection%swith file: "%s".';
   lisProjAddToProject = 'Add to Project';
   lisProjAddNewRequirement = 'New Requirement';
+  lisProjAddNewFPMakeRequirement = 'New FPMake Requirement';
   lisProjAddEditorFile = 'Add Editor Files';
   lisProjFiles = 'Files:';
   lisProjAddAddFilesToProject = 'Add Files to Project';

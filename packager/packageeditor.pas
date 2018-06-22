@@ -47,8 +47,8 @@ uses
   // IDE
   MainBase, IDEProcs, LazarusIDEStrConsts, IDEDefs, CompilerOptions,
   EnvironmentOpts, DialogProcs, InputHistory, PackageDefs, AddToPackageDlg,
-  AddPkgDependencyDlg, ProjPackChecks, PkgVirtualUnitEditor, MissingPkgFilesDlg,
-  PackageSystem, CleanPkgDeps, ImgList;
+  AddPkgDependencyDlg, AddFPMakeDependencyDlg, ProjPackChecks, PkgVirtualUnitEditor,
+  MissingPkgFilesDlg, PackageSystem, CleanPkgDeps, ImgList;
   
 const
   PackageEditorMenuRootName = 'PackageEditor';
@@ -62,6 +62,7 @@ var
   PkgEditMenuAddNewFile: TIDEMenuCommand;
   PkgEditMenuAddNewComp: TIDEMenuCommand;
   PkgEditMenuAddNewReqr: TIDEMenuCommand;
+  PkgEditMenuAddNewFPMakeReqr: TIDEMenuCommand;
 
   // selected files
   PkgEditMenuOpenFile: TIDEMenuCommand;
@@ -186,6 +187,7 @@ type
 
   TPackageEditorForm = class(TBasePackageEditor,IFilesEditorInterface)
     MenuItem1: TMenuItem;
+    mnuAddFPMakeReq: TMenuItem;
     mnuAddDiskFile: TMenuItem;
     mnuAddDiskFiles: TMenuItem;
     mnuAddNewFile: TMenuItem;
@@ -266,6 +268,7 @@ type
     procedure ItemsTreeViewKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure mnuAddDiskFileClick(Sender: TObject);
     procedure mnuAddDiskFilesClick(Sender: TObject);
+    procedure mnuAddFPMakeReqClick(Sender: TObject);
     procedure mnuAddNewCompClick(Sender: TObject);
     procedure mnuAddNewReqrClick(Sender: TObject);
     procedure mnuAddNewFileClick(Sender: TObject);
@@ -377,6 +380,7 @@ type
     function DoOpenPkgFile(PkgFile: TPkgFile): TModalResult;
     function ShowAddDialog(var DlgPage: TAddToPkgType): TModalResult;
     function ShowAddDepDialog: TModalResult;
+    function ShowAddFPMakeDepDialog: TModalResult;
     function PkgNameToFormName(const PkgName: string): string;
   public
     // IFilesEditorInterface
@@ -572,6 +576,7 @@ begin
   PkgEditMenuAddNewFile:=RegisterIDEMenuCommand(AParent,'New file',lisA2PNewFile);
   PkgEditMenuAddNewComp:=RegisterIDEMenuCommand(AParent,'New component',lisA2PNewComponent);
   PkgEditMenuAddNewReqr:=RegisterIDEMenuCommand(AParent,'New requirement',lisProjAddNewRequirement);
+  PkgEditMenuAddNewFPMakeReqr:=RegisterIDEMenuCommand(AParent,'New FPMake requirement',lisProjAddNewFPMakeRequirement);
   //
   PkgEditMenuOpenFile:=RegisterIDEMenuCommand(AParent,'Open File',lisOpen);
   PkgEditMenuRemoveFile:=RegisterIDEMenuCommand(AParent,'Remove File',lisPckEditRemoveFile);
@@ -650,6 +655,8 @@ begin
     else
       Result:=Format(lisPckEditDefault, [Result, aFilename]);
   end;
+  if ADependency.DependencyType=pdtFPMake then
+    Result:=Result+' '+lisPckEditFPMakePackage;
 end;
 
 { TPENodeData }
@@ -717,8 +724,8 @@ begin
 end;
 
 type
-  PackageSelType = (pstFile, pstDir, pstDep, pstFilesNode, pstReqPackNode,
-                    pstRemFile, pstRemDep);
+  PackageSelType = (pstFile, pstDir, pstDep, pstFPMake, pstFilesNode,
+                     pstReqPackNode, pstRemFile, pstRemDep);
   PackageSelTypes = set of PackageSelType;
 
 procedure TPackageEditorForm.ItemsPopupMenuPopup(Sender: TObject);
@@ -752,6 +759,8 @@ var
           CurDependency := TPkgDependency(Item);
           if (ItemsTreeView.SelectionCount=1) and Assigned(CurDependency.RequiredPackage) then
             FSingleSelectedDep:=CurDependency;
+          if CurDependency.DependencyType=pdtFPMake then
+            Include(UserSelection, pstFPMake);
           if NodeData.Removed then
             Include(UserSelection, pstRemDep)
           else
@@ -840,9 +849,11 @@ begin
               Writable);
       SetItem(PkgEditMenuAddNewReqr, @mnuAddNewReqrClick, UserSelection=[pstReqPackNode],
               Writable);
+      SetItem(PkgEditMenuAddNewFPMakeReqr, @mnuAddFPMakeReqClick, UserSelection=[pstReqPackNode],
+              Writable);
       // selected files
       SetItem(PkgEditMenuOpenFile, @OpenFileMenuItemClick,
-              UserSelection*[pstFilesNode,pstReqPackNode]=[]);
+              UserSelection*[pstFilesNode,pstReqPackNode,pstFPMake]=[]);
       SetItem(PkgEditMenuReAddFile, @ReAddMenuItemClick, UserSelection=[pstRemFile]);
       SetItem(PkgEditMenuCopyMoveToDirectory, @CopyMoveToDirMenuItemClick,
               (UserSelection=[pstFile]) and LazPackage.HasDirectory);
@@ -870,9 +881,9 @@ begin
     if PkgEditMenuSectionDependency.Visible then
     begin
       SetItem(PkgEditMenuRemoveDependency, @RemoveBitBtnClick,
-              UserSelection=[pstDep], Writable);
+              pstdep in UserSelection, Writable);
       SetItem(PkgEditMenuReAddDependency,@ReAddMenuItemClick,
-              UserSelection=[pstRemDep], Writable);
+              pstRemDep in UserSelection, Writable);
       SetItem(PkgEditMenuDepStoreFileNameDefault, @SetDepDefaultFilenameMenuItemClick,
               Assigned(FSingleSelectedDep), Writable);
       SetItem(PkgEditMenuDepStoreFileNamePreferred, @SetDepPreferredFilenameMenuItemClick,
@@ -1078,6 +1089,11 @@ end;
 procedure TPackageEditorForm.mnuAddDiskFilesClick(Sender: TObject);
 begin
   ShowAddDialogEx(d2ptFiles);
+end;
+
+procedure TPackageEditorForm.mnuAddFPMakeReqClick(Sender: TObject);
+begin
+  ShowAddFPMakeDepDialog
 end;
 
 procedure TPackageEditorForm.mnuAddNewCompClick(Sender: TObject);
@@ -1968,6 +1984,7 @@ begin
   mnuAddNewFile.Caption := lisA2PNewFile;
   mnuAddNewComp.Caption := lisA2PNewComponent;
   mnuAddNewReqr.Caption := lisProjAddNewRequirement;
+  mnuAddFPMakeReq.Caption := lisProjAddNewFPMakeRequirement;
 
   // Buttons on FilterPanel
   IDEImages.AssignImage(OpenButton, 'laz_open');
@@ -2290,6 +2307,37 @@ begin
   finally
     Deps.Free;
   end;
+end;
+
+function TPackageEditorForm.ShowAddFPMakeDepDialog: TModalResult;
+var
+  Deps: TPkgDependencyList;
+  i: Integer;
+begin
+  if LazPackage.ReadOnly then begin
+    UpdateButtons;
+    exit(mrCancel);
+  end;
+  Result:=ShowAddFPMakeDependencyDlg(LazPackage, Deps);
+  try
+    if (Result<>mrOk) or (Deps.Count=0) then exit;
+    PackageGraph.BeginUpdate(false);
+    try
+      // add all dependencies
+      fForcedFlags := [pefNeedUpdateRequiredPkgs];
+      FreeAndNil(FNextSelectedPart);
+      for i := 0 to Deps.Count-1 do
+        PackageGraph.AddDependencyToPackage(LazPackage, Deps[i]);
+      FNextSelectedPart := TPENodeData.Create(penDependency,
+                                            Deps[Deps.Count-1].PackageName, false);
+      Assert(LazPackage.Modified, 'TPackageEditorForm.ShowAddFPMakeDepDialog: LazPackage.Modified = False');
+    finally
+      PackageGraph.EndUpdate;
+    end;
+  finally
+    Deps.Free;
+  end;
+
 end;
 
 function TPackageEditorForm.PkgNameToFormName(const PkgName: string): string;
@@ -3460,8 +3508,13 @@ begin
   Result:=mrCancel;
   if PackageGraph.OpenDependency(Dependency,false)=lprSuccess then
   begin
-    APackage:=Dependency.RequiredPackage;
-    if Assigned(OnOpenPackage) then Result:=OnOpenPackage(Sender,APackage);
+    if Dependency.DependencyType=pdtLazarus then
+    begin
+      APackage:=Dependency.RequiredPackage;
+      if Assigned(OnOpenPackage) then Result:=OnOpenPackage(Sender,APackage);
+    end
+    else
+      ShowMessage('It is not possible to open FPMake packages.');
   end;
 end;
 

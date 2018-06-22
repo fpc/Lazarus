@@ -2403,7 +2403,7 @@ begin
     // put all required packages on stack
     Dependency:=Pkg.FirstRequiredDependency;
     while Dependency<>nil do begin
-      if Dependency.LoadPackageResult=lprSuccess then begin
+      if (Dependency.DependencyType=pdtLazarus) and (Dependency.LoadPackageResult=lprSuccess) then begin
         RequiredPackage:=Dependency.RequiredPackage;
         if (not (lpfNeeded in RequiredPackage.Flags)) then begin
           RequiredPackage.Flags:=RequiredPackage.Flags+[lpfNeeded];
@@ -2690,7 +2690,7 @@ function TLazPackageGraph.FindUnsavedDependencyPath(APackage: TLazPackage;
     RequiredPackage: TLazPackage;
   begin
     while Dependency<>nil do begin
-      if Dependency.LoadPackageResult=lprSuccess then begin
+      if (Dependency.DependencyType=pdtLazarus) and (Dependency.LoadPackageResult=lprSuccess) then begin
         // dependency ok
         RequiredPackage:=Dependency.RequiredPackage;
         if RequiredPackage.Modified then begin
@@ -2740,7 +2740,7 @@ function TLazPackageGraph.FindNotInstalledRegisterUnits(
     APkgFile: TPkgFile;
   begin
     while Dependency<>nil do begin
-      if Dependency.LoadPackageResult=lprSuccess then begin
+      if (Dependency.DependencyType=pdtLazarus) and (Dependency.LoadPackageResult=lprSuccess) then begin
         // dependency ok
         RequiredPackage:=Dependency.RequiredPackage;
         if not (lpfVisited in RequiredPackage.Flags) then begin
@@ -3042,7 +3042,7 @@ var
 begin
   Dependency:=FirstDependency;
   while Dependency<>nil do begin
-    if Dependency.LoadPackageResult=lprSuccess then begin
+    if (Dependency.DependencyType=pdtLazarus) and (Dependency.LoadPackageResult=lprSuccess) then begin
       RequiredPackage:=Dependency.RequiredPackage;
       if not (lpfVisited in RequiredPackage.Flags) then begin
         RequiredPackage.Flags:=RequiredPackage.Flags+[lpfVisited];
