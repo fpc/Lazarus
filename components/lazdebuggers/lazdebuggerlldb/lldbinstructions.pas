@@ -21,6 +21,7 @@ type
   TLldbInstructionQueue = class(TDBGInstructionQueue)
   private
   protected
+    function CheckForIgnoredError(const AData: String): Boolean;
     procedure DoBeforeHandleLineReceived(var ALine: String); override;
 
     function GetSelectFrameInstruction(AFrame: Integer): TDBGInstruction; override;
@@ -37,7 +38,6 @@ type
     function GetQueue: TLldbInstructionQueue;
   protected
     function ProcessInputFromDbg(const AData: String): Boolean; override;
-    function CheckForIgnoredError(const AData: String): Boolean;
     procedure SetContentReceieved; reintroduce;
 
     property Queue: TLldbInstructionQueue read GetQueue;
@@ -227,10 +227,28 @@ implementation
 
 { TLldbInstructionQueue }
 
+function TLldbInstructionQueue.CheckForIgnoredError(const AData: String
+  ): Boolean;
+begin
+  Result := True;
+  if StrStartsWith(AData, 'error: ') then begin // ignore dwarf warnings
+    if StrMatches(AData, ['error', 'unhandled type tag', 'DW_TAG_', '']) then // ignore dwarf warnings
+      exit;
+    if StrStartsWith(AData, 'error: need to add support for DW_TAG_') then // ignore dwarf warnings
+      exit;
+  end;
+  Result := False;
+end;
+
 procedure TLldbInstructionQueue.DoBeforeHandleLineReceived(var ALine: String);
 begin
   while LeftStr(ALine, 7) = '(lldb) ' do begin
     Delete(ALine, 1, 7);
+  end;
+
+  if CheckForIgnoredError(ALine) then begin
+    ALine := '';
+    exit;
   end;
 
   inherited DoBeforeHandleLineReceived(ALine);
@@ -283,24 +301,10 @@ begin
   Result := False;
   if LeftStr(AData, 7) = 'error: ' then begin
     Result := True;
-    if CheckForIgnoredError(AData) then
-      exit;
 
     HandleError(ifeContentError);
     exit;
   end;
-end;
-
-function TLldbInstruction.CheckForIgnoredError(const AData: String): Boolean;
-begin
-  Result := True;
-  if StrStartsWith(AData, 'error: ') then begin // ignore dwarf warnings
-    if StrMatches(AData, ['error', 'unhandled type tag', 'DW_TAG_', '']) then // ignore dwarf warnings
-      exit;
-    if StrStartsWith(AData, 'error: need to add support for DW_TAG_') then // ignore dwarf warnings
-      exit;
-  end;
-  Result := False;
 end;
 
 procedure TLldbInstruction.SetContentReceieved;
@@ -563,9 +567,6 @@ var
 begin
   Result := True;
 
-  if CheckForIgnoredError(AData) then
-    exit;
-
   if FRes <> '' then begin
     FRes := FRes + AData;
     if ParseStruct(AData) then
@@ -612,9 +613,6 @@ begin
     exit;
 
   Result := True;
-  if CheckForIgnoredError(AData) then
-    exit;
-
 
 
   if StrMatches(AData, ['0x', ': ', ''], found) then begin
@@ -681,8 +679,6 @@ begin
     exit;
 
   Result := True;
-  if CheckForIgnoredError(AData) then
-    exit;
 
   if StrStartsWith(AData, 'General Purpose Registers:') then
     exit;
@@ -764,8 +760,6 @@ begin
     exit;
 
   Result := True;
-  if CheckForIgnoredError(AData) then
-    exit;
 
   if StrStartsWith(AData, 'Process ') then
     exit;
@@ -821,8 +815,6 @@ begin
     exit;
 
   Result := True;
-  if CheckForIgnoredError(AData) then
-    exit;
 
   if StrStartsWith(AData, '* thread ') then
     exit;
