@@ -7,8 +7,10 @@ interface
 uses
   Classes,
   SysUtils,
-  fprepos,
-  pkgFppkg;
+  {$IFNDEF VER3_0}
+  pkgFppkg,
+  {$ENDIF VER3_0}
+  fprepos;
 
 type
 
@@ -16,7 +18,9 @@ type
 
   TFppkgHelper = class
   private
+    {$IFNDEF VER3_0}
     FFPpkg: TpkgFPpkg;
+    {$ENDIF}
   public
     constructor Create;
     destructor Destroy; override;
@@ -33,6 +37,7 @@ var
 { TFppkgHelper }
 
 constructor TFppkgHelper.Create;
+{$IFNDEF VER3_0}
 var
   FPpkg: TpkgFPpkg;
 begin
@@ -54,10 +59,17 @@ begin
     FPpkg.Free;
   end;
 end;
+{$ELSE}
+begin
+
+end;
+{$ENDIF VER3_0}
 
 destructor TFppkgHelper.Destroy;
 begin
+{$IFNDEF VER3_0}
   FFPpkg.Free;
+{$ENDIF VER3_0}
   inherited Destroy;
 end;
 
@@ -70,6 +82,7 @@ end;
 
 function TFppkgHelper.HasPackage(const PackageName: string): Boolean;
 begin
+{$IFNDEF VER3_0}
   Result :=
     Assigned(FFPpkg.FindPackage(PackageName,pkgpkInstalled)) or
     Assigned(FFPpkg.FindPackage(PackageName,pkgpkAvailable)) or
@@ -86,6 +99,9 @@ begin
       Assigned(FFPpkg.FindPackage(PackageName,pkgpkAvailable)) or
       Assigned(FFPpkg.FindPackage(PackageName,pkgpkBoth));
     end;
+{$ELSE }
+  Result := True;
+{$ENDIF VER3_0}
 end;
 
 procedure TFppkgHelper.ListPackages(AList: TStringList);
@@ -93,6 +109,7 @@ var
   I, J: Integer;
   Repository: TFPRepository;
 begin
+{$IFNDEF VER3_0}
   for I := 0 to FFPpkg.RepositoryList.Count -1 do
     begin
     Repository := FFPpkg.RepositoryList.Items[I] as TFPRepository;
@@ -101,6 +118,7 @@ begin
       AList.AddObject(Repository.Packages[J].Name, Repository.Packages[J]);
       end;
     end;
+{$ENDIF VER3_0}
 end;
 
 finalization
