@@ -78,6 +78,7 @@ type
     {$ifNdef NATIVE_ASYNC_PROCESS}
     procedure ThreadDataAvail;
     procedure ThreadPipeError;
+    procedure TerminataThread;
     {$ENDIF}
     procedure FinishedReadingOutput;
   protected
@@ -228,6 +229,15 @@ DebugLn(['got pipe err / is running ', Running]);
   Terminate(0);
   HandleProcessTermination(0, cerExit, 0);
 end;
+
+procedure TDebugAsyncProcess.TerminataThread;
+begin
+  FReadThread.Terminate;
+  FinishedReadingOutput;
+  TThread.RemoveQueuedEvents(FReadThread, @ThreadDataAvail);
+  TThread.RemoveQueuedEvents(FReadThread, @ThreadPipeError);
+end;
+
 {$ENDIF}
 
 procedure TDebugAsyncProcess.HandlePipeInput(AData: PtrInt;
@@ -257,10 +267,7 @@ begin
     RemovePipeEventHandler(FPipeHandler);
   {$ELSE}
   if FReadThread <> nil then begin
-    FReadThread.Terminate;
-    FinishedReadingOutput;
-    RemoveQueuedEvents(FReadThread, FOnDataAvail);
-    RemoveQueuedEvents(FReadThread, FOnPipeError);
+    TerminataThread;
   end;
   {$ENDIF}
 end;
@@ -272,10 +279,7 @@ begin
     RemoveProcessEventHandler(FProcessHandler);
   {$ELSE} // should be enough in UnhookPipeHandle;
   if FReadThread <> nil then begin
-    FReadThread.Terminate;
-    FinishedReadingOutput;
-    RemoveQueuedEvents(FReadThread, FOnDataAvail);
-    RemoveQueuedEvents(FReadThread, FOnPipeError);
+    TerminataThread;
   end;
   {$ENDIF}
 end;
@@ -305,10 +309,7 @@ begin
   UnhookPipeHandle;
   {$ELSE}
   if FReadThread <> nil then begin
-    FReadThread.Terminate;
-    FinishedReadingOutput; // make sure destroy will not wait forever
-    RemoveQueuedEvents(FReadThread, FOnDataAvail);
-    RemoveQueuedEvents(FReadThread, FOnPipeError);
+    TerminataThread;
     FReadThread.WaitFor;
 debugln(['DESTROY thread destroying']);
     FreeAndNil(FReadThread);
@@ -325,10 +326,7 @@ begin
   UnhookPipeHandle;
   {$ELSE}
   if FReadThread <> nil then begin
-    FReadThread.Terminate;
-    FinishedReadingOutput;
-    RemoveQueuedEvents(FReadThread, FOnDataAvail);
-    RemoveQueuedEvents(FReadThread, FOnPipeError);
+    TerminataThread;
     FReadThread.WaitFor;
 debugln(['DESTROY thread destroying']);
     FreeAndNil(FReadThread);
