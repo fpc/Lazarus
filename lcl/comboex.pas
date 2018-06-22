@@ -284,6 +284,8 @@ type
   protected
     FCheckHighlight: Boolean;
     FCheckSize: TSize;
+    FDropped: Boolean;
+    FHilightedIndex: Integer;
     FHiLiteLeft: Integer;
     FHiLiteRight: Integer;
     FNeedMeasure: Boolean;
@@ -306,6 +308,7 @@ type
     procedure MouseLeave; override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure SetItemHeight(const AValue: Integer); override;
+    procedure SetItems(const Value: TStrings); override;
     procedure Select; override;
   public
     constructor Create(AOwner: TComponent); override;

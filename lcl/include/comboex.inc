@@ -550,6 +550,7 @@ end;
 
 procedure TCustomCheckCombo.CloseUp;
 begin
+  FDropped:=False;
   if FRejectDropDown then
   begin
     FRejectDropDown:=False;
@@ -661,7 +662,10 @@ begin  { do not call inherited ! }
   Canvas.Brush.Style:=bsClear;
   if (not (odSelected in State) or not aDropped) and not aFocusedEditableMainItemNoDD
     then Canvas.Font.Color:=clWindowText
-    else Canvas.Font.Color:=clHighlightText;
+    else begin
+       Canvas.Font.Color:=clHighlightText;
+       FHilightedIndex:=Index;
+    end;
   if aFocusedEditableMainItemNoDD then
     begin
       LCLIntf.SetBkColor(Canvas.Handle, ColorToRGB(clBtnFace));
@@ -697,12 +701,13 @@ begin
   aRect:=Rect(FHiLiteLeft, 0, FHiLiteRight, Height);
   FRejectDropDown:=PtInRect(aRect, aCursorPos);
   {$ENDIF}
+  FDropped:=True;
   if not FRejectDropDown then
     begin
       inherited DropDown;
       FRejectToggleOnSelect:=False;
     end else
-    if ItemEnabled[ItemIndex] then Toggle(ItemIndex);
+    if (ItemIndex>=0) and ItemEnabled[ItemIndex] then Toggle(ItemIndex);
 end;
 
 procedure TCustomCheckCombo.FontChanged(Sender: TObject);
@@ -752,30 +757,20 @@ procedure TCustomCheckCombo.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   case Key of
     VK_RETURN:
-      begin
-        if not DroppedDown then
-          begin
-            DroppedDown:=True;
-            Key:=0;
-          end else
-          begin
-            if (ItemIndex>=0) and ItemEnabled[ItemIndex] then
-              begin
-                Toggle(ItemIndex);
-                Key:=0;
-                DroppedDown:=False;
-              end;
-          end;
-      end;
+      if FDropped then
+        if (ItemIndex=FHilightedIndex) and ItemEnabled[ItemIndex] then Toggle(ItemIndex);
     VK_SPACE:
-      begin
+      if DroppedDown then
         if (ItemIndex>=0) and ItemEnabled[ItemIndex] then
+        begin
+          if ItemIndex<>FHilightedIndex then
           begin
-            Toggle(ItemIndex);
-            Key:=0;
-            if DroppedDown then DroppedDown:=False;
+            ItemIndex:=FHilightedIndex;
+            inherited Select;
           end;
-      end;
+          Toggle(ItemIndex);
+          DroppedDown:=False;
+        end;
   end;
   inherited KeyDown(Key, Shift);
 end;
@@ -796,7 +791,7 @@ procedure TCustomCheckCombo.MouseMove(Shift: TShiftState; X, Y: Integer);
 var aHighlight: Boolean;
 begin
   inherited MouseMove(Shift, X, Y);
-  aHighlight:= ((X>FHiLiteLeft) and (X<FHiLiteRight));
+  aHighlight:=((X>FHiLiteLeft) and (X<FHiLiteRight));
   if aHighlight<>FCheckHighlight then
     begin
       FCheckHighlight:=aHighlight;
@@ -815,12 +810,20 @@ begin
       if ItemEnabled[ItemIndex] then Toggle(ItemIndex);
       FRejectToggleOnSelect:=True;
     end;
+  FDropped:=False;
 end;
 
 procedure TCustomCheckCombo.SetItemHeight(const AValue: Integer);
 begin
   inherited SetItemHeight(AValue);
   FNeedMeasure:=True;
+end;
+
+procedure TCustomCheckCombo.SetItems(const Value: TStrings);
+begin
+  ClearItemStates;
+  inherited SetItems(Value);
+  InitItemStates;
 end;
 
 procedure TCustomCheckCombo.Toggle(AIndex: Integer);
@@ -899,7 +902,5 @@ begin
   if AIndex=ItemIndex then
     Invalidate;
 end;
-
-
 
 
