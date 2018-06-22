@@ -377,7 +377,6 @@ var
 begin
   Result := False;
   InStr := TLldbInstructionMemory.Create(AnAddress, ASize);
-  InStr.AddReference;
   try
     FDebugger.DebugInstructionQueue.QueueInstruction(InStr);
     while not InStr.IsCompleted do begin
