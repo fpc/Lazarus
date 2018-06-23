@@ -768,10 +768,7 @@ begin
 
   if IsValgrindLine(Trc[TrcIndex]) and IsHeaderLine(TrcIndex)  // add valgrind headers
   then begin
-    NewLine := TStackLine.Create; // No reference
     trace.RawStackData := Trc[TrcIndex]; // raw stack trace data
-//    trace.Add(NewLine);
-    NewLine.RawLineData := Trc[Trcindex]; // raw stack line data
     inc(Trcindex);
   end
   else
