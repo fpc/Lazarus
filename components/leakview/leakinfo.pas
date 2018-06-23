@@ -141,6 +141,19 @@ resourcestring
 
 implementation
 
+type
+
+  { TValgrindParser }
+
+  TValgrindParser = class
+    public
+      type
+        TValgrindLineType = (vltNone, vltEmpty, vltThread, vltHeader, vltTrace);
+    public
+      class function StripValgrindPrefix(var s: String): Boolean;
+      class function ValgrindLineType(s: String): TValgrindLineType;
+  end;
+
 function AllocHeapTraceInfo(const TrcFile: string): TLeakInfo;
 begin
   Result := THeapTrcInfo.Create(TrcFile);
@@ -242,6 +255,44 @@ begin
   GetNumberAfter(s, AfterNum, AfterStr);
 end;
 
+{ TValgrindParser }
+
+class function TValgrindParser.StripValgrindPrefix(var s: String): Boolean;
+var
+  i: Integer;
+begin
+  Result := False;
+  if pos('==', s) <> 1 then exit;
+  i := 3;
+  while (i<=Length(s)) and (s[i] in ['0'..'9']) do inc(i);
+  if (i+2 <= Length(s)) and (s[i] = '=') and (s[i+1] = '=')  and (s[i+2] in [' ', #10, #13]) then
+    Result := true;
+
+  if Result then begin
+    i := i + 3;
+    while (i<=Length(s)) and (s[i] in [#10, #13]) do inc(i);
+    delete(s, 1, i-1);
+  end;
+end;
+
+class function TValgrindParser.ValgrindLineType(s: String): TValgrindLineType;
+begin
+  Result := vltNone;
+  if not StripValgrindPrefix(s) then
+    exit;
+
+  if s = '' then
+    Result := vltEmpty
+  else
+  if pos('Thread ', s) = 1 then
+    Result := vltThread
+  else
+  if pos('   ', s) = 1 then
+    Result := vltTrace  // any sub line. Real traces begin with "by" ar "at"
+  else
+    Result := vltHeader;
+end;
+
 { TStackLine }
 
 function TStackLine.Equals(ALine: TStackLine): boolean;
@@ -281,43 +332,6 @@ begin
     Result := Pos(SubStr, Trc[TrcIndex])>0
   else // slow?
     Result := Pos(UpperCase(SubStr), UpperCase(Trc[TrcIndex]))>0;
-end;
-
-function IsValgrindLine(s: String; CheckEmpty: Boolean = false): Boolean;
-var
-  i: Integer;
-begin
-  Result := False;
-  if pos('==', s) <> 1 then exit;
-  i := 3;
-  while (i<=Length(s)) and (s[i] in ['0'..'9']) do inc(i);
-  if (i+2 <= Length(s)) and (s[i] = '=') and (s[i+1] = '=')  and (s[i+2] = ' ') then
-    Result := true;
-
-  if CheckEmpty then begin
-    i := i + 3;
-    while (i<=Length(s)) and (s[i] in [' ', #9, #10, #13]) do inc(i);
-    if i < Length(s) then Result := False;
-  end;
-end;
-
-function IsValgrindTraceLine(s: String; RequireAT: boolean = false): Boolean;
-var
-  i: Integer;
-begin
-  Result := False;
-  if pos('==', s) <> 1 then exit;
-  i := 3;
-  while (i<=Length(s)) and (s[i] in ['0'..'9']) do inc(i);
-  if (i+2 < Length(s)) and (s[i] = '=') and (s[i+1] = '=')  and (s[i+2] = ' ') then i := i + 3;
-  while (i<=Length(s)) and (s[i] = ' ') do inc(i);
-
-  if (i+2 < Length(s)) and
-     ( (copy(s, i, 3) = 'at ') or
-       ( (copy(s, i, 3) = 'by ') and not RequireAT )
-     )
-  then
-    Result := true;
 end;
 
 function THeapTrcInfo.IsTraceLine(const Idx: Integer;
@@ -365,9 +379,12 @@ begin
     Result := true;
   end else if pos('frame #', s) > 0 then begin
     Result := True;
-  end else if IsValgrindLine(s) then begin
-    Result := IsValgrindTraceLine(s) or
-              ( (Idx > 0) and (Idx < Trc.Count-1) and IsValgrindTraceLine(Trc[Idx-1]) and IsValgrindTraceLine(Trc[Idx+1]) );
+  end else if TValgrindParser.ValgrindLineType(s) in [vltHeader] then begin
+    Result := (Idx > 0) and (Idx < Trc.Count-1) and
+              (TValgrindParser.ValgrindLineType(Trc[Idx-1]) = vltTrace) and
+              (TValgrindParser.ValgrindLineType(Trc[Idx+1]) = vltTrace);
+  end else if TValgrindParser.ValgrindLineType(s) in [vltTrace] then begin
+    Result := True;
   end else begin
     // heaptrc line?
     i := 1;
@@ -390,9 +407,9 @@ var
   SubStr: String;
 begin
   SubStr := Trc[Idx];
-  if (pos('==', SubStr) = 1) and
-     ( (Idx<Trc.Count-1) and IsValgrindTraceLine(Trc[Idx+1], True) ) and
-     ( (Idx = 0) or IsValgrindLine(Trc[Idx-1], True) )
+  if (TValgrindParser.ValgrindLineType(SubStr) = vltHeader) and
+     ( (Idx < Trc.Count-1) and (TValgrindParser.ValgrindLineType(Trc[Idx+1]) = vltTrace) ) and
+     ( (Idx = 0) or (TValgrindParser.ValgrindLineType(Trc[Idx-1]) in [vltNone, vltEmpty, vltThread]) )
   then begin
     Result := True;
     exit;
@@ -670,7 +687,7 @@ begin
     ReadLLDBLine;
   end
   else // valgrind
-  if IsValgrindTraceLine(s) then begin
+  if TValgrindParser.ValgrindLineType(s) = vltTrace then begin
     ReadValgrindLine;
   end else begin
     i := Pos('$', s);
@@ -744,9 +761,12 @@ var
   hex : string;
   NewLine: TStackLine;
   s: String;
+  ValHeader2: Boolean;
 begin
   i := Pos(RawTracePrefix, Trc[TrcIndex]);
-  if (i <= 0) and (not IsTraceLine(TrcIndex)) and (not IsValgrindLine(Trc[TrcIndex])) then begin
+  if (i <= 0) and (not IsTraceLine(TrcIndex)) and
+     (TValgrindParser.ValgrindLineType(Trc[TrcIndex]) = vltNone)
+  then begin
     i := Pos(CallTracePrefix, Trc[TrcIndex]);
     if i <= 0 then begin
       inc(TrcIndex);
@@ -766,7 +786,7 @@ begin
     trace.BlockSize := 0;
   end;
 
-  if IsValgrindLine(Trc[TrcIndex]) and IsHeaderLine(TrcIndex)  // add valgrind headers
+  if (TValgrindParser.ValgrindLineType(Trc[TrcIndex]) <> vltNone) and IsHeaderLine(TrcIndex)  // add valgrind headers
   then begin
     trace.RawStackData := Trc[TrcIndex]; // raw stack trace data
     inc(Trcindex);
@@ -775,11 +795,18 @@ begin
   if (not IsTraceLine(TrcIndex)) then
     inc(TrcIndex);
 
+  ValHeader2 := False;
   while (TrcIndex < Trc.Count) and (not IsHeaderLine(TrcIndex, True))
   do begin
+    s := Trc[Trcindex];
+    if (not ValHeader2) and (TValgrindParser.ValgrindLineType(s) = vltHeader) then begin
+      ValHeader2 := True;
+      TValgrindParser.StripValgrindPrefix(s);
+      trace.RawStackData := trace.RawStackData + '  /  ' + s;
+      s := Trc[Trcindex];
+    end;
     NewLine := TStackLine.Create; // No reference
     trace.Add(NewLine);
-    s := Trc[Trcindex];
     if (TrcIndex < Trc.Count-1) and (not IsTraceLine(Trcindex+1, True)) and
        (not IsHeaderLine(Trcindex+1))
     then begin
