@@ -247,11 +247,14 @@ var
   i   : integer;
   sz  : Integer;
 begin
-  sz := 16 + trace.Count * 16; // 8 hex digits for Size + 8 hex digits for Size
+  sz := 32 + trace.Count * 16; // 8 hex digits for Size + 8 hex digits for Size
   SetLength(Result, sz);
   HexInt64ToStr(trace.BlockSize, Result, 1);
+  HexInt64ToStr(hash(trace.RawStackData), Result, 17);
   for i := 0 to trace.Count - 1 do
-    HexInt64ToStr(trace.lines[i].Addr, Result, 17 + i * 16);
+    if trace.lines[i].Addr <> 0
+    then HexInt64ToStr(trace.lines[i].Addr, Result, 33 + i * 16)
+    else HexInt64ToStr(Hash(trace.lines[i].RawLineData), Result, 17 + i * 16);
 end;
 
 procedure THeapTrcViewForm.ItemsToTree;
