@@ -127,7 +127,7 @@ begin
     begin
       if (FPackageLinks.Count = 0) then
       begin
-        if not PackageDownloader.DownloadingJSON then
+        if (not PackageDownloader.DownloadingJSON) and (not Application.Terminated) then
           PackageDownloader.DownloadJSON(Options.ConTimeOut*1000, True);
         Exit;
       end;
@@ -146,7 +146,6 @@ begin
   SerializablePackages.OnUpdatePackageLinks := @DoUpdatePackageLinks;
   PackageDownloader := TPackageDownloader.Create(Options.RemoteRepository[Options.ActiveRepositoryIndex]);
   InstallPackageList := TObjectList.Create(True);
-  PackageDownloader.DownloadJSON(Options.ConTimeOut*1000);
 end;
 
 procedure TOPMInterfaceEx.DoUpdatePackageLinks(Sender: TObject);

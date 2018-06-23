@@ -144,6 +144,7 @@ type
     FRemoteRepository: String;
     FLastError: String;
     FDownloadingJSON: Boolean;
+    FSilent: Boolean;
     FOnJSONProgress: TNotifyEvent;
     FOnJSONDownloadCompleted: TOnJSONDownloadCompleted;
     FOnPackageDownloadProgress: TOnPackageDownloadProgress;
@@ -257,8 +258,6 @@ procedure TThreadDownload.DoOnJSONDownloadCompleted;
 var
   JSON: TJSONStringType;
 begin
-  if FSilent then
-    Exit;
   if Assigned(FOnJSONComplete) then
   begin
     if (FErrTyp = etNone) or (FMS.Size > 0) then
@@ -653,9 +652,12 @@ end;
 procedure TPackageDownloader.DoOnJSONDownloadCompleted(Sender: TObject;
   AJSON: TJSONStringType; AErrTyp: TErrorType; const AErrMsg: String);
 begin
-  FJSON := AJSON;
-  if Assigned(FOnJSONDownloadCompleted) then
-    FOnJSONDownloadCompleted(Self, AJSON, AErrTyp, AErrMsg);
+  if not FSilent then
+  begin
+    FJSON := AJSON;
+    if Assigned(FOnJSONDownloadCompleted) then
+      FOnJSONDownloadCompleted(Self, AJSON, AErrTyp, AErrMsg);
+  end;
   FDownloadingJSON := False;
 end;
 
@@ -675,6 +677,7 @@ procedure TPackageDownloader.DownloadJSON(const ATimeOut: Integer = -1;
   const ASilent: Boolean = False);
 begin
   FDownloadingJSON := True;
+  FSilent := ASilent;
   FDownload := TThreadDownload.Create;
   FDownload.OnJSONProgress := @DoOnJSONProgress;
   FDownload.OnJSONDownloadCompleted := @DoOnJSONDownloadCompleted;
