@@ -1839,6 +1839,7 @@ type
        Errors should also be reported by debugger
     *)
     class function  RequiresLocalExecutable: Boolean; virtual;
+    procedure TestCmd(const ACommand: String); virtual;// For internal debugging purposes
   public
     constructor Create(const AExternalDebugger: String); virtual;
     destructor Destroy; override;
@@ -6059,6 +6060,11 @@ end;
 class function TDebuggerIntf.RequiresLocalExecutable: Boolean;
 begin
   Result := True;
+end;
+
+procedure TDebuggerIntf.TestCmd(const ACommand: String);
+begin
+  //
 end;
 
 procedure TDebuggerIntf.SetState(const AValue: TDBGState);

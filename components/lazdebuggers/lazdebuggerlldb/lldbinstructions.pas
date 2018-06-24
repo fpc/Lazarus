@@ -242,6 +242,8 @@ end;
 
 procedure TLldbInstructionQueue.DoBeforeHandleLineReceived(var ALine: String);
 begin
+  inherited DoBeforeHandleLineReceived(ALine); // Do first send to DebugOutput window
+
   while LeftStr(ALine, 7) = '(lldb) ' do begin
     Delete(ALine, 1, 7);
   end;
@@ -251,7 +253,9 @@ begin
     exit;
   end;
 
-  inherited DoBeforeHandleLineReceived(ALine);
+  if StrMatches(ALine, ['Process ', ' stopped']) then begin // TODO: needed?
+    ALine := '';
+  end;
 
   // TODO: detect the echo, and flag if data is for RunningInstruction;
 
@@ -630,7 +634,7 @@ begin
 //<< << TCmdLineDebugger.ReadLn "0x005ff280: 0x60 0x10 0x77 0x04"
 
 
-  if StrMatches(AData, ['(', ')', ' = ', '112234', '']) then begin
+  if StrStartsWith(AData, 'lldb version ') then begin
     MarkAsSuccess;
     Exit;
   end;
@@ -641,7 +645,7 @@ end;
 procedure TLldbInstructionMemory.SendCommandDataToDbg();
 begin
   inherited SendCommandDataToDbg();
-  Queue.SendDataToDBG(Self, 'p 112234'); // end marker // do not sent before new prompt
+  Queue.SendDataToDBG(Self, 'version'); // end marker // do not sent before new prompt
 end;
 
 constructor TLldbInstructionMemory.Create(AnAddress: TDBGPtr; ALen: Cardinal);
@@ -693,7 +697,7 @@ begin
     exit;
   end;
 
-  if StrMatches(AData, ['(', ')', ' = ', '112235', '']) then begin
+  if StrStartsWith(AData, 'lldb version ') then begin
     MarkAsSuccess;
     Exit;
   end;
@@ -723,7 +727,7 @@ end;
 procedure TLldbInstructionRegister.SendCommandDataToDbg();
 begin
   inherited SendCommandDataToDbg();
-  Queue.SendDataToDBG(Self, 'p 112235'); // end marker // do not sent before new prompt
+  Queue.SendDataToDBG(Self, 'version'); // end marker // do not sent before new prompt
 end;
 
 constructor TLldbInstructionRegister.Create(AThread, AFrame: Integer);
@@ -742,7 +746,7 @@ end;
 procedure TLldbInstructionThreadList.SendCommandDataToDbg();
 begin
   inherited SendCommandDataToDbg();
-  Queue.SendDataToDBG(Self, 'p 112236'); // end marker // do not sent before new prompt
+  Queue.SendDataToDBG(Self, 'version'); // end marker // do not sent before new prompt
 end;
 
 function TLldbInstructionThreadList.ProcessInputFromDbg(const AData: String
@@ -773,7 +777,7 @@ DebugLn(['######### add ',AData]);
     exit;
   end;
 
-  if StrMatches(AData, ['(', ')', ' = ', '112236', '']) then begin
+  if StrStartsWith(AData, 'lldb version ') then begin
     MarkAsSuccess;
     Exit;
   end;
@@ -797,7 +801,7 @@ end;
 procedure TLldbInstructionStackTrace.SendCommandDataToDbg();
 begin
   inherited SendCommandDataToDbg();
-  Queue.SendDataToDBG(Self, 'p 112233'); // end marker // do not sent before new prompt
+  Queue.SendDataToDBG(Self, 'version'); // end marker // do not sent before new prompt
 end;
 
 function TLldbInstructionStackTrace.ProcessInputFromDbg(const AData: String
@@ -827,7 +831,7 @@ begin
     exit;
   end;
 
-  if StrMatches(AData, ['(', ')', ' = ', '112233', '']) then begin
+  if StrStartsWith(AData, 'lldb version ') then begin
     MarkAsSuccess;
     Exit;
   end;

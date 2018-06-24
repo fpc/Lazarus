@@ -22,6 +22,10 @@ function ParseFrameLocation(AnInput: String; out AnId: Integer;
   out AnIsCurrent: Boolean; out AnAddr: TDBGPtr; out AFuncName: String;
   out AnArgs: TStringList; out AFile: String; out ALine: Integer;
   out AReminder: String): Boolean;
+function ParseNewFrameLocation(AnInput: String; out AnId: Integer;
+  out AnIsCurrent: Boolean; out AnAddr: TDBGPtr; out AFuncName: String;
+  out AnArgs: TStringList; out AFile, AFullFile: String; out ALine: Integer;
+  out AReminder: String): Boolean;
 
 implementation
 
@@ -232,6 +236,61 @@ begin
   Result := True;
 
   ParseLocation(AnInput, AnAddr, AFuncName, AnArgs, AFile, ALine, AReminder);
+end;
+
+function ParseNewFrameLocation(AnInput: String; out AnId: Integer; out
+  AnIsCurrent: Boolean; out AnAddr: TDBGPtr; out AFuncName: String; out
+  AnArgs: TStringList; out AFile, AFullFile: String; out ALine: Integer; out
+  AReminder: String): Boolean;
+var
+  found: TStringArray;
+  i, j, k: SizeInt;
+begin
+  Result := False;
+  AnIsCurrent := (Length(AnInput) > 3) and (AnInput[3] = '*');
+  if AnIsCurrent then AnInput[3] := ' ';
+
+  if not StrMatches(AnInput, ['    frame #'{id}, ': '{addr},
+    ' &&//FULL: '{fullfile}, ' &&//SHORT: '{file},' &&//LINE: '{line},
+    ' &&//MOD: '{mod},' &&//FUNC: '{func}, '',' <<&&//FRAME', ''
+     ], found) then begin
+    AnId := -1;
+    AnAddr :=    0;
+    AFile :=     '';
+    AFullFile := '';
+    ALine :=     -1;
+    AFuncName := '';
+    AReminder := '';
+    AnArgs := nil;
+    exit;
+  end;
+
+  AnId :=      StrToIntDef(found[0], -1);
+  AnAddr :=    StrToInt64Def(found[1], 0);
+  AFullFile := found[2];
+  AFile :=     found[3];
+  ALine :=     StrToIntDef(found[4], -1);
+  AFuncName := found[6];
+  AnArgs := nil;
+  AReminder := found[7];
+
+  if AFuncName = '' then begin
+    AFuncName := '<'+found[5]+'>';
+  end
+  else begin
+    AnInput := AFuncName;
+    i := pos(' ', AnInput);
+    j := pos('(', AnInput);
+    k := pos(')', AnInput);
+    if ((i = 0) or (i > j)) and (j > 1) and (k > j) then begin
+      AFuncName := Copy(AnInput, 1, j-1);
+      AnArgs := TStringList.Create;
+      AnArgs.CommaText := copy(AnInput, j+1, k-j-1);
+      AnInput := Copy(AnInput, k+1, Length(AnInput));
+    end;
+  end;
+
+  Result := True;
 end;
 
 end.

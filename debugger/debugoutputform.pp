@@ -145,9 +145,7 @@ end;
 {$IFDEF DBG_WITH_DEBUGGER_DEBUG}
 procedure TDbgOutputForm.Button1Click(Sender: TObject);
 begin
-  if DebugBoss.Debugger is TCmdLineDebugger then begin
-    TCmdLineDebugger(DebugBoss.Debugger).TestCmd(Edit1.Text);
-  end;
+  DebugBoss.Debugger.TestCmd(Edit1.Text);
 end;
 {$ENDIF}
 

@@ -132,6 +132,7 @@ type
     procedure DoAfterLineReceived(var ALine: String);
     procedure DoBeforeLineReceived(var ALine: String);
     procedure DoCmdLineDebuggerTerminated(Sender: TObject);
+    procedure DoLineSentToDbg(Sender: TObject; ALine: String);
     function  LldbRun: Boolean;
     function  LldbStep(AStepAction: TLldbInstructionProcessStepAction): Boolean;
     function  LldbStop: Boolean;
@@ -178,6 +179,7 @@ type
     function GetLocation: TDBGLocationRec; override;
 //    function GetProcessList({%H-}AList: TRunningProcessInfoList): boolean; override;
 //    function NeedReset: Boolean; override;
+    procedure TestCmd(const ACommand: String); override;
   end;
 
 
@@ -438,7 +440,7 @@ var
   found, foundArg: TStringArray;
   Arguments: TStringList;
   It: TMapIterator;
-  s, func, filename, d: String;
+  s, func, filename, d, fullfile: String;
   frame: LongInt;
   IsCur: Boolean;
   addr: TDBGPtr;
@@ -452,10 +454,10 @@ begin
 
   for i := 0 to Length(Instr.Res) - 1 do begin
     s := Instr.Res[i];
-    ParseFrameLocation(s, FId, IsCur, addr, func, Arguments, filename, line, d);
+    ParseNewFrameLocation(s, FId, IsCur, addr, func, Arguments, filename, fullfile, line, d);
     if It.Locate(FId) then begin
       e := TCallStackEntry(It.DataPtr^);
-      e.Init(addr, Arguments, func, filename, '', line);
+      e.Init(addr, Arguments, func, filename, fullfile, line);
     end;
     Arguments.Free;
   end;
@@ -885,6 +887,16 @@ procedure TLldbDebuggerCommandInit.DoExecute;
 var
   Instr: TLldbInstructionSettingSet;
 begin
+  Instr := TLldbInstructionSettingSet.Create('frame-format',
+    '"frame #${frame.index}: ${frame.pc}' +
+    ' &&//FULL: {${line.file.fullpath}} &&//SHORT: {${line.file.basename}} &&//LINE: {${line.number}}' +
+    ' &&//MOD: {${module.file.basename}} &&//FUNC: {${function.name-with-args}{${frame.no-debug}${function.pc-offset}}}' +
+    ' <<&&//FRAME\n"'
+//    ' {  ${frame.fp} }  \n"'
+  );
+  QueueInstruction(Instr);
+  Instr.ReleaseReference;
+
   Instr := TLldbInstructionSettingSet.Create('stop-line-count-after', '0');
   QueueInstruction(Instr);
   Instr.ReleaseReference;
@@ -1040,7 +1052,7 @@ var
   AnId, SrcLine: Integer;
   AnIsCurrent: Boolean;
   AnAddr: TDBGPtr;
-  AFuncName, AFile, AReminder: String;
+  AFuncName, AFile, AReminder, AFullFile: String;
   AnArgs: TStringList;
 begin
   if ALine = '' then
@@ -1067,13 +1079,14 @@ begin
     Instr.ReleaseReference;
   end;
 
-  if ParseFrameLocation(ALine, AnId, AnIsCurrent, AnAddr, AFuncName, AnArgs,
-    AFile, SrcLine, AReminder)
+  if ParseNewFrameLocation(ALine, AnId, AnIsCurrent, AnAddr, AFuncName, AnArgs,
+    AFile, AFullFile, SrcLine, AReminder)
   then begin
     AnArgs.Free;
     FCurrentLocation.Address := AnAddr;
     FCurrentLocation.FuncName := AFuncName;
     FCurrentLocation.SrcFile := AFile;
+    FCurrentLocation.SrcFullName := AFullFile;
     FCurrentLocation.SrcLine := SrcLine;
     DoCurrent(FCurrentLocation);
     ALine := '';
@@ -1082,9 +1095,7 @@ end;
 
 procedure TLldbDebugger.DoBeforeLineReceived(var ALine: String);
 begin
-  if StrMatches(ALine, ['Process ', ' stopped']) then begin // TODO: needed?
-    ALine := '';
-  end;
+  DoDbgOutput(ALine);
 end;
 
 procedure TLldbDebugger.DoBeginReceivingLines(Sender: TObject);
@@ -1095,6 +1106,11 @@ end;
 procedure TLldbDebugger.DoCmdLineDebuggerTerminated(Sender: TObject);
 begin
   SetState(dsError);
+end;
+
+procedure TLldbDebugger.DoLineSentToDbg(Sender: TObject; ALine: String);
+begin
+  DoDbgOutput('>> '+ALine);
 end;
 
 procedure TLldbDebugger.DoEndReceivingLines(Sender: TObject);
@@ -1240,6 +1256,7 @@ constructor TLldbDebugger.Create(const AExternalDebugger: String);
 begin
   inherited Create(AExternalDebugger);
   FDebugProcess := TDebugProcess.Create(AExternalDebugger);
+  FDebugProcess.OnLineSent := @DoLineSentToDbg;
 
   FDebugInstructionQueue := TLldbInstructionQueue.Create(FDebugProcess);
   FDebugInstructionQueue.OnBeginLinesReceived := @DoBeginReceivingLines;
@@ -1294,6 +1311,11 @@ end;
 function TLldbDebugger.GetLocation: TDBGLocationRec;
 begin
   Result := FCurrentLocation;
+end;
+
+procedure TLldbDebugger.TestCmd(const ACommand: String);
+begin
+  FDebugProcess.SendCmdLn(ACommand);
 end;
 
 procedure Register;
