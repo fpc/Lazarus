@@ -890,7 +890,7 @@ begin
   Instr := TLldbInstructionSettingSet.Create('frame-format',
     '"frame #${frame.index}: ${frame.pc}' +
     ' &&//FULL: {${line.file.fullpath}} &&//SHORT: {${line.file.basename}} &&//LINE: {${line.number}}' +
-    ' &&//MOD: {${module.file.basename}} &&//FUNC: {${function.name-with-args}{${frame.no-debug}${function.pc-offset}}}' +
+    ' &&//MOD: {${module.file.basename}} &&//FUNC: {${function.name-with-args}}' +
     ' <<&&//FRAME\n"'
 //    ' {  ${frame.fp} }  \n"'
   );
