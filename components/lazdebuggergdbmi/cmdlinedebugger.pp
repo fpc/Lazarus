@@ -78,7 +78,7 @@ type
   public
     constructor Create(const AExternalDebugger: String); override;
     destructor Destroy; override;
-    procedure TestCmd(const ACommand: String); virtual;// For internal debugging purposes
+    procedure TestCmd(const ACommand: String); override;// For internal debugging purposes
     class function CanExternalDebugSymbolsFile: boolean; override;
   public
     property DebugProcess: TProcessUTF8 read FDbgProcess;
