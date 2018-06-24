@@ -19,6 +19,7 @@
         <CompilerMessages>
           <IgnoredMessages idx3057="True"/>
         </CompilerMessages>
+        <CustomOptions Value="$(IDEBuildOptions)"/>
       </Other>
     </CompilerOptions>
     <Description Value="A set of helperclasses for implementing a debugger.
