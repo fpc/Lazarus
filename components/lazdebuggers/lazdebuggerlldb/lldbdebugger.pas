@@ -885,7 +885,7 @@ end;
 
 procedure TLldbDebuggerCommandInit.DoExecute;
 var
-  Instr: TLldbInstructionSettingSet;
+  Instr: TLldbInstruction;
 begin
   Instr := TLldbInstructionSettingSet.Create('frame-format',
     '"frame #${frame.index}: ${frame.pc}' +
@@ -906,6 +906,11 @@ begin
   Instr.ReleaseReference;
 
   Instr := TLldbInstructionSettingSet.Create('stop-disassembly-count', '0');
+  //Instr.OnFinish := @InstructionSucceeded;
+  QueueInstruction(Instr);
+  Instr.ReleaseReference;
+
+  Instr := TLldbInstructionBreakSet.Create('fpc_raiseexception');
   Instr.OnFinish := @InstructionSucceeded;
   QueueInstruction(Instr);
   Instr.ReleaseReference;

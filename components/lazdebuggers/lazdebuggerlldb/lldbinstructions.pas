@@ -112,6 +112,7 @@ type
     function ProcessInputFromDbg(const AData: String): Boolean; override;
   public
     constructor Create(AFileName: String; ALine: Integer);
+    constructor Create(AMethod: String);
     property BreakId: Integer read FBreakId;
     property State: TValidState read FState;
   end;
@@ -477,6 +478,11 @@ begin
   if pos(' ', AFileName) > 0 then
     AFileName := ''''+AFileName+'''';
   inherited Create(Format('breakpoint set --file %s --line %d', [AFileName, ALine]));
+end;
+
+constructor TLldbInstructionBreakSet.Create(AMethod: String);
+begin
+  inherited Create(Format('breakpoint set --func %s', [AMethod]));
 end;
 
 { TLldbInstructionBreakDelete }
