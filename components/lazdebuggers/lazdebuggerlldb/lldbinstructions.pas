@@ -634,7 +634,7 @@ begin
 //<< << TCmdLineDebugger.ReadLn "0x005ff280: 0x60 0x10 0x77 0x04"
 
 
-  if StrStartsWith(AData, 'lldb version ') then begin
+  if StrStartsWith(AData, 'version') then begin
     MarkAsSuccess;
     Exit;
   end;
@@ -697,7 +697,7 @@ begin
     exit;
   end;
 
-  if StrStartsWith(AData, 'lldb version ') then begin
+  if StrStartsWith(AData, 'version') then begin
     MarkAsSuccess;
     Exit;
   end;
@@ -777,7 +777,7 @@ DebugLn(['######### add ',AData]);
     exit;
   end;
 
-  if StrStartsWith(AData, 'lldb version ') then begin
+  if StrStartsWith(AData, 'version') then begin
     MarkAsSuccess;
     Exit;
   end;
@@ -831,7 +831,7 @@ begin
     exit;
   end;
 
-  if StrStartsWith(AData, 'lldb version ') then begin
+  if StrStartsWith(AData, 'version') then begin
     MarkAsSuccess;
     Exit;
   end;
