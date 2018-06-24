@@ -255,7 +255,7 @@ end;
 
 procedure tDbgWinLibrary.InitializeLoaders;
 begin
-  LoaderList.Add(TDbgImageLoader.Create(FInfo.hFile));
+  TDbgImageLoader.Create(FInfo.hFile).AddToLoaderList(LoaderList);
 end;
 
 constructor tDbgWinLibrary.Create(const AProcess: TDbgProcess;
@@ -288,7 +288,7 @@ end;
 
 procedure TDbgWinProcess.InitializeLoaders;
 begin
-  LoaderList.Add(TDbgImageLoader.Create(FInfo.hFile));
+  TDbgImageLoader.Create(FInfo.hFile).AddToLoaderList(LoaderList);
 end;
 
 destructor TDbgWinProcess.Destroy;

@@ -586,7 +586,7 @@ end;
 
 procedure TDbgLinuxProcess.InitializeLoaders;
 begin
-  LoaderList.Add(TDbgImageLoader.Create(Name));
+  TDbgImageLoader.Create(Name).AddToLoaderList(LoaderList);
 end;
 
 function TDbgLinuxProcess.CreateThread(AthreadIdentifier: THandle; out IsMainThread: boolean): TDbgThread;

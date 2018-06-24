@@ -85,6 +85,7 @@ type
     class function UserName: AnsiString; virtual; abstract;
     procedure ParseSymbolTable(AFpSymbolInfo: TfpSymbolList); virtual;
     constructor Create({%H-}ASource: TDbgFileLoader; {%H-}ADebugMap: TObject; OwnSource: Boolean); virtual;
+    procedure AddSubFilesToLoaderList(ALoaderList: TObject; PrimaryLoader: TObject); virtual;
 
     property ImageBase: QWord read FImageBase;
     Property Image64Bit: Boolean read FImage64Bit;
@@ -286,6 +287,12 @@ end;
 constructor TDbgImageReader.Create(ASource: TDbgFileLoader; ADebugMap: TObject; OwnSource: Boolean);
 begin
   inherited Create;
+end;
+
+procedure TDbgImageReader.AddSubFilesToLoaderList(ALoaderList: TObject;
+  PrimaryLoader: TObject);
+begin
+  //
 end;
 
 

@@ -50,11 +50,15 @@ type
   {$ifdef windows}
     {$define USE_WIN_FILE_MAPPING}
   {$endif}
+
+  TDbgImageLoaderList = class;
+
   { TDbgImageLoader }
 
   TDbgImageLoader = class(TObject)
   private
     FFileLoader: TDbgFileLoader;
+    FFileName: String;
     FImgReader: TDbgImageReader;
     function GetAddressMapList: TDbgAddressMapList;
     function GetSubFiles: TStrings;
@@ -73,7 +77,9 @@ type
     constructor Create(AFileHandle: THandle; ADebugMap: TObject = nil);
     {$endif}
     destructor Destroy; override;
+    procedure AddToLoaderList(ALoaderList: TDbgImageLoaderList);
     function IsValid: Boolean;
+    property FileName: String read FFileName; // Empty if using USE_WIN_FILE_MAPPING
     property ImageBase: QWord read FImageBase; unimplemented;
     Property Image64Bit: Boolean read GetImage64Bit;
     property UUID: TGuid read GetUUID;
@@ -187,6 +193,7 @@ end;
 
 constructor TDbgImageLoader.Create(AFileName: String; ADebugMap: TObject = nil);
 begin
+  FFileName := AFileName;
   FFileLoader := TDbgFileLoader.Create(AFileName);
   FImgReader := GetImageReader(FFileLoader, ADebugMap, True);
 end;
@@ -209,6 +216,12 @@ destructor TDbgImageLoader.Destroy;
 begin
   FreeAndNil(FImgReader);
   inherited Destroy;
+end;
+
+procedure TDbgImageLoader.AddToLoaderList(ALoaderList: TDbgImageLoaderList);
+begin
+  ALoaderList.Add(Self);
+  FImgReader.AddSubFilesToLoaderList(ALoaderList, Self);
 end;
 
 function TDbgImageLoader.IsValid: Boolean;

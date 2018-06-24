@@ -9,7 +9,7 @@ uses
   macho, FpImgReaderMachoFile, FpImgReaderBase, LazLoggerBase,
   DbgIntfBaseTypes,
   lazfglhash,
-  fpDbgSymTable;
+  fpDbgSymTable, FpDbgUtil;
 
 type
 
@@ -38,6 +38,7 @@ type
     function GetSectionIndex(const SectionName: AnsiString): Integer;
 
     function GetSection(const AName: String): PDbgImageSection; override;
+    procedure AddSubFilesToLoaderList(ALoaderList: TObject; PrimaryLoader: TObject); override;
   public
     class function isValid(ASource: TDbgFileLoader): Boolean; override;
     class function UserName: AnsiString; override;
@@ -296,6 +297,55 @@ begin
     exit;
   ex^.Loaded  := True;
   fSource.LoadMemory(ex^.Offs, Result^.Size, Result^.RawData);
+end;
+
+procedure TDbgMachoDataSource.AddSubFilesToLoaderList(ALoaderList: TObject;
+  PrimaryLoader: TObject);
+var
+  PLoader: TDbgImageLoader absolute PrimaryLoader;
+  LList: TDbgImageLoaderList absolute ALoaderList;
+  ALoader: TDbgImageLoader;
+  fname, dSYMFilename: String;
+  i: SizeInt;
+begin
+  // JvdS: Mach-O binaries do not contain DWARF-debug info. Instead this info
+  // is stored inside the .o files, and the executable contains a map (in stabs-
+  // format) of all these .o files. An alternative to parsing this map and reading
+  // those .o files a dSYM-bundle could be used, which could be generated
+  // with dsymutil.
+
+  // PLoader.FileName in Contents/MacOs
+  ALoader:=nil;
+
+  fname := PLoader.FileName;
+  i := pos('/Contents/MacOs', fname);
+  if i > 0 then delete(fname, i, Length(fname));
+  dSYMFilename:=ChangeFileExt(PLoader.FileName, '.dSYM');
+  dSYMFilename:=dSYMFilename+'/Contents/Resources/DWARF/'+ExtractFileName(fname); // TDbgProcess.Name
+
+  if ExtractFileExt(dSYMFilename)='.app' then
+    dSYMFilename := ChangeFileExt(dSYMFilename,'');
+
+  if FileExists(dSYMFilename) then
+    begin
+    ALoader := TDbgImageLoader.Create(dSYMFilename);
+    if GUIDToString(ALoader.UUID)<>GUIDToString(PLoader.UUID) then
+      begin
+      Log('The unique UUID''s of the executable and the dSYM bundle with debug-info ('+dSYMFilename+') do not match.');
+      FreeAndNil(ALoader);
+      end
+    else
+      begin
+      log('Load debug-info from dSYM bundle ('+dSYMFilename+').');
+      LList.Add(ALoader);
+      end;
+    end;
+
+  if not assigned(ALoader) then
+    begin
+    log('Read debug-info from separate object files.');
+    TDbgMachoDataSource.LoadSubFiles(PLoader.SubFiles, LList);
+    end;
 end;
 
 constructor TDbgMachoDataSource.Create(ASource: TDbgFileLoader; ADebugMap: TObject; OwnSource: Boolean);
