@@ -131,9 +131,10 @@ begin
           PackageDownloader.DownloadJSON(Options.ConTimeOut*1000, True);
         Exit;
       end;
-      if (not FBusyUpdating) then
-        if (Assigned(OnPackageListAvailable)) then
-          OnPackageListAvailable(Self);
+      if (not Application.terminated) then
+        if (not FBusyUpdating) then
+          if (Assigned(OnPackageListAvailable)) then
+            OnPackageListAvailable(Self);
     end;
   end;
 end;
