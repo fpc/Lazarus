@@ -57,11 +57,11 @@ msgstr "Параметры компилятора от fpmake"
 
 #: fppkg_const.rsfppkgenvironmentoptions
 msgid "Fppkg"
-msgstr ""
+msgstr "Fppkg"
 
 #: fppkg_const.rsfppkgenvironmentoptionscaption
 msgid "Compilation"
-msgstr ""
+msgstr "Компиляция"
 
 #: fppkg_const.rsfppkgoptions
 msgid "fppkg options"
