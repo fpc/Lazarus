@@ -63,6 +63,8 @@ resourcestring
   rsRemoteMirrorsURL = 'Remote mirrors URL';
   rsRemoteRepository = 'Remote repository';
   rsShowFppkgPackageManager = 'Show Fppkg Package Manager';
+  rsFppkgEnvironmentOptions = 'Fppkg';
+  rsFppkgEnvironmentOptionsCaption = 'Compilation';
 
 implementation
 

@@ -8,21 +8,18 @@ unit IDEIntf;
 interface
 
 uses
-  ActionsEditor, ActionsEditorStd, BaseIDEIntf, CheckGroupEditorDlg, 
-  CheckListboxEditorDlg, CollectionPropEditForm, ColumnDlg, ComponentEditors, 
-  ComponentReg, ComponentTreeView, CompOptsIntf, DBPropEdits, 
-  EditorSyntaxHighlighterDef, fieldseditor, fieldslist, FileFilterPropEditor, 
-  FormEditingIntf, frmSelectProps, GraphicPropEdit, GraphPropEdits, 
-  HeaderControlPropEdit, HelpFPDoc, IDECommands, IDEDialogs, 
-  IDEExternToolIntf, IDEHelpIntf, IDEImagesIntf, IDEMsgIntf, IDEOptionsIntf, 
-  IDETextConverter, IDEUtils, IDEWindowIntf, ImageListEditor, 
-  KeyValPropEditDlg, LazIDEIntf, LazStringGridEdit, ListViewPropEdit, 
-  MacroDefIntf, MacroIntf, MaskPropEdit, MenuIntf, NewField, NewItemIntf, 
-  ObjectInspector, ObjInspStrConsts, OIFavoriteProperties, PackageIntf, 
-  ProjectIntf, ProjectResourcesIntf, PropEdits, PropEditUtils, SrcEditorIntf, 
-  StatusBarPropEdit, StringsPropEditDlg, TextTools, TreeViewPropEdit, 
-  UnitResources, ProjPackIntf, DBGridColumnsPropEditForm, ToolBarIntf, 
-  ChangeParentDlg, PackageDependencyIntf, PackageLinkIntf, LazarusPackageIntf;
+  ActionsEditor, ActionsEditorStd, BaseIDEIntf, CheckGroupEditorDlg, CheckListboxEditorDlg, 
+  CollectionPropEditForm, ColumnDlg, ComponentEditors, ComponentReg, ComponentTreeView, 
+  CompOptsIntf, DBPropEdits, EditorSyntaxHighlighterDef, fieldseditor, FieldsList, 
+  FileFilterPropEditor, FormEditingIntf, frmSelectProps, GraphicPropEdit, GraphPropEdits, 
+  HeaderControlPropEdit, HelpFPDoc, IDECommands, IDEDialogs, IDEExternToolIntf, IDEHelpIntf, 
+  IDEImagesIntf, IDEMsgIntf, IDEOptionsIntf, IDETextConverter, IDEUtils, IDEWindowIntf, 
+  ImageListEditor, KeyValPropEditDlg, LazIDEIntf, LazStringGridEdit, ListViewPropEdit, MacroDefIntf, 
+  MacroIntf, MaskPropEdit, MenuIntf, NewField, NewItemIntf, ObjectInspector, ObjInspStrConsts, 
+  OIFavoriteProperties, PackageIntf, ProjectIntf, ProjectResourcesIntf, PropEdits, PropEditUtils, 
+  SrcEditorIntf, StatusBarPropEdit, StringsPropEditDlg, TextTools, TreeViewPropEdit, UnitResources, 
+  ProjPackIntf, DBGridColumnsPropEditForm, ToolBarIntf, ChangeParentDlg, PackageDependencyIntf, 
+  PackageLinkIntf, FppkgIntf, LazarusPackageIntf;
 
 implementation
 

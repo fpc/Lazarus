@@ -19,7 +19,7 @@
     <Description Value="A packagemanager based on FPC's fppkg"/>
     <License Value="GPL"/>
     <Version Minor="1"/>
-    <Files Count="10">
+    <Files Count="12">
       <Item1>
         <Filename Value="lazfppkgmanagerintf.pas"/>
         <HasRegisterProc Value="True"/>
@@ -59,8 +59,17 @@
       </Item9>
       <Item10>
         <Filename Value="fppkgworkerthread.pas"/>
-        <UnitName Value="fppkgworkerthread"/>
+        <UnitName Value="FppkgWorkerThread"/>
       </Item10>
+      <Item11>
+        <Filename Value="fppkg_environmentoptions.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="fppkg_environmentoptions"/>
+      </Item11>
+      <Item12>
+        <Filename Value="fppkg_interface.pas"/>
+        <UnitName Value="fppkg_interface"/>
+      </Item12>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

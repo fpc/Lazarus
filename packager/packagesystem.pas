@@ -56,7 +56,7 @@ uses
   BasicCodeTools, NonPascalCodeTools, SourceChanger,
   // IDEIntf,
   IDEExternToolIntf, IDEDialogs, IDEMsgIntf, CompOptsIntf, LazIDEIntf,
-  MacroDefIntf, ProjectIntf,
+  MacroDefIntf, ProjectIntf, FppkgIntf,
   PackageDependencyIntf, PackageLinkIntf, PackageIntf, LazarusPackageIntf,
   // IDE
   LazarusIDEStrConsts, IDECmdLine, EnvironmentOpts, IDEProcs, LazConf,
@@ -404,6 +404,9 @@ type
     function CompilePackage(APackage: TLazPackage; Flags: TPkgCompileFlags;
                             ShowAbort: boolean;
                             BuildItem: TLazPkgGraphBuildItem = nil): TModalResult;
+    function CompilePackageUsingFPMake(APackageName: string; Flags: TPkgCompileFlags;
+                                       ShowAbort: boolean;
+                                       BuildItem: TLazPkgGraphBuildItem = nil): TModalResult;
     function ConvertPackageRSTFiles(APackage: TLazPackage): TModalResult;
     function WriteMakefileCompiled(APackage: TLazPackage;
       TargetCompiledFile, UnitPath, IncPath, OtherOptions: string): TModalResult;
@@ -3959,6 +3962,50 @@ begin
         end;
       end;
 
+      if Assigned(FppkgInterface) and (FppkgInterface.InstallFPMakeDependencies) and Assigned(FPMakeList) then begin
+        Flags:=[pcfDoNotCompileDependencies,pcfDoNotSaveEditorFiles,pcfGroupCompile];
+        if SkipDesignTimePackages then
+          Include(Flags,pcfSkipDesignTimePackages);
+        if Policy=pupAsNeeded then
+          Include(Flags,pcfOnlyIfNeeded)
+        else
+          Include(Flags,pcfCleanCompile);
+
+        BuildItems:=TObjectList.Create(true);
+        for i:=0 to FPMakeList.Count-1 do begin
+          aDependency:=TPkgDependency(FPMakeList[i]);
+          BuildItem:=TLazPkgGraphBuildItem.Create(nil);
+          BuildItems.Add(BuildItem);
+          Result:=CompilePackageUsingFPMake(aDependency.PackageName,Flags,false,BuildItem);
+          if Result<>mrOk then exit;
+        end;
+
+        // add tool dependencies
+        for i:=0 to BuildItems.Count-1 do begin
+          BuildItem:=TLazPkgGraphBuildItem(BuildItems[i]);
+
+          if BuildItem.Count=0 then continue;
+
+          // Make sure that all FPMake-buildtools are executed after each other
+          // (It is not safe to run them simultaneously)
+          if i > 0 then
+            BuildItem.GetFirstOrDummy.AddExecuteBefore(TLazPkgGraphBuildItem(BuildItems[i-1]).GetFirstOrDummy);
+
+          // add tools to ToolGroup
+          if ToolGroup=nil then
+            ToolGroup:=TExternalToolGroup.Create(nil);
+          for j:=0 to BuildItem.Count-1 do
+            BuildItem[j].Group:=ToolGroup;
+
+          // add dependencies between tools of this package
+          for j:=1 to BuildItem.Count-1 do begin
+            Tool1:=BuildItem[j-1];
+            Tool2:=BuildItem[j];
+            Tool2.AddExecuteBefore(Tool1);
+          end;
+        end;
+      end;
+
       if ToolGroup=nil then exit(mrOk);
 
       // execute
@@ -4224,6 +4271,68 @@ begin
             // Note: messages window already contains error message
             exit;
           end;
+        end;
+      end;
+      Result:=mrOk;
+    finally
+      if (BuildItem=nil) and (LazarusIDE<>nil) then
+        LazarusIDE.MainBarSubTitle:='';
+    end;
+  finally
+    PackageGraph.EndUpdate;
+  end;
+end;
+
+function TLazPackageGraph.CompilePackageUsingFPMake(APackageName: string; Flags: TPkgCompileFlags;
+  ShowAbort: boolean; BuildItem: TLazPkgGraphBuildItem): TModalResult;
+
+var
+  PkgCompileTool: TAbstractExternalTool;
+  FPCParser: TFPCParser;
+  CompilerFilename: String;
+  EffectiveCompilerParams: String;
+  ExtToolData: TLazPkgGraphExtToolData;
+begin
+  Result:=mrCancel;
+
+  //DebugLn('TLazPackageGraph.CompilePackageAsFPMake A ',APackageName,' Flags=',PkgCompileFlagsToString(Flags));
+  BeginUpdate(false);
+  try
+    try
+      if (BuildItem=nil) and (LazarusIDE<>nil) then
+        LazarusIDE.MainBarSubTitle:=APackageName;
+
+      // create external tool to run the compiler
+      //DebugLn('TLazPackageGraph.CompilePackageFPMake');
+
+      if (not (pcfDoNotCompilePackage in Flags)) then begin
+        CompilerFilename:='fppkg';
+        EffectiveCompilerParams:='install -b '+APackageName;
+
+        PkgCompileTool:=ExternalToolList.Add(Format(lisPkgMangCompilePackage, [APackageName]));
+        if BuildItem<>nil then
+          BuildItem.Add(PkgCompileTool)
+        else
+          PkgCompileTool.Reference(Self,Classname);
+        try
+          FPCParser:=TFPCParser(PkgCompileTool.AddParsers(SubToolFPC));
+
+          PkgCompileTool.AddParsers(SubToolMake);
+          PkgCompileTool.Process.Executable:=CompilerFilename;
+          PkgCompileTool.CmdLineParams:=EffectiveCompilerParams;
+          if BuildItem<>nil then
+          begin
+            // run later
+          end else begin
+            // run now
+            PkgCompileTool.Execute;
+            //debugln(['TLazPackageGraph.CompileFPMakePackage BEFORE WaitForExit: ',APackageName]);
+            PkgCompileTool.WaitForExit;
+            //debugln(['TLazPackageGraph.CompileFPMakePackage AFTER WaitForExit: ',APackageName,' ExtToolData.ErrorMessage=',ExtToolData.ErrorMessage]);
+          end;
+        finally
+          if BuildItem=nil then
+            PkgCompileTool.Release(Self);
         end;
       end;
       Result:=mrOk;

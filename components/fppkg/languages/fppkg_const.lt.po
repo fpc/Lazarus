@@ -56,6 +56,14 @@ msgstr "Atsiuntyklė"
 msgid "fpmake compiler config"
 msgstr "Kompiliatoriaus „fpmake“ parinktys"
 
+#: fppkg_const.rsfppkgenvironmentoptions
+msgid "Fppkg"
+msgstr ""
+
+#: fppkg_const.rsfppkgenvironmentoptionscaption
+msgid "Compilation"
+msgstr ""
+
 #: fppkg_const.rsfppkgoptions
 msgid "fppkg options"
 msgstr "„fppkg“ parinktys"

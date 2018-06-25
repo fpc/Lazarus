@@ -55,6 +55,14 @@ msgstr "Downloader"
 msgid "fpmake compiler config"
 msgstr "Configuração compilador \"fpmake\""
 
+#: fppkg_const.rsfppkgenvironmentoptions
+msgid "Fppkg"
+msgstr ""
+
+#: fppkg_const.rsfppkgenvironmentoptionscaption
+msgid "Compilation"
+msgstr ""
+
 #: fppkg_const.rsfppkgoptions
 msgid "fppkg options"
 msgstr "Opções \"fppkg\""
