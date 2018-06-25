@@ -29,9 +29,13 @@ interface
 uses
   // libs
   MacOSAll,
-  // wdgetset
-  WSLCLClasses, Classes, SysUtils, Controls, LCLType, LCLProc, Graphics, Contnrs,
-  Laz_AVL_Tree, LMessages, LCLMessageGlue;
+  Classes, SysUtils, Controls,
+  Laz_AVL_Tree,
+  // lcl
+  LCLType, LCLProc, Graphics, Contnrs, LMessages, LCLMessageGlue,
+  LazLoggerBase,
+  // widgetset
+  WSLCLClasses;
 
 var
   LAZARUS_FOURCC: FourCharCode;    // = 'Laz ';
