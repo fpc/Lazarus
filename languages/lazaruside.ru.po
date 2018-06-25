@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-06-19 02:18+0300\n"
+"PO-Revision-Date: 2018-06-26 00:04+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -14597,6 +14597,10 @@ msgstr "Изменить общие параметры"
 msgid "File Properties"
 msgstr "Свойства файла"
 
+#: lazarusidestrconsts.lispckeditfpmakepackage
+msgid "(fpmake)"
+msgstr "(fpmake)"
+
 #: lazarusidestrconsts.lispckeditinstall
 msgid "Install"
 msgstr "Установить"
@@ -15878,6 +15882,10 @@ msgstr "Максимальная версия (необязательна):"
 #: lazarusidestrconsts.lisprojaddminimumversionoptional
 msgid "Minimum Version (optional):"
 msgstr "Минимальная версия (необязательна):"
+
+#: lazarusidestrconsts.lisprojaddnewfpmakerequirement
+msgid "New FPMake Requirement"
+msgstr "Новая зависимость FPMake"
 
 #: lazarusidestrconsts.lisprojaddnewrequirement
 msgid "New Requirement"

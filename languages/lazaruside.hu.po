@@ -14638,6 +14638,10 @@ msgstr "Általános beállítások szerkesztése"
 msgid "File Properties"
 msgstr "Fájl tulajdonságok"
 
+#: lazarusidestrconsts.lispckeditfpmakepackage
+msgid "(fpmake)"
+msgstr ""
+
 #: lazarusidestrconsts.lispckeditinstall
 msgid "Install"
 msgstr "Telepítés"
@@ -15919,6 +15923,10 @@ msgstr "Legnagyobb változat (nem kötelező):"
 #: lazarusidestrconsts.lisprojaddminimumversionoptional
 msgid "Minimum Version (optional):"
 msgstr "Legkisebb változat (nem kötelező):"
+
+#: lazarusidestrconsts.lisprojaddnewfpmakerequirement
+msgid "New FPMake Requirement"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojaddnewrequirement
 msgid "New Requirement"

@@ -14518,6 +14518,10 @@ msgstr "Muokkaa yleisiä asetuksia"
 msgid "File Properties"
 msgstr "Tiedoston ominaisuudet"
 
+#: lazarusidestrconsts.lispckeditfpmakepackage
+msgid "(fpmake)"
+msgstr ""
+
 #: lazarusidestrconsts.lispckeditinstall
 msgid "Install"
 msgstr "Asenna"
@@ -15796,6 +15800,10 @@ msgstr "Maximiversio (valinnainen):"
 #: lazarusidestrconsts.lisprojaddminimumversionoptional
 msgid "Minimum Version (optional):"
 msgstr "Pienin versio (valinnainen):"
+
+#: lazarusidestrconsts.lisprojaddnewfpmakerequirement
+msgid "New FPMake Requirement"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojaddnewrequirement
 msgid "New Requirement"

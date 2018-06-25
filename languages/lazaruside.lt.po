@@ -14662,6 +14662,10 @@ msgstr "Keisti pagrindines parinktis"
 msgid "File Properties"
 msgstr "Failo savybės"
 
+#: lazarusidestrconsts.lispckeditfpmakepackage
+msgid "(fpmake)"
+msgstr ""
+
 #: lazarusidestrconsts.lispckeditinstall
 msgid "Install"
 msgstr "Įdiegti"
@@ -15943,6 +15947,10 @@ msgstr "Maksimali versija (nebūtina):"
 #: lazarusidestrconsts.lisprojaddminimumversionoptional
 msgid "Minimum Version (optional):"
 msgstr "Minimali versija (nebūtina):"
+
+#: lazarusidestrconsts.lisprojaddnewfpmakerequirement
+msgid "New FPMake Requirement"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojaddnewrequirement
 msgid "New Requirement"

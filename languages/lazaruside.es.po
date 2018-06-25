@@ -14871,6 +14871,10 @@ msgstr "Editar Opciones Generales"
 msgid "File Properties"
 msgstr "Propiedades de archivo"
 
+#: lazarusidestrconsts.lispckeditfpmakepackage
+msgid "(fpmake)"
+msgstr ""
+
 #: lazarusidestrconsts.lispckeditinstall
 msgid "Install"
 msgstr "Instalar"
@@ -16161,6 +16165,10 @@ msgstr "Versión máxima (opcional):"
 #: lazarusidestrconsts.lisprojaddminimumversionoptional
 msgid "Minimum Version (optional):"
 msgstr "Versión mínima (opcional)"
+
+#: lazarusidestrconsts.lisprojaddnewfpmakerequirement
+msgid "New FPMake Requirement"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojaddnewrequirement
 msgid "New Requirement"

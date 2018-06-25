@@ -14601,6 +14601,10 @@ msgstr "Змінити загальні параметри"
 msgid "File Properties"
 msgstr "Властивості файлу"
 
+#: lazarusidestrconsts.lispckeditfpmakepackage
+msgid "(fpmake)"
+msgstr ""
+
 #: lazarusidestrconsts.lispckeditinstall
 msgid "Install"
 msgstr "Встановити"
@@ -15882,6 +15886,10 @@ msgstr "Найвища версія (не обов'язково)"
 #: lazarusidestrconsts.lisprojaddminimumversionoptional
 msgid "Minimum Version (optional):"
 msgstr "Найнижча версія (не обов'язково)"
+
+#: lazarusidestrconsts.lisprojaddnewfpmakerequirement
+msgid "New FPMake Requirement"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojaddnewrequirement
 msgid "New Requirement"

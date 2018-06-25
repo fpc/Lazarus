@@ -15243,6 +15243,10 @@ msgstr "Edit Opsi Umum"
 msgid "File Properties"
 msgstr "Properti File"
 
+#: lazarusidestrconsts.lispckeditfpmakepackage
+msgid "(fpmake)"
+msgstr ""
+
 #: lazarusidestrconsts.lispckeditinstall
 msgid "Install"
 msgstr "Instalasi"
@@ -16658,6 +16662,10 @@ msgstr "Versi Maksimum (opsional):"
 #: lazarusidestrconsts.lisprojaddminimumversionoptional
 msgid "Minimum Version (optional):"
 msgstr "Versi Minimum (opsional):"
+
+#: lazarusidestrconsts.lisprojaddnewfpmakerequirement
+msgid "New FPMake Requirement"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojaddnewrequirement
 msgid "New Requirement"

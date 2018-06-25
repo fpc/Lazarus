@@ -15602,6 +15602,10 @@ msgstr "ערוך אפשרויות כלליות"
 msgid "File Properties"
 msgstr "תכונות קובץ"
 
+#: lazarusidestrconsts.lispckeditfpmakepackage
+msgid "(fpmake)"
+msgstr ""
+
 #: lazarusidestrconsts.lispckeditinstall
 msgid "Install"
 msgstr "התקן"
@@ -17040,6 +17044,10 @@ msgstr "גירסה מקסימלית (לא חובה):"
 #: lazarusidestrconsts.lisprojaddminimumversionoptional
 msgid "Minimum Version (optional):"
 msgstr "גגירסה מינימלית (לא חובה):"
+
+#: lazarusidestrconsts.lisprojaddnewfpmakerequirement
+msgid "New FPMake Requirement"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojaddnewrequirement
 msgid "New Requirement"

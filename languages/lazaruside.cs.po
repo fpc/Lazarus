@@ -14747,6 +14747,10 @@ msgstr "Upravit obecná nastavení"
 msgid "File Properties"
 msgstr "Vlastnosti souboru"
 
+#: lazarusidestrconsts.lispckeditfpmakepackage
+msgid "(fpmake)"
+msgstr ""
+
 #: lazarusidestrconsts.lispckeditinstall
 msgid "Install"
 msgstr "Instalovat"
@@ -16036,6 +16040,10 @@ msgstr "Maximální verze (nepovinné):"
 #: lazarusidestrconsts.lisprojaddminimumversionoptional
 msgid "Minimum Version (optional):"
 msgstr "Minimální verze (nepovinné):"
+
+#: lazarusidestrconsts.lisprojaddnewfpmakerequirement
+msgid "New FPMake Requirement"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojaddnewrequirement
 msgid "New Requirement"

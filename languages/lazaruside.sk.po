@@ -15331,6 +15331,10 @@ msgstr "Upraviť Všeobecné voľby"
 msgid "File Properties"
 msgstr "Vlastnosti súboru"
 
+#: lazarusidestrconsts.lispckeditfpmakepackage
+msgid "(fpmake)"
+msgstr ""
+
 #: lazarusidestrconsts.lispckeditinstall
 msgid "Install"
 msgstr "Inštalovať"
@@ -16748,6 +16752,10 @@ msgstr "Maximálna Verzia (voliteľné):"
 #: lazarusidestrconsts.lisprojaddminimumversionoptional
 msgid "Minimum Version (optional):"
 msgstr "Minimálna verzia (voliteľné)"
+
+#: lazarusidestrconsts.lisprojaddnewfpmakerequirement
+msgid "New FPMake Requirement"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojaddnewrequirement
 msgid "New Requirement"

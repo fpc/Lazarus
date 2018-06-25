@@ -14829,6 +14829,10 @@ msgstr "Genel seçenekleri düzenle"
 msgid "File Properties"
 msgstr "Dosya Özellikleri"
 
+#: lazarusidestrconsts.lispckeditfpmakepackage
+msgid "(fpmake)"
+msgstr ""
+
 #: lazarusidestrconsts.lispckeditinstall
 msgid "Install"
 msgstr "Yükle"
@@ -16156,6 +16160,10 @@ msgstr "Maksimum Sürüm (isteğe bağlı):"
 #: lazarusidestrconsts.lisprojaddminimumversionoptional
 msgid "Minimum Version (optional):"
 msgstr "Minimum Sürüm (isteğe bağlı):"
+
+#: lazarusidestrconsts.lisprojaddnewfpmakerequirement
+msgid "New FPMake Requirement"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojaddnewrequirement
 msgid "New Requirement"

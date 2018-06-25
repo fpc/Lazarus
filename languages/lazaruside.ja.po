@@ -14630,6 +14630,10 @@ msgstr "一般的なオプションを編集"
 msgid "File Properties"
 msgstr "ファイルのプロパティ"
 
+#: lazarusidestrconsts.lispckeditfpmakepackage
+msgid "(fpmake)"
+msgstr ""
+
 #: lazarusidestrconsts.lispckeditinstall
 msgid "Install"
 msgstr "インストール"
@@ -15912,6 +15916,10 @@ msgstr "バージョンの上限(オプション)"
 #: lazarusidestrconsts.lisprojaddminimumversionoptional
 msgid "Minimum Version (optional):"
 msgstr "バージョン番号の下限値（オプション）"
+
+#: lazarusidestrconsts.lisprojaddnewfpmakerequirement
+msgid "New FPMake Requirement"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojaddnewrequirement
 msgid "New Requirement"
