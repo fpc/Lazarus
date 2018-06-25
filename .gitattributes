@@ -1988,6 +1988,7 @@ components/ideintf/filefilterpropeditor.lfm svneol=native#text/plain
 components/ideintf/filefilterpropeditor.pas svneol=native#text/pascal
 components/ideintf/formeditingintf.pas svneol=native#text/pascal
 components/ideintf/fpmake.pp svneol=native#text/plain
+components/ideintf/fppkgintf.pas svneol=native#text/pascal
 components/ideintf/frmselectprops.lfm svneol=native#text/plain
 components/ideintf/frmselectprops.pas svneol=native#text/plain
 components/ideintf/graphicpropedit.lfm svneol=native#text/plain
