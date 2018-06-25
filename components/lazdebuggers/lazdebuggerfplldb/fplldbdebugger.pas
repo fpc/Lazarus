@@ -701,7 +701,7 @@ begin
     exit;
   end;
   FImageLoaderList := TDbgImageLoaderList.Create(True);
-  FImageLoaderList.Add(AnImageLoader);
+  AnImageLoader.AddToLoaderList(FImageLoaderList);
 {$IFdef WithWinMemReader}
   FMemReader := TFpLldbAndWin32DbgMemReader.Create(Self);
 {$Else}
