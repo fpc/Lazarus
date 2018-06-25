@@ -244,11 +244,7 @@ begin
   AMasterList := GetSelectedMasterFiles;
   try
     if TryCreatePoFamilyList(AMasterList, SL, ALangID) then
-      RunSelectedTests(SL, StatL, DupL)
-    else
-    begin
-      if Assigned(PoFamilyList) then FreeAndNil(PoFamilyList);
-    end;
+      RunSelectedTests(SL, StatL, DupL);
   finally
     SL.Free;
     StatL.Free;
