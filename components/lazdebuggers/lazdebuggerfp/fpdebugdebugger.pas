@@ -2050,7 +2050,13 @@ end;
 
 class function TFpDebugDebugger.CanExternalDebugSymbolsFile: boolean;
 begin
+  {$ifdef CD_Cocoa}{$DEFINE MacOS}{$ENDIF}
+  {$IFDEF Darwin}{$DEFINE MacOS}{$ENDIF}
+  {$IFDEF MacOs}
+  Result:=True;
+  {$ELSE}
   Result:=False;
+  {$ENDIF}
 end;
 
 class function TFpDebugDebugger.CreateProperties: TDebuggerProperties;

@@ -109,6 +109,7 @@ type
     property CurrentStackFrame;
   public
     class function Caption: String; override;
+    class function CanExternalDebugSymbolsFile: boolean; override;
   public
     constructor Create(const AExternalDebugger: String); override;
     destructor Destroy; override;
@@ -1099,6 +1100,17 @@ end;
 class function TFpLldbDebugger.Caption: String;
 begin
   Result := 'LLDB debugger (with fpdebug) (Alpha)';
+end;
+
+class function TFpLldbDebugger.CanExternalDebugSymbolsFile: boolean;
+begin
+  {$ifdef CD_Cocoa}{$DEFINE MacOS}{$ENDIF}
+  {$IFDEF Darwin}{$DEFINE MacOS}{$ENDIF}
+  {$IFDEF MacOs}
+  Result:=True;
+  {$ELSE}
+  Result:=False;
+  {$ENDIF}
 end;
 
 constructor TFpLldbDebugger.Create(const AExternalDebugger: String);
