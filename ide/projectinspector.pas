@@ -1105,6 +1105,7 @@ begin
   mnuAddDiskFiles.Caption:=lisAddFilesInDirectory;
   mnuAddEditorFiles.Caption:=lisProjAddEditorFile;
   mnuAddReq.Caption:=lisProjAddNewRequirement;
+  mnuAddFPMakeReq.Caption:=lisProjAddNewFPMakeRequirement;
 
   IDEImages.AssignImage(OpenButton, 'laz_open');
   OpenButton.Caption:='';
