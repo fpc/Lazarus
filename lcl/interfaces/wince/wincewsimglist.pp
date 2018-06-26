@@ -32,7 +32,7 @@ uses
 
 type
 
-  { TWinCEWSCustomImageList }
+  { TWinCEWSCustomImageListResolution }
 
   TWinCEWSCustomImageListResolution = class(TWSCustomImageListResolution)
   private
@@ -91,7 +91,7 @@ begin
   ReleaseDC(0, DC);
 end;
 
-class procedure TWinCEWSCustomImageList.AddData(AListHandle: TLCLIntfHandle; ACount, AReplaceIndex, AWidth, AHeight: Integer; AData: PRGBAQuad);
+class procedure TWinCEWSCustomImageListResolution.AddData(AListHandle: TLCLIntfHandle; ACount, AReplaceIndex, AWidth, AHeight: Integer; AData: PRGBAQuad);
 
   procedure DoAdd;
   var
@@ -167,14 +167,14 @@ begin
   DoAdd;
 end;
 
-class procedure TWinCEWSCustomImageList.Clear(AList: TCustomImageListResolution);
+class procedure TWinCEWSCustomImageListResolution.Clear(AList: TCustomImageListResolution);
 begin
   if not WSCheckReferenceAllocated(AList, 'Clear')
   then Exit;
   ImageList_SetImageCount(AList.Reference._Handle, 0);
 end;
 
-class function TWinCEWSCustomImageList.CreateReference(AList: TCustomImageListResolution;
+class function TWinCEWSCustomImageListResolution.CreateReference(AList: TCustomImageListResolution;
   ACount, AGrow, AWidth, AHeight: Integer; AData: PRGBAQuad): TWSCustomImageListReference;
 var
   Flags: DWord;
@@ -185,7 +185,7 @@ begin
   then AddData(Result._Handle, ACount, -1, AWidth, AHeight, AData);
 end;
 
-class procedure TWinCEWSCustomImageList.Delete(AList: TCustomImageListResolution;
+class procedure TWinCEWSCustomImageListResolution.Delete(AList: TCustomImageListResolution;
   AIndex: Integer);
 begin
   if not WSCheckReferenceAllocated(AList, 'Delete')
@@ -193,14 +193,14 @@ begin
   ImageList_Remove(AList.Reference._Handle, AIndex);
 end;
 
-class procedure TWinCEWSCustomImageList.DestroyReference(AComponent: TComponent);
+class procedure TWinCEWSCustomImageListResolution.DestroyReference(AComponent: TComponent);
 begin
   if not WSCheckReferenceAllocated(TCustomImageListResolution(AComponent), 'DestroyReference')
   then Exit;
   ImageList_Destroy(TCustomImageListResolution(AComponent).Reference._Handle);
 end;
 
-class procedure TWinCEWSCustomImageList.Draw(AList: TCustomImageListResolution; AIndex: Integer;
+class procedure TWinCEWSCustomImageListResolution.Draw(AList: TCustomImageListResolution; AIndex: Integer;
   ACanvas: TCanvas; ABounds: TRect; ABkColor, ABlendColor: TColor; ADrawEffect: TGraphicsDrawEffect; AStyle: TDrawingStyle; AImageType: TImageType);
 begin
   if not WSCheckReferenceAllocated(AList, 'Draw')
@@ -208,7 +208,7 @@ begin
   DrawToDC(AList, AIndex, ACanvas.Handle, ABounds, ABkColor, ABlendColor, ADrawEffect, AStyle, AImageType);
 end;
 
-class procedure TWinCEWSCustomImageList.DrawToDC(AList: TCustomImageListResolution;
+class procedure TWinCEWSCustomImageListResolution.DrawToDC(AList: TCustomImageListResolution;
   AIndex: Integer; ADC: HDC; ABounds: TRect; ABkColor, ABlendColor: TColor;
   ADrawEffect: TGraphicsDrawEffect; AStyle: TDrawingStyle;
   AImageType: TImageType);
@@ -255,7 +255,7 @@ begin
   end;
 end;
 
-class procedure TWinCEWSCustomImageList.Insert(AList: TCustomImageListResolution;
+class procedure TWinCEWSCustomImageListResolution.Insert(AList: TCustomImageListResolution;
   AIndex: Integer; AData: PRGBAQuad);
 var
   ImageList: HImageList;
@@ -275,7 +275,7 @@ begin
   end;
 end;
 
-class procedure TWinCEWSCustomImageList.Move(AList: TCustomImageListResolution;
+class procedure TWinCEWSCustomImageListResolution.Move(AList: TCustomImageListResolution;
   ACurIndex, ANewIndex: Integer);
 var
   n: integer;
@@ -299,7 +299,7 @@ begin
   end;
 end;
 
-class procedure TWinCEWSCustomImageList.Replace(AList: TCustomImageListResolution;
+class procedure TWinCEWSCustomImageListResolution.Replace(AList: TCustomImageListResolution;
   AIndex: Integer; AData: PRGBAQuad);
 var
   ImageList: HImageList;

@@ -266,7 +266,7 @@ begin
 
     LM_GETDLGCODE:
     begin
-      TLMessage(Message).Result := CallDefaultWindowProc(Handle, WM_GETDLGCODE, WPARAM, 0);
+      TLMessage(Message).Result := CallDefaultWindowProc(Handle, WM_GETDLGCODE, TLMessage(Message).WParam, 0);
     end;
 
   else

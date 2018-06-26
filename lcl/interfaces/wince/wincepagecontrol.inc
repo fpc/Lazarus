@@ -243,7 +243,7 @@ begin
   Result := Params.Window;
 
   if TCustomTabControl(AWinControl).Images <> nil then
-    SendMessage(Result, TCM_SETIMAGELIST, 0, TCustomTabControl(AWinControl).Images.Reference._Handle);
+    SendMessage(Result, TCM_SETIMAGELIST, 0, TCustomImageListResolution(TCustomTabControl(AWinControl).Images).Reference._Handle);
 
   // although we may be child of tabpage, cut the paint chain
   // to improve speed and possible paint anomalities

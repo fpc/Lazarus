@@ -59,7 +59,7 @@ procedure DrawBitBtnImage(BitBtn: TCustomBitBtn; DrawStruct: PDrawItemStruct);
 
 implementation
 
-uses WinCEInt, WinCEExtra;
+uses ImgList, WinCEInt, WinCEExtra;
 
 type
   TBitBtnAceess = class(TCustomBitBtn)
@@ -97,6 +97,7 @@ var
   DrawRect: TRect;
   ButtonCaption: PWideChar;
   ButtonState: TButtonState;
+  AImageRes: TScaledImageListResolution;
 
   procedure DrawBitmap;
   var
@@ -113,12 +114,14 @@ var
 
     if (srcWidth <> 0) and (srcHeight <> 0) then
     begin
-      TBitBtnAceess(BitBtn).FButtonGlyph.GetImageIndexAndEffect(ButtonState, AIndex, AEffect);
+      TBitBtnAceess(BitBtn).FButtonGlyph.GetImageIndexAndEffect(ButtonState, BitBtn.Font.PixelsPerInch, 1,
+        AImageRes, AIndex, AEffect);
+
       
       w := TBitBtnAceess(BitBtn).FButtonGlyph.Images.Width;
       h := TBitBtnAceess(BitBtn).FButtonGlyph.Images.Height;
 
-      TWinCEWSCustomImageList.DrawToDC(TBitBtnAceess(BitBtn).FButtonGlyph.Images, AIndex,
+      TWinCEWSCustomImageListResolution.DrawToDC(AImageRes.Resolution, AIndex,
         DrawStruct^._hDC, Rect(XDestBitmap, YDestBitmap, w, h),
         TBitBtnAceess(BitBtn).FButtonGlyph.Images.BkColor,
         TBitBtnAceess(BitBtn).FButtonGlyph.Images.BlendColor, AEffect,
