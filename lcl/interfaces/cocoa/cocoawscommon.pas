@@ -470,7 +470,9 @@ var
     if Length(UTF8VKCharacter) > 0 then
     begin
       if UTF8VKCharacter[1] <= #127 then
-        VKKeyChar := UTF8VKCharacter[1];
+        VKKeyChar := UTF8VKCharacter[1]
+      else
+        VKKeyChar := #0;
     end;
 
     //printable keys
@@ -482,7 +484,9 @@ var
       SendChar := True;
 
       if Utf8Character[1] <= #127 then
-        KeyChar := Utf8Character[1];
+        KeyChar := Utf8Character[1]
+      else
+        KeyChar := #0;
 
       // the VKKeyCode is independent of the modifier
       // => use the VKKeyChar instead of the KeyChar
@@ -614,7 +618,7 @@ var
       end;
     end;
 
-    if KeyMsg.CharCode = 0 then Exit;
+    if KeyMsg.CharCode = VK_UNKNOWN then Exit;
 
     //We should send a character
     if SendChar then
@@ -658,7 +662,7 @@ var
         CharMsg.Msg := LM_CHAR;
 
       if DeliverMessage(CharMsg) <> 0 then
-        // "LN_CHAR" should be delivivered only after Cocoa processed the key
+        // "LN_CHAR" should be delivered only after Cocoa processed the key
         // todo: in the current code, Cocoa has not processed the key yet
         // it must be rewritten.
         NotifyApplicationUserInput(Target, CharMsg.Msg);
