@@ -761,9 +761,9 @@ begin
     FPDEvent:=FCurrentProcess.ResolveDebugEvent(FCurrentThread);
     {$ifdef DBG_FPDEBUG_VERBOSE}
     log('Process stopped with event %s. IP=%s, SP=%s, BSP=%s.', [FPDEventNames[FPDEvent],
-                                                                FCurrentProcess.FormatAddress(FCurrentProcess.GetInstructionPointerRegisterValue),
-                                                                FCurrentProcess.FormatAddress(FCurrentProcess.GetStackPointerRegisterValue),
-                                                                FCurrentProcess.FormatAddress(FCurrentProcess.GetStackBasePointerRegisterValue)], dllDebug);
+                                                                FCurrentProcess.FormatAddress(FCurrentThread.GetInstructionPointerRegisterValue),
+                                                                FCurrentProcess.FormatAddress(FCurrentThread.GetStackPointerRegisterValue),
+                                                                FCurrentProcess.FormatAddress(FCurrentThread.GetStackBasePointerRegisterValue)], dllDebug);
     {$endif DBG_FPDEBUG_VERBOSE}
     if assigned(FCommand) then
       begin
