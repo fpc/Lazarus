@@ -68,7 +68,8 @@ function NSColorToRGB(const Color: NSColor): TColorRef; inline;
 function NSColorToColorRef(const Color: NSColor): TColorRef;
 function ColorToNSColor(const Color: TColorRef): NSColor; inline;
 
-procedure ShortcutToKeyEquivalent(const AShortCut: TShortcut; out Key: string; out shiftKeyMask: NSUInteger);
+// the returned "Key" should not be released, as it's not memory owned
+procedure ShortcutToKeyEquivalent(const AShortCut: TShortcut; out Key: NSString; out shiftKeyMask: NSUInteger);
 
 const
   DEFAULT_CFSTRING_ENCODING = kCFStringEncodingUTF8;
@@ -84,6 +85,7 @@ const
 {$I mackeycodes.inc}
 
 function VirtualKeyCodeToMac(AKey: Word): Word;
+function VirtualKeyCodeToMacString(AKey: Word): NSString;
 
 procedure FillStandardDescription(out Desc: TRawImageDescription);
 
@@ -188,18 +190,13 @@ begin
     ((Color shr 16) and $FF) / $FF, 1);
 end;
 
-procedure ShortcutToKeyEquivalent(const AShortCut: TShortcut; out Key: string; out shiftKeyMask: NSUInteger);
+procedure ShortcutToKeyEquivalent(const AShortCut: TShortcut; out Key: NSString; out shiftKeyMask: NSUInteger);
 var
   w: word;
   s: TShiftState;
 begin
   ShortCutToKey(AShortCut, w, s);
-  case w of
-    VK_DELETE: key := char(NSDeleteCharacter);
-    VK_OEM_2 : key := char(44);
-  else
-    key := lowercase(char(w and $ff));
-  end;
+  key := VirtualKeyCodeToMacString(w);
   shiftKeyMask := 0;
   if ssShift in s then
     ShiftKeyMask := ShiftKeyMask + NSShiftKeyMask;
@@ -521,6 +518,53 @@ begin
   end;
 end;
 
+function VirtualKeyCodeToMacString(AKey: Word): NSString;
+type
+  WideChar = System.WideChar;
+var
+  w : WideChar;
+begin
+  w:=#0;
+  case AKey of
+  VK_MULTIPLY  : w := '*';
+  VK_ADD, VK_OEM_PLUS       : w := '+';
+  VK_SUBTRACT, VK_OEM_MINUS : w := '-';
+  VK_OEM_COMMA : w := ',';
+  VK_OEM_PERIOD: w := '.';
+  VK_OEM_1     : w := ';';
+  VK_OEM_2     : w := '/';
+  VK_OEM_3     : w := '`';
+  VK_OEM_4     : w := '[';
+  VK_OEM_5     : w := '\';
+  VK_OEM_6     : w := ']';
+  VK_OEM_7     : w := '''';
+  VK_BACK      : w := WideChar(NSBackspaceCharacter);
+  VK_CLEAR     : w := WideChar(NSClearDisplayFunctionKey);
+  VK_PAUSE     : w := WideChar(NSPauseFunctionKey);
+  VK_PRIOR     : w := WideChar(NSPageUpFunctionKey);
+  VK_NEXT      : w := WideChar(NSPageDownFunctionKey);
+  VK_END       : w := WideChar(NSEndFunctionKey);
+  VK_HOME      : w := WideChar(NSHomeFunctionKey);
+  VK_LEFT      : w := WideChar(NSLeftArrowFunctionKey);
+  VK_UP        : w := WideChar(NSUpArrowFunctionKey);
+  VK_RIGHT     : w := WideChar(NSRightArrowFunctionKey);
+  VK_DOWN      : w := WideChar(NSDownArrowFunctionKey);
+  VK_SELECT    : w := WideChar(NSSelectFunctionKey);
+  VK_PRINT     : w := WideChar(NSPrintFunctionKey);
+  VK_EXECUTE   : w := WideChar(NSExecuteFunctionKey);
+  VK_INSERT    : w := WideChar(NSInsertFunctionKey);
+  VK_DELETE    : w := WideChar(NSDeleteCharacter);
+  VK_HELP      : w := WideChar(NSHelpFunctionKey);
+  VK_SCROLL    : w := WideChar(NSScrollLockFunctionKey);
+  VK_F1..VK_F24: w := WideChar(NSF1FunctionKey + AKey - VK_F1);
+  VK_A..VK_Z   : w := WideChar(Ord('a') + AKey - VK_A);
+  else
+    w := WideChar(AKey and $ff);
+  end;
+  if w<>#0
+    then Result:=NSString.stringWithCharacters_length(@w, 1)
+    else Result:=NSString.string_;
+end;
 {------------------------------------------------------------------------------
   Name:    FillStandardDescription
   Params:  Desc - Raw image description

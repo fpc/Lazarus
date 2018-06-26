@@ -505,11 +505,10 @@ begin
   begin
     s := AMenuItem.Caption;
     DeleteAmpersands(s);
-    ShortcutToKeyEquivalent(AMenuItem.ShortCut, key, ShiftSt);
+    ShortcutToKeyEquivalent(AMenuItem.ShortCut, nsKey, ShiftSt);
 
-    nsKey := NSString(CFStringCreateWithCString(nil, pointer(pchar(key)), kCFStringEncodingASCII));
     ns := NSStringUtf8(s);
-    item := TCocoaMenuItem.alloc.initWithTitle_action_keyEquivalent(ns,
+    item := TCocoaMenuItem(TCocoaMenuItem.alloc).initWithTitle_action_keyEquivalent(ns,
       objcselector('lclItemSelected:'), nsKey);
     item.setKeyEquivalentModifierMask(ShiftSt);
     TCocoaMenuItem(item).FMenuItemTarget := AMenuItem;
@@ -522,7 +521,6 @@ begin
     end;
 
     ns.release;
-    nsKey.release;
     item.setTarget(item);
     TCocoaMenuItem(item).menuItemCallback:=TLCLMenuItemCallback.Create(item, AMenuItem);
 
@@ -601,15 +599,12 @@ end;
 class procedure TCocoaWSMenuItem.SetShortCut(const AMenuItem: TMenuItem;
   const ShortCutK1, ShortCutK2: TShortCut);
 var
-  key: string;
   ShiftState: NSUInteger;
   ns: NSString;
 begin
-  ShortcutToKeyEquivalent(ShortCutK1, key, ShiftState);
-  ns := NSString(CFStringCreateWithCString(nil, pointer(pchar(key)), kCFStringEncodingASCII));
+  ShortcutToKeyEquivalent(ShortCutK1, ns, ShiftState);
   TCocoaMenuItem(AMenuItem.Handle).setKeyEquivalentModifierMask(ShiftState);
   TCocoaMenuItem(AMenuItem.Handle).setKeyEquivalent(ns);
-  ns.release;
 end;
 
 {------------------------------------------------------------------------------
