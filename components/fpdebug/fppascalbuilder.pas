@@ -669,6 +669,7 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
     fl: TFpPrettyPrintValueFlags;
     f: TDBGField;
     ti: TFpDbgSymbol;
+    Cache: TFpDbgMemCacheBase;
   begin
     if (AValue.Kind = skClass) and (AValue.AsCardinal = 0) then begin
       APrintedValue := 'nil';
@@ -679,86 +680,92 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
       exit;
     end;
 
-    if (ppvCreateDbgType in AFlags) then begin
-      s := ResTypeName;
-      case AValue.Kind of
-        skRecord: ADBGTypeInfo^ := TDBGType.Create(skRecord, s);
-        skObject: ADBGTypeInfo^ := TDBGType.Create(skClass, s);
-        skClass:  ADBGTypeInfo^ := TDBGType.Create(skClass, s);
-      end;
-    end;
+    Cache := MemManager.CacheManager.AddCache(AValue.DataAddress.Address, AValue.DataSize);
+    try
 
-    if (ADisplayFormat = wdfPointer) or (ppoStackParam in AOptions) then begin
-      if not (ppvCreateDbgType in AFlags) then
-        s := ResTypeName;
-      APrintedValue := '$'+IntToHex(AValue.AsCardinal, AnAddressSize*2);
-      if s <> '' then
-        APrintedValue := s + '(' + APrintedValue + ')';
-      Result := True;
-      if not (ppvCreateDbgType in AFlags) then
-        exit;
-    end
-    else
-    if ( (AValue.Kind in [skClass, skObject]) and (ppvSkipClassBody in AFlags) ) or
-       ( (AValue.Kind in [skRecord]) and (ppvSkipRecordBody in AFlags) )
-    then begin
-      APrintedValue := ResTypeName;
-      case AValue.Kind of
-        skRecord: APrintedValue := '{record:}' + APrintedValue;
-        skObject: APrintedValue := '{object:}' + APrintedValue;
-        skClass:  APrintedValue := '{class:}' + APrintedValue + '(' + '$'+IntToHex(AValue.AsCardinal, AnAddressSize*2) + ')';
-      end;
-      Result := True;
-      if not (ppvCreateDbgType in AFlags) then
-        exit;
-    end;
-
-    s2 := LineEnding;
-    if AFlags <> [] then s2 := ' ';;
-    fl := [ppvSkipClassBody];
-    //if ppvSkipClassBody in AFlags then
-    //  fl := [ppvSkipClassBody, ppvSkipRecordBody];
-
-    if (ppvCreateDbgType in AFlags) and (AValue.Kind in [skObject, skClass]) then begin
-      ti := AValue.TypeInfo;
-      if (ti <> nil) and (ti.TypeInfo <> nil) then
-        ADBGTypeInfo^.Ancestor := ti.TypeInfo.Name;
-    end;
-
-    if not Result then
-      APrintedValue := '';
-    for i := 0 to AValue.MemberCount-1 do begin
-      m := AValue.Member[i];
-      if (m = nil) or (m.Kind in [skProcedure, skFunction]) then
-        continue;
-      s := '';
-      InternalPrintValue(MbVal, m, AnAddressSize, fl, ANestLevel+1, AnIndent, ADisplayFormat, -1, nil, AOptions);
-      if m.DbgSymbol <> nil then begin
-        MbName := m.DbgSymbol.Name;
-        s := MbName + ' = ' + MbVal;
-      end
-      else begin
-        MbName := '';
-        s := MbVal;
-      end;
-
-      if not Result then begin
-        if APrintedValue = ''
-        then APrintedValue := s
-        else APrintedValue := APrintedValue + '; ' + s2 + s;
-      end;
       if (ppvCreateDbgType in AFlags) then begin
-        s := '';
-        if m.ContextTypeInfo <> nil then s := m.ContextTypeInfo.Name;
-        f := TDBGField.Create(MbName, TDBGType.Create(skSimple, ResTypeName(m)),
-                              flPublic, [], s);
-        f.DBGType.Value.AsString := MbVal;
-        ADBGTypeInfo^.Fields.Add(f);
+        s := ResTypeName;
+        case AValue.Kind of
+          skRecord: ADBGTypeInfo^ := TDBGType.Create(skRecord, s);
+          skObject: ADBGTypeInfo^ := TDBGType.Create(skClass, s);
+          skClass:  ADBGTypeInfo^ := TDBGType.Create(skClass, s);
+        end;
       end;
+
+      if (ADisplayFormat = wdfPointer) or (ppoStackParam in AOptions) then begin
+        if not (ppvCreateDbgType in AFlags) then
+          s := ResTypeName;
+        APrintedValue := '$'+IntToHex(AValue.AsCardinal, AnAddressSize*2);
+        if s <> '' then
+          APrintedValue := s + '(' + APrintedValue + ')';
+        Result := True;
+        if not (ppvCreateDbgType in AFlags) then
+          exit;
+      end
+      else
+      if ( (AValue.Kind in [skClass, skObject]) and (ppvSkipClassBody in AFlags) ) or
+         ( (AValue.Kind in [skRecord]) and (ppvSkipRecordBody in AFlags) )
+      then begin
+        APrintedValue := ResTypeName;
+        case AValue.Kind of
+          skRecord: APrintedValue := '{record:}' + APrintedValue;
+          skObject: APrintedValue := '{object:}' + APrintedValue;
+          skClass:  APrintedValue := '{class:}' + APrintedValue + '(' + '$'+IntToHex(AValue.AsCardinal, AnAddressSize*2) + ')';
+        end;
+        Result := True;
+        if not (ppvCreateDbgType in AFlags) then
+          exit;
+      end;
+
+      s2 := LineEnding;
+      if AFlags <> [] then s2 := ' ';;
+      fl := [ppvSkipClassBody];
+      //if ppvSkipClassBody in AFlags then
+      //  fl := [ppvSkipClassBody, ppvSkipRecordBody];
+
+      if (ppvCreateDbgType in AFlags) and (AValue.Kind in [skObject, skClass]) then begin
+        ti := AValue.TypeInfo;
+        if (ti <> nil) and (ti.TypeInfo <> nil) then
+          ADBGTypeInfo^.Ancestor := ti.TypeInfo.Name;
+      end;
+
+      if not Result then
+        APrintedValue := '';
+      for i := 0 to AValue.MemberCount-1 do begin
+        m := AValue.Member[i];
+        if (m = nil) or (m.Kind in [skProcedure, skFunction]) then
+          continue;
+        s := '';
+        InternalPrintValue(MbVal, m, AnAddressSize, fl, ANestLevel+1, AnIndent, ADisplayFormat, -1, nil, AOptions);
+        if m.DbgSymbol <> nil then begin
+          MbName := m.DbgSymbol.Name;
+          s := MbName + ' = ' + MbVal;
+        end
+        else begin
+          MbName := '';
+          s := MbVal;
+        end;
+
+        if not Result then begin
+          if APrintedValue = ''
+          then APrintedValue := s
+          else APrintedValue := APrintedValue + '; ' + s2 + s;
+        end;
+        if (ppvCreateDbgType in AFlags) then begin
+          s := '';
+          if m.ContextTypeInfo <> nil then s := m.ContextTypeInfo.Name;
+          f := TDBGField.Create(MbName, TDBGType.Create(skSimple, ResTypeName(m)),
+                                flPublic, [], s);
+          f.DBGType.Value.AsString := MbVal;
+          ADBGTypeInfo^.Fields.Add(f);
+        end;
+      end;
+      if not Result then
+        APrintedValue := '(' + APrintedValue + ')';
+      Result := True;
+    finally
+      MemManager.CacheManager.RemoveCache(Cache)
     end;
-    if not Result then
-      APrintedValue := '(' + APrintedValue + ')';
-    Result := True;
   end;
 
   procedure DoArray;

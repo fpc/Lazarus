@@ -1,6 +1,7 @@
 unit FpdMemoryTools;
 
 {$mode objfpc}{$H+}
+{$HINT 5024 OFF}
 
 (* Tools to read data from Target or Own memory.
 
@@ -24,7 +25,8 @@ unit FpdMemoryTools;
 interface
 
 uses
-  Classes, SysUtils, math, DbgIntfBaseTypes, FpErrorMessages, LazClasses;
+  Classes, SysUtils, math, DbgIntfBaseTypes, FpErrorMessages, LazClasses,
+  Laz_AVL_Tree;
 
 type
 
@@ -164,6 +166,70 @@ type
     //procedure UnsignedExtend(ADataPointer: Pointer; ASourceSize, ADestSize: Cardinal); override;
   end;
 
+  { TFpDbgMemCacheBase }
+
+  TFpDbgMemCacheBase = class
+  private
+    FMemReader: TFpDbgMemReaderBase;
+  protected
+    // Init:
+    //   will be called by Manager.AddCache after the memreader is set.
+    //   Earliest chance to pre-read the memory
+    procedure Init; virtual;
+    property MemReader: TFpDbgMemReaderBase read FMemReader;
+  public
+  end;
+
+  { TFpDbgMemCacheManagerBase }
+
+  TFpDbgMemCacheManagerBase = class
+  private
+    FMemReader: TFpDbgMemReaderBase;
+  protected
+    procedure InitalizeCache(ACache: TFpDbgMemCacheBase); // must be called by AddCache
+  public
+    function AddCache(AnAddress: TDbgPtr; ASize: Cardinal): TFpDbgMemCacheBase; virtual;
+    function AddCacheEx(AnAddress, AnAddressSpace: TDbgPtr; ASize: Cardinal): TFpDbgMemCacheBase; virtual;
+    procedure RemoveCache(ACache: TFpDbgMemCacheBase); virtual;
+
+    function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; virtual;
+    function ReadMemoryEx(AnAddress, AnAddressSpace: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; virtual;
+  end;
+
+  { TFpDbgMemCacheSimple
+    MemCache for contineous mem / does not support AddressSpace
+    TODO: Handle Overlaps
+  }
+
+  TFpDbgMemCacheSimple = class(TFpDbgMemCacheBase)
+  private
+    FCacheAddress: TDBGPtr;
+    FCacheSize: Cardinal;
+    FMem: Array of byte;
+  public
+    constructor Create(ACacheAddress: TDBGPtr; ACacheSize: Cardinal);
+    function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean;
+    property CacheAddress: TDBGPtr read FCacheAddress;
+    property CacheSize: Cardinal read FCacheSize;
+  end;
+
+  { TFpDbgMemCacheManagerSimple }
+
+  TFpDbgMemCacheManagerSimple = class(TFpDbgMemCacheManagerBase)
+  private
+    FCaches: TAVLTree;
+  public
+    constructor Create;
+    destructor Destroy; override;
+
+    function HasMemory(AnAddress: TDbgPtr; ASize: Cardinal): Boolean;
+    function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
+
+    function AddCache(AnAddress: TDbgPtr; ASize: Cardinal): TFpDbgMemCacheBase;
+      override;
+    procedure RemoveCache(ACache: TFpDbgMemCacheBase); override;
+  end;
+
   (* TFpDbgMemManager
    * allows to to pretend reading from the target, by using its own memory, or
        a constant.
@@ -193,24 +259,29 @@ type
     MType: TFpDbgMemLocationType;
   end;
 
-
   { TFpDbgMemManager }
 
   TFpDbgMemManager = class
   private
+    FCacheManager: TFpDbgMemCacheManagerBase;
     FDefaultContext: TFpDbgAddressContext;
     FLastError: TFpError;
     FMemReader: TFpDbgMemReaderBase;
     FTargetMemConvertor: TFpDbgMemConvertor;
     FSelfMemConvertor: TFpDbgMemConvertor; // used when resizing constants (or register values, which are already in self format)
+    function GetCacheManager: TFpDbgMemCacheManagerBase;
   protected
     function ReadMemory(AReadDataType: TFpDbgMemReadDataType;
                         const ALocation: TFpDbgMemLocation; ATargetSize: Cardinal;
                         ADest: Pointer; ADestSize: Cardinal;
                         AContext: TFpDbgAddressContext = nil): Boolean;
   public
+    procedure SetCacheManager(ACacheMgr: TFpDbgMemCacheManagerBase);
+    property CacheManager: TFpDbgMemCacheManagerBase read GetCacheManager;
+  public
     constructor Create(AMemReader: TFpDbgMemReaderBase; AMemConvertor: TFpDbgMemConvertor);
     constructor Create(AMemReader: TFpDbgMemReaderBase; ATargenMemConvertor, ASelfMemConvertor: TFpDbgMemConvertor);
+    destructor Destroy; override;
     procedure ClearLastError;
 
     function ReadMemory(const ALocation: TFpDbgMemLocation; ASize: Cardinal;
@@ -516,7 +587,178 @@ end;
 //  FillByte((ADataPointer + ASourceSize)^, ADestSize-ASourceSize, $00)
 //end;
 
+{ TFpDbgMemCacheBase }
+
+procedure TFpDbgMemCacheBase.Init;
+begin
+  //
+end;
+
+{ TFpDbgMemCacheManagerBase }
+
+procedure TFpDbgMemCacheManagerBase.InitalizeCache(ACache: TFpDbgMemCacheBase);
+begin
+  ACache.FMemReader := FMemReader;
+  ACache.Init;
+end;
+
+function TFpDbgMemCacheManagerBase.AddCache(AnAddress: TDbgPtr; ASize: Cardinal
+  ): TFpDbgMemCacheBase;
+begin
+  Result := nil;
+end;
+
+function TFpDbgMemCacheManagerBase.AddCacheEx(AnAddress,
+  AnAddressSpace: TDbgPtr; ASize: Cardinal): TFpDbgMemCacheBase;
+begin
+  Result := nil;
+end;
+
+procedure TFpDbgMemCacheManagerBase.RemoveCache(ACache: TFpDbgMemCacheBase);
+begin
+  //
+end;
+
+function TFpDbgMemCacheManagerBase.ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal;
+  ADest: Pointer): Boolean;
+begin
+  Result := FMemReader.ReadMemory(AnAddress, ASize, ADest);
+end;
+
+function TFpDbgMemCacheManagerBase.ReadMemoryEx(AnAddress, AnAddressSpace: TDbgPtr;
+  ASize: Cardinal; ADest: Pointer): Boolean;
+begin
+  Result := FMemReader.ReadMemoryEx(AnAddress, AnAddressSpace, ASize, ADest);
+end;
+
+{ TFpDbgMemCacheSimple }
+
+constructor TFpDbgMemCacheSimple.Create(ACacheAddress: TDBGPtr;
+  ACacheSize: Cardinal);
+begin
+  FCacheAddress := ACacheAddress;
+  FCacheSize := ACacheSize;
+end;
+
+function TFpDbgMemCacheSimple.ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal;
+  ADest: Pointer): Boolean;
+begin
+  if (AnAddress < FCacheAddress) or (AnAddress + ASize > FCacheAddress + FCacheSize) then
+    exit(False);
+
+  if FMem = nil then begin
+    SetLength(FMem, FCacheSize);
+    MemReader.ReadMemory(FCacheAddress, FCacheSize, @FMem[0]);
+  end;
+
+  Result := true;
+  move(FMem[AnAddress - FCacheAddress], PByte(ADest)^, ASize);
+end;
+
+{ TFpDbgMemCacheManagerSimple }
+
+function CompareNodes(Item1, Item2: Pointer): Integer;
+begin
+  if TFpDbgMemCacheSimple(Item1).CacheAddress > TFpDbgMemCacheSimple(Item2).CacheAddress
+  then Result := 1
+  else
+  if TFpDbgMemCacheSimple(Item1).CacheAddress < TFpDbgMemCacheSimple(Item2).CacheAddress
+  then Result := -1
+  else Result := 0;
+end;
+
+function CompareKey(Item1, Item2: Pointer): Integer;
+begin
+  If {%H-}TDBGPtr(Item1) > TFpDbgMemCacheSimple(Item2).CacheAddress
+  then Result := 1
+  else
+  If {%H-}TDBGPtr(Item1) < TFpDbgMemCacheSimple(Item2).CacheAddress
+  then Result := -1
+  else Result := 0;
+end;
+
+constructor TFpDbgMemCacheManagerSimple.Create;
+begin
+  FCaches := TAVLTree.Create;
+  FCaches.OnCompare := @CompareNodes;
+end;
+
+destructor TFpDbgMemCacheManagerSimple.Destroy;
+begin
+  inherited Destroy;
+  FCaches.Free;
+end;
+
+function TFpDbgMemCacheManagerSimple.HasMemory(AnAddress: TDbgPtr;
+  ASize: Cardinal): Boolean;
+var
+  Node: TAVLTreeNode;
+begin
+  Result := False;
+  Node := FCaches.FindNearestKey({%H-}Pointer(AnAddress), @CompareKey);
+  if Node = nil then
+    exit;
+
+  if TFpDbgMemCacheSimple(Node.Data).CacheAddress > AnAddress then
+    Node := Node.Precessor;;
+  if Node = nil then
+    exit;
+
+  Result := (AnAddress >= TFpDbgMemCacheSimple(Node.Data).CacheAddress) and
+            (AnAddress + ASize <= TFpDbgMemCacheSimple(Node.Data).CacheAddress +
+             TFpDbgMemCacheSimple(Node.Data).CacheSize);
+end;
+
+function TFpDbgMemCacheManagerSimple.ReadMemory(AnAddress: TDbgPtr;
+  ASize: Cardinal; ADest: Pointer): Boolean;
+var
+  Node: TAVLTreeNode;
+begin
+  Node := FCaches.FindNearestKey({%H-}Pointer(AnAddress), @CompareKey);
+  if Node = nil then
+    exit(inherited ReadMemory(AnAddress, ASize, ADest));
+
+  if TFpDbgMemCacheSimple(Node.Data).CacheAddress > AnAddress then
+    Node := Node.Precessor;;
+  if Node = nil then
+    exit(inherited ReadMemory(AnAddress, ASize, ADest));
+
+  Result := TFpDbgMemCacheSimple(Node.Data).ReadMemory(AnAddress, ASize, ADest);
+  if Result then
+    exit;
+
+  Result := inherited ReadMemory(AnAddress, ASize, ADest);
+end;
+
+function TFpDbgMemCacheManagerSimple.AddCache(AnAddress: TDbgPtr;
+  ASize: Cardinal): TFpDbgMemCacheBase;
+begin
+  Result := nil;
+  if HasMemory(AnAddress, ASize) then
+    exit;
+
+  Result := TFpDbgMemCacheSimple.Create(AnAddress, ASize);
+  InitalizeCache(Result);
+  FCaches.Add(Result);
+end;
+
+procedure TFpDbgMemCacheManagerSimple.RemoveCache(ACache: TFpDbgMemCacheBase);
+begin
+  if ACache = nil then
+    exit;
+
+  FCaches.Remove(ACache);
+  ACache.Free;
+end;
+
 { TFpDbgMemManager }
+
+function TFpDbgMemManager.GetCacheManager: TFpDbgMemCacheManagerBase;
+begin
+  If FCacheManager = nil then
+    SetCacheManager(TFpDbgMemCacheManagerBase.Create);
+  Result := FCacheManager;
+end;
 
 function TFpDbgMemManager.ReadMemory(AReadDataType: TFpDbgMemReadDataType;
   const ALocation: TFpDbgMemLocation; ATargetSize: Cardinal; ADest: Pointer;
@@ -540,7 +782,7 @@ begin
       if not Result then exit;
 
       if ALocation.MType = mlfTargetMem then begin
-        Result := FMemReader.ReadMemory(ConvData.NewTargetAddress, ConvData.NewReadSize, ConvData.NewDestAddress);
+        Result := CacheManager.ReadMemory(ConvData.NewTargetAddress, ConvData.NewReadSize, ConvData.NewDestAddress);
         if not Result then
           FLastError := CreateError(fpErrCanNotReadMemAtAddr, [ALocation.Address]);
       end
@@ -597,6 +839,15 @@ begin
     FLastError := CreateError(fpErrFailedReadMem);
 end;
 
+procedure TFpDbgMemManager.SetCacheManager(ACacheMgr: TFpDbgMemCacheManagerBase);
+begin
+  if FCacheManager = ACacheMgr then exit;
+  FCacheManager.Free;
+  FCacheManager := ACacheMgr;
+  if FCacheManager <> nil then
+    FCacheManager.FMemReader := FMemReader;
+end;
+
 constructor TFpDbgMemManager.Create(AMemReader: TFpDbgMemReaderBase;
   AMemConvertor: TFpDbgMemConvertor);
 begin
@@ -611,6 +862,12 @@ begin
   FMemReader := AMemReader;
   FTargetMemConvertor := ATargenMemConvertor;
   FSelfMemConvertor := ASelfMemConvertor;
+end;
+
+destructor TFpDbgMemManager.Destroy;
+begin
+  SetCacheManager(nil);
+  inherited Destroy;
 end;
 
 procedure TFpDbgMemManager.ClearLastError;
@@ -634,7 +891,7 @@ begin
     mlfInvalid, mlfUninitialized: ;
     mlfTargetMem:
       begin
-        Result := FMemReader.ReadMemory(ALocation.Address, ASize, ADest);
+        Result := CacheManager.ReadMemory(ALocation.Address, ASize, ADest);
         if not Result then
           FLastError := CreateError(fpErrCanNotReadMemAtAddr, [ALocation.Address]);
       end;
