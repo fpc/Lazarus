@@ -60,6 +60,19 @@ type
   end;
   {$EndIf}
 
+  { TFpLldbDbgMemCacheManagerSimple }
+
+  TFpLldbDbgMemCacheManagerSimple = class(TFpDbgMemCacheManagerSimple)
+  private
+    FList: TList;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer
+      ): Boolean; override;
+    procedure Clear;
+  end;
+
 const
   MAX_CTX_CACHE = 30;
 
@@ -398,8 +411,6 @@ begin
     InStr.ReleaseReference;
   end;
   Result := True;
-
-debugln(DBG_VERBOSE, ['TFpLldbDbgMemReader.ReadMemory ', dbgs(AnAddress), '  ', dbgMemRange(ADest, ASize)]);
 end;
 
 function TFpLldbDbgMemReader.ReadMemoryEx(AnAddress, AnAddressSpace: TDbgPtr;
@@ -487,6 +498,37 @@ begin
   {$ELSE}
   Result := 4; // for the very few supported...
   {$ENDIF}
+end;
+
+{ TFpLldbDbgMemCacheManagerSimple }
+
+constructor TFpLldbDbgMemCacheManagerSimple.Create;
+begin
+  FList := TList.Create;
+  inherited Create;
+end;
+
+destructor TFpLldbDbgMemCacheManagerSimple.Destroy;
+begin
+  inherited Destroy;
+  FList.Free;
+end;
+
+function TFpLldbDbgMemCacheManagerSimple.ReadMemory(AnAddress: TDbgPtr;
+  ASize: Cardinal; ADest: Pointer): Boolean;
+begin
+  if not HasMemory(AnAddress, ASize) then
+    FList.Add(AddCache(AnAddress, ASize));
+  Result := inherited ReadMemory(AnAddress, ASize, ADest);
+end;
+
+procedure TFpLldbDbgMemCacheManagerSimple.Clear;
+var
+  i: Integer;
+begin
+  for i := 0 to FList.Count - 1 do
+    RemoveCache(TFpDbgMemCacheBase(FList[i]));
+  FList.Clear;
 end;
 
 { TFPLldbWatches }
@@ -683,6 +725,8 @@ begin
       FWatchEvalList.Clear;
     end;
   end;
+  if (State = dsRun) then
+    TFpLldbDbgMemCacheManagerSimple(FMemManager.CacheManager).Clear;
 end;
 
 function TFpLldbDebugger.HasDwarf: Boolean;
@@ -709,6 +753,7 @@ begin
   FMemReader := TFpLldbDbgMemReader.Create(Self);
 {$ENDIF}
   FMemManager := TFpDbgMemManager.Create(FMemReader, TFpDbgMemConvertorLittleEndian.Create);
+  FMemManager.SetCacheManager(TFpLldbDbgMemCacheManagerSimple.Create);
 
   FDwarfInfo := TFpDwarfInfo.Create(FImageLoaderList);
   FDwarfInfo.MemManager := FMemManager;
