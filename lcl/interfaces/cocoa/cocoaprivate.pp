@@ -850,10 +850,13 @@ type
     procedure mouseMoved(event: NSEvent); override;
 end;
 
+  { TCocoaTabPageView }
+
   TCocoaTabPageView = objcclass(TCocoaCustomControl)
   public
     tabView: TCocoaTabControl;
     tabPage: TCocoaTabPage;
+    procedure setHidden(Ahidden: Boolean); override;
   end;
 
   { TListView }
@@ -1098,6 +1101,17 @@ begin
   {$IFDEF COCOA_SUPERVIEW_HEIGHT}
   WriteLn(Format('GetNSViewSuperViewHeight Result=%f', [Result]));
   {$ENDIF}
+end;
+
+{ TCocoaTabPageView }
+
+procedure TCocoaTabPageView.setHidden(Ahidden: Boolean);
+begin
+  // Should never be hidden. (The parent NSView would show/hide tabs)
+  // it seems, that lclSetVisible interferes with
+  // control visibility TCocoaCustomControl
+  // todo: there should be a cleaner solution than overriding this method
+  inherited setHidden(false);
 end;
 
 { TCocoaDesignOverlay }
