@@ -17,7 +17,7 @@ uses
   // WS
   WSComCtrls,
   // Cocoa WS
-  CocoaPrivate, CocoaUtils, CocoaWSCommon;
+  CocoaPrivate, CocoaTabControls, CocoaUtils, CocoaWSCommon;
 
 type
 
