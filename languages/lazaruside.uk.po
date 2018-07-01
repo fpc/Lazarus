@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-06-19 22:10+0200\n"
+"PO-Revision-Date: 2018-06-30 13:39+0200\n"
 "Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -2920,7 +2920,7 @@ msgstr "Декілька курсорів"
 
 #: lazarusidestrconsts.dlgmulticaretmode
 msgid "Navigation keys move all carets"
-msgstr "Клавіші навігації рухають всі курсори "
+msgstr "Клавіші навігації рухають всі курсори"
 
 #: lazarusidestrconsts.dlgmulticaretoncolumnselection
 msgid "Enable multi-caret for column selection"
@@ -14603,7 +14603,7 @@ msgstr "Властивості файлу"
 
 #: lazarusidestrconsts.lispckeditfpmakepackage
 msgid "(fpmake)"
-msgstr ""
+msgstr "(fpmake)"
 
 #: lazarusidestrconsts.lispckeditinstall
 msgid "Install"
@@ -15889,7 +15889,7 @@ msgstr "Найнижча версія (не обов'язково)"
 
 #: lazarusidestrconsts.lisprojaddnewfpmakerequirement
 msgid "New FPMake Requirement"
-msgstr ""
+msgstr "Нова залежність FPMake"
 
 #: lazarusidestrconsts.lisprojaddnewrequirement
 msgid "New Requirement"
