@@ -19,12 +19,6 @@ unit CocoaTabControls;
 {$modeswitch objectivec2}
 {$interfaces corba}
 
-{.$DEFINE COCOA_DEBUG_SETBOUNDS}
-{.$DEFINE COCOA_DEBUG_LISTVIEW}
-{.$DEFINE COCOA_SPIN_DEBUG}
-{.$DEFINE COCOA_SPINEDIT_INSIDE_CONTAINER}
-{.$DEFINE COCOA_SUPERVIEW_HEIGHT}
-
 interface
 
 uses
@@ -33,9 +27,7 @@ uses
   CGGeometry,
   // Libs
   MacOSAll, CocoaAll, CocoaUtils, //CocoaGDIObjects,
-  cocoa_extra, CocoaPrivate,
-  // LCL
-  Controls;
+  cocoa_extra, CocoaPrivate;
 
 type
 
@@ -191,19 +183,25 @@ end;
 
 procedure TCocoaTabControl.tabView_didSelectTabViewItem(tabView: NSTabView;
   tabViewItem: NSTabViewItem);
-var
-  i: Integer;
-  lTabView, lCurSubview: NSView;
-  lLCLControl: TWinControl;
-  lBounds: TRect;
-  lCurCallback: ICommonCallback;
+//var
+  //i: Integer;
+  //lTabView, lCurSubview: NSView;
+  //lLCLControl: TWinControl;
+  //lBounds: TRect;
+  //lCurCallback: ICommonCallback;
 begin
   if Assigned(callback) then
     callback.didSelectTabViewItem( tabview.indexOfTabViewItem(tabViewItem) );
 
+  // The recent clean up, drove the workaround below unnecessary
+  // (at least the problem is not observed)
+  // The issue, is that the controls are being placed incorrectly, below
+  // the actual height of the control. Refactoring, removed direct LCL bindings.
+  // And it seemed to helped with returning invalid control bounds?!
+
   // Update the coordinates of all children of this tab
   // Fixes bug 31914: TPageControl problems with Cocoa
-  lTabView := tabViewItem.view.subViews.objectAtIndex(0);
+  {lTabView := tabViewItem.view.subViews.objectAtIndex(0);
   for i := 0 to lTabView.subViews.count-1 do
   begin
     lCurSubview := lTabView.subViews.objectAtIndex(i);
@@ -214,7 +212,7 @@ begin
       lBounds := Classes.Bounds(lLCLControl.Left, lLCLControl.Top, lLCLControl.Width, lLCLControl.Height);
       lCurSubview.lclSetFrame(lBounds);
     end;
-  end;
+  end;}
 end;
 
 procedure TCocoaTabControl.tabViewDidChangeNumberOfTabViewItems(
