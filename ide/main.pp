@@ -645,6 +645,7 @@ type
     fNeedSaveEnvironment: boolean;
     FRemoteControlTimer: TTimer;
     FRemoteControlFileAge: integer;
+    FRestartWanted: Boolean;
 
     FIDECodeToolsDefines: TIDECodetoolsDefines;
 
@@ -3637,7 +3638,7 @@ end;
 
 procedure TMainIDE.mnuRestartClicked(Sender: TObject);
 begin
-  DoRestart;
+  FRestartWanted := True;
 end;
 
 procedure TMainIDE.mnuQuitClicked(Sender: TObject);
@@ -12026,6 +12027,10 @@ begin
     debugln(['TMainIDE.OnApplicationIdle Screen.GetCurrentModalForm']);
     {$ENDIF}
     PkgBoss.OpenHiddenModifiedPackages;
+  end;
+  if FRestartWanted then begin
+    FRestartWanted := False; { Avoid loop if restart cancelled }
+    DoRestart;
   end;
 end;
 
