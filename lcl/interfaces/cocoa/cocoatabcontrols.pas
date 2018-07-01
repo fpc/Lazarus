@@ -33,9 +33,9 @@ uses
   CGGeometry,
   // Libs
   MacOSAll, CocoaAll, CocoaUtils, //CocoaGDIObjects,
-  cocoa_extra,
+  cocoa_extra, CocoaPrivate,
   // LCL
-  Controls, ComCtrls, CocoaPrivate;
+  Controls;
 
 type
 
@@ -49,8 +49,6 @@ type
   TCocoaTabPage = objcclass(NSTabViewItem)
   public
     callback: ICommonCallback;
-    LCLPage: TCustomPage;          //todo: remove LCL object reference
-    LCLTabCtrl: TCustomTabControl; //todo: remove LCL object reference
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     function lclFrame: TRect; override;
@@ -127,9 +125,9 @@ end;
 function TCocoaTabPage.lclFrame: TRect;
 var
   svh: CGFloat;
-  lParent: TCocoaTabControl;
+  lParent: NSTabView;
 begin
-  lParent := TCocoaWSCustomTabControl.GetCocoaTabControlHandle(LCLTabCtrl);
+  lParent := tabView;
   if lParent <> nil then
   begin
     svh := lParent.contentRect.size.height;

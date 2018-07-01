@@ -339,7 +339,6 @@ begin
   if Result <> 0 then
   begin
     lControl.callback := TLCLCommonCallback.Create(lControl, AWinControl);
-    lControl.LCLPage := TCustomPage(AWinControl);
     SetProperties(TCustomPage(AWinControl), lControl);
 
     // Set a special view for the page
@@ -494,7 +493,6 @@ begin
   AChild.HandleNeeded();
   if not Assigned(AChild) or not AChild.HandleAllocated then Exit;
   lTabPage := TCocoaWSCustomPage.GetCocoaTabPageFromHandle(AChild.Handle);
-  lTabPage.LCLTabCtrl := ATabControl;
 
   lTabControl.insertTabViewItem_atIndex(lTabPage, AIndex);
   {$IFDEF COCOA_DEBUG_TABCONTROL}
