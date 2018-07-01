@@ -97,8 +97,6 @@ end;
 
 implementation
 
-uses CocoaWSComCtrls; //todo: get rid of use of WS unit
-
 { TCocoaTabPageView }
 
 procedure TCocoaTabPageView.setHidden(Ahidden: Boolean);
