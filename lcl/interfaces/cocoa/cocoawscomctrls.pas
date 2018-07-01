@@ -39,6 +39,12 @@ type
   published
   end;
 
+  { TLCLTabControlCallback }
+
+  TLCLTabControlCallback = class(TLCLCommonCallback, ITabControlCallback)
+    procedure willSelectTabViewItem(aTabIndex: Integer);
+    procedure didSelectTabViewItem(aTabIndex: Integer);
+  end;
 
   { TCocoaWSCustomPage }
 
@@ -220,6 +226,42 @@ type
   TLCLListViewCallBackClass = class of TLCLListViewCallback;
 
 implementation
+
+{ TLCLTabControlCallback }
+
+procedure TLCLTabControlCallback.willSelectTabViewItem(aTabIndex: Integer);
+var
+  Msg: TLMNotify;
+  Hdr: TNmHdr;
+begin
+  FillChar(Msg, SizeOf(Msg), 0);
+  Msg.Msg := LM_NOTIFY;
+  FillChar(Hdr, SizeOf(Hdr), 0);
+
+  Hdr.hwndFrom := FTarget.Handle;
+  Hdr.Code := TCN_SELCHANGING;
+  Hdr.idFrom := aTabIndex;
+  Msg.NMHdr := @Hdr;
+  Msg.Result := 0;
+  LCLMessageGlue.DeliverMessage(Target, Msg);
+end;
+
+procedure TLCLTabControlCallback.didSelectTabViewItem(aTabIndex: Integer);
+var
+  Msg: TLMNotify;
+  Hdr: TNmHdr;
+begin
+  FillChar(Msg, SizeOf(Msg), 0);
+  Msg.Msg := LM_NOTIFY;
+  FillChar(Hdr, SizeOf(Hdr), 0);
+
+  Hdr.hwndFrom := FTarget.Handle;
+  Hdr.Code := TCN_SELCHANGE;
+  Hdr.idFrom := PtrUInt(aTabIndex);
+  Msg.NMHdr := @Hdr;
+  Msg.Result := 0;
+  LCLMessageGlue.DeliverMessage(Target, Msg);
+end;
 
 { TCocoaWSStatusBar }
 
@@ -434,8 +476,7 @@ begin
   Result := TLCLIntfHandle(lControl);
   if Result <> 0 then
   begin
-    lControl.callback := TLCLCommonCallback.Create(lControl, AWinControl);
-    lControl.LCLPageControl := TCustomTabControl(AWinControl);
+    lControl.callback := TLCLTabControlCallback.Create(lControl, AWinControl);
     lControl.setDelegate(lControl);
   end;
 end;

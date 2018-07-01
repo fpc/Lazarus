@@ -35,10 +35,14 @@ uses
   MacOSAll, CocoaAll, CocoaUtils, //CocoaGDIObjects,
   cocoa_extra,
   // LCL
-  LMessages, LCLMessageGlue, { ExtCtrls, Graphics, Forms,}
-  LCLType, LCLProc, Controls, ComCtrls, CocoaPrivate;
+  Controls, ComCtrls, CocoaPrivate;
 
 type
+
+  ITabControlCallback = interface(ICommonCallback)
+    procedure willSelectTabViewItem(aTabIndex: Integer);
+    procedure didSelectTabViewItem(aTabIndex: Integer);
+  end;
 
   { TCocoaTabPage }
 
@@ -57,8 +61,7 @@ type
 
   TCocoaTabControl = objcclass(NSTabView, NSTabViewDelegateProtocol)
   public
-    LCLPageControl: TCustomTabControl;
-    callback: ICommonCallback;
+    callback: ITabControlCallback;
 
     lclEnabled: Boolean;
     // lcl
@@ -185,47 +188,22 @@ end;
 
 procedure TCocoaTabControl.tabView_willSelectTabViewItem(tabView: NSTabView;
   tabViewItem: NSTabViewItem);
-var
-  Msg: TLMNotify;
-  Hdr: TNmHdr;
 begin
-  if LCLPageControl = nil then Exit;
-
-  FillChar(Msg, SizeOf(Msg), 0);
-  Msg.Msg := LM_NOTIFY;
-  FillChar(Hdr, SizeOf(Hdr), 0);
-
-  Hdr.hwndFrom := HWND(tabview);
-  Hdr.Code := TCN_SELCHANGING;
-  Hdr.idFrom := PtrUInt(tabview.indexOfTabViewItem(tabViewItem));
-  Msg.NMHdr := @Hdr;
-  Msg.Result := 0;
-  LCLMessageGlue.DeliverMessage(LCLPageControl, Msg);
+  if Assigned(callback) then
+    callback.willSelectTabViewItem( tabview.indexOfTabViewItem(tabViewItem) );
 end;
 
 procedure TCocoaTabControl.tabView_didSelectTabViewItem(tabView: NSTabView;
   tabViewItem: NSTabViewItem);
 var
-  Msg: TLMNotify;
-  Hdr: TNmHdr;
   i: Integer;
   lTabView, lCurSubview: NSView;
   lLCLControl: TWinControl;
   lBounds: TRect;
   lCurCallback: ICommonCallback;
 begin
-  if LCLPageControl = nil then Exit;
-
-  FillChar(Msg, SizeOf(Msg), 0);
-  Msg.Msg := LM_NOTIFY;
-  FillChar(Hdr, SizeOf(Hdr), 0);
-
-  Hdr.hwndFrom := HWND(tabview);
-  Hdr.Code := TCN_SELCHANGE;
-  Hdr.idFrom := PtrUInt(tabview.indexOfTabViewItem(tabViewItem));
-  Msg.NMHdr := @Hdr;
-  Msg.Result := 0;
-  LCLMessageGlue.DeliverMessage(LCLPageControl, Msg);
+  if Assigned(callback) then
+    callback.didSelectTabViewItem( tabview.indexOfTabViewItem(tabViewItem) );
 
   // Update the coordinates of all children of this tab
   // Fixes bug 31914: TPageControl problems with Cocoa
