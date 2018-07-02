@@ -5038,8 +5038,8 @@ begin
 
   if FMaster <> nil
   then begin
-    // create without source. it will be set in assign (but during Begin/EndUpdate)
-    BP := FMaster.Add('', 0);
+    // create without data. it will be set in assign (but during Begin/EndUpdate)
+    BP :=  TBaseBreakPoint(FMaster.Add);
     BP.Assign(ABreakPoint); // will set ABreakPoint.FMaster := BP;
   end;
 end;
