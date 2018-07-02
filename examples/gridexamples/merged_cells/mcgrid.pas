@@ -66,7 +66,8 @@ var
   R: TRect;
 begin
   inherited;
-  if goColSpanning in Options then begin
+  if (goColSpanning in Options) and Assigned(Editor) then begin
+    R := CellRect(Col, Row);
     CalcCellExtent(Col, Row, R);
     Editor.SetBounds(R.Left, R.Top, R.Right-R.Left-1, R.Bottom-R.Top-1);
   end;
