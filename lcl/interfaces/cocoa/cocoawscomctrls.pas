@@ -344,6 +344,7 @@ begin
     // Set a special view for the page
     // based on http://stackoverflow.com/questions/14892218/adding-a-nstextview-subview-to-nstabviewitem
     tabview := TCocoaTabControl(AWinControl.Parent.Handle);
+    tabview.setAllowsTruncatedLabels(false);
     tv := TCocoaTabPageView.alloc.initWithFrame(NSZeroRect);
     tv.setAutoresizingMask(NSViewWidthSizable or NSViewHeightSizable);
     {tv.setHasVerticalScroller(True);
@@ -494,7 +495,7 @@ begin
   if not Assigned(AChild) or not AChild.HandleAllocated then Exit;
   lTabPage := TCocoaWSCustomPage.GetCocoaTabPageFromHandle(AChild.Handle);
 
-  lTabControl.insertTabViewItem_atIndex(lTabPage, AIndex);
+  lTabControl.exttabInsertTabViewItem_atIndex(lTabPage, AIndex);
   {$IFDEF COCOA_DEBUG_TABCONTROL}
   WriteLn('[TCocoaWSCustomTabControl.AddPage] END');
   {$ENDIF}
@@ -511,8 +512,8 @@ begin
   if not Assigned(AChild) or not AChild.HandleAllocated then Exit;
   lTabPage := TCocoaWSCustomPage.GetCocoaTabPageFromHandle(AChild.Handle);
 
-  lTabControl.removeTabViewItem(lTabPage);
-  lTabControl.insertTabViewItem_atIndex(lTabPage, NewIndex);
+  lTabControl.exttabremoveTabViewItem(lTabPage);
+  lTabControl.exttabinsertTabViewItem_atIndex(lTabPage, NewIndex);
 end;
 
 class procedure TCocoaWSCustomTabControl.RemovePage(const ATabControl: TCustomTabControl; const AIndex: integer);
@@ -524,7 +525,7 @@ begin
   lTabControl := TCocoaTabControl(ATabControl.Handle);
 
   lTabPage := lTabControl.tabViewItemAtIndex(AIndex);
-  lTabControl.removeTabViewItem(lTabPage);
+  lTabControl.exttabremoveTabViewItem(lTabPage);
 end;
 
 class function TCocoaWSCustomTabControl.GetTabIndexAtPos(const ATabControl: TCustomTabControl; const AClientPos: TPoint): integer;
@@ -547,7 +548,7 @@ begin
   lTabPage := lTabControl.tabViewItemAtPoint(lClientPos);
   if not Assigned(lTabPage) then
     Exit;
-  Result := lTabControl.indexOfTabViewItem(lTabPage);
+  Result := lTabControl.exttabIndexOfTabViewItem(lTabPage);
 end;
 
 class procedure TCocoaWSCustomTabControl.SetPageIndex(const ATabControl: TCustomTabControl; const AIndex: integer);

@@ -45,15 +45,26 @@ type
     procedure lclClearCallback; override;
     function lclFrame: TRect; override;
     function lclClientFrame: TRect; override;
+    procedure setLabel(label__: NSString); override;
   end;
 
   { TCocoaTabControl }
 
   TCocoaTabControl = objcclass(NSTabView, NSTabViewDelegateProtocol)
+  private
+    prevarr  : NSButton;
+    nextarr  : NSButton;
+
+    fulltabs : NSMutableArray;  // the full list of NSTabViewItems
+    leftmost : Integer;         // index of the left-most tab shown
+
   public
     callback: ITabControlCallback;
 
     lclEnabled: Boolean;
+    // cocoa
+    class function alloc: id; override;
+    procedure setFrame(aframe: NSRect); override;
     // lcl
     function lclIsEnabled: Boolean; override;
     procedure lclSetEnabled(AEnabled: Boolean); override;
@@ -76,7 +87,18 @@ type
     procedure otherMouseDragged(event: NSEvent); override;
     procedure mouseDragged(event: NSEvent); override;
     procedure mouseMoved(event: NSEvent); override;
-end;
+    // lcl
+    procedure exttabInsertTabViewItem_atIndex(lTabPage: NSTabViewItem; AIndex: integer);
+      message 'exttabInsertTabViewItem:atIndex:';
+    procedure exttabRemoveTabViewItem(lTabPage: NSTabViewItem);
+      message 'exttabRemoveTabViewItem:';
+    function exttabIndexOfTabViewItem(lTabPage: NSTabViewItem): NSInteger;
+      message 'exttabIndexOfTabViewItem:';
+    procedure extTabPrevButtonClick(sender: id);
+      message 'extTabPrevButtonClick:';
+    procedure extTabNextButtonClick(sender: id);
+      message 'extTabNextButtonClick:';
+  end;
 
   { TCocoaTabPageView }
 
@@ -88,6 +110,183 @@ end;
   end;
 
 implementation
+
+function AllocArrowButton(isPrev: Boolean): NSButton;
+var
+  btn : NSButton;
+  r   : NSRect;
+begin
+  btn:=NSButton(NSButton.alloc).initWithFrame(NSZeroRect);
+  btn.setBezelStyle(NSRegularSquareBezelStyle);
+  btn.setButtonType(NSMomentaryLightButton);
+
+  if isPrev then
+    btn.setImage( NSImage.imageNamed( NSImageNameLeftFacingTriangleTemplate  ))
+  else
+    btn.setImage( NSImage.imageNamed( NSImageNameRightFacingTriangleTemplate ));
+
+  btn.setBordered(false);
+  btn.setTitle(NSString.string_);
+  btn.sizeToFit();
+  if not isPrev then btn.setAutoresizingMask(NSViewMinXMargin);
+  Result:=btn;
+end;
+
+const
+  arrow_hofs = 12;
+  arrow_vofs = 20;
+
+procedure PlaceButton(isPrev: Boolean; abtn: NSButton; dst: NSTabView);
+var
+  org: NSPoint;
+begin
+  if not assigned(abtn) then Exit;
+
+  if isPrev then org:=NSMakePoint(arrow_hofs, arrow_vofs)
+  else org:=NSMakePoint(dst.frame.size.width - abtn.frame.size.width - arrow_hofs , arrow_vofs);
+
+  abtn.setFrameOrigin(org);
+end;
+
+
+procedure AllocPrevNext(aview: TCocoaTabControl);
+begin
+  aview.prevarr := AllocArrowButton(true);
+  aview.addSubview(aview.prevarr);
+  aview.nextarr := AllocArrowButton(false);
+  aview.addSubview(aview.nextarr);
+  aview.prevarr.setTarget(aview);
+  aview.prevarr.setAction( ObjCSelector('extTabPrevButtonClick:'));
+  aview.nextarr.setTarget(aview);
+  aview.nextarr.setAction( ObjCSelector('extTabNextButtonClick:'));
+
+
+  PlaceButton(true, aview.prevarr, aview);
+  PlaceButton(false, aview.nextarr, aview);
+end;
+
+procedure RemoveAllTabs(aview: TCocoaTabControl);
+var
+  arr: NSArray;
+  i : integer;
+begin
+  arr := aview.tabViewItems;
+  for i :=arr.count - 1 downto 0 do
+    aview.removeTabViewItem( arr.objectAtIndex(i) );
+end;
+
+procedure AttachAllTabs(aview: TCocoaTabControl);
+var
+  i : integer;
+begin
+  RemoveAllTabs(aview);
+  for i := 0 to aview.fulltabs.count - 1 do
+    aview.insertTabViewItem_atIndex( aview.fulltabs.objectAtIndex(i), i);
+end;
+
+procedure ReviseTabs(aview: TCocoaTabControl; out ShowPrev,ShowNext: Boolean);
+var
+  minw: double;
+  i: integer;
+  arr: NSArray;
+  vi : NSTabViewItem;
+  sz : NSSize;
+  x,y: integer;
+  lw  : double;
+  tbext : double;
+  lwid : array of double;
+  xd  : double;
+  j : integer;
+  ofs : integer;
+  frw: double;
+  sel: NSTabViewItem;
+  v : NSView;
+begin
+  ShowPrev := false;
+  ShowNext := false;
+
+  sel := aview.selectedTabViewItem;
+  try
+    if (aview.fulltabs.count>aview.tabViewItems.count) then
+      AttachAllTabs(aview);
+
+    minw := aview.minimumSize.width;
+    if (minw<aview.frame.size.width) then Exit;
+
+    arr := aview.tabViewItems;
+
+    lw := 0;
+    SetLength(lwid, arr.count);
+    for i := 0 to arr.count - 1 do
+    begin
+      vi := NSTabViewItem( arr.objectAtIndex(i) );
+      sz := vi.sizeOfLabel(false);
+      lw := lw + sz.width;
+      lwid[i] := sz.width;
+    end;
+
+    tbext := (minw - lw) / arr.count;
+    for i:=0 to length(lwid)-1 do
+      lwid[i] := lwid[i] + tbext;
+
+    ofs := aview.leftmost;
+    if ofs>=length(lwid) then ofs:=length(lwid)-1;
+    if (ofs < 0) then Exit;
+    ShowPrev := ofs > 0;
+
+
+    xd := lwid[ofs];
+    frw := aview.frame.size.width;
+    frw := frw - ((arrow_hofs + aview.nextarr.frame.size.width) * 2);
+    if frw<0 then frw := 0;
+
+    //aview.prevarr.isHidden((aview.leftmost=0));
+
+    for i := ofs+1 to length(lwid)-1 do begin
+      if xd + lwid[i] > frw then begin
+        //aview.nextarr.isHidden((aview.leftmost=0));
+        for j:=length(lwid)-1 downto i do
+          aview.removeTabViewItem( arr.objectAtIndex(j));
+        ShowNext := true;
+        Break;
+      end;
+      xd := xd + lwid[i];
+    end;
+
+    if not ShowNext then begin
+      // shown all right-side tabs, there might be a tab, that can be shown on the left
+      while (ofs>0) and (xd+lwid[ofs]<frw) do begin
+        xd := xd + lwid[ofs];
+        dec(ofs);
+      end;
+      aview.leftmost:=ofs;
+    end;
+
+    for i := ofs - 1 downto 0 do
+      aview.removeTabViewItem( arr.objectAtIndex(i));
+
+    // todo: automatic resizing still has its effect on the tabs.
+    //       the content page fails to pick up the proper size and place
+    //       and it seems that the content of the tab is shifted.
+
+  finally
+    if (aview.indexOfTabViewItem(sel)<>NSNotFound) then
+      aview.selectTabViewItem(sel);
+  end;
+end;
+
+procedure UpdateTabAndArrowVisibility(aview: TCocoaTabControl);
+var
+  showNext : Boolean;
+  showPrev : Boolean;
+begin
+  ReviseTabs(aview, showPrev, showNExt);
+  if Assigned(aview.prevarr) then
+    aview.prevarr.setHidden(not showPrev);
+  if Assigned(aview.nextarr) then
+    aview.nextarr.setHidden(not showNext);
+end;
+
 
 { TCocoaTabPageView }
 
@@ -138,7 +337,29 @@ begin
   Result := lclFrame();
 end;
 
+procedure TCocoaTabPage.setLabel(label__: NSString);
+begin
+  inherited setLabel(label__);
+  //todo: revise the parent labels
+end;
+
 { TCocoaTabControl }
+
+class function TCocoaTabControl.alloc: id;
+begin
+  Result := inherited alloc;
+  TCocoaTabControl(Result).fulltabs := NSMutableArray(NSMutableArray.alloc).init;
+end;
+
+procedure TCocoaTabControl.setFrame(aframe: NSRect);
+begin
+  inherited setFrame(aframe);
+
+  if not Assigned(nextarr) then
+    AllocPrevNext( self );
+
+  UpdateTabAndArrowVisibility(self);
+end;
 
 function TCocoaTabControl.lclIsEnabled: Boolean;
 begin
@@ -281,6 +502,50 @@ procedure TCocoaTabControl.mouseMoved(event: NSEvent);
 begin
   if Assigned(callback) then callback.MouseMove(event);
   inherited mouseMoved(event);
+end;
+
+procedure TCocoaTabControl.exttabInsertTabViewItem_atIndex(
+  lTabPage: NSTabViewItem; AIndex: integer);
+begin
+  insertTabViewItem_atIndex(lTabPage, AIndex);
+
+  if AIndex>fulltabs.count then AIndex:=fulltabs.count;
+  fulltabs.insertObject_atIndex(lTabPage, AIndex);
+
+  UpdateTabAndArrowVisibility(self);
+end;
+
+procedure TCocoaTabControl.exttabRemoveTabViewItem(lTabPage: NSTabViewItem);
+begin
+  removeTabViewItem(lTabPage);
+
+  fulltabs.removeObject(lTabPage);
+
+  UpdateTabAndArrowVisibility(self);
+end;
+
+function TCocoaTabControl.exttabIndexOfTabViewItem(lTabPage: NSTabViewItem
+  ): NSInteger;
+begin
+  Result := indexOfTabViewItem(ltabPage);
+
+  Result := fulltabs.indexOfObject(lTabPage);
+end;
+
+procedure TCocoaTabControl.extTabPrevButtonClick(sender: id);
+begin
+  if leftmost = 0 then Exit;
+
+  leftmost := leftmost - 1;
+  UpdateTabAndArrowVisibility(self);
+end;
+
+procedure TCocoaTabControl.extTabNextButtonClick(sender: id);
+begin
+  if leftmost = fulltabs.count - 1 then Exit;
+
+  leftmost := leftmost + 1;
+  UpdateTabAndArrowVisibility(self);
 end;
 
 
