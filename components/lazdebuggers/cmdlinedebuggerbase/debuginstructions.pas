@@ -92,6 +92,7 @@ type
     procedure Cancel;
     function  IsSuccess: Boolean;
     function  IsCompleted: boolean;
+    function  IsRunning: boolean;
     procedure MarkAsSuccess; // calls DoInstructionFinished // releases the instruction
     procedure MarkAsFailed;  // calls DoInstructionFinished // releases the instruction
 
@@ -261,7 +262,7 @@ end;
 
 { TDBGInstruction }
 
-function TDBGInstruction.GetCommandAsString: String;
+function TDBGInstruction.GetCommandAsString(): String;
 begin
   Result := FCommand;
 end;
@@ -340,6 +341,11 @@ end;
 function TDBGInstruction.IsCompleted: boolean;
 begin
   Result := (FState = disComleted) or (FState = disFailed);
+end;
+
+function TDBGInstruction.IsRunning: boolean;
+begin
+  Result := (FState = disDataSent) or (FState = disContentReceived);
 end;
 
 procedure TDBGInstruction.MarkAsSuccess;

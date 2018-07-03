@@ -102,24 +102,66 @@ type
     constructor Create();
   end;
 
-  { TLldbInstructionBreakSet }
+  { TLldbInstructionBreakOrWatchSet }
 
-  TLldbInstructionBreakSet = class(TLldbInstruction)
+  TLldbInstructionBreakOrWatchSet = class(TLldbInstruction)
   private
     FBreakId: Integer;
     FState: TValidState;
   protected
     function ProcessInputFromDbg(const AData: String): Boolean; override;
   public
-    constructor Create(AFileName: String; ALine: Integer);
-    constructor Create(AMethod: String);
     property BreakId: Integer read FBreakId;
     property State: TValidState read FState;
+  end;
+
+  { TLldbInstructionBreakSet }
+
+  TLldbInstructionBreakSet = class(TLldbInstructionBreakOrWatchSet)
+  public
+    constructor Create(AFileName: String; ALine: Integer; ADisabled: Boolean = False; AConditon: String = '');
+    constructor Create(AMethod: String; ADisabled: Boolean = False; AConditon: String = '');
+    constructor Create(AnAddress: TDBGPtr; ADisabled: Boolean = False; AConditon: String = '');
+  end;
+
+  { TLldbInstructionBreakModify }
+
+  TLldbInstructionBreakModify = class(TLldbInstruction)
+  protected
+    function ProcessInputFromDbg(const AData: String): Boolean; override;
+  public
+    constructor Create(AnId: Integer; ADisabled: Boolean);
+    constructor Create(AnId: Integer; ADisabled: Boolean; AConditon: String);
   end;
 
   { TLldbInstructionBreakDelete }
 
   TLldbInstructionBreakDelete = class(TLldbInstruction)
+  protected
+    function ProcessInputFromDbg(const AData: String): Boolean; override;
+  public
+    constructor Create(AnId: Integer);
+  end;
+
+  { TLldbInstructionWatchSet }
+
+  TLldbInstructionWatchSet = class(TLldbInstructionBreakOrWatchSet)
+  public
+    constructor Create(AWatch: String; AKind: TDBGWatchPointKind);
+  end;
+
+  { TLldbInstructionWatchModify }
+
+  TLldbInstructionWatchModify = class(TLldbInstruction)
+  protected
+    function ProcessInputFromDbg(const AData: String): Boolean; override;
+  public
+    constructor Create(AnId: Integer; AConditon: String = '');
+  end;
+
+  { TLldbInstructionWatchDelete }
+
+  TLldbInstructionWatchDelete = class(TLldbInstruction)
   protected
     function ProcessInputFromDbg(const AData: String): Boolean; override;
   public
@@ -225,6 +267,43 @@ type
   end;
 
 implementation
+
+{ TLldbInstructionBreakOrWatchSet }
+
+function TLldbInstructionBreakOrWatchSet.ProcessInputFromDbg(const AData: String
+  ): Boolean;
+var
+  i: Integer;
+  found, found2: TStringArray;
+begin
+  Result := True;
+  if StrMatches(AData, ['Breakpoint ',': ', ''], found) then begin
+    i := StrToIntDef(found[0], -1);
+    if i = -1 then begin
+      MarkAsFailed;
+      exit;
+    end;
+    FBreakId:= i;
+
+    if StrContains(found[1], 'pending') then
+      FState := vsPending
+    else
+    if StrMatches(found[1], ['', ' locations'], found2) then begin
+      if StrToIntDef(found2[0], 0) > 0 then
+        FState := vsValid;
+    end
+    else
+    if StrStartsWith(found[1], 'where = ') then
+      FState := vsValid;
+
+    MarkAsSuccess;
+  end
+//Breakpoint 41: where = lazarus.exe`CREATE + 2029 at synedit.pp:2123, address = 0x00764d2d
+//Breakpoint 38: no locations (pending).
+//Breakpoint 34: 3 locations.
+  else
+      Result := inherited;
+end;
 
 { TLldbInstructionQueue }
 
@@ -437,52 +516,61 @@ end;
 
 { TLldbInstructionBreakSet }
 
-function TLldbInstructionBreakSet.ProcessInputFromDbg(const AData: String
-  ): Boolean;
-var
-  i: Integer;
-  found, found2: TStringArray;
-begin
-  Result := True;
-  if StrMatches(AData, ['Breakpoint ',': ', ''], found) then begin
-    i := StrToIntDef(found[0], -1);
-    if i = -1 then begin
-      MarkAsFailed;
-      exit;
-    end;
-    FBreakId:= i;
-
-    if StrContains(found[1], 'pending') then
-      FState := vsPending
-    else
-    if StrMatches(found[1], ['', ' locations'], found2) then begin
-      if StrToIntDef(found2[0], 0) > 0 then
-        FState := vsValid;
-    end
-    else
-    if StrStartsWith(found[1], 'where = ') then
-      FState := vsValid;
-
-    MarkAsSuccess;
-  end
-//Breakpoint 41: where = lazarus.exe`CREATE + 2029 at synedit.pp:2123, address = 0x00764d2d
-//Breakpoint 38: no locations (pending).
-//Breakpoint 34: 3 locations.
-  else
-      Result := inherited;
-end;
-
-constructor TLldbInstructionBreakSet.Create(AFileName: String; ALine: Integer);
+constructor TLldbInstructionBreakSet.Create(AFileName: String; ALine: Integer;
+  ADisabled: Boolean; AConditon: String);
 begin
   FState := vsInvalid;
+  if AConditon <> '' then AConditon := ' --condition ''' + AConditon + '''';
+  if ADisabled then AConditon := AConditon + ' --disable';
   if pos(' ', AFileName) > 0 then
     AFileName := ''''+AFileName+'''';
-  inherited Create(Format('breakpoint set --file %s --line %d', [AFileName, ALine]));
+  inherited Create(Format('breakpoint set --file %s --line %d', [AFileName, ALine]) + AConditon);
 end;
 
-constructor TLldbInstructionBreakSet.Create(AMethod: String);
+constructor TLldbInstructionBreakSet.Create(AMethod: String;
+  ADisabled: Boolean; AConditon: String);
 begin
-  inherited Create(Format('breakpoint set --func %s', [AMethod]));
+  FState := vsInvalid;
+  if AConditon <> '' then AConditon := ' --condition ''' + AConditon + '''';
+  if ADisabled then AConditon := AConditon + ' --disable';
+  inherited Create(Format('breakpoint set --func %s', [AMethod]) + AConditon);
+end;
+
+constructor TLldbInstructionBreakSet.Create(AnAddress: TDBGPtr;
+  ADisabled: Boolean; AConditon: String);
+begin
+  FState := vsInvalid;
+  if AConditon <> '' then AConditon := ' --condition ''' + AConditon + '''';
+  if ADisabled then AConditon := AConditon + ' --disable';
+  inherited Create(Format('breakpoint set --address %u', [AnAddress]) + AConditon);
+end;
+
+{ TLldbInstructionBreakModify }
+
+function TLldbInstructionBreakModify.ProcessInputFromDbg(const AData: String
+  ): Boolean;
+begin
+  Result := inherited ProcessInputFromDbg(AData);
+  if not Result then
+    MarkAsSuccess;
+end;
+
+constructor TLldbInstructionBreakModify.Create(AnId: Integer; ADisabled: Boolean
+  );
+begin
+  if ADisabled
+  then inherited Create(Format('breakpoint modify --disable %d', [AnId]))
+  else inherited Create(Format('breakpoint modify --enable %d', [AnId]));
+end;
+
+constructor TLldbInstructionBreakModify.Create(AnId: Integer;
+  ADisabled: Boolean; AConditon: String);
+begin
+  AConditon := ' --condition ''' + AConditon + '''';
+  if ADisabled
+  then AConditon := ' --disable' + AConditon
+  else AConditon := ' --enable' + AConditon;
+  inherited Create(Format('breakpoint modify %s %d', [AConditon, AnId]));
 end;
 
 { TLldbInstructionBreakDelete }
@@ -503,6 +591,54 @@ end;
 constructor TLldbInstructionBreakDelete.Create(AnId: Integer);
 begin
   inherited Create(Format('breakpoint delete %d', [AnId]));
+end;
+
+{ TLldbInstructionWatchSet }
+
+constructor TLldbInstructionWatchSet.Create(AWatch: String;
+  AKind: TDBGWatchPointKind);
+begin
+  case AKind of
+  	wpkWrite:     inherited Create(Format('watchpoint set variable -w write %s', [AWatch]));
+    wpkRead:      inherited Create(Format('watchpoint set variable -w read %s', [AWatch]));
+    wpkReadWrite: inherited Create(Format('watchpoint set variable -w read_write %s', [AWatch]));
+  end;
+end;
+
+{ TLldbInstructionWatchModify }
+
+function TLldbInstructionWatchModify.ProcessInputFromDbg(const AData: String
+  ): Boolean;
+begin
+  Result := inherited ProcessInputFromDbg(AData);
+  if not Result then
+    MarkAsSuccess;
+end;
+
+constructor TLldbInstructionWatchModify.Create(AnId: Integer; AConditon: String
+  );
+begin
+  inherited Create(Format('watchpoint modify --condition ''%s'' %d', [AConditon, AnId]));
+end;
+
+{ TLldbInstructionWatchDelete }
+
+function TLldbInstructionWatchDelete.ProcessInputFromDbg(const AData: String
+  ): Boolean;
+begin
+  Result := inherited ProcessInputFromDbg(AData);
+
+  if not Result then // if Result=true then self is destroyed;
+    MarkAsSuccess;
+  Result := true;
+
+  //TODO: "error: No breakpoints exist to be deleted."
+  // prevent from failing other instruction
+end;
+
+constructor TLldbInstructionWatchDelete.Create(AnId: Integer);
+begin
+  inherited Create(Format('watchpoint delete %d', [AnId]));
 end;
 
 { TLldbInstructionThreadSelect }
