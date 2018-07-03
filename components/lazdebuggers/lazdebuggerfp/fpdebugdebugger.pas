@@ -1600,10 +1600,14 @@ begin
       end
     else
       begin
+        ALocationAddr := GetLocation;
         ABreakPoint := TFPBreakpoints(BreakPoints).Find(Breakpoint);
+
+        if Assigned(EventLogHandler) then
+          EventLogHandler.LogEventBreakPointHit(ABreakpoint, ALocationAddr);
+
         if assigned(ABreakPoint) then
           ABreakPoint.Hit(continue);
-        ALocationAddr := GetLocation;
       end;
     end
   else if FQuickPause then
