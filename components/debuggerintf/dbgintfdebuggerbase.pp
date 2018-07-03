@@ -1727,6 +1727,27 @@ type
   TDebuggerPropertiesClass= class of TDebuggerProperties;
 
 
+  {$INTERFACES CORBA} // no ref counting needed
+
+  { TDebuggerEventLogInterface
+    Methods for the EventLogger that a debugger may call
+  }
+  //TODO: remove TDebuggerIntf.OnEvent
+
+  TDebuggerEventLogInterface = interface
+    procedure LogCustomEvent(const ACategory: TDBGEventCategory;
+                const AEventType: TDBGEventType; const AText: String);
+    procedure LogEventBreakPointHit(const ABreakpoint: TDBGBreakPoint; const ALocation: TDBGLocationRec);
+    procedure LogEventWatchPointTriggered(const ABreakpoint: TDBGBreakPoint;
+                const ALocation: TDBGLocationRec; const AOldWatchedVal, ANewWatchedVal: String);
+    procedure LogEventWatchPointScope(const ABreakpoint: TDBGBreakPoint;
+                const ALocation: TDBGLocationRec);
+  end;
+
+  //TDebuggerActionInterface = interface
+  //  // prompt user
+  //end;
+
   { TDebuggerIntf }
 
   TDebuggerIntf = class
@@ -1757,6 +1778,7 @@ type
     FCallStack: TCallStackSupplier;
     FWatches: TWatchesSupplier;
     FThreads: TThreadsSupplier;
+    FEventLogHandler: TDebuggerEventLogInterface;
     FOnCurrent: TDBGCurrentLineEvent;
     FOnException: TDBGExceptionEvent;
     FOnOutput: TDBGOutputEvent;
@@ -1793,6 +1815,7 @@ type
     procedure DoCurrent(const ALocation: TDBGLocationRec);
     procedure DoDbgOutput(const AText: String);
     procedure DoDbgEvent(const ACategory: TDBGEventCategory; const AEventType: TDBGEventType; const AText: String);
+      deprecated 'swich to EventLogHandler';
     procedure DoException(const AExceptionType: TDBGExceptionType;
                           const AExceptionClass: String;
                           const AExceptionLocation: TDBGLocationRec;
@@ -1903,9 +1926,11 @@ type
     //property UnitInfoProvider: TDebuggerUnitInfoProvider                        // Provided by DebugBoss, to map files to packages or project
     //         read GetUnitInfoProvider write FUnitInfoProvider;
     // Events
+    property EventLogHandler: TDebuggerEventLogInterface read FEventLogHandler write FEventLogHandler;
     property OnCurrent: TDBGCurrentLineEvent read FOnCurrent write FOnCurrent;   // Passes info about the current line being debugged
     property OnDbgOutput: TDBGOutputEvent read FOnDbgOutput write FOnDbgOutput;  // Passes all debuggeroutput
     property OnDbgEvent: TDBGEventNotify read FOnDbgEvent write FOnDbgEvent;     // Passes recognized debugger events, like library load or unload
+      deprecated 'swich to EventLogHandler';
     property OnException: TDBGExceptionEvent read FOnException write FOnException;  // Fires when the debugger received an ecxeption
     property OnOutput: TDBGOutputEvent read FOnOutput write FOnOutput;           // Passes all output of the debugged target
     property OnBeforeState: TDebuggerStateChangedEvent read FOnBeforeState write FOnBeforeState;   // Fires when the current state of the debugger changes
@@ -5745,7 +5770,7 @@ end;
 procedure TDebuggerIntf.DoDbgEvent(const ACategory: TDBGEventCategory; const AEventType: TDBGEventType; const AText: String);
 begin
   DebugLnEnter(DBG_EVENTS, ['DebugEvent: Enter >> DoDbgEvent >>  State=', dbgs(FState), ' Category=', dbgs(ACategory)]);
-  if Assigned(FOnDbgEvent) then FOnDbgEvent(Self, ACategory, AEventType, AText);
+  if Assigned(FEventLogHandler) then FEventLogHandler.LogCustomEvent(ACategory, AEventType, AText);
   DebugLnExit(DBG_EVENTS, ['DebugEvent: Exit  << DoDbgEvent <<']);
 end;
 

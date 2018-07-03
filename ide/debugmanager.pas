@@ -61,6 +61,34 @@ uses
 
 
 type
+
+  { TDebugEventLogManager }
+
+  TDebugEventLogManager = class(TObject, TDebuggerEventLogInterface)
+  private
+    FEventDialog: TDbgEventsForm;
+    FHiddenDebugEventsLog: TStringList;
+    FTargetWidth: Integer;
+    procedure SetEventDialog(AValue: TDbgEventsForm);
+    function  FormatBreakPointAddress(const ABreakpoint: TDBGBreakPoint;
+                const ALocation: TDBGLocationRec): String;
+  protected
+    procedure DebuggerEvent(Sender: TObject; const ACategory: TDBGEventCategory; const AEventType: TDBGEventType; const AText: String);
+  public
+    procedure LogCustomEvent(const ACategory: TDBGEventCategory;
+                const AEventType: TDBGEventType; const AText: String);
+    procedure LogEventBreakPointHit(const ABreakpoint: TDBGBreakPoint; const ALocation: TDBGLocationRec);
+    procedure LogEventWatchPointTriggered(const ABreakpoint: TDBGBreakPoint;
+                const ALocation: TDBGLocationRec; const AOldWatchedVal, ANewWatchedVal: String);
+    procedure LogEventWatchPointScope(const ABreakpoint: TDBGBreakPoint;
+                const ALocation: TDBGLocationRec);
+  public
+    destructor Destroy; override;
+    procedure ClearDebugEventsLog;
+    property EventDialog: TDbgEventsForm read FEventDialog write SetEventDialog;
+    property TargetWidth: Integer read FTargetWidth write FTargetWidth;
+  end;
+
   { TDebugManager }
 
   TDebugManager = class(TBaseDebugManager)
@@ -85,7 +113,6 @@ type
     procedure DebuggerChangeState(ADebugger: TDebuggerIntf; OldState: TDBGState);
     procedure DebuggerCurrentLine(Sender: TObject; const ALocation: TDBGLocationRec);
     procedure DebuggerOutput(Sender: TObject; const AText: String);
-    procedure DebuggerEvent(Sender: TObject; const ACategory: TDBGEventCategory; const AEventType: TDBGEventType; const AText: String);
     procedure DebuggerConsoleOutput(Sender: TObject; const AText: String);
     function DebuggerFeedback(Sender: TObject; const AText, AInfo: String;
       AType: TDBGFeedbackType; AButtons: TDBGFeedbackResults): TDBGFeedbackResult;
@@ -100,6 +127,7 @@ type
     procedure DebugDialogDestroy(Sender: TObject);
   private
     FDebugger: TDebuggerIntf;
+    FEventLogManager: TDebugEventLogManager;
     FUnitInfoProvider: TDebuggerUnitInfoProvider;
     FDialogs: array[TDebugDialogType] of TDebuggerDlg;
     FInStateChange: Boolean;
@@ -118,7 +146,6 @@ type
 
     // when the debug output log is not open, store the debug log internally
     FHiddenDebugOutputLog: TStringList;
-    FHiddenDebugEventsLog: TStringList;
 
     FRunTimer: TTimer;
     FAttachToID: String;
@@ -327,6 +354,148 @@ type
     procedure Notify(Item: TCollectionItem; Action: TCollectionNotification); override;
     procedure Update(Item: TCollectionItem); override;
   end;
+
+{ TDebugEventLogManager }
+
+procedure TDebugEventLogManager.SetEventDialog(AValue: TDbgEventsForm);
+begin
+  if FEventDialog = AValue then Exit;
+
+  If AValue = nil then begin
+    if FHiddenDebugEventsLog=nil then
+      FHiddenDebugEventsLog:=TStringList.Create;
+    FEventDialog.GetEvents(FHiddenDebugEventsLog);
+  end
+  else
+  if FHiddenDebugEventsLog <> nil then begin
+    AValue.SetEvents(FHiddenDebugEventsLog);
+    FreeAndNil(FHiddenDebugEventsLog);
+  end;
+
+  FEventDialog := AValue;
+end;
+
+function TDebugEventLogManager.FormatBreakPointAddress(
+  const ABreakpoint: TDBGBreakPoint; const ALocation: TDBGLocationRec): String;
+var
+  SrcName: String;
+begin
+  SrcName := ALocation.SrcFullName;
+  if SrcName = '' then
+    SrcName := ALocation.SrcFile;
+
+  if SrcName <> '' then
+    Result := Format(dbgEventBreakAtAddressSourceLine,
+                      [IntToHex(ALocation.Address, FTargetWidth), SrcName, ALocation.SrcLine])
+  else
+  if (ABreakpoint <> nil) and (ABreakPoint.Kind = bpkSource) then
+    Result := Format(dbgEventBreakAtAddressOriginSourceOriginLine,
+                      [IntToHex(ALocation.Address, FTargetWidth), ABreakpoint.Source, ABreakpoint.Line])
+  else
+    Result := Format(dbgEventBreakAtAddress, [IntToHex(ALocation.Address,
+      FTargetWidth)]);
+end;
+
+procedure TDebugEventLogManager.DebuggerEvent(Sender: TObject;
+  const ACategory: TDBGEventCategory; const AEventType: TDBGEventType;
+  const AText: String);
+var
+  Rec: TDBGEventRec;
+begin
+  if EventDialog <> nil
+  then begin
+    EventDialog.AddEvent(ACategory, AEventType, AText)
+  end
+  else begin
+    // store it internally, and copy it to the dialog, when the user opens it
+    if FHiddenDebugEventsLog=nil
+    then FHiddenDebugEventsLog := TStringList.Create;
+    if EnvironmentOptions.DebuggerEventLogCheckLineLimit
+    then begin
+      while FHiddenDebugEventsLog.Count >= EnvironmentOptions.DebuggerEventLogLineLimit do
+        FHiddenDebugEventsLog.Delete(0);
+    end;
+    Rec.Category := Ord(ACategory);
+    Rec.EventType := Ord(AEventType);
+    FHiddenDebugEventsLog.AddObject(AText, TObject(Rec.Ptr));
+  end;
+end;
+
+procedure TDebugEventLogManager.LogCustomEvent(
+  const ACategory: TDBGEventCategory; const AEventType: TDBGEventType;
+  const AText: String);
+begin
+  DebuggerEvent(nil, ACategory, AEventType, AText);
+end;
+
+procedure TDebugEventLogManager.LogEventBreakPointHit(
+  const ABreakpoint: TDBGBreakPoint; const ALocation: TDBGLocationRec);
+var
+  Msg: String;
+begin
+  if ABreakpoint = nil then
+    Msg := dbgEventBreakUnknownBreakPoint
+  else
+  case ABreakPoint.Kind of
+    bpkSource:  Msg := dbgEventBreakSourceBreakPoint;
+    bpkAddress: Msg := dbgEventBreakAddressBreakPoint;
+    bpkData:    Msg := dbgEventBreakWatchPoint; // should not be here, use LogEventWatchPointTriggered();
+  end;
+
+  LogCustomEvent(ecBreakpoint, etBreakpointHit,
+    Format(Msg, [FormatBreakPointAddress(ABreakpoint, ALocation)]));
+end;
+
+procedure TDebugEventLogManager.LogEventWatchPointTriggered(
+  const ABreakpoint: TDBGBreakPoint; const ALocation: TDBGLocationRec;
+  const AOldWatchedVal, ANewWatchedVal: String);
+var
+  Msg, Loc: String;
+begin
+  Loc := FormatBreakPointAddress(ABreakpoint, ALocation);
+  if ABreakpoint = nil then
+    Msg := Format(dbgEventUnknownWatchPointTriggered, [Loc, AOldWatchedVal, ANewWatchedVal])
+  else
+  case ABreakPoint.Kind of
+    bpkSource:  Msg := Format(dbgEventBreakSourceBreakPoint , [Loc]); // should not be here
+    bpkAddress: Msg := Format(dbgEventBreakAddressBreakPoint, [Loc]); // should not be here
+    bpkData:    Msg := Format(dbgEventWatchTriggered, [Loc, ABreakpoint.WatchData,
+      AOldWatchedVal, ANewWatchedVal]);
+  end;
+
+  LogCustomEvent(ecBreakpoint, etBreakpointHit, Msg );
+end;
+
+procedure TDebugEventLogManager.LogEventWatchPointScope(
+  const ABreakpoint: TDBGBreakPoint; const ALocation: TDBGLocationRec);
+var
+  Msg, Loc: String;
+begin
+  Loc := FormatBreakPointAddress(ABreakpoint, ALocation);
+  if ABreakpoint = nil then
+    Msg := Format(dbgEventUnknownWatchPointScopeEnded, [Loc])
+  else
+  case ABreakPoint.Kind of
+    bpkSource:  Msg := Format(dbgEventBreakSourceBreakPoint , [Loc]); // should not be here
+    bpkAddress: Msg := Format(dbgEventBreakAddressBreakPoint, [Loc]); // should not be here
+    bpkData:    Format(dbgEventWatchScopeEnded, [ABreakpoint.WatchData, Loc])
+  end;
+
+  LogCustomEvent(ecBreakpoint, etBreakpointHit, Msg );
+end;
+
+destructor TDebugEventLogManager.Destroy;
+begin
+  FreeAndNil(FHiddenDebugEventsLog);
+  inherited Destroy;
+end;
+
+procedure TDebugEventLogManager.ClearDebugEventsLog;
+begin
+  if EventDialog <> nil then
+    EventDialog.Clear;
+  FreeAndNil(FHiddenDebugEventsLog);
+end;
 
 { TProjectExceptions }
 
@@ -1066,30 +1235,6 @@ begin
   end;
 end;
 
-procedure TDebugManager.DebuggerEvent(Sender: TObject; const ACategory: TDBGEventCategory; const AEventType: TDBGEventType; const AText: String);
-var
-  Rec: TDBGEventRec;
-begin
-  if Destroying then exit;
-  if FDialogs[ddtEvents] <> nil
-  then begin
-    TDbgEventsForm(FDialogs[ddtEvents]).AddEvent(ACategory, AEventType, AText)
-  end
-  else begin
-    // store it internally, and copy it to the dialog, when the user opens it
-    if FHiddenDebugEventsLog=nil
-    then FHiddenDebugEventsLog := TStringList.Create;
-    if EnvironmentOptions.DebuggerEventLogCheckLineLimit
-    then begin
-      while FHiddenDebugEventsLog.Count >= EnvironmentOptions.DebuggerEventLogLineLimit do
-        FHiddenDebugEventsLog.Delete(0);
-    end;
-    Rec.Category := Ord(ACategory);
-    Rec.EventType := Ord(AEventType);
-    FHiddenDebugEventsLog.AddObject(AText, TObject(Rec.Ptr));
-  end;
-end;
-
 procedure TDebugManager.DebuggerBeforeChangeState(ADebugger: TDebuggerIntf;
   AOldState: TDBGState);
 var
@@ -1432,9 +1577,7 @@ begin
       end;
     ddtEvents:
       begin
-        if FHiddenDebugEventsLog=nil then
-          FHiddenDebugEventsLog:=TStringList.Create;
-        TDbgEventsForm(FDialogs[ddtEvents]).GetEvents(FHiddenDebugEventsLog);
+        FEventLogManager.EventDialog := nil;
       end;
     end;
     FDialogs[DlgType]:=nil;
@@ -1546,9 +1689,7 @@ var
   TheDialog: TDbgEventsForm;
 begin
   TheDialog := TDbgEventsForm(FDialogs[ddtEvents]);
-  TheDialog.SetEvents(FHiddenDebugEventsLog);
-  if FHiddenDebugEventsLog <> nil then
-    FreeAndNil(FHiddenDebugEventsLog);
+  FEventLogManager.EventDialog := TheDialog;
 end;
 
 procedure TDebugManager.InitBreakPointDlg;
@@ -1720,6 +1861,8 @@ begin
   RegisterValueFormatter(skFloat, 'TTime', @DBGDateTimeFormatter);
   RegisterValueFormatter(skSimple, 'TDateTime', @DBGDateTimeFormatter);
   RegisterValueFormatter(skFloat, 'TDateTime', @DBGDateTimeFormatter);
+
+  FEventLogManager := TDebugEventLogManager.Create;
 end;
 
 destructor TDebugManager.Destroy;
@@ -1736,6 +1879,7 @@ begin
 
   SetDebugger(nil);
 
+  FreeAndNil(FEventLogManager);
   FreeAndNil(FSnapshots);
   FreeAndNil(FWatches);
   FreeAndNil(FThreads);
@@ -1751,7 +1895,6 @@ begin
 
   FreeAndNil(FUserSourceFiles);
   FreeAndNil(FHiddenDebugOutputLog);
-  FreeAndNil(FHiddenDebugEventsLog);
   FreeAndNil(FUnitInfoProvider);
 
   inherited Destroy;
@@ -2113,10 +2256,7 @@ end;
 
 procedure TDebugManager.ClearDebugEventsLog;
 begin
-  if FDialogs[ddtEvents] <> nil then
-    TDbgEventsForm(FDialogs[ddtEvents]).Clear
-  else if FHiddenDebugEventsLog<>nil then
-    FHiddenDebugEventsLog.Clear;
+  FEventLogManager.ClearDebugEventsLog;
 end;
 
 //-----------------------------------------------------------------------------
@@ -2302,11 +2442,14 @@ begin
     FDebugger.OnState         := @DebuggerChangeState;
     FDebugger.OnCurrent       := @DebuggerCurrentLine;
     FDebugger.OnDbgOutput     := @DebuggerOutput;
-    FDebugger.OnDbgEvent      := @DebuggerEvent;
+    FDebugger.OnDbgEvent      := @FEventLogManager.DebuggerEvent;
     FDebugger.OnException     := @DebuggerException;
     FDebugger.OnConsoleOutput := @DebuggerConsoleOutput;
     FDebugger.OnFeedback      := @DebuggerFeedback;
     FDebugger.OnIdle          := @DebuggerIdle;
+    FDebugger.EventLogHandler := FEventLogManager;
+
+    FEventLogManager.TargetWidth := FDebugger.TargetWidth div 8;
 
     if FDebugger.State = dsNone
     then begin
@@ -2993,6 +3136,7 @@ begin
     FDebugger.OnFeedback      := nil;
     FDebugger.OnIdle          := nil;
     FDebugger.Exceptions := nil;
+    FDebugger.EventLogHandler := nil;
   end;
 
   FDebugger := ADebugger;

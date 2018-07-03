@@ -6440,6 +6440,22 @@ resourcestring
   lisDsgToggleShowingNonVisualComponents = 'Toggle showing nonvisual '
     +'components';
   lisDsgShowNonVisualComponents = 'Show nonvisual components';
+
+  // * Debug Event Log *
+  // Snippet for break location: .... at $04123456: unit1.pas line 15 ...
+  dbgEventBreakAtAddressSourceLine = 'at $%s: %s line %d';
+  dbgEventBreakAtAddressOriginSourceOriginLine = 'at $%s: from origin %s line %d'; // Source/Line from Breakpoint (origin)
+  dbgEventBreakAtAddress = 'at $%s'; // unknows source/line
+  // Breakpoint hit events (first param is location): "Source Breakpoint at $0x00000..."
+  dbgEventBreakSourceBreakPoint = 'Source Breakpoint %s';
+  dbgEventBreakAddressBreakPoint = 'Address Breakpoint %s';
+  dbgEventBreakUnknownBreakPoint = 'Unknown Breakpoint %s';
+  dbgEventBreakWatchPoint = 'Watchpoint %s';
+  dbgEventWatchTriggered = 'Watchpoint for "%s" was triggered %s. Old value "%s", New Value "%s"';
+  dbgEventUnknownWatchPointTriggered = 'Unknown Watchpoint triggered %s. Old value "%s", New Value "%s"';
+  dbgEventWatchScopeEnded = 'Watchpoint for "%s" out of scope %s';
+  dbgEventUnknownWatchPointScopeEnded = 'Unknown Watchpoint out of scope %s';
+
 implementation
 
 end.

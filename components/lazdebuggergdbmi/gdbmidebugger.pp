@@ -902,7 +902,7 @@ type
     procedure DoUnknownException(Sender: TObject; AnException: Exception);
 
     procedure DoNotifyAsync(Line: String);
-    procedure DoDbgBreakpointEvent(ABreakpoint: TDBGBreakPoint; Location: TDBGLocationRec;
+    procedure DoDbgBreakpointEvent(ABreakpoint: TDBGBreakPoint; ALocation: TDBGLocationRec;
                                    AReason: TGDBMIBreakpointReason;
                                    AOldVal: String = ''; ANewVal: String = '');
     procedure AddThreadGroup(const S: String);
@@ -7911,51 +7911,17 @@ begin
 end;
 
 procedure TGDBMIDebugger.DoDbgBreakpointEvent(ABreakpoint: TDBGBreakPoint;
-  Location: TDBGLocationRec; AReason: TGDBMIBreakpointReason;
-  AOldVal: String = ''; ANewVal: String = '');
-var
-  SrcName, Msg: String;
-  SrcLine: Integer;
+  ALocation: TDBGLocationRec; AReason: TGDBMIBreakpointReason; AOldVal: String;
+  ANewVal: String);
 begin
-  SrcName := Location.SrcFullName;
-  if SrcName = '' then
-    SrcName := Location.SrcFile;
-  if (SrcName = '') and (ABreakPoint <> nil) and (ABreakPoint.Kind = bpkSource) then
-    SrcName := ABreakpoint.Source;
-  SrcLine := Location.SrcLine;
-  if (SrcLine < 1) and (ABreakPoint <> nil) and (ABreakPoint.Kind = bpkSource) then
-    SrcLine := ABreakpoint.Line;
+  if not Assigned(EventLogHandler) then exit;
 
-  if ABreakpoint = nil then begin
-    Msg := Format('Unknown %s', [GDBMIBreakPointReasonNames[AReason]]);
-    if AReason = gbrWatchTrigger then
-      Msg := Msg + Format(' changed from "%s" to "%s"', [AOldVal, ANewVal]);
-  end
-  else begin
-    case ABreakPoint.Kind of
-      bpkSource:  Msg := 'Source Breakpoint';
-      bpkAddress: Msg := 'Address Breakpoint';
-      bpkData:
-        begin
-          if AReason = gbrWatchScope then
-            Msg := Format('Watchpoint for "%s" out of scope', [ABreakpoint.WatchData])
-          else
-            Msg := Format('Watchpoint for "%s" was triggered. Old value "%s", New Value "%s"', [ABreakpoint.WatchData, AOldVal, ANewVal]);
-        end;
-    end;
+  case AReason of
+    gbrBreak:        EventLogHandler.LogEventBreakPointHit(ABreakpoint, ALocation);
+    gbrWatchTrigger: EventLogHandler.LogEventWatchPointTriggered(
+      ABreakpoint, ALocation, AOldVal, ANewVal);
+    gbrWatchScope:   EventLogHandler.LogEventWatchPointScope(ABreakpoint, ALocation);
   end;
-
-  if SrcName <> '' then begin
-    DoDbgEvent(ecBreakpoint, etBreakpointHit,
-               Format('%s at $%.' + IntToStr(TargetPtrSize * 2) + 'x: %s line %d',
-                      [Msg, Location.Address, SrcName, SrcLine]));
-  end
-  else begin
-    DoDbgEvent(ecBreakpoint, etBreakpointHit,
-               Format('%s at $%.' + IntToStr(TargetPtrSize * 2) + 'x',
-                      [Msg, Location.Address]));
-  end;
-
 end;
 
 function TGDBMIDebugger.ExecuteCommand(const ACommand: String;
