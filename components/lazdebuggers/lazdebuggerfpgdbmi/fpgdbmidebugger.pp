@@ -576,7 +576,7 @@ begin
         end;
       finally
         if IsWatchValueAlive then begin
-          WatchValue.RemoveFreeeNotification(@FpDebugger.DoWatchFreed);
+          WatchValue.RemoveFreeNotification(@FpDebugger.DoWatchFreed);
           FpDebugger.FWatchEvalList.Remove(pointer(WatchValue));
         end;
         Application.ProcessMessages;
@@ -728,7 +728,7 @@ begin
       ReleaseRefAndNil(FLastContext[i]);
     if not(State in [dsPause, dsInternalPause]) then begin
       for i := 0 to FWatchEvalList.Count - 1 do begin
-        TWatchValue(FWatchEvalList[i]).RemoveFreeeNotification(@DoWatchFreed);
+        TWatchValue(FWatchEvalList[i]).RemoveFreeNotification(@DoWatchFreed);
         //TWatchValueBase(FWatchEvalList[i]).Validity := ddsInvalid;
       end;
       FWatchEvalList.Clear;
