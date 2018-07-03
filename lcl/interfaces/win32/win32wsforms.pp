@@ -682,11 +682,10 @@ begin
     Exit;
 
   OldStyle := GetWindowLong(AForm.Handle, GWL_EXSTYLE);
-  NewStyle := OldStyle;
   if AValue = stAlways then
-    NewStyle := NewStyle or WS_EX_APPWINDOW
+    NewStyle := OldStyle or WS_EX_APPWINDOW
   else
-    NewStyle := NewStyle and not WS_EX_APPWINDOW;
+    NewStyle := OldStyle and not WS_EX_APPWINDOW;
   if OldStyle = NewStyle then exit;
 
   // to apply this changes we need either to hide window or recreate it. Hide is
