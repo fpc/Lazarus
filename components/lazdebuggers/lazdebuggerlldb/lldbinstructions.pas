@@ -190,12 +190,35 @@ type
     constructor Create(AnIndex: Integer);
   end;
 
+  { TLldbInstructionValueBase }
+
+  TLldbInstructionValueBase = class(TLldbInstruction)
+  private
+    FCurly: Integer;
+  protected
+    function ParseStruct(ALine: string): Boolean;
+  end;
+
+  { TLldbInstructionLocals }
+
+  TLldbInstructionLocals = class(TLldbInstructionValueBase)
+  private
+    FRes: TStringList;
+    FCurVal, FCurName: String;
+  protected
+    function ProcessInputFromDbg(const AData: String): Boolean; override;
+    procedure SendCommandDataToDbg(); override;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    property Res: TStringList read FRes;
+  end;
+
   { TLldbInstructionExpression }
 
-  TLldbInstructionExpression = class(TLldbInstruction)
+  TLldbInstructionExpression = class(TLldbInstructionValueBase)
   private
     FRes: String;
-    FCurly: Integer;
   protected
     function ProcessInputFromDbg(const AData: String): Boolean; override;
   public
@@ -267,6 +290,25 @@ type
   end;
 
 implementation
+
+{ TLldbInstructionValueBase }
+
+function TLldbInstructionValueBase.ParseStruct(ALine: string): Boolean;
+var
+  i: Integer;
+begin
+  i := 1;
+  while i <= Length(ALine) do begin
+    case ALine[i] of
+      '"': break; // string always goes to end of line
+      '{': inc(FCurly);
+      '}': dec(FCurly);
+    end;
+    inc(i);
+    if FCurly<0 then debugln(['ParseStruct curly too low ', FCurly]);
+  end;
+  Result := FCurly <= 0;
+end;
 
 { TLldbInstructionBreakOrWatchSet }
 
@@ -688,26 +730,67 @@ begin
   inherited Create(Format('frame select %d', [AnIndex]));
 end;
 
+{ TLldbInstructionLocals }
+
+function TLldbInstructionLocals.ProcessInputFromDbg(const AData: String
+  ): Boolean;
+var
+  found: TStringArray;
+begin
+  Result := True;
+
+  if StrStartsWith(AData, 'version') then begin
+    MarkAsSuccess;
+    Exit;
+  end;
+
+  if FCurVal <> '' then begin
+    FCurVal := FCurVal + AData;
+    if ParseStruct(AData) then begin
+      FRes.Values[FCurName] := FCurVal;
+      FCurName := '';
+      FCurVal := '';
+    end;
+    exit;
+  end;
+
+  if StrMatches(AData, ['(', ')', ' = ', ''], found) then begin
+    FCurName := found[1];
+    FCurVal := found[2];
+    FCurly := 0;
+    if ParseStruct(found[2]) then begin
+      FRes.Values[FCurName] := FCurVal;
+      FCurName := '';
+      FCurVal := '';
+    end;
+    exit;
+  end;
+
+  Result := inherited ProcessInputFromDbg(AData);
+end;
+
+procedure TLldbInstructionLocals.SendCommandDataToDbg();
+begin
+  inherited SendCommandDataToDbg();
+  Queue.SendDataToDBG(Self, 'version'); // end marker // do not sent before new prompt
+end;
+
+constructor TLldbInstructionLocals.Create;
+begin
+  inherited Create('frame variable -P 1 -D 5'); // TODO: make -D 5 configurable
+  FRes := TStringList.Create;
+end;
+
+destructor TLldbInstructionLocals.Destroy;
+begin
+  inherited Destroy;
+  FRes.Free;
+end;
+
 { TLldbInstructionExpression }
 
 function TLldbInstructionExpression.ProcessInputFromDbg(const AData: String
   ): Boolean;
-  function ParseStruct(ALine: string): Boolean;
-  var
-    i: Integer;
-  begin
-    i := 1;
-    while i <= Length(ALine) do begin
-      case ALine[i] of
-        '"': break; // string always goes to end of line
-        '{': inc(FCurly);
-        '}': dec(FCurly);
-      end;
-      inc(i);
-if FCurly<0 then debugln(['ParseStruct curly too low ', FCurly]);
-    end;
-    Result := FCurly = 0;
-  end;
 var
   found: TStringArray;
 begin

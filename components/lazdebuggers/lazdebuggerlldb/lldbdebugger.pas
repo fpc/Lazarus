@@ -95,6 +95,21 @@ type
     procedure DoExecute; override;
   end;
 
+  { TLldbDebuggerCommandLocals }
+
+  TLldbDebuggerCommandLocals = class(TLldbDebuggerCommand)
+  private
+    FLocals: TLocals;
+    FLocalsInstr: TLldbInstructionLocals;
+    procedure DoLocalsFreed(Sender: TObject);
+    procedure LocalsInstructionFinished(Sender: TObject);
+  protected
+    procedure DoExecute; override;
+  public
+    constructor Create(AOwner: TLldbDebugger; ALocals: TLocals);
+    destructor Destroy; override;
+  end;
+
   { TLldbDebuggerCommandEvaluate }
 
   TLldbDebuggerCommandEvaluate = class(TLldbDebuggerCommand)
@@ -153,7 +168,7 @@ type
     property CommandQueue: TLldbDebuggerCommandQueue read FCommandQueue;
   protected
     function  CreateBreakPoints: TDBGBreakPoints; override;
-    //function  CreateLocals: TLocalsSupplier; override;
+    function  CreateLocals: TLocalsSupplier; override;
     //function  CreateLineInfo: TDBGLineInfo; override;
     function  CreateRegisters: TRegisterSupplier; override;
     function  CreateCallStack: TCallStackSupplier; override;
@@ -259,6 +274,20 @@ type
 
   {%region
     *****
+    *****     Locals
+    ***** }
+
+  { TLldbLocals }
+
+  TLldbLocals = class(TLocalsSupplier)
+  public
+    procedure RequestData(ALocals: TLocals); override;
+  end;
+
+  {%endregion   ^^^^^  Locals  ^^^^^   }
+
+  {%region
+    *****
     *****     Watches
     ***** }
 
@@ -343,6 +372,68 @@ type
     procedure Changed;
     procedure RequestData(ARegisters: TRegisters); override;
   end;
+
+{ TLldbDebuggerCommandLocals }
+
+procedure TLldbDebuggerCommandLocals.LocalsInstructionFinished(Sender: TObject
+  );
+var
+  n: String;
+  i: Integer;
+begin
+  if FLocals <> nil then begin
+    FLocals.Clear;
+    for i := 0 to FLocalsInstr.Res.Count - 1 do begin
+      n := FLocalsInstr.Res.Names[i];
+      FLocals.Add(n, FLocalsInstr.Res.Values[n]);
+    end;
+    FLocals.SetDataValidity(ddsValid);
+  end;
+
+  ReleaseRefAndNil(FLocalsInstr);
+  Finished;
+end;
+
+procedure TLldbDebuggerCommandLocals.DoLocalsFreed(Sender: TObject);
+begin
+  FLocals := nil;
+  if FLocalsInstr <> nil then begin
+    FLocalsInstr.OnFinish := nil;
+    FLocalsInstr.Cancel;
+    ReleaseRefAndNil(FLocalsInstr);
+    Finished;
+  end;
+end;
+
+procedure TLldbDebuggerCommandLocals.DoExecute;
+begin
+  if FLocalsInstr <> nil then begin
+    FLocalsInstr.OnFinish := nil;
+    ReleaseRefAndNil(FLocalsInstr);
+  end;
+  FLocalsInstr := TLldbInstructionLocals.Create();
+  FLocalsInstr.OnFinish := @LocalsInstructionFinished;
+  TLldbDebugger(Debugger).DebugInstructionQueue.QueueInstruction(FLocalsInstr);
+end;
+
+constructor TLldbDebuggerCommandLocals.Create(AOwner: TLldbDebugger;
+  ALocals: TLocals);
+begin
+  FLocals := ALocals;
+  FLocals.AddFreeNotification(@DoLocalsFreed);
+  inherited Create(AOwner);
+end;
+
+destructor TLldbDebuggerCommandLocals.Destroy;
+begin
+  if FLocalsInstr <> nil then begin
+    FLocalsInstr.OnFinish := nil;
+    ReleaseRefAndNil(FLocalsInstr);
+  end;
+  if FLocals <> nil then
+    FLocals.RemoveFreeNotification(@DoLocalsFreed);
+  inherited Destroy;
+end;
 
   {%endregion   ^^^^^  Register  ^^^^^   }
 
@@ -484,7 +575,7 @@ end;
 procedure TLldbDebuggerCommandCallStack.DoCallstackFreed(Sender: TObject);
 begin
   FCurrentCallStack := nil;
-  //cancel
+  //TODO cancel
 end;
 
 procedure TLldbDebuggerCommandCallStack.DoExecute;
@@ -520,7 +611,8 @@ end;
 
 destructor TLldbDebuggerCommandCallStack.Destroy;
 begin
-  FCurrentCallStack.RemoveFreeeNotification(@DoCallstackFreed);
+  if FCurrentCallStack <> nil then
+    FCurrentCallStack.RemoveFreeNotification(@DoCallstackFreed);
   inherited Destroy;
 end;
 
@@ -591,12 +683,27 @@ end;
 
 {%endregion   ^^^^^  CallStack  ^^^^^   }
 
+{ TLldbLocals }
+
+procedure TLldbLocals.RequestData(ALocals: TLocals);
+var
+  Cmd: TLldbDebuggerCommandLocals;
+begin
+  if (Debugger = nil) or not(Debugger.State in [dsPause, dsInternalPause]) then Exit;
+
+  Cmd := TLldbDebuggerCommandLocals.Create(TLldbDebugger(Debugger), ALocals);
+  TLldbDebugger(Debugger).QueueCommand(Cmd);
+  Cmd.ReleaseReference;
+end;
+
 { TLldbWatches }
 
 procedure TLldbWatches.InternalRequestData(AWatchValue: TWatchValue);
 var
   Cmd: TLldbDebuggerCommandEvaluate;
 begin
+  if (Debugger = nil) or not(Debugger.State in [dsPause, dsInternalPause]) then Exit;
+
   Cmd := TLldbDebuggerCommandEvaluate.Create(TLldbDebugger(Debugger), AWatchValue);
   TLldbDebugger(Debugger).QueueCommand(Cmd);
   Cmd.ReleaseReference;
@@ -1462,6 +1569,11 @@ end;
 function TLldbDebugger.CreateBreakPoints: TDBGBreakPoints;
 begin
   Result := TLldbBreakPoints.Create(Self, TLldbBreakPoint);
+end;
+
+function TLldbDebugger.CreateLocals: TLocalsSupplier;
+begin
+  Result := TLldbLocals.Create(Self);
 end;
 
 function TLldbDebugger.CreateRegisters: TRegisterSupplier;
