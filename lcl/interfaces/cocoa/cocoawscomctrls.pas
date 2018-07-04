@@ -227,6 +227,31 @@ type
 
 implementation
 
+function CocoaTabIndexToLCLIndex(trg: TObject; src: TCocoaTabControl; aTabIndex: Integer): Integer;
+var
+  i : integer;
+  tb: TCustomTabControl;
+  hnd: HWND;
+  tbitem: TCocoaTabPage;
+begin
+  Result:=aTabIndex;
+  if not Assigned(trg) or not (trg is TCustomTabControl) then Exit;
+  if (aTabIndex<0) or (atabIndex>=src.fulltabs.count) then begin
+    aTabIndex:=-1;
+    Exit;
+  end;
+
+  tbitem:=TCocoaTabPage(src.fulltabs.objectAtIndex(aTabIndex));
+  hnd := HWND(NSView(tbitem.view).subviews.objectAtIndex(0));
+
+  tb:=TCustomTabControl(trg);
+  for i:=0 to tb.PageCount-1 do
+    if tb.Page[i].Handle = hnd then begin
+      Result:=i;
+      Exit;
+    end;
+end;
+
 { TLCLTabControlCallback }
 
 procedure TLCLTabControlCallback.willSelectTabViewItem(aTabIndex: Integer);
@@ -240,7 +265,7 @@ begin
 
   Hdr.hwndFrom := FTarget.Handle;
   Hdr.Code := TCN_SELCHANGING;
-  Hdr.idFrom := aTabIndex;
+  Hdr.idFrom := CocoaTabIndexToLCLIndex(Target, TCocoaTabControl(Owner), aTabIndex);
   Msg.NMHdr := @Hdr;
   Msg.Result := 0;
   LCLMessageGlue.DeliverMessage(Target, Msg);
@@ -257,7 +282,7 @@ begin
 
   Hdr.hwndFrom := FTarget.Handle;
   Hdr.Code := TCN_SELCHANGE;
-  Hdr.idFrom := PtrUInt(aTabIndex);
+  Hdr.idFrom := CocoaTabIndexToLCLIndex(Target, TCocoaTabControl(Owner), aTabIndex);
   Msg.NMHdr := @Hdr;
   Msg.Result := 0;
   LCLMessageGlue.DeliverMessage(Target, Msg);

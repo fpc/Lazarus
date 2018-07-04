@@ -55,12 +55,12 @@ type
     prevarr  : NSButton;
     nextarr  : NSButton;
 
-    fulltabs : NSMutableArray;  // the full list of NSTabViewItems
     leftmost : Integer;         // index of the left-most tab shown
 
   public
     callback: ITabControlCallback;
 
+    fulltabs : NSMutableArray;  // the full list of NSTabViewItems
     lclEnabled: Boolean;
     // cocoa
     class function alloc: id; override;
@@ -106,8 +106,9 @@ type
   public
     tabView: TCocoaTabControl;
     tabPage: TCocoaTabPage;
-    procedure setHidden(Ahidden: Boolean); override;
   end;
+
+function IndexOfTab(ahost: TCocoaTabControl; atab: NSTabViewItem): Integer;
 
 implementation
 
@@ -268,6 +269,7 @@ begin
     // todo: automatic resizing still has its effect on the tabs.
     //       the content page fails to pick up the proper size and place
     //       and it seems that the content of the tab is shifted.
+    //       Needs investiage and a fix.
 
   finally
     if (aview.indexOfTabViewItem(sel)<>NSNotFound) then
@@ -287,16 +289,16 @@ begin
     aview.nextarr.setHidden(not showNext);
 end;
 
-
-{ TCocoaTabPageView }
-
-procedure TCocoaTabPageView.setHidden(Ahidden: Boolean);
+function IndexOfTab(ahost: TCocoaTabControl; atab: NSTabViewItem): Integer;
+var
+  idx : NSUInteger;
 begin
-  // Should never be hidden. (The parent NSView would show/hide tabs)
-  // it seems, that lclSetVisible interferes with
-  // control visibility TCocoaCustomControl
-  // todo: there should be a cleaner solution than overriding this method
-  inherited setHidden(false);
+  idx := ahost.fulltabs.indexOfObject(atab);
+  if idx=NSUIntegerMax then Result:=-1
+  else begin
+    if idx>MaxInt then Result:=-1
+    else Result:=Integer(idx);
+  end;
 end;
 
 { TCocoaTabPage }
@@ -399,7 +401,7 @@ procedure TCocoaTabControl.tabView_willSelectTabViewItem(tabView: NSTabView;
   tabViewItem: NSTabViewItem);
 begin
   if Assigned(callback) then
-    callback.willSelectTabViewItem( tabview.indexOfTabViewItem(tabViewItem) );
+    callback.willSelectTabViewItem( IndexOfTab( self, tabViewItem) );
 end;
 
 procedure TCocoaTabControl.tabView_didSelectTabViewItem(tabView: NSTabView;
@@ -412,7 +414,9 @@ procedure TCocoaTabControl.tabView_didSelectTabViewItem(tabView: NSTabView;
   //lCurCallback: ICommonCallback;
 begin
   if Assigned(callback) then
-    callback.didSelectTabViewItem( tabview.indexOfTabViewItem(tabViewItem) );
+  begin
+    callback.didSelectTabViewItem( IndexOfTab( self, tabViewItem) );
+  end;
 
   // The recent clean up, drove the workaround below unnecessary
   // (at least the problem is not observed)
