@@ -31,7 +31,7 @@ uses
   // Widgetset
   CocoaGDIObjects, CocoaPrivate,
   // LCL
-  LCLType, LCLIntf, LCLProc, Graphics, Controls, ExtCtrls, Forms;
+  Controls, ExtCtrls;
 
 type
   { TEmulatedCaret }
