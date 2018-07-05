@@ -259,6 +259,8 @@ var
   Msg: TLMNotify;
   Hdr: TNmHdr;
 begin
+  if aTabIndex<0 then exit;
+
   FillChar(Msg, SizeOf(Msg), 0);
   Msg.Msg := LM_NOTIFY;
   FillChar(Hdr, SizeOf(Hdr), 0);
@@ -276,6 +278,8 @@ var
   Msg: TLMNotify;
   Hdr: TNmHdr;
 begin
+  if aTabIndex<0 then exit;
+
   FillChar(Msg, SizeOf(Msg), 0);
   Msg.Msg := LM_NOTIFY;
   FillChar(Hdr, SizeOf(Hdr), 0);
