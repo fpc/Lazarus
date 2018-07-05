@@ -58,10 +58,13 @@ type
   { TLldbInstructionTargetCreate }
 
   TLldbInstructionTargetCreate = class(TLldbInstruction)
+  private
+    FRes: String;
   protected
     function ProcessInputFromDbg(const AData: String): Boolean; override;
   public
     constructor Create(AFile: String);
+    property Res: String read FRes;
   end;
 
   { TLldbInstructionTargetDelete }
@@ -132,6 +135,18 @@ type
   public
     constructor Create(AnId: Integer; ADisabled: Boolean);
     constructor Create(AnId: Integer; ADisabled: Boolean; AConditon: String);
+  end;
+
+  { TLldbInstructionBreakAddCommands }
+
+  TLldbInstructionBreakAddCommands = class(TLldbInstruction)
+  private
+    FCommands: TStringArray;
+  protected
+    function ProcessInputFromDbg(const AData: String): Boolean; override;
+    procedure SendCommandDataToDbg(); override;
+  public
+    constructor Create(AnId: Integer; ACommands: Array of String);
   end;
 
   { TLldbInstructionBreakDelete }
@@ -214,16 +229,33 @@ type
     property Res: TStringList read FRes;
   end;
 
-  { TLldbInstructionExpression }
+  { TLldbInstructionExpressionBase }
 
-  TLldbInstructionExpression = class(TLldbInstructionValueBase)
+  TLldbInstructionExpressionBase = class(TLldbInstructionValueBase)
   private
     FRes: String;
   protected
     function ProcessInputFromDbg(const AData: String): Boolean; override;
   public
-    constructor Create(AnExpression: String; AThread, AFrame: Integer);
     property Res: String read FRes;
+  end;
+
+  { TLldbInstructionExpression }
+
+  TLldbInstructionExpression = class(TLldbInstructionExpressionBase)
+  public
+    constructor Create(AnExpression: String; AThread, AFrame: Integer);
+  end;
+
+  { TLldbInstructionReadExpression
+    Reads data, if LLDB already printing it
+  }
+
+  TLldbInstructionReadExpression = class(TLldbInstructionExpressionBase)
+  protected
+    procedure SendCommandDataToDbg(); override;
+  public
+    constructor Create;
   end;
 
   { TLldbInstructionMemory }
@@ -467,6 +499,7 @@ function TLldbInstructionTargetCreate.ProcessInputFromDbg(const AData: String
 begin
   Result := True;
   if LeftStr(AData, 25) = 'Current executable set to' then begin
+    FRes := AData;
     SetContentReceieved;
   end
   else
@@ -613,6 +646,41 @@ begin
   then AConditon := ' --disable' + AConditon
   else AConditon := ' --enable' + AConditon;
   inherited Create(Format('breakpoint modify %s %d', [AConditon, AnId]));
+end;
+
+{ TLldbInstructionBreakAddCommands }
+
+function TLldbInstructionBreakAddCommands.ProcessInputFromDbg(const AData: String
+  ): Boolean;
+begin
+  if StrStartsWith(AData, 'version') then begin
+    Result := True;
+    MarkAsSuccess;
+    Exit;
+  end;
+  Result := inherited ProcessInputFromDbg(AData);
+end;
+
+procedure TLldbInstructionBreakAddCommands.SendCommandDataToDbg();
+var
+  i: Integer;
+begin
+  inherited SendCommandDataToDbg();
+  for i := 0 to length(FCommands) - 1 do
+    Queue.SendDataToDBG(Self, FCommands[i]);
+  Queue.SendDataToDBG(Self, 'DONE');
+  Queue.SendDataToDBG(Self, 'version'); // end marker // do not sent before new prompt
+end;
+
+constructor TLldbInstructionBreakAddCommands.Create(AnId: Integer;
+  ACommands: array of String);
+var
+  i: Integer;
+begin
+  inherited Create(Format('breakpoint command add %d', [AnId]));
+  SetLength(FCommands, Length(ACommands));
+  for i := 0 to Length(ACommands) - 1 do
+    FCommands[i] := ACommands[i];
 end;
 
 { TLldbInstructionBreakDelete }
@@ -787,9 +855,9 @@ begin
   FRes.Free;
 end;
 
-{ TLldbInstructionExpression }
+{ TLldbInstructionExpressionBase }
 
-function TLldbInstructionExpression.ProcessInputFromDbg(const AData: String
+function TLldbInstructionExpressionBase.ProcessInputFromDbg(const AData: String
   ): Boolean;
 var
   found: TStringArray;
@@ -817,11 +885,25 @@ begin
   Result := inherited ProcessInputFromDbg(AData);
 end;
 
+{ TLldbInstructionExpression }
+
 constructor TLldbInstructionExpression.Create(AnExpression: String; AThread,
   AFrame: Integer);
 begin
 //  inherited Create(Format('expression -R -- %s', [UpperCase(AnExpression)]));
   inherited Create(Format('expression -T -- %s', [UpperCase(AnExpression)]), AThread, AFrame);
+end;
+
+{ TLldbInstructionReadExpression }
+
+procedure TLldbInstructionReadExpression.SendCommandDataToDbg();
+begin
+  // do not sent data
+end;
+
+constructor TLldbInstructionReadExpression.Create;
+begin
+  inherited Create('');
 end;
 
 { TLldbInstructionMemory }

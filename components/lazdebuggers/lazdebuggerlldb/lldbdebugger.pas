@@ -81,6 +81,7 @@ type
   TLldbDebuggerCommandRun = class(TLldbDebuggerCommand)
   private
     FRunInstr: TLldbInstruction;
+    procedure ExceptBreakInstructionFinished(Sender: TObject);
     procedure TargetCreated(Sender: TObject);
   protected
     procedure DoExecute; override;
@@ -119,6 +120,7 @@ type
     FExpr: String;
     FFlags: TDBGEvaluateFlags;
     FCallback: TDBGEvaluateResultCallback;
+    procedure DoWatchFreed(Sender: TObject);
     procedure EvalInstructionFailed(Sender: TObject);
     procedure EvalInstructionSucceeded(Sender: TObject);
   protected
@@ -128,6 +130,7 @@ type
     constructor Create(AOwner: TLldbDebugger; AWatchValue: TWatchValue);
     constructor Create(AOwner: TLldbDebugger; AnExpr: String; AFlags: TDBGEvaluateFlags;
                        ACallback: TDBGEvaluateResultCallback);
+    destructor Destroy; override;
   end;
 
   (*
@@ -137,17 +140,35 @@ type
 
   TLldbDebugger = class(TDebuggerIntf)
   private
+  type
+    TExceptionInfoCommand = (exiReg0, exiClass, exiMsg);
+    TExceptionInfoCommands = set of TExceptionInfoCommand;
+  private
     FDebugProcess: TDebugProcess;
     FDebugInstructionQueue: TLldbInstructionQueue;
     FCommandQueue: TLldbDebuggerCommandQueue;
     FCurrentLocation: TDBGLocationRec;
     FCurrentStackFrame: Integer;
     FCurrentThreadId: Integer;
-
+    FTargetWidth: Byte;
+    FTargetRegisters: array[0..2] of String;
+    FExceptionBreakId: Integer;
+    FExceptionInfo: record
+      FReg0Cmd, FExceptClassCmd, FExceptMsgCmd: String;
+      FAtExcepiton: Boolean; // cleared in Setstate
+      FHasCommandData: TExceptionInfoCommands; // cleared in Setstate
+      FObjAddress: TDBGPtr;
+      FExceptClass: String;
+      FExceptMsg: String;
+    end;
     procedure DoAfterLineReceived(var ALine: String);
     procedure DoBeforeLineReceived(var ALine: String);
     procedure DoCmdLineDebuggerTerminated(Sender: TObject);
     procedure DoLineSentToDbg(Sender: TObject; ALine: String);
+    procedure ExceptionReadReg0Success(Sender: TObject);
+    procedure ExceptionReadClassSuccess(Sender: TObject);
+    procedure ExceptionReadMsgSuccess(Sender: TObject);
+
     function  LldbRun: Boolean;
     function  LldbStep(AStepAction: TLldbInstructionProcessStepAction): Boolean;
     function  LldbStop: Boolean;
@@ -175,6 +196,7 @@ type
     //function  CreateDisassembler: TDBGDisassembler; override;
     function  CreateWatches: TWatchesSupplier; override;
     function  CreateThreads: TThreadsSupplier; override;
+    function  GetTargetWidth: Byte; override;
 
     function  GetSupportedCommands: TDBGCommands; override;
     //function  GetCommands: TDBGCommands; override;
@@ -1222,11 +1244,6 @@ begin
   Instr.ReleaseReference;
 
   Instr := TLldbInstructionSettingSet.Create('stop-disassembly-count', '0');
-  //Instr.OnFinish := @InstructionSucceeded;
-  QueueInstruction(Instr);
-  Instr.ReleaseReference;
-
-  Instr := TLldbInstructionBreakSet.Create('fpc_raiseexception');
   Instr.OnFinish := @InstructionSucceeded;
   QueueInstruction(Instr);
   Instr.ReleaseReference;
@@ -1235,7 +1252,87 @@ end;
 { TLldbDebuggerCommandRun }
 
 procedure TLldbDebuggerCommandRun.TargetCreated(Sender: TObject);
+var
+  TargetInstr: TLldbInstructionTargetCreate absolute Sender;
+  Instr: TLldbInstruction;
+  found: TStringArray;
 begin
+  if not TargetInstr.IsSuccess then begin
+    SetDebuggerState(dsError);
+    Finished;
+  end;
+
+  If StrMatches(TargetInstr.Res, [''{}, '','('{}, ')',''], found) then begin
+    if (found[1] = '(i386)') or (found[1] = '(i686)') then begin
+      Debugger.FTargetWidth := 32;
+      Debugger.FTargetRegisters[0] := '$eax';
+      Debugger.FTargetRegisters[1] := '$edx';
+      Debugger.FTargetRegisters[2] := '$ecx';
+    end
+    else
+    if (found[1] = '(x86_64)') then begin
+      Debugger.FTargetWidth := 64;
+      // target list  gives more detailed result. But until remote debugging is added, use the current system
+      {$IFDEF MSWindows}
+      Debugger.FTargetRegisters[0] := '$rcx';
+      Debugger.FTargetRegisters[1] := '$rdx';
+      Debugger.FTargetRegisters[2] := '$r8';
+      {$ELSE}
+      Debugger.FTargetRegisters[0] := '$rdi';
+      Debugger.FTargetRegisters[1] := '$rsi';
+      Debugger.FTargetRegisters[2] := '$rdx';
+      {$ENDIF}
+    end
+    else found := nil;
+  end
+  else found := nil;
+  if found = nil then begin
+    // use architecture of IDE
+    {$IFDEF cpu64}
+    Debugger.FTargetWidth := 64;
+    {$IFDEF MSWindows}
+    Debugger.FTargetRegisters[0] := '$rcx';
+    Debugger.FTargetRegisters[1] := '$rdx';
+    Debugger.FTargetRegisters[2] := '$r8';
+    {$ELSE}
+    Debugger.FTargetRegisters[0] := '$rdi';
+    Debugger.FTargetRegisters[1] := '$rsi';
+    Debugger.FTargetRegisters[2] := '$rdx';
+    {$ENDIF}
+    {$ELSE}
+    Debugger.FTargetWidth := 32;
+    Debugger.FTargetRegisters[0] := '$eax';
+    Debugger.FTargetRegisters[1] := '$edx';
+    Debugger.FTargetRegisters[2] := '$ecx';
+    {$ENDIF}
+  end;
+
+  Instr := TLldbInstructionBreakSet.Create('fpc_raiseexception');
+  Instr.OnFinish := @ExceptBreakInstructionFinished;
+  QueueInstruction(Instr);
+  Instr.ReleaseReference;
+end;
+
+procedure TLldbDebuggerCommandRun.ExceptBreakInstructionFinished(Sender: TObject
+  );
+var
+  ExceptInstr: TLldbInstructionBreakSet absolute Sender;
+  Instr: TLldbInstruction;
+begin
+  Debugger.FExceptionBreakId := ExceptInstr.BreakId;
+
+  Debugger.FExceptionInfo.FReg0Cmd := 'p/x ' + Debugger.FTargetRegisters[0];
+  Debugger.FExceptionInfo.FExceptClassCmd := 'p ((char ***)' + Debugger.FTargetRegisters[0] + ')[0][3]';
+  Debugger.FExceptionInfo.FExceptMsgCmd := 'p ((char **)' + Debugger.FTargetRegisters[0] + ')[1]';
+                // 'p ((EXCEPTION *)' + Debugger.FTargetRegisters[0] + ')->FMESSAGE'
+  if ExceptInstr.BreakId > 0 then begin
+    Instr := TLldbInstructionBreakAddCommands.Create(ExceptInstr.BreakId, [
+      Debugger.FExceptionInfo.FReg0Cmd, Debugger.FExceptionInfo.FExceptClassCmd, Debugger.FExceptionInfo.FExceptMsgCmd
+    ]);
+    QueueInstruction(Instr);
+    Instr.ReleaseReference;
+  end;
+
   SetDebuggerState(dsRun);
   // the state change allows breakpoints to be set, before the run command is issued.
 
@@ -1316,11 +1413,17 @@ begin
   Finished;
 end;
 
+procedure TLldbDebuggerCommandEvaluate.DoWatchFreed(Sender: TObject);
+begin
+  FWatchValue := nil;
+end;
+
 procedure TLldbDebuggerCommandEvaluate.DoExecute;
 begin
   if FWatchValue <> nil then
     FInstr := TLldbInstructionExpression.Create(FWatchValue.Expression, Debugger.FCurrentThreadId, Debugger.FCurrentStackFrame)
   else
+    // todo: only if FCallback ?
     FInstr := TLldbInstructionExpression.Create(FExpr, Debugger.FCurrentThreadId, Debugger.FCurrentStackFrame);
   FInstr.OnSuccess := @EvalInstructionSucceeded;
   FInstr.OnFailure := @EvalInstructionFailed;
@@ -1331,6 +1434,7 @@ constructor TLldbDebuggerCommandEvaluate.Create(AOwner: TLldbDebugger;
   AWatchValue: TWatchValue);
 begin
   FWatchValue := AWatchValue;
+  FWatchValue.AddFreeNotification(@DoWatchFreed);
   inherited Create(AOwner);
 end;
 
@@ -1344,6 +1448,13 @@ begin
   inherited Create(AOwner);
 end;
 
+destructor TLldbDebuggerCommandEvaluate.Destroy;
+begin
+  if FWatchValue <> nil then
+    FWatchValue.RemoveFreeNotification(@DoWatchFreed);
+  inherited Destroy;
+end;
+
 { TLldbDebugger }
 
 function TLldbDebugger.LldbRun: Boolean;
@@ -1353,7 +1464,7 @@ begin
   DebugLn('*** Run');
   Result := True;
 
-  if State in [dsPause, dsInternalPause] then begin
+  if State in [dsPause, dsInternalPause, dsRun] then begin // dsRun in case of exception
     LldbStep(saContinue);
     exit;
   end;
@@ -1366,18 +1477,93 @@ begin
   Cmd.ReleaseReference;
 end;
 
+procedure TLldbDebugger.ExceptionReadReg0Success(Sender: TObject);
+begin
+  FExceptionInfo.FObjAddress := StrToInt64Def(TLldbInstructionReadExpression(Sender).Res, 0);
+  Include(FExceptionInfo.FHasCommandData, exiReg0);
+end;
+
+procedure TLldbDebugger.ExceptionReadClassSuccess(Sender: TObject);
+var
+  s: String;
+  i: SizeInt;
+begin
+  // (char * ) $2 = 0x005c18d0 "\tException"
+  s := TLldbInstructionReadExpression(Sender).Res;
+  i := pos('"', s);
+  if i > 0 then begin
+    if s[i+1] = '\' then inc(i);
+    s := copy(s, i+2, Length(s)-i-2);
+  end;
+  FExceptionInfo.FExceptClass := s;
+  Include(FExceptionInfo.FHasCommandData, exiClass);
+end;
+
+procedure TLldbDebugger.ExceptionReadMsgSuccess(Sender: TObject);
+var
+  s: String;
+  i: SizeInt;
+begin
+  s := TLldbInstructionReadExpression(Sender).Res;
+  i := pos('"', s);
+  if i > 0 then
+    s := copy(s, i+1, Length(s)-i-1);
+  FExceptionInfo.FExceptMsg := s;
+  Include(FExceptionInfo.FHasCommandData, exiMsg);
+end;
+
 procedure TLldbDebugger.DoAfterLineReceived(var ALine: String);
-  procedure DoBreakPointHit(AReason: String);
+  function GetBreakPointId(AReason: String): Integer;
   var
-    i, BrkId: Integer;
-    BreakPoint: TLldbBreakPoint;
-    CanContinue: Boolean;
+    i: Integer;
   begin
     i := pos('.', AReason);
     if i = 0 then i := Length(AReason)+1;
-    BrkId := StrToIntDef(copy(AReason, 12, i-12), -1);
-    debugln(['DoBreakPointHit ', AReason, ' / ', BrkId]);
+    Result := StrToIntDef(copy(AReason, 12, i-12), -1);
+    debugln(['DoBreakPointHit ', AReason, ' / ', Result]);
+  end;
 
+  procedure DoException;
+  var
+    ExcClass, ExcMsg: String;
+    CanContinue: Boolean;
+  begin
+    FExceptionInfo.FAtExcepiton := False;
+    if exiClass in FExceptionInfo.FHasCommandData then
+      ExcClass := FExceptionInfo.FExceptClass
+    else
+      ExcClass := '<Unknown Class>'; // TODO: move to IDE
+    if exiMsg in FExceptionInfo.FHasCommandData then
+      ExcMsg := FExceptionInfo.FExceptMsg
+    else
+      ExcMsg := '<Unknown Message>'; // TODO: move to IDE
+
+    DoDbgEvent(ecDebugger, etExceptionRaised,
+                 Format('Exception class "%s" at $%.' + IntToStr(TargetWidth div 4) + 'x with message "%s"',
+                        [ExcClass, FCurrentLocation.Address, ExcMsg]));
+
+    if Assigned(OnException) then
+      OnException(Self, deInternal, ExcClass, FCurrentLocation, ExcMsg, CanContinue) // TODO: Location
+    else
+      CanContinue := True;
+
+    if CanContinue
+    then begin
+      FExceptionInfo.FHasCommandData := []; // no state change
+ // TODO: handle continue stepping
+ // TODO: wait for SetLocation / lldb sents the frame info in the next output line
+      LldbRun;
+      exit;
+    end;
+
+    SetState(dsPause); // after GetLocation => dsPause may run stack, watches etc
+  end;
+
+  procedure DoBreakPointHit(BrkId: Integer);
+  var
+    BreakPoint: TLldbBreakPoint;
+    CanContinue: Boolean;
+  begin
     if (BrkId >= 0) then
       BreakPoint := TLldbBreakPoints(BreakPoints).FindById(BrkId)
     else
@@ -1436,28 +1622,108 @@ procedure TLldbDebugger.DoAfterLineReceived(var ALine: String);
   end;
 
 var
-  Instr: TLldbInstructionTargetDelete;
+  Instr: TLldbInstruction;
   found: TStringArray;
-  AnId, SrcLine: Integer;
+  AnId, SrcLine, i: Integer;
   AnIsCurrent: Boolean;
   AnAddr: TDBGPtr;
-  AFuncName, AFile, AReminder, AFullFile: String;
+  AFuncName, AFile, AReminder, AFullFile, s: String;
   AnArgs: TStringList;
 begin
   if ALine = '' then
     exit;
 
+  {%region debuggee interrupted/paused }
+  (* When the debuggee stops (pause), the following will be received:
+    // for EXCEPTIONS ONLY  (less the spaces between * ) )
+     p/x $eax
+     (unsigned int) $1 = 0x04dfd920
+     p ((char *** )$eax)[0][3]
+     (char * ) $2 = 0x005c18d0 "\tException"
+     p ((char ** )$eax)[1]
+     (char * ) $3 = 0x00000000 <no value available>
+
+    // Hit breakpoint
+      Process 10992 stopped
+      * thread #1, stop reason = breakpoint 6.1
+          frame #0: 0x0042b855 &&//FULL: \tmp\New Folder (2)\unit1.pas &&//SHORT: unit1.pas &&//LINE: 54 &&//MOD: project1.exe &&//FUNC: FORMCREATE(this=0x04c81248, SENDER=0x04c81248) <<&&//FRAME
+  *)
+
+  s := TrimLeft(ALine);
+  if (FExceptionInfo.FReg0Cmd <> '') and StrStartsWith(s, FExceptionInfo.FReg0Cmd) then begin
+    ALine := '';
+    assert(DebugInstructionQueue.RunningInstruction = nil, 'DebugInstructionQueue.RunningInstruction = nil / exiReg0');
+    Instr := TLldbInstructionReadExpression.Create;
+    Instr.OnSuccess := @ExceptionReadReg0Success;
+    FDebugInstructionQueue.QueueInstruction(Instr);
+    Instr.ReleaseReference;
+    exit;
+  end;
+
+  if (FExceptionInfo.FExceptClassCmd <> '') and StrStartsWith(s, FExceptionInfo.FExceptClassCmd) then begin
+    ALine := '';
+    assert(DebugInstructionQueue.RunningInstruction = nil, 'DebugInstructionQueue.RunningInstruction = nil / exiReg0');
+    Instr := TLldbInstructionReadExpression.Create;
+    Instr.OnSuccess := @ExceptionReadClassSuccess;
+    FDebugInstructionQueue.QueueInstruction(Instr);
+    Instr.ReleaseReference;
+    exit;
+  end;
+
+  if (FExceptionInfo.FExceptMsgCmd <> '') and StrStartsWith(s, FExceptionInfo.FExceptMsgCmd) then begin
+    ALine := '';
+    assert(DebugInstructionQueue.RunningInstruction = nil, 'DebugInstructionQueue.RunningInstruction = nil / exiReg0');
+    Instr := TLldbInstructionReadExpression.Create;
+    Instr.OnSuccess := @ExceptionReadMsgSuccess;
+    FDebugInstructionQueue.QueueInstruction(Instr);
+    Instr.ReleaseReference;
+    exit;
+  end;
+
+  // STEP 1:   Process 10992 stopped
+  // filtered in lldb instructions
+
+  // STEP 2:   * thread #1, stop reason = breakpoint 6.1
   if StrMatches(ALine, ['* thread #', ', stop reason = ', ''], found) then begin
     FCurrentThreadId := StrToIntDef(found[0], 0);
     FCurrentStackFrame := 0;
     FDebugInstructionQueue.SetKnownThreadAndFrame(FCurrentThreadId, 0);
     Threads.CurrentThreads.CurrentThreadId := FCurrentThreadId;
     ALine := '';
-    if StrStartsWith(found[1], 'breakpoint ') then
-      DoBreakPointHit(found[1])
+
+    if StrStartsWith(found[1], 'breakpoint ') then begin
+      i := GetBreakPointId(found[1]);
+      if i = FExceptionBreakId then
+        FExceptionInfo.FAtExcepiton := True
+      else
+        DoBreakPointHit(i);
+    end
     else
       SetState(dsPause);
+    exit;
   end;
+
+  // STEP 3:   frame #0: 0x0042b855 &&//FULL: \tmp\New Folder (2)\unit1.pas &&//SHORT: unit1.pas &&//LINE: 54 &&//MOD: project1.exe &&//FUNC: FORMCREATE(this=0x04c81248, SENDER=0x04c81248) <<&&//FRAME
+  if ParseNewFrameLocation(ALine, AnId, AnIsCurrent, AnAddr, AFuncName, AnArgs,
+    AFile, AFullFile, SrcLine, AReminder)
+  then begin
+    AnArgs.Free;
+    FCurrentLocation.Address := AnAddr;
+    FCurrentLocation.FuncName := AFuncName;
+    FCurrentLocation.SrcFile := AFile;
+    FCurrentLocation.SrcFullName := AFullFile;
+    FCurrentLocation.SrcLine := SrcLine;
+
+    if FExceptionInfo.FAtExcepiton then
+      DoException;
+
+    if State in [dsPause, dsInternalPause, dsStop] then
+      DoCurrent(FCurrentLocation);
+    ALine := '';
+    exit;
+  end;
+
+  {%endregion debuggee interrupted/paused }
 
   // Process 8888 exited with status = 0 (0x00000000)
   if (LeftStr(ALine, 8) = 'Process ') and (pos('exited with status = ', ALine) > 0) then begin
@@ -1469,20 +1735,18 @@ begin
     Instr := TLldbInstructionTargetDelete.Create();
     FDebugInstructionQueue.QueueInstruction(Instr);
     Instr.ReleaseReference;
+    exit;
   end;
 
-  if ParseNewFrameLocation(ALine, AnId, AnIsCurrent, AnAddr, AFuncName, AnArgs,
-    AFile, AFullFile, SrcLine, AReminder)
-  then begin
-    AnArgs.Free;
-    FCurrentLocation.Address := AnAddr;
-    FCurrentLocation.FuncName := AFuncName;
-    FCurrentLocation.SrcFile := AFile;
-    FCurrentLocation.SrcFullName := AFullFile;
-    FCurrentLocation.SrcLine := SrcLine;
-    DoCurrent(FCurrentLocation);
-    ALine := '';
+  if FExceptionInfo.FAtExcepiton then begin // did not get location
+    FCurrentLocation.Address := 0;
+    FCurrentLocation.FuncName := '';
+    FCurrentLocation.SrcFile := '';
+    FCurrentLocation.SrcFullName := '';
+    FCurrentLocation.SrcLine := -1;
+    DoException;
   end;
+
 end;
 
 procedure TLldbDebugger.DoBeforeLineReceived(var ALine: String);
@@ -1563,6 +1827,8 @@ end;
 
 procedure TLldbDebugger.SetState(const AValue: TDBGState);
 begin
+  FExceptionInfo.FHasCommandData := [];
+  FExceptionInfo.FAtExcepiton := False;
   inherited;
 end;
 
@@ -1594,6 +1860,11 @@ end;
 function TLldbDebugger.CreateThreads: TThreadsSupplier;
 begin
   Result := TLldbThreads.Create(Self);
+end;
+
+function TLldbDebugger.GetTargetWidth: Byte;
+begin
+  Result := FTargetWidth;
 end;
 
 function TLldbDebugger.GetSupportedCommands: TDBGCommands;
@@ -1679,14 +1950,12 @@ procedure TLldbDebugger.Init;
 var
   Cmd: TLldbDebuggerCommandInit;
 begin
-  DebugLnEnter('*** Init');
   FDebugProcess.CreateDebugProcess('', Environment);
   inherited Init;
 
   Cmd := TLldbDebuggerCommandInit.Create(Self);
   QueueCommand(Cmd);
   Cmd.ReleaseReference;
-  DebugLnExit('*** Init');
 end;
 
 procedure TLldbDebugger.Done;
