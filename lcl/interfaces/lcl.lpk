@@ -129,7 +129,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Minor="9"/>
-    <Files Count="478">
+    <Files Count="479">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
         <AddToUsesPkgSection Value="False"/>
@@ -2366,6 +2366,11 @@ end;"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaTabControls"/>
       </Item478>
+      <Item479>
+        <Filename Value="cocoa/cocoabuttons.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CocoaButtons"/>
+      </Item479>
     </Files>
     <LazDoc Paths="../../docs/xml/lcl"/>
     <i18n>

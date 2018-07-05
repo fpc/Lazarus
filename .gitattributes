@@ -8820,6 +8820,7 @@ lcl/interfaces/cocoa/Makefile.fpc svneol=native#text/plain
 lcl/interfaces/cocoa/agl.pp svneol=native#text/plain
 lcl/interfaces/cocoa/alllclintfunits.pas svneol=native#text/plain
 lcl/interfaces/cocoa/cocoa_extra.pas svneol=native#text/plain
+lcl/interfaces/cocoa/cocoabuttons.pas svneol=native#text/plain
 lcl/interfaces/cocoa/cocoacaret.pas svneol=native#text/pascal
 lcl/interfaces/cocoa/cocoadatepicker.pas svneol=native#text/plain
 lcl/interfaces/cocoa/cocoadefines.inc svneol=native#text/plain

@@ -29,7 +29,7 @@ uses
   WSButtons, WSLCLClasses, WSProc,
   // LCL Cocoa
   CocoaWSCommon, CocoaWSStdCtrls, CocoaGDIObjects, CocoaPrivate, CocoaUtils,
-  cocoa_extra;
+  cocoa_extra, CocoaButtons;
 
 type
 
