@@ -7649,9 +7649,6 @@ begin
       Exclude(FWinControlFlags, wcfFontChanged);
     end;
 
-    if not (csDesigning in ComponentState) then
-      EnableWindow(Handle, Enabled);
-
     // Delay the setting of text until it is completely loaded
     if not (csLoading in ComponentState) then
     begin
