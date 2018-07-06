@@ -31,14 +31,16 @@ uses
   // Widgetset
   CocoaGDIObjects, CocoaPrivate,
   // LCL
-  Controls, ExtCtrls;
+  Controls;
 
 type
+
   { TEmulatedCaret }
 
-  TEmulatedCaret = class(TComponent)
+  TEmulatedCaret = class(TObject)
   private
-    FTimer: TTimer;
+    FTimerTarget: NSObject;
+    FTimer: NSTimer;
     FOldRect: TRect;
     FView: NSView;
     FBitmap: TCocoaBitmap;
@@ -58,7 +60,7 @@ type
     procedure SetView(AView: NSView);
     procedure UpdateCaret;
   public
-    constructor Create(AOwner: TComponent); override;
+    constructor Create;
     destructor Destroy; override;
     
     procedure Lock;
@@ -72,7 +74,6 @@ type
     function Show(AView: NSView): Boolean;
     function Hide: Boolean;
 
-    property Timer: TTimer read FTimer;
     property Pos: TPoint read FPos write SetPos;
     property RespondToFocus: Boolean read FRespondToFocus write FRespondToFocus;
   end;
@@ -92,12 +93,20 @@ procedure CaretViewSetReleased;
 
 implementation
 
+type
+  { TCaretTimerTarget }
+
+  TCaretTimerTarget = objcclass(NSObject)
+    fCaret: TEmulatedCaret;
+    procedure CaretEvent(sender: id); message 'CaretEvent:';
+  end;
+
 var
   GlobalCaret: TEmulatedCaret = nil;
-  
+
 procedure GlobalCaretNeeded;
 begin
-  if GlobalCaret = nil then GlobalCaret := TEmulatedCaret.Create(nil);
+  if GlobalCaret = nil then GlobalCaret := TEmulatedCaret.Create;
 end;
 
 procedure DrawCaret;
@@ -233,18 +242,38 @@ begin
   end;
 end;
 
+procedure CocoaDisableTimer(var ATimer: NSTimer);
+begin
+  if not Assigned(ATimer) then Exit;
+  ATimer.invalidate;
+  ATimer := nil;
+end;
+
+function CocoaEnableTimer(trg: id): NSTimer;
+begin
+  Result:=NSTimer.scheduledTimerWithTimeInterval_target_selector_userInfo_repeats(
+    GetCaretBlinkTime / 1000, trg, ObjCSelector('CaretEvent:'), nil, true);
+end;
+
+{ TCaretTimerTarget }
+
+procedure TCaretTimerTarget.CaretEvent(sender: id);
+begin
+  if not Assigned(fCaret) then Exit;
+  fCaret.DoTimer(nil);
+end;
+
 { TEmulatedCaret }
 
-constructor TEmulatedCaret.Create(AOwner: TComponent);
+constructor TEmulatedCaret.Create;
 begin
-  inherited Create(AOwner);
+  inherited Create;
 
   FOldRect := Rect(0, 0, 1, 1);
-  
-  FTimer := TTimer.Create(self);
-  FTimer.Enabled := False;
-  FTimer.Interval := GetCaretBlinkTime;
-  FTimer.OnTimer := @DoTimer;
+
+  FTimerTarget := TCaretTimerTarget.alloc.init;
+  TCaretTimerTarget(FTimerTarget).fCaret := Self;
+
   FVisibleRealized := True;
   
   FRespondToFocus := False;
@@ -259,6 +288,7 @@ begin
   
   System.DoneCriticalsection(FCaretCS^);
   Dispose(FCaretCS);
+  FTimerTarget.release;
 
   inherited Destroy;
 end;
@@ -291,7 +321,9 @@ end;
 
 function TEmulatedCaret.DestroyCaret: Boolean;
 begin
-  if FTimer<>nil then FTimer.Enabled := False;
+  if FTimer<>nil then begin
+    CocoaDisableTimer(FTimer);
+  end;
   FVisible := False;
   FVisibleRealized := False;
   FVisibleState := False;
@@ -340,8 +372,8 @@ begin
     if FVisible then Exit;
     
     FVisible := True;
-    FTimer.Enabled := False;
-    FTimer.Enabled := True;
+    CocoaDisableTimer(FTimer);
+    FTimer:=CocoaEnableTimer(FTimerTarget);
     if FVisibleRealized then
     begin
       FVisibleState := True;
@@ -358,7 +390,7 @@ begin
   
   if FVisible then
   begin
-    FTimer.Enabled := False;
+    CocoaDisableTimer(FTimer);
     FVisible := False;
     UpdateCaret;
     FVisibleRealized := (FView = nil) or not FView.lclIsPainting;
@@ -378,8 +410,8 @@ begin
   if ((FPos.x <> Value.x) or (FPos.y <> Value.y)) then
   begin
     FPos := Value;
-    FTimer.Enabled := False;
-    FTimer.Enabled := True;
+    CocoaDisableTimer(FTimer);
+    FTimer:=CocoaEnableTimer(FTimerTarget);
     if not FView.lclIsPainting then FVisibleState := True;
     UpdateCaret;
   end;
@@ -406,8 +438,9 @@ begin
 
   FView := AView;
   if FView <> nil then FView.lclGetCallback.HasCaret := True;
-  FTimer.Enabled := False;
-  FTimer.Enabled := FView <> nil;
+  CocoaDisableTimer(FTimer);
+  if Assigned(FView) then
+    FTimer:=CocoaEnableTimer(FTimerTarget);
 end;
 
 procedure TEmulatedCaret.UpdateCaret;
@@ -440,8 +473,7 @@ procedure CaretViewSetReleased;
 begin
   if Assigned(GlobalCaret) then
   begin
-    GlobalCaret.fTimer.Free;
-    GlobalCaret.fTimer:=nil;
+    CocoaDisableTimer(GlobalCaret.fTimer);
     GlobalCaret.FWidgetSetReleased:=True;
   end;
 end;
