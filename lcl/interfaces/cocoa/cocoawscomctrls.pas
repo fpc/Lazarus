@@ -553,7 +553,7 @@ begin
   if not Assigned(ATabControl) or not ATabControl.HandleAllocated then Exit;
   lTabControl := TCocoaTabControl(ATabControl.Handle);
 
-  lTabPage := lTabControl.tabViewItemAtIndex(AIndex);
+  lTabPage := NSTabViewItem(lTabControl.fulltabs.objectAtIndex(AIndex));
   lTabControl.exttabremoveTabViewItem(lTabPage);
 end;
 

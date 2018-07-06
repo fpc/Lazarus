@@ -511,8 +511,6 @@ end;
 procedure TCocoaTabControl.exttabInsertTabViewItem_atIndex(
   lTabPage: NSTabViewItem; AIndex: integer);
 begin
-  insertTabViewItem_atIndex(lTabPage, AIndex);
-
   if AIndex>fulltabs.count then AIndex:=fulltabs.count;
   fulltabs.insertObject_atIndex(lTabPage, AIndex);
 
@@ -531,8 +529,6 @@ end;
 function TCocoaTabControl.exttabIndexOfTabViewItem(lTabPage: NSTabViewItem
   ): NSInteger;
 begin
-  Result := indexOfTabViewItem(ltabPage);
-
   Result := fulltabs.indexOfObject(lTabPage);
 end;
 
