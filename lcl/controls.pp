@@ -1303,7 +1303,6 @@ type
     procedure ScaleConstraints(Multiplier, Divider: Integer);
     procedure ChangeScale(Multiplier, Divider: Integer); virtual;
     function CanAutoSize(var NewWidth, NewHeight: Integer): Boolean; virtual;
-    procedure UpdateAlignIndex;
     procedure SetBiDiMode(AValue: TBiDiMode); virtual;
     procedure SetParentBiDiMode(AValue: Boolean); virtual;
     function IsAParentAligning: boolean;
@@ -2048,14 +2047,15 @@ type
     procedure Remove(AControl: TControl);
     procedure AlignNonAlignedControls(ListOfControls: TFPList;
                                       var BoundsModified: Boolean);
+    procedure CreateControlAlignList(TheAlign: TAlign;
+                                    AlignList: TFPList; StartControl: TControl);
+    procedure UpdateAlignIndex(aChild: TControl);
   protected
     FDoubleBuffered: Boolean;
     FWinControlFlags: TWinControlFlags;
     class procedure WSRegisterClass; override;
     procedure AdjustClientRect(var ARect: TRect); virtual;
     procedure GetAdjustedLogicalClientRect(out ARect: TRect);
-    procedure CreateControlAlignList(TheAlign: TAlign;
-                                    AlignList: TFPList; StartControl: TControl);
     procedure AlignControls(AControl: TControl;
                             var RemainingClientRect: TRect); virtual;
     function CustomAlignInsertBefore(AControl1, AControl2: TControl): Boolean; virtual;

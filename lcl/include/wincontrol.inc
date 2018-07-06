@@ -2530,6 +2530,20 @@ begin
   end;
 end;
 
+procedure TWinControl.UpdateAlignIndex(aChild: TControl);
+// Move child control to position 0 of FAlignOrder
+var
+  i: Integer;
+begin
+  if FAlignOrder=nil then
+    FAlignOrder:=TFPList.Create;
+  i:=FAlignOrder.IndexOf(aChild);
+  if i<0 then
+    FAlignOrder.Insert(0,aChild)
+  else
+    FAlignOrder.Move(i,0);
+end;
+
 {------------------------------------------------------------------------------
   TWinControl AlignControls
 
@@ -6322,7 +6336,8 @@ begin
     AControl.ValidateContainer(Self);
     Perform(CM_CONTROLLISTCHANGE, WParam(AControl), LParam(True));
     Insert(AControl,Index);
-    AControl.UpdateAlignIndex;
+    Assert(AControl.Parent = Self, 'TWinControl.InsertControl: AControl.Parent <> Self');
+    UpdateAlignIndex(AControl);
     if not (csReading in AControl.ComponentState) then
     begin
       AControl.Perform(CM_PARENTCOLORCHANGED, 0, 0);
