@@ -62,6 +62,7 @@ type
   TCustomPieSeries = class(TChartSeries)
   private
     FCenter: TPoint;
+    FMarkDistancePercent: Boolean;
     FMarkPositions: TPieMarkPositions;
     FRadius: Integer;
     FSlices: array of TPieSlice;
@@ -74,6 +75,7 @@ type
     procedure SetEdgePen(AValue: TPen);
     procedure SetExploded(AValue: Boolean);
     procedure SetFixedRadius(AValue: TChartDistance);
+    procedure SetMarkDistancePercent(AValue: Boolean);
     procedure SetMarkPositions(AValue: TPieMarkPositions);
     procedure SetRotateLabels(AValue: Boolean);
     function SliceColor(AIndex: Integer): TColor;
@@ -99,6 +101,8 @@ type
     property Exploded: Boolean read FExploded write SetExploded default false;
     property FixedRadius: TChartDistance
       read FFixedRadius write SetFixedRadius default 0;
+    property MarkDistancePercent: Boolean
+      read FMarkDistancePercent write SetMarkDistancePercent default false;
     property MarkPositions: TPieMarkPositions
       read FMarkPositions write SetMarkPositions default pmpAround;
     property RotateLabels: Boolean
@@ -465,6 +469,13 @@ begin
   UpdateParentChart;
 end;
 
+procedure TCustomPieSeries.SetMarkDistancePercent(AValue: Boolean);
+begin
+  if FMarkDistancePercent = AValue then exit;
+  FMarkDistancePercent := AVAlue;
+  UpdateParentChart;
+end;
+
 procedure TCustomPieSeries.SetRotateLabels(AValue: Boolean);
 begin
   if FRotateLabels = AValue then exit;
@@ -534,7 +545,7 @@ function TCustomPieSeries.TryRadius(ADrawer: IChartDrawer): TRect;
     var
       d: Double;
     begin
-      d := Marks.Distance;
+      d := IfThen(FMarkDistancePercent, Marks.Distance * FRadius / 100, Marks.Distance);
       if not Marks.DistanceToCenter then
         d += LabelExtraDist(p, AAngle);
       Result := EndPoint(AAngle, d);

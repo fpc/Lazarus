@@ -119,6 +119,7 @@ type
     property Depth;
     property Exploded;
     property FixedRadius;
+    property MarkDistancePercent;
     property MarkPositions;
     property RotateLabels;
     property Source;
