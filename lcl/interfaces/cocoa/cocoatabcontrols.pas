@@ -98,6 +98,8 @@ type
       message 'extTabPrevButtonClick:';
     procedure extTabNextButtonClick(sender: id);
       message 'extTabNextButtonClick:';
+    procedure extselectTabViewItemAtIndex(index: NSInteger);
+      message 'extselectTabViewItemAtIndex:';
   end;
 
   { TCocoaTabPageView }
@@ -361,6 +363,28 @@ begin
     AllocPrevNext( self );
 
   UpdateTabAndArrowVisibility(self);
+end;
+
+procedure TCocoaTabControl.extselectTabViewItemAtIndex(index: NSInteger);
+var
+  idx : integer;
+  itm : NSTabViewItem;
+  i   : NSUInteger;
+begin
+  if (index<0) or (index>=fulltabs.count) then Exit;
+  itm := NSTabViewItem(fulltabs.objectAtIndex(index));
+
+  i := tabViewItems.indexOfObject(itm);
+  if i <> NSNotFound then
+  begin
+    inherited selectTabViewItemAtIndex(NSInteger(i));
+  end
+  else begin
+    leftmost := index;
+    UpdateTabAndArrowVisibility(self);
+    i := tabViewItems.indexOfObject(itm);
+    inherited selectTabViewItemAtIndex(NSInteger(i));
+  end;
 end;
 
 function TCocoaTabControl.lclIsEnabled: Boolean;

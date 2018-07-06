@@ -584,22 +584,22 @@ class procedure TCocoaWSCustomTabControl.SetPageIndex(const ATabControl: TCustom
 var
   lTabControl: TCocoaTabControl;
   lTabCount: NSInteger;
+  h : id;
+  i : NSUInteger;
+  tb : TCocoaTabPageView;
 begin
   {$IFDEF COCOA_DEBUG_TABCONTROL}
   WriteLn('[TCocoaWSCustomTabControl.SetPageIndex]');
   {$ENDIF}
   if not Assigned(ATabControl) or not ATabControl.HandleAllocated then Exit;
-  lTabControl := TCocoaTabControl(ATabControl.Handle);
-  {$IFDEF COCOA_DEBUG_TABCONTROL}
-  WriteLn(Format('[TCocoaWSCustomTabControl.SetPageIndex] lTabControl=%d', [PtrUInt(lTabControl)]));
-  {$ENDIF}
-  lTabCount := lTabControl.numberOfTabViewItems();
-  {$IFDEF COCOA_DEBUG_TABCONTROL}
-  WriteLn(Format('[TCocoaWSCustomTabControl.SetPageIndex] lTabCount=%d', [lTabCount]));
-  {$ENDIF}
-  if (AIndex < 0) or (AIndex >= lTabCount) then Exit;
+  if (AIndex<0) or (AIndex>=ATabControl.PageCount) then Exit;
+  tb := TCocoaTabPageView(ATabControl.Page[AIndex].Handle);
+  if not Assigned(tb) then Exit;
 
-  lTabControl.selectTabViewItemAtIndex(AIndex);
+  i := TCocoaTabControl(ATabControl.Handle).fulltabs.indexOfObject( tb.tabPage );
+  if (i = NSNotFound) then Exit;
+
+  TCocoaTabControl(ATabControl.Handle).extselectTabViewItemAtIndex(NSInteger(i));
 end;
 
 class procedure TCocoaWSCustomTabControl.SetTabPosition(const ATabControl: TCustomTabControl; const ATabPosition: TTabPosition);
