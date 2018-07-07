@@ -1513,11 +1513,8 @@ begin
   sz:=AScrollBar.Max - AScrollBar.PageSize;
   if sz > 0 then
   begin
-    lScroller.setFloatValue_knobProportion(
-      AScrollBar.Position / sz,
-      AScrollBar.PageSize / AScrollBar.Max);
-    //if TCocoaScrollBar(Handle).setKnobProportion( PageSize/Max );
-    //if TCocoaScrollBar(Handle).setDoubleValue( Position/Max );
+    lScroller.setDoubleValue( AScrollBar.Position / sz );
+    lScroller.setKnobProportion( AScrollBar.PageSize / AScrollBar.Max );
   end;
 end;
 
