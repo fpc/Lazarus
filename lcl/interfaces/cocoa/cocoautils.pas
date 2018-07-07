@@ -97,7 +97,7 @@ function CFStringToData(AString: CFStringRef; Encoding: CFStringEncoding = DEFAU
 function GetCurrentEventTime: double;
 function GetMacOSXVersion: Integer;
 
-procedure NSResponderHotKeys(trg: NSResponder; event: NSEvent; var handled: Boolean);
+procedure NSResponderHotKeys(asender: NSResponder; event: NSEvent; var handled: Boolean; atarget: id = nil);
 
 function DateTimeToNSDate(const aDateTime : TDateTime): NSDate;
 function NSDateToDateTime(const aDateTime: NSDate): TDateTime;
@@ -748,7 +748,7 @@ begin
   Result := lMajor*$10000 + lMinor*$100 + lFix;
 end;
 
-procedure NSResponderHotKeys(trg: NSResponder; event: NSEvent; var handled: Boolean);
+procedure NSResponderHotKeys(asender: NSResponder; event: NSEvent; var handled: Boolean; atarget: id);
 begin
   // todo: system keys could be overriden. thus need to review the current
   //       keyboard configuration first. See "Key Bindings" at
@@ -762,12 +762,13 @@ begin
     if Assigned(event.charactersIgnoringModifiers.UTF8String) then
     begin
       case event.charactersIgnoringModifiers.UTF8String^ of
-        'Z': handled := NSApplication(NSApp).sendAction_to_from(objcselector('redo:'), nil, trg);
-        'a': handled := NSApplication(NSApp).sendAction_to_from(objcselector('selectAll:'), nil, trg);
-        'c': handled := NSApplication(NSApp).sendAction_to_from(objcselector('copy:'), nil, trg);
-        'v': handled := NSApplication(NSApp).sendAction_to_from(objcselector('paste:'), nil, trg);
-        'x': handled := NSApplication(NSApp).sendAction_to_from(objcselector('cut:'), nil, trg);
-        'z': handled := NSApplication(NSApp).sendAction_to_from(objcselector('undo:'), nil, trg);
+        // redo/undo are not implemented in either of TextControls?
+        //'Z': handled := NSApplication(NSApp).sendAction_to_from(objcselector('redo:'), atarget, asender);
+        'a': handled := NSApplication(NSApp).sendAction_to_from(objcselector('selectAll:'), atarget, asender);
+        'c': handled := NSApplication(NSApp).sendAction_to_from(objcselector('copy:'), atarget, asender);
+        'v': handled := NSApplication(NSApp).sendAction_to_from(objcselector('paste:'), atarget, asender);
+        'x': handled := NSApplication(NSApp).sendAction_to_from(objcselector('cut:'), atarget, asender);
+        //'z': handled := NSApplication(NSApp).sendAction_to_from(objcselector('undo:'), atarget, asender);
       end;
     end;
   end;

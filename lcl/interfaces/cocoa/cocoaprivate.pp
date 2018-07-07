@@ -223,6 +223,7 @@ type
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
     function lclIsHandle: Boolean; override;
+    function performKeyEquivalent(event: NSEvent): Boolean; override;
     // key
     procedure keyDown(event: NSEvent); override;
     procedure keyUp(event: NSEvent); override;
@@ -1403,6 +1404,17 @@ end;
 function TCocoaTextView.lclIsHandle: Boolean;
 begin
   Result := True;
+end;
+
+function TCocoaTextView.performKeyEquivalent(event: NSEvent): Boolean;
+begin
+  Result := false;
+  // only respond to key, if focused
+  if (not Assigned(window) or (window.firstResponder<>self)) then Exit;
+
+  NSResponderHotKeys(self, event, Result, self);
+  if not Result then
+    Result:=inherited performKeyEquivalent(event);
 end;
 
 procedure TCocoaTextView.keyDown(event: NSEvent);

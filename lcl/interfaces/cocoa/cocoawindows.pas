@@ -264,12 +264,7 @@ end;
 
 function TCocoaWindowContent.performKeyEquivalent(event: NSEvent): Boolean;
 begin
-  // this event servers all TextEdit, ComboBoxes and Memos on a form.
-  // to do short keys for copy, paste, cut, etc...
-  Result := false;
-  NSResponderHotKeys(self, event, Result);
-  if not Result then
-    Result:=inherited performKeyEquivalent(event);
+  Result:=inherited performKeyEquivalent(event);
 end;
 
 procedure TCocoaWindowContent.resolvePopupParent();
