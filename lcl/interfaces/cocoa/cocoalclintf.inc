@@ -527,6 +527,14 @@ end;
 
  http://developer.apple.com/qa/qa2007/qa1509.html
  ------------------------------------------------------------------------------}
+var
+  _CGDisplayCreateImage : function ( displayID: CGDirectDisplayID ): CGImageRef; cdecl = nil;
+
+function CGDisplayCreateImageNone( displayID: CGDirectDisplayID ): CGImageRef; cdecl;
+begin
+  Result := nil;
+end;
+
 function TCocoaWidgetSet.RawImage_FromDevice(out ARawImage: TRawImage; ADC: HDC; const ARect: TRect): Boolean;
 var
   CBC: TCocoaBitmapContext absolute ADC;
@@ -548,19 +556,24 @@ begin
 
   { Get's a screenshot }
   displayID := CGMainDisplayID();
-  {$IF not defined(MAC_OS_X_VERSION_MIN_REQUIRED) or (MAC_OS_X_VERSION_MIN_REQUIRED >= 1060)}
+  if not Assigned(@_CGDisplayCreateImage) then begin
+    Pointer(_CGDisplayCreateImage) := GetProcAddress(TLibHandle(RTLD_DEFAULT), 'CGDisplayCreateImage');
+    if not Assigned(@_CGDisplayCreateImage) then
+      Pointer(_CGDisplayCreateImage) := @CGDisplayCreateImageNone;
+  end;
   ScreenImage := CGDisplayCreateImage(displayID);
-  {$ENDIF}
 
   { Fills the image description }
   ARawImage.Init;
   FillStandardDescription(ARawImage.Description);
-  ARawImage.Description.Height := CGImageGetHeight(ScreenImage);
-  ARawImage.Description.Width := CGImageGetWidth(ScreenImage);
+  if Assigned(ScreenImage) then begin
+    ARawImage.Description.Height := CGImageGetHeight(ScreenImage);
+    ARawImage.Description.Width := CGImageGetWidth(ScreenImage);
+    ARawImage.Data := GetImagePixelData(ScreenImage, ARawImage.DataSize);
+  end;
   ARawImage.Mask := nil;
 
   { Copies the image data to a local buffer }
-  ARawImage.Data := GetImagePixelData(ScreenImage, ARawImage.DataSize);
 
   { clean-up }
   CGImageRelease(ScreenImage);

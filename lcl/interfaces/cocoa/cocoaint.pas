@@ -221,6 +221,7 @@ implementation
 {$R ../../cursor_hourglass.res}
 
 uses
+  dl,dynlibs,
   CocoaCaret,
   CocoaThemes;
 
