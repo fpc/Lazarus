@@ -20,7 +20,6 @@ unit CocoaPrivate;
 {$interfaces corba}
 
 {.$DEFINE COCOA_DEBUG_SETBOUNDS}
-{.$DEFINE COCOA_DEBUG_LISTVIEW}
 {.$DEFINE COCOA_SPIN_DEBUG}
 {.$DEFINE COCOA_SPINEDIT_INSIDE_CONTAINER}
 {.$DEFINE COCOA_SUPERVIEW_HEIGHT}
@@ -35,8 +34,7 @@ uses
   MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects,
   cocoa_extra,
   // LCL
-  LMessages, LCLMessageGlue, ExtCtrls, Graphics, Forms,
-  LCLType, LCLProc, Controls, ComCtrls, StdCtrls;
+  LCLType, ComCtrls, StdCtrls;
 
 const
   SPINEDIT_DEFAULT_STEPPER_WIDTH = 15;
