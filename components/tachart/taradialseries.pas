@@ -246,6 +246,9 @@ begin
   inherited Create(AOwner);
   FEdgePen := TPen.Create;
   FEdgePen.OnChange := @StyleChanged;
+
+  // Tell DataPointTool that data points are not at their regular x/y coordinates
+  FSpecialPointPos := True;
 end;
 
 destructor TCustomPieSeries.Destroy;

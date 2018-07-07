@@ -51,6 +51,7 @@ type
     FShadow: TChartShadow;
     FTransparency: TChartTransparency;
     FZPosition: TChartDistance;
+    FSpecialPointPos: Boolean;
 
     procedure AfterAdd; virtual; abstract;
     procedure AfterDraw; virtual;
@@ -93,6 +94,7 @@ type
     property DragOrigin: TPoint read FDragOrigin write FDragOrigin;
     property ParentChart: TChart read FChart;
     property Shadow: TChartShadow read FShadow write SetShadow;
+    property SpecialPointPos: Boolean read FSpecialPointPos;
     property Transparency: TChartTransparency
       read FTransparency write SetTransparency default 0;
     property ZPosition: TChartDistance read FZPosition write SetZPosition default 0;

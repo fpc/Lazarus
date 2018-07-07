@@ -1643,9 +1643,13 @@ procedure TDataPointTool.FindNearestPoint(APoint: TPoint);
     p: TDoublePoint;
     ext: TDoubleRect;
   begin
+    if ASeries.SpecialPointPos then
+      exit(true);
+
     r := ASeries.GetGraphBounds;
     ext := FChart.CurrentExtent;
-    if not RectIntersectsRect(r, ext) then exit(false);
+    if not RectIntersectsRect(r, ext) then
+      exit(false);
 
     if FMouseInsideOnly then begin
       p := FChart.ImageToGraph(APoint);
@@ -1795,7 +1799,7 @@ procedure TDataPointClickTool.MouseUp(APoint: TPoint);
 begin
   if
     Assigned(OnPointClick) and (FSeries <> nil) and
-    (PointDist(APoint, FMouseDownPoint) <= Sqr(GrabRadius))
+    (FSeries.SpecialPointPos or (PointDist(APoint, FMouseDownPoint) <= Sqr(GrabRadius)))
   then
     OnPointClick(Self, FMouseDownPoint);
   FSeries := nil;
