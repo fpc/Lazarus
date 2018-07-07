@@ -29,9 +29,7 @@ uses
   // Free Pascal
   Classes, SysUtils, Types,
   // Widgetset
-  CocoaGDIObjects, CocoaPrivate,
-  // LCL
-  Controls;
+  CocoaGDIObjects, CocoaPrivate;
 
 type
 
@@ -424,12 +422,9 @@ begin
 end;
 
 function TEmulatedCaret.IsValid: Boolean;
-var
-  ctrl: TControl;
 begin
-  ctrl := TControl(FView.lclGetTarget);
   Result := (FWidth > 0) and (FHeight > 0) and (FView <> nil) and FView.lclIsVisible
-    and Assigned(ctrl) and not (csDestroying in ctrl.ComponentState);
+    and Assigned(FView.lclGetTarget);
 end;
 
 procedure TEmulatedCaret.SetView(AView: NSView);
