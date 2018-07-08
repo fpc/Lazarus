@@ -42,6 +42,7 @@ type
     holdscroll : Integer; // do not send scroll messages
     function initWithFrame(ns: NSRect): id; override;
     procedure dealloc; override;
+    procedure setFrame(aframe: NSRect); override;
     function acceptsFirstResponder: Boolean; override;
     function becomeFirstResponder: Boolean; override;
     function resignFirstResponder: Boolean; override;
@@ -418,6 +419,25 @@ begin
   NSNotificationCenter.defaultCenter
     .removeObserver(self);
   inherited dealloc;
+end;
+
+procedure TCocoaScrollView.setFrame(aframe: NSRect);
+var
+  flg : NSUInteger;
+begin
+  inherited setFrame(aframe);
+  if isCustomRange and ((NSView(documentView).frame.size.height)<frame.size.height)
+  then begin
+    // force automatic resize for isCustomRange
+    flg:=documentView.autoresizingMask;
+    if flg and NSViewHeightSizable = 0 then
+    begin
+      flg := flg or NSViewHeightSizable;
+      documentView.setFrameOrigin( NSMakePoint(0, aframe.size.height));
+      documentView.setFrameSize(aframe.size);
+      documentView.setAutoresizingMask(flg);
+    end;
+  end;
 end;
 
 function TCocoaScrollView.acceptsFirstResponder: Boolean;
