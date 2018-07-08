@@ -33,7 +33,7 @@ uses
   WSStdCtrls, WSLCLClasses, WSControls, WSProc,
   // LCL Cocoa
   CocoaWSCommon, CocoaPrivate, CocoaUtils, CocoaGDIObjects, CocoaButtons,
-  CocoaTables, CocoaTextEdits;
+  CocoaTables, CocoaTextEdits, CocoaScrollers;
 
 type
 

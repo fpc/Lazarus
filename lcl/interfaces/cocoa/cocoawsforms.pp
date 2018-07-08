@@ -30,7 +30,8 @@ uses
   // Widgetset
   WSForms, WSLCLClasses, WSProc, LCLMessageGlue,
   // LCL Cocoa
-  CocoaPrivate, CocoaUtils, CocoaWSCommon, CocoaWSStdCtrls, CocoaWSMenus, CocoaWindows;
+  CocoaPrivate, CocoaUtils, CocoaWSCommon, CocoaWSStdCtrls, CocoaWSMenus,
+  CocoaWindows, CocoaScrollers;
 
 type
   { TLCLWindowCallback }

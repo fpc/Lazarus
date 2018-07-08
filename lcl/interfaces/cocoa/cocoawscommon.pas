@@ -12,7 +12,8 @@ uses
   Classes, Controls, SysUtils,
   //
   WSControls, LCLType, LMessages, LCLProc, Graphics, Forms,
-  CocoaPrivate, CocoaGDIObjects, CocoaCaret, CocoaUtils, LCLMessageGlue;
+  CocoaPrivate, CocoaGDIObjects, CocoaCaret, CocoaUtils, LCLMessageGlue,
+  CocoaScrollers;
 
 type
   { TLCLCommonCallback }
