@@ -410,30 +410,20 @@ end;
 
 procedure TCustomPieSeries.MovePointEx(var AIndex: Integer;
   AXIndex, AYIndex: Integer; const ANewPos: TDoublePoint);
-const
-  SENS = 25;  // empirical sensitivity factor for dragging
 var
   idx: Integer;
   p: TPoint;
-  vslice, vdrag: TDoublePoint;
-  phi, dist: Double;
+  r1, r2, dist: Double;
 begin
   Unused(AIndex, AXIndex, AYIndex);
 
   if FExploded then begin
-    p := ParentChart.GraphToImage(ANewPos);
-    idx := FindContainingSlice(p);
+    idx := FindContainingSlice(FDragOrigin);
     if idx > -1 then begin
-      // Center angle of slice (runs in counter-clockwise direction)
-      phi := FSlices[idx].CenterAngle;
-      // Radial slice vector (unit length)
-      vslice := DoublePoint(cos(phi), sin(phi));
-      // Direction vector of dragging
-      vdrag := ANewPos - ParentChart.ImageToGraph(FDragOrigin);
-      // Projection of dragging vector onto slice vector (length)
-      dist := DotProduct(vdrag, vslice);
-      // Add to distance parameter in source (x)
-      dist := Source.Item[idx]^.X + DotProduct(vdrag, vslice) / SENS;
+      p := ParentChart.GraphToImage(ANewPos);
+      r1 := sqrt(PointDist(FDragOrigin, FCenter));
+      r2 := sqrt(PointDist(p, FCenter));
+      dist := Source.Item[idx]^.X + (r2 - r1) / FRadius;
       if dist < 0 then dist := 0;  // Don't let value go negative
       ListSource.BeginUpdate;
       try
@@ -441,6 +431,7 @@ begin
       finally
         ListSource.EndUpdate;
       end;
+      FDragOrigin := p;
     end;
   end;
 end;
