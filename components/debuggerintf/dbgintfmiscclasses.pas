@@ -121,7 +121,7 @@ type
     procedure DoEndUpdate; virtual; // even if not changed
   public
     procedure Assign(ASource: TPersistent); override;
-    procedure BeginUpdate;
+    procedure BeginUpdate; virtual;
     constructor Create(ACollection: TCollection); override;
     procedure EndUpdate;
     function IsUpdating: Boolean;

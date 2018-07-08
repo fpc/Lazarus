@@ -346,10 +346,9 @@ type
     property Items[AIndex: Integer]: TIDEBreakPointGroup read GetItem; default;
   end;
 
-  TIDEBreakPoint = class(TBaseBreakPoint)
+  TIDEBreakPoint = class(TIDEBreakPointBase)
   private
     FLogEvalExpression: String;
-    FMaster: TDBGBreakPoint;
     FAutoContinueTime: Cardinal;
     FActions: TIDEBreakPointActions;
     FDisableGroupList: TIDEBreakPointGroupList;
@@ -370,6 +369,7 @@ type
     procedure SetEnabled(const AValue: Boolean); override;
     procedure SetInitialEnabled(const AValue: Boolean); override;
     procedure SetExpression(const AValue: String); override;
+    procedure SetKind(const AValue: TDBGBreakPointKind);
     function  DebugExeLine: Integer; virtual;  // Same as line, but in Subclass: the line in the compiled exe
 
     procedure DisableGroups;
@@ -450,10 +450,10 @@ type
   public
     constructor Create(const ABreakPointClass: TIDEBreakPointClass);
     destructor Destroy; override;
-    function Add(const ASource: String; const ALine: Integer): TIDEBreakPoint; overload;
-    function Add(const AAddress: TDBGPtr): TIDEBreakPoint; overload;
+    function Add(const ASource: String; const ALine: Integer; AnUpdating: Boolean = False): TIDEBreakPoint; overload; reintroduce;
+    function Add(const AAddress: TDBGPtr; AnUpdating: Boolean = False): TIDEBreakPoint; overload; reintroduce;
     function Add(const AData: String; const AScope: TDBGWatchPointScope;
-                 const AKind: TDBGWatchPointKind): TIDEBreakPoint; overload;
+                 const AKind: TDBGWatchPointKind; AnUpdating: Boolean = False): TIDEBreakPoint; overload; reintroduce;
     function Find(const ASource: String; const ALine: Integer): TIDEBreakPoint; overload;
     function Find(const ASource: String; const ALine: Integer; const AIgnore: TIDEBreakPoint): TIDEBreakPoint; overload;
     function Find(const AAddress: TDBGPtr): TIDEBreakPoint; overload;
@@ -4528,18 +4528,18 @@ begin
   if (Collection <> nil) and (TIDEBreakPoints(Collection).FMaster <> nil)
   and (Dest is TDBGBreakPoint)
   then begin
-    Assert(FMaster=nil, 'TManagedBreakPoint.AssignTO already has Master');
-    if FMaster <> nil then FMaster.Slave := nil;
-    FMaster := TDBGBreakPoint(Dest);
-    FMaster.Slave := Self;
+    Assert(Master=nil, 'TManagedBreakPoint.AssignTO already has Master');
+    if Master <> nil then Master.Slave := nil;
+    Master := TDBGBreakPoint(Dest);
+    Master.Slave := Self;
   end;
 end;
 
 procedure TIDEBreakPoint.DoChanged;
 begin
-  if (FMaster <> nil)
-  and (FMaster.Slave = nil)
-  then FMaster := nil;
+  if (Master <> nil)
+  and (Master.Slave = nil)
+  then Master := nil;
 
   inherited DoChanged;
 end;
@@ -4552,16 +4552,16 @@ end;
 
 function TIDEBreakPoint.GetHitCount: Integer;
 begin
-  if FMaster = nil
+  if Master = nil
   then Result := 0
-  else Result := FMaster.HitCount;
+  else Result := Master.HitCount;
 end;
 
 function TIDEBreakPoint.GetValid: TValidState;
 begin
-  if FMaster = nil
+  if Master = nil
   then Result := vsUnknown
-  else Result := FMaster.Valid;
+  else Result := Master.Valid;
 end;
 
 procedure TIDEBreakPoint.SetBreakHitCount(const AValue: Integer);
@@ -4569,7 +4569,7 @@ begin
   if BreakHitCount = AValue then exit;
   inherited SetBreakHitCount(AValue);
   DoUserChanged;
-  if FMaster <> nil then FMaster.BreakHitCount := AValue;
+  if Master <> nil then Master.BreakHitCount := AValue;
 end;
 
 procedure TIDEBreakPoint.SetEnabled(const AValue: Boolean);
@@ -4577,7 +4577,7 @@ begin
   if Enabled = AValue then exit;
   inherited SetEnabled(AValue);
   InitialEnabled:=Enabled;
-  if FMaster <> nil then FMaster.Enabled := AValue;
+  if Master <> nil then Master.Enabled := AValue;
 end;
 
 procedure TIDEBreakPoint.SetInitialEnabled(const AValue: Boolean);
@@ -4585,7 +4585,7 @@ begin
   if InitialEnabled = AValue then exit;
   inherited SetInitialEnabled(AValue);
   DoUserChanged;
-  if FMaster <> nil then FMaster.InitialEnabled := AValue;
+  if Master <> nil then Master.InitialEnabled := AValue;
 end;
 
 procedure TIDEBreakPoint.SetExpression(const AValue: String);
@@ -4593,7 +4593,15 @@ begin
   if AValue=Expression then exit;
   inherited SetExpression(AValue);
   DoUserChanged;
-  if FMaster <> nil then FMaster.Expression := AValue;
+  if Master <> nil then Master.Expression := AValue;
+end;
+
+procedure TIDEBreakPoint.SetKind(const AValue: TDBGBreakPointKind);
+begin
+  if AValue=Kind then exit;
+  inherited SetKind(AValue);
+  DoUserChanged;
+  if Master <> nil then Master.Kind := AValue;
 end;
 
 function TIDEBreakPoint.DebugExeLine: Integer;
@@ -4630,11 +4638,7 @@ destructor TIDEBreakPoint.Destroy;
 var
   Grp: TIDEBreakPointGroup;
 begin
-  if FMaster <> nil
-  then begin
-    FMaster.Slave := nil;
-    ReleaseRefAndNil(FMaster);
-  end;
+  ReleaseMaster;
 
   if (TIDEBreakPoints(Collection) <> nil)
   then TIDEBreakPoints(Collection).NotifyRemove(Self);
@@ -4673,11 +4677,11 @@ begin
   inherited DoHit(ACount, AContinue);
   AContinue := AContinue or not (bpaStop in Actions);
   if bpaLogMessage in Actions
-  then FMaster.DoLogMessage(FLogMessage);
+  then Master.DoLogMessage(FLogMessage);
   if (bpaEValExpression in Actions) and (Trim(FLogEvalExpression) <> '')
-  then FMaster.DoLogExpression(Trim(FLogEvalExpression));
+  then Master.DoLogExpression(Trim(FLogEvalExpression));
   if bpaLogCallStack in Actions
-  then FMaster.DoLogCallStack(FLogCallStackLimit);
+  then Master.DoLogCallStack(FLogCallStackLimit);
   // SnapShot is taken in TDebugManager.DebuggerChangeState
   if bpaEnableGroup in Actions
   then EnableGroups;
@@ -4737,7 +4741,7 @@ var
 begin
   FLoading:=true;
   try
-    Kind:=TDBGBreakPointKind(GetEnumValueDef(TypeInfo(TDBGBreakPointKind),XMLConfig.GetValue(Path+'Kind/Value',''),0));
+    SetKind(TDBGBreakPointKind(GetEnumValueDef(TypeInfo(TDBGBreakPointKind),XMLConfig.GetValue(Path+'Kind/Value',''),0)));
     GroupName:=XMLConfig.GetValue(Path+'Group/Name','');
     Group:=OnGetGroup(GroupName);
     Expression:=XMLConfig.GetValue(Path+'Expression/Value','');
@@ -4757,7 +4761,7 @@ begin
     FSource:=Filename;
 
     InitialEnabled:=XMLConfig.GetValue(Path+'InitialEnabled/Value',true);
-    Enabled:=FInitialEnabled;
+    Enabled:=InitialEnabled;
     FLine:=XMLConfig.GetValue(Path+'Line/Value',-1);
     FLogEvalExpression := XMLConfig.GetValue(Path+'LogEvalExpression/Value', '');
     FLogMessage:=XMLConfig.GetValue(Path+'LogMessage/Value','');
@@ -4835,26 +4839,30 @@ end;
 procedure TIDEBreakPoint.SetAddress(const AValue: TDBGPtr);
 begin
   inherited SetAddress(AValue);
-  if FMaster<>nil then FMaster.Address := Address;
+  if Master<>nil then Master.Address := Address;
+
+  //TODO: Why not DoUserChanged; ?
 end;
 
 procedure TIDEBreakPoint.SetLocation(const ASource: String; const ALine: Integer);
 begin
   inherited SetLocation(ASource, ALine);
-  if FMaster<>nil then FMaster.SetLocation(ASource, DebugExeLine);
+  if Master<>nil then Master.SetLocation(ASource, DebugExeLine);
+  //TODO: Why not DoUserChanged; ?
 end;
 
 procedure TIDEBreakPoint.SetWatch(const AData: String; const AScope: TDBGWatchPointScope;
   const AKind: TDBGWatchPointKind);
 begin
   inherited SetWatch(AData, AScope, AKind);
-  if FMaster<>nil then FMaster.SetWatch(AData, AScope, AKind);
+  if Master<>nil then Master.SetWatch(AData, AScope, AKind);
+  //TODO: Why not DoUserChanged; ?
 end;
 
 procedure TIDEBreakPoint.ResetMaster;
 begin
-  if FMaster <> nil then FMaster.Slave := nil;
-  FMaster := nil;
+  if Master <> nil then Master.Slave := nil;
+  Master := nil;
   Changed;
 end;
 
@@ -4918,23 +4926,25 @@ end;
 { TIDEBreakPoints }
 { =========================================================================== }
 
-function TIDEBreakPoints.Add(const ASource: String;
-  const ALine: Integer): TIDEBreakPoint;
+function TIDEBreakPoints.Add(const ASource: String; const ALine: Integer;
+  AnUpdating: Boolean): TIDEBreakPoint;
 begin
-  Result := TIDEBreakPoint(inherited Add(ASource, ALine));
+  Result := TIDEBreakPoint(inherited Add(ASource, ALine, AnUpdating));
   NotifyAdd(Result);
 end;
 
-function TIDEBreakPoints.Add(const AAddress: TDBGPtr): TIDEBreakPoint;
+function TIDEBreakPoints.Add(const AAddress: TDBGPtr; AnUpdating: Boolean
+  ): TIDEBreakPoint;
 begin
-  Result := TIDEBreakPoint(inherited Add(AAddress));
+  Result := TIDEBreakPoint(inherited Add(AAddress, AnUpdating));
   NotifyAdd(Result);
 end;
 
-function TIDEBreakPoints.Add(const AData: String; const AScope: TDBGWatchPointScope;
-  const AKind: TDBGWatchPointKind): TIDEBreakPoint;
+function TIDEBreakPoints.Add(const AData: String;
+  const AScope: TDBGWatchPointScope; const AKind: TDBGWatchPointKind;
+  AnUpdating: Boolean): TIDEBreakPoint;
 begin
-  Result := TIDEBreakPoint(inherited Add(AData, AScope, AKind));
+  Result := TIDEBreakPoint(inherited Add(AData, AScope, AKind, AnUpdating));
   NotifyAdd(Result);
 end;
 

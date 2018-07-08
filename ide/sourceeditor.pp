@@ -4678,10 +4678,11 @@ begin
   if not BreakFound then begin
     DebugBoss.LockCommandProcessing;
     try
-      DebugBoss.DoCreateBreakPoint(Filename, Line, True, ABrkPoint);
+      DebugBoss.DoCreateBreakPoint(Filename, Line, True, ABrkPoint, True);
       if Ctrl and (ABrkPoint <> nil)
       then ABrkPoint.Enabled := False;
     finally
+      ABrkPoint.EndUpdate;
       DebugBoss.UnLockCommandProcessing;
     end;
   end;

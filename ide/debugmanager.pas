@@ -253,10 +253,12 @@ type
                                 WarnIfNoDebugger: boolean): TModalResult; override;
     function DoCreateBreakPoint(const AFilename: string; ALine: integer;
                                 WarnIfNoDebugger: boolean;
-                                out ABrkPoint: TIDEBreakPoint): TModalResult; override;
+                                out ABrkPoint: TIDEBreakPoint;
+                                AnUpdating: Boolean = False): TModalResult; override;
     function DoCreateBreakPoint(const AnAddr: TDBGPtr;
                                 WarnIfNoDebugger: boolean;
-                                out ABrkPoint: TIDEBreakPoint): TModalResult; override;
+                                out ABrkPoint: TIDEBreakPoint;
+                                AnUpdating: Boolean = False): TModalResult; override;
 
     function DoDeleteBreakPoint(const AFilename: string;
                                 ALine: integer): TModalResult; override;
@@ -2920,31 +2922,28 @@ begin
   Result := DoCreateBreakPoint(AFilename, ALine, WarnIfNoDebugger, ABrkPoint);
 end;
 
-function TDebugManager.DoCreateBreakPoint(const AFilename: string; ALine: integer;
-  WarnIfNoDebugger: boolean; out ABrkPoint: TIDEBreakPoint): TModalResult;
+function TDebugManager.DoCreateBreakPoint(const AFilename: string;
+  ALine: integer; WarnIfNoDebugger: boolean; out ABrkPoint: TIDEBreakPoint;
+  AnUpdating: Boolean): TModalResult;
 begin
   ABrkPoint := nil;
   if WarnIfNoDebugger and not DoSetBreakkPointWarnIfNoDebugger then
     exit(mrCancel);
 
-  ABrkPoint := FBreakPoints.Add(AFilename, ALine);
+  ABrkPoint := FBreakPoints.Add(AFilename, ALine, AnUpdating);
   Result := mrOK;
 end;
 
-function TDebugManager.DoCreateBreakPoint(const AnAddr: TDBGPtr; WarnIfNoDebugger: boolean;
-  out ABrkPoint: TIDEBreakPoint): TModalResult;
+function TDebugManager.DoCreateBreakPoint(const AnAddr: TDBGPtr;
+  WarnIfNoDebugger: boolean; out ABrkPoint: TIDEBreakPoint; AnUpdating: Boolean
+  ): TModalResult;
 begin
-  LockCommandProcessing;
-  try
-    ABrkPoint := nil;
-    if WarnIfNoDebugger and not DoSetBreakkPointWarnIfNoDebugger then
-      exit(mrCancel);
+  ABrkPoint := nil;
+  if WarnIfNoDebugger and not DoSetBreakkPointWarnIfNoDebugger then
+    exit(mrCancel);
 
-    ABrkPoint := FBreakPoints.Add(AnAddr);
-    Result := mrOK;
-  finally
-    UnLockCommandProcessing;
-  end;
+  ABrkPoint := FBreakPoints.Add(AnAddr, AnUpdating);
+  Result := mrOK;
 end;
 
 function TDebugManager.DoDeleteBreakPoint(const AFilename: string;

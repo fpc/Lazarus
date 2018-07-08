@@ -296,29 +296,43 @@ type
   { TBaseBreakPoint }
 
   TBaseBreakPoint = class(TRefCountedColectionItem)
-  protected
+  private
     FAddress: TDBGPtr;
-    FWatchData: String;
     FEnabled: Boolean;
+    FInitialEnabled: Boolean;
     FExpression: String;
     FHitCount: Integer;      // Current counter
     FBreakHitCount: Integer; // The user configurable value
     FKind: TDBGBreakPointKind;
-    FLine: Integer;
+  protected  // TODO: private
+    FWatchData: String;
     FWatchScope: TDBGWatchPointScope;
     FWatchKind: TDBGWatchPointKind;
     FSource: String;
+    FLine: Integer;
     FValid: TValidState;
-    FInitialEnabled: Boolean;
+  protected
+    type
+      (* ciCreated  will be called, as soon as any other property is set the first time (or at EndUpdate)
+         ciLocation includes Address, WatchData,Watch....
+      *)
+      TDbgBpChangeIndicator = (ciCreated, ciDestroy, ciKind, ciLocation, ciEnabled, ciCondition, ciHitCount);
+      TDbgBpChangeIndicators = set of TDbgBpChangeIndicator;
+    // For the debugger backend to override
+  private
+    FPropertiesChanged: TDbgBpChangeIndicators;
+    FInPropertiesChanged: Boolean;
+    procedure PropertyChanged(AChanged: TDbgBpChangeIndicator);
+  protected
+    procedure DoPropertiesChanged(AChanged: TDbgBpChangeIndicators); virtual;
+    procedure DoExpressionChange; virtual;
+    procedure DoEnableChange; virtual;
+    // TODO: ClearPropertiesChanged, if needed inside DoPropertiesChanged
   protected
     procedure AssignLocationTo(Dest: TPersistent); virtual;
     procedure AssignTo(Dest: TPersistent); override;
-    procedure DoBreakHitCountChange; virtual;
-    procedure DoExpressionChange; virtual;
-    procedure DoEnableChange; virtual;
     procedure DoHit(const ACount: Integer; var {%H-}AContinue: Boolean); virtual;
     procedure SetHitCount(const AValue: Integer);
-    procedure DoKindChange; virtual;
     procedure SetValid(const AValue: TValidState);
   protected
     // virtual properties
@@ -334,25 +348,27 @@ type
     function GetWatchScope: TDBGWatchPointScope; virtual;
     function GetWatchKind: TDBGWatchPointKind; virtual;
     function GetValid: TValidState; virtual;
+    procedure DoEndUpdate; override;
 
-    procedure SetAddress(const AValue: TDBGPtr); virtual;
     procedure SetBreakHitCount(const AValue: Integer); virtual;
     procedure SetEnabled(const AValue: Boolean); virtual;
     procedure SetExpression(const AValue: String); virtual;
     procedure SetInitialEnabled(const AValue: Boolean); virtual;
-    procedure SetKind(const AValue: TDBGBreakPointKind); virtual;
+    procedure SetKind(const AValue: TDBGBreakPointKind);
   public
     constructor Create(ACollection: TCollection); override;
+    destructor Destroy; override;
+    procedure SetPendingToValid(const AValue: TValidState);
     // PublicProtectedFix ide/debugmanager.pas(867,32) Error: identifier idents no member "SetLocation"
     property BreakHitCount: Integer read GetBreakHitCount write SetBreakHitCount;
     property Enabled: Boolean read GetEnabled write SetEnabled;
     property Expression: String read GetExpression write SetExpression;
     property HitCount: Integer read GetHitCount;
     property InitialEnabled: Boolean read FInitialEnabled write SetInitialEnabled;
-    property Kind: TDBGBreakPointKind read GetKind write SetKind;
+    property Kind: TDBGBreakPointKind read GetKind;
     property Valid: TValidState read GetValid;
   public
-    procedure SetPendingToValid(const AValue: TValidState);
+    procedure SetAddress(const AValue: TDBGPtr); virtual;
     procedure SetLocation(const ASource: String; const ALine: Integer); virtual;
     procedure SetWatch(const AData: String; const AScope: TDBGWatchPointScope;
                        const AKind: TDBGWatchPointKind); virtual;
@@ -378,7 +394,7 @@ type
     function GetDebugger: TDebuggerIntf;
     procedure SetSlave(const ASlave : TBaseBreakPoint);
   protected
-    procedure SetEnabled(const AValue: Boolean); override;
+    procedure SetEnabled(const AValue: Boolean); override; // TODO: remove, currently used by WatchPoint, instead of vsInvalid
     procedure DoChanged; override;
     procedure DoStateChange(const AOldState: TDBGState); virtual;
     property  Debugger: TDebuggerIntf read GetDebugger;
@@ -387,12 +403,29 @@ type
     destructor Destroy; override;
     procedure Hit(var ACanContinue: Boolean);
     property Slave: TBaseBreakPoint read FSlave write SetSlave;
+    property Kind: TDBGBreakPointKind read GetKind write SetKind; // TODO: remove, used by TIDEBreakPoint.SetKind
 
     procedure DoLogMessage(const AMessage: String); virtual;
     procedure DoLogCallStack(const {%H-}Limit: Integer); virtual;
     procedure DoLogExpression(const {%H-}AnExpression: String); virtual; // implemented in TGDBMIBreakpoint
   end;
   TDBGBreakPointClass = class of TDBGBreakPoint;
+
+  { TIdeBreakPointBase }
+
+  TIdeBreakPointBase = class(TBaseBreakPoint)
+  private
+    FMaster: TDBGBreakPoint;
+    procedure SetMaster(AValue: TDBGBreakPoint);
+  protected
+    procedure BeginUpdate; override;
+    procedure DoEndUpdate; override;
+    procedure ReleaseMaster;
+    property Master: TDBGBreakPoint read FMaster write SetMaster;
+    // TODO: move TBaseBreakPoint properties from IDE te IDEBase
+  public
+    destructor Destroy; override;
+  end;
 
   { TBaseBreakPoints }
 
@@ -403,10 +436,10 @@ type
     constructor Create(const ABreakPointClass: TBaseBreakPointClass);
     destructor Destroy; override;
     procedure Clear; reintroduce;
-    function Add(const ASource: String; const ALine: Integer): TBaseBreakPoint; overload;
-    function Add(const AAddress: TDBGPtr): TBaseBreakPoint; overload;
+    function Add(const ASource: String; const ALine: Integer; AnUpdating: Boolean = False): TBaseBreakPoint; overload;
+    function Add(const AAddress: TDBGPtr; AnUpdating: Boolean = False): TBaseBreakPoint; overload;
     function Add(const AData: String; const AScope: TDBGWatchPointScope;
-                 const AKind: TDBGWatchPointKind): TBaseBreakPoint; overload;
+                 const AKind: TDBGWatchPointKind; AnUpdating: Boolean = False): TBaseBreakPoint; overload;
     function Find(const ASource: String; const ALine: Integer): TBaseBreakPoint; overload;
     function Find(const ASource: String; const ALine: Integer; const AIgnore: TBaseBreakPoint): TBaseBreakPoint; overload;
     function Find(const AAddress: TDBGPtr): TBaseBreakPoint; overload;
@@ -431,10 +464,10 @@ type
   public
     constructor Create(const ADebugger: TDebuggerIntf;
                        const ABreakPointClass: TDBGBreakPointClass);
-    function Add(const ASource: String; const ALine: Integer): TDBGBreakPoint; overload;
-    function Add(const AAddress: TDBGPtr): TDBGBreakPoint; overload;
+    function Add(const ASource: String; const ALine: Integer; AnUpdating: Boolean = False): TDBGBreakPoint; overload; reintroduce;
+    function Add(const AAddress: TDBGPtr; AnUpdating: Boolean = False): TDBGBreakPoint; overload; reintroduce;
     function Add(const AData: String; const AScope: TDBGWatchPointScope;
-                 const AKind: TDBGWatchPointKind): TDBGBreakPoint; overload;
+                 const AKind: TDBGWatchPointKind; AnUpdating: Boolean = False): TDBGBreakPoint; overload; reintroduce;
     function Find(const ASource: String; const ALine: Integer): TDBGBreakPoint; overload;
     function Find(const ASource: String; const ALine: Integer; const AIgnore: TDBGBreakPoint): TDBGBreakPoint; overload;
     function Find(const AAddress: TDBGPtr): TDBGBreakPoint; overload;
@@ -3495,7 +3528,8 @@ begin
   if FKind <> AValue
   then begin
     FKind := AValue;
-    DoKindChange;
+    Changed;
+    PropertyChanged(ciKind);
   end;
 end;
 
@@ -3505,6 +3539,7 @@ begin
   begin
     FAddress := AValue;
     Changed;
+    PropertyChanged(ciLocation);
   end;
 end;
 
@@ -3551,6 +3586,7 @@ end;
 
 constructor TBaseBreakPoint.Create(ACollection: TCollection);
 begin
+  FPropertiesChanged := [ciCreated];
   FAddress := 0;
   FSource := '';
   FLine := -1;
@@ -3565,15 +3601,45 @@ begin
   AddReference;
 end;
 
+destructor TBaseBreakPoint.Destroy;
+begin
+  FPropertiesChanged := []; // Do not sent old changes
+  if not IsUpdating then
+    PropertyChanged(ciDestroy);
+  inherited Destroy;
+end;
+
 procedure TBaseBreakPoint.SetPendingToValid(const AValue: TValidState);
 begin
   assert(Valid = vsPending, 'Can only change state if pending');
   SetValid(AValue);
 end;
 
-procedure TBaseBreakPoint.DoBreakHitCountChange;
+procedure TBaseBreakPoint.PropertyChanged(AChanged: TDbgBpChangeIndicator);
+var
+  c: TDbgBpChangeIndicators;
 begin
-  Changed;
+  FPropertiesChanged := FPropertiesChanged + [AChanged];
+  if IsUpdating or FInPropertiesChanged then
+    exit;
+  FInPropertiesChanged := True;
+  try
+    while FPropertiesChanged <> [] do begin
+      c := FPropertiesChanged;
+      FPropertiesChanged := [];
+      DoPropertiesChanged(c);
+    end;
+  finally
+    FInPropertiesChanged := False;
+  end;
+end;
+
+procedure TBaseBreakPoint.DoPropertiesChanged(AChanged: TDbgBpChangeIndicators);
+begin
+  if ciEnabled in AChanged then
+    DoEnableChange;
+  if ciCondition in AChanged then
+    DoExpressionChange;
 end;
 
 procedure TBaseBreakPoint.DoEnableChange;
@@ -3626,12 +3692,32 @@ begin
   Result := FValid;
 end;
 
+procedure TBaseBreakPoint.DoEndUpdate;
+var
+  c: TDbgBpChangeIndicators;
+begin
+  inherited DoEndUpdate;
+  if FInPropertiesChanged then
+    exit;
+  FInPropertiesChanged := True;
+  try
+    while FPropertiesChanged <> [] do begin
+      c := FPropertiesChanged;
+      FPropertiesChanged := [];
+      DoPropertiesChanged(c);
+    end;
+  finally
+    FInPropertiesChanged := False;
+  end;
+end;
+
 procedure TBaseBreakPoint.SetBreakHitCount(const AValue: Integer);
 begin
   if FBreakHitCount <> AValue
   then begin
     FBreakHitCount := AValue;
-    DoBreakHitCountChange;
+    Changed;
+    PropertyChanged(ciHitCount);
   end;
 end;
 
@@ -3640,7 +3726,7 @@ begin
   if FEnabled <> AValue
   then begin
     FEnabled := AValue;
-    DoEnableChange;
+    PropertyChanged(ciEnabled);
   end;
 end;
 
@@ -3649,7 +3735,7 @@ begin
   if FExpression <> AValue
   then begin
     FExpression := AValue;
-    DoExpressionChange;
+    PropertyChanged(ciCondition);
   end;
 end;
 
@@ -3660,11 +3746,6 @@ begin
     FHitCount := AValue;
     Changed;
   end;
-end;
-
-procedure TBaseBreakPoint.DoKindChange;
-begin
-  Changed;
 end;
 
 procedure TBaseBreakPoint.SetInitialEnabled(const AValue: Boolean);
@@ -3679,6 +3760,7 @@ begin
   FSource := ASource;
   FLine := ALine;
   Changed;
+  PropertyChanged(ciLocation);
 end;
 
 procedure TBaseBreakPoint.SetWatch(const AData: String; const AScope: TDBGWatchPointScope;
@@ -3689,6 +3771,7 @@ begin
   FWatchScope := AScope;
   FWatchKind := AKind;
   Changed;
+  PropertyChanged(ciLocation);
 end;
 
 procedure TBaseBreakPoint.SetValid(const AValue: TValidState );
@@ -3824,30 +3907,79 @@ begin
   if FSlave <> nil then FSlave.Enabled := AValue;
 end;
 
+{ TIdeBreakPointBase }
+
+procedure TIdeBreakPointBase.SetMaster(AValue: TDBGBreakPoint);
+begin
+  if FMaster = AValue then Exit;
+  if (FMaster <> nil) and IsUpdating then FMaster.EndUpdate;
+  FMaster := AValue;
+  if (FMaster <> nil) and IsUpdating then FMaster.BeginUpdate;
+end;
+
+procedure TIdeBreakPointBase.BeginUpdate;
+begin
+  if (not IsUpdating) and (FMaster <> nil) then FMaster.BeginUpdate;
+  inherited BeginUpdate;
+end;
+
+procedure TIdeBreakPointBase.DoEndUpdate;
+begin
+  inherited DoEndUpdate;
+  if FMaster <> nil then FMaster.EndUpdate;
+end;
+
+procedure TIdeBreakPointBase.ReleaseMaster;
+begin
+  if FMaster <> nil
+  then begin
+    FMaster.Slave := nil;
+    ReleaseRefAndNil(FMaster);
+  end;
+end;
+
+destructor TIdeBreakPointBase.Destroy;
+begin
+  ReleaseMaster;
+  inherited Destroy;
+end;
+
 { =========================================================================== }
 { TBaseBreakPoints }
 { =========================================================================== }
 
-function TBaseBreakPoints.Add(const ASource: String; const ALine: Integer): TBaseBreakPoint;
+function TBaseBreakPoints.Add(const ASource: String; const ALine: Integer;
+  AnUpdating: Boolean): TBaseBreakPoint;
 begin
   Result := TBaseBreakPoint(inherited Add);
+  Result.BeginUpdate;
   Result.SetKind(bpkSource);
   Result.SetLocation(ASource, ALine);
+  if not AnUpdating then
+    Result.EndUpdate;
 end;
 
-function TBaseBreakPoints.Add(const AAddress: TDBGPtr): TBaseBreakPoint;
+function TBaseBreakPoints.Add(const AAddress: TDBGPtr; AnUpdating: Boolean
+  ): TBaseBreakPoint;
 begin
   Result := TBaseBreakPoint(inherited Add);
+  Result.BeginUpdate;
   Result.SetKind(bpkAddress);
   Result.SetAddress(AAddress);
+  if not AnUpdating then
+    Result.EndUpdate;
 end;
 
-function TBaseBreakPoints.Add(const AData: String; const AScope: TDBGWatchPointScope;
-  const AKind: TDBGWatchPointKind): TBaseBreakPoint;
+function TBaseBreakPoints.Add(const AData: String;
+  const AScope: TDBGWatchPointScope; const AKind: TDBGWatchPointKind;
+  AnUpdating: Boolean): TBaseBreakPoint;
 begin
   Result := TBaseBreakPoint(inherited Add);
+  Result.BeginUpdate;
   Result.SetKind(bpkData);
   Result.SetWatch(AData, AScope, AKind);
+  if not AnUpdating then
+    Result.EndUpdate;
 end;
 
 constructor TBaseBreakPoints.Create(const ABreakPointClass: TBaseBreakPointClass);
@@ -3935,20 +4067,23 @@ end;
 { TDBGBreakPoints }
 { =========================================================================== }
 
-function TDBGBreakPoints.Add (const ASource: String; const ALine: Integer ): TDBGBreakPoint;
+function TDBGBreakPoints.Add(const ASource: String; const ALine: Integer;
+  AnUpdating: Boolean): TDBGBreakPoint;
 begin
-  Result := TDBGBreakPoint(inherited Add(ASource, ALine));
+  Result := TDBGBreakPoint(inherited Add(ASource, ALine, AnUpdating));
 end;
 
-function TDBGBreakPoints.Add(const AAddress: TDBGPtr): TDBGBreakPoint;
+function TDBGBreakPoints.Add(const AAddress: TDBGPtr; AnUpdating: Boolean
+  ): TDBGBreakPoint;
 begin
-  Result := TDBGBreakPoint(inherited Add(AAddress));
+  Result := TDBGBreakPoint(inherited Add(AAddress, AnUpdating));
 end;
 
-function TDBGBreakPoints.Add(const AData: String; const AScope: TDBGWatchPointScope;
-  const AKind: TDBGWatchPointKind): TDBGBreakPoint;
+function TDBGBreakPoints.Add(const AData: String;
+  const AScope: TDBGWatchPointScope; const AKind: TDBGWatchPointKind;
+  AnUpdating: Boolean): TDBGBreakPoint;
 begin
-  Result := TDBGBreakPoint(inherited Add(AData, AScope, AKind));
+  Result := TDBGBreakPoint(inherited Add(AData, AScope, AKind, AnUpdating));
 end;
 
 constructor TDBGBreakPoints.Create(const ADebugger: TDebuggerIntf;

@@ -881,12 +881,12 @@ begin
   ADebugger := TFpDebugDebugger(Debugger);
   if (ADebugger.State in [dsPause, dsInit]) then
     begin
-    if FEnabled and not FIsSet then
+    if Enabled and not FIsSet then
       FSetBreakFlag := True
-    else if not FEnabled and FIsSet then
+    else if not Enabled and FIsSet then
       FResetBreakFlag := True;
     end
-  else if (ADebugger.State = dsRun) and ((FEnabled and not FIsSet) or (not FEnabled and FIsSet)) then
+  else if (ADebugger.State = dsRun) and ((Enabled and not FIsSet) or (not Enabled and FIsSet)) then
     ADebugger.QuickPause;
   inherited;
 end;

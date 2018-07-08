@@ -9625,7 +9625,7 @@ begin
   then SetBreakPoint;
   if FUpdateFlags * [bufEnabled, bufCondition] <> []
   then UpdateProperties(FUpdateFlags);
-  inherited DoChanged;
+  inherited DoEndUpdate;
 end;
 
 procedure TGDBMIBreakPoint.ReleaseBreakPoint;
