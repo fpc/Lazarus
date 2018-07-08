@@ -11,10 +11,7 @@
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Other>
-        <CompilerMessages>
-          <MsgFileName Value=""/>
-        </CompilerMessages>
-        <CompilerPath Value="$(CompPath)"/>
+        <CustomOptions Value="$(IDEBuildOptions)"/>
       </Other>
     </CompilerOptions>
     <Description Value="Debugger for the Lazarus IDE

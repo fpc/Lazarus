@@ -2,6 +2,7 @@
 <CONFIG>
   <Package Version="4">
     <Name Value="LazDebuggerFp"/>
+    <Type Value="RunAndDesignTime"/>
     <Author Value="Joost van der Sluis"/>
     <CompilerOptions>
       <Version Value="11"/>
@@ -9,10 +10,7 @@
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Other>
-        <CompilerMessages>
-          <MsgFileName Value=""/>
-        </CompilerMessages>
-        <CompilerPath Value="$(CompPath)"/>
+        <CustomOptions Value="$(IDEBuildOptions)"/>
       </Other>
     </CompilerOptions>
     <Description Value="This package adds a stand-alone debugger to the IDE. For now it is only a proof-of-concept. Evaluating data is not (yet) possible."/>
@@ -24,7 +22,6 @@
         <UnitName Value="FpDebugDebugger"/>
       </Item1>
     </Files>
-    <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="3">
       <Item1>
         <PackageName Value="fpdebug"/>
