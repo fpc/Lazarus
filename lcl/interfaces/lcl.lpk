@@ -129,7 +129,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Minor="9"/>
-    <Files Count="482">
+    <Files Count="483">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
         <AddToUsesPkgSection Value="False"/>
@@ -2386,6 +2386,11 @@ end;"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaTextEdits"/>
       </Item482>
+      <Item483>
+        <Filename Value="cocoa/cocoascrollers.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CocoaScrollers"/>
+      </Item483>
     </Files>
     <LazDoc Paths="../../docs/xml/lcl"/>
     <i18n>
