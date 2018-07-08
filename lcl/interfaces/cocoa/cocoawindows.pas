@@ -27,7 +27,7 @@ uses
   CGGeometry,
   // Libs
   MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects,
-  cocoa_extra, CocoaPrivate,
+  cocoa_extra, CocoaPrivate, CocoaTextEdits,
   // LCL
   Forms, LCLType, LCLProc;
 

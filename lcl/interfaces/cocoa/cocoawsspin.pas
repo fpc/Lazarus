@@ -26,7 +26,7 @@ uses
   // widgetset
   WSSpin, WSLCLClasses,
   // cocoa ws
-  CocoaPrivate, CocoaWSCommon;
+  CocoaPrivate, CocoaWSCommon, CocoaTextEdits;
 
 type
 
