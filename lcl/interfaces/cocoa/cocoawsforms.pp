@@ -31,7 +31,7 @@ uses
   WSForms, WSLCLClasses, WSProc, LCLMessageGlue,
   // LCL Cocoa
   CocoaPrivate, CocoaUtils, CocoaWSCommon, CocoaWSStdCtrls, CocoaWSMenus,
-  CocoaWindows, CocoaScrollers;
+  CocoaWindows, CocoaScrollers, cocoa_extra;
 
 type
   { TLCLWindowCallback }
@@ -517,6 +517,10 @@ begin
     ns.release;
     win.setReleasedWhenClosed(False); // do not release automatically
     win.setAcceptsMouseMovedEvents(True);
+
+    if win.respondsToSelector(ObjCSelector('setTabbingMode:')) then
+      win.setTabbingMode(NSWindowTabbingModeDisallowed);
+
     if AWinControl.Perform(WM_NCHITTEST, 0, 0)=HTTRANSPARENT then
       win.setIgnoresMouseEvents(True);
 

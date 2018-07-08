@@ -68,12 +68,19 @@ type
     class function modifierFlags_: NSUInteger; message 'modifierFlags';
   end;
 
+  NSWindowTabbingMode = NSInteger;
+
   NSWindowFix = objccategory external (NSWindow)
     // 10.4-10.7
     function userSpaceScaleFactor: CGFloat; message 'userSpaceScaleFactor'; //deprecated
     // 10.7+
     procedure toggleFullScreen(sender: id); message 'toggleFullScreen:';
     function backingScaleFactor: CGFloat; message 'backingScaleFactor';
+    // 10.12
+    procedure setTabbingMode(amode: NSWindowTabbingMode); message 'setTabbingMode:';
+    function tabbingMode: NSWindowTabbingMode; message 'tabbingMode';
+    class procedure setAllowsAutomaticWindowTabbing(aflag: Boolean); message 'setAllowsAutomaticWindowTabbing:';
+    class function allowsAutomaticWindowTabbing: Boolean; message 'allowsAutomaticWindowTabbing';
   end;
 
   {// private since 10.5, doesn't seam to do anything in 10.10
@@ -121,6 +128,10 @@ const
   NSWindowCollectionBehaviorFullScreenAuxiliary = 1 shl 8;  // 10.7
   NSWindowCollectionBehaviorFullScreenAllowsTiling = 1 shl 11; // 10.11
   NSWindowCollectionBehaviorFullScreenDisallowsTiling = 1 shl 12; // 10.11
+
+  NSWindowTabbingModeAutomatic  = 0; // The system automatically prefers to tab this window when appropriate
+  NSWindowTabbingModePreferred  = 1; // The window explicitly should prefer to tab when shown
+  NSWindowTabbingModeDisallowed = 2; // The window explicitly should not prefer to tab when shown
 
 implementation
 
