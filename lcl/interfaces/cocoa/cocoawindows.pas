@@ -263,8 +263,24 @@ begin
 end;
 
 function TCocoaWindowContent.performKeyEquivalent(event: NSEvent): Boolean;
+var
+  resp : NSResponder;
+  wn   : NSWindow;
+  view : NSTextView;
 begin
-  Result:=inherited performKeyEquivalent(event);
+  Result := false;
+  // only respond to key, if focused
+
+  wn := window;
+  if not Assigned(wn) then Exit;
+  resp := wn.firstResponder;
+  if (not Assigned(resp)) or (not resp.isKindOfClass_(NSTextView)) then Exit;
+
+  if (not resp.lclIsEnabled) then Exit;
+
+  NSResponderHotKeys(self, event, Result, resp);
+  if not Result then
+    Result:=inherited performKeyEquivalent(event);
 end;
 
 procedure TCocoaWindowContent.resolvePopupParent();
