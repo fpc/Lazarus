@@ -106,7 +106,8 @@ type
     procedure DeletePath(const APath: string);
     procedure DeleteValue(const APath: string);
     function FindNode(const APath: String; PathHasValue: boolean): TDomNode;
-    function HasPath(const APath: string; PathHasValue: boolean): boolean; // checks if the path has values, set PathHasValue=true to skip the last part
+    // checks if the path has values, set PathHasValue=true to skip the last part
+    function HasPath(const APath: string; PathHasValue: boolean): boolean;
     function HasChildPaths(const APath: string): boolean;
     property Modified: Boolean read FModified write FModified;
     procedure InvalidatePathCache;

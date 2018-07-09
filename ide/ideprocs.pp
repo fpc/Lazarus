@@ -152,7 +152,7 @@ function SearchDirectoryInSearchPath(const SearchPath, Directory: string;
 function SearchDirectoryInSearchPath(SearchPath: TStrings;
                     const Directory: string; DirStartPos: integer = 0): integer;
 
-// XMLConfig
+// Recent item lists
 type
   TRecentListType = (
     rltCaseSensitive,
@@ -171,12 +171,13 @@ function StrToRecentListType(s: string): TRecentListType;
 function CompareRecentListItem(s1, s2: string; ListType: TRecentListType): boolean;
 procedure LoadRecentList(XMLConfig: TXMLConfig; List: TStrings; const Path: string;
                          ListType: TRecentListType);
-procedure SaveRecentList(XMLConfig: TXMLConfig; List: TStrings; const Path: string);
-function AddToRecentList(const s: string; RecentList: TStrings; Max: integer;
+procedure SaveRecentList(XMLConfig: TXMLConfig; List: TStrings;
+                         const Path: string);
+function AddToRecentList(const s: string; List: TStrings; aMax: integer;
                          ListType: TRecentListType): boolean;
-function AddComboTextToRecentList(cb: TCombobox; Max: integer;
+function AddComboTextToRecentList(cb: TCombobox; aMax: integer;
                                   ListType: TRecentListType): boolean;
-procedure RemoveFromRecentList(const s: string; RecentList: TStrings;
+procedure RemoveFromRecentList(const s: string; List: TStrings;
                                ListType: TRecentListType);
 procedure CleanUpRecentList(List: TStrings; ListType: TRecentListType);
 
@@ -193,20 +194,19 @@ procedure LoadPoint(XMLConfig: TXMLConfig; const Path:string;
                     var APoint:TPoint; const DefaultPoint: TPoint);
 procedure SavePoint(XMLConfig: TXMLConfig; const Path:string;
                     const APoint, DefaultPoint:TPoint);
-function PointToCfgStr(const Point: TPoint): string;
-procedure CfgStrToPoint(const s: string; var Point: TPoint;
-                        const DefaultPoint: TPoint);
-procedure LoadStringList(XMLConfig: TXMLConfig; List: TStrings;
-                         const Path: string);
-procedure SaveStringList(XMLConfig: TXMLConfig; List: TStrings;
-                         const Path: string);
+procedure LoadStringList(XMLConfig: TXMLConfig; List: TStrings; const Path: string);
+procedure SaveStringList(XMLConfig: TXMLConfig; List: TStrings; const Path: string);
 procedure LoadStringToStringTree(XMLConfig: TXMLConfig;
                                  Tree: TStringToStringTree; const Path: string);
 procedure SaveStringToStringTree(XMLConfig: TXMLConfig;
                                  Tree: TStringToStringTree; const Path: string);
 procedure MakeXMLName(var Name: string);
 function LoadXMLConfigViaCodeBuffer(Filename: string): TXMLConfig;
-  
+
+// Point conversion
+function PointToCfgStr(const Point: TPoint): string;
+procedure CfgStrToPoint(const s: string; var Point: TPoint;
+                        const DefaultPoint: TPoint);
 
 // text conversion
 function TabsToSpaces(const s: string; TabWidth: integer; UseUTF8: boolean
@@ -270,7 +270,6 @@ function CheckGroupItemChecked(CheckGroup: TCheckGroup; const Caption: string): 
 
 implementation
 
-
 {$IfNdef MSWindows}
 {$ifNdef HASAMIGA}
 // to get more detailed error messages consider the os
@@ -278,57 +277,6 @@ uses
   Unix, BaseUnix;
 {$EndIf}
 {$EndIf}
-
-function AddToRecentList(const s: string; RecentList: TStrings; Max: integer;
-  ListType: TRecentListType): boolean;
-begin
-  if (RecentList.Count>0) and CompareRecentListItem(RecentList[0],s,ListType) then
-    exit(false);
-  Result:=true;
-  RemoveFromRecentList(s,RecentList,ListType);
-  RecentList.Insert(0,s);
-  if Max>0 then
-    while RecentList.Count>Max do
-      RecentList.Delete(RecentList.Count-1);
-end;
-
-function AddComboTextToRecentList(cb: TCombobox; Max: integer;
-  ListType: TRecentListType): boolean;
-var
-  List: TStringList;
-begin
-  List := TStringList.Create;
-  try
-    List.Assign(cb.Items);
-    if (List.Count>0) and CompareRecentListItem(List[0],cb.Text,ListType) then
-      exit(false);
-    Result:=true;
-    RemoveFromRecentList(cb.Text,List,ListType);
-    List.Insert(0,cb.Text);
-    if Max>0 then
-      while List.Count>Max do
-        List.Delete(List.Count-1);
-    cb.Items.Assign(List);
-    cb.ItemIndex:=0;
-  finally
-    List.Free;
-  end;
-end;
-
-procedure RemoveFromRecentList(const s: string; RecentList: TStrings;
-  ListType: TRecentListType);
-var
-  i: integer;
-begin
-  for i:=RecentList.Count-1 downto 0 do
-    if CompareRecentListItem(RecentList[i],s,ListType) then
-      RecentList.Delete(i);
-end;
-
-procedure SaveRecentList(XMLConfig: TXMLConfig; List: TStrings; const Path: string);
-begin
-  SaveStringList(XMLConfig,List,Path);
-end;
 
 {-------------------------------------------------------------------------------
   function FindFilesCaseInsensitive(const Directory,
@@ -977,6 +925,8 @@ begin
   FindCloseUTF8(FileInfo);
 end;
 
+// Recent item lists :
+
 function IndexInRecentList(List: TStrings; ListType: TRecentListType;
   const Path: string): integer;
 begin
@@ -1008,23 +958,67 @@ begin
   CleanUpRecentList(List,ListType);
 end;
 
-procedure LoadPoint(XMLConfig: TXMLConfig; const Path: string;
-                    var APoint: TPoint; const DefaultPoint: TPoint);
+procedure SaveRecentList(XMLConfig: TXMLConfig; List: TStrings; const Path: string);
 begin
-  APoint.X:=XMLConfig.GetValue(Path+'X',DefaultPoint.X);
-  APoint.Y:=XMLConfig.GetValue(Path+'Y',DefaultPoint.Y);
+  SaveStringList(XMLConfig,List,Path);
 end;
 
-procedure SavePoint(XMLConfig: TXMLConfig; const Path: string;
-                    const APoint, DefaultPoint: TPoint);
+function AddToRecentList(const s: string; List: TStrings; aMax: integer;
+  ListType: TRecentListType): boolean;
 begin
-  XMLConfig.SetDeleteValue(Path+'X',APoint.X,DefaultPoint.X);
-  XMLConfig.SetDeleteValue(Path+'Y',APoint.Y,DefaultPoint.Y);
+  if (List.Count>0) and CompareRecentListItem(List[0],s,ListType) then
+    exit(false);
+  Result:=true;
+  RemoveFromRecentList(s,List,ListType);
+  List.Insert(0,s);
+  if aMax>0 then
+    while List.Count>aMax do
+      List.Delete(List.Count-1);
 end;
 
-procedure LoadStringList(XMLConfig: TXMLConfig; List: TStrings;
-  const Path: string);
-var i,Count: integer;
+function AddComboTextToRecentList(cb: TCombobox; aMax: integer;
+  ListType: TRecentListType): boolean;
+var
+  List: TStringList;
+begin
+  List:=TStringList.Create;
+  try
+    List.Assign(cb.Items);
+    Result:=AddToRecentList(cb.Text,List,aMax,ListType);
+    if Result then
+    begin
+      cb.Items.Assign(List);
+      cb.ItemIndex:=0;
+    end;
+  finally
+    List.Free;
+  end;
+end;
+
+procedure RemoveFromRecentList(const s: string; List: TStrings;
+  ListType: TRecentListType);
+var
+  i: integer;
+begin
+  for i:=List.Count-1 downto 0 do
+    if CompareRecentListItem(List[i],s,ListType) then
+      List.Delete(i);
+end;
+
+procedure CleanUpRecentList(List: TStrings; ListType: TRecentListType);
+var
+  i: Integer;
+begin
+  for i:=List.Count-1 downto 1 do
+    if (List[i]='') or CompareRecentListItem(List[i],List[i-1],ListType) then
+      List.Delete(i);
+end;
+
+// XMLConfig
+
+procedure LoadStringList(XMLConfig: TXMLConfig; List: TStrings; const Path: string);
+var
+  i,Count: integer;
   s: string;
 begin
   Count:=XMLConfig.GetValue(Path+'Count',0);
@@ -1035,9 +1029,9 @@ begin
   end;
 end;
 
-procedure SaveStringList(XMLConfig: TXMLConfig; List: TStrings;
-  const Path: string);
-var i: integer;
+procedure SaveStringList(XMLConfig: TXMLConfig; List: TStrings; const Path: string);
+var
+  i: integer;
 begin
   XMLConfig.SetDeleteValue(Path+'Count',List.Count,0);
   for i:=0 to List.Count-1 do
@@ -1115,15 +1109,6 @@ begin
   end;
 end;
 
-procedure CleanUpRecentList(List: TStrings; ListType: TRecentListType);
-var
-  i: Integer;
-begin
-  for i:=List.Count-1 downto 1 do
-    if (List[i]='') or CompareRecentListItem(List[i],List[i-1],ListType) then
-      List.Delete(i);
-end;
-
 procedure LoadRect(XMLConfig: TXMLConfig; const Path: string;
   var ARect: TRect);
 begin
@@ -1151,6 +1136,20 @@ begin
   XMLConfig.SetDeleteValue(Path+'Top',ARect.Top,DefaultRect.Top);
   XMLConfig.SetDeleteValue(Path+'Right',ARect.Right,DefaultRect.Right);
   XMLConfig.SetDeleteValue(Path+'Bottom',ARect.Bottom,DefaultRect.Bottom);
+end;
+
+procedure LoadPoint(XMLConfig: TXMLConfig; const Path: string;
+                    var APoint: TPoint; const DefaultPoint: TPoint);
+begin
+  APoint.X:=XMLConfig.GetValue(Path+'X',DefaultPoint.X);
+  APoint.Y:=XMLConfig.GetValue(Path+'Y',DefaultPoint.Y);
+end;
+
+procedure SavePoint(XMLConfig: TXMLConfig; const Path: string;
+                    const APoint, DefaultPoint: TPoint);
+begin
+  XMLConfig.SetDeleteValue(Path+'X',APoint.X,DefaultPoint.X);
+  XMLConfig.SetDeleteValue(Path+'Y',APoint.Y,DefaultPoint.Y);
 end;
 
 procedure SplitCmdLine(const CmdLine: string;
