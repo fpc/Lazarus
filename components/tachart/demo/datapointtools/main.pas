@@ -22,6 +22,8 @@ type
     BoxWhiskerSeries: TBoxAndWhiskerSeries;
     BubbleSeries: TBubbleSeries;
     BSplineSeries: TBSplineSeries;
+    PieSeriesDatapointDragTool: TDataPointDragTool;
+    PieSeries: TPieSeries;
     FitSeries: TFitSeries;
     FieldSeries: TFieldSeries;
     FuncSeries: TFuncSeries;
@@ -35,7 +37,7 @@ type
     CbDragXY: TCheckBox;
     DatapointInfo: TLabel;
     LblNOTE: TLabel;
-    Label2: TLabel;
+    LblUSAGE: TLabel;
     ListChartSource: TListChartSource;
     CrosshairTool: TDataPointCrosshairTool;
     HintTool: TDataPointHintTool;
@@ -75,12 +77,16 @@ implementation
 
 {$R *.lfm}
 
+uses
+  TALegend;
+
 { TMainForm }
 
 procedure TMainForm.CbCandleStickChange(Sender: TObject);
 begin
   if CbCandleStick.Checked then
-    OHLCSeries.Mode := mCandleStick else
+    OHLCSeries.Mode := mCandleStick
+  else
     OHLCSeries.Mode := mOHLC;
 end;
 
@@ -206,6 +212,15 @@ begin
     FieldSeries.AddVector(x, y1, x2, y2);
   end;
 
+  PieSeries.ListSource.Clear;
+  for i:=0 to 4 do begin
+    y1 := Random*10;
+    PieSeries.AddXY(0, y1, 'Item ' + IntToStr(i+1));
+  end;
+  PieSeries.Legend.Multiplicity := lmPoint;
+  PieSeries.Marks.Style := smsLabel;
+  PieSeries.Exploded := true;
+
   LineSeries.Index := 0;
   BarSeries.Index := 1;
   AreaSeries.Index := 2;
@@ -219,6 +234,7 @@ begin
   FieldSeries.Index := 10;
   FuncSeries.Index := 11;
   ConstantLineSeries.Index := 12;
+  PieSeries.Index := 13;
 
   TabControlChange(nil);
   DatapointInfo.Caption := '';
@@ -255,7 +271,15 @@ begin
           ATool.NearestGraphPoint.X, ATool.NearestGraphPoint.Y
         ])
       else
-      if (ATool.PointIndex > -1) and (ATool.YIndex > -1) then
+      if (ATool.PointIndex > -1) and (ser.Source.YCount = 1) then
+        Result := Format('"%s": Point index %d, x = %.2f, y = %.2f', [
+          ser.Title,
+          ATool.PointIndex,
+          ser.XValue[ATool.PointIndex],
+          ser.YValue[ATool.PointIndex]
+        ])
+      else
+      if (ATool.PointIndex > -1) and (ser.Source.YCount > 1) and (ATool.YIndex > -1) then
         Result := Format('"%s": Point index %d, x = %.2f, y = %.2f (y index %d)', [
           ser.Title,
           ATool.PointIndex,
@@ -290,6 +314,7 @@ begin
 
   BubbleSeriesDatapointDragTool.Enabled := TabControl.TabIndex = BubbleSeries.Index;
   FieldSeriesDatapointDragTool.Enabled := TabControl.TabIndex = FieldSeries.Index;
+  PieSeriesDatapointDragTool.Enabled := TabControl.TabIndex = PieSeries.Index;
   DataPointDragTool.Enabled := not
     (BubbleSeriesDatapointDragTool.Enabled or FieldSeriesDatapointDragtool.Enabled);
 
@@ -299,6 +324,9 @@ begin
   if FieldSeriesDatapointDragTool.Enabled then
     FieldSeriesDatapointDragTool.AffectedSeries := s
   else
+  if PieSeriesDatapointDragTool.Enabled then
+    PieSeriesDatapointDragtool.AffectedSeries := s
+  else
     DatapointDragtool.AffectedSeries := s;
 
   // Treatment of special requirements of particular series
@@ -306,6 +334,11 @@ begin
   LblNOTE.Visible := LineSeries.Active or BarSeries.Active or AreaSeries.Active;
   Chart.LeftAxis.Range.UseMax := ConstantLineSeries.Active;
   Chart.LeftAxis.Range.UseMin := ConstantLineSeries.Active;
+
+  if PieSeries.Active then
+    LblUsage.Caption := StringReplace(LblUsage.Caption, 'datapoint', 'pie', [])
+  else
+    LblUsage.Caption := StringReplace(LblUsage.Caption, 'pie', 'datapoint', []);
 
   s := '';
   if LineSeries.Active or BarSeries.Active or AreaSeries.Active then begin
@@ -326,7 +359,9 @@ begin
       'Overlapping bubbles may be detected erroneously.';
   if s <> '' then
     LblNOTE.Caption := 'NOTE:' + LineEnding + s;
-  LblNote.Visible := (s <> '');
+  LblNOTE.Visible := (s <> '');
+
+  CbDragXY.Enabled := not PieSeries.Active;
 end;
 
 end.

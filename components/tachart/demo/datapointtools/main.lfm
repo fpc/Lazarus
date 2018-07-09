@@ -30,13 +30,14 @@ object MainForm: TMainForm
       'Field series'
       'Function series'
       'Constant line'
+      'Pie series'
     )
     Align = alClient
     TabOrder = 0
     object Chart: TChart
       Left = 2
-      Height = 302
-      Top = 43
+      Height = 282
+      Top = 63
       Width = 633
       AutoFocus = True
       AxisList = <      
@@ -87,6 +88,7 @@ object MainForm: TMainForm
         BarBrush.Color = clRed
         BarWidthStyle = bwPercentMin
         Source = ListChartSource
+        Stacked = True
         Styles = ChartStyles
       end
       object AreaSeries: TAreaSeries
@@ -184,6 +186,9 @@ object MainForm: TMainForm
         Pointer.VertSize = 5
         Pointer.Visible = False
       end
+      object PieSeries: TPieSeries
+        Title = 'Pie series'
+      end
     end
   end
   object Panel1: TPanel
@@ -226,7 +231,7 @@ object MainForm: TMainForm
     end
     object LblNOTE: TLabel
       AnchorSideLeft.Control = Panel1
-      AnchorSideTop.Control = Label2
+      AnchorSideTop.Control = LblUSAGE
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = Panel1
       AnchorSideRight.Side = asrBottom
@@ -242,7 +247,7 @@ object MainForm: TMainForm
       ParentColor = False
       WordWrap = True
     end
-    object Label2: TLabel
+    object LblUSAGE: TLabel
       AnchorSideLeft.Control = Panel1
       AnchorSideTop.Control = CbDragXY
       AnchorSideTop.Side = asrBottom
@@ -314,6 +319,9 @@ object MainForm: TMainForm
       GrabRadius = 12
       OnDraw = CrosshairToolDraw
       Size = 12
+    end
+    object PieSeriesDatapointDragTool: TDataPointDragTool
+      Shift = [ssLeft]
     end
   end
   object ChartStyles: TChartStyles
