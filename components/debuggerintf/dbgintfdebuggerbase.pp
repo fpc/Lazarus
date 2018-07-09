@@ -322,8 +322,9 @@ type
   private
     FPropertiesChanged: TDbgBpChangeIndicators;
     FInPropertiesChanged: Boolean;
-    procedure PropertyChanged(AChanged: TDbgBpChangeIndicator);
   protected
+    procedure MarkPropertyChanged(AChanged: TDbgBpChangeIndicator);
+    procedure MarkPropertiesChanged(AChanged: TDbgBpChangeIndicators);
     procedure DoPropertiesChanged(AChanged: TDbgBpChangeIndicators); virtual;
     procedure DoExpressionChange; virtual;
     procedure DoEnableChange; virtual;
@@ -392,12 +393,14 @@ type
   private
     FSlave: TBaseBreakPoint;
     function GetDebugger: TDebuggerIntf;
+    function GetDebuggerState: TDBGState;
     procedure SetSlave(const ASlave : TBaseBreakPoint);
   protected
     procedure SetEnabled(const AValue: Boolean); override; // TODO: remove, currently used by WatchPoint, instead of vsInvalid
     procedure DoChanged; override;
     procedure DoStateChange(const AOldState: TDBGState); virtual;
     property  Debugger: TDebuggerIntf read GetDebugger;
+    property  DebuggerState: TDBGState read GetDebuggerState;
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
@@ -3529,7 +3532,7 @@ begin
   then begin
     FKind := AValue;
     Changed;
-    PropertyChanged(ciKind);
+    MarkPropertyChanged(ciKind);
   end;
 end;
 
@@ -3539,7 +3542,7 @@ begin
   begin
     FAddress := AValue;
     Changed;
-    PropertyChanged(ciLocation);
+    MarkPropertyChanged(ciLocation);
   end;
 end;
 
@@ -3605,7 +3608,7 @@ destructor TBaseBreakPoint.Destroy;
 begin
   FPropertiesChanged := []; // Do not sent old changes
   if not IsUpdating then
-    PropertyChanged(ciDestroy);
+    MarkPropertyChanged(ciDestroy);
   inherited Destroy;
 end;
 
@@ -3615,11 +3618,17 @@ begin
   SetValid(AValue);
 end;
 
-procedure TBaseBreakPoint.PropertyChanged(AChanged: TDbgBpChangeIndicator);
+procedure TBaseBreakPoint.MarkPropertyChanged(AChanged: TDbgBpChangeIndicator);
+begin
+  MarkPropertiesChanged([AChanged]);
+end;
+
+procedure TBaseBreakPoint.MarkPropertiesChanged(AChanged: TDbgBpChangeIndicators
+  );
 var
   c: TDbgBpChangeIndicators;
 begin
-  FPropertiesChanged := FPropertiesChanged + [AChanged];
+  FPropertiesChanged := FPropertiesChanged + AChanged;
   if IsUpdating or FInPropertiesChanged then
     exit;
   FInPropertiesChanged := True;
@@ -3697,18 +3706,7 @@ var
   c: TDbgBpChangeIndicators;
 begin
   inherited DoEndUpdate;
-  if FInPropertiesChanged then
-    exit;
-  FInPropertiesChanged := True;
-  try
-    while FPropertiesChanged <> [] do begin
-      c := FPropertiesChanged;
-      FPropertiesChanged := [];
-      DoPropertiesChanged(c);
-    end;
-  finally
-    FInPropertiesChanged := False;
-  end;
+  MarkPropertiesChanged([]);
 end;
 
 procedure TBaseBreakPoint.SetBreakHitCount(const AValue: Integer);
@@ -3717,7 +3715,7 @@ begin
   then begin
     FBreakHitCount := AValue;
     Changed;
-    PropertyChanged(ciHitCount);
+    MarkPropertyChanged(ciHitCount);
   end;
 end;
 
@@ -3726,7 +3724,7 @@ begin
   if FEnabled <> AValue
   then begin
     FEnabled := AValue;
-    PropertyChanged(ciEnabled);
+    MarkPropertyChanged(ciEnabled);
   end;
 end;
 
@@ -3735,7 +3733,7 @@ begin
   if FExpression <> AValue
   then begin
     FExpression := AValue;
-    PropertyChanged(ciCondition);
+    MarkPropertyChanged(ciCondition);
   end;
 end;
 
@@ -3760,7 +3758,7 @@ begin
   FSource := ASource;
   FLine := ALine;
   Changed;
-  PropertyChanged(ciLocation);
+  MarkPropertyChanged(ciLocation);
 end;
 
 procedure TBaseBreakPoint.SetWatch(const AData: String; const AScope: TDBGWatchPointScope;
@@ -3771,7 +3769,7 @@ begin
   FWatchScope := AScope;
   FWatchKind := AKind;
   Changed;
-  PropertyChanged(ciLocation);
+  MarkPropertyChanged(ciLocation);
 end;
 
 procedure TBaseBreakPoint.SetValid(const AValue: TValidState );
@@ -3891,6 +3889,14 @@ end;
 function TDBGBreakPoint.GetDebugger: TDebuggerIntf;
 begin
   Result := TDBGBreakPoints(Collection).FDebugger;
+end;
+
+function TDBGBreakPoint.GetDebuggerState: TDBGState;
+begin
+  if Debugger <> nil then
+    Result := Debugger.State
+  else
+    Result := dsNone;
 end;
 
 procedure TDBGBreakPoint.SetSlave(const ASlave : TBaseBreakPoint);

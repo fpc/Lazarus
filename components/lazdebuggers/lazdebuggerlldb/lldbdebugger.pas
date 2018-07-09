@@ -153,6 +153,7 @@ type
     FTargetWidth: Byte;
     FTargetRegisters: array[0..2] of String;
     FExceptionBreakId: Integer;
+    FLldbMissingBreakSetDisable: Boolean;
     FExceptionInfo: record
       FReg0Cmd, FExceptClassCmd, FExceptMsgCmd: String;
       FAtExcepiton: Boolean; // cleared in Setstate
@@ -335,28 +336,21 @@ type
   private
     FBreakID: Integer;
     FCurrentInstruction: TLldbInstruction;
-    FState: (bpDone, bpNeedSet, bpNeedDel);
-    FUpdateState: set of (buEnabled, buCondition);
-    procedure InstructionDeleteBreakFinished(Sender: TObject);
+    FNeededChanges: TDbgBpChangeIndicators;
     procedure InstructionSetBreakFinished(Sender: TObject);
     procedure InstructionUpdateBreakFinished(Sender: TObject);
     procedure SetBreakPoint;
     procedure ReleaseBreakPoint;
-    procedure UpdateProperties;
+    procedure UpdateProperties(AChanged: TDbgBpChangeIndicators);
     procedure DoCurrentInstructionFinished;
     procedure CancelCurrentInstruction;
   protected
     procedure DoStateChange(const AOldState: TDBGState); override;
-    procedure DoEndUpdate; override;
-    procedure DoEnableChange; override;
-    procedure DoExpressionChange; override;
+    procedure DoPropertiesChanged(AChanged: TDbgBpChangeIndicators); override;
   public
 //    constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
 //    procedure DoLogExpression(const AnExpression: String); override;
-    procedure SetLocation(const ASource: String; const ALine: Integer); override;
-//    procedure SetWatch(const AData: String; const AScope: TDBGWatchPointScope;
-//                       const AKind: TDBGWatchPointKind); override;
   end;
 
   { TLldbBreakPoints }
@@ -738,24 +732,30 @@ var
   i: Integer;
   s: String;
   Instr: TLldbInstruction;
+  en: Boolean;
 begin
-  if not (Debugger.State in [dsPause, dsInternalPause, dsRun]) then
-    exit;
   debugln(['TLldbBreakPoint.SetBreakPoint ']);
-  if (FCurrentInstruction <> nil) then begin
-    if FCurrentInstruction.IsRunning then begin
-      FState := bpNeedSet;
-      exit;
+
+  if FCurrentInstruction <> nil then begin
+    if (FBreakID <> 0) or (not FCurrentInstruction.IsRunning) then begin
+      // Can be a queued SetBreak => replace
+      // Or an Update => don't care, ReleaseBreakpoint will be called
+      CancelCurrentInstruction;
     end
     else begin
-      CancelCurrentInstruction;
+      // already running a SetBreakPoint
+      FNeededChanges := FNeededChanges + [ciLocation]; // wait for instruction to finish // need ID to del
+      exit;
     end;
   end;
-  FState := bpDone;
 
-  if FBreakID <> 0 then begin
-    UpdateProperties;
-    exit;
+  if (FBreakID <> 0) then
+    ReleaseBreakPoint;
+
+  en := Enabled;
+  if TLldbDebugger(Debugger).FLldbMissingBreakSetDisable and (not en) and (Kind <> bpkData) then begin
+    en := True;
+    FNeededChanges := FNeededChanges + [ciEnabled];
   end;
 
   case Kind of
@@ -765,10 +765,10 @@ begin
         s := Copy(Source, i+1, Length(Source))
       else
         s := Source;
-      Instr := TLldbInstructionBreakSet.Create(s, Line, not Enabled, Expression);
+      Instr := TLldbInstructionBreakSet.Create(s, Line, not en, Expression);
     end;
     bpkAddress: begin
-      Instr := TLldbInstructionBreakSet.Create(Address, not Enabled, Expression);
+      Instr := TLldbInstructionBreakSet.Create(Address, not en, Expression);
     end;
     bpkData: begin
       if not Enabled then // do not set, if not enabled
@@ -776,6 +776,8 @@ begin
       // TODO: scope
       // TODO: apply , Expression, not Enabled
       Instr := TLldbInstructionWatchSet.Create(WatchData, WatchKind);
+      if Expression <> '' then
+        FNeededChanges := FNeededChanges + [ciCondition];
     end;
   end;
 
@@ -785,61 +787,45 @@ begin
 end;
 
 procedure TLldbBreakPoint.InstructionSetBreakFinished(Sender: TObject);
+var
+  nc: TDbgBpChangeIndicators;
 begin
   DoCurrentInstructionFinished;
 
+  if TLldbInstructionBreakOrWatchSet(Sender).LldbNoDisableError then begin
+    TLldbDebugger(Debugger).FLldbMissingBreakSetDisable := True;
+    FNeededChanges := FNeededChanges + [ciLocation]
+  end;
+
   if TLldbInstructionBreakOrWatchSet(Sender).IsSuccess then begin
     FBreakID := TLldbInstructionBreakOrWatchSet(Sender).BreakId;
-    if FState <> bpNeedDel then
+    if FNeededChanges * [ciDestroy, ciLocation] = [] then
       SetValid(TLldbInstructionBreakOrWatchSet(Sender).State);
   end
   else
     SetValid(vsInvalid);
 
-  if FState = bpNeedDel then
-    ReleaseBreakPoint;
+  nc := FNeededChanges;
+  FNeededChanges := [];
+  MarkPropertiesChanged(nc);
 end;
 
 procedure TLldbBreakPoint.InstructionUpdateBreakFinished(Sender: TObject);
+var
+  nc: TDbgBpChangeIndicators;
 begin
   DoCurrentInstructionFinished;
 
-  if FState = bpNeedSet then
-    SetBreakPoint
-  else
-  if FState = bpNeedDel then
-    ReleaseBreakPoint;
-end;
-
-procedure TLldbBreakPoint.InstructionDeleteBreakFinished(Sender: TObject);
-begin
-  DoCurrentInstructionFinished;
-  FBreakID := 0;
-
-  if FState = bpNeedSet then
-    SetBreakPoint;
+  nc := FNeededChanges;
+  FNeededChanges := [];
+  MarkPropertiesChanged(nc);
 end;
 
 procedure TLldbBreakPoint.ReleaseBreakPoint;
 var
   Instr: TLldbInstruction;
 begin
-  if not (Debugger.State in [dsPause, dsInternalPause, dsRun, dsStop]) then
-    exit;
-  if (FCurrentInstruction <> nil) then begin
-    if (FCurrentInstruction is TLldbInstructionBreakDelete) or
-       (FCurrentInstruction is TLldbInstructionWatchDelete)
-    then
-      exit;
-    if FCurrentInstruction.IsRunning then begin
-      FState := bpNeedDel;
-      exit;
-    end
-    else begin
-      CancelCurrentInstruction;
-    end;
-  end;
-  FState := bpDone;
+  CancelCurrentInstruction;
 
   if FBreakID <= 0 then exit;
   SetHitCount(0);
@@ -850,62 +836,51 @@ begin
     bpkData:
       Instr := TLldbInstructionWatchDelete.Create(FBreakID);
   end;
+  FBreakID := 0; // Allow a new location to be set immediately
 
+  //Instr.OwningCommand := Self;  // if it needs to be cancelled
   TLldbDebugger(Debugger).FDebugInstructionQueue.QueueInstruction(Instr);
-  Instr.OnFinish := @InstructionDeleteBreakFinished;
-  FCurrentInstruction := Instr;
+  Instr.ReleaseReference;
 end;
 
-procedure TLldbBreakPoint.UpdateProperties;
+procedure TLldbBreakPoint.UpdateProperties(AChanged: TDbgBpChangeIndicators);
 var
   Instr: TLldbInstruction;
 begin
-  if not (Debugger.State in [dsPause, dsInternalPause, dsRun]) then
-    exit;
-
-  if IsUpdating or (FUpdateState = []) then
-    exit;
+  assert(AChanged * [ciEnabled, ciCondition] <> [], 'break.UpdateProperties() AChanged * [ciEnabled, ciCondition] <> []');
 
   if (FCurrentInstruction <> nil) then begin
-    if (FCurrentInstruction is TLldbInstructionBreakDelete) or
-       (FCurrentInstruction is TLldbInstructionWatchDelete)
-    then
-      exit; // can not change deleted breakpoint
-    if FCurrentInstruction.IsRunning then begin
-      FState := bpNeedSet;
-      exit;
-    end
-    else begin
-      CancelCurrentInstruction;
-    end;
+    FNeededChanges := FNeededChanges + AChanged;
+    exit;
   end;
-  FState := bpDone;
 
-  if FBreakID <= 0 then begin
+  if FBreakID = 0 then begin
+    Assert(false, 'update // FBreakID = 0');
     SetBreakPoint;
     exit;
   end;
 
   case Kind of
   	bpkSource, bpkAddress:
-      if buCondition in FUpdateState
+      if ciCondition in AChanged
       then Instr := TLldbInstructionBreakModify.Create(FBreakID, not Enabled, Expression)
       else Instr := TLldbInstructionBreakModify.Create(FBreakID, not Enabled);
     bpkData:
-      if buCondition in FUpdateState then begin
+    begin
+      if Enabled <> (FBreakID <> 0) then begin
         if Enabled
-        then SetBreakPoint
+        then SetBreakPoint // will
         else ReleaseBreakPoint;
         exit;
-      end
-      else Instr := TLldbInstructionWatchModify.Create(FBreakID, Expression);
+      end;
+      if ciCondition in AChanged then
+        Instr := TLldbInstructionWatchModify.Create(FBreakID, Expression);
+    end;
   end;
 
   TLldbDebugger(Debugger).FDebugInstructionQueue.QueueInstruction(Instr);
   Instr.OnFinish := @InstructionUpdateBreakFinished;
   FCurrentInstruction := Instr;
-
-  FUpdateState := [];
 end;
 
 procedure TLldbBreakPoint.DoCurrentInstructionFinished;
@@ -928,11 +903,11 @@ end;
 procedure TLldbBreakPoint.DoStateChange(const AOldState: TDBGState);
 begin
   inherited DoStateChange(AOldState);
-  case Debugger.State of
+  case DebuggerState of
     dsRun: if AOldState = dsInit then begin
       // Disabled data breakpoints: wait until enabled
       // Disabled other breakpoints: Give to LLDB to see if they are valid
-      SetBreakpoint;
+      SetBreakPoint
     end;
     dsStop: begin
       if FBreakID > 0
@@ -941,45 +916,28 @@ begin
   end;
 end;
 
-procedure TLldbBreakPoint.DoEndUpdate;
+procedure TLldbBreakPoint.DoPropertiesChanged(AChanged: TDbgBpChangeIndicators);
 begin
-  inherited DoEndUpdate;
-  UpdateProperties;
-end;
+  FNeededChanges := [];
+  if not (DebuggerState in [dsPause, dsInternalPause, dsRun]) then
+    exit;
 
-procedure TLldbBreakPoint.DoEnableChange;
-begin
-  inherited DoEnableChange;
-  if Kind = bpkData then begin
-    if Enabled
-    then SetBreakPoint
-    else ReleaseBreakPoint;
+  if ciDestroy in AChanged then begin
+    ReleaseBreakPoint;
+    DoCurrentInstructionFinished;
     exit;
   end;
 
-  FUpdateState := FUpdateState + [buEnabled];
-  UpdateProperties;
-end;
-
-procedure TLldbBreakPoint.DoExpressionChange;
-begin
-  inherited DoExpressionChange;
-  FUpdateState := FUpdateState + [buCondition];
-  UpdateProperties;
+  if AChanged * [ciLocation, ciCreated] <> [] then
+    SetBreakPoint
+  else
+    UpdateProperties(AChanged);
 end;
 
 destructor TLldbBreakPoint.Destroy;
 begin
   DoCurrentInstructionFinished;
   inherited Destroy;
-end;
-
-procedure TLldbBreakPoint.SetLocation(const ASource: String;
-  const ALine: Integer);
-begin
-  inherited SetLocation(ASource, ALine);
-  if Debugger.State in [dsPause, dsInternalPause, dsRun] then
-    SetBreakPoint;
 end;
 
 { TLldbBreakPoints }

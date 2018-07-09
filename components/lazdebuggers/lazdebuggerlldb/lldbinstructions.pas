@@ -110,12 +110,14 @@ type
   TLldbInstructionBreakOrWatchSet = class(TLldbInstruction)
   private
     FBreakId: Integer;
+    FLldbNoDisableError: Boolean;
     FState: TValidState;
   protected
     function ProcessInputFromDbg(const AData: String): Boolean; override;
   public
     property BreakId: Integer read FBreakId;
     property State: TValidState read FState;
+    property LldbNoDisableError: Boolean read FLldbNoDisableError;
   end;
 
   { TLldbInstructionBreakSet }
@@ -351,6 +353,13 @@ var
   found, found2: TStringArray;
 begin
   Result := True;
+
+  if StrMatches(AData, ['error:', 'unrecognized option', 'disable', '']) then begin
+    FLldbNoDisableError := True;
+    MarkAsFailed;
+    exit;
+  end;
+
   if StrMatches(AData, ['Breakpoint ',': ', ''], found) then begin
     i := StrToIntDef(found[0], -1);
     if i = -1 then begin
@@ -689,8 +698,10 @@ function TLldbInstructionBreakDelete.ProcessInputFromDbg(const AData: String
   ): Boolean;
 begin
   Result := inherited ProcessInputFromDbg(AData);
+  if Result then exit;  // if Result=true then self is destroyed;
 
-  if not Result then // if Result=true then self is destroyed;
+  //ReadLn "1 breakpoints deleted; 0 breakpoint locations disabled."
+  if StrMatches(AData, ['', 'breakpoint', 'deleted', '']) then
     MarkAsSuccess;
   Result := true;
 
