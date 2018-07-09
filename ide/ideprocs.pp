@@ -172,7 +172,9 @@ function CompareRecentListItem(s1, s2: string; ListType: TRecentListType): boole
 procedure LoadRecentList(XMLConfig: TXMLConfig; List: TStrings; const Path: string;
                          ListType: TRecentListType);
 procedure SaveRecentList(XMLConfig: TXMLConfig; List: TStrings;
-                         const Path: string);
+                         const Path: string); overload;
+procedure SaveRecentList(XMLConfig: TXMLConfig; List: TStrings;
+                         const Path: string; aMax: Integer); overload;
 function AddToRecentList(const s: string; List: TStrings; aMax: integer;
                          ListType: TRecentListType): boolean;
 function AddComboTextToRecentList(cb: TCombobox; aMax: integer;
@@ -961,6 +963,26 @@ end;
 procedure SaveRecentList(XMLConfig: TXMLConfig; List: TStrings; const Path: string);
 begin
   SaveStringList(XMLConfig,List,Path);
+end;
+
+procedure SaveRecentList(XMLConfig: TXMLConfig; List: TStrings;
+  const Path: string; aMax: Integer);
+var
+  i: Integer;
+  s: String;
+begin
+  if aMax>0 then
+    while List.Count>aMax do    // Truncate list to aMax items.
+      List.Delete(List.Count-1);
+  SaveStringList(XMLConfig,List,Path);
+  i:=List.Count+1;
+  while True do
+  begin
+    s:=Path+'Item'+IntToStr(i);
+    if not XMLConfig.HasPath(s+'/Value',True) then Break;
+    XMLConfig.DeletePath(s);    // Remove excess items from XML.
+    Inc(i);
+  end;
 end;
 
 function AddToRecentList(const s: string; List: TStrings; aMax: integer;
