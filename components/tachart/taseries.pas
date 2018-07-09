@@ -98,6 +98,7 @@ type
     property SeriesColor: TColor
       read GetSeriesColor write SetSeriesColor stored false default clRed;
     property Source;
+    property Stacked default true;
     property Styles;
     property ToolTargets default [nptPoint, nptYList, nptCustom];
     property UseReticule;
@@ -1117,13 +1118,12 @@ var
   p: TDoublePoint;
   heights: TDoubleDynArray;
 
-  procedure BuildBar;
+  procedure BuildBar(x, y1, y2: Double);
   var
     graphBar: TDoubleRect;
     imageBar: TRect;
   begin
-    graphBar :=
-      DoubleRect(p.X - w, heights[stackIndex], p.X + w, heights[stackIndex + 1]);
+    graphBar := DoubleRect(x - w, y1, x + w, y2);
     if IsRotated then
       with graphBar do begin
         Exchange(a.X, a.Y);
@@ -1166,16 +1166,33 @@ begin
     BarOffsetWidth(p.X, pointIndex, ofs, w);
     p.X += ofs;
     heights[0] := ZeroLevel;
-    heights[1] := NumberOr(p.Y, ZeroLevel);
-    for stackIndex := 1 to Source.YCount - 1 do begin
-      y := Source[pointIndex]^.YList[stackIndex - 1];
-      if not IsNan(y) then
-        heights[stackIndex + 1] := heights[stackIndex] + y;
+    if FStacked then begin
+      heights[1] := NumberOr(p.Y, ZeroLevel);
+      for stackIndex := 1 to Source.YCount - 1 do begin
+        y := Source[pointIndex]^.YList[stackIndex - 1];
+        if not IsNan(y) then
+          heights[stackIndex + 1] := heights[stackIndex] + y;
+      end;
+      for stackIndex := 0 to High(heights) do
+        heights[stackindex] := AxisToGraphY(heights[stackindex]);
+      for stackIndex := 0 to Source.YCount - 1 do
+        BuildBar(p.X, heights[stackindex], heights[stackIndex+1]);
+    end else begin
+      for stackIndex := 0 to Source.YCount - 1 do begin
+        y := Source[pointIndex]^.GetY(stackIndex);
+        if not IsNaN(y) then
+          heights[stackIndex + 1] := y
+        else
+          heights[stackIndex + 1] := 0;
+      end;
+      p.X -= w;
+      w := w / High(heights);
+      p.X += w;
+      for stackIndex := 0 to Source.YCount - 1 do begin
+        BuildBar(p.X, heights[0], heights[stackIndex+1]);
+        p.X += 2*w;
+      end;
     end;
-    for stackIndex := 0 to High(heights) do
-      heights[stackindex] := AxisToGraphY(heights[stackindex]);
-    for stackIndex := 0 to Source.YCount - 1 do
-      BuildBar;
   end;
 
   DrawLabels(ADrawer);
