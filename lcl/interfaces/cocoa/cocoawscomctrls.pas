@@ -367,7 +367,7 @@ begin
   Result := TLCLIntfHandle(lControl);
   if Result <> 0 then
   begin
-    lControl.callback := TLCLCommonCallback.Create(lControl, AWinControl);
+    //lControl.callback := TLCLCommonCallback.Create(lControl, AWinControl);
     SetProperties(TCustomPage(AWinControl), lControl);
 
     // Set a special view for the page
@@ -383,6 +383,7 @@ begin
     tv.tabView := tabview;
     tv.tabPage := lControl;
     tv.callback := TLCLCommonCallback.Create(tv, AWinControl);
+    lControl.callback := tv.callback;
 
     // view.addSubview works better than setView, no idea why
     lControl.view.setAutoresizesSubviews(True);
