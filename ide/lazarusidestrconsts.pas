@@ -1426,6 +1426,7 @@ resourcestring
   dlgEnvOtherFiles = 'Other Files';
   dlgMaxRecentFiles = 'Max recent files';
   dlgMaxRecentProjs = 'Max recent project files';
+  dlgMaxRecentHint = 'Value 0 means unlimited.';
   dlgQOpenLastPrj = 'Open last project and packages at start';
   dlgLazarusDir = 'Lazarus directory (default for all projects)';
   dlgFpcExecutable = 'Compiler executable (e.g. %s)';

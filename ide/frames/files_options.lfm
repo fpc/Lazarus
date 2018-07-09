@@ -344,10 +344,13 @@ object FilesOptionsFrame: TFilesOptionsFrame
     Left = 2
     Height = 23
     Top = 19
+    Hint = 'Value 0 means unlimited.'
     Width = 305
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Right = 3
     BorderSpacing.Around = 2
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 0
   end
   object MaxRecentProjectFilesSpin: TSpinEdit
@@ -359,10 +362,13 @@ object FilesOptionsFrame: TFilesOptionsFrame
     Left = 316
     Height = 23
     Top = 19
+    Hint = 'Value 0 means unlimited.'
     Width = 304
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 3
     BorderSpacing.Around = 2
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 1
   end
   object MultipleInstancesLabel: TLabel

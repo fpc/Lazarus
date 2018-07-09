@@ -229,7 +229,9 @@ end;
 procedure TFilesOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   MaxRecentOpenFilesLabel.Caption:=dlgMaxRecentFiles;
+  MaxRecentOpenFilesLabel.Hint:=dlgMaxRecentHint;
   MaxRecentProjectFilesLabel.Caption:=dlgMaxRecentProjs;
+  MaxRecentProjectFilesLabel.Hint:=dlgMaxRecentHint;
   OpenLastProjectAtStartCheckBox.Caption:=dlgQOpenLastPrj;
   ShowCompileDialogCheckBox.Visible:=false;
   AutoCloseCompileDialogCheckBox.Visible:=false;
