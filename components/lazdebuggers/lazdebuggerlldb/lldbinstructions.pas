@@ -354,7 +354,7 @@ var
 begin
   Result := True;
 
-  if StrMatches(AData, ['error:', 'unrecognized option', 'disable', '']) then begin
+  if StrMatches(AData, ['', 'unrecognized option', 'disable', '']) then begin
     FLldbNoDisableError := True;
     MarkAsFailed;
     exit;
