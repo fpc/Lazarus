@@ -8,9 +8,9 @@ unit LazDebuggerGdbmi;
 interface
 
 uses
-  CmdLineDebugger, DebugUtils, GDBTypeInfo, GDBMIMiscClasses, IDEMiniLibC, 
-  GDBMIDebugger, GDBMIDebugInstructions, GDBMIServerDebugger, 
-  SSHGDBMIDebugger, GdbmiStringConstants, LazarusPackageIntf;
+  CmdLineDebugger, DebugUtils, GDBTypeInfo, GDBMIMiscClasses, GDBMIDebugger, 
+  GDBMIDebugInstructions, GDBMIServerDebugger, SSHGDBMIDebugger, 
+  GdbmiStringConstants, LazarusPackageIntf;
 
 implementation
 

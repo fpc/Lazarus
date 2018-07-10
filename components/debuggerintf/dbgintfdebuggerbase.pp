@@ -50,7 +50,7 @@ uses
   // LazUtils
   LazClasses, LazLoggerBase, LazFileUtils, Maps, LazMethodList,
   // DebuggerIntf
-  DbgIntfBaseTypes, DbgIntfMiscClasses;
+  DbgIntfBaseTypes, DbgIntfMiscClasses, DbgIntfPseudoTerminal;
 
 const
   DebuggerIntfVersion = 0;
@@ -81,6 +81,7 @@ type
     dcStepOverInstr,
     dcStepIntoInstr,
     dcSendConsoleInput
+    //, dcSendSignal
     );
   TDBGCommands = set of TDBGCommand;
 
@@ -1878,6 +1879,7 @@ type
     // prevent destruction while nested in any call
     procedure LockRelease; virtual;
     procedure UnlockRelease; virtual;
+    function GetPseudoTerminal: TPseudoTerminal; virtual;
   public
     class function Caption: String; virtual;         // The name of the debugger as shown in the debuggeroptions
     class function ExePaths: String; virtual;        // The default locations of the exe
@@ -1949,6 +1951,7 @@ type
     property Registers: TRegisterSupplier read FRegisters;                           // list of all registers
     property Signals: TDBGSignals read FSignals;                                 // A list of actions for signals we know
     property ShowConsole: Boolean read FShowConsole write FShowConsole;          // Indicates if the debugger should create a console for the debuggee
+    property PseudoTerminal: TPseudoTerminal read GetPseudoTerminal; experimental; // 'may be replaced with a more general API';
     property State: TDBGState read FState;                                       // The current state of the debugger
     property SupportedCommands: TDBGCommands read GetSupportedCommands;          // All available commands of the debugger
     property TargetWidth: Byte read GetTargetWidth;                              // Currently only 32 or 64
@@ -2037,11 +2040,11 @@ const
              dcSendConsoleInput],
   {dsPause} [dcRun, dcStop, dcStepOver, dcStepInto, dcStepOverInstr, dcStepIntoInstr,
              dcStepOut, dcRunTo, dcJumpto, dcDetach, dcBreak, dcWatch, dcLocal, dcEvaluate, dcModify,
-             dcEnvironment, dcSetStackFrame, dcDisassemble, dcSendConsoleInput],
+             dcEnvironment, dcSetStackFrame, dcDisassemble, dcSendConsoleInput {, dcSendSignal}],
   {dsInternalPause} // same as run, so not really used
-            [dcStop, dcBreak, dcWatch, dcEnvironment, dcSendConsoleInput],
+            [dcStop, dcBreak, dcWatch, dcEnvironment, dcSendConsoleInput{, dcSendSignal}],
   {dsInit } [],
-  {dsRun  } [dcPause, dcStop, dcDetach, dcBreak, dcWatch, dcEnvironment, dcSendConsoleInput],
+  {dsRun  } [dcPause, dcStop, dcDetach, dcBreak, dcWatch, dcEnvironment, dcSendConsoleInput{, dcSendSignal}],
   {dsError} [dcStop],
   {dsDestroying} []
   );
@@ -5996,6 +5999,11 @@ begin
     end;
   end;
   FCurEnvironment.Assign(FEnvironment);
+end;
+
+function TDebuggerIntf.GetPseudoTerminal: TPseudoTerminal;
+begin
+  Result := nil;
 end;
 
 //function TDebuggerIntf.GetUnitInfoProvider: TDebuggerUnitInfoProvider;

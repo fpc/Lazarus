@@ -1744,6 +1744,7 @@ const
     'StepOverInstr',
     'StepIntoInstr',
     'SendConsoleInput'
+//    'SendSignal'
     );
 
   DBGStateNames: array[TDBGState] of string = (

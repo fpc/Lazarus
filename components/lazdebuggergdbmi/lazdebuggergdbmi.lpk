@@ -20,7 +20,7 @@
 This debugger uses gdb and is based on gdb's mi interface."/>
     <License Value="GPL"/>
     <Version Minor="1"/>
-    <Files Count="10">
+    <Files Count="9">
       <Item1>
         <Filename Value="cmdlinedebugger.pp"/>
         <UnitName Value="CmdLineDebugger"/>
@@ -38,32 +38,28 @@ This debugger uses gdb and is based on gdb's mi interface."/>
         <UnitName Value="GDBMIMiscClasses"/>
       </Item4>
       <Item5>
-        <Filename Value="ideminilibc.pas"/>
-        <UnitName Value="IDEMiniLibC"/>
-      </Item5>
-      <Item6>
         <Filename Value="gdbmidebugger.pp"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="GDBMIDebugger"/>
-      </Item6>
-      <Item7>
+      </Item5>
+      <Item6>
         <Filename Value="gdbmidebuginstructions.pp"/>
         <UnitName Value="GDBMIDebugInstructions"/>
-      </Item7>
-      <Item8>
+      </Item6>
+      <Item7>
         <Filename Value="gdbmiserverdebugger.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="GDBMIServerDebugger"/>
-      </Item8>
-      <Item9>
+      </Item7>
+      <Item8>
         <Filename Value="sshgdbmidebugger.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="SSHGDBMIDebugger"/>
-      </Item9>
-      <Item10>
+      </Item8>
+      <Item9>
         <Filename Value="gdbmistringconstants.pas"/>
         <UnitName Value="GdbmiStringConstants"/>
-      </Item10>
+      </Item9>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

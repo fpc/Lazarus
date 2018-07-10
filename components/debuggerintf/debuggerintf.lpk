@@ -27,7 +27,7 @@
 Provides an interface to add debuggers to the IDE"/>
     <License Value="GPL-2"/>
     <Version Minor="1"/>
-    <Files Count="3">
+    <Files Count="5">
       <Item1>
         <Filename Value="dbgintfbasetypes.pas"/>
         <UnitName Value="DbgIntfBaseTypes"/>
@@ -40,6 +40,14 @@ Provides an interface to add debuggers to the IDE"/>
         <Filename Value="dbgintfmiscclasses.pas"/>
         <UnitName Value="DbgIntfMiscClasses"/>
       </Item3>
+      <Item4>
+        <Filename Value="ideminilibc.pas"/>
+        <UnitName Value="IDEMiniLibC"/>
+      </Item4>
+      <Item5>
+        <Filename Value="dbgintfpseudoterminal.pas"/>
+        <UnitName Value="dbgintfpseudoterminal"/>
+      </Item5>
     </Files>
     <RequiredPkgs Count="1">
       <Item1>

@@ -49,15 +49,14 @@ uses
   IDEWindowIntf, SrcEditorIntf, MenuIntf, IDECommands, LazIDEIntf, ProjectIntf,
   CompOptsIntf, IDEDialogs, ToolBarIntf,
   // IDE
-  CompilerOptions, EnvironmentOpts,
-  SourceEditor, ProjectDefs, Project, IDEProcs, InputHistory, Debugger,
-  LazarusIDEStrConsts, TransferMacros,
-  MainBar, MainIntf, MainBase, BaseBuildManager, SourceMarks,
-  DebuggerDlg, Watchesdlg, BreakPointsdlg, BreakPropertyDlg, LocalsDlg, WatchPropertyDlg,
-  CallStackDlg, EvaluateDlg, RegistersDlg, AssemblerDlg, DebugOutputForm, ExceptionDlg,
-  InspectDlg, DebugEventsForm, PseudoTerminalDlg, FeedbackDlg, ThreadDlg, HistoryDlg,
-  ProcessDebugger,
-  DbgIntfBaseTypes, DbgIntfDebuggerBase, DbgIntfMiscClasses, BaseDebugManager;
+  CompilerOptions, EnvironmentOpts, SourceEditor, ProjectDefs, Project,
+  IDEProcs, InputHistory, Debugger, LazarusIDEStrConsts, TransferMacros,
+  MainBar, MainIntf, MainBase, BaseBuildManager, SourceMarks, DebuggerDlg,
+  Watchesdlg, BreakPointsdlg, BreakPropertyDlg, LocalsDlg, WatchPropertyDlg,
+  CallStackDlg, EvaluateDlg, RegistersDlg, AssemblerDlg, DebugOutputForm,
+  ExceptionDlg, InspectDlg, DebugEventsForm, PseudoTerminalDlg, FeedbackDlg,
+  ThreadDlg, HistoryDlg, ProcessDebugger, DbgIntfBaseTypes, DbgIntfDebuggerBase,
+  DbgIntfMiscClasses, DbgIntfPseudoTerminal, BaseDebugManager;
 
 
 type
@@ -182,6 +181,7 @@ type
   protected
     function  GetState: TDBGState; override;
     function  GetCommands: TDBGCommands; override;
+    function GetPseudoTerminal: TPseudoTerminal; override;
     function GetDebuggerClass: TDebuggerClass;
     {$IFDEF DBG_WITH_DEBUGGER_DEBUG}
     function GetDebugger: TDebuggerIntf; override;
@@ -3057,6 +3057,14 @@ begin
   if FDebugger = nil
   then Result := []
   else Result := FDebugger.Commands;
+end;
+
+function TDebugManager.GetPseudoTerminal: TPseudoTerminal;
+begin
+  if FDebugger = nil then
+    Result := nil
+  else
+    Result := FDebugger.PseudoTerminal;
 end;
 
 function TDebugManager.GetDebuggerClass: TDebuggerClass;

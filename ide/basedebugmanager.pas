@@ -48,7 +48,7 @@ uses
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf,
   // DebuggerIntf
-  DbgIntfBaseTypes, DbgIntfDebuggerBase,
+  DbgIntfBaseTypes, DbgIntfDebuggerBase, DbgIntfPseudoTerminal,
   // IDE
   Debugger, SourceMarks, Project, ProjectDefs, LazarusIDEStrConsts;
 
@@ -131,6 +131,7 @@ type
     FManagerStates: TDebugManagerStates;
     function  GetState: TDBGState; virtual; abstract;
     function  GetCommands: TDBGCommands; virtual; abstract;
+    function GetPseudoTerminal: TPseudoTerminal; virtual; abstract;
     {$IFDEF DBG_WITH_DEBUGGER_DEBUG}
     function GetDebugger: TDebuggerIntf; virtual; abstract;
     {$ENDIF}
@@ -235,6 +236,7 @@ type
     property Watches: TIdeWatchesMonitor read FWatches;
     property Threads: TIdeThreadsMonitor read FThreads;
     property Snapshots: TSnapshotManager read FSnapshots;
+    property PseudoTerminal: TPseudoTerminal read GetPseudoTerminal; experimental; // 'may be replaced with a more general API';
     (* TODO: workaround for http://bugs.freepascal.org/view.php?id=21834   *)
     property DebuggerClass: TDebuggerClass read GetCurrentDebuggerClass;
     {$IFDEF DBG_WITH_DEBUGGER_DEBUG}

@@ -1,9 +1,15 @@
-inherited PseudoConsoleDlg: TPseudoConsoleDlg
-  Left = 1261
-  Top = 344
+object PseudoConsoleDlg: TPseudoConsoleDlg
+  Left = 697
+  Height = 240
+  Top = 327
+  Width = 320
   Caption = 'Console'
+  ClientHeight = 240
+  ClientWidth = 320
   DockSite = True
-  object Memo1: TMemo[0]
+  OnResize = FormResize
+  LCLVersion = '1.9.0.0'
+  object Memo1: TMemo
     Left = 0
     Height = 240
     Top = 0

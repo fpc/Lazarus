@@ -8,7 +8,8 @@ unit DebuggerIntf;
 interface
 
 uses
-  DbgIntfBaseTypes, DbgIntfDebuggerBase, DbgIntfMiscClasses, LazarusPackageIntf;
+  DbgIntfBaseTypes, DbgIntfDebuggerBase, DbgIntfMiscClasses, IDEMiniLibC, 
+  DbgIntfPseudoTerminal, LazarusPackageIntf;
 
 implementation
 

@@ -27,16 +27,11 @@
 
 unit GDBMIMiscClasses;
 {$mode objfpc}{$H+}
-{$IFDEF linux} {$DEFINE DBG_ENABLE_TERMINAL} {$ENDIF}
 
 interface
 
 uses
-  SysUtils,
-  {$IFDEF DBG_ENABLE_TERMINAL}
-  IDEMiniLibC, BaseUnix, Classes,
-  {$ENDIF}
-  DebugUtils, DbgIntfDebuggerBase;
+    Classes, SysUtils, DebugUtils, DbgIntfDebuggerBase;
 
 type
 
@@ -103,31 +98,6 @@ type
     property DataLen: Integer read FDataLen;
     property Text: String read GetText;
   end;
-
-  {$IFDEF DBG_ENABLE_TERMINAL}
-type
-
-  { TPseudoTerminal }
-
-  TPseudoTerminal = class
-  private
-    FDeviceName: string;
-    FOnCanRead: TNotifyEvent;
-    FPTy: Integer;
-    FReadBuf: String;
-    procedure CloseInp;
-  public
-    constructor Create;
-    destructor  Destroy; override;
-    procedure Open;
-    procedure Close;
-    function Write(s: string): Integer;
-    function Read: String;
-    procedure CheckCanRead;
-    property OnCanRead: TNotifyEvent read FOnCanRead write FOnCanRead;
-    property Devicename: string read FDeviceName;
-  end;
-  {$ENDIF}
 
 
 implementation
@@ -451,141 +421,6 @@ begin
   Result := -1;
 end;
 
-{$IFDEF DBG_ENABLE_TERMINAL}
-
-{ TPseudoTerminal }
-
-procedure TPseudoTerminal.CloseInp;
-var
-  ios: termios;
-begin
-  // Based on MSEGui
-  if FPTy = InvalHandle then exit;
-  tcgetattr(FPty, @ios);
-  ios.c_lflag:= (ios.c_lflag and not (icanon)) or echo;
-  ios.c_cc[vmin]:= 0;
-  ios.c_cc[vtime]:= 0;
-  tcsetattr(FPty, tcsanow, @ios);
-    //foutput.writeln('');
-end;
-
-constructor TPseudoTerminal.Create;
-begin
-  FPTy := InvalHandle;
-end;
-
-destructor TPseudoTerminal.Destroy;
-begin
-  Close;
-  inherited Destroy;
-end;
-
-procedure TPseudoTerminal.Close;
-begin
-  CloseInp;
-  if FPTy <> InvalHandle
-  then __Close(FPTy);
-  FPTy := InvalHandle;
-end;
-
-procedure TPseudoTerminal.Open;
-const
-  BufLen = 100;
-var
-  ios: termios;
-  int1: integer;
-
-  procedure Error;
-  begin
-    if FPTy <> InvalHandle
-    then __Close(FPTy);
-    FPTy := InvalHandle;
-    FDeviceName := '';
-  end;
-
-begin
-  Close;
-  FPTy := getpt;
-  if FPTy < 0 then Error;
-  if (grantpt(FPTy) < 0) or (unlockpt(FPTy) < 0) then begin
-    Error;
-    exit;
-  end;
-  setlength(FDeviceName, BufLen);
-  if ptsname_r(FPTy, @FDeviceName[1], BufLen) < 0 then begin
-    Error;
-    exit;
-  end;
-  setlength(FDeviceName,length(pchar(FDeviceName)));
-  if tcgetattr(FPTy, @ios) <> 0 then begin
-    Error;
-    exit;
-  end;
-  ios.c_lflag:= ios.c_lflag and not (icanon); // or echo);
-  ios.c_cc[vmin]:= 1;
-  ios.c_cc[vtime]:= 0;
-  if tcsetattr(FPTy, tcsanow, @ios) <> 0 then begin
-    Error;
-    exit;
-  end;
-
-  int1 := fcntl(FPTy, f_getfl, 0);
-  if int1 = InvalHandle then begin
-    Error;
-    exit;
-  end;
-  if fcntl(FPTy, f_setfl, int1 or o_nonblock) = InvalHandle then Error;
-end;
-
-function TPseudoTerminal.Write(s: string): Integer;
-var
-  int1, nbytes: Integer;
-  p: PChar;
-begin
-  nbytes := length(s);
-  if (FPTy = InvalHandle) or (nbytes = 0) then exit(0);
-  Result:= nbytes;
-  p := @s[1];
-  repeat
-    int1 := __write(FPTy, p^, nbytes);
-    if int1 = -1 then begin
-      if errno <> eintr then begin
-        Result:= int1;
-        break;
-      end;
-      continue;
-    end;
-    inc(p, int1);
-    dec(nbytes, int1);
-  until integer(nbytes) <= 0;
-end;
-
-function TPseudoTerminal.Read: String;
-const
-  BufLen = 1024;
-var
-  buf: String;
-  i: Integer;
-begin
-  if (FPTy = InvalHandle) then exit('');
-
-  SetLength(buf, BufLen + 1);
-  Result := FReadBuf;
-  FReadBuf := '';
-  repeat
-    i := __read(FPTy, buf[1], BufLen);
-    if i > 0 then Result := Result + copy(buf, 1, i);
-  until i <= 0;
-end;
-
-procedure TPseudoTerminal.CheckCanRead;
-begin
-  FReadBuf := Read;
-  if (FReadBuf <> '') and assigned(FOnCanRead)
-  then FOnCanRead(self);
-end;
-
-{$ENDIF}
 
 end.
 

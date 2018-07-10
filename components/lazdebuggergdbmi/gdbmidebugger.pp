@@ -65,7 +65,7 @@ uses
   LazFileUtils,
   {$ENDIF}
   DebugUtils, GDBTypeInfo, GDBMIDebugInstructions, GDBMIMiscClasses,
-  DbgIntfBaseTypes, DbgIntfDebuggerBase, GdbmiStringConstants;
+  DbgIntfBaseTypes, DbgIntfDebuggerBase, DbgIntfPseudoTerminal, GdbmiStringConstants;
 
 type
   TGDBMIProgramInfo = record
@@ -860,6 +860,7 @@ type
     {$IFDEF DBG_ENABLE_TERMINAL}
     FPseudoTerminal: TPseudoTerminal;
     procedure ProcessWhileWaitForHandles; override;
+    function GetPseudoTerminal: TPseudoTerminal; override;
     {$ENDIF}
     procedure QueueExecuteLock;
     procedure QueueExecuteUnlock;
@@ -9004,6 +9005,11 @@ procedure TGDBMIDebugger.ProcessWhileWaitForHandles;
 begin
   inherited ProcessWhileWaitForHandles;
   FPseudoTerminal.CheckCanRead;
+end;
+
+function TGDBMIDebugger.GetPseudoTerminal: TPseudoTerminal;
+begin
+  Result := FPseudoTerminal;
 end;
 {$ENDIF}
 
