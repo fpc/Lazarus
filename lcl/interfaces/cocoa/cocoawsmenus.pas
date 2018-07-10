@@ -337,6 +337,7 @@ end;
 
 procedure TCocoaMenuItem.menuNeedsUpdate(AMenu: NSMenu);
 begin
+  if not Assigned(menuItemCallback) then Exit;
   menuItemCallback.ItemSelected;
 end;
 
