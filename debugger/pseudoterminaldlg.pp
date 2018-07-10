@@ -204,7 +204,7 @@ begin
 
     if DebugBoss.PseudoTerminal <> nil then begin
       //DebugLn(DBG_VERBOSE, ['TPseudoConsoleDlg.AddOutput PseudoTerminal.DevicePtyMaster=',
-                        DebugBoss.PseudoTerminal.DevicePtyMaster]);
+      //                  DebugBoss.PseudoTerminal.DevicePtyMaster]);
 {$IFDEF USE_SLAVE_HANDLE }
       s := DebugBoss.PseudoTerminal.Devicename;
       //DebugLn(DBG_VERBOSE, ['TPseudoConsoleDlg.AddOutput PseudoTerminal.Devicename="', s, '"']);
