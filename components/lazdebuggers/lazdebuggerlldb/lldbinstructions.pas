@@ -356,7 +356,7 @@ begin
 
   if StrMatches(AData, ['', 'unrecognized option', 'disable', '']) then begin
     FLldbNoDisableError := True;
-    MarkAsFailed;
+    //MarkAsFailed; // next line will be error
     exit;
   end;
 

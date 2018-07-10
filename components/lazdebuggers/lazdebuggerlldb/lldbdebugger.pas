@@ -854,11 +854,8 @@ begin
     exit;
   end;
 
-  if FBreakID = 0 then begin
-    Assert(false, 'update // FBreakID = 0');
-    SetBreakPoint;
+  if FBreakID = 0 then // SetBreakPoint may have failed / nothing to do
     exit;
-  end;
 
   case Kind of
   	bpkSource, bpkAddress:
