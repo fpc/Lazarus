@@ -2331,7 +2331,7 @@ end;
 function TIDESynGutterMarks.GetImgListRes(const ACanvas: TCanvas;
   const AImages: TCustomImageList): TScaledImageListResolution;
 const
-  AllowedHeights: array[0..6] of Integer = (5, 8, 11, 16, 22, 33, 44);
+  AllowedHeights: array[0..7] of Integer = (5, 7, 9, 11, 16, 22, 33, 44);
 var
   Scale: Double;
   PPI, LineHeight, I, ImageHeight: Integer;
@@ -2345,9 +2345,20 @@ begin
   if SynEdit is TSynEdit then
   begin
     LineHeight := TSynEdit(SynEdit).LineHeight;
+    if LineHeight > 22 then
+      I := LineHeight div 8
+    else
+      I := 1;
+    If LineHeight - I >= 11 then
+      LineHeight := LineHeight - I;
+    if LineHeight < 11 then begin
+      LineHeight := TSynEdit(SynEdit).LineHeight;
+      if LineHeight > 11 then
+        LineHeight := LineHeight - 1;
+    end;
     ImageHeight := AllowedHeights[0];
     for I := High(AllowedHeights) downto Low(AllowedHeights) do
-      if AllowedHeights[I]<LineHeight then
+      if AllowedHeights[I] <= LineHeight then
       begin
         ImageHeight := AllowedHeights[I];
         break;
