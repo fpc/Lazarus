@@ -858,9 +858,9 @@ procedure TFPBreakpoint.DoEnableChange;
 begin
   if (Debugger.State in [dsPause, dsInit, dsRun]) then
     begin
-    if FEnabled and not FIsSet then
+    if Enabled and not FIsSet then
       FSetBreakFlag := True
-    else if not FEnabled and FIsSet then
+    else if not Enabled and FIsSet then
       FResetBreakFlag := True;
     end;
   inherited;
