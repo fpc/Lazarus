@@ -461,7 +461,7 @@ begin
   case ABreakPoint.Kind of
     bpkSource:  Msg := Format(dbgEventBreakSourceBreakPoint , [Loc]); // should not be here
     bpkAddress: Msg := Format(dbgEventBreakAddressBreakPoint, [Loc]); // should not be here
-    bpkData:    Msg := Format(dbgEventWatchTriggered, [Loc, ABreakpoint.WatchData,
+    bpkData:    Msg := Format(dbgEventWatchTriggered, [ABreakpoint.WatchData, Loc,
       AOldWatchedVal, ANewWatchedVal]);
   end;
 
