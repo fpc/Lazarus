@@ -159,7 +159,7 @@ begin
   //Gutter.Paint always supplies AClip.Left = GutterPart.Left
   MarkRect := Rect(AClip.Left + FBookMarkOpt.LeftMargin,
                    AClip.Top,
-                   AClip.Left + FColumnWidth,
+                   AClip.Left + FBookMarkOpt.LeftMargin + FColumnWidth,
                    AClip.Top + LineHeight);
 
 
@@ -180,7 +180,7 @@ begin
 
     DoPaintMark(MLine[j], MarkRect);
     MarkRect.Left := MarkRect.Right;
-    MarkRect.Right := Max(MarkRect.Right + FColumnWidth, AClip.Right);
+    MarkRect.Right := Min(MarkRect.Right + FColumnWidth, AClip.Right);
 
     Result := Result or (not MLine[j].IsBookmark); // Line has a none-bookmark glyph
     if (MLine[j].IsBookmark <> LastMarkIsBookmark)  and
