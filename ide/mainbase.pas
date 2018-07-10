@@ -1210,7 +1210,6 @@ begin
       CreateMenuItem(itmViewDebugWindows,itmViewThreads,'itmViewThreads',lisMenuViewThreads);
       CreateMenuItem(itmViewDebugWindows,itmViewAssembler,'itmViewAssembler',lisMenuViewAssembler);
       CreateMenuItem(itmViewDebugWindows,itmViewDebugEvents,'itmViewDebugEvents',lisMenuViewDebugEvents,'debugger_event_log');
-      CreateMenuItem(itmViewDebugWindows,itmViewDebugOutput,'itmViewDebugOutput',lisMenuViewDebugOutput,'debugger_output');
       CreateMenuItem(itmViewDebugWindows,itmViewDbgHistory,'itmViewDbgHistory',lisMenuViewHistory);
     end;
     CreateMenuSubSection(ParentMI, itmViewIDEInternalsWindows, 'itmViewIDEInternalsWindows', lisMenuIDEInternals);
@@ -1218,6 +1217,7 @@ begin
       CreateMenuItem(itmViewIDEInternalsWindows, itmViewFPCInfo, 'itmViewFPCInfo', lisMenuAboutFPC);
       CreateMenuItem(itmViewIDEInternalsWindows, itmViewIDEInfo, 'itmViewIDEInfo', lisAboutIDE);
       CreateMenuItem(itmViewIDEInternalsWindows, itmViewNeedBuild, 'itmViewNeedBuild', lisMenuWhatNeedsBuilding);
+      CreateMenuItem(itmViewIDEInternalsWindows,itmViewDebugOutput,'itmViewDebugOutput',lisMenuViewDebugOutput,'debugger_output');
       {$IFDEF EnableFPDocSearch}
       CreateMenuItem(itmViewIDEInternalsWindows, itmSearchInFPDocFiles,'itmSearchInFPDocFiles','Search in FPDoc files');
       {$ENDIF}
