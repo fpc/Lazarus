@@ -806,7 +806,7 @@ begin
   if lCaptureControlCallback <> nil then
   begin
     FIsEventRouting:=true;
-    Result := lCaptureControlCallback.MouseUpDownEvent(Event);
+    Result := lCaptureControlCallback.MouseUpDownEvent(Event, AForceAsMouseUp);
     FIsEventRouting:=false;
     exit;
   end;

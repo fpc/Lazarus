@@ -345,7 +345,11 @@ end;
 procedure TCocoaListBox.mouseDown(event: NSEvent);
 begin
   if Assigned(callback) and not callback.MouseUpDownEvent(event) then
+  begin
     inherited mouseDown(event);
+
+    callback.MouseUpDownEvent(event, true);
+  end;
 end;
 
 procedure TCocoaListBox.rightMouseDown(event: NSEvent);
