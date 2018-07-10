@@ -105,9 +105,11 @@ begin
 end;
 
 procedure TFppkgHelper.ListPackages(AList: TStringList);
+{$IFNDEF VER3_0}
 var
   I, J: Integer;
   Repository: TFPRepository;
+{$ENDIF VER3_0}
 begin
 {$IFNDEF VER3_0}
   for I := 0 to FFPpkg.RepositoryList.Count -1 do
