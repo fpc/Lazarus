@@ -2294,7 +2294,8 @@ begin
   if Assigned(SourceEditorMarks) and Assigned(SourceEditorMarks.ImgList) then
   begin
     img := GetImgListRes(nil, SourceEditorMarks.ImgList);
-    Result := SynEdit.ScaleFontTo96(img.Width * 2) + FBookMarkOpt.LeftMargin; // PreferedWidth needs width at 96 PPI
+    // + 1 => right margin
+    Result := SynEdit.ScaleFontTo96(img.Width) * 2 + FBookMarkOpt.LeftMargin + 1; // PreferedWidth needs width at 96 PPI
   end else
     Result := inherited PreferedWidth;
 end;
