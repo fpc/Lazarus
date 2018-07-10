@@ -31,6 +31,50 @@ msgstr "Виберіть групи для ввімкнення при заді�
 msgid "Some groups in the Enable/Disable list do not exist.%0:sCreate them?%0:s%0:s%1:s"
 msgstr "Деякі групи в списку ввімкнення/вимкнення не існують.%0:sСтворити їх?%0:s%0:s%1:s"
 
+#: lazarusidestrconsts.dbgeventbreakaddressbreakpoint
+msgid "Address Breakpoint %s"
+msgstr ""
+
+#: lazarusidestrconsts.dbgeventbreakataddress
+msgid "at $%s"
+msgstr ""
+
+#: lazarusidestrconsts.dbgeventbreakataddressoriginsourceoriginline
+msgid "at $%s: from origin %s line %d"
+msgstr ""
+
+#: lazarusidestrconsts.dbgeventbreakataddresssourceline
+msgid "at $%s: %s line %d"
+msgstr ""
+
+#: lazarusidestrconsts.dbgeventbreaksourcebreakpoint
+msgid "Source Breakpoint %s"
+msgstr ""
+
+#: lazarusidestrconsts.dbgeventbreakunknownbreakpoint
+msgid "Unknown Breakpoint %s"
+msgstr ""
+
+#: lazarusidestrconsts.dbgeventbreakwatchpoint
+msgid "Watchpoint %s"
+msgstr ""
+
+#: lazarusidestrconsts.dbgeventunknownwatchpointscopeended
+msgid "Unknown Watchpoint out of scope %s"
+msgstr ""
+
+#: lazarusidestrconsts.dbgeventunknownwatchpointtriggered
+msgid "Unknown Watchpoint triggered %s. Old value \"%s\", New Value \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.dbgeventwatchscopeended
+msgid "Watchpoint for \"%s\" out of scope %s"
+msgstr ""
+
+#: lazarusidestrconsts.dbgeventwatchtriggered
+msgid "Watchpoint for \"%s\" was triggered %s. Old value \"%s\", New Value \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousepredefinedscheme
 msgid "Use predefined scheme"
 msgstr "Попередньо визначена схема"
@@ -2557,6 +2601,10 @@ msgstr "Найбільша довжина рядка:"
 #: lazarusidestrconsts.dlgmaxrecentfiles
 msgid "Max recent files"
 msgstr "Максимум останніх файлів"
+
+#: lazarusidestrconsts.dlgmaxrecenthint
+msgid "Value 0 means unlimited."
+msgstr ""
 
 #: lazarusidestrconsts.dlgmaxrecentprojs
 msgid "Max recent project files"

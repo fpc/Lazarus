@@ -30,6 +30,50 @@ msgstr "Sélectionner les groupes à activer dès le point d'arrêt atteint"
 msgid "Some groups in the Enable/Disable list do not exist.%0:sCreate them?%0:s%0:s%1:s"
 msgstr "Certains groupes de la liste Activer/désactiver n'existent pas.%0:sFaut-il les créer ?%0:s%0:s%1:s"
 
+#: lazarusidestrconsts.dbgeventbreakaddressbreakpoint
+msgid "Address Breakpoint %s"
+msgstr ""
+
+#: lazarusidestrconsts.dbgeventbreakataddress
+msgid "at $%s"
+msgstr ""
+
+#: lazarusidestrconsts.dbgeventbreakataddressoriginsourceoriginline
+msgid "at $%s: from origin %s line %d"
+msgstr ""
+
+#: lazarusidestrconsts.dbgeventbreakataddresssourceline
+msgid "at $%s: %s line %d"
+msgstr ""
+
+#: lazarusidestrconsts.dbgeventbreaksourcebreakpoint
+msgid "Source Breakpoint %s"
+msgstr ""
+
+#: lazarusidestrconsts.dbgeventbreakunknownbreakpoint
+msgid "Unknown Breakpoint %s"
+msgstr ""
+
+#: lazarusidestrconsts.dbgeventbreakwatchpoint
+msgid "Watchpoint %s"
+msgstr ""
+
+#: lazarusidestrconsts.dbgeventunknownwatchpointscopeended
+msgid "Unknown Watchpoint out of scope %s"
+msgstr ""
+
+#: lazarusidestrconsts.dbgeventunknownwatchpointtriggered
+msgid "Unknown Watchpoint triggered %s. Old value \"%s\", New Value \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.dbgeventwatchscopeended
+msgid "Watchpoint for \"%s\" out of scope %s"
+msgstr ""
+
+#: lazarusidestrconsts.dbgeventwatchtriggered
+msgid "Watchpoint for \"%s\" was triggered %s. Old value \"%s\", New Value \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousepredefinedscheme
 msgid "Use predefined scheme"
 msgstr "Utiliser le profil prédéfini"
@@ -2568,6 +2612,10 @@ msgstr "Longueur maximale d'une ligne :"
 #: lazarusidestrconsts.dlgmaxrecentfiles
 msgid "Max recent files"
 msgstr "Maximum de fichiers récents"
+
+#: lazarusidestrconsts.dlgmaxrecenthint
+msgid "Value 0 means unlimited."
+msgstr ""
 
 #: lazarusidestrconsts.dlgmaxrecentprojs
 msgid "Max recent project files"

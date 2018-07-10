@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-06-26 00:04+0300\n"
+"PO-Revision-Date: 2018-07-11 02:22+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -28,6 +28,50 @@ msgstr "Выберите группы для включения при дост�
 #: lazarusidestrconsts.dbgbreakpropertygroupnotfound
 msgid "Some groups in the Enable/Disable list do not exist.%0:sCreate them?%0:s%0:s%1:s"
 msgstr "Некоторые группы в списке включения/отключения не существуют.%0:sСоздать их?%0:s%0:s%1:s"
+
+#: lazarusidestrconsts.dbgeventbreakaddressbreakpoint
+msgid "Address Breakpoint %s"
+msgstr "Точка останова %s"
+
+#: lazarusidestrconsts.dbgeventbreakataddress
+msgid "at $%s"
+msgstr "по адресу $%s"
+
+#: lazarusidestrconsts.dbgeventbreakataddressoriginsourceoriginline
+msgid "at $%s: from origin %s line %d"
+msgstr "по адресу $%s: изначально находится в %s строка %d"
+
+#: lazarusidestrconsts.dbgeventbreakataddresssourceline
+msgid "at $%s: %s line %d"
+msgstr "по адресу $%s: %s строка %d"
+
+#: lazarusidestrconsts.dbgeventbreaksourcebreakpoint
+msgid "Source Breakpoint %s"
+msgstr "Точка останова в исходном коде %s"
+
+#: lazarusidestrconsts.dbgeventbreakunknownbreakpoint
+msgid "Unknown Breakpoint %s"
+msgstr "Неизвестная точка останова %s"
+
+#: lazarusidestrconsts.dbgeventbreakwatchpoint
+msgid "Watchpoint %s"
+msgstr "Наблюдение %s"
+
+#: lazarusidestrconsts.dbgeventunknownwatchpointscopeended
+msgid "Unknown Watchpoint out of scope %s"
+msgstr "Неизвестное наблюдение вне области действия %s"
+
+#: lazarusidestrconsts.dbgeventunknownwatchpointtriggered
+msgid "Unknown Watchpoint triggered %s. Old value \"%s\", New Value \"%s\""
+msgstr "Сработало неизвестное наблюдение %s. Старое значение - \"%s\", новое значение - \"%s\""
+
+#: lazarusidestrconsts.dbgeventwatchscopeended
+msgid "Watchpoint for \"%s\" out of scope %s"
+msgstr "Наблюдение для \"%s\" вне области действия %s"
+
+#: lazarusidestrconsts.dbgeventwatchtriggered
+msgid "Watchpoint for \"%s\" was triggered %s. Old value \"%s\", New Value \"%s\""
+msgstr "Сработало наблюдение для \"%s\" %s. Старое значение - \"%s\", новое значение - \"%s\""
 
 #: lazarusidestrconsts.dlfmousepredefinedscheme
 msgid "Use predefined scheme"
@@ -2555,6 +2599,10 @@ msgstr "max длина строки:"
 #: lazarusidestrconsts.dlgmaxrecentfiles
 msgid "Max recent files"
 msgstr "Максимальное количество недавних файлов"
+
+#: lazarusidestrconsts.dlgmaxrecenthint
+msgid "Value 0 means unlimited."
+msgstr "Значение \"0\" соответствует неограниченному количеству."
 
 #: lazarusidestrconsts.dlgmaxrecentprojs
 msgid "Max recent project files"
