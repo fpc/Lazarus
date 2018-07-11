@@ -2345,6 +2345,10 @@ begin
   if SynEdit is TSynEdit then
   begin
     LineHeight := TSynEdit(SynEdit).LineHeight;
+    if LineHeight - Max(0, TSynEdit(SynEdit).ExtraLineSpacing) > 11 then
+      LineHeight := LineHeight - Max(0, TSynEdit(SynEdit).ExtraLineSpacing)
+    else
+      LineHeight := 12;
     if LineHeight > 22 then
       I := LineHeight div 8
     else
