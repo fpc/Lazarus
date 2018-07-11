@@ -7633,12 +7633,15 @@ images/debugger/debugger_call_stack_200.png -text
 images/debugger/debugger_current_line.png -text
 images/debugger/debugger_current_line_150.png -text
 images/debugger/debugger_current_line_200.png -text
+images/debugger/debugger_current_line_300.png -text
 images/debugger/debugger_current_line_breakpoint.png -text
 images/debugger/debugger_current_line_breakpoint_150.png -text
 images/debugger/debugger_current_line_breakpoint_200.png -text
+images/debugger/debugger_current_line_breakpoint_300.png -text
 images/debugger/debugger_current_line_disabled_breakpoint.png -text svneol=unset#image/png
 images/debugger/debugger_current_line_disabled_breakpoint_150.png -text
 images/debugger/debugger_current_line_disabled_breakpoint_200.png -text
+images/debugger/debugger_current_line_disabled_breakpoint_300.png -text
 images/debugger/debugger_disable.png -text svneol=unset#images/png
 images/debugger/debugger_disable_all.png -text svneol=unset#images/png
 images/debugger/debugger_enable.png -text svneol=unset#images/png
@@ -8163,26 +8166,33 @@ images/powered_by.png -text svneol=unset#image/png
 images/sourceeditor/ActiveBreakPoint.png -text
 images/sourceeditor/ActiveBreakPoint_150.png -text
 images/sourceeditor/ActiveBreakPoint_200.png -text
+images/sourceeditor/ActiveBreakPoint_300.png -text
 images/sourceeditor/InactiveBreakPoint.png -text
 images/sourceeditor/InactiveBreakPoint_150.png -text
 images/sourceeditor/InactiveBreakPoint_200.png -text
+images/sourceeditor/InactiveBreakPoint_300.png -text
 images/sourceeditor/InvalidBreakPoint.png -text
 images/sourceeditor/InvalidBreakPoint_150.png -text
 images/sourceeditor/InvalidBreakPoint_200.png -text
+images/sourceeditor/InvalidBreakPoint_300.png -text
 images/sourceeditor/InvalidDisabledBreakPoint.png -text svneol=unset#image/png
 images/sourceeditor/InvalidDisabledBreakPoint_150.png -text
 images/sourceeditor/InvalidDisabledBreakPoint_200.png -text
+images/sourceeditor/InvalidDisabledBreakPoint_300.png -text
 images/sourceeditor/MultiBreakPoint.png -text
 images/sourceeditor/PendingBreakPoint.png -text
 images/sourceeditor/PendingBreakPoint_150.png -text
 images/sourceeditor/PendingBreakPoint_200.png -text
+images/sourceeditor/PendingBreakPoint_300.png -text
 images/sourceeditor/Record.png -text
 images/sourceeditor/UnknownBreakPoint.png -text
 images/sourceeditor/UnknownBreakPoint_150.png -text
 images/sourceeditor/UnknownBreakPoint_200.png -text
+images/sourceeditor/UnknownBreakPoint_300.png -text
 images/sourceeditor/UnknownDisabledBreakPoint.png -text svneol=unset#image/png
 images/sourceeditor/UnknownDisabledBreakPoint_150.png -text
 images/sourceeditor/UnknownDisabledBreakPoint_200.png -text
+images/sourceeditor/UnknownDisabledBreakPoint_300.png -text
 images/sourceeditor/bookmark0.png -text
 images/sourceeditor/bookmark0_150.png -text
 images/sourceeditor/bookmark0_200.png -text

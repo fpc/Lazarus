@@ -554,7 +554,7 @@ begin
   FImgList:=TLCLGlyphs.Create(Self);
   FImgList.Width := 11;
   FImgList.Height := 11;
-  FImgList.RegisterResolutions([11, 16, 22], [100, 150, 200]);
+  FImgList.RegisterResolutions([11, 16, 22, 33], [100, 150, 200, 300]);
 
   // synedit expects the first 10 icons for the bookmarks
   for i := 0 to 9 do

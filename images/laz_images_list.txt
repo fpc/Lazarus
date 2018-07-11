@@ -164,12 +164,15 @@ debugger/debugger_call_stack_200.png
 debugger/debugger_current_line.png
 debugger/debugger_current_line_150.png
 debugger/debugger_current_line_200.png
+debugger/debugger_current_line_300.png
 debugger/debugger_current_line_breakpoint.png
 debugger/debugger_current_line_breakpoint_150.png
 debugger/debugger_current_line_breakpoint_200.png
+debugger/debugger_current_line_breakpoint_300.png
 debugger/debugger_current_line_disabled_breakpoint.png
 debugger/debugger_current_line_disabled_breakpoint_150.png
 debugger/debugger_current_line_disabled_breakpoint_200.png
+debugger/debugger_current_line_disabled_breakpoint_300.png
 debugger/debugger_disable.png
 debugger/debugger_disable_all.png
 debugger/debugger_enable.png
