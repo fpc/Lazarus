@@ -515,6 +515,14 @@ end;
 
 function GroupBoxWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
     LParam: Windows.LParam): LResult; stdcall;
+
+  function EnabledPainted(AControl: TControl): Boolean;
+  begin
+    Result := AControl.Enabled;
+    if not Result or not Assigned(AControl.Parent) then Exit;
+    Result := EnabledPainted(AControl.Parent);
+  end;
+
 var
   Info: PWin32WindowInfo;
   DC: HDC;
@@ -548,7 +556,7 @@ begin
         begin
           Info := GetWin32WindowInfo(Window);
           if Assigned(Info) and (Info^.WinControl is TCustomGroupBox)
-          and not TCustomGroupBox(Info^.WinControl).Enabled then
+          and not EnabledPainted(Info^.WinControl) then
           begin
             GroupBox := TCustomGroupBox(Info^.WinControl);
             DC := Windows.GetDC(Window);
