@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for lazsvnpkg 0.0.1
 #
-#   This file was generated on 20-6-18
+#   This file was generated on 12-7-18
 
 [package]
 name=lazsvnpkg
@@ -11,7 +11,7 @@ version=0.0.1
 [compiler]
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)
 unitdir=../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../codetools/units/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../lazcontrols/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../synedit/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) .
-options= -MObjFPC -Sgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) -dEnableQTAppH $(DBG_OPTIONS)
+options= -MObjFPC -Sgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 
 [target]
 units=lazsvnpkg.pas

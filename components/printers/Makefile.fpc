@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for Printer4Lazarus 0.5
 #
-#   This file was generated on 20-6-18
+#   This file was generated on 12-7-18
 
 [package]
 name=printer4lazarus
@@ -12,7 +12,7 @@ version=0.5
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
 unitdir=unix win32 carbon qt cocoa ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../cairocanvas/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) .
 includedir=unix win32 carbon qt cocoa
-options= -MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) -dUseCache -dNativePrint -dUSEUNICODE -dEnableQTAppH $(DBG_OPTIONS)
+options= -MObjFPC -Scgi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) -dUseCache -dNativePrint -dUSEUNICODE $(DBG_OPTIONS)
 
 [target]
 units=printer4lazarus.pas

@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for SynEditDsgn 1.0
 #
-#   This file was generated on 20-6-18
+#   This file was generated on 12-7-18
 
 [package]
 name=syneditdsgn
@@ -11,7 +11,7 @@ version=1.0
 [compiler]
 unittargetdir=units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
 unitdir=../../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../lazcontrols/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) .
-options= -MObjFPC -Scghi -O1 -g -gl -l -vewnhibq -vm5024,4055 -dLCL -dLCL$(LCL_PLATFORM) -dgc -dEnableQTAppH $(DBG_OPTIONS)
+options= -MObjFPC -Scghi -O1 -g -gl -l -vewnhibq -vm5024,4055 -dLCL -dLCL$(LCL_PLATFORM) -dgc $(DBG_OPTIONS)
 
 [target]
 units=allsyneditdsgn.pas
