@@ -30,6 +30,8 @@ unit PseudoTerminalDlg;
 
 {$mode objfpc}{$H+}
 
+{$IFDEF linux} {$DEFINE DBG_ENABLE_TERMINAL} {$ENDIF}
+
 interface
 
 uses
@@ -74,9 +76,9 @@ implementation
 
 uses
   SysUtils, LazLoggerBase
-{$IFDEF UNIX}
+{$IFDEF DBG_ENABLE_TERMINAL}
   , Unix, BaseUnix, termio
-{$ENDIF UNIX}
+{$ENDIF DBG_ENABLE_TERMINAL}
   ;
 
 const
@@ -130,12 +132,12 @@ end;
 
 procedure TPseudoConsoleDlg.DoClose(var CloseAction: TCloseAction);
 begin
-{$IFDEF UNIX}
+{$IFDEF DBG_ENABLE_TERMINAL}
   if integer(ttyHandle) >= 0 then begin
     FileClose(ttyHandle);
     ttyHandle := handleUnopened
   end;
-{$ENDIF UNIX}
+{$ENDIF DBG_ENABLE_TERMINAL}
   inherited DoClose(CloseAction);
   CloseAction := caHide;
 end;
@@ -182,7 +184,7 @@ end;
 *)
 procedure TPseudoConsoleDlg.consoleSizeChanged;
 
-{$IFDEF UNIX }
+{$IFDEF DBG_ENABLE_TERMINAL }
 { DEFINE USE_SLAVE_HANDLE }
 { DEFINE SEND_EXPLICIT_SIGNAL }
 
@@ -272,7 +274,7 @@ begin
 {$ELSE       }
 begin
   ttyHandle := THandle(-1);             (* Not used in non-unix OSes            *)
-{$ENDIF UNIX }
+{$ENDIF DBG_ENABLE_TERMINAL }
   Assert(ttyHandle <> handleUnopened, 'TPseudoConsoleDlg.consoleSizeChanged: TTY handle still in virgin state at exit')
 end;
 
