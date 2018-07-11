@@ -172,7 +172,9 @@ type
     procedure SetMouseActions(const AValue: TSynEditMouseActions);
   protected
     function  CreateMouseActions: TSynEditMouseInternalActions; virtual;
-    function  PreferedWidth: Integer; virtual;
+    function Scale96ToFont(const ASize: Integer): Integer;
+    function  PreferedWidth: Integer; virtual; // at PPI 96
+    function  PreferedWidthAtCurrentPPI: Integer; virtual;
     procedure SetBounds(ALeft, ATop, AHeight: Integer);
     procedure DoAutoSize;
     procedure SetAutoSize(const AValue : boolean); virtual;
@@ -598,6 +600,11 @@ begin
   Result := 12;
 end;
 
+function TSynGutterPartBase.PreferedWidthAtCurrentPPI: Integer;
+begin
+  Result := Scale96ToFont(PreferedWidth);
+end;
+
 procedure TSynGutterPartBase.SetBounds(ALeft, ATop, AHeight: Integer);
 begin
   if (ALeft = FLeft) and (ATop = FTop) and (AHeight = FHeight) then
@@ -612,9 +619,7 @@ procedure TSynGutterPartBase.DoAutoSize;
 var
   NewWidth: Integer;
 begin
-  NewWidth := PreferedWidth;
-  if FSynEdit<>nil then
-    NewWidth := FSynEdit.Scale96ToFont(NewWidth);
+  NewWidth := PreferedWidthAtCurrentPPI;
   if FWidth = NewWidth then exit;
   FWidth := NewWidth;
   VisibilityOrSize;
@@ -661,6 +666,13 @@ end;
 function TSynGutterPartBase.CreateMouseActions: TSynEditMouseInternalActions;
 begin
   Result := TSynEditMouseInternalActions.Create(Self);
+end;
+
+function TSynGutterPartBase.Scale96ToFont(const ASize: Integer): Integer;
+begin
+  Result := ASize;
+  if SynEdit<>nil then
+    Result := SynEdit.Scale96ToFont(Result);
 end;
 
 constructor TSynGutterPartBase.Create(AOwner: TComponent);

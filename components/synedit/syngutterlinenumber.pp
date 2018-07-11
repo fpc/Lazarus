@@ -33,7 +33,7 @@ type
     function FormatLineNumber(Line: integer; IsDot: boolean): string;
   protected
     procedure Init; override;
-    function  PreferedWidth: Integer; override;
+    function  PreferedWidthAtCurrentPPI: Integer; override;
     procedure LineCountChanged(Sender: TSynEditStrings; AIndex, ACount: Integer);
     procedure BufferChanged(Sender: TObject);
     procedure FontChanged(Sender: TObject);
@@ -172,7 +172,7 @@ begin
   end;
 end;
 
-function TSynGutterLineNumber.PreferedWidth: Integer;
+function TSynGutterLineNumber.PreferedWidthAtCurrentPPI: Integer;
 begin
   Result := FAutoSizeDigitCount * FTextDrawer.CharWidth + 1;
 end;

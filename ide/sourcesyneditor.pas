@@ -438,7 +438,7 @@ type
   protected
     procedure CheckTextBuffer;       // Todo: Add a notification, when TextBuffer Changes
     Procedure PaintLine(aScreenLine: Integer; Canvas : TCanvas; AClip : TRect); override;
-    function PreferedWidth: Integer; override;
+    function PreferedWidthAtCurrentPPI: Integer; override;
 
     function GetImgListRes(const ACanvas: TCanvas;
       const AImages: TCustomImageList): TScaledImageListResolution; override;
@@ -2269,7 +2269,7 @@ var
         iTop := (LineHeight - img.Height) div 2;
 
       img.Draw
-        (Canvas, AClip.Left + FBookMarkOpt.LeftMargin + aGutterOffs * ColumnWidth,
+        (Canvas, AClip.Left + LeftMarginAtCurrentPPI + aGutterOffs * ColumnWidth,
          AClip.Top + iTop, DebugMarksImageIndex, True);
     end
   end;
@@ -2287,7 +2287,7 @@ begin
     DrawDebugMark(aScreenLine);
 end;
 
-function TIDESynGutterMarks.PreferedWidth: Integer;
+function TIDESynGutterMarks.PreferedWidthAtCurrentPPI: Integer;
 var
   img: TScaledImageListResolution;
 begin
@@ -2295,9 +2295,9 @@ begin
   begin
     img := GetImgListRes(nil, SourceEditorMarks.ImgList);
     // + 1 => right margin
-    Result := SynEdit.ScaleFontTo96(img.Width) * 2 + FBookMarkOpt.LeftMargin + 1; // PreferedWidth needs width at 96 PPI
+    Result := img.Width * 2 + LeftMarginAtCurrentPPI + Scale96ToFont(1);
   end else
-    Result := inherited PreferedWidth;
+    Result := inherited PreferedWidthAtCurrentPPI;
 end;
 
 destructor TIDESynGutterMarks.Destroy;

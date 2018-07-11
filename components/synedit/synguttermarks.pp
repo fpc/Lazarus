@@ -23,6 +23,7 @@ type
     FBookMarkOpt: TSynBookMarkOpt;
     procedure Init; override;
     function  PreferedWidth: Integer; override;
+    function  LeftMarginAtCurrentPPI: Integer;
     function GetImgListRes(const ACanvas: TCanvas;
       const AImages: TCustomImageList): TScaledImageListResolution; virtual;
     // PaintMarks: True, if it has any Mark, that is *not* a bookmark
@@ -64,6 +65,11 @@ end;
 function TSynGutterMarks.PreferedWidth: Integer;
 begin
   Result := 22 + FBookMarkOpt.LeftMargin
+end;
+
+function TSynGutterMarks.LeftMarginAtCurrentPPI: Integer;
+begin
+  Result := Scale96ToFont(FBookMarkOpt.LeftMargin);
 end;
 
 destructor TSynGutterMarks.Destroy;
@@ -134,7 +140,7 @@ var
   end;
 
 var
-  j: Integer;
+  j, lm: Integer;
   MLine: TSynEditMarkLine;
   MarkRect: TRect;
   LastMarkIsBookmark: Boolean;
@@ -157,9 +163,10 @@ begin
 
   LineHeight := TCustomSynEdit(SynEdit).LineHeight;
   //Gutter.Paint always supplies AClip.Left = GutterPart.Left
-  MarkRect := Rect(AClip.Left + FBookMarkOpt.LeftMargin,
+  lm := LeftMarginAtCurrentPPI;
+  MarkRect := Rect(AClip.Left + lm,
                    AClip.Top,
-                   AClip.Left + FBookMarkOpt.LeftMargin + FColumnWidth,
+                   AClip.Left + lm + FColumnWidth,
                    AClip.Top + LineHeight);
 
 
