@@ -538,7 +538,7 @@ begin
         begin
           Info := GetWin32WindowInfo(Window);
           if Assigned(Info) and (Info^.WinControl is TCustomGroupBox)
-          and not TCustomGroupBox(Info^.WinControl).Enabled then
+          and not Info^.WinControl.IsEnabled then
           begin
             GroupBox := TCustomGroupBox(Info^.WinControl);
             DC := Windows.GetDC(Window);
