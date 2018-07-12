@@ -105,7 +105,6 @@ type
     function DoHandleMouseAction(AnAction: TSynEditMouseAction;
                                  var AnInfo: TSynEditMouseActionInfo): Boolean; override;
     procedure ResetMouseActions; override; // set mouse-actions according to current Options / may clear them
-    procedure ScalePPI(const AScaleFactor: Double); override;
   published
     property MarkupInfo;
     property MouseActionsExpanded: TSynEditMouseActions
@@ -508,12 +507,6 @@ begin
   FMouseActionsExpanded.ResetUserActions;
   FMouseActionsCollapsed.Options := TCustomSynEdit(SynEdit).MouseOptions;
   FMouseActionsCollapsed.ResetUserActions;
-end;
-
-procedure TSynGutterCodeFolding.ScalePPI(const AScaleFactor: Double);
-begin
-  AutoSize := False;
-  inherited ScalePPI(AScaleFactor);
 end;
 
 procedure TSynGutterCodeFolding.DrawNodeSymbol(Canvas: TCanvas; Rect: TRect;
