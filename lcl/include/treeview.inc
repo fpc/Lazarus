@@ -1824,7 +1824,7 @@ begin
     SelectedIndex := OldInfo.SelectedIndex;
     StateIndex := OldInfo.StateIndex;
     OverlayIndex := OldInfo.OverlayIndex;
-    Data := {%H-}Pointer(OldInfo.Data);
+    Data := Pointer(OldInfo.Data);
     Height := OldInfo.Height;
     NewExpanded := OldInfo.Expanded;
     ItemCount := OldInfo.Count;
@@ -1896,7 +1896,7 @@ begin
     OldInfo.OverlayIndex := OverlayIndex;
     OldInfo.StateIndex := StateIndex;
     OldInfo.Height := FHeight;
-    OldInfo.Data := {%H-}Cardinal(Data);
+    OldInfo.Data := PtrUInt(Data);
     OldInfo.Count := Count;
     OldInfo.Expanded := Expanded;
     OldInfo.TextLen := Length(Text);
