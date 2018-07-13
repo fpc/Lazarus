@@ -205,6 +205,10 @@ begin
     TreeOptions.PaintOptions := [toHideFocusRect, toPopupMode, toShowButtons, toShowDropmark, toShowRoot, toThemeAware, toUseBlendedImages];
     TreeOptions.SelectionOptions := [toRightClickSelect];
     TreeOptions.AutoOptions := [toAutoTristateTracking];
+    IncrementalSearch := isAll;
+    IncrementalSearchDirection := sdForward;
+    IncrementalSearchStart := ssAlwaysStartOver;
+    IncrementalSearchTimeout := 1500;
     PopupMenu := pm;
     OnGetText := @VSTPackagesGetText;
     OnGetImageIndex := @VSTPackagesGetImageIndex;
