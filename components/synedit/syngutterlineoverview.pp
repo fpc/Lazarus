@@ -1541,7 +1541,6 @@ end;
 
 procedure TSynGutterLineOverview.ScalePPI(const AScaleFactor: Double);
 begin
-  AutoSize := False;
   FLineMarks.ItemHeight := Round(FLineMarks.ItemHeight*AScaleFactor);
   inherited ScalePPI(AScaleFactor);
 end;
