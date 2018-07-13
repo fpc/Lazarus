@@ -625,7 +625,7 @@ var
   rcLine: TRect;
   rcCodeFold: TRect;
   tmp: TSynEditFoldLineCapability;
-  LineHeight, LineOffset, BoxSize: Integer;
+  LineHeight, TextHeight, LineOffset, HalfBoxSize: Integer;
 
   procedure DrawNodeBox(rcCodeFold: TRect; NodeType: TSynEditFoldLineCapability);
   var
@@ -634,6 +634,7 @@ var
     isPrevLine: Boolean;
     DrawOpts: TDrawNodeSymbolOptions;
   begin
+
     isPrevLine := IsFoldHidePreviousLine(iLine);
     LineOffset := 0;
     DrawOpts := [];
@@ -645,17 +646,18 @@ var
 
     //center of the draw area
     ptCenter.X := (rcCodeFold.Left + rcCodeFold.Right) div 2;
-    ptCenter.Y := (rcCodeFold.Top + rcCodeFold.Bottom) div 2;
+    ptCenter.Y := Max(HalfBoxSize,
+                      (rcCodeFold.Top + Min(rcCodeFold.Top+TextHeight, rcCodeFold.Bottom)) div 2);
 
     // If belongs to line above, draw at very top
     if isPrevLine then
-      ptCenter.Y := rcCodeFold.Top + (BoxSize div 2) - 1;
+      ptCenter.Y := rcCodeFold.Top + (HalfBoxSize) - 1;
 
     //area of drawbox
-    rcNode.Left   := ptCenter.X - (BoxSize div 2) + 1;
-    rcNode.Right  := ptCenter.X + (BoxSize div 2);
-    rcNode.Top    := ptCenter.Y - (BoxSize div 2) + 1;
-    rcNode.Bottom := ptCenter.Y + (BoxSize div 2);
+    rcNode.Left   := ptCenter.X - (HalfBoxSize) + 1;
+    rcNode.Right  := ptCenter.X + (HalfBoxSize);
+    rcNode.Top    := ptCenter.Y - (HalfBoxSize) + 1;
+    rcNode.Bottom := ptCenter.Y + (HalfBoxSize);
 
     Canvas.Brush.Style := bsClear;
 
@@ -718,11 +720,12 @@ var
 begin
   if not Visible then exit;
   LineHeight := TCustomSynEdit(SynEdit).LineHeight;
+  TextHeight := LineHeight - Max(0, TCustomSynEdit(SynEdit).ExtraLineSpacing);
   LineOffset := 0;
   if (FirstLine > 0) and
      (FoldView.FoldType[FirstLine-1] - [cfFoldBody] = [cfFoldEnd]) then
     LineOffset := 2;
-  BoxSize := Min(Width, LineHeight - cNodeOffset*2);
+  HalfBoxSize := Min(Width, LineHeight - cNodeOffset*2) div 2;
 
   if MarkupInfo.Background <> clNone then
   begin
