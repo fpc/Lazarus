@@ -604,6 +604,7 @@ begin
           AContext := AController.CurrentProcess.DbgInfo.FindContext(CurThreadId, e.Index, Reg.NumValue);
           if AContext <> nil then begin
             AContext.MemManager.DefaultContext := AContext;
+            FPrettyPrinter.MemManager := AContext.MemManager;
             FPrettyPrinter.AddressSize := AContext.SizeOfAddress;
 
             for i := 0 to ProcVal.MemberCount - 1 do begin
@@ -726,6 +727,7 @@ begin
     AContext.ReleaseReference;
     exit;
   end;
+  FPrettyPrinter.MemManager := AContext.MemManager;
   FPrettyPrinter.AddressSize := AContext.SizeOfAddress;
 
   ALocals.Clear;
