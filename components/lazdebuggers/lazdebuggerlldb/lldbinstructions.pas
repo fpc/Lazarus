@@ -573,7 +573,7 @@ constructor TLldbInstructionProcessStep.Create(
   AStepAction: TLldbInstructionProcessStepAction);
 begin
   case AStepAction of
-  	saContinue: inherited Create('thread continue');
+  	saContinue: inherited Create('process continue');
     saOver: inherited Create('thread step-over');
   	saInto: inherited Create('thread step-in');
     saOut: inherited Create('thread step-out');
