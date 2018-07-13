@@ -541,7 +541,7 @@ procedure TSynGutterCodeFolding.DrawNodeSymbol(Canvas: TCanvas; Rect: TRect;
   NodeType: TSynEditFoldLineCapability; SubType: TDrawNodeSymbolOptions);
 var
   Points: Array [0..3] of TPoint;
-  X, Y, LineBorder: Integer;
+  X, Y, LineBorder, c, LineBorderEnd: Integer;
   AliasMode: TAntialiasingMode;
   OdlCosmetic: Boolean;
 begin
@@ -556,21 +556,22 @@ begin
     Canvas.Pen.Style := psDash;
     Canvas.Pen.Cosmetic := False;
   end;
-  Canvas.Pen.EndCap := pecSquare;
+  Canvas.Pen.JoinStyle := pjsMiter;
   Canvas.Rectangle(Rect);
   Canvas.Pen.Style := psSolid;
   Canvas.Pen.Cosmetic := OdlCosmetic;
-  LineBorder := Round((Rect.Right-Rect.Left) / 5);
+  c := FPpiPenWidth div 2;
+  LineBorder := Round((Rect.Right-Rect.Left) / 5) + c;
+  LineBorderEnd := LineBorder + c;
   X := (Rect.Left - 1 + Rect.Right) div 2;
   Y := (Rect.Top - 1 + Rect.Bottom) div 2;
 
-  //Canvas.Pen.EndCap := pecFlat;
   case NodeType of
     cfFoldStart:
       begin
         // [-]
         Canvas.MoveTo(Rect.Left + LineBorder, Y);
-        Canvas.LineTo(Rect.Right - LineBorder, Y);
+        Canvas.LineTo(Rect.Right - LineBorderEnd, Y);
       end;
     cfHideStart:
       begin
@@ -582,9 +583,9 @@ begin
       begin
         // [+]
         Canvas.MoveTo(Rect.Left + LineBorder, Y);
-        Canvas.LineTo(Rect.Right - LineBorder, Y);
+        Canvas.LineTo(Rect.Right - LineBorderEnd, Y);
         Canvas.MoveTo(X, Rect.Top + LineBorder);
-        Canvas.LineTo(X, Rect.Bottom - LineBorder);
+        Canvas.LineTo(X, Rect.Bottom - LineBorderEnd);
       end;
     cfCollapsedHide:
       begin
@@ -613,7 +614,6 @@ begin
         Canvas.Polygon(Points);
       end;
   end;
-  //Canvas.Pen.EndCap := pecSquare;
   Canvas.AntialiasingMode := AliasMode;
 end;
 
@@ -636,6 +636,7 @@ var
     ptCenter : TPoint;
     isPrevLine: Boolean;
     DrawOpts: TDrawNodeSymbolOptions;
+    c: Integer;
   begin
 
     isPrevLine := IsFoldHidePreviousLine(iLine);
@@ -655,12 +656,13 @@ var
     // If belongs to line above, draw at very top
     if isPrevLine then
       ptCenter.Y := rcCodeFold.Top + (HalfBoxSize) - 1;
+    c := FPpiPenWidth div 2;
 
     //area of drawbox
-    rcNode.Left   := ptCenter.X - (HalfBoxSize) + 1;
-    rcNode.Right  := ptCenter.X + (HalfBoxSize);
-    rcNode.Top    := ptCenter.Y - (HalfBoxSize) + 1;
-    rcNode.Bottom := ptCenter.Y + (HalfBoxSize);
+    rcNode.Left   := ptCenter.X - (HalfBoxSize) + 1 + c;
+    rcNode.Right  := ptCenter.X + (HalfBoxSize) - c;
+    rcNode.Top    := ptCenter.Y - (HalfBoxSize) + 1 + c;
+    rcNode.Bottom := ptCenter.Y + (HalfBoxSize) - c;
 
     Canvas.Brush.Style := bsClear;
 
