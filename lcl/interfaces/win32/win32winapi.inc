@@ -1221,8 +1221,14 @@ end;
   control.
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.EnableWindow(HWnd: HWND; BEnable: Boolean): Boolean;
+var
+  OldEnable: Boolean;
 begin
-  Result := Boolean(Windows.EnableWindow(HWnd, BEnable));
+  OldEnable := IsWindowEnabled(HWnd);
+  if OldEnable <> BEnable then
+    Result := Boolean(Windows.EnableWindow(HWnd, BEnable))
+  else
+    Result := not OldEnable;
 end;
 
 {------------------------------------------------------------------------------
