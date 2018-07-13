@@ -556,6 +556,7 @@ begin
     Canvas.Pen.Style := psDash;
     Canvas.Pen.Cosmetic := False;
   end;
+  Canvas.Pen.EndCap := pecSquare;
   Canvas.Rectangle(Rect);
   Canvas.Pen.Style := psSolid;
   Canvas.Pen.Cosmetic := OdlCosmetic;
@@ -563,6 +564,7 @@ begin
   X := (Rect.Left - 1 + Rect.Right) div 2;
   Y := (Rect.Top - 1 + Rect.Bottom) div 2;
 
+  //Canvas.Pen.EndCap := pecFlat;
   case NodeType of
     cfFoldStart:
       begin
@@ -611,6 +613,7 @@ begin
         Canvas.Polygon(Points);
       end;
   end;
+  //Canvas.Pen.EndCap := pecSquare;
   Canvas.AntialiasingMode := AliasMode;
 end;
 
@@ -737,6 +740,7 @@ begin
   with Canvas do
   begin
     Pen.Color := MarkupInfo.Foreground;
+    Pen.EndCap := pecSquare;
     Pen.Width := FPpiPenWidth;
 
     rcLine.Bottom := AClip.Top;
