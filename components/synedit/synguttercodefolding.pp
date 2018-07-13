@@ -69,6 +69,8 @@ type
 
   TSynGutterCodeFolding = class(TSynGutterPartBase)
   private
+    const cNodeOffset = 1;
+  private
     FMouseActionsCollapsed: TSynEditMouseInternalActions;
     FMouseActionsExpanded: TSynEditMouseInternalActions;
     FPopUp: TPopupMenu;
@@ -76,6 +78,7 @@ type
     FIsFoldHidePreviousLine: Boolean;
     FPopUpImageList: TSynGutterImageList;
     FReversePopMenuOrder: Boolean;
+    FPpiPenWidth: Integer;
     procedure FPopUpOnPopup(Sender: TObject);
     function GetMouseActionsCollapsed: TSynEditMouseActions;
     function GetMouseActionsExpanded: TSynEditMouseActions;
@@ -93,9 +96,11 @@ type
     procedure CreatePopUpMenuEntries(var APopUp: TPopupMenu; ALine: Integer); virtual;
     procedure PopClicked(Sender: TObject);
     function CreateMouseActions: TSynEditMouseInternalActions; override;
+    procedure SetWidth(const AValue: integer); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure ScalePPI(const AScaleFactor: Double); override;
 
     procedure Paint(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer);
       override;
@@ -354,6 +359,7 @@ end;
 
 constructor TSynGutterCodeFolding.Create(AOwner: TComponent);
 begin
+  FPpiPenWidth := 1;
   FReversePopMenuOrder := true;
   FMouseActionsExpanded := TSynEditMouseActionsGutterFoldExpanded.Create(self);
   FMouseActionsCollapsed := TSynEditMouseActionsGutterFoldCollapsed.Create(self);
@@ -378,6 +384,16 @@ begin
   inherited Destroy;
 end;
 
+procedure TSynGutterCodeFolding.ScalePPI(const AScaleFactor: Double);
+var
+  m: Integer;
+begin
+  inherited ScalePPI(AScaleFactor);
+  FPpiPenWidth := Max(1, Scale96ToFont(1));
+  m := Max(1, Min(Width, TCustomSynEdit(SynEdit).LineHeight - cNodeOffset*2) div 5);
+  FPpiPenWidth := Min(m, FPpiPenWidth);
+end;
+
 procedure TSynGutterCodeFolding.PopClicked(Sender: TObject);
 var
   inf: TFoldViewNodeInfo;
@@ -395,6 +411,18 @@ end;
 function TSynGutterCodeFolding.CreateMouseActions: TSynEditMouseInternalActions;
 begin
   Result := TSynEditMouseActionsGutterFold.Create(self);
+end;
+
+procedure TSynGutterCodeFolding.SetWidth(const AValue: integer);
+var
+  m: Integer;
+begin
+  if (Width=AValue) or (AutoSize) then exit;
+  inherited SetWidth(AValue);
+
+  FPpiPenWidth := Max(1, Scale96ToFont(1));
+  m := Max(1, Min(Width, TCustomSynEdit(SynEdit).LineHeight - cNodeOffset*2) div 5);
+  FPpiPenWidth := Min(m, FPpiPenWidth);
 end;
 
 procedure TSynGutterCodeFolding.DoOnGutterClick(X, Y : integer);
@@ -592,7 +620,6 @@ begin
 end;
 
 procedure TSynGutterCodeFolding.Paint(Canvas : TCanvas; AClip : TRect; FirstLine, LastLine : integer);
-const cNodeOffset = 1;
 var
   iLine: integer;
   rcLine: TRect;
@@ -707,7 +734,7 @@ begin
   with Canvas do
   begin
     Pen.Color := MarkupInfo.Foreground;
-    Pen.Width := 1;
+    Pen.Width := FPpiPenWidth;
 
     rcLine.Bottom := AClip.Top;
     for iLine := FirstLine to LastLine do
