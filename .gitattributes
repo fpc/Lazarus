@@ -7651,12 +7651,18 @@ images/debugger/debugger_event_log.png -text svneol=unset#image/png
 images/debugger/debugger_inspect.png -text svneol=unset#images/png
 images/debugger/debugger_modify.png -text svneol=unset#images/png
 images/debugger/debugger_nosource_line.png -text
+images/debugger/debugger_nosource_line_150.png -text
+images/debugger/debugger_nosource_line_200.png -text
+images/debugger/debugger_nosource_line_300.png -text
 images/debugger/debugger_options.png -text svneol=unset#image/png
 images/debugger/debugger_output.png -text svneol=unset#image/png
 images/debugger/debugger_power.png -text svneol=unset#images/png
 images/debugger/debugger_power_grey.png -text svneol=unset#images/png
 images/debugger/debugger_show_execution_point.png -text svneol=unset#image/png
 images/debugger/debugger_source_line.png -text
+images/debugger/debugger_source_line_150.png -text
+images/debugger/debugger_source_line_200.png -text
+images/debugger/debugger_source_line_300.png -text
 images/debugger/debugger_watches.png -text svneol=unset#image/png
 images/debugger/evaluate_no_hist.png -text
 images/debugger/evaluate_up.png -text
