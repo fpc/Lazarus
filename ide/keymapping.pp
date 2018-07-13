@@ -442,7 +442,8 @@ begin
     ecSetMarker9              : Result:= Format(srkmecSetMarker,[cmd-ecSetMarker0]);
     ecToggleMarker0 ..
     ecToggleMarker9           : Result:= Format(srkmecToggleMarker,[cmd-ecToggleMarker0]);
-
+    ecGotoBookmarks           : Result:= uemGotoBookmarks;
+    ecToggleBookmarks         : Result:= uemToggleBookmarks;
     ecBlockSetBegin   : Result := srkmecBlockSetBegin;
     ecBlockSetEnd     : Result := srkmecBlockSetEnd;
     ecBlockToggleHide : Result := srkmecBlockToggleHide;
@@ -1159,6 +1160,8 @@ begin
   ecSetMarker7:          SetSingle(VK_UNKNOWN,[]);
   ecSetMarker8:          SetSingle(VK_UNKNOWN,[]);
   ecSetMarker9:          SetSingle(VK_UNKNOWN,[]);
+  ecGotoBookmarks:       SetSingle(VK_B,[ssCtrl]);
+  ecToggleBookmarks:     SetSingle(VK_B,[ssCtrl,ssShift]);
 
   // codetools
   ecAutoCompletion:      SetSingle(VK_J,[XCtrl]);
@@ -1685,6 +1688,8 @@ begin
   EcFoldCurrent:         SetSingle(VK_OEM_PLUS,[ssAlt,ssShift]);
   EcUnFoldCurrent:       SetSingle(VK_OEM_MINUS,[ssAlt,ssShift]);
   EcToggleMarkupWord:    SetSingle(VK_M,[ssAlt]);
+  ecGotoBookmarks:       SetSingle(VK_B,[ssCtrl]);
+  ecToggleBookmarks:     SetSingle(VK_B,[ssCtrl,ssShift]);
 
   // file menu
   ecNew:                 SetSingle(VK_UNKNOWN,[]);
@@ -2311,6 +2316,9 @@ begin
   EcToggleMarkupWord:    SetSingle(VK_M,[ssMeta]);
   *)
 
+  ecGotoBookmarks:       SetSingle(VK_UNKNOWN,[]);
+  ecToggleBookmarks:     SetSingle(VK_UNKNOWN,[]);
+
   // file menu
   ecNew:                 SetSingle(VK_N,[ssMeta]);
   ecNewUnit:             SetSingle(VK_UNKNOWN,[]);
@@ -2814,6 +2822,7 @@ begin
   AddDefault(C, 'Clear all Bookmarks', srkmecClearAllBookmark, ecClearAllBookmark);
   AddDefault(C, 'Previous Bookmark', srkmecPrevBookmark, ecPrevBookmark);
   AddDefault(C, 'Next Bookmark', srkmecNextBookmark, ecNextBookmark);
+  AddDefault(C, 'Go to Bookmark...', uemGotoBookmarks, ecGotoBookmarks);
   AddDefault(C, 'Go to marker 0', lisKMGoToMarker0, ecGotoMarker0);
   AddDefault(C, 'Go to marker 1', lisKMGoToMarker1, ecGotoMarker1);
   AddDefault(C, 'Go to marker 2', lisKMGoToMarker2, ecGotoMarker2);
@@ -2834,6 +2843,7 @@ begin
   AddDefault(C, 'Set marker 7', lisKMSetMarker7, ecSetMarker7);
   AddDefault(C, 'Set marker 8', lisKMSetMarker8, ecSetMarker8);
   AddDefault(C, 'Set marker 9', lisKMSetMarker9, ecSetMarker9);
+  AddDefault(C, 'Toggle Bookmark...', uemToggleBookmarks, ecToggleBookmarks);
   AddDefault(C, 'Toggle marker 0', lisKMToggleMarker0, ecToggleMarker0);
   AddDefault(C, 'Toggle marker 1', lisKMToggleMarker1, ecToggleMarker1);
   AddDefault(C, 'Toggle marker 2', lisKMToggleMarker2, ecToggleMarker2);

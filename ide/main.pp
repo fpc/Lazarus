@@ -8521,7 +8521,7 @@ begin
   if not UpdateBookmarkCommandsStamp.Changed(BookmarksStamp) then
     Exit;
 
-  for BookMarkID:=0 to 9 do begin
+  for BookMarkID in TBookmarkNumRange do begin
     MarkDesc:=' '+IntToStr(BookMarkID);
     BookmarkAvail:=False;
     i := 0;
@@ -10705,7 +10705,7 @@ var
   UInfo: TUnitInfo;
 begin
   if ID = -1 then begin
-    for i := 0 to 9 do begin
+    for i in TBookmarkNumRange do begin
       //b := Project1.Bookmarks[i];
       UInfo := TUnitInfo(Project1.Bookmarks.UnitInfoForBookmarkWithIndex(i));
       if UInfo <> nil then begin

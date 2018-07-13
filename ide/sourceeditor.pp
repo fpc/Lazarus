@@ -1358,6 +1358,10 @@ var
     SrcEditMenuSetFreeBookmark: TIDEMenuCommand;
     SrcEditMenuClearFileBookmark: TIDEMenuCommand;
     SrcEditMenuClearAllBookmark: TIDEMenuCommand;
+    SrcEditMenuGotoBookmark: array [TBookmarkNumRange] of TIDEMenuCommand;
+    SrcEditMenuGotoBookmarks: TIDEMenuCommand;
+    SrcEditMenuToggleBookmark: array [TBookmarkNumRange] of TIDEMenuCommand;
+    SrcEditMenuToggleBookmarks: TIDEMenuCommand;
     // debugging
     SrcEditMenuToggleBreakpoint: TIDEMenuCommand;
     SrcEditMenuRunToCursor: TIDEMenuCommand;
@@ -1421,6 +1425,27 @@ var
   EnglishLGPLNotice: string;
   EnglishModifiedLGPLNotice: string;
   EnglishMITNotice: string;
+
+type
+
+  { TToolButton_GotoBookmarks }
+
+  TToolButton_GotoBookmarks = class(TIDEToolButton_ButtonDrop)
+  protected
+    procedure RefreshMenu; override;
+  public
+    class procedure ShowAloneMenu(Sender: TObject); static;
+  end;
+
+  { TToolButton_ToggleBookmarks }
+
+  TToolButton_ToggleBookmarks = class(TIDEToolButton_ButtonDrop)
+  protected
+    procedure RefreshMenu; override;
+  public
+    class procedure ShowAloneMenu(Sender: TObject); static;
+  end;
+
 
 implementation
 
@@ -1657,32 +1682,56 @@ begin
   SrcEditMenuSectionMarks:=RegisterIDEMenuSection(SourceEditorMenuRoot, 'Marks section');
     // register the Goto Bookmarks Submenu
     SrcEditSubMenuGotoBookmarks:=RegisterIDESubMenu(SrcEditMenuSectionMarks,
-                                              'Goto bookmarks',uemGotoBookmark);
+                                   'Goto bookmarks submenu', uemGotoBookmark, nil, nil, 'menu_goto_bookmarks');
     AParent:=SrcEditSubMenuGotoBookmarks;
-      for I := 0 to 9 do
-        RegisterIDEMenuCommand(AParent,'GotoBookmark'+IntToStr(I),
-            uemBookmarkN+IntToStr(I), nil, @ExecuteIdeMenuClick, nil, 'menu_goto_bookmark'+IntToStr(I));
+      for I in TBookmarkNumRange do
+        SrcEditMenuGotoBookmark[I]:=RegisterIDEMenuCommand(AParent,
+            'GotoBookmark'+IntToStr(I), uemBookmarkN+IntToStr(I),
+            nil, @ExecuteIdeMenuClick, nil,
+            'menu_goto_bookmark'+IntToStr(I));
+
+      AParent:=RegisterIDEMenuSection(AParent, 'Next/Prev Bookmark section');
       SrcEditMenuNextBookmark:=RegisterIDEMenuCommand(AParent,
           'Goto next Bookmark',uemNextBookmark, nil,
           @ExecuteIdeMenuClick, nil, 'menu_search_next_bookmark');
       SrcEditMenuPrevBookmark:=RegisterIDEMenuCommand(AParent,
           'Goto previous Bookmark',uemPrevBookmark, nil,
           @ExecuteIdeMenuClick, nil, 'menu_search_previous_bookmark');
+
+      {For toolbar only. Hidden in menu.}
+      SrcEditMenuGotoBookmarks:=RegisterIDEMenuCommand(AParent,
+          'Goto bookmarks', uemGotoBookmarks,
+          nil, TNotifyProcedure(@TToolButton_GotoBookmarks.ShowAloneMenu), nil,
+          'menu_goto_bookmarks');
+      SrcEditMenuGotoBookmarks.Visible:=False;
   {%endregion}
 
   {%region *** Toggle Bookmarks Submenu ***}
     SrcEditSubMenuToggleBookmarks:=RegisterIDESubMenu(SrcEditMenuSectionMarks,
-                                           'Toggle bookmarks',uemToggleBookmark);
+                                     'Toggle bookmarks submenu', uemToggleBookmark, nil, nil, 'menu_toggle_bookmarks');
     AParent:=SrcEditSubMenuToggleBookmarks;
-      for I := 0 to 9 do
-        RegisterIDEMenuCommand(AParent, 'ToggleBookmark'+IntToStr(I),
-            uemBookmarkN+IntToStr(I), nil, @ExecuteIdeMenuClick, nil, 'menu_toggle_bookmark'+IntToStr(I));
+      for I in TBookmarkNumRange do
+        SrcEditMenuToggleBookmark[I]:=RegisterIDEMenuCommand(AParent,
+            'ToggleBookmark'+IntToStr(I), uemBookmarkN+IntToStr(I),
+            nil, @ExecuteIdeMenuClick, nil,
+            'menu_toggle_bookmark'+IntToStr(I));
+
+      AParent:=RegisterIDEMenuSection(AParent, 'Set Free Bookmark section');
       SrcEditMenuSetFreeBookmark:=RegisterIDEMenuCommand(AParent,
           'Set a free Bookmark',uemSetFreeBookmark, nil, @ExecuteIdeMenuClick, nil, 'menu_set_free_bookmark');
+
+      AParent:=RegisterIDEMenuSection(AParent, 'Clear Bookmarks section');
       SrcEditMenuClearFileBookmark:=RegisterIDEMenuCommand(AParent,
           'Clear Bookmark for current file',srkmecClearBookmarkForFile, nil, @ExecuteIdeMenuClick, nil, 'menu_clear_file_bookmarks');
       SrcEditMenuClearAllBookmark:=RegisterIDEMenuCommand(AParent,
           'Clear all Bookmark',srkmecClearAllBookmark, nil, @ExecuteIdeMenuClick, nil, 'menu_clear_all_bookmarks');
+
+      {For toolbar only. Hidden in menu.}
+      SrcEditMenuToggleBookmarks:=RegisterIDEMenuCommand(AParent,
+          'Toggle bookmarks', uemToggleBookmarks,
+          nil, TNotifyProcedure(@TToolButton_ToggleBookmarks.ShowAloneMenu), nil,
+          'menu_toggle_bookmarks');
+      SrcEditMenuToggleBookmarks.Visible:=False;
   {%endregion}
 
   {%region *** Debug Section ***}
@@ -1789,6 +1838,51 @@ var
   SE1: TSourceEditorInterface absolute SrcEdit;
 begin
   Result:=CompareFilenames(AnsiString(FileNameStr),SE1.FileName);
+end;
+
+{ TToolButton_GotoBookmarks }
+
+procedure TToolButton_GotoBookmarks.RefreshMenu;
+begin
+  AddMenuItems(SrcEditMenuGotoBookmark);
+  DropdownMenu.Items.AddSeparator;
+  AddMenuItems([
+    SrcEditMenuPrevBookmark,
+    SrcEditMenuNextBookmark]);
+end;
+
+class procedure TToolButton_GotoBookmarks.ShowAloneMenu(Sender: TObject);  // on shortcuts only
+const
+  Btn: TToolButton_GotoBookmarks=nil;  // static var
+begin
+  if Btn = nil then
+    Btn := TToolButton_GotoBookmarks.Create(Application);
+  Btn.PopUpAloneMenu;
+  // Btn should not be destroyed immediately after PopUp
+end;
+
+
+{ TToolButton_ToggleBookmarks }
+
+procedure TToolButton_ToggleBookmarks.RefreshMenu;
+begin
+  AddMenuItems(SrcEditMenuToggleBookmark);
+  DropdownMenu.Items.AddSeparator;
+  AddMenuItem(SrcEditMenuSetFreeBookmark);
+  DropdownMenu.Items.AddSeparator;
+  AddMenuItems([
+    SrcEditMenuClearFileBookmark,
+    SrcEditMenuClearAllBookmark]);
+end;
+
+class procedure TToolButton_ToggleBookmarks.ShowAloneMenu(Sender: TObject);  // on shortcuts only
+const
+  Btn: TToolButton_ToggleBookmarks=nil;  // static var
+begin
+  if Btn = nil then
+    Btn := TToolButton_ToggleBookmarks.Create(Application);
+  Btn.PopUpAloneMenu;
+  // Btn should not be destroyed immediately after PopUp
 end;
 
 { TSourceEditorWordCompletion }
@@ -4060,7 +4154,7 @@ Begin
     end;
   ecClearBookmarkForFile: begin
       if Assigned(Manager) and Assigned(Manager.OnClearBookmarkId) then
-        for i := 0 to 9 do
+        for i in TBookmarkNumRange do
           if EditorComponent.GetBookMark(i,x{%H-},y{%H-}) then
             Manager.OnClearBookmarkId(Self, i);
     end;
@@ -10539,9 +10633,17 @@ procedure TSourceEditorManager.SetupShortCuts;
     Result:=GetCmdAndBtn(ACommand, ToolButton);
   end;
 
+  function GetCommand(ACommand: word; ToolButtonClass: TIDEToolButtonClass): TIDECommand;
+  var
+    ToolButton: TIDEButtonCommand;
+  begin
+    Result:=GetCmdAndBtn(ACommand, ToolButton);
+    if ToolButton<>nil then
+      ToolButton.ToolButtonClass := ToolButtonClass;
+  end;
+
 var
   i: Integer;
-  IDEmi: TIDEMenuItem;
 begin
   {%region *** first static section *** }
     SrcEditMenuFindDeclaration.Command := GetCommand(ecFindDeclaration);
@@ -10604,12 +10706,14 @@ begin
   SrcEditMenuClearFileBookmark.Command:=GetCommand(ecClearBookmarkForFile);
   SrcEditMenuClearAllBookmark.Command:=GetCommand(ecClearAllBookmark);
 
-  for i:=0 to 9 do begin
-    IDEmi:=SrcEditSubMenuGotoBookmarks.FindByName('GotoBookmark'+IntToStr(i));
-    IDEmi.Command := GetCommand(ecGotoMarker0 + i);
-    IDEmi:=SrcEditSubMenuToggleBookmarks.FindByName('ToggleBookmark'+IntToStr(i));
-    IDEmi.Command := GetCommand(ecToggleMarker0 + i);
-  end;
+  SrcEditMenuGotoBookmarks.Command:=GetCommand(ecGotoBookmarks, TToolButton_GotoBookmarks);
+  SrcEditMenuToggleBookmarks.Command:=GetCommand(ecToggleBookmarks, TToolButton_ToggleBookmarks);
+
+  for i in TBookmarkNumRange do
+    SrcEditMenuGotoBookmark[i].Command := GetCommand(ecGotoMarker0 + i);
+
+  for i in TBookmarkNumRange do
+    SrcEditMenuToggleBookmark[i].Command := GetCommand(ecToggleMarker0 + i);
 
   {%region *** Source Section ***}
     SrcEditMenuEncloseSelection.Command:=GetCommand(ecSelectionEnclose);

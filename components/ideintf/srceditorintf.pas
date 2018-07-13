@@ -589,6 +589,8 @@ type
     SearchFor, ReplaceText: string; Flags: TSrcEditSearchOptions;
     var Prompt: boolean; Progress: TIDESearchInTextProgress = nil): TModalResult;
 
+  TBookmarkNumRange = 0..9;
+
 var
   IDESearchInText: TIDESearchInTextFunction = nil;// set by the IDE
 

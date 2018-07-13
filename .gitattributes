@@ -7875,6 +7875,9 @@ images/menu/menu_goto_bookmark8_200.png -text
 images/menu/menu_goto_bookmark9.png -text
 images/menu/menu_goto_bookmark9_150.png -text
 images/menu/menu_goto_bookmark9_200.png -text
+images/menu/menu_goto_bookmarks.png -text
+images/menu/menu_goto_bookmarks_150.png -text
+images/menu/menu_goto_bookmarks_200.png -text
 images/menu/menu_goto_line.png -text svneol=unset#image/png
 images/menu/menu_goto_line_150.png -text
 images/menu/menu_goto_line_200.png -text
@@ -8066,6 +8069,9 @@ images/menu/menu_toggle_bookmark8_200.png -text
 images/menu/menu_toggle_bookmark9.png -text
 images/menu/menu_toggle_bookmark9_150.png -text
 images/menu/menu_toggle_bookmark9_200.png -text
+images/menu/menu_toggle_bookmarks.png -text
+images/menu/menu_toggle_bookmarks_150.png -text
+images/menu/menu_toggle_bookmarks_200.png -text
 images/menu/menu_tool_check_lfm.png -text svneol=unset#image/png
 images/menu/menu_tool_check_lfm_150.png -text
 images/menu/menu_tool_check_lfm_200.png -text

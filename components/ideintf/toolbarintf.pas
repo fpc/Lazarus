@@ -16,7 +16,8 @@ unit ToolBarIntf;
 interface
 
 uses
-  Classes, SysUtils, Controls, ComCtrls, IDECommands, MenuIntf;
+  Classes, SysUtils, Controls, ComCtrls, IDECommands, MenuIntf, IDEImagesIntf,
+  SrcEditorIntf, Menus, Forms;
 
 type
   TIDEToolButton = class;
@@ -59,6 +60,36 @@ type
     procedure Click; override;
     property Item: TIDEButtonCommand read FItem write FItem;
   end;
+
+  { TIDEToolButtonWithArrow }
+
+  TIDEToolButtonWithArrow = class(TIDEToolButton)
+  protected
+    procedure AddMenuItem(ACommand: TIDEMenuCommand); virtual;
+    procedure AddMenuItems(ACommands: array of TIDEMenuCommand);
+    procedure DoOnMenuItemClick(Sender: TObject);
+    procedure DoOnMenuPopup(Sender: TObject);
+    procedure RefreshMenu; virtual;
+  public
+    constructor Create(AOwner: TComponent); override;
+  end;
+
+  { TIDEToolButton_ButtonDrop }
+
+  TIDEToolButton_ButtonDrop = class(TIDEToolButtonWithArrow)
+  protected
+    procedure PopUpAloneMenu;
+  public
+    procedure DoOnAdded; override;
+  end;
+
+  { TIDEToolButton_DropDown }
+
+  TIDEToolButton_DropDown = class(TIDEToolButtonWithArrow)
+  public
+    procedure DoOnAdded; override;
+  end;
+
 
   TIDEToolButtonCategory = class
   private
@@ -153,6 +184,93 @@ end;
 function RegisterIDEButtonCommand(const aCommand: TIDECommand): TIDEButtonCommand;
 begin
   Result := IDEToolButtonCategories.AddButton(aCommand);
+end;
+
+{ TIDEToolButtonWithArrow }
+
+constructor TIDEToolButtonWithArrow.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  DropdownMenu := TPopupMenu.Create(Self);
+  DropdownMenu.Images := IDEImages.Images_16;
+  DropdownMenu.OnPopup := @DoOnMenuPopup;
+end;
+
+procedure TIDEToolButtonWithArrow.AddMenuItem(ACommand: TIDEMenuCommand);
+var
+  Itm: TMenuItem;
+begin
+  Itm := TMenuItem.Create(DropdownMenu);
+  Itm.Caption := ACommand.Caption;
+  Itm.ShortCut := ACommand.Command.AsShortCut;
+  Itm.ImageIndex := ACommand.ImageIndex;
+  Itm.Enabled := ACommand.Enabled;
+  Itm.OnClick := @DoOnMenuItemClick;
+  Itm.Tag := PtrInt(ACommand);
+  DropdownMenu.Items.Add(Itm);
+end;
+
+procedure TIDEToolButtonWithArrow.AddMenuItems(ACommands: array of TIDEMenuCommand);
+var
+  Cmd: TIDEMenuCommand;
+begin
+  for Cmd in ACommands do
+    AddMenuItem(Cmd);
+end;
+
+procedure TIDEToolButtonWithArrow.DoOnMenuPopup(Sender: TObject);
+begin
+  DropdownMenu.Items.Clear;
+  RefreshMenu;
+end;
+
+procedure TIDEToolButtonWithArrow.RefreshMenu;
+begin
+  { Override this method in descendants.
+    DropdownMenu fully regenerates for every showing on OnPopup event.
+    So, RefreshMenu calling happens:
+    - On click to arrow (Style=tbsDropDown)
+    - On click to button (Style=tbsButtonDrop)
+    - On popup alone menu in static methods (on shortcuts)
+        of TIDEToolButton_ButtonDrop descendants (Style is not matter)
+    At calling time:
+    - Instance of DropdownMenu exists
+    - DropdownMenu is empty }
+end;
+
+procedure TIDEToolButtonWithArrow.DoOnMenuItemClick(Sender: TObject);
+var
+  Cmd: TIDEMenuCommand;
+begin
+  Cmd:=TIDEMenuCommand((Sender as TMenuItem).Tag);
+  Cmd.DoOnClick;  // Sender in handler should be a command but not a menu item
+end;
+
+{ TIDEToolButton_ButtonDrop }
+
+procedure TIDEToolButton_ButtonDrop.DoOnAdded;
+begin
+  Style := tbsButtonDrop;  // not in constructor
+end;
+
+procedure TIDEToolButton_ButtonDrop.PopUpAloneMenu;
+var
+  ActiveEditor: TSourceEditorInterface;
+  ScreenXY: TPoint;
+begin
+  ActiveEditor := SourceEditorManagerIntf.ActiveEditor;
+  if ActiveEditor=nil then
+    Exit;
+  ScreenXY := ActiveEditor.EditorControl.ClientToScreen(Point(0, 0));
+
+  DropdownMenu.PopUp(ScreenXY.X, ScreenXY.Y);
+end;
+
+{ TIDEToolButton_DropDown }
+
+procedure TIDEToolButton_DropDown.DoOnAdded;
+begin
+  Style := tbsDropDown;  // not in constructor
 end;
 
 { TIDEToolButtonsEnumerator }

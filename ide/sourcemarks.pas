@@ -254,7 +254,7 @@ type
     property CurrentLineDisabledBreakPointImg: Integer read FCurrentLineDisabledBreakPointImg;
     property SourceLineImg: Integer read FSourceLineImg;
   end;
-  
+
 var
   SourceEditorMarks: TSourceMarks = nil;
   
@@ -557,7 +557,7 @@ begin
   FImgList.RegisterResolutions([11, 16, 22, 33], [100, 150, 200, 300]);
 
   // synedit expects the first 10 icons for the bookmarks
-  for i := 0 to 9 do
+  for i in TBookmarkNumRange do
     AddImage('bookmark'+IntToStr(i));
 
   // load active breakpoint image

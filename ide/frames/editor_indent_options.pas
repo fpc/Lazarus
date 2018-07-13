@@ -33,7 +33,7 @@ uses
   // SynEdit
   SynEdit, SynBeautifier, SynHighlighterPas, SynEditKeyCmds,
   // IdeIntf
-  IDEOptionsIntf, IDEOptEditorIntf, IDEUtils,
+  IDEOptionsIntf, IDEOptEditorIntf, IDEUtils, SrcEditorIntf,
   // IDE
   EditorOptions, LazarusIDEStrConsts, IDEProcs, KeyMapping,
   editor_keymapping_options, editor_general_options;
@@ -662,7 +662,7 @@ begin
     FDefaultBookmarkImages := TImageList.Create(Self);
     FDefaultBookmarkImages.Width := 11;
     FDefaultBookmarkImages.Height := 11;
-    for i := 0 to 9 do
+    for i in TBookmarkNumRange do
       FDefaultBookmarkImages.AddResourceName(HInstance, 'bookmark' + IntToStr(i));
   end;
   Result := FDefaultBookmarkImages;

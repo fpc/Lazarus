@@ -362,6 +362,9 @@ menu/menu_goto_bookmark8_200.png
 menu/menu_goto_bookmark9.png
 menu/menu_goto_bookmark9_150.png
 menu/menu_goto_bookmark9_200.png
+menu/menu_goto_bookmarks.png
+menu/menu_goto_bookmarks_150.png
+menu/menu_goto_bookmarks_200.png
 menu/menu_goto_line.png
 menu/menu_goto_line_150.png
 menu/menu_goto_line_200.png
@@ -553,6 +556,9 @@ menu/menu_toggle_bookmark8_200.png
 menu/menu_toggle_bookmark9.png
 menu/menu_toggle_bookmark9_150.png
 menu/menu_toggle_bookmark9_200.png
+menu/menu_toggle_bookmarks.png
+menu/menu_toggle_bookmarks_150.png
+menu/menu_toggle_bookmarks_200.png
 menu/menu_tool_check_lfm.png
 menu/menu_tool_check_lfm_150.png
 menu/menu_tool_check_lfm_200.png

@@ -55,6 +55,7 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
+  // RTL + FCL
   Classes, SysUtils, Types, Math,
   // LCL
   LCLProc, Buttons, Menus, ComCtrls, Controls, Graphics, Dialogs, Forms, ImgList,
@@ -204,12 +205,9 @@ type
 
   { TJumpToSectionToolButton }
 
-  TJumpToSectionToolButton = class(TIDEToolButton)
-  private
-    procedure AddMenuItem(aCmd: TIDEMenuCommand);
-  public
-    procedure DoOnAdded; override;
-    procedure RefreshMenu;
+  TJumpToSectionToolButton = class(TIDEToolButton_DropDown)
+  protected
+    procedure RefreshMenu; override;
   end;
 
   { TSetBuildModeToolButton }
@@ -599,37 +597,14 @@ end;
 
 { TJumpToSectionToolButton }
 
-procedure TJumpToSectionToolButton.DoOnAdded;
-begin
-  inherited DoOnAdded;
-  RefreshMenu;
-end;
-
-procedure TJumpToSectionToolButton.AddMenuItem(aCmd: TIDEMenuCommand);
-var
-  xItem: TMenuItem;
-begin
-  xItem := TMenuItem.Create(DropdownMenu);
-  DropdownMenu.Items.Add(xItem);
-  xItem.Caption := aCmd.Caption;
-  xItem.OnClick := aCmd.OnClick;
-  xItem.ImageIndex := aCmd.ImageIndex;
-end;
-
 procedure TJumpToSectionToolButton.RefreshMenu;
 begin
-  if DropdownMenu = nil then
-  begin
-    DropdownMenu := TPopupMenu.Create(Self);
-    if Assigned(FToolBar) then
-      DropdownMenu.Images := FToolBar.Images;
-    Style := tbsDropDown;
-  end;
-  DropdownMenu.Items.Clear;
   AddMenuItem(MainIDEBar.itmJumpToInterface);
   AddMenuItem(MainIDEBar.itmJumpToInterfaceUses);
+  DropdownMenu.Items.AddSeparator;
   AddMenuItem(MainIDEBar.itmJumpToImplementation);
   AddMenuItem(MainIDEBar.itmJumpToImplementationUses);
+  DropdownMenu.Items.AddSeparator;
   AddMenuItem(MainIDEBar.itmJumpToInitialization);
 end;
 
