@@ -1686,7 +1686,7 @@ begin
     AParent:=SrcEditSubMenuGotoBookmarks;
       for I in TBookmarkNumRange do
         SrcEditMenuGotoBookmark[I]:=RegisterIDEMenuCommand(AParent,
-            'GotoBookmark'+IntToStr(I), uemBookmarkN+IntToStr(I),
+            'GotoBookmark'+IntToStr(I), Format(uemBookmarkNUnSet, [IntToStr(I)]),
             nil, @ExecuteIdeMenuClick, nil,
             'menu_goto_bookmark'+IntToStr(I));
 
@@ -1712,7 +1712,7 @@ begin
     AParent:=SrcEditSubMenuToggleBookmarks;
       for I in TBookmarkNumRange do
         SrcEditMenuToggleBookmark[I]:=RegisterIDEMenuCommand(AParent,
-            'ToggleBookmark'+IntToStr(I), uemBookmarkN+IntToStr(I),
+            'ToggleBookmark'+IntToStr(I), Format(uemToggleBookmarkNUnset, [IntToStr(I)]),
             nil, @ExecuteIdeMenuClick, nil,
             'menu_toggle_bookmark'+IntToStr(I));
 

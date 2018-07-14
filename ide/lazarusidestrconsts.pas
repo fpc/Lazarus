@@ -2838,7 +2838,9 @@ resourcestring
   uemSetFreeBookmark = 'Set a Free Bookmark';
   uemNextBookmark = 'Goto Next Bookmark';
   uemPrevBookmark = 'Goto Previous Bookmark';
-  uemBookmarkN = 'Bookmark';
+  uemBookmarkNUnSetDisabled = 'Bookmark %s';
+  uemBookmarkNUnSet = 'Bookmark &%s';
+  uemBookmarkNSet   = 'Bookmark &%s: %s';
   lisChangeEncoding = 'Change Encoding';
   lisChangeFile = 'Change file';
   lisEncodingOfFileOnDiskIsNewEncodingIs = 'Encoding of file "%s"%son disk is %s. New encoding is %s.';
@@ -2849,6 +2851,8 @@ resourcestring
   lisOpenLfm = 'Open %s';
   lisUtf8WithBOM = 'UTF-8 with BOM';
   uemToggleBookmark = '&Toggle Bookmark';
+  uemToggleBookmarkNUnset = 'Toggle Bookmark &%s';
+  uemToggleBookmarkNset = 'Toggle Bookmark &%s: %s';
   uemToggleBookmarks = 'Toggle Bookmark...';
   uemReadOnly = 'Read Only';
   uemShowLineNumbers = 'Show Line Numbers';

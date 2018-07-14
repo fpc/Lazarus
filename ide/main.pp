@@ -8522,7 +8522,7 @@ begin
     Exit;
 
   for BookMarkID in TBookmarkNumRange do begin
-    MarkDesc:=' '+IntToStr(BookMarkID);
+    MarkDesc:='';
     BookmarkAvail:=False;
     i := 0;
     while i < SourceEditorManager.SourceEditorCount do begin
@@ -8530,7 +8530,7 @@ begin
       BookMarkX:=0; BookMarkY:=0;
       if se.EditorComponent.GetBookMark(BookMarkID,BookMarkX,BookMarkY) then
       begin
-        MarkDesc:=MarkDesc+': '+se.PageName+' ('+IntToStr(BookMarkY)+','+IntToStr(BookMarkX)+')';
+        MarkDesc:=se.PageName+' ('+IntToStr(BookMarkY)+','+IntToStr(BookMarkX)+')';
         BookmarkAvail:=True;
         break;
       end;
@@ -8538,11 +8538,17 @@ begin
     end;
     // goto book mark item
     MarkComand:=IDECommandList.FindIDECommand(ecGotoMarker0+BookMarkID);
-    MarkComand.Caption:=uemBookmarkN+MarkDesc;
+    if BookmarkAvail then
+      MarkComand.Caption:=Format(uemBookmarkNSet, [IntToStr(BookMarkID), MarkDesc])
+    else // Needed, because (on win) disabled menus still capture there shortcut key
+      MarkComand.Caption:=Format(uemBookmarkNUnSetDisabled, [IntToStr(BookMarkID), MarkDesc]);
     MarkComand.Enabled:=BookmarkAvail;
     // set book mark item
     MarkComand:=IDECommandList.FindIDECommand(ecToggleMarker0+BookMarkID);
-    MarkComand.Caption:=uemToggleBookmark+MarkDesc;
+    if BookmarkAvail then
+      MarkComand.Caption:=Format(uemToggleBookmarkNset, [IntToStr(BookMarkID), MarkDesc])
+    else
+      MarkComand.Caption:=Format(uemToggleBookmarkNUnset, [IntToStr(BookMarkID)])
   end;
 end;
 
