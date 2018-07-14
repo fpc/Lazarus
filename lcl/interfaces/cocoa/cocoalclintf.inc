@@ -556,12 +556,12 @@ begin
 
   { Get's a screenshot }
   displayID := CGMainDisplayID();
-  if not Assigned(@_CGDisplayCreateImage) then begin
+  if not Assigned(Pointer(_CGDisplayCreateImage)) then begin
     Pointer(_CGDisplayCreateImage) := GetProcAddress(TLibHandle(RTLD_DEFAULT), 'CGDisplayCreateImage');
     if not Assigned(@_CGDisplayCreateImage) then
       Pointer(_CGDisplayCreateImage) := @CGDisplayCreateImageNone;
   end;
-  ScreenImage := CGDisplayCreateImage(displayID);
+  ScreenImage := _CGDisplayCreateImage(displayID);
 
   { Fills the image description }
   ARawImage.Init;
