@@ -5938,6 +5938,8 @@ begin
   end;
 
   DoModified;
+  if Assigned(ComponentTree) then
+    ComponentTree.RebuildComponentNodes
 end;
 
 function TObjectInspectorDlg.GetComponentPanelHeight: integer;
