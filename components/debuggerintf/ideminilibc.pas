@@ -8,6 +8,7 @@
   Always use types from the ctypes unit.
 }
 unit IDEMiniLibC;
+{$IFDEF linux} {$DEFINE DBG_ENABLE_TERMINAL} {$ENDIF}
 
 {$mode objfpc}{$H+}
 
@@ -17,6 +18,9 @@ interface
 
 uses
   ctypes
+{$IFDEF DBG_ENABLE_TERMINAL}
+  , BaseUnix
+{$ENDIF}
   //,libc
   ;
 
@@ -33,11 +37,9 @@ const
   F_SETFD   = 2;
   F_GETFL   = 3;
   F_SETFL   = 4;
-  {$ifdef cpusparc}
-  O_NONBLOCK = $4000;
-  {$else}
-  O_NONBLOCK = &04000;
-  {$endif}
+{$IFDEF DBG_ENABLE_TERMINAL}
+  O_NONBLOCK = BaseUnix.O_NONBLOCK;
+{$ENDIF}
   EINTR = 4;
   NCCS = 32;
 
