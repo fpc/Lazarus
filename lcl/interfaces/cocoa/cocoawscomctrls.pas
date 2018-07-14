@@ -236,12 +236,18 @@ var
 begin
   Result:=aTabIndex;
   if not Assigned(trg) or not (trg is TCustomTabControl) then Exit;
-  if (aTabIndex<0) or (atabIndex>=src.fulltabs.count) then begin
+  if (aTabIndex<0) or (atabIndex>=src.fulltabs.count) then
+  begin
     aTabIndex:=-1;
     Exit;
   end;
 
   tbitem:=TCocoaTabPage(src.fulltabs.objectAtIndex(aTabIndex));
+  if NSView(tbitem.view).subviews.count=0 then
+  begin
+    aTabIndex:=-1;
+    Exit;
+  end;
   hnd := HWND(NSView(tbitem.view).subviews.objectAtIndex(0));
 
   tb:=TCustomTabControl(trg);
