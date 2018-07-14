@@ -390,8 +390,6 @@ var
 begin
   inherited ScalePPI(AScaleFactor);
   FPpiPenWidth := Max(1, Scale96ToFont(1));
-  m := Max(1, Min(Width, TCustomSynEdit(SynEdit).LineHeight - cNodeOffset*2) div 5);
-  FPpiPenWidth := Min(m, FPpiPenWidth);
 end;
 
 procedure TSynGutterCodeFolding.PopClicked(Sender: TObject);
@@ -421,8 +419,6 @@ begin
   inherited SetWidth(AValue);
 
   FPpiPenWidth := Max(1, Scale96ToFont(1));
-  m := Max(1, Min(Width, TCustomSynEdit(SynEdit).LineHeight - cNodeOffset*2) div 5);
-  FPpiPenWidth := Min(m, FPpiPenWidth);
 end;
 
 procedure TSynGutterCodeFolding.DoOnGutterClick(X, Y : integer);
@@ -560,7 +556,7 @@ begin
   Canvas.Rectangle(Rect);
   Canvas.Pen.Style := psSolid;
   Canvas.Pen.Cosmetic := OdlCosmetic;
-  c := FPpiPenWidth div 2;
+  c := Canvas.Pen.Width div 2;
   LineBorder := Round((Rect.Right-Rect.Left) / 5) + c;
   LineBorderEnd := LineBorder + c;
   X := (Rect.Left - 1 + Rect.Right) div 2;
@@ -618,8 +614,10 @@ begin
 end;
 
 function TSynGutterCodeFolding.PreferedWidth: Integer;
+const PrefFullWidth = 10;
 begin
-  Result := 10;
+  Result :=
+    Max(PrefFullWidth div 2, Min(PrefFullWidth, TCustomSynEdit(SynEdit).LineHeight - cNodeOffset));
 end;
 
 procedure TSynGutterCodeFolding.Paint(Canvas : TCanvas; AClip : TRect; FirstLine, LastLine : integer);
@@ -656,7 +654,7 @@ var
     // If belongs to line above, draw at very top
     if isPrevLine then
       ptCenter.Y := rcCodeFold.Top + (HalfBoxSize) - 1;
-    c := FPpiPenWidth div 2;
+    c := Canvas.Pen.Width div 2;
 
     //area of drawbox
     rcNode.Left   := ptCenter.X - (HalfBoxSize) + 1 + c;
@@ -743,7 +741,7 @@ begin
   begin
     Pen.Color := MarkupInfo.Foreground;
     Pen.EndCap := pecSquare;
-    Pen.Width := FPpiPenWidth;
+    Pen.Width := Min(Max(1, Min(Width, HalfBoxSize*2 - cNodeOffset*2) div 5), FPpiPenWidth);
 
     rcLine.Bottom := AClip.Top;
     for iLine := FirstLine to LastLine do
