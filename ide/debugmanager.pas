@@ -95,6 +95,7 @@ type
     function DoProjectClose(Sender: TObject; AProject: TLazProject): TModalResult;
     procedure DoProjectModified(Sender: TObject);
   private
+    FAsmWindowShouldAutoClose: Boolean;
     procedure BreakAutoContinueTimer(Sender: TObject);
     procedure OnRunTimer(Sender: TObject);
     // Menu events
@@ -1423,7 +1424,11 @@ begin
           FDebugger.FileName := '';  // SetState(dsIdle) via ResetStateToIdle
 
         if FDialogs[ddtAssembler] <> nil
-        then TAssemblerDlg(FDialogs[ddtAssembler]).SetLocation(nil, 0);
+        then begin
+          TAssemblerDlg(FDialogs[ddtAssembler]).SetLocation(nil, 0);
+          if FAsmWindowShouldAutoClose then
+            TAssemblerDlg(FDialogs[ddtAssembler]).Close;
+        end;
       end;
     end;
     dsInit: begin
@@ -1453,6 +1458,7 @@ var
   StackEntry: TIdeCallStackEntry;
   Flags: TJumpToCodePosFlags;
   CurrentSourceUnitInfo: TDebuggerUnitInfo;
+  a: Boolean;
 begin
   if (Sender<>FDebugger) or (Sender=nil) then exit;
   if FDebugger.State = dsInternalPause then exit;
@@ -1463,12 +1469,14 @@ begin
   CurrentSourceUnitInfo := nil;
 
   if (SrcLine < 1) and (SrcLine <> -2) // TODO: this should move to the debugger
+                                       // SrcLine will be -2 after stepping (gdbmi)
   then begin
     // jump to the deepest stack frame with debugging info
     // TODO: Only below the frame supplied by debugger
     i:=0;
     TId := Threads.CurrentThreads.CurrentThreadId;
     c := CallStack.CurrentCallStackList.EntriesForThreads[TId].CountLimited(30);
+c := -1;
     while (i < c) do
     begin
       StackEntry := CallStack.CurrentCallStackList.EntriesForThreads[TId].Entries[i];
@@ -1529,9 +1537,13 @@ begin
 
   if SrcLine < 1
   then begin
+    a := FAsmWindowShouldAutoClose or (FDialogs[ddtAssembler] = nil) or (not FDialogs[ddtAssembler].Visible);
     ViewDebugDialog(ddtAssembler);
+    FAsmWindowShouldAutoClose := a and EnvironmentOptions.DebuggerAutoCloseAsm;
     exit;
   end;
+  if (FDialogs[ddtAssembler] <> nil) and FAsmWindowShouldAutoClose then
+    TAssemblerDlg(FDialogs[ddtAssembler]).Close;
 
   Editor := nil;
   if SourceEditorManager <> nil
@@ -1602,6 +1614,8 @@ begin
   if Destroying then exit;
   if (ADialogType = ddtPseudoTerminal) and not HasConsoleSupport
   then exit;
+  if ADialogType = ddtAssembler then
+    FAsmWindowShouldAutoClose := False;
   if FDialogs[ADialogType] = nil
   then begin
     CurDialog := TDebuggerDlg(DEBUGDIALOGCLASS[ADialogType].NewInstance);
