@@ -290,6 +290,7 @@ type
     FLineMarks: TSynGutterLOvLineMarksList;
     FMouseActionsForMarks: TSynEditMouseInternalActions;
     FState: TSynGutterLOvStateFlags;
+    FPpiPenWidth: Integer;
     function GetMarkHeight: Integer;
     function GetMouseActionsForMarks: TSynEditMouseActions;
     procedure SetMarkHeight(const AValue: Integer);
@@ -1471,6 +1472,8 @@ begin
   AClip.Right := Width;
   FWinControl.Canvas.Brush.Color := MarkupInfo.Background;
   FWinControl.Canvas.FillRect(AClip);
+  FWinControl.Canvas.Pen.Width := FPpiPenWidth;
+  FWinControl.Canvas.Pen.JoinStyle := pjsMiter;
 
   for i := 0 to Providers.Count - 1 do
     Providers[i].Paint(FWinControl.Canvas, AClip, 0);
@@ -1482,6 +1485,7 @@ end;
 constructor TSynGutterLineOverview.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FPpiPenWidth := 1;
   FMouseActionsForMarks := TSynEditMouseInternalActions.Create(Self);
 end;
 
@@ -1542,6 +1546,7 @@ end;
 procedure TSynGutterLineOverview.ScalePPI(const AScaleFactor: Double);
 begin
   FLineMarks.ItemHeight := Round(FLineMarks.ItemHeight*AScaleFactor);
+  FPpiPenWidth := Max(1, Scale96ToFont(1));
   inherited ScalePPI(AScaleFactor);
 end;
 
