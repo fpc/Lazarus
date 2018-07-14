@@ -39,9 +39,10 @@ interface
 
 uses
   Classes, Forms, Controls, math, sysutils, LazLoggerBase, Clipbrd,
-  IDEWindowIntf, Menus, ComCtrls, ActnList, ExtCtrls, StdCtrls, LCLType, IDEImagesIntf,
-  LazarusIDEStrConsts, DebuggerStrConst, Debugger, DebuggerDlg,
-  DbgIntfBaseTypes, DbgIntfDebuggerBase, DbgIntfMiscClasses, BaseDebugManager;
+  IDEWindowIntf, Menus, ComCtrls, ActnList, ExtCtrls, StdCtrls, LCLType,
+  IDEImagesIntf, LazarusIDEStrConsts, DebuggerStrConst, Debugger, DebuggerDlg,
+  DbgIntfBaseTypes, DbgIntfDebuggerBase, DbgIntfMiscClasses, SynEdit,
+  BaseDebugManager;
 
 type
 
@@ -121,6 +122,9 @@ type
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormShow(Sender: TObject);
     procedure lvWatchesDblClick(Sender: TObject);
+    procedure lvWatchesDragDrop(Sender, Source: TObject; X, Y: Integer);
+    procedure lvWatchesDragOver(Sender, Source: TObject; X, Y: Integer;
+      State: TDragState; var Accept: Boolean);
     procedure lvWatchesSelectItem(Sender: TObject; {%H-}AItem: TListItem; {%H-}Selected: Boolean);
     procedure popAddClick(Sender: TObject);
     procedure popPropertiesClick(Sender: TObject);
@@ -411,6 +415,30 @@ begin
     popPropertiesClick(Sender)
   else
     popAddClick(Sender);
+end;
+
+procedure TWatchesDlg.lvWatchesDragDrop(Sender, Source: TObject; X, Y: Integer);
+var
+  s: String;
+  NewWatch: TCurrentWatch;
+begin
+  s := '';
+  if (Source is TSynEdit) then s := TSynEdit(Source).SelText;
+  if (Source is TCustomEdit) then s := TCustomEdit(Source).SelText;
+
+  if s <> '' then begin
+    NewWatch := DebugBoss.Watches.CurrentWatches.Add(s);
+    NewWatch.DisplayFormat := wdfDefault;
+    NewWatch.EvaluateFlags := [defClassAutoCast];
+    NewWatch.Enabled       := True;
+  end;
+end;
+
+procedure TWatchesDlg.lvWatchesDragOver(Sender, Source: TObject; X, Y: Integer;
+  State: TDragState; var Accept: Boolean);
+begin
+  Accept := ( (Source is TSynEdit) and (TSynEdit(Source).SelAvail) ) or
+            ( (Source is TCustomEdit) and (TCustomEdit(Source).SelText <> '') );
 end;
 
 procedure TWatchesDlg.FormDestroy(Sender: TObject);

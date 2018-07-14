@@ -1,4 +1,4 @@
-inherited WatchesDlg: TWatchesDlg
+object WatchesDlg: TWatchesDlg
   Left = 321
   Height = 200
   Top = 437
@@ -14,7 +14,8 @@ inherited WatchesDlg: TWatchesDlg
   OnDestroy = FormDestroy
   OnKeyDown = FormKeyDown
   OnShow = FormShow
-  object lvWatches: TListView[0]
+  LCLVersion = '1.9.0.0'
+  object lvWatches: TListView
     Left = 0
     Height = 174
     Top = 26
@@ -38,9 +39,11 @@ inherited WatchesDlg: TWatchesDlg
     TabOrder = 0
     ViewStyle = vsReport
     OnDblClick = lvWatchesDblClick
+    OnDragDrop = lvWatchesDragDrop
+    OnDragOver = lvWatchesDragOver
     OnSelectItem = lvWatchesSelectItem
   end
-  object ToolBar1: TToolBar[1]
+  object ToolBar1: TToolBar
     Left = 0
     Height = 26
     Top = 0
@@ -58,8 +61,8 @@ inherited WatchesDlg: TWatchesDlg
     end
     object ToolButton2: TToolButton
       Left = 24
+      Height = 22
       Top = 2
-      Width = 5
       Caption = 'ToolButton2'
       Style = tbsDivider
     end
@@ -80,8 +83,8 @@ inherited WatchesDlg: TWatchesDlg
     end
     object ToolButton6: TToolButton
       Left = 121
+      Height = 22
       Top = 2
-      Width = 5
       Caption = 'ToolButton6'
       Style = tbsDivider
     end
@@ -102,8 +105,8 @@ inherited WatchesDlg: TWatchesDlg
     end
     object ToolButton10: TToolButton
       Left = 195
+      Height = 22
       Top = 2
-      Width = 5
       Caption = 'ToolButton10'
       Style = tbsDivider
     end
@@ -124,7 +127,7 @@ inherited WatchesDlg: TWatchesDlg
       Style = tbsCheck
     end
   end
-  object InspectSplitter: TSplitter[2]
+  object InspectSplitter: TSplitter
     Left = 295
     Height = 174
     Top = 26
@@ -133,7 +136,7 @@ inherited WatchesDlg: TWatchesDlg
     ResizeAnchor = akRight
     Visible = False
   end
-  object nbInspect: TNotebook[3]
+  object nbInspect: TNotebook
     Left = 300
     Height = 174
     Top = 26
@@ -165,7 +168,7 @@ inherited WatchesDlg: TWatchesDlg
       end
     end
   end
-  object mnuPopup: TPopupMenu[4]
+  object mnuPopup: TPopupMenu
     left = 100
     top = 96
     object popAdd: TMenuItem
@@ -217,7 +220,7 @@ inherited WatchesDlg: TWatchesDlg
       Action = actCopyValue
     end
   end
-  object ActionList1: TActionList[5]
+  object ActionList1: TActionList
     left = 184
     top = 88
     object actPower: TAction
