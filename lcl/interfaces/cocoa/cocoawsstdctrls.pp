@@ -328,20 +328,13 @@ const
   );
 
 function AllocButton(const ATarget: TWinControl; const ACallBackClass: TLCLButtonCallBackClass; const AParams: TCreateParams; btnBezel: NSBezelStyle; btnType: NSButtonType): TCocoaButton;
-var
-  titel:string;
-  cap: NSString;
 begin
   Result := TCocoaButton.alloc.lclInitWithCreateParams(AParams);
   if Assigned(Result) then
   begin
     TCocoaButton(Result).callback := ACallBackClass.Create(Result, ATarget);
-    titel:=aParams.Caption;
-    DeleteAmpersands(titel);
-    cap := NSStringUTF8(titel);
 
-    Result.setTitle(cap);
-    cap.release;
+    Result.setTitle(ControlTitleToNSStr(AParams.Caption));
     if btnBezel <> 0 then
       Result.setBezelStyle(btnBezel);
     Result.setButtonType(btnType);
@@ -524,15 +517,8 @@ end;
 
 
 class procedure TCocoaWSButton.SetText(const AWinControl: TWinControl; const AText: String);
-var
-  titel:string;
-  cap: NSString;
 begin
-  titel:=AText;
-  DeleteAmpersands(titel);
-  cap := NSStringUTF8(titel);
-  NSButton(AWinControl.Handle).setTitle(cap);
-  cap.release;
+  NSButton(AWinControl.Handle).setTitle(ControlTitleToNSStr(AText));
 end;
 
 class function TCocoaWSButton.GetText(const AWinControl: TWinControl;
@@ -1563,7 +1549,7 @@ var
   box: TCocoaGroupBox;
 begin
   box := TCocoaGroupBox(AWinControl.Handle);
-  box.setTitle(NSStringUTF8(AText));
+  box.setTitle(ControlTitleToNSStr(AText));
 end;
 
 { TCocoaWSCustomListBox }

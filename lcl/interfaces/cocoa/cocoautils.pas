@@ -102,6 +102,13 @@ procedure NSResponderHotKeys(asender: NSResponder; event: NSEvent; var handled: 
 function DateTimeToNSDate(const aDateTime : TDateTime): NSDate;
 function NSDateToDateTime(const aDateTime: NSDate): TDateTime;
 
+// The function removes single & and replaced && with &
+// (removing LCL (Windows) specific caption convention
+function ControlTitleToStr(const ATitle: string): String;
+// The returned NSString doesn't require a release
+// (it would happen in NSAutoRelease pool)
+function ControlTitleToNSStr(const ATitle: string): NSString;
+
 implementation
 
 procedure ColorToRGBFloat(cl: TColorRef; var r,g,b: Single); inline;
@@ -794,6 +801,20 @@ begin
   Result:= aDateTime.timeIntervalSince1970 / SecsPerDay + EncodeDate(1970, 1, 1);
 end;
 
+function ControlTitleToStr(const ATitle: string): String;
+begin
+  Result := ATitle;
+  DeleteAmpersands(Result);
+end;
+
+function ControlTitleToNSStr(const ATitle: string): NSString;
+var
+  t: string;
+begin
+  t := ControlTitleToStr(ATitle);
+  if t = '' then Result:=NSString.string_ // empty string
+  else Result := NSString.stringWithUTF8String( @t[1] );
+end;
 
 end.
 

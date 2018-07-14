@@ -112,7 +112,6 @@ type
     class function NSMenuCheckmark: NSImage;
     class function NSMenuRadio: NSImage;
     class function isSeparator(const ACaption: AnsiString): Boolean;
-    class function MenuCaption(const ACaption: AnsiString): AnsiString;
   published
     class procedure AttachMenu(const AMenuItem: TMenuItem); override;
     class function  CreateHandle(const AMenuItem: TMenuItem): HMENU; override;
@@ -413,17 +412,6 @@ begin
   Result:=ACaption='-';
 end;
 
-class function TCocoaWSMenuItem.MenuCaption(const ACaption: AnsiString): AnsiString;
-var
-  i : Integer;
-begin
-  i:=Pos('&', ACaption);
-  if i>0 then
-    Result:=Copy(ACaption, 1, i-1)+Copy(ACaption,i+1, length(ACaption))
-  else
-    Result:=ACaption;
-end;
-
 {------------------------------------------------------------------------------
   Method:  TCocoaWSMenuItem.AttachMenu
   Params:  AMenuItem - LCL menu item
@@ -435,8 +423,6 @@ var
   ParObj  : NSObject;
   Parent  : TCocoaMenu;
   item    : NSMenuItem;
-  ns      : NSString;
-  str       : string;
 begin
   if not Assigned(AMenuItem) or (AMenuItem.Handle=0) or not Assigned(AMenuItem.Parent) or (AMenuItem.Parent.Handle=0) then Exit;
   ParObj:=NSObject(AMenuItem.Parent.Handle);
@@ -446,13 +432,9 @@ begin
   begin
     if not NSMenuItem(ParObj).hasSubmenu then
     begin
-      str := AMenuItem.Parent.Caption;
-      DeleteAmpersands(str);
-      ns := NSStringUtf8(pchar(str));
-      Parent := TCocoaMenu.alloc.initWithTitle(ns);
+      Parent := TCocoaMenu.alloc.initWithTitle( ControlTitleToNSStr(AMenuItem.Parent.Caption));
       Parent.setDelegate(TCocoaMenuItem(ParObj));
       NSMenuItem(ParObj).setSubmenu(Parent);
-      ns.release;
     end
     else
       Parent:=TCocoaMenu(NSMenuItem(ParObj).submenu);
@@ -475,7 +457,6 @@ class function TCocoaWSMenuItem.CreateHandle(const AMenuItem: TMenuItem): HMENU;
 var
   item    : NSMenuItem;
   ANSMenu : NSMenu;
-  s       : string;
   ns      : NSString;
   nsKey   : NSString;
   key     : string;
@@ -504,12 +485,11 @@ begin
   end
   else
   begin
-    s := AMenuItem.Caption;
-    DeleteAmpersands(s);
     ShortcutToKeyEquivalent(AMenuItem.ShortCut, nsKey, ShiftSt);
 
-    ns := NSStringUtf8(s);
-    item := TCocoaMenuItem(TCocoaMenuItem.alloc).initWithTitle_action_keyEquivalent(ns,
+    ns := ControlTitleToNSStr(AMenuItem.Caption);
+    item := TCocoaMenuItem(TCocoaMenuItem.alloc).initWithTitle_action_keyEquivalent(
+      ns,
       objcselector('lclItemSelected:'), nsKey);
     item.setKeyEquivalentModifierMask(ShiftSt);
     TCocoaMenuItem(item).FMenuItemTarget := AMenuItem;

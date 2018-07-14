@@ -414,12 +414,10 @@ end;
 class procedure TCocoaWSCustomPage.SetProperties(
   const ACustomPage: TCustomPage; ACocoaControl: NSTabViewItem);
 var
-  lHintStr, lTitle: string;
+  lHintStr: string;
 begin
   // title
-  lTitle := ACustomPage.Caption;
-  DeleteAmpersands(lTitle);
-  ACocoaControl.setLabel(NSStringUTF8(lTitle));
+  ACocoaControl.setLabel(ControlTitleToNSStr(ACustomPage.Caption));
 
   // hint
   if ACustomPage.ShowHint then lHintStr := ACustomPage.Hint
@@ -445,9 +443,7 @@ begin
 
   page := GetCocoaTabPageFromHandle(AWinControl.Handle);
   if not Assigned(page) then Exit;
-  lTitle := AText;
-  DeleteAmpersands(lTitle);
-  page.setLabel(NSStringUTF8(lTitle));
+  page.setLabel(ControlTitleToNSStr(AText));
 end;
 
 class function TCocoaWSCustomPage.GetText(const AWinControl: TWinControl;
