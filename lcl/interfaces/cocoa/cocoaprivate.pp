@@ -830,7 +830,8 @@ end;
 
 procedure LCLViewExtension.lclUpdate;
 begin
-  display;
+  setNeedsDisplay_(true);
+  //display;
 end;
 
 procedure LCLViewExtension.lclRelativePos(var Left, Top: Integer);
