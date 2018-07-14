@@ -126,6 +126,7 @@ resourcestring
   SYNS_AttrSQLPlus              =  'SQL*Plus command';
   SYNS_AttrString               =  'String';
   SYNS_AttrSymbol               =  'Symbol';
+  SYNS_AttrProcedureHeaderName  =  'Procedure header name';
   SYNS_AttrCaseLabel            =  'Case label';
   SYNS_AttrSyntaxError          =  'SyntaxError';
   SYNS_AttrSystem               =  'System functions and variables';
@@ -243,6 +244,7 @@ const
   SYNS_XML_AttrSQLPlus              =  'SQL*Plus command';
   SYNS_XML_AttrString               =  'String';
   SYNS_XML_AttrSymbol               =  'Symbol';
+  SYNS_XML_AttrProcedureHeaderName  =  'Procedure header name';
   SYNS_XML_AttrCaseLabel            =  'Case label';
   SYNS_XML_AttrSyntaxError          =  'SyntaxError';
   SYNS_XML_AttrSystem               =  'System functions and variables';

@@ -292,6 +292,10 @@ msgstr "Preprocessore"
 msgid "Previous value"
 msgstr "Valore precedente"
 
+#: syneditstrconst.syns_attrprocedureheadername
+msgid "Procedure header name"
+msgstr ""
+
 #: syneditstrconst.syns_attrprocessinginstr
 msgid "Processing Instruction"
 msgstr "Elaborazione dell'istruzione"

@@ -289,6 +289,10 @@ msgstr "קדם-מעבד"
 msgid "Previous value"
 msgstr ""
 
+#: syneditstrconst.syns_attrprocedureheadername
+msgid "Procedure header name"
+msgstr ""
+
 #: syneditstrconst.syns_attrprocessinginstr
 msgid "Processing Instruction"
 msgstr "הוראות עיבוד"

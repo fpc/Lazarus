@@ -292,6 +292,10 @@ msgstr "Parengiamoji doroklė"
 msgid "Previous value"
 msgstr "Ankstesnė vertė"
 
+#: syneditstrconst.syns_attrprocedureheadername
+msgid "Procedure header name"
+msgstr ""
+
 #: syneditstrconst.syns_attrprocessinginstr
 msgid "Processing Instruction"
 msgstr "Apdorojamoji komanda"

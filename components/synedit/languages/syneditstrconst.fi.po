@@ -284,6 +284,10 @@ msgstr "Esikääntäjä"
 msgid "Previous value"
 msgstr "Edellinen arvo"
 
+#: syneditstrconst.syns_attrprocedureheadername
+msgid "Procedure header name"
+msgstr ""
+
 #: syneditstrconst.syns_attrprocessinginstr
 msgid "Processing Instruction"
 msgstr "Käsittelee käskyä"

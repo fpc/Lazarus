@@ -317,6 +317,8 @@ type
     fAsmStart: Boolean;
     FExtendedKeywordsMode: Boolean;
     FNestedComments: boolean;
+    FProcedureHeaderNameAttr: TSynHighlighterAttributesModifier;
+    FCurProcedureHeaderNameAttr: TSynSelectedColorMergeResult;
     FStartCodeFoldBlockLevel: integer; // TODO: rename FStartNestedFoldBlockLevel
     FPasStartLevel: Smallint;
     fRange: TRangeStates;
@@ -606,6 +608,8 @@ type
       write fStringAttri;
     property SymbolAttri: TSynHighlighterAttributes read fSymbolAttri
       write fSymbolAttri;
+    property ProcedureHeaderName: TSynHighlighterAttributesModifier read FProcedureHeaderNameAttr
+      write FProcedureHeaderNameAttr;
     property CaseLabelAttri: TSynHighlighterAttributesModifier read FCaseLabelAttri
       write FCaseLabelAttri;
     property DirectiveAttri: TSynHighlighterAttributes read fDirectiveAttri
@@ -2412,7 +2416,7 @@ begin
   AddAttribute(fCommentAttri);
   FIDEDirectiveAttri := TSynHighlighterAttributesModifier.Create(@SYNS_AttrIDEDirective, SYNS_XML_AttrIDEDirective);
   AddAttribute(FIDEDirectiveAttri);
-  // FCurIDEDirectiveAttri, FCurCaseLabelAttri
+  // FCurIDEDirectiveAttri, FCurCaseLabelAttri, FCurProcedureHeaderNameAttr
   // They are not available through the "Attribute" property (not added via AddAttribute
   // But they are returned via GetTokenAttribute, so they should have a name.
   FCurIDEDirectiveAttri := TSynSelectedColorMergeResult.Create(@SYNS_AttrIDEDirective, SYNS_XML_AttrIDEDirective);
@@ -2429,9 +2433,12 @@ begin
   AddAttribute(fStringAttri);
   fSymbolAttri := TSynHighlighterAttributes.Create(@SYNS_AttrSymbol, SYNS_XML_AttrSymbol);
   AddAttribute(fSymbolAttri);
+  FProcedureHeaderNameAttr := TSynHighlighterAttributesModifier.Create(@SYNS_AttrProcedureHeaderName, SYNS_XML_AttrProcedureHeaderName);
+  AddAttribute(FProcedureHeaderNameAttr);
   FCaseLabelAttri := TSynHighlighterAttributesModifier.Create(@SYNS_AttrCaseLabel, SYNS_XML_AttrCaseLabel);
   AddAttribute(FCaseLabelAttri);
   FCurCaseLabelAttri := TSynSelectedColorMergeResult.Create(@SYNS_AttrCaseLabel, SYNS_XML_AttrCaseLabel);
+  FCurProcedureHeaderNameAttr := TSynSelectedColorMergeResult.Create(@SYNS_AttrProcedureHeaderName, SYNS_XML_AttrProcedureHeaderName);
   fDirectiveAttri := TSynHighlighterAttributes.Create(@SYNS_AttrDirective, SYNS_XML_AttrDirective);
   fDirectiveAttri.Style:= [fsItalic];
   AddAttribute(fDirectiveAttri);
@@ -2450,6 +2457,7 @@ begin
   DestroyDividerDrawConfig;
   FreeAndNil(FCurCaseLabelAttri);
   FreeAndNil(FCurIDEDirectiveAttri);
+  FreeAndNil(FCurProcedureHeaderNameAttr);
   inherited Destroy;
 end;
 
@@ -3292,6 +3300,16 @@ begin
     FCurCaseLabelAttri.Merge(FCaseLabelAttri);
     Result := FCurCaseLabelAttri;
   end;
+
+  if (GetTokenID in [tkIdentifier, tkSymbol]) and
+     (fRange * [rsInProcHeader, rsAfterEqualOrColon, rsAfterEqual] = [rsInProcHeader]) and
+     (FOldRange * [rsAfterEqualOrColon, rsAfterEqual] = []) and
+     (PasCodeFoldRange.BracketNestLevel = 0)
+  then begin
+    FCurProcedureHeaderNameAttr.Assign(Result);
+    FCurProcedureHeaderNameAttr.Merge(FProcedureHeaderNameAttr);
+    Result := FCurProcedureHeaderNameAttr;
+  end;
 end;
 
 function TSynPasSyn.GetTokenKind: integer;
@@ -3851,7 +3869,7 @@ begin
   Result := TLazSynFoldNodeInfoList.Create;
 end;
 
-procedure TSynPasSyn.ScanFoldNodeInfo;
+procedure TSynPasSyn.ScanFoldNodeInfo();
 var
   nd: PSynFoldNodeInfo;
   i: Integer;

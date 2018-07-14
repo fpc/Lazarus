@@ -291,6 +291,10 @@ msgstr "Команда препроцессора"
 msgid "Previous value"
 msgstr "Предыдущее значение"
 
+#: syneditstrconst.syns_attrprocedureheadername
+msgid "Procedure header name"
+msgstr ""
+
 #: syneditstrconst.syns_attrprocessinginstr
 msgid "Processing Instruction"
 msgstr "Инструкция обработки"

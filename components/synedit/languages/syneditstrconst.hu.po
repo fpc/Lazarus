@@ -291,6 +291,10 @@ msgstr "Előfeldolgozó"
 msgid "Previous value"
 msgstr "Előző érték"
 
+#: syneditstrconst.syns_attrprocedureheadername
+msgid "Procedure header name"
+msgstr ""
+
 #: syneditstrconst.syns_attrprocessinginstr
 msgid "Processing Instruction"
 msgstr "Feldolgozási utasítások"
