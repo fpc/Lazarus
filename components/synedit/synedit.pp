@@ -4820,19 +4820,16 @@ begin
       ShowScrollBar(Handle, SB_Horz, sfHorizScrollbarVisible in fStateFlags);
       RecalcCharsAndLinesInWin(True);
     end;
-    {$IFnDEF SynNewScrollBarUpdate}
     if (sfHorizScrollbarVisible in fStateFlags) then begin
-    {$ENDIF}
-    ScrollInfo.nPage := CharsInWindow;
-    ScrollInfo.nPos := LeftChar;
-    SetScrollInfo(Handle, SB_HORZ, ScrollInfo, True);
-    {$IFNDEF LCLWin32} {$IFnDEF SynScrollBarWorkaround}
-    if not (sfHorizScrollbarVisible in fStateFlags) then
-      ShowScrollBar(Handle, SB_Horz, False);
-    {$ENDIF} {$ENDIF}
-    {$IFnDEF SynNewScrollBarUpdate}
+debugln(['}}} ',ScrollInfo.nMax, ', ',CharsInWindow ]);
+      ScrollInfo.nPage := CharsInWindow;
+      ScrollInfo.nPos := LeftChar;
+      SetScrollInfo(Handle, SB_HORZ, ScrollInfo, True);
+      {$IFNDEF LCLWin32} {$IFnDEF SynScrollBarWorkaround}
+      if not (sfHorizScrollbarVisible in fStateFlags) then
+        ShowScrollBar(Handle, SB_Horz, False);
+      {$ENDIF} {$ENDIF}
     end;
-    {$ENDIF}
     //DebugLn('[TCustomSynEdit.UpdateScrollbars] nMin=',ScrollInfo.nMin,' nMax=',ScrollInfo.nMax,
     //' nPage=',ScrollInfo.nPage,' nPos=',ScrollInfo.nPos,' ClientW=',ClientWidth);
 
@@ -4852,19 +4849,15 @@ begin
       ShowScrollBar(Handle, SB_Vert, sfVertScrollbarVisible in fStateFlags);
       RecalcCharsAndLinesInWin(True);
     end;
-    {$IFnDEF SynNewScrollBarUpdate}
-    if (sfVertScrollbarVisible in fStateFlags) then begin
-    {$ENDIF}
-    ScrollInfo.nPage := LinesInWindow;
-    ScrollInfo.nPos := TopView;
-    SetScrollInfo(Handle, SB_VERT, ScrollInfo, True);
-    {$IFNDEF LCLWin32} {$IFnDEF SynScrollBarWorkaround}
-    if not (sfVertScrollbarVisible in fStateFlags) then
-      ShowScrollBar(Handle, SB_Vert, False);
-    {$ENDIF} {$ENDIF}
-    {$IFnDEF SynNewScrollBarUpdate}
+      if (sfVertScrollbarVisible in fStateFlags) then begin
+      ScrollInfo.nPage := LinesInWindow;
+      ScrollInfo.nPos := TopView;
+      SetScrollInfo(Handle, SB_VERT, ScrollInfo, True);
+      {$IFNDEF LCLWin32} {$IFnDEF SynScrollBarWorkaround}
+      if not (sfVertScrollbarVisible in fStateFlags) then
+        ShowScrollBar(Handle, SB_Vert, False);
+      {$ENDIF} {$ENDIF}
     end;
-    {$ENDIF}
   end;
 end;
 
