@@ -1635,6 +1635,7 @@ resourcestring
   dlgHalfPageScroll = 'Half page scroll';
   dlgKeepCursorX = 'Keep caret X position when navigating up/down';
   dlgPersistentCursor = 'Visible caret in unfocused editor';
+  dlgPersistentCursorNoBlink = 'Caret in unfocused editor does not blink';
   dlgPersistentBlock = 'Persistent block';
   dlgOverwriteBlock = 'Overwrite block';
   dlgCursorSkipsSelection = 'Caret skips selection';

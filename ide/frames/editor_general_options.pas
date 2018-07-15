@@ -46,6 +46,7 @@ type
 
   TEditorGeneralOptionsFrame = class(TAbstractIDEOptionsEditor)
     CaretMoveClearsSelectionCheckBox: TCheckBox;
+    PersistentCursorNoBlinkCheckBox: TCheckBox;
     chkMultiCaretColumnMode: TCheckBox;
     chkMultiCaretMode: TCheckBox;
     chkMultiCaretDelSkipCr: TCheckBox;
@@ -86,6 +87,7 @@ type
     procedure OverwriteBlockCheckBoxChange(Sender: TObject);
     procedure PersistentBlockCheckBoxChange(Sender: TObject);
     procedure PersistentCursorCheckBoxChange(Sender: TObject);
+    procedure PersistentCursorNoBlinkCheckBoxChange(Sender: TObject);
     procedure ScrollByOneLessCheckBoxChange(Sender: TObject);
     procedure ScrollPastEndFileCheckBoxChange(Sender: TObject);
     procedure ScrollPastEndLineCheckBoxChange(Sender: TObject);
@@ -153,6 +155,7 @@ begin
   CaretGroupDivider.Caption := dlgCaretGroupOptions;
   KeepCursorXCheckBox.Caption := dlgKeepCursorX;
   PersistentCursorCheckBox.Caption := dlgPersistentCursor;
+  PersistentCursorNoBlinkCheckBox.Caption := dlgPersistentCursorNoBlink;
   AlwaysVisibleCursorCheckBox.Caption := dlgAlwaysVisibleCursor;
   CursorSkipsSelectionCheckBox.Caption := dlgCursorSkipsSelection;
   CaretMoveClearsSelectionCheckBox.Caption := dlgCursorMoveClearsSelection;
@@ -195,6 +198,7 @@ begin
     // cursor
     KeepCursorXCheckBox.Checked := eoKeepCaretX in SynEditOptions;
     PersistentCursorCheckBox.Checked := eoPersistentCaret in SynEditOptions;
+    PersistentCursorNoBlinkCheckBox.Checked := eoPersistentCaretStopBlink in SynEditOptions2;
     AlwaysVisibleCursorCheckBox.Checked := eoAlwaysVisibleCaret in SynEditOptions2;
     CursorSkipsSelectionCheckBox.Checked := eoCaretSkipsSelection in SynEditOptions2;
     CaretMoveClearsSelectionCheckBox.Checked := eoCaretMoveEndsSelection in SynEditOptions2;
@@ -259,6 +263,7 @@ begin
     // cursor
     UpdateOptionFromBool(KeepCursorXCheckBox.Checked, eoKeepCaretX);
     UpdateOptionFromBool(PersistentCursorCheckBox.Checked, eoPersistentCaret);
+    UpdateOptionFromBool(PersistentCursorNoBlinkCheckBox.Checked, eoPersistentCaretStopBlink);
     UpdateOptionFromBool(AlwaysVisibleCursorCheckBox.Checked, eoAlwaysVisibleCaret);
     UpdateOptionFromBool(CursorSkipsSelectionCheckBox.Checked, eoCaretSkipsSelection);
     UpdateOptionFromBool(CaretMoveClearsSelectionCheckBox.Checked, eoCaretMoveEndsSelection);
@@ -391,6 +396,12 @@ procedure TEditorGeneralOptionsFrame.PersistentCursorCheckBoxChange(
   Sender: TObject);
 begin
   SetPreviewOption(PersistentCursorCheckBox.Checked, eoPersistentCaret);
+end;
+
+procedure TEditorGeneralOptionsFrame.PersistentCursorNoBlinkCheckBoxChange(
+  Sender: TObject);
+begin
+  SetPreviewOption(PersistentCursorNoBlinkCheckBox.Checked, eoPersistentCaretStopBlink);
 end;
 
 procedure TEditorGeneralOptionsFrame.ScrollByOneLessCheckBoxChange(

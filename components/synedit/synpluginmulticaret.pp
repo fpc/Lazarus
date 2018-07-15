@@ -1453,8 +1453,10 @@ begin
   if Carets = nil then exit;
 
   if Carets.Count = 0 then begin
-    if (ScreenCaret.Painter.ClassType = TSynEditScreenCaretPainterInternal) and
-       (ScreenCaret.Painter.ClassType <> FSingleCaretClass) then
+    if (FSingleCaretClass <> nil) and
+       (ScreenCaret.Painter.ClassType = TSynEditScreenCaretPainterInternal) and
+       (ScreenCaret.Painter.ClassType <> FSingleCaretClass)
+    then
       ScreenCaret.ChangePainter(FSingleCaretClass);
     FSingleCaretClass := nil;
   end

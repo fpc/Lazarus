@@ -256,7 +256,8 @@ type
     eoPersistentBlock,         // Keeps selection, even if caret moves away or text is edited
     eoOverwriteBlock,          // Allows to overwrite currently selected block, when pasting or typing new text
     eoAutoHideCursor,          // Hide mouse cursor, when new text is typed
-    eoColorSelectionTillEol    // Colorize selection background only till EOL of each line, not till edge of control
+    eoColorSelectionTillEol,   // Colorize selection background only till EOL of each line, not till edge of control
+    eoPersistentCaretStopBlink // only if eoPersistentCaret > do not blink, draw fixed line
   );
   TSynEditorOptions2 = set of TSynEditorOption2;
 
@@ -593,7 +594,9 @@ type
     FOnClickLink: TMouseEvent;
     FOnMouseLink: TSynMouseLinkEvent;
     FPendingFoldState: String;
+    FScreenCaretPainterClass: TSynEditScreenCaretPainterClass;
 
+    procedure UpdateScreenCaret;
     procedure AquirePrimarySelection;
     function GetChangeStamp: int64;
     function GetCharsInWindow: Integer;
@@ -800,6 +803,7 @@ type
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
     procedure DestroyWnd; override;
+    procedure VisibleChanged; override;
     procedure Loaded; override;
     function  GetChildOwner: TComponent; override;
 
@@ -2048,6 +2052,7 @@ begin
   FCaret.AddChangeHandler(@CaretChanged);
   FInternalCaret := TSynEditCaret.Create;
   FInternalCaret.MaxLeftChar := @CurrentMaxLineLen;
+  FScreenCaretPainterClass := TSynEditScreenCaretPainterInternal;
 
   // Create the lines/views
   FTrimmedLinesView := TSynEditStringTrimmingList.Create(fLines, fCaret);
@@ -4982,10 +4987,8 @@ begin
   {$ENDIF}
   LastMouseCaret:=Point(-1,-1);
   // Todo: Under Windows, keeping the Caret only works, if no other component creates a caret
-  if not (eoPersistentCaret in fOptions) then begin
-    FScreenCaret.Visible := False;
-    FScreenCaret.DestroyCaret;
-  end;
+  FScreenCaretPainterClass := TSynEditScreenCaretPainterClass(ScreenCaret.Painter.ClassType);
+  UpdateScreenCaret;
   if FHideSelection and SelAvail then
     Invalidate;
   {$IFDEF WinIME}
@@ -5004,7 +5007,11 @@ begin
   DebugLn(['[TCustomSynEdit.WMSetFocus] A ',DbgSName(Self), ' time=', dbgs(Now*86640)]);
   {$ENDIF}
   FScreenCaret.DestroyCaret; // Ensure recreation. On Windows only one caret exists, and it must be moved to the focused editor
-  FScreenCaret.Visible := not(eoNoCaret in FOptions);
+  if ScreenCaret.Painter.ClassType <> FScreenCaretPainterClass then
+    ScreenCaret.ChangePainter(FScreenCaretPainterClass);
+  if ScreenCaret.Painter.ClassType <> TSynEditScreenCaretPainterSystem then // system painter does not use timer
+    FScreenCaret.PaintTimer.ResetInterval;
+  FScreenCaret.Visible := not(eoNoCaret in FOptions) and IsVisible;
   //if FHideSelection and SelAvail then
   //  Invalidate;
   inherited;
@@ -5124,6 +5131,37 @@ begin
   end
   else
     inherited;
+end;
+
+procedure TCustomSynEdit.UpdateScreenCaret;
+begin
+  if not HandleAllocated then
+    exit;
+  if (not IsVisible) or
+     ( (not Focused) and (not (eoPersistentCaret in fOptions)) ) or
+     (eoNoCaret in FOptions)
+  then begin
+    FScreenCaret.Hide;
+    FScreenCaret.DestroyCaret;
+    exit;
+  end;
+
+  if Focused then begin
+    // everything else is done in WM_SETFOCUS;
+    FScreenCaret.Visible := True;
+  end
+  else begin
+    // eoPersistentCaret is set
+    if ScreenCaret.Painter.ClassType <> TSynEditScreenCaretPainterInternal then
+      ScreenCaret.ChangePainter(TSynEditScreenCaretPainterInternal);
+
+    if (eoPersistentCaretStopBlink in FOptions2) then
+      FScreenCaret.PaintTimer.Interval := 0
+    else
+      ScreenCaret.PaintTimer.ResetInterval;
+
+    FScreenCaret.Visible := True;
+  end;
 end;
 
 procedure TCustomSynEdit.ScanRanges(ATextChanged: Boolean = True);
@@ -7852,10 +7890,7 @@ begin
     ; // ToDo DragAcceptFiles
   if (ChangedOptions * [eoPersistentCaret, eoNoCaret] <> []) and HandleAllocated then begin
     UpdateCaret;
-    if Focused then
-      FScreenCaret.Visible := not(eoNoCaret in FOptions)
-    else
-      FScreenCaret.Visible := (eoPersistentCaret in FOptions) and not(eoNoCaret in FOptions);
+    UpdateScreenCaret;
   end;
   if (eoShowSpecialChars in ChangedOptions) then begin
     if eoShowSpecialChars in FOptions
@@ -7914,6 +7949,8 @@ begin
       MoveCaretToVisibleArea;
     if (eoAutoHideCursor in ChangedOptions) and not(eoAutoHideCursor in fOptions2) then
       UpdateCursor;
+    if (eoPersistentCaretStopBlink in ChangedOptions) then
+      UpdateScreenCaret;
     StatusChanged([scOptions]);
   end;
 end;
@@ -8314,6 +8351,12 @@ begin
   {$ENDIF}
   SurrenderPrimarySelection;
   inherited DestroyWnd;
+end;
+
+procedure TCustomSynEdit.VisibleChanged;
+begin
+  inherited VisibleChanged;
+  UpdateScreenCaret;
 end;
 
 procedure TCustomSynEdit.DoAutoAdjustLayout(

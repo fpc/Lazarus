@@ -365,6 +365,7 @@ type
   TSynEditScreenCaretTimer = class
   private
     FDisplayCycle: Boolean;
+    FTimerEnabled: Boolean;
     FTimer: TTimer;
     FTimerList: TMethodList;
     FAfterPaintList: TMethodList;
@@ -372,6 +373,8 @@ type
     FLocFlags: set of (lfTimer, lfRestart);
     procedure DoTimer(Sender: TObject);
     procedure DoAfterPaint(Data: PtrInt);
+    function GetInterval: Integer;
+    procedure SetInterval(AValue: Integer);
   public
     constructor Create;
     destructor Destroy; override;
@@ -382,9 +385,11 @@ type
     procedure IncLock;
     procedure DecLock;
     procedure AfterPaintEvent;
+    procedure ResetInterval;
 
     procedure RestartCycle;
     property DisplayCycle: Boolean read FDisplayCycle;
+    property Interval: Integer read GetInterval write SetInterval;
   end;
 
   TSynEditScreenCaret = class;
@@ -2497,6 +2502,29 @@ begin
     FAfterPaintList.Delete(FAfterPaintList.Count - 1);
 end;
 
+function TSynEditScreenCaretTimer.GetInterval: Integer;
+begin
+  Result := FTimer.Interval;
+end;
+
+procedure TSynEditScreenCaretTimer.SetInterval(AValue: Integer);
+begin
+  if AValue = FTimer.Interval then
+    exit;
+
+  if (AValue = 0) then begin
+    FTimer.Enabled := False;
+    FDisplayCycle := True;
+    FTimer.Interval := 0;
+  end
+  else begin
+    FTimer.Interval := AValue;
+    FTimer.Enabled := FTimerEnabled;
+  end;
+  if FTimerEnabled then
+    RestartCycle;
+end;
+
 procedure TSynEditScreenCaretTimer.DoTimer(Sender: TObject);
 begin
   if FLocCount > 0 then begin
@@ -2508,28 +2536,13 @@ begin
 end;
 
 constructor TSynEditScreenCaretTimer.Create;
-{$IFDEF windows}
-var
-  i: UINT;
-{$ENDIF}
 begin
   FTimerList := TMethodList.Create;
   FAfterPaintList := TMethodList.Create;
   FTimer := TTimer.Create(nil);
   FTimer.Enabled := False;
-  {$IFDEF windows}
-  i := GetCaretBlinkTime;
-  if (i = high(i)) or (i = 0) then begin
-    FTimer.Enabled := False;
-    FDisplayCycle := True;
-    FTimer.Interval := 0;
-  end
-  else begin
-    FTimer.Interval := i;
-  end;
-  {$ELSE}
-  FTimer.Interval := 500;
-  {$ENDIF}
+  FTimerEnabled := False;
+  ResetInterval;
   FTimer.OnTimer := @DoTimer;
 end;
 
@@ -2559,15 +2572,20 @@ end;
 procedure TSynEditScreenCaretTimer.RemoveHandler(AHandler: TNotifyEvent);
 begin
   FTimerList.Remove(TMethod(AHandler));
-  if FTimerList.Count = 0 then
+  if FTimerList.Count = 0 then begin
     FTimer.Enabled := False;
+    FTimerEnabled := False;
+  end;
 end;
 
 procedure TSynEditScreenCaretTimer.RemoveHandler(AHandlerOwner: TObject);
 begin
   FTimerList.RemoveAllMethodsOfObject(AHandlerOwner);
   FAfterPaintList.RemoveAllMethodsOfObject(AHandlerOwner);
-  if FTimerList.Count = 0 then FTimer.Enabled := False;
+  if FTimerList.Count = 0 then begin
+    FTimer.Enabled := False;
+    FTimerEnabled := False;
+  end;
 end;
 
 procedure TSynEditScreenCaretTimer.IncLock;
@@ -2597,6 +2615,21 @@ begin
   DoAfterPaint(0);
 end;
 
+procedure TSynEditScreenCaretTimer.ResetInterval;
+{$IFDEF windows}
+var
+  i: windows.UINT;
+{$ENDIF}
+begin
+  {$IFDEF windows}
+  i := GetCaretBlinkTime;
+  if (i = high(i)) then i := 0;
+  Interval := i;
+  {$ELSE}
+  Interval := 500;
+  {$ENDIF}
+end;
+
 procedure TSynEditScreenCaretTimer.RestartCycle;
 begin
   if FLocCount > 0 then begin
@@ -2610,9 +2643,11 @@ begin
 
   if FTimerList.Count = 0 then exit;
   FTimer.Enabled := False;
+  FTimerEnabled := False;
   FDisplayCycle := False;
   DoTimer(nil);
   FTimer.Enabled := True;
+  FTimerEnabled := True;
 end;
 
 { TSynEditScreenCaretPainter }
