@@ -582,11 +582,11 @@ begin
     // There might font properties (i.e. Transform Matrix) to adjust the position of
     // the font. But at this time, it's safer to use systemFont() method
     IsDefault := IsFontNameDefault(FName);
-    if not IsDefault then
+    {if IsDefault then
     begin
       FTmpFont := NSFont.fontWithName_size(NSFont.systemFontOfSize(0).fontDescriptor.postscriptName, 0);
       FName := NSStringToString(FTmpFont.familyName);
-    end;
+    end;}
 
     if ALogFont.lfHeight = 0 then
       FSize := Round(NSFont.systemFontSize)
