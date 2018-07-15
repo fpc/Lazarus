@@ -306,9 +306,24 @@ begin
     frOwnerProjectPackage,frAllOpenProjectsAndPackages:
       begin
         OwnerList:=PackageEditingInterface.GetOwnersOfUnit(StartSrcCode.Filename);
-        if (OwnerList<>nil)
-        and (Options.Scope=frAllOpenProjectsAndPackages) then begin
-          PackageEditingInterface.ExtendOwnerListWithUsedByOwners(OwnerList);
+        if (OwnerList<>nil) and (OwnerList.Count=0) then
+          FreeAndNil(OwnerList);
+        if (OwnerList=nil) then
+          OwnerList:=PackageEditingInterface.GetPossibleOwnersOfUnit(
+            StartSrcCode.Filename,[piosfExcludeOwned,piosfIncludeSourceDirectories]);
+        if (OwnerList<>nil) and (OwnerList.Count=0) then
+          FreeAndNil(OwnerList);
+        if (OwnerList<>nil) then begin
+          if Options.Scope=frAllOpenProjectsAndPackages then begin
+            PackageEditingInterface.ExtendOwnerListWithUsedByOwners(OwnerList);
+            ReverseList(OwnerList);
+          end;
+        end else begin
+          // unknown unit -> search everywhere
+          OwnerList:=TFPList.Create;
+          OwnerList.Add(LazarusIDE.ActiveProject);
+          for i:=0 to PackageEditingInterface.GetPackageCount-1 do
+            OwnerList.Add(PackageEditingInterface.GetPackages(i));
           ReverseList(OwnerList);
         end;
       end;
