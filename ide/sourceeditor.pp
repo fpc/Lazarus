@@ -2598,36 +2598,41 @@ var
   hl: TSynCustomHighlighter;
   Colors: TPaintCompletionItemColors;
 begin
-  with ACanvas do begin
-    if (Editor<>nil) then
-      Font := Editor.Font
-    else begin
-      Font.Size:=EditorOpts.EditorFontSize; // set Size before name for XLFD !
-      Font.Name:=EditorOpts.EditorFont;
+  try
+    with ACanvas do begin
+      if (Editor<>nil) then
+        Font := Editor.Font
+      else begin
+        Font.Size:=EditorOpts.EditorFontSize; // set Size before name for XLFD !
+        Font.Name:=EditorOpts.EditorFont;
+      end;
+      Font.Style:=[];
     end;
-    Font.Style:=[];
-  end;
-  Colors.BackgroundColor := FActiveEditBackgroundColor;
-  Colors.BackgroundSelectedColor := FActiveEditBackgroundSelectedColor;
-  Colors.TextColor := FActiveEditTextColor;
-  Colors.TextSelectedColor := FActiveEditTextSelectedColor;
-  Colors.TextHilightColor := FActiveEditTextHighLightColor;
-  MaxX:=TheForm.ClientWidth;
-  t:=CurrentCompletionType;
-  if Manager.ActiveCompletionPlugin<>nil then
-  begin
-    if Manager.ActiveCompletionPlugin.HasCustomPaint then
+    Colors.BackgroundColor := FActiveEditBackgroundColor;
+    Colors.BackgroundSelectedColor := FActiveEditBackgroundSelectedColor;
+    Colors.TextColor := FActiveEditTextColor;
+    Colors.TextSelectedColor := FActiveEditTextSelectedColor;
+    Colors.TextHilightColor := FActiveEditTextHighLightColor;
+    MaxX:=TheForm.ClientWidth;
+    t:=CurrentCompletionType;
+    if Manager.ActiveCompletionPlugin<>nil then
     begin
-      Manager.ActiveCompletionPlugin.PaintItem(AKey,ACanvas,X,Y,ItemSelected,Index);
-    end else begin
-      t:=ctWordCompletion;
+      if Manager.ActiveCompletionPlugin.HasCustomPaint then
+      begin
+        Manager.ActiveCompletionPlugin.PaintItem(AKey,ACanvas,X,Y,ItemSelected,Index);
+      end else begin
+        t:=ctWordCompletion;
+      end;
     end;
+    hl := nil;
+    if Editor <> nil then
+      hl := Editor.Highlighter;
+    PaintCompletionItem(AKey, ACanvas, X, Y, MaxX, ItemSelected, Index, self, t, hl, @Colors);
+    Result:=true;
+  except
+    DebugLn('OnSynCompletionPaintItem failed');
+    Result := false;
   end;
-  hl := nil;
-  if Editor <> nil then
-    hl := Editor.Highlighter;
-  PaintCompletionItem(AKey, ACanvas, X, Y, MaxX, ItemSelected, Index, self, t, hl, @Colors);
-  Result:=true;
 end;
 
 function TSourceEditCompletion.OnSynCompletionMeasureItem(const AKey: string;
