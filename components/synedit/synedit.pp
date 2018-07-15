@@ -246,6 +246,9 @@ type
 
   TSynEditorOption2 = (
     eoCaretSkipsSelection,     // Allows <Left> and <Right> keys to move caret to selected block edges, without deselecting the block
+    eoCaretMoveEndsSelection,  // <Left> and <Right> will clear the selection, but the caret will NOT move.
+                               // Combine with eoCaretSkipsSelection, and the caret will move to the other selection bound, if needed
+                               // Kind of overrides eoPersistentBlock
     eoCaretSkipTab,            // Disables caret positioning inside tab-characters internal area
     eoAlwaysVisibleCaret,      // Keeps caret on currently visible control area, when scrolling control
     eoEnhanceEndKey,           // Toggles behaviour of <End> key on line with trailing spaces. If turned on, key will jump to last non-spacing char, if it's nearer to caret position.
@@ -6610,9 +6613,13 @@ begin
         begin
           if (eoCaretSkipsSelection in Options2) and (Command=ecLeft)
           and SelAvail and FCaret.IsAtLineByte(FBlockSelection.LastLineBytePos) then begin
-            FBlockSelection.IgnoreNextCaretMove;
+            if not (eoCaretMoveEndsSelection in Options2) then
+              FBlockSelection.IgnoreNextCaretMove;
             FCaret.LineBytePos := FBlockSelection.FirstLineBytePos;
           end
+          else
+          if (eoCaretMoveEndsSelection in Options2) and SelAvail then
+            FBlockSelection.Clear
           else
             MoveCaretHorz(-1);
         end;
@@ -6620,9 +6627,13 @@ begin
         begin
           if (eoCaretSkipsSelection in Options2) and (Command=ecRight)
           and SelAvail and FCaret.IsAtLineByte(FBlockSelection.FirstLineBytePos) then begin
-            FBlockSelection.IgnoreNextCaretMove;
+            if not (eoCaretMoveEndsSelection in Options2) then
+              FBlockSelection.IgnoreNextCaretMove;
             FCaret.LineBytePos := FBlockSelection.LastLineBytePos;
           end
+          else
+          if (eoCaretMoveEndsSelection in Options2) and SelAvail then
+            FBlockSelection.Clear
           else
             MoveCaretHorz(1);
         end;

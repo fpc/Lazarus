@@ -45,6 +45,7 @@ type
   { TEditorGeneralOptionsFrame }
 
   TEditorGeneralOptionsFrame = class(TAbstractIDEOptionsEditor)
+    CaretMoveClearsSelectionCheckBox: TCheckBox;
     chkMultiCaretColumnMode: TCheckBox;
     chkMultiCaretMode: TCheckBox;
     chkMultiCaretDelSkipCr: TCheckBox;
@@ -74,6 +75,7 @@ type
     UndoLimitLabel: TLabel;
     chkScrollHint: TCheckBox;
     procedure AlwaysVisibleCursorCheckBoxChange(Sender: TObject);
+    procedure CaretMoveClearsSelectionCheckBoxChange(Sender: TObject);
     procedure CursorSkipsSelectionCheckBoxChange(Sender: TObject);
     procedure CursorSkipsTabCheckBoxChange(Sender: TObject);
     procedure EndKeyJumpsToNearestStartCheckBoxChange(Sender: TObject);
@@ -153,6 +155,8 @@ begin
   PersistentCursorCheckBox.Caption := dlgPersistentCursor;
   AlwaysVisibleCursorCheckBox.Caption := dlgAlwaysVisibleCursor;
   CursorSkipsSelectionCheckBox.Caption := dlgCursorSkipsSelection;
+  CaretMoveClearsSelectionCheckBox.Caption := dlgCursorMoveClearsSelection;
+  //dlgCursorMoveClearsSelection
   CursorSkipsTabCheckBox.Caption := dlgCursorSkipsTab;
   HomeKeyJumpsToNearestStartCheckBox.Caption := dlgHomeKeyJumpsToNearestStart;
   EndKeyJumpsToNearestStartCheckBox.Caption := dlgEndKeyJumpsToNearestStart;
@@ -193,6 +197,7 @@ begin
     PersistentCursorCheckBox.Checked := eoPersistentCaret in SynEditOptions;
     AlwaysVisibleCursorCheckBox.Checked := eoAlwaysVisibleCaret in SynEditOptions2;
     CursorSkipsSelectionCheckBox.Checked := eoCaretSkipsSelection in SynEditOptions2;
+    CaretMoveClearsSelectionCheckBox.Checked := eoCaretMoveEndsSelection in SynEditOptions2;
     CursorSkipsTabCheckBox.Checked := eoCaretSkipTab in SynEditOptions2;
     HomeKeyJumpsToNearestStartCheckBox.Checked := eoEnhanceHomeKey in SynEditOptions;
     EndKeyJumpsToNearestStartCheckBox.Checked := eoEnhanceEndKey in SynEditOptions2;
@@ -256,6 +261,7 @@ begin
     UpdateOptionFromBool(PersistentCursorCheckBox.Checked, eoPersistentCaret);
     UpdateOptionFromBool(AlwaysVisibleCursorCheckBox.Checked, eoAlwaysVisibleCaret);
     UpdateOptionFromBool(CursorSkipsSelectionCheckBox.Checked, eoCaretSkipsSelection);
+    UpdateOptionFromBool(CaretMoveClearsSelectionCheckBox.Checked, eoCaretMoveEndsSelection);
     UpdateOptionFromBool(CursorSkipsTabCheckBox.Checked, eoCaretSkipTab);
     UpdateOptionFromBool(HomeKeyJumpsToNearestStartCheckBox.Checked, eoEnhanceHomeKey);
     UpdateOptionFromBool(EndKeyJumpsToNearestStartCheckBox.Checked, eoEnhanceEndKey);
@@ -324,6 +330,12 @@ procedure TEditorGeneralOptionsFrame.AlwaysVisibleCursorCheckBoxChange(
   Sender: TObject);
 begin
   SetPreviewOption(AlwaysVisibleCursorCheckBox.Checked, eoAlwaysVisibleCaret);
+end;
+
+procedure TEditorGeneralOptionsFrame.CaretMoveClearsSelectionCheckBoxChange(
+  Sender: TObject);
+begin
+  SetPreviewOption(CaretMoveClearsSelectionCheckBox.Checked, eoCaretMoveEndsSelection);
 end;
 
 procedure TEditorGeneralOptionsFrame.CursorSkipsSelectionCheckBoxChange(

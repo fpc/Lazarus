@@ -4661,6 +4661,8 @@ begin
           SynEditOptName := 'OverwriteBlock';
         eoAutoHideCursor:
           SynEditOptName := 'AutoHideCursor';
+        eoCaretMoveEndsSelection:
+          WriteStr(SynEditOptName, SynEditOpt2);
         else
           SynEditOptName := '';
       end;
@@ -4890,6 +4892,8 @@ begin
           SynEditOptName := 'OverwriteBlock';
         eoAutoHideCursor:
           SynEditOptName := 'AutoHideCursor';
+        eoCaretMoveEndsSelection:
+          WriteStr(SynEditOptName, SynEditOpt2);
         else
           SynEditOptName := '';
       end;

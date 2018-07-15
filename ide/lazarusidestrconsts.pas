@@ -1638,6 +1638,7 @@ resourcestring
   dlgPersistentBlock = 'Persistent block';
   dlgOverwriteBlock = 'Overwrite block';
   dlgCursorSkipsSelection = 'Caret skips selection';
+  dlgCursorMoveClearsSelection = 'Caret left/right clears selection (no move)';
   dlgCursorSkipsTab = 'Caret skips tabs';
   dlgScrollByOneLess = 'Scroll by one less';
   dlgScrollPastEndFile = 'Scroll past end of file';
