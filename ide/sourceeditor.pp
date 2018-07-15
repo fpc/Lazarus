@@ -2631,6 +2631,7 @@ begin
     Result:=true;
   except
     DebugLn('OnSynCompletionPaintItem failed');
+    DumpStack;
     Result := false;
   end;
 end;
@@ -2641,6 +2642,7 @@ var
   MaxX: Integer;
   t: TCompletionType;
 begin
+  try
   with ACanvas do begin
     if (Editor<>nil) then
       Font:=Editor.Font
@@ -2664,6 +2666,11 @@ begin
   Result := PaintCompletionItem(AKey,ACanvas,0,0,MaxX,ItemSelected,Index,
                                 self,t,nil,nil,True);
   Result.Y:=FontHeight;
+  except
+    DebugLn('OnSynCompletionMeasureItem failed');
+    DumpStack;
+    Result := Point(FontHeight * length(AKey), FontHeight);
+  end;
 end;
 
 procedure TSourceEditCompletion.OnSynCompletionSearchPosition(
