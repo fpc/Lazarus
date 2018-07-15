@@ -4817,11 +4817,22 @@ begin
         else include(fStateFlags, sfHorizScrollbarVisible);
       if fStateFlags * [sfEnsureCursorPos, sfEnsureCursorPosAtResize] <> [] then
         include(fStateFlags, sfEnsureCursorPosAtResize);
+
+      {$IFDEF LCLWin32}
+      // Some bug in Windows? ShowScrollBar will not always remove the scrollbar
+      // This will make the scrollbar un-scrollable, after that it can be hidden
+      if not (sfHorizScrollbarVisible in fStateFlags) then begin
+        ScrollInfo.nMax  := 99;
+        ScrollInfo.nPage := ScrollInfo.nMax-1;
+        ScrollInfo.nPos  := 1;
+        SetScrollInfo(Handle, SB_HORZ, ScrollInfo, False);
+      end;
+      {$ENDIF}
+
       ShowScrollBar(Handle, SB_Horz, sfHorizScrollbarVisible in fStateFlags);
       RecalcCharsAndLinesInWin(True);
     end;
     if (sfHorizScrollbarVisible in fStateFlags) then begin
-debugln(['}}} ',ScrollInfo.nMax, ', ',CharsInWindow ]);
       ScrollInfo.nPage := CharsInWindow;
       ScrollInfo.nPos := LeftChar;
       SetScrollInfo(Handle, SB_HORZ, ScrollInfo, True);
@@ -4846,6 +4857,18 @@ debugln(['}}} ',ScrollInfo.nMax, ', ',CharsInWindow ]);
         else include(fStateFlags, sfVertScrollbarVisible);
       if fStateFlags * [sfEnsureCursorPos, sfEnsureCursorPosAtResize] <> [] then
         include(fStateFlags, sfEnsureCursorPosAtResize);
+
+      {$IFDEF LCLWin32}
+      // Some bug in Windows? ShowScrollBar will not always remove the scrollbar
+      // This will make the scrollbar un-scrollable, after that it can be hidden
+      if not (sfVertScrollbarVisible in fStateFlags) then begin
+        ScrollInfo.nMax  := 99;
+        ScrollInfo.nPage := ScrollInfo.nMax-1;
+        ScrollInfo.nPos  := 1;
+        SetScrollInfo(Handle, SB_Vert, ScrollInfo, False);
+      end;
+      {$ENDIF}
+
       ShowScrollBar(Handle, SB_Vert, sfVertScrollbarVisible in fStateFlags);
       RecalcCharsAndLinesInWin(True);
     end;
