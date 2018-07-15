@@ -559,6 +559,7 @@ var
   Win32Weight, LoopCount: Integer;
   CocoaWeight: NSInteger;
   FTmpFont: NSFont;
+  IsDefault: Boolean;
 begin
   inherited Create(AGlobal);
 
@@ -570,7 +571,18 @@ begin
     // because otherwise the result is wrong in Mac OS X 10.11, see bug 30300
     // Code used for 10.10 or inferior:
     // FName := NSStringToString(NSFont.systemFontOfSize(0).familyName);
-    if IsFontNameDefault(FName) then
+    //
+    // There's a differnet issue with not using systemFont.
+    // NSComboBox, if assigned a manually created font have an odd ascending-offset
+    // (easily seen in Xcode interface builder as well). systemFonts()
+    // don't have such issue at all. see bug 33626
+    // the fix below (detecting "default" font and use systemFont()) is a potential
+    // regression for bug 30300.
+    //
+    // There might font properties (i.e. Transform Matrix) to adjust the position of
+    // the font. But at this time, it's safer to use systemFont() method
+    IsDefault := IsFontNameDefault(FName);
+    if not IsDefault then
     begin
       FTmpFont := NSFont.fontWithName_size(NSFont.systemFontOfSize(0).fontDescriptor.postscriptName, 0);
       FName := NSStringToString(FTmpFont.familyName);
@@ -594,14 +606,14 @@ begin
       include(FStyle, cfs_StrikeOut);
 
     // If this is not a "systemFont" Create the font ourselves
-    FontName := NSStringUTF8(FName);
-    Attributes := NSDictionary.dictionaryWithObjectsAndKeys(
-          FontName, NSFontFamilyAttribute,
-          NSNumber.numberWithFloat(FSize), NSFontSizeAttribute,
-          nil);
-    FontName.release;
-    Descriptor := NSFontDescriptor.fontDescriptorWithFontAttributes(Attributes);
-    FFont := NSFont.fontWithDescriptor_textTransform(Descriptor, nil);
+    if IsDefault then
+    begin
+      FFont := NSFont.systemFontOfSize( FSize );
+    end else begin
+      FontName := NSStringUTF8(FName);
+      FFont := NSFont.fontWithName_size(FontName, FSize);
+      FontName.release;
+    end;
 
     if FFont = nil then
     begin
@@ -620,7 +632,6 @@ begin
         exit;
       end;
     end;
-
     // we could use NSFontTraitsAttribute to request the desired font style (Bold/Italic)
     // but in this case we may get NIL as result. This way is safer.
     if cfs_Italic in Style then
