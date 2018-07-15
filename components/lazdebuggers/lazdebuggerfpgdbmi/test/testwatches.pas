@@ -1138,6 +1138,8 @@ begin
 
   ClearTestErrors;
 
+  // Floating point tests assume that decimal separator is a '.' so make sure that's what we get.
+  FormatSettings.DecimalSeparator := '.';
   ClearAllTestArrays;
   AddExpectSimple;
   AddExpectArray_1;
