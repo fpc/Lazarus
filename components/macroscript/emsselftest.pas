@@ -9,9 +9,9 @@ interface
 {$ENDIF}
 
 uses
-  Classes, SysUtils, SynEdit, SynEditTypes, SynEditKeyCmds, LazLoggerBase,
+  Classes, SysUtils, SynEdit, LazLoggerBase,
   IDECommands, EMScriptClasses, EMScriptMacro, Clipbrd, Dialogs, Controls,
-  uPSCompiler, uPSRuntime, uPSUtils, uPSDebugger, uPSR_std, uPSC_std;
+  uPSCompiler, uPSRuntime, uPSUtils;
 
 type
 
@@ -56,7 +56,7 @@ type TPoint2 = record x,y,a,b,c: Longint; end;
 {%region RegisterSelfTests}
 
 var
-  TestResultA: integer;
+  {%H-}TestResultA: integer;
   TestResultInt1, TestResultInt2: integer;
   TestInputInt1, TestInputInt2: integer;
   TestResultBool1, TestResultBool2: boolean;

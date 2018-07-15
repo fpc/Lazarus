@@ -4,7 +4,7 @@ unit EMScriptClasses;
 }
 
 {$mode objfpc}{$H+}
-
+{$WARN 4055 off : Conversion between ordinals and pointers is not portable} // PtrInt is ok
 interface
 
 {$IFDEF darwin}
