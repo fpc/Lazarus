@@ -90,6 +90,12 @@ begin
   Result := 0;
 end;
 
+function TWidgetSet.ClipboardFormatNeedsNullByte(
+  const AFormat: TPredefinedClipboardFormat): Boolean;
+begin
+  Result := AFormat = pcfText;
+end;
+
 //todo: remove ?
 function TWidgetSet.CreateEmptyRegion: hRGN;
 begin

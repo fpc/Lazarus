@@ -91,6 +91,11 @@ begin
   Result := WidgetSet.ClipboardRegisterFormat(AMimeType);
 end;
 
+function ClipboardFormatNeedsNullByte(const AFormat: TPredefinedClipboardFormat): Boolean;
+begin
+  Result := WidgetSet.ClipboardFormatNeedsNullByte(AFormat);
+end;
+
 function CreateEmptyRegion: hRGN;
 begin
   Result := WidgetSet.CreateEmptyRegion;

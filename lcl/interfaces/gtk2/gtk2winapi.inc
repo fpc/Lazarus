@@ -720,6 +720,12 @@ begin
     Result:=true;
 end;
 
+function TGtk2WidgetSet.ClipboardFormatNeedsNullByte(
+  const AFormat: TPredefinedClipboardFormat): Boolean;
+begin
+  Result := False;
+end;
+
 {------------------------------------------------------------------------------
   Function: ClipboardRegisterFormat
   Params:  AMimeType
