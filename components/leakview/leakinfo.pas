@@ -134,7 +134,7 @@ type
 function AllocHeapTraceInfo(const TrcFile: string): TLeakInfo;
 function AllocHeapTraceInfoFromText(const TrcText: string): TLeakInfo;
 
-resourcestring
+const
   CallTracePrefix = 'Call trace for block ';
   RawTracePrefix = 'Stack trace:';
   rsStackTrace = 'Stack trace';
