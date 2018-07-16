@@ -454,7 +454,6 @@ begin
   
   if not EqualRect(FOldRect, R) then FView.lclInvalidateRect(FOldRect);
   FView.lclInvalidateRect(R);
-  FView.lclUpdate;
     
   FOldRect := R;
 end;
