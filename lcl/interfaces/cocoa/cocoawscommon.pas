@@ -936,7 +936,7 @@ begin
       begin
         childControl:=TWinControl(Target.Controls[i]);
         rect:=childControl.BoundsRect;
-        if  Types.PtInRect(rect, mp) then
+        if Types.PtInRect(rect, mp) and childControl.Visible and childControl.Enabled then
         begin
           targetControl:=childControl;
           break;

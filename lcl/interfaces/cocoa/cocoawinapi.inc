@@ -1492,6 +1492,7 @@ var  sv:integer;
 begin
   // first check views subview if there is a embedded view
   Result:=0;
+  if not Assigned(view) or (view.isHidden) or (not view.lclIsEnabled) then Exit;
   sv:=0;
   while (Result=0) and (sv<view.subviews.count) do
     begin
