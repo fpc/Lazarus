@@ -8536,14 +8536,14 @@ begin
       end;
       inc(i);
     end;
-    // goto book mark item
+    // goto bookmark item
     MarkComand:=IDECommandList.FindIDECommand(ecGotoMarker0+BookMarkID);
     if BookmarkAvail then
       MarkComand.Caption:=Format(uemBookmarkNSet, [IntToStr(BookMarkID), MarkDesc])
-    else // Needed, because (on win) disabled menus still capture there shortcut key
-      MarkComand.Caption:=Format(uemBookmarkNUnSetDisabled, [IntToStr(BookMarkID), MarkDesc]);
+    else // Needed, because (on win) disabled menus still capture their shortcut key
+      MarkComand.Caption:=Format(uemBookmarkNUnSetDisabled, [IntToStr(BookMarkID)]);
     MarkComand.Enabled:=BookmarkAvail;
-    // set book mark item
+    // set bookmark item
     MarkComand:=IDECommandList.FindIDECommand(ecToggleMarker0+BookMarkID);
     if BookmarkAvail then
       MarkComand.Caption:=Format(uemToggleBookmarkNset, [IntToStr(BookMarkID), MarkDesc])
