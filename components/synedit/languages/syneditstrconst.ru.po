@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-05-11 00:34+0300\n"
+"PO-Revision-Date: 2018-07-17 01:47+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Language: ru\n"
@@ -293,7 +293,7 @@ msgstr "Предыдущее значение"
 
 #: syneditstrconst.syns_attrprocedureheadername
 msgid "Procedure header name"
-msgstr ""
+msgstr "Имя процедуры в заголовке"
 
 #: syneditstrconst.syns_attrprocessinginstr
 msgid "Processing Instruction"
