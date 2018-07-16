@@ -2836,7 +2836,7 @@ resourcestring
   uemCopyFilename = 'Copy Filename';
   lisCopyFilename = 'Copy Filename %s';
   uemGotoBookmark = '&Goto Bookmark';
-  uemGotoBookmarks = 'Goto Bookmark...';
+  uemGotoBookmarks = 'Goto Bookmark ...';
   uemSetFreeBookmark = 'Set a Free Bookmark';
   uemNextBookmark = 'Goto Next Bookmark';
   uemPrevBookmark = 'Goto Previous Bookmark';
@@ -2855,7 +2855,7 @@ resourcestring
   uemToggleBookmark = '&Toggle Bookmark';
   uemToggleBookmarkNUnset = 'Toggle Bookmark &%s';
   uemToggleBookmarkNset = 'Toggle Bookmark &%s: %s';
-  uemToggleBookmarks = 'Toggle Bookmark...';
+  uemToggleBookmarks = 'Toggle Bookmark ...';
   uemReadOnly = 'Read Only';
   uemShowLineNumbers = 'Show Line Numbers';
   lisDisableI18NForLFM = 'Disable I18N for LFM';
