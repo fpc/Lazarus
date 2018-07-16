@@ -116,15 +116,6 @@ type
     class procedure Invalidate(const AWinControl: TWinControl); override;
   end;
 
-
-  { TLCLCustomControlCallback }
-
-  TLCLCustomControlCallback = class(TLCLCommonCallback)
-  public
-    function MouseMove(Event: NSEvent): Boolean; override;
-    function MouseUpDownEvent(Event: NSEvent; AForceAsMouseUp: Boolean = False): Boolean; override;
-  end;
-
   { TCocoaWSCustomControl }
 
   TCocoaWSCustomControl = class(TWSCustomControl)
@@ -186,21 +177,6 @@ begin
   AView.setHidden(false);
   SetViewDefaults(Result);
 end;
-
-{ TLCLCustomControlCallback }
-
-function TLCLCustomControlCallback.MouseMove(Event: NSEvent): Boolean;
-begin
-  inherited MouseMove(Event);
-  Result:=True;
-end;
-
-function TLCLCustomControlCallback.MouseUpDownEvent(Event: NSEvent; AForceAsMouseUp: Boolean = False): Boolean;
-begin
-  inherited MouseUpDownEvent(Event, AForceAsMouseUp);
-  Result := True;
-end;
-
 
 { TLCLCommonCallback }
 
@@ -1693,10 +1669,10 @@ class function TCocoaWSCustomControl.CreateHandle(const AWinControl: TWinControl
 var
   ctrl : TCocoaCustomControl;
   sl   : TCocoaManualScrollView;
-  lcl  : TLCLCustomControlCallback;
+  lcl  : TLCLCommonCallback;
 begin
   ctrl := TCocoaCustomControl(TCocoaCustomControl.alloc.lclInitWithCreateParams(AParams));
-  lcl := TLCLCustomControlCallback.Create(ctrl, AWinControl);
+  lcl := TLCLCommonCallback.Create(ctrl, AWinControl);
   ctrl.callback := lcl;
 
   sl := EmbedInManualScrollView(ctrl);

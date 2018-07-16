@@ -368,7 +368,7 @@ class function  TCocoaWSScrollingWinControl.CreateHandle(const AWinControl: TWin
 var
   scrollcon: TCocoaScrollView;
   docview: TCocoaCustomControl;
-  lcl: TLCLCustomControlCallback;
+  lcl : TLCLCommonCallback;
 begin
   docview := TCocoaCustomControl.alloc.lclInitWithCreateParams(AParams);
   scrollcon:=EmbedInScrollView(docView);
@@ -378,7 +378,7 @@ begin
   scrollcon.setHasVerticalScroller(True);
   scrollcon.isCustomRange := true;
 
-  lcl := TLCLCustomControlCallback.Create(docview, AWinControl);
+  lcl := TLCLCommonCallback.Create(docview, AWinControl);
   docview.callback := lcl;
   docview.setAutoresizingMask(NSViewWidthSizable or NSViewHeightSizable);
   scrollcon.callback := lcl;
@@ -548,7 +548,7 @@ begin
   end
   else
   begin
-    cnt.callback := TLCLCustomControlCallback.Create(cnt, AWinControl);
+    cnt.callback := TLCLCommonCallback.Create(cnt, AWinControl);
     if AParams.WndParent <> 0 then
     begin
       lDestView := GetNSObjectView(NSObject(AParams.WndParent));
