@@ -57,7 +57,7 @@ uses
   // SynEdit Highlighters
   SynEditHighlighter, SynEditHighlighterFoldBase, SynHighlighterCPP,
   SynHighlighterHTML, SynHighlighterJava, SynHighlighterLFM, SynHighlighterPas,
-  SynHighlighterPerl, SynHighlighterPHP, SynHighlighterSQL,
+  SynHighlighterPerl, SynHighlighterPHP, SynHighlighterSQL, SynHighlighterCss,
   SynHighlighterPython, SynHighlighterUNIXShellScript, SynHighlighterXML,
   SynHighlighterJScript, SynHighlighterDiff, SynHighlighterBat,
   SynHighlighterIni, SynHighlighterPo, SynHighlighterPike, SynPluginMultiCaret,
@@ -430,6 +430,7 @@ const
       (Count: 0; Info: nil), // python
       (Count: 0; Info: nil), // php
       (Count: 0; Info: nil), // sql
+      (Count: 0; Info: nil), // css
       (Count: 0; Info: nil), // jscript
       (Count: 0; Info: nil), // Diff
       (Count: 0; Info: nil), // Ini
@@ -638,6 +639,7 @@ const
       (Count:  0; HasMarkup: False; Info: nil), // python
       (Count:  0; HasMarkup: False; Info: nil), // php
       (Count:  0; HasMarkup: False; Info: nil), // sql
+      (Count:  0; HasMarkup: False; Info: nil), // css
       (Count:  0; HasMarkup: False; Info: nil), // jscript
       (Count:  3; HasMarkup: False; Info: @EditorOptionsFoldInfoDiff[0]), // Diff
       (Count:  0; HasMarkup: False; Info: nil), // Bat
@@ -674,7 +676,7 @@ const
     TCustomSynClass =
     (nil, nil, TIDESynFreePasSyn, TIDESynPasSyn, TSynLFMSyn, TSynXMLSyn,
     TSynHTMLSyn, TSynCPPSyn, TSynPerlSyn, TSynJavaSyn, TSynUNIXShellScriptSyn,
-    TSynPythonSyn, TSynPHPSyn, TSynSQLSyn, TSynJScriptSyn, TSynDiffSyn,
+    TSynPythonSyn, TSynPHPSyn, TSynSQLSyn,TSynCssSyn, TSynJScriptSyn, TSynDiffSyn,
     TSynBatSyn, TSynIniSyn, TSynPoSyn, TSynPikeSyn);
 
 
@@ -695,6 +697,7 @@ const
     comtPerl,  // lshPython
     comtHTML,  // lshPHP
     comtCPP,   // lshSQL
+    comtCPP,   // lshCss
     comtCPP,   // lshJScript
     comtNone,  // Diff
     comtNone,  // Bat
@@ -723,6 +726,10 @@ type
       value fo style [fsBold] as defined in synhighlighterhtml.pp.
     }
   TEditOptLanguageInfo = class
+  private
+    MappedAttributes: TStringList; // map attributes to pascal
+  protected
+    procedure prepare(Syntax :  TLazSyntaxHighlighter);virtual;
   public
     SynClass: TCustomSynClass;
     TheType:  TLazSyntaxHighlighter;
@@ -731,7 +738,7 @@ type
     ColorScheme: String;
     SampleSource: String;
     AddAttrSampleLines: array[TAdditionalHilightAttribute] of Integer; // first line = 1
-    MappedAttributes: TStringList; // map attributes to pascal
+//    MappedAttributes: TStringList; // map attributes to pascal
     DefaultCommentType: TCommentType;
     CaretXY: TPoint;
     constructor Create;
@@ -739,6 +746,15 @@ type
     function GetDefaultFilextension: String;
     procedure SetBothFilextensions(const Extensions: string);
     function SampleLineToAddAttr(Line: Integer): TAdditionalHilightAttribute;
+  end;
+
+  { TEditOptLangCssInfo }
+
+  TEditOptLangCssInfo = class(tEditOptLanguageInfo)
+  protected
+     procedure prepare(Syntax :  TLazSyntaxHighlighter);override;
+     function getSampleSource:string;
+     function getMappedAttributes: tStringList;
   end;
 
   { TEditOptLangList }
@@ -1769,6 +1785,7 @@ const
     lshPython,
     lshPHP,
     lshSQL,
+    lshCSS,
     lshJScript,
     lshDiff,
     lshBat,
@@ -2580,6 +2597,52 @@ begin
   DefaultFileExtensions:=Extensions;
 end;
 
+procedure TEditOptLanguageInfo.prepare(Syntax: TLazSyntaxHighlighter);
+begin
+  TheType := Syntax;
+  DefaultCommentType := DefaultCommentTypes[TheType];
+  SynClass := LazSyntaxHighlighterClasses[TheType];
+end;
+
+{ TEditOptLangCssInfo }
+
+procedure TEditOptLangCssInfo.prepare(Syntax: TLazSyntaxHighlighter);
+begin
+  inherited Prepare(syntax);
+  SetBothFilextensions('css');
+  SampleSource := getSampleSource;
+  AddAttrSampleLines[ahaTextBlock] := 4;
+  CaretXY := Point(1,1);
+  MappedAttributes := getMappedAttributes;;
+end;
+
+function TEditOptLangCssInfo.getSampleSource: string;
+begin
+  result :=
+      '.field :hover {'#10 +
+      '   display:inline;'#10+
+      '   border:10px;'#10+
+      '   color: #555;'#10+
+      '/* comment */'#10+
+      '}'#10+#10;
+end;
+
+function TEditOptLangCssInfo.getMappedAttributes: tStringList;
+begin
+    result:=tStringList.create;
+    with result do
+    begin
+      Add('Comment=Comment');
+      Add('Selector=Reserved_word');
+      Add('Identifier=Identifier');
+      Add('Space=Space');
+      Add('Symbol=Symbol');
+      Add('Number=Number');
+      Add('Key=Key');
+      Add('String=String');
+    end;
+end;
+
 { TEditOptLangList }
 
 function TEditOptLangList.GetInfos(Index: Integer): TEditOptLanguageInfo;
@@ -2983,6 +3046,13 @@ begin
     CaretXY := Point(1,1);
   end;
   Add(NewInfo);
+
+  // create info for CSS
+  NewInfo := TEditOptLangCssInfo.Create;
+  NewInfo.Prepare(lshCss);
+  Add(NewInfo);
+
+
 
   // create info for JScript
   NewInfo := TEditOptLanguageInfo.Create;

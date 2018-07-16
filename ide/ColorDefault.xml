@@ -185,6 +185,16 @@
           <Symbol Foreground="clRed"/>
         </SchemeDefault>
       </LangSQL>
+      <LangCSS Version="6">
+        <SchemeDefault>
+          <Comment Foreground="clBlue" />
+          <Measurement_Unit Foreground="clNavy" Style="fsBold"/>
+          <Number Foreground="clNavy"/>
+          <Selector Style="fsBold"/>
+          <String Foreground="clPurple"/>
+          <Symbol Foreground="clRed"/>
+        </SchemeDefault>
+      </LangCSS>
       <LangJavascript Version="6">
         <SchemeDefault>
           <Comment Foreground="clBlue" Style="fsBold"/>

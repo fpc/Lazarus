@@ -10,7 +10,7 @@ uses
 type
   TLazSyntaxHighlighter =
   ( lshNone, lshText, lshFreePascal, lshDelphi, lshLFM, lshXML, lshHTML,
-    lshCPP, lshPerl, lshJava, lshBash, lshPython, lshPHP, lshSQL, lshJScript,
+    lshCPP, lshPerl, lshJava, lshBash, lshPython, lshPHP, lshSQL, lshCSS, lshJScript,
     lshDiff, lshBat, lshIni, lshPo, lshPike
   );
 
@@ -30,6 +30,7 @@ const
     'Python',
     'PHP',
     'SQL',
+    'CSS',
     'JScript',
     'Diff',
     'Bat',
