@@ -1354,6 +1354,10 @@ msgstr ""
 msgid "Cursor beyond EOL"
 msgstr "El cursor darrera EOL"
 
+#: lazarusidestrconsts.dlgcursormoveclearsselection
+msgid "Caret left/right clears selection (no move)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcursorskipsselection
 msgid "Caret skips selection"
 msgstr ""
@@ -3248,6 +3252,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgpersistentcursor
 msgid "Visible caret in unfocused editor"
+msgstr ""
+
+#: lazarusidestrconsts.dlgpersistentcursornoblink
+msgid "Caret in unfocused editor does not blink"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpoapplication
@@ -8281,6 +8289,10 @@ msgstr ""
 #: lazarusidestrconsts.lisdebugoptionsfrmadditionalsearchpath
 msgid "Additional search path"
 msgstr "Trajectòria de cerca addicional"
+
+#: lazarusidestrconsts.lisdebugoptionsfrmautocloseasm
+msgid "Automatically close the assembler window, after source not found"
+msgstr ""
 
 #: lazarusidestrconsts.lisdebugoptionsfrmbreakpoint
 msgid "Breakpoint"
@@ -21992,9 +22004,17 @@ msgstr "Afegeix &Control al cursor"
 msgid "Add Watch&Point At Cursor"
 msgstr ""
 
-#: lazarusidestrconsts.uembookmarkn
-msgid "Bookmark"
-msgstr "Marcador"
+#: lazarusidestrconsts.uembookmarknset
+msgid "Bookmark &%s: %s"
+msgstr ""
+
+#: lazarusidestrconsts.uembookmarknunset
+msgid "Bookmark &%s"
+msgstr ""
+
+#: lazarusidestrconsts.uembookmarknunsetdisabled
+msgid "Bookmark %s"
+msgstr ""
 
 #: lazarusidestrconsts.uemcloseotherpages
 msgid "Close All &Other Pages"
@@ -22045,6 +22065,10 @@ msgstr ""
 #: lazarusidestrconsts.uemgotobookmark
 msgid "&Goto Bookmark"
 msgstr "&Vés al marcador"
+
+#: lazarusidestrconsts.uemgotobookmarks
+msgid "Goto Bookmark ..."
+msgstr ""
 
 #: lazarusidestrconsts.uemhighlighter
 msgid "Highlighter"
@@ -22152,6 +22176,18 @@ msgstr ""
 
 #: lazarusidestrconsts.uemtogglebookmark
 msgid "&Toggle Bookmark"
+msgstr ""
+
+#: lazarusidestrconsts.uemtogglebookmarknset
+msgid "Toggle Bookmark &%s: %s"
+msgstr ""
+
+#: lazarusidestrconsts.uemtogglebookmarknunset
+msgid "Toggle Bookmark &%s"
+msgstr ""
+
+#: lazarusidestrconsts.uemtogglebookmarks
+msgid "Toggle Bookmark ..."
 msgstr ""
 
 #: lazarusidestrconsts.uemtogglebreakpoint

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-07-11 02:22+0300\n"
+"PO-Revision-Date: 2018-07-17 01:39+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -1314,6 +1314,10 @@ msgstr "Параметр оказывает влияние на окно соо�
 #: lazarusidestrconsts.dlgcursorbeyondeol
 msgid "Cursor beyond EOL"
 msgstr "Допускать установку курсора вне конца строки"
+
+#: lazarusidestrconsts.dlgcursormoveclearsselection
+msgid "Caret left/right clears selection (no move)"
+msgstr "Сбрасывать выделение без перемещения курсора"
 
 #: lazarusidestrconsts.dlgcursorskipsselection
 msgid "Caret skips selection"
@@ -3159,6 +3163,10 @@ msgstr "Постоянное выделение"
 #: lazarusidestrconsts.dlgpersistentcursor
 msgid "Visible caret in unfocused editor"
 msgstr "Показывать курсор в неактивном редакторе"
+
+#: lazarusidestrconsts.dlgpersistentcursornoblink
+msgid "Caret in unfocused editor does not blink"
+msgstr "Не мигать курсором в неактивном редакторе"
 
 #: lazarusidestrconsts.dlgpoapplication
 msgid "Application"
@@ -8012,6 +8020,10 @@ msgstr "Добавить исключение"
 #: lazarusidestrconsts.lisdebugoptionsfrmadditionalsearchpath
 msgid "Additional search path"
 msgstr "Дополнительный путь поиска"
+
+#: lazarusidestrconsts.lisdebugoptionsfrmautocloseasm
+msgid "Automatically close the assembler window, after source not found"
+msgstr "Автоматически закрывать окно ассемблера при необнаружении исходного кода"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmbreakpoint
 msgid "Breakpoint"
@@ -21228,9 +21240,17 @@ msgstr "Добавить &наблюдение у курсора"
 msgid "Add Watch&Point At Cursor"
 msgstr "Добавить точку останова с наблюдением у &курсора"
 
-#: lazarusidestrconsts.uembookmarkn
-msgid "Bookmark"
-msgstr "Закладка"
+#: lazarusidestrconsts.uembookmarknset
+msgid "Bookmark &%s: %s"
+msgstr "Закладка &%s: %s"
+
+#: lazarusidestrconsts.uembookmarknunset
+msgid "Bookmark &%s"
+msgstr "Закладка &%s"
+
+#: lazarusidestrconsts.uembookmarknunsetdisabled
+msgid "Bookmark %s"
+msgstr "Закладка %s"
 
 #: lazarusidestrconsts.uemcloseotherpages
 msgid "Close All &Other Pages"
@@ -21281,6 +21301,10 @@ msgstr "Найти в другом окне"
 #: lazarusidestrconsts.uemgotobookmark
 msgid "&Goto Bookmark"
 msgstr "&Перейти по закладке"
+
+#: lazarusidestrconsts.uemgotobookmarks
+msgid "Goto Bookmark ..."
+msgstr "Перейти по закладке ..."
 
 #: lazarusidestrconsts.uemhighlighter
 msgid "Highlighter"
@@ -21379,6 +21403,18 @@ msgstr "Исходный код"
 #: lazarusidestrconsts.uemtogglebookmark
 msgid "&Toggle Bookmark"
 msgstr "П&ереключить закладку"
+
+#: lazarusidestrconsts.uemtogglebookmarknset
+msgid "Toggle Bookmark &%s: %s"
+msgstr "Переключить закладку &%s: %s"
+
+#: lazarusidestrconsts.uemtogglebookmarknunset
+msgid "Toggle Bookmark &%s"
+msgstr "Переключить закладку &%s"
+
+#: lazarusidestrconsts.uemtogglebookmarks
+msgid "Toggle Bookmark ..."
+msgstr "Переключить закладку ..."
 
 #: lazarusidestrconsts.uemtogglebreakpoint
 msgid "Toggle &Breakpoint"
