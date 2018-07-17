@@ -83,6 +83,7 @@ begin
     exit;
     end;
   FormToGenerator;
+  FGenerator.Code.Clear;
   FGenerator.Execute;
   FGenerator.Code.SaveToFile(FECode.FileName);
   ModalResult:=mrOK;
@@ -93,6 +94,7 @@ begin
   If PCCode.ActivePage=TSCode then
     begin
     FormToGenerator;
+    FGenerator.Code.Clear;
     FGenerator.Execute;
     SECode.Lines:=FGenerator.Code;
     end;
