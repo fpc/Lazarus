@@ -608,10 +608,10 @@ begin
     fieldEditor := TCocoaFieldEditor.alloc.init;
     fieldEditor.setFieldEditor(True);
   end;
-  if client.isKindOfClass_(TCocoaTextField) or
-     client.isKindOfClass_(TCocoaSecureTextField) then
+  if client.isKindOfClass_(NSTextField) then
   begin
     Result := fieldEditor;
+    TCocoaFieldEditor(fieldEditor).lastEditBox := NSTextField(client);
   end;
 end;
 

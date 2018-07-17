@@ -48,7 +48,6 @@ type
   TCocoaTextField = objcclass(NSTextField)
     callback: ICommonCallback;
     procedure dealloc; override;
-    function GetFieldEditor: TCocoaFieldEditor; message 'GetFieldEditor';
     function acceptsFirstResponder: Boolean; override;
     function becomeFirstResponder: Boolean; override;
     function RealResignFirstResponder: Boolean; message 'RealResignFirstResponder';
@@ -78,7 +77,6 @@ type
   public
     callback: ICommonCallback;
     procedure dealloc; override;
-    function GetFieldEditor: TCocoaFieldEditor; message 'GetFieldEditor';
     function acceptsFirstResponder: Boolean; override;
     function becomeFirstResponder: Boolean; override;
     function RealResignFirstResponder: Boolean; message 'RealResignFirstResponder';
@@ -271,7 +269,6 @@ type
     procedure CreateSubcontrols(const AParams: TCreateParams); message 'CreateSubControls:';
     procedure PositionSubcontrols(const ALeft, ATop, AWidth, AHeight: Integer); message 'PositionSubcontrols:ATop:AWidth:AHeight:';
     procedure StepperChanged(sender: NSObject); message 'StepperChanged:';
-    function GetFieldEditor: TCocoaFieldEditor; message 'GetFieldEditor';
     procedure textDidEndEditing(notification: NSNotification); message 'textDidEndEditing:'; override;
     // NSTextFieldDelegateProtocol
     procedure controlTextDidChange(obj: NSNotification); override;
@@ -299,9 +296,30 @@ const
   NSTextAlignmentJustified = 3;
   NSTextAlignmentNatural   = 4;
 
+function GetFieldEditor(afield: NSTextField): TCocoaFieldEditor;
+
 implementation
 
 uses CocoaInt;
+
+function GetFieldEditor(afield: NSTextField): TCocoaFieldEditor;
+var
+  lFieldEditor: TCocoaFieldEditor;
+  lText: NSText;
+  window: NSWindow;
+begin
+  Result := nil;
+  if not Assigned(afield) then Exit;
+  window := afield.window;
+  if window = nil then Exit;
+
+  lText := window.fieldEditor_forObject(True, afield);
+  if (lText <> nil) and lText.isKindOfClass_(TCocoaFieldEditor) then
+  begin
+    Result := TCocoaFieldEditor(lText);
+  end;
+end;
+
 
 { TCocoaFieldEditor }
 
@@ -445,27 +463,13 @@ procedure TCocoaTextField.dealloc;
 var
   lFieldEditor: TCocoaFieldEditor;
 begin
-  lFieldEditor := GetFieldEditor();
+  lFieldEditor := GetFieldEditor(self);
   if (lFieldEditor <> nil) and (lFieldEditor.lastEditBox = Self) then
   begin
     lFieldEditor.lastEditBox := nil;
   end;
 
   inherited dealloc;
-end;
-
-function TCocoaTextField.GetFieldEditor: TCocoaFieldEditor;
-var
-  lFieldEditor: TCocoaFieldEditor;
-  lText: NSText;
-begin
-  Result := nil;
-  if window = nil then Exit;
-  lText := window.fieldEditor_forObject(True, Self);
-  if (lText <> nil) and lText.isKindOfClass_(TCocoaFieldEditor) then
-  begin
-    Result := TCocoaFieldEditor(lText);
-  end;
 end;
 
 function TCocoaTextField.acceptsFirstResponder: Boolean;
@@ -497,7 +501,7 @@ var
 begin
   //DebugLn('[TCocoaTextField.resignFirstResponder]');
   Result := inherited resignFirstResponder;
-  lFieldEditor := GetFieldEditor();
+  lFieldEditor := GetFieldEditor(self);
   if (lFieldEditor <> nil) then
   begin
     lFieldEditor.lastEditBox := Self;
@@ -747,27 +751,13 @@ procedure TCocoaSecureTextField.dealloc;
 var
   lFieldEditor: TCocoaFieldEditor;
 begin
-  lFieldEditor := GetFieldEditor();
+  lFieldEditor := GetFieldEditor(Self);
   if (lFieldEditor <> nil) and (lFieldEditor.lastEditBox = Self) then
   begin
     lFieldEditor.lastEditBox := nil;
   end;
 
   inherited dealloc;
-end;
-
-function TCocoaSecureTextField.GetFieldEditor: TCocoaFieldEditor;
-var
-  lFieldEditor: TCocoaFieldEditor;
-  lText: NSText;
-begin
-  Result := nil;
-  if window = nil then Exit;
-  lText := window.fieldEditor_forObject(True, Self);
-  if (lText <> nil) and lText.isKindOfClass_(TCocoaFieldEditor) then
-  begin
-    Result := TCocoaFieldEditor(lText);
-  end;
 end;
 
 function TCocoaSecureTextField.acceptsFirstResponder: Boolean;
@@ -793,7 +783,7 @@ var
 begin
   //DebugLn('[TCocoaTextField.resignFirstResponder]');
   Result := inherited resignFirstResponder;
-  lFieldEditor := GetFieldEditor();
+  lFieldEditor := GetFieldEditor(Self);
   if (lFieldEditor <> nil) then
   begin
     lFieldEditor.lastEditBox := Self;
@@ -1302,7 +1292,7 @@ procedure TCocoaSpinEdit.dealloc;
 var
   lFieldEditor: TCocoaFieldEditor;
 begin
-  lFieldEditor := GetFieldEditor();
+  lFieldEditor := GetFieldEditor(Self);
   if (lFieldEditor <> nil) and (lFieldEditor.lastEditBox = Self) then
   begin
     lFieldEditor.lastEditBox := nil;
@@ -1409,20 +1399,6 @@ begin
   if callback <> nil then callback.SendOnTextChanged();
 end;
 
-function TCocoaSpinEdit.GetFieldEditor: TCocoaFieldEditor;
-var
-  lFieldEditor: TCocoaFieldEditor;
-  lText: NSText;
-begin
-  Result := nil;
-  if window = nil then Exit;
-  lText := window.fieldEditor_forObject(True, Self);
-  if (lText <> nil) and lText.isKindOfClass_(TCocoaFieldEditor) then
-  begin
-    Result := TCocoaFieldEditor(lText);
-  end;
-end;
-
 procedure TCocoaSpinEdit.textDidEndEditing(notification: NSNotification);
 begin
   updateStepper;
@@ -1461,7 +1437,7 @@ var
 begin
   //DebugLn('[TCocoaTextField.resignFirstResponder]');
   Result := inherited resignFirstResponder;
-  lFieldEditor := GetFieldEditor();
+  lFieldEditor := GetFieldEditor(Self);
   if (lFieldEditor <> nil) then
   begin
     lFieldEditor.lastEditBox := Self;
