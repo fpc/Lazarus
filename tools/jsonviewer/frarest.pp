@@ -319,7 +319,11 @@ begin
         R.Content:=SERequestContent.Text
       else
         begin
+{$IF FPC_FULLVERSION>30004}
         S:=TStringStream.Create('',CP_UTF8);
+{$ELSE}
+        S:=TStringStream.Create('');
+{$ENDIF}
         try
           OnSendContent(Self,S);
           R.Content:=S.DataString;
