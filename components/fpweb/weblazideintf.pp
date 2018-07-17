@@ -22,15 +22,15 @@ unit WebLazIDEIntf;
 interface
 
 uses
-  Classes, SysUtils, fpWeb, fpHTML, fpdatasetform,
-  IDEExternToolIntf,
+  Classes, SysUtils, fpWeb, fpHTML, fpdatasetform,  IDEExternToolIntf,
   Controls, Dialogs, forms, LazIDEIntf, ProjectIntf, SrcEditorIntf, IDEMsgIntf,
-  fpextjs,
-  extjsjson, extjsxml,
-  fpjsonrpc,
-  jstree,jsparser,
+  fpextjs, extjsjson, extjsxml, fpjsonrpc, jstree,jsparser,
   fpextdirect,fpwebdata,
-{$IFDEF VER3_1}
+{$IF FPC_FULLVERSION>=30004}
+  fphttpclient,
+  fphttpserver,
+{$ENDIF}
+{$IF FPC_FULLVERSION>=30100}
   fphttpwebclient,
   fpoauth2,
   fpoauth2ini,
@@ -246,7 +246,7 @@ resourcestring
 
 implementation
 
-uses LazarusPackageIntf,FormEditingIntf, PropEdits, DBPropEdits, sqldbwebdata,
+uses LazarusPackageIntf,FormEditingIntf, PropEdits, DBPropEdits, sqldbwebdata, LResources,
      frmrpcmoduleoptions,frmnewhttpapp, registersqldb, sqlstringspropertyeditordlg;
 
 Const
@@ -278,11 +278,9 @@ begin
                                ]);
 end;
 
-
-{$IFDEF VER3_1}
+{$IF FPC_FULLVERSION>=30100}
 procedure RegisterTFPHTTPWebClient;
 begin
-  RegisterComponents(fpWebTab,[TFPHTTPWebClient]);
 end;
 procedure RegisterTOAuth2Handler;
 begin
@@ -294,12 +292,15 @@ begin
 end;
 {$ENDIF}
 
-Procedure RegisterComponents;
+Procedure RegisterWebComponents;
 
 begin
+  {$IF FPC_FULLVERSION>=30004}
+  RegisterComponents(fpWebTab,[TFPHTTPClient,TFPHTTPServer]);
+  {$ENDIF}
   RegisterUnit('fphtml',@RegisterHTMLComponents);
   RegisterUnit('fpdatasetform',@RegisterdatasetComponents);
-  {$IFDEF VER3_1}
+  {$IF FPC_FULLVERSION>=30100}
   RegisterUnit('fphttpwebclient',@RegisterTFPHTTPWebClient);
   RegisterUnit('fpoauth2',@RegisterTOAuth2Handler);
   RegisterUnit('fpoauth2ini',@RegisterTFPOAuth2IniStore);
@@ -309,7 +310,7 @@ end;
 
 procedure Register;
 begin
-  RegisterComponents;
+  RegisterWebComponents;
   FileDescriptorWebProviderDataModule:=TFileDescWebProviderDataModule.Create;
   FileDescriptorJSONRPCModule:=TFileDescWebJSONRPCModule.Create;
   FileDescriptorExtDirectModule:=TFileDescExtDirectModule.Create;
@@ -1000,20 +1001,17 @@ function TFileDescWebJSONRPCModule.GetImplementationSource(const Filename,
 
 Var
   RH,RM : Boolean;
-  CN,HP : String;
+  HP : String;
 
 begin
   RH:=False;
   RM:=False;
-  CN:=ResourceName;
   HP:=ResourceName;
   With TJSONRPCModuleOptionsForm.Create(Application) do
     try
       If (ShowModal=mrOK) then
         begin
         RH:=RegisterHandlers;
-        If RH Then
-          CN:=JSONRPCClass;
         RM:=RegisterModule;
         If RM then
           HP:=HTTPPath;
@@ -1062,20 +1060,17 @@ function TFileDescExtDirectModule.GetImplementationSource(const Filename,
 
 Var
   RH,RM : Boolean;
-  CN,HP : String;
+  HP : String;
 
 begin
   RH:=False;
   RM:=False;
-  CN:=ResourceName;
   HP:=ResourceName;
   With TJSONRPCModuleOptionsForm.Create(Application) do
     try
       If (ShowModal=mrOK) then
         begin
         RH:=RegisterHandlers;
-        If RH Then
-          CN:=JSONRPCClass;
         RM:=RegisterModule;
         If RM then
           HP:=HTTPPath;
@@ -1120,6 +1115,7 @@ Var
   P : TJSParser;
   E : TJSElement;
 begin
+  Result:=mrOK;
   P:=TJSParser.Create(S);
   try
     try
@@ -1128,7 +1124,10 @@ begin
       ShowMessage('Javascript syntax OK');
     except
       On E : Exception do
+        begin
         ShowException('Javascript syntax error',E);
+        Result:=mrAbort;
+        end;
     end;
   finally
     P.free;
@@ -1208,6 +1207,9 @@ procedure TJSFileDescriptor.UpdateDefaultPascalFileExtension(
 begin
   inherited UpdateDefaultPascalFileExtension(DefPasExt);
 end;
+
+initialization
+ {$i fpweb_images.inc}
 
 finalization
   FreeAndNil(AChecker);
