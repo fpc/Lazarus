@@ -389,7 +389,7 @@ begin
       window.orderOut(nil)
     else
     if not aisHidden and not window.isVisible then
-      window.orderBack(nil);
+      window.makeKeyAndOrderFront(nil);
   end;
 end;
 
