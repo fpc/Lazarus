@@ -549,13 +549,21 @@ end;
 procedure TCocoaTextField.mouseDown(event: NSEvent);
 begin
   if Assigned(callback) and not callback.MouseUpDownEvent(event) then
+  begin
+    writeln('mouse down');
     inherited mouseDown(event);
+    writeln('mouse down-post');
+  end;
 end;
 
 procedure TCocoaTextField.mouseUp(event: NSEvent);
 begin
   if Assigned(callback) and not callback.MouseUpDownEvent(event) then
+  begin
+    writeln('mouse up');
     inherited mouseUp(event);
+    writeln('mouse up-post');
+  end;
 end;
 
 procedure TCocoaTextField.rightMouseDown(event: NSEvent);

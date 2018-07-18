@@ -107,6 +107,20 @@ type
     function lclIsHandle: Boolean; override;
     function lclPos: Integer; message 'lclPos';
     procedure lclSetPos(aPos: integer); message 'lclSetPos:';
+    // mouse
+    function acceptsFirstMouse(event: NSEvent): Boolean; override;
+    procedure mouseDown(event: NSEvent); override;
+    procedure mouseUp(event: NSEvent); override;
+    procedure rightMouseDown(event: NSEvent); override;
+    procedure rightMouseUp(event: NSEvent); override;
+    procedure rightMouseDragged(event: NSEvent); override;
+    procedure otherMouseDown(event: NSEvent); override;
+    procedure otherMouseUp(event: NSEvent); override;
+    procedure otherMouseDragged(event: NSEvent); override;
+    procedure mouseDragged(event: NSEvent); override;
+    procedure mouseMoved(event: NSEvent); override;
+    procedure scrollWheel(event: NSEvent); override;
+
   end;
 
 implementation
@@ -513,6 +527,81 @@ begin
     else if aPos > maxInt then aPos:=maxInt;
     setDoubleValue( (aPos - minInt) / d );
   end;
+end;
+
+function TCocoaScrollBar.acceptsFirstMouse(event: NSEvent): Boolean;
+begin
+  Result:=true;
+end;
+
+procedure TCocoaScrollBar.mouseDown(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+  begin
+    inherited mouseDown(event);
+
+    callback.MouseUpDownEvent(event, true);
+  end;
+end;
+
+procedure TCocoaScrollBar.mouseUp(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited mouseUp(event);
+end;
+
+procedure TCocoaScrollBar.rightMouseDown(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited rightMouseDown(event);
+end;
+
+procedure TCocoaScrollBar.rightMouseUp(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited rightMouseUp(event);
+end;
+
+procedure TCocoaScrollBar.rightMouseDragged(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited rightMouseDragged(event);
+end;
+
+procedure TCocoaScrollBar.otherMouseDown(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited otherMouseDown(event);
+end;
+
+procedure TCocoaScrollBar.otherMouseUp(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited otherMouseUp(event);
+end;
+
+procedure TCocoaScrollBar.otherMouseDragged(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseMove(event) then
+    inherited otherMouseDragged(event);
+end;
+
+procedure TCocoaScrollBar.mouseDragged(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseMove(event) then
+    inherited mouseDragged(event);
+end;
+
+procedure TCocoaScrollBar.mouseMoved(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseMove(event) then
+    inherited mouseMoved(event);
+end;
+
+procedure TCocoaScrollBar.scrollWheel(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.scrollWheel(event) then
+    inherited scrollWheel(event);
 end;
 
 function TCocoaScrollBar.acceptsFirstResponder: Boolean;
