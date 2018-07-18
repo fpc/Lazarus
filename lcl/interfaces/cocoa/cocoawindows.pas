@@ -119,6 +119,7 @@ type
     fsview: TCocoaWindowContent;
     function windowShouldClose(sender : id): LongBool; message 'windowShouldClose:';
     procedure windowWillClose(notification: NSNotification); message 'windowWillClose:';
+    function windowWillReturnFieldEditor_toObject(sender: NSWindow; client: id): id; message 'windowWillReturnFieldEditor:toObject:';
     procedure windowDidBecomeKey(notification: NSNotification); message 'windowDidBecomeKey:';
     procedure windowDidResignKey(notification: NSNotification); message 'windowDidResignKey:';
     procedure windowDidResize(notification: NSNotification); message 'windowDidResize:';
@@ -137,8 +138,6 @@ type
     function resignFirstResponder: Boolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
-    // field editor
-    function fieldEditor_forObject(createFlag: Boolean; client: id): NSText; override;
     // mouse
     procedure mouseDown(event: NSEvent); override;
     procedure mouseUp(event: NSEvent); override;
@@ -599,23 +598,21 @@ begin
   Result := canClose;
 end;
 
-function TCocoaWindow.fieldEditor_forObject(createFlag: Boolean; client: id): NSText;
+function TCocoaWindow.windowWillReturnFieldEditor_toObject(sender: NSWindow; client: id): id;
 begin
-  //DebugLn('[TCocoaWindow.fieldEditor_forObject]');
+  //DebugLn('[TCocoaWindow.windowWillReturnFieldEditor_toObject]');
   Result := nil;
-  if not createFlag then Exit;
 
-  if (fieldEditor = nil) then
+  if (NSObject(client).isKindOfClass(NSTextField)) and Assigned(NSObject(client).lclGetCallBack) then
   begin
-    fieldEditor := TCocoaFieldEditor.alloc.init;
-    fieldEditor.setFieldEditor(True);
-  end;
-  Result := fieldEditor;
-
-  if NSObject(client).isKindOfClass(NSTextField) then
+    if (fieldEditor = nil) then
+    begin
+      fieldEditor := TCocoaFieldEditor.alloc.init;
+      fieldEditor.setFieldEditor(True);
+    end;
+    Result := fieldEditor;
     TCocoaFieldEditor(fieldEditor).lastEditBox := NSTextField(client)
-  else
-    TCocoaFieldEditor(fieldEditor).lastEditBox := nil;
+  end;
 end;
 
 procedure TCocoaWindow.windowWillClose(notification: NSNotification);
