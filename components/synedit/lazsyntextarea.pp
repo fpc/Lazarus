@@ -695,7 +695,7 @@ begin
 
     LogicIdx := FCurViewScannerPos.Logical - 1;
     LogicEnd := LogicIdx + FCurViewToken.TokenLength;
-    assert(GetCharWidthData(LogicIdx)<>0, 'GetNextHighlighterTokenFromView: Token starts with char');
+    //assert(GetCharWidthData(LogicIdx)<>0, 'GetNextHighlighterTokenFromView: Token starts with char');
 
     case FCurViewinRTL of
       False: // Left To Right
