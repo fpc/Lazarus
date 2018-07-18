@@ -45,6 +45,7 @@ type
   public
     Owner: NSObject;
     Frame: NSObject;
+    BlockCocoaUpDown: Boolean;
     class constructor Create;
     constructor Create(AOwner: NSObject; ATarget: TWinControl); virtual;
     destructor Destroy; override;
@@ -808,6 +809,8 @@ begin
   lEventType := Event.type_;
   if AForceAsMouseUp then
     lEventType := NSLeftMouseUp;
+
+  Result := Result or BlockCocoaUpDown;
   case lEventType of
     NSLeftMouseDown,
     NSRightMouseDown,
@@ -815,6 +818,7 @@ begin
     begin
       Msg.Msg := CheckMouseButtonDownUp(TLCLIntfHandle(Owner),FTarget,LastMouse,
         FTarget.ClientToScreen(Point(Msg.XPos, Msg.YPos)),MButton+1,True);
+
       case LastMouse.ClickCount of
         2: Msg.Keys := msg.Keys or MK_DOUBLECLICK;
         3: Msg.Keys := msg.Keys or MK_TRIPLECLICK;
@@ -1673,6 +1677,7 @@ var
 begin
   ctrl := TCocoaCustomControl(TCocoaCustomControl.alloc.lclInitWithCreateParams(AParams));
   lcl := TLCLCommonCallback.Create(ctrl, AWinControl);
+  lcl.BlockCocoaUpDown := true;
   ctrl.callback := lcl;
 
   sl := EmbedInManualScrollView(ctrl);

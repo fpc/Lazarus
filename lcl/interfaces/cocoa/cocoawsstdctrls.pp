@@ -1519,6 +1519,7 @@ begin
   if Assigned(box) then
   begin
     box.callback := TLCLCommonCallback.Create(box, AWinControl);
+    TLCLCommonCallback(box.callback.GetCallbackObject).BlockCocoaUpDown := true;
     cap := NSStringUTF8(AParams.Caption);
     box.setTitle(cap);
     cap.release;

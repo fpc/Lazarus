@@ -118,7 +118,6 @@ type
     isInFullScreen: Boolean;
     fsview: TCocoaWindowContent;
     function windowShouldClose(sender : id): LongBool; message 'windowShouldClose:';
-    function windowWillReturnFieldEditor_toObject(sender: NSWindow; client: id): id; message 'windowWillReturnFieldEditor:toObject:';
     procedure windowWillClose(notification: NSNotification); message 'windowWillClose:';
     procedure windowDidBecomeKey(notification: NSNotification); message 'windowDidBecomeKey:';
     procedure windowDidResignKey(notification: NSNotification); message 'windowDidResignKey:';
@@ -138,6 +137,8 @@ type
     function resignFirstResponder: Boolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
+    // field editor
+    function fieldEditor_forObject(createFlag: Boolean; client: id): NSText; override;
     // mouse
     procedure mouseDown(event: NSEvent); override;
     procedure mouseUp(event: NSEvent); override;
@@ -598,21 +599,23 @@ begin
   Result := canClose;
 end;
 
-function TCocoaWindow.windowWillReturnFieldEditor_toObject(sender: NSWindow;
-  client: id): id;
+function TCocoaWindow.fieldEditor_forObject(createFlag: Boolean; client: id): NSText;
 begin
-  //DebugLn('[TCocoaWindow.windowWillReturnFieldEditor_toObject]');
+  //DebugLn('[TCocoaWindow.fieldEditor_forObject]');
   Result := nil;
+  if not createFlag then Exit;
+
   if (fieldEditor = nil) then
   begin
     fieldEditor := TCocoaFieldEditor.alloc.init;
     fieldEditor.setFieldEditor(True);
   end;
-  if client.isKindOfClass_(NSTextField) then
-  begin
-    Result := fieldEditor;
-    TCocoaFieldEditor(fieldEditor).lastEditBox := NSTextField(client);
-  end;
+  Result := fieldEditor;
+
+  if NSObject(client).isKindOfClass(NSTextField) then
+    TCocoaFieldEditor(fieldEditor).lastEditBox := NSTextField(client)
+  else
+    TCocoaFieldEditor(fieldEditor).lastEditBox := nil;
 end;
 
 procedure TCocoaWindow.windowWillClose(notification: NSNotification);
