@@ -1553,6 +1553,8 @@ begin
   Result := AParams.FDistFunc(AParams.FPoint, pt);
 end;
 
+// AIndex refers to the index into YList here.
+// The ordinary Y value has Index = -1.
 procedure TBasicPointSeries.UpdateGraphPoints(AIndex, ALo, AUp: Integer;
   ACumulative: Boolean);
 var
@@ -1568,7 +1570,10 @@ begin
           y += Source[i]^.YList[j];
         FGraphPoints[i - ALo].X := AxisToGraphY(y);
       end else
-        FGraphPoints[i - Alo].X := AxisToGraphY(Source[i]^.YList[AIndex]);
+      if AIndex = -1 then
+        FGraphPoints[i - ALo].X := AxisToGraphY(Source[i]^.Y)
+      else
+        FGraphPoints[i - ALo].X := AxisToGraphY(Source[i]^.YList[AIndex]);
     end
   else
     for i := ALo to AUp do
@@ -1579,6 +1584,9 @@ begin
           y += Source[i]^.YList[j];
         FGraphPoints[i - ALo].Y := AxisToGraphY(y);
       end else
+      if AIndex = -1 then
+        FGraphPoints[i - ALo].Y := AxisToGraphY(Source[i]^.Y)
+      else
         FGraphPoints[i - Alo].Y := AxisToGraphY(Source[i]^.YList[AIndex]);
     end;
 end;
