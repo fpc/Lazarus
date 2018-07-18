@@ -550,9 +550,10 @@ procedure TCocoaTextField.mouseDown(event: NSEvent);
 begin
   if Assigned(callback) and not callback.MouseUpDownEvent(event) then
   begin
-    writeln('mouse down');
     inherited mouseDown(event);
-    writeln('mouse down-post');
+    // the text selection is handled withing mouseDown
+    if Assigned(callback) then
+      callback.MouseUpDownEvent(event, True);
   end;
 end;
 
@@ -560,9 +561,7 @@ procedure TCocoaTextField.mouseUp(event: NSEvent);
 begin
   if Assigned(callback) and not callback.MouseUpDownEvent(event) then
   begin
-    writeln('mouse up');
     inherited mouseUp(event);
-    writeln('mouse up-post');
   end;
 end;
 
@@ -819,7 +818,12 @@ end;
 procedure TCocoaSecureTextField.mouseDown(event: NSEvent);
 begin
   if Assigned(callback) and not callback.MouseUpDownEvent(event) then
+  begin
     inherited mouseDown(event);
+
+    if Assigned(callback) then
+      callback.MouseUpDownEvent(event, True);
+  end;
 end;
 
 procedure TCocoaSecureTextField.mouseUp(event: NSEvent);
