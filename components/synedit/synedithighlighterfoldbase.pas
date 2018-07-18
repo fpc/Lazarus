@@ -1351,6 +1351,7 @@ var
 
       dec(pcnt);
     end;
+    ClearPreviousCache;
   end;
 
 begin

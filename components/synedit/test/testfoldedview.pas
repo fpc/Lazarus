@@ -27,6 +27,10 @@ type
     DoAllowScrollPastEof: Boolean;
     //EnableDebug: Boolean;
 
+    // fold nest list
+    PrepareLine, PrepareMax: integer;
+
+
     procedure TestFoldedText(AName: String; ALines: Array of Integer);
     procedure SetLines(AText: Array of String); reintroduce;
   protected
@@ -69,6 +73,17 @@ type
     procedure TstViewPosToTextIndex(AName: String; AExpectedPairs: Array of Integer; ADoReverse: Boolean = false);
     procedure TstTextIndexToScreenLine(AName: String; AExpectedPairs: Array of Integer; ADoReverse: Boolean = false);
     procedure TstScreenLineToTextIndex(AName: String; AExpectedPairs: Array of Integer; ADoReverse: Boolean = false);
+
+    // fold nest list
+    Procedure CheckNode(nd: TSynFoldNodeInfo; ALine: TLineIdx; AColumn: integer;
+      LogXStart, LogXEnd,  FoldLvlStart, FoldLvlEnd,  NestLvlStart, NestLvlEnd: Integer;
+      FoldType: integer;  FoldTypeCompatible: integer; FoldGroup: Integer;
+      FoldAction: TSynFoldActions);
+    Procedure CheckNodeLines(AList: TLazSynEditNestedFoldsList; ALines: array of integer);
+    Procedure CheckNodeEndLines(AList: TLazSynEditNestedFoldsList; ALines: array of integer);
+    procedure InitList(const AName: String; AList: TLazSynEditNestedFoldsList;
+      ALine, AGroup: Integer; AFlags: TSynFoldBlockFilterFlags;
+      AInclOpening: Boolean; AClear: Boolean = True);
   published
     procedure TestFold;
     procedure TestFoldEdit;
@@ -76,6 +91,7 @@ type
     procedure TestFoldStateDesc;
     procedure TestFoldProvider;
     procedure TestNestedFoldsList;
+    procedure TestNestedFoldsListCache;
   end;
 
 implementation
@@ -1880,57 +1896,56 @@ begin
 
 end;
 
-procedure TTestFoldedView.TestNestedFoldsList;
-  Procedure CheckNode(nd: TSynFoldNodeInfo; ALine: TLineIdx; AColumn: integer;
-    LogXStart, LogXEnd,  FoldLvlStart, FoldLvlEnd,  NestLvlStart, NestLvlEnd: Integer;
-    FoldType: integer;  FoldTypeCompatible: integer; FoldGroup: Integer;
-    FoldAction: TSynFoldActions);
-  begin
-    CheckPasFoldNodeInfo('', nd, ALine, AColumn, LogXStart, LogXEnd, FoldLvlStart,
-      FoldLvlEnd, NestLvlStart, NestLvlEnd,
-      TPascalCodeFoldBlockType(FoldType), TPascalCodeFoldBlockType(FoldTypeCompatible),
-      FoldGroup, FoldAction);
-  end;
+Procedure TTestFoldedView.CheckNode(nd: TSynFoldNodeInfo; ALine: TLineIdx; AColumn: integer;
+  LogXStart, LogXEnd,  FoldLvlStart, FoldLvlEnd,  NestLvlStart, NestLvlEnd: Integer;
+  FoldType: integer;  FoldTypeCompatible: integer; FoldGroup: Integer;
+  FoldAction: TSynFoldActions);
+begin
+  CheckPasFoldNodeInfo('', nd, ALine, AColumn, LogXStart, LogXEnd, FoldLvlStart,
+    FoldLvlEnd, NestLvlStart, NestLvlEnd,
+    TPascalCodeFoldBlockType(FoldType), TPascalCodeFoldBlockType(FoldTypeCompatible),
+    FoldGroup, FoldAction);
+end;
 
-  Procedure CheckNodeLines(AList: TLazSynEditNestedFoldsList; ALines: array of integer);
-  var
-    i: Integer;
-  begin
-    for i := 0 to high(ALines) do
-      AssertEquals(BaseTestName+ ' Node line=' + IntToStr(i), ALines[i], AList.NodeLine[i]);
-  end;
-
-  Procedure CheckNodeEndLines(AList: TLazSynEditNestedFoldsList; ALines: array of integer);
-  var
-    i: Integer;
-  begin
-    for i := 0 to high(ALines) do
-      AssertEquals(BaseTestName+ ' Node end line=' + IntToStr(i), ALines[i], AList.NodeEndLine[i]);
-  end;
-
+Procedure TTestFoldedView.CheckNodeLines(AList: TLazSynEditNestedFoldsList; ALines: array of integer);
 var
-  PrepareLine, PrepareMax: integer;
-  procedure InitList(const AName: String; AList: TLazSynEditNestedFoldsList;
-    ALine, AGroup: Integer; AFlags: TSynFoldBlockFilterFlags;
-    AInclOpening: Boolean; AClear: Boolean = True);
-  var
-    i: Integer;
-  begin
-    PopPushBaseName(Format('%s (Line=%d / Grp=%d / FLG=%s / IncOpen=%s / Prep=%d,%d)', [AName, ALine, AGroup, dbgs(AFlags), dbgs(AInclOpening), PrepareLine, PrepareMax]));
-    AList.ResetFilter;
-    if AClear then AList.Clear;
-    AList.FoldGroup := AGroup;
-    AList.FoldFlags := AFlags;
-    AList.IncludeOpeningOnLine := AInclOpening;
-    if (PrepareLine >= 0) and (PrepareLine < SynEdit.Lines.Count) then begin
-      AList.Line := PrepareLine;
-      for i := 0 to Min(AList.Count-1, PrepareLine) do AList.NodeLine[i];
-    end;
-    AList.Line := ALine;
+  i: Integer;
+begin
+  for i := 0 to high(ALines) do
+    AssertEquals(BaseTestName+ ' Node line=' + IntToStr(i), ALines[i], AList.NodeLine[i]);
+end;
+
+Procedure TTestFoldedView.CheckNodeEndLines(AList: TLazSynEditNestedFoldsList; ALines: array of integer);
+var
+  i: Integer;
+begin
+  for i := 0 to high(ALines) do
+    AssertEquals(BaseTestName+ ' Node end line=' + IntToStr(i), ALines[i], AList.NodeEndLine[i]);
+end;
+
+procedure TTestFoldedView.InitList(const AName: String; AList: TLazSynEditNestedFoldsList;
+  ALine, AGroup: Integer; AFlags: TSynFoldBlockFilterFlags;
+  AInclOpening: Boolean; AClear: Boolean = True);
+var
+  i: Integer;
+begin
+  PopPushBaseName(Format('%s (Line=%d / Grp=%d / FLG=%s / IncOpen=%s / Prep=%d,%d)', [AName, ALine, AGroup, dbgs(AFlags), dbgs(AInclOpening), PrepareLine, PrepareMax]));
+  AList.ResetFilter;
+  if AClear then AList.Clear;
+  AList.FoldGroup := AGroup;
+  AList.FoldFlags := AFlags;
+  AList.IncludeOpeningOnLine := AInclOpening;
+  if (PrepareLine >= 0) and (PrepareLine < SynEdit.Lines.Count) then begin
+    AList.Line := PrepareLine;
+    for i := 0 to Min(AList.Count-1, PrepareLine) do AList.NodeLine[i];
   end;
+  AList.Line := ALine;
+end;
+
+procedure TTestFoldedView.TestNestedFoldsList;
 var
   TheList: TLazSynEditNestedFoldsList;
-  i1, i2, i3, i: Integer;
+  i1, i2, i3, i, pl, pm: Integer;
 begin
 // L= *(\d+).*?(\d+).*?(\d+).*?(\d+).*?(\d+).*?(\d+).*?(\d+).*?(\d+).*?(\d+).*?(\d+).*?(\d+).*?A=(.*)
 // CheckNode(TheList.HLNode[2],  $1, $2,  $3, $4,  $5, $6,  $7, $8,  $9, $10, $11, $12);
@@ -1939,8 +1954,10 @@ begin
   PushBaseName(''); // InitList();
 
   {%region TestText1}
-  For PrepareLine := -1 to 5 do begin
-  For PrepareMax := 1 to Max(1, Min(PrepareLine+1, 3)) do begin
+  For pl := -1 to 5 do begin
+  PrepareLine := pl;
+  For pm := 1 to Max(1, Min(PrepareLine+1, 3)) do begin
+    PrepareMax := pm;
     TstSetText('TestText1', TestText1);
     TheList := FoldedView.FoldProvider.NestedFoldsList;
     EnableFolds([cfbtBeginEnd..cfbtNone]);
@@ -2168,8 +2185,10 @@ begin
   {%endregion TestText1}
 
   {%region TestText2}
-  For PrepareLine := -1 to 12 do begin
-  For PrepareMax := 1 to Max(1, Min(PrepareLine+1, 5)) do begin
+  For pl := -1 to 12 do begin
+  PrepareLine := pl;
+  For pm := 1 to Max(1, Min(PrepareLine+1, 5)) do begin
+    PrepareMax := pm;
     TstSetText('TestText2', TestText2);
     TheList := FoldedView.FoldProvider.NestedFoldsList;
     EnableFolds([cfbtBeginEnd..cfbtNone]-[cfbtIfThen,cfbtForDo,cfbtWhileDo,cfbtWithDo]);
@@ -2275,8 +2294,10 @@ begin
   {%endregion TestText2}
 
   {%region TestText3}
-  For PrepareLine := -1 to 12 do begin
-  For PrepareMax := 1 to Max(1, Min(PrepareLine+1, 5)) do begin
+  For pl := -1 to 12 do begin
+  PrepareLine := pl;
+  For pm := 1 to Max(1, Min(PrepareLine+1, 5)) do begin
+    PrepareMax := pm;
 
     TstSetText('TestText3', TestText3);
     TheList := FoldedView.FoldProvider.NestedFoldsList;
@@ -2330,8 +2351,10 @@ begin
   {%endregion TestText2}
 
   {%region TestText11}
-  For PrepareLine := -1 to 20 do begin
-  For PrepareMax := 1 to Max(1, Min(PrepareLine+1, 5)) do begin
+  For pl := -1 to 20 do begin
+  PrepareLine := pl;
+  For pm := 1 to Max(1, Min(PrepareLine+1, 5)) do begin
+    PrepareMax := pm;
     TstSetText('TestText11', TestText11);
     TheList := FoldedView.FoldProvider.NestedFoldsList;
     EnableFolds([cfbtBeginEnd..cfbtNone]);
@@ -2405,8 +2428,10 @@ begin
   TheList := FoldedView.FoldProvider.NestedFoldsList;
   EnableFolds([cfbtBeginEnd..cfbtSlashComment]); // not include IF then ...
 
-  For PrepareLine := -1 to 12 do begin
-  For PrepareMax := 1 to Max(1, Min(PrepareLine+1, 4)) do begin
+  For pl := -1 to 12 do begin
+  PrepareLine := pl;
+  For pm := 1 to Max(1, Min(PrepareLine+1, 4)) do begin
+  PrepareMax := pm;
   for i := 0 to 16 do begin;
     InitList('',  TheList,  i, 0, [], False);
     case i of
@@ -2463,7 +2488,14 @@ begin
   end;
   {%endregion TestText12}
 
-  {%region  cache from previous access}
+
+  PopBaseName;PopBaseName;
+end;
+
+procedure TTestFoldedView.TestNestedFoldsListCache;
+var
+  TheList: TLazSynEditNestedFoldsList;
+begin
   PushBaseName('cache');
   TstSetText('TestText1', TestText1);
   TheList := FoldedView.FoldProvider.NestedFoldsList;
@@ -2475,10 +2507,24 @@ begin
   TheList.Line := 8;
   TheList.HLNode[0]; // do not crash // group levels are not initialized
 
-  PopBaseName;
-  {%endregion cache}
 
-  PopBaseName;PopBaseName;
+
+  // Issue 0033996
+  TstSetText('TestText11', TestText11);
+  TheList := FoldedView.FoldProvider.NestedFoldsList;
+  EnableFolds([cfbtBeginEnd..cfbtNone]);
+  PrepareLine := -1;
+
+  InitList('All Enabled ',  TheList,  8, FOLDGROUP_PASCAL, [], False, True);
+  TheList.HLNode[TheList.Count-1];
+  TheList.HLNode[TheList.Count-2];
+
+  TheList.Line := 11;
+  TheList.HLNode[TheList.Count-1];
+  TheList.HLNode[TheList.Count-2];
+  TheList.HLNode[TheList.Count-3];
+
+  PopBaseName;
 end;
 
 initialization
