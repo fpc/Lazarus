@@ -312,6 +312,7 @@ begin
   Result := TLCLIntfHandle(lResult);
 
   lResult.callback := TLCLCommonCallback.Create(lResult, AWinControl);
+  TLCLCommonCallback(lResult.callback.GetCallbackObject).BlockCocoaUpDown := true;
   lResult.StatusBar := TStatusBar(AWinControl);
 
   cell:=NSButtonCell(NSButtonCell.alloc).initTextCell(nil);
@@ -389,6 +390,7 @@ begin
     tv.tabView := tabview;
     tv.tabPage := lControl;
     tv.callback := TLCLCommonCallback.Create(tv, AWinControl);
+    TLCLCommonCallback(tv.callback.GetCallbackObject).BlockCocoaUpDown := true;
     lControl.callback := tv.callback;
 
     // view.addSubview works better than setView, no idea why
