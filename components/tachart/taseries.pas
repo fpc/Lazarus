@@ -135,6 +135,7 @@ type
     FAreaBrush: TBrush;
     FAreaContourPen: TPen;
     FAreaLinesPen: TPen;
+    FBanded: Boolean;
     FConnectType: TConnectType;
     FUseZeroLevel: Boolean;
     FZeroLevel: Double;
@@ -143,6 +144,7 @@ type
     procedure SetAreaBrush(AValue: TBrush);
     procedure SetAreaContourPen(AValue: TPen);
     procedure SetAreaLinesPen(AValue: TPen);
+    procedure SetBanded(AValue: Boolean);
     procedure SetConnectType(AValue: TConnectType);
     procedure SetSeriesColor(AValue: TColor);
     procedure SetUseZeroLevel(AValue: Boolean);
@@ -164,6 +166,7 @@ type
     property AreaBrush: TBrush read FAreaBrush write SetAreaBrush;
     property AreaContourPen: TPen read FAreaContourPen write SetAreaContourPen;
     property AreaLinesPen: TPen read FAreaLinesPen write SetAreaLinesPen;
+    property Banded: Boolean read FBanded write SetBanded default false;
     property ConnectType: TConnectType
       read FConnectType write SetConnectType default ctLine;
     property Depth;
@@ -1565,7 +1568,7 @@ var
     numPrevPts := numPts;
 
     // Collect points of lower end of each lever
-    j0 := -1;
+    j0 := IfThen(FBanded, 0, -1);
     for j := Source.YCount - 2 downto j0 do begin
       numPts := 0;
 
@@ -1599,7 +1602,7 @@ var
       ADrawer.Brush := AreaBrush;
       ADrawer.Pen := AreaContourPen;
       if Styles <> nil then
-        Styles.Apply(ADrawer, j+1);
+        Styles.Apply(ADrawer, j - j0);
       // Draw 3D sides
       // Note: Rendering is often incorrect, e.g. when values cross zero level!
       if (Depth > 0) then begin
@@ -1610,7 +1613,8 @@ var
         if FStacked then begin
           if (j > -1) then
             ADrawer.DrawLineDepth(pts[numSavedPts - 1], pts[numSavedPts], scaled_depth)
-          else if j = -1 then
+          else
+          if (j = -1) and (FStacked or FBanded) then
             ADrawer.Drawlinedepth(pts[numSavedPts], pts[numSavedPts+1], scaled_depth);
         end;
       end;
@@ -1626,7 +1630,7 @@ var
     end;
 
     // Drop lines of lowest layer
-    if AreaLinesPen.Style <> psClear then begin
+    if (AreaLinesPen.Style <> psClear) and (not FBanded) then begin
       ADrawer.Pen := AreaLinesPen;
       for i := AStart + 1 to AEnd - 1 do begin
         a := ProjToRect(FGraphPoints[i], ext2);
@@ -1710,6 +1714,13 @@ end;
 procedure TAreaSeries.SetAreaLinesPen(AValue: TPen);
 begin
   FAreaLinesPen.Assign(AValue);
+  UpdateParentChart;
+end;
+
+procedure TAreaSeries.SetBanded(AValue: Boolean);
+begin
+  if FBanded = AValue then exit;
+  FBanded := AValue;
   UpdateParentChart;
 end;
 
