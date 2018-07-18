@@ -53,6 +53,8 @@ end { hookWinch } ;
 
 
 begin
+  WriteLn('This header line comprises 50 characters plus EOL.');
+  WriteLn;
   WriteLn('Press key to terminate.'); // http://ars.userfriendly.org/cartoons/?id=20030128
   reportSize;
   if not hookWinch() then
