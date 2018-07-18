@@ -379,6 +379,7 @@ begin
   scrollcon.isCustomRange := true;
 
   lcl := TLCLCommonCallback.Create(docview, AWinControl);
+  lcl.BlockCocoaUpDown := true;
   docview.callback := lcl;
   docview.setAutoresizingMask(NSViewWidthSizable or NSViewHeightSizable);
   scrollcon.callback := lcl;
