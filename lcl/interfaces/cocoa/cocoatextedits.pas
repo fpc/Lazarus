@@ -209,6 +209,19 @@ type
     //
     function lclIsHandle: Boolean; override;
     procedure setStringValue(avalue: NSString); override;
+    // mouse
+    function acceptsFirstMouse(event: NSEvent): Boolean; override;
+    procedure mouseDown(event: NSEvent); override;
+    procedure mouseUp(event: NSEvent); override;
+    procedure rightMouseDown(event: NSEvent); override;
+    procedure rightMouseUp(event: NSEvent); override;
+    procedure rightMouseDragged(event: NSEvent); override;
+    procedure otherMouseDown(event: NSEvent); override;
+    procedure otherMouseUp(event: NSEvent); override;
+    procedure otherMouseDragged(event: NSEvent); override;
+    procedure mouseDragged(event: NSEvent); override;
+    procedure mouseMoved(event: NSEvent); override;
+    procedure scrollWheel(event: NSEvent); override;
   end;
 
   { TCocoaReadOnlyComboBox }
@@ -230,6 +243,19 @@ type
     function lclIsHandle: Boolean; override;
     procedure comboboxAction(sender: id); message 'comboboxAction:';
     function stringValue: NSString; override;
+    // mouse
+    function acceptsFirstMouse(event: NSEvent): Boolean; override;
+    procedure mouseDown(event: NSEvent); override;
+    procedure mouseUp(event: NSEvent); override;
+    procedure rightMouseDown(event: NSEvent); override;
+    procedure rightMouseUp(event: NSEvent); override;
+    procedure rightMouseDragged(event: NSEvent); override;
+    procedure otherMouseDown(event: NSEvent); override;
+    procedure otherMouseUp(event: NSEvent); override;
+    procedure otherMouseDragged(event: NSEvent); override;
+    procedure mouseDragged(event: NSEvent); override;
+    procedure mouseMoved(event: NSEvent); override;
+    procedure scrollWheel(event: NSEvent); override;
   end;
 
   { TCocoaSpinEdit }
@@ -1045,6 +1071,81 @@ begin
   callback.ComboBoxSelectionIsChanging;
 end;
 
+function TCocoaComboBox.acceptsFirstMouse(event: NSEvent): Boolean;
+begin
+  Result:=true;
+end;
+
+procedure TCocoaComboBox.mouseDown(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+  begin
+    inherited mouseDown(event);
+
+    callback.MouseUpDownEvent(event, true);
+  end;
+end;
+
+procedure TCocoaComboBox.mouseUp(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited mouseUp(event);
+end;
+
+procedure TCocoaComboBox.rightMouseDown(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited rightMouseDown(event);
+end;
+
+procedure TCocoaComboBox.rightMouseUp(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited rightMouseUp(event);
+end;
+
+procedure TCocoaComboBox.rightMouseDragged(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited rightMouseDragged(event);
+end;
+
+procedure TCocoaComboBox.otherMouseDown(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited otherMouseDown(event);
+end;
+
+procedure TCocoaComboBox.otherMouseUp(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited otherMouseUp(event);
+end;
+
+procedure TCocoaComboBox.otherMouseDragged(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseMove(event) then
+    inherited otherMouseDragged(event);
+end;
+
+procedure TCocoaComboBox.mouseDragged(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseMove(event) then
+    inherited mouseDragged(event);
+end;
+
+procedure TCocoaComboBox.mouseMoved(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseMove(event) then
+    inherited mouseMoved(event);
+end;
+
+procedure TCocoaComboBox.scrollWheel(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.scrollWheel(event) then
+    inherited scrollWheel(event);
+end;
+
 { TCocoaReadOnlyComboBox }
 
 function TCocoaReadOnlyComboBox.acceptsFirstResponder: Boolean;
@@ -1113,6 +1214,81 @@ begin
     Result:=selectedItem.title
   else
     Result:=inherited stringValue;
+end;
+
+function TCocoaReadOnlyComboBox.acceptsFirstMouse(event: NSEvent): Boolean;
+begin
+  Result:=true;
+end;
+
+procedure TCocoaReadOnlyComboBox.mouseDown(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+  begin
+    inherited mouseDown(event);
+
+    callback.MouseUpDownEvent(event, true);
+  end;
+end;
+
+procedure TCocoaReadOnlyComboBox.mouseUp(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited mouseUp(event);
+end;
+
+procedure TCocoaReadOnlyComboBox.rightMouseDown(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited rightMouseDown(event);
+end;
+
+procedure TCocoaReadOnlyComboBox.rightMouseUp(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited rightMouseUp(event);
+end;
+
+procedure TCocoaReadOnlyComboBox.rightMouseDragged(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited rightMouseDragged(event);
+end;
+
+procedure TCocoaReadOnlyComboBox.otherMouseDown(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited otherMouseDown(event);
+end;
+
+procedure TCocoaReadOnlyComboBox.otherMouseUp(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited otherMouseUp(event);
+end;
+
+procedure TCocoaReadOnlyComboBox.otherMouseDragged(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseMove(event) then
+    inherited otherMouseDragged(event);
+end;
+
+procedure TCocoaReadOnlyComboBox.mouseDragged(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseMove(event) then
+    inherited mouseDragged(event);
+end;
+
+procedure TCocoaReadOnlyComboBox.mouseMoved(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseMove(event) then
+    inherited mouseMoved(event);
+end;
+
+procedure TCocoaReadOnlyComboBox.scrollWheel(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.scrollWheel(event) then
+    inherited scrollWheel(event);
 end;
 
 { TCocoaSpinEdit }
