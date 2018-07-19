@@ -1,0 +1,426 @@
+object Form1: TForm1
+  Left = 356
+  Height = 440
+  Top = 130
+  Width = 694
+  Caption = 'Area series demo'
+  ClientHeight = 440
+  ClientWidth = 694
+  OnCreate = FormCreate
+  LCLVersion = '1.9.0.0'
+  object PageControl1: TPageControl
+    Left = 4
+    Height = 432
+    Top = 4
+    Width = 686
+    ActivePage = PgGeneral
+    Align = alClient
+    BorderSpacing.Around = 4
+    TabIndex = 0
+    TabOrder = 0
+    object PgGeneral: TTabSheet
+      Caption = 'General'
+      ClientHeight = 404
+      ClientWidth = 678
+      object Panel1: TPanel
+        Left = 0
+        Height = 81
+        Top = 323
+        Width = 678
+        Align = alBottom
+        AutoSize = True
+        BevelOuter = bvNone
+        ClientHeight = 81
+        ClientWidth = 678
+        TabOrder = 0
+        object CbRotated: TCheckBox
+          AnchorSideLeft.Control = CbBanded
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = CbStacked
+          AnchorSideTop.Side = asrCenter
+          Left = 84
+          Height = 19
+          Top = 8
+          Width = 61
+          BorderSpacing.Left = 16
+          Caption = 'Rotated'
+          OnChange = CbRotatedChange
+          TabOrder = 0
+        end
+        object Cb3D: TCheckBox
+          AnchorSideLeft.Control = CbRotated
+          AnchorSideTop.Control = CbBanded
+          Left = 84
+          Height = 19
+          Top = 35
+          Width = 34
+          Caption = '3D'
+          OnChange = Cb3DChange
+          TabOrder = 1
+        end
+        object CbUseZeroLevel: TCheckBox
+          AnchorSideLeft.Control = CbRotated
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = CbStacked
+          AnchorSideTop.Side = asrCenter
+          Left = 161
+          Height = 19
+          Top = 8
+          Width = 91
+          BorderSpacing.Left = 16
+          Caption = 'Use zero level'
+          OnChange = CbUseZeroLevelChange
+          TabOrder = 2
+        end
+        object EdZeroLevel: TFloatSpinEdit
+          AnchorSideLeft.Control = CbLabelsAt
+          AnchorSideTop.Control = CbStacked
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = CbLabelsAt
+          AnchorSideRight.Side = asrBottom
+          Left = 273
+          Height = 23
+          Top = 6
+          Width = 76
+          Anchors = [akTop, akLeft, akRight]
+          Increment = 0.1
+          MaxValue = 2
+          MinValue = -2
+          OnChange = EdZeroLevelChange
+          TabOrder = 3
+          Value = 0
+        end
+        object BtnNewData: TButton
+          AnchorSideLeft.Control = CbLabelsAt
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = CbUseZeroLevel
+          AnchorSideTop.Side = asrCenter
+          Left = 381
+          Height = 25
+          Top = 5
+          Width = 76
+          AutoSize = True
+          BorderSpacing.Left = 32
+          Caption = 'New data'
+          OnClick = BtnNewDataClick
+          TabOrder = 4
+        end
+        object LblCount: TLabel
+          AnchorSideLeft.Control = BtnNewData
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = CbStacked
+          AnchorSideTop.Side = asrCenter
+          Left = 473
+          Height = 15
+          Top = 10
+          Width = 33
+          BorderSpacing.Left = 16
+          Caption = 'Count'
+          FocusControl = EdCount
+          ParentColor = False
+        end
+        object EdCount: TSpinEdit
+          AnchorSideLeft.Control = EdYCount
+          AnchorSideTop.Control = CbStacked
+          AnchorSideTop.Side = asrCenter
+          Left = 522
+          Height = 23
+          Top = 6
+          Width = 50
+          MaxValue = 20
+          MinValue = 1
+          OnChange = EdCountChange
+          TabOrder = 5
+          Value = 10
+        end
+        object CbStacked: TCheckBox
+          AnchorSideLeft.Control = Panel1
+          AnchorSideTop.Control = Panel1
+          AnchorSideBottom.Side = asrBottom
+          Left = 8
+          Height = 19
+          Top = 8
+          Width = 61
+          BorderSpacing.Left = 8
+          BorderSpacing.Top = 8
+          Caption = 'Stacked'
+          Checked = True
+          OnChange = CbStackedChange
+          State = cbChecked
+          TabOrder = 6
+        end
+        object CbBanded: TCheckBox
+          AnchorSideLeft.Control = CbStacked
+          AnchorSideTop.Control = EdYCount
+          AnchorSideTop.Side = asrCenter
+          Left = 8
+          Height = 19
+          Top = 35
+          Width = 60
+          Caption = 'Banded'
+          OnChange = CbBandedChange
+          TabOrder = 7
+        end
+        object LblYCount: TLabel
+          AnchorSideLeft.Control = BtnNewData
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = EdYCount
+          AnchorSideTop.Side = asrCenter
+          Left = 473
+          Height = 15
+          Top = 37
+          Width = 41
+          BorderSpacing.Left = 16
+          Caption = 'Y count'
+          FocusControl = EdYCount
+          ParentColor = False
+        end
+        object EdYCount: TSpinEdit
+          AnchorSideLeft.Control = LblYCount
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = EdCount
+          AnchorSideTop.Side = asrBottom
+          Left = 522
+          Height = 23
+          Top = 33
+          Width = 50
+          BorderSpacing.Left = 8
+          BorderSpacing.Top = 4
+          MaxValue = 5
+          MinValue = 1
+          OnChange = EdYCountChange
+          TabOrder = 8
+          Value = 3
+        end
+        object CbShowDropLines: TCheckBox
+          AnchorSideLeft.Control = CbUseZeroLevel
+          AnchorSideTop.Control = CbShowLegend
+          Left = 161
+          Height = 19
+          Top = 62
+          Width = 104
+          Caption = 'Show drop lines'
+          Checked = True
+          OnChange = CbShowDropLinesChange
+          State = cbChecked
+          TabOrder = 9
+        end
+        object CbShowDataLabels: TCheckBox
+          AnchorSideLeft.Control = CbShowDropLines
+          AnchorSideTop.Control = CbBanded
+          Left = 161
+          Height = 19
+          Top = 35
+          Width = 108
+          Caption = 'Show data labels'
+          OnChange = CbShowDataLabelsChange
+          TabOrder = 10
+        end
+        object CbLabelsAt: TComboBox
+          AnchorSideLeft.Control = CbShowDataLabels
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = CbShowDataLabels
+          AnchorSideTop.Side = asrCenter
+          Left = 273
+          Height = 23
+          Top = 33
+          Width = 76
+          BorderSpacing.Left = 4
+          ItemHeight = 15
+          OnChange = CbLabelsAtChange
+          TabOrder = 11
+          Text = 'CbLabelsAt'
+        end
+        object CbShowLegend: TCheckBox
+          AnchorSideLeft.Control = CbStacked
+          AnchorSideTop.Control = CbBanded
+          AnchorSideTop.Side = asrBottom
+          Left = 8
+          Height = 19
+          Top = 62
+          Width = 88
+          BorderSpacing.Top = 8
+          Caption = 'Show legend'
+          OnChange = CbShowLegendChange
+          TabOrder = 12
+        end
+      end
+      object Chart1: TChart
+        Left = 0
+        Height = 323
+        Top = 0
+        Width = 678
+        AxisList = <        
+          item
+            Marks.LabelBrush.Style = bsClear
+            Minors = <>
+            Title.LabelFont.Orientation = 900
+            Title.LabelBrush.Style = bsClear
+          end        
+          item
+            Alignment = calBottom
+            Marks.LabelBrush.Style = bsClear
+            Minors = <>
+            Title.LabelBrush.Style = bsClear
+          end>
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alClient
+        Color = clWindow
+        object Chart1AreaSeries1: TAreaSeries
+          Legend.Multiplicity = lmStyle
+          Marks.YIndex = -1
+          AxisIndexX = 1
+          AxisIndexY = 0
+          AreaContourPen.Width = 3
+          Styles = ChartStyles1
+          UseZeroLevel = True
+        end
+      end
+    end
+    object PgErrorRange: TTabSheet
+      Caption = 'Error range'
+      ClientHeight = 404
+      ClientWidth = 678
+      object Chart2: TChart
+        Left = 0
+        Height = 373
+        Top = 31
+        Width = 678
+        AxisList = <        
+          item
+            Grid.Color = clSilver
+            Grid.Style = psSolid
+            Marks.LabelBrush.Style = bsClear
+            Minors = <>
+            Title.LabelFont.Orientation = 900
+            Title.LabelBrush.Style = bsClear
+          end        
+          item
+            Grid.Color = clSilver
+            Grid.Style = psSolid
+            Alignment = calBottom
+            Marks.LabelBrush.Style = bsClear
+            Minors = <>
+            Title.LabelBrush.Style = bsClear
+          end>
+        BackColor = clWhite
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Legend.Visible = True
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alClient
+        Color = clWindow
+        object Chart2AreaSeries1: TAreaSeries
+          Legend.Visible = False
+          Transparency = 180
+          AreaBrush.Color = clRed
+          AreaContourPen.Style = psClear
+          AreaLinesPen.Style = psClear
+          Source = ChartSourceArea1
+          Stacked = False
+        end
+        object Chart2LineSeries1: TLineSeries
+          Title = 'sin data'
+          LinePen.Color = clRed
+          LinePen.Width = 3
+          LineType = ltNone
+          Pointer.Brush.Color = clRed
+          Pointer.HorizSize = 5
+          Pointer.Style = psCircle
+          Pointer.VertSize = 5
+          ShowPoints = True
+          Source = ChartSourceLine1
+        end
+        object Chart2AreaSeries2: TAreaSeries
+          Legend.Visible = False
+          Transparency = 180
+          AreaBrush.Color = clBlue
+          AreaLinesPen.Style = psClear
+          Source = ChartSourceArea2
+        end
+        object Chart2LineSeries2: TLineSeries
+          Title = 'cos data'
+          LinePen.Color = clBlue
+          Pointer.Brush.Color = clBlue
+          Pointer.HorizSize = 5
+          Pointer.Style = psCircle
+          Pointer.VertSize = 5
+          ShowPoints = True
+          Source = ChartSourceLine2
+        end
+      end
+      object Label1: TLabel
+        Left = 8
+        Height = 15
+        Top = 8
+        Width = 662
+        Align = alTop
+        Alignment = taCenter
+        BorderSpacing.Around = 8
+        Caption = 'This functionality requires at least Lazarus version 1.9'
+        ParentColor = False
+        Visible = False
+      end
+    end
+  end
+  object ChartStyles1: TChartStyles
+    Styles = <    
+      item
+        Brush.Color = clRed
+        Pen.Width = 3
+        Text = 'Curve 1'
+      end    
+      item
+        Brush.Color = clBlue
+        Pen.Width = 3
+        Text = 'Curve 2'
+      end    
+      item
+        Brush.Color = clYellow
+        Pen.Width = 3
+        Text = 'Curve 3'
+      end    
+      item
+        Brush.Color = clSilver
+        Pen.Width = 3
+        Text = 'Curve 4'
+      end    
+      item
+        Brush.Color = clGreen
+        Pen.Width = 3
+        Text = 'Curve 5'
+      end>
+    left = 128
+    top = 96
+  end
+  object ChartSourceArea1: TUserDefinedChartSource
+    OnGetChartDataItem = ChartSourceArea1GetChartDataItem
+    left = 258
+    top = 96
+  end
+  object ChartSourceLine1: TUserDefinedChartSource
+    OnGetChartDataItem = ChartSourceLine1GetChartDataItem
+    left = 258
+    top = 184
+  end
+  object ChartSourceArea2: TUserDefinedChartSource
+    OnGetChartDataItem = ChartSourceArea2GetChartDataItem
+    left = 424
+    top = 96
+  end
+  object ChartSourceLine2: TUserDefinedChartSource
+    OnGetChartDataItem = ChartSourceLine2GetChartDataItem
+    left = 423
+    top = 184
+  end
+end
