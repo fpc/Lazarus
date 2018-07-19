@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-06-30 13:39+0200\n"
+"PO-Revision-Date: 2018-07-19 11:09+0200\n"
 "Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -33,47 +33,47 @@ msgstr "Деякі групи в списку ввімкнення/вимкне�
 
 #: lazarusidestrconsts.dbgeventbreakaddressbreakpoint
 msgid "Address Breakpoint %s"
-msgstr ""
+msgstr "Точка зупинки за адресою %s"
 
 #: lazarusidestrconsts.dbgeventbreakataddress
 msgid "at $%s"
-msgstr ""
+msgstr "в $%s"
 
 #: lazarusidestrconsts.dbgeventbreakataddressoriginsourceoriginline
 msgid "at $%s: from origin %s line %d"
-msgstr ""
+msgstr "в $%s: від початку %s рядок %d"
 
 #: lazarusidestrconsts.dbgeventbreakataddresssourceline
 msgid "at $%s: %s line %d"
-msgstr ""
+msgstr "в $%s: %s рядок %d"
 
 #: lazarusidestrconsts.dbgeventbreaksourcebreakpoint
 msgid "Source Breakpoint %s"
-msgstr ""
+msgstr "Точка зупинки в коді %s"
 
 #: lazarusidestrconsts.dbgeventbreakunknownbreakpoint
 msgid "Unknown Breakpoint %s"
-msgstr ""
+msgstr "Невідома точка зупинки %s"
 
 #: lazarusidestrconsts.dbgeventbreakwatchpoint
 msgid "Watchpoint %s"
-msgstr ""
+msgstr "Точка спостереження %s"
 
 #: lazarusidestrconsts.dbgeventunknownwatchpointscopeended
 msgid "Unknown Watchpoint out of scope %s"
-msgstr ""
+msgstr "Невідома точка спостереження поза областю дії %s"
 
 #: lazarusidestrconsts.dbgeventunknownwatchpointtriggered
 msgid "Unknown Watchpoint triggered %s. Old value \"%s\", New Value \"%s\""
-msgstr ""
+msgstr "Невідому точку спостереження перемкнуто %s. Старе значення \"%s\", нове значення \"%s\""
 
 #: lazarusidestrconsts.dbgeventwatchscopeended
 msgid "Watchpoint for \"%s\" out of scope %s"
-msgstr ""
+msgstr "Точка спостереження для \"%s\" поза областю дії %s"
 
 #: lazarusidestrconsts.dbgeventwatchtriggered
 msgid "Watchpoint for \"%s\" was triggered %s. Old value \"%s\", New Value \"%s\""
-msgstr ""
+msgstr "Точку спостереження для \"%s\" перемкнуто %s. Старе значення \"%s\", нове значення \"%s\""
 
 #: lazarusidestrconsts.dlfmousepredefinedscheme
 msgid "Use predefined scheme"
@@ -1319,7 +1319,7 @@ msgstr "Курсор за межею рядка"
 
 #: lazarusidestrconsts.dlgcursormoveclearsselection
 msgid "Caret left/right clears selection (no move)"
-msgstr ""
+msgstr "Курсор вліво/вправо знімає вибір (без зміщення)"
 
 #: lazarusidestrconsts.dlgcursorskipsselection
 msgid "Caret skips selection"
@@ -2608,7 +2608,7 @@ msgstr "Максимум останніх файлів"
 
 #: lazarusidestrconsts.dlgmaxrecenthint
 msgid "Value 0 means unlimited."
-msgstr ""
+msgstr "Значення 0 означає необмежено."
 
 #: lazarusidestrconsts.dlgmaxrecentprojs
 msgid "Max recent project files"
@@ -3168,7 +3168,7 @@ msgstr "Показувати курсор, якщо редактор не у ф�
 
 #: lazarusidestrconsts.dlgpersistentcursornoblink
 msgid "Caret in unfocused editor does not blink"
-msgstr ""
+msgstr "Курсор, якщо редактор не у фокусі, не блимає"
 
 #: lazarusidestrconsts.dlgpoapplication
 msgid "Application"
@@ -8028,7 +8028,7 @@ msgstr "Додатковий пошуковий шлях"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmautocloseasm
 msgid "Automatically close the assembler window, after source not found"
-msgstr ""
+msgstr "Автоматично закривати вікно асемблера, якщо джерело не знайдено"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmbreakpoint
 msgid "Breakpoint"
@@ -21246,15 +21246,15 @@ msgstr "Додати точку&огляду біля курсору"
 
 #: lazarusidestrconsts.uembookmarknset
 msgid "Bookmark &%s: %s"
-msgstr ""
+msgstr "Закладка &%s: %s"
 
 #: lazarusidestrconsts.uembookmarknunset
 msgid "Bookmark &%s"
-msgstr ""
+msgstr "Закладка &%s"
 
 #: lazarusidestrconsts.uembookmarknunsetdisabled
 msgid "Bookmark %s"
-msgstr ""
+msgstr "Закладка %s"
 
 #: lazarusidestrconsts.uemcloseotherpages
 msgid "Close All &Other Pages"
@@ -21308,7 +21308,7 @@ msgstr "&Перехід на закладку"
 
 #: lazarusidestrconsts.uemgotobookmarks
 msgid "Goto Bookmark ..."
-msgstr ""
+msgstr "Перейти до закладки ..."
 
 #: lazarusidestrconsts.uemhighlighter
 msgid "Highlighter"
@@ -21410,15 +21410,15 @@ msgstr "&Перемкнути закладку"
 
 #: lazarusidestrconsts.uemtogglebookmarknset
 msgid "Toggle Bookmark &%s: %s"
-msgstr ""
+msgstr "Перемкнути закладку &%s: %s"
 
 #: lazarusidestrconsts.uemtogglebookmarknunset
 msgid "Toggle Bookmark &%s"
-msgstr ""
+msgstr "Перемкнути закладку &%s"
 
 #: lazarusidestrconsts.uemtogglebookmarks
 msgid "Toggle Bookmark ..."
-msgstr ""
+msgstr "Перемкнути закладку ..."
 
 #: lazarusidestrconsts.uemtogglebreakpoint
 msgid "Toggle &Breakpoint"
