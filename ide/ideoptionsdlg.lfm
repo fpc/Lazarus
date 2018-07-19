@@ -104,7 +104,7 @@ object IDEOptionsDialog: TIDEOptionsDialog
       Align = alBottom
       AutoSize = True
       BevelOuter = bvNone
-      Constraints.MinHeight = 20
+      Constraints.MinHeight = 6
       TabOrder = 2
     end
   end

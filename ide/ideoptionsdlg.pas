@@ -160,7 +160,6 @@ begin
   FPrevEditor := nil;
   FEditorsCreated := False;
   FEditorToOpen := nil;
-  SettingsPanel.Constraints.MinHeight:=6;
   SetBuildModeVisibility(False);
   UseBuildModeCheckBox.Caption:=lisBuildModes;
 
