@@ -132,13 +132,14 @@ begin
     startCol.Physical := nextP;
     Markup.GetNextMarkupColAfterRowCol(aRow, startCol, rtl, nextP, nextL);
 
-    AssertEquals(BaseTestName+' Correct pos for frame at '+IntToStr(i), aExpColumns[i], Max(nextP, nextL)); // Testing logigal or phys
+    AddErrorTestEqual(BaseTestName+' Correct pos for frame at '+IntToStr(i), aExpColumns[i], Max(nextP, nextL)); // Testing logigal or phys
 
     if i < Length(aExpColors) then begin
       startCol.Logical := nextL;
       startCol.Physical := nextP;
       gotColor := Markup.GetMarkupAttributeAtRowCol(aRow, startCol, rtl);
-      AssertEquals(BaseTestName+' correct color for frame at idx '+IntToStr(i), aExpColors[i], gotColor.FrameColor);
+      if AddErrorTestTrue(BaseTestName+' color not nil for frame at idx '+IntToStr(i), gotColor <> nil) then
+        AddErrorTestEqual(BaseTestName+' correct color for frame at idx '+IntToStr(i), aExpColors[i], gotColor.FrameColor);
     end;
   end;
 
@@ -147,29 +148,31 @@ begin
     startCol.Physical := nextP;
     Markup.GetNextMarkupColAfterRowCol(aRow, startCol, rtl, nextP, nextL);
 
-    AssertEquals(BaseTestName+' Correct pos for word at '+IntToStr(i), aExpWords[i*2], Max(nextP, nextL));
+    AddErrorTestEqual(BaseTestName+' Correct pos for word at '+IntToStr(i), aExpWords[i*2], Max(nextP, nextL));
 
     startCol.Logical := nextL;
     startCol.Physical := nextP;
     if i < Length(aExpWordsColor) then begin
       gotColor := Markup.GetMarkupAttributeAtRowCol(aRow, startCol, rtl);
-      AssertEquals(BaseTestName+' correct color for word at idx '+IntToStr(i), aExpWordsColor[i], gotColor.Foreground);
+      if AddErrorTestTrue(BaseTestName+' color <> nil for word at idx '+IntToStr(i), gotColor <> nil) then
+        AddErrorTestEqual(BaseTestName+' correct color for word at idx '+IntToStr(i), aExpWordsColor[i], gotColor.Foreground);
     end;
 
 // TODO: missing implementation for token end
 //    Markup.GetNextMarkupColAfterRowCol(aRow, startCol, rtl, nextP, nextL);
-//    AssertEquals(BaseTestName+' Correct pos for word end at '+IntToStr(i), aExpWords[i*2]+aExpWords[i*2+1], Max(nextP, nextL));
+//    AddErrorTestEqual(BaseTestName+' Correct pos for word end at '+IntToStr(i), aExpWords[i*2]+aExpWords[i*2+1], Max(nextP, nextL));
 //    startCol.Logical := nextL;
 //    startCol.Physical := nextP;
 //    gotColor := Markup.GetMarkupAttributeAtRowCol(aRow, startCol, rtl);
-//    AssertTrue(BaseTestName+' correct color after word at idx '+IntToStr(i), nil = gotColor);
+//    AddErrorTestTrue(BaseTestName+' correct color after word at idx '+IntToStr(i), nil = gotColor);
   end;
 
   startCol.Logical := nextL;
   startCol.Physical := nextP;
   Markup.GetNextMarkupColAfterRowCol(aRow, startCol, rtl, nextP, nextL);
-  AssertEquals(BaseTestName+' no more markup ', -1, Max(nextP, nextL));
+  AddErrorTestEqual(BaseTestName+' no more markup ', -1, Max(nextP, nextL));
 
+  MaybeThrowError;
   TestNoInvalidate;
   PopBaseName;
 end;

@@ -49,6 +49,14 @@ type
 
   TTestBase = class(TTestCase)
   private
+    FCurError: String;
+  protected
+    procedure ClearError;
+    procedure MaybeThrowError;
+    function AddErrorTestTrue(Msg: String; Actual: Boolean): Boolean;
+    function AddErrorTestEqual(Msg: String; Expected, Actual: Integer): Boolean;
+
+  private
     FBaseTestName: String;
     FBaseTestNames: Array of String;
     FFixedBaseTestNames: Integer;
@@ -264,6 +272,7 @@ end;
 
 procedure TTestBase.SetUp;
 begin
+  ClearError;
   inherited SetUp;
   Clipboard.Open;
 
@@ -487,6 +496,39 @@ procedure TTestBase.SetBaseTestName(const AValue: String);
 begin
   SetLength(FBaseTestNames, FFixedBaseTestNames);
   PushBaseName(AValue);
+end;
+
+procedure TTestBase.ClearError;
+begin
+  FCurError := '';
+end;
+
+procedure TTestBase.MaybeThrowError;
+var
+  s: String;
+begin
+  s := FCurError;
+  ClearError;
+  if s <> '' then
+    AssertTrue(s, False);
+end;
+
+function TTestBase.AddErrorTestTrue(Msg: String; Actual: Boolean): Boolean;
+begin
+  Result := Actual;
+  if not Actual then begin
+    if FCurError <> '' then FCurError := FCurError + LineEnding;
+    FCurError := FCurError + Msg;
+  end;
+end;
+
+function TTestBase.AddErrorTestEqual(Msg: String; Expected, Actual: Integer
+  ): Boolean;
+begin
+  Result := AddErrorTestTrue(
+    ComparisonMsg(Msg,IntToStr(PtrInt(Expected)), IntToStr(PtrInt(Actual))),
+    Expected = Actual
+  );
 end;
 
 function TTestBase.GetClipBoardText: String;
