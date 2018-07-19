@@ -1566,6 +1566,7 @@ var
     CollectPoints(AStart, AEnd);
     CopyPoints(prevPts, pts, numPts);
     numPrevPts := numPts;
+    numSavedPts := numPts;
 
     // Collect points of lower end of each lever
     j0 := IfThen(FBanded, 0, -1);
