@@ -1677,7 +1677,7 @@ var
 begin
   ctrl := TCocoaCustomControl(TCocoaCustomControl.alloc.lclInitWithCreateParams(AParams));
   lcl := TLCLCommonCallback.Create(ctrl, AWinControl);
-  lcl.BlockCocoaUpDown := true;
+  //lcl.BlockCocoaUpDown := true;
   ctrl.callback := lcl;
 
   sl := EmbedInManualScrollView(ctrl);
