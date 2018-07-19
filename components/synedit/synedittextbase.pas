@@ -958,7 +958,7 @@ begin
 
   if i < 0 then begin
     if AValue = nil then begin
-      debugln('Removing none existent range');
+      //debugln('Removing none existent range');
       exit;
     end;
     j := length(FClassList);
