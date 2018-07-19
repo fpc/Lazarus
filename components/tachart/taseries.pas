@@ -1603,11 +1603,12 @@ var
       ADrawer.Pen := AreaContourPen;
       if Styles <> nil then
         Styles.Apply(ADrawer, j - j0);
+
       // Draw 3D sides
       // Note: Rendering is often incorrect, e.g. when values cross zero level!
       if (Depth > 0) then begin
         if ((not FStacked) or (j = Source.YCount-2)) then
-          for i := 1 to n2 - 2 do
+          for i:= n2-2 downto n2 - numSavedPts - 1 do
             ADrawer.DrawLineDepth(pts[i], pts[i + 1], scaled_depth)
         else
         if FStacked then begin
@@ -1615,9 +1616,10 @@ var
             ADrawer.DrawLineDepth(pts[numSavedPts - 1], pts[numSavedPts], scaled_depth)
           else
           if (j = -1) and (FStacked or FBanded) then
-            ADrawer.Drawlinedepth(pts[numSavedPts], pts[numSavedPts+1], scaled_depth);
+            ADrawer.DrawLineDepth(pts[numSavedPts], pts[numSavedPts+1], scaled_depth);
         end;
       end;
+
       // Fill area
       ADrawer.Polygon(pts, 0, numPts);
 
