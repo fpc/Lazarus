@@ -1561,15 +1561,15 @@ var
 
     // Collect points of top-most curve
     UpdateGraphPoints(Source.YCount-2, AStart, AEnd, FStacked);
-      // Index (1st parameter) refers to YList --> 1 less than usual!)
+      // Index (1st parameter) refers to YList --> one less than usual!)
     numPts := 0;
     CollectPoints(AStart, AEnd);
     CopyPoints(prevPts, pts, numPts);
     numPrevPts := numPts;
     numSavedPts := numPts;
 
-    // Collect points of lower end of each lever
-    j0 := IfThen(FBanded, 0, -1);
+    // Collect points of lower end of each level
+    j0 := IfThen(FBanded and (Source.YCount > 1), 0, -1);
     for j := Source.YCount - 2 downto j0 do begin
       numPts := 0;
 
@@ -1608,6 +1608,10 @@ var
       // Draw 3D sides
       // Note: Rendering is often incorrect, e.g. when values cross zero level!
       if (Depth > 0) then begin
+        if (Source.YCount = 1) or ((not FStacked) and (j = -1)) then
+          for i := 1 to numSavedPts do
+            ADrawer.DrawlineDepth(pts[i], pts[i+1], scaled_depth)
+        else
         if ((not FStacked) or (j = Source.YCount-2)) then
           for i:= n2-2 downto n2 - numSavedPts - 1 do
             ADrawer.DrawLineDepth(pts[i], pts[i + 1], scaled_depth)
