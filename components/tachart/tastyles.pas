@@ -93,6 +93,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   public
+    function Add: TChartStyle;
     procedure Apply(ADrawer: IChartDrawer; AIndex: Cardinal); overload;
     function StyleByIndex(AIndex: Cardinal): TChartStyle;
     property Broadcaster: TBroadcaster read FBroadcaster;
@@ -255,6 +256,11 @@ begin
 end;
 
 { TChartStyles }
+
+function TChartStyles.Add: TChartStyle;
+begin
+  Result := TChartStyle(FStyles.Add);
+end;
 
 procedure TChartStyles.Apply(ADrawer: IChartDrawer; AIndex: Cardinal);
 var
