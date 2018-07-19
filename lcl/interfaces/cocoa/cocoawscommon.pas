@@ -54,7 +54,7 @@ type
     function GetTarget: TObject;
     function GetCallbackObject: TObject;
     function GetCaptureControlCallback: ICommonCallBack;
-    function MouseUpDownEvent(Event: NSEvent; AForceAsMouseUp: Boolean = False): Boolean; virtual;
+    function MouseUpDownEvent(Event: NSEvent; AForceAsMouseUp: Boolean = False; AOverrideBlock: Boolean = False): Boolean; virtual;
     function KeyEvent(Event: NSEvent; AForceAsKeyDown: Boolean = False): Boolean; virtual;
     procedure MouseClick; virtual;
     function MouseMove(Event: NSEvent): Boolean; virtual;
@@ -755,7 +755,7 @@ begin
   LCLSendClickedMsg(Target);
 end;
 
-function TLCLCommonCallback.MouseUpDownEvent(Event: NSEvent; AForceAsMouseUp: Boolean = False): Boolean;
+function TLCLCommonCallback.MouseUpDownEvent(Event: NSEvent; AForceAsMouseUp: Boolean = False; AOverrideBlock: Boolean = False): Boolean;
 const
   MSGKINDUP: array[0..3] of Integer = (LM_LBUTTONUP, LM_RBUTTONUP, LM_MBUTTONUP, LM_XBUTTONUP);
 var
@@ -810,7 +810,7 @@ begin
   if AForceAsMouseUp then
     lEventType := NSLeftMouseUp;
 
-  Result := Result or BlockCocoaUpDown;
+  Result := Result or (BlockCocoaUpDown and not AOverrideBlock);
   case lEventType of
     NSLeftMouseDown,
     NSRightMouseDown,
@@ -1677,7 +1677,7 @@ var
 begin
   ctrl := TCocoaCustomControl(TCocoaCustomControl.alloc.lclInitWithCreateParams(AParams));
   lcl := TLCLCommonCallback.Create(ctrl, AWinControl);
-  //lcl.BlockCocoaUpDown := true;
+  lcl.BlockCocoaUpDown := true;
   ctrl.callback := lcl;
 
   sl := EmbedInManualScrollView(ctrl);

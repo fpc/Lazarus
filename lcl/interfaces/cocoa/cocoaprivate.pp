@@ -47,7 +47,7 @@ type
 
   ICommonCallback = interface
     // mouse events
-    function MouseUpDownEvent(Event: NSEvent; AForceAsMouseUp: Boolean = False): Boolean;
+    function MouseUpDownEvent(Event: NSEvent; AForceAsMouseUp: Boolean = False; AOverrideBlock: Boolean = False): Boolean;
     procedure MouseClick;
     function MouseMove(Event: NSEvent): Boolean;
     function KeyEvent(Event: NSEvent; AForceAsKeyDown: Boolean = False): Boolean;
