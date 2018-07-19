@@ -1163,6 +1163,9 @@ begin
           else
             Marks.LabelFont.Assign(lfont);
         end;
+        if not Stacked then
+          g := GetGraphPoint(i, 0, si)
+        else
         if si = 0 then
           y := Source[i]^.y - GetZeroLevel
         else begin
