@@ -293,15 +293,19 @@ begin
 
   // Special draw oultine color
   if Attri.Group = agnOutlineColors then begin
-    c := Attri.Foreground;
+    c := Attri.MarkupFoldLineColor;
     if c <> clNone then begin
       TheTree.Canvas.Pen.Color := c;
-      TheTree.Canvas.MoveTo(NodeRect.Left+(FullAbcWidth div 2), NodeRect.Top+2);
-      TheTree.Canvas.LineTo(NodeRect.Left+(FullAbcWidth div 2), NodeRect.Bottom-2);
-      TheTree.Canvas.MoveTo(NodeRect.Left+(FullAbcWidth div 2)+1, NodeRect.Top+2);
-      TheTree.Canvas.LineTo(NodeRect.Left+(FullAbcWidth div 2)+1, NodeRect.Bottom-2);
+      TheTree.Canvas.MoveTo(NodeRect.Left+2, NodeRect.Top+2);
+      TheTree.Canvas.LineTo(NodeRect.Left+2, NodeRect.Bottom-2);
+      TheTree.Canvas.MoveTo(NodeRect.Left+2+1, NodeRect.Top+2);
+      TheTree.Canvas.LineTo(NodeRect.Left+2+1, NodeRect.Bottom-2);
     end;
-    exit;
+    NodeRect.Left := NodeRect.Left + 6;
+    FullAbcWidth := FullAbcWidth - 6;
+    TheTree.Canvas.Brush.Color := Attri.Background;
+    TheTree.Canvas.FillRect(NodeRect.Left+2, NodeRect.Top+2, NodeRect.Left+FullAbcWidth-2, NodeRect.Bottom-2);
+//    exit;
   end;
 
   // Draw preview Frame
@@ -367,6 +371,8 @@ begin
         s:= '---';
       if AttriIdx = ord(ahaLineNumber) then
         s:= '123';
+      if Attri.Group = agnOutlineColors then
+        s:= 'ab';
       TheTree.Canvas.Font.Color := c;
       TheTree.Canvas.Font.Style := Attri.Style;
       TheTree.Canvas.Font.Height := -(NodeRect.Bottom - NodeRect.Top - 7);
