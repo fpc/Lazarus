@@ -146,6 +146,7 @@ type
     constructor Create;
     constructor Create(aCaption: string; aStoredName: String = '');
     constructor Create(aCaption: PString; aStoredName: String = '');
+    function  IsEnabled: boolean;
     procedure InternalSaveDefaultValues; virtual;
     function  LoadFromBorlandRegistry(rootKey: HKEY; attrKey, attrName: string;
                                       oldStyle: boolean): boolean; virtual;
@@ -902,6 +903,13 @@ begin
   if aStoredName = '' then
     aStoredName := FConstName;
   FStoredName := aStoredName;;
+end;
+
+function TSynHighlighterAttributes.IsEnabled: boolean;
+begin
+  Result := (Background <> clNone) or (Foreground <> clNone) or
+            ( (FrameColor <> clNone) and (FrameEdges <> sfeNone) ) or
+            (Style <> []) or (StyleMask <> []);
 end;
 
 function TSynHighlighterAttributes.GetBackgroundColorStored: boolean;

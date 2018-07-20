@@ -968,8 +968,8 @@ begin
     FStorageMemList[j] := AValue;
   end
   else begin
-    if AValue <> nil then
-      DebugLn(['TSynEditStringMemory.SetRange - Overwriting old range at index=', i, ' index=', dbgs(Index)]);
+    //if AValue <> nil then
+    //  DebugLn(['TSynEditStringMemory.SetRange - Overwriting old range at index=', i, ' index=', dbgs(Index)]);
     FStorageMemList[i] := AValue;
     if AValue = nil then begin
       for j := i to length(FClassList) - 2 do begin

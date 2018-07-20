@@ -237,7 +237,6 @@ type
     property StartX: TLazSynDisplayTokenBound read FStartX write FStartX;
     property EndX: TLazSynDisplayTokenBound read FEndX write FEndX;
   public
-    function IsEnabled: boolean;
     function GetModifiedStyle(aStyle: TFontStyles): TFontStyles; // deprecated;
     procedure ModifyColors(var AForeground, ABackground, AFrameColor: TColor;
       var AStyle: TFontStyles; var AFrameStyle: TSynLineStyle); deprecated;
@@ -1231,12 +1230,6 @@ begin
   FEndX.Logical    := -1;
   FStartX.Offset   := 0;
   FEndX.Offset     := 0;
-end;
-
-function TSynSelectedColor.IsEnabled: boolean;
-begin
-  Result := (Background <> clNone) or (Foreground <> clNone) or (FrameColor <> clNone) or
-            (Style <> []) or (StyleMask <> []);
 end;
 
 { TLazSynSurface }

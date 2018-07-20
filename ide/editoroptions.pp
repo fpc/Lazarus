@@ -90,7 +90,8 @@ type
   TColorSchemeAttributeFeature =
     ( hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior,
       hafStyle, hafStyleMask,
-      hafFrameStyle, hafFrameEdges
+      hafFrameStyle, hafFrameEdges,
+      hafMarkupFoldColor // for the MarkupFoldColor module
     );
   TColorSchemeAttributeFeatures = set of TColorSchemeAttributeFeature;
 
@@ -228,16 +229,16 @@ const
     { ahaIdentComplWindowBorder }    [hafForeColor],
     { ahaIdentComplWindowSelection } [hafBackColor, hafForeColor],
     { ahaIdentComplWindowHighlight } [hafForeColor],
-    { ahaFoldLevel1Color }    [hafForeColor],
-    { ahaFoldLevel2Color }    [hafForeColor],
-    { ahaFoldLevel3Color }    [hafForeColor],
-    { ahaFoldLevel4Color }    [hafForeColor],
-    { ahaFoldLevel5Color }    [hafForeColor],
-    { ahaFoldLevel6Color }    [hafForeColor],
-    { ahaFoldLevel7Color }    [hafForeColor],
-    { ahaFoldLevel8Color }    [hafForeColor],
-    { ahaFoldLevel9Color }    [hafForeColor],
-    { ahaFoldLevel10Color }   [hafForeColor]
+    { ahaFoldLevel1Color }    [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask, hafMarkupFoldColor],
+    { ahaFoldLevel2Color }    [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask, hafMarkupFoldColor],
+    { ahaFoldLevel3Color }    [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask, hafMarkupFoldColor],
+    { ahaFoldLevel4Color }    [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask, hafMarkupFoldColor],
+    { ahaFoldLevel5Color }    [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask, hafMarkupFoldColor],
+    { ahaFoldLevel6Color }    [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask, hafMarkupFoldColor],
+    { ahaFoldLevel7Color }    [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask, hafMarkupFoldColor],
+    { ahaFoldLevel8Color }    [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask, hafMarkupFoldColor],
+    { ahaFoldLevel9Color }    [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask, hafMarkupFoldColor],
+    { ahaFoldLevel10Color }   [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask, hafMarkupFoldColor]
   );
 
 
@@ -263,10 +264,16 @@ type
   private
     FFeatures: TColorSchemeAttributeFeatures;
     FGroup: TAhaGroupName;
+    FMarkupFoldLineAlpha: Byte;
+    FMarkupFoldLineColor: TColor;
+    FMarkupFoldLineStyle: TSynLineStyle;
     FOwner: TColorSchemeLanguage;
     FUseSchemeGlobals: Boolean;
     function GetIsUsingSchemeGlobals: Boolean;
     function OldAdditionalAttributeName(NewAha: String): string;
+    procedure SetMarkupFoldLineAlpha(AValue: Byte);
+    procedure SetMarkupFoldLineColor(AValue: TColor);
+    procedure SetMarkupFoldLineStyle(AValue: TSynLineStyle);
   protected
     procedure Init; override;
   public
@@ -287,6 +294,10 @@ type
     property Features: TColorSchemeAttributeFeatures read FFeatures write FFeatures;
   published
     property UseSchemeGlobals: Boolean read FUseSchemeGlobals write FUseSchemeGlobals;
+    // For markup fold color
+    property MarkupFoldLineColor: TColor read FMarkupFoldLineColor write SetMarkupFoldLineColor default clNone; // clDefault will take Color[].Frame or Color[].Foreground
+    property MarkupFoldLineStyle: TSynLineStyle read FMarkupFoldLineStyle write SetMarkupFoldLineStyle default slsSolid;
+    property MarkupFoldLineAlpha: Byte read FMarkupFoldLineAlpha write SetMarkupFoldLineAlpha default 0;
   end;
 
   { TColorSchemeLanguage }
@@ -300,6 +311,7 @@ type
     FOwner: TColorScheme;
     FLanguageName: String;
     FIsSchemeDefault: Boolean;
+    FFormatVersion: integer;
     function GetAttribute(Index: String): TColorSchemeAttribute;
     function GetAttributeAtPos(Index: Integer): TColorSchemeAttribute;
     function GetAttributeByEnum(Index: TAdditionalHilightAttribute): TColorSchemeAttribute;
@@ -649,7 +661,7 @@ const
     );
 
 const
-  EditorOptsFormatVersion = 11;
+  EditorOptsFormatVersion = 12;
   { * Changes in Version 6:
        - ColorSchemes now have a Global settings part.
          Language specific changes must save UseSchemeGlobals=False (Default is true)
@@ -666,6 +678,9 @@ const
          eoTabIndent was added to SynEditDefaultOptions
     * Changes in Version 11:
          Default for GutterLeft set to moglUpClickAndSelect (was moGLDownClick)
+    * Changes in Version 12:
+         Used in Colorscheme/Version
+         Colors for MarkupFoldColor can now have gaps (before unset colors were filtered)
   }
   EditorMouseOptsFormatVersion = 1;
   { * Changes in Version 6:
@@ -5962,10 +5977,34 @@ begin
     else Result := ahaXmlNames[TAdditionalHilightAttribute(AttriIdx)];
 end;
 
+procedure TColorSchemeAttribute.SetMarkupFoldLineAlpha(AValue: Byte);
+begin
+  if FMarkupFoldLineAlpha = AValue then Exit;
+  FMarkupFoldLineAlpha := AValue;
+  Changed;
+end;
+
+procedure TColorSchemeAttribute.SetMarkupFoldLineColor(AValue: TColor);
+begin
+  if FMarkupFoldLineColor = AValue then Exit;
+  FMarkupFoldLineColor := AValue;
+  Changed;
+end;
+
+procedure TColorSchemeAttribute.SetMarkupFoldLineStyle(AValue: TSynLineStyle);
+begin
+  if FMarkupFoldLineStyle = AValue then Exit;
+  FMarkupFoldLineStyle := AValue;
+  Changed;
+end;
+
 procedure TColorSchemeAttribute.Init;
 begin
   inherited Init;
   FFeatures := [hafBackColor, hafForeColor, hafFrameColor, hafStyle, hafFrameStyle, hafFrameEdges];
+  FMarkupFoldLineColor := clNone;
+  FMarkupFoldLineStyle := slsSolid;
+  FMarkupFoldLineAlpha := 0;
 end;
 
 function TColorSchemeAttribute.GetIsUsingSchemeGlobals: Boolean;
@@ -6067,6 +6106,10 @@ begin
     FGroup := TColorSchemeAttribute(Src).FGroup;
     FUseSchemeGlobals := TColorSchemeAttribute(Src).FUseSchemeGlobals;
     FFeatures := TColorSchemeAttribute(Src).FFeatures;
+
+    FMarkupFoldLineColor := TColorSchemeAttribute(Src).FMarkupFoldLineColor;;
+    FMarkupFoldLineStyle := TColorSchemeAttribute(Src).FMarkupFoldLineStyle;;
+    FMarkupFoldLineAlpha := TColorSchemeAttribute(Src).FMarkupFoldLineAlpha;;
   end;
 
 end;
@@ -6407,6 +6450,7 @@ begin
   end
   else
     FormatVersion := 6;
+  FFormatVersion := FormatVersion;
   TmpPath := TmpPath + 'Scheme' + StrToValidXMLName(Name) + '/';
 
   if (aOldPath <> '') and (FormatVersion > 1) then begin
@@ -6461,6 +6505,10 @@ begin
       AttributeAtPos[i].FrameStyle := slsSolid;
       AttributeAtPos[i].FrameEdges := sfeBottom;
     end;
+
+    if (ColorVersion < 12) and (AttributeAtPos[i].Group = agnOutlineColors) then begin
+      AttributeAtPos[i].MarkupFoldLineColor := AttributeAtPos[i].Foreground;
+    end
   end;
   FreeAndNil(EmptyDef);
 
@@ -6544,9 +6592,10 @@ procedure TColorSchemeLanguage.ApplyTo(ASynEdit: TSynEdit);
       Result := Result.GetSchemeGlobal;
   end;
 var
-  Attri: TColorSchemeAttribute;
-  i: Integer;
+  Attri, att: TColorSchemeAttribute;
+  i, c, j: Integer;
   IDESynEdit: TIDESynEditor;
+  aha: TAdditionalHilightAttribute;
 begin
   ASynEdit.BeginUpdate;
   try
@@ -6674,16 +6723,26 @@ begin
     while (i >= 0) and not(aSynEdit.Markup[i] is TSynEditMarkupFoldColors) do
       dec(i);
     if i >= 0 then begin
-      SetMarkupColor(ahaOutlineLevel1Color, TSynEditMarkupFoldColors(aSynEdit.Markup[i]).Color[0]);
-      SetMarkupColor(ahaOutlineLevel2Color, TSynEditMarkupFoldColors(aSynEdit.Markup[i]).Color[1]);
-      SetMarkupColor(ahaOutlineLevel3Color, TSynEditMarkupFoldColors(aSynEdit.Markup[i]).Color[2]);
-      SetMarkupColor(ahaOutlineLevel4Color, TSynEditMarkupFoldColors(aSynEdit.Markup[i]).Color[3]);
-      SetMarkupColor(ahaOutlineLevel5Color, TSynEditMarkupFoldColors(aSynEdit.Markup[i]).Color[4]);
-      SetMarkupColor(ahaOutlineLevel6Color, TSynEditMarkupFoldColors(aSynEdit.Markup[i]).Color[5]);
-      SetMarkupColor(ahaOutlineLevel7Color, TSynEditMarkupFoldColors(aSynEdit.Markup[i]).Color[6]);
-      SetMarkupColor(ahaOutlineLevel8Color, TSynEditMarkupFoldColors(aSynEdit.Markup[i]).Color[7]);
-      SetMarkupColor(ahaOutlineLevel9Color, TSynEditMarkupFoldColors(aSynEdit.Markup[i]).Color[8]);
-      SetMarkupColor(ahaOutlineLevel10Color, TSynEditMarkupFoldColors(aSynEdit.Markup[i]).Color[9]);
+      TSynEditMarkupFoldColors(aSynEdit.Markup[i]).ColorCount := 10;
+      j := 0;
+      for aha := ahaOutlineLevel1Color to ahaOutlineLevel10Color do begin
+        att := AttributeByEnum[aha];
+        if Att.IsEnabled or
+           (FFormatVersion >= 12)
+        then begin
+          SetMarkupColor(aha, TSynEditMarkupFoldColors(aSynEdit.Markup[i]).Color[j]);
+
+        if att.IsUsingSchemeGlobals then
+          att := att.GetSchemeGlobal;
+          TSynEditMarkupFoldColors(aSynEdit.Markup[i]).LineColor[j].Color := att.MarkupFoldLineColor;
+          TSynEditMarkupFoldColors(aSynEdit.Markup[i]).LineColor[j].Style := att.MarkupFoldLineStyle;
+          TSynEditMarkupFoldColors(aSynEdit.Markup[i]).LineColor[j].Alpha := att.MarkupFoldLineAlpha;
+          TSynEditMarkupFoldColors(aSynEdit.Markup[i]).LineColor[j].Priority := att.FramePriority;
+          inc(j);
+          c := j;
+        end;
+      end;
+      TSynEditMarkupFoldColors(aSynEdit.Markup[i]).ColorCount := c; // discard unused colors at the end
     end;
   finally
     ASynEdit.EndUpdate;

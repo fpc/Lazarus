@@ -2,9 +2,9 @@ object SynColorAttrEditor: TSynColorAttrEditor
   Left = 0
   Height = 207
   Top = 0
-  Width = 714
+  Width = 758
   ClientHeight = 207
-  ClientWidth = 714
+  ClientWidth = 758
   Constraints.MinHeight = 140
   OnResize = pnlElementAttributesResize
   TabOrder = 0
@@ -57,7 +57,7 @@ object SynColorAttrEditor: TSynColorAttrEditor
     Left = 204
     Height = 22
     Top = 3
-    Width = 184
+    Width = 200
     DefaultColorColor = clWhite
     Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeDefault, cbCustomColor, cbPrettyNames, cbCustomColors]
     OnGetColors = ForegroundColorBoxGetColors
@@ -77,7 +77,7 @@ object SynColorAttrEditor: TSynColorAttrEditor
     Left = 204
     Height = 22
     Top = 28
-    Width = 184
+    Width = 200
     DefaultColorColor = clWhite
     Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeDefault, cbCustomColor, cbPrettyNames, cbCustomColors]
     OnGetColors = ForegroundColorBoxGetColors
@@ -112,7 +112,7 @@ object SynColorAttrEditor: TSynColorAttrEditor
     Left = 204
     Height = 22
     Top = 53
-    Width = 184
+    Width = 200
     DefaultColorColor = clWhite
     Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeDefault, cbCustomColor, cbPrettyNames, cbCustomColors]
     OnGetColors = ForegroundColorBoxGetColors
@@ -141,11 +141,11 @@ object SynColorAttrEditor: TSynColorAttrEditor
   end
   object pnlUnderline: TPanel
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = FrameEdgesBox
+    AnchorSideTop.Control = MarkupFoldColorBox
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 40
-    Top = 102
+    Top = 127
     Width = 145
     AutoSize = True
     BorderSpacing.Left = 6
@@ -238,7 +238,7 @@ object SynColorAttrEditor: TSynColorAttrEditor
     AnchorSideTop.Control = pnlUnderline
     Left = 157
     Height = 40
-    Top = 102
+    Top = 127
     Width = 134
     AutoSize = True
     BorderSpacing.Left = 6
@@ -329,7 +329,7 @@ object SynColorAttrEditor: TSynColorAttrEditor
     AnchorSideTop.Control = pnlUnderline
     Left = 297
     Height = 40
-    Top = 102
+    Top = 127
     Width = 134
     AutoSize = True
     BorderSpacing.Left = 6
@@ -467,7 +467,7 @@ object SynColorAttrEditor: TSynColorAttrEditor
     AnchorSideBottom.Side = asrBottom
     Left = 204
     Height = 1
-    Top = 145
+    Top = 170
     Width = 50
     AutoSize = True
     BorderSpacing.Left = 6
@@ -481,7 +481,7 @@ object SynColorAttrEditor: TSynColorAttrEditor
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = ForegroundColorBox
     AnchorSideTop.Side = asrCenter
-    Left = 398
+    Left = 414
     Height = 15
     Top = 7
     Width = 82
@@ -494,7 +494,7 @@ object SynColorAttrEditor: TSynColorAttrEditor
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = BackGroundColorBox
     AnchorSideTop.Side = asrCenter
-    Left = 398
+    Left = 414
     Height = 15
     Top = 32
     Width = 84
@@ -507,7 +507,7 @@ object SynColorAttrEditor: TSynColorAttrEditor
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = FrameColorBox
     AnchorSideTop.Side = asrCenter
-    Left = 398
+    Left = 414
     Height = 15
     Top = 57
     Width = 92
@@ -520,7 +520,7 @@ object SynColorAttrEditor: TSynColorAttrEditor
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = ForeAlphaLabel
     AnchorSideTop.Side = asrCenter
-    Left = 486
+    Left = 502
     Height = 23
     Top = 3
     Width = 65
@@ -541,7 +541,7 @@ object SynColorAttrEditor: TSynColorAttrEditor
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = BackAlphaLabel
     AnchorSideTop.Side = asrCenter
-    Left = 488
+    Left = 504
     Height = 23
     Top = 28
     Width = 65
@@ -562,7 +562,7 @@ object SynColorAttrEditor: TSynColorAttrEditor
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = FrameAlphaLabel
     AnchorSideTop.Side = asrCenter
-    Left = 496
+    Left = 512
     Height = 23
     Top = 53
     Width = 65
@@ -583,7 +583,7 @@ object SynColorAttrEditor: TSynColorAttrEditor
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = ForegroundColorBox
     AnchorSideTop.Side = asrCenter
-    Left = 561
+    Left = 577
     Height = 15
     Top = 7
     Width = 76
@@ -596,7 +596,7 @@ object SynColorAttrEditor: TSynColorAttrEditor
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = BackGroundColorBox
     AnchorSideTop.Side = asrCenter
-    Left = 563
+    Left = 579
     Height = 15
     Top = 32
     Width = 78
@@ -609,7 +609,7 @@ object SynColorAttrEditor: TSynColorAttrEditor
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = FrameColorBox
     AnchorSideTop.Side = asrCenter
-    Left = 571
+    Left = 587
     Height = 15
     Top = 57
     Width = 86
@@ -622,7 +622,7 @@ object SynColorAttrEditor: TSynColorAttrEditor
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = ForePriorLabel
     AnchorSideTop.Side = asrCenter
-    Left = 643
+    Left = 659
     Height = 23
     Top = 3
     Width = 65
@@ -640,7 +640,7 @@ object SynColorAttrEditor: TSynColorAttrEditor
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = BackPriorLabel
     AnchorSideTop.Side = asrCenter
-    Left = 647
+    Left = 663
     Height = 23
     Top = 28
     Width = 65
@@ -658,7 +658,7 @@ object SynColorAttrEditor: TSynColorAttrEditor
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = FrameAlphaLabel
     AnchorSideTop.Side = asrCenter
-    Left = 663
+    Left = 679
     Height = 23
     Top = 53
     Width = 65
@@ -670,5 +670,97 @@ object SynColorAttrEditor: TSynColorAttrEditor
     OnExit = ForePriorSpinChange
     TabOrder = 17
     Value = 1
+  end
+  object MarkupFoldColorUseDefaultCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = MarkupFoldColorBox
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 19
+    Top = 104
+    Width = 222
+    BorderSpacing.Left = 6
+    Caption = 'MarkupFoldColorUseDefaultCheckBox'
+    OnChange = GeneralCheckBoxOnChange
+    OnResize = pnlElementAttributesResize
+    TabOrder = 19
+  end
+  object MarkupFoldColorBox: TColorBox
+    AnchorSideLeft.Control = ColumnPosBevel
+    AnchorSideTop.Control = FrameEdgesBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    Left = 204
+    Height = 22
+    Top = 102
+    Width = 200
+    DefaultColorColor = clWhite
+    Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeDefault, cbCustomColor, cbPrettyNames, cbCustomColors]
+    OnGetColors = ForegroundColorBoxGetColors
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 3
+    Constraints.MaxWidth = 200
+    Constraints.MinWidth = 80
+    ItemHeight = 16
+    OnChange = ForegroundColorBoxChange
+    TabOrder = 18
+  end
+  object MarkupFoldAlphaLabel: TLabel
+    AnchorSideLeft.Control = MarkupFoldColorBox
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = MarkupFoldColorBox
+    AnchorSideTop.Side = asrCenter
+    Left = 414
+    Height = 15
+    Top = 106
+    Width = 123
+    BorderSpacing.Left = 10
+    Caption = 'MarkupFoldAlphaLabel'
+    ParentColor = False
+  end
+  object MarkupFoldAlphaSpin: TSpinEdit
+    AnchorSideLeft.Control = MarkupFoldAlphaLabel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = MarkupFoldColorBox
+    AnchorSideTop.Side = asrCenter
+    Left = 543
+    Height = 23
+    Top = 102
+    Width = 65
+    BorderSpacing.Left = 6
+    Constraints.MinWidth = 65
+    MaxValue = 256
+    MinValue = 1
+    OnChange = ForeAlphaSpinChange
+    OnEditingDone = ForeAlphaSpinChange
+    OnEnter = ForeAlphaSpinEnter
+    OnExit = ForeAlphaSpinChange
+    OnResize = ForeAlphaSpinChange
+    TabOrder = 20
+    Value = 256
+  end
+  object MarkupFoldStyleBox: TComboBox
+    AnchorSideLeft.Control = MarkupFoldAlphaSpin
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = MarkupFoldColorUseDefaultCheckBox
+    Left = 614
+    Height = 21
+    Top = 104
+    Width = 97
+    BorderSpacing.Left = 6
+    ItemHeight = 15
+    ItemIndex = 0
+    Items.Strings = (
+      'slsSolid'
+      'slsDashed'
+      'slsDotted'
+      'slsWaved'
+    )
+    OnChange = ForegroundColorBoxChange
+    OnDrawItem = FrameStyleBoxDrawItem
+    Style = csOwnerDrawFixed
+    TabOrder = 21
+    Text = 'slsSolid'
   end
 end

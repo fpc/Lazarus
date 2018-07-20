@@ -25,6 +25,11 @@ type
     ColumnPosBevel: TPanel;
     ForePriorLabel: TLabel;
     ForePriorSpin: TSpinEdit;
+    MarkupFoldStyleBox: TComboBox;
+    MarkupFoldAlphaSpin: TSpinEdit;
+    MarkupFoldAlphaLabel: TLabel;
+    MarkupFoldColorUseDefaultCheckBox: TCheckBox;
+    MarkupFoldColorBox: TColorBox;
     FramePriorSpin: TSpinEdit;
     FramePriorLabel: TLabel;
     FrameStyleBox: TComboBox;
@@ -139,6 +144,12 @@ begin
     FrameEdgesBox.Enabled := FrameColorBox.Selected <> clDefault;
     FrameStyleBox.Enabled := FrameColorBox.Selected <> clDefault;
   end;
+  if Sender = MarkupFoldColorBox then
+  begin
+    FCurHighlightElement.MarkupFoldLineColor := DefaultToNone(MarkupFoldColorBox.Selected);
+    MarkupFoldColorUseDefaultCheckBox.Checked := MarkupFoldColorBox.Selected <> clDefault;
+    MarkupFoldStyleBox.Enabled := MarkupFoldColorBox.Selected <> clDefault;
+  end;
   if Sender = FrameEdgesBox then
   begin
     FCurHighlightElement.FrameEdges := TSynFrameEdges(FrameEdgesBox.ItemIndex);
@@ -146,6 +157,10 @@ begin
   if Sender = FrameStyleBox then
   begin
     FCurHighlightElement.FrameStyle := TSynLineStyle(FrameStyleBox.ItemIndex);
+  end;
+  if Sender = MarkupFoldStyleBox then
+  begin
+    FCurHighlightElement.MarkupFoldLineStyle := TSynLineStyle(MarkupFoldStyleBox.ItemIndex);
   end;
 
   UpdatingColor := False;
@@ -175,6 +190,8 @@ begin
     FCurHighlightElement.BackAlpha := v;
   if Sender = FrameAlphaSpin then
     FCurHighlightElement.FrameAlpha := v;
+  if Sender = MarkupFoldAlphaSpin then
+    FCurHighlightElement.MarkupFoldLineAlpha := v;
 
   DoChanged;
 end;
@@ -298,6 +315,7 @@ begin
     if Sender = ForeGroundUseDefaultCheckBox then TheColorBox := ForegroundColorBox;
     if Sender = BackGroundUseDefaultCheckBox then TheColorBox := BackGroundColorBox;
     if Sender = FrameColorUseDefaultCheckBox then TheColorBox := FrameColorBox;
+    if Sender = MarkupFoldColorUseDefaultCheckBox then TheColorBox := MarkupFoldColorBox;
     if Assigned(TheColorBox) then begin
       if TCheckBox(Sender).Checked then begin
         TheColorBox.Selected := TheColorBox.Tag;
@@ -326,6 +344,12 @@ begin
         FrameEdgesBox.Enabled := TCheckBox(Sender).Checked;
         FrameStyleBox.Enabled := TCheckBox(Sender).Checked;
         DoChanged;
+      end;
+      if (Sender = MarkupFoldColorUseDefaultCheckBox) and
+         (DefaultToNone(MarkupFoldColorBox.Selected) <> FCurHighlightElement.MarkupFoldLineColor)
+      then begin
+        FCurHighlightElement.MarkupFoldLineColor := DefaultToNone(MarkupFoldColorBox.Selected);
+        MarkupFoldStyleBox.Enabled := MarkupFoldColorBox.Selected <> clDefault;
       end;
     end;
 
@@ -399,6 +423,7 @@ begin
   CheckControl(ForeGroundUseDefaultCheckBox);
   CheckControl(BackGroundUseDefaultCheckBox);
   CheckControl(FrameColorUseDefaultCheckBox);
+  CheckControl(MarkupFoldColorUseDefaultCheckBox);
 
   ColumnPosBevel.AnchorSide[akLeft].Control := MinAnchor;
   Constraints.MinHeight := pnlItalic.Top + pnlItalic.Height;
@@ -593,6 +618,30 @@ begin
     FramePriorLabel.Visible := FramePriorSpin.Visible;
     FramePriorSpin.Value    := FCurHighlightElement.FramePriority;
 
+    // Markup Fold
+    MarkupFoldColorUseDefaultCheckBox.Visible := hafMarkupFoldColor in FCurHighlightElement.Features;
+    MarkupFoldColorBox.Visible                := hafMarkupFoldColor in FCurHighlightElement.Features;
+    MarkupFoldAlphaLabel.Visible             := hafMarkupFoldColor in FCurHighlightElement.Features;
+    MarkupFoldAlphaSpin.Visible              := hafMarkupFoldColor in FCurHighlightElement.Features;
+    MarkupFoldStyleBox.Visible               := hafMarkupFoldColor in FCurHighlightElement.Features;
+
+    MarkupFoldColorBox.Selected := NoneToDefault(FCurHighlightElement.MarkupFoldLineColor);
+    if MarkupFoldColorBox.Selected = clDefault then
+      MarkupFoldColorBox.Tag := MarkupFoldColorBox.DefaultColorColor
+    else
+      MarkupFoldColorBox.Tag := MarkupFoldColorBox.Selected;
+    MarkupFoldColorUseDefaultCheckBox.Checked := MarkupFoldColorBox.Selected <> clDefault;
+
+    MarkupFoldStyleBox.ItemIndex := integer(FCurHighlightElement.MarkupFoldLineStyle);
+    MarkupFoldStyleBox.Enabled := MarkupFoldColorUseDefaultCheckBox.Checked;
+
+    if FCurHighlightElement.MarkupFoldLineAlpha = 0 then begin
+      MarkupFoldAlphaSpin.Value    := 256; // Off
+      MarkupFoldAlphaSpin.Caption  := dlgEdOff;
+    end
+    else
+      MarkupFoldAlphaSpin.Value    := FCurHighlightElement.MarkupFoldLineAlpha;
+
     // Styles
     TextBoldCheckBox.Visible      := hafStyle in FCurHighlightElement.Features;
     TextItalicCheckBox.Visible    := hafStyle in FCurHighlightElement.Features;
@@ -688,9 +737,11 @@ begin
   ForeGroundUseDefaultCheckBox.Caption := dlgForecolor;
   BackGroundUseDefaultCheckBox.Caption := dlgBackColor;
   FrameColorUseDefaultCheckBox.Caption := dlgFrameColor;
+  MarkupFoldColorUseDefaultCheckBox.Caption := dlgMarkupFoldColor;
   ForeAlphaLabel.Caption := lisAlpha;
   BackAlphaLabel.Caption := lisAlpha;
   FrameAlphaLabel.Caption := lisAlpha;
+  MarkupFoldAlphaLabel.Caption := lisAlpha;
   ForePriorLabel.Caption := lisPriority;
   BackPriorLabel.Caption := lisPriority;
   FramePriorLabel.Caption := lisPriority;
