@@ -1302,27 +1302,49 @@ begin
   lSlider.setMaxValue(ATrackBar.Max);
   lSlider.setMinValue(ATrackBar.Min);
   lSlider.setIntValue(ATrackBar.Position);
-
-  if ATrackBar.Orientation = trHorizontal then
-    lTrackBarLength := ATrackBar.Width
-  else
-    lTrackBarLength := ATrackBar.Height;
+  lSlider.intval := ATrackBar.Position;
 
   // Ticks
   if ATrackBar.TickStyle = tsNone then
   begin
     lTickCount := 0;
   end
-  else
+  else if ATrackBar.TickStyle = tsAuto then
   begin
-    lTickCount := lTrackBarLength div 5;
-    lTickCount := Min(lTickCount, 1+ATrackBar.Max-ATrackBar.Min);
+    // this should only apply to Auto
+    // and for Manual it should drawn manually
+    if ATrackBar.Frequency <> 0 then
+      lTickCount := (ATrackBar.Max-ATrackBar.Min) div ATrackBar.Frequency + 1
+    else
+      lTickCount := (ATrackBar.Max-ATrackBar.Min);
+
+    // Protection from too frequent ticks.
+    // 1024 is a number of "too much" ticks, based on a common
+    // screen resolution 1024 x 768
+    // Protects ticks from "disappearing" when trackbar is resized
+    // and is temporary too narrow to fit the trackbar
+    if TickCount > 1024 then
+    begin
+      if ATrackBar.Orientation = trHorizontal then
+        lTrackBarLength := ATrackBar.Width
+      else
+        lTrackBarLength := ATrackBar.Height;
+
+      lTickCount := Min(lTickCount, lTrackBarLength);
+    end;
+  end else if ATrackBar.TickStyle = tsManual then
+  begin
+    lTickCount := 2;
   end;
+
+  //for some reason Option(Alt)+Drag doesn't work at all
+  //lSlider.setAltIncrementValue(ATrackBar.PageSize);
   lSlider.setNumberOfTickMarks(lTickCount);
 
-  //procedure setAltIncrementValue(incValue: double); message 'setAltIncrementValue:';
-  //procedure setTitle(aString: NSString); message 'setTitle:';
-  //procedure setKnobThickness(aFloat: CGFloat); message 'setKnobThickness:';
+  if ATrackBar.TickMarks = tmTopLeft then
+    lSlider.setTickMarkPosition(NSTickMarkAbove)
+  else
+    lSlider.setTickMarkPosition(NSTickMarkBelow);
 end;
 
 {------------------------------------------------------------------------------

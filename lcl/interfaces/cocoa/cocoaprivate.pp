@@ -257,6 +257,14 @@ type
 
   TCocoaSlider = objcclass(NSSlider)
     callback: ICommonCallback;
+    intval : Integer;
+
+    //manticks      : array of Integer;
+    macticksCount : integer;
+    mantickdraw   : Boolean;
+
+    procedure drawRect(dirtyRect: NSRect); override;
+
     function acceptsFirstResponder: Boolean; override;
     function becomeFirstResponder: Boolean; override;
     function resignFirstResponder: Boolean; override;
@@ -282,6 +290,9 @@ type
     procedure mouseDragged(event: NSEvent); override;
     procedure mouseMoved(event: NSEvent); override;
     procedure scrollWheel(event: NSEvent); override;
+
+    procedure lclAddManTick(atick : integer); message 'lclAddManTick:';
+    procedure lclSetManTickDraw(adraw: Boolean); message 'lclSetManTickDraw:';
   end;
 
   TCocoaSliderCell = objcclass(NSSliderCell)
@@ -1147,6 +1158,33 @@ end;
 
 { TCocoaSlider }
 
+procedure TCocoaSlider.drawRect(dirtyRect: NSRect);
+(*var
+  i  : integer;
+  nr : NSRect;
+  xr : NSRect;
+  dr : NSRect;
+  nm : integer;*)
+begin
+  inherited drawRect(dirtyRect);
+(*
+    //todo: draw ticks!
+
+  if not mantickdraw then Exit;
+  if numberOfTickMarks<>2 then Exit;
+  nm := round(maxValue - minValue);
+  if nm = 0 then Exit;
+
+  nr := rectOfTickMarkAtIndex(0);
+  xr := rectOfTickMarkAtIndex(1);
+
+  for i := 0 to macticksCount - 1 do begin
+    dr:=nr;
+    dr.origin.x := dr.origin.x + (xr.origin.x - nr.origin.x) * (manticks[i] - minValue) / nm;
+  end;
+  *)
+end;
+
 function TCocoaSlider.acceptsFirstResponder: Boolean;
 begin
   Result := True;
@@ -1217,11 +1255,17 @@ begin
 end;
 
 procedure TCocoaSlider.sliderAction(sender: id);
+var
+  newval: Integer;
 begin
   SnapToInteger();
-  // OnChange event
-  if callback <> nil then
-    callback.SendOnChange();
+  newval := intValue;
+  if newval <> intval then begin
+    intval := newval;
+    // OnChange event
+    if callback <> nil then
+      callback.SendOnChange();
+  end;
 end;
 
 function TCocoaSlider.acceptsFirstMouse(event: NSEvent): Boolean;
@@ -1297,6 +1341,16 @@ procedure TCocoaSlider.scrollWheel(event: NSEvent);
 begin
   if not Assigned(callback) or not callback.scrollWheel(event) then
     inherited scrollWheel(event);
+end;
+
+procedure TCocoaSlider.lclAddManTick(atick: integer);
+begin
+
+end;
+
+procedure TCocoaSlider.lclSetManTickDraw(adraw: Boolean);
+begin
+
 end;
 
 procedure SetNSControlSize(ctrl: NSControl; newHeight, miniHeight, smallHeight: Integer; AutoChangeFont: Boolean);
