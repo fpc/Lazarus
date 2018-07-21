@@ -367,7 +367,7 @@ var
   (* Translate C0 control codes to "control pictures", and optionally C1 codes
     to the same glyph but with an underbar.
   *)
-  function withControlPictures(const str: widestring; c1Underbar: boolean): widestring;
+  function withControlPictures(const str: string; c1Underbar: boolean): widestring;
 
   const
     nul= #$2400;                        // ␀
@@ -407,9 +407,10 @@ var
 
   var
     i, test, masked: integer;
+    changed: boolean;
 
   begin
-    result := str;
+    SetLength(result, Length(str));
 
   (* This should probably be recoded to use a persistent table, but doing it    *)
   (* this way results in no lookup for plain text which is likely to be the     *)
@@ -418,12 +419,13 @@ var
   (* pictures and ISO-2047 glyphs, and so that if somebody has (good) reason to *)
   (* want to adjust them he can do so.                                          *)
 
-    for i := Length(result) downto 1 do begin
-      test := Ord(result[i]);
+    for i := Length(str) downto 1 do begin
+      test := Ord(str[i]);
       if c1Underbar then
         masked := test and $7f          (* Handle both C0 and C1 in one operation *)
       else
         masked := test;
+      changed := true;
       case masked of
         $00: result[i] := nul;
         $01: result[i] := soh;
@@ -459,11 +461,12 @@ var
         $1f: result[i] := us;
         $7f: result[i] := del
       otherwise
+        result[i] := Chr(test);
+        changed := false;
       end;
-      if c1Underbar and                 (* Now fix changed C1 characters        *)
-                (Ord(result[i]) <> test) and (* Was changed, so must be C0 or C1 *)
-                (masked <> test) then   (* MSB masked so must be C1, add bar    *)
-        Insert(bar, result, i + 1)
+      if c1Underbar and changed and     (* Now fix changed C1 characters        *)
+                                (masked <> test) then
+        Insert(bar, result, i)
     end
   end { withControlPictures } ;
 
@@ -471,7 +474,7 @@ var
   (* Translate C0 control codes to "pretty pictures", and optionally C1 codes
     to the same glyph but with an underbar.
   *)
-  function withIso2047(const str: widestring; c1Underbar: boolean): widestring;
+  function withIso2047(const str: string; c1Underbar: boolean): widestring;
 
   (* I've not got access to a pukka copy of ISO-2047, so like (it appears)      *)
   (* almost everybody else I'm assuming that the Wikipedia page is correct.     *)
@@ -537,9 +540,10 @@ var
 
   var
     i, test, masked: integer;
+    changed: boolean;
 
   begin
-    result := str;
+    SetLength(result, Length(str));
 
   (* This should probably be recoded to use a persistent table, but doing it    *)
   (* this way results in no lookup for plain text which is likely to be the     *)
@@ -548,12 +552,13 @@ var
   (* pictures and ISO-2047 glyphs, and so that if somebody has (good) reason to *)
   (* want to adjust them she can do so.                                         *)
 
-    for i := Length(result) downto 1 do begin
-      test := Ord(result[i]);
+    for i := Length(str) downto 1 do begin
+      test := Ord(str[i]);
       if c1Underbar then
         masked := test and $7f          (* Handle both C0 and C1 in one operation *)
       else
         masked := test;
+      changed := true;
       case masked of
         $00: result[i] := nul;
         $01: result[i] := soh;
@@ -589,13 +594,42 @@ var
         $1f: result[i] := us;
         $7f: result[i] := del
       otherwise
+        result[i] := Chr(test);
+        changed := false;
       end;
-      if c1Underbar and                 (* Now fix changed C1 characters        *)
-                (Ord(result[i]) <> test) and (* Was changed, so must be C0 or C1 *)
-                (masked <> test) then   (* MSB masked so must be C1, add bar    *)
-        Insert(bar, result, i + 1)
+      if c1Underbar and changed and     (* Now fix changed C1 characters        *)
+                                (masked <> test) then
+        Insert(bar, result, i)
     end
   end { withIso2047 } ;
+
+
+  (* Convert the string that's arrived from GDB etc. into UTF-8. In this case
+    it's mostly a dummy operation, except that there might be widget-set-specific
+    hacks.
+  *)
+  function widen(const str: string): widestring;
+
+  const
+    dot= #$00B7;                        // ·
+
+  var
+    i: integer;
+
+  begin
+    SetLength(result, Length(str));
+    for i := Length(str) downto 1 do
+      case str[i] of
+        ' ': result[i] := ' ';          (* Satisfy syntax requirement           *)
+        #$00: result[i] := dot;         (* GTK2 really doesn't like seeing this *)
+//        #$01..#$0f:   result[i] := dot;
+//        #$10..#$1f: result[i] := dot;
+//        #$7f:       result[i] := dot;
+//        #$80..#$ff: result[i] := dot
+      otherwise
+        result[i] := str[i]
+      end
+  end { widen } ;
 
 
   (* Look at the line index cl in a TStringList. Assume that at the start there
@@ -606,7 +640,7 @@ var
   procedure expandAsHex(var stringList: TStringList; currentLine, lineNumberLength: integer);
 
   var
-    lineNumberAsText,     scratch     : string;
+    lineNumberAsText: string;
     dataAsByteArray: TBytes;
     lengthLastBlock, startLastBlock: integer;
 
@@ -664,7 +698,10 @@ var
       dataAsByteArray := BytesOf(Copy(stringList[currentLine], lineNumberLength + 2,
                                 Length(stringList[currentLine]) - (lineNumberLength + 1)))
     end;
-    lengthLastBlock := Length(dataAsByteArray) mod 16;
+    if (Length(dataAsByteArray) > 0) and ((Length(dataAsByteArray) mod 16) = 0) then
+      lengthLastBlock := 16
+    else
+      lengthLastBlock := Length(dataAsByteArray) mod 16;
     startLastBlock := Length(dataAsByteArray) - lengthLastBlock;
     hexLines(startLastBlock, lengthLastBlock)
   end { expandAsHex } ;
@@ -719,6 +756,8 @@ begin
     else
       i := 67890;             (* Another good place for a breakpoint            *)
     case RadioGroupRight.ItemIndex of
+      0: for i := 0 to buffer.Count - 1 do
+           buffer[i] := widen(buffer[i]);
       1: for i := 0 to buffer.Count - 1 do
            buffer[i] := withControlPictures(buffer[i], CheckGroupRight.Checked[1]);
       2: for i := 0 to buffer.Count - 1 do
