@@ -501,7 +501,6 @@ begin
       item.setSubmenu(ANSMenu);
     end;
 
-    ns.release;
     item.setTarget(item);
     TCocoaMenuItem(item).menuItemCallback:=TLCLMenuItemCallback.Create(item, AMenuItem);
 
