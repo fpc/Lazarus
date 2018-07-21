@@ -375,7 +375,7 @@ begin
                 TS_PRESSED, TS_CHECKED, TS_HOTCHECKED:
                   Result.Shadow := GTK_SHADOW_IN;
                 TS_HOT:
-                  Result.Shadow := GTK_SHADOW_OUT;
+                  Result.Shadow := GTK_SHADOW_ETCHED_OUT;
               else
                 Result.Shadow := GTK_SHADOW_NONE;
               end;
@@ -390,7 +390,8 @@ begin
                 Result.State := GtkButtonMap[Details.State];
 
               Result.IsHot := Details.State in [TS_HOT, TS_HOTCHECKED];
-              Result.Style := GetStyle(lgsButton);
+              if Result.Style = nil then
+                Result.Style := GetStyle(lgsToolButton);
               if (Details.Part = TP_SPLITBUTTONDROPDOWN) then
               begin
                 Result.Detail := 'arrow';
