@@ -542,7 +542,7 @@ begin
       parItem := TCocoaMenuItem(Item).parentItem;
       if assigned(parItem) and parItem.isKindOfClass_(NSMenuItem) then
         NSMenuItem(paritem).submenu.removeItem(NSMenuItem(item));
-      Item.Release;
+      //Item.Release;
       AMenuItem.Handle := 0;
       end
     end;
