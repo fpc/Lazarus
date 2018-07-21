@@ -79,7 +79,7 @@ type
     procedure BtnClearClick(Sender: TObject);
     procedure BtnDeleteClick(Sender: TObject);
     procedure BtnReplaceClick(Sender: TObject);
-    procedure BtnMoveUpClick(Sender: TObject);
+    procedure BtnMoveUpDownClick(Sender: TObject);
     procedure btnSaveAllClick(Sender: TObject);
     procedure BtnSaveClick(Sender: TObject);
     procedure ColorBoxTransparentClick(Sender: TObject);
@@ -476,26 +476,27 @@ begin
   end;
 end;
 
-procedure TImageListEditorDlg.BtnMoveUpClick(Sender: TObject);
+procedure TImageListEditorDlg.BtnMoveUpDownClick(Sender: TObject);
 var
-  S, D: Integer;
+  OldIndex, NewIndex: Integer;
   P: TObject;
 begin
-  if ImageListBox.ItemIndex > 0 then
+  if ImageListBox.ItemIndex < 0 then
+    Exit;
+
+  OldIndex := ImageListBox.ItemIndex;
+  NewIndex := OldIndex + (Sender as TControl).Tag;
+
+  if (NewIndex >= 0) and (NewIndex < ImageListBox.Items.Count) then
   begin
-    S := ImageListBox.ItemIndex;
-    D := (Sender as TControl).Tag;
-    if (S + D >= 0) and (S + D < ImageListBox.Items.Count) then
-    begin
-      ImageList.Move(S, S + D);
-      
-      P := ImageListBox.Items.Objects[S + D];
-      ImageListBox.Items.Objects[S + D] := ImageListBox.Items.Objects[S];
-      ImageListBox.Items.Objects[S] := P;
-      
-      ImageListBox.ItemIndex := S + D;
-      ImageListBox.SetFocus;
-    end;
+    ImageList.Move(OldIndex, NewIndex);
+
+    P := ImageListBox.Items.Objects[NewIndex];
+    ImageListBox.Items.Objects[NewIndex] := ImageListBox.Items.Objects[OldIndex];
+    ImageListBox.Items.Objects[OldIndex] := P;
+
+    ImageListBox.ItemIndex := NewIndex;
+    ImageListBox.SetFocus;
   end;
 end;
 

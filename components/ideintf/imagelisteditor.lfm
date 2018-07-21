@@ -205,7 +205,7 @@ object ImageListEditorDlg: TImageListEditorDlg
       BorderSpacing.Top = 4
       BorderSpacing.Right = 6
       Caption = 'Move Up'
-      OnClick = BtnMoveUpClick
+      OnClick = BtnMoveUpDownClick
       TabOrder = 4
     end
     object BtnMoveDown: TButton
@@ -224,7 +224,7 @@ object ImageListEditorDlg: TImageListEditorDlg
       BorderSpacing.Top = 4
       BorderSpacing.Right = 6
       Caption = 'Move Down'
-      OnClick = BtnMoveUpClick
+      OnClick = BtnMoveUpDownClick
       TabOrder = 5
     end
     object BtnSave: TButton
