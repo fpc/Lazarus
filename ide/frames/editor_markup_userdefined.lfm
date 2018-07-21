@@ -42,8 +42,8 @@ object EditorMarkupUserDefinedFrame: TEditorMarkupUserDefinedFrame
     end
     object ToolButton2: TToolButton
       Left = 212
+      Height = 22
       Top = 0
-      Width = 5
       Caption = 'ToolButton2'
       Style = tbsDivider
     end
@@ -80,7 +80,7 @@ object EditorMarkupUserDefinedFrame: TEditorMarkupUserDefinedFrame
     TabOrder = 1
     inline SynColorAttrEditor1: TSynColorAttrEditor
       Height = 146
-      Top = 217
+      Top = 195
       Width = 507
       Align = alTop
       ClientHeight = 146
@@ -96,16 +96,28 @@ object EditorMarkupUserDefinedFrame: TEditorMarkupUserDefinedFrame
       inherited BackGroundColorBox: TColorBox
         AnchorSideRight.Control = SynColorAttrEditor1
       end
+      inherited BackGroundUseDefaultCheckBox: TCheckBox
+        AnchorSideLeft.Control = SynColorAttrEditor1
+      end
       inherited FrameColorBox: TColorBox
         AnchorSideRight.Control = SynColorAttrEditor1
+      end
+      inherited FrameColorUseDefaultCheckBox: TCheckBox
+        AnchorSideLeft.Control = SynColorAttrEditor1
+      end
+      inherited pnlUnderline: TPanel
+        AnchorSideLeft.Control = SynColorAttrEditor1
+      end
+      inherited MarkupFoldColorUseDefaultCheckBox: TCheckBox
+        AnchorSideLeft.Control = SynColorAttrEditor1
       end
     end
     object Notebook1: TNotebook
       Left = 0
-      Height = 217
+      Height = 195
       Top = 0
       Width = 507
-      PageIndex = 1
+      PageIndex = 0
       Align = alTop
       AutoSize = True
       Constraints.MinHeight = 195
@@ -165,24 +177,33 @@ object EditorMarkupUserDefinedFrame: TEditorMarkupUserDefinedFrame
           AutoAdvance = aaDown
           AutoFillColumns = True
           BorderSpacing.Around = 6
-          ColCount = 1
+          ColCount = 2
           Columns = <          
             item
               Title.Caption = 'Title'
-              Width = 238
+              Width = 213
+            end          
+            item
+              ButtonStyle = cbsButtonColumn
+              MaxSize = 20
+              SizePriority = 0
+              Title.Caption = 'Del'
+              Width = 25
             end>
           FixedCols = 0
           FixedRows = 0
-          Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goDrawFocusSelected, goEditing, goAutoAddRows, goThumbTracking, goSmoothScroll]
+          Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goDrawFocusSelected, goEditing, goThumbTracking, goSmoothScroll, goColSpanning]
           RowCount = 1
           TabOrder = 4
           OnColRowDeleted = WordListColRowDeleted
+          OnButtonClick = WordListButtonClick
           OnEditingDone = WordListEditingDone
           OnExit = WordListExit
           OnKeyUp = WordListKeyUp
           OnSelection = WordListSelection
           ColWidths = (
-            238
+            213
+            25
           )
         end
         object cbCaseSense: TCheckBox
@@ -287,8 +308,8 @@ object EditorMarkupUserDefinedFrame: TEditorMarkupUserDefinedFrame
             BorderSpacing.Left = 6
             BorderSpacing.Right = 6
             Font.Style = [fsBold]
-            ParentFont = False
             LeftIndent = 30
+            ParentFont = False
           end
           object btnKeyAdd: TSpeedButton
             AnchorSideLeft.Control = Panel1
@@ -349,8 +370,8 @@ object EditorMarkupUserDefinedFrame: TEditorMarkupUserDefinedFrame
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
             Font.Style = [fsBold]
-            ParentFont = False
             LeftIndent = 30
+            ParentFont = False
           end
           object divKeyToggle: TDividerBevel
             AnchorSideLeft.Control = Panel1
@@ -368,8 +389,8 @@ object EditorMarkupUserDefinedFrame: TEditorMarkupUserDefinedFrame
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
             Font.Style = [fsBold]
-            ParentFont = False
             LeftIndent = 30
+            ParentFont = False
           end
           object btnKeyRemove: TSpeedButton
             AnchorSideLeft.Control = Panel1

@@ -8,7 +8,7 @@ uses
   Classes, sysutils, math,
   // LCL
   LCLType, StdCtrls, ComCtrls, Graphics, EditorOptions, Spin, ExtCtrls,
-  Menus, Grids, Controls, Dialogs, Buttons,
+  Menus, Grids, Controls, Dialogs, Buttons, Forms,
   // LazControls
   DividerBevel,
   // LazUtils
@@ -29,15 +29,23 @@ type
   private
     FRowFontColor: Array of TColor;
     function GetRowFontColor(AIndex: Integer): TColor;
+    function GetUserWordIndex(ARowIndex: Integer): Integer;
     procedure SetRowFontColor(AIndex: Integer; AValue: TColor);
+    procedure SetUserWordIndex(ARowIndex: Integer; AValue: Integer);
   protected
     procedure PrepareCanvas(aCol, aRow: Integer; aState: TGridDrawState); override;
     procedure ColRowDeleted(IsColumn: Boolean; index: Integer); override;
     procedure ColRowInserted(IsColumn: boolean; index: integer); override;
     // no exchanged or move
     procedure SizeChanged(OldColCount, OldRowCount: Integer); override;
+    procedure DrawTextInCell(aCol, aRow: Integer; aRect: TRect;
+      aState: TGridDrawState); override;
+    procedure CalcCellExtent(acol, aRow: Integer; var aRect: TRect); override;
   public
+    procedure DefaultDrawCell(aCol, aRow: Integer; var aRect: TRect;
+      aState: TGridDrawState); override;
     property RowFontColor[AIndex: Integer]: TColor read GetRowFontColor write SetRowFontColor;
+    property UserWordIndex[ARowIndex: Integer]: Integer read GetUserWordIndex write SetUserWordIndex;
   end;
 
   { TEditorMarkupUserDefinedFrame }
@@ -97,6 +105,7 @@ type
     procedure tbSelectListClick(Sender: TObject);
     procedure GeneralCheckBoxChange(Sender: TObject);
     procedure tbSelectPageClicked(Sender: TObject);
+    procedure WordListButtonClick(Sender: TObject; aCol, aRow: Integer);
     procedure WordListColRowDeleted(Sender: TObject; {%H-}IsColumn: Boolean; {%H-}sIndex,
       {%H-}tIndex: Integer);
     procedure WordListEditingDone(Sender: TObject);
@@ -140,6 +149,11 @@ begin
   Result := FRowFontColor[AIndex];
 end;
 
+function TColorStringGrid.GetUserWordIndex(ARowIndex: Integer): Integer;
+begin
+  Result := PtrInt(Objects[0, ARowIndex])-1;
+end;
+
 procedure TColorStringGrid.SetRowFontColor(AIndex: Integer; AValue: TColor);
 begin
   assert(AIndex < Length(FRowFontColor), 'SetRowFontColor');
@@ -147,6 +161,12 @@ begin
     exit;
   FRowFontColor[AIndex] := AValue;
   Invalidate;
+end;
+
+procedure TColorStringGrid.SetUserWordIndex(ARowIndex: Integer; AValue: Integer
+  );
+begin
+  Objects[0, ARowIndex] := TObject(PtrInt(AValue + 1));
 end;
 
 procedure TColorStringGrid.PrepareCanvas(aCol, aRow: Integer; aState: TGridDrawState);
@@ -189,6 +209,53 @@ begin
   while i < RowCount do begin
     FRowFontColor[i] := Font.Color;
     inc(i);
+  end;
+end;
+
+procedure TColorStringGrid.DrawTextInCell(aCol, aRow: Integer; aRect: TRect;
+  aState: TGridDrawState);
+var
+  c: TColor;
+begin
+  if (aRow = RowCount - 1) and (Cells[0, aRow] = '') then begin
+    c := Canvas.Font.Color;
+    Canvas.Font.Color := clGrayText;
+    DrawCellText(aCol, aRow, aRect, aState, rsAddNewTerm);
+    Canvas.Font.Color := c;
+  end
+  else
+    inherited DrawTextInCell(aCol, aRow, aRect, aState);
+end;
+
+procedure TColorStringGrid.CalcCellExtent(acol, aRow: Integer; var aRect: TRect
+  );
+var
+  dummy: Integer;
+begin
+  if (aRow = RowCount - 1) and (acol = 0) then
+    ColRowToOffset(True, True, 1, dummy, aRect.Right);
+end;
+
+procedure TColorStringGrid.DefaultDrawCell(aCol, aRow: Integer;
+  var aRect: TRect; aState: TGridDrawState);
+var
+  w, h, x, y: LongInt;
+begin
+  if (aRow = RowCount - 1) and (aCol = 1) then
+    exit;
+
+  inherited DefaultDrawCell(aCol, aRow, aRect, aState);
+  if aCol = 1 then begin
+    Canvas.Pen.Color := clRed;
+    Canvas.Pen.Width := 2;
+    Canvas.Pen.Style := psSolid;
+    w := (aRect.Right - aRect.Left) div 2;
+    h := (aRect.Bottom - aRect.Top) div 2;
+    x := aRect.Left + w;
+    y := aRect.Top + h;
+    w := min(w, h) div 2;
+    Canvas.Line(x - w, y - w, x + w, y + w);
+    Canvas.Line(x - w, y + w, x + w, y - w);
   end;
 end;
 
@@ -315,7 +382,7 @@ begin
 
 
   // Related to current word
-  i := PtrInt(WordList.Objects[0, FSelectedRow])-1;
+  i := WordList.UserWordIndex[FSelectedRow];
   if (i < 0) or (i >= FUserWords.Count) then
     exit;
 
@@ -350,6 +417,33 @@ begin
     Notebook1.PageIndex :=  1;
 end;
 
+procedure TEditorMarkupUserDefinedFrame.WordListButtonClick(Sender: TObject;
+  aCol, aRow: Integer);
+var
+  i: LongInt;
+begin
+  if (FUserWords = nil) or (aRow = WordList.RowCount - 1) then
+    exit;
+
+  inc(FUpdatingDisplay);
+  try
+    i := WordList.UserWordIndex[aRow];
+    if (i >= 0) and (i < FUserWords.Count) then begin
+      FUserWords.Delete(i);
+      i := FSelectedRow;
+      UpdateListDisplay(True);
+      FSelectedRow := i;
+      if (FSelectedRow > aRow) and (FSelectedRow > 0) then
+        dec(FSelectedRow);
+      WordList.Row := FSelectedRow;
+      UpdateTermOptions;
+    end;
+  finally
+    dec(FUpdatingDisplay);
+  end;
+  UpdateTermOptions;
+end;
+
 procedure TEditorMarkupUserDefinedFrame.WordListColRowDeleted(Sender: TObject;
   IsColumn: Boolean; sIndex, tIndex: Integer);
 begin
@@ -363,10 +457,11 @@ var
 begin
   if (FUpdatingDisplay > 0) or (FUserWords = nil) then exit;
 
-  i := PtrInt(WordList.Objects[0, FSelectedRow])-1;
+  i := WordList.UserWordIndex[FSelectedRow];
   if (i = -1) and (WordList.Cells[0, FSelectedRow] <> '') then begin
     i := FUserWords.Add.Index;
-    WordList.Objects[0, FSelectedRow] := TObject(PtrInt(i+1));
+    WordList.UserWordIndex[FSelectedRow] := i;
+    WordList.RowCount := WordList.RowCount + 1;
   end;
 
   if (i < 0) or (i >= FUserWords.Count) then
@@ -382,6 +477,8 @@ end;
 
 procedure TEditorMarkupUserDefinedFrame.WordListExit(Sender: TObject);
 begin
+  if WordList.EditorMode then
+    WordList.EditingDone;
   MaybeCleanEmptyRow(FSelectedRow);
 end;
 
@@ -392,12 +489,14 @@ var
 begin
   if (FUpdatingDisplay > 0) or (FUserWords = nil) then exit;
 
-  i := PtrInt(WordList.Objects[0, FSelectedRow])-1;
+  i := WordList.UserWordIndex[FSelectedRow];
   if (i = -1) and (WordList.Cells[0, FSelectedRow] <> '') then begin
+    // Editing in the newly added cell
     i := FUserWords.Add.Index;
-    WordList.Objects[0, FSelectedRow] := TObject(PtrInt(i+1));
+    WordList.UserWordIndex[FSelectedRow] := i;
+    WordList.RowCount := WordList.RowCount + 1;
     UpdateTermOptions;
-  end
+  end;
 end;
 
 procedure TEditorMarkupUserDefinedFrame.WordListSelection(Sender: TObject; aCol,
@@ -472,17 +571,7 @@ begin
 
   inc(FUpdatingDisplay);
   try
-    i := PtrInt(WordList.Objects[0, aRow])-1;
-    if (i = -1) and (aRow > 0) then begin
-      WordList.DeleteRow(aRow);
-      if FSelectedRow > aRow then
-        dec(FSelectedRow);
-      if FSelectedRow >= WordList.RowCount then
-        dec(FSelectedRow);
-      WordList.Row := FSelectedRow;
-      UpdateTermOptions; // WordListSelection
-    end;
-
+    i := WordList.UserWordIndex[aRow];
     if (i < 0) or (i >= FUserWords.Count) then
       exit;
 
@@ -534,7 +623,7 @@ begin
 
   inc(FUpdatingDisplay);
   try
-    i := PtrInt(WordList.Objects[0, FSelectedRow])-1;
+    i := WordList.UserWordIndex[FSelectedRow];
     cbCaseSense.Enabled       := (i >= 0) and (i < FUserWords.Count);
     cbMatchStartBound.Enabled := (i >= 0) and (i < FUserWords.Count);
     cbMatchEndBound.Enabled   := (i >= 0) and (i < FUserWords.Count);
@@ -611,13 +700,15 @@ begin
     MainPanel.Enabled := True;
     edListName.Text := FUserWords.Name;
     SynColorAttrEditor1.CurHighlightElement := FUserWords.ColorAttr;
-    WordList.RowCount := max(1, FUserWords.Count);
+    WordList.RowCount := FUserWords.Count + 1;
     WordList.Cells[0, 0] := '';
-    WordList.Objects[0,0] := TObject(PtrInt(0));
+    WordList.UserWordIndex[0] := -1;
     for i := 0 to FUserWords.Count - 1 do begin
       WordList.Cells[0, i] := FUserWords.Items[i].SearchTerm;
-      WordList.Objects[0,i] := TObject(PtrInt(FUserWords.Items[i].Index + 1));
+      WordList.UserWordIndex[i] := FUserWords.Items[i].Index;
     end;
+    WordList.Cells[0, FUserWords.Count] := '';
+    WordList.UserWordIndex[FUserWords.Count] := -1;
     FSelectedRow := 0;
     WordList.Col := 0;
     WordList.Row := 0;

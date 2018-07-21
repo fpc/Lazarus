@@ -6466,6 +6466,7 @@ resourcestring
   dbgEventUnknownWatchPointTriggered = 'Unknown Watchpoint triggered %s. Old value "%s", New Value "%s"';
   dbgEventWatchScopeEnded = 'Watchpoint for "%s" out of scope %s';
   dbgEventUnknownWatchPointScopeEnded = 'Unknown Watchpoint out of scope %s';
+  rsAddNewTerm = 'Add new term';
 
 implementation
 
