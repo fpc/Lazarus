@@ -202,7 +202,7 @@ type
     class function  GetPosition(const ATrackBar: TCustomTrackBar): integer; override;
     class procedure SetPosition(const ATrackBar: TCustomTrackBar; const {%H-}NewPosition: integer); override;
     class procedure SetOrientation(const ATrackBar: TCustomTrackBar; const AOrientation: TTrackBarOrientation); override;
-    //class procedure SetTick(const ATrackBar: TCustomTrackBar; const ATick: integer); virtual;
+    class procedure SetTick(const ATrackBar: TCustomTrackBar; const ATick: integer); override;
   end;
 
   { TCocoaWSCustomTreeView }
@@ -1337,6 +1337,8 @@ begin
     lTickCount := 2;
   end;
 
+  lSlider.lclSetManTickDraw(ATrackBar.TickStyle = tsManual);
+
   //for some reason Option(Alt)+Drag doesn't work at all
   //lSlider.setAltIncrementValue(ATrackBar.PageSize);
   lSlider.setNumberOfTickMarks(lTickCount);
@@ -1345,6 +1347,7 @@ begin
     lSlider.setTickMarkPosition(NSTickMarkAbove)
   else
     lSlider.setTickMarkPosition(NSTickMarkBelow);
+  lSlider.setNeedsDisplay;
 end;
 
 {------------------------------------------------------------------------------
@@ -1385,13 +1388,23 @@ end;
 
 // Cocoa auto-detects the orientation based on width/height and there seams
 // to be no way to force it
-class procedure TCocoaWSTrackBar.SetOrientation(
-  const ATrackBar: TCustomTrackBar; const AOrientation: TTrackBarOrientation);
+class procedure TCocoaWSTrackBar.SetOrientation(const ATrackBar: TCustomTrackBar;
+  const AOrientation: TTrackBarOrientation);
 begin
+  if not Assigned(ATrackBar) or not ATrackBar.HandleAllocated then Exit;
   if (AOrientation = trHorizontal) and (ATrackBar.Height > ATrackBar.Width) then
     ATrackBar.Width := ATrackBar.Height + 1
   else if (AOrientation = trVertical) and (ATrackBar.Width > ATrackBar.Height) then
     ATrackBar.Height := ATrackBar.Width + 1;
+end;
+
+class procedure TCocoaWSTrackBar.SetTick(const ATrackBar: TCustomTrackBar; const ATick: integer);
+var
+  lSlider: TCocoaSlider;
+begin
+  if not Assigned(ATrackBar) or not ATrackBar.HandleAllocated then Exit;
+  lSlider := TCocoaSlider(ATrackBar.Handle);
+  lSlider.lclAddManTick(ATick);
 end;
 
 end.

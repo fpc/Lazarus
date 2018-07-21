@@ -253,16 +253,24 @@ type
     procedure scrollWheel(event: NSEvent); override;
   end;
 
+  { TManualTicks }
+
+  TManualTicks = class(TObject)
+    count : integer;
+    //todo: keep sorted and do binary search
+    ticks : array of Integer;
+    draw  : Boolean;
+    function AddTick(atick: integer): Boolean;
+  end;
+
   { TCocoaSlider }
 
   TCocoaSlider = objcclass(NSSlider)
-    callback: ICommonCallback;
-    intval : Integer;
+    callback  : ICommonCallback;
+    intval    : Integer;
+    man       : TManualTicks;
 
-    //manticks      : array of Integer;
-    macticksCount : integer;
-    mantickdraw   : Boolean;
-
+    procedure dealloc; override;
     procedure drawRect(dirtyRect: NSRect); override;
 
     function acceptsFirstResponder: Boolean; override;
@@ -341,6 +349,28 @@ begin
   {$IFDEF COCOA_SUPERVIEW_HEIGHT}
   WriteLn(Format('GetNSViewSuperViewHeight Result=%f', [Result]));
   {$ENDIF}
+end;
+
+{ TManualTicks }
+
+function TManualTicks.AddTick(atick: integer): Boolean;
+var
+  i : integer;
+begin
+  //todo: must be a binary search
+  for i:=0 to length(ticks)-1 do
+    if ticks[i]=atick then begin
+      Result:=false;
+      Exit;
+    end;
+
+  // adding new tick
+  if length(ticks)=count then begin
+    if count=0 then SetLength(ticks, 8)
+    else SetLength(ticks, count * 2);
+  end;
+  ticks[count]:=atick;
+  inc(count);
 end;
 
 { TCocoaGroupBox }
@@ -1158,31 +1188,52 @@ end;
 
 { TCocoaSlider }
 
+function GetManTicks(slider: TCocoaSlider): TManualTicks;
+begin
+  if not Assigned(slider.man) then
+    slider.man := TManualTicks.Create;
+  Result := slider.man;
+end;
+
+procedure TCocoaSlider.dealloc;
+begin
+  man.Free;
+  inherited dealloc;
+end;
+
 procedure TCocoaSlider.drawRect(dirtyRect: NSRect);
-(*var
+var
   i  : integer;
   nr : NSRect;
   xr : NSRect;
   dr : NSRect;
-  nm : integer;*)
+  nm : integer;
+  ctx : NSGraphicsContext;
+  pth : NSBezierPath;
 begin
-  inherited drawRect(dirtyRect);
-(*
-    //todo: draw ticks!
+  if not Assigned(man) or (not man.draw) then begin
+    inherited drawRect(dirtyRect);
+    Exit;
+  end;
 
-  if not mantickdraw then Exit;
-  if numberOfTickMarks<>2 then Exit;
   nm := round(maxValue - minValue);
   if nm = 0 then Exit;
+  if numberOfTickMarks < 2 then Exit;
 
   nr := rectOfTickMarkAtIndex(0);
   xr := rectOfTickMarkAtIndex(1);
 
-  for i := 0 to macticksCount - 1 do begin
-    dr:=nr;
-    dr.origin.x := dr.origin.x + (xr.origin.x - nr.origin.x) * (manticks[i] - minValue) / nm;
+  ctx := NSGraphicsContext.currentContext;
+  pth := NSBezierPath.bezierPath;
+  NSColor.controlShadowColor.setFill;
+  dr:=nr;
+  dr.origin.y := dr.origin.y + 1;
+  dr.size.height := dr.size.height - 1;
+  for i := 0 to man.count - 1 do begin
+    dr.origin.x := round(nr.origin.x + (xr.origin.x - nr.origin.x) * (man.ticks[i] - minValue) / nm);
+    pth.fillRect(dr);
   end;
-  *)
+  inherited drawRect(dirtyRect);
 end;
 
 function TCocoaSlider.acceptsFirstResponder: Boolean;
@@ -1344,13 +1395,24 @@ begin
 end;
 
 procedure TCocoaSlider.lclAddManTick(atick: integer);
+var
+  mn : TManualTicks;
 begin
-
+  mn := GetManTicks(self);
+  if mn.AddTick(atick) then
+  begin
+    if mn.draw then self.setNeedsDisplay;
+  end;
 end;
 
 procedure TCocoaSlider.lclSetManTickDraw(adraw: Boolean);
+var
+  mn : TManualTicks;
 begin
-
+  mn := GetManTicks(self);
+  if mn.draw=adraw then Exit;
+  mn.draw:=adraw;
+  self.setNeedsDisplay;
 end;
 
 procedure SetNSControlSize(ctrl: NSControl; newHeight, miniHeight, smallHeight: Integer; AutoChangeFont: Boolean);
