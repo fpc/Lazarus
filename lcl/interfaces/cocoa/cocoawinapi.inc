@@ -1056,10 +1056,11 @@ begin
   case uiAction of
     SPI_GETWHEELSCROLLLINES: PDword(pvPAram)^ := 3;
     SPI_GETWORKAREA:
-      TRect(pvParam^) := Bounds(GetSystemMetrics(SM_XVIRTUALSCREEN),
-                                GetSystemMetrics(SM_YVIRTUALSCREEN),
-                                GetSystemMetrics(SM_CXVIRTUALSCREEN),
-                                GetSystemMetrics(SM_CYVIRTUALSCREEN));
+    begin
+      NSToLCLRect(NSScreen.mainScreen.visibleFrame
+        , NSScreen.mainScreen.frame.size.height
+        , TRect(pvParam^));
+    end;
   else
     Result := False;
   end
@@ -1168,7 +1169,7 @@ begin
   Result := (lpmi <> nil) and (lpmi^.cbSize >= SizeOf(TMonitorInfo));
   if not Result then Exit;
   lpmi^.rcMonitor := NSRectToRect(ScreenID.frame);
-  lpmi^.rcWork := NSRectToRect(ScreenID.visibleFrame);
+  NSToLCLRect(ScreenID.visibleFrame, ScreenID.frame.size.height, lpmi^.rcWork);
   if ScreenID = NSScreen.mainScreen then
     lpmi^.dwFlags := MONITORINFOF_PRIMARY
   else
