@@ -207,6 +207,7 @@ type
     procedure comboBoxSelectionDidChange(notification: NSNotification); message 'comboBoxSelectionDidChange:';
     procedure comboBoxSelectionIsChanging(notification: NSNotification); message 'comboBoxSelectionIsChanging:';
     //
+    procedure keyUp(event: NSEvent); override;
     function lclIsHandle: Boolean; override;
     procedure setStringValue(avalue: NSString); override;
     // mouse
@@ -1069,6 +1070,15 @@ end;
 procedure TCocoaComboBox.comboBoxSelectionIsChanging(notification: NSNotification);
 begin
   callback.ComboBoxSelectionIsChanging;
+end;
+
+procedure TCocoaComboBox.keyUp(event: NSEvent);
+begin
+  if Assigned(callback) then
+  begin
+    callback.KeyEvent(event);
+  end;
+  inherited keyUp(event);
 end;
 
 function TCocoaComboBox.acceptsFirstMouse(event: NSEvent): Boolean;
