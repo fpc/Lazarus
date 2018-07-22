@@ -77,8 +77,15 @@ begin
     end
     else
     begin
-      ASpinWidget.setMinimum(-MaxDouble);
-      ASpinWidget.setMaximum(MaxDouble);
+      if ASpinWidget is TQtFloatSpinBox then
+      begin
+        ASpinWidget.setMinimum(-MaxDouble);
+        ASpinWidget.setMaximum(MaxDouble);
+      end else
+      begin
+        ASpinWidget.setMinimum(-MaxInt);
+        ASpinWidget.setMaximum(MaxInt);
+      end;
     end;
     ASpinWidget.setSingleStep(ACustomFloatSpinEdit.Increment);
   finally
