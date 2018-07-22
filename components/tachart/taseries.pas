@@ -243,6 +243,8 @@ type
     property Styles;
     property ToolTargets;
     property UseReticule default true;
+    property XErrorBars;
+    property YErrorBars;
     // Events
     property OnDrawPointer: TSeriesPointerDrawEvent
       read FOnDrawPointer write FOnDrawPointer; deprecated 'Use OnCustomDrawPointer';
@@ -426,6 +428,7 @@ begin
   PrepareGraphPoints(ext, LineType <> ltFromOrigin);
   DrawSingleLineInStack(ADrawer, 0);
   for i := 0 to Source.YCount - 2 do begin
+    if Source.IsYErrorIndex(i+1) then Continue;
     UpdateGraphPoints(i, FStacked);
     DrawSingleLineInStack(ADrawer, i + 1);
   end;
@@ -663,6 +666,7 @@ begin
     else
       DrawColoredLines;
   end;
+  DrawErrorBars(ADrawer);
   DrawLabels(ADrawer);
   if ShowPoints then
     DrawPointers(ADrawer, AIndex, FColorEach in [cePoint, cePointAndLineBefore, cePointAndLineAfter]);

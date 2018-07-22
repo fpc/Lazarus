@@ -183,6 +183,8 @@ type
     property Step: TFuncSeriesStep
       read FStep write SetStep default DEF_SPLINE_STEP;
     property ToolTargets default [nptPoint, nptCustom];
+    property XErrorBars;
+    property YErrorBars;
     property OnCustomDrawPointer;
     property OnGetPointerStyle;
   end;
@@ -271,6 +273,8 @@ type
       read FSplineType write SetSplineType default cstNatural;
     property Step: TFuncSeriesStep
       read FStep write SetStep default DEF_SPLINE_STEP;
+    property XErrorBars;
+    property YErrorBars;
   end;
 
   TFitParamsState = (fpsUnknown, fpsInvalid, fpsValid);
@@ -338,8 +342,10 @@ type
     property Pen: TChartPen read FPen write SetPen;
     property Pointer;
     property Source;
-    property ToolTargets default [nptPoint, nptCustom];
     property Step: TFuncSeriesStep read FStep write SetStep default DEF_FIT_STEP;
+    property ToolTargets default [nptPoint, nptCustom];
+    property XErrorBars;
+    property YErrorBars;
     property OnCalcGoodnessOfFit: TCalcGoodnessOfFitEvent
       read FOnCalcGoodnessOfFit write FOnCalcGoodnessOfFit;
     property OnCustomDrawPointer;
@@ -1041,6 +1047,7 @@ begin
     for startIndex := splineStart to splineEnd + Degree - 1 do
       SplineSegment(0.0, 1.0, SplinePoint(0.0), SplinePoint(1.0));
   end;
+  DrawErrorBars(ADrawer);
   DrawLabels(ADrawer);
   DrawPointers(ADrawer);
 end;
@@ -1290,6 +1297,7 @@ begin
     if not s.IsFewPoints then
       DrawSpline(s);
 
+  DrawErrorBars(ADrawer);
   DrawLabels(ADrawer);
   DrawPointers(ADrawer);
 end;
@@ -1570,6 +1578,7 @@ begin
         Free;
       end;
     DrawLabels(ADrawer);
+    DrawErrorBars(ADrawer);
     DrawPointers(ADrawer);
   finally
     de.Free;

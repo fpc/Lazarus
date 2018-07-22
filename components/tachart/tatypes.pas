@@ -268,6 +268,22 @@ type
     property Visible default false;
   end;
 
+  TChartErrorBar = class(TChartElement)
+  private
+    FWidth: Integer;
+    FPen: TPen;
+    procedure SetPen(const AValue: TPen);
+    procedure SetWidth(const AValue: Integer);
+  public
+    constructor Create(AOwner: TCustomChart);
+    destructor Destroy; override;
+    procedure Assign(ASource: TPersistent); override;
+  published
+    property Pen: TPen read FPen write SetPen;
+    property Visible default false;
+    property Width: Integer read FWidth write SetWidth default -1;
+  end;
+
 implementation
 
 uses
@@ -821,6 +837,45 @@ begin
   if FTransparency = AValue then exit;
   FTransparency := AValue;
   StyleChanged(Self);
+end;
+
+{ TChartErrorBar }
+
+constructor TChartErrorBar.Create(AOwner: TCustomChart);
+begin
+  inherited Create(AOwner);
+  FWidth := -1;     // -1 = same width as series pointer
+  FPen := TPen.Create;
+  FPen.OnChange := @StyleChanged;
+  FVisible := false;
+end;
+
+destructor TChartErrorBar.Destroy;
+begin
+  FPen.Free;
+  inherited Destroy;
+end;
+
+procedure TChartErrorBar.Assign(ASource: TPersistent);
+begin
+  if ASource is TChartErrorBar then begin
+    FPen.Assign(TChartErrorBar(ASource).Pen);
+    FWidth := TChartErrorBar(ASource).Width;
+  end;
+  inherited;
+end;
+
+procedure TChartErrorBar.SetPen(const AValue: TPen);
+begin
+  FPen.Assign(AValue);
+  StyleChanged(Self);
+end;
+
+procedure TChartErrorBar.SetWidth(const AValue: Integer);
+begin
+  if FWidth = AValue then exit;
+  FWidth := AValue;
+  StyleChanged(self);
 end;
 
 end.

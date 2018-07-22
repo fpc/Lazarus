@@ -22,6 +22,7 @@ uses
 
 const
   DEF_AXIS_INDEX = -1;
+  DEF_ERR_ENDLENGTH = 5;
 
 type
   TNearestPointParams = record
@@ -257,9 +258,12 @@ type
   TBasicPointSeries = class(TChartSeries)
   strict private
     FMarkPositions: TLinearMarkPositions;
+    FErrorBars: array[0..1] of TChartErrorBar;
     FOnCustomDrawPointer: TSeriesPointerCustomDrawEvent;
     FOnGetPointerStyle: TSeriesPointerStyleEvent;
+    function GetErrorBars(AIndex: Integer): TChartErrorBar;
     function GetLabelDirection(AIndex: Integer): TLabelDirection;
+    procedure SetErrorBars(AIndex: Integer; AValue: TChartErrorBar);
     procedure SetMarkPositions(AValue: TLinearMarkPositions);
     procedure SetPointer(AValue: TSeriesPointer);
     procedure SetStacked(AValue: Boolean);
@@ -276,11 +280,16 @@ type
 
     procedure AfterDrawPointer(
       ADrawer: IChartDrawer; AIndex: Integer; const APos: TPoint); virtual;
+    procedure DrawErrorBars(ADrawer: IChartDrawer);
     procedure DrawLabels(ADrawer: IChartDrawer);
     procedure DrawPointers(ADrawer: IChartDrawer; AStyleIndex: Integer = 0;
       UseDataColors: Boolean = false);
     procedure FindExtentInterval(
       const AExtent: TDoubleRect; AFilterByExtent: Boolean);
+    {
+    function GetErrorBars(APointIndex: Integer; IsXError: Boolean;
+      out AGraphPointPos, AGraphPointNeg: Double): Boolean;
+      }
     function GetLabelDataPoint(AIndex: Integer): TDoublePoint; virtual;
     procedure GetLegendItemsRect(AItems: TChartLegendItems; ABrush: TBrush);
     function GetXRange(AX: Double; AIndex: Integer): Double;
@@ -296,9 +305,13 @@ type
 
     property Pointer: TSeriesPointer read FPointer write SetPointer;
     property Stacked: Boolean read FStacked write SetStacked;
+
   protected
     procedure AfterAdd; override;
     procedure UpdateMargins(ADrawer: IChartDrawer; var AMargins: TRect); override;
+
+    property XErrorBars: TChartErrorBar index 0 read GetErrorBars write SetErrorBars;
+    property YErrorBars: TChartErrorBar index 1 read GetErrorBars write SetErrorBars;
     property OnCustomDrawPointer: TSeriesPointerCustomDrawEvent
       read FOnCustomDrawPointer write FOnCustomDrawPointer;
     property OnGetPointerStyle: TSeriesPointerStyleEvent
@@ -1076,10 +1089,15 @@ end;
 { TBasicPointSeries }
 
 procedure TBasicPointSeries.AfterAdd;
+var
+  i: Integer;
 begin
   inherited AfterAdd;
   if Pointer <> nil then
     Pointer.SetOwner(ParentChart);
+  for i := 0 to 1 do
+    if FErrorBars[i] <> nil then
+      FErrorBars[i].SetOwner(ParentChart);
 end;
 
 procedure TBasicPointSeries.AfterDrawPointer(
@@ -1105,14 +1123,94 @@ end;
 constructor TBasicPointSeries.Create(AOwner: TComponent);
 begin
   inherited;
+  FErrorBars[0] := TChartErrorBar.Create(FChart);
+  FErrorBars[1] := TChartErrorBar.Create(FChart);
   FOptimizeX := true;
   ToolTargets := [nptPoint, nptYList];
 end;
 
 destructor TBasicPointSeries.Destroy;
 begin
+  FreeAndNil(FErrorBars[0]);
+  FreeAndNil(FErrorBars[1]);
   FreeAndNil(FPointer);
   inherited;
+end;
+
+procedure TBasicPointSeries.DrawErrorBars(ADrawer: IChartDrawer);
+
+  procedure EndBar(p: TPoint; w: Integer; IsHorBar: Boolean);
+  begin
+    if IsHorBar then
+      ADrawer.Line(Point(p.x, p.y-w), Point(p.x, p.y+w))
+    else
+      ADrawer.Line(Point(p.x-w, p.y), Point(p.x+w, p.y));
+  end;
+
+  procedure DrawErrorBar(p: TDoublePoint; vp, vn: Double; w: Integer;
+    IsXError: Boolean);
+  var
+    p1, p2: TDoublePoint;
+    imgPt1, imgPt2: TPoint;
+    isHorBar: Boolean;
+  begin
+    isHorBar := (IsXError and not IsRotated) or (IsRotated and not IsXError);
+
+    if IsHorBar then begin
+      p1 := DoublePoint(vp, p.Y);
+      p2 := DoublePoint(vn, p.Y);
+    end else begin
+      p1 := DoublePoint(p.X, vp);
+      p2 := DoublePoint(p.X, vn);
+    end;
+    imgPt1 := ParentChart.GraphToImage(p1);
+    imgPt2 := ParentChart.GraphToImage(p2);
+    ADrawer.Line(imgPt1, imgPt2);
+
+    EndBar(imgPt1, w, isHorBar);
+    EndBar(imgPt2, w, isHorBar);
+  end;
+
+  procedure InternalDrawErrorBars(IsXError: Boolean);
+  var
+    i: Integer;
+    p: TDoublePoint;
+    vp, vn: Double;
+    w, w0: Integer;
+    errbar: TChartErrorBar;
+  begin
+    if Assigned(Pointer) then
+      w0 := IfThen(IsXError, Pointer.VertSize, Pointer.HorizSize)
+    else
+      w0 := DEF_ERR_ENDLENGTH;
+    errbar := TChartErrorBar(IfThen(IsXError, XErrorBars, YErrorBars));
+    w := ADrawer.Scale(IfThen(errBar.Width = -1, w0, errBar.Width));
+
+    for i := FLoBound to FUpBound do begin
+      p := FGraphPoints[i - FLoBound];
+      if not ParentChart.IsPointInViewPort(p) then continue;
+      if IsXError then begin
+        if Source.GetXErrorBarLimits(i, vp, vn) then
+          DrawErrorBar(p, AxisToGraphX(vp), AxisToGraphX(vn), w, true);
+      end else begin
+        if Source.GetYErrorBarLimits(i, vp, vn) then
+          DrawErrorBar(p, AxisTographY(vp), AxisToGraphY(vn), w, false);
+      end;
+    end;
+  end;
+
+begin
+  if Assigned(YErrorBars) and YErrorBars.Visible and Source.HasYErrorBars then
+  begin
+    ADrawer.Pen := YErrorBars.Pen;
+    InternalDrawErrorBars(false);
+  end;
+
+  if Assigned(XErrorBars) and XErrorBars.Visible and Source.HasXErrorBars then
+  begin
+    ADrawer.pen := XErrorBars.Pen;
+    InternalDrawErrorBars(true);
+  end;
 end;
 
 procedure TBasicPointSeries.DrawLabels(ADrawer: IChartDrawer);
@@ -1270,6 +1368,11 @@ begin
     FLoBound := Max(FLoBound - 1, 0);
     FUpBound := Min(FUpBound + 1, Count - 1);
   end;
+end;
+
+function TBasicPointSeries.GetErrorBars(AIndex: Integer): TChartErrorBar;
+begin
+  Result := FErrorBars[AIndex];
 end;
 
 function TBasicPointSeries.GetLabelDataPoint(AIndex: Integer): TDoublePoint;
@@ -1516,6 +1619,13 @@ begin
   else
     for i := FLoBound to FUpBound do
       FGraphPoints[i - FLoBound] := GetGraphPoint(i);
+end;
+
+procedure TBasicPointSeries.SetErrorBars(AIndex: Integer;
+  AValue: TChartErrorBar);
+begin
+  FErrorBars[AIndex] := AValue;
+  UpdateParentChart;
 end;
 
 procedure TBasicPointSeries.SetMarkPositions(AValue: TLinearMarkPositions);

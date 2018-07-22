@@ -68,6 +68,8 @@ type
   published
     property DataPoints: TStrings read FDataPoints write SetDataPoints;
     property Sorted: Boolean read FSorted write SetSorted default false;
+    property XErrorBarData;
+    property YErrorBarData;
     property YCount;
   end;
 
@@ -135,6 +137,8 @@ type
     property YMax: Double read FYMax write SetYMax;
     property YMin: Double read FYMin write SetYMin;
     property YNanPercent: TPercent read FYNanPercent write SetYNanPercent default 0;
+    property XErrorBarData;
+    property YErrorBarData;
   end;
 
   TUserDefinedChartSource = class;
