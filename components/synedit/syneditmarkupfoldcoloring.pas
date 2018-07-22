@@ -381,8 +381,6 @@ end;
 { TSynEditMarkupFoldColors }
 
 constructor TSynEditMarkupFoldColors.Create(pSynEdit: TSynEditBase);
-var
-  i: Integer;
 begin
   inherited Create(pSynEdit);
 
@@ -432,8 +430,6 @@ begin
 end;
 
 destructor TSynEditMarkupFoldColors.Destroy;
-var
-  i: Integer;
 begin
   if Lines <> nil then
     Lines.Ranges[Self] := nil;

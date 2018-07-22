@@ -385,8 +385,6 @@ begin
 end;
 
 procedure TSynGutterCodeFolding.ScalePPI(const AScaleFactor: Double);
-var
-  m: Integer;
 begin
   inherited ScalePPI(AScaleFactor);
   FPpiPenWidth := Max(1, Scale96ToFont(1));
@@ -412,8 +410,6 @@ begin
 end;
 
 procedure TSynGutterCodeFolding.SetWidth(const AValue: integer);
-var
-  m: Integer;
 begin
   if (Width=AValue) or (AutoSize) then exit;
   inherited SetWidth(AValue);
