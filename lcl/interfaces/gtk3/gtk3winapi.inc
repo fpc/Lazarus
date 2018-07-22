@@ -210,7 +210,7 @@ begin
         cairo_region_get_extents(RSrc1, @ACairoRect);
         TGtk3Region(Dest).Handle := cairo_region_create_rectangle(@ACairoRect);
         RDest := TGtk3Region(Dest).Handle;
-        cairo_region_translate(RDest, -ACairoRect.x, -ACairoRect.y);
+        //cairo_region_translate(RDest, -ACairoRect.x, -ACairoRect.y);
       end else
         AStatus := cairo_region_intersect(RDest, RSrc1);
     end;
@@ -1360,6 +1360,29 @@ begin
     exit;
   Result := cairo_region_equal(TGtk3Region(Rgn1).Handle,TGtk3Region(Rgn2).Handle);
 end;
+
+function TGtk3WidgetSet.IntersectClipRect(dc: hdc; Left, Top, Right,Bottom: Integer): Integer;
+var
+  ncorg,dcOrigin:TPoint;
+  rgn,clip:HRGN;
+begin
+  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
+  DebugLn('WARNING: TGtk3WidgetSet.ExcludeClipRect not implemented ...');
+  {$ENDIF}
+  rgn:=Self.CreateRectRgn(Left,Top,Right,Bottom);
+  //Self.SelectClipRGN(dc,rgn);
+  clip:=Self.CreateEmptyRegion;
+  Self.GetClipRGN(dc,clip);
+  Self.CombineRgn(clip,rgn,clip,RGN_AND);
+  Self.SelectClipRGN(dc,clip);
+  DeleteObject(clip);
+  DeleteObject(rgn);
+  // fail Self.ExtSelectClipRGN(dc,rgn,RGN_AND);
+ { ncorg:=Tgtk3DeviceContext(dc).fncOrigin;
+  GetWindowOrgEx(DC, @DCOrigin);
+  Result:=inherited IntersectClipRect(dc, Left, Top, Right, Bottom);}
+end;
+
 
 function TGtk3WidgetSet.ExcludeClipRect(dc: hdc; Left, Top, Right,
   Bottom: Integer): Integer;

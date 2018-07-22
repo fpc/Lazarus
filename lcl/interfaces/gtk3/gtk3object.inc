@@ -95,7 +95,7 @@ begin
   g_type_init;
   gtk_init(@argc, @argv);
   AGtkThread := g_thread_self();
-  AId := 'lcl.' + dbgHex(PtrUInt(AGtkThread));
+  AId := 'org.lcl.thread_' + dbgHex(PtrUInt(AGtkThread));
   FGtk3Application := TGtkApplication.new(PgChar(AId), G_APPLICATION_NON_UNIQUE);
   // FGtk3Application^.set_application_id(PgChar(AId));
   FGtk3Application^.register(nil, nil);

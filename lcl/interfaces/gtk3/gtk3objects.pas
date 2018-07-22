@@ -966,7 +966,7 @@ begin
   if FBkMode = TRANSPARENT then
   begin
     DebugLn('TGtk3DeviceContext.ApplyBrush setting transparent source');
-    cairo_set_source_surface(Widget, CairoSurface, 0 , 0);
+    //cairo_set_source_surface(Widget, CairoSurface, 0 , 0);
   end else
     SetSourceColor(FCurrentBrush.Color);
 end;
@@ -1552,13 +1552,14 @@ begin
   if ABrush <> 0 then
   begin
     ATempBrush := FCurrentBrush;
+    fBkMode:=OPAQUE;
     SetCurrentBrush(TGtk3Brush(ABrush));
   end;
 
   applyBrush;
   cairo_rectangle(Widget, x, y, w, h);
+  cairo_stroke_preserve(Widget);
   cairo_fill(Widget);
-  cairo_stroke(Widget);
   // cairo_clip(Widget);
 
   // cairo_fill_preserve(Widget);

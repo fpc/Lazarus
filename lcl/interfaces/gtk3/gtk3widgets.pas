@@ -1665,9 +1665,10 @@ function TGtk3Widget.GtkEventPaint(Sender: PGtkWidget; AContext: Pcairo_t
   ): Boolean; cdecl;
 var
   Msg: TLMPaint;
-  AStruct: PPaintStruct;
+  AStruct: TPaintStruct;
   P: TPoint;
   AClipRect: TGdkRectangle;
+  localClip:TRect;
 begin
   Result := False;
 
@@ -1677,9 +1678,9 @@ begin
   FillChar(Msg, SizeOf(Msg), #0);
 
   Msg.Msg := LM_PAINT;
-  New(AStruct);
-  FillChar(AStruct^, SizeOf(TPaintStruct), 0);
-  Msg.PaintStruct := AStruct;
+  //New(AStruct);
+  FillChar(AStruct, SizeOf(TPaintStruct), 0);
+  Msg.PaintStruct := @AStruct;
 
   with PaintData do
   begin
@@ -1690,14 +1691,15 @@ begin
     ClipRegion := nil;
     // gdk_cairo_region(AContext, ClipRegion);
     // Event^.expose.region;
-    if ClipRect = nil then
-      New(ClipRect);
+    //if ClipRect = nil then
+    //  New(ClipRect);
     gdk_cairo_get_clip_rectangle(AContext, @AClipRect);
-    ClipRect^ := RectFromGdkRect(AClipRect);
+    localClip:=RectFromGdkRect(AClipRect);
+    ClipRect := @localClip;
   end;
 
   FCairoContext := AContext;
-  Msg.DC := BeginPaint(THandle(Self), AStruct^);
+  Msg.DC := BeginPaint(THandle(Self), AStruct);
   FContext := Msg.DC;
 
   Msg.PaintStruct^.rcPaint := PaintData.ClipRect^;
@@ -1743,11 +1745,11 @@ begin
       LCLObject.WindowProc(TLMessage(Msg));
     finally
       FCairoContext := nil;
-      Dispose(PaintData.ClipRect);
+      //Dispose(PaintData.ClipRect);
       Fillchar(FPaintData, SizeOf(FPaintData), 0);
       FContext := 0;
-      EndPaint(THandle(Self), AStruct^);
-      Dispose(AStruct);
+      EndPaint(THandle(Self), AStruct);
+      //Dispose(AStruct);
     end;
   except
     Application.HandleException(nil);
