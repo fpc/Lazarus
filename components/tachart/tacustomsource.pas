@@ -155,9 +155,13 @@ type
   private
     FKind: TChartErrorBarKind;
     FValue: array[0..1] of Double;  // 0 = positive, 1 = negative
+    FIndex: array[0..1] of Integer;
     FOnChange: TNotifyEvent;
+    procedure Changed;
+    function GetIndex(AIndex: Integer): Integer;
     function GetValue(AIndex: Integer): Double;
     procedure SetKind(AValue: TChartErrorbarKind);
+    procedure SetIndex(AIndex, AValue: Integer);
     procedure SetValue(AIndex: Integer; AValue: Double);
   public
     constructor Create;
@@ -166,7 +170,10 @@ type
   published
     property Kind: TChartErrorBarKind read FKind write SetKind default ebkNone;
     property NegDelta: Double index 1 read GetValue write SetValue;
+    property NegIndex: Integer index 1 read GetIndex write SetIndex default -1;
     property PosDelta: Double index 0 read GetValue write SetValue;
+    property PosIndex: Integer index 0 read GetIndex write SetIndex default -1;
+
   end;
 
   TCustomChartSource = class(TBasicChartSource)
@@ -693,8 +700,10 @@ end;
 constructor TChartErrorBarData.Create;
 begin
   inherited;
-  FValue[0] := -1;
-  FValue[1] := -1;
+  FIndex[0] := -1;
+  FIndex[1] := -1;
+  FValue[0] := 0;
+  FValue[1] := 0;
   FKind := ebkNone;
 end;
 
@@ -702,9 +711,20 @@ procedure TChartErrorBarData.Assign(ASource: TPersistent);
 begin
   if ASource is TChartErrorBarData then begin
     FValue := TChartErrorBarData(ASource).FValue;
+    FIndex := TChartErrorBarData(ASource).FIndex;
     FKind := TChartErrorBarData(ASource).Kind;
   end;
   inherited;
+end;
+
+procedure TChartErrorBarData.Changed;
+begin
+  if Assigned(FOnChange) then FOnChange(Self);
+end;
+
+function TChartErrorBarData.GetIndex(AIndex: Integer): Integer;
+begin
+  Result := FIndex[AIndex];
 end;
 
 function TChartErrorBarData.GetValue(AIndex: Integer): Double;
@@ -712,17 +732,25 @@ begin
   Result := FValue[AIndex];
 end;
 
+procedure TChartErrorBarData.SetIndex(AIndex, AValue: Integer);
+begin
+  if FIndex[AIndex] = AValue then exit;
+  FIndex[AIndex] := AValue;
+  Changed;
+end;
+
 procedure TChartErrorBarData.SetKind(AValue: TChartErrorBarKind);
 begin
   if FKind = AValue then exit;
   FKind := AValue;
-  if Assigned(FOnChange) then FOnChange(self);
+  Changed;
 end;
 
 procedure TChartErrorBarData.SetValue(AIndex: Integer; AValue: Double);
 begin
+  if FValue[AIndex] = AValue then exit;
   FValue[AIndex] := AValue;
-  if Assigned(FOnChange) then FOnChange(self);
+  Changed;
 end;
 
 
@@ -823,8 +851,8 @@ begin
 
   // Skip the y values used for error bars in calculating the cumulative sum.
   if YErrorBarData.Kind = ebkChartSource then begin
-    jyp := round(YErrorBarData.PosDelta) - 1;  // -1 because YList index is offset by 1
-    jyn := round(YErrorBarData.NegDelta) - 1;
+    jyp := YErrorBarData.PosIndex - 1;  // -1 because YList index is offset by 1
+    jyn := YErrorBarData.NegIndex - 1;
   end;
 
   for i := 0 to Count - 1 do begin
@@ -850,15 +878,15 @@ begin
 
   // Skip then x and y values used for error bars when calculating the list extent.
   if XErrorBarData.Kind = ebkChartSource then begin
-    jxp := round(XErrorBarData.PosDelta) - 1;  // -1 because XList is offset by 1
-    jxn := round(XErrorBarData.NegDelta) - 1;
+    jxp := XErrorBarData.PosIndex - 1;  // -1 because XList is offset by 1
+    jxn := XErrorBarData.NegIndex - 1;
   end else begin
     jxp := -1;
-    jyp := -1;
+    jxn := -1;
   end;
   if YErrorBarData.Kind = ebkChartSource then begin
-    jyp := round(YErrorbarData.PosDelta) - 1;  // -1 because YList is offset by 1
-    jyn := round(YErrorBarData.NegDelta) - 1;
+    jyp := YErrorbarData.PosIndex - 1;  // -1 because YList is offset by 1
+    jyn := YErrorBarData.NegIndex - 1;
   end else begin
     jyp := -1;
     jyn := -1;
@@ -967,6 +995,7 @@ function TCustomChartSource.GetErrorBarLimits(APointIndex: Integer;
 var
   v: Double;
   deltaP, deltaN: Double;
+  pidx, nidx: Integer;
 begin
   Result := false;
 
@@ -1002,23 +1031,31 @@ begin
             deltaN := v * FErrorBarData[Which].NegDelta * PERCENT;
         end;
       ebkChartSource:
-        begin
-          if Which = 0 then
-            deltaP := Item[APointIndex]^.GetX(round(FErrorbarData[0].PosDelta))
-          else
-            deltaP := Item[APointIndex]^.GetY(round(FErrorBarData[1].PosDelta));
-          if FErrorBarData[Which].NegDelta = -1 then
+        if Which = 0 then begin
+          pidx := FErrorBarData[0].PosIndex;
+          nidx := FErrorBarData[0].NegIndex;
+          if not InRange(pidx, 0, XCount - 1) then exit;
+          if (nidx <> -1) and not InRange(nidx, 0, XCount - 1) then exit;
+          deltaP := Item[APointIndex]^.GetX(pidx);
+          if nidx = -1 then
             deltaN := deltaP
           else
-          if Which = 0 then
-            deltaN := Item[APointIndex]^.GetX(round(FErrorBarData[Which].NegDelta))
+            deltaN := Item[APointIndex]^.GetX(nidx);
+        end else begin
+          pidx := FErrorBarData[1].PosIndex;
+          nidx := FErrorBarData[1].NegIndex;
+          if not InRange(pidx, 0, YCount - 1) then exit;
+          if (nidx <> -1) and not InRange(nidx, 0, YCount - 1) then exit;
+          deltaP := Item[APointIndex]^.GetY(pidx);
+          if nidx = -1 then
+            deltaN := deltaP
           else
-            deltaN := Item[APointIndex]^.GetY(round(FErrorBarData[Which].NegDelta));
+            deltaN := Item[APointIndex]^.GetY(nidx);
         end;
     end;
     AUpperLimit := v + abs(deltaP);
     ALowerLimit := v - abs(deltaN);
-    Result := true;
+    Result := (AUpperLimit <> ALowerLimit);
   end;
 end;
 
@@ -1044,7 +1081,7 @@ begin
       ebkConst, ebkPercent:
         Result := (FErrorBarData[Which].PosDelta > 0);
       ebkChartSource:
-        Result := (FErrorBarData[Which].PosDelta > -1);
+        Result := (FErrorBarData[Which].PosIndex > -1);
     end;
 end;
 
@@ -1066,14 +1103,19 @@ end;
 
 function TCustomChartSource.IsXErrorIndex(AXIndex: Integer): Boolean;
 begin
-  Result := (XErrorBarData.Kind = ebkChartSource) and
-    ((round(XErrorBarData.PosDelta) = AXIndex) or (round(XErrorBarData.NegDelta) = AXIndex));
+  Result :=
+    (XErrorBarData.Kind = ebkChartSource) and
+    ((XErrorBarData.PosIndex = AXIndex) or (XErrorBarData.NegIndex = AXIndex) and
+    (AXIndex > -1)
+  );
 end;
 
 function TCustomChartSource.IsYErrorIndex(AYIndex: Integer): Boolean;
 begin
-  Result := (YErrorBarData.Kind = ebkChartSource) and
-    ((round(YErrorBarData.PosDelta) = AYIndex) or (round(YErrorBarData.NegDelta) = AYIndex));
+  Result :=
+    (YErrorBarData.Kind = ebkChartSource) and
+    ((YErrorBarData.PosIndex = AYIndex) or (YErrorBarData.NegIndex = AYIndex)) and
+    (AYIndex > -1);
 end;
 
 function TCustomChartSource.IsSorted: Boolean;

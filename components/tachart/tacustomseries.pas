@@ -1200,16 +1200,18 @@ procedure TBasicPointSeries.DrawErrorBars(ADrawer: IChartDrawer);
   end;
 
 begin
-  if Assigned(YErrorBars) and YErrorBars.Visible and Source.HasYErrorBars then
-  begin
-    ADrawer.Pen := YErrorBars.Pen;
-    InternalDrawErrorBars(false);
-  end;
-
+  // Draw x error bars
   if Assigned(XErrorBars) and XErrorBars.Visible and Source.HasXErrorBars then
   begin
     ADrawer.pen := XErrorBars.Pen;
     InternalDrawErrorBars(true);
+  end;
+
+  // Draw y error bars
+  if Assigned(YErrorBars) and YErrorBars.Visible and Source.HasYErrorBars then
+  begin
+    ADrawer.Pen := YErrorBars.Pen;
+    InternalDrawErrorBars(false);
   end;
 end;
 
