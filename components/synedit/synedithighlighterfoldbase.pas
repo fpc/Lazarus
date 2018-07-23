@@ -953,6 +953,7 @@ begin
   FPreviousNestInfo := FNestInfo;
   FPreviousLine := FLine;
   FNestInfo := nil;
+  FOnLineNestInfo := nil;
 
   FLine := AValue;
   FCount := -1;                          // will trigger InitCount
@@ -1017,6 +1018,7 @@ begin
   // Warning: storing endlevels, not minlevels
   FNestInfo[FCount].FGroupMinLevels := copy(FGroupEndLevelsAtEval,0, length(FGroupEndLevelsAtEval));
   FNestInfo[FCount].LineIdx := Line - 1;
+  FNestInfo[FCount].EndLineIdx := 0;
 end;
 
 function TLazSynEditNestedFoldsList.GetHLNode(Index: Integer): TSynFoldNodeInfo;
@@ -1555,6 +1557,7 @@ begin
         FOnLineNestInfo[j].LineIdx := FLine;
         FOnLineNestInfo[j].HNode := nd;
         FOnLineNestInfo[j].HNode.NodeIndex := j;
+        FOnLineNestInfo[j].EndLineIdx := 0;
       end;
     end;
 
