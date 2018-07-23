@@ -7470,10 +7470,8 @@ begin
     on E:exception do
     begin
       {$ifdef DbgPrinter}
-      Debugln(['Exception: selecting custom paper ']);
+      Debugln('Exception: %s', [E.Message]);
       {$endif}
-      Prn.SetPrinterInfo($100, AWidth, AHeight, AOr);
-      Prn.FillPrnInfo(PrnInfo);
     end;
   end;
   pgSize := Prn.PaperSize;
