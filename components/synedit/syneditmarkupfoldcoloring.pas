@@ -1162,6 +1162,9 @@ begin
     lEndLine := Max(lEndLine, lLineIdx);
   end;
 
+  // invalidate cache
+  FColumnCache.LineTextChanged(ToIdx(pStartLine), Max(pEndLine, lEndLine) - pStartLine);
+
   if lEndLine > pEndLine then begin
     {$IFDEF SynEditMarkupFoldColoringDebug}
     //DebugLn('   InvalidateSynLines(%d, %d)', [EndLine + 1, lEndLine]);
