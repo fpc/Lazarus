@@ -345,6 +345,9 @@ var
 begin
   if (FCheckStyle <> cbsRadioButton) or not (cloShowCheckboxes in Options) then
     exit;
+  if FLegendItems = nil then
+    exit;
+
   FListener.OnNotify := nil;
   try
     for i := 0 to FLegendItems.Count - 1 do begin
