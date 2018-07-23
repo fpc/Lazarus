@@ -173,6 +173,8 @@ type
     property PointsNumber: Integer
       read FPointsNumber write SetPointsNumber default 0;
     property Sorted: Boolean read FSorted write FSorted default false;
+    property XErrorBarData;
+    property YErrorBarData;
   end;
 
   TChartAccumulationMethod = (
@@ -812,6 +814,7 @@ function TRandomChartSource.GetItem(AIndex: Integer): PChartDataItem;
 
 var
   i: Integer;
+  fp, fn: Double;
 begin
   if FCurIndex > AIndex then begin
     FRNG.Seed := FRandSeed;
@@ -837,12 +840,12 @@ begin
       end;
       // Make sure that x values belonging to an error bar are random and
       // multiplied by the percentage given by ErrorBarData.Pos/NegDelta.
+      fp := XErrorBarData.ValuePlus * PERCENT;
+      if XErrorBarData.ValueMinus = -1 then fn := fp else fn := XErrorBarData.ValueMinus * PERCENT;
       for i := 0 to XCount - 2 do
         if (XErrorBarData.Kind = ebkChartSource) then begin
-          if (i+1 = XErrorBarData.IndexPlus) and (XErrorBarData.ValuePlus > 0) then
-            FCurItem.XList[i] := GetRandomX * XErrorBarData.ValuePlus * PERCENT;
-          if (i+1 = XErrorBarData.IndexMinus) and (XErrorBarData.ValueMinus > 0) then
-            FCurItem.XList[i] := GetRandomX * XErrorBarData.ValueMinus * PERCENT;
+          if (i+1 = XErrorBarData.IndexPlus) then FCurItem.XList[i] := GetRandomX * fp;
+          if (i+1 = XErrorBarData.IndexMinus) then FCurItem.XList[i] := GetRandomX * fn;
         end;
     end;
     if YCount > 0 then begin
@@ -853,11 +856,11 @@ begin
         // If this y value is that of an error bar assume that the error is
         // a percentage of the y value calculated. The percentage is the
         // ErrorBarData.Pos/NegDelta.
+        fp := YErrorBarData.ValuePlus * PERCENT;
+        if YErrorBarData.ValueMinus = -1 then fn := fp else fn := YErrorBarData.ValueMinus * PERCENT;
         if (YErrorBarData.Kind = ebkChartSource) then begin
-          if (i+1 = YErrorBarData.IndexPlus) and (YErrorBarData.ValuePlus > 0) then
-            FCurItem.YList[i] := FCurItem.YList[i] * YErrorBarData.ValuePlus * PERCENT;
-          if (i+1 = YErrorBarData.IndexMinus) and (YErrorBarData.ValueMinus > 0) then
-            FCurItem.YList[i] := FCurItem.YList[i] * YErrorBarData.ValueMinus * PERCENT;
+          if (i+1 = YErrorBarData.IndexPlus) then FCurItem.YList[i] := GetRandomY * fp;
+          if (i+1 = YErrorBarData.IndexMinus) then FCurItem.YList[i] := GetRandomY * fn;
         end;
       end;
     end;

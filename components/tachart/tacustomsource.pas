@@ -194,8 +194,8 @@ type
     FYCount: Cardinal;
     procedure ChangeErrorBars(Sender: TObject); virtual;
     function GetCount: Integer; virtual; abstract;
-    function GetErrorBarLimits(APointIndex: Integer; Which: Integer;
-      out AUpperLimit, ALowerLimit: Double): Boolean;
+    function GetErrorBarValues(APointIndex: Integer; Which: Integer;
+      out AUpperDelta, ALowerDelta: Double): Boolean;
     function GetHasErrorBars(Which: Integer): Boolean;
     function GetItem(AIndex: Integer): PChartDataItem; virtual; abstract;
     procedure InvalidateCaches;
@@ -227,6 +227,10 @@ type
       out AUpperLimit, ALowerLimit: Double): Boolean;
     function GetYErrorBarLimits(APointIndex: Integer;
       out AUpperLimit, ALowerLimit: Double): Boolean;
+    function GetXErrorBarValues(APointIndex: Integer;
+      out AUpperDelta, ALowerDelta: Double): Boolean;
+    function GetYErrorBarValues(APointIndex: Integer;
+      out AUpperDelta, ALowerDelta: Double): Boolean;
     function HasXErrorBars: Boolean;
     function HasYErrorBars: Boolean;
     function IsXErrorIndex(AXIndex: Integer): Boolean;
@@ -715,8 +719,8 @@ begin
     FValue := TChartErrorBarData(ASource).FValue;
     FIndex := TChartErrorBarData(ASource).FIndex;
     FKind := TChartErrorBarData(ASource).Kind;
-  end;
-  inherited;
+  end else
+    inherited;
 end;
 
 procedure TChartErrorBarData.Changed;
@@ -998,25 +1002,23 @@ begin
   Result := FErrorBarData[AIndex];
 end;
 
-{ Returns the error bar limits in positive and negative direction for the
+{ Returns the error bar values in positive and negative direction for the
   x (which = 0) or y (which = 1) coordinates of the data point at the specified
   index. The result is false if there is no error bar. }
-function TCustomChartSource.GetErrorBarLimits(APointIndex: Integer;
-  Which: Integer; out AUpperLimit, ALowerLimit: Double): Boolean;
+function TCustomChartSource.GetErrorBarValues(APointIndex: Integer;
+  Which: Integer; out AUpperDelta, ALowerDelta: Double): Boolean;
 var
   v: Double;
-  deltaP, deltaN: Double;
   pidx, nidx: Integer;
 begin
   Result := false;
+  AUpperDelta := 0;
+  ALowerDelta := 0;
 
   if Which = 0 then
     v := Item[APointIndex]^.X
   else
     v := Item[APointIndex]^.Y;
-
-  AUpperLimit := v;
-  ALowerLimit := v;
 
   if IsNaN(v) then
     exit;
@@ -1027,59 +1029,91 @@ begin
         exit;
       ebkConst:
         begin
-          deltaP := FErrorBarData[Which].ValuePlus;
+          AUpperDelta := FErrorBarData[Which].ValuePlus;
           if FErrorBarData[Which].ValueMinus = -1 then
-            deltaN := deltaP
+            ALowerDelta := AUpperDelta
           else
-            deltaN := FErrorBarData[Which].ValueMinus;
+            ALowerDelta := FErrorBarData[Which].ValueMinus;
         end;
       ebkPercent:
         begin
-          deltaP := v * FErrorBarData[Which].ValuePlus * PERCENT;
+          AUpperDelta := v * FErrorBarData[Which].ValuePlus * PERCENT;
           if FErrorBarData[Which].ValueMinus = -1 then
-            deltaN := deltaP
+            ALowerDelta := AUpperDelta
           else
-            deltaN := v * FErrorBarData[Which].ValueMinus * PERCENT;
+            ALowerDelta := v * FErrorBarData[Which].ValueMinus * PERCENT;
         end;
       ebkChartSource:
         if Which = 0 then begin
           pidx := FErrorBarData[0].IndexPlus;
           nidx := FErrorBarData[0].IndexMinus;
-          if not InRange(pidx, 0, XCount - 1) then exit;
-          if (nidx <> -1) and not InRange(nidx, 0, XCount - 1) then exit;
-          deltaP := Item[APointIndex]^.GetX(pidx);
+          if not InRange(pidx, 0, XCount) then exit;
+          if (nidx <> -1) and not InRange(nidx, 0, XCount-1) then exit;
+          AUpperDelta := Item[APointIndex]^.GetX(pidx);
           if nidx = -1 then
-            deltaN := deltaP
+            ALowerDelta := AUpperDelta
           else
-            deltaN := Item[APointIndex]^.GetX(nidx);
+            ALowerDelta := Item[APointIndex]^.GetX(nidx);
         end else begin
           pidx := FErrorBarData[1].IndexPlus;
           nidx := FErrorBarData[1].IndexMinus;
-          if not InRange(pidx, 0, YCount - 1) then exit;
-          if (nidx <> -1) and not InRange(nidx, 0, YCount - 1) then exit;
-          deltaP := Item[APointIndex]^.GetY(pidx);
+          if not InRange(pidx, 0, YCount-1) then exit;
+          if (nidx <> -1) and not InRange(nidx, 0, YCount-1) then exit;
+          AUpperDelta := Item[APointIndex]^.GetY(pidx);
           if nidx = -1 then
-            deltaN := deltaP
+            ALowerDelta := AUpperDelta
           else
-            deltaN := Item[APointIndex]^.GetY(nidx);
+            ALowerDelta := Item[APointIndex]^.GetY(nidx);
         end;
     end;
-    AUpperLimit := v + abs(deltaP);
-    ALowerLimit := v - abs(deltaN);
-    Result := (AUpperLimit <> ALowerLimit);
+    AUpperDelta := abs(AUpperDelta);
+    ALowerDelta := abs(ALowerDelta);
+    Result := (AUpperDelta <> 0) and (ALowerDelta <> 0);
   end;
 end;
 
 function TCustomChartSource.GetXErrorBarLimits(APointIndex: Integer;
   out AUpperLimit, ALowerLimit: Double): Boolean;
+var
+  v, dxp, dxn: Double;
 begin
-  Result := GetErrorBarLimits(APointIndex, 0, AUpperLimit, ALowerLimit);
+  Result := GetErrorBarValues(APointIndex, 0, dxp, dxn);
+  v := Item[APointIndex]^.X;
+  if Result and not IsNaN(v) then begin
+    AUpperLimit := v + dxp;
+    ALowerLimit := v - dxn;
+  end else begin
+    AUpperLimit := v;
+    ALowerLimit := v;
+  end;
 end;
 
 function TCustomChartSource.GetYErrorBarLimits(APointIndex: Integer;
   out AUpperLimit, ALowerLimit: Double): Boolean;
+var
+  v, dyp, dyn: Double;
 begin
-  Result := GetErrorBarLimits(APointIndex, 1, AUpperLimit, ALowerLimit);
+  Result := GetErrorBarValues(APointIndex, 1, dyp, dyn);
+  v := Item[APointIndex]^.Y;
+  if Result and not IsNaN(v) then begin
+    AUpperLimit := v + dyp;
+    ALowerLimit := v - dyn;
+  end else begin
+    AUpperLimit := v;
+    ALowerLimit := v;
+  end;
+end;
+
+function TCustomChartSource.GetXErrorBarValues(APointIndex: Integer;
+  out AUpperDelta, ALowerDelta: Double): Boolean;
+begin
+  Result := GetErrorBarValues(APointIndex, 0, AUpperDelta, ALowerDelta);
+end;
+
+function TCustomChartSource.GetYErrorBarValues(APointIndex: Integer;
+  out AUpperDelta, ALowerDelta: Double): Boolean;
+begin
+  Result := GetErrorBarValues(APointIndex, 1, AUpperDelta, ALowerDelta);
 end;
 
 function TCustomChartSource.GetHasErrorBars(Which: Integer): Boolean;
