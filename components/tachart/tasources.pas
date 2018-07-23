@@ -807,18 +807,21 @@ begin
   end;
   while FCurIndex < AIndex do begin
     FCurIndex += 1;
-    if (XMax <= XMin) or (Count = 1) then begin
-      FCurItem.X := XMin;
-      for i := 0 to XCount - 2 do FCurItem.XList[i] := XMin;
-    end else begin
-      if FRandomX then begin
-        FCurItem.X := FRNG.Get / High(LongWord) * (XMax - XMin) + XMin;
-        for i := 0 to XCount - 2 do
-          FCurItem.XList[i] := FRNG.Get / High(LongWord) * (XMax - XMin) + XMin;
+    if XCount > 0 then begin
+      SetLength(FCurItem.XList, Max(XCount - 1, 0));
+      if (XMax <= XMin) or (Count = 1) then begin
+        FCurItem.X := XMin;
+        for i := 0 to XCount - 2 do FCurItem.XList[i] := XMin;
       end else begin
-        FCurItem.X := FCurIndex / (Count - 1) * (XMax - XMin) + XMin;
-        for i := 0 to XCount - 2 do
-          FCurItem.XList[i] := FCurItem.X;
+        if FRandomX then begin
+          FCurItem.X := FRNG.Get / High(LongWord) * (XMax - XMin) + XMin;
+          for i := 0 to XCount - 2 do
+            FCurItem.XList[i] := FRNG.Get / High(LongWord) * (XMax - XMin) + XMin;
+        end else begin
+          FCurItem.X := FCurIndex / (Count - 1) * (XMax - XMin) + XMin;
+          for i := 0 to XCount - 2 do
+            FCurItem.XList[i] := FCurItem.X;
+        end;
       end;
     end;
     if YCount > 0 then begin
