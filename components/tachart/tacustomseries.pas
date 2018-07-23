@@ -263,6 +263,7 @@ type
     FOnGetPointerStyle: TSeriesPointerStyleEvent;
     function GetErrorBars(AIndex: Integer): TChartErrorBar;
     function GetLabelDirection(AIndex: Integer): TLabelDirection;
+    function IsErrorBarsStored(AIndex: Integer): Boolean;
     procedure SetErrorBars(AIndex: Integer; AValue: TChartErrorBar);
     procedure SetMarkPositions(AValue: TLinearMarkPositions);
     procedure SetPointer(AValue: TSeriesPointer);
@@ -310,8 +311,10 @@ type
     procedure AfterAdd; override;
     procedure UpdateMargins(ADrawer: IChartDrawer; var AMargins: TRect); override;
 
-    property XErrorBars: TChartErrorBar index 0 read GetErrorBars write SetErrorBars;
-    property YErrorBars: TChartErrorBar index 1 read GetErrorBars write SetErrorBars;
+    property XErrorBars: TChartErrorBar index 0 read GetErrorBars
+      write SetErrorBars stored IsErrorBarsStored;
+    property YErrorBars: TChartErrorBar index 1 read GetErrorBars
+      write SetErrorBars stored IsErrorBarsStored;
     property OnCustomDrawPointer: TSeriesPointerCustomDrawEvent
       read FOnCustomDrawPointer write FOnCustomDrawPointer;
     property OnGetPointerStyle: TSeriesPointerStyleEvent
@@ -1203,7 +1206,7 @@ begin
   // Draw x error bars
   if Assigned(XErrorBars) and XErrorBars.Visible and Source.HasXErrorBars then
   begin
-    ADrawer.pen := XErrorBars.Pen;
+    ADrawer.Pen := XErrorBars.Pen;
     InternalDrawErrorBars(true);
   end;
 
@@ -1544,6 +1547,15 @@ end;
 function TBasicPointSeries.GetZeroLevel: Double;
 begin
   Result := 0.0;
+end;
+
+function TBasicPointSeries.IsErrorBarsStored(AIndex: Integer): Boolean;
+begin
+  with FErrorBars[AIndex] do
+    Result := Visible or (Width <> -1) or (Pen.Color <> clBlack) or
+      (not Pen.Cosmetic) or (Pen.EndCap <> pecRound) or
+      (Pen.JoinStyle <> pjsRound) or (Pen.Mode <> pmCopy) or
+      (Pen.Style <> psSolid) or (Pen.Width <> 1);
 end;
 
 procedure TBasicPointSeries.MovePoint(

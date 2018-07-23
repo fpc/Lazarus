@@ -160,6 +160,7 @@ type
     procedure Changed;
     function GetIndex(AIndex: Integer): Integer;
     function GetValue(AIndex: Integer): Double;
+    function IsErrorBarValueStored(AIndex: Integer): Boolean;
     procedure SetKind(AValue: TChartErrorbarKind);
     procedure SetIndex(AIndex, AValue: Integer);
     procedure SetValue(AIndex: Integer; AValue: Double);
@@ -169,18 +170,18 @@ type
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   published
     property Kind: TChartErrorBarKind read FKind write SetKind default ebkNone;
-    property NegDelta: Double index 1 read GetValue write SetValue;
-    property NegIndex: Integer index 1 read GetIndex write SetIndex default -1;
-    property PosDelta: Double index 0 read GetValue write SetValue;
-    property PosIndex: Integer index 0 read GetIndex write SetIndex default -1;
+    property IndexMinus: Integer index 1 read GetIndex write SetIndex default -1;
+    property IndexPlus: Integer index 0 read GetIndex write SetIndex default -1;
+    property ValueMinus: Double index 1 read GetValue write SetValue stored IsErrorBarValueStored;
+    property ValuePlus: Double index 0 read GetValue write SetValue stored IsErrorBarValueStored;
 
   end;
 
   TCustomChartSource = class(TBasicChartSource)
   strict private
     FErrorBarData: array[0..1] of TChartErrorBarData;
-    procedure ChangeErrorBarHandler(Sender: TObject);
     function GetErrorBarData(AIndex: Integer): TChartErrorBarData;
+    function IsErrorBarDataStored(AIndex: Integer): Boolean;
     procedure SetErrorBarData(AIndex: Integer; AValue: TChartErrorBarData);
     procedure SortValuesInRange(
       var AValues: TChartValueTextArray; AStart, AEnd: Integer);
@@ -191,6 +192,7 @@ type
     FValuesTotalIsValid: Boolean;
     FXCount: Cardinal;
     FYCount: Cardinal;
+    procedure ChangeErrorBars(Sender: TObject); virtual;
     function GetCount: Integer; virtual; abstract;
     function GetErrorBarLimits(APointIndex: Integer; Which: Integer;
       out AUpperLimit, ALowerLimit: Double): Boolean;
@@ -200,9 +202,9 @@ type
     procedure SetXCount(AValue: Cardinal); virtual; abstract;
     procedure SetYCount(AValue: Cardinal); virtual; abstract;
     property XErrorBarData: TChartErrorBarData index 0 read GetErrorBarData
-      write SetErrorBarData;
+      write SetErrorBarData stored IsErrorBarDataStored;
     property YErrorBarData: TChartErrorBarData index 1 read GetErrorBarData
-      write SetErrorBarData;
+      write SetErrorBarData stored IsErrorBarDataStored;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -703,7 +705,7 @@ begin
   FIndex[0] := -1;
   FIndex[1] := -1;
   FValue[0] := 0;
-  FValue[1] := 0;
+  FValue[1] := -1;
   FKind := ebkNone;
 end;
 
@@ -730,6 +732,14 @@ end;
 function TChartErrorBarData.GetValue(AIndex: Integer): Double;
 begin
   Result := FValue[AIndex];
+end;
+
+function TChartErrorBarData.IsErrorbarValueStored(AIndex: Integer): Boolean;
+begin
+  if AIndex = 0 then
+    Result := FValue[0] <> 0
+  else
+    Result := FValue[1] <> -1;
 end;
 
 procedure TChartErrorBarData.SetIndex(AIndex, AValue: Integer);
@@ -780,7 +790,7 @@ begin
   FYCount := 1;
   for i:=0 to 1 do begin
     FErrorBarData[i] := TChartErrorBarData.Create;
-    FErrorBarData[i].OnChange := @ChangeErrorBarHandler;
+    FErrorBarData[i].OnChange := @ChangeErrorBars;
   end;
 end;
 
@@ -791,7 +801,7 @@ begin
   inherited;
 end;
 
-procedure TCustomChartSource.ChangeErrorBarHandler(Sender: TObject);
+procedure TCustomChartSource.ChangeErrorBars(Sender: TObject);
 begin
   Unused(Sender);
   Notify;
@@ -851,8 +861,8 @@ begin
 
   // Skip the y values used for error bars in calculating the cumulative sum.
   if YErrorBarData.Kind = ebkChartSource then begin
-    jyp := YErrorBarData.PosIndex - 1;  // -1 because YList index is offset by 1
-    jyn := YErrorBarData.NegIndex - 1;
+    jyp := YErrorBarData.IndexPlus - 1;  // -1 because YList index is offset by 1
+    jyn := YErrorBarData.IndexMinus - 1;
   end;
 
   for i := 0 to Count - 1 do begin
@@ -878,15 +888,15 @@ begin
 
   // Skip then x and y values used for error bars when calculating the list extent.
   if XErrorBarData.Kind = ebkChartSource then begin
-    jxp := XErrorBarData.PosIndex - 1;  // -1 because XList is offset by 1
-    jxn := XErrorBarData.NegIndex - 1;
+    jxp := XErrorBarData.IndexPlus - 1;  // -1 because XList is offset by 1
+    jxn := XErrorBarData.IndexMinus - 1;
   end else begin
     jxp := -1;
     jxn := -1;
   end;
   if YErrorBarData.Kind = ebkChartSource then begin
-    jyp := YErrorbarData.PosIndex - 1;  // -1 because YList is offset by 1
-    jyn := YErrorBarData.NegIndex - 1;
+    jyp := YErrorbarData.IndexPlus - 1;  // -1 because YList is offset by 1
+    jyn := YErrorBarData.IndexMinus - 1;
   end else begin
     jyp := -1;
     jyn := -1;
@@ -1016,24 +1026,24 @@ begin
         exit;
       ebkConst:
         begin
-          deltaP := FErrorBarData[Which].PosDelta;
-          if FErrorBarData[Which].NegDelta = -1 then
+          deltaP := FErrorBarData[Which].ValuePlus;
+          if FErrorBarData[Which].ValueMinus = -1 then
             deltaN := deltaP
           else
-            deltaN := FErrorBarData[Which].NegDelta;
+            deltaN := FErrorBarData[Which].ValueMinus;
         end;
       ebkPercent:
         begin
-          deltaP := v * FErrorBarData[Which].PosDelta * PERCENT;
-          if FErrorBarData[Which].NegDelta = -1 then
+          deltaP := v * FErrorBarData[Which].ValuePlus * PERCENT;
+          if FErrorBarData[Which].ValueMinus = -1 then
             deltaN := deltaP
           else
-            deltaN := v * FErrorBarData[Which].NegDelta * PERCENT;
+            deltaN := v * FErrorBarData[Which].ValueMinus * PERCENT;
         end;
       ebkChartSource:
         if Which = 0 then begin
-          pidx := FErrorBarData[0].PosIndex;
-          nidx := FErrorBarData[0].NegIndex;
+          pidx := FErrorBarData[0].IndexPlus;
+          nidx := FErrorBarData[0].IndexMinus;
           if not InRange(pidx, 0, XCount - 1) then exit;
           if (nidx <> -1) and not InRange(nidx, 0, XCount - 1) then exit;
           deltaP := Item[APointIndex]^.GetX(pidx);
@@ -1042,8 +1052,8 @@ begin
           else
             deltaN := Item[APointIndex]^.GetX(nidx);
         end else begin
-          pidx := FErrorBarData[1].PosIndex;
-          nidx := FErrorBarData[1].NegIndex;
+          pidx := FErrorBarData[1].IndexPlus;
+          nidx := FErrorBarData[1].IndexMinus;
           if not InRange(pidx, 0, YCount - 1) then exit;
           if (nidx <> -1) and not InRange(nidx, 0, YCount - 1) then exit;
           deltaP := Item[APointIndex]^.GetY(pidx);
@@ -1072,16 +1082,20 @@ begin
 end;
 
 function TCustomChartSource.GetHasErrorBars(Which: Integer): Boolean;
+var
+  errbar: TChartErrorbarData;
 begin
   Result := false;
-  if Assigned(FErrorBarData[Which]) then
-    case FErrorBarData[Which].Kind of
+  errbar := FErrorBarData[Which];
+  if Assigned(errbar) then
+    case errbar.Kind of
       ebkNone:
         ;
       ebkConst, ebkPercent:
-        Result := (FErrorBarData[Which].PosDelta > 0);
+        Result := (errbar.ValuePlus > 0) and
+                  ((errbar.ValueMinus = -1) or (errbar.ValueMinus > 0));
       ebkChartSource:
-        Result := (FErrorBarData[Which].PosIndex > -1);
+        Result := (errbar.IndexPlus > -1) and (errbar.IndexMinus >= -1);
     end;
 end;
 
@@ -1101,11 +1115,17 @@ begin
   FValuesTotalIsValid := false;
 end;
 
+function TCustomChartSource.IsErrorBarDataStored(AIndex: Integer): Boolean;
+begin
+  with FErrorBarData[AIndex] do
+    Result := (FIndex[AIndex] <> -1) or (FValue[AIndex] <> -1) or (FKind <> ebkNone);
+end;
+
 function TCustomChartSource.IsXErrorIndex(AXIndex: Integer): Boolean;
 begin
   Result :=
     (XErrorBarData.Kind = ebkChartSource) and
-    ((XErrorBarData.PosIndex = AXIndex) or (XErrorBarData.NegIndex = AXIndex) and
+    ((XErrorBarData.IndexPlus = AXIndex) or (XErrorBarData.IndexMinus = AXIndex) and
     (AXIndex > -1)
   );
 end;
@@ -1114,7 +1134,7 @@ function TCustomChartSource.IsYErrorIndex(AYIndex: Integer): Boolean;
 begin
   Result :=
     (YErrorBarData.Kind = ebkChartSource) and
-    ((YErrorBarData.PosIndex = AYIndex) or (YErrorBarData.NegIndex = AYIndex)) and
+    ((YErrorBarData.IndexPlus = AYIndex) or (YErrorBarData.IndexMinus = AYIndex)) and
     (AYIndex > -1);
 end;
 

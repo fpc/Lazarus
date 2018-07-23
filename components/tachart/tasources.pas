@@ -116,6 +116,7 @@ type
     procedure SetYMin(AValue: Double);
     procedure SetYNanPercent(AValue: TPercent);
   protected
+    procedure ChangeErrorBars(Sender: TObject); override;
     function GetCount: Integer; override;
     function GetItem(AIndex: Integer): PChartDataItem; override;
     procedure SetXCount(AValue: Cardinal); override;
@@ -781,12 +782,23 @@ begin
   inherited;
 end;
 
+procedure TRandomChartSource.ChangeErrorBars(Sender: TObject);
+begin
+  Unused(Sender);
+  Reset;
+end;
+
 function TRandomChartSource.GetCount: Integer;
 begin
   Result := FPointsNumber;
 end;
 
 function TRandomChartSource.GetItem(AIndex: Integer): PChartDataItem;
+
+  function GetRandomX: Double;
+  begin
+    Result := FRNG.Get / High(LongWord) * (XMax - XMin) + XMin;
+  end;
 
   function GetRandomY: Double;
   begin
@@ -814,21 +826,40 @@ begin
         for i := 0 to XCount - 2 do FCurItem.XList[i] := XMin;
       end else begin
         if FRandomX then begin
-          FCurItem.X := FRNG.Get / High(LongWord) * (XMax - XMin) + XMin;
+          FCurItem.X := GetRandomX;
           for i := 0 to XCount - 2 do
-            FCurItem.XList[i] := FRNG.Get / High(LongWord) * (XMax - XMin) + XMin;
+            FCurItem.XList[i] := GetRandomX;
         end else begin
           FCurItem.X := FCurIndex / (Count - 1) * (XMax - XMin) + XMin;
           for i := 0 to XCount - 2 do
             FCurItem.XList[i] := FCurItem.X;
         end;
       end;
+      // Make sure that x values belonging to an error bar are random and
+      // multiplied by the percentage given by ErrorBarData.Pos/NegDelta.
+      for i := 0 to XCount - 2 do
+        if (XErrorBarData.Kind = ebkChartSource) then begin
+          if (i+1 = XErrorBarData.IndexPlus) and (XErrorBarData.ValuePlus > 0) then
+            FCurItem.XList[i] := GetRandomX * XErrorBarData.ValuePlus * PERCENT;
+          if (i+1 = XErrorBarData.IndexMinus) and (XErrorBarData.ValueMinus > 0) then
+            FCurItem.XList[i] := GetRandomX * XErrorBarData.ValueMinus * PERCENT;
+        end;
     end;
     if YCount > 0 then begin
       FCurItem.Y := GetRandomY;
       SetLength(FCurItem.YList, Max(YCount - 1, 0));
-      for i := 0 to YCount - 2 do
+      for i := 0 to YCount - 2 do begin
         FCurItem.YList[i] := GetRandomY;
+        // If this y value is that of an error bar assume that the error is
+        // a percentage of the y value calculated. The percentage is the
+        // ErrorBarData.Pos/NegDelta.
+        if (YErrorBarData.Kind = ebkChartSource) then begin
+          if (i+1 = YErrorBarData.IndexPlus) and (YErrorBarData.ValuePlus > 0) then
+            FCurItem.YList[i] := FCurItem.YList[i] * YErrorBarData.ValuePlus * PERCENT;
+          if (i+1 = YErrorBarData.IndexMinus) and (YErrorBarData.ValueMinus > 0) then
+            FCurItem.YList[i] := FCurItem.YList[i] * YErrorBarData.ValueMinus * PERCENT;
+        end;
+      end;
     end;
   end;
   Result := @FCurItem;
