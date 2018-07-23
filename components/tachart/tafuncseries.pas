@@ -1544,7 +1544,7 @@ begin
   FFitRange := TFitSeriesRange.Create(Self);
   FDrawFitRangeOnly := true;
   FPointer := TSeriesPointer.Create(ParentChart);
-  FPointer.Visible := false;
+//  FPointer.Visible := false;
   FPen := TChartPen.Create;
   FPen.OnChange := @StyleChanged;
   FStep := DEF_FIT_STEP;

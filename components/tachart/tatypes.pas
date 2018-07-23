@@ -122,7 +122,6 @@ type
     destructor Destroy; override;
   public
     procedure Assign(Source: TPersistent); override;
-
     procedure Draw(ADrawer: IChartDrawer; ACenter: TPoint; AColor: TColor;
       ABrushAlreadySet: Boolean = false);
     procedure DrawSize(ADrawer: IChartDrawer; ACenter, ASize: TPoint;
@@ -135,7 +134,7 @@ type
     property Pen: TChartPen read FPen write SetPen;
     property Style: TSeriesPointerStyle read FStyle write SetStyle default psRectangle;
     property VertSize: Integer read FVertSize write SetVertSize default DEF_POINTER_SIZE;
-    property Visible default true;
+    property Visible default false;
   end;
 
   EExtentError = class(EChartError);
@@ -395,8 +394,8 @@ begin
 
   FHorizSize := DEF_POINTER_SIZE;
   SetPropDefaults(Self, ['OverrideColor', 'Style']);
-  FVertSize  := DEF_POINTER_SIZE;
-  FVisible := true;
+  FVertSize := DEF_POINTER_SIZE;
+  FVisible := false;
 end;
 
 destructor TSeriesPointer.Destroy;
@@ -565,6 +564,7 @@ begin
   FVertSize := AValue;
   StyleChanged(Self);
 end;
+
 
 { TChartRange }
 

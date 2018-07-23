@@ -200,11 +200,11 @@ type
     FLinePen: TPen;
     FLineType: TLineType;
     FOnDrawPointer: TSeriesPointerDrawEvent;
-    FShowPoints: Boolean;
     FColorEach: TColorEachMode;
 
     procedure DrawSingleLineInStack(ADrawer: IChartDrawer; AIndex: Integer);
     function GetShowLines: Boolean;
+    function GetShowPoints: Boolean;
     procedure SetColorEach(AValue: TColorEachMode);
     procedure SetLinePen(AValue: TPen);
     procedure SetLineType(AValue: TLineType);
@@ -237,7 +237,7 @@ type
     property ShowLines: Boolean
       read GetShowLines write SetShowLines stored false default true;
     property ShowPoints: Boolean
-      read FShowPoints write SetShowPoints default false;
+      read GetShowPoints write SetShowPoints default false;
     property Stacked default false;
     property Source;
     property Styles;
@@ -387,7 +387,6 @@ begin
       Self.LinePen := FLinePen;
       Self.FLineType := FLineType;
       Self.FOnDrawPointer := FOnDrawPointer;
-      Self.FShowPoints := FShowPoints;
       Self.FColorEach := FColorEach;
     end;
   inherited Assign(ASource);
@@ -396,12 +395,11 @@ end;
 constructor TLineSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-
   FColorEach := cePoint;
   FLinePen := TPen.Create;
   FLinePen.OnChange := @StyleChanged;
   FPointer := TSeriesPointer.Create(FChart);
-  SetPropDefaults(Self, ['LineType', 'ShowPoints', 'UseReticule']);
+  SetPropDefaults(Self, ['LineType', 'UseReticule']);
 end;
 
 destructor TLineSeries.Destroy;
@@ -722,6 +720,11 @@ begin
   Result := FLineType <> ltNone;
 end;
 
+function TLineSeries.GetShowPoints: Boolean;
+begin
+  Result := FPointer.Visible;
+end;
+
 procedure TLineSeries.SetColorEach(AValue: TColorEachMode);
 begin
   if FColorEach = AValue then exit;
@@ -759,7 +762,7 @@ end;
 procedure TLineSeries.SetShowPoints(AValue: Boolean);
 begin
   if ShowPoints = AValue then exit;
-  FShowPoints := AValue;
+  FPointer.Visible := AValue;
   UpdateParentChart;
 end;
 
