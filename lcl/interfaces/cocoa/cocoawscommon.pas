@@ -859,6 +859,18 @@ begin
   end;
 
   //debugln('MouseUpDownEvent:'+DbgS(Msg.Msg)+' Target='+Target.name+);
+  if not Result then
+  //Result := Result or (BlockCocoaUpDown and not AOverrideBlock);
+    case lEventType of
+      NSLeftMouseDown,
+      NSRightMouseDown,
+      NSOtherMouseDown:
+        TrackedControl := Owner;
+      NSLeftMouseUp,
+      NSRightMouseUp,
+      NSOtherMouseUp:
+        if TrackedControl = Owner then TrackedControl := nil;
+    end;
 end;
 
 function TLCLCommonCallback.MouseMove(Event: NSEvent): Boolean;

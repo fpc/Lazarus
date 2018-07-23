@@ -320,6 +320,10 @@ const
   NSTextAlignmentJustified = 3;
   NSTextAlignmentNatural   = 4;
 
+var
+  // todo: this should be a threadvar
+  TrackedControl : NSObject = nil;
+
 implementation
 
 uses CocoaInt;

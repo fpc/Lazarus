@@ -83,6 +83,7 @@ type
     function isRunning: Boolean; override;
     procedure run; override;
     procedure sendEvent(theEvent: NSEvent); override;
+    function nextEventMatchingMask_untilDate_inMode_dequeue(mask: NSUInteger; expiration: NSDate; mode: NSString; deqFlag: Boolean): NSEvent; override;
   end;
 
   TCocoaPasteboardsRef = record
@@ -395,6 +396,23 @@ begin
   then
     self.keyWindow.sendEvent(theEvent);
   inherited sendEvent(theEvent);
+end;
+
+function TCocoaApplication.nextEventMatchingMask_untilDate_inMode_dequeue(
+  mask: NSUInteger; expiration: NSDate; mode: NSString; deqFlag: Boolean
+  ): NSEvent;
+var
+  cb : ICommonCallback;
+begin
+  Result:=inherited nextEventMatchingMask_untilDate_inMode_dequeue(mask,
+    expiration, mode, deqFlag);
+  if Assigned(Result)
+    and ((mode = NSEventTrackingRunLoopMode) or mode.isEqualToString(NSEventTrackingRunLoopMode))
+    and Assigned(TrackedControl)
+  then begin
+    cb := TrackedControl.lclGetCallback;
+    if Assigned(cb) then cb.MouseMove(Result);
+  end;
 end;
 
 // the implementation of the utility methods
