@@ -804,6 +804,7 @@ end;
 procedure TCustomChartSource.ChangeErrorBars(Sender: TObject);
 begin
   Unused(Sender);
+  InvalidateCaches;
   Notify;
 end;
 
