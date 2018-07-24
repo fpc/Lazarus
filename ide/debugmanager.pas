@@ -40,9 +40,11 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
+  Classes, SysUtils, math,
   // LCL
-  Classes, SysUtils, math, Forms, Controls, Dialogs, ExtCtrls, LazFileUtils,
-  LCLType, LCLIntf, LazLoggerBase, Laz2_XMLCfg, LazFileCache, LazUTF8,
+  LCLType, LCLIntf, Forms, Controls, Dialogs, ExtCtrls,
+  // LazUtils
+  LazFileUtils, LazFileCache, LazLoggerBase, Laz2_XMLCfg, LazUTF8,
   // codetools
   CodeCache, CodeToolManager, PascalParserTool, CodeTree,
   // IDEIntf

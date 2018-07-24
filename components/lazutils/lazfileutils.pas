@@ -169,10 +169,18 @@ function GetDarwinNormalizedFilename(Filename: string; nForm:Integer=2): string;
 function SHGetFolderPathUTF8(ID :  Integer) : String;
 {$ENDIF}
 
+// Command line
 procedure SplitCmdLineParams(const Params: string; ParamList: TStrings;
                              ReadBackslash: boolean = false);
 function StrToCmdLineParam(const Param: string): string;
 function MergeCmdLineParams(ParamList: TStrings): string;
+// Command line functions moved from IDEProcs.
+// ToDo: Study if they are needed or if the above functions could be used instead.
+procedure SplitCmdLine(const CmdLine: string;
+                       out ProgramFilename, Params: string);
+function PrepareCmdLineOption(const Option: string): string;
+//function AddCmdLineParameter(const CmdLine, AddParameter: string): string;
+
 
 type
   TInvalidateFileStateCacheEvent = procedure(const Filename: string);
@@ -1363,6 +1371,68 @@ begin
   end;
 end;
 
+procedure SplitCmdLine(const CmdLine: string;
+                       out ProgramFilename, Params: string);
+var p, s, l: integer;
+  quote: char;
+begin
+  ProgramFilename:='';
+  Params:='';
+  if CmdLine='' then exit;
+  p:=1;
+  s:=1;
+  if (CmdLine[p] in ['"','''']) then
+  begin
+    // skip quoted string
+    quote:=CmdLine[p];
+    inc(s);
+    repeat
+      inc(p);
+      if p>Length(CmdLine) then Break;
+      // check if we have an escape char
+      if (CmdLine[p] = '\') and (CmdLine[p]<>PathDelim) then inc(p);
+    until (p>Length(CmdLine)) or (CmdLine[p]=quote);
+    // go past last character or quoted string
+    l:=p-s;
+    inc(p);
+  end else begin
+    while (p<=length(CmdLine)) and (CmdLine[p]>' ') do begin
+      if (CmdLine[p] in ['/','\']) and (CmdLine[p]<>PathDelim) then begin
+        // skip special char
+        inc(p);
+      end;
+      inc(p);
+    end;
+    l:=p-s;
+  end;
+  ProgramFilename:=Copy(CmdLine,s,l);
+  while (p<=length(CmdLine)) and (CmdLine[p]<=' ') do inc(p);
+  Params:=RightStr(CmdLine,length(CmdLine)-p+1);
+end;
+
+function PrepareCmdLineOption(const Option: string): string;
+// If there is a space in the option add " " around the whole option
+var
+  i: integer;
+begin
+  Result:=Option;
+  if (Result='') or (Result[1]='"') then exit;
+  for i:=1 to length(Result) do begin
+    if Result[i]=' ' then begin
+      Result:='"'+Result+'"';
+      exit;
+    end;
+  end;
+end;
+{
+function AddCmdLineParameter(const CmdLine, AddParameter: string): string;
+begin
+  Result:=CmdLine;
+  if (Result<>'') and (Result[length(Result)]<>' ') then
+    Result:=Result+' ';
+  Result:=Result+AddParameter;
+end;
+}
 {
   Returns
   - DriveLetter + : + PathDelim on Windows (if present) or

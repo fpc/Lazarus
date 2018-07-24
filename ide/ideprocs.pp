@@ -94,12 +94,6 @@ function FilenameIsFormText(const Filename: string): boolean;
 function ChompEndNumber(const s: string): string;
 function ShortDisplayFilename(const aFileName: string): string;
 
-// cmd line
-procedure SplitCmdLine(const CmdLine: string;
-                       out ProgramFilename, Params: string);
-function PrepareCmdLineOption(const Option: string): string;
-function AddCmdLineParameter(const CmdLine, AddParameter: string): string;
-
 // find file
 function FindFilesCaseInsensitive(const Directory,
   CaseInsensitiveFilename: string; IgnoreExact: boolean): TStringList;
@@ -1105,45 +1099,6 @@ begin
   XMLConfig.SetDeleteValue(Path+'Y',APoint.Y,DefaultPoint.Y);
 end;
 
-procedure SplitCmdLine(const CmdLine: string;
-                       out ProgramFilename, Params: string);
-var p, s, l: integer;
-  quote: char;
-begin
-  ProgramFilename:='';
-  Params:='';
-  if CmdLine='' then exit;
-  p:=1;
-  s:=1;
-  if (CmdLine[p] in ['"','''']) then
-  begin
-    // skip quoted string
-    quote:=CmdLine[p];
-    inc(s);
-    repeat
-      inc(p);
-      if p>Length(CmdLine) then Break;
-      // check if we have an escape char
-      if (CmdLine[p] = '\') and (CmdLine[p]<>PathDelim) then inc(p);
-    until (p>Length(CmdLine)) or (CmdLine[p]=quote);
-    // go past last character or quoted string
-    l:=p-s;
-    inc(p);
-  end else begin
-    while (p<=length(CmdLine)) and (CmdLine[p]>' ') do begin
-      if (CmdLine[p] in ['/','\']) and (CmdLine[p]<>PathDelim) then begin
-        // skip special char
-        inc(p);
-      end;
-      inc(p);
-    end;
-    l:=p-s;
-  end;
-  ProgramFilename:=Copy(CmdLine,s,l);
-  while (p<=length(CmdLine)) and (CmdLine[p]<=' ') do inc(p);
-  Params:=RightStr(CmdLine,length(CmdLine)-p+1);
-end;
-
 procedure CheckList(List: TList; TestListNil, TestDoubles, TestNils: boolean);
 var
   Cnt: Integer;
@@ -1935,35 +1890,6 @@ begin
       inc(i,2);
     end;
   end;
-end;
-
-{-------------------------------------------------------------------------------
-  PrepareCmdLineOption
-
-  Params: const Option: string
-  Result: string
-
-  If there is a space in the option add " " around the whole option
--------------------------------------------------------------------------------}
-function PrepareCmdLineOption(const Option: string): string;
-var i: integer;
-begin
-  Result:=Option;
-  if (Result='') or (Result[1]='"') then exit;
-  for i:=1 to length(Result) do begin
-    if Result[i]=' ' then begin
-      Result:='"'+Result+'"';
-      exit;
-    end;
-  end;
-end;
-
-function AddCmdLineParameter(const CmdLine, AddParameter: string): string;
-begin
-  Result:=CmdLine;
-  if (Result<>'') and (Result[length(Result)]<>' ') then
-    Result:=Result+' ';
-  Result:=Result+AddParameter;
 end;
 
 {-------------------------------------------------------------------------------
