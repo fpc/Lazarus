@@ -9800,6 +9800,8 @@ var
   OldR,OldC: Integer;
   RowChanged, ColChanged: Boolean;
 begin
+  if EditorMode then
+    EditorMode := false;
   OldR:=RowCount;
   OldC:=ColCount;
   RowChanged := ClearRows;
