@@ -1,0 +1,585 @@
+object MainForm: TMainForm
+  Left = 371
+  Height = 601
+  Top = 283
+  Width = 1136
+  Caption = 'MainForm'
+  ClientHeight = 601
+  ClientWidth = 1136
+  OnCreate = FormCreate
+  LCLVersion = '1.9.0.0'
+  object Chart1: TChart
+    Left = 208
+    Height = 601
+    Top = 0
+    Width = 502
+    AxisList = <    
+      item
+        Grid.Color = clSilver
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelFont.Orientation = 900
+        Title.LabelBrush.Style = bsClear
+      end    
+      item
+        Grid.Color = clSilver
+        Alignment = calBottom
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelBrush.Style = bsClear
+      end>
+    BackColor = clWhite
+    Foot.Brush.Color = clBtnFace
+    Foot.Font.Color = clBlue
+    Title.Brush.Color = clBtnFace
+    Title.Font.Color = clBlue
+    Title.Text.Strings = (
+      'TAChart'
+    )
+    OnAfterPaint = Chart1AfterPaint
+    Align = alClient
+    object Chart1LineSeries1: TLineSeries
+      Title = 'Line'
+      ZPosition = 1
+      AxisIndexX = 1
+      AxisIndexY = 0
+      LinePen.Color = clBlue
+      Pointer.Brush.Color = clBlue
+      Pointer.HorizSize = 6
+      Pointer.Style = psCircle
+      Pointer.VertSize = 6
+      Pointer.Visible = True
+      ShowPoints = True
+      Stacked = True
+      Source = RandomChartSource1
+      XErrorBars.Pen.Color = clBlue
+      XErrorBars.Visible = True
+      YErrorBars.Pen.Color = clBlue
+      YErrorBars.Visible = True
+    end
+    object Chart1BSplineSeries1: TBSplineSeries
+      Active = False
+      Title = 'BSpline'
+      ZPosition = 2
+      AxisIndexX = 1
+      AxisIndexY = 0
+      Source = RandomChartSource1
+      Pen.Color = clRed
+      Pointer.Brush.Color = clRed
+      Pointer.HorizSize = 6
+      Pointer.Style = psDiamond
+      Pointer.VertSize = 6
+      Pointer.Visible = True
+      XErrorBars.Pen.Color = clRed
+      XErrorBars.Visible = True
+      YErrorBars.Pen.Color = clRed
+      YErrorBars.Visible = True
+    end
+    object Chart1CubicSplineSeries1: TCubicSplineSeries
+      Active = False
+      Title = 'Cubic spline'
+      ZPosition = 3
+      AxisIndexX = 1
+      AxisIndexY = 0
+      Pointer.Brush.Color = clSilver
+      Pointer.Visible = True
+      Source = RandomChartSource1
+      XErrorBars.Visible = True
+      YErrorBars.Visible = True
+    end
+    object Chart1FitSeries1: TFitSeries
+      Active = False
+      Title = 'Fit'
+      ZPosition = 4
+      AxisIndexX = 1
+      AxisIndexY = 0
+      Pen.Color = clGreen
+      Pointer.Brush.Color = clGreen
+      Pointer.HorizSize = 3
+      Pointer.Pen.Color = clGreen
+      Pointer.Style = psTriangle
+      Pointer.VertSize = 3
+      Pointer.Visible = True
+      Source = RandomChartSource1
+      XErrorBars.Pen.Color = clGreen
+      XErrorBars.Visible = True
+      YErrorBars.Pen.Color = clGreen
+      YErrorBars.Visible = True
+    end
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 601
+    Top = 0
+    Width = 208
+    Align = alLeft
+    BevelOuter = bvNone
+    ClientHeight = 601
+    ClientWidth = 208
+    TabOrder = 1
+    object CbRotated: TCheckBox
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Side = asrBottom
+      AnchorSideBottom.Control = Panel1
+      AnchorSideBottom.Side = asrBottom
+      Left = 8
+      Height = 19
+      Top = 574
+      Width = 61
+      Anchors = [akLeft, akBottom]
+      BorderSpacing.Left = 8
+      BorderSpacing.Top = 8
+      BorderSpacing.Bottom = 8
+      Caption = 'Rotated'
+      OnChange = CbRotatedChange
+      TabOrder = 0
+    end
+    object GbXErr: TGroupBox
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = RgChartSource
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      Left = 8
+      Height = 153
+      Top = 109
+      Width = 192
+      Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
+      BorderSpacing.Top = 8
+      BorderSpacing.Around = 8
+      Caption = 'x error bars'
+      ClientHeight = 133
+      ClientWidth = 188
+      TabOrder = 1
+      object RbXErrConst: TRadioButton
+        AnchorSideLeft.Control = CbXErrShow
+        AnchorSideTop.Control = CbXErrShow
+        AnchorSideTop.Side = asrBottom
+        Left = 16
+        Height = 19
+        Top = 33
+        Width = 66
+        BorderSpacing.Top = 10
+        Caption = 'constant'
+        Checked = True
+        OnChange = RbXErrConstChange
+        TabOrder = 4
+        TabStop = True
+      end
+      object RbXErrPercent: TRadioButton
+        AnchorSideLeft.Control = RbXErrConst
+        AnchorSideTop.Control = RbXErrConst
+        AnchorSideTop.Side = asrBottom
+        Left = 16
+        Height = 19
+        Top = 56
+        Width = 79
+        BorderSpacing.Top = 4
+        Caption = 'percentage'
+        OnChange = RbXErrPercentChange
+        TabOrder = 0
+      end
+      object RbXErrChartSource: TRadioButton
+        AnchorSideLeft.Control = RbXErrConst
+        AnchorSideTop.Control = RbXErrPercent
+        AnchorSideTop.Side = asrBottom
+        Left = 16
+        Height = 19
+        Top = 79
+        Width = 72
+        BorderSpacing.Top = 4
+        Caption = 'individual'
+        OnChange = RbXErrChartSourceChange
+        TabOrder = 1
+      end
+      object EdXErrConst: TFloatSpinEdit
+        AnchorSideLeft.Control = RbXErrPercent
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = RbXErrConst
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = GbXErr
+        AnchorSideRight.Side = asrBottom
+        Left = 119
+        Height = 23
+        Top = 31
+        Width = 61
+        Alignment = taRightJustify
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Left = 24
+        BorderSpacing.Right = 8
+        DecimalPlaces = 1
+        Increment = 0.1
+        MaxValue = 2
+        MinValue = 0
+        OnChange = EdXErrConstChange
+        TabOrder = 2
+        Value = 1
+      end
+      object EdXErrPercent: TFloatSpinEdit
+        AnchorSideLeft.Control = RbXErrPercent
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = RbXErrPercent
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = EdXErrConst
+        AnchorSideRight.Side = asrBottom
+        Left = 119
+        Height = 23
+        Top = 54
+        Width = 61
+        Alignment = taRightJustify
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Left = 24
+        DecimalPlaces = 1
+        Increment = 2
+        MinValue = 0
+        OnChange = EdXErrPercentChange
+        TabOrder = 3
+        Value = 10
+        Visible = False
+      end
+      object CbXErrShow: TCheckBox
+        AnchorSideLeft.Control = GbXErr
+        AnchorSideTop.Control = GbXErr
+        Left = 16
+        Height = 19
+        Top = 4
+        Width = 102
+        BorderSpacing.Left = 16
+        BorderSpacing.Top = 4
+        Caption = 'Show error bars'
+        Checked = True
+        OnChange = CbXErrShowChange
+        State = cbChecked
+        TabOrder = 5
+      end
+      object CbXErrDifferent: TCheckBox
+        AnchorSideLeft.Control = CbXErrShow
+        AnchorSideTop.Control = RbXErrChartSource
+        AnchorSideTop.Side = asrBottom
+        Left = 16
+        Height = 19
+        Top = 106
+        Width = 135
+        BorderSpacing.Top = 8
+        BorderSpacing.Bottom = 8
+        Caption = 'asymmetric error bars'
+        OnChange = CbXErrDifferentChange
+        TabOrder = 6
+      end
+    end
+    object GbYErr: TGroupBox
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = GbXErr
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      Left = 8
+      Height = 153
+      Top = 278
+      Width = 192
+      Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
+      BorderSpacing.Top = 8
+      BorderSpacing.Around = 8
+      Caption = 'y error bars'
+      ClientHeight = 133
+      ClientWidth = 188
+      TabOrder = 2
+      object RbYErrConst: TRadioButton
+        AnchorSideLeft.Control = CbYErrShow
+        AnchorSideTop.Control = CbYErrShow
+        AnchorSideTop.Side = asrBottom
+        Left = 16
+        Height = 19
+        Top = 33
+        Width = 66
+        BorderSpacing.Top = 10
+        Caption = 'constant'
+        Checked = True
+        OnChange = RbYErrConstChange
+        TabOrder = 4
+        TabStop = True
+      end
+      object RbYErrPercent: TRadioButton
+        AnchorSideLeft.Control = CbYErrShow
+        AnchorSideTop.Control = RbYErrConst
+        AnchorSideTop.Side = asrBottom
+        Left = 16
+        Height = 19
+        Top = 56
+        Width = 79
+        BorderSpacing.Top = 4
+        Caption = 'percentage'
+        OnChange = RbYErrPercentChange
+        TabOrder = 0
+      end
+      object RbYErrChartSource: TRadioButton
+        AnchorSideLeft.Control = CbYErrShow
+        AnchorSideTop.Control = RbYErrPercent
+        AnchorSideTop.Side = asrBottom
+        Left = 16
+        Height = 19
+        Top = 79
+        Width = 72
+        BorderSpacing.Top = 4
+        Caption = 'individual'
+        OnChange = RbYErrChartSourceChange
+        TabOrder = 1
+      end
+      object EdYErrConst: TFloatSpinEdit
+        AnchorSideLeft.Control = RbYErrPercent
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = RbYErrConst
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = GbYErr
+        AnchorSideRight.Side = asrBottom
+        Left = 119
+        Height = 23
+        Top = 31
+        Width = 61
+        Alignment = taRightJustify
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Left = 24
+        BorderSpacing.Right = 8
+        DecimalPlaces = 1
+        Increment = 0.1
+        MaxValue = 2
+        MinValue = 0
+        OnChange = EdYErrConstChange
+        TabOrder = 2
+        Value = 1
+      end
+      object EdYErrPercent: TFloatSpinEdit
+        AnchorSideLeft.Control = RbYErrPercent
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = RbYErrPercent
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = EdYErrConst
+        AnchorSideRight.Side = asrBottom
+        Left = 119
+        Height = 23
+        Top = 54
+        Width = 61
+        Alignment = taRightJustify
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Left = 24
+        DecimalPlaces = 1
+        Increment = 2
+        MinValue = 0
+        OnChange = EdYErrPercentChange
+        TabOrder = 3
+        Value = 10
+        Visible = False
+      end
+      object CbYErrShow: TCheckBox
+        AnchorSideLeft.Control = GbYErr
+        AnchorSideTop.Control = GbYErr
+        Left = 16
+        Height = 19
+        Top = 4
+        Width = 102
+        BorderSpacing.Left = 16
+        BorderSpacing.Top = 4
+        Caption = 'Show error bars'
+        Checked = True
+        OnChange = CbYErrShowChange
+        State = cbChecked
+        TabOrder = 5
+      end
+      object CbYErrDifferent: TCheckBox
+        AnchorSideLeft.Control = CbYErrShow
+        AnchorSideTop.Control = RbYErrChartSource
+        AnchorSideTop.Side = asrBottom
+        Left = 16
+        Height = 19
+        Top = 106
+        Width = 135
+        BorderSpacing.Top = 8
+        BorderSpacing.Bottom = 8
+        Caption = 'asymmetric error bars'
+        OnChange = CbYErrDifferentChange
+        TabOrder = 6
+      end
+    end
+    object RgChartSource: TRadioGroup
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = Panel1
+      Left = 8
+      Height = 85
+      Top = 8
+      Width = 185
+      AutoFill = True
+      AutoSize = True
+      BorderSpacing.Around = 8
+      Caption = 'Chart source'
+      ChildSizing.LeftRightSpacing = 16
+      ChildSizing.VerticalSpacing = 4
+      ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+      ChildSizing.EnlargeVertical = crsHomogenousChildResize
+      ChildSizing.ShrinkHorizontal = crsScaleChilds
+      ChildSizing.ShrinkVertical = crsScaleChilds
+      ChildSizing.Layout = cclLeftToRightThenTopToBottom
+      ChildSizing.ControlsPerLine = 1
+      ClientHeight = 65
+      ClientWidth = 181
+      ItemIndex = 0
+      Items.Strings = (
+        'RandomChartSource'
+        'ListChartSource'
+        'UserDefinedChartSource'
+      )
+      OnClick = RgChartSourceClick
+      TabOrder = 3
+    end
+    object GbErrorBarStyle: TGroupBox
+      AnchorSideLeft.Control = GbYErr
+      AnchorSideTop.Control = GbYErr
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = GbYErr
+      AnchorSideRight.Side = asrBottom
+      Left = 16
+      Height = 78
+      Top = 447
+      Width = 176
+      Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
+      BorderSpacing.Top = 8
+      BorderSpacing.Bottom = 8
+      BorderSpacing.Around = 8
+      Caption = 'Error bar style'
+      ClientHeight = 58
+      ClientWidth = 172
+      TabOrder = 4
+      object EdErrPenWidth: TSpinEdit
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = GbErrorBarStyle
+        AnchorSideRight.Control = GbErrorBarStyle
+        AnchorSideRight.Side = asrBottom
+        Left = 103
+        Height = 23
+        Top = 4
+        Width = 61
+        Alignment = taRightJustify
+        Anchors = [akTop, akRight]
+        BorderSpacing.Left = 24
+        BorderSpacing.Top = 4
+        BorderSpacing.Right = 8
+        MaxValue = 5
+        MinValue = 1
+        OnChange = EdErrPenWidthChange
+        TabOrder = 0
+        Value = 1
+      end
+      object LblErrLineWidth: TLabel
+        AnchorSideLeft.Control = GbErrorBarStyle
+        AnchorSideTop.Control = EdErrPenWidth
+        AnchorSideTop.Side = asrCenter
+        Left = 16
+        Height = 15
+        Top = 8
+        Width = 56
+        BorderSpacing.Left = 16
+        BorderSpacing.Top = 12
+        Caption = 'Pen width:'
+        ParentColor = False
+      end
+      object Label1: TLabel
+        AnchorSideLeft.Control = LblErrLineWidth
+        AnchorSideTop.Control = CbErrPenStyle
+        AnchorSideTop.Side = asrCenter
+        Left = 16
+        Height = 15
+        Top = 32
+        Width = 50
+        Caption = 'Pen style:'
+        ParentColor = False
+      end
+      object CbErrPenStyle: TChartComboBox
+        AnchorSideLeft.Control = EdErrPenWidth
+        AnchorSideTop.Control = EdErrPenWidth
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = EdErrPenWidth
+        AnchorSideRight.Side = asrBottom
+        Left = 103
+        Height = 22
+        Top = 28
+        Width = 61
+        Options = [ccoPatternBrush, ccoPatternPen]
+        PenPattern = '1|1'
+        PointerStyle = psNone
+        BorderSpacing.Top = 1
+        BorderSpacing.Bottom = 8
+        ItemHeight = 16
+        ItemIndex = 0
+        TabOrder = 1
+        OnChange = CbErrPenStyleChange
+      end
+    end
+  end
+  object ChartListbox1: TChartListbox
+    Left = 710
+    Height = 593
+    Top = 4
+    Width = 140
+    Chart = Chart1
+    CheckStyle = cbsRadiobutton
+    Align = alRight
+    BorderSpacing.Top = 4
+    BorderSpacing.Right = 4
+    BorderSpacing.Bottom = 4
+    ItemHeight = 0
+    TabOrder = 2
+  end
+  object StringGrid1: TStringGrid
+    Left = 854
+    Height = 593
+    Top = 4
+    Width = 278
+    Align = alRight
+    BorderSpacing.Around = 4
+    ColCount = 4
+    DefaultColWidth = 68
+    FixedCols = 0
+    TabOrder = 3
+    OnPrepareCanvas = StringGrid1PrepareCanvas
+    Cells = (
+      4
+      0
+      0
+      'x'
+      1
+      0
+      'y'
+      2
+      0
+      'dx'
+      3
+      0
+      'dy'
+    )
+  end
+  object RandomChartSource1: TRandomChartSource
+    PointsNumber = 10
+    RandSeed = 56490104
+    XMax = 10
+    XMin = 0
+    YMax = 10
+    YMin = 0
+    XErrorBarData.Kind = ebkConst
+    XErrorBarData.ValuePlus = 1
+    YErrorBarData.Kind = ebkConst
+    YErrorBarData.ValuePlus = 1
+    left = 353
+    top = 136
+  end
+  object ListChartSource1: TListChartSource
+    left = 353
+    top = 204
+  end
+  object UserDefinedChartSource1: TUserDefinedChartSource
+    OnGetChartDataItem = UserDefinedChartSource1GetChartDataItem
+    left = 353
+    top = 280
+  end
+end
