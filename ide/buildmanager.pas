@@ -45,7 +45,7 @@ uses
   LConvEncoding, FileUtil, LazFileUtils, LazFileCache, LazUTF8, Laz2_XMLCfg,
   LazUtilities, LazMethodList,
   // IDEIntf
-  IDEOptionsIntf, ProjectIntf, MacroIntf, IDEDialogs, IDEExternToolIntf,
+  BaseIDEIntf, IDEOptionsIntf, ProjectIntf, MacroIntf, IDEDialogs, IDEExternToolIntf,
   CompOptsIntf, LazIDEIntf, MacroDefIntf, IDEMsgIntf, PackageDependencyIntf,
   // IDE
   IDECmdLine, LazarusIDEStrConsts, DialogProcs, IDEProcs,

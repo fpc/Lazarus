@@ -22,8 +22,8 @@ uses
   // LazUtils
   LazMethodList,
   // IdeIntf
-  PropEdits, IDEOptionsIntf, IDEOptEditorIntf, CompOptsIntf, ProjectIntf,
-  IDEExternToolIntf, SrcEditorIntf, IDEWindowIntf;
+  BaseIDEIntf, IDEOptionsIntf, IDEOptEditorIntf, CompOptsIntf, ProjectIntf,
+  IDEExternToolIntf, SrcEditorIntf, IDEWindowIntf, PropEdits;
 
 type
   TIDEDirective = (
@@ -158,12 +158,6 @@ type
     );
   TProjectBuildFlags = set of TProjectBuildFlag;
   
-  TScanModeFPCSources = (
-    smsfsSkip,
-    smsfsWaitTillDone, // scan now and wait till finished
-    smsfsBackground    // start in background
-    );
-
   // new filename flags
   // Normally you don't need to pass any flags.
   TSearchIDEFileFlag = (

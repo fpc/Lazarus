@@ -76,7 +76,7 @@ uses
   // SynEdit
   SynEdit, AllSynEdit, SynEditKeyCmds, SynEditMarks, SynEditHighlighter,
   // IDE interface
-  IDEIntf, ObjectInspector, PropEdits, PropEditUtils, EditorSyntaxHighlighterDef,
+  BaseIDEIntf, ObjectInspector, PropEdits, PropEditUtils, EditorSyntaxHighlighterDef,
   MacroIntf, IDECommands, IDEWindowIntf, ComponentReg,
   SrcEditorIntf, NewItemIntf, IDEExternToolIntf, IDEMsgIntf, LazMsgDialogs,
   PackageIntf, ProjectIntf, CompOptsIntf, MenuIntf, LazIDEIntf, IDEDialogs,

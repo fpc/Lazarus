@@ -23,6 +23,12 @@ uses
   MacroIntf;
   
 type
+  TScanModeFPCSources = (
+    smsfsSkip,
+    smsfsWaitTillDone, // scan now and wait till finished
+    smsfsBackground    // start in background
+    );
+
   TGetIDEConfigStorage = function(const Filename: string; LoadFromDisk: Boolean
                                   ): TConfigStorage;
 

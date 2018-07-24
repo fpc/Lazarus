@@ -38,7 +38,7 @@ uses
   // Codetools
   CodeCache, CodeToolManager, DefineTemplates, FileProcs,
   // IDEIntf
-  MacroIntf, PackageIntf, LazMsgDialogs, ProjectIntf, IDEExternToolIntf,
+  BaseIDEIntf, MacroIntf, PackageIntf, LazMsgDialogs, ProjectIntf, IDEExternToolIntf,
   CompOptsIntf, IDEOptionsIntf, LazIDEIntf, PackageDependencyIntf,
   // IDE
   IDEProcs, InitialSetupProc, ExtTools, CompilerOptions,

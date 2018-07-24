@@ -43,7 +43,7 @@ uses
   // CodeTools
   CodeToolsCfgScript,
   // IdeIntf
-  LazIDEIntf, IDEImagesIntf, CompOptsIntf, ProjectIntf, PackageIntf,
+  BaseIDEIntf, LazIDEIntf, IDEImagesIntf, CompOptsIntf, ProjectIntf, PackageIntf,
   // IDE
   LazarusIDEStrConsts, IDEProcs, Project, PackageDefs,
   CompilerOptions, ModeMatrixOpts, MiscOptions;
