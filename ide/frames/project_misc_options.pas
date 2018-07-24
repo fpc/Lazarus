@@ -9,11 +9,11 @@ uses
   // LCL
   LCLProc, Forms, Dialogs, ExtCtrls, StdCtrls,
   // LazUtils
-  FileUtil,
+  FileUtil, LazFileUtils,
   // IdeIntf
   ProjectIntf, IDEOptionsIntf, IDEOptEditorIntf,
   // IDE
-  IDEProcs, Project, LazarusIDEStrConsts;
+  Project, LazarusIDEStrConsts;
 
 type
 

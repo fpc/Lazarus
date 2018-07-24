@@ -59,8 +59,6 @@ function FilenameIsTrimmed(const TheFilename: string): boolean;
 function FilenameIsTrimmed(StartPos: PChar; NameLen: integer): boolean;
 function TrimFilename(const AFilename: string): string;
 function ResolveDots(const AFilename: string): string;
-Procedure ForcePathDelims(Var FileName: string);
-Function GetForcedPathDelims(Const FileName: string): String;
 function CleanAndExpandFilename(const Filename: string): string; // empty string returns current directory
 function CleanAndExpandDirectory(const Filename: string): string; // empty string returns current directory
 function TrimAndExpandFilename(const Filename: string; const BaseDir: string = ''): string; // empty string returns empty string
@@ -70,8 +68,31 @@ function TryCreateRelativePath(const Dest, Source: String; UsePointDirectory: bo
 function CreateRelativePath(const Filename, BaseDirectory: string;
                             UsePointDirectory: boolean = false; AlwaysRequireSharedBaseFolder: Boolean = True): string;
 function FileIsInPath(const Filename, Path: string): boolean;
+
+type
+  TPathDelimSwitch = (
+    pdsNone,    // no change
+    pdsSystem,  // switch to current PathDelim
+    pdsUnix,    // switch to slash /
+    pdsWindows  // switch to backslash \
+    );
+const
+  PathDelimSwitchToDelim: array[TPathDelimSwitch] of char = (
+    PathDelim, // pdsNone
+    PathDelim, // pdsSystem
+    '/',       // pdsUnix
+    '\'        // pdsWindows
+    );
+
+// Path delimiters
+procedure ForcePathDelims(Var FileName: string);
+function GetForcedPathDelims(const FileName: string): string;
 function AppendPathDelim(const Path: string): string;
 function ChompPathDelim(const Path: string): string;
+function SwitchPathDelims(const Filename: string; Switch: TPathDelimSwitch): string;
+function SwitchPathDelims(const Filename: string; Switch: boolean): string;
+function CheckPathDelim(const OldPathDelim: string; out Changed: boolean): TPathDelimSwitch;
+function IsCurrentPathDelim(Switch: TPathDelimSwitch): boolean;
 
 // search paths
 function CreateAbsoluteSearchPath(const SearchPath, BaseDirectory: string): string;
@@ -659,26 +680,6 @@ begin
   Result := ResolveDots(Result);
 end;
 
-procedure ForcePathDelims(var FileName: string);
-var
-  i: Integer;
-begin
-  for i:=1 to length(FileName) do
-    {$IFDEF Windows}
-    if Filename[i]='/' then
-      Filename[i]:='\';
-    {$ELSE}
-    if Filename[i]='\' then
-      Filename[i]:='/';
-    {$ENDIF}
-end;
-
-function GetForcedPathDelims(const FileName: string): String;
-begin
-  Result:=FileName;
-  ForcePathDelims(Result);
-end;
-
 {------------------------------------------------------------------------------
   function CleanAndExpandFilename(const Filename: string): string;
  ------------------------------------------------------------------------------}
@@ -709,11 +710,6 @@ begin
   Result:=TrimFilename(AppendPathDelim(ExpandFileNameUTF8(Result,BaseDir)));
 end;
 
-
-
-{------------------------------------------------------------------------------
-  function FileIsInPath(const Filename, Path: string): boolean;
- ------------------------------------------------------------------------------}
 function FileIsInPath(const Filename, Path: string): boolean;
 var
   ExpFile: String;
@@ -729,6 +725,29 @@ begin
   l:=length(ExpPath);
   Result:=(l>0) and (length(ExpFile)>l) and (ExpFile[l]=PathDelim)
           and (CompareFilenames(ExpPath,LeftStr(ExpFile,l))=0);
+end;
+
+
+// Path delimiters
+
+procedure ForcePathDelims(var FileName: string);
+var
+  i: Integer;
+begin
+  for i:=1 to length(FileName) do
+    {$IFDEF Windows}
+    if Filename[i]='/' then
+      Filename[i]:='\';
+    {$ELSE}
+    if Filename[i]='\' then
+      Filename[i]:='/';
+    {$ENDIF}
+end;
+
+function GetForcedPathDelims(const FileName: string): string;
+begin
+  Result:=FileName;
+  ForcePathDelims(Result);
 end;
 
 function AppendPathDelim(const Path: string): string;
@@ -769,8 +788,55 @@ begin
     SetLength(Result,Len);
 end;
 
-function CreateAbsoluteSearchPath(const SearchPath, BaseDirectory: string
-  ): string;
+function SwitchPathDelims(const Filename: string; Switch: TPathDelimSwitch): string;
+var
+  i: Integer;
+  p: Char;
+begin
+  Result:=Filename;
+  case Switch of
+  pdsSystem:  p:=PathDelim;
+  pdsUnix:    p:='/';
+  pdsWindows: p:='\';
+  else exit;
+  end;
+  for i:=1 to length(Result) do
+    if Result[i] in ['/','\'] then
+      Result[i]:=p;
+end;
+
+function SwitchPathDelims(const Filename: string; Switch: boolean): string;
+begin
+  if Switch then
+    Result:=SwitchPathDelims(Filename,pdsSystem)
+  else
+    Result:=Filename;
+end;
+
+function CheckPathDelim(const OldPathDelim: string; out Changed: boolean): TPathDelimSwitch;
+begin
+  Changed:=OldPathDelim<>PathDelim;
+  if Changed then begin
+    if OldPathDelim='/' then
+      Result:=pdsUnix
+    else if OldPathDelim='\' then
+      Result:=pdsWindows
+    else
+      Result:=pdsSystem;
+  end else begin
+    Result:=pdsNone;
+  end;
+end;
+
+function IsCurrentPathDelim(Switch: TPathDelimSwitch): boolean;
+begin
+  Result:=(Switch in [pdsNone,pdsSystem])
+     or ((Switch=pdsUnix) and (PathDelim='/'))
+     or ((Switch=pdsWindows) and (PathDelim='\'));
+end;
+
+
+function CreateAbsoluteSearchPath(const SearchPath, BaseDirectory: string): string;
 var
   PathLen: Integer;
   EndPos: Integer;

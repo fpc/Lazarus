@@ -87,29 +87,10 @@ function CopyDirectoryWithMethods(const SrcDirectory, DestDirectory: string;
              OnCopyFile: TOnCopyFileMethod; OnCopyError: TOnCopyErrorMethod;
              Data: TObject): boolean;
 
-type
-  TPathDelimSwitch = (
-    pdsNone,    // no change
-    pdsSystem,  // switch to current PathDelim
-    pdsUnix,    // switch to slash /
-    pdsWindows  // switch to backslash \
-    );
-const
-  PathDelimSwitchToDelim: array[TPathDelimSwitch] of char = (
-    PathDelim, // pdsNone
-    PathDelim, // pdsSystem
-    '/',       // pdsUnix
-    '\'        // pdsWindows
-    );
-
 // file names
 function ConvertSpecialFileChars(const Filename: string): string;
 function FilenameIsPascalSource(const Filename: string): boolean;
 function FilenameIsFormText(const Filename: string): boolean;
-function SwitchPathDelims(const Filename: string; Switch: TPathDelimSwitch): string;
-function SwitchPathDelims(const Filename: string; Switch: boolean): string;
-function CheckPathDelim(const OldPathDelim: string; out Changed: boolean): TPathDelimSwitch;
-function IsCurrentPathDelim(Switch: TPathDelimSwitch): boolean;
 function ChompEndNumber(const s: string): string;
 function ShortDisplayFilename(const aFileName: string): string;
 
@@ -813,53 +794,6 @@ begin
       StartPos:=EndPos+1;
     end;
   end;
-end;
-
-function SwitchPathDelims(const Filename: string; Switch: TPathDelimSwitch): string;
-var
-  i: Integer;
-  p: Char;
-begin
-  Result:=Filename;
-  case Switch of
-  pdsSystem:  p:=PathDelim;
-  pdsUnix:    p:='/';
-  pdsWindows: p:='\';
-  else exit;
-  end;
-  for i:=1 to length(Result) do
-    if Result[i] in ['/','\'] then
-      Result[i]:=p;
-end;
-
-function SwitchPathDelims(const Filename: string; Switch: boolean): string;
-begin
-  if Switch then
-    Result:=SwitchPathDelims(Filename,pdsSystem)
-  else
-    Result:=Filename;
-end;
-
-function CheckPathDelim(const OldPathDelim: string; out Changed: boolean): TPathDelimSwitch;
-begin
-  Changed:=OldPathDelim<>PathDelim;
-  if Changed then begin
-    if OldPathDelim='/' then
-      Result:=pdsUnix
-    else if OldPathDelim='\' then
-      Result:=pdsWindows
-    else
-      Result:=pdsSystem;
-  end else begin
-    Result:=pdsNone;
-  end;
-end;
-
-function IsCurrentPathDelim(Switch: TPathDelimSwitch): boolean;
-begin
-  Result:=(Switch in [pdsNone,pdsSystem])
-     or ((Switch=pdsUnix) and (PathDelim='/'))
-     or ((Switch=pdsWindows) and (PathDelim='\'));
 end;
 
 function ChompEndNumber(const s: string): string;
