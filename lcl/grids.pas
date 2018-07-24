@@ -3029,7 +3029,7 @@ var
 begin
   OldR := FRows.Count;
   if AValue<>OldR then begin
-    if AValue>=1 then begin
+    if AValue>=0 then begin
       NewColCount := ColCount;
       if (OldR=0) and FGridPropBackup.ValidData then begin
         NewColCount := FGridPropBackup.ColCount;
