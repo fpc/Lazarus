@@ -8221,7 +8221,7 @@ function TCustomGrid.EditingAllowed(ACol: Integer = -1): Boolean;
 var
   C: TGridColumn;
 begin
-  Result:=(goEditing in options) and (ACol>=0) and (ACol<ColCount);
+  Result:=(goEditing in options) and (ACol>=0) and (ACol<ColCount) and (RowCount>FixedRows);
   if Result and Columns.Enabled then begin
     C:=ColumnFromGridColumn(ACol);
     Result:=(C<>nil) and (not C.ReadOnly);
