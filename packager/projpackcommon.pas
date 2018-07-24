@@ -7,10 +7,12 @@ interface
 
 uses
   Classes, SysUtils,
+  // LazUtils
+  LazTracer,
   // Codetools
   DefineTemplates, CodeToolManager,
   // IDE
-  CompilerOptions, FileReferenceList, IDEProcs;
+  CompilerOptions, FileReferenceList;
 
 type
 
@@ -140,7 +142,7 @@ end;
 
 procedure TProjPackDefineTemplates.EndUpdate;
 begin
-  if FUpdateLock=0 then RaiseException('TProjPackDefineTemplates.EndUpdate');
+  if FUpdateLock=0 then RaiseGDBException('TProjPackDefineTemplates.EndUpdate');
   dec(FUpdateLock);
   if FUpdateLock=0 then begin
     if ptfIsPackageTemplate in FFlags then begin

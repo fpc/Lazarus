@@ -262,7 +262,7 @@ end;
 destructor TLazPackageLink.Destroy;
 begin
   //debugln('TPackageLink.Destroy ',IDAsString,' ',dbgs(Pointer(Self)));
-  //if Origin=ploGlobal then RaiseException('');
+  //if Origin=ploGlobal then RaiseGDBException('');
   inherited Destroy;
 end;
 
@@ -813,7 +813,7 @@ end;
 
 procedure TLazPackageLinks.EndUpdate;
 begin
-  if fUpdateLock<=0 then RaiseException('TPackageLinks.EndUpdate');
+  if fUpdateLock<=0 then RaiseGDBException('TPackageLinks.EndUpdate');
   dec(fUpdateLock);
   if (plsGlobalLinksNeedUpdate in FStates) then UpdateGlobalLinks;
   if (plsUserLinksNeedUpdate in FStates) then UpdateUserLinks;

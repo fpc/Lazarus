@@ -308,11 +308,6 @@ implementation
 const
   BasePath = 'ComponentPaletteOptions/';
 
-procedure RaiseException(const Msg: string);
-begin
-  raise Exception.Create(Msg);
-end;
-
 function ComponentPriority(Category: TComponentPriorityCategory; Level: integer
   ): TComponentPriority;
 begin
@@ -659,9 +654,9 @@ end;
 procedure TRegisteredComponent.ConsistencyCheck;
 begin
   if (FComponentClass=nil) then
-    RaiseException('TRegisteredComponent.ConsistencyCheck FComponentClass=nil');
+    raise Exception.Create('TRegisteredComponent.ConsistencyCheck FComponentClass=nil');
   if not IsValidIdent(FComponentClass.ClassName) then
-    RaiseException('TRegisteredComponent.ConsistencyCheck not IsValidIdent(FComponentClass.ClassName)');
+    raise Exception.Create('TRegisteredComponent.ConsistencyCheck not IsValidIdent(FComponentClass.ClassName)');
 end;
 
 function TRegisteredComponent.GetPriority: TComponentPriority;
@@ -982,7 +977,7 @@ end;
 procedure TBaseComponentPalette.EndUpdate;
 begin
   if FUpdateLock<=0 then
-    RaiseException('TBaseComponentPalette.EndUpdate');
+    raise Exception.Create('TBaseComponentPalette.EndUpdate');
   dec(FUpdateLock);
   if (FUpdateLock=0) and fChanged then
     Update(False);

@@ -44,7 +44,7 @@ uses
   // LCL
   LCLType, LCLIntf, Forms, Controls, Dialogs, ExtCtrls,
   // LazUtils
-  LazFileUtils, LazFileCache, LazLoggerBase, Laz2_XMLCfg, LazUTF8,
+  LazFileUtils, LazFileCache, LazLoggerBase, Laz2_XMLCfg, LazUTF8, LazTracer,
   // codetools
   CodeCache, CodeToolManager, PascalParserTool, CodeTree,
   // IDEIntf
@@ -52,7 +52,7 @@ uses
   CompOptsIntf, IDEDialogs, ToolBarIntf,
   // IDE
   CompilerOptions, EnvironmentOpts, SourceEditor, ProjectDefs, Project,
-  IDEProcs, InputHistory, Debugger, LazarusIDEStrConsts, TransferMacros,
+  InputHistory, Debugger, LazarusIDEStrConsts, TransferMacros,
   MainBar, MainIntf, MainBase, BaseBuildManager, SourceMarks, DebuggerDlg,
   Watchesdlg, BreakPointsdlg, BreakPropertyDlg, LocalsDlg, WatchPropertyDlg,
   CallStackDlg, EvaluateDlg, RegistersDlg, AssemblerDlg, DebugOutputForm,
@@ -1599,7 +1599,7 @@ begin
     FDialogs[DlgType]:=nil;
     exit;
   end;
-  RaiseException('Invalid debug window '+Sender.ClassName);
+  RaiseGDBException('Invalid debug window '+Sender.ClassName);
 end;
 
 procedure TDebugManager.ViewDebugDialog(const ADialogType: TDebugDialogType;
@@ -2219,7 +2219,7 @@ var
   NewSrcMark: TSourceMark;
 begin
   if not (ABreakpoint is TManagedBreakPoint) then
-    RaiseException('TDebugManager.CreateSourceMarkForBreakPoint');
+    RaiseGDBException('TDebugManager.CreateSourceMarkForBreakPoint');
   ManagedBreakPoint:=TManagedBreakPoint(ABreakpoint);
 
   if (ManagedBreakPoint.SourceMark<>nil) or Destroying then exit;
@@ -2989,7 +2989,7 @@ begin
     // consistency check
     if (ASourceMark=nil) or (not ASourceMark.IsBreakPoint)
     or (ASourceMark.Data=nil) or (not (ASourceMark.Data is TIDEBreakPoint)) then
-      RaiseException('TDebugManager.DoDeleteBreakPointAtMark');
+      RaiseGDBException('TDebugManager.DoDeleteBreakPointAtMark');
 
   {$ifdef VerboseDebugger}
     DebugLn('TDebugManager.DoDeleteBreakPointAtMark A ',ASourceMark.GetFilename,

@@ -4601,8 +4601,8 @@ begin
               if List=nil then List:=TObjectArray.Create;
               List.AddObject(UnitOwner,RequiredPackage);
               //debugln(['TPkgManager.GetMissingDependenciesForUnit A ',UnitOwner.ClassName,' ',RequiredPackage.Name]);
-              //if TObject(List[List.Count-1])<>UnitOwner then RaiseException('A');
-              //if TObject(List.Objects[List.Count-1])<>RequiredPackage then RaiseException('B');
+              //if TObject(List[List.Count-1])<>UnitOwner then RaiseGDBException('A');
+              //if TObject(List.Objects[List.Count-1])<>RequiredPackage then RaiseGDBException('B');
             end;
           end;
         end;

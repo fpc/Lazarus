@@ -42,9 +42,9 @@ var
  ------------------------------------------------------------------------------}
 procedure RaiseGDBException(const Msg: string);
 begin
-  debugln(lrsERRORInLib, Msg);
+  DebugLn(lrsERRORInCode, Msg);
   // creates an exception, that gdb catches:
-  debugln(lrsCreatingGdbCatchableError);
+  DebugLn(lrsCreatingGdbCatchableError);
   DumpStack;
   {$ifndef HASAMIGA} // On Amiga Division by 0 is not catchable, just crash
   if (length(Msg) div (length(Msg) div 10000))=0 then ;
@@ -55,7 +55,7 @@ procedure RaiseAndCatchException;
 begin
   try
     {$ifndef HASAMIGA} // On Amiga Division by 0 is not catchable, just crash
-    if (length(lrsERRORInLib) div (length(lrsERRORInLib) div 10000))=0 then ;
+    if (length(lrsERRORInCode) div (length(lrsERRORInCode) div 10000))=0 then ;
     {$else}
     DumpStack;
     {$endif}

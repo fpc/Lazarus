@@ -1163,7 +1163,7 @@ end;
 
 procedure TLazPackageGraph.EndUpdate;
 begin
-  if FUpdateLock<=0 then RaiseException('TLazPackageGraph.EndUpdate');
+  if FUpdateLock<=0 then RaiseGDBException('TLazPackageGraph.EndUpdate');
   dec(FUpdateLock);
   if FUpdateLock=0 then begin
     if FLockedChangeStamp>0 then
@@ -1794,7 +1794,7 @@ var
   i: Integer;
 begin
   if not IsValidPkgName(Prefix) then
-    RaiseException('invalid pkg name "'+Prefix+'"');
+    RaiseGDBException('invalid pkg name "'+Prefix+'"');
   // try Prefix alone
   if not PackageNameExists(Prefix,IgnorePackage) then begin
     Result:=Prefix;
@@ -2138,7 +2138,7 @@ procedure TLazPackageGraph.ReplacePackage(var OldPackage: TLazPackage;
   begin
     if (OldPkgFile.ComponentCount>0) then begin
       OldUnitName:=OldPkgFile.Unit_Name;
-      if OldUnitName='' then RaiseException('MoveInstalledComponents');
+      if OldUnitName='' then RaiseGDBException('MoveInstalledComponents');
       NewPkgFile:=NewPackage.FindUnit(OldUnitName,false);
       if NewPkgFile=nil then begin
         NewPkgFile:=NewPackage.AddRemovedFile(OldPkgFile.Filename,OldUnitName,
@@ -5480,7 +5480,7 @@ begin
     else
       CurLvl:=0;
     if Dependencies[BucketStarts[CurLvl]]<>nil then
-      RaiseException('');
+      RaiseGDBException('');
     Dependencies[BucketStarts[CurLvl]]:=Dependency;
     inc(BucketStarts[CurLvl]);
     Dependency:=Dependency.NextRequiresDependency;
@@ -5556,7 +5556,7 @@ function TLazPackageGraph.PackageCanBeReplaced(
   OldPackage, NewPackage: TLazPackage): boolean;
 begin
   if SysUtils.CompareText(OldPackage.Name,NewPackage.Name)<>0 then
-    RaiseException('TLazPackageGraph.PackageCanBeReplaced');
+    RaiseGDBException('TLazPackageGraph.PackageCanBeReplaced');
 
   Result:=true;
 end;
@@ -5987,7 +5987,7 @@ begin
 
     // open it
     if OpenDependency(Dependency,false)<>lprSuccess then
-      RaiseException('TLazPackageGraph.OpenInstalledDependency');
+      RaiseGDBException('TLazPackageGraph.OpenInstalledDependency');
   end;
   Dependency.RequiredPackage.Installed:=InstallType;
 end;

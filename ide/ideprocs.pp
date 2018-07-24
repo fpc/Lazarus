@@ -34,7 +34,7 @@ uses
   Classes, SysUtils, Laz_AVL_Tree,
   // LazUtils
   FileUtil, LazFileUtils, LazUtilities, LazFileCache, LazUTF8, LazUTF8Classes,
-  Laz2_XMLCfg, AvgLvlTree,
+  Laz2_XMLCfg, AvgLvlTree, LazLoggerBase, LazTracer,
   // LCL
   StdCtrls, ExtCtrls,
   // CodeTools
@@ -223,9 +223,6 @@ type
 function GetCurrentUserName: string;
 function GetCurrentMailAddress: string;
 function GetProgramSearchPath: string;
-
-// debugging
-procedure RaiseException(const Msg: string);
 
 // miscellaneous
 procedure CheckList(List: TList; TestListNil, TestDoubles, TestNils: boolean);
@@ -1108,21 +1105,21 @@ var
 begin
   if List=nil then begin
     if TestListNil then
-      RaiseException('CheckList List is Nil');
+      RaiseGDBException('CheckList List is Nil');
     exit;
   end;
   Cnt:=List.Count;
   if TestNils then begin
     for i:=0 to Cnt-1 do
       if List[i]=nil then
-        RaiseException('CheckList item is Nil');
+        RaiseGDBException('CheckList item is Nil');
   end;
   if TestDoubles then begin
     for i:=0 to Cnt-2 do begin
       CurItem:=List[i];
       for j:=i+1 to Cnt-1 do begin
         if List[j]=CurItem then
-          RaiseException('CheckList Double');
+          RaiseGDBException('CheckList Double');
       end;
     end;
   end;
@@ -1137,21 +1134,21 @@ var
 begin
   if List=nil then begin
     if TestListNil then
-      RaiseException('CheckList List is Nil');
+      RaiseGDBException('CheckList List is Nil');
     exit;
   end;
   Cnt:=List.Count;
   if TestNils then begin
     for i:=0 to Cnt-1 do
       if List[i]=nil then
-        RaiseException('CheckList item is Nil');
+        RaiseGDBException('CheckList item is Nil');
   end;
   if TestDoubles then begin
     for i:=0 to Cnt-2 do begin
       CurItem:=List[i];
       for j:=i+1 to Cnt-1 do begin
         if List[j]=CurItem then
-          RaiseException('CheckList Double');
+          RaiseGDBException('CheckList Double');
       end;
     end;
   end;
@@ -1166,7 +1163,7 @@ begin
   Cnt1:=List1.Count;
   for i:=0 to Cnt1 do begin
     if List2.IndexOf(List1[i])>=0 then
-      RaiseException('CheckEmptyListCut');
+      RaiseGDBException('CheckEmptyListCut');
   end;
 end;
 
@@ -1756,7 +1753,7 @@ begin
   end;
   //DebugLn(['StringListToString ',dbgstr(Result),' ',Size,' ',p]);
   if Size<>p-1 then
-    RaiseException('StringListToString');
+    RaiseGDBException('StringListToString');
 end;
 
 procedure StringToStringList(const s: string; List: TStrings);
@@ -1864,7 +1861,7 @@ begin
     inc(OldPos);
   end;
   if NewPos-1<>NewLen then
-    RaiseException('ERROR: BinaryStrToText: '+IntToStr(NewLen)+'<>'+IntToStr(NewPos-1));
+    RaiseGDBException('ERROR: BinaryStrToText: '+IntToStr(NewLen)+'<>'+IntToStr(NewPos-1));
 end;
 
 {-------------------------------------------------------------------------------
@@ -2106,21 +2103,6 @@ end;
 function GetProgramSearchPath: string;
 begin
   GetProgramSearchPath := GetEnvironmentVariableUTF8('PATH');
-end;
-
-{------------------------------------------------------------------------------
-  procedure RaiseException(const Msg: string);
-
-  Raises an exception.
-  gdb does not catch fpc Exception objects, therefore this procedure raises
-  a standard AV which is catched by gdb.
- ------------------------------------------------------------------------------}
-procedure RaiseException(const Msg: string);
-begin
-  DebugLn('ERROR in IDE: ',Msg);
-  // creates an exception, that gdb catches:
-  DebugLn('Creating gdb catchable error:');
-  if (length(Msg) div (length(Msg) div 10000))=0 then ;
 end;
 
 function CopyDirectoryWithMethods(const SrcDirectory, DestDirectory: string;

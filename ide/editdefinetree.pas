@@ -35,11 +35,15 @@ unit EditDefineTree;
 interface
 
 uses
-  Classes, SysUtils, FileProcs, FileUtil, IDEProcs, CodeToolManager,
-  DefineTemplates, LinkScanner,
+  Classes, SysUtils,
+  // LazUtils
+  FileUtil, LazTracer,
+  // CodeTools
+  FileProcs, CodeToolManager, DefineTemplates, LinkScanner,
+  // IdeIntf
   CompOptsIntf,
-  CompilerOptions, TransferMacros,
-  LazarusIDEStrConsts;
+  // IDE
+  IDEProcs, CompilerOptions, LazarusIDEStrConsts;
 
 
 // global
@@ -249,7 +253,7 @@ var
 begin
   Result:=false; // no change
   if ParentTemplate=nil then
-    RaiseException('UpdateCompilerOptionsTemplates internal error');
+    RaiseGDBException('UpdateCompilerOptionsTemplates internal error');
   
   { ToDo:
 

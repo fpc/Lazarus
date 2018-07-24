@@ -52,7 +52,7 @@ uses
   ExtendedNotebook,
   // LazUtils
   LConvEncoding, FileUtil, LazFileUtils, LazFileCache, LazUTF8, LazUTF8Classes,
-  LazMethodList, LazLoggerBase, LazLogger, Translations, LazUtilities,
+  LazMethodList, LazLoggerBase, LazLogger, Translations, LazUtilities, LazTracer,
   // codetools
   BasicCodeTools, CodeBeautifier, CodeToolManager, CodeCache, SourceLog,
   LinkScanner, CodeTree, SourceChanger,
@@ -9795,7 +9795,7 @@ procedure TSourceEditorManagerBase.RegisterMarklingProducer(
   aProducer: TSourceMarklingProducer);
 begin
   if fProducers.IndexOf(aProducer)>=0 then
-    RaiseException('TSourceEditorManagerBase.RegisterProducer already registered');
+    RaiseGDBException('TSourceEditorManagerBase.RegisterProducer already registered');
   fProducers.Add(aProducer);
   FreeNotification(aProducer);
 end;

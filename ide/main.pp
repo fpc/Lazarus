@@ -6331,7 +6331,7 @@ begin
   AFilename:=ExpandFileNameUTF8(TrimFilename(AFilename));
   //debugln('TMainIDE.DoOpenProjectFile A2 "'+AFileName+'"');
   if not FilenameIsAbsolute(AFilename) then
-    RaiseException('TMainIDE.DoOpenProjectFile: buggy ExpandFileNameUTF8');
+    RaiseGDBException('TMainIDE.DoOpenProjectFile: buggy ExpandFileNameUTF8');
   DiskFilename:=GetPhysicalFilenameCached(AFilename,false);
   if DiskFilename<>AFilename then begin
     // e.g. encoding changed
@@ -8286,10 +8286,10 @@ begin
   ActiveUnitInfo:=nil;
   if AForm<>nil then begin
     if (AForm.Designer=nil) then
-      RaiseException('TMainIDE.GetUnitWithForm AForm.Designer');
+      RaiseGDBException('TMainIDE.GetUnitWithForm AForm.Designer');
     AComponent:=AForm.Designer.LookupRoot;
     if AComponent=nil then
-      RaiseException('TMainIDE.GetUnitWithForm AComponent=nil');
+      RaiseGDBException('TMainIDE.GetUnitWithForm AComponent=nil');
     GetUnitWithPersistent(AComponent,ActiveSourceEditor,ActiveUnitInfo);
   end;
 end;
@@ -9154,11 +9154,11 @@ begin
                 [ctfSwitchToFormSource]) then exit;
   ActiveForm:=CurDesigner.Form;
   if ActiveForm=nil then
-    RaiseException('[TMainIDE.OnPropHookPersistentDeleting] Error: TDesigner without a form');
+    RaiseGDBException('[TMainIDE.OnPropHookPersistentDeleting] Error: TDesigner without a form');
   // find source for form
   ActiveUnitInfo:=Project1.UnitWithComponent(CurDesigner.LookupRoot);
   if ActiveUnitInfo=nil then begin
-    RaiseException('[TMainIDE.OnPropHookPersistentDeleting] Error: form without source');
+    RaiseGDBException('[TMainIDE.OnPropHookPersistentDeleting] Error: form without source');
   end;
   if APersistent is TComponent then begin
     // mark references modified
@@ -11546,7 +11546,7 @@ begin
         AComponent.Name,NewName,AComponent.ClassName,true);
       ApplyBossResult(lisUnableToRenameVariableInSource);
     end else begin
-      RaiseException('TMainIDE.DesignerRenameComponent internal error:'+AComponent.Name+':'+AComponent.ClassName);
+      RaiseGDBException('TMainIDE.DesignerRenameComponent internal error:'+AComponent.Name+':'+AComponent.ClassName);
     end;
 
     // rename inherited components
@@ -12517,7 +12517,7 @@ var
 begin
   AComponent:=ADesigner.LookupRoot;
   if AComponent=nil then
-    RaiseException('TMainIDE.GetProjectFileWithDesigner Designer.LookupRoot=nil');
+    RaiseGDBException('TMainIDE.GetProjectFileWithDesigner Designer.LookupRoot=nil');
   Result:=GetProjectFileWithRootComponent(AComponent);
 end;
 

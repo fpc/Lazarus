@@ -56,7 +56,7 @@ uses
   // IdeIntf
   PackageDependencyIntf, PropEditUtils, PropEdits, UnitResources, IDEDialogs,
   // IDE
-  IDEProcs, PackageDefs;
+  PackageDefs;
 
 type
   //----------------------------------------------------------------------------
@@ -757,10 +757,10 @@ procedure TJITComponentList.DestroyJITComponent(JITComponent:TComponent);
 var a:integer;
 begin
   if JITComponent=nil then
-    RaiseException('TJITComponentList.DestroyJITForm JITComponent=nil');
+    RaiseGDBException('TJITComponentList.DestroyJITForm JITComponent=nil');
   a:=IndexOf(JITComponent);
   if a<0 then
-    RaiseException('TJITComponentList.DestroyJITForm JITComponent.ClassName='+
+    RaiseGDBException('TJITComponentList.DestroyJITForm JITComponent.ClassName='+
       JITComponent.ClassName);
   if a>=0 then DestroyJITComponent(a);
 end;
@@ -1315,7 +1315,7 @@ var
   Action: TModalResult;
 begin
   if IndexOf(JITOwnerComponent)<0 then
-    RaiseException('TJITComponentList.AddJITChildComponentFromStream');
+    RaiseGDBException('TJITComponentList.AddJITChildComponentFromStream');
   {$IFDEF VerboseJITForms}
   debugln('[TJITComponentList.AddJITChildComponentFromStream] A');
   {$ENDIF}
@@ -1763,7 +1763,7 @@ var
 begin
   TypeInfo:=PTypeInfo(JITClass.ClassInfo);
   if TypeInfo=nil then
-    RaiseException('TJITComponentList.DoRenameUnitNameOfClass');
+    RaiseGDBException('TJITComponentList.DoRenameUnitNameOfClass');
   TypeData:=GetTypeData(TypeInfo);
   //DebugLn(['TJITComponentList.DoRenameUnitNameOfClass Old=',TypeData^.UnitName,' New=',NewUnitName]);
   OldPropCount:=GetTypeDataPropCountAddr(TypeData)^;

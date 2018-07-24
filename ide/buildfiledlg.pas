@@ -318,7 +318,7 @@ begin
     end;
   end;
   if ResultPos<>NewLength+1 then
-    RaiseException('Internal error');
+    RaiseGDBException('Internal error');
 end;
 
 function IDEDirectiveValueToString(const s: string): string;
@@ -357,7 +357,7 @@ begin
     end;
   end;
   if ResultPos<>NewLength+1 then
-    RaiseException('Internal error');
+    RaiseGDBException('Internal error');
 end;
 
 function IDEDirectiveNameToDirective(const DirectiveName: string): TIDEDirective;

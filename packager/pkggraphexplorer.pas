@@ -42,14 +42,14 @@ uses
   LCLType, LCLIntf, Forms, Controls, ComCtrls, StdCtrls, ExtCtrls,
   Menus, ButtonPanel,
   // LazUtils
-  LazLoggerBase, LazUtilities,
+  LazLoggerBase, LazUtilities, LazTracer,
   // LazControls
   LvlGraphCtrl,
   // IdeIntf
   IDECommands, PackageIntf, IDEImagesIntf,
   // IDE
-  LazarusIDEStrConsts, IDEProcs, IDEOptionDefs,
-  Project, PackageDefs, PackageSystem, PackageEditor, CleanPkgDeps;
+  LazarusIDEStrConsts, IDEOptionDefs, Project,
+  PackageDefs, PackageSystem, PackageEditor, CleanPkgDeps;
   
 const
   GroupPrefixProject = '-Project-';
@@ -466,7 +466,7 @@ end;
 
 procedure TPkgGraphExplorerDlg.EndUpdate;
 begin
-  if FUpdateLock<=0 then RaiseException('TPkgGraphExplorerDlg.EndUpdate');
+  if FUpdateLock<=0 then RaiseGDBException('TPkgGraphExplorerDlg.EndUpdate');
   dec(FUpdateLock);
   if FChangedDuringLock then UpdateAll;
 end;

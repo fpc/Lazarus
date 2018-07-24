@@ -39,15 +39,11 @@ interface
 
 uses
   Classes, SysUtils, Laz_AVL_Tree,
-  // LCL
-  LCLProc,
   // Codetools
   FileProcs,
   // LazUtils
-  LazFileUtils,
-  // IDE
-  IDEProcs;
-  
+  LazFileUtils, LazTracer;
+
 type
   { TFileReference }
   
@@ -161,7 +157,7 @@ begin
       ANode:=FTree.FindSuccessor(ANode);
     end;
     if StartPos<>length(FSearchPath)+1 then
-      RaiseException('TFileReferenceList.UpdateSearchPath');
+      RaiseGDBException('TFileReferenceList.UpdateSearchPath');
   end;
   Include(FFlags,frfSearchPathValid);
 end;
@@ -209,7 +205,7 @@ end;
 
 procedure TFileReferenceList.EndUpdate;
 begin
-  if FUpdateLock<=0 then RaiseException('TFileReferenceList.EndUpdate');
+  if FUpdateLock<=0 then RaiseGDBException('TFileReferenceList.EndUpdate');
   dec(FUpdateLock);
   if (frfChanged in FFlags) then begin
     Exclude(FFlags,frfChanged);

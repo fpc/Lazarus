@@ -4759,7 +4759,7 @@ begin
   end;
   
   {$IFDEF RaiseExceptionOnNilPointers}
-  RaiseException('TGtk2WidgetSet.GetDeviceSize Window=nil');
+  RaiseGDBException('TGtk2WidgetSet.GetDeviceSize Window=nil');
   {$ENDIF}
   DebugLn('TGtk2WidgetSet.GetDeviceSize:', ' WARNING: DC ',DbgS(DC),' without gdkwindow.',
           ' Widget=',DbgS(DevCtx.Widget));

@@ -1994,7 +1994,7 @@ begin
     if LastPaintSender=Sender then begin
       //writeln('NOTE: TDesigner.PaintControl E control painted twice: ',
       //  Sender.Name,':',Sender.ClassName,' DC=',DbgS(TheMessage.DC));
-      //RaiseException('');
+      //RaiseGDBException('');
     end;
     LastPaintSender:=Sender;
 

@@ -37,8 +37,9 @@ unit PackageDefs;
 interface
 
 uses
-  // FCL, LCL
+  // FCL
   Classes, SysUtils, contnrs, typinfo, Laz_AVL_Tree,
+  // LCL
   LCLType, LResources, Graphics, Controls, Forms, Dialogs,
   // Codetools
   FileProcs, LazConfigStorage, BasicCodeTools, DefineTemplates, CodeToolManager,
@@ -1253,7 +1254,7 @@ end;
 function GetDependencyWithIndex(First: TPkgDependency;
   ListType: TPkgDependencyList; Index: integer): TPkgDependency;
 begin
-  if Index<0 then RaiseException('GetDependencyWithIndex');
+  if Index<0 then RaiseGDBException('GetDependencyWithIndex');
   Result:=First;
   while (Result<>nil) and (Index>0) do begin
     Result:=Result.NextDependency[ListType];
@@ -2634,7 +2635,7 @@ end;
 
 procedure TLazPackage.EndUpdate;
 begin
-  if FUpdateLock=0 then RaiseException('TLazPackage.EndUpdate');
+  if FUpdateLock=0 then RaiseGDBException('TLazPackage.EndUpdate');
   dec(FUpdateLock);
   FDefineTemplates.EndUpdate;
   FSourceDirectories.EndUpdate;
@@ -2755,7 +2756,7 @@ end;
 procedure TLazPackage.UnlockModified;
 begin
   if FModifiedLock<=0 then
-    RaiseException('TLazPackage.UnlockModified');
+    RaiseGDBException('TLazPackage.UnlockModified');
   dec(FModifiedLock);
 end;
 
@@ -4152,8 +4153,8 @@ end;
 procedure TPkgCompilerOptions.InvalidateOptions;
 begin
   if (LazPackage=nil) then exit;
-  if LazPackage.UsageOptions=nil then RaiseException('');
-  if LazPackage.UsageOptions.ParsedOpts=nil then RaiseException('');
+  if LazPackage.UsageOptions=nil then RaiseGDBException('');
+  if LazPackage.UsageOptions.ParsedOpts=nil then RaiseGDBException('');
   LazPackage.UsageOptions.ParsedOpts.InvalidateAll;
 end;
 

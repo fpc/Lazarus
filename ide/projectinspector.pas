@@ -55,8 +55,11 @@ unit ProjectInspector;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LCLType, Forms, Controls, Buttons, ComCtrls,
+  Classes, SysUtils,
+  // LCL
+  LCLProc, LCLType, Forms, Controls, Buttons, ComCtrls,
   Menus, Dialogs, FileUtil, LazFileUtils, LazFileCache, ExtCtrls, Graphics,
+  // LazControls
   TreeFilterEdit,
   // IDEIntf
   IDEHelpIntf, IDECommands, IDEDialogs, IDEImagesIntf, LazIDEIntf, ProjectIntf,
@@ -1489,7 +1492,7 @@ end;
 
 procedure TProjectInspectorForm.EndUpdate;
 begin
-  if FUpdateLock=0 then RaiseException('TProjectInspectorForm.EndUpdate');
+  if FUpdateLock=0 then RaiseGDBException('TProjectInspectorForm.EndUpdate');
   dec(FUpdateLock);
   if FUpdateLock=0 then
     IdleConnected:=true;

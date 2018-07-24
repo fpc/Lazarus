@@ -613,7 +613,7 @@ var
   i: Integer;
 begin
   if StartPos>EndPos then
-    RaiseException('TCheckLFMDialog.AddReplaceMent StartPos>EndPos');
+    RaiseGDBException('TCheckLFMDialog.AddReplaceMent StartPos>EndPos');
   // check for intersection
   for i:=0 to LFMChangeList.Count-1 do begin
     Entry:=TLFMChangeEntry(LFMChangeList[i]);
@@ -625,7 +625,7 @@ begin
         EndPos:=Max(EndPos,Entry.EndPos);
       end else begin
         // not allowed
-        RaiseException('TCheckLFMDialog.AddReplaceMent invalid Intersection');
+        RaiseGDBException('TCheckLFMDialog.AddReplaceMent invalid Intersection');
       end;
     end;
   end;

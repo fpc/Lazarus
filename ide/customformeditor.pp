@@ -51,8 +51,7 @@ uses
   PropEdits, PropEditUtils, ObjectInspector, FormEditingIntf, ComponentReg,
   UnitResources, IDEOptEditorIntf, IDEDialogs, ComponentEditors,
   // IDE
-  LazarusIDEStrConsts, EditorOptions, EnvironmentOpts, IDEProcs, Project, MainIntf,
-  PackageDefs,
+  LazarusIDEStrConsts, EditorOptions, EnvironmentOpts, Project, MainIntf, PackageDefs,
   // Designer
   CustomNonFormDesigner, NonControlDesigner, FrameDesigner, ControlSelection,
   JITForms, DesignerProcs;
@@ -613,8 +612,8 @@ Begin
       // free/unbind a non form component and its designer form
       aForm:=GetDesignerForm(AComponent);
       if (AForm<>nil) and (not (AForm is TNonFormProxyDesignerForm)) then
-        RaiseException(Format(lisCFETCustomFormEditorDeleteComponentWhereIsTheTCustomN,
-                              [AComponent.ClassName]));
+        RaiseGDBException(Format(lisCFETCustomFormEditorDeleteComponentWhereIsTheTCustomN,
+                                 [AComponent.ClassName]));
 
       if (AForm <> nil) then
       begin
@@ -626,7 +625,7 @@ Begin
       if FreeComponent then
         JITNonFormList.DestroyJITComponent(AComponent);
     end else
-      RaiseException('TCustomFormEditor.DeleteComponent '+AComponent.ClassName);
+      RaiseGDBException('TCustomFormEditor.DeleteComponent '+AComponent.ClassName);
   end else if FreeComponent then begin
     if (AComponent.Owner=nil) then
       DebugLn(['WARNING: TCustomFormEditor.DeleteComponent freeing orphaned component ',DbgSName(AComponent)]);
@@ -874,7 +873,7 @@ var
 begin
   Result := Nil;
   if FindNonFormFormNode(LookupRoot) <> nil then
-    RaiseException(lisCFETCustomFormEditorCreateNonFormFormAlreadyExists);
+    RaiseGDBException(lisCFETCustomFormEditorCreateNonFormFormAlreadyExists);
   if LookupRoot is TComponent then
   begin
     if LookupRoot is TCustomFrame then
@@ -901,8 +900,8 @@ begin
         (Result as INonControlDesigner).Mediator:=MediatorClass.CreateMediator(nil,LookupRoot);
     end;
   end else
-    RaiseException(Format(lisCFETCustomFormEditorCreateNonFormFormUnknownType, [
-      LookupRoot.ClassName]));
+    RaiseGDBException(Format(lisCFETCustomFormEditorCreateNonFormFormUnknownType,
+                             [LookupRoot.ClassName]));
 end;
 
 procedure TCustomFormEditor.RenameJITComponent(AComponent: TComponent;
@@ -912,7 +911,7 @@ var
 begin
   JITComponentList:=FindJITList(AComponent);
   if JITComponentList=nil then
-    RaiseException('TCustomFormEditor.RenameJITComponent');
+    RaiseGDBException('TCustomFormEditor.RenameJITComponent');
   JITComponentList.RenameComponentClass(AComponent,NewClassName);
 end;
 
@@ -923,7 +922,7 @@ var
 begin
   JITComponentList:=FindJITList(AComponent);
   if JITComponentList=nil then
-    RaiseException('TCustomFormEditor.RenameJITComponent');
+    RaiseGDBException('TCustomFormEditor.RenameJITComponent');
   JITComponentList.RenameComponentUnitname(AComponent,NewUnitName);
 end;
 
@@ -959,7 +958,7 @@ var
 begin
   JITComponentList:=FindJITList(ALookupRoot);
   if JITComponentList=nil then
-    RaiseException('TCustomFormEditor.CreateNewJITMethod');
+    RaiseGDBException('TCustomFormEditor.CreateNewJITMethod');
   Result:=JITComponentList.CreateNewMethod(ALookupRoot,AMethodName);
 end;
 
@@ -970,7 +969,7 @@ var
 begin
   JITComponentList:=FindJITList(AComponent);
   if JITComponentList=nil then
-    RaiseException('TCustomFormEditor.RenameJITMethod');
+    RaiseGDBException('TCustomFormEditor.RenameJITMethod');
   JITComponentList.RenameMethod(AComponent,OldMethodName,NewMethodName);
 end;
 
@@ -1337,7 +1336,7 @@ begin
       if csInline in NewComponent.ComponentState then begin
         JITList:=FindJITList(OwnerComponent);
         if JITList=nil then
-          RaiseException('TCustomFormEditor.CreateComponent '+TypeClass.ClassName);
+          RaiseGDBException('TCustomFormEditor.CreateComponent '+TypeClass.ClassName);
         JITList.ReadInlineJITChildComponent(NewComponent);
       end;
 
@@ -1365,7 +1364,7 @@ begin
         NewUnitName:=AUnitName;
       JITList:=GetJITListOfType(TypeClass);
       if JITList=nil then
-        RaiseException('TCustomFormEditor.CreateComponent '+TypeClass.ClassName);
+        RaiseGDBException('TCustomFormEditor.CreateComponent '+TypeClass.ClassName);
       NewJITIndex := JITList.AddNewJITComponent(NewUnitName,TypeClass,DisableAutoSize);
       if NewJITIndex < 0 then
         exit;
@@ -1579,8 +1578,8 @@ begin
   // create JIT Component
   JITList:=GetJITListOfType(AncestorType);
   if JITList=nil then
-    RaiseException('TCustomFormEditor.CreateComponentFromStream ClassName='+
-                   AncestorType.ClassName);
+    RaiseGDBException('TCustomFormEditor.CreateComponentFromStream ClassName='+
+                      AncestorType.ClassName);
   NewJITIndex := JITList.AddJITComponentFromStream(BinStream, UnitResourcefileFormat,
               AncestorType,NewUnitName,Interactive,Visible,DisableAutoSize,
               ContextObj);
@@ -1599,8 +1598,8 @@ var
 begin
   JITList:=FindJITList(Root);
   if JITList=nil then
-    RaiseException('TCustomFormEditor.CreateChildComponentFromStream ClassName='+
-                   Root.ClassName);
+    RaiseGDBException('TCustomFormEditor.CreateChildComponentFromStream ClassName='+
+                      Root.ClassName);
 
   JITList.AddJITChildComponentsFromStream(
                      Root,BinStream,ComponentClass,ParentControl,NewComponents);

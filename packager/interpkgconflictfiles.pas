@@ -61,7 +61,7 @@ uses
   // CodeTools
   BasicCodeTools, DefineTemplates, CodeToolManager, FileProcs,
   // LazUtils
-  LazFileUtils, LazFileCache,
+  LazFileUtils, LazFileCache, LazTracer,
   // IDEIntf
   ProjectIntf, CompOptsIntf, IDEWindowIntf, LazIDEIntf, IDEMsgIntf, IDEExternToolIntf,
   // IDE
@@ -180,13 +180,13 @@ end;
 function TPGIPAmbiguousFileGroup.Add(SrcFile, PPUFile: TPGInterPkgFile): integer;
 begin
   if (SrcFile=nil) and (PPUFile=nil) then
-    RaiseException('');
+    RaiseGDBException('');
   if (SrcFile<>nil) and (PPUFile<>nil) and (PPUFile.OwnerInfo<>SrcFile.OwnerInfo) then
-    RaiseException('bug: not equal: PPUFile.OwnerInfo='+PPUFile.OwnerInfo.Name+' SrcFile.OwnerInfo='+SrcFile.OwnerInfo.Name);
+    RaiseGDBException('bug: not equal: PPUFile.OwnerInfo='+PPUFile.OwnerInfo.Name+' SrcFile.OwnerInfo='+SrcFile.OwnerInfo.Name);
   if (SrcFile<>nil) and FilenameIsCompiledSource(SrcFile.ShortFilename) then
-    RaiseException('bug: src is compiled file: SrcFile.Filename='+SrcFile.FullFilename);
+    RaiseGDBException('bug: src is compiled file: SrcFile.Filename='+SrcFile.FullFilename);
   if (PPUFile<>nil) and not FilenameIsCompiledSource(PPUFile.ShortFilename) then
-    RaiseException('bug: compiled file is source:'+PPUFile.FullFilename);
+    RaiseGDBException('bug: compiled file is source:'+PPUFile.FullFilename);
   Result:=length(CompiledFiles);
   SetLength(CompiledFiles,Result+1);
   SetLength(Sources,Result+1);

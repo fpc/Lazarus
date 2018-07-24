@@ -51,7 +51,7 @@ uses
   // IDEIntf
   LazIDEIntf, IDECommands, MenuIntf, SrcEditorIntf, IDEDialogs, IDEImagesIntf,
   // IDE
-  LazarusIDEStrConsts, IDEOptionDefs, IDEProcs, CodeExplOpts;
+  LazarusIDEStrConsts, IDEOptionDefs, CodeExplOpts;
 
 type
   TCodeExplorerView = class;
@@ -2050,7 +2050,7 @@ var
   CurPage: TCodeExplorerPage;
 begin
   if FUpdateCount<=0 then
-    RaiseException('TCodeExplorerView.EndUpdate');
+    RaiseGDBException('TCodeExplorerView.EndUpdate');
   dec(FUpdateCount);
   if FUpdateCount=0 then begin
     CurPage:=CurrentPage;

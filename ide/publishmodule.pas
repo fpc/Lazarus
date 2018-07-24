@@ -36,10 +36,8 @@ interface
 
 uses
   Classes, SysUtils, RegExpr,
-  // LCL
-  LCLProc,
   // LazUtils
-  LazFileUtils, Laz2_XMLCfg,
+  LazFileUtils, Laz2_XMLCfg, LazLoggerBase, LazTracer,
   // IDE
   IDEProcs;
 
@@ -379,7 +377,7 @@ end;
 procedure TPublishModuleOptions.UnlockModified;
 begin
   if FModifiedLock<=0 then
-    RaiseException('TPublishModuleOptions.UnlockModified');
+    RaiseGDBException('TPublishModuleOptions.UnlockModified');
   dec(FModifiedLock);
 end;
 

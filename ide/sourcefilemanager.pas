@@ -38,7 +38,7 @@ uses
   LResources, LCLMemManager,
   // LazUtils
   LConvEncoding, LazFileCache, FileUtil, LazFileUtils, LazLoggerBase, LazUtilities,
-  LazUTF8, AvgLvlTree,
+  LazUTF8, LazTracer, AvgLvlTree,
   // Codetools
   BasicCodeTools, CodeToolsStructs, CodeToolManager, FileProcs, DefineTemplates,
   CodeCache, CodeTree, FindDeclarationTool, KeywordFuncLists,
@@ -4823,7 +4823,7 @@ begin
     NewFilename:=MainIDE.CreateNewUniqueFilename(NewShortFilename,
                                            NewFileExt,NewOwner,SearchFlags,true);
     if NewFilename='' then
-      RaiseException('');
+      RaiseGDBException('');
     NewShortFilename:=ExtractFilenameOnly(NewFilename);
     // use as unitname the NewShortFilename, but with the case of the
     // original unitname. e.g. 'unit12.pas' becomes 'Unit12.pas'
@@ -4859,7 +4859,7 @@ var
   r: TRect;
 begin
   if not AncestorType.InheritsFrom(TComponent) then
-    RaiseException('TLazSourceFileManager.CreateNewForm invalid AncestorType');
+    RaiseGDBException('TLazSourceFileManager.CreateNewForm invalid AncestorType');
 
   //debugln('TLazSourceFileManager.CreateNewForm START ',NewUnitInfo.Filename,' ',AncestorType.ClassName,' ',dbgs(ResourceCode<>nil));
   // create a buffer for the new resource file and for the LFM file

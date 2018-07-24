@@ -37,9 +37,17 @@ unit DebuggerDlg;
 interface
 
 uses
-  Classes, Forms, Controls, IDEProcs, LazFileUtils, LCLProc, LazLoggerBase, Debugger,
-  IDEImagesIntf, MainIntf, EditorOptions, IDECommands, DbgIntfDebuggerBase,
-  DbgIntfMiscClasses, BaseDebugManager;
+  Classes,
+  // LCL
+  Forms, Controls, LCLProc,
+  // LazUtils
+  LazFileUtils, LazLoggerBase,
+  // IdeIntf
+  IDEImagesIntf, IDECommands,
+  // DebuggerIntf
+  DbgIntfDebuggerBase, DbgIntfMiscClasses,
+  // IDE
+  MainIntf, EditorOptions, BaseDebugManager, Debugger;
 
 type
 
@@ -143,7 +151,7 @@ end;
 
 procedure TDebuggerDlg.EndUpdate;
 begin
-  if FUpdateCount < 1 then RaiseException('TDebuggerDlg.EndUpdate');
+  if FUpdateCount < 1 then RaiseGDBException('TDebuggerDlg.EndUpdate');
   Dec(FUpdateCount);
   if FUpdateCount = 0 then DoEndUpdate;
 end;

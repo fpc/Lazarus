@@ -845,7 +845,7 @@ begin
             icoLinkerOptions,icoCustomOptions:
               CurOptions:=MergeWithDelimiter(CurOptions,UnparsedOption,' ');
             else
-              RaiseException('GatherInheritedOptions');
+              RaiseGDBException('GatherInheritedOptions');
             end;
             InheritedOptionStrings[o]:=CurOptions;
           end;
@@ -933,7 +933,7 @@ var
   EndPos: LongInt;
 begin
   if Switch='' then
-    RaiseException('ConvertSearchPathToCmdLine no Switch');
+    RaiseGDBException('ConvertSearchPathToCmdLine no Switch');
   Result := '';
   if (Paths = '') then exit;
 

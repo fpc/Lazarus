@@ -4568,7 +4568,7 @@ begin
     else
       DbgOut(' LCLObject=',TControl(LCLObject).ClassName);
     DebugLn('');
-    RaiseException('GetWidgetOrigin Window=nil');
+    RaiseGDBException('GetWidgetOrigin Window=nil');
     {$ENDIF}
     Result.X:=0;
     Result.Y:=0;
@@ -4767,7 +4767,7 @@ begin
   if SourceWindow = nil then
   begin
     {$IFDEF RaiseExceptionOnNilPointers}
-    RaiseException('TranslateGdkPointToClientArea Window=nil');
+    RaiseGDBException('TranslateGdkPointToClientArea Window=nil');
     {$ENDIF}
     DebugLn('WARNING: TranslateGdkPointToClientArea SourceWindow=nil');
   end;
@@ -6878,7 +6878,7 @@ var
     DebugLn('WARNING: SetWidgetSizeAndPosition: resizing BIG ',
       ' Control=',LCLControl.Name,':',LCLControl.ClassName,
       ' NewSize=',dbgs(LCLWidth),',',dbgs(LCLHeight));
-    //RaiseException('');
+    //RaiseGDBException('');
   end;
 
   procedure WriteWarningParentWidgetNotFound;

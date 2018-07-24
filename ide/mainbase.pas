@@ -813,7 +813,7 @@ end;
 procedure TMainIDEBase.ActivateCodeToolAbortableMode;
 begin
   if ToolStatus=itNone then
-    RaiseException('TMainIDEBase.ActivateCodeToolAbortableMode Error 1');
+    RaiseGDBException('TMainIDEBase.ActivateCodeToolAbortableMode Error 1');
   ToolStatus:=itCodeTools;
   CodeToolBoss.OnCheckAbort:=@OnCodeToolBossCheckAbort;
   CodeToolBoss.Abortable:=true;

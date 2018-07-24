@@ -2353,7 +2353,7 @@ end;
 procedure TPackageEditorForm.EndUpdate;
 begin
   if fUpdateLock=0 then
-    RaiseException('');
+    RaiseGDBException('');
   dec(fUpdateLock);
   if fUpdateLock=0 then
     IdleConnected:=true;

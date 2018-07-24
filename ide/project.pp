@@ -2019,7 +2019,7 @@ end;
 procedure TUnitInfo.SetFilename(const AValue: string);
 begin
   if fSource<>nil then
-    RaiseException('TUnitInfo.SetFilename Source<>nil')
+    RaiseGDBException('TUnitInfo.SetFilename Source<>nil')
   else
     SetInternalFilename(AValue);
 end;
@@ -3741,7 +3741,7 @@ end;
 
 procedure TProject.EndUpdate;
 begin
-  if FUpdateLock<=0 then RaiseException('TProject.EndUpdate');
+  if FUpdateLock<=0 then RaiseGDBException('TProject.EndUpdate');
   dec(FUpdateLock);
   FSourceDirectories.EndUpdate;
   FDefineTemplates.EndUpdate;

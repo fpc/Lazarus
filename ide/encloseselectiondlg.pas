@@ -35,9 +35,15 @@ unit EncloseSelectionDlg;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons,
-  ExtCtrls, BasicCodeTools, CodeToolManager, SourceChanger,
-  LazarusIDEStrConsts, LazConf, LazUTF8, IDEProcs, ButtonPanel;
+  Classes, SysUtils,
+  // LCL
+  Forms, Controls, Graphics, Dialogs, ExtCtrls, ButtonPanel,
+  // LazUtils
+  LazUTF8, LazTracer,
+  // CodeTools
+  BasicCodeTools, CodeToolManager, SourceChanger,
+  // IDE
+  LazarusIDEStrConsts, LazConf;
 
 type
   TEncloseSelectionType = (
@@ -89,7 +95,7 @@ begin
     estWith: Result:='With | do begin..end';
     estPascalComment: Result:='{..}';
   else
-    RaiseException('EncloseSelectionTypeDescription');
+    RaiseGDBException('EncloseSelectionTypeDescription');
   end;
 end;
 
@@ -155,7 +161,7 @@ begin
                +'}'+LineEnding;
 
   else
-    RaiseException('GetEnclosedSelectionParams');
+    RaiseGDBException('GetEnclosedSelectionParams');
   end;
 end;
 
@@ -427,7 +433,7 @@ begin
                        EncloseSelectionTypeDescription(Result))=0
     then
       exit;
-  RaiseException('TEncloseSelectionDialog.GetEncloseType');
+  RaiseGDBException('TEncloseSelectionDialog.GetEncloseType');
 end;
 
 end.
