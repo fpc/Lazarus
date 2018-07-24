@@ -1521,15 +1521,28 @@ begin
 end;
 
 procedure TCocoaSpinEdit.UpdateControl(min, max, inc, avalue: double; ADecimalPlaces: Integer);
+var
+  notifyChange : Boolean;
 begin
   decimalPlaces := ADecimalPlaces;
   Stepper.setMinValue(min);
   Stepper.setMaxValue(max);
   Stepper.setIncrement(inc);
-  Stepper.setDoubleValue(avalue);
 
-  // update the UI too
-  StepperChanged(Self);
+  if avalue < min then
+  begin
+    Stepper.setDoubleValue(min);
+    notifyChange := true;
+  end
+  else if avalue > max then
+  begin
+    Stepper.setDoubleValue(max);
+    notifyChange := true;
+  end
+  else
+    notifychange := false;
+
+  if notifychange then StepperChanged(Self);
 end;
 
 procedure TCocoaSpinEdit.CreateSubcontrols(const AParams: TCreateParams);
