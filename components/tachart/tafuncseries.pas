@@ -1530,8 +1530,13 @@ begin
     ext.b := AxisToGraph(b);
   end;
   NormalizeRect(ext);
-  AXMin := GraphToAxisX(ext.a.X);
-  AXMax := GraphToAxisX(ext.b.X);
+  if IsRotated then begin
+    AXMin := GraphToAxisY(ext.a.Y);
+    AXMax := GraphToAxisY(ext.b.Y);
+  end else begin
+    AXMin := GraphToAxisX(ext.a.X);
+    AXMax := GraphToAxisX(ext.b.X);
+  end;
   EnsureOrder(AXMin, AXMax);
   FFitRange.Intersect(AXMin, AXMax);
 end;
