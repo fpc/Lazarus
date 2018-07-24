@@ -254,8 +254,6 @@ function ProgramDirectory(BundleRoot: boolean): string;
 procedure RaiseException(const Msg: string);
 
 // miscellaneous
-function CompareCaret(const FirstCaret, SecondCaret: TPoint): integer;
-function CompareBoolean(b1, b2: boolean): integer;
 procedure CheckList(List: TList; TestListNil, TestDoubles, TestNils: boolean);
 procedure CheckList(List: TFPList; TestListNil, TestDoubles, TestNils: boolean);
 procedure CheckEmptyListCut(List1, List2: TList);
@@ -1213,26 +1211,6 @@ begin
   Params:=RightStr(CmdLine,length(CmdLine)-p+1);
 end;
 
-{-------------------------------------------------------------------------------
-  function CompareCaret(const FirstCaret, SecondCaret: TPoint): integer;
--------------------------------------------------------------------------------}
-function CompareCaret(const FirstCaret, SecondCaret: TPoint): integer;
-begin
-  if (FirstCaret.Y<SecondCaret.Y) then
-    Result:=1
-  else if (FirstCaret.Y>SecondCaret.Y) then
-    Result:=-1
-  else if (FirstCaret.X<SecondCaret.X) then
-    Result:=1
-  else if (FirstCaret.X>SecondCaret.X) then
-    Result:=-1
-  else
-    Result:=0;
-end;
-
-{-------------------------------------------------------------------------------
-  procedure CheckList(List: TList; TestListNil, TestDoubles, TestNils: boolean);
--------------------------------------------------------------------------------}
 procedure CheckList(List: TList; TestListNil, TestDoubles, TestNils: boolean);
 var
   Cnt: Integer;
@@ -1291,9 +1269,6 @@ begin
   end;
 end;
 
-{-------------------------------------------------------------------------------
-  procedure CheckEmptyListCut(List1, List2: TList);
--------------------------------------------------------------------------------}
 procedure CheckEmptyListCut(List1, List2: TList);
 var
   Cnt1: Integer;
@@ -1305,19 +1280,6 @@ begin
     if List2.IndexOf(List1[i])>=0 then
       RaiseException('CheckEmptyListCut');
   end;
-end;
-
-{-------------------------------------------------------------------------------
-  function CompareBoolean(b1, b2: boolean): integer;
--------------------------------------------------------------------------------}
-function CompareBoolean(b1, b2: boolean): integer;
-begin
-  if b1=b2 then
-    Result:=0
-  else if b1 then
-    Result:=1
-  else
-    Result:=-1;
 end;
 
 procedure RemoveDoubles(List: TStrings);

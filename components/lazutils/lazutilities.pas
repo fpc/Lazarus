@@ -17,6 +17,7 @@ uses
 
 procedure FreeThenNil(var obj);
 function ComparePointers(p1, p2: Pointer): integer; inline;
+function CompareBoolean(b1, b2: boolean): integer;
 
 { MergeSortWithLen:
   sort ascending, e.g. Compare(List[0],List[1])<0
@@ -56,6 +57,16 @@ begin
     Result:=-1
   else
     Result:=0;
+end;
+
+function CompareBoolean(b1, b2: boolean): integer;
+begin
+  if b1=b2 then
+    Result:=0
+  else if b1 then
+    Result:=1
+  else
+    Result:=-1;
 end;
 
 procedure MergeSortWithLen(List: PPointer; ListLength: PtrInt;

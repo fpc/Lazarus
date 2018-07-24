@@ -133,6 +133,7 @@ function ComparePointers(p1, p2: Pointer): integer; inline;
 function CompareHandles(h1, h2: THandle): integer;
 function CompareRect(R1, R2: PRect): Boolean;
 function ComparePoints(const p1, p2: TPoint): integer;
+function CompareCaret(const FirstCaret, SecondCaret: TPoint): integer;
 function CompareMethods(const m1, m2: TMethod): boolean; inline;
 
 function RoundToInt(const e: Extended): integer;
@@ -1060,6 +1061,20 @@ begin
   else if p1.X>p2.X then
     Result:=1
   else if p1.X<p2.X then
+    Result:=-1
+  else
+    Result:=0;
+end;
+
+function CompareCaret(const FirstCaret, SecondCaret: TPoint): integer;
+begin
+  if (FirstCaret.Y<SecondCaret.Y) then
+    Result:=1
+  else if (FirstCaret.Y>SecondCaret.Y) then
+    Result:=-1
+  else if (FirstCaret.X<SecondCaret.X) then
+    Result:=1
+  else if (FirstCaret.X>SecondCaret.X) then
     Result:=-1
   else
     Result:=0;

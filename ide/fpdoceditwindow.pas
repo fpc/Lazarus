@@ -36,7 +36,7 @@ uses
   Laz2_DOM, Laz2_XMLRead, LazUtilities, LazTracer,
   // LCL
   LResources, StdCtrls, Buttons, ComCtrls, Controls, Dialogs,
-  ExtCtrls, Forms, Graphics, LCLType,
+  ExtCtrls, Forms, Graphics, LCLType, LCLProc,
   // Synedit
   SynEdit, SynHighlighterXML,
   // codetools
@@ -45,7 +45,7 @@ uses
   IDEWindowIntf, ProjectIntf, LazIDEIntf, IDEHelpIntf, Menus,
   SrcEditorIntf, IDEDialogs, LazFileUtils, IDEImagesIntf,
   // IDE
-  IDEOptionDefs, EnvironmentOpts, PackageSystem, IDEProcs, LazarusIDEStrConsts,
+  IDEOptionDefs, EnvironmentOpts, PackageSystem, LazarusIDEStrConsts,
   FPDocSelectInherited, FPDocSelectLink, CodeHelp;
 
 type

@@ -40,7 +40,7 @@ uses
   // IdeIntf
   IDEHelpIntf, IDEDialogs,
   // IDE
-  LazarusIDEStrConsts, IDEProcs, MiscOptions;
+  LazarusIDEStrConsts, MiscOptions;
 
 type
 
