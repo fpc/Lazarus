@@ -5,7 +5,13 @@ unit CodyOpts;
 interface
 
 uses
-  Classes, SysUtils, FileProcs, LazMethodList, LazConfigStorage, BaseIDEIntf;
+  Classes, SysUtils,
+  // CodeTools
+  FileProcs,
+  // LazUtils
+  LazMethodList, LazConfigStorage,
+  // IdeIntf
+  BaseIDEIntf;
 
 const
   CodyConfigVersion = 1;

@@ -161,25 +161,6 @@ begin
 end;
 
 
-{ Check, if the given string starts with this substring. Check ignores case. }
-function StrStartsWith(sStr, sSubstr: String): Boolean;
-begin
-  sStr := AnsiUpperCase(sStr);
-  sSubstr := AnsiUpperCase(sSubstr);
-
-  Result := Pos(sSubstr, sStr) = 1;
-end;
-
-
-function StrContains(const SubStr, Str: string; CaseSensitive: Boolean): Boolean;
-begin
-  if CaseSensitive then
-    Result := Pos(SubStr, Str) > 0
-  else
-    Result := Pos(AnsiUpperCase(SubStr), AnsiUpperCase(Str)) > 0;
-end;
-
-
 function FilterFits(const SubStr, Str: string): boolean;
 var
   Src: PChar;

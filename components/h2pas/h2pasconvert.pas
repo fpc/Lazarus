@@ -23,15 +23,19 @@ unit H2PasConvert;
 interface
 
 uses
-  Classes, SysUtils, Laz_AVL_Tree, LCLProc, Forms, Controls, Dialogs,
-  LResources, XMLPropStorage,
+  Classes, SysUtils, Laz_AVL_Tree,
+  // LCL
+  LCLProc, LResources, Forms, Controls, Dialogs, XMLPropStorage,
+  // LazUtils
   LazConfigStorage, FileUtil, LazFileUtils, LazFileCache, LazUTF8Classes,
   // CodeTools
   CodeAtom, CodeTree, KeywordFuncLists, NonPascalCodeTools, BasicCodeTools,
   FileProcs, CodeCache, SourceChanger, CodeToolManager,
   // IDEIntf
   TextTools, IDEExternToolIntf, IDEDialogs, LazIDEIntf, SrcEditorIntf,
-  IDEMsgIntf, IDETextConverter, h2passtrconsts;
+  IDEMsgIntf, IDETextConverter,
+  // H2Pas
+  H2PasStrConsts;
   
 type
 

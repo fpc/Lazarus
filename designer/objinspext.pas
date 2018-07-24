@@ -17,13 +17,20 @@ unit ObjInspExt;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, Buttons, StdCtrls,
+  Classes, SysUtils,
+  // LCL
+  LCLProc, Forms, Controls, Buttons, StdCtrls,
   ExtCtrls, Dialogs, Menus, ComCtrls, Grids, CustomTimer,
-  CodeToolManager, CodeCache, PropEdits,
-  LazIDEIntf, ProjectIntf, ObjectInspector, OIFavoriteProperties,
-  DialogProcs, LazFileUtils, LazConf, BaseIDEIntf, IDEDialogs, LazConfigStorage,
-  LazarusIDEStrConsts;
-  
+  // LazUtils
+  LazFileUtils, LazConfigStorage,
+  // CodeTools
+  CodeToolManager, CodeCache,
+  // IdeIntf
+  BaseIDEIntf, LazIDEIntf, ProjectIntf, ObjectInspector, OIFavoriteProperties,
+  PropEdits, IDEDialogs,
+  // IDE
+  DialogProcs, LazConf, LazarusIDEStrConsts;
+
 type
   { TOIAddRemoveFavoriteDlg }
 

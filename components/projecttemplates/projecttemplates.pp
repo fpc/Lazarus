@@ -5,7 +5,9 @@ unit ProjectTemplates;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LazFileUtils, LazUTF8Classes, IniFiles;
+  Classes, SysUtils, IniFiles,
+  // LazUtils
+  FileUtil, LazFileUtils, LazUTF8Classes;
 
 type
 
@@ -61,11 +63,7 @@ type
     function GetTemplate(Index : Integer): TProjectTemplate;
     function GetTemplateName(Index : Integer): String;
     procedure SetTemplate(Index : Integer; const AValue: TProjectTemplate);
-    { Private declarations }
-  protected
-    { Protected declarations }
   public
-    { Public declarations }
     Constructor Create(Const ATemplateDir : String);
     Procedure Initialize(Const ATemplateDir : String);
     Procedure CreateProject(Const ProjectName, ProjectDir : String; Variables : TStrings);

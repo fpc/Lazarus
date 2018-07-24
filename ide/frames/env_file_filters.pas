@@ -9,11 +9,11 @@ uses
   // LazUtils
   LazFileUtils, LazConfigStorage,
   // LCL
-  LCLProc, LCLType, LResources, Forms, Grids, Dialogs, Controls, StdCtrls, Menus,
+  LCLProc, LCLType, LResources, Grids, Dialogs, Controls, StdCtrls, Menus,
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, BaseIDEIntf, IDEDialogs,
   // IDE
-  EnvironmentOpts, IDEOptionDefs, LazarusIDEStrConsts;
+  EnvironmentOpts, LazarusIDEStrConsts;
 
 const
   FileDialogFilterConfigFile = 'filefilters.xml';

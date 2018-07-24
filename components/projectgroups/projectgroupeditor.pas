@@ -12,10 +12,17 @@ unit ProjectGroupEditor;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ComCtrls, Menus,
-  ActnList, LCLProc, Clipbrd, LazIDEIntf, PackageIntf, ProjectIntf,
-  ProjectGroupIntf, MenuIntf, IDEDialogs, IDEWindowIntf, LazFileUtils,
-  LazLoggerBase, LazFileCache, ProjectGroupStrConst, ProjectGroup;
+  Classes, SysUtils,
+  // LCL
+  Forms, Controls, Graphics, Dialogs, ComCtrls, Menus,
+  ActnList, LCLProc, Clipbrd,
+  // LazUtils
+  LazFileUtils, LazLoggerBase, LazFileCache,
+  // IdeIntf
+  LazIDEIntf, PackageIntf, ProjectIntf, ProjectGroupIntf, MenuIntf, IDEWindowIntf,
+  IDEDialogs,
+  // ProjectGroups
+  ProjectGroupStrConst, ProjectGroup;
 
 type
   TNodeType = (

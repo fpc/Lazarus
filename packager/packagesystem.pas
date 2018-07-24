@@ -61,7 +61,7 @@ uses
   // IDE
   LazarusIDEStrConsts, IDECmdLine, EnvironmentOpts, IDEProcs, LazConf,
   TransferMacros, DialogProcs, IDETranslations, CompilerOptions, PackageLinks,
-  PackageDefs, ComponentReg, ExtTools, FppkgHelper;
+  PackageDefs, ComponentReg, FppkgHelper;
 
 const
   MakefileCompileVersion = 2;

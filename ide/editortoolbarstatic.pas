@@ -24,9 +24,15 @@ unit EditorToolbarStatic;
 interface
 
 uses
-  SysUtils, Classes, fgl, ComCtrls, Controls, LCLProc, Menus,
-  IDEImagesIntf, SrcEditorIntf, BaseIDEIntf,
-  LazarusIDEStrConsts, LazConfigStorage, Laz2_XMLCfg, ToolbarConfig;
+  SysUtils, Classes, fgl,
+  // LCL
+  ComCtrls, Controls, LCLProc, Menus,
+  // LazUtils
+  LazConfigStorage, Laz2_XMLCfg,
+  // IdeIntf
+  BaseIDEIntf, IDEImagesIntf, SrcEditorIntf,
+  // IDE
+  LazarusIDEStrConsts, ToolbarConfig;
 
 type
 

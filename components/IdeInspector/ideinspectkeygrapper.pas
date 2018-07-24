@@ -5,7 +5,13 @@ unit IdeInspectKeyGrapper;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ButtonPanel, PropEdits;
+  Classes, SysUtils,
+  // LazUtils
+  FileUtil,
+  // LCL
+  Forms, Controls, Graphics, Dialogs, ButtonPanel,
+  // IdeIntf
+  PropEdits;
 
 type
 
@@ -18,9 +24,7 @@ type
     procedure OKButtonClick(Sender: TObject);
   private
     FKeyBox: TShortCutGrabBox;
-    { private declarations }
   public
-    { public declarations }
     property KeyBox: TShortCutGrabBox read FKeyBox;
   end;
 

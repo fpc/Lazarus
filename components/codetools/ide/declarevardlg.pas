@@ -32,11 +32,16 @@ unit DeclareVarDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, contnrs, LResources, Forms, Controls, Graphics,
-  Dialogs, ButtonPanel, StdCtrls, ExtCtrls,
-  IDEDialogs, LazIDEIntf, SrcEditorIntf,
+  Classes, SysUtils, contnrs,
+  // LCL
+  LCLProc, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
+  ButtonPanel,
+  // IdeIntf
+  LazIDEIntf, SrcEditorIntf, IDEDialogs,
+  // CodeTools
   FileProcs, CodeToolManager, FindDeclarationTool, CodeTree, CodeCache,
   KeywordFuncLists, BasicCodeTools,
+  // Cody
   CodyUtils, CodyStrConsts;
 
 type

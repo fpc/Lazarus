@@ -16,7 +16,10 @@ unit PagesPropEditDlg;
 interface
 
 uses
-  Classes, SysUtils, Forms, ButtonPanel, StdCtrls, Dialogs, ExtCtrls, Controls,
+  Classes, SysUtils,
+  // LCL
+  Forms, ButtonPanel, StdCtrls, Dialogs, ExtCtrls, Controls,
+  // IdeIntf
   ObjInspStrConsts, IDEDialogs;
   
 type

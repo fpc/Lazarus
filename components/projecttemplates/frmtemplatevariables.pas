@@ -5,8 +5,10 @@ unit frmTemplateVariables;
 interface
 
 uses
-  Classes, Forms, ExtCtrls,
-  Grids, StdCtrls, EditBtn, ButtonPanel,
+  Classes,
+  // LCL
+  Forms, ExtCtrls, Grids, StdCtrls, EditBtn, ButtonPanel,
+  // ProjectTemplates
   ProjectTemplates;
 
 type

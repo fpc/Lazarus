@@ -38,8 +38,16 @@ unit TransferMacros;
 
 interface
 
-uses Classes, SysUtils, LazUTF8, FileProcs, LazFileUtils, LazarusIDEStrConsts,
-  MacroIntf, MacroDefIntf;
+uses
+  Classes, SysUtils,
+  // LazUtils
+  LazFileUtils, LazUTF8,
+  // CodeTools
+  FileProcs,
+  // IdeIntf
+  MacroIntf, MacroDefIntf,
+  // IDE
+  LazarusIDEStrConsts;
 
 type
 

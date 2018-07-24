@@ -32,9 +32,15 @@ unit IDEOptionDefs;
 interface
 
 uses
-  Classes, SysUtils, types, LCLProc, LazFileUtils, Laz2_XMLCfg,
-  Forms, Controls, Buttons, BaseIDEIntf, LazConfigStorage, LazUTF8,
-  IDEWindowIntf, IDEExternToolIntf, LazConf;
+  Classes, SysUtils, types,
+  // LCL
+  LCLProc, Forms, Controls,
+  // LazUtils
+  LazFileUtils, LazConfigStorage, Laz2_XMLCfg, LazUTF8,
+  // IdeIntf
+  BaseIDEIntf, IDEExternToolIntf,
+  // IDE
+  LazConf;
 
 type
   { TXMLOptionsStorage }

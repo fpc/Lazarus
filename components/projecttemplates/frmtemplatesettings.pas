@@ -5,7 +5,10 @@ unit frmtemplatesettings;
 interface
 
 uses
-  Classes, LclIntf, Forms, StdCtrls, EditBtn, ButtonPanel, ProjectTemplates;
+  // LCL
+  LclIntf, Forms, StdCtrls, EditBtn, ButtonPanel,
+  // ProjectTemplates
+  ProjectTemplates;
 
 type
 

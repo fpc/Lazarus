@@ -5,9 +5,16 @@ unit MainInspector;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls, Buttons,
-  ComCtrls, Menus, StdCtrls, MenuIntf, ObjectInspector, PropEdits, types, typinfo,
-  LazIDEIntf, LazConfigStorage, BaseIDEIntf, LCLProc, IdeInspectKeyGrapper, math;
+  Classes, SysUtils, types, typinfo, math,
+  // LazUtils
+  FileUtil, LazConfigStorage,
+  // LCL
+  LCLProc, Forms, Controls, Graphics, Dialogs, ExtCtrls, ComCtrls, StdCtrls,
+  Buttons, Menus,
+  // IdeIntf
+  BaseIDEIntf, MenuIntf, LazIDEIntf, ObjectInspector, PropEdits,
+  // IdeInspector
+  IdeInspectKeyGrapper;
 
 type
 

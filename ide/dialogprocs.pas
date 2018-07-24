@@ -36,9 +36,16 @@ unit DialogProcs;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Dialogs, ComCtrls,
-  FileProcs, FileUtil, LazFileUtils, Laz2_XMLCfg, lazutf8classes, LazFileCache,
-  CodeToolsConfig, CodeCache, CodeToolManager, LazIDEIntf, IDEDialogs,
+  Classes, SysUtils,
+  // LCL
+  LCLProc, LResources, Forms, Controls, Dialogs, ComCtrls,
+  // LazUtils
+  FileUtil, LazFileUtils, LazFileCache, Laz2_XMLCfg, LazUTF8Classes,
+  // CodeTools
+  FileProcs, CodeToolsConfig, CodeCache, CodeToolManager,
+  // IdeIntf
+  LazIDEIntf, IDEDialogs,
+  // IDE
   IDEProcs, LazarusIDEStrConsts;
 
 type

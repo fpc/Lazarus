@@ -22,12 +22,21 @@ unit H2PasDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LCLType, LResources, Forms, Controls, Graphics,
+  Classes, SysUtils,
+  // LCL
+  LCLProc, LCLType, LResources, Forms, Controls, Graphics,
   Dialogs, ComCtrls, Buttons, StdCtrls, ExtCtrls,
-  LazConfigStorage, LazFileUtils, LazFileCache, SynEdit,
-  FileProcs, IDEMsgIntf, MenuIntf, IDECommands, BaseIDEIntf,
-  IDEDialogs, LazIDEIntf, SrcEditorIntf, IDEExternToolIntf, CompOptsIntf,
-  IDETextConverter, H2PasStrConsts, H2PasConvert, IDETextConvListEdit;
+  // LazUtils
+  LazConfigStorage, LazFileUtils, LazFileCache,
+  // SynEdit
+  SynEdit,
+  // CodeTools
+  FileProcs,
+  // IdeIntf
+  BaseIDEIntf, IDEMsgIntf, MenuIntf, IDECommands, IDEDialogs, LazIDEIntf,
+  SrcEditorIntf, IDEExternToolIntf, CompOptsIntf, IDETextConverter,
+  // H2Pas
+  H2PasStrConsts, H2PasConvert, IDETextConvListEdit;
 
 type
 
