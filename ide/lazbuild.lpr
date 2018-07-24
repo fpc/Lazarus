@@ -1764,7 +1764,7 @@ const
   end;
 
 begin
-  TranslateResourceStrings(ProgramDirectory(true),'');
+  TranslateResourceStrings(ProgramDirectoryWithBundle,'');
   writeln('');
   writeln('lazbuild [options] <project/package filename or package name>');
   writeln('');

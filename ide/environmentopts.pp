@@ -41,7 +41,8 @@ uses
   // LCL
   Graphics, Controls, Forms, Dialogs, LCLProc,
   // LazUtils
-  LazFileUtils, LazFileCache, LazConfigStorage, Laz2_XMLCfg, LazUTF8, Laz2_DOM,
+  LazFileUtils, FileUtil, LazFileCache, LazConfigStorage, LazUTF8,
+  Laz2_XMLCfg, Laz2_DOM,
   // CodeTools
   FileProcs, SourceChanger, CodeCompletionTool,
   // IDEIntf
@@ -1910,7 +1911,7 @@ begin
   LazarusDirectory:=FXMLCfg.GetValue(Path+'LazarusDirectory/Value',LazarusDirectory);
   LoadRecentList(FXMLCfg,FLazarusDirHistory,Path+'LazarusDirectory/History/',rltFile);
   if FLazarusDirHistory.Count=0 then
-    FLazarusDirHistory.Add(ProgramDirectory(true));
+    FLazarusDirHistory.Add(ProgramDirectoryWithBundle);
   CompilerFilename:=TrimFilename(FXMLCfg.GetValue(
                         Path+'CompilerFilename/Value',CompilerFilename));
   LoadRecentList(FXMLCfg,FCompilerFileHistory,Path+'CompilerFilename/History/',rltFile);

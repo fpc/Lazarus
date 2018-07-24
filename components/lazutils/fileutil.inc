@@ -163,6 +163,15 @@ begin
   Result:=ExpandFileNameUTF8(ExtractFilePath(Result));
 end;
 
+function ProgramDirectoryWithBundle: string;
+const
+  BundlePostFix='.app/Contents/MacOS';
+begin
+  Result:=ProgramDirectory;
+  if (RightStr(ChompPathDelim(Result),Length(BundlePostFix))=BundlePostFix) then
+    Result:=ExtractFilePath(LeftStr(Result,Length(Result)-Length(BundlePostFix)));
+end;
+
 function CreateAbsoluteSearchPath(const SearchPath, BaseDirectory: string): string;
 var
   PathLen: Integer;

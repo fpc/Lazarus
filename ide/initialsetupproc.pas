@@ -37,10 +37,10 @@ uses
   // CodeTools
   DefineTemplates, CodeToolManager, FileProcs,
   // LazUtils
-  LazFileCache, LazUTF8, LazUTF8Classes, LazFileUtils,
+  LazFileCache, LazUTF8, LazUTF8Classes, LazFileUtils, FileUtil,
   LazLoggerBase, Laz2_XMLCfg,
   // IDE
-  LazarusIDEStrConsts, LazConf, EnvironmentOpts, IDEProcs;
+  LazarusIDEStrConsts, LazConf, EnvironmentOpts;
 
 type
   TSDFilenameQuality = (
@@ -239,7 +239,7 @@ begin
     if CheckDir(EnvironmentOptions.LazarusDirectory,Result) then exit;
 
     // then check the directory of the executable
-    Dir:=ProgramDirectory(true);
+    Dir:=ProgramDirectoryWithBundle;
     if CheckDir(Dir,Result) then exit;
     ResolvedDir:=GetPhysicalFilenameCached(Dir,false);
     if (ResolvedDir<>Dir) and (CheckDir(ResolvedDir,Result)) then exit;

@@ -41,7 +41,7 @@ uses
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, IDEDialogs, IDEUtils,
   // IDE
-  LazarusIDEStrConsts, InputHistory, LazConf, IDEProcs, DialogProcs, InitialSetupProc;
+  LazarusIDEStrConsts, InputHistory, LazConf, DialogProcs, InitialSetupProc;
 
 type
 
@@ -239,7 +239,7 @@ begin
   with LazarusDirComboBox.Items do
   begin
     BeginUpdate;
-    Add(ProgramDirectory(true));
+    Add(ProgramDirectoryWithBundle);
     EndUpdate;
   end;
   MultipleInstancesLabel.Caption := dlgMultipleInstances;

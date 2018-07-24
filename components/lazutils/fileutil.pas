@@ -56,6 +56,7 @@ function CompareFilenames(Filename1: PChar; Len1: integer;
 function ExtractShortPathNameUTF8(Const FileName : String) : String;
 function DeleteDirectory(const DirectoryName: string; OnlyChildren: boolean): boolean;
 function ProgramDirectory: string;
+function ProgramDirectoryWithBundle: string;
 
 function ExpandUNCFileNameUTF8(const FileName: string): string;
 function FileSize(const Filename: string): int64; overload; inline;

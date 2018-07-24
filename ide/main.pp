@@ -1094,7 +1094,7 @@ begin
       except
       end;
     end;
-    TranslateResourceStrings(ProgramDirectory(true), HelpLang);
+    TranslateResourceStrings(ProgramDirectoryWithBundle, HelpLang);
 
     AHelp := TStringList.Create;
     AddHelp([lislazarusOptionsProjectFilename]);
@@ -1250,7 +1250,7 @@ begin
 
   // check if this PCP was used by another lazarus exe
   s := ExtractFileName(ParamStrUTF8(0));
-  CurPrgName := NormalizeLazExe(AppendPathDelim(ProgramDirectory(False)) + s);
+  CurPrgName := NormalizeLazExe(AppendPathDelim(ProgramDirectory) + s);
   AltPrgName := NormalizeLazExe(AppendPathDelim(PCP + 'bin') + s);
   LastCalled := NormalizeLazExe(EnvironmentOptions.LastCalledByLazarusFullPath);
 

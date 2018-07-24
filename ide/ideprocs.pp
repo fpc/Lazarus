@@ -248,7 +248,6 @@ type
 function GetCurrentUserName: string;
 function GetCurrentMailAddress: string;
 function GetProgramSearchPath: string;
-function ProgramDirectory(BundleRoot: boolean): string;
 
 // debugging
 procedure RaiseException(const Msg: string);
@@ -2352,16 +2351,6 @@ begin
   and not HandleError(ceSrcDirDoesNotExists,SrcDir,'') then exit;
   
   CopyDir(SrcDir,DestDirectory);
-end;
-
-function ProgramDirectory(BundleRoot: boolean): string;
-const
-  BundlePostFix='.app/Contents/MacOS';
-begin
-  Result:=FileUtil.ProgramDirectory;
-  if BundleRoot
-  and (RightStr(ChompPathDelim(Result),length(BundlePostFix))=BundlePostFix) then
-    Result:=ExtractFilePath(LeftStr(Result,length(Result)-length(BundlePostFix)));
 end;
 
 function CreateEmptyFile(const Filename: string): boolean;
