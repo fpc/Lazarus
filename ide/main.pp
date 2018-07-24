@@ -76,10 +76,10 @@ uses
   // SynEdit
   SynEdit, AllSynEdit, SynEditKeyCmds, SynEditMarks, SynEditHighlighter,
   // IDE interface
-  BaseIDEIntf, ObjectInspector, PropEdits, PropEditUtils, EditorSyntaxHighlighterDef,
-  MacroIntf, IDECommands, IDEWindowIntf, ComponentReg,
+  IDEIntf, ObjectInspector, PropEdits, PropEditUtils, EditorSyntaxHighlighterDef,
+  MacroIntf, IDECommands, IDEWindowIntf, ComponentReg, IDEDialogs,
   SrcEditorIntf, NewItemIntf, IDEExternToolIntf, IDEMsgIntf, LazMsgDialogs,
-  PackageIntf, ProjectIntf, CompOptsIntf, MenuIntf, LazIDEIntf, IDEDialogs,
+  PackageIntf, ProjectIntf, CompOptsIntf, MenuIntf, BaseIDEIntf, LazIDEIntf,
   IDEOptionsIntf, IDEOptEditorIntf, IDEImagesIntf, ComponentEditors, ToolBarIntf,
   // protocol
   IDEProtocol,
