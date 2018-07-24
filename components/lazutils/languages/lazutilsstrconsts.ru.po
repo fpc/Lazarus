@@ -43,9 +43,9 @@ msgstr "невозможно выполнить %s"
 msgid "Creating gdb catchable error:"
 msgstr "Создание ошибки, захватываемой GDB:"
 
-#: lazutilsstrconsts.lrserrorinlib
-msgid "ERROR in libraries: "
-msgstr "ОШИБКА в библиотеках: "
+#: lazutilsstrconsts.lrserrorincode
+msgid "ERROR in code: "
+msgstr "ОШИБКА в коде: "
 
 #: lazutilsstrconsts.lrsevalinvalidargcount
 msgid "Invalid number of function arguments"

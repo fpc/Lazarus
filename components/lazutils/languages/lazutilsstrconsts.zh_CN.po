@@ -44,8 +44,8 @@ msgstr "不能执行%s"
 msgid "Creating gdb catchable error:"
 msgstr ""
 
-#: lazutilsstrconsts.lrserrorinlib
-msgid "ERROR in libraries: "
+#: lazutilsstrconsts.lrserrorincode
+msgid "ERROR in code: "
 msgstr ""
 
 #: lazutilsstrconsts.lrsevalinvalidargcount
