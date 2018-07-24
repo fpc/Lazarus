@@ -37,7 +37,6 @@ type
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class function  GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): Double; override;
     class procedure UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit); override;
-    //
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
   end;
 
@@ -66,10 +65,9 @@ begin
   lSpin := TCocoaSpinEdit.alloc.lclInitWithCreateParams(AParams);
   Result := TLCLIntfHandle(lSpin);
   if Result = 0 then Exit;
-
-  lSpin.callback := TLCLCommonCallback.Create(lSpin, AWinControl);
+  lSpin.decimalPlaces := -1;
   lSpin.CreateSubcontrols(AParams);
-  UpdateControlLCLToCocoa(TCustomFloatSpinEdit(AWinControl), lSpin);
+  lSpin.callback := TLCLCommonCallback.Create(lSpin, AWinControl);
 end;
 
 {------------------------------------------------------------------------------
