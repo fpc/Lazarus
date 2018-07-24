@@ -32,13 +32,13 @@ uses
   Interfaces, // this includes the NoGUI widgetset
   // LazUtils
   Masks, LConvEncoding, FileUtil, LazFileUtils, LazLoggerBase, LazUtilities,
-  LazUTF8, Laz2_XMLCfg,
+  LazUTF8, Laz2_XMLCfg, UITypes,
   // LCL
-  LCLPlatformDef, Controls, Dialogs, Forms,
+  LCLPlatformDef, Forms,
   // Codetools
   CodeCache, CodeToolManager, DefineTemplates, FileProcs,
   // IDEIntf
-  MacroIntf, PackageIntf, IDEDialogs, ProjectIntf, IDEExternToolIntf,
+  MacroIntf, PackageIntf, LazMsgDialogs, ProjectIntf, IDEExternToolIntf,
   CompOptsIntf, IDEOptionsIntf, LazIDEIntf, PackageDependencyIntf,
   // IDE
   IDEProcs, InitialSetupProc, ExtTools, CompilerOptions,
@@ -1251,8 +1251,8 @@ end;
 
 procedure TLazBuildApplication.SetupDialogs;
 begin
-  IDEMessageDialog:=@OnIDEMessageDialog;
-  IDEQuestionDialog:=@OnIDEQuestionDialog;
+  LazMessageDialog:=@OnIDEMessageDialog;
+  LazQuestionDialog:=@OnIDEQuestionDialog;
 end;
 
 procedure TLazBuildApplication.StoreBaseSettings;

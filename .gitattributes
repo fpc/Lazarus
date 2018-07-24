@@ -2057,6 +2057,7 @@ components/ideintf/languages/objinspstrconsts.sk.po svneol=native#text/plain
 components/ideintf/languages/objinspstrconsts.uk.po svneol=native#text/plain
 components/ideintf/languages/objinspstrconsts.zh_CN.po svneol=native#text/plain
 components/ideintf/lazideintf.pas svneol=native#text/pascal
+components/ideintf/lazmsgdialogs.pas svneol=native#text/pascal
 components/ideintf/lazstringgridedit.lfm svneol=native#text/plain
 components/ideintf/lazstringgridedit.pas svneol=native#text/plain
 components/ideintf/listviewpropedit.lfm svneol=native#text/plain

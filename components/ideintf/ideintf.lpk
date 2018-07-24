@@ -20,7 +20,7 @@
     <Description Value="IDEIntf - the interface units for the Lazarus IDE"/>
     <License Value="Modified LGPL2"/>
     <Version Major="1"/>
-    <Files Count="84">
+    <Files Count="85">
       <Item1>
         <Filename Value="actionseditor.pas"/>
         <UnitName Value="ActionsEditor"/>
@@ -103,7 +103,7 @@
       </Item20>
       <Item21>
         <Filename Value="fieldslist.pas"/>
-        <UnitName Value="fieldslist"/>
+        <UnitName Value="FieldsList"/>
       </Item21>
       <Item22>
         <Filename Value="fieldslist.lfm"/>
@@ -356,8 +356,12 @@
       </Item83>
       <Item84>
         <Filename Value="fppkgintf.pas"/>
-        <UnitName Value="fppkgintf"/>
+        <UnitName Value="FppkgIntf"/>
       </Item84>
+      <Item85>
+        <Filename Value="lazmsgdialogs.pas"/>
+        <UnitName Value="LazMsgDialogs"/>
+      </Item85>
     </Files>
     <LazDoc Paths="docs"/>
     <i18n>

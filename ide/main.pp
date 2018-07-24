@@ -78,7 +78,7 @@ uses
   // IDE interface
   IDEIntf, ObjectInspector, PropEdits, PropEditUtils, EditorSyntaxHighlighterDef,
   MacroIntf, IDECommands, IDEWindowIntf, ComponentReg,
-  SrcEditorIntf, NewItemIntf, IDEExternToolIntf, IDEMsgIntf,
+  SrcEditorIntf, NewItemIntf, IDEExternToolIntf, IDEMsgIntf, LazMsgDialogs,
   PackageIntf, ProjectIntf, CompOptsIntf, MenuIntf, LazIDEIntf, IDEDialogs,
   IDEOptionsIntf, IDEOptEditorIntf, IDEImagesIntf, ComponentEditors, ToolBarIntf,
   // protocol
@@ -2103,8 +2103,8 @@ begin
   LazIDESelectDirectory:=@SelectDirectoryHandler;
   InitIDEFileDialog:=@InitIDEFileDialogHandler;
   StoreIDEFileDialog:=@StoreIDEFileDialogHandler;
-  IDEMessageDialog:=@IDEMessageDialogHandler;
-  IDEQuestionDialog:=@IDEQuestionDialogHandler;
+  LazMessageDialog:=@IDEMessageDialogHandler;
+  LazQuestionDialog:=@IDEQuestionDialogHandler;
   TestCompilerOptions:=@CompilerOptionsDialogTest;
   CheckCompOptsAndMainSrcForNewUnitEvent:=@CheckForNewUnit;
 end;
