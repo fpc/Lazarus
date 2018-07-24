@@ -2504,6 +2504,10 @@ msgstr "Margini e spaziatura laterale"
 msgid "Marker color"
 msgstr "Colore marker"
 
+#: lazarusidestrconsts.dlgmarkupfoldcolor
+msgid "Vertical-mark"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupgroup
 msgid "Highlight of Word under Caret"
 msgstr "Evidenzia la parola sotto il cursore"
@@ -19734,6 +19738,10 @@ msgstr "Grezzo"
 #: lazarusidestrconsts.rsaddinverse
 msgid "Add Inverse"
 msgstr "Aggiungi inverso"
+
+#: lazarusidestrconsts.rsaddnewterm
+msgid "Add new term"
+msgstr ""
 
 #: lazarusidestrconsts.rsattachto
 msgid "Attach to"

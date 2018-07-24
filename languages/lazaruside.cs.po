@@ -2482,6 +2482,10 @@ msgstr "Okraj a žlábek"
 msgid "Marker color"
 msgstr "Barva značkovače"
 
+#: lazarusidestrconsts.dlgmarkupfoldcolor
+msgid "Vertical-mark"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupgroup
 msgid "Highlight of Word under Caret"
 msgstr "Zvýraznění slova pod kurzorem"
@@ -19671,6 +19675,10 @@ msgstr "Beze změny"
 #: lazarusidestrconsts.rsaddinverse
 msgid "Add Inverse"
 msgstr "Přidat inverzi"
+
+#: lazarusidestrconsts.rsaddnewterm
+msgid "Add new term"
+msgstr ""
 
 #: lazarusidestrconsts.rsattachto
 msgid "Attach to"

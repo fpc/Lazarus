@@ -2446,6 +2446,10 @@ msgstr "Marginaali ja reunapalkki"
 msgid "Marker color"
 msgstr "Merkattu väri"
 
+#: lazarusidestrconsts.dlgmarkupfoldcolor
+msgid "Vertical-mark"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupgroup
 msgid "Highlight of Word under Caret"
 msgstr "Tekstikursorin kohdalla olevan sanan korostus"
@@ -19406,6 +19410,10 @@ msgstr "Raaka"
 #: lazarusidestrconsts.rsaddinverse
 msgid "Add Inverse"
 msgstr "Lisää käänteinen"
+
+#: lazarusidestrconsts.rsaddnewterm
+msgid "Add new term"
+msgstr ""
 
 #: lazarusidestrconsts.rsattachto
 msgid "Attach to"

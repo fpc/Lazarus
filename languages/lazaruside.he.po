@@ -2589,6 +2589,10 @@ msgstr "שוליים וקווי עזר"
 msgid "Marker color"
 msgstr "צבע הסמן"
 
+#: lazarusidestrconsts.dlgmarkupfoldcolor
+msgid "Vertical-mark"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupgroup
 #, fuzzy
 #| msgid "Word under Caret Highlight"
@@ -20983,6 +20987,10 @@ msgstr ""
 #: lazarusidestrconsts.rsaddinverse
 msgid "Add Inverse"
 msgstr "הוסף הפוך"
+
+#: lazarusidestrconsts.rsaddnewterm
+msgid "Add new term"
+msgstr ""
 
 #: lazarusidestrconsts.rsattachto
 msgid "Attach to"

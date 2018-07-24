@@ -2449,6 +2449,10 @@ msgstr ""
 msgid "Marker color"
 msgstr ""
 
+#: lazarusidestrconsts.dlgmarkupfoldcolor
+msgid "Vertical-mark"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupgroup
 msgid "Highlight of Word under Caret"
 msgstr ""
@@ -19401,6 +19405,10 @@ msgstr ""
 
 #: lazarusidestrconsts.rsaddinverse
 msgid "Add Inverse"
+msgstr ""
+
+#: lazarusidestrconsts.rsaddnewterm
+msgid "Add new term"
 msgstr ""
 
 #: lazarusidestrconsts.rsattachto

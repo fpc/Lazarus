@@ -2474,6 +2474,10 @@ msgstr "Margó és hasábköz"
 msgid "Marker color"
 msgstr "Jelző színe"
 
+#: lazarusidestrconsts.dlgmarkupfoldcolor
+msgid "Vertical-mark"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupgroup
 msgid "Highlight of Word under Caret"
 msgstr "Szó kiemelése a kurzor alatt"
@@ -19552,6 +19556,10 @@ msgstr "Nyers"
 #: lazarusidestrconsts.rsaddinverse
 msgid "Add Inverse"
 msgstr "Hozzáadás negáltan"
+
+#: lazarusidestrconsts.rsaddnewterm
+msgid "Add new term"
+msgstr ""
 
 #: lazarusidestrconsts.rsattachto
 msgid "Attach to"

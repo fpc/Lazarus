@@ -2463,6 +2463,10 @@ msgstr "Межі і смужка"
 msgid "Marker color"
 msgstr "Маркери"
 
+#: lazarusidestrconsts.dlgmarkupfoldcolor
+msgid "Vertical-mark"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupgroup
 msgid "Highlight of Word under Caret"
 msgstr "Підсвітка Слова під Курсором"
@@ -19513,6 +19517,10 @@ msgstr "Сирі дані"
 #: lazarusidestrconsts.rsaddinverse
 msgid "Add Inverse"
 msgstr "Додати зворотне"
+
+#: lazarusidestrconsts.rsaddnewterm
+msgid "Add new term"
+msgstr ""
 
 #: lazarusidestrconsts.rsattachto
 msgid "Attach to"

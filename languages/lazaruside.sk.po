@@ -2561,6 +2561,10 @@ msgstr "Okraj a gutter"
 msgid "Marker color"
 msgstr "Farba markera"
 
+#: lazarusidestrconsts.dlgmarkupfoldcolor
+msgid "Vertical-mark"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupgroup
 msgid "Highlight of Word under Caret"
 msgstr ""
@@ -20591,6 +20595,10 @@ msgstr ""
 #: lazarusidestrconsts.rsaddinverse
 msgid "Add Inverse"
 msgstr "Pridať obrátene"
+
+#: lazarusidestrconsts.rsaddnewterm
+msgid "Add new term"
+msgstr ""
 
 #: lazarusidestrconsts.rsattachto
 msgid "Attach to"

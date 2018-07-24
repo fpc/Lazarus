@@ -2475,6 +2475,10 @@ msgstr "マージンとガター"
 msgid "Marker color"
 msgstr "マーカーの色"
 
+#: lazarusidestrconsts.dlgmarkupfoldcolor
+msgid "Vertical-mark"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupgroup
 msgid "Highlight of Word under Caret"
 msgstr "キャレットの下の単語を強調"
@@ -19556,6 +19560,10 @@ msgstr "生"
 #: lazarusidestrconsts.rsaddinverse
 msgid "Add Inverse"
 msgstr "否定を追加"
+
+#: lazarusidestrconsts.rsaddnewterm
+msgid "Add new term"
+msgstr ""
 
 #: lazarusidestrconsts.rsattachto
 msgid "Attach to"

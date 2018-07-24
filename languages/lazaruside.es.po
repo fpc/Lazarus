@@ -2502,6 +2502,10 @@ msgstr "Margen y columna de marcas"
 msgid "Marker color"
 msgstr "Color de marca"
 
+#: lazarusidestrconsts.dlgmarkupfoldcolor
+msgid "Vertical-mark"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupgroup
 msgid "Highlight of Word under Caret"
 msgstr "Resaltado de la palabra bajo el Cursor de Texto"
@@ -19802,6 +19806,10 @@ msgstr "Raw"
 #: lazarusidestrconsts.rsaddinverse
 msgid "Add Inverse"
 msgstr "Añadir Inverso"
+
+#: lazarusidestrconsts.rsaddnewterm
+msgid "Add new term"
+msgstr ""
 
 #: lazarusidestrconsts.rsattachto
 msgid "Attach to"

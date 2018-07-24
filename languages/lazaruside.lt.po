@@ -2476,6 +2476,10 @@ msgstr "Paraštės"
 msgid "Marker color"
 msgstr "Žymeklio spalva"
 
+#: lazarusidestrconsts.dlgmarkupfoldcolor
+msgid "Vertical-mark"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupgroup
 msgid "Highlight of Word under Caret"
 msgstr "Paryškinti žodį, esantį ties žymekliu"
@@ -19580,6 +19584,10 @@ msgstr "Neapdorotas"
 #: lazarusidestrconsts.rsaddinverse
 msgid "Add Inverse"
 msgstr "Pridėti atvirkščiai"
+
+#: lazarusidestrconsts.rsaddnewterm
+msgid "Add new term"
+msgstr ""
 
 #: lazarusidestrconsts.rsattachto
 msgid "Attach to"

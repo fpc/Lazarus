@@ -2578,6 +2578,10 @@ msgstr "Margines i pasek ikon"
 msgid "Marker color"
 msgstr "Kolor zaznaczenia"
 
+#: lazarusidestrconsts.dlgmarkupfoldcolor
+msgid "Vertical-mark"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupgroup
 #, fuzzy
 #| msgid "Word under Caret Highlight"
@@ -19927,6 +19931,10 @@ msgstr ""
 
 #: lazarusidestrconsts.rsaddinverse
 msgid "Add Inverse"
+msgstr ""
+
+#: lazarusidestrconsts.rsaddnewterm
+msgid "Add new term"
 msgstr ""
 
 #: lazarusidestrconsts.rsattachto

@@ -2479,6 +2479,10 @@ msgstr "Kenar boşluğu ve cilt payı"
 msgid "Marker color"
 msgstr "İşaretçi rengi"
 
+#: lazarusidestrconsts.dlgmarkupfoldcolor
+msgid "Vertical-mark"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupgroup
 msgid "Highlight of Word under Caret"
 msgstr "Caret'in Altındaki Sözcüklerin Vurgulanıyor"
@@ -19901,6 +19905,10 @@ msgstr "Çiğ"
 #: lazarusidestrconsts.rsaddinverse
 msgid "Add Inverse"
 msgstr "Ters Ekle"
+
+#: lazarusidestrconsts.rsaddnewterm
+msgid "Add new term"
+msgstr ""
 
 #: lazarusidestrconsts.rsattachto
 msgid "Attach to"

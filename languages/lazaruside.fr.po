@@ -2474,6 +2474,10 @@ msgstr "Marge et gouttière"
 msgid "Marker color"
 msgstr "Couleur de marqueur"
 
+#: lazarusidestrconsts.dlgmarkupfoldcolor
+msgid "Vertical-mark"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupgroup
 msgid "Highlight of Word under Caret"
 msgstr "Mot sous le curseur surligné"
@@ -19544,6 +19548,10 @@ msgstr "Brut"
 #: lazarusidestrconsts.rsaddinverse
 msgid "Add Inverse"
 msgstr "Ajouter l'inverse"
+
+#: lazarusidestrconsts.rsaddnewterm
+msgid "Add new term"
+msgstr ""
 
 #: lazarusidestrconsts.rsattachto
 msgid "Attach to"

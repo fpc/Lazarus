@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-07-17 01:39+0300\n"
+"PO-Revision-Date: 2018-07-25 01:57+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -2460,6 +2460,10 @@ msgstr "Границы"
 #: lazarusidestrconsts.dlgmarkercolor
 msgid "Marker color"
 msgstr "Маркер"
+
+#: lazarusidestrconsts.dlgmarkupfoldcolor
+msgid "Vertical-mark"
+msgstr "Вертикальная черта"
 
 #: lazarusidestrconsts.dlgmarkupgroup
 msgid "Highlight of Word under Caret"
@@ -19509,6 +19513,10 @@ msgstr "Исходное"
 #: lazarusidestrconsts.rsaddinverse
 msgid "Add Inverse"
 msgstr "Добавить инверсию"
+
+#: lazarusidestrconsts.rsaddnewterm
+msgid "Add new term"
+msgstr "Добавить новый терм"
 
 #: lazarusidestrconsts.rsattachto
 msgid "Attach to"
