@@ -53,6 +53,7 @@ uses
   // LazUtils
   LConvEncoding, FileUtil, LazFileUtils, LazFileCache, LazUTF8, LazUTF8Classes,
   LazMethodList, LazLoggerBase, LazLogger, Translations, LazUtilities, LazTracer,
+  LazStringUtils,
   // codetools
   BasicCodeTools, CodeBeautifier, CodeToolManager, CodeCache, SourceLog,
   LinkScanner, CodeTree, SourceChanger,

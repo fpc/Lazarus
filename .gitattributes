@@ -3299,6 +3299,7 @@ components/lazutils/lazloggerdummy.pas svneol=native#text/pascal
 components/lazutils/lazloggerprofiling.pas svneol=native#text/pascal
 components/lazutils/lazmethodlist.pas svneol=native#text/pascal
 components/lazutils/lazpasreadutil.pas svneol=native#text/plain
+components/lazutils/lazstringutils.pas svneol=native#text/pascal
 components/lazutils/lazsysutils.pas svneol=native#text/pascal
 components/lazutils/laztracer.pas svneol=native#text/pascal
 components/lazutils/lazunicode.pas svneol=native#text/plain

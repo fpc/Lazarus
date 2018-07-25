@@ -36,7 +36,9 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, LazFileUtils, LazUTF8, lazutf8classes, LazDbgLog;
+  Classes, SysUtils,
+  // LazUtils
+  LazFileUtils, LazUTF8, LazUTF8Classes, LazDbgLog, LazStringUtils;
 
 type
   TSourceLog = class;
@@ -196,91 +198,7 @@ type
                                                       write FOnEncodeSaving;
   end;
   
-function ChangeLineEndings(const s, NewLineEnding: string): string;
-
 implementation
-
-
-{ useful function }
-
-function LineEndCount(const Txt: string;var LengthOfLastLine: integer): integer;
-var i, LastLineEndPos, TxtLen: integer;
-begin
-  i:=1;
-  LastLineEndPos:=0;
-  Result:=0;
-  TxtLen:=length(Txt);
-  while i<TxtLen do begin
-    if (Txt[i] in [#10,#13]) then begin
-      inc(Result);
-      inc(i);
-      if (i<=TxtLen) and (Txt[i] in [#10,#13]) and (Txt[i-1]<>Txt[i]) then
-        inc(i);
-      LastLineEndPos:=i-1;
-    end else
-      inc(i);
-  end;
-  LengthOfLastLine:=TxtLen-LastLineEndPos;
-end;
-
-function ChangeLineEndings(const s, NewLineEnding: string): string;
-var
-  NewLength: Integer;
-  p: Integer;
-  Src, Dest, EndPos: PChar;
-  EndLen: Integer;
-begin
-  if s='' then begin
-    Result:=s;
-    exit;
-  end;
-  EndLen:=length(NewLineEnding);
-  NewLength:=length(s);
-  Src:=PChar(s);
-  repeat
-    case Src^ of
-    #0:
-      if Src-PChar(s)=length(s) then
-        break
-      else
-        inc(Src);
-    #10,#13:
-      begin
-        if (Src[1] in [#10,#13]) and (Src^<>Src[1]) then begin
-          inc(Src,2);
-          inc(NewLength,EndLen-2);
-        end else begin
-          inc(Src);
-          inc(NewLength,EndLen-1);
-        end;
-      end;
-    else
-      inc(Src);
-    end;
-  until false;
-  SetLength(Result,NewLength);
-  Src:=PChar(s);
-  Dest:=PChar(Result);
-  EndPos:=Dest+NewLength;
-  while (Dest<EndPos) do begin
-    if Src^ in [#10,#13] then begin
-      for p:=1 to EndLen do begin
-        Dest^:=NewLineEnding[p];
-        inc(Dest);
-      end;
-      if (Src[1] in [#10,#13]) and (Src^<>Src[1]) then
-        inc(Src,2)
-      else
-        inc(Src);
-    end else begin
-      Dest^:=Src^;
-      inc(Src);
-      inc(Dest);
-    end;
-  end;
-  //if Src-1<>@s[length(s)] then RaiseGDBException('');
-end;
-
 
 { TSourceLogEntry }
 
@@ -291,7 +209,7 @@ begin
   Len:=ALength;
   MoveTo:=AMoveTo;
   Operation:=AnOperation;
-  LineEnds:=LineEndCount(Txt, LengthOfLastLine);
+  LineEnds:=LineEndingCount(Txt, LengthOfLastLine);
   Txt:=ATxt;
 end;
 

@@ -34,11 +34,11 @@ uses
   Classes, SysUtils, Laz_AVL_Tree,
   // LazUtils
   FileUtil, LazFileUtils, LazUtilities, LazFileCache, LazUTF8, LazUTF8Classes,
-  Laz2_XMLCfg, AvgLvlTree, LazLoggerBase, LazTracer,
+  Laz2_XMLCfg, AvgLvlTree, LazLoggerBase, LazTracer, LazStringUtils,
   // LCL
   StdCtrls, ExtCtrls,
   // CodeTools
-  BasicCodeTools, SourceLog, FileProcs, CodeToolManager, CodeToolsConfig, CodeCache,
+  BasicCodeTools, FileProcs, CodeToolManager, CodeToolsConfig, CodeCache,
   // IDE
   IDECmdLine, LazConf;
 

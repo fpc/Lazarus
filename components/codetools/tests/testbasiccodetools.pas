@@ -26,8 +26,11 @@ unit TestBasicCodetools;
 interface
 
 uses
-  fpcunit, testregistry, contnrs, Classes, SysUtils, FileProcs,
-  BasicCodeTools, SourceLog, DefineTemplates;
+  fpcunit, testregistry, contnrs, Classes, SysUtils,
+  // LazUtils
+  LazStringUtils,
+  // CodeTools
+  FileProcs, BasicCodeTools, DefineTemplates;
 
 type
   { TTestBasicCodeTools }
