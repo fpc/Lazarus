@@ -38,7 +38,7 @@ uses
   // Codetools
   FileProcs, CodeToolManager, DirectoryCacher, CodeCache,
   // IDE
-  IDEProcs, LazarusIDEStrConsts;  { IDE Language (Human, not computer) }
+  LazarusIDEStrConsts;  { IDE Language (Human, not computer) }
 
 type
   { TLazarusTranslation }

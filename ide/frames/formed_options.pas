@@ -31,7 +31,7 @@ uses
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf,
   // IDE
-  EnvironmentOpts, LazarusIDEStrConsts, IDEProcs;
+  EnvironmentOpts, LazarusIDEStrConsts;
 
 type
   TDesignerColor = (

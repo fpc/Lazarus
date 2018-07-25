@@ -30,10 +30,16 @@ unit CleanDirDlg;
 interface
 
 uses
-  Classes, SysUtils, RegExpr, Forms, Controls, Graphics, Dialogs, Buttons,
-  StdCtrls, FileUtil, Laz2_XMLCfg, LazFileUtils, LCLProc, ButtonPanel,
-  IDEWindowIntf, IDEHelpIntf, IDEDialogs, LazarusIDEStrConsts, LazConf,
-  IDEProcs, TransferMacros, InputHistory, ShowDeletingFilesDlg;
+  Classes, SysUtils, RegExpr,
+  // LCL
+  LCLProc, Forms, Controls, Graphics, Dialogs, StdCtrls, ButtonPanel,
+  // LazUtils
+  FileUtil, LazFileUtils, Laz2_XMLCfg,
+  // IdeIntf
+  IDEWindowIntf, IDEHelpIntf, IDEDialogs,
+  // IDE
+  LazarusIDEStrConsts, LazConf, TransferMacros, InputHistory,
+  ShowDeletingFilesDlg, IDEProcs;
 
 type
 

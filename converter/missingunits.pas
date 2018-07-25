@@ -31,16 +31,19 @@ unit MissingUnits;
 interface
 
 uses
-  // FCL+LCL
-  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics,
-  Dialogs, Buttons, StdCtrls, FileUtil, CheckLst, Menus, ExtCtrls,
-  // Components
-  SynEdit, CodeToolManager, DefineTemplates,
-  // IDEIntf
-  LazIDEIntf,
-  // IDE
-  CompilerOptions, IDEImagesIntf,
-  PackageDefs, Project, IDEProcs, LazarusIDEStrConsts;
+  // FCL
+  Classes, SysUtils,
+  // LCL
+  LCLProc, LResources, Forms, Controls, Graphics, Dialogs, Buttons, StdCtrls,
+  CheckLst, Menus, ExtCtrls,
+  // LazUtils
+  FileUtil,
+  // CodeTools
+  DefineTemplates,
+  // IdeIntf
+  IDEImagesIntf,
+   // IDE
+  PackageDefs, Project, LazarusIDEStrConsts;
 
 type
 

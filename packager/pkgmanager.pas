@@ -56,13 +56,13 @@ uses
   CodeToolsConfig, CodeToolManager, CodeCache, BasicCodeTools,
   FileProcs, CodeTree, CTUnitGraph,
   // IDE Interface
-  NewItemIntf, ProjPackIntf, ProjectIntf,
+  IDECommands, NewItemIntf, ProjPackIntf, ProjectIntf,
   PackageIntf, PackageDependencyIntf, PackageLinkIntf,
   CompOptsIntf, MenuIntf, IDEWindowIntf, IDEExternToolIntf, MacroIntf, LazIDEIntf,
   IDEMsgIntf, SrcEditorIntf, ComponentReg, PropEdits, IDEDialogs, UnitResources,
   // IDE
   IDECmdLine, LazarusIDEStrConsts, IDEProcs, ObjectLists,
-  DialogProcs, IDECommands, IDEOptionDefs, EnvironmentOpts,
+  DialogProcs, IDEOptionDefs, EnvironmentOpts,
   MiscOptions, InputHistory, Project, PackageEditor, AddToPackageDlg,
   PackageDefs, PackageLinks, PackageSystem, OpenInstalledPkgDlg,
   PkgGraphExplorer, BrokenDependenciesDlg, CompilerOptions, IDETranslations,

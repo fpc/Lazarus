@@ -35,7 +35,7 @@ uses
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, IDEUtils, SrcEditorIntf,
   // IDE
-  EditorOptions, LazarusIDEStrConsts, IDEProcs, KeyMapping,
+  EditorOptions, LazarusIDEStrConsts, KeyMapping,
   editor_keymapping_options, editor_general_options;
 
 type

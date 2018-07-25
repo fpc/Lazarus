@@ -14,8 +14,13 @@ unit SrcEditorIntf;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, FileUtil, Laz2_XMLCfg, LCLType, Forms, Controls,
-  Graphics, ProjectIntf, IDECommands;
+  Classes, SysUtils,
+  // LCL
+  LCLProc, LCLType, Forms, Controls, Graphics,
+  // LazUtils
+  FileUtil, Laz2_XMLCfg,
+  // IdeIntf
+  ProjectIntf, IDECommands;
   
 type
   TSourceMarklingType = (

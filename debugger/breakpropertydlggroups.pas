@@ -5,7 +5,11 @@ unit BreakPropertyDlgGroups;
 interface
 
 uses
-  Classes, Forms, Controls, ButtonPanel, StdCtrls, CheckLst, Debugger, LazarusIDEStrConsts;
+  Classes,
+  // LCL
+  Forms, Controls, ButtonPanel, StdCtrls, CheckLst,
+  // IDE
+  Debugger, LazarusIDEStrConsts;
 
 type
 

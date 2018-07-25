@@ -25,10 +25,15 @@ unit JumpHistoryView;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, StdCtrls, Menus,
+  Classes, SysUtils,
+  // LCL
+  Forms, Controls, StdCtrls, Menus,
+  // LazUtils
+  LazUTF8,
+  // CodeTools
   CodeToolManager, CodeCache,
-  IDEOptionDefs, EnvironmentOpts, IDEProcs, LazarusIDEStrConsts, LazUTF8,
-  Project, ProjectDefs;
+  // IDE
+  IDEProcs, IDEOptionDefs, EnvironmentOpts, LazarusIDEStrConsts, Project, ProjectDefs;
 
 type
 

@@ -31,7 +31,7 @@ uses
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, IDEUtils,
   // IDE
-  EnvironmentOpts, LazarusIDEStrConsts, IDEProcs;
+  EnvironmentOpts, LazarusIDEStrConsts;
 
 type
 

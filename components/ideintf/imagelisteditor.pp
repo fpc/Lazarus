@@ -27,13 +27,13 @@ unit ImageListEditor;
 interface
 
 uses
-  Classes, SysUtils, Math,
+  Classes, SysUtils, Types, Math,
   // LCL
-  LCLProc, Forms, Controls, Graphics, GraphType, Dialogs, ComCtrls, StdCtrls,
+  LCLProc, Forms, Controls, Graphics, GraphType, Dialogs, StdCtrls,
   ExtCtrls, ExtDlgs, ColorBox, Buttons, ButtonPanel, ImgList, LCLTaskDialog,
   LCLIntf, LCLType,
   // IdeIntf
-  IDEDialogs, PropEdits, ComponentEditors, ObjInspStrConsts, IDEWindowIntf, Types;
+  IDEDialogs, PropEdits, ComponentEditors, ObjInspStrConsts, IDEWindowIntf;
 
 type
   TGlyphAdjustment = (gaNone, gaStretch, gaCrop, gaCenter);

@@ -34,7 +34,7 @@ uses
   IDEOptionsIntf, IDEOptEditorIntf, IDEUtils,
   // IDE
   EditorOptions, LazarusIDEStrConsts, editor_general_options, editor_color_options,
-  IDEProcs, SourceSynEditor, SourceMarks;
+  SourceSynEditor, SourceMarks;
 
 type
   { TEditorDisplayOptionsFrame }

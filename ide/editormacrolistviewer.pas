@@ -6,14 +6,19 @@ interface
 
 uses
   Classes, SysUtils,
-  LazFileUtils, Laz2_XMLCfg, LazUTF8, LazLoggerBase,
+  // LCL
   LCLType, Forms, Controls, Dialogs, StdCtrls, ButtonPanel, ComCtrls, ExtCtrls,
   Spin, Menus,
+  // LazUtils
+  LazFileUtils, Laz2_XMLCfg, LazUTF8, LazLoggerBase,
+  // SynEdit
   SynMacroRecorder, SynEdit, SynEditKeyCmds,
+  // IdeIntf
   IDEWindowIntf, IDEImagesIntf, SrcEditorIntf, IDEHelpIntf, IDECommands,
-  LazIDEIntf,
+  LazIDEIntf, IDEDialogs,
+  // IDE
   LazarusIDEStrConsts, ProjectDefs, LazConf, Project, KeyMapping,
-  KeyMapShortCutDlg, MainIntf, IDEDialogs;
+  KeyMapShortCutDlg, MainIntf;
 
 type
   TSynEditorMacro = class(TSynMacroRecorder)

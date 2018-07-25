@@ -37,12 +37,19 @@ unit CodeContextForm;
 interface
 
 uses
-  Classes, SysUtils, Types, LCLProc, LResources, Forms, Controls,
-  Graphics, Dialogs, LCLType, LCLIntf, Themes, Buttons, SynEdit, SynEditKeyCmds,
+  Classes, SysUtils, Types,
+  // LCL
+  LCLProc, LCLType, LCLIntf, LResources, LMessages, Forms, Controls,
+  Graphics, Dialogs, Themes, Buttons,
+  // SynEdit
+  SynEdit, SynEditKeyCmds,
+  // CodeTools
   BasicCodeTools, KeywordFuncLists, LinkScanner, CodeCache, FindDeclarationTool,
   IdentCompletionTool, CodeTree, CodeAtom, PascalParserTool, CodeToolManager,
-  SrcEditorIntf, LazIDEIntf, IDEProcs, LazarusIDEStrConsts, IDEImagesIntf,
-  LMessages;
+  // IdeIntf
+  SrcEditorIntf, LazIDEIntf, IDEImagesIntf,
+  // IDE
+  IDEProcs, LazarusIDEStrConsts;
 
 type
 

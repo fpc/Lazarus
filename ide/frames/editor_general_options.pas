@@ -25,12 +25,9 @@ unit editor_general_options;
 interface
 
 uses
-  //Classes, SysUtils, math, LCLProc, LCLType, StdCtrls, Controls, ExtCtrls,
-  //Graphics, EditorOptions, LazarusIDEStrConsts, IDEProcs, IDEOptionsIntf,
-  //IDEUtils, SynEdit, SynHighlighterPas, SynPluginMultiCaret, DividerBevel;
   Classes, SysUtils, math,
   // LCL
-  LCLProc, LCLType, StdCtrls, Controls, ExtCtrls, Graphics,
+  LCLProc, LCLType, StdCtrls, Controls, Graphics,
   // LazControls
   DividerBevel,
   // SynEdit
@@ -38,7 +35,7 @@ uses
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, IDEUtils, SrcEditorIntf,
   // IDE
-  EditorOptions, LazarusIDEStrConsts, IDEProcs;
+  EditorOptions, LazarusIDEStrConsts;
 
 type
   TPreviewEditor = TSynEdit;

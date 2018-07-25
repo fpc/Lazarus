@@ -13,7 +13,7 @@ uses
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, ProjectIntf,
   // IDE
-  Project, IDEProcs, LazarusIDEStrConsts;
+  Project, LazarusIDEStrConsts;
 
 type
 

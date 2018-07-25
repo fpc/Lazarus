@@ -39,10 +39,11 @@ uses
   FileProcs, CTUnitGraph, CodeTree, CodeCache, CodeToolManager, BasicCodeTools,
   // LazUtils
   LazFileUtils, LazFileCache, laz2_DOM, AvgLvlTree,
+  // IdeIntf
+  LazIDEIntf, IDEWindowIntf, SrcEditorIntf, PackageIntf, IDEDialogs,
   // IDE
-  LazarusIDEStrConsts, IDEProcs, IDEWindowIntf, MiscOptions, DialogProcs,
-  LazIDEIntf, IDEDialogs, SrcEditorIntf, PackageIntf, InputHistory,
-  SearchResultView, CodeHelp, TransferMacros;
+  LazarusIDEStrConsts, IDEProcs, MiscOptions, DialogProcs,
+  InputHistory, SearchResultView, CodeHelp, TransferMacros;
 
 type
 

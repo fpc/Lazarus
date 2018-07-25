@@ -15,8 +15,7 @@ uses
   // IdeIntf
   CompOptsIntf, ProjectIntf, LazIDEIntf,
   // IDE
-  frmCustomApplicationOptions, IDEProcs, LazarusIDEStrConsts,
-  Project, ProjectDefs, W32Manifest;
+  frmCustomApplicationOptions, LazarusIDEStrConsts, Project, W32Manifest;
 
 type
 

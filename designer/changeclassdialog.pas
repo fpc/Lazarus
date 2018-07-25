@@ -41,9 +41,9 @@ uses
   // Codetools
   LFMTrees, CodeCache, CodeToolManager,
   // IdeIntf
-  ComponentReg, PropEdits, ComponentEditors, FormEditingIntf, SrcEditorIntf,
+  ComponentReg, PropEdits, ComponentEditors, FormEditingIntf, SrcEditorIntf, IDEDialogs,
   // IDE
-  LazarusIDEStrConsts, IDEDialogs, CheckLFMDlg, Project, MainIntf;
+  LazarusIDEStrConsts, CheckLFMDlg, Project, MainIntf;
 
 type
 

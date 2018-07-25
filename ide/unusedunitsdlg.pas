@@ -32,9 +32,15 @@ unit UnusedUnitsDlg;
 interface
 
 uses
-  Classes, sysutils, LCLProc, Forms, Controls, ComCtrls, StdCtrls, ExtCtrls,
-  Buttons, Dialogs, SrcEditorIntf, LazIDEIntf, IDEImagesIntf, IDEDialogs,
-  CodeCache, CodeToolManager, LazarusIDEStrConsts;
+  Classes, SysUtils,
+  // LCL
+  LCLProc, Forms, Controls, ComCtrls, StdCtrls, ExtCtrls, Buttons, Dialogs,
+  // Codetools
+  CodeCache, CodeToolManager,
+  // IdeIntf
+  SrcEditorIntf, LazIDEIntf, IDEImagesIntf, IDEDialogs,
+  // IDE
+  LazarusIDEStrConsts;
 
 type
 

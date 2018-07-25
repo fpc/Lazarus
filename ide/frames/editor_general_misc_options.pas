@@ -38,7 +38,7 @@ uses
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf,
   // IDE
-  EditorOptions, LazarusIDEStrConsts, IDEProcs, editor_general_options;
+  EditorOptions, LazarusIDEStrConsts, editor_general_options;
 
 type
   { TEditorGeneralMiscOptionsFrame }

@@ -16,8 +16,11 @@ unit ToolBarIntf;
 interface
 
 uses
-  Classes, SysUtils, Controls, ComCtrls, IDECommands, MenuIntf, IDEImagesIntf,
-  SrcEditorIntf, Menus, Forms;
+  Classes, SysUtils,
+  // LCL
+  Controls, ComCtrls, Menus, Forms,
+  // IdeIntf
+  IDECommands, MenuIntf, IDEImagesIntf, SrcEditorIntf;
 
 type
   TIDEToolButton = class;

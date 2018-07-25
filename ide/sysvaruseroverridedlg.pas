@@ -36,8 +36,13 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, Controls, Forms, Dialogs,
-  LazarusIDEStrConsts, IDEDialogs;
+  Classes, SysUtils,
+  // LCL
+  Controls, Forms, Dialogs,
+  // IdeIntf
+  IDEDialogs,
+  // IDE
+  LazarusIDEStrConsts;
 
 function ShowSysVarUserOverrideDialog(var AName, AValue: string): TModalResult;
 

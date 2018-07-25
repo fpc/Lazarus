@@ -21,11 +21,15 @@ unit InputFileDialog;
 interface
 
 uses
+  Classes, SysUtils, Math,
   // LCL
-  Classes, SysUtils, Math, Forms, Controls, Dialogs, Buttons, StdCtrls,
-  LazFileUtils, LazFileCache, LResources,
+  Forms, Controls, Dialogs, StdCtrls, LResources,
+  // LazUtils
+  LazFileUtils, LazFileCache,
+  // IdeIntf
+  IDEDialogs,
   // IDE
-  LazarusIDEStrConsts, TransferMacros, InputHistory, IDEProcs, IDEDialogs;
+  LazarusIDEStrConsts, TransferMacros, InputHistory;
 
 type
   TInputFileFlag = (iftDirectory, iftFilename, iftCmdLine,

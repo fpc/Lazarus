@@ -28,10 +28,16 @@ unit InspectDlg;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, IDEWindowIntf, DebuggerStrConst, ComCtrls,
-  ObjectInspector, PropEdits, IDEImagesIntf, Debugger, DebuggerDlg, DbgIntfBaseTypes,
-  DbgIntfDebuggerBase, BaseDebugManager, LazarusIDEStrConsts, LCLType, Grids, StdCtrls, Menus,
-  LCLProc, InputHistory, IDEProcs;
+  Classes, SysUtils,
+  // LCL
+  LCLProc, LCLType, Grids, StdCtrls, Menus, Forms, Controls, Graphics, ComCtrls,
+  // IdeIntf
+  IDEWindowIntf, IDEImagesIntf, ObjectInspector, PropEdits,
+  // DebuggerIntf
+  DbgIntfDebuggerBase, DbgIntfBaseTypes,
+  // IDE
+  LazarusIDEStrConsts, BaseDebugManager, InputHistory, IDEProcs,
+  Debugger, DebuggerDlg, DebuggerStrConst;
 
 type
 

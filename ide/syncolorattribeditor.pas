@@ -5,13 +5,14 @@ unit SynColorAttribEditor;
 interface
 
 uses
-  Classes, Controls, StdCtrls, sysutils, ExtCtrls, Graphics, GraphUtil,
-  ColorBox, LCLProc, LCLType, LCLIntf, Dialogs, Menus, Forms, Spin, SynEdit,
-  SynGutterCodeFolding, SynEditTypes,
-  SynEditMouseCmds, SynEditHighlighter, SynTextDrawer,
-  EditorOptions,
-  editor_general_options, IDEImagesIntf, LazarusIDEStrConsts, IDEProcs, typinfo,
-  LazConf, SourceMarks, types, math, FPCanvas;
+  Classes, Controls, sysutils, types, typinfo, math, FPCanvas,
+  // LCL
+  LCLProc, LCLType, LCLIntf, Forms, StdCtrls, ExtCtrls, Graphics, GraphUtil,
+  ColorBox, Dialogs, Menus, Spin,
+  // SynEdit
+  SynEditTypes, SynTextDrawer,
+  // IDE
+  EditorOptions, SourceMarks, LazarusIDEStrConsts;
 
 type
 
@@ -77,7 +78,6 @@ type
     procedure pnlElementAttributesResize(Sender: TObject);
     procedure TextStyleRadioOnChange(Sender: TObject);
   private
-    { private declarations }
     FCurHighlightElement: TColorSchemeAttribute;
     FCurrentColorScheme: TColorSchemeLanguage;
     FOnChanged: TNotifyEvent;
@@ -88,7 +88,6 @@ type
     procedure DoChanged;
     procedure SetShowPrior(AValue: Boolean);
   public
-    { public declarations }
     constructor Create(TheOwner: TComponent); override;
     procedure Setup;
     procedure UpdateAll;

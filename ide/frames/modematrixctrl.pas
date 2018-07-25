@@ -36,7 +36,7 @@ uses
   // IdeIntf
   IDEUtils,
   // IDE
-  IDEProcs, LazarusIDEStrConsts;
+  LazarusIDEStrConsts;
 
 const
   DefaultModeMatrixMaxUndo = 100;

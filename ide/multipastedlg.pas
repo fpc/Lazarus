@@ -39,8 +39,15 @@ unit MultiPasteDlg;
 interface
 
 uses
-  SysUtils, Classes, StdCtrls, ButtonPanel, Forms, Clipbrd, SynEdit,
-  IDEHelpIntf, InputHistory, IDEProcs, LazarusIDEStrConsts;
+  SysUtils, Classes,
+  // LCL
+  StdCtrls, ButtonPanel, Forms, Clipbrd,
+  // SynEdit
+  SynEdit,
+  // IdeIntf
+  IDEHelpIntf,
+  // IDE
+  InputHistory, IDEProcs, LazarusIDEStrConsts;
 
 const
   hlFormatPasteTxtBefore = 'FormatPasteTxtBefore';
