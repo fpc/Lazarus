@@ -6726,6 +6726,7 @@ begin
     if i >= 0 then begin
       TSynEditMarkupFoldColors(aSynEdit.Markup[i]).ColorCount := 10;
       j := 0;
+      c := 0;
       for aha := ahaOutlineLevel1Color to ahaOutlineLevel10Color do begin
         att := AttributeByEnum[aha];
         if Att.IsEnabled or
