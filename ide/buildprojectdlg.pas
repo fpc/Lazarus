@@ -32,7 +32,7 @@ uses
   // LCL
   Forms, Controls, Dialogs, ButtonPanel, StdCtrls, ComCtrls, Masks, LCLIntf,
   // LazUtils
-  LazFileUtils, LazFileCache, LazUtilities, AvgLvlTree,
+  LazFileUtils, LazFileCache, LazStringUtils, AvgLvlTree,
   // codetools
   FileProcs, CodeToolManager, DirectoryCacher,
   // IDEIntf

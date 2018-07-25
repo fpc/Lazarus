@@ -15,7 +15,7 @@ interface
 uses
   Classes, SysUtils, types, math,
   // LazUtils
-  LazLoggerBase, LazClasses, LazFileUtils, LazUtilities, LazUTF8;
+  LazLoggerBase, LazClasses, LazFileUtils, LazStringUtils, LazUTF8;
 
 type
 

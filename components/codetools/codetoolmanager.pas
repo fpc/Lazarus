@@ -43,7 +43,7 @@ uses
   Classes, SysUtils, contnrs, TypInfo, types, Laz_AVL_Tree,
   // LazUtils
   LazFileUtils, LazFileCache, LazMethodList, LazDbgLog, AvgLvlTree,
-  LazUtilities,
+  LazStringUtils,
   // Codetools
   FileProcs, BasicCodeTools, CodeToolsStrConsts,
   EventCodeTool, CodeTree, CodeAtom, SourceChanger, DefineTemplates, CodeCache,

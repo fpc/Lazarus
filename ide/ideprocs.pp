@@ -40,7 +40,7 @@ uses
   // CodeTools
   BasicCodeTools, FileProcs, CodeToolManager, CodeToolsConfig, CodeCache,
   // IDE
-  IDECmdLine, LazConf;
+  LazConf;
 
 type
   // copy

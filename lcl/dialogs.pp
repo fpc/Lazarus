@@ -24,11 +24,11 @@ uses
   // RTL + FCL
   Types, typinfo, Classes, SysUtils,
   // LCL
-  LMessages, LResources, LCLIntf, InterfaceBase, LCLStrConsts, LCLType, LCLProc,
+  LMessages, LResources, LCLIntf, InterfaceBase, LCLStrConsts, LCLType,
   Forms, Controls, Themes, GraphType, Graphics, Buttons, ButtonPanel, StdCtrls,
   ExtCtrls, LCLClasses, ClipBrd, Menus, LCLTaskDialog,
   // LazUtils
-  UITypes, FileUtil, LazFileUtils;
+  UITypes, FileUtil, LazFileUtils, LazStringUtils, LazLoggerBase;
 
 type
   // Aliases for types in UITypes.

@@ -35,7 +35,7 @@ interface
 
 uses
   Classes, SysUtils, zstream, Laz2_XMLCfg, LazUTF8, LConvEncoding,
-  LazFileUtils, LazUtilities;
+  LazFileUtils, LazStringUtils, LazUtilities;
 
 type
   TAPackageType = (

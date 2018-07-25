@@ -28,7 +28,7 @@ uses
   // LCL
   LCLProc, LCLType, Graphics, Controls, StdCtrls,
   // LazUtils
-  LazUtf8Classes, TextStrings,
+  LazUtf8Classes, TextStrings, LazStringUtils,
   // LCL Carbon
   CarbonEdits, CarbonListViews;
 

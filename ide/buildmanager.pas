@@ -43,7 +43,7 @@ uses
   FileProcs, CodeToolsCfgScript, LinkScanner,
   // LazUtils
   LConvEncoding, FileUtil, LazFileUtils, LazFileCache, LazUTF8, Laz2_XMLCfg,
-  LazUtilities, LazMethodList,
+  LazUtilities, LazStringUtils, LazMethodList,
   // IDEIntf
   BaseIDEIntf, IDEOptionsIntf, ProjectIntf, MacroIntf, IDEDialogs, IDEExternToolIntf,
   CompOptsIntf, LazIDEIntf, MacroDefIntf, IDEMsgIntf, PackageDependencyIntf,

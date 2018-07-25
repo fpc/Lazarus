@@ -32,7 +32,7 @@ uses
   // LCL
   Controls, Dialogs, Graphics, StdCtrls,
   // LazUtils
-  LazFileUtils, LazUtilities,
+  LazFileUtils, LazStringUtils,
   // CodeTools
   DefineTemplates,
   // IdeIntf

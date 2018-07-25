@@ -59,8 +59,8 @@ uses
   CodeToolsStrConsts, ExprEval, DirectoryCacher, BasicCodeTools,
   CodeToolsStructs, KeywordFuncLists, LinkScanner, FileProcs,
   // LazUtils
-  LazUtilities, LazUTF8, LazUTF8Classes, LazFileUtils, UTF8Process,
-  LazFileCache, LazDbgLog, AvgLvlTree, Laz2_XMLCfg;
+  LazStringUtils, LazFileUtils, LazFileCache,
+  LazUTF8, LazUTF8Classes, UTF8Process, LazDbgLog, AvgLvlTree, Laz2_XMLCfg;
 
 const
   ExternalMacroStart = ExprEval.ExternalMacroStart;

@@ -42,7 +42,7 @@ uses
   LCLType, LCLIntf, Forms, Controls, ComCtrls, StdCtrls, ExtCtrls,
   Menus, ButtonPanel,
   // LazUtils
-  LazLoggerBase, LazUtilities, LazTracer,
+  LazLoggerBase, LazTracer, LazStringUtils,
   // LazControls
   LvlGraphCtrl,
   // IdeIntf

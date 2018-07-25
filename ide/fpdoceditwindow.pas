@@ -33,7 +33,7 @@ uses
   // FCL
   Classes, SysUtils,
   // LazUtils
-  Laz2_DOM, Laz2_XMLRead, LazUtilities, LazTracer,
+  Laz2_DOM, Laz2_XMLRead, LazStringUtils, LazTracer,
   // LCL
   LResources, StdCtrls, Buttons, ComCtrls, Controls, Dialogs,
   ExtCtrls, Forms, Graphics, LCLType, LCLProc,

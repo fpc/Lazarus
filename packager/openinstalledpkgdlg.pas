@@ -35,7 +35,7 @@ uses
   // LCL
   Forms, Controls, ComCtrls, StdCtrls, ExtCtrls, LCLType, ButtonPanel,
   // LazUtils
-  LazUtilities,
+  LazStringUtils,
   // LazControls
   ListViewFilterEdit,
   // IdeIntf

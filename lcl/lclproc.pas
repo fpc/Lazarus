@@ -244,7 +244,6 @@ procedure DbgOut(const s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12: string); overload
 procedure CloseDebugOutput;
 {$ENDIF}
 
-function ConvertLineEndings(const s: string): string; inline;
 function DbgS(const c: cardinal): string; overload; inline;
 function DbgS(const i: longint): string; overload; inline;
 function DbgS(const i: int64): string; overload; inline;
@@ -1837,11 +1836,6 @@ begin
   DbgOut(s1+s2+s3+s4+s5+s6+s7+s8+s9+s10+s11+s12);
 end;
 {$ENDIF}
-
-function ConvertLineEndings(const s: string): string;
-begin
-  Result:=LazUtilities.ConvertLineEndings(s);
-end;
 
 function DbgS(const c: cardinal): string;
 begin

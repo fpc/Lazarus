@@ -32,7 +32,7 @@ interface
 uses
   Classes, SysUtils, Laz_AVL_Tree,
   // LazUtils
-  LazFileUtils, LazUtilities,
+  LazFileUtils, LazStringUtils,
   // Codetools
   FileProcs, FindDeclarationTool, CodeBeautifier, CodeCache, StdCodeTools,
   DirectoryCacher, LinkScanner, CustomCodeTool, CodeTree, CodeToolsStructs;

@@ -40,7 +40,7 @@ uses
   // LCL
   LCLType, Graphics, Controls,
   // LazUtils
-  LazFileUtils, LazUtilities,
+  LazFileUtils, LazStringUtils,
   // SynEdit
   SynCompletion,
   // CodeTools

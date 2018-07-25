@@ -37,8 +37,14 @@ type
 const
   EndOfLine: shortstring = LineEnding;
 
+// Functions for line endings
 function LineEndingCount(const Txt: string; var LengthOfLastLine: integer): integer;
 function ChangeLineEndings(const s, NewLineEnding: string): string;
+function LineBreaksToSystemLineBreaks(const s: string): string;
+function LineBreaksToDelimiter(const s: string; Delimiter: char): string;
+function ConvertLineEndings(const s: string): string;
+
+// Conversions
 function TabsToSpaces(const s: string; TabWidth: integer; UseUTF8: boolean): string;
 //function CommentLines(const s: string): string;
 function CommentText(const s: string; CommentType: TCommentType): string;
@@ -47,13 +53,14 @@ function CommentText(const s: string; CommentType: TCommentType): string;
 //                           const SpecialChars: string): string;
 function SimpleSyntaxToRegExpr(const Src: string): string;
 function BinaryStrToText(const s: string): string;
+function SpecialCharsToSpaces(const s: string; FixUTF8: boolean): string;
+function SpecialCharsToHex(const s: string): string;
+function BreakString(const s: string; MaxLineLength, Indent: integer): string;
+
+// Conversions to and from a StringList
 function SplitString(const s: string; Delimiter: char): TStrings;
 procedure SplitString(const s: string; Delimiter: char; AddTo: TStrings;
                       ClearList: boolean = true);
-function SpecialCharsToSpaces(const s: string; FixUTF8: boolean): string;
-function SpecialCharsToHex(const s: string): string;
-function LineBreaksToSystemLineBreaks(const s: string): string;
-function LineBreaksToDelimiter(const s: string; Delimiter: char): string;
 function StringListToText(List: TStrings; const Delimiter: string;
                           IgnoreEmptyLines: boolean = false): string;
 function StringListPartToText(List: TStrings; FromIndex, ToIndex: integer;
@@ -62,6 +69,15 @@ function StringListPartToText(List: TStrings; FromIndex, ToIndex: integer;
 function StringListToString(List: TStrings; FromIndex, ToIndex: integer;
                             IgnoreEmptyLines: boolean = false): string;
 procedure StringToStringList(const s: string; List: TStrings);
+
+// Text with delimiters
+function GetNextDelimitedItem(const List: string; Delimiter: char;
+                              var Position: integer): string;
+function HasDelimitedItem(const List: string; Delimiter: char; FindItem: string
+                          ): boolean;
+function FindNextDelimitedItem(const List: string; Delimiter: char;
+                               var Position: integer; FindItem: string): string;
+function MergeWithDelimiter(const a, b: string; Delimiter: char): string;
 
 
 implementation
@@ -141,6 +157,59 @@ begin
     end;
   end;
   //if Src-1<>@s[length(s)] then RaiseGDBException('');
+end;
+
+function LineBreaksToSystemLineBreaks(const s: string): string;
+begin
+  Result:=ChangeLineEndings(s,LineEnding);
+end;
+
+function LineBreaksToDelimiter(const s: string; Delimiter: char): string;
+var
+  p: Integer;
+  StartPos: LongInt;
+begin
+  Result:=s;
+  p:=1;
+  while (p<=length(Result)) do begin
+    if Result[p] in [#10,#13] then begin
+      StartPos:=p;
+      repeat
+        inc(p);
+      until (p>length(Result)) or (not (Result[p] in [#10,#13]));
+      if p<=length(Result) then
+        Result:=copy(Result,1,StartPos-1)+Delimiter+copy(Result,p,length(Result))
+      else
+        Result:=copy(Result,1,StartPos-1);
+    end else begin
+      inc(p);
+    end;
+  end;
+end;
+
+function ConvertLineEndings(const s: string): string;
+var
+  i: Integer;
+  EndingStart: LongInt;
+begin
+  Result:=s;
+  i:=1;
+  while (i<=length(Result)) do begin
+    if Result[i] in [#10,#13] then begin
+      EndingStart:=i;
+      inc(i);
+      if (i<=length(Result)) and (Result[i] in [#10,#13])
+      and (Result[i]<>Result[i-1]) then
+        inc(i);
+      if (length(LineEnding)<>i-EndingStart)
+      or (LineEnding<>copy(Result,EndingStart,length(LineEnding))) then begin
+        // line end differs => replace with current LineEnding
+        Result:=copy(Result,1,EndingStart-1)+LineEnding+copy(Result,i,length(Result));
+        i:=EndingStart+length(LineEnding);
+      end;
+    end else
+      inc(i);
+  end;
 end;
 
 function TabsToSpaces(const s: string; TabWidth: integer; UseUTF8: boolean): string;
@@ -602,37 +671,6 @@ begin
     RaiseGDBException('ERROR: BinaryStrToText: '+IntToStr(NewLen)+'<>'+IntToStr(NewPos-1));
 end;
 
-function SplitString(const s: string; Delimiter: char): TStrings;
-begin
-  Result:=TStringList.Create;
-  SplitString(s,Delimiter,Result,false);
-end;
-
-procedure SplitString(const s: string; Delimiter: char; AddTo: TStrings;
-  ClearList: boolean);
-var
-  SLen: Integer;
-  StartPos: Integer;
-  EndPos: Integer;
-begin
-  if ClearList then
-    AddTo.Clear;
-  SLen:=length(s);
-  StartPos:=1;
-  EndPos:=1;
-  repeat
-    if (EndPos<=sLen) and (s[EndPos]<>Delimiter) then
-      inc(EndPos)
-    else begin
-      if EndPos>StartPos then
-        AddTo.Add(copy(s,StartPos,EndPos-StartPos));
-      StartPos:=EndPos+1;
-      if StartPos>sLen then exit;
-      inc(EndPos);
-    end;
-  until false;
-end;
-
 function SpecialCharsToSpaces(const s: string; FixUTF8: boolean): string;
 // Converts illegal characters to spaces. Trim leading and trailing spaces.
 var
@@ -676,32 +714,116 @@ begin
               +copy(Result,i+1,length(Result));
 end;
 
-function LineBreaksToSystemLineBreaks(const s: string): string;
+function BreakString(const s: string; MaxLineLength, Indent: integer): string;
+var
+  SrcLen: Integer;
+  APos: Integer;
+  Src: String;
+  SplitPos: Integer;
+  CurMaxLineLength: Integer;
 begin
-  Result:=ChangeLineEndings(s,LineEnding);
+  Result:='';
+  Src:=s;
+  CurMaxLineLength:=MaxLineLength;
+  if Indent>MaxLineLength-2 then
+    Indent:=MaxLineLength-2;
+  if Indent<0 then
+    MaxLineLength:=0;
+  repeat
+    SrcLen:=length(Src);
+    if SrcLen<=CurMaxLineLength then begin
+      Result:=Result+Src;
+      break;
+    end;
+    // split line
+    SplitPos:=0;
+    // search new line chars
+    APos:=1;
+    while (APos<=CurMaxLineLength) do begin
+      if Src[APos] in [#13,#10] then begin
+        SplitPos:=APos;
+        break;
+      end;
+      inc(APos);
+    end;
+    // search a space boundary
+    if SplitPos=0 then begin
+      APos:=CurMaxLineLength;
+      while APos>1 do begin
+        if (Src[APos-1] in [' ',#9])
+        and (not (Src[APos] in [' ',#9])) then begin
+          SplitPos:=APos;
+          break;
+        end;
+        dec(APos);
+      end;
+    end;
+    // search a word boundary
+    if SplitPos=0 then begin
+      APos:=CurMaxLineLength;
+      while APos>1 do begin
+        if (Src[APos] in ['A'..'Z','a'..'z'])
+        and (not (Src[APos-1] in ['A'..'Z','a'..'z'])) then begin
+          SplitPos:=APos;
+          break;
+        end;
+        dec(APos);
+      end;
+    end;
+    if SplitPos=0 then begin
+      // no word boundary found -> split chars
+      SplitPos:=CurMaxLineLength;
+    end;
+    // append part and newline
+    if (SplitPos<=SrcLen) and (Src[SplitPos] in [#10,#13]) then begin
+      // there is already a new line char at position
+      inc(SplitPos);
+      if (SplitPos<=SrcLen) and (Src[SplitPos] in [#10,#13])
+      and (Src[SplitPos]<>Src[SplitPos-1]) then
+        inc(SplitPos);
+      Result:=Result+copy(Src,1,SplitPos-1);
+    end else begin
+      Result:=Result+copy(Src,1,SplitPos-1)+LineEnding;
+    end;
+    // append indent
+    if Indent>0 then
+      Result:=Result+StringOfChar(' ',Indent);
+    // calculate new LineLength
+    CurMaxLineLength:=MaxLineLength-Indent;
+    // cut string
+    Src:=copy(Src,SplitPos,length(Src)-SplitPos+1);
+  until false;
 end;
 
-function LineBreaksToDelimiter(const s: string; Delimiter: char): string;
-var
-  p: Integer;
-  StartPos: LongInt;
+function SplitString(const s: string; Delimiter: char): TStrings;
 begin
-  Result:=s;
-  p:=1;
-  while (p<=length(Result)) do begin
-    if Result[p] in [#10,#13] then begin
-      StartPos:=p;
-      repeat
-        inc(p);
-      until (p>length(Result)) or (not (Result[p] in [#10,#13]));
-      if p<=length(Result) then
-        Result:=copy(Result,1,StartPos-1)+Delimiter+copy(Result,p,length(Result))
-      else
-        Result:=copy(Result,1,StartPos-1);
-    end else begin
-      inc(p);
+  Result:=TStringList.Create;
+  SplitString(s,Delimiter,Result,false);
+end;
+
+procedure SplitString(const s: string; Delimiter: char; AddTo: TStrings;
+  ClearList: boolean);
+var
+  SLen: Integer;
+  StartPos: Integer;
+  EndPos: Integer;
+begin
+  if ClearList then
+    AddTo.Clear;
+  SLen:=length(s);
+  StartPos:=1;
+  EndPos:=1;
+  repeat
+    if (EndPos<=sLen) and (s[EndPos]<>Delimiter) then
+      inc(EndPos)
+    else begin
+      if EndPos>StartPos then
+        AddTo.Add(copy(s,StartPos,EndPos-StartPos));
+      StartPos:=EndPos+1;
+      if StartPos>sLen then exit;
+      inc(EndPos);
     end;
-  end;
+  until false;
 end;
 
 function StringListToText(List: TStrings; const Delimiter: string;
@@ -878,6 +1000,48 @@ begin
       exit;
     end;
   end;
+end;
+
+function GetNextDelimitedItem(const List: string; Delimiter: char;
+  var Position: integer): string;
+var
+  StartPos: LongInt;
+begin
+  StartPos:=Position;
+  while (Position<=length(List)) and (List[Position]<>Delimiter) do
+    inc(Position);
+  Result:=copy(List,StartPos,Position-StartPos);
+  if Position<=length(List) then inc(Position); // skip Delimiter
+end;
+
+function HasDelimitedItem(const List: string; Delimiter: char; FindItem: string
+  ): boolean;
+var
+  p: Integer;
+begin
+  p:=1;
+  Result:=FindNextDelimitedItem(List,Delimiter,p,FindItem)<>'';
+end;
+
+function FindNextDelimitedItem(const List: string; Delimiter: char;
+  var Position: integer; FindItem: string): string;
+begin
+  while Position<=length(List) do begin
+    Result:=GetNextDelimitedItem(List,Delimiter,Position);
+    if Result=FindItem then exit;
+  end;
+  Result:='';
+end;
+
+function MergeWithDelimiter(const a, b: string; Delimiter: char): string;
+begin
+  if a<>'' then begin
+    if b<>'' then
+      Result:=a+Delimiter+b
+    else
+      Result:=a;
+  end else
+    Result:=b;
 end;
 
 end.

@@ -40,7 +40,8 @@ uses
   // CodeTools
   FileProcs,
   // LazUtils
-  LazUTF8, LazFileCache, LazFileUtils, LazUtilities, AvgLvlTree, LazDbgLog;
+  LazUTF8, LazFileCache, LazFileUtils, LazUtilities, LazStringUtils, LazDbgLog,
+  AvgLvlTree;
 
 // verbosity
 { $DEFINE CTDEBUG}

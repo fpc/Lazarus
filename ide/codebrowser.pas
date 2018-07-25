@@ -54,7 +54,7 @@ uses
   BasicCodeTools, DefineTemplates, CodeTree, CodeCache, CodeToolManager,
   PascalParserTool, LinkScanner, FileProcs, CodeIndex, StdCodeTools, SourceLog,
   // LazUtils
-  LazFileUtils, LazUtilities, AvgLvlTree,
+  LazFileUtils, LazStringUtils, AvgLvlTree,
   // IDEIntf
   IDEWindowIntf, SrcEditorIntf, IDEMsgIntf, IDEDialogs, LazConfigStorage,
   IDEHelpIntf, PackageIntf, IDECommands, LazIDEIntf, IDEExternToolIntf,

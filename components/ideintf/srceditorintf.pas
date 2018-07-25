@@ -16,9 +16,9 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  LCLProc, LCLType, Forms, Controls, Graphics,
+  LCLType, Forms, Controls, Graphics,
   // LazUtils
-  FileUtil, Laz2_XMLCfg,
+  FileUtil, Laz2_XMLCfg, LazStringUtils,
   // IdeIntf
   ProjectIntf, IDECommands;
   

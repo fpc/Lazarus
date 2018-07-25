@@ -44,14 +44,12 @@ unit CodeToolsDefines;
 interface
 
 uses
-  //Classes, SysUtils, Math, LCLIntf, Forms, Controls, Buttons, StdCtrls,
-  //ComCtrls,  LCLType, ExtCtrls, Menus, LCLProc, Graphics, Dialogs, ButtonPanel,
   Classes, SysUtils, Math,
   // LCL
   LCLType, LCLIntf, Forms, Controls, Buttons, StdCtrls,
   ComCtrls, ExtCtrls, Menus, Graphics, Dialogs, ButtonPanel,
   // LazUtils
-  LazFileUtils, LazLogger, LazUtilities,
+  LazFileUtils, LazLogger, LazStringUtils,
   // SynEdit
   SynEdit,
   // Codetools
