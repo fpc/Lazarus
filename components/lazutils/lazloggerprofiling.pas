@@ -13,7 +13,9 @@ unit LazLoggerProfiling;
 interface
 
 uses
-  Classes, SysUtils, LazLoggerBase, lazutf8sysutils;
+  Classes, SysUtils,
+  // LazUtils
+  LazLoggerBase, LazSysUtils;
 
 type
 

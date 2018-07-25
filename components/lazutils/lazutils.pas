@@ -16,11 +16,11 @@ uses
   LazFreeType, LazFreeTypeFontCollection, LazFreeTypeFPImageDrawer, 
   LazLinkedList, LazListClasses, LazLogger, LazLoggerBase, LazLoggerDummy, 
   LazLoggerProfiling, LazMethodList, LazUnicode, LazUTF16, LazUTF8, 
-  LazUTF8Classes, LazUTF8SysUtils, LazUtilities, LazUtilsStrConsts, 
-  LConvEncoding, lcsvutils, LookupStringList, Maps, Masks, PasWString, 
-  StringHashList, TextStrings, Translations, TTCache, TTCalc, TTCMap, TTDebug, 
-  TTError, TTFile, TTGLoad, TTInterp, TTLoad, TTMemory, TTObjs, TTProfile, 
-  TTRASTER, TTTables, TTTypes, UTF8Process, HTML2TextRender, Laz_AVL_Tree, 
+  LazUTF8Classes, LazSysUtils, LazUtilities, LazUtilsStrConsts, LConvEncoding, 
+  lcsvutils, LookupStringList, Maps, Masks, PasWString, StringHashList, 
+  TextStrings, Translations, TTCache, TTCalc, TTCMap, TTDebug, TTError, 
+  TTFile, TTGLoad, TTInterp, TTLoad, TTMemory, TTObjs, TTProfile, TTRASTER, 
+  TTTables, TTTypes, UTF8Process, HTML2TextRender, Laz_AVL_Tree, 
   CompWriterPas, LazPasReadUtil, IntegerList, LazVersion, UITypes, GraphType, 
   LazTracer, LazarusPackageIntf;
 

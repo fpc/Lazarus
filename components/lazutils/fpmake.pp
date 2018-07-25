@@ -60,7 +60,7 @@ begin
     t.Dependencies.AddUnit('lazutilsstrconsts');
     t.Dependencies.AddUnit('lconvencoding');
     t.Dependencies.AddUnit('lazutf16');
-    t.Dependencies.AddUnit('lazutf8sysutils');
+    t.Dependencies.AddUnit('lazsysutils');
     t.Dependencies.AddUnit('lazmethodlist');
     t.Dependencies.AddUnit('avglvltree');
     t.Dependencies.AddUnit('lazlogger');
@@ -120,7 +120,7 @@ begin
     T:=P.Targets.AddUnit('lazutilsstrconsts.pas');
     T:=P.Targets.AddUnit('lconvencoding.pas');
     T:=P.Targets.AddUnit('lazutf16.pas');
-    T:=P.Targets.AddUnit('lazutf8sysutils.pas');
+    T:=P.Targets.AddUnit('lazsysutils.pas');
     T:=P.Targets.AddUnit('lazmethodlist.pas');
     T:=P.Targets.AddUnit('avglvltree.pas');
     T:=P.Targets.AddUnit('lazlogger.pas');

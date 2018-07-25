@@ -13,7 +13,7 @@ uses
   // Custom Drawn Canvas
   IntfGraphics, lazcanvas, customdrawnproc,
   // Libs
-  MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects, lazutf8sysutils,
+  MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects, LazSysUtils,
   //
   LMessages, StdCtrls, LCLIntf,
   Forms, Controls, LCLMessageGlue, WSControls, LCLType, LCLProc, GraphType;

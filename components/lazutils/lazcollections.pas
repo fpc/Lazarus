@@ -13,7 +13,9 @@ unit lazCollections;
 interface
 
 uses
-  sysutils, syncobjs, LazUTF8SysUtils;
+  sysutils, syncobjs,
+  // LazUtils
+  LazSysUtils;
 
 type
 

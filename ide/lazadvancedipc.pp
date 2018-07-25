@@ -36,7 +36,7 @@ uses
   {$endif}
   sysutils, Classes, LazFileUtils
   {$IF FPC_FULLVERSION<20701}
-  ,LazUTF8SysUtils
+  ,LazSysUtils
   {$ENDIF}
   ;
 

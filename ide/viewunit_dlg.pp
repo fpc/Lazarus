@@ -45,7 +45,7 @@ uses
   LCLType, LCLIntf,
   Controls, Forms, Buttons, StdCtrls, ExtCtrls, ButtonPanel, Menus, ComCtrls,
   // LazUtils
-  LazUTF8SysUtils, LazFileUtils, LazFileCache, AvgLvlTree,
+  LazSysUtils, LazFileUtils, LazFileCache, AvgLvlTree,
   // Codetools
   CodeToolManager, FileProcs,
   // LazControls

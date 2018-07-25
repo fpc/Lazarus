@@ -54,7 +54,7 @@ uses
   // LCL
   LCLType, LCLProc, LMessages, LCLStrConsts, GraphType, InterfaceBase,
   // LazUtils
-  FileUtil, LazFileUtils, UTF8Process, LazUTF8, LazUTF8SysUtils, Maps;
+  FileUtil, LazFileUtils, UTF8Process, LazUTF8, LazSysUtils, Maps;
 
 {$ifdef Trace}
   {$ASSERTIONS ON}
@@ -149,12 +149,12 @@ end;
 
 function GetTickCount(): DWord;
 begin
-  Result := DWord(lazutf8sysutils.GetTickCount64());
+  Result := DWord(LazSysUtils.GetTickCount64());
 end;
 
 function GetTickCount64(): QWord;
 begin
-  Result := lazutf8sysutils.GetTickCount64();
+  Result := LazSysUtils.GetTickCount64();
 end;
 
 {$IFDEF DebugLCL}

@@ -6,7 +6,7 @@
   for details about the license.
  *****************************************************************************
 }
-unit LazUTF8SysUtils;
+unit LazSysUtils;
 
 {$mode objfpc}{$H+}
 

@@ -20,7 +20,7 @@ uses
   dialogs,
   syncobjs,
   lazCollections,
-  lazutf8sysutils,
+  LazSysUtils,
   strutils,
   SysUtils, UTF8Process;
 

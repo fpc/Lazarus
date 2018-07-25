@@ -32,7 +32,7 @@ uses
     {$ifdef CD_X11_UseATK}atk, {$endif} {unitxft, Xft font support}{$endif}
   {$ifdef CD_Android}customdrawn_androidproc,{$endif}
   // LazUtils
-  lazutf8sysutils,
+  LazSysUtils,
   // LCL
   Controls, LCLType, Forms, LCLProc, GraphType, IntfGraphics, lazcanvas,
   lazregions, LCLIntf, Lmessages, LazUTF8,

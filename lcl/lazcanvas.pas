@@ -43,7 +43,7 @@ uses
   // LCL
   IntfGraphics, LazRegions
   {$if defined(lazcanvas_debug) or defined(lazcanvas_profiling)}
-  , lazutf8sysutils, LCLProc
+  , LazSysUtils, LCLProc
   {$endif}
   ;
 

@@ -6,7 +6,7 @@ interface
 
 uses
   FpImgReaderWinPE, Classes, SysUtils, math, FileUtil, LazLogger, LazLoggerProfiling,
-  lazutf8sysutils, FpDbgLoader, FpDbgDwarf, FpDbgDwarfConst, FpPascalParser, FpDbgInfo,
+  LazSysUtils, FpDbgLoader, FpDbgDwarf, FpDbgDwarfConst, FpPascalParser, FpDbgInfo,
   FpDbgDwarfDataClasses, Forms, Controls, Graphics, Dialogs, StdCtrls, ComCtrls, EditBtn,
   Menus, Clipbrd, maps, types, strutils;
 

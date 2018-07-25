@@ -218,8 +218,8 @@
         <UnitName Value="LazUTF8Classes"/>
       </Item50>
       <Item51>
-        <Filename Value="lazutf8sysutils.pas"/>
-        <UnitName Value="LazUTF8SysUtils"/>
+        <Filename Value="lazsysutils.pas"/>
+        <UnitName Value="LazSysUtils"/>
       </Item51>
       <Item52>
         <Filename Value="lazutilities.pas"/>
