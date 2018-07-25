@@ -37,9 +37,7 @@ interface
 uses
   Classes, SysUtils, RegExpr,
   // LazUtils
-  LazFileUtils, Laz2_XMLCfg, LazLoggerBase, LazTracer,
-  // IDE
-  IDEProcs;
+  LazFileUtils, Laz2_XMLCfg, LazLoggerBase, LazTracer, LazStringUtils;
 
 type
   { TPublishModuleOptions }

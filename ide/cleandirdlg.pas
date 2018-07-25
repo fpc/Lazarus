@@ -34,12 +34,12 @@ uses
   // LCL
   LCLProc, Forms, Controls, Graphics, Dialogs, StdCtrls, ButtonPanel,
   // LazUtils
-  FileUtil, LazFileUtils, Laz2_XMLCfg,
+  FileUtil, LazFileUtils, Laz2_XMLCfg, LazStringUtils,
   // IdeIntf
   IDEWindowIntf, IDEHelpIntf, IDEDialogs,
   // IDE
-  LazarusIDEStrConsts, LazConf, TransferMacros, InputHistory,
-  ShowDeletingFilesDlg, IDEProcs;
+  IDEProcs, LazarusIDEStrConsts, LazConf, TransferMacros, InputHistory,
+  ShowDeletingFilesDlg;
 
 type
 

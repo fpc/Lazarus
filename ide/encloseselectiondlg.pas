@@ -39,11 +39,11 @@ uses
   // LCL
   Forms, Controls, Graphics, Dialogs, ExtCtrls, ButtonPanel,
   // LazUtils
-  LazUTF8, LazTracer,
+  LazUTF8, LazTracer, LazStringUtils,
   // CodeTools
   BasicCodeTools, CodeToolManager, SourceChanger,
   // IDE
-  LazarusIDEStrConsts, LazConf;
+  LazarusIDEStrConsts;
 
 type
   TEncloseSelectionType = (

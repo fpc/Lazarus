@@ -31,19 +31,21 @@ unit CheckLFMDlg;
 interface
 
 uses
-  // FCL+LCL
+  // FCL
   Classes, SysUtils, Math, TypInfo, contnrs,
-  LCLProc, LResources, Forms, Controls,
-  Dialogs, Buttons, StdCtrls, ExtCtrls,
-  // components
-  SynHighlighterLFM, SynEdit, BasicCodeTools, CodeCache, CodeToolManager,
-  SynEditMiscClasses, LFMTrees,
+  // LCL
+  LCLProc, LResources, Forms, Controls, Dialogs, Buttons, StdCtrls, ExtCtrls,
+  // LazUtils
+  LazStringUtils,
+  // CodeTools
+  BasicCodeTools, CodeCache, CodeToolManager, LFMTrees,
+  // SynEdit
+  SynHighlighterLFM, SynEdit, SynEditMiscClasses,
   // IDEIntf
   IDEExternToolIntf, PackageIntf, IDEWindowIntf, PropEdits, PropEditUtils,
-  IDEMsgIntf, IDEDialogs, ComponentReg,
+  IDEMsgIntf, IDEImagesIntf, IDEDialogs, ComponentReg,
   // IDE
-  CustomFormEditor, LazarusIDEStrConsts, IDEImagesIntf,
-  IDEProcs, EditorOptions, SourceMarks, JITForms;
+  CustomFormEditor, LazarusIDEStrConsts, EditorOptions, SourceMarks, JITForms;
 
 type
 

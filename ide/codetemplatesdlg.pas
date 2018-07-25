@@ -36,7 +36,7 @@ uses
   LCLProc, Forms, Controls, Dialogs, ClipBrd, StdCtrls, ExtCtrls, Menus,
   ButtonPanel, EditBtn,
   // LazUtils
-  FileUtil, LazFileUtils, LazUTF8Classes, LazLoggerBase,
+  FileUtil, LazFileUtils, LazUTF8Classes, LazLoggerBase, LazStringUtils,
   // synedit
   SynEdit, SynHighlighterPas, SynEditAutoComplete,
   // codetools
@@ -44,7 +44,7 @@ uses
   // IDEIntf
   SrcEditorIntf, MenuIntf, IDEWindowIntf, LazIDEIntf, IDEHelpIntf, IDEDialogs,
   // IDE
-  IDEProcs, LazarusIDEStrConsts, EditorOptions, CodeMacroSelect, CodeMacroPrompt;
+  LazarusIDEStrConsts, EditorOptions, CodeMacroSelect, CodeMacroPrompt;
 
 type
   TAutoCompleteOption = (

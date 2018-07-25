@@ -118,10 +118,6 @@ procedure AddFilenameToList(List: TStrings; const Filename: string;
   SkipEmpty: boolean = true);
 
 const
-  EmptyLine = LineEnding + LineEnding;
-  EndOfLine: shortstring = LineEnding;
-  
-const
   ExitCodeRestartLazarus = 99;
 
 implementation

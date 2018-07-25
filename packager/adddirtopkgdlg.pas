@@ -29,11 +29,11 @@ uses
   // LCL
   Forms, Controls, Dialogs, StdCtrls, ButtonPanel, EditBtn,
   // LazUtils
-  FileProcs, LazFileUtils,
+  FileProcs, LazFileUtils, LazStringUtils,
   // IdeIntf
   IDEWindowIntf,
   // IDE
-  IDEProcs, LazarusIDEStrConsts, PackageDefs;
+  LazarusIDEStrConsts, PackageDefs;
 
 type
 

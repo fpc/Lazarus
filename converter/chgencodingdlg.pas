@@ -37,7 +37,7 @@ uses
   // CodeTools
   CodeCache, CodeToolManager, FileProcs,
   // LazUtils
-  LConvEncoding, LazFileUtils, LazFileCache, AvgLvlTree,
+  LConvEncoding, LazFileUtils, LazFileCache, LazStringUtils, AvgLvlTree,
   // IDEIntf
   IDEWindowIntf, SrcEditorIntf, IDEHelpIntf, IDEImagesIntf,
   // IDE

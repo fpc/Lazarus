@@ -4555,7 +4555,7 @@ begin
           CommentType:=EditorOpts.HighlighterList[i].DefaultCommentType;
       end;
   end;
-  Result:=IDEProcs.CommentText(Txt,CommentType);
+  Result:=LazStringUtils.CommentText(Txt,CommentType);
 end;
 
 procedure TSourceEditor.InsertCharacterFromMap;

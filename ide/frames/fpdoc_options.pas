@@ -28,10 +28,12 @@ uses
   SysUtils,
   // LCL
   Dialogs, StdCtrls, EditBtn,
+  // LazUtils
+  LazStringUtils,
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf,
   // IDE
-  EnvironmentOpts, LazarusIDEStrConsts, IDEProcs;
+  EnvironmentOpts, LazarusIDEStrConsts;
 
 type
 

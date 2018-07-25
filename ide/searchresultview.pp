@@ -44,10 +44,11 @@ uses
   // LazControls
   TreeFilterEdit,
   // LazUtils
-  LazUTF8, LazFileUtils, LazLoggerBase,
+  LazUTF8, LazFileUtils, LazLoggerBase, LazStringUtils,
+  // IdeIntf
+  IDEImagesIntf, IDECommands,
   // IDE
-  IDEOptionDefs, LazarusIDEStrConsts, EnvironmentOpts, InputHistory, IDEProcs,
-  Project, MainIntf, IDECommands, IDEImagesIntf;
+  IDEOptionDefs, LazarusIDEStrConsts, EnvironmentOpts, InputHistory, Project, MainIntf;
 
 
 type

@@ -8,10 +8,12 @@ uses
   SysUtils,
   // LCL
   Forms, Dialogs, StdCtrls, Buttons, EditBtn,
+  // LazUtils
+  LazStringUtils,
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, IDEImagesIntf,
   // IDE
-  Project, LazarusIDEStrConsts, IDEProcs, CodeHelp;
+  Project, LazarusIDEStrConsts, CodeHelp;
 
 type
 

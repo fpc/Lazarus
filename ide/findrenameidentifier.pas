@@ -38,7 +38,7 @@ uses
   // CodeTools
   FileProcs, CTUnitGraph, CodeTree, CodeCache, CodeToolManager, BasicCodeTools,
   // LazUtils
-  LazFileUtils, LazFileCache, laz2_DOM, AvgLvlTree,
+  LazFileUtils, LazFileCache, laz2_DOM, LazStringUtils, AvgLvlTree,
   // IdeIntf
   LazIDEIntf, IDEWindowIntf, SrcEditorIntf, PackageIntf, IDEDialogs,
   // IDE

@@ -41,6 +41,8 @@ uses
   // LCL
   LCLProc, LCLType, LCLIntf, LResources, LMessages, Forms, Controls,
   Graphics, Dialogs, Themes, Buttons,
+  // LazUtils
+  LazStringUtils,
   // SynEdit
   SynEdit, SynEditKeyCmds,
   // CodeTools
@@ -49,7 +51,7 @@ uses
   // IdeIntf
   SrcEditorIntf, LazIDEIntf, IDEImagesIntf,
   // IDE
-  IDEProcs, LazarusIDEStrConsts;
+  LazarusIDEStrConsts;
 
 type
 

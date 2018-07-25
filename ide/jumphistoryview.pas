@@ -29,11 +29,11 @@ uses
   // LCL
   Forms, Controls, StdCtrls, Menus,
   // LazUtils
-  LazUTF8,
+  LazUTF8, LazStringUtils,
   // CodeTools
   CodeToolManager, CodeCache,
   // IDE
-  IDEProcs, IDEOptionDefs, EnvironmentOpts, LazarusIDEStrConsts, Project, ProjectDefs;
+  IDEOptionDefs, EnvironmentOpts, LazarusIDEStrConsts, Project, ProjectDefs;
 
 type
 

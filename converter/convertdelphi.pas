@@ -39,7 +39,8 @@ uses
   // CodeTools
   CodeToolManager, DefineTemplates, CodeCache, LinkScanner, FileProcs,
   // LazUtils
-  LConvEncoding, FileUtil, LazFileUtils, LazUTF8, LazUTF8Classes, AvgLvlTree,
+  LConvEncoding, FileUtil, LazFileUtils, LazUTF8, LazUTF8Classes, LazStringUtils,
+  AvgLvlTree,
   // IDEIntf
   ComponentReg, IDEDialogs, LazIDEIntf, PackageIntf, ProjectIntf,
   IDEExternToolIntf, IDEOptEditorIntf,

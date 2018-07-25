@@ -47,6 +47,7 @@ uses
   InterfaceBase, Forms, Controls,
   // LazUtils
   FileUtil, LazFileUtils, LazUTF8, Laz2_XMLCfg, Laz2_DOM, LazUtilities, LazTracer,
+  LazStringUtils,
   // CodeTools
   FileProcs, DefineTemplates, CodeToolsCfgScript, CodeToolManager,
   KeywordFuncLists, BasicCodeTools, LinkScanner,

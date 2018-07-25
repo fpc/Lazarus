@@ -11,13 +11,13 @@ uses
   // LCL
   LCLProc, LCLType, Forms, Controls, Graphics, ComCtrls, Dialogs, StdCtrls, ButtonPanel,
   // LazUtils
-  LazFileUtils,
+  LazFileUtils, LazStringUtils,
   // CodeTools
   BasicCodeTools,
   // IdeIntf
   IDEHelpIntf, MacroDefIntf, LazIDEIntf, IDEUtils,
   // IDE
-  IDEProcs, InputHistory, LazarusIDEStrConsts, EnvironmentOpts, TransferMacros;
+  InputHistory, LazarusIDEStrConsts, EnvironmentOpts, TransferMacros;
 
 type
 

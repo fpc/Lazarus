@@ -45,6 +45,7 @@ uses
   Graphics, LCLProc, LResources, Forms, Dialogs, ComCtrls, LCLType,
   // LazUtils
   FileUtil, LazFileUtils, LazUTF8, LazClasses, LazUTF8Classes, Laz2_XMLCfg,
+  LazStringUtils,
   // Synedit
   SynEdit, SynEditAutoComplete, SynEditKeyCmds, SynEditTypes,
   SynEditMiscClasses, SynBeautifier, SynEditTextTrimmer, SynEditMouseCmds,
@@ -68,7 +69,7 @@ uses
   IDECommands, SrcEditorIntf, IDEOptionsIntf, IDEOptEditorIntf, IDEDialogs,
   EditorSyntaxHighlighterDef,
   // IDE
-  SourceMarks, LazarusIDEStrConsts, IDEProcs, KeyMapping, LazConf;
+  SourceMarks, LazarusIDEStrConsts, KeyMapping, LazConf;
 
 const
   DefaultCompletionLongLineHintType = sclpExtendRightOnly;

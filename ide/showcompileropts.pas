@@ -39,13 +39,13 @@ uses
   // LCL
   Forms, Controls, Buttons, StdCtrls, ComCtrls, ExtCtrls,
   // LazUtils
-  LazFileUtils, LazUTF8,
+  LazFileUtils, LazUTF8, LazStringUtils,
   // CodeTools
   CodeToolsCfgScript,
   // IdeIntf
   BaseIDEIntf, LazIDEIntf, IDEImagesIntf, CompOptsIntf, ProjectIntf, PackageIntf,
   // IDE
-  LazarusIDEStrConsts, IDEProcs, Project, PackageDefs,
+  LazarusIDEStrConsts, Project, PackageDefs,
   CompilerOptions, ModeMatrixOpts, MiscOptions;
 
 type

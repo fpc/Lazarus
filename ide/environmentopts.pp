@@ -41,7 +41,7 @@ uses
   // LCL
   Graphics, Controls, Forms, Dialogs, LCLProc,
   // LazUtils
-  LazFileUtils, FileUtil, LazFileCache, LazConfigStorage, LazUTF8,
+  LazFileUtils, FileUtil, LazFileCache, LazConfigStorage, LazUTF8, LazStringUtils,
   Laz2_XMLCfg, Laz2_DOM,
   // CodeTools
   FileProcs, SourceChanger, CodeCompletionTool,

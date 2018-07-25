@@ -26,13 +26,13 @@ uses
   LCLType, LCLProc, Forms, Controls, Buttons, StdCtrls, Dialogs, Menus, Graphics,
   ButtonPanel, Clipbrd,
   // LazUtils
-  FileUtil, LazFileUtils,
+  FileUtil, LazFileUtils, LazStringUtils,
   // LazControls
   ShortPathEdit,
   // IdeIntf
   MacroIntf, IDEImagesIntf,
   // IDE
-  TransferMacros, GenericListSelect, LazarusIDEStrConsts, IDEProcs;
+  TransferMacros, GenericListSelect, LazarusIDEStrConsts;
 
 type
 
