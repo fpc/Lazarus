@@ -1761,10 +1761,10 @@ begin
                                   [sfaOpen, sfaOpenFold,sfaMarkup,sfaFold,sfaFoldFold, sfaMultiLine]);// try
       CheckNode( 2, [], 0,   8,   72, 77,   2, 1,   2, 1,
                                   cfbtIfDef, cfbtIfDef,  FOLDGROUP_IFDEF,
-                                  [sfaClose, sfaMarkup,sfaOneLineClose, sfaSingleLine]);                      // {$ELSE}
+                                  [sfaClose, sfaMarkup,sfaOneLineClose, sfaSingleLine, sfaCloseAndOpen]);                      // {$ELSE}
       CheckNode( 2, [], 0,   9,   72, 77,   1, 2,   1, 2,
                                   cfbtIfDef, cfbtIfDef,  FOLDGROUP_IFDEF,
-                                  [sfaMarkup,sfaOpen, sfaOpenFold,sfaFold,sfaFoldFold, sfaMultiLine]);          // {$ELSE}
+                                  [sfaMarkup,sfaOpen, sfaOpenFold,sfaFold,sfaFoldFold, sfaMultiLine, sfaCloseAndOpen]);          // {$ELSE}
       // Line 3:     //foo                                                      # pasminlvl=4 endlvl=4
       CheckNode( 3, [], 0,   0,   2, 4,   4, 5,   4, 5,
                                   cfbtSlashComment, cfbtSlashComment,  FOLDGROUP_PASCAL,

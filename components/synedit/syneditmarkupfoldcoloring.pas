@@ -74,7 +74,7 @@ type
 
   PMarkupFoldColorInfo = ^TMarkupFoldColorInfo;
   TMarkupFoldColorInfo = record
-    Row, PhysX, PhysX2, PhysCol: Integer;
+    PhysX, PhysX2, PhysCol: Integer;
     ColorIdx: Integer;
     Border  : Boolean;
     Ignore  : Boolean; //no color no line
@@ -585,7 +585,6 @@ var
     with fFoldColorInfos[lCurIndex] do begin
       SrcNode:= lCurNode; //needed by close node
       PhysCol := lNodeCol;
-      Row  := pRow;
       PhysX := lNodeCol;
       PhysX2 := PhysX + 1;
       Border := PhysX < GetFirstCharacterColumn(lLineIdx); // use real one here not cache
@@ -607,8 +606,6 @@ var
   begin
     ONodeFirstCol := FirstCharacterColumn[LineIdx];
     FColumnCache[LineIdx] := ONodeFirstCol;
-    if ONodeFirstCol = 1 then
-      exit;
 
     fNestList2.Line := LineIdx;
     fNestList2.FoldGroup := FoldGroup;
@@ -618,14 +615,15 @@ var
     if sfaInvalid in LevelOpenNode.FoldAction then
       exit; // try node before ??
 
-    if not (sfaOutlineKeepLevel in LevelOpenNode.FoldAction) then
-      exit;
-
     if not FColumnCache.IsValidForLine[LevelOpenNode.LineIndex] then begin
-      InitColumnForKeepLvl(LevelOpenNode.LineIndex, FoldGroup);
-      if not FColumnCache.IsValidForLine[LevelOpenNode.LineIndex] then begin
+      if (LevelOpenNode.NestLvlStart <  fHighlighter.FoldBlockEndLevel(LevelOpenNode.LineIndex-1, lCurNode.FoldGroup, [sfbIncludeDisabled])) and
+         (sfaCloseAndOpen in LevelOpenNode.FoldAction)
+      then
+        InitColumnForKeepLvl(LevelOpenNode.LineIndex, FoldGroup)
+      else
+        FColumnCache[LevelOpenNode.LineIndex] := FirstCharacterColumn[LevelOpenNode.LineIndex];
+      if not FColumnCache.IsValidForLine[LevelOpenNode.LineIndex] then
         exit;
-      end;
     end;
     i := FColumnCache[LevelOpenNode.LineIndex];
     FColumnCache[LineIdx] := min(i, ONodeFirstCol);
@@ -671,10 +669,11 @@ begin
       //  DebugLn('   %s %s - %s %s', [FoldTypeToStr(fLastOpenNode.FoldType), IfThen(sfaOutlineKeepLevel in fLastOpenNode.FoldAction, '(Keep)', ''), FoldTypeToStr(lCurNode.FoldType), IfThen(sfaOutlineKeepLevel in lCurNode.FoldAction, '(Keep)', '')]);
       {$ENDIF}
 
+
       // find lastnode // first opening node on this line, that is = hl.line[-1].endnestlevel (-1)
       if (lCurNode.NestLvlStart <  fHighlighter.FoldBlockEndLevel(lCurNode.LineIndex-1, lCurNode.FoldGroup, [sfbIncludeDisabled])) and
-         (i < fNestList.Count - fNestList.OpeningOnLineCount) and
-         (not FColumnCache.IsValidForLine[lCurNode.LineIndex])
+         (sfaCloseAndOpen in lCurNode.FoldAction)
+// // TODO: check that this is the FIRST sfaCloseAndOpen on this line
       then
         InitColumnForKeepLvl(lCurNode.LineIndex, lCurNode.FoldGroup);
 
@@ -781,7 +780,6 @@ var
         Ignore := False;
         Border := False;
         SrcNode:= lCurNode; //needed by close node
-        Row := pRow; //ToPos(lCurNode.LineIndex);
         PhysX := lPhysX;
         //if not FColumnCache.IsValidForLine[lCurNode.LineIndex] then
         //  FColumnCache[lCurNode.LineIndex] := FirstCharacterColumn[lCurNode.LineIndex];
@@ -1001,21 +999,6 @@ begin
   //DebugLn('  --- DoMarkupParentCloseFoldAtRow ---');
   {$ENDIF}
   DoMarkupParentCloseFoldAtRow(pRow);
-
-  // update Col if last parent open node is closed and reopened on current line
-  for i := fFoldColorInfosCount - 1 downto 2 do begin
-    if (sfaOpen in fFoldColorInfos[i-2].SrcNode.FoldAction)
-    and (sfaClose in fFoldColorInfos[i-1].SrcNode.FoldAction)
-    and (sfaOpen in fFoldColorInfos[i].SrcNode.FoldAction)
-    and (fFoldColorInfos[i-2].SrcNode.FoldType = fFoldColorInfos[i-1].SrcNode.FoldType)
-    and (fFoldColorInfos[i-1].SrcNode.FoldType = fFoldColorInfos[i].SrcNode.FoldType)
-    and (fFoldColorInfos[i-1].PhysX = fFoldColorInfos[i].PhysX)
-    and (fFoldColorInfos[i-1].PhysX2 = fFoldColorInfos[i].PhysX2)
-    and (fFoldColorInfos[i-1].Row = pRow)
-    and (fFoldColorInfos[i].Row = pRow) then begin
-      FColumnCache[ToIdx(pRow)] := fFoldColorInfos[i-2].PhysCol;
-    end;
-  end;
 
   // delete parents with bigger x
   // to keep out mis indented blocks

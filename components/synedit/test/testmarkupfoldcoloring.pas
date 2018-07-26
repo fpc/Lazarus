@@ -11,6 +11,20 @@ uses
 
 type
 
+  TIntArray = array of integer;
+
+  TTestLineMarkupResult = record
+    aRow: Integer;
+    aExpColumns, aExpColors, aExpWords, aExpWordsColor: Array of Integer;
+  end;
+  TTestLineMarkupResults = array of TTestLineMarkupResult;
+
+  // build expectations
+  function ExpR(aExpColumns, aExpColors: Array of Integer): TTestLineMarkupResult;
+  function ExpR(aExpColumns, aExpColors, aExpWords, aExpWordsColor: Array of Integer): TTestLineMarkupResult;
+
+type
+
   { TTestMarkupFoldColoring }
 
   TTestMarkupFoldColoring = class(TTestBaseHighlighterPas)
@@ -24,6 +38,7 @@ type
     procedure TestNoInvalidate(aName: string = '');
     procedure TestInvalidate(aName: string; aExpFrom, aExpTo: Integer);
     procedure TestBeginMarkup(aName: string = '');
+    procedure TestRowColumns(aName: string; aRow: Integer; aExp: TTestLineMarkupResult; aScrollOffs: Integer = 0); overload;
     procedure TestRowColumns(aName: string; aRow: Integer;
       aExpColumns, aExpColors: Array of Integer; aScrollOffs: Integer = 0); overload;
     (* TestRowColumns( name, row,
@@ -35,25 +50,55 @@ type
     *)
     procedure TestRowColumns(aName: string; aRow: Integer;
       aExpColumns, aExpColors, aExpWords, aExpWordsColor: Array of Integer; aScrollOffs: Integer = 0); overload;
+
+    procedure TestLines(exp: TTestLineMarkupResults; backward: Boolean = false);
   protected
     procedure SetUp; override;
     procedure TearDown; override;
     procedure ReCreateEdit(AText: TStringArray = nil; AHeight: integer = 30; ATopLine: Integer = 1); reintroduce;
     function TestText1: TStringArray;
     function TestText2: TStringArray; // case indent
+    function TestTextEditIfThen(out ExpLines, ExpLinesEdited: TTestLineMarkupResults): TStringArray; // edit text => update if/else
     function TestTextMultiLineIfIndent: TStringArray;
     function TestTextInval1: TStringArray;
     function TestTextScroll1: TStringArray;
+    function TestTextCaseScroll1(out ExpLines: TTestLineMarkupResults): TStringArray;
     procedure EnableOutlines(AEnbledTypes: TPascalCodeFoldBlockTypes);
   published
     procedure TestColors;
     procedure TestCaseLabelIndent; // issue https://bugs.freepascal.org/view.php?id=33154
     procedure TestMultiLineIfIndent; // issue https://bugs.freepascal.org/view.php?id=32852
+    procedure TestEditIfThen;
     procedure TestInvalidateIfElseChain;
     procedure TestInvalidateScroll;
+    procedure TestCaseScroll;
   end;
 
 implementation
+
+function CopyArray(a: array of Integer): TIntArray;
+begin
+  SetLength(Result, Length(a));
+  if Length(a) > 0 then
+    move(a[0], Result[0], Length(a) * SizeOf(a[0]));
+end;
+
+function ExpR(aExpColumns, aExpColors: array of Integer): TTestLineMarkupResult;
+begin
+  Result.aExpColumns := CopyArray(aExpColumns);
+  Result.aExpColors  := CopyArray(aExpColors);
+  Result.aExpWords   := nil;
+  Result.aExpWordsColor := nil;
+end;
+
+function ExpR(aExpColumns, aExpColors, aExpWords,
+  aExpWordsColor: array of Integer): TTestLineMarkupResult;
+begin
+  Result.aExpColumns := CopyArray(aExpColumns);
+  Result.aExpColors  := CopyArray(aExpColors);
+  Result.aExpWords   := CopyArray(aExpWords);
+  Result.aExpWordsColor := CopyArray(aExpWordsColor);
+end;
 
 { TTestMarkupFoldColoring }
 
@@ -94,6 +139,12 @@ begin
 end;
 
 procedure TTestMarkupFoldColoring.TestRowColumns(aName: string; aRow: Integer;
+  aExp: TTestLineMarkupResult; aScrollOffs: Integer);
+begin
+  TestRowColumns(aName, aRow, aExp.aExpColumns, aExp.aExpColors, aExp.aExpWords, aExp.aExpWordsColor, aScrollOffs);
+end;
+
+procedure TTestMarkupFoldColoring.TestRowColumns(aName: string; aRow: Integer;
   aExpColumns, aExpColors: array of Integer; aScrollOffs: Integer);
 begin
   TestRowColumns(aName, aRow, aExpColumns, aExpColors, [], [], aScrollOffs);
@@ -108,6 +159,7 @@ var
   startCol: TLazSynDisplayTokenBound;
   gotColor: TSynSelectedColor;
 begin
+  aName := aName + '; row=' + IntToStr(aRow);
   if FOnlyTestVisibleRows then begin
     srow := SynEdit.RowToScreenRow(aRow);
     if (srow < 0) or (srow > SynEdit.LinesInWindow) then
@@ -175,6 +227,21 @@ begin
   MaybeThrowError;
   TestNoInvalidate;
   PopBaseName;
+end;
+
+procedure TTestMarkupFoldColoring.TestLines(exp: TTestLineMarkupResults;
+  backward: Boolean);
+var
+  i: LongInt;
+begin
+  TestBeginMarkup('');
+  if backward then
+    for i := high(exp) downto low(exp) do
+      TestRowColumns('Line ',  i+1, exp[i])
+  else
+    for i := low(exp) to high(exp) do
+      TestRowColumns('Line ',  i+1, exp[i]);
+  Markup.EndMarkup;
 end;
 
 procedure TTestMarkupFoldColoring.SetUp;
@@ -263,6 +330,77 @@ begin
   Result[16] := '      NotifEnabled:= false;';
   Result[17] := '  end;';
   Result[18] := 'end;';
+end;
+
+function TTestMarkupFoldColoring.TestTextEditIfThen(out ExpLines,
+  ExpLinesEdited: TTestLineMarkupResults): TStringArray;
+var
+  i: Integer;
+begin
+  SetLength(Result, 29);
+  SetLength(ExpLines, 29);
+  SetLength(ExpLinesEdited, 18); // stop at bad line // HL may change....
+  Result[ 0] := 'program a;';
+  Result[ 1] := '  begin';
+  Result[ 2] := '';
+  Result[ 3] := '';
+  Result[ 4] := '      if a then';
+  Result[ 5] := '';
+  Result[ 6] := '         //(*  remove the //'; // edit this line, remov //
+  Result[ 7] := '';
+  Result[ 8] := '';
+  Result[ 9] := '     if b then';
+  Result[10] := '';
+  Result[11] := '          //*)';
+  Result[12] := '';
+  Result[13] := '';
+  Result[14] := '         else  // not updated below';
+  Result[15] := '';
+  Result[16] := '';
+  Result[17] := '    else';     // bad code after edit, depends on HL... // no ";" statement continues
+  Result[18] := '        begin';
+  Result[19] := '';
+  Result[20] := '        end';
+  Result[21] := '      ;';
+  Result[22] := '';
+  Result[23] := '';
+  Result[24] := '';
+  Result[25] := '';
+  Result[26] := '';
+  Result[27] := '';
+  Result[28] := '  end.';
+
+  ExpLines[ 0] := ExpR([], []);
+  ExpLines[ 1] := ExpR([],     [],       [3,8],    [1]); // begin
+  for i :=  2 to 3 do
+  ExpLines[ i] := ExpR([3],    [1],      [],       []);
+  ExpLines[ 4] := ExpR([3],    [1],      [7,9, 12,16],    [2, 2]); // if a then
+  for i :=  5 to 8 do
+  ExpLines[ i] := ExpR([3, 7], [1, 2]);
+  ExpLines[ 9] := ExpR([3],    [1],      [6,8, 11,15],    [ 3, 3]);  // if b then (nested)
+  for i := 10 to 16 do
+  ExpLines[ i] := ExpR([3, 6], [1,  3]);
+  ExpLines[14] := ExpR([3, 6], [1,  3],  [10,14],  [ 3]);  // else
+  ExpLines[17] := ExpR([3],    [1],      [5,9],    [2]);   // else
+  ExpLines[18] := ExpR([3, 5], [1, 2],   [9,14],   [2]);  // begin (merged color)
+  ExpLines[19] := ExpR([3, 5], [1, 2]);
+  ExpLines[20] := ExpR([3, 5], [1, 2],   [9,12],   [2]);  // end
+  ExpLines[21] := ExpR([3],    [1]);   //,      [7,8],    [2]); // the "end" ended the "else" should be the ";"
+  for i := 22 to 27 do
+  ExpLines[ i] := ExpR([3],    [1],     [],  []);
+  ExpLines[28] := ExpR([],     [],      [3,6],  [1]);
+
+  // after enabling the (* comment; removing the //
+  ExpLinesEdited[ 0] := ExpR([], []);
+  ExpLinesEdited[ 1] := ExpR([],     [],      [3,8],  [1]); // begin
+  for i :=  2 to 3 do
+  ExpLinesEdited[ i] := ExpR([3],    [1],     [],  []);
+  ExpLinesEdited[ 4] := ExpR([3],    [1],      [7,9, 12,16],    [2, 2]); // if a then
+  for i :=  5 to 16 do
+  ExpLinesEdited[ i] := ExpR([3, 7], [1, 2],  [], []);
+  ExpLinesEdited[ 9] := ExpR([3],    [1],     [], []);  // (* if b then
+  ExpLinesEdited[14] := ExpR([3, 7], [1, 2],  [10,14],  [2]);  // else
+  ExpLinesEdited[17] := ExpR([3],    [1],     [],  []);   // else // without if then
 end;
 
 function TTestMarkupFoldColoring.TestTextMultiLineIfIndent: TStringArray;
@@ -374,6 +512,105 @@ begin
   Result[109] := 'end;';
   Result[110] := '';
   Result[111] := 'end.';
+end;
+
+function TTestMarkupFoldColoring.TestTextCaseScroll1(out
+  ExpLines: TTestLineMarkupResults): TStringArray;
+begin
+  SetLength(Result, 44+30);
+  SetLength(ExpLines, 44);
+  Result[ 0] := 'program a;';
+  Result[ 1] := 'begin';
+  Result[ 2] := '  case var1 of';
+  Result[ 3] := '      1: begin';
+  Result[ 4] := '        code;';
+  Result[ 5] := '      end';
+  Result[ 6] := '      2: begin';
+  Result[ 7] := '        code;';
+  Result[ 8] := '      end';
+  Result[ 9] := '    else';
+  Result[10] := '      begin';
+  Result[11] := '        code;';
+  Result[12] := '      end;';
+  Result[13] := '    end;';
+  Result[14] := '';
+  Result[15] := '  case';
+  Result[16] := '     var1 of';
+  Result[17] := '    1: begin';
+  Result[18] := '      code;';
+  Result[19] := '    end';
+  Result[20] := '    2: begin';
+  Result[21] := '      code;';
+  Result[22] := '    end';
+  Result[23] := '  else';
+  Result[24] := '    begin';
+  Result[25] := '      code;';
+  Result[26] := '    end;';
+  Result[27] := '  end;';
+  Result[28] := '';
+  Result[29] := '  case';
+  Result[30] := '     var1 of';
+  Result[31] := '      1: begin';
+  Result[32] := '        code;';
+  Result[33] := '      end';
+  Result[34] := '      2: begin';
+  Result[35] := '        code;';
+  Result[36] := '      end';
+  Result[37] := '    else';
+  Result[38] := '      begin';
+  Result[39] := '        code;';
+  Result[40] := '      end;';
+  Result[41] := '  end;';
+  Result[42] := '';
+  Result[43] := 'end.';
+
+  ExpLines[ 0] := ExpR([], []);
+  ExpLines[ 1] := ExpR([],        [],       [1,6],    [1]); // begin
+  ExpLines[ 2] := ExpR([1],       [1],      [3,7, 13,15], [2,2]);  // case var 1 of
+  ExpLines[ 3] := ExpR([1, 3],    [1,2],    [10,16], [3]); // 1: begin
+  ExpLines[ 4] := ExpR([1, 3, 7], [1,2,3]);
+  ExpLines[ 5] := ExpR([1, 3],    [1,2],    [ 7,10], [3]); // end
+  ExpLines[ 6] := ExpR([1, 3],    [1,2],    [10,16], [3]); // 2: begin
+  ExpLines[ 7] := ExpR([1, 3, 7], [1,2,3]);
+  ExpLines[ 8] := ExpR([1, 3],    [1,2],    [ 7,10], [3]); // end
+  ExpLines[ 9] := ExpR([1, 3],    [1,2]);
+  ExpLines[10] := ExpR([1, 3],    [1,2],    [7,13],  [3]); // begin
+  ExpLines[11] := ExpR([1, 3, 7], [1,2,3]);
+  ExpLines[12] := ExpR([1, 3],    [1,2],    [7,10],  [3]); // end
+  ExpLines[13] := ExpR([1, 3],    [1,2],    [5,9],   [2]); // end // case
+  ExpLines[14] := ExpR([1],       [1]);
+
+  ExpLines[15] := ExpR([1],       [1],      [3,7],   [2]);  // case
+  ExpLines[16] := ExpR([1, 3],    [1,2],    [11,13], [2]);  //    var 1 of
+  ExpLines[17] := ExpR([1, 3],    [1,2],    [8,14],  [3]); // 1: begin
+  ExpLines[18] := ExpR([1, 3, 5], [1,2,3]);
+  ExpLines[19] := ExpR([1, 3],    [1,2],    [5, 8], [3]); // end
+  ExpLines[20] := ExpR([1, 3],    [1,2],    [8,14], [3]); // 2: begin
+  ExpLines[21] := ExpR([1, 3, 5], [1,2,3]);
+  ExpLines[22] := ExpR([1, 3],    [1,2],    [5, 8], [3]); // end
+  ExpLines[23] := ExpR([1],       [1]);
+  ExpLines[24] := ExpR([1, 3],    [1,2],    [5,11], [3]); // begin
+  ExpLines[25] := ExpR([1, 3, 5], [1,2,3]);
+  ExpLines[26] := ExpR([1, 3],    [1,2],    [5,8],  [3]); // end
+  ExpLines[27] := ExpR([1],       [1],      [3,6],  [2]); // end // case
+  ExpLines[28] := ExpR([1],       [1]);
+
+  ExpLines[29] := ExpR([1],       [1],      [3,7],   [2]);  // case
+  ExpLines[30] := ExpR([1, 3],    [1,2],    [11,13], [2]);  //    var 1 of
+  ExpLines[31] := ExpR([1, 3],    [1,2],    [10,16], [3]); // 1: begin
+  ExpLines[32] := ExpR([1, 3, 7], [1,2,3]);
+  ExpLines[33] := ExpR([1, 3],    [1,2],    [ 7,10], [3]); // end
+  ExpLines[34] := ExpR([1, 3],    [1,2],    [10,16], [3]); // 2: begin
+  ExpLines[35] := ExpR([1, 3, 7], [1,2,3]);
+  ExpLines[36] := ExpR([1, 3],    [1,2],    [ 7,10], [3]); // end
+  ExpLines[37] := ExpR([1, 3],    [1,2]);
+  ExpLines[38] := ExpR([1, 3],    [1,2],    [7,13],  [3]); // begin
+  ExpLines[39] := ExpR([1, 3, 7], [1,2,3]);
+  ExpLines[40] := ExpR([1, 3],    [1,2],    [7,10],  [3]); // end
+  ExpLines[41] := ExpR([1],       [1],      [3,7],   [2]); // end // case
+  ExpLines[42] := ExpR([1],       [1]);
+
+  ExpLines[43] := ExpR([],        [],       [1,3],    [1]); // end.
 end;
 
 procedure TTestMarkupFoldColoring.EnableOutlines(AEnbledTypes: TPascalCodeFoldBlockTypes);
@@ -502,6 +739,36 @@ begin
   Markup.EndMarkup;
 
   PopBaseName;
+end;
+
+procedure TTestMarkupFoldColoring.TestEditIfThen;
+var
+  Lines: TStringArray;
+  ExpLines, ExpLinesAfter: TTestLineMarkupResults;
+begin
+  Lines := TestTextEditIfThen(ExpLines, ExpLinesAfter);
+  ReCreateEdit(Lines);
+  EnableFolds([cfbtBeginEnd.. cfbtNone], [cfbtSlashComment]);
+  EnableOutlines([cfbtBeginEnd.. cfbtNone]);
+
+  PushBaseName('Before edit');
+  TestLines(ExpLines);
+  SynEdit.TestTypeText(11, 7, #8);
+
+  PopPushBaseName('After edit');
+  TestLines(ExpLinesAfter);
+
+
+  ReCreateEdit(Lines);
+  EnableFolds([cfbtBeginEnd.. cfbtNone], [cfbtSlashComment]);
+  EnableOutlines([cfbtBeginEnd.. cfbtNone]);
+
+  PopPushBaseName('backwards Before edit');
+  TestLines(ExpLines, True);
+  SynEdit.TestTypeText(11, 7, #8);
+
+  PopPushBaseName('backwards After edit');
+  TestLines(ExpLinesAfter, True);
 end;
 
 procedure TTestMarkupFoldColoring.TestInvalidateIfElseChain;
@@ -635,6 +902,28 @@ begin
     PopBaseName;
 
   PopBaseName;
+end;
+
+procedure TTestMarkupFoldColoring.TestCaseScroll;
+var
+  Lines: TStringArray;
+  ExpLines: TTestLineMarkupResults;
+  i: Integer;
+begin
+  Lines := TestTextCaseScroll1(ExpLines);
+  ReCreateEdit(Lines, 30, 43);
+  EnableFolds([cfbtBeginEnd.. cfbtNone], [cfbtSlashComment]);
+  EnableOutlines([cfbtBeginEnd.. cfbtNone]);
+
+  FOnlyTestVisibleRows := True;
+
+  PushBaseName('');
+  for i := 43 downto 1 do begin
+    SynEdit.TopLine := i;
+    PopPushBaseName('scroll '+IntToStr(i));
+    TestLines(ExpLines);
+  end;
+
 end;
 
 initialization

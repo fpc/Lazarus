@@ -82,6 +82,8 @@ type
                      // //sfaSingleLineClosedByNext
                      sfaCloseForNextLine,  // Fold closes this line, but keyword is on the next (e.g. "var" block)
                      sfaLastLineClose,     // Fold is incomplete, and closed at last line of file
+                     sfaCloseAndOpen,    // This node has the same location/type as the neighbouring opposite node.
+                                         // eg an open node, matche exactly the previous node, which has to be a closing node of the same type and location (and vice versa for a closing node matching the next...)
 
                      sfaDefaultCollapsed,
                      sfaMarkup,   // This node can be highlighted, by the matching Word-Pair Markup
@@ -821,6 +823,17 @@ begin
   end;
   FNodeInfoList[FNodeCount] := AnInfo;
   FNodeInfoList[FNodeCount].AllNodeIndex := FNodeCount;
+  If (FNodeCount > 0) and (sfaOpen in AnInfo.FoldAction) then begin
+    c := FNodeCount-1;
+    if (sfaClose in FNodeInfoList[c].FoldAction) and
+       //(AnInfo.FoldType = FNodeInfoList[c].FoldType) and  // cfbtIfDef <> cfbtIfElse
+       (AnInfo.LogXStart = FNodeInfoList[c].LogXStart) and
+       (AnInfo.LogXEnd = FNodeInfoList[c].LogXEnd)
+    then begin
+      include(FNodeInfoList[FNodeCount].FoldAction, sfaCloseAndOpen);
+      include(FNodeInfoList[c].FoldAction, sfaCloseAndOpen);
+    end;
+  end;
   inc(FNodeCount);
 end;
 
