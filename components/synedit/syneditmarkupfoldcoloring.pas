@@ -632,6 +632,7 @@ var
 var
   lKeepLevel: Boolean;
   LastNode: TSynFoldNodeInfo;
+  cnf: TSynCustomFoldConfig;
 begin
   lLineIdx := ToIdx(pRow);
   fNestList.Line := lLineIdx;
@@ -645,6 +646,11 @@ begin
   lLvl := 0;
   i := 0; // starting at the node with the lowest line number
   while i < fNestList.Count do begin
+    cnf := TSynCustomFoldHighlighter(Highlighter).FoldConfig[PtrInt(fNestList.NodeFoldType[i])];
+    if (not cnf.Enabled) or not(fmOutline in cnf.Modes) then begin
+      inc(i);
+      continue;
+    end;
     lCurNode := fNestList.HLNode[i];
     // sanity check
     Assert(sfaOpen in lCurNode.FoldAction, 'no sfaOpen in lCurNode.FoldAction');
