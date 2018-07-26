@@ -12,7 +12,7 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
   OnDestroy = FormDestroy
   OnShow = dlgpropertiesprinterSHOW
   Position = poScreenCenter
-  LCLVersion = '1.5'
+  LCLVersion = '1.9.0.0'
   object Notebook1: TPageControl
     AnchorSideRight.Side = asrBottom
     Left = 0
@@ -310,9 +310,6 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         Style = csDropDownList
         TabOrder = 3
       end
-    end
-    object pgMargins: TTabSheet
-      Caption = 'Margins'
     end
     object pgAdvanced: TTabSheet
       Caption = 'Advanced'
