@@ -42,6 +42,7 @@ uses
   LResources, Forms, Controls, Graphics, Dialogs, StdCtrls, Buttons, ExtCtrls,
   Spin, ComCtrls, LCLType, LCLPlatformDef, InterfaceBase, Printers,
   // Printers
+  Printer4LazStrConst,
   OsPrinters, CUPSDyn;
 
 type
@@ -214,20 +215,20 @@ begin
 
     BtnPrint.Enabled:=True;
     Case Printer.PrinterState of
-      psReady     : St:='Ready';
-      psPrinting  : St:='Printing';
+      psReady     : St:=p4lrsJobStateReady;
+      psPrinting  : St:=p4lrsJobStatePrinting;
       psStopped   : begin
-                      St:='Stopped';
+                      St:=p4lrsJobStateStopped;
                       StP:=StP+'_stopped';
                       BtnPrint.Enabled:=False;
                     end;
     end;
 
     if Printer.CanPrint then
-      St:=St+' (Accepting jobs)'
+      St:=St+' '+p4lrsJobStateAccepting
     else
     begin
-      St:=St+' (Rejetting jobs)';
+      St:=St+' '+p4lrsJobStateRejecting;
       BtnPrint.Enabled:=False;
     end;
 
@@ -335,9 +336,9 @@ begin
   if edPageSet.ItemIndex>0 then
   begin
     if edPageSet.ItemIndex=1 then
-      St:='Odd'
+      St:=p4lrsPageOdd
     else
-      St:='Even';
+      St:=p4lrsPageEven;
     THackCUPSPrinter(Printer).cupsAddOption('page-set',St);
   end;
   if cbCollate.Checked then
@@ -448,9 +449,9 @@ begin
   Constraints.MaxHeight:=Height;
 
   if not FBig then
-    btnReduc.Caption:='More >>'
+    btnReduc.Caption:=p4lrsButtonMoreArrow
   else
-    btnReduc.Caption:='<< Less';
+    btnReduc.Caption:=p4lrsButtonLessArrow;
 end;
 
 procedure TdlgSelectPrinter.btnPrintCLICK(Sender: TObject);
