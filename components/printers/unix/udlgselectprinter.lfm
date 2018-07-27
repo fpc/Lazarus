@@ -12,7 +12,7 @@ object dlgSelectPrinter: TdlgSelectPrinter
   OnCreate = dlgSelectPrinterCREATE
   OnShow = dlgSelectPrinterSHOW
   Position = poScreenCenter
-  LCLVersion = '1.5'
+  LCLVersion = '1.9.0.0'
   object PrinterGroupbox: TGroupBox
     Left = 6
     Height = 137
@@ -110,7 +110,7 @@ object dlgSelectPrinter: TdlgSelectPrinter
       AutoSize = True
       Caption = 'Properties ...'
       OnClick = btnPropCLICK
-      TabOrder = 0
+      TabOrder = 1
     end
     object cbPrintToFile: TCheckBox
       AnchorSideRight.Side = asrBottom
@@ -120,7 +120,7 @@ object dlgSelectPrinter: TdlgSelectPrinter
       Width = 101
       Anchors = [akRight, akBottom]
       Caption = 'Print to file'
-      TabOrder = 1
+      TabOrder = 2
     end
     object cbPrinters: TComboBox
       AnchorSideRight.Control = btnProp
@@ -134,7 +134,7 @@ object dlgSelectPrinter: TdlgSelectPrinter
       OnChange = cbPrintersCHANGE
       OnKeyPress = cbPrintersKEYPRESS
       Style = csDropDownList
-      TabOrder = 2
+      TabOrder = 0
     end
   end
   object NbOpts: TPageControl
@@ -201,7 +201,7 @@ object dlgSelectPrinter: TdlgSelectPrinter
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Left = 15
           BorderSpacing.Right = 6
-          TabOrder = 0
+          TabOrder = 4
         end
         object edPageSet: TComboBox
           AnchorSideTop.Control = labPage
@@ -222,7 +222,7 @@ object dlgSelectPrinter: TdlgSelectPrinter
             'Even pages'
           )
           Style = csDropDownList
-          TabOrder = 1
+          TabOrder = 5
           Text = 'All pages'
         end
         object rbCurrentPage: TRadioButton
@@ -236,7 +236,7 @@ object dlgSelectPrinter: TdlgSelectPrinter
           Caption = 'Current page'
           DragCursor = crDefault
           Enabled = False
-          TabOrder = 2
+          TabOrder = 1
         end
         object rbRange: TRadioButton
           AnchorSideTop.Control = rbSelection
@@ -248,7 +248,7 @@ object dlgSelectPrinter: TdlgSelectPrinter
           BorderSpacing.Around = 2
           Caption = 'Range'
           DragCursor = crDefault
-          TabOrder = 4
+          TabOrder = 3
         end
         object rbAllPage: TRadioButton
           Left = 8
@@ -258,7 +258,7 @@ object dlgSelectPrinter: TdlgSelectPrinter
           Caption = 'All '
           Checked = True
           DragCursor = crDefault
-          TabOrder = 3
+          TabOrder = 0
           TabStop = True
         end
         object rbSelection: TRadioButton
@@ -272,7 +272,7 @@ object dlgSelectPrinter: TdlgSelectPrinter
           Caption = 'Selection'
           DragCursor = crDefault
           Enabled = False
-          TabOrder = 5
+          TabOrder = 2
         end
       end
       object gbCopies: TGroupBox
@@ -335,7 +335,7 @@ object dlgSelectPrinter: TdlgSelectPrinter
           Caption = 'Collate'
           DragCursor = crDefault
           OnClick = cbReverseCLICK
-          TabOrder = 2
+          TabOrder = 1
         end
         object cbReverse: TCheckBox
           AnchorSideTop.Control = cbCollate
@@ -349,7 +349,7 @@ object dlgSelectPrinter: TdlgSelectPrinter
           Caption = 'Reverse'
           DragCursor = crDefault
           OnClick = cbReverseCLICK
-          TabOrder = 1
+          TabOrder = 2
         end
       end
     end
@@ -469,7 +469,7 @@ object dlgSelectPrinter: TdlgSelectPrinter
       Caption = 'Cancel'
       Constraints.MinWidth = 80
       ModalResult = 2
-      TabOrder = 0
+      TabOrder = 3
     end
     object btnPrint: TButton
       Left = 391
@@ -484,7 +484,7 @@ object dlgSelectPrinter: TdlgSelectPrinter
       Default = True
       ModalResult = 1
       OnClick = btnPrintCLICK
-      TabOrder = 1
+      TabOrder = 2
     end
     object btnReduc: TButton
       Left = 6
@@ -497,7 +497,7 @@ object dlgSelectPrinter: TdlgSelectPrinter
       Caption = 'More ...'
       Constraints.MinWidth = 80
       OnClick = btnReducCLICK
-      TabOrder = 2
+      TabOrder = 0
     end
     object btnPreview: TButton
       Left = 305
@@ -510,7 +510,7 @@ object dlgSelectPrinter: TdlgSelectPrinter
       Caption = 'Preview'
       Constraints.MinWidth = 80
       ModalResult = 6
-      TabOrder = 3
+      TabOrder = 1
     end
   end
   object panLabels: TPanel
