@@ -123,6 +123,7 @@ const
     '',  // ahaRightMargin
     '',  // ahaSpecialVisibleChars
     '',  // ahaTopInfoHint
+    '', // ahaCaretColor
     '', '', '',  // ahaIfDefBlockInactive, ahaIfDefBlockActive, ahaIfDefBlockTmpActive
     '', '', '',  // ahaIfDefNodeInactive, ahaIfDefNodeActive, ahaIfDefNodeTmpActive
     '', '', '', '', // ahaIdentComplWindow, ahaIdentComplWindowBorder, ahaIdentComplWindowSelection, ahaIdentComplWindowHighlight
@@ -163,6 +164,7 @@ const
     { ahaRightMargin}          agnGutter,
     { ahaSpecialVisibleChars } agnText,
     { ahaTopInfoHint }         agnLine,
+    { ahaCaretColor }          agnText,
     { ahaIfDefBlockInactive }  agnIfDef,
     { ahaIfDefBlockActive }    agnIfDef,
     { ahaIfDefBlockTmpActive } agnIfDef,
@@ -220,6 +222,7 @@ const
     { ahaRightMargin}         [hafForeColor],
     { ahaSpecialVisibleChars }[hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
     { ahaTopInfoHint }        [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
+    { ahaCaretColor }         [hafBackColor, hafForeColor],
     { ahaIfDefBlockInactive } [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
     { ahaIfDefBlockActive }   [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
     { ahaIfDefBlockTmpActive }[hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
@@ -2523,6 +2526,7 @@ begin
   AdditionalHighlightAttributes[ahaRightMargin]         := dlgRightMargin;
   AdditionalHighlightAttributes[ahaSpecialVisibleChars] := dlgAddHiSpecialVisibleChars;
   AdditionalHighlightAttributes[ahaTopInfoHint]         := dlgTopInfoHint;
+  AdditionalHighlightAttributes[ahaCaretColor]          := dlgCaretColor;
   AdditionalHighlightAttributes[ahaIfDefBlockInactive]  := dlgIfDefBlockInactive;
   AdditionalHighlightAttributes[ahaIfDefBlockActive]    := dlgIfDefBlockActive;
   AdditionalHighlightAttributes[ahaIfDefBlockTmpActive] := dlgIfDefBlockTmpActive;
@@ -6593,7 +6597,7 @@ procedure TColorSchemeLanguage.ApplyTo(ASynEdit: TSynEdit);
       Result := Result.GetSchemeGlobal;
   end;
 var
-  Attri, att: TColorSchemeAttribute;
+  Attri: TColorSchemeAttribute;
   i, c, j: Integer;
   IDESynEdit: TIDESynEditor;
   aha: TAdditionalHilightAttribute;
@@ -6632,8 +6636,14 @@ begin
     SetMarkupColor(ahaFoldedCodeLine,    aSynEdit.FoldedCodeLineColor);
     SetMarkupColor(ahaHiddenCodeLine,    aSynEdit.HiddenCodeLineColor);
     SetMarkupColor(ahaLineHighlight,     aSynEdit.LineHighlightColor);
-    if ASynEdit is TIDESynEditor then
+    if ASynEdit is TIDESynEditor then begin
       SetMarkupColor(ahaTopInfoHint,  TIDESynEditor(aSynEdit).TopInfoMarkup);
+      Attri := GetUsedAttr(ahaCaretColor);
+      if Attri <> nil then begin
+        TIDESynEditor(aSynEdit).CaretColor := Attri.Foreground;
+        TIDESynEditor(aSynEdit).MultiCaret.Color := Attri.Background;
+      end;
+    end;
     SetMarkupColorByClass(ahaHighlightWord, TSynEditMarkupHighlightAllCaret);
     SetMarkupColorByClass(ahaWordGroup,     TSynEditMarkupWordGroup);
     SetMarkupColorByClass(ahaSpecialVisibleChars, TSynEditMarkupSpecialChar);
@@ -6728,18 +6738,17 @@ begin
       j := 0;
       c := 0;
       for aha := ahaOutlineLevel1Color to ahaOutlineLevel10Color do begin
-        att := AttributeByEnum[aha];
-        if Att.IsEnabled or
+        Attri := GetUsedAttr(aha);
+        if Attri = nil then Continue;
+        if (Attri.IsEnabled) or
            (FFormatVersion >= 12)
         then begin
           SetMarkupColor(aha, TSynEditMarkupFoldColors(aSynEdit.Markup[i]).Color[j]);
 
-        if att.IsUsingSchemeGlobals then
-          att := att.GetSchemeGlobal;
-          TSynEditMarkupFoldColors(aSynEdit.Markup[i]).LineColor[j].Color := att.MarkupFoldLineColor;
-          TSynEditMarkupFoldColors(aSynEdit.Markup[i]).LineColor[j].Style := att.MarkupFoldLineStyle;
-          TSynEditMarkupFoldColors(aSynEdit.Markup[i]).LineColor[j].Alpha := att.MarkupFoldLineAlpha;
-          TSynEditMarkupFoldColors(aSynEdit.Markup[i]).LineColor[j].Priority := att.FramePriority;
+          TSynEditMarkupFoldColors(aSynEdit.Markup[i]).LineColor[j].Color := Attri.MarkupFoldLineColor;
+          TSynEditMarkupFoldColors(aSynEdit.Markup[i]).LineColor[j].Style := Attri.MarkupFoldLineStyle;
+          TSynEditMarkupFoldColors(aSynEdit.Markup[i]).LineColor[j].Alpha := Attri.MarkupFoldLineAlpha;
+          TSynEditMarkupFoldColors(aSynEdit.Markup[i]).LineColor[j].Priority := Attri.FramePriority;
           inc(j);
           c := j;
         end;

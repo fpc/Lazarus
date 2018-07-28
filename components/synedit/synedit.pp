@@ -594,7 +594,6 @@ type
     FOnClickLink: TMouseEvent;
     FOnMouseLink: TSynMouseLinkEvent;
     FPendingFoldState: String;
-    FScreenCaretPainterClass: TSynEditScreenCaretPainterClass;
 
     procedure UpdateScreenCaret;
     procedure AquirePrimarySelection;
@@ -766,6 +765,7 @@ type
     procedure InternalBeginUndoBlock(aList: TSynEditUndoList = nil); // includes paintlock
     procedure InternalEndUndoBlock(aList: TSynEditUndoList = nil);
   protected
+    FScreenCaretPainterClass: TSynEditScreenCaretPainterClass deprecated 'need refactor';
     {$IFDEF EnableDoubleBuf}
     BufferBitmap: TBitmap; // the double buffer
     SavedCanvas: TCanvas; // the normal TCustomControl canvas during paint
@@ -2052,7 +2052,7 @@ begin
   FCaret.AddChangeHandler(@CaretChanged);
   FInternalCaret := TSynEditCaret.Create;
   FInternalCaret.MaxLeftChar := @CurrentMaxLineLen;
-  FScreenCaretPainterClass := TSynEditScreenCaretPainterSystem;
+  FScreenCaretPainterClass{%H-} := TSynEditScreenCaretPainterSystem;
 
   // Create the lines/views
   FTrimmedLinesView := TSynEditStringTrimmingList.Create(fLines, fCaret);
@@ -4987,7 +4987,7 @@ begin
   {$ENDIF}
   LastMouseCaret:=Point(-1,-1);
   // Todo: Under Windows, keeping the Caret only works, if no other component creates a caret
-  FScreenCaretPainterClass := TSynEditScreenCaretPainterClass(ScreenCaret.Painter.ClassType);
+  FScreenCaretPainterClass{%H-} := TSynEditScreenCaretPainterClass(ScreenCaret.Painter.ClassType);
   UpdateScreenCaret;
   if FHideSelection and SelAvail then
     Invalidate;
@@ -5007,8 +5007,8 @@ begin
   DebugLn(['[TCustomSynEdit.WMSetFocus] A ',DbgSName(Self), ' time=', dbgs(Now*86640)]);
   {$ENDIF}
   FScreenCaret.DestroyCaret; // Ensure recreation. On Windows only one caret exists, and it must be moved to the focused editor
-  if ScreenCaret.Painter.ClassType <> FScreenCaretPainterClass then
-    ScreenCaret.ChangePainter(FScreenCaretPainterClass);
+  if ScreenCaret.Painter.ClassType <> FScreenCaretPainterClass{%H-} then
+    ScreenCaret.ChangePainter(FScreenCaretPainterClass{%H-});
   if ScreenCaret.Painter.ClassType <> TSynEditScreenCaretPainterSystem then // system painter does not use timer
     FScreenCaret.PaintTimer.ResetInterval;
   FScreenCaret.Visible := not(eoNoCaret in FOptions) and IsVisible;

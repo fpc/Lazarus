@@ -1941,6 +1941,8 @@ resourcestring
   dlgUnsavedLineColor = 'Unsaved line';
   dlgSavedLineColor = 'Saved line';
   dlgGutterCollapsedColor = 'Collapsed';
+  dlgCaretForeColor = 'Color (NotXor)';
+  dlgCaretBackColor = 'Multi/2nd (NotXor)';
   dlgElementAttributes = 'Element Attributes';
   dlgEdBold = 'Bold';
   dlgEdItal = 'Italic';
@@ -2132,6 +2134,7 @@ resourcestring
   dlgAddHiAttrOutlineLevel10Color = 'Level 10';
   dlgAddHiSpecialVisibleChars     = 'Visualized Special Chars';
   dlgTopInfoHint                  = 'Current Class/Proc Hint';
+  dlgCaretColor                   = 'Caret';
   dlgIfDefBlockInactive           = 'Inactive $IFDEF code';
   dlgIfDefBlockActive             = 'Active $IFDEF code';
   dlgIfDefBlockTmpActive          = 'Included mixed state $IFDEF code';

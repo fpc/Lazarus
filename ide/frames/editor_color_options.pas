@@ -264,7 +264,7 @@ begin
 
   // Draw preview box - Background
   c := clNone;
-  if (hafBackColor in  Attri.Features) then
+  if (hafBackColor in  Attri.Features) and not (AttriIdx = ord(ahaCaretColor)) then
     c := Attri.Background;
   // Fallback Background-color for gutter
   if ((c = clNone) or (c = clDefault)) and
@@ -282,7 +282,7 @@ begin
   TheTree.Canvas.FillRect(NodeRect.Left+2, NodeRect.Top+2, NodeRect.Left+FullAbcWidth-2, NodeRect.Bottom-2);
 
   // Special draw Modified line gutter
-  if AttriIdx = ord(ahaModifiedLine) then begin
+  if (AttriIdx = ord(ahaModifiedLine)) then begin
     TextY := NodeRect.Bottom - NodeRect.Top - 4;
     TheTree.Canvas.Brush.Color := Attri.Foreground;
     TheTree.Canvas.FillRect(NodeRect.Left+2, NodeRect.Top+2, NodeRect.Left+5, NodeRect.Bottom-2);
@@ -291,9 +291,11 @@ begin
     exit;
   end;
 
-  // Special draw oultine color
-  if Attri.Group = agnOutlineColors then begin
+  // Special draw oultine color // Caret color
+  if (Attri.Group = agnOutlineColors) or (AttriIdx = ord(ahaCaretColor)) then begin
     c := Attri.MarkupFoldLineColor;
+    if (AttriIdx = ord(ahaCaretColor)) then
+      c := Attri.Foreground;
     if c <> clNone then begin
       TheTree.Canvas.Pen.Color := c;
       TheTree.Canvas.MoveTo(NodeRect.Left+2, NodeRect.Top+2);
@@ -305,7 +307,8 @@ begin
     FullAbcWidth := FullAbcWidth - 6;
     TheTree.Canvas.Brush.Color := Attri.Background;
     TheTree.Canvas.FillRect(NodeRect.Left+2, NodeRect.Top+2, NodeRect.Left+FullAbcWidth-2, NodeRect.Bottom-2);
-//    exit;
+    if (AttriIdx = ord(ahaCaretColor)) then
+      exit;
   end;
 
   // Draw preview Frame

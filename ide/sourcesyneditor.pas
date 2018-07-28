@@ -238,6 +238,7 @@ type
 
   TIDESynEditor = class(TSynEdit)
   private
+    FCaretColor: TColor;
     FCaretStamp: Int64;
     FMarkupIdentComplWindow: TSynMarkupIdentComplWindow;
     FShowTopInfo: boolean;
@@ -266,6 +267,7 @@ type
     function GetOnMultiCaretBeforeCommand: TSynMultiCaretBeforeCommand;
     procedure GetTopInfoMarkupForLine(Sender: TObject; {%H-}Line: integer; var Special: boolean;
       aMarkup: TSynSelectedColor);
+    procedure SetCaretColor(AValue: TColor);
     procedure SetHighlightUserWordCount(AValue: Integer);
     procedure SetOnMultiCaretBeforeCommand(AValue: TSynMultiCaretBeforeCommand);
     procedure SetShowTopInfo(AValue: boolean);
@@ -309,6 +311,7 @@ type
     property  IsInMultiCaretRepeatExecution: Boolean read GetIsInMultiCaretRepeatExecution;
     property  OnMultiCaretBeforeCommand: TSynMultiCaretBeforeCommand read GetOnMultiCaretBeforeCommand write SetOnMultiCaretBeforeCommand;
     property CaretStamp: Int64 read FCaretStamp;
+    property CaretColor: TColor read FCaretColor write SetCaretColor;
   end;
 
   TIDESynHighlighterPasRangeList = class(TSynHighlighterPasRangeList)
@@ -1563,6 +1566,27 @@ begin
   aMarkup.Assign(FTopInfoMarkup);
 end;
 
+procedure TIDESynEditor.SetCaretColor(AValue: TColor);
+begin
+  if FCaretColor = AValue then Exit;
+  FCaretColor := AValue;
+  if (AValue = clDefault) or (AValue = clNone) then begin
+    FScreenCaretPainterClass{%H-} := TSynEditScreenCaretPainterSystem;
+    if ScreenCaret.Painter.ClassType <> TSynEditScreenCaretPainterSystem then begin
+      MultiCaret.ActiveMode := mcmNoCarets; // clear all carets, before changing the caret class
+      ScreenCaret.ChangePainter(TSynEditScreenCaretPainterSystem);
+  end;
+  end
+  else begin
+    FScreenCaretPainterClass{%H-} := TSynEditScreenCaretPainterInternal;
+    if ScreenCaret.Painter.ClassType <> TSynEditScreenCaretPainterInternal then begin
+      MultiCaret.ActiveMode := mcmNoCarets; // clear all carets, before changing the caret class
+      ScreenCaret.ChangePainter(TSynEditScreenCaretPainterInternal);
+    end;
+    TSynEditScreenCaretPainterInternal(ScreenCaret.Painter).Color := AValue;
+  end;
+end;
+
 procedure TIDESynEditor.SetHighlightUserWordCount(AValue: Integer);
 var
   m: TSourceSynEditMarkupHighlightAllMulti;
@@ -1714,6 +1738,7 @@ var
   MarkupFoldColors: TSynEditMarkupFoldColors;
 begin
   inherited Create(AOwner);
+  FCaretColor := clNone;
   FUserWordsList := TFPList.Create;
   FTemplateEdit:=TSynPluginTemplateEdit.Create(Self);
   FSyncroEdit := TSynPluginSyncroEdit.Create(Self);

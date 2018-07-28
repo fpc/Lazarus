@@ -502,6 +502,7 @@ begin
   try
     // Adjust color captions
     ForeGroundUseDefaultCheckBox.Caption := dlgForecolor;
+    BackGroundUseDefaultCheckBox.Caption := dlgBackColor;
     FrameColorUseDefaultCheckBox.Caption := dlgFrameColor;
     if FCurrentColorScheme <> nil then begin
       if (FCurrentColorScheme.AttributeByEnum[ahaModifiedLine] <> nil) and
@@ -514,6 +515,12 @@ begin
          (FCurHighlightElement.StoredName = FCurrentColorScheme.AttributeByEnum[ahaCodeFoldingTree].StoredName)
       then begin
         FrameColorUseDefaultCheckBox.Caption := dlgGutterCollapsedColor;
+      end else
+      if (FCurrentColorScheme.AttributeByEnum[ahaCaretColor] <> nil) and
+         (FCurHighlightElement.StoredName = FCurrentColorScheme.AttributeByEnum[ahaCaretColor].StoredName)
+      then begin
+        ForeGroundUseDefaultCheckBox.Caption := dlgCaretForeColor;
+        BackGroundUseDefaultCheckBox.Caption := dlgCaretBackColor;
       end;
     end;
 
