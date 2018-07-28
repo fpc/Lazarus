@@ -471,16 +471,24 @@ begin
 end;
 
 procedure TCocoaTabControl.mouseDown(event: NSEvent);
+var
+  res : Boolean;
 begin
-  if not Assigned(callback) then callback.MouseUpDownEvent(event);
-  // do not block?
-  inherited mouseDown(event);
+  res := callback.MouseUpDownEvent(event, false, true);
+  if not Assigned(callback) or not res then
+  begin
+    inherited mouseDown(event);
+
+    if Assigned(callback) then
+    begin
+      callback.MouseUpDownEvent(event, True);
+    end;
+  end
 end;
 
 procedure TCocoaTabControl.mouseUp(event: NSEvent);
 begin
   if not Assigned(callback) then callback.MouseUpDownEvent(event);
-  // do not block?
   inherited mouseUp(event);
 end;
 

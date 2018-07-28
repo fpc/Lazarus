@@ -507,6 +507,7 @@ begin
   lControl := TCocoaTabControl.alloc.lclInitWithCreateParams(AParams);
   lTabStyle := LCLTabPosToNSTabStyle(lTabControl.ShowTabs, lTabControl.BorderWidth, lTabControl.TabPosition);
   lControl.setTabViewType(lTabStyle);
+  lControl.lclEnabled := AWinControl.Enabled;
   Result := TLCLIntfHandle(lControl);
   if Result <> 0 then
   begin
