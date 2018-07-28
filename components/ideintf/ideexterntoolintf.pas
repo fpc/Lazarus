@@ -394,9 +394,9 @@ type
     FMessageLineClass: TMessageLineClass;
     procedure CreateLines; virtual;
     procedure FetchAllPending; virtual; // (main thread)
-    procedure ToolExited; virtual; // (main thread) called by InputClosed
-    procedure QueueAsyncOnChanged; virtual; abstract; // (worker thread)
-    procedure RemoveAsyncOnChanged; virtual; abstract; // (main or worker thread)
+    procedure ToolExited; virtual;      // (main thread) called by InputClosed
+    procedure QueueAsyncOnChanged; virtual;  // (worker thread)
+    procedure RemoveAsyncOnChanged; virtual; // (main or worker thread)
   public
     constructor Create(AOwner: TComponent); override; // (main thread)
     destructor Destroy; override; // (main thread)
@@ -450,7 +450,7 @@ type
     ethStopped
     );
 
-  TIDEExternalTools = class;
+  TExternalToolsBase = class;
 
   TExternalToolGroup = class;
 
@@ -476,7 +476,7 @@ type
     FParsers: TFPList; // list of TExtToolParser
     FReferences: TStringList;
     FTitle: string;
-    FTools: TIDEExternalTools;
+    FTools: TExternalToolsBase;
     FViews: TFPList; // list of TExtToolView
     FCurrentDirectoryIsTestDir: boolean;
     function GetCmdLineParams: string;
@@ -521,7 +521,7 @@ type
     property Hint: string read FHint write FHint; // this hint is shown in About dialog
     property Data: TObject read FData write FData; // free for user, e.g. the IDE uses TIDEExternalToolData
     property FreeData: boolean read FFreeData write FFreeData default false; // true = auto free Data on destroy
-    property Tools: TIDEExternalTools read FTools;
+    property Tools: TExternalToolsBase read FTools;
     property Group: TExternalToolGroup read FGroup write SetGroup;
     property EstimatedLoad: int64 read FEstimatedLoad write FEstimatedLoad default 1; // used for deciding which tool to run next
 
@@ -623,10 +623,10 @@ type
     property ErrorMessage: string read FErrorMessage write FErrorMessage;
   end;
 
-  { TIDEExternalTools
-    Implemented by the IDE. }
+  { TExternalToolsBase
+    Implemented by an application or the IDE. }
 
-  TIDEExternalTools = class(TComponent)
+  TExternalToolsBase = class(TComponent)
   private
     function GetItems(Index: integer): TAbstractExternalTool; inline;
   protected
@@ -660,7 +660,7 @@ type
   end;
 
 var
-  ExternalToolList: TIDEExternalTools = nil; // will be set by the IDE
+  ExternalToolList: TExternalToolsBase = nil; // will be set by the IDE
 
 type
   { TIDEExternalToolOptions }
@@ -1183,8 +1183,8 @@ end;
 
 constructor TAbstractExternalTool.Create(AOwner: TComponent);
 begin
-  if AOwner is TIDEExternalTools then
-    FTools:=TIDEExternalTools(AOwner);
+  if AOwner is TExternalToolsBase then
+    FTools:=TExternalToolsBase(AOwner);
   inherited Create(AOwner);
   if FWorkerMessagesClass=nil then
     FWorkerMessagesClass:=TMessageLine;
@@ -1582,33 +1582,33 @@ begin
   Result:=0;
 end;
 
-{ TIDEExternalTools }
+{ TExternalToolsBase }
 
 // inline
-function TIDEExternalTools.GetItems(Index: integer): TAbstractExternalTool;
+function TExternalToolsBase.GetItems(Index: integer): TAbstractExternalTool;
 begin
   Result:=TAbstractExternalTool(fItems[Index]);
 end;
 
 // inline
-function TIDEExternalTools.Count: integer;
+function TExternalToolsBase.Count: integer;
 begin
   Result:=fItems.Count;
 end;
 
-function TIDEExternalTools.AddDummy(Title: string): TAbstractExternalTool;
+function TExternalToolsBase.AddDummy(Title: string): TAbstractExternalTool;
 begin
   Result:=Add(Title);
   Result.Terminate;
 end;
 
-constructor TIDEExternalTools.Create(aOwner: TComponent);
+constructor TExternalToolsBase.Create(aOwner: TComponent);
 begin
   inherited Create(aOwner);
   fItems:=TFPList.Create;
 end;
 
-destructor TIDEExternalTools.Destroy;
+destructor TExternalToolsBase.Destroy;
 begin
   inherited Destroy;
   FreeAndNil(fItems);
@@ -1616,7 +1616,7 @@ begin
     ExternalToolList:=nil;
 end;
 
-procedure TIDEExternalTools.ConsistencyCheck;
+procedure TExternalToolsBase.ConsistencyCheck;
 var
   i: Integer;
 begin
@@ -1624,7 +1624,7 @@ begin
     Items[i].ConsistencyCheck;
 end;
 
-function TIDEExternalTools.GetMsgPattern(SubTool: string; MsgID: integer; out
+function TExternalToolsBase.GetMsgPattern(SubTool: string; MsgID: integer; out
   Urgency: TMessageLineUrgency): string;
 var
   Parser: TExtToolParserClass;
@@ -1639,7 +1639,7 @@ begin
   end;
 end;
 
-function TIDEExternalTools.GetMsgHint(SubTool: string; MsgID: integer): string;
+function TExternalToolsBase.GetMsgHint(SubTool: string; MsgID: integer): string;
 var
   Parser: TExtToolParserClass;
   i: Integer;
@@ -2296,7 +2296,17 @@ end;
 
 procedure TExtToolView.ToolExited;
 begin
+  ;
+end;
 
+procedure TExtToolView.QueueAsyncOnChanged;
+begin
+  raise Exception.Create('TExtToolView.QueueAsyncOnChanged should be overridden when needed.');
+end;
+
+procedure TExtToolView.RemoveAsyncOnChanged;
+begin
+  ;
 end;
 
 procedure TExtToolView.CreateLines;

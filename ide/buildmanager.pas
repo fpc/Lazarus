@@ -183,7 +183,7 @@ type
     destructor Destroy; override;
     procedure SetupTransferMacros;
     procedure TranslateMacros;
-    procedure SetupExternalTools;
+    procedure SetupExternalTools(aToolsClass: TExternalToolsClass);
     procedure SetupCompilerInterface;
     procedure SetupInputHistories(aInputHist: TInputHistories);
     procedure EnvOptsChanged;
@@ -519,10 +519,10 @@ begin
   tr('MakeFile',lisTMFunctionChompPathDelimiter);
 end;
 
-procedure TBuildManager.SetupExternalTools;
+procedure TBuildManager.SetupExternalTools(aToolsClass: TExternalToolsClass);
 begin
   // setup the external tool queue
-  ExternalTools:=TExternalTools.Create(Self);
+  ExternalTools:=aToolsClass.Create(Self);
   EnvOptsChanged;
   RegisterFPCParser;
   RegisterPas2jsParser;

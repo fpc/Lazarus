@@ -17,10 +17,8 @@ interface
 
 uses
   Classes, SysUtils, contnrs,
-  // LCL
-  LCLProc, Forms,
   // LazUtils
-  LazConfigStorage, LazMethodList,
+  LazConfigStorage, LazMethodList, LazLoggerBase, UITypes,
   // IdeIntf
   NewItemIntf, ProjPackIntf, PackageDependencyIntf;
   

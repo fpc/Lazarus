@@ -36,18 +36,11 @@ interface
 uses
   // RTL + FCL
   Classes, SysUtils, math, process, Pipes, Laz_AVL_Tree,
-  // LCL
-  {$IFDEF VerboseExtToolThread}
-  LCLProc,
-  {$ENDIF}
-  LCLIntf, Forms, Dialogs,
-  // CodeTools
-  FileProcs,
   // LazUtils
-  FileUtil, LazFileUtils, LazUtilities, UTF8Process, LazUTF8, AvgLvlTree,
+  FileUtil, LazFileUtils, LazUtilities, LazLoggerBase, UTF8Process, LazUTF8,
+  UITypes, AvgLvlTree,
   // IDEIntf
-  IDEExternToolIntf, BaseIDEIntf, MacroIntf, IDEMsgIntf, IDEDialogs,
-  PackageIntf, LazIDEIntf,
+  IDEExternToolIntf, BaseIDEIntf, MacroIntf, LazMsgDialogs,
   // IDE
   IDECmdLine, TransferMacros, LazarusIDEStrConsts;
 
@@ -63,53 +56,13 @@ type
 
   TLazExtToolView = class(TExtToolView)
   private
-    FAsyncQueued: boolean;
     FToolState: TLMVToolState;
   protected
     procedure SetToolState(AValue: TLMVToolState); virtual;
-    procedure CallOnChangedInMainThread({%H-}Data: PtrInt); // (main thread)
-    procedure QueueAsyncOnChanged; override; // (worker thread)
-    procedure RemoveAsyncOnChanged; override; // (worker thread)
   public
     property ToolState: TLMVToolState read FToolState write SetToolState;
   end;
 
-  { TLazExtToolConsoleView }
-
-  TLazExtToolConsoleView = class(TLazExtToolView)
-  protected
-    fWrittenLineCount: integer;
-    procedure ToolExited; override; // (main thread)
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-    procedure InputClosed; override; // (main thread)
-    procedure ProcessNewMessages({%H-}AThread: TThread); override; // (worker thread, Tool is in Critical section)
-    procedure OnNewOutput(Sender: TObject; {%H-}FirstNewMsgLine: integer); // (main thread)
-  end;
-
-  { TLazExtToolConsole }
-
-  TLazExtToolConsole = class(TComponent)
-  private
-    FTerminating: boolean;
-    fViews: TFPList; // list of TLazExtToolConsoleView
-    function GetViews(Index: integer): TLazExtToolConsoleView;
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-    procedure Clear;
-    function CreateView(Tool: TAbstractExternalTool): TLazExtToolConsoleView;
-    function FindUnfinishedView: TLazExtToolConsoleView;
-    property Views[Index: integer]: TLazExtToolConsoleView read GetViews;
-    function Count: integer; inline;
-    property Terminating: boolean read FTerminating write FTerminating;
-  end;
-
-var
-  ExtToolConsole: TLazExtToolConsole = nil; // set by lazbuild
-
-type
   TExternalTool = class;
 
   { TExternalToolThread }
@@ -142,16 +95,15 @@ type
     procedure SetThread(AValue: TExternalToolThread); // main or worker thread
     procedure SynchronizedImproveMessages; // (main thread) called by AddOutputLines
     procedure DoTerminate; // (main thread)
-    procedure SyncAutoFree({%H-}aData: PtrInt); // (main thread)
   protected
-    procedure DoExecute; override; // (main thread)
-    procedure DoStart; // (main thread)
-    procedure CreateView; // (main thread)
+    procedure DoExecute; override;           // (main thread)
+    procedure DoStart;                       // (main thread)
+    procedure CreateView; virtual; abstract; // (main thread)
     function GetExecuteAfter(Index: integer): TAbstractExternalTool; override;
     function GetExecuteBefore(Index: integer): TAbstractExternalTool; override;
-    procedure Notification(AComponent: TComponent; Operation: TOperation);
-      override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     function CanFree: boolean; override;
+    procedure QueueAsyncAutoFree; virtual; abstract;
   public
     constructor Create(aOwner: TComponent); override;
     destructor Destroy; override;
@@ -170,9 +122,11 @@ type
     function GetLongestEstimatedLoad: int64;
   end;
 
+  TExternalToolClass = class of TExternalTool;
+
   { TExternalTools }
 
-  TExternalTools = class(TIDEExternalTools)
+  TExternalTools = class(TExternalToolsBase)
   private
     FCritSec: TRTLCriticalSection;
     fRunning: TFPList; // list of TExternalTool, needs Enter/LeaveCriticalSection
@@ -181,11 +135,12 @@ type
     function GetRunningTools(Index: integer): TExternalTool;
     procedure AddRunningTool(Tool: TExternalTool); // (worker thread)
     procedure RemoveRunningTool(Tool: TExternalTool); // (worker thread)
-    function OnRunExternalTool(ToolOptions: TIDEExternalToolOptions): boolean; // (main thread)
   protected
+    FToolClass: TExternalToolClass;
     function GetParsers(Index: integer): TExtToolParserClass; override;
-    procedure Notification(AComponent: TComponent; Operation: TOperation);
-      override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    function RunToolAndDetach(ToolOptions: TIDEExternalToolOptions): boolean;
+    function RunToolWithParsers(ToolOptions: TIDEExternalToolOptions): boolean;
   public
     constructor Create(aOwner: TComponent); override;
     destructor Destroy; override;
@@ -201,8 +156,6 @@ type
     property RunningTools[Index: integer]: TExternalTool read GetRunningTools;
     procedure EnterCriticalSection; override;
     procedure LeaveCriticalSection; override;
-    function GetIDEObject(ToolData: TIDEExternalToolData): TObject; override;
-    procedure HandleMesages; override;
     // parsers
     function ParserCount: integer; override;
     procedure RegisterParser(Parser: TExtToolParserClass); override;
@@ -213,130 +166,12 @@ type
     function GetMsgTool(Msg: TMessageLine): TAbstractExternalTool; override;
   end;
 
+  TExternalToolsClass = class of TExternalTools;
+
 var
   ExternalTools: TExternalTools = nil;
 
 implementation
-
-{ TLazExtToolConsole }
-
-// inline
-function TLazExtToolConsole.Count: integer;
-begin
-  Result:=fViews.Count;
-end;
-
-function TLazExtToolConsole.GetViews(Index: integer): TLazExtToolConsoleView;
-begin
-  Result:=TLazExtToolConsoleView(fViews[Index]);
-end;
-
-constructor TLazExtToolConsole.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  fViews:=TFPList.Create;
-  ExtToolConsole:=Self;
-end;
-
-destructor TLazExtToolConsole.Destroy;
-begin
-  Clear;
-  FreeAndNil(fViews);
-  ExtToolConsole:=nil;
-  inherited Destroy;
-end;
-
-procedure TLazExtToolConsole.Clear;
-var
-  i: Integer;
-begin
-  while FindUnfinishedView<>nil do begin
-    if Application<>nil then
-      Application.ProcessMessages
-    else
-      CheckSynchronize;
-    Sleep(10);
-  end;
-  for i:=Count-1 downto 0 do begin
-    if i>=Count then continue;
-    Views[i].Free;
-  end;
-  if Count>0 then
-    raise Exception.Create('TLazExtToolConsole.Clear: some views failed to free');
-end;
-
-function TLazExtToolConsole.CreateView(Tool: TAbstractExternalTool
-  ): TLazExtToolConsoleView;
-begin
-  Result:=TLazExtToolConsoleView.Create(Self);
-  Result.Caption:=Tool.Title;
-  Tool.AddHandlerOnNewOutput(@Result.OnNewOutput);
-  fViews.Add(Result);
-end;
-
-function TLazExtToolConsole.FindUnfinishedView: TLazExtToolConsoleView;
-var
-  i: Integer;
-begin
-  for i:=0 to fViews.Count-1 do begin
-    Result:=Views[i];
-    if not Result.HasFinished then exit;
-  end;
-  Result:=nil;
-end;
-
-{ TLazExtToolConsoleView }
-
-procedure TLazExtToolConsoleView.ToolExited;
-begin
-  inherited ToolExited;
-  if Tool.Terminated then begin
-    ToolState:=lmvtsFailed;
-    debugln('Error: (lazarus) ',Caption,': terminated');
-  end else if (ExitStatus<>0) then begin
-    ToolState:=lmvtsFailed;
-    debugln('Error: (lazarus) ',Caption,': stopped with exit code '+IntToStr(ExitStatus));
-  end else if Tool.ErrorMessage<>'' then begin
-    ToolState:=lmvtsFailed;
-    debugln('Error: (lazarus) ',Caption,': ',Tool.ErrorMessage);
-  end else begin
-    ToolState:=lmvtsSuccess;
-  end;
-end;
-
-procedure TLazExtToolConsoleView.ProcessNewMessages(AThread: TThread);
-begin
-
-end;
-
-procedure TLazExtToolConsoleView.OnNewOutput(Sender: TObject;
-  FirstNewMsgLine: integer);
-begin
-  if (ExtToolConsole<>nil) and ExtToolConsole.Terminating then
-    exit;
-  while fWrittenLineCount<Tool.WorkerOutput.Count do begin
-    debugln(Tool.WorkerOutput[fWrittenLineCount]);
-    inc(fWrittenLineCount);
-  end;
-end;
-
-constructor TLazExtToolConsoleView.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-end;
-
-destructor TLazExtToolConsoleView.Destroy;
-begin
-  if Owner is TLazExtToolConsole then
-    TLazExtToolConsole(Owner).fViews.Remove(Self);
-  inherited Destroy;
-end;
-
-procedure TLazExtToolConsoleView.InputClosed;
-begin
-  inherited InputClosed;
-  Free;
-end;
 
 { TLazExtToolView }
 
@@ -344,30 +179,6 @@ procedure TLazExtToolView.SetToolState(AValue: TLMVToolState);
 begin
   if FToolState=AValue then Exit;
   FToolState:=AValue;
-end;
-
-procedure TLazExtToolView.CallOnChangedInMainThread(Data: PtrInt);
-begin
-  FAsyncQueued:=false;
-  if csDestroying in ComponentState then exit;
-  if Assigned(OnChanged) then
-    OnChanged(Self);
-end;
-
-procedure TLazExtToolView.QueueAsyncOnChanged;
-begin
-  if FAsyncQueued then exit;
-  FAsyncQueued:=true;
-  if Application<>nil then
-    Application.QueueAsyncCall(@CallOnChangedInMainThread,0);
-end;
-
-procedure TLazExtToolView.RemoveAsyncOnChanged;
-begin
-  if not FAsyncQueued then exit;
-  FAsyncQueued:=false;
-  if Application<>nil then
-    Application.RemoveAsyncCalls(Self);
 end;
 
 { TExternalTool }
@@ -595,12 +406,8 @@ begin
   if CallAutoFree then begin
     if MainThreadID=GetCurrentThreadId then
       AutoFree
-    else if (Application<>nil) then
-      Application.QueueAsyncCall(@SyncAutoFree,0)
     else
-    begin
-      debugln(['WARNING: (lazarus) TExternalTool.SetThread can not call AutoFree from other thread']);
-    end;
+      QueueAsyncAutoFree;
   end;
 end;
 
@@ -816,25 +623,6 @@ begin
   Thread.Start;
 end;
 
-procedure TExternalTool.CreateView;
-var
-  View: TExtToolView;
-begin
-  if ViewCount>0 then exit;
-  View:=nil;
-  if ExtToolConsole<>nil then begin
-    // in console mode (lazbuild) all output goes unparsed to console
-    ClearParsers;
-    View:=ExtToolConsole.CreateView(Self);
-  end else if (ViewCount=0) and (ParserCount>0) then begin
-    // this tool generates parsed output => auto create view
-    if IDEMessagesWindow<>nil then
-      View:=IDEMessagesWindow.CreateView(Title);
-  end;
-  if View<>nil then
-    AddView(View);
-end;
-
 function TExternalTool.ExecuteBeforeCount: integer;
 begin
   Result:=fExecuteBefore.Count;
@@ -882,13 +670,7 @@ begin
     Process.Terminate(AbortedExitCode);
 end;
 
-procedure TExternalTool.SyncAutoFree(aData: PtrInt);
-begin
-  AutoFree;
-end;
-
-procedure TExternalTool.Notification(AComponent: TComponent;
-  Operation: TOperation);
+procedure TExternalTool.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
   if Operation=opRemove then begin
@@ -1034,7 +816,7 @@ end;
 
 procedure TExternalTool.WaitForExit;
 var
-  MyTools: TIDEExternalTools;
+  MyTools: TExternalToolsBase;
 begin
   MyTools:=Tools;
   repeat
@@ -1047,10 +829,10 @@ begin
     end;
     // call synchronized tasks, this might free this tool
     if MainThreadID=ThreadID then
-      if Application<>nil then
-        Application.ProcessMessages
-      else
-        CheckSynchronize;
+    begin
+      Assert(Owner is TExternalToolsBase, 'TExternalTool.WaitForExit: Owner is not TExternalToolsBase.');
+      TExternalToolsBase(Owner).HandleMesages;
+    end;
     // check if this tool still exists
     if MyTools.IndexOf(Self)<0 then exit;
     // still running => wait
@@ -1067,7 +849,7 @@ function TExternalTool.ResolveMacros: boolean;
     if Result then exit;
     if ErrorMessage='' then
       ErrorMessage:=Format(lisInvalidMacrosIn, [aValue]);
-    IDEMessageDialog(lisCCOErrorCaption, Format(lisInvalidMacrosInExternalTool,
+    LazMessageDialog(lisCCOErrorCaption, Format(lisInvalidMacrosInExternalTool,
       [aValue, Title]),
       mtError,[mbCancel]);
   end;
@@ -1108,179 +890,171 @@ end;
 
 { TExternalTools }
 
-function TExternalTools.OnRunExternalTool(ToolOptions: TIDEExternalToolOptions
-  ): boolean;
+function TExternalTools.RunToolAndDetach(ToolOptions: TIDEExternalToolOptions): boolean;
+// simply run and detach
+var
+  i: Integer;
+  Proc: TProcessUTF8;
+  sl: TStringList;
+  s, Path: String;
+begin
+  Result:=false;
+  Proc:=TProcessUTF8.Create(nil);
+  try
+    Proc.InheritHandles:=false;
+    // working directory
+    s:=ToolOptions.WorkingDirectory;
+    if ToolOptions.ResolveMacros then begin
+      if not GlobalMacroList.SubstituteStr(s) then begin
+        debugln(['Error: (lazarus) [TExternalTools.RunToolAndDetach] ',ToolOptions.Title,' failed: macros of WorkerDirectory: "',ToolOptions.WorkingDirectory,'"']);
+        exit;
+      end;
+    end;
+    s:=ChompPathDelim(CleanAndExpandDirectory(s));
+    if not DirectoryExistsUTF8(s) then begin
+      debugln(['Error: (lazarus) [TExternalTools.RunToolAndDetach] ',ToolOptions.Title,' failed: missing directory "',s,'"']);
+      exit;
+    end;
+    Proc.CurrentDirectory:=s;
+
+    // environment
+    if ToolOptions.EnvironmentOverrides.Count>0 then
+      AssignEnvironmentTo(Proc.Environment,ToolOptions.EnvironmentOverrides);
+    if ToolOptions.ResolveMacros then begin
+      for i:=0 to Proc.Environment.Count-1 do begin
+        s:=Proc.Environment[i];
+        if not GlobalMacroList.SubstituteStr(s) then begin
+          debugln(['Error: (lazarus) [TExternalTools.RunToolAndDetach] ',ToolOptions.Title,' failed: environment override "',Proc.Environment,'"']);
+          exit;
+        end;
+        Proc.Environment[i]:=s;
+      end;
+    end;
+
+    // executable
+    s:=ToolOptions.Executable;
+    if ToolOptions.ResolveMacros then begin
+      if not GlobalMacroList.SubstituteStr(s) then begin
+        debugln(['Error: (lazarus) [TExternalTools.RunToolAndDetach] ',ToolOptions.Title,' failed: macros of Executable: "',ToolOptions.Executable,'"']);
+        exit;
+      end;
+    end;
+    if not FilenameIsAbsolute(s) then begin
+      // search in PATH
+      if Proc.Environment.Count>0 then
+        Path:=Proc.Environment.Values['PATH']
+      else
+        Path:=GetEnvironmentVariableUTF8('PATH');
+      s:=SearchFileInPath(s,Proc.CurrentDirectory,
+                               Path, PathSeparator,
+                               []);
+      {$IFDEF Windows}
+      if (s='') and (ExtractFileExt(s)='') then begin
+        s:=SearchFileInPath(s+'.exe',Proc.CurrentDirectory,
+                                 Path, PathSeparator,
+                                 []);
+      end;
+      {$ENDIF}
+      if s='' then begin
+        debugln(['Error: (lazarus) [TExternalTools.RunToolAndDetach] ',ToolOptions.Title,' failed: missing executable "',ToolOptions.Executable,'"']);
+        exit;
+      end;
+    end;
+    if not ( FilenameIsAbsolute(s) and FileExistsUTF8(s) ) then begin
+      debugln(['Error: (lazarus) [TExternalTools.RunToolAndDetach] ',ToolOptions.Title,'  failed: missing executable: "',s,'"']);
+      exit;
+    end;
+    if DirectoryExistsUTF8(s) then begin
+      debugln(['Error: (lazarus) [TExternalTools.RunToolAndDetach] ',ToolOptions.Title,'  failed: executable is a directory: "',s,'"']);
+      exit;
+    end;
+    if not FileIsExecutable(s) then begin
+      debugln(['Error: (lazarus) [TExternalTools.RunToolAndDetach] ',ToolOptions.Title,'  failed: executable lacks permission to run: "',s,'"']);
+      exit;
+    end;
+    Proc.Executable:=s;
+
+    // params
+    s:=ToolOptions.CmdLineParams;
+    if ToolOptions.ResolveMacros then begin
+      if not GlobalMacroList.SubstituteStr(s) then begin
+        debugln(['Error: (lazarus) [TExternalTools.RunToolAndDetach] ',ToolOptions.Title,' failed: macros in cmd line params "',ToolOptions.CmdLineParams,'"']);
+        exit;
+      end;
+    end;
+    sl:=TStringList.Create;
+    try
+      SplitCmdLineParams(s,sl);
+      Proc.Parameters:=sl;
+    finally
+      sl.Free;
+    end;
+
+    // run and detach
+    if ToolOptions.ShowConsole then
+      Proc.Options:=Proc.Options+[poNewConsole]-[poNoConsole]
+    else
+      Proc.Options:=Proc.Options-[poNewConsole]+[poNoConsole];
+    if ToolOptions.HideWindow then
+      Proc.ShowWindow:=swoHide
+    else
+      Proc.ShowWindow:=swoShow;
+    try
+      Proc.Execute;
+    except
+    end;
+  finally
+    Proc.Free;
+  end;
+end;
+
+function TExternalTools.RunToolWithParsers(ToolOptions: TIDEExternalToolOptions): boolean;
+// run with parsers and messages
 var
   Tool: TAbstractExternalTool;
   i: Integer;
-  Proc: TProcessUTF8;
-  s: String;
-  sl: TStringList;
-  Path: String;
 begin
   {$IFDEF VerboseExtToolThread}
-  debugln(['TExternalTools.OnRunExternalTool ',ToolOptions.Title,' exe="',ToolOptions.Executable,'" params="',ToolOptions.CmdLineParams,'"']);
+  debugln(['TExternalTools.RunToolWithParsers run with scanners ...']);
   {$ENDIF}
   Result:=false;
-
-  if (ToolOptions.Parsers.Count=0) and (ExtToolConsole=nil) then begin
-    // simply run and detach
-    Proc:=TProcessUTF8.Create(nil);
-    try
-      Proc.InheritHandles:=false;
-      // working directory
-      s:=ToolOptions.WorkingDirectory;
-      if ToolOptions.ResolveMacros then begin
-        if not GlobalMacroList.SubstituteStr(s) then begin
-          debugln(['Error: (lazarus) [TExternalTools.OnRunExternalTool] ',ToolOptions.Title,' failed: macros of WorkerDirectory: "',ToolOptions.WorkingDirectory,'"']);
-          exit;
-        end;
-      end;
-      s:=ChompPathDelim(CleanAndExpandDirectory(s));
-      if not DirectoryExistsUTF8(s) then begin
-        debugln(['Error: (lazarus) [TExternalTools.OnRunExternalTool] ',ToolOptions.Title,' failed: missing directory "',s,'"']);
-        exit;
-      end;
-      Proc.CurrentDirectory:=s;
-
-      // environment
-      if ToolOptions.EnvironmentOverrides.Count>0 then
-        AssignEnvironmentTo(Proc.Environment,ToolOptions.EnvironmentOverrides);
-      if ToolOptions.ResolveMacros then begin
-        for i:=0 to Proc.Environment.Count-1 do begin
-          s:=Proc.Environment[i];
-          if not GlobalMacroList.SubstituteStr(s) then begin
-            debugln(['Error: (lazarus) [TExternalTools.OnRunExternalTool] ',ToolOptions.Title,' failed: environment override "',Proc.Environment,'"']);
-            exit;
-          end;
-          Proc.Environment[i]:=s;
-        end;
-      end;
-
-      // executable
-      s:=ToolOptions.Executable;
-      if ToolOptions.ResolveMacros then begin
-        if not GlobalMacroList.SubstituteStr(s) then begin
-          debugln(['Error: (lazarus) [TExternalTools.OnRunExternalTool] ',ToolOptions.Title,' failed: macros of Executable: "',ToolOptions.Executable,'"']);
-          exit;
-        end;
-      end;
-      if not FilenameIsAbsolute(s) then begin
-        // search in PATH
-        if Proc.Environment.Count>0 then
-          Path:=Proc.Environment.Values['PATH']
-        else
-          Path:=GetEnvironmentVariableUTF8('PATH');
-        s:=SearchFileInPath(s,Proc.CurrentDirectory,
-                                 Path, PathSeparator,
-                                 []);
-        {$IFDEF Windows}
-        if (s='') and (ExtractFileExt(s)='') then begin
-          s:=SearchFileInPath(s+'.exe',Proc.CurrentDirectory,
-                                   Path, PathSeparator,
-                                   []);
-        end;
-        {$ENDIF}
-        if s='' then begin
-          debugln(['Error: (lazarus) [TExternalTools.OnRunExternalTool] ',ToolOptions.Title,' failed: missing executable "',ToolOptions.Executable,'"']);
-          exit;
-        end;
-      end;
-      if (not FilenameIsAbsolute(s))
-      or (not FileExistsUTF8(s)) then begin
-        debugln(['Error: (lazarus) [TExternalTools.OnRunExternalTool] ',ToolOptions.Title,'  failed: missing executable: "',s,'"']);
-        exit;
-      end;
-      if DirectoryExistsUTF8(s) then begin
-        debugln(['Error: (lazarus) [TExternalTools.OnRunExternalTool] ',ToolOptions.Title,'  failed: executable is a directory: "',s,'"']);
-        exit;
-      end;
-      if not FileIsExecutable(s) then begin
-        debugln(['Error: (lazarus) [TExternalTools.OnRunExternalTool] ',ToolOptions.Title,'  failed: executable lacks permission to run: "',s,'"']);
-        exit;
-      end;
-      Proc.Executable:=s;
-
-      // params
-      s:=ToolOptions.CmdLineParams;
-      if ToolOptions.ResolveMacros then begin
-        if not GlobalMacroList.SubstituteStr(s) then begin
-          debugln(['Error: (lazarus) [TExternalTools.OnRunExternalTool] ',ToolOptions.Title,' failed: macros in cmd line params "',ToolOptions.CmdLineParams,'"']);
-          exit;
-        end;
-      end;
-      sl:=TStringList.Create;
-      try
-        SplitCmdLineParams(s,sl);
-        Proc.Parameters:=sl;
-      finally
-        sl.Free;
-      end;
-
-      // run and detach
-      {$IF FPC_FULLVERSION<20604}
-      Proc.InheritHandles:=false;
-      {$ENDIF}
-      if ToolOptions.ShowConsole then
-        Proc.Options:=Proc.Options+[poNewConsole]-[poNoConsole]
-      else
-        Proc.Options:=Proc.Options-[poNewConsole]+[poNoConsole];
-      if ToolOptions.HideWindow then
-        Proc.ShowWindow:=swoHide
-      else
-        Proc.ShowWindow:=swoShow;
-      try
-        Proc.Execute;
-      except
-      end;
-    finally
-      Proc.Free;
+  Tool:=Add(ToolOptions.Title);
+  Tool.Reference(Self,ClassName);
+  try
+    Tool.Hint:=ToolOptions.Hint;
+    Tool.Process.CurrentDirectory:=ToolOptions.WorkingDirectory;
+    Tool.Process.Executable:=ToolOptions.Executable;
+    Tool.CmdLineParams:=ToolOptions.CmdLineParams;
+    Tool.EnvironmentOverrides:=ToolOptions.EnvironmentOverrides;
+    Assert(Assigned(ToolOptions.Parsers), 'TExternalTools.RunToolWithParsers: Parsers=Nil.');
+    for i:=0 to ToolOptions.Parsers.Count-1 do
+      Tool.AddParsers(ToolOptions.Parsers[i]);
+    if ToolOptions.ShowConsole then
+      Tool.Process.Options:=Tool.Process.Options+[poNewConsole]-[poNoConsole]
+    else
+      Tool.Process.Options:=Tool.Process.Options-[poNewConsole]+[poNoConsole];
+    if ToolOptions.HideWindow then
+      Tool.Process.ShowWindow:=swoHide
+    else
+      Tool.Process.ShowWindow:=swoShow;
+    if ToolOptions.ResolveMacros and not Tool.ResolveMacros then begin
+      debugln(['Error: (lazarus) [TExternalTools.RunToolWithParsers] failed to resolve macros']);
+      exit;
     end;
-  end else begin
-    // run with parsers and messages
     {$IFDEF VerboseExtToolThread}
-    debugln(['TExternalTools.OnRunExternalTool run with scanners ...']);
+    debugln(['TExternalTools.RunToolWithParsers Execute ',Tool.Title,' WD="',Tool.Process.CurrentDirectory,'" Exe="',Tool.Process.Executable,'" Params="',Tool.CmdLineParams,'" ...']);
     {$ENDIF}
-    Tool:=Add(ToolOptions.Title);
-    Tool.Reference(Self,ClassName);
-    try
-      Tool.Hint:=ToolOptions.Hint;
-      Tool.Process.CurrentDirectory:=ToolOptions.WorkingDirectory;
-      Tool.Process.Executable:=ToolOptions.Executable;
-      Tool.CmdLineParams:=ToolOptions.CmdLineParams;
-      Tool.EnvironmentOverrides:=ToolOptions.EnvironmentOverrides;
-      if ExtToolConsole=nil then
-        for i:=0 to ToolOptions.Parsers.Count-1 do
-          Tool.AddParsers(ToolOptions.Parsers[i]);
-      if ToolOptions.ShowConsole then
-        Tool.Process.Options:=Tool.Process.Options+[poNewConsole]-[poNoConsole]
-      else
-        Tool.Process.Options:=Tool.Process.Options-[poNewConsole]+[poNoConsole];
-      if ToolOptions.HideWindow then
-        Tool.Process.ShowWindow:=swoHide
-      else
-        Tool.Process.ShowWindow:=swoShow;
-      if ToolOptions.ResolveMacros then begin
-        if not Tool.ResolveMacros then begin
-          debugln(['Error: (lazarus) [TExternalTools.OnRunExternalTool] failed to resolve macros']);
-          exit;
-        end;
-      end;
-      {$IFDEF VerboseExtToolThread}
-      debugln(['TExternalTools.OnRunExternalTool Execute ',Tool.Title,' WD="',Tool.Process.CurrentDirectory,'" Exe="',Tool.Process.Executable,'" Params="',Tool.CmdLineParams,'" ...']);
-      {$ENDIF}
-      Tool.Execute;
-      {$IFDEF VerboseExtToolThread}
-      debugln(['TExternalTools.OnRunExternalTool WaitForExit ',Tool.Title,' ...']);
-      {$ENDIF}
-      Tool.WaitForExit;
-      {$IFDEF VerboseExtToolThread}
-      debugln(['TExternalTools.OnRunExternalTool Done ',Tool.Title]);
-      {$ENDIF}
-      Result:=(Tool.ErrorMessage='') and (not Tool.Terminated) and (Tool.ExitStatus=0);
-    finally
-      Tool.Release(Self);
-    end;
+    Tool.Execute;
+    {$IFDEF VerboseExtToolThread}
+    debugln(['TExternalTools.RunToolWithParsers WaitForExit ',Tool.Title,' ...']);
+    {$ENDIF}
+    Tool.WaitForExit;
+    {$IFDEF VerboseExtToolThread}
+    debugln(['TExternalTools.RunToolWithParsers Done ',Tool.Title]);
+    {$ENDIF}
+    Result:=(Tool.ErrorMessage='') and (not Tool.Terminated) and (Tool.ExitStatus=0);
+  finally
+    Tool.Release(Self);
   end;
 end;
 
@@ -1320,8 +1094,7 @@ begin
   Result:=TExtToolParserClass(fParsers[Index]);
 end;
 
-procedure TExternalTools.Notification(AComponent: TComponent;
-  Operation: TOperation);
+procedure TExternalTools.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
   if Operation=opRemove then begin
@@ -1348,7 +1121,6 @@ begin
     ExternalToolList:=Self;
   if ExternalTools=nil then
     ExternalTools:=Self;
-  RunExternalTool:=@OnRunExternalTool;
 end;
 
 destructor TExternalTools.Destroy;
@@ -1374,7 +1146,7 @@ end;
 
 function TExternalTools.Add(Title: string): TAbstractExternalTool;
 begin
-  Result:=TExternalTool.Create(Self);
+  Result:=FToolClass.Create(Self);
   Result.Title:=Title;
   fItems.Add(Result);
 end;
@@ -1427,18 +1199,15 @@ begin
 end;
 
 procedure TExternalTools.TerminateAll;
+// terminate all current tools
 var
   i: Integer;
 begin
-  // terminate all current tools
-  if ExtToolConsole<>nil then
-    ExtToolConsole.Terminating:=true;
-  for i:=Count-1 downto 0 do begin
-    if i>=Count then continue;
+  for i:=Count-1 downto 0 do
+  begin
+    Assert(i<Count, 'TExternalTools.TerminateAll: xxx'); // if i>=Count then continue;  <- why was this?
     Terminate(Items[i] as TExternalTool);
   end;
-  if ExtToolConsole<>nil then
-    ExtToolConsole.Terminating:=false;
 end;
 
 procedure TExternalTools.Clear;
@@ -1463,27 +1232,6 @@ begin
   System.LeaveCriticalsection(FCritSec);
 end;
 
-function TExternalTools.GetIDEObject(ToolData: TIDEExternalToolData): TObject;
-begin
-  Result:=nil;
-  if ToolData=nil then exit;
-  if ToolData.Kind=IDEToolCompileProject then begin
-    Result:=LazarusIDE.ActiveProject;
-  end else if ToolData.Kind=IDEToolCompilePackage then begin
-    Result:=PackageEditingInterface.FindPackageWithName(ToolData.ModuleName);
-  end else if ToolData.Kind=IDEToolCompileIDE then begin
-    Result:=LazarusIDE;
-  end;
-end;
-
-procedure TExternalTools.HandleMesages;
-begin
-  if Application<>nil then
-    Application.ProcessMessages
-  else
-    CheckSynchronize;
-end;
-
 procedure TExternalTools.RegisterParser(Parser: TExtToolParserClass);
 begin
   if fParsers.IndexOf(Parser)>=0 then exit;
@@ -1496,8 +1244,7 @@ begin
   fParsers.Remove(Parser);
 end;
 
-function TExternalTools.FindParserForTool(const SubTool: string
-  ): TExtToolParserClass;
+function TExternalTools.FindParserForTool(const SubTool: string): TExtToolParserClass;
 var
   i: Integer;
 begin
@@ -1508,8 +1255,7 @@ begin
   Result:=nil;
 end;
 
-function TExternalTools.FindParserWithName(const ParserName: string
-  ): TExtToolParserClass;
+function TExternalTools.FindParserWithName(const ParserName: string): TExtToolParserClass;
 var
   i: Integer;
 begin

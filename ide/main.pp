@@ -87,7 +87,7 @@ uses
   // compile
   CompilerOptions, CheckCompilerOpts, BuildProjectDlg,
   ApplicationBundle,
-  ExtTools,
+  ExtTools, ExtToolsIDE,
   // projects
   ProjectResources, Project, ProjectDefs, NewProjectDlg,
   PublishProjectDlg, ProjectInspector, PackageDefs, ProjectDescriptors,
@@ -1525,7 +1525,7 @@ begin
 
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create CODETOOLS');{$ENDIF}
 
-  MainBuildBoss.SetupExternalTools;
+  MainBuildBoss.SetupExternalTools(TExternalToolsIDE);
   MainBuildBoss.EnvOptsChanged;
 
   // build and position the MainIDE form

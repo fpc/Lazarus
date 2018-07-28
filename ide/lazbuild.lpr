@@ -41,7 +41,7 @@ uses
   BaseIDEIntf, MacroIntf, PackageIntf, LazMsgDialogs, ProjectIntf, IDEExternToolIntf,
   CompOptsIntf, IDEOptionsIntf, PackageDependencyIntf,
   // IDE
-  IDEProcs, InitialSetupProc, ExtTools, CompilerOptions,
+  InitialSetupProc, ExtToolsConsole, CompilerOptions,
   ApplicationBundle, TransferMacros, EnvironmentOpts, IDETranslations,
   LazarusIDEStrConsts, IDECmdLine, MiscOptions, Project, LazConf, PackageDefs,
   PackageLinks, PackageSystem, InterPkgConflictFiles, BuildLazDialog,
@@ -1155,7 +1155,7 @@ begin
   SetupCodetools;
   SetupFPCExeFilename;
   SetupPackageSystem;
-  MainBuildBoss.SetupExternalTools;
+  MainBuildBoss.SetupExternalTools(TExternalToolsConsole);
   ExtToolConsole:=TLazExtToolConsole.Create(nil);
   MainBuildBoss.SetupCompilerInterface;
 

@@ -57,6 +57,7 @@ type
 
   TLMsgWndView = class(TLazExtToolView)
   private
+    FAsyncQueued: boolean;
     FControl: TMessagesCtrl;
     FFilter: TLMsgViewFilter;
     fPaintBottom: integer; // only valid if FPaintStamp=Control.FPaintStamp
@@ -65,10 +66,13 @@ type
     FPendingChanges: TETMultiSrcChanges;
     procedure SetFilter(AValue: TLMsgViewFilter);
     procedure OnMarksFixed(ListOfTMessageLine: TFPList); // (main thread) called after mlfFixed was added to these messages
+    procedure CallOnChangedInMainThread({%H-}Data: PtrInt); // (main thread)
   protected
     procedure SetToolState(AValue: TLMVToolState); override;
     procedure FetchAllPending; override; // (main thread)
     procedure ToolExited; override; // (main thread)
+    procedure QueueAsyncOnChanged; override; // (worker thread)
+    procedure RemoveAsyncOnChanged; override; // (worker thread)
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -731,6 +735,30 @@ begin
     ToolState:=lmvtsFailed;
   end else
     ToolState:=lmvtsSuccess;
+end;
+
+procedure TLMsgWndView.CallOnChangedInMainThread(Data: PtrInt);
+begin
+  FAsyncQueued:=false;
+  if csDestroying in ComponentState then exit;
+  if Assigned(OnChanged) then
+    OnChanged(Self);
+end;
+
+procedure TLMsgWndView.QueueAsyncOnChanged;
+begin
+  if FAsyncQueued then exit;
+  FAsyncQueued:=true;
+  if Application<>nil then
+    Application.QueueAsyncCall(@CallOnChangedInMainThread,0);
+end;
+
+procedure TLMsgWndView.RemoveAsyncOnChanged;
+begin
+  if not FAsyncQueued then exit;
+  FAsyncQueued:=false;
+  if Application<>nil then
+    Application.RemoveAsyncCalls(Self);
 end;
 
 constructor TLMsgWndView.Create(AOwner: TComponent);

@@ -65,7 +65,7 @@
         <PackageName Value="SynEdit"/>
       </Item7>
     </RequiredPackages>
-    <Units Count="242">
+    <Units Count="243">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -1417,6 +1417,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="etPas2jsMsgParser"/>
       </Unit241>
+      <Unit242>
+        <Filename Value="exttoolside.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="ExtToolsIDE"/>
+      </Unit242>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
