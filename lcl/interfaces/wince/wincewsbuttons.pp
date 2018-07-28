@@ -97,14 +97,13 @@ var
   DrawRect: TRect;
   ButtonCaption: PWideChar;
   ButtonState: TButtonState;
+  AIndex: Integer;
   AImageRes: TScaledImageListResolution;
+  AEffect: TGraphicsDrawEffect;
 
   procedure DrawBitmap;
   var
     TextFlags: integer; // flags for caption (enabled or disabled)
-    w, h: integer;
-    AIndex: Integer;
-    AEffect: TGraphicsDrawEffect;
   begin
     TextFlags := DST_PREFIXTEXT;
     if ButtonState = bsDisabled then
@@ -117,16 +116,12 @@ var
       TBitBtnAceess(BitBtn).FButtonGlyph.GetImageIndexAndEffect(ButtonState, BitBtn.Font.PixelsPerInch, 1,
         AImageRes, AIndex, AEffect);
 
-      
-      w := TBitBtnAceess(BitBtn).FButtonGlyph.Images.Width;
-      h := TBitBtnAceess(BitBtn).FButtonGlyph.Images.Height;
-
       TWinCEWSCustomImageListResolution.DrawToDC(AImageRes.Resolution, AIndex,
-        DrawStruct^._hDC, Rect(XDestBitmap, YDestBitmap, w, h),
-        TBitBtnAceess(BitBtn).FButtonGlyph.Images.BkColor,
-        TBitBtnAceess(BitBtn).FButtonGlyph.Images.BlendColor, AEffect,
-        TBitBtnAceess(BitBtn).FButtonGlyph.Images.DrawingStyle,
-        TBitBtnAceess(BitBtn).FButtonGlyph.Images.ImageType);
+        DrawStruct^._hDC, Rect(XDestBitmap, YDestBitmap, srcWidth, srcHeight),
+        AImageRes.Resolution.ImageList.BkColor,
+        AImageRes.Resolution.ImageList.BlendColor, AEffect,
+        AImageRes.Resolution.ImageList.DrawingStyle,
+        AImageRes.Resolution.ImageList.ImageType);
     end;
     SetBkMode(DrawStruct^._hDC, TRANSPARENT);
     if ButtonState = bsDown then
@@ -154,14 +149,16 @@ begin
 
   // DFCS_ADJUSTRECT doesnot work
   InflateRect(DrawRect, -4, -4);
-  
+
   ButtonCaption := PWideChar(UTF8Decode(BitBtn.Caption));
 
   // gather info about bitbtn
-  if BitBtn.CanShowGlyph then
+  if BitBtn.CanShowGlyph(True) then
   begin
-    srcWidth := TBitBtnAceess(BitBtn).FButtonGlyph.Images.Width;
-    srcHeight := TBitBtnAceess(BitBtn).FButtonGlyph.Images.Height;
+    TBitBtnAceess(BitBtn).FButtonGlyph.GetImageIndexAndEffect(Low(TButtonState), BitBtn.Font.PixelsPerInch, 1,
+      AImageRes, AIndex, AEffect);
+    srcWidth := AImageRes.Width;
+    srcHeight := AImageRes.Height;
   end else
   begin
     srcWidth := 0;
