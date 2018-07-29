@@ -336,9 +336,9 @@ begin
   if edPageSet.ItemIndex>0 then
   begin
     if edPageSet.ItemIndex=1 then
-      St:=p4lrsPageOdd
+      St:='Odd'
     else
-      St:=p4lrsPageEven;
+      St:='Even';
     THackCUPSPrinter(Printer).cupsAddOption('page-set',St);
   end;
   if cbCollate.Checked then
@@ -407,6 +407,9 @@ begin
   if Sender=nil then ;
   fPropertiesSetting:=False;
   NbOpts.PageIndex:=0;
+  edPageSet.Items[0]:=p4lrsAllPages;
+  edPageSet.Items[1]:=p4lrsPageOdd;
+  edPageSet.Items[2]:=p4lrsPageEven;
 end;
 
 //Show corresponding image
