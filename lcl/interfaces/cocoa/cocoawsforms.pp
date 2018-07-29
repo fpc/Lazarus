@@ -239,6 +239,7 @@ begin
   cb := TLCLWindowCallback.Create(cnt, AWinControl);
   cb.window := win;
   cnt.callback := cb;
+  cnt.preventKeyOnShow := true;
   TCocoaPanel(win).callback := cb;
 
   win.setContentView(cnt);

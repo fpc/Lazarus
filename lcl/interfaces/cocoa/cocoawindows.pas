@@ -183,6 +183,7 @@ type
     procedure didResignKeyNotification(sender: NSNotification); message 'didResignKeyNotification:';
   public
     isembedded: Boolean; // true - if the content is inside of another control, false - if the content is in its own window;
+    preventKeyOnShow: Boolean;
     ownwin: NSWindow;
     fswin: NSWindow; // window that was used as a content prior to switching to old-school fullscreen
     popup_parent: HWND; // if not 0, indicates that we should set the popup parent
@@ -389,7 +390,12 @@ begin
       window.orderOut(nil)
     else
     if not aisHidden and not window.isVisible then
-      window.makeKeyAndOrderFront(nil);
+    begin
+      if preventKeyOnShow then // used for Hint-windows, so they would not steal the focus from the current window
+        window.orderFrontRegardless
+      else
+        window.makeKeyAndOrderFront(nil);
+    end;
   end;
 end;
 
