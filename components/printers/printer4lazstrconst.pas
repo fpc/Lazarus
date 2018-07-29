@@ -44,6 +44,7 @@ resourcestring
   p4lrsJobStateStopped = 'Stopped';
   p4lrsJobStateAccepting = '(Accepting jobs)';
   p4lrsJobStateRejecting = '(Rejecting jobs)';
+  p4lrsAllPages = 'All';
   p4lrsPageOdd = 'Odd';
   p4lrsPageEven = 'Even';
 
