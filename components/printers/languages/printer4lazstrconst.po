@@ -5,8 +5,20 @@ msgstr "Content-Type: text/plain; charset=UTF-8"
 msgid "Advanced"
 msgstr ""
 
+#: printer4lazstrconst.p4lrsallpages
+msgid "All"
+msgstr ""
+
 #: printer4lazstrconst.p4lrsbanners
 msgid "Banners"
+msgstr ""
+
+#: printer4lazstrconst.p4lrsbuttonlessarrow
+msgid "<< Less"
+msgstr ""
+
+#: printer4lazstrconst.p4lrsbuttonmorearrow
+msgid "More >>"
 msgstr ""
 
 #: printer4lazstrconst.p4lrscancel
@@ -19,6 +31,26 @@ msgstr ""
 
 #: printer4lazstrconst.p4lrsgeneral
 msgid "General"
+msgstr ""
+
+#: printer4lazstrconst.p4lrsjobstateaccepting
+msgid "(Accepting jobs)"
+msgstr ""
+
+#: printer4lazstrconst.p4lrsjobstateprinting
+msgid "Printing"
+msgstr ""
+
+#: printer4lazstrconst.p4lrsjobstateready
+msgid "Ready"
+msgstr ""
+
+#: printer4lazstrconst.p4lrsjobstaterejecting
+msgid "(Rejecting jobs)"
+msgstr ""
+
+#: printer4lazstrconst.p4lrsjobstatestopped
+msgid "Stopped"
 msgstr ""
 
 #: printer4lazstrconst.p4lrslandscape
@@ -39,6 +71,14 @@ msgstr ""
 
 #: printer4lazstrconst.p4lrsorientation
 msgid "Orientation"
+msgstr ""
+
+#: printer4lazstrconst.p4lrspageeven
+msgid "Even"
+msgstr ""
+
+#: printer4lazstrconst.p4lrspageodd
+msgid "Odd"
 msgstr ""
 
 #: printer4lazstrconst.p4lrspagespersheet

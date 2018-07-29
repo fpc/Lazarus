@@ -15,9 +15,21 @@ msgstr ""
 msgid "Advanced"
 msgstr "Расширенные"
 
+#: printer4lazstrconst.p4lrsallpages
+msgid "All"
+msgstr "Все"
+
 #: printer4lazstrconst.p4lrsbanners
 msgid "Banners"
 msgstr "Колонтитулы"
+
+#: printer4lazstrconst.p4lrsbuttonlessarrow
+msgid "<< Less"
+msgstr "<< Основные"
+
+#: printer4lazstrconst.p4lrsbuttonmorearrow
+msgid "More >>"
+msgstr "Прочие >>"
 
 #: printer4lazstrconst.p4lrscancel
 msgid "Cancel"
@@ -30,6 +42,26 @@ msgstr "Нижний"
 #: printer4lazstrconst.p4lrsgeneral
 msgid "General"
 msgstr "Общие"
+
+#: printer4lazstrconst.p4lrsjobstateaccepting
+msgid "(Accepting jobs)"
+msgstr "(принимает задания)"
+
+#: printer4lazstrconst.p4lrsjobstateprinting
+msgid "Printing"
+msgstr "Печатает"
+
+#: printer4lazstrconst.p4lrsjobstateready
+msgid "Ready"
+msgstr "Готов"
+
+#: printer4lazstrconst.p4lrsjobstaterejecting
+msgid "(Rejecting jobs)"
+msgstr "(отклоняет задания)"
+
+#: printer4lazstrconst.p4lrsjobstatestopped
+msgid "Stopped"
+msgstr "Остановлен"
 
 #: printer4lazstrconst.p4lrslandscape
 msgid "Landscape"
@@ -50,6 +82,14 @@ msgstr "ОК"
 #: printer4lazstrconst.p4lrsorientation
 msgid "Orientation"
 msgstr "Ориентация"
+
+#: printer4lazstrconst.p4lrspageeven
+msgid "Even"
+msgstr "Чётные"
+
+#: printer4lazstrconst.p4lrspageodd
+msgid "Odd"
+msgstr "Нечётные"
 
 #: printer4lazstrconst.p4lrspagespersheet
 msgid "Pages per sheet"

@@ -16,9 +16,21 @@ msgstr ""
 msgid "Advanced"
 msgstr "Išsamiau"
 
+#: printer4lazstrconst.p4lrsallpages
+msgid "All"
+msgstr ""
+
 #: printer4lazstrconst.p4lrsbanners
 msgid "Banners"
 msgstr "Reklamjuostės"
+
+#: printer4lazstrconst.p4lrsbuttonlessarrow
+msgid "<< Less"
+msgstr ""
+
+#: printer4lazstrconst.p4lrsbuttonmorearrow
+msgid "More >>"
+msgstr ""
 
 #: printer4lazstrconst.p4lrscancel
 msgid "Cancel"
@@ -31,6 +43,26 @@ msgstr "Pabaiga"
 #: printer4lazstrconst.p4lrsgeneral
 msgid "General"
 msgstr "Pagrindinis"
+
+#: printer4lazstrconst.p4lrsjobstateaccepting
+msgid "(Accepting jobs)"
+msgstr ""
+
+#: printer4lazstrconst.p4lrsjobstateprinting
+msgid "Printing"
+msgstr ""
+
+#: printer4lazstrconst.p4lrsjobstateready
+msgid "Ready"
+msgstr ""
+
+#: printer4lazstrconst.p4lrsjobstaterejecting
+msgid "(Rejecting jobs)"
+msgstr ""
+
+#: printer4lazstrconst.p4lrsjobstatestopped
+msgid "Stopped"
+msgstr ""
 
 #: printer4lazstrconst.p4lrslandscape
 msgid "Landscape"
@@ -51,6 +83,14 @@ msgstr "Tvarka"
 #: printer4lazstrconst.p4lrsorientation
 msgid "Orientation"
 msgstr "Orientacija"
+
+#: printer4lazstrconst.p4lrspageeven
+msgid "Even"
+msgstr ""
+
+#: printer4lazstrconst.p4lrspageodd
+msgid "Odd"
+msgstr ""
 
 #: printer4lazstrconst.p4lrspagespersheet
 msgid "Pages per sheet"
