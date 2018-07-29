@@ -1560,3 +1560,4 @@ msgstr "Größe"
 #: lclstrconsts.sshellctrlstype
 msgid "Type"
 msgstr "Typ"
+
