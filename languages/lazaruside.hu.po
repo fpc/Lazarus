@@ -857,6 +857,20 @@ msgstr "Illeszkedő zárójel párok"
 msgid "You cannot use docked desktop in undocked environment and vice versa."
 msgstr "Dokkolt felületek nem használhatók nem dokkolt környezetben és fordítva."
 
+#: lazarusidestrconsts.dlgcaretbackcolor
+msgid "Multi/2nd (NotXor)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcaretcolor
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgcaretcolor"
+msgid "Caret"
+msgstr "Kurzor"
+
+#: lazarusidestrconsts.dlgcaretforecolor
+msgid "Color (NotXor)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcaretgroupoptions
 msgid "Caret (Text Cursor)"
 msgstr ""
@@ -2747,6 +2761,7 @@ msgid "Button"
 msgstr "Gomb"
 
 #: lazarusidestrconsts.dlgmouseoptheadcaret
+msgctxt "lazarusidestrconsts.dlgmouseoptheadcaret"
 msgid "Caret"
 msgstr "Kurzor"
 

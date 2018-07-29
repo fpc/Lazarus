@@ -859,6 +859,20 @@ msgstr "Atitinkančios skliaustų poros"
 msgid "You cannot use docked desktop in undocked environment and vice versa."
 msgstr "Įstatomojo darbalaukio negalima naudoti aplinkoje, kurioje įstatymas neveikia, ir atvirkščiai."
 
+#: lazarusidestrconsts.dlgcaretbackcolor
+msgid "Multi/2nd (NotXor)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcaretcolor
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgcaretcolor"
+msgid "Caret"
+msgstr "Žymeklis"
+
+#: lazarusidestrconsts.dlgcaretforecolor
+msgid "Color (NotXor)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcaretgroupoptions
 msgid "Caret (Text Cursor)"
 msgstr ""
@@ -2751,6 +2765,7 @@ msgid "Button"
 msgstr "Mygtukas"
 
 #: lazarusidestrconsts.dlgmouseoptheadcaret
+msgctxt "lazarusidestrconsts.dlgmouseoptheadcaret"
 msgid "Caret"
 msgstr "Žymeklis"
 

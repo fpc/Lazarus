@@ -855,6 +855,20 @@ msgstr "Yhteensopivat sulkuparit"
 msgid "You cannot use docked desktop in undocked environment and vice versa."
 msgstr "Telakoitua työpäytää ei voi käyttää erillisten ikkunoiden kanssa ja päinvastoin."
 
+#: lazarusidestrconsts.dlgcaretbackcolor
+msgid "Multi/2nd (NotXor)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcaretcolor
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgcaretcolor"
+msgid "Caret"
+msgstr "Osoitin"
+
+#: lazarusidestrconsts.dlgcaretforecolor
+msgid "Color (NotXor)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcaretgroupoptions
 msgid "Caret (Text Cursor)"
 msgstr ""
@@ -2721,6 +2735,7 @@ msgid "Button"
 msgstr "Nappi"
 
 #: lazarusidestrconsts.dlgmouseoptheadcaret
+msgctxt "lazarusidestrconsts.dlgmouseoptheadcaret"
 msgid "Caret"
 msgstr "Osoitin"
 

@@ -857,6 +857,20 @@ msgstr "Eşleşen ayraç çiftleri"
 msgid "You cannot use docked desktop in undocked environment and vice versa."
 msgstr "Yerleştirilmiş masaüstünü kenetlenmemiş ortamda kullanamazsınız, tersi durumda."
 
+#: lazarusidestrconsts.dlgcaretbackcolor
+msgid "Multi/2nd (NotXor)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcaretcolor
+#, fuzzy
+msgctxt "lazarusidestrconsts.dlgcaretcolor"
+msgid "Caret"
+msgstr "Düzeltme işareti"
+
+#: lazarusidestrconsts.dlgcaretforecolor
+msgid "Color (NotXor)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcaretgroupoptions
 msgid "Caret (Text Cursor)"
 msgstr ""
@@ -2754,6 +2768,7 @@ msgid "Button"
 msgstr "Düğme"
 
 #: lazarusidestrconsts.dlgmouseoptheadcaret
+msgctxt "lazarusidestrconsts.dlgmouseoptheadcaret"
 msgid "Caret"
 msgstr "Düzeltme işareti"
 
