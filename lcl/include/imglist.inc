@@ -1867,22 +1867,27 @@ function TCustomImageList.GetWidthForPPI(AImageWidth,
   APPI: Integer): Integer;
 var
   Factor: Integer;
+  idx: Integer;
 begin
   if AImageWidth<=0 then
     AImageWidth := FWidth;
 
   if not FScaled then
-    Factor := 100
-  else
-  if APPI <= 120 then
-    Factor := 100 // 100-125% (96-120 DPI): no scaling
-  else
-  if APPI <= 168 then
-    Factor := 150 // 126%-175% (144-168 DPI): 150% scaling
-  else
-    Factor := Round(APPI/96) * 100; // 200, 300, 400, ...
+    Result := AImageWidth
+  else begin
+    Result := round(AImageWidth * APPI / 96);
+    if not FData.Find(Result, idx) then begin
+      if APPI <= 120 then
+        Factor := 100 // 100-125% (96-120 DPI): no scaling
+      else
+      if APPI <= 168 then
+        Factor := 150 // 126%-175% (144-168 DPI): 150% scaling
+      else
+        Factor := Round(APPI/96) * 100; // 200, 300, 400, ...
+      Result := AImageWidth * Factor div 100;
+    end;
+  end;
 
-  Result := AImageWidth * Factor div 100;
   if Assigned(FOnGetWidthForPPI) then
     FOnGetWidthForPPI(Self, AImageWidth, APPI, Result);
 end;
