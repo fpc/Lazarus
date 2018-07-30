@@ -2567,9 +2567,11 @@ begin
     SM_CYVSCROLL:
       Result := Round(NSScroller.scrollerWidthForControlSize(NSRegularControlSize));
     SM_CXSCREEN,
-    SM_CXVIRTUALSCREEN: Result := Round(NSScreen.mainScreen.frame.size.width);
+    SM_CXVIRTUALSCREEN,
+    SM_CXFULLSCREEN: Result := Round(NSScreen.mainScreen.frame.size.width);
     SM_CYSCREEN,
-    SM_CYVIRTUALSCREEN: Result := Round(NSScreen.mainScreen.frame.size.height);
+    SM_CYVIRTUALSCREEN,
+    SM_CYFULLSCREEN: Result := Round(NSScreen.mainScreen.frame.size.height);
     SM_XVIRTUALSCREEN: Result := Round(NSScreen.mainScreen.frame.origin.x);
     SM_YVIRTUALSCREEN: Result := Round(NSScreen.mainScreen.frame.origin.y);
     SM_CXSMICON,

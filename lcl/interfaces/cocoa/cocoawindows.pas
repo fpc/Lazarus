@@ -116,6 +116,7 @@ type
     fieldEditor: TCocoaFieldEditor;
     firedMouseEvent: Boolean;
     isInFullScreen: Boolean;
+    orderOutAfterFS : Boolean;
     fsview: TCocoaWindowContent;
     function windowShouldClose(sender : id): LongBool; message 'windowShouldClose:';
     procedure windowWillClose(notification: NSNotification); message 'windowWillClose:';
@@ -379,6 +380,8 @@ begin
 end;
 
 procedure TCocoaWindowContent.setHidden(aisHidden: Boolean);
+var
+  cw : TCocoaWindow;
 begin
   if isembedded then
   begin
@@ -387,7 +390,18 @@ begin
   else
   begin
     if aisHidden and window.isVisible then
-      window.orderOut(nil)
+    begin
+      if (window.isKindOfClass(TCocoaWindow)) then
+        cw := TCocoaWindow(window)
+      else
+        cw := nil;
+      if cw.lclIsFullScreen then
+      begin
+        cw.orderOutAfterFS := true;
+        cw.lclSwitchFullScreen(false);
+      end else
+        window.orderOut(nil);
+    end
     else
     if not aisHidden and not window.isVisible then
     begin
@@ -668,6 +682,10 @@ end;
 procedure TCocoaWindow.windowDidExitFullScreen(notification: NSNotification);
 begin
   if isInFullScreen then isInFullScreen := false;
+  if orderOutAfterFS then begin
+    self.orderOut(nil);
+    orderOutAfterFS := false;
+  end;
 end;
 
 procedure TCocoaWindow.dealloc;

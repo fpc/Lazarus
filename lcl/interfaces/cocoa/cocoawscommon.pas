@@ -94,8 +94,6 @@ type
   { TCocoaWSWinControl }
 
   TCocoaWSWinControl = class(TWSWinControl)
-  private
-    class procedure ArrangeTabOrder(const AWinControl: TWinControl);
   published
     class function CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
@@ -1296,37 +1294,6 @@ end;
 
 { TCocoaWSWinControl }
 
-class procedure TCocoaWSWinControl.ArrangeTabOrder(
-  const AWinControl: TWinControl);
-var
-  lList: TFPList;
-  prevControl, curControl: TWinControl;
-  lPrevView, lCurView: NSView;
-  i: Integer;
-begin
-  lList := TFPList.Create;
-  try
-    AWinControl.GetTabOrderList(lList);
-    if lList.Count>0 then
-      begin
-      prevControl := TWinControl(lList.Items[lList.Count-1]);
-      lPrevView := GetNSObjectView(NSObject(prevControl.Handle));
-      for i := 0 to lList.Count-1 do
-      begin
-        curControl := TWinControl(lList.Items[i]);
-        lCurView := GetNSObjectView(NSObject(curControl.Handle));
-
-        if (lCurView <> nil) and (lPrevView <> nil) then
-          lPrevView.setNextKeyView(lCurView);
-
-        lPrevView := lCurView;
-      end;
-    end;
-  finally
-    lList.Free;
-  end;
-end;
-
 class function TCocoaWSWinControl.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 begin
@@ -1663,10 +1630,6 @@ begin
     lShow := AWinControl.HandleObjectShouldBeVisible;
 
     NSObject(AWinControl.Handle).lclSetVisible(lShow);
-
-    // TabStop / TabOrder support
-    if (AWinControl is TCustomForm) and lShow then
-      ArrangeTabOrder(AWinControl);
 
     pool.release;
   end;

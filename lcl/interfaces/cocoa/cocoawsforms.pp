@@ -121,6 +121,7 @@ type
     class procedure SetFormStyle(const AForm: TCustomform; const AFormStyle, AOldFormStyle: TFormStyle); override;
     class procedure SetRealPopupParent(const ACustomForm: TCustomForm;
       const APopupParent: TCustomForm); override;
+    class procedure ShowHide(const AWinControl: TWinControl); override;
 
     {need to override these }
     class function GetClientBounds(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
@@ -162,6 +163,7 @@ type
   public
   end;
 
+procedure ArrangeTabOrder(const AWinControl: TWinControl);
 
 implementation
 
@@ -391,6 +393,37 @@ end;
 
 
 { TCocoaWSCustomForm }
+
+procedure ArrangeTabOrder(const AWinControl: TWinControl);
+var
+  lList: TFPList;
+  prevControl, curControl: TWinControl;
+  lPrevView, lCurView: NSView;
+  i: Integer;
+begin
+  lList := TFPList.Create;
+  try
+    AWinControl.GetTabOrderList(lList);
+    if lList.Count>0 then
+      begin
+      prevControl := TWinControl(lList.Items[lList.Count-1]);
+      lPrevView := GetNSObjectView(NSObject(prevControl.Handle));
+      for i := 0 to lList.Count-1 do
+      begin
+        curControl := TWinControl(lList.Items[i]);
+        lCurView := GetNSObjectView(NSObject(curControl.Handle));
+
+        if (lCurView <> nil) and (lPrevView <> nil) then
+          lPrevView.setNextKeyView(lCurView);
+
+        lPrevView := lCurView;
+      end;
+    end;
+  finally
+    lList.Free;
+  end;
+end;
+
 
 class function TCocoaWSCustomForm.GetStyleMaskFor(
   ABorderStyle: TFormBorderStyle; ABorderIcons: TBorderIcons): NSUInteger;
@@ -774,6 +807,27 @@ begin
     win.parentWindow.removeChildWindow(win);
   if Assigned(APopupParent) then
     NSWindow( NSView(APopupParent.Handle).window).addChildWindow_ordered(win, NSWindowAbove);
+end;
+
+class procedure TCocoaWSCustomForm.ShowHide(const AWinControl: TWinControl);
+var
+  lShow : Boolean;
+  w : NSWindow;
+begin
+  lShow := AWinControl.HandleObjectShouldBeVisible;
+  // TCustomForm class of LCL doesn't do anything specific about first time showing
+  // of wsFullScreen window. Thus it should be taken care of in WS size
+  if lShow and (TCustomForm(AWinControl).WindowState = wsFullScreen) then
+  begin
+    w := NSView(AWinControl.Handle).window;
+    if Assigned(w) and (w.isKindOfClass(TCocoaWindow)) then
+      TCocoaWindow(w).lclSwitchFullScreen(true);
+  end
+  else
+    TCocoaWSWinControl.ShowHide(AWinControl);
+
+  if (lShow) then
+    ArrangeTabOrder(AWinControl);
 end;
 
 class function TCocoaWSCustomForm.GetClientBounds(
