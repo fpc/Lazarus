@@ -4,13 +4,13 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-07-28 19:35+0200\n"
+"PO-Revision-Date: 2018-07-30 13:15+0200\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
 "X-Poedit-SourceCharset: utf-8\n"
 "Language: de_DE\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 2.1.1\n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
 msgid "Browser \"%s\" not executable."
@@ -418,11 +418,11 @@ msgstr "Andocken"
 
 #: lclstrconsts.rsdocopy
 msgid "Copy"
-msgstr ""
+msgstr "Kopieren"
 
 #: lclstrconsts.rsdopaste
 msgid "Paste"
-msgstr ""
+msgstr "Einfügen"
 
 #: lclstrconsts.rsduplicateiconformat
 msgid "Duplicate icon format."
@@ -548,7 +548,7 @@ msgstr "Form"
 
 #: lclstrconsts.rsformresourcesnotfoundforresourcelessformscreatenew
 msgid "Form resource %s not found. For resourceless forms CreateNew constructor must be used. See the global variable RequireDerivedFormResource."
-msgstr ""
+msgstr "Die Formular-Ressource %s wurde nicht gefunden. Für Formulare ohne Ressourcen muss der Constructor CreateNew verwendet werden. Siehe die globale Variable \"RequireDerivedFormResource\"."
 
 #: lclstrconsts.rsformstreamingerror
 msgid "Form streaming \"%s\" error: %s"
@@ -608,11 +608,11 @@ msgstr ""
 
 #: lclstrconsts.rsgridhasnocols
 msgid "Cannot insert rows into a grid when it has no columns"
-msgstr ""
+msgstr "Kann keine Zeilen in ein Grid einfügen, wenn es keine Spalten hat."
 
 #: lclstrconsts.rsgridhasnorows
 msgid "Cannot insert columns into a grid when it has no rows"
-msgstr ""
+msgstr "Kann keine Spalten in ein Grid einfügen, wenn es keine Zeilen hat"
 
 #: lclstrconsts.rsgridindexoutofrange
 msgid "Grid index out of range."
@@ -1328,7 +1328,7 @@ msgstr "Kann abgeschaltetes oder unsichtbares Fenster nicht fokussieren"
 
 #: lclstrconsts.scannotsetdesigntimeppi
 msgid "Cannot set design time PPI."
-msgstr ""
+msgstr "Kann die Entwurfszeit-PPI nicht festlegen."
 
 #: lclstrconsts.sduplicatemenus
 msgid "Duplicate menus"
@@ -1364,7 +1364,7 @@ msgstr "Ungültiger Bildlistenindex"
 
 #: lclstrconsts.smaskeditnomatch
 msgid "The current text does not match the specified mask."
-msgstr ""
+msgstr "Der aktuelle Text stimmt nicht mit der angegebenen Maske überein."
 
 #: lclstrconsts.smenuindexerror
 msgid "Menu index out of range"
@@ -1384,7 +1384,7 @@ msgstr "Alt+"
 
 #: lclstrconsts.smkcbksp
 msgid "BkSp"
-msgstr ""
+msgstr "Rück"
 
 #: lclstrconsts.smkcctrl
 msgid "Ctrl+"
@@ -1449,7 +1449,7 @@ msgstr "Umsch+"
 
 #: lclstrconsts.smkcspace
 msgid "Space"
-msgstr ""
+msgstr "Leer"
 
 #: lclstrconsts.smkctab
 msgctxt "lclstrconsts.smkctab"
@@ -1560,4 +1560,3 @@ msgstr "Größe"
 #: lclstrconsts.sshellctrlstype
 msgid "Type"
 msgstr "Typ"
-

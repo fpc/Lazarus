@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-12-11 22:16+0100\n"
+"PO-Revision-Date: 2018-07-30 13:06+0200\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
 "Language: de_DE\n"
-"X-Generator: Poedit 2.0.4\n"
+"X-Generator: Poedit 2.1.1\n"
 
 #: lazarusidestrconsts.dbgbreakgroupdlgcaption
 msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaption"
@@ -3221,7 +3221,7 @@ msgstr "Vorgabe-Symbol laden"
 
 #: lazarusidestrconsts.dlgpodpiawareness
 msgid "DPI awareness"
-msgstr "DPI-Bewusstsein"
+msgstr "DPI-Anpassung"
 
 #: lazarusidestrconsts.dlgpodpiawarenessoff
 msgid "off"
@@ -3518,8 +3518,6 @@ msgid "Scroll past end of file"
 msgstr "Über das Dateiende hinaus scrollen"
 
 #: lazarusidestrconsts.dlgscrollpastendline
-#, fuzzy
-#| msgid "Caret past end of line"
 msgid "Allow caret to move past end of line"
 msgstr "Über das Zeilenende hinaus scrollen"
 
@@ -3592,8 +3590,6 @@ msgid "Show all units"
 msgstr "Zeige alle Units"
 
 #: lazarusidestrconsts.dlgshowcaptionsofnonvisuals
-#, fuzzy
-#| msgid "Show captions of non-visual components"
 msgid "Show captions of nonvisual components"
 msgstr "Zeige Titel nichtvisueller Komponenten"
 
@@ -5060,13 +5056,11 @@ msgid "Bottom space equally"
 msgstr "Gleichmäßig am unteren Rand aufteilen"
 
 #: lazarusidestrconsts.lisbpsdisabled
-#, fuzzy
 msgctxt "lazarusidestrconsts.lisbpsdisabled"
 msgid "Disabled"
 msgstr "Ausgeschaltet"
 
 #: lazarusidestrconsts.lisbpsenabled
-#, fuzzy
 msgctxt "lazarusidestrconsts.lisbpsenabled"
 msgid "Enabled"
 msgstr "Eingeschaltet"
@@ -7022,7 +7016,6 @@ msgid "contains"
 msgstr "enthält"
 
 #: lazarusidestrconsts.liscontents
-#, fuzzy
 msgctxt "lazarusidestrconsts.liscontents"
 msgid "Contents"
 msgstr "Inhalte"
@@ -8777,8 +8770,6 @@ msgid "Editor Colors"
 msgstr "Editorfarben"
 
 #: lazarusidestrconsts.liseditormacros
-#, fuzzy
-#| msgid "Editor macros"
 msgid "Editor Macros"
 msgstr "Editormakros"
 
@@ -11767,8 +11758,6 @@ msgid "&Local"
 msgstr "&Lokal"
 
 #: lazarusidestrconsts.lislocals
-#, fuzzy
-#| msgid "Locals"
 msgctxt "lazarusidestrconsts.lislocals"
 msgid "Local Variables"
 msgstr "Lokale Variablen"
@@ -11863,7 +11852,6 @@ msgid "Assume Pascal even if it does not end with .pas/.pp suffix."
 msgstr "Nehme Pascal an auch ohne .pas/.pp Dateierweiterung"
 
 #: lazarusidestrconsts.lismakecurrent
-#, fuzzy
 msgctxt "lazarusidestrconsts.lismakecurrent"
 msgid "Current"
 msgstr "Aktuell"
@@ -19417,8 +19405,6 @@ msgid "&Properties"
 msgstr "&Eigenschaften"
 
 #: lazarusidestrconsts.liswlwatchlist
-#, fuzzy
-#| msgid "Watch List"
 msgctxt "lazarusidestrconsts.liswlwatchlist"
 msgid "Watches"
 msgstr "Liste der überwachten Ausdrücke"
@@ -21500,4 +21486,3 @@ msgstr "Schreibgeschützt"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
-
