@@ -690,12 +690,20 @@ var
   {$ifdef COCOA_USE_NATIVE_MODAL}
   win: TCocoaWindow;
   {$endif}
+  fullscreen: Boolean;
 begin
   // Another possible implementation is to have modal started in ShowHide with (fsModal in AForm.FormState)
 
   // Handle PopupParent
   lWinContent := GetWindowContentFromHandle(ACustomForm);
-  if lWinContent <> nil then
+
+  fullscreen := ACustomForm.WindowState = wsFullScreen;
+  if (not fullscreen) and (lWinContent.window.isKindOfClass(TCocoaWindow)) then
+    fullscreen := TCocoaWindow(lWinContent.window).lclIsFullScreen;
+
+  // A window opening in full screen doesn't like to be added as someones popup
+  // Thus resolvePopupParent should only be used for non full-screens forms
+  if (lWinContent <> nil) and (not fullscreen) then
     lWinContent.resolvePopupParent();
 
   CocoaWidgetSet.CurModalForm := ACustomForm;
