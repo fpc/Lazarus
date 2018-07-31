@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-07-19 11:09+0200\n"
+"PO-Revision-Date: 2018-07-30 13:05+0200\n"
 "Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -860,17 +860,16 @@ msgstr "Неможливо використати стільницю зі сти
 
 #: lazarusidestrconsts.dlgcaretbackcolor
 msgid "Multi/2nd (NotXor)"
-msgstr ""
+msgstr "Декілька/2-й (NotXor)"
 
 #: lazarusidestrconsts.dlgcaretcolor
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgcaretcolor"
 msgid "Caret"
-msgstr "Каретка"
+msgstr "Курсор"
 
 #: lazarusidestrconsts.dlgcaretforecolor
 msgid "Color (NotXor)"
-msgstr ""
+msgstr "Колір (NotXor)"
 
 #: lazarusidestrconsts.dlgcaretgroupoptions
 msgid "Caret (Text Cursor)"
@@ -1629,7 +1628,7 @@ msgstr "Підкреслений"
 
 #: lazarusidestrconsts.dlgelementattributes
 msgid "Element Attributes"
-msgstr "Атрибути Елементу"
+msgstr "Атрибути елемента"
 
 #: lazarusidestrconsts.dlgendkeyjumpstoneareststart
 msgid "End key jumps to nearest end"
@@ -1697,7 +1696,7 @@ msgstr "Фокусувати при компіляції на вікні пов�
 
 #: lazarusidestrconsts.dlgextracharspacing
 msgid "Extra char spacing"
-msgstr "Додат. міжсимвольний інтервал"
+msgstr "Додатковий міжсимвольний інтервал"
 
 #: lazarusidestrconsts.dlgextralinespacing
 msgid "Extra line spacing"
@@ -2479,7 +2478,7 @@ msgstr "Маркери"
 
 #: lazarusidestrconsts.dlgmarkupfoldcolor
 msgid "Vertical-mark"
-msgstr ""
+msgstr "Вертикальна позначка"
 
 #: lazarusidestrconsts.dlgmarkupgroup
 msgid "Highlight of Word under Caret"
@@ -19535,7 +19534,7 @@ msgstr "Додати зворотне"
 
 #: lazarusidestrconsts.rsaddnewterm
 msgid "Add new term"
-msgstr ""
+msgstr "Додати новий терм"
 
 #: lazarusidestrconsts.rsattachto
 msgid "Attach to"

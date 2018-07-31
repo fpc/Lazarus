@@ -4,7 +4,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-04-25 18:27+0200\n"
+"PO-Revision-Date: 2018-07-30 12:45+0200\n"
 "Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgstr "Розширені"
 
 #: printer4lazstrconst.p4lrsallpages
 msgid "All"
-msgstr ""
+msgstr "Все"
 
 #: printer4lazstrconst.p4lrsbanners
 msgid "Banners"
@@ -27,11 +27,11 @@ msgstr "Колонтитули"
 
 #: printer4lazstrconst.p4lrsbuttonlessarrow
 msgid "<< Less"
-msgstr ""
+msgstr "<< Менше"
 
 #: printer4lazstrconst.p4lrsbuttonmorearrow
 msgid "More >>"
-msgstr ""
+msgstr "Більше >>"
 
 #: printer4lazstrconst.p4lrscancel
 msgid "Cancel"
@@ -47,23 +47,23 @@ msgstr "Загальні"
 
 #: printer4lazstrconst.p4lrsjobstateaccepting
 msgid "(Accepting jobs)"
-msgstr ""
+msgstr "(Прийняття робіт)"
 
 #: printer4lazstrconst.p4lrsjobstateprinting
 msgid "Printing"
-msgstr ""
+msgstr "Друк"
 
 #: printer4lazstrconst.p4lrsjobstateready
 msgid "Ready"
-msgstr ""
+msgstr "Готово"
 
 #: printer4lazstrconst.p4lrsjobstaterejecting
 msgid "(Rejecting jobs)"
-msgstr ""
+msgstr "(Відхилення робіт)"
 
 #: printer4lazstrconst.p4lrsjobstatestopped
 msgid "Stopped"
-msgstr ""
+msgstr "Зупинено"
 
 #: printer4lazstrconst.p4lrslandscape
 msgid "Landscape"
@@ -87,11 +87,11 @@ msgstr "Орієнтація"
 
 #: printer4lazstrconst.p4lrspageeven
 msgid "Even"
-msgstr ""
+msgstr "Парні"
 
 #: printer4lazstrconst.p4lrspageodd
 msgid "Odd"
-msgstr ""
+msgstr "Непарні"
 
 #: printer4lazstrconst.p4lrspagespersheet
 msgid "Pages per sheet"
