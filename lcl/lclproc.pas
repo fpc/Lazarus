@@ -382,15 +382,6 @@ end;
 //-----------------------------------------------------------------------------
 // Keys and shortcuts
 
-type
-  TMenuKeyCap = (mkcBkSp, mkcTab, mkcEsc, mkcEnter, mkcSpace, mkcPgUp,
-    mkcPgDn, mkcEnd, mkcHome, mkcLeft, mkcUp, mkcRight, mkcDown, mkcIns,
-    mkcDel, mkcShift, mkcCtrl, mkcAlt, mkcMeta);
-
-var
-  MenuKeyCaps: array[TMenuKeyCap] of string;
-  MenuKeyCapsInited: boolean = false;
-
 const
   // MS documentation:
   // https://msdn.microsoft.com/en-us/library/windows/desktop/dd375731(v=vs.85).aspx
@@ -658,54 +649,6 @@ const
   );
 
 
-procedure InitializeMenuKeyCaps;
-begin
-  if not MenuKeyCapsInited then
-  begin
-    MenuKeyCapsInited:=true;
-
-    MenuKeyCaps[mkcBkSp]:=SmkcBkSp;
-    MenuKeyCaps[mkcTab]:=SmkcTab;
-    MenuKeyCaps[mkcEsc]:=SmkcEsc;
-    MenuKeyCaps[mkcEnter]:=SmkcEnter;
-    MenuKeyCaps[mkcSpace]:=SmkcSpace;
-    MenuKeyCaps[mkcPgUp]:=SmkcPgUp;
-    MenuKeyCaps[mkcPgDn]:=SmkcPgDn;
-    MenuKeyCaps[mkcEnd]:=SmkcEnd;
-    MenuKeyCaps[mkcHome]:=SmkcHome;
-    MenuKeyCaps[mkcLeft]:=SmkcLeft;
-    MenuKeyCaps[mkcUp]:=SmkcUp;
-    MenuKeyCaps[mkcRight]:=SmkcRight;
-    MenuKeyCaps[mkcDown]:=SmkcDown;
-    MenuKeyCaps[mkcIns]:=SmkcIns;
-    MenuKeyCaps[mkcDel]:=SmkcDel;
-    MenuKeyCaps[mkcShift]:=SmkcShift;
-    MenuKeyCaps[mkcCtrl]:=SmkcCtrl;
-    MenuKeyCaps[mkcAlt]:=SmkcAlt;
-    MenuKeyCaps[mkcMeta]:=SmkcMeta;
-
-    KeyCodeStrings[VK_BACK]:=SmkcBkSp;
-    KeyCodeStrings[VK_TAB]:=SmkcTab;
-    KeyCodeStrings[VK_ESCAPE]:=SmkcEsc;
-    KeyCodeStrings[VK_RETURN]:=SmkcEnter;
-    KeyCodeStrings[VK_SPACE]:=SmkcSpace;
-    KeyCodeStrings[VK_PRIOR]:=SmkcPgUp;
-    KeyCodeStrings[VK_NEXT]:=SmkcPgDn;
-    KeyCodeStrings[VK_END]:=SmkcEnd;
-    KeyCodeStrings[VK_HOME]:=SmkcHome;
-    KeyCodeStrings[VK_LEFT]:=SmkcLeft;
-    KeyCodeStrings[VK_UP]:=SmkcUp;
-    KeyCodeStrings[VK_RIGHT]:=SmkcRight;
-    KeyCodeStrings[VK_DOWN]:=SmkcDown;
-    KeyCodeStrings[VK_INSERT]:=SmkcIns;
-    KeyCodeStrings[VK_DELETE]:=SmkcDel;
-    // must ignore single Shift, Alt, Ctrl in KeyCodeStrings
-    //KeyCodeStrings[VK_SHIFT]:=SmkcShift;
-    //KeyCodeStrings[VK_CONTROL]:=SmkcCtrl;
-    //KeyCodeStrings[VK_MENU]:=SmkcAlt;
-  end;
-end;
-
 function CompareDebugLCLItemInfos(Data1, Data2: Pointer): integer;
 begin
   Result:=ComparePointers(TDebugLCLItemInfo(Data1).Item,
@@ -728,7 +671,31 @@ end;
 function KeyCodeToKeyString(Key: integer): string;
 begin
   if (Key >= Low(KeyCodeStrings)) and (Key <= High(KeyCodeStrings)) then
-    Result := KeyCodeStrings[Key]
+  begin
+    case Key of
+      VK_BACK: Result:=SmkcBkSp;
+      VK_TAB: Result:=SmkcTab;
+      VK_ESCAPE: Result:=SmkcEsc;
+      VK_RETURN: Result:=SmkcEnter;
+      VK_SPACE: Result:=SmkcSpace;
+      VK_PRIOR: Result:=SmkcPgUp;
+      VK_NEXT: Result:=SmkcPgDn;
+      VK_END: Result:=SmkcEnd;
+      VK_HOME: Result:=SmkcHome;
+      VK_LEFT: Result:=SmkcLeft;
+      VK_UP: Result:=SmkcUp;
+      VK_RIGHT: Result:=SmkcRight;
+      VK_DOWN: Result:=SmkcDown;
+      VK_INSERT: Result:=SmkcIns;
+      VK_DELETE: Result:=SmkcDel;
+      // must ignore single Shift, Alt, Ctrl in KeyCodeStrings
+      //VK_SHIFT: Result:=SmkcShift;
+      //VK_CONTROL: Result:=SmkcCtrl;
+      //VK_MENU: Result:=SmkcAlt;
+    otherwise
+      Result := KeyCodeStrings[Key];
+    end;
+  end
   else
     Result := '';
 end;
@@ -776,14 +743,13 @@ var
   Name: string;
 begin
   Result := '';
-  InitializeMenuKeyCaps;
   Name := KeyCodeToKeyString(ShortCut and $FF);
   if Name <> '' then
   begin
-    if ShortCut and scShift <> 0 then Result := Result + MenuKeyCaps[mkcShift];
-    if ShortCut and scCtrl <> 0 then Result := Result + MenuKeyCaps[mkcCtrl];
-    if ShortCut and scMeta <> 0 then Result := Result + MenuKeyCaps[mkcMeta];
-    if ShortCut and scAlt <> 0 then Result := Result + MenuKeyCaps[mkcAlt];
+    if ShortCut and scShift <> 0 then Result := Result + SmkcShift;
+    if ShortCut and scCtrl <> 0 then Result := Result + SmkcCtrl;
+    if ShortCut and scMeta <> 0 then Result := Result + SmkcMeta;
+    if ShortCut and scAlt <> 0 then Result := Result + SmkcAlt;
     Result := Result + Name;
   end;
 end;
@@ -811,18 +777,17 @@ begin
   if ShortCutText = '' then Exit;
   Shift := 0;
   StartPos := 1;
-  InitializeMenuKeyCaps;
   while True do
   begin
-    if CompareFront(StartPos, MenuKeyCaps[mkcShift]) then
+    if CompareFront(StartPos, SmkcShift) then
       Shift := Shift or scShift
     else if CompareFront(StartPos, '^') then
       Shift := Shift or scCtrl
-    else if CompareFront(StartPos, MenuKeyCaps[mkcCtrl]) then
+    else if CompareFront(StartPos, SmkcCtrl) then
       Shift := Shift or scCtrl
-    else if CompareFront(StartPos, MenuKeyCaps[mkcAlt]) then
+    else if CompareFront(StartPos, SmkcAlt) then
       Shift := Shift or scAlt
-    else if CompareFront(StartPos, MenuKeyCaps[mkcMeta]) then
+    else if CompareFront(StartPos, SmkcMeta) then
       Shift := Shift or scMeta
     else
       Break;
