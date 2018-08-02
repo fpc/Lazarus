@@ -33,7 +33,6 @@ type
 
   TLazExtToolConsole = class(TComponent)
   private
-    FTerminating: boolean;
     fViews: TFPList; // list of TLazExtToolConsoleView
     function GetViews(Index: integer): TLazExtToolConsoleView;
   public
@@ -67,7 +66,6 @@ type
   public
     constructor Create(aOwner: TComponent); override;
     destructor Destroy; override;
-    procedure TerminateAll; override;
     function GetIDEObject(ToolData: TIDEExternalToolData): TObject; override;
     procedure HandleMesages; override;
   end;
@@ -116,8 +114,6 @@ end;
 procedure TLazExtToolConsoleView.OnNewOutput(Sender: TObject;
   FirstNewMsgLine: integer);
 begin
-  if (ExtToolConsole<>nil) and ExtToolConsole.FTerminating then
-    exit;
   while fWrittenLineCount<Tool.WorkerOutput.Count do begin
     debugln(Tool.WorkerOutput[fWrittenLineCount]);
     inc(fWrittenLineCount);
@@ -238,15 +234,6 @@ begin
   {$ENDIF}
   Assert(ToolOptions.Parsers.Count=0, 'TExternalToolsConsole.RunExtToolHandler: Parsers.Count>0.');
   Result := RunToolWithParsers(ToolOptions);
-end;
-
-procedure TExternalToolsConsole.TerminateAll;
-begin
-  // ToDo: If the assertion never triggers, remove this whole method and var FTerminating.
-  Assert(ExtToolConsole=Nil, 'TExternalToolsConsole.TerminateAll: ExtToolConsole is assigned.');
-  //ExtToolConsole.FTerminating:=true;
-  inherited TerminateAll;
-  //ExtToolConsole.FTerminating:=false;
 end;
 
 function TExternalToolsConsole.GetIDEObject(ToolData: TIDEExternalToolData): TObject;
