@@ -537,10 +537,18 @@ end;
 type
   TProcessClassTemplate = class(TComponent)
   private
+    {$if fpc_fullversion < 30101}
     {%H-}FProcessOptions : TProcessOptions;
     {%H-}FStartupOptions : TStartupOptions;
     FProcessID : Integer;
     {%H-}FTerminalProgram: String;
+    {$else}
+    {%H-}FOnRunCommandEvent: TOnRunCommandEvent;
+    {%H-}FProcessOptions : TProcessOptions;
+    FRunCommandSleepTime: Integer;
+    {%H-}FStartupOptions : TStartupOptions;
+    FProcessID : Integer;
+    {$ifend}
     {%H-}FThreadID : Integer;
     FProcessHandle : Thandle;
     FThreadHandle : Thandle;
