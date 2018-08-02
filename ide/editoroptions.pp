@@ -6644,9 +6644,9 @@ begin
         TIDESynEditor(aSynEdit).CaretColor := Attri.Foreground;
 
         col := Attri.Background;
-        if (c = clNone) or (c = clDefault) then
-          c := $606060;
-        TIDESynEditor(aSynEdit).MultiCaret.Color := c;
+        if (col = clNone) or (col = clDefault) then
+          col := $606060;
+        TIDESynEditor(aSynEdit).MultiCaret.Color := col;
       end;
     end;
     SetMarkupColorByClass(ahaHighlightWord, TSynEditMarkupHighlightAllCaret);
