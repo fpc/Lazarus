@@ -6601,6 +6601,7 @@ var
   i, c, j: Integer;
   IDESynEdit: TIDESynEditor;
   aha: TAdditionalHilightAttribute;
+  col: TColor;
 begin
   ASynEdit.BeginUpdate;
   try
@@ -6641,7 +6642,11 @@ begin
       Attri := GetUsedAttr(ahaCaretColor);
       if Attri <> nil then begin
         TIDESynEditor(aSynEdit).CaretColor := Attri.Foreground;
-        TIDESynEditor(aSynEdit).MultiCaret.Color := Attri.Background;
+
+        col := Attri.Background;
+        if (c = clNone) or (c = clDefault) then
+          c := $606060;
+        TIDESynEditor(aSynEdit).MultiCaret.Color := c;
       end;
     end;
     SetMarkupColorByClass(ahaHighlightWord, TSynEditMarkupHighlightAllCaret);
