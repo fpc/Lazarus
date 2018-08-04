@@ -200,6 +200,9 @@ type
     property Visible;
   end;
 
+  TFilterStringOption = (fsoCaseSensitive, fsoMatchOnlyAtStart);
+  TFilterStringOptions = set of TFilterStringOption;
+
   // Called when an item is filtered. Returns true if the item passes the filter.
   // Done=False means the data should also be filtered by its title string.
   // Done=True means no other filtering is needed.
@@ -217,6 +220,7 @@ type
   TCustomControlFilterEdit = class(TCustomEditButton)
   private
     fFilter: string;
+    fFilterOptions: TFilterStringOptions;
     fIdleConnected: Boolean;
     fSortData: Boolean;             // Data needs to be sorted.
     fIsFirstSetFormActivate: Boolean;
@@ -232,11 +236,9 @@ type
     fOnFilterItem: TFilterItemEvent;
     fOnFilterItemEx: TFilterItemExEvent;
     fOnCheckItem: TCheckItemEvent;
-    function DoFilterItem(const ACaption, FilterLC: string;
-      ItemData: Pointer): Boolean;
-    function DoDefaultFilterItem(const ACaption, FilterLC: string;
-      const ItemData: Pointer): Boolean; virtual;
     procedure DestroyWnd; override;
+    function DoFilterItem(const ACaption, AFilter: string;
+      ItemData: Pointer): Boolean;
     procedure EditKeyDown(var Key: Word; Shift: TShiftState); override;
     procedure EditChange; override;
     procedure BuddyClick; override;
@@ -254,6 +256,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    function DoDefaultFilterItem(const ACaption, AFilter: string;
+      const ItemData: Pointer): Boolean; virtual;
     procedure InvalidateFilter;
     procedure ResetFilter;
     function ForceFilter(AFilter: String) : String;
@@ -265,6 +269,8 @@ type
     property SortData: Boolean read fSortData write fSortData;
     property SelectedPart: TObject read fSelectedPart write fSelectedPart;
   published
+    property CharCase default ecLowerCase;
+    property FilterOptions: TFilterStringOptions read fFilterOptions write fFilterOptions default [];
     property OnAfterFilter: TNotifyEvent read fOnAfterFilter write fOnAfterFilter;
     property OnFilterItem: TFilterItemEvent read fOnFilterItem write fOnFilterItem;
       deprecated 'Use OnFilterItemEx with a caption parameter instead.';
@@ -1112,6 +1118,7 @@ begin
   inherited Create(AOwner);
   CharCase:=ecLowerCase;
   Button.Enabled:=False;
+  fFilterOptions:=[];
   fIsFirstUpdate:=True;
   fIsFirstSetFormActivate:=True;
   TextHint:=rsFilter;
@@ -1122,20 +1129,33 @@ begin
   inherited Destroy;
 end;
 
-function TCustomControlFilterEdit.DoDefaultFilterItem(const ACaption,
-  FilterLC: string; const ItemData: Pointer): Boolean;
-begin
-  Result := (FilterLC='') or (Pos(FilterLC,UTF8LowerCase(ACaption))>0);
-end;
-
 procedure TCustomControlFilterEdit.DestroyWnd;
 begin
   IdleConnected:=false;
   inherited DestroyWnd;
 end;
 
+function TCustomControlFilterEdit.DoDefaultFilterItem(const ACaption,
+  AFilter: string; const ItemData: Pointer): Boolean;
+var
+  NPos: integer;
+begin
+  if AFilter='' then
+    exit(True);
+
+  if fsoCaseSensitive in fFilterOptions then
+    NPos := Pos(AFilter, ACaption)
+  else
+    NPos := Pos(UTF8LowerCase(AFilter), UTF8LowerCase(ACaption));
+
+  if fsoMatchOnlyAtStart in fFilterOptions then
+    Result := NPos=1
+  else
+    Result := NPos>0;
+end;
+
 function TCustomControlFilterEdit.DoFilterItem(const ACaption,
-  FilterLC: string; ItemData: Pointer): Boolean;
+  AFilter: string; ItemData: Pointer): Boolean;
 var
   Done: Boolean;
 begin
@@ -1152,7 +1172,7 @@ begin
 
   // Filter by item's caption text if needed.
   if not (Result or Done) then
-    Result := DoDefaultFilterItem(ACaption, FilterLC, ItemData);
+    Result := DoDefaultFilterItem(ACaption, AFilter, ItemData);
 end;
 
 procedure TCustomControlFilterEdit.OnIdle(Sender: TObject; var Done: Boolean);

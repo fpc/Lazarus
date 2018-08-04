@@ -194,7 +194,8 @@ begin
   fSortedData.Clear;
   for Origi:=0 to fOriginalData.Count-1 do begin
     s:=fOriginalData[Origi];
-    if (fOwner.Filter='') or (Pos(fOwner.Filter,lowercase(s))>0) then begin
+    if (fOwner.Filter='') or
+        fOwner.DoDefaultFilterItem(s,fOwner.Filter,nil) then begin
       i:=fSortedData.Count-1;
       while i>=0 do begin
         if CompareFNs(s,fSortedData[i])>=0 then break;
@@ -467,18 +468,16 @@ function TTreeFilterEdit.FilterTree(Node: TTreeNode): Boolean;
 // Returns True if Node or its siblings or child nodes have visible items.
 var
   Pass, Done: Boolean;
-  FilterLC: string;
 begin
   Result := False;
   Done := False;
-  FilterLC:=UTF8LowerCase(Filter);
   while (Node<>nil) and not Done do
   begin
     // Filter with event handler if there is one.
     if Assigned(fOnFilterNode) then
       Pass := fOnFilterNode(Node, Done);
     if not (Pass and Done) then
-      Pass := DoFilterItem(Node.Text, FilterLC, Node.Data);
+      Pass := DoFilterItem(Node.Text, Filter, Node.Data);
     if Pass and (fFirstPassedNode=Nil) then
       fFirstPassedNode:=Node;
     // Recursive call for child nodes.

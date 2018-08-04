@@ -171,13 +171,12 @@ procedure TListFilterEdit.SortAndFilter;
 // Copy data from fOriginalData to fSortedData in sorted order
 var
   Origi, i: Integer;
-  Capt, FilterLC: string;
+  Capt: string;
 begin
   fSortedData.Clear;
-  FilterLC:=UTF8LowerCase(Filter);
   for Origi:=0 to fOriginalData.Count-1 do begin
     Capt:=fOriginalData[Origi];
-    if DoFilterItem(Capt, FilterLC, fOriginalData.Objects[Origi]) then begin
+    if DoFilterItem(Capt, Filter, fOriginalData.Objects[Origi]) then begin
       i:=fSortedData.Count-1;       // Always sort the data.
       while i>=0 do begin
         if CompareFNs(Capt,fSortedData[i])>=0 then break;
