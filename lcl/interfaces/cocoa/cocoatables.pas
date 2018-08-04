@@ -32,7 +32,7 @@ uses
   cocoa_extra, CocoaPrivate,
   // LCL
   LMessages, LCLMessageGlue, ExtCtrls,
-  LCLType, LCLProc, Controls, ComCtrls, StdCtrls;
+  LCLType, LCLProc, Controls, StdCtrls;
 
 type
 
@@ -46,6 +46,10 @@ type
 
   IListViewCallBack = interface(ICommonCallback)
     procedure delayedSelectionDidChange_OnTimer(ASender: TObject);
+
+    function ItemsCount: Integer;
+    function GetItemTextAt(ARow, ACol: Integer; var Text: String): Boolean;
+    procedure tableSelectionChange(ARow: Integer);
   end;
 
   TCocoaListBox = objcclass;
@@ -143,12 +147,12 @@ type
 
   TCocoaTableListView = objcclass(NSTableView, NSTableViewDelegateProtocol, NSTableViewDataSourceProtocol)
   public
-    ListView: TCustomListView; // just reference, don't release
     callback: IListViewCallback;
 
     // Owned Pascal classes which need to be released
-    Items: TStringList; // Object are TStringList for sub-items
+    //Items: TStringList; // Object are TStringList for sub-items
     Timer: TTimer;
+    readOnly: Boolean;
 
     function acceptsFirstResponder: Boolean; override;
     function becomeFirstResponder: Boolean; override;
@@ -157,9 +161,9 @@ type
     procedure lclClearCallback; override;
 
     // Own methods, mostly convenience methods
-    procedure setStringValue_forCol_row(AStr: NSString; col, row: NSInteger); message 'setStringValue:forCol:row:';
-    procedure deleteItemForRow(row: NSInteger); message 'deleteItemForRow:';
-    procedure setListViewStringValue_forCol_row(AStr: NSString; col, row: NSInteger); message 'setListViewStringValue:forCol:row:';
+    //procedure setStringValue_forCol_row(AStr: NSString; col, row: NSInteger); message 'setStringValue:forCol:row:';
+    //procedure deleteItemForRow(row: NSInteger); message 'deleteItemForRow:';
+    //procedure setListViewStringValue_forCol_row(AStr: NSString; col, row: NSInteger); message 'setListViewStringValue:forCol:row:';
     function getIndexOfColumn(ACol: NSTableColumn): NSInteger; message 'getIndexOfColumn:';
     procedure reloadDataForRow_column(ARow, ACol: NSInteger); message 'reloadDataForRow:column:';
     procedure scheduleSelectionDidChange(); message 'scheduleSelectionDidChange';
@@ -220,9 +224,9 @@ type
     procedure tableViewSelectionIsChanging(notification: NSNotification); message 'tableViewSelectionIsChanging:';}
   end;
 
+  // todo: this NSScrollView should go away. TCocoaScrollView must be used instead
   TCocoaListView = objcclass(NSScrollView)
   public
-    ListView: TCustomListView; // just reference, don't release
     callback: ICommonCallback;
     // For report style:
     TableListView: TCocoaTableListView;
@@ -592,7 +596,7 @@ end;
 
 procedure TCocoaTableListView.dealloc;
 begin
-  if Assigned(Items) then FreeAndNil(Items);
+  //if Assigned(Items) then FreeAndNil(Items);
   inherited dealloc;
 end;
 
@@ -601,7 +605,7 @@ begin
   if not callback.resetCursorRects then
     inherited resetCursorRects;
 end;
-
+(*
 procedure TCocoaTableListView.setStringValue_forCol_row(
   AStr: NSString; col, row: NSInteger);
 var
@@ -681,7 +685,7 @@ begin
     lSubItems.Strings[col-1] := lNewValue;
   end;
 end;
-
+*)
 function TCocoaTableListView.getIndexOfColumn(ACol: NSTableColumn): NSInteger;
 begin
   Result := tableColumns.indexOfObject(ACol);
@@ -770,10 +774,11 @@ end;
 function TCocoaTableListView.numberOfRowsInTableView(tableView: NSTableView
   ): NSInteger;
 begin
-  if Assigned(Items) then
-    Result := Items.Count
+  if Assigned(callback) then
+    Result := callback.ItemsCount
   else
     Result := 0;
+  writeln('items.Count = ',Result);
 end;
 
 function TCocoaTableListView.tableView_objectValueForTableColumn_row(
@@ -782,12 +787,23 @@ var
   lStringList: TStringList;
   col: NSInteger;
   StrResult: NSString;
+  txt : string;
 begin
-  col := tableColumns.indexOfObject(tableColumn);
   {$IFDEF COCOA_DEBUG_TABCONTROL}
   WriteLn(Format('[TCocoaTableListView.tableView_objectValueForTableColumn_row] col=%d row=%d Items.Count=%d',
     [col, row, Items.Count]));
   {$ENDIF}
+
+  Result := nil;
+  if not Assigned(callback) then Exit;
+  col := tableColumns.indexOfObject(tableColumn);
+
+  txt := '';
+  if callback.GetItemTextAt(row, col, txt) then begin
+    if txt = '' then Result := NSString.string_
+    else Result := NSString.stringWithUTF8String(@txt[1])
+  end;
+  (*
   if row > Items.Count-1 then begin
     Result := nil;
     Exit;
@@ -800,6 +816,7 @@ begin
     StrResult := NSStringUTF8(lStringList.Strings[col-1]);
   end;
   Result := StrResult;
+  *)
 end;
 
 procedure TCocoaTableListView.tableView_setObjectValue_forTableColumn_row(
@@ -810,58 +827,33 @@ var
   lNewValue: NSString;
 begin
   //WriteLn('[TCocoaTableListView.tableView_setObjectValue_forTableColumn_row]');
-  lNewValue := NSString(object_);
   if not NSObject(object_).isKindOfClass(NSString) then Exit;
-  //WriteLn('[TCocoaTableListView.tableView_setObjectValue_forTableColumn_row] A');
-  if ListView.ReadOnly then Exit;
+  lNewValue := NSString(object_);
+  //WriteLn('[TCocoaTableListView.tableView_setObjectValue_forTableColumn_row] A');}
+  if ReadOnly then Exit;
 
   lColumnIndex := getIndexOfColumn(tableColumn);
-
+  {
   setListViewStringValue_forCol_row(lNewValue, lColumnIndex, row);
-  setStringValue_forCol_row(lNewValue, lColumnIndex, row);
+  //setStringValue_forCol_row(lNewValue, lColumnIndex, row);
+  }
   reloadDataForRow_column(lColumnIndex, row);
 end;
 
 function TCocoaTableListView.tableView_shouldEditTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): Boolean;
 begin
-  Result := not ListView.ReadOnly;
+  Result := not readOnly;
 end;
 
 procedure TCocoaTableListView.tableViewSelectionDidChange(notification: NSNotification);
 var
-  Msg: TLMNotify;
-  NMLV: TNMListView;
-  OldSel, NewSel: Integer;
+  NewSel: Integer;
 begin
-  NewSel := Self.selectedRow();
-  {$IFDEF COCOA_DEBUG_LISTVIEW}
-  WriteLn(Format('[TLCLListViewCallback.SelectionChanged] NewSel=%d', [NewSel]));
-  {$ENDIF}
-
-  FillChar(Msg{%H-}, SizeOf(Msg), #0);
-  FillChar(NMLV{%H-}, SizeOf(NMLV), #0);
-
-  Msg.Msg := CN_NOTIFY;
-
-  NMLV.hdr.hwndfrom := ListView.Handle;
-  NMLV.hdr.code := LVN_ITEMCHANGED;
-  NMLV.iSubItem := 0;
-  NMLV.uChanged := LVIF_STATE;
-  Msg.NMHdr := @NMLV.hdr;
-
-  if NewSel >= 0 then
+  if Assigned(callback) then
   begin
-    NMLV.iItem := NewSel;
-    NMLV.uNewState := LVIS_SELECTED;
-  end
-  else
-  begin
-    NMLV.iItem := 0;
-    NMLV.uNewState := 0;
-    NMLV.uOldState := LVIS_SELECTED;
+    NewSel := Self.selectedRow();
+    callback.tableSelectionChange(NewSel);
   end;
-
-  LCLMessageGlue.DeliverMessage(ListView, Msg);
 end;
 
 { TCocoaStringList }

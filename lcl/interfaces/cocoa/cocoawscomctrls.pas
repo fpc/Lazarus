@@ -221,7 +221,13 @@ type
 
   TLCLListViewCallback = class(TLCLCommonCallback, IListViewCallback)
   public
+    listView: TCustomListView;
+    tempItemsCountDelta : Integer;
     procedure delayedSelectionDidChange_OnTimer(ASender: TObject);
+
+    function ItemsCount: Integer;
+    function GetItemTextAt(ARow, ACol: Integer; var Text: String): Boolean;
+    procedure tableSelectionChange(NewSel: Integer);
   end;
   TLCLListViewCallBackClass = class of TLCLListViewCallback;
 
@@ -684,6 +690,7 @@ var
   lCocoaLV: TCocoaListView;
   lTableLV: TCocoaTableListView;
   ns: NSRect;
+  lclcb: TLCLListViewCallback;
 begin
   {$IFDEF COCOA_DEBUG_LISTVIEW}
   WriteLn('[TCocoaWSCustomListView.CreateHandle] AWinControl='+IntToStr(PtrInt(AWinControl)));
@@ -706,13 +713,12 @@ begin
     // 2-> To get proper scrolling use NSScrollView.setDocumentView instead of addSubview
     // Source: http://stackoverflow.com/questions/13872642/nstableview-scrolling-does-not-work
     lCocoaLV.TableListView := lTableLV;
-    lCocoaLV.ListView := TCustomListView(AWinControl);
     lCocoaLV.setDocumentView(lTableLV);
     lCocoaLV.setHasVerticalScroller(True);
 
-    lTableLV.callback := TLCLListViewCallback.Create(lTableLV, AWinControl);
-    lTableLV.Items := TStringList.Create;
-    lTableLV.ListView := TCustomListView(AWinControl);
+    lclcb := TLCLListViewCallback.Create(lTableLV, AWinControl);
+    lclcb.listView := TCustomListView(AWinControl);
+    lTableLV.callback := lclcb;
     lTableLV.setDataSource(lTableLV);
     lTableLV.setDelegate(lTableLV);
     lTableLV.setAllowsColumnReordering(False);
@@ -899,14 +905,24 @@ class procedure TCocoaWSCustomListView.ItemDelete(const ALV: TCustomListView;
 var
   lCocoaLV: TCocoaListView;
   lTableLV: TCocoaTableListView;
+  lclcb : TLCLListViewCallback;
   lStr: NSString;
 begin
   {$IFDEF COCOA_DEBUG_TABCONTROL}
   WriteLn(Format('[TCocoaWSCustomListView.ItemDelete] AIndex=%d', [AIndex]));
   {$ENDIF}
   if not CheckParams(lCocoaLV, lTableLV, ALV) then Exit;
-  lTableLV.deleteItemForRow(AIndex);
+  //lTableLV.deleteItemForRow(AIndex);
+
+  lclcb := TLCLListViewCallback(lTableLV.callback.GetCallbackObject);
+  // TListView item would actually be removed after call to ItemDelete()
+  // thus have to decrease the count, as reloadDate might
+  // request the updated itemCount immediately
+  lclcb.tempItemsCountDelta := -1;
+
   lTableLV.reloadData();
+
+  lclcb.tempItemsCountDelta := 0;
   lTableLV.scheduleSelectionDidChange();
 end;
 
@@ -978,7 +994,7 @@ begin
   {$IFDEF COCOA_DEBUG_TABCONTROL}
   WriteLn(Format('[TCocoaWSCustomListView.ItemInsert]=> lColumnCount=%d', [lColumnCount]));
   {$ENDIF}
-  for i := 0 to lColumnCount-1 do
+  {for i := 0 to lColumnCount-1 do
   begin
     lColumn := lTableLV.tableColumns.objectAtIndex(i);
     if i = 0 then
@@ -990,7 +1006,7 @@ begin
     lNSStr := NSStringUTF8(lStr);
     lTableLV.setStringValue_forCol_row(lNSStr, i, AIndex);
     lNSStr.release;
-  end;
+  end;}
   lTableLV.reloadData();
   lTableLV.sizeToFit();
 end;
@@ -1004,9 +1020,11 @@ var
   lStr: NSString;
 begin
   if not CheckParams(lCocoaLV, lTableLV, ALV) then Exit;
-  lStr := NSStringUTF8(AText);
-  lTableLV.setStringValue_forCol_row(lStr, ASubIndex, AItem.Index);
-  lStr.release;
+  // todo: make a specific row/column reload data!
+  lTableLV.reloadData();
+  //lStr := NSStringUTF8(AText);
+  //lTableLV.setStringValue_forCol_row(lStr, ASubIndex, AItem.Index);
+  //lStr.release;
 end;
 
 class procedure TCocoaWSCustomListView.ItemShow(const ALV: TCustomListView;
@@ -1136,9 +1154,9 @@ begin
   lvpHideSelection,
   lvpHotTrack,}
   lvpMultiSelect: lTableLV.setAllowsMultipleSelection(AIsSet);
-  {lvpOwnerDraw,
-  //lvpReadOnly, implemented elsewhere, no need for this here
-  lvpRowSelect,
+  {lvpOwnerDraw,}
+  lvpReadOnly: lTableLv.readOnly := AIsSet;
+{  lvpRowSelect,
   lvpShowColumnHeaders,
   lvpShowWorkAreas,
   lvpWrapText,
@@ -1255,11 +1273,68 @@ end; *)
 
 { TLCLListViewCallback }
 
+
 procedure TLCLListViewCallback.delayedSelectionDidChange_OnTimer(
   ASender: TObject);
 begin
   TCocoaTableListView(Owner).Timer.Enabled := False;
   TCocoaTableListView(Owner).tableViewSelectionDidChange(nil);
+end;
+
+function TLCLListViewCallback.ItemsCount: Integer;
+begin
+  Result:=listView.Items.Count + tempItemsCountDelta;
+end;
+
+function TLCLListViewCallback.GetItemTextAt(ARow, ACol: Integer;
+  var Text: String): Boolean;
+begin
+  Result := (ACol>=0) and (ACol<listView.ColumnCount)
+    and (ARow >= 0) and (ARow < listView.Items.Count);
+  if not Result then Exit;
+  if ACol = 0 then
+    Text := listView.Items[ARow].Caption
+  else
+  begin
+    Text := '';
+    if (ACol >=0) and (ACol < listView.Items[ARow].SubItems.Count) then
+      Text := listView.Items[ARow].SubItems[ACol];
+  end;
+end;
+
+procedure TLCLListViewCallback.tableSelectionChange(NewSel: Integer);
+var
+  Msg: TLMNotify;
+  NMLV: TNMListView;
+begin
+  {$IFDEF COCOA_DEBUG_LISTVIEW}
+  WriteLn(Format('[TLCLListViewCallback.SelectionChanged] NewSel=%d', [NewSel]));
+  {$ENDIF}
+
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
+  FillChar(NMLV{%H-}, SizeOf(NMLV), #0);
+
+  Msg.Msg := CN_NOTIFY;
+
+  NMLV.hdr.hwndfrom := ListView.Handle;
+  NMLV.hdr.code := LVN_ITEMCHANGED;
+  NMLV.iSubItem := 0;
+  NMLV.uChanged := LVIF_STATE;
+  Msg.NMHdr := @NMLV.hdr;
+
+  if NewSel >= 0 then
+  begin
+    NMLV.iItem := NewSel;
+    NMLV.uNewState := LVIS_SELECTED;
+  end
+  else
+  begin
+    NMLV.iItem := 0;
+    NMLV.uNewState := 0;
+    NMLV.uOldState := LVIS_SELECTED;
+  end;
+
+  LCLMessageGlue.DeliverMessage(ListView, Msg);
 end;
 
 { TCocoaWSTrackBar }
