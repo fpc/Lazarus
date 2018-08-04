@@ -778,7 +778,6 @@ begin
     Result := callback.ItemsCount
   else
     Result := 0;
-  writeln('items.Count = ',Result);
 end;
 
 function TCocoaTableListView.tableView_objectValueForTableColumn_row(
