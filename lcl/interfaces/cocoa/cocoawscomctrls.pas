@@ -832,7 +832,7 @@ begin
   else
     lNSColumn.headerCell.setStringValue(lNSCaption);
 
-  lTableLV.reloadData; // forces the newly set Value (even for setTitle!)
+  lTableLV.headerView.setNeedsDisplay_(true); // forces the newly set Value (even for setTitle!)
   lNSCaption.release;
 end;
 
