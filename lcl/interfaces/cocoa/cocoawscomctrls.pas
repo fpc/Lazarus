@@ -17,7 +17,7 @@ uses
   // WS
   WSComCtrls,
   // Cocoa WS
-  CocoaPrivate, CocoaTabControls, CocoaUtils, CocoaWSCommon, CocoaTables;
+  CocoaPrivate, CocoaTabControls, CocoaUtils, CocoaWSCommon, CocoaTables, cocoa_extra;
 
 type
 
@@ -666,15 +666,11 @@ class function TCocoaWSCustomListView.CheckColumnParams(
   const ALV: TCustomListView; const AIndex: Integer; ASecondIndex: Integer
   ): Boolean;
 var
-  lObject: NSObject;
+  lv : TCocoaListView;
 begin
-  Result := False;
-  ALV.HandleNeeded();
-  if not Assigned(ALV) or not ALV.HandleAllocated then Exit;
-  lObject := NSObject(ALV.Handle);
-  if not lObject.isKindOfClass(TCocoaTableListView) then Exit; // in styles other than Report, column have no meaning
+  Result := CheckParams(lv, ATableControl, ALV);
+  if not Result then Exit;
 
-  ATableControl := TCocoaListView(lObject).TableListView;
   if (AIndex < 0) or (AIndex >= ATableControl.tableColumns.count()) then Exit;
   ANSColumn := NSTableColumn(ATableControl.tableColumns.objectAtIndex(AIndex));
 
@@ -794,7 +790,6 @@ var
   lNSColumn: NSTableColumn;
 begin
   if not CheckColumnParams(lTableLV, lNSColumn, ALV, AOldINdex, ANewIndex) then Exit;
-
   lTableLV.moveColumn_toColumn(AOldIndex, ANewIndex);
 end;
 
@@ -831,7 +826,12 @@ begin
   if not CheckColumnParams(lTableLV, lNSColumn, ALV, AIndex) then Exit;
 
   lNSCaption := NSStringUtf8(ACaption);
-  lNSColumn.headerCell.setStringValue(lNSCaption);
+  if lNSColumn.respondsToSelector(ObjCSelector('setTitle:')) then
+    lNSColumn.setTitle(lNSCaption)
+  else
+    lNSColumn.headerCell.setStringValue(lNSCaption);
+
+  lTableLV.reloadData; // forces the newly set Value (even for setTitle!)
   lNSCaption.release;
 end;
 

@@ -83,6 +83,11 @@ type
     class function allowsAutomaticWindowTabbing: Boolean; message 'allowsAutomaticWindowTabbing';
   end;
 
+  NSTableColumnFix = objccategory external (NSTableColumn)
+    procedure setTitle(atitle: NSString); message 'setTitle:';
+    function title: NSString; message 'title';
+  end;
+
   {// private since 10.5, doesn't seam to do anything in 10.10
   NSApplicationSetAppleMenu = objccategory external(NSApplication)
     procedure setAppleMenu(AMenu: NSMenu); message 'setAppleMenu:';
