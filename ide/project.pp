@@ -6281,8 +6281,9 @@ end;
 
 function TProjectCompilerOptions.IsActive: boolean;
 begin
-  Result:=(LazProject<>nil) and (LazProject.CompilerOptions=Self)
-          and not LazProject.BuildModes.Assigning;
+  Result:=(LazProject<>nil)
+      and not LazProject.BuildModes.Assigning
+      and (LazProject.CompilerOptions=Self);
 end;
 
 procedure TProjectCompilerOptions.Clear;
