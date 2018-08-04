@@ -718,6 +718,7 @@ begin
     lTableLV.setDataSource(lTableLV);
     lTableLV.setDelegate(lTableLV);
     lTableLV.setAllowsColumnReordering(False);
+    lCocoaLV.callback := lclcb;
     {$IFDEF COCOA_DEBUG_LISTVIEW}
     WriteLn(Format('[TCocoaWSCustomListView.CreateHandle] headerView=%d', [PtrInt(lTableLV.headerView)]));
     {$ENDIF}
