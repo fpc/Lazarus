@@ -18,7 +18,7 @@ uses
   WSComCtrls,
   // Cocoa WS
   CocoaPrivate, CocoaScrollers, CocoaTabControls, CocoaUtils,
-  CocoaWSCommon, CocoaTables, cocoa_extra;
+  CocoaWSCommon, CocoaTables, cocoa_extra, CocoaWSStdCtrls;
 
 type
 
@@ -1185,29 +1185,11 @@ var
   lCocoaLV: TCocoaListView;
 begin
   if not CheckParams(lCocoaLV, lTableLV, ALV) then Exit;
-  case AValue of
-  ssNone:
-  begin
-    lCocoaLV.setHasHorizontalRuler(False);
-    lCocoaLV.setHasVerticalRuler(False);
-  end;
-  ssHorizontal, ssAutoHorizontal:
-  begin
-    lCocoaLV.setHasHorizontalRuler(True);
-    lCocoaLV.setHasVerticalRuler(False);
-  end;
-  ssVertical, ssAutoVertical:
-  begin
-    lCocoaLV.setHasHorizontalRuler(False);
-    lCocoaLV.setHasVerticalRuler(True);
-  end;
-  ssBoth, ssAutoBoth:
-  begin
-    lCocoaLV.setHasHorizontalRuler(True);
-    lCocoaLV.setHasVerticalRuler(True);
-  end;
-  end;
-  lCocoaLV.setAutohidesScrollers(AValue in [ssAutoHorizontal, ssAutoVertical, ssAutoBoth]);
+
+  ScrollViewSetScrollStyles(lCocoaLV, AValue);
+
+  lCocoaLV.setNeedsDisplay_(true);
+  lCocoaLV.documentView.setNeedsDisplay_(true);
 end;
 
 { TCocoaWSProgressBar }

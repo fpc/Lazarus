@@ -294,6 +294,8 @@ procedure TextViewSetAllignment(txt: NSTextView; align: TAlignment);
 procedure TextFieldSetAllignment(txt: NSTextField; align: TAlignment);
 procedure RadioButtonSwitchSiblings(checkedRadio: NSButton);
 
+procedure ScrollViewSetScrollStyles(AScroll: TCocoaScrollView; AStyles: TScrollStyle);
+
 implementation
 
 const
@@ -380,6 +382,13 @@ begin
     begin
       NSButton(SubView).setState(NSOffState);
     end;
+end;
+
+procedure ScrollViewSetScrollStyles(AScroll: TCocoaScrollView; AStyles: TScrollStyle);
+begin
+  AScroll.setHasVerticalScroller(VerticalScrollerVisible[AStyles]);
+  AScroll.setHasHorizontalScroller(HorizontalScrollerVisible[AStyles]);
+  AScroll.setAutohidesScrollers(ScrollerAutoHide[AStyles]);
 end;
 
 { TLCLRadioButtonCallback }
@@ -1276,9 +1285,7 @@ end;
 
 class procedure TCocoaWSCustomMemo.SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle);
 begin
-  TCocoaScrollView(ACustomMemo.Handle).setHasVerticalScroller(VerticalScrollerVisible[NewScrollbars]);
-  TCocoaScrollView(ACustomMemo.Handle).setHasHorizontalScroller(HorizontalScrollerVisible[NewScrollbars]);
-  TCocoaScrollView(ACustomMemo.Handle).setAutohidesScrollers(ScrollerAutoHide[NewScrollbars]);
+  ScrollViewSetScrollStyles(TCocoaScrollView(ACustomMemo.Handle), NewScrollbars);
 end;
 
 class procedure  TCocoaWSCustomMemo.SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean);
