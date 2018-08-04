@@ -17,7 +17,8 @@ uses
   // WS
   WSComCtrls,
   // Cocoa WS
-  CocoaPrivate, CocoaTabControls, CocoaUtils, CocoaWSCommon, CocoaTables, cocoa_extra;
+  CocoaPrivate, CocoaScrollers, CocoaTabControls, CocoaUtils,
+  CocoaWSCommon, CocoaTables, cocoa_extra;
 
 type
 
@@ -91,6 +92,8 @@ type
   end;
 
   { TCocoaWSCustomListView }
+
+  TCocoaListView = TCocoaScrollView;
 
   TCocoaWSCustomListView = class(TWSCustomListView)
   private
@@ -654,9 +657,9 @@ begin
   AScroll := TCocoaListView(ALV.Handle);
 
   // ToDo: Implement for other styles
-  if AScroll.TableListView <> nil then
+  if Assigned(AScroll.documentView) and (AScroll.documentView.isKindOfClass(TCocoaTableListView)) then
   begin
-    ATableControl := AScroll.TableListView;
+    ATableControl := TCocoaTableListView(AScroll.documentView);
     Result := True;
   end;
 end;
@@ -708,7 +711,7 @@ begin
     // 1-> The column header appears only if the NSTableView is inside a NSScrollView
     // 2-> To get proper scrolling use NSScrollView.setDocumentView instead of addSubview
     // Source: http://stackoverflow.com/questions/13872642/nstableview-scrolling-does-not-work
-    lCocoaLV.TableListView := lTableLV;
+    //lCocoaLV.TableListView := lTableLV;
     lCocoaLV.setDocumentView(lTableLV);
     lCocoaLV.setHasVerticalScroller(True);
 
@@ -747,13 +750,15 @@ class function TCocoaWSCustomListView.ColumnGetWidth(
 var
   lTableLV: TCocoaTableListView;
   lColumn: NSTableColumn;
+  sc: TCocoaListView;
 begin
   {$IFDEF COCOA_DEBUG_LISTVIEW}
   WriteLn(Format('[TCocoaWSCustomListView.ColumnGetWidth] AIndex=%d', [AIndex]));
   {$ENDIF}
   Result:=0;
-  if not Assigned(ALV) or not ALV.HandleAllocated then Exit;
-  lTableLV := TCocoaListView(ALV.Handle).TableListView;
+  if not CheckParams(sc, lTableLV, ALV) then Exit;
+  //if not Assigned(ALV) or not ALV.HandleAllocated then Exit;
+  //lTableLV := TCocoaTableListView(TCocoaListView(ALV.Handle).documentView);
   if (AIndex < 0) or (AIndex >= lTableLV.tableColumns.count()) then Exit;
 
   lColumn := lTableLV.tableColumns.objectAtIndex(AIndex);
@@ -766,13 +771,15 @@ var
   lTableLV: TCocoaTableListView;
   lNSColumn: NSTableColumn;
   lTitle: NSString;
+  sc: TCocoaListView;
 begin
   {$IFDEF COCOA_DEBUG_LISTVIEW}
   WriteLn(Format('[TCocoaWSCustomListView.ColumnInsert] ALV=%x AIndex=%d', [PtrInt(ALV), AIndex]));
   {$ENDIF}
   ALV.HandleNeeded();
-  if not Assigned(ALV) or not ALV.HandleAllocated then Exit;
-  lTableLV := TCocoaListView(ALV.Handle).TableListView;
+  //if not Assigned(ALV) or not ALV.HandleAllocated then Exit;
+  //lTableLV := TCocoaTableListView(TCocoaListView(ALV.Handle).documentView);
+  if not CheckParams(sc, lTableLV, ALV) then Exit;
   {$IFDEF COCOA_DEBUG_LISTVIEW}
   WriteLn(Format('[TCocoaWSCustomListView.ColumnInsert]=> tableColumns.count=%d', [lTableLV.tableColumns.count()]));
   {$ENDIF}

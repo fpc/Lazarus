@@ -224,29 +224,7 @@ type
     procedure tableViewSelectionIsChanging(notification: NSNotification); message 'tableViewSelectionIsChanging:';}
   end;
 
-  // todo: this NSScrollView should go away. TCocoaScrollView must be used instead
-
-  { TCocoaListView }
-
-  TCocoaListView = objcclass(NSScrollView)
-  public
-    callback: ICommonCallback;
-    // For report style:
-    TableListView: TCocoaTableListView;
-    // For the other styles:
-    // ToDo
-    function lclGetCallback: ICommonCallback; override;
-  end;
-
-
 implementation
-
-{ TCocoaListView }
-
-function TCocoaListView.lclGetCallback: ICommonCallback;
-begin
-  Result := callback;
-end;
 
 { TCocoaListBox }
 
