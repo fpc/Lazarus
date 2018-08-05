@@ -856,7 +856,8 @@ begin
   AutoOnOptionsCheckGroup.Items.Add(lisAutomaticallyIgnoreForSelection);
   AutoOnOptionsCheckGroup.Items.Add(lisAutomaticallyRemoveCharacter);
 
-  FilenameEdit.Text:=EditorOpts.CodeTemplateFileName;
+  FilenameEdit.Text:=EditorOpts.CodeTemplateFileNameRaw;
+  FilenameEdit.InitialDir:=ExtractFilePath(EditorOpts.CodeTemplateFileNameExpand);
   FilenameEdit.DialogTitle:=dlgChsCodeTempl;
   FilenameEdit.Filter:=dlgFilterDciFile + '|*.dci|' + dlgFilterAll  + '|' + GetAllFilesMask;
 
@@ -874,7 +875,7 @@ begin
 
   // init SynAutoComplete
   with SynAutoComplete do begin
-    s:=EditorOpts.CodeTemplateFileName;
+    s:=EditorOpts.CodeTemplateFileNameExpand;
     if FileExistsUTF8(s) then
       try
          LoadStringsFromFileUTF8(AutoCompleteList,s);
@@ -910,7 +911,7 @@ var
 begin
   SaveCurCodeTemplate;
 
-  EditorOpts.CodeTemplateFileName:=FilenameEdit.Text;
+  EditorOpts.CodeTemplateFileNameRaw:=FilenameEdit.Text;
   //EditorOpts.CodeTemplateIndentToTokenStart:=
   //  (CodeTemplateIndentTypeRadioGroup.ItemIndex=0);
 
@@ -920,11 +921,11 @@ begin
     Res:=mrOk;
     repeat
       try
-        SaveStringsToFileUTF8(SynAutoComplete.AutoCompleteList,EditorOpts.CodeTemplateFileName);
+        SaveStringsToFileUTF8(SynAutoComplete.AutoCompleteList,EditorOpts.CodeTemplateFileNameExpand);
       except
         res:=IDEMessageDialog(lisCCOErrorCaption, 'Unable to write code '
           +'templates to file '''
-          +EditorOpts.CodeTemplateFileName+'''! ',mtError
+          +EditorOpts.CodeTemplateFileNameExpand+'''! ',mtError
           ,[mbAbort, mbIgnore, mbRetry]);
         if res=mrAbort then exit;
       end;

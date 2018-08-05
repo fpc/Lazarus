@@ -10259,8 +10259,8 @@ begin
   AutoStartCompletionBoxTimer.Interval:=EditorOpts.AutoDelayInMSec;
   // reload code templates
   with CodeTemplateModul do begin
-    if FileExistsUTF8(EditorOpts.CodeTemplateFilename) then
-      LoadStringsFromFileUTF8(AutoCompleteList,EditorOpts.CodeTemplateFilename)
+    if FileExistsUTF8(EditorOpts.CodeTemplateFileNameExpand) then
+      LoadStringsFromFileUTF8(AutoCompleteList,EditorOpts.CodeTemplateFileNameExpand)
     else begin
       Filename:=EnvironmentOptions.GetParsedLazarusDirectory
         +GetForcedPathDelims('ide/lazarus.dci');
@@ -11191,7 +11191,7 @@ begin
   // code templates
   FCodeTemplateModul:=TSynEditAutoComplete.Create(Self);
   with FCodeTemplateModul do begin
-    DCIFilename:=EditorOpts.CodeTemplateFilename;
+    DCIFilename:=EditorOpts.CodeTemplateFileNameExpand;
     if not FileExistsCached(DCIFilename) then
       DCIFilename:=EnvironmentOptions.GetParsedLazarusDirectory
         +GetForcedPathDelims('ide/lazarus.dci');

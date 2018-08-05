@@ -67,7 +67,7 @@ uses
   LinkScanner, CodeToolManager,
   // IDEIntf
   IDECommands, SrcEditorIntf, IDEOptionsIntf, IDEOptEditorIntf, IDEDialogs,
-  EditorSyntaxHighlighterDef,
+  EditorSyntaxHighlighterDef, MacroIntf,
   // IDE
   SourceMarks, LazarusIDEStrConsts, KeyMapping, LazConf;
 
@@ -1454,7 +1454,7 @@ type
     fAutoToolTipExprEval: Boolean;
     fAutoToolTipSymbTools: Boolean;
     FDbgHintAutoTypeCastClass: Boolean;
-    fCodeTemplateFileName: String;
+    fCodeTemplateFileNameRaw: String;
     fCTemplIndentToTokenStart: Boolean;
     fAutoDisplayFuncPrototypes: Boolean;
 
@@ -1497,7 +1497,7 @@ type
     FStringBreakPrefix: String;
 
     FDefaultValues: TEditorOptions;
-
+    function GetCodeTemplateFileNameExpand:String;
   protected
     function GetTabPosition: TTabPosition; override;
   public
@@ -1655,8 +1655,10 @@ type
   public
     property AutoDelayInMSec: Integer read fAutoDelayInMSec
       write fAutoDelayInMSec default 1000;
-    property CodeTemplateFileName: String
-      read fCodeTemplateFileName write fCodeTemplateFileName;
+    property CodeTemplateFileNameRaw: String
+      read fCodeTemplateFileNameRaw write fCodeTemplateFileNameRaw;
+    property CodeTemplateFileNameExpand:String
+      read GetCodeTemplateFileNameExpand;
     property CodeTemplateIndentToTokenStart: Boolean
       read fCTemplIndentToTokenStart write fCTemplIndentToTokenStart;
     property AutoRemoveEmptyMethods: Boolean read FAutoRemoveEmptyMethods
@@ -4548,15 +4550,15 @@ begin
   Init;
 
   // code templates (dci file)
-  fCodeTemplateFileName :=
+  fCodeTemplateFileNameRaw :=
     TrimFilename(AppendPathDelim(GetPrimaryConfigPath)+DefaultCodeTemplatesFilename);
   CopySecondaryConfigFile(DefaultCodeTemplatesFilename);
-  if not FileExistsUTF8(CodeTemplateFileName) then
+  if not FileExistsUTF8(CodeTemplateFileNameExpand) then
   begin
     res := TResourceStream.Create(HInstance, PChar('lazarus_dci_file'), PChar(RT_RCDATA));
     try
       InvalidateFileStateCache;
-      fs := TFileStreamUTF8.Create(CodeTemplateFileName, fmCreate);
+      fs := TFileStreamUTF8.Create(CodeTemplateFileNameExpand, fmCreate);
       try
         fs.CopyFrom(res, res.Size);
       finally
@@ -4564,7 +4566,7 @@ begin
       end;
     except
       DebugLn('WARNING: unable to write code template file "',
-        CodeTemplateFileName, '"');
+        CodeTemplateFileNameExpand, '"');
     end;
     res.Free;
   end;
@@ -4902,7 +4904,7 @@ begin
       XMLConfig.GetValue('EditorOptions/CodeTools/AutoToolTipSymbTools', True);
     fAutoDelayInMSec    :=
       XMLConfig.GetValue('EditorOptions/CodeTools/AutoDelayInMSec', 1000);
-    fCodeTemplateFileName :=
+    fCodeTemplateFileNameRaw :=
       XMLConfig.GetValue('EditorOptions/CodeTools/CodeTemplateFileName'
       , TrimFilename(AppendPathDelim(GetPrimaryConfigPath) + DefaultCodeTemplatesFilename));
     fCTemplIndentToTokenStart :=
@@ -5098,7 +5100,7 @@ begin
     XMLConfig.SetDeleteValue('EditorOptions/CodeTools/AutoDelayInMSec'
       , fAutoDelayInMSec, 1000);
     XMLConfig.SetDeleteValue('EditorOptions/CodeTools/CodeTemplateFileName'
-      , fCodeTemplateFileName, '');
+      , fCodeTemplateFileNameRaw, '');
     XMLConfig.SetDeleteValue(
       'EditorOptions/CodeTools/CodeTemplateIndentToTokenStart/Value'
       , fCTemplIndentToTokenStart, False);
@@ -5944,6 +5946,12 @@ begin
   finally
     ASynEdit.EndUpdate;
   end;
+end;
+
+function TEditorOptions.GetCodeTemplateFileNameExpand:String;
+begin
+  result:=fCodeTemplateFileNameRaw;
+  IDEMacros.SubstituteMacros(result);
 end;
 
 function TEditorOptions.GetTabPosition: TTabPosition;
