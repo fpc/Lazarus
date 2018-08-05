@@ -51,6 +51,11 @@ type
     procedure MouseClick;
     function MouseMove(Event: NSEvent): Boolean;
     function KeyEvent(Event: NSEvent; AForceAsKeyDown: Boolean = False): Boolean;
+
+    procedure KeyEvPrepare(Event: NSEvent; AForceAsKeyDown: Boolean = False);
+    procedure KeyEvBefore(var AllowCocoaHandle: boolean);
+    procedure KeyEvAfter;
+
     function scrollWheel(Event: NSEvent): Boolean;
     // size, pos events
     procedure frameDidChange(sender: id);
@@ -111,6 +116,7 @@ type
     function lclIsHandle: Boolean; message 'lclIsHandle';
     function lclContentView: NSView; message 'lclContentView';
     procedure lclOffsetMousePos(var Point: NSPoint); message 'lclOffsetMousePos:';
+    procedure lclExpectedKeys(var wantTabs, wantArrows, wantAll: Boolean); message 'lclExpectedKeys:::';
   end;
 
   { LCLViewExtension }
@@ -771,6 +777,14 @@ end;
 procedure LCLObjectExtension.lclOffsetMousePos(var Point: NSPoint);
 begin
 
+end;
+
+procedure LCLObjectExtension.lclExpectedKeys(var wantTabs, wantArrows,
+  wantAll: Boolean);
+begin
+  wantTabs := false;
+  wantArrows := false;
+  wantAll := false;
 end;
 
 { LCLControlExtension }

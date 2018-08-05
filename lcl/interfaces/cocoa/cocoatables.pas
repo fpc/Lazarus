@@ -187,6 +187,7 @@ type
     procedure keyDown(event: NSEvent); override;
     procedure keyUp(event: NSEvent); override;
     function lclIsHandle: Boolean; override;
+    procedure lclExpectedKeys(var wantTabs, wantKeys, wantAllKeys: Boolean); override;
 
     // NSTableViewDataSourceProtocol
     function numberOfRowsInTableView(tableView: NSTableView): NSInteger; message 'numberOfRowsInTableView:';
@@ -558,6 +559,14 @@ begin
   Result:=true;
 end;
 
+procedure TCocoaTableListView.lclExpectedKeys(var wantTabs, wantKeys,
+  wantAllKeys: Boolean);
+begin
+  wantTabs := false;
+  wantKeys := true;
+  wantAllKeys := false;
+end;
+
 function TCocoaTableListView.acceptsFirstResponder: Boolean;
 begin
   Result := True;
@@ -691,7 +700,7 @@ begin
   reloadDataForRowIndexes_columnIndexes(lRowSet, lColSet);
 end;
 
-procedure TCocoaTableListView.scheduleSelectionDidChange;
+procedure TCocoaTableListView.scheduleSelectionDidChange();
 begin
   if Timer = nil then Timer := TTimer.Create(nil);
   Timer.Interval := 1;
@@ -751,15 +760,33 @@ begin
 end;
 
 procedure TCocoaTableListView.keyDown(event: NSEvent);
+var
+  allow : Boolean;
 begin
-  if not Assigned(callback) or not callback.KeyEvent(event) then
-    inherited keyDown(event);
+  if not Assigned(callback) then
+    inherited keyDown(event)
+  else
+  begin
+    callback.KeyEvPrepare(event);
+    callback.KeyEvBefore(allow);
+    if allow then inherited KeyDown(event);
+    callback.KeyEvAfter;
+  end;
 end;
 
 procedure TCocoaTableListView.keyUp(event: NSEvent);
+var
+  allow : Boolean;
 begin
-  if not Assigned(callback) or not callback.KeyEvent(event) then
-    inherited keyUp(event);
+  if not Assigned(callback) then
+    inherited KeyUp(event)
+  else
+  begin
+    callback.KeyEvPrepare(event);
+    callback.KeyEvBefore(allow);
+    if allow then inherited KeyUp(event);
+    callback.KeyEvAfter;
+  end;
 end;
 
 function TCocoaTableListView.numberOfRowsInTableView(tableView: NSTableView

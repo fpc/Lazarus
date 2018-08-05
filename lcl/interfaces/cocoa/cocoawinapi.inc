@@ -102,6 +102,39 @@ begin
     NSObject(Handle).lclContentView.lclLocalToScreen(P.X, P.Y);
 end;
 
+procedure TCocoaWidgetSet.CallDefaultWndHandler(Sender: TObject; var Message);
+var
+  hnd : NSObject;
+  vw  : NSView;
+  tb : Boolean;
+  ar : Boolean;
+  ks : Boolean;
+const
+  WantTab   : array [boolean] of integer = (0, DLGC_WANTTAB);
+  WantArrow : array [boolean] of integer = (0, DLGC_WANTARROWS);
+  WantKeys  : array [boolean] of integer = (0, DLGC_WANTALLKEYS);
+begin
+  case TLMessage(Message).Msg of
+    LM_GETDLGCODE: begin
+      hnd := nil;
+      if (Sender is TWinControl) then hnd := NSObject(TWinControl(Sender).Handle);
+      if not Assigned(hnd) then Exit;
+      vw := hnd.lclContentView();
+      if Assigned(vw) then
+      begin
+        tb := false;
+        ar := false;
+        ks := false;
+        vw.lclExpectedKeys(tb, ar, ks);
+        TLMessage(Message).Result := TLMessage(Message).Result or WantTab[tb] or WantArrow[ar] or WantKeys[ks];
+      end;
+
+    end;
+  else
+    TLMessage(Message).Result := 0;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Method:  ClipboardFormatToMimeType
   Params:  FormatID - A registered format identifier (0 is invalid)
