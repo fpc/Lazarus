@@ -7090,6 +7090,7 @@ var
   ProgramFilename: string;
   DebugClass: TDebuggerClass;
   ARunMode: TRunParamsOptionsMode;
+  ReqOpts: TDebugCompilerRequirements;
 begin
   if ToolStatus <> itNone
   then begin
@@ -7119,19 +7120,53 @@ begin
 
   DebugClass:=DebugBoss.DebuggerClass;
 
-  // check if debugger supports compiler flags
-  if ((DebugClass <> nil)
-  and (not DebugClass.CanExternalDebugSymbolsFile))
-  and (Project1.CompilerOptions.UseExternalDbgSyms) then
-  begin
-    // this debugger does not support external debug symbols
-    if IDEQuestionDialog(lisDisableOptionXg,
-        Format(lisTheProjectWritesTheDebugSymbolsToAnExternalFileThe, [DebugClass.Caption]),
-        mtConfirmation, [mrYes, lisDisableOptionXg2,
-                         mrCancel]) <> mrYes
-    then
-      exit;
-    Project1.CompilerOptions.UseExternalDbgSyms:=false;
+  if DebugClass <> nil then begin
+    ReqOpts := DebugBoss.RequiredCompilerOpts(Project1.CompilerOptions.TargetCPU, Project1.CompilerOptions.TargetOS);
+    // check if debugger supports compiler flags
+    if (dcrNoExternalDbgInfo in ReqOpts)
+    and (Project1.CompilerOptions.UseExternalDbgSyms) then
+    begin
+      // this debugger does not support external debug symbols
+      if IDEQuestionDialog(lisDisableOptionXg,
+          Format(lisTheProjectWritesTheDebugSymbolsToAnExternalFileThe, [DebugClass.Caption]),
+          mtConfirmation, [mrYes, lisDisableOptionXg2,
+                           mrCancel]) <> mrYes
+      then
+        exit;
+      Project1.CompilerOptions.UseExternalDbgSyms:=false;
+    end
+    else
+    if (dcrExternalDbgInfoOnly in ReqOpts)
+    and (not Project1.CompilerOptions.UseExternalDbgSyms) then
+    begin
+      // this debugger does ONLY support external debug symbols
+      if IDEQuestionDialog(lisEnableOptionXg,
+          Format(lisTheProjectWritesTheDebugSymbolsToTheExexcutable, [DebugClass.Caption]),
+          mtConfirmation, [mrYes, lisEnableOptionXg,
+                           mrCancel]) <> mrYes
+      then
+        exit;
+      Project1.CompilerOptions.UseExternalDbgSyms:=true;
+    end;
+
+    if (dcrDwarfOnly in ReqOpts)
+    and (not (Project1.CompilerOptions.DebugInfoType in [dsDwarf2, dsDwarf2Set, dsDwarf3])) then
+    begin
+      // this debugger does ONLY support external debug symbols
+      case IDEQuestionDialog(lisEnableOptionDwarf,
+          Format(lisTheProjectDoesNotUseDwarf, [DebugClass.Caption]),
+          mtConfirmation, [1 {mrOk}, lisEnableOptionDwarf2Sets,
+                           12, lisEnableOptionDwarf2,
+                           13, lisEnableOptionDwarf3,
+                           mrCancel])
+      of
+        1:  Project1.CompilerOptions.DebugInfoType := dsDwarf2Set;
+        12: Project1.CompilerOptions.DebugInfoType := dsDwarf2;
+        13: Project1.CompilerOptions.DebugInfoType := dsDwarf3;
+        else
+          exit;
+      end;
+    end;
   end;
 
   // Build project first

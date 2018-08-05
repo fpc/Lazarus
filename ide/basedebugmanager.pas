@@ -154,6 +154,7 @@ type
 
     procedure DoRestoreDebuggerMarks(AnUnitInfo: TUnitInfo); virtual; abstract;
 
+    function RequiredCompilerOpts(ATargetCPU, ATargetOS: String): TDebugCompilerRequirements; virtual; abstract;
     function InitDebugger(AFlags: TDbgInitFlags = []): Boolean; virtual; abstract;
     
     function DoPauseProject: TModalResult; virtual; abstract;

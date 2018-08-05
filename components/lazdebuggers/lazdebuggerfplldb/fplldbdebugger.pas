@@ -122,7 +122,7 @@ type
     property CurrentStackFrame;
   public
     class function Caption: String; override;
-    class function CanExternalDebugSymbolsFile: boolean; override;
+    class function RequiredCompilerOpts(ATargetCPU, ATargetOS: String): TDebugCompilerRequirements; override;
   public
     constructor Create(const AExternalDebugger: String); override;
     destructor Destroy; override;
@@ -1147,14 +1147,21 @@ begin
   Result := 'LLDB debugger (with fpdebug) (Alpha)';
 end;
 
-class function TFpLldbDebugger.CanExternalDebugSymbolsFile: boolean;
+class function TFpLldbDebugger.RequiredCompilerOpts(ATargetCPU, ATargetOS: String): TDebugCompilerRequirements;
 begin
-  {$ifdef CD_Cocoa}{$DEFINE MacOS}{$ENDIF}
-  {$IFDEF Darwin}{$DEFINE MacOS}{$ENDIF}
+  {$ifdef CD_Cocoa}{$DEFINE MacOS}
+  if ATargetCPU = '' then ATargetCPU := 'x86_64'
+  {$ENDIF}
+  {$IFDEF Darwin}{$DEFINE MacOS}
+  if ATargetCPU = '' then ATargetCPU := 'i386'
+  {$ENDIF}
   {$IFDEF MacOs}
-  Result:=True;
+  if LowerCase(ATargetCPU) = 'i386' then
+    Result:=[dcrDwarfOnly] // carbon
+  else
+    Result:=[dcrExternalDbgInfoOnly, dcrDwarfOnly]; // cocoa
   {$ELSE}
-  Result:=False;
+  Result:=[dcrNoExternalDbgInfo, dcrDwarfOnly];
   {$ENDIF}
 end;
 

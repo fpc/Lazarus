@@ -211,6 +211,8 @@ type
     procedure ClearDebugOutputLog;
     procedure ClearDebugEventsLog;
 
+    function RequiredCompilerOpts(ATargetCPU, ATargetOS: String
+      ): TDebugCompilerRequirements; override;
     function InitDebugger(AFlags: TDbgInitFlags = []): Boolean; override;
     function DoSetBreakkPointWarnIfNoDebugger: boolean;
 
@@ -2275,6 +2277,14 @@ end;
 procedure TDebugManager.ClearDebugEventsLog;
 begin
   FEventLogManager.ClearDebugEventsLog;
+end;
+
+function TDebugManager.RequiredCompilerOpts(ATargetCPU, ATargetOS: String
+  ): TDebugCompilerRequirements;
+begin
+  if DebuggerClass = nil then
+    exit([]);
+  Result := DebuggerClass.RequiredCompilerOpts(ATargetCPU, ATargetOS);
 end;
 
 //-----------------------------------------------------------------------------

@@ -169,7 +169,7 @@ type
     function GetLocation: TDBGLocationRec; override;
     class function Caption: String; override;
     class function NeedsExePath: boolean; override;
-    class function CanExternalDebugSymbolsFile: boolean; override;
+    class function RequiredCompilerOpts(ATargetCPU, ATargetOS: String): TDebugCompilerRequirements; override;
     class function CreateProperties: TDebuggerProperties; override;
     function  GetSupportedCommands: TDBGCommands; override;
   end;
@@ -2054,14 +2054,21 @@ begin
   Result:=False;
 end;
 
-class function TFpDebugDebugger.CanExternalDebugSymbolsFile: boolean;
+class function TFpDebugDebugger.RequiredCompilerOpts(ATargetCPU, ATargetOS: String): TDebugCompilerRequirements;
 begin
-  {$ifdef CD_Cocoa}{$DEFINE MacOS}{$ENDIF}
-  {$IFDEF Darwin}{$DEFINE MacOS}{$ENDIF}
+  {$ifdef CD_Cocoa}{$DEFINE MacOS}
+  if ATargetCPU = '' then ATargetCPU := 'x86_64'
+  {$ENDIF}
+  {$IFDEF Darwin}{$DEFINE MacOS}
+  if ATargetCPU = '' then ATargetCPU := 'i386'
+  {$ENDIF}
   {$IFDEF MacOs}
-  Result:=True;
+  if LowerCase(ATargetCPU) = 'i386' then
+    Result:=[dcrDwarfOnly] // carbon
+  else
+    Result:=[dcrExternalDbgInfoOnly, dcrDwarfOnly]; // cocoa
   {$ELSE}
-  Result:=False;
+  Result:=[dcrNoExternalDbgInfo, dcrDwarfOnly];
   {$ENDIF}
 end;
 

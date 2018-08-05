@@ -59,7 +59,6 @@ type
   public
     class function Caption: String; override;
     class function NeedsExePath: boolean; override;
-    class function CanExternalDebugSymbolsFile: boolean; override;
   published
   end;
 
@@ -175,11 +174,6 @@ end;
 class function TProcessDebugger.NeedsExePath: boolean;
 begin
   Result := false; // no need to have a valid exe path for the process debugger
-end;
-
-class function TProcessDebugger.CanExternalDebugSymbolsFile: boolean;
-begin
-  Result := true; // Yeah, why not.
 end;
 
 initialization

@@ -1721,6 +1721,9 @@ type
     etWindowsMessageSent
   );
 
+  TDebugCompilerRequirement = (dcrNoExternalDbgInfo, dcrExternalDbgInfoOnly, dcrDwarfOnly);
+  TDebugCompilerRequirements = set of TDebugCompilerRequirement;
+
   TDBGFeedbackType = (ftInformation, ftWarning, ftError);
   TDBGFeedbackResult = (frOk, frStop);
   TDBGFeedbackResults = set of TDBGFeedbackResult;
@@ -1885,7 +1888,7 @@ type
     class function ExePaths: String; virtual;        // The default locations of the exe
     class function HasExePath: boolean; virtual; deprecated; // use NeedsExePath instead
     class function NeedsExePath: boolean; virtual;        // If the debugger needs to have an exe path
-    class function CanExternalDebugSymbolsFile: boolean; virtual; // If the debugger support the -Xg compiler option to store the debug info in an external file
+    class function RequiredCompilerOpts(ATargetCPU, ATargetOS: String): TDebugCompilerRequirements; virtual;
 
     // debugger properties
     class function CreateProperties: TDebuggerProperties; virtual;         // Creates debuggerproperties
@@ -6044,9 +6047,9 @@ begin
   Result := true; // most debugger are external and have an exe path
 end;
 
-class function TDebuggerIntf.CanExternalDebugSymbolsFile: boolean;
+class function TDebuggerIntf.RequiredCompilerOpts(ATargetCPU, ATargetOS: String): TDebugCompilerRequirements;
 begin
-  Result := false;
+  Result := [];
 end;
 
 function TDebuggerIntf.GetCommands: TDBGCommands;
