@@ -1150,10 +1150,10 @@ end;
 class function TFpLldbDebugger.RequiredCompilerOpts(ATargetCPU, ATargetOS: String): TDebugCompilerRequirements;
 begin
   {$ifdef CD_Cocoa}{$DEFINE MacOS}
-  if ATargetCPU = '' then ATargetCPU := 'x86_64'
+  if ATargetCPU = '' then ATargetCPU := 'x86_64';
   {$ENDIF}
   {$IFDEF Darwin}{$DEFINE MacOS}
-  if ATargetCPU = '' then ATargetCPU := 'i386'
+  if ATargetCPU = '' then ATargetCPU := 'i386';
   {$ENDIF}
   {$IFDEF MacOs}
   if LowerCase(ATargetCPU) = 'i386' then

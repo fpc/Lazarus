@@ -214,6 +214,8 @@ type
     procedure Init; override;         // Initializes external debugger
     procedure Done; override;         // Kills external debugger
 
+    class function RequiredCompilerOpts(ATargetCPU, ATargetOS: String
+      ): TDebugCompilerRequirements; override;
     function GetLocation: TDBGLocationRec; override;
 //    function GetProcessList({%H-}AList: TRunningProcessInfoList): boolean; override;
 //    function NeedReset: Boolean; override;
@@ -1927,6 +1929,12 @@ begin
   FDebugInstructionQueue.OnDebuggerTerminated := @DoCmdLineDebuggerTerminated;
   inherited Done;
   DebugLnExit('!!! TLldbDebugger.Done;');
+end;
+
+class function TLldbDebugger.RequiredCompilerOpts(ATargetCPU, ATargetOS: String
+  ): TDebugCompilerRequirements;
+begin
+  Result:=[dcrDwarfOnly];
 end;
 
 function TLldbDebugger.GetLocation: TDBGLocationRec;
