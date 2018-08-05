@@ -49,6 +49,7 @@ type
 
     function ItemsCount: Integer;
     function GetItemTextAt(ARow, ACol: Integer; var Text: String): Boolean;
+    procedure SetItemTextAt(ARow, ACol: Integer; const Text: String);
     procedure tableSelectionChange(ARow: Integer);
   end;
 
@@ -822,11 +823,11 @@ begin
   if ReadOnly then Exit;
 
   lColumnIndex := getIndexOfColumn(tableColumn);
-  {
-  setListViewStringValue_forCol_row(lNewValue, lColumnIndex, row);
-  //setStringValue_forCol_row(lNewValue, lColumnIndex, row);
-  }
-  reloadDataForRow_column(lColumnIndex, row);
+  if Assigned(callback) then
+  begin
+    callback.SetItemTextAt(row, lColumnIndex, lNewValue.UTF8String);
+    reloadDataForRow_column(lColumnIndex, row);
+  end;
 end;
 
 function TCocoaTableListView.tableView_shouldEditTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): Boolean;

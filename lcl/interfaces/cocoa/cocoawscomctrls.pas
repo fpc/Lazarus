@@ -226,10 +226,14 @@ type
   public
     listView: TCustomListView;
     tempItemsCountDelta : Integer;
+
+    isSetTextFromWS: Integer; // allows to suppress the notifation about text change
+                              // when initiated by Cocoa itself.
     procedure delayedSelectionDidChange_OnTimer(ASender: TObject);
 
     function ItemsCount: Integer;
     function GetItemTextAt(ARow, ACol: Integer; var Text: String): Boolean;
+    procedure SetItemTextAt(ARow, ACol: Integer; const Text: String);
     procedure tableSelectionChange(NewSel: Integer);
   end;
   TLCLListViewCallBackClass = class of TLCLListViewCallback;
@@ -1263,6 +1267,8 @@ end; *)
 
 { TLCLListViewCallback }
 
+type
+  TProtCustomListView = class(TCustomListView);
 
 procedure TLCLListViewCallback.delayedSelectionDidChange_OnTimer(
   ASender: TObject);
@@ -1290,6 +1296,23 @@ begin
     if (ACol >=0) and (ACol < listView.Items[ARow].SubItems.Count) then
       Text := listView.Items[ARow].SubItems[ACol];
   end;
+end;
+
+procedure TLCLListViewCallback.SetItemTextAt(ARow, ACol: Integer;
+  const Text: String);
+begin
+  // there's no notifcaiton to be sent to the TCustomListView;
+  if (ACol<>0) then Exit;
+
+  inc(isSetTextFromWS);
+  try
+    if (ACol=0) then
+      if (ARow>=0) and (ARow<listView.Items.Count) then
+        TProtCustomListView(listView).DoEndEdit(listView.Items[ARow], Text);
+  finally
+    dec(isSetTextFromWS);
+  end;
+
 end;
 
 procedure TLCLListViewCallback.tableSelectionChange(NewSel: Integer);
