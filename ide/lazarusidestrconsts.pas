@@ -4064,7 +4064,7 @@ resourcestring
   lisEnableOptionDwarf = 'Enable Dwarf 2 (-gw)?';
   lisTheProjectDoesNotUseDwarf = 'The project does not '
     +'write debug info in Dwarf format.'
-    + 'The "%s" supports only Dwarf.';
+    +' The "%s" supports only Dwarf.';
   lisEnableOptionDwarf2 = 'Enable Dwarf 2 (-gw)';
   lisEnableOptionDwarf2Sets = 'Enable Dwarf 2 with sets';
   lisEnableOptionDwarf3 = 'Enable Dwarf 3 (-gw3)';
