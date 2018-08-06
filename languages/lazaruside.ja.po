@@ -219,7 +219,9 @@ msgid "Gutter"
 msgstr "ガター"
 
 #: lazarusidestrconsts.dlfmousesimplerightmovecaret
-msgid "Right mouse includes caret move"
+#, fuzzy
+#| msgid "Right mouse includes caret move"
+msgid "Right button click includes caret move"
 msgstr "右マウスはキャレット移動を含む"
 
 #: lazarusidestrconsts.dlfmousesimpletextsect
@@ -677,7 +679,7 @@ msgstr "アルファベット順に"
 #: lazarusidestrconsts.dlgalwaysvisiblecursor
 #, fuzzy
 #| msgid "Always visible cursor"
-msgid "Always keep Caret in visible area of editor"
+msgid "Always keep caret in visible area of editor"
 msgstr "常にカーソルを表示"
 
 #: lazarusidestrconsts.dlgambigfileact
@@ -733,7 +735,9 @@ msgid "Auto Display Function Prototypes"
 msgstr "自動的に関数のプロトタイプを表示"
 
 #: lazarusidestrconsts.dlgautohidecursor
-msgid "Hide mouse when typing"
+#, fuzzy
+#| msgid "Hide mouse when typing"
+msgid "Hide mouse pointer when typing"
 msgstr "タイプ時にマウスを隠す"
 
 #: lazarusidestrconsts.dlgautoindent
@@ -848,7 +852,9 @@ msgid "Bracket highlight"
 msgstr "括弧の強調"
 
 #: lazarusidestrconsts.dlgbracketmatchgroup
-msgid "Matching bracket pairs"
+#, fuzzy
+#| msgid "Matching bracket pairs"
+msgid "Matching bracket and quote pairs"
 msgstr "括弧のペアを揃える"
 
 #: lazarusidestrconsts.dlgcannotusedockedundockeddesktop
@@ -1156,7 +1162,9 @@ msgid "Do not indent prefix"
 msgstr "プレフィックスをインデントしない"
 
 #: lazarusidestrconsts.dlgcommentindentgroupoptions
-msgid "Comments"
+#, fuzzy
+#| msgid "Comments"
+msgid "Comments and Strings"
 msgstr "コメント"
 
 #: lazarusidestrconsts.dlgcommentshlashextendalways
@@ -1225,7 +1233,9 @@ msgid "Copy/Paste with fold info"
 msgstr "折り畳み情報を含むコピー/ペースト"
 
 #: lazarusidestrconsts.dlgcopywordatcursoroncopynone
-msgid "Copy word on copy none"
+#, fuzzy
+#| msgid "Copy word on copy none"
+msgid "Copy current word when no selection exists"
 msgstr "非選択時にも複写範囲を自動設定"
 
 #: lazarusidestrconsts.dlgcorange
@@ -1611,7 +1621,10 @@ msgid "Scheme globals"
 msgstr "グローバルなスキーム"
 
 #: lazarusidestrconsts.dlgedmisc
-msgid "Misc"
+#, fuzzy
+#| msgid "Misc"
+msgctxt "lazarusidestrconsts.dlgedmisc"
+msgid "Miscellaneous"
 msgstr "その他"
 
 #: lazarusidestrconsts.dlgedoff
@@ -1700,7 +1713,9 @@ msgid "Focus messages at compilation"
 msgstr "コンパイル時にメッセージをフォーカス"
 
 #: lazarusidestrconsts.dlgextracharspacing
-msgid "Extra char spacing"
+#, fuzzy
+#| msgid "Extra char spacing"
+msgid "Extra character spacing"
 msgstr "文字間隔の追加分"
 
 #: lazarusidestrconsts.dlgextralinespacing
@@ -2494,7 +2509,9 @@ msgid "Vertical-mark"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupgroup
-msgid "Highlight of Word under Caret"
+#, fuzzy
+#| msgid "Highlight of Word under Caret"
+msgid "Highlight all occurrences of Word under Caret"
 msgstr "キャレットの下の単語を強調"
 
 #: lazarusidestrconsts.dlgmarkupoutline
@@ -2605,7 +2622,9 @@ msgid "Main settings"
 msgstr "主な設定"
 
 #: lazarusidestrconsts.dlgmarkupwordbracket
-msgid "Word Brackets on caret (global)"
+#, fuzzy
+#| msgid "Word Brackets on caret (global)"
+msgid "Keyword brackets on caret (global)"
 msgstr "キャレットで単語にカッコをつける(グローバル)"
 
 #: lazarusidestrconsts.dlgmarkupwordfulllen
@@ -3038,7 +3057,9 @@ msgid "Multi Select"
 msgstr "複数選択"
 
 #: lazarusidestrconsts.dlgmultiwinaccessgroup
-msgid "Find Editor for Jump Targets"
+#, fuzzy
+#| msgid "Find Editor for Jump Targets"
+msgid "Jump target priority between multiple editors"
 msgstr "移動先のエディタを見つける"
 
 #: lazarusidestrconsts.dlgmultiwinaccessorder
@@ -9003,6 +9024,30 @@ msgstr "国際化と翻訳のサポートを有効に"
 #: lazarusidestrconsts.lisenablemacros
 msgid "Enable Macros"
 msgstr "マクロを有効にする"
+
+#: lazarusidestrconsts.lisenableoptiondwarf
+msgid "Enable Dwarf 2 (-gw)?"
+msgstr ""
+
+#: lazarusidestrconsts.lisenableoptiondwarf2
+msgid "Enable Dwarf 2 (-gw)"
+msgstr ""
+
+#: lazarusidestrconsts.lisenableoptiondwarf2sets
+msgid "Enable Dwarf 2 with sets"
+msgstr ""
+
+#: lazarusidestrconsts.lisenableoptiondwarf3
+msgid "Enable Dwarf 3 (-gw3)"
+msgstr ""
+
+#: lazarusidestrconsts.lisenableoptionxg
+msgid "Enable Option -Xg?"
+msgstr ""
+
+#: lazarusidestrconsts.lisenableoptionxg2
+msgid "Enable option -Xg"
+msgstr ""
 
 #: lazarusidestrconsts.lisenablereplacewholeidentifierdisablereplaceprefix
 msgid "Enable = pressing Return replaces whole identifier and Shift+Return replaces prefix, Disable = pressing Return replaces prefix and Shift+Return replaces whole identifier"
@@ -17215,7 +17260,9 @@ msgid "Show output"
 msgstr ""
 
 #: lazarusidestrconsts.lisshowoverviewgutter
-msgid "Show overview Gutter"
+#, fuzzy
+#| msgid "Show overview Gutter"
+msgid "Show overview gutter"
 msgstr "概観ガターを表示"
 
 #: lazarusidestrconsts.lisshowpackages
@@ -17990,6 +18037,10 @@ msgstr "プログラム \"make\" が見つかりませんでした。%sこのツ
 msgid "The project compiler options and the directives in the main source differ. For the new unit the mode and string type of the project options are used:"
 msgstr "プロジェクトのコンパイラオプションとメインソース内の指令は異なります。新しいユニットについては、プロジェクトオプションのモードと文字列型が用いられます："
 
+#: lazarusidestrconsts.listheprojectdoesnotusedwarf
+msgid "The project does not write debug info in Dwarf format. The \"%s\" supports only Dwarf."
+msgstr ""
+
 #: lazarusidestrconsts.listheprojectdoesnotusethelclunitinterfacesbutitseems
 msgid "The project does not use the LCL unit interfaces, which is required by LCLBase.%sYou will get strange linker errors if you use the LCL without interfaces."
 msgstr "プロジェクトは LCLBase を必要とする LCL ユニットインターフェースを用いていません。%sインターフェースなしで LCL 用いた場合、通常とは異なったリンカエラーが出るでしょう。"
@@ -18021,6 +18072,10 @@ msgstr "プロジェクトは、 ターゲット OS=%s と CPU=%s を使って�
 #: lazarusidestrconsts.listheprojectwritesthedebugsymbolstoanexternalfilethe
 msgid "The project writes the debug symbols to an external file. The \"%s\" supports only symbols within the executable."
 msgstr "プロジェクトはデバッグシンボルを外部ファイルに書き込みます。\"%s\"は実行可能ファイル内のシンボルのみサポートしています。"
+
+#: lazarusidestrconsts.listheprojectwritesthedebugsymbolstotheexexcutable
+msgid "The project writes the debug symbols into the executable, rather than to an external file. The \"%s\" supports only symbols in an external file."
+msgstr ""
 
 #: lazarusidestrconsts.listhereareadditionalnotesforthismessageon
 msgid "%sThere are additional notes for this message on%s"
@@ -18379,7 +18434,9 @@ msgid "Top borderspace. This value is added to base borderspace and used for the
 msgstr "上部の境界間隔。この値は基本境界間隔に加算され、コントロールの下の間隔に用いられます"
 
 #: lazarusidestrconsts.listopinfoview
-msgid "Show Class/Proc Hint"
+#, fuzzy
+#| msgid "Show Class/Proc Hint"
+msgid "Show Class/Procedure hint"
 msgstr "クラス/手続きのヒントを表示"
 
 #: lazarusidestrconsts.listops

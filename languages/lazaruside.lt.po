@@ -223,7 +223,9 @@ msgid "Gutter"
 msgstr "Paraštė"
 
 #: lazarusidestrconsts.dlfmousesimplerightmovecaret
-msgid "Right mouse includes caret move"
+#, fuzzy
+#| msgid "Right mouse includes caret move"
+msgid "Right button click includes caret move"
 msgstr "Dešiniuoju pelės spustelėjimu perkeliamas žymeklis"
 
 #: lazarusidestrconsts.dlfmousesimpletextsect
@@ -681,7 +683,7 @@ msgstr "Pagal abėcėlę"
 #: lazarusidestrconsts.dlgalwaysvisiblecursor
 #, fuzzy
 #| msgid "Always visible cursor"
-msgid "Always keep Caret in visible area of editor"
+msgid "Always keep caret in visible area of editor"
 msgstr "Visuomet matomas žymeklis"
 
 #: lazarusidestrconsts.dlgambigfileact
@@ -737,7 +739,9 @@ msgid "Auto Display Function Prototypes"
 msgstr "Automatiškai rodyti funkcijų prototipus"
 
 #: lazarusidestrconsts.dlgautohidecursor
-msgid "Hide mouse when typing"
+#, fuzzy
+#| msgid "Hide mouse when typing"
+msgid "Hide mouse pointer when typing"
 msgstr "Rašymo metu slėpti pelės žymeklį"
 
 #: lazarusidestrconsts.dlgautoindent
@@ -852,7 +856,9 @@ msgid "Bracket highlight"
 msgstr "Paryškinti skliaustus"
 
 #: lazarusidestrconsts.dlgbracketmatchgroup
-msgid "Matching bracket pairs"
+#, fuzzy
+#| msgid "Matching bracket pairs"
+msgid "Matching bracket and quote pairs"
 msgstr "Atitinkančios skliaustų poros"
 
 #: lazarusidestrconsts.dlgcannotusedockedundockeddesktop
@@ -1160,7 +1166,9 @@ msgid "Do not indent prefix"
 msgstr "Priešdėliui netaikyti įtraukos"
 
 #: lazarusidestrconsts.dlgcommentindentgroupoptions
-msgid "Comments"
+#, fuzzy
+#| msgid "Comments"
+msgid "Comments and Strings"
 msgstr "Komentarai"
 
 #: lazarusidestrconsts.dlgcommentshlashextendalways
@@ -1229,7 +1237,9 @@ msgid "Copy/Paste with fold info"
 msgstr "Kopijuoti/įdėti kartu su lankstimo informacija"
 
 #: lazarusidestrconsts.dlgcopywordatcursoroncopynone
-msgid "Copy word on copy none"
+#, fuzzy
+#| msgid "Copy word on copy none"
+msgid "Copy current word when no selection exists"
 msgstr "Kai kopijuojant nieks nepažymėta- kopijuoti žodį"
 
 #: lazarusidestrconsts.dlgcorange
@@ -1615,7 +1625,10 @@ msgid "Scheme globals"
 msgstr "Schemos globalieji"
 
 #: lazarusidestrconsts.dlgedmisc
-msgid "Misc"
+#, fuzzy
+#| msgid "Misc"
+msgctxt "lazarusidestrconsts.dlgedmisc"
+msgid "Miscellaneous"
 msgstr "Kita"
 
 #: lazarusidestrconsts.dlgedoff
@@ -1703,7 +1716,9 @@ msgid "Focus messages at compilation"
 msgstr "Kompiliuojant fokusą perkelti į pranešimus"
 
 #: lazarusidestrconsts.dlgextracharspacing
-msgid "Extra char spacing"
+#, fuzzy
+#| msgid "Extra char spacing"
+msgid "Extra character spacing"
 msgstr "Papildomas tarpas tarp simbolių"
 
 #: lazarusidestrconsts.dlgextralinespacing
@@ -2495,7 +2510,9 @@ msgid "Vertical-mark"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupgroup
-msgid "Highlight of Word under Caret"
+#, fuzzy
+#| msgid "Highlight of Word under Caret"
+msgid "Highlight all occurrences of Word under Caret"
 msgstr "Paryškinti žodį, esantį ties žymekliu"
 
 #: lazarusidestrconsts.dlgmarkupoutline
@@ -2606,7 +2623,9 @@ msgid "Main settings"
 msgstr "Pagrindinės nuostatos"
 
 #: lazarusidestrconsts.dlgmarkupwordbracket
-msgid "Word Brackets on caret (global)"
+#, fuzzy
+#| msgid "Word Brackets on caret (global)"
+msgid "Keyword brackets on caret (global)"
 msgstr "Žodžio skliaustai pagal žymeklį (globaliai)"
 
 #: lazarusidestrconsts.dlgmarkupwordfulllen
@@ -3039,7 +3058,9 @@ msgid "Multi Select"
 msgstr "Pažymėti kelis"
 
 #: lazarusidestrconsts.dlgmultiwinaccessgroup
-msgid "Find Editor for Jump Targets"
+#, fuzzy
+#| msgid "Find Editor for Jump Targets"
+msgid "Jump target priority between multiple editors"
 msgstr "Peršokimo paskirčiai skirtos rengyklės paieška"
 
 #: lazarusidestrconsts.dlgmultiwinaccessorder
@@ -9006,6 +9027,30 @@ msgstr "Įgalinti internacionalizacijos ir vertimo palaikymą"
 #: lazarusidestrconsts.lisenablemacros
 msgid "Enable Macros"
 msgstr "Įgalinti makrokomandas"
+
+#: lazarusidestrconsts.lisenableoptiondwarf
+msgid "Enable Dwarf 2 (-gw)?"
+msgstr ""
+
+#: lazarusidestrconsts.lisenableoptiondwarf2
+msgid "Enable Dwarf 2 (-gw)"
+msgstr ""
+
+#: lazarusidestrconsts.lisenableoptiondwarf2sets
+msgid "Enable Dwarf 2 with sets"
+msgstr ""
+
+#: lazarusidestrconsts.lisenableoptiondwarf3
+msgid "Enable Dwarf 3 (-gw3)"
+msgstr ""
+
+#: lazarusidestrconsts.lisenableoptionxg
+msgid "Enable Option -Xg?"
+msgstr ""
+
+#: lazarusidestrconsts.lisenableoptionxg2
+msgid "Enable option -Xg"
+msgstr ""
 
 #: lazarusidestrconsts.lisenablereplacewholeidentifierdisablereplaceprefix
 msgid "Enable = pressing Return replaces whole identifier and Shift+Return replaces prefix, Disable = pressing Return replaces prefix and Shift+Return replaces whole identifier"
@@ -17243,7 +17288,9 @@ msgid "Show output"
 msgstr ""
 
 #: lazarusidestrconsts.lisshowoverviewgutter
-msgid "Show overview Gutter"
+#, fuzzy
+#| msgid "Show overview Gutter"
+msgid "Show overview gutter"
 msgstr "Rodyti apžvalgos paraštę"
 
 #: lazarusidestrconsts.lisshowpackages
@@ -18017,6 +18064,10 @@ msgstr "Nerasta programa „make“.%sŠi programa reikalinga Lazarus darymui."
 msgid "The project compiler options and the directives in the main source differ. For the new unit the mode and string type of the project options are used:"
 msgstr "Skiriasi projekto kompiliatoriaus parinktys ir direktyvos pagrindiniame pirminiame kode. Naujame projekte bus naudojami projekto parinkčių veiksena ir eilutės tipas:"
 
+#: lazarusidestrconsts.listheprojectdoesnotusedwarf
+msgid "The project does not write debug info in Dwarf format. The \"%s\" supports only Dwarf."
+msgstr ""
+
 #: lazarusidestrconsts.listheprojectdoesnotusethelclunitinterfacesbutitseems
 msgid "The project does not use the LCL unit interfaces, which is required by LCLBase.%sYou will get strange linker errors if you use the LCL without interfaces."
 msgstr "Projekte nenaudojamos „LCL“ modulio sąsajos, kurių reikalauja „LCLBase“.%sJei „LCL“ naudojamas be sąsajų, saistyklė gali pranešti apie keistas klaidas."
@@ -18048,6 +18099,10 @@ msgstr "Projekto paskirties operacinė sistema yra „%s“, procesorius – „
 #: lazarusidestrconsts.listheprojectwritesthedebugsymbolstoanexternalfilethe
 msgid "The project writes the debug symbols to an external file. The \"%s\" supports only symbols within the executable."
 msgstr "Projekto derinimo simboliai bus įrašyti atskirame faile. „%s“ reikalauja, kad simboliai būtų vykdomajame faile."
+
+#: lazarusidestrconsts.listheprojectwritesthedebugsymbolstotheexexcutable
+msgid "The project writes the debug symbols into the executable, rather than to an external file. The \"%s\" supports only symbols in an external file."
+msgstr ""
 
 #: lazarusidestrconsts.listhereareadditionalnotesforthismessageon
 msgid "%sThere are additional notes for this message on%s"
@@ -18407,7 +18462,9 @@ msgstr ""
 "Ši vertė, pridėta prie pagrindinio kraštinės pločio, nusakys bendrą viršutinės kraštinės plotį.\n"
 
 #: lazarusidestrconsts.listopinfoview
-msgid "Show Class/Proc Hint"
+#, fuzzy
+#| msgid "Show Class/Proc Hint"
+msgid "Show Class/Procedure hint"
 msgstr "Rodyti klasės/procedūros užuominas"
 
 #: lazarusidestrconsts.listops

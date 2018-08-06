@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-07-30 02:12+0300\n"
+"PO-Revision-Date: 2018-08-07 02:00+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -222,7 +222,7 @@ msgid "Gutter"
 msgstr "Боковое поле"
 
 #: lazarusidestrconsts.dlfmousesimplerightmovecaret
-msgid "Right mouse includes caret move"
+msgid "Right button click includes caret move"
 msgstr "Перемещать курсор правой кнопкой мыши"
 
 #: lazarusidestrconsts.dlfmousesimpletextsect
@@ -678,7 +678,7 @@ msgid "Alphabetically"
 msgstr "По алфавиту"
 
 #: lazarusidestrconsts.dlgalwaysvisiblecursor
-msgid "Always keep Caret in visible area of editor"
+msgid "Always keep caret in visible area of editor"
 msgstr "Всегда держать курсор в видимой части редактора"
 
 #: lazarusidestrconsts.dlgambigfileact
@@ -734,7 +734,7 @@ msgid "Auto Display Function Prototypes"
 msgstr "Автоматически отображать прототипы функций"
 
 #: lazarusidestrconsts.dlgautohidecursor
-msgid "Hide mouse when typing"
+msgid "Hide mouse pointer when typing"
 msgstr "Скрывать курсор мыши во время набора текста"
 
 #: lazarusidestrconsts.dlgautoindent
@@ -849,8 +849,8 @@ msgid "Bracket highlight"
 msgstr "Подсветка скобок"
 
 #: lazarusidestrconsts.dlgbracketmatchgroup
-msgid "Matching bracket pairs"
-msgstr "Парные скобки"
+msgid "Matching bracket and quote pairs"
+msgstr "Парные скобки и кавычки"
 
 #: lazarusidestrconsts.dlgcannotusedockedundockeddesktop
 msgid "You cannot use docked desktop in undocked environment and vice versa."
@@ -1154,8 +1154,8 @@ msgid "Do not indent prefix"
 msgstr "Не делать отступ префикса"
 
 #: lazarusidestrconsts.dlgcommentindentgroupoptions
-msgid "Comments"
-msgstr "Комментарии"
+msgid "Comments and Strings"
+msgstr "Комментарии и строки"
 
 #: lazarusidestrconsts.dlgcommentshlashextendalways
 msgid "Extend, if matched or not matched"
@@ -1223,8 +1223,8 @@ msgid "Copy/Paste with fold info"
 msgstr "Копировать/вставлять со свёрнутостью"
 
 #: lazarusidestrconsts.dlgcopywordatcursoroncopynone
-msgid "Copy word on copy none"
-msgstr "Копировать слово при пустом копировании"
+msgid "Copy current word when no selection exists"
+msgstr "Копировать текущее слово при отсутствии выделения"
 
 #: lazarusidestrconsts.dlgcorange
 msgctxt "lazarusidestrconsts.dlgcorange"
@@ -1605,7 +1605,8 @@ msgid "Scheme globals"
 msgstr "Глобальная схема"
 
 #: lazarusidestrconsts.dlgedmisc
-msgid "Misc"
+msgctxt "lazarusidestrconsts.dlgedmisc"
+msgid "Miscellaneous"
 msgstr "Разное"
 
 #: lazarusidestrconsts.dlgedoff
@@ -1693,7 +1694,7 @@ msgid "Focus messages at compilation"
 msgstr "Переводить фокус в окно сообщений при компиляции"
 
 #: lazarusidestrconsts.dlgextracharspacing
-msgid "Extra char spacing"
+msgid "Extra character spacing"
 msgstr "Дополнительный межсимвольный интервал"
 
 #: lazarusidestrconsts.dlgextralinespacing
@@ -2479,8 +2480,8 @@ msgid "Vertical-mark"
 msgstr "Вертикальная черта"
 
 #: lazarusidestrconsts.dlgmarkupgroup
-msgid "Highlight of Word under Caret"
-msgstr "Подсветка текущего слова под курсором"
+msgid "Highlight all occurrences of Word under Caret"
+msgstr "Подсветка всех экземпляров слова под курсором"
 
 #: lazarusidestrconsts.dlgmarkupoutline
 msgid "Outline (global)"
@@ -2590,7 +2591,7 @@ msgid "Main settings"
 msgstr "Основные параметры"
 
 #: lazarusidestrconsts.dlgmarkupwordbracket
-msgid "Word Brackets on caret (global)"
+msgid "Keyword brackets on caret (global)"
 msgstr "Подсвечивать операторные скобки при установке курсора (глобально)"
 
 #: lazarusidestrconsts.dlgmarkupwordfulllen
@@ -3015,8 +3016,8 @@ msgid "Multi Select"
 msgstr "Множественное выделение"
 
 #: lazarusidestrconsts.dlgmultiwinaccessgroup
-msgid "Find Editor for Jump Targets"
-msgstr "Выбор редактора для перехода"
+msgid "Jump target priority between multiple editors"
+msgstr "Приоритет перехода между редакторами"
 
 #: lazarusidestrconsts.dlgmultiwinaccessorder
 msgid "Order to use for editors matching the same criteria"
@@ -8956,6 +8957,30 @@ msgstr "Включить поддержку интернационализаци
 #: lazarusidestrconsts.lisenablemacros
 msgid "Enable Macros"
 msgstr "Включить макросы"
+
+#: lazarusidestrconsts.lisenableoptiondwarf
+msgid "Enable Dwarf 2 (-gw)?"
+msgstr "Включить Dwarf 2 (-gw)?"
+
+#: lazarusidestrconsts.lisenableoptiondwarf2
+msgid "Enable Dwarf 2 (-gw)"
+msgstr "Включить Dwarf 2 (-gw)"
+
+#: lazarusidestrconsts.lisenableoptiondwarf2sets
+msgid "Enable Dwarf 2 with sets"
+msgstr "Включить Dwarf 2 с поддержкой множеств"
+
+#: lazarusidestrconsts.lisenableoptiondwarf3
+msgid "Enable Dwarf 3 (-gw3)"
+msgstr "Включить Dwarf 3 (-gw3)"
+
+#: lazarusidestrconsts.lisenableoptionxg
+msgid "Enable Option -Xg?"
+msgstr "Включить параметр -Xg?"
+
+#: lazarusidestrconsts.lisenableoptionxg2
+msgid "Enable option -Xg"
+msgstr "Включить параметр -Xg"
 
 #: lazarusidestrconsts.lisenablereplacewholeidentifierdisablereplaceprefix
 msgid "Enable = pressing Return replaces whole identifier and Shift+Return replaces prefix, Disable = pressing Return replaces prefix and Shift+Return replaces whole identifier"
@@ -17175,7 +17200,7 @@ msgid "Show output"
 msgstr "Показывать вывод"
 
 #: lazarusidestrconsts.lisshowoverviewgutter
-msgid "Show overview Gutter"
+msgid "Show overview gutter"
 msgstr "Показывать поле обзора"
 
 #: lazarusidestrconsts.lisshowpackages
@@ -17949,6 +17974,10 @@ msgstr "Программа \"make\" не найдена.%sОна требует�
 msgid "The project compiler options and the directives in the main source differ. For the new unit the mode and string type of the project options are used:"
 msgstr "Параметры компилятора для проекта не соответствуют директивам в главном файле исходного кода. В новом модуле будут использованы режим синтаксиса и тип строк в соответствии с параметрами проекта:"
 
+#: lazarusidestrconsts.listheprojectdoesnotusedwarf
+msgid "The project does not write debug info in Dwarf format. The \"%s\" supports only Dwarf."
+msgstr "Проект не выводит отладочную информацию в формате Dwarf. \"%s\" поддерживает только Dwarf."
+
 #: lazarusidestrconsts.listheprojectdoesnotusethelclunitinterfacesbutitseems
 msgid "The project does not use the LCL unit interfaces, which is required by LCLBase.%sYou will get strange linker errors if you use the LCL without interfaces."
 msgstr "Проект не использует модуль LCL Interfaces, требующийся LCLBase.%sКомпоновщик будет выдавать непонятные ошибки, если LCL будет использоваться без модуля Interfaces."
@@ -17980,6 +18009,10 @@ msgstr "Проект использует целевую ОС %s и процес
 #: lazarusidestrconsts.listheprojectwritesthedebugsymbolstoanexternalfilethe
 msgid "The project writes the debug symbols to an external file. The \"%s\" supports only symbols within the executable."
 msgstr "Проект записывает отладочные символы во внешний файл. \"%s\" поддерживает только отладочные символы, размещённые непосредственно в исполнимом файле."
+
+#: lazarusidestrconsts.listheprojectwritesthedebugsymbolstotheexexcutable
+msgid "The project writes the debug symbols into the executable, rather than to an external file. The \"%s\" supports only symbols in an external file."
+msgstr "Проект записывает отладочные символы непосредственно в исполнимый, а не во внешний файл. \"%s\" поддерживает только отладочные символы, размещённые во внешнем файле."
 
 #: lazarusidestrconsts.listhereareadditionalnotesforthismessageon
 msgid "%sThere are additional notes for this message on%s"
@@ -18337,8 +18370,8 @@ msgid "Top borderspace. This value is added to base borderspace and used for the
 msgstr "Верхний зазор. Его значение добавляется к базовуму зазору и используется для определения пространства над компонентом."
 
 #: lazarusidestrconsts.listopinfoview
-msgid "Show Class/Proc Hint"
-msgstr "Подсказывать текущие класс/процедуру"
+msgid "Show Class/Procedure hint"
+msgstr "Показывать текущие класс/процедуру"
 
 #: lazarusidestrconsts.listops
 msgid "Tops"

@@ -222,7 +222,7 @@ msgid "Gutter"
 msgstr "边缝"
 
 #: lazarusidestrconsts.dlfmousesimplerightmovecaret
-msgid "Right mouse includes caret move"
+msgid "Right button click includes caret move"
 msgstr ""
 
 #: lazarusidestrconsts.dlfmousesimpletextsect
@@ -679,7 +679,7 @@ msgstr "按字母顺序排列"
 #: lazarusidestrconsts.dlgalwaysvisiblecursor
 #, fuzzy
 #| msgid "Always visible cursor"
-msgid "Always keep Caret in visible area of editor"
+msgid "Always keep caret in visible area of editor"
 msgstr "光标总是可视"
 
 #: lazarusidestrconsts.dlgambigfileact
@@ -737,7 +737,7 @@ msgid "Auto Display Function Prototypes"
 msgstr "自动显示函数原型"
 
 #: lazarusidestrconsts.dlgautohidecursor
-msgid "Hide mouse when typing"
+msgid "Hide mouse pointer when typing"
 msgstr ""
 
 #: lazarusidestrconsts.dlgautoindent
@@ -850,7 +850,9 @@ msgid "Bracket highlight"
 msgstr "括号高亮"
 
 #: lazarusidestrconsts.dlgbracketmatchgroup
-msgid "Matching bracket pairs"
+#, fuzzy
+#| msgid "Matching bracket pairs"
+msgid "Matching bracket and quote pairs"
 msgstr "是括号成对"
 
 #: lazarusidestrconsts.dlgcannotusedockedundockeddesktop
@@ -1157,7 +1159,9 @@ msgid "Do not indent prefix"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcommentindentgroupoptions
-msgid "Comments"
+#, fuzzy
+#| msgid "Comments"
+msgid "Comments and Strings"
 msgstr "注释"
 
 #: lazarusidestrconsts.dlgcommentshlashextendalways
@@ -1226,7 +1230,7 @@ msgid "Copy/Paste with fold info"
 msgstr "复制/粘贴带有折叠信息"
 
 #: lazarusidestrconsts.dlgcopywordatcursoroncopynone
-msgid "Copy word on copy none"
+msgid "Copy current word when no selection exists"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcorange
@@ -1610,7 +1614,10 @@ msgid "Scheme globals"
 msgstr ""
 
 #: lazarusidestrconsts.dlgedmisc
-msgid "Misc"
+#, fuzzy
+#| msgid "Misc"
+msgctxt "lazarusidestrconsts.dlgedmisc"
+msgid "Miscellaneous"
 msgstr "杂项"
 
 #: lazarusidestrconsts.dlgedoff
@@ -1698,7 +1705,9 @@ msgid "Focus messages at compilation"
 msgstr ""
 
 #: lazarusidestrconsts.dlgextracharspacing
-msgid "Extra char spacing"
+#, fuzzy
+#| msgid "Extra char spacing"
+msgid "Extra character spacing"
 msgstr "附加字间距"
 
 #: lazarusidestrconsts.dlgextralinespacing
@@ -2500,7 +2509,7 @@ msgid "Vertical-mark"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupgroup
-msgid "Highlight of Word under Caret"
+msgid "Highlight all occurrences of Word under Caret"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupoutline
@@ -2611,7 +2620,7 @@ msgid "Main settings"
 msgstr "主设置"
 
 #: lazarusidestrconsts.dlgmarkupwordbracket
-msgid "Word Brackets on caret (global)"
+msgid "Keyword brackets on caret (global)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupwordfulllen
@@ -3038,7 +3047,7 @@ msgid "Multi Select"
 msgstr "多选"
 
 #: lazarusidestrconsts.dlgmultiwinaccessgroup
-msgid "Find Editor for Jump Targets"
+msgid "Jump target priority between multiple editors"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmultiwinaccessorder
@@ -9092,6 +9101,30 @@ msgstr ""
 #: lazarusidestrconsts.lisenablemacros
 msgid "Enable Macros"
 msgstr "允许宏"
+
+#: lazarusidestrconsts.lisenableoptiondwarf
+msgid "Enable Dwarf 2 (-gw)?"
+msgstr ""
+
+#: lazarusidestrconsts.lisenableoptiondwarf2
+msgid "Enable Dwarf 2 (-gw)"
+msgstr ""
+
+#: lazarusidestrconsts.lisenableoptiondwarf2sets
+msgid "Enable Dwarf 2 with sets"
+msgstr ""
+
+#: lazarusidestrconsts.lisenableoptiondwarf3
+msgid "Enable Dwarf 3 (-gw3)"
+msgstr ""
+
+#: lazarusidestrconsts.lisenableoptionxg
+msgid "Enable Option -Xg?"
+msgstr ""
+
+#: lazarusidestrconsts.lisenableoptionxg2
+msgid "Enable option -Xg"
+msgstr ""
 
 #: lazarusidestrconsts.lisenablereplacewholeidentifierdisablereplaceprefix
 msgid "Enable = pressing Return replaces whole identifier and Shift+Return replaces prefix, Disable = pressing Return replaces prefix and Shift+Return replaces whole identifier"
@@ -17470,7 +17503,7 @@ msgid "Show output"
 msgstr ""
 
 #: lazarusidestrconsts.lisshowoverviewgutter
-msgid "Show overview Gutter"
+msgid "Show overview gutter"
 msgstr ""
 
 #: lazarusidestrconsts.lisshowpackages
@@ -18275,6 +18308,10 @@ msgstr "程序 %smake%s 未找到.%s构建 Lazarus 这个工具是必须的.%s"
 msgid "The project compiler options and the directives in the main source differ. For the new unit the mode and string type of the project options are used:"
 msgstr ""
 
+#: lazarusidestrconsts.listheprojectdoesnotusedwarf
+msgid "The project does not write debug info in Dwarf format. The \"%s\" supports only Dwarf."
+msgstr ""
+
 #: lazarusidestrconsts.listheprojectdoesnotusethelclunitinterfacesbutitseems
 msgid "The project does not use the LCL unit interfaces, which is required by LCLBase.%sYou will get strange linker errors if you use the LCL without interfaces."
 msgstr ""
@@ -18309,6 +18346,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listheprojectwritesthedebugsymbolstoanexternalfilethe
 msgid "The project writes the debug symbols to an external file. The \"%s\" supports only symbols within the executable."
+msgstr ""
+
+#: lazarusidestrconsts.listheprojectwritesthedebugsymbolstotheexexcutable
+msgid "The project writes the debug symbols into the executable, rather than to an external file. The \"%s\" supports only symbols in an external file."
 msgstr ""
 
 #: lazarusidestrconsts.listhereareadditionalnotesforthismessageon
@@ -18687,7 +18728,9 @@ msgid "Top borderspace. This value is added to base borderspace and used for the
 msgstr "顶部边缘.  这个值将添加为基础边距并且设置为控件的上面."
 
 #: lazarusidestrconsts.listopinfoview
-msgid "Show Class/Proc Hint"
+#, fuzzy
+#| msgid "Show Class/Proc Hint"
+msgid "Show Class/Procedure hint"
 msgstr "显示Class/Proc提示"
 
 #: lazarusidestrconsts.listops

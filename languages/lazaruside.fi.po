@@ -219,7 +219,9 @@ msgid "Gutter"
 msgstr "Reunapalkki"
 
 #: lazarusidestrconsts.dlfmousesimplerightmovecaret
-msgid "Right mouse includes caret move"
+#, fuzzy
+#| msgid "Right mouse includes caret move"
+msgid "Right button click includes caret move"
 msgstr "Oikea hiiren nappi siirtää tekstikursoria"
 
 #: lazarusidestrconsts.dlfmousesimpletextsect
@@ -677,7 +679,7 @@ msgstr "Aakkosjärjestys"
 #: lazarusidestrconsts.dlgalwaysvisiblecursor
 #, fuzzy
 #| msgid "Always visible cursor"
-msgid "Always keep Caret in visible area of editor"
+msgid "Always keep caret in visible area of editor"
 msgstr "Kursori näkyy aina"
 
 #: lazarusidestrconsts.dlgambigfileact
@@ -733,7 +735,9 @@ msgid "Auto Display Function Prototypes"
 msgstr "Näytä automaattisesti funktioiden prototyypit"
 
 #: lazarusidestrconsts.dlgautohidecursor
-msgid "Hide mouse when typing"
+#, fuzzy
+#| msgid "Hide mouse when typing"
+msgid "Hide mouse pointer when typing"
 msgstr "Piilota hiiri kirjoitettaessa"
 
 #: lazarusidestrconsts.dlgautoindent
@@ -848,7 +852,9 @@ msgid "Bracket highlight"
 msgstr "Sulkujen korostus"
 
 #: lazarusidestrconsts.dlgbracketmatchgroup
-msgid "Matching bracket pairs"
+#, fuzzy
+#| msgid "Matching bracket pairs"
+msgid "Matching bracket and quote pairs"
 msgstr "Yhteensopivat sulkuparit"
 
 #: lazarusidestrconsts.dlgcannotusedockedundockeddesktop
@@ -1151,7 +1157,9 @@ msgid "Do not indent prefix"
 msgstr "Älä sisennä etuliitettä"
 
 #: lazarusidestrconsts.dlgcommentindentgroupoptions
-msgid "Comments"
+#, fuzzy
+#| msgid "Comments"
+msgid "Comments and Strings"
 msgstr "Kommentit"
 
 #: lazarusidestrconsts.dlgcommentshlashextendalways
@@ -1220,7 +1228,9 @@ msgid "Copy/Paste with fold info"
 msgstr "Kopioi/Liitä laskostustiedon kanssa"
 
 #: lazarusidestrconsts.dlgcopywordatcursoroncopynone
-msgid "Copy word on copy none"
+#, fuzzy
+#| msgid "Copy word on copy none"
+msgid "Copy current word when no selection exists"
 msgstr "Kopioi sana, kun valittuna ei mitään"
 
 #: lazarusidestrconsts.dlgcorange
@@ -1605,7 +1615,10 @@ msgid "Scheme globals"
 msgstr "Kaavan julkiset"
 
 #: lazarusidestrconsts.dlgedmisc
-msgid "Misc"
+#, fuzzy
+#| msgid "Misc"
+msgctxt "lazarusidestrconsts.dlgedmisc"
+msgid "Miscellaneous"
 msgstr "Lisuke"
 
 #: lazarusidestrconsts.dlgedoff
@@ -1693,7 +1706,9 @@ msgid "Focus messages at compilation"
 msgstr "Fokusoi viesti-ikkuna käännettäessä"
 
 #: lazarusidestrconsts.dlgextracharspacing
-msgid "Extra char spacing"
+#, fuzzy
+#| msgid "Extra char spacing"
+msgid "Extra character spacing"
 msgstr "Merkkien välistys"
 
 #: lazarusidestrconsts.dlgextralinespacing
@@ -2465,7 +2480,9 @@ msgid "Vertical-mark"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupgroup
-msgid "Highlight of Word under Caret"
+#, fuzzy
+#| msgid "Highlight of Word under Caret"
+msgid "Highlight all occurrences of Word under Caret"
 msgstr "Tekstikursorin kohdalla olevan sanan korostus"
 
 #: lazarusidestrconsts.dlgmarkupoutline
@@ -2576,7 +2593,7 @@ msgid "Main settings"
 msgstr "Pääasetukset"
 
 #: lazarusidestrconsts.dlgmarkupwordbracket
-msgid "Word Brackets on caret (global)"
+msgid "Keyword brackets on caret (global)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupwordfulllen
@@ -3009,7 +3026,9 @@ msgid "Multi Select"
 msgstr "Monivalinta"
 
 #: lazarusidestrconsts.dlgmultiwinaccessgroup
-msgid "Find Editor for Jump Targets"
+#, fuzzy
+#| msgid "Find Editor for Jump Targets"
+msgid "Jump target priority between multiple editors"
 msgstr "Etsi hyppykohteen editori"
 
 #: lazarusidestrconsts.dlgmultiwinaccessorder
@@ -8945,6 +8964,30 @@ msgstr "Salli kansainvälistämisen ja käännöksen tuki"
 #: lazarusidestrconsts.lisenablemacros
 msgid "Enable Macros"
 msgstr "Salli makrot"
+
+#: lazarusidestrconsts.lisenableoptiondwarf
+msgid "Enable Dwarf 2 (-gw)?"
+msgstr ""
+
+#: lazarusidestrconsts.lisenableoptiondwarf2
+msgid "Enable Dwarf 2 (-gw)"
+msgstr ""
+
+#: lazarusidestrconsts.lisenableoptiondwarf2sets
+msgid "Enable Dwarf 2 with sets"
+msgstr ""
+
+#: lazarusidestrconsts.lisenableoptiondwarf3
+msgid "Enable Dwarf 3 (-gw3)"
+msgstr ""
+
+#: lazarusidestrconsts.lisenableoptionxg
+msgid "Enable Option -Xg?"
+msgstr ""
+
+#: lazarusidestrconsts.lisenableoptionxg2
+msgid "Enable option -Xg"
+msgstr ""
 
 #: lazarusidestrconsts.lisenablereplacewholeidentifierdisablereplaceprefix
 #, fuzzy
@@ -17072,7 +17115,9 @@ msgid "Show output"
 msgstr ""
 
 #: lazarusidestrconsts.lisshowoverviewgutter
-msgid "Show overview Gutter"
+#, fuzzy
+#| msgid "Show overview Gutter"
+msgid "Show overview gutter"
 msgstr "Näytä yleiskuva-reunapalkki "
 
 #: lazarusidestrconsts.lisshowpackages
@@ -17845,6 +17890,10 @@ msgstr "\"make\" ohjelmaa ei löydy.%sSe tarvitaan Lazaruksen kokoamiseen."
 msgid "The project compiler options and the directives in the main source differ. For the new unit the mode and string type of the project options are used:"
 msgstr "Projektin kääntäjän asetukset ja pää-lähdekoodissa olevat ohjeet eroavat. Uudelle käännösyksikölle käytetään projektin asetusten moodia ja string-tyyppiä:"
 
+#: lazarusidestrconsts.listheprojectdoesnotusedwarf
+msgid "The project does not write debug info in Dwarf format. The \"%s\" supports only Dwarf."
+msgstr ""
+
 #: lazarusidestrconsts.listheprojectdoesnotusethelclunitinterfacesbutitseems
 msgid "The project does not use the LCL unit interfaces, which is required by LCLBase.%sYou will get strange linker errors if you use the LCL without interfaces."
 msgstr "Projekti ei käytä LCL \"interfaces\" käännösyksikköä, Mitä LCLBase tarvitsee.%sLinkittäjä antaa omituisia virheitä, jos LCL käytetään ilman \"interfaces\":a."
@@ -17876,6 +17925,10 @@ msgstr "Projektin kohdekäyttöjärjestelmä=%s ja CPU=%s.%sKohteelle ei löydy 
 #: lazarusidestrconsts.listheprojectwritesthedebugsymbolstoanexternalfilethe
 msgid "The project writes the debug symbols to an external file. The \"%s\" supports only symbols within the executable."
 msgstr "Projekti kirjoittaa virheenjäljitys symbolit ulkoiseen tiedostoon. \"%s\" tukee vain symboleja suoritettavassa ohjelmassa."
+
+#: lazarusidestrconsts.listheprojectwritesthedebugsymbolstotheexexcutable
+msgid "The project writes the debug symbols into the executable, rather than to an external file. The \"%s\" supports only symbols in an external file."
+msgstr ""
 
 #: lazarusidestrconsts.listhereareadditionalnotesforthismessageon
 msgid "%sThere are additional notes for this message on%s"
@@ -18233,7 +18286,9 @@ msgid "Top borderspace. This value is added to base borderspace and used for the
 msgstr "Yläpuolen reuna-alue. Tämä arvo lisätään yhteiseen reuna-alueeseen."
 
 #: lazarusidestrconsts.listopinfoview
-msgid "Show Class/Proc Hint"
+#, fuzzy
+#| msgid "Show Class/Proc Hint"
+msgid "Show Class/Procedure hint"
 msgstr "Näytä luokan/metodin vihje"
 
 #: lazarusidestrconsts.listops

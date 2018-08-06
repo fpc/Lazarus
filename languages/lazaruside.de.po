@@ -222,7 +222,9 @@ msgid "Gutter"
 msgstr "Randleiste"
 
 #: lazarusidestrconsts.dlfmousesimplerightmovecaret
-msgid "Right mouse includes caret move"
+#, fuzzy
+#| msgid "Right mouse includes caret move"
+msgid "Right button click includes caret move"
 msgstr "Rechte Maustaste bewegt auch den Cursor"
 
 #: lazarusidestrconsts.dlfmousesimpletextsect
@@ -680,7 +682,7 @@ msgstr "alphabetisch"
 #: lazarusidestrconsts.dlgalwaysvisiblecursor
 #, fuzzy
 #| msgid "Always visible cursor"
-msgid "Always keep Caret in visible area of editor"
+msgid "Always keep caret in visible area of editor"
 msgstr "Ständig sichtbarer Cursor"
 
 #: lazarusidestrconsts.dlgambigfileact
@@ -736,7 +738,9 @@ msgid "Auto Display Function Prototypes"
 msgstr "Zeige Funktions-Prototypen automatisch"
 
 #: lazarusidestrconsts.dlgautohidecursor
-msgid "Hide mouse when typing"
+#, fuzzy
+#| msgid "Hide mouse when typing"
+msgid "Hide mouse pointer when typing"
 msgstr "Maus beim Tippen verbergen"
 
 #: lazarusidestrconsts.dlgautoindent
@@ -849,7 +853,9 @@ msgid "Bracket highlight"
 msgstr "Klammerhervorhebung"
 
 #: lazarusidestrconsts.dlgbracketmatchgroup
-msgid "Matching bracket pairs"
+#, fuzzy
+#| msgid "Matching bracket pairs"
+msgid "Matching bracket and quote pairs"
 msgstr "Korrespondierende Klammernpaare"
 
 #: lazarusidestrconsts.dlgcannotusedockedundockeddesktop
@@ -1155,7 +1161,9 @@ msgid "Do not indent prefix"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcommentindentgroupoptions
-msgid "Comments"
+#, fuzzy
+#| msgid "Comments"
+msgid "Comments and Strings"
 msgstr "Kommentare"
 
 #: lazarusidestrconsts.dlgcommentshlashextendalways
@@ -1224,7 +1232,9 @@ msgid "Copy/Paste with fold info"
 msgstr "Kopieren/Einfügen mit Faltungsinformationen"
 
 #: lazarusidestrconsts.dlgcopywordatcursoroncopynone
-msgid "Copy word on copy none"
+#, fuzzy
+#| msgid "Copy word on copy none"
+msgid "Copy current word when no selection exists"
 msgstr "Ohne Markierung Wort kopieren"
 
 #: lazarusidestrconsts.dlgcorange
@@ -1610,7 +1620,10 @@ msgid "Scheme globals"
 msgstr "Globale Schemata"
 
 #: lazarusidestrconsts.dlgedmisc
-msgid "Misc"
+#, fuzzy
+#| msgid "Misc"
+msgctxt "lazarusidestrconsts.dlgedmisc"
+msgid "Miscellaneous"
 msgstr "Verschiedenes"
 
 #: lazarusidestrconsts.dlgedoff
@@ -1698,7 +1711,9 @@ msgid "Focus messages at compilation"
 msgstr "Nachrichtenfenster während Kompilierung fokussieren"
 
 #: lazarusidestrconsts.dlgextracharspacing
-msgid "Extra char spacing"
+#, fuzzy
+#| msgid "Extra char spacing"
+msgid "Extra character spacing"
 msgstr "Zusätzlicher Zeichenabstand"
 
 #: lazarusidestrconsts.dlgextralinespacing
@@ -2490,7 +2505,9 @@ msgid "Vertical-mark"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupgroup
-msgid "Highlight of Word under Caret"
+#, fuzzy
+#| msgid "Highlight of Word under Caret"
+msgid "Highlight all occurrences of Word under Caret"
 msgstr "Wort unter Cursor hervorheben"
 
 #: lazarusidestrconsts.dlgmarkupoutline
@@ -2601,7 +2618,9 @@ msgid "Main settings"
 msgstr "Haupteinstellungen"
 
 #: lazarusidestrconsts.dlgmarkupwordbracket
-msgid "Word Brackets on caret (global)"
+#, fuzzy
+#| msgid "Word Brackets on caret (global)"
+msgid "Keyword brackets on caret (global)"
 msgstr "Wortklammern am Cursor (global)"
 
 #: lazarusidestrconsts.dlgmarkupwordfulllen
@@ -3026,7 +3045,9 @@ msgid "Multi Select"
 msgstr "Mehrfachauswahl"
 
 #: lazarusidestrconsts.dlgmultiwinaccessgroup
-msgid "Find Editor for Jump Targets"
+#, fuzzy
+#| msgid "Find Editor for Jump Targets"
+msgid "Jump target priority between multiple editors"
 msgstr "Editorauswahl für Sprungziele"
 
 #: lazarusidestrconsts.dlgmultiwinaccessorder
@@ -8977,6 +8998,30 @@ msgstr "Unterstützung für Internationalisierung und Übersetzung aktivieren"
 #: lazarusidestrconsts.lisenablemacros
 msgid "Enable Macros"
 msgstr "Makros einschalten"
+
+#: lazarusidestrconsts.lisenableoptiondwarf
+msgid "Enable Dwarf 2 (-gw)?"
+msgstr ""
+
+#: lazarusidestrconsts.lisenableoptiondwarf2
+msgid "Enable Dwarf 2 (-gw)"
+msgstr ""
+
+#: lazarusidestrconsts.lisenableoptiondwarf2sets
+msgid "Enable Dwarf 2 with sets"
+msgstr ""
+
+#: lazarusidestrconsts.lisenableoptiondwarf3
+msgid "Enable Dwarf 3 (-gw3)"
+msgstr ""
+
+#: lazarusidestrconsts.lisenableoptionxg
+msgid "Enable Option -Xg?"
+msgstr ""
+
+#: lazarusidestrconsts.lisenableoptionxg2
+msgid "Enable option -Xg"
+msgstr ""
 
 #: lazarusidestrconsts.lisenablereplacewholeidentifierdisablereplaceprefix
 msgid "Enable = pressing Return replaces whole identifier and Shift+Return replaces prefix, Disable = pressing Return replaces prefix and Shift+Return replaces whole identifier"
@@ -17190,7 +17235,9 @@ msgid "Show output"
 msgstr ""
 
 #: lazarusidestrconsts.lisshowoverviewgutter
-msgid "Show overview Gutter"
+#, fuzzy
+#| msgid "Show overview Gutter"
+msgid "Show overview gutter"
 msgstr "Übersichtssteg anzeigen"
 
 #: lazarusidestrconsts.lisshowpackages
@@ -17964,6 +18011,10 @@ msgstr "Das Programm \"make\" wurde nicht gefunden.%sEs wird für das Kompiliere
 msgid "The project compiler options and the directives in the main source differ. For the new unit the mode and string type of the project options are used:"
 msgstr "Die Projekt-Compilereinstellungen unterscheiden sich von den Direktiven in der Hauptquelldatei. Für die neue Unit werden der Modus und der String-Typ der Projekteinstellungen verwendet:"
 
+#: lazarusidestrconsts.listheprojectdoesnotusedwarf
+msgid "The project does not write debug info in Dwarf format. The \"%s\" supports only Dwarf."
+msgstr ""
+
 #: lazarusidestrconsts.listheprojectdoesnotusethelclunitinterfacesbutitseems
 msgid "The project does not use the LCL unit interfaces, which is required by LCLBase.%sYou will get strange linker errors if you use the LCL without interfaces."
 msgstr "Das Projekt bindet die LCL-Unit-Schnittstellen nicht ein, welche von LCLBase benötigt werden.%sEs führt zu Linker-Fehlern, wenn die LCL-Fenster ohne ihre Interfaces eingebunden werden."
@@ -17994,6 +18045,10 @@ msgstr "Das Projekt nutzt die Ziele OS=%s und CPU=%s.%sDie system.ppu für diese
 
 #: lazarusidestrconsts.listheprojectwritesthedebugsymbolstoanexternalfilethe
 msgid "The project writes the debug symbols to an external file. The \"%s\" supports only symbols within the executable."
+msgstr ""
+
+#: lazarusidestrconsts.listheprojectwritesthedebugsymbolstotheexexcutable
+msgid "The project writes the debug symbols into the executable, rather than to an external file. The \"%s\" supports only symbols in an external file."
 msgstr ""
 
 #: lazarusidestrconsts.listhereareadditionalnotesforthismessageon
@@ -18352,7 +18407,9 @@ msgid "Top borderspace. This value is added to base borderspace and used for the
 msgstr "Oberer Randabstand. Der Wert wird zum Grund-Randabstand addiert und für den Platz über dem Element verwendet."
 
 #: lazarusidestrconsts.listopinfoview
-msgid "Show Class/Proc Hint"
+#, fuzzy
+#| msgid "Show Class/Proc Hint"
+msgid "Show Class/Procedure hint"
 msgstr "Klassen/Prozeduren-Hinweis anzeigen"
 
 #: lazarusidestrconsts.listops

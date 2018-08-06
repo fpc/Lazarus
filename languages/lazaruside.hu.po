@@ -221,7 +221,9 @@ msgid "Gutter"
 msgstr "Hasábköz"
 
 #: lazarusidestrconsts.dlfmousesimplerightmovecaret
-msgid "Right mouse includes caret move"
+#, fuzzy
+#| msgid "Right mouse includes caret move"
+msgid "Right button click includes caret move"
 msgstr "A jobb egérgomb a kurzort is mozgatja"
 
 #: lazarusidestrconsts.dlfmousesimpletextsect
@@ -679,7 +681,7 @@ msgstr "Ábécérendben"
 #: lazarusidestrconsts.dlgalwaysvisiblecursor
 #, fuzzy
 #| msgid "Always visible cursor"
-msgid "Always keep Caret in visible area of editor"
+msgid "Always keep caret in visible area of editor"
 msgstr "Mindig látható a kurzor"
 
 #: lazarusidestrconsts.dlgambigfileact
@@ -735,7 +737,9 @@ msgid "Auto Display Function Prototypes"
 msgstr "Művelet-prototípusok automatikus megjelenítése"
 
 #: lazarusidestrconsts.dlgautohidecursor
-msgid "Hide mouse when typing"
+#, fuzzy
+#| msgid "Hide mouse when typing"
+msgid "Hide mouse pointer when typing"
 msgstr "Egérkurzor elrejtése gépelés közben"
 
 #: lazarusidestrconsts.dlgautoindent
@@ -850,7 +854,9 @@ msgid "Bracket highlight"
 msgstr "Zárójel kiemelése"
 
 #: lazarusidestrconsts.dlgbracketmatchgroup
-msgid "Matching bracket pairs"
+#, fuzzy
+#| msgid "Matching bracket pairs"
+msgid "Matching bracket and quote pairs"
 msgstr "Illeszkedő zárójel párok"
 
 #: lazarusidestrconsts.dlgcannotusedockedundockeddesktop
@@ -1158,7 +1164,9 @@ msgid "Do not indent prefix"
 msgstr "Az előtag ne legyen behúzva"
 
 #: lazarusidestrconsts.dlgcommentindentgroupoptions
-msgid "Comments"
+#, fuzzy
+#| msgid "Comments"
+msgid "Comments and Strings"
 msgstr "Megjegyzések"
 
 #: lazarusidestrconsts.dlgcommentshlashextendalways
@@ -1227,7 +1235,9 @@ msgid "Copy/Paste with fold info"
 msgstr "Másolás/Beillesztés összecsukási információkkal együtt"
 
 #: lazarusidestrconsts.dlgcopywordatcursoroncopynone
-msgid "Copy word on copy none"
+#, fuzzy
+#| msgid "Copy word on copy none"
+msgid "Copy current word when no selection exists"
 msgstr "Kifejezés másolása, ha nincs kijelölve semmi"
 
 #: lazarusidestrconsts.dlgcorange
@@ -1613,7 +1623,10 @@ msgid "Scheme globals"
 msgstr "Globális séma"
 
 #: lazarusidestrconsts.dlgedmisc
-msgid "Misc"
+#, fuzzy
+#| msgid "Misc"
+msgctxt "lazarusidestrconsts.dlgedmisc"
+msgid "Miscellaneous"
 msgstr "Egyéb"
 
 #: lazarusidestrconsts.dlgedoff
@@ -1701,7 +1714,9 @@ msgid "Focus messages at compilation"
 msgstr "Üzenetek előtérbe hozása fordításkor"
 
 #: lazarusidestrconsts.dlgextracharspacing
-msgid "Extra char spacing"
+#, fuzzy
+#| msgid "Extra char spacing"
+msgid "Extra character spacing"
 msgstr "Extra karakterköz"
 
 #: lazarusidestrconsts.dlgextralinespacing
@@ -2493,7 +2508,9 @@ msgid "Vertical-mark"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmarkupgroup
-msgid "Highlight of Word under Caret"
+#, fuzzy
+#| msgid "Highlight of Word under Caret"
+msgid "Highlight all occurrences of Word under Caret"
 msgstr "Szó kiemelése a kurzor alatt"
 
 #: lazarusidestrconsts.dlgmarkupoutline
@@ -2604,7 +2621,9 @@ msgid "Main settings"
 msgstr "Elsődleges beállítások"
 
 #: lazarusidestrconsts.dlgmarkupwordbracket
-msgid "Word Brackets on caret (global)"
+#, fuzzy
+#| msgid "Word Brackets on caret (global)"
+msgid "Keyword brackets on caret (global)"
 msgstr "Szó-zárójelek a kurzornál (globális)"
 
 #: lazarusidestrconsts.dlgmarkupwordfulllen
@@ -3035,7 +3054,9 @@ msgid "Multi Select"
 msgstr "Többszörös kijelölés"
 
 #: lazarusidestrconsts.dlgmultiwinaccessgroup
-msgid "Find Editor for Jump Targets"
+#, fuzzy
+#| msgid "Find Editor for Jump Targets"
+msgid "Jump target priority between multiple editors"
 msgstr "Szerkesztő keresése az ugrási célhoz"
 
 #: lazarusidestrconsts.dlgmultiwinaccessorder
@@ -8993,6 +9014,30 @@ msgstr "Engedélyezi a nemzetközivé tételt és fordítástámogatást"
 #: lazarusidestrconsts.lisenablemacros
 msgid "Enable Macros"
 msgstr "Makrók engedélyezése"
+
+#: lazarusidestrconsts.lisenableoptiondwarf
+msgid "Enable Dwarf 2 (-gw)?"
+msgstr ""
+
+#: lazarusidestrconsts.lisenableoptiondwarf2
+msgid "Enable Dwarf 2 (-gw)"
+msgstr ""
+
+#: lazarusidestrconsts.lisenableoptiondwarf2sets
+msgid "Enable Dwarf 2 with sets"
+msgstr ""
+
+#: lazarusidestrconsts.lisenableoptiondwarf3
+msgid "Enable Dwarf 3 (-gw3)"
+msgstr ""
+
+#: lazarusidestrconsts.lisenableoptionxg
+msgid "Enable Option -Xg?"
+msgstr ""
+
+#: lazarusidestrconsts.lisenableoptionxg2
+msgid "Enable option -Xg"
+msgstr ""
 
 #: lazarusidestrconsts.lisenablereplacewholeidentifierdisablereplaceprefix
 msgid "Enable = pressing Return replaces whole identifier and Shift+Return replaces prefix, Disable = pressing Return replaces prefix and Shift+Return replaces whole identifier"
@@ -17217,7 +17262,9 @@ msgid "Show output"
 msgstr ""
 
 #: lazarusidestrconsts.lisshowoverviewgutter
-msgid "Show overview Gutter"
+#, fuzzy
+#| msgid "Show overview Gutter"
+msgid "Show overview gutter"
 msgstr "Áttekintő hasábköz megjelenítése"
 
 #: lazarusidestrconsts.lisshowpackages
@@ -17991,6 +18038,10 @@ msgstr "A \"make\" program nem található.%sEz az eszköz szükséges a Lazarus
 msgid "The project compiler options and the directives in the main source differ. For the new unit the mode and string type of the project options are used:"
 msgstr "A projekt fordítóbeállításai és a direktívák a fő forrásban eltérnek. Az új unit-hoz a projekt módbeállítása és karakterlánctípusa lesz használva:"
 
+#: lazarusidestrconsts.listheprojectdoesnotusedwarf
+msgid "The project does not write debug info in Dwarf format. The \"%s\" supports only Dwarf."
+msgstr ""
+
 #: lazarusidestrconsts.listheprojectdoesnotusethelclunitinterfacesbutitseems
 msgid "The project does not use the LCL unit interfaces, which is required by LCLBase.%sYou will get strange linker errors if you use the LCL without interfaces."
 msgstr "A projekt nem használja az LCL \"interfaces\" unit-ját, amelyre szükség van az LCLBase-hez.%sKülönös összefűzési hibák jelentkeznek az LCL \"interfaces\" unit nélküli használatkor."
@@ -18022,6 +18073,10 @@ msgstr "A projekt %s cél OS-t és %s cél CPU-t használ.%sA system.ppu ehhez a
 #: lazarusidestrconsts.listheprojectwritesthedebugsymbolstoanexternalfilethe
 msgid "The project writes the debug symbols to an external file. The \"%s\" supports only symbols within the executable."
 msgstr "A projekt hibakeresési szimbólumai külső fájlba kerülnek. A(z) \"%s\" csak a futtatható állományban található szimbólumokat támogatja."
+
+#: lazarusidestrconsts.listheprojectwritesthedebugsymbolstotheexexcutable
+msgid "The project writes the debug symbols into the executable, rather than to an external file. The \"%s\" supports only symbols in an external file."
+msgstr ""
 
 #: lazarusidestrconsts.listhereareadditionalnotesforthismessageon
 msgid "%sThere are additional notes for this message on%s"
@@ -18379,7 +18434,9 @@ msgid "Top borderspace. This value is added to base borderspace and used for the
 msgstr "Felső keret-térköz. Ez az érték hozzáadódik az alap oldaltérköz értékéhez és a vezérlő feletti térközre vonatkozik."
 
 #: lazarusidestrconsts.listopinfoview
-msgid "Show Class/Proc Hint"
+#, fuzzy
+#| msgid "Show Class/Proc Hint"
+msgid "Show Class/Procedure hint"
 msgstr "Osztály/Eljárás tipp megjelenítése"
 
 #: lazarusidestrconsts.listops
