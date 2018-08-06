@@ -209,10 +209,10 @@ object EditorMarkupOptionsFrame: TEditorMarkupOptionsFrame
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = -721
+    Left = 0
     Height = 15
     Top = 155
-    Width = 1355
+    Width = 634
     Caption = 'divMatchingBrackets'
     Anchors = [akTop, akLeft, akRight]
     Font.Style = [fsBold]

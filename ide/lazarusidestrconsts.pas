@@ -1600,7 +1600,7 @@ resourcestring
   dlgFilterImagesPixmap = 'Pixmap images';
 
   // editor options
-  dlgEdMisc = 'Misc';
+  dlgEdMisc = 'Miscellaneous';
   dlgEdTabIndent = 'Tab and Indent';
   dlgEdDisplay = 'Display';
   dlgKeyMapping = 'Key Mappings';
@@ -1623,14 +1623,14 @@ resourcestring
   dlgScrollGroupOptions = 'Scrolling';
   dlgIndentsTabsGroupOptions = 'Tabs';
   dlgIndentsIndentGroupOptions = 'Indent';
-  dlgCommentIndentGroupOptions = 'Comments';
+  dlgCommentIndentGroupOptions = 'Comments and Strings';
   dlgCaretGroupOptions = 'Caret (Text Cursor)';
   dlgMultiCaretGroupOptions = 'Multi-caret';
   dlgBlockGroupOptions = 'Selection';
-  dlgAlwaysVisibleCursor = 'Always keep Caret in visible area of editor';
+  dlgAlwaysVisibleCursor = 'Always keep caret in visible area of editor';
   dlgAutoIndent = 'Auto indent';
   dlgAutoIndentLink = '(Set up smart indent)';
-  dlgAutoHideCursor  = 'Hide mouse when typing';
+  dlgAutoHideCursor  = 'Hide mouse pointer when typing';
   dlgGroupUndo = 'Group Undo';
   dlgHalfPageScroll = 'Half page scroll';
   dlgKeepCursorX = 'Keep caret X position when navigating up/down';
@@ -1706,7 +1706,7 @@ resourcestring
   dlfMouseSimpleGutterLines = 'Use line numbers to select lines';
   dlfMouseSimpleTextSect = 'Text';
   dlfMouseSimpleTextSectDrag = 'Drag selection (copy/paste)';
-  dlfMouseSimpleRightMoveCaret = 'Right mouse includes caret move';
+  dlfMouseSimpleRightMoveCaret = 'Right button click includes caret move';
   dlfMouseSimpleTextSectMidLabel = 'Middle Button';
   dlfMouseSimpleTextSectWheelLabel = 'Wheel';
   dlfMouseSimpleTextSectRightLabel = 'Right Button';
@@ -1850,7 +1850,7 @@ resourcestring
   dlgMouseOptionsynCommand = 'IDE-Command';
   dlgUseDividerDraw = 'Divider Drawing';
   dlgEditorOptions = 'Editor options';
-  dlgCopyWordAtCursorOnCopyNone = 'Copy word on copy none';
+  dlgCopyWordAtCursorOnCopyNone = 'Copy current word when no selection exists';
   dlgHomeKeyJumpsToNearestStart = 'Home key jumps to nearest start';
   dlgEndKeyJumpsToNearestStart = 'End key jumps to nearest end';
   dlgMultiCaretOnColumnSelection = 'Enable multi-caret for column selection';
@@ -1894,7 +1894,7 @@ resourcestring
   dlgGutterColor = 'Gutter Color';
   dlgDefaultEditorFont='Default editor font';
   dlgEditorFontSize = 'Editor font size';
-  dlgExtraCharSpacing = 'Extra char spacing';
+  dlgExtraCharSpacing = 'Extra character spacing';
   dlgExtraLineSpacing = 'Extra line spacing';
   dlgDisableAntialiasing = 'Disable anti-aliasing';
   lisEdOptsLoadAScheme = 'Load a scheme';
@@ -1954,13 +1954,13 @@ resourcestring
   dlgEdCompleteBlocks = 'Add close statement for Pascal blocks';
   lisShowValueHintsWhileDebugging = 'Show value hints while debugging';
   lisDebugHintAutoTypeCastClass = 'Automatic typecast for objects';
-  dlgMarkupGroup = 'Highlight of Word under Caret';
-  dlgBracketMatchGroup = 'Matching bracket pairs';
+  dlgMarkupGroup = 'Highlight all occurrences of Word under Caret';
+  dlgBracketMatchGroup = 'Matching bracket and quote pairs';
   dlgPasExtKeywordsGroup = 'Extended Pascal Keyword Options';
   dlgPasKeywordsMatches = 'Matching Keywords';
   dlgPasKeywordsMarkup = 'Markup (on caret)';
   dlgPasKeywordsOutline = 'Outline';
-  dlgMarkupWordBracket = 'Word Brackets on caret (global)';
+  dlgMarkupWordBracket = 'Keyword brackets on caret (global)';
   dlgMarkupOutline = 'Outline (global)';
   dlgPasExtKeywords = 'Highlight control statements as keywords';
   dlgPasStringKeywords = 'Highlight "String" keyword(s)';
@@ -2024,7 +2024,7 @@ resourcestring
 
   dlgMultiWinOptions = 'Pages and Windows';
   dlgMultiWinTabGroup = 'Notebook Tabs';
-  dlgMultiWinAccessGroup = 'Find Editor for Jump Targets';
+  dlgMultiWinAccessGroup = 'Jump target priority between multiple editors';
   dlgMultiWinAccessOrder    = 'Order to use for editors matching the same criteria';
   dlgMultiWinAccessOrderEdit= 'Most recent focused editor for this file';
   dlgMultiWinAccessOrderWin = 'Editor (for file) in most recent focused window';
@@ -5590,8 +5590,8 @@ resourcestring
     +'%sDelete all files in "%s"?';
   lisFileExtensionOfPrograms = 'File extension of programs';
   lisEveryNThLineNumber = 'Every n-th line number';
-  lisShowOverviewGutter = 'Show overview Gutter';
-  lisTopInfoView = 'Show Class/Proc Hint';
+  lisShowOverviewGutter = 'Show overview gutter';
+  lisTopInfoView = 'Show Class/Procedure hint';
   lisLink = 'Link:';
   lisShort = 'Short:';
   lisInsertUrlTag = 'Insert url tag';
