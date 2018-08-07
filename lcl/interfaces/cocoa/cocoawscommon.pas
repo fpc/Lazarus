@@ -191,6 +191,8 @@ begin
   Result.setDocumentView(AView);
   AView.setHidden(false);
   SetViewDefaults(Result);
+  if AView.isKindOfClass(TCocoaCustomControl) then
+    TCocoaCustomControl(AView).auxMouseByParent := true;
 end;
 
 { TLCLCommonCallback }
@@ -1286,6 +1288,15 @@ begin
     result := callback.MouseMove(Event);
     FIsEventRouting := false;
     exit;
+  end;
+
+  if (Event.type_ = NSMouseMoved) and Owner.lclIsMouseInAuxArea(Event) then
+  begin
+    // mouse is over auxillary area that's "blind" to mouse moves
+    // even though the mouse cursos is within the control bounds.
+    // (i.e. scrollbars)
+    Result := false;
+    Exit;
   end;
 
   // debugln('Send to: '+Target.name+' Point: '+dbgs(mp));

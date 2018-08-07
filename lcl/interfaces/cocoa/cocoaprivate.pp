@@ -117,6 +117,7 @@ type
     function lclContentView: NSView; message 'lclContentView';
     procedure lclOffsetMousePos(var Point: NSPoint); message 'lclOffsetMousePos:';
     procedure lclExpectedKeys(var wantTabs, wantArrows, wantAll: Boolean); message 'lclExpectedKeys:::';
+    function lclIsMouseInAuxArea(Event: NSEvent): Boolean; message 'lclMouseInAuxArea:';
   end;
 
   { LCLViewExtension }
@@ -164,6 +165,7 @@ type
     faileddraw  : Boolean;
   public
     callback: ICommonCallback;
+    auxMouseByParent: Boolean;
     procedure dealloc; override;
     function acceptsFirstResponder: Boolean; override;
     function becomeFirstResponder: Boolean; override;
@@ -171,6 +173,7 @@ type
     procedure drawRect(dirtyRect: NSRect); override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
+    function lclIsMouseInAuxArea(Event: NSevent): Boolean; override;
     // mouse
     function acceptsFirstMouse(event: NSEvent): Boolean; override;
     procedure mouseDown(event: NSEvent); override;
@@ -542,6 +545,14 @@ begin
   callback := nil;
 end;
 
+function TCocoaCustomControl.lclIsMouseInAuxArea(Event: NSevent): Boolean;
+begin
+  if auxMouseByParent and Assigned(superview) then
+    Result := superview.lclIsMouseInAuxArea(Event)
+  else
+    Result := false;
+end;
+
 procedure TCocoaCustomControl.mouseDown(event: NSEvent);
 begin
   if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
@@ -785,6 +796,19 @@ begin
   wantTabs := false;
   wantArrows := false;
   wantAll := false;
+end;
+
+{ The method should return TRUE, if mouse is located above an auxilary area
+  of a (composited) control, and thus MOUSE MOVE event should not be propagated
+  to LCL. For example, controls with Scrollbars should not report mouse events
+  if mouse cursor is above ScrollBar and scroll bar is visible. (ScrollBar = Auxillary area)
+
+  By default, the whole area is considered to be non-auxillary and must be
+  reported to LCL.
+  }
+function LCLObjectExtension.lclIsMouseInAuxArea(Event: NSEvent): Boolean;
+begin
+  Result := false;
 end;
 
 { LCLControlExtension }
