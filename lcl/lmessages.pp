@@ -90,6 +90,7 @@ const
 
   LM_GRABFOCUS      = LM_LCL + 80;
   LM_DRAWLISTITEM   = LM_LCL + 81;
+  LM_DEFERREDEDIT   = LM_LCL + 82;            // used in customdbcombobox
 
   // these IDs are reserved for internal messages in the interfaces
   LM_INTERFACEFIRST = LM_LCL + 99;

@@ -34,7 +34,7 @@ uses
   // LazUtils
   LazTracer, LazUtilities,
   // LCL
-  LCLStrConsts, LMessages, LCLType, LResources, GraphType, Controls, Graphics,
+  LCLStrConsts, LMessages, LCLType, LCLIntf, LResources, GraphType, Controls, Graphics,
   Dialogs, StdCtrls, Buttons, MaskEdit, ExtCtrls, Calendar, ImgList;
 
 Type
@@ -714,6 +714,7 @@ Type
   TCustomDBComboBox = class(TCustomComboBox)
   private
     FDataLink: TFieldDataLink;
+    FDetectedEvents: Word;
     function GetDataField: string;
     function GetDataSource: TDataSource;
     function GetField: TField;
@@ -723,7 +724,12 @@ Type
     procedure SetReadOnly(const AValue: Boolean);
     procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
   protected
+    function DoEdit: boolean;
+    procedure DoOnCloseUp;
+    procedure LMDeferredEdit(var Message: TLMessage); message LM_DEFERREDEDIT;
+  protected
     procedure CloseUp; override;
+    Procedure Select; override;
     procedure DataChange(Sender: TObject); virtual; abstract;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Change; override;
@@ -748,11 +754,9 @@ Type
 
   TDBComboBox = class(TCustomDBComboBox)
   protected
-    procedure Change; override;
     procedure DataChange(Sender: TObject); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: char); override;
-    procedure Select; override;
     procedure UpdateData(Sender: TObject); override;
   published
     property Align;

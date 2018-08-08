@@ -17,22 +17,6 @@ begin
   FDataLink.Field.Text := Text;
 end;
 
-procedure TDBComboBox.Change;
-begin
-  try
-    if FDataLink.CanModify then begin
-      FDataLink.OnDataChange := nil;
-      if FDataLink.Edit then begin
-        FDataLink.Field.AsString := Text;
-        FDatalink.Modified;
-      end;
-      FDataLink.OnDataChange := @Datachange;
-    end;
-  finally
-    inherited Change;
-  end;
-end;
-
 procedure TDBComboBox.DataChange(Sender: TObject);
 var
   DataLinkField: TField;
@@ -52,10 +36,6 @@ begin
     FDataLink.Reset;
     SelectAll;
     Key := VK_UNKNOWN;
-  end else
-  if Key in [VK_DELETE, VK_BACK] then begin
-    if not FDataLink.Edit then
-      Key := VK_UNKNOWN;
   end;
 end;
 
@@ -63,34 +43,9 @@ procedure TDBComboBox.KeyPress(var Key: char);
 begin
   inherited KeyPress(Key);
   case Key of
-    #8: // special keys
-      if not FDatalink.Edit then
-        Key:=#0;
-
     #32..#255: //standard keys
-      if not FieldCanAcceptKey(FDataLink.Field, Key) or not FDatalink.Edit then
+      if not FieldCanAcceptKey(FDataLink.Field, Key) then
         Key:=#0;
   end;//case
 end;
 
-procedure TDBComboBox.Select;
-begin
-  //avoid reseting text when calling select
-  FDataLink.OnDataChange := nil;
-  try
-    if FDataLink.Edit then
-    begin
-       FDataLink.Modified;
-       FDataLink.UpdateData;
-       inherited Select;
-    end
-    else
-    begin
-       // if cannot modify, let it reset
-       FDatalink.Reset;
-       DataChange(Self);
-    end;
-  finally
-    FDataLink.OnDataChange := @DataChange;
-  end;
-end;
