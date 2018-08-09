@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-07-30 13:05+0200\n"
+"PO-Revision-Date: 2018-08-09 22:01+0200\n"
 "Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -224,10 +224,8 @@ msgid "Gutter"
 msgstr "Смужка"
 
 #: lazarusidestrconsts.dlfmousesimplerightmovecaret
-#, fuzzy
-#| msgid "Right mouse includes caret move"
 msgid "Right button click includes caret move"
-msgstr "Переміщувати курсор за правою кнопкою миші"
+msgstr "Переміщувати курсор клацанням правою кнопкою миші"
 
 #: lazarusidestrconsts.dlfmousesimpletextsect
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsect"
@@ -682,8 +680,6 @@ msgid "Alphabetically"
 msgstr "За алфавітом"
 
 #: lazarusidestrconsts.dlgalwaysvisiblecursor
-#, fuzzy
-#| msgid "Always keep Caret in visible area of editor"
 msgid "Always keep caret in visible area of editor"
 msgstr "Завжди тримати курсор у видимій ділянці редактора"
 
@@ -740,10 +736,8 @@ msgid "Auto Display Function Prototypes"
 msgstr "Автоматично показувати прототипи функцій"
 
 #: lazarusidestrconsts.dlgautohidecursor
-#, fuzzy
-#| msgid "Hide mouse when typing"
 msgid "Hide mouse pointer when typing"
-msgstr "Сховати мишу при наборі тексту"
+msgstr "Сховати вказівник миші при наборі тексту"
 
 #: lazarusidestrconsts.dlgautoindent
 msgctxt "lazarusidestrconsts.dlgautoindent"
@@ -857,10 +851,8 @@ msgid "Bracket highlight"
 msgstr "Підсвічування дужок"
 
 #: lazarusidestrconsts.dlgbracketmatchgroup
-#, fuzzy
-#| msgid "Matching bracket pairs"
 msgid "Matching bracket and quote pairs"
-msgstr "Підбір пар дужок"
+msgstr "Підбір пар дужок і лапок"
 
 #: lazarusidestrconsts.dlgcannotusedockedundockeddesktop
 msgid "You cannot use docked desktop in undocked environment and vice versa."
@@ -1164,10 +1156,8 @@ msgid "Do not indent prefix"
 msgstr "Не робити відступ префікса"
 
 #: lazarusidestrconsts.dlgcommentindentgroupoptions
-#, fuzzy
-#| msgid "Comments"
 msgid "Comments and Strings"
-msgstr "Коментарі"
+msgstr "Коментарі і рядки"
 
 #: lazarusidestrconsts.dlgcommentshlashextendalways
 msgid "Extend, if matched or not matched"
@@ -1235,10 +1225,8 @@ msgid "Copy/Paste with fold info"
 msgstr "Копіювати/Вставляти зі згорненням"
 
 #: lazarusidestrconsts.dlgcopywordatcursoroncopynone
-#, fuzzy
-#| msgid "Copy word on copy none"
 msgid "Copy current word when no selection exists"
-msgstr "Копіювати слово при порожньому копіюванні"
+msgstr "Копіювати поточне слово якщо нічого не вибрано"
 
 #: lazarusidestrconsts.dlgcorange
 msgctxt "lazarusidestrconsts.dlgcorange"
@@ -1619,8 +1607,6 @@ msgid "Scheme globals"
 msgstr "Глобальні параметри схеми"
 
 #: lazarusidestrconsts.dlgedmisc
-#, fuzzy
-#| msgid "Misc"
 msgctxt "lazarusidestrconsts.dlgedmisc"
 msgid "Miscellaneous"
 msgstr "Різне"
@@ -1710,8 +1696,6 @@ msgid "Focus messages at compilation"
 msgstr "Фокусувати при компіляції на вікні повідомлень"
 
 #: lazarusidestrconsts.dlgextracharspacing
-#, fuzzy
-#| msgid "Extra char spacing"
 msgid "Extra character spacing"
 msgstr "Додатковий міжсимвольний інтервал"
 
@@ -2498,10 +2482,8 @@ msgid "Vertical-mark"
 msgstr "Вертикальна позначка"
 
 #: lazarusidestrconsts.dlgmarkupgroup
-#, fuzzy
-#| msgid "Highlight of Word under Caret"
 msgid "Highlight all occurrences of Word under Caret"
-msgstr "Підсвітка Слова під Курсором"
+msgstr "Підсвітка всіх входжень слова під курсором"
 
 #: lazarusidestrconsts.dlgmarkupoutline
 msgid "Outline (global)"
@@ -2611,10 +2593,8 @@ msgid "Main settings"
 msgstr "Головні параметри"
 
 #: lazarusidestrconsts.dlgmarkupwordbracket
-#, fuzzy
-#| msgid "Word Brackets on caret (global)"
 msgid "Keyword brackets on caret (global)"
-msgstr "Операторні дужки біля курсору (глобально)"
+msgstr "Операторні дужки біля курсора (глобально)"
 
 #: lazarusidestrconsts.dlgmarkupwordfulllen
 msgid "Match whole words, if length is less or equal to:"
@@ -3038,10 +3018,8 @@ msgid "Multi Select"
 msgstr "Множинний вибір"
 
 #: lazarusidestrconsts.dlgmultiwinaccessgroup
-#, fuzzy
-#| msgid "Find Editor for Jump Targets"
 msgid "Jump target priority between multiple editors"
-msgstr "Знайти редактор для цілей переходу"
+msgstr "Пріоритет цілей переходу між декількома редакторами"
 
 #: lazarusidestrconsts.dlgmultiwinaccessorder
 msgid "Order to use for editors matching the same criteria"
@@ -8987,27 +8965,27 @@ msgstr "Макрос доступний"
 
 #: lazarusidestrconsts.lisenableoptiondwarf
 msgid "Enable Dwarf 2 (-gw)?"
-msgstr ""
+msgstr "Увімкнути Dwarf 2 (-gw)?"
 
 #: lazarusidestrconsts.lisenableoptiondwarf2
 msgid "Enable Dwarf 2 (-gw)"
-msgstr ""
+msgstr "Увімкнути Dwarf 2 (-gw)"
 
 #: lazarusidestrconsts.lisenableoptiondwarf2sets
 msgid "Enable Dwarf 2 with sets"
-msgstr ""
+msgstr "Увімкнути Dwarf 2 з підтримкою множин"
 
 #: lazarusidestrconsts.lisenableoptiondwarf3
 msgid "Enable Dwarf 3 (-gw3)"
-msgstr ""
+msgstr "Увімкнути Dwarf 3 (-gw3)"
 
 #: lazarusidestrconsts.lisenableoptionxg
 msgid "Enable Option -Xg?"
-msgstr ""
+msgstr "Увімкнути параметр -Xg?"
 
 #: lazarusidestrconsts.lisenableoptionxg2
 msgid "Enable option -Xg"
-msgstr ""
+msgstr "Увімкнути параметр -Xg"
 
 #: lazarusidestrconsts.lisenablereplacewholeidentifierdisablereplaceprefix
 msgid "Enable = pressing Return replaces whole identifier and Shift+Return replaces prefix, Disable = pressing Return replaces prefix and Shift+Return replaces whole identifier"
@@ -17226,8 +17204,6 @@ msgid "Show output"
 msgstr "Показати вивід"
 
 #: lazarusidestrconsts.lisshowoverviewgutter
-#, fuzzy
-#| msgid "Show overview Gutter"
 msgid "Show overview gutter"
 msgstr "Показати смужку огляду"
 
@@ -18004,7 +17980,7 @@ msgstr "Опції компілятора проекту і директиви �
 
 #: lazarusidestrconsts.listheprojectdoesnotusedwarf
 msgid "The project does not write debug info in Dwarf format. The \"%s\" supports only Dwarf."
-msgstr ""
+msgstr "Проект не записує зневаджувальної інформації у форматі Dwarf. \"%s\" підтримує тільки Dwarf."
 
 #: lazarusidestrconsts.listheprojectdoesnotusethelclunitinterfacesbutitseems
 msgid "The project does not use the LCL unit interfaces, which is required by LCLBase.%sYou will get strange linker errors if you use the LCL without interfaces."
@@ -18040,7 +18016,7 @@ msgstr "Проект записує зневаджувальні дані у з�
 
 #: lazarusidestrconsts.listheprojectwritesthedebugsymbolstotheexexcutable
 msgid "The project writes the debug symbols into the executable, rather than to an external file. The \"%s\" supports only symbols in an external file."
-msgstr ""
+msgstr "Проект записує зневаджувальні символи у виконуваний файл, а не в зовнішній файл. \"%s\" підтримує тільки зневаджувальні символи, розміщені у зовнішньому файлі."
 
 #: lazarusidestrconsts.listhereareadditionalnotesforthismessageon
 msgid "%sThere are additional notes for this message on%s"
@@ -18398,10 +18374,8 @@ msgid "Top borderspace. This value is added to base borderspace and used for the
 msgstr "Верхній бордюр. Ця величина додається до базового бордюру і використовується для відступу над контролем."
 
 #: lazarusidestrconsts.listopinfoview
-#, fuzzy
-#| msgid "Show Class/Proc Hint"
 msgid "Show Class/Procedure hint"
-msgstr "Показувати підказку Клас/Проц"
+msgstr "Показувати підказку Клас/Процедура"
 
 #: lazarusidestrconsts.listops
 msgid "Tops"
