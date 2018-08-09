@@ -50,210 +50,29 @@ msgstr "Alt"
 msgid "Ctrl"
 msgstr "Ctrl"
 
-#: lclstrconsts.ifsvk_accept
-msgid "Accept"
-msgstr "Прийняти"
-
-#: lclstrconsts.ifsvk_apps
-msgid "application key"
-msgstr "кнопка програми"
-
-#: lclstrconsts.ifsvk_back
-msgid "Backspace"
-msgstr "Backspace"
-
-#: lclstrconsts.ifsvk_cancel
-msgctxt "lclstrconsts.ifsvk_cancel"
-msgid "Cancel"
-msgstr "Скасувати"
-
-#: lclstrconsts.ifsvk_capital
-msgid "Capital"
-msgstr "Великі літери"
-
-#: lclstrconsts.ifsvk_clear
-msgid "Clear"
-msgstr "Очистити"
-
 #: lclstrconsts.ifsvk_cmd
 msgid "Cmd"
 msgstr "Cmd"
-
-#: lclstrconsts.ifsvk_control
-msgid "Control"
-msgstr "Керування"
-
-#: lclstrconsts.ifsvk_convert
-msgid "Convert"
-msgstr "Перетворити"
-
-#: lclstrconsts.ifsvk_delete
-msgctxt "lclstrconsts.ifsvk_delete"
-msgid "Delete"
-msgstr "Видалити"
-
-#: lclstrconsts.ifsvk_down
-msgctxt "lclstrconsts.ifsvk_down"
-msgid "Down"
-msgstr "Вниз"
-
-#: lclstrconsts.ifsvk_end
-msgctxt "lclstrconsts.ifsvk_end"
-msgid "End"
-msgstr "Кінець"
-
-#: lclstrconsts.ifsvk_escape
-msgid "Escape"
-msgstr "Вихід"
-
-#: lclstrconsts.ifsvk_execute
-msgid "Execute"
-msgstr "Виконати"
-
-#: lclstrconsts.ifsvk_final
-msgid "Final"
-msgstr "Кінцевий"
-
-#: lclstrconsts.ifsvk_hanja
-msgid "Hanja"
-msgstr "Китайська"
 
 #: lclstrconsts.ifsvk_help
 msgid "Help"
 msgstr "Допомога"
 
-#: lclstrconsts.ifsvk_home
-msgctxt "lclstrconsts.ifsvk_home"
-msgid "Home"
-msgstr "Дім"
-
-#: lclstrconsts.ifsvk_insert
-msgctxt "lclstrconsts.ifsvk_insert"
-msgid "Insert"
-msgstr "Вставити"
-
-#: lclstrconsts.ifsvk_junja
-msgid "Junja"
-msgstr "Кенійська"
-
-#: lclstrconsts.ifsvk_kana
-msgid "Kana"
-msgstr "Японська"
-
-#: lclstrconsts.ifsvk_lbutton
-msgid "Mouse Button Left"
-msgstr "Ліва клавіша миші"
-
-#: lclstrconsts.ifsvk_left
-msgctxt "lclstrconsts.ifsvk_left"
-msgid "Left"
-msgstr "Вліво"
-
-#: lclstrconsts.ifsvk_lwin
-msgid "left windows key"
-msgstr "ліва клавіша Win"
-
-#: lclstrconsts.ifsvk_mbutton
-msgid "Mouse Button Middle"
-msgstr "Середня клавіша миші"
-
-#: lclstrconsts.ifsvk_menu
-msgctxt "lclstrconsts.ifsvk_menu"
-msgid "Menu"
-msgstr "Меню"
-
 #: lclstrconsts.ifsvk_meta
 msgid "Meta"
 msgstr "Мета"
-
-#: lclstrconsts.ifsvk_modechange
-msgid "Mode Change"
-msgstr "Зміна режиму"
-
-#: lclstrconsts.ifsvk_next
-msgctxt "lclstrconsts.ifsvk_next"
-msgid "Next"
-msgstr "Наступний"
-
-#: lclstrconsts.ifsvk_nonconvert
-msgid "Nonconvert"
-msgstr "Неконвертоване"
-
-#: lclstrconsts.ifsvk_numlock
-msgid "Numlock"
-msgstr "Numlock"
-
-#: lclstrconsts.ifsvk_numpad
-msgid "Numpad %d"
-msgstr "Numpad %d"
-
-#: lclstrconsts.ifsvk_pause
-msgid "Pause key"
-msgstr "Клавіша Pause"
-
-#: lclstrconsts.ifsvk_print
-msgid "Print"
-msgstr "Друкувати"
-
-#: lclstrconsts.ifsvk_prior
-msgctxt "lclstrconsts.ifsvk_prior"
-msgid "Prior"
-msgstr "Попередній"
-
-#: lclstrconsts.ifsvk_rbutton
-msgid "Mouse Button Right"
-msgstr "Права клавіша миші"
-
-#: lclstrconsts.ifsvk_return
-msgid "Return"
-msgstr "Enter"
-
-#: lclstrconsts.ifsvk_right
-msgctxt "lclstrconsts.ifsvk_right"
-msgid "Right"
-msgstr "Вправо"
-
-#: lclstrconsts.ifsvk_rwin
-msgid "right windows key"
-msgstr "права клавіша Win"
-
-#: lclstrconsts.ifsvk_scroll
-msgid "Scroll"
-msgstr "Scroll"
-
-#: lclstrconsts.ifsvk_select
-msgid "Select"
-msgstr "Вибрати"
 
 #: lclstrconsts.ifsvk_shift
 msgid "Shift"
 msgstr "Shift"
 
-#: lclstrconsts.ifsvk_snapshot
-msgid "Snapshot"
-msgstr "Скріншот"
-
-#: lclstrconsts.ifsvk_space
-msgid "Space key"
-msgstr "Пробіл"
-
 #: lclstrconsts.ifsvk_super
 msgid "Super"
 msgstr "Super"
 
-#: lclstrconsts.ifsvk_tab
-msgctxt "lclstrconsts.ifsvk_tab"
-msgid "Tab"
-msgstr "Tab"
-
 #: lclstrconsts.ifsvk_unknown
 msgid "Unknown"
 msgstr "Невідомий"
-
-#: lclstrconsts.ifsvk_up
-msgctxt "lclstrconsts.ifsvk_up"
-msgid "Up"
-msgstr "Вверх"
 
 #: lclstrconsts.lislclresourcesnotfound
 msgctxt "lclstrconsts.lislclresourcesnotfound"
@@ -413,10 +232,6 @@ msgstr "Напрямок"
 #: lclstrconsts.rsdirectory
 msgid "&Directory"
 msgstr "&Каталог"
-
-#: lclstrconsts.rsdocking
-msgid "Docking"
-msgstr "Стикування"
 
 #: lclstrconsts.rsdocopy
 msgid "Copy"
@@ -1462,10 +1277,6 @@ msgstr "Tab"
 msgctxt "lclstrconsts.smkcup"
 msgid "Up"
 msgstr "Вгору"
-
-#: lclstrconsts.snomdiform
-msgid "No MDI form present."
-msgstr "Немає MDI форми."
 
 #: lclstrconsts.snotimers
 msgid "No timers available"

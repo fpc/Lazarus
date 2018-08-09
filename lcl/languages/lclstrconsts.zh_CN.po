@@ -50,210 +50,29 @@ msgstr "Alt"
 msgid "Ctrl"
 msgstr "Ctrl"
 
-#: lclstrconsts.ifsvk_accept
-msgid "Accept"
-msgstr "接受"
-
-#: lclstrconsts.ifsvk_apps
-msgid "application key"
-msgstr "应用key"
-
-#: lclstrconsts.ifsvk_back
-msgid "Backspace"
-msgstr "退格"
-
-#: lclstrconsts.ifsvk_cancel
-msgctxt "lclstrconsts.ifsvk_cancel"
-msgid "Cancel"
-msgstr "取消"
-
-#: lclstrconsts.ifsvk_capital
-msgid "Capital"
-msgstr "大写"
-
-#: lclstrconsts.ifsvk_clear
-msgid "Clear"
-msgstr "清除"
-
 #: lclstrconsts.ifsvk_cmd
 msgid "Cmd"
 msgstr "Cmd"
-
-#: lclstrconsts.ifsvk_control
-msgid "Control"
-msgstr "控件(Control)"
-
-#: lclstrconsts.ifsvk_convert
-msgid "Convert"
-msgstr "转换"
-
-#: lclstrconsts.ifsvk_delete
-msgctxt "lclstrconsts.ifsvk_delete"
-msgid "Delete"
-msgstr "删除"
-
-#: lclstrconsts.ifsvk_down
-msgctxt "lclstrconsts.ifsvk_down"
-msgid "Down"
-msgstr "向下"
-
-#: lclstrconsts.ifsvk_end
-msgctxt "lclstrconsts.ifsvk_end"
-msgid "End"
-msgstr "结束"
-
-#: lclstrconsts.ifsvk_escape
-msgid "Escape"
-msgstr "Esc"
-
-#: lclstrconsts.ifsvk_execute
-msgid "Execute"
-msgstr "执行"
-
-#: lclstrconsts.ifsvk_final
-msgid "Final"
-msgstr ""
-
-#: lclstrconsts.ifsvk_hanja
-msgid "Hanja"
-msgstr ""
 
 #: lclstrconsts.ifsvk_help
 msgid "Help"
 msgstr "帮助"
 
-#: lclstrconsts.ifsvk_home
-msgctxt "lclstrconsts.ifsvk_home"
-msgid "Home"
-msgstr "用户主目录"
-
-#: lclstrconsts.ifsvk_insert
-msgctxt "lclstrconsts.ifsvk_insert"
-msgid "Insert"
-msgstr "插入"
-
-#: lclstrconsts.ifsvk_junja
-msgid "Junja"
-msgstr ""
-
-#: lclstrconsts.ifsvk_kana
-msgid "Kana"
-msgstr ""
-
-#: lclstrconsts.ifsvk_lbutton
-msgid "Mouse Button Left"
-msgstr "鼠标左键"
-
-#: lclstrconsts.ifsvk_left
-msgctxt "lclstrconsts.ifsvk_left"
-msgid "Left"
-msgstr "左"
-
-#: lclstrconsts.ifsvk_lwin
-msgid "left windows key"
-msgstr "左 Win 键"
-
-#: lclstrconsts.ifsvk_mbutton
-msgid "Mouse Button Middle"
-msgstr "鼠标中键"
-
-#: lclstrconsts.ifsvk_menu
-msgctxt "lclstrconsts.ifsvk_menu"
-msgid "Menu"
-msgstr "菜单"
-
 #: lclstrconsts.ifsvk_meta
 msgid "Meta"
 msgstr ""
-
-#: lclstrconsts.ifsvk_modechange
-msgid "Mode Change"
-msgstr "模式更改"
-
-#: lclstrconsts.ifsvk_next
-msgctxt "lclstrconsts.ifsvk_next"
-msgid "Next"
-msgstr "下一个"
-
-#: lclstrconsts.ifsvk_nonconvert
-msgid "Nonconvert"
-msgstr "不转换"
-
-#: lclstrconsts.ifsvk_numlock
-msgid "Numlock"
-msgstr "数字锁定"
-
-#: lclstrconsts.ifsvk_numpad
-msgid "Numpad %d"
-msgstr "数字键盘 %d"
-
-#: lclstrconsts.ifsvk_pause
-msgid "Pause key"
-msgstr "暂停键"
-
-#: lclstrconsts.ifsvk_print
-msgid "Print"
-msgstr "打印"
-
-#: lclstrconsts.ifsvk_prior
-msgctxt "lclstrconsts.ifsvk_prior"
-msgid "Prior"
-msgstr "前一个"
-
-#: lclstrconsts.ifsvk_rbutton
-msgid "Mouse Button Right"
-msgstr "鼠标右键"
-
-#: lclstrconsts.ifsvk_return
-msgid "Return"
-msgstr "返回"
-
-#: lclstrconsts.ifsvk_right
-msgctxt "lclstrconsts.ifsvk_right"
-msgid "Right"
-msgstr "右"
-
-#: lclstrconsts.ifsvk_rwin
-msgid "right windows key"
-msgstr "右windows键"
-
-#: lclstrconsts.ifsvk_scroll
-msgid "Scroll"
-msgstr "滚动"
-
-#: lclstrconsts.ifsvk_select
-msgid "Select"
-msgstr "选择"
 
 #: lclstrconsts.ifsvk_shift
 msgid "Shift"
 msgstr "Shift"
 
-#: lclstrconsts.ifsvk_snapshot
-msgid "Snapshot"
-msgstr "快照"
-
-#: lclstrconsts.ifsvk_space
-msgid "Space key"
-msgstr "空格键"
-
 #: lclstrconsts.ifsvk_super
 msgid "Super"
 msgstr ""
 
-#: lclstrconsts.ifsvk_tab
-msgctxt "lclstrconsts.ifsvk_tab"
-msgid "Tab"
-msgstr "Tab"
-
 #: lclstrconsts.ifsvk_unknown
 msgid "Unknown"
 msgstr "未知"
-
-#: lclstrconsts.ifsvk_up
-msgctxt "lclstrconsts.ifsvk_up"
-msgid "Up"
-msgstr "上"
 
 #: lclstrconsts.lislclresourcesnotfound
 msgctxt "lclstrconsts.lislclresourcesnotfound"
@@ -415,10 +234,6 @@ msgstr "方向"
 #: lclstrconsts.rsdirectory
 msgid "&Directory"
 msgstr "目录(&D)"
-
-#: lclstrconsts.rsdocking
-msgid "Docking"
-msgstr "停靠"
 
 #: lclstrconsts.rsdocopy
 msgid "Copy"
@@ -1488,10 +1303,6 @@ msgstr "Tab"
 msgctxt "lclstrconsts.smkcup"
 msgid "Up"
 msgstr "上"
-
-#: lclstrconsts.snomdiform
-msgid "No MDI form present."
-msgstr "没有 MDI 窗体出现"
 
 #: lclstrconsts.snotimers
 msgid "No timers available"

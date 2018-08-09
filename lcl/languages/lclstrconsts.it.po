@@ -49,210 +49,29 @@ msgstr "Alt"
 msgid "Ctrl"
 msgstr "Ctrl"
 
-#: lclstrconsts.ifsvk_accept
-msgid "Accept"
-msgstr "Accetta"
-
-#: lclstrconsts.ifsvk_apps
-msgid "application key"
-msgstr "tasto applicazione"
-
-#: lclstrconsts.ifsvk_back
-msgid "Backspace"
-msgstr "Backspace"
-
-#: lclstrconsts.ifsvk_cancel
-msgctxt "lclstrconsts.ifsvk_cancel"
-msgid "Cancel"
-msgstr "Cancella"
-
-#: lclstrconsts.ifsvk_capital
-msgid "Capital"
-msgstr "Maiuscola"
-
-#: lclstrconsts.ifsvk_clear
-msgid "Clear"
-msgstr "Cancella"
-
 #: lclstrconsts.ifsvk_cmd
 msgid "Cmd"
 msgstr "Cmd"
-
-#: lclstrconsts.ifsvk_control
-msgid "Control"
-msgstr "Controllo"
-
-#: lclstrconsts.ifsvk_convert
-msgid "Convert"
-msgstr "Converti"
-
-#: lclstrconsts.ifsvk_delete
-msgctxt "lclstrconsts.ifsvk_delete"
-msgid "Delete"
-msgstr "Elimina"
-
-#: lclstrconsts.ifsvk_down
-msgctxt "lclstrconsts.ifsvk_down"
-msgid "Down"
-msgstr "Giù"
-
-#: lclstrconsts.ifsvk_end
-msgctxt "lclstrconsts.ifsvk_end"
-msgid "End"
-msgstr "Fine"
-
-#: lclstrconsts.ifsvk_escape
-msgid "Escape"
-msgstr "Escape"
-
-#: lclstrconsts.ifsvk_execute
-msgid "Execute"
-msgstr "Esegui"
-
-#: lclstrconsts.ifsvk_final
-msgid "Final"
-msgstr "Finale"
-
-#: lclstrconsts.ifsvk_hanja
-msgid "Hanja"
-msgstr "Hanja"
 
 #: lclstrconsts.ifsvk_help
 msgid "Help"
 msgstr "Aiuto"
 
-#: lclstrconsts.ifsvk_home
-msgctxt "lclstrconsts.ifsvk_home"
-msgid "Home"
-msgstr "Home"
-
-#: lclstrconsts.ifsvk_insert
-msgctxt "lclstrconsts.ifsvk_insert"
-msgid "Insert"
-msgstr "Inserisci"
-
-#: lclstrconsts.ifsvk_junja
-msgid "Junja"
-msgstr "Junja"
-
-#: lclstrconsts.ifsvk_kana
-msgid "Kana"
-msgstr "Kana"
-
-#: lclstrconsts.ifsvk_lbutton
-msgid "Mouse Button Left"
-msgstr "Tasto sinistro del mouse"
-
-#: lclstrconsts.ifsvk_left
-msgctxt "lclstrconsts.ifsvk_left"
-msgid "Left"
-msgstr "Sinistra"
-
-#: lclstrconsts.ifsvk_lwin
-msgid "left windows key"
-msgstr "tasto windows sinistro"
-
-#: lclstrconsts.ifsvk_mbutton
-msgid "Mouse Button Middle"
-msgstr "Tasto centrale del mouse"
-
-#: lclstrconsts.ifsvk_menu
-msgctxt "lclstrconsts.ifsvk_menu"
-msgid "Menu"
-msgstr "Menu"
-
 #: lclstrconsts.ifsvk_meta
 msgid "Meta"
 msgstr "Meta"
-
-#: lclstrconsts.ifsvk_modechange
-msgid "Mode Change"
-msgstr "Cambiamento di modalità"
-
-#: lclstrconsts.ifsvk_next
-msgctxt "lclstrconsts.ifsvk_next"
-msgid "Next"
-msgstr "Successivo"
-
-#: lclstrconsts.ifsvk_nonconvert
-msgid "Nonconvert"
-msgstr "Nonconvertente"
-
-#: lclstrconsts.ifsvk_numlock
-msgid "Numlock"
-msgstr "BlocNum"
-
-#: lclstrconsts.ifsvk_numpad
-msgid "Numpad %d"
-msgstr "TastNum %d"
-
-#: lclstrconsts.ifsvk_pause
-msgid "Pause key"
-msgstr "Tasto pausa"
-
-#: lclstrconsts.ifsvk_print
-msgid "Print"
-msgstr "Stampa"
-
-#: lclstrconsts.ifsvk_prior
-msgctxt "lclstrconsts.ifsvk_prior"
-msgid "Prior"
-msgstr "Precedente"
-
-#: lclstrconsts.ifsvk_rbutton
-msgid "Mouse Button Right"
-msgstr "Tasto destro del mouse"
-
-#: lclstrconsts.ifsvk_return
-msgid "Return"
-msgstr "Invio"
-
-#: lclstrconsts.ifsvk_right
-msgctxt "lclstrconsts.ifsvk_right"
-msgid "Right"
-msgstr "Destra"
-
-#: lclstrconsts.ifsvk_rwin
-msgid "right windows key"
-msgstr "tasto windows destro"
-
-#: lclstrconsts.ifsvk_scroll
-msgid "Scroll"
-msgstr "Scorrimento"
-
-#: lclstrconsts.ifsvk_select
-msgid "Select"
-msgstr "Selezione"
 
 #: lclstrconsts.ifsvk_shift
 msgid "Shift"
 msgstr "Maiusc"
 
-#: lclstrconsts.ifsvk_snapshot
-msgid "Snapshot"
-msgstr "Istantanea"
-
-#: lclstrconsts.ifsvk_space
-msgid "Space key"
-msgstr "Tasto di spaziatura"
-
 #: lclstrconsts.ifsvk_super
 msgid "Super"
 msgstr "Super"
 
-#: lclstrconsts.ifsvk_tab
-msgctxt "lclstrconsts.ifsvk_tab"
-msgid "Tab"
-msgstr "Tab"
-
 #: lclstrconsts.ifsvk_unknown
 msgid "Unknown"
 msgstr "Sconosciuto"
-
-#: lclstrconsts.ifsvk_up
-msgctxt "lclstrconsts.ifsvk_up"
-msgid "Up"
-msgstr "Su"
 
 #: lclstrconsts.lislclresourcesnotfound
 msgctxt "lclstrconsts.lislclresourcesnotfound"
@@ -412,10 +231,6 @@ msgstr "Direzione"
 #: lclstrconsts.rsdirectory
 msgid "&Directory"
 msgstr "&Cartella"
-
-#: lclstrconsts.rsdocking
-msgid "Docking"
-msgstr "Agganciamento"
 
 #: lclstrconsts.rsdocopy
 msgid "Copy"
@@ -1463,10 +1278,6 @@ msgstr "Tab"
 msgctxt "lclstrconsts.smkcup"
 msgid "Up"
 msgstr "Su"
-
-#: lclstrconsts.snomdiform
-msgid "No MDI form present."
-msgstr "Nessun form MDI presente."
 
 #: lclstrconsts.snotimers
 msgid "No timers available"

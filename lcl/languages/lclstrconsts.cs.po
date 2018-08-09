@@ -49,210 +49,29 @@ msgstr "Alt"
 msgid "Ctrl"
 msgstr "Ctrl"
 
-#: lclstrconsts.ifsvk_accept
-msgid "Accept"
-msgstr "Přijmout"
-
-#: lclstrconsts.ifsvk_apps
-msgid "application key"
-msgstr "aplikační klávesa"
-
-#: lclstrconsts.ifsvk_back
-msgid "Backspace"
-msgstr "Backspace"
-
-#: lclstrconsts.ifsvk_cancel
-msgctxt "lclstrconsts.ifsvk_cancel"
-msgid "Cancel"
-msgstr "Zrušit"
-
-#: lclstrconsts.ifsvk_capital
-msgid "Capital"
-msgstr "Velké písmena"
-
-#: lclstrconsts.ifsvk_clear
-msgid "Clear"
-msgstr "Vyčistit"
-
 #: lclstrconsts.ifsvk_cmd
 msgid "Cmd"
 msgstr "Cmd"
-
-#: lclstrconsts.ifsvk_control
-msgid "Control"
-msgstr "Ovládání"
-
-#: lclstrconsts.ifsvk_convert
-msgid "Convert"
-msgstr "Převést"
-
-#: lclstrconsts.ifsvk_delete
-msgctxt "lclstrconsts.ifsvk_delete"
-msgid "Delete"
-msgstr "Smazat"
-
-#: lclstrconsts.ifsvk_down
-msgctxt "lclstrconsts.ifsvk_down"
-msgid "Down"
-msgstr "Dolů"
-
-#: lclstrconsts.ifsvk_end
-msgctxt "lclstrconsts.ifsvk_end"
-msgid "End"
-msgstr "Konec"
-
-#: lclstrconsts.ifsvk_escape
-msgid "Escape"
-msgstr "Escape"
-
-#: lclstrconsts.ifsvk_execute
-msgid "Execute"
-msgstr "Vykonat"
-
-#: lclstrconsts.ifsvk_final
-msgid "Final"
-msgstr "Konečný"
-
-#: lclstrconsts.ifsvk_hanja
-msgid "Hanja"
-msgstr "Hanja"
 
 #: lclstrconsts.ifsvk_help
 msgid "Help"
 msgstr "Nápověda"
 
-#: lclstrconsts.ifsvk_home
-msgctxt "lclstrconsts.ifsvk_home"
-msgid "Home"
-msgstr "Domů"
-
-#: lclstrconsts.ifsvk_insert
-msgctxt "lclstrconsts.ifsvk_insert"
-msgid "Insert"
-msgstr "Vložit"
-
-#: lclstrconsts.ifsvk_junja
-msgid "Junja"
-msgstr "Junja"
-
-#: lclstrconsts.ifsvk_kana
-msgid "Kana"
-msgstr "Kana"
-
-#: lclstrconsts.ifsvk_lbutton
-msgid "Mouse Button Left"
-msgstr "Levé tlačítko myši"
-
-#: lclstrconsts.ifsvk_left
-msgctxt "lclstrconsts.ifsvk_left"
-msgid "Left"
-msgstr "Doleva"
-
-#: lclstrconsts.ifsvk_lwin
-msgid "left windows key"
-msgstr "levá klávesa windows"
-
-#: lclstrconsts.ifsvk_mbutton
-msgid "Mouse Button Middle"
-msgstr "Prostřední tlačítko myši"
-
-#: lclstrconsts.ifsvk_menu
-msgctxt "lclstrconsts.ifsvk_menu"
-msgid "Menu"
-msgstr "Nabídka"
-
 #: lclstrconsts.ifsvk_meta
 msgid "Meta"
 msgstr "Meta"
-
-#: lclstrconsts.ifsvk_modechange
-msgid "Mode Change"
-msgstr "Změna režimu"
-
-#: lclstrconsts.ifsvk_next
-msgctxt "lclstrconsts.ifsvk_next"
-msgid "Next"
-msgstr "Další"
-
-#: lclstrconsts.ifsvk_nonconvert
-msgid "Nonconvert"
-msgstr "Nepřevedeitelné"
-
-#: lclstrconsts.ifsvk_numlock
-msgid "Numlock"
-msgstr "Numlock"
-
-#: lclstrconsts.ifsvk_numpad
-msgid "Numpad %d"
-msgstr "Numerická klávesa %d"
-
-#: lclstrconsts.ifsvk_pause
-msgid "Pause key"
-msgstr "Klávesa pouza"
-
-#: lclstrconsts.ifsvk_print
-msgid "Print"
-msgstr "Tisknout"
-
-#: lclstrconsts.ifsvk_prior
-msgctxt "lclstrconsts.ifsvk_prior"
-msgid "Prior"
-msgstr "Předchozí"
-
-#: lclstrconsts.ifsvk_rbutton
-msgid "Mouse Button Right"
-msgstr "Pravé tlačítko myši"
-
-#: lclstrconsts.ifsvk_return
-msgid "Return"
-msgstr "Návrat"
-
-#: lclstrconsts.ifsvk_right
-msgctxt "lclstrconsts.ifsvk_right"
-msgid "Right"
-msgstr "Doprava"
-
-#: lclstrconsts.ifsvk_rwin
-msgid "right windows key"
-msgstr "pravá klávesa windows"
-
-#: lclstrconsts.ifsvk_scroll
-msgid "Scroll"
-msgstr "Posouvat"
-
-#: lclstrconsts.ifsvk_select
-msgid "Select"
-msgstr "Vybrat"
 
 #: lclstrconsts.ifsvk_shift
 msgid "Shift"
 msgstr "Shift"
 
-#: lclstrconsts.ifsvk_snapshot
-msgid "Snapshot"
-msgstr "Snímek"
-
-#: lclstrconsts.ifsvk_space
-msgid "Space key"
-msgstr "Mezerník"
-
 #: lclstrconsts.ifsvk_super
 msgid "Super"
 msgstr "Super"
 
-#: lclstrconsts.ifsvk_tab
-msgctxt "lclstrconsts.ifsvk_tab"
-msgid "Tab"
-msgstr "Tab"
-
 #: lclstrconsts.ifsvk_unknown
 msgid "Unknown"
 msgstr "Neznámé"
-
-#: lclstrconsts.ifsvk_up
-msgctxt "lclstrconsts.ifsvk_up"
-msgid "Up"
-msgstr "Nahoru"
 
 #: lclstrconsts.lislclresourcesnotfound
 msgctxt "lclstrconsts.lislclresourcesnotfound"
@@ -412,10 +231,6 @@ msgstr "Adresář"
 #: lclstrconsts.rsdirectory
 msgid "&Directory"
 msgstr "&Adresář"
-
-#: lclstrconsts.rsdocking
-msgid "Docking"
-msgstr "Ukotvení"
 
 #: lclstrconsts.rsdocopy
 msgid "Copy"
@@ -1461,10 +1276,6 @@ msgstr "Tab"
 msgctxt "lclstrconsts.smkcup"
 msgid "Up"
 msgstr "Nahoru"
-
-#: lclstrconsts.snomdiform
-msgid "No MDI form present."
-msgstr "Nepřítomno žádné MDI okno."
 
 #: lclstrconsts.snotimers
 msgid "No timers available"

@@ -49,210 +49,29 @@ msgstr "Alt"
 msgid "Ctrl"
 msgstr "Vald"
 
-#: lclstrconsts.ifsvk_accept
-msgid "Accept"
-msgstr "Priimti"
-
-#: lclstrconsts.ifsvk_apps
-msgid "application key"
-msgstr "Programos klavišas"
-
-#: lclstrconsts.ifsvk_back
-msgid "Backspace"
-msgstr "Naikinimo klavišas"
-
-#: lclstrconsts.ifsvk_cancel
-msgctxt "lclstrconsts.ifsvk_cancel"
-msgid "Cancel"
-msgstr "Atsisakyti"
-
-#: lclstrconsts.ifsvk_capital
-msgid "Capital"
-msgstr "Didž"
-
-#: lclstrconsts.ifsvk_clear
-msgid "Clear"
-msgstr "Išvalyti"
-
 #: lclstrconsts.ifsvk_cmd
 msgid "Cmd"
 msgstr "Cmd"
-
-#: lclstrconsts.ifsvk_control
-msgid "Control"
-msgstr "Vald"
-
-#: lclstrconsts.ifsvk_convert
-msgid "Convert"
-msgstr "Paversti"
-
-#: lclstrconsts.ifsvk_delete
-msgctxt "lclstrconsts.ifsvk_delete"
-msgid "Delete"
-msgstr "Šalinti"
-
-#: lclstrconsts.ifsvk_down
-msgctxt "lclstrconsts.ifsvk_down"
-msgid "Down"
-msgstr "Žemyn"
-
-#: lclstrconsts.ifsvk_end
-msgctxt "lclstrconsts.ifsvk_end"
-msgid "End"
-msgstr "Pabaiga"
-
-#: lclstrconsts.ifsvk_escape
-msgid "Escape"
-msgstr "Grįžimas"
-
-#: lclstrconsts.ifsvk_execute
-msgid "Execute"
-msgstr "Vykdyti"
-
-#: lclstrconsts.ifsvk_final
-msgid "Final"
-msgstr "Galutinis"
-
-#: lclstrconsts.ifsvk_hanja
-msgid "Hanja"
-msgstr "Hanja"
 
 #: lclstrconsts.ifsvk_help
 msgid "Help"
 msgstr "Žinynas"
 
-#: lclstrconsts.ifsvk_home
-msgctxt "lclstrconsts.ifsvk_home"
-msgid "Home"
-msgstr "Į pradžią"
-
-#: lclstrconsts.ifsvk_insert
-msgctxt "lclstrconsts.ifsvk_insert"
-msgid "Insert"
-msgstr "Įterpti"
-
-#: lclstrconsts.ifsvk_junja
-msgid "Junja"
-msgstr "Junja"
-
-#: lclstrconsts.ifsvk_kana
-msgid "Kana"
-msgstr "Kana"
-
-#: lclstrconsts.ifsvk_lbutton
-msgid "Mouse Button Left"
-msgstr "Kairys peles klavišas"
-
-#: lclstrconsts.ifsvk_left
-msgctxt "lclstrconsts.ifsvk_left"
-msgid "Left"
-msgstr "Kairėn"
-
-#: lclstrconsts.ifsvk_lwin
-msgid "left windows key"
-msgstr "Kairysis windows klavišas"
-
-#: lclstrconsts.ifsvk_mbutton
-msgid "Mouse Button Middle"
-msgstr "Vidurinis pelės klavišas"
-
-#: lclstrconsts.ifsvk_menu
-msgctxt "lclstrconsts.ifsvk_menu"
-msgid "Menu"
-msgstr "Meniu"
-
 #: lclstrconsts.ifsvk_meta
 msgid "Meta"
 msgstr "Meta"
-
-#: lclstrconsts.ifsvk_modechange
-msgid "Mode Change"
-msgstr "Būsenos keitimas"
-
-#: lclstrconsts.ifsvk_next
-msgctxt "lclstrconsts.ifsvk_next"
-msgid "Next"
-msgstr "Kitas"
-
-#: lclstrconsts.ifsvk_nonconvert
-msgid "Nonconvert"
-msgstr "Nonconvert"
-
-#: lclstrconsts.ifsvk_numlock
-msgid "Numlock"
-msgstr "Skaitm"
-
-#: lclstrconsts.ifsvk_numpad
-msgid "Numpad %d"
-msgstr "%d skaičių klaviatūros"
-
-#: lclstrconsts.ifsvk_pause
-msgid "Pause key"
-msgstr "Pazės klavišas"
-
-#: lclstrconsts.ifsvk_print
-msgid "Print"
-msgstr "Spausdinti"
-
-#: lclstrconsts.ifsvk_prior
-msgctxt "lclstrconsts.ifsvk_prior"
-msgid "Prior"
-msgstr "Ankstesnis"
-
-#: lclstrconsts.ifsvk_rbutton
-msgid "Mouse Button Right"
-msgstr "Dešinys pelės klavišas"
-
-#: lclstrconsts.ifsvk_return
-msgid "Return"
-msgstr "Įvedimas"
-
-#: lclstrconsts.ifsvk_right
-msgctxt "lclstrconsts.ifsvk_right"
-msgid "Right"
-msgstr "Dešinėn"
-
-#: lclstrconsts.ifsvk_rwin
-msgid "right windows key"
-msgstr "Dešinysis windows klavišas"
-
-#: lclstrconsts.ifsvk_scroll
-msgid "Scroll"
-msgstr "Slinkti"
-
-#: lclstrconsts.ifsvk_select
-msgid "Select"
-msgstr "Pasirinkti"
 
 #: lclstrconsts.ifsvk_shift
 msgid "Shift"
 msgstr "Lyg2"
 
-#: lclstrconsts.ifsvk_snapshot
-msgid "Snapshot"
-msgstr "Momentinė kopija"
-
-#: lclstrconsts.ifsvk_space
-msgid "Space key"
-msgstr "Tarpo klavišas"
-
 #: lclstrconsts.ifsvk_super
 msgid "Super"
 msgstr "Super"
 
-#: lclstrconsts.ifsvk_tab
-msgctxt "lclstrconsts.ifsvk_tab"
-msgid "Tab"
-msgstr "Tab"
-
 #: lclstrconsts.ifsvk_unknown
 msgid "Unknown"
 msgstr "Nežinomas"
-
-#: lclstrconsts.ifsvk_up
-msgctxt "lclstrconsts.ifsvk_up"
-msgid "Up"
-msgstr "Aukštyn"
 
 #: lclstrconsts.lislclresourcesnotfound
 msgctxt "lclstrconsts.lislclresourcesnotfound"
@@ -412,10 +231,6 @@ msgstr "Kryptis"
 #: lclstrconsts.rsdirectory
 msgid "&Directory"
 msgstr "&Aplankas"
-
-#: lclstrconsts.rsdocking
-msgid "Docking"
-msgstr "Pritvirtinimas"
 
 #: lclstrconsts.rsdocopy
 msgid "Copy"
@@ -1461,10 +1276,6 @@ msgstr "Tab"
 msgctxt "lclstrconsts.smkcup"
 msgid "Up"
 msgstr "Aukštyn"
-
-#: lclstrconsts.snomdiform
-msgid "No MDI form present."
-msgstr "MDI formos nėra."
 
 #: lclstrconsts.snotimers
 msgid "No timers available"

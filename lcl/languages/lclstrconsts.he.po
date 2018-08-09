@@ -53,211 +53,29 @@ msgstr "מקש אלט"
 msgid "Ctrl"
 msgstr "מקש קונטרול"
 
-#: lclstrconsts.ifsvk_accept
-msgid "Accept"
-msgstr "קבל"
-
-#: lclstrconsts.ifsvk_apps
-msgid "application key"
-msgstr "מקש יישם"
-
-#: lclstrconsts.ifsvk_back
-msgid "Backspace"
-msgstr "מקש חזור"
-
-#: lclstrconsts.ifsvk_cancel
-msgctxt "lclstrconsts.ifsvk_cancel"
-msgid "Cancel"
-msgstr "ביטול"
-
-#: lclstrconsts.ifsvk_capital
-msgid "Capital"
-msgstr "אות ריישית"
-
-#: lclstrconsts.ifsvk_clear
-msgid "Clear"
-msgstr "מקש נקה"
-
 #: lclstrconsts.ifsvk_cmd
 msgid "Cmd"
 msgstr ""
-
-#: lclstrconsts.ifsvk_control
-msgid "Control"
-msgstr "מקש קונטרול"
-
-#: lclstrconsts.ifsvk_convert
-msgid "Convert"
-msgstr "המר"
-
-#: lclstrconsts.ifsvk_delete
-msgctxt "lclstrconsts.ifsvk_delete"
-msgid "Delete"
-msgstr "מחק"
-
-#: lclstrconsts.ifsvk_down
-msgctxt "lclstrconsts.ifsvk_down"
-msgid "Down"
-msgstr "למטה"
-
-#: lclstrconsts.ifsvk_end
-msgctxt "lclstrconsts.ifsvk_end"
-msgid "End"
-msgstr "מקש סיום"
-
-#: lclstrconsts.ifsvk_escape
-msgid "Escape"
-msgstr "מקש בטל"
-
-#: lclstrconsts.ifsvk_execute
-msgid "Execute"
-msgstr "הרץ"
-
-#: lclstrconsts.ifsvk_final
-msgid "Final"
-msgstr "סופי"
-
-#: lclstrconsts.ifsvk_hanja
-msgid "Hanja"
-msgstr "Hanja"
 
 #: lclstrconsts.ifsvk_help
 msgid "Help"
 msgstr "עזרה"
 
-#: lclstrconsts.ifsvk_home
-msgctxt "lclstrconsts.ifsvk_home"
-msgid "Home"
-msgstr "מקש התחלה (בית)"
-
-#: lclstrconsts.ifsvk_insert
-msgctxt "lclstrconsts.ifsvk_insert"
-msgid "Insert"
-msgstr "הכנס"
-
-#: lclstrconsts.ifsvk_junja
-msgid "Junja"
-msgstr "Junja"
-
-#: lclstrconsts.ifsvk_kana
-msgid "Kana"
-msgstr "Kana"
-
-#: lclstrconsts.ifsvk_lbutton
-msgid "Mouse Button Left"
-msgstr "לחצן עכבר שמאלי"
-
-#: lclstrconsts.ifsvk_left
-msgctxt "lclstrconsts.ifsvk_left"
-msgid "Left"
-msgstr "שמאל"
-
-#: lclstrconsts.ifsvk_lwin
-msgid "left windows key"
-msgstr "מקש חלונות שמאלי"
-
-#: lclstrconsts.ifsvk_mbutton
-msgid "Mouse Button Middle"
-msgstr "לחצן עכבר אמצעי"
-
-#: lclstrconsts.ifsvk_menu
-msgctxt "lclstrconsts.ifsvk_menu"
-msgid "Menu"
-msgstr "תפריט"
-
 #: lclstrconsts.ifsvk_meta
 msgid "Meta"
 msgstr ""
-
-#: lclstrconsts.ifsvk_modechange
-msgid "Mode Change"
-msgstr "שינוי מצב"
-
-#: lclstrconsts.ifsvk_next
-msgctxt "lclstrconsts.ifsvk_next"
-msgid "Next"
-msgstr "הבא "
-
-#: lclstrconsts.ifsvk_nonconvert
-msgid "Nonconvert"
-msgstr "אל תמיר"
-
-#: lclstrconsts.ifsvk_numlock
-msgid "Numlock"
-msgstr "נעילת לוח מקשי המספרים"
-
-#: lclstrconsts.ifsvk_numpad
-#, fuzzy,badformat
-msgid "Numpad %d"
-msgstr "לוח מקשי המספרים"
-
-#: lclstrconsts.ifsvk_pause
-msgid "Pause key"
-msgstr "מקש השהה"
-
-#: lclstrconsts.ifsvk_print
-msgid "Print"
-msgstr "הדפס"
-
-#: lclstrconsts.ifsvk_prior
-msgctxt "lclstrconsts.ifsvk_prior"
-msgid "Prior"
-msgstr "קודם"
-
-#: lclstrconsts.ifsvk_rbutton
-msgid "Mouse Button Right"
-msgstr "לחצן עכבר ימני"
-
-#: lclstrconsts.ifsvk_return
-msgid "Return"
-msgstr "מקש אנטר"
-
-#: lclstrconsts.ifsvk_right
-msgctxt "lclstrconsts.ifsvk_right"
-msgid "Right"
-msgstr "ימין"
-
-#: lclstrconsts.ifsvk_rwin
-msgid "right windows key"
-msgstr "מקש חלונות ימני"
-
-#: lclstrconsts.ifsvk_scroll
-msgid "Scroll"
-msgstr "גלול"
-
-#: lclstrconsts.ifsvk_select
-msgid "Select"
-msgstr "בחר"
 
 #: lclstrconsts.ifsvk_shift
 msgid "Shift"
 msgstr "מקש הזז"
 
-#: lclstrconsts.ifsvk_snapshot
-msgid "Snapshot"
-msgstr "תצלום-בזק"
-
-#: lclstrconsts.ifsvk_space
-msgid "Space key"
-msgstr "מקש רווח"
-
 #: lclstrconsts.ifsvk_super
 msgid "Super"
 msgstr ""
 
-#: lclstrconsts.ifsvk_tab
-msgctxt "lclstrconsts.ifsvk_tab"
-msgid "Tab"
-msgstr "מקש טאב"
-
 #: lclstrconsts.ifsvk_unknown
 msgid "Unknown"
 msgstr "לא ידוע"
-
-#: lclstrconsts.ifsvk_up
-msgctxt "lclstrconsts.ifsvk_up"
-msgid "Up"
-msgstr "למעלה"
 
 #: lclstrconsts.lislclresourcesnotfound
 #, fuzzy,badformat
@@ -420,10 +238,6 @@ msgstr "כיוון"
 #: lclstrconsts.rsdirectory
 msgid "&Directory"
 msgstr "תיקייה"
-
-#: lclstrconsts.rsdocking
-msgid "Docking"
-msgstr "עיגון"
 
 #: lclstrconsts.rsdocopy
 msgid "Copy"
@@ -1512,10 +1326,6 @@ msgstr "מקש טאב"
 msgctxt "lclstrconsts.smkcup"
 msgid "Up"
 msgstr "למעלה"
-
-#: lclstrconsts.snomdiform
-msgid "No MDI form present."
-msgstr "לא קיים טופס MDI "
 
 #: lclstrconsts.snotimers
 msgid "No timers available"

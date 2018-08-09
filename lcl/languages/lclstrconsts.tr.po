@@ -53,215 +53,29 @@ msgstr "Alt"
 msgid "Ctrl"
 msgstr "Ctrl"
 
-#: lclstrconsts.ifsvk_accept
-msgid "Accept"
-msgstr "Kabul"
-
-#: lclstrconsts.ifsvk_apps
-msgid "application key"
-msgstr "uygulama tuşu"
-
-#: lclstrconsts.ifsvk_back
-msgid "Backspace"
-msgstr "Silme"
-
-#: lclstrconsts.ifsvk_cancel
-#, fuzzy
-msgctxt "lclstrconsts.ifsvk_cancel"
-msgid "Cancel"
-msgstr "İptal"
-
-#: lclstrconsts.ifsvk_capital
-msgid "Capital"
-msgstr "Büyük harf"
-
-#: lclstrconsts.ifsvk_clear
-msgid "Clear"
-msgstr "Temizle"
-
 #: lclstrconsts.ifsvk_cmd
 msgid "Cmd"
 msgstr ""
-
-#: lclstrconsts.ifsvk_control
-msgid "Control"
-msgstr "Kontrol"
-
-#: lclstrconsts.ifsvk_convert
-msgid "Convert"
-msgstr "Dönüştür"
-
-#: lclstrconsts.ifsvk_delete
-#, fuzzy
-msgctxt "lclstrconsts.ifsvk_delete"
-msgid "Delete"
-msgstr "Sil"
-
-#: lclstrconsts.ifsvk_down
-msgctxt "lclstrconsts.ifsvk_down"
-msgid "Down"
-msgstr "Aşağı"
-
-#: lclstrconsts.ifsvk_end
-msgctxt "lclstrconsts.ifsvk_end"
-msgid "End"
-msgstr "Sona git"
-
-#: lclstrconsts.ifsvk_escape
-msgid "Escape"
-msgstr "Çıkış karakteri"
-
-#: lclstrconsts.ifsvk_execute
-msgid "Execute"
-msgstr "Çalıştır"
-
-#: lclstrconsts.ifsvk_final
-msgid "Final"
-msgstr "Final"
-
-#: lclstrconsts.ifsvk_hanja
-msgid "Hanja"
-msgstr "Hanja"
 
 #: lclstrconsts.ifsvk_help
 msgid "Help"
 msgstr "Yardım"
 
-#: lclstrconsts.ifsvk_home
-msgctxt "lclstrconsts.ifsvk_home"
-msgid "Home"
-msgstr "Başa git"
-
-#: lclstrconsts.ifsvk_insert
-#, fuzzy
-msgctxt "lclstrconsts.ifsvk_insert"
-msgid "Insert"
-msgstr "Ekle"
-
-#: lclstrconsts.ifsvk_junja
-msgid "Junja"
-msgstr "Junja"
-
-#: lclstrconsts.ifsvk_kana
-msgid "Kana"
-msgstr "Kana"
-
-#: lclstrconsts.ifsvk_lbutton
-msgid "Mouse Button Left"
-msgstr "Sol fare düğmesi"
-
-#: lclstrconsts.ifsvk_left
-msgctxt "lclstrconsts.ifsvk_left"
-msgid "Left"
-msgstr "Sol"
-
-#: lclstrconsts.ifsvk_lwin
-msgid "left windows key"
-msgstr "sol windows tuşu"
-
-#: lclstrconsts.ifsvk_mbutton
-msgid "Mouse Button Middle"
-msgstr "Orta fare düğmesi"
-
-#: lclstrconsts.ifsvk_menu
-msgctxt "lclstrconsts.ifsvk_menu"
-msgid "Menu"
-msgstr "Menü"
-
 #: lclstrconsts.ifsvk_meta
 msgid "Meta"
 msgstr ""
-
-#: lclstrconsts.ifsvk_modechange
-msgid "Mode Change"
-msgstr "Kip değişimi"
-
-#: lclstrconsts.ifsvk_next
-#, fuzzy
-msgctxt "lclstrconsts.ifsvk_next"
-msgid "Next"
-msgstr "Sonraki"
-
-#: lclstrconsts.ifsvk_nonconvert
-msgid "Nonconvert"
-msgstr "Dönüştürme"
-
-#: lclstrconsts.ifsvk_numlock
-msgid "Numlock"
-msgstr "Numlock"
-
-#: lclstrconsts.ifsvk_numpad
-msgid "Numpad %d"
-msgstr "Nümerik %d"
-
-#: lclstrconsts.ifsvk_pause
-msgid "Pause key"
-msgstr "Durdurma tuşu"
-
-#: lclstrconsts.ifsvk_print
-msgid "Print"
-msgstr "Yazdır"
-
-#: lclstrconsts.ifsvk_prior
-#, fuzzy
-msgctxt "lclstrconsts.ifsvk_prior"
-msgid "Prior"
-msgstr "Önceki"
-
-#: lclstrconsts.ifsvk_rbutton
-msgid "Mouse Button Right"
-msgstr "Sağ fare düğmesi"
-
-#: lclstrconsts.ifsvk_return
-msgid "Return"
-msgstr "Giriş"
-
-#: lclstrconsts.ifsvk_right
-msgctxt "lclstrconsts.ifsvk_right"
-msgid "Right"
-msgstr "Sağ"
-
-#: lclstrconsts.ifsvk_rwin
-msgid "right windows key"
-msgstr "sağ windows tuşu"
-
-#: lclstrconsts.ifsvk_scroll
-msgid "Scroll"
-msgstr "Kaydırma"
-
-#: lclstrconsts.ifsvk_select
-msgid "Select"
-msgstr "Seçim"
 
 #: lclstrconsts.ifsvk_shift
 msgid "Shift"
 msgstr "Üstkarakter"
 
-#: lclstrconsts.ifsvk_snapshot
-msgid "Snapshot"
-msgstr "Kare yakala"
-
-#: lclstrconsts.ifsvk_space
-msgid "Space key"
-msgstr "Boşluk tuşu"
-
 #: lclstrconsts.ifsvk_super
 msgid "Super"
 msgstr ""
 
-#: lclstrconsts.ifsvk_tab
-msgctxt "lclstrconsts.ifsvk_tab"
-msgid "Tab"
-msgstr "Sekme"
-
 #: lclstrconsts.ifsvk_unknown
 msgid "Unknown"
 msgstr "Bilinmeyen"
-
-#: lclstrconsts.ifsvk_up
-msgctxt "lclstrconsts.ifsvk_up"
-msgid "Up"
-msgstr "Yukarı"
 
 #: lclstrconsts.lislclresourcesnotfound
 msgctxt "lclstrconsts.lislclresourcesnotfound"
@@ -424,10 +238,6 @@ msgstr "Yön"
 #: lclstrconsts.rsdirectory
 msgid "&Directory"
 msgstr "&Dizin"
-
-#: lclstrconsts.rsdocking
-msgid "Docking"
-msgstr "Gömme"
 
 #: lclstrconsts.rsdocopy
 msgid "Copy"
@@ -1505,10 +1315,6 @@ msgstr "Sekme"
 msgctxt "lclstrconsts.smkcup"
 msgid "Up"
 msgstr "Yukarı"
-
-#: lclstrconsts.snomdiform
-msgid "No MDI form present."
-msgstr "MDI Pencere mevcut değil."
 
 #: lclstrconsts.snotimers
 msgid "No timers available"

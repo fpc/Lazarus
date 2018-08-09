@@ -45,210 +45,29 @@ msgstr ""
 msgid "Ctrl"
 msgstr ""
 
-#: lclstrconsts.ifsvk_accept
-msgid "Accept"
-msgstr "Hyväksy"
-
-#: lclstrconsts.ifsvk_apps
-msgid "application key"
-msgstr "sovellusavain"
-
-#: lclstrconsts.ifsvk_back
-msgid "Backspace"
-msgstr "Askelpalautin"
-
-#: lclstrconsts.ifsvk_cancel
-msgctxt "lclstrconsts.ifsvk_cancel"
-msgid "Cancel"
-msgstr "Peruuta"
-
-#: lclstrconsts.ifsvk_capital
-msgid "Capital"
-msgstr "Iso kirjain"
-
-#: lclstrconsts.ifsvk_clear
-msgid "Clear"
-msgstr "Tyhjennä"
-
 #: lclstrconsts.ifsvk_cmd
 msgid "Cmd"
-msgstr ""
-
-#: lclstrconsts.ifsvk_control
-msgid "Control"
-msgstr ""
-
-#: lclstrconsts.ifsvk_convert
-msgid "Convert"
-msgstr "Muunna"
-
-#: lclstrconsts.ifsvk_delete
-msgctxt "lclstrconsts.ifsvk_delete"
-msgid "Delete"
-msgstr "Poista"
-
-#: lclstrconsts.ifsvk_down
-msgctxt "lclstrconsts.ifsvk_down"
-msgid "Down"
-msgstr "Alas"
-
-#: lclstrconsts.ifsvk_end
-msgctxt "lclstrconsts.ifsvk_end"
-msgid "End"
-msgstr "Loppu"
-
-#: lclstrconsts.ifsvk_escape
-msgid "Escape"
-msgstr ""
-
-#: lclstrconsts.ifsvk_execute
-msgid "Execute"
-msgstr "Suorita"
-
-#: lclstrconsts.ifsvk_final
-msgid "Final"
-msgstr "Viimeinen"
-
-#: lclstrconsts.ifsvk_hanja
-msgid "Hanja"
 msgstr ""
 
 #: lclstrconsts.ifsvk_help
 msgid "Help"
 msgstr "Apu"
 
-#: lclstrconsts.ifsvk_home
-msgctxt "lclstrconsts.ifsvk_home"
-msgid "Home"
-msgstr "Koti"
-
-#: lclstrconsts.ifsvk_insert
-msgctxt "lclstrconsts.ifsvk_insert"
-msgid "Insert"
-msgstr "Lisää"
-
-#: lclstrconsts.ifsvk_junja
-msgid "Junja"
-msgstr ""
-
-#: lclstrconsts.ifsvk_kana
-msgid "Kana"
-msgstr ""
-
-#: lclstrconsts.ifsvk_lbutton
-msgid "Mouse Button Left"
-msgstr "Hiiren vasen nappi"
-
-#: lclstrconsts.ifsvk_left
-msgctxt "lclstrconsts.ifsvk_left"
-msgid "Left"
-msgstr "Vasen"
-
-#: lclstrconsts.ifsvk_lwin
-msgid "left windows key"
-msgstr "vasen windows nappi"
-
-#: lclstrconsts.ifsvk_mbutton
-msgid "Mouse Button Middle"
-msgstr "Hiiren keskinappi"
-
-#: lclstrconsts.ifsvk_menu
-msgctxt "lclstrconsts.ifsvk_menu"
-msgid "Menu"
-msgstr "Valikko"
-
 #: lclstrconsts.ifsvk_meta
 msgid "Meta"
 msgstr ""
-
-#: lclstrconsts.ifsvk_modechange
-msgid "Mode Change"
-msgstr "Tilan vaihto"
-
-#: lclstrconsts.ifsvk_next
-msgctxt "lclstrconsts.ifsvk_next"
-msgid "Next"
-msgstr "Seuraava"
-
-#: lclstrconsts.ifsvk_nonconvert
-msgid "Nonconvert"
-msgstr ""
-
-#: lclstrconsts.ifsvk_numlock
-msgid "Numlock"
-msgstr "Numerolukko"
-
-#: lclstrconsts.ifsvk_numpad
-msgid "Numpad %d"
-msgstr "Numeronäppäin %d"
-
-#: lclstrconsts.ifsvk_pause
-msgid "Pause key"
-msgstr "Keskeytysnappi"
-
-#: lclstrconsts.ifsvk_print
-msgid "Print"
-msgstr "Tulosta"
-
-#: lclstrconsts.ifsvk_prior
-msgctxt "lclstrconsts.ifsvk_prior"
-msgid "Prior"
-msgstr "Edellinen"
-
-#: lclstrconsts.ifsvk_rbutton
-msgid "Mouse Button Right"
-msgstr "Hiiren oikea nappi"
-
-#: lclstrconsts.ifsvk_return
-msgid "Return"
-msgstr "Palaa"
-
-#: lclstrconsts.ifsvk_right
-msgctxt "lclstrconsts.ifsvk_right"
-msgid "Right"
-msgstr "Oikea"
-
-#: lclstrconsts.ifsvk_rwin
-msgid "right windows key"
-msgstr "oikea windows nappi"
-
-#: lclstrconsts.ifsvk_scroll
-msgid "Scroll"
-msgstr "Vieritä"
-
-#: lclstrconsts.ifsvk_select
-msgid "Select"
-msgstr "Valitse"
 
 #: lclstrconsts.ifsvk_shift
 msgid "Shift"
 msgstr ""
 
-#: lclstrconsts.ifsvk_snapshot
-msgid "Snapshot"
-msgstr "Pikakuva"
-
-#: lclstrconsts.ifsvk_space
-msgid "Space key"
-msgstr "Välilyöntipainike"
-
 #: lclstrconsts.ifsvk_super
 msgid "Super"
-msgstr ""
-
-#: lclstrconsts.ifsvk_tab
-msgctxt "lclstrconsts.ifsvk_tab"
-msgid "Tab"
 msgstr ""
 
 #: lclstrconsts.ifsvk_unknown
 msgid "Unknown"
 msgstr "Tuntematon"
-
-#: lclstrconsts.ifsvk_up
-msgctxt "lclstrconsts.ifsvk_up"
-msgid "Up"
-msgstr "Ylös"
 
 #: lclstrconsts.lislclresourcesnotfound
 msgctxt "lclstrconsts.lislclresourcesnotfound"
@@ -408,10 +227,6 @@ msgstr "Suunta"
 #: lclstrconsts.rsdirectory
 msgid "&Directory"
 msgstr "&Hakemisto"
-
-#: lclstrconsts.rsdocking
-msgid "Docking"
-msgstr "Telakointi"
 
 #: lclstrconsts.rsdocopy
 msgid "Copy"
@@ -1457,10 +1272,6 @@ msgstr ""
 msgctxt "lclstrconsts.smkcup"
 msgid "Up"
 msgstr "Ylös"
-
-#: lclstrconsts.snomdiform
-msgid "No MDI form present."
-msgstr "Ei MDI lomakkeita."
 
 #: lclstrconsts.snotimers
 msgid "No timers available"

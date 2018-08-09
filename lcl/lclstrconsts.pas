@@ -22,9 +22,6 @@ unit LCLStrConsts;
 interface
 
 resourceString
-  // common Delphi strings
-  SNoMDIForm = 'No MDI form present.';
-
   // message/input dialog buttons
   rsMbYes          = '&Yes';
   rsMbNo           = '&No';
@@ -314,53 +311,15 @@ resourceString
   sShellCtrlsInvalidPathRelative = 'Invalid relative pathname:'#13'"%s"'#13
     +'in relation to rootpath:'#13'"%s"';
 
-  // I'm not sure if in all languages the Dialog texts for a button
-  // have the same meaning as a key
-  // So every VK gets its own constant
   ifsVK_UNKNOWN    = 'Unknown';
-  ifsVK_LBUTTON    = 'Mouse Button Left';
-  ifsVK_RBUTTON    = 'Mouse Button Right';
-  ifsVK_CANCEL     = 'Cancel'; //= lisCancel
-  ifsVK_MBUTTON    = 'Mouse Button Middle';
-  ifsVK_BACK       = 'Backspace';
-  ifsVK_TAB        = 'Tab';
-  ifsVK_CLEAR      = 'Clear';
-  ifsVK_RETURN     = 'Return';
   ifsVK_SHIFT      = 'Shift';
   ifsVK_META       = 'Meta';
   ifsVK_CMD        = 'Cmd';
   ifsVK_SUPER      = 'Super';
-  ifsVK_CONTROL    = 'Control';
-  ifsVK_MENU       = 'Menu';
-  ifsVK_PAUSE      = 'Pause key';
-  ifsVK_CAPITAL    = 'Capital';
-  ifsVK_KANA       = 'Kana';
-  ifsVK_JUNJA      = 'Junja';
-  ifsVK_FINAL      = 'Final';
-  ifsVK_HANJA      = 'Hanja';
-  ifsVK_ESCAPE     = 'Escape';
-  ifsVK_CONVERT    = 'Convert';
-  ifsVK_NONCONVERT = 'Nonconvert';
-  ifsVK_ACCEPT     = 'Accept';
-  ifsVK_MODECHANGE = 'Mode Change';
-  ifsVK_SPACE      = 'Space key';
-  ifsVK_PRIOR      = 'Prior';
-  ifsVK_NEXT       = 'Next';
-  ifsVK_END        = 'End';
-  ifsVK_HOME       = 'Home';
-  ifsVK_LEFT       = 'Left';
-  ifsVK_UP         = 'Up';
-  ifsVK_RIGHT      = 'Right';
-  ifsVK_DOWN       = 'Down'; //= lisdown
-  ifsVK_SELECT     = 'Select'; //= lismenuselect
-  ifsVK_PRINT      = 'Print';
-  ifsVK_EXECUTE    = 'Execute';
-  ifsVK_SNAPSHOT   = 'Snapshot';
-  ifsVK_INSERT     = 'Insert';
-  ifsVK_DELETE     = 'Delete'; //= lisdelete
   ifsVK_HELP       = 'Help';
   ifsCtrl          = 'Ctrl';
   ifsAlt           = 'Alt';
+
   rsWholeWordsOnly = 'Whole words only';
   rsCaseSensitive  = 'Case sensitive';
   rsPromptOnReplace= 'Prompt on replace';
@@ -369,12 +328,6 @@ resourceString
   rsDirection      = 'Direction';
   rsForward        = 'Forward';
   rsBackward       = 'Backward';
-  ifsVK_LWIN       = 'left windows key';
-  ifsVK_RWIN       = 'right windows key';
-  ifsVK_APPS       = 'application key';
-  ifsVK_NUMPAD     = 'Numpad %d';
-  ifsVK_NUMLOCK    = 'Numlock';
-  ifsVK_SCROLL     = 'Scroll';
 
   // menu key captions
   SmkcBkSp = 'BkSp';
@@ -396,9 +349,6 @@ resourceString
   SmkcCtrl = 'Ctrl+';
   SmkcAlt = 'Alt+';
   SmkcMeta = 'Meta+';
-
-  // docking
-  rsDocking = 'Docking';
 
   // help
   rsHelpHelpNodeHasNoHelpDatabase = 'Help node "%s" has no Help Database';
