@@ -150,10 +150,20 @@ begin
 end;
 
 procedure TCocoaWidgetSet.InitClipboard;
+var
+  t : TClipboardType;
 begin
   PrimarySelection := NSPasteboard.pasteboardWithUniqueName();
   SecondarySelection := NSPasteboard.pasteboardWithUniqueName();
   ClipboardFormats := TFPObjectList.Create(True);
+
+  Pasteboards[ctPrimarySelection].pasteboard := PrimarySelection;
+  Pasteboards[ctSecondarySelection].pasteboard := SecondarySelection;
+  Pasteboards[ctClipboard].pasteboard := NSPasteboard.generalPasteboard;
+
+  for t := Low(TClipboardType) to High(TClipboardType) do
+    if Assigned(Pasteboards[t].pasteboard) then
+      Pasteboards[t].changeCount := Pasteboards[t].pasteboard.changeCount;
 end;
 
 procedure TCocoaWidgetSet.FreeClipboard;
