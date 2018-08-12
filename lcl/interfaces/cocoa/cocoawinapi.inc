@@ -141,16 +141,11 @@ end;
   Returns: The corresponding mime type as string
  ------------------------------------------------------------------------------}
 function TCocoaWidgetSet.ClipboardFormatToMimeType(FormatID: TClipboardFormat): string;
-var
-  lFormat: TCocoaClipboardData;
 begin
   {$IFDEF VerboseClipboard}
     DebugLn('TCocoaWidgetSet.ClipboardFormatToMimeType FormatID: ' + DbgS(FormatID));
   {$ENDIF}
-
-  lFormat := GetClipboardDataForFormat(FormatID);
-  if lFormat = nil then Exit;
-  Result := lFormat.MimeType;
+  Result := fClipboard.FormatToMimeType(FormatID);
 end;
 
 {------------------------------------------------------------------------------
@@ -163,84 +158,12 @@ end;
  ------------------------------------------------------------------------------}
 function TCocoaWidgetSet.ClipboardGetData(ClipboardType: TClipboardType;
   FormatID: TClipboardFormat; Stream: TStream): boolean;
-var
-  pasteboard: NSPasteboard;
-  lFormat: TCocoaClipboardData;
-  lNSStr: NSString;
-  // for text
-  lStr: String;
-  // for standard
-  lNSData: NSData;
-  lNSbytes: PByte;
-  i: Integer;
-  // for bitmap
-  image: TFPCustomImage;
-  lTmpStream: TMemoryStream;
-  reader: TFPCustomImageReader;
-  writer: TFPCustomImageWriter;
 begin
-  Result := False;
   {$IFDEF VerboseClipboard}
     DebugLn('TCocoaWidgetSet.ClipboardGetData ClipboardType=' +
       ClipboardTypeName[ClipboardType] + ' FormatID: ' + DbgS(FormatID));
   {$ENDIF}
-
-  case ClipboardType of
-  ctPrimarySelection:   pasteboard := PrimarySelection;
-  ctSecondarySelection: pasteboard := SecondarySelection;
-  ctClipboard:          pasteboard := NSPasteboard.generalPasteboard;
-  end;
-
-  lFormat := GetClipboardDataForFormat(FormatID);
-  if lFormat = nil then Exit;
-
-  case lFormat.DataType of
-  ccdtText:
-  begin
-    lNSStr := pasteboard.stringForType(lFormat.CocoaFormat);
-    if lNSStr = nil then Exit;
-    lStr := NSStringToString(lNSStr);
-    Stream.Write(lStr[1], Length(lStr));
-    {$IFDEF VerboseClipboard}
-      DebugLn('TCocoaWidgetSet.ClipboardGetData IsText Result=' + lStr);
-    {$ENDIF}
-  end;
-  ccdtCocoaStandard, ccdtNonStandard:
-  begin
-    lNSData := pasteboard.dataForType(lFormat.CocoaFormat);
-    if lNSData = nil then Exit;
-    lNSbytes := lNSData.bytes;
-    for i := 0 to lNSData.length-1 do
-      Stream.WriteByte(lNSbytes[i]);
-  end;
-  // In Cocoa images are stored as PNG, convert to BMP for LCL app usage
-  ccdtBitmap:
-  begin
-    lNSData := pasteboard.dataForType(lFormat.CocoaFormat);
-    if lNSData = nil then Exit;
-    lNSbytes := lNSData.bytes;
-
-    Image := TFPMemoryImage.Create(10, 10);
-    Reader := TFPReaderPNG.Create;
-    Writer := TFPWriterBMP.Create;
-    lTmpStream := TMemoryStream.Create;
-    try
-      for i := 0 to lNSData.length-1 do
-        lTmpStream.WriteByte(lNSbytes[i]);
-      lTmpStream.Position := 0;
-
-      Image.LoadFromStream(lTmpStream, Reader);
-      Image.SaveToStream(Stream, Writer);
-    finally
-      Image.Free;
-      Reader.Free;
-      Writer.Free;
-      lTmpStream.Free;
-    end;
-  end;
-  end;
-
-  Result := True;
+  Result := fClipboard.GetData(ClipboardType, FormatID, Stream);
 end;
 
 {------------------------------------------------------------------------------
@@ -251,28 +174,23 @@ end;
                            (you must free it yourself)
   Returns: If the function succeeds
  ------------------------------------------------------------------------------}
+
 function TCocoaWidgetSet.ClipboardGetFormats(ClipboardType: TClipboardType;
   var Count: integer; var List: PClipboardFormat): boolean;
 var
-  ListDataSize, ListCount: Integer;
-  i: Integer;
+  fmt: TDynClipboardFormatArray;
 begin
-  Result := False;
   {$IFDEF VerboseClipboard}
     DebugLn('TCocoaWidgetSet.ClipboardGetFormats ClipboardType' +
       ClipboardTypeName[ClipboardType]);
   {$ENDIF}
-
-  ListCount := Min(ClipboardFormats.Count, Count);
-  ListDataSize := SizeOf(Pointer) * ListCount;
-  List := GetMem(ListDataSize);
-
-  for i := 0 to ListCount - 1 do
-  begin
-    List[i] := PtrUInt(ClipboardFormats.Items[i]);
-  end;
-
-  Result := True;
+  fmt := nil;
+  Result := fClipboard.GetFormats(ClipboardType, Count, fmt);
+  if Count > 0 then begin
+    GetMem(List, Count * sizeof(TClipboardFormat));
+    Move(fmt[0], List^, Count * sizeof(TClipboardFormat));
+  end else
+    List := nil;
 end;
 
 {------------------------------------------------------------------------------
@@ -295,116 +213,12 @@ end;
 function TCocoaWidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
   OnRequestProc: TClipboardRequestEvent; FormatCount: integer;
   Formats: PClipboardFormat): boolean;
-var
-  pasteboard: NSPasteboard;
-  i: Integer;
-  lCurFormat: TCocoaClipboardData;
-  DataStream: TMemoryStream;
-  FormatToOwn: NSString;
-  FormatToOwnArray: NSArray;
-  // text format
-  lText: string;
-  lNSText: NSString;
-  // non-text
-  lNSData: NSData;
-  // for bitmap
-  image: TFPCustomImage;
-  lTmpStream: TMemoryStream;
-  reader: TFPCustomImageReader;
-  writer: TFPCustomImageWriter;
 begin
-  Result := False;
   {$IFDEF VerboseClipboard}
     DebugLn('TCocoaWidgetSet.ClipboardGetOwnerShip ClipboardType=' +
       ClipboardTypeName[ClipboardType] + ' FormatCount: ' + DbgS(FormatCount));
   {$ENDIF}
-
-  case ClipboardType of
-  ctPrimarySelection:   pasteboard := PrimarySelection;
-  ctSecondarySelection: pasteboard := SecondarySelection;
-  ctClipboard:          pasteboard := NSPasteboard.generalPasteboard;
-  end;
-
-  DataStream := TMemoryStream.Create;
-  try
-    FormatToOwnArray := nil;
-    if FormatCount>0 then
-    begin
-      FormatToOwnArray := NSArray(NSMutableArray.array_);
-      for i := 0 to FormatCount-1 do
-      begin
-        lCurFormat := TCocoaClipboardData(Formats[i]);
-        if lCurFormat = nil then Continue;
-        FormatToOwn := lCurFormat.CocoaFormat;
-        NSMutableArray(FormatToOwnArray).addObject(FormatToOwn);
-      end;
-    end;
-
-    if Assigned(FormatToOwnArray) and (FormatToOwnArray.count>0) then
-      pasteboard.declareTypes_owner(FormatToOwnArray, nil);
-
-    for i := 0 to FormatCount-1 do
-    begin
-      lCurFormat := TCocoaClipboardData(Formats[i]);
-      if lCurFormat = nil then Continue;
-      DataStream.Position := 0;
-      DataStream.Size := 0;
-      OnRequestProc(Formats[i], DataStream);
-
-      case lCurFormat.DataType of
-      ccdtText:
-      begin
-        DataStream.Position := 0;
-        SetLength(lText, DataStream.Size);
-        DataStream.Read(lText[1], DataStream.Size);
-        lNSText := NSStringUtf8(lText);
-
-        pasteboard.setString_forType(lNSText, lCurFormat.CocoaFormat);
-      end;
-      ccdtCocoaStandard, ccdtNonStandard:
-      begin
-        DataStream.Position := 0;
-        lNSData := NSData.dataWithBytes_length(DataStream.Memory, DataStream.Size);
-
-        pasteboard.setData_forType(lNSData, lCurFormat.CocoaFormat);
-      end;
-      ccdtBitmap:
-      begin
-        Image := TFPMemoryImage.Create(10, 10);
-        Reader := TFPReaderBMP.Create;
-        Writer := TFPWriterPNG.Create;
-        lTmpStream := TMemoryStream.Create;
-        try
-          DataStream.Position := 0;
-          Image.LoadFromStream(DataStream, Reader);
-          Image.SaveToStream(lTmpStream, Writer);
-          lTmpStream.Position := 0;
-          lNSData := NSData.dataWithBytes_length(lTmpStream.Memory, lTmpStream.Size);
-          pasteboard.setData_forType(lNSData, lCurFormat.CocoaFormat);
-        finally
-          Image.Free;
-          Reader.Free;
-          Writer.Free;
-          lTmpStream.Free;
-        end;
-      end;
-      end;
-    end;
-  finally
-    DataStream.Free;
-  end;
-
-  Pasteboards[ClipboardType].pasteboard:=pasteboard;
-  Pasteboards[ClipboardType].dataProc:=OnRequestProc;
-  if Assigned(pasteboard) then
-  begin
-    Pasteboards[ClipboardType].changeCount:=pasteboard.changeCount;
-    Pasteboards[ClipboardType].isOwned:=true;
-  end else
-    Pasteboards[ClipboardType].isOwned:=false;
-
-
-  Result := True;
+  Result := fClipboard.GetOwnership(ClipboardType, OnRequestProc, FormatCount, Formats);
 end;
 
 {------------------------------------------------------------------------------
@@ -414,64 +228,8 @@ end;
   Returns: The registered Format identifier (TClipboardFormat)
  ------------------------------------------------------------------------------}
 function TCocoaWidgetSet.ClipboardRegisterFormat(const AMimeType: string): TClipboardFormat;
-var
-  i: Integer;
-  lCurData: TCocoaClipboardData;
-  lNSStr: NSString = nil;
-  lDataType: TCocoaClipboardDataType;
 begin
-  Result := 0;
-
-  // Check first if it was already registered
-  for i := 0 to ClipboardFormats.Count-1 do
-  begin
-    lCurData := TCocoaClipboardData(ClipboardFormats.Items[i]);
-    if lCurData.MimeType = AMimeType then
-    begin
-      Result := TClipboardFormat(lCurData);
-      {$IFDEF VerboseClipboard}
-        DebugLn('TCocoaWidgetSet.ClipboardRegisterFormat AMimeType=' + AMimeType
-          + ' Result='+DbgS(Result));
-      {$ENDIF}
-      Exit;
-    end;
-  end;
-
-  // if none was found, we need to register it
-
-  lDataType := ccdtNonStandard;
-  // See PredefinedClipboardMimeTypes for the most common mime-types
-  case AMimeType of
-  'text/plain':
-  begin
-    //hack: the name of constants is a hack
-    //      should be replaced with either weaklinking
-    //      or dynamic loading (dlsym)
-    lNSStr := NSSTR('public.utf8-plain-text'); // NSPasteboardTypeString; // commented out for OSX < 10.6  see #33672
-    lDataType := ccdtText;
-  end;
-  'image/png':
-  begin
-    lNSStr := NSSTR('public.png'); // NSPasteboardTypePNG
-    lDataType := ccdtCocoaStandard;
-  end;
-  'image/bmp':
-  begin
-    lNSStr := NSSTR('public.png'); // NSPasteboardTypePNG
-    lDataType := ccdtBitmap;
-  end;
-  else
-    lNSStr := NSStringUtf8(AMimeType);
-    lDataType := ccdtNonStandard;
-  end;
-
-  if lNSStr <> nil then
-  begin
-    lCurData := TCocoaClipboardData.Create(AMimeType, lNSStr, lDataType);
-    ClipboardFormats.Add(lCurData);
-    Result := TClipboardFormat(lCurData);
-  end;
-
+  Result := fClipboard.RegisterFormat(AMimeType);
   {$IFDEF VerboseClipboard}
     DebugLn('TCocoaWidgetSet.ClipboardRegisterFormat AMimeType=' + AMimeType
       + ' Result='+DbgS(Result));

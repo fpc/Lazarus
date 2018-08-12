@@ -149,54 +149,9 @@ begin
   Result := (WindowHandle <> 0) and (DC <> 0) and TCocoaContext(DC).isDesignDC;
 end;
 
-procedure TCocoaWidgetSet.InitClipboard;
-var
-  t : TClipboardType;
-begin
-  PrimarySelection := NSPasteboard.pasteboardWithUniqueName();
-  SecondarySelection := NSPasteboard.pasteboardWithUniqueName();
-  ClipboardFormats := TFPObjectList.Create(True);
-
-  Pasteboards[ctPrimarySelection].pasteboard := PrimarySelection;
-  Pasteboards[ctSecondarySelection].pasteboard := SecondarySelection;
-  Pasteboards[ctClipboard].pasteboard := NSPasteboard.generalPasteboard;
-
-  for t := Low(TClipboardType) to High(TClipboardType) do
-    if Assigned(Pasteboards[t].pasteboard) then
-      Pasteboards[t].changeCount := Pasteboards[t].pasteboard.changeCount;
-end;
-
-procedure TCocoaWidgetSet.FreeClipboard;
-begin
-  PrimarySelection.releaseGlobally();
-  SecondarySelection.releaseGlobally();
-  ClipboardFormats.Free;
-end;
-
 procedure TCocoaWidgetSet.SyncClipboard();
-var
-  ct : TClipboardType;
-  pb : NSPasteboard;
 begin
-  for ct := low(TClipboardType) to high(TClipboardType) do begin
-    if not Pasteboards[ct].isOwned then Continue;
-
-    pb := Pasteboards[ct].pasteboard;
-    if not Assigned(pb) then Continue;
-
-    if (pb.changeCount <> Pasteboards[ct].changeCount) then
-    begin
-      Pasteboards[ct].isOwned:=false;
-      if Assigned(Pasteboards[ct].dataProc) then
-        // notifying about the loss of ownership
-        Pasteboards[ct].dataProc(0, nil);
-    end;
-  end;
-end;
-
-function TCocoaWidgetSet.GetClipboardDataForFormat(AFormat: TClipboardFormat): TCocoaClipboardData;
-begin
-  Result := TCocoaClipboardData(AFormat);
+  fClipboard.Sync;
 end;
 
 {------------------------------------------------------------------------------

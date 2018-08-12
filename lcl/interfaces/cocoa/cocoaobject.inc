@@ -170,7 +170,7 @@ begin
 
   InitStockItems;
 
-  InitClipboard(); // must be here otherwise clipboard calls before Application.Initialize crash
+  fClipboard := TCocoaWSClipboard.Create; // must be here otherwise clipboard calls before Application.Initialize crash
 end;
 
 {------------------------------------------------------------------------------
@@ -193,7 +193,7 @@ begin
 
   FreeSysColorBrushes;
 
-  FreeClipboard();
+  fClipboard.Free;
 
   // The CocoaCaret is based WidgetSet timer.
   // The GlobalCaret is freed in finalization section, which is called
@@ -610,20 +610,6 @@ class function TCocoaTimerObject.newWithFunc(afunc: TWSTimerProc): TCocoaTimerOb
 begin
   Result:=alloc;
   Result.func:=afunc;
-end;
-
-{ TCocoaClipboardData }
-
-constructor TCocoaClipboardData.Create(AMimeType: string; ACocoaFormat: NSString; ADataType: TCocoaClipboardDataType);
-begin
-  MimeType := AMimeType;
-  CocoaFormat := ACocoaFormat;
-  DataType := ADataType;
-end;
-
-destructor TCocoaClipboardData.Destroy;
-begin
-  CocoaFormat.release;
 end;
 
 procedure TAppDelegate.application_openFiles(sender: NSApplication; filenames: NSArray);

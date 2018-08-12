@@ -28,8 +28,6 @@ interface
 uses
   // rtl+ftl
   Types, Classes, SysUtils, Math, contnrs,
-  // fcl-image
-  fpreadpng, fpwritepng, fpimage, fpreadbmp, fpwritebmp,
   // carbon bindings
   MacOSAll,
   // interfacebase
@@ -37,6 +35,7 @@ uses
   // private
   CocoaAll, CocoaPrivate, CocoaUtils, CocoaGDIObjects,
   cocoa_extra, CocoaWSMenus, CocoaWSForms, CocoaWindows, CocoaScrollers,
+  CocoaWSClipboard,
   // LCL
   LCLStrConsts, LMessages, LCLMessageGlue, LCLProc, LCLIntf, LCLType,
   Controls, Forms, Themes, Menus,
@@ -50,20 +49,6 @@ type
     func: TWSTimerProc;
     procedure timerEvent; message 'timerEvent';
     class function newWithFunc(afunc: TWSTimerProc): TCocoaTimerObject; message 'newWithFunc:';
-  end;
-
-  TCocoaClipboardDataType = (ccdtText,
-    ccdtCocoaStandard, // Formats supported natively by Mac OS X
-    ccdtBitmap,     // BMPs need conversion to PNG to work with other Mac OS X apps
-    ccdtNonStandard { Formats that will only work in LCL apps } );
-
-  TCocoaClipboardData = class(TObject) // TClipboardFormat is a reference to a TClipboardData
-  public
-    MimeType: string;
-    CocoaFormat: NSString;  // utilized for ccdtCocoaStandard and ccdtNonStandard
-    DataType: TCocoaClipboardDataType;
-    constructor Create(AMimeType: string; ACocoaFormat: NSString; ADataType: TCocoaClipboardDataType);
-    destructor Destroy; override;
   end;
 
   TAppDelegate = objcclass(NSObject, NSApplicationDelegateProtocol)
@@ -84,13 +69,6 @@ type
     procedure run; override;
     procedure sendEvent(theEvent: NSEvent); override;
     function nextEventMatchingMask_untilDate_inMode_dequeue(mask: NSUInteger; expiration: NSDate; mode: NSString; deqFlag: Boolean): NSEvent; override;
-  end;
-
-  TCocoaPasteboardsRef = record
-    pasteboard : NSPasteboard;
-    changeCount: NSInteger;
-    dataProc   : TClipboardRequestEvent;
-    isOwned    : Boolean;
   end;
 
   { TCocoaWidgetSet }
@@ -121,18 +99,11 @@ type
 
     // Sandboxing
     SandboxingOn: Boolean;
+    fClipboard: TCocoaWSClipboard;
 
     // Clipboard
-    PrimarySelection: NSPasteboard;
-    SecondarySelection: NSPasteboard;
-    ClipboardFormats: TFPObjectList; // of TCocoaClipboardData
-    ClipboardChangeCount: NSInteger;
-    Pasteboards: array [TClipboardType] of TCocoaPasteboardsRef;
 
-    procedure InitClipboard();
-    procedure FreeClipboard();
     procedure SyncClipboard();
-    function GetClipboardDataForFormat(AFormat: TClipboardFormat): TCocoaClipboardData;
 
     function PromptUser(const DialogCaption, DialogMessage: String;
       DialogType: longint; Buttons: PLongint; ButtonCount, DefaultIndex,
