@@ -56,6 +56,13 @@ sourceeditor/InvalidDisabledBreakPoint_200.png
 sourceeditor/InvalidDisabledBreakPoint_300.png
 sourceeditor/MultiBreakPoint.png
 sourceeditor/Record.png
+sourceeditor/state11x11_error.png
+sourceeditor/state11x11_fatal.png
+sourceeditor/state11x11_hint.png
+sourceeditor/state11x11_information.png
+sourceeditor/state11x11_note.png
+sourceeditor/state11x11_unknown.png
+sourceeditor/state11x11_warning.png
 sourceeditor/tsynsyncroedit.png
 sourceeditor/PendingBreakPoint.png
 sourceeditor/PendingBreakPoint_150.png
