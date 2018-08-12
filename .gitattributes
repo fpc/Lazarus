@@ -8274,6 +8274,8 @@ images/states/state_unit_circular_reference.png -text svneol=unset#image/png
 images/states/state_unknown.png -text svneol=unset#image/png
 images/states/state_unknown_75.png -text
 images/states/state_warning.png -text svneol=unset#image/png
+images/states/state_warning_150.png -text
+images/states/state_warning_200.png -text
 images/states/state_warning_75.png -text
 images/template.png -text svneol=unset#image/png
 images/vase_trans.xpm -text svneol=native#image/x-xpixmap
