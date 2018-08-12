@@ -438,15 +438,12 @@ bookmark9.png
 bookmark9_150.png
 bookmark9_200.png
 bookmark9_300.png
-state11x11_warning.png
-state11x11_warning_150.png
-state11x11_warning_200.png
-state11x11_warning_300.png
 
 states directory:
 
-state_warning.png
+state_warning_69.png
 state_warning_75.png
+state_warning.png
 state_warning_150.png
 state_warning_200.png
 

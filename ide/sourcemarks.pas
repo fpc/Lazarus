@@ -585,12 +585,15 @@ begin
   // load source line
   FSourceLineImg:=AddImage('debugger_source_line');
 
+  FImgList.RegisterResolutions([11, 16, 22, 33], [69, 100, 150, 200]);
+
+  ImgIDFatal:=AddImage('state_fatal');
+  ImgIDError:=AddImage('state_error');
+  ImgIDWarning:=AddImage('state_warning');
+  ImgIDNote:=AddImage('state_note');
+  ImgIDHint:=AddImage('state_hint');
+
   ExtToolsMarks.ImageList:=ImgList;
-  ImgIDFatal:=AddImage('state11x11_fatal');
-  ImgIDError:=AddImage('state11x11_error');
-  ImgIDWarning:=AddImage('state11x11_warning');
-  ImgIDNote:=AddImage('state11x11_note');
-  ImgIDHint:=AddImage('state11x11_hint');
   ExtToolsMarks.MarkStyles[mluNone].ImageIndex:=-1;
   ExtToolsMarks.MarkStyles[mluProgress].ImageIndex:=-1;
   ExtToolsMarks.MarkStyles[mluDebug].ImageIndex:=-1;
