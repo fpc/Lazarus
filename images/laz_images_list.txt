@@ -669,6 +669,7 @@ states/state_note_75.png
 states/state_note.png
 states/state_not_found.png
 states/state_unit_circular_reference.png
+states/state_unknown_75.png
 states/state_unknown.png
 states/state_warning_75.png
 states/state_warning.png

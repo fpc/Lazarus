@@ -554,7 +554,7 @@ begin
   FImgList:=TLCLGlyphs.Create(Self);
   FImgList.Width := 11;
   FImgList.Height := 11;
-  FImgList.RegisterResolutions([11, 16, 22, 33], [100, 150, 200, 300]);
+  FImgList.RegisterResolutions([11, 16, 22, 33], [75, 100, 150, 200]); // if *_75 needs to be 12 pixel then make this 74
 
   // synedit expects the first 10 icons for the bookmarks
   for i in TBookmarkNumRange do
@@ -586,11 +586,11 @@ begin
   FSourceLineImg:=AddImage('debugger_source_line');
 
   ExtToolsMarks.ImageList:=ImgList;
-  ImgIDFatal:=AddImage('state11x11_fatal');
-  ImgIDError:=AddImage('state11x11_error');
-  ImgIDWarning:=AddImage('state11x11_warning');
-  ImgIDNote:=AddImage('state11x11_note');
-  ImgIDHint:=AddImage('state11x11_hint');
+  ImgIDFatal:=AddImage('state_fatal');
+  ImgIDError:=AddImage('state_error');
+  ImgIDWarning:=AddImage('state_warning');
+  ImgIDNote:=AddImage('state_note');
+  ImgIDHint:=AddImage('state_hint');
   ExtToolsMarks.MarkStyles[mluNone].ImageIndex:=-1;
   ExtToolsMarks.MarkStyles[mluProgress].ImageIndex:=-1;
   ExtToolsMarks.MarkStyles[mluDebug].ImageIndex:=-1;
