@@ -670,8 +670,10 @@ states/state_note.png
 states/state_not_found.png
 states/state_unit_circular_reference.png
 states/state_unknown.png
-states/state_warning_75.png
 states/state_warning.png
+states/state_warning_75.png
+states/state_warning_150.png
+states/state_warning_200.png
 windows/win_formeditor.ico
 windows/win_main.ico
 windows/win_messages.ico

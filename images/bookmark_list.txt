@@ -63,6 +63,9 @@ sourceeditor/state11x11_information.png
 sourceeditor/state11x11_note.png
 sourceeditor/state11x11_unknown.png
 sourceeditor/state11x11_warning.png
+sourceeditor/state11x11_warning_150.png
+sourceeditor/state11x11_warning_200.png
+sourceeditor/state11x11_warning_300.png
 sourceeditor/tsynsyncroedit.png
 sourceeditor/PendingBreakPoint.png
 sourceeditor/PendingBreakPoint_150.png

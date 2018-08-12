@@ -8257,6 +8257,9 @@ images/sourceeditor/state11x11_information.png -text svneol=unset#image/png
 images/sourceeditor/state11x11_note.png -text svneol=unset#image/png
 images/sourceeditor/state11x11_unknown.png -text svneol=unset#image/png
 images/sourceeditor/state11x11_warning.png -text svneol=unset#image/png
+images/sourceeditor/state11x11_warning_150.png -text
+images/sourceeditor/state11x11_warning_200.png -text
+images/sourceeditor/state11x11_warning_300.png -text
 images/sourceeditor/tsynsyncroedit.png -text
 images/splash_logo.bat svneol=native#text/x-msdos-program
 images/splash_logo.png -text svneol=unset#image/png
@@ -8280,6 +8283,8 @@ images/states/state_note_75.png -text
 images/states/state_unit_circular_reference.png -text svneol=unset#image/png
 images/states/state_unknown.png -text svneol=unset#image/png
 images/states/state_warning.png -text svneol=unset#image/png
+images/states/state_warning_150.png -text
+images/states/state_warning_200.png -text
 images/states/state_warning_75.png -text
 images/template.png -text svneol=unset#image/png
 images/vase_trans.xpm -text svneol=native#image/x-xpixmap
