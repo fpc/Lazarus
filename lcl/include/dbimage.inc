@@ -164,7 +164,7 @@ var s        : Tstream;
 
 begin
   if not FPictureLoaded then
-    begin
+  begin
     FUpdatingRecord := True;
     if not assigned(FDatalink.Field) then Picture.Assign(FDatalink.Field)
     else
@@ -192,7 +192,7 @@ begin
           AGraphic := nil;
           GraphExt := '';
           if assigned(FOnDBImageRead) then
-            begin
+          begin
             // External method to identify graphic type
             // returns file extension for graphic type (e.g. jpg)
             // If user implements OnDBImageRead, the control assumes that
@@ -211,21 +211,24 @@ begin
             // a image header will not work.
             OnDBImageRead(self,s,GraphExt);
             GraphExtToClass;
-            end
+          end
           else
             ReadImageHeader;
 
           if gc<>nil then
-            begin
+          begin
             AGraphic := gc.Create;
             AGraphic.LoadFromStream(s);
             Picture.Assign(AGraphic);
-            end
+            FPictureLoaded:=true;
+          end
           else
-            begin
-            if not LoadImageFromStream then
+          begin
+            if LoadImageFromStream then
+              FPictureLoaded:=true
+            else
               Picture.Clear;
-            end;
+          end;
 
         finally
           AGraphic.Free;
@@ -241,6 +244,32 @@ begin
     end;
 end;
 
+procedure TDBImage.CopyToClipboard;
+begin
+  if Assigned(Picture.Graphic) then
+    DoCopyToClipboard;
+end;
+
+procedure TDBImage.CutToClipboard;
+begin
+  if Assigned(Picture.Graphic) then
+  begin
+    if FDataLink.Edit then
+    begin
+      DoCopyToClipboard;
+      Picture.Clear;
+    end;
+  end;
+end;
+
+procedure TDBImage.PasteFromClipboard;
+begin
+  if Clipboard.HasPictureFormat then
+    if FDataLink.Edit then
+      // TODO: add some option to convert image to an user preferred format?
+      Clipboard.AssignTo(Picture);
+end;
+
 class procedure TDBImage.WSRegisterClass;
 const
   Done: Boolean = False;
@@ -250,6 +279,40 @@ begin
   inherited WSRegisterClass;
   RegisterPropertyToSkip(TDBImage, 'Picture', 'Removed in 0.9.29. DB control should not save/load their data from stream.', '');
   Done := True;
+end;
+
+procedure TDBImage.DoCopyToClipboard;
+  procedure AddGraphicFormat(fmt: TClipboardFormat; aClass: TGraphicClass);
+  var
+    st: TMemoryStream;
+    gp: TGraphic;
+  begin
+    if not (Picture.Graphic is aClass) then
+    begin
+      st := TMemoryStream.Create;
+      gp := aClass.Create;
+      try
+        gp.assign(Picture.Graphic);
+        gp.SaveToStream(st);
+        st.Position := 0;
+        Clipboard.Open;
+        Clipboard.AddFormat(fmt, st);
+        Clipboard.Close;
+      finally
+        st.free;
+        gp.free;
+      end;
+    end;
+  end;
+begin
+  Clipboard.Assign(Picture);
+  {$IFDEF MSWINDOWS}
+  AddGraphicFormat(CF_BITMAP, TBitmap);
+  {$ELSE}
+  // TODO: check: under linux most apps seems to understand png clipboard format
+  //              under osx it will probably be tiff
+  AddGraphicFormat(ClipboardRegisterFormat('image/png'), TPortableNetworkGraphic);
+  {$ENDIF}
 end;
 
 constructor TDBImage.Create(TheOwner: TComponent);

@@ -1135,8 +1135,8 @@ Type
     procedure DataChange(Sender: TObject);
     procedure UpdateData(Sender: TObject); virtual;
     procedure PictureChanged(Sender: TObject); override;
-    procedure LoadPicture; virtual;
     class procedure WSRegisterClass; override;
+    procedure DoCopyToClipboard;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -1144,6 +1144,12 @@ Type
     function UpdateAction(AAction: TBasicAction): Boolean; override;
     property Field: TField read GetField;
     procedure Change; virtual;
+
+    procedure LoadPicture; virtual;
+    procedure CopyToClipboard;
+    procedure CutToClipboard;
+    procedure PasteFromClipboard;
+    property PictureLoaded : boolean read FPictureLoaded;
   published
     property Align;
     property Anchors;
@@ -1469,7 +1475,7 @@ implementation
 {$R lcl_dbnav_images.res}
 
 uses
-  InterfaceBase;
+  InterfaceBase, Clipbrd;
 
 var
   FieldClasses: TFpList;
