@@ -108,6 +108,19 @@ begin
 end;
 
 function GetParamsAndCfgFile: TStrings;
+  procedure CleanDuplicates(ACurParam, AMatch, AClean: String);
+  var
+    i: Integer;
+  begin
+    if LowerCase(copy(ACurParam, 1, Length(AMatch))) = LowerCase(AMatch) then begin
+      i := ParamsAndCfgFileContent.Count - 1;
+      while i >= 0 do begin
+        if LowerCase(copy(ParamsAndCfgFileContent[i], 1, Length(AClean))) = LowerCase(AClean) then
+          ParamsAndCfgFileContent.Delete(i);
+        dec(i);
+      end;
+    end;
+  end;
 var
   Cfg: TStrings;
   i: Integer;
@@ -146,8 +159,20 @@ begin
     end;
   end;
 
-  for i := 1 to Paramcount do
-    ParamsAndCfgFileContent.Add(ParamStrUTF8(i));
+  for i := 1 to Paramcount do begin
+    s := ParamStrUTF8(i);
+    CleanDuplicates(s, PrimaryConfPathOptLong, PrimaryConfPathOptLong);
+    CleanDuplicates(s, PrimaryConfPathOptLong, PrimaryConfPathOptShort);
+    CleanDuplicates(s, PrimaryConfPathOptShort, PrimaryConfPathOptLong);
+    CleanDuplicates(s, PrimaryConfPathOptShort, PrimaryConfPathOptShort);
+    CleanDuplicates(s, SecondaryConfPathOptLong, SecondaryConfPathOptLong);
+    CleanDuplicates(s, SecondaryConfPathOptLong, SecondaryConfPathOptShort);
+    CleanDuplicates(s, SecondaryConfPathOptShort, SecondaryConfPathOptLong);
+    CleanDuplicates(s, SecondaryConfPathOptShort, SecondaryConfPathOptShort);
+    CleanDuplicates(s, LanguageOpt, LanguageOpt);
+    CleanDuplicates(s, LazarusDirOpt, LazarusDirOpt);
+    ParamsAndCfgFileContent.Add(s);
+  end;
 
   Result := ParamsAndCfgFileContent;
 end;
