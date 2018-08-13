@@ -2740,6 +2740,8 @@ resourcestring
     +'the Run File command instead';
   lisCEFilter = '(filter)';
   lrsPLDUnableToDeleteFile = 'Unable to delete file "%s"';
+  lisPLDSomePackagesCannotBeDeleted = 'Some packages cannot be deleted';
+  lisPLDOnlinePackagesCannotBeDeleted = 'Online packages cannot be deleted';
   lisPESortFilesAlphabetically = 'Sort files alphabetically';
   lisPEShowDirectoryHierarchy = 'Show directory hierarchy';
   dlgCaseSensitive = '&Case sensitive';

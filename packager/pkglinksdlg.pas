@@ -39,13 +39,13 @@ interface
 uses
   Classes, SysUtils, Laz_AVL_Tree,
   // LCL
-  Forms, Controls, StdCtrls, Buttons, Grids, ExtCtrls, ComCtrls, Menus,
+  Forms, Controls, StdCtrls, Buttons, Grids, ExtCtrls, ComCtrls, Menus, Dialogs,
   // Codetools
   FileProcs,
   // LazUtils
   LazUTF8, LazFileUtils, LazFileCache,
   // IdeIntf
-  PackageLinkIntf, PackageIntf,
+  PackageLinkIntf, PackageIntf, IDEDialogs,
   // IDE
   LazarusIDEStrConsts, PackageLinks, LPKCache;
 
@@ -179,14 +179,19 @@ var
   i: Integer;
   Link: TPkgLinkInfo;
   ErrMsg: String;
+  HasOnline: Boolean;
 begin
   ErrMsg:='';
+  HasOnline:=false;
   for i:=1 to PkgStringGrid.RowCount-1 do
   begin
     if PkgStringGrid.Cells[0,i]=PkgStringGrid.Columns[0].ValueChecked then
     begin
       Link:=GetLinkAtRow(i);
-      if Link=nil then exit;
+      if Link=nil then begin
+        HasOnline:=true;
+        continue;
+      end;
       case Link.Origin of
         ploGlobal: begin
           // delete lpl file
@@ -195,7 +200,7 @@ begin
               ErrMsg+=Format(lrsPLDUnableToDeleteFile, [Link.LPLFilename])+LineEnding;
           end;
         end;
-        ploOnline: begin { What to do here? } end;
+        ploOnline: HasOnline:=true;
         ploUser: LazPackageLinks.RemoveUserLinks(Link); // delete user link
       end;
     end;
@@ -203,6 +208,17 @@ begin
   RescanGlobalLinks;
   UpdatePackageList;
   LazPackageLinks.SaveUserLinks;
+  if ErrMsg<>'' then
+  begin
+    IDEMessageDialog(dlgMsgWinColorUrgentError,
+      lisPLDSomePackagesCannotBeDeleted+':'+LineEnding
+      +ErrMsg,mtError,[mbOk]);
+  end else if HasOnline then begin
+    IDEMessageDialog(dlgMsgWinColorUrgentError,
+      lisPLDOnlinePackagesCannotBeDeleted, mtError, [
+      mbOk]);
+  end;
+  if HasOnline then;
 end;
 
 procedure TPackageLinksDialog.FormDestroy(Sender: TObject);
