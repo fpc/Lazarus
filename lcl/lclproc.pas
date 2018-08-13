@@ -89,8 +89,10 @@ function GetEnumValueDef(TypeInfo: PTypeInfo; const Name: string;
 
 function KeyAndShiftStateToKeyString(Key: word; ShiftState: TShiftState): String;
 function KeyStringIsIrregular(const s: string): boolean;
-function ShortCutToText(ShortCut: TShortCut): string;// untranslated
-function TextToShortCut(const ShortCutText: string): TShortCut;// untranslated
+function ShortCutToText(ShortCut: TShortCut): string;// localized output
+function ShortCutToTextRaw(ShortCut: TShortCut): string;// NOT localized output
+function TextToShortCut(const ShortCutText: string): TShortCut;// localized input
+function TextToShortCutRaw(const ShortCutText: string): TShortCut;// NOT localized input
 
 function GetCompleteText(const sText: string; iSelStart: Integer;
   bCaseSensitive, bSearchAscending: Boolean; slTextList: TStrings): string;
@@ -668,36 +670,47 @@ begin
     Result:=DefaultValue;
 end;
 
-function KeyCodeToKeyString(Key: integer): string;
+function KeyCodeToKeyString(Key: TShortCut; Localized: boolean): string;
 begin
-  if (Key >= Low(KeyCodeStrings)) and (Key <= High(KeyCodeStrings)) then
+  if Key <= High(KeyCodeStrings) then
   begin
-    case Key of
-      VK_BACK: Result:=SmkcBkSp;
-      VK_TAB: Result:=SmkcTab;
-      VK_ESCAPE: Result:=SmkcEsc;
-      VK_RETURN: Result:=SmkcEnter;
-      VK_SPACE: Result:=SmkcSpace;
-      VK_PRIOR: Result:=SmkcPgUp;
-      VK_NEXT: Result:=SmkcPgDn;
-      VK_END: Result:=SmkcEnd;
-      VK_HOME: Result:=SmkcHome;
-      VK_LEFT: Result:=SmkcLeft;
-      VK_UP: Result:=SmkcUp;
-      VK_RIGHT: Result:=SmkcRight;
-      VK_DOWN: Result:=SmkcDown;
-      VK_INSERT: Result:=SmkcIns;
-      VK_DELETE: Result:=SmkcDel;
-      // must ignore single Shift, Alt, Ctrl in KeyCodeStrings
-      //VK_SHIFT: Result:=SmkcShift;
-      //VK_CONTROL: Result:=SmkcCtrl;
-      //VK_MENU: Result:=SmkcAlt;
-    otherwise
+    if Localized then
+      case Key of
+        VK_UNKNOWN: Result:=ifsVK_UNKNOWN;
+        VK_BACK: Result:=SmkcBkSp;
+        VK_TAB: Result:=SmkcTab;
+        VK_ESCAPE: Result:=SmkcEsc;
+        VK_RETURN: Result:=SmkcEnter;
+        VK_SPACE: Result:=SmkcSpace;
+        VK_PRIOR: Result:=SmkcPgUp;
+        VK_NEXT: Result:=SmkcPgDn;
+        VK_END: Result:=SmkcEnd;
+        VK_HOME: Result:=SmkcHome;
+        VK_LEFT: Result:=SmkcLeft;
+        VK_UP: Result:=SmkcUp;
+        VK_RIGHT: Result:=SmkcRight;
+        VK_DOWN: Result:=SmkcDown;
+        VK_INSERT: Result:=SmkcIns;
+        VK_DELETE: Result:=SmkcDel;
+        // must ignore single Shift, Alt, Ctrl in KeyCodeStrings
+        //VK_SHIFT: Result:=SmkcShift;
+        //VK_CONTROL: Result:=SmkcCtrl;
+        //VK_MENU: Result:=SmkcAlt;
+      otherwise
+        Result := KeyCodeStrings[Key];
+      end
+    else
       Result := KeyCodeStrings[Key];
-    end;
   end
   else
-    Result := '';
+    case Key of
+      scMeta: if Localized then Result:=SmkcMeta else Result:='Meta+';
+      scShift: if Localized then Result:=SmkcShift else Result:='Shift+';
+      scCtrl: if Localized then Result:=SmkcCtrl else Result:='Ctrl+';
+      scAlt: if Localized then Result:=SmkcAlt else Result:='Alt+';
+    otherwise
+      Result:='';
+    end;
 end;
 
 // Used also by TWidgetSet.GetAcceleratorString
@@ -725,7 +738,7 @@ begin
     {$ENDIF}
   if ssSuper in ShiftState then AddPart(ifsVK_SUPER);
 
-  s := KeyCodeToKeyString(Key);
+  s := KeyCodeToKeyString(Key, true);
   // function returned "Word(nnn)" previously, keep this
   if s = '' then
     s := UNKNOWN_VK_PREFIX + IntToStr(Key) + UNKNOWN_VK_POSTFIX;
@@ -738,23 +751,33 @@ begin
     (AnsiStrLComp(PChar(s),PChar(UNKNOWN_VK_PREFIX),length(UNKNOWN_VK_PREFIX))=0);
 end;
 
-function ShortCutToText(ShortCut: TShortCut): string;
+function ShortCutToTextGeneric(ShortCut: TShortCut; Localized: boolean): string;
 var
   Name: string;
 begin
   Result := '';
-  Name := KeyCodeToKeyString(ShortCut and $FF);
+  Name := KeyCodeToKeyString(ShortCut and $FF, Localized);
   if Name <> '' then
   begin
-    if ShortCut and scShift <> 0 then Result := Result + SmkcShift;
-    if ShortCut and scCtrl <> 0 then Result := Result + SmkcCtrl;
-    if ShortCut and scMeta <> 0 then Result := Result + SmkcMeta;
-    if ShortCut and scAlt <> 0 then Result := Result + SmkcAlt;
+    if ShortCut and scShift <> 0 then Result := Result + KeyCodeToKeyString(scShift, Localized);
+    if ShortCut and scCtrl <> 0 then Result := Result + KeyCodeToKeyString(scCtrl, Localized);
+    if ShortCut and scMeta <> 0 then Result := Result + KeyCodeToKeyString(scMeta, Localized);
+    if ShortCut and scAlt <> 0 then Result := Result + KeyCodeToKeyString(scAlt, Localized);
     Result := Result + Name;
   end;
 end;
 
-function TextToShortCut(const ShortCutText: string): TShortCut;
+function ShortCutToText(ShortCut: TShortCut): string;
+begin
+  Result:=ShortCutToTextGeneric(ShortCut, true);
+end;
+
+function ShortCutToTextRaw(ShortCut: TShortCut): string;
+begin
+  Result:=ShortCutToTextGeneric(ShortCut, false);
+end;
+
+function TextToShortCutGeneric(const ShortCutText: string; Localized: boolean): TShortCut;
 
   function CompareFront(var StartPos: integer; const Front: string): Boolean;
   begin
@@ -779,15 +802,15 @@ begin
   StartPos := 1;
   while True do
   begin
-    if CompareFront(StartPos, SmkcShift) then
+    if CompareFront(StartPos, KeyCodeToKeyString(scShift, Localized)) then
       Shift := Shift or scShift
     else if CompareFront(StartPos, '^') then
       Shift := Shift or scCtrl
-    else if CompareFront(StartPos, SmkcCtrl) then
+    else if CompareFront(StartPos, KeyCodeToKeyString(scCtrl, Localized)) then
       Shift := Shift or scCtrl
-    else if CompareFront(StartPos, SmkcAlt) then
+    else if CompareFront(StartPos, KeyCodeToKeyString(scAlt, Localized)) then
       Shift := Shift or scAlt
-    else if CompareFront(StartPos, SmkcMeta) then
+    else if CompareFront(StartPos, KeyCodeToKeyString(scMeta, Localized)) then
       Shift := Shift or scMeta
     else
       Break;
@@ -795,7 +818,7 @@ begin
 
   for Key := Low(KeyCodeStrings) to High(KeyCodeStrings) do
   begin
-    Name := KeyCodeToKeyString(Key);
+    Name := KeyCodeToKeyString(Key, Localized);
     if (Name<>'') and (length(Name)=length(ShortCutText)-StartPos+1)
     and (AnsiStrLIComp(@ShortCutText[StartPos], PChar(Name), length(Name)) = 0)
     then begin
@@ -803,6 +826,16 @@ begin
       Exit;
     end;
   end;
+end;
+
+function TextToShortCut(const ShortCutText: string): TShortCut;
+begin
+  Result:=TextToShortCutGeneric(ShortCutText, true);
+end;
+
+function TextToShortCutRaw(const ShortCutText: string): TShortCut;
+begin
+  Result:=TextToShortCutGeneric(ShortCutText, false);
 end;
 
 function GetCompleteText(const sText: string; iSelStart: Integer;
