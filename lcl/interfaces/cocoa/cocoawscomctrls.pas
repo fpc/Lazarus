@@ -675,17 +675,18 @@ class function TCocoaWSCustomListView.CheckColumnParams(
 var
   lv : TCocoaListView;
 begin
-  Result := CheckParams(lv, ATableControl, ALV);
-  if not Result then Exit;
+  Result := False;
+  ANSColumn := nil;
+  if not CheckParams(lv, ATableControl, ALV) then Exit;
 
   if (AIndex < 0) or (AIndex >= ATableControl.tableColumns.count()) then Exit;
   ANSColumn := NSTableColumn(ATableControl.tableColumns.objectAtIndex(AIndex));
+  Result := Assigned(ANSColumn);
 
   if ASecondIndex >= 0 then
   begin
     if (ASecondIndex < 0) or (ASecondIndex >= ATableControl.tableColumns.count()) then Exit;
   end;
-  Result := True;
 end;
 
 class function TCocoaWSCustomListView.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
