@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-08-07 02:00+0300\n"
+"PO-Revision-Date: 2018-08-14 01:41+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -15769,6 +15769,10 @@ msgstr "Глобальные"
 msgid "Online"
 msgstr "Сетевые"
 
+#: lazarusidestrconsts.lispldonlinepackagescannotbedeleted
+msgid "Online packages cannot be deleted"
+msgstr "Пакеты из сети не могут быть удалены"
+
 #: lazarusidestrconsts.lispldpackagelinks
 msgid "Package Links"
 msgstr "Ссылки на пакеты"
@@ -15784,6 +15788,10 @@ msgstr "Показывать сетевые ссылки"
 #: lazarusidestrconsts.lispldshowuserlinksin
 msgid "Show user links in "
 msgstr "Показывать пользовательские ссылки в "
+
+#: lazarusidestrconsts.lispldsomepackagescannotbedeleted
+msgid "Some packages cannot be deleted"
+msgstr "Некоторые пакеты не могут быть удалены"
 
 #: lazarusidestrconsts.lisplduser
 msgid "User"

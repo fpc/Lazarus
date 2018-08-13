@@ -16063,6 +16063,10 @@ msgstr "Küresel"
 msgid "Online"
 msgstr ""
 
+#: lazarusidestrconsts.lispldonlinepackagescannotbedeleted
+msgid "Online packages cannot be deleted"
+msgstr ""
+
 #: lazarusidestrconsts.lispldpackagelinks
 msgid "Package Links"
 msgstr "Paket Bağlantıları"
@@ -16078,6 +16082,10 @@ msgstr ""
 #: lazarusidestrconsts.lispldshowuserlinksin
 msgid "Show user links in "
 msgstr "Kullanıcı bağlantılarını göster"
+
+#: lazarusidestrconsts.lispldsomepackagescannotbedeleted
+msgid "Some packages cannot be deleted"
+msgstr ""
 
 #: lazarusidestrconsts.lisplduser
 msgid "User"

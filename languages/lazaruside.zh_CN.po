@@ -16068,6 +16068,10 @@ msgstr "全局"
 msgid "Online"
 msgstr ""
 
+#: lazarusidestrconsts.lispldonlinepackagescannotbedeleted
+msgid "Online packages cannot be deleted"
+msgstr ""
+
 #: lazarusidestrconsts.lispldpackagelinks
 msgid "Package Links"
 msgstr "包链接"
@@ -16083,6 +16087,10 @@ msgstr ""
 #: lazarusidestrconsts.lispldshowuserlinksin
 msgid "Show user links in "
 msgstr "显示用户链接在"
+
+#: lazarusidestrconsts.lispldsomepackagescannotbedeleted
+msgid "Some packages cannot be deleted"
+msgstr ""
 
 #: lazarusidestrconsts.lisplduser
 msgid "User"

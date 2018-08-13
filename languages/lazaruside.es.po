@@ -16073,6 +16073,10 @@ msgstr "Global"
 msgid "Online"
 msgstr "En línea"
 
+#: lazarusidestrconsts.lispldonlinepackagescannotbedeleted
+msgid "Online packages cannot be deleted"
+msgstr ""
+
 #: lazarusidestrconsts.lispldpackagelinks
 msgid "Package Links"
 msgstr "Enlaces de paquete"
@@ -16088,6 +16092,10 @@ msgstr "Mostrar enlaces en línea"
 #: lazarusidestrconsts.lispldshowuserlinksin
 msgid "Show user links in "
 msgstr "Mostrar enlaces de usuario en"
+
+#: lazarusidestrconsts.lispldsomepackagescannotbedeleted
+msgid "Some packages cannot be deleted"
+msgstr ""
 
 #: lazarusidestrconsts.lisplduser
 msgid "User"

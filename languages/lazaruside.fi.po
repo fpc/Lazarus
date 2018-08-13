@@ -15706,6 +15706,10 @@ msgstr "Julkinen"
 msgid "Online"
 msgstr ""
 
+#: lazarusidestrconsts.lispldonlinepackagescannotbedeleted
+msgid "Online packages cannot be deleted"
+msgstr ""
+
 #: lazarusidestrconsts.lispldpackagelinks
 msgid "Package Links"
 msgstr "Pakettilinkit"
@@ -15721,6 +15725,10 @@ msgstr ""
 #: lazarusidestrconsts.lispldshowuserlinksin
 msgid "Show user links in "
 msgstr "Näytä käyttäjän linkit: "
+
+#: lazarusidestrconsts.lispldsomepackagescannotbedeleted
+msgid "Some packages cannot be deleted"
+msgstr ""
 
 #: lazarusidestrconsts.lisplduser
 msgid "User"

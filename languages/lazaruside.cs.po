@@ -15946,6 +15946,10 @@ msgstr "Celkový"
 msgid "Online"
 msgstr ""
 
+#: lazarusidestrconsts.lispldonlinepackagescannotbedeleted
+msgid "Online packages cannot be deleted"
+msgstr ""
+
 #: lazarusidestrconsts.lispldpackagelinks
 msgid "Package Links"
 msgstr "Odkazy balíčku"
@@ -15961,6 +15965,10 @@ msgstr ""
 #: lazarusidestrconsts.lispldshowuserlinksin
 msgid "Show user links in "
 msgstr "Ukázat odkaz uživatele v "
+
+#: lazarusidestrconsts.lispldsomepackagescannotbedeleted
+msgid "Some packages cannot be deleted"
+msgstr ""
 
 #: lazarusidestrconsts.lisplduser
 msgid "User"

@@ -15831,6 +15831,10 @@ msgstr "Globális"
 msgid "Online"
 msgstr "Hálózaton"
 
+#: lazarusidestrconsts.lispldonlinepackagescannotbedeleted
+msgid "Online packages cannot be deleted"
+msgstr ""
+
 #: lazarusidestrconsts.lispldpackagelinks
 msgid "Package Links"
 msgstr "Csomag hivatkozások"
@@ -15846,6 +15850,10 @@ msgstr "Hálózati hivatkozások megjelenítése"
 #: lazarusidestrconsts.lispldshowuserlinksin
 msgid "Show user links in "
 msgstr "Felhasználói hivatkozások itt: "
+
+#: lazarusidestrconsts.lispldsomepackagescannotbedeleted
+msgid "Some packages cannot be deleted"
+msgstr ""
 
 #: lazarusidestrconsts.lisplduser
 msgid "User"

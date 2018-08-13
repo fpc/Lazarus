@@ -15773,6 +15773,10 @@ msgstr "Глобальна"
 msgid "Online"
 msgstr "Мережні"
 
+#: lazarusidestrconsts.lispldonlinepackagescannotbedeleted
+msgid "Online packages cannot be deleted"
+msgstr ""
+
 #: lazarusidestrconsts.lispldpackagelinks
 msgid "Package Links"
 msgstr "Зв'язки пакунка"
@@ -15788,6 +15792,10 @@ msgstr "Показувати мережні посилання"
 #: lazarusidestrconsts.lispldshowuserlinksin
 msgid "Show user links in "
 msgstr "Показувати користувацькі зв'язки у "
+
+#: lazarusidestrconsts.lispldsomepackagescannotbedeleted
+msgid "Some packages cannot be deleted"
+msgstr ""
 
 #: lazarusidestrconsts.lisplduser
 msgid "User"

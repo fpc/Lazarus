@@ -15855,6 +15855,10 @@ msgstr "Globalus"
 msgid "Online"
 msgstr "Internetinis"
 
+#: lazarusidestrconsts.lispldonlinepackagescannotbedeleted
+msgid "Online packages cannot be deleted"
+msgstr ""
+
 #: lazarusidestrconsts.lispldpackagelinks
 msgid "Package Links"
 msgstr "Paketo saitai"
@@ -15870,6 +15874,10 @@ msgstr "Rodyti interneto saitus"
 #: lazarusidestrconsts.lispldshowuserlinksin
 msgid "Show user links in "
 msgstr "Naudotojo saitus rodyti"
+
+#: lazarusidestrconsts.lispldsomepackagescannotbedeleted
+msgid "Some packages cannot be deleted"
+msgstr ""
 
 #: lazarusidestrconsts.lisplduser
 msgid "User"

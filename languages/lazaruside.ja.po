@@ -15823,6 +15823,10 @@ msgstr "グローバル"
 msgid "Online"
 msgstr "オンライン"
 
+#: lazarusidestrconsts.lispldonlinepackagescannotbedeleted
+msgid "Online packages cannot be deleted"
+msgstr ""
+
 #: lazarusidestrconsts.lispldpackagelinks
 msgid "Package Links"
 msgstr "パッケージリンク"
@@ -15838,6 +15842,10 @@ msgstr "グローバルリンクを表示"
 #: lazarusidestrconsts.lispldshowuserlinksin
 msgid "Show user links in "
 msgstr "ユーザーリンクを次に表示"
+
+#: lazarusidestrconsts.lispldsomepackagescannotbedeleted
+msgid "Some packages cannot be deleted"
+msgstr ""
 
 #: lazarusidestrconsts.lisplduser
 msgid "User"

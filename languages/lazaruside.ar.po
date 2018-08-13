@@ -15740,6 +15740,10 @@ msgstr ""
 msgid "Online"
 msgstr ""
 
+#: lazarusidestrconsts.lispldonlinepackagescannotbedeleted
+msgid "Online packages cannot be deleted"
+msgstr ""
+
 #: lazarusidestrconsts.lispldpackagelinks
 msgid "Package Links"
 msgstr ""
@@ -15754,6 +15758,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lispldshowuserlinksin
 msgid "Show user links in "
+msgstr ""
+
+#: lazarusidestrconsts.lispldsomepackagescannotbedeleted
+msgid "Some packages cannot be deleted"
 msgstr ""
 
 #: lazarusidestrconsts.lisplduser
