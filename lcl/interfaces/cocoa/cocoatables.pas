@@ -711,7 +711,11 @@ end;
 procedure TCocoaTableListView.mouseDown(event: NSEvent);
 begin
   if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+  begin
     inherited mouseDown(event);
+    if Assigned(callback) then
+      callback.MouseUpDownEvent(event, true);
+  end;
 end;
 
 procedure TCocoaTableListView.rightMouseDown(event: NSEvent);
