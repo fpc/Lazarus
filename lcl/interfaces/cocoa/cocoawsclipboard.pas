@@ -1,7 +1,22 @@
+{ $Id: $}
+{                  --------------------------------------------
+                  cocoawsclipboard.pas  -  Cocoa internal classes
+                  --------------------------------------------
+
+ This unit contains the private classhierarchy for the Cocoa implemetations
+
+ *****************************************************************************
+  This file is part of the Lazarus Component Library (LCL)
+
+  See the file COPYING.modifiedLGPL.txt, included in this distribution,
+  for details about the license.
+ *****************************************************************************
+}
 unit CocoaWSClipboard;
 
 interface
 
+{$mode objfpc}{$H+}
 {$modeswitch objectivec2}
 
 uses

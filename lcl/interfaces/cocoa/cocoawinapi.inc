@@ -203,7 +203,7 @@ begin
   Result := fClipboard.GetFormats(ClipboardType, Count, fmt);
   if Count > 0 then begin
     GetMem(List, Count * sizeof(TClipboardFormat));
-    Move(fmt[0], List^, Count * sizeof(TClipboardFormat));
+    System.Move(fmt[0], List^, Count * sizeof(TClipboardFormat));
   end else
     List := nil;
 end;
