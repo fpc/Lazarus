@@ -94,12 +94,27 @@ begin
 end;
 
 function TCocoaWidgetSet.ClientToScreen(Handle: HWND; var P: TPoint): Boolean;
+var
+  r : NSRect;
+  cl : NSView;
+  clr : TRect;
 begin
   Result := Handle <> 0;
 
   if Result then
+  begin
     // must use lclContentView! - it's client view
-    NSObject(Handle).lclContentView.lclLocalToScreen(P.X, P.Y);
+    cl := NSObject(Handle).lclContentView;
+    if HWND(cl) = Handle then
+    begin
+      // if Handle is lclContentView, then we should check clientRect
+      // (i.e. TabControl doesn't have lclContentView, yet its clientRect is adjusted)
+      clr := NSObject(Handle).lclClientFrame;
+      P.X := P.X + clr.Left;
+      P.Y := P.Y + clr.Top;
+    end;
+    cl.lclLocalToScreen(P.X, P.Y);
+  end;
 end;
 
 procedure TCocoaWidgetSet.CallDefaultWndHandler(Sender: TObject; var Message);
