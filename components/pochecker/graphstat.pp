@@ -206,7 +206,7 @@ begin
       try
         if All=true then
           StatusLabel.Caption := Format(sProcessingTranslationFamilyOf, [
-            IntToStr(i), IntToStr(PoFamilyList.Count)])
+            IntToStr(i + 1), IntToStr(PoFamilyList.Count)])
         else
           StatusLabel.Caption := sProcessingTranslationFamily;
         StatusLabel.Repaint;
@@ -411,7 +411,7 @@ begin
     StatusLabel.Visible := True;
     for Index := 0 to FPoFamilyStats.Count - 1 do
     begin
-      StatusLabel.Caption := Format(sCreatingIconXofY,[Index, Cnt]);
+      StatusLabel.Caption := Format(sCreatingIconXofY,[Index + 1, Cnt]);
       StatusLabel.Repaint;
       AStat := FPoFamilyStats.Items[Index];
       Bmp := CreateBitmap(AStat);
