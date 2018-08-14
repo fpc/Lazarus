@@ -1272,7 +1272,7 @@ begin
         for I := 0 to AValue.Count-1 do
         begin
           FromR.GetBitmap(I, Bmp);
-          Replace(OldCount+I, Bmp, nil);
+          Replace(OldCount+I, Bmp, nil, false);
         end;
       end;
     end;
