@@ -694,12 +694,14 @@ begin
   if Assigned(callback) then
   begin
     if not callback.MouseUpDownEvent(event) then
+    begin
       inherited mouseDown(event);
 
-    // Cocoa doesn't call mouseUp for NSTextView, so we have to emulate it here :(
-    // See bug 29000
-    if Assigned(callback) then
-      callback.MouseUpDownEvent(event, True);
+      // Cocoa doesn't call mouseUp for NSTextView, so we have to emulate it here :(
+      // See bug 29000
+      if Assigned(callback) then
+        callback.MouseUpDownEvent(event, True);
+    end;
   end else
     inherited mouseDown(event);
 end;
