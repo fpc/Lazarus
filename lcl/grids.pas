@@ -934,6 +934,7 @@ type
     function  BoxRect(ALeft,ATop,ARight,ABottom: Longint): TRect;
     procedure CacheMouseDown(const X,Y:Integer);
     procedure CalcAutoSizeColumn(const Index: Integer; var AMin,AMax,APriority: Integer); virtual;
+    procedure CalcCellExtent(acol, aRow: Integer; var aRect: TRect); overload; virtual; deprecated 'old function';
     procedure CalcFocusRect(var ARect: TRect; adjust: boolean = true);
     procedure CalcMaxTopLeft;
     procedure CalcScrollbarsRange;
@@ -942,6 +943,7 @@ type
     function  CanEditShow: Boolean; virtual;
     function  CanGridAcceptKey(Key: Word; Shift: TShiftState): Boolean; virtual;
     procedure CellClick(const aCol,aRow: Integer; const Button:TMouseButton); virtual;
+    procedure CellExtent(const aCol,aRow: Integer; var R: TRect; out exCol:Integer);
     procedure CheckLimits(var aCol,aRow: Integer);
     procedure CheckLimitsWithError(const aCol, aRow: Integer);
     procedure CMBiDiModeChanged(var Message: TLMessage); message CM_BIDIMODECHANGED;
@@ -1338,7 +1340,6 @@ type
     function  GetEditorValue(ACol, ARow: Integer): String;
   protected
     FGrid: TVirtualGrid;
-    procedure CalcCellExtent(acol, aRow: Integer; var aRect: TRect); virtual;
     procedure CellClick(const aCol,aRow: Integer; const Button:TMouseButton); override;
     procedure ColRowDeleted(IsColumn: Boolean; index: Integer); override;
     procedure ColRowExchanged(IsColumn: Boolean; index,WithIndex: Integer); override;
@@ -3431,10 +3432,18 @@ end;
 
 // Returns a rectagle corresponding to a physical cell[aCol,aRow]
 function TCustomGrid.CellRect(ACol, ARow: Integer): TRect;
+var
+  ok: Boolean;
+  dummy: Integer;
 begin
-  if not (ColRowToOffset(True, True, ACol, Result.Left, Result.Right)
-      and ColRowToOffSet(False,True, ARow, Result.Top, Result.Bottom))
-  then
+  ok := ColRowToOffset(True, True, ACol, Result.Left, Result.Right);
+  if ok then begin
+    if goColSpanning in Options then
+      CellExtent(ACol, ARow, Result, dummy);
+    ok := ColRowToOffSet(False,True, ARow, Result.Top, Result.Bottom);
+  end;
+
+  if not ok then
     Result:=Rect(0,0,0,0);
 end;
 
@@ -4269,8 +4278,8 @@ end;
 procedure TCustomGrid.DrawRow(aRow: Integer);
 var
   gds: TGridDrawState;
-  aCol: Integer;
-  Rs: Boolean;
+  aCol, exCol: Integer;
+  Rs, colSpanning: Boolean;
   R: TRect;
   ClipArea: Trect;
 
@@ -4307,14 +4316,26 @@ begin
     exit;
   end;
 
+  colSpanning := (goColSpanning in Options);
+
   // Draw columns in this row
   with FGCache.VisibleGrid do begin
-    for aCol:=left to Right do begin
+
+    aCol := left;
+    while aCol<=Right do begin
       ColRowToOffset(True, True, aCol, R.Left, R.Right);
-      if (R.Left>=R.Right) or not HorizontalIntersect(R, ClipArea) then
-        continue;
-      gds := GetGridDrawState(ACol, ARow);
-      DoDrawCell;
+      if (R.Left<R.Right) and HorizontalIntersect(R, ClipArea) then begin
+
+        if colSpanning then
+          CellExtent(aCol, aRow, R, exCol);
+
+        gds := GetGridDrawState(ACol, ARow);
+        DoDrawCell;
+
+        if colSpanning then
+          aCol := exCol;
+      end;
+      inc(aCol);
     end;
 
     Rs := (goRowSelect in Options);
@@ -4328,8 +4349,11 @@ begin
       end else begin
         if Rs then
           CalcFocusRect(R, false) // will be adjusted when calling DrawFocusRect
-        else
+        else begin
           ColRowToOffset(True, True, FCol, R.Left, R.Right);
+          if colSpanning then
+            CellExtent(FCol, aRow, R, exCol);
+        end;
         // is this column within the ClipRect?
         if HorizontalIntersect(R, ClipArea) then
           DrawFocusRect(FCol,FRow, R);
@@ -7838,6 +7862,11 @@ begin
   APriority := 0;
 end;
 
+procedure TCustomGrid.CalcCellExtent(acol, aRow: Integer; var aRect: TRect);
+begin
+  //
+end;
+
 procedure TCustomGrid.CalcFocusRect(var ARect: TRect; adjust: boolean = true);
 begin
   if goRowSelect in Options then begin
@@ -7944,6 +7973,21 @@ end;
 
 procedure TCustomGrid.CellClick(const aCol, aRow: Integer; const Button:TMouseButton);
 begin
+end;
+
+procedure TCustomGrid.CellExtent(const aCol, aRow: Integer; var R: TRect;
+  out exCol: Integer);
+var
+  Extent: TRect;
+begin
+  Extent := R;
+  exCol := aCol;
+  CalcCellExtent(aCol, aRow, Extent);
+  // TODO: check RTL
+  while (exCol<=FGCache.VisibleGrid.Right) and (R.Right<Extent.Right) do begin
+    inc(exCol);
+    ColRowToOffset(True, True, exCol, Extent.Left, R.Right);
+  end;
 end;
 
 procedure TCustomGrid.CheckLimits(var aCol, aRow: Integer);
@@ -10423,11 +10467,6 @@ begin
   end;
 end;
 
-procedure TCustomDrawGrid.CalcCellExtent(acol, aRow: Integer; var aRect: TRect);
-begin
-  //
-end;
-
 procedure TCustomDrawGrid.CellClick(const ACol, ARow: Integer; const Button:TMouseButton);
 begin
   if (Button=mbLeft) and CellNeedsCheckboxBitmaps(ACol, ARow) then
@@ -10767,8 +10806,6 @@ end;
 procedure TCustomDrawGrid.DefaultDrawCell(aCol, aRow: Integer; var aRect: TRect;
   aState: TGridDrawState);
 begin
-  if goColSpanning in Options then CalcCellExtent(acol, arow, aRect);
-
   if (FTitleStyle=tsNative) and (gdFixed in AState) then
     DrawThemedCell(aCol, aRow, aRect, aState)
   else
