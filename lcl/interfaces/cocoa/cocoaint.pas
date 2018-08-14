@@ -203,7 +203,6 @@ var
   mn  : Integer;
   mx  : Integer;
   dl  : Integer;
-  pos : CGFloat;
 begin
   if not Assigned(bar) then
   begin

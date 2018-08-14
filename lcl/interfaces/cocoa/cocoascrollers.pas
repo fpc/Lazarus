@@ -641,15 +641,15 @@ end;
 
 function TCocoaScrollBar.lclPos: Integer;
 begin
-  Result:=round( floatValue * (maxint-minInt)) + minInt;
+  Result:=round( floatValue * (maxint-minInt-pageInt)) + minInt;
 end;
 
 procedure TCocoaScrollBar.lclSetPos(aPos: integer);
 var
   d : integer;
 begin
-  d := maxInt - minInt;
-  if d = 0 then
+  d := maxInt - minInt - pageInt;
+  if d <= 0 then
     setDoubleValue(0)
   else
   begin
