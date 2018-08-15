@@ -11,10 +11,10 @@ object MainFrm: TMainFrm
   KeyPreview = True
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnKeyDown = FormKeyDown
   OnKeyPress = FormKeyPress
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '1.9.0.0'
   object pnMain: TPanel
     Left = 0
     Height = 580
