@@ -1249,6 +1249,7 @@ var
   FromR: TCustomImageListResolution;
   First: Boolean;
   Bmp: TBitmap;
+  RawImage: TRawImage;
 begin
   if (AValue = nil) or (AValue=Self) or (AValue.Count = 0) then exit;
 
@@ -1271,8 +1272,8 @@ begin
       begin
         for I := 0 to AValue.Count-1 do
         begin
-          FromR.GetBitmap(I, Bmp);
-          Replace(OldCount+I, Bmp, nil, false);
+          FromR.GetRawImage(I, RawImage);
+          FData[R].InternalReplace(OldCount+I, PRGBAQuad(RawImage.Data));
         end;
       end;
     end;
