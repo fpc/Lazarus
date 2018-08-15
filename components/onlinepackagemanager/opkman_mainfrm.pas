@@ -112,6 +112,7 @@ type
     tbCreate: TToolButton;
     tbUpdate: TToolButton;
     tbOpenRepo: TToolButton;
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure miCopyToClpBrdClick(Sender: TObject);
     procedure miCreateJSONForUpdatesClick(Sender: TObject);
     procedure miCreateRepositoryClick(Sender: TObject);
@@ -1090,6 +1091,34 @@ begin
       17: Clipboard.AsText := Data^.HomePageURL;
       18: Clipboard.AsText := Data^.DownloadURL;
     end;
+  end;
+end;
+
+procedure TMainFrm.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if ssCtrl in Shift then
+  begin
+    if (Key = 82) and (tbRefresh.Enabled) then
+      tbRefreshClick(tbRefresh)
+    else if (Key = 68) and (tbDownload.Enabled) then
+      tbDownloadClick(tbDownload)
+    else if (Key = 73) and (tbInstall.Enabled) then
+      tbInstallClick(tbInstall)
+    else if (Key = 69) and (tbUpdate.Enabled) then
+      tbUpdateClick(tbUpdate)
+    else if (Key = 85) and (tbUninstall.Enabled) then
+      tbUninstallClick(tbUninstall)
+    else if (Key = 76) and (tbOpenRepo.Enabled) then
+      tbOpenRepoClick(tbOpenRepo)
+    else if (Key = 67) and (tbCleanUp.Enabled) then
+      tbCleanUpClick(tbCleanUp)
+    else if (Key = 80) and (tbInstall.Enabled) then
+      miCreateRepositoryPackageClick(miCreateRepositoryPackage)
+    else if (Key = 79) and (tbOptions.Enabled) then
+      tbOptionsClick(tbOptions)
+    else if (Key = 72) and (tbHelp.Enabled) then
+      tbHelpClick(tbHelp);
   end;
 end;
 
