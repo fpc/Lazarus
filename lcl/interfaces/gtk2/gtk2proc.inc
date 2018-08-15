@@ -3336,11 +3336,11 @@ var
   KeySymCount: Integer;
   KeySymChars: array[0..16] of Char;
   KeySymCharLen: Integer;
+  NewKeyMap: PGdkKeymap;
 
 {$ifdef HasX}
   XDisplay: PDisplay;
   ModMap: TModMap;
-  NewKeyMap: PGdkKeymap;
 {$endif}
 {$ifdef UseOwnShiftState}
   KeyStateMapIndex: Integer;
