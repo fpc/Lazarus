@@ -39,11 +39,13 @@ type
     procedure RBStartServerAtChange(Sender: TObject);
     procedure RBUseURLChange(Sender: TObject);
   private
+    FDialog: TAbstractOptionsEditorDialog;
     procedure CheckAllControls(aEnabled: Boolean);
     procedure CheckHTMLOptions(aEnabled: Boolean);
     procedure CheckServerOptions(aEnabled: Boolean);
     function FillFilesCombo(PRJ: TLazProject): Integer;
     procedure ToggleCB(CB: TCheckBox; aEnabled: Boolean);
+
   public
     function GetTitle: string; override;
     procedure Setup({%H-}ADialog: TAbstractOptionsEditorDialog); override;
@@ -141,6 +143,7 @@ end;
 procedure TPas2JSProjectOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   // Do nothing
+  FDialog:=ADialog;
 end;
 
 procedure TPas2JSProjectOptionsFrame.CBWebProjectChange(Sender: TObject);
@@ -167,14 +170,21 @@ procedure TPas2JSProjectOptionsFrame.BResetRunCommandClick(Sender: TObject);
 
 Var
   Prj : TLazProject;
+
 begin
   PRJ:=LazarusIDE.ActiveProject;
   SetDefaultWebRunParams(Prj.RunParameters.GetOrCreate('Default'));
 end;
 
 procedure TPas2JSProjectOptionsFrame.BResetCompileCommandClick(Sender: TObject);
-begin
 
+Var
+  Prj : TLazProject;
+
+begin
+  PRJ:=LazarusIDE.ActiveProject;
+  SetDefaultWebCompileOptions(PRJ.LazBuildModes.BuildModes[0].LazCompilerOptions);
+  SetDefaultWebCompileOptions(PRJ.LazCompilerOptions);
 end;
 
 procedure TPas2JSProjectOptionsFrame.CBUseHTTPServerChange(Sender: TObject);
@@ -227,7 +237,7 @@ end;
 Function TPas2JSProjectOptionsFrame.FillFilesCombo(PRJ : TLazProject) : Integer;
 
 Var
-  I: integer;
+  I : integer;
   HPF,PF : TLazProjectFile;
   Ext : String;
   L : TStringList;
@@ -267,7 +277,6 @@ Var
   URL : String;
 
 begin
-  if AOptions=nil then ;
   PRJ:=LazarusIDE.ActiveProject;
   HTMLIdx:=FillFilesCombo(PRJ);
   CBWebProject.Checked:=PRJ.CustomData[PJSProjectWebBrowser]='1';
@@ -300,7 +309,6 @@ Var
   end;
 
 begin
-  if AOptions=nil then ;
   PRJ:=LazarusIDE.ActiveProject;
   // Clear everything
   With PRJ.CustomData do
