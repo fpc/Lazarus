@@ -7321,6 +7321,9 @@ images/components/tcontrolbar_200.png -text
 images/components/tcoolbar.png -text svneol=unset#image/png
 images/components/tcoolbar_150.png -text
 images/components/tcoolbar_200.png -text
+images/components/tcsvdataset.png -text svneol=unset#image/png
+images/components/tcsvdataset_150.png -text svneol=unset#image/png
+images/components/tcsvdataset_200.png -text svneol=unset#image/png
 images/components/tdatasource.png -text svneol=unset#image/png
 images/components/tdatasource_150.png -text
 images/components/tdatasource_200.png -text

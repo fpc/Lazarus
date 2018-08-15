@@ -76,6 +76,9 @@ components/tcontrolbar_200.png
 components/tcoolbar.png
 components/tcoolbar_150.png
 components/tcoolbar_200.png
+components/tcsvdataset.png
+components/tcsvdataset_150.png
+components/tcsvdataset_200.png
 components/tdatasource.png
 components/tdatasource_150.png
 components/tdatasource_200.png
