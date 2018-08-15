@@ -299,6 +299,7 @@ type
     procedure AResizeExecute(Sender: TObject);
     procedure ASendToBackExecute(Sender: TObject);
     procedure ASendToBackFrontUpdate(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormDestroy(Sender: TObject);
     procedure FormDropFiles(Sender: TObject; const FileNames: array of String);
@@ -1950,6 +1951,13 @@ begin
   (Sender as TAction).Enabled:=Assigned(CurrentDesigner)
                                and (CurrentDesigner.Objects.SelectionCount=1)
                                and (CurrentDesigner.Objects.GetSelection[0].IsPlainElement);
+end;
+
+procedure TFPReportDesignerForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  if Not (fsModal in FFormState) then
+    CloseAction:=caFree;
+
 end;
 
 

@@ -13,6 +13,7 @@ object FPReportDesignerForm: TFPReportDesignerForm
   ClientWidth = 890
   KeyPreview = True
   Menu = MMReport
+  OnClose = FormClose
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
