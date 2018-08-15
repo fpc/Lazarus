@@ -25,10 +25,9 @@ type
   protected
     procedure CalcCellExtent(ACol, ARow: Integer; var ARect: TRect); override;
     procedure DoEditorShow; override;
-    procedure DrawAllRows; override;
+    procedure DrawCell(aCol,aRow: Integer; aRect: TRect; aState:TGridDrawState); override;
     procedure DrawCellText(ACol, ARow: Integer; ARect: TRect;
       AState: TGridDrawState; AText: String); override;
-    procedure DrawFocusRect(ACol, ARow:Integer; ARect:TRect); override;
     function GetCells(ACol, ARow: Integer): String; override;
     function GetEditText(ACol, ARow: Integer): String; override;
     function IsMerged(ACol, ARow: Integer): Boolean; overload;
@@ -37,6 +36,7 @@ type
     procedure MoveSelection; override;
     procedure PrepareCanvas(aCol, aRow: Integer; AState: TGridDrawState); override;
     procedure SetEditText(ACol, ARow: LongInt; const Value: String); override;
+    function  MoveNextSelectable(Relative: Boolean; DCol, DRow: Integer): Boolean; override;
   published
     property OnDrawCelLText: TDrawCellTextEvent read FOnDrawCellText write FOnDrawCellText;
     property OnMergeCells: TMergeCellsEvent read FOnMergeCells write FOnMergeCells;
@@ -48,15 +48,16 @@ implementation
 { Calculates the size of the merged block }
 procedure TMCStringGrid.CalcCellExtent(ACol, ARow: Integer; var ARect: TRect);
 var
-  L, T, R, B: Integer;
+  L, T, R, B, dummy: Integer;
 begin
   if IsMerged(ACol, ARow, L, T, R, B) then begin
-    ARect.TopLeft := CellRect(L, T).TopLeft;
-    ARect.BottomRight := CellRect(R, B).BottomRight;
-  end;
-
-  // Call the inherited procedure to handle non-merged cells
-  inherited;
+    ColRowToOffset(true, true, L, ARect.Left, dummy);
+    ColRowToOffset(true, true, R, dummy, ARect.Right);
+    ColRowToOffset(false, true, T, ARect.Top, dummy);
+    ColRowToOffset(false, true, B, dummy, ARect.Bottom);
+  end else
+    // Call the inherited procedure to handle non-merged cells
+    inherited;
 end;
 
 { Make sure that the cell editor of a merged block is the same size as the
@@ -73,19 +74,15 @@ begin
   end;
 end;
 
-{ Redraws the FocusRect after all cells have been painted. Otherwise the
-  FocusRect might not be complete }
-procedure TMCStringGrid.DrawAllRows;
+procedure TMCStringGrid.DrawCell(aCol, aRow: Integer; aRect: TRect;
+  aState: TGridDrawState);
 var
   L, T, R, B: Integer;
-  rct: TRect;
 begin
-  inherited;
-  if FocusRectVisible and IsMerged(Col, Row, L, T, R, B) then begin
-    rct.TopLeft := CellRect(L, T).TopLeft;
-    rct.BottomRight := CellRect(R, B).BottomRight;
-    DrawFocusRect(L, T, rct);
-  end;
+  if IsMerged(aCol, aRow, L, T, R, B) and ((aCol<>L) or (aRow<>T)) then
+    // nothing to draw
+  else
+    inherited DrawCell(aCol, aRow, aRect, aState);
 end;
 
 { Draws the cell text. Allows to hook in an external painting routine which
@@ -100,14 +97,6 @@ begin
     FOnDrawCellText(Self, ACol, ARow, ARect, AState, AText, handled);
   if not handled then
     inherited;
-end;
-
-{ makes sure that the focus rect is drawn to enclose all cells of a
-  merged block }
-procedure TMCStringGrid.DrawFocusRect(ACol, ARow: Integer; ARect: TRect);
-begin
-  CalcCellExtent(ACol, ARow, ARect);
-  inherited DrawFocusRect(ACol, ARow, ARect);
 end;
 
 { Returns the string to be displayed in the specified cell. In case of a merged
@@ -173,8 +162,9 @@ end;
   painted merged block }
 procedure TMCStringGrid.MoveSelection;
 begin
+  if SelectActive then
+    InvalidateGrid;
   inherited;
-  InvalidateGrid;
 end;
 
 { Makes sure that all cells of the merged block are drawn as selected/focused,
@@ -204,6 +194,20 @@ begin
     inherited SetEditText(ACol, ARow, Value);
 end;
 
+function TMCStringGrid.MoveNextSelectable(Relative: Boolean; DCol, DRow: Integer
+  ): Boolean;
+var
+  L, T, R, B: Integer;
+begin
+  if Relative and IsMerged(Col, Row, L, T, R, B) then begin
+    // we are only interested on relative movement (basically by keyboard)
+    if DCol>0 then DCol := R - Col + 1 else
+    if DCol<0 then DCol := L - Col - 1 else
+    if DRow>0 then DRow := B - Row + 1 else
+    if DRow<0 then DRow := T - Row - 1;
+  end;
+  Result := inherited MoveNextSelectable(Relative, DCol, DRow);
+end;
 
 end.
 

@@ -1098,7 +1098,7 @@ type
     procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
     function  MoveExtend(Relative: Boolean; DCol, DRow: Integer; ForceFullyVisible: Boolean = True): Boolean;
     function  MoveNextAuto(const Inverse: boolean): boolean;
-    function  MoveNextSelectable(Relative:Boolean; DCol, DRow: Integer): Boolean;
+    function  MoveNextSelectable(Relative:Boolean; DCol, DRow: Integer): Boolean; virtual;
     procedure MoveSelection; virtual;
     function  OffsetToColRow(IsCol,Fisical:Boolean; Offset:Integer;
                              var Index,Rest:Integer): boolean;
@@ -3434,13 +3434,12 @@ end;
 function TCustomGrid.CellRect(ACol, ARow: Integer): TRect;
 var
   ok: Boolean;
-  dummy: Integer;
 begin
   ok := ColRowToOffset(True, True, ACol, Result.Left, Result.Right);
   if ok then begin
-    if goColSpanning in Options then
-      CellExtent(ACol, ARow, Result, dummy);
-    ok := ColRowToOffSet(False,True, ARow, Result.Top, Result.Bottom);
+    ok := ColRowToOffSet(False, True, ARow, Result.Top, Result.Bottom);
+    if ok and (goColSpanning in Options) then
+      CalcCellExtent(ACol, ARow, Result);
   end;
 
   if not ok then
@@ -4278,7 +4277,7 @@ end;
 procedure TCustomGrid.DrawRow(aRow: Integer);
 var
   gds: TGridDrawState;
-  aCol, exCol: Integer;
+  aCol, exCol, orgTop, orgBottom: Integer;
   Rs, colSpanning: Boolean;
   R: TRect;
   ClipArea: Trect;
@@ -4307,6 +4306,8 @@ begin
 
   // Upper and Lower bounds for this row
   ColRowToOffSet(False, True, aRow, R.Top, R.Bottom);
+  orgTop := R.Top;
+  orgBottom := R.Bottom;
   // is this row within the ClipRect?
   ClipArea := Canvas.ClipRect;
   if (R.Top>=R.Bottom) or not VerticalIntersect(R, ClipArea) then begin
@@ -4332,8 +4333,11 @@ begin
         gds := GetGridDrawState(ACol, ARow);
         DoDrawCell;
 
-        if colSpanning then
+        if colSpanning then begin
           aCol := exCol;
+          R.Top    := orgTop;
+          R.Bottom := orgBottom;
+        end;
       end;
       inc(aCol);
     end;
@@ -4364,12 +4368,22 @@ begin
 
 
   // Draw Fixed Columns
-  For aCol:=0 to FFixedCols-1 do begin
+  aCol := 0;
+  while aCol<=FFixedCols-1 do begin
     gds:=[gdFixed];
     ColRowToOffset(True, True, aCol, R.Left, R.Right);
     // is this column within the ClipRect?
-    if (R.Left<R.Right) and HorizontalIntersect(R, ClipArea) then
+    if (R.Left<R.Right) and HorizontalIntersect(R, ClipArea) then begin
+      if colSpanning then
+        CellExtent(aCol, aRow, R, exCol);
       DoDrawCell;
+      if colSpanning then begin
+        aCol := exCol;
+        R.Top    := orgTop;
+        R.Bottom := orgBottom;
+      end;
+    end;
+    inc(aCol);
   end;
 end;
 
@@ -7975,18 +7989,18 @@ procedure TCustomGrid.CellClick(const aCol, aRow: Integer; const Button:TMouseBu
 begin
 end;
 
-procedure TCustomGrid.CellExtent(const aCol, aRow: Integer; var R: TRect;
-  out exCol: Integer);
+procedure TCustomGrid.CellExtent(const aCol, aRow: Integer; var R: TRect; out
+  exCol: Integer);
 var
   Extent: TRect;
 begin
   Extent := R;
   exCol := aCol;
-  CalcCellExtent(aCol, aRow, Extent);
+  CalcCellExtent(aCol, aRow, R);
   // TODO: check RTL
-  while (exCol<=FGCache.VisibleGrid.Right) and (R.Right<Extent.Right) do begin
+  while (exCol<=FGCache.VisibleGrid.Right) and (Extent.Right<R.Right) do begin
     inc(exCol);
-    ColRowToOffset(True, True, exCol, Extent.Left, R.Right);
+    ColRowToOffset(True, True, exCol, Extent.Left, Extent.Right);
   end;
 end;
 
