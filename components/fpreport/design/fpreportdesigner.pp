@@ -51,8 +51,11 @@ type
     FOnShowDesigner: TNotifyEvent;
     FOptions: TFPReportDesignOptions;
     FReport: TFPCustomReport;
+    procedure DoDesignerClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure DoSaveDesignJSON(Sender: TObject);
+    procedure EndDesigning;
     procedure SetReport(AValue: TFPCustomReport);
+    procedure StartDesigning;
   protected
     procedure ConfigDesigner(F: TFPReportDesignerForm); virtual;
     procedure AssignReportData; virtual;
@@ -108,6 +111,13 @@ begin
   (Sender as TFPReportDesignerForm).ResetModified;
 end;
 
+procedure TFPReportDesigner.DoDesignerClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  EndDesigning;
+  If Assigned(OnCloseDesigner) then
+    OnCloseDesigner(Self);
+end;
+
 procedure TFPReportDesigner.ConfigDesigner(F : TFPReportDesignerForm);
 
 Var
@@ -148,15 +158,36 @@ begin
     end;
 end;
 
+procedure TFPReportDesigner.StartDesigning;
+
+Var
+  I : integer;
+
+begin
+  For I:=0 to Report.ReportData.Count-1 do
+    Report.ReportData[i].Data.StartDesigning;
+end;
+
+procedure TFPReportDesigner.EndDesigning;
+
+Var
+  I : integer;
+
+begin
+  For I:=0 to Report.ReportData.Count-1 do
+    Report.ReportData[i].Data.EndDesigning;
+end;
 
 procedure TFPReportDesigner.DoExecute;
 
 Var
   F : TFPReportDesignerForm;
+  isModal : Boolean;
 
 begin
   If not Assigned(FReport) then
     Raise EReportError.Create(SErrNoReport);
+  StartDesigning;
   F:=TFPReportDesignerForm.Create(Application);
   try
     if AutoAssignReportData then
@@ -164,16 +195,14 @@ begin
     ConfigDesigner(F);
     if Assigned(OnShowDesigner) then
       OnShowDesigner(F);
-    if not ModalWindow then
+    F.AddHandlerClose(@DoDesignerClose,False);
+    isModal:=ModalWindow;
+    if not isModal then
       F.Show
     else
-      begin
       F.ShowModal;
-      if Assigned(OnCloseDesigner) then
-        OnCloseDesigner(F);
-      end;
   finally
-    if ModalWindow then
+    if isModal then
       F.Free;
   end;
 end;
