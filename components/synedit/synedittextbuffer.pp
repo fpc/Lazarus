@@ -1281,13 +1281,13 @@ begin
     exit;
   IncIsInEditAction;
   s := Strings[LogY - 1];
-  if LogX - 1 > Length(s) then
-    exit;
-  Result := copy(s, LogX, ByteLen);
-  Strings[LogY - 1] := copy(s,1, LogX - 1) + copy(s, LogX +  ByteLen, length(s));
-  if Result <> '' then
-    CurUndoList.AddChange(TSynEditUndoTxtDelete.Create(LogX, LogY, Result));
-  MarkModified(LogY, LogY);
+  if LogX - 1 <= Length(s) then begin
+    Result := copy(s, LogX, ByteLen);
+    Strings[LogY - 1] := copy(s,1, LogX - 1) + copy(s, LogX +  ByteLen, length(s));
+    if Result <> '' then
+      CurUndoList.AddChange(TSynEditUndoTxtDelete.Create(LogX, LogY, Result));
+    MarkModified(LogY, LogY);
+  end;
   SendNotification(senrEditAction, self, LogY, 0, LogX, -ByteLen, '');
   DecIsInEditAction;
 end;
