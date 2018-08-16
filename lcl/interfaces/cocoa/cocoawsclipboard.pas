@@ -241,10 +241,8 @@ var
   tp : NSString;
 begin
   pb := Pasteboards[ClipboardType].pasteboard;
-  if not Assigned(pb) then begin
-    Result := false;
-    Exit;
-  end;
+  Result := Assigned(pb);
+  if not Result then Exit;
 
   i := 0;
   SetLength(List, pb.types.count);
