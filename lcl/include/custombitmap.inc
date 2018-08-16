@@ -221,7 +221,7 @@ begin
     case FPixelFormat of
       pf1bit: Flags := [riqfMono, riqfMask];
       pf4bit,
-      pf8bit: Flags := [riqfRGB, riqfMask, riqfPalette];
+      pf8bit: Flags := [riqfGrey, riqfMask, riqfPalette];
       pf32bit: Flags := [riqfRGB, riqfMask, riqfAlpha];
     else
       Flags := [riqfRGB, riqfMask];
