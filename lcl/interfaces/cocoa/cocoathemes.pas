@@ -393,6 +393,8 @@ begin
         TREIS_DISABLED: lColor := ColorToNSColor(ColorToRGB(clWindow));
         TREIS_SELECTEDNOTFOCUS: lColor := ColorToNSColor(ColorToRGB(clBtnFace));
         TREIS_HOTSELECTED: lColor := ColorToNSColor(ColorToRGB(clHighlight));
+      else
+        lColor := NSColor.blackColor;
       end;
       lBrush := TCocoaBrush.Create(lColor, False);
       DC.Rectangle(R.Left, R.Top, R.Right, R.Bottom, True, lBrush);

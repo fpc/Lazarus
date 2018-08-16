@@ -150,8 +150,8 @@ var
   lFormat: TCocoaClipboardData;
 begin
   lFormat := GetClipboardDataForFormat(FormatID);
-  if lFormat = nil then Exit;
-  Result := lFormat.MimeType;
+  if lFormat = nil then Result := ''
+  else Result := lFormat.MimeType;
 end;
 
 function TCocoaWSClipboard.GetClipboardDataForFormat(AFormat: TClipboardFormat

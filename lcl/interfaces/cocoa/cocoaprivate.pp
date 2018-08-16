@@ -384,6 +384,7 @@ begin
   end;
   ticks[count]:=atick;
   inc(count);
+  Result := true;
 end;
 
 { TCocoaGroupBox }

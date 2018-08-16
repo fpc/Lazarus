@@ -1261,7 +1261,8 @@ begin
     end
     else
       Result := nil;
-  end;
+  end else
+    Result := nil;
 end;
 
 function TCocoaWidgetSet.IsWindow(handle: HWND): boolean;
@@ -1919,6 +1920,7 @@ begin
       Result := 0;
   else
     DebugLn('TCocoaWidgetSet.GetDeviceCaps TODO Index: ' + DbgS(Index));
+    Result := 0;
   end;
 end;
 
@@ -2077,7 +2079,8 @@ begin
     NSApp.sendEvent(Event);
     Result := NSNumber(Info.objectForKey(NSMessageResult)).integerValue;
     Info.Release;
-  end;
+  end else
+    Result := 0;
 end;
 
 function TCocoaWidgetSet.SetActiveWindow(Handle: HWND): HWND;

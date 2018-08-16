@@ -705,7 +705,10 @@ begin
   ADesc.BluePrec := Prec;
 
   // gray or mono
-  if ADesc.Format = ricfGray then Exit;
+  if ADesc.Format = ricfGray then begin
+    Result := true;
+    Exit;
+  end;
 
   // alpha
   if ABitmap.BitmapType in [cbtARGB, cbtRGBA] then

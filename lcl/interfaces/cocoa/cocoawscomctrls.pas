@@ -1457,11 +1457,7 @@ begin
   lSlider.intval := ATrackBar.Position;
 
   // Ticks
-  if ATrackBar.TickStyle = tsNone then
-  begin
-    lTickCount := 0;
-  end
-  else if ATrackBar.TickStyle = tsAuto then
+  if ATrackBar.TickStyle = tsAuto then
   begin
     // this should only apply to Auto
     // and for Manual it should drawn manually
@@ -1487,7 +1483,8 @@ begin
   end else if ATrackBar.TickStyle = tsManual then
   begin
     lTickCount := 2;
-  end;
+  end else
+    lTickCount := 0;
 
   lSlider.lclSetManTickDraw(ATrackBar.TickStyle = tsManual);
 
