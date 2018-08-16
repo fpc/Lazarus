@@ -125,8 +125,8 @@ type
     class procedure ItemInsert(const ALV: TCustomListView; const AIndex: Integer; const {%H-}AItem: TListItem); override;
     (*class procedure ItemSetChecked(const ALV: TCustomListView; const AIndex: Integer; const {%H-}AItem: TListItem; const AChecked: Boolean); override;
     //class procedure ItemSetImage(const ALV: TCustomListView; const AIndex: Integer; const {%H-}AItem: TListItem; const {%H-}ASubIndex, {%H-}AImageIndex: Integer); override;
-    //carbon//class function ItemSetPosition(const ALV: TCustomListView; const AIndex: Integer; const ANewPosition: TPoint): Boolean; override;
-    class procedure ItemSetState(const ALV: TCustomListView; const AIndex: Integer; const {%H-}AItem: TListItem; const AState: TListItemState; const AIsSet: Boolean); override;*)
+    //carbon//class function ItemSetPosition(const ALV: TCustomListView; const AIndex: Integer; const ANewPosition: TPoint): Boolean; override;*)
+    class procedure ItemSetState(const ALV: TCustomListView; const AIndex: Integer; const {%H-}AItem: TListItem; const AState: TListItemState; const AIsSet: Boolean); override;
     class procedure ItemSetText(const ALV: TCustomListView; const AIndex: Integer; const {%H-}AItem: TListItem; const {%H-}ASubIndex: Integer; const {%H-}AText: String); override;
     class procedure ItemShow(const ALV: TCustomListView; const AIndex: Integer; const {%H-}AItem: TListItem; const PartialOK: Boolean); override;
 
@@ -234,7 +234,7 @@ type
     function ItemsCount: Integer;
     function GetItemTextAt(ARow, ACol: Integer; var Text: String): Boolean;
     procedure SetItemTextAt(ARow, ACol: Integer; const Text: String);
-    procedure tableSelectionChange(NewSel: Integer);
+    procedure tableSelectionChange(NewSel: Integer; Added, Removed: NSIndexSet);
   end;
   TLCLListViewCallBackClass = class of TLCLListViewCallback;
 
@@ -1024,6 +1024,34 @@ begin
   lTableLV.sizeToFit();
 end;
 
+class procedure TCocoaWSCustomListView.ItemSetState(const ALV: TCustomListView;
+  const AIndex: Integer; const AItem: TListItem; const AState: TListItemState;
+  const AIsSet: Boolean);
+var
+  lCocoaLV: TCocoaListView;
+  lTableLV: TCocoaTableListView;
+  row : Integer;
+  isSel : Boolean;
+begin
+  if not CheckParams(lCocoaLV, lTableLV, ALV) or not Assigned(AItem) then Exit;
+
+  row := AItem.Index;
+  if (row < 0) or (row >= lTableLV.numberOfRows) then Exit;
+
+  case AState of
+    lisSelected:
+    begin
+      isSel := lTableLV.selectedRowIndexes.containsIndex(row);
+      if AIsSet and not isSel then
+        lTableLV.selectRowIndexes_byExtendingSelection(NSIndexSet.indexSetWithIndex(row),false)
+      else if not AIsSet and isSel then
+        lTableLV.deselectRow(row);
+    end;
+  else
+    inherited ItemSetState(ALV, AIndex, AItem, AState, AIsSet);
+  end;
+end;
+
 class procedure TCocoaWSCustomListView.ItemSetText(const ALV: TCustomListView;
   const AIndex: Integer; const AItem: TListItem; const ASubIndex: Integer;
   const AText: String);
@@ -1316,10 +1344,32 @@ begin
 
 end;
 
-procedure TLCLListViewCallback.tableSelectionChange(NewSel: Integer);
+procedure TLCLListViewCallback.tableSelectionChange(NewSel: Integer; Added, Removed: NSIndexSet);
 var
   Msg: TLMNotify;
   NMLV: TNMListView;
+
+  procedure RunIndex(idx: NSIndexSet);
+  var
+    buf : array [0..256-1] of NSUInteger;
+    rng : NSRange;
+    cnt : Integer;
+    i   : Integer;
+    itm : NSUInteger;
+  begin
+    rng.location := idx.firstIndex;
+    repeat
+      rng.length := idx.lastIndex - rng.location + 1;
+      cnt := idx.getIndexes_maxCount_inIndexRange(@buf[0], length(buf), @rng);
+      for i := 0 to cnt - 1 do begin
+        NMLV.iItem := buf[i];
+        LCLMessageGlue.DeliverMessage(ListView, Msg);
+      end;
+      if cnt < length(buf) then cnt := 0
+      else rng.location := buf[cnt-1]+1;
+    until cnt = 0;
+  end;
+
 begin
   {$IFDEF COCOA_DEBUG_LISTVIEW}
   WriteLn(Format('[TLCLListViewCallback.SelectionChanged] NewSel=%d', [NewSel]));
@@ -1336,7 +1386,19 @@ begin
   NMLV.uChanged := LVIF_STATE;
   Msg.NMHdr := @NMLV.hdr;
 
-  if NewSel >= 0 then
+  if Removed.count>0 then
+  begin
+    NMLV.uNewState := 0;
+    NMLV.uOldState := LVIS_SELECTED;
+    RunIndex( Removed );
+  end;
+  if Added.count > 0 then begin
+    NMLV.uNewState := LVIS_SELECTED;
+    NMLV.uOldState := 0;
+    RunIndex( Added );
+  end;
+
+  {if NewSel >= 0 then
   begin
     NMLV.iItem := NewSel;
     NMLV.uNewState := LVIS_SELECTED;
@@ -1348,7 +1410,7 @@ begin
     NMLV.uOldState := LVIS_SELECTED;
   end;
 
-  LCLMessageGlue.DeliverMessage(ListView, Msg);
+  LCLMessageGlue.DeliverMessage(ListView, Msg);}
 end;
 
 { TCocoaWSTrackBar }

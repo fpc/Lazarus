@@ -50,7 +50,7 @@ type
     function ItemsCount: Integer;
     function GetItemTextAt(ARow, ACol: Integer; var Text: String): Boolean;
     procedure SetItemTextAt(ARow, ACol: Integer; const Text: String);
-    procedure tableSelectionChange(ARow: Integer);
+    procedure tableSelectionChange(ARow: Integer; Added, Removed: NSIndexSet);
   end;
 
   TCocoaListBox = objcclass;
@@ -155,6 +155,8 @@ type
     Timer: TTimer;
     readOnly: Boolean;
 
+    beforeSel : NSIndexSet;
+
     function acceptsFirstResponder: Boolean; override;
     function becomeFirstResponder: Boolean; override;
     function resignFirstResponder: Boolean; override;
@@ -202,8 +204,8 @@ type
     // NSTableViewDelegateProtocol
     //procedure tableView_willDisplayCell_forTableColumn_row(tableView: NSTableView; cell: id; tableColumn: NSTableColumn; row: NSInteger); message 'tableView:willDisplayCell:forTableColumn:row:';
     function tableView_shouldEditTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): Boolean; message 'tableView:shouldEditTableColumn:row:';
-    {function selectionShouldChangeInTableView(tableView: NSTableView): Boolean; message 'selectionShouldChangeInTableView:';
-    function tableView_shouldSelectRow(tableView: NSTableView; row: NSInteger): Boolean; message 'tableView:shouldSelectRow:';
+    function selectionShouldChangeInTableView(tableView: NSTableView): Boolean; message 'selectionShouldChangeInTableView:';
+    {function tableView_shouldSelectRow(tableView: NSTableView; row: NSInteger): Boolean; message 'tableView:shouldSelectRow:';
     function tableView_selectionIndexesForProposedSelection(tableView: NSTableView; proposedSelectionIndexes: NSIndexSet): NSIndexSet; message 'tableView:selectionIndexesForProposedSelection:';
     function tableView_shouldSelectTableColumn(tableView: NSTableView; tableColumn: NSTableColumn): Boolean; message 'tableView:shouldSelectTableColumn:';
     procedure tableView_mouseDownInHeaderOfTableColumn(tableView: NSTableView; tableColumn: NSTableColumn); message 'tableView:mouseDownInHeaderOfTableColumn:';
@@ -605,6 +607,7 @@ begin
   if not callback.resetCursorRects then
     inherited resetCursorRects;
 end;
+
 (*
 procedure TCocoaTableListView.setStringValue_forCol_row(
   AStr: NSString; col, row: NSInteger);
@@ -866,14 +869,193 @@ begin
   Result := not readOnly;
 end;
 
+function TCocoaTableListView.selectionShouldChangeInTableView(
+  tableView: NSTableView): Boolean;
+begin
+  if Assigned(beforeSel) then beforeSel.release;
+  beforeSel := (NSIndexSet.alloc).initWithIndexSet(selectedRowIndexes);
+  Result := true;
+end;
+
+type
+  TCompareData = record
+    rmved : NSMutableIndexSet;
+    added : NSMutableIndexSet;
+    src   : NSIndexSet;
+    dst   : NSIndexSet;
+  end;
+
+procedure DumpIndexes(src: NSIndexSet; dst: NSMutableIndexSet; rng: NSRange);
+var
+  buf : array [0..512 * 4-1] of NSUInteger;
+  i   : NSUInteger;
+  j   : Integer;
+  trg : NSUInteger;
+  r   : NSRange;
+  gth : NSRange;
+  k   : Integer;
+  cmp : NSUInteger;
+begin
+  if src.containsIndexesInRange(rng) then begin
+    // the range is packed
+    dst.addIndexesInRange(rng);
+    Exit;
+  end;
+
+  i := rng.location;
+  trg := rng.location+rng.length;
+  gth.location := NSNotFound;
+  gth.length := 0;
+
+  while i<=trg do begin
+    r.location := i;
+    r.length := trg - r.location;
+    j := Integer(src.getIndexes_maxCount_inIndexRange(@buf[0], length(buf), @r));
+    if j = 0 then i:=trg+1
+    else
+    begin
+      i := buf[j-1]+1;
+      if (gth.location = NSNotFound) then gth.location := buf[0];
+
+      cmp := gth.length + gth.location;
+
+      for k := 0 to j - 1 do begin
+        if cmp = buf[k] then
+          inc(cmp)
+        else begin
+          gth.length := cmp - gth.location + 1;
+          dst.addIndexesInRange(gth);
+
+          if k < j-1 then
+            gth.location := buf[k]
+          else
+            gth.location := NSNotFound;
+          gth.length := 0;
+
+          cmp := gth.length + gth.location;
+        end;
+      end;
+    end;
+  end;
+
+  if gth.location <> NSNotFound then begin
+    gth.length := gth.length + 1;
+    dst.addIndexesInRange(gth);
+  end;
+end;
+
+procedure CompareIdxRange(const data: TCompareData; startIdx, endIdx: NSUInteger);
+var
+  isrc, idst: Boolean;
+  rng : NSRange;
+  m : Integer;
+begin
+  rng.location := startIdx;
+  rng.length := endIdx - startIdx + 1;
+  isrc := data.src.intersectsIndexesInRange(rng);
+  idst := data.dst.intersectsIndexesInRange(rng);
+  if (not isrc) and (not idst) then
+    // there are no indexes in either selection
+    // no need to dig deeper
+    Exit;
+
+
+  if (not isrc) then begin
+    // there are only added indexes in this range
+    DumpIndexes(data.dst, data.added, rng);
+    Exit;
+  end else if not (idst) then begin
+    // there are only removed indexes in this range
+    DumpIndexes(data.src, data.rmved, rng);
+    Exit;
+  end;
+
+  isrc := data.src.containsIndexesInRange(rng);
+  idst := data.dst.containsIndexesInRange(rng);
+  if isrc and idst then begin
+    // indexes match in both sets. No need for further investigation
+    Exit;
+  end;
+
+  if startIdx < endIdx then
+  begin
+    m := (endidx - startidx) div 2 + startIdx;
+    CompareIdxRange(data, startIdx, m);
+    if m <= endIdx then
+      CompareIdxRange(data, m+1, endIdx);
+  end;
+end;
+
+procedure CompareIndexSets(src, dst: NSIndexSet; out removed, added: NSIndexSet);
+var
+  rm, ad : NSMutableIndexSet;
+  srci : NSUInteger;
+  dsti : NSUinteger;
+
+  srcl : NSUInteger;
+  dstl : NSUInteger;
+  data : TCompareData;
+begin
+  rm := NSMutableIndexSet.alloc.init;
+  ad := NSMutableIndexSet.alloc.init;
+  removed := rm;
+  added := ad;
+
+  srci := src.firstIndex;
+  dsti := dst.firstIndex;
+  if (srci = NSNotFound) and (dsti <> NSNotFound) then begin
+    // has not been previosly selected;
+    ad.addIndexes(dst);
+    Exit;
+  end else if (dsti = NSNotFound) and (srci <> NSNotFound) then begin
+    // cleared the selection
+    rm.addIndexes(src);
+    Exit;
+  end;
+
+  if srci < dsti then begin
+    DumpIndexes(src, rm, NSMakeRange(srci, dsti-srci));
+    srci := dsti;
+  end else if dsti < srci  then begin
+    DumpIndexes(dst, ad, NSMakeRange(dsti, srci-dsti));
+    dsti := srci;
+  end;
+
+  srcl := src.lastIndex;
+  dstl := dst.lastIndex;
+  if srcl > dstl then begin
+    DumpIndexes(src, rm, NSMakeRange(dstl+1, srcl - dstl));
+    srcl := dstl;
+  end else if dstl > srcl then begin
+    DumpIndexes(dst, ad, NSMakeRange(srcl+1, dstl - srcl));
+    dstl := srcl;
+  end;
+
+  if srci <= srcl then begin
+    data.rmved := rm;
+    data.added := ad;
+    data.src := src;
+    data.dst := dst;
+    CompareIdxRange( data, srci, srcl);
+  end;
+end;
+
 procedure TCocoaTableListView.tableViewSelectionDidChange(notification: NSNotification);
 var
   NewSel: Integer;
+  Unsel : NSIndexSet;
+  rm : NSIndexSet;
+  ad : NSIndexSet;
 begin
   if Assigned(callback) then
   begin
+    CompareIndexSets(beforeSel, selectedRowIndexes, rm, ad);
+
     NewSel := Self.selectedRow();
-    callback.tableSelectionChange(NewSel);
+    callback.tableSelectionChange(NewSel, ad, rm);
+
+    beforeSel.release;
+    beforeSel := nil;
   end;
 end;
 
