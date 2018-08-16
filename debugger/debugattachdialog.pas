@@ -30,13 +30,12 @@ type
     lvProcesses: TListView;
     procedure btnRefreshClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure lvProcessesChange(Sender: TObject; Item: TListItem;
-      {%H-}Change: TItemChange);
     procedure lvProcessesColumnClick(Sender: TObject; Column: TListColumn);
     procedure lvProcessesData(Sender: TObject; Item: TListItem);
     procedure lvProcessesDblClick(Sender: TObject);
     procedure lvProcessesKeyDown(Sender: TObject; var Key: Word;
       {%H-}Shift: TShiftState);
+    procedure lvProcessesSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
   private
     FPidString: string;
     FList: TRunningProcessInfoList;
@@ -282,12 +281,11 @@ begin
   end;
 end;
 
-procedure TDebugAttachDialogForm.lvProcessesChange(Sender: TObject;
-  Item: TListItem; Change: TItemChange);
+procedure TDebugAttachDialogForm.lvProcessesSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
 var
   info: TRunningProcessInfo;
 begin
-  if Item.Index <> -1 then
+  if (Item.Index <> -1) And Selected then
   begin
     info := TRunningProcessInfo(FList.Items[Item.Index]);
     FPidString := IntToStr(info.PID);
