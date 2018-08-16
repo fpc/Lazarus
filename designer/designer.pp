@@ -1562,6 +1562,7 @@ procedure TDesigner.DoChangeZOrder(TheAction: Integer);
 var
   Control: TControl;
   Parent: TWinControl;
+  OI: TObjectInspectorDlg;
 begin
   if Selection.Count <> 1 then Exit;
   if not Selection[0].IsTControl then Exit;
@@ -1588,6 +1589,9 @@ begin
   SelectOnlyThisComponent(Control);
 
   Modified;
+  OI := FormEditingHook.GetCurrentObjectInspector;
+  if Assigned(OI) then
+    OI.ComponentTree.RebuildComponentNodes;
 end;
 
 procedure TDesigner.GiveComponentsNames;
