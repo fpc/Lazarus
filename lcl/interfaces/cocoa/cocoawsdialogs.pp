@@ -564,7 +564,7 @@ begin
   lFilterParser := TParseStringList.Create(AFileDialog.Filter, '|');
   try
     lFilterCounter := 0;
-    while lFilterCounter < lFilterParser.Count do
+    while lFilterCounter < lFilterParser.Count - 1 do
     begin
       lFilterName := lFilterParser[lFilterCounter];
       filterext := lFilterParser[lFilterCounter+1];
