@@ -2149,6 +2149,12 @@ begin
 
   if Assigned(LCLObject) and FWidgetNeedFontColorInitialization then
     setInitialFontColor(LCLObject);
+
+  if Assigned(LCLObject) then
+    QWidget_setEnabled(Widget, LCLObject.Enabled)
+  else
+    QWidget_setEnabled(Widget, (FParams.Style and WS_DISABLED) = 0);
+
   if (FParams.Style and WS_VISIBLE) = 0 then
     QWidget_hide(Widget)
   else
