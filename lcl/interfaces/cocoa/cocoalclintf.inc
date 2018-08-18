@@ -29,7 +29,9 @@
 function TCocoaWidgetSet.CreateStandardCursor(ACursor: SmallInt): HCursor;
 begin
   case ACursor of
-    crArrow, crDefault: Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.arrowCursor));
+    crArrow,
+    crAppStart,   // neither LCL nor Cocoa provides "crAppStart" cursor
+    crDefault     : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.arrowCursor));
     crCross       : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.crosshairCursor));
     crIBeam       : Result := HCursor(TCocoaCursor.CreateStandard(NSCursor.IBeamCursor));
     crSizeNS,
