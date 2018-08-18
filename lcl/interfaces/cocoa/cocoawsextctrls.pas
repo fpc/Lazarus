@@ -190,6 +190,7 @@ type
 
   { TCocoaSplitterOwnerControl }
 
+  // todo: this should be removed with theme drawing
   TCocoaSplitterOwnerControl = objcclass(TCocoaCustomControl)
     splitter: NSSplitView;
     procedure drawRect(dirtyRect: NSRect); override;
@@ -226,7 +227,8 @@ begin
   ctrl := TCocoaSplitterOwnerControl(TCocoaSplitterOwnerControl.alloc.lclInitWithCreateParams(AParams));
 
   ctrl.splitter:=NSSplitView.alloc.initWithFrame( ctrl.frame );
-  ctrl.splitter.setDividerStyle(NSSplitViewDividerStylePaneSplitter);
+  // The "pane" decoration doesn't always look good
+  //ctrl.splitter.setDividerStyle(NSSplitViewDividerStylePaneSplitter);
 
   lcl := TLCLCommonCallback.Create(ctrl, AWinControl);
   lcl.BlockCocoaUpDown := true;
