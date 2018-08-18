@@ -358,7 +358,8 @@ end;
 
 function RegisterCustomSplitter: Boolean; alias : 'WSRegisterCustomSplitter';
 begin
-  Result := False;
+  RegisterWSComponent(TCustomSplitter, TCocoaWSCustomSplitter);
+  Result := True;
 end;
 
 function RegisterPaintBox: Boolean; alias : 'WSRegisterPaintBox';

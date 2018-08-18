@@ -139,9 +139,10 @@ type
       const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
-// Utility WS functions
+// Utility WS functions. todo: it makes sense to put them into CocoaScollers
 
 function EmbedInScrollView(AView: NSView; AReleaseView: Boolean = true): TCocoaScrollView;
+function EmbedInManualScrollView(AView: NSView): TCocoaManualScrollView;
 
 implementation
 
