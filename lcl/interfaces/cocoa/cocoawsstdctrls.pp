@@ -205,6 +205,7 @@ type
   public
     procedure ButtonClick; virtual;
     procedure Draw(ControlContext: NSGraphicsContext; const bounds, dirty: NSRect); override;
+    procedure GetAllowMixedState(var allowed: Boolean); virtual;
   end;
   TLCLButtonCallBackClass = class of TLCLButtonCallBack;
 
@@ -232,6 +233,7 @@ type
   TLCLCheckBoxCallback = class(TLCLButtonCallBack)
   public
     procedure ButtonClick; override;
+    procedure GetAllowMixedState(var allowed: Boolean); override;
   end;
 
   { TCocoaWSCustomCheckBox }
@@ -438,6 +440,11 @@ begin
   end;
 end;
 
+procedure TLCLButtonCallback.GetAllowMixedState(var allowed: Boolean);
+begin
+
+end;
+
 { TLCLListBoxCallback }
 
 procedure TLCLListBoxCallback.SelectionChanged;
@@ -453,6 +460,11 @@ begin
   if not Owner.lclIsEnabled() then Exit;
   SendSimpleMessage(Target, LM_CHANGED);
   // todo: win32 has something about dbcheckbox handling here. so maybe we need to handle it special too
+end;
+
+procedure TLCLCheckBoxCallback.GetAllowMixedState(var allowed: Boolean);
+begin
+  allowed := TCustomCheckBox(Target).AllowGrayed;
 end;
 
 { TLCLComboboxCallback }
@@ -569,6 +581,10 @@ var
   btn: NSButton;
 begin
   btn := AllocButton(AWinControl, TLCLCheckBoxCallBack, AParams, 0, NSSwitchButton);
+  // changes in AllowGrayed are never sent to WS!
+  // so it should be checked at create time (and at SetNextState?)
+  if TCustomCheckBox(AWinControl).AllowGrayed then
+    NSButton(btn).setAllowsMixedState(true);
   Result := TLCLIntfHandle(btn);
 end;
 
@@ -607,6 +623,8 @@ const
 begin
   if ACustomCheckBox.HandleAllocated then
   begin
+    if NewState = cbGrayed then
+      NSButton(ACustomCheckBox.Handle).setAllowsMixedState(true);
     NSButton(ACustomCheckBox.Handle).setState(buttonState[NewState]);
   end;
 end;

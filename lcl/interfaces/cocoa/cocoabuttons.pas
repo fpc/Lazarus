@@ -38,7 +38,9 @@ type
 
   IButtonCallback = interface(ICommonCallback)
     procedure ButtonClick;
+    procedure GetAllowMixedState(var allowed: Boolean);
   end;
+
 
   { TCocoaButton }
 
@@ -82,6 +84,7 @@ type
     // lcl overrides
     function lclIsHandle: Boolean; override;
     procedure lclSetFrame(const r: TRect); override;
+    procedure lclCheckMixedAllowance; message 'lclCheckMixedAllowance';
     // cocoa
     procedure setState(astate: NSInteger); override;
   end;
@@ -118,6 +121,25 @@ begin
   if (miniHeight<>0) or (smallHeight<>0) then
     SetNSControlSize(Self,r.Bottom-r.Top,miniHeight, smallHeight, adjustFontToControlSize);
   inherited lclSetFrame(r);
+end;
+
+procedure TCocoaButton.lclCheckMixedAllowance;
+var
+  allowed : Boolean;
+begin
+  if allowsMixedState and Assigned(callback)  then begin
+    allowed := false;
+    callback.GetAllowMixedState(allowed);
+    if not allowed then begin
+      // "mixed" should be following by "On" state
+      // lclCheckMixedAllowance is called prior to changing
+      // the state. So the state needs to be switched to "Off"
+      // so it could be then switched to "On" by Cocoa
+      if state = NSMixedState then
+        inherited setState(NSOffState);
+      setAllowsMixedState(false);
+    end;
+  end;
 end;
 
 procedure TCocoaButton.setState(astate: NSInteger);
@@ -210,6 +232,7 @@ end;
 
 procedure TCocoaButton.keyDown(event: NSEvent);
 begin
+  lclCheckMixedAllowance;
   if not Assigned(callback) or not callback.KeyEvent(event) then
     inherited keyDown(event);
 end;
@@ -259,9 +282,12 @@ end;
 procedure TCocoaButton.mouseDown(event: NSEvent);
 begin
   if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-  // We need to call the inherited regardless of the result of the call to
-  // MouseUpDownEvent otherwise mouse clicks don't work, see bug 30131
+  begin
+    lclCheckMixedAllowance;
+    // We need to call the inherited regardless of the result of the call to
+    // MouseUpDownEvent otherwise mouse clicks don't work, see bug 30131
     inherited mouseDown(event);
+  end;
 end;
 
 procedure TCocoaButton.mouseDragged(event: NSEvent);
