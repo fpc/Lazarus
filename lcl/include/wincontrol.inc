@@ -6095,7 +6095,7 @@ begin
     Params.ExStyle := Params.ExStyle or WS_EX_CLIENTEDGE;
   if TabStop then
     Params.Style := Params.Style or WS_TABSTOP;
-  if not IsEnabled then
+  if not IsEnabled and not (csDesigning in ComponentState) then
     Params.Style := Params.Style or WS_DISABLED;
 
   if (Parent <> nil) then
