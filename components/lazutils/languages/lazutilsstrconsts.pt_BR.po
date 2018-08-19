@@ -41,11 +41,11 @@ msgstr "incapaz de executar %s"
 
 #: lazutilsstrconsts.lrscreatinggdbcatchableerror
 msgid "Creating gdb catchable error:"
-msgstr ""
+msgstr "Criando erro gdb possível:"
 
 #: lazutilsstrconsts.lrserrorincode
 msgid "ERROR in code: "
-msgstr ""
+msgstr "ERRO no código:"
 
 #: lazutilsstrconsts.lrsevalinvalidargcount
 msgid "Invalid number of function arguments"

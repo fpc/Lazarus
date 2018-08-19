@@ -177,7 +177,7 @@ msgstr "Resultado inesperado:%sO depurador irá finalizar"
 
 #: gdbmistringconstants.synffailedtodownloadapplicationexecutable
 msgid "Failed to download application executable"
-msgstr ""
+msgstr "Falha ao baixar executável da aplicação"
 
 #: gdbmistringconstants.synffailedtoinitializedebugger
 msgid "Failed to initialize debugger"

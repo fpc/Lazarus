@@ -293,7 +293,7 @@ msgstr "Valor anterior"
 
 #: syneditstrconst.syns_attrprocedureheadername
 msgid "Procedure header name"
-msgstr ""
+msgstr "Nome de cabeçalho da \"Procedure\""
 
 #: syneditstrconst.syns_attrprocessinginstr
 msgid "Processing Instruction"

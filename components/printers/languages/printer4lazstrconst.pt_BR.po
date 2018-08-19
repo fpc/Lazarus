@@ -17,7 +17,7 @@ msgstr "Avançado"
 
 #: printer4lazstrconst.p4lrsallpages
 msgid "All"
-msgstr ""
+msgstr "Tudo"
 
 #: printer4lazstrconst.p4lrsbanners
 msgid "Banners"
@@ -25,11 +25,11 @@ msgstr "Bandas"
 
 #: printer4lazstrconst.p4lrsbuttonlessarrow
 msgid "<< Less"
-msgstr ""
+msgstr "<< Menos"
 
 #: printer4lazstrconst.p4lrsbuttonmorearrow
 msgid "More >>"
-msgstr ""
+msgstr "Mais >>"
 
 #: printer4lazstrconst.p4lrscancel
 msgid "Cancel"
@@ -45,23 +45,23 @@ msgstr "Geral"
 
 #: printer4lazstrconst.p4lrsjobstateaccepting
 msgid "(Accepting jobs)"
-msgstr ""
+msgstr "(Aceitando trabalhos)"
 
 #: printer4lazstrconst.p4lrsjobstateprinting
 msgid "Printing"
-msgstr ""
+msgstr "Imprimindo"
 
 #: printer4lazstrconst.p4lrsjobstateready
 msgid "Ready"
-msgstr ""
+msgstr "Pronto"
 
 #: printer4lazstrconst.p4lrsjobstaterejecting
 msgid "(Rejecting jobs)"
-msgstr ""
+msgstr "(Rejeitando trabalhos)"
 
 #: printer4lazstrconst.p4lrsjobstatestopped
 msgid "Stopped"
-msgstr ""
+msgstr "Parado"
 
 #: printer4lazstrconst.p4lrslandscape
 msgid "Landscape"
@@ -85,11 +85,11 @@ msgstr "Orientação"
 
 #: printer4lazstrconst.p4lrspageeven
 msgid "Even"
-msgstr ""
+msgstr "Par"
 
 #: printer4lazstrconst.p4lrspageodd
 msgid "Odd"
-msgstr ""
+msgstr "Ímpar"
 
 #: printer4lazstrconst.p4lrspagespersheet
 msgid "Pages per sheet"

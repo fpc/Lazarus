@@ -30,47 +30,47 @@ msgstr "Alguns grupos na lista Habilitar/Desabilitar não existem.%0:sCriá-los?
 
 #: lazarusidestrconsts.dbgeventbreakaddressbreakpoint
 msgid "Address Breakpoint %s"
-msgstr ""
+msgstr "Endereço do ponto de parada %s"
 
 #: lazarusidestrconsts.dbgeventbreakataddress
 msgid "at $%s"
-msgstr ""
+msgstr "na $%s"
 
 #: lazarusidestrconsts.dbgeventbreakataddressoriginsourceoriginline
 msgid "at $%s: from origin %s line %d"
-msgstr ""
+msgstr "na $%s: da origem %s linha %d"
 
 #: lazarusidestrconsts.dbgeventbreakataddresssourceline
 msgid "at $%s: %s line %d"
-msgstr ""
+msgstr "na $%s: %s linha %d"
 
 #: lazarusidestrconsts.dbgeventbreaksourcebreakpoint
 msgid "Source Breakpoint %s"
-msgstr ""
+msgstr "Ponto de parada origem %s"
 
 #: lazarusidestrconsts.dbgeventbreakunknownbreakpoint
 msgid "Unknown Breakpoint %s"
-msgstr ""
+msgstr "Ponto de parada desconhecido %s"
 
 #: lazarusidestrconsts.dbgeventbreakwatchpoint
 msgid "Watchpoint %s"
-msgstr ""
+msgstr "Ponto de observação %s"
 
 #: lazarusidestrconsts.dbgeventunknownwatchpointscopeended
 msgid "Unknown Watchpoint out of scope %s"
-msgstr ""
+msgstr "Ponto de observação desconhecido fora do escopo %s"
 
 #: lazarusidestrconsts.dbgeventunknownwatchpointtriggered
 msgid "Unknown Watchpoint triggered %s. Old value \"%s\", New Value \"%s\""
-msgstr ""
+msgstr "Ponto de observação desconhecido disparado %s. Valor anterior \"%s\", Novo valor \"%s\""
 
 #: lazarusidestrconsts.dbgeventwatchscopeended
 msgid "Watchpoint for \"%s\" out of scope %s"
-msgstr ""
+msgstr "Ponto de observação para \"%s\" fora do escopo %s"
 
 #: lazarusidestrconsts.dbgeventwatchtriggered
 msgid "Watchpoint for \"%s\" was triggered %s. Old value \"%s\", New Value \"%s\""
-msgstr ""
+msgstr "Ponto de observação para \"%s\" foi disparado %s. Valor anterior \"%s\", Novo valor \"%s\""
 
 #: lazarusidestrconsts.dlfmousepredefinedscheme
 msgid "Use predefined scheme"
@@ -221,10 +221,8 @@ msgid "Gutter"
 msgstr "Medianiz"
 
 #: lazarusidestrconsts.dlfmousesimplerightmovecaret
-#, fuzzy
-#| msgid "Right mouse includes caret move"
 msgid "Right button click includes caret move"
-msgstr "Mouse direita inclui movimento cursor texto"
+msgstr "Clique botão direito inclui movimento cursor texto"
 
 #: lazarusidestrconsts.dlfmousesimpletextsect
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsect"
@@ -679,8 +677,6 @@ msgid "Alphabetically"
 msgstr "Alfabeticamente"
 
 #: lazarusidestrconsts.dlgalwaysvisiblecursor
-#, fuzzy
-#| msgid "Always keep Caret in visible area of editor"
 msgid "Always keep caret in visible area of editor"
 msgstr "Sempre manter cursor texto na área visível do editor"
 
@@ -737,10 +733,8 @@ msgid "Auto Display Function Prototypes"
 msgstr "Auto exibir protótipos de função"
 
 #: lazarusidestrconsts.dlgautohidecursor
-#, fuzzy
-#| msgid "Hide mouse when typing"
 msgid "Hide mouse pointer when typing"
-msgstr "Ocultar \"mouse\" ao digitar"
+msgstr "Ocultar ponteiro do \"mouse\" ao digitar"
 
 #: lazarusidestrconsts.dlgautoindent
 msgctxt "lazarusidestrconsts.dlgautoindent"
@@ -854,10 +848,8 @@ msgid "Bracket highlight"
 msgstr "Realçar parênteses"
 
 #: lazarusidestrconsts.dlgbracketmatchgroup
-#, fuzzy
-#| msgid "Matching bracket pairs"
 msgid "Matching bracket and quote pairs"
-msgstr "Correspondendo pares parênteses"
+msgstr "Correspondendo a parênteses e pares de aspas"
 
 #: lazarusidestrconsts.dlgcannotusedockedundockeddesktop
 msgid "You cannot use docked desktop in undocked environment and vice versa."
@@ -865,17 +857,16 @@ msgstr "Você não pode usar área de trabalho ancorada em ambiente não ancorad
 
 #: lazarusidestrconsts.dlgcaretbackcolor
 msgid "Multi/2nd (NotXor)"
-msgstr ""
+msgstr "Multi/2º (NotXor)"
 
 #: lazarusidestrconsts.dlgcaretcolor
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgcaretcolor"
 msgid "Caret"
 msgstr "Cursor Texto"
 
 #: lazarusidestrconsts.dlgcaretforecolor
 msgid "Color (NotXor)"
-msgstr ""
+msgstr "Cor (NotXor)"
 
 #: lazarusidestrconsts.dlgcaretgroupoptions
 msgid "Caret (Text Cursor)"
@@ -1162,10 +1153,8 @@ msgid "Do not indent prefix"
 msgstr "Não prefixar a identação"
 
 #: lazarusidestrconsts.dlgcommentindentgroupoptions
-#, fuzzy
-#| msgid "Comments"
 msgid "Comments and Strings"
-msgstr "Comentários"
+msgstr "Comentários e \"Strings\""
 
 #: lazarusidestrconsts.dlgcommentshlashextendalways
 msgid "Extend, if matched or not matched"
@@ -1233,10 +1222,8 @@ msgid "Copy/Paste with fold info"
 msgstr "Copiar/Colar com info. retração"
 
 #: lazarusidestrconsts.dlgcopywordatcursoroncopynone
-#, fuzzy
-#| msgid "Copy word on copy none"
 msgid "Copy current word when no selection exists"
-msgstr "Selecionar/Copiar palavra se nada selecionado"
+msgstr "Copiar palavra atual quando não existir seleção"
 
 #: lazarusidestrconsts.dlgcorange
 msgctxt "lazarusidestrconsts.dlgcorange"
@@ -1342,7 +1329,7 @@ msgstr "Cursor além fim de linha (EOL)"
 
 #: lazarusidestrconsts.dlgcursormoveclearsselection
 msgid "Caret left/right clears selection (no move)"
-msgstr ""
+msgstr "Cursor texto esquerda/direita limpa seleção (sem movimento)"
 
 #: lazarusidestrconsts.dlgcursorskipsselection
 msgid "Caret skips selection"
@@ -1617,11 +1604,9 @@ msgid "Scheme globals"
 msgstr "Esquemas globais"
 
 #: lazarusidestrconsts.dlgedmisc
-#, fuzzy
-#| msgid "Misc"
 msgctxt "lazarusidestrconsts.dlgedmisc"
 msgid "Miscellaneous"
-msgstr "Misc."
+msgstr "Miscelânea"
 
 #: lazarusidestrconsts.dlgedoff
 msgid "Off"
@@ -1708,8 +1693,6 @@ msgid "Focus messages at compilation"
 msgstr "Mensagem focada na compilação"
 
 #: lazarusidestrconsts.dlgextracharspacing
-#, fuzzy
-#| msgid "Extra char spacing"
 msgid "Extra character spacing"
 msgstr "Espaço extra carac."
 
@@ -2307,19 +2290,19 @@ msgstr "Incluir variáveis de sistema"
 
 #: lazarusidestrconsts.dlgincludewordstoidentcompl
 msgid "Include words"
-msgstr ""
+msgstr "Incluir palavras"
 
 #: lazarusidestrconsts.dlgincludewordstoidentcompl_dontinclude
 msgid "don't include"
-msgstr ""
+msgstr "Não incluir"
 
 #: lazarusidestrconsts.dlgincludewordstoidentcompl_includefromallunits
 msgid "from all units"
-msgstr ""
+msgstr "de todas as unidades"
 
 #: lazarusidestrconsts.dlgincludewordstoidentcompl_includefromcurrentunit
 msgid "from current unit"
-msgstr ""
+msgstr "da unidade atual"
 
 #: lazarusidestrconsts.dlgindentsindentgroupoptions
 msgid "Indent"
@@ -2493,13 +2476,11 @@ msgstr "Cor dos marcadores"
 
 #: lazarusidestrconsts.dlgmarkupfoldcolor
 msgid "Vertical-mark"
-msgstr ""
+msgstr "Marca vertical"
 
 #: lazarusidestrconsts.dlgmarkupgroup
-#, fuzzy
-#| msgid "Highlight of Word under Caret"
 msgid "Highlight all occurrences of Word under Caret"
-msgstr "Realce da palavra sob o cursor texto"
+msgstr "Realçar todas as ocorrências da palavra sob o cursor texto"
 
 #: lazarusidestrconsts.dlgmarkupoutline
 msgid "Outline (global)"
@@ -2609,10 +2590,8 @@ msgid "Main settings"
 msgstr "Definições principais"
 
 #: lazarusidestrconsts.dlgmarkupwordbracket
-#, fuzzy
-#| msgid "Word Brackets on caret (global)"
 msgid "Keyword brackets on caret (global)"
-msgstr "Colchetes na palavras na posição cursor texto"
+msgstr "Colchetes da palavra-chave no cursor texto (global)"
 
 #: lazarusidestrconsts.dlgmarkupwordfulllen
 msgid "Match whole words, if length is less or equal to:"
@@ -2644,7 +2623,7 @@ msgstr "Máximo de arquivos recentes"
 
 #: lazarusidestrconsts.dlgmaxrecenthint
 msgid "Value 0 means unlimited."
-msgstr ""
+msgstr "Valor 0 significa ilimitado."
 
 #: lazarusidestrconsts.dlgmaxrecentprojs
 msgid "Max recent project files"
@@ -3036,10 +3015,8 @@ msgid "Multi Select"
 msgstr "Seleção múltipla"
 
 #: lazarusidestrconsts.dlgmultiwinaccessgroup
-#, fuzzy
-#| msgid "Find Editor for Jump Targets"
 msgid "Jump target priority between multiple editors"
-msgstr "Localizar editor para os alvos do salto"
+msgstr "Prioridade do alvo do salto entre múltiplos editores"
 
 #: lazarusidestrconsts.dlgmultiwinaccessorder
 msgid "Order to use for editors matching the same criteria"
@@ -3207,7 +3184,7 @@ msgstr "Cursor texto visível em editor fora de foco"
 
 #: lazarusidestrconsts.dlgpersistentcursornoblink
 msgid "Caret in unfocused editor does not blink"
-msgstr ""
+msgstr "Cursor texto em editor fora de foco não pisca"
 
 #: lazarusidestrconsts.dlgpoapplication
 msgid "Application"
@@ -5967,7 +5944,7 @@ msgstr "Escolha o executável \"make\""
 
 #: lazarusidestrconsts.lischoosenameandtext
 msgid "Choose name and text"
-msgstr ""
+msgstr "Escolha nome e texto"
 
 #: lazarusidestrconsts.lischooseoneoftheseitemstocreateanewfile
 msgid "Choose one of these items to create a new File"
@@ -7051,7 +7028,6 @@ msgid "contains"
 msgstr "contém"
 
 #: lazarusidestrconsts.liscontents
-#, fuzzy
 msgctxt "lazarusidestrconsts.liscontents"
 msgid "Contents"
 msgstr "Conteúdo"
@@ -8098,7 +8074,7 @@ msgstr "Caminho de busca adicional"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmautocloseasm
 msgid "Automatically close the assembler window, after source not found"
-msgstr ""
+msgstr "Fechar a janela assembler automaticamente, após código não encontrado"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmbreakpoint
 msgid "Breakpoint"
@@ -9016,27 +8992,27 @@ msgstr "Ativar Macros"
 
 #: lazarusidestrconsts.lisenableoptiondwarf
 msgid "Enable Dwarf 2 (-gw)?"
-msgstr ""
+msgstr "Habilitar Dwarf 2 (-gw)?"
 
 #: lazarusidestrconsts.lisenableoptiondwarf2
 msgid "Enable Dwarf 2 (-gw)"
-msgstr ""
+msgstr "Habilitar Dwarf 2 (-gw)"
 
 #: lazarusidestrconsts.lisenableoptiondwarf2sets
 msgid "Enable Dwarf 2 with sets"
-msgstr ""
+msgstr "Habilitar Dwarf 2 com definições"
 
 #: lazarusidestrconsts.lisenableoptiondwarf3
 msgid "Enable Dwarf 3 (-gw3)"
-msgstr ""
+msgstr "Habilitar Dwarf 3 (-gw3)"
 
 #: lazarusidestrconsts.lisenableoptionxg
 msgid "Enable Option -Xg?"
-msgstr ""
+msgstr "Habilitar opção -Xg?"
 
 #: lazarusidestrconsts.lisenableoptionxg2
 msgid "Enable option -Xg"
-msgstr ""
+msgstr "Habilitar opção -Xg"
 
 #: lazarusidestrconsts.lisenablereplacewholeidentifierdisablereplaceprefix
 msgid "Enable = pressing Return replaces whole identifier and Shift+Return replaces prefix, Disable = pressing Return replaces prefix and Shift+Return replaces whole identifier"
@@ -14763,7 +14739,7 @@ msgstr "Propriedades do Arquivo"
 
 #: lazarusidestrconsts.lispckeditfpmakepackage
 msgid "(fpmake)"
-msgstr ""
+msgstr "(fpmake)"
 
 #: lazarusidestrconsts.lispckeditinstall
 msgid "Install"
@@ -15832,7 +15808,7 @@ msgstr "Online"
 
 #: lazarusidestrconsts.lispldonlinepackagescannotbedeleted
 msgid "Online packages cannot be deleted"
-msgstr ""
+msgstr "Pacotes online não podem ser apagados"
 
 #: lazarusidestrconsts.lispldpackagelinks
 msgid "Package Links"
@@ -15852,7 +15828,7 @@ msgstr "Exibir vínculos de usuário em "
 
 #: lazarusidestrconsts.lispldsomepackagescannotbedeleted
 msgid "Some packages cannot be deleted"
-msgstr ""
+msgstr "Alguns pacotes não podem ser apagados"
 
 #: lazarusidestrconsts.lisplduser
 msgid "User"
@@ -16057,7 +16033,7 @@ msgstr "Versão Mínima (opcional):"
 
 #: lazarusidestrconsts.lisprojaddnewfpmakerequirement
 msgid "New FPMake Requirement"
-msgstr ""
+msgstr "Novo requerimento FPMake"
 
 #: lazarusidestrconsts.lisprojaddnewrequirement
 msgid "New Requirement"
@@ -16333,7 +16309,7 @@ msgstr "Propriedades (substituir ou excluir)"
 
 #: lazarusidestrconsts.lisproperty
 msgid "%s property"
-msgstr ""
+msgstr "propriedade %s"
 
 #: lazarusidestrconsts.lisprotected
 msgid "Protected"
@@ -17278,10 +17254,8 @@ msgid "Show output"
 msgstr "Exibir saída"
 
 #: lazarusidestrconsts.lisshowoverviewgutter
-#, fuzzy
-#| msgid "Show overview Gutter"
 msgid "Show overview gutter"
-msgstr "Exibir medianiz de visão global"
+msgstr "Exibir medianiz de visão geral"
 
 #: lazarusidestrconsts.lisshowpackages
 msgid "Show packages"
@@ -18056,7 +18030,7 @@ msgstr "As opções de compilação do projeto e as diretivas do fonte principal
 
 #: lazarusidestrconsts.listheprojectdoesnotusedwarf
 msgid "The project does not write debug info in Dwarf format. The \"%s\" supports only Dwarf."
-msgstr ""
+msgstr "O projeto não escreve informações de depuração no formato Dwarf. O \"%s\" suporta apenas Dwarf."
 
 #: lazarusidestrconsts.listheprojectdoesnotusethelclunitinterfacesbutitseems
 msgid "The project does not use the LCL unit interfaces, which is required by LCLBase.%sYou will get strange linker errors if you use the LCL without interfaces."
@@ -18092,7 +18066,7 @@ msgstr "O projeto grava os símbolos de depuração em um arquivo externo. O \"%
 
 #: lazarusidestrconsts.listheprojectwritesthedebugsymbolstotheexexcutable
 msgid "The project writes the debug symbols into the executable, rather than to an external file. The \"%s\" supports only symbols in an external file."
-msgstr ""
+msgstr "O projeto escreve os símbolos de depuração dentro do executável, ao invés de um arquivo externo. O \"%s\" suporta apenas símbolos em um arquivo externo."
 
 #: lazarusidestrconsts.listhereareadditionalnotesforthismessageon
 msgid "%sThere are additional notes for this message on%s"
@@ -18453,8 +18427,6 @@ msgstr ""
 "usado para o espaço acima do controle.\n"
 
 #: lazarusidestrconsts.listopinfoview
-#, fuzzy
-#| msgid "Show Class/Proc Hint"
 msgid "Show Class/Procedure hint"
 msgstr "Exibir dicas de Classe/Proc"
 
@@ -19650,7 +19622,7 @@ msgstr "Adicionar Reverso"
 
 #: lazarusidestrconsts.rsaddnewterm
 msgid "Add new term"
-msgstr ""
+msgstr "Adicionar novo termo"
 
 #: lazarusidestrconsts.rsattachto
 msgid "Attach to"
@@ -21384,15 +21356,15 @@ msgstr "Adicionar &Ponto de observação no Cursor"
 
 #: lazarusidestrconsts.uembookmarknset
 msgid "Bookmark &%s: %s"
-msgstr ""
+msgstr "Marcador &%s: %s"
 
 #: lazarusidestrconsts.uembookmarknunset
 msgid "Bookmark &%s"
-msgstr ""
+msgstr "Marcador &%s"
 
 #: lazarusidestrconsts.uembookmarknunsetdisabled
 msgid "Bookmark %s"
-msgstr ""
+msgstr "Marcador %s"
 
 #: lazarusidestrconsts.uemcloseotherpages
 msgid "Close All &Other Pages"
@@ -21446,7 +21418,7 @@ msgstr "&Ir para marcador"
 
 #: lazarusidestrconsts.uemgotobookmarks
 msgid "Goto Bookmark ..."
-msgstr ""
+msgstr "Ir para marcador ..."
 
 #: lazarusidestrconsts.uemhighlighter
 msgid "Highlighter"
@@ -21548,15 +21520,15 @@ msgstr "&Alternar marcador"
 
 #: lazarusidestrconsts.uemtogglebookmarknset
 msgid "Toggle Bookmark &%s: %s"
-msgstr ""
+msgstr "Alternar marcador &%s: %s"
 
 #: lazarusidestrconsts.uemtogglebookmarknunset
 msgid "Toggle Bookmark &%s"
-msgstr ""
+msgstr "Alternar marcador &%s"
 
 #: lazarusidestrconsts.uemtogglebookmarks
 msgid "Toggle Bookmark ..."
-msgstr ""
+msgstr "Alternar marcador ..."
 
 #: lazarusidestrconsts.uemtogglebreakpoint
 msgid "Toggle &Breakpoint"

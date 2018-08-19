@@ -57,11 +57,11 @@ msgstr "Configuração compilador \"fpmake\""
 
 #: fppkg_const.rsfppkgenvironmentoptions
 msgid "Fppkg"
-msgstr ""
+msgstr "Fppkg"
 
 #: fppkg_const.rsfppkgenvironmentoptionscaption
 msgid "Compilation"
-msgstr ""
+msgstr "Compilação"
 
 #: fppkg_const.rsfppkgoptions
 msgid "fppkg options"
