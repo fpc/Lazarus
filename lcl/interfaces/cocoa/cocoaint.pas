@@ -213,7 +213,6 @@ begin
   if ScrollInfo.fMask and SIF_PAGE>0 then
   begin
     pg:=ScrollInfo.nPage;
-    if pg=0 then pg:=1; // zero page is not allowed?
   end
   else pg:=bar.pageInt;
 
