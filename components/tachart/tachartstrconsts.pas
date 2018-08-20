@@ -125,6 +125,21 @@ resourcestring
   rsErrInvalidResultType = 'Expression result type must be integer or float. Got "%s".';
 //  rsTDistParamError = 'Function tdist() requires parameter "tails" to be 1 or 2. Get %d.';
 
+  // Fit series
+  rsFitNumObservations = 'Number of observations';
+  rsFitNumFitParams = 'Number of fit parameters';
+  rsFitDegreesOfFreedom = 'Degrees of freedom';
+  rsFitTotalSumOfSquares = 'Total sum of squares (SST)';
+  rsFitRegressionSumOfSquares = 'Regression sum of squares (SSR)';
+  rsFitErrorSumOfSquares = 'Error sum of squares (SSE)';
+  rsFitCoefficientOfDetermination = 'Coefficient of determination (R2)';
+  rsFitAdjCoefficientOfDetermination = 'Adj. coefficient of determination';
+  rsFitChiSquared = 'Chi-squared';
+  rsFitReducedChiSquared = 'Reduced Chi-squared';
+  rsFitResidualStandardError = 'Residual standard error';
+  rsFitVarianceRatio = 'Variance ratio F';
+  rsFitPValue = 'p value';
+
 implementation
 
 end.

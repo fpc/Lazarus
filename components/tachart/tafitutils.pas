@@ -15,7 +15,7 @@ unit TAFitUtils;
 interface
 
 uses
-  TAChartUtils;
+  Classes, TAChartUtils, TAFitLib;
 
 type
   TFitEquation = (
@@ -74,12 +74,48 @@ type
     function Get: String;
   end;
 
-  operator :=(AEq: IFitEquationText): String; inline;
+  TFitStatistics = class(TObject)
+  private
+    fN: Integer;        // number of observations
+    fM: Integer;        // number of (adjusted) fit parameters (fixed params not included)
+    fSST: Double;       // total sum of squares (yi - ybar)^2
+    fSSR: Double;       // regression sum of squares (yhat - ybar)^2
+    fSSE: Double;       // error sum of squares (yi - yhat)^2
+    fAlpha: Double;     // significance level for hypothesis tests
+    fVarCovar: array of array of Double;
+    function GetVarCovar(i, j: Integer): Double;
+  public
+    constructor Create(aN, aM: Integer; aSSR, aSSE: Double;
+      aVarCovar: TArbFloatMatrix; ASignificanceLevel: Double = 0.05);
+    procedure Report_ANOVA(AText: TStrings; ASeparator: String = ': ';
+      ANumFormat: String = '%f');
+    procedure Report_VarCovar(AText: TSTrings; ANumFormat: String = '%12.6f');
+  public
+    function AdjR2: Double;
+    function Chi2: Double;
+    function DOF: Integer;   // Degrees of freedom
+    function F: Double;
+    function MSE: Double;    // Mean standard error
+    function ReducedChi2: Double;
+    function R2: Double;
+    property N: Integer read fN;
+    property M: Integer read fM;
+    property SST: Double read fSST;
+    property SSR: Double read fSSR;
+    property SSE: Double read fSSE;
+    property VarCovar[i, j: Integer]: Double read GetVarCovar;
+    {$IF FPC_FullVersion >= 30004}
+    function Fcrit: Double;
+    function pValue: Double;
+    {$ENDIF}
+  end;
+
+  operator := (AEq: IFitEquationText): String; inline;
 
 implementation
 
 uses
-  StrUtils, SysUtils;
+  Math, StrUtils, SysUtils, spe, TAChartStrConsts;
 
 operator := (AEq: IFitEquationText): String;
 begin
@@ -273,6 +309,166 @@ function TFitEquationText.Y(AText: String): IFitEquationText;
 begin
   FY := AText;
   Result := Self;
+end;
+
+
+{ TFitStatistics }
+
+constructor TFitStatistics.Create(aN, aM: Integer; aSSR, aSSE: Double;
+  aVarCovar: TArbFloatMatrix; ASignificanceLevel: Double = 0.05);
+var
+  i, j, L: Integer;
+begin
+  fN := aN;
+  fM := aM;
+  fSSR := aSSR;
+  fSSE := aSSE;
+  fSST := aSSR + aSSE;
+  fAlpha := ASignificanceLevel;
+  L := Length(aVarCovar);
+  SetLength(fVarCovar, L, L);
+  for j := 0 to L-1 do
+    for i := 0 to L-1 do
+      fVarCovar[i, j] := aVarCovar[i, j];
+end;
+
+{ Coefficient of determination, adjusted to number of data points and fit
+  parameters. Should be close to 1 ("good" fit). "0" means: "poor" fit }
+function TFitStatistics.AdjR2: Double;
+begin
+  Result := 1.0 - (1.0 - R2) * (N - 1) / DOF;
+end;
+
+{ Total variance of data values minus calculated values, weighted by
+  data error.
+  For a "moderately" good fit Chi2 is approximately equal to the degrees of
+  freedom (DOF). }
+function TFitStatistics.Chi2: Double;
+begin
+  Result := SSE;
+end;
+
+{ Degrees of freedom }
+function TFitStatistics.DOF: Integer;
+begin
+  Result := N - M;
+end;
+
+function TFitStatistics.F: Double;
+begin
+  if M > 1 then
+    Result := (SSR/(M-1)) / (SSE/(N-M))
+  else
+    Result := NaN;
+end;
+
+{$IF FPC_FullVersion >= 30004}
+function TFitStatistics.Fcrit: Double;
+begin
+  if (M = 1) then
+    Result := NaN
+  else
+    Result := InvFDist(FAlpha, M-1, N-M);
+end;
+{$IFEND}
+
+function TFitStatistics.GetVarCovar(i, j: Integer): Double;
+begin
+  Result := fVarCovar[i, j];
+end;
+
+{ Mean standard error of fit = sqrt(Chi2): The smaller the better }
+function TFitStatistics.MSE: Double;
+begin
+  if DOF > 0 then
+    Result := sqrt(SSE / DOF)
+  else
+    Result := NaN;
+end;
+
+{$IF FPC_FullVersion >= 30004}
+{ Probability that the scatter of the data around the fitted curve is by chance.
+  Should be several 0.1, the higher the better.
+  According to Numerical Recipes, very small (<< 0.1) values mean
+  - wrong model
+  - error bars too small
+  - errors are not normally distributed
+  Values close to 1.0 mean
+  - error bars overestimaged. }
+function TFitStatistics.pValue: Double;
+begin
+  if DOF > 0 then
+    Result := chi2dist(Chi2, DOF)
+  else
+    Result := NaN;
+end;
+{$IFEND}
+
+{ Variance normalized to the degrees of freedem. Should be about 1 for
+  a "moderately" good fit. }
+function TFitStatistics.ReducedChi2: Double;
+begin
+  if (DOF > 0) then
+    Result := SSE / DOF
+  else
+    Result := NaN;
+end;
+
+{ Coefficient of determination: 0 -> "poor" fit, 1 -> "good" fit }
+function TFitStatistics.R2: Double;
+begin
+  Result := SSR / SST;
+end;
+
+procedure TFitStatistics.Report_ANOVA(AText: TStrings; ASeparator: String = ': ';
+  ANumFormat: String = '%f');
+const
+  FMT = '%.3f';
+begin
+  AText.Add(rsFitNumObservations + ASeparator + IntToStr(N));
+  AText.Add(rsFitNumFitParams + ASeparator + IntToStr(M));
+  AText.Add(rsFitDegreesOfFreedom + ASeparator + IntToStr(DOF));
+  AText.Add(rsFitTotalSumOfSquares + ASeparator +
+    Format(IfThen(SST > 1E6, FMT, ANumFormat), [SST]));
+  AText.Add(rsFitRegressionSumOfSquares + ASeparator +
+    Format(IfThen(SST > 1E6, FMT, ANumFormat), [SSR]));
+  AText.Add(rsFitErrorSumOfSquares + ASeparator +
+    Format(ifThen(SST > 1E6, FMT, ANumFormat), [SSE]));
+  AText.Add(rsFitCoefficientOfDetermination + ASeparator + Format(ANumFormat, [R2]));
+  AText.Add(rsFitAdjCoefficientOfDetermination + ASeparator + Format(ANumFormat, [AdjR2]));
+  AText.Add(rsFitChiSquared + ASeparator + Format(ANumFormat, [Chi2]));
+  AText.Add(rsFitReducedChiSquared + ASeparator + Format(ANumFormat, [ReducedChi2]));
+  AText.Add(rsFitResidualStandardError + ASeparator + Format(ANumFormat, [MSE]));
+  AText.Add(rsFitVarianceRatio + ASeparator + Format(ANumFormat, [F]));
+  {
+  AText.Add(Format('Fcrit(%d, %d)', [M-1, DOF]) + ASeparator +
+    Format(IfThen(Fcrit < 1E-3, FMT, ANumFormat), [Fcrit]));
+    }
+  {$IF FPC_FullVersion >= 30004}
+  AText.Add(rsFitPValue + ASeparator +
+    Format(IfThen(pValue < 1E-3, '%.3e', ANumFormat), [pValue]));
+  {$IFEND}
+end;
+
+procedure TFitStatistics.Report_VarCovar(AText: TStrings; ANumFormat: String = '%12.6f');
+var
+  i, j: Integer;
+  s, t: String;
+  w: Integer;
+begin
+  t := Copy(ANumFormat, 1, pos('.', ANumFormat)-1);
+  Delete(t, 1, 1);
+  w := StrToInt(t);
+
+  for i := 0 to M-1 do begin
+    s := '';
+    for j := 0 to M-1 do
+      if IsNaN(VarCovar[i, j]) then
+        s := s + Format('%*s', [w, '---'])
+      else
+        s := s + Format(ANumFormat, [VarCovar[i, j]]);
+    AText.Add(s);
+  end;
 end;
 
 end.

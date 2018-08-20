@@ -350,7 +350,7 @@ function Split(
   AString: String; ADest: TStrings = nil; ADelimiter: Char = '|'): TStrings;
 
 // Accept both locale-specific and default decimal separators.
-function StrToFloatDefSep(const AStr: String): Double;
+function StrToFloatDefSep(const AStr: String; ADefault: Double = 0.0): Double;
 // .. or date/time values
 function StrToFloatOrDateTimeDef(const AStr: String): Double;
 
@@ -525,13 +525,13 @@ begin
   Result.DelimitedText := AString;
 end;
 
-function StrToFloatDefSep(const AStr: String): Double;
+function StrToFloatDefSep(const AStr: String; ADefault: Double = 0.0): Double;
 begin
   if
     not TryStrToFloat(AStr, Result, DefSeparatorSettings) and
     not TryStrToFloat(AStr, Result)
   then
-    Result := 0.0;
+    Result := ADefault;
 end;
 
 function StrToFloatOrDateTimeDef(const AStr: String): Double;

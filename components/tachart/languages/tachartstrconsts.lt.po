@@ -181,6 +181,58 @@ msgstr ""
 msgid "Vector field series"
 msgstr "Vektorinio lauko sekos"
 
+#: tachartstrconsts.rsfitadjcoefficientofdetermination
+msgid "Adj. coefficient of determination"
+msgstr ""
+
+#: tachartstrconsts.rsfitchisquared
+msgid "Chi-squared"
+msgstr ""
+
+#: tachartstrconsts.rsfitcoefficientofdetermination
+msgid "Coefficient of determination (R2)"
+msgstr ""
+
+#: tachartstrconsts.rsfitdegreesoffreedom
+msgid "Degrees of freedom"
+msgstr ""
+
+#: tachartstrconsts.rsfiterrorsumofsquares
+msgid "Error sum of squares (SSE)"
+msgstr ""
+
+#: tachartstrconsts.rsfitnumfitparams
+msgid "Number of fit parameters"
+msgstr ""
+
+#: tachartstrconsts.rsfitnumobservations
+msgid "Number of observations"
+msgstr ""
+
+#: tachartstrconsts.rsfitpvalue
+msgid "p value"
+msgstr ""
+
+#: tachartstrconsts.rsfitreducedchisquared
+msgid "Reduced Chi-squared"
+msgstr ""
+
+#: tachartstrconsts.rsfitregressionsumofsquares
+msgid "Regression sum of squares (SSR)"
+msgstr ""
+
+#: tachartstrconsts.rsfitresidualstandarderror
+msgid "Residual standard error"
+msgstr ""
+
+#: tachartstrconsts.rsfittotalsumofsquares
+msgid "Total sum of squares (SST)"
+msgstr ""
+
+#: tachartstrconsts.rsfitvarianceratio
+msgid "Variance ratio F"
+msgstr ""
+
 #: tachartstrconsts.rsfullstarsymbol
 msgid "Star (full)"
 msgstr "Žvaigždė (pilna)"

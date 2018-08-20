@@ -5026,6 +5026,7 @@ components/tachart/tadrawerwmf.pas svneol=native#text/pascal
 components/tachart/tadrawutils.pas svneol=native#text/pascal
 components/tachart/taenumerators.pas svneol=native#text/pascal
 components/tachart/taexpressionseries.pas svneol=native#text/plain
+components/tachart/tafitlib.pas svneol=native#text/pascal
 components/tachart/tafitutils.pas svneol=native#text/pascal
 components/tachart/tafonts.pas svneol=native#text/plain
 components/tachart/tafuncseries.pas svneol=native#text/pascal

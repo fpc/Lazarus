@@ -19,7 +19,7 @@ interface
 uses
   Classes, Graphics, typ, Types,
   TAChartUtils, TACustomFuncSeries, TACustomSeries, TACustomSource,
-  TADrawUtils, TAFitUtils, TALegend, TATypes;
+  TADrawUtils, TAFitUtils, TALegend, TATypes, TAFitLib;
 
 const
   DEF_FUNC_STEP = 2;
@@ -286,30 +286,44 @@ type
   strict private
     FDrawFitRangeOnly: Boolean;
     FFitEquation: TFitEquation;
-    FFitParams: TDoubleDynArray;
+    FFitParams: TDoubleDynArray;  // raw values, not transformed!
     FFitRange: TChartRange;
+    FFixedParams: String;
     FOnFitComplete: TNotifyEvent;
     FPen: TChartPen;
     FState: TFitParamsState;
     FStep: TFuncSeriesStep;
+    FErrCode: TFitErrCode;
+    FFitStatistics: TFitStatistics;
+    FConfidenceLevel: Double;
     FGoodnessOfFit: Double;
     FOnCalcGoodnessOfFit: TCalcGoodnessOfFitEvent;
     function GetParam(AIndex: Integer): Double;
     function GetParamCount: Integer;
+    function GetParamError(AIndex: Integer): Double;
+    {$IF FPC_FullVersion >= 30004}
+    function GetParam_pValue(AIndex: Integer): Double;
+    {$IFEND}
+    function GetParam_RawError(AIndex: Integer): Double;
+    function GetParam_RawValue(AIndex: Integer): Double;
+    function GetParam_tValue(AIndex: Integer): Double;
+    function IsFixedParamsStored: Boolean;
     function PrepareIntervals: TIntervalList;
     procedure SetDrawFitRangeOnly(AValue: Boolean);
     procedure SetFitEquation(AValue: TFitEquation);
     procedure SetFitRange(AValue: TChartRange);
-    procedure SetParam(AIndex: Integer; AValue: Double);
+    procedure SetFixedParams(AValue: String);
     procedure SetParamCount(AValue: Integer);
     procedure SetPen(AValue: TChartPen);
     procedure SetStep(AValue: TFuncSeriesStep);
   strict protected
     procedure CalcXRange(out AXMin, AXMax: Double);
-    procedure Transform(AX, AY: Double; out ANewX, ANewY: Extended);
+    function TransformX(AX: Double): Extended; inline;
+    function TransformY(AY: Double): Extended; inline;
   protected
     procedure AfterAdd; override;
-    function CalcGoodnessOfFit(var x,y: ArbFloat; n: Integer): Double; virtual;
+    function CalcGoodnessOfFit(var x,y: ArbFloat; n: Integer): Double; virtual; deprecated;
+    procedure GetFixedParams(out AList: TFitParamArray);
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     procedure SourceChanged(ASender: TObject); override;
   public
@@ -320,15 +334,25 @@ type
     procedure Draw(ADrawer: IChartDrawer); override;
     procedure ExecFit; virtual;
     function EquationText: IFitEquationText;
+    function FitParams: TDoubleDynArray;
     function GetFitEquationString(
       ANumFormat: String; AXText: String = 'x'; AYText: String = 'y'): String;
       deprecated 'Use EquationText';
     function GetNearestPoint(
       const AParams: TNearestPointParams;
       out AResults: TNearestPointResults): Boolean; override;
-    property Param[AIndex: Integer]: Double read GetParam write SetParam;
-    property GoodnessOfFit: Double read FGoodnessOfFit;
+  public  // properties
+    property Param[AIndex: Integer]: Double read GetParam;
+    property ParamError[AIndex: Integer]: Double read GetParamError;
+    {$IF FPC_FullVersion >= 30004}
+    property Param_pValue[AIndex: Integer]: Double read GetParam_pValue;
+    {$IFEND}
+    property Param_tValue[AIndex: Integer]: Double read GetParam_tValue;
+    property Statistics: TFitStatistics read FFitStatistics;
+    property ConfidenceLevel: Double read FConfidenceLevel write FConfidenceLevel;
+    property ErrCode: TFitErrCode read FErrCode;
     property State: TFitParamsState read FState;
+    property GoodnessOfFit: Double read FGoodnessOfFit; deprecated 'Use Statistics instead';
   published
     property AxisIndexX;
     property AxisIndexY;
@@ -337,6 +361,8 @@ type
     property FitEquation: TFitEquation
       read FFitEquation write SetFitEquation default fePolynomial;
     property FitRange: TChartRange read FFitRange write SetFitRange;
+    property FixedParams: String read FFixedParams write SetFixedParams
+      stored IsFixedParamsStored;
     property ParamCount: Integer
       read GetParamCount write SetParamCount default DEF_FIT_PARAM_COUNT;
     property Pen: TChartPen read FPen write SetPen;
@@ -347,7 +373,7 @@ type
     property XErrorBars;
     property YErrorBars;
     property OnCalcGoodnessOfFit: TCalcGoodnessOfFitEvent
-      read FOnCalcGoodnessOfFit write FOnCalcGoodnessOfFit;
+      read FOnCalcGoodnessOfFit write FOnCalcGoodnessOfFit; deprecated 'Use Statistics instead';
     property OnCustomDrawPointer;
     property OnFitComplete: TNotifyEvent
       read FOnFitComplete write FOnFitComplete;
@@ -447,7 +473,7 @@ implementation
 
 uses
   {$IF FPC_FullVersion >= 30101}ipf{$ELSE}ipf_fix{$ENDIF},
-  GraphType, GraphUtil, IntfGraphics, Math, StrUtils, SysUtils,
+  GraphType, GraphUtil, IntfGraphics, Math, spe, StrUtils, SysUtils,
   TAChartStrConsts, TAGeometry, TAGraph, TAMath, TASources;
 
 const
@@ -1465,7 +1491,10 @@ end;
   which are not available.
   Method can be overridden for more advanced calculations.
   x and y are the first values of arrays containing the transformed values
-  used during fitting. n indicates the number of these value pairs. }
+  used during fitting. n indicates the number of these value pairs.
+
+  This function is obsolete since Laz v1.9 and has been replaced by the more
+  comprehensive property "Statistics".}
 function TFitSeries.CalcGoodnessOfFit(var x,y: ArbFloat; n: Integer): Double;
 type
   TArbFloatArray = array[0..0] of Arbfloat;
@@ -1508,16 +1537,16 @@ begin
     fePolynomial, feLinear:
       begin
         Result := 0;
-        for i := High(FFitParams) downto 0 do
-          Result := Result * AX + FFitParams[i];
+        for i := ParamCount-1 downto 0 do
+          Result := Result * AX + Param[i];
       end;
     feExp:
-      Result := FFitParams[0] * Exp(FFitParams[1] * AX);
+      Result := Param[0] * Exp(Param[1] * AX);
     fePower:
       if AX < 0 then
         Result := SafeNaN
       else
-        Result := FFitParams[0] * Power(AX, FFitParams[1]);
+        Result := Param[0] * Power(AX, Param[1]);
   end;
 end;
 
@@ -1549,18 +1578,19 @@ begin
   FFitRange := TFitSeriesRange.Create(Self);
   FDrawFitRangeOnly := true;
   FPointer := TSeriesPointer.Create(ParentChart);
-//  FPointer.Visible := false;
   FPen := TChartPen.Create;
   FPen.OnChange := @StyleChanged;
   FStep := DEF_FIT_STEP;
+  FConfidenceLevel := 0.95;
   ParamCount := DEF_FIT_PARAM_COUNT; // Parabolic fit as default.
-  FGoodnessOfFit := NaN;
+//  FGoodnessOfFit := NaN;
 end;
 
 destructor TFitSeries.Destroy;
 begin
   FreeAndNil(FPen);
   FreeAndNil(FFitRange);
+  FreeAndNil(FFitStatistics);
   inherited;
 end;
 
@@ -1596,7 +1626,7 @@ begin
     Result := TFitEquationText.Create
   else
     Result := TFitEmptyEquationText.Create;
-  Result.TextFormat(Marks.TextFormat).Equation(FitEquation).Params(FFitParams);
+  Result.TextFormat(Marks.TextFormat).Equation(FitEquation).Params(FitParams);
 end;
 
 procedure TFitSeries.ExecFit;
@@ -1610,12 +1640,16 @@ var
 
   procedure TryFit;
   var
-    i, j, term, ns, np, n: Integer;
-    xv, yv, fp: array of ArbFloat;
+    i, j, ns, np, n: Integer;
+    xv, yv, dy: array of ArbFloat;
+    yp, yn: Double;
+    fixedParams: TFitParamArray;
+    fitRes: TFitResults;
+    hasErrorBars: Boolean;
   begin
     np := ParamCount;
     ns := Source.Count;
-    if (np <= 0) or (ns = 0) or (ns < np) then exit;
+
     CalcXRange(xmin, xmax);
     if xmin = xmax then exit;
 
@@ -1623,38 +1657,46 @@ var
     for i := 0 to ns - 1 do
       with Source.Item[i]^ do
         n += Ord(IsValidPoint(X, Y));
-    if n < np then exit;
 
     // Copy data in fit range to temporary arrays.
     SetLength(xv, n);
     SetLength(yv, n);
+    hasErrorBars := Source.HasYErrorBars;
+    SetLength(dy, IfThen(hasErrorBars, n, 0));
     j := 0;
     for i := 0 to ns - 1 do
       with Source.Item[i]^ do
         if IsValidPoint(X, Y) then begin
-          Transform(X, Y, xv[j], yv[j]);
+          xv[j] := TransformX(X);
+          yv[j] := TransformY(Y);
+          if hasErrorBars and Source.GetYErrorBarLimits(i, yp, yn) then
+            dy[j] := abs(TransformY(yp) - TransformY(yn)) / 2;
           j += 1;
         end;
 
+    // Prepare fit parameters
+    GetFixedParams(fixedParams);
+
     // Execute the polynomial fit; the degree of the polynomial is np - 1.
-    SetLength(fp, np);
-    term := 0;
-    ipfpol(n, np - 1, xv[0], yv[0], fp[0], term);
-    if term <> 1 then exit;
-    for i := 0 to High(FFitParams) do
-      FFitParams[i] := fp[i];
+    fitRes := LinearFit(xv, yv, dy, fixedParams);
+    FErrCode := fitRes.ErrCode;
+    if fitRes.ErrCode <> fitOK then
+      exit;
 
-    // Calculate goodness-of-fit parameter
-    if Assigned(FOnCalcGoodnessOfFit) then
-      FOnCalcGoodnessOfFit(Self, xv[0], yv[0], Length(yv), FGoodnessOfFit)
-    else
-      FGoodnessOfFit := CalcGoodnessOfFit(xv[0], yv[0], Length(yv));
+    // Store values of fit parameters.
+    // Note: In case of exponential and power fit equations, the first fitted
+    // parameter is the logarithm of the "real" parameter. It needs to be
+    // transformed back to real units by exp function. This is done by the
+    // getter of the property
+    for i:= 0 to High(FFitParams) do
+      FFitParams[i] := fitRes.ParamValues[i];
 
-    // See comment for "Transform": for exponential and power fit equations, the
-    // first fitted parameter is the logarithm of the "real" parameter. It needs
-    // to be transformed back to real units by exp function.
-    if FFitEquation in [feExp, fePower] then
-      FFitParams[0] := Exp(FFitParams[0]);
+    // Analysis of variance, variance-covariance matrix
+    FFitStatistics.Free;
+    FFitStatistics := TFitStatistics.Create(
+      fitRes.N, fitRes.M, fitRes.SSR, fitRes.SSE, fitRes.CovarianceMatrix);
+
+    // State of the fit
     FState := fpsValid;
   end;
 
@@ -1670,10 +1712,72 @@ begin
   end;
 end;
 
+function TFitSeries.FitParams: TDoubleDynArray;
+var
+  i: Integer;
+begin
+  SetLength(Result, ParamCount);
+  for i := 0 to High(Result) do
+    Result[i] := Param[i];
+end;
+
 function TFitSeries.GetFitEquationString(ANumFormat: String; AXText: String;
   AYText: String): String;
 begin
   Result := EquationText.NumFormat(ANumFormat).X(AXText).Y(AYText);
+end;
+
+{ FFixedParams contains several items separated by semicolon or bar ('|'). Any
+  numerical item will be used as fixed fitting parameter at the given index.
+  Non-numerial items are assumed to be variable fitting parameters.
+  Examples:
+    '0'     --> the first fitting parameter (index 0) is held fixed at 0
+    '-;1.0' --> the first parameter is variable, the second one is fixed at 1.0.
+                Another way to write this would be
+                  ';1.0'   or   'free;1.0'   or   '-|1.0'
+  For each fixed parameter the corresponding element of the output list has
+  .Fixed = true. Variable parameters are stored in the outpust list as
+  .Value = NaN, and .Fixed = false.
+
+  The fit basis functions (.Func) are set to a polygon because all implemented
+  fitting types are of this kind.
+}
+procedure TFitSeries.GetFixedParams(out AList: TFitParamArray);
+var
+  sl: TStringList;
+  i: Integer;
+  sep: Char;
+begin
+  Setlength(AList, GetParamCount);
+  for i := 0 to High(AList) do begin
+    AList[i].Fixed := false;
+    AList[i].Value := NaN;
+    AList[i].Func := @FitBaseFunc_Poly;
+  end;
+  if FFixedParams <> '' then begin
+    sl := TStringlist.Create;
+    try
+      sep := ';';
+      if pos('|', FFixedParams) > 0 then sep := '|';
+      Split(FFixedParams, sl, sep);
+      for i := 0 to High(AList) do begin
+        if i < sl.Count then
+          AList[i].Value := StrToFloatDefSep(sl[i], NaN);
+        AList[i].Fixed := not IsNaN(AList[i].Value);
+      end;
+
+      // Transform fixed parameters
+      case FFitEquation of
+        feLinear, fePolynomial:
+          ;
+        feExp, fePower:
+          if AList[0].Fixed then
+            AList[0].Value := sign(AList[0].Value) * ln(abs(AList[0].Value));
+      end;
+    finally
+      sl.Free;
+    end;
+  end;
 end;
 
 procedure TFitSeries.GetLegendItems(AItems: TChartLegendItems);
@@ -1728,12 +1832,74 @@ function TFitSeries.GetParam(AIndex: Integer): Double;
 begin
   if not InRange(AIndex, 0, ParamCount - 1) then
     raise EChartError.Create('TFitSeries.GetParam index out of range');
-  Result := FFitParams[AIndex]
+  if (FFitEquation in [feExp, fePower]) and (AIndex = 0) then
+    Result := exp(FFitParams[AIndex])
+  else
+    Result := FFitParams[AIndex];
 end;
 
 function TFitSeries.GetParamCount: Integer;
 begin
   Result := Length(FFitParams);
+end;
+
+function TFitSeries.GetParamError(AIndex: Integer): Double;
+var
+  val, sig: Double;
+begin
+  val := GetParam_RawValue(AIndex);
+  sig := GetParam_RawError(AIndex);
+  if IsNaN(sig) then
+    Result := NaN
+  else if (FFitEquation in [feExp, fePower]) and (AIndex = 0) then
+    Result := (exp(val + sig) - exp(val - sig)) / 2
+  else
+    Result := sig;
+end;
+
+{$IF FPC_FullVersion >= 30004}
+function TFitSeries.GetParam_pValue(AIndex: Integer): Double;
+var
+  t: Double;
+begin
+  t := GetParam_tValue(AIndex);
+  if IsNaN(t) then
+    Result := NaN
+  else
+    Result := tDist(t, FFitStatistics.DOF, 2);
+end;
+{$IFEND}
+
+function TFitSeries.GetParam_RawError(AIndex: Integer): Double;
+var
+  sig2: Double;
+begin
+  sig2 := FFitStatistics.VarCovar[AIndex, AIndex];
+  if IsNaN(sig2) then
+    Result := NaN
+  else
+    Result := sqrt(sig2);
+end;
+
+function TFitSeries.GetParam_RawValue(AIndex: Integer): Double;
+begin
+  Result := FFitParams[AIndex];
+end;
+
+function TFitSeries.GetParam_tValue(AIndex: Integer): Double;
+var
+  sig: Double;
+begin
+  sig := GetParam_RawError(AIndex);
+  if IsNaN(sig) then
+    Result := NaN
+  else
+    Result := GetParam_RawValue(AIndex) / sig;
+end;
+
+function TFitSeries.IsFixedParamsStored: Boolean;
+begin
+  Result := FFixedParams <> '';
 end;
 
 function TFitSeries.PrepareIntervals: TIntervalList;
@@ -1778,11 +1944,11 @@ begin
   UpdateParentChart;
 end;
 
-procedure TFitSeries.SetParam(AIndex: Integer; AValue: Double);
+procedure TFitSeries.SetFixedParams(AValue: String);
 begin
-  if not InRange(AIndex, 0, ParamCount - 1) then
-    raise EChartError.Create('TFitSeries.SetParam index out of range');
-  FFitParams[AIndex] := AValue;
+  if FFixedParams = AValue then exit;
+  FFixedParams := AValue;
+  FState := fpsUnknown;
   UpdateParentChart;
 end;
 
@@ -1814,24 +1980,27 @@ begin
   FState := fpsUnknown;
 end;
 
-procedure TFitSeries.Transform(AX, AY: Double; out ANewX, ANewY: Extended);
+{ The exponential and power fitting equations can be transformed to a
+  polynomial by taking the logarithm:
+    feExp:   y = a exp(b*x) ==> ln(y) = ln(a) + b*x
+    fePower: y = a*x^b      ==> ln(y) = ln(a) + b*ln(x)
+  In each case, the first parameter (a) needs to be transformed back
+  after the fitting -- see "ExecFit". }
+function TFitSeries.TransformX(AX: Double): Extended;
 begin
-  // The exponential and power fitting equations can be transformed to a
-  // polynomial by taking the logarithm:
-  // feExp:   y = a exp(b*x) ==> ln(y) = ln(a) + b*x
-  // fePower: y = a*x^b      ==> ln(y) = ln(a) + b*ln(x)
-  // In each case, the first parameter (a) needs to be transformed back
-  // after the fitting -- see "ExecFit".
   if FitEquation in [fePower] then
-    ANewX := Ln(AX)
+    Result := ln(AX)
   else
-    ANewX := AX;
-  if FitEquation in [feExp, fePower] then
-    ANewY := Ln(AY)
-  else
-    ANewY := AY;
+    Result := AX;
 end;
 
+function TFitSeries.TransformY(AY: Double): Extended;
+begin
+  if FitEquation in [feExp, fePower] then
+    Result := ln(AY)
+  else
+    Result := AY;
+end;
 
 { TCustomColorMapSeries }
 
