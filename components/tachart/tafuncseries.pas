@@ -335,6 +335,9 @@ type
     procedure ExecFit; virtual;
     function EquationText: IFitEquationText;
     function FitParams: TDoubleDynArray;
+    {$IF FPC_FullVersion >= 30004}
+    procedure GetConfidenceLimits(AIndex: Integer; out ALower, AUpper: Double);
+    {$IFEND}
     function GetFitEquationString(
       ANumFormat: String; AXText: String = 'x'; AYText: String = 'y'): String;
       deprecated 'Use EquationText';
@@ -1720,6 +1723,25 @@ begin
   for i := 0 to High(Result) do
     Result[i] := Param[i];
 end;
+
+{$IF FPC_FullVersion >= 30004}
+procedure TFitSeries.GetConfidenceLimits(AIndex: Integer; out ALower, AUpper: Double);
+var
+  val, sig, t: Double;
+  alpha: Double;
+begin
+  val := GetParam_RawValue(AIndex);
+  sig := GetParam_RawError(AIndex);
+  alpha := 1.0 - FConfidenceLevel;
+  t := invtdist(alpha, Statistics.DOF, 2);
+  ALower := val - sig*t;
+  AUpper := val + sig*t;
+  if (FFitEquation in [feExp, fePower]) and (AIndex = 0) then begin
+    ALower := exp(ALower);
+    AUpper := exp(AUpper);
+  end;
+end;
+{$IFEND}
 
 function TFitSeries.GetFitEquationString(ANumFormat: String; AXText: String;
   AYText: String): String;

@@ -378,6 +378,7 @@ procedure TfrmMain.FitCompleteHandler(Sender:TObject);
 const
   {$IF FPC_FullVersion >= 30004}
   MASK = '%-4s %10s %10s %10s %10s';
+  CONF_MASK = '%-4s %10s %10s %10s';
   {$ELSE}
   MASK = '%-4s %10s %10s %10s';
   {$IFEND}
@@ -389,6 +390,7 @@ var
   L: Integer;
   decsep: Char;
   paramName: String;
+  confL, confH: Double;
 begin
   decsep := DefaultFormatSettings.DecimalSeparator;
   with lbResults.Items do begin
@@ -421,6 +423,24 @@ begin
               ]));
             end;
             Add('');
+            {$IF FPC_FullVersion >= 30004}
+            Add('CONFIDENCE LIMITS');
+            Add(Format(CONF_MASK, ['Name', 'Value', 'Lower', 'Upper']));
+            for i := 0 to FitSeries.ParamCount - 1 do begin
+              case FitSeries.FitEquation of
+                fePolynomial: paramname := Format('b[%d]', [i]);
+                else          paramname := PARAM_NAME[i];
+              end;
+              FitSeries.GetConfidenceLimits(i, confL, confH);
+              Add(Format(CONF_MASK, [
+                paramName,
+                MyFormatFloat(FitSeries.Param[i], STD_FMT, EXP_FMT),
+                MyFormatFloat(confL, STD_FMT, EXP_FMT),
+                MyFormatFloat(confH, STD_FMT, EXP_FMT)
+              ]));
+            end;
+            Add('');
+            {$IFEND}
             Add('ANALYSIS OF VARIANCE');
             lbResults.Canvas.Font.Assign(lbResults.Font);
             FReportDecimals := 5;
