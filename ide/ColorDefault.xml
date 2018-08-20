@@ -8,7 +8,7 @@
       <Globals Version="6">
         <SchemeDefault>
           <ahaDefault Background="clWhite" Foreground="clBlack"/>
-          <ahaExecutionPoint Background="clGray" Foreground="clWhite"  ForePriority="500" BackPriority="500" FramePriority="500"/>
+          <ahaExecutionPoint Background="clMedGray" Foreground="clWhite"  ForePriority="500" BackPriority="500" FramePriority="500"/>
           <ahaEnabledBreakpoint Background="clRed" Foreground="clBlack" ForePriority="500" BackPriority="500" FramePriority="500"/>
           <ahaDisabledBreakpoint Background="clGreen" Foreground="clBlack" ForePriority="500" BackPriority="500" FramePriority="500"/>
           <ahaInvalidBreakpoint Background="clOlive" Foreground="clGreen" ForePriority="500" BackPriority="500" FramePriority="500"/>
