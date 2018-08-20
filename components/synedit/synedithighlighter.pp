@@ -146,7 +146,7 @@ type
     constructor Create;
     constructor Create(aCaption: string; aStoredName: String = '');
     constructor Create(aCaption: PString; aStoredName: String = '');
-    function  IsEnabled: boolean;
+    function  IsEnabled: boolean; virtual;
     procedure InternalSaveDefaultValues; virtual;
     function  LoadFromBorlandRegistry(rootKey: HKEY; attrKey, attrName: string;
                                       oldStyle: boolean): boolean; virtual;

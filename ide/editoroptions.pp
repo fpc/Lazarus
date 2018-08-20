@@ -282,6 +282,7 @@ type
     procedure Init; override;
   public
     constructor Create(ASchemeLang: TColorSchemeLanguage; attribName: PString; aStoredName: String = '');
+    function IsEnabled: boolean; override;
     procedure ApplyTo(aDest: TSynHighlighterAttributes; aDefault: TColorSchemeAttribute = nil);
     procedure Assign(Src: TPersistent); override;
     function Equals(Other: TColorSchemeAttribute): Boolean; reintroduce;
@@ -6044,6 +6045,11 @@ begin
   FUseSchemeGlobals := True;
 end;
 
+function TColorSchemeAttribute.IsEnabled: boolean;
+begin
+  Result := (inherited IsEnabled) or (FMarkupFoldLineColor <> clNone);
+end;
+
 procedure TColorSchemeAttribute.ApplyTo(aDest: TSynHighlighterAttributes;
   aDefault: TColorSchemeAttribute);
 // aDefault (if supplied) is usuallythe Schemes agnDefault / DefaultAttribute
@@ -6763,7 +6769,8 @@ begin
           TSynEditMarkupFoldColors(aSynEdit.Markup[i]).LineColor[j].Alpha := Attri.MarkupFoldLineAlpha;
           TSynEditMarkupFoldColors(aSynEdit.Markup[i]).LineColor[j].Priority := Attri.FramePriority;
           inc(j);
-          c := j;
+          if Attri.IsEnabled then
+            c := j;
         end;
       end;
       TSynEditMarkupFoldColors(aSynEdit.Markup[i]).ColorCount := c; // discard unused colors at the end
