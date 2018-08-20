@@ -112,6 +112,12 @@ type
     maxInt  : Integer;
     pageInt : Integer;
     suppressLCLMouse: Boolean;
+
+    repeatTimer : NSTimer;
+    repeatMousePos : NSPoint; // should be taken from event.locationInWindow
+    procedure timeRepeatScroll(atimer: NSTimer); message 'timeRepeatScroll:';
+
+    procedure dealloc; override;
     procedure actionScrolling(sender: NSObject); message 'actionScrolling:';
     function IsHorizontal: Boolean; message 'IsHorizontal';
     function acceptsFirstResponder: Boolean; override;
@@ -141,7 +147,109 @@ type
 
 function isMouseEventInScrollBar(host: TCocoaManualScrollView; event: NSEvent): Boolean;
 
+// These settings are set by a user in "System Preferences"
+// One can check the values by running the command line:
+// $defaults read
+// "AppleShowScrollBars": Automatic, Always, WhenScrolling
+function SysPrefScrollShow: string;
+// "AppleScrollerPagingBehavior": 0 - adjust by page, 1 - jump to the position
+function SysPrefScrollClick: Integer;
+// ??? indicated the number of seconds (fraction of), when to repeat the scroll
+// action. It's unknown what the actual system value is or where to get it from
+// thus it's hardcoded to 125 ms
+function SysRepeatScrollSec: Double;
+
+
+function isIncDecPagePart(prt: NSScrollerPart): Boolean; inline;
+procedure HandleMouseDown(sc: TCocoaScrollBar; locInWin: NSPoint; prt: NSScrollerPart);
+function AdjustScrollerPage(sc: TCocoaScrollBar; prt: NSScrollerPart): Boolean;
+
 implementation
+
+function SysPrefScrollShow: string;
+begin
+  Result := NSStringToString(NSUserDefaults.standardUserDefaults.stringForKey(NSSTR('AppleShowScrollBars')));
+end;
+
+function SysPrefScrollClick: Integer; // 0 - adjust by page, 1 - jump to the position
+begin
+  Result := Integer(NSUserDefaults.standardUserDefaults.integerForKey(NSSTR('AppleScrollerPagingBehavior')));
+end;
+
+function SysRepeatScrollSec: Double;
+begin
+  Result := 0.125;
+end;
+
+function isIncDecPagePart(prt: NSScrollerPart): Boolean; inline;
+begin
+  Result := (prt = NSScrollerDecrementPage) or (prt = NSScrollerIncrementPage);
+end;
+
+function AdjustScrollerPage(sc: TCocoaScrollBar; prt: NSScrollerPart): Boolean;
+var
+  adj : Integer;
+  sz  : Integer;
+  dlt : double;
+  v   : double;
+begin
+  Result := isIncDecPagePart(prt);
+  if not Result then Exit;
+  sz := sc.maxInt - sc.minInt - sc.pageInt;
+  if sz = 0 then Exit; // do nothing!
+
+  if sc.pageInt = 0 then dlt := 1 / sz
+  else dlt := sc.pageInt / sz;
+  if prt = NSScrollerDecrementPage then dlt := -dlt;
+
+  v := sc.doubleValue;
+  v := v + dlt;
+  if v < 0 then v := 0
+  else if v > 1 then v := 1;
+
+  // todo: call scroll event?
+  sc.setDoubleValue(v);
+
+  sc.setNeedsDisplay_(true);
+end;
+
+procedure HandleMouseDown(sc: TCocoaScrollBar; locInWin: NSPoint; prt: NSScrollerPart);
+var
+  adj : Integer;
+  sz  : Integer;
+  pt  : NSPoint;
+  ps  : double;
+  newPos: Integer;
+begin
+  adj := SysPrefScrollClick;
+  if adj = 0 then begin
+    // single page jump
+    if AdjustScrollerPage(sc, prt) then
+    begin
+      sc.repeatMousePos := locInWin;
+      sc.repeatTimer := NSTimer.scheduledTimerWithTimeInterval_target_selector_userInfo_repeats(SysRepeatScrollSec, sc, ObjCSelector('timeRepeatScroll:'), nil, true);
+    end;
+  end
+  else
+  begin
+    // direct jump
+    pt := sc.convertPoint_fromView(locInWin, nil);
+    if sc.IsHorizontal then begin
+      if sc.frame.size.width = 0 then Exit; // do nothing
+      ps := pt.x / sc.frame.size.width;
+    end
+    else
+    begin
+      if sc.frame.size.height = 0 then Exit; // do nothing
+      ps := pt.y / sc.frame.size.height;
+    end;
+    sz := (sc.maxInt - sc.minInt - sc.pageInt);;
+    newPos := Round(sc.minInt + sz * ps);
+    sc.lclSetPos(NewPos);
+  end;
+
+
+end;
 
 { TCocoaManualScrollView }
 
@@ -621,6 +729,17 @@ end;
 
 { TCocoaScrollBar }
 
+procedure TCocoaScrollBar.timeRepeatScroll(atimer: NSTimer);
+begin
+  AdjustScrollerPage(self, testPart(repeatMousePos));
+end;
+
+procedure TCocoaScrollBar.dealloc;
+begin
+  if Assigned(repeatTimer) then repeatTimer.invalidate;
+  inherited dealloc;
+end;
+
 procedure TCocoaScrollBar.actionScrolling(sender: NSObject);
 begin
   if Assigned(callback) then
@@ -665,22 +784,44 @@ begin
 end;
 
 procedure TCocoaScrollBar.mouseDown(event: NSEvent);
+var
+  prt : NSScrollerPart;
 begin
-  if suppressLCLMouse then
-    inherited mouseDown(event)
-  else if not Assigned(callback) or not callback.MouseUpDownEvent(event, false, preventBlock) then
-  begin
-    inherited mouseDown(event);
+  prt := testPart(event.locationInWindow);
 
-    if Assigned(callback) then
-      callback.MouseUpDownEvent(event, true, preventBlock);
+  if suppressLCLMouse then
+  begin
+    if isIncDecPagePart(prt)
+      then HandleMouseDown(self, event.locationInWindow, prt)
+      else inherited mouseDown(event);
+  end
+  else
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event, false, preventBlock) then
+  begin
+    if isIncDecPagePart(prt) then
+      HandleMouseDown(self, event.locationInWindow, prt)
+    else
+    begin
+      inherited mouseDown(event);
+
+      if Assigned(callback) then
+        callback.MouseUpDownEvent(event, true, preventBlock);
+    end;
   end;
 end;
 
 procedure TCocoaScrollBar.mouseUp(event: NSEvent);
 begin
+  if Assigned(repeatTimer) then
+  begin
+    repeatTimer.invalidate;
+    repeatTimer := nil;
+  end;
+
   if suppressLCLMouse then
+  begin
     inherited mouseDown(event)
+  end
   else
   if not Assigned(callback) or not callback.MouseUpDownEvent(event, false, preventBlock) then
     inherited mouseUp(event);
@@ -742,6 +883,8 @@ end;
 
 procedure TCocoaScrollBar.mouseDragged(event: NSEvent);
 begin
+  if Assigned(repeatTimer) then repeatMousePos := event.locationInWindow;
+
   if suppressLCLMouse then
     inherited mouseDragged(event)
   else
@@ -801,6 +944,8 @@ begin
   if not Assigned(callback) or not callback.resetCursorRects then
     inherited resetCursorRects;
 end;
+
+
 
 end.
 
