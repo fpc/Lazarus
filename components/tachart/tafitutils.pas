@@ -95,11 +95,11 @@ type
     function Chi2: Double;
     function DOF: Integer;   // Degrees of freedom
     function F: Double;
-    function MSE: Double;    // Mean standard error
-    function ReducedChi2: Double;
-    function R2: Double;
     property N: Integer read fN;
     property M: Integer read fM;
+    function ReducedChi2: Double;
+    function R2: Double;
+    function ResidualStandardError: Double;
     property SST: Double read fSST;
     property SSR: Double read fSSR;
     property SSE: Double read fSSE;
@@ -377,15 +377,6 @@ begin
   Result := fVarCovar[i, j];
 end;
 
-{ Mean standard error of fit = sqrt(Chi2): The smaller the better }
-function TFitStatistics.MSE: Double;
-begin
-  if DOF > 0 then
-    Result := sqrt(SSE / DOF)
-  else
-    Result := NaN;
-end;
-
 {$IF FPC_FullVersion >= 30004}
 { Probability that the scatter of the data around the fitted curve is by chance.
   Should be several 0.1, the higher the better.
@@ -420,6 +411,15 @@ begin
   Result := SSR / SST;
 end;
 
+{ Mean residual standard error of fit: The smaller the better }
+function TFitStatistics.ResidualStandardError: Double;
+begin
+  if DOF > 0 then
+    Result := sqrt(SSE / DOF)
+  else
+    Result := NaN;
+end;
+
 procedure TFitStatistics.Report_ANOVA(AText: TStrings; ASeparator: String = ': ';
   ANumFormat: String = '%f');
 const
@@ -438,7 +438,7 @@ begin
   AText.Add(rsFitAdjCoefficientOfDetermination + ASeparator + Format(ANumFormat, [AdjR2]));
   AText.Add(rsFitChiSquared + ASeparator + Format(ANumFormat, [Chi2]));
   AText.Add(rsFitReducedChiSquared + ASeparator + Format(ANumFormat, [ReducedChi2]));
-  AText.Add(rsFitResidualStandardError + ASeparator + Format(ANumFormat, [MSE]));
+  AText.Add(rsFitResidualStandardError + ASeparator + Format(ANumFormat, [ResidualStandardError]));
   AText.Add(rsFitVarianceRatio + ASeparator + Format(ANumFormat, [F]));
   {
   AText.Add(Format('Fcrit(%d, %d)', [M-1, DOF]) + ASeparator +
