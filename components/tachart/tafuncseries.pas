@@ -301,9 +301,6 @@ type
     function GetParam(AIndex: Integer): Double;
     function GetParamCount: Integer;
     function GetParamError(AIndex: Integer): Double;
-    {$IF FPC_FullVersion >= 30004}
-    function GetParam_pValue(AIndex: Integer): Double;
-    {$IFEND}
     function GetParam_RawError(AIndex: Integer): Double;
     function GetParam_RawValue(AIndex: Integer): Double;
     function GetParam_tValue(AIndex: Integer): Double;
@@ -316,6 +313,10 @@ type
     procedure SetParamCount(AValue: Integer);
     procedure SetPen(AValue: TChartPen);
     procedure SetStep(AValue: TFuncSeriesStep);
+    {$IF FPC_FullVersion >= 30004}
+    procedure GetInterval(const Ax: Double; out AY: Double; IsUpper, IsPrediction: Boolean);
+    function GetParam_pValue(AIndex: Integer): Double;
+    {$IFEND}
   strict protected
     procedure CalcXRange(out AXMin, AXMax: Double);
     function TransformX(AX: Double): Extended; inline;
@@ -337,6 +338,10 @@ type
     function FitParams: TDoubleDynArray;
     {$IF FPC_FullVersion >= 30004}
     procedure GetConfidenceLimits(AIndex: Integer; out ALower, AUpper: Double);
+    procedure GetLowerConfidenceInterval(const Ax: Double; out AY: Double);
+    procedure GetUpperConfidenceInterval(const Ax: Double; out AY: Double);
+    procedure GetLowerPredictionInterval(const Ax: Double; out AY: Double);
+    procedure GetUpperPredictionInterval(const Ax: Double; out AY: Double);
     {$IFEND}
     function GetFitEquationString(
       ANumFormat: String; AXText: String = 'x'; AYText: String = 'y'): String;
@@ -1696,8 +1701,7 @@ var
 
     // Analysis of variance, variance-covariance matrix
     FFitStatistics.Free;
-    FFitStatistics := TFitStatistics.Create(
-      fitRes.N, fitRes.M, fitRes.SSR, fitRes.SSE, fitRes.CovarianceMatrix);
+    FFitStatistics := TFitStatistics.Create(fitRes, 1 - FConfidenceLevel);
 
     // State of the fit
     FState := fpsValid;
@@ -1733,13 +1737,53 @@ begin
   val := GetParam_RawValue(AIndex);
   sig := GetParam_RawError(AIndex);
   alpha := 1.0 - FConfidenceLevel;
-  t := invtdist(alpha, Statistics.DOF, 2);
+  t := Statistics.tValue;
+//  t := invtdist(alpha, Statistics.DOF, 2);
   ALower := val - sig*t;
   AUpper := val + sig*t;
   if (FFitEquation in [feExp, fePower]) and (AIndex = 0) then begin
     ALower := exp(ALower);
     AUpper := exp(AUpper);
   end;
+end;
+
+procedure TFitSeries.GetInterval(const aX: Double; out AY: Double;
+  IsUpper, IsPrediction: Boolean);
+var
+  y: Double;
+  dy: Double;
+  Offs: Double;
+begin
+  offs := IfThen(IsPrediction, 1, 0);
+  with Statistics do begin
+    y := TransformY(Calculate(AX));
+    dy := tValue * ResidualStdError * sqrt(offs + 1/N + sqr(AX - xBar) / SSx);
+    if IsUpper then
+      AY := y + dy
+    else
+      AY := y - dy;
+    if (FFitEquation in [feExp, fePower]) then AY := exp(AY);
+  end;
+end;
+
+procedure TFitSeries.GetLowerConfidenceInterval(const AX: Double; out AY: Double);
+begin
+  GetInterval(AX, AY, false, false);
+end;
+
+procedure TFitSeries.GetUpperConfidenceInterval(const AX: Double; out AY: Double);
+begin
+  GetInterval(AX, AY, true, false);
+end;
+
+procedure TFitSeries.GetLowerPredictionInterval(const AX: Double; out AY: Double);
+begin
+  GetInterval(AX, AY, false, true);
+end;
+
+procedure TFitSeries.GetUpperPredictionInterval(const AX: Double; out AY: Double);
+begin
+  GetInterval(AX, AY, true, true);
 end;
 {$IFEND}
 

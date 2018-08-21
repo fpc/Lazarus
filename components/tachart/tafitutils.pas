@@ -82,11 +82,15 @@ type
     fSSR: Double;       // regression sum of squares (yhat - ybar)^2
     fSSE: Double;       // error sum of squares (yi - yhat)^2
     fAlpha: Double;     // significance level for hypothesis tests
+    fxbar: Double;      // mean x value
+    fSSx: Double;       // sum of squares (xi - xbar)³
     fVarCovar: array of array of Double;
+    fTValue: Double;    // t-value
+    procedure CalcTValue;
     function GetVarCovar(i, j: Integer): Double;
+    procedure SetAlpha(AValue: Double);
   public
-    constructor Create(aN, aM: Integer; aSSR, aSSE: Double;
-      aVarCovar: TArbFloatMatrix; ASignificanceLevel: Double = 0.05);
+    constructor Create(aFitResults: TFitResults; aAlpha: Double = 0.05);
     procedure Report_ANOVA(AText: TStrings; ASeparator: String = ': ';
       ANumFormat: String = '%f');
     procedure Report_VarCovar(AText: TSTrings; ANumFormat: String = '%12.6f');
@@ -99,14 +103,19 @@ type
     property M: Integer read fM;
     function ReducedChi2: Double;
     function R2: Double;
-    function ResidualStandardError: Double;
+    function ResidualStdError: Double;
+    property Alpha: Double read FAlpha write SetAlpha;
     property SST: Double read fSST;
     property SSR: Double read fSSR;
     property SSE: Double read fSSE;
     property VarCovar[i, j: Integer]: Double read GetVarCovar;
+    property xBar: Double read fXBar;
+    property SSx: Double read fSSx;
+  public
     {$IF FPC_FullVersion >= 30004}
     function Fcrit: Double;
     function pValue: Double;
+    property tValue: Double read ftValue;
     {$ENDIF}
   end;
 
@@ -314,22 +323,25 @@ end;
 
 { TFitStatistics }
 
-constructor TFitStatistics.Create(aN, aM: Integer; aSSR, aSSE: Double;
-  aVarCovar: TArbFloatMatrix; ASignificanceLevel: Double = 0.05);
+constructor TFitStatistics.Create(aFitResults: TFitResults;
+  aAlpha: Double = 0.05);
 var
   i, j, L: Integer;
 begin
-  fN := aN;
-  fM := aM;
-  fSSR := aSSR;
-  fSSE := aSSE;
-  fSST := aSSR + aSSE;
-  fAlpha := ASignificanceLevel;
-  L := Length(aVarCovar);
+  fN := aFitResults.N;
+  fM := aFitResults.M;
+  fSSR := aFitResults.SSR;
+  fSSE := aFitResults.SSE;
+  fSST := aFitResults.SSR + aFitResults.SSE;
+  fAlpha := aAlpha;
+  L := Length(aFitResults.CovarianceMatrix);
   SetLength(fVarCovar, L, L);
   for j := 0 to L-1 do
     for i := 0 to L-1 do
-      fVarCovar[i, j] := aVarCovar[i, j];
+      fVarCovar[i, j] := aFitResults.CovarianceMatrix[i, j];
+  fXBar := aFitResults.XBar;
+  fSSx := aFitResults.SSx;
+  CalcTValue;
 end;
 
 { Coefficient of determination, adjusted to number of data points and fit
@@ -337,6 +349,13 @@ end;
 function TFitStatistics.AdjR2: Double;
 begin
   Result := 1.0 - (1.0 - R2) * (N - 1) / DOF;
+end;
+
+procedure TFitStatistics.CalcTValue;
+begin
+  {$IF FPC_FullVersion >= 30004}
+  fTValue := invtdist(fAlpha, fN - fM, 2)
+  {$IFEND}
 end;
 
 { Total variance of data values minus calculated values, weighted by
@@ -412,7 +431,7 @@ begin
 end;
 
 { Mean residual standard error of fit: The smaller the better }
-function TFitStatistics.ResidualStandardError: Double;
+function TFitStatistics.ResidualStdError: Double;
 begin
   if DOF > 0 then
     Result := sqrt(SSE / DOF)
@@ -438,7 +457,7 @@ begin
   AText.Add(rsFitAdjCoefficientOfDetermination + ASeparator + Format(ANumFormat, [AdjR2]));
   AText.Add(rsFitChiSquared + ASeparator + Format(ANumFormat, [Chi2]));
   AText.Add(rsFitReducedChiSquared + ASeparator + Format(ANumFormat, [ReducedChi2]));
-  AText.Add(rsFitResidualStandardError + ASeparator + Format(ANumFormat, [ResidualStandardError]));
+  AText.Add(rsFitResidualStandardError + ASeparator + Format(ANumFormat, [ResidualStdError]));
   AText.Add(rsFitVarianceRatio + ASeparator + Format(ANumFormat, [F]));
   {
   AText.Add(Format('Fcrit(%d, %d)', [M-1, DOF]) + ASeparator +
@@ -469,6 +488,12 @@ begin
         s := s + Format(ANumFormat, [VarCovar[i, j]]);
     AText.Add(s);
   end;
+end;
+
+procedure TFitStatistics.SetAlpha(AValue: Double);
+begin
+  fAlpha := AValue;
+  CalcTValue;
 end;
 
 end.

@@ -22,6 +22,12 @@ type
     cbFitParam0Fixed: TCheckBox;
     cbFitParam1Fixed: TCheckBox;
     cbShowErrorbars: TCheckBox;
+    cbShowConfidenceIntervals: TCheckBox;
+    cbShowPredictionIntervals: TCheckBox;
+    UpperConfIntervalSeries: TFuncSeries;
+    LowerConfIntervalSeries: TFuncSeries;
+    UpperPredIntervalSeries: TFuncSeries;
+    LowerPredIntervalSeries: TFuncSeries;
     FitSeries: TFitSeries;
     cbFitRangeUseMin:TCheckBox;
     cbFitRangeUseMax:TCheckBox;
@@ -64,7 +70,9 @@ type
     procedure btnSaveClick(Sender: TObject);
     procedure cbDrawFitRangeOnlyClick(Sender: TObject);
     procedure cbFitEquationSelect(Sender: TObject);
+    procedure cbShowConfidenceIntervalsChange(Sender: TObject);
     procedure cbShowErrorbarsChange(Sender: TObject);
+    procedure cbShowPredictionIntervalsChange(Sender: TObject);
     procedure EdPointsCountChange(Sender: TObject);
     procedure FixedParamsChanged(Sender: TObject);
     procedure cbFitRangeUseMaxClick(Sender:TObject);
@@ -212,6 +220,12 @@ begin
   end;
 end;
 
+procedure TfrmMain.cbShowConfidenceIntervalsChange(Sender: TObject);
+begin
+  UpperConfIntervalSeries.Active := cbShowConfidenceIntervals.Checked;
+  LowerConfIntervalSeries.Active := cbShowConfidenceIntervals.Checked;
+end;
+
 procedure TfrmMain.cbShowErrorbarsChange(Sender: TObject);
 begin
   FitSeries.YErrorbars.Visible := cbShowErrorBars.Checked;
@@ -229,6 +243,12 @@ begin
   end;
   if FDemoData then
     CreateData;
+end;
+
+procedure TfrmMain.cbShowPredictionIntervalsChange(Sender: TObject);
+begin
+  UpperPredIntervalSeries.Active := cbShowPredictionIntervals.Checked;
+  LowerPredIntervalSeries.Active := cbShowPredictionIntervals.Checked;
 end;
 
 procedure TfrmMain.EdPointsCountChange(Sender: TObject);
@@ -448,6 +468,13 @@ begin
             Add('');
             Add('VARIANCE-COVARIANCE MATRIX');
             FitSeries.Statistics.Report_VarCovar(lbResults.Items);
+
+            {$IF FPC_FullVersion >= 30004}
+            UpperConfIntervalSeries.OnCalculate := @FitSeries.GetUpperConfidenceInterval;
+            LowerConfIntervalSeries.OnCalculate := @FitSeries.GetLowerConfidenceInterval;
+            UpperPredIntervalSeries.OnCalculate := @FitSeries.GetUpperPredictionInterval;
+            LowerPredIntervalSeries.OnCalculate := @FitSeries.GetLowerPredictionInterval;
+            {$IFEND}
           end;
         fitDimError:
           Add('The lengths of the data vectors do not match.');

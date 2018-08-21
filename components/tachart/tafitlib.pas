@@ -45,6 +45,8 @@ type
     M: Integer;                // Number of fit parameters
     SSR: ArbFloat;             // regression sum of squares (yhat - ybar)²
     SSE: ArbFloat;             // error sum of squares (yi - yhat)²
+    xbar: ArbFloat;            // mean x value
+    SSx: ArbFloat;             // sum of squares (xi - xbar)²
   end;
 
   { for compatibility with TAChart of Lazarus version <= 1.8.x }
@@ -350,6 +352,13 @@ begin
       Result.CovarianceMatrix[list[j], list[i]] := alpha[k];
     end;
   end;
+
+  // Calculate x mean and sum of squares (needed for confidence intervals)
+  Result.xbar := 0;
+  for i := 0 to n - 1 do Result.xbar += x[i];
+  Result.xbar := Result.xbar / n;
+  Result.SSx := 0;
+  for i := 0 to n - 1 do Result.SSx += sqr(x[i] - Result.xbar);
 
   // Clean up
   SetLength(alpha, 0);

@@ -552,7 +552,7 @@ object frmMain: TfrmMain
     TabOrder = 1
     object Chart: TChart
       Left = 0
-      Height = 452
+      Height = 449
       Top = 0
       Width = 560
       AxisList = <      
@@ -615,42 +615,73 @@ object frmMain: TfrmMain
         Source = ListChartSource
         OnFitComplete = FitCompleteHandler
       end
+      object UpperConfIntervalSeries: TFuncSeries
+        Active = False
+        Title = 'Confidence interval'
+        AxisIndexX = 1
+        AxisIndexY = 0
+        ExtentAutoY = True
+        Pen.Color = clRed
+        Pen.Style = psDot
+      end
+      object LowerConfIntervalSeries: TFuncSeries
+        Legend.Visible = False
+        Active = False
+        AxisIndexX = 1
+        AxisIndexY = 0
+        ExtentAutoY = True
+        Pen.Color = clRed
+        Pen.Style = psDot
+      end
+      object UpperPredIntervalSeries: TFuncSeries
+        Active = False
+        Title = 'Prediction interval'
+        AxisIndexX = 1
+        AxisIndexY = 0
+        ExtentAutoY = True
+        Pen.Color = clRed
+        Pen.Style = psDash
+      end
+      object LowerPredIntervalSeries: TFuncSeries
+        Legend.Visible = False
+        Active = False
+        AxisIndexX = 1
+        AxisIndexY = 0
+        ExtentAutoY = True
+        Pen.Color = clRed
+        Pen.Style = psDash
+      end
     end
     object pnlLog: TPanel
       Left = 0
-      Height = 35
-      Top = 452
+      Height = 38
+      Top = 449
       Width = 560
       Align = alBottom
       AutoSize = True
       BevelOuter = bvNone
-      ClientHeight = 35
+      ClientHeight = 38
       ClientWidth = 560
       TabOrder = 1
       object cbLogX: TCheckBox
         AnchorSideLeft.Control = pnlLog
         AnchorSideTop.Control = pnlLog
-        Left = 20
+        Left = 0
         Height = 19
-        Top = 8
+        Top = 0
         Width = 92
-        BorderSpacing.Left = 20
-        BorderSpacing.Top = 8
-        BorderSpacing.Bottom = 8
         Caption = 'Logarithmic x'
         OnClick = cbLogClick
         TabOrder = 0
       end
       object cbLogY: TCheckBox
         AnchorSideLeft.Control = cbLogX
-        AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = cbLogX
-        AnchorSideTop.Side = asrCenter
-        Left = 132
+        AnchorSideTop.Side = asrBottom
+        Left = 0
         Height = 19
-        Top = 8
+        Top = 19
         Width = 93
-        BorderSpacing.Left = 20
         Caption = 'Logarithmic y'
         OnClick = cbLogClick
         TabOrder = 1
@@ -658,16 +689,41 @@ object frmMain: TfrmMain
       object cbShowErrorbars: TCheckBox
         AnchorSideLeft.Control = cbLogY
         AnchorSideLeft.Side = asrBottom
-        AnchorSideTop.Control = cbLogX
+        AnchorSideTop.Control = pnlLog
         AnchorSideTop.Side = asrCenter
-        Left = 245
+        Left = 113
         Height = 19
-        Top = 8
+        Top = 10
         Width = 102
         BorderSpacing.Left = 20
         Caption = 'Show error bars'
         OnChange = cbShowErrorbarsChange
         TabOrder = 2
+      end
+      object cbShowConfidenceIntervals: TCheckBox
+        AnchorSideLeft.Control = cbShowErrorbars
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = pnlLog
+        Left = 235
+        Height = 19
+        Top = 0
+        Width = 158
+        BorderSpacing.Left = 20
+        Caption = 'Show confidence intervals'
+        OnChange = cbShowConfidenceIntervalsChange
+        TabOrder = 3
+      end
+      object cbShowPredictionIntervals: TCheckBox
+        AnchorSideLeft.Control = cbShowConfidenceIntervals
+        AnchorSideTop.Control = cbShowConfidenceIntervals
+        AnchorSideTop.Side = asrBottom
+        Left = 235
+        Height = 19
+        Top = 19
+        Width = 153
+        Caption = 'Show prediction intervals'
+        OnChange = cbShowPredictionIntervalsChange
+        TabOrder = 4
       end
     end
   end
