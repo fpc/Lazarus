@@ -12987,8 +12987,10 @@ procedure TMainIDE.PropHookComponentRenamed(AComponent: TComponent);
 begin
   FormEditor1.UpdateComponentName(AComponent);
   // Component can be renamed in designer and OI must be updated
-  if ObjectInspector1<>nil then
-    ObjectInspector1.Update;
+  if ObjectInspector1<>nil then begin
+    ObjectInspector1.RefreshComponentTreeSelection;
+    ObjectInspector1.RefreshPropertyValues;
+  end;
 end;
 
 procedure TMainIDE.PropHookModified(Sender: TObject; PropName: ShortString);
@@ -13001,6 +13003,7 @@ begin
   else
     // Any change of property can cause a change in display name.
     ObjectInspector1.UpdateComponentValues;
+  ObjectInspector1.RefreshPropertyValues;
 end;
 
 {-------------------------------------------------------------------------------
