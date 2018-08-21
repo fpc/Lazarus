@@ -231,10 +231,16 @@ begin
 end;
 
 procedure TCocoaButton.keyDown(event: NSEvent);
+const
+  KeyCode_Space = 49;
 begin
-  lclCheckMixedAllowance;
   if not Assigned(callback) or not callback.KeyEvent(event) then
+  begin
+    // space would attempt to change checked status
+    if event.keyCode = KeyCode_Space then
+      lclCheckMixedAllowance;
     inherited keyDown(event);
+  end;
 end;
 
 procedure TCocoaButton.keyUp(event: NSEvent);
