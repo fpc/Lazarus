@@ -195,7 +195,7 @@ begin
       CurFrame.Init;
       CurFrame.pnPackageName.Caption := ' ' + LazPackage.Name;
       FFrames.Add(CurFrame);
-      CurFrame.pnBase.BorderSpacing.Bottom := 5;
+      CurFrame.pnBase.BorderSpacing.Bottom := 3;
       CurFrame.Parent := sbLazPackages;
       CurFrame.CalcHeight(CurFrame.mDescription, Trim(LazPackage.Description));
       CurFrame.CalcHeight(CurFrame.mLicense, Trim(LazPackage.License));
@@ -206,11 +206,15 @@ begin
     end;
     Node := VisualTree.VST.GetNextSibling(Node);
   end;
-//  if FFrames.Count > 1 then
+  if FFrames.Count > 1 then
+  begin
     TfrShowHint(FFrames.Items[0]).pnBuffer.Visible := True;
-  TotHeight := TotHeight + pnPackageName.Height + pnDescription.Height + 25;
-  if (TotHeight < 51) or (TotHeight > 350) then
-    TotHeight := 350;
+    TfrShowHint(FFrames.Items[0]).BorderSpacing.Bottom := 0;
+  end;
+  TfrShowHint(FFrames.Items[FFrames.Count - 1]).pnBase.BorderSpacing.Top := 0;
+  TotHeight := TotHeight + pnPackageName.Height + pnDescription.Height + 15;
+  if (TotHeight < 51) or (TotHeight > 365) then
+    TotHeight := 365;
   Self.Height := TotHeight;
   sbLazPackages.SetFocus;
 end;

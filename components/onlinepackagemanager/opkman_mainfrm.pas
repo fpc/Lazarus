@@ -558,7 +558,8 @@ begin
         cbPackageCategory.Visible := False;
         pnFilter.Visible := True;
         edFilter.Text := '';
-        edFilter.SetFocus;
+        if edFilter.CanFocus then
+          edFilter.SetFocus;
       end;
    2: begin
         pnFilter.Visible := False;
@@ -566,7 +567,8 @@ begin
         cbPackageState.Visible := False;
         cbPackageCategory.Visible := True;
         cbPackageCategory.ItemIndex := 0;
-        cbPackageCategory.SetFocus;
+        if cbPackageCategory.CanFocus then
+          cbPackageCategory.SetFocus;
       end;
    3: begin
         pnFilter.Visible := False;
@@ -574,7 +576,8 @@ begin
         cbPackageState.Visible := True;
         cbPackageCategory.Visible := False;
         cbPackageState.ItemIndex := 0;
-        cbPackageState.SetFocus;
+        if cbPackageState.CanFocus then
+          cbPackageState.SetFocus;
       end;
    10: begin
         pnFilter.Visible := False;
@@ -582,7 +585,8 @@ begin
         cbPackageType.Visible := True;
         cbPackageCategory.Visible := False;
         cbPackageType.ItemIndex := 0;
-        cbPackageType.SetFocus;
+        if cbPackageType.CanFocus then
+          cbPackageType.SetFocus;
       end;
   end;
   cbPackageState.Height := cbFilterBy.Height;
