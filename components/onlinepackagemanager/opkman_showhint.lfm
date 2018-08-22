@@ -15,22 +15,116 @@ object ShowHintFrm: TShowHintFrm
   OnKeyUp = FormKeyUp
   PopupMode = pmExplicit
   LCLVersion = '1.9.0.0'
-  object sbLazPackages: TScrollBox
-    Left = 0
-    Height = 325
+  object pnMain: TPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 10
+    Height = 315
     Top = 0
-    Width = 563
-    HorzScrollBar.Page = 1
-    VertScrollBar.Page = 1
+    Width = 543
     Align = alClient
-    AutoSize = True
-    BorderStyle = bsNone
+    Anchors = [akLeft, akRight, akBottom]
+    BorderSpacing.Left = 10
+    BorderSpacing.Right = 10
+    BorderSpacing.Bottom = 10
+    BevelInner = bvLowered
+    ClientHeight = 315
+    ClientWidth = 543
+    Color = 15460842
+    ParentColor = False
     TabOrder = 0
+    object pnPackageName: TPanel
+      AnchorSideLeft.Control = pnMain
+      AnchorSideRight.Control = pnMain
+      AnchorSideRight.Side = asrBottom
+      Left = 12
+      Height = 22
+      Top = 2
+      Width = 519
+      Align = alTop
+      BorderSpacing.Left = 10
+      BorderSpacing.Right = 10
+      BevelOuter = bvNone
+      Caption = 'Package Name'
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 0
+    end
+    object pnDescription: TPanel
+      Left = 2
+      Height = 57
+      Top = 24
+      Width = 539
+      Align = alTop
+      BevelOuter = bvNone
+      ClientHeight = 57
+      ClientWidth = 539
+      ParentFont = False
+      TabOrder = 1
+      object mDescription: TMemo
+        AnchorSideLeft.Control = pnDescription
+        AnchorSideTop.Control = pnDescription
+        AnchorSideRight.Control = pnDescription
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = pnDescription
+        AnchorSideBottom.Side = asrBottom
+        Left = 10
+        Height = 53
+        Top = 2
+        Width = 519
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        BorderSpacing.Left = 10
+        BorderSpacing.Top = 2
+        BorderSpacing.Right = 10
+        BorderSpacing.Bottom = 2
+        BorderStyle = bsNone
+        Color = 15460842
+        Font.CharSet = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Pitch = fpVariable
+        Font.Quality = fqDraft
+        Lines.Strings = (
+          'aaaaaaaaaa'
+          'bbbbbbbb'
+        )
+        ParentFont = False
+        ReadOnly = True
+        TabOrder = 0
+      end
+    end
+    object sbLazPackages: TScrollBox
+      AnchorSideLeft.Control = pnMain
+      AnchorSideTop.Control = pnDescription
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = pnMain
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = pnMain
+      AnchorSideBottom.Side = asrBottom
+      Left = 12
+      Height = 228
+      Top = 83
+      Width = 519
+      HorzScrollBar.Page = 1
+      VertScrollBar.Page = 1
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      AutoSize = True
+      BorderSpacing.Left = 10
+      BorderSpacing.Top = 2
+      BorderSpacing.Right = 10
+      BorderSpacing.Bottom = 2
+      BorderStyle = bsNone
+      TabOrder = 2
+    end
   end
   object tmWait: TTimer
     Enabled = False
     OnTimer = tmWaitTimer
-    left = 7
-    top = 12
+    left = 40
+    top = 160
   end
 end

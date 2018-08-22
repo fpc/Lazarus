@@ -468,6 +468,7 @@ begin
      GrandChildData^.DataType := 19;
      Inc(UniqueID);
      GrandChildData^.ButtonID := UniqueID;
+     Data^.CommunityDescription := SerializablePackages.Items[I].CommunityDescription;;
   end;
   FVST.SortTree(0, VirtualTrees.sdAscending);
   ExpandEx;

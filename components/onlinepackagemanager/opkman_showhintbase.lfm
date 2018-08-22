@@ -10,28 +10,25 @@ object frShowHint: TfrShowHint
   DesignLeft = 388
   DesignTop = 227
   object pnBase: TPanel
-    Left = 10
+    Left = 0
     Height = 178
     Top = 10
-    Width = 539
+    Width = 559
     Align = alClient
-    BorderSpacing.Left = 10
     BorderSpacing.Top = 10
-    BorderSpacing.Right = 10
-    BorderSpacing.Bottom = 10
     BevelInner = bvLowered
     ClientHeight = 178
-    ClientWidth = 539
+    ClientWidth = 559
     TabOrder = 0
     object pnDescription: TPanel
       Left = 2
       Height = 73
       Top = 24
-      Width = 535
+      Width = 555
       Align = alTop
       BevelOuter = bvNone
       ClientHeight = 73
-      ClientWidth = 535
+      ClientWidth = 555
       ParentFont = False
       TabOrder = 0
       object mDescription: TMemo
@@ -44,7 +41,7 @@ object frShowHint: TfrShowHint
         Left = 20
         Height = 51
         Top = 19
-        Width = 508
+        Width = 528
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 20
         BorderSpacing.Top = 2
@@ -78,11 +75,11 @@ object frShowHint: TfrShowHint
       Left = 2
       Height = 79
       Top = 97
-      Width = 535
+      Width = 555
       Align = alTop
       BevelOuter = bvNone
       ClientHeight = 79
-      ClientWidth = 535
+      ClientWidth = 555
       ParentFont = False
       TabOrder = 1
       object mLicense: TMemo
@@ -95,7 +92,7 @@ object frShowHint: TfrShowHint
         Left = 20
         Height = 51
         Top = 19
-        Width = 508
+        Width = 528
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 20
         BorderSpacing.Top = 2
@@ -124,7 +121,7 @@ object frShowHint: TfrShowHint
       Left = 2
       Height = 22
       Top = 2
-      Width = 535
+      Width = 555
       Align = alTop
       BevelOuter = bvNone
       Caption = 'Package Name'
@@ -132,5 +129,15 @@ object frShowHint: TfrShowHint
       ParentFont = False
       TabOrder = 2
     end
+  end
+  object pnBuffer: TPanel
+    Left = 0
+    Height = 10
+    Top = 188
+    Width = 559
+    Align = alBottom
+    BevelOuter = bvNone
+    TabOrder = 1
+    Visible = False
   end
 end

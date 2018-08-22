@@ -215,6 +215,7 @@ resourcestring
   rsMainFrm_rsUninstall_Nothing = 'None of the checked packages are installed. Nothing to uninstall.';
   rsMainFrm_rsUninstall_Error = 'Cannot uninstall package "%s"!';
   rsMainFrm_rsDestDirError = 'Cannot create directory "%s". Operation aborted.';
+  rsMainFrm_rsPackageInformation = 'Quick package information for "%s"';
 
   //progress form
   rsProgressFrm_Caption0 = 'Downloading packages';

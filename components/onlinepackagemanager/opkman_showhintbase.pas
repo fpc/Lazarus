@@ -40,6 +40,7 @@ type
     lbLicense: TLabel;
     mDescription: TMemo;
     mLicense: TMemo;
+    pnBuffer: TPanel;
     pnPackageName: TPanel;
     pnBase: TPanel;
     pnDescription: TPanel;

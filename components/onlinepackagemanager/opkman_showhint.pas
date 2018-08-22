@@ -33,7 +33,7 @@ uses
   //LCL
   Controls, Graphics, Dialogs, ExtCtrls, Menus, LCLType,
   //Interface
-  LCLIntf,
+  LCLIntf, StdCtrls,
   //OpkMan
   virtualtrees;
 
@@ -42,6 +42,10 @@ type
   { TShowHintFrm }
 
   TShowHintFrm = class(TForm)
+    mDescription: TMemo;
+    pnDescription: TPanel;
+    pnMain: TPanel;
+    pnPackageName: TPanel;
     sbLazPackages: TScrollBox;
     tmWait: TTimer;
     procedure FormCreate(Sender: TObject);
@@ -69,8 +73,8 @@ implementation
 
 { TShowHintFrm }
 
-uses opkman_visualtree, opkman_serializablepackages, opkman_showhintbase
-     {$IFDEF LclGtk2}, gtk2 {$ENDIF};
+uses opkman_visualtree, opkman_serializablepackages, opkman_showhintbase,
+     opkman_options, opkman_const {$IFDEF LclGtk2}, gtk2 {$ENDIF};
 
 procedure TShowHintFrm.FormCreate(Sender: TObject);
 begin
@@ -167,7 +171,9 @@ var
   TotHeight: Integer;
 begin
   Data := VisualTree.VST.GetNodeData(ANode);
-  Caption := Data^.PackageDisplayName;
+  Caption := Format(rsMainFrm_rsPackageInformation, [Data^.PackageDisplayName]);
+  pnPackageName.Caption := Data^.PackageDisplayName;
+  mDescription.Text := Data^.CommunityDescription;
   for I := FFrames.Count - 1  downto 0 do
   begin
     CurFrame := TfrShowHint(FFrames.Items[I]);
@@ -189,8 +195,7 @@ begin
       CurFrame.Init;
       CurFrame.pnPackageName.Caption := ' ' + LazPackage.Name;
       FFrames.Add(CurFrame);
-      if FFrames.Count > 1 then
-        CurFrame.pnBase.BorderSpacing.Bottom := 5;
+      CurFrame.pnBase.BorderSpacing.Bottom := 5;
       CurFrame.Parent := sbLazPackages;
       CurFrame.CalcHeight(CurFrame.mDescription, Trim(LazPackage.Description));
       CurFrame.CalcHeight(CurFrame.mLicense, Trim(LazPackage.License));
@@ -201,9 +206,13 @@ begin
     end;
     Node := VisualTree.VST.GetNextSibling(Node);
   end;
-  if (TotHeight < 51) or (TotHeight > 325) then
-    TotHeight := 325;
+//  if FFrames.Count > 1 then
+    TfrShowHint(FFrames.Items[0]).pnBuffer.Visible := True;
+  TotHeight := TotHeight + pnPackageName.Height + pnDescription.Height + 25;
+  if (TotHeight < 51) or (TotHeight > 350) then
+    TotHeight := 350;
   Self.Height := TotHeight;
+  sbLazPackages.SetFocus;
 end;
 
 procedure TShowHintFrm.SetupTimer(const AInterval: Integer);
