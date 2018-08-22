@@ -2564,6 +2564,7 @@ begin
 
   // must hide all by default
   FWidget^.hide;
+  FWidget^.set_sensitive(FParams.Style and WS_DISABLED = 0);
 
   g_signal_connect_data(FWidget,'hide', TGCallback(@Gtk3WidgetHide), Self, nil, 0);
   g_signal_connect_data(FWidget,'show', TGCallback(@Gtk3WidgetShow), Self, nil, 0);
