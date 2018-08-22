@@ -1,12 +1,12 @@
 # Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2017.
-# admin <lxlalexlxl@ukr.net>, 2017.
+# admin <lxlalexlxl@ukr.net>, 2017, 2018.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-11-14 23:05+0200\n"
-"Last-Translator: admin <lxlalexlxl@ukr.net>\n"
+"PO-Revision-Date: 2018-08-21 22:15+0200\n"
+"Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -185,55 +185,55 @@ msgstr "Діаграма з векторним полем"
 
 #: tachartstrconsts.rsfitadjcoefficientofdetermination
 msgid "Adj. coefficient of determination"
-msgstr ""
+msgstr "Скоригований коефіцієнт детермінації"
 
 #: tachartstrconsts.rsfitchisquared
 msgid "Chi-squared"
-msgstr ""
+msgstr "Хі-квадрат"
 
 #: tachartstrconsts.rsfitcoefficientofdetermination
 msgid "Coefficient of determination (R2)"
-msgstr ""
+msgstr "Коефіцієнт детермінації (R2)"
 
 #: tachartstrconsts.rsfitdegreesoffreedom
 msgid "Degrees of freedom"
-msgstr ""
+msgstr "Ступені вільності"
 
 #: tachartstrconsts.rsfiterrorsumofsquares
 msgid "Error sum of squares (SSE)"
-msgstr ""
+msgstr "Сума квадратів похибок (SSE)"
 
 #: tachartstrconsts.rsfitnumfitparams
 msgid "Number of fit parameters"
-msgstr ""
+msgstr "Кількість придатних параметрів"
 
 #: tachartstrconsts.rsfitnumobservations
 msgid "Number of observations"
-msgstr ""
+msgstr "Кількість спостережень"
 
 #: tachartstrconsts.rsfitpvalue
 msgid "p value"
-msgstr ""
+msgstr "Значення p"
 
 #: tachartstrconsts.rsfitreducedchisquared
 msgid "Reduced Chi-squared"
-msgstr ""
+msgstr "Зменшена хі-квадрат"
 
 #: tachartstrconsts.rsfitregressionsumofsquares
 msgid "Regression sum of squares (SSR)"
-msgstr ""
+msgstr "Сума квадратів регресії (SSR)"
 
 #: tachartstrconsts.rsfitresidualstandarderror
 msgid "Residual standard error"
-msgstr ""
+msgstr "Остаточна стандартна похибка"
 
 #: tachartstrconsts.rsfittotalsumofsquares
 msgid "Total sum of squares (SST)"
-msgstr ""
+msgstr "Загальна сума квадратів (SSE)"
 
 #: tachartstrconsts.rsfitvarianceratio
 msgid "Variance ratio F"
-msgstr ""
+msgstr "Коефіцієнт варіації F"
 
 #: tachartstrconsts.rsfullstarsymbol
 msgid "Star (full)"

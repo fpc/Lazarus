@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-08-09 22:01+0200\n"
+"PO-Revision-Date: 2018-08-19 16:32+0200\n"
 "Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -15775,7 +15775,7 @@ msgstr "Мережні"
 
 #: lazarusidestrconsts.lispldonlinepackagescannotbedeleted
 msgid "Online packages cannot be deleted"
-msgstr ""
+msgstr "Онлайнові пакунки неможливо видалити"
 
 #: lazarusidestrconsts.lispldpackagelinks
 msgid "Package Links"
@@ -15795,7 +15795,7 @@ msgstr "Показувати користувацькі зв'язки у "
 
 #: lazarusidestrconsts.lispldsomepackagescannotbedeleted
 msgid "Some packages cannot be deleted"
-msgstr ""
+msgstr "Деякі пакунки неможливо видалити"
 
 #: lazarusidestrconsts.lisplduser
 msgid "User"
