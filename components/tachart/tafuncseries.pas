@@ -356,7 +356,7 @@ type
     property Param_pValue[AIndex: Integer]: Double read GetParam_pValue;
     {$IFEND}
     property Param_tValue[AIndex: Integer]: Double read GetParam_tValue;
-    property Statistics: TFitStatistics read FFitStatistics;
+    property FitStatistics: TFitStatistics read FFitStatistics;
     property ConfidenceLevel: Double read FConfidenceLevel write FConfidenceLevel;
     property ErrCode: TFitErrCode read FErrCode;
     property State: TFitParamsState read FState;
@@ -1737,8 +1737,8 @@ begin
   val := GetParam_RawValue(AIndex);
   sig := GetParam_RawError(AIndex);
   alpha := 1.0 - FConfidenceLevel;
-  t := Statistics.tValue;
-//  t := invtdist(alpha, Statistics.DOF, 2);
+  t := FitStatistics.tValue;
+//  t := invtdist(alpha, FitStatistics.DOF, 2);
   ALower := val - sig*t;
   AUpper := val + sig*t;
   if (FFitEquation in [feExp, fePower]) and (AIndex = 0) then begin
@@ -1755,7 +1755,7 @@ var
   Offs: Double;
 begin
   offs := IfThen(IsPrediction, 1, 0);
-  with Statistics do begin
+  with FitStatistics do begin
     y := TransformY(Calculate(AX));
     dy := tValue * ResidualStdError * sqrt(offs + 1/N + sqr(AX - xBar) / SSx);
     if IsUpper then

@@ -464,10 +464,10 @@ begin
             Add('ANALYSIS OF VARIANCE');
             lbResults.Canvas.Font.Assign(lbResults.Font);
             FReportDecimals := 5;
-            FitSeries.Statistics.Report_ANOVA(lbResults.Items, #9, '%.'+IntToStr(FReportDecimals)+'f');
+            FitSeries.FitStatistics.Report_ANOVA(lbResults.Items, #9, '%.'+IntToStr(FReportDecimals)+'f');
             Add('');
             Add('VARIANCE-COVARIANCE MATRIX');
-            FitSeries.Statistics.Report_VarCovar(lbResults.Items);
+            FitSeries.FitStatistics.Report_VarCovar(lbResults.Items);
 
             {$IF FPC_FullVersion >= 30004}
             UpperConfIntervalSeries.OnCalculate := @FitSeries.GetUpperConfidenceInterval;
