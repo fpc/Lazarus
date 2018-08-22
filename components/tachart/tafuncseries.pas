@@ -1738,7 +1738,6 @@ begin
   sig := GetParam_RawError(AIndex);
   alpha := 1.0 - FConfidenceLevel;
   t := FitStatistics.tValue;
-//  t := invtdist(alpha, FitStatistics.DOF, 2);
   ALower := val - sig*t;
   AUpper := val + sig*t;
   if (FFitEquation in [feExp, fePower]) and (AIndex = 0) then begin
@@ -1750,14 +1749,16 @@ end;
 procedure TFitSeries.GetInterval(const aX: Double; out AY: Double;
   IsUpper, IsPrediction: Boolean);
 var
-  y: Double;
+  x,y: Double;
   dy: Double;
   Offs: Double;
 begin
   offs := IfThen(IsPrediction, 1, 0);
   with FitStatistics do begin
-    y := TransformY(Calculate(AX));
-    dy := tValue * ResidualStdError * sqrt(offs + 1/N + sqr(AX - xBar) / SSx);
+    x := TransformX(AX);
+    y := Calculate(AX);
+    y := TransformY(y);
+    dy := tValue * ResidualStdError * sqrt(offs + 1/N + sqr(x - xBar) / SSx);
     if IsUpper then
       AY := y + dy
     else
