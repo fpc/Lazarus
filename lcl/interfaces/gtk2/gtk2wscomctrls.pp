@@ -499,6 +499,7 @@ begin
 
   GTK_WIDGET_SET_FLAGS(Widget, GTK_CAN_FOCUS);
   InternalSetStyle(PGtkProgressBar(Widget), TCustomProgressBar(AWinControl).Style);
+  gtk_widget_set_sensitive(Widget, AParams.Style and WS_DISABLED = 0);
 
   TGtk2WSWinControl.SetCallbacks(PGtkObject(Widget), TComponent(WidgetInfo^.LCLObject));
 end;
@@ -592,6 +593,7 @@ begin
   DebugGtkWidgets.MarkCreated(EventBox, dbgsName(AWinControl));
   {$ENDIF}
   WidgetInfo := CreateWidgetInfo({%H-}Pointer(Result), AWinControl, AParams);
+  gtk_widget_set_sensitive(EventBox, AParams.Style and WS_DISABLED = 0);
   Set_RC_Name(AWinControl, EventBox);
   SetCallbacks(EventBox, WidgetInfo);
 end;

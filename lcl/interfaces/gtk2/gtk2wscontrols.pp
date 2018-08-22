@@ -184,6 +184,7 @@ begin
   Allocation.Width := AParams.Width;
   Allocation.Height := AParams.Height;
   gtk_widget_size_allocate(Widget, @Allocation);
+  gtk_widget_set_sensitive(Widget, AParams.Style and WS_DISABLED = 0);
 
   Set_RC_Name(AWinControl, Widget);
 
