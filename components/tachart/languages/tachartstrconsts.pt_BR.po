@@ -182,55 +182,55 @@ msgstr "Série Campo de Vetor"
 
 #: tachartstrconsts.rsfitadjcoefficientofdetermination
 msgid "Adj. coefficient of determination"
-msgstr ""
+msgstr "Coeficiente de determinação ajustado"
 
 #: tachartstrconsts.rsfitchisquared
 msgid "Chi-squared"
-msgstr ""
+msgstr "Qui-quadrado"
 
 #: tachartstrconsts.rsfitcoefficientofdetermination
 msgid "Coefficient of determination (R2)"
-msgstr ""
+msgstr "Coeficiente de determinação (R2)"
 
 #: tachartstrconsts.rsfitdegreesoffreedom
 msgid "Degrees of freedom"
-msgstr ""
+msgstr "Graus de liberdade"
 
 #: tachartstrconsts.rsfiterrorsumofsquares
 msgid "Error sum of squares (SSE)"
-msgstr ""
+msgstr "Soma dos quadrados dos resíduos (SSE)"
 
 #: tachartstrconsts.rsfitnumfitparams
 msgid "Number of fit parameters"
-msgstr ""
+msgstr "Número de parâmetros de ajuste"
 
 #: tachartstrconsts.rsfitnumobservations
 msgid "Number of observations"
-msgstr ""
+msgstr "Número de observações"
 
 #: tachartstrconsts.rsfitpvalue
 msgid "p value"
-msgstr ""
+msgstr "valor p"
 
 #: tachartstrconsts.rsfitreducedchisquared
 msgid "Reduced Chi-squared"
-msgstr ""
+msgstr "Qui-quadrado reduzido"
 
 #: tachartstrconsts.rsfitregressionsumofsquares
 msgid "Regression sum of squares (SSR)"
-msgstr ""
+msgstr "Regressão das somas dos quadrados (SSR)"
 
 #: tachartstrconsts.rsfitresidualstandarderror
 msgid "Residual standard error"
-msgstr ""
+msgstr "Erro residual padrão"
 
 #: tachartstrconsts.rsfittotalsumofsquares
 msgid "Total sum of squares (SST)"
-msgstr ""
+msgstr "Soma total de quadrados (SST)"
 
 #: tachartstrconsts.rsfitvarianceratio
 msgid "Variance ratio F"
-msgstr ""
+msgstr "Razão de variação F"
 
 #: tachartstrconsts.rsfullstarsymbol
 msgid "Star (full)"
