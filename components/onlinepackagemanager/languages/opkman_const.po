@@ -741,6 +741,10 @@ msgstr ""
 msgid "Not resolving dependencies might lead to install failure! Continue?"
 msgstr ""
 
+#: opkman_const.rsmainfrm_rspackageinformation
+msgid "Quick package information for \"%s\""
+msgstr ""
+
 #: opkman_const.rsmainfrm_rspackagerating
 msgid "Your vote for package \"%s\" is: %s. Thank you for voting!"
 msgstr ""
@@ -903,6 +907,14 @@ msgstr ""
 #: opkman_const.rsmainfrm_vsttext_category
 msgctxt "opkman_const.rsmainfrm_vsttext_category"
 msgid "Category"
+msgstr ""
+
+#: opkman_const.rsmainfrm_vsttext_comdesc
+msgid "Community description for metapackage"
+msgstr ""
+
+#: opkman_const.rsmainfrm_vsttext_communitydescription
+msgid "Community description"
 msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_dependecies

@@ -768,6 +768,10 @@ msgstr "Пакунок \"%s\" залежить від пакунка \"%s\". Р�
 msgid "Not resolving dependencies might lead to install failure! Continue?"
 msgstr "Нерозв'язані залежності можуть спричинити збій встановлення! Продовжити?"
 
+#: opkman_const.rsmainfrm_rspackageinformation
+msgid "Quick package information for \"%s\""
+msgstr ""
+
 #: opkman_const.rsmainfrm_rspackagerating
 msgid "Your vote for package \"%s\" is: %s. Thank you for voting!"
 msgstr "Ваш голос за пакунок \"%s\": %s. Дякуємо за участь!"
@@ -933,6 +937,14 @@ msgstr "Автор"
 msgctxt "opkman_const.rsmainfrm_vsttext_category"
 msgid "Category"
 msgstr "Категорія"
+
+#: opkman_const.rsmainfrm_vsttext_comdesc
+msgid "Community description for metapackage"
+msgstr ""
+
+#: opkman_const.rsmainfrm_vsttext_communitydescription
+msgid "Community description"
+msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_dependecies
 msgctxt "opkman_const.rsmainfrm_vsttext_dependecies"

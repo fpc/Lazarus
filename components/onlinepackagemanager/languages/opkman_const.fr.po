@@ -769,6 +769,10 @@ msgstr "Le paquet \"%s\" dépend du paquet \"%s\". Faut-il résoudre cette dépe
 msgid "Not resolving dependencies might lead to install failure! Continue?"
 msgstr "La non résolution des dépendances peut conduire à un échec de l'installation ! Voulez-vous continuer ?"
 
+#: opkman_const.rsmainfrm_rspackageinformation
+msgid "Quick package information for \"%s\""
+msgstr ""
+
 #: opkman_const.rsmainfrm_rspackagerating
 msgid "Your vote for package \"%s\" is: %s. Thank you for voting!"
 msgstr "Votre note pour le paquet \"%s\" est : %s. Merci de votre évaluation !"
@@ -934,6 +938,14 @@ msgstr "Auteur"
 msgctxt "opkman_const.rsmainfrm_vsttext_category"
 msgid "Category"
 msgstr "Catégorie"
+
+#: opkman_const.rsmainfrm_vsttext_comdesc
+msgid "Community description for metapackage"
+msgstr ""
+
+#: opkman_const.rsmainfrm_vsttext_communitydescription
+msgid "Community description"
+msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_dependecies
 msgctxt "opkman_const.rsmainfrm_vsttext_dependecies"

@@ -778,6 +778,10 @@ msgstr "A(z) \"%s\" csomag függ a(z) \"%s\" csomagtól. Függőség feloldása?
 msgid "Not resolving dependencies might lead to install failure! Continue?"
 msgstr "A feloldatlan függőségek a telepítés sikertelenségét okozhatják!"
 
+#: opkman_const.rsmainfrm_rspackageinformation
+msgid "Quick package information for \"%s\""
+msgstr ""
+
 #: opkman_const.rsmainfrm_rspackagerating
 msgid "Your vote for package \"%s\" is: %s. Thank you for voting!"
 msgstr "A(z) \"%s\" csomagra adott értékelésed: %s. Köszönet érte!"
@@ -947,6 +951,14 @@ msgstr "Szerző"
 msgctxt "opkman_const.rsmainfrm_vsttext_category"
 msgid "Category"
 msgstr "Kategória"
+
+#: opkman_const.rsmainfrm_vsttext_comdesc
+msgid "Community description for metapackage"
+msgstr ""
+
+#: opkman_const.rsmainfrm_vsttext_communitydescription
+msgid "Community description"
+msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_dependecies
 msgctxt "opkman_const.rsmainfrm_vsttext_dependecies"

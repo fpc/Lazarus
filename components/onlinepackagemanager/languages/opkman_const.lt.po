@@ -800,6 +800,10 @@ msgstr "Paketas „%s“ yra priklausomas nuo paketo „%s“. Išspręsti prikl
 msgid "Not resolving dependencies might lead to install failure! Continue?"
 msgstr "Neišsprendus priklausomybes gali nepavykti diegimas!"
 
+#: opkman_const.rsmainfrm_rspackageinformation
+msgid "Quick package information for \"%s\""
+msgstr ""
+
 #: opkman_const.rsmainfrm_rspackagerating
 msgid "Your vote for package \"%s\" is: %s. Thank you for voting!"
 msgstr "Tavo balsas už paketą „%s“ yra: %s. Ačių kad balsavote!"
@@ -967,6 +971,14 @@ msgstr "Autorius"
 msgctxt "opkman_const.rsmainfrm_vsttext_category"
 msgid "Category"
 msgstr "Kategorija"
+
+#: opkman_const.rsmainfrm_vsttext_comdesc
+msgid "Community description for metapackage"
+msgstr ""
+
+#: opkman_const.rsmainfrm_vsttext_communitydescription
+msgid "Community description"
+msgstr ""
 
 #: opkman_const.rsmainfrm_vsttext_dependecies
 msgctxt "opkman_const.rsmainfrm_vsttext_dependecies"
