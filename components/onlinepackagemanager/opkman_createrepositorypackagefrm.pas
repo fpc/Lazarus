@@ -73,6 +73,8 @@ type
     lbOF4: TLabel;
     lbPackagedir: TLabel;
     lbSupportedWidgetSet: TLabel;
+    lbComDescr: TLabel;
+    mComDescr: TMemo;
     pnB: TPanel;
     pnButtons: TPanel;
     pnCategories: TPanel;
@@ -181,6 +183,7 @@ type
     FHomePageURL: String;
     FDownloadURL: String;
     FSVNURL: String;
+    FCommunityDescription: String;
   end;
 
 procedure TCreateRepositoryPackagesFrm.FormCreate(Sender: TObject);
@@ -197,6 +200,8 @@ begin
   lbHomePageURL.Caption := rsCreateRepositoryPackageFrm_lbHomePageURL_Caption;
   lbDownloadURL.Caption := rsCreateRepositoryPackageFrm_lbDownloadURL_Caption;
   lbSVNURL.Caption := rsCreateRepositoryPackageFrm_lbSVNURL_Caption;
+  lbComDescr.Caption := rsMainFrm_VSTText_CommunityDescription + ':';
+
   bHelp.Caption := rsCreateRepositoryPackageFrm_bHelp_Caption;
   bHelp.Hint := rsCreateRepositoryPackageFrm_bHelp_Hint;
   bOptions.Caption := rsCreateRepositoryPackageFrm_bOptions_Caption;
@@ -460,6 +465,7 @@ begin
         RootData^.FHomePageURL := '';
         RootData^.FDownloadURL := '';
         RootData^.FSVNURL := '';
+        RootData^.FCommunityDescription := '';
         RootData^.FDataType := 0;
         FPackageName := RootData^.FName;
         for I := 0 to PackageList.Count - 1 do
@@ -717,6 +723,7 @@ begin
          Data^.FHomePageURL := edHomePageURL.Text;
          Data^.FDownloadURL :=   edDownloadURL.Text;
          Data^.FSVNURL := edSVNURL.Text;
+         Data^.FCommunityDescription := mComDescr.Text;
        end;
     1: begin
          Data^.FLazCompatibility := edLazCompatibility.Text;
@@ -765,6 +772,7 @@ begin
     edHomePageURL.Text := Data^.FHomePageURL;
     edDownloadURL.Text := Data^.FDownloadURL;
     edSVNURL.Text := Data^.FSVNURL;
+    mComDescr.Text := Data^.FCommunityDescription;
   end
   else if Level = 1 then
   begin
@@ -1040,6 +1048,7 @@ begin
       MetaPkg.HomePageURL := RootData^.FHomePageURL;
       MetaPkg.DownloadURL := RootData^.FDownloadURL;
       MetaPkg.SVNURL := RootData^.FSVNURL;
+      MetaPkg.CommunityDescription := RootData^.FCommunityDescription;
       Node := FVSTPackages.GetFirstChild(RootNode);
       while Assigned(Node) do
       begin

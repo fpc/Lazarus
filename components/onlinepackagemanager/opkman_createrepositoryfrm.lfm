@@ -1045,9 +1045,6 @@ object CreateRepositoryFrm: TCreateRepositoryFrm
       00FFAA690000AA690000AA690000AA690000AA690000AA690000AA690000AA69
       0000AA690000AA690000FFFFFF00
     }
-    BitmapAdv = {
-      4C6900000000
-    }
   end
   object tmWait: TTimer
     Enabled = False

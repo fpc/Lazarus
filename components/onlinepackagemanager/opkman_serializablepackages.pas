@@ -171,6 +171,7 @@ type
     FName: String;
     FDisplayName: String;
     FCategory: String;
+    FCommunityDescription: String;
     FRepositoryFileName: String;
     FRepositoryFileSize: Int64;
     FRepositoryFileHash: String;
@@ -213,6 +214,7 @@ type
     property Name: String read FName write FName;
     property DisplayName: String read FDisplayName write FDisplayName;
     property Category: String read FCategory write FCategory;
+    property CommunityDescription: string read FCommunityDescription write FCommunityDescription;
     property Checked: Boolean read FChecked write FChecked;
     property RepositoryFileName: String read FRepositoryFileName write FRepositoryFileName;
     property RepositoryFileSize: int64 read FRepositoryFileSize write FRepositoryFileSize;
@@ -847,6 +849,7 @@ begin
     AMetaPackage.Name := PackageData.Get('Name');
     AMetaPackage.DisplayName := PackageData.Get('DisplayName');
     AMetaPackage.Category := PackageData.Get('Category');
+    AMetaPackage.CommunityDescription := PackageData.Get('CommunityDescription');
     AMetaPackage.RepositoryFileName := PackageData.Get('RepositoryFileName');
     AMetaPackage.RepositoryFileSize := PackageData.Get('RepositoryFileSize');
     AMetaPackage.RepositoryFileHash := PackageData.Get('RepositoryFileHash');
@@ -1210,6 +1213,7 @@ begin
     APackageData.Add('Name', AMetaPackage.Name);
     APackageData.Add('DisplayName', AMetaPackage.DisplayName);
     APackageData.Add('Category', AMetaPackage.Category);
+    APackageData.Add('CommunityDescription', AMetaPackage.CommunityDescription);
     APackageData.Add('RepositoryFileName', AMetaPackage.RepositoryFileName);
     APackageData.Add('RepositoryFileSize', AMetaPackage.RepositoryFileSize);
     APackageData.Add('RepositoryFileHash', AMetaPackage.RepositoryFileHash);

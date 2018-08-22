@@ -156,6 +156,7 @@ type
     FHomePageURL: String;
     FDownloadURL: String;
     FSVNURL: String;
+    FCommunityDescription: String;
   end;
 
 procedure TCreateRepositoryFrm.FormCreate(Sender: TObject);
@@ -695,6 +696,7 @@ begin
       Data^.FRepositoryDate := MetaPackage.RepositoryDate;
       Data^.FHomePageURL := MetaPackage.HomePageURL;
       Data^.FDownloadURL := MetaPackage.DownloadURL;
+      Data^.FCommunityDescription := MetaPackage.CommunityDescription;
       Data^.FDataType := 1;
       for J := 0 to MetaPackage.LazarusPackages.Count - 1 do
       begin
@@ -916,6 +918,11 @@ begin
          DetailData := FVSTDetails.GetNodeData(DetailNode);
          DetailData^.FDownloadURL := Data^.FDownloadURL;
          DetailData^.FDataType := 18;
+         //add CommunityDescription(DataType = 19)
+         DetailNode := FVSTDetails.AddChild(nil);
+         DetailData := FVSTDetails.GetNodeData(DetailNode);
+         DetailData^.FCommunityDescription := Data^.FCommunityDescription;
+         DetailData^.FDataType := 19;
        end;
     2: begin
          //add description(DataType = 2)
@@ -1038,6 +1045,10 @@ begin
                  CellText := rsCreateRepositoryFrm_VSTText_DownloadURL
                else
                  CellText := DetailData^.FDownloadURL;
+          19:  if Column = 0 then
+                  CellText := rsMainFrm_VSTText_CommunityDescription
+                else
+                  CellText := DetailData^.FCommunityDescription;
          end;
        end;
     2: begin

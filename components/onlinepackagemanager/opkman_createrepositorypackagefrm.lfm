@@ -1,7 +1,7 @@
 object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
-  Left = 550
+  Left = 511
   Height = 600
-  Top = 254
+  Top = 198
   Width = 800
   BorderIcons = [biSystemMenu]
   Caption = 'CreateRepositoryPackagesFrm'
@@ -106,13 +106,13 @@ object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
     TabOrder = 3
     object pnPackageData: TPanel
       Left = 0
-      Height = 313
-      Top = 189
+      Height = 187
+      Top = 315
       Width = 553
       Align = alClient
       BevelOuter = bvNone
       BorderStyle = bsSingle
-      ClientHeight = 309
+      ClientHeight = 183
       ClientWidth = 549
       TabOrder = 1
       Visible = False
@@ -203,13 +203,13 @@ object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
     end
     object pnCategory: TPanel
       Left = 0
-      Height = 189
+      Height = 315
       Top = 0
       Width = 553
       Align = alTop
       BevelOuter = bvNone
       BorderStyle = bsSingle
-      ClientHeight = 185
+      ClientHeight = 311
       ClientWidth = 549
       TabOrder = 0
       Visible = False
@@ -335,6 +335,21 @@ object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
           ShowHint = True
           TabOrder = 0
         end
+      end
+      object mComDescr: TMemo
+        Left = 170
+        Height = 152
+        Top = 152
+        Width = 350
+        TabOrder = 5
+      end
+      object lbComDescr: TLabel
+        Left = 9
+        Height = 15
+        Top = 154
+        Width = 65
+        Caption = 'lbComDescr'
+        ParentColor = False
       end
     end
   end

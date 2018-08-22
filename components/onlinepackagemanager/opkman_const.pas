@@ -85,6 +85,7 @@ resourcestring
   rsMainFrm_VSTText_License = 'License';
   rsMainFrm_VSTText_PackageInfo = 'Package info';
   rsMainFrm_VSTText_Category = 'Category';
+  rsMainFrm_VSTText_CommunityDescription = 'Community description';
   rsMainFrm_VSTText_RepositoryFilename = 'Repository filename';
   rsMainFrm_VSTText_RepositoryFileSize = 'Repository filesize';
   rsMainFrm_VSTText_RepositoryFileHash = 'Repository filehash';
@@ -136,6 +137,7 @@ resourcestring
   rsMainFrm_VSTText_PackageCategory27 = 'Games and Game Engines';
   rsMainFrm_VSTText_Desc = 'Description for package';
   rsMainFrm_VSTText_Lic = 'License info for package';
+  rsMainFrm_VSTText_ComDesc = 'Community description for metapackage';
   rsMainFrm_cbAll_Caption = 'All/None';
   rsMainFrm_cbAll_Hint = 'Check/Uncheck packages';
   rsMainFrm_lbFilter_Caption = 'Filter by:';

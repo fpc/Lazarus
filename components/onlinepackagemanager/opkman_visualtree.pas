@@ -74,6 +74,7 @@ type
     DisableInOPM: Boolean;
     IsUpdated: Boolean;
     SVNURL: String;
+    CommunityDescription: String;
     InstallState: Integer;
     ButtonID: Integer;
     Button: TSpeedButton;
@@ -104,6 +105,7 @@ type
     FOnChecked: TNotifyEvent;
     FMouseEnter: Boolean;
     FShowHintFrm: TShowHintFrm;
+    FOldButtonNode: PVirtualNode;
     procedure VSTBeforeCellPaint(Sender: TBaseVirtualTree;
       TargetCanvas: TCanvas; Node: PVirtualNode; {%H-}Column: TColumnIndex;
       {%H-}CellPaintMode: TVTCellPaintMode; CellRect: TRect; var {%H-}ContentRect: TRect);
@@ -302,18 +304,6 @@ begin
 end;
 
 procedure TVisualTree.PopulateTree;
-
-  procedure CreateButton(AUniqueID: Integer; AData: PData);
-  begin
-    AData^.Button := TSpeedButton.Create(FVST);
-    AData^.Button.Caption := '...';
-    AData^.Button.Parent := FVST;
-    AData^.Button.Visible := True;
-    AData^.Button.Tag := AUniqueID;
-    AData^.Button.OnClick := @ButtonClick;
-    AData^.ButtonID := AUniqueID;
-    AData^.Button.Width := 25;
-  end;
 var
   I, J: Integer;
   RootNode, Node, ChildNode, GrandChildNode: PVirtualNode;
@@ -373,8 +363,7 @@ begin
          GrandChildData^.Description := LazarusPkg.Description;
        GrandChildData^.DataType := 3;
        Inc(UniqueID);
-       CreateButton(UniqueID, GrandChildData);
-       GrandChildData^.Button.Enabled := not FVST.IsDisabled[GrandChildNode];
+       GrandChildData^.ButtonID := UniqueID;
        //add author(DataType = 4)
        GrandChildNode := FVST.AddChild(ChildNode);
        FVST.IsDisabled[GrandChildNode] := FVST.IsDisabled[GrandChildNode^.Parent];
@@ -415,8 +404,7 @@ begin
          GrandChildData^.License := LazarusPkg.License;
        GrandChildData^.DataType := 9;
        Inc(UniqueID);
-       CreateButton(UniqueID, GrandChildData);
-       GrandChildData^.Button.Enabled := not FVST.IsDisabled[GrandChildNode];
+       GrandChildData^.ButtonID := UniqueID;
        //add dependencies(DataType = 10)
        GrandChildNode := FVST.AddChild(ChildNode);
        FVST.IsDisabled[GrandChildNode] := FVST.IsDisabled[GrandChildNode^.Parent];
@@ -472,12 +460,14 @@ begin
      GrandChildData := FVST.GetNodeData(GrandChildNode);
      GrandChildData^.DownloadURL := SerializablePackages.Items[I].DownloadURL;
      GrandChildData^.DataType := 18;
-     //add SVNURL(DataType = 19)
-     {GrandChildNode := FVST.AddChild(ChildNode);
+     //add community description(DataType = 19) - added 2018.08.21
+     GrandChildNode := FVST.AddChild(ChildNode);
      FVST.IsDisabled[GrandChildNode] := FVST.IsDisabled[GrandChildNode^.Parent];
      GrandChildData := FVST.GetNodeData(GrandChildNode);
-     GrandChildData^.SVNURL := SerializablePackages.Items[I].SVNURL;
-     GrandChildData^.DataType := 19;}
+     GrandChildData^.CommunityDescription := SerializablePackages.Items[I].CommunityDescription;
+     GrandChildData^.DataType := 19;
+     Inc(UniqueID);
+     GrandChildData^.ButtonID := UniqueID;
   end;
   FVST.SortTree(0, VirtualTrees.sdAscending);
   ExpandEx;
@@ -509,8 +499,8 @@ end;
 
 procedure TVisualTree.ShowDetails(const AButtonID: Integer);
 var
-  Node, ParentNode: PVirtualNode;
-  Data, ParentData: PData;
+  Node, ParentNode, MetaPackageNode: PVirtualNode;
+  Data, ParentData, MetaPackageData: PData;
   Text: String;
   FrmCaption: String;
 begin
@@ -532,6 +522,15 @@ begin
         9: begin
              Text := Data^.License;
              FrmCaption := rsMainFrm_VSTText_Lic  + ' "' + ParentData^.LazarusPackageName  + '"';
+           end;
+       19: begin
+             MetaPackageNode := ParentNode^.Parent;
+             if MetaPackageNode <> nil then
+             begin
+               MetaPackageData := VST.GetNodeData(MetaPackageNode);
+               Text := Data^.CommunityDescription;
+               FrmCaption := rsMainFrm_VSTText_ComDesc  + ' "' + MetaPackageData^.PackageDisplayName + '"';
+             end;
            end;
       end;
       Break;
@@ -1468,7 +1467,7 @@ begin
        16: CellText := rsMainFrm_VSTText_RepositoryFileDate;
        17: CellText := rsMainFrm_VSTText_HomePageURL;
        18: CellText := rsMainFrm_VSTText_DownloadURL;
-       19: CellText := rsMainFrm_VSTText_SVNURL;
+       19: CellText := rsMainFrm_VSTText_CommunityDescription;
       end;
     end
     else if Column = 1 then
@@ -1570,7 +1569,7 @@ begin
        16: CellText := FormatDateTime('YYYY.MM.DD', Data^.RepositoryDate);
        17: CellText := Data^.HomePageURL;
        18: CellText := Data^.DownloadURL;
-       19: CellText := Data^.SVNURL;
+       19: CellText := GetDisplayString(Data^.CommunityDescription);
       end;
     end
     else if Column = 5 then
@@ -1716,6 +1715,17 @@ begin
   FHoverP.Y := Y;
   FHoverNode:= VST.GetNodeAt(X, Y);
   FHoverColumn := GetColumn(X);
+
+  if (FOldButtonNode <> nil) and (FOldButtonNode <> FHoverNode) then
+  begin
+    Data := FVST.GetNodeData(FOldButtonNode);
+    if Data^.Button <> nil then
+    begin
+      Data^.Button.Free;
+      Data^.Button := nil;
+    end;
+  end;
+
   if ((FHoverColumn = 0) or (FShowHintFrm.Visible)) and (FHoverNode <> nil) then
   begin
     case Options.HintFormOption of
@@ -1761,7 +1771,28 @@ begin
     if ((Data^.DataType = 17) and (Trim(Data^.HomePageURL) <> '')) or
        ((Data^.DataType = 18) and (Trim(Data^.DownloadURL) <> '')) then
       FVST.Cursor := crHandPoint;
-  end;
+
+    if (Data^.Button = nil) and
+       (
+         ((Data^.DataType = 3) and (Trim(Data^.Description) <> '')) or
+         ((Data^.DataType = 9) and (Trim(Data^.License) <> '')) or
+         ((Data^.DataType = 19) and (Trim(Data^.CommunityDescription) <> ''))
+
+        ) then
+    begin
+      Data := FVST.GetNodeData(FHoverNode);
+      Data^.Button := TSpeedButton.Create(VST);
+      with Data^.Button do
+      begin
+        Caption := '...';
+        Parent := FVST;
+        Tag := Data^.ButtonID;
+        Visible := True;
+        OnClick := @ButtonClick;
+      end;
+      FOldButtonNode := FHoverNode;
+    end;
+  end
 end;
 
 procedure TVisualTree.VSTMouseEnter(Sender: TObject);
@@ -1799,16 +1830,7 @@ begin
     if Button = mbLeft then
     begin
       case DownColumn of
-        4: if (Data^.DataType = 3) or (Data^.DataType = 9) and (DownColumn = 4) then
-           begin
-             R := FVST.GetDisplayRect(Node, DownColumn, False);
-             if X > R.Right - Data^.Button.Width - 1 then
-             begin
-               if Assigned(Data^.Button) then
-                 ShowDetails(Data^.ButtonID);
-             end;
-           end
-           else if (Data^.DataType = 17) or (Data^.DataType = 18) and (DownColumn = 4) then
+        4: if (Data^.DataType = 17) or (Data^.DataType = 18) and (DownColumn = 4) then
            begin
              FLinkClicked := True;
              if (Data^.DataType = 17) and (Trim(Data^.HomePageURL) <> '') then
@@ -1914,7 +1936,7 @@ begin
     16: HintText := FormatDateTime('YYYY.MM.DD', Data^.RepositoryDate);
     17: HintText := Data^.HomePageURL;
     18: HintText := Data^.DownloadURL;
-    19: HintText := Data^.SVNURL;
+    19: HintText := Data^.CommunityDescription;
    else
        HintText := '';
   end;
