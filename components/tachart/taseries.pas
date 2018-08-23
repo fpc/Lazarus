@@ -290,10 +290,11 @@ type
     FPosition: Double; // Graph coordinate of line
     FUseBounds: Boolean;
 
+    function GetAxisIndex: TChartAxisIndex;
     function GetSeriesColor: TColor;
     procedure SavePosToCoord(var APoint: TDoublePoint);
     procedure SetArrow(AValue: TChartArrow);
-    procedure SetAxisIndexX(AValue: TChartAxisIndex);
+    procedure SetAxisIndex(AValue: TChartAxisIndex);
     procedure SetLineStyle(AValue: TLineStyle);
     procedure SetPen(AValue: TPen);
     procedure SetPosition(AValue: Double);
@@ -319,7 +320,9 @@ type
   published
     property Active default true;
     property Arrow: TChartArrow read FArrow write SetArrow;
-    property AxisIndexX write SetAxisIndexX;
+    property AxisIndex: TChartAxisIndex
+      read GetAxisIndex write SetAxisIndex default DEF_AXIS_INDEX;
+    property AxisIndexX write SetAxisIndex; deprecated 'Use AxisIndex';
     property LineStyle: TLineStyle
       read FLineStyle write SetLineStyle default lsHorizontal;
     property Pen: TPen read FPen write SetPen;
@@ -917,6 +920,11 @@ begin
     end;
 end;
 
+function TConstantLine.GetAxisIndex: TChartAxisIndex;
+begin
+  Result := inherited AxisIndexX;
+end;
+
 procedure TConstantLine.GetBounds(var ABounds: TDoubleRect);
 begin
   if not UseBounds then exit;
@@ -978,7 +986,7 @@ begin
   UpdateParentChart;
 end;
 
-procedure TConstantLine.SetAxisIndexX(AValue: TChartAxisIndex);
+procedure TConstantLine.SetAxisIndex(AValue: TChartAxisIndex);
 begin
   inherited AxisIndexX := AValue;
   AxisIndexY := AValue;

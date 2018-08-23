@@ -282,11 +282,13 @@ type
   TCalcGoodnessOfFitEvent = procedure (Sender: TObject; var x,y: ArbFloat;
     n: Integer; out AResult: Double) of object;
 
+  TFitFuncEvent = procedure(AIndex: Integer; AFitFunc: TFitFunc) of object;
+
   TFitSeries = class(TBasicPointSeries)
   strict private
     FDrawFitRangeOnly: Boolean;
     FFitEquation: TFitEquation;
-    FFitParams: TDoubleDynArray;  // raw values, not transformed!
+    FFitParams: TFitParamArray; // raw values, not transformed!
     FFitRange: TChartRange;
     FFixedParams: String;
     FOnFitComplete: TNotifyEvent;
@@ -305,7 +307,6 @@ type
     function GetParam_RawValue(AIndex: Integer): Double;
     function GetParam_tValue(AIndex: Integer): Double;
     function IsFixedParamsStored: Boolean;
-    function PrepareIntervals: TIntervalList;
     procedure SetDrawFitRangeOnly(AValue: Boolean);
     procedure SetFitEquation(AValue: TFitEquation);
     procedure SetFitRange(AValue: TChartRange);
@@ -324,8 +325,10 @@ type
   protected
     procedure AfterAdd; override;
     function CalcGoodnessOfFit(var x,y: ArbFloat; n: Integer): Double; virtual; deprecated;
-    procedure GetFixedParams(out AList: TFitParamArray);
+//    procedure GetFixedParams(out AList: TFitParamArray);
     procedure GetLegendItems(AItems: TChartLegendItems); override;
+    function PrepareFitParams: boolean;
+    function PrepareIntervals: TIntervalList;
     procedure SourceChanged(ASender: TObject); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -349,6 +352,7 @@ type
     function GetNearestPoint(
       const AParams: TNearestPointParams;
       out AResults: TNearestPointResults): Boolean; override;
+    procedure SetFitParamBasisFunc(AIndex: Integer; AFitFunc: TFitFunc; AFitFuncName: String);
   public  // properties
     property Param[AIndex: Integer]: Double read GetParam;
     property ParamError[AIndex: Integer]: Double read GetParamError;
@@ -1494,43 +1498,12 @@ begin
   FFitRange.SetOwner(ParentChart);
 end;
 
-{ Calculates the R-squared parameter as a simple measure for the goodness-of-fit.
-  More advanced calculations require the standard deviation of the y values
-  which are not available.
-  Method can be overridden for more advanced calculations.
-  x and y are the first values of arrays containing the transformed values
-  used during fitting. n indicates the number of these value pairs.
-
+{ Returns the R-squared parameter as a simple measure for the goodness-of-fit.
   This function is obsolete since Laz v1.9 and has been replaced by the more
-  comprehensive property "Statistics".}
+  comprehensive property "FitStatistics".}
 function TFitSeries.CalcGoodnessOfFit(var x,y: ArbFloat; n: Integer): Double;
-type
-  TArbFloatArray = array[0..0] of Arbfloat;
-var
-  yave, ycalc, SStot, SSres: Double;
-  i, j: Integer;
 begin
-  {$PUSH}
-  {$R-}
-  yave := 0;
-  for i:=0 to n-1 do
-    yave := yave + TArbFloatArray(y)[i];
-  yave := yave / n;
-
-  SStot := 0.0;
-  SSres := 0.0;
-  for i:=0 to n-1 do begin
-    SStot := SStot + sqr(TArbFloatArray(y)[i] - yave);
-    ycalc := 0.0;
-    for j:=High(FFitParams) downto 0 do
-      ycalc := ycalc * TArbFloatArray(x)[i] + FFitParams[j];
-    SSres := SSres + sqr(TArbFloatArray(y)[i] - ycalc);
-  end;
-  if SStot = 0 then
-    Result := 0.0
-  else
-    Result := 1.0 - SSres / SStot;
-  {$POP}
+  Result := FFitStatistics.R2;
 end;
 
 function TFitSeries.Calculate(AX: Double): Double;
@@ -1555,6 +1528,12 @@ begin
         Result := SafeNaN
       else
         Result := Param[0] * Power(AX, Param[1]);
+    feCustom:
+      begin
+        Result := 0;
+        for i := 0 to ParamCount - 1 do
+          Result := Result + Param[i] * FFitParams[i].Func(AX, i);
+      end;
   end;
 end;
 
@@ -1629,12 +1608,20 @@ begin
 end;
 
 function TFitSeries.EquationText: IFitEquationText;
+var
+  basis: Array of string;
+  i: Integer;
 begin
   if State = fpsValid then
     Result := TFitEquationText.Create
   else
     Result := TFitEmptyEquationText.Create;
-  Result.TextFormat(Marks.TextFormat).Equation(FitEquation).Params(FitParams);
+  if FitEquation = feCustom then begin
+    SetLength(basis, ParamCount-1);
+    for i:=1 to High(FFitParams) do
+      basis[i-1] := FFitParams[i].FuncName;
+  end;
+  Result.TextFormat(Marks.TextFormat).Equation(FitEquation).Params(FitParams).BasisFuncs(basis);
 end;
 
 procedure TFitSeries.ExecFit;
@@ -1651,7 +1638,6 @@ var
     i, j, ns, np, n: Integer;
     xv, yv, dy: array of ArbFloat;
     yp, yn: Double;
-    fixedParams: TFitParamArray;
     fitRes: TFitResults;
     hasErrorBars: Boolean;
   begin
@@ -1683,10 +1669,13 @@ var
         end;
 
     // Prepare fit parameters
-    GetFixedParams(fixedParams);
+    if not PrepareFitParams then begin
+      fitRes.ErrCode := fitNoBaseFunctions;
+      exit;
+    end;
 
     // Execute the polynomial fit; the degree of the polynomial is np - 1.
-    fitRes := LinearFit(xv, yv, dy, fixedParams);
+    fitRes := LinearFit(xv, yv, dy, FFitParams);
     FErrCode := fitRes.ErrCode;
     if fitRes.ErrCode <> fitOK then
       exit;
@@ -1697,7 +1686,7 @@ var
     // transformed back to real units by exp function. This is done by the
     // getter of the property
     for i:= 0 to High(FFitParams) do
-      FFitParams[i] := fitRes.ParamValues[i];
+      FFitParams[i].Value := fitRes.ParamValues[i];
 
     // Analysis of variance, variance-covariance matrix
     FFitStatistics.Free;
@@ -1794,59 +1783,6 @@ begin
   Result := EquationText.NumFormat(ANumFormat).X(AXText).Y(AYText);
 end;
 
-{ FFixedParams contains several items separated by semicolon or bar ('|'). Any
-  numerical item will be used as fixed fitting parameter at the given index.
-  Non-numerial items are assumed to be variable fitting parameters.
-  Examples:
-    '0'     --> the first fitting parameter (index 0) is held fixed at 0
-    '-;1.0' --> the first parameter is variable, the second one is fixed at 1.0.
-                Another way to write this would be
-                  ';1.0'   or   'free;1.0'   or   '-|1.0'
-  For each fixed parameter the corresponding element of the output list has
-  .Fixed = true. Variable parameters are stored in the outpust list as
-  .Value = NaN, and .Fixed = false.
-
-  The fit basis functions (.Func) are set to a polygon because all implemented
-  fitting types are of this kind.
-}
-procedure TFitSeries.GetFixedParams(out AList: TFitParamArray);
-var
-  sl: TStringList;
-  i: Integer;
-  sep: Char;
-begin
-  Setlength(AList, GetParamCount);
-  for i := 0 to High(AList) do begin
-    AList[i].Fixed := false;
-    AList[i].Value := NaN;
-    AList[i].Func := @FitBaseFunc_Poly;
-  end;
-  if FFixedParams <> '' then begin
-    sl := TStringlist.Create;
-    try
-      sep := ';';
-      if pos('|', FFixedParams) > 0 then sep := '|';
-      Split(FFixedParams, sl, sep);
-      for i := 0 to High(AList) do begin
-        if i < sl.Count then
-          AList[i].Value := StrToFloatDefSep(sl[i], NaN);
-        AList[i].Fixed := not IsNaN(AList[i].Value);
-      end;
-
-      // Transform fixed parameters
-      case FFitEquation of
-        feLinear, fePolynomial:
-          ;
-        feExp, fePower:
-          if AList[0].Fixed then
-            AList[0].Value := sign(AList[0].Value) * ln(abs(AList[0].Value));
-      end;
-    finally
-      sl.Free;
-    end;
-  end;
-end;
-
 procedure TFitSeries.GetLegendItems(AItems: TChartLegendItems);
 var
   cp: TChartPen;
@@ -1900,9 +1836,9 @@ begin
   if not InRange(AIndex, 0, ParamCount - 1) then
     raise EChartError.Create('TFitSeries.GetParam index out of range');
   if (FFitEquation in [feExp, fePower]) and (AIndex = 0) then
-    Result := exp(FFitParams[AIndex])
+    Result := exp(FFitParams[AIndex].Value)
   else
-    Result := FFitParams[AIndex];
+    Result := FFitParams[AIndex].Value;
 end;
 
 function TFitSeries.GetParamCount: Integer;
@@ -1950,7 +1886,7 @@ end;
 
 function TFitSeries.GetParam_RawValue(AIndex: Integer): Double;
 begin
-  Result := FFitParams[AIndex];
+  Result := FFitParams[AIndex].Value;
 end;
 
 function TFitSeries.GetParam_tValue(AIndex: Integer): Double;
@@ -1967,6 +1903,63 @@ end;
 function TFitSeries.IsFixedParamsStored: Boolean;
 begin
   Result := FFixedParams <> '';
+end;
+
+{ FFixedParams contains several items separated by semicolon or bar ('|'). Any
+  numerical item will be used as fixed fitting parameter at the given index.
+  Non-numerial items are assumed to be variable fitting parameters.
+  Examples:
+    '0'     --> the first fitting parameter (index 0) is held fixed at 0
+    '-;1.0' --> the first parameter is variable, the second one is fixed at 1.0.
+                Another way to write this would be
+                  ';1.0'   or   'free;1.0'   or   '-|1.0'
+  For each fixed parameter the corresponding element of the output list has
+  .Fixed = true. Variable parameters are stored in the outpust list as
+  .Value = NaN, and .Fixed = false.
+
+  By default, the fit base functions (.Func) are set to a polygon because
+  all implemented fitting types are of this kind.
+  However, if handlers are assigned to the event OnGetFitBaseFunc then these
+  functions are used instead.
+}
+function TFitSeries.PrepareFitParams: Boolean;
+var
+  sl: TStringList;
+  i: Integer;
+  sep: Char;
+begin
+  Result := false;
+
+  for i := 0 to High(FFitParams) do begin
+    FFitParams[i].Fixed := false;
+    FFitParams[i].Value := NaN;
+    if FFitEquation <> feCustom then
+      FFitParams[i].Func := @FitBaseFunc_Poly
+    else if FFitParams[i].Func = nil then
+      exit;
+  end;
+
+  if FFixedParams <> '' then begin
+    // Extract fixed parameters
+    sl := TStringlist.Create;
+    try
+      sep := ';';
+      if pos('|', FFixedParams) > 0 then sep := '|';
+      Split(FFixedParams, sl, sep);
+      for i := 0 to High(FFitParams) do begin
+        if i < sl.Count then
+          FFitParams[i].Value := StrToFloatDefSep(sl[i], NaN);
+        FFitParams[i].Fixed := not IsNaN(FFitParams[i].Value);
+      end;
+
+      // Transform fixed parameters
+      if (FFitEquation in [feExp, fePower]) and FFitparams[0].Fixed then
+        FFitParams[0].Value := sign(FFitParams[0].Value) * ln(abs(FFitParams[0].Value));
+    finally
+      sl.Free;
+    end;
+  end;
+  Result := true;
 end;
 
 function TFitSeries.PrepareIntervals: TIntervalList;
@@ -1998,9 +1991,16 @@ begin
   if FFitEquation = AValue then exit;
   FFitEquation := AValue;
   SetLength(
-    FFitParams, IfThen(FFitEquation = fePolynomial, DEF_FIT_PARAM_COUNT, 2));
+    FFitParams, IfThen(FFitEquation in [fePolynomial, feCustom], DEF_FIT_PARAM_COUNT, 2));
   FState := fpsUnknown;
   UpdateParentChart;
+end;
+
+procedure TFitSeries.SetFitParamBasisFunc(AIndex: Integer; AFitFunc: TFitFunc;
+  AFitFuncName: String);
+begin
+  FFitParams[AIndex].Func := AFitFunc;
+  FFitParams[AIndex].FuncName := AFitFuncName;  // e.g. 'sin(x)';
 end;
 
 procedure TFitSeries.SetFitRange(AValue: TChartRange);
@@ -2021,7 +2021,8 @@ end;
 
 procedure TFitSeries.SetParamCount(AValue: Integer);
 begin
-  if (AValue = ParamCount) or (FFitEquation <> fePolynomial) then exit;
+  if (AValue = ParamCount) or not (FFitEquation in [fePolynomial, feCustom]) then
+    exit;
   SetLength(FFitParams, AValue);
   FState := fpsUnknown;
   UpdateParentChart;

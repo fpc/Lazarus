@@ -15,17 +15,20 @@ unit TAFitUtils;
 interface
 
 uses
-  Classes, TAChartUtils, TAFitLib;
+  SysUtils, Classes, TAChartUtils, TAFitLib;
 
 type
   TFitEquation = (
-    fePolynomial, // y = b0 + b1*x + b2*x^2 + ... bn*x^n
-    feLinear,     // y = a + b*x
-    feExp,        // y = a * exp(b * x)
-    fePower       // y = a * x^b
+    fePolynomial,  // y = b0 + b1*x + b2*x^2 + ... bn*x^n
+    feLinear,      // y = a + b*x
+    feExp,         // y = a * exp(b * x)
+    fePower,       // y = a * x^b
+    feCustom       // y = b0 + b1*F1(x) + b2*F2(x) + ... bn*Fn(x),
+                   //    Fi(x) = custom "fit base function" provided by event
   );
 
   IFitEquationText = interface
+    function BasisFuncs(const ATexts: array of string): IFitEquationText;
     function DecimalSeparator(AValue: Char): IFitEquationText;
     function Equation(AEquation: TFitEquation): IFitEquationText;
     function X(AText: String): IFitEquationText;
@@ -39,6 +42,7 @@ type
 
   TFitEmptyEquationText = class(TInterfacedObject, IFitEquationText)
   public
+    function BasisFuncs(const ATexts: array of string): IFitEquationText;
     function DecimalSeparator(AValue: Char): IFitEquationText;
     function Equation(AEquation: TFitEquation): IFitEquationText;
     function X(AText: String): IFitEquationText;
@@ -52,6 +56,7 @@ type
 
   TFitEquationText = class(TInterfacedObject, IFitEquationText)
   strict private
+    FBasisFunc: array of string;
     FDecSep: Char;
     FEquation: TFitEquation;
     FX: String;
@@ -63,6 +68,7 @@ type
     function GetNumFormat(AIndex: Integer): String;
   public
     constructor Create;
+    function BasisFuncs(const ATexts: array of string): IFitEquationText;
     function DecimalSeparator(AValue: Char): IFitEquationText;
     function Equation(AEquation: TFitEquation): IFitEquationText;
     function X(AText: String): IFitEquationText;
@@ -124,7 +130,7 @@ type
 implementation
 
 uses
-  Math, StrUtils, SysUtils, spe, TAChartStrConsts;
+  Math, StrUtils, spe, TAChartStrConsts;
 
 operator := (AEq: IFitEquationText): String;
 begin
@@ -133,6 +139,12 @@ end;
 
 
 { TFitEmptyEquationText }
+
+function TFitEmptyEquationText.BasisFuncs(const ATexts: array of string): IFitEquationText;
+begin
+  Unused(ATexts);
+  Result := Self;
+end;
 
 function TFitEmptyEquationText.DecimalSeparator(AValue: Char): IFitEquationText;
 begin
@@ -200,6 +212,17 @@ begin
   FDecSep := DefaultFormatSettings.DecimalSeparator;
 end;
 
+function TFitEquationText.BasisFuncs(const ATexts: array of string): IFitEquationText;
+var
+  i: Integer;
+begin
+  // Note: the constant term is skipped! --> BasisFunc[0] belongs to Index = 1
+  SetLength(FBasisFunc, Length(ATexts));
+  for i := 0 to High(FBasisFunc) do
+    FBasisFunc[i] := ATexts[i];
+  Result := Self;
+end;
+
 function TFitEquationText.DecimalSeparator(AValue: Char): IFitEquationText;
 begin
   FDecSep := AValue;
@@ -226,6 +249,19 @@ begin
   fs.DecimalSeparator := FDecSep;
 
   Result := Format('%s = ' + GetNumFormat(0), [FY, FParams[0]], fs);
+  if FEquation = feCustom then
+    for i := 1 to High(FParams) do begin
+      if FParams[i] = 0 then
+        Continue;
+      if FTextFormat = tfNormal then
+        s := '*%s'
+      else
+        s := '&middot;%s';
+      Result += Format(' %s ' + GetNumFormat(i) + s,
+        [IfThen(FParams[i] > 0, '+', '-'), Abs(FParams[i]), FBasisFunc[i-1]], fs
+      );
+    end
+  else
   if FEquation in [fePolynomial, feLinear] then
     for i := 1 to High(FParams) do begin
       if FParams[i] = 0 then

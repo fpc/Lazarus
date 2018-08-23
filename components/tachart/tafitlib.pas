@@ -22,6 +22,7 @@ type
 
   TFitParam = record
     Func: TFitFunc;
+    FuncName: String;
     Value: ArbFloat;
     Fixed: Boolean;
   end;
@@ -34,7 +35,7 @@ type
     fitMoreParamsThanValues,   // There are more fitting parameters than data values
     fitNoFitParams,            // No fit parameters specified
     fitSingular,               // Matrix is (nearly) singular
-    fitExpValueError           // Incorrect usage of negative values in ExpFit.
+    fitNoBaseFunctions         // No user-provided base functions
   );
 
   TFitResults = record

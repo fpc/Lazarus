@@ -103,7 +103,7 @@ implementation
 {$R *.lfm}
 
 uses
-  Math, spe, StrUtils,
+  Math, typ, spe, StrUtils,
   TAChartAxis, TATypes, TAChartUtils, TACustomSource, TAFitLib, TAFitUtils;
 
 const
@@ -112,6 +112,7 @@ const
   LIN_PARAMS: array[0..1] of Double = (100.0, -2.5);
   EXP_PARAMS: array[0..1] of Double = (10.0, -0.05);
   PWR_PARAMS: array[0..1] of Double = (3.0, -0.5);
+  HARMONIC_PARAMS: array[0..3] of Double = (2.0, 1.0, 1/3, 1/5);
 
   // Min and max for x axis of the various test functions
   // positive numbers only because of the logarithms involved in this example.
@@ -119,7 +120,8 @@ const
     (0.1, 50),
     (1, 20),
     (0.001, 100),
-    (1, 20)
+    (1, 20),
+    (0.1, 20)
   );
 
 
@@ -183,6 +185,11 @@ begin
   FitSeries.DrawFitRangeOnly := cbDrawFitRangeOnly.Checked;
 end;
 
+function HarmonicBaseFunc(x: ArbFloat; Param: Integer): ArbFloat;
+begin
+  Result := sin(x * (2*Param - 1));
+end;
+
 procedure TfrmMain.cbFitEquationSelect(Sender: TObject);
 var
   eq: TFitEquation;
@@ -216,6 +223,18 @@ begin
       begin
         edFitParam0.Value := PWR_PARAMS[0];
         edFitParam1.value := PWR_PARAMS[1];
+      end;
+    feCustom:
+      begin
+        FitSeries.ParamCount := 4;
+        FitSeries.SetFitParamBasisFunc(0, @FitBaseFunc_Const, '');
+        FitSeries.SetFitParamBasisFunc(1, @HarmonicBaseFunc, 'sin(x)');
+        FitSeries.SetFitParamBasisFunc(2, @HarmonicBaseFunc, 'sin(3 x)');
+        FitSeries.SetFitParamBasisFunc(3, @HarmonicBaseFunc, 'sin(5 x)');
+        cbFitParam0Fixed.Caption := 'b0 = ';
+        cbFitParam1Fixed.Caption := 'b1 = ';
+        edFitParam0.Value := HARMONIC_PARAMS[0];
+        edFitParam1.Value := HARMONIC_PARAMS[1];
       end;
   end;
 end;
@@ -331,6 +350,9 @@ begin
         y := EXP_PARAMS[0] * Exp(EXP_PARAMS[1]*x);
       fePower:
         y := PWR_PARAMS[0] * Power(x, PWR_PARAMS[1]);
+      feCustom:
+        y := HARMONIC_PARAMS[0] + HARMONIC_PARAMS[1] * sin(x) +
+             HARMONIC_PARAMS[2] * sin(3*x) + HARMONIC_PARAMS[3] * sin(5*x);
     end;
     xarr[i] := x;
     yarr[i] := y;
@@ -429,8 +451,10 @@ begin
             {$IFEND}
             for i := 0 to FitSeries.ParamCount - 1 do begin
               case FitSeries.FitEquation of
-                fePolynomial: paramName := Format('b[%d]', [i]);
-                else          paramName := PARAM_NAME[i];
+                fePolynomial, feCustom:
+                  paramName := Format('b[%d]', [i]);
+                else
+                  paramName := PARAM_NAME[i];
               end;
               Add(Format(MASK, [
                 paramName,
@@ -448,8 +472,10 @@ begin
             Add(Format(CONF_MASK, ['Name', 'Value', 'Lower', 'Upper']));
             for i := 0 to FitSeries.ParamCount - 1 do begin
               case FitSeries.FitEquation of
-                fePolynomial: paramname := Format('b[%d]', [i]);
-                else          paramname := PARAM_NAME[i];
+                fePolynomial, feCustom:
+                  paramname := Format('b[%d]', [i]);
+                else
+                  paramname := PARAM_NAME[i];
               end;
               FitSeries.GetConfidenceLimits(i, confL, confH);
               Add(Format(CONF_MASK, [
@@ -484,8 +510,6 @@ begin
           Add('No fit parameters specified');
         fitSingular:
           Add('Matrix is (nearly) singular');
-        fitExpValueError:
-          Add('Incorrect usage of negative values in ExpFit.');
       end;
     finally
       EndUpdate;
@@ -501,16 +525,18 @@ var
   p: Integer;
   i: Integer;
   w: Integer;
+  lb: TListBox;
 begin
-  lbResults.Canvas.FillRect(ARect);
-  s := lbResults.Items[Index];
-  p := pos(#9, lbResults.Items[Index]);
+  lb := Control as TListbox;
+  lb.Canvas.FillRect(ARect);
+  s := lb.Items[Index];
+  p := pos(#9, lb.Items[Index]);
   if p = 0 then
-    lbResults.Canvas.TextOut(ARect.Left+2, ARect.Top, lbResults.Items[Index])
+    lb.Canvas.TextOut(ARect.Left+2, ARect.Top, lb.Items[Index])
   else begin
-    s := Copy(lbResults.Items[Index], 1, p-1);
-    lbResults.Canvas.TextOut(ARect.Left+2, ARect.Top, s);
-    s := Copy(lbResults.Items[Index], p+1, MaxInt);
+    s := Copy(lb.Items[Index], 1, p-1);
+    lb.Canvas.TextOut(ARect.Left+2, ARect.Top, s);
+    s := Copy(lb.Items[Index], p+1, MaxInt);
     if TryStrToInt(s, i) then begin
       p := FReportDecimals + 1;
       while p > 0 do begin
@@ -518,8 +544,8 @@ begin
         dec(p);
       end;
     end;
-    w := lbResults.Canvas.TextWidth(s);
-    lbResults.Canvas.Textout(ARect.Right - w - 2, ARect.Top, s);
+    w := lb.Canvas.TextWidth(s);
+    lb.Canvas.Textout(ARect.Right - w - 2, ARect.Top, s);
   end;
 end;
 
@@ -533,6 +559,7 @@ begin
     Items.Add(eq.Equation(feLinear).Params(LIN_PARAMS));
     Items.Add(eq.Equation(feExp).Params(EXP_PARAMS));
     Items.Add(eq.Equation(fePower).Params(PWR_PARAMS));
+    Items.Add('y = 2 + sin(x) + 1/3 * sin(3x) + 1/5 * sin(5x)');
     ItemIndex := Ord(fePolynomial);
   end;
 
