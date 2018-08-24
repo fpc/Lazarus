@@ -282,7 +282,9 @@ type
   TCalcGoodnessOfFitEvent = procedure (Sender: TObject; var x,y: ArbFloat;
     n: Integer; out AResult: Double) of object;
 
-  TFitFuncEvent = procedure(AIndex: Integer; AFitFunc: TFitFunc) of object;
+  TFitFuncIndex = 1..MaxInt;
+
+  TFitFuncEvent = procedure(AIndex: TFitFuncIndex; AFitFunc: TFitFunc) of object;
 
   TFitSeries = class(TBasicPointSeries)
   strict private
@@ -352,7 +354,8 @@ type
     function GetNearestPoint(
       const AParams: TNearestPointParams;
       out AResults: TNearestPointResults): Boolean; override;
-    procedure SetFitParamBasisFunc(AIndex: Integer; AFitFunc: TFitFunc; AFitFuncName: String);
+    procedure SetFitBasisFunc(AIndex: TFitFuncIndex; AFitFunc: TFitFunc;
+      AFitFuncName: String);
   public  // properties
     property Param[AIndex: Integer]: Double read GetParam;
     property ParamError[AIndex: Integer]: Double read GetParamError;
@@ -1996,7 +1999,7 @@ begin
   UpdateParentChart;
 end;
 
-procedure TFitSeries.SetFitParamBasisFunc(AIndex: Integer; AFitFunc: TFitFunc;
+procedure TFitSeries.SetFitBasisFunc(AIndex: TFitFuncIndex; AFitFunc: TFitFunc;
   AFitFuncName: String);
 begin
   FFitParams[AIndex].Func := AFitFunc;

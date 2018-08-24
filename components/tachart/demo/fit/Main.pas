@@ -227,10 +227,9 @@ begin
     feCustom:
       begin
         FitSeries.ParamCount := 4;
-        FitSeries.SetFitParamBasisFunc(0, @FitBaseFunc_Const, '');
-        FitSeries.SetFitParamBasisFunc(1, @HarmonicBaseFunc, 'sin(x)');
-        FitSeries.SetFitParamBasisFunc(2, @HarmonicBaseFunc, 'sin(3 x)');
-        FitSeries.SetFitParamBasisFunc(3, @HarmonicBaseFunc, 'sin(5 x)');
+        FitSeries.SetFitBasisFunc(1, @HarmonicBaseFunc, 'sin(x)');
+        FitSeries.SetFitBasisFunc(2, @HarmonicBaseFunc, 'sin(3 x)');
+        FitSeries.SetFitBasisFunc(3, @HarmonicBaseFunc, 'sin(5 x)');
         cbFitParam0Fixed.Caption := 'b0 = ';
         cbFitParam1Fixed.Caption := 'b1 = ';
         edFitParam0.Value := HARMONIC_PARAMS[0];
