@@ -1379,7 +1379,7 @@ type
     procedure DeleteColRow(IsColumn: Boolean; index: Integer);
     procedure DeleteCol(Index: Integer); virtual;
     procedure DeleteRow(Index: Integer); virtual;
-    procedure ExchangeColRow(IsColumn: Boolean; index, WithIndex: Integer);
+    procedure ExchangeColRow(IsColumn: Boolean; index, WithIndex: Integer); virtual;
     procedure InsertColRow(IsColumn: boolean; index: integer);
     procedure MoveColRow(IsColumn: Boolean; FromIndex, ToIndex: Integer);
     procedure SortColRow(IsColumn: Boolean; index:Integer); overload;
@@ -3691,6 +3691,7 @@ procedure TCustomGrid.ColRowMoved(IsColumn: Boolean; FromIndex,ToIndex: Integer)
 begin
 end;
 
+{Use in derived grids to exchange the actual data}
 procedure TCustomGrid.ColRowExchanged(IsColumn: Boolean; index, WithIndex: Integer);
 begin
 end;
@@ -6282,9 +6283,9 @@ begin
     exit;
   end;
   if IsColumn then
-    FCols.Exchange(index, WithIndex)
+    FCols.Exchange(index, WithIndex) //exchanges the dimensions (width/height) of the resp. columns
   else
-    FRows.Exchange(index, WithIndex);
+    FRows.Exchange(index, WithIndex); //exchanges the dimensions (width/height) of the resp. rows
   ColRowExchanged(IsColumn, index, WithIndex);
   VisualChange;
 
