@@ -1480,7 +1480,6 @@ begin
     i:=0;
     TId := Threads.CurrentThreads.CurrentThreadId;
     c := CallStack.CurrentCallStackList.EntriesForThreads[TId].CountLimited(30);
-c := -1;
     while (i < c) do
     begin
       StackEntry := CallStack.CurrentCallStackList.EntriesForThreads[TId].Entries[i];
