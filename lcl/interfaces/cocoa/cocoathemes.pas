@@ -180,18 +180,26 @@ var
   acc : TCocoaContextAccess;
   nsr : NSRect;
   dr  : NSRect;
+
+  cur : NSGraphicsContext;
 begin
   cl := GetCellForDetails(Details);
   if Assigned(cl) then
   begin
     acc := TCocoaContextAccess(DC);
+
+    cur := NSGraphicsContext.currentContext;
+    NSGraphicsContext.setCurrentContext( acc.ctx );
+
     acc.SetCGFillping(acc.CGContext, 0, -acc.Size.cy);
     try
       LCLToNSRect( R, acc.size.cy, dr);
       cl.drawWithFrame_inView (dr, nil );
     finally
       acc.SetCGFillping(acc.CGContext, 0, -acc.Size.cy);
+      NSGraphicsContext.setCurrentContext( cur );
     end;
+
     Exit;
   end;
 
@@ -399,6 +407,8 @@ begin
       lBrush := TCocoaBrush.Create(lColor, False);
       DC.Rectangle(R.Left, R.Top, R.Right, R.Bottom, True, lBrush);
       lBrush.Free;
+
+      Result := R;
     end;
     TVP_GLYPH, TVP_HOTGLYPH:
     begin
@@ -463,6 +473,8 @@ begin
       Result := R;
       {$endif}
     end;
+  else
+    Result := Bounds(0,0,0,0);
   end;
 end;
 
