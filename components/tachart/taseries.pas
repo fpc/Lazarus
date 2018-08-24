@@ -300,8 +300,11 @@ type
     procedure SetPosition(AValue: Double);
     procedure SetSeriesColor(AValue: TColor);
     procedure SetUseBounds(AValue: Boolean);
+    procedure ReadAxisIndexX(Reader: TReader);
+    procedure WriteAxisIndexX(Writer: TWriter);
   protected
     procedure AfterAdd; override;
+    procedure DefineProperties(AFiler: TFiler); override;
     procedure GetBounds(var ABounds: TDoubleRect); override;
     procedure GetLegendItems(AItems: TChartLegendItems); override;
   public
@@ -317,12 +320,15 @@ type
     procedure MovePoint(var AIndex: Integer; const ANewPos: TDoublePoint); override;
     procedure UpdateBiDiMode; override;
 
+    property AxisIndexX: TChartAxisIndex
+      read GetAxisIndex write SetAxisIndex stored false;
+      deprecated 'Use AxisIndex';
+
   published
     property Active default true;
     property Arrow: TChartArrow read FArrow write SetArrow;
     property AxisIndex: TChartAxisIndex
       read GetAxisIndex write SetAxisIndex default DEF_AXIS_INDEX;
-    property AxisIndexX write SetAxisIndex; deprecated 'Use AxisIndex';
     property LineStyle: TLineStyle
       read FLineStyle write SetLineStyle default lsHorizontal;
     property Pen: TPen read FPen write SetPen;
@@ -882,6 +888,22 @@ begin
   FreeAndNil(FArrow);
   FreeAndNil(FPen);
   inherited;
+end;
+
+procedure TConstantLine.DefineProperties(AFiler: TFiler);
+begin
+  inherited;
+  AFiler.DefineProperty('AxisIndexX', @ReadAxisIndexX, @WriteAxisIndexX, false);
+end;
+
+procedure TConstantLine.ReadAxisIndexX(Reader: TReader);
+begin
+  AxisIndex := Reader.ReadInteger;
+end;
+
+procedure TConstantLine.WriteAxisIndexX(Writer: TWriter);
+begin
+  Writer.WriteInteger(AxisIndex);
 end;
 
 procedure TConstantLine.Draw(ADrawer: IChartDrawer);
