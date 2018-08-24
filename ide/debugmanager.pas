@@ -2598,16 +2598,13 @@ begin
 end;
 
 function TDebugManager.DoShowExecutionPoint: TModalResult;
-var
-  DummyLocation: TDBGLocationRec;
 begin
   Result := mrCancel;
   if (MainIDE.ToolStatus <> itDebugger)
   or (FDebugger = nil) or Destroying
   then Exit;
 
-  DummyLocation.SrcLine := 0;
-  DebuggerCurrentLine(FDebugger, DummyLocation);
+  DebuggerCurrentLine(FDebugger, FCurrentLocation);
   Result := mrOk;
 end;
 
