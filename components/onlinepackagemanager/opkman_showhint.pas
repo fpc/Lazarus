@@ -173,7 +173,7 @@ begin
   Data := VisualTree.VST.GetNodeData(ANode);
   Caption := Format(rsMainFrm_rsPackageInformation, [Data^.PackageDisplayName]);
   pnPackageName.Caption := Data^.PackageDisplayName;
-  mDescription.Text := Data^.CommunityDescription;
+  CalcHeight(mDescription, Data^.CommunityDescription);
   for I := FFrames.Count - 1  downto 0 do
   begin
     CurFrame := TfrShowHint(FFrames.Items[I]);
@@ -197,8 +197,8 @@ begin
       FFrames.Add(CurFrame);
       CurFrame.pnBase.BorderSpacing.Bottom := 3;
       CurFrame.Parent := sbLazPackages;
-      CurFrame.CalcHeight(CurFrame.mDescription, Trim(LazPackage.Description));
-      CurFrame.CalcHeight(CurFrame.mLicense, Trim(LazPackage.License));
+      CalcHeight(CurFrame.mDescription, Trim(LazPackage.Description));
+      CalcHeight(CurFrame.mLicense, Trim(LazPackage.License));
       CurFrame.Height := CurFrame.pnPackageName.Height + CurFrame.pnDescription.Height + CurFrame.pnLicense.Height +
                          CurFrame.BorderSpacing.Top + CurFrame.pnBase.BorderSpacing.Bottom;
       TotHeight := TotHeight + CurFrame.Height;
@@ -212,7 +212,7 @@ begin
     TfrShowHint(FFrames.Items[0]).BorderSpacing.Bottom := 0;
   end;
   TfrShowHint(FFrames.Items[FFrames.Count - 1]).pnBase.BorderSpacing.Top := 0;
-  TotHeight := TotHeight + pnPackageName.Height + pnDescription.Height + 15;
+  TotHeight := TotHeight + pnPackageName.Height + pnDescription.Height + 25;
   if (TotHeight < 51) or (TotHeight > 365) then
     TotHeight := 365;
   Self.Height := TotHeight;

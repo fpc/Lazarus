@@ -14,7 +14,6 @@ object ShowHintFrm: TShowHintFrm
   OnDestroy = FormDestroy
   OnKeyUp = FormKeyUp
   PopupMode = pmExplicit
-  LCLVersion = '1.9.0.0'
   object pnMain: TPanel
     AnchorSideLeft.Control = Owner
     AnchorSideRight.Control = Owner
@@ -22,16 +21,17 @@ object ShowHintFrm: TShowHintFrm
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 10
-    Height = 315
-    Top = 0
+    Height = 305
+    Top = 10
     Width = 543
     Align = alClient
     Anchors = [akLeft, akRight, akBottom]
     BorderSpacing.Left = 10
+    BorderSpacing.Top = 10
     BorderSpacing.Right = 10
     BorderSpacing.Bottom = 10
     BevelInner = bvLowered
-    ClientHeight = 315
+    ClientHeight = 305
     ClientWidth = 543
     Color = 15460842
     ParentColor = False
@@ -106,7 +106,7 @@ object ShowHintFrm: TShowHintFrm
       AnchorSideBottom.Control = pnMain
       AnchorSideBottom.Side = asrBottom
       Left = 12
-      Height = 228
+      Height = 218
       Top = 83
       Width = 519
       HorzScrollBar.Page = 1

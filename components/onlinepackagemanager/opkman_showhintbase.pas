@@ -48,8 +48,9 @@ type
   private
   public
     procedure Init;
-    procedure CalcHeight(AMemo: TMemo; AText: String);
   end;
+
+  procedure CalcHeight(AMemo: TMemo; AText: String);
 
 implementation
 uses opkman_const, opkman_options;
@@ -75,7 +76,7 @@ begin
   end;
 end;
 
-procedure TfrShowHint.CalcHeight(AMemo: TMemo; AText: String);
+procedure CalcHeight(AMemo: TMemo; AText: String);
 var
   R: TRect;
   Increase: Integer;
