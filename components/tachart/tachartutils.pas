@@ -236,7 +236,7 @@ type
   end;
 
   // An ordered set of integers represented as a comma-separated string
-  // for publushing as a single property.
+  // for publishing as a single property.
   TPublishedIntegerSet = object
   strict private
     FAllSet: Boolean;
@@ -985,7 +985,15 @@ begin
   if AllSet then exit;
   sl := TStringList.Create;
   try
-    sl.CommaText := AValue;
+    if pos(',', AValue) > 0 then
+      sl.CommaText := AValue
+    else if pos(';', AValue) > 0 then begin
+      sl.Delimiter := ';';
+      sl.DelimitedText := AValue;
+    end else if pos('|', AValue) > 0 then begin
+      sl.Delimiter := '|';
+      sl.DelimitedText := AValue;
+    end;
     SetLength(FData, sl.Count);
     i := 0;
     for s in sl do

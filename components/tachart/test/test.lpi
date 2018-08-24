@@ -1,7 +1,7 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="9"/>
+    <Version Value="11"/>
     <PathDelim Value="\"/>
     <General>
       <Flags>
@@ -18,7 +18,6 @@
     <VersionInfo>
       <Language Value=""/>
       <CharSet Value=""/>
-      <StringTable ProductVersion=""/>
     </VersionInfo>
     <BuildModes Count="1">
       <Item1 Name="default" Default="True"/>
@@ -30,9 +29,10 @@
       <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
     </PublishOptions>
     <RunParams>
-      <local>
-        <FormatVersion Value="1"/>
-      </local>
+      <FormatVersion Value="2"/>
+      <Modes Count="1">
+        <Mode0 Name="default"/>
+      </Modes>
     </RunParams>
     <RequiredPackages Count="1">
       <Item1>
@@ -43,27 +43,22 @@
       <Unit0>
         <Filename Value="test.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="test"/>
       </Unit0>
       <Unit1>
         <Filename Value="UtilsTest.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="UtilsTest"/>
       </Unit1>
       <Unit2>
         <Filename Value="SourcesTest.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="SourcesTest"/>
       </Unit2>
       <Unit3>
         <Filename Value="AssertHelpers.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="AssertHelpers"/>
       </Unit3>
       <Unit4>
         <Filename Value="DbTest.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="DbTest"/>
       </Unit4>
     </Units>
   </ProjectOptions>
@@ -88,12 +83,6 @@
         <OverflowChecks Value="True"/>
       </Checks>
     </CodeGeneration>
-    <Other>
-      <CompilerMessages>
-        <UseMsgFile Value="True"/>
-      </CompilerMessages>
-      <CompilerPath Value="$(CompPath)"/>
-    </Other>
   </CompilerOptions>
   <Debugging>
     <Exceptions Count="4">

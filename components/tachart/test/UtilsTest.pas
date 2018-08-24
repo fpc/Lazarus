@@ -445,6 +445,10 @@ begin
   AssertTrue(FISet.AllSet);
   FISet.AsString := '+';
   AssertEquals(PUB_INT_SET_EMPTY, FISet.AsString);
+  FISet.AsString := '3 ;1;; 2';
+  AssertEquals('3,1,2', FISet.AsString);
+  FISet.AsString := '3|1||2';
+  AssertEquals('3,1,2', FISet.AsString);
 end;
 
 procedure TPublishedIntegerSetTest.TestIsSet;
