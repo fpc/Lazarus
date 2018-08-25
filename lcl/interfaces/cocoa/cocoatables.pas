@@ -51,6 +51,7 @@ type
     function GetItemTextAt(ARow, ACol: Integer; var Text: String): Boolean;
     procedure SetItemTextAt(ARow, ACol: Integer; const Text: String);
     procedure tableSelectionChange(ARow: Integer; Added, Removed: NSIndexSet);
+    procedure ColumnClicked(ACol: Integer);
   end;
 
   TCocoaListBox = objcclass;
@@ -208,9 +209,9 @@ type
     {function tableView_shouldSelectRow(tableView: NSTableView; row: NSInteger): Boolean; message 'tableView:shouldSelectRow:';
     function tableView_selectionIndexesForProposedSelection(tableView: NSTableView; proposedSelectionIndexes: NSIndexSet): NSIndexSet; message 'tableView:selectionIndexesForProposedSelection:';
     function tableView_shouldSelectTableColumn(tableView: NSTableView; tableColumn: NSTableColumn): Boolean; message 'tableView:shouldSelectTableColumn:';
-    procedure tableView_mouseDownInHeaderOfTableColumn(tableView: NSTableView; tableColumn: NSTableColumn); message 'tableView:mouseDownInHeaderOfTableColumn:';
+    procedure tableView_mouseDownInHeaderOfTableColumn(tableView: NSTableView; tableColumn: NSTableColumn); message 'tableView:mouseDownInHeaderOfTableColumn:';}
     procedure tableView_didClickTableColumn(tableView: NSTableView; tableColumn: NSTableColumn); message 'tableView:didClickTableColumn:';
-    procedure tableView_didDragTableColumn(tableView: NSTableView; tableColumn: NSTableColumn); message 'tableView:didDragTableColumn:';
+    {procedure tableView_didDragTableColumn(tableView: NSTableView; tableColumn: NSTableColumn); message 'tableView:didDragTableColumn:';
     function tableView_toolTipForCell_rect_tableColumn_row_mouseLocation(tableView: NSTableView; cell: NSCell; rect: NSRectPointer; tableColumn: NSTableColumn; row: NSInteger; mouseLocation: NSPoint): NSString; message 'tableView:toolTipForCell:rect:tableColumn:row:mouseLocation:';
     function tableView_heightOfRow(tableView: NSTableView; row: NSInteger): CGFloat; message 'tableView:heightOfRow:';
     function tableView_typeSelectStringForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): NSString; message 'tableView:typeSelectStringForTableColumn:row:';
@@ -875,6 +876,13 @@ begin
   if Assigned(beforeSel) then beforeSel.release;
   beforeSel := (NSIndexSet.alloc).initWithIndexSet(selectedRowIndexes);
   Result := true;
+end;
+
+procedure TCocoaTableListView.tableView_didClickTableColumn(
+  tableView: NSTableView; tableColumn: NSTableColumn);
+begin
+  if Assigned(callback) then
+    callback.ColumnClicked(getIndexOfColumn(tableColumn));
 end;
 
 type

@@ -235,6 +235,7 @@ type
     function GetItemTextAt(ARow, ACol: Integer; var Text: String): Boolean;
     procedure SetItemTextAt(ARow, ACol: Integer; const Text: String);
     procedure tableSelectionChange(NewSel: Integer; Added, Removed: NSIndexSet);
+    procedure ColumnClicked(ACol: Integer);
   end;
   TLCLListViewCallBackClass = class of TLCLListViewCallback;
 
@@ -1411,6 +1412,25 @@ begin
   end;
 
   LCLMessageGlue.DeliverMessage(ListView, Msg);}
+end;
+
+procedure TLCLListViewCallback.ColumnClicked(ACol: Integer);
+var
+  Msg: TLMNotify;
+  NMLV: TNMListView;
+begin
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
+  FillChar(NMLV{%H-}, SizeOf(NMLV), #0);
+
+  Msg.Msg := CN_NOTIFY;
+
+  NMLV.hdr.hwndfrom := ListView.Handle;
+  NMLV.hdr.code := LVN_COLUMNCLICK;
+  NMLV.iSubItem := ACol;
+  NMLV.uChanged := 0;
+  Msg.NMHdr := @NMLV.hdr;
+
+  LCLMessageGlue.DeliverMessage(ListView, Msg);
 end;
 
 { TCocoaWSTrackBar }
