@@ -481,25 +481,41 @@ end;
 function TCocoaThemeServices.GetCellForDetails(Details: TThemedElementDetails): NSCell;
 var
   btn  : NSButtonCell;
+  cocoaBtn : Integer;
+const
+  IntBool : array [Boolean] of NSInteger = (0,1);
 begin
   //todo: instead of recreating btn all the time, should it be cached instead?
   //      typically as soon as a themed drawing stared, it would be ongoing
   //      (i.e. customly drawn/themed controls)
   Result := nil;
-  if Details.Element = teButton then
-  begin
-    if Details.Part = BP_CHECKBOX then
-    begin
-      btn := NSButtonCell(NSButtonCell.alloc).initTextCell(NSSTR(''));
-      btn.setButtonType(NSSwitchButton);
-      if IsChecked(Details) then
-        btn.setIntValue(1)
-      else
-        btn.setIntValue(0);
-      btn.autorelease;
-      Result := btn;
-    end;
+  if Details.Element <> teButton then Exit;
+
+  case Details.Part of
+    BP_CHECKBOX:    cocoaBtn := NSSwitchButton;
+    BP_RADIOBUTTON: cocoaBtn := NSRadioButton;
+    BP_PUSHBUTTON:  cocoaBtn := NSMomentaryLightButton;
+  else
+    cocoaBtn := -1;
   end;
+  if cocoaBtn < 0 then Exit; // unsupported button type
+
+  btn := NSButtonCell(NSButtonCell.alloc).initTextCell(NSSTR(''));
+  btn.setButtonType(NSButtonType(cocoaBtn));
+  btn.setCellAttribute_to(NSCellAllowsMixedState, 1);
+  btn.setCellAttribute_to(NSCellDisabled, IntBool[IsDisabled(Details)]);
+  btn.setCellAttribute_to(NSCellHighlighted, IntBool[IsHot(Details)]);
+  btn.setCellAttribute_to(NSPushInCell, IntBool[IsPushed(Details)]);
+
+  if IsMixed(Details) then begin
+    btn.setState(NSMixedState);
+  end else if IsChecked(Details) then begin
+    btn.setIntValue(1)
+  end
+  else
+    btn.setIntValue(0);
+  btn.autorelease;
+  Result := btn;
 end;
 
 (*function TCarbonThemeServices.DrawWindowElement(DC: TCarbonDeviceContext;
