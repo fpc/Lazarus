@@ -49,7 +49,9 @@ type
 
     function ItemsCount: Integer;
     function GetItemTextAt(ARow, ACol: Integer; var Text: String): Boolean;
+    function GetItemCheckedAt(ARow, ACol: Integer; var isChecked: Boolean): Boolean;
     procedure SetItemTextAt(ARow, ACol: Integer; const Text: String);
+    procedure SetItemCheckedAt(ARow, ACol: Integer; isChecked: Boolean);
     procedure tableSelectionChange(ARow: Integer; Added, Removed: NSIndexSet);
     procedure ColumnClicked(ACol: Integer);
   end;
@@ -157,6 +159,8 @@ type
     readOnly: Boolean;
 
     beforeSel : NSIndexSet;
+    isFirstColumnCheckboxes: Boolean;
+    checkedIdx : NSMutableIndexSet;
 
     function acceptsFirstResponder: Boolean; override;
     function becomeFirstResponder: Boolean; override;
@@ -172,6 +176,7 @@ type
     procedure reloadDataForRow_column(ARow, ACol: NSInteger); message 'reloadDataForRow:column:';
     procedure scheduleSelectionDidChange(); message 'scheduleSelectionDidChange';
 
+    function initWithFrame(frameRect: NSRect): id; override;
     procedure dealloc; override;
     procedure resetCursorRects; override;
 
@@ -191,6 +196,7 @@ type
     procedure keyUp(event: NSEvent); override;
     function lclIsHandle: Boolean; override;
     procedure lclExpectedKeys(var wantTabs, wantKeys, wantAllKeys: Boolean); override;
+    procedure lclSetFirstColumCheckboxes(acheckboxes: Boolean); message 'lclSetFirstColumCheckboxes:';
 
     // NSTableViewDataSourceProtocol
     function numberOfRowsInTableView(tableView: NSTableView): NSInteger; message 'numberOfRowsInTableView:';
@@ -219,7 +225,9 @@ type
     function tableView_shouldTypeSelectForEvent_withCurrentSearchString(tableView: NSTableView; event: NSEvent; searchString: NSString): Boolean; message 'tableView:shouldTypeSelectForEvent:withCurrentSearchString:';
     function tableView_shouldShowCellExpansionForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): Boolean; message 'tableView:shouldShowCellExpansionForTableColumn:row:';
     function tableView_shouldTrackCell_forTableColumn_row(tableView: NSTableView; cell: NSCell; tableColumn: NSTableColumn; row: NSInteger): Boolean; message 'tableView:shouldTrackCell:forTableColumn:row:';
+    }
     function tableView_dataCellForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): NSCell; message 'tableView:dataCellForTableColumn:row:';
+    {
     function tableView_isGroupRow(tableView: NSTableView; row: NSInteger): Boolean; message 'tableView:isGroupRow:';
     function tableView_sizeToFitWidthOfColumn(tableView: NSTableView; column: NSInteger): CGFloat; message 'tableView:sizeToFitWidthOfColumn:';
     function tableView_shouldReorderColumn_toColumn(tableView: NSTableView; columnIndex: NSInteger; newColumnIndex: NSInteger): Boolean; message 'tableView:shouldReorderColumn:toColumn:';}
@@ -535,7 +543,7 @@ function TCocoaCheckListBox.tableView_dataCellForTableColumn_row(tableView: NSTa
 var
   lNSString: NSString;
 begin
-  Result:=nil;
+   Result:=nil;
   if not Assigned(tableColumn) then
   begin
     Exit;
@@ -570,6 +578,13 @@ begin
   wantAllKeys := false;
 end;
 
+procedure TCocoaTableListView.lclSetFirstColumCheckboxes(acheckboxes: Boolean);
+begin
+  if isFirstColumnCheckboxes = acheckboxes then Exit;
+  isFirstColumnCheckboxes := acheckboxes;
+  reloadData();
+end;
+
 function TCocoaTableListView.acceptsFirstResponder: Boolean;
 begin
   Result := True;
@@ -600,6 +615,7 @@ end;
 procedure TCocoaTableListView.dealloc;
 begin
   //if Assigned(Items) then FreeAndNil(Items);
+  checkedIdx.release;
   inherited dealloc;
 end;
 
@@ -712,6 +728,12 @@ begin
   Timer.OnTimer := @callback.delayedSelectionDidChange_OnTimer;
 end;
 
+function TCocoaTableListView.initWithFrame(frameRect: NSRect): id;
+begin
+  Result:=inherited initWithFrame(frameRect);
+  TCocoaTableListView(Result).checkedIdx := NSMutableIndexSet.alloc.init;
+end;
+
 procedure TCocoaTableListView.mouseDown(event: NSEvent);
 begin
   if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
@@ -812,6 +834,7 @@ var
   lStringList: TStringList;
   col: NSInteger;
   StrResult: NSString;
+  chk : Boolean;
   txt : string;
 begin
   {$IFDEF COCOA_DEBUG_TABCONTROL}
@@ -821,7 +844,13 @@ begin
 
   Result := nil;
   if not Assigned(callback) then Exit;
-  col := tableColumns.indexOfObject(tableColumn);
+  col := getIndexOfColumn(tableColumn);
+  if (col = 0) and isFirstColumnCheckboxes then begin
+    chk := false;
+    callback.GetItemCheckedAt(row, col, chk);
+    Result := NSNumber.numberWithBool(chk);
+    Exit;
+  end;
 
   txt := '';
   if callback.GetItemTextAt(row, col, txt) then begin
@@ -850,7 +879,23 @@ procedure TCocoaTableListView.tableView_setObjectValue_forTableColumn_row(
 var
   lColumnIndex: NSInteger;
   lNewValue: NSString;
+  isSel: Boolean;
 begin
+  if (NSObject(object_).isKindOfClass(NSNumber)) and isFirstColumnCheckboxes then begin
+    lColumnIndex := getIndexOfColumn(tableColumn);
+    if Assigned(callback) and (lColumnIndex = 0) then
+    begin
+      isSel := NSNumber(object_).integerValue <> 0;
+      if isSel
+        then checkedIdx.addIndex(row)
+        else checkedIdx.removeIndex(row);
+      callback.SetItemCheckedAt(row, lColumnIndex, isSel);
+      //reloadDataForRow_column(lColumnIndex, row);
+    end;
+
+    exit;
+  end;
+
   //WriteLn('[TCocoaTableListView.tableView_setObjectValue_forTableColumn_row]');
   if not NSObject(object_).isKindOfClass(NSString) then Exit;
   lNewValue := NSString(object_);
@@ -883,6 +928,40 @@ procedure TCocoaTableListView.tableView_didClickTableColumn(
 begin
   if Assigned(callback) then
     callback.ColumnClicked(getIndexOfColumn(tableColumn));
+end;
+
+function TCocoaTableListView.tableView_dataCellForTableColumn_row(
+  tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): NSCell;
+var
+  chk : Boolean;
+  txt : string;
+  col : Integer;
+  nstxt : NSString;
+begin
+  Result:=nil;
+  if not isFirstColumnCheckboxes then Exit;
+  //writeln('getting dataCell row=',row,' col=',getIndexOfColumn(tableColumn));
+
+  col := getIndexOfColumn(tableColumn);
+  if (col <> 0) then Exit;
+
+  txt := '';
+  chk := false;
+
+  callback.GetItemTextAt(row, col, txt);
+
+  if txt = '' then nstxt := NSString.string_
+  else nstxt := NSString.stringWithUTF8String(@txt[1]);
+
+  Result := NSButtonCell.alloc.init.autorelease;
+  //Result.setAllowsMixedState(True);
+  NSButtonCell(Result).setButtonType(NSSwitchButton);
+  NSButtonCell(Result).setTitle(nstxt);
+  if chk then begin
+    NSButtonCell(Result).setIntValue(1);
+    NSButtonCell(Result).setCellAttribute_to(NSCellState, NSOnState);
+  end;
+
 end;
 
 type

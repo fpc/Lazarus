@@ -229,11 +229,19 @@ type
 
     isSetTextFromWS: Integer; // allows to suppress the notifation about text change
                               // when initiated by Cocoa itself.
+
+    // used when delivering the notifaciton to LCL
+    isChkChg : Boolean;
+    ChkChgRow : Integer;
+    ChkChgState : Boolean;
+
     procedure delayedSelectionDidChange_OnTimer(ASender: TObject);
 
     function ItemsCount: Integer;
     function GetItemTextAt(ARow, ACol: Integer; var Text: String): Boolean;
+    function GetItemCheckedAt(ARow, ACol: Integer; var IsChecked: Boolean): Boolean;
     procedure SetItemTextAt(ARow, ACol: Integer; const Text: String);
+    procedure SetItemCheckedAt(ARow, ACol: Integer; IsChecked: Boolean);
     procedure tableSelectionChange(NewSel: Integer; Added, Removed: NSIndexSet);
     procedure ColumnClicked(ACol: Integer);
   end;
@@ -933,11 +941,13 @@ begin
   // thus have to decrease the count, as reloadDate might
   // request the updated itemCount immediately
   lclcb.tempItemsCountDelta := -1;
+  lTableLV.checkedIdx.shiftIndexesStartingAtIndex_by(AIndex, -1);
 
   lTableLV.reloadData();
 
   lclcb.tempItemsCountDelta := 0;
   lTableLV.scheduleSelectionDidChange();
+
 end;
 
 class function TCocoaWSCustomListView.ItemDisplayRect(
@@ -962,8 +972,17 @@ end;
 class function TCocoaWSCustomListView.ItemGetChecked(
   const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem
   ): Boolean;
+var
+  lclcb : TLCLListViewCallback;
+  lStr: NSString;
+  lCocoaLV: TCocoaListView;
+  lTableLV: TCocoaTableListView;
 begin
-  Result:=inherited ItemGetChecked(ALV, AIndex, AItem);
+  if not CheckParams(lCocoaLV, lTableLV, ALV) then begin
+    Result := false;
+    Exit;
+  end;
+  Result:=lTableLV.checkedIdx.containsIndex(AIndex);
 end;
 
 class function TCocoaWSCustomListView.ItemGetPosition(
@@ -1021,6 +1040,7 @@ begin
     lTableLV.setStringValue_forCol_row(lNSStr, i, AIndex);
     lNSStr.release;
   end;}
+  lTableLV.checkedIdx.shiftIndexesStartingAtIndex_by(AIndex, 1);
   lTableLV.reloadData();
   lTableLV.sizeToFit();
 end;
@@ -1187,8 +1207,8 @@ var
 begin
   if not CheckParams(lCocoaLV, lTableLV, ALV) then Exit;
   case AProp of
-  {lvpAutoArrange,
-  lvpCheckboxes,}
+  {lvpAutoArrange,}
+  lvpCheckboxes: lTableLV.lclSetFirstColumCheckboxes(AIsSet);
   lvpColumnClick: lTableLV.setAllowsColumnSelection(AIsSet);
 {  lvpFlatScrollBars,
   lvpFullDrag,
@@ -1328,6 +1348,15 @@ begin
   end;
 end;
 
+function TLCLListViewCallback.GetItemCheckedAt(ARow, ACol: Integer;
+  var IsChecked: Boolean): Boolean;
+begin
+  Result := (ACol=0) and (ARow >= 0) and (ARow < listView.Items.Count);
+  if not Result then Exit;
+
+  IsChecked := listView.Items[ARow].Checked;
+end;
+
 procedure TLCLListViewCallback.SetItemTextAt(ARow, ACol: Integer;
   const Text: String);
 begin
@@ -1343,6 +1372,34 @@ begin
     dec(isSetTextFromWS);
   end;
 
+end;
+
+procedure TLCLListViewCallback.SetItemCheckedAt(ARow, ACol: Integer;
+  IsChecked: Boolean);
+var
+  Msg: TLMNotify;
+  NMLV: TNMListView;
+begin
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
+  FillChar(NMLV{%H-}, SizeOf(NMLV), #0);
+
+  Msg.Msg := CN_NOTIFY;
+
+  NMLV.hdr.hwndfrom := ListView.Handle;
+  NMLV.hdr.code := LVN_ITEMCHANGED;
+  NMLV.iItem := ARow;
+  NMLV.iSubItem := 0;
+  NMLV.uChanged := LVIF_STATE;
+  Msg.NMHdr := @NMLV.hdr;
+
+  isChkChg := true;
+  ChkChgRow := ARow;
+  ChkChgState := isChecked;
+  try
+    LCLMessageGlue.DeliverMessage(ListView, Msg);
+  finally
+    isChkChg := false;
+  end;
 end;
 
 procedure TLCLListViewCallback.tableSelectionChange(NewSel: Integer; Added, Removed: NSIndexSet);
