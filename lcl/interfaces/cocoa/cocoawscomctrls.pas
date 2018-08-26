@@ -123,7 +123,7 @@ type
     class function  ItemGetPosition(const ALV: TCustomListView; const AIndex: Integer): TPoint; override;
     class function  ItemGetState(const ALV: TCustomListView; const AIndex: Integer; const {%H-}AItem: TListItem; const AState: TListItemState; out AIsSet: Boolean): Boolean; override; // returns True if supported
     class procedure ItemInsert(const ALV: TCustomListView; const AIndex: Integer; const {%H-}AItem: TListItem); override;
-    (*class procedure ItemSetChecked(const ALV: TCustomListView; const AIndex: Integer; const {%H-}AItem: TListItem; const AChecked: Boolean); override;
+    class procedure ItemSetChecked(const ALV: TCustomListView; const AIndex: Integer; const {%H-}AItem: TListItem; const AChecked: Boolean); override;
     //class procedure ItemSetImage(const ALV: TCustomListView; const AIndex: Integer; const {%H-}AItem: TListItem; const {%H-}ASubIndex, {%H-}AImageIndex: Integer); override;
     //carbon//class function ItemSetPosition(const ALV: TCustomListView; const AIndex: Integer; const ANewPosition: TPoint): Boolean; override;*)
     class procedure ItemSetState(const ALV: TCustomListView; const AIndex: Integer; const {%H-}AItem: TListItem; const AState: TListItemState; const AIsSet: Boolean); override;
@@ -1045,6 +1045,18 @@ begin
   lTableLV.sizeToFit();
 end;
 
+class procedure TCocoaWSCustomListView.ItemSetChecked(
+  const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem;
+  const AChecked: Boolean);
+var
+  lCocoaLV: TCocoaListView;
+  lTableLV: TCocoaTableListView;
+begin
+  if not CheckParams(lCocoaLV, lTableLV, ALV) then Exit;
+  // todo: make a specific row/column reload data!
+  lTableLV.reloadData();
+end;
+
 class procedure TCocoaWSCustomListView.ItemSetState(const ALV: TCustomListView;
   const AIndex: Integer; const AItem: TListItem; const AState: TListItemState;
   const AIsSet: Boolean);
@@ -1079,14 +1091,10 @@ class procedure TCocoaWSCustomListView.ItemSetText(const ALV: TCustomListView;
 var
   lCocoaLV: TCocoaListView;
   lTableLV: TCocoaTableListView;
-  lStr: NSString;
 begin
   if not CheckParams(lCocoaLV, lTableLV, ALV) then Exit;
   // todo: make a specific row/column reload data!
   lTableLV.reloadData();
-  //lStr := NSStringUTF8(AText);
-  //lTableLV.setStringValue_forCol_row(lStr, ASubIndex, AItem.Index);
-  //lStr.release;
 end;
 
 class procedure TCocoaWSCustomListView.ItemShow(const ALV: TCustomListView;
