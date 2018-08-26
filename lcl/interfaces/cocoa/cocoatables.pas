@@ -31,7 +31,7 @@ uses
   MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects,
   cocoa_extra, CocoaPrivate,
   // LCL
-  LMessages, LCLMessageGlue, ExtCtrls,
+  LMessages, LCLMessageGlue,
   LCLType, LCLProc, Controls, StdCtrls;
 
 type
@@ -45,8 +45,6 @@ type
   { IListViewCallBack }
 
   IListViewCallBack = interface(ICommonCallback)
-    procedure delayedSelectionDidChange_OnTimer(ASender: TObject);
-
     function ItemsCount: Integer;
     function GetItemTextAt(ARow, ACol: Integer; var Text: String): Boolean;
     function GetItemCheckedAt(ARow, ACol: Integer; var isChecked: Boolean): Boolean;
@@ -155,9 +153,6 @@ type
   public
     callback: IListViewCallback;
 
-    // Owned Pascal classes which need to be released
-    //Items: TStringList; // Object are TStringList for sub-items
-    Timer: TTimer;
     readOnly: Boolean;
 
     beforeSel : NSIndexSet;
@@ -173,12 +168,8 @@ type
     procedure lclClearCallback; override;
 
     // Own methods, mostly convenience methods
-    //procedure setStringValue_forCol_row(AStr: NSString; col, row: NSInteger); message 'setStringValue:forCol:row:';
-    //procedure deleteItemForRow(row: NSInteger); message 'deleteItemForRow:';
-    //procedure setListViewStringValue_forCol_row(AStr: NSString; col, row: NSInteger); message 'setListViewStringValue:forCol:row:';
     function getIndexOfColumn(ACol: NSTableColumn): NSInteger; message 'getIndexOfColumn:';
     procedure reloadDataForRow_column(ARow, ACol: NSInteger); message 'reloadDataForRow:column:';
-    procedure scheduleSelectionDidChange(); message 'scheduleSelectionDidChange';
 
     function initWithFrame(frameRect: NSRect): id; override;
     procedure dealloc; override;
@@ -680,87 +671,6 @@ begin
     inherited resetCursorRects;
 end;
 
-(*
-procedure TCocoaTableListView.setStringValue_forCol_row(
-  AStr: NSString; col, row: NSInteger);
-var
-  lStringList: TStringList;
-  lStr: string;
-begin
-  lStr := NSStringToString(AStr);
-  {$IFDEF COCOA_DEBUG_TABCONTROL}
-  WriteLn(Format('[TCocoaTableListView.setStringValue_forTableColumn_row] AStr=%s col=%d row=%d Items.Count=%d',
-    [lStr, col, row, Items.Count]));
-  {$ENDIF}
-
-  // make sure we have enough lines
-  while (row >= Items.Count) do
-  begin
-    {$IFDEF COCOA_DEBUG_TABCONTROL}
-    WriteLn(Format('[TCocoaTableListView.setStringValue_forTableColumn_row] Adding line', []));
-    {$ENDIF}
-    Items.AddObject('', TStringList.Create());
-  end;
-
-  // Now write it
-  if col = 0 then
-    Items.Strings[row] := lStr
-  else
-  begin
-    lStringList := TStringList(Items.Objects[row]);
-    if lStringList = nil then
-    begin
-      lStringList := TStringList.Create;
-      Items.Objects[row] := lStringList;
-    end;
-
-    // make sure we have enough columns
-    while (col-1 >= lStringList.Count) do
-    begin
-      {$IFDEF COCOA_DEBUG_TABCONTROL}
-      WriteLn(Format('[TCocoaTableListView.setStringValue_forTableColumn_row] Adding column', []));
-      {$ENDIF}
-      lStringList.Add('');
-    end;
-
-    lStringList.Strings[col-1] := lStr;
-  end;
-end;
-
-procedure TCocoaTableListView.deleteItemForRow(row: NSInteger);
-var
-  lStringList: TStringList;
-begin
-  lStringList := TStringList(Items.Objects[row]);
-  if lStringList <> nil then lStringList.Free;
-  Items.Delete(row);
-end;
-
-procedure TCocoaTableListView.setListViewStringValue_forCol_row(
-  AStr: NSString; col, row: NSInteger);
-var
-  lSubItems: TStrings;
-  lItem: TListItem;
-  lNewValue: string;
-begin
-  lNewValue := NSStringToString(AStr);
-  if ListView.ReadOnly then Exit;
-
-  if row >= ListView.Items.Count then Exit;
-  lItem := ListView.Items.Item[row];
-
-  if col = 0 then
-  begin
-    lItem.Caption := lNewValue;
-  end
-  else if col > 0 then
-  begin
-    lSubItems := lItem.SubItems;
-    if col >= lSubItems.Count+1 then Exit;
-    lSubItems.Strings[col-1] := lNewValue;
-  end;
-end;
-*)
 function TCocoaTableListView.getIndexOfColumn(ACol: NSTableColumn): NSInteger;
 begin
   Result := tableColumns.indexOfObject(ACol);
@@ -773,14 +683,6 @@ begin
   lRowSet := NSIndexSet.indexSetWithIndex(ARow);
   lColSet := NSIndexSet.indexSetWithIndex(ACol);
   reloadDataForRowIndexes_columnIndexes(lRowSet, lColSet);
-end;
-
-procedure TCocoaTableListView.scheduleSelectionDidChange();
-begin
-  if Timer = nil then Timer := TTimer.Create(nil);
-  Timer.Interval := 1;
-  Timer.Enabled := True;
-  Timer.OnTimer := @callback.delayedSelectionDidChange_OnTimer;
 end;
 
 function TCocoaTableListView.initWithFrame(frameRect: NSRect): id;

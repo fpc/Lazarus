@@ -235,8 +235,6 @@ type
     ChkChgRow : Integer;
     ChkChgState : Boolean;
 
-    procedure delayedSelectionDidChange_OnTimer(ASender: TObject);
-
     function ItemsCount: Integer;
     function GetItemTextAt(ARow, ACol: Integer; var Text: String): Boolean;
     function GetItemCheckedAt(ARow, ACol: Integer; var IsChecked: Boolean): Boolean;
@@ -948,8 +946,6 @@ begin
   lTableLV.reloadData();
 
   lclcb.tempItemsCountDelta := 0;
-  lTableLV.scheduleSelectionDidChange();
-
 end;
 
 class function TCocoaWSCustomListView.ItemDisplayRect(
@@ -1341,13 +1337,6 @@ end; *)
 
 type
   TProtCustomListView = class(TCustomListView);
-
-procedure TLCLListViewCallback.delayedSelectionDidChange_OnTimer(
-  ASender: TObject);
-begin
-  TCocoaTableListView(Owner).Timer.Enabled := False;
-  TCocoaTableListView(Owner).tableViewSelectionDidChange(nil);
-end;
 
 function TLCLListViewCallback.ItemsCount: Integer;
 begin
