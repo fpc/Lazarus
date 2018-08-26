@@ -18,7 +18,7 @@ uses
   WSComCtrls,
   // Cocoa WS
   CocoaPrivate, CocoaScrollers, CocoaTabControls, CocoaUtils,
-  CocoaWSCommon, CocoaTables, cocoa_extra, CocoaWSStdCtrls;
+  CocoaWSCommon, CocoaTables, cocoa_extra, CocoaWSStdCtrls, CocoaGDIObjects;
 
 type
 
@@ -124,7 +124,7 @@ type
     class function  ItemGetState(const ALV: TCustomListView; const AIndex: Integer; const {%H-}AItem: TListItem; const AState: TListItemState; out AIsSet: Boolean): Boolean; override; // returns True if supported
     class procedure ItemInsert(const ALV: TCustomListView; const AIndex: Integer; const {%H-}AItem: TListItem); override;
     class procedure ItemSetChecked(const ALV: TCustomListView; const AIndex: Integer; const {%H-}AItem: TListItem; const AChecked: Boolean); override;
-    //class procedure ItemSetImage(const ALV: TCustomListView; const AIndex: Integer; const {%H-}AItem: TListItem; const {%H-}ASubIndex, {%H-}AImageIndex: Integer); override;
+    class procedure ItemSetImage(const ALV: TCustomListView; const AIndex: Integer; const {%H-}AItem: TListItem; const {%H-}ASubIndex, {%H-}AImageIndex: Integer); override;
     //carbon//class function ItemSetPosition(const ALV: TCustomListView; const AIndex: Integer; const ANewPosition: TPoint): Boolean; override;*)
     class procedure ItemSetState(const ALV: TCustomListView; const AIndex: Integer; const {%H-}AItem: TListItem; const AState: TListItemState; const AIsSet: Boolean); override;
     class procedure ItemSetText(const ALV: TCustomListView; const AIndex: Integer; const {%H-}AItem: TListItem; const {%H-}ASubIndex: Integer; const {%H-}AText: String); override;
@@ -240,6 +240,8 @@ type
     function ItemsCount: Integer;
     function GetItemTextAt(ARow, ACol: Integer; var Text: String): Boolean;
     function GetItemCheckedAt(ARow, ACol: Integer; var IsChecked: Boolean): Boolean;
+    function GetItemImageAt(ARow, ACol: Integer; var imgIdx: Integer): Boolean;
+    function GetImageFromIndex(imgIdx: Integer): NSImage;
     procedure SetItemTextAt(ARow, ACol: Integer; const Text: String);
     procedure SetItemCheckedAt(ARow, ACol: Integer; IsChecked: Boolean);
     procedure tableSelectionChange(NewSel: Integer; Added, Removed: NSIndexSet);
@@ -1057,6 +1059,18 @@ begin
   lTableLV.reloadData();
 end;
 
+class procedure TCocoaWSCustomListView.ItemSetImage(const ALV: TCustomListView;
+  const AIndex: Integer; const AItem: TListItem; const ASubIndex,
+  AImageIndex: Integer);
+var
+  lCocoaLV: TCocoaListView;
+  lTableLV: TCocoaTableListView;
+begin
+  if not CheckParams(lCocoaLV, lTableLV, ALV) then Exit;
+  // todo: make a specific row/column reload data!
+  lTableLV.reloadData();
+end;
+
 class procedure TCocoaWSCustomListView.ItemSetState(const ALV: TCustomListView;
   const AIndex: Integer; const AItem: TListItem; const AState: TListItemState;
   const AIsSet: Boolean);
@@ -1363,6 +1377,65 @@ begin
   if not Result then Exit;
 
   IsChecked := listView.Items[ARow].Checked;
+end;
+
+function TLCLListViewCallback.GetItemImageAt(ARow, ACol: Integer;
+  var imgIdx: Integer): Boolean;
+begin
+  Result := (ARow >= 0) and (ARow<listView.Items.Count);
+  if not Result then Exit;
+  imgIdx := listView.Items[ARow].ImageIndex;
+end;
+
+type
+  TSmallImagesAccess = class(TCustomListView);
+
+function TLCLListViewCallback.GetImageFromIndex(imgIdx: Integer): NSImage;
+var
+  bmp : TBitmap;
+  lst : TCustomImageList;
+  x,y : integer;
+  img : NSImage;
+  rep : NSBitmapImageRep;
+  cb  : TCocoaBitmap;
+begin
+  lst := TSmallImagesAccess(listView).SmallImages;
+  bmp := TBitmap.Create;
+  try
+    lst.GetBitmap(imgIdx, bmp);
+
+    if bmp.Handle = 0 then begin
+      Result := nil;
+      Exit;
+    end;
+
+    // Bitmap Handle should be nothing but TCocoaBitmap
+    cb := TCocoaBitmap(bmp.Handle);
+
+    // There's NSBitmapImageRep in TCocoaBitmap, but it depends on the availability
+    // of memory buffer stored with TCocoaBitmap. As soon as TCocoaBitmap is freed
+    // pixels are not available. For this reason, we're making a copy of the bitmapdata
+    // allowing Cocoa to allocate its own buffer (by passing nil for planes parameter)
+    rep := NSBitmapImageRep(NSBitmapImageRep.alloc).initWithBitmapDataPlanes_pixelsWide_pixelsHigh__colorSpaceName_bitmapFormat_bytesPerRow_bitsPerPixel(
+      nil, // planes, BitmapDataPlanes
+      Round(cb.ImageRep.size.Width), // width, pixelsWide
+      Round(cb.ImageRep.size.Height),// height, PixelsHigh
+      cb.ImageRep.bitsPerSample,// bitsPerSample, bps
+      cb.ImageRep.samplesPerPixel, // samplesPerPixel, spp
+      cb.ImageRep.hasAlpha, // hasAlpha
+      False, // isPlanar
+      cb.ImageRep.colorSpaceName, // colorSpaceName
+      cb.ImageRep.bitmapFormat, // bitmapFormat
+      cb.ImageRep.bytesPerRow, // bytesPerRow
+      cb.ImageRep.BitsPerPixel //bitsPerPixel
+    );
+    System.Move( cb.ImageRep.bitmapData^, rep.bitmapData^, cb.ImageRep.bytesPerRow * Round(cb.ImageRep.size.height));
+    img := NSImage(NSImage.alloc).initWithSize( rep.size );
+    img.addRepresentation(rep);
+    Result := img;
+  finally
+    bmp.Free;
+  end;
 end;
 
 procedure TLCLListViewCallback.SetItemTextAt(ARow, ACol: Integer;

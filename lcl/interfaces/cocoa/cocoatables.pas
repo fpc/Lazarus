@@ -50,6 +50,8 @@ type
     function ItemsCount: Integer;
     function GetItemTextAt(ARow, ACol: Integer; var Text: String): Boolean;
     function GetItemCheckedAt(ARow, ACol: Integer; var isChecked: Boolean): Boolean;
+    function GetItemImageAt(ARow, ACol: Integer; var imgIdx: Integer): Boolean;
+    function GetImageFromIndex(imgIdx: Integer): NSImage;
     procedure SetItemTextAt(ARow, ACol: Integer; const Text: String);
     procedure SetItemCheckedAt(ARow, ACol: Integer; isChecked: Boolean);
     procedure tableSelectionChange(ARow: Integer; Added, Removed: NSIndexSet);
@@ -162,6 +164,8 @@ type
     isFirstColumnCheckboxes: Boolean;
     checkedIdx : NSMutableIndexSet;
 
+    smallimages : NSMutableDictionary;
+
     function acceptsFirstResponder: Boolean; override;
     function becomeFirstResponder: Boolean; override;
     function resignFirstResponder: Boolean; override;
@@ -197,6 +201,9 @@ type
     function lclIsHandle: Boolean; override;
     procedure lclExpectedKeys(var wantTabs, wantKeys, wantAllKeys: Boolean); override;
     procedure lclSetFirstColumCheckboxes(acheckboxes: Boolean); message 'lclSetFirstColumCheckboxes:';
+
+    procedure lclRegisterSmallImage(idx: Integer; img: NSImage); message 'lclRegisterSmallImage::';
+    function lclGetSmallImage(idx: INteger): NSImage; message 'lclGetSmallImage:';
 
     // NSTableViewDataSourceProtocol
     function numberOfRowsInTableView(tableView: NSTableView): NSInteger; message 'numberOfRowsInTableView:';
@@ -237,7 +244,37 @@ type
     procedure tableViewSelectionIsChanging(notification: NSNotification); message 'tableViewSelectionIsChanging:';}
   end;
 
+
+  { NSImageAndTextCell }
+
+  NSImageAndTextCell = objcclass(NSTextFieldCell)
+    drawImage : NSImage;
+    procedure drawWithFrame_inView(cellFrame: NSRect; controlView_: NSView); override;
+  end;
+
 implementation
+
+{ NSImageAndTextCell }
+
+procedure NSImageAndTextCell.drawWithFrame_inView(cellFrame: NSRect;
+  controlView_: NSView);
+var
+  r : NSRect;
+  srcsz : NSSize;
+begin
+  r:=cellFrame;
+  cellFrame.origin.x:=cellFrame.origin.x+cellFrame.size.height;
+  cellFrame.size.width:=cellFrame.size.width-cellFrame.size.height;
+  inherited drawWithFrame_inView(cellFrame, controlView_);
+  if Assigned(drawImage) then
+  begin
+    r.size.width:=r.size.height;
+    srcsz := drawImage.size;
+    drawImage.drawInRect_fromRect_operation_fraction_respectFlipped_hints(
+      r, NSMakeRect(0,0, srcsz.width, srcsz.height), NSCompositeSourceOver, 1, true, nil
+    );
+  end;
+end;
 
 { TCocoaListBox }
 
@@ -585,6 +622,23 @@ begin
   reloadData();
 end;
 
+procedure TCocoaTableListView.lclRegisterSmallImage(idx: Integer; img: NSImage);
+begin
+  if not Assigned(smallimages) then
+    smallimages := (NSMutableDictionary.alloc).init;
+
+  if Assigned(img) then
+    smallimages.setObject_forKey(img, NSNumber.numberWithInt(idx) )
+  else
+    smallimages.removeObjectForKey( NSNumber.numberWithInt(idx) );
+end;
+
+function TCocoaTableListView.lclGetSmallImage(idx: INteger): NSImage;
+begin
+  if not Assigned(smallimages) then Result := nil;
+  Result := NSImage(smallimages.objectForKey( NSNumber.numberWithInt(idx) ) );
+end;
+
 function TCocoaTableListView.acceptsFirstResponder: Boolean;
 begin
   Result := True;
@@ -615,7 +669,8 @@ end;
 procedure TCocoaTableListView.dealloc;
 begin
   //if Assigned(Items) then FreeAndNil(Items);
-  checkedIdx.release;
+  if Assigned(checkedIdx) then checkedIdx.release;
+  if Assigned(smallimages) then smallimages.release; // all contents is released automatically
   inherited dealloc;
 end;
 
@@ -937,13 +992,32 @@ var
   txt : string;
   col : Integer;
   nstxt : NSString;
+  idx  : Integer;
+  img  : NSImage;
 begin
   Result:=nil;
-  if not isFirstColumnCheckboxes then Exit;
-  //writeln('getting dataCell row=',row,' col=',getIndexOfColumn(tableColumn));
-
   col := getIndexOfColumn(tableColumn);
   if (col <> 0) then Exit;
+
+  if not isFirstColumnCheckboxes then begin
+    idx := -1;
+    callback.GetItemImageAt(row, col, idx);
+    if idx>=0 then
+    begin
+      img := lclGetSmallImage(idx);
+      if not Assigned(img) then begin
+        img := callback.GetImageFromIndex(idx);
+        if Assigned(img) then lclRegisterSmallImage(idx, img);
+      end;
+    end else
+      img := nil;
+
+    if Assigned(img) then begin
+      Result := NSImageAndTextCell(NSImageAndTextCell.alloc).initTextCell(NSSTR(''));
+      NSImageAndTextCell(Result).drawImage := img; // if "image" is assigned, text won't be drawn :(
+    end;
+    Exit;
+  end;
 
   txt := '';
   chk := false;
