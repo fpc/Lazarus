@@ -149,8 +149,8 @@ type
     class procedure SetDefaultItemHeight(const ALV: TCustomListView; const AValue: Integer); override;
     //carbon//class procedure SetHotTrackStyles(const ALV: TCustomListView; const AValue: TListHotTrackStyles); override;
     //carbon//class procedure SetHoverTime(const ALV: TCustomListView; const AValue: Integer); override;
-    (*class procedure SetImageList(const ALV: TCustomListView; const {%H-}AList: TListViewImageList; const {%H-}AValue: TCustomImageList); override;
-    class procedure SetItemsCount(const ALV: TCustomListView; const Avalue: Integer); override;
+    class procedure SetImageList(const ALV: TCustomListView; const {%H-}AList: TListViewImageList; const {%H-}AValue: TCustomImageListResolution); override;
+    (*class procedure SetItemsCount(const ALV: TCustomListView; const Avalue: Integer); override;
     class procedure SetOwnerData(const ALV: TCustomListView; const {%H-}AValue: Boolean); override;*)
     class procedure SetProperty(const ALV: TCustomListView; const AProp: TListViewProperty; const AIsSet: Boolean); override;
     class procedure SetProperties(const ALV: TCustomListView; const AProps: TListViewProperties); override;
@@ -1215,6 +1215,16 @@ begin
   if AValue > 0 then
     lTableLV.setRowHeight(AValue);
   // setRowSizeStyle could be used here but is available only in 10.7+
+end;
+
+class procedure TCocoaWSCustomListView.SetImageList(const ALV: TCustomListView;
+  const AList: TListViewImageList; const AValue: TCustomImageListResolution);
+var
+  lCocoaLV: TCocoaListView;
+  lTableLV: TCocoaTableListView;
+begin
+  if not CheckParams(lCocoaLV, lTableLV, ALV) then Exit;
+  lTableLV.lclSetImagesInCell(Assigned(AValue));
 end;
 
 class procedure TCocoaWSCustomListView.SetProperty(const ALV: TCustomListView;

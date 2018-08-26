@@ -156,6 +156,8 @@ type
     readOnly: Boolean;
 
     beforeSel : NSIndexSet;
+
+    isImagesInCell: Boolean;
     isFirstColumnCheckboxes: Boolean;
     checkedIdx : NSMutableIndexSet;
 
@@ -192,6 +194,7 @@ type
     function lclIsHandle: Boolean; override;
     procedure lclExpectedKeys(var wantTabs, wantKeys, wantAllKeys: Boolean); override;
     procedure lclSetFirstColumCheckboxes(acheckboxes: Boolean); message 'lclSetFirstColumCheckboxes:';
+    procedure lclSetImagesInCell(aimagesInCell: Boolean); message 'lclSetImagesInCell:';
 
     procedure lclRegisterSmallImage(idx: Integer; img: NSImage); message 'lclRegisterSmallImage::';
     function lclGetSmallImage(idx: INteger): NSImage; message 'lclGetSmallImage:';
@@ -613,6 +616,13 @@ begin
   reloadData();
 end;
 
+procedure TCocoaTableListView.lclSetImagesInCell(aimagesInCell: Boolean);
+begin
+  if isImagesInCell = aimagesInCell then Exit;
+  isImagesInCell := aimagesInCell;
+  reloadData();
+end;
+
 procedure TCocoaTableListView.lclRegisterSmallImage(idx: Integer; img: NSImage);
 begin
   if not Assigned(smallimages) then
@@ -898,10 +908,12 @@ var
   img  : NSImage;
 begin
   Result:=nil;
+  if not isFirstColumnCheckboxes and not isImagesInCell then Exit;
+
   col := getIndexOfColumn(tableColumn);
   if (col <> 0) then Exit;
 
-  if not isFirstColumnCheckboxes then begin
+  if not isFirstColumnCheckboxes and isImagesInCell then begin
     idx := -1;
     callback.GetItemImageAt(row, col, idx);
     if idx>=0 then
@@ -914,10 +926,8 @@ begin
     end else
       img := nil;
 
-    if Assigned(img) then begin
-      Result := NSImageAndTextCell(NSImageAndTextCell.alloc).initTextCell(NSSTR(''));
-      NSImageAndTextCell(Result).drawImage := img; // if "image" is assigned, text won't be drawn :(
-    end;
+    Result := NSImageAndTextCell(NSImageAndTextCell.alloc).initTextCell(NSSTR(''));
+    NSImageAndTextCell(Result).drawImage := img; // if "image" is assigned, text won't be drawn :(
     Exit;
   end;
 
