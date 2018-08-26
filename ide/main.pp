@@ -8380,11 +8380,16 @@ procedure TMainIDE.UpdateCaption;
   end;
 
 var
-  NewCaption, NewTitle, ProjectName, DirName: String;
+  rev, NewCaption, NewTitle, ProjectName, DirName: String;
 begin
   if MainIDEBar = nil then Exit;
   if ToolStatus = itExiting then Exit;
-  NewCaption := Format(lisLazarusEditorV, [GetLazarusVersionString]);
+  rev := GetLazarusRevision;
+  if (rev = '') or (rev = 'Unknown') then
+    NewCaption := Format(lisLazarusEditorV, [GetLazarusVersionString])
+  else
+    NewCaption := Format(lisLazarusEditorV + ' ' + lisLazarusSVNRev,
+                         [GetLazarusVersionString, rev]);
   NewTitle := NewCaption;
   if MainBarSubTitle <> '' then
     NewCaption := AddToCaption(NewCaption, MainBarSubTitle)
