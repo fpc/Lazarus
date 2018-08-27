@@ -95,9 +95,38 @@ type
 
   TCocoaListView = TCocoaScrollView;
 
+  { TLCLListViewCallback }
+
+  TLCLListViewCallback = class(TLCLCommonCallback, IListViewCallback)
+  public
+    listView: TCustomListView;
+    tempItemsCountDelta : Integer;
+
+    isSetTextFromWS: Integer; // allows to suppress the notifation about text change
+                              // when initiated by Cocoa itself.
+    checkedIdx : NSMutableIndexSet;
+
+    constructor Create(AOwner: NSObject; ATarget: TWinControl); override;
+    destructor Destroy; override;
+    function ItemsCount: Integer;
+    function GetItemTextAt(ARow, ACol: Integer; var Text: String): Boolean;
+    function GetItemCheckedAt(ARow, ACol: Integer; var IsChecked: Integer): Boolean;
+    function GetItemImageAt(ARow, ACol: Integer; var imgIdx: Integer): Boolean;
+    function GetImageFromIndex(imgIdx: Integer): NSImage;
+    procedure SetItemTextAt(ARow, ACol: Integer; const Text: String);
+    procedure SetItemCheckedAt(ARow, ACol: Integer; IsChecked: Integer);
+    procedure tableSelectionChange(NewSel: Integer; Added, Removed: NSIndexSet);
+    procedure ColumnClicked(ACol: Integer);
+    procedure DrawRow(rowidx: Integer; ctx: TCocoaContext; const r: TRect;
+      state: TOwnerDrawState);
+  end;
+  TLCLListViewCallBackClass = class of TLCLListViewCallback;
+
+
   TCocoaWSCustomListView = class(TWSCustomListView)
   private
     class function CheckParams(out AScroll: TCocoaListView; out ATableControl: TCocoaTableListView; const ALV: TCustomListView): Boolean;
+    class function CheckParamsCb(out AScroll: TCocoaListView; out ATableControl: TCocoaTableListView; out Cb: TLCLListViewCallback; const ALV: TCustomListView): Boolean;
     class function CheckColumnParams(out ATableControl: TCocoaTableListView;
       out ANSColumn: NSTableColumn; const ALV: TCustomListView; const AIndex: Integer; ASecondIndex: Integer = -1): Boolean;
   published
@@ -219,30 +248,6 @@ type
   TCocoaWSTreeView = class(TWSTreeView)
   published
   end;
-
-  { TLCLListViewCallback }
-
-  TLCLListViewCallback = class(TLCLCommonCallback, IListViewCallback)
-  public
-    listView: TCustomListView;
-    tempItemsCountDelta : Integer;
-
-    isSetTextFromWS: Integer; // allows to suppress the notifation about text change
-                              // when initiated by Cocoa itself.
-
-    function ItemsCount: Integer;
-    function GetItemTextAt(ARow, ACol: Integer; var Text: String): Boolean;
-    function GetItemCheckedAt(ARow, ACol: Integer; var IsChecked: Integer): Boolean;
-    function GetItemImageAt(ARow, ACol: Integer; var imgIdx: Integer): Boolean;
-    function GetImageFromIndex(imgIdx: Integer): NSImage;
-    procedure SetItemTextAt(ARow, ACol: Integer; const Text: String);
-    procedure SetItemCheckedAt(ARow, ACol: Integer; IsChecked: Integer);
-    procedure tableSelectionChange(NewSel: Integer; Added, Removed: NSIndexSet);
-    procedure ColumnClicked(ACol: Integer);
-    procedure DrawRow(rowidx: Integer; ctx: TCocoaContext; const r: TRect;
-      state: TOwnerDrawState);
-  end;
-  TLCLListViewCallBackClass = class of TLCLListViewCallback;
 
 implementation
 
@@ -674,6 +679,15 @@ begin
   end;
 end;
 
+class function TCocoaWSCustomListView.CheckParamsCb(out AScroll: TCocoaListView; out ATableControl: TCocoaTableListView; out Cb: TLCLListViewCallback; const ALV: TCustomListView): Boolean;
+begin
+  Result := CheckParams(AScroll, ATableControl, ALV);
+  if Result then
+    Cb := TLCLListViewCallback(ATableControl.lclGetCallback.GetCallbackObject)
+  else
+    Cb := nil;
+end;
+
 class function TCocoaWSCustomListView.CheckColumnParams(
   out ATableControl: TCocoaTableListView; out ANSColumn: NSTableColumn;
   const ALV: TCustomListView; const AIndex: Integer; ASecondIndex: Integer
@@ -930,15 +944,14 @@ begin
   {$IFDEF COCOA_DEBUG_TABCONTROL}
   WriteLn(Format('[TCocoaWSCustomListView.ItemDelete] AIndex=%d', [AIndex]));
   {$ENDIF}
-  if not CheckParams(lCocoaLV, lTableLV, ALV) then Exit;
+  if not CheckParamsCb(lCocoaLV, lTableLV, lclcb, ALV) then Exit;
   //lTableLV.deleteItemForRow(AIndex);
 
-  lclcb := TLCLListViewCallback(lTableLV.callback.GetCallbackObject);
   // TListView item would actually be removed after call to ItemDelete()
   // thus have to decrease the count, as reloadDate might
   // request the updated itemCount immediately
   lclcb.tempItemsCountDelta := -1;
-  lTableLV.checkedIdx.shiftIndexesStartingAtIndex_by(AIndex, -1);
+  lclcb.checkedIdx.shiftIndexesStartingAtIndex_by(AIndex, -1);
 
   lTableLV.reloadData();
 
@@ -969,15 +982,14 @@ class function TCocoaWSCustomListView.ItemGetChecked(
   ): Boolean;
 var
   lclcb : TLCLListViewCallback;
-  lStr: NSString;
   lCocoaLV: TCocoaListView;
   lTableLV: TCocoaTableListView;
 begin
-  if not CheckParams(lCocoaLV, lTableLV, ALV) then begin
+  if not CheckParamsCb(lCocoaLV, lTableLV, lclcb, ALV) then begin
     Result := false;
     Exit;
   end;
-  Result:=lTableLV.checkedIdx.containsIndex(AIndex);
+  Result:=lclcb.checkedIdx.containsIndex(AIndex);
 end;
 
 class function TCocoaWSCustomListView.ItemGetPosition(
@@ -1013,11 +1025,12 @@ var
   lColumn: NSTableColumn;
   lStr: string;
   lNSStr: NSString;
+  lclcb: TLCLListViewCallback;
 begin
   {$IFDEF COCOA_DEBUG_TABCONTROL}
   WriteLn(Format('[TCocoaWSCustomListView.ItemInsert] AIndex=%d', [AIndex]));
   {$ENDIF}
-  if not CheckParams(lCocoaLV, lTableLV, ALV) then Exit;
+  if not CheckParamsCb(lCocoaLV, lTableLV, lclcb, ALV) then Exit;
   lColumnCount := lTableLV.tableColumns.count();
   {$IFDEF COCOA_DEBUG_TABCONTROL}
   WriteLn(Format('[TCocoaWSCustomListView.ItemInsert]=> lColumnCount=%d', [lColumnCount]));
@@ -1035,7 +1048,7 @@ begin
     lTableLV.setStringValue_forCol_row(lNSStr, i, AIndex);
     lNSStr.release;
   end;}
-  lTableLV.checkedIdx.shiftIndexesStartingAtIndex_by(AIndex, 1);
+  lclcb.checkedIdx.shiftIndexesStartingAtIndex_by(AIndex, 1);
   lTableLV.reloadData();
   lTableLV.sizeToFit();
 end;
@@ -1046,10 +1059,22 @@ class procedure TCocoaWSCustomListView.ItemSetChecked(
 var
   lCocoaLV: TCocoaListView;
   lTableLV: TCocoaTableListView;
+  cb : TLCLListViewCallback;
 begin
-  if not CheckParams(lCocoaLV, lTableLV, ALV) then Exit;
+  if not CheckParamsCb(lCocoaLV, lTableLV, cb, ALV) then Exit;
   // todo: make a specific row/column reload data!
-  lTableLV.reloadData();
+
+  if AChecked and not cb.checkedIdx.containsIndex(AIndex) then
+  begin
+    cb.checkedIdx.addIndex(AIndex);
+    lTableLV.reloadDataForRow_column(AIndex, 0);
+  end
+  else
+  if not AChecked and cb.checkedIdx.containsIndex(AIndex) then
+  begin
+    cb.checkedIdx.removeIndex(AIndex);
+    lTableLV.reloadDataForRow_column(AIndex, 0);
+  end;
 end;
 
 class procedure TCocoaWSCustomListView.ItemSetImage(const ALV: TCustomListView;
@@ -1345,6 +1370,18 @@ end; *)
 type
   TProtCustomListView = class(TCustomListView);
 
+constructor TLCLListViewCallback.Create(AOwner: NSObject; ATarget: TWinControl);
+begin
+  inherited Create(AOwner, ATarget);
+  checkedIdx := NSMutableIndexSet.alloc.init;
+end;
+
+destructor TLCLListViewCallback.Destroy;
+begin
+  if Assigned(checkedIdx) then checkedIdx.release;
+  inherited Destroy;
+end;
+
 function TLCLListViewCallback.ItemsCount: Integer;
 begin
   Result:=listView.Items.Count + tempItemsCountDelta;
@@ -1372,10 +1409,8 @@ function TLCLListViewCallback.GetItemCheckedAt(ARow, ACol: Integer;
 var
   BoolState : array [Boolean] of Integer = (NSOffState, NSOnState);
 begin
-  Result := (ACol=0) and (ARow >= 0) and (ARow < listView.Items.Count);
-  if not Result then Exit;
-
-  IsChecked := BoolState[listView.Items[ARow].Checked];
+  IsChecked := BoolState[checkedIdx.containsIndex(ARow)];
+  Result := true;
 end;
 
 function TLCLListViewCallback.GetItemImageAt(ARow, ACol: Integer;
@@ -1460,6 +1495,10 @@ var
   Msg: TLMNotify;
   NMLV: TNMListView;
 begin
+  if IsChecked = NSOnState
+    then checkedIdx.addIndex(ARow)
+    else checkedIdx.removeIndex(ARow);
+
   FillChar(Msg{%H-}, SizeOf(Msg), #0);
   FillChar(NMLV{%H-}, SizeOf(NMLV), #0);
 

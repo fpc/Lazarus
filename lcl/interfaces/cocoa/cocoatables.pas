@@ -73,7 +73,6 @@ type
     isImagesInCell: Boolean;
     isFirstColumnCheckboxes: Boolean;
     isCustomDraw : Boolean;
-    checkedIdx : NSMutableIndexSet;
 
     smallimages : NSMutableDictionary;
 
@@ -262,7 +261,6 @@ end;
 procedure TCocoaTableListView.dealloc;
 begin
   //if Assigned(Items) then FreeAndNil(Items);
-  if Assigned(checkedIdx) then checkedIdx.release;
   if Assigned(smallimages) then smallimages.release; // all contents is released automatically
   inherited dealloc;
 end;
@@ -309,7 +307,6 @@ end;
 function TCocoaTableListView.initWithFrame(frameRect: NSRect): id;
 begin
   Result:=inherited initWithFrame(frameRect);
-  TCocoaTableListView(Result).checkedIdx := NSMutableIndexSet.alloc.init;
 end;
 
 procedure TCocoaTableListView.mouseDown(event: NSEvent);
@@ -462,16 +459,9 @@ begin
   if (NSObject(object_).isKindOfClass(NSNumber)) and isFirstColumnCheckboxes then begin
     lColumnIndex := getIndexOfColumn(tableColumn);
     if Assigned(callback) and (lColumnIndex = 0) then
-    begin
-      isSel := NSNumber(object_).integerValue;
-      if isSel = NSOffState
-        then checkedIdx.addIndex(row)
-        else checkedIdx.removeIndex(row);
-      callback.SetItemCheckedAt(row, lColumnIndex, isSel);
-      //reloadDataForRow_column(lColumnIndex, row);
-    end;
+      callback.SetItemCheckedAt(row, lColumnIndex, NSNumber(object_).integerValue);
 
-    exit;
+    Exit;
   end;
 
   //WriteLn('[TCocoaTableListView.tableView_setObjectValue_forTableColumn_row]');
