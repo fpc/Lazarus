@@ -230,20 +230,17 @@ type
     isSetTextFromWS: Integer; // allows to suppress the notifation about text change
                               // when initiated by Cocoa itself.
 
-    // used when delivering the notifaciton to LCL
-    isChkChg : Boolean;
-    ChkChgRow : Integer;
-    ChkChgState : Boolean;
-
     function ItemsCount: Integer;
     function GetItemTextAt(ARow, ACol: Integer; var Text: String): Boolean;
-    function GetItemCheckedAt(ARow, ACol: Integer; var IsChecked: Boolean): Boolean;
+    function GetItemCheckedAt(ARow, ACol: Integer; var IsChecked: Integer): Boolean;
     function GetItemImageAt(ARow, ACol: Integer; var imgIdx: Integer): Boolean;
     function GetImageFromIndex(imgIdx: Integer): NSImage;
     procedure SetItemTextAt(ARow, ACol: Integer; const Text: String);
-    procedure SetItemCheckedAt(ARow, ACol: Integer; IsChecked: Boolean);
+    procedure SetItemCheckedAt(ARow, ACol: Integer; IsChecked: Integer);
     procedure tableSelectionChange(NewSel: Integer; Added, Removed: NSIndexSet);
     procedure ColumnClicked(ACol: Integer);
+    procedure DrawRow(rowidx: Integer; ctx: TCocoaContext; const r: TRect;
+      state: TOwnerDrawState);
   end;
   TLCLListViewCallBackClass = class of TLCLListViewCallback;
 
@@ -1364,18 +1361,21 @@ begin
   else
   begin
     Text := '';
+    dec(ACol);
     if (ACol >=0) and (ACol < listView.Items[ARow].SubItems.Count) then
       Text := listView.Items[ARow].SubItems[ACol];
   end;
 end;
 
 function TLCLListViewCallback.GetItemCheckedAt(ARow, ACol: Integer;
-  var IsChecked: Boolean): Boolean;
+  var IsChecked: Integer): Boolean;
+var
+  BoolState : array [Boolean] of Integer = (NSOffState, NSOnState);
 begin
   Result := (ACol=0) and (ARow >= 0) and (ARow < listView.Items.Count);
   if not Result then Exit;
 
-  IsChecked := listView.Items[ARow].Checked;
+  IsChecked := BoolState[listView.Items[ARow].Checked];
 end;
 
 function TLCLListViewCallback.GetItemImageAt(ARow, ACol: Integer;
@@ -1455,7 +1455,7 @@ begin
 end;
 
 procedure TLCLListViewCallback.SetItemCheckedAt(ARow, ACol: Integer;
-  IsChecked: Boolean);
+  IsChecked: Integer);
 var
   Msg: TLMNotify;
   NMLV: TNMListView;
@@ -1472,14 +1472,7 @@ begin
   NMLV.uChanged := LVIF_STATE;
   Msg.NMHdr := @NMLV.hdr;
 
-  isChkChg := true;
-  ChkChgRow := ARow;
-  ChkChgState := isChecked;
-  try
-    LCLMessageGlue.DeliverMessage(ListView, Msg);
-  finally
-    isChkChg := false;
-  end;
+  LCLMessageGlue.DeliverMessage(ListView, Msg);
 end;
 
 procedure TLCLListViewCallback.tableSelectionChange(NewSel: Integer; Added, Removed: NSIndexSet);
@@ -1568,6 +1561,12 @@ begin
   Msg.NMHdr := @NMLV.hdr;
 
   LCLMessageGlue.DeliverMessage(ListView, Msg);
+end;
+
+procedure TLCLListViewCallback.DrawRow(rowidx: Integer; ctx: TCocoaContext;
+  const r: TRect; state: TOwnerDrawState);
+begin
+  // todo: check for custom draw listviews event
 end;
 
 { TCocoaWSTrackBar }

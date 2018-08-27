@@ -31,32 +31,24 @@ uses
   MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects,
   cocoa_extra, CocoaPrivate,
   // LCL
-  LMessages, LCLMessageGlue,
-  LCLType, LCLProc, Controls, StdCtrls;
+  LCLType;
 
 type
-
-  { IListBoxCallBack }
-
-  IListBoxCallBack = interface(ICommonCallback)
-    procedure SelectionChanged;
-  end;
 
   { IListViewCallBack }
 
   IListViewCallBack = interface(ICommonCallback)
     function ItemsCount: Integer;
     function GetItemTextAt(ARow, ACol: Integer; var Text: String): Boolean;
-    function GetItemCheckedAt(ARow, ACol: Integer; var isChecked: Boolean): Boolean;
+    function GetItemCheckedAt(ARow, ACol: Integer; var CheckState: Integer): Boolean;
     function GetItemImageAt(ARow, ACol: Integer; var imgIdx: Integer): Boolean;
     function GetImageFromIndex(imgIdx: Integer): NSImage;
     procedure SetItemTextAt(ARow, ACol: Integer; const Text: String);
-    procedure SetItemCheckedAt(ARow, ACol: Integer; isChecked: Boolean);
+    procedure SetItemCheckedAt(ARow, ACol: Integer; CheckState: Integer);
     procedure tableSelectionChange(ARow: Integer; Added, Removed: NSIndexSet);
     procedure ColumnClicked(ACol: Integer);
+    procedure DrawRow(rowidx: Integer; ctx: TCocoaContext; const r: TRect; state: TOwnerDrawState);
   end;
-
-  TCocoaListBox = objcclass;
 
   { TCocoaStringList }
 
@@ -64,88 +56,9 @@ type
   protected
     procedure Changed; override;
   public
-    Owner: TCocoaListBox;
-    constructor Create(AOwner: TCocoaListBox);
+    Owner: NSTableView;
+    constructor Create(AOwner: NSTableView);
   end;
-
-  { TCocoaListBox }
-
-  TCocoaListBox = objcclass(NSTableView, NSTableViewDelegateProtocol, NSTableViewDataSourceProtocol)
-  public
-    callback: IListBoxCallback;
-    resultNS: NSString;
-    list: TCocoaStringList;
-    isCustomDraw: Boolean;
-    function acceptsFirstResponder: Boolean; override;
-    function becomeFirstResponder: Boolean; override;
-    function resignFirstResponder: Boolean; override;
-    function lclGetCallback: ICommonCallback; override;
-    procedure lclClearCallback; override;
-    function numberOfRowsInTableView(aTableView: NSTableView): NSInteger; message 'numberOfRowsInTableView:';
-
-    function tableView_shouldEditTableColumn_row(tableView: NSTableView;
-      tableColumn: NSTableColumn; row: NSInteger): Boolean;
-      message 'tableView:shouldEditTableColumn:row:';
-
-    function tableView_objectValueForTableColumn_row(tableView: NSTableView;
-      objectValueForTableColumn: NSTableColumn; row: NSInteger):id;
-      message 'tableView:objectValueForTableColumn:row:';
-
-    procedure tableViewSelectionDidChange(notification: NSNotification); message 'tableViewSelectionDidChange:';
-
-    procedure drawRow_clipRect(row: NSInteger; clipRect: NSRect); override;
-
-    procedure dealloc; override;
-    procedure resetCursorRects; override;
-
-    // mouse
-    procedure mouseDown(event: NSEvent); override;
-    // procedure mouseUp(event: NSEvent); override;   This is eaten by NSTableView - worked around with NSTableViewDelegateProtocol
-    procedure rightMouseDown(event: NSEvent); override;
-    procedure rightMouseUp(event: NSEvent); override;
-    procedure otherMouseDown(event: NSEvent); override;
-    procedure otherMouseUp(event: NSEvent); override;
-    procedure mouseDragged(event: NSEvent); override;
-    procedure mouseEntered(event: NSEvent); override;
-    procedure mouseExited(event: NSEvent); override;
-    procedure mouseMoved(event: NSEvent); override;
-    // key
-    procedure keyDown(event: NSEvent); override;
-    procedure keyUp(event: NSEvent); override;
-    function lclIsHandle: Boolean; override;
-  end;
-
-  { TCocoaCheckListBox }
-
-  TCocoaCheckListBox = objcclass(TCocoaListBox)
-  private
-    chkid : NSString;
-    txtid : NSString;
-  public
-    // LCL functions
-    AllowMixedState: Boolean;
-    function initWithFrame(ns: NSRect): id; override;
-    procedure dealloc; override;
-    class function LCLCheckStateToCocoa(ALCLState: TCheckBoxState): NSInteger; message 'LCLCheckStateToCocoa:';
-    class function CocoaCheckStateToLCL(ACocoaState: NSInteger): TCheckBoxState; message 'CocoaCheckStateToLCL:';
-    function CheckListBoxGetNextState(ACurrent: TCheckBoxState): TCheckBoxState; message 'CheckListBoxGetNextState:';
-    function GetCocoaState(const AIndex: integer): NSInteger; message 'GetCocoaState:';
-    procedure SetCocoaState(const AIndex: integer; AState: NSInteger); message 'SetCocoaState:AState:';
-    function GetState(const AIndex: integer): TCheckBoxState; message 'GetState:';
-    procedure SetState(const AIndex: integer; AState: TCheckBoxState); message 'SetState:AState:';
-    // Cocoa functions
-    function tableView_objectValueForTableColumn_row(tableView: NSTableView;
-      objectValueForTableColumn: NSTableColumn; row: NSInteger):id;
-      override;
-    procedure tableView_setObjectValue_forTableColumn_row(tableView: NSTableView;
-      object_: id; tableColumn: NSTableColumn; row: NSInteger);
-      message 'tableView:setObjectValue:forTableColumn:row:';
-    function tableView_dataCellForTableColumn_row(tableView: NSTableView;
-      tableColumn: NSTableColumn; row: NSInteger): NSCell;
-      message 'tableView:dataCellForTableColumn:row:';
-  end;
-
-  { TListView }
 
   { TCocoaTableListView }
 
@@ -159,6 +72,7 @@ type
 
     isImagesInCell: Boolean;
     isFirstColumnCheckboxes: Boolean;
+    isCustomDraw : Boolean;
     checkedIdx : NSMutableIndexSet;
 
     smallimages : NSMutableDictionary;
@@ -176,6 +90,8 @@ type
     function initWithFrame(frameRect: NSRect): id; override;
     procedure dealloc; override;
     procedure resetCursorRects; override;
+
+    procedure drawRow_clipRect(row: NSInteger; clipRect: NSRect); override;
 
     // mouse
     procedure mouseDown(event: NSEvent); override;
@@ -270,330 +186,6 @@ begin
   end;
 end;
 
-{ TCocoaListBox }
-
-function TCocoaListBox.lclIsHandle: Boolean;
-begin
-  Result:=true;
-end;
-
-function TCocoaListBox.acceptsFirstResponder: Boolean;
-begin
-  Result := True;
-end;
-
-function TCocoaListBox.becomeFirstResponder: Boolean;
-begin
-  Result := inherited becomeFirstResponder;
-  callback.BecomeFirstResponder;
-end;
-
-function TCocoaListBox.resignFirstResponder: Boolean;
-begin
-  Result := inherited resignFirstResponder;
-  callback.ResignFirstResponder;
-end;
-
-function TCocoaListBox.lclGetCallback: ICommonCallback;
-begin
-  Result := callback;
-end;
-
-procedure TCocoaListBox.lclClearCallback;
-begin
-  callback := nil;
-end;
-
-function TCocoaListBox.numberOfRowsInTableView(aTableView:NSTableView): NSInteger;
-begin
-  if Assigned(list) then
-    Result := list.Count
-  else
-    Result := 0;
-end;
-
-
-function TCocoaListBox.tableView_shouldEditTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): Boolean;
-begin
-  Result := False;  // disable cell editing by default
-end;
-
-function TCocoaListBox.tableView_objectValueForTableColumn_row(tableView: NSTableView;
-  objectValueForTableColumn: NSTableColumn; row: NSInteger):id;
-begin
-  //WriteLn('TCocoaListBox.tableView_objectValueForTableColumn_row');
-  if not Assigned(list) then
-    Result:=nil
-  else
-  begin
-    if row>=list.count then
-      Result := nil
-    else
-    begin
-      resultNS.release;
-      resultNS := NSStringUtf8(list[row]);
-      Result := ResultNS;
-    end;
-  end;
-end;
-
-procedure TCocoaListBox.drawRow_clipRect(row: NSInteger; clipRect: NSRect);
-var
-  DrawStruct: TDrawListItemStruct;
-  ctx: TCocoaContext;
-  LCLObject: TCustomListBox;
-begin
-  inherited;
-  if not isCustomDraw then Exit;
-  ctx := TCocoaContext.Create(NSGraphicsContext.currentContext);
-  DrawStruct.Area := NSRectToRect(rectOfRow(row));
-  DrawStruct.DC := HDC(ctx);
-  DrawStruct.ItemID :=  row;
-
-  LCLObject := TCustomListBox(callback.GetTarget);
-  DrawStruct.ItemState := [];
-  if isRowSelected(row) then
-    Include(DrawStruct.ItemState, odSelected);
-  if not LCLObject.Enabled then
-    Include(DrawStruct.ItemState, odDisabled);
-  if (LCLObject.Focused) and (LCLObject.ItemIndex = row) then
-    Include(DrawStruct.ItemState, odFocused);
-  LCLSendDrawListItemMsg(TWinControl(callback.GetTarget), @DrawStruct);
-end;
-
-procedure TCocoaListBox.dealloc;
-begin
-  FreeAndNil(list);
-  resultNS.release;
-  inherited dealloc;
-end;
-
-procedure TCocoaListBox.resetCursorRects;
-begin
-  if not callback.resetCursorRects then
-    inherited resetCursorRects;
-end;
-
-procedure TCocoaListBox.tableViewSelectionDidChange(notification: NSNotification);
-begin
-  if Assigned(callback) then
-    callback.SelectionChanged;
-end;
-
-procedure TCocoaListBox.mouseDown(event: NSEvent);
-begin
-  if Assigned(callback) and not callback.MouseUpDownEvent(event) then
-  begin
-    inherited mouseDown(event);
-
-    callback.MouseUpDownEvent(event, true);
-  end;
-end;
-
-procedure TCocoaListBox.rightMouseDown(event: NSEvent);
-begin
-  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-    inherited rightMouseDown(event);
-end;
-
-procedure TCocoaListBox.rightMouseUp(event: NSEvent);
-begin
-  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-    inherited rightMouseUp(event);
-end;
-
-procedure TCocoaListBox.otherMouseDown(event: NSEvent);
-begin
-  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-    inherited otherMouseDown(event);
-end;
-
-procedure TCocoaListBox.otherMouseUp(event: NSEvent);
-begin
-  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
-    inherited otherMouseUp(event);
-end;
-
-procedure TCocoaListBox.mouseDragged(event: NSEvent);
-begin
-if not Assigned(callback) or not callback.MouseMove(event) then
-  inherited mouseDragged(event);
-end;
-
-procedure TCocoaListBox.mouseEntered(event: NSEvent);
-begin
-  inherited mouseEntered(event);
-end;
-
-procedure TCocoaListBox.mouseExited(event: NSEvent);
-begin
-  inherited mouseExited(event);
-end;
-
-procedure TCocoaListBox.mouseMoved(event: NSEvent);
-begin
-  inherited mouseMoved(event);
-end;
-
-procedure TCocoaListBox.keyDown(event: NSEvent);
-begin
-  if not Assigned(callback) or not callback.KeyEvent(event) then
-    inherited keyDown(event);
-end;
-
-procedure TCocoaListBox.keyUp(event: NSEvent);
-begin
-  if not Assigned(callback) or not callback.KeyEvent(event) then
-    inherited keyUp(event);
-end;
-
-{ TCocoaCheckListBox }
-
-function TCocoaCheckListBox.initWithFrame(ns: NSRect): id;
-var
-  chklist : TCocoaCheckListBox;
-  clm : NSTableColumn;
-begin
-  Result:=inherited initWithFrame(ns);
-
-  chklist := TCocoaCheckListBox(Result);
-  // identifiers for columns
-  chklist.chkid:=NSSTR('chk');
-  chklist.txtid:=NSSTR('txt');
-  // the first column is for the checkbox
-  // the second column is for the title of the button
-  // the separation is needed, so clicking on the text would not trigger
-  // change of the button
-  clm:=NSTableColumn.alloc.initWithIdentifier(chkid);
-  chklist.addTableColumn(clm);
-  // todo: this should be "auto-size" and not hard-coded width to fix the checkbox
-  clm.setWidth(18);
-  chklist.addTableColumn(NSTableColumn.alloc.initWithIdentifier(txtid));
-end;
-
-procedure TCocoaCheckListBox.dealloc;
-begin
-  chkid.release;
-  txtid.release;
-  inherited dealloc;
-end;
-
-class function TCocoaCheckListBox.LCLCheckStateToCocoa(ALCLState: TCheckBoxState): NSInteger;
-begin
-  case ALCLState of
-  cbChecked: Result := NSOnState;
-  cbGrayed:  Result := NSMixedState;
-  else // cbUnchecked
-    Result := NSOffState;
-  end;
-end;
-
-class function TCocoaCheckListBox.CocoaCheckStateToLCL(ACocoaState: NSInteger): TCheckBoxState;
-begin
-  case ACocoaState of
-  NSOnState:    Result := cbChecked;
-  NSMixedState: Result := cbGrayed;
-  else // NSOffState
-    Result := cbUnchecked;
-  end;
-end;
-
-function TCocoaCheckListBox.CheckListBoxGetNextState(ACurrent: TCheckBoxState): TCheckBoxState;
-begin
-  case ACurrent of
-  cbChecked: Result := cbUnchecked;
-  cbGrayed:  Result := cbChecked;
-  else // cbUnchecked
-    if AllowMixedState then
-      Result := cbGrayed
-    else
-      Result := cbChecked;
-  end;
-end;
-
-function TCocoaCheckListBox.GetCocoaState(const AIndex: integer): NSInteger;
-begin
-  Result := NSInteger(list.Objects[AIndex]);
-end;
-
-procedure TCocoaCheckListBox.SetCocoaState(const AIndex: integer; AState: NSInteger);
-begin
-  list.Objects[AIndex] := TObject(AState);
-end;
-
-function TCocoaCheckListBox.GetState(const AIndex: integer): TCheckBoxState;
-var
-  lInt: NSInteger;
-begin
-  lInt := GetCocoaState(AIndex);
-  Result := CocoaCheckStateToLCL(lInt);
-end;
-
-procedure TCocoaCheckListBox.SetState(const AIndex: integer; AState: TCheckBoxState);
-begin
-  SetCocoaState(AIndex, LCLCheckStateToCocoa(AState));
-end;
-
-function TCocoaCheckListBox.tableView_objectValueForTableColumn_row(tableView: NSTableView;
-  objectValueForTableColumn: NSTableColumn; row: NSInteger):id;
-var
-  lInt: NSInteger;
-  lNSString : NSString;
-begin
-  Result:=nil;
-
-  //WriteLn('[TCocoaCheckListBox.tableView_objectValueForTableColumn_row] row='+IntToStr(row));
-  if not Assigned(list) then Exit;
-
-  if row>=list.count then Exit;
-
-  if objectValueForTableColumn.identifier=chkid then
-  begin
-    // Returns if the state is checked or unchecked
-    lInt := GetCocoaState(row);
-    Result := NSNumber.numberWithInteger(lInt)
-  end
-  else if objectValueForTableColumn.identifier=txtid then
-  begin
-    // Returns caption of the checkbox
-    lNSString := NSStringUtf8(list[row]);
-    Result:= lNSString;
-  end;
-
-end;
-
-procedure TCocoaCheckListBox.tableView_setObjectValue_forTableColumn_row(tableView: NSTableView;
-  object_: id; tableColumn: NSTableColumn; row: NSInteger);
-begin
-  //WriteLn('[TCocoaCheckListBox.tableView_setObjectValue_forTableColumn_row] row='+IntToStr(row));
-  SetState(row, CheckListBoxGetNextState(GetState(row)));
-end;
-
-function TCocoaCheckListBox.tableView_dataCellForTableColumn_row(tableView: NSTableView;
-  tableColumn: NSTableColumn; row: NSInteger): NSCell;
-var
-  lNSString: NSString;
-begin
-   Result:=nil;
-  if not Assigned(tableColumn) then
-  begin
-    Exit;
-  end;
-
-  if tableColumn.identifier = chkid then
-  begin
-    Result := NSButtonCell.alloc.init.autorelease;
-    Result.setAllowsMixedState(True);
-    NSButtonCell(Result).setButtonType(NSSwitchButton);
-    NSButtonCell(Result).setTitle(NSSTR(''));
-  end
-  else
-  if tableColumn.identifier = txtid then
-  begin
-    Result:=NSTextFieldCell.alloc.init.autorelease;
-  end
-end;
-
 { TCocoaTableListView }
 
 function TCocoaTableListView.lclIsHandle: Boolean;
@@ -679,6 +271,25 @@ procedure TCocoaTableListView.resetCursorRects;
 begin
   if not callback.resetCursorRects then
     inherited resetCursorRects;
+end;
+
+procedure TCocoaTableListView.drawRow_clipRect(row: NSInteger; clipRect: NSRect
+  );
+var
+  ctx: TCocoaContext;
+  ItemState: TOwnerDrawState;
+begin
+  inherited;
+  if not isCustomDraw then Exit;
+  if not Assigned(callback) then Exit;
+  ctx := TCocoaContext.Create(NSGraphicsContext.currentContext);
+
+  ItemState := [];
+  if isRowSelected(row) then Include(ItemState, odSelected);
+  if lclIsEnabled then Include(ItemState, odDisabled);
+  if Assigned(window) and (window.firstResponder = self) then Include(ItemState, odFocused);
+
+  callback.DrawRow(row, ctx, NSRectToRect(rectOfRow(row)), ItemState);
 end;
 
 function TCocoaTableListView.getIndexOfColumn(ACol: NSTableColumn): NSInteger;
@@ -801,7 +412,7 @@ var
   lStringList: TStringList;
   col: NSInteger;
   StrResult: NSString;
-  chk : Boolean;
+  chk : Integer;
   txt : string;
 begin
   {$IFDEF COCOA_DEBUG_TABCONTROL}
@@ -813,9 +424,9 @@ begin
   if not Assigned(callback) then Exit;
   col := getIndexOfColumn(tableColumn);
   if (col = 0) and isFirstColumnCheckboxes then begin
-    chk := false;
+    chk := 0;
     callback.GetItemCheckedAt(row, col, chk);
-    Result := NSNumber.numberWithBool(chk);
+    Result := NSNumber.numberWithInt(chk);
     Exit;
   end;
 
@@ -846,14 +457,14 @@ procedure TCocoaTableListView.tableView_setObjectValue_forTableColumn_row(
 var
   lColumnIndex: NSInteger;
   lNewValue: NSString;
-  isSel: Boolean;
+  isSel: Integer;
 begin
   if (NSObject(object_).isKindOfClass(NSNumber)) and isFirstColumnCheckboxes then begin
     lColumnIndex := getIndexOfColumn(tableColumn);
     if Assigned(callback) and (lColumnIndex = 0) then
     begin
-      isSel := NSNumber(object_).integerValue <> 0;
-      if isSel
+      isSel := NSNumber(object_).integerValue;
+      if isSel = NSOffState
         then checkedIdx.addIndex(row)
         else checkedIdx.removeIndex(row);
       callback.SetItemCheckedAt(row, lColumnIndex, isSel);
@@ -930,7 +541,6 @@ begin
     NSImageAndTextCell(Result).drawImage := img; // if "image" is assigned, text won't be drawn :(
     Exit;
   end;
-
   txt := '';
   chk := false;
 
@@ -1140,7 +750,7 @@ begin
   Owner.reloadData;
 end;
 
-constructor TCocoaStringList.Create(AOwner:TCocoaListBox);
+constructor TCocoaStringList.Create(AOwner: NSTableView);
 begin
   Owner:=AOwner;
   inherited Create;

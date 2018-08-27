@@ -211,9 +211,22 @@ type
 
   { TLCLListBoxCallback }
 
-  TLCLListBoxCallback = class(TLCLCommonCallback, IListBoxCallback)
+  TLCLListBoxCallback = class(TLCLCommonCallback, IListViewCallBack)
   public
-    procedure SelectionChanged; virtual;
+    listview : TCocoaTableListView;
+    strings  : TCocoaStringList;
+    constructor CreateWithView(AOwner: TCocoaTableListView; ATarget: TWinControl);
+    destructor Destroy; override;
+    function ItemsCount: Integer; virtual;
+    function GetItemTextAt(ARow, ACol: Integer; var Text: String): Boolean; virtual;
+    function GetItemCheckedAt(ARow, ACol: Integer; var isChecked: Integer): Boolean; virtual;
+    function GetItemImageAt(ARow, ACol: Integer; var imgIdx: Integer): Boolean; virtual;
+    function GetImageFromIndex(imgIdx: Integer): NSImage; virtual;
+    procedure SetItemTextAt(ARow, ACol: Integer; const Text: String); virtual;
+    procedure SetItemCheckedAt(ARow, ACol: Integer; isChecked: Integer); virtual;
+    procedure tableSelectionChange(ARow: Integer; Added, Removed: NSIndexSet); virtual;
+    procedure ColumnClicked(ACol: Integer); virtual;
+    procedure DrawRow(rowidx: Integer; ctx: TCocoaContext; const r: TRect; state: TOwnerDrawState); virtual;
   end;
   TLCLListBoxCallBackClass = class of TLCLListBoxCallBack;
 
@@ -287,8 +300,8 @@ function AllocButton(const ATarget: TWinControl; const ACallBackClass: TLCLButto
 function AllocTextField(ATarget: TWinControl; const AParams: TCreateParams): TCocoaTextField;
 function AllocSecureTextField(ATarget: TWinControl; const AParams: TCreateParams): TCocoaSecureTextField;
 
-function GetListBox(AWinControl: TWinControl): TCocoaListBox;
-procedure ListBoxSetStyle(list: TCocoaListBox; AStyle: TListBoxStyle);
+function GetListBox(AWinControl: TWinControl): TCocoaTableListView;
+procedure ListBoxSetStyle(list: TCocoaTableListView; AStyle: TListBoxStyle);
 
 procedure TextViewSetWordWrap(txt: NSTextView; lScroll: NSScrollView; NewWordWrap: Boolean);
 function AlignmentLCLToCocoa(al: TAlignment): NSTextAlignment;
@@ -447,9 +460,82 @@ end;
 
 { TLCLListBoxCallback }
 
-procedure TLCLListBoxCallback.SelectionChanged;
+constructor TLCLListBoxCallback.CreateWithView(AOwner: TCocoaTableListView;
+  ATarget: TWinControl);
+begin
+  Create(AOwner, ATarget);
+
+  listview:=AOwner;
+  strings := TCocoaStringList.Create(AOwner);
+end;
+
+destructor TLCLListBoxCallback.Destroy;
+begin
+  // "strings" are released with FreeStrings call
+  inherited Destroy;
+end;
+
+function TLCLListBoxCallback.ItemsCount: Integer;
+begin
+  Result := strings.Count;
+end;
+
+function TLCLListBoxCallback.GetItemTextAt(ARow, ACol: Integer; var Text: String): Boolean;
+begin
+  Result := (ARow>=0) and (ARow < strings.Count);
+  if Result then Text := strings[ARow];
+end;
+
+function TLCLListBoxCallback.GetItemCheckedAt(ARow, ACol: Integer;
+  var isChecked: Integer): Boolean;
+begin
+  Result := false;
+end;
+
+function TLCLListBoxCallback.GetItemImageAt(ARow, ACol: Integer;
+  var imgIdx: Integer): Boolean;
+begin
+  Result := false;
+end;
+
+function TLCLListBoxCallback.GetImageFromIndex(imgIdx: Integer): NSImage;
+begin
+  Result := nil;
+end;
+
+procedure TLCLListBoxCallback.SetItemTextAt(ARow, ACol: Integer;
+  const Text: String);
+begin
+  // todo:
+end;
+
+procedure TLCLListBoxCallback.SetItemCheckedAt(ARow, ACol: Integer;
+  isChecked: Integer);
+begin
+  // do nothing
+end;
+
+procedure TLCLListBoxCallback.tableSelectionChange(ARow: Integer; Added,
+  Removed: NSIndexSet);
 begin
   SendSimpleMessage(Target, LM_SELCHANGE);
+end;
+
+procedure TLCLListBoxCallback.ColumnClicked(ACol: Integer);
+begin
+  // not needed
+end;
+
+procedure TLCLListBoxCallback.DrawRow(rowidx: Integer; ctx: TCocoaContext;
+  const r: TRect; state: TOwnerDrawState);
+var
+  DrawStruct: TDrawListItemStruct;
+begin
+  DrawStruct.ItemState := state;
+  DrawStruct.Area := r;
+  DrawStruct.DC := HDC(ctx);
+  DrawStruct.ItemID :=  rowIdx;
+  LCLSendDrawListItemMsg(Target, @DrawStruct);
 end;
 
 { TLCLCheckBoxCallback }
@@ -1580,15 +1666,25 @@ end;
 
 { TCocoaWSCustomListBox }
 
-function GetListBox(AWinControl: TWinControl): TCocoaListBox;
+function GetListBox(AWinControl: TWinControl): TCocoaTableListView;
 begin
   if not Assigned(AWinControl) or (AWinControl.Handle=0) then
     Result := nil
   else
-    Result := TCocoaListBox(TCocoaScrollView(AWinControl.Handle).documentView);
+    Result := TCocoaTableListView(TCocoaScrollView(AWinControl.Handle).documentView);
 end;
 
-procedure ListBoxSetStyle(list: TCocoaListBox; AStyle: TListBoxStyle);
+function GetListBoxWithCb(AWinControl: TWinControl; out cb: TLCLListBoxCallback): TCocoaTableListView;
+begin
+  Result := GetListBox(AWinControl);
+  if not Assigned(Result) then
+    cb := nil
+  else
+    cb := TLCLListBoxCallback(Result.lclGetCallback.GetCallbackObject)
+end;
+
+
+procedure ListBoxSetStyle(list: TCocoaTableListView; AStyle: TListBoxStyle);
 begin
   if not Assigned(list) then Exit;
   list.isCustomDraw := AStyle in [lbOwnerDrawFixed, lbOwnerDrawVariable];
@@ -1597,23 +1693,23 @@ end;
 class function TCocoaWSCustomListBox.CreateHandle(const AWinControl:TWinControl;
   const AParams:TCreateParams):TLCLIntfHandle;
 var
-  list    : TCocoaListBox;
+  list    : TCocoaTableListView;
   scroll  : TCocoaScrollView;
   lclListBox: TCustomListBox absolute AWinControl;
 begin
-  list := NSView(TCocoaListBox.alloc).lclInitWithCreateParams(AParams);
+  list := TCocoaTableListView.alloc.lclInitWithCreateParams(AParams);
   if not Assigned(list) then
   begin
     Result := 0;
     Exit;
   end;
-  list.callback := TLCLListBoxCallback.Create(list, AWinControl);
-  list.list := TCocoaStringList.Create(list);
+  list.callback := TLCLListBoxCallback.CreateWithView(list, AWinControl);
   list.addTableColumn(NSTableColumn.alloc.init);
   list.setHeaderView(nil);
   list.setDataSource(list);
   list.setDelegate(list);
   list.setAllowsMultipleSelection(lclListBox.MultiSelect);
+  list.readOnly := true;
   ListBoxSetStyle(list, TCustomListBox(AWinControl).Style);
 
   scroll := EmbedInScrollView(list);
@@ -1631,7 +1727,7 @@ end;
 
 class function TCocoaWSCustomListBox.GetIndexAtXY(const ACustomListBox: TCustomListBox; X, Y: integer): integer;
 var
-  list: TCocoaListBox;
+  list: TCocoaTableListView;
   lPoint: NSPoint;
 begin
   list := GetListBox(ACustomListBox);
@@ -1646,7 +1742,7 @@ end;
 
 class function TCocoaWSCustomListBox.GetItemRect(const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect): boolean;
 var
-  view: TCocoaListBox;
+  view: TCocoaTableListView;
   r:NSRect;
 begin
   Result := False;
@@ -1661,7 +1757,7 @@ end;
 
 class function TCocoaWSCustomListBox.GetItemIndex(const ACustomListBox: TCustomListBox): integer;
 var
-  view: TCocoaListBox;
+  view: TCocoaTableListView;
   indexset: NSIndexSet;
 begin
   view:=GetListBox(ACustomListBox);
@@ -1673,7 +1769,7 @@ end;
 
 class function TCocoaWSCustomListBox.GetSelCount(const ACustomListBox: TCustomListBox): integer;
 var
-  view: TCocoaListBox;
+  view: TCocoaTableListView;
   selection: NSIndexSet;
 begin
   view := GetListBox(ACustomListBox);
@@ -1685,7 +1781,7 @@ end;
 
 class function TCocoaWSCustomListBox.GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean;
 var
-  view: TCocoaListBox;
+  view: TCocoaTableListView;
   selection: NSIndexSet;
 begin
   view := GetListBox(ACustomListBox);
@@ -1697,16 +1793,17 @@ end;
 
 class function TCocoaWSCustomListBox.GetStrings(const ACustomListBox: TCustomListBox):TStrings;
 var
-  view: TCocoaListBox;
+  view: TCocoaTableListView;
+  cb : TLCLListBoxCallback;
 begin
-  view := GetListBox(ACustomListBox);
+  view := GetListBoxWithCb(ACustomListBox, cb);
   if not Assigned(view) then Exit(nil);
-  Result := view.list;
+  Result := cb.strings;
 end;
 
 class function TCocoaWSCustomListBox.GetTopIndex(const ACustomListBox: TCustomListBox): integer;
 var
-  view: TCocoaListBox;
+  view: TCocoaTableListView;
   visibleRect: NSRect;
   visibleRange: NSRange;
 begin
@@ -1719,7 +1816,7 @@ end;
 
 class procedure TCocoaWSCustomListBox.SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean);
 var
-  list: TCocoaListBox;
+  list: TCocoaTableListView;
 begin
   list := GetListBox(ACustomListBox);
   if not Assigned(list) then Exit();
@@ -1733,7 +1830,7 @@ end;
 
 class procedure TCocoaWSCustomListBox.SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer);
 var
-  list: TCocoaListBox;
+  list: TCocoaTableListView;
 begin
   list := GetListBox(ACustomListBox);
   if not Assigned(list) then Exit();
@@ -1743,7 +1840,7 @@ end;
 
 class procedure TCocoaWSCustomListBox.SetSelectionMode(const ACustomListBox: TCustomListBox; const AExtendedSelect, AMultiSelect: boolean);
 var
-  list: TCocoaListBox;
+  list: TCocoaTableListView;
 begin
   list := GetListBox(ACustomListBox);
   if not Assigned(list) then Exit();
@@ -1752,7 +1849,7 @@ end;
 
 class procedure TCocoaWSCustomListBox.SetStyle(const ACustomListBox: TCustomListBox);
 var
-  view: TCocoaListBox;
+  view: TCocoaTableListView;
 begin
   view := GetListBox(ACustomListBox);
   ListBoxSetStyle(view, TCustomListBox(ACustomListBox).Style);
@@ -1761,7 +1858,7 @@ end;
 
 class procedure TCocoaWSCustomListBox.SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer);
 var
-  view: TCocoaListBox;
+  view: TCocoaTableListView;
 begin
   view := GetListBox(ACustomListBox);
   if not Assigned(view) then Exit();
