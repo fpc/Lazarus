@@ -139,6 +139,8 @@ resourcestring
   lisExportSub = 'Export >>';
   lisImport = 'Import';
   lisDlgImport = 'Import ...';
+  lisSuccess = 'Success';
+  lisAborted = 'Aborted';
 
   // *** Common sentence resources that can be safely shared around Lazarus ***
   //  Be careful, sharing sentences can lead to wrong translations in some places.
@@ -867,10 +869,8 @@ resourcestring
   lisSourceAndDestinationAreTheSame = 'Source and Destination are the same:%s%s';
   lisInvalidCommand = 'Invalid command';
   lisTheCommandAfterIsNotExecutable = 'The command after "%s" is not executable.';
-  lisUnableToCleanUpDestinationDirectory = 'Unable to clean up destination directory';
   lisCommandAfterInvalid = 'Command after invalid';
   lisTheCommandAfterPublishingIsInvalid = 'The command after publishing is invalid:%s"%s"';
-  lisUnableToCleanUpPleaseCheckPermissions = 'Unable to clean up "%s".%sPlease check permissions.';
   lisCommandAfterPublishingModule = 'Command after publishing module';
   lisUnableToAddToProjectBecauseThereIsAlreadyAUnitWith = 'Unable to add %s '
     +'to project, because there is already a unit with the same name in the Project.';
@@ -1080,9 +1080,6 @@ resourcestring
   lisOpenPackageFile = 'Open Package File';
   lisSaveSpace = 'Save ';
   lisSelectDFMFiles = 'Select Delphi form files (*.dfm)';
-  lisChooseDirectory = 'Choose directory';
-  lisDestinationDirectory = 'Destination directory';
-  lisCommandAfter = 'Command after';
   lisChooseLazarusSourceDirectory = 'Choose Lazarus Directory';
   lisChooseCompilerExecutable = 'Choose compiler executable (%s)';
   lisChooseFPCSourceDir = 'Choose FPC source directory';
@@ -1270,20 +1267,42 @@ resourcestring
   dlgFrmEditor = 'Form Editor';
   dlgObjInsp = 'Object Inspector';
   dlgEnvFiles = 'Files';
-  lisIgnoreBinaries = 'Ignore binaries';
+
+  // Publish project / package
+  lisDestinationDirectory = 'Destination directory';
+  lisChooseDirectory = 'Choose directory';
+  //lisCommandAfter = 'Command after';
+  lisCompress = 'Compress';
+  lisCompressHint = 'The resulting directory will be compressed into a ZIP file.';
+  lisPublishModuleNote = 'Files belonging to project / package will be included automatically.';
   lisSimpleSyntax = 'Simple syntax';
   lisNormallyTheFilterIsARegularExpressionInSimpleSynta = 'Normally the '
     +'filter is a regular expression. In simple syntax a . is a normal '
     +'character, a * stands for anything, a ? stands for any character, and '
     +'comma and semicolon separates alternatives. For example: Simple '
     +'syntax *.pas;*.pp corresponds to ^(.*\.pas|.*\.pp)$';
-  lisUseExcludeFilter = 'Use exclude filter';
-  lisExcludeFilter = 'Exclude filter';
-  lisProjectInformation = 'Project information';
-  lisSaveEditorInfoOfNonProjectFiles = 'Save editor info of non project files';
-  lisSaveInfoOfClosedEditorFiles = 'Save info of closed editor files';
-  lisUseIncludeFilter = 'Use include filter';
+  //lisUseExcludeFilter = 'Use exclude filter';
+  //lisProjectInformation = 'Project information';
+  //lisSaveEditorInfoOfNonProjectFiles = 'Save editor info of non project files';
+  //lisSaveInfoOfClosedEditorFiles = 'Save info of closed editor files';
+  lisUseFiltersForExtraFiles = 'Use filters for extra files';
+  //lisUseIncludeFilter = 'Use include filter';
   lisIncludeFilter = 'Include filter';
+  lisExcludeFilter = 'Exclude filter';
+  lisInvalidPublishingDirectory = 'Invalid publishing Directory';
+  lisSourceDirectoryAndDestinationDirectoryAreTheSameMa = 'Source directory "%s"'
+    +'%sand destination directory "%s"'
+    +'%sare the same. Maybe you misunderstand this feature.'
+    +'%sIt will clean/recreate the destination directory and copy the package/project into it.';
+  lisClearDirectory = 'Clear Directory?';
+  lisInOrderToCreateACleanCopyOfTheProjectPackageAllFil = 'In order to create '
+    +'a clean copy of the project/package, all files in the following '
+    +'directory will be deleted and all its content will be lost.'
+    +'%sDelete all files in "%s"?';
+  lisUnableToCleanUpDestinationDirectory = 'Unable to clean up destination directory';
+  lisUnableToCleanUpPleaseCheckPermissions = 'Unable to clean up "%s".%sPlease check permissions.';
+
+  //
   dlgEnvBckup = 'Backup';
   dlgNaming = 'Naming';
   lisInformation = 'Information';
@@ -3789,16 +3808,13 @@ resourcestring
   lisMakeResStrInsertContexttSensitive = 'Insert context sensitive';
   lisMakeResStrSourcePreview = 'Source preview';
   lisNoStringConstantFound = 'No string constant found';
-  lisSuccess = 'Success';
   lisFailedToResolveMacros = 'failed to resolve macros';
   lisToolHasNoExecutable = 'tool "%s" has no executable';
   lisCanNotFindExecutable = 'cannot find executable "%s"';
   lisMissingExecutable = 'missing executable "%s"';
   lisExecutableIsADirectory = 'executable "%s" is a directory';
-  lisExecutableLacksThePermissionToRun = 'executable "%s" lacks the permission'
-    +' to run';
+  lisExecutableLacksThePermissionToRun = 'executable "%s" lacks the permission to run';
   lisParser = 'parser "%s": %s';
-  lisAborted = 'Aborted';
   lisInvalidMacrosIn = 'Invalid macros in "%s"';
   lisAllBlocksLooksOk = 'All blocks look ok.';
   lisTheApplicationBundleWasCreatedFor = 'The Application Bundle was created for "%s"';
@@ -5581,16 +5597,6 @@ resourcestring
   lisTheComponentCanNotBeDeletedBecauseItIsNotOwnedBy = 'The component %s can '
     +'not be deleted, because it is not owned by %s.';
   lisFilter3 = 'Filter: %s';
-  lisInvalidPublishingDirectory = 'Invalid publishing Directory';
-  lisSourceDirectoryAndDestinationDirectoryAreTheSameMa = 'Source directory "%s"'
-    +'%sand destination directory "%s"'
-    +'%sare the same. Maybe you misunderstand this feature.'
-    +'%sIt will clean/recreate the destination directory and copy the package/project into it.';
-  lisClearDirectory = 'Clear Directory?';
-  lisInOrderToCreateACleanCopyOfTheProjectPackageAllFil = 'In order to create '
-    +'a clean copy of the project/package, all files in the following '
-    +'directory will be deleted and all its content will be lost.'
-    +'%sDelete all files in "%s"?';
   lisFileExtensionOfPrograms = 'File extension of programs';
   lisEveryNThLineNumber = 'Every n-th line number';
   lisShowOverviewGutter = 'Show overview gutter';

@@ -25,7 +25,7 @@
  *                                                                         *
  ***************************************************************************
 
-  Author: Mattias Gaertner
+  Author: Mattias Gaertner, Juha Manninen
 
 }
 unit PublishModule;
@@ -37,20 +37,23 @@ interface
 uses
   Classes, SysUtils, RegExpr,
   // LazUtils
-  LazFileUtils, Laz2_XMLCfg, LazLoggerBase, LazTracer, LazStringUtils;
+  LazFileUtils, LazLoggerBase, LazTracer, LazStringUtils, Laz2_XMLCfg, UITypes,
+  // IdeIntf
+  MacroIntf, IDEDialogs,
+  // IDE
+  IDEProcs, LazarusIDEStrConsts;
 
 type
   { TPublishModuleOptions }
 
   TPublishModuleOptions = class
   private
-    FCommandAfter: string;
+    FCompressFinally: boolean;
     FDestinationDirectory: string;
     FExcludeFileFilter: string;
     FExcludeFilterRegExpr: TRegExpr;
     FExcludeFilterSimpleSyntax: boolean;
     FExcludeFilterValid: boolean;
-    FIgnoreBinaries: boolean;
     FIncludeFileFilter: string;
     FIncludeFilterRegExpr: TRegExpr;
     FIncludeFilterSimpleSyntax: boolean;
@@ -58,18 +61,15 @@ type
     FModified: boolean;
     FModifiedLock: integer;
     FOwner: TObject;
-    FUseExcludeFileFilter: boolean;
-    FUseIncludeFileFilter: boolean;
-    procedure SetCommandAfter(const AValue: string);
+    FUseFileFilters: boolean;
+    procedure SetCompressFinally(const AValue: boolean);
     procedure SetDestinationDirectory(const AValue: string);
     procedure SetExcludeFileFilter(const AValue: string);
     procedure SetExcludeFilterSimpleSyntax(const AValue: boolean);
-    procedure SetIgnoreBinaries(const AValue: boolean);
     procedure SetIncludeFileFilter(const AValue: string);
     procedure SetIncludeFilterSimpleSyntax(const AValue: boolean);
     procedure SetModified(const AValue: boolean);
-    procedure SetUseExcludeFileFilter(const AValue: boolean);
-    procedure SetUseIncludeFileFilter(const AValue: boolean);
+    procedure SetUseFileFilters(const AValue: boolean);
     procedure UpdateIncludeFilter;
     procedure UpdateExcludeFilter;
   protected
@@ -86,7 +86,7 @@ type
     function FileCanBePublished(const AFilename: string): boolean; virtual;
     procedure LockModified;
     procedure UnlockModified;
-    function GetDefaultDestinationDir: string; virtual;
+    function GetDefaultDestinationDir: string; virtual; abstract;
   public
     property Owner: TObject read FOwner;
     property Modified: boolean read FModified write SetModified;
@@ -94,19 +94,15 @@ type
     // destination
     property DestinationDirectory: string
                 read FDestinationDirectory write SetDestinationDirectory;
-    property CommandAfter: string read FCommandAfter write SetCommandAfter;
-
-    // file filter
-    property IgnoreBinaries: boolean read FIgnoreBinaries write SetIgnoreBinaries;
-    property UseIncludeFileFilter: boolean
-                read FUseIncludeFileFilter write SetUseIncludeFileFilter;
+    property CompressFinally: boolean read FCompressFinally write SetCompressFinally;
+    property UseFileFilters: boolean read FUseFileFilters write SetUseFileFilters;
+    // Include Filter
     property IncludeFilterSimpleSyntax: boolean
                 read FIncludeFilterSimpleSyntax write SetIncludeFilterSimpleSyntax;
     property IncludeFileFilter: string
                 read FIncludeFileFilter write SetIncludeFileFilter;
     property IncludeFilterValid: boolean read FIncludeFilterValid;
-    property UseExcludeFileFilter: boolean
-                read FUseExcludeFileFilter write SetUseExcludeFileFilter;
+    // Exclude Filter
     property ExcludeFilterSimpleSyntax: boolean
                 read FExcludeFilterSimpleSyntax write SetExcludeFilterSimpleSyntax;
     property ExcludeFileFilter: string
@@ -119,16 +115,32 @@ const
 
   DefPublModIncFilter = '*.(pas|pp|inc|lpr|lfm|lrs|lpi|lpk|xml|sh)';
   DefPublModExcFilter = '*.(bak|ppu|ppl|a|o|so);*~;backup';
-  DefPublishDirectory = '$(TestDir)/publishedproject/';
+
+function RealPublishDir(AOptions: TPublishModuleOptions): string;
+
 
 implementation
 
+function RealPublishDir(AOptions: TPublishModuleOptions): string;
+begin
+  Result:=AOptions.DestinationDirectory;
+  if IDEMacros.SubstituteMacros(Result) then begin
+    if FilenameIsAbsolute(Result) then begin
+      Result:=AppendPathDelim(TrimFilename(Result));
+    end else begin
+      Result:='';
+    end;
+  end else begin
+    Result:='';
+  end;
+end;
+
 { TPublishModuleOptions }
 
-procedure TPublishModuleOptions.SetCommandAfter(const AValue: string);
+procedure TPublishModuleOptions.SetCompressFinally(const AValue: boolean);
 begin
-  if FCommandAfter=AValue then exit;
-  FCommandAfter:=AValue;
+  if FCompressFinally=AValue then exit;
+  FCompressFinally:=AValue;
   Modified:=true;
 end;
 
@@ -147,19 +159,11 @@ begin
   Modified:=true;
 end;
 
-procedure TPublishModuleOptions.SetExcludeFilterSimpleSyntax(
-  const AValue: boolean);
+procedure TPublishModuleOptions.SetExcludeFilterSimpleSyntax(const AValue: boolean);
 begin
   if FExcludeFilterSimpleSyntax=AValue then exit;
   FExcludeFilterSimpleSyntax:=AValue;
   UpdateExcludeFilter;
-  Modified:=true;
-end;
-
-procedure TPublishModuleOptions.SetIgnoreBinaries(const AValue: boolean);
-begin
-  if FIgnoreBinaries=AValue then exit;
-  FIgnoreBinaries:=AValue;
   Modified:=true;
 end;
 
@@ -171,8 +175,7 @@ begin
   Modified:=true;
 end;
 
-procedure TPublishModuleOptions.SetIncludeFilterSimpleSyntax(
-  const AValue: boolean);
+procedure TPublishModuleOptions.SetIncludeFilterSimpleSyntax(const AValue: boolean);
 begin
   if FIncludeFilterSimpleSyntax=AValue then exit;
   FIncludeFilterSimpleSyntax:=AValue;
@@ -188,17 +191,10 @@ begin
   DoOnModifyChange;
 end;
 
-procedure TPublishModuleOptions.SetUseExcludeFileFilter(const AValue: boolean);
+procedure TPublishModuleOptions.SetUseFileFilters(const AValue: boolean);
 begin
-  if FUseExcludeFileFilter=AValue then exit;
-  FUseExcludeFileFilter:=AValue;
-  Modified:=true;
-end;
-
-procedure TPublishModuleOptions.SetUseIncludeFileFilter(const AValue: boolean);
-begin
-  if FUseIncludeFileFilter=AValue then exit;
-  FUseIncludeFileFilter:=AValue;
+  if FUseFileFilters=AValue then exit;
+  FUseFileFilters:=AValue;
   Modified:=true;
 end;
 
@@ -271,12 +267,10 @@ end;
 procedure TPublishModuleOptions.LoadDefaults;
 begin
   DestinationDirectory:=GetDefaultDestinationDir;
-  CommandAfter:='';
-  IgnoreBinaries:=true;
-  UseIncludeFileFilter:=true;
+  CompressFinally:=true;
+  UseFileFilters:=true;
   IncludeFilterSimpleSyntax:=true;
   IncludeFileFilter:=DefPublModIncFilter;
-  UseExcludeFileFilter:=false;
   ExcludeFilterSimpleSyntax:=true;
   ExcludeFileFilter:=DefPublModExcFilter;
 end;
@@ -294,24 +288,17 @@ var
 begin
   XMLVersion:=XMLConfig.GetValue(APath+'Version/Value',0);
   FDestinationDirectory:=f(XMLConfig.GetValue(APath+'DestinationDirectory/Value',
-                                            GetDefaultDestinationDir));
-  FCommandAfter:=f(XMLConfig.GetValue(APath+'CommandAfter/Value',''));
-  IgnoreBinaries:=XMLConfig.GetValue(APath+'IgnoreBinaries/Value',true);
-  UseIncludeFileFilter:=XMLConfig.GetValue(APath+'UseIncludeFileFilter/Value',
-                                            true);
-  IncludeFilterSimpleSyntax:=
-    XMLConfig.GetValue(APath+'IncludeFilterSimpleSyntax/Value',true);
-  if XMLVersion>=2 then
+                                              GetDefaultDestinationDir));
+  CompressFinally:=XMLConfig.GetValue(APath+'CompressFinally/Value',true);
+  UseFileFilters:=XMLConfig.GetValue(APath+'UseFileFilters/Value',false);
+  IncludeFilterSimpleSyntax:=XMLConfig.GetValue(APath+'IncludeFilterSimpleSyntax/Value',true);
+  ExcludeFilterSimpleSyntax:=XMLConfig.GetValue(APath+'ExcludeFilterSimpleSyntax/Value',true);
+  if XMLVersion>=2 then begin
     IncludeFileFilter:=XMLConfig.GetValue(APath+'IncludeFileFilter/Value',
                                            DefPublModIncFilter);
-  UseExcludeFileFilter:=XMLConfig.GetValue(APath+'UseExcludeFileFilter/Value',
-                                           false);
-  ExcludeFilterSimpleSyntax:=
-    XMLConfig.GetValue(APath+'ExcludeFilterSimpleSyntax/Value',
-                       true);
-  if XMLVersion>=2 then
     ExcludeFileFilter:=XMLConfig.GetValue(APath+'ExcludeFileFilter/Value',
                                            DefPublModExcFilter);
+  end;
 end;
 
 procedure TPublishModuleOptions.SaveToXMLConfig(XMLConfig: TXMLConfig;
@@ -327,43 +314,32 @@ begin
   XMLConfig.SetDeleteValue(APath+'DestinationDirectory/Value',
                            f(DestinationDirectory),
                            f(GetDefaultDestinationDir));
-  XMLConfig.SetDeleteValue(APath+'CommandAfter/Value',f(CommandAfter),'');
-  XMLConfig.SetDeleteValue(APath+'IgnoreBinaries/Value',IgnoreBinaries,true);
-  XMLConfig.SetDeleteValue(APath+'UseIncludeFileFilter/Value',
-    UseIncludeFileFilter,true);
+  XMLConfig.SetDeleteValue(APath+'CompressFinally/Value',CompressFinally,true);
+  XMLConfig.SetDeleteValue(APath+'UseFileFilters/Value',UseFileFilters,false);
   XMLConfig.SetDeleteValue(APath+'IncludeFilterSimpleSyntax/Value',
-    IncludeFilterSimpleSyntax,true);
-  XMLConfig.SetDeleteValue(APath+'IncludeFileFilter/Value',
-    IncludeFileFilter,DefPublModIncFilter);
-  XMLConfig.SetDeleteValue(APath+'UseExcludeFileFilter/Value',
-    UseExcludeFileFilter,false);
+                           IncludeFilterSimpleSyntax,true);
+  XMLConfig.SetDeleteValue(APath+'IncludeFileFilter/Value',IncludeFileFilter,
+                           DefPublModIncFilter);
   XMLConfig.SetDeleteValue(APath+'ExcludeFilterSimpleSyntax/Value',
-    ExcludeFilterSimpleSyntax,true);
-  XMLConfig.SetDeleteValue(APath+'ExcludeFileFilter/Value',
-    ExcludeFileFilter,DefPublModExcFilter);
+                           ExcludeFilterSimpleSyntax,true);
+  XMLConfig.SetDeleteValue(APath+'ExcludeFileFilter/Value',ExcludeFileFilter,
+                           DefPublModExcFilter);
 end;
 
-function TPublishModuleOptions.FileCanBePublished(
-  const AFilename: string): boolean;
+function TPublishModuleOptions.FileCanBePublished(const AFilename: string): boolean;
 begin
   Result:=false;
-
   // check include filter
-  if UseIncludeFileFilter
-  and (FIncludeFilterRegExpr<>nil)
+  if (FIncludeFilterRegExpr<>nil)
   and (not FIncludeFilterRegExpr.Exec(ExtractFilename(AFilename))) then
     exit;
-
   // check exclude filter
-  if UseExcludeFileFilter
-  and (FExcludeFilterRegExpr<>nil)
+  if (FExcludeFilterRegExpr<>nil)
   and (FExcludeFilterRegExpr.Exec(ExtractFilename(AFilename))) then
     exit;
-
   // check binaries
-  if IgnoreBinaries and (not DirPathExists(AFilename))
-  and (not FileIsText(AFilename)) then exit;
-
+  //if IgnoreBinaries and (not DirPathExists(AFilename))
+  //and (not FileIsText(AFilename)) then exit;
   Result:=true;
 end;
 
@@ -378,11 +354,33 @@ begin
     RaiseGDBException('TPublishModuleOptions.UnlockModified');
   dec(FModifiedLock);
 end;
-
-function TPublishModuleOptions.GetDefaultDestinationDir: string;
+{
+procedure TPublishModuleOptions.OnCopyFile(const Filename: string; var Copy: boolean; Data: TObject);
 begin
-  Result:=DefPublishDirectory;
+  //if Data=nil then exit;
+  Assert(Data is TPublishModuleOptions, 'TPublishModuleOptions.OnCopyFile: Data type is wrong.');
+  Copy:=TPublishModuleOptions(Data).FileCanBePublished(Filename);
+  //debugln('TLazSourceFileManager.OnCopyFile "',Filename,'" ',Copy);
 end;
 
+procedure TPublishModuleOptions.OnCopyError(const ErrorData: TCopyErrorData;
+  var Handled: boolean; Data: TObject);
+begin
+  case ErrorData.Error of
+    ceSrcDirDoesNotExists:
+      IDEMessageDialog(lisCopyError2,
+        Format(lisSourceDirectoryDoesNotExist, [ErrorData.Param1]),
+        mtError,[mbCancel]);
+    ceCreatingDirectory:
+      IDEMessageDialog(lisCopyError2,
+        Format(lisUnableToCreateDirectory, [ErrorData.Param1]),
+        mtError,[mbCancel]);
+    ceCopyFileError:
+      IDEMessageDialog(lisCopyError2,
+        Format(lisUnableToCopyFileTo, [ErrorData.Param1, LineEnding, ErrorData.Param1]),
+        mtError,[mbCancel]);
+  end;
+end;
+}
 end.
 

@@ -144,7 +144,7 @@ uses
   // rest of the ide
   Splash, IDEDefs, LazarusIDEStrConsts, LazConf, SearchResultView,
   CodeTemplatesDlg, CodeBrowser, FindUnitDlg, InspectChksumChangedDlg,
-  IdeOptionsDlg, EditDefineTree, PublishModule, EnvironmentOpts, TransferMacros,
+  IdeOptionsDlg, EditDefineTree, EnvironmentOpts, TransferMacros,
   KeyMapping, IDETranslations, IDEProcs, ExtToolDialog, ExtToolEditDlg,
   JumpHistoryView, DesktopManager, ExampleManager,
   BuildLazDialog, BuildProfileManager, BuildManager, CheckCompOptsForNewUnitDlg,
@@ -878,8 +878,8 @@ type
     function FindSourceFile(const AFilename, BaseDirectory: string;
                             Flags: TFindSourceFlags): string; override;
     function DoCheckFilesOnDisk(Instantaneous: boolean = false): TModalResult; override;
-    function DoPublishModule(Options: TPublishModuleOptions;
-      const SrcDirectory, DestDirectory: string): TModalResult; override;
+    //function DoPublishModule(Options: TPublishModuleOptions;
+    //  const SrcDirectory, DestDirectory: string): TModalResult; override;
     procedure PrepareBuildTarget(Quiet: boolean;
                                ScanFPCSrc: TScanModeFPCSources = smsfsBackground); override;
     procedure AbortBuild; override;
@@ -6417,7 +6417,7 @@ begin
 
   // show the publish project dialog
   if ShowDialog then begin
-    Result:=ShowPublishProjectDialog(Project1.PublishOptions);
+    Result:=ShowPublishDialog(Project1.PublishOptions);
     Project1.Modified:=Project1.PublishOptions.Modified;
     if Result<>mrOk then exit;
     IncreaseCompilerParseStamp;
@@ -6430,8 +6430,7 @@ begin
 
   // publish project
   //debugln('TMainIDE.DoPublishProject B');
-  Result:=SourceFileMgr.PublishModule(Project1.PublishOptions,
-    Project1.Directory, MainBuildBoss.GetProjectPublishDir);
+  Result:=PublishAModule(Project1.PublishOptions);
 end;
 
 procedure TMainIDE.DoShowProjectInspector(State: TIWGetFormState);
@@ -8352,13 +8351,13 @@ function TMainIDE.DoCheckFilesOnDisk(Instantaneous: boolean): TModalResult;
 begin
   Result:=SourceFileMgr.CheckFilesOnDisk(Instantaneous);
 end;
-
+{
 function TMainIDE.DoPublishModule(Options: TPublishModuleOptions;
   const SrcDirectory, DestDirectory: string): TModalResult;
 begin
   Result:=SourceFileMgr.PublishModule(Options, SrcDirectory, DestDirectory);
 end;
-
+}
 procedure TMainIDE.PrepareBuildTarget(Quiet: boolean; ScanFPCSrc: TScanModeFPCSources);
 begin
   MainBuildBoss.SetBuildTargetProject1(Quiet,ScanFPCSrc);

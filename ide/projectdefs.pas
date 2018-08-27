@@ -287,25 +287,15 @@ type
   
   TPublishProjectOptions = class(TPublishModuleOptions)
   private
-    FSaveClosedEditorFilesInfo: boolean;
-    FSaveEditorInfoOfNonProjectFiles: boolean;
-    procedure SetSaveClosedEditorFilesInfo(const AValue: boolean);
-    procedure SetSaveEditorInfoOfNonProjectFiles(const AValue: boolean);
+    FBackupDir, FUnitOutputDir: String;  // Backup and unit output directories.
   public
-    procedure LoadDefaults; override;
-    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const APath: string;
-                                AdjustPathDelims: boolean); override;
-    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const APath: string;
-                              UsePathDelim: TPathDelimSwitch); override;
+    function GetDefaultDestinationDir: string; override;
+    function FileCanBePublished(const AFilename: string): boolean; override;
     function WriteFlags: TProjectWriteFlags;
+    procedure InitValues(const ABackupDir, AUnitOutputDir: String);
   public
-    // project info
-    property SaveEditorInfoOfNonProjectFiles: boolean
-                read FSaveEditorInfoOfNonProjectFiles
-                write SetSaveEditorInfoOfNonProjectFiles;
-    property SaveClosedEditorFilesInfo: boolean
-                read FSaveClosedEditorFilesInfo
-                write SetSaveClosedEditorFilesInfo;
+    property BackupDir: String read FBackupDir; // write FBackupDir;
+    property UnitOutputDir: String read FUnitOutputDir; // write FUnitOutputDir;
   end;
 
 implementation
@@ -752,66 +742,35 @@ end;
 
 { TPublishProjectOptions }
 
-procedure TPublishProjectOptions.SetSaveClosedEditorFilesInfo(
-  const AValue: boolean);
+function TPublishProjectOptions.GetDefaultDestinationDir: string;
 begin
-  if FSaveClosedEditorFilesInfo=AValue then exit;
-  FSaveClosedEditorFilesInfo:=AValue;
+  Result:='$(TestDir)/publishedproject/';
 end;
 
-procedure TPublishProjectOptions.SetSaveEditorInfoOfNonProjectFiles(
-  const AValue: boolean);
+function TPublishProjectOptions.FileCanBePublished(const AFilename: string): boolean;
 begin
-  if FSaveEditorInfoOfNonProjectFiles=AValue then exit;
-  FSaveEditorInfoOfNonProjectFiles:=AValue;
-end;
-
-procedure TPublishProjectOptions.LoadDefaults;
-begin
-  inherited LoadDefaults;
-  DestinationDirectory:='$(TestDir)/publishedproject/';
-  CommandAfter:='';
-  UseIncludeFileFilter:=true;
-  IncludeFilterSimpleSyntax:=true;
-  IncludeFileFilter:=DefPublModIncFilter;
-  UseExcludeFileFilter:=false;
-  ExcludeFilterSimpleSyntax:=true;
-  ExcludeFileFilter:=DefPublModExcFilter;
-  SaveClosedEditorFilesInfo:=false;
-  SaveEditorInfoOfNonProjectFiles:=false;
-end;
-
-procedure TPublishProjectOptions.LoadFromXMLConfig(XMLConfig: TXMLConfig;
-  const APath: string; AdjustPathDelims: boolean);
-//var
-//  XMLVersion: integer;
-begin
-  inherited LoadFromXMLConfig(XMLConfig,APath,AdjustPathDelims);
-  //XMLVersion:=XMLConfig.GetValue(APath+'Version/Value',0);
-  FSaveClosedEditorFilesInfo:=XMLConfig.GetValue(
-             APath+'SaveClosedEditorFilesInfo/Value',SaveClosedEditorFilesInfo);
-  FSaveEditorInfoOfNonProjectFiles:=XMLConfig.GetValue(
-             APath+'SaveEditorInfoOfNonProjectFiles/Value',
-             SaveEditorInfoOfNonProjectFiles);
-end;
-
-procedure TPublishProjectOptions.SaveToXMLConfig(XMLConfig: TXMLConfig;
-  const APath: string; UsePathDelim: TPathDelimSwitch);
-begin
-  inherited SaveToXMLConfig(XMLConfig,APath,UsePathDelim);
-  XMLConfig.SetDeleteValue(APath+'SaveClosedEditorFilesInfo/Value',
-    SaveClosedEditorFilesInfo,false);
-  XMLConfig.SetDeleteValue(APath+'SaveEditorInfoOfNonProjectFiles/Value',
-    SaveEditorInfoOfNonProjectFiles,false);
+  Result:=inherited FileCanBePublished(AFilename);
+  // ToDo: filter also based on FBackupDir and FUnitOutputDir
 end;
 
 function TPublishProjectOptions.WriteFlags: TProjectWriteFlags;
 begin
   Result:=[];
-  if not SaveEditorInfoOfNonProjectFiles then
-    Include(Result,pwfSaveOnlyProjectUnits);
-  if not SaveClosedEditorFilesInfo then
-    Include(Result,pwfSkipClosedUnits);
+  Include(Result,pwfSaveOnlyProjectUnits);
+  Include(Result,pwfSkipClosedUnits);
+end;
+
+procedure TPublishProjectOptions.InitValues(const ABackupDir, AUnitOutputDir: String);
+var
+  P: Integer;
+begin
+  FBackupDir := ABackupDir;
+  FUnitOutputDir := AUnitOutputDir;
+  P := Pos(DirectorySeparator, FUnitOutputDir);
+  if P > 0 then
+    FUnitOutputDir := Copy(FUnitOutputDir, 1, P - 1);
+  DebugLn(['TPublishProjectOptions.InitValues: BackupDir=', FBackupDir,
+           ', UnitOutputDir=', FUnitOutputDir, ', Raw UnitOutputDir=', AUnitOutputDir]);
 end;
 
 

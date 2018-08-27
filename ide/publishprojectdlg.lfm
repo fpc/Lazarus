@@ -1,51 +1,37 @@
 object PublishProjectDialog: TPublishProjectDialog
-  Left = 371
-  Height = 476
-  Top = 171
-  Width = 498
+  Left = 391
+  Height = 442
+  Top = 56
+  Width = 642
   BorderIcons = [biSystemMenu]
   Caption = 'Publish Project'
-  ClientHeight = 476
-  ClientWidth = 498
+  ClientHeight = 442
+  ClientWidth = 642
   OnClose = FormClose
   OnCreate = FormCreate
   Position = poScreenCenter
   LCLVersion = '1.9.0.0'
   object DestDirGroupBox: TGroupBox
     Left = 6
-    Height = 99
+    Height = 66
     Top = 6
-    Width = 486
-    Align = alTop
-    AutoSize = True
+    Width = 630
+    Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Around = 6
     Caption = 'Destination directory'
     ChildSizing.LeftRightSpacing = 6
     ChildSizing.TopBottomSpacing = 6
-    ClientHeight = 79
-    ClientWidth = 482
+    ClientHeight = 46
+    ClientWidth = 628
     TabOrder = 0
-    OnResize = DestDirGroupBoxRESIZE
-    object CommandAfterLabel: TLabel
-      AnchorSideTop.Control = DestDirComboBox
-      AnchorSideTop.Side = asrBottom
-      Left = 6
-      Height = 15
-      Top = 35
-      Width = 456
-      Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Top = 6
-      Caption = 'Command after:'
-      ParentColor = False
-    end
     object DestDirComboBox: TComboBox
       AnchorSideRight.Control = BrowseDestDirBitBtn
       Left = 6
-      Height = 23
+      Height = 31
       Top = 6
-      Width = 445
+      Width = 591
       Anchors = [akTop, akLeft, akRight]
-      ItemHeight = 15
+      ItemHeight = 0
       TabOrder = 0
       Text = 'DestDirComboBox'
     end
@@ -54,8 +40,8 @@ object PublishProjectDialog: TPublishProjectDialog
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = DestDirComboBox
       AnchorSideBottom.Side = asrBottom
-      Left = 451
-      Height = 23
+      Left = 597
+      Height = 31
       Top = 6
       Width = 25
       Anchors = [akTop, akRight, akBottom]
@@ -64,196 +50,51 @@ object PublishProjectDialog: TPublishProjectDialog
       OnClick = BrowseDestDirBitBtnCLICK
       TabOrder = 1
     end
-    object CommandAfterCombobox: TComboBox
-      AnchorSideTop.Control = CommandAfterLabel
-      AnchorSideTop.Side = asrBottom
-      AnchorSideRight.Control = DestDirGroupBox
-      AnchorSideRight.Side = asrBottom
-      Left = 6
-      Height = 23
-      Top = 50
-      Width = 470
-      Anchors = [akTop, akLeft, akRight]
-      ItemHeight = 15
-      TabOrder = 2
-      Text = 'CommandAfterCombobox'
-    end
   end
-  object FilesGroupbox: TGroupBox
+  object OptionsGroupbox: TGroupBox
+    AnchorSideTop.Control = FiltersPanel
+    AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 51
-    Top = 111
-    Width = 486
-    Align = alTop
+    Height = 53
+    Top = 279
+    Width = 628
+    Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Around = 6
-    Caption = 'Files'
+    Caption = 'Options'
     ChildSizing.TopBottomSpacing = 6
-    ClientHeight = 31
-    ClientWidth = 482
+    ClientHeight = 33
+    ClientWidth = 626
     TabOrder = 1
-    object IgnoreBinariesCheckbox: TCheckBox
+    object CompressCheckbox: TCheckBox
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 19
+      Height = 21
+      Hint = 'Compress the whole directory into a ZIP file.'
       Top = 6
-      Width = 98
+      Width = 87
       BorderSpacing.Around = 6
-      Caption = 'Ignore binaries'
-      TabOrder = 0
-    end
-  end
-  object ProjectInfoGroupbox: TGroupBox
-    Left = 6
-    Height = 76
-    Top = 328
-    Width = 486
-    Align = alTop
-    AutoSize = True
-    BorderSpacing.Around = 6
-    Caption = 'Project Information'
-    ChildSizing.LeftRightSpacing = 6
-    ChildSizing.TopBottomSpacing = 6
-    ClientHeight = 56
-    ClientWidth = 482
-    TabOrder = 4
-    object SaveClosedEditorFilesInfoCheckbox: TCheckBox
-      AnchorSideLeft.Control = ProjectInfoGroupbox
-      AnchorSideTop.Control = ProjectInfoGroupbox
-      Left = 6
-      Height = 19
-      Top = 6
-      Width = 177
-      BorderSpacing.Around = 6
-      Caption = 'Save editor info of closed files'
-      TabOrder = 0
-    end
-    object SaveEditorInfoOfNonProjectFilesCheckbox: TCheckBox
-      AnchorSideLeft.Control = ProjectInfoGroupbox
-      AnchorSideTop.Control = SaveClosedEditorFilesInfoCheckbox
-      AnchorSideTop.Side = asrBottom
-      Left = 6
-      Height = 19
-      Top = 31
-      Width = 204
-      BorderSpacing.Around = 6
-      Caption = 'Save editor info of non project files'
-      TabOrder = 1
-    end
-  end
-  object IncludeFilterGroupbox: TGroupBox
-    Left = 6
-    Height = 74
-    Top = 168
-    Width = 486
-    Align = alTop
-    AutoSize = True
-    BorderSpacing.Around = 6
-    Caption = 'Include Filter'
-    ChildSizing.LeftRightSpacing = 6
-    ChildSizing.TopBottomSpacing = 6
-    ClientHeight = 54
-    ClientWidth = 482
-    TabOrder = 2
-    TabStop = True
-    object UseIncludeFilterCheckbox: TCheckBox
-      AnchorSideTop.Control = IncludeFilterGroupbox
-      Left = 6
-      Height = 19
-      Top = 6
-      Width = 110
-      Caption = 'Use Include Filter'
-      TabOrder = 0
-    end
-    object IncFilterSimpleSyntaxCheckbox: TCheckBox
-      AnchorSideLeft.Control = UseIncludeFilterCheckbox
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = IncludeFilterGroupbox
-      Left = 128
-      Height = 19
-      Top = 6
-      Width = 93
-      BorderSpacing.Left = 12
-      Caption = 'Simple Syntax'
+      Caption = 'Compress'
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 1
-    end
-    object IncludeFilterCombobox: TComboBox
-      AnchorSideLeft.Control = IncludeFilterGroupbox
-      AnchorSideTop.Control = UseIncludeFilterCheckbox
-      AnchorSideTop.Side = asrBottom
-      AnchorSideRight.Control = IncludeFilterGroupbox
-      AnchorSideRight.Side = asrBottom
-      Left = 6
-      Height = 23
-      Top = 25
-      Width = 470
-      Anchors = [akTop, akLeft, akRight]
-      ItemHeight = 15
-      TabOrder = 2
-      Text = 'IncludeFilterCombobox'
-    end
-  end
-  object ExcludeFilterGroupbox: TGroupBox
-    Left = 6
-    Height = 74
-    Top = 248
-    Width = 486
-    Align = alTop
-    AutoSize = True
-    BorderSpacing.Around = 6
-    Caption = 'Exclude Filter'
-    ChildSizing.LeftRightSpacing = 6
-    ChildSizing.TopBottomSpacing = 6
-    ClientHeight = 54
-    ClientWidth = 482
-    TabOrder = 3
-    TabStop = True
-    object UseExcludeFilterCheckbox: TCheckBox
-      AnchorSideTop.Control = ExcludeFilterGroupbox
-      Left = 6
-      Height = 19
-      Top = 6
-      Width = 111
-      Caption = 'Use Exclude Filter'
       TabOrder = 0
     end
-    object ExcFilterSimpleSyntaxCheckbox: TCheckBox
-      AnchorSideLeft.Control = UseExcludeFilterCheckbox
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = ExcludeFilterGroupbox
-      Left = 129
+    object Label1: TLabel
+      Left = 168
       Height = 19
-      Top = 6
-      Width = 93
-      BorderSpacing.Left = 12
-      Caption = 'Simple Syntax'
-      ParentShowHint = False
-      ShowHint = True
-      TabOrder = 1
-    end
-    object ExcludeFilterCombobox: TComboBox
-      AnchorSideLeft.Control = ExcludeFilterGroupbox
-      AnchorSideTop.Control = UseExcludeFilterCheckbox
-      AnchorSideTop.Side = asrBottom
-      AnchorSideRight.Control = ExcludeFilterGroupbox
-      AnchorSideRight.Side = asrBottom
-      Left = 6
-      Height = 23
-      Top = 25
-      Width = 470
-      Anchors = [akTop, akLeft, akRight]
-      ItemHeight = 15
-      TabOrder = 2
-      Text = 'ExcludeFilterCombobox'
+      Top = 8
+      Width = 138
+      Caption = 'Not implemented yet.'
+      Font.Color = clRed
+      ParentColor = False
+      ParentFont = False
     end
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
     Height = 26
-    Top = 444
-    Width = 486
+    Top = 410
+    Width = 630
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
@@ -262,7 +103,135 @@ object PublishProjectDialog: TPublishProjectDialog
     CloseButton.DefaultCaption = True
     CancelButton.Name = 'CancelButton'
     CancelButton.DefaultCaption = True
-    TabOrder = 5
+    TabOrder = 3
     ShowBevel = False
+  end
+  object UseFiltersCheckbox: TCheckBox
+    AnchorSideTop.Control = NoteLabel
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 21
+    Top = 103
+    Width = 174
+    BorderSpacing.Around = 6
+    Caption = 'Use filters for extra files'
+    OnClick = UseFiltersCheckboxClick
+    TabOrder = 4
+  end
+  object FiltersPanel: TPanel
+    AnchorSideLeft.Control = UseFiltersCheckbox
+    AnchorSideTop.Control = UseFiltersCheckbox
+    AnchorSideTop.Side = asrBottom
+    Left = 21
+    Height = 143
+    Top = 130
+    Width = 615
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Left = 15
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ClientHeight = 143
+    ClientWidth = 615
+    TabOrder = 2
+    TabStop = True
+    object IncFilterSimpleSyntaxCheckbox: TCheckBox
+      AnchorSideLeft.Control = IncludeFilterCombobox
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = IncludeFilterCombobox
+      AnchorSideTop.Side = asrCenter
+      Left = 462
+      Height = 21
+      Top = 37
+      Width = 111
+      BorderSpacing.Around = 6
+      Caption = 'Simple Syntax'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 0
+    end
+    object IncludeFilterCombobox: TComboBox
+      AnchorSideLeft.Control = IncludeFilterLabel
+      AnchorSideTop.Control = IncludeFilterLabel
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Side = asrBottom
+      Left = 7
+      Height = 31
+      Top = 32
+      Width = 449
+      Anchors = [akTop, akLeft, akRight]
+      AutoSize = False
+      ItemHeight = 0
+      TabOrder = 1
+      Text = 'IncludeFilterCombobox'
+    end
+    object IncludeFilterLabel: TLabel
+      AnchorSideLeft.Control = FiltersPanel
+      AnchorSideTop.Control = FiltersPanel
+      Left = 7
+      Height = 19
+      Top = 7
+      Width = 112
+      BorderSpacing.Around = 6
+      Caption = 'IncludeFilterLabel'
+      ParentColor = False
+    end
+    object ExcludeFilterLabel: TLabel
+      AnchorSideLeft.Control = FiltersPanel
+      AnchorSideTop.Control = IncludeFilterCombobox
+      AnchorSideTop.Side = asrBottom
+      Left = 7
+      Height = 19
+      Top = 80
+      Width = 113
+      BorderSpacing.Top = 11
+      BorderSpacing.Around = 6
+      Caption = 'ExcludeFilterLabel'
+      ParentColor = False
+    end
+    object ExcludeFilterCombobox: TComboBox
+      AnchorSideLeft.Control = ExcludeFilterLabel
+      AnchorSideTop.Control = ExcludeFilterLabel
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = IncludeFilterCombobox
+      AnchorSideRight.Side = asrBottom
+      Left = 7
+      Height = 31
+      Top = 105
+      Width = 449
+      Anchors = [akTop, akLeft, akRight]
+      ItemHeight = 0
+      TabOrder = 2
+      Text = 'ExcludeFilterCombobox'
+    end
+    object ExcFilterSimpleSyntaxCheckbox: TCheckBox
+      AnchorSideLeft.Control = ExcludeFilterCombobox
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = ExcludeFilterCombobox
+      AnchorSideTop.Side = asrCenter
+      Left = 462
+      Height = 21
+      Top = 110
+      Width = 111
+      BorderSpacing.Around = 6
+      Caption = 'Simple Syntax'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 3
+    end
+  end
+  object NoteLabel: TLabel
+    AnchorSideTop.Control = DestDirGroupBox
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 19
+    Top = 78
+    Width = 391
+    BorderSpacing.Around = 6
+    Caption = 'Files belonging to project / package will be included automatically.'
+    Font.Color = clMaroon
+    Font.Style = [fsItalic]
+    ParentColor = False
+    ParentFont = False
   end
 end

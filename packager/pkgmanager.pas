@@ -62,7 +62,7 @@ uses
   IDEMsgIntf, SrcEditorIntf, ComponentReg, PropEdits, IDEDialogs, UnitResources,
   // IDE
   IDECmdLine, LazarusIDEStrConsts, IDEProcs, ObjectLists,
-  DialogProcs, IDEOptionDefs, EnvironmentOpts,
+  DialogProcs, IDEOptionDefs, EnvironmentOpts, SourceFileManager,
   MiscOptions, InputHistory, Project, PackageEditor, AddToPackageDlg,
   PackageDefs, PackageLinks, PackageSystem, OpenInstalledPkgDlg,
   PkgGraphExplorer, BrokenDependenciesDlg, CompilerOptions, IDETranslations,
@@ -223,7 +223,6 @@ type
 
     // files
     function GetDefaultSaveDirectoryForFile(const Filename: string): string; override;
-    function GetPublishPackageDir(APackage: TLazPackage): string;
     function OnRenameFile(const OldFilename, NewFilename: string;
                           IsPartOfProject: boolean): TModalResult; override;
     function FindIncludeFileInProjectDependencies(aProject: TProject;
@@ -3061,20 +3060,6 @@ begin
   APackage:=PkgFile.LazPackage;
   if APackage.IsVirtual or (not APackage.HasDirectory) then exit;
   Result:=APackage.Directory;
-end;
-
-function TPkgManager.GetPublishPackageDir(APackage: TLazPackage): string;
-begin
-  Result:=APackage.PublishOptions.DestinationDirectory;
-  if IDEMacros.SubstituteMacros(Result) then begin
-    if FilenameIsAbsolute(Result) then begin
-      Result:=AppendPathDelim(TrimFilename(Result));
-    end else begin
-      Result:='';
-    end;
-  end else begin
-    Result:='';
-  end;
 end;
 
 procedure TPkgManager.LoadInstalledPackages;
@@ -6068,7 +6053,7 @@ function TPkgManager.DoPublishPackage(APackage: TLazPackage;
 begin
   // show the publish dialog
   if ShowDialog then begin
-    Result:=ShowPublishProjectDialog(APackage.PublishOptions);
+    Result:=ShowPublishDialog(APackage.PublishOptions);
     if Result<>mrOk then exit;
   end;
 
@@ -6077,8 +6062,7 @@ begin
   if Result<>mrOk then exit;
 
   // publish package
-  Result:=MainIDE.DoPublishModule(APackage.PublishOptions,APackage.Directory,
-                                  GetPublishPackageDir(APackage));
+  Result:=PublishAModule(APackage.PublishOptions);
 end;
 
 function TPkgManager.GetUsableComponentUnits(CurRoot: TPersistent): TFPList;

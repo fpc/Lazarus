@@ -50,7 +50,7 @@ uses
   // IDE
   IDECmdLine, LazarusIDEStrConsts, DialogProcs, IDEProcs,
   InputHistory, EditDefineTree, ProjectResources, MiscOptions, LazConf,
-  EnvironmentOpts, TransferMacros, CompilerOptions,
+  EnvironmentOpts, TransferMacros, CompilerOptions, PublishModule,
   ExtTools, etMakeMsgParser, etFPCMsgParser, etPas2jsMsgParser,
   Compiler, FPCSrcScan, PackageDefs, PackageSystem, Project, ProjectIcon,
   ModeMatrixOpts, BaseBuildManager, ApplicationBundle, RunParamsOpts;
@@ -198,7 +198,6 @@ type
     function GetCompilerFilename: string; override;
     function GetFPCompilerFilename: string; override;
     function GetFPCFrontEndOptions: string; override;
-    function GetProjectPublishDir: string; override;
     function GetProjectTargetFilename(aProject: TProject): string; override;
     function GetProjectUsesAppBundle: Boolean; override;
     function GetTestUnitFilename(AnUnitInfo: TUnitInfo): string; override;
@@ -696,23 +695,6 @@ begin
       debugln(['Warning: TBuildManager.GetFPCFrontEndOptions: LazarusIDE.CallHandlerGetFPCFrontEndParams failed Result="',Result,'"']);
     end;
   Result:=UTF8Trim(Result);
-end;
-
-function TBuildManager.GetProjectPublishDir: string;
-begin
-  Result:='';
-  if Project1=nil then
-    exit;
-  Result:=Project1.PublishOptions.DestinationDirectory;
-  if GlobalMacroList.SubstituteStr(Result) then begin
-    if FilenameIsAbsolute(Result) then begin
-      Result:=AppendPathDelim(TrimFilename(Result));
-    end else begin
-      Result:='';
-    end;
-  end else begin
-    Result:='';
-  end;
 end;
 
 function TBuildManager.GetProjectTargetFilename(aProject: TProject): string;
@@ -2239,7 +2221,7 @@ function TBuildManager.MacroFuncProjPublishDir(const Param: string;
   const Data: PtrInt; var Abort: boolean): string;
 begin
   if Project1<>nil then
-    Result:=GetProjectPublishDir
+    Result:=RealPublishDir(Project1.PublishOptions)
   else
     Result:='';
 end;

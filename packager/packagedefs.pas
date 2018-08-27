@@ -404,14 +404,10 @@ type
   { TPublishPackageOptions }
 
   TPublishPackageOptions = class(TPublishModuleOptions)
-  private
-    FLazPackage: TLazPackage;
   protected
     procedure DoOnModifyChange; override;
   public
-    constructor Create(TheLazPackage: TLazPackage);
     function GetDefaultDestinationDir: string; override;
-    property LazPackage: TLazPackage read FLazPackage;
   end;
   
   
@@ -4520,13 +4516,8 @@ end;
 
 procedure TPublishPackageOptions.DoOnModifyChange;
 begin
-  if Modified then LazPackage.Modified:=true;
-end;
-
-constructor TPublishPackageOptions.Create(TheLazPackage: TLazPackage);
-begin
-  FLazPackage:=TheLazPackage;
-  inherited Create(FLazPackage);
+  if Modified then
+    TLazPackage(Owner).Modified:=true;
 end;
 
 function TPublishPackageOptions.GetDefaultDestinationDir: string;
@@ -4552,8 +4543,7 @@ begin
   inherited Destroy;
 end;
 
-function TPkgPairTree.FindPair(Pkg1, Pkg2: TLazPackage; IgnoreOrder: boolean
-  ): TPkgPair;
+function TPkgPairTree.FindPair(Pkg1, Pkg2: TLazPackage; IgnoreOrder: boolean): TPkgPair;
 var
   Comp: integer;
   ANode: TAVLTreeNode;
