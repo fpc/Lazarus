@@ -310,9 +310,6 @@ begin
   Result := LowerCase(Result); // GetText requires same case as in .po file, which is lowercase
 end;
 
-var
-  lcfn: string;
-
 { TUpdateTranslator }
 
 procedure TUpdateTranslator.IntUpdateTranslation(AnInstance: TPersistent; Level: integer = 0);
@@ -510,7 +507,7 @@ procedure SetDefaultLang(Lang: string; Dir: string = ''; ForceUpdate: boolean = 
 }
 var
   Dot1: integer;
-  LCLPath: string;
+  LCLPath, lcfn: string;
   LocalTranslator: TUpdateTranslator;
   i: integer;
 
