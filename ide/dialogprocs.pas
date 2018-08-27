@@ -91,8 +91,6 @@ function LoadXMLConfigFromCodeBuffer(const Filename: string; Config: TXMLConfig;
 function SaveXMLConfigToCodeBuffer(const Filename: string; Config: TXMLConfig;
                                    var ACodeBuffer: TCodeBuffer;
                                    KeepFileAttributes: boolean): TModalResult;
-function CreateEmptyFile(const Filename: string;
-                         ErrorButtons: TMsgDlgButtons): TModalResult;
 function CheckCreatingFile(const AFilename: string;
                            CheckReadable: boolean;
                            WarnOverwrite: boolean = false;
@@ -105,8 +103,7 @@ function CheckDirectoryIsWritable(const Filename: string;
 function CheckExecutable(const OldFilename,
   NewFilename: string; const ErrorCaption, ErrorMsg: string;
   SearchInPath: boolean = true): boolean;
-function CheckDirPathExists(const Dir,
-  ErrorCaption, ErrorMsg: string): TModalResult;
+function CheckDirPathExists(const Dir, ErrorCaption, ErrorMsg: string): TModalResult;
 function ChooseSymlink(var Filename: string; const TargetFilename: string): TModalResult;
 function CreateSymlinkInteractive(const {%H-}LinkFilename, {%H-}TargetFilename: string;
                                   {%H-}ErrorButtons: TMsgDlgButtons = []): TModalResult;
@@ -400,35 +397,6 @@ begin
   end;
 end;
 
-function CreateEmptyFile(const Filename: string; ErrorButtons: TMsgDlgButtons
-  ): TModalResult;
-var
-  Buffer: TCodeBuffer;
-begin
-  repeat
-    Buffer:=CodeToolBoss.CreateFile(Filename);
-    if Buffer<>nil then begin
-      break;
-    end else begin
-      Result:=IDEMessageDialog(lisUnableToCreateFile,
-        Format(lisUnableToCreateFile2, [Filename]),
-        mtError,ErrorButtons+[mbCancel]);
-      if Result<>mrRetry then exit;
-    end;
-  until false;
-  repeat
-    if Buffer.Save then begin
-      break;
-    end else begin
-      Result:=IDEMessageDialog(lisUnableToWriteFile,
-        Format(lisUnableToWriteToFile2, [Buffer.Filename]),
-        mtError,ErrorButtons+[mbCancel]);
-      if Result<>mrRetry then exit;
-    end;
-  until false;
-  Result:=mrOk;
-end;
-
 function CheckCreatingFile(const AFilename: string;
   CheckReadable: boolean; WarnOverwrite: boolean; CreateBackup: boolean
   ): TModalResult;
@@ -613,8 +581,7 @@ begin
   end;
 end;
 
-function CheckDirPathExists(const Dir,
-  ErrorCaption, ErrorMsg: string): TModalResult;
+function CheckDirPathExists(const Dir, ErrorCaption, ErrorMsg: string): TModalResult;
 begin
   if not DirPathExists(Dir) then begin
     Result:=IDEMessageDialog(ErrorCaption,Format(ErrorMsg,[Dir]),mtWarning,

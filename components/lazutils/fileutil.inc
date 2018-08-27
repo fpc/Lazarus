@@ -344,10 +344,10 @@ type
     FSourceDir: string;
     FTargetDir: string;
     FFlags: TCopyFileFlags;
-    FCopyFailedCount:Integer;
+    FCopyFailedCount: Integer;
   protected
     procedure DoFileFound; override;
-    procedure DoDirectoryFound; override;
+    //procedure DoDirectoryFound; override;
   end;
 
 procedure TCopyDirTree.DoFileFound;
@@ -359,18 +359,12 @@ begin
   if not CopyFile(FileName, NewLoc, FFlags) then
     Inc(FCopyFailedCount);
 end;
-
+{
 procedure TCopyDirTree.DoDirectoryFound;
-var
-  NewPath:String;
 begin
-  NewPath:=StringReplace(FileName, FSourceDir, FTargetDir, []);
-  // ToDo: make directories also respect cffPreserveTime flag.
-  if not DirectoryExistsUTF8(NewPath) then
-    if not ForceDirectoriesUTF8(NewPath) then
-      Inc(FCopyFailedCount);
+  // Directory is already created by the cffCreateDestDirectory flag.
 end;
-
+}
 function CopyDirTree(const SourceDir, TargetDir: string; Flags: TCopyFileFlags=[]): Boolean;
 var
   Searcher: TCopyDirTree;
@@ -387,11 +381,7 @@ begin
 
     // Don't even try to copy to a subdirectory of SourceDir.
     {$ifdef CaseInsensitiveFilenames}
-      {$ifdef ACP_RTL}
       if AnsiStartsText(Searcher.FSourceDir, Searcher.FTargetDir) then Exit;
-      {$else ACP_RTL}
-      if Utf8StartsText(Searcher.FSourceDir, Searcher.FTargetDir) then Exit;
-      {$endif}
     {$ELSE}
       if AnsiStartsStr(Searcher.FSourceDir, Searcher.FTargetDir) then Exit;
     {$ENDIF}

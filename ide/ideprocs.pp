@@ -34,7 +34,7 @@ uses
   Classes, SysUtils, Laz_AVL_Tree,
   // LazUtils
   FileUtil, LazFileUtils, LazUtilities, LazFileCache, LazUTF8, LazUTF8Classes,
-  Laz2_XMLCfg, AvgLvlTree, LazLoggerBase, LazTracer, LazStringUtils,
+  Laz2_XMLCfg, AvgLvlTree, LazLoggerBase, LazTracer,
   // LCL
   StdCtrls, ExtCtrls,
   // CodeTools
@@ -42,42 +42,12 @@ uses
   // IDE
   LazConf;
 
-type
-  // copy
-  TOnCopyFileMethod =
-    procedure(const Filename: string; var Copy: boolean;
-      Data: TObject) of object;
-
-  TCopyErrorType = (
-    ceSrcDirDoesNotExists,
-    ceCreatingDirectory,
-    ceCopyFileError
-    );
-    
-  TCopyErrorData = record
-    Error: TCopyErrorType;
-    Param1: string;
-    Param2: string;
-  end;
-      
-  TOnCopyErrorMethod =
-    procedure(const ErrorData: TCopyErrorData; var Handled: boolean;
-      Data: TObject) of object;
-      
 // file operations
 function BackupFileForWrite(const Filename, BackupFilename: string): boolean;
-function ClearFile(const Filename: string; RaiseOnError: boolean): boolean;
 function CreateEmptyFile(const Filename: string): boolean;
-function CopyFileWithMethods(const SrcFilename, DestFilename: string;
-             {%H-}OnCopyError: TOnCopyErrorMethod; {%H-}Data: TObject): boolean;
-function CopyDirectoryWithMethods(const SrcDirectory, DestDirectory: string;
-             OnCopyFile: TOnCopyFileMethod; OnCopyError: TOnCopyErrorMethod;
-             Data: TObject): boolean;
 
 // file names
-function ConvertSpecialFileChars(const Filename: string): string;
 function FilenameIsPascalSource(const Filename: string): boolean;
-function FilenameIsFormText(const Filename: string): boolean;
 function ChompEndNumber(const s: string): string;
 function ShortDisplayFilename(const aFileName: string): string;
 
@@ -85,7 +55,6 @@ function ShortDisplayFilename(const aFileName: string): string;
 function FindFilesCaseInsensitive(const Directory,
   CaseInsensitiveFilename: string; IgnoreExact: boolean): TStringList;
 function FindFirstFileWithExt(const Directory, Ext: string): string;
-function FindShortFileNameOnDisk(const Filename: string): string;
 function CreateNonExistingFilename(const BaseFilename: string): string;
 function FindFPCTool(const Executable, CompilerFilename: string): string;
 procedure ResolveLinksInFileList(List: TStrings; RemoveDanglingLinks: Boolean);
@@ -257,40 +226,6 @@ begin
   for i:=Low(PascalSourceExt) to High(PascalSourceExt) do
     if s=PascalSourceExt[i] then
       exit(True);
-end;
-
-function FilenameIsFormText(const Filename: string): boolean;
-var
-  Ext: string;
-begin
-  Ext:=lowercase(ExtractFileExt(Filename));
-  Result:=((Ext='.lfm') or (Ext='.dfm') or (Ext='.xfm'))
-          and (ExtractFileNameOnly(Filename)<>'');
-end;
-
-function FindShortFileNameOnDisk(const Filename: string): string;
-var
-  FileInfo: TSearchRec;
-  ADirectory: String;
-  ShortFilename: String;
-begin
-  Result:='';
-  ADirectory:=ExtractFilePath(Filename);
-  if FindFirstUTF8(AppendPathDelim(ADirectory)+GetAllFilesMask,
-                        faAnyFile,FileInfo)=0
-  then begin
-    ShortFilename:=ExtractFilename(Filename);
-    repeat
-      // check if special file
-      if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='') then
-        continue;
-      if CompareFilenames(ShortFilename,FileInfo.Name)=0 then begin
-        Result:=FileInfo.Name;
-        break;
-      end;
-    until FindNextUTF8(FileInfo)<>0;
-  end;
-  FindCloseUTF8(FileInfo);
 end;
 
 function CreateNonExistingFilename(const BaseFilename: string): string;
@@ -1335,32 +1270,6 @@ begin
   Result := True;
 end;
 
-{-------------------------------------------------------------------------------
-  function ClearFile(const Filename: string; RaiseOnError: boolean): boolean;
-  
-  Empty file if exists.
--------------------------------------------------------------------------------}
-function ClearFile(const Filename: string; RaiseOnError: boolean): boolean;
-var
-  fs: TFileStreamUTF8;
-begin
-  if FileExistsUTF8(Filename) then begin
-    try
-      InvalidateFileStateCache;
-      fs:=TFileStreamUTF8.Create(Filename,fmOpenWrite);
-      fs.Size:=0;
-      fs.Free;
-    except
-      on E: Exception do begin
-        Result:=false;
-        if RaiseOnError then raise;
-        exit;
-      end;
-    end;
-  end;
-  Result:=true;
-end;
-
 function FindProgram(ProgramName, BaseDirectory: string;
   WithBaseDirectory: boolean): string;
 var
@@ -1405,31 +1314,6 @@ begin
   Point.Y:=StrToIntDef(copy(s,p+1,length(s)-p),DefaultPoint.Y);
 end;
 
-{-------------------------------------------------------------------------------
-  ConvertSpecialFileChars
-
-  Params: const Filename: string
-  Result: string
-
-  Replaces all spaces in a filename.
--------------------------------------------------------------------------------}
-function ConvertSpecialFileChars(const Filename: string): string;
-const
-  SpecialChar = '\';
-var i: integer;
-begin
-  Result:=Filename;
-  i:=1;
-  while (i<=length(Result)) do begin
-    if Result[i]<>' ' then begin
-      inc(i);
-    end else begin
-      Result:=LeftStr(Result,i-1)+SpecialChar+RightStr(Result,length(Result)-i+1);
-      inc(i,2);
-    end;
-  end;
-end;
-
 function GetCurrentUserName: string;
 begin
   Result:=GetEnvironmentVariableUTF8('USER');
@@ -1445,96 +1329,6 @@ begin
   GetProgramSearchPath := GetEnvironmentVariableUTF8('PATH');
 end;
 
-function CopyDirectoryWithMethods(const SrcDirectory, DestDirectory: string;
-  OnCopyFile: TOnCopyFileMethod; OnCopyError: TOnCopyErrorMethod;
-  Data: TObject): boolean;
-var
-  SrcDir, DestDir: string;
-
-  function HandleError(ErrorNumber: TCopyErrorType;
-    const Param1, Param2: string): boolean;
-  var
-    ErrorData: TCopyErrorData;
-  begin
-    Result:=false;
-    if Assigned(OnCopyError) then begin
-      ErrorData.Error:=ErrorNumber;
-      ErrorData.Param1:=Param1;
-      ErrorData.Param2:=Param2;
-      OnCopyError(ErrorData,Result,Data);
-    end;
-  end;
-  
-  function CopyDir(const CurSrcDir, CurDestDir: string): boolean;
-  // both dirs must end with PathDelim
-  var
-    FileInfo: TSearchRec;
-    CurFilename,
-    SubSrcDir, SubDestDir,
-    DestFilename: string;
-    DoCopy: boolean;
-  begin
-    Result:=false;
-    if (CompareFilenames(CurSrcDir,DestDir)=0)
-    or (CompareFilenames(CurDestDir,SrcDir)=0) then begin
-      // copying into subdirectory. For example: /home/ to /home/user/
-      // or copying from subdirectory. For example: /home/user/ to /home/
-      // -> skip
-      Result:=true;
-      exit;
-    end;
-    
-    if not ForceDirectory(CurDestDir)
-    and not HandleError(ceCreatingDirectory,CurDestDir,'') then exit;
-    
-    if FindFirstUTF8(CurSrcDir+GetAllFilesMask,faAnyFile,FileInfo)=0 then begin
-      repeat
-        // check if special file
-        if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
-        then continue;
-        CurFilename:=CurSrcDir+FileInfo.Name;
-        // check if src file
-        if FilenameIsMatching(DestDirectory,CurFilename,false) then continue;
-        
-        // check user filter
-        if Assigned(OnCopyFile) then begin
-          DoCopy:=true;
-          OnCopyFile(CurFilename,DoCopy,Data);
-          if not DoCopy then continue;
-        end;
-
-        // copy
-        if (FileInfo.Attr and faDirectory)>0 then begin
-          // copy sub directory
-          SubSrcDir:=AppendPathDelim(CurFilename);
-          SubDestDir:=AppendPathDelim(CurDestDir+FileInfo.Name);
-          if not CopyDir(SubSrcDir,SubDestDir) then exit;
-        end else begin
-          // copy file
-          DestFilename:=CurDestDir+FileInfo.Name;
-          if not CopyFileWithMethods(CurFilename,DestFilename,OnCopyError,Data)
-          then
-            exit;
-        end;
-      until FindNextUTF8(FileInfo)<>0;
-    end;
-    FindCloseUTF8(FileInfo);
-    
-    Result:=true;
-  end;
-  
-begin
-  Result:=true;
-  SrcDir:=AppendPathDelim(TrimAndExpandDirectory(SrcDirectory));
-  DestDir:=AppendPathDelim(TrimAndExpandDirectory(DestDirectory));
-  if CompareFilenames(SrcDir,DestDir)=0 then exit;
-
-  if (not DirPathExists(SrcDir))
-  and not HandleError(ceSrcDirDoesNotExists,SrcDir,'') then exit;
-  
-  CopyDir(SrcDir,DestDirectory);
-end;
-
 function CreateEmptyFile(const Filename: string): boolean;
 var
   fs: TFileStreamUTF8;
@@ -1547,55 +1341,6 @@ begin
     Result:=true;
   except
   end;
-end;
-
-function CopyFileWithMethods(const SrcFilename, DestFilename: string;
-  OnCopyError: TOnCopyErrorMethod; Data: TObject): boolean;
-var
-  SrcFileStream, DestFileStream: TFileStreamUTF8;
-  {$IFdef MSWindows}
-  OldAttr: Longint;
-  {$ELSE}
-  OldInfo: Stat;
-  {$ENDIF}
-begin
-  Result:=false;
-  if CompareFilenames(SrcFilename,DestFilename)=0 then exit;
-  
-  // read file attributes
-  {$IFdef MSWindows}
-  OldAttr:=FileGetAttrUTF8(SrcFilename);
-  {$ELSE}
-  FpStat(SrcFilename,OldInfo{%H-});
-  {$ENDIF}
-  
-  // copy file
-  try
-    SrcFileStream:=TFileStreamUTF8.Create(SrcFilename,fmOpenRead);
-    try
-      InvalidateFileStateCache;
-      DestFileStream:=TFileStreamUTF8.Create(DestFilename,fmCreate);
-      try
-        DestFileStream.CopyFrom(SrcFileStream,SrcFileStream.Size);
-      finally
-        DestFileStream.Free;
-      end;
-    finally
-      SrcFileStream.Free;
-    end;
-  except
-    exit;
-  end;
-  
-  // copy file attributes
-  {$IFdef MSWindows}
-  FileSetAttrUTF8(DestFileName,OldAttr);
-  {$ELSE}
-  FpChmod(DestFilename, OldInfo.st_Mode and (STAT_IRWXO+STAT_IRWXG+STAT_IRWXU
-                           +STAT_ISUID+STAT_ISGID+STAT_ISVTX));
-  {$ENDIF}
-
-  Result:=true;
 end;
 
 function CompareMemStreamText(s1, s2: TMemoryStream): Boolean;

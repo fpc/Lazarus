@@ -27,8 +27,9 @@ unit FileUtil;
 interface
 
 uses
-  Classes, SysUtils,
-  Masks, LazUTF8, LazFileUtils, StrUtils;
+  Classes, SysUtils, StrUtils,
+  // LazUtils
+  Masks, LazUTF8, LazFileUtils;
 
 {$IF defined(Windows) or defined(darwin) or defined(HASAMIGA)}
 {$define CaseInsensitiveFilenames}
@@ -100,14 +101,12 @@ type
     function GetFileName: String;
   public
     procedure Stop;
-
     function IsDirectory: Boolean;
   public
     property FileName: String read GetFileName;
     property FileInfo: TSearchRec read FFileInfo;
     property Level: Integer read FLevel;
     property Path: String read FPath;
-
     property Searching: Boolean read FSearching;
   end;
 
