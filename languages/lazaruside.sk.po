@@ -7112,10 +7112,6 @@ msgstr ""
 msgid "Visibility"
 msgstr ""
 
-#: lazarusidestrconsts.liscommandafter
-msgid "Command after"
-msgstr "Príkaz po"
-
 #: lazarusidestrconsts.liscommandafterinvalid
 msgid "Command after invalid"
 msgstr "Príkaz za neplatným"
@@ -7241,6 +7237,14 @@ msgstr "Otvoriť balíček"
 #: lazarusidestrconsts.liscomppalopenunit
 msgid "Open unit"
 msgstr "Otvoriť jednotku"
+
+#: lazarusidestrconsts.liscompress
+msgid "Compress"
+msgstr ""
+
+#: lazarusidestrconsts.liscompresshint
+msgid "The resulting directory will be compressed into a ZIP file."
+msgstr ""
 
 #: lazarusidestrconsts.liscomptest
 #, fuzzy
@@ -10739,10 +10743,6 @@ msgstr "Ignorovať všetko"
 msgid "Ignore and continue"
 msgstr "Ignorovať a pokračovať"
 
-#: lazarusidestrconsts.lisignorebinaries
-msgid "Ignore binaries"
-msgstr "Ignorovať binárky"
-
 #: lazarusidestrconsts.lisignoreexceptiontype
 msgid "Ignore this exception type"
 msgstr ""
@@ -11960,6 +11960,10 @@ msgstr "Meno jazyka Lazarus (napr. english, slovak)"
 #: lazarusidestrconsts.lislazarusoptionsprojectfilename
 msgid "lazarus [options] <project-filename>"
 msgstr "lazarus [voľby] <meno-suboru-projektu>"
+
+#: lazarusidestrconsts.lislazarussvnrev
+msgid "r%s"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildaboaction
 msgctxt "lazarusidestrconsts.lislazbuildaboaction"
@@ -16996,12 +17000,6 @@ msgstr "Cesta k include projektu"
 msgid "Project info file detected"
 msgstr "Informačný súbor projektu zistený"
 
-#: lazarusidestrconsts.lisprojectinformation
-#, fuzzy
-#| msgid "Project Information"
-msgid "Project information"
-msgstr "Informácie o projekte"
-
 #: lazarusidestrconsts.lisprojectisrunnable
 msgid "Project is runnable"
 msgstr "Projekt je spustiteľný"
@@ -17180,6 +17178,10 @@ msgstr "Verejná metóda"
 #: lazarusidestrconsts.lispublishedmethod
 msgid "Published Method"
 msgstr "Zverejnená metóda"
+
+#: lazarusidestrconsts.lispublishmodulenote
+msgid "Files belonging to project / package will be included automatically."
+msgstr ""
 
 #: lazarusidestrconsts.lispublishprojdir
 msgid "Publish project directory"
@@ -17800,10 +17802,6 @@ msgstr ""
 msgid "Saved with project session"
 msgstr ""
 
-#: lazarusidestrconsts.lissaveeditorinfoofnonprojectfiles
-msgid "Save editor info of non project files"
-msgstr "Uložiť informácie editora o súboroch, ktoré nepatria do projektu"
-
 #: lazarusidestrconsts.lissavefileas
 msgid "Save file as"
 msgstr "Uložiť súbor ako"
@@ -17813,10 +17811,6 @@ msgstr "Uložiť súbor ako"
 #| msgid "Save file %s%s%s%sbefore closing form %s%s%s?"
 msgid "Save file \"%s\"%sbefore closing form \"%s\"?"
 msgstr "Uložiť súbor %s%s%s%spred zatvorením formulára %s%s%s?"
-
-#: lazarusidestrconsts.lissaveinfoofclosededitorfiles
-msgid "Save info of closed editor files"
-msgstr "Uložiť informácie o zatvorených súboroch editora"
 
 #: lazarusidestrconsts.lissavemacroas
 msgid "Save macro as"
@@ -20198,11 +20192,9 @@ msgstr ""
 msgid "Used for auto-created forms."
 msgstr ""
 
-#: lazarusidestrconsts.lisuseexcludefilter
-#, fuzzy
-#| msgid "Use Exclude Filter"
-msgid "Use exclude filter"
-msgstr "Použiť vylučovací filter"
+#: lazarusidestrconsts.lisusefiltersforextrafiles
+msgid "Use filters for extra files"
+msgstr ""
 
 #: lazarusidestrconsts.lisuseidentifier
 msgid "Use identifier"
@@ -20211,12 +20203,6 @@ msgstr ""
 #: lazarusidestrconsts.lisuseidentifierinat
 msgid "Use identifier %s in %s at %s"
 msgstr ""
-
-#: lazarusidestrconsts.lisuseincludefilter
-#, fuzzy
-#| msgid "Use Include Filter"
-msgid "Use include filter"
-msgstr "Použiť zahŕňací filter"
 
 #: lazarusidestrconsts.lisuselaunchingapplicationgroupbox
 msgid "Launching application"

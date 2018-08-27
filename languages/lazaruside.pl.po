@@ -7034,10 +7034,6 @@ msgstr ""
 msgid "Visibility"
 msgstr "Widoczność"
 
-#: lazarusidestrconsts.liscommandafter
-msgid "Command after"
-msgstr ""
-
 #: lazarusidestrconsts.liscommandafterinvalid
 msgid "Command after invalid"
 msgstr ""
@@ -7160,6 +7156,14 @@ msgstr "Otwórz pakiet..."
 #: lazarusidestrconsts.liscomppalopenunit
 msgid "Open unit"
 msgstr "Otwórz moduł"
+
+#: lazarusidestrconsts.liscompress
+msgid "Compress"
+msgstr ""
+
+#: lazarusidestrconsts.liscompresshint
+msgid "The resulting directory will be compressed into a ZIP file."
+msgstr ""
 
 #: lazarusidestrconsts.liscomptest
 #, fuzzy
@@ -10608,10 +10612,6 @@ msgstr ""
 msgid "Ignore and continue"
 msgstr ""
 
-#: lazarusidestrconsts.lisignorebinaries
-msgid "Ignore binaries"
-msgstr ""
-
 #: lazarusidestrconsts.lisignoreexceptiontype
 msgid "Ignore this exception type"
 msgstr ""
@@ -11766,6 +11766,10 @@ msgstr ""
 #: lazarusidestrconsts.lislazarusoptionsprojectfilename
 msgid "lazarus [options] <project-filename>"
 msgstr "lazarus [options] <project-filename>"
+
+#: lazarusidestrconsts.lislazarussvnrev
+msgid "r%s"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildaboaction
 msgctxt "lazarusidestrconsts.lislazbuildaboaction"
@@ -16512,10 +16516,6 @@ msgstr "Ścieżka dołączanych plików projektu"
 msgid "Project info file detected"
 msgstr "Wykryłem plik z informacją o projekcie"
 
-#: lazarusidestrconsts.lisprojectinformation
-msgid "Project information"
-msgstr "Informacje o projekcie"
-
 #: lazarusidestrconsts.lisprojectisrunnable
 msgid "Project is runnable"
 msgstr "Projekt jest wykonywalny"
@@ -16693,6 +16693,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lispublishedmethod
 msgid "Published Method"
+msgstr ""
+
+#: lazarusidestrconsts.lispublishmodulenote
+msgid "Files belonging to project / package will be included automatically."
 msgstr ""
 
 #: lazarusidestrconsts.lispublishprojdir
@@ -17293,10 +17297,6 @@ msgstr ""
 msgid "Saved with project session"
 msgstr ""
 
-#: lazarusidestrconsts.lissaveeditorinfoofnonprojectfiles
-msgid "Save editor info of non project files"
-msgstr "Zapisuj informację edytara dla plików z poza projektu"
-
 #: lazarusidestrconsts.lissavefileas
 msgid "Save file as"
 msgstr "Zapisz plik jako"
@@ -17304,10 +17304,6 @@ msgstr "Zapisz plik jako"
 #: lazarusidestrconsts.lissavefilebeforeclosingform
 msgid "Save file \"%s\"%sbefore closing form \"%s\"?"
 msgstr "Czy zapisać\"plik \"%s\"%sprzed zamknięciem formularza \"%s\"?"
-
-#: lazarusidestrconsts.lissaveinfoofclosededitorfiles
-msgid "Save info of closed editor files"
-msgstr "Zapisz informacje o zamkniętych plikach edytora"
 
 #: lazarusidestrconsts.lissavemacroas
 msgid "Save macro as"
@@ -19548,8 +19544,8 @@ msgstr ""
 msgid "Used for auto-created forms."
 msgstr ""
 
-#: lazarusidestrconsts.lisuseexcludefilter
-msgid "Use exclude filter"
+#: lazarusidestrconsts.lisusefiltersforextrafiles
+msgid "Use filters for extra files"
 msgstr ""
 
 #: lazarusidestrconsts.lisuseidentifier
@@ -19558,10 +19554,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisuseidentifierinat
 msgid "Use identifier %s in %s at %s"
-msgstr ""
-
-#: lazarusidestrconsts.lisuseincludefilter
-msgid "Use include filter"
 msgstr ""
 
 #: lazarusidestrconsts.lisuselaunchingapplicationgroupbox

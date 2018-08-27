@@ -6773,10 +6773,6 @@ msgstr "Повертає"
 msgid "Visibility"
 msgstr "Видимість"
 
-#: lazarusidestrconsts.liscommandafter
-msgid "Command after"
-msgstr "Команда після"
-
 #: lazarusidestrconsts.liscommandafterinvalid
 msgid "Command after invalid"
 msgstr "Некоректна команда \"після\" "
@@ -6896,6 +6892,14 @@ msgstr "Відкрити пакунок"
 #: lazarusidestrconsts.liscomppalopenunit
 msgid "Open unit"
 msgstr "Відкрити модуль"
+
+#: lazarusidestrconsts.liscompress
+msgid "Compress"
+msgstr ""
+
+#: lazarusidestrconsts.liscompresshint
+msgid "The resulting directory will be compressed into a ZIP file."
+msgstr ""
 
 #: lazarusidestrconsts.liscomptest
 msgctxt "lazarusidestrconsts.liscomptest"
@@ -10313,10 +10317,6 @@ msgstr "Знехтувати все"
 msgid "Ignore and continue"
 msgstr "Знехтувати і продовжити"
 
-#: lazarusidestrconsts.lisignorebinaries
-msgid "Ignore binaries"
-msgstr "Нехтувати двійкові"
-
 #: lazarusidestrconsts.lisignoreexceptiontype
 msgid "Ignore this exception type"
 msgstr "Нехтувати цей тип винятків"
@@ -11457,6 +11457,10 @@ msgstr "Назва мови для Lazarus (напр. english, deutsch, ukrainai
 #: lazarusidestrconsts.lislazarusoptionsprojectfilename
 msgid "lazarus [options] <project-filename>"
 msgstr "lazarus [параметри] <назва файлу проекту>"
+
+#: lazarusidestrconsts.lislazarussvnrev
+msgid "r%s"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildaboaction
 msgctxt "lazarusidestrconsts.lislazbuildaboaction"
@@ -16111,10 +16115,6 @@ msgstr "Шляхи, що включені до проекту"
 msgid "Project info file detected"
 msgstr "Виявлено info-файл проекту"
 
-#: lazarusidestrconsts.lisprojectinformation
-msgid "Project information"
-msgstr "Інформація про проект"
-
 #: lazarusidestrconsts.lisprojectisrunnable
 msgid "Project is runnable"
 msgstr "Проект є виконуваним"
@@ -16293,6 +16293,10 @@ msgstr "Спільний метод"
 #: lazarusidestrconsts.lispublishedmethod
 msgid "Published Method"
 msgstr "Опублікований метод"
+
+#: lazarusidestrconsts.lispublishmodulenote
+msgid "Files belonging to project / package will be included automatically."
+msgstr ""
 
 #: lazarusidestrconsts.lispublishprojdir
 msgid "Publish project directory"
@@ -16891,10 +16895,6 @@ msgstr "Збережено з параметрами ІСР"
 msgid "Saved with project session"
 msgstr "Збережено з сеансом проекту"
 
-#: lazarusidestrconsts.lissaveeditorinfoofnonprojectfiles
-msgid "Save editor info of non project files"
-msgstr "Зберегти інформацію редактора про файли, що не відносяться до проекту"
-
 #: lazarusidestrconsts.lissavefileas
 msgid "Save file as"
 msgstr "Зберегти файл як"
@@ -16902,10 +16902,6 @@ msgstr "Зберегти файл як"
 #: lazarusidestrconsts.lissavefilebeforeclosingform
 msgid "Save file \"%s\"%sbefore closing form \"%s\"?"
 msgstr "Зберегти файл \"%s\"%sперед закриттям форми \"%s\"?"
-
-#: lazarusidestrconsts.lissaveinfoofclosededitorfiles
-msgid "Save info of closed editor files"
-msgstr "Зберегти інформацію про закриті редактором файли"
 
 #: lazarusidestrconsts.lissavemacroas
 msgid "Save macro as"
@@ -19128,9 +19124,9 @@ msgstr "Викор. пакунки часу розробки"
 msgid "Used for auto-created forms."
 msgstr "Використано для автоматично створених форм."
 
-#: lazarusidestrconsts.lisuseexcludefilter
-msgid "Use exclude filter"
-msgstr "Використовувати фільтр виключень"
+#: lazarusidestrconsts.lisusefiltersforextrafiles
+msgid "Use filters for extra files"
+msgstr ""
 
 #: lazarusidestrconsts.lisuseidentifier
 msgid "Use identifier"
@@ -19139,10 +19135,6 @@ msgstr "Використати ідентифікатор"
 #: lazarusidestrconsts.lisuseidentifierinat
 msgid "Use identifier %s in %s at %s"
 msgstr "Використати ідентифікатор %s в %s на %s"
-
-#: lazarusidestrconsts.lisuseincludefilter
-msgid "Use include filter"
-msgstr "Використовувати фільтр включень"
 
 #: lazarusidestrconsts.lisuselaunchingapplicationgroupbox
 msgid "Launching application"

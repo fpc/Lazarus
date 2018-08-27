@@ -7065,10 +7065,6 @@ msgstr ""
 msgid "Visibility"
 msgstr ""
 
-#: lazarusidestrconsts.liscommandafter
-msgid "Command after"
-msgstr "Perintah setelah"
-
 #: lazarusidestrconsts.liscommandafterinvalid
 msgid "Command after invalid"
 msgstr "Perintah seteleahnya tidak benar"
@@ -7194,6 +7190,14 @@ msgstr "Buka paket"
 #: lazarusidestrconsts.liscomppalopenunit
 msgid "Open unit"
 msgstr "Buka unit"
+
+#: lazarusidestrconsts.liscompress
+msgid "Compress"
+msgstr ""
+
+#: lazarusidestrconsts.liscompresshint
+msgid "The resulting directory will be compressed into a ZIP file."
+msgstr ""
 
 #: lazarusidestrconsts.liscomptest
 #, fuzzy
@@ -10678,10 +10682,6 @@ msgstr ""
 msgid "Ignore and continue"
 msgstr ""
 
-#: lazarusidestrconsts.lisignorebinaries
-msgid "Ignore binaries"
-msgstr "Abaikan biner"
-
 #: lazarusidestrconsts.lisignoreexceptiontype
 msgid "Ignore this exception type"
 msgstr ""
@@ -11892,6 +11892,10 @@ msgstr "Nama bahasa Lazarus (contoh english, dutsch)"
 #: lazarusidestrconsts.lislazarusoptionsprojectfilename
 msgid "lazarus [options] <project-filename>"
 msgstr "lazarus [opsi] <namafile-proyek>"
+
+#: lazarusidestrconsts.lislazarussvnrev
+msgid "r%s"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildaboaction
 msgctxt "lazarusidestrconsts.lislazbuildaboaction"
@@ -16904,12 +16908,6 @@ msgstr "Path Include Proyek"
 msgid "Project info file detected"
 msgstr "File info proyek dideteksi"
 
-#: lazarusidestrconsts.lisprojectinformation
-#, fuzzy
-#| msgid "Project Information"
-msgid "Project information"
-msgstr "Informasi Proyek"
-
 #: lazarusidestrconsts.lisprojectisrunnable
 msgid "Project is runnable"
 msgstr "Proyek bisa dijalankan"
@@ -17088,6 +17086,10 @@ msgstr "Metode Public"
 #: lazarusidestrconsts.lispublishedmethod
 msgid "Published Method"
 msgstr "Metode Published"
+
+#: lazarusidestrconsts.lispublishmodulenote
+msgid "Files belonging to project / package will be included automatically."
+msgstr ""
 
 #: lazarusidestrconsts.lispublishprojdir
 msgid "Publish project directory"
@@ -17698,10 +17700,6 @@ msgstr ""
 msgid "Saved with project session"
 msgstr ""
 
-#: lazarusidestrconsts.lissaveeditorinfoofnonprojectfiles
-msgid "Save editor info of non project files"
-msgstr "Simpan info editor dari file non proyek"
-
 #: lazarusidestrconsts.lissavefileas
 msgid "Save file as"
 msgstr "Simpan file sebagai"
@@ -17711,10 +17709,6 @@ msgstr "Simpan file sebagai"
 #| msgid "Save file %s%s%s%sbefore closing form %s%s%s?"
 msgid "Save file \"%s\"%sbefore closing form \"%s\"?"
 msgstr "Simpan file %s%s%s%ssebelum menutup form %s%s%s?"
-
-#: lazarusidestrconsts.lissaveinfoofclosededitorfiles
-msgid "Save info of closed editor files"
-msgstr "Simpan info dari file editor yang ditutup"
 
 #: lazarusidestrconsts.lissavemacroas
 msgid "Save macro as"
@@ -20058,11 +20052,9 @@ msgstr ""
 msgid "Used for auto-created forms."
 msgstr ""
 
-#: lazarusidestrconsts.lisuseexcludefilter
-#, fuzzy
-#| msgid "Use Exclude Filter"
-msgid "Use exclude filter"
-msgstr "Gunakan Filter Kekecualian"
+#: lazarusidestrconsts.lisusefiltersforextrafiles
+msgid "Use filters for extra files"
+msgstr ""
 
 #: lazarusidestrconsts.lisuseidentifier
 msgid "Use identifier"
@@ -20071,12 +20063,6 @@ msgstr ""
 #: lazarusidestrconsts.lisuseidentifierinat
 msgid "Use identifier %s in %s at %s"
 msgstr ""
-
-#: lazarusidestrconsts.lisuseincludefilter
-#, fuzzy
-#| msgid "Use Include Filter"
-msgid "Use include filter"
-msgstr "Gunakan Filter Include"
 
 #: lazarusidestrconsts.lisuselaunchingapplicationgroupbox
 msgid "Launching application"

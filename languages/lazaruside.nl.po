@@ -7041,10 +7041,6 @@ msgstr ""
 msgid "Visibility"
 msgstr ""
 
-#: lazarusidestrconsts.liscommandafter
-msgid "Command after"
-msgstr "Commando-uitvoer"
-
 #: lazarusidestrconsts.liscommandafterinvalid
 msgid "Command after invalid"
 msgstr "Opdracht na ongeldig"
@@ -7170,6 +7166,14 @@ msgstr "Open een Pakket"
 #: lazarusidestrconsts.liscomppalopenunit
 msgid "Open unit"
 msgstr "Open unit"
+
+#: lazarusidestrconsts.liscompress
+msgid "Compress"
+msgstr ""
+
+#: lazarusidestrconsts.liscompresshint
+msgid "The resulting directory will be compressed into a ZIP file."
+msgstr ""
 
 #: lazarusidestrconsts.liscomptest
 #, fuzzy
@@ -10636,10 +10640,6 @@ msgstr ""
 msgid "Ignore and continue"
 msgstr ""
 
-#: lazarusidestrconsts.lisignorebinaries
-msgid "Ignore binaries"
-msgstr "Negeer binaire bestanden"
-
 #: lazarusidestrconsts.lisignoreexceptiontype
 msgid "Ignore this exception type"
 msgstr ""
@@ -11817,6 +11817,10 @@ msgstr "Lazarus taal naam (Engels, Duits, etc.)"
 #: lazarusidestrconsts.lislazarusoptionsprojectfilename
 msgid "lazarus [options] <project-filename>"
 msgstr "lazarus [opties] <project-bestandsnaam>"
+
+#: lazarusidestrconsts.lislazarussvnrev
+msgid "r%s"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildaboaction
 msgctxt "lazarusidestrconsts.lislazbuildaboaction"
@@ -16798,12 +16802,6 @@ msgstr "Project Include Path"
 msgid "Project info file detected"
 msgstr "Project info bestand gevonden"
 
-#: lazarusidestrconsts.lisprojectinformation
-#, fuzzy
-#| msgid "Project Information"
-msgid "Project information"
-msgstr "Project informatie"
-
 #: lazarusidestrconsts.lisprojectisrunnable
 msgid "Project is runnable"
 msgstr "Project is 'runnable'"
@@ -16982,6 +16980,10 @@ msgstr "Publieke methode"
 #: lazarusidestrconsts.lispublishedmethod
 msgid "Published Method"
 msgstr "Gepubliceerde methode"
+
+#: lazarusidestrconsts.lispublishmodulenote
+msgid "Files belonging to project / package will be included automatically."
+msgstr ""
 
 #: lazarusidestrconsts.lispublishprojdir
 msgid "Publish project directory"
@@ -17588,10 +17590,6 @@ msgstr ""
 msgid "Saved with project session"
 msgstr ""
 
-#: lazarusidestrconsts.lissaveeditorinfoofnonprojectfiles
-msgid "Save editor info of non project files"
-msgstr "Bewaar bewerker info voor bestanden buiten het project"
-
 #: lazarusidestrconsts.lissavefileas
 msgid "Save file as"
 msgstr "Sla bestand op als"
@@ -17601,10 +17599,6 @@ msgstr "Sla bestand op als"
 #| msgid "Save file %s%s%s%sbefore closing form %s%s%s?"
 msgid "Save file \"%s\"%sbefore closing form \"%s\"?"
 msgstr "Bestand \"%s\"%sopslaan voor het sluiten van form \"%s\"?"
-
-#: lazarusidestrconsts.lissaveinfoofclosededitorfiles
-msgid "Save info of closed editor files"
-msgstr "Bewaar info gesloten bewerker bestanden"
 
 #: lazarusidestrconsts.lissavemacroas
 msgid "Save macro as"
@@ -19944,11 +19938,9 @@ msgstr ""
 msgid "Used for auto-created forms."
 msgstr ""
 
-#: lazarusidestrconsts.lisuseexcludefilter
-#, fuzzy
-#| msgid "Use Exclude Filter"
-msgid "Use exclude filter"
-msgstr "Gebruik \"uitsluit\" filter"
+#: lazarusidestrconsts.lisusefiltersforextrafiles
+msgid "Use filters for extra files"
+msgstr ""
 
 #: lazarusidestrconsts.lisuseidentifier
 msgid "Use identifier"
@@ -19957,12 +19949,6 @@ msgstr ""
 #: lazarusidestrconsts.lisuseidentifierinat
 msgid "Use identifier %s in %s at %s"
 msgstr ""
-
-#: lazarusidestrconsts.lisuseincludefilter
-#, fuzzy
-#| msgid "Use Include Filter"
-msgid "Use include filter"
-msgstr "Gebruik \"bevat\" filter"
 
 #: lazarusidestrconsts.lisuselaunchingapplicationgroupbox
 msgid "Launching application"

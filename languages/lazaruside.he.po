@@ -7210,10 +7210,6 @@ msgstr ""
 msgid "Visibility"
 msgstr ""
 
-#: lazarusidestrconsts.liscommandafter
-msgid "Command after"
-msgstr "פקודה אחרי"
-
 #: lazarusidestrconsts.liscommandafterinvalid
 msgid "Command after invalid"
 msgstr "פקודה שאחרי לא חוקית"
@@ -7342,6 +7338,14 @@ msgstr "פתח חבילה"
 #: lazarusidestrconsts.liscomppalopenunit
 msgid "Open unit"
 msgstr "פתח יחידה"
+
+#: lazarusidestrconsts.liscompress
+msgid "Compress"
+msgstr ""
+
+#: lazarusidestrconsts.liscompresshint
+msgid "The resulting directory will be compressed into a ZIP file."
+msgstr ""
 
 #: lazarusidestrconsts.liscomptest
 msgctxt "lazarusidestrconsts.liscomptest"
@@ -10922,10 +10926,6 @@ msgstr "התעלם מהכל"
 msgid "Ignore and continue"
 msgstr "התעלם והמשך"
 
-#: lazarusidestrconsts.lisignorebinaries
-msgid "Ignore binaries"
-msgstr "התעלם מבינארי"
-
 #: lazarusidestrconsts.lisignoreexceptiontype
 msgid "Ignore this exception type"
 msgstr "התעלם מסוג חריגות זה"
@@ -12185,6 +12185,10 @@ msgstr "שם השפה של לזרוס (למשל english, deutsch, hebrew)"
 #: lazarusidestrconsts.lislazarusoptionsprojectfilename
 msgid "lazarus [options] <project-filename>"
 msgstr "לזארוס [אפשרויות] <פרוייקט-שם קובץ>"
+
+#: lazarusidestrconsts.lislazarussvnrev
+msgid "r%s"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildaboaction
 msgctxt "lazarusidestrconsts.lislazbuildaboaction"
@@ -17298,12 +17302,6 @@ msgstr "פרוייקט כולל נתיב"
 msgid "Project info file detected"
 msgstr "התגלה קובץ המידע של הפרויקט"
 
-#: lazarusidestrconsts.lisprojectinformation
-#, fuzzy
-#| msgid "Project Information"
-msgid "Project information"
-msgstr "מידע הפרויקט"
-
 #: lazarusidestrconsts.lisprojectisrunnable
 msgid "Project is runnable"
 msgstr "הפרויקט בר ריצה"
@@ -17490,6 +17488,10 @@ msgstr "מתודה ציבורית"
 #: lazarusidestrconsts.lispublishedmethod
 msgid "Published Method"
 msgstr "מתודה מסוג Published"
+
+#: lazarusidestrconsts.lispublishmodulenote
+msgid "Files belonging to project / package will be included automatically."
+msgstr ""
 
 #: lazarusidestrconsts.lispublishprojdir
 msgid "Publish project directory"
@@ -18125,10 +18127,6 @@ msgstr ""
 msgid "Saved with project session"
 msgstr ""
 
-#: lazarusidestrconsts.lissaveeditorinfoofnonprojectfiles
-msgid "Save editor info of non project files"
-msgstr "שמור מידע עורך על קבצים שאינם של הפרוייקט"
-
 #: lazarusidestrconsts.lissavefileas
 msgid "Save file as"
 msgstr "שמור קובץ כ"
@@ -18138,10 +18136,6 @@ msgstr "שמור קובץ כ"
 #| msgid "Save file %s%s%s%sbefore closing form %s%s%s?"
 msgid "Save file \"%s\"%sbefore closing form \"%s\"?"
 msgstr "לשמור את הקובץ %s%s%s%s לפני סגירת הטופס %s%s%s?"
-
-#: lazarusidestrconsts.lissaveinfoofclosededitorfiles
-msgid "Save info of closed editor files"
-msgstr "שמור מידע של קבצי עורך סגורים"
 
 #: lazarusidestrconsts.lissavemacroas
 msgid "Save macro as"
@@ -20587,11 +20581,9 @@ msgstr "השתמש ב\"חבילות זמן תיכנות\""
 msgid "Used for auto-created forms."
 msgstr ""
 
-#: lazarusidestrconsts.lisuseexcludefilter
-#, fuzzy
-#| msgid "Use Exclude Filter"
-msgid "Use exclude filter"
-msgstr "השתמש במסנן \"אל תכלול\""
+#: lazarusidestrconsts.lisusefiltersforextrafiles
+msgid "Use filters for extra files"
+msgstr ""
 
 #: lazarusidestrconsts.lisuseidentifier
 msgid "Use identifier"
@@ -20601,12 +20593,6 @@ msgstr "השתמש במזהה"
 #, fuzzy,badformat
 msgid "Use identifier %s in %s at %s"
 msgstr "השתמש במזהה s% ב %s ב %s"
-
-#: lazarusidestrconsts.lisuseincludefilter
-#, fuzzy
-#| msgid "Use Include Filter"
-msgid "Use include filter"
-msgstr "השתמש במסנן \"כלול\""
 
 #: lazarusidestrconsts.lisuselaunchingapplicationgroupbox
 msgid "Launching application"

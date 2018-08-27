@@ -6888,10 +6888,6 @@ msgstr "İade"
 msgid "Visibility"
 msgstr "Görünürlük"
 
-#: lazarusidestrconsts.liscommandafter
-msgid "Command after"
-msgstr "Komutadan sonra"
-
 #: lazarusidestrconsts.liscommandafterinvalid
 msgid "Command after invalid"
 msgstr "Geçersiz Komut"
@@ -7012,6 +7008,14 @@ msgstr "Açık paket"
 #: lazarusidestrconsts.liscomppalopenunit
 msgid "Open unit"
 msgstr "Açık birimi"
+
+#: lazarusidestrconsts.liscompress
+msgid "Compress"
+msgstr ""
+
+#: lazarusidestrconsts.liscompresshint
+msgid "The resulting directory will be compressed into a ZIP file."
+msgstr ""
 
 #: lazarusidestrconsts.liscomptest
 msgctxt "lazarusidestrconsts.liscomptest"
@@ -10481,10 +10485,6 @@ msgstr "Hepsini Yoksay"
 msgid "Ignore and continue"
 msgstr "Yoksay ve devam et"
 
-#: lazarusidestrconsts.lisignorebinaries
-msgid "Ignore binaries"
-msgstr "Çiftleri yoksay"
-
 #: lazarusidestrconsts.lisignoreexceptiontype
 msgid "Ignore this exception type"
 msgstr "Bu istisna türü yoksay"
@@ -11694,6 +11694,10 @@ msgstr "Lazarus dil adı (ör. Ingilizce, deutsch)"
 #: lazarusidestrconsts.lislazarusoptionsprojectfilename
 msgid "lazarus [options] <project-filename>"
 msgstr "Lazarus [seçenekler] <proje-dosya adı>"
+
+#: lazarusidestrconsts.lislazarussvnrev
+msgid "r%s"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildaboaction
 msgctxt "lazarusidestrconsts.lislazbuildaboaction"
@@ -16408,10 +16412,6 @@ msgstr "Projeyi Dahil Et Yolu"
 msgid "Project info file detected"
 msgstr "Proje bilgi dosyası algılandı"
 
-#: lazarusidestrconsts.lisprojectinformation
-msgid "Project information"
-msgstr "Proje bilgisi"
-
 #: lazarusidestrconsts.lisprojectisrunnable
 msgid "Project is runnable"
 msgstr "Proje çalıştırılabilir"
@@ -16598,6 +16598,10 @@ msgstr "Genel Yöntem"
 #: lazarusidestrconsts.lispublishedmethod
 msgid "Published Method"
 msgstr "Yayımlanmış Yöntem"
+
+#: lazarusidestrconsts.lispublishmodulenote
+msgid "Files belonging to project / package will be included automatically."
+msgstr ""
 
 #: lazarusidestrconsts.lispublishprojdir
 msgid "Publish project directory"
@@ -17192,10 +17196,6 @@ msgstr "IDE ayarları ile kaydedildi"
 msgid "Saved with project session"
 msgstr "Proje oturumu ile kaydedildi"
 
-#: lazarusidestrconsts.lissaveeditorinfoofnonprojectfiles
-msgid "Save editor info of non project files"
-msgstr "Proje dışı dosyaların düzenleyici bilgilerini kaydet"
-
 #: lazarusidestrconsts.lissavefileas
 msgid "Save file as"
 msgstr "Dosyayı farklı kaydet"
@@ -17203,10 +17203,6 @@ msgstr "Dosyayı farklı kaydet"
 #: lazarusidestrconsts.lissavefilebeforeclosingform
 msgid "Save file \"%s\"%sbefore closing form \"%s\"?"
 msgstr "\" %s \\ \" %s dosyayı kaydetmeden önce \" %s \\ \"kaydedilsin mi?"
-
-#: lazarusidestrconsts.lissaveinfoofclosededitorfiles
-msgid "Save info of closed editor files"
-msgstr "Kapalı editör dosyalarının bilgilerini kaydedin"
 
 #: lazarusidestrconsts.lissavemacroas
 msgid "Save macro as"
@@ -19532,9 +19528,9 @@ msgstr "Tasarım zaman paketlerini kullanın"
 msgid "Used for auto-created forms."
 msgstr "Otomatik oluşturulan formlar için kullanılır."
 
-#: lazarusidestrconsts.lisuseexcludefilter
-msgid "Use exclude filter"
-msgstr "Dışlama filtresi kullan"
+#: lazarusidestrconsts.lisusefiltersforextrafiles
+msgid "Use filters for extra files"
+msgstr ""
 
 #: lazarusidestrconsts.lisuseidentifier
 msgid "Use identifier"
@@ -19543,10 +19539,6 @@ msgstr "Tanımlayıcıyı kullan"
 #: lazarusidestrconsts.lisuseidentifierinat
 msgid "Use identifier %s in %s at %s"
 msgstr " %s içindeki tanımlayıcı %s'yi kullanın %s"
-
-#: lazarusidestrconsts.lisuseincludefilter
-msgid "Use include filter"
-msgstr "Dahil et filtre"
 
 #: lazarusidestrconsts.lisuselaunchingapplicationgroupbox
 msgid "Launching application"

@@ -7014,10 +7014,6 @@ msgstr ""
 msgid "Visibility"
 msgstr ""
 
-#: lazarusidestrconsts.liscommandafter
-msgid "Command after"
-msgstr ""
-
 #: lazarusidestrconsts.liscommandafterinvalid
 msgid "Command after invalid"
 msgstr "Ordre no vàlida"
@@ -7143,6 +7139,14 @@ msgstr "Obre el paquet"
 #: lazarusidestrconsts.liscomppalopenunit
 msgid "Open unit"
 msgstr "Obre la unitat"
+
+#: lazarusidestrconsts.liscompress
+msgid "Compress"
+msgstr ""
+
+#: lazarusidestrconsts.liscompresshint
+msgid "The resulting directory will be compressed into a ZIP file."
+msgstr ""
 
 #: lazarusidestrconsts.liscomptest
 #, fuzzy
@@ -10601,10 +10605,6 @@ msgstr ""
 msgid "Ignore and continue"
 msgstr ""
 
-#: lazarusidestrconsts.lisignorebinaries
-msgid "Ignore binaries"
-msgstr ""
-
 #: lazarusidestrconsts.lisignoreexceptiontype
 msgid "Ignore this exception type"
 msgstr ""
@@ -11730,6 +11730,10 @@ msgstr ""
 #: lazarusidestrconsts.lislazarusoptionsprojectfilename
 msgid "lazarus [options] <project-filename>"
 msgstr "lazarus [opcions] <projecte-nomfitxer>"
+
+#: lazarusidestrconsts.lislazarussvnrev
+msgid "r%s"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildaboaction
 msgctxt "lazarusidestrconsts.lislazbuildaboaction"
@@ -16697,12 +16701,6 @@ msgstr "Trajectòria dels inclosos del projecte"
 msgid "Project info file detected"
 msgstr "S'ha detectat fitxer d'informacó del projecte"
 
-#: lazarusidestrconsts.lisprojectinformation
-#, fuzzy
-#| msgid "Project Information"
-msgid "Project information"
-msgstr "Informació del projecte"
-
 #: lazarusidestrconsts.lisprojectisrunnable
 msgid "Project is runnable"
 msgstr "El projecte és executable"
@@ -16881,6 +16879,10 @@ msgstr "Mètode públic"
 #: lazarusidestrconsts.lispublishedmethod
 msgid "Published Method"
 msgstr "Mètode publicat"
+
+#: lazarusidestrconsts.lispublishmodulenote
+msgid "Files belonging to project / package will be included automatically."
+msgstr ""
 
 #: lazarusidestrconsts.lispublishprojdir
 msgid "Publish project directory"
@@ -17481,10 +17483,6 @@ msgstr ""
 msgid "Saved with project session"
 msgstr ""
 
-#: lazarusidestrconsts.lissaveeditorinfoofnonprojectfiles
-msgid "Save editor info of non project files"
-msgstr ""
-
 #: lazarusidestrconsts.lissavefileas
 msgid "Save file as"
 msgstr ""
@@ -17494,10 +17492,6 @@ msgstr ""
 #| msgid "Save file %s%s%s%sbefore closing form %s%s%s?"
 msgid "Save file \"%s\"%sbefore closing form \"%s\"?"
 msgstr "Voleu desar el fitxer %s%s%s%sabans de tancar la forma %s%s%s?"
-
-#: lazarusidestrconsts.lissaveinfoofclosededitorfiles
-msgid "Save info of closed editor files"
-msgstr ""
 
 #: lazarusidestrconsts.lissavemacroas
 msgid "Save macro as"
@@ -19817,8 +19811,8 @@ msgstr ""
 msgid "Used for auto-created forms."
 msgstr ""
 
-#: lazarusidestrconsts.lisuseexcludefilter
-msgid "Use exclude filter"
+#: lazarusidestrconsts.lisusefiltersforextrafiles
+msgid "Use filters for extra files"
 msgstr ""
 
 #: lazarusidestrconsts.lisuseidentifier
@@ -19827,10 +19821,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisuseidentifierinat
 msgid "Use identifier %s in %s at %s"
-msgstr ""
-
-#: lazarusidestrconsts.lisuseincludefilter
-msgid "Use include filter"
 msgstr ""
 
 #: lazarusidestrconsts.lisuselaunchingapplicationgroupbox

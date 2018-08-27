@@ -6832,10 +6832,6 @@ msgstr "リターン"
 msgid "Visibility"
 msgstr "可視性"
 
-#: lazarusidestrconsts.liscommandafter
-msgid "Command after"
-msgstr "後のコマンド"
-
 #: lazarusidestrconsts.liscommandafterinvalid
 msgid "Command after invalid"
 msgstr "無効の後のコマンド"
@@ -6955,6 +6951,14 @@ msgstr "パッケージを開く"
 #: lazarusidestrconsts.liscomppalopenunit
 msgid "Open unit"
 msgstr "ユニットを開く"
+
+#: lazarusidestrconsts.liscompress
+msgid "Compress"
+msgstr ""
+
+#: lazarusidestrconsts.liscompresshint
+msgid "The resulting directory will be compressed into a ZIP file."
+msgstr ""
 
 #: lazarusidestrconsts.liscomptest
 msgctxt "lazarusidestrconsts.liscomptest"
@@ -10377,10 +10381,6 @@ msgstr "すべて無視"
 msgid "Ignore and continue"
 msgstr "無視して継続"
 
-#: lazarusidestrconsts.lisignorebinaries
-msgid "Ignore binaries"
-msgstr "バイナリーを無視"
-
 #: lazarusidestrconsts.lisignoreexceptiontype
 msgid "Ignore this exception type"
 msgstr "この例外型を無視"
@@ -11506,6 +11506,10 @@ msgstr "Lazarus言語名(例: english, deutsch)"
 #: lazarusidestrconsts.lislazarusoptionsprojectfilename
 msgid "lazarus [options] <project-filename>"
 msgstr "Lazarus [オプション]<プロジェクト-ファイル名>"
+
+#: lazarusidestrconsts.lislazarussvnrev
+msgid "r%s"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildaboaction
 msgctxt "lazarusidestrconsts.lislazbuildaboaction"
@@ -16162,10 +16166,6 @@ msgstr "プロジェクトのインクルードパス"
 msgid "Project info file detected"
 msgstr "プロジェクト情報ファイルが検出されました"
 
-#: lazarusidestrconsts.lisprojectinformation
-msgid "Project information"
-msgstr "プロジェクト情報"
-
 #: lazarusidestrconsts.lisprojectisrunnable
 msgid "Project is runnable"
 msgstr "プロジェクトは実行可能"
@@ -16344,6 +16344,10 @@ msgstr "Publicメソッド"
 #: lazarusidestrconsts.lispublishedmethod
 msgid "Published Method"
 msgstr "Publishedメソッド"
+
+#: lazarusidestrconsts.lispublishmodulenote
+msgid "Files belonging to project / package will be included automatically."
+msgstr ""
 
 #: lazarusidestrconsts.lispublishprojdir
 msgid "Publish project directory"
@@ -16945,10 +16949,6 @@ msgstr "IDE の設定と共に保存されます"
 msgid "Saved with project session"
 msgstr "プロジェクトセッションと共に保存されます"
 
-#: lazarusidestrconsts.lissaveeditorinfoofnonprojectfiles
-msgid "Save editor info of non project files"
-msgstr "非プロジェクトファイルのエディタ情報を保存"
-
 #: lazarusidestrconsts.lissavefileas
 msgid "Save file as"
 msgstr "名前を付けて保存"
@@ -16956,10 +16956,6 @@ msgstr "名前を付けて保存"
 #: lazarusidestrconsts.lissavefilebeforeclosingform
 msgid "Save file \"%s\"%sbefore closing form \"%s\"?"
 msgstr "フォーム \"%s\"%s を閉じる前にファイル \"%s\"を保存しますか？"
-
-#: lazarusidestrconsts.lissaveinfoofclosededitorfiles
-msgid "Save info of closed editor files"
-msgstr "閉じられるエディタファイルの情報を保存"
 
 #: lazarusidestrconsts.lissavemacroas
 msgid "Save macro as"
@@ -19191,9 +19187,9 @@ msgstr "設計時パッケージを使用"
 msgid "Used for auto-created forms."
 msgstr "自動作成フォームに用いられる"
 
-#: lazarusidestrconsts.lisuseexcludefilter
-msgid "Use exclude filter"
-msgstr "除外フィルタを使用"
+#: lazarusidestrconsts.lisusefiltersforextrafiles
+msgid "Use filters for extra files"
+msgstr ""
 
 #: lazarusidestrconsts.lisuseidentifier
 msgid "Use identifier"
@@ -19202,10 +19198,6 @@ msgstr "識別子を使う"
 #: lazarusidestrconsts.lisuseidentifierinat
 msgid "Use identifier %s in %s at %s"
 msgstr "識別子 %s を %s において  %s で使用"
-
-#: lazarusidestrconsts.lisuseincludefilter
-msgid "Use include filter"
-msgstr "包含フィルタを使用"
 
 #: lazarusidestrconsts.lisuselaunchingapplicationgroupbox
 msgid "Launching application"

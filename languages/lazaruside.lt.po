@@ -6835,10 +6835,6 @@ msgstr "Grąžina"
 msgid "Visibility"
 msgstr "Matomumas"
 
-#: lazarusidestrconsts.liscommandafter
-msgid "Command after"
-msgstr "Komanda po"
-
 #: lazarusidestrconsts.liscommandafterinvalid
 msgid "Command after invalid"
 msgstr "Klaidinga komanda esanti po"
@@ -6958,6 +6954,14 @@ msgstr "Atverti paketą"
 #: lazarusidestrconsts.liscomppalopenunit
 msgid "Open unit"
 msgstr "Atverti modulį"
+
+#: lazarusidestrconsts.liscompress
+msgid "Compress"
+msgstr ""
+
+#: lazarusidestrconsts.liscompresshint
+msgid "The resulting directory will be compressed into a ZIP file."
+msgstr ""
 
 #: lazarusidestrconsts.liscomptest
 msgctxt "lazarusidestrconsts.liscomptest"
@@ -10378,10 +10382,6 @@ msgstr "Visada ignoruoti"
 msgid "Ignore and continue"
 msgstr "Nepaisyti ir tęsti"
 
-#: lazarusidestrconsts.lisignorebinaries
-msgid "Ignore binaries"
-msgstr "Praleisti dvejetainius failus"
-
 #: lazarusidestrconsts.lisignoreexceptiontype
 msgid "Ignore this exception type"
 msgstr "Ignoruoti šio tipo išimtines situacijas"
@@ -11532,6 +11532,10 @@ msgstr "Lazarus kalbos pavadinimas (t.y. anglų, vokiečių, lietuvių, …)"
 #: lazarusidestrconsts.lislazarusoptionsprojectfilename
 msgid "lazarus [options] <project-filename>"
 msgstr "lazarus [parinktys] <projekto_failo_pavadinimas>"
+
+#: lazarusidestrconsts.lislazarussvnrev
+msgid "r%s"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildaboaction
 msgctxt "lazarusidestrconsts.lislazbuildaboaction"
@@ -16193,10 +16197,6 @@ msgstr "Kelias iki projekto įterpinių"
 msgid "Project info file detected"
 msgstr "Aptiktas projekto informacinis failas"
 
-#: lazarusidestrconsts.lisprojectinformation
-msgid "Project information"
-msgstr "Informacija apie projektą"
-
 #: lazarusidestrconsts.lisprojectisrunnable
 msgid "Project is runnable"
 msgstr "Projektas yra vykdomasis"
@@ -16375,6 +16375,10 @@ msgstr "Public metodas"
 #: lazarusidestrconsts.lispublishedmethod
 msgid "Published Method"
 msgstr "Published metodas"
+
+#: lazarusidestrconsts.lispublishmodulenote
+msgid "Files belonging to project / package will be included automatically."
+msgstr ""
 
 #: lazarusidestrconsts.lispublishprojdir
 msgid "Publish project directory"
@@ -16975,10 +16979,6 @@ msgstr "Įrašyta kartu su IKA nuostatomis"
 msgid "Saved with project session"
 msgstr "Įrašyta kartu su projekto sesija"
 
-#: lazarusidestrconsts.lissaveeditorinfoofnonprojectfiles
-msgid "Save editor info of non project files"
-msgstr "Įrašyti rengyklės informaciją apie projektui nepriklausančius failus"
-
 #: lazarusidestrconsts.lissavefileas
 msgid "Save file as"
 msgstr "Įrašyti failą taip"
@@ -16986,10 +16986,6 @@ msgstr "Įrašyti failą taip"
 #: lazarusidestrconsts.lissavefilebeforeclosingform
 msgid "Save file \"%s\"%sbefore closing form \"%s\"?"
 msgstr "Įrašyti failą „%s“%sprieš užveriant formą „%s“?"
-
-#: lazarusidestrconsts.lissaveinfoofclosededitorfiles
-msgid "Save info of closed editor files"
-msgstr "Įrašyti informaciją apie užvertus rengyklės failus"
 
 #: lazarusidestrconsts.lissavemacroas
 msgid "Save macro as"
@@ -19218,9 +19214,9 @@ msgstr "Naudoti konstravimui skirtus paketus"
 msgid "Used for auto-created forms."
 msgstr "Naudojamas automatiškai sukurtoms formoms."
 
-#: lazarusidestrconsts.lisuseexcludefilter
-msgid "Use exclude filter"
-msgstr "Naudoti neįtraukimo filtrą"
+#: lazarusidestrconsts.lisusefiltersforextrafiles
+msgid "Use filters for extra files"
+msgstr ""
 
 #: lazarusidestrconsts.lisuseidentifier
 msgid "Use identifier"
@@ -19229,10 +19225,6 @@ msgstr "Naudoti identifikatorių"
 #: lazarusidestrconsts.lisuseidentifierinat
 msgid "Use identifier %s in %s at %s"
 msgstr "Identifikatorių „%s“ panaudoti failo „%s“ pozicijoje %s"
-
-#: lazarusidestrconsts.lisuseincludefilter
-msgid "Use include filter"
-msgstr "Naudoti įterpimo filtrą"
 
 #: lazarusidestrconsts.lisuselaunchingapplicationgroupbox
 msgid "Launching application"

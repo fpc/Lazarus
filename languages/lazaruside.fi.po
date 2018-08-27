@@ -6785,10 +6785,6 @@ msgstr "Palauttaa"
 msgid "Visibility"
 msgstr "Näkyvyys"
 
-#: lazarusidestrconsts.liscommandafter
-msgid "Command after"
-msgstr "Komento jälkeen"
-
 #: lazarusidestrconsts.liscommandafterinvalid
 msgid "Command after invalid"
 msgstr "Komento virheellisen jälkeen"
@@ -6908,6 +6904,14 @@ msgstr "Avaa paketti"
 #: lazarusidestrconsts.liscomppalopenunit
 msgid "Open unit"
 msgstr "Avaa käännösyksikkö"
+
+#: lazarusidestrconsts.liscompress
+msgid "Compress"
+msgstr ""
+
+#: lazarusidestrconsts.liscompresshint
+msgid "The resulting directory will be compressed into a ZIP file."
+msgstr ""
 
 #: lazarusidestrconsts.liscomptest
 msgid "&Test"
@@ -10304,10 +10308,6 @@ msgstr "Ohita kaikki"
 msgid "Ignore and continue"
 msgstr "Jätä huomiotta ja jatka"
 
-#: lazarusidestrconsts.lisignorebinaries
-msgid "Ignore binaries"
-msgstr "Jätä huomiotta binaarit"
-
 #: lazarusidestrconsts.lisignoreexceptiontype
 msgid "Ignore this exception type"
 msgstr "Ohita tämän tyyppiset poikkeukset"
@@ -11435,6 +11435,10 @@ msgstr "Lazarus kieli-nimi (esim. english, deutsch)"
 #: lazarusidestrconsts.lislazarusoptionsprojectfilename
 msgid "lazarus [options] <project-filename>"
 msgstr "lazarus [valinnat] <projekti-tiedosto>"
+
+#: lazarusidestrconsts.lislazarussvnrev
+msgid "r%s"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildaboaction
 msgctxt "lazarusidestrconsts.lislazbuildaboaction"
@@ -16044,10 +16048,6 @@ msgstr "Projekti Include polku"
 msgid "Project info file detected"
 msgstr "Tunnistettiin 'Project Info'-tiedostoksi"
 
-#: lazarusidestrconsts.lisprojectinformation
-msgid "Project information"
-msgstr "Projektin tiedot"
-
 #: lazarusidestrconsts.lisprojectisrunnable
 msgid "Project is runnable"
 msgstr "Projekti on ajettavissa"
@@ -16226,6 +16226,10 @@ msgstr "Public-metodi"
 #: lazarusidestrconsts.lispublishedmethod
 msgid "Published Method"
 msgstr "Published-metodi"
+
+#: lazarusidestrconsts.lispublishmodulenote
+msgid "Files belonging to project / package will be included automatically."
+msgstr ""
 
 #: lazarusidestrconsts.lispublishprojdir
 msgid "Publish project directory"
@@ -16805,10 +16809,6 @@ msgstr "Tallennettu IDE:n asetusten kanssa"
 msgid "Saved with project session"
 msgstr "Tallennettu projektin istunnon kanssa"
 
-#: lazarusidestrconsts.lissaveeditorinfoofnonprojectfiles
-msgid "Save editor info of non project files"
-msgstr "Tallenna editorin tiedot projektiin kuulumattomista tiedostoista"
-
 #: lazarusidestrconsts.lissavefileas
 msgid "Save file as"
 msgstr "Tallenna tiedosto nimellä"
@@ -16816,10 +16816,6 @@ msgstr "Tallenna tiedosto nimellä"
 #: lazarusidestrconsts.lissavefilebeforeclosingform
 msgid "Save file \"%s\"%sbefore closing form \"%s\"?"
 msgstr "Tallennetaanko tiedosto \"%s\"%sennenkuin suljetaan lomake \"%s\"?"
-
-#: lazarusidestrconsts.lissaveinfoofclosededitorfiles
-msgid "Save info of closed editor files"
-msgstr "Tallenna editorin tiedot suljetuista tiedostoista"
 
 #: lazarusidestrconsts.lissavemacroas
 msgid "Save macro as"
@@ -19043,9 +19039,9 @@ msgstr "Käytä suunnittelupaketteja"
 msgid "Used for auto-created forms."
 msgstr "Automaattisesti luodut lomakkeet käyttävät."
 
-#: lazarusidestrconsts.lisuseexcludefilter
-msgid "Use exclude filter"
-msgstr "Käytä poissulkevaa suodatinta"
+#: lazarusidestrconsts.lisusefiltersforextrafiles
+msgid "Use filters for extra files"
+msgstr ""
 
 #: lazarusidestrconsts.lisuseidentifier
 msgid "Use identifier"
@@ -19054,10 +19050,6 @@ msgstr "Käytä tunnistetta"
 #: lazarusidestrconsts.lisuseidentifierinat
 msgid "Use identifier %s in %s at %s"
 msgstr "Käytä tunnistetta %s %s:ssa %s:n kanssa"
-
-#: lazarusidestrconsts.lisuseincludefilter
-msgid "Use include filter"
-msgstr "Käytä mukaan ottavaa suodatinta"
 
 #: lazarusidestrconsts.lisuselaunchingapplicationgroupbox
 msgid "Launching application"

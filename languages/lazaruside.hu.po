@@ -6822,10 +6822,6 @@ msgstr "Eredmény típusa"
 msgid "Visibility"
 msgstr "Láthatóság"
 
-#: lazarusidestrconsts.liscommandafter
-msgid "Command after"
-msgstr "Utána következő parancs"
-
 #: lazarusidestrconsts.liscommandafterinvalid
 msgid "Command after invalid"
 msgstr "Utána következő parancs érvénytelen"
@@ -6945,6 +6941,14 @@ msgstr "Csomag megnyitása"
 #: lazarusidestrconsts.liscomppalopenunit
 msgid "Open unit"
 msgstr "Unit megnyitása"
+
+#: lazarusidestrconsts.liscompress
+msgid "Compress"
+msgstr ""
+
+#: lazarusidestrconsts.liscompresshint
+msgid "The resulting directory will be compressed into a ZIP file."
+msgstr ""
 
 #: lazarusidestrconsts.liscomptest
 msgctxt "lazarusidestrconsts.liscomptest"
@@ -10365,10 +10369,6 @@ msgstr "Összes kihagyása"
 msgid "Ignore and continue"
 msgstr "Kihagyás és folytatás"
 
-#: lazarusidestrconsts.lisignorebinaries
-msgid "Ignore binaries"
-msgstr "Bináris fájlok kihagyása"
-
 #: lazarusidestrconsts.lisignoreexceptiontype
 msgid "Ignore this exception type"
 msgstr "Az ilyen típusú kivételek figyelmen kívül hagyása"
@@ -11511,6 +11511,10 @@ msgstr "Lazarus nyelv neve (pl. english, deutsch)"
 #: lazarusidestrconsts.lislazarusoptionsprojectfilename
 msgid "lazarus [options] <project-filename>"
 msgstr "lazarus [beállítások] <projekt-fájlnév>"
+
+#: lazarusidestrconsts.lislazarussvnrev
+msgid "r%s"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildaboaction
 msgctxt "lazarusidestrconsts.lislazbuildaboaction"
@@ -16169,10 +16173,6 @@ msgstr "Projekt beemelhető fájljainak útvonala"
 msgid "Project info file detected"
 msgstr "Projekt információs fájl törölve"
 
-#: lazarusidestrconsts.lisprojectinformation
-msgid "Project information"
-msgstr "Projekt információ"
-
 #: lazarusidestrconsts.lisprojectisrunnable
 msgid "Project is runnable"
 msgstr "A projekt futtatható"
@@ -16351,6 +16351,10 @@ msgstr "\"Public\" metódus"
 #: lazarusidestrconsts.lispublishedmethod
 msgid "Published Method"
 msgstr "\"Published\" metódus"
+
+#: lazarusidestrconsts.lispublishmodulenote
+msgid "Files belonging to project / package will be included automatically."
+msgstr ""
 
 #: lazarusidestrconsts.lispublishprojdir
 msgid "Publish project directory"
@@ -16949,10 +16953,6 @@ msgstr "Mentve az IDE beállításokkal"
 msgid "Saved with project session"
 msgstr "Mentve a projekt munkamenettel"
 
-#: lazarusidestrconsts.lissaveeditorinfoofnonprojectfiles
-msgid "Save editor info of non project files"
-msgstr "Szerkesztő információinak mentése a nem projekt fájlokhoz"
-
 #: lazarusidestrconsts.lissavefileas
 msgid "Save file as"
 msgstr "Fájl mentése másként"
@@ -16960,10 +16960,6 @@ msgstr "Fájl mentése másként"
 #: lazarusidestrconsts.lissavefilebeforeclosingform
 msgid "Save file \"%s\"%sbefore closing form \"%s\"?"
 msgstr "Menti a(z) \"%s\" fájlt%s a(z) \"%s\" form bezárása előtt?"
-
-#: lazarusidestrconsts.lissaveinfoofclosededitorfiles
-msgid "Save info of closed editor files"
-msgstr "Információk mentése a bezárt szerkesztett fájlokról"
 
 #: lazarusidestrconsts.lissavemacroas
 msgid "Save macro as"
@@ -19190,9 +19186,9 @@ msgstr "Tervezési csomagok használata"
 msgid "Used for auto-created forms."
 msgstr "Automatikusan létrehozott form-okhoz használatos."
 
-#: lazarusidestrconsts.lisuseexcludefilter
-msgid "Use exclude filter"
-msgstr "Kizáró szűrő használata"
+#: lazarusidestrconsts.lisusefiltersforextrafiles
+msgid "Use filters for extra files"
+msgstr ""
 
 #: lazarusidestrconsts.lisuseidentifier
 msgid "Use identifier"
@@ -19201,10 +19197,6 @@ msgstr "Azonosító használata"
 #: lazarusidestrconsts.lisuseidentifierinat
 msgid "Use identifier %s in %s at %s"
 msgstr "A(z) %s azonosító használata ebben: %s, itt: %s"
-
-#: lazarusidestrconsts.lisuseincludefilter
-msgid "Use include filter"
-msgstr "Belevétel szűrő használata"
 
 #: lazarusidestrconsts.lisuselaunchingapplicationgroupbox
 msgid "Launching application"

@@ -6784,10 +6784,6 @@ msgstr ""
 msgid "Visibility"
 msgstr ""
 
-#: lazarusidestrconsts.liscommandafter
-msgid "Command after"
-msgstr ""
-
 #: lazarusidestrconsts.liscommandafterinvalid
 msgid "Command after invalid"
 msgstr ""
@@ -6906,6 +6902,14 @@ msgstr ""
 
 #: lazarusidestrconsts.liscomppalopenunit
 msgid "Open unit"
+msgstr ""
+
+#: lazarusidestrconsts.liscompress
+msgid "Compress"
+msgstr ""
+
+#: lazarusidestrconsts.liscompresshint
+msgid "The resulting directory will be compressed into a ZIP file."
 msgstr ""
 
 #: lazarusidestrconsts.liscomptest
@@ -10325,10 +10329,6 @@ msgstr ""
 msgid "Ignore and continue"
 msgstr ""
 
-#: lazarusidestrconsts.lisignorebinaries
-msgid "Ignore binaries"
-msgstr ""
-
 #: lazarusidestrconsts.lisignoreexceptiontype
 msgid "Ignore this exception type"
 msgstr ""
@@ -11444,6 +11444,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lislazarusoptionsprojectfilename
 msgid "lazarus [options] <project-filename>"
+msgstr ""
+
+#: lazarusidestrconsts.lislazarussvnrev
+msgid "r%s"
 msgstr ""
 
 #: lazarusidestrconsts.lislazbuildaboaction
@@ -16078,10 +16082,6 @@ msgstr ""
 msgid "Project info file detected"
 msgstr ""
 
-#: lazarusidestrconsts.lisprojectinformation
-msgid "Project information"
-msgstr ""
-
 #: lazarusidestrconsts.lisprojectisrunnable
 msgid "Project is runnable"
 msgstr ""
@@ -16259,6 +16259,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lispublishedmethod
 msgid "Published Method"
+msgstr ""
+
+#: lazarusidestrconsts.lispublishmodulenote
+msgid "Files belonging to project / package will be included automatically."
 msgstr ""
 
 #: lazarusidestrconsts.lispublishprojdir
@@ -16847,20 +16851,12 @@ msgstr ""
 msgid "Saved with project session"
 msgstr ""
 
-#: lazarusidestrconsts.lissaveeditorinfoofnonprojectfiles
-msgid "Save editor info of non project files"
-msgstr ""
-
 #: lazarusidestrconsts.lissavefileas
 msgid "Save file as"
 msgstr "إحفظ نسحة جديدة من الجذاذة"
 
 #: lazarusidestrconsts.lissavefilebeforeclosingform
 msgid "Save file \"%s\"%sbefore closing form \"%s\"?"
-msgstr ""
-
-#: lazarusidestrconsts.lissaveinfoofclosededitorfiles
-msgid "Save info of closed editor files"
 msgstr ""
 
 #: lazarusidestrconsts.lissavemacroas
@@ -19088,8 +19084,8 @@ msgstr ""
 msgid "Used for auto-created forms."
 msgstr ""
 
-#: lazarusidestrconsts.lisuseexcludefilter
-msgid "Use exclude filter"
+#: lazarusidestrconsts.lisusefiltersforextrafiles
+msgid "Use filters for extra files"
 msgstr ""
 
 #: lazarusidestrconsts.lisuseidentifier
@@ -19098,10 +19094,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisuseidentifierinat
 msgid "Use identifier %s in %s at %s"
-msgstr ""
-
-#: lazarusidestrconsts.lisuseincludefilter
-msgid "Use include filter"
 msgstr ""
 
 #: lazarusidestrconsts.lisuselaunchingapplicationgroupbox

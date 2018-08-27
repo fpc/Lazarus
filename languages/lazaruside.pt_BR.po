@@ -6800,10 +6800,6 @@ msgstr "Retorna"
 msgid "Visibility"
 msgstr "Visibilidade"
 
-#: lazarusidestrconsts.liscommandafter
-msgid "Command after"
-msgstr "Comando posterior"
-
 #: lazarusidestrconsts.liscommandafterinvalid
 msgid "Command after invalid"
 msgstr "Comando posterior inválido"
@@ -6923,6 +6919,14 @@ msgstr "Abrir pacote"
 #: lazarusidestrconsts.liscomppalopenunit
 msgid "Open unit"
 msgstr "Abrir unidade"
+
+#: lazarusidestrconsts.liscompress
+msgid "Compress"
+msgstr ""
+
+#: lazarusidestrconsts.liscompresshint
+msgid "The resulting directory will be compressed into a ZIP file."
+msgstr ""
 
 #: lazarusidestrconsts.liscomptest
 msgctxt "lazarusidestrconsts.liscomptest"
@@ -10341,10 +10345,6 @@ msgstr "Ignorar tudo"
 msgid "Ignore and continue"
 msgstr "Ignorar e continuar"
 
-#: lazarusidestrconsts.lisignorebinaries
-msgid "Ignore binaries"
-msgstr "Ignorar binários"
-
 #: lazarusidestrconsts.lisignoreexceptiontype
 msgid "Ignore this exception type"
 msgstr "Ignorar este tipo de exceção"
@@ -11485,6 +11485,10 @@ msgstr "Nome de idioma do Lazarus (ex. inglês, alemão)"
 #: lazarusidestrconsts.lislazarusoptionsprojectfilename
 msgid "lazarus [options] <project-filename>"
 msgstr "lazarus [opções] <nome-de-arquivo-do-projeto>"
+
+#: lazarusidestrconsts.lislazarussvnrev
+msgid "r%s"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildaboaction
 msgctxt "lazarusidestrconsts.lislazbuildaboaction"
@@ -16144,10 +16148,6 @@ msgstr "Caminho inclusões do projeto"
 msgid "Project info file detected"
 msgstr "Arquivo de informações de projeto detectado"
 
-#: lazarusidestrconsts.lisprojectinformation
-msgid "Project information"
-msgstr "Informação do projeto"
-
 #: lazarusidestrconsts.lisprojectisrunnable
 msgid "Project is runnable"
 msgstr "Projeto é executável"
@@ -16326,6 +16326,10 @@ msgstr "Método Publico"
 #: lazarusidestrconsts.lispublishedmethod
 msgid "Published Method"
 msgstr "Método Publicado"
+
+#: lazarusidestrconsts.lispublishmodulenote
+msgid "Files belonging to project / package will be included automatically."
+msgstr ""
 
 #: lazarusidestrconsts.lispublishprojdir
 msgid "Publish project directory"
@@ -16929,10 +16933,6 @@ msgstr "Salvo com as configurações da IDE"
 msgid "Saved with project session"
 msgstr "Salvo com a sessão do projeto"
 
-#: lazarusidestrconsts.lissaveeditorinfoofnonprojectfiles
-msgid "Save editor info of non project files"
-msgstr "Salvar informações do editor de arquivos que não são do projeto"
-
 #: lazarusidestrconsts.lissavefileas
 msgid "Save file as"
 msgstr "Salvar arquivo como"
@@ -16940,10 +16940,6 @@ msgstr "Salvar arquivo como"
 #: lazarusidestrconsts.lissavefilebeforeclosingform
 msgid "Save file \"%s\"%sbefore closing form \"%s\"?"
 msgstr "Salvar arquivo \"%s\"%santes de fechar o formulário \"%s\"?"
-
-#: lazarusidestrconsts.lissaveinfoofclosededitorfiles
-msgid "Save info of closed editor files"
-msgstr "Salvar informações de arquivos fechados do editor"
 
 #: lazarusidestrconsts.lissavemacroas
 msgid "Save macro as"
@@ -19175,9 +19171,9 @@ msgstr "Usar pacotes de tempo de projeto"
 msgid "Used for auto-created forms."
 msgstr "Usado para formulários auto-criados."
 
-#: lazarusidestrconsts.lisuseexcludefilter
-msgid "Use exclude filter"
-msgstr "Usar filtro de exclusão"
+#: lazarusidestrconsts.lisusefiltersforextrafiles
+msgid "Use filters for extra files"
+msgstr ""
 
 #: lazarusidestrconsts.lisuseidentifier
 msgid "Use identifier"
@@ -19186,10 +19182,6 @@ msgstr "Identificador \"Use\""
 #: lazarusidestrconsts.lisuseidentifierinat
 msgid "Use identifier %s in %s at %s"
 msgstr "Usar identificador %s em %s no %s"
-
-#: lazarusidestrconsts.lisuseincludefilter
-msgid "Use include filter"
-msgstr "Usar filtro de inclusão"
 
 #: lazarusidestrconsts.lisuselaunchingapplicationgroupbox
 msgid "Launching application"

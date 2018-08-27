@@ -6896,10 +6896,6 @@ msgstr "返回"
 msgid "Visibility"
 msgstr "可视性"
 
-#: lazarusidestrconsts.liscommandafter
-msgid "Command after"
-msgstr "运行命令后"
-
 #: lazarusidestrconsts.liscommandafterinvalid
 msgid "Command after invalid"
 msgstr "错误后运行命令"
@@ -7019,6 +7015,14 @@ msgstr "打开包"
 #: lazarusidestrconsts.liscomppalopenunit
 msgid "Open unit"
 msgstr "打开单元"
+
+#: lazarusidestrconsts.liscompress
+msgid "Compress"
+msgstr ""
+
+#: lazarusidestrconsts.liscompresshint
+msgid "The resulting directory will be compressed into a ZIP file."
+msgstr ""
 
 #: lazarusidestrconsts.liscomptest
 msgctxt "lazarusidestrconsts.liscomptest"
@@ -10450,10 +10454,6 @@ msgstr "忽略所有"
 msgid "Ignore and continue"
 msgstr "忽略并继续"
 
-#: lazarusidestrconsts.lisignorebinaries
-msgid "Ignore binaries"
-msgstr "忽略二进制的"
-
 #: lazarusidestrconsts.lisignoreexceptiontype
 msgid "Ignore this exception type"
 msgstr "忽略这个异常类型"
@@ -11657,6 +11657,10 @@ msgstr "Lazarus语言名称 (e.g. english, deutsch)"
 #: lazarusidestrconsts.lislazarusoptionsprojectfilename
 msgid "lazarus [options] <project-filename>"
 msgstr "lazarus [选项] <工程-文件名>"
+
+#: lazarusidestrconsts.lislazarussvnrev
+msgid "r%s"
+msgstr ""
 
 #: lazarusidestrconsts.lislazbuildaboaction
 msgctxt "lazarusidestrconsts.lislazbuildaboaction"
@@ -16414,10 +16418,6 @@ msgstr "工程包含路径"
 msgid "Project info file detected"
 msgstr "工程信息文件检测"
 
-#: lazarusidestrconsts.lisprojectinformation
-msgid "Project information"
-msgstr "工程信息"
-
 #: lazarusidestrconsts.lisprojectisrunnable
 msgid "Project is runnable"
 msgstr "工程可执行"
@@ -16596,6 +16596,10 @@ msgstr "公共方法"
 #: lazarusidestrconsts.lispublishedmethod
 msgid "Published Method"
 msgstr "发布的方法"
+
+#: lazarusidestrconsts.lispublishmodulenote
+msgid "Files belonging to project / package will be included automatically."
+msgstr ""
 
 #: lazarusidestrconsts.lispublishprojdir
 msgid "Publish project directory"
@@ -17190,10 +17194,6 @@ msgstr "保存IDE设置"
 msgid "Saved with project session"
 msgstr "保存工程会话"
 
-#: lazarusidestrconsts.lissaveeditorinfoofnonprojectfiles
-msgid "Save editor info of non project files"
-msgstr "保存空工程的代码编辑器信息"
-
 #: lazarusidestrconsts.lissavefileas
 msgid "Save file as"
 msgstr "另存文件为"
@@ -17201,10 +17201,6 @@ msgstr "另存文件为"
 #: lazarusidestrconsts.lissavefilebeforeclosingform
 msgid "Save file \"%s\"%sbefore closing form \"%s\"?"
 msgstr "保存文件\"%s\"%s在关闭窗体\"%s\"前 ?"
-
-#: lazarusidestrconsts.lissaveinfoofclosededitorfiles
-msgid "Save info of closed editor files"
-msgstr "保存已经关闭的代码编辑器文件的信息"
 
 #: lazarusidestrconsts.lissavemacroas
 msgid "Save macro as"
@@ -19505,11 +19501,9 @@ msgstr "使用设计时包"
 msgid "Used for auto-created forms."
 msgstr ""
 
-#: lazarusidestrconsts.lisuseexcludefilter
-#, fuzzy
-#| msgid "Use Exclude Filter"
-msgid "Use exclude filter"
-msgstr "使用排除过滤器"
+#: lazarusidestrconsts.lisusefiltersforextrafiles
+msgid "Use filters for extra files"
+msgstr ""
 
 #: lazarusidestrconsts.lisuseidentifier
 msgid "Use identifier"
@@ -19518,12 +19512,6 @@ msgstr "使用标识符"
 #: lazarusidestrconsts.lisuseidentifierinat
 msgid "Use identifier %s in %s at %s"
 msgstr ""
-
-#: lazarusidestrconsts.lisuseincludefilter
-#, fuzzy
-#| msgid "Use Include Filter"
-msgid "Use include filter"
-msgstr "使用包含过滤器"
 
 #: lazarusidestrconsts.lisuselaunchingapplicationgroupbox
 msgid "Launching application"
