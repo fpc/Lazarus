@@ -692,6 +692,7 @@ begin
         VK_DOWN: Result:=SmkcDown;
         VK_INSERT: Result:=SmkcIns;
         VK_DELETE: Result:=SmkcDel;
+        VK_HELP: Result:=ifsVK_HELP;
         // must ignore single Shift, Alt, Ctrl in KeyCodeStrings
         //VK_SHIFT: Result:=SmkcShift;
         //VK_CONTROL: Result:=SmkcCtrl;

@@ -58,6 +58,7 @@ msgid "Cmd"
 msgstr ""
 
 #: lclstrconsts.ifsvk_help
+msgctxt "lclstrconsts.ifsvk_help"
 msgid "Help"
 msgstr "Yardım"
 
@@ -495,6 +496,12 @@ msgstr "--no-xshm             X paylaşımlı bellek genişletmesini kullanmayı
 #| msgid "--sync                Call XSynchronize (display, True) after the Xserver connection has been established. This makes debugging X protocol errors easier, because X request buffering will be disabled and X errors will be received immediatey after the protocol request that generated the error has been processed by the X server."
 msgid "--sync                Call XSynchronize (display, True) after the Xserver connection has been established. This makes debugging X protocol errors easier, because X request buffering will be disabled and X errors will be received immediately after the protocol request that generated the error has been processed by the X server."
 msgstr "--sync                Xserver bağlantısı sağlandıktan sonra XSynchronize (display, True) işlevini çağırır. Bu X protokol hatalarını ayıklamayı kolaylaştırır, çünkü X istek tamponlama kapalı olacaktır ve X hataları hata oluşturan protokol isteği X sunucu tarafından işlendikten hemen sonra alınacaktır."
+
+#: lclstrconsts.rshelp
+#, fuzzy
+msgctxt "lclstrconsts.rshelp"
+msgid "Help"
+msgstr "Yardım"
 
 #: lclstrconsts.rshelpalreadyregistered
 msgid "%s: Already registered"

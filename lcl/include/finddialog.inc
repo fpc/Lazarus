@@ -507,7 +507,7 @@ begin
   begin
     FindButton.Caption := rsFind;
     CancelButton.Caption := rsMbCancel;
-    HelpButton.Caption := ifsVK_HELP;
+    HelpButton.Caption := rsHelp;
     WholeWordsOnlyCheckBox.Caption := rsWholeWordsOnly;
     CaseSensitiveCheckBox.Caption := rsCaseSensitive;
     EntireScopeCheckBox.Caption := rsEntireScope;

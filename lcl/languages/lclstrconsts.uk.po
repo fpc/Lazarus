@@ -55,6 +55,7 @@ msgid "Cmd"
 msgstr "Cmd"
 
 #: lclstrconsts.ifsvk_help
+msgctxt "lclstrconsts.ifsvk_help"
 msgid "Help"
 msgstr "Допомога"
 
@@ -482,6 +483,12 @@ msgstr "--no-xshm             Заборонити використання сп
 #: lclstrconsts.rsgtkoptionsync
 msgid "--sync                Call XSynchronize (display, True) after the Xserver connection has been established. This makes debugging X protocol errors easier, because X request buffering will be disabled and X errors will be received immediately after the protocol request that generated the error has been processed by the X server."
 msgstr "--sync                Виклик XSynchronize (display, True) після встановлення з'єднання з X-сервером. Це полегшує зневадження помилок протоколу X через те, що буферування запитів X буде вимкнено і помилки X будуть одержані одразу після обробки X-сервером запиту протоколу, який викликав цю помилку."
+
+#: lclstrconsts.rshelp
+#, fuzzy
+msgctxt "lclstrconsts.rshelp"
+msgid "Help"
+msgstr "Допомога"
 
 #: lclstrconsts.rshelpalreadyregistered
 msgid "%s: Already registered"

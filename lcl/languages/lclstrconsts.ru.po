@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-11-13 01:34+0300\n"
+"PO-Revision-Date: 2018-08-28 01:50+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Language: ru\n"
@@ -52,6 +52,7 @@ msgid "Cmd"
 msgstr "Cmd"
 
 #: lclstrconsts.ifsvk_help
+msgctxt "lclstrconsts.ifsvk_help"
 msgid "Help"
 msgstr "Справка"
 
@@ -479,6 +480,11 @@ msgstr "--no-xshm             Запрет использования расши
 #: lclstrconsts.rsgtkoptionsync
 msgid "--sync                Call XSynchronize (display, True) after the Xserver connection has been established. This makes debugging X protocol errors easier, because X request buffering will be disabled and X errors will be received immediately after the protocol request that generated the error has been processed by the X server."
 msgstr "--sync                Вызвать XSynchronize (display, True) после установления соединения с сервером X. Это облегчает отладку ошибок протокола X, так как запросы буферизации X будут отключены, и ошибки X будут получаться сразу после обработки сервером X запроса протокола, который вызвал ошибку."
+
+#: lclstrconsts.rshelp
+msgctxt "lclstrconsts.rshelp"
+msgid "Help"
+msgstr "Справка"
 
 #: lclstrconsts.rshelpalreadyregistered
 msgid "%s: Already registered"

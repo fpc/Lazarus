@@ -55,6 +55,7 @@ msgid "Cmd"
 msgstr "Cmd"
 
 #: lclstrconsts.ifsvk_help
+msgctxt "lclstrconsts.ifsvk_help"
 msgid "Help"
 msgstr "帮助"
 
@@ -486,6 +487,12 @@ msgstr "--no-xshm             禁止使用 X 共享内存扩展。"
 #: lclstrconsts.rsgtkoptionsync
 msgid "--sync                Call XSynchronize (display, True) after the Xserver connection has been established. This makes debugging X protocol errors easier, because X request buffering will be disabled and X errors will be received immediately after the protocol request that generated the error has been processed by the X server."
 msgstr ""
+
+#: lclstrconsts.rshelp
+#, fuzzy
+msgctxt "lclstrconsts.rshelp"
+msgid "Help"
+msgstr "帮助"
 
 #: lclstrconsts.rshelpalreadyregistered
 msgid "%s: Already registered"

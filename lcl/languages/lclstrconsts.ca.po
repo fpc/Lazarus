@@ -58,6 +58,7 @@ msgid "Cmd"
 msgstr ""
 
 #: lclstrconsts.ifsvk_help
+msgctxt "lclstrconsts.ifsvk_help"
 msgid "Help"
 msgstr "Ajuda"
 
@@ -495,6 +496,12 @@ msgstr "--no-xshm             Desactiva l'ús de l'extensió X de memòria compa
 #| msgid "--sync                Call XSynchronize (display, True) after the Xserver connection has been established. This makes debugging X protocol errors easier, because X request buffering will be disabled and X errors will be received immediatey after the protocol request that generated the error has been processed by the X server."
 msgid "--sync                Call XSynchronize (display, True) after the Xserver connection has been established. This makes debugging X protocol errors easier, because X request buffering will be disabled and X errors will be received immediately after the protocol request that generated the error has been processed by the X server."
 msgstr "--sync                Crida XSynchronize (display, True) un cop la connexió al Xserver ha estat establerta. Això facilita que la depuració d'errors del protocol X sigui més senzilla, perquè la demanda de memòria cau X serà desactivad i els errors X seran rebuts immediatament després que la demanda del protocol que ha generat l'error ha estat processat pel servidor X."
+
+#: lclstrconsts.rshelp
+#, fuzzy
+msgctxt "lclstrconsts.rshelp"
+msgid "Help"
+msgstr "Ajuda"
 
 #: lclstrconsts.rshelpalreadyregistered
 #, fuzzy,badformat

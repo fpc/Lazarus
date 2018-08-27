@@ -52,6 +52,7 @@ msgid "Cmd"
 msgstr "Cmd"
 
 #: lclstrconsts.ifsvk_help
+msgctxt "lclstrconsts.ifsvk_help"
 msgid "Help"
 msgstr "Help"
 
@@ -479,6 +480,12 @@ msgstr "--no-xshm             X 共有メモリ拡張の使用を無効にしま
 #: lclstrconsts.rsgtkoptionsync
 msgid "--sync                Call XSynchronize (display, True) after the Xserver connection has been established. This makes debugging X protocol errors easier, because X request buffering will be disabled and X errors will be received immediately after the protocol request that generated the error has been processed by the X server."
 msgstr "--sync                X サーバの接続を確立した後、「XSynchronize (display, True)」を呼び出します。これは X プロトコルエラーのデバッグを容易にできるようにします。なぜなら、X リクエストバッファリングは無効であり、X サーバで稼動しているところより生成されたエラーをエラープロトコル要求されてすぐに受け取るからです。"
+
+#: lclstrconsts.rshelp
+#, fuzzy
+msgctxt "lclstrconsts.rshelp"
+msgid "Help"
+msgstr "Help"
 
 #: lclstrconsts.rshelpalreadyregistered
 msgid "%s: Already registered"

@@ -53,6 +53,7 @@ msgid "Cmd"
 msgstr "Komend (cmd)"
 
 #: lclstrconsts.ifsvk_help
+msgctxt "lclstrconsts.ifsvk_help"
 msgid "Help"
 msgstr "Pomoc"
 
@@ -480,6 +481,12 @@ msgstr "--no-xshm             Wyłącz używanie X Shared Memory Extension."
 #: lclstrconsts.rsgtkoptionsync
 msgid "--sync                Call XSynchronize (display, True) after the Xserver connection has been established. This makes debugging X protocol errors easier, because X request buffering will be disabled and X errors will be received immediately after the protocol request that generated the error has been processed by the X server."
 msgstr "--sync                Wywołaj XSynchronize (display, True) Po połączeniu z serwerem X. To ułatwia odpluskwianie protokołu X, ponieważ buforowanie żądań X będzie wyłączone i błędy X będą odbierane natychmiast po przetworzeniu przez serwer X żądania, które spowodowało błąd."
+
+#: lclstrconsts.rshelp
+#, fuzzy
+msgctxt "lclstrconsts.rshelp"
+msgid "Help"
+msgstr "Pomoc"
 
 #: lclstrconsts.rshelpalreadyregistered
 msgid "%s: Already registered"

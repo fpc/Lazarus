@@ -523,7 +523,7 @@ begin
     ReplaceButton.Caption := rsReplace;
     ReplaceAllButton.Caption := rsReplaceAll;
     CancelButton.Caption := rsMbCancel;
-    HelpButton.Caption := ifsVK_HELP;
+    HelpButton.Caption := rsHelp;
     WholeWordsOnlyCheckBox.Caption := rsWholeWordsOnly;
     CaseSensitiveCheckBox.Caption := rsCaseSensitive;
     EntireScopeCheckBox.Caption := rsEntireScope;

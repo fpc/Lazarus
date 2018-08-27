@@ -72,7 +72,9 @@ resourceString
   rsFindMore = 'Find more';
   rsReplace = 'Replace';
   rsReplaceAll = 'Replace all';
-  
+
+  rsHelp = 'Help';
+
   // DBGrid
   rsDeleteRecord = 'Delete record?';
 
