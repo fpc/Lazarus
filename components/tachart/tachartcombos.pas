@@ -42,6 +42,7 @@ type
       FOptions: TChartComboOptions;
       FSymbolWidth: Integer;
       function GetPenPattern: String;
+      function GetSymbolWidth: Integer;
       procedure SetAlignment(const AValue: TAlignment);
       procedure SetBrushBitmap(const AValue: TBitmap);
       procedure SetBrushColor(const AValue: TColor);
@@ -56,10 +57,13 @@ type
       procedure SetSelectedPenWidth(const AValue: Integer);
       procedure SetSelectedPointerStyle(const AValue: TSeriesPointerStyle);
       procedure SetSymbolWidth(const AValue: Integer);
+      function SymbolWidthStored: Boolean;
     protected
       procedure Change; override;
       procedure CreateBitmaps(AWidth, AHeight: Integer);
       procedure DestroyBitmaps;
+      procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
+        const AXProportion, AYProportion: Double); override;
       procedure DrawItem(AIndex: Integer; ARect: TRect; AState: TOwnerDrawState); override;
       function GetBrushStyle(const AIndex: Integer): TBrushStyle;
       function GetPenStyle(const AIndex: Integer): TPenStyle;
@@ -90,7 +94,7 @@ type
       property PenWidth: Integer read FPenWidth write SetSelectedPenWidth default 1;
       property PointerStyle: TSeriesPointerStyle read FPointerStyle write SetSelectedPointerStyle default DEFAULT_POINTER_STYLE;
 //      property ShowNames: Boolean read FShowNames write SetShowNames default true;
-      property SymbolWidth: Integer read FSymbolWidth write SetSymbolWidth default DEFAULT_SYMBOL_WIDTH;
+      property SymbolWidth: Integer read GetSymbolWidth write SetSymbolWidth stored SymbolWidthStored;
 
       property Align;
       property Anchors;
@@ -246,7 +250,7 @@ begin
   FPenWidth := 1;
   FMaxPenWidth := 5;
   FOptions := DEFAULT_OPTIONS;
-  FSymbolWidth := DEFAULT_SYMBOL_WIDTH;
+  FSymbolWidth := -1;
   PopulatePenStyles;
   SetSelectedPenStyle(FPenStyle);
   GetItems;
@@ -323,6 +327,20 @@ begin
     FreeAndNil(FBitmaps[ps]);
 end;
 
+procedure TChartComboBox.DoAutoAdjustLayout(
+  const AMode: TLayoutAdjustmentPolicy;
+  const AXProportion, AYProportion: Double);
+begin
+  inherited DoAutoAdjustLayout(AMode, AXProportion, AYProportion);
+
+  if AMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
+  begin
+    if SymbolWidthStored then
+      FSymbolWidth := Round(FSymbolWidth * AXProportion);
+    Invalidate;
+  end;
+end;
+
 procedure TChartComboBox.DrawItem(AIndex: Integer; ARect: TRect;
   AState: TOwnerDrawState);
 const
@@ -356,7 +374,7 @@ begin
       alignmnt := FAlignment;
 
     symheight := ARect.Bottom - ARect.Top - 2 * MARGIN;
-    symwidth := IfThen(FMode = ccmPointerStyle, symheight * 6 div 4, FSymbolWidth);
+    symwidth := IfThen(FMode = ccmPointerStyle, symheight * 6 div 4, SymbolWidth);
 
     case alignmnt of
       taLeftJustify  : x1 := IfThen(DroppedDown, MARGIN, MARGIN * 2);
@@ -470,6 +488,14 @@ begin
     Result := psNone
   else
     Result := TSeriesPointerStyle(PtrInt(Items.Objects[AIndex]));
+end;
+
+function TChartCombobox.GetSymbolWidth: Integer;
+begin
+  if SymbolWidthStored then
+    Result := FSymbolWidth
+  else
+    Result := Scale96ToFont(DEFAULT_SYMBOL_WIDTH);
 end;
 
 procedure TChartCombobox.PopulateBrushStyles;
@@ -765,6 +791,11 @@ begin
   if FSymbolWidth = AValue then exit;
   FSymbolWidth := AValue;
   Invalidate;
+end;
+
+function TChartCombobox.SymbolWidthStored: Boolean;
+begin
+  Result := FSymbolWidth >= 0;
 end;
 
 end.
