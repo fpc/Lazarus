@@ -878,8 +878,6 @@ type
     function FindSourceFile(const AFilename, BaseDirectory: string;
                             Flags: TFindSourceFlags): string; override;
     function DoCheckFilesOnDisk(Instantaneous: boolean = false): TModalResult; override;
-    //function DoPublishModule(Options: TPublishModuleOptions;
-    //  const SrcDirectory, DestDirectory: string): TModalResult; override;
     procedure PrepareBuildTarget(Quiet: boolean;
                                ScanFPCSrc: TScanModeFPCSources = smsfsBackground); override;
     procedure AbortBuild; override;
@@ -8351,13 +8349,7 @@ function TMainIDE.DoCheckFilesOnDisk(Instantaneous: boolean): TModalResult;
 begin
   Result:=SourceFileMgr.CheckFilesOnDisk(Instantaneous);
 end;
-{
-function TMainIDE.DoPublishModule(Options: TPublishModuleOptions;
-  const SrcDirectory, DestDirectory: string): TModalResult;
-begin
-  Result:=SourceFileMgr.PublishModule(Options, SrcDirectory, DestDirectory);
-end;
-}
+
 procedure TMainIDE.PrepareBuildTarget(Quiet: boolean; ScanFPCSrc: TScanModeFPCSources);
 begin
   MainBuildBoss.SetBuildTargetProject1(Quiet,ScanFPCSrc);

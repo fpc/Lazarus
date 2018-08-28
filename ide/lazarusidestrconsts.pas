@@ -865,13 +865,7 @@ resourcestring
   lisFileDoesNotLookLikeATextFileOpenItAnyway = 'File "%s"'
     +'%sdoes not look like a text file.'
     +'%sOpen it anyway?';
-  lisUnableToCreateBackupDirectory = 'Unable to create backup directory "%s".';
   lisSourceAndDestinationAreTheSame = 'Source and Destination are the same:%s%s';
-  lisInvalidCommand = 'Invalid command';
-  lisTheCommandAfterIsNotExecutable = 'The command after "%s" is not executable.';
-  lisCommandAfterInvalid = 'Command after invalid';
-  lisTheCommandAfterPublishingIsInvalid = 'The command after publishing is invalid:%s"%s"';
-  lisCommandAfterPublishingModule = 'Command after publishing module';
   lisUnableToAddToProjectBecauseThereIsAlreadyAUnitWith = 'Unable to add %s '
     +'to project, because there is already a unit with the same name in the Project.';
   lisAddToProject = 'Add %s to project?';
@@ -1271,7 +1265,6 @@ resourcestring
   // Publish project / package
   lisDestinationDirectory = 'Destination directory';
   lisChooseDirectory = 'Choose directory';
-  //lisCommandAfter = 'Command after';
   lisCompress = 'Compress';
   lisCompressHint = 'The resulting directory will be compressed into a ZIP file.';
   lisPublishModuleNote = 'Files belonging to project / package will be included automatically.';
@@ -1281,12 +1274,7 @@ resourcestring
     +'character, a * stands for anything, a ? stands for any character, and '
     +'comma and semicolon separates alternatives. For example: Simple '
     +'syntax *.pas;*.pp corresponds to ^(.*\.pas|.*\.pp)$';
-  //lisUseExcludeFilter = 'Use exclude filter';
-  //lisProjectInformation = 'Project information';
-  //lisSaveEditorInfoOfNonProjectFiles = 'Save editor info of non project files';
-  //lisSaveInfoOfClosedEditorFiles = 'Save info of closed editor files';
   lisUseFiltersForExtraFiles = 'Use filters for extra files';
-  //lisUseIncludeFilter = 'Use include filter';
   lisIncludeFilter = 'Include filter';
   lisExcludeFilter = 'Exclude filter';
   lisInvalidPublishingDirectory = 'Invalid publishing Directory';

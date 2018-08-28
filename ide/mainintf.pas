@@ -154,9 +154,6 @@ type
     function DoExampleManager: TModalResult; virtual; abstract;
     function DoBuildLazarus(Flags: TBuildLazarusFlags): TModalResult; virtual; abstract;
     function DoSaveForBuild(AReason: TCompileReason): TModalResult; virtual; abstract;
-    //function DoPublishModule(Options: TPublishModuleOptions;
-    //                         const SrcDirectory, DestDirectory: string
-    //                         ): TModalResult; virtual; abstract;
     function DoFixupComponentReferences(RootComponent: TComponent;
                         OpenFlags: TOpenFlags): TModalResult; virtual; abstract;
 
