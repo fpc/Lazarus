@@ -210,6 +210,7 @@ var
   RelPath: string;
   Adjusted: Boolean;
 begin
+  Assert(Pos('\',AFileName) = 0, 'AdjustTopDir: File name contains a backslash.');
   RelPath := ExtractRelativePath(FTopDir, AFilename);
   Adjusted := False;
   while Copy(RelPath, 1, 3) = '../' do
@@ -238,9 +239,15 @@ begin
   begin
     FCopiedFiles.Add(AFilename);
     if FilenameIsPascalUnit(AFilename) then
-    begin           // Copy .lfm file even if it is not part of project/package.
+    begin    // Copy .lfm or .dfm file even if it is not part of project/package.
       LfmFile := ChangeFileExt(AFilename, '.lfm');
-      if FileExistsUTF8(LfmFile) then
+      if not FileExistsUTF8(LfmFile) then
+      begin
+        LfmFile := ChangeFileExt(AFilename, '.dfm');
+        if not FileExistsUTF8(LfmFile) then
+          LfmFile := '';
+      end;
+      if LfmFile <> '' then
         Result := CopyAFile(LfmFile);  // Recursive call.
     end;
   end
