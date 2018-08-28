@@ -6888,14 +6888,6 @@ msgstr "İade"
 msgid "Visibility"
 msgstr "Görünürlük"
 
-#: lazarusidestrconsts.liscommandafterinvalid
-msgid "Command after invalid"
-msgstr "Geçersiz Komut"
-
-#: lazarusidestrconsts.liscommandafterpublishingmodule
-msgid "Command after publishing module"
-msgstr "Modülü yayınladıktan sonra komuta"
-
 #: lazarusidestrconsts.liscommandlineparameters
 msgctxt "lazarusidestrconsts.liscommandlineparameters"
 msgid "Command line parameters"
@@ -10831,10 +10823,6 @@ msgstr "Etkileşimli"
 #: lazarusidestrconsts.lisinternalerror
 msgid "internal error: %s"
 msgstr "Dahili hata: %s"
-
-#: lazarusidestrconsts.lisinvalidcommand
-msgid "Invalid command"
-msgstr "Geçersiz komut"
 
 #: lazarusidestrconsts.lisinvaliddelete
 msgid "Invalid delete"
@@ -18013,14 +18001,6 @@ msgstr "\" %s \\ \"sınıfı bir TControl'tir ve olmayan bir denetleyiciye yapı
 msgid "The Codetools found an error:%s%s"
 msgstr "Codetools bir hata buldu: %s %s"
 
-#: lazarusidestrconsts.listhecommandafterisnotexecutable
-msgid "The command after \"%s\" is not executable."
-msgstr "\" %s \\ \"den sonraki komut çalıştırılamaz."
-
-#: lazarusidestrconsts.listhecommandafterpublishingisinvalid
-msgid "The command after publishing is invalid:%s\"%s\""
-msgstr "Yayınlama sonrası komut geçersiz: %s \" %s \\ \""
-
 #: lazarusidestrconsts.listhecompilerfiledoesnotlookcorrect
 #, fuzzy,badformat
 msgid "The compiler file \"%s\" does not look correct:%s%s"
@@ -19085,10 +19065,6 @@ msgstr "Dosya kopyalanamıyor"
 #: lazarusidestrconsts.lisunabletocopyfileto
 msgid "Unable to copy file \"%s\"%sto \"%s\""
 msgstr "Dosya \" %s \\ \" %sto \" %s \\ \"kopya edilemiyor"
-
-#: lazarusidestrconsts.lisunabletocreatebackupdirectory
-msgid "Unable to create backup directory \"%s\"."
-msgstr "Yedek dizin \" %s \\ \"oluşturulamadı."
 
 #: lazarusidestrconsts.lisunabletocreatedirectory
 msgid "Unable to create directory \"%s\"."

@@ -7065,14 +7065,6 @@ msgstr ""
 msgid "Visibility"
 msgstr ""
 
-#: lazarusidestrconsts.liscommandafterinvalid
-msgid "Command after invalid"
-msgstr "Perintah seteleahnya tidak benar"
-
-#: lazarusidestrconsts.liscommandafterpublishingmodule
-msgid "Command after publishing module"
-msgstr "Perintah setelah mempublikasikan modul"
-
 #: lazarusidestrconsts.liscommandlineparameters
 msgctxt "lazarusidestrconsts.liscommandlineparameters"
 msgid "Command line parameters"
@@ -11017,10 +11009,6 @@ msgstr ""
 #: lazarusidestrconsts.lisinternalerror
 msgid "internal error: %s"
 msgstr ""
-
-#: lazarusidestrconsts.lisinvalidcommand
-msgid "Invalid command"
-msgstr "Perintah tidak benar"
 
 #: lazarusidestrconsts.lisinvaliddelete
 msgid "Invalid delete"
@@ -18514,18 +18502,6 @@ msgstr "Class %s%s%s adalah TControl dan tidak bisa di-paste ke dalam non kontro
 msgid "The Codetools found an error:%s%s"
 msgstr ""
 
-#: lazarusidestrconsts.listhecommandafterisnotexecutable
-#, fuzzy,badformat
-#| msgid "The command after %s%s%s is not executable."
-msgid "The command after \"%s\" is not executable."
-msgstr "Perintah seteleh %s%s%s bukan eksekutabel."
-
-#: lazarusidestrconsts.listhecommandafterpublishingisinvalid
-#, fuzzy,badformat
-#| msgid "The command after publishing is invalid:%s%s%s%s"
-msgid "The command after publishing is invalid:%s\"%s\""
-msgstr "Perintah setelah publikasi tidak benar:%s%s%s%s"
-
 #: lazarusidestrconsts.listhecompilerfiledoesnotlookcorrect
 msgid "The compiler file \"%s\" does not look correct:%s%s"
 msgstr ""
@@ -19600,12 +19576,6 @@ msgstr "Tidak bisa meng-copy file"
 #| msgid "Unable to copy file %s%s%s%sto %s%s%s"
 msgid "Unable to copy file \"%s\"%sto \"%s\""
 msgstr "Tidak bisa meng- copy file %s%s%s%sto %s%s%s"
-
-#: lazarusidestrconsts.lisunabletocreatebackupdirectory
-#, fuzzy,badformat
-#| msgid "Unable to create backup directory %s%s%s."
-msgid "Unable to create backup directory \"%s\"."
-msgstr "Tidak bisa membuat direktori backup %s%s%s."
 
 #: lazarusidestrconsts.lisunabletocreatedirectory
 #, fuzzy,badformat

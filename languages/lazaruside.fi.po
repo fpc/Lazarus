@@ -6785,14 +6785,6 @@ msgstr "Palauttaa"
 msgid "Visibility"
 msgstr "Näkyvyys"
 
-#: lazarusidestrconsts.liscommandafterinvalid
-msgid "Command after invalid"
-msgstr "Komento virheellisen jälkeen"
-
-#: lazarusidestrconsts.liscommandafterpublishingmodule
-msgid "Command after publishing module"
-msgstr "Komento julkaistun moduulin jälkeen"
-
 #: lazarusidestrconsts.liscommandlineparameters
 msgctxt "lazarusidestrconsts.liscommandlineparameters"
 msgid "Command line parameters"
@@ -10641,10 +10633,6 @@ msgstr "Vuorovaikutteinen"
 #: lazarusidestrconsts.lisinternalerror
 msgid "internal error: %s"
 msgstr "sisäinen virhe: %s"
-
-#: lazarusidestrconsts.lisinvalidcommand
-msgid "Invalid command"
-msgstr "Kelvoton komento"
 
 #: lazarusidestrconsts.lisinvaliddelete
 msgid "Invalid delete"
@@ -17606,14 +17594,6 @@ msgstr "Luokka \"%s\" on TControl eikä sitä voi liittää muuhun kuin kontroll
 msgid "The Codetools found an error:%s%s"
 msgstr "Codetools löysi virheen:%s%s"
 
-#: lazarusidestrconsts.listhecommandafterisnotexecutable
-msgid "The command after \"%s\" is not executable."
-msgstr "Komento \"%s\":n jälkeen ei ole suoritettava ohjelma."
-
-#: lazarusidestrconsts.listhecommandafterpublishingisinvalid
-msgid "The command after publishing is invalid:%s\"%s\""
-msgstr "Komento julkaisun jälkeen on kelvoton:%s\"%s\""
-
 #: lazarusidestrconsts.listhecompilerfiledoesnotlookcorrect
 msgid "The compiler file \"%s\" does not look correct:%s%s"
 msgstr "Kääntäjä-tiedosto \"%s\" ei näytä oikealta:%s%s"
@@ -18616,10 +18596,6 @@ msgstr "Tiedoston kopiointi ei onnistunut"
 #: lazarusidestrconsts.lisunabletocopyfileto
 msgid "Unable to copy file \"%s\"%sto \"%s\""
 msgstr "Tiedoston \"%s\"%skopiointi ei onnistunut tiedostoksi \"%s\""
-
-#: lazarusidestrconsts.lisunabletocreatebackupdirectory
-msgid "Unable to create backup directory \"%s\"."
-msgstr "Backup-hakemiston \"%s\" luominen ei onnistu."
 
 #: lazarusidestrconsts.lisunabletocreatedirectory
 msgid "Unable to create directory \"%s\"."

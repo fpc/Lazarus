@@ -7034,14 +7034,6 @@ msgstr ""
 msgid "Visibility"
 msgstr "Widoczność"
 
-#: lazarusidestrconsts.liscommandafterinvalid
-msgid "Command after invalid"
-msgstr ""
-
-#: lazarusidestrconsts.liscommandafterpublishingmodule
-msgid "Command after publishing module"
-msgstr "Polecenie po module publikacji"
-
 #: lazarusidestrconsts.liscommandlineparameters
 msgctxt "lazarusidestrconsts.liscommandlineparameters"
 msgid "Command line parameters"
@@ -10945,10 +10937,6 @@ msgstr ""
 #: lazarusidestrconsts.lisinternalerror
 msgid "internal error: %s"
 msgstr ""
-
-#: lazarusidestrconsts.lisinvalidcommand
-msgid "Invalid command"
-msgstr "Błędne polecenie"
 
 #: lazarusidestrconsts.lisinvaliddelete
 msgid "Invalid delete"
@@ -18102,14 +18090,6 @@ msgstr ""
 msgid "The Codetools found an error:%s%s"
 msgstr ""
 
-#: lazarusidestrconsts.listhecommandafterisnotexecutable
-msgid "The command after \"%s\" is not executable."
-msgstr "Polecenie po \"%s\" nie jest wykonywalne."
-
-#: lazarusidestrconsts.listhecommandafterpublishingisinvalid
-msgid "The command after publishing is invalid:%s\"%s\""
-msgstr ""
-
 #: lazarusidestrconsts.listhecompilerfiledoesnotlookcorrect
 msgid "The compiler file \"%s\" does not look correct:%s%s"
 msgstr ""
@@ -19120,10 +19100,6 @@ msgstr ""
 #: lazarusidestrconsts.lisunabletocopyfileto
 msgid "Unable to copy file \"%s\"%sto \"%s\""
 msgstr "Nie można skopiować pliku \"%s\"%sdo \"%s\""
-
-#: lazarusidestrconsts.lisunabletocreatebackupdirectory
-msgid "Unable to create backup directory \"%s\"."
-msgstr "Nie można utworzyć katalogu z kopią zapasową \"%s\"."
 
 #: lazarusidestrconsts.lisunabletocreatedirectory
 msgid "Unable to create directory \"%s\"."

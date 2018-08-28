@@ -6896,14 +6896,6 @@ msgstr "返回"
 msgid "Visibility"
 msgstr "可视性"
 
-#: lazarusidestrconsts.liscommandafterinvalid
-msgid "Command after invalid"
-msgstr "错误后运行命令"
-
-#: lazarusidestrconsts.liscommandafterpublishingmodule
-msgid "Command after publishing module"
-msgstr "发布后运行命令"
-
 #: lazarusidestrconsts.liscommandlineparameters
 msgctxt "lazarusidestrconsts.liscommandlineparameters"
 msgid "Command line parameters"
@@ -10793,10 +10785,6 @@ msgstr ""
 #: lazarusidestrconsts.lisinternalerror
 msgid "internal error: %s"
 msgstr "内部错误:%s"
-
-#: lazarusidestrconsts.lisinvalidcommand
-msgid "Invalid command"
-msgstr "无效的命令"
 
 #: lazarusidestrconsts.lisinvaliddelete
 msgid "Invalid delete"
@@ -17997,18 +17985,6 @@ msgstr "类 %s%s%s 是 TControl 类,无法粘贴到非control类.%s无法粘贴.
 msgid "The Codetools found an error:%s%s"
 msgstr "CodeTools找到错误:%s%s"
 
-#: lazarusidestrconsts.listhecommandafterisnotexecutable
-#, fuzzy,badformat
-#| msgid "The command after %s%s%s is not executable."
-msgid "The command after \"%s\" is not executable."
-msgstr "%s%s%s 后运行的命令不可执行."
-
-#: lazarusidestrconsts.listhecommandafterpublishingisinvalid
-#, fuzzy,badformat
-#| msgid "The command after publishing is invalid:%s%s%s%s"
-msgid "The command after publishing is invalid:%s\"%s\""
-msgstr "发布后运行的命令无效:%s%s%s%s"
-
 #: lazarusidestrconsts.listhecompilerfiledoesnotlookcorrect
 msgid "The compiler file \"%s\" does not look correct:%s%s"
 msgstr ""
@@ -19072,10 +19048,6 @@ msgstr "不能复制文件"
 #: lazarusidestrconsts.lisunabletocopyfileto
 msgid "Unable to copy file \"%s\"%sto \"%s\""
 msgstr "不能复制文件\"%s\"%s到\"%s\""
-
-#: lazarusidestrconsts.lisunabletocreatebackupdirectory
-msgid "Unable to create backup directory \"%s\"."
-msgstr "不能创建备份目录\"%s\"."
 
 #: lazarusidestrconsts.lisunabletocreatedirectory
 msgid "Unable to create directory \"%s\"."

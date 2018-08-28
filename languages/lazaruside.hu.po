@@ -6822,14 +6822,6 @@ msgstr "Eredmény típusa"
 msgid "Visibility"
 msgstr "Láthatóság"
 
-#: lazarusidestrconsts.liscommandafterinvalid
-msgid "Command after invalid"
-msgstr "Utána következő parancs érvénytelen"
-
-#: lazarusidestrconsts.liscommandafterpublishingmodule
-msgid "Command after publishing module"
-msgstr "Modul közzététele utáni parancs"
-
 #: lazarusidestrconsts.liscommandlineparameters
 msgctxt "lazarusidestrconsts.liscommandlineparameters"
 msgid "Command line parameters"
@@ -10729,10 +10721,6 @@ msgstr "Interaktív"
 #: lazarusidestrconsts.lisinternalerror
 msgid "internal error: %s"
 msgstr "belső hiba: %s"
-
-#: lazarusidestrconsts.lisinvalidcommand
-msgid "Invalid command"
-msgstr "Érvénytelen parancs"
 
 #: lazarusidestrconsts.lisinvaliddelete
 msgid "Invalid delete"
@@ -17754,14 +17742,6 @@ msgstr "A(z) \"%s\" osztály egy TControl és nem illeszthető egy nem-vezérlő
 msgid "The Codetools found an error:%s%s"
 msgstr "A CodeTools talált egy hibát:%s%s"
 
-#: lazarusidestrconsts.listhecommandafterisnotexecutable
-msgid "The command after \"%s\" is not executable."
-msgstr "A(z) \"%s\" utáni parancs nem futtatható."
-
-#: lazarusidestrconsts.listhecommandafterpublishingisinvalid
-msgid "The command after publishing is invalid:%s\"%s\""
-msgstr "A közzétéel utáni parancs érvénytelen:%s\"%s\""
-
 #: lazarusidestrconsts.listhecompilerfiledoesnotlookcorrect
 msgid "The compiler file \"%s\" does not look correct:%s%s"
 msgstr "A fordítófájl \"%s\" nem tűnik megfelelőnek:%s%s"
@@ -18764,10 +18744,6 @@ msgstr "A fájl másolása nem lehetséges"
 #: lazarusidestrconsts.lisunabletocopyfileto
 msgid "Unable to copy file \"%s\"%sto \"%s\""
 msgstr "A fájl nem másolható innen: \"%s\"%side: \"%s\""
-
-#: lazarusidestrconsts.lisunabletocreatebackupdirectory
-msgid "Unable to create backup directory \"%s\"."
-msgstr "A biztonsági mentés könyvtára nem hozható létre: \"%s\"."
 
 #: lazarusidestrconsts.lisunabletocreatedirectory
 msgid "Unable to create directory \"%s\"."

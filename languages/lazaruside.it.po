@@ -6867,14 +6867,6 @@ msgstr "Ritorna"
 msgid "Visibility"
 msgstr "Visibilità"
 
-#: lazarusidestrconsts.liscommandafterinvalid
-msgid "Command after invalid"
-msgstr "Comando post-pubblicazione non valido"
-
-#: lazarusidestrconsts.liscommandafterpublishingmodule
-msgid "Command after publishing module"
-msgstr "Comando dopo la pubblicazione di un modulo"
-
 #: lazarusidestrconsts.liscommandlineparameters
 msgctxt "lazarusidestrconsts.liscommandlineparameters"
 msgid "Command line parameters"
@@ -10792,10 +10784,6 @@ msgstr "Interattivo"
 #: lazarusidestrconsts.lisinternalerror
 msgid "internal error: %s"
 msgstr "errore interno: %s"
-
-#: lazarusidestrconsts.lisinvalidcommand
-msgid "Invalid command"
-msgstr "Comando non valido"
 
 #: lazarusidestrconsts.lisinvaliddelete
 msgid "Invalid delete"
@@ -17925,14 +17913,6 @@ msgstr "La classe \"%s\" è un TControl e può essere incollata solo su un contr
 msgid "The Codetools found an error:%s%s"
 msgstr "I codetools hanno trovato un errore:%s%s"
 
-#: lazarusidestrconsts.listhecommandafterisnotexecutable
-msgid "The command after \"%s\" is not executable."
-msgstr "Il comando dopo \"%s\" non è eseguibile."
-
-#: lazarusidestrconsts.listhecommandafterpublishingisinvalid
-msgid "The command after publishing is invalid:%s\"%s\""
-msgstr "Il comando dopo la pubblicazione non è valido:%s\"%s\""
-
 #: lazarusidestrconsts.listhecompilerfiledoesnotlookcorrect
 msgid "The compiler file \"%s\" does not look correct:%s%s"
 msgstr "Il file del compilatore \"%s\" non sembra corretto:%s%s"
@@ -18942,10 +18922,6 @@ msgstr "Impossibile copiare il file"
 #: lazarusidestrconsts.lisunabletocopyfileto
 msgid "Unable to copy file \"%s\"%sto \"%s\""
 msgstr "Impossibile copiare il file \"%s\"%sin \"%s\""
-
-#: lazarusidestrconsts.lisunabletocreatebackupdirectory
-msgid "Unable to create backup directory \"%s\"."
-msgstr "Impossibile creare una cartella di backup \"%s\"."
 
 #: lazarusidestrconsts.lisunabletocreatedirectory
 msgid "Unable to create directory \"%s\"."

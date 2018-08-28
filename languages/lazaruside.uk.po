@@ -6773,14 +6773,6 @@ msgstr "Повертає"
 msgid "Visibility"
 msgstr "Видимість"
 
-#: lazarusidestrconsts.liscommandafterinvalid
-msgid "Command after invalid"
-msgstr "Некоректна команда \"після\" "
-
-#: lazarusidestrconsts.liscommandafterpublishingmodule
-msgid "Command after publishing module"
-msgstr "Команда після установки модуля"
-
 #: lazarusidestrconsts.liscommandlineparameters
 msgctxt "lazarusidestrconsts.liscommandlineparameters"
 msgid "Command line parameters"
@@ -10677,10 +10669,6 @@ msgstr "Інтерактивний"
 #: lazarusidestrconsts.lisinternalerror
 msgid "internal error: %s"
 msgstr "внутрішня помилка: %s"
-
-#: lazarusidestrconsts.lisinvalidcommand
-msgid "Invalid command"
-msgstr "Неправильна команда"
 
 #: lazarusidestrconsts.lisinvaliddelete
 msgid "Invalid delete"
@@ -17694,14 +17682,6 @@ msgstr "Клас \"%s\" є елементом керування (TControl) і �
 msgid "The Codetools found an error:%s%s"
 msgstr "Codetools знайшов помилку:%s%s"
 
-#: lazarusidestrconsts.listhecommandafterisnotexecutable
-msgid "The command after \"%s\" is not executable."
-msgstr "Команда після \"%s\" не є виконуваною."
-
-#: lazarusidestrconsts.listhecommandafterpublishingisinvalid
-msgid "The command after publishing is invalid:%s\"%s\""
-msgstr "Команда після опублікування є некоректною:%s\"%s\""
-
 #: lazarusidestrconsts.listhecompilerfiledoesnotlookcorrect
 msgid "The compiler file \"%s\" does not look correct:%s%s"
 msgstr "Файл компілятора \"%s\" виглядає неправильним:%s%s"
@@ -18702,10 +18682,6 @@ msgstr "Неможливо скопіювати файл"
 #: lazarusidestrconsts.lisunabletocopyfileto
 msgid "Unable to copy file \"%s\"%sto \"%s\""
 msgstr "Неможливо скопіювати файл \"%s\"%sу \"%s\""
-
-#: lazarusidestrconsts.lisunabletocreatebackupdirectory
-msgid "Unable to create backup directory \"%s\"."
-msgstr "Неможливо створити резервну теку \"%s\"."
 
 #: lazarusidestrconsts.lisunabletocreatedirectory
 msgid "Unable to create directory \"%s\"."

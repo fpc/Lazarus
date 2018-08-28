@@ -6832,14 +6832,6 @@ msgstr "リターン"
 msgid "Visibility"
 msgstr "可視性"
 
-#: lazarusidestrconsts.liscommandafterinvalid
-msgid "Command after invalid"
-msgstr "無効の後のコマンド"
-
-#: lazarusidestrconsts.liscommandafterpublishingmodule
-msgid "Command after publishing module"
-msgstr "モジュールの発行後のコマンド"
-
 #: lazarusidestrconsts.liscommandlineparameters
 msgctxt "lazarusidestrconsts.liscommandlineparameters"
 msgid "Command line parameters"
@@ -10716,10 +10708,6 @@ msgstr "双方向的"
 #: lazarusidestrconsts.lisinternalerror
 msgid "internal error: %s"
 msgstr "内部エラー: %s"
-
-#: lazarusidestrconsts.lisinvalidcommand
-msgid "Invalid command"
-msgstr "無効なコマンド"
 
 #: lazarusidestrconsts.lisinvaliddelete
 msgid "Invalid delete"
@@ -17752,14 +17740,6 @@ msgstr "クラス\"%s\"はTControlで、非コントロールの上には貼り�
 msgid "The Codetools found an error:%s%s"
 msgstr "コードツールがエラーを見つけました:%s%s"
 
-#: lazarusidestrconsts.listhecommandafterisnotexecutable
-msgid "The command after \"%s\" is not executable."
-msgstr " \"%s\"の後のコマンドは実行できません。"
-
-#: lazarusidestrconsts.listhecommandafterpublishingisinvalid
-msgid "The command after publishing is invalid:%s\"%s\""
-msgstr "発行後のコマンドは無効です：%s\"%s\""
-
 #: lazarusidestrconsts.listhecompilerfiledoesnotlookcorrect
 msgid "The compiler file \"%s\" does not look correct:%s%s"
 msgstr "コンパイラファイル \"%s\" は正しくないようです：%s%s"
@@ -18764,10 +18744,6 @@ msgstr "ファイルをコピーできません。"
 #: lazarusidestrconsts.lisunabletocopyfileto
 msgid "Unable to copy file \"%s\"%sto \"%s\""
 msgstr "ファイル\"%s\"%sを\"%s\"にコピーできません。"
-
-#: lazarusidestrconsts.lisunabletocreatebackupdirectory
-msgid "Unable to create backup directory \"%s\"."
-msgstr "バックアップディレクトリ\"%s\"を作成できません。"
 
 #: lazarusidestrconsts.lisunabletocreatedirectory
 msgid "Unable to create directory \"%s\"."

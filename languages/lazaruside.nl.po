@@ -7041,14 +7041,6 @@ msgstr ""
 msgid "Visibility"
 msgstr ""
 
-#: lazarusidestrconsts.liscommandafterinvalid
-msgid "Command after invalid"
-msgstr "Opdracht na ongeldig"
-
-#: lazarusidestrconsts.liscommandafterpublishingmodule
-msgid "Command after publishing module"
-msgstr "Opdracht na publiceren module"
-
 #: lazarusidestrconsts.liscommandlineparameters
 msgctxt "lazarusidestrconsts.liscommandlineparameters"
 msgid "Command line parameters"
@@ -10975,10 +10967,6 @@ msgstr ""
 #: lazarusidestrconsts.lisinternalerror
 msgid "internal error: %s"
 msgstr ""
-
-#: lazarusidestrconsts.lisinvalidcommand
-msgid "Invalid command"
-msgstr "Ongeldig commando"
 
 #: lazarusidestrconsts.lisinvaliddelete
 msgid "Invalid delete"
@@ -18404,18 +18392,6 @@ msgstr "De klasse \"%s\" is een TControl en kan niet op een niet control geplaat
 msgid "The Codetools found an error:%s%s"
 msgstr ""
 
-#: lazarusidestrconsts.listhecommandafterisnotexecutable
-#, fuzzy
-#| msgid "The command after %s%s%s is not executable."
-msgid "The command after \"%s\" is not executable."
-msgstr "Het commando na \"%s\" kan niet worden uitgevoerd."
-
-#: lazarusidestrconsts.listhecommandafterpublishingisinvalid
-#, fuzzy
-#| msgid "The command after publishing is invalid:%s%s%s%s"
-msgid "The command after publishing is invalid:%s\"%s\""
-msgstr "Het commando na publicatie is ongeldig:%s\"%s\""
-
 #: lazarusidestrconsts.listhecompilerfiledoesnotlookcorrect
 msgid "The compiler file \"%s\" does not look correct:%s%s"
 msgstr ""
@@ -19488,12 +19464,6 @@ msgstr "Kan het bestand niet kopiëren"
 #| msgid "Unable to copy file %s%s%s%sto %s%s%s"
 msgid "Unable to copy file \"%s\"%sto \"%s\""
 msgstr "Kan het bestand \"%s\"%s niet kopiëren naar \"%s\""
-
-#: lazarusidestrconsts.lisunabletocreatebackupdirectory
-#, fuzzy
-#| msgid "Unable to create backup directory %s%s%s."
-msgid "Unable to create backup directory \"%s\"."
-msgstr "Kan geen backup directory maken \"%s\"."
 
 #: lazarusidestrconsts.lisunabletocreatedirectory
 #, fuzzy

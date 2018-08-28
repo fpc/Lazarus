@@ -6768,14 +6768,6 @@ msgstr "Тип результата"
 msgid "Visibility"
 msgstr "Видимость"
 
-#: lazarusidestrconsts.liscommandafterinvalid
-msgid "Command after invalid"
-msgstr "Команда \"после\" некорректна"
-
-#: lazarusidestrconsts.liscommandafterpublishingmodule
-msgid "Command after publishing module"
-msgstr "Команда после установки модуля"
-
 #: lazarusidestrconsts.liscommandlineparameters
 msgctxt "lazarusidestrconsts.liscommandlineparameters"
 msgid "Command line parameters"
@@ -10672,10 +10664,6 @@ msgstr "Интерактивный режим"
 #: lazarusidestrconsts.lisinternalerror
 msgid "internal error: %s"
 msgstr "внутренняя ошибка: %s"
-
-#: lazarusidestrconsts.lisinvalidcommand
-msgid "Invalid command"
-msgstr "Неверная команда"
 
 #: lazarusidestrconsts.lisinvaliddelete
 msgid "Invalid delete"
@@ -17690,14 +17678,6 @@ msgstr "Класс \"%s\" имеет тип TControl и может быть вс
 msgid "The Codetools found an error:%s%s"
 msgstr "Средством CodeTools найдена ошибка:%s%s"
 
-#: lazarusidestrconsts.listhecommandafterisnotexecutable
-msgid "The command after \"%s\" is not executable."
-msgstr "Команда для исполнения после опубликования \"%s\" не является исполнимой."
-
-#: lazarusidestrconsts.listhecommandafterpublishingisinvalid
-msgid "The command after publishing is invalid:%s\"%s\""
-msgstr "Команда для исполнения после опубликования некорректна:%s\"%s\""
-
 #: lazarusidestrconsts.listhecompilerfiledoesnotlookcorrect
 msgid "The compiler file \"%s\" does not look correct:%s%s"
 msgstr "Файл компилятора \"%s\", вероятно, некорректен:%s%s"
@@ -18698,10 +18678,6 @@ msgstr "Невозможно скопировать файл"
 #: lazarusidestrconsts.lisunabletocopyfileto
 msgid "Unable to copy file \"%s\"%sto \"%s\""
 msgstr "Невозможно скопировать файл \"%s\"%sв \"%s\""
-
-#: lazarusidestrconsts.lisunabletocreatebackupdirectory
-msgid "Unable to create backup directory \"%s\"."
-msgstr "Невозможно создать каталог резервных копий \"%s\"."
 
 #: lazarusidestrconsts.lisunabletocreatedirectory
 msgid "Unable to create directory \"%s\"."

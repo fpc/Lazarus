@@ -6784,14 +6784,6 @@ msgstr ""
 msgid "Visibility"
 msgstr ""
 
-#: lazarusidestrconsts.liscommandafterinvalid
-msgid "Command after invalid"
-msgstr ""
-
-#: lazarusidestrconsts.liscommandafterpublishingmodule
-msgid "Command after publishing module"
-msgstr ""
-
 #: lazarusidestrconsts.liscommandlineparameters
 msgctxt "lazarusidestrconsts.liscommandlineparameters"
 msgid "Command line parameters"
@@ -10661,10 +10653,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisinternalerror
 msgid "internal error: %s"
-msgstr ""
-
-#: lazarusidestrconsts.lisinvalidcommand
-msgid "Invalid command"
 msgstr ""
 
 #: lazarusidestrconsts.lisinvaliddelete
@@ -17652,14 +17640,6 @@ msgstr ""
 msgid "The Codetools found an error:%s%s"
 msgstr ""
 
-#: lazarusidestrconsts.listhecommandafterisnotexecutable
-msgid "The command after \"%s\" is not executable."
-msgstr ""
-
-#: lazarusidestrconsts.listhecommandafterpublishingisinvalid
-msgid "The command after publishing is invalid:%s\"%s\""
-msgstr ""
-
 #: lazarusidestrconsts.listhecompilerfiledoesnotlookcorrect
 msgid "The compiler file \"%s\" does not look correct:%s%s"
 msgstr ""
@@ -18659,10 +18639,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisunabletocopyfileto
 msgid "Unable to copy file \"%s\"%sto \"%s\""
-msgstr ""
-
-#: lazarusidestrconsts.lisunabletocreatebackupdirectory
-msgid "Unable to create backup directory \"%s\"."
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletocreatedirectory

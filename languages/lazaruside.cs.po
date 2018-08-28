@@ -6843,14 +6843,6 @@ msgstr "Odřádkování"
 msgid "Visibility"
 msgstr "Viditelnost"
 
-#: lazarusidestrconsts.liscommandafterinvalid
-msgid "Command after invalid"
-msgstr "Příkaz po neplatném"
-
-#: lazarusidestrconsts.liscommandafterpublishingmodule
-msgid "Command after publishing module"
-msgstr "Příkaz po publikování modulu"
-
 #: lazarusidestrconsts.liscommandlineparameters
 msgctxt "lazarusidestrconsts.liscommandlineparameters"
 msgid "Command line parameters"
@@ -10747,10 +10739,6 @@ msgstr "Interaktivní"
 #: lazarusidestrconsts.lisinternalerror
 msgid "internal error: %s"
 msgstr "vnitřní chyba: %s"
-
-#: lazarusidestrconsts.lisinvalidcommand
-msgid "Invalid command"
-msgstr "Neplatný povel"
 
 #: lazarusidestrconsts.lisinvaliddelete
 msgid "Invalid delete"
@@ -17865,14 +17853,6 @@ msgstr "Třída \"%s\" je TControl a nemůže být vložena na neovládací prve
 msgid "The Codetools found an error:%s%s"
 msgstr "CodeTools našly chybu:%s%s"
 
-#: lazarusidestrconsts.listhecommandafterisnotexecutable
-msgid "The command after \"%s\" is not executable."
-msgstr "Příkaz po \"%s\" není spustitelný."
-
-#: lazarusidestrconsts.listhecommandafterpublishingisinvalid
-msgid "The command after publishing is invalid:%s\"%s\""
-msgstr "Příkaz za publikováním je neplatný:%s\"%s\""
-
 #: lazarusidestrconsts.listhecompilerfiledoesnotlookcorrect
 msgid "The compiler file \"%s\" does not look correct:%s%s"
 msgstr "Soubor překladače \"%s\" nevypadá v pořádku:%s%s"
@@ -18879,10 +18859,6 @@ msgstr "Soubor nelze zkopírovat"
 #: lazarusidestrconsts.lisunabletocopyfileto
 msgid "Unable to copy file \"%s\"%sto \"%s\""
 msgstr "Nelze zkopírovat soubor \"%s\"%sna \"%s\""
-
-#: lazarusidestrconsts.lisunabletocreatebackupdirectory
-msgid "Unable to create backup directory \"%s\"."
-msgstr "Nelze vytvořit záložní adresář \"%s\"."
 
 #: lazarusidestrconsts.lisunabletocreatedirectory
 msgid "Unable to create directory \"%s\"."
