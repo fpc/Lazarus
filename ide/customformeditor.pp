@@ -1404,13 +1404,13 @@ begin
         begin
           CompWidth := Max(5, AControl.Width);
           if ParentDesigner<>nil then
-            CompWidth := MulDiv(CompWidth, OldPPI, ParentDesigner.PixelsPerInch);
+            CompWidth := MulDiv(CompWidth, ParentDesigner.PixelsPerInch, OldPPI);
         end;
         if CompHeight <= 0 then
         begin
           CompHeight := Max(5, AControl.Height);
           if ParentDesigner<>nil then
-            CompHeight := MulDiv(CompHeight, OldPPI, ParentDesigner.PixelsPerInch);
+            CompHeight := MulDiv(CompHeight, ParentDesigner.PixelsPerInch, OldPPI);
         end;
         MonitorBounds := ActiveMonitor.BoundsRect;
         if (CompLeft < 0) and (AParent <> nil) then
