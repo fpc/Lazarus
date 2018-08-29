@@ -207,15 +207,15 @@ procedure TPublisher.AdjustTopDir(const AFileName: string);
 // Adjust the actual top directory. It will differ from the
 //  main dir when project/package has files up in directory structure.
 var
-  RelPath: string;
+  RelPath, UpALevel: string;
   Adjusted: Boolean;
 begin
-  Assert(Pos('\',AFileName) = 0, 'AdjustTopDir: File name contains a backslash.');
+  UpALevel := '..' + DirectorySeparator;
   RelPath := ExtractRelativePath(FTopDir, AFilename);
   Adjusted := False;
-  while Copy(RelPath, 1, 3) = '../' do
+  while Copy(RelPath, 1, 3) = UpALevel do
   begin
-    FTopDir := FTopDir + '../'; // This file is in upper dir. Move TopDir up, too.
+    FTopDir := FTopDir + UpALevel; // This file is in upper dir. Move TopDir up, too.
     Delete(RelPath, 1, 3);
     Adjusted := True;
   end;
