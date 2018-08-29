@@ -6914,11 +6914,11 @@ msgstr "Abrir unidade"
 
 #: lazarusidestrconsts.liscompress
 msgid "Compress"
-msgstr ""
+msgstr "Compactar"
 
 #: lazarusidestrconsts.liscompresshint
 msgid "The resulting directory will be compressed into a ZIP file."
-msgstr ""
+msgstr "O diretório resultante será compactado em um arquivo ZIP."
 
 #: lazarusidestrconsts.liscomptest
 msgctxt "lazarusidestrconsts.liscomptest"
@@ -11476,7 +11476,7 @@ msgstr "lazarus [opções] <nome-de-arquivo-do-projeto>"
 
 #: lazarusidestrconsts.lislazarussvnrev
 msgid "r%s"
-msgstr ""
+msgstr "r%s"
 
 #: lazarusidestrconsts.lislazbuildaboaction
 msgctxt "lazarusidestrconsts.lislazbuildaboaction"
@@ -16317,7 +16317,7 @@ msgstr "Método Publicado"
 
 #: lazarusidestrconsts.lispublishmodulenote
 msgid "Files belonging to project / package will be included automatically."
-msgstr ""
+msgstr "Arquivos pertencentes ao projeto / pacote serão incluídos automaticamente."
 
 #: lazarusidestrconsts.lispublishprojdir
 msgid "Publish project directory"
@@ -19149,7 +19149,7 @@ msgstr "Usado para formulários auto-criados."
 
 #: lazarusidestrconsts.lisusefiltersforextrafiles
 msgid "Use filters for extra files"
-msgstr ""
+msgstr "Usar filtros para arquivos extra"
 
 #: lazarusidestrconsts.lisuseidentifier
 msgid "Use identifier"

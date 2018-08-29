@@ -768,7 +768,7 @@ msgstr "Não resolver dependências pode levar à falha de instalação! Continu
 
 #: opkman_const.rsmainfrm_rspackageinformation
 msgid "Quick package information for \"%s\""
-msgstr ""
+msgstr "Rápida informação de pacote para \"%s\""
 
 #: opkman_const.rsmainfrm_rspackagerating
 msgid "Your vote for package \"%s\" is: %s. Thank you for voting!"
@@ -938,11 +938,11 @@ msgstr "Categoria"
 
 #: opkman_const.rsmainfrm_vsttext_comdesc
 msgid "Community description for metapackage"
-msgstr ""
+msgstr "Descrição da comunidade para o metapacote"
 
 #: opkman_const.rsmainfrm_vsttext_communitydescription
 msgid "Community description"
-msgstr ""
+msgstr "Descrição da comunidade"
 
 #: opkman_const.rsmainfrm_vsttext_dependecies
 msgctxt "opkman_const.rsmainfrm_vsttext_dependecies"

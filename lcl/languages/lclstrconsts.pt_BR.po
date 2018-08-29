@@ -482,7 +482,6 @@ msgid "--sync                Call XSynchronize (display, True) after the Xserver
 msgstr "--sync                Chama XSynchronize (display, True) após ser estabelecida a conexão com Xserver. Isto torna fácil a  depuração de erros de protocolo do X, porque as solicitações de armazenamento do X serão desativadas e erros do X serão recebidos imediatamente, após as solicitações de protocolo que geraram os erros, tenham sido processadas pelo servidor X."
 
 #: lclstrconsts.rshelp
-#, fuzzy
 msgctxt "lclstrconsts.rshelp"
 msgid "Help"
 msgstr "Ajuda"
