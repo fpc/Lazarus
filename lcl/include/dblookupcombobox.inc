@@ -38,6 +38,20 @@ begin
     Text := '';
 end;
 
+function TDBLookupComboBox.DoEdit: boolean;
+begin
+  if (FDataLink.DataSource=nil) or (DataField='') then begin
+    if DetectedEvents and DBCBEVENT_SELECT <>0 then begin
+      UpdateData(self);
+      DoOnSelect;
+    end;
+    if DetectedEvents and DBCBEVENT_CLOSEUP <>0 then
+      DoOnCloseUp;
+  end
+  else
+    Result := inherited DoEdit;
+end;
+
 procedure TDBLookupComboBox.ActiveChange(Sender: TObject);
 begin
   if FDataLink.Active then
@@ -45,16 +59,8 @@ begin
 end;
 
 procedure TDBLookupComboBox.DataChange(Sender: TObject);
-var
-  i: Integer;
 begin
-  if FDatalink.Active then
-    i := FLookup.GetKeyIndex
-  else
-    i := -1;
-  ItemIndex := i;
-  if i = -1 then
-    Text := '';
+  UpdateLookup;
 end;
 
 procedure TDBLookupComboBox.DestroyWnd;
@@ -62,32 +68,6 @@ begin
   inherited;
   //after handle destroy Items address changes
   FLookup.ControlItems := Items;
-end;
-
-procedure TDBLookupComboBox.Select;
-begin
-  FDataLink.OnDataChange := nil;
-  try
-    if FDataLink.Edit then
-    begin
-       FDataLink.Modified;
-       FDataLink.UpdateData;
-       inherited Select;
-    end
-    else
-    begin
-       // if cannot modify, let it reset
-       if ReadOnly then begin
-         FDatalink.Reset;
-         DataChange(Self);
-       end else begin
-         FDataLink.Modified;
-         inherited Select;
-       end;
-    end;
-  finally
-    FDataLink.OnDataChange := @DataChange;
-  end;
 end;
 
 procedure TDBLookupComboBox.KeyDown(var Key: Word; Shift: TShiftState);
@@ -208,12 +188,5 @@ begin
     if i = -1 then
       Text := '';
   end;
-end;
-
-procedure TDBLookupComboBox.CloseUp;
-begin
-  if Style = csDropDownList then
-    FDataLink.UpdateRecord;
-  inherited CloseUp;
 end;
 

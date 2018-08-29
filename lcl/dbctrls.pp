@@ -724,9 +724,11 @@ Type
     procedure SetReadOnly(const AValue: Boolean);
     procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
   protected
-    function DoEdit: boolean;
-    procedure DoOnCloseUp;
+    function DoEdit: boolean; virtual;
+    procedure DoOnCloseUp; virtual;
+    procedure DoOnSelect; virtual;
     procedure LMDeferredEdit(var Message: TLMessage); message LM_DEFERREDEDIT;
+    property DetectedEvents: Word read FDetectedEvents;
   protected
     procedure CloseUp; override;
     Procedure Select; override;
@@ -831,6 +833,8 @@ Type
   { TDBLookupComboBox }
 
   TDBLookupComboBox = class(TCustomDBComboBox)
+  protected
+    function DoEdit: boolean; override;
   private
     FLookup: TDBLookup;
     FScrollListDataset: Boolean;
@@ -851,7 +855,6 @@ Type
     procedure SetNullValueKey(const AValue: TShortCut);
     procedure UpdateLookup;
   protected
-    procedure CloseUp; override;
     procedure InitializeWnd; override;
     procedure DestroyWnd; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
@@ -859,7 +862,6 @@ Type
     procedure Loaded; override;
     procedure UpdateData(Sender: TObject); override;
     procedure DataChange(Sender: TObject); override;
-    procedure Select; override;
   public
     constructor Create(AOwner: TComponent); override;
     property KeyValue: variant read GetKeyValue write SetKeyValue;
@@ -1854,6 +1856,11 @@ begin
 
   IsModified := False;
 end;
+
+CONST
+  DBCBEVENT_CHANGE   = 1;   // CustomDBBoxCombobox Detected change event
+  DBCBEVENT_SELECT   = 2;   // CustomDBBoxCombobox Detected select event
+  DBCBEVENT_CLOSEUP  = 4;   // CustomDBBoxCombobox Detected closeup event
 
 {$Include dblookup.inc}
 {$Include dbedit.inc}

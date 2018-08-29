@@ -15,11 +15,6 @@
 
 // included by dbctrls.pp
 
-CONST
-  DBCBEVENT_CHANGE   = 1;   // Detected change event
-  DBCBEVENT_SELECT   = 2;   // Detected select event
-  DBCBEVENT_CLOSEUP  = 4;   // Detected closeup event
-
 {TCustomDBComboBox}
 
 function TCustomDBComboBox.GetDataField: string;
@@ -77,7 +72,7 @@ begin
         if FDetectedEvents and DBCBEVENT_CHANGE <> 0 then
           inherited Change;
         if FDetectedEvents and DBCBEVENT_SELECT <> 0 then
-          inherited Select;
+          DoOnSelect;
       end;
       if FDetectedEvents and DBCBEVENT_CLOSEUP <> 0 then
         DoOnCloseUp;
@@ -109,6 +104,11 @@ begin
       AutoSelected := True;
   end;//End if FAutoSelect
   FDetectedEvents := 0;   // reset because closeup may occur without editing
+end;
+
+procedure TCustomDBComboBox.DoOnSelect;
+begin
+  inherited Select;
 end;
 
 procedure TCustomDBComboBox.SetDataField(const AValue: string);
