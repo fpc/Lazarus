@@ -873,6 +873,10 @@ begin
 
         if QWord(PNGComn.Signature) = QWord(PNGSig)
         then begin
+          {$if FPC_FULLVERSION < 30200}
+          //workaround for fpc bug #0034185 (dangling FPalette pointer in TFPReaderPNG.InternalRead causes AV)
+          if Assigned(PNGReader) then FreeAndNil(PngReader);
+          {$ENDIF}
           if PNGReader = nil
           then PNGReader := TLazReaderPNG.Create;
           ImgReader := PNGReader;
