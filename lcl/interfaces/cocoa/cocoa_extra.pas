@@ -39,9 +39,24 @@ type
     function itemAtIndex(index: NSInteger): NSMenuItem; message 'itemAtIndex:';
   end;
 
+  NSEdgeInsets = packed record
+    top     : CGFloat;
+    left    : CGFloat;
+    bottom  : CGFloat;
+    right   : CGFloat;
+  end;
+
   NSViewFix = objccategory external (NSView)
     // 10.7+
     function fittingSize: NSSize; message 'fittingSize';
+    function alignmentRectInsets: NSEdgeInsets; message 'alignmentRectInsets';
+    function alignmentRectForFrame(ns: NSRect): NSRect; message 'alignmentRectForFrame:';
+    function frameForAlignmentRect(ns: NSRect): NSRect; message 'frameForAlignmentRect:';
+  end;
+
+  NSLayoutConstraint = objcclass external (NSObject)
+    function isActive: Boolean; message 'isActive';
+    procedure setActive(Active: Boolean); message 'setActive:';
   end;
 
   NSButtonSoundExtensionsCategory = objccategory external (NSButton)
