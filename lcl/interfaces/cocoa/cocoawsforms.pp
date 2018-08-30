@@ -626,7 +626,7 @@ begin
   begin
     win := TCocoaWindowContent(AWinControl.Handle).lclOwnWindow;
     if not Assigned(win) then
-      AText := ''
+      AText := NSStringToString(TCocoaWindowContent(AWinControl.Handle).stringValue)
     else
       AText := NSStringToString(win.title);
   end;
@@ -643,7 +643,9 @@ begin
     if Assigned(win) then
       ALength := NSWindow(AWinControl.Handle).title.length
     else
-      ALength := 0;
+    begin
+      ALength := TCocoaWindowContent(AWinControl.Handle).stringValue.length
+    end;
   end;
 end;
 
@@ -655,12 +657,12 @@ begin
   if not AWinControl.HandleAllocated then
     Exit;
   win := TCocoaWindowContent(AWinControl.Handle).lclOwnWindow;
+  ns := NSStringUtf8(AText);
   if Assigned(win) then
-  begin
-    ns := NSStringUtf8(AText);
-    NSwindow(win).setTitle(ns);
-    ns.release;
-  end;
+    NSwindow(win).setTitle(ns)
+  else
+    TCocoaWindowContent(AWinControl.Handle).setStringValue(ns);
+  ns.release;
 end;
 
 class procedure TCocoaWSCustomForm.CloseModal(const ACustomForm: TCustomForm);

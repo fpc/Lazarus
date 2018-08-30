@@ -356,6 +356,8 @@ begin
   else
   begin
     ownwin := NSWindow(window);
+    if Assigned(stringValue) then
+      ownwin.setTitle(stringValue);
   end;
   inherited viewDidMoveToWindow;
 end;
@@ -367,7 +369,10 @@ begin
   if not isembedded and (newWindow <> window) then
   begin
     if Assigned(window) then
-       window.close;
+    begin
+      setStringValue(window.title);
+      window.close;
+    end;
     ownwin := nil;
     isembedded := false;
   end;
