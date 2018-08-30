@@ -55,10 +55,8 @@ uses
 
 const
   // these are the names of the various history lists in the IDE:
-  hlPublishProjectDestDirs = 'PublishProjectDestinationDirectories';
-  //hlPublishProjectCommandsAfter = 'PublishProjectCommmandsAfter';
-  hlPublishProjectIncludeFileFilter = 'PublishProjectIncludeFileFilter';
-  hlPublishProjectExcludeFileFilter = 'PublishProjectExcludeFileFilter';
+  hlPublishModuleDestDirs = 'PublishModuleDestinationDirectories';
+  hlPublishModuleFileFilter = 'PublishModuleFileFilter';
   hlMakeResourceStringSections = 'MakeResourceStringSections';
   hlMakeResourceStringPrefixes = 'MakeResourceStringPrefixes';
   hlMakeResourceStringLengths = 'MakeResourceStringLengths';

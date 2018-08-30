@@ -363,7 +363,7 @@ begin
     P.Sources.AddSrc('projectresources.pas');
     P.Sources.AddSrc('projectwizarddlg.pas');
     P.Sources.AddSrc('publishmodule.pas');
-    P.Sources.AddSrc('publishprojectdlg.pas');
+    P.Sources.AddSrc('publishmoduledlg.pas');
     P.Sources.AddSrc('restrictionbrowser.pas');
     P.Sources.AddSrc('runparamsopts.pas');
     P.Sources.AddSrc('searchfrm.pas');

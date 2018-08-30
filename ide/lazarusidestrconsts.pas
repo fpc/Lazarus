@@ -1262,34 +1262,6 @@ resourcestring
   dlgObjInsp = 'Object Inspector';
   dlgEnvFiles = 'Files';
 
-  // Publish project / package
-  lisDestinationDirectory = 'Destination directory';
-  lisChooseDirectory = 'Choose directory';
-  lisCompress = 'Compress';
-  lisCompressHint = 'The resulting directory will be compressed into a ZIP file.';
-  lisPublishModuleNote = 'Files belonging to project / package will be included automatically.';
-  lisSimpleSyntax = 'Simple syntax';
-  lisNormallyTheFilterIsARegularExpressionInSimpleSynta = 'Normally the '
-    +'filter is a regular expression. In simple syntax a . is a normal '
-    +'character, a * stands for anything, a ? stands for any character, and '
-    +'comma and semicolon separates alternatives. For example: Simple '
-    +'syntax *.pas;*.pp corresponds to ^(.*\.pas|.*\.pp)$';
-  lisUseFiltersForExtraFiles = 'Use filters for extra files';
-  lisIncludeFilter = 'Include filter';
-  lisExcludeFilter = 'Exclude filter';
-  lisInvalidPublishingDirectory = 'Invalid publishing Directory';
-  lisSourceDirectoryAndDestinationDirectoryAreTheSameMa = 'Source directory "%s"'
-    +'%sand destination directory "%s"'
-    +'%sare the same. Maybe you misunderstand this feature.'
-    +'%sIt will clean/recreate the destination directory and copy the package/project into it.';
-  lisClearDirectory = 'Clear Directory?';
-  lisInOrderToCreateACleanCopyOfTheProjectPackageAllFil = 'In order to create '
-    +'a clean copy of the project/package, all files in the following '
-    +'directory will be deleted and all its content will be lost.'
-    +'%sDelete all files in "%s"?';
-  lisUnableToCleanUpDestinationDirectory = 'Unable to clean up destination directory';
-  lisUnableToCleanUpPleaseCheckPermissions = 'Unable to clean up "%s".%sPlease check permissions.';
-
   //
   dlgEnvBckup = 'Backup';
   dlgNaming = 'Naming';
@@ -2773,12 +2745,6 @@ resourcestring
   lisShowPackages = 'Show packages';
   lisShowUnits = 'Show units';
   lisShowIdentifiers = 'Show identifiers';
-  lisFilter = 'Filter';
-  lisCreateFilter = 'Create Filter';
-  lisIssues = 'Issues';
-  lisRegularExpression = 'Regular expression';
-  lisInvalidFilter = 'Invalid filter';
-  lisInvalidExpression = 'Invalid expression:%s%s%s%s';
   lisPrivate = 'Private';
   lisProtected = 'Protected';
   lisEMDPublic = 'Public';
@@ -3898,9 +3864,39 @@ resourcestring
   lisSortSelIgnoreSpace = 'Ignore Space';
   lisSortSelSort = 'Accept';
 
-  // publish project dialog
-  lisPublProjInvalidIncludeFilter = 'Invalid include filter';
-  lisPublProjInvalidExcludeFilter = 'Invalid exclude filter';
+  // Publish project/package + Add dir to package
+  lisDestinationDirectory = 'Destination directory';
+  lisChooseDirectory = 'Choose directory';
+  lisCompress = 'Compress';
+  lisCompressHint = 'The resulting directory will be compressed into a ZIP file.';
+  lisPublishModuleNote = 'Files belonging to project / package will be included automatically.';
+  lisSimpleSyntax = 'Simple syntax';
+  lisNormallyTheFilterIsARegularExpressionInSimpleSynta = 'Normally the '
+    +'filter is a regular expression. In simple syntax a . is a normal '
+    +'character, a * stands for anything, a ? stands for any character, and '
+    +'comma and semicolon separates alternatives. For example: Simple '
+    +'syntax *.pas;*.pp corresponds to ^(.*\.pas|.*\.pp)$';
+  lisUseFilterForExtraFiles = 'Use filter for extra files';
+  lisIncludeFilter = 'Include filter';
+  lisExcludeFilter = 'Exclude filter';
+  lisInvalidPublishingDirectory = 'Invalid publishing Directory';
+  lisSourceDirectoryAndDestinationDirectoryAreTheSameMa = 'Source directory "%s"'
+    +'%sand destination directory "%s"'
+    +'%sare the same. Maybe you misunderstand this feature.'
+    +'%sIt will clean/recreate the destination directory and copy the package/project into it.';
+  lisClearDirectory = 'Clear Directory?';
+  lisInOrderToCreateACleanCopyOfTheProjectPackageAllFil = 'In order to create '
+    +'a clean copy of the project/package, all files in the following '
+    +'directory will be deleted and all its content will be lost.'
+    +'%sDelete all files in "%s"?';
+  lisUnableToCleanUpDestinationDirectory = 'Unable to clean up destination directory';
+  lisUnableToCleanUpPleaseCheckPermissions = 'Unable to clean up "%s".%sPlease check permissions.';
+  lisFilter = 'Filter';
+  lisCreateFilter = 'Create Filter';
+  lisIssues = 'Issues';
+  lisRegularExpression = 'Regular expression';
+  lisInvalidFilter = 'Invalid filter';
+  lisInvalidExpression = 'Invalid expression:%s%s%s%s';
 
   // project options
   lisProjOptsUnableToChangeTheAutoCreateFormList = 'Unable to change the auto '

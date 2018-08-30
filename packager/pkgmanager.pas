@@ -68,7 +68,7 @@ uses
   PkgGraphExplorer, BrokenDependenciesDlg, CompilerOptions, IDETranslations,
   TransferMacros, BuildLazDialog, NewDialog, FindInFilesDlg, ProjectInspector,
   SourceEditor, ProjPackChecks, AddFileToAPackageDlg, LazarusPackageIntf,
-  PublishProjectDlg, PkgLinksDlg, InterPkgConflictFiles, InstallPkgSetDlg,
+  PublishModuleDlg, PkgLinksDlg, InterPkgConflictFiles, InstallPkgSetDlg,
   ConfirmPkgListDlg, NewPkgComponentDlg, BaseBuildManager, BasePkgManager,
   MainBar, MainIntf, MainBase, ModeMatrixOpts;
 

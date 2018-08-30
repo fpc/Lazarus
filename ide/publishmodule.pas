@@ -50,28 +50,21 @@ type
   private
     FCompressFinally: boolean;
     FDestinationDirectory: string;
-    FExcludeFileFilter: string;
-    FExcludeFilterRegExpr: TRegExpr;
-    FExcludeFilterSimpleSyntax: boolean;
-    FExcludeFilterValid: boolean;
-    FIncludeFileFilter: string;
-    FIncludeFilterRegExpr: TRegExpr;
-    FIncludeFilterSimpleSyntax: boolean;
-    FIncludeFilterValid: boolean;
+    FFileFilter: string;
+    FFilterRegExpr: TRegExpr;
+    FFilterSimpleSyntax: boolean;
+    FFilterValid: boolean;
     FModified: boolean;
     FModifiedLock: integer;
     FOwner: TObject;
     FUseFileFilters: boolean;
     procedure SetCompressFinally(const AValue: boolean);
     procedure SetDestinationDirectory(const AValue: string);
-    procedure SetExcludeFileFilter(const AValue: string);
-    procedure SetExcludeFilterSimpleSyntax(const AValue: boolean);
-    procedure SetIncludeFileFilter(const AValue: string);
-    procedure SetIncludeFilterSimpleSyntax(const AValue: boolean);
+    procedure SetFileFilter(const AValue: string);
+    procedure SetFilterSimpleSyntax(const AValue: boolean);
     procedure SetModified(const AValue: boolean);
     procedure SetUseFileFilters(const AValue: boolean);
-    procedure UpdateIncludeFilter;
-    procedure UpdateExcludeFilter;
+    procedure UpdateFilter;
   protected
     procedure DoOnModifyChange; virtual;
   public
@@ -93,28 +86,20 @@ type
   
     // destination
     property DestinationDirectory: string
-                read FDestinationDirectory write SetDestinationDirectory;
+                        read FDestinationDirectory write SetDestinationDirectory;
     property CompressFinally: boolean read FCompressFinally write SetCompressFinally;
     property UseFileFilters: boolean read FUseFileFilters write SetUseFileFilters;
-    // Include Filter
-    property IncludeFilterSimpleSyntax: boolean
-                read FIncludeFilterSimpleSyntax write SetIncludeFilterSimpleSyntax;
-    property IncludeFileFilter: string
-                read FIncludeFileFilter write SetIncludeFileFilter;
-    property IncludeFilterValid: boolean read FIncludeFilterValid;
-    // Exclude Filter
-    property ExcludeFilterSimpleSyntax: boolean
-                read FExcludeFilterSimpleSyntax write SetExcludeFilterSimpleSyntax;
-    property ExcludeFileFilter: string
-                read FExcludeFileFilter write SetExcludeFileFilter;
-    property ExcludeFilterValid: boolean read FExcludeFilterValid;
+    // Filter
+    property FilterSimpleSyntax: boolean read FFilterSimpleSyntax write SetFilterSimpleSyntax;
+    property FileFilter: string read FFileFilter write SetFileFilter;
+    property FilterValid: boolean read FFilterValid;
   end;
   
 const
   PublishModulOptsVersion = 2;
 
   DefPublModIncFilter = '*.(pas|pp|inc|lpr|lfm|lrs|lpi|lpk|xml|sh)';
-  DefPublModExcFilter = '*.(bak|ppu|ppl|a|o|so);*~;backup';
+  //DefPublModExcFilter = '*.(bak|ppu|ppl|a|o|so);*~;backup';
 
 function RealPublishDir(AOptions: TPublishModuleOptions): string;
 
@@ -151,35 +136,19 @@ begin
   Modified:=true;
 end;
 
-procedure TPublishModuleOptions.SetExcludeFileFilter(const AValue: string);
+procedure TPublishModuleOptions.SetFileFilter(const AValue: string);
 begin
-  if FExcludeFileFilter=AValue then exit;
-  FExcludeFileFilter:=AValue;
-  UpdateExcludeFilter;
+  if FFileFilter=AValue then exit;
+  FFileFilter:=AValue;
+  UpdateFilter;
   Modified:=true;
 end;
 
-procedure TPublishModuleOptions.SetExcludeFilterSimpleSyntax(const AValue: boolean);
+procedure TPublishModuleOptions.SetFilterSimpleSyntax(const AValue: boolean);
 begin
-  if FExcludeFilterSimpleSyntax=AValue then exit;
-  FExcludeFilterSimpleSyntax:=AValue;
-  UpdateExcludeFilter;
-  Modified:=true;
-end;
-
-procedure TPublishModuleOptions.SetIncludeFileFilter(const AValue: string);
-begin
-  if FIncludeFileFilter=AValue then exit;
-  FIncludeFileFilter:=AValue;
-  UpdateIncludeFilter;
-  Modified:=true;
-end;
-
-procedure TPublishModuleOptions.SetIncludeFilterSimpleSyntax(const AValue: boolean);
-begin
-  if FIncludeFilterSimpleSyntax=AValue then exit;
-  FIncludeFilterSimpleSyntax:=AValue;
-  UpdateIncludeFilter;
+  if FFilterSimpleSyntax=AValue then exit;
+  FFilterSimpleSyntax:=AValue;
+  UpdateFilter;
   Modified:=true;
 end;
 
@@ -198,44 +167,23 @@ begin
   Modified:=true;
 end;
 
-procedure TPublishModuleOptions.UpdateIncludeFilter;
+procedure TPublishModuleOptions.UpdateFilter;
 var
   Expr: string;
 begin
-  if FIncludeFilterRegExpr=nil then
-    FIncludeFilterRegExpr:=TRegExpr.Create;
-  if IncludeFilterSimpleSyntax then
-    Expr:=SimpleSyntaxToRegExpr(FIncludeFileFilter)
+  if FFilterRegExpr=nil then
+    FFilterRegExpr:=TRegExpr.Create;
+  if FilterSimpleSyntax then
+    Expr:=SimpleSyntaxToRegExpr(FFileFilter)
   else
-    Expr:=FIncludeFileFilter;
+    Expr:=FFileFilter;
   try
-    FIncludeFilterRegExpr.Expression:=Expr;
-    FIncludeFilterValid:=true;
+    FFilterRegExpr.Expression:=Expr;
+    FFilterValid:=true;
   except
     on E: Exception do begin
-      DebugLn('Invalid Include File Expression ',Expr,' ',E.Message);
-      FIncludeFilterValid:=false;
-    end;
-  end;
-end;
-
-procedure TPublishModuleOptions.UpdateExcludeFilter;
-var
-  Expr: string;
-begin
-  if FExcludeFilterRegExpr=nil then
-    FExcludeFilterRegExpr:=TRegExpr.Create;
-  if ExcludeFilterSimpleSyntax then
-    Expr:=SimpleSyntaxToRegExpr(FExcludeFileFilter)
-  else
-    Expr:=FExcludeFileFilter;
-  try
-    FExcludeFilterRegExpr.Expression:=Expr;
-    FExcludeFilterValid:=true;
-  except
-    on E: Exception do begin
-      DebugLn('Invalid Exclude File Expression ',Expr,' ',E.Message);
-      FExcludeFilterValid:=false;
+      DebugLn('Invalid File Expression ',Expr,' ',E.Message);
+      FFilterValid:=false;
     end;
   end;
 end;
@@ -254,8 +202,7 @@ end;
 destructor TPublishModuleOptions.Destroy;
 begin
   Clear;
-  FIncludeFilterRegExpr.Free;
-  FExcludeFilterRegExpr.Free;
+  FFilterRegExpr.Free;
   inherited Destroy;
 end;
 
@@ -269,10 +216,8 @@ begin
   DestinationDirectory:=GetDefaultDestinationDir;
   CompressFinally:=true;
   UseFileFilters:=true;
-  IncludeFilterSimpleSyntax:=true;
-  IncludeFileFilter:=DefPublModIncFilter;
-  ExcludeFilterSimpleSyntax:=true;
-  ExcludeFileFilter:=DefPublModExcFilter;
+  FilterSimpleSyntax:=true;
+  FileFilter:=DefPublModIncFilter;
 end;
 
 procedure TPublishModuleOptions.LoadFromXMLConfig(XMLConfig: TXMLConfig;
@@ -291,14 +236,9 @@ begin
                                               GetDefaultDestinationDir));
   CompressFinally:=XMLConfig.GetValue(APath+'CompressFinally/Value',true);
   UseFileFilters:=XMLConfig.GetValue(APath+'UseFileFilters/Value',false);
-  IncludeFilterSimpleSyntax:=XMLConfig.GetValue(APath+'IncludeFilterSimpleSyntax/Value',true);
-  ExcludeFilterSimpleSyntax:=XMLConfig.GetValue(APath+'ExcludeFilterSimpleSyntax/Value',true);
-  if XMLVersion>=2 then begin
-    IncludeFileFilter:=XMLConfig.GetValue(APath+'IncludeFileFilter/Value',
-                                           DefPublModIncFilter);
-    ExcludeFileFilter:=XMLConfig.GetValue(APath+'ExcludeFileFilter/Value',
-                                           DefPublModExcFilter);
-  end;
+  FilterSimpleSyntax:=XMLConfig.GetValue(APath+'FilterSimpleSyntax/Value',true);
+  if XMLVersion>=2 then
+    FileFilter:=XMLConfig.GetValue(APath+'FileFilter/Value',DefPublModIncFilter);
 end;
 
 procedure TPublishModuleOptions.SaveToXMLConfig(XMLConfig: TXMLConfig;
@@ -316,31 +256,14 @@ begin
                            f(GetDefaultDestinationDir));
   XMLConfig.SetDeleteValue(APath+'CompressFinally/Value',CompressFinally,true);
   XMLConfig.SetDeleteValue(APath+'UseFileFilters/Value',UseFileFilters,false);
-  XMLConfig.SetDeleteValue(APath+'IncludeFilterSimpleSyntax/Value',
-                           IncludeFilterSimpleSyntax,true);
-  XMLConfig.SetDeleteValue(APath+'IncludeFileFilter/Value',IncludeFileFilter,
-                           DefPublModIncFilter);
-  XMLConfig.SetDeleteValue(APath+'ExcludeFilterSimpleSyntax/Value',
-                           ExcludeFilterSimpleSyntax,true);
-  XMLConfig.SetDeleteValue(APath+'ExcludeFileFilter/Value',ExcludeFileFilter,
-                           DefPublModExcFilter);
+  XMLConfig.SetDeleteValue(APath+'FilterSimpleSyntax/Value',FilterSimpleSyntax,true);
+  XMLConfig.SetDeleteValue(APath+'FileFilter/Value',FileFilter,DefPublModIncFilter);
 end;
 
 function TPublishModuleOptions.FileCanBePublished(const AFilename: string): boolean;
 begin
-  Result:=false;
-  // check include filter
-  if (FIncludeFilterRegExpr<>nil)
-  and (not FIncludeFilterRegExpr.Exec(ExtractFilename(AFilename))) then
-    exit;
-  // check exclude filter
-  if (FExcludeFilterRegExpr<>nil)
-  and (FExcludeFilterRegExpr.Exec(ExtractFilename(AFilename))) then
-    exit;
-  // check binaries
-  //if IgnoreBinaries and (not DirPathExists(AFilename))
-  //and (not FileIsText(AFilename)) then exit;
-  Result:=true;
+  // check file filter
+  Result := (FFilterRegExpr=nil) or FFilterRegExpr.Exec(ExtractFilename(AFilename));
 end;
 
 procedure TPublishModuleOptions.LockModified;

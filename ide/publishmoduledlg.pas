@@ -1,9 +1,4 @@
-{ /***************************************************************************
-                 publishprojectdlg.pp  -  Lazarus IDE unit
-                 -----------------------------------------
-
- ***************************************************************************/
-
+{
  ***************************************************************************
  *                                                                         *
  *   This source is free software; you can redistribute it and/or modify   *
@@ -26,11 +21,11 @@
   Author: Juha Manninen
 
   Abstract:
-    - TPublishProjectDialog
+    - TPublishModuleDialog
     The dialog for TPublishModuleOptions to publish projects and packages.
 
 }
-unit PublishProjectDlg;
+unit PublishModuleDlg;
 
 {$mode objfpc}{$H+}
 
@@ -49,20 +44,15 @@ uses
   LazarusIDEStrConsts, IDEProcs, EnvironmentOpts;
 
 type
-  { TPublishProjectDialog }
+  { TPublishModuleDialog }
 
-  TPublishProjectDialog = class(TForm)
+  TPublishModuleDialog = class(TForm)
     ButtonPanel1: TButtonPanel;
     DestDirGroupBox: TGroupBox;
     DestDirComboBox: TComboBox;
     BrowseDestDirBitBtn: TBitBtn;
-    ExcFilterSimpleSyntaxCheckbox: TCheckBox;
-    ExcludeFilterCombobox: TComboBox;
-    ExcludeFilterLabel: TLabel;
-    FiltersPanel: TPanel;
-    IncFilterSimpleSyntaxCheckbox: TCheckBox;
-    IncludeFilterCombobox: TComboBox;
-    IncludeFilterLabel: TLabel;
+    FilterCombobox: TComboBox;
+    FilterSimpleSyntaxCheckbox: TCheckBox;
     Label1: TLabel;
     NoteLabel: TLabel;
     OptionsGroupbox: TGroupBox;
@@ -132,10 +122,10 @@ implementation
 
 function ShowPublishDialog(AOptions: TPublishModuleOptions): TModalResult;
 var
-  PublishProjectDialog: TPublishProjectDialog;
+  PublishModuleDialog: TPublishModuleDialog;
 begin
-  PublishProjectDialog:=TPublishProjectDialog.Create(nil);
-  with PublishProjectDialog do
+  PublishModuleDialog:=TPublishModuleDialog.Create(nil);
+  with PublishModuleDialog do
   begin
     Options:=AOptions;
     Result:=ShowModal;
@@ -428,42 +418,34 @@ begin
     IDEMessageDialog(lisSuccess, 'Published to '+FDestDir, mtInformation,[mbOk]);
 end;
 
-{ TPublishProjectDialog }
+{ TPublishModuleDialog }
 
-constructor TPublishProjectDialog.Create(TheOwner: TComponent);
+constructor TPublishModuleDialog.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   Position:=poScreenCenter;
-  IDEDialogLayoutList.ApplyLayout(Self, 600, 400);
+  IDEDialogLayoutList.ApplyLayout(Self, 600, 350);
   LoadHistoryLists;
 end;
 
-destructor TPublishProjectDialog.Destroy;
+destructor TPublishModuleDialog.Destroy;
 begin
   SaveHistoryLists;
   inherited Destroy;
 end;
 
-procedure TPublishProjectDialog.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+procedure TPublishModuleDialog.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
   IDEDialogLayoutList.SaveLayout(Self);
 end;
 
-procedure TPublishProjectDialog.FormCreate(Sender: TObject);
+procedure TPublishModuleDialog.FormCreate(Sender: TObject);
 begin
   DestDirGroupBox.Caption:=lisDestinationDirectory;
   NoteLabel.Caption:=lisPublishModuleNote;
-  UseFiltersCheckbox.Caption:=lisUseFiltersForExtraFiles;
-
-  IncludeFilterLabel.Caption:=lisIncludeFilter;
-  IncFilterSimpleSyntaxCheckbox.Caption:=lisSimpleSyntax;
-  IncFilterSimpleSyntaxCheckbox.Hint:=
-    lisNormallyTheFilterIsARegularExpressionInSimpleSynta;
-
-  ExcludeFilterLabel.Caption:=lisExcludeFilter;
-  ExcFilterSimpleSyntaxCheckbox.Caption:=lisSimpleSyntax;
-  ExcFilterSimpleSyntaxCheckbox.Hint:=
-    lisNormallyTheFilterIsARegularExpressionInSimpleSynta;
+  UseFiltersCheckbox.Caption:=lisUseFilterForExtraFiles;
+  FilterSimpleSyntaxCheckbox.Caption:=lisSimpleSyntax;
+  FilterSimpleSyntaxCheckbox.Hint:=lisNormallyTheFilterIsARegularExpressionInSimpleSynta;
 
   OptionsGroupbox.Caption:=lisOptions;
   CompressCheckbox.Caption:=lisCompress;
@@ -471,7 +453,6 @@ begin
 
   ButtonPanel1.OkButton.Caption := lisMenuOk;
   ButtonPanel1.OKButton.OnClick := @OkButtonCLICK;
-
   ButtonPanel1.CloseButton.Caption := lisSaveSettings;
   ButtonPanel1.CloseButton.ModalResult := mrNone;
   ButtonPanel1.CloseButton.Kind := bkCustom;
@@ -479,11 +460,10 @@ begin
   if ButtonPanel1.CloseButton.Glyph.Empty then
     IDEImages.AssignImage(ButtonPanel1.CloseButton, 'laz_save');
   ButtonPanel1.CloseButton.OnClick := @SaveSettingsButtonCLICK;
-
   ButtonPanel1.HelpButton.OnClick := @HelpButtonClick;
 end;
 
-procedure TPublishProjectDialog.BrowseDestDirBitBtnCLICK(Sender: TObject);
+procedure TPublishModuleDialog.BrowseDestDirBitBtnCLICK(Sender: TObject);
 var
   SelectDirDialog: TSelectDirectoryDialog;
   NewDir: String;
@@ -498,78 +478,71 @@ begin
   SelectDirDialog.Free;
 end;
 
-procedure TPublishProjectDialog.HelpButtonClick(Sender: TObject);
+procedure TPublishModuleDialog.HelpButtonClick(Sender: TObject);
 begin
   LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
-procedure TPublishProjectDialog.OkButtonCLICK(Sender: TObject);
+procedure TPublishModuleDialog.OkButtonCLICK(Sender: TObject);
 begin
   if not CheckFilter then exit;
-  if Options<>nil then SaveToOptions(Options);
+  if Options<>nil then
+    SaveToOptions(Options);
 end;
 
-procedure TPublishProjectDialog.SaveSettingsButtonClick(Sender: TObject);
+procedure TPublishModuleDialog.SaveSettingsButtonClick(Sender: TObject);
 begin
   if not CheckFilter then exit;
-  if Options<>nil then SaveToOptions(Options);
+  if Options<>nil then
+    SaveToOptions(Options);
 end;
 
-procedure TPublishProjectDialog.UseFiltersCheckboxClick(Sender: TObject);
+procedure TPublishModuleDialog.UseFiltersCheckboxClick(Sender: TObject);
 begin
-  FiltersPanel.Enabled := (Sender as TCheckBox).Checked;
+  FilterCombobox.Enabled := (Sender as TCheckBox).Checked;
+  FilterSimpleSyntaxCheckbox.Enabled := FilterCombobox.Enabled;
 end;
 
-procedure TPublishProjectDialog.SetComboBox(AComboBox: TComboBox;
+procedure TPublishModuleDialog.SetComboBox(AComboBox: TComboBox;
   const NewText: string; MaxItemCount: integer);
 begin
   AComboBox.AddHistoryItem(NewText,MaxItemCount,true,false);
 end;
 
-procedure TPublishProjectDialog.LoadHistoryLists;
+procedure TPublishModuleDialog.LoadHistoryLists;
 var
   hl: THistoryList;
 begin
   // destination directories
-  hl:=InputHistories.HistoryLists.GetList(hlPublishProjectDestDirs,true,rltFile);
+  hl:=InputHistories.HistoryLists.GetList(hlPublishModuleDestDirs,true,rltFile);
   hl.AppendEntry(GetForcedPathDelims('$(TestDir)/publishedproject/'));
   hl.AppendEntry(GetForcedPathDelims('$(TestDir)/publishedpackage/'));
   hl.AppendEntry(GetForcedPathDelims('$(ProjPath)/published/'));
   DestDirComboBox.Items.Assign(hl);
 
-  // file filters
-  hl:=InputHistories.HistoryLists.GetList(hlPublishProjectIncludeFileFilter,
-                                          true,rltFile);
+  // file filter
+  hl:=InputHistories.HistoryLists.GetList(hlPublishModuleFileFilter,true,rltFile);
   if hl.Count=0 then
     hl.Add(DefPublModIncFilter);
-  IncludeFilterCombobox.Items.Assign(hl);
-
-  hl:=InputHistories.HistoryLists.GetList(hlPublishProjectExcludeFileFilter,
-                                          true,rltFile);
-  if hl.Count=0 then
-    hl.Add(DefPublModExcFilter);
-  ExcludeFilterCombobox.Items.Assign(hl);
+  FilterCombobox.Items.Assign(hl);
 end;
 
-procedure TPublishProjectDialog.SaveHistoryLists;
+procedure TPublishModuleDialog.SaveHistoryLists;
 var
   hl: THistoryList;
 begin
   // destination directories
   SetComboBox(DestDirComboBox,DestDirComboBox.Text,20);
-  hl:=InputHistories.HistoryLists.GetList(hlPublishProjectDestDirs,true,rltFile);
+  hl:=InputHistories.HistoryLists.GetList(hlPublishModuleDestDirs,true,rltFile);
   hl.Assign(DestDirComboBox.Items);
 
   // file filters
-  SetComboBox(IncludeFilterCombobox,IncludeFilterCombobox.Text,20);
-  hl:=InputHistories.HistoryLists.GetList(hlPublishProjectIncludeFileFilter,true,rltFile);
-  hl.Assign(IncludeFilterCombobox.Items);
-  SetComboBox(ExcludeFilterCombobox,ExcludeFilterCombobox.Text,20);
-  hl:=InputHistories.HistoryLists.GetList(hlPublishProjectExcludeFileFilter,true,rltFile);
-  hl.Assign(ExcludeFilterCombobox.Items);
+  SetComboBox(FilterCombobox,FilterCombobox.Text,20);
+  hl:=InputHistories.HistoryLists.GetList(hlPublishModuleFileFilter,true,rltFile);
+  hl.Assign(FilterCombobox.Items);
 end;
 
-procedure TPublishProjectDialog.SetOptions(const AValue: TPublishModuleOptions);
+procedure TPublishModuleDialog.SetOptions(const AValue: TPublishModuleOptions);
 begin
   if FOptions=AValue then exit;
   FOptions:=AValue;
@@ -580,25 +553,20 @@ begin
   LoadFromOptions(FOptions);
 end;
 
-function TPublishProjectDialog.CheckFilter: boolean;
+function TPublishModuleDialog.CheckFilter: boolean;
 begin
   Result:=false;
   if Options<>nil then begin
-    if not Options.IncludeFilterValid then begin
-      if IDEMessageDialog(lisCCOErrorCaption, lisPublProjInvalidIncludeFilter,
+    if not Options.FilterValid then begin
+      if IDEMessageDialog(lisCCOErrorCaption, lisInvalidFilter,
                           mtError, [mbIgnore,mbCancel]) = mrCancel
-      then exit;
-    end;
-    if not Options.ExcludeFilterValid then begin
-      if IDEMessageDialog(lisCCOErrorCaption, lisPublProjInvalidExcludeFilter,
-        mtError, [mbIgnore,mbCancel]) = mrCancel
       then exit;
     end;
   end;
   Result:=true;
 end;
 
-procedure TPublishProjectDialog.LoadFromOptions(SrcOpts: TPublishModuleOptions);
+procedure TPublishModuleDialog.LoadFromOptions(SrcOpts: TPublishModuleOptions);
 begin
   // destination
   SeTComboBox(DestDirComboBox,SrcOpts.DestinationDirectory,20);
@@ -606,13 +574,11 @@ begin
   // file filters
   CompressCheckbox.Checked:=SrcOpts.CompressFinally;
   UseFiltersCheckbox.Checked:=SrcOpts.UseFileFilters;
-  IncFilterSimpleSyntaxCheckbox.Checked:=SrcOpts.IncludeFilterSimpleSyntax;
-  SeTComboBox(IncludeFilterCombobox,SrcOpts.IncludeFileFilter,20);
-  ExcFilterSimpleSyntaxCheckbox.Checked:=SrcOpts.ExcludeFilterSimpleSyntax;
-  SeTComboBox(ExcludeFilterCombobox,SrcOpts.ExcludeFileFilter,20);
+  FilterSimpleSyntaxCheckbox.Checked:=SrcOpts.FilterSimpleSyntax;
+  SeTComboBox(FilterCombobox,SrcOpts.FileFilter,20);
 end;
 
-procedure TPublishProjectDialog.SaveToOptions(DestOpts: TPublishModuleOptions);
+procedure TPublishModuleDialog.SaveToOptions(DestOpts: TPublishModuleOptions);
 begin
   // destination
   DestOpts.DestinationDirectory:=DestDirComboBox.Text;
@@ -620,10 +586,8 @@ begin
   // file filters
   DestOpts.CompressFinally:=CompressCheckbox.Checked;
   DestOpts.UseFileFilters:=UseFiltersCheckbox.Checked;
-  DestOpts.IncludeFilterSimpleSyntax:=IncFilterSimpleSyntaxCheckbox.Checked;
-  DestOpts.IncludeFileFilter:=IncludeFilterCombobox.Text;
-  DestOpts.ExcludeFilterSimpleSyntax:=ExcFilterSimpleSyntaxCheckbox.Checked;
-  DestOpts.ExcludeFileFilter:=ExcludeFilterCombobox.Text;
+  DestOpts.FilterSimpleSyntax:=FilterSimpleSyntaxCheckbox.Checked;
+  DestOpts.FileFilter:=FilterCombobox.Text;
 end;
 
 end.

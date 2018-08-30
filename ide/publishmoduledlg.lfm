@@ -1,0 +1,166 @@
+object PublishModuleDialog: TPublishModuleDialog
+  Left = 391
+  Height = 320
+  Top = 56
+  Width = 642
+  BorderIcons = [biSystemMenu]
+  Caption = 'Publish Module'
+  ClientHeight = 320
+  ClientWidth = 642
+  OnClose = FormClose
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '1.9.0.0'
+  object DestDirGroupBox: TGroupBox
+    Left = 6
+    Height = 66
+    Top = 6
+    Width = 630
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
+    Caption = 'Destination directory'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ClientHeight = 46
+    ClientWidth = 628
+    TabOrder = 0
+    object DestDirComboBox: TComboBox
+      AnchorSideRight.Control = BrowseDestDirBitBtn
+      Left = 6
+      Height = 31
+      Top = 6
+      Width = 591
+      Anchors = [akTop, akLeft, akRight]
+      ItemHeight = 0
+      TabOrder = 0
+      Text = 'DestDirComboBox'
+    end
+    object BrowseDestDirBitBtn: TBitBtn
+      AnchorSideRight.Control = DestDirGroupBox
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = DestDirComboBox
+      AnchorSideBottom.Side = asrBottom
+      Left = 597
+      Height = 31
+      Top = 6
+      Width = 25
+      Anchors = [akTop, akRight, akBottom]
+      BorderSpacing.Right = 6
+      Caption = '...'
+      OnClick = BrowseDestDirBitBtnCLICK
+      TabOrder = 1
+    end
+  end
+  object OptionsGroupbox: TGroupBox
+    AnchorSideTop.Control = FilterCombobox
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 53
+    Top = 203
+    Width = 628
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Around = 18
+    Caption = 'Options'
+    ChildSizing.TopBottomSpacing = 6
+    ClientHeight = 33
+    ClientWidth = 626
+    TabOrder = 1
+    object CompressCheckbox: TCheckBox
+      AnchorSideRight.Side = asrBottom
+      Left = 6
+      Height = 21
+      Hint = 'Compress the whole directory into a ZIP file.'
+      Top = 6
+      Width = 87
+      BorderSpacing.Around = 6
+      Caption = 'Compress'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 0
+    end
+    object Label1: TLabel
+      Left = 168
+      Height = 19
+      Top = 8
+      Width = 138
+      Caption = 'Not implemented yet.'
+      Font.Color = clRed
+      ParentColor = False
+      ParentFont = False
+    end
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 26
+    Top = 288
+    Width = 630
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 2
+    ShowBevel = False
+  end
+  object UseFiltersCheckbox: TCheckBox
+    AnchorSideTop.Control = NoteLabel
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 21
+    Top = 115
+    Width = 168
+    BorderSpacing.Around = 18
+    Caption = 'Use filter for extra files'
+    OnClick = UseFiltersCheckboxClick
+    TabOrder = 3
+  end
+  object NoteLabel: TLabel
+    AnchorSideTop.Control = DestDirGroupBox
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 19
+    Top = 78
+    Width = 391
+    BorderSpacing.Around = 6
+    Caption = 'Files belonging to project / package will be included automatically.'
+    Font.Color = clMaroon
+    Font.Style = [fsItalic]
+    ParentColor = False
+    ParentFont = False
+  end
+  object FilterCombobox: TComboBox
+    AnchorSideLeft.Control = UseFiltersCheckbox
+    AnchorSideTop.Control = UseFiltersCheckbox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = FilterSimpleSyntaxCheckbox
+    Left = 24
+    Height = 31
+    Top = 154
+    Width = 462
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = False
+    BorderSpacing.Left = 18
+    ItemHeight = 0
+    TabOrder = 4
+    Text = 'FilterCombobox'
+  end
+  object FilterSimpleSyntaxCheckbox: TCheckBox
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = FilterCombobox
+    AnchorSideTop.Side = asrCenter
+    Left = 499
+    Height = 21
+    Top = 159
+    Width = 111
+    Anchors = [akTop, akRight]
+    BorderSpacing.Around = 13
+    Caption = 'Simple Syntax'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 5
+  end
+end
