@@ -161,7 +161,58 @@ type
     procedure drawWithFrame_inView(cellFrame: NSRect; controlView_: NSView); override;
   end;
 
+  { NSTableButtonCell }
+
+  // NSButtonCell would handle a click on a checkbox caption as a click on
+  // the checkbox itself.  (You can experience that by clicking on TCheckBox)
+  // This is the expected behavior for a standalone checkbox control.
+  // However, for a checkbox is in a table, it's not desired to have checkbox
+  // triggered, by clicking on its caption.
+  // (You can try it in macOS "System Preferences"->"Keyboard"->"Shortcuts")
+  // Since a checkbox and the text are put in the same NSTableView column
+  // using NSButtonCell, there's an override for hitTesting function.
+  // IF a user hits caption, then hitTest returns "none" suppressing the hit.
+  // Thus a checkbox in a table can only be checked if clicked directly into
+  // the checkbox.
+  //
+  // todo: add support for images. (For TListView with checkboxes and images)
+  //       It's rarely used (if ever), yet it's possible
+
+  NSTableButtonCell = objcclass (NSButtonCell)
+    _type: NSButtonType;
+    function hitTestForEvent_inRect_ofView(event: NSEvent; cellFrame: NSRect; controlView_: NSView): NSUInteger; override;
+    procedure setButtonType(aType: NSButtonType); override;
+  end;
+
 implementation
+
+{ NSTableButtonCell }
+
+function NSTableButtonCell.hitTestForEvent_inRect_ofView(event: NSEvent;
+  cellFrame: NSRect; controlView_: NSView): NSUInteger;
+var
+  r  : NSRect;
+  pt : NSPoint;
+begin
+  Result := inherited hitTestForEvent_inRect_ofView(event, cellFrame, controlView_);
+  if _type = NSSwitchButton then
+  begin
+    pt := event.locationInWindow;
+    if Assigned(controlView_) then
+      pt := controlView_.convertPoint_fromView(pt, nil);
+    r := titleRectForBounds(cellFrame);
+
+    // todo: pt.y seems to be off by some amount
+    if ((pt.x >= r.origin.x) and (pt.x<=r.origin.x + r.size.width)) then
+      Result := NSCellHitNone;
+  end;
+end;
+
+procedure NSTableButtonCell.setButtonType(aType: NSButtonType);
+begin
+  _type := aType;
+  inherited setButtonType(aType);
+end;
 
 { NSImageAndTextCell }
 
@@ -507,6 +558,7 @@ var
   nstxt : NSString;
   idx  : Integer;
   img  : NSImage;
+  btn  : NSTableButtonCell;
 begin
   Result:=nil;
   if not isFirstColumnCheckboxes and not isImagesInCell then Exit;
@@ -539,15 +591,15 @@ begin
   if txt = '' then nstxt := NSString.string_
   else nstxt := NSString.stringWithUTF8String(@txt[1]);
 
-  Result := NSButtonCell.alloc.init.autorelease;
+  btn := NSTableButtonCell.alloc.init.autorelease;
   //Result.setAllowsMixedState(True);
-  NSButtonCell(Result).setButtonType(NSSwitchButton);
-  NSButtonCell(Result).setTitle(nstxt);
+  btn.setButtonType(NSSwitchButton);
+  btn.setTitle(nstxt);
   if chk then begin
-    NSButtonCell(Result).setIntValue(1);
-    NSButtonCell(Result).setCellAttribute_to(NSCellState, NSOnState);
+    btn.setIntValue(1);
+    btn.setCellAttribute_to(NSCellState, NSOnState);
   end;
-
+  Result := btn;
 end;
 
 type
