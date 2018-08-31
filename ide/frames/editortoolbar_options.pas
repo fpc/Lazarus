@@ -34,7 +34,7 @@ uses
   // LazControls
   DividerBevel,
   // IdeIntf
-  IDEOptionsIntf, IDEOptEditorIntf,
+  IDEOptionsIntf, IDEOptEditorIntf, IDEImagesIntf,
   // IDE
   LazarusIDEStrConsts, EnvironmentOpts, EditorToolbarStatic, ToolbarConfig;
 
@@ -110,7 +110,9 @@ begin
   cbCoolBarVisible.Caption := lisEditorToolbarVisible;
   lblpos.Caption := lisPosition;
   bDefaultToolbar.Caption := lisCmpRestoreDefaults;
+  IDEImages.AssignImage(bDefaultToolbar, 'restore_defaults');
   bConfig.Caption := lisCoolbarConfigure;
+  IDEImages.AssignImage(bConfig, 'preferences');
 end;
 
 procedure TEditorToolbarOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);

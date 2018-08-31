@@ -52,6 +52,12 @@ laz_open_unit_200.png
 laz_save.png
 laz_save_150.png
 laz_save_200.png
+restore_default.png
+restore_default_150.png
+restore_default_200.png
+restore_defaults.png
+restore_defaults_150.png
+restore_defaults_200.png
 
 debugger directory:
 

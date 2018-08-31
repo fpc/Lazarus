@@ -1469,9 +1469,9 @@ begin
   LanguageButton.Hint := dlgLang;
   ColorSchemeButton.Hint := dlgClrScheme;
   FileExtensionsComboBox.hint := dlgFileExts;
-  SetAttributeToDefaultButton.ImageIndex := IDEImages.LoadImage('laz_set_color_default');
+  SetAttributeToDefaultButton.ImageIndex := IDEImages.LoadImage('restore_default');
   SetAttributeToDefaultButton.Hint := dlgSetElementDefault;
-  SetAllAttributesToDefaultButton.ImageIndex := IDEImages.LoadImage('laz_set_colors_default');
+  SetAllAttributesToDefaultButton.ImageIndex := IDEImages.LoadImage('restore_defaults');
   SetAllAttributesToDefaultButton.Hint := dlgSetAllElementDefault;
   btnExport.ImageIndex := IDEImages.LoadImage('laz_save');
   btnExport.Hint := lisExport;

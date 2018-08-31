@@ -7158,11 +7158,15 @@ images/actions/laz_refresh.png -text svneol=unset#image/png
 images/actions/laz_save.png -text svneol=unset#image/png
 images/actions/laz_save_150.png -text
 images/actions/laz_save_200.png -text
-images/actions/laz_set_color_default.png -text svneol=unset#image/png
-images/actions/laz_set_colors_default.png -text svneol=unset#image/png
 images/actions/laz_tick.png -text svneol=unset#image/png
 images/actions/laz_wand.png -text svneol=unset#image/png
 images/actions/preferences.png -text
+images/actions/restore_default.png -text svneol=unset#image/png
+images/actions/restore_default_150.png -text svneol=unset#image/png
+images/actions/restore_default_200.png -text svneol=unset#image/png
+images/actions/restore_defaults.png -text svneol=unset#image/png
+images/actions/restore_defaults_150.png -text svneol=unset#image/png
+images/actions/restore_defaults_200.png -text svneol=unset#image/png
 images/bookmark.res -text
 images/bookmark.sh svneol=native#text/plain
 images/bookmark_images.bat svneol=native#text/plain

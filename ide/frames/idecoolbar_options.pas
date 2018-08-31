@@ -34,7 +34,7 @@ uses
   // LazControls
   DividerBevel,
   // IDEIntf
-  IDEOptionsIntf, IDEOptEditorIntf,
+  IDEOptionsIntf, IDEOptEditorIntf, IDEImagesIntf,
   // IDE
   LazarusIDEStrConsts, EnvironmentOpts, IdeCoolbarData;
 
@@ -136,12 +136,7 @@ end;
 
 procedure TIdeCoolbarOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
-  dbAddConfigDelete.Caption := lisCoolbarAddConfigDelete;
   dbGeneralSettings.Caption := lisCoolbarGeneralSettings;
-  bDefaultToolbar.Caption := lisCoolbarRestoreDefaults;
-  bAdd.Caption := lisBtnAdd;
-  bConfig.Caption := lisCoolbarConfigure;
-  bDelete.Caption := lisBtnDelete;
   cbCoolBarVisible.Caption := lisCoolbarVisible;
   lbCoolBarWidth.Caption := lisCoolbarWidth;
   gbGrabStyle.Caption := lisCoolbarGrabStyle;
@@ -156,6 +151,17 @@ begin
   cbBorderStyle.Items.Strings[0] := lisCoolbarBorderStyleItem0;
   cbBorderStyle.Items.Strings[1] := lisCoolbarBorderStyleItem1;
   bDefaultGeneral.Caption := lisCoolbarRestoreDefaults;
+  IDEImages.AssignImage(bDefaultGeneral, 'restore_default');
+
+  dbAddConfigDelete.Caption := lisCoolbarAddConfigDelete;
+  bAdd.Caption := lisBtnAdd;
+  IDEImages.AssignImage(bAdd, 'laz_add');
+  bConfig.Caption := lisCoolbarConfigure;
+  IDEImages.AssignImage(bConfig, 'preferences');
+  bDelete.Caption := lisBtnDelete;
+  IDEImages.AssignImage(bDelete, 'laz_delete');
+  bDefaultToolbar.Caption := lisCoolbarRestoreDefaults;
+  IDEImages.AssignImage(bDefaultToolbar, 'restore_defaults');
 end;
 
 procedure TIdeCoolbarOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);

@@ -166,6 +166,7 @@ begin
   AddPageButton.Caption := lisBtnDlgAdd;
   IDEImages.AssignImage(AddPageButton, 'laz_add');
   RestoreButton.Caption := lisCmpRestoreDefaults;
+  IDEImages.AssignImage(RestoreButton, 'restore_defaults');
   ImportDividerBevel.Caption := lisExportImport;
   IDEImages.AssignImage(ImportButton, 'laz_open');
   ImportButton.Caption := lisDlgImport;

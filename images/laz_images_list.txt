@@ -66,11 +66,15 @@ actions/laz_refresh.png
 actions/laz_save.png
 actions/laz_save_150.png
 actions/laz_save_200.png
-actions/laz_set_colors_default.png
-actions/laz_set_color_default.png
 actions/laz_tick.png
 actions/laz_wand.png
 actions/preferences.png
+actions/restore_default.png
+actions/restore_default_150.png
+actions/restore_default_200.png
+actions/restore_defaults.png
+actions/restore_defaults_150.png
+actions/restore_defaults_200.png
 codecompletion/cc_class.png
 codecompletion/cc_class_150.png
 codecompletion/cc_class_200.png

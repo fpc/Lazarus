@@ -33,11 +33,9 @@ object FpDocOptionsFrame: TFpDocOptionsFrame
       BorderSpacing.Around = 6
       ItemHeight = 0
       OnSelectionChange = LazDocListBoxSelectionChange
-      ScrollWidth = 458
       TabOrder = 0
-      TopIndex = -1
     end
-    object LazDocAddPathButton: TButton
+    object LazDocAddPathButton: TBitBtn
       AnchorSideLeft.Control = LazDocPathsGroupBox
       AnchorSideTop.Control = LazDocListBox
       AnchorSideTop.Side = asrBottom
@@ -52,7 +50,7 @@ object FpDocOptionsFrame: TFpDocOptionsFrame
       OnClick = LazDocAddPathButtonClick
       TabOrder = 1
     end
-    object LazDocDeletePathButton: TButton
+    object LazDocDeletePathButton: TBitBtn
       AnchorSideLeft.Control = LazDocAddPathButton
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = LazDocAddPathButton
