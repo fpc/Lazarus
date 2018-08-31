@@ -5,16 +5,8 @@ msgstr "Content-Type: text/plain; charset=UTF-8"
 msgid "A free side of a splitter must not be anchored: Node=\"%s\" Type=%s Anchors[%s]=\"%s\""
 msgstr ""
 
-#: anchordockstr.adrsallfiles
-msgid "All files"
-msgstr ""
-
 #: anchordockstr.adrsamountofpixelthemousehastodragbeforedragstarts
 msgid "Amount of pixel the mouse has to drag before drag starts"
-msgstr ""
-
-#: anchordockstr.adrsanchordockinglayout
-msgid "Anchor Docking Layout"
 msgstr ""
 
 #: anchordockstr.adrsanchorisnotsplitternodeanchors
@@ -89,18 +81,6 @@ msgstr ""
 msgid "Enlarge %s side"
 msgstr ""
 
-#: anchordockstr.adrserror
-msgid "Error"
-msgstr ""
-
-#: anchordockstr.adrserrorloadingwindowlayoutfromfile
-msgid "Error loading window layout from file \"%s\"%s%s"
-msgstr ""
-
-#: anchordockstr.adrserrorwritingwindowlayouttofile
-msgid "Error writing window layout to file \"%s\"%s%s"
-msgstr ""
-
 #: anchordockstr.adrsfilledheaders
 msgid "Fill headers"
 msgstr ""
@@ -151,14 +131,6 @@ msgstr ""
 
 #: anchordockstr.adrsleft
 msgid "left"
-msgstr ""
-
-#: anchordockstr.adrsloadwindowlayoutfromfile
-msgid "Load window layout from file ..."
-msgstr ""
-
-#: anchordockstr.adrsloadwindowlayoutfromfilexml
-msgid "Load window layout from file (*.xml)"
 msgstr ""
 
 #: anchordockstr.adrslocked
@@ -221,24 +193,8 @@ msgstr ""
 msgid "%s requested, but %s created"
 msgstr ""
 
-#: anchordockstr.adrsrestoredefaultlayout
-msgid "Restore default layout"
-msgstr ""
-
 #: anchordockstr.adrsright
 msgid "right"
-msgstr ""
-
-#: anchordockstr.adrssavewindowlayoutasdefault
-msgid "Save window layout as default"
-msgstr ""
-
-#: anchordockstr.adrssavewindowlayouttofile
-msgid "Save window layout to file ..."
-msgstr ""
-
-#: anchordockstr.adrssavewindowlayouttofilexml
-msgid "Save window layout to file (*.xml)"
 msgstr ""
 
 #: anchordockstr.adrsscaleonresize

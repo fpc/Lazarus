@@ -18,17 +18,9 @@ msgstr ""
 msgid "A free side of a splitter must not be anchored: Node=\"%s\" Type=%s Anchors[%s]=\"%s\""
 msgstr "Volná strana děliče nesmí být ukotvena: Uzel=\"%s\" Typ=%s Kotvy[%s]=\"%s\""
 
-#: anchordockstr.adrsallfiles
-msgid "All files"
-msgstr "Všechny soubory"
-
 #: anchordockstr.adrsamountofpixelthemousehastodragbeforedragstarts
 msgid "Amount of pixel the mouse has to drag before drag starts"
 msgstr "Počet pixelů které musí myš táhnout, než posouvání začne"
-
-#: anchordockstr.adrsanchordockinglayout
-msgid "Anchor Docking Layout"
-msgstr "Rozložení Kotvení-Dokování"
 
 #: anchordockstr.adrsanchorisnotsplitternodeanchors
 msgid "Anchor is not splitter: Node=\"%s\" Anchors[%s]=\"%s\""
@@ -104,18 +96,6 @@ msgstr "Rozšířit"
 msgid "Enlarge %s side"
 msgstr "Rozšířit směrem %s"
 
-#: anchordockstr.adrserror
-msgid "Error"
-msgstr "Chyba"
-
-#: anchordockstr.adrserrorloadingwindowlayoutfromfile
-msgid "Error loading window layout from file \"%s\"%s%s"
-msgstr "Chyba načítání rozvržení oken ze souboru \"%s\"%s%s"
-
-#: anchordockstr.adrserrorwritingwindowlayouttofile
-msgid "Error writing window layout to file \"%s\"%s%s"
-msgstr "Chyba zapisování rozvržení oken do souboru \"%s\"%s%s"
-
 #: anchordockstr.adrsfilledheaders
 msgid "Fill headers"
 msgstr "Vyplnit záhlaví"
@@ -167,14 +147,6 @@ msgstr ""
 #: anchordockstr.adrsleft
 msgid "left"
 msgstr "vlevo"
-
-#: anchordockstr.adrsloadwindowlayoutfromfile
-msgid "Load window layout from file ..."
-msgstr "Načíst rozvržení oken ze souboru..."
-
-#: anchordockstr.adrsloadwindowlayoutfromfilexml
-msgid "Load window layout from file (*.xml)"
-msgstr "Načíst rozvržení oken ze souboru (*.xml)"
 
 #: anchordockstr.adrslocked
 msgid "Locked"
@@ -236,25 +208,9 @@ msgstr "Ukončit %s"
 msgid "%s requested, but %s created"
 msgstr "%s požadováno,ale %s vytvořeno"
 
-#: anchordockstr.adrsrestoredefaultlayout
-msgid "Restore default layout"
-msgstr "Obnovit výchozí rozložení"
-
 #: anchordockstr.adrsright
 msgid "right"
 msgstr "vpravo"
-
-#: anchordockstr.adrssavewindowlayoutasdefault
-msgid "Save window layout as default"
-msgstr "Uložit rozvržení oken jako výchozí"
-
-#: anchordockstr.adrssavewindowlayouttofile
-msgid "Save window layout to file ..."
-msgstr "Uložit rozvržení oken do souboru..."
-
-#: anchordockstr.adrssavewindowlayouttofilexml
-msgid "Save window layout to file (*.xml)"
-msgstr "Uložit rozvržení oken do souboru (*.xml)"
 
 #: anchordockstr.adrsscaleonresize
 msgid "Scale on resize"

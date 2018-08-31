@@ -13,17 +13,9 @@ msgstr ""
 msgid "A free side of a splitter must not be anchored: Node=\"%s\" Type=%s Anchors[%s]=\"%s\""
 msgstr "No debe anclarse en un lado libre de un splitter: Node=\"%s\" Tipo=%s Anclajes[%s]=\"%s\""
 
-#: anchordockstr.adrsallfiles
-msgid "All files"
-msgstr "Todos los archivos"
-
 #: anchordockstr.adrsamountofpixelthemousehastodragbeforedragstarts
 msgid "Amount of pixel the mouse has to drag before drag starts"
 msgstr "Cantidad de píxeles el ratón tiene que arrastrar antes del comienzo de arrastre"
-
-#: anchordockstr.adrsanchordockinglayout
-msgid "Anchor Docking Layout"
-msgstr "Disposición de Acoplamiento de Anclaje"
 
 #: anchordockstr.adrsanchorisnotsplitternodeanchors
 msgid "Anchor is not splitter: Node=\"%s\" Anchors[%s]=\"%s\""
@@ -97,18 +89,6 @@ msgstr "Ampliar"
 msgid "Enlarge %s side"
 msgstr "Ampliar el lado de %s"
 
-#: anchordockstr.adrserror
-msgid "Error"
-msgstr "Error"
-
-#: anchordockstr.adrserrorloadingwindowlayoutfromfile
-msgid "Error loading window layout from file \"%s\"%s%s"
-msgstr "Error al cargar el diseño de ventana desde archivo \"%s\"%s%s"
-
-#: anchordockstr.adrserrorwritingwindowlayouttofile
-msgid "Error writing window layout to file \"%s\"%s%s"
-msgstr "Error al escribir archivo \"%s\"%s%s el diseño de ventana"
-
 #: anchordockstr.adrsfilledheaders
 msgid "Fill headers"
 msgstr "Llena los encabezados"
@@ -160,14 +140,6 @@ msgstr ""
 #: anchordockstr.adrsleft
 msgid "left"
 msgstr "izquierda"
-
-#: anchordockstr.adrsloadwindowlayoutfromfile
-msgid "Load window layout from file ..."
-msgstr "Carga de diseño de ventana desde archivo ..."
-
-#: anchordockstr.adrsloadwindowlayoutfromfilexml
-msgid "Load window layout from file (*.xml)"
-msgstr "Carga de diseño de la ventana desde archivo (*.xml)"
 
 #: anchordockstr.adrslocked
 msgid "Locked"
@@ -229,25 +201,9 @@ msgstr "Salir de %s"
 msgid "%s requested, but %s created"
 msgstr "%s solicitado, pero %s creado"
 
-#: anchordockstr.adrsrestoredefaultlayout
-msgid "Restore default layout"
-msgstr "Restaurar el diseño predeterminado"
-
 #: anchordockstr.adrsright
 msgid "right"
 msgstr "derecha"
-
-#: anchordockstr.adrssavewindowlayoutasdefault
-msgid "Save window layout as default"
-msgstr "Guardar diseño de ventana como predeterminado"
-
-#: anchordockstr.adrssavewindowlayouttofile
-msgid "Save window layout to file ..."
-msgstr "Guardar diseño de ventana a archivo ..."
-
-#: anchordockstr.adrssavewindowlayouttofilexml
-msgid "Save window layout to file (*.xml)"
-msgstr "Guardar diseño de ventana a archivo (*.xml)"
 
 #: anchordockstr.adrsscaleonresize
 msgid "Scale on resize"

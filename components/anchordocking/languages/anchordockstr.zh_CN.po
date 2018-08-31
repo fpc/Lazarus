@@ -16,17 +16,9 @@ msgstr ""
 msgid "A free side of a splitter must not be anchored: Node=\"%s\" Type=%s Anchors[%s]=\"%s\""
 msgstr ""
 
-#: anchordockstr.adrsallfiles
-msgid "All files"
-msgstr "所有文件"
-
 #: anchordockstr.adrsamountofpixelthemousehastodragbeforedragstarts
 msgid "Amount of pixel the mouse has to drag before drag starts"
 msgstr ""
-
-#: anchordockstr.adrsanchordockinglayout
-msgid "Anchor Docking Layout"
-msgstr "锚停靠布局(Anchor"
 
 #: anchordockstr.adrsanchorisnotsplitternodeanchors
 msgid "Anchor is not splitter: Node=\"%s\" Anchors[%s]=\"%s\""
@@ -100,18 +92,6 @@ msgstr ""
 msgid "Enlarge %s side"
 msgstr ""
 
-#: anchordockstr.adrserror
-msgid "Error"
-msgstr "错误"
-
-#: anchordockstr.adrserrorloadingwindowlayoutfromfile
-msgid "Error loading window layout from file \"%s\"%s%s"
-msgstr "错误加载窗体布局从文件\"%s\"%s%s"
-
-#: anchordockstr.adrserrorwritingwindowlayouttofile
-msgid "Error writing window layout to file \"%s\"%s%s"
-msgstr "错误写入窗体布局到文件\"%s\"%s%s"
-
 #: anchordockstr.adrsfilledheaders
 msgid "Fill headers"
 msgstr "填充headers"
@@ -163,14 +143,6 @@ msgstr ""
 #: anchordockstr.adrsleft
 msgid "left"
 msgstr "左"
-
-#: anchordockstr.adrsloadwindowlayoutfromfile
-msgid "Load window layout from file ..."
-msgstr "加载window布局从文件..."
-
-#: anchordockstr.adrsloadwindowlayoutfromfilexml
-msgid "Load window layout from file (*.xml)"
-msgstr "加载window布局从文件(*.xml)"
 
 #: anchordockstr.adrslocked
 msgid "Locked"
@@ -232,25 +204,9 @@ msgstr "退出%s"
 msgid "%s requested, but %s created"
 msgstr "%s请求,但是%s被创建"
 
-#: anchordockstr.adrsrestoredefaultlayout
-msgid "Restore default layout"
-msgstr "恢复默认布局"
-
 #: anchordockstr.adrsright
 msgid "right"
 msgstr "右"
-
-#: anchordockstr.adrssavewindowlayoutasdefault
-msgid "Save window layout as default"
-msgstr "保存窗体布局为默认"
-
-#: anchordockstr.adrssavewindowlayouttofile
-msgid "Save window layout to file ..."
-msgstr "保存窗体布局到文件..."
-
-#: anchordockstr.adrssavewindowlayouttofilexml
-msgid "Save window layout to file (*.xml)"
-msgstr "保存window布局到文件(*.xml)"
 
 #: anchordockstr.adrsscaleonresize
 msgid "Scale on resize"

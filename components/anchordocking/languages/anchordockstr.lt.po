@@ -17,17 +17,9 @@ msgstr ""
 msgid "A free side of a splitter must not be anchored: Node=\"%s\" Type=%s Anchors[%s]=\"%s\""
 msgstr "Laisvoji skyriklio kraštinė neturi būti pririšta: mazgas = „%0:s“, tipas = %1:s, prieraišos[%2:s] = „%3:s“"
 
-#: anchordockstr.adrsallfiles
-msgid "All files"
-msgstr "Visi failai"
-
 #: anchordockstr.adrsamountofpixelthemousehastodragbeforedragstarts
 msgid "Amount of pixel the mouse has to drag before drag starts"
 msgstr "Pelės judesio kelias pikseliais, po kurio pradedamas tempimo veiksmas"
-
-#: anchordockstr.adrsanchordockinglayout
-msgid "Anchor Docking Layout"
-msgstr "Prieraišų pritvirtinimų maketas"
 
 #: anchordockstr.adrsanchorisnotsplitternodeanchors
 msgid "Anchor is not splitter: Node=\"%s\" Anchors[%s]=\"%s\""
@@ -101,18 +93,6 @@ msgstr "Išdidinti"
 msgid "Enlarge %s side"
 msgstr "Išdidinti kraštinę „%s“"
 
-#: anchordockstr.adrserror
-msgid "Error"
-msgstr "Klaida"
-
-#: anchordockstr.adrserrorloadingwindowlayoutfromfile
-msgid "Error loading window layout from file \"%s\"%s%s"
-msgstr "Iš failo „%s“ nepavyko įkelti lango maketo, nes:%s%s"
-
-#: anchordockstr.adrserrorwritingwindowlayouttofile
-msgid "Error writing window layout to file \"%s\"%s%s"
-msgstr "Lango maketo nepavyko įrašyti failan „%s“, nes:%s%s"
-
 #: anchordockstr.adrsfilledheaders
 msgid "Fill headers"
 msgstr "Užpildytos antraštes"
@@ -164,14 +144,6 @@ msgstr ""
 #: anchordockstr.adrsleft
 msgid "left"
 msgstr "kairysis"
-
-#: anchordockstr.adrsloadwindowlayoutfromfile
-msgid "Load window layout from file ..."
-msgstr "Lango maketą įkelti iš failo…"
-
-#: anchordockstr.adrsloadwindowlayoutfromfilexml
-msgid "Load window layout from file (*.xml)"
-msgstr "Lango maketą įkelti iš failo (*.xml)"
 
 #: anchordockstr.adrslocked
 msgid "Locked"
@@ -233,25 +205,9 @@ msgstr "Baigti „%s“ darbą"
 msgid "%s requested, but %s created"
 msgstr "Pareikalauta „%s“, tačiau sukurta „%s“"
 
-#: anchordockstr.adrsrestoredefaultlayout
-msgid "Restore default layout"
-msgstr "Atstatyti numatytąjį maketą"
-
 #: anchordockstr.adrsright
 msgid "right"
 msgstr "dešinysis"
-
-#: anchordockstr.adrssavewindowlayoutasdefault
-msgid "Save window layout as default"
-msgstr "Lango maketą įrašyti kaip numatytąjį"
-
-#: anchordockstr.adrssavewindowlayouttofile
-msgid "Save window layout to file ..."
-msgstr "Lango maketą įrašyti failan…"
-
-#: anchordockstr.adrssavewindowlayouttofilexml
-msgid "Save window layout to file (*.xml)"
-msgstr "Lango maketą įrašyti failan (*.xml)"
 
 #: anchordockstr.adrsscaleonresize
 msgid "Scale on resize"

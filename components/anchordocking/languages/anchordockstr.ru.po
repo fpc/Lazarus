@@ -15,17 +15,9 @@ msgstr ""
 msgid "A free side of a splitter must not be anchored: Node=\"%s\" Type=%s Anchors[%s]=\"%s\""
 msgstr "Свободная сторона разделителя не должна иметь привязки: Узел=\"%s\" Тип=%s Anchors[%s]=\"%s\""
 
-#: anchordockstr.adrsallfiles
-msgid "All files"
-msgstr "Все файлы"
-
 #: anchordockstr.adrsamountofpixelthemousehastodragbeforedragstarts
 msgid "Amount of pixel the mouse has to drag before drag starts"
 msgstr "Число пикселов, на которые должна переместиться мышь для начала операции перетаскивания"
-
-#: anchordockstr.adrsanchordockinglayout
-msgid "Anchor Docking Layout"
-msgstr "Разбивка Anchor Docking"
 
 #: anchordockstr.adrsanchorisnotsplitternodeanchors
 msgid "Anchor is not splitter: Node=\"%s\" Anchors[%s]=\"%s\""
@@ -99,18 +91,6 @@ msgstr "Расширить"
 msgid "Enlarge %s side"
 msgstr "Расширить край %s"
 
-#: anchordockstr.adrserror
-msgid "Error"
-msgstr "Ошибка"
-
-#: anchordockstr.adrserrorloadingwindowlayoutfromfile
-msgid "Error loading window layout from file \"%s\"%s%s"
-msgstr "Ошибка загрузки разбивки окна из файла \"%s\"%s%s"
-
-#: anchordockstr.adrserrorwritingwindowlayouttofile
-msgid "Error writing window layout to file \"%s\"%s%s"
-msgstr "Ошибка записи разбивки окна в файл \"%s\"%s%s"
-
 #: anchordockstr.adrsfilledheaders
 msgid "Fill headers"
 msgstr "Отображать заголовки закрашенными"
@@ -162,14 +142,6 @@ msgstr "Выделять заголовок пристыкованного об�
 #: anchordockstr.adrsleft
 msgid "left"
 msgstr "слева"
-
-#: anchordockstr.adrsloadwindowlayoutfromfile
-msgid "Load window layout from file ..."
-msgstr "Загрузить разбивку окна из файла ..."
-
-#: anchordockstr.adrsloadwindowlayoutfromfilexml
-msgid "Load window layout from file (*.xml)"
-msgstr "Загрузить разбивку окна из файла (*.xml)"
 
 #: anchordockstr.adrslocked
 msgid "Locked"
@@ -231,25 +203,9 @@ msgstr "Выход из %s"
 msgid "%s requested, but %s created"
 msgstr "Запрошен %s, но создан %s"
 
-#: anchordockstr.adrsrestoredefaultlayout
-msgid "Restore default layout"
-msgstr "Восстановить разбивку окна по умолчанию"
-
 #: anchordockstr.adrsright
 msgid "right"
 msgstr "справа"
-
-#: anchordockstr.adrssavewindowlayoutasdefault
-msgid "Save window layout as default"
-msgstr "Сохранить разбивку окна как разбивку по умолчанию"
-
-#: anchordockstr.adrssavewindowlayouttofile
-msgid "Save window layout to file ..."
-msgstr "Сохранить разбивку окна в файл ..."
-
-#: anchordockstr.adrssavewindowlayouttofilexml
-msgid "Save window layout to file (*.xml)"
-msgstr "Сохранить разбивку окна в файл (*.xml)"
 
 #: anchordockstr.adrsscaleonresize
 msgid "Scale on resize"

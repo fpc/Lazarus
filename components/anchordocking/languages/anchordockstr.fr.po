@@ -15,17 +15,9 @@ msgstr ""
 msgid "A free side of a splitter must not be anchored: Node=\"%s\" Type=%s Anchors[%s]=\"%s\""
 msgstr "Un côté libre du séparateur ne doit pas être ancré : Nœud = \"%s\" Type = %s Ancres[%s] = \"%s\""
 
-#: anchordockstr.adrsallfiles
-msgid "All files"
-msgstr "Tous les fichiers"
-
 #: anchordockstr.adrsamountofpixelthemousehastodragbeforedragstarts
 msgid "Amount of pixel the mouse has to drag before drag starts"
 msgstr "Nombre de pixels que la souris doit déplacer avant que le déplacement ne commence"
-
-#: anchordockstr.adrsanchordockinglayout
-msgid "Anchor Docking Layout"
-msgstr "Disposition de l'amarrage par ancre"
 
 #: anchordockstr.adrsanchorisnotsplitternodeanchors
 msgid "Anchor is not splitter: Node=\"%s\" Anchors[%s]=\"%s\""
@@ -99,18 +91,6 @@ msgstr "Agrandir"
 msgid "Enlarge %s side"
 msgstr "Agrandir le côté %s"
 
-#: anchordockstr.adrserror
-msgid "Error"
-msgstr "Erreur"
-
-#: anchordockstr.adrserrorloadingwindowlayoutfromfile
-msgid "Error loading window layout from file \"%s\"%s%s"
-msgstr "Erreur à la lecture de la disposition dans le fichier \"%s\"%s%s"
-
-#: anchordockstr.adrserrorwritingwindowlayouttofile
-msgid "Error writing window layout to file \"%s\"%s%s"
-msgstr "Erreur à l'écriture de la disposition dans le fichier \"%s\"%s%s"
-
 #: anchordockstr.adrsfilledheaders
 msgid "Fill headers"
 msgstr "Remplir les en-têtes"
@@ -164,14 +144,6 @@ msgstr "Mettre en évidence les contrôles ancrés et ciblés"
 #: anchordockstr.adrsleft
 msgid "left"
 msgstr "gauche"
-
-#: anchordockstr.adrsloadwindowlayoutfromfile
-msgid "Load window layout from file ..."
-msgstr "Charger la disposition depuis le fichier..."
-
-#: anchordockstr.adrsloadwindowlayoutfromfilexml
-msgid "Load window layout from file (*.xml)"
-msgstr "Charger la disposition depuis le fichier (\"*.xml\")"
 
 #: anchordockstr.adrslocked
 msgid "Locked"
@@ -233,25 +205,9 @@ msgstr "Quitter %s"
 msgid "%s requested, but %s created"
 msgstr "%s demandé, mais %s créé"
 
-#: anchordockstr.adrsrestoredefaultlayout
-msgid "Restore default layout"
-msgstr "Revenir à la disposition par défaut"
-
 #: anchordockstr.adrsright
 msgid "right"
 msgstr "droite"
-
-#: anchordockstr.adrssavewindowlayoutasdefault
-msgid "Save window layout as default"
-msgstr "Enregistrer la disposition comme celle par défaut"
-
-#: anchordockstr.adrssavewindowlayouttofile
-msgid "Save window layout to file ..."
-msgstr "Enregistrer la disposition dans le fichier..."
-
-#: anchordockstr.adrssavewindowlayouttofilexml
-msgid "Save window layout to file (*.xml)"
-msgstr "Enregistrer la disposition dans le fichier (\"*.xml\")"
 
 #: anchordockstr.adrsscaleonresize
 msgid "Scale on resize"
