@@ -57,8 +57,7 @@ resourcestring
   adrsSplitterWidth = 'Splitter width';
   adrsSplitterThickness = 'Splitter thickness';
   adrsScaleOnResize = 'Scale on resize';
-  adrsScaleSubSitesWhenASiteIsResized =
-    'Scale sub sites when a site is resized';
+  adrsScaleSubSitesWhenASiteIsResized ='Scale sub sites when a site is resized';
   adrsShowHeaderCaptions = 'Show header captions';
   adrsShowCaptionsOfDockedControlsInTheHeader = 'Show captions of docked '
     +'controls in the header';
@@ -70,26 +69,13 @@ resourcestring
   adrsHideHeaderCaptionsForSitesWithOnlyOneDockedControl = 'Hide header '
     +'captions for sites with only one docked control, as that is already '
     +'shown in the normal window title';
-  adrsErrorWritingWindowLayoutToFile = 'Error writing window layout to file "%s"%s%s';
   adrsToUseAnchordockingYouMustFirstUninstall = 'To use anchordocking you '
     +'must first uninstall %s';
   adrsThereIsAnotherDockMasterInstalledOnlyOneDockingPac = 'There is another '
     +'dock master installed. Only one docking package can be installed at a '
     +'time. Please uninstall the other dock master %s and restart the IDE';
-  adrsLoadWindowLayoutFromFileXml = 'Load window layout from file (*.xml)';
-  adrsSaveWindowLayoutAsDefault = 'Save window layout as default';
-  adrsSaveWindowLayoutToFile = 'Save window layout to file ...';
-  adrsLoadWindowLayoutFromFile = 'Load window layout from file ...';
-  adrsRestoreDefaultLayout = 'Restore default layout';
-  adrsErrorLoadingWindowLayoutFromFile = 'Error loading window layout from '
-    +'file "%s"%s%s';
-  adrsError = 'Error';
-  adrsSaveWindowLayoutToFileXml = 'Save window layout to file (*.xml)';
-  adrsAllFiles = 'All files';
-  adrsAnchorDockingLayout = 'Anchor Docking Layout';
   adrsDockingAnchordocking = 'Docking / Anchordocking';
   adrsHeaderStyle = 'Header Style:';
-
   adrsFlattenHeaders = 'Flatten headers';
   adrsFlattenHeadersHint = 'Flatten headers of docked controls';
   adrsFilledHeaders = 'Fill headers';
