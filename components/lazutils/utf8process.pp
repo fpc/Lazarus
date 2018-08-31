@@ -359,7 +359,11 @@ end;
 Const
   PriorityConstants : Array [TProcessPriority] of Cardinal =
                       (HIGH_PRIORITY_CLASS,IDLE_PRIORITY_CLASS,
-                       NORMAL_PRIORITY_CLASS,REALTIME_PRIORITY_CLASS);
+                       NORMAL_PRIORITY_CLASS,REALTIME_PRIORITY_CLASS
+                       {$if (FPC_FULLVERSION >= 30200) and not defined(WinCE)}
+                       ,BELOW_NORMAL_PRIORITY_CLASS,ABOVE_NORMAL_PRIORITY_CLASS
+                       {$endif}
+                       );
 
 function WStrAsUniquePWideChar(var s: UnicodeString): PWideChar; inline;
 begin
