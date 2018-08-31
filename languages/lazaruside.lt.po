@@ -16376,14 +16376,6 @@ msgstr "Skelbiamo projekto aplankas"
 msgid "Publish Project"
 msgstr "Skelbti projektą"
 
-#: lazarusidestrconsts.lispublprojinvalidexcludefilter
-msgid "Invalid exclude filter"
-msgstr "Klaidingas neįtraukiamųjų filtras"
-
-#: lazarusidestrconsts.lispublprojinvalidincludefilter
-msgid "Invalid include filter"
-msgstr "Klaidingas įtraukiamųjų filtras"
-
 #: lazarusidestrconsts.lisputlrsfilesinoutputdirectory
 msgid "Save .lrs files in the output directory"
 msgstr "„.lrs“ failus įrašyti išvesties aplanke"
@@ -19190,8 +19182,8 @@ msgstr "Naudoti konstravimui skirtus paketus"
 msgid "Used for auto-created forms."
 msgstr "Naudojamas automatiškai sukurtoms formoms."
 
-#: lazarusidestrconsts.lisusefiltersforextrafiles
-msgid "Use filters for extra files"
+#: lazarusidestrconsts.lisusefilterforextrafiles
+msgid "Use filter for extra files"
 msgstr ""
 
 #: lazarusidestrconsts.lisuseidentifier

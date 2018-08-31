@@ -16345,14 +16345,6 @@ msgstr "プロジェクトを発行するディレクトリ"
 msgid "Publish Project"
 msgstr "プロジェクトを発行"
 
-#: lazarusidestrconsts.lispublprojinvalidexcludefilter
-msgid "Invalid exclude filter"
-msgstr "無効な実行フィルタ"
-
-#: lazarusidestrconsts.lispublprojinvalidincludefilter
-msgid "Invalid include filter"
-msgstr "無効なインクルードフィルタ"
-
 #: lazarusidestrconsts.lisputlrsfilesinoutputdirectory
 msgid "Save .lrs files in the output directory"
 msgstr "出力ディレクトリに.lrsファイルを保存"
@@ -19163,8 +19155,8 @@ msgstr "設計時パッケージを使用"
 msgid "Used for auto-created forms."
 msgstr "自動作成フォームに用いられる"
 
-#: lazarusidestrconsts.lisusefiltersforextrafiles
-msgid "Use filters for extra files"
+#: lazarusidestrconsts.lisusefilterforextrafiles
+msgid "Use filter for extra files"
 msgstr ""
 
 #: lazarusidestrconsts.lisuseidentifier

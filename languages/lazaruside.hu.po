@@ -16352,14 +16352,6 @@ msgstr "Projekt könyvtár közzététele"
 msgid "Publish Project"
 msgstr "Projekt közzététele"
 
-#: lazarusidestrconsts.lispublprojinvalidexcludefilter
-msgid "Invalid exclude filter"
-msgstr "Érvénytelen kizáró szűrő"
-
-#: lazarusidestrconsts.lispublprojinvalidincludefilter
-msgid "Invalid include filter"
-msgstr "Érvénytelen belevétel szűrő"
-
 #: lazarusidestrconsts.lisputlrsfilesinoutputdirectory
 msgid "Save .lrs files in the output directory"
 msgstr ".lrs fájlok mentése a kimenti könyvtárba"
@@ -19162,8 +19154,8 @@ msgstr "Tervezési csomagok használata"
 msgid "Used for auto-created forms."
 msgstr "Automatikusan létrehozott form-okhoz használatos."
 
-#: lazarusidestrconsts.lisusefiltersforextrafiles
-msgid "Use filters for extra files"
+#: lazarusidestrconsts.lisusefilterforextrafiles
+msgid "Use filter for extra files"
 msgstr ""
 
 #: lazarusidestrconsts.lisuseidentifier

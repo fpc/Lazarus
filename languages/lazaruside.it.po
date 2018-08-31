@@ -16527,14 +16527,6 @@ msgstr "Pubblica cartella progetto"
 msgid "Publish Project"
 msgstr "Pubblica il progetto"
 
-#: lazarusidestrconsts.lispublprojinvalidexcludefilter
-msgid "Invalid exclude filter"
-msgstr "Filtro exclude non valido"
-
-#: lazarusidestrconsts.lispublprojinvalidincludefilter
-msgid "Invalid include filter"
-msgstr "Filtro include non valido"
-
 #: lazarusidestrconsts.lisputlrsfilesinoutputdirectory
 msgid "Save .lrs files in the output directory"
 msgstr "Salva file .lrs nella cartella di output"
@@ -19342,8 +19334,8 @@ msgstr "Usare pacchetti da progetto"
 msgid "Used for auto-created forms."
 msgstr "Usato per form auto-create."
 
-#: lazarusidestrconsts.lisusefiltersforextrafiles
-msgid "Use filters for extra files"
+#: lazarusidestrconsts.lisusefilterforextrafiles
+msgid "Use filter for extra files"
 msgstr ""
 
 #: lazarusidestrconsts.lisuseidentifier

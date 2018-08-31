@@ -16227,14 +16227,6 @@ msgstr "Julkaistavan projektin hakemisto"
 msgid "Publish Project"
 msgstr "Julkaise projekti"
 
-#: lazarusidestrconsts.lispublprojinvalidexcludefilter
-msgid "Invalid exclude filter"
-msgstr "Kelvoton poistosuodatin"
-
-#: lazarusidestrconsts.lispublprojinvalidincludefilter
-msgid "Invalid include filter"
-msgstr "Kelvoton lisäyssuodatin"
-
 #: lazarusidestrconsts.lisputlrsfilesinoutputdirectory
 msgid "Save .lrs files in the output directory"
 msgstr "Tallenna .lrs tiedostot käännöshakemistoon"
@@ -19015,8 +19007,8 @@ msgstr "Käytä suunnittelupaketteja"
 msgid "Used for auto-created forms."
 msgstr "Automaattisesti luodut lomakkeet käyttävät."
 
-#: lazarusidestrconsts.lisusefiltersforextrafiles
-msgid "Use filters for extra files"
+#: lazarusidestrconsts.lisusefilterforextrafiles
+msgid "Use filter for extra files"
 msgstr ""
 
 #: lazarusidestrconsts.lisuseidentifier

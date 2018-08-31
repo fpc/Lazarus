@@ -16334,14 +16334,6 @@ msgstr "Veröffentliche Projektverzeichnis"
 msgid "Publish Project"
 msgstr "Projekt veröffentlichen"
 
-#: lazarusidestrconsts.lispublprojinvalidexcludefilter
-msgid "Invalid exclude filter"
-msgstr "Ungültiger Ausschlußfilter"
-
-#: lazarusidestrconsts.lispublprojinvalidincludefilter
-msgid "Invalid include filter"
-msgstr "Ungültiger Include-Filter"
-
 #: lazarusidestrconsts.lisputlrsfilesinoutputdirectory
 msgid "Save .lrs files in the output directory"
 msgstr ".lrs-Datei in das Ausgabeverzeichnis speichern"
@@ -19137,8 +19129,8 @@ msgstr "Verwende Entwicklungszeit-Packages"
 msgid "Used for auto-created forms."
 msgstr "Verwendet für automatisch erzeugte Formulare"
 
-#: lazarusidestrconsts.lisusefiltersforextrafiles
-msgid "Use filters for extra files"
+#: lazarusidestrconsts.lisusefilterforextrafiles
+msgid "Use filter for extra files"
 msgstr ""
 
 #: lazarusidestrconsts.lisuseidentifier

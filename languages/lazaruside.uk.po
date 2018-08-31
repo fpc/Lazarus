@@ -16294,14 +16294,6 @@ msgstr "Тека публікації проекту"
 msgid "Publish Project"
 msgstr "Опублікувати проект"
 
-#: lazarusidestrconsts.lispublprojinvalidexcludefilter
-msgid "Invalid exclude filter"
-msgstr "Неправильний фільтр виключень"
-
-#: lazarusidestrconsts.lispublprojinvalidincludefilter
-msgid "Invalid include filter"
-msgstr "Неправильний фільтр включень"
-
 #: lazarusidestrconsts.lisputlrsfilesinoutputdirectory
 msgid "Save .lrs files in the output directory"
 msgstr "Зберігати .lrs файли в кінцеву теку"
@@ -19100,8 +19092,8 @@ msgstr "Викор. пакунки часу розробки"
 msgid "Used for auto-created forms."
 msgstr "Використано для автоматично створених форм."
 
-#: lazarusidestrconsts.lisusefiltersforextrafiles
-msgid "Use filters for extra files"
+#: lazarusidestrconsts.lisusefilterforextrafiles
+msgid "Use filter for extra files"
 msgstr ""
 
 #: lazarusidestrconsts.lisuseidentifier

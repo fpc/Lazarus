@@ -16880,18 +16880,6 @@ msgstr "Publica el directori del projecte"
 msgid "Publish Project"
 msgstr ""
 
-#: lazarusidestrconsts.lispublprojinvalidexcludefilter
-#, fuzzy
-#| msgid "Invalid Exclude filter"
-msgid "Invalid exclude filter"
-msgstr "El filtre Exclude no és vàlid"
-
-#: lazarusidestrconsts.lispublprojinvalidincludefilter
-#, fuzzy
-#| msgid "Invalid Include filter"
-msgid "Invalid include filter"
-msgstr "El filtre Include no és vàlid"
-
 #: lazarusidestrconsts.lisputlrsfilesinoutputdirectory
 msgid "Save .lrs files in the output directory"
 msgstr ""
@@ -19781,8 +19769,8 @@ msgstr ""
 msgid "Used for auto-created forms."
 msgstr ""
 
-#: lazarusidestrconsts.lisusefiltersforextrafiles
-msgid "Use filters for extra files"
+#: lazarusidestrconsts.lisusefilterforextrafiles
+msgid "Use filter for extra files"
 msgstr ""
 
 #: lazarusidestrconsts.lisuseidentifier

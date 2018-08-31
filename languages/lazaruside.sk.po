@@ -17179,18 +17179,6 @@ msgstr "Publikovať adresár projektu"
 msgid "Publish Project"
 msgstr ""
 
-#: lazarusidestrconsts.lispublprojinvalidexcludefilter
-#, fuzzy
-#| msgid "Invalid Exclude filter"
-msgid "Invalid exclude filter"
-msgstr "Neplatný vylučovací filter"
-
-#: lazarusidestrconsts.lispublprojinvalidincludefilter
-#, fuzzy
-#| msgid "Invalid Include filter"
-msgid "Invalid include filter"
-msgstr "Neplatný zahrňovací filter"
-
 #: lazarusidestrconsts.lisputlrsfilesinoutputdirectory
 msgid "Save .lrs files in the output directory"
 msgstr ""
@@ -20162,8 +20150,8 @@ msgstr ""
 msgid "Used for auto-created forms."
 msgstr ""
 
-#: lazarusidestrconsts.lisusefiltersforextrafiles
-msgid "Use filters for extra files"
+#: lazarusidestrconsts.lisusefilterforextrafiles
+msgid "Use filter for extra files"
 msgstr ""
 
 #: lazarusidestrconsts.lisuseidentifier

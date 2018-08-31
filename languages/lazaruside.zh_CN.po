@@ -16597,18 +16597,6 @@ msgstr "发布工程目录"
 msgid "Publish Project"
 msgstr "发布工程"
 
-#: lazarusidestrconsts.lispublprojinvalidexcludefilter
-#, fuzzy
-#| msgid "Invalid Exclude filter"
-msgid "Invalid exclude filter"
-msgstr "无效排除过滤器"
-
-#: lazarusidestrconsts.lispublprojinvalidincludefilter
-#, fuzzy
-#| msgid "Invalid Include filter"
-msgid "Invalid include filter"
-msgstr "无效包含过滤器"
-
 #: lazarusidestrconsts.lisputlrsfilesinoutputdirectory
 msgid "Save .lrs files in the output directory"
 msgstr "保存.lrs文件到输出目录"
@@ -19473,8 +19461,8 @@ msgstr "使用设计时包"
 msgid "Used for auto-created forms."
 msgstr ""
 
-#: lazarusidestrconsts.lisusefiltersforextrafiles
-msgid "Use filters for extra files"
+#: lazarusidestrconsts.lisusefilterforextrafiles
+msgid "Use filter for extra files"
 msgstr ""
 
 #: lazarusidestrconsts.lisuseidentifier

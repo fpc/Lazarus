@@ -16599,14 +16599,6 @@ msgstr "Proje dizini yayınla"
 msgid "Publish Project"
 msgstr "Projeyi Yayınla"
 
-#: lazarusidestrconsts.lispublprojinvalidexcludefilter
-msgid "Invalid exclude filter"
-msgstr "Geçersiz hariç tutma filtresi"
-
-#: lazarusidestrconsts.lispublprojinvalidincludefilter
-msgid "Invalid include filter"
-msgstr "Geçersiz filtre ekle"
-
 #: lazarusidestrconsts.lisputlrsfilesinoutputdirectory
 msgid "Save .lrs files in the output directory"
 msgstr ".lrs dosyalarını çıkış dizinine kaydedin"
@@ -19504,8 +19496,8 @@ msgstr "Tasarım zaman paketlerini kullanın"
 msgid "Used for auto-created forms."
 msgstr "Otomatik oluşturulan formlar için kullanılır."
 
-#: lazarusidestrconsts.lisusefiltersforextrafiles
-msgid "Use filters for extra files"
+#: lazarusidestrconsts.lisusefilterforextrafiles
+msgid "Use filter for extra files"
 msgstr ""
 
 #: lazarusidestrconsts.lisuseidentifier
