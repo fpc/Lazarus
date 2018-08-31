@@ -453,7 +453,7 @@ begin
                 Size := Pos(#0, BufferString);
                 if Size > 0 then
                   SetLength(BufferString, Size - 1);
-                BufferString := AnsiToUtf8(BufferString);
+                BufferString := WinCPToUTF8(BufferString);
               end;
               Stream.Write(BufferString[1], Length(BufferString));
             end;
@@ -615,7 +615,7 @@ function TWin32WidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
             end
             else
             begin
-              BufferString := Utf8ToAnsi(BufferString);
+              BufferString := UTF8ToWinCP(BufferString);
               if BufferString<>'' then  // original string may contain invalid UTF8
                 BufferStream.Write(BufferString[1], Length(BufferString));
             end;
