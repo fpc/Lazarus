@@ -2015,7 +2015,7 @@ begin
   CallRegisterProcCheckBox.Hint:=Format(lisPckEditCallRegisterProcedureOfSelectedUnit, ['"', '"']);
 
   AddToUsesPkgSectionCheckBox.Caption:=lisPkgMangUseUnit;
-  AddToUsesPkgSectionCheckBox.Hint:=lisPkgMangAddUnitToUsesClauseOfPackageDisableThisOnlyForUnit;
+  AddToUsesPkgSectionCheckBox.Hint:=lisPkgMangAddUnitToUsesClause;
 
   DisableI18NForLFMCheckBox.Caption:=lisPckDisableI18NOfLfm;
   DisableI18NForLFMCheckBox.Hint:=lisPckWhenTheFormIsSavedTheIDECanStoreAllTTranslateString;

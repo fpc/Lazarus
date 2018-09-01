@@ -182,7 +182,7 @@ resourcestring
   // command line help
   listhisHelpMessage = 'this help message';
   lisprimaryConfigDirectoryWhereLazarusStoresItsConfig = 'primary config '+
-    'directory, where Lazarus stores its config files. Default is ';
+    'directory where Lazarus stores its config files. Default is ';
   lislazarusOptionsProjectFilename = 'lazarus [options] <project-filename>';
   lisIDEOptions = 'IDE Options:';
   lisCmdLineLCLInterfaceSpecificOptions = 'LCL Interface specific options:';
@@ -193,15 +193,15 @@ resourcestring
   lisOverrideLanguage = 'Override language. For example --language=de.'+
     ' For possible values see files in the languages directory.';
   lissecondaryConfigDirectoryWhereLazarusSearchesFor = 'secondary config '+
-    'directory, where Lazarus searches for config template files. Default is ';
+    'directory where Lazarus searches for config template files. Default is ';
   lisFileWhereDebugOutputIsWritten =
-    'file, where debug output is written to. If it is '+
+    'file where debug output is written to. If it is '+
     'not specified, debug output is written to the console.';
   lisGroupsForDebugOutput = 'Enable or Disable groups of debug output.' +
     ' Valid Options are:';
-  lisLazarusDirOverride = 'directory, to be used as a basedirectory';
+  lisLazarusDirOverride = 'directory to be used as a basedirectory';
   lisMaximumNumberOfThreadsForCompilingInParallelDefaul = 'Maximum number of '
-    +'threads for compiling in parallel. Default is 0, which guesses the '
+    +'threads for compiling in parallel. Default is 0 which guesses the '
     +'number of cores in the system.';
   lisDoNotWriteUpdatedProjectInfoAfterBuild = 'Do not write updated project '+
     'info file after build. If not specified, build number will be incremented '+
@@ -250,8 +250,9 @@ resourcestring
   lisProjectMacroProperties = 'Project macro properties';
   lisOpenProject2 = 'Open project';
   lisFileHasNoProject = 'File has no project';
-  lisTheFileIsNotALazarusProjectCreateANewProjectForThi = 'The file "%s" is '
-    +'not a Lazarus project.%sCreate a new project for this "%s"?';
+  lisTheFileIsNotALazarusProjectCreateANewProjectForThi =
+    +'The file "%s" is not a Lazarus project.'
+    +'%sCreate a new project for this "%s"?';
   lisCreateProject = 'Create project';
   lisKMSaveProject = 'Save project';
   lisKMCloseProject = 'Close project';
@@ -779,7 +780,7 @@ resourcestring
   lisTheDestinationDirectoryDoesNotExist = 'The destination directory%s"%s" does not exist.';
   lisRenameFile = 'Rename file?';
   lisThisLooksLikeAPascalFileItIsRecommendedToUseLowerC = 'This looks like a Pascal file.'
-    +'%sIt is recommended to use lower case filenames, to avoid '
+    +'%sIt is recommended to use lower case filenames to avoid '
     +'various problems on some filesystems and different compilers.'
     +'%sRename it to lowercase?';
   lisRenameToLowercase = 'Rename to lowercase';
@@ -867,7 +868,7 @@ resourcestring
     +'%sOpen it anyway?';
   lisSourceAndDestinationAreTheSame = 'Source and Destination are the same:%s%s';
   lisUnableToAddToProjectBecauseThereIsAlreadyAUnitWith = 'Unable to add %s '
-    +'to project, because there is already a unit with the same name in the Project.';
+    +'to project because there is already a unit with the same name in the Project.';
   lisAddToProject = 'Add %s to project?';
   lisTheFile = 'The file "%s"';
   lisAddToUnitSearchPath = 'Add to unit search path?';
@@ -1015,7 +1016,7 @@ resourcestring
   lisUnableToCreateNewMethod = 'Unable to create new method.';
   lisUnableToShowMethod = 'Unable to show method.';
   lisPleaseFixTheErrorInTheMessageWindow = 'Please fix the error shown in the'
-    +' message window, which is normally below the source editor.';
+    +' message window which is normally below the source editor.';
   lisMethodClassNotFound = 'Method class not found';
   lisClassOfMethodNotFound = 'Class "%s" of method "%s" not found.';
   lisUnableToRenameMethodPleaseFixTheErrorShownInTheMessag = 'Unable to rename '
@@ -1025,7 +1026,7 @@ resourcestring
   lisCannotFindLazarusStarter = 'Cannot find Lazarus starter:%s%s';
   lisFPCTooOld = 'FPC too old';
   lisTheProjectUsesFPCResourcesWhichRequireAtLeast = 'The project uses '
-    +'FPC resources, which require at least FPC 2.4';
+    +'FPC resources which require at least FPC 2.4';
   lisCreateDirectory = 'Create directory?';
   lisFileFound = 'File found';
   lisTheTargetDirectoryIsAFile = 'The target directory is a file:%s';
@@ -1356,7 +1357,7 @@ resourcestring
   dlgHideIDEOnRun = 'Hide IDE windows on run';
   dlgHideIDEOnRunHint = 'Do not show the IDE at all while program is running.';
   lisShowOnlyOneButtonInTheTaskbarForTheWholeIDEInstead = 'Show only one '
-    +'button in the taskbar for the whole IDE, instead of one per window. Some'
+    +'button in the taskbar for the whole IDE instead of one per window. Some'
     +' Linux Window Managers like Cinnamon do not support this and always show'
     +' one button per window.';
   lisIDETitleStartsWithProjectName = 'IDE title starts with project name';
@@ -1365,7 +1366,8 @@ resourcestring
   lisAutoAdjustIDEHeight = 'Automatically adjust IDE main window height';
   lisAutoAdjustIDEHeightHint = '';
   lisAutoAdjustIDEHeightFullComponentPalette = 'Show complete component palette';
-  lisAutoAdjustIDEHeightFullComponentPaletteHint = 'If component palette spans over more lines, show them all and not only one.';
+  lisAutoAdjustIDEHeightFullComponentPaletteHint =
+    'If component palette spans over more lines, show them all and not only one.';
   lisWindowMenuWithNameForDesignedForm = 'Window menu shows designed form''s name instead of caption';
   lisWindowMenuWithNameForDesignedFormHint = 'Useful especially if the caption is left empty.';
   lisTitleInTaskbarShowsForExampleProject1LpiLazarus = 'Title in taskbar '
@@ -1381,7 +1383,7 @@ resourcestring
     +'in front of a message. The same icon shows in source editor gutter in any case.';
   lisAlwaysDrawSelectedItemsFocused = 'Always draw selected items focused';
   lisDrawTheSelectionFocusedEvenIfTheMessagesWindowHasN = 'Draw the selection '
-    +'focused, even if the Messages window has no focus. Use this if your '
+    +'focused even if the Messages window has no focus. Use this if your '
     +'theme has a hardly visible unfocused drawing.';
   lisEditorColors = 'Editor Colors';
   lisPastelColors = 'Pastel Colors';
@@ -1660,10 +1662,10 @@ resourcestring
   dlgCommentContinuePrefixIndDefault = 'Align Prefix at indent of previous line';
   dlgCommentContinuePrefixIndMatch = 'Align Prefix below start of comment on first comment line';
   dlgCommentContinuePrefixIndNone = 'Do not indent prefix';
-  dlgCommentShlashExtendMatch = 'Extend, if matched';
-  dlgCommentShlashExtendMatchSplit = 'Extend, if matched and caret in the middle of text (not at EOL)';
-  dlgCommentShlashExtendAlways = 'Extend, if matched or not matched';
-  dlgCommentShlashExtendAlwaysSplit = 'Extend, if matched or not matched (not at EOL)';
+  dlgCommentShlashExtendMatch = 'Extend if matched';
+  dlgCommentShlashExtendMatchSplit = 'Extend if matched and caret in the middle of text (not at EOL)';
+  dlgCommentShlashExtendAlways = 'Extend if matched or not matched';
+  dlgCommentShlashExtendAlwaysSplit = 'Extend if matched or not matched (not at EOL)';
   dlgStringEnableAutoContinue = 'Extend strings on linebreak';
   dlgStringAutoAppend = 'Append text to close string';
   dlgStringAutoPrefix = 'Prefix string on new line';
@@ -2142,17 +2144,17 @@ resourcestring
   dlgEditAccessCaptionUnLockedOpenNewInAnyWin = 'New tab, existing or new window';
 
   dlgEditAccessDescLockedInView =
-    'This option will use a locked (and only a locked) Editor, '+
+    'This option will use a locked (and only a locked) Editor '+
     'which does not need to scroll in order to display the target jump point '+
     '(target jump point is already in visible screen area).';
-  dlgEditAccessDescUnLockedInSoftView = 'This option will use a not locked Editor, '+
+  dlgEditAccessDescUnLockedInSoftView = 'This option will use a not locked Editor '+
     'which does not need to scroll in order to display the target jump point '+
     '(target jump point is already in visible screen center area, excluding 2-5 lines at the top/bottom).';
   dlgEditAccessDescUnLocked = 'This option will use any not locked Editor.';
   dlgEditAccessDescUnLockedOpenNewInOldWin =
     'If no unlocked tab is found, then this option will open a new Tab in an existing '+
     '(and only in an existing) Window. '+
-    'A tab is only opened if a window exists, that has not yet an editor for the target file.';
+    'A tab is only opened if there is a window that has no editor for the target file yet.';
   dlgEditAccessDescUnLockedOpenNewInNewWin =
     'If no unlocked tab is found, then this option will open a new Tab in a new '+
     'Window (even if other existing windows could be used for the new tab). '+
@@ -2170,8 +2172,7 @@ resourcestring
     'This option will check if there is an editor for the target file in the current window '+
     'and if there is, it will use this editor, even if it is locked and/or needs scrolling.';
   dlgEditAccessDescUnLockedOpenNewInAnyWin =
-    'This option will open a new Tab in an existing or new Window, '+
-    'if no unlocked tab is found. '+
+    'This option will open a new Tab in an existing or new Window if no unlocked tab is found. '+
     'This option will always succeed, further options are never tested.';
 
   // CodeTools dialog
@@ -2252,9 +2253,8 @@ resourcestring
   // compiler options
   dlgCompilerOptions = 'Compiler Options';
   dlgCOSetAsDefault = 'Set compiler options as default';
-  lisWhenEnabledTheCurrentOptionsAreSavedToTheTemplateW = 'When enabled the '
-    +'current options are saved to the template, which is used when creating '
-    +'new projects';
+  lisWhenEnabledTheCurrentOptionsAreSavedToTheTemplateW = 'When enabled the current '
+    +'options are saved to the template which is used when creating new projects';
   dlgSearchPaths = 'Paths';
   lisIWonderHowYouDidThatErrorInTheBaseDirectory = 'I wonder how you did '
     +'that: Error in the base directory:';
@@ -2869,7 +2869,7 @@ resourcestring
   uepIns='INS';
   uepOvr='OVR';
   lisUEFontWith = 'Font without UTF-8';
-  lisUETheCurre = 'The current editor font does not support UTF-8, but your system seems to use it.'
+  lisUETheCurre = 'The current editor font does not support UTF-8 but your system seems to use it.'
     +'%sThat means non ASCII characters will probably be shown incorrectly.'
     +'%sYou can select another font in the editor options.';
   lisUEDoNotSho = 'Do not show this message again.';
@@ -3582,13 +3582,13 @@ resourcestring
     'In order to install it, you must download them first. Download now?';
   lisNotADesigntimePackage = 'Not a designtime package';
   lisThePackageCanNotBeInstalledBecauseItRequiresWhichI = 'The package %s cannot be '
-    +'installed, because it requires the package "%s", which is a runtime only package.';
+    +'installed because it requires the package "%s" which is a runtime only package.';
   lisUninstall = 'Uninstall %s';
   lisThePackageIsNotADesignTimePackageItCanNotBeInstall = 'The package %s is '
     +'not a design time package. It cannot be installed in the IDE.';
   lisUninstallImpossible = 'Uninstall impossible';
   lisThePackageCanNotBeUninstalledBecauseItIsNeededByTh = 'The package %s can '
-    +'not be uninstalled, because it is needed by the IDE itself.';
+    +'not be uninstalled because it is needed by the IDE itself.';
   lisCodeToolsDefsNodeIsReadonly = 'Node is readonly';
   lisCodeToolsDefsAutoGeneratedNodesCanNotBeEdited = 'Auto generated nodes '
     +'cannot be edited.';
@@ -3734,7 +3734,7 @@ resourcestring
     +'TForm or TDataModule.';
   lisIgnoreUseAsAncestor = 'Ignore, use %s as ancestor';
   lisUnableToLoadTheComponentClassBecauseItDependsOnIts = 'Unable to load the '
-    +'component class "%s", because it depends on itself.';
+    +'component class "%s" because it depends on itself.';
   lisCancelLoadingThisComponent = 'Cancel loading this component';
   lisAbortWholeLoading = 'Abort whole loading';
   lisTheResourceClassDescendsFromProbablyThisIsATypoFor = 'The resource '
@@ -3979,10 +3979,10 @@ resourcestring
   lisProjAddDependencyAlreadyExists = 'Dependency already exists';
   lisVersionMismatch = 'Version mismatch';
   lisUnableToAddTheDependencyBecauseThePackageHasAlread = 'Unable to add the '
-    +'dependency %s, because the package %s has already a dependency %s';
+    +'dependency %s because the package %s has already a dependency %s';
   lisCircularDependencyDetected = 'Circular dependency detected';
   lisUnableToAddTheDependencyBecauseThisWouldCreateA = 'Unable to add the '
-    +'dependency %s, because this would create a circular dependency. Dependency %s';
+    +'dependency %s because this would create a circular dependency. Dependency %s';
   lisProjAddTheProjectHasAlreadyADependency = 'The project has already a '
     +'dependency for the package "%s".';
   lisProjAddPackageNotFound = 'Package not found';
@@ -3991,7 +3991,7 @@ resourcestring
     +'or project.%sUnable to create the fpdoc file.';
   lisLDNoValidFPDocPath = 'No valid FPDoc path';
   lisTheUnitIsPartOfTheFPCSourcesButTheCorrespondingFpd = 'The unit %s is part'
-    +' of the FPC sources, but the corresponding fpdoc xml file was not found.'
+    +' of the FPC sources but the corresponding fpdoc xml file was not found.'
     +'%sEither you have not yet added the fpcdocs directory to the search path or the '
     +'unit is not yet documented.%sThe fpdoc files for the FPC sources can be'
     +' downloaded from: %s%sPlease add the directory in the '
@@ -4061,7 +4061,7 @@ resourcestring
   lisDisableOptionXg2 = 'Disable option -Xg';
   lisEnableOptionXg = 'Enable Option -Xg?';
   lisTheProjectWritesTheDebugSymbolsToTheExexcutable = 'The project writes '
-    +'the debug symbols into the executable, rather than to an external file. '
+    +'the debug symbols into the executable rather than to an external file. '
     + 'The "%s" supports only symbols in an external file.';
   lisEnableOptionXg2 = 'Enable option -Xg';
   lisEnableOptionDwarf = 'Enable Dwarf 2 (-gw)?';
@@ -4254,7 +4254,7 @@ resourcestring
     +'found. See package graph for details.';
   lisPkgMangCircularDependencies = 'Circular dependencies found';
   lisPkgMangThePackageIsCompiledAutomaticallyAndItsOutputDirec = 'The package "%s" '
-    +'is compiled automatically and its output directory is "%s", which is in the '
+    +'is compiled automatically and its output directory is "%s" which is in the '
     +'default unit search path of the compiler. The package uses other packages which '
     +'also use the default unit search of the compiler. This creates an endless loop.'
     +'%sYou can fix this issue by removing the path from your compiler config (e.g. fpc.cfg)'
@@ -4319,7 +4319,7 @@ resourcestring
   lisProbablyYouNeedToInstallSomePackagesForBeforeConti = 'Probably you need to '
     +'install some packages before continuing.'
     +'%sWarning:'
-    +'%sThe project uses the following design time packages, which might be needed '
+    +'%sThe project uses the following design time packages which might be needed '
     +'to open the form in the designer. If you continue, you might get errors '
     +'about missing components and the form loading will probably create very '
     +'unpleasant results.'
@@ -4353,9 +4353,8 @@ resourcestring
   lisNotInstalledPackages = 'Not installed packages';
   lisInstallPackagesMsg = 'The following packages are not installed, but available in the main repository: %s.' +
     sLineBreak + 'Do you wish to install missing packages?';
-  lisOtherSourcesPathOfPackageContainsDirectoryWhichIsA = 'other sources path '
-    +'of package "%s" contains directory "%s", which is already in the unit '
-    +'search path.';
+  lisOtherSourcesPathOfPackageContainsDirectoryWhichIsA = 'other sources path of '
+    +'package "%s" contains directory "%s" which is already in the unit search path.';
   lisOutputDirectoryOfContainsPascalUnitSource = 'output directory of %s '
     +'contains Pascal unit source "%s"';
   lisInsertAssignment = 'Insert Assignment %s := ...';
@@ -4399,7 +4398,7 @@ resourcestring
     +'%sDo you want to rebuild Lazarus now?';
   lisPkgMangPackageIsRequired = 'Package is required';
   lisPkgMangThePackageIsRequiredByWhichIsMarkedForInstallation = 'The package %s '
-    +'is required by %s, which is marked for installation.'
+    +'is required by %s which is marked for installation.'
     +'%sSee package graph.';
   lisPkgMangUninstallPackage = 'Uninstall package?';
   lisPkgMangUninstallPackage2 = 'Uninstall package %s?';
@@ -4411,7 +4410,7 @@ resourcestring
     +'virtual package. It has no source yet. Please save the package first.';
   lisPkgMangPleaseCompileThePackageFirst = 'Please compile the package first.';
   lisPkgMangThePackageIsMarkedForInstallationButCanNotBeFound = 'The package "%s" '
-    +'is marked for installation, but cannot be found.'
+    +'is marked for installation but cannot be found.'
     +'%sRemove dependency from the installation list of packages?';
   lisERRORInvalidBuildMode = 'Error: (lazarus) invalid build mode "%s"';
   lisAvailableProjectBuildModes = 'Available project build modes:';
@@ -4440,7 +4439,7 @@ resourcestring
   lisPkgSysInvalidComponentClass = 'Invalid component class';
   lisPkgSysComponentClassAlreadyDefined = 'Component Class "%s" already defined';
   lisPkgSysRegisterUnitWasCalledButNoPackageIsRegistering = 'RegisterUnit was '
-    +'called, but no package is registering.';
+    +'called but no package is registering.';
   lisPkgSysUnitName = '%s%sUnit Name: "%s"';
   lisPkgSysFileName = '%s%sFile Name: "%s"';
   lisPkgSysLPKFilename = '%s%slpk file: "%s"';
@@ -4452,13 +4451,13 @@ resourcestring
   lisUpdatingPoFilesFailedForPackage =
     'Updating PO files failed for package %s';
   lisPkgSysRegisterProcedureIsNil = 'Register procedure is nil';
-  lisPkgSysThisPackageIsInstalledButTheLpkFileWasNotFound = 'This package is '
-    +'installed, but the lpk file was not found. All its components are '
-    +'deactivated. Please fix this.';
+  lisPkgSysThisPackageIsInstalledButTheLpkFileWasNotFound = 'This package is installed '
+    +'but the lpk file was not found. All its components are deactivated. Please fix this.';
   lisPkgSysPackageFileNotFound = 'Package file not found';
   lisPkgMangTheFileOfPackageWasNotFound = 'The file "%s" of package %s was not found.';
-  lisPkgSysThePackageIsInstalledButNoValidPackageFileWasFound = 'The package "%s" is installed, '
-    +'but no valid package file (.lpk) was found.%sA broken dummy package was created.';
+  lisPkgSysThePackageIsInstalledButNoValidPackageFileWasFound =
+    +'The package "%s" is installed but no valid package file (.lpk) was found.'
+    +'%sA broken dummy package was created.';
   lisSkipTheseWarnings = 'Skip these warnings';
 
   // package defs
@@ -4487,7 +4486,7 @@ resourcestring
   // add to package dialog
   lisA2PInvalidFilename = 'Invalid filename';
   lisA2PTheFilenameIsAmbiguousPleaseSpecifiyAFilename = 'The filename "%s" '
-    +'is ambiguous, because the package has no default directory yet.'
+    +'is ambiguous because the package has no default directory yet.'
     +'%sPlease specify a filename with full path.';
   lisA2PFileNotUnit = 'File not unit';
   lisA2PPascalUnitsMustHaveTheExtensionPPOrPas = 'Pascal units must have the '
@@ -4583,7 +4582,7 @@ resourcestring
   lisNotInstalled = 'not installed';
   lisOnlinePackage = 'available in the main repository';
   lisOIPThisPackageIsInstalledButTheLpkFileWasNotFound = '%sThis package is '
-    +'installed, but the lpk file was not found';
+    +'installed but the lpk file was not found';
   lisOIPDescriptionDescription = '%sDescription:  %s';
   lisOIPDescription = 'Description:  ';
   lisOIPLicenseLicense = '%sLicense:  %s';
@@ -4659,9 +4658,8 @@ resourcestring
   lisPckEditCallRegisterProcedureOfSelectedUnit = 'Call %sRegister%s '
     +'procedure of selected unit';
   lisPckEditRegisteredPlugins = 'Registered plugins';
-  lisPkgMangAddUnitToUsesClauseOfPackageDisableThisOnlyForUnit = 'Add unit to '
-    +'uses clause of package. Disable this only for units, that should not be '
-    +'compiled in all cases.';
+  lisPkgMangAddUnitToUsesClause = 'Add unit to uses clause of package main file.'
+    +' Disable this only for units that should not be compiled in all cases.';
   lisPckDisableI18NOfLfm = 'Disable I18N of lfm';
   lisPckWhenTheFormIsSavedTheIDECanStoreAllTTranslateString = 'When the form is'
     +' saved, the IDE can store all TTranslateString properties to the package '
@@ -4727,7 +4725,7 @@ resourcestring
     +'want to forget all changes to package %s and reload it from file?';
   lisNotAnInstallPackage = 'Not an install package';
   lisThePackageDoesNotHaveAnyRegisterProcedureWhichTypi = 'The package %s '
-    +'does not have any "Register" procedure, which typically means, it does '
+    +'does not have any "Register" procedure which typically means it does '
     +'not provide any IDE addon. Installing it will probably only increase '
     +'the size of the IDE and may even make it unstable.'
     +'%sHint: If you want to use a package in your project, use the "Add to project" menu item.';
@@ -5035,8 +5033,8 @@ resourcestring
   // LFM repair wizard
   lisTheLFMLazarusFormFileContainsInvalidPropertiesThis = 'The LFM (Lazarus '
     +'form) file contains invalid properties. This means for example it '
-    +'contains some properties/classes, which do not exist in the current '
-    +'LCL. The normal fix is to remove these properties from the lfm and fix '
+    +'contains some properties/classes which do not exist in the current LCL. '
+    +'The normal fix is to remove these properties from the lfm and fix '
     +'the Pascal code manually.';
   lisFixLFMFile = 'Fix LFM file';
   lisMissingEvents = 'Missing Events';
@@ -5371,7 +5369,7 @@ resourcestring
   lisCCDChangeClassOf = 'Change Class of %s';
 
   // View Search Results dialog
-  rsFoundButNotListedHere = 'Found, but not listed here: ';
+  rsFoundButNotListedHere = 'Found but not listed here: ';
   rsStartANewSearch = 'Start a new search';
   rsCloseCurrentPage = 'Close current page';
   rsFilterTheListWithString = 'Filter the lines in list with a string';
@@ -5579,7 +5577,7 @@ resourcestring
   lisIsAThisCircularDependencyIsNotAllowed = '%s is a %s.%sThis circular '
     +'dependency is not allowed.';
   lisTheComponentCanNotBeDeletedBecauseItIsNotOwnedBy = 'The component %s can '
-    +'not be deleted, because it is not owned by %s.';
+    +'not be deleted because it is not owned by %s.';
   lisFilter3 = 'Filter: %s';
   lisFileExtensionOfPrograms = 'File extension of programs';
   lisEveryNThLineNumber = 'Every n-th line number';
@@ -5854,7 +5852,8 @@ resourcestring
     +' Disable = pressing Return replaces prefix and Shift+Return replaces'
     +' whole identifier';
   lisJumpToError = 'Jump to error';
-  lisJumpToErrorAtIdentifierCompletion = 'When an error in the sources is found at identifier completion, jump to it.';
+  lisJumpToErrorAtIdentifierCompletion =
+    'When an error in the sources is found at identifier completion, jump to it.';
   lisShowHelp = 'Show help';
   lisBestViewedByInstallingAHTMLControlLikeTurbopowerip = 'Best viewed by '
     +'installing a HTML control like turbopoweriprodsgn';
@@ -6212,7 +6211,7 @@ resourcestring
     +'Create them?%0:s%0:s%1:s';
   lisFileIsDirectory = 'File is directory';
   lisUnableToCreateNewFileBecauseThereIsAlreadyADirecto = 'Unable to create '
-    +'new file, because there is already a directory with this name.';
+    +'new file because there is already a directory with this name.';
 
   //Toolbar options
   lisToolbarOptions = 'Toolbar';
@@ -6268,10 +6267,10 @@ resourcestring
     +'packages have no limitations.';
   lisDesignTimePackagesAddComponentsAndMenuItemsToTheID = '"Design time" '
     +'packages add components and menu items to the IDE. They can be used by '
-    +'projects, but are not compiled into the project. The compiler will not '
+    +'projects but are not compiled into the project. The compiler will not '
     +'find units of this package when compiling the project.';
-  lisRunTimePackagesCanBeUsedByProjectsTheyCanNotBeInst = '"Run time" packages'
-    +' can be used by projects. They cannot be installed in the IDE, unless '
+  lisRunTimePackagesCanBeUsedByProjectsTheyCanNotBeInst = '"Run time" packages '
+    +'can be used by projects. They cannot be installed in the IDE unless '
     +'some design time package requires them.';
   lisRunTimeOnlyPackagesAreOnlyForProjectsTheyCanNotBeI = '"Run time only" '
     +'packages are only for projects. They cannot be installed in the IDE, '
@@ -6280,7 +6279,7 @@ resourcestring
   lisPkgCleanUpPackageDependencies = 'Clean up package dependencies';
   lisPkgTransitivity = 'Transitivity';
   lisPkgTheFollowingDependenciesAreNotNeededBecauseOfTheAu = 'The following '
-    +'dependencies are not needed, because of the automatic transitivity '
+    +'dependencies are not needed because of the automatic transitivity '
     +'between package dependencies.';
   lisPkgDeleteDependencies = 'Delete dependencies';
   lisPkgClearSelection = 'Clear Selection';
@@ -6290,9 +6289,9 @@ resourcestring
   lisMMOverrideOutputDirectoryFUOfTarget = 'Override output directory -FU of target';
   lisMMSetAnIDEMacroEGLCLWidgetTypeWin32 = 'Set an IDE macro, e.g.: LCLWidgetType:=win32';
   lisMMMissingMacroName = 'missing macro name';
-  lisMMExpectedMacroNameButFound = 'expected macro name, but found "%s"';
+  lisMMExpectedMacroNameButFound = 'expected macro name but found "%s"';
   lisMMInvalidCharacterInMacroValue = 'invalid character in macro value "%s"';
-  lisMMExpectedAfterMacroNameButFound = 'expected ":=" after macro name, but found "%s"';
+  lisMMExpectedAfterMacroNameButFound = 'expected ":=" after macro name but found "%s"';
   lisMMApplyToAllPackages = 'Apply to all packages.';
   lisMMTargets = 'Targets: ';
   lisMMApplyToAllPackagesAndProjects = 'Apply to all packages and projects.';
@@ -6365,7 +6364,7 @@ resourcestring
     + 'The IDE configuration found was previously used by another '
     + 'installation of Lazarus.%0:s'
     + 'If you have two or more separate installations of Lazarus, they should not '
-    + 'share the same configuration. This may lead to conflicts, and your '
+    + 'share the same configuration. This may lead to conflicts and your '
     + 'Lazarus installations may become unusable.%0:s%0:s'
     + 'If you have only one installation and copied or moved the Lazarus '
     + 'executable, then you may upgrade this configuration.%0:s'
@@ -6373,7 +6372,7 @@ resourcestring
     + 'Choose:%0:s%0:s'
     + '* Update info: Use this configuration and update it for being used with this '
     + 'Lazarus in future. The old installation will no longer use this.%0:s'
-    + '* Ignore: Use this configuration, but keep the warning. This may lead to '
+    + '* Ignore: Use this configuration but keep the warning. This may lead to '
     + 'conflicts with the other installation.%0:s'
     + '* Abort: Exit now. You can then fix the problem by starting this Lazarus '
     + 'with the correct configuration.%0:s%0:s'
