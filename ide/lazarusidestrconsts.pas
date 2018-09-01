@@ -251,7 +251,7 @@ resourcestring
   lisOpenProject2 = 'Open project';
   lisFileHasNoProject = 'File has no project';
   lisTheFileIsNotALazarusProjectCreateANewProjectForThi =
-    +'The file "%s" is not a Lazarus project.'
+     'The file "%s" is not a Lazarus project.'
     +'%sCreate a new project for this "%s"?';
   lisCreateProject = 'Create project';
   lisKMSaveProject = 'Save project';
@@ -4430,12 +4430,12 @@ resourcestring
 
   // package system
   lisPkgSysInvalidUnitname = 'Invalid Unitname: %s';
-  lisPkgSysUnitWasNotFoundInTheLpkFileProbablyThisLpkFileWasN = 'Unit "%s" was'
-    +' not found in the lpk file.%sProbably this lpk file was not used for '
-    +'building this IDE. Or the package misuses the procedure RegisterUnit.';
+  lisPkgSysUnitWasNotFoundInTheLpkFileProbablyThisLpkFileWasN =
+     'Unit "%s" was not found in the lpk file.'
+    +'%sProbably this lpk file was not used for building this IDE. '
+    +'Or the package misuses the procedure RegisterUnit.';
   lisPkgSysUnitWasRemovedFromPackageLpk = 'Unit "%s" was removed from package (lpk)';
-  lisPkgSysCanNotRegisterComponentsWithoutUnit = 'Cannot register components '
-    +'without unit';
+  lisPkgSysCanNotRegisterComponentsWithoutUnit = 'Cannot register components without unit';
   lisPkgSysInvalidComponentClass = 'Invalid component class';
   lisPkgSysComponentClassAlreadyDefined = 'Component Class "%s" already defined';
   lisPkgSysRegisterUnitWasCalledButNoPackageIsRegistering = 'RegisterUnit was '
@@ -4448,15 +4448,14 @@ resourcestring
   lisPkgSysThisIsTheDefaultPackageUsedOnlyForComponents = 'This is the '
     +'default package. Used only for components without a package. These '
     +'components are outdated.';
-  lisUpdatingPoFilesFailedForPackage =
-    'Updating PO files failed for package %s';
+  lisUpdatingPoFilesFailedForPackage = 'Updating PO files failed for package %s';
   lisPkgSysRegisterProcedureIsNil = 'Register procedure is nil';
   lisPkgSysThisPackageIsInstalledButTheLpkFileWasNotFound = 'This package is installed '
     +'but the lpk file was not found. All its components are deactivated. Please fix this.';
   lisPkgSysPackageFileNotFound = 'Package file not found';
   lisPkgMangTheFileOfPackageWasNotFound = 'The file "%s" of package %s was not found.';
   lisPkgSysThePackageIsInstalledButNoValidPackageFileWasFound =
-    +'The package "%s" is installed but no valid package file (.lpk) was found.'
+     'The package "%s" is installed but no valid package file (.lpk) was found.'
     +'%sA broken dummy package was created.';
   lisSkipTheseWarnings = 'Skip these warnings';
 
