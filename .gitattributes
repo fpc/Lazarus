@@ -7395,6 +7395,9 @@ images/components/teditbutton_200.png -text
 images/components/teventlog.png -text svneol=unset#image/png
 images/components/teventlog_150.png -text
 images/components/teventlog_200.png -text
+images/components/textjsjsondataset.png -text svneol=unset#image/png
+images/components/textjsjsondataset_150.png -text svneol=unset#image/png
+images/components/textjsjsondataset_200.png -text svneol=unset#image/png
 images/components/tfilelistbox.png -text svneol=unset#image/png
 images/components/tfilelistbox_150.png -text
 images/components/tfilelistbox_200.png -text

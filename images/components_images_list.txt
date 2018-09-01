@@ -145,6 +145,9 @@ components/teditbutton_200.png
 components/teventlog.png
 components/teventlog_150.png
 components/teventlog_200.png
+components/textjsjsondataset.png
+components/textjsjsondataset_150.png
+components/textjsjsondataset_200.png
 components/tfilelistbox.png
 components/tfilelistbox_150.png
 components/tfilelistbox_200.png
