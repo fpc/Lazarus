@@ -32,15 +32,13 @@ interface
 uses
   Classes, SysUtils,
   // LazUtils
-  FileUtil, LazLoggerBase,
+  LazLoggerBase,
   // LCL
-  Forms, Controls, Graphics, Dialogs, StdCtrls, ColorBox, ExtCtrls, Spin, ComCtrls,
-  // SynEdit
-  SynEdit,
+  Forms, Controls, Graphics, Dialogs, StdCtrls, ColorBox, ExtCtrls, Spin, Buttons,
   // IdeIntf
-  IDEOptionsIntf, IDEOptEditorIntf, IDEExternToolIntf,
+  IDEOptionsIntf, IDEOptEditorIntf, IDEExternToolIntf, IDEImagesIntf,
   // IDE
-  LazarusIDEStrConsts, EnvironmentOpts, EditorOptions, editor_general_options;
+  LazarusIDEStrConsts, EnvironmentOpts, editor_general_options;
 
 type
 
@@ -63,7 +61,7 @@ type
     MWColorsGroupBox: TGroupBox;
     MWOptionsLabel: TLabel;
     MWOptsRightBevel: TBevel;
-    MWSetDefaultColorsButton: TButton;
+    MWSetDefaultColorsButton: TBitBtn;
     MWSetEditorColorsButton: TButton;
     MWSpeedSetColorsGroupBox: TGroupBox;
     procedure MsgColorBoxChange(Sender: TObject);
@@ -229,6 +227,7 @@ begin
   MsgColorGroupBox.Caption:= lisMsgColors;
   MWSpeedSetColorsGroupBox.Caption:=lisSetAllColors;
   MWSetDefaultColorsButton.Caption:=lisLazarusDefault;
+  IDEImages.AssignImage(MWSetDefaultColorsButton, 'restore_defaults');
   MWSetPastelColorsButton.Caption:=lisPastelColors;
   MWSetEditorColorsButton.Caption:=lisEditorColors;
   MWShowIconsCheckBox.Caption:=dlgShowMessagesIcons;
@@ -236,8 +235,8 @@ begin
   MWAlwaysDrawFocusedCheckBox.Caption:=lisAlwaysDrawSelectedItemsFocused;
   MWAlwaysDrawFocusedCheckBox.Hint:=lisDrawTheSelectionFocusedEvenIfTheMessagesWindowHasN;
   MWFocusCheckBox.Caption:=dlgEOFocusMessagesAtCompilation;
-  MWMaxProcsLabel.Caption:=Format(lisMaximumParallelProcesses0MeansDefault, [
-    IntToStr(DefaultMaxProcessCount)]);
+  MWMaxProcsLabel.Caption:=Format(lisMaximumParallelProcesses0MeansDefault,
+                                  [IntToStr(DefaultMaxProcessCount)]);
   MWShowFPCMsgLinesCompiledCheckBox.Caption:=lisShowFPCMessageLinesCompiled;
   MWShowFPCMsgLinesCompiledCheckBox.Hint:=
     lisElevateTheMessagePriorityToAlwaysShowItByDefaultIt;

@@ -32,7 +32,7 @@ interface
 uses
   SysUtils, Math, Graphics, Classes,
   // ideintf
-  MacroIntf,
+  MacroIntf, IDEImagesIntf,
   // LCL
   Forms, Controls, Dialogs, StdCtrls, ExtCtrls, Spin, ComCtrls, EditBtn, Menus,
   ButtonPanel, Buttons,
@@ -569,6 +569,7 @@ begin
   pnProfilesMain.Visible := Options.UserProfile = 1;
   bColors.Caption := rsOptions_bColors_Caption;
   bpOptions.HelpButton.Caption := rsOptions_bpOptions_bHelp;
+  IDEImages.AssignImage(bpOptions.HelpButton, 'restore_defaults');
   bpOptions.HelpButton.Kind := bkCustom;
   bpOptions.HelpButton.Glyph.Clear;
   SetupColors;

@@ -235,7 +235,7 @@ object OIOptionsFrame: TOIOptionsFrame
     ClientHeight = 145
     ClientWidth = 373
     TabOrder = 1
-    object BtnUseDefaultLazarusSettings: TButton
+    object BtnUseDefaultLazarusSettings: TBitBtn
       AnchorSideLeft.Control = ObjectInspectorSpeedSettingsGroupBox
       AnchorSideTop.Control = ObjectInspectorSpeedSettingsGroupBox
       Left = 3
@@ -251,7 +251,7 @@ object OIOptionsFrame: TOIOptionsFrame
       OnClick = BtnUseDefaultLazarusSettingsClick
       TabOrder = 0
     end
-    object BtnUseDefaultDelphiSettings: TButton
+    object BtnUseDefaultDelphiSettings: TBitBtn
       AnchorSideLeft.Control = ObjectInspectorSpeedSettingsGroupBox
       AnchorSideTop.Control = BtnUseDefaultLazarusSettings
       AnchorSideTop.Side = asrBottom

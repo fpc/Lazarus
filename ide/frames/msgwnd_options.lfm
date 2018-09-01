@@ -188,7 +188,7 @@ object MsgWndOptionsFrame: TMsgWndOptionsFrame
         OnClick = MWSetEditorColorsButtonClick
         TabOrder = 0
       end
-      object MWSetDefaultColorsButton: TButton
+      object MWSetDefaultColorsButton: TBitBtn
         AnchorSideLeft.Control = MWSpeedSetColorsGroupBox
         AnchorSideTop.Control = MWSetEditorColorsButton
         AnchorSideTop.Side = asrBottom

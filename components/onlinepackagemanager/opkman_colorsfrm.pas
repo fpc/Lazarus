@@ -5,8 +5,11 @@ unit opkman_colorsfrm;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
-  ButtonPanel, Buttons;
+  Classes, SysUtils,
+  // LCL
+  Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls, ButtonPanel, Buttons,
+  // IdeIntf
+  IDEImagesIntf;
 
 type
 
@@ -48,6 +51,7 @@ begin
   lbLicense.Caption := rsMainFrm_VSTText_License;
   CD.Title := rsColors_CD_Title;
   bp.HelpButton.Caption := rsOptions_bpOptions_bHelp;
+  IDEImages.AssignImage(bp.HelpButton, 'restore_defaults');
   bp.HelpButton.Kind := bkCustom;
   bp.HelpButton.Glyph.Clear;
 end;

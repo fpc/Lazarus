@@ -30,9 +30,9 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  LCLProc, Forms, StdCtrls, Dialogs, Spin, ColorBox, Graphics,
+  LCLProc, Forms, StdCtrls, Dialogs, Spin, ColorBox, Graphics, Buttons,
   // IdeIntf
-  ObjectInspector, IDEOptionsIntf, IDEOptEditorIntf,
+  ObjectInspector, IDEOptionsIntf, IDEOptEditorIntf, IDEImagesIntf,
   // IDE
   LazarusIDEStrConsts, EnvironmentOpts;
 
@@ -73,8 +73,8 @@ type
   { TOIOptionsFrame }
 
   TOIOptionsFrame = class(TAbstractIDEOptionsEditor)
-    BtnUseDefaultDelphiSettings: TButton;
-    BtnUseDefaultLazarusSettings: TButton;
+    BtnUseDefaultDelphiSettings: TBitBtn;
+    BtnUseDefaultLazarusSettings: TBitBtn;
     OIOptsCenterLabel: TLabel;
     OIMiscGroupBox: TGroupBox;
     ObjectInspectorSpeedSettingsGroupBox: TGroupBox;
@@ -181,9 +181,10 @@ begin
   OIMiscGroupBox.Caption := dlgOIMiscellaneous;
   OIOptionsGroupBox.Caption := lisOptions;
   ObjectInspectorSpeedSettingsGroupBox.Caption := dlgOISpeedSettings;
-
   BtnUseDefaultLazarusSettings.Caption := dlgOIUseDefaultLazarusSettings;
+  IDEImages.AssignImage(BtnUseDefaultLazarusSettings, 'restore_defaults');
   BtnUseDefaultDelphiSettings.Caption := dlgOIUseDefaultDelphiSettings;
+  IDEImages.AssignImage(BtnUseDefaultDelphiSettings, 'restore_defaults');
   OIDefaultItemHeightLabel.Caption := dlgOIItemHeight;
   OIDefaultItemHeightSpinEdit.Hint := dlgHeightOfOnePropertyInGrid;
 
