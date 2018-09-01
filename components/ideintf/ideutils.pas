@@ -42,9 +42,9 @@ var
 begin
   for i:=0 to List.Count-1 do begin
     case Cmp of
-    cstCaseSensitive: if List[i]=s then exit(i);
+    cstCaseSensitive:   if List[i]=s then exit(i);
     cstCaseInsensitive: if UTF8CompareText(List[i],s)=0 then exit(i);
-    cstFilename: if CompareFilenames(List[i],s)=0 then exit(i);
+    cstFilename:        if CompareFilenames(List[i],s)=0 then exit(i);
     end;
   end;
   Result:=-1;

@@ -30,7 +30,7 @@ uses
   // LazControls
   ShortPathEdit,
   // IdeIntf
-  MacroIntf, IDEImagesIntf,
+  MacroIntf, IDEImagesIntf, IDEUtils,
   // IDE
   TransferMacros, GenericListSelect, LazarusIDEStrConsts;
 
@@ -569,8 +569,10 @@ var
   InValidPathsExist: Boolean;
 begin
   // Replace / add / delete / Delete Invalid Paths
-  AddButton.Enabled:=(DirectoryEdit.Text<>'') and (DirectoryEdit.Text<>FEffectiveBaseDirectory)
-      and (PathListBox.Items.IndexOf(BaseRelative(DirectoryEdit.Text))=-1);
+  AddButton.Enabled:=(DirectoryEdit.Text<>'')
+                 and (DirectoryEdit.Text<>FEffectiveBaseDirectory)
+                 and (IndexInStringList(PathListBox.Items,cstCaseSensitive,
+                                        BaseRelative(DirectoryEdit.Text)) = -1);
   ReplaceButton.Enabled:=AddButton.Enabled and (PathListBox.ItemIndex>-1) ;
   DeleteButton.Enabled:=PathListBox.SelCount=1; // or ItemIndex>-1; ?
   // Delete non-existent paths button. Check if there are any.
