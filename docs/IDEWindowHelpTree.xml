@@ -148,7 +148,7 @@
     <Node48 Name="PackageI18NOptionsFrame" Path="Package_Options" HasHelp="True" IsRoot="True"/>
     <Node49 Name="PackageDescriptionOptionsFrame" Path="Package_Options" HasHelp="True" IsRoot="True"/>
     <Node50 Name="PackageIntegrationOptionsFrame" Path="Package_Options" HasHelp="True" IsRoot="True"/>
-    <Node51 Name="EditorsPanel" Path="EditorsPanel" ChildCount="30">
+    <Node51 Name="EditorsPanel" Path="EditorsPanel" ChildCount="31">
       <Node1 Name="EditorMarkupUserDefinedFrame" Path="Editor_User_Defined_Words" HasHelp="True" IsRoot="True"/>
       <Node2 Name="CompOptModeMatrixFrame" Path="_Compiler_Options#Additions_and_Overrides" HasHelp="True" IsRoot="True"/>
       <Node3 Name="CompilerOtherOptionsFrame" Path="_Compiler_Options#Other" HasHelp="True" IsRoot="True"/>
@@ -179,6 +179,7 @@
       <Node28 Name="ResourcesOptionsFrame" Path="_Project_Options#Resources" HasHelp="True" IsRoot="True"/>
       <Node29 Name="CompilerConfigTargetFrame" Path="_Compiler_Options#Config_and_Target" HasHelp="True" IsRoot="True"/>
       <Node30 Name="CompilerDebuggingOptionsFrame" Path="_Compiler_Options#Debugging" HasHelp="True" IsRoot="True"/>
+      <Node31 Name="EditorColorOptionsFrame" Path="Editor_Options_HighlightColors" HasHelp="True" IsRoot="True"/>
     </Node51>
     <Node52 Name="BuildModeSelectPanel" Path="_Project_Options#Build_modes" HasHelp="True" IsRoot="True"/>
   </Node55>
