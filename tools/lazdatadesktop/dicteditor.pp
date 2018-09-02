@@ -108,6 +108,8 @@ Type
     procedure ShowSubLists(TV: TTreeView; ParentNode: TTreeNode; AObject: TObject);
     procedure ShowTableObjectList(TV: TTreeView; ParentNode: TTreeNode; ATableDef: TDDTableDef; AObjectType: TEditObjectType);
     procedure ShowGlobalObjectList(TV: TTreeView; ParentNode: TTreeNode; AObjectType: TEditObjectType; AShowSubLists : Boolean = False);
+  Protected
+    procedure CreateHandle; override;
   Public
     Constructor Create(AOwner : TComponent); override;
     Destructor Destroy; override;
@@ -351,7 +353,7 @@ constructor TDataDictEditor.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FDD:=TFPDataDictionary.Create;
-  //CreateGUI;
+  CreateGUI;
 end;
 
 Procedure TDataDictEditor.CreateGUI;
@@ -412,6 +414,11 @@ begin
     end;
   FTV.Images:=FImgList;
   FMenu.Images:=FImgList;
+end;
+
+procedure TDataDictEditor.CreateHandle;
+begin
+  inherited;
   ShowDictionary;
 end;
 
