@@ -402,22 +402,29 @@ type
     FClassId: string;
     FTitle: string;
     FId: string;
+    FAreaList: {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif};
   protected
+    procedure AddArea(const R: TRect);
+    procedure BuildAreaList; virtual;
+    procedure ClearAreaList; virtual;
     procedure ParseBaseProps(aOwner : TIpHtml);
     {$IFDEF IP_LAZARUS}
     function SelectCSSFont(const aFont: string): string;
     procedure ApplyCSSProps(const ACSSProps: TCSSProps; const props: TIpHtmlProps);
     function ElementName: String;
     function GetFontSizeFromCSS(CurrentFontSize:Integer; aFontSize: string):Integer;
+    procedure SetId(const Value: string); virtual;
     {$ENDIF}
   public
+    constructor Create(ParentNode : TIpHtmlNode);
     {$IFDEF IP_LAZARUS}
     destructor Destroy; override;
     procedure LoadAndApplyCSSProps; virtual;
+    procedure MakeVisible; override;
     property InlineCSS: TCSSProps read FInlineCSSProps write FInlineCSSProps;
     {$ENDIF}
     property ClassId : string read FClassId write FClassId;
-    property Id : string read FId write FId;
+    property Id : string read FId write SetId;
     property Style : string read FStyle write FStyle;
     property Title : string read FTitle write FTitle;
   end;
@@ -1112,16 +1119,14 @@ type
     procedure SetHRef(const Value: string);
     procedure SetName(const Value: string);
   protected
-    AreaList : {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif};
     FHasRef : Boolean;
     FHot: Boolean;
     MapAreaList : {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif};
-    procedure ClearAreaList;
+    procedure ClearAreaList; override;
     function PtInRects(const P : TPoint) : Boolean;
     function RelMapPoint(const P: TPoint): TPoint;
     procedure SetHot(const Value: Boolean);
-    procedure AddArea(const R: TRect);
-    procedure BuildAreaList;
+    procedure BuildAreaList; override;
     procedure AddMapArea(const R: TRect);
     function GetHint: string; override;
     procedure DoOnFocus;
@@ -1131,7 +1136,7 @@ type
   public
     constructor Create(ParentNode : TIpHtmlNode);
     destructor Destroy; override;
-    procedure MakeVisible; override;
+//    procedure MakeVisible; override;
     procedure SetProps(const RenderProps: TIpHtmlProps); override;
   {$IFDEF HTML_RTTI}
   published
@@ -1994,6 +1999,7 @@ type
     HardLF, HardLFClearLeft, SoftHyphen,
     HardLFClearRight, HardLFClearBoth : PIpHtmlElement;
     NameList : TStringList;
+    IdList: TStringList;
     GifQueue : {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif};
     InPre : Integer;
     InBlock : Integer;
@@ -2176,6 +2182,7 @@ type
     procedure AddWord(Value: string; Props: TIpHtmlProps; Owner: TIpHtmlNode);
     procedure AddWordEntry(const Value: string; Props: TIpHtmlProps; Owner: TIpHtmlNode);
     function FindElement(const Name: string): TIpHtmlNode;
+    function FindElementId(const Id: String): TIpHtmlNode;
     procedure Clear; {clear any contents}
     procedure Home;
     function GetPageRect(TargetCanvas: TCanvas; Width, Height : Integer): TRect; // computes the layout for this Canvas
@@ -4180,7 +4187,17 @@ begin
 end;
 
 procedure TIpHtmlNode.MakeVisible;
+var
+  elem: PIpHtmlElement;
+  R: TRect;
 begin
+  (*
+  elem := FOwner.FindFirstElementOfNode(self);
+  if elem <> nil then begin
+    R := elem.WordRect2;
+    FOwner.MakeVisible(R{$IFDEF IP_LAZARUS}, true {$ENDIF});
+  end;
+  *)
 end;
 
 procedure TIpHtmlNode.SetProps(const RenderProps: TIpHtmlProps);
@@ -5694,6 +5711,7 @@ begin
   NewHeader.ParseBaseProps(Self);
   NewHeader.Size := Size;
   NewHeader.Align := ParseAlignment;
+  NewHeader.Id := FindAttribute(htmlAttrID);
   NextToken;
   ParseBodyText(NewHeader, [EndToken]);
   if CurToken = EndToken then
@@ -7762,6 +7780,7 @@ begin
   OtherImages := {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif}.Create;
   {$ENDIF}
   NameList := TStringList.Create;
+  IdList := TStringList.Create;
   DefaultImage := TPicture.Create;
   TmpBitmap := nil;
   try
@@ -7872,6 +7891,7 @@ begin
   GifQueue.Free;
   DefaultImage.Free;
   NameList.Free;
+  IdList.Free;
   FHtml.Free;
   AnchorList.Free;
   MapList.Free;
@@ -8727,7 +8747,7 @@ begin
 end;
 procedure TIpHtml.MakeVisible(const R: TRect{$IFDEF IP_LAZARUS}; ShowAtTop: Boolean = True{$ENDIF});
 begin
-  if assigned(FOnScroll) then
+  if Assigned(FOnScroll) then
     FOnScroll(Self, R{$IFDEF IP_LAZARUS}, ShowAtTop{$ENDIF});
 end;
 
@@ -8739,6 +8759,18 @@ begin
   i := NameList.IndexOf(Name);
   if i <> -1 then
     Result := TIpHtmlNode(NameList.Objects[i])
+  else
+    Result := nil;
+end;
+
+function TIpHtml.FindElementID(const Id: String): TIpHtmlNode;
+var
+  i: Integer;
+begin
+  IdList.Sorted := true;
+  i := IdList.IndexOf(Id);
+  if i <> -1 then
+    Result := TIpHtmlNode(IdList.Objects[i])
   else
     Result := nil;
 end;
@@ -10096,26 +10128,6 @@ end;
 
 { TIpHtmlNodeA }
 
-procedure TIpHtmlNodeA.AddArea(const R: TRect);
-var
-  RCopy : PRect;
-  c : Integer;
-begin
-  c := AreaList.Count;
-  if c > 0 then begin
-    RCopy := PRect(AreaList[c-1]);
-    if (R.Left = RCopy.Right)
-    and (R.Top = RCopy.Top)
-    and (R.Bottom = RCopy.Bottom) then begin
-      RCopy.Right := R.Right;
-      Exit;
-    end;
-  end;
-  New(RCopy);
-  RCopy^  := R;
-  AreaList.Add(RCopy);
-end;
-
 procedure TIpHtmlNodeA.AddMapArea(const R: TRect);
 var
   RCopy : PRect;
@@ -10123,7 +10135,7 @@ var
 begin
   c := MapAreaList.Count;
   if c > 0 then begin
-    RCopy := PRect(AreaList[c-1]);
+    RCopy := PRect(FAreaList[c-1]);
     if (R.Left = RCopy.Right)
     and (R.Top = RCopy.Top)
     and (R.Bottom = RCopy.Bottom) then begin
@@ -10141,11 +10153,7 @@ var
   a: Pointer;
   m: Pointer;
 begin
-  while AreaList.Count > 0 do begin
-    a:=AreaList[0];
-    FreeMem(a);
-    AreaList.Delete(0);
-  end;
+  inherited;
   while MapAreaList.Count > 0 do begin
     m:=MapAreaList[0];
     FreeMem(m);
@@ -10157,7 +10165,6 @@ constructor TIpHtmlNodeA.Create(ParentNode: TIpHtmlNode);
 begin
   inherited Create(ParentNode);
   FElementName := 'a';
-  AreaList := {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif}.Create;
   MapAreaList := {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif}.Create;
 end;
 
@@ -10166,7 +10173,6 @@ begin
   if HasRef then
     Owner.AnchorList.Remove(Self);
   ClearAreaList;
-  AreaList.Free;
   MapAreaList.Free;
   inherited;
 end;
@@ -10175,21 +10181,20 @@ procedure TIpHtmlNodeA.BuildAreaList;
 var
   i : Integer;
 begin
-  for i := 0 to Pred(FChildren.Count) do begin
-    TIpHtmlNode(FChildren[i]).ReportDrawRects(AddArea);
+  inherited;
+  for i := 0 to Pred(FChildren.Count) do
     TIpHtmlNode(FChildren[i]).ReportMapRects(AddMapArea);
-  end;
 end;
 
 function TIpHtmlNodeA.PtInRects(const P: TPoint): Boolean;
 var
   i : Integer;
 begin
-  if AreaList.Count = 0 then
+  if FAreaList.Count = 0 then
     BuildAreaList;
-  for i := 0 to Pred(AreaList.Count) do begin
-    with PRect(AreaList[i])^ do
-    if PtInRect(PRect(AreaList[i])^,P) then begin
+  for i := 0 to Pred(FAreaList.Count) do begin
+    with PRect(FAreaList[i])^ do
+    if PtInRect(PRect(FAreaList[i])^,P) then begin
       Result := True;
       Exit;
     end;
@@ -10201,14 +10206,14 @@ function TIpHtmlNodeA.RelMapPoint(const P: TPoint): TPoint;
 var
   i : Integer;
 begin
-  if AreaList.Count = 0 then
+  if FAreaList.Count = 0 then
     BuildAreaList;
   for i := 0 to Pred(MapAreaList.Count) do begin
     with PRect(MapAreaList[i])^ do
-    if PtInRect(PRect(AreaList[i])^,P) then begin
+    if PtInRect(PRect(FAreaList[i])^,P) then begin
       Result := Point(
-        P.x - PRect(AreaList[i])^.Left,
-        P.y - PRect(AreaList[i])^.Top);
+        P.x - PRect(FAreaList[i])^.Left,
+        P.y - PRect(FAreaList[i])^.Top);
       Exit;
     end;
   end;
@@ -10221,11 +10226,11 @@ var
   R : TRect;
 begin
   FHot := Value;
-  if AreaList.Count = 0 then
+  if FAreaList.Count = 0 then
     BuildAreaList;
   SetProps(Props);
-  for i := 0 to Pred(AreaList.Count) do
-    if PageRectToScreen(PRect(AreaList[i])^, R) then
+  for i := 0 to Pred(FAreaList.Count) do
+    if PageRectToScreen(PRect(FAreaList[i])^, R) then
       Owner.InvalidateRect(R);
 end;
 
@@ -10266,7 +10271,7 @@ begin
   if FName <> '' then
     Owner.NameList.AddObject(FName, Self);
 end;
-
+  (*
 procedure TIpHtmlNodeA.MakeVisible;
 var
   i : Integer;
@@ -10281,7 +10286,7 @@ begin
   Owner.MakeVisible(R{$IFDEF IP_LAZARUS}, true {$ENDIF});
   //Owner.MakeVisible(R{$IFDEF IP_LAZARUS}, False {$ENDIF});  // original
 end;
-
+    *)
 procedure TIpHtmlNodeA.SetProps(const RenderProps: TIpHtmlProps);
 begin
   Props.Assign(RenderProps);
@@ -12389,6 +12394,45 @@ end;
 
 { TIpHtmlNodeCore }
 
+procedure TIpHtmlNodeCore.AddArea(const R: TRect);
+var
+  RCopy : PRect;
+  n : Integer;
+begin
+  n := FAreaList.Count;
+  if n > 0 then begin
+    RCopy := PRect(FAreaList[n-1]);
+    if (R.Left = RCopy.Right) and (R.Top = RCopy.Top) and (R.Bottom = RCopy.Bottom)
+    then begin
+      RCopy.Right := R.Right;
+      Exit;
+    end;
+  end;
+  New(RCopy);
+  RCopy^ := R;
+  FAreaList.Add(RCopy);
+end;
+
+procedure TIpHtmlNodeCore.BuildAreaList;
+var
+  i : Integer;
+begin
+  for i := 0 to Pred(FChildren.Count) do
+    TIpHtmlNode(FChildren[i]).ReportDrawRects(AddArea);
+end;
+
+procedure TIpHtmlNodeCore.ClearAreaList;
+var
+  a: Pointer;
+  m: Pointer;
+begin
+  while FAreaList.Count > 0 do begin
+    a := FAreaList[0];
+    FreeMem(a);
+    FAreaList.Delete(0);
+  end;
+end;
+
 procedure TIpHtmlNodeCore.ParseBaseProps(aOwner : TIpHtml);
 {$IFDEF IP_LAZARUS}
 var
@@ -12481,10 +12525,39 @@ begin
   Props.DelayCache:=False;
 end;
 
+procedure TIpHtmlNodeCore.MakeVisible;
+var
+  i : Integer;
+  R : TRect;
+begin
+  if FAreaList.Count = 0 then
+    BuildAreaList;
+  SetRectEmpty(R);
+  for i := 0 to Pred(FAreaList.Count) do
+    UnionRect(R, R, PRect(FAreaList[i])^);
+
+  Owner.MakeVisible(R{$IFDEF IP_LAZARUS}, true {$ENDIF});
+  //Owner.MakeVisible(R{$IFDEF IP_LAZARUS}, False {$ENDIF});  // original
+end;
+
 function TIpHtmlNodeCore.SelectCSSFont(const aFont: string): string;
 begin
   // todo: implement font matching
   result := FirstString(aFont);
+end;
+
+procedure TIpHtmlNodeCore.SetId(const Value: String);
+var
+  idx: Integer;
+begin
+  if FId <> '' then
+    with Owner.IdList do begin
+      idx := IndexOf(Id);
+      if idx > -1 then Delete(idx);
+    end;
+  FId:= Value;
+  if FId <> '' then
+    Owner.IdList.AddObject(FId, Self);
 end;
 
 procedure TIpHtmlNodeCore.ApplyCSSProps(const ACSSProps: TCSSProps;
@@ -12648,12 +12721,20 @@ begin
   end;
 end;
 
+constructor TIpHtmlNodeCore.Create(ParentNode: TIpHtmlNode);
+begin
+  inherited;
+  FAreaList := {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif}.Create;
+end;
+
 destructor TIpHtmlNodeCore.Destroy;
 begin
   if Assigned(FInlineCSSProps) then
     FInlineCSSProps.Free;
   if Assigned(FCombinedCSSProps) then
     FCombinedCSSProps.Free;
+  ClearAreaList;
+  FAreaList.Free;
   inherited Destroy;
 end;
 {$ENDIF}
@@ -14638,6 +14719,7 @@ var
   i : Integer;
 begin
   E := FHtml.FindElement(URL);
+  if E = nil then E := FHtml.FindElementID(URL);
   FCurAnchor := '';
   if E <> nil then begin
     HyperPanel.GetPageRect;  // Make sure that layout is valid
@@ -15064,6 +15146,7 @@ var
   i : Integer;
 begin
   E := FHtml.FindElement(URL);
+  if E = nil then E := FHtml.FindElementID(URL);
   FCurAnchor := '';
   if E <> nil then begin
     E.MakeVisible;
