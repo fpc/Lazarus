@@ -236,9 +236,16 @@ function AllocCocoaTableListView: TCocoaTableListView;
 
 implementation
 
-function AllocCocoaTableListView: TCocoaTableListView;
+function AllocCocoaTableListView: TCocoaTableListView; // init will happen outside
 begin
-  Result := TCellCocoaTableListView.alloc; // init will happen outside
+  {$IFDEF DYNAMIC_NSTABLEVIEW_BASE}
+  if NSAppKitVersionNumber >= NSAppKitVersionNumber10_7 then
+    Result := TViewCocoaTableListView.alloc
+  else
+    Result := TCellCocoaTableListView.alloc;
+  {$ELSE}
+    Result := TCellCocoaTableListView.alloc;
+  {$ENDIF}
 end;
 
 { NSTableButtonCell }
