@@ -227,6 +227,9 @@ type
     //       on the other hand, it doesn't call "inherited" so there's no need
     //       to do an actual override
     function tableView_viewForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): NSView; message 'tableView:viewForTableColumn:row:';
+
+    procedure textFieldAction(sender: NSTextField); message 'textFieldAction:';
+    procedure checkboxAction(sender: NSButton); message 'checkboxAction:';
   end;
 
 function AllocCocoaTableListView: TCocoaTableListView;
@@ -1056,6 +1059,29 @@ begin
   item.setStringValue(NSStringUtf8(txt));
   item.lclSetEnabled(isEnabled);
   Result := item
+end;
+
+procedure TViewCocoaTableListView.textFieldAction(sender: NSTextField);
+var
+  column, row: NSInteger;
+begin
+  if not Assigned(callback) then Exit;
+
+  column := columnForView(sender);
+  row := rowForView(sender);
+  callback.SetItemTextAt(row, column, NSStringToString(sender.stringValue));
+  reloadDataForRow_column(row, column);
+end;
+
+procedure TViewCocoaTableListView.checkboxAction(sender: NSButton);
+var
+  row: NSInteger;
+begin
+  if not Assigned(callback) then Exit;
+
+  row := rowForView(sender);
+  callback.SetItemCheckedAt(row, 0, sender.state);
+  reloadDataForRow_column(row, 0);
 end;
 
 end.
