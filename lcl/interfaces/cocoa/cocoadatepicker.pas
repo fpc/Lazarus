@@ -8,7 +8,7 @@ interface
 uses
   Classes, SysUtils, DateUtils,
   LclType,
-  CocoaAll, CocoaUtils, CocoaPrivate;
+  CocoaAll, CocoaUtils, CocoaPrivate, cocoa_extra;
 
 
 type

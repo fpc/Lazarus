@@ -12,7 +12,7 @@
   for details about the license.
  *****************************************************************************
 }
-unit cocoa_extra;
+unit Cocoa_Extra;
 
 {$mode objfpc}{$H+}
 {$modeswitch objectivec1}
@@ -87,7 +87,8 @@ type
 
   NSWindowFix = objccategory external (NSWindow)
     // 10.4-10.7
-    function userSpaceScaleFactor: CGFloat; message 'userSpaceScaleFactor'; //deprecated
+    // userSpaceScaleFactor is declare in the latest CocoaAll
+    //function userSpaceScaleFactor: CGFloat; message 'userSpaceScaleFactor'; //deprecated
     // 10.7+
     procedure toggleFullScreen(sender: id); message 'toggleFullScreen:';
     function backingScaleFactor: CGFloat; message 'backingScaleFactor';
