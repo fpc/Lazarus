@@ -113,6 +113,7 @@ type
 
     procedure lclRegisterSmallImage(idx: Integer; img: NSImage); message 'lclRegisterSmallImage::';
     function lclGetSmallImage(idx: INteger): NSImage; message 'lclGetSmallImage:';
+    function lclGetItemImageAt(ARow, ACol: Integer): NSImage; message 'lclGetItemImageAt::';
 
     // NSTableViewDataSourceProtocol
     function numberOfRowsInTableView(tableView: NSTableView): NSInteger; message 'numberOfRowsInTableView:';
@@ -222,6 +223,10 @@ type
   { TViewCocoaTableListView }
 
   TViewCocoaTableListView = objcclass(TCocoaTableListView, NSTableViewDelegateProtocol, NSTableViewDataSourceProtocol)
+    // todo: this should be "override" for 10.7 and later
+    //       on the other hand, it doesn't call "inherited" so there's no need
+    //       to do an actual override
+    function tableView_viewForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): NSView; message 'tableView:viewForTableColumn:row:';
   end;
 
 function AllocCocoaTableListView: TCocoaTableListView;
@@ -327,6 +332,30 @@ function TCocoaTableListView.lclGetSmallImage(idx: INteger): NSImage;
 begin
   if not Assigned(smallimages) then Result := nil;
   Result := NSImage(smallimages.objectForKey( NSNumber.numberWithInt(idx) ) );
+end;
+
+function TCocoaTableListView.lclGetItemImageAt(ARow, ACol: Integer): NSImage;
+var
+  idx : Integer;
+  img : NSimage;
+begin
+  if not Assigned(callback) then
+  begin
+    Result := nil;
+    Exit;
+  end;
+
+  idx := -1;
+  callback.GetItemImageAt(ARow, ACol, idx);
+  if idx>=0 then
+  begin
+    img := lclGetSmallImage(idx);
+    if not Assigned(img) then begin
+      img := callback.GetImageFromIndex(idx);
+      if Assigned(img) then lclRegisterSmallImage(idx, img);
+    end;
+  end else
+    img := nil;
 end;
 
 function TCocoaTableListView.acceptsFirstResponder: Boolean;
@@ -812,17 +841,7 @@ begin
   if (col <> 0) then Exit;
 
   if not isFirstColumnCheckboxes and isImagesInCell then begin
-    idx := -1;
-    callback.GetItemImageAt(row, col, idx);
-    if idx>=0 then
-    begin
-      img := lclGetSmallImage(idx);
-      if not Assigned(img) then begin
-        img := callback.GetImageFromIndex(idx);
-        if Assigned(img) then lclRegisterSmallImage(idx, img);
-      end;
-    end else
-      img := nil;
+    img := lclGetItemImageAt(row, col);
 
     Result := NSImageAndTextCell(NSImageAndTextCell.alloc).initTextCell(NSSTR(''));
     NSImageAndTextCell(Result).drawImage := img; // if "image" is assigned, text won't be drawn :(
@@ -991,6 +1010,52 @@ begin
   else
     textSubView.setTextColor(NSColor.disabledControlTextColor);
   inherited lclSetEnabled(AEnabled);
+end;
+
+{ TViewCocoaTableListView }
+
+function TViewCocoaTableListView.tableView_viewForTableColumn_row(tableView: NSTableView;
+  tableColumn: NSTableColumn; row: NSInteger): NSView;
+var
+  col: NSInteger;
+  frameRect: NSRect;
+  item: TCocoaTableListItem;
+  StrValue: NSString;
+  chkst: Integer;
+  txt: String;
+begin
+  frameRect.origin := GetNSPoint(0,0);
+  frameRect.size := GetNSSize(tableColumn.width, rowHeight);
+
+  item := TCocoaTableListItem(makeViewWithIdentifier_owner(NSSTR('tblview'), self));
+  if item = nil then begin
+    item := TCocoaTableListItem.alloc.initWithFrame(frameRect);
+    //todo: should be system font :?
+    //item.setfont(TCocoaFont(ListView.Font.Handle).Font);
+    item.setTarget(self);
+    item.setCheckAction(ObjCSelector('checkboxAction:'));
+    item.setTextAction(ObjCSelector('textFieldAction:'));
+    item.setidentifier(NSSTR('tblview'));
+  end;
+
+  item.setFrame(frameRect);
+  item.setColumn(tableColumn);
+  col := tableColumns.indexOfObject(tableColumn);
+  if (col = 0) and isFirstColumnCheckboxes then begin
+    callback.GetItemCheckedAt(row, col, chkst);
+    item.setCheckState(chkst)
+  end
+  else
+    item.setCheckState(-1);
+
+  item.setImage(lclGetItemImageAt(row, col));
+
+  txt := '';
+  if not callback.GetItemTextAt(row, col, txt) then txt := '';
+
+  item.setStringValue(NSStringUtf8(txt));
+  item.lclSetEnabled(isEnabled);
+  Result := item
 end;
 
 end.
