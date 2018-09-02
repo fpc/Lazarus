@@ -190,6 +190,40 @@ type
     function tableView_dataCellForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): NSCell; message 'tableView:dataCellForTableColumn:row:';
   end;
 
+  // View based NSTableView
+
+  TCocoaTableListItem = objcclass(NSView)
+  private
+    column: NSTableColumn;
+    checkedSubView: NSButton;
+    imageSubView: NSImageView;
+    textSubView: NSTextField;
+    idStr: NSString;
+  public
+    function initWithFrame(frameRect: NSRect): id; override;
+    procedure dealloc; override;
+    procedure setColumn(AColumn: NSTableColumn); message 'setColumn:';
+    procedure setImage(AImage: NSImage); message 'setImage:';
+    procedure setCheckState(AState: NSInteger); message 'setCheckState:';
+    procedure setStringValue(AString: NSString); message 'setStringValue:';
+    procedure setEditable(flag: Boolean); message 'setEditable:';
+    procedure setFont(AFont: NSFont); message 'setFont:';
+    procedure setTarget(ATarget: id); message 'setTarget:';
+    procedure setCheckAction(aSelector: SEL); message 'setCheckAction:';
+    procedure setTextAction(aSelector: SEL); message 'setTextAction:';
+    procedure resizeSubviewsWithOldSize(oldSize: NSSize); override;
+    procedure setIdentifier(identifier_: id); message 'setIdentifier:';
+    function identifier: id; message 'identifier';
+    function textFrame: NSRect; message 'textFrame';
+    procedure lclSetEnabled(AEnabled: Boolean); override;
+  end;
+
+
+  { TViewCocoaTableListView }
+
+  TViewCocoaTableListView = objcclass(TCocoaTableListView, NSTableViewDelegateProtocol, NSTableViewDataSourceProtocol)
+  end;
+
 function AllocCocoaTableListView: TCocoaTableListView;
 
 implementation
@@ -813,6 +847,151 @@ begin
   Result := btn;
 end;
 
+{ TCocoaTableListItem }
+
+function TCocoaTableListItem.initWithFrame(frameRect: NSRect): id;
+var
+  ImageIndex: NSInteger;
+  //bmp: TBitmap;
+  Img: NSImage;
+begin
+  Result := inherited initWithFrame(frameRect);
+  Result.setAutoresizesSubviews(True);
+
+  checkedSubview := NSButton.alloc.init;
+  checkedSubview.setButtonType(NSSwitchButton);
+  checkedSubview.setFrameOrigin(GetNSPoint(0,0));
+  checkedSubview.setFrameSize(GetNSSize(frameRect.size.height, frameRect.size.height));
+  Result.addSubview(checkedSubView);
+
+  imageSubView := NSImageView.alloc.initWithFrame(checkedSubView.frame);
+  Result.addSubview(imageSubView);
+
+  textSubView := NSTextField.alloc.initWithFrame(frameRect);
+  textSubView.setBordered(False);
+  textSubView.setDrawsBackground(False);
+  textSubView.cell.setSendsActionOnEndEditing(True);
+  textSubView.cell.setLineBreakMode(NSLineBreakByTruncatingTail);
+  textSubView.setEditable(False);
+  textSubView.setAllowsEditingTextAttributes(False);
+  Result.addSubview(textSubView);
+end;
+
+procedure TCocoaTableListItem.dealloc;
+begin
+  checkedSubView.release;
+  imageSubView.release;
+  textSubView.release;
+  inherited dealloc;
+end;
+
+procedure TCocoaTableListItem.setColumn(AColumn: NSTableColumn);
+begin
+  column := AColumn;
+  resizeSubviewsWithOldSize(GetNSSize(column.width, column.tableView.rowHeight));
+end;
+
+procedure TCocoaTableListItem.setImage(AImage: NSImage);
+begin
+  imageSubView.setImage(AImage);
+  imageSubView.setHidden(AImage = nil);
+  resizeSubviewsWithOldSize(GetNSSize(column.width, column.tableView.rowHeight));
+end;
+
+procedure TCocoaTableListItem.setCheckState(AState: NSInteger);
+begin
+  checkedSubView.setState(AState);
+  checkedSubView.setHidden(AState = -1);
+  resizeSubviewsWithOldSize(GetNSSize(column.width, column.tableView.rowHeight));
+end;
+
+procedure TCocoaTableListItem.setStringValue(AString: NSString);
+begin
+  if Assigned(textSubView) and Assigned(AString) then
+    textSubView.setStringValue(AString);
+end;
+
+procedure TCocoaTableListItem.setEditable(flag: Boolean);
+begin
+  textSubView.setEditable(flag);
+end;
+
+procedure TCocoaTableListItem.setFont(AFont: NSFont);
+begin
+  textSubView.setFont(AFont);
+  resizeSubviewsWithOldSize(GetNSSize(column.width, column.tableView.rowHeight));
+end;
+
+procedure TCocoaTableListItem.setTarget(ATarget: id);
+begin
+  checkedSubView.setTarget(ATarget);
+  textSubView.setTarget(ATarget);
+end;
+
+procedure TCocoaTableListItem.setCheckAction(aSelector: SEL);
+begin
+  checkedSubView.setAction(aSelector);
+end;
+
+procedure TCocoaTableListItem.setTextAction(aSelector: SEL);
+begin
+  textSubView.setAction(aSelector);
+end;
+
+procedure TCocoaTableListItem.resizeSubviewsWithOldSize(oldSize: NSSize);
+var
+  origin: NSPoint;
+  size: NSSize;
+  height: CGFloat;
+begin
+  origin := bounds.origin;
+  size := oldSize;
+  if not checkedSubView.isHidden then
+  begin
+    checkedSubView.setFrameOrigin(origin);
+    origin.x := origin.x + checkedSubView.frame.size.width;
+    size.width := size.width - checkedSubView.frame.size.width;
+  end;
+
+  if not imageSubView.isHidden then
+  begin
+    imageSubView.setFrameOrigin(origin);
+    origin.x := origin.x + imageSubView.frame.size.width;
+    size.width := size.width - imageSubView.frame.size.width;
+  end;
+
+  // Vertically center text
+  height := textSubView.font.boundingRectForFont.size.height;
+  origin.y := ((size.height - height + 0.5) / 2.0);
+  size.height := height;
+  textSubView.setFrameOrigin(origin);
+  textSubView.setFrameSize(size);
+end;
+
+procedure TCocoaTableListItem.setIdentifier(identifier_: id);
+begin
+  idStr := identifier_;
+end;
+
+function TCocoaTableListItem.identifier: id;
+begin
+  Result := idStr;
+end;
+
+function TCocoaTableListItem.textFrame: NSRect;
+begin
+  Result := textSubView.frame;
+end;
+
+procedure TCocoaTableListItem.lclSetEnabled(AEnabled: Boolean);
+begin
+  // If NSTextField editable is set False, text color won't change when disabled
+  if AEnabled then
+    textSubView.setTextColor(NSColor.controlTextColor)
+  else
+    textSubView.setTextColor(NSColor.disabledControlTextColor);
+  inherited lclSetEnabled(AEnabled);
+end;
 
 end.
 
