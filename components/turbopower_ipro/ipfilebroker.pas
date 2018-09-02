@@ -81,7 +81,6 @@ type
   public
     constructor Create(AOwner : TComponent); override;
     destructor Destroy; override;
-
     function DoGetHtmlStream(const URL : string; PostData : TIpFormDataEntity) : TStream; override;
     function DoCheckURL(const URL : string; var ContentType : string) : Boolean; override;
     procedure DoLeave(Html : TIpHtml); override;

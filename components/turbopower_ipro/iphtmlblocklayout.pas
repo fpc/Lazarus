@@ -806,6 +806,7 @@ var
   Prefor : Boolean;
   CurElem : PIpHtmlElement;
   wi: PWordInfo;
+  lfh: Integer;
 
   procedure InitInner;
   begin
@@ -831,6 +832,7 @@ var
     FBaseOffset := 0;
     FSoftBreak := False;
     FHyphenSpace := 0;
+    lfh := 0;
   end;
 
   procedure ContinueRow;
@@ -935,12 +937,20 @@ begin
               Break;
           etSoftLF :
             if not DoQueueElemSoftLF(WW) then
+            begin
+              if CurElem.LFHeight > 0 then
+                lfh := CurElem.LFHeight;
               Break;
+            end;
           etHardLF :
             if not DoQueueElemHardLF then
+            begin
+              if CurElem.LFHeight > 0 then
+                lfh := CurElem.LFHeight;
             //  raise EIpHtmlException.Create('TIpNodeBlockLayouter.LayoutQueue: FIgnoreHardLF is True after all.')
             //else
               Break;
+            end;
           etClearLeft, etClearRight, etClearBoth :
             if not DoQueueElemClear(CurElem) then
               Break;
@@ -977,7 +987,7 @@ begin
       OutputQueueLine;
       if (not FExpBreak) and (FTextWidth=0) and (FVRemainL=0) and (FVRemainR=0) then
         break;
-      Inc(YYY, FMaxAscent + FMaxDescent);
+      Inc(YYY, FMaxAscent + FMaxDescent + lfh);
 
       // Calculate VRemainL and VRemainR
       FVRemainL := CalcVRemain(FVRemainL, FLIdent);

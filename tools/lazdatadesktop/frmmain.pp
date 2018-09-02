@@ -1440,6 +1440,7 @@ begin
   Result.ImageIndex:=15;
   PCDD.ActivePage:=Result;
   Result.DataDictionary.OnProgress:=@DoDDEprogress;
+  Result.CreateGUI;
 end;
 
 { ---------------------------------------------------------------------

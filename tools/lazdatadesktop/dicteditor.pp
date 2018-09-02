@@ -71,7 +71,6 @@ Type
     FDomainsNode : TTreeNode;
 {$endif}
     Function AddNewItemPopup(ObjectType: TEditObjectType; AImageIndex : Integer) : TMenuItem;
-    procedure CreateGUI;
     procedure DoDoubleClick(Sender: TObject);
     procedure DoNewObject(Sender: TObject);
     procedure DoDeleteObject(Sender: TObject);
@@ -112,6 +111,7 @@ Type
     Constructor Create(AOwner : TComponent); override;
     Destructor Destroy; override;
     // General methods.
+    procedure CreateGUI;
     Procedure ShowDictionary;
     Procedure LoadFromFile(AFileName : String);
     Procedure SaveToFile(AFileName : String);
@@ -351,7 +351,7 @@ constructor TDataDictEditor.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FDD:=TFPDataDictionary.Create;
-  CreateGUI;
+  //CreateGUI;
 end;
 
 Procedure TDataDictEditor.CreateGUI;

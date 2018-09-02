@@ -96,7 +96,7 @@ const
   MAXINTS = 4096; {buffer size - this should be way more than needed}
   TINTARRGROWFACTOR = 64;
   DEFAULT_PRINTMARGIN = 0.5; {inches}
-  FONTSIZESVALUSARRAY : array[0..6] of integer = (8,10,12,14,18,24,36);
+  FONTSIZESVALUESARRAY : array[0..6] of integer = (8,10,12,14,18,24,36);
   MAXWORDS = 65536;
 
   ZOOM_TO_FIT = 0;
@@ -299,6 +299,7 @@ type
     WordRect2 : TRect;
     Props : TIpHtmlProps;
     Owner : TIpHtmlNode;
+    LFHeight : Integer;  // Height of LineFeed elements
     {$IFDEF IP_LAZARUS}
     IsSelected: boolean;
     {$ENDIF}
@@ -648,6 +649,8 @@ type
     property Align : TIpHtmlAlign read FAlign write FAlign;
     property Size : TIpHtmlHeaderSize read FSize write FSize;
   end;
+
+  { TIpHtmlNodeP }
 
   TIpHtmlNodeP = class(TIpHtmlNodeInline)
   private
@@ -2039,6 +2042,7 @@ type
     procedure EnsureClosure(const EndToken: TIpHtmlToken; const EndTokens: TIpHtmlTokenSet);
     function NewElement(EType : TElementType; Own: TIpHtmlNode) : PIpHtmlElement;
     function BuildStandardEntry(EType: TElementType): PIpHtmlElement;
+    function BuildLinefeedEntry(EType: TElementType; AHeight: Integer): PIpHtmlElement;
     function ParseDir: TIpHtmlDirection;
     procedure ParseSPAN(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
     procedure ParseQ(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
@@ -3908,21 +3912,22 @@ end;
 procedure TIpHtmlBaseLayouter.RemoveDuplicateLFs;
 var
   i: Integer;
+  elem: PIpHtmlElement;
+  prevelem: PIpHtmlElement;
 begin
   i := pred(FElementQueue.Count);
-  while i >= 0 do begin
+  while i > 0 do begin
+    elem := PIpHtmlElement(FElementQueue[i]);
+    prevelem := PIpHtmlElement(FElementQueue[i-1]);
     case PIpHtmlElement(FElementQueue[i])^.ElementType of
       etSoftLF:
-        if (i > 0) and (PIpHtmlElement(FElementQueue[i-1])^.ElementType in [etSoftLF, etHardLF])
-          then FElementQueue.Delete(i);
-      {
-      etHardLF:
-        if (i > 0) and (PIpHtmlElement(FElementQueue[i-1])^.ElementType in [etSoftLF, etHardLF])
-        then begin
-          FElementQueue.Delete(i-1);
-          dec(i);
+        if (prevelem.ElementType in [etSoftLF, etHardLF]) then begin
+          prevelem.LFHeight := MaxI2(prevelem.LFHeight, elem.LFHeight);
+          FElementQueue.Delete(i);
         end;
-        }
+      etHardLF:
+        if (prevelem.ElementType in [etSoftLF, etHardLF]) then
+          prevelem.LFHeight := MaxI2(prevelem.LFHeight, elem.LFHeight);
     end;
     dec(i);
   end;
@@ -8712,6 +8717,14 @@ begin
   SetWordRect(Result, Rect(0, 0, 0, 0));
 end;
 
+function TIpHtml.BuildLineFeedEntry(EType: TElementType;
+  AHeight: Integer): PIpHtmlElement;
+begin
+  if not (EType in [etHardLF, etSoftLF]) then
+    raise Exception.Create('BuildLinefeedEntry can only be called with parameter etSoftLF or dtHardLF');
+  Result := BuildStandardEntry(EType);
+  Result.LFHeight := AHeight;
+end;
 procedure TIpHtml.MakeVisible(const R: TRect{$IFDEF IP_LAZARUS}; ShowAtTop: Boolean = True{$ENDIF});
 begin
   if assigned(FOnScroll) then
@@ -9212,7 +9225,7 @@ begin
     Props.FontName := FirstString(Face);
   case Size.SizeType of
   hrsAbsolute :
-    Props.FontSize := FONTSIZESVALUSARRAY[Size.Value-1];
+    Props.FontSize := FONTSIZESVALUESARRAY[Size.Value-1];
   hrsRelative :
     begin
       TmpSize := Props.BaseFontSize + Size.Value;
@@ -9222,7 +9235,7 @@ begin
       if TmpSize > 7 then
         Props.FontSize := 36
       else
-        Props.FontSize := FONTSIZESVALUSARRAY[TmpSize-1];
+        Props.FontSize := FONTSIZESVALUESARRAY[TmpSize-1];
     end;
   end;
   if Color <> -1 then
@@ -9624,22 +9637,41 @@ begin
   inherited SetProps(Props);
 end;
 
-procedure TIpHtmlNodeP.Enqueue;
+function GetMargin(AMargin: TIpHtmlElemMargin; ADefault: Integer): Integer;
 begin
+  if AMargin.Style = hemsPx then
+    Result := round(AMargin.Size)
+  else
+    Result := ADefault;
+end;
+
+procedure TIpHtmlNodeP.Enqueue;
+var
+  elem: PIpHtmlElement;
+  hf, h: Integer;
+begin
+  hf := Props.FontSize;
   if FChildren.Count > 0 then begin
-    if not ((FParentNode is TIpHtmlNodeLI) or (FParentNode is TIpHtmlNodeTD)) then
+    if not (FParentNode is TIpHtmlNodeLI) then
     begin
-      EnqueueElement(Owner.SoftLF);
-      EnqueueElement(Owner.HardLF);
+      if FParentNode is TIpHtmlNodeTD then h := 0 else h := hf div 2;
+      // FIXME: above line is a workaround for LHelp to display the code tables
+      // correctly
+      h := GetMargin(Props.ElemMarginTop, h);
+      elem := Owner.BuildLinefeedEntry(etSoftLF, h);
+      EnqueueElement(elem);
     end;
   end;
-
   inherited Enqueue;
-
   if FChildren.Count > 0 then begin
-    if not (FParentNode is TIpHtmlNodeTD) then begin
-      EnqueueElement(Owner.SoftLF);
-      EnqueueElement(Owner.HardLF);
+    if not (FParentNode is TIpHtmlNodeLI) then
+    begin
+      if FParentNode is TIpHtmlNodeTD then h := 0 else h := hf div 2;
+      // FIXME: above line is a workaround for LHelp to display the code tables
+      // correctly
+      h := GetMargin(Props.ElemMarginBottom, h);
+      elem := Owner.BuildLinefeedEntry(etSoftLF, h);
+      EnqueueElement(elem);
     end;
   end;
 end;
@@ -9784,7 +9816,7 @@ procedure TIpHtmlNodeHeader.SetProps(const RenderProps: TIpHtmlProps);
 begin
   Props.Assign(RenderProps);
   Props.DelayCache:=True;
-  Props.FontSize := FONTSIZESVALUSARRAY[abs(Size-6)];
+  Props.FontSize := FONTSIZESVALUESARRAY[abs(Size-6)];
   Props.FontStyle := [fsBold];
   Props.Alignment := Align;
   Props.DelayCache:=False;
@@ -9792,13 +9824,22 @@ begin
 end;
 
 procedure TIpHtmlNodeHeader.Enqueue;
+var
+  elem: PIpHtmlElement;
+  hf: Integer;
+  h: Integer;
 begin
-  if FChildren.Count > 0 then
-    EnqueueElement(Owner.HardLF);
+  hf := Props.FontSize;
+  if FChildren.Count > 0 then begin
+    h := GetMargin(Props.ElemMarginTop, hf div 2);
+    elem := Owner.BuildLinefeedEntry(etHardLF, h);
+    EnqueueElement(elem);
+  end;
   inherited Enqueue;
   if FChildren.Count > 0 then begin
-    EnqueueElement(Owner.SoftLF);
-//    EnqueueElement(Owner.HardLF);    // Remove large spacing after header line
+    h := GetMargin(Props.ElemMarginBottom, hf div 4);
+    elem := Owner.BuildLinefeedEntry(etHardLF, h);
+    EnqueueElement(elem);
   end;
 end;
 
@@ -10609,15 +10650,14 @@ begin
   hiaCenter :
     EnqueueElement(Owner.SoftLF);
   end;
- }
+}
   EnqueueElement(Owner.SoftLF);
-  EnqueueElement(Owner.HardLF);
 
   EnqueueElement(Element);
 
   EnqueueElement(Owner.SoftLF);
-  EnqueueElement(Owner.hardLF);  // LFs needed otherwise next element is too close
-                               {
+//  EnqueueElement(Owner.HardLF);  // LFs needed otherwise next element is too close
+{
   case Align of
   hiaTop,
   hiaMiddle,
@@ -10625,7 +10665,7 @@ begin
   hiaCenter :
     EnqueueElement(Owner.SoftLF);
   end;
-  }
+}
 end;
 
 procedure TIpHtmlNodeTABLE.SetBorder(const Value: Integer);
@@ -11567,7 +11607,7 @@ procedure TIpHtmlNodeBASEFONT.ApplyProps(
   const RenderProps: TIpHtmlProps);
 begin
   Props.Assign(RenderProps);
-  Props.FontSize := FONTSIZESVALUSARRAY[Size-1];
+  Props.FontSize := FONTSIZESVALUESARRAY[Size-1];
   Props.BaseFontSize := Size;
 end;
 
