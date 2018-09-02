@@ -132,7 +132,6 @@ end;
 procedure TForm1.MergeCellsHandler(Sender: TObject; ACol, ARow: Integer;
   var ALeft, ATop, ARight, ABottom: Integer);
 begin
-  (*
   // Define a merged block which is a single row heigh
   if (ACol in [1..2]) and (ARow = 1) then begin
     ALeft := 1;
@@ -150,11 +149,10 @@ begin
     ALeft := 1;
     ARight := 2;
   end else
-  *)
   // Define a merged block in the row headers (for the vertical text)
   if (ACol = 0) and (ARow in [2..5]) then begin
     ATop := 2;
-    ABottom := 5;    (*
+    ABottom := 5;
   end else
   // Merge the next two cells adjacent to cell with text 'Image'
   if (ACol > 1) and (Grid.Cells[ACol-1, ARow] = 'Image') then begin
@@ -163,7 +161,7 @@ begin
   end else
   if (ACol > 2) and (Grid.Cells[ACol-2, ARow] = 'Image') then begin
     ALeft := ACol - 1;
-    ARight := ALeft + 1;    *)
+    ARight := ALeft + 1;
   end;
 end;
 
