@@ -103,6 +103,16 @@ type
     function title: NSString; message 'title';
   end;
 
+  NSUserInterfaceItemIdentifier = NSString;
+
+  NSTableViewFix = objccategory external (NSTableView)
+    // 10.7
+    function rowForView(AView: NSView): NSInteger; message 'rowForView:';
+    function columnForView(AView: NSView): NSInteger; message 'columnForView:';
+    function makeViewWithIdentifier_owner(identifier_: NSUserInterfaceItemIdentifier; owner: id): NSView ; message 'makeViewWithIdentifier:owner:';
+    function viewAtColumn_row_makeIfNecessary(column, row: NSInteger; makeifNecessary: Boolean): NSview; message 'viewAtColumn:row:makeIfNecessary:';
+  end;
+
   {// private since 10.5, doesn't seam to do anything in 10.10
   NSApplicationSetAppleMenu = objccategory external(NSApplication)
     procedure setAppleMenu(AMenu: NSMenu); message 'setAppleMenu:';
