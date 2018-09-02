@@ -15,7 +15,7 @@ object PackageEditorForm: TPackageEditorForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnDropFiles = FormDropFiles
-  LCLVersion = '1.7'
+  LCLVersion = '1.9.0.0'
   object ToolBar: TToolBar
     Left = 0
     Height = 48
@@ -23,24 +23,25 @@ object PackageEditorForm: TPackageEditorForm
     Width = 464
     AutoSize = True
     ButtonHeight = 46
+    ButtonWidth = 23
     ShowCaptions = True
     TabOrder = 0
   end
   object PropsGroupBox: TGroupBox
     Left = 0
     Height = 118
-    Top = 314
+    Top = 316
     Width = 464
     Align = alBottom
     Caption = 'PropsGroupBox'
     ClientHeight = 98
-    ClientWidth = 460
+    ClientWidth = 462
     TabOrder = 3
     object CallRegisterProcCheckBox: TCheckBox
       Left = 0
-      Height = 19
+      Height = 21
       Top = 0
-      Width = 158
+      Width = 187
       Caption = 'CallRegisterProcCheckBox'
       OnChange = CallRegisterProcCheckBoxChange
       ParentShowHint = False
@@ -50,10 +51,10 @@ object PackageEditorForm: TPackageEditorForm
     object AddToUsesPkgSectionCheckBox: TCheckBox
       AnchorSideLeft.Control = CallRegisterProcCheckBox
       AnchorSideLeft.Side = asrBottom
-      Left = 168
-      Height = 19
+      Left = 197
+      Height = 21
       Top = 0
-      Width = 191
+      Width = 222
       BorderSpacing.Left = 10
       Caption = 'AddToUsesPkgSectionCheckBox'
       OnChange = AddToUsesPkgSectionCheckBoxChange
@@ -66,9 +67,9 @@ object PackageEditorForm: TPackageEditorForm
       AnchorSideTop.Control = MinVersionEdit
       AnchorSideTop.Side = asrCenter
       Left = 0
-      Height = 19
+      Height = 21
       Top = 2
-      Width = 151
+      Width = 179
       Caption = 'UseMinVersionCheckBox'
       OnChange = UseMinVersionCheckBoxChange
       TabOrder = 2
@@ -77,8 +78,8 @@ object PackageEditorForm: TPackageEditorForm
       AnchorSideLeft.Control = UseMinVersionCheckBox
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = PropsGroupBox
-      Left = 161
-      Height = 23
+      Left = 189
+      Height = 25
       Top = 0
       Width = 100
       BorderSpacing.Left = 10
@@ -91,9 +92,9 @@ object PackageEditorForm: TPackageEditorForm
       AnchorSideTop.Control = MaxVersionEdit
       AnchorSideTop.Side = asrCenter
       Left = 0
-      Height = 19
-      Top = 27
-      Width = 152
+      Height = 21
+      Top = 29
+      Width = 183
       Caption = 'UseMaxVersionCheckBox'
       OnChange = UseMaxVersionCheckBoxChange
       TabOrder = 4
@@ -103,9 +104,9 @@ object PackageEditorForm: TPackageEditorForm
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = MinVersionEdit
       AnchorSideTop.Side = asrBottom
-      Left = 162
-      Height = 23
-      Top = 25
+      Left = 193
+      Height = 25
+      Top = 27
       Width = 100
       BorderSpacing.Left = 10
       BorderSpacing.Top = 2
@@ -119,8 +120,8 @@ object PackageEditorForm: TPackageEditorForm
       AnchorSideTop.Side = asrBottom
       Left = 0
       Height = 25
-      Top = 54
-      Width = 159
+      Top = 58
+      Width = 163
       AutoSize = True
       BorderSpacing.Top = 6
       Caption = 'ApplyDependencyButton'
@@ -131,36 +132,38 @@ object PackageEditorForm: TPackageEditorForm
       AnchorSideTop.Control = CallRegisterProcCheckBox
       AnchorSideTop.Side = asrBottom
       Left = 0
-      Height = 73
-      Top = 25
-      Width = 460
+      Height = 71
+      Top = 27
+      Width = 462
       Align = alBottom
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Top = 6
       Caption = 'RegisteredPluginsGroupBox'
-      ClientHeight = 53
-      ClientWidth = 456
+      ClientHeight = 51
+      ClientWidth = 460
       TabOrder = 7
       object RegisteredListBox: TListBox
         Left = 0
-        Height = 53
+        Height = 51
         Top = 0
-        Width = 456
+        Width = 460
         Align = alClient
         ItemHeight = 0
         OnDrawItem = RegisteredListBoxDrawItem
+        ScrollWidth = 458
         Style = lbOwnerDrawFixed
         TabOrder = 0
+        TopIndex = -1
       end
     end
     object DisableI18NForLFMCheckBox: TCheckBox
       AnchorSideLeft.Control = AddToUsesPkgSectionCheckBox
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = AddToUsesPkgSectionCheckBox
-      Left = 365
-      Height = 19
+      Left = 425
+      Height = 21
       Top = 0
-      Width = 174
+      Width = 209
       BorderSpacing.Left = 6
       Caption = 'DisableI18NForLFMCheckBox'
       OnChange = DisableI18NForLFMCheckBoxChange
@@ -171,8 +174,8 @@ object PackageEditorForm: TPackageEditorForm
   end
   object StatusBar: TStatusBar
     Left = 0
-    Height = 23
-    Top = 432
+    Height = 21
+    Top = 434
     Width = 464
     Panels = <>
   end
@@ -180,7 +183,7 @@ object PackageEditorForm: TPackageEditorForm
     Cursor = crVSplit
     Left = 0
     Height = 5
-    Top = 309
+    Top = 311
     Width = 464
     Align = alBottom
     ResizeAnchor = akBottom
@@ -243,14 +246,13 @@ object PackageEditorForm: TPackageEditorForm
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Side = asrBottom
       Left = 163
-      Height = 23
-      Top = 3
+      Height = 25
+      Top = 2
       Width = 300
-      UseFormActivate = True
       ButtonWidth = 23
-      NumGlyphs = 1
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 11
+      NumGlyphs = 1
       MaxLength = 0
       ParentFont = False
       TabOrder = 0
@@ -313,12 +315,11 @@ object PackageEditorForm: TPackageEditorForm
   end
   object ItemsTreeView: TTreeView
     Left = 0
-    Height = 232
+    Height = 234
     Top = 77
     Width = 464
     Align = alClient
     BorderSpacing.Top = 1
-    DefaultItemHeight = 18
     DragMode = dmAutomatic
     MultiSelect = True
     PopupMenu = ItemsPopupMenu
@@ -358,10 +359,6 @@ object PackageEditorForm: TPackageEditorForm
     end
     object MenuItem1: TMenuItem
       Caption = '-'
-    end
-    object mnuAddDiskFiles: TMenuItem
-      Caption = 'Add multiple files...'
-      OnClick = mnuAddDiskFilesClick
     end
     object mnuAddNewFile: TMenuItem
       Caption = 'New file of type...'

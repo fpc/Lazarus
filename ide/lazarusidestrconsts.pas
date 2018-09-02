@@ -3878,7 +3878,6 @@ resourcestring
     +'syntax *.pas;*.pp corresponds to ^(.*\.pas|.*\.pp)$';
   lisUseFilterForExtraFiles = 'Use filter for extra files';
   lisIncludeFilter = 'Include filter';
-  lisExcludeFilter = 'Exclude filter';
   lisInvalidPublishingDirectory = 'Invalid publishing Directory';
   lisSourceDirectoryAndDestinationDirectoryAreTheSameMa = 'Source directory "%s"'
     +'%sand destination directory "%s"'
@@ -3896,7 +3895,6 @@ resourcestring
   lisIssues = 'Issues';
   lisRegularExpression = 'Regular expression';
   lisInvalidFilter = 'Invalid filter';
-  lisInvalidExpression = 'Invalid expression:%s%s%s%s';
 
   // project options
   lisProjOptsUnableToChangeTheAutoCreateFormList = 'Unable to change the auto '
@@ -4018,12 +4016,9 @@ resourcestring
     +'already exists in the project%swith file: "%s".';
   lisProjAddTheUnitNameAlreadyExistsInTheSelection = 'The unit name "%s" '
     +'already exists in the selection%swith file: "%s".';
-  lisProjAddToProject = 'Add to Project';
   lisProjAddNewRequirement = 'New Requirement';
   lisProjAddNewFPMakeRequirement = 'New FPMake Requirement';
   lisProjAddEditorFile = 'Add Editor Files';
-  lisProjFiles = 'Files:';
-  lisProjAddAddFilesToProject = 'Add Files to Project';
   lisProjAddPackageName = 'Package Name:';
   lisProjAddPackageType = 'Package Type:';
   lisProjAddLocalPkg = 'Local (%s)';
@@ -4195,7 +4190,6 @@ resourcestring
   lisDirectories = 'Directories';
   lisFindFileFileMask = 'Fi&le mask';
   lisFindFileIncludeSubDirectories = 'Include &sub directories';
-  lisFindFileOnlyTextFiles = 'Only text files';
 
   // package manager
   lisPkgMangPackage = 'Package: %s';
@@ -4549,7 +4543,6 @@ resourcestring
     +'%sPlease use the format major.minor.release.build'
     +'%sFor example: 1.0.20.10';
   lisA2PNewFile = 'New File';
-  lisA2PNewComponent = 'New Component';
   lisA2PAddFiles = 'Add Files';
   lisA2PAncestorType = 'Ancestor Type';
   lisA2PShowAll = 'Show all';
@@ -5089,9 +5082,6 @@ resourcestring
   lisLFMFile = 'LFM file';
   lisRemoveAllInvalidProperties = 'Remove all invalid properties';
 
-  lisA2PSwitchPaths = 'Switch Paths';
-  lisA2PAddFilesToPackage = 'Add Files to Package';
-  lisA2PAddToPackage = 'Add to package';
   lisA2PCreateNewFile = 'Create New File';
   lisA2PCreateNewComp = 'Create New Component';
   lisA2PCreateNewReq = 'Create New Requirement';
@@ -5612,8 +5602,6 @@ resourcestring
   lisVerifyMethodCalls = 'Verify method calls';
   lisToggleShowingFilenamesWithFullPathOrWithRelativePa = 'Toggle showing '
     +'filenames with full path or with relative path';
-  lisDeleteSelectedFiles = 'Delete selected files';
-  lisAddFilesInDirectory = 'Add Files in Directory';
   lisUnableToCreateLinkWithTarget = 'Unable to create link "%s" with target "%s"';
   lisBuildAllFilesOfProjectPackageIDE =
     'build all files of project/package/IDE';

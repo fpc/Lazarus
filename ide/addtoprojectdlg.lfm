@@ -1,134 +1,20 @@
 object AddToProjectDialog: TAddToProjectDialog
-  Left = 312
+  Left = 279
   Height = 358
-  Top = 231
-  Width = 658
-  ActiveControl = Notebook
+  Top = 224
+  Width = 579
   BorderIcons = [biSystemMenu, biMaximize]
   Caption = 'AddToProjectDialog'
   ClientHeight = 358
-  ClientWidth = 658
+  ClientWidth = 579
   OnClose = AddToProjectDialogClose
-  OnShow = AddToProjectDialogShow
   Position = poScreenCenter
-  LCLVersion = '1.7'
-  object Notebook: TPageControl
-    Left = 0
-    Height = 317
-    Top = 0
-    Width = 658
-    ActivePage = AddEditorFilePage
-    Align = alClient
-    TabIndex = 0
-    TabOrder = 0
-    OnChange = NotebookChange
-    object AddEditorFilePage: TTabSheet
-      Caption = 'AddEditorFilePage'
-      ClientHeight = 282
-      ClientWidth = 650
-      object AddFileLabel: TLabel
-        Left = 6
-        Height = 18
-        Top = 6
-        Width = 638
-        Align = alTop
-        BorderSpacing.Around = 6
-        Caption = 'AddFileLabel'
-        ParentColor = False
-      end
-      object AddFileListView: TListView
-        Left = 6
-        Height = 244
-        Top = 30
-        Width = 638
-        Align = alTop
-        Anchors = [akTop, akLeft, akRight, akBottom]
-        AutoWidthLastColumn = True
-        BorderSpacing.Around = 6
-        Columns = <>
-        MultiSelect = True
-        ReadOnly = True
-        RowSelect = True
-        SortType = stText
-        TabOrder = 0
-        ViewStyle = vsReport
-        OnSelectItem = AddFileListViewSelectItem
-      end
-    end
-    object AddFilesPage: TTabSheet
-      Caption = 'AddFilesPage'
-      ClientHeight = 282
-      ClientWidth = 650
-      object FilesListView: TListView
-        AnchorSideBottom.Control = FilesDirButton
-        Left = 6
-        Height = 235
-        Top = 6
-        Width = 638
-        Anchors = [akTop, akLeft, akRight, akBottom]
-        AutoWidthLastColumn = True
-        BorderSpacing.Around = 6
-        Columns = <>
-        MultiSelect = True
-        ReadOnly = True
-        RowSelect = True
-        SortType = stText
-        TabOrder = 0
-        ViewStyle = vsReport
-        OnSelectItem = FilesListViewSelectItem
-      end
-      object FilesDirButton: TBitBtn
-        AnchorSideLeft.Side = asrBottom
-        AnchorSideBottom.Control = AddFilesPage
-        AnchorSideBottom.Side = asrBottom
-        Left = 6
-        Height = 29
-        Top = 247
-        Width = 101
-        Anchors = [akLeft, akBottom]
-        AutoSize = True
-        BorderSpacing.Around = 6
-        Caption = 'FilesDirButton'
-        OnClick = FilesDirButtonClick
-        TabOrder = 1
-      end
-      object FilesShortenButton: TBitBtn
-        AnchorSideLeft.Control = FilesDirButton
-        AnchorSideLeft.Side = asrBottom
-        AnchorSideTop.Control = FilesDirButton
-        AnchorSideTop.Side = asrCenter
-        Left = 113
-        Height = 29
-        Top = 247
-        Width = 132
-        AutoSize = True
-        BorderSpacing.Around = 6
-        Caption = 'FilesShortenButton'
-        OnClick = FilesShortenButtonClick
-        TabOrder = 2
-      end
-      object FilesDeleteButton: TBitBtn
-        AnchorSideLeft.Control = FilesShortenButton
-        AnchorSideLeft.Side = asrBottom
-        AnchorSideTop.Control = FilesShortenButton
-        AnchorSideTop.Side = asrCenter
-        Left = 251
-        Height = 29
-        Top = 247
-        Width = 123
-        AutoSize = True
-        BorderSpacing.Around = 6
-        Caption = 'FilesDeleteButton'
-        OnClick = FilesDeleteButtonClick
-        TabOrder = 3
-      end
-    end
-  end
+  LCLVersion = '1.9.0.0'
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 29
-    Top = 323
-    Width = 646
+    Height = 26
+    Top = 326
+    Width = 567
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
@@ -140,5 +26,22 @@ object AddToProjectDialog: TAddToProjectDialog
     TabOrder = 1
     ShowButtons = [pbOK, pbCancel]
     ShowBevel = False
+  end
+  object AddFileListView: TListView
+    Left = 6
+    Height = 314
+    Top = 6
+    Width = 567
+    Align = alClient
+    AutoWidthLastColumn = True
+    BorderSpacing.Around = 6
+    Columns = <>
+    MultiSelect = True
+    ReadOnly = True
+    RowSelect = True
+    SortType = stText
+    TabOrder = 0
+    ViewStyle = vsReport
+    OnSelectItem = AddFileListViewSelectItem
   end
 end

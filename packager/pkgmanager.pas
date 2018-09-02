@@ -5208,7 +5208,6 @@ function TPkgManager.DoNewPackageComponent: TModalResult;
 var
   APackage: TLazPackage;
   SaveFlags: TPkgSaveFlags;
-  Page: TAddToPkgType;
   CurEditor: TPackageEditorForm;
 begin
   Result:=ShowNewPkgComponentDialog(APackage);
@@ -5228,9 +5227,7 @@ begin
   // save
   Result:=DoSavePackage(APackage,SaveFlags);
   if Result<>mrOk then exit;
-  // show new component dialog
-  Page:=d2ptNewComponent;
-  Result:=CurEditor.ShowAddDialog(Page);
+  Result:=CurEditor.ShowAddDialog;  // show new component dialog
 end;
 
 function TPkgManager.SavePackageFiles(APackage: TLazPackage): TModalResult;

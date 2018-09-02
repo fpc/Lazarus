@@ -21,8 +21,7 @@ type
     d2ptUnit,
     d2ptVirtualUnit,
     d2ptNewComponent,
-    d2ptFile,
-    d2ptFiles
+    d2ptFile
     );
 
 function CheckAddingPackageUnit(LazPackage: TLazPackage;
@@ -35,7 +34,7 @@ function CheckAddingPackageDependency(LazPackage: TLazPackage;
 
 // Projects:
 
-function CheckAddingProjectFile(AProject: TProject; NewFiles: TStringList;
+function CheckAddingProjectFile(AProject: TProject; NewFiles: TStrings;
   var NewFilename: string): TModalResult;
 
 function CheckAddingProjectDependency(AProject: TProject;
@@ -280,7 +279,7 @@ end;
 
 // Project:
 
-function CheckAddingProjectFile(AProject: TProject; NewFiles: TStringList;
+function CheckAddingProjectFile(AProject: TProject; NewFiles: TStrings;
   var NewFilename: string): TModalResult;
 var
   ConflictFile: TUnitInfo;

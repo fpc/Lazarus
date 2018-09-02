@@ -99,7 +99,6 @@ type
     mnuAddFPMakeReq: TMenuItem;
     mnuAddEditorFiles: TMenuItem;
     mnuAddDiskFile: TMenuItem;
-    mnuAddDiskFiles: TMenuItem;
     mnuAddReq: TMenuItem;
     OpenButton: TSpeedButton;
     ItemsTreeView: TTreeView;
@@ -128,7 +127,6 @@ type
     procedure ItemsTreeViewKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
     procedure ItemsTreeViewSelectionChanged(Sender: TObject);
     procedure mnuAddBitBtnClick(Sender: TObject);
-    procedure mnuAddDiskFilesClick(Sender: TObject);
     procedure mnuAddEditorFilesClick(Sender: TObject);
     procedure mnuAddFPMakeReqClick(Sender: TObject);
     procedure mnuAddReqClick(Sender: TObject);
@@ -180,7 +178,7 @@ type
     FProjectNodeDataList : array [TPENodeType] of TPENodeData;
     procedure AddMenuItemClick(Sender: TObject);
     function AddOneFile(aFilename: string): TModalResult;
-    procedure DoAddMoreDialog(AInitTab: TAddToProjectType);
+    procedure DoAddMoreDialog;
     procedure DoAddDepDialog;
     procedure DoAddFPMakeDepDialog;
     procedure FreeNodeData(Typ: TPENodeType);
@@ -373,14 +371,9 @@ begin
   end;
 end;
 
-procedure TProjectInspectorForm.mnuAddDiskFilesClick(Sender: TObject);
-begin
-  DoAddMoreDialog(a2pFiles);
-end;
-
 procedure TProjectInspectorForm.mnuAddEditorFilesClick(Sender: TObject);
 begin
-  DoAddMoreDialog(a2pEditorFiles);
+  DoAddMoreDialog;
 end;
 
 procedure TProjectInspectorForm.mnuAddFPMakeReqClick(Sender: TObject);
@@ -490,28 +483,23 @@ begin
     mnuAddBitBtnClick(Sender);
 end;
 
-procedure TProjectInspectorForm.DoAddMoreDialog(AInitTab: TAddToProjectType);
+procedure TProjectInspectorForm.DoAddMoreDialog;
 var
-  AddResult: TAddToProjectResult;
+  Files: TStringList;
   i: Integer;
 begin
-  AddResult:=nil;
-  if ShowAddToProjectDlg(LazProject,AddResult,AInitTab)<>mrOk then exit;
-
-  case AddResult.AddType of
-  a2pFiles:
-    begin
-      BeginUpdate;
-      for i:=0 to AddResult.FileNames.Count-1 do
-        if not (AddOneFile(AddResult.FileNames[i]) in [mrOk, mrIgnore]) then break;
-      UpdateAll;
-      EndUpdate;
-    end;
-  else
-    Showmessage('Not implemented');
+  Files:=TStringList.Create;
+  try
+    if ShowAddToProjectDlg(LazProject,Files)<>mrOk then
+      exit;
+    BeginUpdate;
+    for i:=0 to Files.Count-1 do
+      if not (AddOneFile(Files[i]) in [mrOk, mrIgnore]) then break;
+    UpdateAll;
+    EndUpdate;
+  finally
+    Files.Free;
   end;
-
-  AddResult.Free;
 end;
 
 procedure TProjectInspectorForm.DoAddDepDialog;
@@ -1105,7 +1093,6 @@ begin
 
   AddBitBtn.DropdownMenu:=AddPopupMenu;
   mnuAddDiskFile.Caption:=lisPckEditAddFilesFromFileSystem;
-  mnuAddDiskFiles.Caption:=lisAddFilesInDirectory;
   mnuAddEditorFiles.Caption:=lisProjAddEditorFile;
   mnuAddReq.Caption:=lisProjAddNewRequirement;
   mnuAddFPMakeReq.Caption:=lisProjAddNewFPMakeRequirement;

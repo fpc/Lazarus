@@ -156,7 +156,6 @@ begin
 
     T := P.Targets.AddProgram('lazarus.pp');
     t.Dependencies.AddUnit('packagesystem');
-    t.Dependencies.AddUnit('adddirtopkgdlg');
     t.Dependencies.AddUnit('addfiletoapackagedlg');
     t.Dependencies.AddUnit('addtopackagedlg');
     t.Dependencies.AddUnit('basepkgmanager');

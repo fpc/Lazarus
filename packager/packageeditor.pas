@@ -58,7 +58,6 @@ var
   // General actions for the Files and Required packages root nodes.
   // Duplicates actions found under the "Add" button.
   PkgEditMenuAddDiskFile: TIDEMenuCommand;
-  PkgEditMenuAddDiskFiles: TIDEMenuCommand;
   PkgEditMenuAddNewFile: TIDEMenuCommand;
   PkgEditMenuAddNewComp: TIDEMenuCommand;
   PkgEditMenuAddNewReqr: TIDEMenuCommand;
@@ -189,7 +188,6 @@ type
     MenuItem1: TMenuItem;
     mnuAddFPMakeReq: TMenuItem;
     mnuAddDiskFile: TMenuItem;
-    mnuAddDiskFiles: TMenuItem;
     mnuAddNewFile: TMenuItem;
     mnuAddNewComp: TMenuItem;
     mnuAddNewReqr: TMenuItem;
@@ -267,7 +265,6 @@ type
       State: TDragState; var Accept: Boolean);
     procedure ItemsTreeViewKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure mnuAddDiskFileClick(Sender: TObject);
-    procedure mnuAddDiskFilesClick(Sender: TObject);
     procedure mnuAddFPMakeReqClick(Sender: TObject);
     procedure mnuAddNewCompClick(Sender: TObject);
     procedure mnuAddNewReqrClick(Sender: TObject);
@@ -336,7 +333,6 @@ type
     procedure SetSortAlphabetically(const AValue: boolean);
     procedure SetupComponents;
     function OnTreeViewGetImageIndex({%H-}Str: String; Data: TObject; var {%H-}AIsEnabled: Boolean): Integer;
-    procedure ShowAddDialogEx(AType: TAddToPkgType);
     procedure UpdateNodeImage(TVNode: TTreeNode);
     procedure UpdateNodeImage(TVNode: TTreeNode; NodeData: TPENodeData; Item: TObject);
     procedure UpdatePending;
@@ -358,7 +354,6 @@ type
     function CanBeAddedToProject: boolean;
   protected
     fFlags: TPEFlags;
-    fLastDlgPage: TAddToPkgType;
     procedure SetLazPackage(const AValue: TLazPackage); override;
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
   public
@@ -378,7 +373,7 @@ type
     procedure DoSave(SaveAs: boolean);
     procedure DoSortFiles;
     function DoOpenPkgFile(PkgFile: TPkgFile): TModalResult;
-    function ShowAddDialog(var DlgPage: TAddToPkgType): TModalResult;
+    function ShowAddDialog: TModalResult;
     function ShowAddDepDialog: TModalResult;
     function ShowAddFPMakeDepDialog: TModalResult;
     function PkgNameToFormName(const PkgName: string): string;
@@ -572,9 +567,8 @@ begin
   PkgEditMenuSectionFile:=RegisterIDEMenuSection(PackageEditorMenuFilesRoot,'File');
   AParent:=PkgEditMenuSectionFile;
   PkgEditMenuAddDiskFile:=RegisterIDEMenuCommand(AParent,'Add disk file',lisPckEditAddFilesFromFileSystem);
-  PkgEditMenuAddDiskFiles:=RegisterIDEMenuCommand(AParent,'Add disk files',lisAddFilesInDirectory);
   PkgEditMenuAddNewFile:=RegisterIDEMenuCommand(AParent,'New file',lisA2PNewFile);
-  PkgEditMenuAddNewComp:=RegisterIDEMenuCommand(AParent,'New component',lisA2PNewComponent);
+  PkgEditMenuAddNewComp:=RegisterIDEMenuCommand(AParent,'New component',lisMenuNewComponent);
   PkgEditMenuAddNewReqr:=RegisterIDEMenuCommand(AParent,'New requirement',lisProjAddNewRequirement);
   PkgEditMenuAddNewFPMakeReqr:=RegisterIDEMenuCommand(AParent,'New FPMake requirement',lisProjAddNewFPMakeRequirement);
   //
@@ -841,8 +835,6 @@ begin
       // Files root node
       SetItem(PkgEditMenuAddDiskFile, @mnuAddDiskFileClick, UserSelection=[pstFilesNode],
               Writable);
-      SetItem(PkgEditMenuAddDiskFiles, @mnuAddDiskFilesClick, UserSelection=[pstFilesNode],
-              Writable);
       SetItem(PkgEditMenuAddNewFile, @mnuAddNewFileClick, UserSelection=[pstFilesNode],
               Writable);
       SetItem(PkgEditMenuAddNewComp, @mnuAddNewCompClick, UserSelection=[pstFilesNode],
@@ -1075,22 +1067,6 @@ begin
     Key := VK_UNKNOWN;
 end;
 
-procedure TPackageEditorForm.ShowAddDialogEx(AType: TAddToPkgType);
-begin
-  if LazPackage=nil then exit;
-  BeginUpdate;
-  try
-    ShowAddDialog(AType);
-  finally
-    EndUpdate;
-  end;
-end;
-
-procedure TPackageEditorForm.mnuAddDiskFilesClick(Sender: TObject);
-begin
-  ShowAddDialogEx(d2ptFiles);
-end;
-
 procedure TPackageEditorForm.mnuAddFPMakeReqClick(Sender: TObject);
 begin
   ShowAddFPMakeDepDialog
@@ -1098,7 +1074,7 @@ end;
 
 procedure TPackageEditorForm.mnuAddNewCompClick(Sender: TObject);
 begin
-  ShowAddDialogEx(d2ptNewComponent);
+  ShowAddDialog;
 end;
 
 procedure TPackageEditorForm.mnuAddNewReqrClick(Sender: TObject);
@@ -1980,9 +1956,8 @@ begin
   MoreBitBtn.DropdownMenu := MorePopupMenu;
 
   mnuAddDiskFile.Caption := lisPckEditAddFilesFromFileSystem;
-  mnuAddDiskFiles.Caption := lisAddFilesInDirectory;
   mnuAddNewFile.Caption := lisA2PNewFile;
-  mnuAddNewComp.Caption := lisA2PNewComponent;
+  mnuAddNewComp.Caption := lisMenuNewComponent;
   mnuAddNewReqr.Caption := lisProjAddNewRequirement;
   mnuAddFPMakeReq.Caption := lisProjAddNewFPMakeRequirement;
 
@@ -2153,58 +2128,14 @@ begin
   end;
 end;
 
-function TPackageEditorForm.ShowAddDialog(var DlgPage: TAddToPkgType): TModalResult;
+function TPackageEditorForm.ShowAddDialog: TModalResult;
 var
-  IgnoreUnitPaths, IgnoreIncPaths: TFilenameToStringTree;
+  IgnoreUnitPaths: TFilenameToStringTree;
 
   function PkgDependsOn(PkgName: string): boolean;
   begin
     if PkgName='' then exit(false);
     Result:=PackageGraph.FindDependencyRecursively(LazPackage.FirstRequiredDependency,PkgName)<>nil;
-  end;
-
-  procedure AddUnit(AddParams: TAddToPkgResult);
-  var
-    NewLFMFilename: String;
-    NewLRSFilename: String;
-  begin
-    NewLFMFilename:='';
-    NewLRSFilename:='';
-    // add lfm file
-    if AddParams.AutoAddLFMFile then begin
-      NewLFMFilename:=ChangeFileExt(AddParams.UnitFilename,'.lfm');
-      if FileExistsUTF8(NewLFMFilename)
-      and (LazPackage.FindPkgFile(NewLFMFilename,true,false)=nil) then
-        LazPackage.AddFile(NewLFMFilename,'',pftLFM,[],cpNormal)
-      else
-        NewLFMFilename:='';
-    end;
-    // add lrs file
-    if AddParams.AutoAddLRSFile then begin
-      NewLRSFilename:=ChangeFileExt(AddParams.UnitFilename,'.lrs');
-      if FileExistsUTF8(NewLRSFilename)
-      and (LazPackage.FindPkgFile(NewLRSFilename,true,false)=nil) then
-        LazPackage.AddFile(NewLRSFilename,'',pftLRS,[],cpNormal)
-      else
-        NewLRSFilename:='';
-    end;
-    ExtendUnitIncPathForNewUnit(AddParams.UnitFilename,NewLRSFilename,
-                                IgnoreUnitPaths);
-    // add unit file
-    with AddParams do
-      LazPackage.AddFile(UnitFilename,Unit_Name,FileType,PkgFileFlags,cpNormal);
-    FreeAndNil(FNextSelectedPart);
-    FNextSelectedPart:=TPENodeData.Create(penFile,AddParams.UnitFilename,false);
-    PackageEditors.DeleteAmbiguousFiles(LazPackage,AddParams.UnitFilename);
-  end;
-
-  procedure AddVirtualUnit(AddParams: TAddToPkgResult);
-  begin
-    with AddParams do
-      LazPackage.AddFile(UnitFilename,Unit_Name,FileType,PkgFileFlags,cpNormal);
-    FreeAndNil(FNextSelectedPart);
-    FNextSelectedPart:=TPENodeData.Create(penFile,AddParams.UnitFilename,false);
-    PackageEditors.DeleteAmbiguousFiles(LazPackage,AddParams.UnitFilename);
   end;
 
   procedure AddNewComponent(AddParams: TAddToPkgResult);
@@ -2227,44 +2158,24 @@ var
     PackageEditors.CreateNewFile(Self,AddParams);
   end;
 
-  procedure AddFile(AddParams: TAddToPkgResult);
-  begin
-    // add file
-    with AddParams do begin
-      if (CompareFileExt(UnitFilename,'.inc',false)=0)
-      or (CompareFileExt(UnitFilename,'.lrs',false)=0) then
-        ExtendIncPathForNewIncludeFile(UnitFilename,IgnoreIncPaths);
-      LazPackage.AddFile(UnitFilename,Unit_Name,FileType,PkgFileFlags,cpNormal);
-    end;
-    FreeAndNil(FNextSelectedPart);
-    FNextSelectedPart:=TPENodeData.Create(penFile,AddParams.UnitFilename,false);
-  end;
-
 var
-  AddParams: TAddToPkgResult;
-  OldParams: TAddToPkgResult;
+  AddParams, OldParams: TAddToPkgResult;
 begin
   if LazPackage.ReadOnly then begin
     UpdateButtons;
     exit(mrCancel);
   end;
 
-  Result:=ShowAddToPackageDlg(LazPackage,AddParams,PackageEditors.OnGetIDEFileInfo,
-    PackageEditors.OnGetUnitRegisterInfo,DlgPage);
-  fLastDlgPage:=DlgPage;
+  Result:=ShowAddToPackageDlg(LazPackage, AddParams,
+                              PackageEditors.OnGetIDEFileInfo,
+                              PackageEditors.OnGetUnitRegisterInfo);
   if Result<>mrOk then exit;
 
   PackageGraph.BeginUpdate(false);
   IgnoreUnitPaths:=nil;
-  IgnoreIncPaths:=nil;
   try
     while AddParams<>nil do begin
-      case AddParams.AddType of
-        d2ptUnit:         AddUnit(AddParams);
-        d2ptVirtualUnit:  AddVirtualUnit(AddParams);
-        d2ptNewComponent: AddNewComponent(AddParams);
-        d2ptFile:         AddFile(AddParams);
-      end;
+      AddNewComponent(AddParams);
       OldParams:=AddParams;
       AddParams:=AddParams.Next;
       OldParams.Next:=nil;
@@ -2274,7 +2185,6 @@ begin
     Assert(LazPackage.Modified, 'TPackageEditorForm.ShowAddDialog: LazPackage.Modified = False');
   finally
     IgnoreUnitPaths.Free;
-    IgnoreIncPaths.Free;
     PackageGraph.EndUpdate;
   end;
 end;
