@@ -359,6 +359,7 @@ begin
     end;
   end else
     img := nil;
+  Result := img;
 end;
 
 function TCocoaTableListView.acceptsFirstResponder: Boolean;
