@@ -1163,19 +1163,27 @@ msgid "Comments and Strings"
 msgstr "Kommentit"
 
 #: lazarusidestrconsts.dlgcommentshlashextendalways
-msgid "Extend, if matched or not matched"
+#, fuzzy
+#| msgid "Extend, if matched or not matched"
+msgid "Extend if matched or not matched"
 msgstr "Laajenna, jos täsmää tai ei täsmää"
 
 #: lazarusidestrconsts.dlgcommentshlashextendalwayssplit
-msgid "Extend, if matched or not matched (not at EOL)"
+#, fuzzy
+#| msgid "Extend, if matched or not matched (not at EOL)"
+msgid "Extend if matched or not matched (not at EOL)"
 msgstr "Laajenna, jos täsmää tai ei täsmää (ei rivin loppu)"
 
 #: lazarusidestrconsts.dlgcommentshlashextendmatch
-msgid "Extend, if matched"
+#, fuzzy
+#| msgid "Extend, if matched"
+msgid "Extend if matched"
 msgstr "Laajenna, jos täsmää"
 
 #: lazarusidestrconsts.dlgcommentshlashextendmatchsplit
-msgid "Extend, if matched and caret in the middle of text (not at EOL)"
+#, fuzzy
+#| msgid "Extend, if matched and caret in the middle of text (not at EOL)"
+msgid "Extend if matched and caret in the middle of text (not at EOL)"
 msgstr "Laajenna, jos täsmää ja osoitin on tekstissä (ei rivin loppu)"
 
 #: lazarusidestrconsts.dlgcompilationandlinking
@@ -1574,7 +1582,9 @@ msgid "This option will check if there is an editor for the target file in the c
 msgstr "Tämä valinta testaa löytyykö halutulle tiedostolle editori nykyisessä ikkunassa ja käyttää sitä jos näin oli, vaikka se olisi lukittu ja/tai kaipaisi vieritystä."
 
 #: lazarusidestrconsts.dlgeditaccessdesclockedinview
-msgid "This option will use a locked (and only a locked) Editor, which does not need to scroll in order to display the target jump point (target jump point is already in visible screen area)."
+#, fuzzy
+#| msgid "This option will use a locked (and only a locked) Editor, which does not need to scroll in order to display the target jump point (target jump point is already in visible screen area)."
+msgid "This option will use a locked (and only a locked) Editor which does not need to scroll in order to display the target jump point (target jump point is already in visible screen area)."
 msgstr "Tämä valinta käyttää lukittua (ja vain lukittua) editoria, mikä ei kaipaa vieritystä hyppykohdan näyttämiseen (hyppykohta on jo näkyvissä)."
 
 #: lazarusidestrconsts.dlgeditaccessdescunlocked
@@ -1582,11 +1592,15 @@ msgid "This option will use any not locked Editor."
 msgstr "Tämä valinta käyttää mitä hyvänsä ei-lukittua editoria."
 
 #: lazarusidestrconsts.dlgeditaccessdescunlockedinsoftview
-msgid "This option will use a not locked Editor, which does not need to scroll in order to display the target jump point (target jump point is already in visible screen center area, excluding 2-5 lines at the top/bottom)."
+#, fuzzy
+#| msgid "This option will use a not locked Editor, which does not need to scroll in order to display the target jump point (target jump point is already in visible screen center area, excluding 2-5 lines at the top/bottom)."
+msgid "This option will use a not locked Editor which does not need to scroll in order to display the target jump point (target jump point is already in visible screen center area, excluding 2-5 lines at the top/bottom)."
 msgstr "Tämä valinta käyttää ei-lukittua editoria, mikä ei kaipaa vieritystä hyppykohdan näyttämiseen (hyppykohta on jo näkyvissä, pois lukien 2-5 riviä ylä/alareunassa)."
 
 #: lazarusidestrconsts.dlgeditaccessdescunlockedopennewinanywin
-msgid "This option will open a new Tab in an existing or new Window, if no unlocked tab is found. This option will always succeed, further options are never tested."
+#, fuzzy
+#| msgid "This option will open a new Tab in an existing or new Window, if no unlocked tab is found. This option will always succeed, further options are never tested."
+msgid "This option will open a new Tab in an existing or new Window if no unlocked tab is found. This option will always succeed, further options are never tested."
 msgstr "Tämä valinta avaa uuden välilehden nykyisessä tai uudessa ikkunassa, jos ei-lukittua välilehteä ei löydy. Tämä valinta onnistuu aina, muita valintoja ei testata."
 
 #: lazarusidestrconsts.dlgeditaccessdescunlockedopennewinnewwin
@@ -1594,7 +1608,9 @@ msgid "If no unlocked tab is found, then this option will open a new Tab in a ne
 msgstr "Jos ei-lukittua välilehteä ei löydy, tämä valinta avaa uuden välilehden uudessa ikkunassa (vaikka toista ikkunaa oisi voinut käyttää). Tämä valinta onnistuu aina, muita valintoja ei testata."
 
 #: lazarusidestrconsts.dlgeditaccessdescunlockedopennewinoldwin
-msgid "If no unlocked tab is found, then this option will open a new Tab in an existing (and only in an existing) Window. A tab is only opened if a window exists, that has not yet an editor for the target file."
+#, fuzzy
+#| msgid "If no unlocked tab is found, then this option will open a new Tab in an existing (and only in an existing) Window. A tab is only opened if a window exists, that has not yet an editor for the target file."
+msgid "If no unlocked tab is found, then this option will open a new Tab in an existing (and only in an existing) Window. A tab is only opened if there is a window that has no editor for the target file yet."
 msgstr "Jos ei-lukittua välilehteä ei löydy, tämä valinta avaa uuden välilehden vain olemassa olevaan ikkunaan. Välilehti avataan vain jos löytyy ikkuna, missä ei jo ole editoria halutulle tiedostolle."
 
 #: lazarusidestrconsts.dlgedital
@@ -4126,14 +4142,6 @@ msgstr "0 = ei, 1 = piirrä jakoviivat vain ylätasolle, 2 = piirrä viivat kahd
 msgid "Add Files"
 msgstr "Lisää tiedostot"
 
-#: lazarusidestrconsts.lisa2paddfilestopackage
-msgid "Add Files to Package"
-msgstr "Lisää tiedostot pakettiin"
-
-#: lazarusidestrconsts.lisa2paddtopackage
-msgid "Add to package"
-msgstr "Lisää pakettiin"
-
 #: lazarusidestrconsts.lisa2pambiguousancestortype
 msgid "Ambiguous Ancestor Type"
 msgstr "Ristiriitainen kantatyyppi"
@@ -4241,11 +4249,6 @@ msgstr "\"%s\" ei ole kelvollinen käännösyksikön nimi."
 msgid "New class name:"
 msgstr "Uusi luokan nimi:"
 
-#: lazarusidestrconsts.lisa2pnewcomponent
-msgctxt "lazarusidestrconsts.lisa2pnewcomponent"
-msgid "New Component"
-msgstr "Uusi komponentti"
-
 #: lazarusidestrconsts.lisa2pnewfile
 msgid "New File"
 msgstr "Uusi tiedosto"
@@ -4283,10 +4286,6 @@ msgctxt "lazarusidestrconsts.lisa2pshowall"
 msgid "Show all"
 msgstr "Näytä kaikki"
 
-#: lazarusidestrconsts.lisa2pswitchpaths
-msgid "Switch Paths"
-msgstr "Vaihda tiedostopolkua"
-
 #: lazarusidestrconsts.lisa2ptheancestortypehasthesamenameastheunit
 msgid "The ancestor type \"%s\" has the same name as%sthe unit \"%s\"."
 msgstr "Kantatyypillä \"%s\" on sama nimi kuin %skäännösyksiköllä \"%s\"."
@@ -4316,7 +4315,9 @@ msgid "The file \"%s\" is part of the current project.%sIt is a bad idea to shar
 msgstr "Tiedosto \"%s\" on osa nykyistä projektia.%sOn huono idea jakaa tiedosto projektin ja paketin kesken."
 
 #: lazarusidestrconsts.lisa2pthefilenameisambiguouspleasespecifiyafilename
-msgid "The filename \"%s\" is ambiguous, because the package has no default directory yet.%sPlease specify a filename with full path."
+#, fuzzy
+#| msgid "The filename \"%s\" is ambiguous, because the package has no default directory yet.%sPlease specify a filename with full path."
+msgid "The filename \"%s\" is ambiguous because the package has no default directory yet.%sPlease specify a filename with full path."
 msgstr "Tiedoston nimi \"%s\" on ristiriitainen, koska paketilla ei ole vielä oletushakemistoa.%sMäärittele koko polku tiedostolle."
 
 #: lazarusidestrconsts.lisa2pthemaximumversionisinvalidpleaseusetheformatmajor
@@ -4514,10 +4515,6 @@ msgstr "Lisää -FcUTF8"
 #: lazarusidestrconsts.lisaddfcutf8hint
 msgid "May be needed if source files have non-ansistring literals."
 msgstr "Voidaan tarvita jos lähdekoodissa on muita kuin ansistring vakioita."
-
-#: lazarusidestrconsts.lisaddfilesindirectory
-msgid "Add Files in Directory"
-msgstr "Lisää hakemiston tiedostot"
 
 #: lazarusidestrconsts.lisaddfilter
 msgid "Add Filter ..."
@@ -8289,10 +8286,6 @@ msgstr "Poistetaanko vanha fiedosto \"%s\"?"
 msgid "Delete old file?"
 msgstr "Poistetaanko vanha tiedosto?"
 
-#: lazarusidestrconsts.lisdeleteselectedfiles
-msgid "Delete selected files"
-msgstr "Poista valitut tiedostot"
-
 #: lazarusidestrconsts.lisdeleteselectedmacro
 msgid "Delete selected macro?"
 msgstr "Poista valitut makrot?"
@@ -8322,7 +8315,9 @@ msgid "Delphi compatible resources. Recommended."
 msgstr "Delphi yhteensopivat resurssit. Suositus."
 
 #: lazarusidestrconsts.lisdesigntimepackagesaddcomponentsandmenuitemstotheid
-msgid "\"Design time\" packages add components and menu items to the IDE. They can be used by projects, but are not compiled into the project. The compiler will not find units of this package when compiling the project."
+#, fuzzy
+#| msgid "\"Design time\" packages add components and menu items to the IDE. They can be used by projects, but are not compiled into the project. The compiler will not find units of this package when compiling the project."
+msgid "\"Design time\" packages add components and menu items to the IDE. They can be used by projects but are not compiled into the project. The compiler will not find units of this package when compiling the project."
 msgstr "\"Suunnittelupaketti\" lisää komponentteja ja valikkoja IDE:en. Projektit voivat käyttää niitä, mutta niitä ei käännetä projektin mukana. Kääntäjä ei löydä käännösyksikköjä näistä paketista kääntäessään projektia."
 
 #: lazarusidestrconsts.lisdesktops
@@ -8635,7 +8630,9 @@ msgid "Draw grid lines"
 msgstr "Näytä kohdistusviivat"
 
 #: lazarusidestrconsts.lisdrawtheselectionfocusedevenifthemessageswindowhasn
-msgid "Draw the selection focused, even if the Messages window has no focus. Use this if your theme has a hardly visible unfocused drawing."
+#, fuzzy
+#| msgid "Draw the selection focused, even if the Messages window has no focus. Use this if your theme has a hardly visible unfocused drawing."
+msgid "Draw the selection focused even if the Messages window has no focus. Use this if your theme has a hardly visible unfocused drawing."
 msgstr "Piirrä valinta aina fokusoituna vaikkei viesti-ikkunalla olisi fokusta. Hyödyllinen jos työpöydän teema piirtää sen vaikeasti erottuvana."
 
 #: lazarusidestrconsts.lisdsgcopycomponents
@@ -9250,10 +9247,6 @@ msgstr "Virheejäljettimen kiinniottaman poikkeuksen havainto"
 msgid "%s excluded at run time"
 msgstr "%s sivuutetaan ajon akana"
 
-#: lazarusidestrconsts.lisexcludefilter
-msgid "Exclude filter"
-msgstr "Poistosuodatin"
-
 #: lazarusidestrconsts.lisexecutableisadirectory
 msgid "executable \"%s\" is a directory"
 msgstr "Suoritettava ohjelma \"%s\" onkin hakemisto"
@@ -9585,7 +9578,9 @@ msgid "Files not in ASCII nor UTF-8 encoding"
 msgstr "Muut kuin ASCII- tai UTF-8-koodatut tiedostot"
 
 #: lazarusidestrconsts.lisfilewheredebugoutputiswritten
-msgid "file, where debug output is written to. If it is not specified, debug output is written to the console."
+#, fuzzy
+#| msgid "file, where debug output is written to. If it is not specified, debug output is written to the console."
+msgid "file where debug output is written to. If it is not specified, debug output is written to the console."
 msgstr "Tiedosto mihin virheenjäljitys-tuloste kirjoitetaan. Jollei määritelty, kirjoitetaan konsoliin."
 
 #: lazarusidestrconsts.lisfilter
@@ -9671,10 +9666,6 @@ msgstr "&Sisällytä myös alikansiot "
 #: lazarusidestrconsts.lisfindfilemultilinepattern
 msgid "&Multiline pattern"
 msgstr "&Monirivinen"
-
-#: lazarusidestrconsts.lisfindfileonlytextfiles
-msgid "Only text files"
-msgstr "Vain tekstitiedostot"
 
 #: lazarusidestrconsts.lisfindfilesearchallfilesinproject
 msgid "search all files in &project"
@@ -10165,7 +10156,9 @@ msgid "The IDE will be recompiled and restarted during installation/uninstallati
 msgstr "IDE käännetään ja käynnistetään pakettien asennuksen/poistamisen aikana."
 
 #: lazarusidestrconsts.lisideconficurationfoundmaybelongtootherlazarus
-msgid "Welcome to Lazarus.%0:sThe IDE configuration found was previously used by another installation of Lazarus.%0:sIf you have two or more separate installations of Lazarus, they should not share the same configuration. This may lead to conflicts, and your Lazarus installations may become unusable.%0:s%0:sIf you have only one installation and copied or moved the Lazarus executable, then you may upgrade this configuration.%0:s%1:s%0:s%0:sChoose:%0:s%0:s* Update info: Use this configuration and update it for being used with this Lazarus in future. The old installation will no longer use this.%0:s* Ignore: Use this configuration, but keep the warning. This may lead to conflicts with the other installation.%0:s* Abort: Exit now. You can then fix the problem by starting this Lazarus with the correct configuration.%0:s%0:sAdditional information:%0:sThis configuration is at: %2:s%0:sIt belongs to the Lazarus installation at: %3:s%0:sThe current IDE was started from: %4:s%0:s"
+#, fuzzy
+#| msgid "Welcome to Lazarus.%0:sThe IDE configuration found was previously used by another installation of Lazarus.%0:sIf you have two or more separate installations of Lazarus, they should not share the same configuration. This may lead to conflicts, and your Lazarus installations may become unusable.%0:s%0:sIf you have only one installation and copied or moved the Lazarus executable, then you may upgrade this configuration.%0:s%1:s%0:s%0:sChoose:%0:s%0:s* Update info: Use this configuration and update it for being used with this Lazarus in future. The old installation will no longer use this.%0:s* Ignore: Use this configuration, but keep the warning. This may lead to conflicts with the other installation.%0:s* Abort: Exit now. You can then fix the problem by starting this Lazarus with the correct configuration.%0:s%0:sAdditional information:%0:sThis configuration is at: %2:s%0:sIt belongs to the Lazarus installation at: %3:s%0:sThe current IDE was started from: %4:s%0:s"
+msgid "Welcome to Lazarus.%0:sThe IDE configuration found was previously used by another installation of Lazarus.%0:sIf you have two or more separate installations of Lazarus, they should not share the same configuration. This may lead to conflicts and your Lazarus installations may become unusable.%0:s%0:sIf you have only one installation and copied or moved the Lazarus executable, then you may upgrade this configuration.%0:s%1:s%0:s%0:sChoose:%0:s%0:s* Update info: Use this configuration and update it for being used with this Lazarus in future. The old installation will no longer use this.%0:s* Ignore: Use this configuration but keep the warning. This may lead to conflicts with the other installation.%0:s* Abort: Exit now. You can then fix the problem by starting this Lazarus with the correct configuration.%0:s%0:sAdditional information:%0:sThis configuration is at: %2:s%0:sIt belongs to the Lazarus installation at: %3:s%0:sThe current IDE was started from: %4:s%0:s"
 msgstr "Tervetuloa Lazarukseen.%0:sLöydetyt IDE:n asetukset kuuluvat toiselle Lazarus-asennukselle.%0:sEri Lazarus-asennusten ei pitäisi jakaa samoja asetuksia. Se voi johtaa ristiriitoihin eikä Lazarus-asennus enää toimi kunnolla.%0:s%0:sJos on vain yksi asennus ja Lazarus on kopioitu, asetukset voi huoletta päivittää.%0:s%1:s%0:s%0:sValitse:%0:s%0:s* Päivitys-info: Käytä näitä asetuksia ja päivitä ne käytettäväksi Lazaruksen kanssa jatkossa. Vanha asennus ei enää käytä sitä.%0:s* Ohita: Käytä näitä asetuksia, mutta varoita uudelleen jatkossa. Tämä voi johtaa ristiriitaan toisten asennusten kanssa.%0:s* Keskeytä: Poistu nyt. Ongelmat voi sen jälkeen ratkaista käynnistämällä Lazarus oikeiden asetusten kanssa.%0:s%0:sLisätietoa:%0:sNämä asetukset ovat: %2:s%0:sNe kuuluvat Lazarus asennukseen täällä: %3:s%0:sNykyinen IDE käynnistettiin täältä: %4:s%0:s"
 
 #: lazarusidestrconsts.lisideinfocreatingmakefileforpackage
@@ -10645,10 +10638,6 @@ msgstr "Kelvoton ohjelma"
 #: lazarusidestrconsts.lisinvalidexecutablemessagetext
 msgid "The file \"%s\" is not executable."
 msgstr "Tiedosto \"%s\" ei ole ohjelma."
-
-#: lazarusidestrconsts.lisinvalidexpression
-msgid "Invalid expression:%s%s%s%s"
-msgstr "Kelvoton lauseke:%s%s%s%s"
 
 #: lazarusidestrconsts.lisinvalidexpressionhintthemakeresourcestringfunction
 msgid "Invalid expression.%sHint: The \"Make Resourcestring\" function expects a string constant in a single file. Please select the expression and try again."
@@ -11401,7 +11390,9 @@ msgid "Lazarus directory"
 msgstr "Lazaruksen hakemisto"
 
 #: lazarusidestrconsts.lislazarusdiroverride
-msgid "directory, to be used as a basedirectory"
+#, fuzzy
+#| msgid "directory, to be used as a basedirectory"
+msgid "directory to be used as a basedirectory"
 msgstr "hakemisto, käytetään kantahakemistona"
 
 #: lazarusidestrconsts.lislazaruseditorv
@@ -11910,7 +11901,9 @@ msgid "Manage Source Editors ..."
 msgstr "Hallinnoi lähdekoodieditoria ..."
 
 #: lazarusidestrconsts.lismaximumnumberofthreadsforcompilinginparalleldefaul
-msgid "Maximum number of threads for compiling in parallel. Default is 0, which guesses the number of cores in the system."
+#, fuzzy
+#| msgid "Maximum number of threads for compiling in parallel. Default is 0, which guesses the number of cores in the system."
+msgid "Maximum number of threads for compiling in parallel. Default is 0 which guesses the number of cores in the system."
 msgstr "Rinnakkaiseen käännökseen käytettävien säikeiden maximimäärä. Oletus on 0, mikä arvaa prosessorin ytimien määrän."
 
 #: lazarusidestrconsts.lismaximumparallelprocesses0meansdefault
@@ -13511,11 +13504,15 @@ msgid "Exclude all packages matching name \"%s\""
 msgstr "Jätä pois kaikki \"%s\" nimiset paketit"
 
 #: lazarusidestrconsts.lismmexpectedaftermacronamebutfound
-msgid "expected \":=\" after macro name, but found \"%s\""
+#, fuzzy
+#| msgid "expected \":=\" after macro name, but found \"%s\""
+msgid "expected \":=\" after macro name but found \"%s\""
 msgstr "odotettiin \":=\" makron nimen jälkeen, mutta löydettiin \"%s\""
 
 #: lazarusidestrconsts.lismmexpectedmacronamebutfound
-msgid "expected macro name, but found \"%s\""
+#, fuzzy
+#| msgid "expected macro name, but found \"%s\""
+msgid "expected macro name but found \"%s\""
 msgstr "odotettiin makron nimeä, mutta löydettiin \"%s\""
 
 #: lazarusidestrconsts.lismmfromto
@@ -14152,7 +14149,9 @@ msgid "State"
 msgstr "Tila"
 
 #: lazarusidestrconsts.lisoipthispackageisinstalledbutthelpkfilewasnotfound
-msgid "%sThis package is installed, but the lpk file was not found"
+#, fuzzy
+#| msgid "%sThis package is installed, but the lpk file was not found"
+msgid "%sThis package is installed but the lpk file was not found"
 msgstr "%sPaketti on asennettu, mutta lpk-tiedosto puuttuu"
 
 #: lazarusidestrconsts.lisok
@@ -14330,7 +14329,9 @@ msgid ", OS: %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisothersourcespathofpackagecontainsdirectorywhichisa
-msgid "other sources path of package \"%s\" contains directory \"%s\", which is already in the unit search path."
+#, fuzzy
+#| msgid "other sources path of package \"%s\" contains directory \"%s\", which is already in the unit search path."
+msgid "other sources path of package \"%s\" contains directory \"%s\" which is already in the unit search path."
 msgstr "paketin \"%s\" muut lähdekoodit polku sisältää hakemiston \"%s\", mikä on jo käännösyksikköjen hakupolussa."
 
 #: lazarusidestrconsts.lisoutputdirectoryofcontainspascalunitsource
@@ -15162,9 +15163,9 @@ msgstr "%sLisätään uusi riippuvuus paketille %s: paketti %s"
 msgid "%sAdding new Dependency for project %s: package %s"
 msgstr "%sLisätään uusi riippuvuus projektille %s: paketti %s"
 
-#: lazarusidestrconsts.lispkgmangaddunittousesclauseofpackagedisablethisonlyforunit
-msgid "Add unit to uses clause of package. Disable this only for units, that should not be compiled in all cases."
-msgstr "Lisää käännösyksikkö uses-lausekkeeseen. Estä se vain yksiköiltä, joita ei saa koskaan kääntää."
+#: lazarusidestrconsts.lispkgmangaddunittousesclause
+msgid "Add unit to uses clause of package main file. Disable this only for units that should not be compiled in all cases."
+msgstr ""
 
 #: lazarusidestrconsts.lispkgmangambiguousunitsfound
 msgid "Ambiguous units found"
@@ -15438,15 +15439,21 @@ msgid "The package %s is a runtime only package.%sRuntime only packages cannot b
 msgstr "Paketti %s on vain ajonaikainen.%sAjonaikaisia paketteja ei asenneta IDE:en."
 
 #: lazarusidestrconsts.lispkgmangthepackageiscompiledautomaticallyanditsoutputdirec
-msgid "The package \"%s\" is compiled automatically and its output directory is \"%s\", which is in the default unit search path of the compiler. The package uses other packages which also use the default unit search of the compiler. This creates an endless loop.%sYou can fix this issue by removing the path from your compiler config (e.g. fpc.cfg)%sor by disabling the auto update of this package or by removing dependencies."
+#, fuzzy
+#| msgid "The package \"%s\" is compiled automatically and its output directory is \"%s\", which is in the default unit search path of the compiler. The package uses other packages which also use the default unit search of the compiler. This creates an endless loop.%sYou can fix this issue by removing the path from your compiler config (e.g. fpc.cfg)%sor by disabling the auto update of this package or by removing dependencies."
+msgid "The package \"%s\" is compiled automatically and its output directory is \"%s\" which is in the default unit search path of the compiler. The package uses other packages which also use the default unit search of the compiler. This creates an endless loop.%sYou can fix this issue by removing the path from your compiler config (e.g. fpc.cfg)%sor by disabling the auto update of this package or by removing dependencies."
 msgstr "Paketti \"%s\" on käännetty automaattisesti ja sen käännöshakemisto on \"%s\", mikä on kääntäjän oletus. Paketti käyttää muita paketteja, mitkä myös käyttävät kääntäjän oletusta käännösyksiköiden hakuun. Se synnyttää ikuisen luupin.%sOngelma pitää ratkaista poistamalla polku kääntäjän konfiguroinnista (esim. fpc.cfg)%stai kieltämällä paketin automaattinen päivitys tai poistamalla riippuvuudet."
 
 #: lazarusidestrconsts.lispkgmangthepackageismarkedforinstallationbutcannotbefound
-msgid "The package \"%s\" is marked for installation, but cannot be found.%sRemove dependency from the installation list of packages?"
+#, fuzzy
+#| msgid "The package \"%s\" is marked for installation, but cannot be found.%sRemove dependency from the installation list of packages?"
+msgid "The package \"%s\" is marked for installation but cannot be found.%sRemove dependency from the installation list of packages?"
 msgstr "Paketti \"%s\" on merkitty asennettavaksi mutta sitä ei löydy.%sPoistetaanko riippuvuus pakettien asennusluettelosta?"
 
 #: lazarusidestrconsts.lispkgmangthepackageisrequiredbywhichismarkedforinstallation
-msgid "The package %s is required by %s, which is marked for installation.%sSee package graph."
+#, fuzzy
+#| msgid "The package %s is required by %s, which is marked for installation.%sSee package graph."
+msgid "The package %s is required by %s which is marked for installation.%sSee package graph."
 msgstr "Pakettia %s tarvitaan komponettipaketissa %s, mikä on merkitty asennukseen.%sKatso pakettien kuvauksista"
 
 #: lazarusidestrconsts.lispkgmangthepackagenameisnotavalidpackagenamepleasechoosean
@@ -15634,7 +15641,9 @@ msgid "Register procedure is nil"
 msgstr "'Register' aliohjelma on Nil"
 
 #: lazarusidestrconsts.lispkgsysregisterunitwascalledbutnopackageisregistering
-msgid "RegisterUnit was called, but no package is registering."
+#, fuzzy
+#| msgid "RegisterUnit was called, but no package is registering."
+msgid "RegisterUnit was called but no package is registering."
 msgstr "RegisterUnit kutsuttiin, mutta paketteja ei ole rekisteröity."
 
 #: lazarusidestrconsts.lispkgsysthelpkfilewasnotfound
@@ -15642,7 +15651,9 @@ msgid "%s%sThe lpk file was not found."
 msgstr "%s%slpk tiedostoa ei löydy."
 
 #: lazarusidestrconsts.lispkgsysthepackageisinstalledbutnovalidpackagefilewasfound
-msgid "The package \"%s\" is installed, but no valid package file (.lpk) was found.%sA broken dummy package was created."
+#, fuzzy
+#| msgid "The package \"%s\" is installed, but no valid package file (.lpk) was found.%sA broken dummy package was created."
+msgid "The package \"%s\" is installed but no valid package file (.lpk) was found.%sA broken dummy package was created."
 msgstr "Paketti \"%s\" on asennettu, mutta kelvollista pakettitiedostoa (.lpk) ei löydy.%sTyhjä rikkinäinen paketti luotiin."
 
 #: lazarusidestrconsts.lispkgsysthisisthedefaultpackageusedonlyforcomponents
@@ -15650,7 +15661,9 @@ msgid "This is the default package. Used only for components without a package. 
 msgstr "Tämä on oletuspaketti. Käytetään vain komponenteille, millä ei ole pakettia. Komponentit ovat vanhentuneet."
 
 #: lazarusidestrconsts.lispkgsysthispackageisinstalledbutthelpkfilewasnotfound
-msgid "This package is installed, but the lpk file was not found. All its components are deactivated. Please fix this."
+#, fuzzy
+#| msgid "This package is installed, but the lpk file was not found. All its components are deactivated. Please fix this."
+msgid "This package is installed but the lpk file was not found. All its components are deactivated. Please fix this."
 msgstr "Tämä paketti on asennettu, mutta pakettitiedostoa (.lpk) ei löydy. Komponentit eivät ole käytössä. Korjaa vika."
 
 #: lazarusidestrconsts.lispkgsysunitname
@@ -15666,7 +15679,9 @@ msgid "Unit \"%s\" was removed from package (lpk)"
 msgstr "Käännösyksikkö \"%s\" poistettiin paketista (lpk)"
 
 #: lazarusidestrconsts.lispkgthefollowingdependenciesarenotneededbecauseoftheau
-msgid "The following dependencies are not needed, because of the automatic transitivity between package dependencies."
+#, fuzzy
+#| msgid "The following dependencies are not needed, because of the automatic transitivity between package dependencies."
+msgid "The following dependencies are not needed because of the automatic transitivity between package dependencies."
 msgstr "Seuraavia riippuvuuksia ei tarvita, koska riippuvuudet siirtyvät automaattisesti paketista toiseen."
 
 #: lazarusidestrconsts.lispkgtheprojectoverridestheoutputdirectoryofthefollowin
@@ -15727,7 +15742,9 @@ msgid "User"
 msgstr "Käyttäjä"
 
 #: lazarusidestrconsts.lispleasefixtheerrorinthemessagewindow
-msgid "Please fix the error shown in the message window, which is normally below the source editor."
+#, fuzzy
+#| msgid "Please fix the error shown in the message window, which is normally below the source editor."
+msgid "Please fix the error shown in the message window which is normally below the source editor."
 msgstr "Korjaa viesti-ikkunassa näkyvä virhe."
 
 #: lazarusidestrconsts.lispleaseopenaunitbeforerun
@@ -15833,7 +15850,9 @@ msgid "Preceding word"
 msgstr "Edeltävä sana"
 
 #: lazarusidestrconsts.lisprimaryconfigdirectorywherelazarusstoresitsconfig
-msgid "primary config directory, where Lazarus stores its config files. Default is "
+#, fuzzy
+#| msgid "primary config directory, where Lazarus stores its config files. Default is "
+msgid "primary config directory where Lazarus stores its config files. Default is "
 msgstr "ensisijainen hakemisto, minne Lazarus tallentaa config-tiedostot. Oletus on "
 
 #: lazarusidestrconsts.lisprimaryconfigpath
@@ -15858,7 +15877,9 @@ msgid "Private Method"
 msgstr "Yksityinen metodi"
 
 #: lazarusidestrconsts.lisprobablyyouneedtoinstallsomepackagesforbeforeconti
-msgid "Probably you need to install some packages before continuing.%sWarning:%sThe project uses the following design time packages, which might be needed to open the form in the designer. If you continue, you might get errors about missing components and the form loading will probably create very unpleasant results.%sIt is recommended to cancel and install these packages first."
+#, fuzzy
+#| msgid "Probably you need to install some packages before continuing.%sWarning:%sThe project uses the following design time packages, which might be needed to open the form in the designer. If you continue, you might get errors about missing components and the form loading will probably create very unpleasant results.%sIt is recommended to cancel and install these packages first."
+msgid "Probably you need to install some packages before continuing.%sWarning:%sThe project uses the following design time packages which might be needed to open the form in the designer. If you continue, you might get errors about missing components and the form loading will probably create very unpleasant results.%sIt is recommended to cancel and install these packages first."
 msgstr "Joitain paketteja pitää ehkä asentaa ennen jatkamista.%sVaroitus:%sProjekti käyttää seuraavia design-paketteja, joita ehkä tarvitaan avaamaan suunniteltava lomake. Jatkettaessa voi tulla virheitä puuttuvista komponenteista ja lomakkeen lataus epäonnistuu.%sOn suositeltavaa peruuttaa ja asentaa nuo paketit ensin."
 
 #: lazarusidestrconsts.lisprocedure
@@ -15886,10 +15907,6 @@ msgstr "Free Pascal komentoriviohjelma, mukana joitain hyödyllisia asetuksia."
 #: lazarusidestrconsts.lisprogramsourcemusthaveapascalextensionlikepaspporlp
 msgid "Program source must have a Pascal extension like .pas, .pp or .lpr"
 msgstr "Ohjelman lähdekoodin tiedostotarkennin pitää olla .pas, .pp tai .lpr"
-
-#: lazarusidestrconsts.lisprojaddaddfilestoproject
-msgid "Add Files to Project"
-msgstr "Lisää tiedostoja projektiin"
 
 #: lazarusidestrconsts.lisprojadddependencyalreadyexists
 msgid "Dependency already exists"
@@ -15981,11 +15998,6 @@ msgstr "Käännösyksikkö \"%s\" on jo valinnassa%stiedostossa: \"%s\"."
 #: lazarusidestrconsts.lisprojaddtheunitnameisnotavalidpascalidentifier
 msgid "The unit name \"%s\" is not a valid Pascal identifier."
 msgstr "Käännösyksikön nimi \"%s\" ei ole kelvollinen Pascal-tunniste."
-
-#: lazarusidestrconsts.lisprojaddtoproject
-msgctxt "lazarusidestrconsts.lisprojaddtoproject"
-msgid "Add to Project"
-msgstr "Lisää projektiin"
 
 #: lazarusidestrconsts.lisprojaddunitnamealreadyexists
 msgid "Unit name already exists"
@@ -16124,10 +16136,6 @@ msgstr "Projektin käännösyksikköjen polku"
 #: lazarusidestrconsts.lisprojectwizard
 msgid "Project Wizard"
 msgstr "Projektin valinta"
-
-#: lazarusidestrconsts.lisprojfiles
-msgid "Files:"
-msgstr "Tiedostot:"
 
 #: lazarusidestrconsts.lisprojinspconfirmdeletingdependency
 msgid "Confirm deleting dependency"
@@ -16671,7 +16679,9 @@ msgid "\"Run time only\" packages are only for projects. They cannot be installe
 msgstr "\"Vain Ajo-\" paketit ovat vain projekteille. Niitä ei voi asentaa IDE:en, ei edes epäsuorasti."
 
 #: lazarusidestrconsts.lisruntimepackagescanbeusedbyprojectstheycannotbeinst
-msgid "\"Run time\" packages can be used by projects. They cannot be installed in the IDE, unless some design time package requires them."
+#, fuzzy
+#| msgid "\"Run time\" packages can be used by projects. They cannot be installed in the IDE, unless some design time package requires them."
+msgid "\"Run time\" packages can be used by projects. They cannot be installed in the IDE unless some design time package requires them."
 msgstr "\"Ajo-\" paketit ovat projekteille. Niitä ei voi asentaa IDE:en, paitsi jos joku suunnittelu-paketti riippuu niistä."
 
 #: lazarusidestrconsts.lisruntofailed
@@ -16878,7 +16888,9 @@ msgid "Search Unit \"%s\""
 msgstr "Etsi käännösyksikköä \"%s\""
 
 #: lazarusidestrconsts.lissecondaryconfigdirectorywherelazarussearchesfor
-msgid "secondary config directory, where Lazarus searches for config template files. Default is "
+#, fuzzy
+#| msgid "secondary config directory, where Lazarus searches for config template files. Default is "
+msgid "secondary config directory where Lazarus searches for config template files. Default is "
 msgstr "Toinen asetushakemisto, mistä Lazarus etsii asetusten malleja. Oletus on "
 
 #: lazarusidestrconsts.lissecondaryconfigpath
@@ -17091,7 +17103,9 @@ msgid "Show only modified"
 msgstr "Näytä vain muutetut"
 
 #: lazarusidestrconsts.lisshowonlyonebuttoninthetaskbarforthewholeideinstead
-msgid "Show only one button in the taskbar for the whole IDE, instead of one per window. Some Linux Window Managers like Cinnamon do not support this and always show one button per window."
+#, fuzzy
+#| msgid "Show only one button in the taskbar for the whole IDE, instead of one per window. Some Linux Window Managers like Cinnamon do not support this and always show one button per window."
+msgid "Show only one button in the taskbar for the whole IDE instead of one per window. Some Linux Window Managers like Cinnamon do not support this and always show one button per window."
 msgstr "Näytä vain yksi nappi tehtäväpalkissa koko IDE:lle, ei siis nappi / ikkuna. Jotkin Linux ikkunamanagerit kuten Cinnamon eivät tue tätä ja näyttävät aina napin joka ikkunaa kohti."
 
 #: lazarusidestrconsts.lisshowoutput
@@ -17591,7 +17605,9 @@ msgid "The compiler file \"%s\" does not look correct:%s%s"
 msgstr "Kääntäjä-tiedosto \"%s\" ei näytä oikealta:%s%s"
 
 #: lazarusidestrconsts.listhecomponentcannotbedeletedbecauseitisnotownedby
-msgid "The component %s can not be deleted, because it is not owned by %s."
+#, fuzzy
+#| msgid "The component %s can not be deleted, because it is not owned by %s."
+msgid "The component %s can not be deleted because it is not owned by %s."
 msgstr "Komponenttia %s ei voi poistaa, koska %s ei omista sitä."
 
 #: lazarusidestrconsts.listhecomponenteditorofclasshascreatedtheerror
@@ -17763,7 +17779,9 @@ msgid "The Lazarus directory \"%s\" does not look correct:%s%s"
 msgstr "Lazarus hakemisto \"%s\" ei näytä oikealta:%s%s"
 
 #: lazarusidestrconsts.listhelfmlazarusformfilecontainsinvalidpropertiesthis
-msgid "The LFM (Lazarus form) file contains invalid properties. This means for example it contains some properties/classes, which do not exist in the current LCL. The normal fix is to remove these properties from the lfm and fix the Pascal code manually."
+#, fuzzy
+#| msgid "The LFM (Lazarus form) file contains invalid properties. This means for example it contains some properties/classes, which do not exist in the current LCL. The normal fix is to remove these properties from the lfm and fix the Pascal code manually."
+msgid "The LFM (Lazarus form) file contains invalid properties. This means for example it contains some properties/classes which do not exist in the current LCL. The normal fix is to remove these properties from the lfm and fix the Pascal code manually."
 msgstr "LFM (Lazarus-lomake) sisältää vääriä ominaisuuksia. Tämä tarkoittaa esim. että jotain luokkaa tai ominaisuutta ei ole LCL-kirjastossa. Normaali korjaus on poistaa nämä ominaisuudet LFM-tiedostosta ja korjata Pascal-koodi käsin."
 
 #: lazarusidestrconsts.listhemacrodoesnotbeginwith
@@ -17835,15 +17853,21 @@ msgid "The package already contains a unit with this name."
 msgstr "Paketissa on jo tämän niminen käännösyksikkö."
 
 #: lazarusidestrconsts.listhepackagecannotbeinstalledbecauseitrequireswhichi
-msgid "The package %s cannot be installed, because it requires the package \"%s\", which is a runtime only package."
+#, fuzzy
+#| msgid "The package %s cannot be installed, because it requires the package \"%s\", which is a runtime only package."
+msgid "The package %s cannot be installed because it requires the package \"%s\" which is a runtime only package."
 msgstr "Pakettia %s ei voi asentaa, koska se vaatii paketin \"%s\", mikä on vain ajo-paketti."
 
 #: lazarusidestrconsts.listhepackagecannotbeuninstalledbecauseitisneededbyth
-msgid "The package %s can not be uninstalled, because it is needed by the IDE itself."
+#, fuzzy
+#| msgid "The package %s can not be uninstalled, because it is needed by the IDE itself."
+msgid "The package %s can not be uninstalled because it is needed by the IDE itself."
 msgstr "Paketin %s asennusta ei voi poistaa, koska IDE itse tarvitsee sitä."
 
 #: lazarusidestrconsts.listhepackagedoesnothaveanyregisterprocedurewhichtypi
-msgid "The package %s does not have any \"Register\" procedure, which typically means, it does not provide any IDE addon. Installing it will probably only increase the size of the IDE and may even make it unstable.%sHint: If you want to use a package in your project, use the \"Add to project\" menu item."
+#, fuzzy
+#| msgid "The package %s does not have any \"Register\" procedure, which typically means, it does not provide any IDE addon. Installing it will probably only increase the size of the IDE and may even make it unstable.%sHint: If you want to use a package in your project, use the \"Add to project\" menu item."
+msgid "The package %s does not have any \"Register\" procedure which typically means it does not provide any IDE addon. Installing it will probably only increase the size of the IDE and may even make it unstable.%sHint: If you want to use a package in your project, use the \"Add to project\" menu item."
 msgstr "Paketilla %s ei ole \"Register\" aliohjelmaa, mikä yleensä tarkoittaa ettei se tarjoa mitään lisäyksiä IDE:een. Sen asennus luultavasti vain kasvattaa IDE:n kokoa ja voi jopa heikentää sen vakautta.%sVihje: Jos tahdot käyttää pakettia projektissa, käytä \"Lisää projektiin\" valintaa."
 
 #: lazarusidestrconsts.listhepackageisalreadyinthelist
@@ -17891,7 +17915,7 @@ msgid "The project must be saved before building%sIf you set the Test Directory 
 msgstr "Projekti pitää tallentaa ennen kokoamista%sJos asetat testihakemiston IDE:n asetuksissa,%svoit luoda uusia projekteja ja koota ne saman tien.%sTallenna projekti?"
 
 #: lazarusidestrconsts.listheprojectusesfpcresourceswhichrequireatleast
-msgid "The project uses FPC resources, which require at least FPC 2.4"
+msgid "The project uses FPC resources which require at least FPC 2.4"
 msgstr ""
 
 #: lazarusidestrconsts.listheprojectusestargetosandcputhesystemppuforthistar
@@ -17903,7 +17927,7 @@ msgid "The project writes the debug symbols to an external file. The \"%s\" supp
 msgstr "Projekti kirjoittaa virheenjäljitys symbolit ulkoiseen tiedostoon. \"%s\" tukee vain symboleja suoritettavassa ohjelmassa."
 
 #: lazarusidestrconsts.listheprojectwritesthedebugsymbolstotheexexcutable
-msgid "The project writes the debug symbols into the executable, rather than to an external file. The \"%s\" supports only symbols in an external file."
+msgid "The project writes the debug symbols into the executable rather than to an external file. The \"%s\" supports only symbols in an external file."
 msgstr ""
 
 #: lazarusidestrconsts.listhereareadditionalnotesforthismessageon
@@ -18051,7 +18075,9 @@ msgid "The unit filename \"%s\" is not lowercase.%sThe Free Pascal compiler does
 msgstr "Käännösyksikön nimi \"%s\" ei ole pienillä kirjaimilla.%sFree Pascal -kääntäjä ei etsi kaikkia variaatioita. On suositeltavaa käyttää vain pieniä kirjaimia.%sVaihdetaanko tiedoston nimi?"
 
 #: lazarusidestrconsts.listheunitispartofthefpcsourcesbutthecorrespondingfpd
-msgid "The unit %s is part of the FPC sources, but the corresponding fpdoc xml file was not found.%sEither you have not yet added the fpcdocs directory to the search path or the unit is not yet documented.%sThe fpdoc files for the FPC sources can be downloaded from: %s%sPlease add the directory in the fpdoc editor options.%sIn order to create a new file the directory must be writable."
+#, fuzzy
+#| msgid "The unit %s is part of the FPC sources, but the corresponding fpdoc xml file was not found.%sEither you have not yet added the fpcdocs directory to the search path or the unit is not yet documented.%sThe fpdoc files for the FPC sources can be downloaded from: %s%sPlease add the directory in the fpdoc editor options.%sIn order to create a new file the directory must be writable."
+msgid "The unit %s is part of the FPC sources but the corresponding fpdoc xml file was not found.%sEither you have not yet added the fpcdocs directory to the search path or the unit is not yet documented.%sThe fpdoc files for the FPC sources can be downloaded from: %s%sPlease add the directory in the fpdoc editor options.%sIn order to create a new file the directory must be writable."
 msgstr "Käännösyksikkö %s kuuluu FPC:n lähdekoodeihin, mutta vastaavaa fpdoc xml tiedostoa ei löydy.%sJoko et ole lisännyt fpcdoc hakemistoa hakupolkuun tai käännösyksikköä ei ole vielä dokumentoitu.%sfpdoc tiedostot FPC lähdekoodeille voi ladata täältä: %s%sLisää hakemisto fpdoc editorin valintoihin.%sUuden tiedoston luomiseksi hakemistoon pitää olla kirjoitusoikeus."
 
 #: lazarusidestrconsts.listheunitisusedbyotherfilesupdatereferencesautomatic
@@ -18087,7 +18113,9 @@ msgid "This is a test project for a design time package, testing it outside the 
 msgstr "Tämä on testiprojekti suunnittelupaketille, IDE:n ulkopuolella testausta varten."
 
 #: lazarusidestrconsts.listhislookslikeapascalfileitisrecommendedtouselowerc
-msgid "This looks like a Pascal file.%sIt is recommended to use lower case filenames, to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
+#, fuzzy
+#| msgid "This looks like a Pascal file.%sIt is recommended to use lower case filenames, to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
+msgid "This looks like a Pascal file.%sIt is recommended to use lower case filenames to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
 msgstr "Tämä vaikuttaa Pascal-tiedostolta.%sOn suositeltavaa käyttää pieniä kirjaimia tiedoston nimessä, jotta vältytään ongelmilta joissakin tiedostojärjestelmissä.%sVaihdetaanko nimi pieniksi kirjaimiksi?"
 
 #: lazarusidestrconsts.listhisprojecthasnomainsourcefile
@@ -18464,7 +18492,9 @@ msgid "Search string '%s' not found!"
 msgstr "Etsittyä merkkijonoa '%s' ei löydetty!"
 
 #: lazarusidestrconsts.lisuethecurre
-msgid "The current editor font does not support UTF-8, but your system seems to use it.%sThat means non ASCII characters will probably be shown incorrectly.%sYou can select another font in the editor options."
+#, fuzzy
+#| msgid "The current editor font does not support UTF-8, but your system seems to use it.%sThat means non ASCII characters will probably be shown incorrectly.%sYou can select another font in the editor options."
+msgid "The current editor font does not support UTF-8 but your system seems to use it.%sThat means non ASCII characters will probably be shown incorrectly.%sYou can select another font in the editor options."
 msgstr "Nykyinen editorin kirjasin ei tue UTF-8-merkistöä, mutta käyttöjärjestelmä tukee sitä. %sTämä merkitsee sitä että ei-ASCII merkit voivat näkyä väärin.%sSopivamman kirjasimen voi valita editorin asetuksista."
 
 #: lazarusidestrconsts.lisuiclearincludedbyreference
@@ -18530,15 +18560,21 @@ msgid "Unable to add resource T%s:FORMDATA to resource file %s\"%s\".%sProbably 
 msgstr "Resurssin T%s:FORMDATA lisääminen resurssitiedostoon %s\"%s\" ei onnistu.%sEhkä kielioppivirhe."
 
 #: lazarusidestrconsts.lisunabletoaddthedependencybecausethepackagehasalread
-msgid "Unable to add the dependency %s, because the package %s has already a dependency %s"
+#, fuzzy
+#| msgid "Unable to add the dependency %s, because the package %s has already a dependency %s"
+msgid "Unable to add the dependency %s because the package %s has already a dependency %s"
 msgstr "Riippuvuuden %s lisääminen ei onnistu, koska paketilla %s on jo riippuvuus %s"
 
 #: lazarusidestrconsts.lisunabletoaddthedependencybecausethiswouldcreatea
-msgid "Unable to add the dependency %s, because this would create a circular dependency. Dependency %s"
+#, fuzzy
+#| msgid "Unable to add the dependency %s, because this would create a circular dependency. Dependency %s"
+msgid "Unable to add the dependency %s because this would create a circular dependency. Dependency %s"
 msgstr "Riippuvuuden %s lisääminen ei onnistu, koska se synnyttäisi kehäriippuvuuden. %s"
 
 #: lazarusidestrconsts.lisunabletoaddtoprojectbecausethereisalreadyaunitwith
-msgid "Unable to add %s to project, because there is already a unit with the same name in the Project."
+#, fuzzy
+#| msgid "Unable to add %s to project, because there is already a unit with the same name in the Project."
+msgid "Unable to add %s to project because there is already a unit with the same name in the Project."
 msgstr "%s:n lisääminen projektiin ei onnistu, koska projektissa on jo samanniminen tiedosto."
 
 #: lazarusidestrconsts.lisunabletobackupfileto
@@ -18610,7 +18646,9 @@ msgid "Unable to create link \"%s\" with target \"%s\""
 msgstr "Linkin \"%s\" luominen kohteeseen \"%s\" ei onnistu"
 
 #: lazarusidestrconsts.lisunabletocreatenewfilebecausethereisalreadyadirecto
-msgid "Unable to create new file, because there is already a directory with this name."
+#, fuzzy
+#| msgid "Unable to create new file, because there is already a directory with this name."
+msgid "Unable to create new file because there is already a directory with this name."
 msgstr "Tiedoston luominen ei onnistu, koska samanniminen hakemisto on jo olemassa."
 
 #: lazarusidestrconsts.lisunabletocreatenewmethod
@@ -18682,7 +18720,9 @@ msgid "Unable to load package \"%s\""
 msgstr "Paketin \"%s\" lataaminen ei onnistu"
 
 #: lazarusidestrconsts.lisunabletoloadthecomponentclassbecauseitdependsonits
-msgid "Unable to load the component class \"%s\", because it depends on itself."
+#, fuzzy
+#| msgid "Unable to load the component class \"%s\", because it depends on itself."
+msgid "Unable to load the component class \"%s\" because it depends on itself."
 msgstr "Komponenttiluokan \"%s\" lataaminen ei onnistu, koska sillä on riippuvuus itseensä."
 
 #: lazarusidestrconsts.lisunabletoopen
@@ -19231,7 +19271,9 @@ msgid "When a unit is renamed, update references"
 msgstr "Käännösyksikön nimeä muutettaessa päivitetään viittaukset"
 
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew
-msgid "When enabled the current options are saved to the template, which is used when creating new projects"
+#, fuzzy
+#| msgid "When enabled the current options are saved to the template, which is used when creating new projects"
+msgid "When enabled the current options are saved to the template which is used when creating new projects"
 msgstr "Nykyiset asetukset talletetaan malliksi, mitä käytetään luotaessa uusia projekteja"
 
 #: lazarusidestrconsts.liswhenthereisonlyonepossiblecompletionitemuseitimmed
@@ -19502,7 +19544,9 @@ msgid "Filter the lines in list with a string"
 msgstr "Suodata luettelon rivit tekstillä"
 
 #: lazarusidestrconsts.rsfoundbutnotlistedhere
-msgid "Found, but not listed here: "
+#, fuzzy
+#| msgid "Found, but not listed here: "
+msgid "Found but not listed here: "
 msgstr "Löytyi, muttei ole luettelossa: "
 
 #: lazarusidestrconsts.rsi18nexcluded

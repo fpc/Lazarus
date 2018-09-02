@@ -1170,19 +1170,27 @@ msgid "Comments and Strings"
 msgstr "Commentaires"
 
 #: lazarusidestrconsts.dlgcommentshlashextendalways
-msgid "Extend, if matched or not matched"
+#, fuzzy
+#| msgid "Extend, if matched or not matched"
+msgid "Extend if matched or not matched"
 msgstr "Étendre avec ou sans correspondance"
 
 #: lazarusidestrconsts.dlgcommentshlashextendalwayssplit
-msgid "Extend, if matched or not matched (not at EOL)"
+#, fuzzy
+#| msgid "Extend, if matched or not matched (not at EOL)"
+msgid "Extend if matched or not matched (not at EOL)"
 msgstr "Étendre avec ou sans correspondance (pas en fin de ligne)"
 
 #: lazarusidestrconsts.dlgcommentshlashextendmatch
-msgid "Extend, if matched"
+#, fuzzy
+#| msgid "Extend, if matched"
+msgid "Extend if matched"
 msgstr "Étendre si correspondance"
 
 #: lazarusidestrconsts.dlgcommentshlashextendmatchsplit
-msgid "Extend, if matched and caret in the middle of text (not at EOL)"
+#, fuzzy
+#| msgid "Extend, if matched and caret in the middle of text (not at EOL)"
+msgid "Extend if matched and caret in the middle of text (not at EOL)"
 msgstr "Étendre si correspondance et curseur au sein du texte (pas en fin de ligne)"
 
 #: lazarusidestrconsts.dlgcompilationandlinking
@@ -1582,7 +1590,9 @@ msgid "This option will check if there is an editor for the target file in the c
 msgstr "Cette option va vérifier s'il y a un éditeur pour le fichier cible dans la fenêtre en cours et s'il y est, il utilisera cet éditeur même s'il est verrouillé et/ou a besoin de défiler."
 
 #: lazarusidestrconsts.dlgeditaccessdesclockedinview
-msgid "This option will use a locked (and only a locked) Editor, which does not need to scroll in order to display the target jump point (target jump point is already in visible screen area)."
+#, fuzzy
+#| msgid "This option will use a locked (and only a locked) Editor, which does not need to scroll in order to display the target jump point (target jump point is already in visible screen area)."
+msgid "This option will use a locked (and only a locked) Editor which does not need to scroll in order to display the target jump point (target jump point is already in visible screen area)."
 msgstr "Cette option va utiliser un éditeur verrouillé (et seulement un verrouillé), lequel n'a pas besoin de défiler dans le but d'afficher le point de saut cible (le point de saut est toujours dans la partie visible de l'écran)."
 
 #: lazarusidestrconsts.dlgeditaccessdescunlocked
@@ -1590,11 +1600,15 @@ msgid "This option will use any not locked Editor."
 msgstr "Cette option utilisera n'importe quel éditeur non verrouillé."
 
 #: lazarusidestrconsts.dlgeditaccessdescunlockedinsoftview
-msgid "This option will use a not locked Editor, which does not need to scroll in order to display the target jump point (target jump point is already in visible screen center area, excluding 2-5 lines at the top/bottom)."
+#, fuzzy
+#| msgid "This option will use a not locked Editor, which does not need to scroll in order to display the target jump point (target jump point is already in visible screen center area, excluding 2-5 lines at the top/bottom)."
+msgid "This option will use a not locked Editor which does not need to scroll in order to display the target jump point (target jump point is already in visible screen center area, excluding 2-5 lines at the top/bottom)."
 msgstr "Cette option utilisera pas un éditeur non verrouillé, qui n'a pas besoin de défiler pour afficher le point de saut cible (le point de saut cible est déjà dans la zone centrale de l'écran visible, excluant de 2-5 lignes en haut/bas)."
 
 #: lazarusidestrconsts.dlgeditaccessdescunlockedopennewinanywin
-msgid "This option will open a new Tab in an existing or new Window, if no unlocked tab is found. This option will always succeed, further options are never tested."
+#, fuzzy
+#| msgid "This option will open a new Tab in an existing or new Window, if no unlocked tab is found. This option will always succeed, further options are never tested."
+msgid "This option will open a new Tab in an existing or new Window if no unlocked tab is found. This option will always succeed, further options are never tested."
 msgstr "Cette option va ouvrir un nouvel onglet dans une fenêtre existante ou nouvelle, si aucun onglet déverrouillé n'est trouvé. Cette option va toujours réussir ; les options supplémentaires ne sont jamais testées."
 
 #: lazarusidestrconsts.dlgeditaccessdescunlockedopennewinnewwin
@@ -1602,7 +1616,9 @@ msgid "If no unlocked tab is found, then this option will open a new Tab in a ne
 msgstr "Si aucun onglet déverrouillé n'est trouvé, cette option va ouvrir un nouvel onglet dans une nouvelle fenêtre (même si d'autres fenêtres existantes pourraient être utilisées pour le nouvel onglet). Cette option va toujours réussir ; les options supplémentaires ne sont jamais testées."
 
 #: lazarusidestrconsts.dlgeditaccessdescunlockedopennewinoldwin
-msgid "If no unlocked tab is found, then this option will open a new Tab in an existing (and only in an existing) Window. A tab is only opened if a window exists, that has not yet an editor for the target file."
+#, fuzzy
+#| msgid "If no unlocked tab is found, then this option will open a new Tab in an existing (and only in an existing) Window. A tab is only opened if a window exists, that has not yet an editor for the target file."
+msgid "If no unlocked tab is found, then this option will open a new Tab in an existing (and only in an existing) Window. A tab is only opened if there is a window that has no editor for the target file yet."
 msgstr "Si aucun onglet déverrouillé n'est trouvé, cette option va ouvrir un nouvel onglet dans une fenêtre existante(et seulement dans une existante). Un onglet n'est ouvert que si une fenêtre qui n'a pas encore d'éditeur pour le fichier cible existe."
 
 #: lazarusidestrconsts.dlgedital
@@ -4153,14 +4169,6 @@ msgstr "0 = non - 1 = dessine les lignes de séparation pour le niveau supérieu
 msgid "Add Files"
 msgstr "Ajouter des fichiers"
 
-#: lazarusidestrconsts.lisa2paddfilestopackage
-msgid "Add Files to Package"
-msgstr "Ajouter des fichiers au paquet"
-
-#: lazarusidestrconsts.lisa2paddtopackage
-msgid "Add to package"
-msgstr "Ajouter au paquet"
-
 #: lazarusidestrconsts.lisa2pambiguousancestortype
 msgid "Ambiguous Ancestor Type"
 msgstr "Type d'ancêtre équivoque"
@@ -4266,11 +4274,6 @@ msgstr "\"%s\" n'est pas un nom d'unité correct."
 msgid "New class name:"
 msgstr "Nouveau nom de classe :"
 
-#: lazarusidestrconsts.lisa2pnewcomponent
-msgctxt "lazarusidestrconsts.lisa2pnewcomponent"
-msgid "New Component"
-msgstr "Nouveau composant"
-
 #: lazarusidestrconsts.lisa2pnewfile
 msgid "New File"
 msgstr "Nouveau fichier"
@@ -4308,10 +4311,6 @@ msgctxt "lazarusidestrconsts.lisa2pshowall"
 msgid "Show all"
 msgstr "Tout afficher"
 
-#: lazarusidestrconsts.lisa2pswitchpaths
-msgid "Switch Paths"
-msgstr "Échanger les chemins"
-
 #: lazarusidestrconsts.lisa2ptheancestortypehasthesamenameastheunit
 msgid "The ancestor type \"%s\" has the same name as%sthe unit \"%s\"."
 msgstr "Le type ancêtre \"%s\" a le même nom que%sl'unité \"%s\"."
@@ -4341,7 +4340,9 @@ msgid "The file \"%s\" is part of the current project.%sIt is a bad idea to shar
 msgstr "Le fichier \"%s\" fait partie du projet en cours.%sC'est une mauvaise idée de partager des fichiers entre projets et paquets."
 
 #: lazarusidestrconsts.lisa2pthefilenameisambiguouspleasespecifiyafilename
-msgid "The filename \"%s\" is ambiguous, because the package has no default directory yet.%sPlease specify a filename with full path."
+#, fuzzy
+#| msgid "The filename \"%s\" is ambiguous, because the package has no default directory yet.%sPlease specify a filename with full path."
+msgid "The filename \"%s\" is ambiguous because the package has no default directory yet.%sPlease specify a filename with full path."
 msgstr "Le nom de fichier \"%s\" est équivoque parce que le paquet n'a encore aucun répertoire par défaut.%sVeuillez indiquer un nom de fichier avec le chemin complet."
 
 #: lazarusidestrconsts.lisa2pthemaximumversionisinvalidpleaseusetheformatmajor
@@ -4539,10 +4540,6 @@ msgstr "Ajouter -FcUTF8"
 #: lazarusidestrconsts.lisaddfcutf8hint
 msgid "May be needed if source files have non-ansistring literals."
 msgstr "Peut être nécessaire si les fichiers source contiennent des littéraux non Ansi."
-
-#: lazarusidestrconsts.lisaddfilesindirectory
-msgid "Add Files in Directory"
-msgstr "Ajouter les fichiers du répertoire"
 
 #: lazarusidestrconsts.lisaddfilter
 msgid "Add Filter ..."
@@ -8326,10 +8323,6 @@ msgstr "Voulez-vous supprimer l'ancien fichier \"%s\" ?"
 msgid "Delete old file?"
 msgstr "Voulez-vous supprimer l'ancien fichier ?"
 
-#: lazarusidestrconsts.lisdeleteselectedfiles
-msgid "Delete selected files"
-msgstr "Supprimer les fichiers sélectionnés"
-
 #: lazarusidestrconsts.lisdeleteselectedmacro
 msgid "Delete selected macro?"
 msgstr "Voulez-vous supprimer la macro choisie ?"
@@ -8359,7 +8352,9 @@ msgid "Delphi compatible resources. Recommended."
 msgstr "Ressources compatibles avec Delphi. Recommandées."
 
 #: lazarusidestrconsts.lisdesigntimepackagesaddcomponentsandmenuitemstotheid
-msgid "\"Design time\" packages add components and menu items to the IDE. They can be used by projects, but are not compiled into the project. The compiler will not find units of this package when compiling the project."
+#, fuzzy
+#| msgid "\"Design time\" packages add components and menu items to the IDE. They can be used by projects, but are not compiled into the project. The compiler will not find units of this package when compiling the project."
+msgid "\"Design time\" packages add components and menu items to the IDE. They can be used by projects but are not compiled into the project. The compiler will not find units of this package when compiling the project."
 msgstr "Les paquets de conception ajoutent des composants et des éléments de menu à l'EDI. Ils peuvent être utilisés par les projets, mais ne sont pas compilés dans le projet. Le compilateur ne trouvera pas les unités de ce paquet lors de la compilation du projet."
 
 #: lazarusidestrconsts.lisdesktops
@@ -8681,7 +8676,9 @@ msgid "Draw grid lines"
 msgstr "Dessiner les lignes de la grille"
 
 #: lazarusidestrconsts.lisdrawtheselectionfocusedevenifthemessageswindowhasn
-msgid "Draw the selection focused, even if the Messages window has no focus. Use this if your theme has a hardly visible unfocused drawing."
+#, fuzzy
+#| msgid "Draw the selection focused, even if the Messages window has no focus. Use this if your theme has a hardly visible unfocused drawing."
+msgid "Draw the selection focused even if the Messages window has no focus. Use this if your theme has a hardly visible unfocused drawing."
 msgstr "Dessiner la sélection comme focalisée même si la fenêtre des messages ne l'est pas. Utilisez ceci si votre thème rend le dessin des éléments non focalisés à peine visibles."
 
 #: lazarusidestrconsts.lisdsgcopycomponents
@@ -9293,10 +9290,6 @@ msgstr "Notification d'exception du débogueur"
 msgid "%s excluded at run time"
 msgstr "%s exclu à l'exécution"
 
-#: lazarusidestrconsts.lisexcludefilter
-msgid "Exclude filter"
-msgstr "Filtre d'exclusion"
-
 #: lazarusidestrconsts.lisexecutableisadirectory
 msgid "executable \"%s\" is a directory"
 msgstr "l'exécutable \"%s\" est un répertoire"
@@ -9631,7 +9624,9 @@ msgid "Files not in ASCII nor UTF-8 encoding"
 msgstr "Fichiers non encodés ASCII ou UTF-8"
 
 #: lazarusidestrconsts.lisfilewheredebugoutputiswritten
-msgid "file, where debug output is written to. If it is not specified, debug output is written to the console."
+#, fuzzy
+#| msgid "file, where debug output is written to. If it is not specified, debug output is written to the console."
+msgid "file where debug output is written to. If it is not specified, debug output is written to the console."
 msgstr "fichier où est écrit la sortie de débogage. Si non indiquée, la sortie de débogage est envoyée à la console."
 
 #: lazarusidestrconsts.lisfilter
@@ -9717,10 +9712,6 @@ msgstr "Inclure les &sous-répertoires"
 #: lazarusidestrconsts.lisfindfilemultilinepattern
 msgid "&Multiline pattern"
 msgstr "&Structure en lignes multiples"
-
-#: lazarusidestrconsts.lisfindfileonlytextfiles
-msgid "Only text files"
-msgstr "Seulement les fichiers textes"
 
 #: lazarusidestrconsts.lisfindfilesearchallfilesinproject
 msgid "search all files in &project"
@@ -10221,7 +10212,9 @@ msgid "The IDE will be recompiled and restarted during installation/uninstallati
 msgstr "L'EDI devra être recompilé et redémarré après l'installation et la désinstallation de paquets."
 
 #: lazarusidestrconsts.lisideconficurationfoundmaybelongtootherlazarus
-msgid "Welcome to Lazarus.%0:sThe IDE configuration found was previously used by another installation of Lazarus.%0:sIf you have two or more separate installations of Lazarus, they should not share the same configuration. This may lead to conflicts, and your Lazarus installations may become unusable.%0:s%0:sIf you have only one installation and copied or moved the Lazarus executable, then you may upgrade this configuration.%0:s%1:s%0:s%0:sChoose:%0:s%0:s* Update info: Use this configuration and update it for being used with this Lazarus in future. The old installation will no longer use this.%0:s* Ignore: Use this configuration, but keep the warning. This may lead to conflicts with the other installation.%0:s* Abort: Exit now. You can then fix the problem by starting this Lazarus with the correct configuration.%0:s%0:sAdditional information:%0:sThis configuration is at: %2:s%0:sIt belongs to the Lazarus installation at: %3:s%0:sThe current IDE was started from: %4:s%0:s"
+#, fuzzy
+#| msgid "Welcome to Lazarus.%0:sThe IDE configuration found was previously used by another installation of Lazarus.%0:sIf you have two or more separate installations of Lazarus, they should not share the same configuration. This may lead to conflicts, and your Lazarus installations may become unusable.%0:s%0:sIf you have only one installation and copied or moved the Lazarus executable, then you may upgrade this configuration.%0:s%1:s%0:s%0:sChoose:%0:s%0:s* Update info: Use this configuration and update it for being used with this Lazarus in future. The old installation will no longer use this.%0:s* Ignore: Use this configuration, but keep the warning. This may lead to conflicts with the other installation.%0:s* Abort: Exit now. You can then fix the problem by starting this Lazarus with the correct configuration.%0:s%0:sAdditional information:%0:sThis configuration is at: %2:s%0:sIt belongs to the Lazarus installation at: %3:s%0:sThe current IDE was started from: %4:s%0:s"
+msgid "Welcome to Lazarus.%0:sThe IDE configuration found was previously used by another installation of Lazarus.%0:sIf you have two or more separate installations of Lazarus, they should not share the same configuration. This may lead to conflicts and your Lazarus installations may become unusable.%0:s%0:sIf you have only one installation and copied or moved the Lazarus executable, then you may upgrade this configuration.%0:s%1:s%0:s%0:sChoose:%0:s%0:s* Update info: Use this configuration and update it for being used with this Lazarus in future. The old installation will no longer use this.%0:s* Ignore: Use this configuration but keep the warning. This may lead to conflicts with the other installation.%0:s* Abort: Exit now. You can then fix the problem by starting this Lazarus with the correct configuration.%0:s%0:sAdditional information:%0:sThis configuration is at: %2:s%0:sIt belongs to the Lazarus installation at: %3:s%0:sThe current IDE was started from: %4:s%0:s"
 msgstr "Bienvenue dans Lazarus%0:sLa configuration trouvée de l’EDI a déjà été utilisée par une autre installation de Lazarus.%0:sSi vous avez plusieurs installations distinctes de Lazarus, elles ne doivent pas partager la même configuration. Cette situation peut conduire à des conflits et vos installations Lazarus peuvent en devenir inutilisables.%0:s%0:sSi vous n'avez qu'une seule installation et que vous avez copié ou déplacé le fichier exécutable Lazarus, vous pouvez mettre à jour cette configuration.%0:s%1:s%0:s%0:sChoisissez :%0:s%0:s* Mettre à jour : utiliser cette configuration et la mettre à jour pour être utilisée avec Lazarus à l'avenir. L'ancienne installation ne l’utilisera plus.%0:s* Ignorer : utiliser cette configuration, mais garder l'avertissement. Cela peut conduire à des conflits avec l'autre installation.%0:s* Abandon : quitter maintenant. Vous pouvez alors régler le problème en démarrant Lazarus avec la configuration correcte.%0:s%0:sInformations complémentaires :%0:scette configuration se trouve dans %2:s%0:sElle appartient à l'installation Lazarus qui se trouve dans %3:s%0:sL'EDI actuel a démarré depuis : %4:s%0:s"
 
 #: lazarusidestrconsts.lisideinfocreatingmakefileforpackage
@@ -10729,10 +10722,6 @@ msgstr "Exécutable incorrect"
 #: lazarusidestrconsts.lisinvalidexecutablemessagetext
 msgid "The file \"%s\" is not executable."
 msgstr "Le fichier \"%s\" n'est pas exécutable."
-
-#: lazarusidestrconsts.lisinvalidexpression
-msgid "Invalid expression:%s%s%s%s"
-msgstr "Expression incorrecte :%s%s%s%s"
 
 #: lazarusidestrconsts.lisinvalidexpressionhintthemakeresourcestringfunction
 msgid "Invalid expression.%sHint: The \"Make Resourcestring\" function expects a string constant in a single file. Please select the expression and try again."
@@ -11471,7 +11460,9 @@ msgid "Lazarus directory"
 msgstr "Répertoire de Lazarus"
 
 #: lazarusidestrconsts.lislazarusdiroverride
-msgid "directory, to be used as a basedirectory"
+#, fuzzy
+#| msgid "directory, to be used as a basedirectory"
+msgid "directory to be used as a basedirectory"
 msgstr "répertoire, à utiliser comme un répertoire de base"
 
 #: lazarusidestrconsts.lislazaruseditorv
@@ -11991,7 +11982,9 @@ msgid "Manage Source Editors ..."
 msgstr "Gérer les éditeurs de source..."
 
 #: lazarusidestrconsts.lismaximumnumberofthreadsforcompilinginparalleldefaul
-msgid "Maximum number of threads for compiling in parallel. Default is 0, which guesses the number of cores in the system."
+#, fuzzy
+#| msgid "Maximum number of threads for compiling in parallel. Default is 0, which guesses the number of cores in the system."
+msgid "Maximum number of threads for compiling in parallel. Default is 0 which guesses the number of cores in the system."
 msgstr "Nombre maximum de tâches à compiler en parallèle. Le nombre par défaut est 0, ce qui correspond à la recherche du nombre de cœurs du système."
 
 #: lazarusidestrconsts.lismaximumparallelprocesses0meansdefault
@@ -13611,11 +13604,15 @@ msgid "Exclude all packages matching name \"%s\""
 msgstr "Exclure tous les paquets dont le nom correspond à \"%s\""
 
 #: lazarusidestrconsts.lismmexpectedaftermacronamebutfound
-msgid "expected \":=\" after macro name, but found \"%s\""
+#, fuzzy
+#| msgid "expected \":=\" after macro name, but found \"%s\""
+msgid "expected \":=\" after macro name but found \"%s\""
 msgstr "\":=\" attendu après le nom de la macro, mais \"%s\" trouvé"
 
 #: lazarusidestrconsts.lismmexpectedmacronamebutfound
-msgid "expected macro name, but found \"%s\""
+#, fuzzy
+#| msgid "expected macro name, but found \"%s\""
+msgid "expected macro name but found \"%s\""
 msgstr "nom de macro attendu, mais \"%s\" trouvé"
 
 #: lazarusidestrconsts.lismmfromto
@@ -14265,7 +14262,9 @@ msgid "State"
 msgstr "État"
 
 #: lazarusidestrconsts.lisoipthispackageisinstalledbutthelpkfilewasnotfound
-msgid "%sThis package is installed, but the lpk file was not found"
+#, fuzzy
+#| msgid "%sThis package is installed, but the lpk file was not found"
+msgid "%sThis package is installed but the lpk file was not found"
 msgstr "%s Ce paquet est installé, mais le fichier lpk associé est introuvable"
 
 #: lazarusidestrconsts.lisok
@@ -14446,7 +14445,9 @@ msgid ", OS: %s"
 msgstr " - OS : %s"
 
 #: lazarusidestrconsts.lisothersourcespathofpackagecontainsdirectorywhichisa
-msgid "other sources path of package \"%s\" contains directory \"%s\", which is already in the unit search path."
+#, fuzzy
+#| msgid "other sources path of package \"%s\" contains directory \"%s\", which is already in the unit search path."
+msgid "other sources path of package \"%s\" contains directory \"%s\" which is already in the unit search path."
 msgstr "le chemin des autres codes sources du paquet \"%s\" contient le répertoire \"%s\", qui est déjà dans le chemin de recherche de l'unité."
 
 #: lazarusidestrconsts.lisoutputdirectoryofcontainspascalunitsource
@@ -15280,9 +15281,9 @@ msgstr "%sAjout d'une nouvelle dépendance pour le paquet %s : paquet %s"
 msgid "%sAdding new Dependency for project %s: package %s"
 msgstr "%sAjout d'une nouvelle dépendance pour le projet %s : paquet %s"
 
-#: lazarusidestrconsts.lispkgmangaddunittousesclauseofpackagedisablethisonlyforunit
-msgid "Add unit to uses clause of package. Disable this only for units, that should not be compiled in all cases."
-msgstr "Ajouter une unité à la clause \"uses\" du paquet. Désactivez ceci seulement pour les unités qui ne devraient pas être compilées dans tous les cas."
+#: lazarusidestrconsts.lispkgmangaddunittousesclause
+msgid "Add unit to uses clause of package main file. Disable this only for units that should not be compiled in all cases."
+msgstr ""
 
 #: lazarusidestrconsts.lispkgmangambiguousunitsfound
 msgid "Ambiguous units found"
@@ -15556,15 +15557,21 @@ msgid "The package %s is a runtime only package.%sRuntime only packages cannot b
 msgstr "Le paquet %s est un paquet d'exécution.%sLes paquets d'exécution ne peuvent pas être installés dans l'EDI."
 
 #: lazarusidestrconsts.lispkgmangthepackageiscompiledautomaticallyanditsoutputdirec
-msgid "The package \"%s\" is compiled automatically and its output directory is \"%s\", which is in the default unit search path of the compiler. The package uses other packages which also use the default unit search of the compiler. This creates an endless loop.%sYou can fix this issue by removing the path from your compiler config (e.g. fpc.cfg)%sor by disabling the auto update of this package or by removing dependencies."
+#, fuzzy
+#| msgid "The package \"%s\" is compiled automatically and its output directory is \"%s\", which is in the default unit search path of the compiler. The package uses other packages which also use the default unit search of the compiler. This creates an endless loop.%sYou can fix this issue by removing the path from your compiler config (e.g. fpc.cfg)%sor by disabling the auto update of this package or by removing dependencies."
+msgid "The package \"%s\" is compiled automatically and its output directory is \"%s\" which is in the default unit search path of the compiler. The package uses other packages which also use the default unit search of the compiler. This creates an endless loop.%sYou can fix this issue by removing the path from your compiler config (e.g. fpc.cfg)%sor by disabling the auto update of this package or by removing dependencies."
 msgstr "Le paquet \"%s\" est compilé automatiquement et son répertoire de sortie est \"%s\" qui est sur le chemin de recherche par défaut des unités du compilateur . Le paquet utilise d'autres paquets qui utilisent eux aussi le même chemin. Cela crée une boucle sans fin.%sVous pouvez corriger ce problème en supprimer ce chemin de la configuration du compilateur (par exemple : \"fpc.cfg\")%sou en désactivant la mise à jour automatique de ce paquet, ou encore en supprimant les dépendances."
 
 #: lazarusidestrconsts.lispkgmangthepackageismarkedforinstallationbutcannotbefound
-msgid "The package \"%s\" is marked for installation, but cannot be found.%sRemove dependency from the installation list of packages?"
+#, fuzzy
+#| msgid "The package \"%s\" is marked for installation, but cannot be found.%sRemove dependency from the installation list of packages?"
+msgid "The package \"%s\" is marked for installation but cannot be found.%sRemove dependency from the installation list of packages?"
 msgstr "Le paquet \"%s\" est marqué pour l'installation, mais est introuvable.%sFaut-il retirer la dépendance de la liste d'installation des paquets?"
 
 #: lazarusidestrconsts.lispkgmangthepackageisrequiredbywhichismarkedforinstallation
-msgid "The package %s is required by %s, which is marked for installation.%sSee package graph."
+#, fuzzy
+#| msgid "The package %s is required by %s, which is marked for installation.%sSee package graph."
+msgid "The package %s is required by %s which is marked for installation.%sSee package graph."
 msgstr "Le paquet %s est requis par %s, qui est marqué pour l'installation.%sVoir le graphe des paquets."
 
 #: lazarusidestrconsts.lispkgmangthepackagenameisnotavalidpackagenamepleasechoosean
@@ -15752,7 +15759,9 @@ msgid "Register procedure is nil"
 msgstr "La procédure Register est à nil"
 
 #: lazarusidestrconsts.lispkgsysregisterunitwascalledbutnopackageisregistering
-msgid "RegisterUnit was called, but no package is registering."
+#, fuzzy
+#| msgid "RegisterUnit was called, but no package is registering."
+msgid "RegisterUnit was called but no package is registering."
 msgstr "\"RegisterUnit\" a été appelé, mais aucun paquet n'est en cours de référencement."
 
 #: lazarusidestrconsts.lispkgsysthelpkfilewasnotfound
@@ -15760,7 +15769,9 @@ msgid "%s%sThe lpk file was not found."
 msgstr "%s%sLe fichier du paquet est introuvable."
 
 #: lazarusidestrconsts.lispkgsysthepackageisinstalledbutnovalidpackagefilewasfound
-msgid "The package \"%s\" is installed, but no valid package file (.lpk) was found.%sA broken dummy package was created."
+#, fuzzy
+#| msgid "The package \"%s\" is installed, but no valid package file (.lpk) was found.%sA broken dummy package was created."
+msgid "The package \"%s\" is installed but no valid package file (.lpk) was found.%sA broken dummy package was created."
 msgstr "Le paquet \"%s\" est installé, mais aucun fichier de paquet valide .lpk n'a été trouvé.%sUn paquet factice a été créé."
 
 #: lazarusidestrconsts.lispkgsysthisisthedefaultpackageusedonlyforcomponents
@@ -15768,7 +15779,9 @@ msgid "This is the default package. Used only for components without a package. 
 msgstr "C'est le paquet par défaut. Utilisez-le seulement pour les composants sans paquet. Ces composants sont obsolètes."
 
 #: lazarusidestrconsts.lispkgsysthispackageisinstalledbutthelpkfilewasnotfound
-msgid "This package is installed, but the lpk file was not found. All its components are deactivated. Please fix this."
+#, fuzzy
+#| msgid "This package is installed, but the lpk file was not found. All its components are deactivated. Please fix this."
+msgid "This package is installed but the lpk file was not found. All its components are deactivated. Please fix this."
 msgstr "Ce paquet est installé, mais le fichier lpk associé n'a pas été trouvé. Tous ses composants sont désactivés. Veuillez rectifier ceci."
 
 #: lazarusidestrconsts.lispkgsysunitname
@@ -15785,7 +15798,9 @@ msgid "Unit \"%s\" was removed from package (lpk)"
 msgstr "L'unité \"%s\" a été retirée du paquet (lpk)"
 
 #: lazarusidestrconsts.lispkgthefollowingdependenciesarenotneededbecauseoftheau
-msgid "The following dependencies are not needed, because of the automatic transitivity between package dependencies."
+#, fuzzy
+#| msgid "The following dependencies are not needed, because of the automatic transitivity between package dependencies."
+msgid "The following dependencies are not needed because of the automatic transitivity between package dependencies."
 msgstr "Les dépendances suivantes ne sont pas nécessaires à cause de la transitivité automatique entre les dépendances de paquets."
 
 #: lazarusidestrconsts.lispkgtheprojectoverridestheoutputdirectoryofthefollowin
@@ -15846,7 +15861,9 @@ msgid "User"
 msgstr "Utilisateur"
 
 #: lazarusidestrconsts.lispleasefixtheerrorinthemessagewindow
-msgid "Please fix the error shown in the message window, which is normally below the source editor."
+#, fuzzy
+#| msgid "Please fix the error shown in the message window, which is normally below the source editor."
+msgid "Please fix the error shown in the message window which is normally below the source editor."
 msgstr "Veuillez corriger l'erreur indiquée dans la fenêtre des messages qui se trouve normalement sous l'éditeur."
 
 #: lazarusidestrconsts.lispleaseopenaunitbeforerun
@@ -15952,7 +15969,9 @@ msgid "Preceding word"
 msgstr "Mot précédent"
 
 #: lazarusidestrconsts.lisprimaryconfigdirectorywherelazarusstoresitsconfig
-msgid "primary config directory, where Lazarus stores its config files. Default is "
+#, fuzzy
+#| msgid "primary config directory, where Lazarus stores its config files. Default is "
+msgid "primary config directory where Lazarus stores its config files. Default is "
 msgstr "répertoire principal de configuration, là où Lazarus stocke ses dossiers de configuration. Par défaut, c'est "
 
 #: lazarusidestrconsts.lisprimaryconfigpath
@@ -15977,7 +15996,9 @@ msgid "Private Method"
 msgstr "Méthode privée"
 
 #: lazarusidestrconsts.lisprobablyyouneedtoinstallsomepackagesforbeforeconti
-msgid "Probably you need to install some packages before continuing.%sWarning:%sThe project uses the following design time packages, which might be needed to open the form in the designer. If you continue, you might get errors about missing components and the form loading will probably create very unpleasant results.%sIt is recommended to cancel and install these packages first."
+#, fuzzy
+#| msgid "Probably you need to install some packages before continuing.%sWarning:%sThe project uses the following design time packages, which might be needed to open the form in the designer. If you continue, you might get errors about missing components and the form loading will probably create very unpleasant results.%sIt is recommended to cancel and install these packages first."
+msgid "Probably you need to install some packages before continuing.%sWarning:%sThe project uses the following design time packages which might be needed to open the form in the designer. If you continue, you might get errors about missing components and the form loading will probably create very unpleasant results.%sIt is recommended to cancel and install these packages first."
 msgstr "Vous devez probablement installer certains paquets avant de pouvoir continuer.%sAvertissement :%sLe projet dépend de certains paquets au moment de la conception, qui pourraient être nécessaires pour ouvrir la fiche dans le concepteur. Si vous continuez, vous pourriez obtenir des erreurs relatives aux composants absents et le chargement de la fiche produira sans doute des résultats très désagréables.%sIl est préférable d'abandonner et d'installer d'abord ces paquets."
 
 #: lazarusidestrconsts.lisprocedure
@@ -16005,10 +16026,6 @@ msgstr "Un programme Free Pascal en ligne de commande muni de paramètres suppl�
 #: lazarusidestrconsts.lisprogramsourcemusthaveapascalextensionlikepaspporlp
 msgid "Program source must have a Pascal extension like .pas, .pp or .lpr"
 msgstr "Le fichier de code source du programme doit avoir une extension Pascal comme .pas, .pp ou `.lpr"
-
-#: lazarusidestrconsts.lisprojaddaddfilestoproject
-msgid "Add Files to Project"
-msgstr "Ajouter des fichiers au projet"
 
 #: lazarusidestrconsts.lisprojadddependencyalreadyexists
 msgid "Dependency already exists"
@@ -16100,11 +16117,6 @@ msgstr "Le nom d'unité \"%s\" existe déjà dans la sélection%savec le fichier
 #: lazarusidestrconsts.lisprojaddtheunitnameisnotavalidpascalidentifier
 msgid "The unit name \"%s\" is not a valid Pascal identifier."
 msgstr "Le nom de l'unité \"%s\" n'est pas un identificateur Pascal correct."
-
-#: lazarusidestrconsts.lisprojaddtoproject
-msgctxt "lazarusidestrconsts.lisprojaddtoproject"
-msgid "Add to Project"
-msgstr "Ajouter au projet"
 
 #: lazarusidestrconsts.lisprojaddunitnamealreadyexists
 msgid "Unit name already exists"
@@ -16243,10 +16255,6 @@ msgstr "Chemin des unités du projet"
 #: lazarusidestrconsts.lisprojectwizard
 msgid "Project Wizard"
 msgstr "Assistant de projet"
-
-#: lazarusidestrconsts.lisprojfiles
-msgid "Files:"
-msgstr "Fichiers :"
 
 #: lazarusidestrconsts.lisprojinspconfirmdeletingdependency
 msgid "Confirm deleting dependency"
@@ -16809,7 +16817,9 @@ msgid "\"Run time only\" packages are only for projects. They cannot be installe
 msgstr "Les paquets d'exécution seule ne concernent que les projets. Ils ne peuvent pas être installés dans l'EDI, même indirectement."
 
 #: lazarusidestrconsts.lisruntimepackagescanbeusedbyprojectstheycannotbeinst
-msgid "\"Run time\" packages can be used by projects. They cannot be installed in the IDE, unless some design time package requires them."
+#, fuzzy
+#| msgid "\"Run time\" packages can be used by projects. They cannot be installed in the IDE, unless some design time package requires them."
+msgid "\"Run time\" packages can be used by projects. They cannot be installed in the IDE unless some design time package requires them."
 msgstr "Les paquets d'exécution peuvent être utilisés par les projets. Ils ne peuvent pas être installés dans l'EDI, à moins d'être requis par un paquet de conception."
 
 #: lazarusidestrconsts.lisruntofailed
@@ -17018,7 +17028,9 @@ msgid "Search Unit \"%s\""
 msgstr "Rechercher l'unité \"%s\""
 
 #: lazarusidestrconsts.lissecondaryconfigdirectorywherelazarussearchesfor
-msgid "secondary config directory, where Lazarus searches for config template files. Default is "
+#, fuzzy
+#| msgid "secondary config directory, where Lazarus searches for config template files. Default is "
+msgid "secondary config directory where Lazarus searches for config template files. Default is "
 msgstr "répertoire de configuration secondaire, là où Lazarus recherche ses fichiers de modèles de configuration. Par défaut, c'est "
 
 #: lazarusidestrconsts.lissecondaryconfigpath
@@ -17232,7 +17244,9 @@ msgid "Show only modified"
 msgstr "Montrer uniquement si changés"
 
 #: lazarusidestrconsts.lisshowonlyonebuttoninthetaskbarforthewholeideinstead
-msgid "Show only one button in the taskbar for the whole IDE, instead of one per window. Some Linux Window Managers like Cinnamon do not support this and always show one button per window."
+#, fuzzy
+#| msgid "Show only one button in the taskbar for the whole IDE, instead of one per window. Some Linux Window Managers like Cinnamon do not support this and always show one button per window."
+msgid "Show only one button in the taskbar for the whole IDE instead of one per window. Some Linux Window Managers like Cinnamon do not support this and always show one button per window."
 msgstr "Montrer seulement un bouton dans la barre des tâches pour l’EDI au lieu d’un par fenêtre. Certains gestionnaires de fenêtres Linux, tel Cinnamon, ne peuvent pas le faire et montrent toujours un bouton par fenêtre."
 
 #: lazarusidestrconsts.lisshowoutput
@@ -17733,7 +17747,9 @@ msgid "The compiler file \"%s\" does not look correct:%s%s"
 msgstr "Le fichier de compilateur\"%s\" semble incorrect :%s%s"
 
 #: lazarusidestrconsts.listhecomponentcannotbedeletedbecauseitisnotownedby
-msgid "The component %s can not be deleted, because it is not owned by %s."
+#, fuzzy
+#| msgid "The component %s can not be deleted, because it is not owned by %s."
+msgid "The component %s can not be deleted because it is not owned by %s."
 msgstr "Le composant %s ne peut être supprimé, car il n'est pas détenu par %s."
 
 #: lazarusidestrconsts.listhecomponenteditorofclasshascreatedtheerror
@@ -17905,7 +17921,9 @@ msgid "The Lazarus directory \"%s\" does not look correct:%s%s"
 msgstr "Le répertoire Lazarus \"%s\" n'a pas l'air correct :%s%s"
 
 #: lazarusidestrconsts.listhelfmlazarusformfilecontainsinvalidpropertiesthis
-msgid "The LFM (Lazarus form) file contains invalid properties. This means for example it contains some properties/classes, which do not exist in the current LCL. The normal fix is to remove these properties from the lfm and fix the Pascal code manually."
+#, fuzzy
+#| msgid "The LFM (Lazarus form) file contains invalid properties. This means for example it contains some properties/classes, which do not exist in the current LCL. The normal fix is to remove these properties from the lfm and fix the Pascal code manually."
+msgid "The LFM (Lazarus form) file contains invalid properties. This means for example it contains some properties/classes which do not exist in the current LCL. The normal fix is to remove these properties from the lfm and fix the Pascal code manually."
 msgstr "Le fichier LFM (fiche Lazarus) contient des propriétés incorrectes. Cela veut dire qu'il contient des propriétés/classes qui n'existent pas dans la LCL actuelle. L'action recommandée est de retirer ces propriétés du LFM et de corriger le code Pascal manuellement."
 
 #: lazarusidestrconsts.listhemacrodoesnotbeginwith
@@ -17977,15 +17995,21 @@ msgid "The package already contains a unit with this name."
 msgstr "Le paquet contient déjà une unité portant ce nom."
 
 #: lazarusidestrconsts.listhepackagecannotbeinstalledbecauseitrequireswhichi
-msgid "The package %s cannot be installed, because it requires the package \"%s\", which is a runtime only package."
+#, fuzzy
+#| msgid "The package %s cannot be installed, because it requires the package \"%s\", which is a runtime only package."
+msgid "The package %s cannot be installed because it requires the package \"%s\" which is a runtime only package."
 msgstr "Le paquet %s ne peut pas être installé, car il nécessite le paquet \"%s\" qui est un paquet d'exécution seule."
 
 #: lazarusidestrconsts.listhepackagecannotbeuninstalledbecauseitisneededbyth
-msgid "The package %s can not be uninstalled, because it is needed by the IDE itself."
+#, fuzzy
+#| msgid "The package %s can not be uninstalled, because it is needed by the IDE itself."
+msgid "The package %s can not be uninstalled because it is needed by the IDE itself."
 msgstr "Le paquet %s ne peut pas être désinstallé, car il est nécessaire à l'EDI lui-même."
 
 #: lazarusidestrconsts.listhepackagedoesnothaveanyregisterprocedurewhichtypi
-msgid "The package %s does not have any \"Register\" procedure, which typically means, it does not provide any IDE addon. Installing it will probably only increase the size of the IDE and may even make it unstable.%sHint: If you want to use a package in your project, use the \"Add to project\" menu item."
+#, fuzzy
+#| msgid "The package %s does not have any \"Register\" procedure, which typically means, it does not provide any IDE addon. Installing it will probably only increase the size of the IDE and may even make it unstable.%sHint: If you want to use a package in your project, use the \"Add to project\" menu item."
+msgid "The package %s does not have any \"Register\" procedure which typically means it does not provide any IDE addon. Installing it will probably only increase the size of the IDE and may even make it unstable.%sHint: If you want to use a package in your project, use the \"Add to project\" menu item."
 msgstr "Le paquet %s n'a aucune procédure Register, ce qui signifie qu'il ne fournit aucune fonctionnalité nouvelle à l'EDI. L'installer va probablement augmenter la taille de l'EDI et pourrait même le rendre instable.%sConseil : si vous voulez utiliser un paquet dans votre projet, utilisez l'élément du menu intitulé \"Ajouter au projet\"\"."
 
 #: lazarusidestrconsts.listhepackageisalreadyinthelist
@@ -18033,7 +18057,9 @@ msgid "The project must be saved before building%sIf you set the Test Directory 
 msgstr "Le projet doit être enregistré avant d'être construit%sSi vous définissez un répertoire de test dans les options d'environnement,%svous pourrez créer de nouveaux projets et les créer aussitôt.%sVoulez-vous enregistrer le projet ?"
 
 #: lazarusidestrconsts.listheprojectusesfpcresourceswhichrequireatleast
-msgid "The project uses FPC resources, which require at least FPC 2.4"
+#, fuzzy
+#| msgid "The project uses FPC resources, which require at least FPC 2.4"
+msgid "The project uses FPC resources which require at least FPC 2.4"
 msgstr "Le projet utilise des ressources FPC, qui nécessitent au moins FPC 2.4"
 
 #: lazarusidestrconsts.listheprojectusestargetosandcputhesystemppuforthistar
@@ -18045,7 +18071,7 @@ msgid "The project writes the debug symbols to an external file. The \"%s\" supp
 msgstr "Le projet écrit les symboles de débogage dans un fichier externe. Le \"%s\" ne supporte que les symboles à l'intérieur de l'exécutable."
 
 #: lazarusidestrconsts.listheprojectwritesthedebugsymbolstotheexexcutable
-msgid "The project writes the debug symbols into the executable, rather than to an external file. The \"%s\" supports only symbols in an external file."
+msgid "The project writes the debug symbols into the executable rather than to an external file. The \"%s\" supports only symbols in an external file."
 msgstr ""
 
 #: lazarusidestrconsts.listhereareadditionalnotesforthismessageon
@@ -18193,7 +18219,9 @@ msgid "The unit filename \"%s\" is not lowercase.%sThe Free Pascal compiler does
 msgstr "Le nom de l'unité \"%s\" n'est pas en minuscules.%sLe compilateur FreePascal ne cherche pas toutes les casses. Il est recommandé d'utiliser un nom de fichier en minuscules.%sVoulez-vous renommer le fichier en minuscules ?"
 
 #: lazarusidestrconsts.listheunitispartofthefpcsourcesbutthecorrespondingfpd
-msgid "The unit %s is part of the FPC sources, but the corresponding fpdoc xml file was not found.%sEither you have not yet added the fpcdocs directory to the search path or the unit is not yet documented.%sThe fpdoc files for the FPC sources can be downloaded from: %s%sPlease add the directory in the fpdoc editor options.%sIn order to create a new file the directory must be writable."
+#, fuzzy
+#| msgid "The unit %s is part of the FPC sources, but the corresponding fpdoc xml file was not found.%sEither you have not yet added the fpcdocs directory to the search path or the unit is not yet documented.%sThe fpdoc files for the FPC sources can be downloaded from: %s%sPlease add the directory in the fpdoc editor options.%sIn order to create a new file the directory must be writable."
+msgid "The unit %s is part of the FPC sources but the corresponding fpdoc xml file was not found.%sEither you have not yet added the fpcdocs directory to the search path or the unit is not yet documented.%sThe fpdoc files for the FPC sources can be downloaded from: %s%sPlease add the directory in the fpdoc editor options.%sIn order to create a new file the directory must be writable."
 msgstr "L'unité %s fait partie des codes sources de FPC, mais le fichier XML FPDoc correspondant n'a pas été trouvé.%sSoit vous n'avez pas encore ajouté le répertoire fpcdocs au chemin de recherche ou l'unité n'est pas encore documentée.%sLes fichiers FPDoc pour les sources FPC peuvent être téléchargés depuis :%s%sVeuillez ajouter le répertoire dans les options de l'éditeur de FPDoc%sPour créer un nouveau fichier dans le répertoire, celui-ci doit être accessible en écriture."
 
 #: lazarusidestrconsts.listheunitisusedbyotherfilesupdatereferencesautomatic
@@ -18229,7 +18257,9 @@ msgid "This is a test project for a design time package, testing it outside the 
 msgstr "Il s'agit d'un projet de test pour un paquet de conception. Le test s'effectuera en dehors de l'EDI."
 
 #: lazarusidestrconsts.listhislookslikeapascalfileitisrecommendedtouselowerc
-msgid "This looks like a Pascal file.%sIt is recommended to use lower case filenames, to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
+#, fuzzy
+#| msgid "This looks like a Pascal file.%sIt is recommended to use lower case filenames, to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
+msgid "This looks like a Pascal file.%sIt is recommended to use lower case filenames to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
 msgstr "Ceci ressemble à un fichier Pascal.%sIl est recommandé d'employer des noms de fichier en minuscules pour éviter divers problèmes avec certains systèmes de fichiers et compilateurs.%sVoulez-vous le renommer en lettres minuscules?"
 
 #: lazarusidestrconsts.listhisprojecthasnomainsourcefile
@@ -18606,7 +18636,9 @@ msgid "Search string '%s' not found!"
 msgstr "Chaîne recherchée \"%s\" non trouvée !"
 
 #: lazarusidestrconsts.lisuethecurre
-msgid "The current editor font does not support UTF-8, but your system seems to use it.%sThat means non ASCII characters will probably be shown incorrectly.%sYou can select another font in the editor options."
+#, fuzzy
+#| msgid "The current editor font does not support UTF-8, but your system seems to use it.%sThat means non ASCII characters will probably be shown incorrectly.%sYou can select another font in the editor options."
+msgid "The current editor font does not support UTF-8 but your system seems to use it.%sThat means non ASCII characters will probably be shown incorrectly.%sYou can select another font in the editor options."
 msgstr "La police courante de l'éditeur ne supporte pas l'UTF-8, mais votre système semble l'employer. %sCela signifie que les caractères non ASCII seront probablement mal affichés. %sVous pouvez choisir une autre police dans les options de l'éditeur."
 
 #: lazarusidestrconsts.lisuiclearincludedbyreference
@@ -18672,15 +18704,21 @@ msgid "Unable to add resource T%s:FORMDATA to resource file %s\"%s\".%sProbably 
 msgstr "Impossible d'ajouter la ressource T%s:FORMDATA au fichier ressource %s\"%s\".%sProbablement une erreur de syntaxe."
 
 #: lazarusidestrconsts.lisunabletoaddthedependencybecausethepackagehasalread
-msgid "Unable to add the dependency %s, because the package %s has already a dependency %s"
+#, fuzzy
+#| msgid "Unable to add the dependency %s, because the package %s has already a dependency %s"
+msgid "Unable to add the dependency %s because the package %s has already a dependency %s"
 msgstr "Impossible d'ajouter une dépendance %s, car le paquet %s a déjà une dépendance %s"
 
 #: lazarusidestrconsts.lisunabletoaddthedependencybecausethiswouldcreatea
-msgid "Unable to add the dependency %s, because this would create a circular dependency. Dependency %s"
+#, fuzzy
+#| msgid "Unable to add the dependency %s, because this would create a circular dependency. Dependency %s"
+msgid "Unable to add the dependency %s because this would create a circular dependency. Dependency %s"
 msgstr "Impossible d'ajouter une dépendance %s, car elle créerait une référence circulaire. Dépendance %s"
 
 #: lazarusidestrconsts.lisunabletoaddtoprojectbecausethereisalreadyaunitwith
-msgid "Unable to add %s to project, because there is already a unit with the same name in the Project."
+#, fuzzy
+#| msgid "Unable to add %s to project, because there is already a unit with the same name in the Project."
+msgid "Unable to add %s to project because there is already a unit with the same name in the Project."
 msgstr "Impossible d'ajouter %s au projet, car ce dernier contient déjà une unité portant le même nom."
 
 #: lazarusidestrconsts.lisunabletobackupfileto
@@ -18752,7 +18790,9 @@ msgid "Unable to create link \"%s\" with target \"%s\""
 msgstr "Impossible de créer le lien \"%s\" vers la cible \"%s\""
 
 #: lazarusidestrconsts.lisunabletocreatenewfilebecausethereisalreadyadirecto
-msgid "Unable to create new file, because there is already a directory with this name."
+#, fuzzy
+#| msgid "Unable to create new file, because there is already a directory with this name."
+msgid "Unable to create new file because there is already a directory with this name."
 msgstr "Impossible de créer le nouveau fichier, car il existe déjà un répertoire de ce nom."
 
 #: lazarusidestrconsts.lisunabletocreatenewmethod
@@ -18824,7 +18864,9 @@ msgid "Unable to load package \"%s\""
 msgstr "Impossible de charger le paquet \"%s\""
 
 #: lazarusidestrconsts.lisunabletoloadthecomponentclassbecauseitdependsonits
-msgid "Unable to load the component class \"%s\", because it depends on itself."
+#, fuzzy
+#| msgid "Unable to load the component class \"%s\", because it depends on itself."
+msgid "Unable to load the component class \"%s\" because it depends on itself."
 msgstr "Impossible de charger la classe de composant \"%s\" parce qu'elle dépend d'elle-même."
 
 #: lazarusidestrconsts.lisunabletoopen
@@ -19373,7 +19415,9 @@ msgid "When a unit is renamed, update references"
 msgstr "Si une unité est renommée, mettre à jour les références"
 
 #: lazarusidestrconsts.liswhenenabledthecurrentoptionsaresavedtothetemplatew
-msgid "When enabled the current options are saved to the template, which is used when creating new projects"
+#, fuzzy
+#| msgid "When enabled the current options are saved to the template, which is used when creating new projects"
+msgid "When enabled the current options are saved to the template which is used when creating new projects"
 msgstr "Lorsqu'elles sont activées, les options en cours sont enregistrées dans le modèle qui sera utilisé pour créer de nouveaux projets"
 
 #: lazarusidestrconsts.liswhenthereisonlyonepossiblecompletionitemuseitimmed
@@ -19642,7 +19686,9 @@ msgid "Filter the lines in list with a string"
 msgstr "Filtrer les lignes dans la liste avec une chaîne de caractères"
 
 #: lazarusidestrconsts.rsfoundbutnotlistedhere
-msgid "Found, but not listed here: "
+#, fuzzy
+#| msgid "Found, but not listed here: "
+msgid "Found but not listed here: "
 msgstr "Trouvé, mais ne figure pas ici : "
 
 #: lazarusidestrconsts.rsi18nexcluded
