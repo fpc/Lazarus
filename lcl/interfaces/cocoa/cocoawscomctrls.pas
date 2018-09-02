@@ -724,7 +724,7 @@ begin
   if Result <> 0 then
   begin
     ns := GetNSRect(0, 0, AParams.Width, AParams.Height);
-    lTableLV := TCocoaTableListView.alloc.initWithFrame(ns);
+    lTableLV := AllocCocoaTableListView.initWithFrame(ns);
     if lTableLV = nil then
     begin
       lCocoaLV.dealloc;

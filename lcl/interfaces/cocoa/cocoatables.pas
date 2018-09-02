@@ -142,7 +142,6 @@ type
     function tableView_shouldShowCellExpansionForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): Boolean; message 'tableView:shouldShowCellExpansionForTableColumn:row:';
     function tableView_shouldTrackCell_forTableColumn_row(tableView: NSTableView; cell: NSCell; tableColumn: NSTableColumn; row: NSInteger): Boolean; message 'tableView:shouldTrackCell:forTableColumn:row:';
     }
-    function tableView_dataCellForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): NSCell; message 'tableView:dataCellForTableColumn:row:';
     {
     function tableView_isGroupRow(tableView: NSTableView; row: NSInteger): Boolean; message 'tableView:isGroupRow:';
     function tableView_sizeToFitWidthOfColumn(tableView: NSTableView; column: NSInteger): CGFloat; message 'tableView:sizeToFitWidthOfColumn:';
@@ -184,7 +183,21 @@ type
     procedure setButtonType(aType: NSButtonType); override;
   end;
 
+  { TCellCocoaTableListView }
+
+  TCellCocoaTableListView = objcclass(TCocoaTableListView, NSTableViewDelegateProtocol, NSTableViewDataSourceProtocol)
+  public
+    function tableView_dataCellForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): NSCell; message 'tableView:dataCellForTableColumn:row:';
+  end;
+
+function AllocCocoaTableListView: TCocoaTableListView;
+
 implementation
+
+function AllocCocoaTableListView: TCocoaTableListView;
+begin
+  Result := TCellCocoaTableListView.alloc; // init will happen outside
+end;
 
 { NSTableButtonCell }
 
@@ -549,59 +562,6 @@ begin
     callback.ColumnClicked(getIndexOfColumn(tableColumn));
 end;
 
-function TCocoaTableListView.tableView_dataCellForTableColumn_row(
-  tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): NSCell;
-var
-  chk : Boolean;
-  txt : string;
-  col : Integer;
-  nstxt : NSString;
-  idx  : Integer;
-  img  : NSImage;
-  btn  : NSTableButtonCell;
-begin
-  Result:=nil;
-  if not isFirstColumnCheckboxes and not isImagesInCell then Exit;
-
-  col := getIndexOfColumn(tableColumn);
-  if (col <> 0) then Exit;
-
-  if not isFirstColumnCheckboxes and isImagesInCell then begin
-    idx := -1;
-    callback.GetItemImageAt(row, col, idx);
-    if idx>=0 then
-    begin
-      img := lclGetSmallImage(idx);
-      if not Assigned(img) then begin
-        img := callback.GetImageFromIndex(idx);
-        if Assigned(img) then lclRegisterSmallImage(idx, img);
-      end;
-    end else
-      img := nil;
-
-    Result := NSImageAndTextCell(NSImageAndTextCell.alloc).initTextCell(NSSTR(''));
-    NSImageAndTextCell(Result).drawImage := img; // if "image" is assigned, text won't be drawn :(
-    Exit;
-  end;
-  txt := '';
-  chk := false;
-
-  callback.GetItemTextAt(row, col, txt);
-
-  if txt = '' then nstxt := NSString.string_
-  else nstxt := NSString.stringWithUTF8String(@txt[1]);
-
-  btn := NSTableButtonCell.alloc.init.autorelease;
-  //Result.setAllowsMixedState(True);
-  btn.setButtonType(NSSwitchButton);
-  btn.setTitle(nstxt);
-  if chk then begin
-    btn.setIntValue(1);
-    btn.setCellAttribute_to(NSCellState, NSOnState);
-  end;
-  Result := btn;
-end;
-
 type
   TCompareData = record
     rmved : NSMutableIndexSet;
@@ -797,6 +757,62 @@ begin
   Owner:=AOwner;
   inherited Create;
 end;
+
+{ TCellCocoaTableListView }
+
+function TCellCocoaTableListView.tableView_dataCellForTableColumn_row(
+  tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): NSCell;
+var
+  chk : Boolean;
+  txt : string;
+  col : Integer;
+  nstxt : NSString;
+  idx  : Integer;
+  img  : NSImage;
+  btn  : NSTableButtonCell;
+begin
+  Result:=nil;
+  if not isFirstColumnCheckboxes and not isImagesInCell then Exit;
+
+  col := getIndexOfColumn(tableColumn);
+  if (col <> 0) then Exit;
+
+  if not isFirstColumnCheckboxes and isImagesInCell then begin
+    idx := -1;
+    callback.GetItemImageAt(row, col, idx);
+    if idx>=0 then
+    begin
+      img := lclGetSmallImage(idx);
+      if not Assigned(img) then begin
+        img := callback.GetImageFromIndex(idx);
+        if Assigned(img) then lclRegisterSmallImage(idx, img);
+      end;
+    end else
+      img := nil;
+
+    Result := NSImageAndTextCell(NSImageAndTextCell.alloc).initTextCell(NSSTR(''));
+    NSImageAndTextCell(Result).drawImage := img; // if "image" is assigned, text won't be drawn :(
+    Exit;
+  end;
+  txt := '';
+  chk := false;
+
+  callback.GetItemTextAt(row, col, txt);
+
+  if txt = '' then nstxt := NSString.string_
+  else nstxt := NSString.stringWithUTF8String(@txt[1]);
+
+  btn := NSTableButtonCell.alloc.init.autorelease;
+  //Result.setAllowsMixedState(True);
+  btn.setButtonType(NSSwitchButton);
+  btn.setTitle(nstxt);
+  if chk then begin
+    btn.setIntValue(1);
+    btn.setCellAttribute_to(NSCellState, NSOnState);
+  end;
+  Result := btn;
+end;
+
 
 end.
 

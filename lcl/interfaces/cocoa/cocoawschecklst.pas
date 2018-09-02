@@ -141,7 +141,7 @@ var
   list: TCocoaTableListView;
   scroll: TCocoaScrollView;
 begin
-  list := TCocoaTableListView.alloc.lclInitWithCreateParams(AParams);
+  list := AllocCocoaTableListView.lclInitWithCreateParams(AParams);
   if not Assigned(list) then
   begin
     Result := 0;

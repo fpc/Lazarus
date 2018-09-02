@@ -1697,7 +1697,7 @@ var
   scroll  : TCocoaScrollView;
   lclListBox: TCustomListBox absolute AWinControl;
 begin
-  list := TCocoaTableListView.alloc.lclInitWithCreateParams(AParams);
+  list := AllocCocoaTableListView.lclInitWithCreateParams(AParams);
   if not Assigned(list) then
   begin
     Result := 0;
