@@ -1268,9 +1268,14 @@ begin
   lvpMultiSelect: lTableLV.setAllowsMultipleSelection(AIsSet);
   {lvpOwnerDraw,}
   lvpReadOnly: lTableLv.readOnly := AIsSet;
-{  lvpRowSelect,
-  lvpShowColumnHeaders,
-  lvpShowWorkAreas,
+{  lvpRowSelect,}
+  lvpShowColumnHeaders:
+    if (AIsSet <> Assigned(lTableLV.headerView)) then
+    begin
+      if AIsSet then lTableLv.setHeaderView ( NSTableHeaderView.alloc.init )
+      else lTableLv.setHeaderView(nil);
+    end;
+{  lvpShowWorkAreas,
   lvpWrapText,
   lvpToolTips}
   end;
