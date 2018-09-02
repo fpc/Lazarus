@@ -2089,6 +2089,7 @@ var
   lView: NSView;
 begin
   Obj := NSObject(Handle);
+  Result := 0; // should return 0, if function fails
   if Assigned(Obj) and NSApp.isActive then
   begin
     Result := HWND(NSApp.keyWindow);
@@ -2098,9 +2099,7 @@ begin
     begin
       lView := GetNSObjectView(Obj);
       if lView <> nil then
-        lView.window.makeKeyWindow
-      else
-        Result := 0;
+        lView.window.makeKeyWindow;
     end;
   end;
 end;

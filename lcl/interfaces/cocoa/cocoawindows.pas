@@ -1138,6 +1138,8 @@ begin
     // the window doesn't have screen assigned.
     // figuring out the placement based of the Left/Top of the rect
     // and NSrects;
+    fnd := false;
+    srect := NSMakeRect(0,0,0,0); // making the compiler happy
     p.x:=r.Left;
     p.y:=r.Top;
     for sc in NSScreen.screens do begin

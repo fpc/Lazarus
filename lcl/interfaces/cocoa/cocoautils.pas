@@ -164,6 +164,7 @@ begin
         Result := 0
       else
       begin
+        Result := 0; // getting rid of compiler warning
         for y := 0 to ImageRep.pixelsHigh - 1 do
           for x := 0 to ImageRep.pixelsWide - 1 do
           begin

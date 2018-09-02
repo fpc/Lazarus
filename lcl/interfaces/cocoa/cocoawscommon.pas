@@ -784,6 +784,10 @@ begin
   SendChar := False;
   VKKeyCode := VK_UNKNOWN;
 
+  UTF8Character := '';
+  KeyChar := #0;
+  VKKeyChar := #0;
+
   IsSysKey := (Event.modifierFlags and NSCommandKeyMask) <> 0;
   KeyData := (Ord(Event.isARepeat) + 1) or Event.keyCode shl 16;
   if (Event.modifierFlags and NSAlternateKeyMask) <> 0 then
@@ -934,8 +938,6 @@ begin
 end;
 
 procedure TLCLCommonCallback.KeyEvBeforeDown(var AllowCocoaHandle: boolean);
-var
-  OrigChar: AnsiString;
 begin
   // create the CN_KEYDOWN message
   if _IsSysKey then
@@ -979,7 +981,6 @@ begin
 
 
     // send the UTF8 keypress
-    OrigChar := _UTF8Character;
     if Target.IntfUTF8KeyPress(_UTF8Character, 1, _IsSysKey) then
     begin
       // the LCL has handled the key
