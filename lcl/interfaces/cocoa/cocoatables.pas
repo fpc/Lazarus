@@ -117,7 +117,6 @@ type
     // NSTableViewDataSourceProtocol
     function numberOfRowsInTableView(tableView: NSTableView): NSInteger; message 'numberOfRowsInTableView:';
     function tableView_objectValueForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): id; message 'tableView:objectValueForTableColumn:row:';
-    procedure tableView_setObjectValue_forTableColumn_row(tableView: NSTableView; object_: id; tableColumn: NSTableColumn; row: NSInteger); message 'tableView:setObjectValue:forTableColumn:row:';
     //procedure tableView_sortDescriptorsDidChange(tableView: NSTableView; oldDescriptors: NSArray); message 'tableView:sortDescriptorsDidChange:';
     //function tableView_writeRowsWithIndexes_toPasteboard(tableView: NSTableView; rowIndexes: NSIndexSet; pboard: NSPasteboard): Boolean; message 'tableView:writeRowsWithIndexes:toPasteboard:';
     //function tableView_validateDrop_proposedRow_proposedDropOperation(tableView: NSTableView; info: NSDraggingInfoProtocol; row: NSInteger; dropOperation: NSTableViewDropOperation): NSDragOperation; message 'tableView:validateDrop:proposedRow:proposedDropOperation:';
@@ -187,6 +186,7 @@ type
 
   TCellCocoaTableListView = objcclass(TCocoaTableListView, NSTableViewDelegateProtocol, NSTableViewDataSourceProtocol)
   public
+    procedure tableView_setObjectValue_forTableColumn_row(tableView: NSTableView; object_: id; tableColumn: NSTableColumn; row: NSInteger); message 'tableView:setObjectValue:forTableColumn:row:';
     function tableView_dataCellForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): NSCell; message 'tableView:dataCellForTableColumn:row:';
   end;
 
@@ -546,36 +546,6 @@ begin
   *)
 end;
 
-procedure TCocoaTableListView.tableView_setObjectValue_forTableColumn_row(
-  tableView: NSTableView; object_: id; tableColumn: NSTableColumn;
-  row: NSInteger);
-var
-  lColumnIndex: NSInteger;
-  lNewValue: NSString;
-  isSel: Integer;
-begin
-  if (NSObject(object_).isKindOfClass(NSNumber)) and isFirstColumnCheckboxes then begin
-    lColumnIndex := getIndexOfColumn(tableColumn);
-    if Assigned(callback) and (lColumnIndex = 0) then
-      callback.SetItemCheckedAt(row, lColumnIndex, NSNumber(object_).integerValue);
-
-    Exit;
-  end;
-
-  //WriteLn('[TCocoaTableListView.tableView_setObjectValue_forTableColumn_row]');
-  if not NSObject(object_).isKindOfClass(NSString) then Exit;
-  lNewValue := NSString(object_);
-  //WriteLn('[TCocoaTableListView.tableView_setObjectValue_forTableColumn_row] A');}
-  if ReadOnly then Exit;
-
-  lColumnIndex := getIndexOfColumn(tableColumn);
-  if Assigned(callback) then
-  begin
-    callback.SetItemTextAt(row, lColumnIndex, lNewValue.UTF8String);
-    reloadDataForRow_column(lColumnIndex, row);
-  end;
-end;
-
 function TCocoaTableListView.tableView_shouldEditTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): Boolean;
 begin
   Result := not readOnly;
@@ -793,6 +763,36 @@ begin
 end;
 
 { TCellCocoaTableListView }
+
+procedure TCellCocoaTableListView.tableView_setObjectValue_forTableColumn_row(
+  tableView: NSTableView; object_: id; tableColumn: NSTableColumn;
+  row: NSInteger);
+var
+  lColumnIndex: NSInteger;
+  lNewValue: NSString;
+  isSel: Integer;
+begin
+  if (NSObject(object_).isKindOfClass(NSNumber)) and isFirstColumnCheckboxes then begin
+    lColumnIndex := getIndexOfColumn(tableColumn);
+    if Assigned(callback) and (lColumnIndex = 0) then
+      callback.SetItemCheckedAt(row, lColumnIndex, NSNumber(object_).integerValue);
+
+    Exit;
+  end;
+
+  //WriteLn('[TCocoaTableListView.tableView_setObjectValue_forTableColumn_row]');
+  if not NSObject(object_).isKindOfClass(NSString) then Exit;
+  lNewValue := NSString(object_);
+  //WriteLn('[TCocoaTableListView.tableView_setObjectValue_forTableColumn_row] A');}
+  if ReadOnly then Exit;
+
+  lColumnIndex := getIndexOfColumn(tableColumn);
+  if Assigned(callback) then
+  begin
+    callback.SetItemTextAt(row, lColumnIndex, lNewValue.UTF8String);
+    reloadDataForRow_column(lColumnIndex, row);
+  end;
+end;
 
 function TCellCocoaTableListView.tableView_dataCellForTableColumn_row(
   tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): NSCell;
