@@ -52,7 +52,25 @@ type
   protected
     function ProcessInputFromDbg(const AData: String): Boolean; override;
   public
-    constructor Create(AName, AValue: String; AGlobal: Boolean = False);
+    constructor Create(AName, AValue: String; AGlobal: Boolean = False; AQuote: Boolean = False);
+  end;
+
+  { TLldbInstructionSettingRemove }
+
+  TLldbInstructionSettingRemove = class(TLldbInstruction)
+  protected
+    function ProcessInputFromDbg(const AData: String): Boolean; override;
+  public
+    constructor Create(AName, AValue: String; AQuote: Boolean = False);
+  end;
+
+  { TLldbInstructionSettingClear }
+
+  TLldbInstructionSettingClear = class(TLldbInstruction)
+  protected
+    function ProcessInputFromDbg(const AData: String): Boolean; override;
+  public
+    constructor Create(AName: String);
   end;
 
   { TLldbInstructionTargetCreate }
@@ -515,12 +533,57 @@ begin
 end;
 
 constructor TLldbInstructionSettingSet.Create(AName, AValue: String;
-  AGlobal: Boolean);
+  AGlobal: Boolean; AQuote: Boolean);
 begin
+  if AQuote then begin
+    AValue := StringReplace(AValue, '\', '\\', [rfReplaceAll]);
+    AValue := StringReplace(AValue, '"', '\"', [rfReplaceAll]);
+    AValue := '"'+AValue+'"';
+  end;
   if AGlobal then
     inherited Create(Format('settings set -g -- %s %s', [AName, AValue]))
   else
     inherited Create(Format('settings set -- %s %s', [AName, AValue]));
+end;
+
+{ TLldbInstructionSettingRemove }
+
+function TLldbInstructionSettingRemove.ProcessInputFromDbg(const AData: String
+  ): Boolean;
+begin
+  Result := inherited ProcessInputFromDbg(AData);
+
+  if not Result then // if Result=true then self is destroyed;
+    MarkAsSuccess;
+  Result := true;
+end;
+
+constructor TLldbInstructionSettingRemove.Create(AName, AValue: String;
+  AQuote: Boolean);
+begin
+  if AQuote then begin
+    AValue := StringReplace(AValue, '\', '\\', [rfReplaceAll]);
+    AValue := StringReplace(AValue, '"', '\"', [rfReplaceAll]);
+    AValue := '"'+AValue+'"';
+  end;
+  inherited Create(Format('settings remove %s %s', [AName, AValue]));
+end;
+
+{ TLldbInstructionSettingClear }
+
+function TLldbInstructionSettingClear.ProcessInputFromDbg(const AData: String
+  ): Boolean;
+begin
+  Result := inherited ProcessInputFromDbg(AData);
+
+  if not Result then // if Result=true then self is destroyed;
+    MarkAsSuccess;
+  Result := true;
+end;
+
+constructor TLldbInstructionSettingClear.Create(AName: String);
+begin
+  inherited Create(Format('settings clear -- %s', [AName]));
 end;
 
 { TLldbInstructionTargetCreate }

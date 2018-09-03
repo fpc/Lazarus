@@ -9,8 +9,8 @@ interface
 
 uses
   Classes, SysUtils, math, DbgIntfDebuggerBase, DbgIntfBaseTypes, LazLoggerBase,
-  LazClasses, LazFileUtils, Maps, strutils, DebugProcess, LldbInstructions,
-  LldbHelper;
+  LazClasses, LazFileUtils, Maps, LCLProc, strutils, DebugProcess,
+  LldbInstructions, LldbHelper;
 
 type
 
@@ -209,6 +209,7 @@ type
     function  LldbStep(AStepAction: TLldbInstructionProcessStepAction): Boolean;
     function  LldbStop: Boolean;
     function  LldbEvaluate(const AExpression: String; EvalFlags: TDBGEvaluateFlags; ACallback: TDBGEvaluateResultCallback): Boolean;
+    function  LldbEnvironment(const AVariable: String; const ASet: Boolean): Boolean;
   protected
     procedure DoBeginReceivingLines(Sender: TObject);
     procedure DoEndReceivingLines(Sender: TObject);
@@ -649,6 +650,11 @@ begin
     FState := crDone;
     Finished;
     exit;
+  end;
+
+  if (LeftStr(ALine, 8) = 'Process ') and (pos('exited with status = ', ALine) > 0) then begin
+    Finished;
+    exit; // handle in main debugger
   end;
 
   // Executed, if "frame #0" was not found
@@ -1638,6 +1644,10 @@ begin
     {$ENDIF}
   end;
 
+  Instr := TLldbInstructionSettingSet.Create('target.run-args', Debugger.Arguments);
+  QueueInstruction(Instr);
+  Instr.ReleaseReference;
+
   Instr := TLldbInstructionBreakSet.Create('fpc_raiseexception');
   Instr.OnFinish := @ExceptBreakInstructionFinished;
   QueueInstruction(Instr);
@@ -1895,6 +1905,25 @@ begin
   Result := True;
 end;
 
+function TLldbDebugger.LldbEnvironment(const AVariable: String;
+  const ASet: Boolean): Boolean;
+var
+  Instr: TLldbInstruction;
+  s: String;
+begin
+  debugln(['-----------------------------------------', AVariable]);
+  if ASet then
+    Instr := TLldbInstructionSettingSet.Create('target.env-vars', AVariable, False, True)
+  else begin
+    s := AVariable;
+    Instr := TLldbInstructionSettingRemove.Create('target.env-vars', GetPart([], ['='], s, False, False));
+  end;
+
+  FDebugInstructionQueue.QueueInstruction(Instr);
+  Instr.ReleaseReference;
+  Result := True;
+end;
+
 procedure TLldbDebugger.LockRelease;
 begin
   inherited LockRelease;
@@ -2005,7 +2034,8 @@ end;
 
 function TLldbDebugger.GetSupportedCommands: TDBGCommands;
 begin
-  Result := [dcRun, dcStop, dcStepOver, dcStepInto, dcStepOut, dcEvaluate];
+  Result := [dcRun, dcStop, dcStepOver, dcStepInto, dcStepOut, dcEvaluate,
+             dcEnvironment];
 //  Result := [dcPause, dcStepOverInstr, dcStepIntoInstr, dcRunTo, dcAttach, dcDetach, dcJumpto,
 //             dcBreak, dcWatch, dcLocal, dcEvaluate, dcModify, dcEnvironment,
 //             dcSetStackFrame, dcDisassemble
@@ -2038,7 +2068,7 @@ begin
 //      dcAttach:      Result := GDBAttach(String(AParams[0].VAnsiString));
 //      dcDetach:      Result := GDBDetach;
 //      dcModify:      Result := GDBModify(String(AParams[0].VAnsiString), String(AParams[1].VAnsiString));
-//      dcEnvironment: Result := GDBEnvironment(String(AParams[0].VAnsiString), AParams[1].VBoolean);
+      dcEnvironment: Result := LldbEnvironment(String(AParams[0].VAnsiString), AParams[1].VBoolean);
 //      dcDisassemble: Result := GDBDisassemble(AParams[0].VQWord^, AParams[1].VBoolean, TDbgPtr(AParams[2].VPointer^),
 //                                              String(AParams[3].VPointer^), String(AParams[4].VPointer^),
 //                                              String(AParams[5].VPointer^), Integer(AParams[6].VPointer^))
