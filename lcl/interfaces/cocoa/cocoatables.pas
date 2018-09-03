@@ -117,7 +117,6 @@ type
 
     // NSTableViewDataSourceProtocol
     function numberOfRowsInTableView(tableView: NSTableView): NSInteger; message 'numberOfRowsInTableView:';
-    function tableView_objectValueForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): id; message 'tableView:objectValueForTableColumn:row:';
     //procedure tableView_sortDescriptorsDidChange(tableView: NSTableView; oldDescriptors: NSArray); message 'tableView:sortDescriptorsDidChange:';
     //function tableView_writeRowsWithIndexes_toPasteboard(tableView: NSTableView; rowIndexes: NSIndexSet; pboard: NSPasteboard): Boolean; message 'tableView:writeRowsWithIndexes:toPasteboard:';
     //function tableView_validateDrop_proposedRow_proposedDropOperation(tableView: NSTableView; info: NSDraggingInfoProtocol; row: NSInteger; dropOperation: NSTableViewDropOperation): NSDragOperation; message 'tableView:validateDrop:proposedRow:proposedDropOperation:';
@@ -187,6 +186,7 @@ type
 
   TCellCocoaTableListView = objcclass(TCocoaTableListView, NSTableViewDelegateProtocol, NSTableViewDataSourceProtocol)
   public
+    function tableView_objectValueForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): id; message 'tableView:objectValueForTableColumn:row:';
     procedure tableView_setObjectValue_forTableColumn_row(tableView: NSTableView; object_: id; tableColumn: NSTableColumn; row: NSInteger); message 'tableView:setObjectValue:forTableColumn:row:';
     function tableView_dataCellForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): NSCell; message 'tableView:dataCellForTableColumn:row:';
   end;
@@ -235,6 +235,8 @@ type
 function AllocCocoaTableListView: TCocoaTableListView;
 
 implementation
+
+{$DEFINE DYNAMIC_NSTABLEVIEW_BASE}
 
 function AllocCocoaTableListView: TCocoaTableListView; // init will happen outside
 begin
@@ -541,51 +543,6 @@ begin
     Result := 0;
 end;
 
-function TCocoaTableListView.tableView_objectValueForTableColumn_row(
-  tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): id;
-var
-  lStringList: TStringList;
-  col: NSInteger;
-  StrResult: NSString;
-  chk : Integer;
-  txt : string;
-begin
-  {$IFDEF COCOA_DEBUG_TABCONTROL}
-  WriteLn(Format('[TCocoaTableListView.tableView_objectValueForTableColumn_row] col=%d row=%d Items.Count=%d',
-    [col, row, Items.Count]));
-  {$ENDIF}
-
-  Result := nil;
-  if not Assigned(callback) then Exit;
-  col := getIndexOfColumn(tableColumn);
-  if (col = 0) and isFirstColumnCheckboxes then begin
-    chk := 0;
-    callback.GetItemCheckedAt(row, col, chk);
-    Result := NSNumber.numberWithInt(chk);
-    Exit;
-  end;
-
-  txt := '';
-  if callback.GetItemTextAt(row, col, txt) then begin
-    if txt = '' then Result := NSString.string_
-    else Result := NSString.stringWithUTF8String(@txt[1])
-  end;
-  (*
-  if row > Items.Count-1 then begin
-    Result := nil;
-    Exit;
-  end;
-  if col = 0 then
-    StrResult := NSStringUTF8(Items.Strings[row])
-  else
-  begin
-    lStringList := TStringList(Items.Objects[row]);
-    StrResult := NSStringUTF8(lStringList.Strings[col-1]);
-  end;
-  Result := StrResult;
-  *)
-end;
-
 function TCocoaTableListView.tableView_shouldEditTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): Boolean;
 begin
   Result := not readOnly;
@@ -875,6 +832,51 @@ begin
     btn.setCellAttribute_to(NSCellState, NSOnState);
   end;
   Result := btn;
+end;
+
+function TCellCocoaTableListView.tableView_objectValueForTableColumn_row(
+  tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): id;
+var
+  lStringList: TStringList;
+  col: NSInteger;
+  StrResult: NSString;
+  chk : Integer;
+  txt : string;
+begin
+  {$IFDEF COCOA_DEBUG_TABCONTROL}
+  WriteLn(Format('[TCocoaTableListView.tableView_objectValueForTableColumn_row] col=%d row=%d Items.Count=%d',
+    [col, row, Items.Count]));
+  {$ENDIF}
+
+  Result := nil;
+  if not Assigned(callback) then Exit;
+  col := getIndexOfColumn(tableColumn);
+  if (col = 0) and isFirstColumnCheckboxes then begin
+    chk := 0;
+    callback.GetItemCheckedAt(row, col, chk);
+    Result := NSNumber.numberWithInt(chk);
+    Exit;
+  end;
+
+  txt := '';
+  if callback.GetItemTextAt(row, col, txt) then begin
+    if txt = '' then Result := NSString.string_
+    else Result := NSString.stringWithUTF8String(@txt[1])
+  end;
+  (*
+  if row > Items.Count-1 then begin
+    Result := nil;
+    Exit;
+  end;
+  if col = 0 then
+    StrResult := NSStringUTF8(Items.Strings[row])
+  else
+  begin
+    lStringList := TStringList(Items.Objects[row]);
+    StrResult := NSStringUTF8(lStringList.Strings[col-1]);
+  end;
+  Result := StrResult;
+  *)
 end;
 
 { TCocoaTableListItem }
