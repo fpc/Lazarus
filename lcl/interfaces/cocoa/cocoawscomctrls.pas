@@ -1085,8 +1085,7 @@ var
   lTableLV: TCocoaTableListView;
 begin
   if not CheckParams(lCocoaLV, lTableLV, ALV) then Exit;
-  // todo: make a specific row/column reload data!
-  lTableLV.reloadData();
+  lTableLV.reloadDataForRow_column(AIndex, ASubIndex);
 end;
 
 class procedure TCocoaWSCustomListView.ItemSetState(const ALV: TCustomListView;
@@ -1125,8 +1124,7 @@ var
   lTableLV: TCocoaTableListView;
 begin
   if not CheckParams(lCocoaLV, lTableLV, ALV) then Exit;
-  // todo: make a specific row/column reload data!
-  lTableLV.reloadData();
+  lTableLV.reloadDataForRow_column(AIndex, ASubIndex);
 end;
 
 class procedure TCocoaWSCustomListView.ItemShow(const ALV: TCustomListView;
