@@ -437,9 +437,6 @@ type
 procedure TLldbDebuggerCommandRun.ThreadInstructionSucceeded(Sender: TObject);
 begin
   FState := crStopped;
-
-  // defer until after dsPause
-  TLldbThreads(Debugger.Threads).ReadFromThreadInstruction(TLldbInstructionThreadList(Sender));
 end;
 
 procedure TLldbDebuggerCommandRun.ExceptionReadReg0Success(Sender: TObject);
@@ -559,7 +556,7 @@ begin
      * thread #1: tid=0x1644: 0x00409e91, 0x0158FF38, 0x0158FF50 &&//FULL: \FPC\SVN\fixes_3_0\rtl\win32\..\inc\except.inc &&//SHORT: except.inc &&//LINE: 185 &&//MOD: project1.exe &&//FUNC: fpc_raiseexception(OBJ=0x038f5a90, ANADDR=0x00401601, AFRAME=0x0158ff58) <<&&//FRAME"
        thread #2: tid=0x27bc: 0x77abf8dc, 0x0557FE64, 0x0557FEC8 &&//FULL:  &&//SHORT:  &&//LINE:  &&//MOD: ntdll.dll &&//FUNC: NtDelayExecution <<&&//FRAME"
       Process 10992 stopped
-      * stopped in thread #1, stop reason = breakpoint 6.1
+      * thread #1, stop reason = breakpoint 6.1
           frame #0: 0x0042b855 &&//FULL: \tmp\New Folder (2)\unit1.pas &&//SHORT: unit1.pas &&//LINE: 54 &&//MOD: project1.exe &&//FUNC: FORMCREATE(this=0x04c81248, SENDER=0x04c81248) <<&&//FRAME
   *)
 
@@ -596,13 +593,13 @@ begin
     FState := crReadingThreads;
     debugln(['Reading thread info']);
     FThreadInstr := TLldbInstructionThreadListReader.Create();
-    FThreadInstr.OnFinish := @ThreadInstructionSucceeded;
+    FThreadInstr.OnSuccess := @ThreadInstructionSucceeded;
     QueueInstruction(FThreadInstr);
     exit;
   end;
 
-  // STEP 2:   * stopped in thread #1, stop reason = breakpoint 6.1
-  if StrMatches(ALine, ['* stopped in thread #', ', stop reason = ', ''], found) then begin
+  // STEP 2:   * thread #1, stop reason = breakpoint 6.1
+  if StrMatches(ALine, ['* thread #', ', stop reason = ', ''], found) then begin
     FState := crStopped;
     debugln(['Reading stopped thread']);
     Debugger.FCurrentThreadId := StrToIntDef(found[0], 0);
@@ -627,6 +624,13 @@ begin
   if ParseNewFrameLocation(ALine, AnId, AnIsCurrent, AnAddr, stack, frame, AFuncName, AnArgs,
     AFile, AFullFile, SrcLine, AReminder)
   then begin
+    if FState = crReadingThreads then begin
+      FState := crStopped;
+      // did not execute "thread list" / thread cmd reader has read "stop reason"
+      for i := 0 to length(FThreadInstr.Res) - 1 do
+        DoLineDataReceived(FThreadInstr.Res[i]);
+    end;
+
     debugln(['Reading frame info']);
     AnArgs.Free;
     Debugger.FCurrentLocation.Address := AnAddr;
@@ -1518,13 +1522,18 @@ begin
   Instr.ReleaseReference;
 
   Instr := TLldbInstructionSettingSet.Create('thread-format',
-    '"thread #${thread.index}: tid=${thread.id%tid}: ' + FRAME_INFO + '\n"'
+    '"thread #${thread.index}: tid=${thread.id%tid}: ' + FRAME_INFO +
+    //'{, activity = ''${thread.info.activity.name}''}{, ${thread.info.trace_messages} messages}' +
+    '{, stop reason = ${thread.stop-reason}}' +
+    //'{\nReturn value: ${thread.return-value}}{\nCompleted expression: ${thread.completed-expression}}' +
+    '\n"'
   );
   QueueInstruction(Instr);
   Instr.ReleaseReference;
 
+  // Not all versions of lldb have this
   Instr := TLldbInstructionSettingSet.Create('thread-stop-format',
-    '"stopped in thread #${thread.index}: tid = ${thread.id%tid}: ' + FRAME_INFO  +
+    '"thread #${thread.index}: tid=${thread.id%tid}: ' + FRAME_INFO +
     //'{, activity = ''${thread.info.activity.name}''}{, ${thread.info.trace_messages} messages}' +
     '{, stop reason = ${thread.stop-reason}}' +
     //'{\nReturn value: ${thread.return-value}}{\nCompleted expression: ${thread.completed-expression}}' +

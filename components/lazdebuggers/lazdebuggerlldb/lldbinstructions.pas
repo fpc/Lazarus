@@ -1167,9 +1167,9 @@ end;
 function TLldbInstructionThreadListReader.ProcessInputFromDbg(
   const AData: String): Boolean;
 begin
-  if StrMatches(AData, ['* stopped in thread #', ', stop reason = ', '']) then begin
-    FRes := nil;
-    Result := False; // no data
+  if StrStartsWith(AData, '    frame ') then begin
+    MarkAsFailed;
+    Result := False;
     exit;
   end;
 
