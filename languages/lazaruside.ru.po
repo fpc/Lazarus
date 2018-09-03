@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-09-04 01:37+0300\n"
+"PO-Revision-Date: 2018-09-04 02:10+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -17127,7 +17127,7 @@ msgstr "Показывать только изменённые"
 
 #: lazarusidestrconsts.lisshowonlyonebuttoninthetaskbarforthewholeideinstead
 msgid "Show only one button in the taskbar for the whole IDE instead of one per window. Some Linux Window Managers like Cinnamon do not support this and always show one button per window."
-msgstr "Показывать только одну кнопку в панели задач для всей IDE вместо одной на окно. Некоторые оконные менеджеры (например, Cinnamon) не поддерживают данную возможность и всегда показывают по одной кнопке на окно."
+msgstr "Показывать только одну кнопку в панели задач для всей IDE вместо одной на окно. Некоторые диспетчеры окон (например, Cinnamon) не поддерживают данную возможность и всегда показывают по одной кнопке на окно."
 
 #: lazarusidestrconsts.lisshowoutput
 msgid "Show output"
