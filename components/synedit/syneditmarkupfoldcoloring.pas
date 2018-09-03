@@ -560,12 +560,12 @@ end;
 
 procedure TSynEditMarkupFoldColors.TextBufferChanged(pSender: TObject);
 begin
+  if pSender <> nil then
+    TSynEditStrings(pSender).Ranges[Self] := nil;
+
   if not Enabled then
     exit;
   InitNestList;
-
-  if pSender <> nil then
-    TSynEditStrings(pSender).Ranges[Self] := nil;
 
   FColumnCache.Capacity := SynEdit.Lines.Capacity;
   FColumnCache.Count := SynEdit.Lines.Count;
@@ -1203,7 +1203,7 @@ begin
       end;
     end;
   end;
-  if Lines <> nil then begin
+  if (Lines <> nil) and Enabled then begin
     FColumnCache.Capacity := Lines.Capacity;
     FColumnCache.Count := Lines.Count;
     Lines.Ranges[Self] := FColumnCache;
@@ -1266,11 +1266,21 @@ begin
       // remove Changehandler
       Lines.RemoveChangeHandler(senrHighlightChanged, @HighlightChanged);
       Lines.RemoveNotifyHandler(senrTextBufferChanged, @TextBufferChanged);
-      FColumnCache.Invalidate;
     end;
   end;
-  if Assigned(Lines) then
+
+  if Assigned(Lines) then begin
+    if Enabled then begin
+      FColumnCache.Capacity := Lines.Capacity;
+      FColumnCache.Count := Lines.Count;
+      Lines.Ranges[Self] := FColumnCache;
+      FColumnCache.Invalidate;
+    end
+    else
+      Lines.Ranges[Self] := nil;
+
     InvalidateSynLines(1, Lines.Count);
+  end;
 end;
 
 procedure TSynEditMarkupFoldColors.ColorChanged(pMarkup: TObject);
