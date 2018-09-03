@@ -31,10 +31,6 @@ Type
 
 implementation
 
-uses
-  custforms;
-  
-
 { TDBAppForm }
 
 procedure TDBAppForm.OpenAllDatasets;

@@ -5,7 +5,11 @@ unit custforms;
 interface
 
 uses
-  Classes, SysUtils, Forms;
+  Classes, SysUtils, contnrs,
+  // LCL
+  Forms,
+  // IdeIntf
+  ProjectIntf, NewItemIntf, FormEditingIntf;
 
 Type
 
@@ -39,8 +43,6 @@ Procedure RegisterCustomForm(AFormClass : TFormClass; Const AUnitName, APackage 
 Procedure Register;
 
 implementation
-
-uses ProjectIntf,NewItemIntf,contnrs;
 
 Const
   SAppFrameWork = 'Custom forms';
@@ -170,6 +172,7 @@ begin
     begin
     D:=TCustomFormDescr(CustomFormList[i]);
     RegisterProjectFileDescriptor(TCustomFormFileDescriptor.Create(D),D.Category);
+    FormEditingHook.RegisterDesignerBaseClass(D.FFormClass);
     end;
 end;
 

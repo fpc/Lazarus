@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms;
-  
+
 Type
   TInitFormAt = (ifaShow,ifaCreate,ifaActivate);
   
@@ -52,8 +52,6 @@ Type
 
 
 implementation
-
-uses custforms;
 
 { TAppForm }
 

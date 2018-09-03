@@ -5,22 +5,21 @@ unit regappforms;
 interface
 
 uses
-  Classes, SysUtils, appform, dbappform;
+  custforms, appform, dbappform;
 
-procedure RegisterAppForms;
+procedure Register;
 
 implementation
 
-uses custforms;
-
-procedure RegisterAppForms;
-
+procedure Register;
 begin
-  RegisterCustomForm(TAppForm,'AppForms');
-  RegisterCustomForm(TDBAppForm,'AppForms');
+  ; // Do nothing. Custom forms are registered during initialization.
+    // For some reason does not work if registered here.
 end;
 
 initialization
-  RegisterAppForms;
+  RegisterCustomForm(TAppForm,'AppForms');
+  RegisterCustomForm(TDBAppForm,'AppForms');
+
 end.
 

@@ -14,6 +14,7 @@ implementation
 
 procedure Register;
 begin
+  RegisterUnit('regappforms', @regappforms.Register);
 end;
 
 initialization

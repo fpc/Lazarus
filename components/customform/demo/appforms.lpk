@@ -1,19 +1,20 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="2">
+  <Package Version="4">
     <Name Value="appforms"/>
+    <Type Value="RunAndDesignTime"/>
+    <AddToProjectUsesSection Value="True"/>
     <Author Value="Michael Van Canneyt"/>
     <CompilerOptions>
-      <Version Value="5"/>
+      <Version Value="11"/>
       <SearchPaths>
-        <UnitOutputDirectory Value="lib/"/>
+        <UnitOutputDirectory Value="lib"/>
       </SearchPaths>
-      <CodeGeneration>
-        <Generate Value="Faster"/>
-      </CodeGeneration>
-      <Other>
-        <CompilerPath Value="$(CompPath)"/>
-      </Other>
+      <Parsing>
+        <SyntaxOptions>
+          <UseAnsiStrings Value="False"/>
+        </SyntaxOptions>
+      </Parsing>
     </CompilerOptions>
     <Description Value="Demo package which shows the use of the lazcustforms package.
 It registers 2 custom forms (TAppForm and TDBAppForm)"/>
@@ -30,10 +31,10 @@ It registers 2 custom forms (TAppForm and TDBAppForm)"/>
       </Item2>
       <Item3>
         <Filename Value="regappforms.pp"/>
+        <HasRegisterProc Value="True"/>
         <UnitName Value="regappforms"/>
       </Item3>
     </Files>
-    <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="4">
       <Item1>
         <PackageName Value="LCL"/>
@@ -54,7 +55,6 @@ It registers 2 custom forms (TAppForm and TDBAppForm)"/>
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>
-      <IgnoreBinaries Value="False"/>
     </PublishOptions>
   </Package>
 </CONFIG>
