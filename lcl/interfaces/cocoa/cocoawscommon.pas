@@ -46,7 +46,7 @@ type
     _UTF8Character : TUTF8Char;
     class function CocoaModifiersToKeyState(AModifiers: NSUInteger): PtrInt; static;
     class function CocoaPressedMouseButtonsToKeyState(AMouseButtons: NSUInteger): PtrInt; static;
-    procedure OffsetMousePos(var Point: NSPoint);
+    procedure OffsetMousePos(LocInWin: NSPoint; out PtInBounds, PtInClient: TPoint );
     procedure ScreenMousePos(var Point: NSPoint);
   public
     Owner: NSObject;
@@ -234,22 +234,36 @@ begin
     Result := Result or MK_XBUTTON2;
 end;
 
-procedure TLCLCommonCallback.OffsetMousePos(var Point: NSPoint);
+procedure TLCLCommonCallback.OffsetMousePos(LocInWin: NSPoint; out PtInBounds, PtInClient: TPoint);
 var
   lView: NSView;
+  pt: NSPoint;
+  cr: TRect;
 begin
   if Owner.isKindOfClass(NSWindow) then
-    Point.y := NSWindow(Owner).contentView.bounds.size.height - Point.y
-  else
   begin
-    lView := GetNSObjectView(Owner);
-    if lView <> nil then
-    begin
-      lView.lclOffsetMousePos(Point);
-      //Point := lView.convertPoint_fromView(Point, nil);
-      //if not lView.isFlipped then
-        //Point.y := lView.bounds.size.height - Point.y;
-    end;
+    PtInBounds.x := Round(LocInWin.x);
+    PtInBounds.y := Round(NSWindow(Owner).contentView.bounds.size.height - LocInWin.y);
+    PtInClient := PtInBounds; // todo: it's different. But Owner is never NSWindow (it's TConentWindowView instead)
+  end
+  else if Owner.isKindOfClass(NSView) then
+  begin
+    pt := LocInWin;
+
+    NSView(Owner).lclOffsetMousePos(pt);
+    PtInBounds.x := Round(pt.x);
+    PtInBounds.y := Round(pt.y);
+
+    //pt := NSView(Owner).frame.origin;
+    //if NSView(Owner).frame.
+    cr := NSView(Owner).lclClientFrame;
+    PtInClient.x := Round({PtInBounds.x - }pt.x - cr.Left);
+    PtInClient.y := Round({PtInBounds.y - }pt.y - cr.Top);
+  end else
+  begin
+    PtInBounds.x := Round(LocInWin.x);
+    PtInBounds.y := Round(LocInWin.y);
+    PtInClient := PtInBounds;
   end;
 end;
 
@@ -1108,6 +1122,8 @@ var
   lCaptureControlCallback: ICommonCallback;
   //Str: string;
   lEventType: NSEventType;
+
+  bndPt, clPt: TPoint;
 begin
   if Assigned(Owner) and not Owner.lclIsEnabled then
   begin
@@ -1133,12 +1149,12 @@ begin
   FillChar(Msg, SizeOf(Msg), #0);
 
   MousePos := Event.locationInWindow;
-  OffsetMousePos(MousePos);
+  OffsetMousePos(MousePos, bndPt, clPt);
 
   Msg.Keys := CocoaModifiersToKeyState(Event.modifierFlags) or CocoaPressedMouseButtonsToKeyState(NSEvent.pressedMouseButtons);
 
-  Msg.XPos := Round(MousePos.X);
-  Msg.YPos := Round(MousePos.Y);
+  Msg.XPos := clPt.X;
+  Msg.YPos := clPt.Y;
 
   MButton := event.buttonNumber;
   if MButton >= 3 then
@@ -1221,11 +1237,12 @@ var
   MousePos: NSPoint;
   i: integer;
   rect: TRect;
-  mp: TPoint;
+  //mp: TPoint;
   obj: NSObject;
   callback: ICommonCallback;
   targetControl: TWinControl;
   childControl:TWinControl;
+  bndPt, clPt: TPoint;
 begin
   if Assigned(Owner) and not Owner.lclIsEnabled then
   begin
@@ -1239,9 +1256,7 @@ begin
   Result := Assigned(Target) and (csDesigning in Target.ComponentState);
 
   MousePos := Event.locationInWindow;
-  OffsetMousePos(MousePos);
-  mp.X:=round(MousePos.x);
-  mp.Y:=round(MousePos.y);
+  OffsetMousePos(MousePos, bndPt, clPt);
 
   rect:=Owner.lclClientFrame;
   targetControl:=nil;
@@ -1257,12 +1272,14 @@ begin
   else
   begin
     rect:=Target.BoundsRect;
-    OffsetRect(rect, -rect.left, -rect.Top);
-    if (event.type_ = NSMouseMoved) and (not Types.PtInRect(rect, mp)) then
+    OffsetRect(rect, -rect.Left, -rect.Top);
+    if (event.type_ = NSMouseMoved) and (not Types.PtInRect(rect, bndPt)) then
+    begin
       // do not send negative coordinates (unless dragging mouse)
       Exit;
+    end;
 
-    if assigned(Target.Parent) and not Types.PtInRect(rect, mp) then
+    if assigned(Target.Parent) and not Types.PtInRect(rect, bndPt) then
        targetControl:=Target.Parent // outside myself then route to parent
     else
     for i:=Target.ControlCount-1 downto 0  do // otherwise check, if over child and route to child
@@ -1270,7 +1287,7 @@ begin
       begin
         childControl:=TWinControl(Target.Controls[i]);
         rect:=childControl.BoundsRect;
-        if Types.PtInRect(rect, mp) and childControl.Visible and childControl.Enabled then
+        if Types.PtInRect(rect, clPt) and childControl.Visible and childControl.Enabled then
         begin
           targetControl:=childControl;
           break;
@@ -1282,7 +1299,7 @@ begin
   begin
     if not targetControl.HandleAllocated then Exit; // Fixes crash due to events being sent after ReleaseHandle
     FIsEventRouting:=true;
-    // debugln(Target.name+' -> '+targetControl.Name+'- is parent:'+dbgs(targetControl=Target.Parent)+' Point: '+dbgs(mp)+' Rect'+dbgs(rect));
+     //debugln(Target.name+' -> '+targetControl.Name+'- is parent:'+dbgs(targetControl=Target.Parent)+' Point: '+dbgs(br)+' Rect'+dbgs(rect));
     obj := GetNSObjectView(NSObject(targetControl.Handle));
     if obj = nil then Exit;
     callback := obj.lclGetCallback;
@@ -1306,8 +1323,8 @@ begin
   FillChar(Msg, SizeOf(Msg), #0);
   Msg.Msg := LM_MOUSEMOVE;
   Msg.Keys := CocoaModifiersToKeyState(Event.modifierFlags) or CocoaPressedMouseButtonsToKeyState(NSEvent.pressedMouseButtons);
-  Msg.XPos := mp.X;
-  Msg.YPos := mp.Y;
+  Msg.XPos := clPt.X;
+  Msg.YPos := clPt.Y;
 
   //debugln('MouseMove x='+dbgs(MousePos.X)+' y='+dbgs(MousePos.Y)+' Target='+Target.Name);
 
@@ -1320,6 +1337,7 @@ var
   Msg: TLMMouseEvent;
   MousePos: NSPoint;
   MButton: NSInteger;
+  bndPt, clPt: TPoint;
 begin
   Result := False; // allow cocoa to handle message
 
@@ -1327,7 +1345,7 @@ begin
     Exit;
 
   MousePos := Event.locationInWindow;
-  OffsetMousePos(MousePos);
+  OffsetMousePos(MousePos, bndPt, clPt);
 
   MButton := event.buttonNumber;
   if MButton >= 3 then
@@ -1336,8 +1354,8 @@ begin
   FillChar(Msg, SizeOf(Msg), #0);
 
   Msg.Button := MButton;
-  Msg.X := round(MousePos.X);
-  Msg.Y := round(MousePos.Y);
+  Msg.X := round(clPt.X);
+  Msg.Y := round(clPt.Y);
   Msg.State :=  TShiftState(integer(CocoaModifiersToKeyState(Event.modifierFlags)));
 
   // Some info on event.deltaY can be found here:

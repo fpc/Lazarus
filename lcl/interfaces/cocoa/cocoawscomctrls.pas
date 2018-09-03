@@ -592,18 +592,23 @@ var
   lTabControl: TCocoaTabControl;
   lTabPage: NSTabViewItem;
   lClientPos: NSPoint;
+  pt : TPoint;
 begin
   Result := -1;
   if not Assigned(ATabControl) or not ATabControl.HandleAllocated then Exit;
   lTabControl := TCocoaTabControl(ATabControl.Handle);
 
+  pt.x := Round(AClientPos.x + lTabControl.contentRect.origin.x);
+  pt.y := Round(AClientPos.y + lTabControl.contentRect.origin.y);
+
   if lTabControl.isFlipped then
   begin
-    lClientPos.x := AClientPos.X;
-    lClientPos.y := AClientPos.Y;
+    lClientPos.x := pt.X;
+    lClientPos.y := pt.Y;
   end
   else
-    lClientPos := LCLToNSPoint(AClientPos, lTabControl.frame.size.height);
+    lClientPos := LCLToNSPoint(pt, lTabControl.frame.size.height);
+
   lTabPage := lTabControl.tabViewItemAtPoint(lClientPos);
   if not Assigned(lTabPage) then
     Exit;
