@@ -2674,7 +2674,7 @@ end;
 
 function TDebugManager.DoStepOutProject: TModalResult;
 begin
-  if (FDebugger = nil) or not(dcRunTo in FDebugger.Commands)
+  if (FDebugger = nil) or not(dcStepOut in FDebugger.Commands)
   then begin
     Result := mrAbort;
     Exit;
