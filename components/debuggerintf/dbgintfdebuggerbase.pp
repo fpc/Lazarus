@@ -6307,12 +6307,12 @@ end;
 procedure TDebuggerIntf.LockRelease;
 begin
   inc(FReleaseLock);
-  DebugLnEnter(DBG_VERBOSE, ['> TLldbDebugger.LockRelease ',FReleaseLock]);
+  DebugLnEnter(DBG_VERBOSE, ['> TDebuggerIntf.LockRelease ',FReleaseLock]);
 end;
 
 procedure TDebuggerIntf.UnlockRelease;
 begin
-  DebugLnExit(DBG_VERBOSE, ['< TLldbDebugger.UnlockRelease ',FReleaseLock]);
+  DebugLnExit(DBG_VERBOSE, ['< TDebuggerIntf.UnlockRelease ',FReleaseLock]);
   dec(FReleaseLock);
   if (FReleaseLock = 0) and (State = dsDestroying)
   then Release;

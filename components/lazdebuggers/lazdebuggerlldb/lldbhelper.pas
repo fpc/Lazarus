@@ -9,7 +9,7 @@ uses
 
 function LastPos(ASearch, AString: string): Integer;
 
-function StrStartsWith(AString, AStart: string): Boolean;
+function StrStartsWith(AString, AStart: string; ACheckStartNotEmpty: Boolean = False): Boolean;
 function StrContains(AString, AFind: string): Boolean;
 function StrMatches(AString: string; AFind: array of string): Boolean;
 function StrMatches(AString: string; AFind: array of string; out AGapsContent: TStringArray): Boolean;
@@ -23,9 +23,13 @@ function ParseFrameLocation(AnInput: String; out AnId: Integer;
   out AnArgs: TStringList; out AFile: String; out ALine: Integer;
   out AReminder: String): Boolean;
 function ParseNewFrameLocation(AnInput: String; out AnId: Integer;
-  out AnIsCurrent: Boolean; out AnAddr: TDBGPtr; out AFuncName: String;
+  out AnIsCurrent: Boolean; out AnAddr, AnStack, AnFrame: TDBGPtr; out AFuncName: String;
   out AnArgs: TStringList; out AFile, AFullFile: String; out ALine: Integer;
   out AReminder: String): Boolean;
+function ParseNewThreadLocation(AnInput: String; out AnId: Integer;
+  out AnIsCurrent: Boolean; out AName: String; out AnAddr, AnStack, AnFrame: TDBGPtr;
+  out AFuncName: String; out AnArgs: TStringList; out AFile, AFullFile: String;
+  out ALine: Integer; out AReminder: String): Boolean;
 
 implementation
 
@@ -41,9 +45,10 @@ begin
   end;
 end;
 
-function StrStartsWith(AString, AStart: string): Boolean;
+function StrStartsWith(AString, AStart: string; ACheckStartNotEmpty: Boolean
+  ): Boolean;
 begin
-  Result := LeftStr(AString, Length(AStart)) = AStart;
+  Result := ( (not ACheckStartNotEmpty) or (AStart <> '') ) and (LeftStr(AString, Length(AStart)) = AStart);
 end;
 
 function StrContains(AString, AFind: string): Boolean;
@@ -238,23 +243,19 @@ begin
   ParseLocation(AnInput, AnAddr, AFuncName, AnArgs, AFile, ALine, AReminder);
 end;
 
-function ParseNewFrameLocation(AnInput: String; out AnId: Integer; out
-  AnIsCurrent: Boolean; out AnAddr: TDBGPtr; out AFuncName: String; out
-  AnArgs: TStringList; out AFile, AFullFile: String; out ALine: Integer; out
-  AReminder: String): Boolean;
+function ParseFrameOrThread(AnInput: String; out AnAddr, AnStack, AnFrame: TDBGPtr;
+  out AFuncName: String; out AnArgs: TStringList; out AFile, AFullFile: String;
+  out ALine: Integer; out AReminder: String): Boolean;
 var
   found: TStringArray;
   i, j, k: SizeInt;
 begin
   Result := False;
-  AnIsCurrent := (Length(AnInput) > 3) and (AnInput[3] = '*');
-  if AnIsCurrent then AnInput[3] := ' ';
 
-  if not StrMatches(AnInput, ['    frame #'{id}, ': '{addr},
+  if not StrMatches(AnInput, [''{addr}, ', ' {sp}, ', ' {fp},
     ' &&//FULL: '{fullfile}, ' &&//SHORT: '{file},' &&//LINE: '{line},
     ' &&//MOD: '{mod},' &&//FUNC: '{func}, '',' <<&&//FRAME', ''
      ], found) then begin
-    AnId := -1;
     AnAddr :=    0;
     AFile :=     '';
     AFullFile := '';
@@ -265,17 +266,18 @@ begin
     exit;
   end;
 
-  AnId :=      StrToIntDef(found[0], -1);
-  AnAddr :=    StrToInt64Def(found[1], 0);
-  AFullFile := found[2];
-  AFile :=     found[3];
-  ALine :=     StrToIntDef(found[4], -1);
-  AFuncName := found[6];
+  AnAddr :=    StrToInt64Def(found[0], 0);
+  AnStack :=   StrToInt64Def(found[1], 0);
+  AnFrame :=   StrToInt64Def(found[2], 0);
+  AFullFile := found[3];
+  AFile :=     found[4];
+  ALine :=     StrToIntDef(found[5], -1);
+  AFuncName := found[7];
   AnArgs := nil;
-  AReminder := found[7];
+  AReminder := found[8];
 
   if AFuncName = '' then begin
-    AFuncName := '<'+found[5]+'>';
+    AFuncName := '<'+found[6]+'>';
   end
   else begin
     AnInput := AFuncName;
@@ -291,6 +293,54 @@ begin
   end;
 
   Result := True;
+end;
+
+function ParseNewFrameLocation(AnInput: String; out AnId: Integer; out
+  AnIsCurrent: Boolean; out AnAddr, AnStack, AnFrame: TDBGPtr; out
+  AFuncName: String; out AnArgs: TStringList; out AFile, AFullFile: String; out
+  ALine: Integer; out AReminder: String): Boolean;
+var
+  found: TStringArray;
+begin
+  AnIsCurrent := (Length(AnInput) > 3) and (AnInput[3] = '*');
+  if AnIsCurrent then AnInput[3] := ' ';
+
+  if StrMatches(AnInput, ['    frame #'{id}, ': '{}, ''], found) then begin
+    AnId    := StrToIntDef(found[0], -1);
+    AnInput := found[1];
+  end
+  else begin
+    AnId    := -1;
+    AnInput := '';
+  end;
+
+  Result := ParseFrameOrThread(AnInput, AnAddr, AnStack, AnFrame,
+    AFuncName, AnArgs, AFile, AFullFile, ALine, AReminder);
+end;
+
+function ParseNewThreadLocation(AnInput: String; out AnId: Integer; out
+  AnIsCurrent: Boolean; out AName: String; out AnAddr, AnStack,
+  AnFrame: TDBGPtr; out AFuncName: String; out AnArgs: TStringList; out AFile,
+  AFullFile: String; out ALine: Integer; out AReminder: String): Boolean;
+var
+  found: TStringArray;
+begin
+  AnIsCurrent := (Length(AnInput) > 1) and (AnInput[1] = '*');
+  if AnIsCurrent then AnInput[1] := ' ';
+
+  if StrMatches(AnInput, ['  thread #'{id}, ': tid='{tid}, ': '{}, ''], found) then begin
+    AnId    := StrToIntDef(found[0], -1);
+    AName   := found[1];
+    AnInput := found[2];
+  end
+  else begin
+    AnId    := -1;
+    AName   := '';
+    AnInput := '';
+  end;
+
+  Result := ParseFrameOrThread(AnInput, AnAddr, AnStack, AnFrame,
+    AFuncName, AnArgs, AFile, AFullFile, ALine, AReminder);
 end;
 
 end.

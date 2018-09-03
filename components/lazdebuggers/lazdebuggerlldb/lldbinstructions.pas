@@ -76,6 +76,15 @@ type
     constructor Create;
   end;
 
+  { TLldbInstructionTargetStopHook }
+
+  TLldbInstructionTargetStopHook = class(TLldbInstruction)
+  protected
+    function ProcessInputFromDbg(const AData: String): Boolean; override;
+  public
+    constructor Create(const ACmd: String);
+  end;
+
   { TLldbInstructionProcessLaunch }
 
   TLldbInstructionProcessLaunch = class(TLldbInstruction)
@@ -308,6 +317,14 @@ type
     property Res: TStringArray read FRes;
   end;
 
+  { TLldbInstructionThreadListReader }
+
+  TLldbInstructionThreadListReader = class(TLldbInstructionThreadList)
+  protected
+    procedure SendCommandDataToDbg(); override;
+    function ProcessInputFromDbg(const AData: String): Boolean; override;
+  end;
+
   { TLldbInstructionStackTrace }
 
   TLldbInstructionStackTrace = class(TLldbInstruction)
@@ -416,10 +433,6 @@ begin
     exit;
   end;
 
-  if StrMatches(ALine, ['Process ', ' stopped']) then begin // TODO: needed?
-    ALine := '';
-  end;
-
   // TODO: detect the echo, and flag if data is for RunningInstruction;
 
 //  if LeftStr(ALine, 7) = 'error: ' then begin
@@ -453,6 +466,15 @@ begin
     if Instr.OwningCommand = ACommand then begin
       Instr.Cancel;
     end;
+  end;
+
+  if (RunningInstruction <> nil) and
+     (TLldbInstruction(RunningInstruction).OwningCommand = ACommand) and
+     (not RunningInstruction.IsCompleted)
+  then begin
+    RunningInstruction.OnFailure := nil;
+    RunningInstruction.OnFinish := nil;
+    RunningInstruction.Cancel;
   end;
 end;
 
@@ -542,13 +564,31 @@ begin
   inherited Create('target delete 0');
 end;
 
+{ TLldbInstructionTargetStopHook }
+
+function TLldbInstructionTargetStopHook.ProcessInputFromDbg(const AData: String
+  ): Boolean;
+begin
+  Result := True;
+  if StrStartsWith(AData, 'Stop hook ') and (pos(' added', AData) > 8) then begin
+    SetContentReceieved;
+  end
+  else
+    Result := inherited;
+end;
+
+constructor TLldbInstructionTargetStopHook.Create(const ACmd: String);
+begin
+  inherited Create(Format('target stop-hook add -o "%s"', [ACmd]));
+end;
+
 { TLldbInstructionProcessLaunch }
 
 function TLldbInstructionProcessLaunch.ProcessInputFromDbg(const AData: String
   ): Boolean;
 begin
   Result := True;
-  if (LeftStr(AData, 8) = 'Process ') and (pos(' launched:', AData) > 8) then begin
+  if StrStartsWith(AData, 'Process ') and (pos(' launched:', AData) > 8) then begin
     SetContentReceieved;
   end
   else
@@ -910,6 +950,7 @@ end;
 procedure TLldbInstructionReadExpression.SendCommandDataToDbg();
 begin
   // do not sent data
+  SetStateRunning;
 end;
 
 constructor TLldbInstructionReadExpression.Create;
@@ -1112,6 +1153,32 @@ destructor TLldbInstructionThreadList.Destroy;
 begin
   inherited Destroy;
   FRes := nil;
+end;
+
+{ TLldbInstructionThreadListReader }
+
+procedure TLldbInstructionThreadListReader.SendCommandDataToDbg();
+begin
+  // send nothing
+  SetStateRunning;
+  FReading := True;
+end;
+
+function TLldbInstructionThreadListReader.ProcessInputFromDbg(
+  const AData: String): Boolean;
+begin
+  if StrMatches(AData, ['* stopped in thread #', ', stop reason = ', '']) then begin
+    FRes := nil;
+    Result := False; // no data
+    exit;
+  end;
+
+  Result := inherited ProcessInputFromDbg(AData);
+
+  if StrMatches(AData, ['Process ', 'stopped']) then begin
+    MarkAsSuccess;
+    Exit;
+  end;
 end;
 
 { TLldbInstructionStackTrace }

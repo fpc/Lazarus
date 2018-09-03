@@ -61,6 +61,7 @@ type
   protected
     function GetCommandAsString(): String; virtual;
     procedure SendCommandDataToDbg(); virtual;
+    procedure SetStateRunning;
     function  ProcessInputFromDbg(const AData: String): Boolean; virtual; abstract; // True if data was handled
 
   //  function  GetTimeOutVerifier: TDBGInstruction; virtual;
@@ -270,6 +271,12 @@ end;
 procedure TDBGInstruction.SendCommandDataToDbg();
 begin
   FQueue.SendDataToDBG(Self, GetCommandAsString);
+  FState := disDataSent;
+end;
+
+procedure TDBGInstruction.SetStateRunning;
+begin
+  Assert(FState=disQueued, 'FState=disQueued');
   FState := disDataSent;
 end;
 
