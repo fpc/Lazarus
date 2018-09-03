@@ -2019,7 +2019,7 @@ type
     ElementPool : TIpHtmlPoolManager;
     AnchorList : {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif};
     FControlList : {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif};
-    FCURURL : string;
+    FCurURL : string;
     DoneLoading : Boolean;
     ListLevel : Integer;
     PropACache : TIpHtmlPropsAList;
@@ -10338,6 +10338,24 @@ begin
 end;
 
 procedure TIpHtmlNodeDIV.Enqueue;
+var
+  elem: PIpHtmlElement;
+  hf, h: Integer;
+begin
+  hf := Props.FontSize;
+  if FChildren.Count > 0 then begin
+    h := GetMargin(Props.ElemMarginTop, 0); //hf div 4);
+    elem := Owner.BuildLinefeedEntry(etSoftLF, h);
+    EnqueueElement(elem);
+  end;
+  inherited Enqueue;
+  if FChildren.Count > 0 then begin
+    h := GetMargin(Props.ElemMarginBottom, 0);  //hf div 4);
+    elem := Owner.BuildLinefeedEntry(etSoftLF, h);
+    EnqueueElement(elem);
+  end;
+end;
+(* this is the original code
 begin
   if FChildren.Count > 0 then begin
     if Props.ElemMarginTop.Style=hemsAuto then
@@ -10357,6 +10375,7 @@ begin
     end;
   end;
 end;
+*)
 
 { TIpHtmlNodeSPAN }
 
