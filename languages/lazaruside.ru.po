@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-09-03 01:50+0300\n"
+"PO-Revision-Date: 2018-09-04 01:37+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -15189,7 +15189,7 @@ msgstr "%sДобавление новой зависимости проекта 
 
 #: lazarusidestrconsts.lispkgmangaddunittousesclause
 msgid "Add unit to uses clause of package main file. Disable this only for units that should not be compiled in all cases."
-msgstr "Добавить модуль в выражение uses пакета. Отключить это только для модулей, которые не должны компилироваться во всех случаях."
+msgstr "Добавить модуль в выражение Uses главного файла пакета. Отключайте это только для модулей, которые не должны компилироваться во всех случаях."
 
 #: lazarusidestrconsts.lispkgmangambiguousunitsfound
 msgid "Ambiguous units found"
