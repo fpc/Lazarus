@@ -236,7 +236,8 @@ function AllocCocoaTableListView: TCocoaTableListView;
 
 implementation
 
-{$DEFINE DYNAMIC_NSTABLEVIEW_BASE}
+// not yet!
+{.$DEFINE DYNAMIC_NSTABLEVIEW_BASE}
 
 function AllocCocoaTableListView: TCocoaTableListView; // init will happen outside
 begin
