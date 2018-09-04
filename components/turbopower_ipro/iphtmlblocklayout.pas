@@ -511,12 +511,11 @@ begin
       FBlockDescent := PropA.tmDescent;
     end;
     if (FCurProps = nil) or not BIsEqualTo(FCurProps) then begin
-//      FAl := self.Props.Alignment;      // was: FAl := Alignment
-      // wp: next line was changed to "FAl := self.Props.Alignment" in order
+      FAl := self.Props.Alignment;      // was: FAl := Alignment
+      // wp: line was changed to "FAl := self.Props.Alignment" in order
       // to fix horizontal text alignment of table cells (r50145).
       // But with this change, something like "<p align="center"> does not work any more!
       // Alignment within cells still seems to work correctly after user to old code.
-      FAl := Alignment;
       FVAL := VAlignment;
       FBaseOffset := FontBaseline;
       aPrefor := Preformatted;
