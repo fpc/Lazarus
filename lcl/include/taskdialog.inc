@@ -236,6 +236,10 @@ begin
     FRadioButton := RadioButtons[TaskDlg.RadioRes-200] as TTaskDialogRadioButtonItem
   else
     FRadioButton := nil;
+  if TaskDlg.VerifyChecked then
+    Include(FFlags, tfVerificationFlagChecked)
+  else
+    Exclude(FFlags, tfVerificationFlagChecked)
 end;
 
 procedure TCustomTaskDialog.DoOnButtonClicked(AModalResult: Integer;
