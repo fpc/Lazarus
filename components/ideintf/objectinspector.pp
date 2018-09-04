@@ -2846,17 +2846,13 @@ end;
 procedure TOICustomPropertyGrid.AlignEditComponents;
 var
   RRect, EditCompRect, EditBtnRect: TRect;
-
-  function CompareRectangles(r1,r2:TRect):boolean;
-  begin
-    Result := (r1.Left=r2.Left) and (r1.Top=r2.Top)
-          and (r1.Right=r2.Right) and (r1.Bottom=r2.Bottom);
-  end;
-
 begin
   if ItemIndex>=0 then
   begin
     RRect := RowRect(ItemIndex);
+    {.$ifdef LCLGtk2}
+    InflateRect(RRect, 0, 1);
+    {.$endif}
     EditCompRect := RRect;
 
     if Layout = oilHorizontal then
@@ -2876,8 +2872,8 @@ begin
         Right := EditCompRect.Right;
         EditCompRect.Right := Left;
       end;
-      if not CompareRectangles(FCurrentButton.BoundsRect,EditBtnRect) then
-        FCurrentButton.BoundsRect:=EditBtnRect;
+      if FCurrentButton.BoundsRect <> EditBtnRect then
+        FCurrentButton.BoundsRect := EditBtnRect;
       //DebugLn(['TOICustomPropertyGrid.AlignEditComponents FCurrentButton.BoundsRect=',dbgs(FCurrentButton.BoundsRect),' EditBtnRect=',dbgs(EditBtnRect)]);
     end;
     if FCurrentEdit<>nil then
@@ -2900,8 +2896,8 @@ begin
       {$ENDIF}
       end;
       //debugln('TOICustomPropertyGrid.AlignEditComponents A ',dbgsName(FCurrentEdit),' ',dbgs(EditCompRect));
-      if not CompareRectangles(FCurrentEdit.BoundsRect,EditCompRect) then
-        FCurrentEdit.BoundsRect:=EditCompRect;
+      if FCurrentEdit.BoundsRect <> EditCompRect then
+        FCurrentEdit.BoundsRect := EditCompRect;
     end;
   end;
 end;
