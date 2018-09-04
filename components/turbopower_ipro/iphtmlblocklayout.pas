@@ -525,7 +525,31 @@ begin
 end;
 
 procedure TIpNodeBlockLayouter.DoQueueElemWord(aCurElem: PIpHtmlElement);
+var
+  lAlign: TIpHtmlAlign;
+  node: TIpHtmlNode;
 begin
+  // wp: added to fix Align of <p> and <div> nodes in <tc>
+  if Assigned(aCurElem.Owner) then begin
+    lAlign := FAl;
+    node := aCurElem.Owner.ParentNode;
+    while Assigned(node) do begin
+      if (node is TIpHtmlNodeP) then
+        lAlign := TIpHtmlNodeP(node).Align
+      else
+      if (node is TIpHtmlNodeDIV) then
+        lAlign := TIpHtmlNodeDIV(node).Align
+      else
+        break;
+      if lAlign = haDefault then
+        node := node.ParentNode
+      else begin
+        FAl := lAlign;
+        break;
+      end;
+    end;
+  end;
+
   FIgnoreHardLF := False;
   if FLTrim and (aCurElem.IsBlank <> 0) then
     FxySize := SizeRec(0, 0)
