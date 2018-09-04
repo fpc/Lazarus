@@ -21,6 +21,9 @@
 		<issue name="TMemo.HideSelection">
 			<short>HideSelection property is not supported</short>
 		</issue>
+		<issue name="TMemo.MaxLength">
+			<short>MaxLength property is not supported</short>
+		</issue>	
 		<issue name="TMenuItem.RightJustify">
 			<short>RightJustify property is not supported</short>
 		</issue>
