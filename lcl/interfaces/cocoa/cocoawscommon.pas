@@ -73,7 +73,7 @@ type
     procedure KeyEvAfter;
 
     procedure MouseClick; virtual;
-    function MouseMove(Event: NSEvent): Boolean; virtual;
+    function MouseMove(Event: NSEvent; AForceObject: Boolean): Boolean; virtual;
     function scrollWheel(Event: NSEvent): Boolean; virtual;
     procedure frameDidChange(sender: id); virtual;
     procedure boundsDidChange(sender: id); virtual;
@@ -1231,7 +1231,7 @@ begin
     end;
 end;
 
-function TLCLCommonCallback.MouseMove(Event: NSEvent): Boolean;
+function TLCLCommonCallback.MouseMove(Event: NSEvent; AForceObject: Boolean): Boolean;
 var
   Msg: TLMMouseMove;
   MousePos: NSPoint;
@@ -1258,64 +1258,67 @@ begin
   MousePos := Event.locationInWindow;
   OffsetMousePos(MousePos, bndPt, clPt);
 
-  rect:=Owner.lclClientFrame;
-  targetControl:=nil;
+  if not AForceObject then
+  begin
+    rect:=Owner.lclClientFrame;
+    targetControl:=nil;
 
-  callback := GetCaptureControlCallback();
-  if callback <> nil then
-  begin
-    FIsEventRouting:=true;
-    Result := callback.MouseMove(Event);
-    FIsEventRouting:=false;
-    exit;
-  end
-  else
-  begin
-    rect:=Target.BoundsRect;
-    OffsetRect(rect, -rect.Left, -rect.Top);
-    if (event.type_ = NSMouseMoved) and (not Types.PtInRect(rect, bndPt)) then
+    callback := GetCaptureControlCallback();
+    if callback <> nil then
     begin
-      // do not send negative coordinates (unless dragging mouse)
-      Exit;
+      FIsEventRouting:=true;
+      Result := callback.MouseMove(Event);
+      FIsEventRouting:=false;
+      exit;
+    end
+    else
+    begin
+      rect:=Target.BoundsRect;
+      OffsetRect(rect, -rect.Left, -rect.Top);
+      if (event.type_ = NSMouseMoved) and (not Types.PtInRect(rect, bndPt)) then
+      begin
+        // do not send negative coordinates (unless dragging mouse)
+        Exit;
+      end;
+
+      if assigned(Target.Parent) and not Types.PtInRect(rect, bndPt) then
+         targetControl:=Target.Parent // outside myself then route to parent
+      else
+      for i:=Target.ControlCount-1 downto 0  do // otherwise check, if over child and route to child
+        if Target.Controls[i] is TWinControl then
+        begin
+          childControl:=TWinControl(Target.Controls[i]);
+          rect:=childControl.BoundsRect;
+          if Types.PtInRect(rect, clPt) and childControl.Visible and childControl.Enabled then
+          begin
+            targetControl:=childControl;
+            break;
+          end;
+        end;
     end;
 
-    if assigned(Target.Parent) and not Types.PtInRect(rect, bndPt) then
-       targetControl:=Target.Parent // outside myself then route to parent
-    else
-    for i:=Target.ControlCount-1 downto 0  do // otherwise check, if over child and route to child
-      if Target.Controls[i] is TWinControl then
-      begin
-        childControl:=TWinControl(Target.Controls[i]);
-        rect:=childControl.BoundsRect;
-        if Types.PtInRect(rect, clPt) and childControl.Visible and childControl.Enabled then
-        begin
-          targetControl:=childControl;
-          break;
-        end;
-      end;
-  end;
+    if assigned(targetControl) and not FIsEventRouting then
+    begin
+      if not targetControl.HandleAllocated then Exit; // Fixes crash due to events being sent after ReleaseHandle
+      FIsEventRouting:=true;
+       //debugln(Target.name+' -> '+targetControl.Name+'- is parent:'+dbgs(targetControl=Target.Parent)+' Point: '+dbgs(br)+' Rect'+dbgs(rect));
+      obj := GetNSObjectView(NSObject(targetControl.Handle));
+      if obj = nil then Exit;
+      callback := obj.lclGetCallback;
+      if callback = nil then Exit; // Avoids crashes
+      result := callback.MouseMove(Event);
+      FIsEventRouting := false;
+      exit;
+    end;
 
-  if assigned(targetControl) and not FIsEventRouting then
-  begin
-    if not targetControl.HandleAllocated then Exit; // Fixes crash due to events being sent after ReleaseHandle
-    FIsEventRouting:=true;
-     //debugln(Target.name+' -> '+targetControl.Name+'- is parent:'+dbgs(targetControl=Target.Parent)+' Point: '+dbgs(br)+' Rect'+dbgs(rect));
-    obj := GetNSObjectView(NSObject(targetControl.Handle));
-    if obj = nil then Exit;
-    callback := obj.lclGetCallback;
-    if callback = nil then Exit; // Avoids crashes
-    result := callback.MouseMove(Event);
-    FIsEventRouting := false;
-    exit;
-  end;
-
-  if (Event.type_ = NSMouseMoved) and Owner.lclIsMouseInAuxArea(Event) then
-  begin
-    // mouse is over auxillary area that's "blind" to mouse moves
-    // even though the mouse cursos is within the control bounds.
-    // (i.e. scrollbars)
-    Result := false;
-    Exit;
+    if (Event.type_ = NSMouseMoved) and Owner.lclIsMouseInAuxArea(Event) then
+    begin
+      // mouse is over auxillary area that's "blind" to mouse moves
+      // even though the mouse cursos is within the control bounds.
+      // (i.e. scrollbars)
+      Result := false;
+      Exit;
+    end;
   end;
 
   // debugln('Send to: '+Target.name+' Point: '+dbgs(mp));
