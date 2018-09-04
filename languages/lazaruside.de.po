@@ -19154,7 +19154,7 @@ msgid "Used for auto-created forms."
 msgstr "Verwendet für automatisch erzeugte Formulare"
 
 #: lazarusidestrconsts.lisusefilterforextrafiles
-msgid "Use filter for extra files"
+msgid "Use filter to include extra files"
 msgstr ""
 
 #: lazarusidestrconsts.lisuseidentifier

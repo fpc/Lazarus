@@ -19373,7 +19373,7 @@ msgid "Used for auto-created forms."
 msgstr "Usato per form auto-create."
 
 #: lazarusidestrconsts.lisusefilterforextrafiles
-msgid "Use filter for extra files"
+msgid "Use filter to include extra files"
 msgstr ""
 
 #: lazarusidestrconsts.lisuseidentifier

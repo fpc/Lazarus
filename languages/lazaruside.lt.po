@@ -19223,7 +19223,7 @@ msgid "Used for auto-created forms."
 msgstr "Naudojamas automatiškai sukurtoms formoms."
 
 #: lazarusidestrconsts.lisusefilterforextrafiles
-msgid "Use filter for extra files"
+msgid "Use filter to include extra files"
 msgstr ""
 
 #: lazarusidestrconsts.lisuseidentifier

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-09-04 02:10+0300\n"
+"PO-Revision-Date: 2018-09-05 01:46+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -19039,8 +19039,8 @@ msgid "Used for auto-created forms."
 msgstr "Используется для автоматически создаваемых форм"
 
 #: lazarusidestrconsts.lisusefilterforextrafiles
-msgid "Use filter for extra files"
-msgstr "Использовать фильтр для дополнительных файлов"
+msgid "Use filter to include extra files"
+msgstr "Использовать фильтр для добавления дополнительных файлов"
 
 #: lazarusidestrconsts.lisuseidentifier
 msgid "Use identifier"
