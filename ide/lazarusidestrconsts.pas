@@ -3876,7 +3876,7 @@ resourcestring
     +'character, a * stands for anything, a ? stands for any character, and '
     +'comma and semicolon separates alternatives. For example: Simple '
     +'syntax *.pas;*.pp corresponds to ^(.*\.pas|.*\.pp)$';
-  lisUseFilterForExtraFiles = 'Use filter for extra files';
+  lisUseFilterForExtraFiles = 'Use filter to include extra files';
   lisIncludeFilter = 'Include filter';
   lisInvalidPublishingDirectory = 'Invalid publishing Directory';
   lisSourceDirectoryAndDestinationDirectoryAreTheSameMa = 'Source directory "%s"'

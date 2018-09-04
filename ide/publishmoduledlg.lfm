@@ -22,16 +22,16 @@ object PublishModuleDialog: TPublishModuleDialog
     ChildSizing.LeftRightSpacing = 6
     ChildSizing.TopBottomSpacing = 6
     ClientHeight = 46
-    ClientWidth = 628
+    ClientWidth = 626
     TabOrder = 0
     object DestDirComboBox: TComboBox
       AnchorSideRight.Control = BrowseDestDirBitBtn
       Left = 6
-      Height = 31
+      Height = 23
       Top = 6
-      Width = 591
+      Width = 589
       Anchors = [akTop, akLeft, akRight]
-      ItemHeight = 0
+      ItemHeight = 15
       TabOrder = 0
       Text = 'DestDirComboBox'
     end
@@ -40,8 +40,8 @@ object PublishModuleDialog: TPublishModuleDialog
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = DestDirComboBox
       AnchorSideBottom.Side = asrBottom
-      Left = 597
-      Height = 31
+      Left = 595
+      Height = 23
       Top = 6
       Width = 25
       Anchors = [akTop, akRight, akBottom]
@@ -55,39 +55,29 @@ object PublishModuleDialog: TPublishModuleDialog
     AnchorSideTop.Control = FilterCombobox
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 53
-    Top = 203
+    Height = 51
+    Top = 189
     Width = 628
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Around = 18
     Caption = 'Options'
     ChildSizing.TopBottomSpacing = 6
-    ClientHeight = 33
-    ClientWidth = 626
+    ClientHeight = 31
+    ClientWidth = 624
     TabOrder = 1
     object CompressCheckbox: TCheckBox
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 21
+      Height = 19
       Hint = 'Compress the whole directory into a ZIP file.'
       Top = 6
-      Width = 87
+      Width = 73
       BorderSpacing.Around = 6
       Caption = 'Compress'
       ParentShowHint = False
       ShowHint = True
       TabOrder = 0
-    end
-    object Label1: TLabel
-      Left = 168
-      Height = 19
-      Top = 8
-      Width = 138
-      Caption = 'Not implemented yet.'
-      Font.Color = clRed
-      ParentColor = False
-      ParentFont = False
     end
   end
   object ButtonPanel1: TButtonPanel
@@ -110,9 +100,9 @@ object PublishModuleDialog: TPublishModuleDialog
     AnchorSideTop.Control = NoteLabel
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 21
-    Top = 115
-    Width = 168
+    Height = 19
+    Top = 111
+    Width = 136
     BorderSpacing.Around = 18
     Caption = 'Use filter for extra files'
     OnClick = UseFiltersCheckboxClick
@@ -122,9 +112,9 @@ object PublishModuleDialog: TPublishModuleDialog
     AnchorSideTop.Control = DestDirGroupBox
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 19
+    Height = 15
     Top = 78
-    Width = 391
+    Width = 350
     BorderSpacing.Around = 6
     Caption = 'Files belonging to project / package will be included automatically.'
     Font.Color = clMaroon
@@ -138,13 +128,13 @@ object PublishModuleDialog: TPublishModuleDialog
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = FilterSimpleSyntaxCheckbox
     Left = 24
-    Height = 31
-    Top = 154
-    Width = 462
+    Height = 23
+    Top = 148
+    Width = 480
     Anchors = [akTop, akLeft, akRight]
     AutoSize = False
     BorderSpacing.Left = 18
-    ItemHeight = 0
+    ItemHeight = 15
     TabOrder = 4
     Text = 'FilterCombobox'
   end
@@ -152,10 +142,10 @@ object PublishModuleDialog: TPublishModuleDialog
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = FilterCombobox
     AnchorSideTop.Side = asrCenter
-    Left = 499
-    Height = 21
-    Top = 159
-    Width = 111
+    Left = 517
+    Height = 19
+    Top = 150
+    Width = 93
     Anchors = [akTop, akRight]
     BorderSpacing.Around = 13
     Caption = 'Simple Syntax'
