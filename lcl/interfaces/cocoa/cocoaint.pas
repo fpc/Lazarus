@@ -389,9 +389,7 @@ begin
     and isMouseMoveEvent(Result.type_)
   then begin
     cb := TrackedControl.lclGetCallback;
-    if Assigned(cb) then
-      // making sure that the only the same control is called
-      cb.MouseMove(Result, true);
+    if Assigned(cb) then cb.MouseMove(Result);
   end;
 end;
 

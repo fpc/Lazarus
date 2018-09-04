@@ -73,7 +73,7 @@ type
     procedure KeyEvAfter;
 
     procedure MouseClick; virtual;
-    function MouseMove(Event: NSEvent; AForceObject: Boolean): Boolean; virtual;
+    function MouseMove(Event: NSEvent): Boolean; virtual;
     function scrollWheel(Event: NSEvent): Boolean; virtual;
     procedure frameDidChange(sender: id); virtual;
     procedure boundsDidChange(sender: id); virtual;
@@ -1231,7 +1231,7 @@ begin
     end;
 end;
 
-function TLCLCommonCallback.MouseMove(Event: NSEvent; AForceObject: Boolean): Boolean;
+function TLCLCommonCallback.MouseMove(Event: NSEvent): Boolean;
 var
   Msg: TLMMouseMove;
   MousePos: NSPoint;
@@ -1243,6 +1243,7 @@ var
   targetControl: TWinControl;
   childControl:TWinControl;
   bndPt, clPt: TPoint;
+  MouseTargetLookup: Boolean;
 begin
   if Assigned(Owner) and not Owner.lclIsEnabled then
   begin
@@ -1258,7 +1259,10 @@ begin
   MousePos := Event.locationInWindow;
   OffsetMousePos(MousePos, bndPt, clPt);
 
-  if not AForceObject then
+  // For "dragged" events, the same "Target" should be used
+  MouseTargetLookup := Event.type_ = NSMouseMoved;
+
+  if MouseTargetLookup then
   begin
     rect:=Owner.lclClientFrame;
     targetControl:=nil;

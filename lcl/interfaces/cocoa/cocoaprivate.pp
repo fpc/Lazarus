@@ -49,7 +49,7 @@ type
     // mouse events
     function MouseUpDownEvent(Event: NSEvent; AForceAsMouseUp: Boolean = False; AOverrideBlock: Boolean = False): Boolean;
     procedure MouseClick;
-    function MouseMove(Event: NSEvent; AForceObject: Boolean = False): Boolean;
+    function MouseMove(Event: NSEvent): Boolean;
     function KeyEvent(Event: NSEvent; AForceAsKeyDown: Boolean = False): Boolean;
 
     procedure KeyEvPrepare(Event: NSEvent; AForceAsKeyDown: Boolean = False);
