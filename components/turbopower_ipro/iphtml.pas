@@ -5735,14 +5735,12 @@ begin
   NewHeader.ParseBaseProps(Self);
   NewHeader.Size := Size;
   NewHeader.Align := ParseAlignment;
-  NewHeader.Id := FindAttribute(htmlAttrID);
   NextToken;
   ParseBodyText(NewHeader, [EndToken]);
   if CurToken = EndToken then
     NextToken
-  else
-    if FlagErrors then
-      ReportExpectedToken(EndToken);
+  else if FlagErrors then
+    ReportExpectedToken(EndToken);
 end;
 
 procedure TIpHtml.ParseParagraph(Parent : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
