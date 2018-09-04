@@ -286,16 +286,9 @@ type
   { TPublishProjectOptions }
   
   TPublishProjectOptions = class(TPublishModuleOptions)
-  private
-    FBackupDir, FUnitOutputDir: String;  // Backup and unit output directories.
   public
     function GetDefaultDestinationDir: string; override;
-    function FileCanBePublished(const AFilename: string): boolean; override;
     function WriteFlags: TProjectWriteFlags;
-    procedure InitValues(const ABackupDir, AUnitOutputDir: String);
-  public
-    property BackupDir: String read FBackupDir; // write FBackupDir;
-    property UnitOutputDir: String read FUnitOutputDir; // write FUnitOutputDir;
   end;
 
 implementation
@@ -747,30 +740,11 @@ begin
   Result:='$(TestDir)/publishedproject/';
 end;
 
-function TPublishProjectOptions.FileCanBePublished(const AFilename: string): boolean;
-begin
-  Result:=inherited FileCanBePublished(AFilename);
-  // ToDo: filter also based on FBackupDir and FUnitOutputDir
-end;
-
 function TPublishProjectOptions.WriteFlags: TProjectWriteFlags;
 begin
   Result:=[];
   Include(Result,pwfSaveOnlyProjectUnits);
   Include(Result,pwfSkipClosedUnits);
-end;
-
-procedure TPublishProjectOptions.InitValues(const ABackupDir, AUnitOutputDir: String);
-var
-  P: Integer;
-begin
-  FBackupDir := ABackupDir;
-  FUnitOutputDir := AUnitOutputDir;
-  P := Pos(DirectorySeparator, FUnitOutputDir);
-  if P > 0 then
-    FUnitOutputDir := Copy(FUnitOutputDir, 1, P - 1);
-  DebugLn(['TPublishProjectOptions.InitValues: BackupDir=', FBackupDir,
-           ', UnitOutputDir=', FUnitOutputDir, ', Raw UnitOutputDir=', AUnitOutputDir]);
 end;
 
 

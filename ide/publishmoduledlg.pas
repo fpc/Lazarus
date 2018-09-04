@@ -41,7 +41,7 @@ uses
   IDEWindowIntf, IDEHelpIntf, IDEDialogs, IDEImagesIntf, ProjPackIntf, CompOptsIntf, LazIDEIntf,
   // IDE
   ProjectDefs, Project, PackageDefs, PublishModule, IDEOptionDefs, InputHistory,
-  LazarusIDEStrConsts, IDEProcs, EnvironmentOpts;
+  LazarusIDEStrConsts, IDEProcs, EnvironmentOpts, CompilerOptions;
 
 type
   { TPublishModuleDialog }
@@ -97,6 +97,7 @@ type
     FDestProjDirs: TStringList;
     FDestProjFiles: TStringList;
     FDestProjFileInfo: String;
+    FBackupDir, FLibDir: String;
     procedure AdjustTopDir(const AFileName: string);
     function CopyAFile(const AFileName: string; const AIsProjFile: Boolean = False): TModalResult;
     function CopyProjectFiles: TModalResult;
@@ -152,15 +153,23 @@ end;
 { TPublisher }
 
 constructor TPublisher.Create(AOptions: TPublishModuleOptions);
+var
+  COpts: TBaseCompilerOptions;
 begin
   inherited Create;
   FOptions := AOptions;
   FProjPack := FOptions.Owner as TIDEProjPackBase;
   FTopDir := FProjPack.Directory;     // Initial value for TopDir. It may change.
   FSrcDir := FTopDir;
-  FDestDir:=TrimAndExpandDirectory(RealPublishDir(FOptions));
+  FDestDir := TrimAndExpandDirectory(RealPublishDir(FOptions));
+  FBackupDir := UpperCase(AppendPathDelim(FSrcDir)
+             + EnvironmentOptions.BackupInfoProjectFiles.SubDirectory);
+  COpts := FProjPack.LazCompilerOptions as TBaseCompilerOptions;
+  FLibDir := UpperCase(AppendPathDelim(COpts.GetUnitOutPath(True,coptParsed)));
   DebugLn(['TPublisher: Source      Directory = ', FSrcDir]);
   DebugLn(['TPublisher: Destination Directory = ', FDestDir]);
+  DebugLn(['TPublisher: Backup      Directory = ', FBackupDir]);
+  DebugLn(['TPublisher: Lib         Directory = ', FLibDir]);
   FCopiedFiles := TStringList.Create;
   FDestProjDirs := TStringList.Create;
   FDestProjFiles := TStringList.Create;
@@ -180,16 +189,13 @@ procedure TPublisher.DoFileFound;
 // Copy a found file if it passes the filter.
 var
   CurDir: string;
-  BackupDir, LibDir: string;
 begin
   if FCopiedFiles.IndexOf(FileName) >= 0 then
     DebugLn(['DoFileFound: Already copied file ', FileName])
   else if FOptions.FileCanBePublished(FileName) then
   begin
-    CurDir := UpperCase(AppendPathDelim(ExtractFilePath(FileName)));
-    BackupDir := UpperCase(AppendPathDelim(AppendPathDelim(FSrcDir) + EnvironmentOptions.BackupInfoProjectFiles.SubDirectory));
-    LibDir := UpperCase(AppendPathDelim(TProject(FOptions.Owner).CompilerOptions.GetUnitOutPath(True, coptParsed)));
-    if (CurDir = BackupDir) or (CurDir = LibDir) then
+    CurDir := UpperCase(ExtractFilePath(FileName));
+    if (CurDir = FBackupDir) or (CurDir = FLibDir) then
       Exit;
     if CopyAFile(FileName) <> mrOK then
       Inc(FCopyFailedCount);
@@ -271,8 +277,7 @@ var
   CurProject: TProject;
   CurUnitInfo: TUnitInfo;
   i: Integer;
-  ResFile: String;
-  IcoFile: String;
+  RelatedFile: String;
   CurDir: String;
 begin
   Result := mrOK;
@@ -285,7 +290,7 @@ begin
     if CurUnitInfo.IsPartOfProject then
     begin
       AdjustTopDir(CurUnitInfo.Filename);
-      CurDir := AppendPathDelim(ExtractFilePath(CurUnitInfo.Filename));
+      CurDir := ExtractFilePath(CurUnitInfo.Filename);
       if not IsDirInList(CurDir) then
         FDestProjDirs.Add(CurDir);
     end;
@@ -300,12 +305,12 @@ begin
       if Result<> mrOk then Exit;
       if CurUnitInfo.IsMainUnit then
       begin                // Copy the main resource file in any case.
-        ResFile := ChangeFileExt(CurUnitInfo.Filename, '.res');
-        if FileExistsUTF8(ResFile) then
-          Result := CopyAFile(ResFile);
-        IcoFile := ChangeFileExt(CurUnitInfo.Filename, '.ico');
-        if FileExistsUTF8(IcoFile) then
-          Result := CopyAFile(IcoFile);
+        RelatedFile := ChangeFileExt(CurUnitInfo.Filename, '.res');
+        if FileExistsUTF8(RelatedFile) then
+          Result := CopyAFile(RelatedFile);
+        RelatedFile := ChangeFileExt(CurUnitInfo.Filename, '.ico');
+        if FileExistsUTF8(RelatedFile) then
+          Result := CopyAFile(RelatedFile);
       end;
     end;
   end;
@@ -539,8 +544,6 @@ begin
       mtError, [mbCancel]);
     exit;
   end;
-
-  // checking "command after" was here
 
   // clear destination directory
   if DirPathExists(FDestDir) then
