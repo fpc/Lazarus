@@ -649,6 +649,9 @@ type
     constructor Create(ParentNode : TIpHtmlNode);
     destructor Destroy; override;
     procedure Enqueue; override;
+    {$IFDEF IP_LAZARUS}
+    procedure LoadAndApplyCSSProps; override;
+    {$ENDIF}
     procedure SetProps(const RenderProps: TIpHtmlProps); override;
   {$IFDEF HTML_RTTI}
   published
@@ -667,6 +670,9 @@ type
     constructor Create(ParentNode : TIpHtmlNode);
     destructor Destroy; override;
     procedure Enqueue; override;
+    {$IFDEF IP_LAZARUS}
+    procedure LoadAndApplyCSSProps; override;
+    {$ENDIF}
     procedure SetProps(const RenderProps: TIpHtmlProps); override;
   {$IFDEF HTML_RTTI}
   published
@@ -963,6 +969,9 @@ type
     constructor Create(ParentNode : TIpHtmlNode);
     destructor Destroy; override;
     procedure Enqueue; override;
+    {$IFDEF IP_LAZARUS}
+    procedure LoadAndApplyCSSProps; override;
+    {$ENDIF}
     procedure SetProps(const RenderProps: TIpHtmlProps); override;
   {$IFDEF HTML_RTTI}
   published
@@ -1538,6 +1547,9 @@ type
     FVAlign: TIpHtmlVAlign3;
   public
     constructor Create(ParentNode : TIpHtmlNode);
+    {$IFDEF IP_LAZARUS}
+    procedure LoadAndApplyCSSProps; override;
+    {$ENDIF}
   {$IFDEF HTML_RTTI}
   published
   {$ENDIF}
@@ -1550,6 +1562,9 @@ type
     FAlign: TIpHtmlAlign;
     FVAlign: TIpHtmlVAlign3;
   public
+    {$IFDEF IP_LAZARUS}
+    procedure LoadAndApplyCSSProps; override;
+    {$ENDIF}
   {$IFDEF HTML_RTTI}
   published
   {$ENDIF}
@@ -1563,6 +1578,9 @@ type
     FVAlign: TIpHtmlVAlign3;
   public
     constructor Create(ParentNode : TIpHtmlNode);
+    {$IFDEF IP_LAZARUS}
+    procedure LoadAndApplyCSSProps; override;
+    {$ENDIF}
   {$IFDEF HTML_RTTI}
   published
   {$ENDIF}
@@ -1618,6 +1636,9 @@ type
     procedure AppendSelection(var S: String; var Completed: Boolean); override;
   public
     constructor Create(ParentNode : TIpHtmlNode);
+    {$IFDEF IP_LAZARUS}
+    procedure LoadAndApplyCSSProps; override;
+    {$ENDIF}
     procedure SetProps(const RenderProps: TIpHtmlProps); override;
   {$IFDEF HTML_RTTI}
   published
@@ -1651,6 +1672,9 @@ type
     constructor Create(ParentNode : TIpHtmlNode);
     destructor Destroy; override;
     procedure Layout(RenderProps: TIpHtmlProps; const TargetRect : TRect); override;
+    {$IFDEF IP_LAZARUS}
+    procedure LoadAndApplyCSSProps; override;
+    {$ENDIF}
     procedure Render(RenderProps: TIpHtmlProps); override;
     procedure CalcMinMaxPropWidth(RenderProps: TIpHtmlProps; var Min, Max: Integer); override;
   public
@@ -9708,6 +9732,15 @@ begin
   end;
 end;
 
+{$IFDEF IP_LAZARUS}
+procedure TIpHtmlNodeP.LoadAndApplyCSSProps;
+begin
+  inherited;
+  if not (FCombinedCSSProps.Alignment in [haDefault, haUnknown]) then
+    Align := FCombinedCSSProps.Alignment;
+end;
+{$ENDIF}
+
 procedure TIpHtmlNodeP.SetAlign(const Value: TIpHtmlAlign);
 begin
   if Value <> FAlign then begin
@@ -9843,6 +9876,15 @@ destructor TIpHtmlNodeHeader.Destroy;
 begin
   inherited;
 end;
+
+{$IFDEF IP_LAZARUS}
+procedure TIpHtmlNodeHeader.LoadAndApplyCSSProps;
+begin
+  inherited;
+  if not (FCombinedCSSProps.Alignment in [haDefault, haUnknown]) then
+    Align := FCombinedCSSProps.Alignment;
+end;
+{$ENDIF}
 
 procedure TIpHtmlNodeHeader.SetProps(const RenderProps: TIpHtmlProps);
 begin
@@ -10327,6 +10369,15 @@ begin
   inherited;
 end;
 
+{$IFDEF IP_LAZARUS}
+procedure TIpHtmlNodeDIV.LoadAndApplyCSSProps;
+begin
+  inherited;
+  if not (FCombinedCSSProps.Alignment in [haDefault, haUnknown]) then
+    Align := FCombinedCSSProps.Alignment;
+end;
+{$ENDIF}
+
 procedure TIpHtmlNodeDIV.SetProps(const RenderProps: TIpHtmlProps);
 begin
   Props.Assign(RenderProps);
@@ -10789,15 +10840,8 @@ begin
 end;
 {$ENDIF}
 
-{ TIpNodeTR }
 
-procedure TIpHtmlNodeTR.SetProps(const RenderProps: TIpHtmlProps);
-begin
-  Props.Assign(RenderProps);
-  Props.FontColor := TextColor;
-  Props.BgColor := BgColor;
-  inherited SetProps(Props);
-end;
+{ TIpNodeTR }
 
 constructor TIpHtmlNodeTR.Create(ParentNode: TIpHtmlNode);
 begin
@@ -10807,6 +10851,24 @@ begin
   FValign := hvaMiddle;
   FBgColor := -1;
   FTextColor := -1;
+end;
+
+{$IFDEF IP_LAZARUS}
+procedure TIpHtmlNodeTR.LoadAndApplyCSSProps;
+begin
+  inherited;
+  if not (FCombinedCSSProps.Alignment in [haDefault, haUnknown]) then
+    Align := FCombinedCSSProps.Alignment;
+  // wp: what about VAlign?
+end;
+{$ENDIF}
+
+procedure TIpHtmlNodeTR.SetProps(const RenderProps: TIpHtmlProps);
+begin
+  Props.Assign(RenderProps);
+  Props.FontColor := TextColor;
+  Props.BgColor := BgColor;
+  inherited SetProps(Props);
 end;
 
 procedure TIpHtmlNodeTR.AppendSelection(var S: String; var Completed: Boolean);
@@ -12783,6 +12845,30 @@ begin
   FVAlign := hva3Middle;
 end;
 
+{$IFDEF IP_LAZARUS}
+procedure TIpHtmlNodeTHEAD.LoadAndApplyCSSProps;
+begin
+  inherited;
+  if not (FCombinedCSSProps.Alignment in [haDefault, haUnknown]) then
+    Align := FCombinedCSSProps.Alignment;
+  // wp: what about VAlign?
+end;
+{$ENDIF}
+
+
+{ TIpHtmlNodeTFOOT }
+
+{$IFDEF IP_LAZARUS}
+procedure TIpHtmlNodeTFOOT.LoadAndApplyCSSProps;
+begin
+  inherited;
+  if not (FCombinedCSSProps.Alignment in [haDefault, haUnknown]) then
+    Align := FCombinedCSSProps.Alignment;
+  // wp: what about VAlign?
+end;
+{$ENDIF}
+
+
 { TIpHtmlNodeTBODY }
 
 constructor TIpHtmlNodeTBODY.Create(ParentNode: TIpHtmlNode);
@@ -12791,6 +12877,17 @@ begin
   FElementName := 'tbody';
   FVAlign := hva3Middle;
 end;
+
+{$IFDEF IP_LAZARUS}
+procedure TIpHtmlNodeTBODY.LoadAndApplyCSSProps;
+begin
+  inherited;
+  if not (FCombinedCSSProps.Alignment in [haDefault, haUnknown]) then
+    Align := FCombinedCSSProps.Alignment;
+  // wp: what about VAlign?
+end;
+{$ENDIF}
+
 
 { TIpHtmlNodeSTYLE }
 
@@ -13045,6 +13142,16 @@ procedure TIpHtmlNodeTableHeaderOrCell.Layout(RenderProps: TIpHtmlProps;
 begin
   FLayouter.Layout(Props, TargetRect);
 end;
+
+{$IFDEF IP_LAZARUS}
+procedure TIpHtmlNodeTableHeaderOrCell.LoadAndApplyCSSProps;
+begin
+  inherited;
+  if not (FCombinedCSSProps.Alignment in [haDefault, haUnknown]) then
+    Align := FCombinedCSSProps.Alignment;
+  // wp: what about VAlign?
+end;
+{$ENDIF}
 
 procedure TIpHtmlNodeTableHeaderOrCell.DimChanged(Sender: TObject);
 begin
