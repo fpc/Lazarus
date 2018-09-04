@@ -367,6 +367,14 @@ begin
   inherited sendEvent(theEvent);
 end;
 
+function isMouseMoveEvent(tp: NSEventType): Boolean; inline;
+begin
+  Result := (tp = NSMouseMoved)
+    or (tp = NSLeftMouseDragged)
+    or (tp = NSRightMouseDragged)
+    or (tp = NSOtherMouseDragged);
+end;
+
 function TCocoaApplication.nextEventMatchingMask_untilDate_inMode_dequeue(
   mask: NSUInteger; expiration: NSDate; mode: NSString; deqFlag: Boolean
   ): NSEvent;
@@ -378,6 +386,7 @@ begin
   if Assigned(Result)
     and ((mode = NSEventTrackingRunLoopMode) or mode.isEqualToString(NSEventTrackingRunLoopMode))
     and Assigned(TrackedControl)
+    and isMouseMoveEvent(Result.type_)
   then begin
     cb := TrackedControl.lclGetCallback;
     if Assigned(cb) then cb.MouseMove(Result);
