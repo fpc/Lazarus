@@ -3080,7 +3080,7 @@
         <short>The string containing the characters.</short>
       </element>
       <element name="TWidgetSet.GetTextExtentExPoint.Count">
-        <short>The number of logical characters in Str, -1 for automatic detection.</short>
+        <short>The number of <b>bytes</b> in Str, -1 for automatic detection.</short>
       </element>
       <element name="TWidgetSet.GetTextExtentExPoint.MaxWidth">
         <short>The maximum display width, in logical units.</short>

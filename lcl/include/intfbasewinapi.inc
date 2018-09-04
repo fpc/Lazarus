@@ -1123,44 +1123,70 @@ function TWidgetSet.GetTextExtentExPoint(DC: HDC; Str: PChar;
   Count, MaxWidth: Integer; MaxCount, PartialWidths: PInteger;
   var Size: TSize): Boolean;
 var
-  lPasStr, lCurSubStr: String;
-  lPasStrLen, i: PtrInt;
-  lCurSize: TSize;
-  lBestFitFound: Boolean = False;
+  Utf8Len, CurLen, Left, Right, I: PtrInt;
+  CurSize: TSize;
 begin
   // First obtain the size information which duplicates GetTextExtentPoint
-  Result := GetTextExtentPoint(DC,Str,Count,Size);
+  if not GetTextExtentPoint(DC, Str, Count, Size) then
+    Exit(False);
 
   if MaxCount <> nil then
-    MaxCount^ := 0;
+    MaxCount^ := 0
+  else if PartialWidths = nil then
+    Exit(True);
 
-  lPasStr := StrPas(Str);
+  if Count = 0 then
+    Exit(True);
+  if (Count < -1) or (Str = nil) then
+    Exit(False);
 
-  if (Str = nil) or (Count <= 0) or (lPasStr = '') then
-    exit(False);
+  if Count = -1 then
+    Count := Length(Str);
+  Utf8Len := UTF8Length(Str, Count);
+  if Utf8Len = 0 then
+    Exit(True);
 
-
-  // Now calculate MaxCount and PartialWidths
-  lPasStrLen := UTF8Length(lPasStr);
-  for i := 1 to lPasStrLen do
+  if PartialWidths = nil then
   begin
-    if (not lBestFitFound) then
+    if Size.cx <= MaxWidth then
+      MaxCount^ := Utf8Len
+    else
     begin
-      lCurSubStr := UTF8Copy(lPasStr, 1, i);
-      Self.GetTextExtentPoint(DC, PChar(lCurSubStr), Length(lCurSubStr), lCurSize);
-
-      // Calculate the summed partial widths
-      if PartialWidths<>nil then PartialWidths[i-1] := lCurSize.cx;
-
-      // Calculate the width until the utilized size gets bigger then the desired one
-      // Give up when the size surpases MaxWidth to be faster
-      if (MaxCount <> nil) then
+      Left := 0;
+      Right := Utf8Len;
+      while Left <= Right do
       begin
-        if lCurSize.cx <= MaxWidth then MaxCount^ := i
-        else lBestFitFound := True;
+        I := (Left + Right) div 2;
+        CurLen := UTF8CodepointToByteIndex(Str, Count, I);
+        if not GetTextExtentPoint(DC, Str, CurLen, CurSize) then
+          Exit(False);
+        if CurSize.cx <= MaxWidth then
+        begin
+          MaxCount^ := I;
+          Left := I + 1;
+        end else
+          Right := I - 1;
       end;
     end;
+  end else
+  begin
+    CurLen := 0;
+    for I := 1 to Utf8Len do
+    begin
+      Inc(CurLen, UTF8CodepointSize(@Str[CurLen]));
+      if not GetTextExtentPoint(DC, Str, CurLen, CurSize) then
+        Exit(False);
+      if MaxCount <> nil then
+      begin
+        if CurSize.cx > MaxWidth then
+          Break;
+        MaxCount^ := I;
+      end;
+      PartialWidths[I - 1] := CurSize.cx;
+    end;
   end;
+
+  Exit(True);
 end;
 
 // Note that Count is the number of bytes in the utf-8 encoded string Str
