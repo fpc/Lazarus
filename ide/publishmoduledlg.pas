@@ -31,7 +31,7 @@ unit PublishModuleDlg;
 
 // Define this to test publishing to a subdirectory of the project/package dir.
 //  Now it creates a recursive loop.
-{.$define AllowProjectSubDirectory}
+{$define AllowProjectSubDirectory}
 
 interface
 
@@ -194,6 +194,11 @@ begin
   if (CurDir = FBackupDir) or (CurDir = FLibDir) then
   begin
     DebugLn(['DoFileFound: In Backup or Output dir, not copied: ', FileName]);
+    Exit;
+  end;
+  if (CurDir = FDestDir) then
+  begin
+    DebugLn(['DoFileFound: The destination directory is in the same folder as the source files, not copied: ', FileName]);
     Exit;
   end;
   if FOptions.FileCanBePublished(FileName) then
@@ -480,13 +485,32 @@ begin
   if FOptions is TPublishProjectOptions then
   begin
     Result := CopyProjectFiles;
-    if Result<>mrOk then exit;
+    if Result <> mrOk then
+    begin
+      IDEMessageDialog(lisError, lisCopyFilesFailed, mtInformation,[mbOk]);
+      exit;
+    end;
     Result := WriteProjectInfo;
+    if Result <> mrOk then
+    begin
+      IDEMessageDialog(lisError, lisWriteProjectInfoFailed, mtInformation,[mbOk]);
+      exit;
+    end;
   end
   else begin
     Result := CopyPackageFiles;
-    if Result<>mrOk then exit;
+    if Result <> mrOk then
+    begin
+      IDEMessageDialog(lisError, lisCopyPackagesFailed, mtInformation,[mbOk]);
+      exit;
+    end;
     Result := WritePackageInfo;
+    if Result <> mrOk then
+    begin
+      IDEMessageDialog(lisError, lisWritePackageInfoFailed, mtInformation,[mbOk]);
+      exit;
+    end;
+
   end;
   if Result<>mrOk then exit;
 
@@ -504,6 +528,7 @@ begin
     end;
     if FCopyFailedCount <> 0 then
     begin
+      IDEMessageDialog(lisError, lisCopyFilesFailed, mtInformation,[mbOk]);
       DebugLn('Hint: [TPublisher] Copying files failed');
       exit(mrCancel);
     end;
