@@ -7630,6 +7630,10 @@ msgstr "Kopírovat jméno souboru %s"
 msgid "Copy File Name to Clipboard"
 msgstr "Kopírovat Cestu Souboru do Schránky"
 
+#: lazarusidestrconsts.liscopyfilesfailed
+msgid "Copying files failed."
+msgstr ""
+
 #: lazarusidestrconsts.liscopyidentifier
 msgid "Copy \"%s\" to clipboard"
 msgstr "Zkopírovat \"%s\" do schránky"
@@ -7645,6 +7649,10 @@ msgstr "Zkopírovat položku do schránky"
 #: lazarusidestrconsts.liscopymovefiletodirectory
 msgid "Copy/Move File to Directory"
 msgstr "Kopírovat/Přesunout soubor do adresáře"
+
+#: lazarusidestrconsts.liscopypackagesfailed
+msgid "Copying packages failed."
+msgstr ""
 
 #: lazarusidestrconsts.liscopyselecteditemtoclipboard
 msgid "Copy Selected Items to Clipboard"
@@ -8991,6 +8999,10 @@ msgstr "Nelze zobrazit prázdné metody aktuální třídy, protože%s%s"
 #: lazarusidestrconsts.lisempty
 msgid "Empty"
 msgstr "Prázdné"
+
+#: lazarusidestrconsts.lisemptydestinationforpublishing
+msgid "Destination directory for publishing is either a relative path or empty."
+msgstr ""
 
 #: lazarusidestrconsts.lisenableall
 msgid "&Enable All"
@@ -16463,6 +16475,10 @@ msgstr "Veřejná metoda"
 msgid "Published Method"
 msgstr "Zveřejněné metody"
 
+#: lazarusidestrconsts.lispublishedto
+msgid "Published to %s"
+msgstr ""
+
 #: lazarusidestrconsts.lispublishmodulenote
 msgid "Files belonging to project / package will be included automatically."
 msgstr ""
@@ -17554,6 +17570,10 @@ msgstr "Slova"
 msgid "Sort Unicode range list alphabetically"
 msgstr ""
 
+#: lazarusidestrconsts.lissourceanddestinationaresame
+msgid "Source \"%s\"%sand Destination \"%s\"%sdirectories are the same. Please select another directory."
+msgstr ""
+
 #: lazarusidestrconsts.lissourceanddestinationarethesame
 msgid "Source and Destination are the same:%s%s"
 msgstr "Zdroj a cíl jsou stejné:%s%s"
@@ -17561,10 +17581,6 @@ msgstr "Zdroj a cíl jsou stejné:%s%s"
 #: lazarusidestrconsts.lissourcebreakpoint
 msgid "&Source Breakpoint ..."
 msgstr "&Zdrojový bod přerušení ..."
-
-#: lazarusidestrconsts.lissourcedirectoryanddestinationdirectoryarethesamema
-msgid "Source directory \"%s\"%sand destination directory \"%s\"%sare the same. Maybe you misunderstand this feature.%sIt will clean/recreate the destination directory and copy the package/project into it."
-msgstr "Zdrojový adresář \"%s\"%sa cílový adresář \"%s\"%sjsou stejné. Možná jste špatně pochopili tuto funkci.%sFunkce vyčistí/znovuvytvoří cílový adresář a zkopíruje do něj balíček/projekt."
 
 #: lazarusidestrconsts.lissourcedirectorydoesnotexist
 msgid "Source directory \"%s\" does not exist."
@@ -19639,6 +19655,14 @@ msgstr "Chyba zápisu"
 #: lazarusidestrconsts.liswriteerrorfile
 msgid "Write error: %s%sFile: %s%s%s"
 msgstr "Chyba zápisu: %s%sSoubor: %s%s%s"
+
+#: lazarusidestrconsts.liswritepackageinfofailed
+msgid "Writing the package info file failed."
+msgstr ""
+
+#: lazarusidestrconsts.liswriteprojectinfofailed
+msgid "Writing the project info file failed."
+msgstr ""
 
 #: lazarusidestrconsts.liswrongversionin
 msgid "wrong version in %s: %s"

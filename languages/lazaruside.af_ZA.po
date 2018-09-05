@@ -7555,6 +7555,10 @@ msgstr ""
 msgid "Copy File Name to Clipboard"
 msgstr ""
 
+#: lazarusidestrconsts.liscopyfilesfailed
+msgid "Copying files failed."
+msgstr ""
+
 #: lazarusidestrconsts.liscopyidentifier
 msgid "Copy \"%s\" to clipboard"
 msgstr ""
@@ -7569,6 +7573,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liscopymovefiletodirectory
 msgid "Copy/Move File to Directory"
+msgstr ""
+
+#: lazarusidestrconsts.liscopypackagesfailed
+msgid "Copying packages failed."
 msgstr ""
 
 #: lazarusidestrconsts.liscopyselecteditemtoclipboard
@@ -8903,6 +8911,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisempty
 msgid "Empty"
+msgstr ""
+
+#: lazarusidestrconsts.lisemptydestinationforpublishing
+msgid "Destination directory for publishing is either a relative path or empty."
 msgstr ""
 
 #: lazarusidestrconsts.lisenableall
@@ -16254,6 +16266,10 @@ msgstr ""
 msgid "Published Method"
 msgstr ""
 
+#: lazarusidestrconsts.lispublishedto
+msgid "Published to %s"
+msgstr ""
+
 #: lazarusidestrconsts.lispublishmodulenote
 msgid "Files belonging to project / package will be included automatically."
 msgstr ""
@@ -17342,16 +17358,16 @@ msgstr ""
 msgid "Sort Unicode range list alphabetically"
 msgstr ""
 
+#: lazarusidestrconsts.lissourceanddestinationaresame
+msgid "Source \"%s\"%sand Destination \"%s\"%sdirectories are the same. Please select another directory."
+msgstr ""
+
 #: lazarusidestrconsts.lissourceanddestinationarethesame
 msgid "Source and Destination are the same:%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.lissourcebreakpoint
 msgid "&Source Breakpoint ..."
-msgstr ""
-
-#: lazarusidestrconsts.lissourcedirectoryanddestinationdirectoryarethesamema
-msgid "Source directory \"%s\"%sand destination directory \"%s\"%sare the same. Maybe you misunderstand this feature.%sIt will clean/recreate the destination directory and copy the package/project into it."
 msgstr ""
 
 #: lazarusidestrconsts.lissourcedirectorydoesnotexist
@@ -19388,6 +19404,14 @@ msgstr ""
 
 #: lazarusidestrconsts.liswriteerrorfile
 msgid "Write error: %s%sFile: %s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts.liswritepackageinfofailed
+msgid "Writing the package info file failed."
+msgstr ""
+
+#: lazarusidestrconsts.liswriteprojectinfofailed
+msgid "Writing the project info file failed."
 msgstr ""
 
 #: lazarusidestrconsts.liswrongversionin

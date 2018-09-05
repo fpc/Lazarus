@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-09-05 01:46+0300\n"
+"PO-Revision-Date: 2018-09-06 02:03+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -7536,6 +7536,10 @@ msgstr "Копировать имя файла %s"
 msgid "Copy File Name to Clipboard"
 msgstr "Копировать имя файла в буфер обмена"
 
+#: lazarusidestrconsts.liscopyfilesfailed
+msgid "Copying files failed."
+msgstr "Не удалось скопировать файлы."
+
 #: lazarusidestrconsts.liscopyidentifier
 msgid "Copy \"%s\" to clipboard"
 msgstr "Копировать \"%s\" в буфер обмена"
@@ -7551,6 +7555,10 @@ msgstr "Копировать строку в буфер обмена"
 #: lazarusidestrconsts.liscopymovefiletodirectory
 msgid "Copy/Move File to Directory"
 msgstr "Копировать/переместить файл в каталог"
+
+#: lazarusidestrconsts.liscopypackagesfailed
+msgid "Copying packages failed."
+msgstr "Не удалось скопировать пакеты."
 
 #: lazarusidestrconsts.liscopyselecteditemtoclipboard
 msgid "Copy Selected Items to Clipboard"
@@ -8887,6 +8895,10 @@ msgstr "Невозможно показать пустые методы теку
 #: lazarusidestrconsts.lisempty
 msgid "Empty"
 msgstr "Пусто"
+
+#: lazarusidestrconsts.lisemptydestinationforpublishing
+msgid "Destination directory for publishing is either a relative path or empty."
+msgstr "Путь к каталогу назначения для опубликования относителен либо пуст."
 
 #: lazarusidestrconsts.lisenableall
 msgid "&Enable All"
@@ -16228,6 +16240,10 @@ msgstr "Общий метод"
 msgid "Published Method"
 msgstr "Опубликованный метод"
 
+#: lazarusidestrconsts.lispublishedto
+msgid "Published to %s"
+msgstr "Опубликование произведено в %s"
+
 #: lazarusidestrconsts.lispublishmodulenote
 msgid "Files belonging to project / package will be included automatically."
 msgstr "Файлы, принадлежащие проекту/пакету, будут добавлены автоматически."
@@ -17317,6 +17333,10 @@ msgstr "Слова"
 msgid "Sort Unicode range list alphabetically"
 msgstr "Сортировать список диапазонов Unicode по алфавиту"
 
+#: lazarusidestrconsts.lissourceanddestinationaresame
+msgid "Source \"%s\"%sand Destination \"%s\"%sdirectories are the same. Please select another directory."
+msgstr "Исходный каталог \"%s\"%sи каталог назначения \"%s\"%sсовпадают. Выберите другой."
+
 #: lazarusidestrconsts.lissourceanddestinationarethesame
 msgid "Source and Destination are the same:%s%s"
 msgstr "Источник и назначение одинаковы:%s%s"
@@ -17324,10 +17344,6 @@ msgstr "Источник и назначение одинаковы:%s%s"
 #: lazarusidestrconsts.lissourcebreakpoint
 msgid "&Source Breakpoint ..."
 msgstr "Точка останова в &исходном коде ..."
-
-#: lazarusidestrconsts.lissourcedirectoryanddestinationdirectoryarethesamema
-msgid "Source directory \"%s\"%sand destination directory \"%s\"%sare the same. Maybe you misunderstand this feature.%sIt will clean/recreate the destination directory and copy the package/project into it."
-msgstr "Исходный каталог \"%s\"%sи каталог назначения \"%s\"%sсовпадают. Возможно, вы не поняли смысл функции.%sОна очистит/пересоздаст каталог назначения и скопирует в него пакет/проект."
 
 #: lazarusidestrconsts.lissourcedirectorydoesnotexist
 msgid "Source directory \"%s\" does not exist."
@@ -19362,6 +19378,14 @@ msgstr "Ошибка записи"
 #: lazarusidestrconsts.liswriteerrorfile
 msgid "Write error: %s%sFile: %s%s%s"
 msgstr "Ошибка записи: %s%sФайл: %s%s%s"
+
+#: lazarusidestrconsts.liswritepackageinfofailed
+msgid "Writing the package info file failed."
+msgstr "Не удалось записать файл сведений о пакете."
+
+#: lazarusidestrconsts.liswriteprojectinfofailed
+msgid "Writing the project info file failed."
+msgstr "Не удалось записать файл сведений о проекте."
 
 #: lazarusidestrconsts.liswrongversionin
 msgid "wrong version in %s: %s"

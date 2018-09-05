@@ -7622,6 +7622,10 @@ msgstr "Kopijuoti failo pavadinimą „%s“"
 msgid "Copy File Name to Clipboard"
 msgstr "Failo pavadinimą kopijuoti iškarpinėn"
 
+#: lazarusidestrconsts.liscopyfilesfailed
+msgid "Copying files failed."
+msgstr ""
+
 #: lazarusidestrconsts.liscopyidentifier
 msgid "Copy \"%s\" to clipboard"
 msgstr "„%s“ kopijuoti į iškarpinę"
@@ -7637,6 +7641,10 @@ msgstr "Elementus kopijuoti į iškarpinę"
 #: lazarusidestrconsts.liscopymovefiletodirectory
 msgid "Copy/Move File to Directory"
 msgstr "Failą kopijuoti ar perkelti į aplanką"
+
+#: lazarusidestrconsts.liscopypackagesfailed
+msgid "Copying packages failed."
+msgstr ""
 
 #: lazarusidestrconsts.liscopyselecteditemtoclipboard
 msgid "Copy Selected Items to Clipboard"
@@ -8979,6 +8987,10 @@ msgstr "Neina parodyti veikiamosios klasės tuščių metodų, nes:%s%s"
 #: lazarusidestrconsts.lisempty
 msgid "Empty"
 msgstr "Tuščia"
+
+#: lazarusidestrconsts.lisemptydestinationforpublishing
+msgid "Destination directory for publishing is either a relative path or empty."
+msgstr ""
 
 #: lazarusidestrconsts.lisenableall
 msgid "&Enable All"
@@ -16372,6 +16384,10 @@ msgstr "Public metodas"
 msgid "Published Method"
 msgstr "Published metodas"
 
+#: lazarusidestrconsts.lispublishedto
+msgid "Published to %s"
+msgstr ""
+
 #: lazarusidestrconsts.lispublishmodulenote
 msgid "Files belonging to project / package will be included automatically."
 msgstr ""
@@ -17471,6 +17487,10 @@ msgstr "Žodžiai"
 msgid "Sort Unicode range list alphabetically"
 msgstr "Unikodo rėžio sąrašą rikiuoti pagal abėcėlę"
 
+#: lazarusidestrconsts.lissourceanddestinationaresame
+msgid "Source \"%s\"%sand Destination \"%s\"%sdirectories are the same. Please select another directory."
+msgstr ""
+
 #: lazarusidestrconsts.lissourceanddestinationarethesame
 msgid "Source and Destination are the same:%s%s"
 msgstr "Šaltinis ir tikslas sutampa:%s%s"
@@ -17478,10 +17498,6 @@ msgstr "Šaltinis ir tikslas sutampa:%s%s"
 #: lazarusidestrconsts.lissourcebreakpoint
 msgid "&Source Breakpoint ..."
 msgstr "&Stabdos taškas pirminiame kode…"
-
-#: lazarusidestrconsts.lissourcedirectoryanddestinationdirectoryarethesamema
-msgid "Source directory \"%s\"%sand destination directory \"%s\"%sare the same. Maybe you misunderstand this feature.%sIt will clean/recreate the destination directory and copy the package/project into it."
-msgstr "Išeities „%s“%s ir paskirties „%s“%saplankai nesiskiria. Galbūt Jūs nesupratote šios funkcijos paskirties.%sJi išvalo arba atkuria paskirties aplanką ir į jį kopijuoja projektą arba paketą."
 
 #: lazarusidestrconsts.lissourcedirectorydoesnotexist
 msgid "Source directory \"%s\" does not exist."
@@ -19550,6 +19566,14 @@ msgstr "Rašymo klaida"
 #: lazarusidestrconsts.liswriteerrorfile
 msgid "Write error: %s%sFile: %s%s%s"
 msgstr "Klaida rašant: %s%sFailas: %s%s%s"
+
+#: lazarusidestrconsts.liswritepackageinfofailed
+msgid "Writing the package info file failed."
+msgstr ""
+
+#: lazarusidestrconsts.liswriteprojectinfofailed
+msgid "Writing the project info file failed."
+msgstr ""
 
 #: lazarusidestrconsts.liswrongversionin
 msgid "wrong version in %s: %s"

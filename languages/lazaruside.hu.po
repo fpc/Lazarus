@@ -7609,6 +7609,10 @@ msgstr "Fájlnév másolása: %s"
 msgid "Copy File Name to Clipboard"
 msgstr "Fájlnév másolása a vágólapra"
 
+#: lazarusidestrconsts.liscopyfilesfailed
+msgid "Copying files failed."
+msgstr ""
+
 #: lazarusidestrconsts.liscopyidentifier
 msgid "Copy \"%s\" to clipboard"
 msgstr "\"%s\" másolása a vágólapra"
@@ -7624,6 +7628,10 @@ msgstr "Elem másolása a vágólapra"
 #: lazarusidestrconsts.liscopymovefiletodirectory
 msgid "Copy/Move File to Directory"
 msgstr "Fájl másolása/áthelyezése könyvtárba"
+
+#: lazarusidestrconsts.liscopypackagesfailed
+msgid "Copying packages failed."
+msgstr ""
 
 #: lazarusidestrconsts.liscopyselecteditemtoclipboard
 msgid "Copy Selected Items to Clipboard"
@@ -8966,6 +8974,10 @@ msgstr "Nem lehet megjeleníteni az aktuális osztály üres metódusait, mert%s
 #: lazarusidestrconsts.lisempty
 msgid "Empty"
 msgstr "Üres"
+
+#: lazarusidestrconsts.lisemptydestinationforpublishing
+msgid "Destination directory for publishing is either a relative path or empty."
+msgstr ""
 
 #: lazarusidestrconsts.lisenableall
 msgid "&Enable All"
@@ -16348,6 +16360,10 @@ msgstr "\"Public\" metódus"
 msgid "Published Method"
 msgstr "\"Published\" metódus"
 
+#: lazarusidestrconsts.lispublishedto
+msgid "Published to %s"
+msgstr ""
+
 #: lazarusidestrconsts.lispublishmodulenote
 msgid "Files belonging to project / package will be included automatically."
 msgstr ""
@@ -17445,6 +17461,10 @@ msgstr "Kifejezések"
 msgid "Sort Unicode range list alphabetically"
 msgstr "Unicode tartománylista rendezése ábécé szerint"
 
+#: lazarusidestrconsts.lissourceanddestinationaresame
+msgid "Source \"%s\"%sand Destination \"%s\"%sdirectories are the same. Please select another directory."
+msgstr ""
+
 #: lazarusidestrconsts.lissourceanddestinationarethesame
 msgid "Source and Destination are the same:%s%s"
 msgstr "Forrás és cél megegyezik:%s%s"
@@ -17452,10 +17472,6 @@ msgstr "Forrás és cél megegyezik:%s%s"
 #: lazarusidestrconsts.lissourcebreakpoint
 msgid "&Source Breakpoint ..."
 msgstr "Töréspont a forráskódban ..."
-
-#: lazarusidestrconsts.lissourcedirectoryanddestinationdirectoryarethesamema
-msgid "Source directory \"%s\"%sand destination directory \"%s\"%sare the same. Maybe you misunderstand this feature.%sIt will clean/recreate the destination directory and copy the package/project into it."
-msgstr "Ugyanaz a forráskönyvtár: \"%s\"%sés a célkönyvtár: \"%s\".%sLehet, hogy félreértette ezt a szolgáltatást.%sEz tisztítja / újra létrehozza a célkönyvtárat és belemásolja a csomagot/projektet."
 
 #: lazarusidestrconsts.lissourcedirectorydoesnotexist
 msgid "Source directory \"%s\" does not exist."
@@ -19524,6 +19540,14 @@ msgstr "Írási hiba"
 #: lazarusidestrconsts.liswriteerrorfile
 msgid "Write error: %s%sFile: %s%s%s"
 msgstr "Írási hiba: %s%sFájl: %s%s%s"
+
+#: lazarusidestrconsts.liswritepackageinfofailed
+msgid "Writing the package info file failed."
+msgstr ""
+
+#: lazarusidestrconsts.liswriteprojectinfofailed
+msgid "Writing the project info file failed."
+msgstr ""
 
 #: lazarusidestrconsts.liswrongversionin
 msgid "wrong version in %s: %s"

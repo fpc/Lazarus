@@ -7587,6 +7587,10 @@ msgstr "Kopiere Dateiname %s"
 msgid "Copy File Name to Clipboard"
 msgstr "Dateinamen in Zwischenablage kopieren"
 
+#: lazarusidestrconsts.liscopyfilesfailed
+msgid "Copying files failed."
+msgstr ""
+
 #: lazarusidestrconsts.liscopyidentifier
 msgid "Copy \"%s\" to clipboard"
 msgstr "Kopiere \"%s\" in die Zwischenablage"
@@ -7602,6 +7606,10 @@ msgstr "Eintrag in die Zwischenablage kopieren"
 #: lazarusidestrconsts.liscopymovefiletodirectory
 msgid "Copy/Move File to Directory"
 msgstr "Datei in Verzeichnis kopieren/verschieben"
+
+#: lazarusidestrconsts.liscopypackagesfailed
+msgid "Copying packages failed."
+msgstr ""
 
 #: lazarusidestrconsts.liscopyselecteditemtoclipboard
 msgid "Copy Selected Items to Clipboard"
@@ -8940,6 +8948,10 @@ msgstr "Kann keine leeren Methoden der aktuellen Klasse anzeigen weil%s%s"
 #: lazarusidestrconsts.lisempty
 msgid "Empty"
 msgstr "Leer"
+
+#: lazarusidestrconsts.lisemptydestinationforpublishing
+msgid "Destination directory for publishing is either a relative path or empty."
+msgstr ""
 
 #: lazarusidestrconsts.lisenableall
 msgid "&Enable All"
@@ -16316,6 +16328,10 @@ msgstr "Public-Methode (öffentlich)"
 msgid "Published Method"
 msgstr "Veröffentlichte Methode"
 
+#: lazarusidestrconsts.lispublishedto
+msgid "Published to %s"
+msgstr ""
+
 #: lazarusidestrconsts.lispublishmodulenote
 msgid "Files belonging to project / package will be included automatically."
 msgstr ""
@@ -17404,6 +17420,10 @@ msgstr "Worte"
 msgid "Sort Unicode range list alphabetically"
 msgstr "Unicode-Liste alphabetisch sortieren"
 
+#: lazarusidestrconsts.lissourceanddestinationaresame
+msgid "Source \"%s\"%sand Destination \"%s\"%sdirectories are the same. Please select another directory."
+msgstr ""
+
 #: lazarusidestrconsts.lissourceanddestinationarethesame
 msgid "Source and Destination are the same:%s%s"
 msgstr "Quelle und Ziel sind gleich:%s%s"
@@ -17411,10 +17431,6 @@ msgstr "Quelle und Ziel sind gleich:%s%s"
 #: lazarusidestrconsts.lissourcebreakpoint
 msgid "&Source Breakpoint ..."
 msgstr "&Quelltexthaltepunkt ..."
-
-#: lazarusidestrconsts.lissourcedirectoryanddestinationdirectoryarethesamema
-msgid "Source directory \"%s\"%sand destination directory \"%s\"%sare the same. Maybe you misunderstand this feature.%sIt will clean/recreate the destination directory and copy the package/project into it."
-msgstr "Quellverzeichnis \"%s\"%sund Zielverzeichnis \"%s\"%ssind identisch. Sie haben vielleicht diese Funktion falsch verstanden.%sSie säubert bzw. legt das Zielverzeichnis neu an und kopiert das Package/Projekt dorthin."
 
 #: lazarusidestrconsts.lissourcedirectorydoesnotexist
 msgid "Source directory \"%s\" does not exist."
@@ -19479,6 +19495,14 @@ msgstr "Schreibfehler"
 #: lazarusidestrconsts.liswriteerrorfile
 msgid "Write error: %s%sFile: %s%s%s"
 msgstr "Schreibfehler: %s%sDatei: %s%s%s"
+
+#: lazarusidestrconsts.liswritepackageinfofailed
+msgid "Writing the package info file failed."
+msgstr ""
+
+#: lazarusidestrconsts.liswriteprojectinfofailed
+msgid "Writing the project info file failed."
+msgstr ""
 
 #: lazarusidestrconsts.liswrongversionin
 msgid "wrong version in %s: %s"

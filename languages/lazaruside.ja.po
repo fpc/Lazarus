@@ -7619,6 +7619,10 @@ msgstr "ファイル名%sをコピー"
 msgid "Copy File Name to Clipboard"
 msgstr "ファイル名をクリップボードにコピー"
 
+#: lazarusidestrconsts.liscopyfilesfailed
+msgid "Copying files failed."
+msgstr ""
+
 #: lazarusidestrconsts.liscopyidentifier
 msgid "Copy \"%s\" to clipboard"
 msgstr "\"%s\" をクリップボードにコピー"
@@ -7634,6 +7638,10 @@ msgstr "項目をクリップボードにコピー"
 #: lazarusidestrconsts.liscopymovefiletodirectory
 msgid "Copy/Move File to Directory"
 msgstr "ファイルをディレクトリにコピー/移動"
+
+#: lazarusidestrconsts.liscopypackagesfailed
+msgid "Copying packages failed."
+msgstr ""
 
 #: lazarusidestrconsts.liscopyselecteditemtoclipboard
 msgid "Copy Selected Items to Clipboard"
@@ -8976,6 +8984,10 @@ msgstr "%s%sのため、現在のクラスに空のメソッドを表示でき�
 #: lazarusidestrconsts.lisempty
 msgid "Empty"
 msgstr "空"
+
+#: lazarusidestrconsts.lisemptydestinationforpublishing
+msgid "Destination directory for publishing is either a relative path or empty."
+msgstr ""
 
 #: lazarusidestrconsts.lisenableall
 msgid "&Enable All"
@@ -16340,6 +16352,10 @@ msgstr "Publicメソッド"
 msgid "Published Method"
 msgstr "Publishedメソッド"
 
+#: lazarusidestrconsts.lispublishedto
+msgid "Published to %s"
+msgstr ""
+
 #: lazarusidestrconsts.lispublishmodulenote
 msgid "Files belonging to project / package will be included automatically."
 msgstr ""
@@ -17442,6 +17458,10 @@ msgstr "単語"
 msgid "Sort Unicode range list alphabetically"
 msgstr "ユニコード範囲リストをアルファベット順に並べ替え"
 
+#: lazarusidestrconsts.lissourceanddestinationaresame
+msgid "Source \"%s\"%sand Destination \"%s\"%sdirectories are the same. Please select another directory."
+msgstr ""
+
 #: lazarusidestrconsts.lissourceanddestinationarethesame
 msgid "Source and Destination are the same:%s%s"
 msgstr "出所(Source)と行き先が同じです:%s%s"
@@ -17449,10 +17469,6 @@ msgstr "出所(Source)と行き先が同じです:%s%s"
 #: lazarusidestrconsts.lissourcebreakpoint
 msgid "&Source Breakpoint ..."
 msgstr "ソースのブレークポイント(&S) ..."
-
-#: lazarusidestrconsts.lissourcedirectoryanddestinationdirectoryarethesamema
-msgid "Source directory \"%s\"%sand destination directory \"%s\"%sare the same. Maybe you misunderstand this feature.%sIt will clean/recreate the destination directory and copy the package/project into it."
-msgstr "ソースディレクトリ\"%s\"%sと行き先ディレクトリ\"%s\"%sが同じです。おそらくあなたはこの機能を誤解しています。%sこの機能は、行き先ディレクトリの中身を掃除するか再作成し、パッケージやプロジェクトをその中にコピーします。"
 
 #: lazarusidestrconsts.lissourcedirectorydoesnotexist
 msgid "Source directory \"%s\" does not exist."
@@ -19524,6 +19540,14 @@ msgstr "書き込みエラー"
 #| msgid "Write error: %s%sFile: \"%s\""
 msgid "Write error: %s%sFile: %s%s%s"
 msgstr "書き込みエラー: %s%sファイル: \"%s\""
+
+#: lazarusidestrconsts.liswritepackageinfofailed
+msgid "Writing the package info file failed."
+msgstr ""
+
+#: lazarusidestrconsts.liswriteprojectinfofailed
+msgid "Writing the project info file failed."
+msgstr ""
 
 #: lazarusidestrconsts.liswrongversionin
 msgid "wrong version in %s: %s"
