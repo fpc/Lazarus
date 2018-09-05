@@ -12,6 +12,7 @@ object IDEOptionsDialog: TIDEOptionsDialog
   Constraints.MinWidth = 500
   OnShow = FormShow
   Position = poScreenCenter
+  LCLVersion = '1.9.0.0'
   object ButtonPanel: TButtonPanel
     AnchorSideLeft.Control = Owner
     AnchorSideRight.Control = Owner
@@ -64,8 +65,8 @@ object IDEOptionsDialog: TIDEOptionsDialog
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = SettingsPanel
       Left = 6
-      Height = 407
-      Top = 33
+      Height = 417
+      Top = 37
       Width = 249
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Top = 6
@@ -83,7 +84,7 @@ object IDEOptionsDialog: TIDEOptionsDialog
       AnchorSideTop.Control = CategoryPanel
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 21
+      Height = 25
       Top = 6
       Width = 249
       OnFilterItem = FilterEditFilterItem
@@ -98,8 +99,8 @@ object IDEOptionsDialog: TIDEOptionsDialog
     end
     object SettingsPanel: TPanel
       Left = 0
-      Height = 20
-      Top = 440
+      Height = 6
+      Top = 454
       Width = 255
       Align = alBottom
       AutoSize = True
@@ -124,16 +125,16 @@ object IDEOptionsDialog: TIDEOptionsDialog
     ClientWidth = 535
     TabOrder = 3
     object BuildModeComboBox: TComboBox
-      AnchorSideLeft.Control = UseBuildModeCheckBox
+      AnchorSideLeft.Control = BuildModesLabel
       AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = UseBuildModeCheckBox
+      AnchorSideTop.Control = BuildModesLabel
       AnchorSideTop.Side = asrCenter
-      Left = 93
-      Height = 21
-      Top = 5
+      Left = 125
+      Height = 35
+      Top = -1
       Width = 175
-      BorderSpacing.Left = 7
-      ItemHeight = 13
+      BorderSpacing.Left = 6
+      ItemHeight = 0
       OnSelect = BuildModeComboBoxSelect
       Style = csDropDownList
       TabOrder = 0
@@ -144,9 +145,9 @@ object IDEOptionsDialog: TIDEOptionsDialog
       AnchorSideTop.Control = BuildModeComboBox
       AnchorSideBottom.Control = BuildModeComboBox
       AnchorSideBottom.Side = asrBottom
-      Left = 269
-      Height = 21
-      Top = 5
+      Left = 301
+      Height = 35
+      Top = -1
       Width = 23
       Anchors = [akTop, akLeft, akBottom]
       BorderSpacing.Left = 1
@@ -154,18 +155,13 @@ object IDEOptionsDialog: TIDEOptionsDialog
       OnClick = BuildModeManageButtonClick
       TabOrder = 1
     end
-    object UseBuildModeCheckBox: TCheckBox
-      AnchorSideTop.Side = asrCenter
+    object BuildModesLabel: TLabel
       Left = 12
-      Height = 17
+      Height = 19
       Top = 7
-      Width = 74
-      BorderSpacing.Left = 6
-      Caption = 'Build modes'
-      OnChange = UseBuildModeCheckBoxChange
-      ParentShowHint = False
-      ShowHint = True
-      TabOrder = 2
+      Width = 107
+      Caption = 'BuildModesLabel'
+      ParentColor = False
     end
   end
   object EditorsPanel: TScrollBox

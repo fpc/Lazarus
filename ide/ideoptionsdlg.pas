@@ -58,7 +58,6 @@ type
 
   TIDEOptionsDialog = class(TAbstractOptionsEditorDialog)
     BuildModeComboBox: TComboBox;
-    UseBuildModeCheckBox: TCheckBox;
     BuildModeManageButton: TButton;
     BuildModeSelectPanel: TPanel;
     ButtonPanel: TButtonPanel;
@@ -67,8 +66,8 @@ type
     CatTVSplitter: TSplitter;
     EditorsPanel: TScrollBox;
     FilterEdit: TTreeFilterEdit;
+    BuildModesLabel: TLabel;
     SettingsPanel: TPanel;
-    procedure UseBuildModeCheckBoxChange(Sender: TObject);
     procedure BuildModeComboBoxSelect(Sender: TObject);
     procedure BuildModeManageButtonClick(Sender: TObject);
     procedure CategoryTreeChange(Sender: TObject; Node: TTreeNode);
@@ -131,27 +130,6 @@ implementation
 
 {$R *.lfm}
 
-
-const
-  LazUtilsPkg = 'LazUtils';
-
-function HasLazUtilsDependency: Boolean;
-begin
-  Result := Assigned(Project1.FindDependencyByName('LCL'))
-         or Assigned(Project1.FindDependencyByName(LazUtilsPkg));
-end;
-
-procedure AddLazUtilsDependency;
-var
-  Dep: TPkgDependency;
-begin
-  if HasLazUtilsDependency then Exit;
-  Project1.AddPackageDependency(LazUtilsPkg);
-  Dep:=Project1.FindDependencyByName(LazUtilsPkg);
-  if Assigned(Dep) then
-    PackageGraph.OpenDependency(Dep,false);
-end;
-
 { TIDEOptionsDialog }
 
 constructor TIDEOptionsDialog.Create(AOwner: TComponent);
@@ -161,10 +139,8 @@ begin
   FEditorsCreated := False;
   FEditorToOpen := nil;
   SetBuildModeVisibility(False);
-  UseBuildModeCheckBox.Caption:=lisBuildModes;
-
-  IDEDialogLayoutList.ApplyLayout(Self);
   Caption := dlgIDEOptions;
+  BuildModesLabel.Caption := lisBuildModes;
   ButtonPanel.OKButton.Caption := lisMenuOk;
   ButtonPanel.OKButton.OnClick := @OKButtonClick;
   ButtonPanel.OKButton.ModalResult := mrNone;
@@ -172,6 +148,7 @@ begin
   ButtonPanel.CancelButton.OnClick := @CancelButtonClick;
   ButtonPanel.HelpButton.Caption:= lisMenuHelp;
   ButtonPanel.HelpButton.OnClick := @HelpButtonClick;
+  IDEDialogLayoutList.ApplyLayout(Self);
 end;
 
 procedure TIDEOptionsDialog.FormShow(Sender: TObject);
@@ -232,17 +209,10 @@ begin
   end;
 end;
 
-procedure TIDEOptionsDialog.UseBuildModeCheckBoxChange(Sender: TObject);
-begin
-  EnvironmentOptions.UseBuildModes:=(Sender as TCheckBox).Checked;
-  UpdateBuildModeButtons;
-end;
-
 procedure TIDEOptionsDialog.BuildModeComboBoxSelect(Sender: TObject);
 begin
-  if AllBuildModes then begin
-    ShowMessage(lisThisWillAllowChangingAllBuildModesAtOnceNotImpleme);
-  end
+  if AllBuildModes then
+    ShowMessage(lisThisWillAllowChangingAllBuildModesAtOnceNotImpleme)
   else begin
     Assert(BuildModeSelectPanel.Visible, 'BuildModeComboBoxSelect: BuildModeSelectPanel not Visible');
     SwitchBuildMode(BuildModeComboBox.Text);
@@ -644,17 +614,8 @@ end;
 
 procedure TIDEOptionsDialog.UpdateBuildModeButtons;
 var
-  ManyBuildModes: Boolean;
   ModeMatrix: TCompOptModeMatrixFrame;
 begin
-  ManyBuildModes:=Project1.BuildModes.Count > 1;
-  if ManyBuildModes then
-    EnvironmentOptions.UseBuildModes := True;
-  UseBuildModeCheckBox.Checked:=EnvironmentOptions.UseBuildModes;
-  UseBuildModeCheckBox.Enabled := not ManyBuildModes;
-  BuildModeComboBox.Visible := EnvironmentOptions.UseBuildModes;
-  BuildModeManageButton.Visible := EnvironmentOptions.UseBuildModes;
-
   ModeMatrix:=TCompOptModeMatrixFrame(FindEditor(TCompOptModeMatrixFrame));
   if Assigned(ModeMatrix) then
     ModeMatrix.UpdateModes;

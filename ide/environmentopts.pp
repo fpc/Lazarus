@@ -548,7 +548,6 @@ type
     FTestBuildDirHistory: TStringList;
     FCompilerMessagesFileHistory: TStringList;
     FBuildMatrixOptions: TBuildMatrixOptions;
-    FUseBuildModes: Boolean;
     FIsGlobalMode: TStrToBoolEvent;
 
     // Clean build project dialog
@@ -815,7 +814,6 @@ type
 
     // global build options
     property BuildMatrixOptions: TBuildMatrixOptions read FBuildMatrixOptions;
-    property UseBuildModes: Boolean read FUseBuildModes write FUseBuildModes;
 
     // Clean build project dialog
     property CleanBuildProjOut: Boolean read FCleanBuildProjOut write FCleanBuildProjOut;
@@ -1938,7 +1936,6 @@ begin
   FConfigStore.AppendBasePath('BuildMatrix');
   FBuildMatrixOptions.LoadFromConfig(FConfigStore);
   FConfigStore.UndoAppendBasePath;
-  FUseBuildModes:=FXMLCfg.GetValue(Path+'Build/UseBuildModes',false);
 
   // Clean build project dialog
   FCleanBuildProjOut:=FXMLCfg.GetValue(Path+'CleanBuild/ProjOut',true);
@@ -2320,7 +2317,6 @@ begin
   FConfigStore.AppendBasePath('BuildMatrix');
   FBuildMatrixOptions.SaveToConfig(FConfigStore,IsGlobalMode);
   FConfigStore.UndoAppendBasePath;
-  FXMLCfg.SetDeleteValue(Path+'Build/UseBuildModes',FUseBuildModes,false);
 
   // Clean build project dialog
   FXMLCfg.SetDeleteValue(Path+'CleanBuild/ProjOut',FCleanBuildProjOut,true);
