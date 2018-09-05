@@ -177,7 +177,7 @@ function CocoaScrollBarGetScrollInfo(bar: TCocoaScrollBar; var ScrollInfo: TScro
 procedure NSScrollerGetScrollInfo(docSz, pageSz: CGFloat; rl: NSSCroller; Var ScrollInfo: TScrollInfo);
 procedure NSScrollViewGetScrollInfo(sc: NSScrollView; BarFlag: Integer; Var ScrollInfo: TScrollInfo);
 procedure NSScrollerSetScrollInfo(docSz, pageSz: CGFloat; rl: NSSCroller; const ScrollInfo: TScrollInfo);
-procedure NSScrollViewSetScrollInfo(sc: NSScrollView; BarFlag: Integer; const ScrollInfo: TScrollInfo);
+procedure NSScrollViewSetScrollPos(sc: NSScrollView; BarFlag: Integer; const ScrollInfo: TScrollInfo);
 function HandleToNSObject(AHWnd: HWND): id;
 
 
@@ -311,11 +311,10 @@ begin
   end;
 end;
 
-procedure NSScrollViewSetScrollInfo(sc: NSScrollView; BarFlag: Integer; const ScrollInfo: TScrollInfo);
+procedure NSScrollViewSetScrollPos(sc: NSScrollView; BarFlag: Integer; const ScrollInfo: TScrollInfo);
 var
   ns : NSView;
   vr : NSRect;
-  p  : NSPoint;
 begin
   ns:=sc.documentView;
   if not Assigned(ns) then Exit;
@@ -335,7 +334,6 @@ begin
     vr.origin.x:=ScrollInfo.nPos;
   end;
   ns.scrollRectToVisible(vr);
-  p:=sc.documentVisibleRect.origin;
 end;
 
 function HandleToNSObject(AHWnd: HWND): id;

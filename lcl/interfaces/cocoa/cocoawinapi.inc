@@ -1652,7 +1652,8 @@ begin
       sc.documentView.setFrameSize( sz );
     end;
 
-    NSScrollViewSetScrollInfo(NSScrollView(obj), SBStyle, ScrollInfo);
+    if ScrollInfo.fMask and SIF_ALL > 0 then
+      NSScrollViewSetScrollPos(NSScrollView(obj), SBStyle, ScrollInfo);
     FillChar(si, sizeof(si), 0);
     si.cbSize:=sizeof(si);
     NSScrollViewGetScrollInfo(NSScrollView(obj), SBStyle, si);
