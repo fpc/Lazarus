@@ -29,6 +29,10 @@ unit PublishModuleDlg;
 
 {$mode objfpc}{$H+}
 
+// Define this to test publishing to a subdirectory of the project/package dir.
+//  Now it creates a recursive loop.
+{.$define AllowProjectSubDirectory}
+
 interface
 
 uses
@@ -431,22 +435,23 @@ begin
   Result:=mrCancel;
 
   if FDestDir='' then begin
-    IDEMessageDialog('Invalid publishing Directory',
-      'Destination directory for publishing is empty.',mtError,
-      [mbCancel]);
+    IDEMessageDialog(lisInvalidPublishingDirectory,
+      lisEmptyDestinationForPublishing, mtError, [mbCancel]);
     exit;
   end;
   // Don't try to copy to a subdirectory of FSrcDir.
   if (CompareFilenames(FSrcDir,FDestDir)=0)
+  {$ifNdef AllowProjectSubDirectory}
   {$ifdef CaseInsensitiveFilenames}
   or AnsiStartsText(FSrcDir, FDestDir)
   {$ELSE}
   or AnsiStartsStr(FSrcDir, FDestDir)
   {$ENDIF}
+  {$ENDIF}
   then begin
     IDEMessageDialog(lisInvalidPublishingDirectory,
-      Format(lisSourceDirectoryAndDestinationDirectoryAreTheSameMa,
-             [FSrcDir, LineEnding, FDestDir, LineEnding, LineEnding]),
+      Format(lisDestinationIsSubdirectoryOfSource,
+             [FDestDir, LineEnding, FSrcDir, LineEnding]),
       mtError, [mbCancel]);
     exit;
   end;
@@ -611,7 +616,9 @@ begin
   hl:=InputHistories.HistoryLists.GetList(hlPublishModuleDestDirs,true,rltFile);
   hl.AppendEntry(GetForcedPathDelims('$(TestDir)/publishedproject/'));
   hl.AppendEntry(GetForcedPathDelims('$(TestDir)/publishedpackage/'));
+  {$ifdef AllowProjectSubDirectory}
   hl.AppendEntry(GetForcedPathDelims('$(ProjPath)/published/'));
+  {$ENDIF}
   DestDirComboBox.Items.Assign(hl);
 
   // file filter
@@ -663,13 +670,13 @@ end;
 procedure TPublishModuleDialog.LoadFromOptions(SrcOpts: TPublishModuleOptions);
 begin
   // destination
-  SeTComboBox(DestDirComboBox,SrcOpts.DestinationDirectory,20);
+  SetComboBox(DestDirComboBox,SrcOpts.DestinationDirectory,20);
 
   // file filters
   CompressCheckbox.Checked:=SrcOpts.CompressFinally;
   UseFiltersCheckbox.Checked:=SrcOpts.UseFileFilters;
   FilterSimpleSyntaxCheckbox.Checked:=SrcOpts.FilterSimpleSyntax;
-  SeTComboBox(FilterCombobox,SrcOpts.FileFilter,20);
+  SetComboBox(FilterCombobox,SrcOpts.FileFilter,20);
 end;
 
 procedure TPublishModuleDialog.SaveToOptions(DestOpts: TPublishModuleOptions);

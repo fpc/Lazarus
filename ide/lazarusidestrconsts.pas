@@ -3879,10 +3879,11 @@ resourcestring
   lisUseFilterForExtraFiles = 'Use filter to include extra files';
   lisIncludeFilter = 'Include filter';
   lisInvalidPublishingDirectory = 'Invalid publishing Directory';
-  lisSourceDirectoryAndDestinationDirectoryAreTheSameMa = 'Source directory "%s"'
-    +'%sand destination directory "%s"'
-    +'%sare the same. Maybe you misunderstand this feature.'
-    +'%sIt will clean/recreate the destination directory and copy the package/project into it.';
+  lisEmptyDestinationForPublishing = 'Destination directory for publishing'
+    +' is either a relative path or empty.';
+  lisDestinationIsSubdirectoryOfSource = 'Destination "%s"'
+    +'%sis a subdirectory of source "%s"'
+    +'%swhich is currently not allowed.';
   lisClearDirectory = 'Clear Directory?';
   lisInOrderToCreateACleanCopyOfTheProjectPackageAllFil = 'In order to create '
     +'a clean copy of the project/package, all files in the following '
