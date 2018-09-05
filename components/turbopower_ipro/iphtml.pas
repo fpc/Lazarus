@@ -10937,9 +10937,13 @@ end;
 procedure TIpHtmlNodeTR.LoadAndApplyCSSProps;
 begin
   inherited;
-  if not (FCombinedCSSProps.Alignment in [haDefault, haUnknown]) then
-    Align := FCombinedCSSProps.Alignment;
-  // wp: what about VAlign?
+  if Assigned(FCombinedCSSProps) then begin
+    if not (FCombinedCSSProps.Alignment in [haDefault, haUnknown]) then
+      Align := FCombinedCSSProps.Alignment;
+    if FCombinedCSSProps.BgColor <> -1 then
+      BgColor := FCombinedCSSProps.BGColor;
+    // wp: what about VAlign?
+  end;
 end;
 {$ENDIF}
 
