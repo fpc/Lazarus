@@ -10912,6 +10912,13 @@ begin
       Rules := hrGroups;
     end;
   end;
+  if FCombinedCSSProps.Width.LengthType <> cltUndefined then begin
+    FWidth.Free;
+    FWidth := TIpHtmlLength.Create;
+    FWidth.LengthValue := FCombinedCSSProps.Width.LengthValue;
+    FWidth.LengthType := TIpHtmlLengthType(ord(FCombinedCSSProps.Width.LengthType));
+    FWidth.OnChange := WidthChanged;
+  end;
 end;
 {$ENDIF}
 

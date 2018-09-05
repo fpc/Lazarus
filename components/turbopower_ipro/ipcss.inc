@@ -20,6 +20,11 @@
    Size: single; // negative values are allowed (not implemented)
  end;
 
+ TCSSLengthType =  (cltUndefined, cltAbsolute, cltPercent);
+ TCSSLength = record
+   LengthValue: Integer;
+   LengthType: TCSSLengthType
+ end;
 
  { TCSSFont }
 
@@ -72,6 +77,7 @@
    FMarginLeft: TCSSMargin;
    FMarginRight: TCSSMargin;
    FMarginTop: TCSSMargin;
+   FWidth: TCSSLength;
    function GetCommandArgs(ACommand: String): TStringList;
    function GetCommandName(ACommand: String): String;
  public
@@ -79,6 +85,7 @@
    property MarginLeft: TCSSMargin read FMarginLeft write FMarginLeft;
    property MarginBottom: TCSSMargin read FMarginBottom write FMarginBottom;
    property MarginRight: TCSSMargin read FMarginRight write FMarginRight;
+   property Width: TCSSLength read FWidth write FWidth;
  published
    property Font: TCSSFont read  FFont write FFont;
    property Color: TColor read FColor write FColor;
@@ -142,6 +149,22 @@ begin
     Result := AChar = ' ';
 end;
 
+function StrToCSSLength(AValue: String): TCssLength;
+var
+  P, Err: Integer;
+begin
+  P := Pos('%', AValue);
+  if P <> 0 then begin
+    Result.LengthType := cltPercent;
+    Delete(AValue, P, 1);
+  end else
+    Result.LengthType := cltAbsolute;
+  val(AValue, Result.LengthValue, Err);
+  if (Err <> 0) or (Result.LengthValue < 0) then
+    Result.LengthType := cltUndefined
+  else if (Result.LengthType = cltPercent) and (Result.LengthValue > 100) then
+    Result.LengthValue := 100;
+end;
 
 function SeperateCommands(Commands: String): TStringList;
 var
@@ -745,6 +768,7 @@ begin
   FColor := -1;
   FAlignment := haUnknown;
   FBorder := TCSSBorder.Create;
+  FWidth.LengthType := cltUndefined;
 end;
 
 destructor TCSSProps.Destroy;
@@ -768,6 +792,7 @@ var
   ACommand: String;
   Command: String;
   I: Integer;
+  msg: String;
 begin
   for I := 0 to ACommands.Count-1 do
   begin
@@ -878,6 +903,9 @@ begin
               'e': if (Command = 'font-weight') then
                      Font.Weight := FontWeightFromString(Args[0]);
             end;
+      'w':
+        if (Command = 'width') and (Args.Count > 0) then
+          FWidth := StrToCSSLength(Args[0]);
       end;
     finally
       Args.Free;
@@ -915,6 +943,8 @@ begin
   if AProps.MarginTop.Size <> 0 then
     FMarginTop.Size := AProps.MarginTop.Size;
 
+  if AProps.Width.LengthType <> cltUndefined then
+    FWidth := AProps.Width;
 end;
 
 
