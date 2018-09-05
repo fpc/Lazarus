@@ -153,6 +153,7 @@ type
   public
     constructor Create(AFileName: String; ALine: Integer; ADisabled: Boolean = False; AConditon: String = '');
     constructor Create(AMethod: String; ADisabled: Boolean = False; AConditon: String = '');
+    constructor Create(AMethod: String; ADisabled: Boolean; ABeforePrologue: Boolean);
     constructor Create(AnAddress: TDBGPtr; ADisabled: Boolean = False; AConditon: String = '');
   end;
 
@@ -708,7 +709,7 @@ constructor TLldbInstructionBreakSet.Create(AFileName: String; ALine: Integer;
 begin
   FState := vsInvalid;
   if AConditon <> '' then AConditon := ' --condition ''' + AConditon + '''';
-  if ADisabled then AConditon := AConditon + ' --disable';
+  if ADisabled then AConditon := AConditon + ' -d ';
   if pos(' ', AFileName) > 0 then
     AFileName := ''''+AFileName+'''';
   inherited Create(Format('breakpoint set --file %s --line %d', [AFileName, ALine]) + AConditon);
@@ -719,8 +720,20 @@ constructor TLldbInstructionBreakSet.Create(AMethod: String;
 begin
   FState := vsInvalid;
   if AConditon <> '' then AConditon := ' --condition ''' + AConditon + '''';
-  if ADisabled then AConditon := AConditon + ' --disable';
+  if ADisabled then AConditon := AConditon + ' -d ';
   inherited Create(Format('breakpoint set --func %s', [AMethod]) + AConditon);
+end;
+
+constructor TLldbInstructionBreakSet.Create(AMethod: String;
+  ADisabled: Boolean; ABeforePrologue: Boolean);
+var
+  s: String;
+begin
+  FState := vsInvalid;
+  s := '';
+  if ABeforePrologue then s := ' -K false ';
+  if ADisabled then s := s + ' -d ';
+  inherited Create(Format('breakpoint set --func %s', [AMethod]) + s);
 end;
 
 constructor TLldbInstructionBreakSet.Create(AnAddress: TDBGPtr;
@@ -728,7 +741,7 @@ constructor TLldbInstructionBreakSet.Create(AnAddress: TDBGPtr;
 begin
   FState := vsInvalid;
   if AConditon <> '' then AConditon := ' --condition ''' + AConditon + '''';
-  if ADisabled then AConditon := AConditon + ' --disable';
+  if ADisabled then AConditon := AConditon + ' -d ';
   inherited Create(Format('breakpoint set --address %u', [AnAddress]) + AConditon);
 end;
 

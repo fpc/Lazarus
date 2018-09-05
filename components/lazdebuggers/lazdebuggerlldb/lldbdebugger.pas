@@ -87,7 +87,7 @@ type
     TExceptionInfoCommand = (exiReg0, exiClass, exiMsg);
     TExceptionInfoCommands = set of TExceptionInfoCommand;
   private
-    FState: (crInit, crRunning, crReadingThreads, crStopped, crStoppedAtException, crDone);
+    FState: (crInit, crRunning, crReadingThreads, crStopped, crStoppedAtException, crStoppedAtRunError, crStoppedAtBreakErr, crDone);
     FThreadInstr: TLldbInstructionThreadList;
     FCurrentExceptionInfo: record
       FHasCommandData: TExceptionInfoCommands; // cleared in Setstate
@@ -175,6 +175,31 @@ type
     destructor Destroy; override;
   end;
 
+
+  { TlldbInternalBreakPoint }
+
+  TlldbInternalBreakPoint = class
+  private
+    FName: String;
+    FId: Integer;
+    FDebugger: TLldbDebugger;
+    FOnFail: TNotifyEvent;
+    FOnFinish: TNotifyEvent;
+    procedure BreakSetSuccess(Sender: TObject);
+    procedure DoFailed(Sender: TObject);
+    procedure DoFinshed(Sender: TObject);
+    procedure QueueInstruction(AnInstr: TLldbInstruction);
+  public
+    constructor Create(AName: String; ADebugger: TLldbDebugger);
+    destructor Destroy; override;
+    procedure Enable;
+    procedure Disable;
+    procedure Remove;
+    property BreakId: Integer read FId;
+    property OnFail: TNotifyEvent read FOnFail write FOnFail;
+    property OnFinish: TNotifyEvent read FOnFinish write FOnFinish;
+  end;
+
   (*
    *  Debugger
    *)
@@ -188,9 +213,12 @@ type
     FCurrentLocation: TDBGLocationRec;
     FCurrentStackFrame: Integer;
     FCurrentThreadId: Integer;
+    FBreakErrorBreak: TlldbInternalBreakPoint;
+    FRunErrorBreak: TlldbInternalBreakPoint;
+    FExceptionBreak: TlldbInternalBreakPoint;
+    FPopExceptStack, FCatchesBreak, FReRaiseBreak: TlldbInternalBreakPoint;
     FTargetWidth: Byte;
     FTargetRegisters: array[0..2] of String;
-    FExceptionBreakId: Integer;
     FLldbMissingBreakSetDisable: Boolean;
     FExceptionInfo: record
       FReg0Cmd, FExceptClassCmd, FExceptMsgCmd: String;
@@ -514,6 +542,36 @@ procedure TLldbDebuggerCommandRun.DoLineDataReceived(var ALine: String);
       SetDebuggerState(dsPause); // after GetLocation => dsPause may run stack, watches etc
   end;
 
+  procedure DoRunError;
+  var
+    CanContinue: Boolean;
+    ErrNo: Integer;
+    ExceptName: String;
+    ExceptItem: TBaseException;
+  begin
+    ErrNo := 0;
+    if exiReg0 in FCurrentExceptionInfo.FHasCommandData then
+      ErrNo := FCurrentExceptionInfo.FObjAddress;
+    ErrNo := ErrNo and $FFFF;
+
+    ExceptName := Format('RunError(%d)', [ErrNo]);
+    ExceptItem := Debugger.Exceptions.Find(ExceptName);
+    if (ExceptItem <> nil) and (ExceptItem.Enabled)
+    then begin
+      Debugger.LldbRun; // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      exit;
+    end;
+
+    Debugger.DoException(deRunError, ExceptName, Debugger.FCurrentLocation, '', CanContinue);
+    if CanContinue
+    then begin
+      Debugger.LldbRun; // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      exit;
+    end;
+
+    SetDebuggerState(dsPause); // after GetLocation => dsPause may run stack, watches etc
+  end;
+
   procedure DoBreakPointHit(BrkId: Integer);
   var
     BreakPoint: TLldbBreakPoint;
@@ -611,8 +669,14 @@ begin
 
     if StrStartsWith(found[1], 'breakpoint ') then begin
       i := GetBreakPointId(found[1]);
-      if i = Debugger.FExceptionBreakId then
+      if i = Debugger.FExceptionBreak.BreakId then
         FState := crStoppedAtException
+      else
+      if i = Debugger.FRunErrorBreak.BreakId then
+        FState := crStoppedAtRunError
+      else
+      if i = Debugger.FBreakErrorBreak.BreakId then
+        FState := crStoppedAtBreakErr
       else
         DoBreakPointHit(i);
     end
@@ -640,8 +704,11 @@ begin
     Debugger.FCurrentLocation.SrcFullName := AFullFile;
     Debugger.FCurrentLocation.SrcLine := SrcLine;
 
-    if FState = crStoppedAtException then
-      DoException;
+    case FState of
+      crStoppedAtException: DoException;
+      crStoppedAtRunError:  DoRunError; // location = frame with fp // see gdbmi
+      crStoppedAtBreakErr:  DoRunError; // location = frame(1) // see gdbmi
+    end;
 
     if DebuggerState in [dsPause, dsInternalPause, dsStop] then
       Debugger.DoCurrent(Debugger.FCurrentLocation);
@@ -658,13 +725,17 @@ begin
   end;
 
   // Executed, if "frame #0" was not found
-  if FState = crStoppedAtException then begin // did not get location
+  if FState in [crStoppedAtException, crStoppedAtRunError, crStoppedAtBreakErr] then begin // did not get location
     Debugger.FCurrentLocation.Address := 0;
     Debugger.FCurrentLocation.FuncName := '';
     Debugger.FCurrentLocation.SrcFile := '';
     Debugger.FCurrentLocation.SrcFullName := '';
     Debugger.FCurrentLocation.SrcLine := -1;
-    DoException;
+    case FState of
+      crStoppedAtException: DoException;
+      crStoppedAtRunError:  DoRunError; // location = frame with fp
+      crStoppedAtBreakErr:  DoRunError; // location = frame(1)
+    end;
     Finished;
   end;
 
@@ -1648,28 +1719,50 @@ begin
   QueueInstruction(Instr);
   Instr.ReleaseReference;
 
-  Instr := TLldbInstructionBreakSet.Create('fpc_raiseexception');
-  Instr.OnFinish := @ExceptBreakInstructionFinished;
-  QueueInstruction(Instr);
-  Instr.ReleaseReference;
+  Debugger.FBreakErrorBreak.Enable;
+  Debugger.FRunErrorBreak.Enable;
+  Debugger.FExceptionBreak.OnFinish := @ExceptBreakInstructionFinished;
+  Debugger.FExceptionBreak.Enable;
 end;
 
 procedure TLldbDebuggerCommandRunLaunch.ExceptBreakInstructionFinished(Sender: TObject
   );
 var
-  ExceptInstr: TLldbInstructionBreakSet absolute Sender;
   Instr: TLldbInstruction;
+  BrkId: Integer;
 begin
-  Debugger.FExceptionBreakId := ExceptInstr.BreakId;
+  Debugger.FBreakErrorBreak.OnFinish := nil;
 
-  Debugger.FExceptionInfo.FReg0Cmd := 'p/x ' + Debugger.FTargetRegisters[0];
-  Debugger.FExceptionInfo.FExceptClassCmd := 'p ((char ***)' + Debugger.FTargetRegisters[0] + ')[0][3]';
-  Debugger.FExceptionInfo.FExceptMsgCmd := 'p ((char **)' + Debugger.FTargetRegisters[0] + ')[1]';
-                // 'p ((EXCEPTION *)' + Debugger.FTargetRegisters[0] + ')->FMESSAGE'
-  if ExceptInstr.BreakId > 0 then begin
-    Instr := TLldbInstructionBreakAddCommands.Create(ExceptInstr.BreakId, [
+  Debugger.FExceptionInfo.FReg0Cmd := '';
+  Debugger.FExceptionInfo.FExceptClassCmd := '';
+  Debugger.FExceptionInfo.FExceptMsgCmd := '';
+
+  BrkId := Debugger.FExceptionBreak.BreakId;
+  if BrkId > 0 then begin
+    Debugger.FExceptionInfo.FReg0Cmd := 'p/x ' + Debugger.FTargetRegisters[0];
+    Debugger.FExceptionInfo.FExceptClassCmd := 'p ((char ***)' + Debugger.FTargetRegisters[0] + ')[0][3]';
+    Debugger.FExceptionInfo.FExceptMsgCmd := 'p ((char **)' + Debugger.FTargetRegisters[0] + ')[1]';
+                  // 'p ((EXCEPTION *)' + Debugger.FTargetRegisters[0] + ')->FMESSAGE'
+
+    Instr := TLldbInstructionBreakAddCommands.Create(BrkId, [
       Debugger.FExceptionInfo.FReg0Cmd, Debugger.FExceptionInfo.FExceptClassCmd, Debugger.FExceptionInfo.FExceptMsgCmd
     ]);
+    QueueInstruction(Instr);
+    Instr.ReleaseReference;
+  end;
+
+  BrkId := Debugger.FRunErrorBreak.BreakId;
+  if BrkId > 0 then begin
+    Debugger.FExceptionInfo.FReg0Cmd := 'p/x ' + Debugger.FTargetRegisters[0];
+    Instr := TLldbInstructionBreakAddCommands.Create(BrkId, [Debugger.FExceptionInfo.FReg0Cmd]);
+    QueueInstruction(Instr);
+    Instr.ReleaseReference;
+  end;
+
+  BrkId := Debugger.FBreakErrorBreak.BreakId;
+  if BrkId > 0 then begin
+    Debugger.FExceptionInfo.FReg0Cmd := 'p/x ' + Debugger.FTargetRegisters[0];
+    Instr := TLldbInstructionBreakAddCommands.Create(BrkId, [Debugger.FExceptionInfo.FReg0Cmd]);
     QueueInstruction(Instr);
     Instr.ReleaseReference;
   end;
@@ -1794,6 +1887,95 @@ begin
   if FWatchValue <> nil then
     FWatchValue.RemoveFreeNotification(@DoWatchFreed);
   inherited Destroy;
+end;
+
+{ TlldbInternalBreakPoint }
+
+procedure TlldbInternalBreakPoint.QueueInstruction(AnInstr: TLldbInstruction);
+begin
+  AnInstr.OnFinish := @DoFinshed;
+  FDebugger.DebugInstructionQueue.QueueInstruction(AnInstr);
+  AnInstr.ReleaseReference;
+end;
+
+procedure TlldbInternalBreakPoint.BreakSetSuccess(Sender: TObject);
+begin
+  FId := TLldbInstructionBreakSet(Sender).BreakId;
+end;
+
+procedure TlldbInternalBreakPoint.DoFailed(Sender: TObject);
+begin
+  if FId = 0 then
+    FId := -1;
+  if OnFail <> nil then
+    OnFail(Self);
+end;
+
+procedure TlldbInternalBreakPoint.DoFinshed(Sender: TObject);
+begin
+  if OnFinish <> nil then
+    OnFinish(Self);
+end;
+
+constructor TlldbInternalBreakPoint.Create(AName: String;
+  ADebugger: TLldbDebugger);
+begin
+  FName := AName;
+  FDebugger := ADebugger;
+  FId := 0;
+  inherited Create;
+end;
+
+destructor TlldbInternalBreakPoint.Destroy;
+begin
+  Remove;
+  inherited Destroy;
+end;
+
+procedure TlldbInternalBreakPoint.Enable;
+var
+  Instr: TLldbInstruction;
+begin
+  if FId = 0 then begin
+    Instr := TLldbInstructionBreakSet.Create(FName, False, True);
+    Instr.OnSuccess := @BreakSetSuccess;
+    Instr.OnFailure := @DoFailed;
+    QueueInstruction(Instr);
+    exit;
+  end;
+
+  if FId < 0 then begin
+    DoFailed(nil);
+    exit;
+  end;
+
+  Instr := TLldbInstructionBreakModify.Create(FId, False);
+  Instr.OnFailure := @DoFailed;
+  QueueInstruction(Instr);
+end;
+
+procedure TlldbInternalBreakPoint.Disable;
+var
+  Instr: TLldbInstruction;
+begin
+  if FId <= 0 then
+    exit;
+
+  Instr := TLldbInstructionBreakModify.Create(FId, True);
+  Instr.OnFailure := @DoFailed;
+  QueueInstruction(Instr);
+end;
+
+procedure TlldbInternalBreakPoint.Remove;
+var
+  Instr: TLldbInstruction;
+begin
+  if FId <= 0 then
+    exit;
+
+  Instr := TLldbInstructionBreakDelete.Create(FId);
+  QueueInstruction(Instr);
+  FId := 0;
 end;
 
 { TLldbDebugger }
@@ -2100,13 +2282,32 @@ begin
   FDebugInstructionQueue.OnDebuggerTerminated := @DoCmdLineDebuggerTerminated;
 
   FCommandQueue := TLldbDebuggerCommandQueue.Create(Self);
+
+  FBreakErrorBreak := TlldbInternalBreakPoint.Create('fpc_break_error', Self);
+  FRunErrorBreak   := TlldbInternalBreakPoint.Create('fpc_runerror', Self);
+  FExceptionBreak  := TlldbInternalBreakPoint.Create('fpc_raiseexception', Self);
+  FPopExceptStack  := TlldbInternalBreakPoint.Create('fpc_popaddrstack', Self);
+  FCatchesBreak    := TlldbInternalBreakPoint.Create('fpc_catches', Self);
+  FReRaiseBreak    := TlldbInternalBreakPoint.Create('fpc_reraise', Self);
 end;
 
 destructor TLldbDebugger.Destroy;
 begin
 debugln(['!!!!!!!!!!!!!!! TLldbDebugger.Destroy ']);
+  FBreakErrorBreak.Remove;
+  FRunErrorBreak.Remove;
+  FExceptionBreak.Remove;
+  FPopExceptStack.Remove;
+  FCatchesBreak.Remove;
+  FReRaiseBreak.Remove;
   FDebugInstructionQueue.LockQueueRun;
   inherited Destroy;
+  FBreakErrorBreak.Destroy;
+  FRunErrorBreak.Destroy;
+  FExceptionBreak.Destroy;
+  FPopExceptStack.Destroy;
+  FCatchesBreak.Destroy;
+  FReRaiseBreak.Destroy;
   FCommandQueue.Destroy;
   FDebugInstructionQueue.Destroy;
   FDebugProcess.Destroy;
