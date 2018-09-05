@@ -123,14 +123,12 @@ implementation
 {$R *.lfm}
 
 function ShowPublishDialog(AOptions: TPublishModuleOptions): TModalResult;
-var
-  PublishModuleDialog: TPublishModuleDialog;
 begin
-  PublishModuleDialog:=TPublishModuleDialog.Create(nil);
-  with PublishModuleDialog do
-  begin
+  with TPublishModuleDialog.Create(nil) do
+  try
     Options:=AOptions;
     Result:=ShowModal;
+  finally
     Free;
   end;
 end;
@@ -157,10 +155,10 @@ begin
   FTopDir := FProjPack.Directory;     // Initial value for TopDir. It may change.
   FSrcDir := FTopDir;
   FDestDir := TrimAndExpandDirectory(RealPublishDir(FOptions));
-  FBackupDir := AppendPathDelim(FSrcDir)
-             + EnvironmentOptions.BackupInfoProjectFiles.SubDirectory;
+  FBackupDir := AppendPathDelim(FSrcDir
+                       + EnvironmentOptions.BackupInfoProjectFiles.SubDirectory);
   COpts := FProjPack.LazCompilerOptions as TBaseCompilerOptions;
-  FLibDir := AppendPathDelim(COpts.GetUnitOutPath(True,coptParsed));
+  FLibDir := COpts.GetUnitOutPath(True,coptParsed);
   DebugLn(['TPublisher: Source      Directory = ', FSrcDir]);
   DebugLn(['TPublisher: Destination Directory = ', FDestDir]);
   DebugLn(['TPublisher: Backup      Directory = ', FBackupDir]);
@@ -184,18 +182,23 @@ var
   CurDir: string;
 begin
   if FCopiedFiles.IndexOf(FileName) >= 0 then
-    DebugLn(['DoFileFound: Already copied file ', FileName])
-  else if FOptions.FileCanBePublished(FileName) then
   begin
-    CurDir := ExtractFilePath(FileName);
-    if (CurDir = FBackupDir) or (CurDir = FLibDir) then
-      Exit;
+    DebugLn(['DoFileFound: Already copied file ', FileName]);
+    Exit;
+  end;
+  CurDir := ExtractFilePath(FileName);
+  if (CurDir = FBackupDir) or (CurDir = FLibDir) then
+  begin
+    DebugLn(['DoFileFound: In Backup or Output dir, not copied: ', FileName]);
+    Exit;
+  end;
+  if FOptions.FileCanBePublished(FileName) then
+  begin
     if CopyAFile(FileName) <> mrOK then
       Inc(FCopyFailedCount);
   end
-  else begin
+  else
     DebugLn(['DoFileFound: Rejected file ', FileName]);
-  end;
 end;
 
 procedure TPublisher.DoDirectoryFound;
@@ -375,7 +378,7 @@ begin
   Result := mrNone;
   CurProject := TProject(FOptions.Owner);
   if CurProject = nil then
-   Exit;
+    Exit;
 
   ZipFileEntries := TZipFileEntries.Create(TZipFileEntry);
   try
@@ -488,6 +491,7 @@ begin
     FCopyFailedCount:=0;
     for I := 0 to FProjDirs.Count - 1 do
     begin
+      DebugLn(['Copy extra directory ', FProjDirs.Strings[I]]);
       if IsDrive(FProjDirs.Strings[I]) then
         Search(FProjDirs.Strings[I], '', False)
       else
