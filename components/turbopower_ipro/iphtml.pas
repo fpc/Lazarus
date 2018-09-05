@@ -134,6 +134,8 @@ type
 
   {$IFDEF IP_LAZARUS}
   TIpAbstractHtmlDataProvider = class;
+
+  {.$DEFINE CSS_CASESENSITIVE_CLASSID}
   {$DEFINE CSS_INTERFACE}
 {$I ipcss.inc}
   {$UNDEF CSS_INTERFACE}
@@ -1001,12 +1003,19 @@ type
     FAlign : TIpHtmlAlign;
   protected
     procedure ApplyProps(const RenderProps: TIpHtmlProps); override;
+    function GetAlign: TIpHtmlAlign; override;
+    procedure SetAlign(const Value: TIpHtmlAlign); override;
   public
     constructor Create(ParentNode: TIpHtmlNode);
+    {$IFDEF IP_LAZARUS}
+    procedure LoadAndApplyCSSProps; override;
+    {$ENDIF}
+    (*
   {$IFDEF HTML_RTTI}
   published
   {$ENDIF}
     property Align : TIpHtmlAlign read FAlign write FAlign;
+    *)
   end;
 
   TIpHtmlNodeBLINK = class(TIpHtmlNodeInline);
@@ -7374,7 +7383,7 @@ end;
 
 function TIpHtml.ParseAlignment : TIpHtmlAlign;
 begin
-  Result := GetAlignmentForStr(FindAttribute(htmlAttrALIGN), haLeft);
+  Result := GetAlignmentForStr(FindAttribute(htmlAttrALIGN), haDefault); //haLeft);
 //  if FlagErrors then
 //    ReportError(SHtmlInvAlign);
 end;
@@ -10478,6 +10487,12 @@ end;
 
 { TIpHtmlNodeSPAN }
 
+constructor TIpHtmlNodeSPAN.Create(ParentNode: TIpHtmlNode);
+begin
+  inherited Create(ParentNode);
+  FElementName := 'span';
+end;
+
 procedure TIpHtmlNodeSPAN.ApplyProps(const RenderProps: TIpHtmlProps);
 begin
   Props.Assign(RenderProps);
@@ -10489,11 +10504,23 @@ begin
   Props.DelayCache:=False;
 end;
 
-constructor TIpHtmlNodeSPAN.Create(ParentNode: TIpHtmlNode);
+function TIpHtmlNodeSPAN.GetAlign: TIpHtmlAlign;
 begin
-  inherited Create(ParentNode);
-  FElementName := 'span';
+  Result := FAlign;
 end;
+
+procedure TIpHtmlNodeSPAN.LoadAndApplyCSSProps;
+begin
+  inherited;
+  if not (FCombinedCSSProps.Alignment in [haDefault, haUnknown]) then
+    Align := FCombinedCSSProps.Alignment;
+end;
+
+procedure TIpHtmlNodeSPAN.SetAlign(const Value: TIpHtmlAlign);
+begin
+  FAlign := Value;
+end;
+
 
 { TIpHtmlNodeTABLE }
 

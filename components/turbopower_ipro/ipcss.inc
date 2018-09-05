@@ -515,7 +515,11 @@ begin
   end;
 
   for i := 0 to Result.Count-1 do begin
+    {$IFDEF CSS_CASESENSITIVE_CLASSID}
+    Element := Result[i];
+    {$ELSE}
     Element := LowerCase(Result[i]);
+    {$ENDIF}
     ElementClass := '';
     fpos := Pos('.', Element);
     if fpos = 0 then
@@ -523,8 +527,13 @@ begin
       Result.Objects[i] := FGlobalProps.GetPropsObject(Element, '', True);
     end
     else begin
+      {$IFDEF CSS_CASESENSITIVE_CLASSID}
+      ElementClass := Copy(Element, FPos+1, Length(Element));
+      Element := Copy(Element, 1, FPos-1);
+      {$ELSE}
       ElementClass := LowerCase(Copy(Element, FPos+1, Length(Element)));
       Element := LowerCase(Copy(Element, 1, FPos-1));
+      {$ENDIF}
       Result.Objects[i] := FGlobalProps.GetPropsObject(Element, ElementClass, True);
     end;
   end;
@@ -647,13 +656,16 @@ begin
   while FindStatement(Statement) do begin
    Elements := GetStatementElements(Statement);
    Commands := GetStatementCommands(Statement);
-   for I := 0 to Elements.Count-1 do
-   begin
-     Element := TCSSProps(Elements.Objects[I]);
-     Element.ReadCommands(Commands);
+   try
+     for I := 0 to Elements.Count-1 do
+     begin
+       Element := TCSSProps(Elements.Objects[I]);
+       Element.ReadCommands(Commands);
+     end;
+   finally
+     Elements.Free;
+     Commands.Free;
    end;
-   Elements.Free;
-   Commands.Free;
   end;
 end;
 
@@ -946,7 +958,11 @@ var
   procedure Lookup(const AName: String);
   begin
     if length(AClassID) > 0 then
+      {$IFDEF CSS_CASESENSITIVE_CLASSID}
       Selector := AName + '.' + AClassID
+      {$ELSE}
+      Selector := AName + '.' + Lowercase(AClassID)
+      {$ENDIF}
     else
       Selector := AName;
 
