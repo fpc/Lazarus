@@ -36,7 +36,7 @@ uses
   // LCL
   LCLType, Forms, Controls, StdCtrls, Dialogs, ExtCtrls, Buttons, ButtonPanel,
   // LazUtils
-  FileUtil, LazFileUtils, LazLoggerBase, Laz2_XMLCfg,
+  FileUtil, LazFileUtils, LazLoggerBase,
   // IdeIntf
   IDEWindowIntf, IDEHelpIntf, IDEDialogs, IDEImagesIntf, ProjPackIntf, CompOptsIntf, LazIDEIntf,
   // IDE
@@ -94,21 +94,16 @@ type
     FCopiedFiles: TStringList;
     // Copying by filters failed.
     FCopyFailedCount: Integer;
-    FDestProjDirs: TStringList;
-    FDestProjFiles: TStringList;
-    FDestProjFileInfo: String;
+    FProjDirs: TStringList;
     FBackupDir, FLibDir: String;
     procedure AdjustTopDir(const AFileName: string);
-    function CopyAFile(const AFileName: string; const AIsProjFile: Boolean = False): TModalResult;
+    function CopyAFile(const AFileName: string): TModalResult;
     function CopyProjectFiles: TModalResult;
     function CopyPackageFiles: TModalResult;
     function WriteProjectInfo: TModalResult;
-    function UpdateProjectFiles: TModalResult;
     function WritePackageInfo: TModalResult;
-    function IsDirInList(const ADirName: String): Boolean;
     function IsDrive(const AName: String): Boolean;
     function Compress: TModalResult;
-    function FindProjFile(const AName: String): Integer;
   protected
     procedure DoFileFound; override;    // Called by TFileSearcher.Search.
     procedure DoDirectoryFound; override;
@@ -162,24 +157,22 @@ begin
   FTopDir := FProjPack.Directory;     // Initial value for TopDir. It may change.
   FSrcDir := FTopDir;
   FDestDir := TrimAndExpandDirectory(RealPublishDir(FOptions));
-  FBackupDir := UpperCase(AppendPathDelim(FSrcDir)
-             + EnvironmentOptions.BackupInfoProjectFiles.SubDirectory);
+  FBackupDir := AppendPathDelim(FSrcDir)
+             + EnvironmentOptions.BackupInfoProjectFiles.SubDirectory;
   COpts := FProjPack.LazCompilerOptions as TBaseCompilerOptions;
-  FLibDir := UpperCase(AppendPathDelim(COpts.GetUnitOutPath(True,coptParsed)));
+  FLibDir := AppendPathDelim(COpts.GetUnitOutPath(True,coptParsed));
   DebugLn(['TPublisher: Source      Directory = ', FSrcDir]);
   DebugLn(['TPublisher: Destination Directory = ', FDestDir]);
   DebugLn(['TPublisher: Backup      Directory = ', FBackupDir]);
   DebugLn(['TPublisher: Lib         Directory = ', FLibDir]);
   FCopiedFiles := TStringList.Create;
-  FDestProjDirs := TStringList.Create;
-  FDestProjFiles := TStringList.Create;
+  FProjDirs := TStringList.Create;
 end;
 
 destructor TPublisher.Destroy;
 begin
   FCopiedFiles.Free;
-  FDestProjDirs.Free;
-  FDestProjFiles.Free;
+  FProjDirs.Free;
   inherited Destroy;
 end;
 
@@ -194,7 +187,7 @@ begin
     DebugLn(['DoFileFound: Already copied file ', FileName])
   else if FOptions.FileCanBePublished(FileName) then
   begin
-    CurDir := UpperCase(ExtractFilePath(FileName));
+    CurDir := ExtractFilePath(FileName);
     if (CurDir = FBackupDir) or (CurDir = FLibDir) then
       Exit;
     if CopyAFile(FileName) <> mrOK then
@@ -236,8 +229,7 @@ begin
   end;
 end;
 
-function TPublisher.CopyAFile(const AFileName: string;
-  const AIsProjFile: Boolean = False): TModalResult;
+function TPublisher.CopyAFile(const AFileName: string): TModalResult;
 var
   RelPath, LfmFile: string;
   Drive: String;
@@ -253,8 +245,6 @@ begin
               [cffCreateDestDirectory,cffPreserveTime]) then
   begin
     FCopiedFiles.Add(AFilename);
-    if AIsProjFile then
-      FDestProjFiles.Add(FDestDir + RelPath);
     if FilenameIsPascalUnit(AFilename) then
     begin    // Copy .lfm or .dfm file even if it is not part of project/package.
       LfmFile := ChangeFileExt(AFilename, '.lfm');
@@ -282,7 +272,9 @@ var
 begin
   Result := mrOK;
   CurProject := TProject(FProjPack);
-  FDestProjDirs.Clear;
+  FProjDirs.Clear;
+  FProjDirs.Sorted := True;
+  FProjDirs.Duplicates := dupIgnore;
   // First adjust the TopDir based on relative file paths.
   for i:=0 to CurProject.UnitCount-1 do
   begin
@@ -291,8 +283,7 @@ begin
     begin
       AdjustTopDir(CurUnitInfo.Filename);
       CurDir := ExtractFilePath(CurUnitInfo.Filename);
-      if not IsDirInList(CurDir) then
-        FDestProjDirs.Add(CurDir);
+      FProjDirs.Add(CurDir);
     end;
   end;
   // Then copy the project files
@@ -301,7 +292,7 @@ begin
     CurUnitInfo := CurProject.Units[i];
     if CurUnitInfo.IsPartOfProject then
     begin
-      Result := CopyAFile(CurUnitInfo.Filename, True);
+      Result := CopyAFile(CurUnitInfo.Filename);
       if Result<> mrOk then Exit;
       if CurUnitInfo.IsMainUnit then
       begin                // Copy the main resource file in any case.
@@ -314,7 +305,6 @@ begin
       end;
     end;
   end;
-  FDestProjFileInfo := FDestDir + ExtractRelativePath(FTopDir, CurProject.ProjectInfoFile);
 end;
 
 function TPublisher.CopyPackageFiles: TModalResult;
@@ -359,97 +349,10 @@ begin
     DebugLn('Hint: [TPublisher] CurProject.WriteProject failed');
 end;
 
-function TPublisher.FindProjFile(const AName: String): Integer;
-var
-  I: Integer;
-begin
-  Result := -1;
-  for I := 0 to FDestProjFiles.Count - 1 do
-  begin
-    if UpperCase(ExtractFileName(FDestProjFiles.Strings[I])) = UpperCase(AName) then
-    begin
-      Result := I;
-      Break;
-    end;
-  end;
-end;
-
-function TPublisher.UpdateProjectFiles: TModalResult;
-var
-  XML: TXMLConfig;
-  RelPathList: TStringList;
-  Cnt, I, Res: Integer;
-  XMLPath, XMLSubPath: String;
-  OldPath, RelPath: String;
-begin
-  Result := mrNone;
-  if not FileExistsUTF8(FDestProjFileInfo) then
-    Exit;
-
-  RelPathList := TStringList.Create;
-  try
-    RelPathList.Duplicates := dupIgnore;
-    RelPathList.Sorted := True;
-    XML := TXMLConfig.Create(FDestProjFileInfo);
-    try
-      try
-        XMLPath := 'ProjectOptions/';
-        Cnt := XML.GetValue(XMLPath + 'Units/Count' , 0);
-        for I := 0 to Cnt - 1 do
-        begin
-          XMLSubPath := XMLPath + 'Units/Unit' + IntToStr(I) + '/';
-          OldPath := XML.GetValue(XMLSubPath + 'Filename/Value', '');
-          Res := FindProjFile(ExtractFileName(OldPath));
-          if Res > -1 then
-          begin
-            RelPath := ExtractRelativepath(FDestProjFileInfo, FDestProjFiles.Strings[Res]);
-            XML.SetValue(XMLSubPath + 'Filename/Value', RelPath);
-            if Trim(ExtractFilePath(RelPath)) <> '' then
-              RelPathList.Add(ExtractFilePath(RelPath));
-          end;
-        end;
-        RelPath := '';
-        for I := 0 to RelPathList.Count - 1 do
-        begin
-          if RelPath = '' then
-            RelPath := RelPathList.Strings[I] + ';'
-          else
-            RelPath := RelPath + RelPathList.Strings[I] + ';';
-        end;
-        if RelPath <> '' then
-          XML.SetValue('CompilerOptions/SearchPaths/OtherUnitFiles/Value', RelPath);
-        XML.SetValue('ProjectOptions/PublishOptions/DestinationDirectory/Value', '');
-        XML.Flush;
-        Result := mrOK;
-      except
-      end;
-    finally
-      XML.Free;
-    end;
-  finally
-    RelPathList.Free;
-  end;
-end;
-
 function TPublisher.WritePackageInfo: TModalResult;
 begin
   Result := mrOK;
   // ToDo
-end;
-
-function TPublisher.IsDirInList(const ADirName: String): Boolean;
-var
-  I: Integer;
-begin
-  Result := False;
-  for I := 0 to FDestProjDirs.Count - 1 do
-  begin
-    if Pos(UpperCase(FDestProjDirs.Strings[I]), UpperCase(ADirName)) > 0 then
-    begin
-      Result := True;
-      Break;
-    end;
-  end;
 end;
 
 function TPublisher.IsDrive(const AName: String): Boolean;
@@ -457,17 +360,17 @@ var
   Drive: String;
 begin
   Drive := ExtractFileDrive(AName);
-  Result := (Trim(Drive) <> '') and (UpperCase(AppendPathDelim(Drive)) = UpperCase(AName));
+  Result := (Trim(Drive) <> '') and (AppendPathDelim(Drive) = AName);
 end;
 
 function TPublisher.Compress: TModalResult;
 var
   Zipper: TZipper;
   ZipFileEntries: TZipFileEntries;
-  FileList: TStringList;
   CurProject: TProject;
   I: Integer;
   ZipDestDir: String;
+  RelPath, Drive: String;
 begin
   Result := mrNone;
   CurProject := TProject(FOptions.Owner);
@@ -478,13 +381,13 @@ begin
   try
     if DirPathExists(FDestDir) then
     begin
-      FileList := TStringList.Create;
-      try
-        FindAllFiles(FileList, FDestDir);
-        for I := 0 to FileList.Count - 1 do
-          ZipFileEntries.AddFileEntry(FileList[I], StringReplace(FileList[I], FDestDir, '', [rfIgnoreCase]));
-      finally
-        FileList.Free;
+      for I := 0 to FCopiedFiles.Count - 1 do
+      begin
+        RelPath := ExtractRelativePath(FTopDir, FCopiedFiles.Strings[I]);
+        Drive := ExtractFileDrive(RelPath);
+        if Trim(Drive) <> '' then
+          RelPath := StringReplace(RelPath, AppendPathDelim(Drive), '', [rfIgnoreCase]);
+        ZipFileEntries.AddFileEntry(FDestDir + RelPath, RelPath);
       end;
 
       if (ZipFileEntries.Count > 0) then
@@ -571,8 +474,6 @@ begin
     Result := CopyProjectFiles;
     if Result<>mrOk then exit;
     Result := WriteProjectInfo;
-    if Result<>mrOk then exit;
-    Result := UpdateProjectFiles();
   end
   else begin
     Result := CopyPackageFiles;
@@ -585,12 +486,12 @@ begin
   if FOptions.UseFileFilters then
   begin
     FCopyFailedCount:=0;
-    for I := 0 to FDestProjDirs.Count - 1 do
+    for I := 0 to FProjDirs.Count - 1 do
     begin
-      if IsDrive(FDestProjDirs.Strings[I]) then
-        Search(FDestProjDirs.Strings[I], '', False)
+      if IsDrive(FProjDirs.Strings[I]) then
+        Search(FProjDirs.Strings[I], '', False)
       else
-        Search(FDestProjDirs.Strings[I]);
+        Search(FProjDirs.Strings[I]);
     end;
     if FCopyFailedCount <> 0 then
     begin
