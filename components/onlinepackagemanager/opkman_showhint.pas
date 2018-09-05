@@ -216,6 +216,8 @@ begin
   if (TotHeight < 51) or (TotHeight > 365) then
     TotHeight := 365;
   Self.Height := TotHeight;
+  if (Options.HintFormOption = 0) and (Self.Top + Self.Height > Screen.WorkAreaHeight) then
+    Self.Top := Screen.WorkAreaHeight - Self.Height;
   sbLazPackages.SetFocus;
 end;
 
