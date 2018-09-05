@@ -3885,9 +3885,9 @@ resourcestring
   lisInvalidPublishingDirectory = 'Invalid publishing Directory';
   lisEmptyDestinationForPublishing = 'Destination directory for publishing'
     +' is either a relative path or empty.';
-  lisDestinationIsSubdirectoryOfSource = 'Destination "%s"'
-    +'%sis a subdirectory of source "%s"'
-    +'%swhich is currently not allowed.';
+  lisSourceAndDestinationAreSame = 'Source "%s"'
+    +'%sand Destination "%s"'
+    +'%sdirectories are the same. Please select another directory.';
   lisClearDirectory = 'Clear Directory?';
   lisInOrderToCreateACleanCopyOfTheProjectPackageAllFil = 'In order to create '
     +'a clean copy of the project/package, all files in the following '

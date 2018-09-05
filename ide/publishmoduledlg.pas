@@ -29,10 +29,6 @@ unit PublishModuleDlg;
 
 {$mode objfpc}{$H+}
 
-// Define this to test publishing to a subdirectory of the project/package dir.
-//  Now it creates a recursive loop.
-{$define AllowProjectSubDirectory}
-
 interface
 
 uses
@@ -193,12 +189,12 @@ begin
   CurDir := ExtractFilePath(FileName);
   if (CurDir = FBackupDir) or (CurDir = FLibDir) then
   begin
-    DebugLn(['DoFileFound: In Backup or Output dir, not copied: ', FileName]);
+    DebugLn(['DoFileFound: In Backup or Output directory, not copied: ', FileName]);
     Exit;
   end;
-  if (CurDir = FDestDir) then
+  if AnsiStartsStr(FDestDir, CurDir) then
   begin
-    DebugLn(['DoFileFound: The destination directory is in the same folder as the source files, not copied: ', FileName]);
+    DebugLn(['DoFileFound: In destination directory, not copied: ', FileName]);
     Exit;
   end;
   if FOptions.FileCanBePublished(FileName) then
@@ -445,18 +441,11 @@ begin
     exit;
   end;
   // Don't try to copy to a subdirectory of FSrcDir.
-  if (CompareFilenames(FSrcDir,FDestDir)=0)
-  {$ifNdef AllowProjectSubDirectory}
-  {$ifdef CaseInsensitiveFilenames}
-  or AnsiStartsText(FSrcDir, FDestDir)
-  {$ELSE}
-  or AnsiStartsStr(FSrcDir, FDestDir)
-  {$ENDIF}
-  {$ENDIF}
-  then begin
+  if (CompareFilenames(FSrcDir,FDestDir)=0) then
+  begin
     IDEMessageDialog(lisInvalidPublishingDirectory,
-      Format(lisDestinationIsSubdirectoryOfSource,
-             [FDestDir, LineEnding, FSrcDir, LineEnding]),
+      Format(lisSourceAndDestinationAreSame,
+             [FSrcDir, LineEnding, FDestDir, LineEnding]),
       mtError, [mbCancel]);
     exit;
   end;
@@ -641,9 +630,7 @@ begin
   hl:=InputHistories.HistoryLists.GetList(hlPublishModuleDestDirs,true,rltFile);
   hl.AppendEntry(GetForcedPathDelims('$(TestDir)/publishedproject/'));
   hl.AppendEntry(GetForcedPathDelims('$(TestDir)/publishedpackage/'));
-  {$ifdef AllowProjectSubDirectory}
   hl.AppendEntry(GetForcedPathDelims('$(ProjPath)/published/'));
-  {$ENDIF}
   DestDirComboBox.Items.Assign(hl);
 
   // file filter
