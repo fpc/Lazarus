@@ -528,7 +528,8 @@ begin
     Result := Compress;
 
   if Result = mrOK then
-    IDEMessageDialog(lisSuccess, 'Published to '+FDestDir, mtInformation,[mbOk]);
+    IDEMessageDialog(lisSuccess, Format(lisPublishedTo, [FDestDir]),
+      mtInformation, [mbOk]);
 end;
 
 { TPublishModuleDialog }
