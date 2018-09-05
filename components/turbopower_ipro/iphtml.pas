@@ -412,7 +412,9 @@ type
     function SelectCSSFont(const aFont: string): string;
     procedure ApplyCSSProps(const ACSSProps: TCSSProps; const props: TIpHtmlProps);
     function ElementName: String;
+    function GetAlign: TIpHtmlAlign; virtual;
     function GetFontSizeFromCSS(CurrentFontSize:Integer; aFontSize: string):Integer;
+    procedure SetAlign(const Value: TIpHtmlAlign); virtual;
     procedure SetId(const Value: string); virtual;
     {$ENDIF}
   public
@@ -423,6 +425,7 @@ type
     procedure MakeVisible; override;
     property InlineCSS: TCSSProps read FInlineCSSProps write FInlineCSSProps;
     {$ENDIF}
+    property Align: TIpHtmlAlign read GetAlign write SetAlign;
     property ClassId : string read FClassId write FClassId;
     property Id : string read FId write SetId;
     property Style : string read FStyle write FStyle;
@@ -645,6 +648,9 @@ type
   private
     FAlign : TIpHtmlAlign;
     FSize : TIpHtmlHeaderSize;
+  protected
+    function GetAlign: TIpHtmlAlign; override;
+    procedure SetAlign(const Value: TIpHtmlAlign); override;
   public
     constructor Create(ParentNode : TIpHtmlNode);
     destructor Destroy; override;
@@ -656,7 +662,7 @@ type
   {$IFDEF HTML_RTTI}
   published
   {$ENDIF}
-    property Align : TIpHtmlAlign read FAlign write FAlign;
+//    property Align : TIpHtmlAlign read FAlign write FAlign;
     property Size : TIpHtmlHeaderSize read FSize write FSize;
   end;
 
@@ -665,7 +671,9 @@ type
   TIpHtmlNodeP = class(TIpHtmlNodeInline)
   private
     FAlign : TIpHtmlAlign;
-    procedure SetAlign(const Value: TIpHtmlAlign);
+  protected
+    function GetAlign: TIpHtmlAlign; override;
+    procedure SetAlign(const Value: TIpHtmlAlign); override;
   public
     constructor Create(ParentNode : TIpHtmlNode);
     destructor Destroy; override;
@@ -674,10 +682,12 @@ type
     procedure LoadAndApplyCSSProps; override;
     {$ENDIF}
     procedure SetProps(const RenderProps: TIpHtmlProps); override;
+  (*
   {$IFDEF HTML_RTTI}
   published
   {$ENDIF}
-    property Align : TIpHtmlAlign read FAlign write SetAlign;
+    property Align : TIpHtmlAlign read GetAlign write SetAlign;
+  *)
   end;
 
   TIpHtmlNodeADDRESS = class(TIpHtmlNodeInline);
@@ -965,6 +975,9 @@ type
   TIpHtmlNodeDIV = class(TIpHtmlNodeInline)
   private
     FAlign : TIpHtmlAlign;
+  protected
+    function GetAlign: TIpHtmlAlign; override;
+    procedure SetAlign(const Value: TIpHtmlAlign); override;
   public
     constructor Create(ParentNode : TIpHtmlNode);
     destructor Destroy; override;
@@ -973,10 +986,12 @@ type
     procedure LoadAndApplyCSSProps; override;
     {$ENDIF}
     procedure SetProps(const RenderProps: TIpHtmlProps); override;
+    (*
   {$IFDEF HTML_RTTI}
   published
   {$ENDIF}
     property Align : TIpHtmlAlign read FAlign write FAlign;
+    *)
   end;
 
   { TIpHtmlNodeSPAN }
@@ -1537,13 +1552,19 @@ type
     property Width : TIpHtmlLength read FWidth write FWidth;
   end;
 
-  TIpHtmlNodeTHeadFootBody = class(TIpHtmlNodeCore);
+  TIpHtmlNodeTHeadFootBody = class(TIpHtmlNodeCore)
+  private
+    FAlign: TIpHtmlAlign;
+  protected
+    function GetAlign: TIpHtmlAlign; override;
+    procedure SetAlign(const Value: TIpHtmlAlign); override;
+  end;
 
   TIpHtmlNodeTABLEHEADFOOTBODYClass = class of TIpHtmlNodeTHeadFootBody;
 
   TIpHtmlNodeTHEAD = class(TIpHtmlNodeTHeadFootBody)
   private
-    FAlign: TIpHtmlAlign;
+//    FAlign: TIpHtmlAlign;
     FVAlign: TIpHtmlVAlign3;
   public
     constructor Create(ParentNode : TIpHtmlNode);
@@ -1553,13 +1574,13 @@ type
   {$IFDEF HTML_RTTI}
   published
   {$ENDIF}
-    property Align : TIpHtmlAlign read FAlign write FAlign;
+//    property Align : TIpHtmlAlign read FAlign write FAlign;
     property VAlign : TIpHtmlVAlign3 read FVAlign write FVAlign;
   end;
 
   TIpHtmlNodeTFOOT = class(TIpHtmlNodeTHeadFootBody)
   private
-    FAlign: TIpHtmlAlign;
+//    FAlign: TIpHtmlAlign;
     FVAlign: TIpHtmlVAlign3;
   public
     {$IFDEF IP_LAZARUS}
@@ -1568,13 +1589,13 @@ type
   {$IFDEF HTML_RTTI}
   published
   {$ENDIF}
-    property Align : TIpHtmlAlign read FAlign write FAlign;
+//    property Align : TIpHtmlAlign read FAlign write FAlign;
     property VAlign : TIpHtmlVAlign3 read FVAlign write FVAlign;
   end;
 
   TIpHtmlNodeTBODY = class(TIpHtmlNodeTHeadFootBody)
   private
-    FAlign: TIpHtmlAlign;
+//    FAlign: TIpHtmlAlign;
     FVAlign: TIpHtmlVAlign3;
   public
     constructor Create(ParentNode : TIpHtmlNode);
@@ -1584,7 +1605,7 @@ type
   {$IFDEF HTML_RTTI}
   published
   {$ENDIF}
-    property Align : TIpHtmlAlign read FAlign write FAlign;
+//    property Align : TIpHtmlAlign read FAlign write FAlign;
     property VAlign : TIpHtmlVAlign3 read FVAlign write FVAlign;
   end;
 
@@ -1634,6 +1655,8 @@ type
     procedure SetTextColor(const AValue: TColor);
   protected
     procedure AppendSelection(var S: String; var Completed: Boolean); override;
+    function GetAlign: TIpHtmlAlign; override;
+    procedure SetAlign(const Value: TIpHtmlAlign); override;
   public
     constructor Create(ParentNode : TIpHtmlNode);
     {$IFDEF IP_LAZARUS}
@@ -1643,7 +1666,7 @@ type
   {$IFDEF HTML_RTTI}
   published
   {$ENDIF}
-    property Align : TIpHtmlAlign read FAlign write FAlign;
+//    property Align : TIpHtmlAlign read FAlign write FAlign;
     property VAlign : TIpHtmlVAlign read FVAlign write FVAlign;
     property BgColor: TColor read FBgColor write SetBgColor;
     property TextColor: TColor read FTextColor write SetTextColor;
@@ -1667,6 +1690,8 @@ type
   protected
     procedure AppendSelection(var S: String; var Completed: Boolean); override;
     procedure DimChanged(Sender: TObject);
+    function GetAlign: TIpHtmlAlign; override;
+    procedure SetAlign(const Value: TIpHtmlAlign); override;
   public
     FPadRect : TRect;
     constructor Create(ParentNode : TIpHtmlNode);
@@ -1682,7 +1707,7 @@ type
   {$IFDEF HTML_RTTI}
   published
   {$ENDIF}
-    property Align : TIpHtmlAlign read FAlign write FAlign;
+//    property Align : TIpHtmlAlign read FAlign write FAlign;
     property BgColor;
     property CalcWidthMin: Integer read FCalcWidthMin write FCalcWidthMin;
     property CalcWidthMax: Integer read FCalcWidthMax write FCalcWidthMax;
@@ -9730,6 +9755,11 @@ begin
   end;
 end;
 
+function TIpHtmlNodeP.GetAlign: TIpHtmlAlign;
+begin
+  Result := FAlign;
+end;
+
 {$IFDEF IP_LAZARUS}
 procedure TIpHtmlNodeP.LoadAndApplyCSSProps;
 begin
@@ -9875,6 +9905,11 @@ begin
   inherited;
 end;
 
+function TIpHtmlNodeHeader.GetAlign: TIpHtmlAlign;
+begin
+  Result := FAlign;
+end;
+
 {$IFDEF IP_LAZARUS}
 procedure TIpHtmlNodeHeader.LoadAndApplyCSSProps;
 begin
@@ -9884,6 +9919,11 @@ begin
 end;
 {$ENDIF}
 
+procedure TIpHtmlNodeHeader.SetAlign(const Value: TIpHtmlAlign);
+begin
+  FAlign := Value;
+end;
+
 procedure TIpHtmlNodeHeader.SetProps(const RenderProps: TIpHtmlProps);
 begin
   Props.Assign(RenderProps);
@@ -9891,7 +9931,7 @@ begin
   Props.FontSize := FONTSIZESVALUESARRAY[abs(Size-6)];
   Props.FontStyle := [fsBold];
   Props.Alignment := Align;
-  Props.DelayCache:=False;
+  Props.DelayCache := False;
   inherited SetProps(Props);
 end;
 
@@ -10367,6 +10407,11 @@ begin
   inherited;
 end;
 
+function TIpHtmlNodeDIV.GetAlign: TIpHtmlAlign;
+begin
+  Result := FAlign;
+end;
+
 {$IFDEF IP_LAZARUS}
 procedure TIpHtmlNodeDIV.LoadAndApplyCSSProps;
 begin
@@ -10375,6 +10420,11 @@ begin
     Align := FCombinedCSSProps.Alignment;
 end;
 {$ENDIF}
+
+procedure TIpHtmlNodeDIV.SetAlign(const Value: TIpHtmlAlign);
+begin
+  FAlign := Value;
+end;
 
 procedure TIpHtmlNodeDIV.SetProps(const RenderProps: TIpHtmlProps);
 begin
@@ -10851,6 +10901,11 @@ begin
   FTextColor := -1;
 end;
 
+function TIpHtmlNodeTR.GetAlign: TIpHtmlAlign;
+begin
+  Result := FAlign;
+end;
+
 {$IFDEF IP_LAZARUS}
 procedure TIpHtmlNodeTR.LoadAndApplyCSSProps;
 begin
@@ -10860,6 +10915,11 @@ begin
   // wp: what about VAlign?
 end;
 {$ENDIF}
+
+procedure TIpHtmlNodeTR.SetAlign(const Value: TIpHtmlAlign);
+begin
+  FAlign := Value;
+end;
 
 procedure TIpHtmlNodeTR.SetProps(const RenderProps: TIpHtmlProps);
 begin
@@ -12625,6 +12685,11 @@ begin
   result := FirstString(aFont);
 end;
 
+procedure TIpHtmlNodeCore.SetAlign(const Value: TIpHtmlAlign);
+begin
+  Props.Alignment := Value;
+end;
+
 procedure TIpHtmlNodeCore.SetId(const Value: String);
 var
   idx: Integer;
@@ -12735,6 +12800,11 @@ begin
   Result := FElementName;
 end;
 
+function TIpHtmlNodeCore.GetAlign: TIpHtmlAlign;
+begin
+  Result := Props.Alignment;
+end;
+
 function TIpHtmlNodeCore.GetFontSizeFromCSS(CurrentFontSize:Integer;
   aFontSize: string):Integer;
 
@@ -12833,6 +12903,20 @@ begin
   Props.Assign(RenderProps);
   Props.FontStyle := Props.FontStyle + [fsStrikeOut];
 end;
+
+
+{ TIpHtmlNodeTHeadFootBody }
+
+function TIpHtmlNodeTHeadFootBody.GetAlign: TIpHtmlAlign;
+begin
+  Result := FAlign;
+end;
+
+procedure TIpHtmlNodeTHeadFootBody.SetAlign(const Value: TIpHtmlAlign);
+begin
+  FAlign := Value;
+end;
+
 
 { TIpHtmlNodeTHEAD }
 
@@ -13130,9 +13214,19 @@ begin
   FLayouter.CalcMinMaxPropWidth(RenderProps, Min, Max);
 end;
 
+function TIpHtmlNodeTableHeaderOrCell.GetAlign: TIpHtmlAlign;
+begin
+  Result := FAlign;
+end;
+
 procedure TIpHtmlNodeTableHeaderOrCell.Render(RenderProps: TIpHtmlProps);
 begin
   FLayouter.Render(RenderProps);
+end;
+
+procedure TIpHtmlNodeTableHeaderOrCell.SetAlign(const Value: TIpHtmlAlign);
+begin
+  FAlign := Value;
 end;
 
 procedure TIpHtmlNodeTableHeaderOrCell.Layout(RenderProps: TIpHtmlProps;

@@ -534,11 +534,15 @@ begin
     lAlign := FAl;
     node := aCurElem.Owner.ParentNode;
     while Assigned(node) do begin
+      if (node is TIpHtmlNodeCore) then
+        lAlign := TIpHtmlNodeCore(node).Align
+      {
       if (node is TIpHtmlNodeP) then
         lAlign := TIpHtmlNodeP(node).Align
       else
       if (node is TIpHtmlNodeDIV) then
         lAlign := TIpHtmlNodeDIV(node).Align
+        }
       else
         break;
       if lAlign = haDefault then
