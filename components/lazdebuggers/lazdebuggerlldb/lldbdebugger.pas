@@ -793,7 +793,6 @@ begin
     FState := crDone;
     ALine := '';
 
-    DeleteTempBreakPoint;
     exit;
   end;
 
@@ -812,10 +811,12 @@ begin
         DoLineDataReceived(FThreadInstr.Res[i]);
     end;
 
+    DeleteTempBreakPoint;
     Finished;
   end;
 
   if (LeftStr(ALine, 8) = 'Process ') and (pos('exited with status = ', ALine) > 0) then begin
+    DeleteTempBreakPoint;
     Finished;
     exit; // handle in main debugger
   end;
