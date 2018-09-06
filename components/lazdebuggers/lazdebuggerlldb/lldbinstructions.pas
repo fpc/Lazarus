@@ -585,7 +585,7 @@ end;
 
 constructor TLldbInstructionSettingClear.Create(AName: String);
 begin
-  inherited Create(Format('settings clear -- %s', [AName]));
+  inherited Create(Format('settings clear %s', [AName]));
 end;
 
 { TLldbInstructionTargetCreate }
