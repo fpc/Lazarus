@@ -13,8 +13,8 @@ uses
   windows,
   {$ENDIF}
   Classes, sysutils, math, FpdMemoryTools, FpDbgInfo, LldbDebugger,
-  LldbInstructions, DbgIntfBaseTypes, DbgIntfDebuggerBase, LCLProc, Forms,
-  FpDbgLoader, FpDbgDwarf, LazLoggerBase, LazClasses, FpPascalParser,
+  LldbInstructions, LldbHelper, DbgIntfBaseTypes, DbgIntfDebuggerBase, LCLProc,
+  Forms, FpDbgLoader, FpDbgDwarf, LazLoggerBase, LazClasses, FpPascalParser,
   FpPascalBuilder, FpErrorMessages, FpDbgDwarfDataClasses;
 
 type
@@ -95,6 +95,7 @@ type
     function CreateLineInfo: TDBGLineInfo; override;
     function  CreateWatches: TWatchesSupplier; override;
     function  CreateLocals: TLocalsSupplier; override;
+    function CreateDisassembler: TDBGDisassembler; override;
     procedure DoState(const OldState: TDBGState); override;
     function  HasDwarf: Boolean;
     procedure LoadDwarf;
@@ -211,6 +212,38 @@ type
     procedure Request(const ASource: String); override;
     procedure Cancel(const ASource: String); override;
   end;
+
+  TFpLldbDBGDisassembler = class;
+
+  TFpLldbDebuggerCommandDisassemble = class(TLldbDebuggerCommand)
+  private
+    FOwner: TFpLldbDBGDisassembler;
+    FAddr: TDBGPtr;
+    FBeforeAddr: TDBGPtr;
+    FLinesAfter: Cardinal;
+  protected
+    procedure InstrFinished(Sender: TObject);
+    procedure CmdFinished(Sender: TObject);
+    procedure DoExecute; override;
+  public
+    constructor Create(AOwner: TFpLldbDBGDisassembler; AnAddr: TDBGPtr; ALinesBefore, ALinesAfter: Cardinal);
+  end;
+
+
+  { TLldbDBGDisassembler }
+
+  TFpLldbDBGDisassembler = class(TDBGDisassembler)
+  private
+    FIsDisassembling: Boolean;
+  protected
+    function FpDebugger: TFpLldbDebugger;
+    function PrepareEntries(AnAddr: TDbgPtr; ALinesBefore, ALinesAfter: Integer): boolean; override;
+  public
+    constructor Create(const ADebugger: TDebuggerIntf);
+    procedure EntriesFinished;
+    property EntryRanges;
+  end;
+
 
 { TFpLldbDebuggerCommandLocals }
 
@@ -697,6 +730,169 @@ begin
   //
 end;
 
+{ TFpLldbDebuggerCommandDissassemble }
+
+constructor TFpLldbDebuggerCommandDisassemble.Create(AOwner: TFpLldbDBGDisassembler; AnAddr: TDBGPtr; ALinesBefore, ALinesAfter: Cardinal);
+begin
+  inherited Create(AOwner.FpDebugger);
+  FOwner := AOwner;
+  FAddr := AnAddr;
+  FBeforeAddr := FAddr - Min(ALinesBefore * DAssBytesPerCommandAvg, DAssMaxRangeSize);
+  FLinesAfter := ALinesAfter;
+end;
+
+procedure TFpLldbDebuggerCommandDisassemble.CmdFinished(Sender: TObject);
+begin
+  InstrFinished(Sender);
+  Fowner.EntriesFinished;
+  Finished;
+end;
+
+
+procedure TFpLldbDebuggerCommandDisassemble.InstrFinished(Sender: TObject);
+var
+  Instr: TLldbInstructionDisassem absolute Sender;
+  Range: TDBGDisassemblerEntryRange;
+  AnEntry: TDisassemblerEntry;
+  SrcFileName, LineAddrStr: String;
+  i,j, StatIndex, FirstIndex, SrcFileLine: Integer;
+  Sym: TFpDbgSymbol;
+  ALastAddr, LineAddr: TDBGPtr;
+begin
+  StatIndex := 0;
+  FirstIndex := 0;
+  SrcFileLine := 0;
+  SrcFileName := '';
+  Sym:=nil;
+  ALastAddr:=0;
+  Range := TDBGDisassemblerEntryRange.Create;
+
+  i := 0;
+  while (i < Instr.Res.Count) do begin
+    if AnsiStrPos(PAnsiChar(Instr.Res[i]), '0x') = nil then begin
+      Instr.Res.Delete(i)
+      end
+    else
+      Inc(i)
+    end;
+
+  For i := 0 to Instr.Res.Count - 1 do begin
+
+    SScanf(Instr.Res[i], '%s0xsx %s', [@LineAddrStr]);
+    if (LineAddrStr <>  '') and (LineAddrStr[Length(LineAddrStr)] = ':') then
+      Delete(LineAddrStr, Length(LineAddrStr), 1);
+    LineAddr := StrToInt64(LineAddrStr);
+    if i = 0 then
+      Range.RangeStartAddr :=  LineAddr;
+    Sym :=  FOwner.FpDebugger.FDwarfInfo.FindSymbol(LineAddr);
+
+    // If this is the last statement for this source-code-line, fill the
+    // SrcStatementCount from the prior statements.
+    if (assigned(Sym) and ((SrcFileName<>Sym.FileName) or (SrcFileLine<>Sym.Line))) or
+       (not assigned(Sym) and ((SrcFileLine<>0) or (SrcFileName<>''))) then begin
+      for j := 0 to StatIndex-1 do
+        Range.EntriesPtr[FirstIndex+j]^.SrcStatementCount := StatIndex;
+      StatIndex := 0;
+      FirstIndex := i;
+      end;
+
+    if assigned(Sym) then  begin
+      SrcFileName := Sym.FileName;
+      SrcFileLine := Sym.Line;
+      Sym.ReleaseReference;
+      end
+    else begin
+      SrcFileName:='';
+      SrcFileLine:=0;
+      end;
+
+    AnEntry.Addr := LineAddr;
+    AnEntry.Dump := '';
+    AnEntry.Statement := AnsiStrPos(PAnsiChar(Instr.Res[i]), ':');
+    AnEntry.SrcFileLine := SrcFileLine;
+    AnEntry.SrcFileName := SrcFileName;
+    AnEntry.SrcStatementIndex := StatIndex;
+    Range.Append(@AnEntry);
+
+    Inc(StatIndex);
+    ALastAddr:=LineAddr;
+  end;
+
+  if Range.Count>0 then begin
+    Range.RangeEndAddr := ALastAddr;
+    Range.LastEntryEndAddr := ALastAddr;
+    FOwner.EntryRanges.AddRange(Range);
+    end
+  else
+    Range.Free;
+end;
+
+
+procedure TFpLldbDebuggerCommandDisassemble.DoExecute;
+var
+  memLoc: TFpDbgMemLocation;
+  ALinesAfter: Integer;
+  DInstr: TLldbInstructionDisassem;
+  Sym: TFpDbgSymbol;
+  StartRange, EndRange: TDBGPtr;
+begin
+
+  Sym := FOwner.FpDebugger.FDwarfInfo.FindSymbol(FBeforeAddr);
+  if Sym <> nil then
+    StartRange := Sym.Address.Address
+  else
+    StartRange := FBeforeAddr;
+
+  EndRange := FAddr + $20; // Make sure ranges overlap;
+
+  DInstr := TLldbInstructionDisassem.Create(StartRange, EndRange);
+  DInstr.OnFinish := @InstrFinished;
+  QueueInstruction(DInstr);
+  DInstr.ReleaseReference;
+
+  // Make sure FlinesAfter returned is slightly bigger than requested
+  // so that FindRange() will return true
+  DInstr := TLldbInstructionDisassem.Create(FAddr, FLinesAfter + 5);
+  DInstr.OnFinish := @CmdFinished;
+  QueueInstruction(DInstr);
+  DInstr.ReleaseReference;
+end;
+
+
+
+{ TFpLldbDBGDisassembler }
+
+constructor TFpLldbDBGDisassembler.Create(const ADebugger: TDebuggerIntf);
+begin
+  inherited Create(ADebugger);
+  FIsDisassembling := False;
+end;
+
+procedure TFpLldbDBGDisassembler.EntriesFinished;
+begin
+  OnChange(self);
+  FIsDisassembling := False;
+end;
+
+function TFpLldbDBGDisassembler.FpDebugger: TFpLldbDebugger;
+begin
+  Result := TFpLldbDebugger(Debugger);
+end;
+
+function TFpLldbDBGDisassembler.PrepareEntries(AnAddr: TDbgPtr; ALinesBefore, ALinesAfter: Integer): boolean;
+var
+  cmd: TFpLldbDebuggerCommandDisassemble;
+begin
+  Result := False;
+  if (Debugger = nil) or not(Debugger.State = dsPause) or FIsDisassembling then
+    exit;
+  FIsDisassembling := True;
+  cmd := TFpLldbDebuggerCommandDisassemble.Create(self, AnAddr, ALinesBefore, ALinesAfter);
+  TFpLldbDebugger(Debugger).QueueCommand(cmd);
+  cmd.ReleaseReference;
+  Result := True;
+end;
+
 { TFpLldbDebugger }
 
 procedure TFpLldbDebugger.DoState(const OldState: TDBGState);
@@ -1148,6 +1344,11 @@ end;
 function TFpLldbDebugger.CreateLocals: TLocalsSupplier;
 begin
   Result := TFPLldbLocals.Create(Self);
+end;
+
+function TFpLldbDebugger.CreateDisassembler: TDBGDisassembler;
+begin
+  Result:=TFpLldbDBGDisassembler.Create(Self);
 end;
 
 class function TFpLldbDebugger.Caption: String;

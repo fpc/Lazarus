@@ -360,6 +360,20 @@ type
     property Res: TStringArray read FRes;
   end;
 
+  TLldbInstructionDisassem = class(TLldbInstruction)
+  private
+    FRes: TStringList;
+    FReading: Boolean;
+  protected
+   procedure SendCommandDataToDbg(); override;
+   function ProcessInputFromDbg(const AData: String): Boolean; override;
+  public
+    constructor Create(AnAddr: TDBGPtr; NumLines: Cardinal);
+    constructor Create(StartAddr: TDBGPtr; EndAddr: TDBGPtr);
+    destructor Destroy; override;
+    property Res: TStringList read FRes;
+end;
+
 implementation
 
 { TLldbInstructionValueBase }
@@ -1318,6 +1332,64 @@ begin
   inherited Destroy;
   FRes := nil;
 end;
+
+constructor TLldbInstructionDisassem.Create(AnAddr: TDBGPtr; NumLines: Cardinal);
+var AddressString: String;
+begin
+  FRes := TStringList.Create;
+  AddressString := IntToHex(AnAddr, 16);
+  inherited Create(Format('disassemble -b --start-address  0x%s --count %d', [AddressString, NumLines]));
+end;
+
+constructor TLldbInstructionDisassem.Create(StartAddr: TDBGPtr; EndAddr: TDBGPtr);
+var StartAddressString, EndAddressString: String;
+begin
+  FRes := TStringList.Create;
+  StartAddressString := IntToHex(StartAddr, 16);
+  EndAddressString := IntToHex(EndAddr, 16);
+  inherited Create(Format('disassemble -b --start-address  0x%s --end-address 0x%s', [StartAddressString, EndAddressString]));
+end;
+
+
+destructor TLldbInstructionDisassem.Destroy;
+begin
+  FRes.Free;
+  inherited Destroy;
+end;
+
+function TLldbInstructionDisassem.ProcessInputFromDbg(const AData: String): Boolean;
+var i: Integer;
+    Address: TDBGPtr;
+begin
+  Result := False;
+  if StrStartsWith(AData, Command) then begin
+    FReading := True;
+    exit;
+  end;
+
+  if not FReading then
+    exit;
+
+  Result := True;
+
+  if StrStartsWith(AData, 'version') then begin
+    MarkAsSuccess;
+    Exit;
+  end;
+
+  Result := inherited ProcessInputFromDbg(AData);
+
+  if not Result then
+    FRes.Add(StringReplace(AData, '->', '  ',[]));
+
+end;
+
+procedure TLldbInstructionDisassem.SendCommandDataToDbg();
+begin
+  inherited SendCommandDataToDbg();
+  Queue.SendDataToDBG(Self, 'version'); // end marker // do not sent before new prompt
+end;
+
 
 end.
 
