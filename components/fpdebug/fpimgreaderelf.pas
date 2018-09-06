@@ -33,7 +33,7 @@ interface
 uses
   Classes, SysUtils,
   FpImgReaderBase,
-  fpDbgSymTable,
+  fpDbgSymTable, DbgIntfBaseTypes,
   FpImgReaderElfTypes, LCLProc;  // these files are part of
 
 
@@ -363,7 +363,7 @@ begin
           if SymbolArr64^[i].st_name<>0 then
             begin
             SymbolName:=pchar(SymbolStr+SymbolArr64^[i].st_name);
-            AfpSymbolInfo.AddObject(SymbolName, TObject(PtrUInt(SymbolArr64^[i].st_value+ImageBase)));
+            AfpSymbolInfo.Add(SymbolName, TDbgPtr(SymbolArr64^[i].st_value+ImageBase));
             end;
           {$pop}
         end
@@ -379,7 +379,7 @@ begin
           if SymbolArr32^[i].st_name<>0 then
             begin
             SymbolName:=pchar(SymbolStr+SymbolArr32^[i].st_name);
-            AfpSymbolInfo.AddObject(SymbolName, TObject(PtrUInt(SymbolArr32^[i].st_value+ImageBase)));
+            AfpSymbolInfo.Add(SymbolName, TDBGPtr(SymbolArr32^[i].st_value+ImageBase));
             end;
         end
       end;

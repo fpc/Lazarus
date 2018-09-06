@@ -40,7 +40,7 @@ interface
 
 uses
   Classes, SysUtils, math, FpImgReaderBase, FpImgReaderWinPETypes, LazLoggerBase,
-  fpDbgSymTable;
+  fpDbgSymTable, DbgIntfBaseTypes;
   
 type
 
@@ -152,7 +152,7 @@ begin
             end;
           end;
         end;
-        AfpSymbolInfo.AddObject(SymbolName, TObject(PtrUInt(SymbolArr^[i].Value+ImageBase+FCodeBase)));
+        AfpSymbolInfo.Add(SymbolName, TDBGPtr(SymbolArr^[i].Value+ImageBase+FCodeBase));
       end
     end;
     {$POP}

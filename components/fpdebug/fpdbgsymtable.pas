@@ -5,10 +5,11 @@ unit fpDbgSymTable;
 interface
 
 uses
-  Classes;
+  DbgIntfBaseTypes,
+  fgl, Classes;
 
 type
-  TfpSymbolList= TStringList;
+  TfpSymbolList= specialize TFPGMap<String, TDBGPtr>;
 
 implementation
 

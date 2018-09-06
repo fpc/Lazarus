@@ -93,7 +93,7 @@ begin
   i := FFpSymbolInfo.FSymbolList.IndexOf(AName);
   if i > -1 then
   begin
-    val.Address:=TDbgPtr(pointer(FFpSymbolInfo.FSymbolList.Objects[i]));
+    val.Address:=FFpSymbolInfo.FSymbolList.Data[i];
     val.MType:=mlfTargetMem;
     result := TFpDbgValueConstAddress.Create(val);
   end
