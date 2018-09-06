@@ -1810,7 +1810,7 @@ begin
       Debugger.FTargetRegisters[2] := '$ecx';
     end
     else
-    if (found[1] = '(x86_64)') then begin
+    if (found[1] = '(x86_64)') or  (found[1] = 'x86_64') then begin
       Debugger.FTargetWidth := 64;
       // target list  gives more detailed result. But until remote debugging is added, use the current system
       {$IFDEF MSWindows}
