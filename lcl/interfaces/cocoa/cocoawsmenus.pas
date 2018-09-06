@@ -33,7 +33,7 @@ uses
   // Widgetset
   WSMenus, WSLCLClasses,
   // LCL Cocoa
-  CocoaPrivate, CocoaWSCommon, CocoaUtils;
+  CocoaPrivate, CocoaWSCommon, CocoaUtils, CocoaGDIObjects;
 
 type
 
@@ -123,6 +123,7 @@ type
     class function SetEnable(const AMenuItem: TMenuItem; const Enabled: boolean): boolean; override;
     class function SetRadioItem(const AMenuItem: TMenuItem; const RadioItem: boolean): boolean; override;
     //class function SetRightJustify(const AMenuItem: TMenuItem; const Justified: boolean): boolean; override;
+    class procedure UpdateMenuIcon(const AMenuItem: TMenuItem; const HasIcon: Boolean; const AIcon: TBitmap); override;
   end;
 
   { TCocoaWSMenu }
@@ -146,6 +147,7 @@ type
     class procedure Popup(const APopupMenu: TPopupMenu; const X, Y: Integer); override;
   end;
 
+procedure NSMenuItemSetBitmap(mn: NSMenuItem; bmp: TBitmap);
 
 implementation
 
@@ -507,6 +509,9 @@ begin
     // initial set of properties
     item.setEnabled(AMenuItem.Enabled);
     Do_SetCheck(item, AMenuItem.Checked);
+
+    if (AMenuItem.ImageIndex>=0) or (AMenuItem.HasBitmap) then
+      NSMenuItemSetBitmap(item, AMenuItem.Bitmap);
   end;
 
   Result:=HMENU(item);
@@ -658,6 +663,26 @@ begin
   //todo: disable relative radio items
   NSMenuItem(AMenuItem.Handle).setOnStateImage( NSMenuRadio );
   NSMenuItem(AMenuItem.Handle).setState( menustate[RadioItem] );
+end;
+
+procedure NSMenuItemSetBitmap(mn: NSMenuItem; bmp: TBitmap);
+begin
+  if not Assigned(mn) then Exit;
+  if not Assigned(bmp) or (bmp.Handle = 0) then
+    mn.setImage(nil)
+  else
+    mn.setImage(TCocoaBitmap(bmp.Handle).Image);
+end;
+
+class procedure TCocoaWSMenuItem.UpdateMenuIcon(const AMenuItem: TMenuItem;
+  const HasIcon: Boolean; const AIcon: TBitmap);
+var
+  mn : NSMenuItem;
+begin
+  if not Assigned(AMenuItem) or (AMenuItem.Handle=0) then Exit;
+
+  if NSObject(AMenuItem.Handle).isKindOfClass(NSMenuItem) then
+    NSMenuItemSetBitmap( NSMenuItem(AMenuItem.Handle), AIcon);
 end;
 
 { TCocoaWSPopupMenu }
