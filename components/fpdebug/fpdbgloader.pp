@@ -112,7 +112,7 @@ implementation
 
 function TDbgImageLoaderList.GetImage64Bit: Boolean;
 begin
-  if Count<0 then
+  if Count>0 then
     result := Items[0].Image64Bit
   else
     {$ifdef CPU64}

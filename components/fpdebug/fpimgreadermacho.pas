@@ -56,6 +56,7 @@ uses
 
 type
   PnlistArray = ^nlist; // ^array[0..infinite] of nlist;
+  PnlistArray64 = ^nlist_64; // ^array[0..infinite] of nlist_64;
 
 const
   // Symbol-map section name
@@ -184,7 +185,11 @@ var
   p: PDbgImageSection;
   ps: PDbgImageSection;
   SymbolArr: PnlistArray;
+  SymbolArr64: PnlistArray64;
   SymbolStr: pointer;
+  SymbolType: uint8_t;
+  StringOffset: uint32_t;
+  SymbolValue: TDBGPtr;
   i: integer;
   SymbolCount: integer;
 begin
@@ -192,18 +197,38 @@ begin
   ps := Section[_symbolstrings];
   if assigned(p) and assigned(ps) then
   begin
-    SymbolArr:=PDbgImageSectionEx(p)^.Sect.RawData;
     SymbolStr:=PDbgImageSectionEx(ps)^.Sect.RawData;
-    SymbolCount := PDbgImageSectionEx(p)^.Sect.Size div sizeof(nlist);
+    if Image64Bit then
+      begin
+        SymbolArr64:=PDbgImageSectionEx(p)^.Sect.RawData;
+        SymbolCount := PDbgImageSectionEx(p)^.Sect.Size div sizeof(nlist_64);
+      end
+      else
+      begin
+        SymbolArr:=PDbgImageSectionEx(p)^.Sect.RawData;
+        SymbolCount := PDbgImageSectionEx(p)^.Sect.Size div sizeof(nlist);
+      end;
     for i := 0 to SymbolCount-1 do
     begin
-      if (SymbolArr[i].n_type and $e0)<>0 then
+      if Image64Bit then
+      begin
+        SymbolType := SymbolArr64[i].n_type;
+        StringOffset := SymbolArr64[i].n_un.n_strx;
+        SymbolValue := SymbolArr64[i].n_value;
+      end
+      else
+      begin
+        SymbolType := SymbolArr[i].n_type;
+        StringOffset := SymbolArr[i].n_un.n_strx;
+        SymbolValue := SymbolArr[i].n_value;
+      end;
+      if (SymbolType and $e0)<>0 then
         // This is a stabs-entry. Ignore.
         Continue;
-      if (SymbolArr[i].n_type and $0e)=$e then
+      if (SymbolType and $0e)=$e then
       begin
         // Section-index is ignored for now...
-        AfpSymbolInfo.AddObject(pchar(SymbolStr+SymbolArr[i].n_un.n_strx), TObject(PtrUInt(SymbolArr[i].n_value)));
+        AfpSymbolInfo.Add(pchar(SymbolStr+StringOffset), SymbolValue);
       end
     end;
   end;
@@ -258,7 +283,10 @@ begin
     SectionSize := StabsCmd.strsize;
   end else begin
     SectionOffset := StabsCmd.symoff;
-    SectionSize := Int64(StabsCmd.nsyms * sizeof(nlist));
+    if Image64Bit then
+      SectionSize := Int64(StabsCmd.nsyms * sizeof(nlist_64))
+    else
+      SectionSize := Int64(StabsCmd.nsyms * sizeof(nlist));
   end;
 end;
 
@@ -560,9 +588,13 @@ var
   p: PDbgImageSection;
   ps: PDbgImageSection;
   SymbolArr: PnlistArray;
+  SymbolArr64: PnlistArray64;
   SymbolStr: pointer;
   i: integer;
   SymbolCount: integer;
+  SymbolType, SymbolSect: uint8_t;
+  StringOffset: uint32_t;
+  SymbolValue: QWord;
   State: TDebugTableState;
   AddressMap: TDbgAddressMap;
   ProcName: string;
@@ -573,29 +605,51 @@ begin
   ps := Section[_symbolstrings];
   if assigned(p) and assigned(ps) then
   begin
-    SymbolArr:=PDbgImageSectionEx(p)^.Sect.RawData;
     SymbolStr:=PDbgImageSectionEx(ps)^.Sect.RawData;
-    SymbolCount := PDbgImageSectionEx(p)^.Sect.Size div sizeof(nlist);
+    if Image64Bit then
+    begin
+      SymbolArr64:=PDbgImageSectionEx(p)^.Sect.RawData;
+      SymbolCount := PDbgImageSectionEx(p)^.Sect.Size div sizeof(nlist_64);
+    end
+    else
+    begin
+      SymbolArr:=PDbgImageSectionEx(p)^.Sect.RawData;
+      SymbolCount := PDbgImageSectionEx(p)^.Sect.Size div sizeof(nlist);
+    end;
     state := dtsEnd;
     for i := 0 to SymbolCount-1 do
     begin
+      if Image64Bit then
+      begin
+        SymbolType := SymbolArr64[i].n_type;
+        StringOffset := SymbolArr64[i].n_un.n_strx;
+        SymbolValue := SymbolArr64[i].n_value;
+        SymbolSect := SymbolArr64[i].n_sect;
+      end
+      else
+      begin
+        SymbolType := SymbolArr[i].n_type;
+        StringOffset := SymbolArr[i].n_un.n_strx;
+        SymbolValue := SymbolArr[i].n_value;
+        SymbolSect := SymbolArr[i].n_sect;
+      end;
       case state of
         dtsEnd:
           begin
-            if SymbolArr[i].n_type = N_SO then
+            if SymbolType = N_SO then
             begin
               if assigned(DwarfDebugMap) then
                 DwarfDebugMap.Free;
               DwarfDebugMap := TAppleDwarfDebugMap.Create;
-              DwarfDebugMap.Dir := pchar(SymbolStr+SymbolArr[i].n_un.n_strx);
+              DwarfDebugMap.Dir := pchar(SymbolStr+StringOffset);
               state := dtsDir;
             end;
           end;
         dtsDir:
           begin
-            if SymbolArr[i].n_type = N_SO then
+            if SymbolType = N_SO then
             begin
-              DwarfDebugMap.SourceFile:=pchar(SymbolStr+SymbolArr[i].n_un.n_strx);
+              DwarfDebugMap.SourceFile:=pchar(SymbolStr+StringOffset);
               inc(state);
             end
             else
@@ -603,27 +657,27 @@ begin
           end;
         dtsSource:
           begin
-            if SymbolArr[i].n_type = N_OSO then
+            if SymbolType = N_OSO then
             begin
-              DwarfDebugMap.ObjectFile:=pchar(SymbolStr+SymbolArr[i].n_un.n_strx);
-              DwarfDebugMap.ObjFileAge:=SymbolArr[i].n_value;
+              DwarfDebugMap.ObjectFile:=pchar(SymbolStr+StringOffset);
+              DwarfDebugMap.ObjFileAge:=SymbolValue;
               inc(state);
             end;
           end;
         dtsObjectFile:
           begin
-            if (SymbolArr[i].n_type = N_BNSYM) then
+            if (SymbolType = N_BNSYM) then
             begin
               inc(state);
             end
-            else if (SymbolArr[i].n_type = N_STSYM) then
+            else if (SymbolType = N_STSYM) then
             begin
-              AddressMap.NewAddr:=SymbolArr[i].n_value;
+              AddressMap.NewAddr:=SymbolValue;
               AddressMap.OrgAddr:=0;
               AddressMap.Length:=0;
-              DwarfDebugMap.GlobalList.Add(pchar(SymbolStr+SymbolArr[i].n_un.n_strx), AddressMap);
+              DwarfDebugMap.GlobalList.Add(pchar(SymbolStr+StringOffset), AddressMap);
             end
-            else if (SymbolArr[i].n_type = N_SO) and (SymbolArr[i].n_sect=1) then
+            else if (SymbolType = N_SO) and (SymbolSect=1) then
             begin
               state := dtsEnd;
               SubFiles.AddObject(DwarfDebugMap.ObjectFile, DwarfDebugMap);
@@ -632,24 +686,24 @@ begin
           end;
         dtsProc:
           begin
-            if (SymbolArr[i].n_type = N_FUN) and (SymbolArr[i].n_sect=1) then
+            if (SymbolType = N_FUN) and (SymbolSect=1) then
             begin
-              AddressMap.NewAddr:=SymbolArr[i].n_value;
-              ProcName:=pchar(SymbolStr+SymbolArr[i].n_un.n_strx);
+              AddressMap.NewAddr:=SymbolValue;
+              ProcName:=pchar(SymbolStr+StringOffset);
               inc(state);
             end;
           end;
         dtsProcLen:
           begin
-            if (SymbolArr[i].n_type = N_FUN) and (SymbolArr[i].n_sect=0) then
+            if (SymbolType = N_FUN) and (SymbolSect=0) then
             begin
-              AddressMap.Length:=SymbolArr[i].n_value;
+              AddressMap.Length:=SymbolValue;
               inc(state);
             end;
           end;
         dtsProcEnd:
           begin
-            if (SymbolArr[i].n_type = N_ENSYM) and (SymbolArr[i].n_sect=1) then
+            if (SymbolType = N_ENSYM) and (SymbolSect=1) then
             begin
               DwarfDebugMap.GlobalList.Add(ProcName, AddressMap);
               state := dtsObjectFile;
@@ -665,7 +719,11 @@ var
   p: PDbgImageSection;
   ps: PDbgImageSection;
   SymbolArr: PnlistArray;
+  SymbolArr64: PnlistArray64;
   SymbolStr: pointer;
+  SymbolType: uint8_t;
+  StringOffset: uint32_t;
+  SymbolValue: QWord;
   i: integer;
   SymbolCount: integer;
   MainDwarfDebugMap: TAppleDwarfDebugMap;
@@ -678,30 +736,50 @@ begin
   ps := Section[_symbolstrings];
   if assigned(p) and assigned(ps) then
   begin
-    SymbolArr:=PDbgImageSectionEx(p)^.Sect.RawData;
     SymbolStr:=PDbgImageSectionEx(ps)^.Sect.RawData;
-    SymbolCount := PDbgImageSectionEx(p)^.Sect.Size div sizeof(nlist);
+    if Image64Bit then
+    begin
+      SymbolArr64:=PDbgImageSectionEx(p)^.Sect.RawData;
+      SymbolCount := PDbgImageSectionEx(p)^.Sect.Size div sizeof(nlist_64);
+    end
+    else
+    begin
+      SymbolArr:=PDbgImageSectionEx(p)^.Sect.RawData;
+      SymbolCount := PDbgImageSectionEx(p)^.Sect.Size div sizeof(nlist);
+    end;
     for i := 0 to SymbolCount-1 do
     begin
-      if SymbolArr[i].n_type = N_SECT then
+      if Image64Bit then
       begin
-        s := pchar(SymbolStr+SymbolArr[i].n_un.n_strx);
+        SymbolType := SymbolArr64[i].n_type;
+        StringOffset := SymbolArr64[i].n_un.n_strx;
+        SymbolValue := SymbolArr64[i].n_value;
+      end
+      else
+      begin
+        SymbolType := SymbolArr[i].n_type;
+        StringOffset := SymbolArr[i].n_un.n_strx;
+        SymbolValue := SymbolArr[i].n_value;
+      end;
+      if SymbolType = N_SECT then
+      begin
+        s := pchar(SymbolStr+StringOffset);
         ind := MainDwarfDebugMap.GlobalList.Find(s);
         if assigned(ind) then
           begin
             AddressMap:=MainDwarfDebugMap.GlobalList.Items[s];
-            AddressMap.OrgAddr:=SymbolArr[i].n_value;
+            AddressMap.OrgAddr:=SymbolValue;
             AddressMapList.Add(AddressMap);
           end;
       end;
-      if SymbolArr[i].n_type = N_SECT+N_EXT then
+      if SymbolType = N_SECT+N_EXT then
       begin
-        s := pchar(SymbolStr+SymbolArr[i].n_un.n_strx);
+        s := pchar(SymbolStr+StringOffset);
         ind := MainDwarfDebugMap.GlobalList.Find(s);
         if assigned(ind) then
           begin
             AddressMap:=MainDwarfDebugMap.GlobalList.Items[s];
-            AddressMap.OrgAddr:=SymbolArr[i].n_value;
+            AddressMap.OrgAddr:=SymbolValue;
             AddressMapList.Add(AddressMap);
           end;
       end;

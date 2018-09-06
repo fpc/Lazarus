@@ -62,21 +62,26 @@ const
   parentfp2: string = '$parentfp';
   selfname: string = 'self';
   // TODO: get reg num via memreader name-to-num
-  {$IFDEF cpu64}
-  RegFp = 6;
-  RegPc = 16;
-  {$ELSE}
-  RegFp = 5;
-  RegPc = 8;
-  {$ENDIF}
+  RegFp64 = 6;
+  RegPc64 = 16;
+  RegFp32 = 5;
+  RegPc32 = 8;
 var
-  StartScopeIdx: Integer;
+  StartScopeIdx, RegFp, RegPc: Integer;
   ParentFpVal: TFpDbgValue;
   SearchCtx: TFpDwarfFreePascalAddressContext;
   par_fp, cur_fp, prev_fp, pc: TDbgPtr;
   d, i: Integer;
   ParentFpSym: TFpDwarfSymbol;
 begin
+  if Dwarf.Image64Bit then begin
+    RegFP := RegFp64;
+    RegPc := RegPc64;
+  end
+  else begin
+    RegFP := RegFp32;
+    RegPc := RegPc32;
+  end;
   Result := False;
   if (Length(AName) = length(selfname)) and (CompareUtf8BothCase(PNameUpper, PNameLower, @selfname[1])) then begin
     ADbgValue := GetSelfParameter;

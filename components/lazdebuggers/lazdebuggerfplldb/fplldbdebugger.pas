@@ -430,44 +430,46 @@ var
 begin
   Result := False;
 
+
   // WINDOWS gdb dwarf names
-  {$IFDEF cpu64}
-  case ARegNum of
-     0:  rname := 'RAX'; // RAX
-     1:  rname := 'RDX'; // RDX
-     2:  rname := 'RCX'; // RCX
-     3:  rname := 'RBX'; // RBX
-     4:  rname := 'RSI';
-     5:  rname := 'RDI';
-     6:  rname := 'RBP';
-     7:  rname := 'RSP';
-     8:  rname := 'R8'; // R8D , but gdb uses R8
-     9:  rname := 'R9';
-    10:  rname := 'R10';
-    11:  rname := 'R11';
-    12:  rname := 'R12';
-    13:  rname := 'R13';
-    14:  rname := 'R14';
-    15:  rname := 'R15';
-    16:  rname := 'RIP';
-    else
-      exit;
+  if FDebugger.FDwarfInfo.Image64Bit then begin
+    case ARegNum of
+       0:  rname := 'RAX'; // RAX
+       1:  rname := 'RDX'; // RDX
+       2:  rname := 'RCX'; // RCX
+       3:  rname := 'RBX'; // RBX
+       4:  rname := 'RSI';
+       5:  rname := 'RDI';
+       6:  rname := 'RBP';
+       7:  rname := 'RSP';
+       8:  rname := 'R8'; // R8D , but gdb uses R8
+       9:  rname := 'R9';
+      10:  rname := 'R10';
+      11:  rname := 'R11';
+      12:  rname := 'R12';
+      13:  rname := 'R13';
+      14:  rname := 'R14';
+      15:  rname := 'R15';
+      16:  rname := 'RIP';
+      else
+        exit;
+    end;
+  end
+  else begin
+    case ARegNum of
+       0:  rname := 'EAX'; // RAX
+       1:  rname := 'ECX'; // RDX
+       2:  rname := 'EDX'; // RCX
+       3:  rname := 'EBX'; // RBX
+       4:  rname := 'ESP';
+       5:  rname := 'EBP';
+       6:  rname := 'ESI';
+       7:  rname := 'EDI';
+       8:  rname := 'EIP';
+      else
+        exit;
+    end;
   end;
-  {$ELSE}
-  case ARegNum of
-     0:  rname := 'EAX'; // RAX
-     1:  rname := 'ECX'; // RDX
-     2:  rname := 'EDX'; // RCX
-     3:  rname := 'EBX'; // RBX
-     4:  rname := 'ESP';
-     5:  rname := 'EBP';
-     6:  rname := 'ESI';
-     7:  rname := 'EDI';
-     8:  rname := 'EIP';
-    else
-      exit;
-  end;
-  {$ENDIF}
   assert(AContext <> nil, 'TFpLldbDbgMemReader.ReadRegister: AContext <> nil');
 
   Reg := FDebugger.Registers.CurrentRegistersList[AContext.ThreadId, AContext.StackFrame];
@@ -493,11 +495,10 @@ end;
 
 function TFpLldbDbgMemReader.RegisterSize(ARegNum: Cardinal): Integer;
 begin
-  {$IFDEF cpu64}
-  Result := 8; // for the very few supported...
-  {$ELSE}
-  Result := 4; // for the very few supported...
-  {$ENDIF}
+  if FDebugger.FDwarfInfo.Image64Bit then
+    Result := 8 // for the very few supported...
+  else
+    Result := 4; // for the very few supported...
 end;
 
 { TFpLldbDbgMemCacheManagerSimple }

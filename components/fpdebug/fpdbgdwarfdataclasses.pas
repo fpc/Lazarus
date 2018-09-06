@@ -597,6 +597,7 @@ type
   private
     FCompilationUnits: TList;
     FImageBase: QWord;
+    FImage64Bit: Boolean;
     FMemManager: TFpDbgMemManager;
     FFiles: array of TDwarfDebugFile;
     function GetCompilationUnit(AIndex: Integer): TDwarfCompilationUnit;
@@ -620,6 +621,7 @@ type
     property MemManager: TFpDbgMemManager read FMemManager write FMemManager;
 
     property ImageBase: QWord read FImageBase;
+    property Image64Bit: Boolean read FImage64Bit;
   end;
 
   { TDwarfLocationStack }
@@ -2929,6 +2931,7 @@ var
   i: Integer;
 begin
   inherited Create(ALoaderList);
+  FImage64Bit := ALoaderList.Image64Bit;
   FCompilationUnits := TList.Create;
   FImageBase := ALoaderList.ImageBase;
 
