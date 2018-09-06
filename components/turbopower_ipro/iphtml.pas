@@ -7682,7 +7682,6 @@ begin
       LoadAndApplyCSSProps;
       {$ENDIF}
     end;
-
     NextToken;
     ParseBodyText(Body, EndTokens + [IpHtmlTagBODYend]);
     EnsureClosure(IpHtmlTagBODYend, EndTokens);
@@ -12864,6 +12863,9 @@ function TIpHtmlNodeCore.GetFontSizeFromCSS(CurrentFontSize:Integer;
     else
     if (FParentNode is TIpHtmlNodeGenInline) then
       result := TIpHtmlNodeGenInline(FparentNode).Props.FontSize
+    else
+    if (FParentNode is TIpHtmlNodeHtml) or (FParentNode = nil) then
+      Result := 14
     else
       result := CurrentFontSize;
   end;
