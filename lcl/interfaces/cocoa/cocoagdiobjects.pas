@@ -2133,6 +2133,12 @@ begin
   // Make sure that bitmap is the most up-to-date
   Bmp.ReCreateHandle_IfModified(); // Fix for bug 28102
 
+  // see https://bugs.freepascal.org/view.php?id=34197
+  // Bitmap context windowsofs should be used when rendering a bitmap
+  inc(XSrc, -SrcDC.WindowOfs.X);
+  inc(YSrc, -SrcDC.WindowOfs.Y);
+
+  //apply window offset
   if (Msk <> nil) and (Msk.Image <> nil) then
   begin
     MskImage := Msk.CreateMaskImage(Bounds(XMsk, YMsk, SrcWidth, SrcHeight));
