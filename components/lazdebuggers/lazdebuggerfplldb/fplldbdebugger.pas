@@ -136,7 +136,6 @@ var
   DBG_VERBOSE, DBG_ERRORS: PLazLoggerLogGroup;
 
 type
-
   TFPLldbWatches = class;
 
   { TFpLldbDebuggerCommandEvaluate }
@@ -786,6 +785,14 @@ begin
     EvalFlags := TDBGEvaluateFlags(AParams[1].VInteger);
     Result := False;
     if (HasDwarf) then begin
+      Threads.CurrentThreads.Count; // trigger threads, in case
+      if Registers.CurrentRegistersList[CurrentThreadId, CurrentStackFrame].Count = 0 then begin  // trigger register, in case
+        Registers.CurrentRegistersList[CurrentThreadId, CurrentStackFrame].Count;
+        while DebugInstructionQueue.RunningInstruction <> nil do begin // TODO: use a callback
+          Application.ProcessMessages;
+          sleep(30);
+        end;
+      end;
       Result := EvaluateExpression(nil, String(AParams[0].VAnsiString),
         ResText, ResType, EvalFlags);
       if EvalFlags * [defNoTypeInfo, defSimpleTypeInfo, defFullTypeInfo] = [defNoTypeInfo]
