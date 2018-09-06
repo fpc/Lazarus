@@ -1847,7 +1847,10 @@ begin
     {$ENDIF}
   end;
 
-  Instr := TLldbInstructionSettingSet.Create('target.run-args', Debugger.Arguments);
+  if Trim(Debugger.Arguments) <> '' then
+    Instr := TLldbInstructionSettingSet.Create('target.run-args', Debugger.Arguments)
+  else
+    Instr := TLldbInstructionSettingClear.Create('target.run-args');
   QueueInstruction(Instr);
   Instr.ReleaseReference;
 
