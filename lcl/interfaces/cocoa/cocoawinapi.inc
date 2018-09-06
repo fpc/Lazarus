@@ -623,6 +623,30 @@ begin
   end;
 end;
 
+function TCocoaWidgetSet.ExcludeClipRect(dc: hdc;
+  Left, Top, Right, Bottom : Integer) : Integer;
+var
+  RRGN : HRGN;
+  R : TRect;
+begin
+  // there seems to be a bug in TWidgetset ExcludeClipRect.
+  // as it doesn't use LPtoDP() (as IntersectClipRect does).
+  // Fixing the problem here.
+  R := Types.Rect(Left, Top, Right, Bottom);
+  LPtoDP(DC, R, 2);
+
+  If DCClipRegionValid(DC) then begin
+    //DebugLn('TWidgetSet.ExcludeClipRect A DC=',DbgS(DC),' Rect=',Left,',',Top,',',Right,',',Bottom);
+    // create the rectangle region, that should be excluded
+    RRGN := CreateRectRgn(R.Left,R.Top,R.Right,R.Bottom);
+    Result := ExtSelectClipRGN(DC, RRGN, RGN_DIFF);
+    //DebugLn('TWidgetSet.ExcludeClipRect B Result=',Result);
+    DeleteObject(RRGN);
+  end else
+    Result:=ERROR;
+end;
+
+
 function TCocoaWidgetSet.ExtSelectClipRGN(dc: hdc; rgn: hrgn; Mode: Longint): Integer;
 var
   ctx: TCocoaContext;
