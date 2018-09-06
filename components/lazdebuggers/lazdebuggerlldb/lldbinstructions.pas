@@ -114,7 +114,7 @@ type
 
   { TLldbInstructionProcessStep }
 
-  TLldbInstructionProcessStepAction = (saContinue, saOver, saInto, saOut);
+  TLldbInstructionProcessStepAction = (saContinue, saOver, saInto, saOut, saInsIn, saInsOver);
 
   TLldbInstructionProcessStep = class(TLldbInstruction)
   protected
@@ -696,6 +696,8 @@ begin
     saOver: inherited Create('thread step-over');
   	saInto: inherited Create('thread step-in');
     saOut: inherited Create('thread step-out');
+    saInsIn: inherited Create ('thread step-inst');
+    saInsOver: inherited Create('thread step-inst-over');
   end;
 end;
 

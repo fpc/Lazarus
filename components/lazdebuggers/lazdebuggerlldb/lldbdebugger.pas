@@ -2354,9 +2354,9 @@ end;
 function TLldbDebugger.GetSupportedCommands: TDBGCommands;
 begin
   Result := [dcRun, dcStop, dcStepOver, dcStepInto, dcStepOut, dcEvaluate,
-             dcEnvironment];
-//  Result := [dcPause, dcStepOverInstr, dcStepIntoInstr, dcRunTo, dcAttach, dcDetach, dcJumpto,
-//             dcBreak, dcWatch, dcLocal, dcEvaluate, dcModify, dcEnvironment,
+             dcStepOverInstr, dcStepIntoInstr, dcEnvironment];
+//  Result := [dcPause, dcRunTo, dcAttach, dcDetach, dcJumpto,
+//             dcBreak, dcWatch, dcLocal, dcEvaluate, dcModify,
 //             dcSetStackFrame, dcDisassemble
 //            ];
 end;
@@ -2375,6 +2375,8 @@ begin
       dcStepOver:    Result := LldbStep(saOver);
       dcStepInto:    Result := LldbStep(saInto);
       dcStepOut:     Result := LldbStep(saOut);
+      dcStepOverInstr: Result := LldbStep(saInsOver);
+      dcStepIntoInstr: Result := LldbStep(saInsIn);
       dcEvaluate:    begin
                        EvalFlags := [];
                        if high(AParams) >= 1 then
@@ -2392,8 +2394,6 @@ begin
 //                                              String(AParams[3].VPointer^), String(AParams[4].VPointer^),
 //                                              String(AParams[5].VPointer^), Integer(AParams[6].VPointer^))
 //                                              {%H-};
-//      dcStepOverInstr: Result := GDBStepOverInstr;
-//      dcStepIntoInstr: Result := GDBStepIntoInstr;
     end;
   finally
     UnlockRelease;
