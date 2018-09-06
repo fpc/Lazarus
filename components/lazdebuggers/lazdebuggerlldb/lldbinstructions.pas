@@ -652,12 +652,12 @@ end;
 function TLldbInstructionProcessLaunch.ProcessInputFromDbg(const AData: String
   ): Boolean;
 begin
-  Result := True;
   if StrStartsWith(AData, 'Process ') and (pos(' launched:', AData) > 8) then begin
     SetContentReceieved;
   end
   else
     Result := inherited;
+  Result := True; // Ignore any "process stopped", before "launched"
 end;
 
 constructor TLldbInstructionProcessLaunch.Create();
