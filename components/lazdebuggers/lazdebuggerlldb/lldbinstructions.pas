@@ -355,6 +355,7 @@ type
     function ProcessInputFromDbg(const AData: String): Boolean; override;
   public
     constructor Create(FrameCount: Integer; AThread: Integer);
+    constructor Create(FrameCount, FirstFrame: Integer; AThread: Integer);
     destructor Destroy; override;
     property Res: TStringArray read FRes;
   end;
@@ -1303,7 +1304,13 @@ end;
 constructor TLldbInstructionStackTrace.Create(FrameCount: Integer;
   AThread: Integer);
 begin
-  inherited Create(Format('bt %d', [FrameCount]), AThread);
+  inherited Create(Format('thread backtrace -c %d', [FrameCount]), AThread);
+end;
+
+constructor TLldbInstructionStackTrace.Create(FrameCount, FirstFrame: Integer;
+  AThread: Integer);
+begin
+  inherited Create(Format('thread backtrace -s %d -c %d', [FirstFrame, FrameCount]), AThread);
 end;
 
 destructor TLldbInstructionStackTrace.Destroy;
