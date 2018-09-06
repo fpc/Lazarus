@@ -1005,6 +1005,8 @@ type
                ReqFlags: TPkgIntfRequiredFlags = [];
                MinPolicy: TPackageUpdatePolicy = low(TPackageUpdatePolicy));
     procedure AddPackageDependency(const PackageName: string); override;
+    function RemovePackageDependency(const PackageName: string): boolean;
+      override;
     
     // unit dependencies
     procedure LockUnitComponentDependencies;
@@ -4638,6 +4640,15 @@ begin
   PkgDependency.DependencyType:=pdtLazarus;
   PkgDependency.PackageName:=PackageName;
   AddRequiredDependency(PkgDependency);
+end;
+
+function TProject.RemovePackageDependency(const PackageName: string): boolean;
+var
+  PkgDependency: TPkgDependency;
+begin
+  PkgDependency:=FindDependencyByNameInList(FirstRequiredDependency,pdlRequires,PackageName);
+  if PkgDependency=nil then exit(false);
+  RemoveRequiredDependency(PkgDependency);
 end;
 
 procedure TProject.LockUnitComponentDependencies;

@@ -541,6 +541,7 @@ type
     procedure RemoveUnit(Index: integer; RemoveFromUsesSection: boolean = true); virtual; abstract;
     procedure AddSrcPath(const SrcPathAddition: string); virtual; abstract;
     procedure AddPackageDependency(const PackageName: string); virtual; abstract;
+    function RemovePackageDependency(const PackageName: string): boolean; virtual; abstract;
     procedure ClearModifieds(ClearUnits: boolean);
     function FindFile(const AFilename: string;
                       SearchFlags: TProjectFileSearchFlags): TLazProjectFile; virtual; abstract;
