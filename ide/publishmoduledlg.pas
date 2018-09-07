@@ -490,7 +490,7 @@ begin
     Result := CopyPackageFiles;
     if Result <> mrOk then
     begin
-      IDEMessageDialog(lisError, lisCopyPackagesFailed, mtInformation,[mbOk]);
+      IDEMessageDialog(lisError, lisCopyFilesFailed, mtInformation,[mbOk]);
       exit;
     end;
     Result := WritePackageInfo;

@@ -3878,7 +3878,6 @@ resourcestring
     +'syntax *.pas;*.pp corresponds to ^(.*\.pas|.*\.pp)$';
   lisUseFilterForExtraFiles = 'Use filter to include extra files';
   lisCopyFilesFailed = 'Copying files failed.';
-  lisCopyPackagesFailed = 'Copying packages failed.';
   lisWriteProjectInfoFailed = 'Writing the project info file failed.';
   lisWritePackageInfoFailed = 'Writing the package info file failed.';
   lisPublishedTo = 'Published to %s';
