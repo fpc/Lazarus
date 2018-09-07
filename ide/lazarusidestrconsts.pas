@@ -6171,7 +6171,6 @@ resourcestring
   regdlgOctal = 'Octal';
   regdlgBinary = 'Binary';
   regdlgRaw = 'Raw';
-
   // Event log dialog
   lisEventLogOptions = 'Event Log Options ...';
   lisEventLogClear = 'Clear Events';
@@ -6179,9 +6178,10 @@ resourcestring
   lisEventsLogAddComment = 'Add Comment ...';
   lisEventsLogAddComment2 = 'Add Comment';
   lisCleanUpAndBuildProject = 'Clean up and build project';
-  lisBuildFollowingModes = 'Build the following modes';
-  lisSelectedModesWereBuilt  = 'Selected %d modes were successfully built.';
-
+  // Many Build Modes
+  lisCompileFollowingModes = 'Compile the following modes';
+  lisPleaseSelectAtLeastOneBuildMode = 'Please select at least one build mode';
+  lisSelectedModesWereCompiled  = 'Selected %d modes were successfully compiled.';
   // Clean Build Project Dialog
   lisProjectOutputDirectory = 'Project output directory';
   lisProjectSourceDirectories = 'Project source directories';

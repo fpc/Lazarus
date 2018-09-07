@@ -311,6 +311,7 @@ type
   end;
 
 function  GetMainIde: TMainIDEBase;
+function PrepareForCompileWithMsg: TModalResult; // Ensure starting compilation is OK.
 
 property MainIDE: TMainIDEBase read GetMainIde;
 
@@ -324,6 +325,17 @@ implementation
 function GetMainIde: TMainIDEBase;
 begin
   Result := TMainIDEBase(MainIDEInterface)
+end;
+
+function PrepareForCompileWithMsg: TModalResult;
+begin
+  Result:=mrCancel;
+  if Project1=nil then exit;
+  if Project1.MainUnitInfo=nil then
+    // this project has no source to compile
+    IDEMessageDialog(lisCanNotCompileProject,lisTheProjectHasNoMainSourceFile,mtError,[mbCancel])
+  else
+    Result:=MainIDE.PrepareForCompile;
 end;
 
 { TSetBuildModeToolButton.TBuildModeMenu }

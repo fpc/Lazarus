@@ -52,7 +52,7 @@ uses
   MainBase, MainBar, MainIntf, Project, ProjectDefs, ProjectInspector, CompilerOptions,
   SourceSynEditor, SourceEditor, EditorOptions, EnvironmentOpts, CustomFormEditor,
   ControlSelection, FormEditor, EmptyMethodsDlg, BaseDebugManager, TransferMacros,
-  BuildManager, EditorMacroListViewer, FindRenameIdentifier, GenericCheckList,
+  BuildManager, EditorMacroListViewer, FindRenameIdentifier, BuildModesManager,
   ViewUnit_Dlg, DiskDiffsDialog, InputHistory, CheckLFMDlg, etMessagesWnd,
   ConvCodeTool, BasePkgManager, PackageDefs, PackageSystem, Designer, DesignerProcs;
 
@@ -170,15 +170,12 @@ type
   TLazSourceFileManager = class
   private
     FProject: TProject;
-    FListForm: TGenericCheckListForm;
     FCheckFilesOnDiskNeeded: boolean;
     function AskToSaveEditors(EditorList: TList): TModalResult;
-    function AddPathToBuildModes(aPath, CurDirectory: string; IsIncludeFile: Boolean): Boolean;
     function CheckMainSrcLCLInterfaces(Silent: boolean): TModalResult;
     function FileExistsInIDE(const Filename: string;
       SearchFlags: TProjectFileSearchFlags): boolean;
     procedure RemovePathFromBuildModes(ObsoletePaths: String; pcos: TParsedCompilerOptString);
-    function ShowCheckListBuildModes(DlgMsg: String): Boolean;
   public
     constructor Create;
     destructor Destroy; override;
@@ -236,16 +233,6 @@ type
 
     procedure CloseAll;
     procedure InvertedFileClose(PageIndex: LongInt; SrcNoteBook: TSourceNotebook);
-
-    // Ensure compilation is OK, build many modes at one go.
-    function PrepareForCompileWithMsg: TModalResult;
-    function BuildManyModes: Boolean;
-
-    // Project Inspector
-    // Checks if the UnitDirectory is part of the Unit Search Paths, if not,
-    // ask the user if he wants to extend dependencies or the Unit Search Paths.
-    function CheckDirIsInSearchPath(UnitInfo: TUnitInfo; AllowAddingDependencies, IsIncludeFile: Boolean): Boolean;
-
   private
     // methods for 'new unit'
     function CreateNewCodeBuffer(Descriptor: TProjectFileDescriptor;
@@ -4453,179 +4440,6 @@ begin
     until false;
   finally
     SourceEditorManager.DecUpdateLock;
-  end;
-end;
-
-function TLazSourceFileManager.ShowCheckListBuildModes(DlgMsg: String): Boolean;
-var
-  i: Integer;
-begin
-  FListForm:=TGenericCheckListForm.Create(Nil);
-  //lisApplyForBuildModes = 'Apply for build modes:';
-  FListForm.Caption:=lisAvailableProjectBuildModes;
-  FListForm.InfoLabel.Caption:=DlgMsg;
-  for i:=0 to Project1.BuildModes.Count-1 do begin
-    FListForm.CheckListBox1.Items.Add(Project1.BuildModes[i].Identifier);
-    FListForm.CheckListBox1.Checked[i]:=True;
-  end;
-  Result:=FListForm.ShowModal=mrOK;
-end;
-
-function TLazSourceFileManager.AddPathToBuildModes(aPath, CurDirectory: string;
-  IsIncludeFile: Boolean): Boolean;
-var
-  DlgCapt, DlgMsg: String;
-  i: Integer;
-  Ok: Boolean;
-begin
-  Result:=True;
-  FListForm:=Nil;
-  try
-    if IsIncludeFile then begin
-      DlgCapt:=lisAddToIncludeSearchPath;
-      DlgMsg:=lisTheNewIncludeFileIsNotYetInTheIncludeSearchPathAdd;
-    end
-    else begin
-      DlgCapt:=lisAddToUnitSearchPath;
-      DlgMsg:=lisTheNewUnitIsNotYetInTheUnitSearchPathAddDirectory;
-    end;
-    DlgMsg:=Format(DlgMsg,[LineEnding,CurDirectory]);
-    if Project1.BuildModes.Count > 1 then
-      Ok:=ShowCheckListBuildModes(DlgMsg)
-    else
-      Ok:=IDEMessageDialog(DlgCapt,DlgMsg,mtConfirmation,[mbYes,mbNo])=mrYes;
-    if not Ok then Exit(False);
-    for i:=0 to Project1.BuildModes.Count-1 do
-      if (FListForm=Nil) or FListForm.CheckListBox1.Checked[i] then
-        if IsIncludeFile then
-          Project1.BuildModes[i].CompilerOptions.MergeToIncludePaths(aPath)
-        else
-          Project1.BuildModes[i].CompilerOptions.MergeToUnitPaths(aPath);
-  finally
-    FListForm.Free;
-  end;
-end;
-
-function TLazSourceFileManager.PrepareForCompileWithMsg: TModalResult;
-begin
-  Result:=mrCancel;
-  if Project1=nil then exit;
-  if Project1.MainUnitInfo=nil then
-    // this project has no source to compile
-    IDEMessageDialog(lisCanNotCompileProject,lisTheProjectHasNoMainSourceFile,mtError,[mbCancel])
-  else
-    Result:=MainIDE.PrepareForCompile;
-end;
-
-function TLazSourceFileManager.BuildManyModes(): Boolean;
-var
-  ModeCnt: Integer;
-
-  function BuildOneMode(LastMode: boolean): Boolean;
-  begin
-    Inc(ModeCnt);
-    DebugLn('');
-    DebugLn(Format('Building mode %d: %s ...', [ModeCnt, Project1.ActiveBuildMode.Identifier]));
-    DebugLn('');
-    Result := MainIDE.DoBuildProject(crCompile, [], LastMode) = mrOK;
-  end;
-
-var
-  ModeList: TList;
-  md, ActiveMode: TProjectBuildMode;
-  BuildActiveMode: Boolean;
-  i: Integer;
-  LastMode: boolean;
-begin
-  Result := False;
-  ModeCnt := 0;
-  if PrepareForCompileWithMsg <> mrOk then exit;
-  FListForm := Nil;
-  ModeList := TList.Create;
-  try
-    if not ShowCheckListBuildModes(lisBuildFollowingModes) then Exit;
-    ActiveMode := Project1.ActiveBuildMode;
-    BuildActiveMode := False;
-    // Collect modes to be built.
-    for i := 0 to Project1.BuildModes.Count-1 do
-    begin
-      md := Project1.BuildModes[i];
-      if (FListForm=Nil) or FListForm.CheckListBox1.Checked[i] then
-        if md = ActiveMode then
-          BuildActiveMode := True
-        else
-          ModeList.Add(md);
-    end;
-    // Build first the active mode so we don't have to switch many times.
-    if BuildActiveMode then
-    begin
-      LastMode := (ModeList.Count=0);
-      if not BuildOneMode(LastMode) then Exit;
-    end;
-    // Build rest of the modes.
-    for i := 0 to ModeList.Count-1 do
-    begin
-      LastMode := (i=(ModeList.Count-1));
-      Project1.ActiveBuildMode := TProjectBuildMode(ModeList[i]);
-      if not BuildOneMode(LastMode) then Exit;
-    end;
-    // Switch back to original mode.
-    Project1.ActiveBuildMode := ActiveMode;
-    SaveProject([]);
-    IDEMessageDialog(lisSuccess, Format(lisSelectedModesWereBuilt, [ModeCnt]),
-                     mtInformation, [mbOK]);
-    Result:=True;
-  finally
-    ModeList.Free;
-    FListForm.Free;
-  end;
-end;
-
-function TLazSourceFileManager.CheckDirIsInSearchPath(UnitInfo: TUnitInfo;
-  AllowAddingDependencies, IsIncludeFile: Boolean): Boolean;
-// Check if the given unit's path is on Unit- or Include-search path.
-// Returns true if it is OK to add the unit to current project.
-var
-  CurDirectory, CurPath, ShortDir: String;
-  Owners: TFPList;
-  APackage: TLazPackage;
-  i: Integer;
-begin
-  Result:=True;
-  if UnitInfo.IsVirtual then exit;
-  if IsIncludeFile then
-    CurPath:=Project1.CompilerOptions.GetIncludePath(false)
-  else
-    CurPath:=Project1.CompilerOptions.GetUnitPath(false);
-  CurDirectory:=AppendPathDelim(UnitInfo.GetDirectory);
-  if SearchDirectoryInSearchPath(CurPath,CurDirectory)<1 then
-  begin
-    if AllowAddingDependencies then begin
-      Owners:=PkgBoss.GetPossibleOwnersOfUnit(UnitInfo.Filename,[]);
-      try
-        if (Owners<>nil) then begin
-          for i:=0 to Owners.Count-1 do begin
-            if TObject(Owners[i]) is TLazPackage then begin
-              APackage:=TLazPackage(Owners[i]);
-              if IDEMessageDialog(lisAddPackageRequirement,
-                Format(lisAddPackageToProject, [APackage.IDAsString]),
-                mtConfirmation,[mbYes,mbCancel],'')<>mrYes
-              then
-                Exit(True);
-              PkgBoss.AddProjectDependency(Project1,APackage);
-              Exit(False);
-            end;
-          end;
-        end;
-      finally
-        Owners.Free;
-      end;
-    end;
-    // unit is not in a package => extend unit path
-    ShortDir:=CurDirectory;
-    if (not Project1.IsVirtual) then
-      ShortDir:=CreateRelativePath(ShortDir,Project1.Directory);
-    Result:=AddPathToBuildModes(ShortDir,CurDirectory,IsIncludeFile);
   end;
 end;
 

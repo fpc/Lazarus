@@ -548,6 +548,7 @@ type
     FMakeFileHistory: TStringList;
     FTestBuildDirHistory: TStringList;
     FCompilerMessagesFileHistory: TStringList;
+    FManyBuildModesSelection: TStringList;
     FBuildMatrixOptions: TBuildMatrixOptions;
     FIsGlobalMode: TStrToBoolEvent;
 
@@ -812,6 +813,7 @@ type
     property CompilerMessagesFilename: string read GetCompilerMessagesFilename
               write SetCompilerMessagesFilename; // non English translation file
     property CompilerMessagesFileHistory: TStringList read FCompilerMessagesFileHistory;
+    property ManyBuildModesSelection: TStringList read FManyBuildModesSelection;
 
     // Primary-config verification
     property LastCalledByLazarusFullPath: String read FLastCalledByLazarusFullPath write FLastCalledByLazarusFullPath;
@@ -1709,6 +1711,7 @@ begin
   FTestBuildDirHistory:=TStringList.Create;
   CompilerMessagesFilename:='';
   FCompilerMessagesFileHistory:=TStringList.Create;
+  FManyBuildModesSelection:=TStringList.Create;
 
   // recent files and directories
   FRecentOpenFiles:=TStringList.Create;
@@ -1786,6 +1789,7 @@ begin
   FreeAndNil(FDebuggerFileHistory);
   for i := 0 to FDebuggerProperties.Count - 1 do
     FDebuggerProperties.Objects[i].Free;
+  FreeAndNil(FManyBuildModesSelection);
   FreeAndNil(FDebuggerProperties);
   FreeAndNil(FTestBuildDirHistory);
   FreeAndNil(FCompilerMessagesFileHistory);
@@ -1932,6 +1936,7 @@ begin
     GetDefaultTestBuildDirs(FTestBuildDirHistory);
   CompilerMessagesFilename:=FXMLCfg.GetValue(Path+'CompilerMessagesFilename/Value',CompilerMessagesFilename);
   LoadRecentList(FXMLCfg,FCompilerMessagesFileHistory,Path+'CompilerMessagesFilename/History/',rltFile);
+  LoadRecentList(FXMLCfg,FManyBuildModesSelection,Path+'ManyBuildModesSelection/',rltCaseInsensitive);
 
   // Primary-config verification
   FLastCalledByLazarusFullPath:=FXMLCfg.GetValue(Path+'LastCalledByLazarusFullPath/Value','');
@@ -2316,6 +2321,7 @@ begin
   SaveRecentList(FXMLCfg,FTestBuildDirHistory,Path+'TestBuildDirectory/History/');
   FXMLCfg.SetDeleteValue(Path+'CompilerMessagesFilename/Value',CompilerMessagesFilename,'');
   SaveRecentList(FXMLCfg,FCompilerMessagesFileHistory,Path+'CompilerMessagesFilename/History/');
+  SaveRecentList(FXMLCfg,FManyBuildModesSelection,Path+'ManyBuildModesSelection/');
 
   // Primary-config verification
   FXMLCfg.SetDeleteValue(Path+'LastCalledByLazarusFullPath/Value',FLastCalledByLazarusFullPath,'');

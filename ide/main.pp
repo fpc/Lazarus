@@ -85,9 +85,8 @@ uses
   // protocol
   IDEProtocol,
   // compile
-  CompilerOptions, CheckCompilerOpts, BuildProjectDlg,
-  ApplicationBundle,
-  ExtTools, ExtToolsIDE,
+  CompilerOptions, CheckCompilerOpts, BuildProjectDlg, BuildModesManager,
+  ApplicationBundle, ExtTools, ExtToolsIDE,
   // projects
   ProjectResources, Project, ProjectDefs, NewProjectDlg,
   PublishModuleDlg, ProjectInspector, PackageDefs, ProjectDescriptors,
@@ -4287,14 +4286,14 @@ end;
 
 procedure TMainIDE.mnuCleanUpAndBuildProjectClicked(Sender: TObject);
 begin
-  if SourceFileMgr.PrepareForCompileWithMsg<>mrOk then exit;
+  if PrepareForCompileWithMsg<>mrOk then exit;
   if ShowBuildProjectDialog(Project1)<>mrOk then exit;
   DoBuildProject(crBuild,[]);
 end;
 
 procedure TMainIDE.mnuBuildManyModesClicked(Sender: TObject);
 begin
-  SourceFileMgr.BuildManyModes;
+  BuildManyModes;
 end;
 
 procedure TMainIDE.mnuAbortBuildProjectClicked(Sender: TObject);
@@ -6696,7 +6695,7 @@ begin
     exit(mrCancel);
   end;
 
-  Result:=SourceFileMgr.PrepareForCompileWithMsg;
+  Result:=PrepareForCompileWithMsg;
   if Result<>mrOk then begin
     debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] PrepareForCompile failed']);
     exit;
@@ -12319,7 +12318,7 @@ begin
   BeginCodeTool(ActiveSourceEditor,ActiveUnitInfo,[]);
   OkToAdd:=True;
   if FilenameIsPascalUnit(AnUnitInfo.Filename) then begin
-    OkToAdd:=SourceFileMgr.CheckDirIsInSearchPath(AnUnitInfo,False,False);
+    OkToAdd:=CheckDirIsInSearchPath(AnUnitInfo,False,False);
     if (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags) then begin
       AnUnitInfo.ReadUnitNameFromSource(false);
       ShortUnitName:=AnUnitInfo.Unit_Name;
@@ -12336,7 +12335,7 @@ begin
     end;
   end
   else if CompareFileExt(AnUnitInfo.Filename,'inc',false)=0 then
-    OkToAdd:=SourceFileMgr.CheckDirIsInSearchPath(AnUnitInfo,False,True);
+    OkToAdd:=CheckDirIsInSearchPath(AnUnitInfo,False,True);
   if OkToAdd then
     ;
   Project1.Modified:=true;

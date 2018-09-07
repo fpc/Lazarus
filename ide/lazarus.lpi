@@ -34,8 +34,6 @@
     </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
-      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
-      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
     </PublishOptions>
     <RunParams>
       <FormatVersion Value="2"/>
@@ -880,6 +878,7 @@
       <Unit134>
         <Filename Value="dialogprocs.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="DialogProcs"/>
       </Unit134>
       <Unit135>
         <Filename Value="abstractsmethodsdlg.pas"/>
@@ -1013,6 +1012,7 @@
       <Unit162>
         <Filename Value="publishmodule.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="PublishModule"/>
       </Unit162>
       <Unit163>
         <Filename Value="checkcompileropts.pas"/>
@@ -1061,12 +1061,12 @@
         <IsPartOfProject Value="True"/>
       </Unit172>
       <Unit173>
-        <Filename Value="publishprojectdlg.pas"/>
+        <Filename Value="publishmoduledlg.pas"/>
         <IsPartOfProject Value="True"/>
-        <ComponentName Value="PublishProjectDialog"/>
+        <ComponentName Value="PublishModuleDialog"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="PublishProjectDlg"/>
+        <UnitName Value="PublishModuleDlg"/>
       </Unit173>
       <Unit174>
         <Filename Value="findoverloadsdlg.pas"/>
@@ -1123,11 +1123,14 @@
         <Filename Value="genericchecklist.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
+        <UnitName Value="GenericCheckList"/>
       </Unit184>
       <Unit185>
         <Filename Value="patheditordlg.pas"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="PathEditorDialog"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <UnitName Value="PathEditorDlg"/>
       </Unit185>
       <Unit186>
