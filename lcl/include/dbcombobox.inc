@@ -28,17 +28,6 @@ begin
     Text := '';
 end;
 
-procedure TDBComboBox.KeyDown(var Key: Word; Shift: TShiftState);
-begin
-  inherited KeyDown(Key, Shift);
-  if Key=VK_ESCAPE then begin
-    //cancel out of editing by reset on esc
-    FDataLink.Reset;
-    SelectAll;
-    Key := VK_UNKNOWN;
-  end;
-end;
-
 procedure TDBComboBox.KeyPress(var Key: char);
 begin
   inherited KeyPress(Key);

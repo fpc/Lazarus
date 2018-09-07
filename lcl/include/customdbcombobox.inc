@@ -38,6 +38,26 @@ begin
   PostMessage(Handle, LM_DEFERREDEDIT, 0, 0);
 end;
 
+procedure TCustomDBComboBox.KeyDown(var Key: Word; Shift: TShiftState);
+begin
+  inherited KeyDown(Key, Shift);
+  if Key=VK_ESCAPE then begin
+    //cancel out of editing by reset on esc
+    if FDatalink.EditingSource then
+      FDatalink.DataSet.Cancel
+    else
+      FDataLink.Reset;
+    SelectAll;
+    Key := VK_UNKNOWN;
+  end;
+end;
+
+procedure TCustomDBComboBox.UpdateRecord;
+begin
+  if FDatalink.Editing and FDatalink.IsModified then
+    FDataLink.UpdateRecord;
+end;
+
 function TCustomDBComboBox.GetReadOnly: Boolean;
 begin
   Result:=FDataLink.ReadOnly;
@@ -162,8 +182,7 @@ end;
 
 procedure TCustomDBComboBox.EditingDone;
 begin
-  if FDatalink.Editing and FDatalink.IsModified then
-    FDataLink.UpdateRecord;
+  UpdateRecord;
   inherited EditingDone;
 end;
 

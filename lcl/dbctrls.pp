@@ -52,6 +52,8 @@ Type
     FOnActiveChange: TNotifyEvent;
     // Curent State of Affairs
     FEditing: Boolean;
+    FEditingSourceSet: boolean;
+    FEditingSource: Boolean;
     IsModified: Boolean;
     function FieldCanModify: boolean;
     function IsKeyField(aField: TField): Boolean;
@@ -61,6 +63,7 @@ Type
     procedure UpdateField;
     // make sure the field/fieldname is valid before we do stuff with it
     procedure ValidateField;
+    procedure ResetEditingSource;
   protected
     // Testing Events
     procedure ActiveChanged; override;
@@ -88,6 +91,7 @@ Type
     // Current State of DB
     property CanModify: Boolean read GetCanModify;
     property Editing: Boolean read FEditing;
+    property EditingSource: boolean read FEditingSource;
 
     // Our Callbacks
     property OnDataChange: TNotifyEvent read FOnDataChange write FOnDataChange;
@@ -735,7 +739,9 @@ Type
     procedure DataChange(Sender: TObject); virtual; abstract;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Change; override;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure UpdateData(Sender: TObject); virtual; abstract;
+    procedure UpdateRecord;
     procedure WndProc(var Message: TLMessage); override;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -757,7 +763,6 @@ Type
   TDBComboBox = class(TCustomDBComboBox)
   protected
     procedure DataChange(Sender: TObject); override;
-    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: char); override;
     procedure UpdateData(Sender: TObject); override;
   published
@@ -862,6 +867,7 @@ Type
     procedure Loaded; override;
     procedure UpdateData(Sender: TObject); override;
     procedure DataChange(Sender: TObject); override;
+    procedure DoOnSelect; override;
   public
     constructor Create(AOwner: TComponent); override;
     property KeyValue: variant read GetKeyValue write SetKeyValue;
@@ -1628,6 +1634,11 @@ begin
     UpdateField;
 end;
 
+procedure TFieldDataLink.ResetEditingSource;
+begin
+  FEditingSource := false;
+  FEditingSourceSet := false;
+end;
 
 {TFieldDataLink  Protected Methods}
 
@@ -1688,7 +1699,10 @@ begin
   begin
     FEditing := RealEditState;
     if not FEditing then
+    begin
       IsModified := False;
+      ResetEditingSource;
+    end;
     if Assigned(FOnEditingChange) then
       FOnEditingChange(Self);
   end;
@@ -1808,11 +1822,22 @@ end;
   better please fix.
 }
 function TFieldDataLink.Edit: Boolean;
+var
+  editingSrc: Boolean;
 begin
+  editingSrc := (not FEditing) and (Dataset<>nil) and not(Dataset.State in dsEditModes);
+
   if (not FEditing) and CanModify then
     inherited Edit;
 
   Result := FEditing;
+
+  if not FEditingSourceSet then
+  begin
+    // should be triggered one time only if editing succeeded
+    FEditingSource := FEditing and editingSrc;
+    FEditingSourceSet := true;
+  end;
 end;
 
 { Delphi Help ->
@@ -1855,12 +1880,13 @@ begin
     FOnDataChange(Self);
 
   IsModified := False;
+  ResetEditingSource;
 end;
 
 CONST
-  DBCBEVENT_CHANGE   = 1;   // CustomDBBoxCombobox Detected change event
-  DBCBEVENT_SELECT   = 2;   // CustomDBBoxCombobox Detected select event
-  DBCBEVENT_CLOSEUP  = 4;   // CustomDBBoxCombobox Detected closeup event
+  DBCBEVENT_CHANGE   = 1;   // CustomDBCombobox Detected change event
+  DBCBEVENT_SELECT   = 2;   // CustomDBCombobox Detected select event
+  DBCBEVENT_CLOSEUP  = 4;   // CustomDBCombobox Detected closeup event
 
 {$Include dblookup.inc}
 {$Include dbedit.inc}

@@ -35,6 +35,9 @@ begin
   if i <> -1 then
     FLookup.UpdateData(i, FScrollListDataset)
   else
+  if FDatalink.EditingSource then
+    FDatalink.Dataset.Cancel
+  else
     UpdateLookup;
 end;
 
