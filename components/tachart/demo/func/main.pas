@@ -28,6 +28,7 @@ type
     Chart1YAxis: TConstantLine;
     catSpline: TChartAxisTransformations;
     catSplineLogarithmAxisTransform: TLogarithmAxisTransform;
+    cmbPalette: TComboBox;
     ExpressionChart: TChart;
     ExpressionSeries: TExpressionSeries;
     chParametric: TChart;
@@ -49,6 +50,7 @@ type
     EdExprDomain: TEdit;
     EdExprParamA: TEdit;
     EdExprParamB: TEdit;
+    lblPalette: TLabel;
     LblExpression: TLabel;
     LblExprDomain: TLabel;
     LblExprParamA: TLabel;
@@ -100,6 +102,7 @@ type
       AY: Double);
     procedure chParametricParametricCurveSeries1Calculate(const AT: Double; out
       AX, AY: Double);
+    procedure cmbPaletteChange(Sender: TObject);
     procedure EdExprDomainEditingDone(Sender: TObject);
     procedure EdExpressionEditingDone(Sender: TObject);
     procedure EdExprParamAEditingDone(Sender: TObject);
@@ -217,6 +220,15 @@ begin
   d := tbD.Position / tbD.Frequency;
   AX := Cos(a * AT) - IntPower(Cos(b * AT), seJ.Value);
   AY := Sin(c * AT) - IntPower(Sin(d * AT), seK.Value);
+end;
+
+procedure TForm1.cmbPaletteChange(Sender: TObject);
+begin
+  if cmbPalette.ItemIndex < cmbPalette.Items.Count-1 then begin
+    ChartColorMapColorMapSeries1.ColorSource := nil;
+    ChartColorMapColorMapSeries1.BuiltinPalette := TColorMapPalette(cmbPalette.ItemIndex);
+  end else
+    ChartColorMapColorMapSeries1.ColorSource := ListChartSource1;
 end;
 
 procedure TForm1.EdExprDomainEditingDone(Sender: TObject);
