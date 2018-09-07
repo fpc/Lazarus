@@ -51,7 +51,7 @@ object HelpForm: THelpForm
   OnKeyUp = FormKeyUp
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '1.5'
+  LCLVersion = '1.9.0.0'
   Visible = True
   object PageControl: TPageControl
     Left = 0
@@ -107,7 +107,6 @@ object HelpForm: THelpForm
       Left = 33
       Height = 32
       Top = 0
-      Width = 8
       Caption = 'ToolButton1'
       Style = tbsSeparator
     end

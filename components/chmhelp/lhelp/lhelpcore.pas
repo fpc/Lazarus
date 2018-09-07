@@ -554,7 +554,7 @@ begin
   Item.Hint:=Item.URL;
   FileMenuOpenRecentItem.Insert(0, Item);
 
-  MaxHistory := fConfig.GetValue('Recent/HistoryCount/Value', 5);
+  MaxHistory := fConfig.GetValue('Recent/HistoryCount/Value', 10);
 
   if FileMenuOpenRecentItem.Count > 0 then
     FileMenuOpenRecentItem.Enabled:=True;
