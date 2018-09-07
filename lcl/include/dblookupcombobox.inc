@@ -35,7 +35,7 @@ begin
   if i <> -1 then
     FLookup.UpdateData(i, FScrollListDataset)
   else
-    Text := '';
+    UpdateLookup;
 end;
 
 function TDBLookupComboBox.DoEdit: boolean;
@@ -61,6 +61,13 @@ end;
 procedure TDBLookupComboBox.DataChange(Sender: TObject);
 begin
   UpdateLookup;
+end;
+
+procedure TDBLookupComboBox.DoOnSelect;
+begin
+  if Style=csDropDownList then
+    UpdateRecord;
+  inherited DoOnSelect;
 end;
 
 procedure TDBLookupComboBox.DestroyWnd;
