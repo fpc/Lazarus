@@ -512,10 +512,11 @@ type
     // project inspector
     FProjInspSortAlphabetically: boolean;
     FProjInspShowDirHierarchy: boolean;
-
     // package editor
     FPackageEditorSortAlphabetically: boolean;
     FPackageEditorShowDirHierarchy: boolean;
+    // procedure list
+    FProcedureListFilterStart: boolean;
 
     // hints
     FAskSaveSessionOnly: boolean;
@@ -775,6 +776,9 @@ type
                                                      write FPackageEditorSortAlphabetically;
     property PackageEditorShowDirHierarchy: boolean read FPackageEditorShowDirHierarchy
                                                    write FPackageEditorShowDirHierarchy;
+    // procedure list
+    property ProcedureListFilterStart: boolean read FProcedureListFilterStart
+                                              write FProcedureListFilterStart;
     // hints
     property CheckDiskChangesWithLoading: boolean read FCheckDiskChangesWithLoading
                                                  write FCheckDiskChangesWithLoading;
@@ -1653,14 +1657,14 @@ begin
 
   // object inspector
   FObjectInspectorOptions:=TOIOptions.Create;
-
   // project inspector
   FProjInspSortAlphabetically:=false;
   FProjInspShowDirHierarchy:=false;
-
   // package editor
   FPackageEditorSortAlphabetically:=false;
   FPackageEditorShowDirHierarchy:=false;
+  // procedure list
+  FProcedureListFilterStart:=false;
 
   // hints
   FCheckDiskChangesWithLoading:=false;
@@ -2105,6 +2109,9 @@ begin
     FPackageEditorSortAlphabetically:=FXMLCfg.GetValue(Path+'PackageEditorSortAlphabetically/Value',false);
     FPackageEditorShowDirHierarchy:=FXMLCfg.GetValue(Path+'PackageEditorShowDirHierarchy/Value',false);
 
+    // procedure list
+    FProcedureListFilterStart:=FXMLCfg.GetValue(Path+'ProcedureListFilterStart/Value',false);
+
     // hints
     FCheckDiskChangesWithLoading:=FXMLCfg.GetValue(Path+'CheckDiskChangesWithLoading/Value',false);
     FDiskChangesAutoCheckModified:=FXMLCfg.GetValue(Path+'DiskChangesAutoCheckModified/Value',false);
@@ -2456,6 +2463,9 @@ begin
     // package editor
     FXMLCfg.SetDeleteValue(Path+'PackageEditorSortAlphabetically/Value',FPackageEditorSortAlphabetically,false);
     FXMLCfg.SetDeleteValue(Path+'PackageEditorShowDirHierarchy/Value',FPackageEditorShowDirHierarchy,false);
+
+    // procedure list
+    FXMLCfg.SetDeleteValue(Path+'ProcedureListFilterStart/Value',FProcedureListFilterStart,false);
 
     // hints
     FXMLCfg.SetDeleteValue(Path+'CheckDiskChangesWithLoading/Value',FCheckDiskChangesWithLoading,false);
