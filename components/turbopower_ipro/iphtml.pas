@@ -341,6 +341,7 @@ type
     procedure HideUnmarkedControl; virtual;
     procedure EnumChildren(EnumProc: TIpHtmlNodeEnumProc; UserData: Pointer); virtual;
     procedure AppendSelection(var S : string; var Completed: Boolean); virtual;
+    function GetMargin(AMargin: TIpHtmlElemMargin; ADefault: Integer): Integer; virtual;
   public
     constructor Create(ParentNode : TIpHtmlNode);
     destructor Destroy; override;
@@ -378,6 +379,7 @@ type
     procedure ReportMapRects(M : TRectMethod); override;
     procedure AppendSelection(var S : string; var Completed: Boolean); override;
     procedure EnumChildren(EnumProc: TIpHtmlNodeEnumProc; UserData: Pointer); override;
+    function GetMargin(AMargin: TIpHtmlElemMargin; ADefault: Integer): Integer; override;
   public
     constructor Create(ParentNode : TIpHtmlNode);
     destructor Destroy; override;
@@ -1121,6 +1123,7 @@ type
     FId: string;
   protected
     procedure SetClear(const Value: TIpHtmlBreakClear);
+    function GetMargin(AMargin: TIpHtmlElemMargin; ADefault:Integer): Integer; override;
   public
     constructor Create(ParentNode: TIpHtmlNode);
     procedure Enqueue; override;
@@ -3986,13 +3989,19 @@ begin
     prevelem := PIpHtmlElement(FElementQueue[i-1]);
     case PIpHtmlElement(FElementQueue[i])^.ElementType of
       etSoftLF:
-        if (prevelem.ElementType in [etSoftLF, etHardLF]) then begin
+        if (prevelem.ElementType in [etHardLF, etSoftLF]) then begin
           prevelem.LFHeight := MaxI2(prevelem.LFHeight, elem.LFHeight);
           FElementQueue.Delete(i);
         end;
       etHardLF:
-        if (prevelem.ElementType in [etSoftLF, etHardLF]) then
+        if (prevelem.ElementType = etSoftLF) then begin
           prevelem.LFHeight := MaxI2(prevelem.LFHeight, elem.LFHeight);
+          FElementQueue.Delete(i-1);
+        end else
+        if (prevelem.ElementType = etHardLF) then begin
+          prevelem.LFHeight := prevelem.LFHeight + elem.LFHeight;
+          FElementQueue.Delete(i);
+        end;
     end;
     dec(i);
   end;
@@ -4245,17 +4254,7 @@ begin
 end;
 
 procedure TIpHtmlNode.MakeVisible;
-var
-  elem: PIpHtmlElement;
-  R: TRect;
 begin
-  (*
-  elem := FOwner.FindFirstElementOfNode(self);
-  if elem <> nil then begin
-    R := elem.WordRect2;
-    FOwner.MakeVisible(R{$IFDEF IP_LAZARUS}, true {$ENDIF});
-  end;
-  *)
 end;
 
 procedure TIpHtmlNode.SetProps(const RenderProps: TIpHtmlProps);
@@ -4265,6 +4264,12 @@ end;
 procedure TIpHtmlNode.UnmarkControl;
 begin
 end;
+
+function TIpHtmlNode.GetMargin(AMargin: TIpHtmlElemMargin; ADefault: Integer): Integer;
+begin
+  Result := ADefault;
+end;
+
 
 {Attribute support code}
 
@@ -4679,6 +4684,16 @@ begin
     if Completed then exit;
   end;
 end;
+
+function TIpHtmlNodeMulti.GetMargin(AMargin: TIpHtmlElemMargin;
+  ADefault: Integer): Integer;
+begin
+  if AMargin.Style = hemsPx then
+    Result := round(AMargin.Size)
+  else
+    Result := ADefault;
+end;
+
 
 { TIpHtmlNodeBODY }
 
@@ -9724,14 +9739,6 @@ begin
   inherited SetProps(Props);
 end;
 
-function GetMargin(AMargin: TIpHtmlElemMargin; ADefault: Integer): Integer;
-begin
-  if AMargin.Style = hemsPx then
-    Result := round(AMargin.Size)
-  else
-    Result := ADefault;
-end;
-
 procedure TIpHtmlNodeP.Enqueue;
 var
   elem: PIpHtmlElement;
@@ -10074,17 +10081,43 @@ end;
 { TIpHtmlNodeBR }
 
 procedure TIpHtmlNodeBR.Enqueue;
+var
+  h: Integer;
+  elem: PIpHtmlElement;
 begin
+  if (ParentNode is TIpHtmlNodeP) or
+     (ParentNode is TIpHtmlNodeLI) or
+     (ParentNode is TIpHtmlNodePRE) or
+     (ParentNode is TIpHtmlNodeDIV)
+  then
+    h := 0
+  else
+    h := Props.FontSize;
+
   case Clear of
-  hbcNone :
-    EnqueueElement(Owner.HardLF);
-  hbcLeft :
-    EnqueueElement(Owner.HardLFClearLeft);
-  hbcRight :
-    EnqueueElement(Owner.HardLFClearRight);
-  hbcAll :
-    EnqueueElement(Owner.HardLFClearBoth);
+    hbcNone :
+      begin
+        elem := Owner.BuildLinefeedEntry(etHardLF, h);
+        EnqueueElement(elem);
+      end;
+    hbcLeft :
+      EnqueueElement(Owner.HardLFClearLeft);
+    hbcRight :
+      EnqueueElement(Owner.HardLFClearRight);
+    hbcAll :
+      EnqueueElement(Owner.HardLFClearBoth);
   end;
+end;
+
+function TIpHtmlNodeBR.GetMargin(AMargin: TIpHtmlElemMargin; ADefault: Integer): Integer;
+var
+  default: Integer;
+begin
+  if (ParentNode is TIpHtmlNodeP) then
+    default := 0
+  else
+    default := ADefault;
+  Result := inherited GetMargin(AMargin, default);
 end;
 
 procedure TIpHtmlNodeBR.SetClear(const Value: TIpHtmlBreakClear);
