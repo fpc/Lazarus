@@ -3782,7 +3782,7 @@ begin
       if Screen.Fonts.IndexOf(Result) > -1 then
         exit;
       if SameText(Result, 'sans-serif') then begin
-        Result := Checkfonts(['Arial', 'Helvetica','Liberation Sans']);
+        Result := Checkfonts(['Arial', 'Helvetica', 'Liberation Sans']);
         if Result = '' then
           Result := Screen.MenuFont.Name;
         exit;

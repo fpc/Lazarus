@@ -396,7 +396,9 @@ var
       haChar :
         if FTotWidth >= FTextWidth then
           Result := (FTotWidth - FTextWidth) div 2;
-      else //haJustify :
+      {
+      else
+        //haJustify :
         if iElem < FElementQueue.Count then begin
           m := iElem - FFirstWord - 2;
           if m > 0 then begin
@@ -404,6 +406,7 @@ var
             WMod := (FTotWidth - FTextWidth) mod m;
           end;
         end;
+        }
     end;
   end;
 
