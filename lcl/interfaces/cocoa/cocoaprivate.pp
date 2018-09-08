@@ -875,7 +875,6 @@ begin
     Exit;
 
   setHidden(AParams.Style and WS_VISIBLE = 0);
-  lclSetEnabled(AParams.Style and WS_DISABLED = 0);
 
   if Assigned(p) then
     p.lclContentView.addSubview(Result);

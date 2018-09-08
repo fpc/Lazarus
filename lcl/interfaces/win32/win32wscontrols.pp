@@ -164,6 +164,9 @@ begin
     LCLBoundsToWin32Bounds(AWinControl, Left, Top, Width, Height);
     SetStdBiDiModeParams(AWinControl, Params);
 
+    if not (csDesigning in AWinControl.ComponentState) and not AWinControl.IsEnabled then
+      Flags := Flags or WS_DISABLED;
+
     {$IFDEF VerboseSizeMsg}
     DebugLn('PrepareCreateWindow ' + dbgsName(AWinControl) + ' ' +
       Format('%d, %d, %d, %d', [Left, Top, Width, Height]));

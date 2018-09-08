@@ -215,7 +215,6 @@ begin
   Set_RC_Name(AWinControl, {%H-}PGtkWidget(Result));
   if not AWinControl.HandleObjectShouldBeVisible and not (csDesigning in AWinControl.ComponentState) then
     gtk_widget_hide({%H-}PGtkWidget(Result));
-  gtk_widget_set_sensitive({%H-}PGtkWidget(Result), AParams.Style and WS_DISABLED = 0);
   SetCallbacks({%H-}PGtkWidget(Result), WidgetInfo);
 end;
 

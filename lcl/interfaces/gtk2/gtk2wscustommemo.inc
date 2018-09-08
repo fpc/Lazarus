@@ -158,7 +158,6 @@ begin
   Set_RC_Name(AWinControl, Widget);
   if not AWinControl.HandleObjectShouldBeVisible and not (csDesigning in AWinControl.ComponentState) then
     gtk_widget_hide(Widget);
-  gtk_widget_set_sensitive(Widget, AParams.Style and WS_DISABLED = 0);
   SetCallbacks(Widget, WidgetInfo);
 end;
 

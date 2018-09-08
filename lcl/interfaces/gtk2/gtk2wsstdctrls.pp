@@ -792,7 +792,6 @@ begin
   // Sets the callbacks
   if not AWinControl.HandleObjectShouldBeVisible and not (csDesigning in AWinControl.ComponentState) then
     gtk_widget_hide(p);
-  gtk_widget_set_sensitive(p, AParams.Style and WS_DISABLED = 0);
   SetCallbacks(p, WidgetInfo);
 end;
 
@@ -940,7 +939,6 @@ begin
     gtk_widget_hide({%H-}PGtkWidget(Result))
   else
     gtk_widget_show({%H-}PGtkWidget(Result));
-  gtk_widget_set_sensitive({%H-}PGtkWidget(Result), AParams.Style and WS_DISABLED = 0);
 
   Set_RC_Name(AWinControl, {%H-}PGtkWidget(Result));
   SetCallbacks({%H-}PGtkWidget(Result), WidgetInfo);
@@ -1196,7 +1194,6 @@ begin
     gtk_widget_hide(Widget)
   else
     gtk_widget_show(Widget);
-  gtk_widget_set_sensitive(Widget, AParams.Style and WS_DISABLED = 0);
   Result := TLCLIntfHandle({%H-}PtrUInt(Widget));
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
@@ -2251,7 +2248,6 @@ begin
     gtk_widget_hide(Box)
   else
     gtk_widget_show(Box);
-  gtk_widget_set_sensitive(Box, AParams.Style and WS_DISABLED = 0);
 
   Result := TLCLIntfHandle({%H-}PtrUInt(Box));
 end;
@@ -2362,7 +2358,6 @@ begin
   Allocation.Width := AParams.Width;
   Allocation.Height := AParams.Height;
   gtk_widget_size_allocate(FrameBox, @Allocation);
-  gtk_widget_set_sensitive(FrameBox, AParams.Style and WS_DISABLED = 0);
 
   Set_RC_Name(AWinControl, FrameBox);
   SetCallbacks(FrameBox, WidgetInfo);
@@ -2583,7 +2578,6 @@ begin
     gtk_widget_hide(EventBox)
   else
     gtk_widget_show(EventBox);
-  gtk_widget_set_sensitive(EventBox, AParams.Style and WS_DISABLED = 0);
 end;
 
 class function TGtk2WSButton.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
@@ -2716,7 +2710,6 @@ begin
   DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
   {$ENDIF}
   WidgetInfo := CreateWidgetInfo({%H-}Pointer(Result), AWinControl, AParams);
-  gtk_widget_set_sensitive(Widget, AParams.Style and WS_DISABLED = 0);
 
   Set_RC_Name(AWinControl, Widget);
   SetCallbacks(Widget, WidgetInfo);
@@ -2816,7 +2809,6 @@ begin
   Allocation.Width := AParams.Width;
   Allocation.Height := AParams.Height;
   gtk_widget_size_allocate(Widget, @Allocation);
-  gtk_widget_set_sensitive(Widget, AParams.Style and WS_DISABLED = 0);
 
   Set_RC_Name(AWinControl, Widget);
   TGtk2WSCustomCheckBox.SetCallbacks(Widget, WidgetInfo);
@@ -2843,7 +2835,6 @@ begin
   Allocation.Width := AParams.Width;
   Allocation.Height := AParams.Height;
   gtk_widget_size_allocate(Widget, @Allocation);
-  gtk_widget_set_sensitive(Widget, AParams.Style and WS_DISABLED = 0);
 
   Set_RC_Name(AWinControl, Widget);
   TGtk2WSCustomCheckBox.SetCallbacks(Widget, WidgetInfo);
@@ -2907,7 +2898,6 @@ begin
   Allocation.Width := AParams.Width;
   Allocation.Height := AParams.Height;
   gtk_widget_size_allocate({%H-}PGtkWidget(Result), @Allocation);
-  gtk_widget_set_sensitive({%H-}PGtkWidget(Result), AParams.Style and WS_DISABLED = 0);
 
   Set_RC_Name(AWinControl, {%H-}PGtkWidget(Result));
   SetCallbacks({%H-}PGtkWidget(Result), WidgetInfo);
