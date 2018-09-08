@@ -245,8 +245,8 @@ type
     FCurProps : TIpHtmlProps;
     FBlockMin, FBlockMax : Integer;
     function GetProps: TIpHtmlProps;
+    procedure ProcessDuplicateLFs;
     procedure RemoveLeadingLFs;
-    procedure RemoveDuplicateLFs;
   public
     FPageRect : TRect;
     constructor Create(AOwner: TIpHtmlNodeCore); virtual;
@@ -4021,16 +4021,9 @@ begin
   end;
 end;
 
-procedure TIpHtmlBaseLayouter.RemoveLeadingLFs;
-begin
-  while (FElementQueue.Count>0)
-  and (PIpHtmlElement(FElementQueue[0])^.ElementType in [etSoftLF, etHardLF]) do
-    FElementQueue.Delete(0);
-end;
-
-procedure TIpHtmlBaseLayouter.RemoveDuplicateLFs;
+procedure TIpHtmlBaseLayouter.ProcessDuplicateLFs;
 var
-  i: Integer;
+  i, ilast: Integer;
   elem: PIpHtmlElement;
   prevelem: PIpHtmlElement;
 begin
@@ -4048,15 +4041,20 @@ begin
         if (prevelem.ElementType = etSoftLF) then begin
           prevelem.LFHeight := MaxI2(prevelem.LFHeight, elem.LFHeight);
           FElementQueue.Delete(i-1);
-        end else
-        if (prevelem.ElementType = etHardLF) then begin
-          //prevelem.LFHeight := prevelem.LFHeight + elem.LFHeight;
-          //FElementQueue.Delete(i);
         end;
+        // nothing to do for etHardLF
     end;
     dec(i);
   end;
 end;
+
+procedure TIpHtmlBaseLayouter.RemoveLeadingLFs;
+begin
+  while (FElementQueue.Count>0)
+  and (PIpHtmlElement(FElementQueue[0])^.ElementType in [etSoftLF, etHardLF]) do
+    FElementQueue.Delete(0);
+end;
+
 
 { TIpHtmlBaseTableLayouter }
 
@@ -10010,16 +10008,17 @@ begin
   hf := Props.FontSize;
   if FChildren.Count > 0 then begin
     h := GetMargin(Props.ElemMarginTop, hf div 2);
-    elem := Owner.BuildLinefeedEntry(etHardLF, h);
+    elem := Owner.BuildLinefeedEntry(etSoftLF, h);
     EnqueueElement(elem);
   end;
   inherited Enqueue;
   if FChildren.Count > 0 then begin
     h := GetMargin(Props.ElemMarginBottom, hf div 4);
-    elem := Owner.BuildLinefeedEntry(etHardLF, h);
+    elem := Owner.BuildLinefeedEntry(etSoftLF, h);
     EnqueueElement(elem);
   end;
 end;
+
 
 { TIpHtmlNodeLI }
 
@@ -10137,9 +10136,10 @@ var
   elem: PIpHtmlElement;
 begin
   if (ParentNode is TIpHtmlNodeP) or
+     (ParentNode is TIpHtmlNodeDIV) or
      (ParentNode is TIpHtmlNodeLI) or
-     (ParentNode is TIpHtmlNodePRE) or
-     (ParentNode is TIpHtmlNodeDIV)
+//     (ParentNode is TIpHtmlNodePRE) or
+     (ParentNode is TIpHtmlNodeHeader)
   then
     h := 0
   else

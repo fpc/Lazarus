@@ -188,7 +188,7 @@ begin
 
   if FBlockOwner is TIpHtmlNodeBody then
     RemoveLeadingLFs;
-  RemoveDuplicateLFs;
+  ProcessDuplicateLFs;
 
   if not RenderProps.IsEqualTo(Props) then
   begin
