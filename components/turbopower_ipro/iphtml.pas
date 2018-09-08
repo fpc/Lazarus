@@ -98,6 +98,7 @@ const
   DEFAULT_PRINTMARGIN = 0.5; {inches}
   FONTSIZESVALUESARRAY : array[0..6] of integer = (8,10,12,14,18,24,36);
   MAXWORDS = 65536;
+  DEFAULT_LINKS_UNDERLINED = false;
 
   ZOOM_TO_FIT = 0;
   ZOOM_TO_FIT_WIDTH = -1;
@@ -1999,6 +2000,7 @@ type
     FBgColor: TColor;
     FFactBAParag: Real;
     FHasFrames : Boolean;
+    FLinksUnderlined: Boolean;
     FOnGetImageX : TIpHtmlDataGetImageEvent;
     FOnScroll : TIpHtmlScrollEvent;
     FOnInvalidateSize : TNotifyEvent;
@@ -2272,6 +2274,7 @@ type
     property VLinkColor: TColor read FVLinkColor write FVLinkColor;
     property ALinkColor: TColor read FALinkColor write FALinkColor;
     property BgColor: TColor read FBgColor write FBgColor;
+    property LinksUnderlined: Boolean read FLinksUnderlined write FLinksUnderlined;
     property HasFrames: Boolean read FHasFrames;
     property OnGetImageX: TIpHtmlDataGetImageEvent read FOnGetImageX write FOnGetImageX;
     property OnScroll: TIpHtmlScrollEvent read FOnScroll write FOnScroll;
@@ -2732,6 +2735,7 @@ type
     FALinkColor: TColor;
     FTextColor: TColor;
     FBgColor: TColor;
+    FLinksUnderlined: Boolean;
     FShowHints: Boolean;
     FMarginHeight: Integer;
     FMarginWidth: Integer;
@@ -2823,6 +2827,7 @@ type
     property DefaultFontSize: integer read FDefaultFontSize write SetDefaultFontSize;
     property HotURL: string read FHotURL;
     property LinkColor: TColor read FLinkColor write FLinkColor default clBlue;
+    property LinksUnderlined: Boolean read FLinksUnderlined write FLinksUnderlined default DEFAULT_LINKS_UNDERLINED;
     property MarginHeight: Integer read FMarginHeight write FMarginHeight default 10;
     property MarginWidth: Integer read FMarginWidth write FMarginWidth default 10;
     property PrintSettings: TIpHtmlPrintSettings read FPrintSettings write FPrintSettings;
@@ -7886,6 +7891,7 @@ begin
   LinkColor := clBlue;
   VLinkColor := clPurple;
   ALinkColor := clRed;
+  FLinksUnderlined := DEFAULT_LINKS_UNDERLINED;
   {$IFDEF IP_LAZARUS}
   FCSS := TCSSGlobalProps.Create;
   FTabList := TIpHtmlTabList.Create;
@@ -10468,7 +10474,10 @@ begin
     Props.FontStyle := Props.FontStyle + [fsUnderline];
   end else
     if HasRef then begin
-      Props.FontStyle := Props.FontStyle - [fsUnderline];
+      if Owner.LinksUnderlined then
+        Props.FontStyle := Props.FontStyle + [fsUnderline]
+      else
+        Props.FontStyle := Props.FontStyle - [fsUnderline];
       if Owner.LinkVisited(HRef) then
         Props.FontColor := Props.VLinkColor
       else
@@ -14687,6 +14696,7 @@ begin
   FHtml.LinkColor := FViewer.LinkColor;
   FHtml.ALinkColor := FViewer.ALinkColor;
   FHtml.VLinkColor := FViewer.VLinkColor;
+  FHtml.LinksUnderlined := FViewer.LinksUnderlined;
   if FViewer.DataProvider <> nil then
     FHtml.OnGetImageX := FViewer.DataProvider.DoGetImage;
   FHtml.OnInvalidateRect := InvalidateRect;
@@ -15675,6 +15685,7 @@ begin
   URLStack := TStringList.Create;
   VisitedList := TStringList.Create;
   VisitedList.Sorted := True;
+  FLinksUnderlined := DEFAULT_LINKS_UNDERLINED;
   FTextColor := clBlack;
   FLinkColor := clBlue;
   FVLinkColor := clMaroon;
@@ -15980,14 +15991,15 @@ begin
   FMasterFrame := nil;
   FMasterFrame := TIpHtmlFrame.Create(Self, Self, DataProvider, FlagErrors, False,
     MarginWidth, MarginHeight);
-    if NewHtml <> nil then begin
-      NewHtml.FactBAParag := FactBAParag;
-      NewHtml.BgColor := BgColor;
-      NewHtml.FixedTypeface := FixedTypeface;
-      NewHtml.DefaultTypeFace := DefaultTypeFace;
-      NewHtml.DefaultFontSize := FDefaultFontSize;
-      FMasterFrame.SetHtml(NewHtml);
-    end;
+  if NewHtml <> nil then begin
+    NewHtml.FactBAParag := FactBAParag;
+    NewHtml.BgColor := BgColor;
+    NewHtml.FixedTypeface := FixedTypeface;
+    NewHtml.DefaultTypeFace := DefaultTypeFace;
+    NewHtml.DefaultFontSize := FDefaultFontSize;
+    NewHtml.LinksUnderlined := FLinksUnderlined;
+    FMasterFrame.SetHtml(NewHtml);
+  end;
 end;
 
 procedure TIpHtmlCustomPanel.SetHtmlFromStr(NewHtml: string);
