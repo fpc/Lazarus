@@ -12587,7 +12587,7 @@ begin
     1: dk := dkCount;                                         //Add('COUNT');             {1}
     2: val := DayOf(frParser.Calc(p1));                       //Add('DAYOF');             {2}
     3: val := FormatDateTime(frParser.Calc(p1), frParser.Calc(p2)); //Add('FORMATDATETIME');    {3}
-    4: val := FormatFloat(frParser.Calc(p1), frParser.Calc(p2)); //Add('FORMATFLOAT');       {4}
+    4: val := FormatFloat(frParser.Calc(p1), lrVarToFloatDef(frParser.Calc(p2))); //Add('FORMATFLOAT');       {4}
     5: val := FormatMaskText(frParser.Calc(p1) + ';0; ', frParser.Calc(p2));  //Add('FORMATTEXT');        {5}
     6:begin                                                   //Add('INPUT');             {6}
         s1 := InputBox('', frParser.Calc(p1), frParser.Calc(p2));

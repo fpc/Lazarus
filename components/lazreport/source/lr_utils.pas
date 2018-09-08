@@ -15,7 +15,7 @@ interface
 {$I LR_Vers.inc}
 
 uses
-  SysUtils, Classes, strutils, Graphics, Controls,
+  SysUtils, Classes, strutils, Variants, Graphics, Controls,
   LR_DBRel, Forms, StdCtrls, ClipBrd, Menus, db,
   {$IFDEF WIN32}
   Windows,
@@ -70,6 +70,7 @@ function lrExpandVariables(const S:string):string;
 procedure lrNormalizeLocaleFloats(DisableLocale: boolean);
 function lrConfigFolderName(ACreatePath: boolean): string;
 function lrCanReadName(Stream: TStream): boolean;
+function lrVarToFloatDef(AValue:Variant; aDefault:Extended=0.0): Extended;
 
 procedure CanvasTextRectJustify(const Canvas:TCanvas;
   const ARect: TRect; X1, X2, Y: integer; const Text: string;
@@ -953,6 +954,14 @@ begin
   finally
     Stream.Position := oldPosition;
   end;
+end;
+
+function lrVarToFloatDef(AValue: Variant; aDefault: Extended): Extended;
+begin
+  if not VarIsNumeric(AValue) then
+    result := ADefault
+  else
+    result := AValue;
 end;
 
 function UTF8Desc(S: string; var Desc: string): Integer;
