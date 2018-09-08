@@ -2874,10 +2874,11 @@ type
     property FactBAParag;
     property FlagErrors;
     property LinkColor;
-    property PopupMenu;
-    property PrintSettings;
+    property LinksUnderlined;
     property MarginHeight;
     property MarginWidth;
+    property PopupMenu;
+    property PrintSettings;
     property ScrollDist;
     property ShowHints;
     property TabOrder;
@@ -11804,10 +11805,24 @@ begin
 end;
 
 procedure TIpHtmlNodePRE.Enqueue;
+var
+  h, hf: Integer;
+  elem: PIpHtmlElement;
 begin
-  if FChildren.Count > 0 then
-    EnqueueElement(Owner.HardLF);
+  hf := Props.FontSize;
+  if FChildren.Count > 0 then begin
+    h := GetMargin(Props.ElemMarginTop, 0);
+    elem := Owner.BuildLineFeedEntry(etSoftLF, h);
+    EnqueueElement(elem);
+  end;
+  //EnqueueElement(Owner.HardLF);
   inherited Enqueue;
+  if FChildren.Count > 0 then begin
+    h := GetMargin(Props.ElemMarginTop, 0);
+    elem := Owner.BuildLineFeedEntry(etSoftLF, h);
+    EnqueueElement(elem);
+  end;
+
   {
   if FChildren.Count > 0 then
     EnqueueElement(Owner.HardLF);

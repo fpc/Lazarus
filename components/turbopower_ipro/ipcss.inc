@@ -895,7 +895,7 @@ begin
           if (Length(Command) > 7) and (Args.Count > 0) then
             case Command[7] of
               'a': if (Command = 'font-family') then
-                     Font.Name := Args[0];
+                     Font.Name := Args.CommaText; //Args[0];
               'i': if (Command = 'font-size') then
                      Font.Size := Args[0];
               't': if (Command = 'font-style') then
