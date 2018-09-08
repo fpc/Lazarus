@@ -3750,6 +3750,57 @@ begin
     Result := I2;
 end;
 
+function FindFontName(const AFontList: string): string;
+
+  function CheckFonts(ATestFontList: array of String): String;
+  var
+    i: Integer;
+  begin
+    for i:=0 to High(ATestFontList) do begin
+      Result := ATestFontList[i];
+      if Screen.Fonts.IndexOf(Result) > -1 then
+        exit;
+    end;
+    Result := '';
+  end;
+
+var
+  L: TStringList;
+  i: Integer;
+begin
+  L := TStringList.Create;
+  try
+    L.CommaText := AFontList;
+    for i:=0 to L.Count-1 do begin
+      Result := L[i];
+      if Screen.Fonts.IndexOf(Result) > -1 then
+        exit;
+      if SameText(Result, 'sans-serif') then begin
+        Result := Checkfonts(['Arial', 'Helvetica','Liberation Sans']);
+        if Result = '' then
+          Result := Screen.MenuFont.Name;
+        exit;
+      end else
+      if SameText(Result, 'serif') then begin
+        Result := CheckFonts(['Times', 'Times New Roman', 'Liberation Serif']);
+        if Result = '' then
+          Result := Screen.MenuFont.Name;
+        exit;
+      end else
+      if SameText(Result, 'monospace') then begin
+        Result := CheckFonts(['Courier New', 'Courier', 'Liberation Mono']);
+        if Result = '' then
+          Result := Screen.MenuFont.Name;
+        exit;
+      end else
+        Result := Screen.MenuFont.Name;
+    end;
+  finally
+    L.Free;
+  end;
+end;
+
+(*
 function FirstString(const S: string): string;
 {- returns first string if a list - otherwise the string itself}
 var
@@ -3761,7 +3812,7 @@ begin
   else
     Result := copy(S, 1, P - 1);
 end;
-
+*)
 { TIpHtmlInteger }
 
 constructor TIpHtmlInteger.Create(AValue: Integer);
@@ -8088,7 +8139,7 @@ end;
 
 procedure TIpHtml.SetDefaultProps;
 begin
-  if FDefaultTypeFace='' then begin
+  if (FDefaultTypeFace='') or SameText(FDefaultTypeFace, 'default') then begin
     {$IFDEF MSWindows}
     Defaultprops.FontName := 'Times New Roman';
     {$ELSE}
@@ -9324,7 +9375,7 @@ var
 begin
   Props.Assign(RenderProps);
   if Face <> '' then
-    Props.FontName := FirstString(Face);
+    Props.FontName := FindFontName(Face);
   case Size.SizeType of
   hrsAbsolute :
     Props.FontSize := FONTSIZESVALUESARRAY[Size.Value-1];
@@ -9748,7 +9799,7 @@ begin
   if FChildren.Count > 0 then begin
     if not (FParentNode is TIpHtmlNodeLI) then
     begin
-      if FParentNode is TIpHtmlNodeTD then h := 0 else h := hf div 2;
+      if FParentNode is TIpHtmlNodeTD then h := 0 else h := hf; // div 2;
       // FIXME: above line is a workaround for LHelp to display the code tables
       // correctly
       h := GetMargin(Props.ElemMarginTop, h);
@@ -9760,7 +9811,7 @@ begin
   if FChildren.Count > 0 then begin
     if not (FParentNode is TIpHtmlNodeLI) then
     begin
-      if FParentNode is TIpHtmlNodeTD then h := 0 else h := hf div 2;
+      if FParentNode is TIpHtmlNodeTD then h := 0 else h := hf; // div 2;
       // FIXME: above line is a workaround for LHelp to display the code tables
       // correctly
       h := GetMargin(Props.ElemMarginBottom, h);
@@ -12751,8 +12802,7 @@ end;
 
 function TIpHtmlNodeCore.SelectCSSFont(const aFont: string): string;
 begin
-  // todo: implement font matching
-  result := FirstString(aFont);
+  result := FindFontName(aFont);
 end;
 
 procedure TIpHtmlNodeCore.SetAlign(const Value: TIpHtmlAlign);
@@ -15634,7 +15684,11 @@ begin
   FMarginWidth := 10;
   FMarginHeight := 10;
   FAllowTextSelect := True;
+  {$IFDEF MSWINDOWS}
   FixedTypeface := 'Courier New';
+  {$ELSE}
+  FixedTypeFace := 'Courier';
+  {$ENDIF}
   DefaultTypeFace := Graphics.DefFontData.Name;
   DefaultFontSize := 12;
   FPrintSettings := TIpHtmlPrintSettings.Create;
