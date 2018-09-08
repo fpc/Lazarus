@@ -4050,8 +4050,8 @@ begin
           FElementQueue.Delete(i-1);
         end else
         if (prevelem.ElementType = etHardLF) then begin
-          prevelem.LFHeight := prevelem.LFHeight + elem.LFHeight;
-          FElementQueue.Delete(i);
+          //prevelem.LFHeight := prevelem.LFHeight + elem.LFHeight;
+          //FElementQueue.Delete(i);
         end;
     end;
     dec(i);
