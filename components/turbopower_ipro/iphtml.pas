@@ -1571,54 +1571,46 @@ type
   protected
     function GetAlign: TIpHtmlAlign; override;
     procedure SetAlign(const Value: TIpHtmlAlign); override;
+  public
+    {$IFDEF IP_LAZARUS}
+    procedure LoadAndApplyCSSProps; override;
+    {$ENDIF}
   end;
 
   TIpHtmlNodeTABLEHEADFOOTBODYClass = class of TIpHtmlNodeTHeadFootBody;
 
   TIpHtmlNodeTHEAD = class(TIpHtmlNodeTHeadFootBody)
   private
-//    FAlign: TIpHtmlAlign;
     FVAlign: TIpHtmlVAlign3;
+  protected
   public
     constructor Create(ParentNode : TIpHtmlNode);
-    {$IFDEF IP_LAZARUS}
-    procedure LoadAndApplyCSSProps; override;
-    {$ENDIF}
   {$IFDEF HTML_RTTI}
   published
   {$ENDIF}
-//    property Align : TIpHtmlAlign read FAlign write FAlign;
+    property Align;
     property VAlign : TIpHtmlVAlign3 read FVAlign write FVAlign;
   end;
 
   TIpHtmlNodeTFOOT = class(TIpHtmlNodeTHeadFootBody)
   private
-//    FAlign: TIpHtmlAlign;
     FVAlign: TIpHtmlVAlign3;
   public
-    {$IFDEF IP_LAZARUS}
-    procedure LoadAndApplyCSSProps; override;
-    {$ENDIF}
   {$IFDEF HTML_RTTI}
   published
   {$ENDIF}
-//    property Align : TIpHtmlAlign read FAlign write FAlign;
     property VAlign : TIpHtmlVAlign3 read FVAlign write FVAlign;
   end;
 
   TIpHtmlNodeTBODY = class(TIpHtmlNodeTHeadFootBody)
   private
-//    FAlign: TIpHtmlAlign;
     FVAlign: TIpHtmlVAlign3;
   public
     constructor Create(ParentNode : TIpHtmlNode);
-    {$IFDEF IP_LAZARUS}
-    procedure LoadAndApplyCSSProps; override;
-    {$ENDIF}
   {$IFDEF HTML_RTTI}
   published
   {$ENDIF}
-//    property Align : TIpHtmlAlign read FAlign write FAlign;
+    property Align;
     property VAlign : TIpHtmlVAlign3 read FVAlign write FVAlign;
   end;
 
@@ -1628,12 +1620,18 @@ type
     FSpan: Integer;
     FVAlign: TIpHtmlVAlign3;
     FWidth: TIpHtmlMultiLength;
+  protected
+    function GetAlign: TIpHtmlAlign; override;
+    procedure SetAlign(const Value: TIpHtmlAlign); override;
   public
     destructor Destroy; override;
+    {$IFDEF IP_LAZARUS}
+    procedure LoadAndApplyCSSProps; override;
+    {$ENDIF}
   {$IFDEF HTML_RTTI}
   published
   {$ENDIF}
-    property Align : TIpHtmlAlign read FAlign write FAlign;
+    property Align;
     property Span : Integer read FSpan write FSpan;
     property VAlign : TIpHtmlVAlign3 read FVAlign write FVAlign;
     property Width : TIpHtmlMultiLength read FWidth write FWidth;
@@ -1645,12 +1643,18 @@ type
     FVAlign: TIpHtmlVAlign3;
     FSpan: Integer;
     FWidth: TIpHtmlMultiLength;
+  protected
+    function GetAlign: TIpHtmlAlign; override;
+    procedure SetAlign(const Value: TIpHtmlAlign); override;
   public
     destructor Destroy; override;
+    {$IFDEF IP_LAZARUS}
+    procedure LoadAndApplyCSSProps; override;
+    {$ENDIF}
   {$IFDEF HTML_RTTI}
   published
   {$ENDIF}
-    property Align : TIpHtmlAlign read FAlign write FAlign;
+    property Align;
     property Span : Integer read FSpan write FSpan;
     property VAlign : TIpHtmlVAlign3 read FVAlign write FVAlign;
     property Width : TIpHtmlMultiLength read FWidth write FWidth;
@@ -1679,7 +1683,7 @@ type
   {$IFDEF HTML_RTTI}
   published
   {$ENDIF}
-//    property Align : TIpHtmlAlign read FAlign write FAlign;
+    property Align;
     property VAlign : TIpHtmlVAlign read FVAlign write FVAlign;
     property BgColor: TColor read FBgColor write SetBgColor;
     property TextColor: TColor read FTextColor write SetTextColor;
@@ -1720,7 +1724,7 @@ type
   {$IFDEF HTML_RTTI}
   published
   {$ENDIF}
-//    property Align : TIpHtmlAlign read FAlign write FAlign;
+    property Align;
     property BgColor;
     property CalcWidthMin: Integer read FCalcWidthMin write FCalcWidthMin;
     property CalcWidthMax: Integer read FCalcWidthMax write FCalcWidthMax;
@@ -1732,6 +1736,7 @@ type
     property Width : TIpHtmlLength read FWidth write FWidth;
   end;
 
+
   { TIpHtmlNodeTH }
 
   TIpHtmlNodeTH = class(TIpHtmlNodeTableHeaderOrCell)
@@ -1739,12 +1744,16 @@ type
     constructor Create(ParentNode: TIpHtmlNode);
   end;
 
+
   { TIpHtmlNodeTD }
 
   TIpHtmlNodeTD = class(TIpHtmlNodeTableHeaderOrCell)
   public
     constructor Create(ParentNode: TIpHtmlNode);
   end;
+
+
+  { TIpHtmlNodeINPUT }
 
   TIpHtmlInputType = (hitText, hitPassword, hitCheckbox, hitRadio,
     hitSubmit, hitReset, hitFile, hitHidden, hitImage, hitButton);
@@ -11772,12 +11781,26 @@ begin
 end;
 
 procedure TIpHtmlNodeDD.Enqueue;
+var
+  h, hf: Integer;
+  elem: PIpHtmlElement;
 begin
-  EnqueueElement(Owner.HardLF);
+  hf := Props.FontSize;
+  if FChildren.Count > 0 then begin
+    h := GetMargin(Props.ElemMarginTop, hf div 2);
+    elem := Owner.BuildLineFeedEntry(etSoftLF, h);
+    EnqueueElement(elem);
+  end;
+
   EnqueueElement(Owner.FLIndent);
   inherited;
   EnqueueElement(Owner.FLOutdent);
-  EnqueueElement(Owner.HardLF);
+
+  if FChildren.Count > 0 then begin
+    h := GetMargin(Props.ElemMarginTop, hf);
+    elem := Owner.BuildLineFeedEntry(etSoftLF, h);
+    EnqueueElement(elem);
+  end;
 end;
 
 { TIpHtmlNodePRE }
@@ -13059,6 +13082,16 @@ begin
   Result := FAlign;
 end;
 
+{$IFDEF IP_LAZARUS}
+procedure TIpHtmlNodeTHeadFootBody.LoadAndApplyCSSProps;
+begin
+  inherited;
+  if not (FCombinedCSSProps.Alignment in [haDefault, haUnknown]) then
+    Align := FCombinedCSSProps.Alignment;
+  // wp: what about VAlign?
+end;
+{$ENDIF}
+
 procedure TIpHtmlNodeTHeadFootBody.SetAlign(const Value: TIpHtmlAlign);
 begin
   FAlign := Value;
@@ -13074,29 +13107,6 @@ begin
   FVAlign := hva3Middle;
 end;
 
-{$IFDEF IP_LAZARUS}
-procedure TIpHtmlNodeTHEAD.LoadAndApplyCSSProps;
-begin
-  inherited;
-  if not (FCombinedCSSProps.Alignment in [haDefault, haUnknown]) then
-    Align := FCombinedCSSProps.Alignment;
-  // wp: what about VAlign?
-end;
-{$ENDIF}
-
-
-{ TIpHtmlNodeTFOOT }
-
-{$IFDEF IP_LAZARUS}
-procedure TIpHtmlNodeTFOOT.LoadAndApplyCSSProps;
-begin
-  inherited;
-  if not (FCombinedCSSProps.Alignment in [haDefault, haUnknown]) then
-    Align := FCombinedCSSProps.Alignment;
-  // wp: what about VAlign?
-end;
-{$ENDIF}
-
 
 { TIpHtmlNodeTBODY }
 
@@ -13106,16 +13116,6 @@ begin
   FElementName := 'tbody';
   FVAlign := hva3Middle;
 end;
-
-{$IFDEF IP_LAZARUS}
-procedure TIpHtmlNodeTBODY.LoadAndApplyCSSProps;
-begin
-  inherited;
-  if not (FCombinedCSSProps.Alignment in [haDefault, haUnknown]) then
-    Align := FCombinedCSSProps.Alignment;
-  // wp: what about VAlign?
-end;
-{$ENDIF}
 
 
 { TIpHtmlNodeSTYLE }
@@ -13294,12 +13294,53 @@ begin
   FWidth.Free;
 end;
 
+{$IFDEF IP_LAZARUS}
+procedure TIpHtmlNodeCOL.LoadAndApplyCSSProps;
+begin
+  inherited;
+  if not (FCombinedCSSProps.Alignment in [haDefault, haUnknown]) then
+    Align := FCombinedCSSProps.Alignment;
+  // wp: what about VAlign?
+end;
+{$ENDIF}
+
+function TIpHtmlNodeCOL.GetAlign: TIpHtmlAlign;
+begin
+  Result := FAlign;
+end;
+
+procedure TIpHtmlNodeCOL.SetAlign(const Value: TIpHtmlAlign);
+begin
+  FAlign := Value;
+end;
+
+
 { TIpHtmlNodeCOLGROUP }
 
 destructor TIpHtmlNodeCOLGROUP.Destroy;
 begin
   inherited;
   FWidth.Free;
+end;
+
+{$IFDEF IP_LAZARUS}
+procedure TIpHtmlNodeCOLGROUP.LoadAndApplyCSSProps;
+begin
+  inherited;
+  if not (FCombinedCSSProps.Alignment in [haDefault, haUnknown]) then
+    Align := FCombinedCSSProps.Alignment;
+  // wp: what about VAlign?
+end;
+{$ENDIF}
+
+function TIpHtmlNodeCOLGROUP.GetAlign: TIpHtmlAlign;
+begin
+  Result := FAlign;
+end;
+
+procedure TIpHtmlNodeCOLGROUP.SetAlign(const Value: TIpHtmlAlign);
+begin
+  FAlign := Value;
 end;
 
 { TIpHtmlNodeLABEL }
