@@ -1053,8 +1053,7 @@ end;
 function LCLViewExtension.lclClientFrame: TRect;
 begin
   Result := lclFrame;
-  Result.Top := 0;
-  Result.Left := 0;
+  Types.OffsetRect(Result, -Result.Left, -Result.Top);
 end;
 
 function LCLViewExtension.lclContentView: NSView;
