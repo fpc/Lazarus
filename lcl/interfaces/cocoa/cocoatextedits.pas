@@ -125,6 +125,8 @@ type
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
     function lclIsHandle: Boolean; override;
+
+    procedure changeColor(sender: id); override;
     // key
     procedure keyDown(event: NSEvent); override;
     procedure keyUp(event: NSEvent); override;
@@ -646,6 +648,12 @@ end;
 function TCocoaTextView.lclIsHandle: Boolean;
 begin
   Result := True;
+end;
+
+procedure TCocoaTextView.changeColor(sender: id);
+begin
+  //preventing text color from being changed
+  //inherited changeColor(sender);
 end;
 
 procedure TCocoaTextView.keyDown(event: NSEvent);
