@@ -6179,7 +6179,7 @@ resourcestring
   lisCleanUpAndBuildProject = 'Clean up and build project';
   // Many Build Modes
   lisCompileFollowingModes = 'Compile the following modes';
-  lisPleaseSelectAtLeastOneBuildMode = 'Please select at least one build mode';
+  lisPleaseSelectAtLeastOneBuildMode = 'Please select at least one build mode.';
   lisSelectedModesWereCompiled  = 'Selected %d modes were successfully compiled.';
   // Clean Build Project Dialog
   lisProjectOutputDirectory = 'Project output directory';
