@@ -408,7 +408,7 @@ end;"/>
         <Type Value="Include"/>
       </Item58>
       <Item59>
-        <Filename Value="cocoa/cocoaprivate.pp"/>
+        <Filename Value="cocoa/cocoaprivate.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaPrivate"/>
       </Item59>
@@ -445,7 +445,7 @@ end;"/>
         <UnitName Value="CocoaWSFactory"/>
       </Item66>
       <Item67>
-        <Filename Value="cocoa/cocoawsforms.pp"/>
+        <Filename Value="cocoa/cocoawsforms.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaWSForms"/>
       </Item67>
@@ -455,7 +455,7 @@ end;"/>
         <UnitName Value="CocoaWSMenus"/>
       </Item68>
       <Item69>
-        <Filename Value="cocoa/cocoawsstdctrls.pp"/>
+        <Filename Value="cocoa/cocoawsstdctrls.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaWSStdCtrls"/>
       </Item69>
@@ -1633,7 +1633,7 @@ end;"/>
         <Type Value="Include"/>
       </Item322>
       <Item323>
-        <Filename Value="cocoa/cocoawsbuttons.pp"/>
+        <Filename Value="cocoa/cocoawsbuttons.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="cocoawsbuttons"/>
       </Item323>
@@ -2126,7 +2126,7 @@ end;"/>
         <UnitName Value="LazGtk3"/>
       </Item427>
       <Item428>
-        <Filename Value="cocoa/cocoawsdialogs.pp"/>
+        <Filename Value="cocoa/cocoawsdialogs.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaWSDialogs"/>
       </Item428>
