@@ -81,15 +81,12 @@ type
     procedure PathListBoxSelectionChange(Sender: TObject; {%H-}User: boolean);
     procedure ReplaceButtonClick(Sender: TObject);
     procedure ImportMenuItemClick(Sender: TObject);
-    procedure TemplatesListBoxDblClick(Sender: TObject);
-    procedure TemplatesListBoxSelectionChange(Sender: TObject; {%H-}User: boolean);
   private
     FBaseDirectory: string;
     FEffectiveBaseDirectory: string;
     FTemplateList: TStringList;
     procedure AddPath(aPath: String; aObject: TObject);
     function GetPath: string;
-    //function GetTemplates: string;
     function BaseRelative(const APath: string): String;
     function PathAsAbsolute(const APath: string): String;
     function PathMayExist(APath: string): TObject;
@@ -292,6 +289,7 @@ var
 begin
   TemplateForm := TGenericListSelectForm.Create(Nil);
   try
+    TemplateForm.Caption := lisPathEditPathTemplates;
     // Let a user select only templates which are not in the list already.
     for i := 0 to FTemplateList.Count-1 do
       if PathListBox.Items.IndexOf(FTemplateList[i]) = -1 then
@@ -405,16 +403,6 @@ begin
       DirectoryEdit.Directory:=PathAsAbsolute(FullPath);
     end;
   UpdateButtons;
-end;
-
-procedure TPathEditorDialog.TemplatesListBoxSelectionChange(Sender: TObject; User: boolean);
-begin
-  UpdateButtons;
-end;
-
-procedure TPathEditorDialog.TemplatesListBoxDblClick(Sender: TObject);
-begin
-  AddTemplateButtonClick(Nil);
 end;
 
 procedure TPathEditorDialog.FormCreate(Sender: TObject);
@@ -550,13 +538,7 @@ begin
     sl.Free;
   end;
 end;
-{
-function TPathEditorDialog.GetTemplates: string;
-begin
-  raise Exception.Create('TPathEditorDialog.GetTemplates is called.');
-  //Result := TextToPath(FTemplateList.Text);
-end;
-}
+
 procedure TPathEditorDialog.SetTemplates(const AValue: string);
 begin
   SplitString(GetForcedPathDelims(AValue), ';', FTemplateList, True);

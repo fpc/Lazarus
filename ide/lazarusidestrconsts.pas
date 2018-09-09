@@ -3921,9 +3921,14 @@ resourcestring
   lisPathEditMovePathDown = 'Move path down (Ctrl+Down)';
   lisPathEditMovePathUp = 'Move path up (Ctrl+Up)';
   lisPathEditBrowse = 'Browse';
-  lisPathEditPathTemplates = 'Path templates';
+  lisPathEditorReplaceHint = 'Replace the selected path with a new path';
+  lisPathEditorAddHint = 'Add new path to the list';
   lisPathEditDeleteInvalidPaths = 'Delete Invalid Paths';
-  
+  lisPathEditorDeleteHint = 'Delete the selected path';
+  lisPathEditorDeleteInvalidHint = 'Remove non-existent (gray) paths from the list';
+  lisPathEditPathTemplates = 'Path templates';
+  lisPathEditorTemplAddHint = 'Add template to the list';
+
   // new dialog
   lisNewDlgNoItemSelected = 'No item selected';
   lisErrorOpeningComponent = 'Error opening component';
@@ -5318,11 +5323,6 @@ resourcestring
     +'will be set to the values of the chosen scheme.';
   lisKMKeymappingScheme = 'Keymapping Scheme';
   lisPVUEditVirtualUnit = 'Edit virtual unit';
-  lisPathEditorReplaceHint = 'Replace the selected path with a new path';
-  lisPathEditorAddHint = 'Add new path to the list';
-  lisPathEditorDeleteHint = 'Delete the selected path';
-  lisPathEditorDeleteInvalidHint = 'Remove non-existent (gray) paths from the list';
-  lisPathEditorTemplAddHint = 'Add template to the list';
   lisExportAllItemsToFile = 'Export All Items to File';
   lisImportFromFile = 'Import from File';
 
