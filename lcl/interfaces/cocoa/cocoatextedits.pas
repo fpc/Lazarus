@@ -39,6 +39,17 @@ const
   SPINEDIT_DEFAULT_STEPPER_WIDTH = 15;
   SPINEDIT_EDIT_SPACING_FOR_SELECTION = 4;
 
+  // From Interface Builder MacOSX 10.6
+  // The heights are from layout rectangle.
+  COMBOBOX_REG_HEIGHT   = 20;
+  COMBOBOX_SMALL_HEIGHT = 17;
+  COMBOBOX_MINI_HEIGHT  = 14;
+
+  COMBOBOX_RO_REG_HEIGHT   = 20;
+  COMBOBOX_RO_SMALL_HEIGHT = 17;
+  COMBOBOX_RO_MINI_HEIGHT  = 15;
+
+
 type
 
   TCocoaFieldEditor = objcclass;
@@ -210,6 +221,7 @@ type
     procedure keyUp(event: NSEvent); override;
     function lclIsHandle: Boolean; override;
     procedure setStringValue(avalue: NSString); override;
+    function lclGetFrameToLayoutDelta: TRect; override;
     // mouse
     function acceptsFirstMouse(event: NSEvent): Boolean; override;
     procedure mouseDown(event: NSEvent); override;
@@ -240,6 +252,7 @@ type
     procedure dealloc; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
+    function lclGetFrameToLayoutDelta: TRect; override;
     procedure resetCursorRects; override;
     function lclIsHandle: Boolean; override;
     procedure comboboxAction(sender: id); message 'comboboxAction:';
@@ -972,6 +985,32 @@ begin
     callback.SendOnChange;
 end;
 
+function TCocoaComboBox.lclGetFrameToLayoutDelta: TRect;
+begin
+  // todo: on 10.7 or later there's a special API for that!
+    // The data is received from 10.6 Interface Builder
+  case NSCell(Self.Cell).controlSize of
+    NSSmallControlSize: begin
+      Result.Left := 0;
+      Result.Top := 1;
+      Result.Right := -3;
+      Result.Bottom := -4;
+    end;
+    NSMiniControlSize: begin
+      Result.Left := 0;
+      Result.Top := 1;
+      Result.Right := -2;
+      Result.Bottom := -4;
+    end;
+  else
+    // NSRegularControlSize
+    Result.Left := 0;
+    Result.Top := 2;
+    Result.Right := -3;
+    Result.Bottom := -4;
+  end;
+end;
+
 function TCocoaComboBox.acceptsFirstResponder: Boolean;
 begin
   Result := True;
@@ -1197,6 +1236,32 @@ end;
 procedure TCocoaReadOnlyComboBox.lclClearCallback;
 begin
   callback := nil;
+end;
+
+function TCocoaReadOnlyComboBox.lclGetFrameToLayoutDelta: TRect;
+begin
+  // todo: on 10.7 or later there's a special API for that!
+    // The data is received from 10.6 Interface Builder
+  case NSCell(Self.Cell).controlSize of
+    NSSmallControlSize: begin
+      Result.Left := 3;
+      Result.Top := 1;
+      Result.Right := -3;
+      Result.Bottom := -4;
+    end;
+    NSMiniControlSize: begin
+      Result.Left := 1;
+      Result.Top := 0;
+      Result.Right := -2;
+      Result.Bottom := 0;
+    end;
+  else
+    // NSRegularControlSize
+    Result.Left := 3;
+    Result.Top := 2;
+    Result.Right := -3;
+    Result.Bottom := -4;
+  end;
 end;
 
 procedure TCocoaReadOnlyComboBox.resetCursorRects;

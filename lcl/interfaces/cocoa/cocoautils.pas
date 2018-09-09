@@ -106,6 +106,9 @@ function ControlTitleToStr(const ATitle: string): String;
 // (it would happen in NSAutoRelease pool)
 function ControlTitleToNSStr(const ATitle: string): NSString;
 
+procedure AddLayoutToFrame(const layout: TRect; var frame: TRect);
+procedure SubLayoutFromFrame(const layout: TRect; var frame: TRect);
+
 implementation
 
 procedure ColorToRGBFloat(cl: TColorRef; var r,g,b: Single); inline;
@@ -794,6 +797,22 @@ begin
   t := ControlTitleToStr(ATitle);
   if t = '' then Result:=NSString.string_ // empty string
   else Result := NSString.stringWithUTF8String( @t[1] );
+end;
+
+procedure AddLayoutToFrame(const layout: TRect; var frame: TRect);
+begin
+  inc(frame.Left, layout.Left);
+  inc(frame.Top, layout.Top);
+  inc(frame.Right, layout.Right);
+  inc(frame.Bottom, layout.Bottom);
+end;
+
+procedure SubLayoutFromFrame(const layout: TRect; var frame: TRect);
+begin
+  dec(frame.Left, layout.Left);
+  dec(frame.Top, layout.Top);
+  dec(frame.Right, layout.Right);
+  dec(frame.Bottom, layout.Bottom);
 end;
 
 end.

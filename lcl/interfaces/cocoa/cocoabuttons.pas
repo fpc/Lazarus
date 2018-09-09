@@ -85,6 +85,7 @@ type
     function lclIsHandle: Boolean; override;
     procedure lclSetFrame(const r: TRect); override;
     procedure lclCheckMixedAllowance; message 'lclCheckMixedAllowance';
+    function lclGetFrameToLayoutDelta: TRect; override;
     // cocoa
     procedure setState(astate: NSInteger); override;
   end;
@@ -139,6 +140,39 @@ begin
         inherited setState(NSOffState);
       setAllowsMixedState(false);
     end;
+  end;
+end;
+
+function TCocoaButton.lclGetFrameToLayoutDelta: TRect;
+begin
+  case bezelStyle of
+    NSPushOnPushOffButton:
+    begin
+      // todo: on 10.7 or later there's a special API for that!
+        // The data is received from 10.6 Interface Builder
+      case NSCell(Self.Cell).controlSize of
+        NSSmallControlSize: begin
+          Result.Left := 5;
+          Result.Top := 4;
+          Result.Right := -5;
+          Result.Bottom := -7;
+        end;
+        NSMiniControlSize: begin
+          Result.Left := 1;
+          Result.Top := 0;
+          Result.Right := -1;
+          Result.Bottom := -2;
+        end;
+      else
+        // NSRegularControlSize
+        Result.Left := 6;
+        Result.Top := 4;
+        Result.Right := -6;
+        Result.Bottom := -8;
+      end;
+    end;
+  else
+    Result := inherited lclGetFrameToLayoutDelta;
   end;
 end;
 

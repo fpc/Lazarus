@@ -1460,7 +1460,7 @@ begin
   end;
   //todo: 26 pixels is the height of 'normal' combobox. The value is taken from the Interface Builder!
   //      use the correct way to set the size constraints
-  AWinControl.Constraints.SetInterfaceConstraints(0,26,0,26);
+  AWinControl.Constraints.SetInterfaceConstraints(0,COMBOBOX_MINI_HEIGHT,0,COMBOBOX_REG_HEIGHT);
 end;
 
 class function TCocoaWSCustomComboBox.GetItemIndex(const ACustomComboBox:

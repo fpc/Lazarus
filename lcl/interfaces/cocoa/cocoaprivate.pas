@@ -107,6 +107,14 @@ type
     function lclParent: id; message 'lclParent';
     function lclFrame: TRect; message 'lclFrame';
     procedure lclSetFrame(const r: TRect); message 'lclSetFrame:';
+
+    // returns rectangle describing deltas to get "Layout" rectangle from "Frame" rectangle
+    //   left, top  - return offsets from top-left corner of the control (not reversed as in Cocoa coordinates)
+    //                    (values are typically positive)
+    //   right, bottom -  offsets for bottom-right corner
+    //                    (typically negative)
+    function lclGetFrameToLayoutDelta: TRect; message 'lclGetFrameToLayoutDelta';
+
     function lclClientFrame: TRect; message 'lclClientFrame';
     function lclGetCallback: ICommonCallback; message 'lclGetCallback';
     procedure lclClearCallback; message 'lclClearCallback';
@@ -734,6 +742,14 @@ begin
 
 end;
 
+function LCLObjectExtension.lclGetFrameToLayoutDelta: TRect;
+begin
+  Result.Top := 0;
+  Result.Left := 0;
+  Result.Right := 0;
+  Result.Bottom := 0;
+end;
+
 function LCLObjectExtension.lclClientFrame:TRect;
 begin
   FillChar(Result, sizeof(Result), 0);
@@ -1006,20 +1022,26 @@ begin
     NSToLCLRect(frame, v.frame.size.height, Result)
   else
     Result := NSRectToRect(frame);
+  AddLayoutToFrame( lclGetFrameToLayoutDelta, Result);
 end;
 
 procedure LCLViewExtension.lclSetFrame(const r: TRect);
 var
   ns: NSRect;
   svHeight: CGFloat;
+  rr : TRect;
 begin
+  rr := r;
+  SubLayoutFromFrame( lclGetFrameToLayoutDelta, rr);
+
   svHeight := GetNSViewSuperViewHeight(Self);
   if Assigned(superview) and not superview.isFlipped then
   begin
-    LCLToNSRect(r, svHeight, ns)
+    LCLToNSRect(rr, svHeight, ns)
   end
   else
-    ns := RectToNSRect(r);
+    ns := RectToNSRect(rr);
+
   {$IFDEF COCOA_DEBUG_SETBOUNDS}
   WriteLn(Format('LCLViewExtension.lclSetFrame: %s Bounds=%s height=%d ns_pos=%d %d ns_size=%d %d',
     [NSStringToString(Self.ClassName), dbgs(r), Round(svHeight),
@@ -1029,14 +1051,10 @@ begin
 end;
 
 function LCLViewExtension.lclClientFrame: TRect;
-var
-  r: NSRect;
 begin
-  r := bounds;
-  Result.Left := 0;
+  Result := lclFrame;
   Result.Top := 0;
-  Result.Right := Round(r.size.width);
-  Result.Bottom := Round(r.size.height);
+  Result.Left := 0;
 end;
 
 function LCLViewExtension.lclContentView: NSView;
@@ -1048,8 +1066,10 @@ procedure LCLViewExtension.lclOffsetMousePos(var Point: NSPoint);
 var
   es : NSScrollView;
   r  : NSRect;
+  dlt : TRect;
 begin
   Point := convertPoint_fromView(Point, nil);
+
   es := enclosingScrollView;
   if not isFlipped then
     Point.y := bounds.size.height - Point.y;
@@ -1063,6 +1083,10 @@ begin
       Point.y := Point.y - (es.documentView.frame.size.height - r.size.height - r.origin.y);
     Point.X := Point.X - r.origin.x;
   end;
+
+  dlt := lclGetFrameToLayoutDelta;
+  Point.X := Point.X - dlt.Left;
+  Point.Y := Point.Y - dlt.Top;
 end;
 
 { TCocoaStatusBar }

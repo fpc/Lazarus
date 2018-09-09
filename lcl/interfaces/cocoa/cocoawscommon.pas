@@ -1809,6 +1809,7 @@ class procedure TCocoaWSWinControl.GetPreferredSize(
 var
   lView: NSView;
   Size: NSSize;
+  r: TRect;
 begin
   if not AWinControl.HandleAllocated then Exit;
 
@@ -1826,8 +1827,9 @@ begin
   if lView.respondsToSelector(objcselector('fittingSize')) then // fittingSize is 10.7+
   begin
     Size := lView.fittingSize();
-    PreferredWidth := Round(Size.width);
-    PreferredHeight := Round(Size.height);
+    r := lview.lclGetFrameToLayoutDelta;
+    PreferredWidth := Round(Size.width) - r.Left + r.Right;
+    PreferredHeight := Round(Size.height) - r.Top + r.Bottom;
   end;
 end;
 
