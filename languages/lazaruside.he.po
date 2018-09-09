@@ -5455,10 +5455,6 @@ msgctxt "lazarusidestrconsts.lisbuildcaption"
 msgid "Build"
 msgstr "בנה"
 
-#: lazarusidestrconsts.lisbuildfollowingmodes
-msgid "Build the following modes"
-msgstr ""
-
 #: lazarusidestrconsts.lisbuildide
 msgid "Build IDE"
 msgstr ""
@@ -7209,6 +7205,10 @@ msgctxt "lazarusidestrconsts.liscompile"
 msgid "Compile"
 msgstr "הדר"
 
+#: lazarusidestrconsts.liscompilefollowingmodes
+msgid "Compile the following modes"
+msgstr ""
+
 #: lazarusidestrconsts.liscompileproject
 msgid "Compile Project"
 msgstr ""
@@ -8041,10 +8041,6 @@ msgstr "העתק פריט ללוח הזמני"
 
 #: lazarusidestrconsts.liscopymovefiletodirectory
 msgid "Copy/Move File to Directory"
-msgstr ""
-
-#: lazarusidestrconsts.liscopypackagesfailed
-msgid "Copying packages failed."
 msgstr ""
 
 #: lazarusidestrconsts.liscopyselecteditemtoclipboard
@@ -16950,6 +16946,10 @@ msgstr "תקן בבקשה את שגיאה המופיעה בחלון ההודעו
 msgid "Please open a unit before run."
 msgstr "אנא פתח יחידה לפני הרצה."
 
+#: lazarusidestrconsts.lispleaseselectatleastonebuildmode
+msgid "Please select at least one build mode."
+msgstr ""
+
 #: lazarusidestrconsts.lispleaseselectsomecodetoextractanewproceduremethod
 msgid "Please select some code to extract a new procedure/method."
 msgstr "אנא בחר את הקוד לחילוץ לפרוצדורה/מתודה חדשה."
@@ -18251,8 +18251,8 @@ msgstr "(שכן שמאלי שנבחר)"
 msgid "Selected message in messages window:"
 msgstr ""
 
-#: lazarusidestrconsts.lisselectedmodeswerebuilt
-msgid "Selected %d modes were successfully built."
+#: lazarusidestrconsts.lisselectedmodeswerecompiled
+msgid "Selected %d modes were successfully compiled."
 msgstr ""
 
 #: lazarusidestrconsts.lisselectedrightneighbour

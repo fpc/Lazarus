@@ -5125,10 +5125,6 @@ msgctxt "lazarusidestrconsts.lisbuildcaption"
 msgid "Build"
 msgstr "Зібрати"
 
-#: lazarusidestrconsts.lisbuildfollowingmodes
-msgid "Build the following modes"
-msgstr "Зібрати у таких режимах"
-
 #: lazarusidestrconsts.lisbuildide
 msgid "Build IDE"
 msgstr "Зібрати ІСР"
@@ -6784,6 +6780,10 @@ msgctxt "lazarusidestrconsts.liscompile"
 msgid "Compile"
 msgstr "Компілювати"
 
+#: lazarusidestrconsts.liscompilefollowingmodes
+msgid "Compile the following modes"
+msgstr ""
+
 #: lazarusidestrconsts.liscompileproject
 msgid "Compile Project"
 msgstr "Компіляція проекту"
@@ -7578,10 +7578,6 @@ msgstr "Копіювати елемент в буфер"
 #: lazarusidestrconsts.liscopymovefiletodirectory
 msgid "Copy/Move File to Directory"
 msgstr "Копіювати/перемістити файл до теки"
-
-#: lazarusidestrconsts.liscopypackagesfailed
-msgid "Copying packages failed."
-msgstr ""
 
 #: lazarusidestrconsts.liscopyselecteditemtoclipboard
 msgid "Copy Selected Items to Clipboard"
@@ -15830,6 +15826,10 @@ msgstr "Виправте помилку, показану у вікні пові
 msgid "Please open a unit before run."
 msgstr "Відкрийте модуль перед запуском."
 
+#: lazarusidestrconsts.lispleaseselectatleastonebuildmode
+msgid "Please select at least one build mode."
+msgstr ""
+
 #: lazarusidestrconsts.lispleaseselectsomecodetoextractanewproceduremethod
 msgid "Please select some code to extract a new procedure/method."
 msgstr "Виберіть трохи коду, щоб витягти нову процедуру/метод."
@@ -17066,9 +17066,9 @@ msgstr "(вибраний лівий сусід)"
 msgid "Selected message in messages window:"
 msgstr "Повідомлення, вибране у вікні повідомлень:"
 
-#: lazarusidestrconsts.lisselectedmodeswerebuilt
-msgid "Selected %d modes were successfully built."
-msgstr "Збирання у вибраних режимах (%d шт.) успішно завершено."
+#: lazarusidestrconsts.lisselectedmodeswerecompiled
+msgid "Selected %d modes were successfully compiled."
+msgstr ""
 
 #: lazarusidestrconsts.lisselectedrightneighbour
 msgid "(selected right neighbour)"

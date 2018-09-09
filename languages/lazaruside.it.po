@@ -5219,10 +5219,6 @@ msgctxt "lazarusidestrconsts.lisbuildcaption"
 msgid "Build"
 msgstr "Costruisci"
 
-#: lazarusidestrconsts.lisbuildfollowingmodes
-msgid "Build the following modes"
-msgstr "Costruisci i seguenti modi"
-
 #: lazarusidestrconsts.lisbuildide
 msgid "Build IDE"
 msgstr "Costruisci la IDE"
@@ -6878,6 +6874,10 @@ msgctxt "lazarusidestrconsts.liscompile"
 msgid "Compile"
 msgstr "Compila"
 
+#: lazarusidestrconsts.liscompilefollowingmodes
+msgid "Compile the following modes"
+msgstr ""
+
 #: lazarusidestrconsts.liscompileproject
 msgid "Compile Project"
 msgstr "Compila il progetto"
@@ -7683,10 +7683,6 @@ msgstr "Copia voce negli appunti"
 #: lazarusidestrconsts.liscopymovefiletodirectory
 msgid "Copy/Move File to Directory"
 msgstr "Copia/Sposta il file nella Cartella"
-
-#: lazarusidestrconsts.liscopypackagesfailed
-msgid "Copying packages failed."
-msgstr ""
 
 #: lazarusidestrconsts.liscopyselecteditemtoclipboard
 msgid "Copy Selected Items to Clipboard"
@@ -16061,6 +16057,10 @@ msgstr "Correggere l'errore mostrato nella finestra messaggi, che si trova norma
 msgid "Please open a unit before run."
 msgstr "Aprire una unit prima di eseguire."
 
+#: lazarusidestrconsts.lispleaseselectatleastonebuildmode
+msgid "Please select at least one build mode."
+msgstr ""
+
 #: lazarusidestrconsts.lispleaseselectsomecodetoextractanewproceduremethod
 msgid "Please select some code to extract a new procedure/method."
 msgstr "Selezionare codice per estrarre una nuova procedura/metodo."
@@ -17291,9 +17291,9 @@ msgstr "(selezionato vicino a sinistra) "
 msgid "Selected message in messages window:"
 msgstr "Messaggio selezionato nella finestra messaggi:"
 
-#: lazarusidestrconsts.lisselectedmodeswerebuilt
-msgid "Selected %d modes were successfully built."
-msgstr "I %d modi selezionati sono stati costruiti con successo."
+#: lazarusidestrconsts.lisselectedmodeswerecompiled
+msgid "Selected %d modes were successfully compiled."
+msgstr ""
 
 #: lazarusidestrconsts.lisselectedrightneighbour
 msgid "(selected right neighbour)"

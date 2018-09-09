@@ -5192,10 +5192,6 @@ msgctxt "lazarusidestrconsts.lisbuildcaption"
 msgid "Build"
 msgstr "Sestavit"
 
-#: lazarusidestrconsts.lisbuildfollowingmodes
-msgid "Build the following modes"
-msgstr "Sestavit následující režimy"
-
 #: lazarusidestrconsts.lisbuildide
 msgid "Build IDE"
 msgstr "Sestavit IDE"
@@ -6854,6 +6850,10 @@ msgctxt "lazarusidestrconsts.liscompile"
 msgid "Compile"
 msgstr "Přeložit"
 
+#: lazarusidestrconsts.liscompilefollowingmodes
+msgid "Compile the following modes"
+msgstr ""
+
 #: lazarusidestrconsts.liscompileproject
 msgid "Compile Project"
 msgstr "Přeložit projekt"
@@ -7649,10 +7649,6 @@ msgstr "Zkopírovat položku do schránky"
 #: lazarusidestrconsts.liscopymovefiletodirectory
 msgid "Copy/Move File to Directory"
 msgstr "Kopírovat/Přesunout soubor do adresáře"
-
-#: lazarusidestrconsts.liscopypackagesfailed
-msgid "Copying packages failed."
-msgstr ""
 
 #: lazarusidestrconsts.liscopyselecteditemtoclipboard
 msgid "Copy Selected Items to Clipboard"
@@ -16003,6 +15999,10 @@ msgstr "Prosím, opravte chybu zobrazenou v okně zpráv, které je zpravidla po
 msgid "Please open a unit before run."
 msgstr "Prosím otevřete jednotku před spuštěním."
 
+#: lazarusidestrconsts.lispleaseselectatleastonebuildmode
+msgid "Please select at least one build mode."
+msgstr ""
+
 #: lazarusidestrconsts.lispleaseselectsomecodetoextractanewproceduremethod
 msgid "Please select some code to extract a new procedure/method."
 msgstr "Prosíme vyberte nějaký kód k vytažení nové procedury/metody."
@@ -17233,9 +17233,9 @@ msgstr "(vybraný levý soused)"
 msgid "Selected message in messages window:"
 msgstr "Vybrané zprávy v okně zprávy:"
 
-#: lazarusidestrconsts.lisselectedmodeswerebuilt
-msgid "Selected %d modes were successfully built."
-msgstr "Vybrané %d režimy byly úspěšně sestaveny."
+#: lazarusidestrconsts.lisselectedmodeswerecompiled
+msgid "Selected %d modes were successfully compiled."
+msgstr ""
 
 #: lazarusidestrconsts.lisselectedrightneighbour
 msgid "(selected right neighbour)"

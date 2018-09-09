@@ -5212,10 +5212,6 @@ msgctxt "lazarusidestrconsts.lisbuildcaption"
 msgid "Build"
 msgstr "构建"
 
-#: lazarusidestrconsts.lisbuildfollowingmodes
-msgid "Build the following modes"
-msgstr "构建以下模式"
-
 #: lazarusidestrconsts.lisbuildide
 msgid "Build IDE"
 msgstr "构建IDE"
@@ -6895,6 +6891,10 @@ msgctxt "lazarusidestrconsts.liscompile"
 msgid "Compile"
 msgstr "编译"
 
+#: lazarusidestrconsts.liscompilefollowingmodes
+msgid "Compile the following modes"
+msgstr ""
+
 #: lazarusidestrconsts.liscompileproject
 msgid "Compile Project"
 msgstr "编译工程"
@@ -7690,10 +7690,6 @@ msgstr "复制Item 到剪切板"
 #: lazarusidestrconsts.liscopymovefiletodirectory
 msgid "Copy/Move File to Directory"
 msgstr "复制/移动文件到目录"
-
-#: lazarusidestrconsts.liscopypackagesfailed
-msgid "Copying packages failed."
-msgstr ""
 
 #: lazarusidestrconsts.liscopyselecteditemtoclipboard
 msgid "Copy Selected Items to Clipboard"
@@ -16091,6 +16087,10 @@ msgstr ""
 msgid "Please open a unit before run."
 msgstr "在运行前请打开一个单元"
 
+#: lazarusidestrconsts.lispleaseselectatleastonebuildmode
+msgid "Please select at least one build mode."
+msgstr ""
+
 #: lazarusidestrconsts.lispleaseselectsomecodetoextractanewproceduremethod
 msgid "Please select some code to extract a new procedure/method."
 msgstr "请选择一些代码以分析过程或方法."
@@ -17325,8 +17325,8 @@ msgstr ""
 msgid "Selected message in messages window:"
 msgstr "选择信息在信息窗体"
 
-#: lazarusidestrconsts.lisselectedmodeswerebuilt
-msgid "Selected %d modes were successfully built."
+#: lazarusidestrconsts.lisselectedmodeswerecompiled
+msgid "Selected %d modes were successfully compiled."
 msgstr ""
 
 #: lazarusidestrconsts.lisselectedrightneighbour

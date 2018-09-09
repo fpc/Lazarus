@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-09-06 02:03+0300\n"
+"PO-Revision-Date: 2018-09-10 01:05+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -5105,10 +5105,6 @@ msgctxt "lazarusidestrconsts.lisbuildcaption"
 msgid "Build"
 msgstr "Сборка"
 
-#: lazarusidestrconsts.lisbuildfollowingmodes
-msgid "Build the following modes"
-msgstr "Собрать в следующих режимах"
-
 #: lazarusidestrconsts.lisbuildide
 msgid "Build IDE"
 msgstr "Сборка IDE"
@@ -6761,6 +6757,10 @@ msgctxt "lazarusidestrconsts.liscompile"
 msgid "Compile"
 msgstr "Компилировать"
 
+#: lazarusidestrconsts.liscompilefollowingmodes
+msgid "Compile the following modes"
+msgstr "Компилировать в следующих режимах"
+
 #: lazarusidestrconsts.liscompileproject
 msgid "Compile Project"
 msgstr "Компиляция проекта"
@@ -7555,10 +7555,6 @@ msgstr "Копировать строку в буфер обмена"
 #: lazarusidestrconsts.liscopymovefiletodirectory
 msgid "Copy/Move File to Directory"
 msgstr "Копировать/переместить файл в каталог"
-
-#: lazarusidestrconsts.liscopypackagesfailed
-msgid "Copying packages failed."
-msgstr "Не удалось скопировать пакеты."
 
 #: lazarusidestrconsts.liscopyselecteditemtoclipboard
 msgid "Copy Selected Items to Clipboard"
@@ -15772,6 +15768,10 @@ msgstr "Исправьте ошибку, указанную в окне сооб
 msgid "Please open a unit before run."
 msgstr "Откройте модуль перед запуском."
 
+#: lazarusidestrconsts.lispleaseselectatleastonebuildmode
+msgid "Please select at least one build mode."
+msgstr "Выберите хотя бы один режим сборки."
+
 #: lazarusidestrconsts.lispleaseselectsomecodetoextractanewproceduremethod
 msgid "Please select some code to extract a new procedure/method."
 msgstr "Выделите некоторый код, чтобы извлечь новую процедуру/метод."
@@ -17000,9 +17000,9 @@ msgstr "(выбран сосед слева)"
 msgid "Selected message in messages window:"
 msgstr "Выбранное в окне сообщение:"
 
-#: lazarusidestrconsts.lisselectedmodeswerebuilt
-msgid "Selected %d modes were successfully built."
-msgstr "Сборка в выбранных режимах (%d шт.) успешно завершена."
+#: lazarusidestrconsts.lisselectedmodeswerecompiled
+msgid "Selected %d modes were successfully compiled."
+msgstr "Компиляция в выбранных режимах (%d шт.) успешно завершена."
 
 #: lazarusidestrconsts.lisselectedrightneighbour
 msgid "(selected right neighbour)"

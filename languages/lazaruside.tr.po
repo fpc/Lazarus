@@ -5199,10 +5199,6 @@ msgctxt "lazarusidestrconsts.lisbuildcaption"
 msgid "Build"
 msgstr "Derle"
 
-#: lazarusidestrconsts.lisbuildfollowingmodes
-msgid "Build the following modes"
-msgstr "Aşağıdaki modülleri oluşturun"
-
 #: lazarusidestrconsts.lisbuildide
 msgid "Build IDE"
 msgstr "IDE oluştur"
@@ -6898,6 +6894,10 @@ msgctxt "lazarusidestrconsts.liscompile"
 msgid "Compile"
 msgstr "Derleme"
 
+#: lazarusidestrconsts.liscompilefollowingmodes
+msgid "Compile the following modes"
+msgstr ""
+
 #: lazarusidestrconsts.liscompileproject
 msgid "Compile Project"
 msgstr "Derleme Projesi"
@@ -7706,10 +7706,6 @@ msgstr "Öğe Pano'ya Kopyala"
 #: lazarusidestrconsts.liscopymovefiletodirectory
 msgid "Copy/Move File to Directory"
 msgstr "Dosyayı Dizine Kopyala / Taşı"
-
-#: lazarusidestrconsts.liscopypackagesfailed
-msgid "Copying packages failed."
-msgstr ""
 
 #: lazarusidestrconsts.liscopyselecteditemtoclipboard
 msgid "Copy Selected Items to Clipboard"
@@ -16112,6 +16108,10 @@ msgstr "Lütfen normalde kaynak düzenleyicinin altında olan mesaj penceresinde
 msgid "Please open a unit before run."
 msgstr "Lütfen çalıştırmadan önce bir ünite açın."
 
+#: lazarusidestrconsts.lispleaseselectatleastonebuildmode
+msgid "Please select at least one build mode."
+msgstr ""
+
 #: lazarusidestrconsts.lispleaseselectsomecodetoextractanewproceduremethod
 msgid "Please select some code to extract a new procedure/method."
 msgstr "Lütfen yeni bir prosedür / yöntem çıkarmak için bazı kodları seçin."
@@ -17360,10 +17360,9 @@ msgstr "(Seçili sol komşu)"
 msgid "Selected message in messages window:"
 msgstr "Mesaj penceresinde seçilen mesaj:"
 
-#: lazarusidestrconsts.lisselectedmodeswerebuilt
-#, fuzzy,badformat
-msgid "Selected %d modes were successfully built."
-msgstr "Seçilen% d modları başarıyla oluşturuldu."
+#: lazarusidestrconsts.lisselectedmodeswerecompiled
+msgid "Selected %d modes were successfully compiled."
+msgstr ""
 
 #: lazarusidestrconsts.lisselectedrightneighbour
 msgid "(selected right neighbour)"

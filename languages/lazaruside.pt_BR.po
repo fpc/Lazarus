@@ -5149,10 +5149,6 @@ msgctxt "lazarusidestrconsts.lisbuildcaption"
 msgid "Build"
 msgstr "Construir"
 
-#: lazarusidestrconsts.lisbuildfollowingmodes
-msgid "Build the following modes"
-msgstr "Construir os seguintes modos"
-
 #: lazarusidestrconsts.lisbuildide
 msgid "Build IDE"
 msgstr "Construir a IDE"
@@ -6811,6 +6807,10 @@ msgctxt "lazarusidestrconsts.liscompile"
 msgid "Compile"
 msgstr "Compilar"
 
+#: lazarusidestrconsts.liscompilefollowingmodes
+msgid "Compile the following modes"
+msgstr ""
+
 #: lazarusidestrconsts.liscompileproject
 msgid "Compile Project"
 msgstr "Compilar projeto"
@@ -7605,10 +7605,6 @@ msgstr "Copiar item para a área de transferência"
 #: lazarusidestrconsts.liscopymovefiletodirectory
 msgid "Copy/Move File to Directory"
 msgstr "Copiar/Mover arquivo para diretório"
-
-#: lazarusidestrconsts.liscopypackagesfailed
-msgid "Copying packages failed."
-msgstr ""
 
 #: lazarusidestrconsts.liscopyselecteditemtoclipboard
 msgid "Copy Selected Items to Clipboard"
@@ -15863,6 +15859,10 @@ msgstr "Favor corrigir o erro mostrado na janela de mensagens, que se localiza n
 msgid "Please open a unit before run."
 msgstr "Favor abrir uma unidade antes de executar."
 
+#: lazarusidestrconsts.lispleaseselectatleastonebuildmode
+msgid "Please select at least one build mode."
+msgstr ""
+
 #: lazarusidestrconsts.lispleaseselectsomecodetoextractanewproceduremethod
 msgid "Please select some code to extract a new procedure/method."
 msgstr "Favor selecionar algum código para extrair um novo procedimento/método."
@@ -17104,9 +17104,9 @@ msgstr "(vizinho da esquerda selecionado)"
 msgid "Selected message in messages window:"
 msgstr "Mensagem selecionada na janela de mensagens:"
 
-#: lazarusidestrconsts.lisselectedmodeswerebuilt
-msgid "Selected %d modes were successfully built."
-msgstr "Modos %d selecionados construídos com sucesso."
+#: lazarusidestrconsts.lisselectedmodeswerecompiled
+msgid "Selected %d modes were successfully compiled."
+msgstr ""
 
 #: lazarusidestrconsts.lisselectedrightneighbour
 msgid "(selected right neighbour)"

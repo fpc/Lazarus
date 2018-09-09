@@ -5232,10 +5232,6 @@ msgctxt "lazarusidestrconsts.lisbuildcaption"
 msgid "Build"
 msgstr "Construir"
 
-#: lazarusidestrconsts.lisbuildfollowingmodes
-msgid "Build the following modes"
-msgstr "Construir los siguientes modos"
-
 #: lazarusidestrconsts.lisbuildide
 msgid "Build IDE"
 msgstr "Construir IDE"
@@ -6892,6 +6888,10 @@ msgctxt "lazarusidestrconsts.liscompile"
 msgid "Compile"
 msgstr "Compilar"
 
+#: lazarusidestrconsts.liscompilefollowingmodes
+msgid "Compile the following modes"
+msgstr ""
+
 #: lazarusidestrconsts.liscompileproject
 msgid "Compile Project"
 msgstr "Compilar proyecto"
@@ -7698,10 +7698,6 @@ msgstr "Copiar elemento al Portapapeles"
 #: lazarusidestrconsts.liscopymovefiletodirectory
 msgid "Copy/Move File to Directory"
 msgstr "Copia/Mueve fichero a Directorio"
-
-#: lazarusidestrconsts.liscopypackagesfailed
-msgid "Copying packages failed."
-msgstr ""
 
 #: lazarusidestrconsts.liscopyselecteditemtoclipboard
 msgid "Copy Selected Items to Clipboard"
@@ -16129,6 +16125,10 @@ msgstr "Por favor solucione el error mostrado en la ventana de mensajes, que nor
 msgid "Please open a unit before run."
 msgstr "Por favor abra una unidad antes de ejecutar."
 
+#: lazarusidestrconsts.lispleaseselectatleastonebuildmode
+msgid "Please select at least one build mode."
+msgstr ""
+
 #: lazarusidestrconsts.lispleaseselectsomecodetoextractanewproceduremethod
 msgid "Please select some code to extract a new procedure/method."
 msgstr "Por favor seleccione algo de código para extraer un nuevo procedure/method"
@@ -17358,9 +17358,9 @@ msgstr "(vecino izquierdo seleccionado)"
 msgid "Selected message in messages window:"
 msgstr "Mensaje seleccionado en ventana de mensajes:"
 
-#: lazarusidestrconsts.lisselectedmodeswerebuilt
-msgid "Selected %d modes were successfully built."
-msgstr "Modos %d seleccionados se contruyeron satisfactoriamente."
+#: lazarusidestrconsts.lisselectedmodeswerecompiled
+msgid "Selected %d modes were successfully compiled."
+msgstr ""
 
 #: lazarusidestrconsts.lisselectedrightneighbour
 msgid "(selected right neighbour)"

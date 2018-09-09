@@ -5186,10 +5186,6 @@ msgctxt "lazarusidestrconsts.lisbuildcaption"
 msgid "Build"
 msgstr "Daryti"
 
-#: lazarusidestrconsts.lisbuildfollowingmodes
-msgid "Build the following modes"
-msgstr "Daryti šiuos modulius"
-
 #: lazarusidestrconsts.lisbuildide
 msgid "Build IDE"
 msgstr "Daryti IKA"
@@ -6846,6 +6842,10 @@ msgctxt "lazarusidestrconsts.liscompile"
 msgid "Compile"
 msgstr "Kompiliuojama"
 
+#: lazarusidestrconsts.liscompilefollowingmodes
+msgid "Compile the following modes"
+msgstr ""
+
 #: lazarusidestrconsts.liscompileproject
 msgid "Compile Project"
 msgstr "Kompiliuoti projektą"
@@ -7641,10 +7641,6 @@ msgstr "Elementus kopijuoti į iškarpinę"
 #: lazarusidestrconsts.liscopymovefiletodirectory
 msgid "Copy/Move File to Directory"
 msgstr "Failą kopijuoti ar perkelti į aplanką"
-
-#: lazarusidestrconsts.liscopypackagesfailed
-msgid "Copying packages failed."
-msgstr ""
 
 #: lazarusidestrconsts.liscopyselecteditemtoclipboard
 msgid "Copy Selected Items to Clipboard"
@@ -15912,6 +15908,10 @@ msgstr "Ištaisykite klaidą, rodomą pranešimų lange. Pranešimų langas įpr
 msgid "Please open a unit before run."
 msgstr "Prieš startuojant atverkite modulį."
 
+#: lazarusidestrconsts.lispleaseselectatleastonebuildmode
+msgid "Please select at least one build mode."
+msgstr ""
+
 #: lazarusidestrconsts.lispleaseselectsomecodetoextractanewproceduremethod
 msgid "Please select some code to extract a new procedure/method."
 msgstr "Prieš ištraukiant naują procedūrą/metodą pažymėkite kažkiek kodo."
@@ -17150,9 +17150,9 @@ msgstr "(pažymėtas kairysis kaimynas)"
 msgid "Selected message in messages window:"
 msgstr "Pranešimų lange parinktas pranešimas:"
 
-#: lazarusidestrconsts.lisselectedmodeswerebuilt
-msgid "Selected %d modes were successfully built."
-msgstr "Pažymėtių %d režimų darymas baigėsi sėkmingai."
+#: lazarusidestrconsts.lisselectedmodeswerecompiled
+msgid "Selected %d modes were successfully compiled."
+msgstr ""
 
 #: lazarusidestrconsts.lisselectedrightneighbour
 msgid "(selected right neighbour)"

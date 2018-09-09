@@ -5352,10 +5352,6 @@ msgctxt "lazarusidestrconsts.lisbuildcaption"
 msgid "Build"
 msgstr "Bangun"
 
-#: lazarusidestrconsts.lisbuildfollowingmodes
-msgid "Build the following modes"
-msgstr ""
-
 #: lazarusidestrconsts.lisbuildide
 msgid "Build IDE"
 msgstr ""
@@ -7056,6 +7052,10 @@ msgctxt "lazarusidestrconsts.liscompile"
 msgid "Compile"
 msgstr "Kompilasi"
 
+#: lazarusidestrconsts.liscompilefollowingmodes
+msgid "Compile the following modes"
+msgstr ""
+
 #: lazarusidestrconsts.liscompileproject
 msgid "Compile Project"
 msgstr ""
@@ -7866,10 +7866,6 @@ msgstr ""
 
 #: lazarusidestrconsts.liscopymovefiletodirectory
 msgid "Copy/Move File to Directory"
-msgstr ""
-
-#: lazarusidestrconsts.liscopypackagesfailed
-msgid "Copying packages failed."
 msgstr ""
 
 #: lazarusidestrconsts.liscopyselecteditemtoclipboard
@@ -16549,6 +16545,10 @@ msgstr ""
 msgid "Please open a unit before run."
 msgstr "Silahkan buka unit sebelum menjalankan"
 
+#: lazarusidestrconsts.lispleaseselectatleastonebuildmode
+msgid "Please select at least one build mode."
+msgstr ""
+
 #: lazarusidestrconsts.lispleaseselectsomecodetoextractanewproceduremethod
 msgid "Please select some code to extract a new procedure/method."
 msgstr "Silahkan pilih beberapa kode untuk mengekstrak procedure/method baru."
@@ -17815,8 +17815,8 @@ msgstr ""
 msgid "Selected message in messages window:"
 msgstr ""
 
-#: lazarusidestrconsts.lisselectedmodeswerebuilt
-msgid "Selected %d modes were successfully built."
+#: lazarusidestrconsts.lisselectedmodeswerecompiled
+msgid "Selected %d modes were successfully compiled."
 msgstr ""
 
 #: lazarusidestrconsts.lisselectedrightneighbour

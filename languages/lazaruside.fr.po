@@ -5171,10 +5171,6 @@ msgctxt "lazarusidestrconsts.lisbuildcaption"
 msgid "Build"
 msgstr "Création"
 
-#: lazarusidestrconsts.lisbuildfollowingmodes
-msgid "Build the following modes"
-msgstr "Construire les modes suivants"
-
 #: lazarusidestrconsts.lisbuildide
 msgid "Build IDE"
 msgstr "Création de l'EDI"
@@ -6830,6 +6826,10 @@ msgctxt "lazarusidestrconsts.liscompile"
 msgid "Compile"
 msgstr "Compiler"
 
+#: lazarusidestrconsts.liscompilefollowingmodes
+msgid "Compile the following modes"
+msgstr ""
+
 #: lazarusidestrconsts.liscompileproject
 msgid "Compile Project"
 msgstr "Compilation du projet"
@@ -7625,10 +7625,6 @@ msgstr "Copier l'élément dans le presse-papiers"
 #: lazarusidestrconsts.liscopymovefiletodirectory
 msgid "Copy/Move File to Directory"
 msgstr "Copier/Déplacer le fichier vers le répertoire"
-
-#: lazarusidestrconsts.liscopypackagesfailed
-msgid "Copying packages failed."
-msgstr ""
 
 #: lazarusidestrconsts.liscopyselecteditemtoclipboard
 msgid "Copy Selected Items to Clipboard"
@@ -15882,6 +15878,10 @@ msgstr "Veuillez corriger l'erreur indiquée dans la fenêtre des messages qui s
 msgid "Please open a unit before run."
 msgstr "Veuillez ouvrir une unité avant l'exécution."
 
+#: lazarusidestrconsts.lispleaseselectatleastonebuildmode
+msgid "Please select at least one build mode."
+msgstr ""
+
 #: lazarusidestrconsts.lispleaseselectsomecodetoextractanewproceduremethod
 msgid "Please select some code to extract a new procedure/method."
 msgstr "Veuillez sélectionner du code pour extraire une nouvelle procédure/méthode."
@@ -17118,9 +17118,9 @@ msgstr "(voisin de gauche sélectionné)"
 msgid "Selected message in messages window:"
 msgstr "Message sélectionné dans la fenêtre des messages :"
 
-#: lazarusidestrconsts.lisselectedmodeswerebuilt
-msgid "Selected %d modes were successfully built."
-msgstr "Les %d modes sélectionnés ont été construits avec succès."
+#: lazarusidestrconsts.lisselectedmodeswerecompiled
+msgid "Selected %d modes were successfully compiled."
+msgstr ""
 
 #: lazarusidestrconsts.lisselectedrightneighbour
 msgid "(selected right neighbour)"

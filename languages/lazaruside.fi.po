@@ -5148,10 +5148,6 @@ msgctxt "lazarusidestrconsts.lisbuildcaption"
 msgid "Build"
 msgstr "Kokoa"
 
-#: lazarusidestrconsts.lisbuildfollowingmodes
-msgid "Build the following modes"
-msgstr "Kokoa seuraavat moodit"
-
 #: lazarusidestrconsts.lisbuildide
 msgid "Build IDE"
 msgstr "Kokoa IDE"
@@ -6796,6 +6792,10 @@ msgctxt "lazarusidestrconsts.liscompile"
 msgid "Compile"
 msgstr "Käännä"
 
+#: lazarusidestrconsts.liscompilefollowingmodes
+msgid "Compile the following modes"
+msgstr ""
+
 #: lazarusidestrconsts.liscompileproject
 msgid "Compile Project"
 msgstr "Käännä projekti"
@@ -7587,10 +7587,6 @@ msgstr "Kopioi leikepöydälle"
 #: lazarusidestrconsts.liscopymovefiletodirectory
 msgid "Copy/Move File to Directory"
 msgstr "Kopioi/Siirrä tiedosto hakemistoon"
-
-#: lazarusidestrconsts.liscopypackagesfailed
-msgid "Copying packages failed."
-msgstr ""
 
 #: lazarusidestrconsts.liscopyselecteditemtoclipboard
 msgid "Copy Selected Items to Clipboard"
@@ -15763,6 +15759,10 @@ msgstr "Korjaa viesti-ikkunassa näkyvä virhe."
 msgid "Please open a unit before run."
 msgstr "Avaa käänösyksikkö ennen suoritusta."
 
+#: lazarusidestrconsts.lispleaseselectatleastonebuildmode
+msgid "Please select at least one build mode."
+msgstr ""
+
 #: lazarusidestrconsts.lispleaseselectsomecodetoextractanewproceduremethod
 msgid "Please select some code to extract a new procedure/method."
 msgstr "Valitse ensin jokin koodin osa josta tehdään uusi aliohjelma tai metodi"
@@ -16977,9 +16977,9 @@ msgstr "(valittu vasen naapuri)"
 msgid "Selected message in messages window:"
 msgstr "Valittu viesti viesti-ikkunassa:"
 
-#: lazarusidestrconsts.lisselectedmodeswerebuilt
-msgid "Selected %d modes were successfully built."
-msgstr "Valitut %d moodia koottiin onnistuneesti."
+#: lazarusidestrconsts.lisselectedmodeswerecompiled
+msgid "Selected %d modes were successfully compiled."
+msgstr ""
 
 #: lazarusidestrconsts.lisselectedrightneighbour
 msgid "(selected right neighbour)"

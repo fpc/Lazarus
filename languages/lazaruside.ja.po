@@ -5182,10 +5182,6 @@ msgctxt "lazarusidestrconsts.lisbuildcaption"
 msgid "Build"
 msgstr "構築"
 
-#: lazarusidestrconsts.lisbuildfollowingmodes
-msgid "Build the following modes"
-msgstr "後に続くモードで構築"
-
 #: lazarusidestrconsts.lisbuildide
 msgid "Build IDE"
 msgstr "IDEを構築"
@@ -6843,6 +6839,10 @@ msgctxt "lazarusidestrconsts.liscompile"
 msgid "Compile"
 msgstr "コンパイル"
 
+#: lazarusidestrconsts.liscompilefollowingmodes
+msgid "Compile the following modes"
+msgstr ""
+
 #: lazarusidestrconsts.liscompileproject
 msgid "Compile Project"
 msgstr "プロジェクトをコンパイル"
@@ -7638,10 +7638,6 @@ msgstr "項目をクリップボードにコピー"
 #: lazarusidestrconsts.liscopymovefiletodirectory
 msgid "Copy/Move File to Directory"
 msgstr "ファイルをディレクトリにコピー/移動"
-
-#: lazarusidestrconsts.liscopypackagesfailed
-msgid "Copying packages failed."
-msgstr ""
 
 #: lazarusidestrconsts.liscopyselecteditemtoclipboard
 msgid "Copy Selected Items to Clipboard"
@@ -15880,6 +15876,10 @@ msgstr "メッセージウィンドウ（通常ソースエディタの下にあ
 msgid "Please open a unit before run."
 msgstr "実行する前にユニットを開いて下さい。"
 
+#: lazarusidestrconsts.lispleaseselectatleastonebuildmode
+msgid "Please select at least one build mode."
+msgstr ""
+
 #: lazarusidestrconsts.lispleaseselectsomecodetoextractanewproceduremethod
 msgid "Please select some code to extract a new procedure/method."
 msgstr "新しい手続き/メソッドを抽出するためにコードの一部を選択してください。"
@@ -17121,9 +17121,9 @@ msgstr "（選択された左隣）"
 msgid "Selected message in messages window:"
 msgstr "メッセージウィンドウ内の選択されたメッセージ"
 
-#: lazarusidestrconsts.lisselectedmodeswerebuilt
-msgid "Selected %d modes were successfully built."
-msgstr "選択された%dモードの構築に成功しました。"
+#: lazarusidestrconsts.lisselectedmodeswerecompiled
+msgid "Selected %d modes were successfully compiled."
+msgstr ""
 
 #: lazarusidestrconsts.lisselectedrightneighbour
 msgid "(selected right neighbour)"

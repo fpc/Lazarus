@@ -5153,10 +5153,6 @@ msgctxt "lazarusidestrconsts.lisbuildcaption"
 msgid "Build"
 msgstr "Neu kompilieren"
 
-#: lazarusidestrconsts.lisbuildfollowingmodes
-msgid "Build the following modes"
-msgstr "Erstellt die folgenden Modi"
-
 #: lazarusidestrconsts.lisbuildide
 msgid "Build IDE"
 msgstr "IDE erstellen"
@@ -6812,6 +6808,10 @@ msgctxt "lazarusidestrconsts.liscompile"
 msgid "Compile"
 msgstr "Kompilieren"
 
+#: lazarusidestrconsts.liscompilefollowingmodes
+msgid "Compile the following modes"
+msgstr ""
+
 #: lazarusidestrconsts.liscompileproject
 msgid "Compile Project"
 msgstr "Projekt kompilieren"
@@ -7606,10 +7606,6 @@ msgstr "Eintrag in die Zwischenablage kopieren"
 #: lazarusidestrconsts.liscopymovefiletodirectory
 msgid "Copy/Move File to Directory"
 msgstr "Datei in Verzeichnis kopieren/verschieben"
-
-#: lazarusidestrconsts.liscopypackagesfailed
-msgid "Copying packages failed."
-msgstr ""
 
 #: lazarusidestrconsts.liscopyselecteditemtoclipboard
 msgid "Copy Selected Items to Clipboard"
@@ -15856,6 +15852,10 @@ msgstr "Bitte berichtigen Sie den Fehler, der im Nachrichtenfenster angezeigt wi
 msgid "Please open a unit before run."
 msgstr "Btte öffnen Sie eine Unit vor dem Starten."
 
+#: lazarusidestrconsts.lispleaseselectatleastonebuildmode
+msgid "Please select at least one build mode."
+msgstr ""
+
 #: lazarusidestrconsts.lispleaseselectsomecodetoextractanewproceduremethod
 msgid "Please select some code to extract a new procedure/method."
 msgstr "Bitte wählen Sie den Quelltext, um eine neue Prozedur/Methode zu extrahieren."
@@ -17083,9 +17083,9 @@ msgstr "(linken Nachbarn auswählen)"
 msgid "Selected message in messages window:"
 msgstr ""
 
-#: lazarusidestrconsts.lisselectedmodeswerebuilt
-msgid "Selected %d modes were successfully built."
-msgstr "Gewählte %d Modi wurden erfolgreich erstellt."
+#: lazarusidestrconsts.lisselectedmodeswerecompiled
+msgid "Selected %d modes were successfully compiled."
+msgstr ""
 
 #: lazarusidestrconsts.lisselectedrightneighbour
 msgid "(selected right neighbour)"
