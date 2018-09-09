@@ -171,6 +171,7 @@ type
 var
   CocoaWidgetSet: TCocoaWidgetSet;
   CocoaBasePPI : Integer = 96; // for compatiblity with LCL 1.8 release. The macOS base is 72ppi
+  MainPool : NSAutoreleasePool = nil;
 
 function CocoaScrollBarSetScrollInfo(bar: TCocoaScrollBar; const ScrollInfo: TScrollInfo): Integer;
 function CocoaScrollBarGetScrollInfo(bar: TCocoaScrollBar; var ScrollInfo: TScrollInfo): Boolean;
@@ -397,6 +398,18 @@ end;
 {$I cocoawinapi.inc}
 // the implementation of the extra LCL interface methods
 {$I cocoalclintf.inc}
+
+procedure InternalInit;
+begin
+  // MacOSX 10.6 reports a lot of warnings during initialization process
+  // adding the autorelease pool for the whole Cocoa widgetset
+  MainPool := NSAutoreleasePool.alloc.init;
+end;
+
+procedure InternalFinal;
+begin
+  if Assigned(MainPool) then MainPool.release;
+end;
 
 initialization
 //  {$I Cocoaimages.lrs}

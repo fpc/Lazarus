@@ -590,15 +590,6 @@ begin
   Result:= lpCocoa;
 end;
 
-procedure InternalInit;
-begin
-end;
-
-procedure InternalFinal;
-begin
-end;
-
-
 { TCocoaTimerObject }
 
 procedure TCocoaTimerObject.timerEvent;
