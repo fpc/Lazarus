@@ -33,7 +33,7 @@ uses
   MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects,
   cocoa_extra, CocoaPrivate,
   // LCL
-  LCLType, StdCtrls;
+  LCLType;
 
 const
   SPINEDIT_DEFAULT_STEPPER_WIDTH = 15;
@@ -229,7 +229,7 @@ type
 
   TCocoaReadOnlyComboBox = objcclass(NSPopUpButton)
   public
-    Owner: TCustomComboBox;
+    //Owner: TCustomComboBox;
     callback: IComboboxCallBack;
     list: TCocoaComboBoxList;
     resultNS: NSString;  //use to return values to combo

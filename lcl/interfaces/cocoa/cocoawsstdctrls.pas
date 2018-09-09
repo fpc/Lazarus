@@ -1439,7 +1439,6 @@ begin
   begin
     rocmb := NSView(TCocoaReadOnlyComboBox.alloc).lclInitWithCreateParams(AParams);
     if not Assigned(rocmb) then Exit;
-    rocmb.Owner := TCustomComboBox(AWinControl);
     rocmb.list:=TCocoaComboBoxList.Create(nil, rocmb);
     rocmb.setTarget(rocmb);
     rocmb.setAction(objcselector('comboboxAction:'));
