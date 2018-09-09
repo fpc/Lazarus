@@ -34,7 +34,7 @@ uses
   MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects,
   cocoa_extra,
   // LCL
-  LCLType, ComCtrls, StdCtrls;
+  LCLType, StdCtrls;
 
 const
   SPINEDIT_DEFAULT_STEPPER_WIDTH = 15;
@@ -209,10 +209,19 @@ type
 
   { TCocoaStatusBar }
 
+  IStatusBarCallback = interface {(ICommonCallback) // not needed to inherit from ICommonCallback}
+    function GetBarsCount: Integer;
+    //todo: consider the use Cocoa native types, instead of FPC TAlignment
+    function GetBarItem(idx: Integer; var txt: String;
+      var width: Integer; var align: TAlignment): Boolean;
+    //todo: add a method for OwnerDraw Panels support
+  end;
+
   TCocoaStatusBar = objcclass(TCocoaCustomControl)
   public
-    StatusBar : TStatusBar;
-    panelCell : NSCell;
+    //StatusBar : TStatusBar;
+    barcallback : IStatusBarCallback;
+    panelCell   : NSCell;
     procedure drawRect(dirtyRect: NSRect); override;
     procedure dealloc; override;
   end;
@@ -1062,49 +1071,47 @@ procedure TCocoaStatusBar.drawRect(dirtyRect: NSRect);
 var
   R    : TRect;
   i    : Integer;
-  txt  : NSString;
+  cs   : NSString;
   nr   : NSRect;
+  al   : TAlignment;
   x    : Integer;
+  txt  : string;
+  cnt  : Integer;
+  w    : Integer;
 const
   CocoaAlign: array [TAlignment] of Integer = (NSNaturalTextAlignment, NSRightTextAlignment, NSCenterTextAlignment);
 begin
-  //inherited NSControl.drawRect(dirtyRect);
-  if callback = nil then Exit;
+  if not Assigned(barcallback) then Exit;
 
   if not Assigned(panelCell) then Exit;
 
   panelCell.setControlView(Self);
-  FillChar(nr, sizeof(nr), 0);
 
   r := lclClientFrame();
-  nr.size.height := StatusBar.Height;
+  nr.origin.y := 0;
+  nr.size.height := self.lclFrame.Height;
 
-  if StatusBar.SimplePanel then
-  begin
-    nr.size.width := r.Right-r.Left;
-    txt := NSStringUtf8(StatusBar.SimpleText);
-    panelCell.setAlignment( NSNaturalTextAlignment );
-    panelCell.setTitle( txt );
+  x:=0;
+  cnt := barcallback.GetBarsCount;
+  for i:=0 to cnt - 1 do begin
+
+    txt := '';
+    w := 0;
+    al := taLeftJustify;
+
+    if not barcallback.GetBarItem(i, txt, w, al) then Continue;
+
+    if i = cnt - 1 then w := r.Right - x;
+    nr.size.width := w;
+    nr.origin.x := x;
+
+    cs := NSStringUtf8(txt);
+    panelCell.setTitle(cs);
+    panelCell.setAlignment(CocoaAlign[al]);
     panelCell.drawWithFrame_inView(nr, Self);
-    txt.release;
-  end
-  else
-  begin
-    x:=0;
-    for i:=0 to StatusBar.Panels.Count-1 do
-    begin
-      if i=StatusBar.Panels.Count-1 then
-        nr.size.width := r.Right-x+1
-      else
-        nr.size.width := StatusBar.Panels[i].Width+1;
-      nr.origin.x := x;
-      inc(x, StatusBar.Panels[i].Width);
-      txt := NSStringUtf8(StatusBar.Panels[i].Text);
-      panelCell.setTitle(txt);
-      panelCell.setAlignment(CocoaAlign[StatusBar.Panels[i].Alignment]);
-      panelCell.drawWithFrame_inView(nr, Self);
-      txt.release;
-    end;
+    cs.release;
+    inc(x, w);
+    if x > r.Right then break; // no place left
   end;
 end;
 

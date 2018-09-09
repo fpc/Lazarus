@@ -24,6 +24,13 @@ type
 
   { TCocoaWSStatusBar }
 
+  { TStatusBarCallback }
+
+  TStatusBarCallback = class(TLCLCommonCallback, IStatusBarCallback, ICommonCallback)
+    function GetBarsCount: Integer;
+    function GetBarItem(idx: Integer; var txt: String; var width: Integer; var align: TAlignment): Boolean;
+  end;
+
   TCocoaWSStatusBar = class(TWSStatusBar)
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
@@ -282,6 +289,36 @@ begin
     end;
 end;
 
+{ TStatusBarCallback }
+
+function TStatusBarCallback.GetBarsCount: Integer;
+begin
+  if  TStatusBar(Target).SimplePanel
+    then Result := 1
+    else Result := TStatusBar(Target).Panels.Count;
+end;
+
+function TStatusBarCallback.GetBarItem(idx: Integer; var txt: String;
+  var width: Integer; var align: TAlignment): Boolean;
+var
+  sb : TStatusBar;
+begin
+  sb := TStatusBar(Target);
+  if sb.SimplePanel then begin
+    Result := idx = 0;
+    if not Result then Exit;
+    txt := sb.SimpleText;
+    width := sb.Width;
+    align := taLeftJustify; // todo: RTL?
+  end else begin
+    Result := (idx >= 0) and (idx < sb.Panels.Count);
+    if not Result then Exit;
+    txt := sb.Panels[idx].Text;
+    width := sb.Panels[idx].Width;
+    align := sb.Panels[idx].Alignment;
+  end;
+end;
+
 { TLCLTabControlCallback }
 
 procedure TLCLTabControlCallback.willSelectTabViewItem(aTabIndex: Integer);
@@ -328,23 +365,30 @@ class function TCocoaWSStatusBar.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
   lResult: TCocoaStatusBar;
-  cell    : NSButtonCell;
+  cell   : NSButtonCell;
+  cb : TStatusBarCallback;
 begin
   Result := 0;
   lResult := TCocoaStatusBar.alloc.lclInitWithCreateParams(AParams);
   if not Assigned(lResult) then Exit;
   Result := TLCLIntfHandle(lResult);
 
-  lResult.callback := TLCLCommonCallback.Create(lResult, AWinControl);
-  TLCLCommonCallback(lResult.callback.GetCallbackObject).BlockCocoaUpDown := true;
-  lResult.StatusBar := TStatusBar(AWinControl);
+  cb := TStatusBarCallback.Create(lResult, AWinControl);
+  lResult.callback := cb;
+  lResult.barcallback := cb;
+  cb.BlockCocoaUpDown := true;
+  //lResult.StatusBar := TStatusBar(AWinControl);
 
+  //todo: get rid of Cells and replace them with views!
   cell:=NSButtonCell(NSButtonCell.alloc).initTextCell(nil);
   // NSSmallSquareBezelStyle aka "Gradient button", is the best looking
   // candidate for the status bar panel. Could be changed to any NSCell class
   // since CocoaStatusBar doesn't suspect any specific cell type.
   cell.setBezelStyle(NSSmallSquareBezelStyle);
   cell.setFont( NSFont.systemFontOfSize( NSFont.smallSystemFontSize ));
+
+  cell.setLineBreakMode(NSLineBreakByClipping);
+  //cell.setLineBreakMode(NSLineBreakByTruncatingTail);
 
   lResult.panelCell := cell;
 end;
