@@ -91,8 +91,11 @@ begin
         FDatalink.Modified;
         if FDetectedEvents and DBCBEVENT_CHANGE <> 0 then
           inherited Change;
-        if FDetectedEvents and DBCBEVENT_SELECT <> 0 then
+        if FDetectedEvents and DBCBEVENT_SELECT <> 0 then begin
+          if FDetectedEvents and DBCBEVENT_WHEEL <> 0 then
+            FDatalink.UpdateRecord;
           DoOnSelect;
+        end;
       end;
       if FDetectedEvents and DBCBEVENT_CLOSEUP <> 0 then
         DoOnCloseUp;
@@ -169,6 +172,13 @@ end;
 procedure TCustomDBComboBox.Select;
 begin
   FDetectedEvents := FDetectedEvents or DBCBEVENT_SELECT;
+end;
+
+function TCustomDBComboBox.DoMouseWheel(Shift: TShiftState;
+  WheelDelta: Integer; MousePos: TPoint): Boolean;
+begin
+  Result := inherited DoMouseWheel(Shift, WheelDelta, MousePos);
+  FDetectedEvents := FDetectedEvents or DBCBEVENT_WHEEL;
 end;
 
 procedure TCustomDBComboBox.Notification(AComponent: TComponent; Operation: TOperation);

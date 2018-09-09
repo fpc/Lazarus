@@ -737,6 +737,7 @@ Type
     procedure CloseUp; override;
     Procedure Select; override;
     procedure DataChange(Sender: TObject); virtual; abstract;
+    function  DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Change; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
@@ -1887,6 +1888,7 @@ CONST
   DBCBEVENT_CHANGE   = 1;   // CustomDBCombobox Detected change event
   DBCBEVENT_SELECT   = 2;   // CustomDBCombobox Detected select event
   DBCBEVENT_CLOSEUP  = 4;   // CustomDBCombobox Detected closeup event
+  DBCBEVENT_WHEEL    = 8;   // CustomDBCombobox Detected mousewheel event
 
 {$Include dblookup.inc}
 {$Include dbedit.inc}
