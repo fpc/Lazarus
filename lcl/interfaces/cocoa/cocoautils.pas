@@ -8,8 +8,8 @@ interface
 uses
   classes,
   MacOSAll, CocoaAll,
-  SysUtils, Types, LCLType, LCLClasses, LCLProc, menus,//LMessages,
-  Controls, Forms, Graphics, Math, GraphType;
+  SysUtils, Types, LCLType, LCLClasses, LCLProc,
+  Controls, Graphics, Math, GraphType;
 
 const
   LCLEventSubTypeMessage = MaxShort - 1;
@@ -67,9 +67,6 @@ function NSColorToRGB(const Color: NSColor): TColorRef; inline;
 // extract ColorRef from any NSColor
 function NSColorToColorRef(const Color: NSColor): TColorRef;
 function ColorToNSColor(const Color: TColorRef): NSColor; inline;
-
-// the returned "Key" should not be released, as it's not memory owned
-procedure ShortcutToKeyEquivalent(const AShortCut: TShortcut; out Key: NSString; out shiftKeyMask: NSUInteger);
 
 const
   DEFAULT_CFSTRING_ENCODING = kCFStringEncodingUTF8;
@@ -196,24 +193,6 @@ begin
     (Color and $FF) / $FF,
     ((Color shr 8) and $FF) / $FF,
     ((Color shr 16) and $FF) / $FF, 1);
-end;
-
-procedure ShortcutToKeyEquivalent(const AShortCut: TShortcut; out Key: NSString; out shiftKeyMask: NSUInteger);
-var
-  w: word;
-  s: TShiftState;
-begin
-  ShortCutToKey(AShortCut, w, s);
-  key := VirtualKeyCodeToMacString(w);
-  shiftKeyMask := 0;
-  if ssShift in s then
-    ShiftKeyMask := ShiftKeyMask + NSShiftKeyMask;
-  if ssAlt in s then
-    ShiftKeyMask := ShiftKeyMask + NSAlternateKeyMask;
-  if ssCtrl in s then
-    ShiftKeyMask := ShiftKeyMask + NSControlKeyMask;
-  if ssMeta in s then
-    ShiftKeyMask := ShiftKeyMask + NSCommandKeyMask;
 end;
 
 function CFStringToString(AString: CFStringRef): String;
@@ -365,7 +344,7 @@ end;
 function LCLCoordsToCocoa(AControl: TControl; X, Y: Integer): NSPoint;
 begin
   Result.x := X;
-  Result.y := Screen.Height - Y;
+  Result.y := NSScreen.mainScreen.frame.size.height - Y;
   if AControl <> nil then Result.y := Result.y - AControl.Height;
 end;
 

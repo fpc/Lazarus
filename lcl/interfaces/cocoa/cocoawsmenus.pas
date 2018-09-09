@@ -149,6 +149,9 @@ type
 
 procedure NSMenuItemSetBitmap(mn: NSMenuItem; bmp: TBitmap);
 
+// the returned "Key" should not be released, as it's not memory owned
+procedure ShortcutToKeyEquivalent(const AShortCut: TShortcut; out Key: NSString; out shiftKeyMask: NSUInteger);
+
 implementation
 
 { TLCLMenuItemCallback }
@@ -716,5 +719,24 @@ begin
     APopupMenu.Close; // notify LCL popup menu
   end;
 end;
+
+procedure ShortcutToKeyEquivalent(const AShortCut: TShortcut; out Key: NSString; out shiftKeyMask: NSUInteger);
+var
+  w: word;
+  s: TShiftState;
+begin
+  ShortCutToKey(AShortCut, w, s);
+  key := VirtualKeyCodeToMacString(w);
+  shiftKeyMask := 0;
+  if ssShift in s then
+    ShiftKeyMask := ShiftKeyMask + NSShiftKeyMask;
+  if ssAlt in s then
+    ShiftKeyMask := ShiftKeyMask + NSAlternateKeyMask;
+  if ssCtrl in s then
+    ShiftKeyMask := ShiftKeyMask + NSControlKeyMask;
+  if ssMeta in s then
+    ShiftKeyMask := ShiftKeyMask + NSCommandKeyMask;
+end;
+
 
 end.

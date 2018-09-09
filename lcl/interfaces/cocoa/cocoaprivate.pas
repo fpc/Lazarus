@@ -34,7 +34,7 @@ uses
   MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects,
   cocoa_extra,
   // LCL
-  LCLType, StdCtrls;
+  LCLType;
 
 const
   SPINEDIT_DEFAULT_STEPPER_WIDTH = 15;
