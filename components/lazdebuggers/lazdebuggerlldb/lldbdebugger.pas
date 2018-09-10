@@ -299,7 +299,7 @@ type
       ): TDebugCompilerRequirements; override;
     function GetLocation: TDBGLocationRec; override;
 //    function GetProcessList({%H-}AList: TRunningProcessInfoList): boolean; override;
-//    function NeedReset: Boolean; override;
+    function NeedReset: Boolean; override;
     procedure TestCmd(const ACommand: String); override;
   end;
 
@@ -543,7 +543,7 @@ begin
 
   fr := 0;
   repeat
-    ParseNewFrameLocation(r[0], Id, IsCur, addr, stack, frame, func, Arguments, filename, fullfile, line, d);
+    ParseNewFrameLocation(r[fr], Id, IsCur, addr, stack, frame, func, Arguments, filename, fullfile, line, d);
     Arguments.Free;
 
     if fr = 0 then
@@ -696,6 +696,7 @@ const
       exit;
     end
     else begin
+      Debugger.FCurrentLocation.SrcLine := -1;
       SetDebuggerState(dsPause); // after GetLocation => dsPause may run stack, watches etc
     end;
   end;
@@ -2618,6 +2619,11 @@ end;
 function TLldbDebugger.GetLocation: TDBGLocationRec;
 begin
   Result := FCurrentLocation;
+end;
+
+function TLldbDebugger.NeedReset: Boolean;
+begin
+  Result := true;
 end;
 
 procedure TLldbDebugger.TestCmd(const ACommand: String);
