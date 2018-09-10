@@ -1376,7 +1376,7 @@ begin
   ind.setMaxValue(AProgressBar.Max);
   ind.setMinValue(AProgressBar.Min);
   ind.setDoubleValue(AProgressBar.Position);
-  ind.setIndeterminate(AProgressBar.Style = pbstMarquee);
+  SetStyle(AProgressBar, AProgressBar.Style);
 end;
 
 class procedure TCocoaWSProgressBar.SetPosition(
@@ -1390,7 +1390,10 @@ class procedure TCocoaWSProgressBar.SetStyle(
   const AProgressBar: TCustomProgressBar; const NewStyle: TProgressBarStyle);
 begin
   if AProgressBar.HandleAllocated then
+  begin
     NSProgressIndicator(AProgressBar.Handle).setIndeterminate(NewStyle = pbstMarquee);
+    NSProgressIndicator(AProgressBar.Handle).startAnimation(nil);
+  end;
 end;
 
 { TCocoaTabPage }

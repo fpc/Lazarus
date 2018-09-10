@@ -250,6 +250,12 @@ type
     function lclContentView: NSView; override;
   end;
 
+
+const
+  PROGRESS_REG_HEIGHT   = 16; // no longer applies on later macOS version
+  PROGRESS_SMALL_HEIGHT = 10;
+
+type
   { TCocoaProgressIndicator }
 
   TCocoaProgressIndicator = objcclass(NSProgressIndicator)
@@ -260,6 +266,7 @@ type
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
+    function lclGetFrameToLayoutDelta: TRect; override;
     // mouse
     function acceptsFirstMouse(event: NSEvent): Boolean; override;
     procedure mouseDown(event: NSEvent); override;
@@ -1177,6 +1184,24 @@ procedure TCocoaProgressIndicator.resetCursorRects;
 begin
   if not callback.resetCursorRects then
     inherited resetCursorRects;
+end;
+
+function TCocoaProgressIndicator.lclGetFrameToLayoutDelta: TRect;
+begin
+  case controlSize of
+    NSSmallControlSize, NSMiniControlSize:
+    begin
+      Result.Left := 1;
+      Result.Right := -1;
+      Result.Top := 0;
+      Result.Bottom := -2;
+    end;
+  else
+    Result.Left := 2;
+    Result.Right := -2;
+    Result.Top := 0;
+    Result.Bottom := -4;
+  end;
 end;
 
 function TCocoaProgressIndicator.acceptsFirstMouse(event: NSEvent): Boolean;
