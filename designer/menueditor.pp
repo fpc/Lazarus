@@ -6,7 +6,7 @@ interface
 
 uses
   // FCL
-  Classes, SysUtils, Types, typinfo,
+  Classes, SysUtils, Types, typinfo, strutils,
   // LazUtils
   LazLogger,
   // LCL
@@ -720,9 +720,11 @@ begin
   Assert(Assigned(FEditedMenuItem), 'TShadowMenu.StopEditingCaption: FEditedMenuItem = Nil');
   EditedShadow := TShadowItem(GetShadowForMenuItem(FEditedMenuItem));
   s := FInPlaceEditor.Text;
-  if (s <> cLineCaption) and (s <> '') then
+  if s <> '' then
   begin
     FEditedMenuItem.Caption:=s;
+    if (s = cLineCaption) and AnsiStartsStr('MenuItem', FEditedMenuItem.Name) then
+      FEditedMenuItem.Name:=FEditorDesigner.CreateUniqueComponentName('N');
     GlobalDesignHook.RefreshPropertyValues;
     GlobalDesignHook.Modified(FEditedMenuItem);
     EditedShadow.Invalidate;

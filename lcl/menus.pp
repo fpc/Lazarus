@@ -120,7 +120,7 @@ type
   TMenuItem = class(TLCLComponent)
   private
     FActionLink: TMenuActionLink;
-    FCaption: string;
+    FCaption: TTranslateString;
     FBitmap: TBitmap;
     FGlyphShowMode: TGlyphShowMode;
     FHandle: HMenu;
