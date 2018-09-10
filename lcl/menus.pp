@@ -460,7 +460,7 @@ function NewSubMenu(const ACaption: string; hCtx: THelpContext;
 function NewItem(const ACaption: string; AShortCut: TShortCut;
                  AChecked, TheEnabled: Boolean; TheOnClick: TNotifyEvent;
                  hCtx: THelpContext; const AName: string): TMenuItem;
-function NewLine: TMenuItem;
+function NewLineMI: TMenuItem;
 
 function StripHotkey(const Text: string): string;
 
@@ -609,7 +609,7 @@ begin
   end;
 end;
 
-function NewLine: TMenuItem;
+function NewLineMI: TMenuItem;
 begin
   Result := TMenuItem.Create(nil);
   Result.Caption := cLineCaption;
