@@ -88,7 +88,7 @@ type
     TExceptionInfoCommands = set of TExceptionInfoCommand;
   private
     FMode: (cmRun, cmRunToCatch, cmRunAfterCatch, cmRunToTmpBrk);
-    FState: (crRunning, crReadingThreads, crStopped, crDone);
+    FState: (crRunning, crReadingThreads, crStopped, crStoppedRaise, crDone);
     FCurBrkId, FTmpBreakId: Integer;
     FThreadInstr: TLldbInstructionThreadList;
     FCurrentExceptionInfo: record
@@ -545,8 +545,12 @@ begin
     ParseNewFrameLocation(r[fr], Id, IsCur, addr, stack, frame, func, Arguments, filename, fullfile, line, d);
     Arguments.Free;
 
-    if fr = 0 then
+    if fr = 0 then begin
       FFramesDescending := frame > FFramePtrAtStart;
+      if (FState = crStoppedRaise) and (Length(r) >= 2) then
+        inc(fr);
+        Continue;
+    end;
 
     if not( (frame = 0) or ((fr > 0) and (frame = {%H-}prev)) ) then begin
 
@@ -568,7 +572,7 @@ begin
     inc(fr);
   until fr >= Length(r);
 
-  if (fr = 0) or (fr >= Length(r)) or (addr = 0) then begin
+  if (fr >= Length(r)) or (addr = 0) then begin
     SetDebuggerState(dsPause);
     Finished;
     exit;
@@ -691,6 +695,7 @@ const
     CanContinue := Debugger.DoExceptionHit(ExcClass, ExcMsg);
 
     if CanContinue then begin
+      FState := crStoppedRaise;
       ContinueRunning;
       exit;
     end
@@ -717,6 +722,7 @@ const
     ExceptItem := Debugger.Exceptions.Find(ExceptName);
     if (ExceptItem <> nil) and (ExceptItem.Enabled)
     then begin
+      FState := crStoppedRaise;
       ContinueRunning;
       exit;
     end;
@@ -724,6 +730,7 @@ const
     Debugger.DoException(deRunError, ExceptName, Debugger.FCurrentLocation, '', CanContinue);
     if CanContinue
     then begin
+      FState := crStoppedRaise;
       ContinueRunning;
       exit;
     end;
@@ -885,8 +892,10 @@ begin
       then
         DoCatchesHit
       else
-      if FCurBrkId = Debugger.FReRaiseBreak.BreakId then
-        ContinueRunning
+      if FCurBrkId = Debugger.FReRaiseBreak.BreakId then begin
+        FState := crStoppedRaise;
+        ContinueRunning;
+      end
       else
       if FCurBrkId = FTmpBreakId then
         DoStopTemp
