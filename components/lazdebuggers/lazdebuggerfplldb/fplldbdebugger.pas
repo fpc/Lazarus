@@ -845,7 +845,7 @@ begin
 
   EndRange := FAddr + $20; // Make sure ranges overlap;
 
-  DInstr := TLldbInstructionDisassem.Create(StartRange, EndRange);
+  DInstr := TLldbInstructionDisassem.CreateRange(StartRange, EndRange);
   DInstr.OnFinish := @InstrFinished;
   QueueInstruction(DInstr);
   DInstr.ReleaseReference;

@@ -360,16 +360,18 @@ type
     property Res: TStringArray read FRes;
   end;
 
+  { TLldbInstructionDisassem }
+
   TLldbInstructionDisassem = class(TLldbInstruction)
   private
     FRes: TStringList;
     FReading: Boolean;
   protected
-   procedure SendCommandDataToDbg(); override;
-   function ProcessInputFromDbg(const AData: String): Boolean; override;
+    procedure SendCommandDataToDbg(); override;
+    function ProcessInputFromDbg(const AData: String): Boolean; override;
   public
     constructor Create(AnAddr: TDBGPtr; NumLines: Cardinal);
-    constructor Create(StartAddr: TDBGPtr; EndAddr: TDBGPtr);
+    constructor CreateRange(StartAddr: TDBGPtr; EndAddr: TDBGPtr);
     destructor Destroy; override;
     property Res: TStringList read FRes;
 end;
@@ -1343,7 +1345,8 @@ begin
   inherited Create(Format('disassemble -b --start-address  0x%s --count %d', [AddressString, NumLines]));
 end;
 
-constructor TLldbInstructionDisassem.Create(StartAddr: TDBGPtr; EndAddr: TDBGPtr);
+constructor TLldbInstructionDisassem.CreateRange(StartAddr: TDBGPtr;
+  EndAddr: TDBGPtr);
 var StartAddressString, EndAddressString: String;
 begin
   FRes := TStringList.Create;
