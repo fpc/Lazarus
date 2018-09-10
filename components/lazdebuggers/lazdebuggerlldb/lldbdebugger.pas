@@ -258,7 +258,6 @@ type
     procedure LockRelease; override;
     procedure UnlockRelease; override;
     procedure QueueCommand(const ACommand: TLldbDebuggerCommand);
-    procedure SetState(const AValue: TDBGState);
     //procedure DoState(const OldState: TDBGState); override;
     //procedure DoBeforeState(const OldState: TDBGState); override;
     function DoExceptionHit(AExcClass, AExcMsg: String): Boolean;
@@ -999,6 +998,7 @@ end;
 
 constructor TLldbDebuggerCommandRun.Create(AOwner: TLldbDebugger);
 begin
+  AOwner.FExceptionInfo.FAtExcepiton := False;
   FState := crRunning;
   FMode := cmRun;
   FFramePtrAtStart := AOwner.FCurrentThreadFramePtr;
@@ -1907,10 +1907,13 @@ end;
 
 constructor TLldbDebuggerCommandRunStep.Create(AOwner: TLldbDebugger;
   AStepAction: TLldbInstructionProcessStepAction);
+var
+  AtExcepiton: Boolean;
 begin
+  AtExcepiton := Debugger.FExceptionInfo.FAtExcepiton;
   FStepAction := AStepAction;
   inherited Create(AOwner);
-  if Debugger.FExceptionInfo.FAtExcepiton and
+  if AtExcepiton and
      (AStepAction in [saOver, saInto, saOut])
   then
     FMode := cmRunToCatch;
@@ -2388,13 +2391,6 @@ end;
 procedure TLldbDebugger.QueueCommand(const ACommand: TLldbDebuggerCommand);
 begin
   FCommandQueue.QueueCommand(ACommand);
-end;
-
-procedure TLldbDebugger.SetState(const AValue: TDBGState);
-begin
-  if AValue = dsRun then
-    FExceptionInfo.FAtExcepiton := False;
-  inherited;
 end;
 
 function TLldbDebugger.DoExceptionHit(AExcClass, AExcMsg: String): Boolean;
