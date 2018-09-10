@@ -1911,7 +1911,7 @@ constructor TLldbDebuggerCommandRunStep.Create(AOwner: TLldbDebugger;
 var
   AtExcepiton: Boolean;
 begin
-  AtExcepiton := Debugger.FExceptionInfo.FAtExcepiton;
+  AtExcepiton := AOwner.FExceptionInfo.FAtExcepiton;
   FStepAction := AStepAction;
   inherited Create(AOwner);
   if AtExcepiton and
