@@ -592,13 +592,9 @@ var
   btn: TCocoaButton;
 begin
   btn := AllocButton(AWinControl, TLCLButtonCallback, AParams, NSRoundedBezelStyle, NSMomentaryPushInButton);
-  // btn.regularHeight = 32
-  btn.smallHeight := 28;
-  btn.miniHeight := 16;
+  btn.smallHeight := PUSHBTN_SMALL_HEIGHT;
+  btn.miniHeight := PUSHBTN_MINI_HEIGHT;
   btn.adjustFontToControlSize:=true;
-  // these heights were received from Xcode builder, where the height cannot be changed for a button control
-  // the actual size of the button (the difference between top pixel and bottom pixel, is less than frame size
-  // also, the "mini" button seems to be wider, than
   Result := TLCLIntfHandle(btn);
 end;
 

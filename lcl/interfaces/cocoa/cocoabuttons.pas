@@ -31,6 +31,16 @@ uses
   // LCL
   ,Graphics;
 
+const
+  // these heights were received from Xcode interface builder,
+  // where the height cannot be changed for a button control the actual size
+  // of the button (the difference between top pixel and bottom pixel,
+  // is less than frame size also
+
+  PUSHBTN_REG_HEIGHT   = 20;
+  PUSHBTN_SMALL_HEIGHT = 17;
+  PUSHBTN_MINI_HEIGHT  = 14;
+
 
 type
 

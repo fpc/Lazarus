@@ -267,6 +267,7 @@ type
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
     function lclGetFrameToLayoutDelta: TRect; override;
+    procedure lclSetFrame(const r: TRect); override;
     // mouse
     function acceptsFirstMouse(event: NSEvent): Boolean; override;
     procedure mouseDown(event: NSEvent); override;
@@ -339,7 +340,7 @@ procedure SetViewDefaults(AView: NSView);
 function CheckMainThread: Boolean;
 function GetNSViewSuperViewHeight(view: NSView): CGFloat;
 
-procedure SetNSControlSize(ctrl: NSControl; newHeight, miniHeight, smallHeight: Integer; AutoChangeFont: Boolean);
+procedure SetNSControlSize(ctrl: NSView; newHeight, miniHeight, smallHeight: Integer; AutoChangeFont: Boolean);
 
 // these constants are missing from CocoaAll for some reason
 const
@@ -1204,6 +1205,12 @@ begin
   end;
 end;
 
+procedure TCocoaProgressIndicator.lclSetFrame(const r: TRect);
+begin
+  SetNSControlSize(self, r.Bottom - r.Top, 0, PROGRESS_SMALL_HEIGHT, true);
+  inherited lclSetFrame(r);
+end;
+
 function TCocoaProgressIndicator.acceptsFirstMouse(event: NSEvent): Boolean;
 begin
   Result:=true;
@@ -1509,7 +1516,15 @@ begin
   self.setNeedsDisplay;
 end;
 
-procedure SetNSControlSize(ctrl: NSControl; newHeight, miniHeight, smallHeight: Integer; AutoChangeFont: Boolean);
+type
+  NSViewControlSizeExt = objccategory external (NSView)
+    function controlSize: Integer; message 'controlSize';
+    procedure setControlSize(ASize: Integer); message 'setControlSize:';
+    function cell: id; message 'cell';
+    procedure setFont(afont: NSFont); message 'setFont:';
+  end;
+
+procedure SetNSControlSize(ctrl: NSView; newHeight, miniHeight, smallHeight: Integer; AutoChangeFont: Boolean);
 var
   sz : NSControlSize;
 begin
@@ -1520,14 +1535,15 @@ begin
   else
     sz:=NSRegularControlSize;
 
-  //todo: "cell" property (function) has been deprecated since 10.10
-  //      instead NSControl itself has controlSize method
-  if NSCell(ctrl.cell).controlSize<>sz then
+  if ctrl.respondsToSelector(ObjCSelector('setControlSize:')) then
+    ctrl.setControlSize(sz)
+  else if ctrl.respondsToSelector(ObjCSelector('cell')) then
   begin
-    NSCell(ctrl.cell).setControlSize(sz);
-    if AutoChangeFont then
-      ctrl.setFont(NSFont.systemFontOfSize(NSFont.systemFontSizeForControlSize(sz)));
+    if NSCell(ctrl.cell).controlSize<>sz then
+        NSCell(ctrl.cell).setControlSize(sz);
   end;
+  if AutoChangeFont and (ctrl.respondsToSelector(ObjCSelector('setFont:'))) then
+    ctrl.setFont(NSFont.systemFontOfSize(NSFont.systemFontSizeForControlSize(sz)));
 end;
 
 
