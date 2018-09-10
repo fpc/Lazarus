@@ -1,11 +1,11 @@
 # Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2016, 2017.
-# admin <lxlalexlxl@ukr.net>, 2017.
+# admin <lxlalexlxl@ukr.net>, 2017, 2018.
 msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-11-14 23:07+0200\n"
-"Last-Translator: admin <lxlalexlxl@ukr.net>\n"
+"PO-Revision-Date: 2018-09-09 21:55+0200\n"
+"Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
@@ -485,10 +485,9 @@ msgid "--sync                Call XSynchronize (display, True) after the Xserver
 msgstr "--sync                Виклик XSynchronize (display, True) після встановлення з'єднання з X-сервером. Це полегшує зневадження помилок протоколу X через те, що буферування запитів X буде вимкнено і помилки X будуть одержані одразу після обробки X-сервером запиту протоколу, який викликав цю помилку."
 
 #: lclstrconsts.rshelp
-#, fuzzy
 msgctxt "lclstrconsts.rshelp"
 msgid "Help"
-msgstr "Допомога"
+msgstr "Довідка"
 
 #: lclstrconsts.rshelpalreadyregistered
 msgid "%s: Already registered"

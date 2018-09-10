@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
-"PO-Revision-Date: 2018-06-05 22:18+0200\n"
+"PO-Revision-Date: 2018-09-09 21:54+0200\n"
 "Project-Id-Version: \n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -770,7 +770,7 @@ msgstr "Нерозв'язані залежності можуть спричин
 
 #: opkman_const.rsmainfrm_rspackageinformation
 msgid "Quick package information for \"%s\""
-msgstr ""
+msgstr "Швидка інформація про пакунок \"%s\""
 
 #: opkman_const.rsmainfrm_rspackagerating
 msgid "Your vote for package \"%s\" is: %s. Thank you for voting!"
@@ -940,11 +940,11 @@ msgstr "Категорія"
 
 #: opkman_const.rsmainfrm_vsttext_comdesc
 msgid "Community description for metapackage"
-msgstr ""
+msgstr "Опис спільноти для метапакунка"
 
 #: opkman_const.rsmainfrm_vsttext_communitydescription
 msgid "Community description"
-msgstr ""
+msgstr "Опис спільноти"
 
 #: opkman_const.rsmainfrm_vsttext_dependecies
 msgctxt "opkman_const.rsmainfrm_vsttext_dependecies"
