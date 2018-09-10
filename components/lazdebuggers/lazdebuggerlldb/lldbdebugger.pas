@@ -549,23 +549,23 @@ begin
     if fr = 0 then
       FFramesDescending := frame > FFramePtrAtStart;
 
-    if (frame = 0) or ((fr > 0) and (frame = prev)) then
-      Continue;
+    if not( (frame = 0) or ((fr > 0) and (frame = {%H-}prev)) ) then begin
 
-    if frame = FFramePtrAtStart then
-      break;
+      if frame = FFramePtrAtStart then
+        break;
 
-    if (fr > 0) and (
-       ( (fr < prev) and not(FFramePtrAtStart < fr) ) or
-       ( (fr > prev) and not(FFramePtrAtStart > fr) )
-       )
-    then begin
-      SetDebuggerState(dsPause);
-      Finished;
-      exit;
+      if (fr > 0) and (
+         ( (fr < prev) and not(FFramePtrAtStart < fr) ) or
+         ( (fr > prev) and not(FFramePtrAtStart > fr) )
+         )
+      then begin
+        SetDebuggerState(dsPause);
+        Finished;
+        exit;
+      end;
+
+      prev := frame;
     end;
-
-    prev := frame;
     inc(fr);
   until fr >= Length(r);
 
@@ -695,8 +695,9 @@ const
       ContinueRunning;
       exit;
     end
-    else
+    else begin
       SetDebuggerState(dsPause); // after GetLocation => dsPause may run stack, watches etc
+    end;
   end;
 
   procedure DoRunError;
