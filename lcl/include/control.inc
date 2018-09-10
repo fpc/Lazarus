@@ -3472,7 +3472,7 @@ begin
   ChangeText :=
     (csSetCaption in ControlStyle) and not (csLoading in ComponentState) and
     (Name = Text) and
-    ((Owner = nil) or not (Owner is TControl) or not (csLoading in TControl(Owner).ComponentState));
+    ((Owner = nil) or not (Owner is TControl) or not (csLoading in Owner.ComponentState));
   inherited SetName(Value);
   if ChangeText then Text := Value;
 end;

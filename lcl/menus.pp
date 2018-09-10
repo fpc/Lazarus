@@ -174,6 +174,7 @@ type
     procedure SetBitmap(const AValue: TBitmap);
     procedure SetGlyphShowMode(const AValue: TGlyphShowMode);
     procedure SetMenuIndex(AValue: Integer);
+    procedure SetName(const Value: TComponentName); override;
     procedure SetRadioItem(const AValue: Boolean);
     procedure SetRightJustify(const AValue: boolean);
     procedure SetShowAlwaysCheckable(const AValue: boolean);

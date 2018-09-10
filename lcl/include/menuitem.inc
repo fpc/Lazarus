@@ -1225,6 +1225,18 @@ begin
   end;
 end;
 
+procedure TMenuItem.SetName(const Value: TComponentName);
+var
+  ChangeCapt: Boolean;
+begin
+  if Name=Value then exit;
+  ChangeCapt := not (csLoading in ComponentState) and (Name = Caption) and
+      ( (Owner = nil) or not (csLoading in Owner.ComponentState) );
+  inherited SetName(Value);
+  if ChangeCapt then
+    Caption := Value;
+end;
+
 {------------------------------------------------------------------------------
   procedure TMenuItem.SetRadioItem(const AValue: Boolean);
 
