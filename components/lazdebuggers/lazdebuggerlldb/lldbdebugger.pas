@@ -549,7 +549,7 @@ begin
     if fr = 0 then
       FFramesDescending := frame > FFramePtrAtStart;
 
-    if frame = 0 then
+    if (frame = 0) or ((fr > 0) and (frame = prev)) then
       Continue;
 
     if frame = FFramePtrAtStart then
@@ -569,7 +569,7 @@ begin
     inc(fr);
   until fr >= Length(r);
 
-  if (fr >= Length(r)) or (addr = 0) then begin
+  if (fr = 0) or (fr >= Length(r)) or (addr = 0) then begin
     SetDebuggerState(dsPause);
     Finished;
     exit;
