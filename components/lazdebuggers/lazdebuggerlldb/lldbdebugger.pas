@@ -547,9 +547,10 @@ begin
 
     if fr = 0 then begin
       FFramesDescending := frame > FFramePtrAtStart;
-      if (FState = crStoppedRaise) and (Length(r) >= 2) then
+      if (FState = crStoppedRaise) and (Length(r) >= 2) then begin
         inc(fr);
         Continue;
+      end;
     end;
 
     if not( (frame = 0) or ((fr > 0) and (frame = {%H-}prev)) ) then begin
