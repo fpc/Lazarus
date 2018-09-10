@@ -11,7 +11,6 @@ object PathEditorDialog: TPathEditorDialog
   Constraints.MinWidth = 500
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  OnResize = FormResize
   OnShow = FormShow
   Position = poScreenCenter
   LCLVersion = '1.9.0.0'

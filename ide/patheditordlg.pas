@@ -70,7 +70,6 @@ type
     procedure DirectoryEditAcceptDirectory(Sender: TObject; var Value: String);
     procedure DirectoryEditChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure FormResize(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure MoveDownButtonClick(Sender: TObject);
     procedure MoveUpButtonClick(Sender: TObject);
@@ -456,16 +455,6 @@ procedure TPathEditorDialog.FormShow(Sender: TObject);
 begin
   PathListBox.ItemIndex:=-1;
   UpdateButtons;
-end;
-
-procedure TPathEditorDialog.FormResize(Sender: TObject);
-var
-  PathGroupBoxHeight: integer;
-begin
-  PathGroupBoxHeight:=((ClientHeight-70)*2) div 3;
-  if PathGroupBoxHeight<10 then
-    PathGroupBoxHeight:=10;
-  PathGroupBox.Height:=PathGroupBoxHeight;
 end;
 
 procedure TPathEditorDialog.MoveDownButtonClick(Sender: TObject);
