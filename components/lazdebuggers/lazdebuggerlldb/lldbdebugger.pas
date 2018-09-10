@@ -695,6 +695,7 @@ const
       exit;
     end
     else begin
+      Debugger.FExceptionInfo.FAtExcepiton := True;
       Debugger.FCurrentLocation.SrcLine := -1;
       SetDebuggerState(dsPause); // after GetLocation => dsPause may run stack, watches etc
     end;
@@ -2395,8 +2396,6 @@ end;
 
 function TLldbDebugger.DoExceptionHit(AExcClass, AExcMsg: String): Boolean;
 begin
-  FExceptionInfo.FAtExcepiton := True;
-
   if Assigned(EventLogHandler) then
     EventLogHandler.LogCustomEvent(ecDebugger, etExceptionRaised,
       Format('Exception class "%s" at $%.' + IntToStr(TargetWidth div 4) + 'x with message "%s"',
