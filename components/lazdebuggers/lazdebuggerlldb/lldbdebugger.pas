@@ -744,7 +744,7 @@ const
 
   procedure DoStopTemp;
   begin
-    if (FMode = cmRunAfterCatch) and (Debugger.FCurrentLocation.SrcLine = 0) then begin
+    if (FMode in [cmRunAfterCatch, cmRunToTmpBrk]) and (Debugger.FCurrentLocation.SrcLine = 0) then begin
       DeleteTempBreakPoint;
       ResetStateToRun;
       FMode := cmRun;
