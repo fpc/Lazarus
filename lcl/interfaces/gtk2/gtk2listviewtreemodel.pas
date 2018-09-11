@@ -21,6 +21,8 @@ uses
   gtk2, glib2,
   // LCL
   ComCtrls;
+const
+  ELCLListViewModel = 'LCLListViewModel';
 type
 
   { TLCLTreeModel }
@@ -95,6 +97,7 @@ var
   TypeInfo: TGTypeInfo;
   INterfaceINfo: TGInterfaceInfo;
 begin
+  _LCLLISTVIEW_MODEL_TYPE := g_type_from_name(ELCLListViewModel);
   if _LCLLISTVIEW_MODEL_TYPE = 0 then
   begin
     with TypeInfo do
@@ -116,7 +119,7 @@ begin
       interface_finalize := nil; //TGInterfaceFinalizeFunc;
       interface_data := nil;//gpointer;
     end;
-    _LCLLISTVIEW_MODEL_TYPE := g_type_register_static(G_TYPE_OBJECT, 'LCLListViewModel', @TypeInfo, 0);
+    _LCLLISTVIEW_MODEL_TYPE := g_type_register_static(G_TYPE_OBJECT, ELCLListViewModel, @TypeInfo, 0);
     g_type_add_interface_static(_LCLLISTVIEW_MODEL_TYPE, GTK_TYPE_TREE_MODEL, @InterfaceInfo);
   end;
   Result := _LCLLISTVIEW_MODEL_TYPE;
