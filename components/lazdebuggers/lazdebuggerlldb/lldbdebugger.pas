@@ -84,7 +84,7 @@ type
 
   TLldbDebuggerCommandRun = class(TLldbDebuggerCommand)
   private type
-    TExceptionInfoCommand = (exiReg0, exiReg1, exiClass, exiMsg);
+    TExceptionInfoCommand = (exiReg0, exiReg2, exiClass, exiMsg);
     TExceptionInfoCommands = set of TExceptionInfoCommand;
   private
     FMode: (cmRun, cmRunToCatch, cmRunAfterCatch, cmRunToTmpBrk);
@@ -101,7 +101,7 @@ type
     FFramesDescending: Boolean;
     procedure ThreadInstructionSucceeded(Sender: TObject);
     procedure ExceptionReadReg0Success(Sender: TObject);
-    procedure ExceptionReadReg1Success(Sender: TObject);
+    procedure ExceptionReadReg2Success(Sender: TObject);
     procedure ExceptionReadClassSuccess(Sender: TObject);
     procedure ExceptionReadMsgSuccess(Sender: TObject);
     procedure CatchesStackInstructionFinished(Sender: TObject);
@@ -238,7 +238,7 @@ type
     FTargetRegisters: array[0..2] of String;
     FLldbMissingBreakSetDisable: Boolean;
     FExceptionInfo: record
-      FReg0Cmd, FReg1Cmd, FExceptClassCmd, FExceptMsgCmd: String;
+      FReg0Cmd, FReg2Cmd, FExceptClassCmd, FExceptMsgCmd: String;
       FAtExcepiton: Boolean; // cleared in Setstate
     end;
     (* DoAfterLineReceived is called after DebugInstruction.ProcessInputFromDbg
@@ -607,21 +607,21 @@ begin
     exit;
   end;
 
-  fr := 0;
+  fr := 1;
   repeat
     ParseNewFrameLocation(r[fr], Id, IsCur, addr, stack, frame, func, Arguments, filename, fullfile, line, d);
     Arguments.Free;
 
-    if frame = FCurrentExceptionInfo.FFramePtr then
+    if frame = FCurrentExceptionInfo.FFramePtr then begin
+      SetDebuggerLocation(Addr, Frame, Func, filename, FullFile, Line);
       break;
+    end;
 
     inc(fr);
   until fr >= Length(r);
 
-  if (fr < Length(r)) and (line > 0) then
-    SetDebuggerLocation(Addr, Frame, Func, filename, FullFile, Line);
-
   SetDebuggerState(dsPause);
+  Debugger.DoCurrent(Debugger.FCurrentLocation);
   Finished;
 end;
 
@@ -631,15 +631,29 @@ begin
 end;
 
 procedure TLldbDebuggerCommandRun.ExceptionReadReg0Success(Sender: TObject);
+var
+  v: String;
+  i: SizeInt;
 begin
-  FCurrentExceptionInfo.FObjAddress := StrToInt64Def(TLldbInstructionReadExpression(Sender).Res, 0);
+  v := TLldbInstructionReadExpression(Sender).Res;
+  i := pos(' = ', v);
+  if i > 1 then
+    delete(v, 1, i+2);
+  FCurrentExceptionInfo.FObjAddress := StrToInt64Def(v, 0);
   Include(FCurrentExceptionInfo.FHasCommandData, exiReg0);
 end;
 
-procedure TLldbDebuggerCommandRun.ExceptionReadReg1Success(Sender: TObject);
+procedure TLldbDebuggerCommandRun.ExceptionReadReg2Success(Sender: TObject);
+var
+  v: String;
+  i: SizeInt;
 begin
-  FCurrentExceptionInfo.FFramePtr := StrToInt64Def(TLldbInstructionReadExpression(Sender).Res, 0);
-  Include(FCurrentExceptionInfo.FHasCommandData, exiReg1);
+  v := TLldbInstructionReadExpression(Sender).Res;
+  i := pos(' = ', v);
+  if i > 1 then
+    delete(v, 1, i+2);
+  FCurrentExceptionInfo.FFramePtr := StrToInt64Def(v, 0);
+  Include(FCurrentExceptionInfo.FHasCommandData, exiReg2);
 end;
 
 procedure TLldbDebuggerCommandRun.ExceptionReadClassSuccess(Sender: TObject);
@@ -750,7 +764,8 @@ const
     else begin
       Debugger.FExceptionInfo.FAtExcepiton := True;
 
-      if (exiReg1 in FCurrentExceptionInfo.FHasCommandData) and (FCurrentExceptionInfo.FFramePtr <> 0) then begin
+      if (exiReg2 in FCurrentExceptionInfo.FHasCommandData) and (FCurrentExceptionInfo.FFramePtr <> 0) then begin
+        FState := crRunning; // ensure command is not finished early
         Instr := TLldbInstructionStackTrace.Create(MaxStackSearch, 0, Debugger.FCurrentThreadId);
         Instr.OnFinish := @SearchExceptFpStackInstructionFinished;
         QueueInstruction(Instr);
@@ -872,9 +887,9 @@ begin
     Instr.OnSuccess := @ExceptionReadReg0Success;
   end
   else
-  if StrStartsWith(s, Debugger.FExceptionInfo.FReg1Cmd, True) then begin
+  if StrStartsWith(s, Debugger.FExceptionInfo.FReg2Cmd, True) then begin
     Instr := TLldbInstructionReadExpression.Create;
-    Instr.OnSuccess := @ExceptionReadReg1Success;
+    Instr.OnSuccess := @ExceptionReadReg2Success;
   end
   else
   if StrStartsWith(s, Debugger.FExceptionInfo.FExceptClassCmd, True) then begin
@@ -2071,20 +2086,20 @@ begin
   Debugger.FBreakErrorBreak.OnFinish := nil;
 
   Debugger.FExceptionInfo.FReg0Cmd := '';
-  Debugger.FExceptionInfo.FReg1Cmd := '';
+  Debugger.FExceptionInfo.FReg2Cmd := '';
   Debugger.FExceptionInfo.FExceptClassCmd := '';
   Debugger.FExceptionInfo.FExceptMsgCmd := '';
 
   BrkId := Debugger.FExceptionBreak.BreakId;
   if BrkId > 0 then begin
     Debugger.FExceptionInfo.FReg0Cmd := 'p/x ' + Debugger.FTargetRegisters[0];
-    Debugger.FExceptionInfo.FReg1Cmd := 'p/x ' + Debugger.FTargetRegisters[1];
+    Debugger.FExceptionInfo.FReg2Cmd := 'p/x ' + Debugger.FTargetRegisters[2];
     Debugger.FExceptionInfo.FExceptClassCmd := 'p ((char ***)' + Debugger.FTargetRegisters[0] + ')[0][3]';
     Debugger.FExceptionInfo.FExceptMsgCmd := 'p ((char **)' + Debugger.FTargetRegisters[0] + ')[1]';
                   // 'p ((EXCEPTION *)' + Debugger.FTargetRegisters[0] + ')->FMESSAGE'
 
     Instr := TLldbInstructionBreakAddCommands.Create(BrkId, [
-      Debugger.FExceptionInfo.FReg0Cmd, Debugger.FExceptionInfo.FExceptClassCmd, Debugger.FExceptionInfo.FExceptMsgCmd
+      Debugger.FExceptionInfo.FReg0Cmd, Debugger.FExceptionInfo.FReg2Cmd, Debugger.FExceptionInfo.FExceptClassCmd, Debugger.FExceptionInfo.FExceptMsgCmd
     ]);
     QueueInstruction(Instr);
     Instr.ReleaseReference;
