@@ -32,10 +32,16 @@ unit ComponentList;
 interface
 
 uses
-  Classes, SysUtils, LCLType, Forms, Controls, Graphics, StdCtrls, ExtCtrls,
-  ComCtrls, Menus, Dialogs, LazarusIDEStrConsts, ComponentReg, PackageDefs,
-  IDEImagesIntf, TreeFilterEdit, FormEditingIntf, PropEdits, IDEOptionDefs,
-  EnvironmentOpts, Designer, ImgList;
+  Classes, SysUtils,
+  // LCL
+  LCLType, Forms, Controls, Graphics, StdCtrls, ExtCtrls, ComCtrls, Menus, Buttons,
+  Dialogs, ImgList,
+  // LazControls
+  TreeFilterEdit,
+  // IdeIntf
+  FormEditingIntf, PropEdits, ComponentReg,
+  // IDE
+  LazarusIDEStrConsts, PackageDefs, IDEOptionDefs, EnvironmentOpts, Designer;
 
 type
 
@@ -64,6 +70,7 @@ type
     TabSheetList: TTabSheet;
     tmDeselect: TTimer;
     TreeFilterEd: TTreeFilterEdit;
+    SelectionToolButton: TSpeedButton;
     procedure chbKeepOpenChange(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -81,6 +88,7 @@ type
     procedure PageControlChange(Sender: TObject);
     procedure TreeKeyPress(Sender: TObject; var Key: char);
     procedure FormKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
+    procedure SelectionToolButtonClick(Sender: TObject);
   private
     PrevPageIndex: Integer;
     PrevChangeStamp: Integer;
@@ -125,6 +133,14 @@ begin
 
   Name:=NonModalIDEWindowNames[nmiwComponentList];
   FActiveTree := ListTree;
+
+  with SelectionToolButton do begin
+    LoadGlyphFromResourceName(hInstance, 'tmouse');
+    ShowHint := EnvironmentOptions.ShowHintsForComponentPalette;
+    Width := ComponentPaletteBtnWidth;
+    BorderSpacing.Around := (FilterPanel.Height - ComponentPaletteImageHeight) div 2;
+  end;
+
   //Translations
   LabelSearch.Caption := lisMenuFind;
   Caption := lisCmpLstComponents;
@@ -133,6 +149,7 @@ begin
   TabSheetInheritance.Caption := lisCmpLstInheritance;
   OKButton.Caption := lisUse;
   chbKeepOpen.Caption := lisKeepOpen;
+  SelectionToolButton.Hint := lisSelectionTool;
 
   ListTree.Images := TPkgComponent.Images;
   PalletteTree.Images := TPkgComponent.Images;
@@ -251,6 +268,8 @@ end;
 
 procedure TComponentListForm.SelectionWasChanged;
 begin
+  SelectionToolButton.Down := (IDEComponentPalette.Selected = nil);
+
   // ToDo: Select the component in active treeview.
   if FIgnoreSelection then
     Exit;
@@ -433,6 +452,8 @@ end;
 
 procedure TComponentListForm.TreeFilterEdAfterFilter(Sender: TObject);
 begin
+  if TreeFilterEd.Filter = '' then
+    IDEComponentPalette.SetSelectedComp(nil, False);
   UpdateButtonState;
 end;
 
@@ -606,6 +627,12 @@ begin
     miExpand.Enabled := (Node.HasChildren) and (not Node.Expanded);
     miCollapse.Enabled := (Node.HasChildren) and (Node.Expanded);
   end;
+end;
+
+procedure TComponentListForm.SelectionToolButtonClick(Sender: TObject);
+begin
+  SelectionToolButton.Down := True;
+  IDEComponentPalette.SetSelectedComp(nil, False);
 end;
 
 end.
