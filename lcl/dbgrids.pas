@@ -2704,6 +2704,7 @@ procedure TCustomDBGrid.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
 var
   Gz: TGridZone;
   P: TPoint;
+  aoe: Boolean;
   procedure doMouseDown;
   begin
     if not Focused and not(csNoFocus in ControlStyle) then
@@ -2763,7 +2764,18 @@ begin
   CacheMouseDown(X,Y);
   case Gz of
     gzInvalid:
-      doMouseDown;
+      begin
+        if (cursor=crHSplit) and (dgColumnResize in Options) then begin
+          // DBGrid normally doesn't allow outbound events and this is one of them
+          // make GCache.HotGridZone valid for inherited mousedown. Issue #0034032
+          aoe := AllowOutboundEvents;
+          AllowOutboundEvents := true;
+          inherited MouseMove(shift, x, y);
+          AllowOutBoundEvents := aoe;
+          doInherited;
+        end else
+          doMouseDown;
+      end;
 
     gzFixedCells, gzFixedCols:
       doInherited;
