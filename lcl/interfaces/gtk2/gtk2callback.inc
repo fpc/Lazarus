@@ -1077,8 +1077,12 @@ begin
 
   if GTK_WIDGET_REALIZED(Widget) then
   begin
-    if (GDK_WINDOW_STATE_WITHDRAWN and state^.changed_mask) = 1 then // visibility changed - this is another message block
-      exit;
+    if (GDK_WINDOW_STATE_WITHDRAWN and state^.changed_mask <> 0)
+    or (GDK_WINDOW_STATE_WITHDRAWN and state^.new_window_state <> 0) then
+    begin
+      // visibility changed - this is another message block
+      Exit;
+    end;
     if TObject(Data) is TCustomForm then
     begin
       TheForm := TCustomForm(Data);
@@ -1095,9 +1099,6 @@ begin
         //debugln('GTKWindowStateEventCB ',DbgSName(TObject(Data)),' ',dbgs(state^.new_window_state),' ',WidgetFlagsToString(Widget));
         if ((GDK_WINDOW_STATE_ICONIFIED and state^.new_window_state)>0) then
         begin
-          if (TheForm = Application.MainForm) and
-            (TheForm.WindowState <> wsMinimized) then
-            Application.IntfAppMinimize;
           {$IFDEF HasX}
           NetAtom := gdk_atom_intern('_NET_WM_DESKTOP', True);
           if NetAtom > 0 then begin
@@ -1130,11 +1131,6 @@ begin
         else
           SizeMsg.SizeType := SIZE_RESTORED;
 
-        if (TheForm = Application.MainForm) and
-          (SizeMsg.SizeType <> SIZE_MINIMIZED) and
-          (TheForm.WindowState = wsMinimized) then
-            Application.IntfAppRestore;
-
         // don't bother the LCL if nothing changed
         case SizeMsg.SizeType of
           SIZE_RESTORED: if TheForm.WindowState=wsNormal then exit;
@@ -1162,6 +1158,15 @@ begin
         if (gtk_major_version = 2) and (gtk_minor_version <= 8) and
           (TheForm.WindowState = wsMaximized) then
             gtk_widget_queue_draw({%H-}PGtkWidget(TheForm.Handle));
+
+        if (TheForm = Application.MainForm)
+        and (GDK_WINDOW_STATE_ICONIFIED and state^.changed_mask <> 0) then
+        begin
+          if GDK_WINDOW_STATE_ICONIFIED and state^.new_window_state <> 0 then
+            Application.IntfAppMinimize
+          else
+            Application.IntfAppRestore;
+        end;
       end;
     end;
   end;
