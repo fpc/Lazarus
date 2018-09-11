@@ -311,6 +311,9 @@ procedure RadioButtonSwitchSiblings(checkedRadio: NSButton);
 
 procedure ScrollViewSetScrollStyles(AScroll: TCocoaScrollView; AStyles: TScrollStyle);
 
+function ComboBoxStyleIsReadOnly(AStyle: TComboBoxStyle): Boolean;
+function ComboBoxIsReadOnly(cmb: TCustomComboBox): Boolean;
+
 implementation
 
 const
@@ -405,6 +408,18 @@ begin
   AScroll.setHasHorizontalScroller(HorizontalScrollerVisible[AStyles]);
   AScroll.setAutohidesScrollers(ScrollerAutoHide[AStyles]);
 end;
+
+function ComboBoxStyleIsReadOnly(AStyle: TComboBoxStyle): Boolean;
+begin
+  Result := AStyle in [csDropDownList, csOwnerDrawFixed,  csOwnerDrawVariable];
+end;
+
+function ComboBoxIsReadOnly(cmb: TCustomComboBox): Boolean;
+begin
+  Result := Assigned(cmb)
+            and (ComboBoxStyleIsReadOnly(cmb.Style) or cmb.ReadOnly);
+end;
+
 
 { TLCLRadioButtonCallback }
 
@@ -1431,7 +1446,7 @@ var
   rocmb: TCocoaReadOnlyComboBox;
 begin
   Result:=0;
-  if TCustomComboBox(AWinControl).ReadOnly then
+  if ComboBoxIsReadOnly(TCustomComboBox(AWinControl)) then
   begin
     rocmb := NSView(TCocoaReadOnlyComboBox.alloc).lclInitWithCreateParams(AParams);
     if not Assigned(rocmb) then Exit;
@@ -1446,6 +1461,7 @@ begin
   begin
     cmb := NSView(TCocoaComboBox.alloc).lclInitWithCreateParams(AParams);
     if not Assigned(cmb) then Exit;
+    //cmb.setCell(TCocoaComboBoxCell.alloc.initTextCell(NSString.string_));
     cmb.list:=TCocoaComboBoxList.Create(cmb, nil);
     cmb.setUsesDataSource(true);
     cmb.setDataSource(cmb);
