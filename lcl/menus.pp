@@ -461,6 +461,7 @@ function NewItem(const ACaption: string; AShortCut: TShortCut;
                  AChecked, TheEnabled: Boolean; TheOnClick: TNotifyEvent;
                  hCtx: THelpContext; const AName: string): TMenuItem;
 function NewLineMI: TMenuItem;
+function NewLine: TMenuItem; deprecated 'Use function NewLineMI instead.';
 
 function StripHotkey(const Text: string): string;
 
@@ -613,6 +614,12 @@ function NewLineMI: TMenuItem;
 begin
   Result := TMenuItem.Create(nil);
   Result.Caption := cLineCaption;
+end;
+
+function NewLine: TMenuItem;
+// Deprecated because the name clashes with so many variables around Lazarus code.
+begin
+  Result := NewLineMI;
 end;
 
 function StripHotkey(const Text: string): string;
