@@ -1397,7 +1397,7 @@ begin
     if FChecked and FRadioItem then
       TurnSiblingsOff;
     // tell the interface to regroup this menuitem
-    if HandleAllocated then
+    if HandleAllocated and not (csLoading in ComponentState) then
       RegroupMenuItem(Handle,GroupIndex);
   end;
 end;
