@@ -1593,7 +1593,7 @@ begin
     COLOR_3DLIGHT:
       Result := NSColor.controlHighlightColor;// makes a more consistent result (a very light gray) than controlLightHighlightColor (which is white)
     COLOR_INFOBK:
-      Result := NSColor.colorWithCalibratedRed_green_blue_alpha(249 / $FF, 252 / $FF, 201 / $FF, 1);
+      Result := ColorToNSColor(ColorToolTip);
   else
     Result := nil;
   end;

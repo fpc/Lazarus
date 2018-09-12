@@ -126,7 +126,15 @@ type
   end;
 
 const
-  NSAppKitVersionNumber10_7 = 1138; // defined in NSApplication.h
+  // defined in NSApplication.h
+  NSAppKitVersionNumber10_5 = 949;
+  NSAppKitVersionNumber10_6 = 1038;
+  NSAppKitVersionNumber10_7 = 1138;
+  NSAppKitVersionNumber10_8 = 1187;
+  NSAppKitVersionNumber10_9 = 1265;
+  NSAppKitVersionNumber10_10 = 1343;
+  NSAppKitVersionNumber10_11 = 1404;
+  NSAppKitVersionNumber10_12 = 1504;
 
 
 const
