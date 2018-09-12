@@ -168,6 +168,7 @@ begin
   Result.lclSetFrame(r);
   Result.setHidden(AView.isHidden);
   Result.setDocumentView(AView);
+  Result.setDrawsBackground(false); // everything is covered anyway
   if AReleaseView then AView.release;
   AView.setHidden(false);
   SetViewDefaults(Result);
