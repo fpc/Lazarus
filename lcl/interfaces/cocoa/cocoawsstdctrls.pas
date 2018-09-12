@@ -62,6 +62,9 @@ type
     procedure ComboBoxWillDismiss;
     procedure ComboBoxSelectionDidChange;
     procedure ComboBoxSelectionIsChanging;
+
+    procedure ComboBoxDrawItem(itemIndex: Integer; ctx: TCocoaContext;
+      const r: TRect; isSelected: Boolean);
   end;
 
   { TCocoaWSCustomComboBox }
@@ -313,6 +316,8 @@ procedure ScrollViewSetScrollStyles(AScroll: TCocoaScrollView; AStyles: TScrollS
 
 function ComboBoxStyleIsReadOnly(AStyle: TComboBoxStyle): Boolean;
 function ComboBoxIsReadOnly(cmb: TCustomComboBox): Boolean;
+function ComboBoxIsOwnerDrawn(AStyle: TComboBoxStyle): Boolean;
+function ComboBoxIsVariable(AStyle: TComboBoxStyle): Boolean;
 
 implementation
 
@@ -420,6 +425,16 @@ begin
             and (ComboBoxStyleIsReadOnly(cmb.Style) or cmb.ReadOnly);
 end;
 
+function ComboBoxIsOwnerDrawn(AStyle: TComboBoxStyle): Boolean;
+begin
+  Result := AStyle in [csOwnerDrawFixed, csOwnerDrawVariable,
+    csOwnerDrawEditableFixed, csOwnerDrawEditableVariable];
+end;
+
+function ComboBoxIsVariable(AStyle: TComboBoxStyle): Boolean;
+begin
+  Result := AStyle in [csOwnerDrawVariable, csOwnerDrawEditableVariable];
+end;
 
 { TLCLRadioButtonCallback }
 
@@ -588,6 +603,20 @@ end;
 procedure TLCLComboboxCallback.ComboBoxSelectionIsChanging;
 begin
 
+end;
+
+procedure TLCLComboboxCallback.ComboBoxDrawItem(itemIndex: Integer;
+  ctx: TCocoaContext; const r: TRect; isSelected: Boolean);
+var
+  itemstruct: TDrawListItemStruct;
+begin
+  itemstruct.ItemID := UINT(itemIndex);
+  itemstruct.Area := r;
+  itemstruct.DC := HDC(ctx);
+  itemstruct.ItemState := [];
+  if isSelected then Include(itemstruct.ItemState, odSelected);
+
+  LCLSendDrawListItemMsg(Target, @itemstruct);
 end;
 
 
@@ -1456,6 +1485,8 @@ begin
     rocmb.selectItemAtIndex(rocmb.lastSelectedItemIndex);
     rocmb.callback:=TLCLComboboxCallback.Create(rocmb, AWinControl);
     Result:=TLCLIntfHandle(rocmb);
+    rocmb.isOwnerDrawn := ComboBoxIsOwnerDrawn(TCustomComboBox(AWinControl).Style);
+    rocmb.isOwnerMeasure := ComboBoxIsVariable(TCustomComboBox(AWinControl).Style);
   end
   else
   begin

@@ -170,6 +170,10 @@ type
     procedure mouseMoved(event: NSEvent); override;
   end;
 
+const
+  COMBOBOX_RO_MENUITEM_HEIGHT = 18;
+
+type
   TCocoaComboBox = objcclass;
   TCocoaReadOnlyComboBox = objcclass;
 
@@ -192,9 +196,37 @@ type
     procedure ComboBoxWillDismiss;
     procedure ComboBoxSelectionDidChange;
     procedure ComboBoxSelectionIsChanging;
+
+    procedure ComboBoxDrawItem(itemIndex: Integer; ctx: TCocoaContext; const r: TRect; isSelected: Boolean);
   end;
 
   { TCocoaComboBox }
+
+  { TCocoaComboBoxItemCell }
+
+  // represents an item in the combobox dropdown
+  // it should be able to call "draw" callback
+
+  TCocoaComboBoxItemCell = objcclass(NSTextFieldCell)
+    procedure drawWithFrame_inView(cellFrame: NSRect; controlView_: NSView); override;
+  end;
+
+  { TCocoaComboBoxCell }
+
+  // represents combobox itself. All functionality is implemented
+  // in NSComboBoxCell. The cell is also acting as a delegate
+  // for NSTextView, that's used in popup drop-down window.
+  // Apple is deprecating "cells" so NSComboBox implementation
+  // will change in future and it must be expected that NSComboBoxCell
+  // would not be used in future.
+
+  TCocoaComboBoxCell = objcclass(NSComboBoxCell)
+    //function tableView_objectValueForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): id; message 'tableView:objectValueForTableColumn:row:';
+    function tableView_dataCellForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): NSCell; message 'tableView:dataCellForTableColumn:row:';
+    //function tableView_sizeToFitWidthOfColumn(tableView: NSTableView; column: NSInteger): CGFloat; message 'tableView:sizeToFitWidthOfColumn:';
+    //procedure tableView_willDisplayCell_forTableColumn_row(tableView: NSTableView; cell: id; tableColumn: NSTableColumn; row: NSInteger); message 'tableView:willDisplayCell:forTableColumn:row:';
+    //function tableView_heightOfRow(tableView: NSTableView; row: NSInteger): CGFloat; message 'tableView:heightOfRow:';
+  end;
 
   TCocoaComboBox = objcclass(NSComboBox, NSComboBoxDataSourceProtocol, NSComboBoxDelegateProtocol)
   public
@@ -239,6 +271,15 @@ type
     procedure scrollWheel(event: NSEvent); override;
   end;
 
+  { TCocoaReadOnlyView }
+
+  TCocoaReadOnlyView = objcclass (NSView)
+    itemIndex: Integer;
+    combobox: TCocoaReadOnlyComboBox;
+    procedure drawRect(dirtyRect: NSRect); override;
+    procedure mouseUp(event: NSEvent); override;
+  end;
+
   { TCocoaReadOnlyComboBox }
 
   TCocoaReadOnlyComboBox = objcclass(NSPopUpButton)
@@ -248,6 +289,9 @@ type
     list: TCocoaComboBoxList;
     resultNS: NSString;  //use to return values to combo
     lastSelectedItemIndex: Integer; // -1 means invalid or none selected
+
+    isOwnerDrawn: Boolean;
+    isOwnerMeasure: Boolean;
     function acceptsFirstResponder: Boolean; override;
     function becomeFirstResponder: Boolean; override;
     function resignFirstResponder: Boolean; override;
@@ -362,6 +406,87 @@ begin
   end;
 end;
 
+{ TCocoaReadOnlyView }
+
+procedure TCocoaReadOnlyView.drawRect(dirtyRect: NSRect);
+var
+  ctx : TCocoaContext;
+begin
+  inherited drawRect(dirtyRect);
+
+  if not Assigned(combobox) then Exit;
+
+  ctx := TCocoaContext.Create(NSGraphicsContext.currentContext);
+  try
+    combobox.callback.ComboBoxDrawItem(itemIndex, ctx, NSRectToRect(frame), false);
+  finally
+    ctx.Free;
+  end;
+end;
+
+procedure TCocoaReadOnlyView.mouseUp(event: NSEvent);
+begin
+  inherited mouseUp(event);
+  if Assigned(combobox) then
+  begin
+    combobox.selectItemAtIndex(itemIndex);
+    combobox.callback.ComboBoxSelectionDidChange;
+    combobox.menu.performActionForItemAtIndex(itemIndex);
+    combobox.menu.cancelTracking;
+  end;
+end;
+
+{ TCocoaComboBoxItemCell }
+
+procedure TCocoaComboBoxItemCell.drawWithFrame_inView(cellFrame: NSRect; controlView_: NSView);
+begin
+  inherited drawWithFrame_inView(cellFrame, controlView_);
+end;
+
+function TCocoaComboBoxCell.tableView_dataCellForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): NSCell;
+begin
+  Result := TCocoaComboBoxItemCell.alloc.initTextCell(NSString.string_);
+end;
+
+{
+procedure TCocoaComboBoxCell.tableView_willDisplayCell_forTableColumn_row(
+  tableView: NSTableView; cell: id; tableColumn: NSTableColumn; row: NSInteger);
+var
+  sz : NSSize;
+  pr : NSView;
+  frm : NSRect;
+begin
+  writeln('will display ', row);
+  if row = 0 then
+  begin
+    sz := tableView.frame.size;
+    sz.width := 300;
+    tableView.setFrameSize(sz);
+    pr := tableView;
+    while Assigned(pr) do begin
+      writeln(pr.lclClassname);
+      pr := pr.superview;
+    end;
+    writeln('at 10: ', tableView.window.lclClassName);
+    writeln('max size = ', tableView.window.maxSize.width:0:0);
+    writeln('min size = ', tableView.window.minSize.width:0:0);
+    frm := tableView.window.frame;
+    writeln('    size = ', frm.size.width:0:0);
+    frm := NSView(tableView.window.contentView).frame;
+    writeln('clt size = ', frm.size.width:0:0);
+    frm.size.width := 96 * 2; //frm.size.width * 2;
+    tableView.window.setContentSize(frm.size);
+    writeln('clt size = ', frm.size.width:0:0);
+  end;
+end;
+}
+
+{function TCocoaComboBoxCell.tableView_heightOfRow(tableView: NSTableView;
+  row: NSInteger): CGFloat;
+begin
+  writeln('height of row ', row);
+  Result := 32;
+end;}
 
 { TCocoaFieldEditor }
 
@@ -925,6 +1050,7 @@ var
   i: Integer;
   nsstr: NSString;
   lItems: array of NSMenuItem;
+  menuItem: TCocoaReadOnlyView;
 begin
   if FOwner <> nil then
     fOwner.reloadData;
@@ -949,6 +1075,14 @@ begin
     begin
       nsstr := NSStringUtf8(Strings[i]);
       lItems[i].setTitle(nsstr);
+      if FReadOnlyOwner.isOwnerDrawn then
+      begin
+        menuItem := TCocoaReadOnlyView.alloc.initWithFrame( NSMakeRect(0,0, FReadOnlyOwner.frame.size.width, COMBOBOX_RO_MENUITEM_HEIGHT) );
+        menuItem.itemIndex := i;
+        menuItem.combobox := FReadOnlyOwner;
+        lItems[i].setView(menuItem);
+      end;
+
       nsstr.release;
     end;
     SetLength(lItems, 0);
