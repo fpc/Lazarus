@@ -7504,6 +7504,7 @@ function RequestSelectionData(ClipboardWidget: PGtkWidget;
 var
   TimeID: cardinal;
   c: PClipboardEventData;
+  Atom: TGdkAtom;
   StartTime: TDateTime;
 begin
   {$IFDEF DEBUG_CLIPBOARD}
@@ -7531,15 +7532,13 @@ begin
   c^.TimeID:=TimeID;
   ClipboardSelectionData.Add(c);
   try
+    Atom := ClipboardTypeAtoms[ClipboardType];
     {$IFDEF DEBUG_CLIPBOARD}
-    DebugLn('[RequestSelectionData] TimeID=',dbgs(TimeID),' Type=',GdkAtomToStr(ClipboardTypeAtoms[ClipboardType]),' FormatID=',GdkAtomToStr(FormatID));
+    DebugLn('[RequestSelectionData] TimeID=',dbgs(TimeID),' Type=',GdkAtomToStr(Atom),' FormatID=',GdkAtomToStr(FormatID));
     {$ENDIF}
-    if gtk_selection_convert(ClipboardWidget, ClipboardTypeAtoms[ClipboardType],
-                             FormatID, TimeID)<>GdkFalse
-    then begin
-      if not WaitForClipboardAnswer(c) then exit;
-      Result:=c^.Data;
-    end;
+    if gtk_selection_convert(ClipboardWidget,Atom,FormatID,TimeID) <> GdkFalse then
+      if gtk_clipboard_wait_is_text_available(gtk_clipboard_get(Atom)) then
+        Result:=c^.Data;
   finally
     ClipboardSelectionData.Remove(c);
     Dispose(c);
