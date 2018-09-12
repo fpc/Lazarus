@@ -860,6 +860,7 @@ Type
     procedure SetLookupCache(const Value: boolean);
     procedure SetNullValueKey(const AValue: TShortCut);
     procedure UpdateLookup;
+    procedure UpdateItemIndex;
   protected
     procedure InitializeWnd; override;
     procedure DestroyWnd; override;
