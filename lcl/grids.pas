@@ -6758,7 +6758,7 @@ var
 
    procedure DoAutoEdit;
    begin
-     if (gfAutoEditPending in GridFlags) and not (ssDouble in Shift) then begin
+     if (gfAutoEditPending in GridFlags){ and not (ssDouble in Shift)} then begin
        SelectEditor;
        EditorShow(True);
      end;
