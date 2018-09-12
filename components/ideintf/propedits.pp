@@ -23,7 +23,7 @@ interface
 
 uses
   // RTL / FCL
-  Classes, TypInfo, SysUtils, types, RtlConsts, variants, Contnrs,
+  Classes, TypInfo, SysUtils, types, RtlConsts, variants, Contnrs, strutils,
   // LCL
   LCLType, LCLIntf, LCLProc, Forms, Controls, GraphType, ButtonPanel, Graphics,
   StdCtrls, Buttons, Menus, ExtCtrls, ComCtrls, Dialogs, EditBtn, Grids, ValEdit,
@@ -409,7 +409,7 @@ type
   public
     property PropertyHook: TPropertyEditorHook read FPropertyHook;
     property PrivateDirectory: ansistring read GetPrivateDirectory;
-    property PropCount:Integer read FPropCount;
+    property PropCount: Integer read FPropCount;
     property FirstValue: ansistring read GetValue write SetValue;
     property OnSubPropertiesChanged: TNotifyEvent
                      read FOnSubPropertiesChanged write FOnSubPropertiesChanged;
@@ -876,6 +876,16 @@ type
   TCaptionPropertyEditor = class(TStringPropertyEditor)
   public
     function GetAttributes: TPropertyAttributes; override;
+  end;
+
+
+{ TMenuItemCaptionEditor
+  MenuItem's Caption gets its own editor.
+  It updates the MenuItem's name when it is turned into a separator. }
+
+  TMenuItemCaptionEditor = class(TStringPropertyEditor)
+  public
+    procedure SetValue(const NewValue: ansistring); override;
   end;
 
 
@@ -5792,6 +5802,31 @@ begin
   Result := [paMultiSelect, paAutoUpdate, paRevertable];
 end;
 
+{ TMenuItemCaptionEditor }
+
+procedure TMenuItemCaptionEditor.SetValue(const NewValue: ansistring);
+var
+  Designer: TIDesigner;
+  MI: TMenuItem;
+  //Obj: TObject;
+  Inst: TPersistent;
+begin
+  //Obj := GetObjectValue;   <- returns an invalid pointer. Why?
+  Inst := FPropList^[0].Instance;
+  DebugLn(['TMenuItemCaptionEditor.SetValue: Instance=', Inst]);
+  if (NewValue = cLineCaption) and (Inst is TMenuItem) then
+  begin
+    MI := TMenuItem(Inst);
+    if AnsiStartsStr('MenuItem', MI.Name) then
+    begin
+      Designer:=FindRootDesigner(MI);
+      if Designer<>nil then
+        MI.Name:=Designer.UniqueName('N');
+    end;
+  end;
+  SetStrValue(NewValue);
+end;
+
 { TStringsPropertyEditor }
 
 procedure TStringsPropertyEditor.Edit;
@@ -7961,6 +7996,7 @@ begin
   RegisterPropertyEditor(TypeInfo(TTranslateString), TCustomLabel, 'Caption', TStringMultilinePropertyEditor);
   RegisterPropertyEditor(TypeInfo(TTranslateString), TCustomStaticText, 'Caption', TStringMultilinePropertyEditor);
   RegisterPropertyEditor(TypeInfo(TTranslateString), TCustomCheckBox, 'Caption', TStringMultilinePropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TTranslateString), TMenuItem, 'Caption', TMenuItemCaptionEditor);
   RegisterPropertyEditor(TypeInfo(TTranslateString), TComponent, 'Hint', TStringMultilinePropertyEditor);
   RegisterPropertyEditor(TypeInfo(TCaption), TGridColumnTitle, 'Caption', TStringMultilinePropertyEditor);
   RegisterPropertyEditor(TypeInfo(TTabOrder), TControl, 'TabOrder', TTabOrderPropertyEditor);
