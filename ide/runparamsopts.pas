@@ -848,8 +848,7 @@ begin
     LoadFromOptionsMode(SelectedMode);
 end;
 
-procedure TRunParamsOptsDlg.LoadFromOptionsMode(
-  const AMode: TRunParamsOptionsMode);
+procedure TRunParamsOptsDlg.LoadFromOptionsMode(const AMode: TRunParamsOptionsMode);
 var
   List: THistoryList;
   S: String;
@@ -864,12 +863,11 @@ begin
   WorkingDirectoryComboBox.Text := AMode.WorkingDirectory;
 
   SaveInComboBox.ItemIndex := Ord(AMode.SaveIn);
-  if SaveInComboBox.ItemIndex=-1 then
+  if SaveInComboBox.ItemIndex = -1 then
     SaveInComboBox.ItemIndex := 0;
 
   // UseLaunchingApplicationComboBox
   UseLaunchingApplicationCheckBox.Checked := AMode.UseLaunchingApplication;
-  CmdLineParametersGroupBox.Enabled:=not UseLaunchingApplicationCheckBox.Checked;
   List := InputHistories.HistoryLists.GetList(hlLaunchingApplication,true,rltFile);
   List.AppendEntry(AMode.LaunchingApplicationPathPlusParams);
   S := FindTerminalInPath;
@@ -884,7 +882,8 @@ begin
     List.AppendEntry(S);
   {$ENDIF}
   UseLaunchingApplicationComboBox.Items.Assign(List);
-  UseLaunchingApplicationComboBox.Text:=AMode.LaunchingApplicationPathPlusParams;
+  UseLaunchingApplicationComboBox.Text := AMode.LaunchingApplicationPathPlusParams;
+  UseLaunchingApplicationComboBox.Enabled := UseLaunchingApplicationCheckBox.Checked;
 
   // CmdLineParametersComboBox
   List:=InputHistories.HistoryLists.GetList(hlCmdLineParameters,true,rltCaseSensitive);
@@ -905,10 +904,9 @@ begin
   fLastSelectedMode := AMode;
 end;
 
-procedure TRunParamsOptsDlg.UseLaunchingApplicationCheckBoxChange(
-  Sender: TObject);
+procedure TRunParamsOptsDlg.UseLaunchingApplicationCheckBoxChange(Sender: TObject);
 begin
-  CmdLineParametersGroupBox.Enabled:=not UseLaunchingApplicationCheckBox.Checked;
+  UseLaunchingApplicationComboBox.Enabled := (Sender as TCheckBox).Checked;
 end;
 
 procedure TRunParamsOptsDlg.UserOverridesListViewSelectItem(Sender: TObject;
@@ -991,8 +989,7 @@ begin
   end;
 end;
 
-procedure TRunParamsOptsDlg.SaveToOptionsMode(const AMode: TRunParamsOptionsMode
-  );
+procedure TRunParamsOptsDlg.SaveToOptionsMode(const AMode: TRunParamsOptionsMode);
 
   procedure SaveComboHistory(AComboBox: TComboBox; const History: string;
     ListType: TRecentListType);
