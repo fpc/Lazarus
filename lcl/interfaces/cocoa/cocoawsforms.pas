@@ -145,6 +145,7 @@ type
   public
   published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
   end;
 
   { TCocoaWSScreen }
@@ -248,6 +249,20 @@ begin
   win.setContentView(cnt);
 
   Result := TLCLIntfHandle(cnt);
+end;
+
+class procedure TCocoaWSHintWindow.SetText(const AWinControl: TWinControl;
+  const AText: String);
+begin
+  TCocoaWSCustomForm.SetText(AWinControl, AText);
+  //todo: this is a workaround. For some reason, when moving a hint window
+  //      from one control to another (of the same type), the contents
+  //      of the hint window is not invalidated.
+  //
+  //      Need to figure out why this is happening and resolve at the proper place.
+  //      In the mean time - invalidating contents every time Caption is change
+  if (AWinControl.HandleAllocated) then
+    NSView(AWinControl.Handle).setNeedsDisplay_(true);
 end;
 
 { TLCLWindowCallback }
