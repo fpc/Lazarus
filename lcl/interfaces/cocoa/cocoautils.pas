@@ -9,7 +9,7 @@ uses
   classes,
   MacOSAll, CocoaAll,
   SysUtils, Types, LCLType, LCLClasses, LCLProc,
-  Controls, Graphics, Math, GraphType;
+  Graphics, Math, GraphType;
 
 const
   LCLEventSubTypeMessage = MaxShort - 1;
@@ -43,7 +43,6 @@ function NSRectToRect(const NS: NSRect): TRect;
 
 procedure NSToLCLRect(const ns: NSRect; ParentHeight: Single; out lcl: TRect);
 procedure LCLToNSRect(const lcl: TRect; ParentHeight: Single; out ns: NSRect);
-function LCLCoordsToCocoa(AControl: TControl; X, Y: Integer): NSPoint;
 
 function CreateParamsToNSRect(const params: TCreateParams): NSRect;
 
@@ -342,13 +341,6 @@ begin
   ns.origin.y:=ParentHeight-lcl.bottom;
   ns.size.width:=lcl.Right-lcl.Left;
   ns.size.height:=lcl.Bottom-lcl.Top;
-end;
-
-function LCLCoordsToCocoa(AControl: TControl; X, Y: Integer): NSPoint;
-begin
-  Result.x := X;
-  Result.y := NSScreen.mainScreen.frame.size.height - Y;
-  if AControl <> nil then Result.y := Result.y - AControl.Height;
 end;
 
 function CreateParamsToNSRect(const params: TCreateParams): NSRect;

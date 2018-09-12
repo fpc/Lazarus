@@ -1778,7 +1778,12 @@ begin
     Result:=-1;
     Exit();
   end;
-  lPoint := LCLCoordsToCocoa(ACustomListBox, X, Y);
+
+  lPoint.x := X;
+  if list.isFlipped
+    then lPoint.y := Y + list.visibleRect.origin.y
+    else lPoint.y := list.frame.size.height - Y - list.visibleRect.origin.y;
+
   Result := list.rowAtPoint(lPoint);
 end;
 
