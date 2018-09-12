@@ -145,7 +145,7 @@ uses
   CodeTemplatesDlg, CodeBrowser, FindUnitDlg, InspectChksumChangedDlg,
   IdeOptionsDlg, EditDefineTree, EnvironmentOpts, TransferMacros,
   KeyMapping, IDETranslations, IDEProcs, ExtToolDialog, ExtToolEditDlg,
-  JumpHistoryView, DesktopManager, ExampleManager,
+  JumpHistoryView, DesktopManager, ExampleManager, DiskDiffsDialog,
   BuildLazDialog, BuildProfileManager, BuildManager, CheckCompOptsForNewUnitDlg,
   MiscOptions, InputHistory, InputhistoryWithSearchOpt, UnitDependencies,
   IDEFPCInfo, IDEInfoDlg, IDEInfoNeedBuild, ProcessList, InitialSetupDlgs,
@@ -643,10 +643,10 @@ type
     FUserInputSinceLastIdle: boolean;
     FDesignerToBeFreed: TFilenameToStringTree; // form file names to be freed on idle.
     fNeedSaveEnvironment: boolean;
+    FCheckFilesOnDiskNeeded: boolean;
     FRemoteControlTimer: TTimer;
     FRemoteControlFileAge: integer;
     FRestartWanted: Boolean;
-
     FIDECodeToolsDefines: TIDECodetoolsDefines;
 
     FRenamingComponents: TFPList; // list of TComponents currently renaming
@@ -8345,8 +8345,96 @@ begin
 end;
 
 function TMainIDE.DoCheckFilesOnDisk(Instantaneous: boolean): TModalResult;
+var
+  AnUnitList, AIgnoreList: TFPList; // list of TUnitInfo
+  APackageList: TStringList; // list of alternative lpkfilename and TLazPackage
+  i: integer;
+  CurUnit: TUnitInfo;
 begin
-  Result:=SourceFileMgr.CheckFilesOnDisk(Instantaneous);
+  Result:=mrOk;
+  if not CheckFilesOnDiskEnabled then exit;
+  if Project1=nil then exit;
+  if Screen.GetCurrentModalForm<>nil then exit;
+
+  if not Instantaneous then begin
+    FCheckFilesOnDiskNeeded:=true;
+    exit;
+  end;
+  FCheckFilesOnDiskNeeded:=false;
+
+  CheckFilesOnDiskEnabled:=False;
+  AnUnitList:=nil;
+  APackageList:=nil;
+  AIgnoreList:=nil;
+  try
+    AIgnoreList := TFPList.Create;
+    InvalidateFileStateCache;
+
+    if Project1.HasProjectInfoFileChangedOnDisk then begin
+      if IDEQuestionDialog(lisProjectChangedOnDisk,
+        Format(lisTheProjectInformationFileHasChangedOnDisk,[Project1.ProjectInfoFile,LineEnding]),
+        mtConfirmation, [mrYes, lisReopenProject,
+                         mrIgnore], '') = mrYes
+      then begin
+        DoOpenProjectFile(Project1.ProjectInfoFile,[]);
+      end else begin
+        Project1.IgnoreProjectInfoFileOnDisk;
+      end;
+      exit(mrOk);
+    end;
+
+    Project1.GetUnitsChangedOnDisk(AnUnitList, True);
+    PkgBoss.GetPackagesChangedOnDisk(APackageList, True);
+    if (AnUnitList=nil) and (APackageList=nil) then exit;
+    Result:=ShowDiskDiffsDialog(AnUnitList,APackageList,AIgnoreList);
+    if Result in [mrYes,mrYesToAll] then
+      Result:=mrOk;
+
+    // reload units
+    if AnUnitList<>nil then begin
+      for i:=0 to AnUnitList.Count-1 do begin
+        CurUnit:=TUnitInfo(AnUnitList[i]);
+        //DebugLn(['DoCheckFilesOnDisk revert ',CurUnit.Filename,' EditorIndex=',CurUnit.EditorIndex]);
+        if (Result=mrOk)
+        and (AIgnoreList.IndexOf(CurUnit)<0) then // ignore current
+        begin
+          if CurUnit.OpenEditorInfoCount > 0 then begin
+            // Revert one Editor-View, the others follow
+            Result:=OpenEditorFile(CurUnit.Filename, CurUnit.OpenEditorInfo[0].PageIndex,
+              CurUnit.OpenEditorInfo[0].WindowID, nil, [ofRevert], True);
+            //DebugLn(['DoCheckFilesOnDisk OpenEditorFile=',Result]);
+          end else if CurUnit.IsMainUnit then begin
+            Result:=RevertMainUnit;
+            //DebugLn(['DoCheckFilesOnDisk RevertMainUnit=',Result]);
+          end else
+            Result:=mrIgnore;
+          if Result=mrAbort then exit;
+        end else begin
+          //DebugLn(['DoCheckFilesOnDisk IgnoreCurrentFileDateOnDisk']);
+          CurUnit.IgnoreCurrentFileDateOnDisk;
+          CurUnit.Modified:=True;
+          CurUnit.OpenEditorInfo[0].EditorComponent.Modified:=True;
+        end;
+      end;
+    end;
+
+    // reload packages
+    if APackageList<>nil then
+    begin
+      for i:=APackageList.Count-1 downto 0 do
+        if AIgnoreList.IndexOf(APackageList.Objects[i])>=0 then
+          APackageList.Delete(i);
+      Result:=PkgBoss.RevertPackages(APackageList);
+      if Result<>mrOk then exit;
+    end;
+
+    Result:=mrOk;
+  finally
+    CheckFilesOnDiskEnabled:=True;
+    AnUnitList.Free;
+    APackageList.Free;
+    AIgnoreList.Free;
+  end;
 end;
 
 procedure TMainIDE.PrepareBuildTarget(Quiet: boolean; ScanFPCSrc: TScanModeFPCSources);
@@ -12047,7 +12135,7 @@ begin
       DebugBoss.UpdateButtonsAndMenuItems;
     end;
   end;
-  if SourceFileMgr.CheckFilesOnDiskNeeded then begin
+  if FCheckFilesOnDiskNeeded then begin
     {$IFDEF VerboseIdle}
     debugln(['TMainIDE.OnApplicationIdle FCheckFilesOnDiskNeeded']);
     {$ENDIF}
@@ -12349,7 +12437,7 @@ begin
   UnitInfos:=TFPList.Create;
   try
     UnitInfos.Add(AnUnitInfo);
-    Result:=SourceFileMgr.RemoveFilesFromProject(Project1,UnitInfos);
+    Result:=SourceFileMgr.RemoveFilesFromProject(UnitInfos);
   finally
     UnitInfos.Free;
   end;

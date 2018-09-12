@@ -53,7 +53,7 @@ uses
   SourceSynEditor, SourceEditor, EditorOptions, EnvironmentOpts, CustomFormEditor,
   ControlSelection, FormEditor, EmptyMethodsDlg, BaseDebugManager, TransferMacros,
   BuildManager, EditorMacroListViewer, FindRenameIdentifier, BuildModesManager,
-  ViewUnit_Dlg, DiskDiffsDialog, InputHistory, CheckLFMDlg, etMessagesWnd,
+  ViewUnit_Dlg, InputHistory, CheckLFMDlg, etMessagesWnd,
   ConvCodeTool, BasePkgManager, PackageDefs, PackageSystem, Designer, DesignerProcs;
 
 type
@@ -169,8 +169,6 @@ type
 
   TLazSourceFileManager = class
   private
-    FProject: TProject;
-    FCheckFilesOnDiskNeeded: boolean;
     function AskToSaveEditors(EditorList: TList): TModalResult;
     function CheckMainSrcLCLInterfaces(Silent: boolean): TModalResult;
     function FileExistsInIDE(const Filename: string;
@@ -295,7 +293,7 @@ type
                                  CheckHasDesigner: boolean): boolean;
 
     // many files
-    function RemoveFilesFromProject(AProject: TProject; UnitInfos: TFPList): TModalResult;
+    function RemoveFilesFromProject(UnitInfos: TFPList): TModalResult;
 
     // methods for 'save project'
   private
@@ -309,9 +307,6 @@ type
   public
     function AskSaveProject(const ContinueText, ContinueBtn: string): TModalResult;
     function SaveSourceEditorChangesToCodeCache(AEditor: TSourceEditorInterface): boolean;
-  public
-    function CheckFilesOnDisk(Instantaneous: boolean = false): TModalResult;
-    property CheckFilesOnDiskNeeded: boolean read FCheckFilesOnDiskNeeded;
   end;
 
 
@@ -3368,99 +3363,6 @@ begin
   end;
 end;
 
-function TLazSourceFileManager.CheckFilesOnDisk(Instantaneous: boolean): TModalResult;
-var
-  AnUnitList, AIgnoreList: TFPList; // list of TUnitInfo
-  APackageList: TStringList; // list of alternative lpkfilename and TLazPackage
-  i: integer;
-  CurUnit: TUnitInfo;
-begin
-  Result:=mrOk;
-  if not MainIDE.CheckFilesOnDiskEnabled then exit;
-  if Project1=nil then exit;
-  if Screen.GetCurrentModalForm<>nil then exit;
-
-  if not Instantaneous then begin
-    FCheckFilesOnDiskNeeded:=true;
-    exit;
-  end;
-  FCheckFilesOnDiskNeeded:=false;
-
-  MainIDE.CheckFilesOnDiskEnabled:=False;
-  AnUnitList:=nil;
-  APackageList:=nil;
-  AIgnoreList:=nil;
-  try
-    AIgnoreList := TFPList.Create;
-    InvalidateFileStateCache;
-
-    if Project1.HasProjectInfoFileChangedOnDisk then begin
-      if IDEQuestionDialog(lisProjectChangedOnDisk,
-        Format(lisTheProjectInformationFileHasChangedOnDisk,[Project1.ProjectInfoFile,LineEnding]),
-        mtConfirmation, [mrYes, lisReopenProject,
-                         mrIgnore], '') = mrYes
-      then begin
-        MainIDE.DoOpenProjectFile(Project1.ProjectInfoFile,[]);
-      end else begin
-        Project1.IgnoreProjectInfoFileOnDisk;
-      end;
-      exit(mrOk);
-    end;
-
-    Project1.GetUnitsChangedOnDisk(AnUnitList, True);
-    PkgBoss.GetPackagesChangedOnDisk(APackageList, True);
-    if (AnUnitList=nil) and (APackageList=nil) then exit;
-    Result:=ShowDiskDiffsDialog(AnUnitList,APackageList,AIgnoreList);
-    if Result in [mrYes,mrYesToAll] then
-      Result:=mrOk;
-
-    // reload units
-    if AnUnitList<>nil then begin
-      for i:=0 to AnUnitList.Count-1 do begin
-        CurUnit:=TUnitInfo(AnUnitList[i]);
-        //DebugLn(['TLazSourceFileManager.CheckFilesOnDisk revert ',CurUnit.Filename,' EditorIndex=',CurUnit.EditorIndex]);
-        if (Result=mrOk)
-        and (AIgnoreList.IndexOf(CurUnit)<0) then // ignore current
-        begin
-          if CurUnit.OpenEditorInfoCount > 0 then begin
-            // Revert one Editor-View, the others follow
-            Result:=OpenEditorFile(CurUnit.Filename, CurUnit.OpenEditorInfo[0].PageIndex,
-              CurUnit.OpenEditorInfo[0].WindowID, nil, [ofRevert], True);
-            //DebugLn(['TLazSourceFileManager.CheckFilesOnDisk OpenEditorFile=',Result]);
-          end else if CurUnit.IsMainUnit then begin
-            Result:=RevertMainUnit;
-            //DebugLn(['TLazSourceFileManager.CheckFilesOnDisk RevertMainUnit=',Result]);
-          end else
-            Result:=mrIgnore;
-          if Result=mrAbort then exit;
-        end else begin
-          //DebugLn(['TLazSourceFileManager.CheckFilesOnDisk IgnoreCurrentFileDateOnDisk']);
-          CurUnit.IgnoreCurrentFileDateOnDisk;
-          CurUnit.Modified:=True;
-          CurUnit.OpenEditorInfo[0].EditorComponent.Modified:=True;
-        end;
-      end;
-    end;
-
-    // reload packages
-    if APackageList<>nil then
-    begin
-      for i:=APackageList.Count-1 downto 0 do
-        if AIgnoreList.IndexOf(APackageList.Objects[i])>=0 then
-          APackageList.Delete(i);
-      Result:=PkgBoss.RevertPackages(APackageList);
-      if Result<>mrOk then exit;
-    end;
-
-    Result:=mrOk;
-  finally
-    MainIDE.CheckFilesOnDiskEnabled:=True;
-    AnUnitList.Free;
-    APackageList.Free;
-    AIgnoreList.Free;
-  end;
-end;
-
 function TLazSourceFileManager.SelectProjectItems(ItemList: TViewUnitEntries;
   ItemType: TIDEProjectItem; MultiSelect: boolean;
   var MultiSelectCheckedState: Boolean): TModalResult;
@@ -3747,7 +3649,7 @@ Begin
       end;
     end;
     if UnitInfos.Count>0 then
-      Result:=RemoveFilesFromProject(Project1,UnitInfos)
+      Result:=RemoveFilesFromProject(UnitInfos)
     else
       Result:=mrOk;
   finally
@@ -7427,8 +7329,8 @@ begin
   i:=0;
   // Iterate all build modes until the user chooses to cancel.
   PrevResolvedDir:='';
-  while (i < FProject.BuildModes.Count) and (QRes in [mrNone,mrYes]) do begin
-    bm:=FProject.BuildModes[i];
+  while (i < Project1.BuildModes.Count) and (QRes in [mrNone,mrYes]) do begin
+    bm:=Project1.BuildModes[i];
     p:=1;
     repeat
       OldP:=p;
@@ -7464,8 +7366,7 @@ begin
   end;
 end;
 
-function TLazSourceFileManager.RemoveFilesFromProject(AProject: TProject;
-  UnitInfos: TFPList): TModalResult;
+function TLazSourceFileManager.RemoveFilesFromProject(UnitInfos: TFPList): TModalResult;
 var
   AnUnitInfo: TUnitInfo;
   ShortUnitName, UnitPath: String;
@@ -7484,13 +7385,12 @@ begin
     debugln('TLazSourceFileManager.RemoveUnitsFromProject wrong ToolStatus ',dbgs(ord(MainIDE.ToolStatus)));
     exit;
   end;
-  FProject := AProject;
   // commit changes from source editor to codetools
   SaveSourceEditorChangesToCodeCache(nil);
 
   ObsoleteUnitPaths:='';
   ObsoleteIncPaths:='';
-  AProject.BeginUpdate(true);
+  Project1.BeginUpdate(true);
   try
     for i:=0 to UnitInfos.Count-1 do begin
       AnUnitInfo:=TUnitInfo(UnitInfos[i]);
@@ -7498,19 +7398,19 @@ begin
       if not AnUnitInfo.IsPartOfProject then continue;
       UnitPath:=ChompPathDelim(ExtractFilePath(AnUnitInfo.Filename));
       AnUnitInfo.IsPartOfProject:=false;
-      AProject.Modified:=true;
+      Project1.Modified:=true;
       if FilenameIsPascalUnit(AnUnitInfo.Filename) then begin
         if FilenameIsAbsolute(AnUnitInfo.Filename) then
           ObsoleteUnitPaths:=MergeSearchPaths(ObsoleteUnitPaths,UnitPath);
         // remove from project's unit section
-        if (AProject.MainUnitID>=0)
-        and (pfMainUnitIsPascalSource in AProject.Flags)
+        if (Project1.MainUnitID>=0)
+        and (pfMainUnitIsPascalSource in Project1.Flags)
         then begin
           ShortUnitName:=ExtractFileNameOnly(AnUnitInfo.Filename);
           //debugln(['TLazSourceFileManager.RemoveUnitsFromProject UnitName=',ShortUnitName]);
           if (ShortUnitName<>'') then begin
             Dummy:=CodeToolBoss.RemoveUnitFromAllUsesSections(
-                                      AProject.MainUnitInfo.Source,ShortUnitName);
+                                      Project1.MainUnitInfo.Source,ShortUnitName);
             if not Dummy then begin
               MainIDE.DoJumpToCodeToolBossError;
               exit(mrCancel);
@@ -7518,10 +7418,10 @@ begin
           end;
         end;
         // remove CreateForm statement from project
-        if (AProject.MainUnitID>=0)
-        and (pfMainUnitHasCreateFormStatements in AProject.Flags)
+        if (Project1.MainUnitID>=0)
+        and (pfMainUnitHasCreateFormStatements in Project1.Flags)
         and (AnUnitInfo.ComponentName<>'') then begin
-          Dummy:=AProject.RemoveCreateFormFromProjectFile(
+          Dummy:=Project1.RemoveCreateFormFromProjectFile(
               'T'+AnUnitInfo.ComponentName,AnUnitInfo.ComponentName);
           if not Dummy then begin
             MainIDE.DoJumpToCodeToolBossError;
@@ -7536,7 +7436,7 @@ begin
     end;
 
     // removed directories still used for ObsoleteUnitPaths, ObsoleteIncPaths
-    AnUnitInfo:=AProject.FirstPartOfProject;
+    AnUnitInfo:=Project1.FirstPartOfProject;
     while AnUnitInfo<>nil do begin
       if FilenameIsAbsolute(AnUnitInfo.Filename) then begin
         UnitPath:=ChompPathDelim(ExtractFilePath(AnUnitInfo.Filename));
@@ -7558,7 +7458,7 @@ begin
   finally
     // all changes were handled automatically by events, just clear the logs
     CodeToolBoss.SourceCache.ClearAllSourceLogEntries;
-    AProject.EndUpdate;
+    Project1.EndUpdate;
   end;
 end;
 
