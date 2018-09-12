@@ -5808,12 +5808,9 @@ procedure TMenuItemCaptionEditor.SetValue(const NewValue: ansistring);
 var
   Designer: TIDesigner;
   MI: TMenuItem;
-  //Obj: TObject;
   Inst: TPersistent;
 begin
-  //Obj := GetObjectValue;   <- returns an invalid pointer. Why?
-  Inst := FPropList^[0].Instance;
-  DebugLn(['TMenuItemCaptionEditor.SetValue: Instance=', Inst]);
+  Inst := GetComponent(0);
   if (NewValue = cLineCaption) and (Inst is TMenuItem) then
   begin
     MI := TMenuItem(Inst);
