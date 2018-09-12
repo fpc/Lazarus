@@ -3691,7 +3691,7 @@ procedure TCustomGrid.ColRowMoved(IsColumn: Boolean; FromIndex,ToIndex: Integer)
 begin
 end;
 
-{Use in derived grids to exchange the actual data}
+// Notification to inform derived grids to exchange their actual rows data
 procedure TCustomGrid.ColRowExchanged(IsColumn: Boolean; index, WithIndex: Integer);
 begin
 end;
@@ -6282,10 +6282,11 @@ begin
     ColRowExchanged(IsColumn, index, WithIndex);
     exit;
   end;
+  // exchanges column widths or row heights
   if IsColumn then
-    FCols.Exchange(index, WithIndex) //exchanges the dimensions (width/height) of the resp. columns
+    FCols.Exchange(index, WithIndex)
   else
-    FRows.Exchange(index, WithIndex); //exchanges the dimensions (width/height) of the resp. rows
+    FRows.Exchange(index, WithIndex);
   ColRowExchanged(IsColumn, index, WithIndex);
   VisualChange;
 
