@@ -230,6 +230,7 @@ begin
   win.enableCursorRects;
   win.setLevel(HintWindowLevel);
   win.setDelegate(win);
+  win.setHasShadow(true);
   if AWinControl.Perform(WM_NCHITTEST, 0, 0)=HTTRANSPARENT then
     win.setIgnoresMouseEvents(True)
   else
