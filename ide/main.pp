@@ -741,8 +741,6 @@ type
     function DoNewFile(NewFileDescriptor: TProjectFileDescriptor;
         var NewFilename: string; NewSource: string;
         NewFlags: TNewFlags; NewOwner: TObject): TModalResult; override;
-    procedure CreateFileDialogFilterForSourceEditorFiles(Filter: string;
-        out AllEditorMask, AllMask: string);
 
     function DoSaveEditorFile(AEditor: TSourceEditorInterface;
                               Flags: TSaveFlags): TModalResult; override;
@@ -750,7 +748,7 @@ type
                               Flags: TSaveFlags): TModalResult; override;
 
     function DoCloseEditorFile(AEditor: TSourceEditorInterface;
-                               Flags: TCloseFlags):TModalResult; override;
+                               Flags: TCloseFlags): TModalResult; override;
     function DoCloseEditorFile(const Filename: string;
                                Flags: TCloseFlags): TModalResult; override;
 
@@ -806,8 +804,6 @@ type
     function DoPublishProject(Flags: TSaveFlags;
                               ShowDialog: boolean): TModalResult; override;
     procedure DoShowProjectInspector(State: TIWGetFormState = iwgfShowOnTop); override;
-    function DoAddActiveUnitToProject: TModalResult;
-    function DoRemoveFromProjectDialog: TModalResult;
     function DoWarnAmbiguousFiles: TModalResult;
     function DoSaveForBuild(AReason: TCompileReason): TModalResult; override;
     function DoBuildProject(const AReason: TCompileReason;
@@ -2083,7 +2079,7 @@ begin
     if PkgBoss.DoCloseAllPackageEditors<>mrOk then exit;
 
     // save project
-    if SourceFileMgr.AskSaveProject(lisDoYouStillWantToQuit,lisDiscardChangesAndQuit)<>mrOk then
+    if AskSaveProject(lisDoYouStillWantToQuit,lisDiscardChangesAndQuit)<>mrOk then
       exit;
 
     CanClose:=(DoCloseProject <> mrAbort);
@@ -2931,7 +2927,7 @@ var
 begin
   Category:=NewIDEItems.FindByName(FileDescGroupName);
   Template:=Category.FindTemplateByName(EnvironmentOptions.NewUnitTemplate);
-  SourceFileMgr.NewUnitOrForm(Template, FileDescriptorUnit);
+  NewUnitOrForm(Template, FileDescriptorUnit);
 end;
 
 procedure TMainIDE.mnuNewFormClicked(Sender: TObject);
@@ -2941,12 +2937,12 @@ var
 begin
   Category:=NewIDEItems.FindByName(FileDescGroupName);
   Template:=Category.FindTemplateByName(EnvironmentOptions.NewFormTemplate);
-  SourceFileMgr.NewUnitOrForm(Template, FileDescriptorForm);
+  NewUnitOrForm(Template, FileDescriptorForm);
 end;
 
 procedure TMainIDE.mnuNewOtherClicked(Sender: TObject);
 begin
-  SourceFileMgr.NewOther;
+  NewOther;
 end;
 
 procedure TMainIDE.mnuOpenClicked(Sender: TObject);
@@ -3132,7 +3128,7 @@ end;
 
 procedure TMainIDE.mnuCloseAllClicked(Sender: TObject);
 begin
-  SourceFileMgr.CloseAll;
+  CloseAll;
 end;
 
 procedure TMainIDE.mnuCleanDirectoryClicked(Sender: TObject);
@@ -3162,7 +3158,7 @@ begin
       PageIndex := SrcNoteBook.PageIndex;
     end;
     // Close all but the active editor
-    SourceFileMgr.InvertedFileClose(PageIndex, SrcNoteBook);
+    InvertedFileClose(PageIndex, SrcNoteBook);
   end
   else
     mnuCloseClicked(Sender);         // close only the clicked source editor
@@ -4009,7 +4005,7 @@ end;
 
 procedure TMainIDE.mnuNewProjectFromFileClicked(Sender: TObject);
 Begin
-  SourceFileMgr.NewProjectFromFile;
+  NewProjectFromFile;
 end;
 
 procedure TMainIDE.mnuOpenProjectClicked(Sender: TObject);
@@ -4019,7 +4015,7 @@ begin
   MenuItem := nil;
   if Sender is TIDEMenuItem then
     MenuItem := TIDEMenuItem(Sender);
-  SourceFileMgr.OpenProject(MenuItem);
+  OpenProject(MenuItem);
 end;
 
 procedure TMainIDE.mnuCloseProjectClicked(Sender: TObject);
@@ -4035,7 +4031,7 @@ begin
   if not CloseQueryIDEWindows then exit;
 
   // check project
-  if SourceFileMgr.SomethingOfProjectIsModified then begin
+  if SomethingOfProjectIsModified then begin
     DlgResult:=IDEQuestionDialog(lisProjectChanged,
         Format(lisSaveChangesToProject, [Project1.GetTitleOrName]),
         mtConfirmation, [mrYes, lisMenuSave,
@@ -4128,12 +4124,12 @@ end;
 
 procedure TMainIDE.mnuAddToProjectClicked(Sender: TObject);
 begin
-  DoAddActiveUnitToProject;
+  AddActiveUnitToProject;
 end;
 
 procedure TMainIDE.mnuRemoveFromProjectClicked(Sender: TObject);
 begin
-  DoRemoveFromProjectDialog;
+  RemoveFromProjectDialog;
 end;
 
 procedure TMainIDE.mnuViewProjectSourceClicked(Sender: TObject);
@@ -4460,7 +4456,7 @@ var
   LFMUnitInfo: TUnitInfo;
 begin
   GetCurrentUnit(LFMSrcEdit,LFMUnitInfo);
-  SourceFileMgr.CheckLFMInEditor(LFMUnitInfo, false);
+  CheckLFMInEditor(LFMUnitInfo, false);
 end;
 
 procedure TMainIDE.mnuToolConvertDelphiUnitClicked(Sender: TObject);
@@ -5198,7 +5194,7 @@ end;
 function TMainIDE.DoOpenComponent(const UnitFilename: string;
   OpenFlags: TOpenFlags; CloseFlags: TCloseFlags; out Component: TComponent): TModalResult;
 begin
-  Result:=SourceFileMgr.OpenComponent(UnitFilename, OpenFlags, CloseFlags, Component);
+  Result:=OpenComponent(UnitFilename, OpenFlags, CloseFlags, Component);
 end;
 
 function TMainIDE.DoFixupComponentReferences(
@@ -5372,8 +5368,7 @@ var
     end;
 
     // load resource hidden
-    Result:=SourceFileMgr.LoadLFM(RefUnitInfo,LFMCode,
-                                  OpenFlags+[ofLoadHiddenResource],[]);
+    Result:=LoadLFM(RefUnitInfo,LFMCode, OpenFlags+[ofLoadHiddenResource],[]);
     //DebugLn(['LoadDependencyHidden ',dbgsname(RefUnitInfo.Component)]);
   end;
 
@@ -5532,7 +5527,7 @@ begin
   // menu items
   if UpdateSaveAll then
     MainIDEBar.itmProjectSave.Enabled :=
-     SourceFileMgr.SomethingOfProjectIsModified  or ((Project1<>nil) and Project1.IsVirtual);
+       SomethingOfProjectIsModified or ((Project1<>nil) and Project1.IsVirtual);
   MainIDEBar.itmFileSave.Enabled := ((SrcEdit<>nil) and SrcEdit.Modified)
                               or ((AnUnitInfo<>nil) and AnUnitInfo.IsVirtual);
   MainIDEBar.itmFileExportHtml.Enabled := (SrcEdit<>nil);
@@ -5599,35 +5594,28 @@ function TMainIDE.DoNewFile(NewFileDescriptor: TProjectFileDescriptor;
   var NewFilename: string; NewSource: string;
   NewFlags: TNewFlags; NewOwner: TObject): TModalResult;
 begin
-  Result := SourceFileMgr.NewFile(NewFileDescriptor, NewFilename, NewSource,
-                                  NewFlags, NewOwner);
-end;
-
-procedure TMainIDE.CreateFileDialogFilterForSourceEditorFiles(Filter: string;
-  out AllEditorMask, AllMask: string);
-begin
-  SourceFileMgr.CreateFileDialogFilterForSourceEditorFiles(Filter, AllEditorMask, AllMask);
+  Result := NewFile(NewFileDescriptor, NewFilename, NewSource, NewFlags, NewOwner);
 end;
 
 function TMainIDE.DoSaveEditorFile(AEditor: TSourceEditorInterface; Flags: TSaveFlags): TModalResult;
 begin
-  Result:=SourceFileMgr.SaveEditorFile(AEditor, Flags);
+  Result:=SaveEditorFile(AEditor, Flags);
 end;
 
 function TMainIDE.DoSaveEditorFile(const Filename: string; Flags: TSaveFlags): TModalResult;
 begin
-  Result:=SourceFileMgr.SaveEditorFile(Filename, Flags);
+  Result:=SaveEditorFile(Filename, Flags);
 end;
 
 function TMainIDE.DoCloseEditorFile(const Filename: string; Flags: TCloseFlags): TModalResult;
 begin
-  Result:=SourceFileMgr.CloseEditorFile(Filename, Flags);
+  Result:=CloseEditorFile(Filename, Flags);
 end;
 
 function TMainIDE.DoCloseEditorFile(AEditor: TSourceEditorInterface;
   Flags: TCloseFlags): TModalResult;
 begin
-  Result:=SourceFileMgr.CloseEditorFile(AEditor, Flags);
+  Result:=CloseEditorFile(AEditor, Flags);
 end;
 
 function TMainIDE.DoSaveAll(Flags: TSaveFlags): TModalResult;
@@ -5736,7 +5724,7 @@ begin
   UnitList := TStringList.Create;
   try
     dummy := false;
-    if SourceFileMgr.SelectUnitComponents(lisSelectFrame,piFrame,UnitList, false, dummy) <> mrOk
+    if SelectUnitComponents(lisSelectFrame,piFrame,UnitList, false, dummy) <> mrOk
     then
       exit;
     for i := 0 to UnitList.Count-1 do
@@ -5770,8 +5758,8 @@ begin
   Project1.UpdateIsPartOfProjectFromMainUnit;
   UnitList := TViewUnitEntries.Create;
   try
-    if SourceFileMgr.SelectProjectItems(UnitList, UseItemType[OnlyForms],
-      true, MultiSelectCheckedState[OnlyForms]) = mrOk then
+    if SelectProjectItems(UnitList, UseItemType[OnlyForms],
+                          true, MultiSelectCheckedState[OnlyForms]) = mrOk then
     begin
       { This is where we check what the user selected. }
       AnUnitInfo := nil;
@@ -6237,8 +6225,8 @@ begin
   // close current project first
   if Project1<>nil then begin
     if not DoResetToolStatus([rfInteractive, rfSuccessOnTrigger]) then exit;
-    if SourceFileMgr.AskSaveProject(lisDoYouStillWantToCreateTheNewProject,
-      lisDiscardChangesCreateNewProject)<>mrOK then exit;
+    if AskSaveProject(lisDoYouStillWantToCreateTheNewProject,
+                      lisDiscardChangesCreateNewProject)<>mrOK then exit;
     GlobalDesignHook.LookupRoot:=nil;
     Result:=DoCloseProject;
     if Result=mrAbort then exit;
@@ -6254,7 +6242,7 @@ begin
 
   // create new project
   Project1:=CreateProjectObject(ProjectDesc,ProjectDescriptorProgram);
-  Result:=SourceFileMgr.InitNewProject(ProjectDesc);
+  Result:=InitNewProject(ProjectDesc);
 
   {$push}{$overflowchecks off}
   Inc(BookmarksStamp);
@@ -6263,12 +6251,12 @@ end;
 
 function TMainIDE.DoSaveProject(Flags: TSaveFlags):TModalResult;
 begin
-  Result:=SourceFileMgr.SaveProject(Flags);
+  Result:=SaveProject(Flags);
 end;
 
 function TMainIDE.DoCloseProject: TModalResult;
 begin
-  Result:=SourceFileMgr.CloseProject;
+  Result:=CloseProject;
 end;
 
 procedure TMainIDE.DoNoProjectWizard(Sender: TObject);
@@ -6291,7 +6279,7 @@ begin
           if not FileExistsUTF8(ARecentProject) then
             EnvironmentOptions.RemoveFromRecentProjectFiles(ARecentProject)
           else
-            SourceFileMgr.AddRecentProjectFile(ARecentProject);
+            AddRecentProjectFile(ARecentProject);
         end;
       end;
     tpws_examples:
@@ -6308,10 +6296,10 @@ function TMainIDE.DoOpenProjectFile(AFileName: string; Flags: TOpenFlags): TModa
 var
   OriginalFilename: string;
 
-  procedure RemoveRecentProjectFile;
+  procedure RemoveRecentPrjFile;
   begin
     EnvironmentOptions.RemoveFromRecentProjectFiles(OriginalFilename);
-    SourceFileMgr.RemoveRecentProjectFile(AFileName);
+    RemoveRecentProjectFile(AFileName);
   end;
 
 var
@@ -6340,7 +6328,7 @@ begin
   // check if it is a directory
   if DirPathExistsCached(AFileName) then begin
     debugln(['Error: (lazarus) [TMainIDE.DoOpenProjectFile] file is a directory']);
-    RemoveRecentProjectFile;
+    RemoveRecentPrjFile;
     exit;
   end;
 
@@ -6349,7 +6337,7 @@ begin
     ACaption:=lisFileNotFound;
     AText:=Format(lisPkgMangFileNotFound, [AFilename]);
     Result:=IDEMessageDialog(ACaption, AText, mtError, [mbAbort]);
-    RemoveRecentProjectFile;
+    RemoveRecentPrjFile;
     exit;
   end;
 
@@ -6385,13 +6373,13 @@ begin
   end;
 
   if ofAddToRecent in Flags then
-    SourceFileMgr.AddRecentProjectFile(AFileName);
+    AddRecentProjectFile(AFileName);
 
   if not DoResetToolStatus([rfInteractive, rfSuccessOnTrigger]) then exit;
 
   // save old project
-  if SourceFileMgr.AskSaveProject(lisDoYouStillWantToOpenAnotherProject,
-    lisDiscardChangesAndOpenProject)<>mrOk then exit;
+  if AskSaveProject(lisDoYouStillWantToOpenAnotherProject,
+                    lisDiscardChangesAndOpenProject)<>mrOk then exit;
 
   Result:=DoCloseProject;
   if Result=mrAbort then exit;
@@ -6401,7 +6389,7 @@ begin
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenProjectFile B');{$ENDIF}
   Project1:=CreateProjectObject(ProjectDescriptorProgram,
                                 ProjectDescriptorProgram);
-  Result:=SourceFileMgr.InitOpenedProjectFile(AFileName, Flags);
+  Result:=InitOpenedProjectFile(AFileName, Flags);
 
   {$push}{$overflowchecks off}
   Inc(BookmarksStamp);
@@ -6453,15 +6441,9 @@ begin
     IDEWindowCreators.ShowForm(ProjInspector,State=iwgfShowOnTop);
 end;
 
-function TMainIDE.DoAddActiveUnitToProject: TModalResult;
+function TMainIDE.DoAddUnitToProject(AEditor: TSourceEditorInterface): TModalResult;
 begin
-  Result:=SourceFileMgr.AddActiveUnitToProject;
-end;
-
-function TMainIDE.DoAddUnitToProject(AEditor: TSourceEditorInterface
-  ): TModalResult;
-begin
-  Result := SourceFileMgr.AddUnitToProject(AEditor);
+  Result := AddUnitToProject(AEditor);
 end;
 
 procedure TMainIDE.DoAddWordsToIdentCompletion(Sender: TIdentifierList;
@@ -6512,11 +6494,6 @@ begin
         FilteredList.Add(New);
     end;
   end;
-end;
-
-function TMainIDE.DoRemoveFromProjectDialog: TModalResult;
-Begin
-  Result:=SourceFileMgr.RemoveFromProjectDialog;
 end;
 
 function TMainIDE.DoWarnAmbiguousFiles: TModalResult;
@@ -6717,7 +6694,7 @@ begin
 
   // clear old error lines
   SourceEditorManager.ClearErrorLines;
-  SourceFileMgr.ArrangeSourceEditorAndMessageView(false);
+  ArrangeSourceEditorAndMessageView(false);
 
   // check common mistakes in search paths
   Result:=PkgBoss.CheckUserSearchPaths(Project1.CompilerOptions);
@@ -7572,7 +7549,7 @@ begin
 
   // clear old error lines
   SourceEditorManager.ClearErrorLines;
-  SourceFileMgr.ArrangeSourceEditorAndMessageView(false);
+  ArrangeSourceEditorAndMessageView(false);
 
   Result:=DoSaveAll([sfDoNotSaveVirtualFiles]);
   if Result<>mrOk then begin
@@ -8225,7 +8202,7 @@ begin
   if CodeToolBoss.CheckSyntax(ActiveUnitInfo.Source,NewCode,NewX,NewY,
     NewTopLine,ErrorMsg) then
   begin
-    SourceFileMgr.ArrangeSourceEditorAndMessageView(false);
+    ArrangeSourceEditorAndMessageView(false);
     MessagesView.ClearCustomMessages;
     MessagesView.AddCustomMessage(mluImportant,lisMenuQuickSyntaxCheckOk);
   end else begin
@@ -8576,7 +8553,7 @@ begin
   while AnUnitInfo<>nil do begin
     NextUnitInfo:=AnUnitInfo.NextUnitWithComponent;
     if not AnUnitInfo.NeedsSaveToDisk then
-      SourceFileMgr.CloseUnitComponent(AnUnitInfo,[]);
+      CloseUnitComponent(AnUnitInfo,[]);
     AnUnitInfo:=NextUnitInfo;
   end;
 end;
@@ -9112,7 +9089,7 @@ end;
 function TMainIDE.FindUnitFile(const AFilename: string; TheOwner: TObject;
   Flags: TFindUnitFileFlags): string;
 begin
-  Result:=SourceFileMgr.FindUnitFile(AFilename, TheOwner, Flags);
+  Result:=FindUnitFileImpl(AFilename, TheOwner, Flags);
 end;
 
 {------------------------------------------------------------------------------
@@ -9133,7 +9110,7 @@ end;
 function TMainIDE.FindSourceFile(const AFilename, BaseDirectory: string;
   Flags: TFindSourceFlags): string;
 begin
-  Result:=SourceFileMgr.FindSourceFile(AFilename, BaseDirectory, Flags);
+  Result:=FindSourceFileImpl(AFilename, BaseDirectory, Flags);
 end;
 
 //------------------------------------------------------------------------------
@@ -9829,13 +9806,12 @@ end;
 function TMainIDE.SaveSourceEditorChangesToCodeCache(AEditor: TSourceEditorInterface): boolean;
 // save all open sources to code tools cache
 begin
-  Result:=SourceFileMgr.SaveSourceEditorChangesToCodeCache(AEditor);
+  Result:=SaveEditorChangesToCodeCache(AEditor);
 end;
 
-function TMainIDE.FindUnitsOfOwner(TheOwner: TObject;
-  Flags: TFindUnitsOfOwnerFlags): TStrings;
+function TMainIDE.FindUnitsOfOwner(TheOwner: TObject; Flags: TFindUnitsOfOwnerFlags): TStrings;
 begin
-  Result:=SourceFileMgr.FindUnitsOfOwner(TheOwner,Flags);
+  Result:=FindUnitsOfOwnerImpl(TheOwner,Flags);
 end;
 
 function TMainIDE.DoJumpToSourcePosition(const Filename: string; NewX, NewY,
@@ -9911,7 +9887,7 @@ begin
         Result:=DoOpenEditorFile(NewSource.Filename,-1,-1,
           [ofOnlyIfExists,ofRegularFile,ofDoNotLoadResource]);
       if Result<>mrOk then begin
-        SourceFileMgr.UpdateSourceNames;
+        UpdateSourceNames;
         exit;
       end;
       NewSrcEdit := SourceEditorManager.ActiveEditor;
@@ -9956,7 +9932,7 @@ begin
 
     if jfFocusEditor in Flags then
       SourceEditorManager.ShowActiveWindowOnTop(True);
-    SourceFileMgr.UpdateSourceNames;
+    UpdateSourceNames;
     Result:=mrOk;
   finally
     SourceEditorManager.EndAutoFocusLock;
@@ -10087,14 +10063,14 @@ var
 begin
   if (Screen.GetCurrentModalForm<>nil) or (CodeToolBoss.ErrorMessage='') then
   begin
-    SourceFileMgr.UpdateSourceNames;
+    UpdateSourceNames;
     if ConsoleVerbosity>0 then
       debugln('Note: (lazarus) TMainIDE.DoJumpToCodeToolBossError No errormessage');
     exit;
   end;
   // syntax error -> show error and jump
   // show error in message view
-  SourceFileMgr.ArrangeSourceEditorAndMessageView(false);
+  ArrangeSourceEditorAndMessageView(false);
   DoShowCodeToolBossError;
 
   // jump to error in source editor
@@ -10131,7 +10107,7 @@ begin
       ActiveSrcEdit.ErrorLine:=ErrorCaret.Y;
     end;
   end;
-  SourceFileMgr.UpdateSourceNames;
+  UpdateSourceNames;
 end;
 
 procedure TMainIDE.DoFindDeclarationAtCursor;
@@ -12097,7 +12073,7 @@ begin
       AnUnitInfo:=Project1.UnitInfoWithFilename(FileItem^.Name);
       if AnUnitInfo=nil then continue;
       if AnUnitInfo.Component=nil then continue;
-      SourceFileMgr.CloseUnitComponent(AnUnitInfo,[]);
+      CloseUnitComponent(AnUnitInfo,[]);
     end;
     FreeAndNil(FDesignerToBeFreed);
   end;
@@ -12437,7 +12413,7 @@ begin
   UnitInfos:=TFPList.Create;
   try
     UnitInfos.Add(AnUnitInfo);
-    Result:=SourceFileMgr.RemoveFilesFromProject(UnitInfos);
+    Result:=RemoveFilesFromProject(UnitInfos);
   finally
     UnitInfos.Free;
   end;
@@ -12573,7 +12549,7 @@ begin
   if ((Result=nil) or (Result.Designer=nil)) and LoadForm
   and FilenameIsPascalSource(AnUnitInfo.Filename) then begin
     //DebugLn(['TMainIDE.GetFormOfSource ',AnUnitInfo.Filename,' ',dbgsName(AnUnitInfo.Component)]);
-    SourceFileMgr.LoadLFM(AnUnitInfo,[],[]);
+    LoadLFM(AnUnitInfo,[],[]);
   end;
   if (Result=nil) and (AnUnitInfo.Component<>nil) then
     Result:=FormEditor1.GetDesignerForm(AnUnitInfo.Component);
