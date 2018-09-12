@@ -43,7 +43,7 @@ uses
   BasicCodeTools, CodeToolsStructs, CodeToolManager, FileProcs, DefineTemplates,
   CodeCache, CodeTree, FindDeclarationTool, KeywordFuncLists,
   // IdeIntf
-  IDEDialogs, PropEdits, IDEMsgIntf, LazIDEIntf, MenuIntf, NewItemIntf, CompOptsIntf,
+  IDEDialogs, PropEdits, IDEMsgIntf, LazIDEIntf, MenuIntf, NewItemIntf,
   IDEWindowIntf, ProjectIntf, PackageIntf, PackageDependencyIntf, FormEditingIntf,
   IDEExternToolIntf, ObjectInspector, UnitResources, ComponentReg,
   SrcEditorIntf, EditorSyntaxHighlighterDef,
@@ -173,7 +173,6 @@ type
     function CheckMainSrcLCLInterfaces(Silent: boolean): TModalResult;
     function FileExistsInIDE(const Filename: string;
       SearchFlags: TProjectFileSearchFlags): boolean;
-    procedure RemovePathFromBuildModes(ObsoletePaths: String; pcos: TParsedCompilerOptString);
   public
     constructor Create;
     destructor Destroy; override;
@@ -7306,64 +7305,6 @@ begin
   if Project1.UnitComponentIsUsed(AnUnitInfo,CheckHasDesigner) then
     exit(true);
   //DebugLn(['TLazSourceFileManager.UnitComponentIsUsed ',AnUnitInfo.Filename,' ',dbgs(AnUnitInfo.Flags)]);
-end;
-
-procedure TLazSourceFileManager.RemovePathFromBuildModes(ObsoletePaths: String;
-  pcos: TParsedCompilerOptString);
-var
-  bm: TProjectBuildMode;
-  DlgCapt, DlgMsg: String;
-  ProjPaths, CurDir, ResolvedDir, PrevResolvedDir: String;
-  i, p, OldP: Integer;
-  QRes: TModalResult;
-begin
-  if pcos=pcosUnitPath then begin
-    DlgCapt:=lisRemoveUnitPath;
-    DlgMsg:=lisTheDirectoryContainsNoProjectUnitsAnyMoreRemoveThi;
-  end
-  else begin    // pcos=pcosIncludePath
-    DlgCapt:=lisRemoveIncludePath;
-    DlgMsg:=lisTheDirectoryContainsNoProjectIncludeFilesAnyMoreRe;
-  end;
-  QRes:=mrNone;
-  i:=0;
-  // Iterate all build modes until the user chooses to cancel.
-  PrevResolvedDir:='';
-  while (i < Project1.BuildModes.Count) and (QRes in [mrNone,mrYes]) do begin
-    bm:=Project1.BuildModes[i];
-    p:=1;
-    repeat
-      OldP:=p;
-      if pcos=pcosUnitPath then
-        ProjPaths:=bm.CompilerOptions.OtherUnitFiles
-      else
-        ProjPaths:=bm.CompilerOptions.IncludePath;
-      CurDir:=GetNextDirectoryInSearchPath(ProjPaths,p);
-      if CurDir='' then break;
-
-      // Find build modes that have unneeded search paths
-      ResolvedDir:=bm.CompilerOptions.ParsedOpts.DoParseOption(CurDir,pcos,false);
-      if (ResolvedDir<>'')
-      and (SearchDirectoryInSearchPath(ObsoletePaths,ResolvedDir)>0) then begin
-        // Ask confirmation once for each path.
-        // In fact there should be only one path after one source file is removed.
-        if (QRes=mrNone) or ((PrevResolvedDir<>'') and (PrevResolvedDir<>ResolvedDir)) then
-          QRes:=IDEQuestionDialog(DlgCapt,Format(DlgMsg,[CurDir]),
-                   mtConfirmation, [mrYes, lisRemove,
-                                    mrNo, lisKeep2], '');
-        if QRes=mrYes then begin
-          // remove
-          if pcos=pcosUnitPath then
-            bm.CompilerOptions.OtherUnitFiles:=RemoveSearchPaths(ProjPaths,CurDir)
-          else
-            bm.CompilerOptions.IncludePath:=RemoveSearchPaths(ProjPaths,CurDir);
-          p:=OldP;
-        end;
-        PrevResolvedDir:=ResolvedDir;
-      end;
-    until false;
-    Inc(i);
-  end;
 end;
 
 function TLazSourceFileManager.RemoveFilesFromProject(UnitInfos: TFPList): TModalResult;
