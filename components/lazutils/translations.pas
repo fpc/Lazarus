@@ -1050,9 +1050,12 @@ begin
   //Load translation only if it is not flagged as badformat.
   //This allows to avoid even more crashes related
   //to formatting arguments mismatches.
-  and (pos(sBadFormatFlag, Item.Flags)=0)
-  then begin
-    Result:=Item.Translation;
+  and (pos(sBadFormatFlag, Item.Flags)=0) then
+  begin
+    if Item.Translation<>'' then
+      Result:=Item.Translation
+    else
+      Result:=Item.Original;
     if Result='' then
       Raise Exception.Create('TPOFile.Translate Inconsistency');
   end else

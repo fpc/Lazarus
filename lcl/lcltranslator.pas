@@ -105,10 +105,11 @@ var
   begin
     DefaultLang := LangID;
 
+    AppDir := ExtractFilePath(ParamStrUTF8(0));
+    LCFileName := ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), LCExt);
+
     if LangID <> '' then
     begin
-      AppDir := ExtractFilePath(ParamStrUTF8(0));
-      LCFileName := ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), LCExt);
       FullLCFileName := ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), '.' + LangID) + LCExt;
 
       if Dir<>'' then
@@ -243,6 +244,18 @@ var
         exit;
     end;
 
+    Result := AppDir + LCFileName;
+    if FileExistsUTF8(Result) then
+      exit;
+
+    Result := AppDir + 'locale' + DirectorySeparator + LCFileName;
+    if FileExistsUTF8(Result) then
+      exit;
+
+    Result := AppDir + 'languages' + DirectorySeparator + LCFileName;
+    if FileExistsUTF8(Result) then
+      exit;
+
     Result := '';
     DefaultLang := '';
   end;
@@ -264,15 +277,6 @@ begin
     LazGetLanguageIDs(Lang, T);
 
   Result := GetLocaleFileName(Lang, LCExt, Dir);
-  if Result <> '' then
-    exit;
-
-  Result := ChangeFileExt(ParamStrUTF8(0), LCExt);
-  if FileExistsUTF8(Result) then
-    exit;
-
-  Result := '';
-  DefaultLang := '';
 end;
 
 function GetIdentifierPath(Sender: TObject;
@@ -459,7 +463,7 @@ constructor TPOTranslator.Create(POFileName: string);
 begin
   inherited Create;
   // TPOFile expects AFileName in UTF-8 encoding, no conversion required
-  FPOFile := TPOFile.Create(POFileName);
+  FPOFile := TPOFile.Create(POFileName, true);
 end;
 
 constructor TPOTranslator.Create(aPOFile: TPOFile);
