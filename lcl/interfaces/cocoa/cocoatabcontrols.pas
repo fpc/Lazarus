@@ -108,6 +108,7 @@ type
   public
     tabView: TCocoaTabControl;
     tabPage: TCocoaTabPage;
+    procedure setFrame(arect: NSRect); override;
   end;
 
 function IndexOfTab(ahost: TCocoaTabControl; atab: NSTabViewItem): Integer;
@@ -301,6 +302,20 @@ begin
     if idx>MaxInt then Result:=-1
     else Result:=Integer(idx);
   end;
+end;
+
+{ TCocoaTabPageView }
+
+procedure TCocoaTabPageView.setFrame(arect: NSRect);
+begin
+  // It's possible for a tab page view to go in negative height.
+  // However, automatic resizing flags (for whatever reason) prevent
+  // TCocoaTabPageView to go into negative height (remaining at 0 pixels)
+  // The code below makes sure that resizing is actually happening
+  if Assigned(superView) and (superView.frame.size.height < arect.size.height) then
+    arect.size.height := superView.frame.size.height;
+
+  inherited setFrame(arect);
 end;
 
 { TCocoaTabPage }
