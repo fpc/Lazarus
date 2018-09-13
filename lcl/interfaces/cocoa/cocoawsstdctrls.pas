@@ -1254,6 +1254,7 @@ begin
   scr.setHasVerticalScroller(VerticalScrollerVisible[TMemo(AWinControl).ScrollBars]);
   scr.setHasHorizontalScroller(HorizontalScrollerVisible[TMemo(AWinControl).ScrollBars]);
   scr.setAutohidesScrollers(ScrollerAutoHide[TMemo(AWinControl).ScrollBars]);
+  scr.setDrawsBackground(false);
 
   if TCustomMemo(AWinControl).BorderStyle=bsSingle then
      scr.setBorderType(NSBezelBorder);
