@@ -1621,16 +1621,23 @@ begin
 end;
 
 function TCocoaWidgetSet.GetSysColorBrush(nIndex: Integer): HBRUSH;
+var
+  sys : NSColor;
 begin
   if (nIndex < 0) or (nIndex > MAX_SYS_COLORS) then
   begin
     Result := 0;
     Exit;
   end;
-
   if (FSysColorBrushes[nIndex] = 0) then
-    FSysColorBrushes[nIndex] := HBrush(TCocoaBrush.Create(SysColorToNSColor(nIndex), True));
-  Result := FSysColorBrushes[nIndex]
+    FSysColorBrushes[nIndex] := HBrush(TCocoaBrush.Create(SysColorToNSColor(nIndex), True))
+  else
+  begin
+    // system wide can change the color on the fly
+    TCocoaBrush(FSysColorBrushes[nIndex]).Color := SysColorToNSColor(nIndex)
+  end;
+
+  Result := FSysColorBrushes[nIndex];
 end;
 
 function TCocoaWidgetSet.SetScrollInfo(Handle : HWND; SBStyle : Integer; ScrollInfo: TScrollInfo; bRedraw : Boolean): Integer;
