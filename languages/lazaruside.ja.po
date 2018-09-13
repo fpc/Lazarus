@@ -7091,6 +7091,10 @@ msgstr "コントロールには親コントロールが必要です"
 msgid "Add comment after replacement"
 msgstr "置換後にコメントを追加"
 
+#: lazarusidestrconsts.lisconvaddedmodedelphimodifier
+msgid "Added MODE Delphi syntax modifier after unit name."
+msgstr ""
+
 #: lazarusidestrconsts.lisconvaddingflagforregister
 msgid "Adding flag for \"Register\" procedure in unit %s."
 msgstr "ユニット%sの\"Register\"手続きにフラグを追加中"

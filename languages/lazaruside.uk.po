@@ -7013,6 +7013,10 @@ msgstr "Елемент управління вимагає \"предка\""
 msgid "Add comment after replacement"
 msgstr "Після заміни додати коментар"
 
+#: lazarusidestrconsts.lisconvaddedmodedelphimodifier
+msgid "Added MODE Delphi syntax modifier after unit name."
+msgstr ""
+
 #: lazarusidestrconsts.lisconvaddingflagforregister
 msgid "Adding flag for \"Register\" procedure in unit %s."
 msgstr "Додавання прапорця наявності у модулі %s процедури \"Register\"."

@@ -7102,6 +7102,10 @@ msgstr "Prvek potřebuje rodiče"
 msgid "Add comment after replacement"
 msgstr "Přidat komentář po nahrazení"
 
+#: lazarusidestrconsts.lisconvaddedmodedelphimodifier
+msgid "Added MODE Delphi syntax modifier after unit name."
+msgstr ""
+
 #: lazarusidestrconsts.lisconvaddingflagforregister
 msgid "Adding flag for \"Register\" procedure in unit %s."
 msgstr "Přidání příznaku pro proceduru \"Register\" v jednotce %s."

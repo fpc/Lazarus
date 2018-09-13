@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-09-10 01:05+0300\n"
+"PO-Revision-Date: 2018-09-14 01:15+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -7007,6 +7007,10 @@ msgstr "Элемент управления требует \"родителя\""
 #: lazarusidestrconsts.lisconvaddcommentafterreplacement
 msgid "Add comment after replacement"
 msgstr "Добавлять комментарий при замене"
+
+#: lazarusidestrconsts.lisconvaddedmodedelphimodifier
+msgid "Added MODE Delphi syntax modifier after unit name."
+msgstr "После имени модуля добавлена директива MODE Delphi."
 
 #: lazarusidestrconsts.lisconvaddingflagforregister
 msgid "Adding flag for \"Register\" procedure in unit %s."

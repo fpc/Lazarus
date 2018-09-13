@@ -7128,6 +7128,10 @@ msgstr "Il controllo necessita del genitore"
 msgid "Add comment after replacement"
 msgstr "Aggiungi un commento dopo la sostituzione"
 
+#: lazarusidestrconsts.lisconvaddedmodedelphimodifier
+msgid "Added MODE Delphi syntax modifier after unit name."
+msgstr ""
+
 #: lazarusidestrconsts.lisconvaddingflagforregister
 msgid "Adding flag for \"Register\" procedure in unit %s."
 msgstr "Aggiungo il flag \"Registrare\"alla procedura nella unit %s"

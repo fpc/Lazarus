@@ -7143,6 +7143,10 @@ msgstr "控件需要父类"
 msgid "Add comment after replacement"
 msgstr "添加注释在替换后"
 
+#: lazarusidestrconsts.lisconvaddedmodedelphimodifier
+msgid "Added MODE Delphi syntax modifier after unit name."
+msgstr ""
+
 #: lazarusidestrconsts.lisconvaddingflagforregister
 msgid "Adding flag for \"Register\" procedure in unit %s."
 msgstr ""

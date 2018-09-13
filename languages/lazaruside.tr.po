@@ -7148,6 +7148,10 @@ msgstr "Kontrolün ebeveynlere ihtiyacı var"
 msgid "Add comment after replacement"
 msgstr "Değiştirmeden sonra yorum ekle"
 
+#: lazarusidestrconsts.lisconvaddedmodedelphimodifier
+msgid "Added MODE Delphi syntax modifier after unit name."
+msgstr ""
+
 #: lazarusidestrconsts.lisconvaddingflagforregister
 msgid "Adding flag for \"Register\" procedure in unit %s."
 msgstr " %s biriminde \" Kayıt \\ \"işlemi için bayrak ekleniyor."

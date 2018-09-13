@@ -7140,6 +7140,10 @@ msgstr "El control necesita un padre"
 msgid "Add comment after replacement"
 msgstr "Añadir comentario después del reemplazo"
 
+#: lazarusidestrconsts.lisconvaddedmodedelphimodifier
+msgid "Added MODE Delphi syntax modifier after unit name."
+msgstr ""
+
 #: lazarusidestrconsts.lisconvaddingflagforregister
 msgid "Adding flag for \"Register\" procedure in unit %s."
 msgstr "Añadiendo flag (bandera) para procedimiento \"Register\" en unidad %s."

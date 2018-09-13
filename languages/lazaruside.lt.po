@@ -7094,6 +7094,10 @@ msgstr "Valdikliui reikia tėvo"
 msgid "Add comment after replacement"
 msgstr "Po pakeitimo padėti komentarą"
 
+#: lazarusidestrconsts.lisconvaddedmodedelphimodifier
+msgid "Added MODE Delphi syntax modifier after unit name."
+msgstr ""
+
 #: lazarusidestrconsts.lisconvaddingflagforregister
 msgid "Adding flag for \"Register\" procedure in unit %s."
 msgstr "Modulyje „%s“ procedūrai „Register“ dedama žymė."
