@@ -753,6 +753,7 @@ resourcestring
   lisConvRepairingIncludeFiles = 'Repairing include files : ';
   lisConvUserSelectedToEndConversion = 'User selected to end conversion with file %s';
   lisConvFixedUnitName = 'Fixed unit name from %s to %s.';
+  lisConvAddedModeDelphiModifier = 'Added MODE Delphi syntax modifier after unit name.';
   lisConvShouldBeFollowedByNumber = '"$" should be followed by a number: %s';
   lisConvReplacedCall = 'Replaced call %s with %s';
   lisConvReplFuncParameterNum = 'Replacement function parameter number should be >= 1: %s';

@@ -281,28 +281,30 @@ end;
 
 function TConvDelphiCodeTool.AddModeDelphiDirective: boolean;
 var
-  ModeDirectivePos: integer;
-  InsertPos: Integer;
+  NamePos: TAtomPosition;
+  CaretPos: TCodeXYPosition;
+  InsPos: Integer;
   s: String;
 begin
   Result:=false;
-  with fCTLink.CodeTool do begin
-    if not FindModeDirective(true,ModeDirectivePos) then begin
-      // add {$MODE Delphi} behind source type
-      if Tree.Root=nil then exit;
-      MoveCursorToNodeStart(Tree.Root);
-      ReadNextAtom; // 'unit', 'program', ..
-      ReadNextAtom; // name
-      ReadNextAtom; // semicolon
-      InsertPos:=CurPos.EndPos;
-      if fCTLink.Settings.SupportDelphi then
-        s:='{$IFDEF FPC}'+LineEnding+'  {$MODE Delphi}'+LineEnding+'{$ENDIF}'
-      else
-        s:='{$MODE Delphi}';
-      fCTLink.SrcCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,s);
-    end;
-    // changing mode requires rescan
-    BuildTree(lsrEnd);
+  with fCTLink do begin
+    if CodeTool.FindModeDirective(true,InsPos) then exit; // Already has mode directive.
+    Assert(Assigned(CodeTool.Tree.Root), 'AddModeDelphiDirective: Tree root is Nil.');
+    if not CodeTool.GetSourceNamePos(NamePos) then exit;  // "unit" or "program"
+    CodeTool.MoveCursorToCleanPos(NamePos.EndPos);
+    CodeTool.ReadNextAtom; // semicolon
+    InsPos:=CodeTool.CurPos.EndPos;
+    if Settings.SupportDelphi then
+      s:='{$IFDEF FPC}'+LineEnding+'  {$MODE Delphi}'+LineEnding+'{$ENDIF}'
+    else
+      s:='{$MODE Delphi}';
+    SrcCache.MainScanner:=CodeTool.Scanner;
+    SrcCache.Replace(gtEmptyLine, gtEmptyLine, InsPos, InsPos, s);
+    if not SrcCache.Apply then exit;
+    if CodeTool.CleanPosToCaret(InsPos, CaretPos) then
+      fSettings.AddLogLine(mluNote, lisConvAddedModeDelphiModifier,
+                           fCode.Filename, CaretPos.Y, CaretPos.X);
+    CodeTool.BuildTree(lsrEnd);   // changing mode requires rescan
   end;
   Result:=true;
 end;
