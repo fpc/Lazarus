@@ -205,6 +205,7 @@ type
     // value
     procedure setStringValue(avalue: NSString); override;
     function stringValue: NSString; override;
+    procedure addSubView(aview: NSView); override;
   end;
 
   TStatusItemData = record
@@ -486,6 +487,18 @@ end;
 function TCocoaCustomControl.stringValue: NSString;
 begin
   Result:=fstr;
+end;
+
+procedure TCocoaCustomControl.addSubView(aview: NSView);
+begin
+  inherited addSubView(aview);
+
+  if Assigned(aview) then
+  begin
+    // forcing LCL compatible "auto-move" mode. Sticking to left/top corner
+    if not autoresizesSubviews then setAutoresizesSubviews(true);
+    aview.setAutoresizingMask(NSViewMaxXMargin or NSViewMinYMargin);
+  end;
 end;
 
 procedure TCocoaCustomControl.dealloc;
