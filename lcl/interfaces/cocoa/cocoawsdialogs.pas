@@ -31,7 +31,8 @@ uses
   // Widgetset
   WSForms, WSLCLClasses, WSProc, WSDialogs, LCLMessageGlue,
   // LCL Cocoa
-  CocoaPrivate, CocoaUtils, CocoaWSCommon, CocoaWSStdCtrls, CocoaGDIObjects;
+  CocoaPrivate, CocoaUtils, CocoaWSCommon, CocoaWSStdCtrls, CocoaGDIObjects
+  ,Cocoa_Extra;
 
 type
 
@@ -719,8 +720,11 @@ begin
   // work around for bug in validateVisibleColumns() in Mavericks till 10.10.2
   // see https://bugs.freepascal.org/view.php?id=28687
   lOSVer := GetMacOSXVersion();
-  if (lOSVer >= $090000) and (lOSVer <= $0A0A02) then
+  if (lOSVer >= $090000)
+     and (lOSVer <= $0A0A02)
+     and (NSAppKitVersionNumber >= NSAppKitVersionNumber10_7) then
   begin
+    // won't work on 10.6
     reloadNSPanelBrowser(DialogHandle, IsOpenDialog);
   end;
 
