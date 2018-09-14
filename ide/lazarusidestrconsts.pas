@@ -3871,7 +3871,7 @@ resourcestring
   lisCompress = 'Compress';
   lisCompressHint = 'The resulting directory will be compressed into a ZIP file.';
   lisOpenInFileMan = 'Open in file manager';
-  lisOpenInFileManHint = 'Open destination directory in file manager.';
+  lisOpenInFileManHint = 'Open destination directory in file manager';
   lisPublishModuleNote = 'Files belonging to project / package will be included automatically.';
   lisSimpleSyntax = 'Simple syntax';
   lisNormallyTheFilterIsARegularExpressionInSimpleSynta = 'Normally the '
