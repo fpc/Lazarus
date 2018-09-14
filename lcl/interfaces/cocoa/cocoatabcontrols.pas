@@ -71,6 +71,7 @@ type
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     function lclClientFrame: TRect; override;
+    function lclGetFrameToLayoutDelta: TRect; override;
     // NSTabViewDelegateProtocol
     function tabView_shouldSelectTabViewItem(tabView: NSTabView; tabViewItem: NSTabViewItem): Boolean; message 'tabView:shouldSelectTabViewItem:';
     procedure tabView_willSelectTabViewItem(tabView: NSTabView; tabViewItem: NSTabViewItem); message 'tabView:willSelectTabViewItem:';
@@ -423,11 +424,24 @@ begin
 end;
 
 function TCocoaTabControl.lclClientFrame: TRect;
+var
+  r : TRect;
 begin
   if isFlipped then
     Result:=NSRectToRect( contentRect )
   else
     NSToLCLRect( contentRect, frame.size.height, Result );
+
+  r:=lclGetFrameToLayoutDelta;
+  Types.OffsetRect(Result, -r.Left, -r.Top);
+end;
+
+function TCocoaTabControl.lclGetFrameToLayoutDelta: TRect;
+begin
+  Result.Bottom := -10;
+  Result.Top := 6;
+  Result.Left := 7;
+  Result.Right := -7;
 end;
 
 function TCocoaTabControl.tabView_shouldSelectTabViewItem(tabView: NSTabView;
