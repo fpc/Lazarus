@@ -1706,6 +1706,7 @@ begin
   Callback := obj.lclGetCallback;
   if Assigned(Callback) then
   begin
+    if Callback.HasCaret then DestroyCaret(nil);
     CallbackObject := Callback.GetCallbackObject;
     Callback := nil;
     obj.lclClearCallback;

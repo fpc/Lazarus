@@ -305,20 +305,10 @@ end;
 
 function TCocoaWidgetSet.CreateCaret(Handle: HWND; Bitmap: hBitmap; Width,
   Height: Integer): Boolean;
-var
-  Obj: NSObject;
-  View: NSView;
 begin
   Result := (Handle <> 0);
   if Result then
-  begin
-    Obj := NSObject(Handle);
-    View := GetNSObjectView(Obj);
-    if View <> nil then
-      Result := CocoaCaret.CreateCaret(View, Bitmap, Width, Height)
-    else
-      Result := False;
-  end;
+    Result := CocoaCaret.CreateCaret(NSView(Handle).lclContentView, Bitmap, Width, Height)
 end;
 
 function TCocoaWidgetSet.CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP;
@@ -493,7 +483,7 @@ end;
 
 function TCocoaWidgetSet.DestroyCaret(Handle: HWND): Boolean;
 begin
-  Result := CocoaCaret.DestroyCaret;
+  Result := CocoaCaret.DestroyCaret( NSView(Handle).lclContentView );
 end;
 
 function TCocoaWidgetSet.DestroyIcon(Handle: HICON): Boolean;
@@ -1233,19 +1223,13 @@ end;
 
 function TCocoaWidgetSet.HideCaret(Handle: HWND): Boolean;
 var
-  Obj: NSObject;
   lView: NSView;
 begin
-  Result := (Handle <> 0);
-  if Result then
-  begin
-    Obj := NSObject(Handle);
-    lView := GetNSObjectView(Obj);
-    if lView <> nil then
-      Result := CocoaCaret.HideCaret(lView)
-    else
-      Result := False;
-  end;
+  if (Handle = 0)
+    then lView := nil
+    else lView := NSView(Handle).lclContentView;
+
+  Result := CocoaCaret.HideCaret(lView);
 end;
 
 function TCocoaWidgetSet.InvalidateRect(aHandle: HWND; Rect: pRect; bErase: Boolean): Boolean;
@@ -2370,19 +2354,13 @@ end;
 
 function TCocoaWidgetSet.ShowCaret(Handle: HWND): Boolean;
 var
-  Obj: NSObject;
   lView: NSView;
 begin
-  Result := (Handle <> 0);
-  if Result then
-  begin
-    Obj := NSObject(Handle);
-    lView := GetNSObjectView(Obj);
-    if lView <> nil then
-      Result := CocoaCaret.ShowCaret(lView)
-    else
-      Result := False;
-  end;
+  //writeln('WinAPI. show caret ',PtrUInt(Handle));
+  if (Handle = 0) then lView := nil
+  else lView := NSView(Handle).lclContentView;
+
+  Result := CocoaCaret.ShowCaret(lView)
 end;
 
 {------------------------------------------------------------------------------

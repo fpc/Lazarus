@@ -45,35 +45,29 @@ type
     FWidth, FHeight: Integer;
     FPos: TPoint;
     FVisible: Boolean;
-    FVisibleRealized: Boolean;
     FVisibleState: Boolean;
-    FRespondToFocus: Boolean;
-    FCaretCS: System.PRTLCriticalSection;
     FWidgetSetReleased: Boolean;
+    FHideCount: Integer;
     procedure SetPos(const Value: TPoint);
-    procedure UpdateCall(Data: PtrInt);
+    procedure ResetTimer;
   protected
     procedure DoTimer(Sender: TObject);
     procedure DrawCaret; virtual;
     procedure SetView(AView: NSView);
-    procedure UpdateCaret;
+    procedure InvalidateView;
   public
     constructor Create;
     destructor Destroy; override;
     
-    procedure Lock;
-    procedure UnLock;
-
     function CreateCaret(AView: NSView; Bitmap: PtrUInt; Width, Height: Integer): Boolean;
     function DestroyCaret: Boolean;
 
     function IsValid: Boolean;
 
-    function Show(AView: NSView): Boolean;
+    function Show: Boolean;
     function Hide: Boolean;
 
     property Pos: TPoint read FPos write SetPos;
-    property RespondToFocus: Boolean read FRespondToFocus write FRespondToFocus;
   end;
 
 function CreateCaret(View: NSView; Bitmap: PtrUInt; Width, Height: Integer): Boolean; overload;
@@ -81,13 +75,9 @@ function HideCaret(View: NSView): Boolean;
 function ShowCaret(View: NSView): Boolean;
 function SetCaretPos(X, Y: Integer): Boolean;
 function GetCaretPos(var P: TPoint): Boolean;
-function GetCocoaCaretRespondToFocus: Boolean;
-procedure SetCocoaCaretRespondToFocus(Value: Boolean);
-function DestroyCaret: Boolean;
+function DestroyCaret(View: NSView): Boolean;
 procedure DrawCaret;
 procedure DestroyGlobalCaret;
-//todo: make a better solution for the Viewset released before GlobalCaret
-procedure CaretViewSetReleased;
 
 implementation
 
@@ -111,14 +101,7 @@ procedure DrawCaret;
 begin
   GlobalCaretNeeded;
   if Assigned(GlobalCaret) then
-  begin
-    GlobalCaret.Lock;
-    try
-      GlobalCaret.DrawCaret;
-    finally
-      GlobalCaret.UnLock;
-    end;
-  end;
+    GlobalCaret.DrawCaret;
 end;
 
 procedure DestroyGlobalCaret;
@@ -131,14 +114,7 @@ begin
   GlobalCaretNeeded;
 
   if Assigned(GlobalCaret) then
-  begin
-    GlobalCaret.Lock;
-    try
-      Result := GlobalCaret.CreateCaret(View, Bitmap, Width, Height);
-    finally
-      GlobalCaret.UnLock;
-    end;
-  end;
+    Result := GlobalCaret.CreateCaret(View, Bitmap, Width, Height);
 end;
 
 function GetCaretBlinkTime: Cardinal;
@@ -154,28 +130,23 @@ begin
   
   if Assigned(GlobalCaret) then
   begin
-    GlobalCaret.Lock;
-    try
+    Result := not Assigned(View) or (View = GlobalCaret.FView);
+    if Result then
       Result := GlobalCaret.Hide;
-    finally
-      GlobalCaret.UnLock;
-    end;
   end;
 end;
 
 function ShowCaret(View: NSView): Boolean;
 begin
+  //writeln('ShowCaret: ', PtrUInt(View));
   Result := False;
   GlobalCaretNeeded;
 
   if Assigned(GlobalCaret) then
   begin
-    GlobalCaret.Lock;
-    try
-      Result := GlobalCaret.Show(View);
-    finally
-      GlobalCaret.UnLock;
-    end;
+    Result := not Assigned(View) or (view = GlobalCaret.FView);
+    if Result then
+      Result := GlobalCaret.Show;
   end;
 end;
 
@@ -183,16 +154,8 @@ function SetCaretPos(X, Y: Integer): Boolean;
 begin
   Result := True;
   GlobalCaretNeeded;
-
   if Assigned(GlobalCaret) then
-  begin
-    GlobalCaret.Lock;
-    try
-      GlobalCaret.Pos := Classes.Point(X, Y);
-    finally
-      GlobalCaret.UnLock;
-    end;
-  end;
+    GlobalCaret.Pos := Classes.Point(X, Y);
 end;
 
 function GetCaretPos(var P: TPoint): Boolean;
@@ -202,41 +165,23 @@ begin
   
   if Assigned(GlobalCaret) then
   begin
-    GlobalCaret.Lock;
-    try
-      with GlobalCaret.Pos do
-      begin
-        P.x := X;
-        P.y := Y;
-      end;
-    finally
-      GlobalCaret.UnLock;
+    with GlobalCaret.Pos do
+    begin
+      P.x := X;
+      P.y := Y;
     end;
   end;
 end;
 
-function GetCocoaCaretRespondToFocus: Boolean;
-begin
-  Result := GlobalCaret.RespondToFocus;
-end;
-
-procedure SetCocoaCaretRespondToFocus(Value: Boolean);
-begin
-  GlobalCaret.RespondToFocus := Value;
-end;
-
-function DestroyCaret: Boolean;
+function DestroyCaret(View: NSView): Boolean;
 begin
   Result := False;
    
   if Assigned(GlobalCaret) then
   begin
-    GlobalCaret.Lock;
-    try
+    Result := not Assigned(View) or (GlobalCaret.FView = View);
+    if Result then
       Result := GlobalCaret.DestroyCaret;
-    finally
-      GlobalCaret.UnLock;
-    end;
   end;
 end;
 
@@ -271,34 +216,14 @@ begin
 
   FTimerTarget := TCaretTimerTarget.alloc.init;
   TCaretTimerTarget(FTimerTarget).fCaret := Self;
-
-  FVisibleRealized := True;
-  
-  FRespondToFocus := False;
-  
-  New(FCaretCS);
-  System.InitCriticalSection(FCaretCS^);
 end;
 
 destructor TEmulatedCaret.Destroy;
 begin
   DestroyCaret;
-  
-  System.DoneCriticalsection(FCaretCS^);
-  Dispose(FCaretCS);
   FTimerTarget.release;
 
   inherited Destroy;
-end;
-
-procedure TEmulatedCaret.Lock;
-begin
-  System.EnterCriticalsection(FCaretCS^);
-end;
-
-procedure TEmulatedCaret.UnLock;
-begin
-  System.LeaveCriticalsection(FCaretCS^);
 end;
 
 function TEmulatedCaret.CreateCaret(AView: NSView; Bitmap: PtrUInt;
@@ -306,7 +231,10 @@ function TEmulatedCaret.CreateCaret(AView: NSView; Bitmap: PtrUInt;
 begin
   DestroyCaret;
   SetView(AView);
-  
+
+  FVisible := false;
+  FHideCount := 0;
+
   FWidth := Width;
   FHeight := Height;
   if Bitmap > 1 then
@@ -319,13 +247,14 @@ end;
 
 function TEmulatedCaret.DestroyCaret: Boolean;
 begin
-  if FTimer<>nil then begin
-    CocoaDisableTimer(FTimer);
+  if Assigned(FView) then
+  begin
+    InvalidateView;
+    if Assigned(FView.lclGetCallback) then
+      FView.lclGetCallback.SetHasCaret(false);
   end;
-  FVisible := False;
-  FVisibleRealized := False;
-  FVisibleState := False;
-  UpdateCaret;
+
+  CocoaDisableTimer(FTimer);
   
   FreeAndNil(FBitmap);
   FView := nil;
@@ -337,7 +266,8 @@ end;
 procedure TEmulatedCaret.DrawCaret;
 begin
   //DebugLn('DrawCaret ' + DbgSName(FView.LCLObject) + ' ' + DbgS(FPos) + ' ' + DbgS(FVisible) + ' ' + DbgS(FVisibleState));
-  if IsValid and FVisible and FVisibleState and FView.lclIsPainting then
+  //writeln('draw ', FHideCount);
+  if IsValid and FVisible and FVisibleState and FView.lclIsPainting and (FHideCount = 0) then
   begin
     if FBitmap = nil then
       FView.lclGetCallback.GetContext.InvertRectangle(FPos.X, FPos.Y,
@@ -348,50 +278,39 @@ begin
   end;
 end;
 
-function TEmulatedCaret.Show(AView: NSView): Boolean;
+function TEmulatedCaret.Show: Boolean;
 begin
-  Result := False;
-  if AView = nil then Exit;
+  //writeln('car: ', (AView = FView),' ',(IsValid),' ',Assigned(FView));
+  Result := (IsValid) and Assigned(FView);
+  if not Result then Exit;
 
+  if (FHideCount > 0) then dec(FHideCount);
   //DebugLn('ShowCaret ' + DbgSName(AView.LCLObject));
-  
-  if FView <> AView then
-  begin
-    Hide;
-    SetView(AView);
-    
-    UpdateCaret;
-  end;
-  
-  Result := IsValid;
-  
-  if Result then
-  begin
-    if FVisible then Exit;
-    
-    FVisible := True;
-    CocoaDisableTimer(FTimer);
-    FTimer:=CocoaEnableTimer(FTimerTarget);
-    if FVisibleRealized then
-    begin
-      FVisibleState := True;
-      FVisibleRealized := True;
-    end;
 
-    UpdateCaret;
+  if not FVisible then
+  begin
+    // was not previously visible
+    InvalidateView;
+    FVisible := True;
+    FVisibleState := true;
   end;
+
+  if not Assigned(FTimer) then ResetTimer;
 end;
 
 function TEmulatedCaret.Hide: Boolean;
 begin
   Result := IsValid;
-  
+
+  // inside of paint, there's no need to stop timer and invalidate the drawing
+  inc(FHideCount);
+  if Assigned(FView) and (FView.lclIsPainting) then Exit;
+
   if FVisible then
   begin
     CocoaDisableTimer(FTimer);
     FVisible := False;
-    UpdateCaret;
-    FVisibleRealized := (FView = nil) or not FView.lclIsPainting;
+    InvalidateView;
   end;
 end;
 
@@ -408,17 +327,17 @@ begin
   if ((FPos.x <> Value.x) or (FPos.y <> Value.y)) then
   begin
     FPos := Value;
-    CocoaDisableTimer(FTimer);
-    FTimer:=CocoaEnableTimer(FTimerTarget);
-    if not FView.lclIsPainting then FVisibleState := True;
-    UpdateCaret;
+    // the caret must remain visible while changing position
+    FVisibleState := True;
+    ResetTimer;
+    if not FView.lclIsPainting then InvalidateView;
   end;
 end;
 
 procedure TEmulatedCaret.DoTimer(Sender: TObject);
 begin
   FVisibleState := not FVisibleState;
-  if FVisible then UpdateCaret;
+  if FVisible then InvalidateView;
 end;
 
 function TEmulatedCaret.IsValid: Boolean;
@@ -429,8 +348,6 @@ end;
 
 procedure TEmulatedCaret.SetView(AView: NSView);
 begin
-  if FView <> nil then FView.lclGetCallback.HasCaret := False;
-
   FView := AView;
   if FView <> nil then FView.lclGetCallback.HasCaret := True;
   CocoaDisableTimer(FTimer);
@@ -438,7 +355,7 @@ begin
     FTimer:=CocoaEnableTimer(FTimerTarget);
 end;
 
-procedure TEmulatedCaret.UpdateCaret;
+procedure TEmulatedCaret.InvalidateView;
 var
   R: TRect;
 begin
@@ -458,18 +375,10 @@ begin
   FOldRect := R;
 end;
 
-procedure TEmulatedCaret.UpdateCall(Data: PtrInt);
+procedure TEmulatedCaret.ResetTimer;
 begin
-  UpdateCaret;
-end;
-
-procedure CaretViewSetReleased;
-begin
-  if Assigned(GlobalCaret) then
-  begin
-    CocoaDisableTimer(GlobalCaret.fTimer);
-    GlobalCaret.FWidgetSetReleased:=True;
-  end;
+  CocoaDisableTimer(FTimer);
+  FTimer:=CocoaEnableTimer(FTimerTarget);
 end;
 
 finalization
