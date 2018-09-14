@@ -1276,6 +1276,11 @@ begin
   if txt.respondsToSelector(ObjCSelector('setAutomaticSpellingCorrectionEnabled:')) then
     txt.setAutomaticSpellingCorrectionEnabled(False);
 
+  // defaulting to System colors
+  // This makes NSTextView to be responsive to theme color change (Mojave 10.14)
+  txt.setTextColor(NSColor.textColor);
+  txt.setBackgroundColor(NSColor.textBackgroundColor);
+
   txt.callback := TLCLCommonCallback.Create(txt, AWinControl);
   txt.setDelegate(txt);
 
