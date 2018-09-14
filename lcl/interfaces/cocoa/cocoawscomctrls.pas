@@ -1203,15 +1203,13 @@ class function TCocoaWSCustomListView.GetItemAt(const ALV: TCustomListView; x,
 var
   lCocoaLV: TCocoaListView;
   lTableLV: TCocoaTableListView;
-  lNSPt: NSPoint;
 begin
   if not CheckParams(lCocoaLV, lTableLV, ALV) then
   begin
     Result:=-1;
     Exit;
   end;
-  lNSPt := LCLToNSPoint(Point(X, Y), lTableLV.superview.frame.size.height);
-  Result := lTableLV.rowAtPoint(lNSPt);
+  Result := LCLCoordToRow(lTableLV, x,y);
 end;
 
 class function TCocoaWSCustomListView.GetSelCount(const ALV: TCustomListView): Integer;

@@ -1807,12 +1807,7 @@ begin
     Exit();
   end;
 
-  lPoint.x := X;
-  if list.isFlipped
-    then lPoint.y := Y + list.visibleRect.origin.y
-    else lPoint.y := list.frame.size.height - Y - list.visibleRect.origin.y;
-
-  Result := list.rowAtPoint(lPoint);
+  Result := LCLCoordToRow(list, x,y);
 end;
 
 class function TCocoaWSCustomListBox.GetItemRect(const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect): boolean;

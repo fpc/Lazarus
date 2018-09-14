@@ -234,7 +234,27 @@ type
 
 function AllocCocoaTableListView: TCocoaTableListView;
 
+function LCLCoordToRow(tbl: NSTableView; X,Y: Integer): Integer;
+
 implementation
+
+function LCLCoordToRow(tbl: NSTableView; X,Y: Integer): Integer;
+var
+  pt : NSPoint;
+begin
+  if not Assigned(tbl) then
+  begin
+    Result := -1;
+    Exit;
+  end;
+
+  pt.x := X;
+  if tbl.isFlipped
+    then pt.y := Y + tbl.visibleRect.origin.y
+    else pt.y := tbl.frame.size.height - Y - tbl.visibleRect.origin.y;
+
+  Result := tbl.rowAtPoint(pt);
+end;
 
 // not yet!
 {.$DEFINE DYNAMIC_NSTABLEVIEW_BASE}
