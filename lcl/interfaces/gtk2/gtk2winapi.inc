@@ -5965,6 +5965,94 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: GetTextExtentExPoint
+  Params:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGtk2WidgetSet.GetTextExtentExPoint(DC: HDC; Str: PChar;
+  Count, MaxWidth: Integer; MaxCount, PartialWidths: PInteger;
+  var Size: TSize): Boolean;
+var
+  DevCtx: TGtkDeviceContext absolute DC;
+  UseFont : TGtkIntfFont;
+  Utf8Len, Accu, I: PtrInt;
+  Iter: PPangoLayoutIter;
+  CharRect: TPangoRectangle;
+begin
+  if not IsValidDC(DC) then
+    Exit(False);
+
+  Size.cx := 0;
+  Size.cy := 0;
+  if MaxCount <> nil then
+    MaxCount^ := 0;
+
+  if Count = 0 then
+    Exit(True);
+  if (Count < -1) or (Str = nil) then
+    Exit(False);
+
+  if Count = -1 then
+    Count := Length(Str);
+  Utf8Len := UTF8Length(Str, Count);
+  if Utf8Len = 0 then
+    Exit(True);
+
+  UseFont := GetGtkFont(DevCtx);
+  UpdateDCTextMetric(DevCtx);
+  SetLayoutText(UseFont, Str, Count);
+  pango_layout_get_pixel_size(UseFont, @Size.cx, @Size.cy);
+  if DevCtx.HasTransf then
+  begin
+    DevCtx.InvTransfExtent(Size.cx, Size.cy);
+    Size.cx := Abs(Size.cx);
+    Size.cy := Abs(Size.cy);
+  end;
+
+  if PartialWidths = nil then
+  begin
+    if MaxCount = nil then
+      Exit(True);
+    if Size.cx <= MaxWidth then
+    begin
+      MaxCount^ := Utf8Len;
+      Exit(True);
+    end;
+  end;
+
+  I := 1;
+  Accu := 0;
+  Iter := pango_layout_get_iter(UseFont);
+  repeat
+    pango_layout_iter_get_char_extents(Iter, @CharRect);
+    Inc(Accu, CharRect.Width);
+
+    CharRect.Width := Accu;
+    pango_extents_to_pixels(nil, @CharRect);
+    if DevCtx.HasTransf then
+    begin
+      DevCtx.InvTransfExtent(CharRect.Width, CharRect.Height);
+      CharRect.Width := Abs(CharRect.Width);
+    end;
+
+    if MaxCount <> nil then
+    begin
+      if CharRect.Width > MaxWidth then
+        Break;
+      MaxCount^ := I;
+    end;
+    if PartialWidths <> nil then
+      PartialWidths[I - 1] := CharRect.Width;
+
+    Inc(I);
+  until not pango_layout_iter_next_char(Iter);
+  pango_layout_iter_free(Iter);
+
+  Exit(True);
+end;
+
+{------------------------------------------------------------------------------
   Function: GetTextExtentPoint
   Params:  none
   Returns: Nothing
@@ -5973,32 +6061,8 @@ end;
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer;
   var Size: TSize): Boolean;
-var
-  DevCtx: TGtkDeviceContext absolute DC;
-  UseFont : PPangoLayout;
 begin
-  Result := IsValidDC(DC);
-  if not Result then Exit;
-  if (Count <= 0) or (Str = nil) or (StrPas(Str) = '') then
-  begin
-    FillChar(Size, SizeOf(Size), 0);
-    Exit;
-  end;
-
-  UseFont := GetGtkFont(TGtkDeviceContext(DC));
-
-  UpdateDCTextMetric(TGtkDeviceContext(DC));
-
-  SetLayoutText(UseFont, Str, Count);
-  pango_layout_get_pixel_size(UseFont, @Size.cX, @Size.cY);
-  //DebugLn(['TGtk2WidgetSet.GetTextExtentPoint Str="',copy(Str,1,Count),' Count=',Count,' X=',Size.cx,' Y=',Size.cY]);
-
-  if DevCtx.HasTransf then
-  begin
-    DevCtx.InvTransfExtent(Size.cx, Size.cy);
-    Size.cx := Abs(Size.cx);
-    Size.cy := Abs(Size.cy);
-  end;
+  Result := GetTextExtentExPoint(DC, Str, Count, 0, nil, nil, Size);
 end;
 
 {------------------------------------------------------------------------------

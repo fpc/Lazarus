@@ -127,6 +127,8 @@ function pango_attr_gravity_new(gravity: TPangoGravity): PPangoAttribute; cdecl;
 
 function pango_version_check(required_major, required_minor, required_micro: integer): PChar; cdecl; external pangolib;
 
+procedure pango_extents_to_pixels(inclusive: PPangoRectangle; nearest: PPangoRectangle); cdecl; external pangolib;
+
 {$IF FPC_FULLVERSION<20501}
 function pango_font_family_is_monospace(family:PPangoFontFamily):gboolean; cdecl; external pangolib;
 {$ENDIF}
