@@ -14478,6 +14478,14 @@ msgstr "Otevřít soubor"
 msgid "Open file at cursor"
 msgstr ""
 
+#: lazarusidestrconsts.lisopeninfileman
+msgid "Open in file manager"
+msgstr ""
+
+#: lazarusidestrconsts.lisopeninfilemanhint
+msgid "Open destination directory in file manager"
+msgstr ""
+
 #: lazarusidestrconsts.lisopenlfm
 msgid "Open %s"
 msgstr "Otevřít %s"

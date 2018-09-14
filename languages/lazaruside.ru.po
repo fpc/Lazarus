@@ -5,12 +5,12 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-09-14 01:15+0300\n"
+"PO-Revision-Date: 2018-09-14 15:16+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
 "Language: ru\n"
-"X-Generator: Poedit 1.7.7\n"
+"X-Generator: Poedit 2.0.6\n"
 
 #: lazarusidestrconsts.dbgbreakgroupdlgcaption
 msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaption"
@@ -14274,6 +14274,14 @@ msgstr "Открыть файл"
 #: lazarusidestrconsts.lisopenfileatcursor
 msgid "Open file at cursor"
 msgstr "Открытие файла у курсора"
+
+#: lazarusidestrconsts.lisopeninfileman
+msgid "Open in file manager"
+msgstr "Открыть в диспетчере файлов"
+
+#: lazarusidestrconsts.lisopeninfilemanhint
+msgid "Open destination directory in file manager"
+msgstr "Открыть целевой каталог в диспетчере файлов"
 
 #: lazarusidestrconsts.lisopenlfm
 msgid "Open %s"

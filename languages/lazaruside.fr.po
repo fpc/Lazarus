@@ -14367,6 +14367,14 @@ msgstr "Ouvrir un fichier"
 msgid "Open file at cursor"
 msgstr "Ouvrir le fichier sous le curseur"
 
+#: lazarusidestrconsts.lisopeninfileman
+msgid "Open in file manager"
+msgstr ""
+
+#: lazarusidestrconsts.lisopeninfilemanhint
+msgid "Open destination directory in file manager"
+msgstr ""
+
 #: lazarusidestrconsts.lisopenlfm
 msgid "Open %s"
 msgstr "Ouvrir %s"
