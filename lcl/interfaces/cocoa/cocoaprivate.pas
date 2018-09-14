@@ -249,6 +249,7 @@ type
     function lclIsHandle: Boolean; override;
     function lclClientFrame: TRect; override;
     function lclContentView: NSView; override;
+    function lclGetFrameToLayoutDelta: TRect; override;
   end;
 
 
@@ -430,6 +431,14 @@ end;
 function TCocoaGroupBox.lclContentView: NSView;
 begin
   Result := NSView(contentView);
+end;
+
+function TCocoaGroupBox.lclGetFrameToLayoutDelta: TRect;
+begin
+  Result.Left := 3;
+  Result.Right := -3;
+  Result.Top := 0;
+  Result.Bottom := -4;
 end;
 
 function TCocoaGroupBox.acceptsFirstResponder: Boolean;
