@@ -2418,12 +2418,12 @@ begin
     FXMLCfg.SetDeleteValue(Path+'AutoSave/LastSavedProjectFile',FLastSavedProjectFile,'');
     FXMLCfg.SetDeleteValue(Path+'AutoSave/OpenLastProjectAtStart',FOpenLastProjectAtStart,true);
     FXMLCfg.SetDeleteValue(Path+'AutoSave/ActiveDesktop', FAutoSaveActiveDesktop, True);
+    FXMLCfg.DeletePath(Path+'AutoSave/LastOpenPackages/');
     if FOpenLastProjectAtStart and (FLastOpenPackages.Count > 0) then
     begin
       for i := 0 to FLastOpenPackages.Count-1 do
         FXMLCfg.SetValue(Path+'AutoSave/LastOpenPackages/Package'+IntToStr(i+1), FLastOpenPackages[i]);
-    end else
-      FXMLCfg.DeletePath(Path+'AutoSave/LastOpenPackages/');
+    end;
 
     // form editor
     FXMLCfg.SetDeleteValue(Path+'FormEditor/ShowBorderSpacing',FShowBorderSpacing,false);
