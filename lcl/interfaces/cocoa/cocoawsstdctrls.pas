@@ -1819,10 +1819,7 @@ begin
 
   view := GetListBox(ACustomListBox);
   if not Assigned(view) then Exit(False);
-
-  r:=view.frameOfCellAtColumn_row(0,index);
-  Arect:=NSRectToRect(r);
-  Result := True;
+  Result := LCLGetItemRect(view, Index, 0, ARect);
 end;
 
 class function TCocoaWSCustomListBox.GetItemIndex(const ACustomListBox: TCustomListBox): integer;

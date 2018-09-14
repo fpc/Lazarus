@@ -1013,17 +1013,10 @@ class function TCocoaWSCustomListView.ItemDisplayRect(
 var
   lCocoaLV: TCocoaListView;
   lTableLV: TCocoaTableListView;
-  lRowRect, lColRect, lNSRect: NSRect;
 begin
-  if not CheckParams(lCocoaLV, lTableLV, ALV) then
-  begin
-    Result:=Bounds(0,0,0,0);
-    Exit;
-  end;
-  lRowRect := lTableLV.rectOfRow(AIndex);
-  lColRect := lTableLV.rectOfColumn(ASubItem);
-  lNSRect := NSIntersectionRect(lRowRect, lColRect);
-  NSToLCLRect(lNSRect, lCocoaLV.frame.size.height, Result);
+  Result:=Bounds(0,0,0,0);
+  if not CheckParams(lCocoaLV, lTableLV, ALV) then Exit;
+  LCLGetItemRect(lTableLV, AIndex, ASubItem, Result);
 end;
 
 class function TCocoaWSCustomListView.ItemGetChecked(

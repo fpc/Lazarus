@@ -235,6 +235,7 @@ type
 function AllocCocoaTableListView: TCocoaTableListView;
 
 function LCLCoordToRow(tbl: NSTableView; X,Y: Integer): Integer;
+function LCLGetItemRect(tbl: NSTableView; row, col: Integer; var r: TRect): Boolean;
 
 implementation
 
@@ -254,6 +255,20 @@ begin
     else pt.y := tbl.frame.size.height - Y - tbl.visibleRect.origin.y;
 
   Result := tbl.rowAtPoint(pt);
+end;
+
+function LCLGetItemRect(tbl: NSTableView; row, col: Integer; var r: TRect): Boolean;
+var
+  nsr : NSRect;
+begin
+  if not Assigned(tbl) then begin
+    Result := false;
+    r := Bounds(0,0,0,0);
+    Exit;
+  end;
+  nsr:=tbl.frameOfCellAtColumn_row(col,row);
+  r:=NSRectToRect(nsr);
+  Result := True;
 end;
 
 // not yet!
