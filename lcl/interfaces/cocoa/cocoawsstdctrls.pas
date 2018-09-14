@@ -1871,14 +1871,10 @@ end;
 class function TCocoaWSCustomListBox.GetTopIndex(const ACustomListBox: TCustomListBox): integer;
 var
   view: TCocoaTableListView;
-  visibleRect: NSRect;
-  visibleRange: NSRange;
 begin
   view := GetListBox(ACustomListBox);
   if not Assigned(view) then Exit(-1);
-  visibleRect := view.visibleRect();
-  visibleRange := view.rowsInRect(visibleRect);
-  Result := visibleRange.location;
+  Result := LCLGetTopRow(view);
 end;
 
 class procedure TCocoaWSCustomListBox.SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean);

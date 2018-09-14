@@ -1238,15 +1238,13 @@ class function TCocoaWSCustomListView.GetTopItem(const ALV: TCustomListView): In
 var
   lCocoaLV: TCocoaListView;
   lTableLV: TCocoaTableListView;
-  lVisibleRows: NSRange;
 begin
   if not CheckParams(lCocoaLV, lTableLV, ALV) then
   begin
     Result:=-1;
     Exit;
   end;
-  lVisibleRows := lTableLV.rowsInRect(lTableLV.visibleRect());
-  Result := lVisibleRows.location;
+  Result := LCLGetTopRow(lTableLV);
 end;
 
 class function TCocoaWSCustomListView.GetVisibleRowCount(

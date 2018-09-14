@@ -236,6 +236,7 @@ function AllocCocoaTableListView: TCocoaTableListView;
 
 function LCLCoordToRow(tbl: NSTableView; X,Y: Integer): Integer;
 function LCLGetItemRect(tbl: NSTableView; row, col: Integer; var r: TRect): Boolean;
+function LCLGetTopRow(tbl: NSTableView): Integer;
 
 implementation
 
@@ -269,6 +270,19 @@ begin
   nsr:=tbl.frameOfCellAtColumn_row(col,row);
   r:=NSRectToRect(nsr);
   Result := True;
+end;
+
+function LCLGetTopRow(tbl: NSTableView): Integer;
+var
+  visRange: NSRange;
+begin
+  if not Assigned(tbl) then
+    Result := -1
+  else
+  begin
+    visRange := tbl.rowsInRect(tbl.visibleRect());
+    Result := visRange.location;
+  end;
 end;
 
 // not yet!
