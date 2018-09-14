@@ -114,7 +114,6 @@ type
     callback: ICommonCallback;
     FEnabled: Boolean;
 
-    allowTabs : Boolean;
     supressTextChangeEvent: Integer; // if above zero, then don't send text change event
 
     function acceptsFirstResponder: Boolean; override;
@@ -538,12 +537,7 @@ begin
   end;
 
   cb.KeyEvPrepare(event);
-  res := true;
   cb.KeyEvBefore(res);
-
-  //todo: this exceptional code for Tab should NOT be needed!
-  //      callback should take care all of that
-  res := res and (event.keyCode <> NSKeyCodeTab);
   if res then inherited keyDown(event);
   cb.KeyEvAfter;
 end;
@@ -810,10 +804,6 @@ begin
   begin
     callback.KeyEvPrepare(event);
     callback.KeyEvBefore(res);
-    res := res and (
-       // memo can get "tab" if it's allowed
-       ((event.keyCode <> NSKeyCodeTab) or (allowTabs))
-      );
     if res then inherited keyDown(event);
     callback.KeyEvAfter;
   end else

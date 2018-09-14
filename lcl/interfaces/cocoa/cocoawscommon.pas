@@ -52,6 +52,7 @@ type
     Owner: NSObject;
     Frame: NSObject;
     BlockCocoaUpDown: Boolean;
+    SuppressTabDown: Boolean; // all tabs should be suppressed, so Cocoa would not switch focus
 
     class constructor Create;
     constructor Create(AOwner: NSObject; ATarget: TWinControl); virtual;
@@ -71,6 +72,7 @@ type
     procedure KeyEvPrepare(Event: NSEvent; AForceAsKeyDown: Boolean = False);
     procedure KeyEvBefore(out AllowCocoaHandle: boolean);
     procedure KeyEvAfter;
+    procedure SetTabSuppress(ASuppress: Boolean);
 
     procedure MouseClick; virtual;
     function MouseMove(Event: NSEvent): Boolean; virtual;
@@ -301,6 +303,8 @@ begin
   FBoundsReportedToChildren:=false;
   FIsOpaque:=false;
   FIsEventRouting:=false;
+  SuppressTabDown := true; // by default all Tabs would not be allowed for Cocoa.
+                           // it should be enabled, i.e. for TMemo with WantTabs=true
 end;
 
 destructor TLCLCommonCallback.Destroy;
@@ -1102,14 +1106,23 @@ end;
 procedure TLCLCommonCallback.KeyEvBefore(out AllowCocoaHandle: boolean);
 begin
   AllowCocoaHandle := true;
-  if _IsKeyDown then KeyEvBeforeDown(AllowCocoaHandle)
-  else KeyEvBeforeUp(AllowCocoaHandle);
+  if _IsKeyDown then begin
+    KeyEvBeforeDown(AllowCocoaHandle);
+    if AllowCocoaHandle and SuppressTabDown and (_KeyMsg.CharCode = VK_TAB) then
+      AllowCocoaHandle := false;
+  end else
+    KeyEvBeforeUp(AllowCocoaHandle);
 end;
 
 procedure TLCLCommonCallback.KeyEvAfter;
 begin
   if _IsKeyDown then KeyEvAfterDown
   else KeyEvAfterUp;
+end;
+
+procedure TLCLCommonCallback.SetTabSuppress(ASuppress: Boolean);
+begin
+  SuppressTabDown := ASuppress;
 end;
 
 procedure TLCLCommonCallback.MouseClick;

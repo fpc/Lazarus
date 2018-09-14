@@ -69,6 +69,7 @@ type
     procedure KeyEvPrepare(Event: NSEvent; AForceAsKeyDown: Boolean = False);
     procedure KeyEvBefore(out AllowCocoaHandle: boolean);
     procedure KeyEvAfter;
+    procedure SetTabSuppress(ASuppress: Boolean);
 
     function scrollWheel(Event: NSEvent): Boolean;
     // size, pos events

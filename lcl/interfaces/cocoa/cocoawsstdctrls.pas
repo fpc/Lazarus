@@ -1294,7 +1294,7 @@ begin
 
   TextViewSetWordWrap(txt, scr, TCustomMemo(AWinControl).WordWrap);
   TextViewSetAllignment(txt, TCustomMemo(AWinControl).Alignment);
-  txt.allowTabs := TCustomMemo(AWinControl).WantTabs;
+  txt.callback.SetTabSuppress(not TCustomMemo(AWinControl).WantTabs);
   Result := TLCLIntfHandle(scr);
 end;
 
@@ -1457,7 +1457,7 @@ var
 begin
   txt := GetTextView(ACustomMemo);
   if (not Assigned(txt)) then Exit;
-  txt.allowTabs := NewWantTabs;
+  txt.callback.SetTabSuppress(not NewWantTabs);
 end;
 
 class procedure  TCocoaWSCustomMemo.SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean);
