@@ -1265,7 +1265,16 @@ begin
 
   // ToDo: This should be made selectable in the LCL
   txt.setAutomaticQuoteSubstitutionEnabled(False);
-  txt.setAutomaticTextReplacementEnabled(False);
+  txt.setAutomaticLinkDetectionEnabled(False);
+  // macOS 10.6 version
+  if txt.respondsToSelector(objcselector('setAutomaticDataDetectionEnabled:')) then
+    txt.setAutomaticDataDetectionEnabled(false);
+  if txt.respondsToSelector(objcselector('setAutomaticTextReplacementEnabled:')) then
+    txt.setAutomaticTextReplacementEnabled(False);
+  if txt.respondsToSelector(ObjCSelector('setAutomaticDashSubstitutionEnabled:')) then
+    txt.setAutomaticDashSubstitutionEnabled(False);
+  if txt.respondsToSelector(ObjCSelector('setAutomaticSpellingCorrectionEnabled:')) then
+    txt.setAutomaticSpellingCorrectionEnabled(False);
 
   txt.callback := TLCLCommonCallback.Create(txt, AWinControl);
   txt.setDelegate(txt);
