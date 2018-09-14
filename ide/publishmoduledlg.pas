@@ -38,7 +38,7 @@ uses
   // LazUtils
   FileUtil, LazFileUtils, LazLoggerBase,
   // IdeIntf
-  IDEWindowIntf, IDEHelpIntf, IDEDialogs, IDEImagesIntf, ProjPackIntf, CompOptsIntf, LazIDEIntf,
+  IDEWindowIntf, IDEHelpIntf, IDEDialogs, IDEImagesIntf, ProjPackIntf, CompOptsIntf, LazIDEIntf, LCLIntf,
   // IDE
   ProjectDefs, Project, PackageDefs, PublishModule, IDEOptionDefs, InputHistory,
   LazarusIDEStrConsts, IDEProcs, EnvironmentOpts, CompilerOptions;
@@ -48,6 +48,7 @@ type
 
   TPublishModuleDialog = class(TForm)
     ButtonPanel1: TButtonPanel;
+    OpenInFileManCheckbox: TCheckBox;
     DestDirGroupBox: TGroupBox;
     DestDirComboBox: TComboBox;
     BrowseDestDirBitBtn: TBitBtn;
@@ -528,8 +529,12 @@ begin
     Result := Compress;
 
   if Result = mrOK then
+  begin
     IDEMessageDialog(lisSuccess, Format(lisPublishedTo, [FDestDir]),
       mtInformation, [mbOk]);
+    if FOptions.OpenInFileMan then
+      OpenDocument(FDestDir);
+  end;
 end;
 
 { TPublishModuleDialog }
@@ -564,6 +569,8 @@ begin
   OptionsGroupbox.Caption:=lisOptions;
   CompressCheckbox.Caption:=lisCompress;
   CompressCheckbox.Hint:=lisCompressHint;
+  OpenInFileManCheckbox.Caption := lisOpenInFileMan;
+  OpenInFileManCheckbox.Hint := lisOpenInFileManHint;
 
   ButtonPanel1.OkButton.Caption := lisMenuOk;
   ButtonPanel1.OKButton.OnClick := @OkButtonCLICK;
@@ -687,6 +694,7 @@ begin
 
   // file filters
   CompressCheckbox.Checked:=SrcOpts.CompressFinally;
+  OpenInFileManCheckbox.Checked := SrcOpts.OpenInFileMan;
   UseFiltersCheckbox.Checked:=SrcOpts.UseFileFilters;
   FilterSimpleSyntaxCheckbox.Checked:=SrcOpts.FilterSimpleSyntax;
   SetComboBox(FilterCombobox,SrcOpts.FileFilter,20);
@@ -699,6 +707,7 @@ begin
 
   // file filters
   DestOpts.CompressFinally:=CompressCheckbox.Checked;
+  DestOpts.OpenInFileMan:=OpenInFileManCheckbox.Checked;
   DestOpts.UseFileFilters:=UseFiltersCheckbox.Checked;
   DestOpts.FilterSimpleSyntax:=FilterSimpleSyntaxCheckbox.Checked;
   DestOpts.FileFilter:=FilterCombobox.Text;

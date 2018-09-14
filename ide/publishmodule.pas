@@ -49,6 +49,7 @@ type
   TPublishModuleOptions = class
   private
     FCompressFinally: boolean;
+    FOpenInFileMan: boolean;
     FDestinationDirectory: string;
     FFileFilter: string;
     FFilterRegExpr: TRegExpr;
@@ -59,6 +60,7 @@ type
     FOwner: TObject;
     FUseFileFilters: boolean;
     procedure SetCompressFinally(const AValue: boolean);
+    procedure SetOpenInFileMan(const AValue: boolean);
     procedure SetDestinationDirectory(const AValue: string);
     procedure SetFileFilter(const AValue: string);
     procedure SetFilterSimpleSyntax(const AValue: boolean);
@@ -88,6 +90,7 @@ type
     property DestinationDirectory: string
                         read FDestinationDirectory write SetDestinationDirectory;
     property CompressFinally: boolean read FCompressFinally write SetCompressFinally;
+    property OpenInFileMan: boolean read FOpenInFileMan write SetOpenInFileMan;
     property UseFileFilters: boolean read FUseFileFilters write SetUseFileFilters;
     // Filter
     property FilterSimpleSyntax: boolean read FFilterSimpleSyntax write SetFilterSimpleSyntax;
@@ -126,6 +129,13 @@ procedure TPublishModuleOptions.SetCompressFinally(const AValue: boolean);
 begin
   if FCompressFinally=AValue then exit;
   FCompressFinally:=AValue;
+  Modified:=true;
+end;
+
+procedure TPublishModuleOptions.SetOpenInFileMan(const AValue: boolean);
+begin
+  if FOpenInFileMan=AValue then exit;
+  FOpenInFileMan:=AValue;
   Modified:=true;
 end;
 
@@ -215,6 +225,7 @@ procedure TPublishModuleOptions.LoadDefaults;
 begin
   DestinationDirectory:=GetDefaultDestinationDir;
   CompressFinally:=true;
+  OpenInFileMan:=false;
   UseFileFilters:=true;
   FilterSimpleSyntax:=true;
   FileFilter:=DefPublModIncFilter;
@@ -235,6 +246,7 @@ begin
   FDestinationDirectory:=f(XMLConfig.GetValue(APath+'DestinationDirectory/Value',
                                               GetDefaultDestinationDir));
   CompressFinally:=XMLConfig.GetValue(APath+'CompressFinally/Value',true);
+  OpenInFileMan:=XMLConfig.GetValue(APath+'OpenInFileMan/Value',false);
   UseFileFilters:=XMLConfig.GetValue(APath+'UseFileFilters/Value',false);
   FilterSimpleSyntax:=XMLConfig.GetValue(APath+'FilterSimpleSyntax/Value',true);
   if XMLVersion>=2 then
@@ -255,6 +267,7 @@ begin
                            f(DestinationDirectory),
                            f(GetDefaultDestinationDir));
   XMLConfig.SetDeleteValue(APath+'CompressFinally/Value',CompressFinally,true);
+  XMLConfig.SetDeleteValue(APath+'OpenInFileMan/Value',OpenInFileMan,false);
   XMLConfig.SetDeleteValue(APath+'UseFileFilters/Value',UseFileFilters,false);
   XMLConfig.SetDeleteValue(APath+'FilterSimpleSyntax/Value',FilterSimpleSyntax,true);
   XMLConfig.SetDeleteValue(APath+'FileFilter/Value',FileFilter,DefPublModIncFilter);

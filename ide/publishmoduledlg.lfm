@@ -79,6 +79,19 @@ object PublishModuleDialog: TPublishModuleDialog
       ShowHint = True
       TabOrder = 0
     end
+    object OpenInFileManCheckbox: TCheckBox
+      AnchorSideRight.Side = asrBottom
+      Left = 108
+      Height = 19
+      Hint = 'Open destination directory in file manager'
+      Top = 6
+      Width = 131
+      BorderSpacing.Around = 6
+      Caption = 'Open in file manager'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 1
+    end
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
