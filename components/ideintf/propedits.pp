@@ -5886,6 +5886,7 @@ procedure TStringMultilinePropertyEditor.Edit;
 var
   TheDialog : TStringsPropEditorDlg;
   AString : string;
+  LineEndPos: Integer;
 begin
   AString := GetStrValue;
   TheDialog := TStringsPropEditorDlg.Create(nil);
@@ -5896,9 +5897,10 @@ begin
     if (TheDialog.ShowModal = mrOK) then
     begin
       AString := TheDialog.Memo.Text;
+      LineEndPos := Length(AString) - Length(LineEnding) + 1;
       //erase the last lineending if any
-      if Copy(AString, length(AString) - length(LineEnding) + 1, length(LineEnding)) = LineEnding then
-        Delete(AString, length(AString) - length(LineEnding) + 1, length(LineEnding));
+      if Copy(AString, LineEndPos, Length(LineEnding)) = LineEnding then
+        Delete(AString, LineEndPos, Length(LineEnding));
       SetStrValue(AString);
     end;
   finally
