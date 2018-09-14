@@ -69,7 +69,7 @@ type
     procedure KeyEvBeforeUp(var AllowCocoaHandle: boolean);
     procedure KeyEvAfterUp;
     procedure KeyEvPrepare(Event: NSEvent; AForceAsKeyDown: Boolean = False);
-    procedure KeyEvBefore(var AllowCocoaHandle: boolean);
+    procedure KeyEvBefore(out AllowCocoaHandle: boolean);
     procedure KeyEvAfter;
 
     procedure MouseClick; virtual;
@@ -797,7 +797,6 @@ var
   KeyData: PtrInt;         // Modifiers (ctrl, alt, mouse buttons...)
 begin
   SendChar := False;
-  VKKeyCode := VK_UNKNOWN;
 
   UTF8Character := '';
   KeyChar := #0;
@@ -840,6 +839,8 @@ begin
     MK_LEFT     : VKKeyCode:= VK_LEFT;
     MK_RIGHT    : VKKeyCode:= VK_RIGHT;
     MK_NUMLOCK  : VKKeyCode:= VK_NUMLOCK;
+  else
+    VKKeyCode := VK_UNKNOWN;
   end;
 
   if VKKeyCode = VK_UNKNOWN then
@@ -863,9 +864,13 @@ begin
       SendChar := True;
 
       if Utf8Character[1] <= #127 then
+        // ANSI layout character
         KeyChar := Utf8Character[1]
       else
-        KeyChar := #0;
+        // it's non ANSI character. KeyChar must be assinged anything but #0
+        // otherise the message could be surpressed.
+        // In Windows world this would be an "Ansi" char in current locale
+        KeyChar := #$FF;
 
       // the VKKeyCode is independent of the modifier
       // => use the VKKeyChar instead of the KeyChar
@@ -1094,7 +1099,7 @@ begin
   end;
 end;
 
-procedure TLCLCommonCallback.KeyEvBefore(var AllowCocoaHandle: boolean);
+procedure TLCLCommonCallback.KeyEvBefore(out AllowCocoaHandle: boolean);
 begin
   AllowCocoaHandle := true;
   if _IsKeyDown then KeyEvBeforeDown(AllowCocoaHandle)

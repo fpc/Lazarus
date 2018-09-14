@@ -172,6 +172,9 @@ const
   NSWindowTabbingModePreferred  = 1; // The window explicitly should prefer to tab when shown
   NSWindowTabbingModeDisallowed = 2; // The window explicitly should not prefer to tab when shown
 
+const
+  NSKeyCodeTab  = 48;
+
 implementation
 
 end.

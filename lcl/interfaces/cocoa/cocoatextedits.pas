@@ -116,6 +116,7 @@ type
     callback: ICommonCallback;
     FEnabled: Boolean;
 
+    allowTabs : Boolean;
     supressTextChangeEvent: Integer; // if above zero, then don't send text change event
 
     function acceptsFirstResponder: Boolean; override;
@@ -512,24 +513,27 @@ procedure TCocoaFieldEditor.keyDown(event: NSEvent);
 var
   cb : ICommonCallback;
   res : Boolean;
-const
-  NSKeyCodeTab  = 48;
 begin
   if Assigned(lastEditBox) then
-  begin
-    cb := lastEditBox.lclGetCallback;
-    if Assigned(cb) then
-    begin
-      res := cb.KeyEvent(event);
-      // LCL has already handled tab (by switching focus)
-      // do not let Cocoa to switch the focus again!
-      if event.keyCode = NSKeyCodeTab then Exit;
-    end else
-      res := false;
-    if not res then inherited keyDown(event);
-  end
+    cb := lastEditBox.lclGetCallback
   else
+    cb := nil;
+
+  if not Assigned(cb) then
+  begin
     inherited keyDown(event);
+    Exit;
+  end;
+
+  cb.KeyEvPrepare(event);
+  res := true;
+  cb.KeyEvBefore(res);
+
+  //todo: this exceptional code for Tab should NOT be needed!
+  //      callback should take care all of that
+  res := res and (event.keyCode <> NSKeyCodeTab);
+  if res then inherited keyDown(event);
+  cb.KeyEvAfter;
 end;
 
 procedure TCocoaFieldEditor.mouseDown(event: NSEvent);
@@ -695,16 +699,17 @@ begin
 end;
 
 procedure TCocoaTextField.keyUp(event: NSEvent);
+var
+  res : Boolean;
 begin
   if Assigned(callback) then
   begin
-    // NSTextField doesn't provide keyDown, so emulate it here
-    //callback.KeyEvent(event, True);
-    // keyUp now
-    // by this time the control might have been released and callback cleared
-    callback.KeyEvent(event);
-  end;
-  inherited keyUp(event);
+    callback.KeyEvPrepare(event);
+    callback.KeyEvBefore(res);
+    if res then inherited keyUp(event);
+    callback.KeyEvAfter;
+  end else
+    inherited keyUp(event);
 end;
 
 procedure TCocoaTextField.textDidChange(notification: NSNotification);
@@ -782,17 +787,35 @@ begin
 end;
 
 procedure TCocoaTextView.keyDown(event: NSEvent);
+var
+  res : Boolean;
 begin
-  if not Assigned(callback) or not callback.KeyEvent(event) then
-    // don't skip inherited or else key input won't work
+  if Assigned(callback) then
+  begin
+    callback.KeyEvPrepare(event);
+    callback.KeyEvBefore(res);
+    res := res and (
+       // memo can get "tab" if it's allowed
+       ((event.keyCode <> NSKeyCodeTab) or (allowTabs))
+      );
+    if res then inherited keyDown(event);
+    callback.KeyEvAfter;
+  end else
     inherited keyDown(event);
 end;
 
 procedure TCocoaTextView.keyUp(event: NSEvent);
+var
+  res : Boolean;
 begin
-  if Assigned(callback) then callback.KeyEvent(event);
-  // don't skip inherited or else key input won't work
-  inherited keyUp(event);
+  if Assigned(callback) then
+  begin
+    callback.KeyEvPrepare(event);
+    callback.KeyEvBefore(res);
+    if res then inherited keyUp(event);
+    callback.KeyEvAfter;
+  end else
+    inherited keyUp(event);
 end;
 
 procedure TCocoaTextView.flagsChanged(event: NSEvent);
@@ -979,15 +1002,17 @@ begin
 end;
 
 procedure TCocoaSecureTextField.keyUp(event: NSEvent);
+var
+  res : Boolean;
 begin
   if Assigned(callback) then
   begin
-    // NSTextField doesn't provide keyDown, so emulate it here
-    //callback.KeyEvent(event, True);
-    // keyUp now
-    callback.KeyEvent(event);
-  end;
-  inherited keyUp(event);
+    callback.KeyEvPrepare(event);
+    callback.KeyEvBefore(res);
+    if res then inherited keyUp(event);
+    callback.KeyEvAfter;
+  end else
+    inherited keyUp(event);
 end;
 
 procedure TCocoaSecureTextField.mouseDown(event: NSEvent);
@@ -1256,11 +1281,17 @@ begin
 end;
 
 procedure TCocoaComboBox.keyUp(event: NSEvent);
+var
+  res : Boolean;
 begin
   if Assigned(callback) then
   begin
-    callback.KeyEvent(event);
-  end;
+    callback.KeyEvPrepare(event);
+    callback.KeyEvBefore(res);
+    if res then inherited keyUp(event);
+    callback.KeyEvAfter;
+  end else
+    inherited keyUp(event);
   inherited keyUp(event);
 end;
 

@@ -195,6 +195,7 @@ type
     class function GetStrings(const ACustomMemo: TCustomMemo): TStrings; override;
     class procedure AppendText(const ACustomMemo: TCustomMemo; const AText: string); override;
     class procedure SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle); override;
+    class procedure SetWantTabs(const ACustomMemo: TCustomMemo; const NewWantTabs: boolean); override;
     class procedure SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean); override;
     class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
 
@@ -1293,6 +1294,7 @@ begin
 
   TextViewSetWordWrap(txt, scr, TCustomMemo(AWinControl).WordWrap);
   TextViewSetAllignment(txt, TCustomMemo(AWinControl).Alignment);
+  txt.allowTabs := TCustomMemo(AWinControl).WantTabs;
   Result := TLCLIntfHandle(scr);
 end;
 
@@ -1446,6 +1448,16 @@ end;
 class procedure TCocoaWSCustomMemo.SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle);
 begin
   ScrollViewSetScrollStyles(TCocoaScrollView(ACustomMemo.Handle), NewScrollbars);
+end;
+
+class procedure TCocoaWSCustomMemo.SetWantTabs(const ACustomMemo: TCustomMemo;
+  const NewWantTabs: boolean);
+var
+  txt: TCocoaTextView;
+begin
+  txt := GetTextView(ACustomMemo);
+  if (not Assigned(txt)) then Exit;
+  txt.allowTabs := NewWantTabs;
 end;
 
 class procedure  TCocoaWSCustomMemo.SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean);

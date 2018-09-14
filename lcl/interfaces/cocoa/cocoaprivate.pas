@@ -52,8 +52,22 @@ type
     function MouseMove(Event: NSEvent): Boolean;
     function KeyEvent(Event: NSEvent; AForceAsKeyDown: Boolean = False): Boolean;
 
+    // KeyEvXXX methods were introduced to allow a better control
+    // over when Cocoa keys processing is being called.
+    // (The initial KeyEvent() replicates Carbon implementation, and it's not
+    // suitable for Cocoa, due to the use of OOP and the extual "inherited Key..."needs to be called
+    // where for Carbon there's a special fucntion to call the "next event handler" present)
+    //
+    // The desired use is as following:
+    // Call KeyEvPrepare and pass NSEvent object
+    // after that call KeyEvBefore and pass a flag if AllowCocoaHandle
+    //
+    // The call would populate the flag. If it's "True" you should call "inherited" method (to let Cocoa handle the key).
+    // If the flag returned "False", you should not call inherited.
+    //
+    // No matter what the flag value was you should call KeyEvAfter.
     procedure KeyEvPrepare(Event: NSEvent; AForceAsKeyDown: Boolean = False);
-    procedure KeyEvBefore(var AllowCocoaHandle: boolean);
+    procedure KeyEvBefore(out AllowCocoaHandle: boolean);
     procedure KeyEvAfter;
 
     function scrollWheel(Event: NSEvent): Boolean;
