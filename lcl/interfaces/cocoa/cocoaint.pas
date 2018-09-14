@@ -35,7 +35,7 @@ uses
   // private
   CocoaAll, CocoaPrivate, CocoaUtils, CocoaGDIObjects,
   cocoa_extra, CocoaWSMenus, CocoaWSForms, CocoaWindows, CocoaScrollers,
-  CocoaWSClipboard,
+  CocoaWSClipboard, CocoaTextEdits,
   // LCL
   LCLStrConsts, LMessages, LCLMessageGlue, LCLProc, LCLIntf, LCLType,
   Controls, Forms, Themes, Menus,

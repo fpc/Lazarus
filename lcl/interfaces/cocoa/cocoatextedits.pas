@@ -58,7 +58,6 @@ type
 
   TCocoaTextField = objcclass(NSTextField)
     callback: ICommonCallback;
-    procedure dealloc; override;
     function acceptsFirstResponder: Boolean; override;
     function becomeFirstResponder: Boolean; override;
     function RealResignFirstResponder: Boolean; message 'RealResignFirstResponder';
@@ -87,7 +86,6 @@ type
   TCocoaSecureTextField = objcclass(NSSecureTextField)
   public
     callback: ICommonCallback;
-    procedure dealloc; override;
     function acceptsFirstResponder: Boolean; override;
     function becomeFirstResponder: Boolean; override;
     function RealResignFirstResponder: Boolean; message 'RealResignFirstResponder';
@@ -156,7 +154,6 @@ type
 
   TCocoaFieldEditor = objcclass(NSTextView)
   public
-    lastEditBox: NSTextField;
     function resignFirstResponder: Boolean; override;
     // keyboard
     procedure keyDown(event: NSEvent); override;
@@ -491,31 +488,46 @@ end;}
 
 { TCocoaFieldEditor }
 
-function TCocoaFieldEditor.resignFirstResponder: Boolean;
+function GetEditBox(src: TCocoaFieldEditor): NSView;
+var
+  v : NSObject;
 begin
+  Result := nil;
+  if not Assigned(src) then Exit;
+  v := NSObject(src.delegate);
+  if Assigned(v) and (v.isKindOfClass(NSView)) then
+    Result := NSView(v);
+end;
+
+function TCocoaFieldEditor.resignFirstResponder: Boolean;
+var
+  v : NSObject;
+begin
+  v := GetEditBox(Self);
   //DebugLn('[TCocoaFieldEditor.resignFirstResponder]');
-  if (lastEditBox <> nil) then
+  if (v <> nil) then
   begin
-    if lastEditBox.isKindOfClass_(TCocoaTextField) then
+    if v.isKindOfClass_(TCocoaTextField) then
     begin
-      TCocoaTextField(lastEditBox).RealResignFirstResponder();
+      TCocoaTextField(v).RealResignFirstResponder();
     end
-    else if lastEditBox.isKindOfClass_(TCocoaSecureTextField) then
+    else if v.isKindOfClass_(TCocoaSecureTextField) then
     begin
-      TCocoaSecureTextField(lastEditBox).RealResignFirstResponder();
+      TCocoaSecureTextField(v).RealResignFirstResponder();
     end;
-    lastEditBox := nil;
   end;
   Result := inherited resignFirstResponder;
 end;
 
 procedure TCocoaFieldEditor.keyDown(event: NSEvent);
 var
-  cb : ICommonCallback;
+  cb  : ICommonCallback;
   res : Boolean;
+  v   : NSView;
 begin
-  if Assigned(lastEditBox) then
-    cb := lastEditBox.lclGetCallback
+  v := GetEditBox(Self);
+  if Assigned(v) then
+    cb := v.lclGetCallback
   else
     cb := nil;
 
@@ -537,87 +549,111 @@ begin
 end;
 
 procedure TCocoaFieldEditor.mouseDown(event: NSEvent);
+var
+  v : NSView;
 begin
-  if Assigned(lastEditBox) then
+  v := GetEditBox(Self);
+  if Assigned(v) then
   begin
-    if Assigned(lastEditBox.lclGetCallback) and not lastEditBox.lclGetCallback.MouseUpDownEvent(event) then
+    if Assigned(v.lclGetCallback) and not v.lclGetCallback.MouseUpDownEvent(event) then
     begin
       inherited mouseDown(event);
       // NSTextView runs internal mouse-tracking loop in it's mouseDown implemenation.
       // Thus "inherited mouseDown" only returns after the mouse has been released.
       // why is TCocoaTextView not affected?
-      if Assigned(lastEditBox) and Assigned(lastEditBox.lclGetCallback) then
-        lastEditBox.lclGetCallback.MouseUpDownEvent(event, true);
+      if Assigned(v) and Assigned(v.lclGetCallback) then
+        v.lclGetCallback.MouseUpDownEvent(event, true);
     end;
   end else
     inherited mouseDown(event);
 end;
 
 procedure TCocoaFieldEditor.mouseUp(event: NSEvent);
+var
+  v : NSView;
 begin
-  if Assigned(lastEditBox) then
+  v := GetEditBox(Self);
+  if Assigned(v) then
   begin
-    if Assigned(lastEditBox.lclGetCallback) and not lastEditBox.lclGetCallback.MouseUpDownEvent(event) then
+    if Assigned(v.lclGetCallback) and not v.lclGetCallback.MouseUpDownEvent(event) then
       inherited mouseUp(event);
   end else
     inherited mouseUp(event);
 end;
 
 procedure TCocoaFieldEditor.rightMouseDown(event: NSEvent);
+var
+  v : NSView;
 begin
-  if Assigned(lastEditBox) then
+  v := GetEditBox(Self);
+  if Assigned(v) then
   begin
-    if Assigned(lastEditBox.lclGetCallback) and not lastEditBox.lclGetCallback.MouseUpDownEvent(event) then
+    if Assigned(v.lclGetCallback) and not v.lclGetCallback.MouseUpDownEvent(event) then
       inherited rightMouseDown(event);
   end else
     inherited rightMouseDown(event);
 end;
 
 procedure TCocoaFieldEditor.rightMouseUp(event: NSEvent);
+var
+  v : NSView;
 begin
-  if Assigned(lastEditBox) then
+  v := GetEditBox(Self);
+  if Assigned(v) then
   begin
-    if Assigned(lastEditBox.lclGetCallback) and not lastEditBox.lclGetCallback.MouseUpDownEvent(event) then
+    if Assigned(v.lclGetCallback) and not v.lclGetCallback.MouseUpDownEvent(event) then
       inherited rightMouseUp(event);
   end else
     inherited rightMouseUp(event);
 end;
 
 procedure TCocoaFieldEditor.otherMouseDown(event: NSEvent);
+var
+  v : NSView;
 begin
-  if Assigned(lastEditBox) then
+  v := GetEditBox(Self);
+  if Assigned(v) then
   begin
-    if Assigned(lastEditBox.lclGetCallback) and not lastEditBox.lclGetCallback.MouseUpDownEvent(event) then
+    if Assigned(v.lclGetCallback) and not v.lclGetCallback.MouseUpDownEvent(event) then
       inherited otherMouseDown(event);
   end else
     inherited otherMouseDown(event);
 end;
 
 procedure TCocoaFieldEditor.otherMouseUp(event: NSEvent);
+var
+  v : NSView;
 begin
-  if Assigned(lastEditBox) then
+  v := GetEditBox(Self);
+  if Assigned(v) then
   begin
-    if Assigned(lastEditBox.lclGetCallback) and not lastEditBox.lclGetCallback.MouseUpDownEvent(event) then
+    if Assigned(v.lclGetCallback) and not v.lclGetCallback.MouseUpDownEvent(event) then
       inherited otherMouseUp(event);
   end else
     inherited otherMouseUp(event);
 end;
 
 procedure TCocoaFieldEditor.mouseDragged(event: NSEvent);
+var
+  v : NSView;
 begin
-  if Assigned(lastEditBox) then
+  v := GetEditBox(Self);
+  if Assigned(v) then
   begin
-    if Assigned(lastEditBox.lclGetCallback) and not lastEditBox.lclGetCallback.MouseMove(event) then
+    if Assigned(v.lclGetCallback) and not v.lclGetCallback.MouseMove(event) then
       inherited mouseDragged(event);
   end else
     inherited mouseDragged(event);
 end;
 
 procedure TCocoaFieldEditor.mouseMoved(event: NSEvent);
+var
+  v : NSView;
 begin
-  if Assigned(lastEditBox) then
+  v := GetEditBox(Self);
+  if Assigned(v) then
   begin
-    if Assigned(lastEditBox.lclGetCallback) and not lastEditBox.lclGetCallback.MouseMove(event) then
+    if Assigned(v.lclGetCallback) and not v.lclGetCallback.MouseMove(event) then
       inherited mouseMoved(event);
   end else
     inherited mouseMoved(event);
@@ -628,19 +664,6 @@ end;
 function TCocoaTextField.lclIsHandle: Boolean;
 begin
   Result := True;
-end;
-
-procedure TCocoaTextField.dealloc;
-var
-  lFieldEditor: TCocoaFieldEditor;
-begin
-  lFieldEditor := GetFieldEditor(self);
-  if (lFieldEditor <> nil) and (lFieldEditor.lastEditBox = Self) then
-  begin
-    lFieldEditor.lastEditBox := nil;
-  end;
-
-  inherited dealloc;
 end;
 
 function TCocoaTextField.acceptsFirstResponder: Boolean;
@@ -667,16 +690,9 @@ end;
 // See http://www.cocoabuilder.com/archive/cocoa/103607-resignfirstresponder-called-immediately.html
 // See http://stackoverflow.com/questions/3192905/nstextfield-not-noticing-lost-focus-when-pressing-tab
 function TCocoaTextField.resignFirstResponder: Boolean;
-var
-  lFieldEditor: TCocoaFieldEditor;
 begin
   //DebugLn('[TCocoaTextField.resignFirstResponder]');
   Result := inherited resignFirstResponder;
-  lFieldEditor := GetFieldEditor(self);
-  if (lFieldEditor <> nil) then
-  begin
-    lFieldEditor.lastEditBox := Self;
-  end;
 end;
 
 function TCocoaTextField.lclGetCallback: ICommonCallback;
@@ -952,19 +968,6 @@ begin
   Result := True;
 end;
 
-procedure TCocoaSecureTextField.dealloc;
-var
-  lFieldEditor: TCocoaFieldEditor;
-begin
-  lFieldEditor := GetFieldEditor(Self);
-  if (lFieldEditor <> nil) and (lFieldEditor.lastEditBox = Self) then
-  begin
-    lFieldEditor.lastEditBox := nil;
-  end;
-
-  inherited dealloc;
-end;
-
 function TCocoaSecureTextField.acceptsFirstResponder: Boolean;
 begin
   Result := True;
@@ -983,16 +986,9 @@ begin
 end;
 
 function TCocoaSecureTextField.resignFirstResponder: Boolean;
-var
-  lFieldEditor: TCocoaFieldEditor;
 begin
   //DebugLn('[TCocoaTextField.resignFirstResponder]');
   Result := inherited resignFirstResponder;
-  lFieldEditor := GetFieldEditor(Self);
-  if (lFieldEditor <> nil) then
-  begin
-    lFieldEditor.lastEditBox := Self;
-  end;
 end;
 
 procedure TCocoaSecureTextField.resetCursorRects;
@@ -1727,15 +1723,7 @@ end;
 {$ELSE}
 
 procedure TCocoaSpinEdit.dealloc;
-var
-  lFieldEditor: TCocoaFieldEditor;
 begin
-  lFieldEditor := GetFieldEditor(Self);
-  if (lFieldEditor <> nil) and (lFieldEditor.lastEditBox = Self) then
-  begin
-    lFieldEditor.lastEditBox := nil;
-  end;
-
   if Stepper <> nil then
     Stepper.release;
   if NumberFormatter <> nil then
@@ -1884,16 +1872,9 @@ end;
 
 // See TCocoaTextField.resignFirstResponder as to why this is done here
 function TCocoaSpinEdit.resignFirstResponder: Boolean;
-var
-  lFieldEditor: TCocoaFieldEditor;
 begin
   //DebugLn('[TCocoaTextField.resignFirstResponder]');
   Result := inherited resignFirstResponder;
-  lFieldEditor := GetFieldEditor(Self);
-  if (lFieldEditor <> nil) then
-  begin
-    lFieldEditor.lastEditBox := Self;
-  end;
 end;
 
 function TCocoaSpinEdit.lclGetCallback: ICommonCallback;

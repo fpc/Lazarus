@@ -1956,14 +1956,40 @@ end;
 
 function TCocoaWidgetSet.GetFocus: HWND;
 var
-  Obj: NSObject;
+  Obj : NSObject;
+  win : NSWindow;
+  rsp : NSResponder;
+  view : NSView;
+  dl   : NSObject;
 begin
-  Result := HWND(NSApp.keyWindow);
-  if Result <> 0 then
+  Result := 0;
+  win := NSApp.keyWindow;
+  if not Assigned(win) then Exit;
+  // assuming that that the content view of Window
+  // is the focused handle and return it, by default
+  Result := HWND(win.contentView);
+
+  rsp := win.firstResponder;
+  if not Assigned(rsp) then Exit;
+
+  // todo: The HANDLE is allocated in "WS" side, thus we should be using
+  //       "callback" object to determine, what actual NSView is the handle
+
+  if rsp.isKindOfClass(TCocoaFieldEditor) then
   begin
-    Obj := NSWindow(Result).firstResponder;
-    if Assigned(Obj) and Obj.isKindOfClass(NSView) then
-      Result := HWND(Obj);
+    // field editor is a "popup" editor over many controls
+    // the editor itself is never returned as any kind of HANDLE.
+    // The handle is the box, that's editing
+    dl := NSObject(TCocoaFieldEditor(rsp).delegate);
+    if Assigned(dl) and (dl.isKindOfClass(NSView)) and Assigned(dl.lclGetCallback) then
+      Result := HWND(dl);
+  end
+  else if (rsp.isKindOfClass(NSView)) then
+  begin
+    if Assigned(NSView(rsp).enclosingScrollView) then
+      Result := HWND(NSView(rsp).enclosingScrollView)
+    else
+      Result := HWND(rsp);
   end;
 end;
 

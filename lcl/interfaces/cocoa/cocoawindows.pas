@@ -636,7 +636,6 @@ begin
       fieldEditor.setFieldEditor(True);
     end;
     Result := fieldEditor;
-    TCocoaFieldEditor(fieldEditor).lastEditBox := NSTextField(client)
   end;
 end;
 
