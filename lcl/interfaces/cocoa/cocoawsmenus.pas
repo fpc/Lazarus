@@ -513,7 +513,7 @@ begin
     item.setEnabled(AMenuItem.Enabled);
     Do_SetCheck(item, AMenuItem.Checked);
 
-    if (AMenuItem.ImageIndex>=0) or (AMenuItem.HasBitmap) then
+    if AMenuItem.HasIcon and ((AMenuItem.ImageIndex>=0) or (AMenuItem.HasBitmap)) then
       NSMenuItemSetBitmap(item, AMenuItem.Bitmap);
   end;
 
