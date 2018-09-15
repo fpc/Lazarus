@@ -1040,11 +1040,14 @@ end;
 class procedure TGtk2WSCustomCheckBox.ShowHide(const AWinControl: TWinControl);
 begin
   // gtk2 doesn't set font properly
-  // so we are doing it one more time before showing.issue
+  // so we are doing it one more time before showing. Issues #21172, #23152
   if AWinControl.HandleObjectShouldBeVisible then
-      SetFont(AWinControl, AWinControl.Font);
-  Gtk2WidgetSet.SetVisible(AWinControl, AWinControl.HandleObjectShouldBeVisible);
-  InvalidateLastWFPResult(AWinControl, AWinControl.BoundsRect);
+  begin
+    SetFont(AWinControl, AWinControl.Font);
+    AWinControl.InvalidatePreferredSize();
+    AWinControl.AdjustSize();
+  end;
+  TGtk2WSWinControl.ShowHide(AWinControl);
 end;
 
 {$I gtk2wscustommemo.inc}
