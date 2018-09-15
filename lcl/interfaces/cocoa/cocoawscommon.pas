@@ -146,6 +146,8 @@ type
 function EmbedInScrollView(AView: NSView; AReleaseView: Boolean = true): TCocoaScrollView;
 function EmbedInManualScrollView(AView: NSView): TCocoaManualScrollView;
 
+function HWNDToTargetObject(AFormHandle: HWND): TObject;
+
 implementation
 
 uses
@@ -2063,6 +2065,17 @@ begin
   lcl.HandleFrame:=sl;
 
   Result := TLCLIntfHandle(sl);
+end;
+
+function HWNDToTargetObject(AFormHandle: HWND): TObject;
+var
+  cb : ICommonCallback;
+begin
+  Result := nil;
+  if AFormHandle = 0 then Exit;
+  cb := NSObject(AFormHandle).lclGetCallback;
+  if not Assigned(cb) then Exit;
+  Result := cb.GetTarget;
 end;
 
 end.

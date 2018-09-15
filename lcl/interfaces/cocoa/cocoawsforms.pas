@@ -165,6 +165,8 @@ type
   end;
 
 procedure ArrangeTabOrder(const AWinControl: TWinControl);
+function HWNDToForm(AFormHandle: HWND): TCustomForm;
+function isFormDesigned(AFormHandle:HWND): Boolean;
 
 implementation
 
@@ -292,6 +294,10 @@ begin
   begin
     IsActivating:=True;
     ACustForm := Target as TCustomForm;
+
+    if (csDesigning in ACustForm.ComponentState)
+      or (Assigned(ACustForm.Menu) and (csDesigning in ACustForm.Menu.ComponentState))
+      then Exit;
 
     if (ACustForm.Menu <> nil) and
        (ACustForm.Menu.HandleAllocated) then
@@ -910,6 +916,24 @@ begin
     TCocoaWindowContent(AwinControl.Handle).callback.boundsDidChange(NSObject(AWinControl.Handle));
     pool.release;
   end;
+end;
+
+function HWNDToForm(AFormHandle: HWND): TCustomForm;
+var
+  obj : TObject;
+begin
+  obj := HWNDToTargetObject(AFormHandle);
+  if Assigned(obj) and (obj is TCustomForm)
+    then Result := TCustomForm(obj)
+    else Result := nil;
+end;
+
+function isFormDesigned(AFormHandle:HWND): Boolean;
+var
+  frm : TCustomForm;
+begin
+  frm := HWNDToForm(AFormHandle);
+  Result := Assigned(frm) and (csDesigning in frm.ComponentState);
 end;
 
 end.

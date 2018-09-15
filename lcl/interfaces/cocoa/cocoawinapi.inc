@@ -2334,7 +2334,14 @@ var
   lWin: NSWindow;
 begin
   Result := False;
+
   lWin := NSWindow(GetNSObjectWindow(NSObject(AWindowHandle)));
+
+  if isFormDesigned(AWindowHandle) then begin
+    Result := true;
+    Exit;
+  end;
+
   if (lWin <> nil) and lWin.isKindOfClass(TCocoaWindow) and
      (TCocoaWindow(lWin).LCLForm.Menu.Handle = AMenuHandle) then
   begin
