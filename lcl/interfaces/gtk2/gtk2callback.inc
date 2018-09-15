@@ -648,9 +648,9 @@ begin
          and gtk_window_has_TopLevel_Focus(Window) then
       begin
         // fake focus-out event
-        {.$IFDEF VerboseFocus}
+        {$IFDEF VerboseFocus}
         DebugLn('NOTE: Window with stalled focus found!, faking focus-out event');
-        {.$ENDIF}
+        {$ENDIF}
         event := gdk_event_new(GDK_FOCUS_CHANGE);
         event^.focus_change.window := TopLevelWin;
         event^.focus_change._type := GDK_FOCUS_CHANGE;
