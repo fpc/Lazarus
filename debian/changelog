@@ -1,3 +1,9 @@
+lazarus (2.1.0) unstable; urgency=low
+
+  * Development version
+
+ -- Mattias Gaertner <mattias@freepascal.org>  Sat, 15 Sep 2018 21:39:22 +0200
+
 lazarus (2.0.0PreRelease) unstable; urgency=low
 
   * Pre Release Candidate.
