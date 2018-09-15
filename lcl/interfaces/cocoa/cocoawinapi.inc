@@ -1278,10 +1278,19 @@ begin
 end;
 
 function TCocoaWidgetSet.IsWindow(handle: HWND): boolean;
+var
+  cbi : ICommonCallback;
+  obj : TObject;
 begin
   if handle <> 0 then
   begin
-    Result := NSObject(handle).lclIsHandle;
+    cbi := NSObject(handle).lclGetCallback;
+    Result := Assigned(cbi);
+    if not Result then Exit;
+
+    obj := cbi.GetCallbackObject;
+    Result :=  (obj is TLCLCommonCallback)
+      and (HWND(TLCLCommonCallback(obj).HandleFrame)=handle);
   end
   else
     Result := False;
@@ -1290,21 +1299,27 @@ end;
 function ViewFromPoint(view: NSView;Point: TPoint): HWND;
 var rect: TRect;
     p:TPoint;
+    cb: ICommonCallback;
+    cbo: TObject;
 begin
   Result:=0;
   if not assigned(view) then
      exit;
-  if view.lclIsHandle then
-      begin
-      p:=Point;
-      view.lclScreenToLocal(p.X,p.Y);
-      rect:=view.lclClientFrame;
-      if PtInRect(rect, p) then
-         Result:=HWND(view);
-      //debugln('Point:'+DbgS(p)+'  Rect:'+DbgS(rect)+' Result:'+dbgS(Result));
-      end
-  //else
-    //  debugln('No lcl');
+  cb := view.lclGetCallback;
+  if Assigned(cb) then
+  begin
+    cbo := cb.GetCallbackObject;
+    p:=Point;
+    view.lclScreenToLocal(p.X,p.Y);
+    rect:=view.lclClientFrame;
+    if PtInRect(rect, p) then
+    begin
+      if cbo is TLCLCommonCallback then
+        Result := HWND(TLCLCommonCallback(cbo).HandleFrame)
+      else
+        Result:=0;
+    end;
+  end
 end;
 
 function RecurseSubviews(view: NSView;Point: TPoint):HWND;
@@ -1422,7 +1437,7 @@ var
   sc  : NSScrollView;
   obj : NSObject;
 begin
-  obj := HandleToNSObject(Handle);
+  obj := NSObject(Handle);
   Result := 0;
   if not Assigned(obj) then Exit;
 
@@ -1445,7 +1460,7 @@ var
   sc  : NSScrollView;
   mn  : TCocoaManualScrollView;
 begin
-  obj := HandleToNSObject(Handle);
+  obj := NSObject(Handle);
   Result := Assigned(obj);
   if not Result then Exit;
 
@@ -1479,7 +1494,7 @@ var
   sc : NSScrollView;
   obj : NSObject;
 begin
-  obj := HandleToNSObject(Handle);
+  obj := NSObject(Handle);
   Result := Assigned(obj);
   if not Result then Exit;
 
@@ -1638,7 +1653,7 @@ var
   sz  : NSSize;
   flg : NSUInteger;
 begin
-  obj := HandleToNSObject(Handle);
+  obj := NSObject(Handle);
   Result := 0;
   if not Assigned(obj) then Exit;
 
@@ -1707,7 +1722,7 @@ var
   sc  : TCocoaScrollView;
   mn  : TCocoaManualScrollView;
 begin
-  obj := NSObject(HandleToNSObject(Handle));
+  obj := NSObject(Handle);
   Result := Assigned(obj);
   if not Result then Exit;
 
@@ -2538,7 +2553,7 @@ var
   obj: NSOBject;
   v : NSView;
 begin
-  obj:=NSObject(HandleToNSObject(hWnd));
+  obj:=NSObject(hWnd);
   Result:=Assigned(obj) and (obj.isKindOfClass(NSView));
   if not Result then Exit;
 

@@ -65,7 +65,6 @@ type
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
-    function lclIsHandle: Boolean; override;
     // key
     //procedure keyDown(event: NSEvent); override; -> keyDown doesn't work in NSTextField
     procedure keyUp(event: NSEvent); override;
@@ -91,7 +90,6 @@ type
     function RealResignFirstResponder: Boolean; message 'RealResignFirstResponder';
     function resignFirstResponder: Boolean; override;
     procedure resetCursorRects; override;
-    function lclIsHandle: Boolean; override;
     // key
     //procedure keyDown(event: NSEvent); override; -> keyDown doesn't work in NSTextField
     procedure keyUp(event: NSEvent); override;
@@ -122,7 +120,6 @@ type
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
-    function lclIsHandle: Boolean; override;
 
     procedure changeColor(sender: id); override;
     // key
@@ -250,7 +247,6 @@ type
     procedure comboBoxSelectionIsChanging(notification: NSNotification); message 'comboBoxSelectionIsChanging:';
     //
     procedure keyUp(event: NSEvent); override;
-    function lclIsHandle: Boolean; override;
     procedure setStringValue(avalue: NSString); override;
     function lclGetFrameToLayoutDelta: TRect; override;
     // mouse
@@ -297,7 +293,6 @@ type
     procedure lclClearCallback; override;
     function lclGetFrameToLayoutDelta: TRect; override;
     procedure resetCursorRects; override;
-    function lclIsHandle: Boolean; override;
     procedure comboboxAction(sender: id); message 'comboboxAction:';
     function stringValue: NSString; override;
     // mouse
@@ -335,7 +330,6 @@ type
     function resignFirstResponder: Boolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
-    function lclIsHandle: Boolean; override;
     // NSViewFix
     function fittingSize: NSSize; override;
   end;
@@ -363,7 +357,6 @@ type
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
-    function lclIsHandle: Boolean; override;
     procedure lclSetVisible(AVisible: Boolean); override;
     procedure lclSetFrame(const r: TRect); override;
     // NSViewFix
@@ -655,11 +648,6 @@ end;
 
 { TCocoaTextField }
 
-function TCocoaTextField.lclIsHandle: Boolean;
-begin
-  Result := True;
-end;
-
 function TCocoaTextField.acceptsFirstResponder: Boolean;
 begin
   Result := True;
@@ -784,11 +772,6 @@ begin
 end;
 
 { TCocoaTextView }
-
-function TCocoaTextView.lclIsHandle: Boolean;
-begin
-  Result := True;
-end;
 
 procedure TCocoaTextView.changeColor(sender: id);
 begin
@@ -953,11 +936,6 @@ end;
 
 { TCocoaSecureTextField }
 
-function TCocoaSecureTextField.lclIsHandle: Boolean;
-begin
-  Result := True;
-end;
-
 function TCocoaSecureTextField.acceptsFirstResponder: Boolean;
 begin
   Result := True;
@@ -1116,11 +1094,6 @@ begin
 end;
 
 { TCocoaComboBox }
-
-function TCocoaComboBox.lclIsHandle: Boolean;
-begin
-  Result:=true;
-end;
 
 procedure TCocoaComboBox.setStringValue(avalue: NSString);
 var
@@ -1429,11 +1402,6 @@ begin
     inherited resetCursorRects;
 end;
 
-function TCocoaReadOnlyComboBox.lclIsHandle: Boolean;
-begin
-  Result:=true;
-end;
-
 procedure TCocoaReadOnlyComboBox.comboboxAction(sender: id);
 begin
   //setTitle(NSSTR(PChar(Format('%d=%d', [indexOfSelectedItem, lastSelectedItemIndex])))); // <= for debugging
@@ -1689,11 +1657,6 @@ begin
   callback := nil;
 end;
 
-function TCocoaSpinEdit.lclIsHandle: Boolean;
-begin
-  Result := True;
-end;
-
 function TCocoaSpinEdit.fittingSize: NSSize;
 begin
   Result.width := -1;
@@ -1703,11 +1666,6 @@ begin
   WriteLn('[TCocoaSpinEdit.fittingSize] width=', Result.width,
     ' height=', Result.height);
   {$ENDIF}
-end;
-
-function TCocoaTextField.lclIsHandle: Boolean;
-begin
-  Result := True;
 end;
 
 {$ELSE}
@@ -1884,11 +1842,6 @@ begin
   // mouseEntered, mouseMoved and CursorUpdate
   if not callback.resetCursorRects then
     inherited resetCursorRects;
-end;
-
-function TCocoaSpinEdit.lclIsHandle: Boolean;
-begin
-  Result := True;
 end;
 
 procedure TCocoaSpinEdit.lclSetVisible(AVisible: Boolean);

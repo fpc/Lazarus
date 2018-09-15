@@ -106,7 +106,6 @@ type
     // key
     procedure keyDown(event: NSEvent); override;
     procedure keyUp(event: NSEvent); override;
-    function lclIsHandle: Boolean; override;
     procedure lclExpectedKeys(var wantTabs, wantKeys, wantAllKeys: Boolean); override;
     procedure lclSetFirstColumCheckboxes(acheckboxes: Boolean); message 'lclSetFirstColumCheckboxes:';
     procedure lclSetImagesInCell(aimagesInCell: Boolean); message 'lclSetImagesInCell:';
@@ -351,11 +350,6 @@ begin
 end;
 
 { TCocoaTableListView }
-
-function TCocoaTableListView.lclIsHandle: Boolean;
-begin
-  Result:=true;
-end;
 
 procedure TCocoaTableListView.lclExpectedKeys(var wantTabs, wantKeys,
   wantAllKeys: Boolean);

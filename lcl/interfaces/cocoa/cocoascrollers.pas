@@ -49,7 +49,6 @@ type
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
-    function lclIsHandle: Boolean; override;
     function lclClientFrame: TRect; override;
     function lclContentView: NSView; override;
     procedure setDocumentView(aView: NSView); override;
@@ -68,7 +67,6 @@ type
     callback: ICommonCallback;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
-    function lclIsHandle: Boolean; override;
     function lclContentView: NSView; override;
     function lclClientFrame: TRect; override;
     function lclIsMouseInAuxArea(event: NSEvent): Boolean; override;
@@ -121,7 +119,6 @@ type
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
-    function lclIsHandle: Boolean; override;
     function lclPos: Integer; message 'lclPos';
     procedure lclSetPos(aPos: integer); message 'lclSetPos:';
     // mouse
@@ -282,11 +279,6 @@ end;
 procedure TCocoaManualScrollView.lclClearCallback;
 begin
   callback := nil;
-end;
-
-function TCocoaManualScrollView.lclIsHandle: Boolean;
-begin
-  Result := true;
 end;
 
 function TCocoaManualScrollView.lclContentView: NSView;
@@ -619,11 +611,6 @@ end;
 
 { TCocoaScrollView }
 
-function TCocoaScrollView.lclIsHandle: Boolean;
-begin
-  Result := True;
-end;
-
 function TCocoaScrollView.lclClientFrame: TRect;
 begin
   NSToLCLRect(contentView.frame, frame.size.height, Result);
@@ -819,11 +806,6 @@ end;
 function TCocoaScrollBar.IsHorizontal: Boolean;
 begin
   Result := frame.size.width > frame.size.height;
-end;
-
-function TCocoaScrollBar.lclIsHandle: Boolean;
-begin
-  Result := True;
 end;
 
 function TCocoaScrollBar.lclPos: Integer;

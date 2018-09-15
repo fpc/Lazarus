@@ -33,8 +33,6 @@ type
     function becomeFirstResponder: Boolean; override;
     function resignFirstResponder: Boolean; override;
 
-    function lclIsHandle: Boolean; override;
-
     procedure setFrame(aframe: NSRect); override;
   end;
 
@@ -92,11 +90,6 @@ end;
 function TCocoaDatePicker.lclGetCallback: ICommonCallback;
 begin
   Result := callback;
-end;
-
-function TCocoaDatePicker.lclIsHandle: Boolean;
-begin
-  Result:= True;
 end;
 
 procedure TCocoaDatePicker.setFrame(aframe: NSRect);

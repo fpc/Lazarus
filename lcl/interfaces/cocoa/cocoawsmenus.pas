@@ -63,7 +63,6 @@ type
     attachedAppleMenu: Boolean;
   public
     procedure lclItemSelected(sender: id); message 'lclItemSelected:';
-    function lclIsHandle: Boolean; override;
     procedure createAppleMenu(); message 'createAppleMenu';
     procedure overrideAppleMenu(AItem: TCocoaMenuItem); message 'overrideAppleMenu:';
     procedure attachAppleMenu(); message 'attachAppleMenu';
@@ -81,7 +80,6 @@ type
     procedure lclItemSelected(sender: id); message 'lclItemSelected:';
     function lclGetCallback: IMenuItemCallback; override;
     procedure lclClearCallback; override;
-    function lclIsHandle: Boolean; override;
     procedure attachAppleMenuItems(); message 'attachAppleMenuItems';
     function isValidAppleMenu(): Boolean; message 'isValidAppleMenu';
     function validateMenuItem(menuItem: NSMenuItem): Boolean; override;
@@ -179,11 +177,6 @@ end;
 
 { TCocoaMenu }
 
-function TCocoaMenu.lclIsHandle: Boolean;
-begin
-  Result:=true;
-end;
-
 procedure TCocoaMenu.lclItemSelected(sender:id);
 begin
 
@@ -235,11 +228,6 @@ begin
 end;
 
 { TCocoaMenuITem }
-
-function TCocoaMenuItem.lclIsHandle: Boolean;
-begin
-  Result:=true;
-end;
 
 procedure TCocoaMenuItem.UncheckSiblings(AIsChangingToChecked: Boolean);
 var

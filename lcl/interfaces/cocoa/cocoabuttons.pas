@@ -92,7 +92,6 @@ type
     procedure mouseMoved(event: NSEvent); override;
     procedure resetCursorRects; override;
     // lcl overrides
-    function lclIsHandle: Boolean; override;
     procedure lclSetFrame(const r: TRect); override;
     procedure lclCheckMixedAllowance; message 'lclCheckMixedAllowance';
     function lclGetFrameToLayoutDelta: TRect; override;
@@ -103,11 +102,6 @@ type
 implementation
 
 { TCocoaButton }
-
-function TCocoaButton.lclIsHandle: Boolean;
-begin
-  Result := True;
-end;
 
 procedure TCocoaButton.lclSetFrame(const r: TRect);
 var

@@ -136,7 +136,6 @@ type
     function lclGetPropStorage: TStringList; message 'lclGetPropStorage';
     function lclGetTarget: TObject; message 'lclGetTarget';
     function lclDeliverMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): LResult; message 'lclDeliverMessage:::';
-    function lclIsHandle: Boolean; message 'lclIsHandle';
     function lclContentView: NSView; message 'lclContentView';
     procedure lclOffsetMousePos(var Point: NSPoint); message 'lclOffsetMousePos:';
     procedure lclExpectedKeys(var wantTabs, wantArrows, wantAll: Boolean); message 'lclExpectedKeys:::';
@@ -216,7 +215,6 @@ type
     procedure setFrame(aframe: NSRect); override;
     // other
     procedure resetCursorRects; override;
-    function lclIsHandle: Boolean; override;
     // value
     procedure setStringValue(avalue: NSString); override;
     function stringValue: NSString; override;
@@ -261,7 +259,6 @@ type
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
-    function lclIsHandle: Boolean; override;
     function lclClientFrame: TRect; override;
     function lclContentView: NSView; override;
     function lclGetFrameToLayoutDelta: TRect; override;
@@ -427,11 +424,6 @@ end;
 
 { TCocoaGroupBox }
 
-function TCocoaGroupBox.lclIsHandle: Boolean;
-begin
-  Result := True;
-end;
-
 function TCocoaGroupBox.lclClientFrame: TRect;
 var
   v : NSView;
@@ -492,11 +484,6 @@ begin
 end;
 
 { TCocoaCustomControl }
-
-function TCocoaCustomControl.lclIsHandle: Boolean;
-begin
-  Result := True;
-end;
 
 procedure TCocoaCustomControl.setStringValue(avalue: NSString);
 begin
@@ -840,11 +827,6 @@ begin
     Result := Callback.DeliverMessage(Msg, WParam, LParam)
   else
     Result := 0;
-end;
-
-function LCLObjectExtension.lclIsHandle: Boolean;
-begin
-result:=false;
 end;
 
 function LCLObjectExtension.lclContentView: NSView;

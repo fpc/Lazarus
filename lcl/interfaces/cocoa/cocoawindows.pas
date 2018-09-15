@@ -104,7 +104,6 @@ type
     procedure mouseExited(event: NSEvent); override;
     procedure mouseMoved(event: NSEvent); override;
     procedure sendEvent(event: NSEvent); override;
-    function lclIsHandle: Boolean; override;
   end;
 
   { TCocoaWindow }
@@ -154,7 +153,6 @@ type
     procedure mouseMoved(event: NSEvent); override;
     procedure scrollWheel(event: NSEvent); override;
     procedure sendEvent(event: NSEvent); override;
-    function lclIsHandle: Boolean; override;
     // NSDraggingDestinationCategory
     function draggingEntered(sender: NSDraggingInfoProtocol): NSDragOperation; override;
     function performDragOperation(sender: NSDraggingInfoProtocol): Boolean; override;
@@ -199,7 +197,6 @@ type
     procedure viewWillMoveToWindow(newWindow: CocoaAll.NSWindow); override;
     procedure dealloc; override;
     procedure setHidden(aisHidden: Boolean); override;
-    function lclIsHandle: Boolean; override;
     procedure didAddSubview(aview: NSView); override;
   end;
 
@@ -235,11 +232,6 @@ begin
 end;
 
 { TCocoaWindowContent }
-
-function TCocoaWindowContent.lclIsHandle: Boolean;
-begin
-  Result:=true;
-end;
 
 procedure TCocoaWindowContent.didAddSubview(aview: NSView);
 begin
@@ -419,11 +411,6 @@ begin
 end;
 
 { TCocoaPanel }
-
-function TCocoaPanel.lclIsHandle: Boolean;
-begin
-  Result:=true;
-end;
 
 function TCocoaPanel.windowShouldClose(sender: id): LongBool;
 var
@@ -607,11 +594,6 @@ begin
 end;
 
 { TCocoaWindow }
-
-function TCocoaWindow.lclIsHandle: Boolean;
-begin
-  Result:=true;
-end;
 
 function TCocoaWindow.windowShouldClose(sender: id): LongBool;
 var

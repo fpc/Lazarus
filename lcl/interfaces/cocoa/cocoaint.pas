@@ -35,7 +35,7 @@ uses
   // private
   CocoaAll, CocoaPrivate, CocoaUtils, CocoaGDIObjects,
   cocoa_extra, CocoaWSMenus, CocoaWSForms, CocoaWindows, CocoaScrollers,
-  CocoaWSClipboard, CocoaTextEdits,
+  CocoaWSClipboard, CocoaTextEdits, CocoaWSCommon,
   // LCL
   LCLStrConsts, LMessages, LCLMessageGlue, LCLProc, LCLIntf, LCLType,
   Controls, Forms, Themes, Menus,
@@ -184,8 +184,6 @@ procedure NSScrollerGetScrollInfo(docSz, pageSz: CGFloat; rl: NSSCroller; Var Sc
 procedure NSScrollViewGetScrollInfo(sc: NSScrollView; BarFlag: Integer; Var ScrollInfo: TScrollInfo);
 procedure NSScrollerSetScrollInfo(docSz, pageSz: CGFloat; rl: NSSCroller; const ScrollInfo: TScrollInfo);
 procedure NSScrollViewSetScrollPos(sc: NSScrollView; BarFlag: Integer; const ScrollInfo: TScrollInfo);
-function HandleToNSObject(AHWnd: HWND): id;
-
 
 function CocoaPromptUser(const DialogCaption, DialogMessage: String;
     DialogType: longint; Buttons: PLongint; ButtonCount, DefaultIndex,
@@ -340,12 +338,6 @@ begin
     vr.origin.x:=ScrollInfo.nPos;
   end;
   ns.scrollRectToVisible(vr);
-end;
-
-function HandleToNSObject(AHWnd: HWND): id;
-begin
-  if (AHwnd=0) or not NSObject(AHWnd).lclisHandle then Result:=nil
-  else Result:=NSObject(AHwnd);
 end;
 
 { TCocoaApplication }
