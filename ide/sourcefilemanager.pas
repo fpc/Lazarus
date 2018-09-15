@@ -7542,7 +7542,7 @@ begin
       // Note: add *.* filter, so users can see the files in the target directory
       SaveDialog.Filter := '*' + Ext + '|' + '*' + Ext
          + '|' + dlgFilterAll + ' (' + GetAllFilesMask + ')|' + GetAllFilesMask;
-      SaveDialog.DefaultExt := ExtractFileExt(AFilename);
+      SaveDialog.DefaultExt := Ext;
       if not Project1.IsVirtual then
         SaveDialog.InitialDir := Project1.Directory;
 
@@ -7592,7 +7592,7 @@ begin
           if UseMainSourceFile then
             NewProgramFN := ExtractFileName(AFilename)
           else
-            NewProgramFN := ExtractFileNameWithoutExt(NewProgramName) + Ext;
+            NewProgramFN := NewProgramName + Ext;
           NewProgramFN := ExtractFilePath(NewLPIFilename) + NewProgramFN;
           if (CompareFilenames(NewLPIFilename, NewProgramFN) = 0) then
           begin
@@ -7671,7 +7671,6 @@ begin
     if (Project1.MainUnitID >= 0) then
     begin
       GetMainUnit(MainUnitInfo, MainUnitSrcEdit, true);
-
       if not Project1.ProjResources.RenameDirectives(MainUnitInfo.Filename,NewProgramFN)
       then begin
         DebugLn(['ShowSaveProjectAsDialog failed renaming directives Old="',MainUnitInfo.Filename,'" New="',NewProgramFN,'"']);
