@@ -40,7 +40,7 @@ type
   TLCLCheckboxListCallback = class(TLCLListBoxCallback, IListViewCallback)
   public
     checklist: TCustomCheckListBox;
-    constructor Create(AOwner: NSObject; ATarget: TWinControl); override;
+    constructor Create(AOwner: NSObject; ATarget: TWinControl; AHandleView: NSView); override;
     function GetItemCheckedAt(ARow, ACol: Integer; var CheckState: Integer): Boolean; override;
     procedure SetItemCheckedAt(ARow, ACol: Integer; CheckState: Integer); override;
 
@@ -80,9 +80,9 @@ end;
 
 { TLCLCheckboxListCallback }
 
-constructor TLCLCheckboxListCallback.Create(AOwner: NSObject; ATarget: TWinControl);
+constructor TLCLCheckboxListCallback.Create(AOwner: NSObject; ATarget: TWinControl; AHandleView: NSView);
 begin
-  inherited Create(AOwner, ATarget);
+  inherited Create(AOwner, ATarget, AHandleView);
   if ATarget is TCustomCheckListBox then
     checklist := TCustomCheckListBox(ATarget);
 end;

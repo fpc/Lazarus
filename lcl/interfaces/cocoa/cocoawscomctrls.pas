@@ -113,7 +113,7 @@ type
                               // when initiated by Cocoa itself.
     checkedIdx : NSMutableIndexSet;
 
-    constructor Create(AOwner: NSObject; ATarget: TWinControl); override;
+    constructor Create(AOwner: NSObject; ATarget: TWinControl; AHandleView: NSView); override;
     destructor Destroy; override;
     function ItemsCount: Integer;
     function GetItemTextAt(ARow, ACol: Integer; var Text: String): Boolean;
@@ -789,7 +789,7 @@ begin
     lCocoaLV.setDocumentView(lTableLV);
     lCocoaLV.setHasVerticalScroller(True);
 
-    lclcb := TLCLListViewCallback.Create(lTableLV, AWinControl);
+    lclcb := TLCLListViewCallback.Create(lTableLV, AWinControl, lCocoaLV);
     lclcb.listView := TCustomListView(AWinControl);
     lTableLV.callback := lclcb;
     lTableLV.setDataSource(lTableLV);
@@ -1414,9 +1414,9 @@ end; *)
 type
   TProtCustomListView = class(TCustomListView);
 
-constructor TLCLListViewCallback.Create(AOwner: NSObject; ATarget: TWinControl);
+constructor TLCLListViewCallback.Create(AOwner: NSObject; ATarget: TWinControl; AHandleView: NSView);
 begin
-  inherited Create(AOwner, ATarget);
+  inherited Create(AOwner, ATarget, AHandleView);
   checkedIdx := NSMutableIndexSet.alloc.init;
 end;
 

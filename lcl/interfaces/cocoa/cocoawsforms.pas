@@ -41,7 +41,7 @@ type
     IsActivating: boolean;
   public
     window : CocoaAll.NSWindow;
-    constructor Create(AOwner: NSObject; ATarget: TWinControl); override;
+    constructor Create(AOwner: NSObject; ATarget: TWinControl; AHandleView: NSView); override;
     destructor Destroy; override;
 
     function CanActivate: Boolean; virtual;
@@ -240,7 +240,7 @@ begin
   R.origin.x := 0;
   R.origin.y := 0;
   cnt := TCocoaWindowContent.alloc.initWithFrame(R);
-  cb := TLCLWindowCallback.Create(cnt, AWinControl);
+  cb := TLCLWindowCallback.Create(cnt, AWinControl, cnt);
   cb.window := win;
   cnt.callback := cb;
   cnt.preventKeyOnShow := true;
@@ -272,7 +272,7 @@ begin
   Result := Enabled;
 end;
 
-constructor TLCLWindowCallback.Create(AOwner: NSObject; ATarget: TWinControl);
+constructor TLCLWindowCallback.Create(AOwner: NSObject; ATarget: TWinControl; AHandleView: NSView);
 begin
   inherited;
   IsActivating:=false;
@@ -399,12 +399,11 @@ begin
   scrollcon.setHasVerticalScroller(True);
   scrollcon.isCustomRange := true;
 
-  lcl := TLCLCommonCallback.Create(docview, AWinControl);
+  lcl := TLCLCommonCallback.Create(docview, AWinControl, scrollcon);
   lcl.BlockCocoaUpDown := true;
   docview.callback := lcl;
   docview.setAutoresizingMask(NSViewWidthSizable or NSViewHeightSizable);
   scrollcon.callback := lcl;
-  lcl.Frame:=scrollcon;
   scrollcon.setDocumentView(docview);
   Result := TLCLIntfHandle(scrollcon);
 end;
@@ -533,7 +532,7 @@ begin
   pool := NSAutoreleasePool.alloc.init;
   R := CreateParamsToNSRect(AParams);
   cnt := TCocoaWindowContent.alloc.initWithFrame(R);
-  cb := TLCLWindowCallback.Create(cnt, AWinControl);
+  cb := TLCLWindowCallback.Create(cnt, AWinControl, cnt);
   cnt.callback := cb;
 
   if (AParams.Style and WS_CHILD) = 0 then

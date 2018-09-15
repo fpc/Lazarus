@@ -236,7 +236,7 @@ begin
 
   sl := EmbedInManualScrollView(ctrl);
   sl.callback := ctrl.callback;
-  lcl.frame:=sl;
+  lcl.HandleFrame:=sl;
 
   Result := TLCLIntfHandle(sl);
 end;

@@ -50,12 +50,12 @@ type
     procedure ScreenMousePos(var Point: NSPoint);
   public
     Owner: NSObject;
-    Frame: NSObject;
+    HandleFrame: NSView; // HWND and "frame" (rectangle) of the a control
     BlockCocoaUpDown: Boolean;
     SuppressTabDown: Boolean; // all tabs should be suppressed, so Cocoa would not switch focus
 
     class constructor Create;
-    constructor Create(AOwner: NSObject; ATarget: TWinControl); virtual;
+    constructor Create(AOwner: NSObject; ATarget: TWinControl; AHandleFrame: NSView = nil); virtual;
     destructor Destroy; override;
     function GetPropStorage: TStringList;
     function GetContext: TCocoaContext;
@@ -289,11 +289,14 @@ begin
   PrevKeyModifiers := 0;
 end;
 
-constructor TLCLCommonCallback.Create(AOwner: NSObject; ATarget: TWinControl);
+constructor TLCLCommonCallback.Create(AOwner: NSObject; ATarget: TWinControl; AHandleFrame: NSView);
 begin
   inherited Create;
   Owner := AOwner;
-  Frame := AOwner;
+  if Assigned(AHandleFrame) then
+    HandleFrame := AHandleFrame
+  else if Owner.isKindOfClass(NSView) then
+    HandleFrame := NSView(AOwner);
   FTarget := ATarget;
   FContext := nil;
   FHasCaret := False;
@@ -1418,7 +1421,7 @@ var
   Resized, Moved, ClientResized: Boolean;
   SizeType: Integer;
 begin
-  NewBounds := Frame.lclFrame;
+  NewBounds := HandleFrame.lclFrame;
 
   //debugln('Newbounds='+ dbgs(newbounds));
   // send window pos changed
@@ -1451,8 +1454,8 @@ begin
     (OldBounds.Left <> NewBounds.Left) or
     (OldBounds.Top <> NewBounds.Top);
 
-  ClientResized := (sender <> Frame)
-    and not EqualRect(Target.ClientRect, Frame.lclClientFrame);
+  ClientResized := (sender <> HandleFrame)
+    and not EqualRect(Target.ClientRect, HandleFrame.lclClientFrame);
 
   // update client rect
   if ClientResized or Resized or Target.ClientRectNeedsInterfaceUpdate then
@@ -2057,7 +2060,7 @@ begin
 
   sl := EmbedInManualScrollView(ctrl);
   sl.callback := ctrl.callback;
-  lcl.frame:=sl;
+  lcl.HandleFrame:=sl;
 
   Result := TLCLIntfHandle(sl);
 end;
