@@ -2938,8 +2938,6 @@ class procedure TGtk2WSCustomStaticText.SetText(const AWinControl: TWinControl;
 var
   FrameWidget: PGtkFrame;
   LblWidget: PGtkLabel;
-  DC: HDC;
-  ALabel: PChar;
 begin
   if not WSCheckHandleAllocated(AWincontrol, 'SetText')
   then Exit;
@@ -2948,14 +2946,8 @@ begin
   LblWidget := GetLabelWidget(FrameWidget);
 
   if TStaticText(AWinControl).ShowAccelChar and (AText <> '') then
-  begin
-    DC := Widgetset.GetDC(HWND({%H-}PtrUInt(LblWidget)));
-    ALabel := TGtk2WidgetSet(WidgetSet).ForceLineBreaks(
-                          DC, PChar(AText), TStaticText(AWinControl).Width, false);
-    Widgetset.DeleteDC(DC);
-    Gtk2WidgetSet.SetLabelCaption(LblWidget, ALabel);
-    StrDispose(ALabel);
-  end else
+    Gtk2WidgetSet.SetLabelCaption(LblWidget, AText)
+  else
   begin
     gtk_label_set_text(LblWidget, PChar(AText));
     gtk_label_set_pattern(LblWidget, nil);
