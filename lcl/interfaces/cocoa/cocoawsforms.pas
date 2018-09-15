@@ -334,7 +334,9 @@ begin
   if (CocoaWidgetSet.CurModalForm = FTarget) and
     (TCustomForm(Target).ModalResult <> mrNone) then
   begin
+    {$IFDEF COCOA_USE_NATIVE_MODAL}
     NSApp.stopModal();
+    {$ENDIF}
     CocoaWidgetSet.CurModalForm := nil;
     {// Felipe: This code forces focusing another form, its a work around
     // for a gdb issue, gdb doesn't start the app properly
@@ -626,10 +628,18 @@ begin
     Exit;
 
   win := TCocoaWindowContent(AWinControl.Handle).lclOwnWindow;
-  if Assigned(win) then win.close;
+
+  if Assigned(win) then
+  begin
+    // this is needed for macOS 10.6.
+    // if window has been created with a parent (on ShowModal)
+    // it should be removed from "parentWindow"
+    if Assigned(win.parentWindow) then
+      win.parentWindow.removeChildWindow(win);
+    win.close;
+  end;
 
   TCocoaWSWinControl.DestroyHandle(AWinControl);
-  //inherited DestroyHandle(AWinControl);
 end;
 
 
@@ -850,7 +860,17 @@ begin
       TCocoaWindow(w).lclSwitchFullScreen(true);
   end
   else
+  begin
+    if not lShow then
+    begin
+      // macOS 10.6. If a window with a parent window is hidden, then parent is also hidden.
+      // Detaching from the parent first!
+      w := TCocoaWindowContent(AWinControl.Handle).lclOwnWindow;
+      if Assigned(w) and Assigned(w.parentWindow) then
+        w.parentWindow.removeChildWindow(w);
+    end;
     TCocoaWSWinControl.ShowHide(AWinControl);
+  end;
 
   if (lShow) then
     ArrangeTabOrder(AWinControl);

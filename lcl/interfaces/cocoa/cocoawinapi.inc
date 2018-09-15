@@ -741,9 +741,13 @@ begin
 end;
 
 function TCocoaWidgetSet.GetActiveWindow: HWND;
+var
+  wn : NSWindow;
 begin
   // return the currect application active window
-  Result := HWND(NSApp.keyWindow);
+  wn := NSApp.keyWindow;
+  if not Assigned(wn) then Result := 0
+  else Result := HWND(wn.contentView);
 end;
 
 function TCocoaWidgetSet.GetBkColor(DC: HDC): TColorRef;
@@ -2128,21 +2132,14 @@ end;
 function TCocoaWidgetSet.SetActiveWindow(Handle: HWND): HWND;
 var
   Obj: NSObject;
-  lView: NSView;
 begin
   Obj := NSObject(Handle);
   Result := 0; // should return 0, if function fails
   if Assigned(Obj) and NSApp.isActive then
   begin
-    Result := HWND(NSApp.keyWindow);
-    if Obj.isKindOfClass(NSWindow) then
-      NSwindow(Obj).makeKeyWindow
-    else
-    begin
-      lView := GetNSObjectView(Obj);
-      if lView <> nil then
-        lView.window.makeKeyWindow;
-    end;
+    Result := HWND(NSApp.keyWindow.contentView);
+    if (Handle <> 0) then
+      NSView(Handle).window.makeKeyWindow;
   end;
 end;
 
