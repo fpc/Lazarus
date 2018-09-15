@@ -453,6 +453,8 @@ type
     function GetSrcPath: string; override;
     function GetUnitOutputDir: string; override;
     function GetUnitPaths: String; override;
+    function GetExecuteBeforeCommand: string; override;
+    function GetExecuteAfterCommand: string; override;
     procedure SetBaseDirectory(AValue: string);
     procedure SetCompilerPath(const AValue: String); override;
     procedure SetConditionals(AValue: string); override;
@@ -471,6 +473,8 @@ type
     procedure SetTargetOS(const AValue: string); override;
     procedure SetTargetFileExt(const AValue: String); override;
     procedure SetTargetFilename(const AValue: String); override;
+    procedure SetExecuteBeforeCommand(const ACommand: string); override;
+    procedure SetExecuteAfterCommand(const ACommand: string); override;
   protected
     function GetModified: boolean; override;
     procedure SetModified(const AValue: boolean); override;
@@ -3701,6 +3705,28 @@ begin
     ExecuteBefore.Parsers.Text:=SubToolFPC+LineEnding+SubToolMake
   else
     ExecuteBefore.Parsers.Clear;
+end;
+
+function TBaseCompilerOptions.GetExecuteBeforeCommand: string;
+begin
+  Result := ExecuteBefore.Command;
+end;
+
+function TBaseCompilerOptions.GetExecuteAfterCommand: string;
+begin
+  Result := ExecuteAfter.Command;
+end;
+
+procedure TBaseCompilerOptions.SetExecuteBeforeCommand(const ACommand: string);
+begin
+  ExecuteBefore.Command := ACommand;
+  IncreaseChangeStamp;
+end;
+
+procedure TBaseCompilerOptions.SetExecuteAfterCommand(const ACommand: string);
+begin
+  ExecuteAfter.Command := ACommand;
+  IncreaseChangeStamp;
 end;
 
 

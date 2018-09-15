@@ -288,6 +288,8 @@ type
     function GetSrcPath: string; virtual; abstract;
     function GetUnitOutputDir: string; virtual; abstract;
     function GetUnitPaths: String; virtual; abstract;
+    function GetExecuteBeforeCommand: string; virtual; abstract;
+    function GetExecuteAfterCommand: string; virtual; abstract;
     procedure SetCompilerPath(const AValue: String); virtual; abstract;
     procedure SetConditionals(AValue: string); virtual; abstract;
     procedure SetCustomOptions(const AValue: string); virtual; abstract;
@@ -306,6 +308,8 @@ type
     procedure SetTargetProc(const AValue: string); virtual; abstract;
     procedure SetUnitOutputDir(const AValue: string); virtual; abstract;
     procedure SetUnitPaths(const AValue: String); virtual; abstract;
+    procedure SetExecuteBeforeCommand(const ACommand: string); virtual; abstract;
+    procedure SetExecuteAfterCommand(const ACommand: string); virtual; abstract;
   public
     constructor Create(const TheOwner: TObject); virtual;
     destructor Destroy; override;
@@ -448,9 +452,10 @@ type
     property CustomOptions: string read GetCustomOptions write SetCustomOptions;
     property UseCommentsInCustomOptions: Boolean read fUseCommentsInCustomOptions
                                                 write SetUseCommentsInCustomOptions;
-
     // execute
     property CompilerPath: String read GetCompilerPath write SetCompilerPath;
+    property ExecuteBeforeCommand: String read GetExecuteBeforeCommand write SetExecuteBeforeCommand;
+    property ExecuteAfterCommand: String read GetExecuteAfterCommand write SetExecuteAfterCommand;
     procedure SetAlternativeCompile(const Command: string; ScanFPCMsgs: boolean); virtual; abstract; // disable normal compile and call this instead
   end;
 
