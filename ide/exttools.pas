@@ -1001,6 +1001,7 @@ begin
       Proc.ShowWindow:=swoShow;
     try
       Proc.Execute;
+      Result:=true;
     except
     end;
   finally
