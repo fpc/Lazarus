@@ -361,6 +361,47 @@ begin
   aloop();
 end;
 
+procedure ForwardMouseMove(app: NSApplication; theEvent: NSEvent);
+var
+  w   : NSWindow;
+  kw  : NSWindow;
+  ev  : NSEvent;
+  p   : NSPoint;
+  wfr : NSRect;
+begin
+  kw := app.keyWindow;
+
+  // mouse move was consumed by the focused window
+  if Assigned(kw) and NSPointInRect( theEvent.mouseLocation, kw.frame) then
+    Exit;
+
+  for w in app.windows do
+  begin
+    if w = kw then Continue;
+    if not w.isVisible then Continue;
+    // todo: check for enabled windows? modal windows?
+
+    wfr := w.frame;
+    if not NSPointInRect( theEvent.mouseLocation, wfr) then Continue;
+
+    p := theEvent.mouseLocation;
+    p.x := p.x - w.frame.origin.x;
+    p.y := p.y - w.frame.origin.y;
+    ev := NSEvent.mouseEventWithType_location_modifierFlags_timestamp_windowNumber_context_eventNumber_clickCount_pressure(
+      theEvent.type_,
+      p,
+      theEvent.modifierFlags,
+      theEvent.timestamp,
+      w.windowNumber,
+      theEvent.context,
+      theEvent.eventNumber,
+      theEvent.clickCount,
+      theEvent.pressure
+    );
+    w.sendEvent(ev);
+  end;
+end;
+
 procedure TCocoaApplication.sendEvent(theEvent: NSEvent);
 begin
   // https://stackoverflow.com/questions/4001565/missing-keyup-events-on-meaningful-key-combinations-e-g-select-till-beginning
@@ -369,6 +410,8 @@ begin
   then
     self.keyWindow.sendEvent(theEvent);
   inherited sendEvent(theEvent);
+
+  if (theEvent.type_ = NSMouseMoved) then ForwardMouseMove(Self, theEvent);
 end;
 
 function isMouseMoveEvent(tp: NSEventType): Boolean; inline;

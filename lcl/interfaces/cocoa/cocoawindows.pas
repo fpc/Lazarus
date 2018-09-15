@@ -806,13 +806,9 @@ end;
 
 procedure TCocoaWindow.mouseMoved(event: NSEvent);
 begin
-  if (Self = NSApplication.sharedApplication.keyWindow) then
-    // no need to call "callback".
-    // mouseMove would be called on the WindowContent
-    inherited mouseMoved(event)
-  else
-    if not Assigned(callback) or not callback.MouseMove(event) then
-      inherited mouseMoved(event);
+  // no need to call for callback or anything, because WindowContent
+  // will take care of it anyway
+  inherited mouseMoved(event);
 end;
 
 procedure TCocoaWindow.scrollWheel(event: NSEvent);
