@@ -2332,21 +2332,26 @@ end;
 function TCocoaWidgetSet.SetMenu(AWindowHandle: HWND; AMenuHandle: HMENU): Boolean;
 var
   lWin: NSWindow;
+  frm : TCustomForm;
 begin
   Result := False;
 
   lWin := NSWindow(GetNSObjectWindow(NSObject(AWindowHandle)));
 
-  if isFormDesigned(AWindowHandle) then begin
+  frm := HWNDToForm(AWindowHandle);
+  if Assigned(frm) and (csDesigning in frm.ComponentState) then begin
     Result := true;
     Exit;
   end;
+  if not Assigned(frm) then Exit;
 
   if (lWin <> nil) and lWin.isKindOfClass(TCocoaWindow) and
-     (TCocoaWindow(lWin).LCLForm.Menu.Handle = AMenuHandle) then
+     //todo: why is Menu handle checked here?
+     (frm.Menu.Handle = AMenuHandle)
+  then
   begin
     if lWin.isKeyWindow or lWin.isMainWindow then
-      SetMainMenu(AMenuHandle, TCocoaWindow(lWin).LCLForm.Menu);
+      SetMainMenu(AMenuHandle, frm.Menu);
     Result := True;
   end;
 end;

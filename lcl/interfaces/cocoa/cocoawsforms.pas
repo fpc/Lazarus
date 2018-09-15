@@ -55,6 +55,9 @@ type
     function GetEnabled: Boolean; virtual;
     procedure SetEnabled(AValue: Boolean); virtual;
 
+    function AcceptFilesDrag: Boolean;
+    procedure DropFiles(const FileNames: array of string);
+
     property Enabled: Boolean read GetEnabled write SetEnabled;
   end;
 
@@ -166,7 +169,6 @@ type
 
 procedure ArrangeTabOrder(const AWinControl: TWinControl);
 function HWNDToForm(AFormHandle: HWND): TCustomForm;
-function isFormDesigned(AFormHandle:HWND): Boolean;
 
 implementation
 
@@ -337,7 +339,7 @@ begin
   CanClose := LCLSendCloseQueryMsg(Target) > 0;
 
   // Special code for modal forms, which otherwise would get 0 here and not call Close
-  if (CocoaWidgetSet.CurModalForm = FTarget) and
+  if (CocoaWidgetSet.CurModalForm = window) and
     (TCustomForm(Target).ModalResult <> mrNone) then
   begin
     {$IFDEF COCOA_USE_NATIVE_MODAL}
@@ -387,6 +389,17 @@ end;
 procedure TLCLWindowCallback.SetEnabled(AValue: Boolean);
 begin
   Owner.lclSetEnabled(AValue);
+end;
+
+function TLCLWindowCallback.AcceptFilesDrag: Boolean;
+begin
+  Result := Assigned(Target) and Assigned(TCustomForm(Target).OnDropFiles);
+end;
+
+procedure TLCLWindowCallback.DropFiles(const FileNames: array of string);
+begin
+  if Assigned(Target) then
+    TCustomForm(Target).IntfDropFiles(FileNames);
 end;
 
 { TCocoaWSScrollingWinControl}
@@ -584,7 +597,6 @@ begin
 
     cnt.callback := TCocoaWindow(win).callback;
     cnt.callback.IsOpaque:=true;
-    win.LCLForm := Form;
     win.setContentView(cnt);
 
     // Don't call addChildWindow_ordered here because this function can cause
@@ -739,7 +751,7 @@ begin
   if (lWinContent <> nil) and (not fullscreen) then
     lWinContent.resolvePopupParent();
 
-  CocoaWidgetSet.CurModalForm := ACustomForm;
+  CocoaWidgetSet.CurModalForm := lWinContent.lclOwnWindow;
   // LCL initialization code would cause the custom form to be disabled
   // (due to the fact, ShowModal() has not been called yet, and a previous form
   // might be disabled at the time.
@@ -774,7 +786,7 @@ end;
 class procedure TCocoaWSCustomForm.SetModalResult(const ACustomForm: TCustomForm;
   ANewValue: TModalResult);
 begin
-  if (CocoaWidgetSet.CurModalForm = ACustomForm) and (ANewValue <> 0) then
+  if (CocoaWidgetSet.CurModalForm = NSView(ACustomForm.Handle).window) and (ANewValue <> 0) then
     CloseModal(ACustomForm);
 end;
 
@@ -926,14 +938,6 @@ begin
   if Assigned(obj) and (obj is TCustomForm)
     then Result := TCustomForm(obj)
     else Result := nil;
-end;
-
-function isFormDesigned(AFormHandle:HWND): Boolean;
-var
-  frm : TCustomForm;
-begin
-  frm := HWNDToForm(AFormHandle);
-  Result := Assigned(frm) and (csDesigning in frm.ComponentState);
 end;
 
 end.

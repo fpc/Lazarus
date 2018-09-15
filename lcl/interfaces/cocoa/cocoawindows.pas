@@ -29,7 +29,8 @@ uses
   MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects,
   cocoa_extra, CocoaPrivate, CocoaTextEdits,
   // LCL
-  Forms, LCLType, LCLProc;
+  //Forms,
+  LCLType, LCLProc;
 
 type
 
@@ -68,6 +69,9 @@ type
 
     function GetEnabled: Boolean;
     procedure SetEnabled(AValue: Boolean);
+
+    function AcceptFilesDrag: Boolean;
+    procedure DropFiles(const FileNames: array of string);
 
     property Enabled: Boolean read GetEnabled write SetEnabled;
   end;
@@ -130,7 +134,7 @@ type
     procedure windowDidExitFullScreen(notification: NSNotification); message 'windowDidExitFullScreen:';
   public
     callback: IWindowCallback;
-    LCLForm: TCustomForm;
+    //LCLForm: TCustomForm;
     procedure dealloc; override;
     function acceptsFirstResponder: Boolean; override;
     function canBecomeKeyWindow: Boolean; override;
@@ -881,16 +885,10 @@ begin
 end;
 
 function TCocoaWindow.draggingEntered(sender: NSDraggingInfoProtocol): NSDragOperation;
-var
-  lTarget: TCustomForm = nil;
 begin
   Result := NSDragOperationNone;
-  if (callback <> nil) and (callback.GetTarget() <> nil) and (callback.GetTarget() is TCustomForm) then
-    lTarget := TCustomForm(callback.GetTarget());
-  if (lTarget <> nil) and (lTarget.OnDropFiles <> nil) then
-  begin
+  if (callback <> nil) and (callback.AcceptFilesDrag) then
     Result := sender.draggingSourceOperationMask();
-  end;
 end;
 
 function TCocoaWindow.performDragOperation(sender: NSDraggingInfoProtocol): Boolean;
@@ -928,8 +926,8 @@ begin
     end;
   end;}
 
-  if (Length(lFiles) > 0) and (callback <> nil) and (callback.GetTarget() <> nil) then
-    TCustomForm(callback.GetTarget()).IntfDropFiles(lFiles);
+  if (Length(lFiles) > 0) and (callback <> nil)  then
+    callback.DropFiles(lFiles);
   Result := True;
 end;
 

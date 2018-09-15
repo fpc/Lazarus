@@ -532,7 +532,7 @@ begin
   lNSObj := NSWindow(AControl.window());
   if lNSObj = nil then Exit;
   if not lNSObj.isKindOfClass_(TCocoaWindow) then Exit;
-  if lNSWin.LCLForm = CurModalForm then Exit;
+  if lNSWin = CurModalForm then Exit;
   Result := True;
   {$endif}
 end;

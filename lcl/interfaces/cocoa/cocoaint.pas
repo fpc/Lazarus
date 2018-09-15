@@ -115,7 +115,7 @@ type
     procedure OnWakeMainThread(Sender: TObject);
   public
     // modal session
-    CurModalForm: TCustomForm;
+    CurModalForm: NSWindow;
 
     constructor Create; override;
     destructor Destroy; override;
