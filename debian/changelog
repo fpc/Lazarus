@@ -1,8 +1,68 @@
-lazarus (1.9.0) unstable; urgency=low
+lazarus (2.0.0PreRelease) unstable; urgency=low
 
-  * Snapshot building.
+  * Pre Release Candidate.
 
- -- Mattias Gaertner <mattias@freepascal.org>  Sat, 8 Apr 2017 00:01:22 +0200
+ -- Mattias Gaertner <mattias@freepascal.org>  Sat, 15 Sep 2018 21:30:22 +0200
+
+lazarus (1.8.5) unstable; urgency=low
+
+  * Bugfix release
+
+ -- Mattias Gaertner <mattias@freepascal.org>  Sat, 19 May 2018 12:46:22 +0200
+
+lazarus (1.8.4) stable; urgency=low
+
+  * Bugfix release
+
+ -- Mattias Gaertner <mattias@freepascal.org>  Sat, 19 May 2018 12:46:22 +0200
+
+lazarus (1.8.3) unstable; urgency=low
+
+  * Bugfix release
+
+ -- Mattias Gaertner <mattias@freepascal.org>  Sun, 25 Feb 2018 9:45:22 +0100
+
+lazarus (1.8.2) stable; urgency=low
+
+  * Bugfix release
+
+ -- Mattias Gaertner <mattias@freepascal.org>  Sun, 25 Feb 2018 9:45:22 +0100
+
+lazarus (1.8.1) unstable; urgency=low
+
+  * Development version
+
+ -- Mattias Gaertner <mattias@freepascal.org>  Sun, 3 Dec 2017 11:04:22 +0100
+
+lazarus (1.8.0) stable; urgency=low
+
+  * Final Release
+
+ -- Mattias Gaertner <mattias@freepascal.org>  Sun, 3 Dec 2017 11:04:22 +0100
+
+lazarus (1.8.0RC5) unstable; urgency=low
+
+  * Release Candidate 5
+
+ -- Mattias Gaertner <mattias@freepascal.org>  Wed, 11 Oct 2017 11:18:22 +0200
+
+lazarus (1.8.0RC4) unstable; urgency=low
+
+  * Release Candidate 4
+
+ -- Mattias Gaertner <mattias@freepascal.org>  Sat, 5 Aug 2017 14:35:22 +0200
+
+lazarus (1.8.0RC3) unstable; urgency=low
+
+  * Release Candidate 3
+
+ -- Mattias Gaertner <mattias@freepascal.org>  Tue, 27 Jun 2017 23:51:22 +0200
+
+lazarus (1.8.0RC2) unstable; urgency=low
+
+  * Release Candidate 2
+
+ -- Mattias Gaertner <mattias@freepascal.org>  Sat, 3 Jun 2017 19:38:22 +0200
 
 lazarus (1.8.0RC1) unstable; urgency=low
 
