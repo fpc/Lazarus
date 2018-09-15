@@ -1559,7 +1559,7 @@ end;
 procedure TLCLCommonCallback.Draw(ControlContext: NSGraphicsContext;
   const bounds, dirty: NSRect);
 var
-  PS: PPaintStruct;
+  PS: TPaintStruct;
   nsr:NSRect;
 begin
   // todo: think more about draw call while previous draw still active
@@ -1582,17 +1582,12 @@ begin
         //debugln('Background '+Target.name+Dbgs(NSRectToRect(dirty)));
       end;
 
-      New(PS);
-      try
-        FillChar(PS^, SizeOf(TPaintStruct), 0);
-        PS^.hdc := HDC(FContext);
-        PS^.rcPaint := NSRectToRect(nsr);
-        LCLSendPaintMsg(Target, HDC(FContext), PS);
-        if FHasCaret then
-          DrawCaret;
-      finally
-        Dispose(PS);
-      end;
+      FillChar(PS, SizeOf(TPaintStruct), 0);
+      PS.hdc := HDC(FContext);
+      PS.rcPaint := NSRectToRect(nsr);
+      LCLSendPaintMsg(Target, HDC(FContext), @PS);
+      if FHasCaret then
+        DrawCaret;
     end;
   finally
     FreeAndNil(FContext);
