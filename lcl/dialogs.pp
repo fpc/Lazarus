@@ -118,13 +118,13 @@ type
     procedure DoCanClose(var CanClose: Boolean); virtual;
     procedure DoClose; virtual;
     function HandleAllocated: boolean;
+    property Width: integer read GetWidth write SetWidth;
+    property Height: integer read GetHeight write SetHeight;
   published
     property OnClose: TNotifyEvent read FOnClose write FOnClose;
     property OnCanClose: TCloseQueryEvent read FOnCanClose write FOnCanClose;
     property OnShow: TNotifyEvent read FOnShow write FOnShow;
     property HelpContext: THelpContext read FHelpContext write FHelpContext default 0;
-    property Width: integer read GetWidth write SetWidth default 0;
-    property Height: integer read GetHeight write SetHeight default 0;
     property Title: TTranslateString read FTitle write FTitle stored IsTitleStored;
   end;
 
@@ -971,6 +971,9 @@ initialization
   InterfaceBase.InputDialogFunction := @DefaultInputDialog;
   InterfaceBase.PromptDialogFunction := @DefaultPromptDialog;
   InterfaceBase.QuestionDialogFunction := @DefaultQuestionDialog;
+
+  RegisterPropertyToSkip(TCommonDialog, 'Width', 'Property streamed in older Lazarus revision','');
+  RegisterPropertyToSkip(TCommonDialog, 'Height', 'Property streamed in older Lazarus revision','');
 
 finalization
   InterfaceBase.InputDialogFunction := nil;
