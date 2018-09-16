@@ -234,6 +234,7 @@ type
     procedure textDidEndEditing(notification: NSNotification); override;
     // NSComboBoxDataSourceProtocol
     function comboBox_objectValueForItemAtIndex_(combo: TCocoaComboBox; row: NSInteger): id; message 'comboBox:objectValueForItemAtIndex:';
+    function comboBox_indexOfItemWithStringValue(aComboBox: NSComboBox; string_: NSString): NSUInteger; message 'comboBox:indexOfItemWithStringValue:';
     function numberOfItemsInComboBox(combo: TCocoaComboBox): NSInteger; message 'numberOfItemsInComboBox:';
     //
     procedure dealloc; override;
@@ -1181,6 +1182,20 @@ begin
   if not Assigned(list) or (row<0) or (row>=list.Count)
     then Result:=nil
     else Result:=NSStringUtf8(list[row]);
+end;
+
+function TCocoaComboBox.comboBox_indexOfItemWithStringValue(
+  aComboBox: NSComboBox; string_: NSString): NSUInteger;
+var
+  idx : integer;
+begin
+  idx := indexOfSelectedItem;
+  if (idx>=0) and (idx<list.Count) and (list[idx]=string_.UTF8String) then
+    // this is used for the case of the same items in the combobox
+    Result:=idx
+  else
+    // todo: consider a faster search?
+    Result := list.IndexOf(string_.UTF8String);
 end;
 
 function TCocoaComboBox.numberOfItemsInComboBox(combo:TCocoaComboBox):NSInteger;
