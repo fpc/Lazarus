@@ -492,10 +492,29 @@ function CheckDC(dc: HDC; Str: string): Boolean;
 function CheckGDIOBJ(obj: HGDIOBJ): TCocoaGDIObject;
 function CheckBitmap(ABitmap: HBITMAP; AStr: string): Boolean;
 
+type
+
+  { LCLNSGraphicsContext }
+
+  LCLNSGraphicsContext = objccategory (NSGraphicsContext)
+    function lclCGContext: CGContextRef; message 'lclCGContext';
+  end;
+
 implementation
 
 uses
   CocoaInt;
+
+
+{ LCLNSGraphicsContext }
+
+function LCLNSGraphicsContext.lclCGcontext: CGContextRef;
+begin
+  if NSAppKitVersionNumber >= NSAppKitVersionNumber10_10 then
+    Result := CGContext
+  else
+    Result := CGContextRef(graphicsPort);
+end;
 
 //todo: a better check!
 
@@ -1378,7 +1397,7 @@ end;
 
 function TCocoaContext.CGContext: CGContextRef;
 begin
-  Result := CGContextRef(ctx.graphicsPort);
+  Result := CGContextRef(ctx.lclCGContext);
 end;
 
 procedure TCocoaContext.SetAntialiasing(AValue: Boolean);

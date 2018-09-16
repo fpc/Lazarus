@@ -77,6 +77,8 @@ type
   NSGraphicsContextFix = objccategory external(NSGraphicsContext)
     procedure setImageInterpolation(interpolation: NSImageInterpolation); message 'setImageInterpolation:';
     procedure setShouldAntialias(antialias: Boolean); message 'setShouldAntialias:';
+    // 10.10
+    function CGContext: CGContextRef; message 'CGContext';
   end;
 
   NSEventFix = objccategory external (NSEvent)

@@ -408,6 +408,7 @@ begin
 
   ctx := TCocoaContext.Create(NSGraphicsContext.currentContext);
   try
+    ctx.InitDraw(Round(dirtyRect.size.width), Round(dirtyRect.size.height));
     combobox.callback.ComboBoxDrawItem(itemIndex, ctx, NSRectToRect(frame), false);
   finally
     ctx.Free;
