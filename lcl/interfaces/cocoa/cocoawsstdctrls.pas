@@ -72,6 +72,8 @@ type
   TCocoaWSCustomComboBox = class(TWSCustomComboBox)
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
+
     {class function  GetSelStart(const ACustomComboBox: TCustomComboBox): integer; override;
     class function  GetSelLength(const ACustomComboBox: TCustomComboBox): integer; override;}
     class function  GetItemIndex(const ACustomComboBox: TCustomComboBox): integer; override;
@@ -321,7 +323,7 @@ function ComboBoxStyleIsReadOnly(AStyle: TComboBoxStyle): Boolean;
 function ComboBoxIsReadOnly(cmb: TCustomComboBox): Boolean;
 function ComboBoxIsOwnerDrawn(AStyle: TComboBoxStyle): Boolean;
 function ComboBoxIsVariable(AStyle: TComboBoxStyle): Boolean;
-
+procedure ComboBoxSetBorderStyle(box: NSComboBox; astyle: TBorderStyle);
 
 implementation
 
@@ -447,6 +449,12 @@ end;
 function ComboBoxIsVariable(AStyle: TComboBoxStyle): Boolean;
 begin
   Result := AStyle in [csOwnerDrawVariable, csOwnerDrawEditableVariable];
+end;
+
+procedure ComboBoxSetBorderStyle(box: NSComboBox; astyle: TBorderStyle);
+begin
+  if astyle = bsNone then box.setBezeled(false)
+  else box.setBezeled(true);
 end;
 
 { TLCLRadioButtonCallback }
@@ -1514,6 +1522,10 @@ end;
 
 { TCocoaWSCustomComboBox }
 
+type
+  TCustomComboBoxAccess = class(TCustomComboBox)
+  end;
+
 class function TCocoaWSCustomComboBox.CreateHandle(const AWinControl:TWinControl;
   const AParams:TCreateParams):TLCLIntfHandle;
 var
@@ -1545,11 +1557,33 @@ begin
     cmb.setDelegate(cmb);
     cmb.setStringValue(NSStringUtf8(AParams.Caption));
     cmb.callback:=TLCLComboboxCallback.Create(cmb, AWinControl);
+    // default BorderStyle for TComboBox is bsNone! and it looks ugly!
+    // also, Win32 doesn't suppot borderstyle for TComboBox at all.
+    // to be tested and considered
+    //ComboBoxSetBorderStyle(cmb, TCustomComboBoxAccess(AWinControl).BorderStyle);
     Result:=TLCLIntfHandle(cmb);
   end;
   //todo: 26 pixels is the height of 'normal' combobox. The value is taken from the Interface Builder!
   //      use the correct way to set the size constraints
   AWinControl.Constraints.SetInterfaceConstraints(0,COMBOBOX_MINI_HEIGHT,0,COMBOBOX_REG_HEIGHT);
+end;
+
+class procedure TCocoaWSCustomComboBox.SetBorderStyle(
+  const AWinControl: TWinControl; const ABorderStyle: TBorderStyle);
+var
+  ACustomComboBox : TCustomComboBox;
+begin
+  if not Assigned(AWinControl) or not AWinControl.HandleAllocated then Exit;
+  ACustomComboBox:= TCustomComboBox(AWinControl);
+
+  if ACustomComboBox.ReadOnly then
+    //Result := TCocoaReadOnlyComboBox(ACustomComboBox.Handle).indexOfSelectedItem
+  else
+  begin
+    //todo: consider the use of border style
+    //ComboBoxSetBorderStyle(TCocoaComboBox(ACustomComboBox.Handle), ABorderStyle);
+  end;
+
 end;
 
 class function TCocoaWSCustomComboBox.GetItemIndex(const ACustomComboBox:
