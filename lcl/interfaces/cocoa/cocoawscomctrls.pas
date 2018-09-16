@@ -138,6 +138,7 @@ type
       out ANSColumn: NSTableColumn; const ALV: TCustomListView; const AIndex: Integer; ASecondIndex: Integer = -1): Boolean;
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
     // Column
     class procedure ColumnDelete(const ALV: TCustomListView; const AIndex: Integer); override;
     class function  ColumnGetWidth(const ALV: TCustomListView; const AIndex: Integer; const {%H-}AColumn: TListColumn): Integer; override;
@@ -796,10 +797,20 @@ begin
     lTableLV.setDelegate(lTableLV);
     lTableLV.setAllowsColumnReordering(False);
     lCocoaLV.callback := lclcb;
+
+    ScrollViewSetBorderStyle(lCocoaLV, TCustomListView(AWinControl).BorderStyle);
+
     {$IFDEF COCOA_DEBUG_LISTVIEW}
     WriteLn(Format('[TCocoaWSCustomListView.CreateHandle] headerView=%d', [PtrInt(lTableLV.headerView)]));
     {$ENDIF}
   end;
+end;
+
+class procedure TCocoaWSCustomListView.SetBorderStyle(
+  const AWinControl: TWinControl; const ABorderStyle: TBorderStyle);
+begin
+  if not Assigned(AWinControl) or not AWinControl.HandleAllocated then Exit;
+  ScrollViewSetBorderStyle(NSScrollView(AWinControl.Handle), ABorderStyle);
 end;
 
 class procedure TCocoaWSCustomListView.ColumnDelete(const ALV: TCustomListView;

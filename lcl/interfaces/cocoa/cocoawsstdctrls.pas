@@ -109,7 +109,7 @@ type
     class function GetTopIndex(const ACustomListBox: TCustomListBox): integer; override;
 
     class procedure SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean); override;
-    //class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
+    class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
     //class procedure SetBorder(const ACustomListBox: TCustomListBox); override;
     class procedure SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer); override;
     class procedure SetSelectionMode(const ACustomListBox: TCustomListBox; const AExtendedSelect, AMultiSelect: boolean); override;
@@ -128,6 +128,7 @@ type
 
     // WSControl functions
     class procedure SetColor(const AWinControl: TWinControl); override;
+    class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
 
     // WSEdit functions
     class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
@@ -311,6 +312,7 @@ procedure TextViewSetWordWrap(txt: NSTextView; lScroll: NSScrollView; NewWordWra
 function AlignmentLCLToCocoa(al: TAlignment): NSTextAlignment;
 procedure TextViewSetAllignment(txt: NSTextView; align: TAlignment);
 procedure TextFieldSetAllignment(txt: NSTextField; align: TAlignment);
+procedure TextFieldSetBorderStyle(txt: NSTextField; astyle: TBorderStyle);
 procedure RadioButtonSwitchSiblings(checkedRadio: NSButton);
 
 procedure ScrollViewSetScrollStyles(AScroll: TCocoaScrollView; AStyles: TScrollStyle);
@@ -319,6 +321,7 @@ function ComboBoxStyleIsReadOnly(AStyle: TComboBoxStyle): Boolean;
 function ComboBoxIsReadOnly(cmb: TCustomComboBox): Boolean;
 function ComboBoxIsOwnerDrawn(AStyle: TComboBoxStyle): Boolean;
 function ComboBoxIsVariable(AStyle: TComboBoxStyle): Boolean;
+
 
 implementation
 
@@ -394,6 +397,15 @@ begin
     TCocoaSecureTextField(Result).callback := TLCLCommonCallback.Create(Result, ATarget);
     SetNSText(Result.currentEditor, AParams.Caption);
   end;
+end;
+
+procedure TextFieldSetBorderStyle(txt: NSTextField; astyle: TBorderStyle);
+begin
+  if not Assigned(txt) then Exit;
+  if astyle = bsNone then
+    txt.setBezeled(false)
+  else
+    txt.setBezeled(true);
 end;
 
 procedure RadioButtonSwitchSiblings(checkedRadio: NSButton);
@@ -853,6 +865,7 @@ begin
   NSCell(field.cell).setWraps(false);
   NSCell(field.cell).setScrollable(true);
   TextFieldSetAllignment(field, TCustomEdit(AWinControl).Alignment);
+  TextFieldSetBorderStyle(field, TCustomEdit(AWinControl).BorderStyle);
   Result:=TLCLIntfHandle(field);
 end;
 
@@ -867,6 +880,12 @@ begin
     field.setBackgroundColor( NSColor.textBackgroundColor )
   else
     field.setBackgroundColor( ColorToNSColor(ColorToRGB(AWinControl.Color)));
+end;
+
+class procedure TCocoaWSCustomEdit.SetBorderStyle(
+  const AWinControl: TWinControl; const ABorderStyle: TBorderStyle);
+begin
+  inherited SetBorderStyle(AWinControl, ABorderStyle);
 end;
 
 class function TCocoaWSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit): integer;
@@ -1257,8 +1276,7 @@ begin
   scr.setAutohidesScrollers(ScrollerAutoHide[TMemo(AWinControl).ScrollBars]);
   scr.setDrawsBackground(false);
 
-  if TCustomMemo(AWinControl).BorderStyle=bsSingle then
-     scr.setBorderType(NSBezelBorder);
+  ScrollViewSetBorderStyle(scr, TCustomMemo(AWinControl).BorderStyle);
 
   nr:=scr.documentVisibleRect;
   txt.setFrame(nr);
@@ -1792,6 +1810,8 @@ begin
   scroll.callback := list.callback;
   scroll.setHasVerticalScroller(true);
   scroll.setAutohidesScrollers(true);
+  ScrollViewSetBorderStyle(scroll, lclListBox.BorderStyle);
+
   Result := TLCLIntfHandle(scroll);
 end;
 
@@ -1889,6 +1909,17 @@ begin
   end
   else
     list.deselectRow(AIndex);
+end;
+
+class procedure TCocoaWSCustomListBox.SetBorderStyle(
+  const AWinControl: TWinControl; const ABorderStyle: TBorderStyle);
+var
+  list: TCocoaTableListView;
+begin
+  list := GetListBox(AWinControl);
+  if not Assigned(list) then Exit;
+
+  ScrollViewSetBorderStyle(list.enclosingScrollView, ABorderStyle);
 end;
 
 class procedure TCocoaWSCustomListBox.SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer);

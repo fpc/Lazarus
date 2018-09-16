@@ -148,6 +148,8 @@ function EmbedInManualScrollView(AView: NSView): TCocoaManualScrollView;
 
 function HWNDToTargetObject(AFormHandle: HWND): TObject;
 
+procedure ScrollViewSetBorderStyle(sv: NSScrollView; astyle: TBorderStyle);
+
 implementation
 
 uses
@@ -157,6 +159,17 @@ var
   LastMouse: TLastMouseInfo;
 
 {$I mackeycodes.inc}
+
+procedure ScrollViewSetBorderStyle(sv: NSScrollView; astyle: TBorderStyle);
+const
+  NSBorderStyle : array [TBorderStyle] of NSBorderType = (
+    NSNoBorder,   // bsNone
+    NSBezelBorder // bsSingle     (NSLineBorder is too thick)
+  );
+begin
+  if not Assigned(sv) then Exit;
+  sv.setBorderType( NSBorderStyle[astyle] );
+end;
 
 function EmbedInScrollView(AView: NSView; AReleaseView: Boolean): TCocoaScrollView;
 var

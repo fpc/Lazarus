@@ -68,7 +68,8 @@ type
   private
   protected
   public
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
   end;
 
   { TCocoaWSScrollBox }
@@ -425,7 +426,15 @@ begin
   docview.setAutoresizingMask(NSViewWidthSizable or NSViewHeightSizable);
   scrollcon.callback := lcl;
   scrollcon.setDocumentView(docview);
+  ScrollViewSetBorderStyle(scrollcon, TScrollingWinControl(AWincontrol).BorderStyle);
   Result := TLCLIntfHandle(scrollcon);
+end;
+
+class procedure TCocoaWSScrollingWinControl.SetBorderStyle(
+  const AWinControl: TWinControl; const ABorderStyle: TBorderStyle);
+begin
+  if not Assigned(AWinControl) or not AWincontrol.HandleAllocated then Exit;
+  ScrollViewSetBorderStyle( NSScrollView(AWinControl.Handle), ABorderStyle);
 end;
 
 
