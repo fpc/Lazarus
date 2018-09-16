@@ -78,7 +78,6 @@ type
     procedure dealloc; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
-    function lclIsHandle: Boolean; override;
     function lclIsEnabled: Boolean; override;
     // mouse
     procedure mouseDown(event: NSEvent); override;
@@ -422,11 +421,6 @@ end;
 procedure TCocoaOpenGLView.lclClearCallback;
 begin
   callback := nil;
-end;
-
-function TCocoaOpenGLView.lclIsHandle: Boolean;
-begin
-  Result:=true;
 end;
 
 function TCocoaOpenGLView.lclIsEnabled: Boolean;
