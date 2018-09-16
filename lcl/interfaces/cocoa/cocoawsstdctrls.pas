@@ -1963,7 +1963,7 @@ begin
   list := GetListBox(ACustomListBox);
   if not Assigned(list) then Exit();
 
-  list.selectRowIndexes_byExtendingSelection(NSIndexSet.indexSetWithIndex(AIndex), True)
+  list.selectRowIndexes_byExtendingSelection(NSIndexSet.indexSetWithIndex(AIndex), false);
 end;
 
 class procedure TCocoaWSCustomListBox.SetSelectionMode(const ACustomListBox: TCustomListBox; const AExtendedSelect, AMultiSelect: boolean);
