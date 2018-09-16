@@ -157,9 +157,7 @@ implementation
 
 function AllocCocoaMenu(const atitle: string = ''): TCocoaMenu;
 begin
-  Result := TCocoaMenu.alloc;
-  if atitle='' then Result:=Result.initWithTitle(NSString.string_)
-  else Result:=Result.initWithTitle(NSString.stringWithUTF8String(@atitle[1]));
+  Result := TCocoaMenu.alloc.initWithTitle(ControlTitleToNSStr(atitle));
   Result.setAutoenablesItems(false);
 end;
 
