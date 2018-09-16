@@ -311,6 +311,7 @@ begin
       end
       else
         debugln('Warning: Menu does not have a valid handle.');
+      ToggleAppMenu(true);
     end
     else
       CocoaWidgetSet.SetMainMenu(0, nil);
@@ -764,6 +765,7 @@ begin
   // At this point of time, we simply force enabling of the new modal form
   // (which is happening in LCL code, but at the wrong time)
   NSObject(ACustomForm.Handle).lclSetEnabled(true);
+  if not Assigned(ACustomForm.Menu) then ToggleAppMenu(false);
 
   // Another possible implementation is using a session, but this requires
   //  disabling the other windows ourselves

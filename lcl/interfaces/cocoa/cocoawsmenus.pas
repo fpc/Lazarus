@@ -17,7 +17,7 @@
 unit CocoaWSMenus;
 
 {$mode objfpc}{$H+}
-{$modeswitch objectivec1}
+{$modeswitch objectivec2}
 
 interface
 
@@ -82,7 +82,6 @@ type
     procedure lclClearCallback; override;
     procedure attachAppleMenuItems(); message 'attachAppleMenuItems';
     function isValidAppleMenu(): Boolean; message 'isValidAppleMenu';
-    function validateMenuItem(menuItem: NSMenuItem): Boolean; override;
     procedure menuNeedsUpdate(AMenu: NSMenu); message 'menuNeedsUpdate:';
   end;
 
@@ -150,7 +149,19 @@ procedure NSMenuItemSetBitmap(mn: NSMenuItem; bmp: TBitmap);
 // the returned "Key" should not be released, as it's not memory owned
 procedure ShortcutToKeyEquivalent(const AShortCut: TShortcut; out Key: NSString; out shiftKeyMask: NSUInteger);
 
+procedure ToggleAppMenu(ALogicalEnabled: Boolean);
+
+function AllocCocoaMenu(const atitle: string = ''): TCocoaMenu;
+
 implementation
+
+function AllocCocoaMenu(const atitle: string = ''): TCocoaMenu;
+begin
+  Result := TCocoaMenu.alloc;
+  if atitle='' then Result:=Result.initWithTitle(NSString.string_)
+  else Result:=Result.initWithTitle(NSString.stringWithUTF8String(@atitle[1]));
+  Result.setAutoenablesItems(false);
+end;
 
 { TLCLMenuItemCallback }
 
@@ -322,11 +333,6 @@ begin
   Result := Result and ('' = NSStringToString(title));
 end;
 
-function TCocoaMenuItem.validateMenuItem(menuItem: NSMenuItem): Boolean;
-begin
-  Result := FMenuItemTarget.Enabled;
-end;
-
 procedure TCocoaMenuItem.menuNeedsUpdate(AMenu: NSMenu);
 begin
   if not Assigned(menuItemCallback) then Exit;
@@ -358,24 +364,16 @@ end;
   Creates new menu in Cocoa interface
  ------------------------------------------------------------------------------}
 class function TCocoaWSMenu.CreateHandle(const AMenu: TMenu): HMENU;
-var
-  ns: NSString;
 begin
   //WriteLn(':>[TCocoaWSMenu.CreateHandle]');
-  ns := NSStringUtf8('');
-  Result := HMENU(TCocoaMenu.alloc.initWithTitle(ns));
-  ns.release;
+  Result := HMENU(AllocCocoaMenu);
 end;
 
 { TCocoaWSMainMenu }
 
 class function TCocoaWSMainMenu.CreateHandle(const AMenu: TMenu): HMENU;
-var
-  ns: NSString;
 begin
-  ns := NSStringUtf8('');
-  Result := HMENU(TCocoaMenu.alloc.initWithTitle(ns));
-  ns.release;
+  Result := HMENU(AllocCocoaMenu);
   TCocoaMenu(Result).createAppleMenu();
 end;
 
@@ -425,7 +423,7 @@ begin
   begin
     if not NSMenuItem(ParObj).hasSubmenu then
     begin
-      Parent := TCocoaMenu.alloc.initWithTitle( ControlTitleToNSStr(AMenuItem.Parent.Caption));
+      Parent := AllocCocoaMenu(AMenuItem.Parent.Caption);
       Parent.setDelegate(TCocoaMenuItem(ParObj));
       NSMenuItem(ParObj).setSubmenu(Parent);
     end
@@ -489,7 +487,7 @@ begin
 
     if AMenuItem.IsInMenuBar then
     begin
-      ANSMenu := TCocoaMenu.alloc.initWithTitle(ns);
+      ANSMenu := AllocCocoaMenu(AMenuItem.Caption);
       ANSMenu.setDelegate(TCocoaMenuItem(item));
       item.setSubmenu(ANSMenu);
     end;
@@ -733,5 +731,35 @@ begin
     ShiftKeyMask := ShiftKeyMask + NSCommandKeyMask;
 end;
 
+procedure ToggleAppNSMenu(mn: NSMenu; ALogicalEnabled: Boolean);
+var
+  it  : NSMenuItem;
+  obj : NSObject;
+  enb : Boolean;
+begin
+  if not Assigned(mn) then Exit;
+  for obj in mn.itemArray do begin
+    if not obj.isKindOfClass(NSMenuItem) then continue;
+    it := NSMenuItem(obj);
+    enb := ALogicalEnabled;
+    if enb and (it.isKindOfClass(TCocoaMenuItem)) then
+    begin
+      enb := Assigned(TCocoaMenuItem(it).FMenuItemTarget)
+         and TCocoaMenuItem(it).FMenuItemTarget.Enabled;
+    end;
+    it.setEnabled(enb);
+    if (it.hasSubmenu) then
+    begin
+      it.submenu.ise
+      ToggleAppNSMenu(it.submenu, ALogicalEnabled);
+    end;
+  end;
+end;
+
+
+procedure ToggleAppMenu(ALogicalEnabled: Boolean);
+begin
+  ToggleAppNSMenu( NSApplication(NSApp).mainMenu, ALogicalEnabled );
+end;
 
 end.
