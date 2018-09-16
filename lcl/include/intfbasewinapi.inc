@@ -848,19 +848,23 @@ end;
 function TWidgetSet.ExcludeClipRect(dc: hdc;
   Left, Top, Right, Bottom : Integer) : Integer;
 var
-  RRGN : hRGN;
+  RRGN : HRGN;
+  R : TRect;
 begin
+  // Convert from logical to device coordinate
+  R := Types.Rect(Left, Top, Right, Bottom);
+  LPtoDP(DC, R, 2);
+
   If DCClipRegionValid(DC) then begin
     //DebugLn('TWidgetSet.ExcludeClipRect A DC=',DbgS(DC),' Rect=',Left,',',Top,',',Right,',',Bottom);
     // create the rectangle region, that should be excluded
-    RRGN := CreateRectRgn(Left,Top,Right,Bottom);
+    RRGN := CreateRectRgn(R.Left, R.Top, R.Right, R.Bottom);
     Result := ExtSelectClipRGN(DC, RRGN, RGN_DIFF);
     //DebugLn('TWidgetSet.ExcludeClipRect B Result=',Result);
     DeleteObject(RRGN);
   end else
-    Result:=ERROR;
+    Result := ERROR;
 end;
-
 function TWidgetSet.ExtCreatePen(dwPenStyle, dwWidth: DWord;
   const lplb: TLogBrush; dwStyleCount: DWord; lpStyle: PDWord): HPEN;
 var
