@@ -95,6 +95,11 @@ type
     procedure lclItemSelected(sender: id); message 'lclItemSelected:';
   end;
 
+  TCocoaMenuItem_ShowAllApp = objcclass(NSMenuItem)
+  public
+    procedure lclItemSelected(sender: id); message 'lclItemSelected:';
+  end;
+
   TCocoaMenuItem_Quit = objcclass(NSMenuItem)
   public
     procedure lclItemSelected(sender: id); message 'lclItemSelected:';
@@ -152,13 +157,45 @@ procedure ShortcutToKeyEquivalent(const AShortCut: TShortcut; out Key: NSString;
 procedure ToggleAppMenu(ALogicalEnabled: Boolean);
 
 function AllocCocoaMenu(const atitle: string = ''): TCocoaMenu;
+function LCLMenuItemInit(item: NSMenuItem; const atitle: string; ashortCut: TShortCut): id;
+function LCLMenuItemInit(item: NSMenuItem; const atitle: string; VKKey: Word = 0; State: TShiftState = []): id;
 
 implementation
+
+function LCLMenuItemInit(item: NSMenuItem; const atitle: string; ashortCut: TShortCut): id;
+var
+  key   : NSString;
+  mask  : NSUInteger;
+begin
+  ShortcutToKeyEquivalent(ashortCut, key, mask);
+
+  Result := item.initWithTitle_action_keyEquivalent(
+    ControlTitleToNSStr(Atitle),
+    objcselector('lclItemSelected:'), // Selector is Hard-coded, that's why it's LCLMenuItemInit
+    key);
+  NSMenuItem(Result).setKeyEquivalentModifierMask(mask);
+  NSMenuItem(Result).setTarget(Result);
+end;
+
+function LCLMenuItemInit(item: NSMenuItem; const atitle: string; VKKey: Word; State: TShiftState): id;
+var
+  key   : NSString;
+  mask  : NSUInteger;
+begin
+  Result := LCLMenuItemInit(item, atitle, ShortCut(VKKey, State));
+end;
 
 function AllocCocoaMenu(const atitle: string = ''): TCocoaMenu;
 begin
   Result := TCocoaMenu.alloc.initWithTitle(ControlTitleToNSStr(atitle));
   Result.setAutoenablesItems(false);
+end;
+
+{ TCocoaMenuItem_ShowAllApp }
+
+procedure TCocoaMenuItem_ShowAllApp.lclItemSelected(sender: id);
+begin
+  NSApplication(NSApp).unhideAllApplications(sender);
 end;
 
 { TLCLMenuItemCallback }
@@ -199,17 +236,13 @@ var
 begin
   // create the menu item
   nstitle := NSStringUtf8('');
-  nskey := NSStringUtf8('');
   appleMenu := TCocoaMenuItem.alloc.initWithTitle_action_keyEquivalent(nstitle,
-    objcselector('lclItemSelected:'), nskey);
+    objcselector('lclItemSelected:'), NSString.string_);
   nstitle.release;
-  nskey.release;
 
   // add the submenu
-  nssubmeykey := NSStringUtf8('');
-  lNSSubmenu := NSMenu.alloc.initWithTitle(nssubmeykey);
+  lNSSubmenu := NSMenu.alloc.initWithTitle(NSString.string_);
   appleMenu.setSubmenu(lNSSubmenu);
-  nssubmeykey.release;
 
   appleMenu.attachAppleMenuItems();
 end;
@@ -292,35 +325,41 @@ end;
 procedure TCocoaMenuItem.attachAppleMenuItems();
 var
   item    : NSMenuItem;
-  ns, nsCharCode: NSString;
 begin
   if attachedAppleMenuItems then Exit;
   if not hasSubmenu() then Exit;
 
+  // Services
+  { // todo: the sytem would not auto-populate "Services" items.
+    //       atleast assing "System Preferences..." would make sense
+  submenu.insertItem_atIndex(NSMenuItem.separatorItem, submenu.itemArray.count);
+
+  item := LCLMenuItemInit( TCocoaMenuItem_Services.alloc, 'Services');
+  submenu.insertItem_atIndex(item, submenu.itemArray.count);
+  item.setSubmenu(NSMenu.alloc.initWithTitle( NSSTR('Services')));
+  }
+
   // Separator
   submenu.insertItem_atIndex(NSMenuItem.separatorItem, submenu.itemArray.count);
-  // Hide App
-  ns := NSStringUtf8('Hide ' + Application.Title);
-  nsCharCode := NSStringUtf8('h');
-  item := TCocoaMenuItem_HideApp.alloc.initWithTitle_action_keyEquivalent(ns,
-    objcselector('lclItemSelected:'), nsCharCode);
+
+  // Hide App     Meta-H
+  item := LCLMenuItemInit( TCocoaMenuItem_HideApp.alloc, 'Hide ' + Application.Title, VK_H, [ssMeta]);
   submenu.insertItem_atIndex(item, submenu.itemArray.count);
-  item.setTarget(item);
-  // release mem
-  nsCharCode.release;
-  ns.release;
+
+  // Hide Others  Meta-Alt-H
+  item := LCLMenuItemInit( TCocoaMenuItem_HideOthers.alloc, 'Hide Others', VK_H, [ssMeta, ssAlt]);
+  submenu.insertItem_atIndex(item, submenu.itemArray.count);
+
+  // Show All
+  item := LCLMenuItemInit( TCocoaMenuItem_ShowAllApp.alloc, 'Show All');
+  submenu.insertItem_atIndex(item, submenu.itemArray.count);
+
   // Separator
   submenu.insertItem_atIndex(NSMenuItem.separatorItem, submenu.itemArray.count);
-  // Quit
-  ns := NSStringUtf8('Quit');
-  nsCharCode := NSStringUtf8('q');
-  item := TCocoaMenuItem_Quit.alloc.initWithTitle_action_keyEquivalent(ns,
-    objcselector('lclItemSelected:'), nsCharCode);
+
+  // Quit   Meta-Q
+  item := LCLMenuItemInit( TCocoaMenuItem_Quit.alloc, 'Quit '+Application.Title, VK_Q, [ssMeta]);
   submenu.insertItem_atIndex(item, submenu.itemArray.count);
-  item.setTarget(item);
-  // release mem
-  nsCharCode.release;
-  ns.release;
 
   attachedAppleMenuItems := True;
 end;
@@ -339,11 +378,14 @@ end;
 
 procedure TCocoaMenuItem_HideApp.lclItemSelected(sender: id);
 begin
+  // Applicaiton.Minimize, calls WidgetSet.AppMinimize;
+  // which calls NSApplication.hide() anyway
   Application.Minimize;
 end;
 
 procedure TCocoaMenuItem_HideOthers.lclItemSelected(sender: id);
 begin
+  NSApplication(NSApp).hideOtherApplications(sender);
 end;
 
 procedure TCocoaMenuItem_Quit.lclItemSelected(sender: id);
@@ -446,10 +488,6 @@ class function TCocoaWSMenuItem.CreateHandle(const AMenuItem: TMenuItem): HMENU;
 var
   item    : NSMenuItem;
   ANSMenu : NSMenu;
-  ns      : NSString;
-  nsKey   : NSString;
-  key     : string;
-  ShiftSt : NSUInteger;
 begin
   if not Assigned(AMenuItem) then
   begin
@@ -474,14 +512,7 @@ begin
   end
   else
   begin
-    ShortcutToKeyEquivalent(AMenuItem.ShortCut, nsKey, ShiftSt);
-
-    ns := ControlTitleToNSStr(AMenuItem.Caption);
-    item := TCocoaMenuItem(TCocoaMenuItem.alloc).initWithTitle_action_keyEquivalent(
-      ns,
-      objcselector('lclItemSelected:'), nsKey);
-    item.setKeyEquivalentModifierMask(ShiftSt);
-    TCocoaMenuItem(item).FMenuItemTarget := AMenuItem;
+    item := LCLMenuItemInit(TCocoaMenuItem.alloc, AMenuItem.Caption, AMenuItem.ShortCut);
 
     if AMenuItem.IsInMenuBar then
     begin
@@ -490,7 +521,6 @@ begin
       item.setSubmenu(ANSMenu);
     end;
 
-    item.setTarget(item);
     TCocoaMenuItem(item).menuItemCallback:=TLCLMenuItemCallback.Create(item, AMenuItem);
 
     // initial set of properties
@@ -742,8 +772,8 @@ begin
     enb := ALogicalEnabled;
     if enb and (it.isKindOfClass(TCocoaMenuItem)) then
     begin
-      enb := Assigned(TCocoaMenuItem(it).FMenuItemTarget)
-         and TCocoaMenuItem(it).FMenuItemTarget.Enabled;
+      enb := not Assigned(TCocoaMenuItem(it).FMenuItemTarget)
+         or ( TCocoaMenuItem(it).FMenuItemTarget.Enabled );
     end;
     it.setEnabled(enb);
     if (it.hasSubmenu) then
@@ -752,7 +782,6 @@ begin
     end;
   end;
 end;
-
 
 procedure ToggleAppMenu(ALogicalEnabled: Boolean);
 begin
