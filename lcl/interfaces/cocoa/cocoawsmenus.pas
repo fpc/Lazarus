@@ -750,7 +750,6 @@ begin
     it.setEnabled(enb);
     if (it.hasSubmenu) then
     begin
-      it.submenu.ise
       ToggleAppNSMenu(it.submenu, ALogicalEnabled);
     end;
   end;
