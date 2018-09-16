@@ -465,13 +465,16 @@ begin
   if not isCustomDraw then Exit;
   if not Assigned(callback) then Exit;
   ctx := TCocoaContext.Create(NSGraphicsContext.currentContext);
+  try
+    ItemState := [];
+    if isRowSelected(row) then Include(ItemState, odSelected);
+    if lclIsEnabled then Include(ItemState, odDisabled);
+    if Assigned(window) and (window.firstResponder = self) then Include(ItemState, odFocused);
 
-  ItemState := [];
-  if isRowSelected(row) then Include(ItemState, odSelected);
-  if lclIsEnabled then Include(ItemState, odDisabled);
-  if Assigned(window) and (window.firstResponder = self) then Include(ItemState, odFocused);
-
-  callback.DrawRow(row, ctx, NSRectToRect(rectOfRow(row)), ItemState);
+    callback.DrawRow(row, ctx, NSRectToRect(rectOfRow(row)), ItemState);
+  finally
+    ctx.Free;
+  end;
 end;
 
 function TCocoaTableListView.getIndexOfColumn(ACol: NSTableColumn): NSInteger;
