@@ -866,20 +866,6 @@ begin
     else
       inherited sendEvent(event);
   end
-  else  if event.type_ = NSKeyDown then
-  begin
-    if Assigned(firstResponder) and (firstResponder.isKindOfClass_(TCocoaCustomControl)) then
-    begin
-      //todo: (hack!) for whatever Cocoa prevents the processing of Control+Left, Control+Right (Control+Arrow Keys)
-      //      events in IDE configuration. The standalone test is working just fine.
-      //      presumably NSWindow.sendEvent() should call keyDown() directly
-      //      (the only keys supressesed by Cocoa are Tab or Shift+Tab)
-      //      So, instead of figuring out why Cocoa suppresses the navigation
-      //      the overrride method simply forces keyDown() call
-      firstResponder.keyDown(event);
-    end else
-      inherited sendEvent(event);
-  end
   else
     inherited sendEvent(event);
 end;

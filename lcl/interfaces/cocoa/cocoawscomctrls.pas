@@ -461,10 +461,7 @@ begin
     tv.callback := TLCLCommonCallback.Create(tv, AWinControl);
     TLCLCommonCallback(tv.callback.GetCallbackObject).BlockCocoaUpDown := true;
     lControl.callback := tv.callback;
-
-    // view.addSubview works better than setView, no idea why
-    lControl.view.setAutoresizesSubviews(True);
-    lControl.view.addSubview(tv);
+    lControl.setView(tv);
 
     Result := TLCLIntfHandle(tv);
   end;
