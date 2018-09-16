@@ -169,6 +169,9 @@ begin
   scroll.callback := list.callback;
   scroll.setHasVerticalScroller(true);
   scroll.setAutohidesScrollers(true);
+
+  ScrollViewSetBorderStyle(scroll, TCustomCheckListBox(AWinControl).BorderStyle);
+
   Result := TLCLIntfHandle(scroll);
 end;
 
