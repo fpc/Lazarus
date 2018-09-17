@@ -110,7 +110,6 @@ type
     tabView: TCocoaTabControl;
     tabPage: TCocoaTabPage;
     procedure setFrame(arect: NSRect); override;
-    function nextResponder: NSResponder; override;
   end;
 
 function IndexOfTab(ahost: TCocoaTabControl; atab: NSTabViewItem): Integer;
@@ -318,30 +317,6 @@ begin
     arect.size.height := superView.frame.size.height;
 
   inherited setFrame(arect);
-end;
-
-function TCocoaTabPageView.nextResponder: NSResponder;
-begin
-  // by default nextResponder would return the parrent.
-  // for TCocoaTabPageView this would be NSTabView (TCocoaTabControl)
-  // (or NSView*, that would eventually return NSTabView)
-  //
-  // When processing keyboard events, and processing Control-Left or Control-Right
-  // Window finds a NSTabView amongn "the chain of responders", it would
-  // execute moveLeft: or moveRight: methods of that NSTabView,
-  // instead of delivering Control-Left to the firstResponder.
-  // Thus affecting any focused control that depends on Ctrl+Left, Ctrl+Right
-  // (namely TSynEdit).
-  //
-  // So the solution is to prevent NSTabView be available in "chain of responders"
-  //
-  // Test: Create a form  -> place TTabControl on it with 1 page -> put SynEdit on it
-  //       See if TSynEdit can process Ctrl+Left, Ctrl+Right
-  //
-  // * NSView would be returned if TCocoaTabPageView is added as a child
-  //   for a view of a tab, instead of being assigned as a view of a tab
-  if Assigned(tabView) then Result := tabView.nextResponder
-  else Result:=inherited nextResponder;
 end;
 
 { TCocoaTabPage }
