@@ -210,8 +210,60 @@ type
     procedure didAddSubview(aview: NSView); override;
   end;
 
+procedure WindowPerformKeyDown(win: NSWindow; event: NSEvent; out processed: Boolean);
 
 implementation
+
+// Cocoa emulation routine.
+//
+// For whatever reason, the default keyDown: event processing, is triggerring
+// some macOSX hot keys PRIOR to reaching keyDown: (Which is a little bit unpredictable)
+// So the below Key-event-Path is a light version of what is described, in Cocoa
+// documentation.
+// first - run controls and menus, for performKeyEquivalent
+// then pass keyDown through
+//
+// The order can be reverted and let Controls do the key processing first
+// and menu to handle the event after.
+
+procedure WindowPerformKeyDown(win: NSWindow; event: NSEvent; out processed: Boolean);
+var
+  r : NSResponder;
+  fr : NSResponder;
+  mn : NSMenu;
+begin
+  fr := win.firstResponder;
+  r := fr;
+  processed := false;
+
+  // let controls to performKeyEquivalent first
+  while Assigned(r) and not processed do begin
+    if r.respondsToSelector(objcselector('performKeyEquivalent:')) then
+      processed := r.performKeyEquivalent(event);
+    if not processed then r := r.nextResponder;
+  end;
+  if processed then Exit;
+
+  // let menus do the hot key, if controls don't like it.
+  if not processed then
+  begin
+    mn := NSApplication(NSApp).mainMenu;
+    if Assigned(mn) then
+      processed := mn.performKeyEquivalent(event);
+  end;
+  if processed then Exit;
+
+  r := fr;
+  while Assigned(r) and not processed do begin
+    if r.respondsToSelector(objcselector('keyDown:')) then
+    begin
+      r.keyDown(event);
+      processed := true;
+    end;
+    if not processed then r := r.nextResponder;
+  end;
+
+end;
 
 { TCocoaDesignOverlay }
 
@@ -823,7 +875,7 @@ var
   Epos: NSPoint;
   cr : NSRect;
   fr : NSRect;
-  trackEvent: Boolean;
+  prc: Boolean;
 begin
   if event.type_ = NSApplicationDefined then
   begin
@@ -873,6 +925,9 @@ begin
     else
       inherited sendEvent(event);
   end
+  else
+  if event.type_ = NSKeyDown then
+    WindowPerformKeyDown(self, event, prc)
   else
     inherited sendEvent(event);
 end;
