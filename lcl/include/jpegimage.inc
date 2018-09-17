@@ -23,6 +23,21 @@ begin
   FQuality := 75;
 end;
 
+procedure TJPEGImage.Compress;
+var
+  TempStream: TMemoryStream;
+begin
+  TempStream := TMemoryStream.Create;
+  try
+    FreeSaveStream;
+    SaveToStream(TempStream);
+    TempStream.Position := 0;
+    LoadFromStream(TempStream);
+  finally
+    TempStream.Free;
+  end;
+end;
+
 class function TJPEGImage.IsStreamFormatSupported(Stream: TStream): Boolean;
 var
   Pos: Int64;
@@ -78,3 +93,9 @@ begin
   TFPWriterJPEG(AWriter).CompressionQuality := CompressionQuality;
 end;
 
+procedure TJPEGImage.SetCompressionQuality(AValue: TJPEGQualityRange);
+begin
+  if FQuality = AValue then Exit;
+  FQuality := AValue;
+  FreeSaveStream;
+end;

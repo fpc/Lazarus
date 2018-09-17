@@ -1763,6 +1763,7 @@ type
     FPerformance: TJPEGPerformance;
     FProgressiveEncoding: boolean;
     FQuality: TJPEGQualityRange;
+    procedure SetCompressionQuality(AValue: TJPEGQualityRange);
   protected
     procedure InitializeReader(AImage: TLazIntfImage; AReader: TFPCustomImageReader); override;
     procedure InitializeWriter(AImage: TLazIntfImage; AWriter: TFPCustomImageWriter); override;
@@ -1772,10 +1773,11 @@ type
     class function GetSharedImageClass: TSharedRasterImageClass; override;
   public
     constructor Create; override;
+    procedure Compress;
     class function IsStreamFormatSupported(Stream: TStream): Boolean; override;
     class function GetFileExtensions: string; override;
   public
-    property CompressionQuality: TJPEGQualityRange read FQuality write FQuality;
+    property CompressionQuality: TJPEGQualityRange read FQuality write SetCompressionQuality;
     property GrayScale: Boolean read FGrayScale;
     property ProgressiveEncoding: boolean read FProgressiveEncoding;
     property Performance: TJPEGPerformance read FPerformance write FPerformance;
