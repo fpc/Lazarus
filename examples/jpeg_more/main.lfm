@@ -13,10 +13,10 @@ object Form1: TForm1
     Height = 585
     Top = 31
     Width = 676
-    ActivePage = PgRead
+    ActivePage = PgWrite
     Align = alClient
     BorderSpacing.Around = 4
-    TabIndex = 0
+    TabIndex = 1
     TabOrder = 0
     object PgRead: TTabSheet
       Caption = 'Read'

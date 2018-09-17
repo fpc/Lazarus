@@ -1784,7 +1784,7 @@ type
     class function GetFileExtensions: string; override;
   public
     property CompressionQuality: TJPEGQualityRange read FQuality write SetCompressionQuality;
-    property GrayScale: Boolean read FGrayScale write SetGrayScale;
+    property GrayScale: Boolean read FGrayScale {$IF FPC_FullVersion >= 30400} write SetGrayScale{$IFEND};
     property MinHeight: Integer read FMinHeight write FMinHeight;
     property MinWidth: Integer read FMinWidth write FMinWidth;
     property ProgressiveEncoding: boolean read FProgressiveEncoding write SetProgressiveEncoding;
