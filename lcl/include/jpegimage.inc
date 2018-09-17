@@ -91,11 +91,19 @@ begin
   if not(AWriter is TFPWriterJPEG) then Exit;
   TFPWriterJPEG(AWriter).ProgressiveEncoding := ProgressiveEncoding;
   TFPWriterJPEG(AWriter).CompressionQuality := CompressionQuality;
+  TFPWriterJPEG(AWriter).GrayScale := GrayScale;
 end;
 
 procedure TJPEGImage.SetCompressionQuality(AValue: TJPEGQualityRange);
 begin
   if FQuality = AValue then Exit;
   FQuality := AValue;
+  FreeSaveStream;
+end;
+
+procedure TJPEGImage.SetGrayScale(AValue: Boolean);
+begin
+  if FGrayScale = AValue then Exit;
+  FGrayScale := AValue;
   FreeSaveStream;
 end;

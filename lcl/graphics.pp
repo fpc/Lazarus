@@ -1764,6 +1764,7 @@ type
     FProgressiveEncoding: boolean;
     FQuality: TJPEGQualityRange;
     procedure SetCompressionQuality(AValue: TJPEGQualityRange);
+    procedure SetGrayScale(AValue: Boolean);
   protected
     procedure InitializeReader(AImage: TLazIntfImage; AReader: TFPCustomImageReader); override;
     procedure InitializeWriter(AImage: TLazIntfImage; AWriter: TFPCustomImageWriter); override;
@@ -1778,7 +1779,7 @@ type
     class function GetFileExtensions: string; override;
   public
     property CompressionQuality: TJPEGQualityRange read FQuality write SetCompressionQuality;
-    property GrayScale: Boolean read FGrayScale;
+    property GrayScale: Boolean read FGrayScale write SetGrayScale;
     property ProgressiveEncoding: boolean read FProgressiveEncoding;
     property Performance: TJPEGPerformance read FPerformance write FPerformance;
   end;
