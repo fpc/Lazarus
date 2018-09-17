@@ -1,0 +1,430 @@
+object Form1: TForm1
+  Left = 348
+  Height = 620
+  Top = 131
+  Width = 684
+  Caption = 'Form1'
+  ClientHeight = 620
+  ClientWidth = 684
+  OnCreate = FormCreate
+  LCLVersion = '2.1.0.0'
+  object PageControl: TPageControl
+    Left = 4
+    Height = 585
+    Top = 31
+    Width = 676
+    ActivePage = PgRead
+    Align = alClient
+    BorderSpacing.Around = 4
+    TabIndex = 0
+    TabOrder = 0
+    object PgRead: TTabSheet
+      Caption = 'Read'
+      ClientHeight = 557
+      ClientWidth = 668
+      object ScrollBox1: TScrollBox
+        AnchorSideLeft.Control = PgRead
+        AnchorSideTop.Control = PgRead
+        AnchorSideRight.Control = PgRead
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = Panel1
+        Left = 0
+        Height = 445
+        Top = 0
+        Width = 668
+        HorzScrollBar.Page = 553
+        HorzScrollBar.Tracking = True
+        VertScrollBar.Increment = 37
+        VertScrollBar.Page = 370
+        VertScrollBar.Smooth = True
+        VertScrollBar.Tracking = True
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        ClientHeight = 441
+        ClientWidth = 664
+        TabOrder = 0
+        object Image1: TImage
+          Left = 0
+          Height = 370
+          Top = 0
+          Width = 553
+        end
+      end
+      object Panel1: TPanel
+        Left = 4
+        Height = 104
+        Top = 449
+        Width = 660
+        Align = alBottom
+        AutoSize = True
+        BorderSpacing.Around = 4
+        BevelOuter = bvNone
+        ClientHeight = 104
+        ClientWidth = 660
+        TabOrder = 1
+        object RgScale: TRadioGroup
+          AnchorSideLeft.Control = Panel1
+          AnchorSideTop.Control = Panel1
+          Left = 0
+          Height = 104
+          Top = 0
+          Width = 84
+          AutoFill = True
+          AutoSize = True
+          Caption = 'Scale'
+          ChildSizing.LeftRightSpacing = 6
+          ChildSizing.TopBottomSpacing = 4
+          ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+          ChildSizing.EnlargeVertical = crsHomogenousChildResize
+          ChildSizing.ShrinkHorizontal = crsScaleChilds
+          ChildSizing.ShrinkVertical = crsScaleChilds
+          ChildSizing.Layout = cclLeftToRightThenTopToBottom
+          ChildSizing.ControlsPerLine = 1
+          ClientHeight = 84
+          ClientWidth = 80
+          ItemIndex = 2
+          Items.Strings = (
+            'jsFullSize'
+            'jsHalf'
+            'jsQuarter'
+            'jsEighth'
+          )
+          TabOrder = 0
+        end
+        object RgPerformance: TRadioGroup
+          AnchorSideLeft.Control = RgScale
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = Panel1
+          Left = 100
+          Height = 66
+          Top = 0
+          Width = 106
+          AutoFill = True
+          AutoSize = True
+          BorderSpacing.Left = 16
+          Caption = 'Performance'
+          ChildSizing.LeftRightSpacing = 6
+          ChildSizing.TopBottomSpacing = 4
+          ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+          ChildSizing.EnlargeVertical = crsHomogenousChildResize
+          ChildSizing.ShrinkHorizontal = crsScaleChilds
+          ChildSizing.ShrinkVertical = crsScaleChilds
+          ChildSizing.Layout = cclLeftToRightThenTopToBottom
+          ChildSizing.ControlsPerLine = 1
+          ClientHeight = 46
+          ClientWidth = 102
+          ItemIndex = 0
+          Items.Strings = (
+            'jpBestQuality'
+            'jpBestSpeed'
+          )
+          TabOrder = 1
+        end
+        object CbSmoothing: TCheckBox
+          AnchorSideLeft.Control = RgPerformance
+          AnchorSideTop.Control = RgScale
+          AnchorSideTop.Side = asrBottom
+          AnchorSideBottom.Control = RgScale
+          AnchorSideBottom.Side = asrBottom
+          Left = 100
+          Height = 19
+          Top = 85
+          Width = 79
+          Anchors = [akLeft, akBottom]
+          BorderSpacing.Top = 8
+          Caption = 'Smoothing'
+          TabOrder = 2
+        end
+        object BtnRead: TButton
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = Panel1
+          AnchorSideRight.Control = Panel1
+          AnchorSideRight.Side = asrBottom
+          AnchorSideBottom.Control = Panel1
+          AnchorSideBottom.Side = asrBottom
+          Left = 585
+          Height = 68
+          Top = 36
+          Width = 75
+          Anchors = [akRight, akBottom]
+          BorderSpacing.Left = 16
+          Caption = 'Read'
+          OnClick = BtnReadClick
+          TabOrder = 3
+        end
+        object LblSpeed: TLabel
+          AnchorSideLeft.Control = CbApplyMinSize
+          AnchorSideTop.Control = RgPerformance
+          AnchorSideTop.Side = asrBottom
+          AnchorSideBottom.Control = Panel1
+          AnchorSideBottom.Side = asrBottom
+          Left = 222
+          Height = 15
+          Top = 89
+          Width = 32
+          Anchors = [akLeft, akBottom]
+          BorderSpacing.Top = 4
+          Caption = 'Speed'
+          ParentColor = False
+        end
+        object CbApplyMinSize: TCheckBox
+          AnchorSideLeft.Control = RgPerformance
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = EdMinWidth
+          AnchorSideTop.Side = asrCenter
+          Left = 222
+          Height = 19
+          Top = 4
+          Width = 175
+          BorderSpacing.Left = 16
+          Caption = 'Apply min size:       Min width'
+          TabOrder = 4
+        end
+        object EdMinWidth: TSpinEdit
+          AnchorSideLeft.Control = CbApplyMinSize
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = Panel1
+          Left = 405
+          Height = 23
+          Top = 2
+          Width = 81
+          BorderSpacing.Left = 8
+          BorderSpacing.Top = 2
+          MaxValue = 65535
+          TabOrder = 5
+          Value = 200
+        end
+        object EdMinHeight: TSpinEdit
+          AnchorSideLeft.Control = EdMinWidth
+          AnchorSideTop.Control = EdMinWidth
+          AnchorSideTop.Side = asrBottom
+          Left = 405
+          Height = 23
+          Top = 33
+          Width = 81
+          BorderSpacing.Top = 8
+          MaxValue = 65535
+          TabOrder = 6
+          Value = 200
+        end
+        object LblSizeInfo: TLabel
+          AnchorSideLeft.Control = CbApplyMinSize
+          AnchorSideTop.Control = LblSpeed
+          AnchorSideBottom.Control = LblSpeed
+          Left = 222
+          Height = 15
+          Top = 70
+          Width = 20
+          Anchors = [akLeft, akBottom]
+          Caption = 'Size'
+          ParentColor = False
+        end
+        object LblMinHeight: TLabel
+          AnchorSideTop.Control = EdMinHeight
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = EdMinHeight
+          Left = 339
+          Height = 15
+          Top = 37
+          Width = 58
+          Anchors = [akTop, akRight]
+          BorderSpacing.Right = 8
+          Caption = 'Min height'
+          ParentColor = False
+        end
+        object LblProgressive: TLabel
+          AnchorSideLeft.Control = LblSizeInfo
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = LblSizeInfo
+          Left = 258
+          Height = 15
+          Top = 70
+          Width = 56
+          BorderSpacing.Left = 16
+          Caption = 'Progessive'
+          ParentColor = False
+        end
+      end
+    end
+    object PgWrite: TTabSheet
+      Caption = 'Write'
+      ClientHeight = 557
+      ClientWidth = 668
+      object ScrollBox2: TScrollBox
+        AnchorSideLeft.Control = PgWrite
+        AnchorSideTop.Control = PgWrite
+        AnchorSideRight.Control = PgWrite
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = Panel2
+        Left = 0
+        Height = 481
+        Top = 0
+        Width = 668
+        HorzScrollBar.Page = 553
+        HorzScrollBar.Tracking = True
+        VertScrollBar.Increment = 36
+        VertScrollBar.Page = 369
+        VertScrollBar.Smooth = True
+        VertScrollBar.Tracking = True
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        ClientHeight = 477
+        ClientWidth = 664
+        TabOrder = 0
+        object Image2: TImage
+          Left = 0
+          Height = 370
+          Top = -1
+          Width = 553
+        end
+      end
+      object Panel2: TPanel
+        Left = 4
+        Height = 68
+        Top = 485
+        Width = 660
+        Align = alBottom
+        AutoSize = True
+        BorderSpacing.Around = 4
+        BevelOuter = bvNone
+        ClientHeight = 68
+        ClientWidth = 660
+        TabOrder = 1
+        object CbGrayscale: TCheckBox
+          AnchorSideLeft.Control = Panel2
+          AnchorSideTop.Control = SbQuality
+          AnchorSideTop.Side = asrBottom
+          Left = 0
+          Height = 19
+          Top = 48
+          Width = 70
+          BorderSpacing.Top = 8
+          Caption = 'Grayscale'
+          TabOrder = 0
+        end
+        object SbQuality: TScrollBar
+          AnchorSideLeft.Control = Panel2
+          AnchorSideTop.Control = LblQuality
+          AnchorSideTop.Side = asrBottom
+          Left = 0
+          Height = 17
+          Top = 23
+          Width = 329
+          BorderSpacing.Top = 8
+          Min = 1
+          PageSize = 0
+          Position = 10
+          TabOrder = 1
+          OnChange = SbQualityChange
+        end
+        object BtnWrite: TButton
+          AnchorSideRight.Control = Panel2
+          AnchorSideRight.Side = asrBottom
+          AnchorSideBottom.Control = Panel2
+          AnchorSideBottom.Side = asrBottom
+          Left = 585
+          Height = 68
+          Top = 0
+          Width = 75
+          Anchors = [akRight, akBottom]
+          Caption = 'Write'
+          OnClick = BtnWriteClick
+          TabOrder = 2
+        end
+        object LblQuality: TLabel
+          AnchorSideLeft.Control = Panel2
+          AnchorSideTop.Control = Panel2
+          Left = 0
+          Height = 15
+          Top = 0
+          Width = 38
+          Caption = 'Quality'
+          ParentColor = False
+        end
+        object LblQualityLevel: TLabel
+          AnchorSideLeft.Control = SbQuality
+          AnchorSideLeft.Side = asrCenter
+          AnchorSideTop.Control = LblQuality
+          Left = 152
+          Height = 15
+          Top = 0
+          Width = 24
+          Caption = '        '
+          ParentColor = False
+        end
+        object CbProgressive: TCheckBox
+          AnchorSideLeft.Control = CbGrayscale
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = CbGrayscale
+          Left = 86
+          Height = 19
+          Top = 48
+          Width = 133
+          BorderSpacing.Left = 16
+          Caption = 'Progressive encoding'
+          TabOrder = 3
+        end
+      end
+    end
+  end
+  object FilenamePanel: TPanel
+    Left = 4
+    Height = 23
+    Top = 4
+    Width = 676
+    Align = alTop
+    AutoSize = True
+    BorderSpacing.Around = 4
+    BevelOuter = bvNone
+    ClientHeight = 23
+    ClientWidth = 676
+    TabOrder = 1
+    object RbUseCheetah: TRadioButton
+      AnchorSideLeft.Control = FilenamePanel
+      AnchorSideTop.Control = EdFileName
+      AnchorSideTop.Side = asrCenter
+      Left = 4
+      Height = 19
+      Top = 2
+      Width = 104
+      BorderSpacing.Left = 4
+      Caption = 'Lazarus cheetah'
+      Checked = True
+      TabOrder = 2
+      TabStop = True
+    end
+    object RbOtherFile: TRadioButton
+      AnchorSideLeft.Control = RbUseCheetah
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = EdFileName
+      AnchorSideTop.Side = asrCenter
+      Left = 120
+      Height = 19
+      Top = 2
+      Width = 75
+      BorderSpacing.Left = 12
+      Caption = 'Other file: '
+      TabOrder = 0
+    end
+    object EdFileName: TFileNameEdit
+      AnchorSideLeft.Control = RbOtherFile
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = FilenamePanel
+      AnchorSideRight.Control = FilenamePanel
+      AnchorSideRight.Side = asrBottom
+      Left = 199
+      Height = 23
+      Top = 0
+      Width = 473
+      OnAcceptFileName = EdFileNameAcceptFileName
+      FilterIndex = 0
+      HideDirectories = False
+      ButtonWidth = 23
+      NumGlyphs = 1
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 4
+      BorderSpacing.Right = 4
+      MaxLength = 0
+      TabOrder = 1
+      OnButtonClick = EdFileNameButtonClick
+    end
+  end
+end

@@ -6394,6 +6394,10 @@ examples/jpeg/jpegexample.lpr svneol=native#text/pascal
 examples/jpeg/lazarus.jpg -text svneol=unset#image/jpeg
 examples/jpeg/mainform.lfm svneol=native#text/plain
 examples/jpeg/mainform.pas svneol=native#text/pascal
+examples/jpeg_more/jpeg_test.lpi svneol=native#text/plain
+examples/jpeg_more/jpeg_test.lpr svneol=native#text/plain
+examples/jpeg_more/main.lfm svneol=native#text/plain
+examples/jpeg_more/main.pas svneol=native#text/plain
 examples/lazfreetype/lazfreetypetest.ico -text
 examples/lazfreetype/lazfreetypetest.lpi svneol=native#text/plain
 examples/lazfreetype/lazfreetypetest.lpr svneol=native#text/plain
