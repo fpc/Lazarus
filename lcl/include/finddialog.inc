@@ -580,16 +580,11 @@ Var
 
 begin
   //debugln(['TFindDialog.CalcPosition: Left=',Left,', Top=',Top,', Position=',dbgs(position),', FFormLeft=',FFormLeft,', FFormTop=',FFormTop]);
-  if (Self.Position.x < 0) and (Self.Position.y < 0) then
+  if (FFormLeft < 0) and (FFormTop < 0) then
   begin
     MfBound := Application.MainForm.BoundsRect;
     FFormTop  := MfBound.Top + (((MfBound.Bottom - MfBound.Top)  - aForm.Height) Div 2);
     FFormLeft := MfBound.Left + (((MfBound.Right - MfBound.Left) - aForm.Width) Div 2);
-  end
-  else
-  begin
-    FFormLeft := Position.x;
-    FFormTop := Position.y;
   end;
   aForm.Top := FFormTop;
   aForm.Left := FFormLeft;
@@ -600,7 +595,8 @@ constructor TFindDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FOptions:=[frDown];
-  Position := Point(-1,-1);
+  FFormLeft := -1;
+  FFormTop := -1;
 end;
 
 destructor TFindDialog.Destroy;
