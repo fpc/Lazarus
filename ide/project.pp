@@ -512,6 +512,7 @@ type
     FBuildMode: TProjectBuildMode;
     FProject: TProject;
     FCompileReasons: TCompileReasons;
+    procedure InvalidateOptions;
   protected
     procedure SetTargetCPU(const AValue: string); override;
     procedure SetTargetOS(const AValue: string); override;
@@ -543,7 +544,6 @@ type
     procedure Assign(Source: TPersistent); override;
     function CreateDiff(CompOpts: TBaseCompilerOptions;
                         Tool: TCompilerDiffTool = nil): boolean; override; // true if differ
-    procedure InvalidateOptions;
     procedure SetAlternativeCompile(const Command: string; ScanFPCMsgs: boolean); override;
   public
     property LazProject: TProject read FProject;

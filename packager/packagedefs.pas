@@ -342,6 +342,7 @@ type
   private
     FLazPackage: TLazPackage;
     FSkipCompiler: Boolean;
+    procedure InvalidateOptions;
   protected
     procedure SetLazPackage(const AValue: TLazPackage);
     procedure SetCustomOptions(const AValue: string); override;
@@ -362,7 +363,6 @@ type
     procedure Clear; override;
     procedure GetInheritedCompilerOptions(var OptionsList: TFPList); override;
     function GetOwnerName: string; override;
-    procedure InvalidateOptions;
     function GetDefaultMainSourceFileName: string; override;
     function CreateTargetFilename: string; override;
     function HasCompilerCommand: boolean; override;
