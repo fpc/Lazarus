@@ -1763,6 +1763,7 @@ type
     FPerformance: TJPEGPerformance;
     FProgressiveEncoding: boolean;
     FQuality: TJPEGQualityRange;
+    FScale: TJPEGScale;
     procedure SetCompressionQuality(AValue: TJPEGQualityRange);
     procedure SetGrayScale(AValue: Boolean);
   protected
@@ -1782,6 +1783,7 @@ type
     property GrayScale: Boolean read FGrayScale write SetGrayScale;
     property ProgressiveEncoding: boolean read FProgressiveEncoding;
     property Performance: TJPEGPerformance read FPerformance write FPerformance;
+    property Scale: TJPEGScale read FScale write FScale;
   end;
   {$ENDIF}
 

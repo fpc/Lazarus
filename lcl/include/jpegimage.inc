@@ -83,6 +83,7 @@ procedure TJPEGImage.InitializeReader(AImage: TLazIntfImage; AReader: TFPCustomI
 begin
   inherited;
   TFPReaderJPEG(AReader).Performance := Performance;
+  TFPReaderJPEG(AReader).Scale := Scale;
 end;
 
 procedure TJPEGImage.InitializeWriter(AImage: TLazIntfImage; AWriter: TFPCustomImageWriter);
