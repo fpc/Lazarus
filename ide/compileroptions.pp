@@ -335,7 +335,6 @@ type
 
   TCompilationToolOptions = class(TLazCompilationToolOptions)
   private
-    FOwner: TObject;
     FParsers: TStrings;
     FParsedCommandStamp: integer;
     FParsedCommand: string;
@@ -345,12 +344,12 @@ type
   protected
     procedure SubstituteMacros(var s: string); virtual;
   public
-    constructor Create(TheOwner: TObject); virtual;
+    constructor Create(TheOwner: TObject); override;
     destructor Destroy; override;
     procedure Clear; override;
     function CreateDiff(CompOpts: TCompilationToolOptions;
                         Tool: TCompilerDiffTool = nil): boolean; virtual;
-    procedure Assign(Src: TCompilationToolOptions); virtual;
+    procedure Assign(Src: TLazCompilationToolOptions); override;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                                 DoSwitchPathDelims: boolean); virtual;
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
@@ -360,7 +359,6 @@ type
     function GetParsedCommand: string; // resolved macros
     function HasCommands: boolean; // true if there is something to execute
   public
-    property Owner: TObject read FOwner;
     property Parsers: TStrings read FParsers write SetParsers;
     property HasParser[aParserName: string]: boolean read GetHasParser write SetHasParser;
   end;
@@ -4272,8 +4270,7 @@ end;
 
 constructor TCompilationToolOptions.Create(TheOwner: TObject);
 begin
-  inherited Create;
-  FOwner:=TheOwner;
+  inherited Create(TheOwner);
   FParsers:=TStringList.Create;
 end;
 
@@ -4289,10 +4286,11 @@ begin
   Parsers.Clear;
 end;
 
-procedure TCompilationToolOptions.Assign(Src: TCompilationToolOptions);
+procedure TCompilationToolOptions.Assign(Src: TLazCompilationToolOptions);
 begin
-  Command:=Src.Command;
-  Parsers.Assign(Src.Parsers);
+  inherited Assign(Src);
+  if Src is TCompilationToolOptions then
+    Parsers.Assign(TCompilationToolOptions(Src).Parsers);
 end;
 
 procedure TCompilationToolOptions.LoadFromXMLConfig(XMLConfig: TXMLConfig;
@@ -4320,7 +4318,6 @@ begin
   //debugln(['TCompilationToolOptions.SaveToXMLConfig ',Command,' Path=',Path]);
   XMLConfig.SetDeleteValue(Path+'Command/Value',
                            SwitchPathDelims(Command,UsePathDelim),'');
-
   // Parsers
   NeedNewFormat:=false;
   for i:=0 to Parsers.Count-1 do begin
@@ -4336,12 +4333,9 @@ begin
     SaveStringList(XMLConfig,Parsers,Path+'Parsers/')
   else begin
     // save backward compatible
-    XMLConfig.SetDeleteValue(Path+'ScanForFPCMsgs/Value',
-                             HasParser[SubToolFPC],false);
-    XMLConfig.SetDeleteValue(Path+'ScanForMakeMsgs/Value',
-                             HasParser[SubToolMake],false);
-    XMLConfig.SetDeleteValue(Path+'ShowAllMessages/Value',
-                             HasParser[SubToolDefault],false);
+    XMLConfig.SetDeleteValue(Path+'ScanForFPCMsgs/Value', HasParser[SubToolFPC],false);
+    XMLConfig.SetDeleteValue(Path+'ScanForMakeMsgs/Value',HasParser[SubToolMake],false);
+    XMLConfig.SetDeleteValue(Path+'ShowAllMessages/Value',HasParser[SubToolDefault],false);
   end;
 end;
 

@@ -286,7 +286,10 @@ end;
 procedure TCompilerCompilationOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 var
   Options: TBaseCompilerOptions absolute AOptions;
+  Syy: TCompileReasons;
+  IsProj: Boolean;
 begin
+  IsProj := Options is TProjectCompilerOptions;
   chkCreateMakefile.Checked := Options.CreateMakefileOnBuild;
 
   // execute before
@@ -296,24 +299,14 @@ begin
     SetComboBoxText(ExecuteBeforeCommandComboBox,Options.ExecuteBefore.Command,cstCaseSensitive);
     Items.EndUpdate;
   end;
-  if Options.ExecuteBefore is TProjectCompilationToolOptions then
-    with TProjectCompilationToolOptions(Options.ExecuteBefore) do
-    begin
-      chkExecBeforeCompile.Checked := crCompile in CompileReasons;
-      chkExecBeforeBuild.Checked := crBuild in CompileReasons;
-      chkExecBeforeRun.Checked := crRun in CompileReasons;
-      lblRunIfExecBefore.Visible := True;
-      chkExecBeforeCompile.Visible := True;
-      chkExecBeforeBuild.Visible := True;
-      chkExecBeforeRun.Visible := True;
-    end
-  else
-  begin
-    lblRunIfExecBefore.Visible := False;
-    chkExecBeforeCompile.Visible := False;
-    chkExecBeforeBuild.Visible := False;
-    chkExecBeforeRun.Visible := False;
-  end;
+  Syy := Options.ExecuteBefore.CompileReasons;
+  chkExecBeforeCompile.Checked := crCompile in Syy;
+  chkExecBeforeBuild.Checked := crBuild in Syy;
+  chkExecBeforeRun.Checked := crRun in Syy;
+  lblRunIfExecBefore.Visible := IsProj;
+  chkExecBeforeCompile.Visible := IsProj;
+  chkExecBeforeBuild.Visible := IsProj;
+  chkExecBeforeRun.Visible := IsProj;
   ReadSettingsParsers(Options.ExecuteBefore,ExecBeforeParsersCheckListBox);
 
   // compiler path
@@ -368,24 +361,14 @@ begin
     SetComboBoxText(ExecuteAfterCommandComboBox,Options.ExecuteAfter.Command,cstCaseSensitive);
     Items.EndUpdate;
   end;
-  if Options.ExecuteAfter is TProjectCompilationToolOptions then
-    with TProjectCompilationToolOptions(Options.ExecuteAfter) do
-    begin
-      chkExecAfterCompile.Checked := crCompile in CompileReasons;
-      chkExecAfterBuild.Checked := crBuild in CompileReasons;
-      chkExecAfterRun.Checked := crRun in CompileReasons;
-      lblRunIfExecAfter.Visible := True;
-      chkExecAfterCompile.Visible := True;
-      chkExecAfterBuild.Visible := True;
-      chkExecAfterRun.Visible := True;
-    end
-  else
-  begin
-    lblRunIfExecAfter.Visible := False;
-    chkExecAfterCompile.Visible := False;
-    chkExecAfterBuild.Visible := False;
-    chkExecAfterRun.Visible := False;
-  end;
+  Syy := Options.ExecuteAfter.CompileReasons;
+  chkExecAfterCompile.Checked := crCompile in Syy;
+  chkExecAfterBuild.Checked := crBuild in Syy;
+  chkExecAfterRun.Checked := crRun in Syy;
+  lblRunIfExecAfter.Visible := IsProj;
+  chkExecAfterCompile.Visible := IsProj;
+  chkExecAfterBuild.Visible := IsProj;
+  chkExecAfterRun.Visible := IsProj;
   ReadSettingsParsers(Options.ExecuteAfter,ExecAfterParsersCheckListBox);
 end;
 
@@ -414,10 +397,8 @@ begin
   WriteSettingsParsers(Options.ExecuteBefore,ExecBeforeParsersCheckListBox);
 
   if Options.ExecuteBefore is TProjectCompilationToolOptions then
-  begin
-    TProjectCompilationToolOptions(Options.ExecuteBefore).CompileReasons :=
+    Options.ExecuteBefore.CompileReasons :=
       MakeCompileReasons(chkExecBeforeCompile, chkExecBeforeBuild, chkExecBeforeRun);
-  end;
 
   // compiler path
   Options.CompilerPath := cobCompiler.Text;
@@ -440,10 +421,8 @@ begin
   end;
   WriteSettingsParsers(Options.ExecuteAfter,ExecAfterParsersCheckListBox);
   if Options.ExecuteAfter is TProjectCompilationToolOptions then
-  begin
-    TProjectCompilationToolOptions(Options.ExecuteAfter).CompileReasons :=
+    Options.ExecuteAfter.CompileReasons :=
       MakeCompileReasons(chkExecAfterCompile, chkExecAfterBuild, chkExecAfterRun);
-  end;
 end;
 
 class function TCompilerCompilationOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;

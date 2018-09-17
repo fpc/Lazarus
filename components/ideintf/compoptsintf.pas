@@ -120,17 +120,21 @@ type
 
   TLazCompilationToolOptions = class
   private
-    procedure SetCommand(AValue: string);
-  protected
+    FOwner: TObject;
     FChangeStamp: int64;
     FCommand: string;
-    FCompileReasons: TCompileReasons;
     FOnChanged: TNotifyEvent;
+    procedure SetCommand(AValue: string);
+  protected
+    FCompileReasons: TCompileReasons;
     procedure SetCompileReasons(const {%H-}AValue: TCompileReasons); virtual;
   public
+    constructor Create(TheOwner: TObject); virtual;
     procedure Clear; virtual;
+    procedure Assign(Src: TLazCompilationToolOptions); virtual;
     procedure IncreaseChangeStamp;
   public
+    property Owner: TObject read FOwner;
     property ChangeStamp: int64 read FChangeStamp;
     property Command: string read FCommand write SetCommand;
     property CompileReasons: TCompileReasons read FCompileReasons write SetCompileReasons;
@@ -477,16 +481,30 @@ type
                                                 write SetUseCommentsInCustomOptions;
     // execute
     property CompilerPath: String read GetCompilerPath write SetCompilerPath;
-    procedure SetAlternativeCompile(const Command: string; ScanFPCMsgs: boolean); virtual; abstract; // disable normal compile and call this instead
+    // disable normal compile and call this instead
+    procedure SetAlternativeCompile(const Command: string; ScanFPCMsgs: boolean); virtual; abstract;
   end;
 
 implementation
 
 { TLazCompilationToolOptions }
 
+constructor TLazCompilationToolOptions.Create(TheOwner: TObject);
+begin
+  FOwner:=TheOwner;
+  FCompileReasons:=crAll; // This default can be used in some comparisons.
+end;
+
 procedure TLazCompilationToolOptions.Clear;
 begin
   Command:='';
+  FCompileReasons := crAll;
+end;
+
+procedure TLazCompilationToolOptions.Assign(Src: TLazCompilationToolOptions);
+begin
+  Command:=Src.Command;
+  FCompileReasons := Src.CompileReasons;
 end;
 
 procedure TLazCompilationToolOptions.IncreaseChangeStamp;

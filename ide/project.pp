@@ -491,10 +491,9 @@ type
     procedure SetCompileReasons(const AValue: TCompileReasons); override;
     procedure SubstituteMacros(var s: string); override;
   public
-    procedure Clear; override;
+    constructor Create(TheOwner: TObject); override;
     function CreateDiff(CompOpts: TCompilationToolOptions;
                         Tool: TCompilerDiffTool): boolean; override;
-    procedure Assign(Src: TCompilationToolOptions); override;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                                 DoSwitchPathDelims: boolean); override;
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
@@ -542,7 +541,6 @@ type
     function GetDefaultMainSourceFileName: string; override;
     procedure GetInheritedCompilerOptions(var OptionsList: TFPList); override;
     procedure Assign(Source: TPersistent); override;
-    function IsEqual(CompOpts: TBaseCompilerOptions): boolean; override;
     function CreateDiff(CompOpts: TBaseCompilerOptions;
                         Tool: TCompilerDiffTool = nil): boolean; override; // true if differ
     procedure InvalidateOptions;
@@ -5987,67 +5985,20 @@ end;
 
 { TProjectCompilationToolOptions }
 
-procedure TProjectCompilationToolOptions.SetCompileReasons(
-  const AValue: TCompileReasons);
+constructor TProjectCompilationToolOptions.Create(TheOwner: TObject);
 begin
-  if FCompileReasons=AValue then exit;
-  FCompileReasons:=AValue;
-  {$IFDEF VerboseIDEModified}
-  debugln(['TProjectCompilationToolOptions.SetCompileReasons']);
-  {$ENDIF}
-  IncreaseChangeStamp;
-end;
-
-procedure TProjectCompilationToolOptions.SetDefaultCompileReasons(
-  const AValue: TCompileReasons);
-begin
-  if FDefaultCompileReasons=AValue then exit;
-  FDefaultCompileReasons:=AValue;
-  {$IFDEF VerboseIDEModified}
-  debugln(['TProjectCompilationToolOptions.SetDefaultCompileReasons']);
-  {$ENDIF}
-  IncreaseChangeStamp;
-end;
-
-procedure TProjectCompilationToolOptions.SubstituteMacros(var s: string);
-var
-  CompOpts: TProjectCompilerOptions;
-begin
-  if Owner is TProjectCompilerOptions then begin
-    CompOpts:=TProjectCompilerOptions(Owner);
-    //debugln(['TProjectCompilationToolOptions.SubstituteMacros ',DbgSName(Owner),' ',CompOpts.LazProject<>nil]);
-    s:=CompOpts.SubstituteProjectMacros(s,false);
-  end else
-    inherited SubstituteMacros(s);
-end;
-
-procedure TProjectCompilationToolOptions.Clear;
-begin
-  inherited Clear;
-  CompileReasons := crAll;
+  inherited Create(TheOwner);
+  FDefaultCompileReasons:=crAll;
 end;
 
 function TProjectCompilationToolOptions.CreateDiff(
   CompOpts: TCompilationToolOptions; Tool: TCompilerDiffTool): boolean;
 begin
-  if (CompOpts is TProjectCompilationToolOptions) then begin
-    Result:=AddCompileReasonsDiff('CompileReasons',CompileReasons,
-                  TProjectCompilationToolOptions(CompOpts).CompileReasons,Tool);
-  end else begin
-    Result:=true;
-    if Tool<>nil then Tool.Differ:=true;
-  end;
-  if (Tool=nil) and Result then exit;
-  if (inherited CreateDiff(CompOpts, Tool)) then Result:=true;
-end;
-
-procedure TProjectCompilationToolOptions.Assign(Src: TCompilationToolOptions);
-begin
-  inherited Assign(Src);
-  if Src is TProjectCompilationToolOptions then
-    CompileReasons := TProjectCompilationToolOptions(Src).CompileReasons
-  else
-    CompileReasons := crAll;
+  Assert(Assigned(Tool),'TProjectCompilationToolOptions.CreateDiff: Tool=Nil.');
+  Result:=AddCompileReasonsDiff('CompileReasons', CompileReasons,
+                                CompOpts.CompileReasons, Tool);
+  if Result then exit;
+  if inherited CreateDiff(CompOpts, Tool) then Result:=true;
 end;
 
 procedure TProjectCompilationToolOptions.LoadFromXMLConfig(XMLConfig: TXMLConfig;
@@ -6076,30 +6027,47 @@ begin
     Result:=nil;
 end;
 
+procedure TProjectCompilationToolOptions.SetCompileReasons(const AValue: TCompileReasons);
+begin
+  if FCompileReasons=AValue then exit;
+  FCompileReasons:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TProjectCompilationToolOptions.SetDefaultCompileReasons(const AValue: TCompileReasons);
+begin
+  if FDefaultCompileReasons=AValue then exit;
+  FDefaultCompileReasons:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TProjectCompilationToolOptions.SubstituteMacros(var s: string);
+var
+  CompOpts: TProjectCompilerOptions;
+begin
+  if Owner is TProjectCompilerOptions then begin
+    CompOpts:=TProjectCompilerOptions(Owner);
+    //debugln(['TProjectCompilationToolOptions.SubstituteMacros ',DbgSName(Owner),' ',CompOpts.LazProject<>nil]);
+    s:=CompOpts.SubstituteProjectMacros(s,false);
+  end else
+    inherited SubstituteMacros(s);
+end;
+
 { TProjectCompilerOptions }
 
 procedure TProjectCompilerOptions.LoadFromXMLConfig(AXMLConfig: TXMLConfig;
   const Path: string);
 begin
   inherited LoadFromXMLConfig(AXMLConfig,Path);
-  
   //FileVersion:=aXMLConfig.GetValue(Path+'Version/Value', 0);
-
-  // old compatibility
-  if AXMLConfig.GetValue(Path+'SkipCompiler/Value',false) then
-    FCompileReasons := []
-  else
-    FCompileReasons := LoadXMLCompileReasons(AXMLConfig,Path+'CompileReasons/',crAll);
-  //debugln(['TProjectCompilerOptions.LoadFromXMLConfig ',Path+'CompileReasons/ ',crCompile in FCompileReasons]);
+  FCompileReasons := LoadXMLCompileReasons(AXMLConfig,Path+'CompileReasons/',crAll);
 end;
 
 procedure TProjectCompilerOptions.SaveToXMLConfig(AXMLConfig: TXMLConfig;
   const Path: string);
 begin
   inherited SaveToXMLConfig(AXMLConfig,Path);
-  
   SaveXMLCompileReasons(AXMLConfig, Path+'CompileReasons/', FCompileReasons, crAll);
-  //debugln(['TProjectCompilerOptions.SaveToXMLConfig ',Path+'CompileReasons/ ',crCompile in FCompileReasons]);
 end;
 
 procedure TProjectCompilerOptions.SetTargetCPU(const AValue: string);
@@ -6219,11 +6187,6 @@ begin
   end;
 end;
 
-function TProjectCompilerOptions.IsEqual(CompOpts: TBaseCompilerOptions): boolean;
-begin
-  Result:=inherited IsEqual(CompOpts);
-end;
-
 function TProjectCompilerOptions.CreateDiff(CompOpts: TBaseCompilerOptions;
   Tool: TCompilerDiffTool): boolean;
 begin
@@ -6243,7 +6206,7 @@ end;
 
 procedure TProjectCompilerOptions.InvalidateOptions;
 begin
-  if (LazProject=nil) then exit;
+  //if (LazProject=nil) then exit;
 end;
 
 procedure TProjectCompilerOptions.SetAlternativeCompile(const Command: string;
@@ -6265,18 +6228,10 @@ end;
 
 constructor TProjectCompilerOptions.Create(const AOwner: TObject);
 begin
-  FCompileReasons := [crCompile, crBuild, crRun];
+  FCompileReasons := crAll;
   inherited Create(AOwner, TProjectCompilationToolOptions);
-  with TProjectCompilationToolOptions(ExecuteBefore) do begin
-    DefaultCompileReasons:=crAll;
-    CompileReasons:=DefaultCompileReasons;
-  end;
-  with TProjectCompilationToolOptions(ExecuteAfter) do begin
-    DefaultCompileReasons:=crAll;
-    CompileReasons:=DefaultCompileReasons;
-  end;
-  if AOwner <> nil
-  then FProject := AOwner as TProject;
+  if AOwner <> nil then
+    FProject := AOwner as TProject;
   ParsedOpts.OnLocalSubstitute:=@SubstituteProjectMacros;
 end;
 

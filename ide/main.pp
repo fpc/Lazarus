@@ -6620,22 +6620,14 @@ end;
 
 function CheckCompileReasons(Reason: TCompileReason;
   Options: TProjectCompilerOptions; Quiet: boolean): TModalResult;
-var
-  ProjToolOpts: TProjectCompilationToolOptions;
+// The ExecuteBefore/After tools for project are TProjectCompilationToolOptions.
 begin
-  if (Reason in Options.CompileReasons)
-  and (Options.CompilerPath<>'') then
+  if (Reason in Options.CompileReasons) and (Options.CompilerPath<>'') then
     exit(mrOk);
-  if Options.ExecuteBefore is TProjectCompilationToolOptions then begin
-    ProjToolOpts:=TProjectCompilationToolOptions(Options.ExecuteBefore);
-    if (Reason in ProjToolOpts.CompileReasons) and (ProjToolOpts.Command<>'') then
-      exit(mrOk);
-  end;
-  if Options.ExecuteAfter is TProjectCompilationToolOptions then begin
-    ProjToolOpts:=TProjectCompilationToolOptions(Options.ExecuteAfter);
-    if (Reason in ProjToolOpts.CompileReasons) and (ProjToolOpts.Command<>'') then
-      exit(mrOk);
-  end;
+  if (Reason in Options.ExecuteBefore.CompileReasons) and (Options.ExecuteBefore.Command<>'') then
+    exit(mrOk);
+  if (Reason in Options.ExecuteAfter.CompileReasons) and (Options.ExecuteAfter.Command<>'') then
+    exit(mrOk);
   // reason is not handled
   if Quiet then exit(mrCancel);
   Result:=IDEMessageDialog('Nothing to do',
@@ -6650,8 +6642,6 @@ function TMainIDE.DoBuildProject(const AReason: TCompileReason;
   Flags: TProjectBuildFlags; FinalizeResources: boolean): TModalResult;
 var
   SrcFilename: string;
-  ToolBefore: TProjectCompilationToolOptions;
-  ToolAfter: TProjectCompilationToolOptions;
   PkgFlags: TPkgCompileFlags;
   CompilerFilename: String;
   WorkingDir: String;
@@ -6801,17 +6791,15 @@ begin
         aCompileHint:='Compile Reason: '+aCompileHint;
 
       // execute compilation tool 'Before'
-      if not (pbfSkipTools in Flags) then begin
-        ToolBefore:=Project1.CompilerOptions.ExecuteBefore as TProjectCompilationToolOptions;
-        if (AReason in ToolBefore.CompileReasons) then begin
-          Result:=Project1.CompilerOptions.ExecuteBefore.Execute(
-                 WorkingDir, lisProject2+lisExecutingCommandBefore,
-                 aCompileHint);
-          if Result<>mrOk then
-          begin
-            debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] CompilerOptions.ExecuteBefore.Execute failed']);
-            exit;
-          end;
+      if not (pbfSkipTools in Flags)
+      and (AReason in Project1.CompilerOptions.ExecuteBefore.CompileReasons) then
+      begin
+        Result:=Project1.CompilerOptions.ExecuteBefore.Execute(WorkingDir,
+                            lisProject2+lisExecutingCommandBefore, aCompileHint);
+        if Result<>mrOk then
+        begin
+          debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] CompilerOptions.ExecuteBefore.Execute failed']);
+          exit;
         end;
       end;
 
@@ -6960,17 +6948,15 @@ begin
       end;
 
       // execute compilation tool 'After'
-      if not (pbfSkipTools in Flags) then begin
-        ToolAfter:=Project1.CompilerOptions.ExecuteAfter as TProjectCompilationToolOptions;
-        // no need to check for mrOk, we are exit if it wasn't
-        if (AReason in ToolAfter.CompileReasons) then begin
-          Result:=Project1.CompilerOptions.ExecuteAfter.Execute(
-                  WorkingDir,lisProject2+lisExecutingCommandAfter,aCompileHint);
-          if Result<>mrOk then
-          begin
-            debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] CompilerOptions.ExecuteAfter.Execute failed']);
-            exit;
-          end;
+      if not (pbfSkipTools in Flags) // no need to check for mrOk, we are exit if it wasn't
+      and (AReason in Project1.CompilerOptions.ExecuteAfter.CompileReasons) then
+      begin
+        Result:=Project1.CompilerOptions.ExecuteAfter.Execute(WorkingDir,
+                             lisProject2+lisExecutingCommandAfter, aCompileHint);
+        if Result<>mrOk then
+        begin
+          debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] CompilerOptions.ExecuteAfter.Execute failed']);
+          exit;
         end;
       end;
 
