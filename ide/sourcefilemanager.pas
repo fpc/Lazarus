@@ -295,8 +295,7 @@ function SaveEditorChangesToCodeCache(AEditor: TSourceEditorInterface): boolean;
 //save project
   function ShowSaveProjectAsDialog(UseMainSourceFile: boolean): TModalResult;
   function SaveProjectInfo(var Flags: TSaveFlags): TModalResult;
-  procedure GetMainUnit(out MainUnitInfo: TUnitInfo;
-      out MainUnitSrcEdit: TSourceEditor; UpdateModified: boolean);
+  procedure GetMainUnit(out MainUnitInfo: TUnitInfo; out MainUnitSrcEdit: TSourceEditor);
   procedure SaveSrcEditorProjectSpecificSettings(AnEditorInfo: TUnitEditorInfo);
   procedure SaveSourceEditorProjectSpecificSettings;
   procedure UpdateProjectResourceInfo;
@@ -7371,7 +7370,7 @@ begin
   UpdateSourceNames;
 
   // find mainunit
-  GetMainUnit(MainUnitInfo,MainUnitSrcEdit,true);
+  GetMainUnit(MainUnitInfo, MainUnitSrcEdit);
 
   // save project specific settings of the source editor
   SaveSourceEditorProjectSpecificSettings;
@@ -7439,15 +7438,14 @@ begin
   end;
 end;
 
-procedure GetMainUnit(out MainUnitInfo: TUnitInfo;
-  out MainUnitSrcEdit: TSourceEditor; UpdateModified: boolean);
+procedure GetMainUnit(out MainUnitInfo: TUnitInfo; out MainUnitSrcEdit: TSourceEditor);
 begin
   MainUnitSrcEdit:=nil;
   if Project1.MainUnitID>=0 then begin
     MainUnitInfo:=Project1.MainUnitInfo;
     if MainUnitInfo.OpenEditorInfoCount > 0 then begin
       MainUnitSrcEdit := TSourceEditor(MainUnitInfo.OpenEditorInfo[0].EditorComponent);
-      if UpdateModified and MainUnitSrcEdit.Modified then
+      if MainUnitSrcEdit.Modified then
         MainUnitSrcEdit.UpdateCodeBuffer;
     end;
   end else
@@ -7670,7 +7668,7 @@ begin
     // change main source
     if (Project1.MainUnitID >= 0) then
     begin
-      GetMainUnit(MainUnitInfo, MainUnitSrcEdit, true);
+      GetMainUnit(MainUnitInfo, MainUnitSrcEdit);
       if not Project1.ProjResources.RenameDirectives(MainUnitInfo.Filename,NewProgramFN)
       then begin
         DebugLn(['ShowSaveProjectAsDialog failed renaming directives Old="',MainUnitInfo.Filename,'" New="',NewProgramFN,'"']);
