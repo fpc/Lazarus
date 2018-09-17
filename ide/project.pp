@@ -485,11 +485,10 @@ type
 
   TProjectCompilationToolOptions = class(TCompilationToolOptions)
   private
-    FCompileReasons: TCompileReasons;
     FDefaultCompileReasons: TCompileReasons;
-    procedure SetCompileReasons(const AValue: TCompileReasons);
     procedure SetDefaultCompileReasons(const AValue: TCompileReasons);
   protected
+    procedure SetCompileReasons(const AValue: TCompileReasons); override;
     procedure SubstituteMacros(var s: string); override;
   public
     procedure Clear; override;
@@ -502,7 +501,6 @@ type
                               UsePathDelim: TPathDelimSwitch); override;
     function GetProject: TProject;
   public
-    property CompileReasons: TCompileReasons read FCompileReasons write SetCompileReasons;
     property DefaultCompileReasons: TCompileReasons read FDefaultCompileReasons write SetDefaultCompileReasons;
   end;
 

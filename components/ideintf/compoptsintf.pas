@@ -18,7 +18,7 @@ interface
 uses
   Classes, SysUtils,
   // LazUtils
-  LazMethodList,
+  LazMethodList, LazFileCache,
   // IdeIntf
   IDEOptionsIntf;
 
@@ -116,6 +116,27 @@ const
   crAll = [crCompile, crBuild, crRun];
 
 type
+  { TLazCompilationToolOptions }
+
+  TLazCompilationToolOptions = class
+  private
+    procedure SetCommand(AValue: string);
+  protected
+    FChangeStamp: int64;
+    FCommand: string;
+    FCompileReasons: TCompileReasons;
+    FOnChanged: TNotifyEvent;
+    procedure SetCompileReasons(const {%H-}AValue: TCompileReasons); virtual;
+  public
+    procedure Clear; virtual;
+    procedure IncreaseChangeStamp;
+  public
+    property ChangeStamp: int64 read FChangeStamp;
+    property Command: string read FCommand write SetCommand;
+    property CompileReasons: TCompileReasons read FCompileReasons write SetCompileReasons;
+    property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
+  end;
+
   { TLazCompilerOptions }
 
   TLazCompilerOptions = class(TAbstractIDEOptions)
@@ -270,6 +291,10 @@ type
     fStopAfterErrCount: integer;
     // Turn specific types of compiler messages on or off
     fMessageFlags: TAbstractCompilerMsgIDFlags;
+
+    // Other tools:
+    fExecuteBefore: TLazCompilationToolOptions;
+    fExecuteAfter: TLazCompilationToolOptions;
 
     // Other:
     fDontUseConfigFile: Boolean;
@@ -440,7 +465,9 @@ type
     property WriteFPCLogo: Boolean read fWriteFPCLogo write SetWriteFPCLogo;
     property StopAfterErrCount: integer read fStopAfterErrCount write SetStopAfterErrCount;
     property MessageFlags: TAbstractCompilerMsgIDFlags read fMessageFlags;
-
+    // other tools
+    property ExecuteBefore: TLazCompilationToolOptions read fExecuteBefore;
+    property ExecuteAfter: TLazCompilationToolOptions read fExecuteAfter;
     // other
     property DontUseConfigFile: Boolean read fDontUseConfigFile write SetDontUseConfigFile;
     property CustomConfigFile: Boolean read fCustomConfigFile write SetCustomConfigFile;
@@ -448,13 +475,39 @@ type
     property CustomOptions: string read GetCustomOptions write SetCustomOptions;
     property UseCommentsInCustomOptions: Boolean read fUseCommentsInCustomOptions
                                                 write SetUseCommentsInCustomOptions;
-
     // execute
     property CompilerPath: String read GetCompilerPath write SetCompilerPath;
     procedure SetAlternativeCompile(const Command: string; ScanFPCMsgs: boolean); virtual; abstract; // disable normal compile and call this instead
   end;
 
 implementation
+
+{ TLazCompilationToolOptions }
+
+procedure TLazCompilationToolOptions.Clear;
+begin
+  Command:='';
+end;
+
+procedure TLazCompilationToolOptions.IncreaseChangeStamp;
+begin
+  LUIncreaseChangeStamp64(FChangeStamp);
+  if Assigned(OnChanged) then
+    OnChanged(Self);
+end;
+
+procedure TLazCompilationToolOptions.SetCommand(AValue: string);
+begin
+  if FCommand=AValue then exit;
+  FCommand:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilationToolOptions.SetCompileReasons(const AValue: TCompileReasons);
+begin
+  raise Exception.Create('TLazCompilationToolOptions does not support CompileReasons.'
+                        +' Use an inherited class instead.');
+end;
 
 { TLazBuildMacros }
 
