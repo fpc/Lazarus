@@ -6802,8 +6802,7 @@ begin
 
       // execute compilation tool 'Before'
       if not (pbfSkipTools in Flags) then begin
-        ToolBefore:=TProjectCompilationToolOptions(
-                                          Project1.CompilerOptions.ExecuteBefore);
+        ToolBefore:=Project1.CompilerOptions.ExecuteBefore as TProjectCompilationToolOptions;
         if (AReason in ToolBefore.CompileReasons) then begin
           Result:=Project1.CompilerOptions.ExecuteBefore.Execute(
                  WorkingDir, lisProject2+lisExecutingCommandBefore,
@@ -6962,7 +6961,7 @@ begin
 
       // execute compilation tool 'After'
       if not (pbfSkipTools in Flags) then begin
-        ToolAfter:=TProjectCompilationToolOptions(Project1.CompilerOptions.ExecuteAfter);
+        ToolAfter:=Project1.CompilerOptions.ExecuteAfter as TProjectCompilationToolOptions;
         // no need to check for mrOk, we are exit if it wasn't
         if (AReason in ToolAfter.CompileReasons) then begin
           Result:=Project1.CompilerOptions.ExecuteAfter.Execute(

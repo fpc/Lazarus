@@ -6046,13 +6046,10 @@ end;
 procedure TProjectCompilationToolOptions.Assign(Src: TCompilationToolOptions);
 begin
   inherited Assign(Src);
-  if Src is TProjectCompilationToolOptions
-  then begin
-    CompileReasons := TProjectCompilationToolOptions(Src).CompileReasons;
-  end
-  else begin
+  if Src is TProjectCompilationToolOptions then
+    CompileReasons := TProjectCompilationToolOptions(Src).CompileReasons
+  else
     CompileReasons := crAll;
-  end;
 end;
 
 procedure TProjectCompilationToolOptions.LoadFromXMLConfig(XMLConfig: TXMLConfig;
