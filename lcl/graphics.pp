@@ -1760,6 +1760,8 @@ type
   TJPEGImage = class(TFPImageBitmap)
   private
     FGrayScale: Boolean;
+    FMinHeight: Integer;
+    FMinWidth: Integer;
     FPerformance: TJPEGPerformance;
     FProgressiveEncoding: boolean;
     FQuality: TJPEGQualityRange;
@@ -1781,6 +1783,8 @@ type
   public
     property CompressionQuality: TJPEGQualityRange read FQuality write SetCompressionQuality;
     property GrayScale: Boolean read FGrayScale write SetGrayScale;
+    property MinHeight: Integer read FMinHeight write FMinHeight;
+    property MinWidth: Integer read FMinWidth write FMinWidth;
     property ProgressiveEncoding: boolean read FProgressiveEncoding;
     property Performance: TJPEGPerformance read FPerformance write FPerformance;
     property Scale: TJPEGScale read FScale write FScale;

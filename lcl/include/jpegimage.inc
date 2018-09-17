@@ -82,6 +82,8 @@ end;
 procedure TJPEGImage.InitializeReader(AImage: TLazIntfImage; AReader: TFPCustomImageReader);
 begin
   inherited;
+  TFPReaderJPEG(AReader).MinHeight := MinHeight;
+  TFPReaderJPEG(AReader).MinWidth := MinWidth;
   TFPReaderJPEG(AReader).Performance := Performance;
   TFPReaderJPEG(AReader).Scale := Scale;
 end;
