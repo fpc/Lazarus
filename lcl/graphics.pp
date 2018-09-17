@@ -1766,8 +1766,10 @@ type
     FProgressiveEncoding: boolean;
     FQuality: TJPEGQualityRange;
     FScale: TJPEGScale;
+    FSmoothing: Boolean;
     procedure SetCompressionQuality(AValue: TJPEGQualityRange);
     procedure SetGrayScale(AValue: Boolean);
+    procedure SetProgressiveEncoding(AValue: Boolean);
   protected
     procedure InitializeReader(AImage: TLazIntfImage; AReader: TFPCustomImageReader); override;
     procedure InitializeWriter(AImage: TLazIntfImage; AWriter: TFPCustomImageWriter); override;
@@ -1785,9 +1787,10 @@ type
     property GrayScale: Boolean read FGrayScale write SetGrayScale;
     property MinHeight: Integer read FMinHeight write FMinHeight;
     property MinWidth: Integer read FMinWidth write FMinWidth;
-    property ProgressiveEncoding: boolean read FProgressiveEncoding;
+    property ProgressiveEncoding: boolean read FProgressiveEncoding write SetProgressiveEncoding;
     property Performance: TJPEGPerformance read FPerformance write FPerformance;
     property Scale: TJPEGScale read FScale write FScale;
+    property Smoothing: Boolean read FSmoothing write FSmoothing;
   end;
   {$ENDIF}
 

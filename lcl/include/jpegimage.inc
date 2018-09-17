@@ -86,6 +86,7 @@ begin
   TFPReaderJPEG(AReader).MinWidth := MinWidth;
   TFPReaderJPEG(AReader).Performance := Performance;
   TFPReaderJPEG(AReader).Scale := Scale;
+  TFPReaderJPEG(AReader).Smoothing := Smoothing;
 end;
 
 procedure TJPEGImage.InitializeWriter(AImage: TLazIntfImage; AWriter: TFPCustomImageWriter);
@@ -108,5 +109,12 @@ procedure TJPEGImage.SetGrayScale(AValue: Boolean);
 begin
   if FGrayScale = AValue then Exit;
   FGrayScale := AValue;
+  FreeSaveStream;
+end;
+
+procedure TJPEGImage.SetProgressiveEncoding(AValue: boolean);
+begin
+  if FProgressiveEncoding = AValue then Exit;
+  FProgressiveEncoding := AValue;
   FreeSaveStream;
 end;
