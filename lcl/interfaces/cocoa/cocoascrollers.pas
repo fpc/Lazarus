@@ -44,8 +44,6 @@ type
     procedure dealloc; override;
     procedure setFrame(aframe: NSRect); override;
     function acceptsFirstResponder: Boolean; override;
-    function becomeFirstResponder: Boolean; override;
-    function resignFirstResponder: Boolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
@@ -114,8 +112,6 @@ type
     procedure actionScrolling(sender: NSObject); message 'actionScrolling:';
     function IsHorizontal: Boolean; message 'IsHorizontal';
     function acceptsFirstResponder: Boolean; override;
-    function becomeFirstResponder: Boolean; override;
-    function resignFirstResponder: Boolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
@@ -746,20 +742,6 @@ begin
   Result := True;
 end;
 
-function TCocoaScrollView.becomeFirstResponder: Boolean;
-begin
-  Result := inherited becomeFirstResponder;
-  if Assigned(callback) then
-    callback.BecomeFirstResponder;
-end;
-
-function TCocoaScrollView.resignFirstResponder: Boolean;
-begin
-  Result := inherited resignFirstResponder;
-  if Assigned(callback) then
-    callback.ResignFirstResponder;
-end;
-
 function TCocoaScrollView.lclGetCallback: ICommonCallback;
 begin
   Result := callback;
@@ -944,20 +926,6 @@ end;
 function TCocoaScrollBar.acceptsFirstResponder: Boolean;
 begin
   Result := True;
-end;
-
-function TCocoaScrollBar.becomeFirstResponder: Boolean;
-begin
-  Result := inherited becomeFirstResponder;
-  if Assigned(callback) then
-    callback.BecomeFirstResponder;
-end;
-
-function TCocoaScrollBar.resignFirstResponder: Boolean;
-begin
-  Result := inherited resignFirstResponder;
-  if Assigned(callback) then
-    callback.ResignFirstResponder;
 end;
 
 function TCocoaScrollBar.lclGetCallback: ICommonCallback;

@@ -121,6 +121,10 @@ type
     isInFullScreen: Boolean;
     orderOutAfterFS : Boolean;
     fsview: TCocoaWindowContent;
+
+    responderSwitch: Integer;
+    respInitCb : ICommonCallback;
+
     function windowShouldClose(sender : id): LongBool; message 'windowShouldClose:';
     procedure windowWillClose(notification: NSNotification); message 'windowWillClose:';
     function windowWillReturnFieldEditor_toObject(sender: NSWindow; client: id): id; message 'windowWillReturnFieldEditor:toObject:';
@@ -160,6 +164,8 @@ type
     // NSDraggingDestinationCategory
     function draggingEntered(sender: NSDraggingInfoProtocol): NSDragOperation; override;
     function performDragOperation(sender: NSDraggingInfoProtocol): Boolean; override;
+    // windows
+    function makeFirstResponder(r: NSResponder): Boolean; override;
     // menu support
     procedure lclItemSelected(sender: id); message 'lclItemSelected:';
 
@@ -203,6 +209,7 @@ type
     procedure setHidden(aisHidden: Boolean); override;
     procedure didAddSubview(aview: NSView); override;
   end;
+
 
 implementation
 
@@ -915,6 +922,33 @@ begin
   if (Length(lFiles) > 0) and (callback <> nil)  then
     callback.DropFiles(lFiles);
   Result := True;
+end;
+
+function TCocoaWindow.makeFirstResponder(r: NSResponder): Boolean;
+var
+  cbnew: ICommonCallback;
+begin
+  if (responderSwitch = 0) then
+    respInitCb := firstResponder.lclGetCallback;
+
+  // makeFirstResponder calls can be recursive!
+  // the resulting NSResponder can be the same object  (i.e. fieldEditor)
+  // yet, the callback should be the different anyway
+
+  inc(responderSwitch);
+  Result:=inherited makeFirstResponder(r);
+  dec(responderSwitch);
+
+  if (responderSwitch = 0) then
+  begin
+    cbnew := firstResponder.lclGetCallback;
+
+    if not isCallbackForSameObject(respInitCb, cbnew) then
+    begin
+      if Assigned(respInitCb) then respInitCb.ResignFirstResponder;
+      if Assigned(cbnew) then cbnew.BecomeFirstResponder;
+    end;
+  end;
 end;
 
 procedure TCocoaWindow.lclItemSelected(sender: id);

@@ -186,8 +186,6 @@ type
     auxMouseByParent: Boolean;
     procedure dealloc; override;
     function acceptsFirstResponder: Boolean; override;
-    function becomeFirstResponder: Boolean; override;
-    function resignFirstResponder: Boolean; override;
     procedure drawRect(dirtyRect: NSRect); override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
@@ -254,8 +252,6 @@ type
   public
     callback: ICommonCallback;
     function acceptsFirstResponder: Boolean; override;
-    function becomeFirstResponder: Boolean; override;
-    function resignFirstResponder: Boolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
@@ -275,8 +271,6 @@ type
   TCocoaProgressIndicator = objcclass(NSProgressIndicator)
     callback: ICommonCallback;
     function acceptsFirstResponder: Boolean; override;
-    function becomeFirstResponder: Boolean; override;
-    function resignFirstResponder: Boolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
@@ -318,8 +312,6 @@ type
     procedure drawRect(dirtyRect: NSRect); override;
 
     function acceptsFirstResponder: Boolean; override;
-    function becomeFirstResponder: Boolean; override;
-    function resignFirstResponder: Boolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
@@ -368,9 +360,18 @@ var
   // todo: this should be a threadvar
   TrackedControl : NSObject = nil;
 
+function isCallbackForSameObject(cb1, cb2: ICommonCallback): Boolean;
+
 implementation
 
 uses CocoaInt;
+
+function isCallbackForSameObject(cb1, cb2: ICommonCallback): Boolean;
+begin
+  Result := Assigned(cb1) and Assigned(cb2);
+  if Result then
+    Result := (cb1 = cb2) or (cb1.GetTarget = cb2.GetTarget);
+end;
 
 {$I mackeycodes.inc}
 
@@ -453,20 +454,6 @@ begin
   Result := True;
 end;
 
-function TCocoaGroupBox.becomeFirstResponder: Boolean;
-begin
-  Result := inherited becomeFirstResponder;
-  if Assigned(callback) then
-    callback.BecomeFirstResponder;
-end;
-
-function TCocoaGroupBox.resignFirstResponder: Boolean;
-begin
-  Result := inherited resignFirstResponder;
-  if Assigned(callback) then
-    callback.ResignFirstResponder;
-end;
-
 function TCocoaGroupBox.lclGetCallback: ICommonCallback;
 begin
   Result := callback;
@@ -521,20 +508,6 @@ end;
 function TCocoaCustomControl.acceptsFirstResponder: Boolean;
 begin
   Result := True;
-end;
-
-function TCocoaCustomControl.becomeFirstResponder: Boolean;
-begin
-  Result := inherited becomeFirstResponder;
-  if Assigned(callback) then
-    callback.BecomeFirstResponder;
-end;
-
-function TCocoaCustomControl.resignFirstResponder: Boolean;
-begin
-  Result := inherited resignFirstResponder;
-  if Assigned(callback) then
-    callback.ResignFirstResponder;
 end;
 
 function TCocoaCustomControl.acceptsFirstMouse(event: NSEvent): Boolean;
@@ -1178,18 +1151,6 @@ begin
   Result:=True;
 end;
 
-function TCocoaProgressIndicator.becomeFirstResponder: Boolean;
-begin
-  Result := inherited becomeFirstResponder;
-  callback.BecomeFirstResponder;
-end;
-
-function TCocoaProgressIndicator.resignFirstResponder: Boolean;
-begin
-  Result := inherited resignFirstResponder;
-  callback.ResignFirstResponder;
-end;
-
 function TCocoaProgressIndicator.lclGetCallback: ICommonCallback;
 begin
   Result:=callback;
@@ -1359,18 +1320,6 @@ end;
 function TCocoaSlider.acceptsFirstResponder: Boolean;
 begin
   Result := True;
-end;
-
-function TCocoaSlider.becomeFirstResponder: Boolean;
-begin
-  Result := inherited becomeFirstResponder;
-  callback.BecomeFirstResponder;
-end;
-
-function TCocoaSlider.resignFirstResponder: Boolean;
-begin
-  Result := inherited resignFirstResponder;
-  callback.ResignFirstResponder;
 end;
 
 function TCocoaSlider.lclGetCallback: ICommonCallback;

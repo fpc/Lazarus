@@ -59,9 +59,6 @@ type
   TCocoaTextField = objcclass(NSTextField)
     callback: ICommonCallback;
     function acceptsFirstResponder: Boolean; override;
-    function becomeFirstResponder: Boolean; override;
-    function RealResignFirstResponder: Boolean; message 'RealResignFirstResponder';
-    function resignFirstResponder: Boolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
@@ -86,9 +83,6 @@ type
   public
     callback: ICommonCallback;
     function acceptsFirstResponder: Boolean; override;
-    function becomeFirstResponder: Boolean; override;
-    function RealResignFirstResponder: Boolean; message 'RealResignFirstResponder';
-    function resignFirstResponder: Boolean; override;
     procedure resetCursorRects; override;
     // key
     //procedure keyDown(event: NSEvent); override; -> keyDown doesn't work in NSTextField
@@ -115,8 +109,6 @@ type
     supressTextChangeEvent: Integer; // if above zero, then don't send text change event
 
     function acceptsFirstResponder: Boolean; override;
-    function becomeFirstResponder: Boolean; override;
-    function resignFirstResponder: Boolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
@@ -150,7 +142,7 @@ type
 
   TCocoaFieldEditor = objcclass(NSTextView)
   public
-    function resignFirstResponder: Boolean; override;
+    function lclGetCallback: ICommonCallback; override;
     // keyboard
     procedure keyDown(event: NSEvent); override;
     // mouse
@@ -228,8 +220,6 @@ type
     list: TCocoaComboBoxList;
     resultNS: NSString;  //use to return values to combo
     function acceptsFirstResponder: Boolean; override;
-    function becomeFirstResponder: Boolean; override;
-    function resignFirstResponder: Boolean; override;
     procedure textDidChange(notification: NSNotification); override;
     procedure textDidEndEditing(notification: NSNotification); override;
     // NSComboBoxDataSourceProtocol
@@ -287,8 +277,6 @@ type
     isOwnerDrawn: Boolean;
     isOwnerMeasure: Boolean;
     function acceptsFirstResponder: Boolean; override;
-    function becomeFirstResponder: Boolean; override;
-    function resignFirstResponder: Boolean; override;
     procedure dealloc; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
@@ -327,8 +315,6 @@ type
     procedure StepperChanged(sender: NSObject); message 'StepperChanged:';
     // lcl
     function acceptsFirstResponder: Boolean; override;
-    function becomeFirstResponder: Boolean; override;
-    function resignFirstResponder: Boolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     // NSViewFix
@@ -352,9 +338,6 @@ type
     procedure controlTextDidChange(obj: NSNotification); override;
     // lcl
     function acceptsFirstResponder: Boolean; override;
-    function becomeFirstResponder: Boolean; override;
-    function RealResignFirstResponder: Boolean; message 'RealResignFirstResponder';
-    function resignFirstResponder: Boolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
@@ -493,24 +476,10 @@ begin
     Result := NSView(v);
 end;
 
-function TCocoaFieldEditor.resignFirstResponder: Boolean;
-var
-  v : NSObject;
+function TCocoaFieldEditor.lclGetCallback: ICommonCallback;
 begin
-  v := GetEditBox(Self);
-  //DebugLn('[TCocoaFieldEditor.resignFirstResponder]');
-  if (v <> nil) then
-  begin
-    if v.isKindOfClass_(TCocoaTextField) then
-    begin
-      TCocoaTextField(v).RealResignFirstResponder();
-    end
-    else if v.isKindOfClass_(TCocoaSecureTextField) then
-    begin
-      TCocoaSecureTextField(v).RealResignFirstResponder();
-    end;
-  end;
-  Result := inherited resignFirstResponder;
+  if Assigned(delegate) then Result := NSObject(delegate).lclGetCallback
+  else Result := nil;
 end;
 
 procedure TCocoaFieldEditor.keyDown(event: NSEvent);
@@ -655,30 +624,6 @@ begin
   Result := True;
 end;
 
-function TCocoaTextField.becomeFirstResponder: Boolean;
-begin
-  Result := inherited becomeFirstResponder;
-  callback.BecomeFirstResponder;
-end;
-
-function TCocoaTextField.RealResignFirstResponder: Boolean;
-begin
-  callback.ResignFirstResponder;
-  Result := True;
-end;
-
-// Do not propagate this event to the LCL,
-// because Cocoa NSTextField loses focus as soon as it receives it
-// and the shared editor gets focus instead.
-// see NSWindow.fieldEditor:forObject:
-// See http://www.cocoabuilder.com/archive/cocoa/103607-resignfirstresponder-called-immediately.html
-// See http://stackoverflow.com/questions/3192905/nstextfield-not-noticing-lost-focus-when-pressing-tab
-function TCocoaTextField.resignFirstResponder: Boolean;
-begin
-  //DebugLn('[TCocoaTextField.resignFirstResponder]');
-  Result := inherited resignFirstResponder;
-end;
-
 function TCocoaTextField.lclGetCallback: ICommonCallback;
 begin
   Result := callback;
@@ -821,18 +766,6 @@ begin
   Result := True;
 end;
 
-function TCocoaTextView.becomeFirstResponder: Boolean;
-begin
-  Result := inherited becomeFirstResponder;
-  callback.BecomeFirstResponder;
-end;
-
-function TCocoaTextView.resignFirstResponder: Boolean;
-begin
-  Result := inherited resignFirstResponder;
-  callback.ResignFirstResponder;
-end;
-
 function TCocoaTextView.lclGetCallback: ICommonCallback;
 begin
   Result := callback;
@@ -941,24 +874,6 @@ end;
 function TCocoaSecureTextField.acceptsFirstResponder: Boolean;
 begin
   Result := True;
-end;
-
-function TCocoaSecureTextField.becomeFirstResponder: Boolean;
-begin
-  Result := inherited becomeFirstResponder;
-  callback.BecomeFirstResponder;
-end;
-
-function TCocoaSecureTextField.RealResignFirstResponder: Boolean;
-begin
-  callback.ResignFirstResponder;
-  Result := True;
-end;
-
-function TCocoaSecureTextField.resignFirstResponder: Boolean;
-begin
-  //DebugLn('[TCocoaTextField.resignFirstResponder]');
-  Result := inherited resignFirstResponder;
 end;
 
 procedure TCocoaSecureTextField.resetCursorRects;
@@ -1142,18 +1057,6 @@ end;
 function TCocoaComboBox.acceptsFirstResponder: Boolean;
 begin
   Result := True;
-end;
-
-function TCocoaComboBox.becomeFirstResponder: Boolean;
-begin
-  Result := inherited becomeFirstResponder;
-  callback.BecomeFirstResponder;
-end;
-
-function TCocoaComboBox.resignFirstResponder: Boolean;
-begin
-  Result := inherited resignFirstResponder;
-  callback.ResignFirstResponder;
 end;
 
 procedure TCocoaComboBox.textDidChange(notification: NSNotification);
@@ -1350,18 +1253,6 @@ end;
 function TCocoaReadOnlyComboBox.acceptsFirstResponder: Boolean;
 begin
   Result := True;
-end;
-
-function TCocoaReadOnlyComboBox.becomeFirstResponder: Boolean;
-begin
-  Result := inherited becomeFirstResponder;
-  callback.BecomeFirstResponder;
-end;
-
-function TCocoaReadOnlyComboBox.resignFirstResponder: Boolean;
-begin
-  Result := inherited resignFirstResponder;
-  callback.ResignFirstResponder;
 end;
 
 procedure TCocoaReadOnlyComboBox.dealloc;
@@ -1649,20 +1540,6 @@ begin
   Result := True;
 end;
 
-function TCocoaSpinEdit.becomeFirstResponder: Boolean;
-begin
-  Result := Edit.becomeFirstResponder;
-  if Assigned(callback) then
-    callback.BecomeFirstResponder;
-end;
-
-function TCocoaSpinEdit.resignFirstResponder: Boolean;
-begin
-  Result := inherited resignFirstResponder;
-  if Assigned(callback) then
-    callback.ResignFirstResponder;
-end;
-
 function TCocoaSpinEdit.lclGetCallback: ICommonCallback;
 begin
   Result := callback;
@@ -1820,25 +1697,6 @@ end;
 function TCocoaSpinEdit.acceptsFirstResponder: Boolean;
 begin
   Result := True;
-end;
-
-function TCocoaSpinEdit.becomeFirstResponder: Boolean;
-begin
-  Result := inherited becomeFirstResponder;
-  callback.BecomeFirstResponder;
-end;
-
-function TCocoaSpinEdit.RealResignFirstResponder: Boolean;
-begin
-  callback.ResignFirstResponder;
-  Result := True;
-end;
-
-// See TCocoaTextField.resignFirstResponder as to why this is done here
-function TCocoaSpinEdit.resignFirstResponder: Boolean;
-begin
-  //DebugLn('[TCocoaTextField.resignFirstResponder]');
-  Result := inherited resignFirstResponder;
 end;
 
 function TCocoaSpinEdit.lclGetCallback: ICommonCallback;

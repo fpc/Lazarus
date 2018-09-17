@@ -69,8 +69,6 @@ type
     procedure dealloc; override;
     function initWithFrame(frameRect: NSRect): id; override;
     function acceptsFirstResponder: Boolean; override;
-    function becomeFirstResponder: Boolean; override;
-    function resignFirstResponder: Boolean; override;
     procedure drawRect(dirtyRect: NSRect); override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
@@ -234,20 +232,6 @@ end;
 function TCocoaButton.acceptsFirstResponder: Boolean;
 begin
   Result := True;
-end;
-
-function TCocoaButton.becomeFirstResponder: Boolean;
-begin
-  Result := inherited becomeFirstResponder;
-  if Assigned(callback) then
-    callback.BecomeFirstResponder;
-end;
-
-function TCocoaButton.resignFirstResponder: Boolean;
-begin
-  Result := inherited resignFirstResponder;
-  if Assigned(callback) then
-    callback.ResignFirstResponder;
 end;
 
 procedure TCocoaButton.drawRect(dirtyRect: NSRect);

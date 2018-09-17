@@ -77,8 +77,6 @@ type
     smallimages : NSMutableDictionary;
 
     function acceptsFirstResponder: Boolean; override;
-    function becomeFirstResponder: Boolean; override;
-    function resignFirstResponder: Boolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
 
@@ -418,18 +416,6 @@ end;
 function TCocoaTableListView.acceptsFirstResponder: Boolean;
 begin
   Result := True;
-end;
-
-function TCocoaTableListView.becomeFirstResponder: Boolean;
-begin
-  Result := inherited becomeFirstResponder;
-  callback.BecomeFirstResponder;
-end;
-
-function TCocoaTableListView.resignFirstResponder: Boolean;
-begin
-  Result := inherited resignFirstResponder;
-  callback.ResignFirstResponder;
 end;
 
 function TCocoaTableListView.lclGetCallback: ICommonCallback;

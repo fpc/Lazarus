@@ -479,22 +479,27 @@ procedure TCocoaTabControl.tabView_willSelectTabViewItem(tabView: NSTabView;
   tabViewItem: NSTabViewItem);
 begin
   if Assigned(callback) then
+  begin
     callback.willSelectTabViewItem( IndexOfTab( self, tabViewItem) );
+
+    // This must be called, prior to notification about focus (firstResponder) change
+    // Focus changing goes as following:
+    //   First page becomes visible
+    //   Then focus is switching to the control of the page
+    // In Cocoa world, first "willSelect" runs, then "firstResponder" changes, then "didSelect" is fired
+    callback.didSelectTabViewItem( IndexOfTab( self, tabViewItem) );
+  end;
 end;
 
 procedure TCocoaTabControl.tabView_didSelectTabViewItem(tabView: NSTabView;
   tabViewItem: NSTabViewItem);
-//var
-  //i: Integer;
-  //lTabView, lCurSubview: NSView;
-  //lLCLControl: TWinControl;
-  //lBounds: TRect;
-  //lCurCallback: ICommonCallback;
 begin
-  if Assigned(callback) then
-  begin
-    callback.didSelectTabViewItem( IndexOfTab( self, tabViewItem) );
-  end;
+  //it's called together with "willSelect"
+
+  //if Assigned(callback) then
+  //begin
+    //callback.didSelectTabViewItem( IndexOfTab( self, tabViewItem) );
+  //end;
 
   // The recent clean up, drove the workaround below unnecessary
   // (at least the problem is not observed)

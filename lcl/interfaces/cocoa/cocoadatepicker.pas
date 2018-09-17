@@ -30,8 +30,6 @@ type
     procedure mouseMoved(event: NSEvent); override;
 
     function acceptsFirstResponder: Boolean; override;
-    function becomeFirstResponder: Boolean; override;
-    function resignFirstResponder: Boolean; override;
 
     procedure setFrame(aframe: NSRect); override;
   end;
@@ -71,20 +69,6 @@ end;
 function TCocoaDatePicker.acceptsFirstResponder: Boolean;
 begin
   Result := True;
-end;
-
-function TCocoaDatePicker.becomeFirstResponder: Boolean;
-begin
-  Result := inherited becomeFirstResponder;
-  if Assigned(callback) then
-    callback.BecomeFirstResponder;
-end;
-
-function TCocoaDatePicker.resignFirstResponder: Boolean;
-begin
-  Result := inherited resignFirstResponder;
-  if Assigned(callback) then
-    callback.ResignFirstResponder;
 end;
 
 function TCocoaDatePicker.lclGetCallback: ICommonCallback;
