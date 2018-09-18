@@ -168,13 +168,8 @@ function TPackageInstaller.CompilePackage(const AIDEPackage: TIDEPackage;
   ALazarusPkg: TLazarusPackage): Integer;
 begin
   Result := -1;
-  {$if declared(lcl_version)}
-   {$if (lcl_major > 0) and (lcl_minor > 6)}
-     //DoCompilePackage function is only available with Laz 1.7 +
-     DoOnPackageInstallProgress(imCompilePackage, ALazarusPkg);
-     Result := PackageEditingInterface.DoCompilePackage(AIDEPackage, [pcfCleanCompile, pcfDoNotSaveEditorFiles], False);
-   {$endif}
-  {$endif}
+  DoOnPackageInstallProgress(imCompilePackage, ALazarusPkg);
+  Result := PackageEditingInterface.DoCompilePackage(AIDEPackage, [pcfCleanCompile, pcfDoNotSaveEditorFiles], False);
 end;
 
 function TPackageInstaller.InstallPackage: Boolean;
