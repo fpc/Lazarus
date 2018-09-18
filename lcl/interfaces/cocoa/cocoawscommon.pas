@@ -777,11 +777,6 @@ begin
   KeyChar := #0;
   VKKeyChar := #0;
 
-  writeln('keyCode = ',event.keyCode,' $',IntToHex(event.keyCode, 2));
-  writeln('mods = ', IntToHex(Event.modifierFlags,8));
-  writeln('chars = ', Event.characters.UTF8String);
-  writeln('ignoremod = ', Event.charactersIgnoringModifiers.UTF8String);
-
   IsSysKey := (Event.modifierFlags and NSCommandKeyMask) <> 0;
   KeyData := (Ord(Event.isARepeat) + 1) or Event.keyCode shl 16;
   if (Event.modifierFlags and NSAlternateKeyMask) <> 0 then
