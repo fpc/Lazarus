@@ -108,7 +108,304 @@ function ControlTitleToNSStr(const ATitle: string): NSString;
 procedure AddLayoutToFrame(const layout: TRect; var frame: TRect);
 procedure SubLayoutFromFrame(const layout: TRect; var frame: TRect);
 
+  // MacOSX Virtual Key Codes
+const
+  kVK_ANSI_A                    = $00;
+  kVK_ANSI_S                    = $01;
+  kVK_ANSI_D                    = $02;
+  kVK_ANSI_F                    = $03;
+  kVK_ANSI_H                    = $04;
+  kVK_ANSI_G                    = $05;
+  kVK_ANSI_Z                    = $06;
+  kVK_ANSI_X                    = $07;
+  kVK_ANSI_C                    = $08;
+  kVK_ANSI_V                    = $09;
+
+  kVK_ISO_Section               = $0A; // ISO keyboard only
+
+  kVK_ANSI_B                    = $0B;
+  kVK_ANSI_Q                    = $0C;
+  kVK_ANSI_W                    = $0D;
+  kVK_ANSI_E                    = $0E;
+  kVK_ANSI_R                    = $0F;
+  kVK_ANSI_Y                    = $10;
+  kVK_ANSI_T                    = $11;
+  kVK_ANSI_1                    = $12;
+  kVK_ANSI_2                    = $13;
+  kVK_ANSI_3                    = $14;
+  kVK_ANSI_4                    = $15;
+  kVK_ANSI_6                    = $16;
+  kVK_ANSI_5                    = $17;
+  kVK_ANSI_Equal                = $18;
+  kVK_ANSI_9                    = $19;
+  kVK_ANSI_7                    = $1A;
+  kVK_ANSI_Minus                = $1B;
+  kVK_ANSI_8                    = $1C;
+  kVK_ANSI_0                    = $1D;
+  kVK_ANSI_RightBracket         = $1E;
+  kVK_ANSI_O                    = $1F;
+  kVK_ANSI_U                    = $20;
+  kVK_ANSI_LeftBracket          = $21;
+  kVK_ANSI_I                    = $22;
+  kVK_ANSI_P                    = $23;
+
+  kVK_Return                    = $24;
+
+  kVK_ANSI_L                    = $25;
+  kVK_ANSI_J                    = $26;
+  kVK_ANSI_Quote                = $27;
+  kVK_ANSI_K                    = $28;
+  kVK_ANSI_Semicolon            = $29;
+  kVK_ANSI_Backslash            = $2A;
+  kVK_ANSI_Comma                = $2B;
+  kVK_ANSI_Slash                = $2C;
+  kVK_ANSI_N                    = $2D;
+  kVK_ANSI_M                    = $2E;
+  kVK_ANSI_Period               = $2F;
+
+  kVK_Tab                       = $30;
+  kVK_Space                     = $31;
+
+  kVK_ANSI_Grave                = $32;
+
+  kVK_Delete                    = $33;
+
+  kVK_Escape                    = $35;
+  kVK_Command                   = $37;
+  kVK_Shift                     = $38;
+  kVK_CapsLock                  = $39;
+  kVK_Option                    = $3A;
+  kVK_Control                   = $3B;
+  kVK_RightShift                = $3C;
+  kVK_RightOption               = $3D;
+  kVK_RightControl              = $3E;
+  kVK_Function                  = $3F;
+  kVK_F17                       = $40;
+
+  kVK_ANSI_KeypadDecimal        = $41;
+  kVK_ANSI_KeypadMultiply       = $43;
+  kVK_ANSI_KeypadPlus           = $45;
+  kVK_ANSI_KeypadClear          = $47; // Numlock
+
+  kVK_VolumeUp                  = $48;
+  kVK_VolumeDown                = $49;
+  kVK_Mute                      = $4A;
+
+  kVK_ANSI_KeypadDivide         = $4B;
+  kVK_ANSI_KeypadEnter          = $4C;
+  kVK_ANSI_KeypadMinus          = $4E;
+
+  kVK_F18                       = $4F;
+  kVK_F19                       = $50;
+
+  kVK_ANSI_KeypadEquals         = $51;
+  kVK_ANSI_Keypad0              = $52;
+  kVK_ANSI_Keypad1              = $53;
+  kVK_ANSI_Keypad2              = $54;
+  kVK_ANSI_Keypad3              = $55;
+  kVK_ANSI_Keypad4              = $56;
+  kVK_ANSI_Keypad5              = $57;
+  kVK_ANSI_Keypad6              = $58;
+  kVK_ANSI_Keypad7              = $59;
+
+  kVK_F20                       = $5A;
+
+  kVK_ANSI_Keypad8              = $5B;
+  kVK_ANSI_Keypad9              = $5C;
+
+  kVK_JIS_Yen                   = $5D;
+  kVK_JIS_Underscore            = $5E;
+  kVK_JIS_KeypadComma           = $5F;
+
+  kVK_F5                        = $60;
+  kVK_F6                        = $61;
+  kVK_F7                        = $62;
+  kVK_F3                        = $63;
+  kVK_F8                        = $64;
+  kVK_F9                        = $65;
+
+  kVK_JIS_Eisu                  = $66;
+  kVK_JIS_Kana                  = $68;
+
+  kVK_F11                       = $67;
+
+  kVK_F13                       = $69; // Print Screen
+  kVK_F16                       = $6A;
+  kVK_F14                       = $6B; // Scroll Lock
+  kVK_F10                       = $6D;
+
+  kVK_SubMenu = $6E;
+
+  kVK_F12                       = $6F;
+  kVK_F15                       = $71; // Pause
+  kVK_Help                      = $72;
+  kVK_Home                      = $73;
+  kVK_PageUp                    = $74;
+  kVK_ForwardDelete             = $75;
+  kVK_F4                        = $76;
+  kVK_End                       = $77;
+  kVK_F2                        = $78;
+  kVK_PageDown                  = $79;
+  kVK_F1                        = $7A;
+  kVK_LeftArrow                 = $7B;
+  kVK_RightArrow                = $7C;
+  kVK_DownArrow                 = $7D;
+  kVK_UpArrow                   = $7E;
+
+function MacCodeToVK(AKey: Word): Word;
+
 implementation
+
+function MacCodeToVK(AKey: Word): Word;
+begin
+  case AKey of
+    kVK_ANSI_A : Result :=  VK_A;
+    kVK_ANSI_S : Result :=  VK_S;
+    kVK_ANSI_D : Result :=  VK_D;
+    kVK_ANSI_F : Result :=  VK_F;
+    kVK_ANSI_H : Result :=  VK_H;
+    kVK_ANSI_G : Result :=  VK_G;
+    kVK_ANSI_Z : Result :=  VK_Z;
+    kVK_ANSI_X : Result :=  VK_X;
+    kVK_ANSI_C : Result :=  VK_C;
+    kVK_ANSI_V : Result :=  VK_V;
+
+    //kVK_ISO_Section   // ISO keyboard only
+
+    kVK_ANSI_B : Result := VK_B;
+    kVK_ANSI_Q : Result := VK_Q;
+    kVK_ANSI_W : Result := VK_W;
+    kVK_ANSI_E : Result := VK_E;
+    kVK_ANSI_R : Result := VK_R;
+    kVK_ANSI_Y : Result := VK_Y;
+    kVK_ANSI_T : Result := VK_T;
+    kVK_ANSI_1 : Result := VK_1;
+    kVK_ANSI_2 : Result := VK_2;
+    kVK_ANSI_3 : Result := VK_3;
+    kVK_ANSI_4 : Result := VK_4;
+    kVK_ANSI_6 : Result := VK_6;
+    kVK_ANSI_5 : Result := VK_5;
+    kVK_ANSI_Equal        : Result := VK_LCL_EQUAL; // aka VK_EQUAL = 187 = $BB;
+    kVK_ANSI_9            : Result := VK_9;
+    kVK_ANSI_7            : Result := VK_7;
+    kVK_ANSI_Minus        : Result := VK_OEM_MINUS;
+    kVK_ANSI_8            : Result := VK_8;
+    kVK_ANSI_0            : Result := VK_0;
+    kVK_ANSI_RightBracket : Result := VK_OEM_6;
+    kVK_ANSI_O            : Result := VK_O;
+    kVK_ANSI_U            : Result := VK_U;
+    kVK_ANSI_LeftBracket  : Result := VK_LCL_OPEN_BRAKET;
+    kVK_ANSI_I            : Result := VK_I;
+    kVK_ANSI_P            : Result := VK_P;
+
+    kVK_Return            : Result := VK_RETURN;
+
+    kVK_ANSI_L            : Result := VK_L;
+    kVK_ANSI_J            : Result := VK_J;
+    kVK_ANSI_Quote        : Result := VK_LCL_QUOTE;
+    kVK_ANSI_K            : Result := VK_K;
+    kVK_ANSI_Semicolon    : Result := VK_LCL_SEMI_COMMA;
+    kVK_ANSI_Backslash    : Result := VK_LCL_BACKSLASH;
+    kVK_ANSI_Comma        : Result := VK_LCL_COMMA;
+    kVK_ANSI_Slash        : Result := VK_LCL_SLASH;
+    kVK_ANSI_N            : Result := VK_N;
+    kVK_ANSI_M            : Result := VK_M;
+    kVK_ANSI_Period       : Result := VK_LCL_POINT;
+
+    kVK_Tab               : Result := VK_TAB;
+    kVK_Space             : Result := VK_SPACE;
+
+    kVK_ANSI_Grave        : Result := VK_LCL_TILDE;
+
+    kVK_Delete            : Result := VK_BACK; // or VK_DELETE?
+
+    kVK_Escape            : Result := VK_ESCAPE;
+    kVK_Command           : Result := VK_LWIN;
+    // todo: Application.ExtendedKeysSupport must be true!
+    kVK_Shift             : Result := VK_LSHIFT; // VK_SHIFT?
+    kVK_CapsLock          : Result := VK_CAPITAL;
+    kVK_Option            : Result := VK_LMENU;
+    kVK_Control           : Result := VK_LCONTROL;
+    kVK_RightShift        : Result := VK_RSHIFT;
+    kVK_RightOption       : Result := VK_RMENU;
+    kVK_RightControl      : Result := VK_RCONTROL;
+    //kVK_Function          : Result := VK_; todo:
+    kVK_F17               : Result := VK_F17;
+
+    kVK_ANSI_KeypadDecimal  : Result := VK_DECIMAL;
+    kVK_ANSI_KeypadMultiply : Result := VK_MULTIPLY;
+    kVK_ANSI_KeypadPlus     : Result := VK_ADD;
+    kVK_ANSI_KeypadClear    : Result := VK_NUMLOCK;
+
+    kVK_VolumeUp    : Result := VK_VOLUME_UP;
+    kVK_VolumeDown  : Result := VK_VOLUME_DOWN;
+    kVK_Mute        : Result := VK_VOLUME_MUTE;
+
+    kVK_ANSI_KeypadDivide   : Result := VK_DIVIDE;
+    kVK_ANSI_KeypadEnter    : Result := VK_RETURN;
+    kVK_ANSI_KeypadMinus    : Result := VK_SUBTRACT;
+
+    kVK_F18         : Result := VK_F18;
+    kVK_F19         : Result := VK_F19;
+
+    //kVK_ANSI_KeypadEquals : Result := VK_;
+    kVK_ANSI_Keypad0      : Result := VK_NUMPAD0;
+    kVK_ANSI_Keypad1      : Result := VK_NUMPAD1;
+    kVK_ANSI_Keypad2      : Result := VK_NUMPAD2;
+    kVK_ANSI_Keypad3      : Result := VK_NUMPAD3;
+    kVK_ANSI_Keypad4      : Result := VK_NUMPAD4;
+    kVK_ANSI_Keypad5      : Result := VK_NUMPAD5;
+    kVK_ANSI_Keypad6      : Result := VK_NUMPAD6;
+    kVK_ANSI_Keypad7      : Result := VK_NUMPAD7;
+
+    kVK_F20  : Result := VK_F20;
+
+    kVK_ANSI_Keypad8 : Result := VK_NUMPAD8;
+    kVK_ANSI_Keypad9 : Result := VK_NUMPAD9;
+
+    //kVK_JIS_Yen                   = $5D;
+    //kVK_JIS_Underscore            = $5E;
+    //kVK_JIS_KeypadComma           = $5F;
+
+    kVK_F5           : Result := VK_F5;
+    kVK_F6           : Result := VK_F6;
+    kVK_F7           : Result := VK_F7;
+    kVK_F3           : Result := VK_F3;
+    kVK_F8           : Result := VK_F8;
+    kVK_F9           : Result := VK_F9;
+
+    //kVK_JIS_Eisu                  = $66;
+    kVK_JIS_Kana      : Result := VK_KANA;
+
+    kVK_F11           : Result := VK_F11;
+
+    kVK_F13           : Result := VK_SNAPSHOT;
+    kVK_F16           : Result := VK_F16;
+    kVK_F14           : Result := VK_SCROLL;
+    kVK_F10           : Result := VK_F10;
+
+    kVK_SubMenu       : Result := VK_APPS;
+
+    kVK_F12           : Result := VK_F12;
+    kVK_F15           : Result := VK_PAUSE;
+    kVK_Help          : Result := VK_HELP; //VK_INSERT; // todo!
+    kVK_Home          : Result := VK_HOME;
+    kVK_PageUp        : Result := VK_PRIOR;
+    kVK_ForwardDelete : Result := VK_DELETE; // VK_BACK?
+    kVK_F4            : Result := VK_F4;
+    kVK_End           : Result := VK_END;
+    kVK_F2            : Result := VK_F2;
+    kVK_PageDown      : Result := VK_NEXT;
+    kVK_F1            : Result := VK_F1;
+    kVK_LeftArrow     : Result := VK_LEFT;
+    kVK_RightArrow    : Result := VK_RIGHT;
+    kVK_DownArrow     : Result := VK_DOWN;
+    kVK_UpArrow       : Result := VK_UP;
+
+  else
+    Result := VK_UNKNOWN;
+  end;
+end;
 
 procedure ColorToRGBFloat(cl: TColorRef; var r,g,b: Single); inline;
 begin

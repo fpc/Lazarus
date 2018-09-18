@@ -368,53 +368,6 @@ begin
   end;
 end;
 
-function MacKeyToVK(KeyCode: Word): Word; // according to mackeycodes.inc this is risky
-begin
-  case KeyCode of
-    MK_QWERTY_Q: Result := VK_Q;
-    MK_QWERTY_W: Result := VK_W;
-    MK_QWERTY_E: Result := VK_E;
-    MK_QWERTY_R: Result := VK_R;
-    MK_QWERTY_T: Result := VK_T;
-    MK_QWERTY_Y: Result := VK_Y;
-    MK_QWERTY_U: Result := VK_U;
-    MK_QWERTY_I: Result := VK_I;
-    MK_QWERTY_O: Result := VK_O;
-    MK_QWERTY_P: Result := VK_P;
-    MK_QWERTY_A: Result := VK_A;
-    MK_QWERTY_S: Result := VK_S;
-    MK_QWERTY_D: Result := VK_D;
-    MK_QWERTY_F: Result := VK_F;
-    MK_QWERTY_G: Result := VK_G;
-    MK_QWERTY_H: Result := VK_H;
-    MK_QWERTY_J: Result := VK_J;
-    MK_QWERTY_K: Result := VK_K;
-    MK_QWERTY_L: Result := VK_L;
-    MK_QWERTY_Z: Result := VK_Z;
-    MK_QWERTY_X: Result := VK_X;
-    MK_QWERTY_C: Result := VK_C;
-    MK_QWERTY_V: Result := VK_V;
-    MK_QWERTY_B: Result := VK_B;
-    MK_QWERTY_N: Result := VK_N;
-    MK_QWERTY_M: Result := VK_M;
-    //MK_QWERTY_LEFTBR:  Result := VK_;
-    //MK_QWERTY_RIGHTBR: = 30;
-    MK_QWERTY_BACKSLASH: Result := VK_BACK;
-
-    //MK_QWERTY_SEMICOLON: Result := VK_s
-    //MK_QWERTY_QUOTE: = 39;
-    //MK_QWERTY_ENTER: = 36;
-
-    //MK_QWERTY_COMMA: := 43;
-    //MK_QWERTY_PERIOD: := 47;
-    //MK_QWERTY_FRWSLASH: := 44;
-
-  else
-    Result:=VK_UNKNOWN;
-  end;
-end;
-
-
 function TLCLCommonCallback.KeyEvent(Event: NSEvent; AForceAsKeyDown: Boolean): Boolean;
 var
   UTF8VKCharacter: TUTF8Char; // char without modifiers, used for VK_ key value
@@ -574,7 +527,7 @@ var
           MK_PERIOD: VKKeyCode := VK_OEM_PERIOD;
           MK_SLASH:  VKKeyCode := VK_OEM_2;
         else
-          VKKeyCode := MacKeyToVK(KeyCode); // according to mackeycodes.inc this is risky
+          VKKeyCode := MacCodeToVK(KeyCode); // according to mackeycodes.inc this is risky
         end;
       end;
 
@@ -824,146 +777,34 @@ begin
   KeyChar := #0;
   VKKeyChar := #0;
 
+  writeln('keyCode = ',event.keyCode,' $',IntToHex(event.keyCode, 2));
+  writeln('mods = ', IntToHex(Event.modifierFlags,8));
+  writeln('chars = ', Event.characters.UTF8String);
+  writeln('ignoremod = ', Event.charactersIgnoringModifiers.UTF8String);
+
   IsSysKey := (Event.modifierFlags and NSCommandKeyMask) <> 0;
   KeyData := (Ord(Event.isARepeat) + 1) or Event.keyCode shl 16;
   if (Event.modifierFlags and NSAlternateKeyMask) <> 0 then
     KeyData := KeyData or $20000000;   // So that MsgKeyDataToShiftState recognizes Alt key, see bug 30129
   KeyCode := Event.keyCode;
 
-  //non-printable keys (see mackeycodes.inc)
-  //for these keys, only send keydown/keyup (not char or UTF8KeyPress)
-  case KeyCode of
-    MK_F1       : VKKeyCode:=VK_F1;
-    MK_F2       : VKKeyCode:=VK_F2;
-    MK_F3       : VKKeyCode:=VK_F3;
-    MK_F4       : VKKeyCode:=VK_F4;
-    MK_F5       : VKKeyCode:=VK_F5;
-    MK_F6       : VKKeyCode:=VK_F6;
-    MK_F7       : VKKeyCode:=VK_F7;
-    MK_F8       : VKKeyCode:=VK_F8;
-    MK_F9       : VKKeyCode:=VK_F9;
-    MK_F10      : VKKeyCode:=VK_F10;
-    MK_F11      : VKKeyCode:=VK_F11;
-    MK_F12      : VKKeyCode:=VK_F12;
-    MK_F13      : VKKeyCode:=VK_SNAPSHOT;
-    MK_F14      : VKKeyCode:=VK_SCROLL;
-    MK_F15      : VKKeyCode:=VK_PAUSE;
-    MK_POWER    : VKKeyCode:=VK_SLEEP; //?
-    MK_TAB      : VKKeyCode:=VK_TAB; //strangely enough, tab is "non printable"
-    MK_INS      : VKKeyCode:=VK_INSERT;
-    MK_DEL      : VKKeyCode:=VK_DELETE;
-    MK_HOME     : VKKeyCode:=VK_HOME;
-    MK_END      : VKKeyCode:=VK_END;
-    MK_PAGUP    : VKKeyCode:=VK_PRIOR;
-    MK_PAGDN    : VKKeyCode:=VK_NEXT;
-    MK_UP       : VKKeyCode:=VK_UP;
-    MK_DOWN     : VKKeyCode:=VK_DOWN;
-    MK_LEFT     : VKKeyCode:= VK_LEFT;
-    MK_RIGHT    : VKKeyCode:= VK_RIGHT;
-    MK_NUMLOCK  : VKKeyCode:= VK_NUMLOCK;
-  else
-    VKKeyCode := VK_UNKNOWN;
-  end;
+  VKKeyCode := MacCodeToVK(KeyCode);
 
-  if VKKeyCode = VK_UNKNOWN then
+  //printable keys
+  //for these keys, send char or UTF8KeyPress
+  UTF8Character := NSStringToString(Event.characters);
+
+  if Length(UTF8Character) > 0 then
   begin
-    // check non-translated characters
-    UTF8VKCharacter := NSStringToString(Event.charactersIgnoringModifiers);
-    if Length(UTF8VKCharacter) > 0 then
-    begin
-      if UTF8VKCharacter[1] <= #127 then
-        VKKeyChar := UTF8VKCharacter[1]
-      else
-        VKKeyChar := #0;
-    end;
-
-    //printable keys
-    //for these keys, send char or UTF8KeyPress
-    UTF8Character := NSStringToString(Event.characters);
-
-    if Length(UTF8Character) > 0 then
-    begin
-      SendChar := True;
-
-      if Utf8Character[1] <= #127 then
-        // ANSI layout character
-        KeyChar := Utf8Character[1]
-      else
-        // it's non ANSI character. KeyChar must be assinged anything but #0
-        // otherise the message could be surpressed.
-        // In Windows world this would be an "Ansi" char in current locale
-        KeyChar := #$FF;
-
-      // the VKKeyCode is independent of the modifier
-      // => use the VKKeyChar instead of the KeyChar
-      case VKKeyChar of
-        'a'..'z': VKKeyCode:=VK_A+ord(VKKeyChar)-ord('a');
-        'A'..'Z': VKKeyCode:=ord(VKKeyChar);
-        #27     : VKKeyCode:=VK_ESCAPE;
-        #8      : VKKeyCode:=VK_BACK;
-        ' '     : VKKeyCode:=VK_SPACE;
-        #13     : VKKeyCode:=VK_RETURN;
-        '0'..'9':
-          case KeyCode of
-            MK_NUMPAD0: VKKeyCode:=VK_NUMPAD0;
-            MK_NUMPAD1: VKKeyCode:=VK_NUMPAD1;
-            MK_NUMPAD2: VKKeyCode:=VK_NUMPAD2;
-            MK_NUMPAD3: VKKeyCode:=VK_NUMPAD3;
-            MK_NUMPAD4: VKKeyCode:=VK_NUMPAD4;
-            MK_NUMPAD5: VKKeyCode:=VK_NUMPAD5;
-            MK_NUMPAD6: VKKeyCode:=VK_NUMPAD6;
-            MK_NUMPAD7: VKKeyCode:=VK_NUMPAD7;
-            MK_NUMPAD8: VKKeyCode:=VK_NUMPAD8;
-            MK_NUMPAD9: VKKeyCode:=VK_NUMPAD9
-            else VKKeyCode:=ord(VKKeyChar);
-          end;
-        else
-        case KeyCode of
-          MK_PADDIV  : VKKeyCode:=VK_DIVIDE;
-          MK_PADMULT : VKKeyCode:=VK_MULTIPLY;
-          MK_PADSUB  : VKKeyCode:=VK_SUBTRACT;
-          MK_PADADD  : VKKeyCode:=VK_ADD;
-          MK_PADDEC  : VKKeyCode:=VK_DECIMAL;
-          MK_BACKSPACE:
-            begin
-              VKKeyCode := VK_BACK;
-              VKKeyChar := #8;
-              UTF8Character := #8;
-            end;
-          MK_PADENTER:
-            begin
-              VKKeyCode:=VK_RETURN;
-              VKKeyChar:=#13;
-              UTF8Character:=VKKeyChar;
-            end;
-          MK_TILDE: VKKeyCode := VK_OEM_3;
-          MK_MINUS: VKKeyCode := VK_OEM_MINUS;
-          MK_EQUAL: VKKeyCode := VK_OEM_PLUS;
-          MK_BACKSLASH:    VKKeyCode := VK_OEM_5;
-          MK_LEFTBRACKET:  VKKeyCode := VK_OEM_4;
-          MK_RIGHTBRACKET: VKKeyCode := VK_OEM_6;
-          MK_SEMICOLON:    VKKeyCode := VK_OEM_1;
-          MK_QUOTE:  VKKeyCode := VK_OEM_7;
-          MK_COMMA:  VKKeyCode := VK_OEM_COMMA;
-          MK_PERIOD: VKKeyCode := VK_OEM_PERIOD;
-          MK_SLASH:  VKKeyCode := VK_OEM_2;
-        else
-          VKKeyCode := MacKeyToVK(KeyCode); // according to mackeycodes.inc this is risky
-        end;
-      end;
-
-      if VKKeyCode = VK_UNKNOWN then
-      begin
-        // There is no known VK_ code for this characther. Use a dummy keycode
-        // (E8, which is unused by Windows) so that KeyUp/KeyDown events will be
-        // triggered by LCL.
-        // Note: we can't use the raw mac keycode, since it could collide with
-        // well known VK_ keycodes (e.g on my italian ADB keyboard, keycode for
-        // "&egrave;" is 33, which is the same as VK_PRIOR)
-        VKKeyCode := $E8;
-      end;
-      //Result := True;
-    end;
+    SendChar := True;
+    if Utf8Character[1] <= #127 then
+      // ANSI layout character
+      KeyChar := Utf8Character[1]
+    else
+      // it's non ANSI character. KeyChar must be assinged anything but #0
+      // otherise the message could be surpressed.
+      // In Windows world this would be an "Ansi" char in current locale
+      KeyChar := #$FF;
   end;
 
   FillChar(_KeyMsg, SizeOf(_KeyMsg), 0);
