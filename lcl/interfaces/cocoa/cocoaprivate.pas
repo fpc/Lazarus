@@ -607,9 +607,21 @@ begin
 end;
 
 procedure TCocoaCustomControl.keyDown(event: NSEvent);
+var
+  cb  : ICommonCallback;
+  res : Boolean;
 begin
-  if not Assigned(callback) or not callback.KeyEvent(event) then
+  cb := lclGetCallback;
+  if Assigned(cb) then
+  begin
+    cb.KeyEvPrepare(event);
+    cb.KeyEvBefore(res);
+    //there's no keyDown below! expect for *ding*
+    //if res then inherited keyDown(event);
+    cb.KeyEvAfter;
+  end else
     inherited keyDown(event);
+
 end;
 
 procedure TCocoaCustomControl.keyUp(event: NSEvent);
