@@ -215,6 +215,7 @@ var
   BMList: TBuildModesCheckList;
 begin
   Result:=True;
+  DlgMsg:='';
   BMList:=TBuildModesCheckList.Create(DlgMsg);
   try
     if IsIncludeFile then begin
