@@ -62,7 +62,7 @@ uses
   IDEMsgIntf, SrcEditorIntf, ComponentReg, PropEdits, IDEDialogs, UnitResources,
   // IDE
   IDECmdLine, LazarusIDEStrConsts, IDEProcs, ObjectLists,
-  DialogProcs, IDEOptionDefs, EnvironmentOpts, SourceFileManager,
+  DialogProcs, IDEOptionDefs, EnvironmentOpts,
   MiscOptions, InputHistory, Project, PackageEditor, AddToPackageDlg,
   PackageDefs, PackageLinks, PackageSystem, OpenInstalledPkgDlg,
   PkgGraphExplorer, BrokenDependenciesDlg, CompilerOptions, IDETranslations,
