@@ -6547,6 +6547,7 @@ begin
   {$ENDIF}
 
   if GtkWidgetIsA(Widget,GTK_TYPE_EVENT_BOX)
+  and not (AWinControl is TCustomGroupBox)
   and (AWinControl.ControlCount>0) then begin
     // ignore client area (child controls)
     FixedWidget:=PGtkWidget(GetFixedWidget(Widget));
