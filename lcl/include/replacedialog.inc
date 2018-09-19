@@ -516,7 +516,7 @@ end;
 
 function TReplaceDialog.CreateForm: TForm;
 begin
-  Result := TReplaceDialogForm.CreateNew(Self,Options);
+  Result := TReplaceDialogForm.CreateNew(nil,Options);
   with TReplaceDialogForm(Result) do
   begin
     FindMoreButton.Caption := rsFindMore;

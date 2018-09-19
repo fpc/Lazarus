@@ -579,6 +579,11 @@ end;
 procedure TFindDialog.CalcPosition(aForm:Tform);
 begin
   //debugln(['TFindDialog.CalcPosition: Left=',Left,', Top=',Top,', Position=',dbgs(position),', FFormLeft=',FFormLeft,', FFormTop=',FFormTop]);
+  if (csDesigning in ComponentState) then
+  begin
+    aForm.Position := poScreenCenter;
+    Exit;
+  end;
   if (FFormLeft < 0) and (FFormTop < 0) then
   begin
     aForm.Position := poMainFormCenter;
