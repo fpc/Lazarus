@@ -81,7 +81,7 @@ begin
   BorderIcons := [biSystemMenu, biHelp];
   Caption := 'Find';
   //OnCreate := @FormCreate;
-  Position := poMainFormCenter;
+  //Position := poMainFormCenter;
 
   LCLVersion := '1.3';
 
@@ -498,10 +498,9 @@ begin
 end;
 
 function TFindDialog.CreateForm: TForm;
-Var
-  StrTmp : String;
 begin
   // do not use Self as Owner, otherwise as desgntime this will not work
+  //debugln(['TFindDialog.CreateForm: Left=',Left,', Top=',Top,', Position=',dbgs(position),', FFormLeft=',FFormLeft,', FFormTop=',FFormTop]);
   Result := TFindDialogForm.CreateNew(nil,Options);
   with TFindDialogForm(Result) do
   begin
@@ -520,9 +519,9 @@ begin
     HelpButton.OnClick := @HelpClick;
     CancelButton.OnClick := @CancelClick;
     PopupMode := pmAuto;
-    // Init local property with defaut value
-    FFormTop  := top;
-    FFormLeft := Left;
+    // Init local property with default value
+    Result.Top := FFormTop;
+    Result.Left := FFormLeft;
   end;
 end;
 
@@ -580,9 +579,18 @@ Var
   MfBound : Trect;
 
 begin
-  MfBound := Application.MainForm.BoundsRect;
-  FFormTop  := MfBound.Top + (((MfBound.Bottom - MfBound.Top)  - aForm.Height) Div 2);
-  FFormLeft := MfBound.Left + (((MfBound.Right - MfBound.Left) - aForm.Width) Div 2);
+  //debugln(['TFindDialog.CalcPosition: Left=',Left,', Top=',Top,', Position=',dbgs(position),', FFormLeft=',FFormLeft,', FFormTop=',FFormTop]);
+  if (Self.Position.x < 0) and (Self.Position.y < 0) then
+  begin
+    MfBound := Application.MainForm.BoundsRect;
+    FFormTop  := MfBound.Top + (((MfBound.Bottom - MfBound.Top)  - aForm.Height) Div 2);
+    FFormLeft := MfBound.Left + (((MfBound.Right - MfBound.Left) - aForm.Width) Div 2);
+  end
+  else
+  begin
+    FFormLeft := Position.x;
+    FFormTop := Position.y;
+  end;
   aForm.Top := FFormTop;
   aForm.Left := FFormLeft;
 end;
@@ -592,6 +600,7 @@ constructor TFindDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FOptions:=[frDown];
+  Position := Point(-1,-1);
 end;
 
 destructor TFindDialog.Destroy;

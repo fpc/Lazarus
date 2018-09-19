@@ -73,7 +73,7 @@ begin
   AutoSize := True;
   BorderIcons := [biSystemMenu, biHelp];
   Caption := 'Replace Text';
-  Position := poMainFormCenter;
+  //Position := poMainFormCenter;
   LCLVersion := '1.3';
 
   TextLabel := TLabel.Create(Self);
@@ -541,6 +541,9 @@ begin
     CancelButton.OnClick := @CancelClick;
     HelpButton.OnClick := @HelpClick;
     PopupMode := pmAuto;
+    // Init local property with default value
+    Result.Top := FFormTop;
+    Result.Left := FFormLeft;
   end;
 end;
 
