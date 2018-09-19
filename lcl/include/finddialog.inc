@@ -575,19 +575,14 @@ begin
 end;
 
 procedure TFindDialog.CalcPosition(aForm:Tform);
-Var
-  MfBound : Trect;
-
 begin
   //debugln(['TFindDialog.CalcPosition: Left=',Left,', Top=',Top,', Position=',dbgs(position),', FFormLeft=',FFormLeft,', FFormTop=',FFormTop]);
   if (FFormLeft < 0) and (FFormTop < 0) then
   begin
-    MfBound := Application.MainForm.BoundsRect;
-    FFormTop  := MfBound.Top + (((MfBound.Bottom - MfBound.Top)  - aForm.Height) Div 2);
-    FFormLeft := MfBound.Left + (((MfBound.Right - MfBound.Left) - aForm.Width) Div 2);
+    aForm.Position := poMainFormCenter;
+    FFormTop := aForm.Top;
+    FFormLeft := aForm.Left;
   end;
-  aForm.Top := FFormTop;
-  aForm.Left := FFormLeft;
 end;
 
 
