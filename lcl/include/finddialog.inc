@@ -91,7 +91,7 @@ begin
     Height := 17;
     Top := 15;
     Width := 77;
-    BorderSpacing.Right := 2;
+    BorderSpacing.Right := 8;
     Caption := 'Text to find';
     FocusControl := EditFind;
     ParentColor := False;
@@ -102,39 +102,13 @@ begin
     Left := 85;
     Height := 27;
     Top := 10;
+    BorderSpacing.Top := 8;
     Width := 303;
     TabOrder := 0;
     Text := 'EditFind';
     Parent := Self;
   end;
-  DirectionRadioGroup := TRadioGroup.Create(Self);
-  with DirectionRadioGroup do begin
-    Left := 155;
-    Height := 45;
-    Top := 49;
-    Width := 227;
-    AutoFill := True;
-    AutoSize := True;
-    BorderSpacing.Left := 12;
-    //BorderSpacing.Around := 0;
-    Caption := 'Direction';
-    ChildSizing.LeftRightSpacing := 6;
-    ChildSizing.TopBottomSpacing := 6;
-    ChildSizing.EnlargeHorizontal := crsHomogenousChildResize;
-    ChildSizing.EnlargeVertical := crsHomogenousChildResize;
-    ChildSizing.ShrinkHorizontal := crsScaleChilds;
-    ChildSizing.ShrinkVertical := crsScaleChilds;
-    ChildSizing.Layout := cclLeftToRightThenTopToBottom;
-    ChildSizing.ControlsPerLine := 2;
-    ClientHeight := 48;
-    ClientWidth := 217;
-    Columns := 2;
-    Constraints.MaxHeight := 60;
-    Items.Add('Forward');
-    Items.Add('Backward');
-    TabOrder := 1;
-    Parent := Self;
-  end;
+
   FlagsPanel := TPanel.Create(Self);
   With FlagsPanel do begin
     Left := 6;
@@ -143,13 +117,15 @@ begin
     Width := 143;
     AutoSize := True;
     BorderSpacing.Around := 6;
+    BorderSpacing.Top := 4;
     BevelOuter := bvNone;
+    ChildSizing.LeftRightSpacing := 8;
     ChildSizing.VerticalSpacing := 6;
     ChildSizing.Layout := cclLeftToRightThenTopToBottom;
     ChildSizing.ControlsPerLine := 1;
     ClientHeight := 82;
     ClientWidth := 143;
-    TabOrder := 2;
+    TabOrder := 1;
     Parent := Self;
   end;
   // Flags Panel Objects
@@ -184,6 +160,36 @@ begin
       Parent := FlagsPanel;
     end;
   //End of Flags Panel objects
+
+  DirectionRadioGroup := TRadioGroup.Create(Self);
+  with DirectionRadioGroup do begin
+    Left := 155;
+    Height := 45;
+    Top := 49;
+    Width := 227;
+    AutoFill := True;
+    AutoSize := True;
+    BorderSpacing.Left := 12;
+    //BorderSpacing.Around := 0;
+    Caption := 'Direction';
+    ChildSizing.LeftRightSpacing := 6;
+    ChildSizing.TopBottomSpacing := 6;
+    ChildSizing.EnlargeHorizontal := crsHomogenousChildResize;
+    ChildSizing.EnlargeVertical := crsHomogenousChildResize;
+    ChildSizing.ShrinkHorizontal := crsScaleChilds;
+    ChildSizing.ShrinkVertical := crsScaleChilds;
+    ChildSizing.Layout := cclLeftToRightThenTopToBottom;
+    ChildSizing.ControlsPerLine := 2;
+    ClientHeight := 48;
+    ClientWidth := 217;
+    Columns := 2;
+    Constraints.MaxHeight := 60;
+    Items.Add('Forward');
+    Items.Add('Backward');
+    TabOrder := 2;
+    Parent := Self;
+  end;
+
   BtnPanel := TPanel.Create(Self);
   with BtnPanel do begin
     Left := 388;

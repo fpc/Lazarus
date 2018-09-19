@@ -82,7 +82,8 @@ begin
     Height := 17;
     Top := 14;
     Width := 77;
-    BorderSpacing.Left := 4;
+    BorderSpacing.Left := 8;
+    BorderSpacing.Right := 8;
     BorderSpacing.Top := 14;
     Caption := 'Text to find';
     FocusControl := EditFind;
@@ -96,6 +97,7 @@ begin
     Top := 45;
     Width := 87;
     BorderSpacing.Top := 14;
+    BorderSpacing.Right := 8;
     Caption := 'Replace with';
     FocusControl := EditReplace;
     ParentColor := False;
@@ -107,7 +109,6 @@ begin
     Height := 27;
     Top := 9;
     Width := 288;
-    BorderSpacing.Left := 8;
     TabOrder := 0;
     Text := 'EditFind';
     Parent := Self;
@@ -123,6 +124,7 @@ begin
     Text := 'EditReplace';
     Parent := Self;
   end;
+  {
   DirectionRadioGroup := TRadioGroup.Create(Self);
   with DirectionRadioGroup do begin
     Left := 155;
@@ -151,6 +153,7 @@ begin
     TabOrder := 2;
     Parent := Self;
   end;
+  }
   FlagPanel := TPanel.Create(Self);
   With FlagPanel do begin
     Left := 4;
@@ -159,14 +162,15 @@ begin
     Width := 151;
     AutoSize := True;
     BorderSpacing.Around := 6;
+    BorderSpacing.Top := 16;
     BevelOuter := bvNone;
-    //ChildSizing.VerticalSpacing := 6;
-    //ChildSizing.Layout := cclLeftToRightThenTopToBottom;
-    //ChildSizing.ControlsPerLine := 1;
+    ChildSizing.VerticalSpacing := 6;
+    ChildSizing.Layout := cclLeftToRightThenTopToBottom;
+    ChildSizing.ControlsPerLine := 1;
     ClientHeight := 114;
     ClientWidth := 151;
     Constraints.MinHeight := 114;
-    TabOrder := 3;
+    TabOrder := 2;
     Parent := Self;
   end;
   // Flags Panel Objects
@@ -211,6 +215,36 @@ begin
       Parent := FlagPanel;
     end;
   //End of Flags Panel objects
+
+  DirectionRadioGroup := TRadioGroup.Create(Self);
+  with DirectionRadioGroup do begin
+    Left := 155;
+    Height := 60;
+    Top := 62;
+    Width := 222;
+    AutoFill := True;
+    AutoSize := True;
+    BorderSpacing.Left := 12;
+    //BorderSpacing.Around := 0;
+    Caption := 'Direction';
+    ChildSizing.LeftRightSpacing := 6;
+    ChildSizing.TopBottomSpacing := 6;
+    ChildSizing.EnlargeHorizontal := crsHomogenousChildResize;
+    ChildSizing.EnlargeVertical := crsHomogenousChildResize;
+    ChildSizing.ShrinkHorizontal := crsScaleChilds;
+    ChildSizing.ShrinkVertical := crsScaleChilds;
+    ChildSizing.Layout := cclLeftToRightThenTopToBottom;
+    ChildSizing.ControlsPerLine := 2;
+    ClientHeight := 38;
+    ClientWidth := 212;
+    Columns := 2;
+    Constraints.MaxHeight := 60;
+    Items.Add('Forward');
+    Items.Add('Backward');
+    TabOrder := 3;
+    Parent := Self;
+  end;
+
   PanelButtons := TPanel.Create(Self);
   with PanelButtons do begin
     if Layout then begin
@@ -533,6 +567,14 @@ begin
     DirectionRadioGroup.Caption := rsDirection;
     DirectionRadioGroup.Items[0] := rsForward;
     DirectionRadioGroup.Items[1] := rsBackward;
+    if Result.Canvas.TextWidth(TextLabel.Caption) > Result.Canvas.TextWidth(ReplaceLabel.Caption) then
+    begin
+      EditReplace.AnchorSideLeft.Control := EditFind;
+      EditReplace.AnchorSideLeft.Side := asrTop;
+    end else begin
+      EditFind.AnchorSideLeft.Control := EditReplace;
+      EditFind.AnchorSideLeft.Side := asrTop;
+    end;
 
     //Setting up button eventhandlers
     FindMoreButton.OnClick := @FindClick;
