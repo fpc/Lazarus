@@ -56,6 +56,7 @@ uses
   ModeMatrixOpts, BaseBuildManager, ApplicationBundle, RunParamsOpts;
   
 type
+
   { TBuildManager }
 
   TBuildManager = class(TBaseBuildManager)
@@ -198,6 +199,7 @@ type
     function GetCompilerFilename: string; override;
     function GetFPCompilerFilename: string; override;
     function GetFPCFrontEndOptions: string; override;
+    function GetProjectPublishDir: string; override;
     function GetProjectTargetFilename(aProject: TProject): string; override;
     function GetProjectUsesAppBundle: Boolean; override;
     function GetTestUnitFilename(AnUnitInfo: TUnitInfo): string; override;
@@ -695,6 +697,14 @@ begin
       debugln(['Warning: TBuildManager.GetFPCFrontEndOptions: LazarusIDE.CallHandlerGetFPCFrontEndParams failed Result="',Result,'"']);
     end;
   Result:=UTF8Trim(Result);
+end;
+
+function TBuildManager.GetProjectPublishDir: string;
+begin
+  if Project1<>nil then
+    Result:=RealPublishDir(Project1.PublishOptions)
+  else
+    Result:='';
 end;
 
 function TBuildManager.GetProjectTargetFilename(aProject: TProject): string;
@@ -2220,10 +2230,7 @@ end;
 function TBuildManager.MacroFuncProjPublishDir(const Param: string;
   const Data: PtrInt; var Abort: boolean): string;
 begin
-  if Project1<>nil then
-    Result:=RealPublishDir(Project1.PublishOptions)
-  else
-    Result:='';
+  Result:=GetProjectPublishDir;
 end;
 
 function TBuildManager.MacroFuncProjUnitPath(const Param: string;
