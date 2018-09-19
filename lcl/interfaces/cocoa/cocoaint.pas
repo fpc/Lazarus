@@ -65,7 +65,6 @@ type
   TCocoaApplication = objcclass(NSApplication)
     aloop : TApplicationMainLoop;
     isrun : Boolean;
-    lastKeyWin : NSWindow;
     function isRunning: Boolean; override;
     procedure run; override;
     procedure sendEvent(theEvent: NSEvent); override;
@@ -395,29 +394,8 @@ begin
   end;
 end;
 
-procedure ApplicationSwitchWinFocus(fromwin, towin: NSWindow);
-var
-  cb : ICommonCallback;
-begin
-  if Assigned(fromwin) then
-  begin
-    cb := fromwin.lclGetcallback;
-    if Assigned(cb) then IWindowCallback(cb).Deactivate;
-  end;
-  if Assigned(towin) then
-  begin
-    cb := towin.lclGetcallback;
-    if Assigned(cb) then IWindowCallback(cb).Activate;
-  end;
-end;
-
 procedure TCocoaApplication.sendEvent(theEvent: NSEvent);
 begin
-  if lastKeyWin <> keyWindow then begin
-    ApplicationSwitchWinFocus(lastKeyWin, keyWindow);
-    lastKeyWin := keyWindow;
-  end;
-
   // https://stackoverflow.com/questions/4001565/missing-keyup-events-on-meaningful-key-combinations-e-g-select-till-beginning
   if (theEvent.type_ = NSKeyUp) and
      ((theEvent.modifierFlags and NSCommandKeyMask) = NSCommandKeyMask)

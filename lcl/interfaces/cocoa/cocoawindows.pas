@@ -493,14 +493,14 @@ end;
 
 procedure TCocoaPanel.windowDidBecomeKey(notification: NSNotification);
 begin
-  //if Assigned(callback) then
-    //callback.Activate;
+  if Assigned(callback) then
+    callback.Activate;
 end;
 
 procedure TCocoaPanel.windowDidResignKey(notification: NSNotification);
 begin
-  //if Assigned(callback) then
-    //callback.Deactivate;
+  if Assigned(callback) then
+    callback.Deactivate;
 end;
 
 procedure TCocoaPanel.windowDidResize(notification: NSNotification);
@@ -692,14 +692,14 @@ end;
 
 procedure TCocoaWindow.windowDidBecomeKey(notification: NSNotification);
 begin
-  //if Assigned(callback) then
-    //callback.Activate;
+  if Assigned(callback) then
+    callback.Activate;
 end;
 
 procedure TCocoaWindow.windowDidResignKey(notification: NSNotification);
 begin
-  //if Assigned(callback) then
-    //callback.Deactivate;
+  if Assigned(callback) then
+    callback.Deactivate;
 end;
 
 procedure TCocoaWindow.windowDidResize(notification: NSNotification);
