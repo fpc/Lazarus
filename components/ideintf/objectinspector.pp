@@ -1888,8 +1888,7 @@ begin
       FCurrentEdit:=ValueComboBox;
       if (paCustomDrawn in EditorAttributes) and (paPickList in EditorAttributes) then
         ValueComboBox.Style:=csOwnerDrawVariable
-      else
-      if paCustomDrawn in EditorAttributes then
+      else if paCustomDrawn in EditorAttributes then
         ValueComboBox.Style:=csOwnerDrawEditableVariable
       else if paPickList in EditorAttributes then
         ValueComboBox.Style:=csOwnerDrawFixed
@@ -3838,13 +3837,15 @@ function TOIPropertyGridRow.IsDisabled: boolean;
 var
   ParentRow: TOIPropertyGridRow;
 begin
-  Result:=false;
+  if paDisableSubProperties in Editor.GetAttributes then
+    exit(true);
   ParentRow:=Parent;
   while (ParentRow<>nil) do begin
     if paDisableSubProperties in ParentRow.Editor.GetAttributes then
       exit(true);
     ParentRow:=ParentRow.Parent;
   end;
+  Result:=false;
 end;
 
 procedure TOIPropertyGridRow.MeasureHeight(ACanvas: TCanvas);

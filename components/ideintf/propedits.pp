@@ -1134,6 +1134,13 @@ type
       OwnerPersistent: TPersistent; const PropName: String): TCustomForm; virtual;
   end;
 
+  { TDisabledCollectionPropertyEditor }
+
+  TDisabledCollectionPropertyEditor = class(TCollectionPropertyEditor)
+  public
+    function GetAttributes: TPropertyAttributes; override;
+  end;
+
 //==============================================================================
 // Delphi Compatible Property Editor Classnames
 
@@ -4494,6 +4501,13 @@ begin
   if TheCollection = nil then
     raise Exception.Create('Collection=nil');
   ShowCollectionEditor(TheCollection, GetComponent(0), GetName);
+end;
+
+{ TDisabledCollectionPropertyEditor }
+
+function TDisabledCollectionPropertyEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result := [paDialog, paReadOnly, paDisableSubProperties];
 end;
 
 { TClassPropertyEditor }
@@ -8015,11 +8029,17 @@ begin
   RegisterPropertyEditor(TypeInfo(TComponent), nil, 'ActiveControl', TComponentOneFormPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TControl), TCoolBand, 'Control', TCoolBarControlPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TCollection), nil, '', TCollectionPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TFlowPanelControlList), TFlowPanel, 'ControlList', TDisabledCollectionPropertyEditor);
   RegisterPropertyEditor(TypeInfo(AnsiString), TFileDialog, 'Filter', TFileDlgFilterProperty);
   RegisterPropertyEditor(TypeInfo(AnsiString), TFilterComboBox, 'Filter', TFileDlgFilterProperty);
   RegisterPropertyEditor(TypeInfo(AnsiString), TFileNameEdit, 'Filter', TFileDlgFilterProperty);
   RegisterPropertyEditor(TypeInfo(AnsiString), TCustomPropertyStorage, 'Filename', TFileNamePropertyEditor);
   RegisterPropertyEditor(TypeInfo(TStrings), TValueListEditor, 'Strings', TValueListPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TCustomPage), TCustomTabControl, 'ActivePage', TNoteBookActiveControlPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TSizeConstraints), TControl, 'Constraints', TConstraintsPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TStrings), TNoteBook, 'Pages', TPagesPropertyEditor);
+
+  // Property is hidden and editing disabled by HiddenPropertyEditor :
   RegisterPropertyEditor(TypeInfo(TAnchorSide), TControl, 'AnchorSideLeft', THiddenPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TAnchorSide), TControl, 'AnchorSideTop', THiddenPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TAnchorSide), TControl, 'AnchorSideRight', THiddenPropertyEditor);
@@ -8028,9 +8048,6 @@ begin
   RegisterPropertyEditor(TypeInfo(LongInt), TControl, 'ClientHeight', THiddenPropertyEditor);
   RegisterPropertyEditor(TypeInfo(AnsiString), TCustomForm, 'LCLVersion', THiddenPropertyEditor);
   RegisterPropertyEditor(TypeInfo(AnsiString), TCustomFrame, 'LCLVersion', THiddenPropertyEditor);
-  RegisterPropertyEditor(TypeInfo(TCustomPage), TCustomTabControl, 'ActivePage', TNoteBookActiveControlPropertyEditor);
-  RegisterPropertyEditor(TypeInfo(TSizeConstraints), TControl, 'Constraints', TConstraintsPropertyEditor);
-  RegisterPropertyEditor(TypeInfo(TStrings), TNoteBook, 'Pages', TPagesPropertyEditor);
 
   // since fpc 2.6.0 WordBool, LongBool and QWordBool only allow 0 and 1
   RegisterPropertyEditor(TypeInfo(WordBool), nil, '', TBoolPropertyEditor);
@@ -8038,7 +8055,6 @@ begin
   RegisterPropertyEditor(TypeInfo(QWordBool), nil, '', TBoolPropertyEditor);
 
   RegisterPropertyEditor(TypeInfo(IInterface), nil, '', TInterfacePropertyEditor);
-
   RegisterPropertyEditor(TypeInfo(Variant), nil, '', TVariantPropertyEditor);
 end;
 
