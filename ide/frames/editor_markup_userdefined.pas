@@ -105,7 +105,7 @@ type
     procedure tbSelectListClick(Sender: TObject);
     procedure GeneralCheckBoxChange(Sender: TObject);
     procedure tbSelectPageClicked(Sender: TObject);
-    procedure WordListButtonClick(Sender: TObject; aCol, aRow: Integer);
+    procedure WordListButtonClick(Sender: TObject; {%H-}aCol, aRow: Integer);
     procedure WordListColRowDeleted(Sender: TObject; {%H-}IsColumn: Boolean; {%H-}sIndex,
       {%H-}tIndex: Integer);
     procedure WordListEditingDone(Sender: TObject);

@@ -37,11 +37,11 @@ interface
 uses
   Classes, SysUtils, RegExpr,
   // LazUtils
-  LazFileUtils, LazLoggerBase, LazTracer, LazStringUtils, Laz2_XMLCfg, UITypes,
+  LazFileUtils, LazLoggerBase, LazTracer, LazStringUtils, Laz2_XMLCfg,
   // IdeIntf
-  MacroIntf, IDEDialogs,
+  MacroIntf,
   // IDE
-  IDEProcs, LazarusIDEStrConsts;
+  IDEProcs;
 
 type
   { TPublishModuleOptions }

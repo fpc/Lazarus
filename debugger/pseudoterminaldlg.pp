@@ -103,7 +103,8 @@ const
   handleUnopened= THandle(-$80000000);
 
 var
-  DBG_VERBOSE, DBG_WARNINGS: PLazLoggerLogGroup;
+  //DBG_VERBOSE,
+  DBG_WARNINGS: PLazLoggerLogGroup;
   PseudoTerminalDlgWindowCreator: TIDEWindowCreator;
 
 { TPseudoConsoleDlg }
