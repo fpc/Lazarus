@@ -407,6 +407,8 @@ end;
 procedure TFindDialog.DoCloseForm(Sender: TObject; var CloseAction: TCloseAction);
 begin
   if csDesigning in ComponentState then exit;
+  FFormTop := FFindForm.Top;
+  FFormLeft := FFindForm.Left;
   if Assigned(OnClose) then OnClose(Self);
 end;
 
