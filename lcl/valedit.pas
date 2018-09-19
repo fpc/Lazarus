@@ -151,6 +151,7 @@ type
     procedure ShowColumnTitles;
     procedure AdjustRowCount; virtual;
     procedure ColRowExchanged(IsColumn: Boolean; index, WithIndex: Integer); override;
+    procedure ColRowDeleted(IsColumn: Boolean; index: Integer); override;
     procedure DefineCellsProperty(Filer: TFiler); override;
     procedure InvalidateCachedRow;
     procedure GetAutoFillColumnInfo(const Index: Integer; var aMin,aMax,aPriority: Integer); override;
@@ -770,9 +771,8 @@ end;
 
 procedure TValueListEditor.DeleteRow(Index: Integer);
 begin
-  Index := Index - FixedRows;
   //If we have only one row, it may be empty and we cannot remove
-  if not ((Index = 0) and (Strings.Count = 0)) then Strings.Delete(Index);
+  if not ((Index - FixedRows = 0) and (Strings.Count = 0)) then inherited DeleteRow(Index) ;
 end;
 
 procedure TValueListEditor.DeleteCol(Index: Integer);
@@ -1120,6 +1120,13 @@ procedure TValueListEditor.ColRowExchanged(IsColumn: Boolean; index,
 begin
   Strings.Exchange(Index - FixedRows, WithIndex - FixedRows);
   inherited ColRowExchanged(IsColumn, index, WithIndex);
+end;
+
+procedure TValueListEditor.ColRowDeleted(IsColumn: Boolean; index: Integer);
+begin
+  EditorMode := False;
+  Strings.Delete(Index-FixedRows);
+  inherited ColRowDeleted(IsColumn, index);
 end;
 
 procedure TValueListEditor.DefineCellsProperty(Filer: TFiler);
