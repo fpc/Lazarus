@@ -3835,15 +3835,13 @@ end;
 
 function TOIPropertyGridRow.IsDisabled: boolean;
 var
-  ParentRow: TOIPropertyGridRow;
+  CurRow: TOIPropertyGridRow;
 begin
-  if paDisableSubProperties in Editor.GetAttributes then
-    exit(true);
-  ParentRow:=Parent;
-  while (ParentRow<>nil) do begin
-    if paDisableSubProperties in ParentRow.Editor.GetAttributes then
+  CurRow:=Self;
+  while (CurRow<>nil) do begin
+    if paDisableSubProperties in CurRow.Editor.GetAttributes then
       exit(true);
-    ParentRow:=ParentRow.Parent;
+    CurRow:=CurRow.Parent;
   end;
   Result:=false;
 end;
