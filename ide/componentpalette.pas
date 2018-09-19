@@ -443,7 +443,9 @@ begin
       Pal.fComponentButtons[CompCN] := Btn;
       Btn.Name := CompPaletteCompBtnPrefix + aButtonUniqueName + CompCN;
       // Left and Top will be set in ReAlignButtons.
-      Btn.SetBounds(Btn.Left,Btn.Top,aScrollBox.Scale96ToForm(ComponentPaletteBtnWidth),aScrollBox.Scale96ToForm(ComponentPaletteBtnHeight));
+      Btn.SetBounds(Btn.Left, Btn.Top,
+                    aScrollBox.Scale96ToForm(ComponentPaletteBtnWidth),
+                    aScrollBox.Scale96ToForm(ComponentPaletteBtnHeight));
       Btn.Images := aComp.Images;
       Btn.ImageIndex := aComp.ImageIndex;
       Btn.GroupIndex := 1;
@@ -453,7 +455,8 @@ begin
       Btn.OnDblClick := @Pal.ComponentBtnDblClick;
       Btn.OnMouseWheel := @Pal.OnPageMouseWheel;
       Btn.ShowHint := EnvironmentOptions.ShowHintsForComponentPalette;
-      Btn.Hint := CompCN + sLineBreak + '(' + aComp.ComponentClass.UnitName + ')';
+      Btn.Hint := CompCN + sLineBreak +
+        '(' + aComp.ComponentClass.UnitName+', '+aComp.PkgFile.LazPackage.Name + ')';
       Btn.PopupMenu:=Pal.PopupMenu;
       {$IFDEF VerboseComponentPalette}
       if aComp.RealPage.PageName = CompPalVerbPgName then
