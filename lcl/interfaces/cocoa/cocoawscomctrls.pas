@@ -1469,9 +1469,19 @@ end;
 function TLCLListViewCallback.GetItemImageAt(ARow, ACol: Integer;
   var imgIdx: Integer): Boolean;
 begin
-  Result := (ARow >= 0) and (ARow<listView.Items.Count);
+  Result := (ACol >= 0) and (ACol < listView.ColumnCount)
+    and (ARow >= 0) and (ARow < listView.Items.Count);
+
   if not Result then Exit;
-  imgIdx := listView.Items[ARow].ImageIndex;
+
+  if ACol = 0 then
+    imgIdx := listView.Items[ARow].ImageIndex
+  else
+  begin
+    dec(ACol);
+    if (ACol >=0) and (ACol < listView.Items[ARow].SubItems.Count) then
+      imgIdx := listView.Items[ARow].SubItemImages[ACol];
+  end;
 end;
 
 type
