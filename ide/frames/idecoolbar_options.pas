@@ -439,13 +439,14 @@ begin
   begin
     if MessageDlg(lisCoolbarDeleteToolBar, mtConfirmation, [mbYes, mbNo], 0) = mrYes then
     begin
-      if ToDelete + 1 < CoolBar.Bands.Count then
+      if ToDelete < CoolBar.Bands.Count-1 then
         SelectBand(ToDelete + 1)
-      else if ToDelete - 1 >= 0 then
+      else if ToDelete > 0 then
         SelectBand(ToDelete - 1);
       I := FTempCoolBar.FindByToolBar((CoolBar.Bands.Items[ToDelete].Control as TToolBar));
-      if I <> -1 then
-        FTempCoolBar.ToolBars.Delete(I);
+      Assert(I = ToDelete, 'TIdeCoolbarOptionsFrame.bDeleteClick: index mismatch.');
+      // CoolBar Band gets deleted at the same go with FTempCoolBar item.
+      FTempCoolBar.ToolBars.Delete(ToDelete);
     end;
   end;
   EnableDisableToolbarButtons;
