@@ -128,6 +128,13 @@ begin
   UnlockSelectionChange;
 end;
 
+procedure TCustomListbox.DestroyWnd;
+begin
+  inherited;
+  if FCanvas <> nil then
+    TControlCanvas(FCanvas).FreeHandle;
+end;
+
 {------------------------------------------------------------------------------
  procedure TCustomListBox.FinalizeWnd
 ------------------------------------------------------------------------------}
@@ -296,9 +303,10 @@ begin
   begin
     if Self.ItemHeight <> 0 then
       AHeight := Self.ItemHeight
-    else
+    else begin
+      Canvas.Font := Font;
       AHeight := Canvas.TextHeight('Hg');
-
+    end;
     MeasureItem(Integer(ItemId), AHeight);
     if AHeight > 0 then
       ItemHeight := AHeight;

@@ -548,6 +548,7 @@ type
     function CalculateStandardItemHeight: Integer;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure InitializeWnd; override;
+    procedure DestroyWnd; override;
     procedure FinalizeWnd; override;
     class function GetControlClassDefaultSize: TSize; override;
     procedure CheckIndex(const AIndex: Integer);
