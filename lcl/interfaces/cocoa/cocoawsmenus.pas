@@ -514,6 +514,7 @@ begin
   else
   begin
     item := LCLMenuItemInit(TCocoaMenuItem.alloc, AMenuItem.Caption, AMenuItem.ShortCut);
+    TCocoaMenuItem(item).FMenuItemTarget := AMenuItem;
 
     if AMenuItem.IsInMenuBar then
     begin
