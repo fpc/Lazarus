@@ -329,15 +329,16 @@ begin
   if attachedAppleMenuItems then Exit;
   if not hasSubmenu() then Exit;
 
-  // Services
-  { // todo: the sytem would not auto-populate "Services" items.
-    //       atleast assing "System Preferences..." would make sense
+  // Separator
   submenu.insertItem_atIndex(NSMenuItem.separatorItem, submenu.itemArray.count);
 
-  item := LCLMenuItemInit( TCocoaMenuItem_Services.alloc, 'Services');
+  // Services
+  item := LCLMenuItemInit( TCocoaMenuItem.alloc, 'Services');
+  item.setTarget(nil);
+  item.setAction(nil);
   submenu.insertItem_atIndex(item, submenu.itemArray.count);
   item.setSubmenu(NSMenu.alloc.initWithTitle( NSSTR('Services')));
-  }
+  NSApplication(NSApp).setServicesMenu(item.submenu);
 
   // Separator
   submenu.insertItem_atIndex(NSMenuItem.separatorItem, submenu.itemArray.count);
