@@ -869,6 +869,7 @@ begin
   lTitle := NSStringUTF8(AColumn.Caption);
   lNSColumn := NSTableColumn.alloc.initWithIdentifier(lTitle);
   lNSColumn.headerCell.setStringValue(lTitle);
+  lNSColumn.setResizingMask(NSTableColumnUserResizingMask);
   lTableLV.addTableColumn(lNSColumn);
   lTitle.release;
 end;
@@ -900,7 +901,7 @@ var
 begin
   if not CheckColumnParams(lTableLV, lNSColumn, ALV, AIndex) then Exit;
 
-  if AAutoSize then lResizeMask := NSTableColumnAutoresizingMask
+  if AAutoSize then lResizeMask := NSTableColumnAutoresizingMask or NSTableColumnUserResizingMask
   else lResizeMask := NSTableColumnUserResizingMask;
   lNSColumn.setResizingMask(lResizeMask);
 end;
