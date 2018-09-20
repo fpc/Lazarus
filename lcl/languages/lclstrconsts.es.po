@@ -1,13 +1,15 @@
 msgid ""
 msgstr ""
-"Last-Translator: Lucas Martin <codedeep@hotmail.com>\n"
-"PO-Revision-Date: 2012-10-02 20:21+0100\n"
+"Last-Translator: Alonso Cárdenas <acardenas@bsd-peru.org>\n"
+"PO-Revision-Date: 2018-09-19 13:52-0500\n"
 "Language-Team: \n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: lcl\n"
 "POT-Creation-Date: \n"
 "MIME-Version: 1.0\n"
+"Language: es\n"
+"X-Generator: Poedit 2.1.1\n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
 msgid "Browser \"%s\" not executable."
@@ -109,7 +111,7 @@ msgstr "Agua"
 
 #: lclstrconsts.rsascannothaveasparent
 msgid "Class %s cannot have %s as parent."
-msgstr ""
+msgstr "Clase %s no pude tener a %s como padre"
 
 #: lclstrconsts.rsbackgroundcolorcaption
 msgid "Desktop"
@@ -182,7 +184,7 @@ msgstr "El control de clase '%s' no puede tener al control de clase '%s' como hi
 
 #: lclstrconsts.rscontrolhasnoparentformorframe
 msgid "Control '%s' has no parent form or frame"
-msgstr ""
+msgstr "Control '%s' no tiene un formulario o frame padre"
 
 #: lclstrconsts.rscontrolhasnoparentwindow
 msgid "Control '%s' has no parent window"
@@ -231,11 +233,11 @@ msgstr "&Directorio"
 
 #: lclstrconsts.rsdocopy
 msgid "Copy"
-msgstr ""
+msgstr "Copiar"
 
 #: lclstrconsts.rsdopaste
 msgid "Paste"
-msgstr ""
+msgstr "Pegar"
 
 #: lclstrconsts.rsduplicateiconformat
 msgid "Duplicate icon format."
@@ -480,7 +482,6 @@ msgid "--sync                Call XSynchronize (display, True) after the Xserver
 msgstr "--sync                Llama a XSynchronize (display, True) después que se haya establecido la conexión el servidor X. Esto hace más fácil depurar los errores de protocolo de X, porque se desactivará la solicitud de buffer y los errores de X serán recibidos inmediatamente después que el protocolo que generó el error haya sido procesado por el servidor X."
 
 #: lclstrconsts.rshelp
-#, fuzzy
 msgctxt "lclstrconsts.rshelp"
 msgid "Help"
 msgstr "Ayuda"
@@ -863,7 +864,7 @@ msgstr "Enviar"
 
 #: lclstrconsts.rspressoktoignoreandriskdatacorruptionpressaborttok
 msgid "%s%sPress OK to ignore and risk data corruption.%sPress Abort to kill the program."
-msgstr ""
+msgstr "%s%sPresionar OK para ignorar y arriesgarse a una corrupción de datos.%sPresionar Abortar para detener el programa"
 
 #: lclstrconsts.rspriorrecordhint
 msgctxt "lclstrconsts.rspriorrecordhint"
@@ -1045,7 +1046,7 @@ msgstr "Texto"
 
 #: lclstrconsts.rsthebuiltinurlisreadonlychangethebaseurlinstead
 msgid "The built-in URL is read only. Change the BaseURL instead."
-msgstr ""
+msgstr "La URL incorporada es de solo lectura. Cambie el BaseURL en su lugar."
 
 #: lclstrconsts.rstiff
 msgid "Tagged Image File Format"
@@ -1148,7 +1149,7 @@ msgstr "No se puede establecer el foco en una ventana desactivada o invisible"
 
 #: lclstrconsts.scannotsetdesigntimeppi
 msgid "Cannot set design time PPI."
-msgstr ""
+msgstr "No se puede establecer el PPI en tiempo de diseño."
 
 #: lclstrconsts.sduplicatemenus
 msgid "Duplicate menus"

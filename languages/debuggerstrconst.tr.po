@@ -1,0 +1,155 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Hakan KIZILHAN <hakan486@yahoo.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: tr\n"
+"X-Generator: Poedit 2.1.1\n"
+
+#: debuggerstrconst.drsbreakpointcolwidthaction
+msgid "Action column"
+msgstr "Eylem sütunu"
+
+#: debuggerstrconst.drsbreakpointcolwidthcondition
+msgid "Condition column"
+msgstr "Koşul sütunu"
+
+#: debuggerstrconst.drsbreakpointcolwidthfile
+msgid "File/address column"
+msgstr "Dosya/adres sütunu"
+
+#: debuggerstrconst.drsbreakpointcolwidthgroup
+msgid "Group column"
+msgstr "Grup sütunu"
+
+#: debuggerstrconst.drsbreakpointcolwidthline
+msgctxt "debuggerstrconst.drsbreakpointcolwidthline"
+msgid "Line column"
+msgstr "Satır sütunu"
+
+#: debuggerstrconst.drsbreakpointcolwidthpasscount
+msgid "Pass-count column"
+msgstr "Geçiş-sayısı sütunu"
+
+#: debuggerstrconst.drscolwidthbrkpointimg
+msgid "Break indication column"
+msgstr "Kırılma göstergesi sütunu"
+
+#: debuggerstrconst.drscolwidthexpression
+msgid "Expression column"
+msgstr "Deyim sütunu"
+
+#: debuggerstrconst.drscolwidthfunc
+msgid "Function name column"
+msgstr "Fonksiyon ismi sütunu"
+
+#: debuggerstrconst.drscolwidthindex
+msgid "Index column"
+msgstr "İndeks sütunu"
+
+#: debuggerstrconst.drscolwidthline
+msgctxt "debuggerstrconst.drscolwidthline"
+msgid "Line column"
+msgstr "Satır sütunu"
+
+#: debuggerstrconst.drscolwidthname
+msgid "Name column"
+msgstr "Ad sütunu"
+
+#: debuggerstrconst.drscolwidthsource
+msgid "Source column"
+msgstr "Kaynak sütunu"
+
+#: debuggerstrconst.drscolwidthstate
+msgid "State column"
+msgstr "Durum sütunu"
+
+#: debuggerstrconst.drscolwidthvalue
+msgid "Value column"
+msgstr "Değer sütunu"
+
+#: debuggerstrconst.drsevalhistorynone
+msgid "No history kept"
+msgstr "Geçmiş tutulmadı"
+
+#: debuggerstrconst.drshistorycolwidthcurrent
+msgid "Current column"
+msgstr "Şimdiki sütun"
+
+#: debuggerstrconst.drshistorycolwidthlocation
+msgid "Location column"
+msgstr "Yer sütunu"
+
+#: debuggerstrconst.drshistorycolwidthtime
+msgid "Time column"
+msgstr "Zaman sütunu"
+
+#: debuggerstrconst.drsinspectcolwidthdataclass
+msgid "Data class column"
+msgstr "Veri sınıfı sütunu"
+
+#: debuggerstrconst.drsinspectcolwidthdataname
+msgid "Data name column"
+msgstr "Veri adı sütunu"
+
+#: debuggerstrconst.drsinspectcolwidthdatatype
+msgid "Data type column"
+msgstr "Veri türü sütunu"
+
+#: debuggerstrconst.drsinspectcolwidthdatavalue
+msgid "Data value column"
+msgstr "Veri değeri sütunu"
+
+#: debuggerstrconst.drsinspectcolwidthdatavisibility
+msgid "Data visibility column"
+msgstr "Veri görünürlük sütunu"
+
+#: debuggerstrconst.drsinspectcolwidthmethaddress
+msgid "Method address column"
+msgstr "Metod adres sütunu"
+
+#: debuggerstrconst.drsinspectcolwidthmethname
+msgid "Method name column"
+msgstr "Metod ad sütunu"
+
+#: debuggerstrconst.drsinspectcolwidthmethreturns
+msgid "Method returns column"
+msgstr "Metod dönüşü sütunu"
+
+#: debuggerstrconst.drsinspectcolwidthmethtype
+msgid "Method type column"
+msgstr "Metod türü sütunu"
+
+#: debuggerstrconst.drslen
+msgid "Len=%d: "
+msgstr "Len=%d: "
+
+#: debuggerstrconst.drsuseinstanceclasstype
+msgid "Use Instance class type"
+msgstr "Instance sınıf türünü kullan"
+
+#: debuggerstrconst.drswatchsplitterinspect
+msgid "Inspect pane"
+msgstr "İnceleme penceresi"
+
+#: debuggerstrconst.dsrevalhistorydown
+msgid "Append result at bottom of history"
+msgstr "Sonucu geçmişin en altına ekle"
+
+#: debuggerstrconst.dsrevalhistoryup
+msgid "Insert result at top of history"
+msgstr "Sonucu geçmişin en üstüne ekle"
+
+#: debuggerstrconst.synfnewvalueisempty
+msgid "\"New value\" is empty."
+msgstr "\"Yeni değer\" boş."
+
+#: debuggerstrconst.synfthedebuggerwasnotabletomodifythevalue
+msgid "The debugger was not able to modify the value."
+msgstr "Hata ayıklayıcı değeri değiştiremiyor."
+
