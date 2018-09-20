@@ -6523,7 +6523,7 @@ procedure GetGTKDefaultWidgetSize(AWinControl: TWinControl;
 var
   Widget: PGtkWidget;
   Requisition: TGtkRequisition;
-  FixedWidget: PGtkWidget;
+  FixedWidget, LblWidget: PGtkWidget;
 begin
   Widget := {%H-}PGtkWidget(AWinControl.Handle);
   {$IFDEF VerboseCalculatePreferredSize}
@@ -6547,7 +6547,6 @@ begin
   {$ENDIF}
 
   if GtkWidgetIsA(Widget,GTK_TYPE_EVENT_BOX)
-  and not (AWinControl is TCustomGroupBox)
   and (AWinControl.ControlCount>0) then begin
     // ignore client area (child controls)
     FixedWidget:=PGtkWidget(GetFixedWidget(Widget));
@@ -6561,6 +6560,13 @@ begin
       dec(PreferredWidth,Max(0,FixedWidget^.requisition.width));
       dec(PreferredHeight,Max(0,FixedWidget^.requisition.height));
     end;
+  end;
+
+  // Do not truncate Groupbox caption. Issue #32621
+  if AWinControl is TCustomGroupBox then begin
+    LblWidget := gtk_frame_get_label_widget(PGtkFrame(PGtkBin(Widget)^.child));
+    if LblWidget <> nil then
+      PreferredWidth := Max(PreferredWidth, LblWidget^.allocation.x * 2 + LblWidget^.requisition.width);
   end;
 
   // restore size
