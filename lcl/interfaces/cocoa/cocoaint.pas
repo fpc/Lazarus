@@ -69,6 +69,8 @@ type
     procedure run; override;
     procedure sendEvent(theEvent: NSEvent); override;
     function nextEventMatchingMask_untilDate_inMode_dequeue(mask: NSUInteger; expiration: NSDate; mode: NSString; deqFlag: Boolean): NSEvent; override;
+
+    function runModalForWindow(theWindow: NSWindow): NSInteger; override;
   end;
 
   { TCocoaWidgetSet }
@@ -430,6 +432,13 @@ begin
     cb := TrackedControl.lclGetCallback;
     if Assigned(cb) then cb.MouseMove(Result);
   end;
+end;
+
+function TCocoaApplication.runModalForWindow(theWindow: NSWindow): NSInteger;
+begin
+  ApplicationWillShowModal;
+
+  Result:=inherited runModalForWindow(theWindow);
 end;
 
 // the implementation of the utility methods

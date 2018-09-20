@@ -255,6 +255,8 @@ begin
         end;
       end;
 
+      ApplicationWillShowModal;
+
       if Assigned(sheetOfWindow) then
       begin
         anAlert.beginSheetModalForWindow_modalDelegate_didEndSelector_contextInfo(

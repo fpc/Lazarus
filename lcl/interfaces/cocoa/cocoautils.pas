@@ -7,7 +7,7 @@ interface
 
 uses
   classes,
-  MacOSAll, CocoaAll,
+  MacOSAll, CocoaAll, Cocoa_Extra,
   SysUtils, Types, LCLType, LCLClasses, LCLProc,
   Graphics, Math, GraphType;
 
@@ -254,7 +254,36 @@ const
 
 function MacCodeToVK(AKey: Word): Word;
 
+procedure ApplicationWillShowModal;
+
 implementation
+
+procedure ApplicationWillShowModal;
+begin
+  // Any place that would attempt to use Cocoa-native modality.
+  // should call this routine, prior to the call
+  // This is a workaround for AppKit drawing approaches
+
+  // hack: it's assumed that an implicit transaction is running at the moment
+  //       for versions 10.7 and later it's possible to add an end-transacion
+  //       block. But since blocks are not yet, if official FPC release
+  //       the approach is not used
+  //
+  //       the code takes care of all modal windows
+
+  if NSAppkitversionNumber >= NSAppKitVersionNumber10_12 then
+    NSAnimationContext.endGrouping;
+
+  // If transaction is not terminated by calling "endGrouping"
+  // the typical error shown is:
+  //
+  //  *** Terminating app due to uncaught exception 'NSGenericException',
+  //  reason: '-[NSApplication runModalForWindow:] may not be invoked
+  //  inside of transaction begin/commit pair, or inside of transaction
+  //  commit (usually this means it was invoked inside of a view's -drawRect: method.)'
+  //  terminating with uncaught exception of type NSException
+  //  abort() called
+end;
 
 function MacCodeToVK(AKey: Word): Word;
 begin
