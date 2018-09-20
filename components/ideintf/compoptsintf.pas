@@ -18,7 +18,7 @@ interface
 uses
   Classes, SysUtils,
   // LazUtils
-  LazMethodList,
+  LazMethodList, LazFileCache,
   // IdeIntf
   IDEOptionsIntf;
 
@@ -116,6 +116,31 @@ const
   crAll = [crCompile, crBuild, crRun];
 
 type
+  { TLazCompilationToolOptions }
+
+  TLazCompilationToolOptions = class
+  private
+    FOwner: TObject;
+    FChangeStamp: int64;
+    FCommand: string;
+    FOnChanged: TNotifyEvent;
+    procedure SetCommand(AValue: string);
+  protected
+    FCompileReasons: TCompileReasons;
+    procedure SetCompileReasons(const {%H-}AValue: TCompileReasons); virtual;
+  public
+    constructor Create(TheOwner: TObject); virtual;
+    procedure Clear; virtual;
+    procedure Assign(Src: TLazCompilationToolOptions); virtual;
+    procedure IncreaseChangeStamp;
+  public
+    property Owner: TObject read FOwner;
+    property ChangeStamp: int64 read FChangeStamp;
+    property Command: string read FCommand write SetCommand;
+    property CompileReasons: TCompileReasons read FCompileReasons write SetCompileReasons;
+    property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
+  end;
+
   { TLazCompilerOptions }
 
   TLazCompilerOptions = class(TAbstractIDEOptions)
@@ -271,6 +296,10 @@ type
     // Turn specific types of compiler messages on or off
     fMessageFlags: TAbstractCompilerMsgIDFlags;
 
+    // Other tools:
+    fExecuteBefore: TLazCompilationToolOptions;
+    fExecuteAfter: TLazCompilationToolOptions;
+
     // Other:
     fDontUseConfigFile: Boolean;
     fCustomConfigFile: Boolean;
@@ -288,8 +317,6 @@ type
     function GetSrcPath: string; virtual; abstract;
     function GetUnitOutputDir: string; virtual; abstract;
     function GetUnitPaths: String; virtual; abstract;
-    function GetExecuteBeforeCommand: string; virtual; abstract;
-    function GetExecuteAfterCommand: string; virtual; abstract;
     procedure SetCompilerPath(const AValue: String); virtual; abstract;
     procedure SetConditionals(AValue: string); virtual; abstract;
     procedure SetCustomOptions(const AValue: string); virtual; abstract;
@@ -308,8 +335,6 @@ type
     procedure SetTargetProc(const AValue: string); virtual; abstract;
     procedure SetUnitOutputDir(const AValue: string); virtual; abstract;
     procedure SetUnitPaths(const AValue: String); virtual; abstract;
-    procedure SetExecuteBeforeCommand(const ACommand: string); virtual; abstract;
-    procedure SetExecuteAfterCommand(const ACommand: string); virtual; abstract;
   public
     constructor Create(const TheOwner: TObject); virtual;
     destructor Destroy; override;
@@ -444,7 +469,9 @@ type
     property WriteFPCLogo: Boolean read fWriteFPCLogo write SetWriteFPCLogo;
     property StopAfterErrCount: integer read fStopAfterErrCount write SetStopAfterErrCount;
     property MessageFlags: TAbstractCompilerMsgIDFlags read fMessageFlags;
-
+    // other tools
+    property ExecuteBefore: TLazCompilationToolOptions read fExecuteBefore;
+    property ExecuteAfter: TLazCompilationToolOptions read fExecuteAfter;
     // other
     property DontUseConfigFile: Boolean read fDontUseConfigFile write SetDontUseConfigFile;
     property CustomConfigFile: Boolean read fCustomConfigFile write SetCustomConfigFile;
@@ -454,12 +481,51 @@ type
                                                 write SetUseCommentsInCustomOptions;
     // execute
     property CompilerPath: String read GetCompilerPath write SetCompilerPath;
-    property ExecuteBeforeCommand: String read GetExecuteBeforeCommand write SetExecuteBeforeCommand;
-    property ExecuteAfterCommand: String read GetExecuteAfterCommand write SetExecuteAfterCommand;
-    procedure SetAlternativeCompile(const Command: string; ScanFPCMsgs: boolean); virtual; abstract; // disable normal compile and call this instead
+    // disable normal compile and call this instead
+    procedure SetAlternativeCompile(const Command: string; ScanFPCMsgs: boolean); virtual; abstract;
   end;
 
 implementation
+
+{ TLazCompilationToolOptions }
+
+constructor TLazCompilationToolOptions.Create(TheOwner: TObject);
+begin
+  FOwner:=TheOwner;
+  FCompileReasons:=crAll; // This default can be used in some comparisons.
+end;
+
+procedure TLazCompilationToolOptions.Clear;
+begin
+  Command:='';
+  FCompileReasons := crAll;
+end;
+
+procedure TLazCompilationToolOptions.Assign(Src: TLazCompilationToolOptions);
+begin
+  Command:=Src.Command;
+  FCompileReasons := Src.CompileReasons;
+end;
+
+procedure TLazCompilationToolOptions.IncreaseChangeStamp;
+begin
+  LUIncreaseChangeStamp64(FChangeStamp);
+  if Assigned(OnChanged) then
+    OnChanged(Self);
+end;
+
+procedure TLazCompilationToolOptions.SetCommand(AValue: string);
+begin
+  if FCommand=AValue then exit;
+  FCommand:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilationToolOptions.SetCompileReasons(const AValue: TCompileReasons);
+begin
+  raise Exception.Create('TLazCompilationToolOptions does not support CompileReasons.'
+                        +' Use an inherited class instead.');
+end;
 
 { TLazBuildMacros }
 

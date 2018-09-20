@@ -333,42 +333,32 @@ type
 
   { TCompilationToolOptions }
 
-  TCompilationToolOptions = class
+  TCompilationToolOptions = class(TLazCompilationToolOptions)
   private
-    FChangeStamp: int64;
-    FCommand: string;
-    FOnChanged: TNotifyEvent;
-    FOwner: TObject;
     FParsers: TStrings;
     FParsedCommandStamp: integer;
     FParsedCommand: string;
     function GetHasParser(aParserName: string): boolean;
-    procedure SetCommand(const AValue: string);
     procedure SetHasParser(aParserName: string; const AValue: boolean);
     procedure SetParsers(const AValue: TStrings);
   protected
     procedure SubstituteMacros(var s: string); virtual;
   public
-    constructor Create(TheOwner: TObject); virtual;
+    constructor Create(TheOwner: TObject); override;
     destructor Destroy; override;
-    procedure Clear; virtual;
+    procedure Clear; override;
     function CreateDiff(CompOpts: TCompilationToolOptions;
                         Tool: TCompilerDiffTool = nil): boolean; virtual;
-    procedure Assign(Src: TCompilationToolOptions); virtual;
+    procedure Assign(Src: TLazCompilationToolOptions); override;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                                 DoSwitchPathDelims: boolean); virtual;
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                               UsePathDelim: TPathDelimSwitch); virtual;
     function Execute(const WorkingDir, ToolTitle, CompileHint: string): TModalResult;
     function CreateExtTool(const WorkingDir, ToolTitle, CompileHint: string): TAbstractExternalTool;
-    property ChangeStamp: int64 read FChangeStamp;
-    procedure IncreaseChangeStamp;
-    property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
     function GetParsedCommand: string; // resolved macros
     function HasCommands: boolean; // true if there is something to execute
   public
-    property Owner: TObject read FOwner;
-    property Command: string read FCommand write SetCommand;
     property Parsers: TStrings read FParsers write SetParsers;
     property HasParser[aParserName: string]: boolean read GetHasParser write SetHasParser;
   end;
@@ -433,12 +423,9 @@ type
     FStorePathDelim: TPathDelimSwitch;
     FOtherDefines: TStrings; // list of user selectable defines for custom options
     FFPCMsgFile: TFPCMsgFilePoolItem;
-
-    // other tools
-    fExecuteBefore: TCompilationToolOptions;
-    fExecuteAfter: TCompilationToolOptions;
     FCreateMakefileOnBuild: boolean;
-
+    function GetExecuteAfter: TCompilationToolOptions;
+    function GetExecuteBefore: TCompilationToolOptions;
     procedure OnItemChanged(Sender: TObject);
     procedure SetCreateMakefileOnBuild(AValue: boolean);
   protected
@@ -453,8 +440,6 @@ type
     function GetSrcPath: string; override;
     function GetUnitOutputDir: string; override;
     function GetUnitPaths: String; override;
-    function GetExecuteBeforeCommand: string; override;
-    function GetExecuteAfterCommand: string; override;
     procedure SetBaseDirectory(AValue: string);
     procedure SetCompilerPath(const AValue: String); override;
     procedure SetConditionals(AValue: string); override;
@@ -473,8 +458,6 @@ type
     procedure SetTargetOS(const AValue: string); override;
     procedure SetTargetFileExt(const AValue: String); override;
     procedure SetTargetFilename(const AValue: String); override;
-    procedure SetExecuteBeforeCommand(const ACommand: string); override;
-    procedure SetExecuteAfterCommand(const ACommand: string); override;
   protected
     function GetModified: boolean; override;
     procedure SetModified(const AValue: boolean); override;
@@ -584,14 +567,12 @@ type
     property BaseDirectory: string read GetBaseDirectory write SetBaseDirectory;
     property DefaultMakeOptionsFlags: TCompilerCmdLineOptions
                  read FDefaultMakeOptionsFlags write SetDefaultMakeOptionsFlags;
-
     // stored properties
     property StorePathDelim: TPathDelimSwitch read FStorePathDelim write FStorePathDelim;
     property OtherDefines: TStrings read FOtherDefines;
-
     // compilation
-    property ExecuteBefore: TCompilationToolOptions read fExecuteBefore;
-    property ExecuteAfter: TCompilationToolOptions read fExecuteAfter;
+    property ExecuteBefore: TCompilationToolOptions read GetExecuteBefore;
+    property ExecuteAfter: TCompilationToolOptions read GetExecuteAfter;
     property CreateMakefileOnBuild: boolean read FCreateMakefileOnBuild
                                             write SetCreateMakefileOnBuild;
   end;
@@ -1395,6 +1376,16 @@ end;
 function TBaseCompilerOptions.GetUnitPaths: String;
 begin
   Result:=ParsedOpts.Values[pcosUnitPath].UnparsedValue;
+end;
+
+function TBaseCompilerOptions.GetExecuteAfter: TCompilationToolOptions;
+begin
+  Result:=TCompilationToolOptions(fExecuteAfter);
+end;
+
+function TBaseCompilerOptions.GetExecuteBefore: TCompilationToolOptions;
+begin
+  Result:=TCompilationToolOptions(fExecuteBefore);
 end;
 
 procedure TBaseCompilerOptions.SetBaseDirectory(AValue: string);
@@ -3707,28 +3698,6 @@ begin
     ExecuteBefore.Parsers.Clear;
 end;
 
-function TBaseCompilerOptions.GetExecuteBeforeCommand: string;
-begin
-  Result := ExecuteBefore.Command;
-end;
-
-function TBaseCompilerOptions.GetExecuteAfterCommand: string;
-begin
-  Result := ExecuteAfter.Command;
-end;
-
-procedure TBaseCompilerOptions.SetExecuteBeforeCommand(const ACommand: string);
-begin
-  ExecuteBefore.Command := ACommand;
-  IncreaseChangeStamp;
-end;
-
-procedure TBaseCompilerOptions.SetExecuteAfterCommand(const ACommand: string);
-begin
-  ExecuteAfter.Command := ACommand;
-  IncreaseChangeStamp;
-end;
-
 
 { TAdditionalCompilerOptions }
 
@@ -4263,16 +4232,6 @@ end;
 
 { TCompilationToolOptions }
 
-procedure TCompilationToolOptions.SetCommand(const AValue: string);
-begin
-  if FCommand=AValue then exit;
-  FCommand:=AValue;
-  {$IFDEF VerboseIDEModified}
-  debugln(['TCompilationToolOptions.SetCommand ',AValue]);
-  {$ENDIF}
-  IncreaseChangeStamp;
-end;
-
 function TCompilationToolOptions.GetHasParser(aParserName: string): boolean;
 begin
   Result:=FParsers.IndexOf(aParserName)>=0;
@@ -4311,7 +4270,7 @@ end;
 
 constructor TCompilationToolOptions.Create(TheOwner: TObject);
 begin
-  FOwner:=TheOwner;
+  inherited Create(TheOwner);
   FParsers:=TStringList.Create;
 end;
 
@@ -4323,14 +4282,15 @@ end;
 
 procedure TCompilationToolOptions.Clear;
 begin
-  Command:='';
+  inherited Clear;
   Parsers.Clear;
 end;
 
-procedure TCompilationToolOptions.Assign(Src: TCompilationToolOptions);
+procedure TCompilationToolOptions.Assign(Src: TLazCompilationToolOptions);
 begin
-  Command:=Src.Command;
-  Parsers.Assign(Src.Parsers);
+  inherited Assign(Src);
+  if Src is TCompilationToolOptions then
+    Parsers.Assign(TCompilationToolOptions(Src).Parsers);
 end;
 
 procedure TCompilationToolOptions.LoadFromXMLConfig(XMLConfig: TXMLConfig;
@@ -4358,7 +4318,6 @@ begin
   //debugln(['TCompilationToolOptions.SaveToXMLConfig ',Command,' Path=',Path]);
   XMLConfig.SetDeleteValue(Path+'Command/Value',
                            SwitchPathDelims(Command,UsePathDelim),'');
-
   // Parsers
   NeedNewFormat:=false;
   for i:=0 to Parsers.Count-1 do begin
@@ -4374,12 +4333,9 @@ begin
     SaveStringList(XMLConfig,Parsers,Path+'Parsers/')
   else begin
     // save backward compatible
-    XMLConfig.SetDeleteValue(Path+'ScanForFPCMsgs/Value',
-                             HasParser[SubToolFPC],false);
-    XMLConfig.SetDeleteValue(Path+'ScanForMakeMsgs/Value',
-                             HasParser[SubToolMake],false);
-    XMLConfig.SetDeleteValue(Path+'ShowAllMessages/Value',
-                             HasParser[SubToolDefault],false);
+    XMLConfig.SetDeleteValue(Path+'ScanForFPCMsgs/Value', HasParser[SubToolFPC],false);
+    XMLConfig.SetDeleteValue(Path+'ScanForMakeMsgs/Value',HasParser[SubToolMake],false);
+    XMLConfig.SetDeleteValue(Path+'ShowAllMessages/Value',HasParser[SubToolDefault],false);
   end;
 end;
 
@@ -4460,12 +4416,6 @@ begin
     if not ok then
       FreeAndNil(Result);
   end;
-end;
-
-procedure TCompilationToolOptions.IncreaseChangeStamp;
-begin
-  CTIncreaseChangeStamp64(FChangeStamp);
-  if assigned(OnChanged) then OnChanged(Self);
 end;
 
 function TCompilationToolOptions.GetParsedCommand: string;
