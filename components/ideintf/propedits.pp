@@ -4499,9 +4499,13 @@ begin
   CollectionForm.SetCollection(ACollection, OwnerPersistent, PropName);
   CollectionForm.AddButton.Show;
   CollectionForm.Deletebutton.Show;
+  CollectionForm.AddButton.Left := 0;
+  CollectionForm.DeleteButton.Left := 1;
   CollectionForm.DividerToolButton.Show;
+  CollectionForm.DividerToolButton.Left := CollectionForm.DeleteButton.Left + 1;
   SetPopupModeParentForPropertyEditor(CollectionForm);
   CollectionForm.EnsureVisible;
+  CollectionForm.UpdateButtons;
   Result:=CollectionForm;
 end;
 
@@ -4535,10 +4539,9 @@ begin
   CollectionForm.AddButton.Hide;
   CollectionForm.Deletebutton.Hide;
   CollectionForm.DividerToolButton.Hide;
-  CollectionForm.MoveUpButton.Enabled := false;
-  CollectionForm.MoveDownButton.Enabled := false;
   SetPopupModeParentForPropertyEditor(CollectionForm);
   CollectionForm.EnsureVisible;
+  CollectionForm.UpdateButtons;
   Result := CollectionForm;
 end;
 

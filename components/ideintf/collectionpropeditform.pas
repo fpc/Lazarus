@@ -46,7 +46,6 @@ type
     procedure Modified;
   protected
     procedure UpdateCaption;
-    procedure UpdateButtons;
     procedure PersistentAdded({%H-}APersistent: TPersistent; {%H-}Select: boolean);
     procedure ComponentRenamed(AComponent: TComponent);
     procedure PersistentDeleting(APersistent: TPersistent);
@@ -54,6 +53,7 @@ type
   public
     procedure SetCollection(NewCollection: TCollection;
                     NewOwnerPersistent: TPersistent; const NewPropName: String);
+    procedure UpdateButtons;
   public
     property Collection: TCollection read FCollection;
     property OwnerComponent: TPersistent read FOwnerComponent;
