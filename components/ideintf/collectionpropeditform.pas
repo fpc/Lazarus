@@ -234,8 +234,8 @@ var
   I: Integer;
 begin
   I := CollectionListBox.ItemIndex;
-  actAdd.Enabled := Collection <> nil;
-  actDel.Enabled := I > -1;
+  actAdd.Enabled := (Collection <> nil) and actAdd.Visible;
+  actDel.Enabled := (I > -1) and actDel.Visible;
   actMoveUp.Enabled := I > 0;
   actMoveDown.Enabled := (I >= 0) and (I < CollectionListBox.Items.Count - 1);
 end;

@@ -4497,8 +4497,8 @@ begin
   if CollectionForm = nil then
     CollectionForm := TCollectionPropertyEditorForm.Create(Application);
   CollectionForm.SetCollection(ACollection, OwnerPersistent, PropName);
-  CollectionForm.AddButton.Show;
-  CollectionForm.Deletebutton.Show;
+  CollectionForm.actAdd.Visible := true;
+  CollectionForm.actDel.Visible := true;
   CollectionForm.AddButton.Left := 0;
   CollectionForm.DeleteButton.Left := 1;
   CollectionForm.DividerToolButton.Show;
@@ -4536,8 +4536,8 @@ begin
   if CollectionForm = nil then
     CollectionForm := TCollectionPropertyEditorForm.Create(Application);
   CollectionForm.SetCollection(ACollection, OwnerPersistent, PropName);
-  CollectionForm.AddButton.Hide;
-  CollectionForm.Deletebutton.Hide;
+  CollectionForm.actAdd.Visible := false;
+  CollectionForm.actDel.Visible := false;
   CollectionForm.DividerToolButton.Hide;
   SetPopupModeParentForPropertyEditor(CollectionForm);
   CollectionForm.EnsureVisible;
