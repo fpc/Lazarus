@@ -178,17 +178,17 @@ begin
   if not (Opts.GrabStyle in [0..5]) then
     Opts.GrabStyle := 1;
   cbGrabStyle.ItemIndex := Opts.GrabStyle;
-  Coolbar.GrabStyle := TGrabStyle(Opts.GrabStyle);
+  FTempCoolBar.Coolbar.GrabStyle := TGrabStyle(Opts.GrabStyle);
 
   if not (Opts.GrabWidth in [1..50]) then
     Opts.GrabWidth := 5;
   spGrabWidth.Value := Opts.GrabWidth;
-  Coolbar.GrabWidth := Opts.GrabWidth;
+  FTempCoolBar.Coolbar.GrabWidth := Opts.GrabWidth;
 
   if not (Opts.BorderStyle in [0..1]) then
     Opts.BorderStyle := 1;
   cbBorderStyle.ItemIndex := Opts.BorderStyle;
-  Coolbar.BandBorderStyle := TBorderStyle(Opts.BorderStyle);
+  FTempCoolBar.Coolbar.BandBorderStyle := TBorderStyle(Opts.BorderStyle);
   EnableDisableGeneralButtons;
 
   // ToDo: More tests?
@@ -227,10 +227,10 @@ var
   ABand: integer;
   AGrabber: boolean;
 begin
-  CoolBar.MouseToBandPos(X, Y, ABand, AGrabber);
+  FTempCoolBar.CoolBar.MouseToBandPos(X, Y, ABand, AGrabber);
   if ABand < 0 then
     Exit;
-  if CoolBar.Bands.Items[ABand].Color <> clHighlight then
+  if FTempCoolBar.CoolBar.Bands.Items[ABand].Color <> clHighlight then
     SelectBand(ABand);
 end;
 
@@ -249,21 +249,21 @@ end;
 
 procedure TIdeCoolbarOptionsFrame.tmWaitTimer(Sender: TObject);
 begin
-  Coolbar.AutosizeBands;
+  FTempCoolBar.Coolbar.AutosizeBands;
   tmWait.Enabled := False;
 end;
 
 procedure TIdeCoolbarOptionsFrame.spGrabWidthChange(Sender: TObject);
 begin
-  CoolBar.GrabWidth := TSpinEdit(Sender).Value;
-  CoolBar.AutosizeBands;
+  FTempCoolBar.CoolBar.GrabWidth := TSpinEdit(Sender).Value;
+  FTempCoolBar.CoolBar.AutosizeBands;
   EnableDisableGeneralButtons;
 end;
 
 procedure TIdeCoolbarOptionsFrame.cbGrabStyleChange(Sender: TObject);
 begin
-  CoolBar.GrabStyle := TGrabStyle(TComboBox(Sender).ItemIndex);
-  CoolBar.AutosizeBands;
+  FTempCoolBar.CoolBar.GrabStyle := TGrabStyle(TComboBox(Sender).ItemIndex);
+  FTempCoolBar.CoolBar.AutosizeBands;
   EnableDisableGeneralButtons;
 end;
 
@@ -280,8 +280,8 @@ end;
 
 procedure TIdeCoolbarOptionsFrame.cbBorderStyleChange(Sender: TObject);
 begin
-  Coolbar.BandBorderStyle := TBorderStyle(TComboBox(Sender).ItemIndex);
-  Coolbar.AutosizeBands;
+  FTempCoolBar.Coolbar.BandBorderStyle := TBorderStyle(TComboBox(Sender).ItemIndex);
+  FTempCoolBar.Coolbar.AutosizeBands;
   EnableDisableGeneralButtons;
 end;
 
@@ -290,10 +290,10 @@ var
   I: integer;
   Band: TCoolBand;
 begin
-  Coolbar.Color := clDefault;
-  for I := 0 to CoolBar.Bands.Count - 1 do
+  FTempCoolBar.Coolbar.Color := clDefault;
+  for I := 0 to FTempCoolBar.CoolBar.Bands.Count - 1 do
   begin
-    Band := CoolBar.Bands.Items[I];
+    Band := FTempCoolBar.CoolBar.Bands.Items[I];
     if I <> ID then
     begin
       Band.Color := clDefault;
@@ -312,8 +312,8 @@ var
   I: Integer;
 begin
   Result := -1;
-  for I := 0 to CoolBar.Bands.Count - 1 do
-    if CoolBar.Bands.Items[I].Color = clHighlight then
+  for I := 0 to FTempCoolBar.CoolBar.Bands.Count - 1 do
+    if FTempCoolBar.CoolBar.Bands.Items[I].Color = clHighlight then
       Exit(I);
 end;
 
@@ -321,7 +321,7 @@ procedure TIdeCoolbarOptionsFrame.ToolBarClick(Sender: TObject);
 var
   CoolBand: TCoolBand;
 begin
-  CoolBand := Coolbar.Bands.FindBand(Sender as TToolBar);
+  CoolBand := FTempCoolBar.Coolbar.Bands.FindBand(Sender as TToolBar);
   if CoolBand <> nil then
     SelectBand(CoolBand.Index);
 end;
@@ -337,9 +337,9 @@ var
   Selected: Boolean;
 begin
   Selected := False;
-  for I := 0 to Coolbar.Bands.Count - 1 do
+  for I := 0 to FTempCoolBar.Coolbar.Bands.Count - 1 do
   begin
-    if Coolbar.Bands[I].Color = clHighlight then
+    if FTempCoolBar.Coolbar.Bands[I].Color = clHighlight then
     begin
       Selected := True;
       Break;
@@ -361,7 +361,7 @@ end;
 
 function TIdeCoolbarOptionsFrame.AddBand(ToolBar: TToolBar; aBreak: Boolean): TCoolBand;
 begin
-  Result := CoolBar.Bands.Add;
+  Result := FTempCoolBar.CoolBar.Bands.Add;
   Result.Break := aBreak;
   Result.Control := Toolbar;
   //Result.MinWidth := 25;
@@ -374,7 +374,7 @@ var
   I: Integer;
   IDEToolbar: TIDEToolBar;
 begin
-  CoolBar.Bands.Clear;
+  FTempCoolBar.CoolBar.Bands.Clear;
   for I := 0 to FTempCoolBar.ToolBars.Count - 1 do
   begin
     IDEToolbar := FTempCoolBar.ToolBars[I];
@@ -383,9 +383,9 @@ begin
     AddBand(IDEToolbar.ToolBar, IDEToolbar.CurrentOptions.Break);
     UseToolbarButtons(IDEToolbar);
   end;
-  if CoolBar.Bands.Count > 0 then
+  if FTempCoolBar.CoolBar.Bands.Count > 0 then
     SelectBand(0);
-  Coolbar.AutosizeBands;
+  FTempCoolBar.Coolbar.AutosizeBands;
   EnableDisableToolbarButtons;
 end;
 
@@ -413,14 +413,14 @@ begin
     MessageDlg(lisCoolbarSelectToolBar, mtInformation, [mbOk], 0);
     Exit;
   end;
-  ToolBar := Coolbar.Bands.Items[ToConfig].Control as TToolBar;
+  ToolBar := FTempCoolBar.Coolbar.Bands.Items[ToConfig].Control as TToolBar;
   Assert(Assigned(ToolBar), 'TIdeCoolbarOptionsFrame.bConfigClick: ToolBar=Nil.');
   Assert(ToConfig = FTempCoolBar.FindByToolBar(ToolBar),
          'TIdeCoolbarOptionsFrame.bConfigClick: Indices differ!');
   IDEToolbar := FTempCoolBar.ToolBars[ToConfig];
   if ShowToolBarConfig(IDEToolbar.CurrentOptions.ButtonNames) = mrOK then
     UseToolbarButtons(IDEToolbar);
-  Coolbar.AutosizeBands;
+  FTempCoolBar.Coolbar.AutosizeBands;
   EnableDisableToolbarButtons;
 end;
 
@@ -429,7 +429,7 @@ var
   I: integer;
   ToDelete: integer;
 begin
-  if Coolbar.Bands.Count = 1 then
+  if FTempCoolBar.Coolbar.Bands.Count = 1 then
   begin
     MessageDlg(lisCoolbarDeleteWarning, mtInformation, [mbOk], 0);
     Exit;
@@ -439,11 +439,11 @@ begin
   begin
     if MessageDlg(lisCoolbarDeleteToolBar, mtConfirmation, [mbYes, mbNo], 0) = mrYes then
     begin
-      if ToDelete < CoolBar.Bands.Count-1 then
+      if ToDelete < FTempCoolBar.CoolBar.Bands.Count-1 then
         SelectBand(ToDelete + 1)
       else if ToDelete > 0 then
         SelectBand(ToDelete - 1);
-      I := FTempCoolBar.FindByToolBar((CoolBar.Bands.Items[ToDelete].Control as TToolBar));
+      I := FTempCoolBar.FindByToolBar((FTempCoolBar.CoolBar.Bands.Items[ToDelete].Control as TToolBar));
       Assert(I = ToDelete, 'TIdeCoolbarOptionsFrame.bDeleteClick: index mismatch.');
       // CoolBar Band gets deleted at the same go with FTempCoolBar item.
       FTempCoolBar.ToolBars.Delete(ToDelete);
