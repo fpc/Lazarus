@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-06-14 01:33+0300\n"
+"PO-Revision-Date: 2018-09-22 01:14+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -256,7 +256,7 @@ msgstr "&Тип:"
 
 #: objinspstrconsts.fpflowpaneleditor
 msgid "FlowPanel Editor"
-msgstr ""
+msgstr "Редактор FlowPanel"
 
 #: objinspstrconsts.ilesadd
 msgctxt "objinspstrconsts.ilesadd"
