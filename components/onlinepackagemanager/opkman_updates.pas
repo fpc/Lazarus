@@ -32,7 +32,7 @@ interface
 uses
   Classes, SysUtils, fpjson, fpjsonrtti, dateutils,
   // LazUtils
-  Laz2_XMLCfg,
+  Laz2_XMLCfg, LazIDEIntf,
   // OpkMan
   opkman_serializablepackages, opkman_options, opkman_common,
   {$IFDEF MSWINDOWS}
@@ -525,6 +525,8 @@ begin
       if FNeedToBreak then
         Break;
       JSON := '';
+      if (Assigned(LazarusIDE) and LazarusIDE.IDEIsClosing) then
+        Break;
       if GetUpdateInfo(Trim(SerializablePackages.Items[I].DownloadURL), JSON) then
       begin
         if FUpdatePackage.LoadFromJSON(JSON) then
