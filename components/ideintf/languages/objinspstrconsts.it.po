@@ -255,6 +255,10 @@ msgstr "Dimen&sione:"
 msgid "&Type:"
 msgstr "&Tipo:"
 
+#: objinspstrconsts.fpflowpaneleditor
+msgid "FlowPanel Editor"
+msgstr ""
+
 #: objinspstrconsts.ilesadd
 msgctxt "objinspstrconsts.ilesadd"
 msgid "Add"

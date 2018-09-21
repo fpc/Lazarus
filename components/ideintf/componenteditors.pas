@@ -393,7 +393,19 @@ type
   end;
 
 
-{ TToolBarComponentEditor
+{ TFlowPanelComponentEditor
+  The default componenteditor for TFlowPanel }
+
+  TFlowPanelComponentEditor = class(TComponentEditor)
+  public
+    procedure ExecuteVerb(AIndex: Integer); override;
+    function GetVerb(AIndex: Integer): string; override;
+    function GetVerbCount: Integer; override;
+    function FlowPanel: TFlowPanel;
+  end;
+
+
+  { TToolBarComponentEditor
   The default componenteditor for TToolBar }
 
   TToolBarComponentEditor = class(TDefaultComponentEditor)
@@ -1253,6 +1265,33 @@ begin
   Result:=1;
 end;
 
+
+{ TFlowPanelComponentEditor }
+
+var
+  FlowPanelEditor: TCollectionPropertyEditor = nil;
+
+procedure TFlowPanelComponentEditor.ExecuteVerb(AIndex: Integer);
+begin
+  EditCollection(FlowPanel, FlowPanel.ControlList, 'ControlList', true);
+end;
+
+function TFlowPanelComponentEditor.GetVerb(AIndex: Integer): string;
+begin
+  Result := fpFlowPanelEditor+'...';
+end;
+
+function TFlowPanelComponentEditor.GetVerbCount: Integer;
+begin
+  Result := 1;
+end;
+
+function TFlowPanelComponentEditor.FlowPanel: TFlowPanel;
+begin
+  Result := TFlowPanel(GetComponent);
+end;
+
+
 { TToolBarComponentEditor }
 
 procedure TToolBarComponentEditor.ExecuteVerb(Index: Integer);
@@ -1592,6 +1631,7 @@ initialization
   RegisterComponentEditor(TStringGrid, TStringGridComponentEditor);
   RegisterComponentEditor(TCheckListBox, TCheckListBoxComponentEditor);
   RegisterComponentEditor(TCheckGroup, TCheckGroupComponentEditor);
+  RegisterComponentEditor(TFlowPanel, TFlowPanelComponentEditor);
   RegisterComponentEditor(TToolBar, TToolBarComponentEditor);
   RegisterComponentEditor(TCommonDialog, TCommonDialogComponentEditor);
   RegisterComponentEditor(TCustomTimer, TTimerComponentEditor);

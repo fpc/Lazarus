@@ -220,6 +220,9 @@ resourcestring
   cgCheckDuplicate = 'On Add, Check for Duplicate in Items';
   cgCheckDuplicateMsg = 'The "%s" Item is already listed. Add it anyway?';
 
+  // flowpanel editor
+  fpFlowPanelEditor = 'FlowPanel Editor';
+
   // Collection Editor
   oiColEditAdd = 'Add';
   oiColEditDelete = 'Delete';

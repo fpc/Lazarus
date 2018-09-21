@@ -1141,6 +1141,13 @@ type
     function GetAttributes: TPropertyAttributes; override;
   end;
 
+  { TNoAddDeleteCollectionPropertyEditor }
+
+  TNoAddDeleteCollectionPropertyEditor = class(TCollectionPropertyEditor)
+  public
+    class function ShowCollectionEditor(ACollection: TCollection;
+      OwnerPersistent: TPersistent; const PropName: String): TCustomForm; override;
+  end;
 
 //==============================================================================
 // Delphi Compatible Property Editor Classnames
@@ -1759,7 +1766,8 @@ function ControlAcceptsStreamableChildComponent(aControl: TWinControl;
 
 procedure LazSetMethodProp(Instance : TObject;PropInfo : PPropInfo; Value : TMethod);
 procedure WritePublishedProperties(Instance: TPersistent);
-procedure EditCollection(AComponent: TComponent; ACollection: TCollection; APropertyName: String);
+procedure EditCollection(AComponent: TComponent; ACollection: TCollection;
+  APropertyName: String; NoAddDelete: Boolean = false);
 
 // Returns true if given property should be displayed on the property list
 // filtered by AFilter and APropNameFilter.
@@ -4489,6 +4497,9 @@ begin
   if CollectionForm = nil then
     CollectionForm := TCollectionPropertyEditorForm.Create(Application);
   CollectionForm.SetCollection(ACollection, OwnerPersistent, PropName);
+  CollectionForm.AddButton.Show;
+  CollectionForm.Deletebutton.Show;
+  CollectionForm.DividerToolButton.Show;
   SetPopupModeParentForPropertyEditor(CollectionForm);
   CollectionForm.EnsureVisible;
   Result:=CollectionForm;
@@ -4510,6 +4521,27 @@ function TDisabledCollectionPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
   Result := [paDialog, paReadOnly, paDisableSubProperties];
 end;
+
+
+{ TNoAddDeleteCollectionPropertyEditor }
+
+class function TNoAddDeleteCollectionPropertyEditor.ShowCollectionEditor(
+  ACollection: TCollection; OwnerPersistent: TPersistent;
+  const PropName: String): TCustomForm;
+begin
+  if CollectionForm = nil then
+    CollectionForm := TCollectionPropertyEditorForm.Create(Application);
+  CollectionForm.SetCollection(ACollection, OwnerPersistent, PropName);
+  CollectionForm.AddButton.Hide;
+  CollectionForm.Deletebutton.Hide;
+  CollectionForm.DividerToolButton.Hide;
+  CollectionForm.MoveUpButton.Enabled := false;
+  CollectionForm.MoveDownButton.Enabled := false;
+  SetPopupModeParentForPropertyEditor(CollectionForm);
+  CollectionForm.EnsureVisible;
+  Result := CollectionForm;
+end;
+
 
 { TClassPropertyEditor }
 
@@ -7481,9 +7513,13 @@ begin
   Result := Pos(AUpperSubText, UpperCase(AText)) > 0;
 end;
 
-procedure EditCollection(AComponent: TComponent; ACollection: TCollection; APropertyName: String);
+procedure EditCollection(AComponent: TComponent; ACollection: TCollection;
+  APropertyName: String; NoAddDelete: Boolean = false);
 begin
-  TCollectionPropertyEditor.ShowCollectionEditor(ACollection, AComponent, APropertyName);
+  if NoAddDelete then
+    TNoAddDeleteCollectionPropertyEditor.ShowCollectionEditor(ACollection, AComponent, APropertyName)
+  else
+    TCollectionPropertyEditor.ShowCollectionEditor(ACollection, AComponent, APropertyName);
 end;
 
 function IsInteresting(AEditor: TPropertyEditor; const AFilter: TTypeKinds;
@@ -8031,7 +8067,7 @@ begin
   RegisterPropertyEditor(TypeInfo(TComponent), nil, 'ActiveControl', TComponentOneFormPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TControl), TCoolBand, 'Control', TCoolBarControlPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TCollection), nil, '', TCollectionPropertyEditor);
-  RegisterPropertyEditor(TypeInfo(TFlowPanelControlList), TFlowPanel, 'ControlList', TDisabledCollectionPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TFlowPanelControlList), TFlowPanel, 'ControlList', TNoAddDeleteCollectionPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TControl), TFlowPanelControl, 'Control', THiddenPropertyEditor);
   RegisterPropertyEditor(TypeInfo(AnsiString), TFileDialog, 'Filter', TFileDlgFilterProperty);
   RegisterPropertyEditor(TypeInfo(AnsiString), TFilterComboBox, 'Filter', TFileDlgFilterProperty);

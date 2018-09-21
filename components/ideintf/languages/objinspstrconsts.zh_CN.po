@@ -255,6 +255,10 @@ msgstr "大小:(&S)"
 msgid "&Type:"
 msgstr "类型:(&T)"
 
+#: objinspstrconsts.fpflowpaneleditor
+msgid "FlowPanel Editor"
+msgstr ""
+
 #: objinspstrconsts.ilesadd
 msgctxt "objinspstrconsts.ilesadd"
 msgid "Add"

@@ -247,6 +247,10 @@ msgstr "&Koko:"
 msgid "&Type:"
 msgstr "&Tyyppi"
 
+#: objinspstrconsts.fpflowpaneleditor
+msgid "FlowPanel Editor"
+msgstr ""
+
 #: objinspstrconsts.ilesadd
 msgctxt "objinspstrconsts.ilesadd"
 msgid "Add"
