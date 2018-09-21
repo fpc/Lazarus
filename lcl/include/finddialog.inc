@@ -81,7 +81,7 @@ begin
   BorderIcons := [biSystemMenu, biHelp];
   Caption := 'Find';
   //OnCreate := @FormCreate;
-  Position := poMainFormCenter;
+  //Position := poMainFormCenter;
 
   LCLVersion := '1.3';
 
@@ -407,6 +407,8 @@ end;
 procedure TFindDialog.DoCloseForm(Sender: TObject; var CloseAction: TCloseAction);
 begin
   if csDesigning in ComponentState then exit;
+  FFormTop := FFindForm.Top;
+  FFormLeft := FFindForm.Left;
   if Assigned(OnClose) then OnClose(Self);
 end;
 
@@ -498,10 +500,9 @@ begin
 end;
 
 function TFindDialog.CreateForm: TForm;
-Var
-  StrTmp : String;
 begin
   // do not use Self as Owner, otherwise as desgntime this will not work
+  //debugln(['TFindDialog.CreateForm: Left=',Left,', Top=',Top,', Position=',dbgs(position),', FFormLeft=',FFormLeft,', FFormTop=',FFormTop]);
   Result := TFindDialogForm.CreateNew(nil,Options);
   with TFindDialogForm(Result) do
   begin
@@ -520,9 +521,9 @@ begin
     HelpButton.OnClick := @HelpClick;
     CancelButton.OnClick := @CancelClick;
     PopupMode := pmAuto;
-    // Init local property with defaut value
-    FFormTop  := top;
-    FFormLeft := Left;
+    // Init local property with default value
+    Result.Top := FFormTop;
+    Result.Left := FFormLeft;
   end;
 end;
 
@@ -576,15 +577,19 @@ begin
 end;
 
 procedure TFindDialog.CalcPosition(aForm:Tform);
-Var
-  MfBound : Trect;
-
 begin
-  MfBound := Application.MainForm.BoundsRect;
-  FFormTop  := MfBound.Top + (((MfBound.Bottom - MfBound.Top)  - aForm.Height) Div 2);
-  FFormLeft := MfBound.Left + (((MfBound.Right - MfBound.Left) - aForm.Width) Div 2);
-  aForm.Top := FFormTop;
-  aForm.Left := FFormLeft;
+  //debugln(['TFindDialog.CalcPosition: Left=',Left,', Top=',Top,', Position=',dbgs(position),', FFormLeft=',FFormLeft,', FFormTop=',FFormTop]);
+  if (csDesigning in ComponentState) then
+  begin
+    aForm.Position := poScreenCenter;
+    Exit;
+  end;
+  if (FFormLeft < 0) and (FFormTop < 0) then
+  begin
+    aForm.Position := poMainFormCenter;
+    FFormTop := aForm.Top;
+    FFormLeft := aForm.Left;
+  end;
 end;
 
 
@@ -592,6 +597,8 @@ constructor TFindDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FOptions:=[frDown];
+  FFormLeft := -1;
+  FFormTop := -1;
 end;
 
 destructor TFindDialog.Destroy;
