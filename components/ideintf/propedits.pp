@@ -1141,6 +1141,7 @@ type
     function GetAttributes: TPropertyAttributes; override;
   end;
 
+
 //==============================================================================
 // Delphi Compatible Property Editor Classnames
 
@@ -6151,6 +6152,7 @@ begin
   end;
 end;
 
+
 //==============================================================================
 
 
@@ -8030,6 +8032,7 @@ begin
   RegisterPropertyEditor(TypeInfo(TControl), TCoolBand, 'Control', TCoolBarControlPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TCollection), nil, '', TCollectionPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TFlowPanelControlList), TFlowPanel, 'ControlList', TDisabledCollectionPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TControl), TFlowPanelControl, 'Control', THiddenPropertyEditor);
   RegisterPropertyEditor(TypeInfo(AnsiString), TFileDialog, 'Filter', TFileDlgFilterProperty);
   RegisterPropertyEditor(TypeInfo(AnsiString), TFilterComboBox, 'Filter', TFileDlgFilterProperty);
   RegisterPropertyEditor(TypeInfo(AnsiString), TFileNameEdit, 'Filter', TFileDlgFilterProperty);
