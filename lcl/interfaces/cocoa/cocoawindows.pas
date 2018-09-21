@@ -343,6 +343,7 @@ end;
 procedure TCocoaWindowContent.resolvePopupParent();
 var
   lWindow: NSWindow;
+  isfront: Boolean;
 begin
   lWindow := nil;
   if (popup_parent <> 0) then
@@ -358,7 +359,15 @@ begin
     end;
   end;
   if lWindow <> nil then
+  begin
+    isfront:=NSApplication(NSApp).mainWindow=self.window;
+
     lWindow.addChildWindow_ordered(Self.window, NSWindowAbove);
+
+    // adding a window as a child, would bring the "child" form to the bottom
+    // of Zorder. need to restore the order.
+    if isfront then self.window.makeKeyAndOrderFront(nil);
+  end;
   popup_parent := 0;
 end;
 
