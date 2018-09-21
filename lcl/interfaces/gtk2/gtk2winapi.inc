@@ -138,7 +138,7 @@ begin
   else Control := nil;
 
   if (Control <> nil)
-  and Control.DoubleBuffered
+  and TWSWinControlClass(Control.WidgetSetClass).GetDoubleBuffered(Control)
   and not GTK_WIDGET_DOUBLE_BUFFERED({%H-}PGTKWidget(Handle))
   then begin
     //DebugLn(['TGtk2WidgetSet.BeginPaint ',DbgSName(Control)]);
@@ -2837,8 +2837,10 @@ begin
   then Control := TWinControl(GetLCLObject({%H-}Pointer(Handle)))
   else Control := nil;
 
-  If (Control <> nil) and (not GTK_WIDGET_DOUBLE_BUFFERED(({%H-}PGTKWidget(Handle)))) and (Control.DoubleBuffered) then
-  begin
+  if (Control <> nil)
+  and TWSWinControlClass(Control.WidgetSetClass).GetDoubleBuffered(Control)
+  and not GTK_WIDGET_DOUBLE_BUFFERED({%H-}PGTKWidget(Handle))
+  then begin
     gdk_window_thaw_updates(TGtkDeviceContext(PS.HDC).Drawable);
     gdk_window_end_paint (TGtkDeviceContext(PS.HDC).Drawable);
   end;

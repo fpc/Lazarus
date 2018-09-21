@@ -45,7 +45,7 @@ uses
   LMessages, LCLProc, LCLIntf, LCLType, GraphType, GraphMath,
   Graphics, Menus, Themes, Buttons, StdCtrls, CheckLst, ComCtrls, Spin, ExtCtrls,
   LCLPlatformDef, InterfaceBase,
-  WSLCLClasses,
+  WSLCLClasses, WSControls,
   Gtk2WinApiWindow, Gtk2Globals, Gtk2Proc, Gtk2Def, Gtk2FontCache, Gtk2Extra,
   Gtk2MsgQueue;
 
