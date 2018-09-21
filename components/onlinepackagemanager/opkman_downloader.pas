@@ -31,7 +31,7 @@ unit opkman_downloader;
 interface
 
 uses
-  Classes, SysUtils, fpjson,
+  Classes, SysUtils, fpjson, LazIDEIntf,
   // OpkMan
   opkman_timer, opkman_common, opkman_serializablepackages, opkman_const, opkman_options,
   {$IFDEF FPC311}fphttpclient{$ELSE}opkman_httpclient{$ENDIF};
@@ -279,7 +279,8 @@ begin
     FHTTPClient.Terminate;
     FErrMsg := rsMainFrm_rsMessageError2;
     FErrTyp := etTimeOut;
-    FTimer.StopTimer;
+    if Assigned(FTimer) then
+      FTimer.StopTimer;
     TThreadTimer(Sender).Synchronize(@DoOnJSONDownloadCompleted);
     //Synchronize(@DoOnJSONDownloadCompleted);
     FOnJSONComplete := nil;
@@ -340,7 +341,7 @@ begin
       FErrTyp := etConfig;
       FErrMsg := rsMainFrm_rsMessageNoRepository0;
     end;
-    if FTimer.Enabled then
+    if Assigned(FTimer) and FTimer.Enabled then
       FTimer.StopTimer;
     Synchronize(@DoOnJSONDownloadCompleted);
   end
@@ -432,7 +433,8 @@ begin
     begin
       FUSuccess := True;
       Synchronize(@DoOnPackageUpdateCompleted);
-      FTimer.Enabled := True;
+      if Assigned(FTimer) then
+        FTimer.Enabled := True;
       FCnt := 0;
       FTotCnt := UpdCnt;
       for I := 0 to SerializablePackages.Count - 1 do
@@ -498,9 +500,12 @@ end;
 
 destructor TThreadDownload.Destroy;
 begin
-  if FTimer.Enabled then
-    FTimer.StopTimer;
-  FTimer.Terminate;
+  if Assigned(FTimer) then
+  begin
+    if FTimer.Enabled then
+      FTimer.StopTimer;
+    FTimer.Terminate;
+  end;
   FHTTPClient.Free;
   FMS.Free;
   inherited Destroy;
@@ -512,11 +517,14 @@ begin
   FRemoteJSONFile := Options.RemoteRepository[Options.ActiveRepositoryIndex] + cRemoteJSONFile;
   FDownloadType := dtJSON;
   FSilent := ASilent;
-  FTimer := TThreadTimer.Create;
-  FTimer.Interval := ATimeOut;
-  FTimer.OnTimer := @DoOnTimer;
-  FTimer.StartTimer;
-  Start;
+  if (Assigned(LazarusIDE) and LazarusIDE.IDEStarted and (not LazarusIDE.IDEIsClosing)) then
+  begin
+    FTimer := TThreadTimer.Create;
+    FTimer.Interval := ATimeOut;
+    FTimer.OnTimer := @DoOnTimer;
+    FTimer.StartTimer;
+    Start;
+  end;
 end;
 
 procedure TThreadDownload.DownloadPackages(const ADownloadTo: String);
@@ -535,10 +543,13 @@ begin
       FTotSize := FTotSize + SerializablePackages.Items[I].RepositoryFileSize;
     end;
   end;
-  FTimer := TThreadTimer.Create;
-  FTimer.OnTimer := @DoOnTimer;
-  FTimer.StartTimer;
-  Start;
+  if (Assigned(LazarusIDE) and LazarusIDE.IDEStarted and (not LazarusIDE.IDEIsClosing)) then
+  begin
+    FTimer := TThreadTimer.Create;
+    FTimer.OnTimer := @DoOnTimer;
+    FTimer.StartTimer;
+    Start;
+  end;
 end;
 
 procedure TThreadDownload.DoReceivedUpdateSize(Sender: TObject;
@@ -599,11 +610,14 @@ begin
   for I := 0 to SerializablePackages.Count - 1 do
     if (SerializablePackages.Items[I].Checked) and (Trim(SerializablePackages.Items[I].DownloadZipURL) <> '') then
       Inc(FTotCnt);
-  FTimer := TThreadTimer.Create;
-  FTimer.OnTimer := @DoOnTimer;
-  FTimer.StartTimer;
-  FTimer.Enabled := False;
-  Start;
+  if (Assigned(LazarusIDE) and LazarusIDE.IDEStarted and (not LazarusIDE.IDEIsClosing)) then
+  begin
+    FTimer := TThreadTimer.Create;
+    FTimer.OnTimer := @DoOnTimer;
+    FTimer.StartTimer;
+    FTimer.Enabled := False;
+    Start;
+  end;
 end;
 
 { TPackageDownloader}
@@ -709,7 +723,8 @@ begin
   if Assigned(FDownload) then
   begin
     FDownload.FHTTPClient.Terminate;
-    FDownload.FTimer.StopTimer;
+    if Assigned(FDownload.FTimer) then
+      FDownload.FTimer.StopTimer;
     FDownload.NeedToBreak := True;
   end;
 end;
