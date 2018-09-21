@@ -398,8 +398,8 @@ type
 
   TFlowPanelComponentEditor = class(TComponentEditor)
   public
-    procedure ExecuteVerb(AIndex: Integer); override;
-    function GetVerb(AIndex: Integer): string; override;
+    procedure ExecuteVerb({%H-}AIndex: Integer); override;
+    function GetVerb({%H-}AIndex: Integer): string; override;
     function GetVerbCount: Integer; override;
     function FlowPanel: TFlowPanel;
   end;
@@ -1268,12 +1268,9 @@ end;
 
 { TFlowPanelComponentEditor }
 
-var
-  FlowPanelEditor: TCollectionPropertyEditor = nil;
-
 procedure TFlowPanelComponentEditor.ExecuteVerb(AIndex: Integer);
 begin
-  EditCollection(FlowPanel, FlowPanel.ControlList, 'ControlList', true);
+  EditCollectionNoAddDel(FlowPanel, FlowPanel.ControlList, 'ControlList');
 end;
 
 function TFlowPanelComponentEditor.GetVerb(AIndex: Integer): string;

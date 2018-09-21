@@ -1766,8 +1766,8 @@ function ControlAcceptsStreamableChildComponent(aControl: TWinControl;
 
 procedure LazSetMethodProp(Instance : TObject;PropInfo : PPropInfo; Value : TMethod);
 procedure WritePublishedProperties(Instance: TPersistent);
-procedure EditCollection(AComponent: TComponent; ACollection: TCollection;
-  APropertyName: String; NoAddDelete: Boolean = false);
+procedure EditCollection(AComponent: TComponent; ACollection: TCollection; APropName: String);
+procedure EditCollectionNoAddDel(AComponent: TComponent; ACollection: TCollection; APropName: String);
 
 // Returns true if given property should be displayed on the property list
 // filtered by AFilter and APropNameFilter.
@@ -7516,13 +7516,14 @@ begin
   Result := Pos(AUpperSubText, UpperCase(AText)) > 0;
 end;
 
-procedure EditCollection(AComponent: TComponent; ACollection: TCollection;
-  APropertyName: String; NoAddDelete: Boolean = false);
+procedure EditCollection(AComponent: TComponent; ACollection: TCollection; APropName: String);
 begin
-  if NoAddDelete then
-    TNoAddDeleteCollectionPropertyEditor.ShowCollectionEditor(ACollection, AComponent, APropertyName)
-  else
-    TCollectionPropertyEditor.ShowCollectionEditor(ACollection, AComponent, APropertyName);
+  TCollectionPropertyEditor.ShowCollectionEditor(ACollection, AComponent, APropName);
+end;
+
+procedure EditCollectionNoAddDel(AComponent: TComponent; ACollection: TCollection; APropName: String);
+begin
+  TNoAddDeleteCollectionPropertyEditor.ShowCollectionEditor(ACollection, AComponent, APropName);
 end;
 
 function IsInteresting(AEditor: TPropertyEditor; const AFilter: TTypeKinds;
