@@ -1175,6 +1175,7 @@ type
     procedure SetControl(const aControl: TControl);
     procedure SetWrapAfter(const AWrapAfter: TWrapAfter);
   protected
+    function GetDisplayName: String; override;
     procedure SetIndex(Value: Integer); override;
     procedure AssignTo(Dest: TPersistent); override;
     function FPCollection: TFlowPanelControlList;

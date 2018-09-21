@@ -118,6 +118,14 @@ begin
   Result := FPCollection.FPOwner;
 end;
 
+function TFlowPanelControl.GetDisplayName: String;
+begin
+  if (FControl is TComponent) then
+    Result := '[' + TComponent(FControl).Name + ']'
+  else
+    Result := inherited;
+end;
+
 procedure TFlowPanelControl.SetControl(const aControl: TControl);
 begin
   if FControl = aControl then Exit;
