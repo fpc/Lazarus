@@ -455,12 +455,14 @@ var
   ParObj  : NSObject;
   Parent  : TCocoaMenu;
   item    : NSMenuItem;
+  MenuObj : NSObject;
+  Menu    : NSMenu;
 begin
   if not Assigned(AMenuItem) or (AMenuItem.Handle=0) or not Assigned(AMenuItem.Parent) or (AMenuItem.Parent.Handle=0) then Exit;
   ParObj:=NSObject(AMenuItem.Parent.Handle);
   item:=NSMenuItem(AMenuItem.Handle);
 
-  if ParObj.isKindOfClass_(NSMenuItem) then
+  if ParObj.isKindOfClass(NSMenuItem) then
   begin
     if not NSMenuItem(ParObj).hasSubmenu then
     begin
@@ -470,12 +472,25 @@ begin
     end
     else
       Parent:=TCocoaMenu(NSMenuItem(ParObj).submenu);
-  end else if ParObj.isKindOfClass_(NSMenu) then
+  end else if ParObj.isKindOfClass(NSMenu) then
     Parent:=TCocoaMenu(ParObj)
   else
     Exit;
 
-  Parent.insertItem_atIndex(item, AMenuItem.MenuVisibleIndex);
+  item := nil;
+  MenuObj := NSObject(AMenuItem.Handle);
+  if MenuObj.isKindOfClass(NSMenuItem) then
+    item := NSMenuItem(MenuObj)
+  else if MenuObj.isKindOfClass(NSMenu) then
+  begin
+    Menu := NSMenu(MenuObj);
+    item := NSMenuItem(NSMenuItem.alloc).initWithTitle_action_keyEquivalent(
+      ControlTitleToNSStr(AMenuItem.Caption), nil, NSString.string_ );
+    item.setSubmenu( Menu );
+  end;
+
+  if Assigned(item) then
+    Parent.insertItem_atIndex(NSMenuItem(item), AMenuItem.MenuVisibleIndex)
 end;
 
 {------------------------------------------------------------------------------
