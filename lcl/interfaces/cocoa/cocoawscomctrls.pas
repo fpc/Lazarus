@@ -1026,6 +1026,10 @@ begin
   Result:=Bounds(0,0,0,0);
   if not CheckParams(lCocoaLV, lTableLV, ALV) then Exit;
   LCLGetItemRect(lTableLV, AIndex, ASubItem, Result);
+  case ACode of
+    drLabel: Result := lTableLV.lclGetLabelRect(AIndex, ASubItem, Result);
+    drIcon:  Result := lTableLV.lclGetIconRect(AIndex, ASubItem, Result);
+  end;
 end;
 
 class function TCocoaWSCustomListView.ItemGetChecked(

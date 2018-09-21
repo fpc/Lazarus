@@ -112,6 +112,12 @@ type
     function lclGetSmallImage(idx: INteger): NSImage; message 'lclGetSmallImage:';
     function lclGetItemImageAt(ARow, ACol: Integer): NSImage; message 'lclGetItemImageAt::';
 
+    // BoundsRect - is the rectangle of the cell, speciifed of aRow, acol.
+    // so the function lclGetLabelRect, lclGetIconRect should only adjust "BoundsRect"
+    // and return the adjusted rectangle
+    function lclGetLabelRect(ARow, ACol: Integer; const BoundsRect: TRect): TRect; message 'lclGetLabelRect:::';
+    function lclGetIconRect(ARow, ACol: Integer; const BoundsRect: TRect): TRect; message 'lclGetIconRect:::';
+
     // NSTableViewDataSourceProtocol
     function numberOfRowsInTableView(tableView: NSTableView): NSInteger; message 'numberOfRowsInTableView:';
     //procedure tableView_sortDescriptorsDidChange(tableView: NSTableView; oldDescriptors: NSArray); message 'tableView:sortDescriptorsDidChange:';
@@ -227,6 +233,8 @@ type
 
     procedure textFieldAction(sender: NSTextField); message 'textFieldAction:';
     procedure checkboxAction(sender: NSButton); message 'checkboxAction:';
+
+    function lclGetLabelRect(ARow, ACol: Integer; const BoundsRect: TRect): TRect; override;
   end;
 
 function AllocCocoaTableListView: TCocoaTableListView;
@@ -411,6 +419,18 @@ begin
   end else
     img := nil;
   Result := img;
+end;
+
+function TCocoaTableListView.lclGetLabelRect(ARow, ACol: Integer;
+  const BoundsRect: TRect): TRect;
+begin
+  Result := BoundsRect;
+end;
+
+function TCocoaTableListView.lclGetIconRect(ARow, ACol: Integer;
+  const BoundsRect: TRect): TRect;
+begin
+  Result := BoundsRect;
 end;
 
 function TCocoaTableListView.acceptsFirstResponder: Boolean;
@@ -1125,6 +1145,17 @@ begin
   row := rowForView(sender);
   callback.SetItemCheckedAt(row, 0, sender.state);
   reloadDataForRow_column(row, 0);
+end;
+
+function TViewCocoaTableListView.lclGetLabelRect(ARow, ACol: Integer;
+  const BoundsRect: TRect): TRect;
+var
+  lTableItemLV: TCocoaTableListItem;
+begin
+  Result := BoundsRect;
+  lTableItemLV := TCocoaTableListItem(viewAtColumn_row_makeIfNecessary(ACol, ARow, False));
+  Result.Left := Round(lTableItemLV.textFrame.origin.x - 1);
+  Result.Width := Round(lTableItemLV.textFrame.size.width);
 end;
 
 end.
