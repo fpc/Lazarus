@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="4">
+    <Name Value="idespotter"/>
+    <Type Value="DesignTime"/>
+    <Author Value="Michael Van Canneyt"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+    </CompilerOptions>
+    <Description Value="IDE addon showing the &quot;Sleuth - a quick search window for IDE commands"/>
+    <License Value="Modified LGPL-2"/>
+    <Version Release="1"/>
+    <Files Count="3">
+      <Item1>
+        <Filename Value="regidespotter.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="regidespotter"/>
+      </Item1>
+      <Item2>
+        <Filename Value="frmspotter.pas"/>
+        <UnitName Value="frmspotter"/>
+      </Item2>
+      <Item3>
+        <Filename Value="ReadMe.txt"/>
+        <Type Value="Binary"/>
+      </Item3>
+    </Files>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
+    <RequiredPkgs Count="1">
+      <Item1>
+        <PackageName Value="IDEIntf"/>
+      </Item1>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>
