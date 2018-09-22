@@ -1307,7 +1307,7 @@ begin
   // This makes NSTextView to be responsive to theme color change (Mojave 10.14)
   txt.setTextColor(NSColor.textColor);
   txt.setBackgroundColor(NSColor.textBackgroundColor);
-  scr.setBackgroundColor(NSColor.textBackgroundColor);
+  scr.setFocusRingType(NSFocusRingTypeExterior);
 
   txt.callback := TLCLCommonCallback.Create(txt, AWinControl);
   txt.setDelegate(txt);
