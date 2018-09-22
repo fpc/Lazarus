@@ -853,6 +853,7 @@ type
                                          write FMaxRecentOpenFiles;
     procedure AddToRecentOpenFiles(const AFilename: string); override;
     procedure RemoveFromRecentOpenFiles(const AFilename: string); override;
+    function GetRecentProjectFiles: TStrings; override;
     property RecentProjectFiles: TStringList read FRecentProjectFiles;
     property MaxRecentProjectFiles: integer read FMaxRecentProjectFiles
                                             write FMaxRecentProjectFiles;
@@ -2641,6 +2642,12 @@ end;
 procedure TEnvironmentOptions.RemoveFromRecentOpenFiles(const AFilename: string);
 begin
   RemoveFromRecentList(AFilename,FRecentOpenFiles,rltFile);
+end;
+
+function TEnvironmentOptions.GetRecentProjectFiles: TStrings;
+begin
+  Result:=TStringList.Create;
+  Result.Assign(FRecentProjectFiles);
 end;
 
 procedure TEnvironmentOptions.RemoveFromRecentPackageFiles(const AFilename: string);
