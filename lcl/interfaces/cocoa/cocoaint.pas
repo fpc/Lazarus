@@ -144,7 +144,7 @@ type
     MainMenuEnabled: Boolean; // the latest main menu status
     PrevMenu : NSMenu;
     PrevLCLMenu : TMenu;
-    LCLMenu: TMenu;
+    CurLCLMenu: TMenu;
     PrevMenuEnabled: Boolean; // previous mainmenu status
 
     constructor Create; override;
@@ -525,10 +525,13 @@ var
   lMenuObj: NSObject;
   lNSMenu: NSMenu absolute AMenu;
 begin
+  if Assigned(PrevMenu) then PrevMenu.release;
   PrevMenu := NSApplication(NSApp).mainMenu;
-  PrevLCLMenu := LCLMenu;
+  PrevMenu.retain;
+
+  PrevLCLMenu := CurLCLMenu;
   NSApp.setMainMenu(lNSMenu);
-  LCLMenu := ALCLMenu;
+  CurLCLMenu := ALCLMenu;
 
   if (ALCLMenu = nil) or not ALCLMenu.HandleAllocated then Exit;
 
@@ -556,7 +559,7 @@ procedure TCocoaWidgetSet.SetMainMenu(const AMenu: HMENU; const ALCLMenu: TMenu)
 begin
   if AMenu<>0 then
   begin
-    DoSetMainMenu(NSMenu(AMenu), LCLMenu);
+    DoSetMainMenu(NSMenu(AMenu), ALCLMenu);
 
     PrevMenuEnabled := MainMenuEnabled;
     MainMenuEnabled := true;
@@ -584,14 +587,15 @@ begin
   if not Assigned(sess) then Exit;
   if not Assigned(Modals) then Modals := TList.Create;
 
-  // cannot use MainMenuEnabled to record the status, because "MainMenuEnabled"
-  // has been changed in SetMainMenu for the menu of ModalWindow
-  Modals.Add( TModalSession.Create(awin, sess, PrevMenuEnabled, PrevMenu, PrevLCLMenu));
-
+  // If a modal menu has it's menu, then SetMainMenu has already been called
+  // (Show is called for modal windows prior to ShowModal. Show triggers Activate and Active is doing MainMenu)
   if not hasMenu then begin
+    Modals.Add( TModalSession.Create(awin, sess, MainMenuEnabled, NSApplication(NSApp).mainMenu, CurLCLMenu));
     MainMenuEnabled := false;
     ToggleAppMenu(false); // modal menu doesn't have a window, disabling it
-  end;
+  end else
+    // if modal window has its own menu, then the prior window is rescord in "Prev" fields
+    Modals.Add( TModalSession.Create(awin, sess, PrevMenuEnabled, PrevMenu, PrevLCLMenu));
 
   Result := true;
 end;
