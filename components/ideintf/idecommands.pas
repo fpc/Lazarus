@@ -598,9 +598,9 @@ type
     procedure DoOnUpdate; overload;
     procedure DoOnUpdate(Sender: TObject); overload;
   public
-    property Enabled: Boolean write SetEnabled;
-    property Caption: string write SetCaption;
-    property Hint: string write SetHint;
+    property Enabled: Boolean write SetEnabled; // set Enabled of all "Users" TIDESpecialCommand, use Users to read
+    property Caption: string write SetCaption; // set Caption of all "Users" TIDESpecialCommand, use Users to read
+    property Hint: string write SetHint; // set Hint of all "Users" TIDESpecialCommand, use Users to read
     // don't add Visible property here - it is not generic. Tool buttons should never be hidden programmatically
   public
     property Name: String read FName;
