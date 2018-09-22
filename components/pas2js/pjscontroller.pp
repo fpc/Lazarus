@@ -202,6 +202,8 @@ begin
   if (s<>'') and (ConsoleVerbosity>=0) then
     debugln(['Hint: (lazarus) [TPJSController.GetPas2JSPath] ignoring macro Pas2JS parameter "',s,'"']);
   Result:=PJSOptions.GetParsedCompilerFilename;
+  if Result='' then
+    Result:='pas2js'; // always return something to get nicer error messages
 end;
 
 function TPJSController.GetPas2JSBrowser(const s: string; const Data: PtrInt; var Abort: boolean): string;
@@ -211,6 +213,8 @@ begin
   if (s<>'') and (ConsoleVerbosity>=0) then
     debugln(['Hint: (lazarus) [TPJSController.GetPas2JSBrowser] ignoring macro Pas2JSBrowser parameter "',s,'"']);
   Result:=PJSOptions.GetParsedBrowserFilename;
+  if Result='' then
+    Result:='firefox'; // always return something to get nicer error messages
 end;
 
 function TPJSController.GetPas2JSNodeJS(const s: string; const Data: PtrInt; var Abort: boolean): string;
@@ -220,6 +224,8 @@ begin
   if (s<>'') and (ConsoleVerbosity>=0) then
     debugln(['Hint: (lazarus) [TPJSController.GetPas2JSNodeJS] ignoring macro Pas2JSNodeJS parameter "',s,'"']);
   Result:=PJSOptions.GetParsedNodeJSFilename;
+  if Result='' then
+    Result:='nodejs'+GetExeExt; // always return something to get nicer error messages
 end;
 
 function TPJSController.GetPas2jsProjectURL(const s: string; const Data: PtrInt; var Abort: boolean): string;
