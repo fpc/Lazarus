@@ -270,9 +270,11 @@ begin
   //       the approach is not used
   //
   //       the code takes care of all modal windows
+  //
+  //       The hack is commented out, as it doesn't work on some machines
 
-  if NSAppkitversionNumber >= NSAppKitVersionNumber10_12 then
-    NSAnimationContext.endGrouping;
+  //if NSAppkitversionNumber >= NSAppKitVersionNumber10_12 then
+    //NSAnimationContext.endGrouping;
 
   // If transaction is not terminated by calling "endGrouping"
   // the typical error shown is:
