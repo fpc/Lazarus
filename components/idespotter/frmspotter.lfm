@@ -9,12 +9,13 @@ object SpotterForm: TSpotterForm
   ClientHeight = 232
   ClientWidth = 497
   FormStyle = fsStayOnTop
+  OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate
   OnShow = FormShow
   Position = poDefaultSizeOnly
   ShowInTaskBar = stNever
-  LCLVersion = '2.1.0.0'
+  LCLVersion = '1.9.0.0'
   Visible = True
   object ECommand: TEdit
     Left = 0
@@ -40,8 +41,10 @@ object SpotterForm: TSpotterForm
     OnEnter = LBMatchesEnter
     OnKeyUp = LBMatchesKeyUp
     ParentShowHint = False
+    ScrollWidth = 495
     ShowHint = True
     TabOrder = 1
     TabStop = False
+    TopIndex = -1
   end
 end

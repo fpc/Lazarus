@@ -46,6 +46,7 @@ type
     LBMatches: TListBox;
     procedure ECommandChange(Sender: TObject);
     procedure ECommandKeyUp(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
+    procedure FormActivate(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -70,7 +71,7 @@ var
 
 implementation
 
-Uses LCLType, LCLProc;
+Uses StrUtils,LCLType, LCLProc;
 
 {$R *.lfm}
 
@@ -106,6 +107,11 @@ begin
   end;
 end;
 
+procedure TSpotterForm.FormActivate(Sender: TObject);
+begin
+  ECommand.SetFocus;
+end;
+
 procedure TSpotterForm.FormClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
@@ -118,14 +124,36 @@ Var
   i : Integer;
   Cmd : TIDECommand;
   pref,ks : string;
+  Words : Array of string;
+  MatchPos : Array of Integer;
+
+  Function Match(S : String) : Boolean;
+
+  Var
+    I : integer;
+
+  begin
+    Result:=True;
+    I:=0;
+    While Result and (I<Length(Words)) do
+      begin
+      MatchPos[i]:=Pos(Words[i],S);
+      Result:=MatchPos[i]<>0;
+      inc(I);
+      end;
+  end;
 
 begin
   aCmd:=LowerCase(aCmd);
+  Setlength(Words,WordCount(aCmd,[' ']));
+  Setlength(MatchPos,Length(Words));
+  For I:=1 to Length(Words) do
+    Words[I-1]:=ExtractWord(I,aCmd,[' ']);
   LBMatches.Items.BeginUpdate;
   try
     LBMatches.Items.Clear;
     For I:=0 to FCommands.Count-1 do
-      if Pos(aCmd,FCommands[I])>0 then
+      if Match(FCommands[I]) then
         begin
         Cmd:=TIDECommand(FCommands.Objects[i]);
         Pref:=GetCommandCategoryString(Cmd);
@@ -163,7 +191,7 @@ begin
   if MF=nil then MF:=Application.MainForm;
   if Assigned(MF) then
     begin
-    Top:=40; //MF.ClientOrigin.y+MF.Height+32; // Needs some additional work ?
+    Top:=MF.ClientOrigin.y+MF.Height+32; // Needs some additional work ?
     Left:=MF.ClientOrigin.x+(MF.Width-Width) div 2;
     end;
   ECommand.Clear;
