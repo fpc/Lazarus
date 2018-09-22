@@ -161,6 +161,14 @@ type
     procedure mouseMoved(event: NSEvent); override;
     procedure scrollWheel(event: NSEvent); override;
     procedure sendEvent(event: NSEvent); override;
+    // key
+    // in practice those key-handling methods should NOT be needed, because a window
+    // always have TCocoaWindowContent view. However, on some instances
+    // the focus is not switched to CocoaWindowContent, and the window itself
+    // remains the firstResponder. (ie CodeCompletion window, see bug #34301)
+    procedure keyDown(event: NSEvent); override;
+    procedure keyUp(event: NSEvent); override;
+    procedure flagsChanged(event: NSEvent); override;
     // NSDraggingDestinationCategory
     function draggingEntered(sender: NSDraggingInfoProtocol): NSDragOperation; override;
     function performDragOperation(sender: NSDraggingInfoProtocol): Boolean; override;
@@ -939,6 +947,34 @@ begin
     WindowPerformKeyDown(self, event, prc)
   else
     inherited sendEvent(event);
+end;
+
+procedure TCocoaWindow.keyDown(event: NSEvent);
+var
+  cb  : ICommonCallback;
+  res : Boolean;
+begin
+  cb := lclGetCallback;
+  if Assigned(cb) then
+  begin
+    cb.KeyEvPrepare(event);
+    cb.KeyEvBefore(res);
+    inherited keyDown(event);
+    cb.KeyEvAfter;
+  end else
+    inherited keyDown(event);
+end;
+
+procedure TCocoaWindow.keyUp(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.KeyEvent(event) then
+    inherited keyUp(event);
+end;
+
+procedure TCocoaWindow.flagsChanged(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.KeyEvent(event) then
+    inherited flagsChanged(event);
 end;
 
 function TCocoaWindow.draggingEntered(sender: NSDraggingInfoProtocol): NSDragOperation;
