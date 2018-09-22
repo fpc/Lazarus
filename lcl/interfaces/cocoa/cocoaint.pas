@@ -81,7 +81,16 @@ type
   TModalSession = class(TObject)
     window : NSWindow;
     sess   : NSModalSession;
-    constructor Create(awin: NSWindow; asess: NSModalSession);
+    // recording menu state for the modality stack
+    // there's no limitation for a modal window to have its own menu
+    // if it override the mainMenu, we still need the information
+    // to restore the previous state of the mainmenu
+    prevMenuEnabled: Boolean;
+    cocoaMenu : NSMenu;
+    lclMenu   : TMenu;
+    constructor Create(awin: NSWindow; asess: NSModalSession;
+      APrevMenuEnabled: Boolean;
+      amainmenu: NSMenu; ALCL: TMenu);
   end;
 
   { TCocoaWidgetSet }
@@ -126,10 +135,17 @@ type
 
     procedure SendCheckSynchronizeMessage;
     procedure OnWakeMainThread(Sender: TObject);
+
+    procedure DoSetMainMenu(AMenu: NSMenu; ALCLMenu: TMenu);
   public
     // modal session
     CurModalForm: NSWindow;
     Modals : TList;
+    MainMenuEnabled: Boolean; // the latest main menu status
+    PrevMenu : NSMenu;
+    PrevLCLMenu : TMenu;
+    LCLMenu: TMenu;
+    PrevMenuEnabled: Boolean; // previous mainmenu status
 
     constructor Create; override;
     destructor Destroy; override;
@@ -159,9 +175,8 @@ type
     procedure FreeSysColorBrushes;
 
     procedure SetMainMenu(const AMenu: HMENU; const ALCLMenu: TMenu);
-    function StartModal(awin: NSWindow): Boolean;
+    function StartModal(awin: NSWindow; hasMenu: Boolean): Boolean;
     procedure EndModal(awin: NSWindow);
-
 
     {todo:}
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
@@ -359,11 +374,15 @@ end;
 
 { TModalSession }
 
-constructor TModalSession.Create(awin: NSWindow; asess: NSModalSession);
+constructor TModalSession.Create(awin: NSWindow; asess: NSModalSession;
+  APrevMenuEnabled: Boolean; amainmenu: NSMenu; ALCL: TMenu);
 begin
   inherited Create;
   window := awin;
   sess := asess;
+  prevMenuEnabled := APrevMenuEnabled;
+  cocoaMenu := amainmenu;
+  lclMenu   := alcl;
 end;
 
 { TCocoaApplication }
@@ -497,6 +516,105 @@ procedure InternalFinal;
 begin
   if Assigned(MainPool) then MainPool.release;
 end;
+
+
+procedure TCocoaWidgetSet.DoSetMainMenu(AMenu: NSMenu; ALCLMenu: TMenu);
+var
+  i: Integer;
+  lCurItem: TMenuItem;
+  lMenuObj: NSObject;
+  lNSMenu: NSMenu absolute AMenu;
+begin
+  PrevMenu := NSApplication(NSApp).mainMenu;
+  PrevLCLMenu := LCLMenu;
+  NSApp.setMainMenu(lNSMenu);
+  LCLMenu := ALCLMenu;
+
+  if (ALCLMenu = nil) or not ALCLMenu.HandleAllocated then Exit;
+
+  // Find the Apple menu, if the user provided any by setting the Caption to 
+  // Some older docs say we should use setAppleMenu to obtain the Services/Hide/Quit items,
+  // but its now private and in 10.10 it doesn't seam to do anything
+  // NSApp.setAppleMenu(NSMenu(lMenuObj));
+  for i := 0 to ALCLMenu.Items.Count-1 do
+  begin
+    lCurItem := ALCLMenu.Items.Items[i];
+    if not lNSMenu.isKindOfClass_(TCocoaMenu) then Break;
+    if not lCurItem.HandleAllocated then Continue;
+
+    lMenuObj := NSObject(lCurItem.Handle);
+    if not lMenuObj.isKindOfClass_(TCocoaMenuItem) then Continue;
+    if TCocoaMenuItem(lMenuObj).isValidAppleMenu() then
+    begin
+      TCocoaMenu(lNSMenu).overrideAppleMenu(TCocoaMenuItem(lMenuObj));
+      Break;
+    end;
+  end;
+end;
+
+procedure TCocoaWidgetSet.SetMainMenu(const AMenu: HMENU; const ALCLMenu: TMenu);
+begin
+  if AMenu<>0 then
+  begin
+    DoSetMainMenu(NSMenu(AMenu), LCLMenu);
+
+    PrevMenuEnabled := MainMenuEnabled;
+    MainMenuEnabled := true;
+    ToggleAppMenu(true);
+    //if not Assigned(ACustomForm.Menu) then ToggleAppMenu(false);
+
+    // for modal windows work around bug, but doesn't work :(
+    {$ifdef COCOA_USE_NATIVE_MODAL}
+    {if CurModalForm <> nil then
+    for i := 0 to lNSMenu.numberOfItems()-1 do
+    begin
+      lNSMenu.itemAtIndex(i).setTarget(TCocoaWSCustomForm.GetWindowFromHandle(CurModalForm));
+    end;}
+    {$endif}
+  end;
+end;
+
+function TCocoaWidgetSet.StartModal(awin: NSWindow; hasMenu: Boolean): Boolean;
+var
+  sess : NSModalSession;
+begin
+  Result := false;
+  if not Assigned(awin) then Exit;
+  sess := NSApplication(NSApp).beginModalSessionForWindow(awin);
+  if not Assigned(sess) then Exit;
+  if not Assigned(Modals) then Modals := TList.Create;
+
+  // cannot use MainMenuEnabled to record the status, because "MainMenuEnabled"
+  // has been changed in SetMainMenu for the menu of ModalWindow
+  Modals.Add( TModalSession.Create(awin, sess, PrevMenuEnabled, PrevMenu, PrevLCLMenu));
+
+  if not hasMenu then begin
+    MainMenuEnabled := false;
+    ToggleAppMenu(false); // modal menu doesn't have a window, disabling it
+  end;
+
+  Result := true;
+end;
+
+procedure TCocoaWidgetSet.EndModal(awin: NSWindow);
+var
+  ms : TModalSession;
+begin
+  if not Assigned(Modals) or (Modals.Count = 0) then Exit;
+  ms := TModalSession(Modals[Modals.Count-1]);
+  if (ms.window <> awin) then Exit;
+  NSApplication(NSApp).endModalSession(ms.sess);
+
+  // restoring the menu status that was before the modality
+  DoSetMainMenu(ms.cocoaMenu, ms.lclMenu);
+  PrevMenuEnabled := MainMenuEnabled;
+  MainMenuEnabled := ms.prevMenuEnabled;
+  ToggleAppMenu(ms.prevMenuEnabled); // modal menu doesn't have a window, disabling it
+
+  ms.Free;
+  Modals.Delete(Modals.Count-1);
+end;
+
 
 initialization
 //  {$I Cocoaimages.lrs}

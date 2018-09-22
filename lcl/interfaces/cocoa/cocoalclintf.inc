@@ -26,7 +26,7 @@
   Params:  ACursor - Cursor type
   Returns: Cursor object in Cocoa for the specified cursor type
  ------------------------------------------------------------------------------}
-function TCocoaWidgetSet.CreateStandardCursor(ACursor: SmallInt): HCursor;
+function TCocoaWidgetSet.CreateStandardCursor(ACursor: SmallInt): hCursor;
 begin
   case ACursor of
     crArrow,
@@ -294,13 +294,9 @@ end;  {TCocoaWidgetSet.PromptUser}
   Shows modal dialog with the specified caption, message and buttons and prompts
   user to push one.
  ------------------------------------------------------------------------------}
-function TCocoaWidgetSet.PromptUser(const DialogCaption : string;
-                                     const DialogMessage : string;
-                                           DialogType    : LongInt;
-                                           Buttons       : PLongInt;
-                                           ButtonCount   : LongInt;
-                                           DefaultIndex  : LongInt;
-                                           EscapeResult  : LongInt) : LongInt;
+function TCocoaWidgetSet.PromptUser(const DialogCaption, DialogMessage: String;
+  DialogType: longint; Buttons: PLongint; ButtonCount, DefaultIndex,
+  EscapeResult: Longint): Longint;
 begin
   Result := CocoaPromptUser(DialogCaption, DialogMessage, DialogType, Buttons, ButtonCount,
     DefaultIndex, EscapeResult);
