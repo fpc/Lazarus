@@ -29,12 +29,21 @@ begin
 end;
 
 Procedure Register;
+
+Const
+{$IFDEF DARWIN}
+  ShiftKeys = [ssMeta,ssShift];
+{$ELSE}
+  ShiftKeys = [ssAlt,ssShift];
+{$ENDIF}
+
+
 var
   IDEShortCutX: TIDEShortCut;
   IDECommandCategory: TIDECommandCategory;
   IDECommand: TIDECommand;
 begin
-  IDEShortCutX := IDEShortCut(VK_P, [ssMeta,ssShift], VK_UNKNOWN, []);
+  IDEShortCutX := IDEShortCut(VK_P, ShiftKeys, VK_UNKNOWN, []);
   IDECommandCategory := IDECommandList.FindCategoryByName(CommandCategoryViewName);
   if IDECommandCategory <> nil then
   begin
