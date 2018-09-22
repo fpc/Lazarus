@@ -65,12 +65,23 @@ type
   TCocoaApplication = objcclass(NSApplication)
     aloop : TApplicationMainLoop;
     isrun : Boolean;
+    modals : NSMutableDictionary;
+
+    procedure dealloc; override;
     function isRunning: Boolean; override;
     procedure run; override;
     procedure sendEvent(theEvent: NSEvent); override;
     function nextEventMatchingMask_untilDate_inMode_dequeue(mask: NSUInteger; expiration: NSDate; mode: NSString; deqFlag: Boolean): NSEvent; override;
 
     function runModalForWindow(theWindow: NSWindow): NSInteger; override;
+  end;
+
+  { TModalSession }
+
+  TModalSession = class(TObject)
+    window : NSWindow;
+    sess   : NSModalSession;
+    constructor Create(awin: NSWindow; asess: NSModalSession);
   end;
 
   { TCocoaWidgetSet }
@@ -118,6 +129,7 @@ type
   public
     // modal session
     CurModalForm: NSWindow;
+    Modals : TList;
 
     constructor Create; override;
     destructor Destroy; override;
@@ -147,7 +159,9 @@ type
     procedure FreeSysColorBrushes;
 
     procedure SetMainMenu(const AMenu: HMENU; const ALCLMenu: TMenu);
-    function IsControlDisabledDueToModal(AControl: NSView): Boolean;
+    function StartModal(awin: NSWindow): Boolean;
+    procedure EndModal(awin: NSWindow);
+
 
     {todo:}
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
@@ -193,6 +207,7 @@ function CocoaPromptUser(const DialogCaption, DialogMessage: String;
     sheetOfWindow: NSWindow = nil): Longint;
 
 implementation
+
 
 // NSCursor doesn't support any wait cursor, so we need to use a non-native one
 // Not supporting it at all would result in crashes in Screen.Cursor := crHourGlass;
@@ -342,7 +357,22 @@ begin
   ns.scrollRectToVisible(vr);
 end;
 
+{ TModalSession }
+
+constructor TModalSession.Create(awin: NSWindow; asess: NSModalSession);
+begin
+  inherited Create;
+  window := awin;
+  sess := asess;
+end;
+
 { TCocoaApplication }
+
+procedure TCocoaApplication.dealloc;
+begin
+  if Assigned(modals) then modals.release;
+  inherited dealloc;
+end;
 
 function TCocoaApplication.isRunning: Boolean;
 begin

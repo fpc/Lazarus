@@ -520,21 +520,30 @@ begin
   end;
 end;
 
-function TCocoaWidgetSet.IsControlDisabledDueToModal(AControl: NSView): Boolean;
+function TCocoaWidgetSet.StartModal(awin: NSWindow): Boolean;
 var
-  lNSObj: NSWindow;
-  lNSWin: TCocoaWindow absolute lNSObj;
+  sess : NSModalSession;
 begin
-  Result := False;
-  Exit; // todo: the whole function might need to go away
-  {$ifndef COCOA_USE_NATIVE_MODAL}
-  if CurModalForm = nil then Exit;
-  lNSObj := NSWindow(AControl.window());
-  if lNSObj = nil then Exit;
-  if not lNSObj.isKindOfClass_(TCocoaWindow) then Exit;
-  if lNSWin = CurModalForm then Exit;
-  Result := True;
-  {$endif}
+  Result := false;
+  if not Assigned(awin) then Exit;
+  sess := NSApplication(NSApp).beginModalSessionForWindow(awin);
+  if not Assigned(sess) then Exit;
+  if not Assigned(Modals) then Modals := TList.Create;
+
+  Modals.Add( TModalSession.Create(awin, sess));
+  Result := true;
+end;
+
+procedure TCocoaWidgetSet.EndModal(awin: NSWindow);
+var
+  ms : TModalSession;
+begin
+  if not Assigned(Modals) or (Modals.Count = 0) then Exit;
+  ms := TModalSession(Modals[Modals.Count-1]);
+  if (ms.window <> awin) then Exit;
+  NSApplication(NSApp).endModalSession(ms.sess);
+  ms.Free;
+  Modals.Delete(Modals.Count-1);
 end;
 
 {------------------------------------------------------------------------------

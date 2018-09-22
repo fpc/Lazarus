@@ -364,8 +364,6 @@ function isCallbackForSameObject(cb1, cb2: ICommonCallback): Boolean;
 
 implementation
 
-uses CocoaInt;
-
 function isCallbackForSameObject(cb1, cb2: ICommonCallback): Boolean;
 begin
   Result := Assigned(cb1) and Assigned(cb2);
@@ -864,7 +862,6 @@ end;
 function LCLControlExtension.lclIsEnabled:Boolean;
 begin
   Result := IsEnabled;
-  if Result and CocoaWidgetSet.IsControlDisabledDueToModal(Self) then Result := False;
 end;
 
 procedure LCLControlExtension.lclSetEnabled(AEnabled:Boolean);

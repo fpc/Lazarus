@@ -360,8 +360,6 @@ function GetFieldEditor(afield: NSTextField): TCocoaFieldEditor;
 
 implementation
 
-uses CocoaInt;
-
 function GetFieldEditor(afield: NSTextField): TCocoaFieldEditor;
 var
   lFieldEditor: TCocoaFieldEditor;
@@ -855,7 +853,6 @@ end;
 function TCocoaTextView.lclIsEnabled: Boolean;
 begin
   Result := FEnabled;
-  if Result and CocoaWidgetSet.IsControlDisabledDueToModal(Self) then Result := False;
 end;
 
 procedure TCocoaTextView.lclSetEnabled(AEnabled: Boolean);
