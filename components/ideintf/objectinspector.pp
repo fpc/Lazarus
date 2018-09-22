@@ -784,6 +784,7 @@ type
     procedure SetShowRestricted(const AValue: Boolean);
     procedure SetShowStatusBar(const AValue: Boolean);
   protected
+    function CanDeleteSelection: Boolean;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
     procedure Resize; override;
@@ -4949,11 +4950,28 @@ begin
   end;
 end;
 
+function TObjectInspectorDlg.CanDeleteSelection: Boolean;
+var
+  persistent: TPersistent;
+  intf: IObjInspInterface;
+  i: Integer;
+begin
+  Result := true;
+  for i:=0 to ComponentTree.Selection.Count - 1 do begin
+    persistent := ComponentTree.Selection[i];
+    if persistent.GetInterface(GUID_ObjInspInterface, intf) and not intf.AllowDelete then
+    begin
+      Result := false;
+      exit;
+    end;
+  end;
+end;
+
 procedure TObjectInspectorDlg.ComponentTreeKeyDown(Sender: TObject;
   var Key: Word; Shift: TShiftState);
 begin
   if (Shift = []) and (Key = VK_DELETE) and
-     (Selection.Count > 0) and
+     (Selection.Count > 0) and CanDeleteSelection and
      (MessageDlg(oiscDelete, mtConfirmation,[mbYes, mbNo],0) = mrYes) then
   begin
     DeletePopupmenuItemClick(nil);
@@ -5707,7 +5725,11 @@ var
   procedure AddCollectionEditorMenuItems({%H-}ACollection: TCollection);
   var
     Item: TMenuItem;
+    intf: IObjInspInterface;
   begin
+    if ACollection.GetInterface(GUID_ObjInspInterface, intf) and not intf.AllowAdd then
+      exit;
+
     Item := NewItem(oisAddCollectionItem, 0, False, True,
       @CollectionAddItem, 0, ComponentEditorMIPrefix+'0');
     MainPopupMenu.Items.Insert(0, Item);

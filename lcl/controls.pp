@@ -34,6 +34,8 @@ interface
 //  {$DEFINE ASSERT_IS_ON}
 {$ENDIF}
 
+{$INTERFACES CORBA}
+
 uses
   Classes, SysUtils, TypInfo, Types, Laz_AVL_Tree,
   // LCL
@@ -79,7 +81,15 @@ const
   // Mac and iOS use Meta instead of Ctrl for those shortcuts
   ssModifier = {$if defined(darwin) or defined(macos) or defined(iphonesim)} ssMeta {$else} ssCtrl {$endif};
 
+  GUID_ObjInspInterface = '{37417989-8C8F-4A2D-9D26-0FA377E8D8CC}';
+
 type
+  IObjInspInterface = interface
+      [GUID_ObjInspInterface]
+      function AllowAdd: Boolean;
+      function AllowDelete: Boolean;
+    end;
+
   TWinControl = class;
   TControl = class;
   TWinControlClass = class of TWinControl;

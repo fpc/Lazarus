@@ -1168,7 +1168,7 @@ type
     waAvoid,   // try not to wrap after this control, if the control is already at the beginning of the row, wrap though
     waForbid); // never wrap after this control
 
-  TFlowPanelControl = class(TCollectionItem)
+  TFlowPanelControl = class(TCollectionItem, IObjInspInterface)
   private
     FControl: TControl;
     FWrapAfter: TWrapAfter;
@@ -1180,13 +1180,17 @@ type
     procedure AssignTo(Dest: TPersistent); override;
     function FPCollection: TFlowPanelControlList;
     function FPOwner: TCustomFlowPanel;
+  public
+    // These methods are used by the Object Inspector only
+    function AllowAdd: Boolean;
+    function AllowDelete: Boolean;
   published
     property Control: TControl read FControl write SetControl;
     property WrapAfter: TWrapAfter read FWrapAfter write SetWrapAfter;
     property Index;
   end;
 
-  TFlowPanelControlList = class(TOwnedCollection)
+  TFlowPanelControlList = class(TOwnedCollection, IObjInspInterface)
   private
     function GetItem(Index: Integer): TFlowPanelControl;
     procedure SetItem(Index: Integer; const AItem: TFlowPanelControl);
@@ -1200,8 +1204,11 @@ type
     constructor Create(AOwner: TPersistent);
   public
     function IndexOf(AControl: TControl): Integer;
-
     property Items[Index: Integer]: TFlowPanelControl read GetItem write SetItem; default;
+  public
+    // These methods are used by the Object Inspector only
+    function AllowAdd: Boolean;
+    function AllowDelete: Boolean;
   end;
 
   TCustomFlowPanel = class(TCustomPanel)

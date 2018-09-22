@@ -56,6 +56,16 @@ begin
   Item.FControl := AControl;
 end;
 
+function TFlowPanelControlList.AllowAdd: Boolean;
+begin
+  Result := false;
+end;
+
+function TFlowPanelControlList.AllowDelete: Boolean;
+begin
+  Result := false;
+end;
+
 function TFlowPanelControlList.FPOwner: TCustomFlowPanel;
 begin
   Result := TCustomFlowPanel(GetOwner);
@@ -108,6 +118,16 @@ begin
     inherited AssignTo(Dest);
 end;
 
+function TFlowPanelControl.AllowAdd: Boolean;
+begin
+  Result := false;
+end;
+
+function TFlowPanelControl.AllowDelete: Boolean;
+begin
+  Result := false;
+end;
+
 function TFlowPanelControl.FPCollection: TFlowPanelControlList;
 begin
   Result := Collection as TFlowPanelControlList;
@@ -131,6 +151,8 @@ begin
   if FControl = aControl then Exit;
   Assert(FControl = nil);
   FControl := aControl;
+  if FControl <> nil then
+    FControl.Parent := FPOwner;
 end;
 
 procedure TFlowPanelControl.SetIndex(Value: Integer);
@@ -178,6 +200,8 @@ var
     for I := BStartControl to BEndControl do
     begin
       xControl := FControlList[I].Control;
+      if xControl = nil then
+        Continue;
       if not xControl.Visible and not (csDesigning in ComponentState) then
         Continue;
 
@@ -239,6 +263,8 @@ begin
     for I := 0 to FControlList.Count-1 do
     begin
       xControl := FControlList[I].Control;
+      if xControl = nil then
+        Continue;
       xConBS := xControl.BorderSpacing;
       if not xControl.Visible and not (csDesigning in ComponentState) then
         continue;
@@ -341,6 +367,8 @@ begin
     for I := 0 to FControlList.Count-1 do
     begin
       xControl := FControlList[I].Control;
+      if xControl = nil then
+        continue;
       xConBS := xControl.BorderSpacing;
       if not xControl.Visible and not (csDesigning in ComponentState) then
         continue;
