@@ -998,6 +998,7 @@ var
   lTableLV: TCocoaTableListView;
   lclcb : TLCLListViewCallback;
   lStr: NSString;
+  cols, rows: NSIndexSet;
 begin
   {$IFDEF COCOA_DEBUG_TABCONTROL}
   WriteLn(Format('[TCocoaWSCustomListView.ItemDelete] AIndex=%d', [AIndex]));
@@ -1011,7 +1012,9 @@ begin
   lclcb.tempItemsCountDelta := -1;
   lclcb.checkedIdx.shiftIndexesStartingAtIndex_by(AIndex, -1);
 
-  lTableLV.reloadData();
+  cols := NSIndexSet.indexSetWithIndexesInRange(NSMakeRange(0, lTableLV.numberOfColumns));
+  rows := NSIndexSet.indexSetWithIndexesInRange(NSMakeRange(AIndex, lTableLV.numberOfRows - AIndex));
+  lTableLV.reloadDataForRowIndexes_columnIndexes(rows, cols);
 
   lclcb.tempItemsCountDelta := 0;
 end;
@@ -1081,6 +1084,7 @@ var
   lStr: string;
   lNSStr: NSString;
   lclcb: TLCLListViewCallback;
+  cols, rows: NSIndexSet;
 begin
   {$IFDEF COCOA_DEBUG_TABCONTROL}
   WriteLn(Format('[TCocoaWSCustomListView.ItemInsert] AIndex=%d', [AIndex]));
@@ -1104,7 +1108,11 @@ begin
     lNSStr.release;
   end;}
   lclcb.checkedIdx.shiftIndexesStartingAtIndex_by(AIndex, 1);
-  lTableLV.reloadData();
+
+  cols := NSIndexSet.indexSetWithIndexesInRange(NSMakeRange(0, lTableLV.numberOfColumns));
+  rows := NSIndexSet.indexSetWithIndexesInRange(NSMakeRange(AIndex - 1, lTableLV.numberOfRows - AIndex));
+  lTableLV.reloadDataForRowIndexes_columnIndexes(rows, cols);
+
   lTableLV.sizeToFit();
 end;
 
