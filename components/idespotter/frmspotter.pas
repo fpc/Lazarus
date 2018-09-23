@@ -471,7 +471,7 @@ begin
           begin
           ks:=' ('+KeyAndShiftStateToKeyString(Cmd.ShortcutA.Key1,Cmd.ShortcutA.Shift1);
           if Cmd.ShortcutA.Key2<>VK_UNKNOWN then
-            ks:=Ks+', '+KeyAndShiftStateToKeyString(Cmd.ShortcutA.Key1,Cmd.ShortcutA.Shift1);
+            ks:=Ks+', '+KeyAndShiftStateToKeyString(Cmd.ShortcutA.Key2,Cmd.ShortcutA.Shift2);
           ks:=ks+')';
           end;
         Itm:=TSearchItem.Create(Cmd);
