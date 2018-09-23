@@ -74,7 +74,7 @@ type
     procedure FormShow(Sender: TObject);
     procedure LBMatchesClick(Sender: TObject);
     procedure LBMatchesDrawItem(Control: TWinControl; Index: Integer;
-      ARect: TRect; State: TOwnerDrawState);
+      ARect: TRect; {%H-}State: TOwnerDrawState);
     procedure LBMatchesKeyUp(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState
       );
   private
