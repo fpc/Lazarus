@@ -4288,12 +4288,11 @@ function TLazPackageGraph.CompilePackageUsingFPMake(APackageName: string; Flags:
 
 var
   PkgCompileTool: TAbstractExternalTool;
-  FPCParser: TFPCParser;
   CompilerFilename: String;
   EffectiveCompilerParams: String;
-  ExtToolData: TLazPkgGraphExtToolData;
 begin
   Result:=mrCancel;
+  if ShowAbort then ;
 
   //DebugLn('TLazPackageGraph.CompilePackageAsFPMake A ',APackageName,' Flags=',PkgCompileFlagsToString(Flags));
   BeginUpdate(false);
@@ -4315,8 +4314,7 @@ begin
         else
           PkgCompileTool.Reference(Self,Classname);
         try
-          FPCParser:=TFPCParser(PkgCompileTool.AddParsers(SubToolFPC));
-
+          PkgCompileTool.AddParsers(SubToolFPC);
           PkgCompileTool.AddParsers(SubToolMake);
           PkgCompileTool.Process.Executable:=CompilerFilename;
           PkgCompileTool.CmdLineParams:=EffectiveCompilerParams;
