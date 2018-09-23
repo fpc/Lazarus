@@ -42,7 +42,7 @@ function LineEndingCount(const Txt: string; var LengthOfLastLine: integer): inte
 function ChangeLineEndings(const s, NewLineEnding: string): string;
 function LineBreaksToSystemLineBreaks(const s: string): string;
 function LineBreaksToDelimiter(const s: string; Delimiter: char): string;
-function ConvertLineEndings(const s: string): string;
+function ConvertLineEndings(const s: string): string; inline; // duplicate of LineBreaksToSystemLineBreaks
 
 // Conversions
 function TabsToSpaces(const s: string; TabWidth: integer; UseUTF8: boolean): string;
@@ -188,28 +188,8 @@ begin
 end;
 
 function ConvertLineEndings(const s: string): string;
-var
-  i: Integer;
-  EndingStart: LongInt;
 begin
-  Result:=s;
-  i:=1;
-  while (i<=length(Result)) do begin
-    if Result[i] in [#10,#13] then begin
-      EndingStart:=i;
-      inc(i);
-      if (i<=length(Result)) and (Result[i] in [#10,#13])
-      and (Result[i]<>Result[i-1]) then
-        inc(i);
-      if (length(LineEnding)<>i-EndingStart)
-      or (LineEnding<>copy(Result,EndingStart,length(LineEnding))) then begin
-        // line end differs => replace with current LineEnding
-        Result:=copy(Result,1,EndingStart-1)+LineEnding+copy(Result,i,length(Result));
-        i:=EndingStart+length(LineEnding);
-      end;
-    end else
-      inc(i);
-  end;
+  Result:=LineBreaksToSystemLineBreaks(s);
 end;
 
 function TabsToSpaces(const s: string; TabWidth: integer; UseUTF8: boolean): string;
