@@ -35,10 +35,32 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LazUTF8, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, IDECommands, LazIDEIntf;
+  StdCtrls, IDECommands, LazIDEIntf, Types;
 
 type
 
+  { TSearchItem }
+  TMatchPos = Array of Integer;
+  TSearchItem = Class(TObject)
+  private
+    FKeyStroke: String;
+    FMatchLen: TMatchPos;
+    FMatchPos: TMatchPos;
+    FOwnsSource: Boolean;
+    FPrefix: String;
+    FSource: TObject;
+    procedure SetSource(AValue: TObject);
+  Public
+    Constructor Create(aSource : TObject;AOwnsSource : Boolean = False);
+    Destructor Destroy; override;
+  published
+    Property OwnsSource: Boolean read FOwnsSource Write FOwnsSource;
+    Property Source : TObject read FSource write FSource;
+    Property KeyStroke : String Read FKeyStroke Write FKeyStroke;
+    Property Prefix : String Read FPrefix Write FPrefix;
+    Property MatchPos : TMatchPos Read FMatchPos Write FMatchPos;
+    Property MatchLen : TMatchPos Read FMatchLen Write FMatchLen;
+  end;
   { TSpotterForm }
 
   TSpotterForm = class(TForm)
@@ -50,36 +72,141 @@ type
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
-    procedure LBMatchesClickC(Sender: TObject);
-    procedure LBMatchesEnter(Sender: TObject);
+    procedure LBMatchesClick(Sender: TObject);
+    procedure LBMatchesDrawItem(Control: TWinControl; Index: Integer;
+      ARect: TRect; State: TOwnerDrawState);
     procedure LBMatchesKeyUp(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState
       );
   private
+    FKeyStrokeColor: TColor;
+    FMatchColor: TColor;
     FShowCategory: Boolean;
-    FCommands: TStringList;
+    FSearchItems: TStringList;
     FOrgCaption : String;
+    FShowShortCutKey: Boolean;
+    Procedure Initialize;
     procedure ExecuteSelected;
     Procedure FillCommands;
-    procedure FilterCommandList(aCmd: String);
+    procedure FilterList(aSearchTerm: String);
     function GetCommandCategoryString(Cmd: TIDECommand): String;
+    procedure RefreshCaption(aCount: Integer);
   public
     Property ShowCategory : Boolean Read FShowCategory Write FShowCategory;
+    Property ShowShortCutKey : Boolean Read FShowShortCutKey Write FShowShortCutKey;
+    property KeyStrokeColor : TColor Read FKeyStrokeColor Write FKeyStrokeColor;
+    property MatchColor : TColor Read FMatchColor Write FMatchColor;
   end;
+
+Var
+  ShowCmdCategory : Boolean = True;
+  ShowShortCutKey : Boolean = True;
+  MatchColor : TColor = clRed;
+  KeyStrokeColor : TColor = clGreen;
+
+Procedure ShowSpotterForm;
+Procedure ApplySpotterOptions;
+Procedure SaveSpotterOptions;
+procedure LoadSpotterOptions;
+
+implementation
+
+Uses BaseIDEIntf, LazConfigStorage, StrUtils, LCLIntf, LCLType, LCLProc, srceditorintf;
+
+{$R *.lfm}
 
 var
   SpotterForm: TSpotterForm;
 
-implementation
 
-Uses StrUtils,LCLType, LCLProc;
+Const
+  IDESpotterOptsFile = 'idespotter.xml';
 
-{$R *.lfm}
+  KeyShowCategory = 'showcategory/value';
+  KeyShowShortCut = 'showShortCut/value';
+  KeyShortCutColor = 'ShortCutColor/value';
+  KeyMatchColor = 'MatchColor/value';
+
+procedure LoadSpotterOptions;
+var
+  Cfg: TConfigStorage;
+begin
+  Cfg:=GetIDEConfigStorage(IDESpotterOptsFile,true);
+  try
+    ShowCmdCategory:=Cfg.GetValue(KeyShowCategory,ShowCmdCategory);
+    ShowShortCutKey:=Cfg.GetValue(KeyShowShortCut,ShowShortCutKey);
+    KeyStrokeColor:=TColor(Cfg.GetValue(KeyShortCutColor,Ord(KeyStrokeColor)));
+    MatchColor:=TColor(Cfg.GetValue(KeyMatchColor,Ord(MatchColor)));
+    ApplySpotterOptions;
+  finally
+    Cfg.Free;
+  end;
+end;
+
+
+procedure SaveSpotterOptions;
+var
+  Cfg: TConfigStorage;
+begin
+  Cfg:=GetIDEConfigStorage(IDESpotterOptsFile,false);
+  try
+    Cfg.SetValue(KeyShowCategory,ShowCmdCategory);
+    Cfg.SetValue(KeyShowShortCut,ShowShortCutKey);
+    Cfg.SetValue(KeyShortCutColor,Ord(KeyStrokeColor));
+    Cfg.SetValue(KeyMatchColor,Ord(MatchColor));
+  finally
+    Cfg.Free;
+  end;
+end;
+
+Procedure ApplySpotterOptions;
+
+begin
+  if Assigned(SpotterForm) then
+    begin
+    SpotterForm.ShowCategory:=ShowCmdCategory;
+    SpotterForm.MatchColor:=MatchColor;
+    SpotterForm.KeyStrokeColor:=KeyStrokeColor;
+    SpotterForm.ShowShortCutKey:=ShowShortCutKey;
+    SpotterForm.Initialize;
+    end;
+end;
+
+Procedure ShowSpotterForm;
+
+begin
+  if SpotterForm=Nil then
+    begin
+    SpotterForm:=TSpotterForm.Create(Application);
+    ApplySpotterOptions;
+    end;
+  SpotterForm.Show;
+end;
+{ TSearchItem }
+
+procedure TSearchItem.SetSource(AValue: TObject);
+begin
+  if FSource=AValue then Exit;
+  FSource:=AValue;
+end;
+
+constructor TSearchItem.Create(aSource: TObject; AOwnsSource: Boolean);
+begin
+  FSource:=aSource;
+  FOwnsSource:=AOwnsSource;
+end;
+
+destructor TSearchItem.Destroy;
+begin
+  if OwnsSource then
+    FreeAndNil(FSource);
+  Inherited;
+end;
 
 { TSpotterForm }
 
 procedure TSpotterForm.ECommandChange(Sender: TObject);
 begin
-  FilterCommandList(ECommand.Text);
+  FilterList(ECommand.Text);
 end;
 
 procedure TSpotterForm.ECommandKeyUp(Sender: TObject; var Key: Word;
@@ -118,14 +245,23 @@ begin
   CloseAction:=caHide;
 end;
 
-procedure TSpotterForm.FilterCommandList(aCmd: String);
+procedure TSpotterForm.RefreshCaption(aCount : Integer);
+
+begin
+  if ACount=-1 then
+    Caption:=FOrgCaption+Format(' (%d)',[FSearchItems.Count])
+  else
+    Caption:=FOrgCaption+Format(' (%d/%d)',[aCount,FSearchItems.Count]);
+end;
+
+procedure TSpotterForm.FilterList(aSearchTerm: String);
 
 Var
   i : Integer;
-  Cmd : TIDECommand;
-  pref,ks : string;
+  Itm : TSearchItem;
   Words : Array of string;
   MatchPos : Array of Integer;
+  MatchLen : Array of Integer;
 
   Function Match(S : String) : Boolean;
 
@@ -144,30 +280,27 @@ Var
   end;
 
 begin
-  aCmd:=LowerCase(aCmd);
-  Setlength(Words,WordCount(aCmd,[' ']));
+  aSearchTerm:=LowerCase(aSearchTerm);
+  Setlength(Words,WordCount(aSearchTerm,[' ']));
   Setlength(MatchPos,Length(Words));
+  Setlength(MatchLen,Length(Words));
   For I:=1 to Length(Words) do
-    Words[I-1]:=ExtractWord(I,aCmd,[' ']);
+    begin
+    Words[I-1]:=ExtractWord(I,aSearchTerm,[' ']);
+    MatchLen[I-1]:=Length(Words[I-1]);
+    end;
   LBMatches.Items.BeginUpdate;
   try
     LBMatches.Items.Clear;
-    For I:=0 to FCommands.Count-1 do
-      if Match(FCommands[I]) then
+    For I:=0 to FSearchItems.Count-1 do
+      if Match(FSearchItems[I]) then
         begin
-        Cmd:=TIDECommand(FCommands.Objects[i]);
-        Pref:=GetCommandCategoryString(Cmd);
-        ks:='';
-        if Cmd.ShortcutA.Key1<>VK_UNKNOWN then
-          begin
-          ks:=' ('+KeyAndShiftStateToKeyString(Cmd.ShortcutA.Key1,Cmd.ShortcutA.Shift1);
-          if Cmd.ShortcutA.Key2<>VK_UNKNOWN then
-            ks:=Ks+', '+KeyAndShiftStateToKeyString(Cmd.ShortcutA.Key1,Cmd.ShortcutA.Shift1);
-          ks:=ks+')';
-          end;
-        LBMatches.Items.AddObject(Pref+Cmd.LocalizedName+ks,Cmd);
+        Itm:=FSearchItems.Objects[I] as TSearchItem;
+        Itm.MatchPos:=Copy(MatchPos,0,Length(MatchPos));
+        Itm.MatchLen:=Copy(MatchLen,0,Length(MatchLen));
+        LBMatches.Items.AddObject(FSearchItems[I],Itm);
         end;
-    Caption:=FOrgCaption+Format(' (%d/%d)',[LBMatches.Items.Count,FCommands.Count]);
+    RefreshCaption(LBMatches.Items.Count);
   finally
     LBMatches.Items.EndUpdate;
     LBMatches.Visible:=LBMatches.Items.Count>0;
@@ -178,9 +311,9 @@ end;
 
 procedure TSpotterForm.FormCreate(Sender: TObject);
 begin
-  FCommands:=TStringList.Create;
+  FSearchItems:=TStringList.Create;
+  FSearchItems.OwnsObjects:=True;
   FOrgCaption:=Caption;
-  FillCommands;
 end;
 
 procedure TSpotterForm.FormShow(Sender: TObject);
@@ -196,37 +329,99 @@ begin
     end;
   ECommand.Clear;
   LBMatches.Clear;
+  RefreshCaption(-1);
 end;
 
-procedure TSpotterForm.LBMatchesClickC(Sender: TObject);
+procedure TSpotterForm.LBMatchesClick(Sender: TObject);
 
 begin
   ExecuteSelected;
+end;
+
+procedure TSpotterForm.LBMatchesDrawItem(Control: TWinControl; Index: Integer;
+  ARect: TRect; State: TOwnerDrawState);
+
+Var
+  LB : TListbox;
+  DS,S : String;
+  Itm : TSearchItem;
+  R : TRect;
+  P,I,SP,W,SW : Integer;
+  FC : TColor;
+
+begin
+  SW := GetSystemMetrics(SM_CXVSCROLL);
+  LB:=Control as TListBox;
+  LB.Canvas.FillRect(ARect);
+  FC:=LB.Canvas.Font.Color;
+  Itm:=LB.Items.Objects[Index] as TSearchItem;
+  S:=LB.Items[Index];
+  R:=ARect;
+  if ShowShortCutKey and (Itm.KeyStroke<>'') then
+    begin
+    W:=LB.Canvas.TextWidth(Itm.KeyStroke);
+    R.Right:=R.Right-W-SW;
+    end;
+  Inc(R.Left,2);
+  SP:=1;
+  For I:=0 to Length(Itm.MatchPos)-1 do
+    begin
+    P:=Itm.MatchPos[i];
+    if (P-SP>0) then
+      begin
+      DS:=Copy(S,SP,P-SP);
+      LB.Canvas.TextRect(R,R.Left,R.Top,DS);
+      Inc(R.Left,LB.Canvas.TextWidth(DS));
+      end;
+    DS:=Copy(S,P,Itm.MatchLen[i]);
+    LB.Canvas.Font.Color:=MatchColor;
+    LB.Canvas.TextRect(R,R.Left,R.Top,DS);
+    LB.Canvas.Font.Color:=FC;
+    Inc(R.Left,LB.Canvas.TextWidth(DS));
+    SP:=P+Itm.MatchLen[i];
+    end;
+  if SP<=Length(S) then
+    begin
+    DS:=Copy(S,SP,Length(S)-SP+1);
+    LB.Canvas.TextRect(R,R.Left,R.Top,DS);
+    end;
+  if Itm.KeyStroke<>'' then
+    begin
+    R.Left:=R.Right+1;
+    R.Right:=aRect.Right;
+    LB.Canvas.Font.Color:=KeyStrokeColor;
+    LB.Canvas.TextRect(R,R.Left,R.Top,Itm.KeyStroke);
+    end;
 end;
 
 procedure TSpotterForm.ExecuteSelected;
 
 Var
   idx: Integer;
+  itm : TSearchItem;
+
 begin
   Idx:=LBMatches.ItemIndex;
   if (Idx>=0) then
     begin
     Hide;
-    TIDECommand(LBMatches.Items.Objects[Idx]).Execute(Application);
+    Itm:=LBMatches.Items.Objects[Idx] as TSearchItem;
+    if Itm.Source is TIDECommand then
+      TIDECommand(Itm.Source).Execute(SourceEditorManagerIntf.ActiveEditor);
     end;
 end;
 
-procedure TSpotterForm.LBMatchesEnter(Sender: TObject);
-begin
-
-end;
 
 procedure TSpotterForm.LBMatchesKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key=VK_ESCAPE then
     Hide;
+end;
+
+procedure TSpotterForm.Initialize;
+begin
+  FillCommands;
 end;
 
 function TSpotterForm.GetCommandCategoryString(Cmd: TIDECommand): String;
@@ -259,8 +454,9 @@ end;
 procedure TSpotterForm.FillCommands;
 var
   I, J: Integer;
+  Itm : TSearchItem;
   Cmd : TIDECommand;
-  Pref : String;
+  Ks,Pref : String;
 
 begin
   For I:=0 to IDECommandList.CategoryCount-1 do
@@ -270,11 +466,22 @@ begin
         begin
         Cmd:=TIDECommand(IDECommandList.Categories[I].Items[J]);
         Pref:=GetCommandCategoryString(Cmd);
-        FCommands.AddObject(UTF8LowerCase(Pref+Cmd.LocalizedName),Cmd);
+        ks:='';
+        if Cmd.ShortcutA.Key1<>VK_UNKNOWN then
+          begin
+          ks:=' ('+KeyAndShiftStateToKeyString(Cmd.ShortcutA.Key1,Cmd.ShortcutA.Shift1);
+          if Cmd.ShortcutA.Key2<>VK_UNKNOWN then
+            ks:=Ks+', '+KeyAndShiftStateToKeyString(Cmd.ShortcutA.Key1,Cmd.ShortcutA.Shift1);
+          ks:=ks+')';
+          end;
+        Itm:=TSearchItem.Create(Cmd);
+        Itm.Prefix:=Pref;
+        Itm.KeyStroke:=Ks;
+        FSearchItems.AddObject(UTF8LowerCase(Pref+Cmd.LocalizedName),Itm);
         end;
       end;
-  FCommands.Sort;
-  Caption:=FOrgCaption+Format(' (%d)',[FCommands.Count]);
+  FSearchItems.Sort;
+  RefreshCaption(-1);
 end;
 
 end.

@@ -13,7 +13,7 @@
     <Description Value="IDE addon showing the &quot;Sleuth - a quick search window for IDE commands"/>
     <License Value="Modified LGPL-2"/>
     <Version Release="1"/>
-    <Files Count="3">
+    <Files Count="4">
       <Item1>
         <Filename Value="regidespotter.pas"/>
         <HasRegisterProc Value="True"/>
@@ -27,6 +27,10 @@
         <Filename Value="ReadMe.txt"/>
         <Type Value="Binary"/>
       </Item3>
+      <Item4>
+        <Filename Value="idespotteroptions.pas"/>
+        <UnitName Value="IDESPotterOptions"/>
+      </Item4>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

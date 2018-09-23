@@ -11,4 +11,10 @@ If you type multiple words, all words must match.
 The key combination can be configured in the key options, search for
 spotter.
 
+You can set
+* the color of the matches,
+* color of shortcut key (and whether it should be shown at all)
+in the IDE options.
 
+
+Todo: Search recent files/packages

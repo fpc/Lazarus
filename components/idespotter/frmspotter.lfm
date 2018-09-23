@@ -15,7 +15,7 @@ object SpotterForm: TSpotterForm
   OnShow = FormShow
   Position = poDefaultSizeOnly
   ShowInTaskBar = stNever
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '2.1.0.0'
   Visible = True
   object ECommand: TEdit
     Left = 0
@@ -37,12 +37,13 @@ object SpotterForm: TSpotterForm
     Align = alClient
     ClickOnSelChange = False
     ItemHeight = 0
-    OnClick = LBMatchesClickC
-    OnEnter = LBMatchesEnter
+    OnClick = LBMatchesClick
+    OnDrawItem = LBMatchesDrawItem
     OnKeyUp = LBMatchesKeyUp
     ParentShowHint = False
     ScrollWidth = 495
     ShowHint = True
+    Style = lbOwnerDrawFixed
     TabOrder = 1
     TabStop = False
     TopIndex = -1

@@ -8,13 +8,13 @@ unit idespotter;
 interface
 
 uses
-  regidespotter, frmspotter, LazarusPackageIntf;
+  RegIDESpotter, frmspotter, IDESPotterOptions, LazarusPackageIntf;
 
 implementation
 
 procedure Register;
 begin
-  RegisterUnit('regidespotter', @regidespotter.Register);
+  RegisterUnit('RegIDESpotter', @RegIDESpotter.Register);
 end;
 
 initialization
