@@ -1582,7 +1582,7 @@ begin
   SrcPath := sp(aXMLConfig.GetValue(p+'SrcPath/Value', ''));
 
   { Conditionals }
-  FConditionals:=ConvertLineEndings(UTF8Trim(
+  FConditionals:=LineBreaksToSystemLineBreaks(UTF8Trim(
     aXMLConfig.GetValue(Path+'Conditionals/Value',DefaultConditionals),[]));
   TIDEBuildMacros(fBuildMacros).LoadFromXMLConfig(aXMLConfig,
                                        Path+'BuildMacros/',PathDelimChange);
@@ -4520,10 +4520,10 @@ procedure TIDEBuildMacro.LoadFromXMLConfig(AXMLConfig: TXMLConfig;
 begin
   FIdentifier:=AXMLConfig.GetValue(Path+'Identifier/Value','');
   if not IsValidIdent(FIdentifier) then FIdentifier:='';
-  FDescription:=ConvertLineEndings(AXMLConfig.GetValue(Path+'Description/Value',''));
+  FDescription:=LineBreaksToSystemLineBreaks(AXMLConfig.GetValue(Path+'Description/Value',''));
   LoadStringList(AXMLConfig,FValues,Path+'Values/');
   LoadStringList(AXMLConfig,FValueDescriptions,Path+'ValueDescriptions/');
-  FDefaultValue:=ConvertLineEndings(AXMLConfig.GetValue(Path+'Default/Value',''));
+  FDefaultValue:=LineBreaksToSystemLineBreaks(AXMLConfig.GetValue(Path+'Default/Value',''));
 
   while ValueDescriptions.Count>Values.Count do
     ValueDescriptions.Delete(ValueDescriptions.Count-1);

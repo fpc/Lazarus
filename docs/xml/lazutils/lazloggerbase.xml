@@ -2244,17 +2244,6 @@
 <short></short>
 </element>
 
-<!-- function Visibility: default -->
-<element name="ConvertLineEndings">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
 <!-- function result Visibility: default -->
 <element name="ConvertLineEndings.Result">
 <short></short>

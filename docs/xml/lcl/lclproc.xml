@@ -1411,23 +1411,6 @@
       <element name="DebugLnExit.s16"/>
       <element name="DebugLnExit.s17"/>
       <element name="DebugLnExit.s18"/>
-      <!-- function Visibility: default -->
-      <element name="ConvertLineEndings">
-        <short>Converts all line endings in a string into platform LineEnding.
-        </short>
-        <descr>
-        </descr>
-        <errors>
-        </errors>
-        <seealso>
-        </seealso>
-      </element>
-      <element name="ConvertLineEndings.Result">
-        <short/>
-      </element>
-      <element name="ConvertLineEndings.s">
-        <short/>
-      </element>
       <!-- procedure Visibility: default -->
       <element name="DbgOut">
         <short/>

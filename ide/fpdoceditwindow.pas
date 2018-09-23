@@ -852,11 +852,11 @@ begin
     begin
       FOldValues:=Element.FPDocFile.GetValuesFromNode(Element.ElementNode);
       FOldVisualValues[fpdiShort]:=ReplaceLineEndings(FOldValues[fpdiShort],'');
-      FOldVisualValues[fpdiElementLink]:=ConvertLineEndings(FOldValues[fpdiElementLink]);
-      FOldVisualValues[fpdiDescription]:=ConvertLineEndings(FOldValues[fpdiDescription]);
-      FOldVisualValues[fpdiErrors]:=ConvertLineEndings(FOldValues[fpdiErrors]);
-      FOldVisualValues[fpdiSeeAlso]:=ConvertLineEndings(FOldValues[fpdiSeeAlso]);
-      FOldVisualValues[fpdiExample]:=ConvertLineEndings(FOldValues[fpdiExample]);
+      FOldVisualValues[fpdiElementLink]:=LineBreaksToSystemLineBreaks(FOldValues[fpdiElementLink]);
+      FOldVisualValues[fpdiDescription]:=LineBreaksToSystemLineBreaks(FOldValues[fpdiDescription]);
+      FOldVisualValues[fpdiErrors]:=LineBreaksToSystemLineBreaks(FOldValues[fpdiErrors]);
+      FOldVisualValues[fpdiSeeAlso]:=LineBreaksToSystemLineBreaks(FOldValues[fpdiSeeAlso]);
+      FOldVisualValues[fpdiExample]:=LineBreaksToSystemLineBreaks(FOldValues[fpdiExample]);
       //DebugLn(['TFPDocEditor.LoadGUIValues Short="',dbgstr(FOldValues[fpdiShort]),'"']);
     end
     else

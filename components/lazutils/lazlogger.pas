@@ -727,9 +727,9 @@ begin
   end;
 
   if FDebugNestAtBOL and (s <> '') then
-    FileHandle.WriteLnToFile(FDebugIndent + ConvertLineEndings(s))
+    FileHandle.WriteLnToFile(FDebugIndent + LineBreaksToSystemLineBreaks(s))
   else
-    FileHandle.WriteLnToFile(ConvertLineEndings(s));
+    FileHandle.WriteLnToFile(LineBreaksToSystemLineBreaks(s));
   FDebugNestAtBOL := True;
 end;
 

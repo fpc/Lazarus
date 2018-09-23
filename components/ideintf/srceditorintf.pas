@@ -609,8 +609,8 @@ var
 begin
   NewName:=IDECodeMacros.CreateUniqueName(Name);
   Result:=TIDECodeMacro.Create(NewName);
-  Result.ShortDescription:=ConvertLineEndings(ShortDescription);
-  Result.LongDescription:=ConvertLineEndings(LongDescription);
+  Result.ShortDescription:=LineBreaksToSystemLineBreaks(ShortDescription);
+  Result.LongDescription:=LineBreaksToSystemLineBreaks(LongDescription);
   Result.OnGetValueProc:=OnGetValueProc;
   Result.OnGetValueMethod:=OnGetValueMethod;
   IDECodeMacros.Add(Result);
@@ -624,8 +624,8 @@ var
 begin
   NewName:=IDECodeMacros.CreateUniqueName(Name);
   Result:=TIDECodeMacro.Create(NewName);
-  Result.ShortDescription:=ConvertLineEndings(ShortDescription);
-  Result.LongDescription:=ConvertLineEndings(LongDescription);
+  Result.ShortDescription:=LineBreaksToSystemLineBreaks(ShortDescription);
+  Result.LongDescription:=LineBreaksToSystemLineBreaks(LongDescription);
   Result.OnGetValueExProc:=OnGetValueProc;
   Result.OnGetValueExMethod:=OnGetValueMethod;
   IDECodeMacros.Add(Result);

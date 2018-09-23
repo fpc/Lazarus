@@ -1552,7 +1552,7 @@ begin
   ADst.ReleaseData;
 
   // get intersection
-  IntersectRect(R, Rect(0, 0, Description.Width, Description.Height), ARect);
+  IntersectRect(R{%H-}, Rect(0, 0, Description.Width, Description.Height), ARect);
   ADst.Description.Width := R.Right - R.Left;
   ADst.Description.Height := R.Bottom - R.Top;
   if (ADst.Description.Width <= 0)

@@ -138,7 +138,7 @@ begin
   BorderStyle := bsDialog;
   Position    := poScreenCenter;
   SetInitialBounds(0,0,200,100);
-  MSG         := ConvertLineEndings(AMSG);
+  MSG         := LineBreaksToSystemLineBreaks(AMSG);
   Buttons     := nil;
   FBitmap := nil;
   case DialogType of
@@ -827,7 +827,7 @@ begin
   PopupMode := pmAuto;
   BorderStyle := bsDialog;
   Position := poDesigned;
-  MessageTxt := ConvertLineEndings(aMsg);
+  MessageTxt := LineBreaksToSystemLineBreaks(aMsg);
   HelpContext := HelpCtx;
   KeyPreview := True;
 
@@ -1058,7 +1058,7 @@ begin
     end;
     if DialogButtons.DefaultButton = nil then
       DialogButtons.DefaultButton := DialogButtons.FindButton([mrYes, mrOk, mrYesToAll, mrAll, mrRetry, mrCancel, mrNo, mrNoToAll, mrAbort, mrIgnore]);
-    Result := WidgetSet.AskUser(aCaption, ConvertLineEndings(aMsg),
+    Result := WidgetSet.AskUser(aCaption, LineBreaksToSystemLineBreaks(aMsg),
       DialogIds[DlgType], DialogButtons, HelpCtx);
   finally
     DialogButtons.Free;
