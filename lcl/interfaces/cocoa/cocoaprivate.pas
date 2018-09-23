@@ -614,8 +614,7 @@ begin
   begin
     cb.KeyEvPrepare(event);
     cb.KeyEvBefore(res);
-    //there's no keyDown below! expect for *ding*
-    //if res then inherited keyDown(event);
+    if res then inherited keyDown(event);
     cb.KeyEvAfter;
   end else
     inherited keyDown(event);

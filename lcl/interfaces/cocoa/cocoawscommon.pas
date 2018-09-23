@@ -52,6 +52,7 @@ type
     Owner: NSObject;
     HandleFrame: NSView; // HWND and "frame" (rectangle) of the a control
     BlockCocoaUpDown: Boolean;
+    BlockCocoaKeyDown: Boolean;
     SuppressTabDown: Boolean; // all tabs should be suppressed, so Cocoa would not switch focus
 
     class constructor Create;
@@ -962,8 +963,13 @@ begin
   AllowCocoaHandle := true;
   if _IsKeyDown then begin
     KeyEvBeforeDown(AllowCocoaHandle);
-    if AllowCocoaHandle and SuppressTabDown and (_KeyMsg.CharCode = VK_TAB) then
-      AllowCocoaHandle := false;
+    if AllowCocoaHandle then
+    begin
+      if SuppressTabDown and (_KeyMsg.CharCode = VK_TAB) then
+        AllowCocoaHandle := false
+      else if BlockCocoaKeyDown then
+        AllowCocoaHandle := false;
+    end;
   end else
     KeyEvBeforeUp(AllowCocoaHandle);
 end;
@@ -1902,6 +1908,7 @@ begin
   ctrl := TCocoaCustomControl(TCocoaCustomControl.alloc.lclInitWithCreateParams(AParams));
   lcl := TLCLCommonCallback.Create(ctrl, AWinControl);
   lcl.BlockCocoaUpDown := true;
+  lcl.BlockCocoaKeyDown := true; // prevent "dings" on keyDown for custom controls (i.e. SynEdit)
   ctrl.callback := lcl;
 
   sl := EmbedInManualScrollView(ctrl);
