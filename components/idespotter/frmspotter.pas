@@ -324,7 +324,7 @@ begin
   if MF=nil then MF:=Application.MainForm;
   if Assigned(MF) then
     begin
-    Top:=MF.ClientOrigin.y+MF.Height+32; // Needs some additional work ?
+    Top:=MF.ClientOrigin.y+32; // Note: docked or not docked
     Left:=MF.ClientOrigin.x+(MF.Width-Width) div 2;
     end;
   ECommand.Clear;
