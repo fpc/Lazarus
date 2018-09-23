@@ -572,6 +572,7 @@ var
   HasGlyph: Boolean;
   HasText: Boolean;
   CurLayout: TButtonLayout;
+  SysFont: TFont;
 begin
   if FGlyph = nil then exit;
 
@@ -736,8 +737,19 @@ begin
         TextFlags := TextFlags or DT_RTLREADING;
 
       if Draw then
-        ThemeServices.DrawText(Canvas, DrawDetails, Caption, PaintRect,
-          TextFlags, 0);
+      begin
+        SysFont := Screen.SystemFont;
+        if  (SysFont.Color=Font.Color)
+        and ((SysFont.Name=Font.Name) or IsFontNameDefault(Font.Name))
+        and (SysFont.Pitch=Font.Pitch)
+        and (SysFont.Style=Font.Style) then
+          ThemeServices.DrawText(Canvas, DrawDetails, Caption, PaintRect, TextFlags, 0)
+        else
+        begin
+          Canvas.Brush.Style := bsClear;
+          DrawText(Canvas.Handle, PChar(Caption), Length(Caption), PaintRect, TextFlags);
+        end;
+      end;
     end;
   end else begin
     // measuring, not drawing
