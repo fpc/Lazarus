@@ -20,11 +20,10 @@ object SpotterForm: TSpotterForm
   Visible = True
   object ECommand: TEdit
     Left = 0
-    Height = 22
+    Height = 27
     Top = 0
     Width = 497
     Align = alTop
-    AutoSize = False
     OnChange = ECommandChange
     OnKeyUp = ECommandKeyUp
     TabOrder = 0
@@ -32,8 +31,8 @@ object SpotterForm: TSpotterForm
   end
   object LBMatches: TListBox
     Left = 0
-    Height = 210
-    Top = 22
+    Height = 205
+    Top = 27
     Width = 497
     Align = alClient
     ClickOnSelChange = False
