@@ -30,7 +30,7 @@ unit AddToPackageDlg;
 interface
 
 uses
-  Math, Classes, SysUtils, Laz_AVL_Tree,
+  Classes, SysUtils, Laz_AVL_Tree,
   // LCL
   LCLProc, LCLType, Forms, Controls, Buttons, ExtDlgs, StdCtrls, ExtCtrls,
   Dialogs, ComCtrls, ButtonPanel,
