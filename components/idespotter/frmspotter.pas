@@ -281,6 +281,11 @@ Var
   end;
 
 begin
+  if (ASearchTerm='') then
+    begin
+    LBMatches.Clear;
+    Exit;
+    end;
   aSearchTerm:=LowerCase(aSearchTerm);
   Setlength(Words,WordCount(aSearchTerm,[' ']));
   Setlength(MatchPos,Length(Words));
