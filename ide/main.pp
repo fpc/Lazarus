@@ -4089,9 +4089,9 @@ begin
           begin
             ReadSaveFailFlag:=true;
             if (WriteStatus=mrAbort) or
-              (IDEMessageDialog(lisErrorSavingForm, Format(lisCannotSaveForm, [
-                AnUnitInfo.Filename]), mtError, [
-                mbRetry, mbAbort])=mrAbort) then
+              (IDEMessageDialog(lisErrorSavingForm,
+                                Format(lisCannotSaveForm,[AnUnitInfo.Filename]),
+                                mtError, [mbRetry,mbAbort]) = mrAbort) then
                 AbortFlag:=true;
           end;
         end
@@ -4099,9 +4099,9 @@ begin
         begin
           ReadSaveFailFlag:=true;
           if (OpenStatus=mrAbort) or
-            (IDEMessageDialog(lisErrorOpeningForm, Format(lisCannotOpenForm, [
-              AnUnitInfo.Filename]), mtError, [mbRetry,
-              mbAbort])=mrAbort) then
+            (IDEMessageDialog(lisErrorOpeningForm,
+                              Format(lisCannotOpenForm,[AnUnitInfo.Filename]),
+                              mtError, [mbRetry,mbAbort]) = mrAbort) then
               AbortFlag:=true;
         end;
       end;
@@ -4573,9 +4573,9 @@ begin
   if ToolStatus<>itNone then exit;
   with MiscellaneousOptions do
     if BuildLazProfiles.ConfirmBuild then
-      if IDEMessageDialog(lisConfirmation, Format(lisConfirmLazarusRebuild, [
-        BuildLazProfiles.Current.Name]),
-                    mtConfirmation, mbYesNo)<>mrYes then
+      if IDEMessageDialog(lisConfirmation,
+                Format(lisConfirmLazarusRebuild,[BuildLazProfiles.Current.Name]),
+                mtConfirmation, mbYesNo) <> mrYes then
         exit;
   DoBuildLazarus([]);
 end;
@@ -4600,8 +4600,9 @@ begin
       exit;
     end;
     if BuildLazProfiles.ConfirmBuild then
-      if IDEMessageDialog(lisConfirmation, Format(lisConfirmBuildAllProfiles, [s
-        +sLineBreak]), mtConfirmation, mbYesNo)<>mrYes then
+      if IDEMessageDialog(lisConfirmation,
+                          Format(lisConfirmBuildAllProfiles,[s+sLineBreak]),
+                          mtConfirmation, mbYesNo) <> mrYes then
         exit;
     DoBuildAdvancedLazarus(BuildLazProfiles.Selected);
   end;
