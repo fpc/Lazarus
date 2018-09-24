@@ -12,6 +12,7 @@ object SpotterForm: TSpotterForm
   OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   OnShow = FormShow
   Position = poDefaultSizeOnly
   ShowInTaskBar = stNever

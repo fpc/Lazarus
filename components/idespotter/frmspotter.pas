@@ -71,6 +71,7 @@ type
     procedure FormActivate(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure LBMatchesClick(Sender: TObject);
     procedure LBMatchesDrawItem(Control: TWinControl; Index: Integer;
@@ -314,6 +315,11 @@ begin
   FSearchItems:=TStringList.Create;
   FSearchItems.OwnsObjects:=True;
   FOrgCaption:=Caption;
+end;
+
+procedure TSpotterForm.FormDestroy(Sender: TObject);
+begin
+  FreeAndNil(FSearchItems);
 end;
 
 procedure TSpotterForm.FormShow(Sender: TObject);
