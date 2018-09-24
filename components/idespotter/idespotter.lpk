@@ -10,14 +10,15 @@
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
     </CompilerOptions>
-    <Description Value="IDE addon showing the &quot;Sleuth - a quick search window for IDE commands"/>
+    <Description Value="IDE addon showing the &quot;IDE Spotter&quot; - a quick search window for IDE commands.
+See the ReadMe.txt included in the package for a more detailed explanation."/>
     <License Value="Modified LGPL-2"/>
     <Version Release="1"/>
     <Files Count="4">
       <Item1>
         <Filename Value="regidespotter.pas"/>
         <HasRegisterProc Value="True"/>
-        <UnitName Value="regidespotter"/>
+        <UnitName Value="RegIDESpotter"/>
       </Item1>
       <Item2>
         <Filename Value="frmspotter.pas"/>
