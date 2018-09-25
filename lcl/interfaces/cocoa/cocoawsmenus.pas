@@ -162,6 +162,9 @@ function LCLMenuItemInit(item: NSMenuItem; const atitle: string; VKKey: Word = 0
 
 implementation
 
+uses
+  CocoaInt;
+
 function LCLMenuItemInit(item: NSMenuItem; const atitle: string; ashortCut: TShortCut): id;
 var
   key   : NSString;
@@ -737,8 +740,9 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TCocoaWSPopupMenu.Popup(const APopupMenu: TPopupMenu; const X,
   Y: Integer);
-//var
-  //w : NSWindow;
+var
+  res : Boolean;
+  mnu : NSMenuItem;
 begin
   if Assigned(APopupMenu) and (APopupMenu.Handle<>0) then
   begin
@@ -751,8 +755,22 @@ begin
     end;}
 
     // New method for 10.6+
-    TCocoaMenu(APopupMenu.Handle).popUpMenuPositioningItem_atLocation_inView(
+    res := TCocoaMenu(APopupMenu.Handle).popUpMenuPositioningItem_atLocation_inView(
       nil, LCLCoordsToCocoa(nil, X, Y), nil);
+
+    // for whatever reason a context menu will not fire the "action"
+    // of the specified target. Thus we're doing it here manually. :(
+    // It seems a typical behaviour for all versions of macOS
+    // todo: find out why. (calling runModalSession makes no difference)
+    if Assigned(CocoaWidgetSet.Modals) and (CocoaWidgetSet.Modals.Count>0) then
+    begin
+      mnu := TCocoaMenu(APopupMenu.Handle).highlightedItem;
+      if res and Assigned(mnu) then
+      begin
+        if mnu.respondsToSelector(ObjCSelector('lclItemSelected:')) then
+          TCocoaMenuItem(mnu).lclItemSelected(mnu);
+      end;
+    end;
 
     APopupMenu.Close; // notify LCL popup menu
   end;
