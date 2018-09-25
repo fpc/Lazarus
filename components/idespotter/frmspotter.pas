@@ -35,7 +35,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LazUTF8, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, IDECommands, LazIDEIntf, Types;
+  StdCtrls, EditBtn, IDECommands, LazIDEIntf, Types, LCLType, IDEOptionsIntf, IDEOptEditorIntf;
 
 type
 
@@ -64,10 +64,11 @@ type
   { TSpotterForm }
 
   TSpotterForm = class(TForm)
-    ECommand: TEdit;
+    ESearch: TEditButton;
     LBMatches: TListBox;
     procedure ECommandChange(Sender: TObject);
-    procedure ECommandKeyUp(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
+    procedure ECommandKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
+    procedure ESearchButtonClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
@@ -101,8 +102,9 @@ type
 Var
   ShowCmdCategory : Boolean = True;
   ShowShortCutKey : Boolean = True;
-  MatchColor : TColor = clRed;
-  KeyStrokeColor : TColor = clGreen;
+  MatchColor : TColor = clMaroon;
+  KeyStrokeColor : TColor = clNavy;
+  SettingsClass : TAbstractIDEOptionsEditorClass = Nil;
 
 Procedure ShowSpotterForm;
 Procedure ApplySpotterOptions;
@@ -111,7 +113,7 @@ procedure LoadSpotterOptions;
 
 implementation
 
-Uses BaseIDEIntf, LazConfigStorage, StrUtils, LCLIntf, LCLType, LCLProc, srceditorintf;
+Uses BaseIDEIntf, LazConfigStorage, StrUtils, LCLIntf, LCLProc, srceditorintf;
 
 {$R *.lfm}
 
@@ -207,10 +209,10 @@ end;
 
 procedure TSpotterForm.ECommandChange(Sender: TObject);
 begin
-  FilterList(ECommand.Text);
+  FilterList(ESearch.Text);
 end;
 
-procedure TSpotterForm.ECommandKeyUp(Sender: TObject; var Key: Word;
+procedure TSpotterForm.ECommandKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   Case Key of
@@ -220,14 +222,14 @@ begin
     If LBMatches.ItemIndex>0 then
       LBMatches.ItemIndex:=LBMatches.ItemIndex-1;
     Key:=0;
-    ECommand.SelStart:=Length(ECommand.Text);
+    ESearch.SelStart:=Length(ESearch.Text);
     end;
   VK_DOWN:
     begin
     If LBMatches.ItemIndex<LBMatches.Items.Count-1 then
       LBMatches.ItemIndex:=LBMatches.ItemIndex+1;
     Key:=0;
-    ECommand.SelStart:=Length(ECommand.Text);
+    ESearch.SelStart:=Length(ESearch.Text);
     end;
   VK_RETURN :
     If LBMatches.ItemIndex>=0 then
@@ -235,9 +237,16 @@ begin
   end;
 end;
 
+procedure TSpotterForm.ESearchButtonClick(Sender: TObject);
+begin
+  LazarusIDE.DoOpenIDEOptions(SettingsClass,'IDE Spotter');
+  Close;
+end;
+
+
 procedure TSpotterForm.FormActivate(Sender: TObject);
 begin
-  ECommand.SetFocus;
+  ESearch.SetFocus;
 end;
 
 procedure TSpotterForm.FormClose(Sender: TObject;
@@ -338,7 +347,7 @@ begin
     Top:=MF.ClientOrigin.y+32; // Note: docked or not docked
     Left:=MF.ClientOrigin.x+(MF.Width-Width) div 2;
     end;
-  ECommand.Clear;
+  ESearch.Clear;
   LBMatches.Clear;
   RefreshCaption(-1);
 end;
@@ -352,16 +361,19 @@ end;
 procedure TSpotterForm.LBMatchesDrawItem(Control: TWinControl; Index: Integer;
   ARect: TRect; State: TOwnerDrawState);
 
+Const
+  LeftMargin = 5;
+  RightMargin = LeftMargin;
+
 Var
   LB : TListbox;
   DS,S : String;
   Itm : TSearchItem;
   R : TRect;
-  P,I,SP,W,SW : Integer;
+  P,I,SP,W : Integer;
   FC : TColor;
 
 begin
-  SW := GetSystemMetrics(SM_CXVSCROLL);
   LB:=Control as TListBox;
   LB.Canvas.FillRect(ARect);
   FC:=LB.Canvas.Font.Color;
@@ -371,9 +383,9 @@ begin
   if ShowShortCutKey and (Itm.KeyStroke<>'') then
     begin
     W:=LB.Canvas.TextWidth(Itm.KeyStroke);
-    R.Right:=R.Right-W-SW;
+    R.Right:=R.Right-W-RightMargin;
     end;
-  Inc(R.Left,2);
+  Inc(R.Left,LeftMargin);
   SP:=1;
   For I:=0 to Length(Itm.MatchPos)-1 do
     begin

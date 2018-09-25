@@ -66,6 +66,7 @@ var
   IDESpotteroptionsFrameID: Integer = 2000;
 
 begin
+  LoadSpotterOptions;
   IDEShortCutX := IDEShortCut(VK_P, ShiftKeys, VK_UNKNOWN, []);
   IDECommandCategory := IDECommandList.FindCategoryByName(CommandCategoryViewName);
   if IDECommandCategory <> nil then
@@ -81,5 +82,7 @@ begin
     @IDEMenuClicked,IDECommand);
 end;
 
+Initialization
+  SettingsClass:=TIDESpotterOptionsFrame;
 end.
 
