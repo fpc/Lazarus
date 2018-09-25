@@ -27,7 +27,7 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  Forms, Controls, Graphics, StdCtrls, Buttons, ExtCtrls, ComCtrls, Menus,
+  Forms, Controls, Graphics, StdCtrls, Buttons, ExtCtrls, ComCtrls, Menus, ImgList,
   LCLIntf, LazConf, InterfaceBase, LCLPlatformDef, Clipbrd, LCLVersion,
   // LazUtils
   FPCAdds, LazFileUtils, lazutf8classes,
@@ -76,6 +76,7 @@ type
     CloseButton: TBitBtn;
     BuildDateLabel: TLABEL;
     AboutMemo: TMEMO;
+    CopyToClipboardButton: TSpeedButton;
     DocumentationLabel: TLabel;
     DocumentationURLLabel: TLabel;
     FPCVersionLabel: TLabel;
@@ -94,6 +95,7 @@ type
     ContributorsPage: TTabSheet;
     AcknowledgementsPage:TTabSheet;
     procedure AboutFormCreate(Sender:TObject);
+    procedure CopyToClipboardButtonClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure miVerToClipboardClick(Sender: TObject);
     procedure NotebookPageChanged(Sender: TObject);
@@ -120,6 +122,9 @@ function GetLazarusRevision: string;
 implementation
 
 {$R *.lfm}
+
+uses
+  IDEImagesIntf;
 
 function ShowAboutForm: TModalResult;
 var
@@ -202,6 +207,16 @@ begin
   LoadContributors;
   LoadAcknowledgements;
   CloseButton.Caption:=lisBtnClose;
+
+  CopyToClipboardButton.Caption := '';
+  CopyToClipboardButton.Images := IDEImages.Images_16;
+  CopyToClipboardButton.ImageIndex := IDEImages.LoadImage('laz_copy');
+  CopyToClipboardButton.Hint := lisVerToClipboard;
+end;
+
+procedure TAboutForm.CopyToClipboardButtonClick(Sender: TObject);
+begin
+  miVerToClipboardClick(nil);
 end;
 
 procedure TAboutForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -222,6 +237,7 @@ begin
     Contributors.Active:=NoteBook.ActivePage = ContributorsPage;
   if Assigned(Acknowledgements) then
     Acknowledgements.Active:=NoteBook.ActivePage = AcknowledgementsPage;
+  CopyToClipboardButton.Visible := Notebook.ActivePage = VersionPage;
 end;
 
 procedure TAboutForm.URLLabelMouseDown(Sender: TObject;

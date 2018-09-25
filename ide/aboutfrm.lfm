@@ -12,7 +12,8 @@ object AboutForm: TAboutForm
   OnCreate = AboutFormCreate
   PopupMenu = PopupMenu1
   Position = poScreenCenter
-  LCLVersion = '1.9.0.0'
+  ShowHint = True
+  LCLVersion = '2.1.0.0'
   object Notebook: TPageControl
     Left = 0
     Height = 326
@@ -46,7 +47,7 @@ object AboutForm: TAboutForm
         Left = 199
         Height = 15
         Top = 120
-        Width = 55
+        Width = 54
         Alignment = taCenter
         BorderSpacing.Top = 115
         BorderSpacing.Around = 6
@@ -107,10 +108,10 @@ object AboutForm: TAboutForm
         AnchorSideLeft.Side = asrCenter
         AnchorSideTop.Control = BuildDateLabel
         AnchorSideTop.Side = asrBottom
-        Left = 182
+        Left = 183
         Height = 15
         Top = 162
-        Width = 88
+        Width = 87
         BorderSpacing.Around = 6
         Caption = 'FPCVersionLabel'
         Font.Color = clSilver
@@ -230,11 +231,22 @@ object AboutForm: TAboutForm
       Width = 75
       AutoSize = True
       BorderSpacing.Around = 6
-      Cancel = True
       Caption = '&Close'
       Kind = bkClose
       ModalResult = 1
       TabOrder = 0
+    end
+    object CopyToClipboardButton: TSpeedButton
+      AnchorSideLeft.Control = ButtonPanel
+      AnchorSideTop.Control = CloseButton
+      AnchorSideTop.Side = asrCenter
+      AnchorSideBottom.Side = asrBottom
+      Left = 6
+      Height = 26
+      Top = 12
+      Width = 26
+      BorderSpacing.Left = 6
+      OnClick = CopyToClipboardButtonClick
     end
   end
   object PopupMenu1: TPopupMenu
