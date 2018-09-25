@@ -63,6 +63,7 @@ type
     function GetTarget: TObject;
     function GetCallbackObject: TObject;
     function GetCaptureControlCallback: ICommonCallBack;
+    procedure SendContextMenu(Event: NSEvent);
     function MouseUpDownEvent(Event: NSEvent; AForceAsMouseUp: Boolean = False; AOverrideBlock: Boolean = False): Boolean; virtual;
     function KeyEvent(Event: NSEvent; AForceAsKeyDown: Boolean = False): Boolean; virtual;
 
@@ -367,6 +368,53 @@ begin
   begin
     Result := lCaptureView.lclGetCallback;
   end;
+end;
+
+{ If a window does not display a shortcut menu it should pass
+  this message to the DefWindowProc function. If a window is
+  a child window, DefWindowProc sends the message to the parent. }
+procedure TLCLCommonCallback.SendContextMenu(event: NSEvent);
+var
+  MsgContext: TLMContextMenu;
+  MousePos : NSPoint;
+  Res: PtrInt;
+  Rcp : NSObject;
+  Trg : TObject;
+  cb    : ICommonCallback;
+  obj   : TObject;
+  cbobj : TLCLCommonCallback;
+begin
+  FillChar(MsgContext, SizeOf(MsgContext), #0);
+  MsgContext.Msg := LM_CONTEXTMENU;
+  MsgContext.hWnd := HWND(HandleFrame);
+  MousePos := Event.locationInWindow;
+  ScreenMousePos(MousePos);
+  MsgContext.XPos := Round(MousePos.X);
+  MsgContext.YPos := Round(MousePos.Y);
+  Rcp := Owner;
+  repeat
+    cb := Rcp.lclGetCallback;
+    if Assigned(cb) then
+    begin
+      Trg := cb.GetTarget;
+      Res := LCLMessageGlue.DeliverMessage(Trg, MsgContext);
+      // not processed, need to find parent
+      if Res = 0 then
+      begin
+        cbobj := nil;
+        if Assigned(cb) then
+        begin
+          obj := cb.GetCallbackObject;
+          if obj is TLCLCommonCallback then cbobj := TLCLCommonCallback(obj);
+        end;
+        if not Assigned(cbobj) then
+          Rcp := nil
+        else
+          Rcp := cbobj.HandleFrame.superView;
+      end;
+    end else
+      Rcp := nil;
+  until (Res <> 0) or not Assigned(Rcp);
 end;
 
 function TLCLCommonCallback.KeyEvent(Event: NSEvent; AForceAsKeyDown: Boolean): Boolean;
@@ -995,7 +1043,6 @@ const
   MSGKINDUP: array[0..3] of Integer = (LM_LBUTTONUP, LM_RBUTTONUP, LM_MBUTTONUP, LM_XBUTTONUP);
 var
   Msg: TLMMouse;
-  MsgContext: TLMContextMenu;
   MousePos: NSPoint;
   MButton: NSInteger;
   lCaptureControlCallback: ICommonCallback;
@@ -1067,16 +1114,7 @@ begin
 
       // TODO: Check if Cocoa has special context menu check event
       if (Event.type_ = NSRightMouseDown) and (GetTarget is TControl) then
-      begin
-        FillChar(MsgContext, SizeOf(MsgContext), #0);
-        MsgContext.Msg := LM_CONTEXTMENU;
-        MsgContext.hWnd := HWND(Owner);
-        MousePos := Event.locationInWindow;
-        ScreenMousePos(MousePos);
-        MsgContext.XPos := Round(MousePos.X);
-        MsgContext.YPos := Round(MousePos.Y);
-        DeliverMessage(MsgContext);
-      end;
+        SendContextMenu(Event);
     end;
     NSLeftMouseUp,
     NSRightMouseUp,
