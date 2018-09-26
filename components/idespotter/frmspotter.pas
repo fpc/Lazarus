@@ -37,7 +37,9 @@ uses
   Classes, SysUtils, FileUtil, LazUTF8, Forms, Controls, Graphics, Dialogs,
   StdCtrls, EditBtn, IDECommands, LazIDEIntf, Types, LCLType, IDEOptionsIntf, IDEOptEditorIntf;
 
-type
+Type
+  TSpotHighlight = (shCommands,shRecentProjects,shRecentFiles,shRecentPackages);
+  TSpotHighlights = set of TSpotHighlight;
 
   { TSearchItem }
   TMatchPos = Array of Integer;
@@ -61,6 +63,19 @@ type
     Property MatchPos : TMatchPos Read FMatchPos Write FMatchPos;
     Property MatchLen : TMatchPos Read FMatchLen Write FMatchLen;
   end;
+
+  { TOpenFileItem }
+
+  TOpenFileItem = class(TObject)
+  private
+    FFileName: String;
+    FHandler: TIDERecentHandler;
+  public
+    constructor Create(const AFileName: String; AHandler: TIDERecentHandler);
+    Procedure Execute;
+    Property FileName : String Read FFileName;
+    Property Handler : TIDERecentHandler Read FHandler;
+  end;
   { TSpotterForm }
 
   TSpotterForm = class(TForm)
@@ -80,26 +95,38 @@ type
     procedure LBMatchesKeyUp(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState
       );
   private
+    FHighlights: TSpotHighlights;
     FKeyStrokeColor: TColor;
     FMatchColor: TColor;
     FShowCategory: Boolean;
     FSearchItems: TStringList;
     FOrgCaption : String;
     FShowShortCutKey: Boolean;
+    procedure FillRecent(aType: TIDERecentHandler);
     Procedure Initialize;
     procedure ExecuteSelected;
     Procedure FillCommands;
     procedure FilterList(aSearchTerm: String);
+    Procedure AddFileToList(aFileName : String; aType : TIDERecentHandler; CheckDuplicate : Boolean = False);
     function GetCommandCategoryString(Cmd: TIDECommand): String;
+    procedure PackageOpened(Sender: TObject; AFileName: string; var AAllow: Boolean);
+    procedure FileOpened(Sender: TObject; AFileName: string; var AAllow: Boolean);
+    procedure ProjectOpened(Sender: TObject; AFileName: string; var AAllow: Boolean);
     procedure RefreshCaption(aCount: Integer);
   public
     Property ShowCategory : Boolean Read FShowCategory Write FShowCategory;
     Property ShowShortCutKey : Boolean Read FShowShortCutKey Write FShowShortCutKey;
     property KeyStrokeColor : TColor Read FKeyStrokeColor Write FKeyStrokeColor;
     property MatchColor : TColor Read FMatchColor Write FMatchColor;
+    Property Highlights : TSpotHighlights Read FHighlights Write FHighlights;
   end;
 
+
+Const
+  AllSpots = [shCommands,shRecentProjects,shRecentFiles,shRecentPackages];
+
 Var
+  SpotHighlights : TSpotHighlights = AllSpots;
   ShowCmdCategory : Boolean = True;
   ShowShortCutKey : Boolean = True;
   MatchColor : TColor = clMaroon;
@@ -113,7 +140,7 @@ procedure LoadSpotterOptions;
 
 implementation
 
-Uses BaseIDEIntf, LazConfigStorage, StrUtils, LCLIntf, LCLProc, srceditorintf;
+Uses PackageIntf, BaseIDEIntf, LazConfigStorage, StrUtils, LCLIntf, LCLProc, srceditorintf;
 
 {$R *.lfm}
 
@@ -124,17 +151,29 @@ var
 Const
   IDESpotterOptsFile = 'idespotter.xml';
 
+  KeyHighLight = 'highlight/';
   KeyShowCategory = 'showcategory/value';
   KeyShowShortCut = 'showShortCut/value';
   KeyShortCutColor = 'ShortCutColor/value';
   KeyMatchColor = 'MatchColor/value';
 
+  HighlightNames : Array[TSpotHighlight] of string =
+    ('Commands','Projects','Files','Packages');
+
 procedure LoadSpotterOptions;
 var
   Cfg: TConfigStorage;
+  SH  : TSpotHighlight;
+  SHS : TSpotHighlights;
+
 begin
   Cfg:=GetIDEConfigStorage(IDESpotterOptsFile,true);
   try
+   SHS:=[];
+   for SH in TSpotHighlight do
+     if Cfg.GetValue(KeyHighLight+HighlightNames[SH],SH In SpotHighlights) then
+       Include(SHS,SH);
+    SpotHighlights:=SHS;
     ShowCmdCategory:=Cfg.GetValue(KeyShowCategory,ShowCmdCategory);
     ShowShortCutKey:=Cfg.GetValue(KeyShowShortCut,ShowShortCutKey);
     KeyStrokeColor:=TColor(Cfg.GetValue(KeyShortCutColor,Ord(KeyStrokeColor)));
@@ -149,9 +188,13 @@ end;
 procedure SaveSpotterOptions;
 var
   Cfg: TConfigStorage;
+  SH  : TSpotHighlight;
+
 begin
   Cfg:=GetIDEConfigStorage(IDESpotterOptsFile,false);
   try
+    for SH in TSpotHighlight do
+      Cfg.SetValue(KeyHighLight+HighlightNames[SH],SH In SpotHighlights);
     Cfg.SetValue(KeyShowCategory,ShowCmdCategory);
     Cfg.SetValue(KeyShowShortCut,ShowShortCutKey);
     Cfg.SetValue(KeyShortCutColor,Ord(KeyStrokeColor));
@@ -170,6 +213,7 @@ begin
     SpotterForm.MatchColor:=MatchColor;
     SpotterForm.KeyStrokeColor:=KeyStrokeColor;
     SpotterForm.ShowShortCutKey:=ShowShortCutKey;
+    SpotterForm.Highlights:=SpotHighlights;
     SpotterForm.Initialize;
     end;
 end;
@@ -180,10 +224,29 @@ begin
   if SpotterForm=Nil then
     begin
     SpotterForm:=TSpotterForm.Create(Application);
+
     ApplySpotterOptions;
     end;
   SpotterForm.Show;
 end;
+
+{ TOpenFileItem }
+
+constructor TOpenFileItem.Create(const AFileName : String; AHandler: TIDERecentHandler);
+begin
+  FFileName:=AFileName;
+  FHandler:=aHandler;
+end;
+
+procedure TOpenFileItem.Execute;
+begin
+  case fHandler of
+    irhProjectFiles : LazarusIDE.DoOpenProjectFile(FileName,[ofAddToRecent]);
+    irhOpenFiles : LazarusIDE.DoOpenEditorFile(FileName,-1,-1,[ofAddToRecent]);
+    irhPackageFiles : PackageEditingInterface.DoOpenPackageFile(FFileName,[pofAddToRecent],False);
+  end;
+end;
+
 { TSearchItem }
 
 procedure TSearchItem.SetSource(AValue: TObject);
@@ -324,6 +387,31 @@ begin
   end;
 end;
 
+procedure TSpotterForm.AddFileToList(aFileName: String; aType: TIDERecentHandler; CheckDuplicate : Boolean = False);
+
+Var
+  F : TOpenFileItem;
+  SI : TSearchItem;
+  FN,Prefix : String;
+
+begin
+  if ShowCategory then
+    Case aType of
+      irhPackageFiles : Prefix:='Package: ';
+      irhProjectFiles : Prefix:='Project: ';
+      irhOpenFiles : Prefix:='File: ';
+    end;
+  FN:=Prefix+aFileName;
+  if (Not CheckDuplicate) or (FSearchItems.IndexOf(FN)=-1) then
+    begin
+    F:=TOpenFileItem.Create(aFileName,aType);
+    SI:=TSearchItem.Create(F,True);
+    SI.Prefix:=Prefix;
+    FSearchItems.AddObject(FN,SI);
+    end;
+
+end;
+
 procedure TSpotterForm.FormCreate(Sender: TObject);
 begin
   FSearchItems:=TStringList.Create;
@@ -333,6 +421,12 @@ end;
 
 procedure TSpotterForm.FormDestroy(Sender: TObject);
 begin
+  With IDEEnvironmentOptions  do
+    begin
+    RemoveHandlerAddToRecentOpenFiles(@PackageOpened);
+    RemoveHandlerAddToRecentProjectFiles(@FileOpened);
+    RemoveHandlerAddToRecentPackageFiles(@ProjectOpened);
+    end;
   FreeAndNil(FSearchItems);
 end;
 
@@ -430,7 +524,9 @@ begin
     Hide;
     Itm:=LBMatches.Items.Objects[Idx] as TSearchItem;
     if Itm.Source is TIDECommand then
-      TIDECommand(Itm.Source).Execute(SourceEditorManagerIntf.ActiveEditor);
+      TIDECommand(Itm.Source).Execute(SourceEditorManagerIntf.ActiveEditor)
+    else if Itm.Source is TOpenFileItem then
+      TOpenFileItem(Itm.Source).Execute;
     end;
 end;
 
@@ -442,9 +538,48 @@ begin
     Hide;
 end;
 
+procedure TSpotterForm.FillRecent(aType : TIDERecentHandler);
+
+Var
+  L : TStringList;
+  S : String;
+
+begin
+  L:=TstringList.Create;
+  try
+    IDEEnvironmentOptions.GetRecentFiles(aType,L);
+    For S in L do
+       AddFileToList(S,aType,False);
+  finally
+    L.Free;
+  end;
+end;
+
 procedure TSpotterForm.Initialize;
 begin
-  FillCommands;
+  FSearchItems.Sorted:=False;
+  try
+    FSearchItems.Clear;
+    if shCommands in Highlights then
+      FillCommands;
+    if shRecentFiles in Highlights then
+      begin
+      IDEEnvironmentOptions.AddHandlerAddToRecentOpenFiles(@FileOpened,False);
+      FillRecent(irhOpenFiles);
+      end;
+    if shRecentProjects in Highlights then
+      begin
+      IDEEnvironmentOptions.AddHandlerAddToRecentProjectFiles(@ProjectOpened,False);
+      FillRecent(irhProjectFiles);
+      end;
+    if shRecentPackages in Highlights then
+      begin
+      IDEEnvironmentOptions.AddHandlerAddToRecentPackageFiles(@PackageOpened,False);
+      FillRecent(irhPackageFiles);
+      end;
+  finally
+    FSearchItems.Sorted:=True;
+  end;
 end;
 
 function TSpotterForm.GetCommandCategoryString(Cmd: TIDECommand): String;
@@ -472,6 +607,24 @@ begin
       D:=Copy(D,1,P-1);
     Result:=D+': ';
     end;
+end;
+
+procedure TSpotterForm.PackageOpened(Sender: TObject; AFileName: string;
+  var AAllow: Boolean);
+begin
+
+end;
+
+procedure TSpotterForm.FileOpened(Sender: TObject; AFileName: string;
+  var AAllow: Boolean);
+begin
+
+end;
+
+procedure TSpotterForm.ProjectOpened(Sender: TObject; AFileName: string;
+  var AAllow: Boolean);
+begin
+
 end;
 
 procedure TSpotterForm.FillCommands;
@@ -503,7 +656,6 @@ begin
         FSearchItems.AddObject(UTF8LowerCase(Pref+Cmd.LocalizedName),Itm);
         end;
       end;
-  FSearchItems.Sort;
   RefreshCaption(-1);
 end;
 

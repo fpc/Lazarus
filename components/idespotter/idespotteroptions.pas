@@ -55,6 +55,7 @@ Type
     LCBShortCut: TLabel;
     LCBMatchColor: TLabel;
     Options: TGroupBox;
+    procedure CGSearchClick(Sender: TObject);
   private
   public
     function GetTitle: String; override;
@@ -70,6 +71,10 @@ implementation
 
 { TIDESpotterOptionsFrame }
 
+procedure TIDESpotterOptionsFrame.CGSearchClick(Sender: TObject);
+begin
+
+end;
 
 function TIDESpotterOptionsFrame.GetTitle: String;
 begin
@@ -84,8 +89,13 @@ begin
 end;
 
 procedure TIDESpotterOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
+
+Var
+  sh : TSpotHighlight;
+
 begin
-  CGSearch.Checked[0]:=true;
+  for SH in TSpotHighlight do
+    CGSearch.Checked[Ord(SH)]:=SH in SpotHighlights;
   CBShowCategory.Checked  := ShowCmdCategory;
   CBShowShortCut.Checked  := ShowShortCutKey;
   CBMatchColor.Selected   := MatchColor;
@@ -93,7 +103,17 @@ begin
 end;
 
 procedure TIDESpotterOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
+
+Var
+  sh : TSpotHighlight;
+  SHS : TSpotHighlights;
+
 begin
+  SHS:=[];
+  for SH in TSpotHighlight do
+    if CGSearch.Checked[Ord(SH)] then
+      Include(SHS,SH);
+  SpotHighlights:=SHS;
   ShowCmdCategory:=CBShowCategory.Checked;
   ShowShortCutKey:=CBShowShortCut.Checked;
   MatchColor:=CBMatchColor.Selected;

@@ -130,7 +130,7 @@ type
     procedure RemoveFromRecentOpenFiles(const AFilename: string); virtual; abstract;
     procedure AddToRecentProjectFiles(const AFilename: string); virtual; abstract;
     procedure RemoveFromRecentProjectFiles(const AFilename: string); virtual; abstract;
-    function GetRecentProjectFiles: TStrings; virtual; abstract;
+    Procedure GetRecentFiles(aType: TIDERecentHandler; aList : TStrings); virtual; abstract;
     procedure AddToRecentPackageFiles(const AFilename: string); virtual; abstract;
     procedure RemoveFromRecentPackageFiles(const AFilename: string); virtual; abstract;
 

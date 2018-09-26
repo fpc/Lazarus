@@ -11,7 +11,7 @@ object IDESpotterOptionsFrame: TIDESpotterOptionsFrame
   DesignTop = 164
   object CGSearch: TCheckGroup
     Left = 0
-    Height = 56
+    Height = 136
     Top = 0
     Width = 427
     Align = alTop
@@ -25,20 +25,24 @@ object IDESpotterOptionsFrame: TIDESpotterOptionsFrame
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 38
+    ClientHeight = 118
     ClientWidth = 425
     Items.Strings = (
       'Commands'
+      'Recent Projects'
+      'Recent Files'
+      'Recent Packages'
     )
+    OnClick = CGSearchClick
     TabOrder = 0
     Data = {
-      0100000002
+      0400000002020202
     }
   end
   object Options: TGroupBox
     Left = 0
     Height = 105
-    Top = 56
+    Top = 136
     Width = 427
     Align = alTop
     Caption = 'Options'
@@ -65,7 +69,7 @@ object IDESpotterOptionsFrame: TIDESpotterOptionsFrame
   object Colors: TGroupBox
     Left = 0
     Height = 271
-    Top = 161
+    Top = 241
     Width = 427
     Align = alTop
     Caption = 'Colors'
