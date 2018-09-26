@@ -4182,7 +4182,9 @@ msgid "Ambiguous Unit Name"
 msgstr "Nem egyértelmű unit-név"
 
 #: lazarusidestrconsts.lisa2pancestortype
-msgid "Ancestor Type"
+#, fuzzy
+#| msgid "Ancestor Type"
+msgid "Ancestor type"
 msgstr "Ős típus"
 
 #: lazarusidestrconsts.lisa2papascalunitmusthavetheextensionpporpas
@@ -4214,6 +4216,10 @@ msgstr "Új követelmény létrehozása"
 msgid "Dependency"
 msgstr "Függőség"
 
+#: lazarusidestrconsts.lisa2pdirectoryforunitfile
+msgid "Directory for unit file:"
+msgstr ""
+
 #: lazarusidestrconsts.lisa2pexistingfile2
 msgid "Existing file: \"%s\""
 msgstr "Létező fájl: \"%s\""
@@ -4238,9 +4244,17 @@ msgstr "Fájlnév/URL"
 msgid "File not unit"
 msgstr "A fájl nem unit"
 
-#: lazarusidestrconsts.lisa2piconandsize
-msgid "Icon (maximum 24x24):"
-msgstr "Ikon (maximum 24x24):"
+#: lazarusidestrconsts.lisa2picon24x24
+msgid "Icon 24x24:"
+msgstr ""
+
+#: lazarusidestrconsts.lisa2picon36x36
+msgid "Icon 36x36:"
+msgstr ""
+
+#: lazarusidestrconsts.lisa2picon48x48
+msgid "Icon 48x48:"
+msgstr ""
 
 #: lazarusidestrconsts.lisa2pinvalidancestortype
 msgid "Invalid Ancestor Type"
@@ -4291,7 +4305,9 @@ msgid "Page Name too long"
 msgstr "Túl hosszú lapnév"
 
 #: lazarusidestrconsts.lisa2ppalettepage
-msgid "Palette Page:"
+#, fuzzy
+#| msgid "Palette Page:"
+msgid "Palette page:"
 msgstr "Paletta-lap:"
 
 #: lazarusidestrconsts.lisa2ppascalunitsmusthavetheextensionpporpas
@@ -4380,29 +4396,19 @@ msgstr "A(z) \"%s\" unit-név már létezik ebben a csomagban."
 msgid "The unit name \"%s\"%sand filename \"%s\" differ."
 msgstr "A(z) \"%s\" unit-név%sés a(z) \"%s\" fájlnév különbözik."
 
-#: lazarusidestrconsts.lisa2ptheunitnamedoesnotcorrespondtothefilename
-msgid "The unit name \"%s\" does not correspond to the filename."
-msgstr "A(z) \"%s\" unit-név nem megfelelő a fájlnévhez."
-
 #: lazarusidestrconsts.lisa2ptheunitnameisthesameasanregisteredcomponent
 msgid "The unit name \"%s\" is the same as a registered component.%sUsing this can cause strange error messages."
 msgstr "A(z) \"%s\" unit-név megegyezik egy regisztrált komponens nevével.%sEnnek használata furcsa hibaüzeneteket okozhat."
 
-#: lazarusidestrconsts.lisa2punitfilename2
-msgid "Unit File Name:"
-msgstr "Unit fájlneve:"
-
 #: lazarusidestrconsts.lisa2punitname
-msgid "Unit Name:"
+#, fuzzy
+#| msgid "Unit Name:"
+msgid "Unit name:"
 msgstr "Unit-név:"
 
 #: lazarusidestrconsts.lisa2punitnamealreadyexists
 msgid "Unitname already exists"
 msgstr "A unit-név már létezik"
-
-#: lazarusidestrconsts.lisa2punitnameinvalid
-msgid "Unit Name Invalid"
-msgstr "A unit-név érvénytelen"
 
 #: lazarusidestrconsts.lisabandonchanges
 msgid "Abandon changes?"
@@ -18373,10 +18379,6 @@ msgstr "A cím a tálcán így jelenik meg: project1.lpi - Lazarus"
 #: lazarusidestrconsts.listitleleaveemptyfordefault
 msgid "Title (leave empty for default)"
 msgstr "Cím (üres = alapértelmezett)"
-
-#: lazarusidestrconsts.listitleopencomponenticon24x24
-msgid "Choose a component icon 24x24"
-msgstr "Ikon választása a komponenshez (24x24)"
 
 #: lazarusidestrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"

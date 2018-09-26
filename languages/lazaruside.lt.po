@@ -4188,7 +4188,9 @@ msgid "Ambiguous Unit Name"
 msgstr "Neaiškus modulio pavadinimas"
 
 #: lazarusidestrconsts.lisa2pancestortype
-msgid "Ancestor Type"
+#, fuzzy
+#| msgid "Ancestor Type"
+msgid "Ancestor type"
 msgstr "Protėvio tipas"
 
 #: lazarusidestrconsts.lisa2papascalunitmusthavetheextensionpporpas
@@ -4220,6 +4222,10 @@ msgstr "Kurti naują priklausomybę"
 msgid "Dependency"
 msgstr "Priklausomybės"
 
+#: lazarusidestrconsts.lisa2pdirectoryforunitfile
+msgid "Directory for unit file:"
+msgstr ""
+
 #: lazarusidestrconsts.lisa2pexistingfile2
 msgid "Existing file: \"%s\""
 msgstr "Egzistuojantis failas: „%s“"
@@ -4246,9 +4252,17 @@ msgstr "Failo pavadinimas"
 msgid "File not unit"
 msgstr "Failas nėra modulis"
 
-#: lazarusidestrconsts.lisa2piconandsize
-msgid "Icon (maximum 24x24):"
-msgstr "Ikona (maksimaliai 24x24):"
+#: lazarusidestrconsts.lisa2picon24x24
+msgid "Icon 24x24:"
+msgstr ""
+
+#: lazarusidestrconsts.lisa2picon36x36
+msgid "Icon 36x36:"
+msgstr ""
+
+#: lazarusidestrconsts.lisa2picon48x48
+msgid "Icon 48x48:"
+msgstr ""
 
 #: lazarusidestrconsts.lisa2pinvalidancestortype
 msgid "Invalid Ancestor Type"
@@ -4299,7 +4313,9 @@ msgid "Page Name too long"
 msgstr "Per ilgas pavadinimas"
 
 #: lazarusidestrconsts.lisa2ppalettepage
-msgid "Palette Page:"
+#, fuzzy
+#| msgid "Palette Page:"
+msgid "Palette page:"
 msgstr "Paletės lapas:"
 
 #: lazarusidestrconsts.lisa2ppascalunitsmusthavetheextensionpporpas
@@ -4388,29 +4404,19 @@ msgstr "Modulio pavadinimas „%s“ jau yra pakete."
 msgid "The unit name \"%s\"%sand filename \"%s\" differ."
 msgstr "Modulio „%s“%s ir failo „%s“ pavadinimai skiriasi."
 
-#: lazarusidestrconsts.lisa2ptheunitnamedoesnotcorrespondtothefilename
-msgid "The unit name \"%s\" does not correspond to the filename."
-msgstr "Modulio „%s“ ir failo pavadinimai neatitinka."
-
 #: lazarusidestrconsts.lisa2ptheunitnameisthesameasanregisteredcomponent
 msgid "The unit name \"%s\" is the same as a registered component.%sUsing this can cause strange error messages."
 msgstr "Modulio pavadinimas „%s“ toks pat kaip ir užregistruota komponentė.%sDėlto galite sulaukti keistų pranešimų apie klaidas."
 
-#: lazarusidestrconsts.lisa2punitfilename2
-msgid "Unit File Name:"
-msgstr "Modulio failo pavadinimas:"
-
 #: lazarusidestrconsts.lisa2punitname
-msgid "Unit Name:"
+#, fuzzy
+#| msgid "Unit Name:"
+msgid "Unit name:"
 msgstr "Modulio pavadinimas:"
 
 #: lazarusidestrconsts.lisa2punitnamealreadyexists
 msgid "Unitname already exists"
 msgstr "Modulio pavadinimas egzistuoja"
-
-#: lazarusidestrconsts.lisa2punitnameinvalid
-msgid "Unit Name Invalid"
-msgstr "Klaidingas modulio pavadinimas"
 
 #: lazarusidestrconsts.lisabandonchanges
 msgid "Abandon changes?"
@@ -18397,10 +18403,6 @@ msgstr "Antraštė programų juostoje, pavyzdžiui, bus tokia: projektas1.lpi - 
 #: lazarusidestrconsts.listitleleaveemptyfordefault
 msgid "Title (leave empty for default)"
 msgstr "Antraštė (palikus tuščią - bus naudojama numatytoji)"
-
-#: lazarusidestrconsts.listitleopencomponenticon24x24
-msgid "Choose a component icon 24x24"
-msgstr "Komponentei parinkite 24x24 dydžio ikoną"
 
 #: lazarusidestrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"

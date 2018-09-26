@@ -4187,7 +4187,9 @@ msgid "Ambiguous Unit Name"
 msgstr "曖昧なユニット名"
 
 #: lazarusidestrconsts.lisa2pancestortype
-msgid "Ancestor Type"
+#, fuzzy
+#| msgid "Ancestor Type"
+msgid "Ancestor type"
 msgstr "先祖型"
 
 #: lazarusidestrconsts.lisa2papascalunitmusthavetheextensionpporpas
@@ -4219,6 +4221,10 @@ msgstr "新しい要求を作成"
 msgid "Dependency"
 msgstr "依存関係"
 
+#: lazarusidestrconsts.lisa2pdirectoryforunitfile
+msgid "Directory for unit file:"
+msgstr ""
+
 #: lazarusidestrconsts.lisa2pexistingfile2
 msgid "Existing file: \"%s\""
 msgstr "既存のファイル: \"%s\""
@@ -4245,9 +4251,17 @@ msgstr "ファイル名"
 msgid "File not unit"
 msgstr "ファイルはユニットでない"
 
-#: lazarusidestrconsts.lisa2piconandsize
-msgid "Icon (maximum 24x24):"
-msgstr "アイコン（最大24x24）"
+#: lazarusidestrconsts.lisa2picon24x24
+msgid "Icon 24x24:"
+msgstr ""
+
+#: lazarusidestrconsts.lisa2picon36x36
+msgid "Icon 36x36:"
+msgstr ""
+
+#: lazarusidestrconsts.lisa2picon48x48
+msgid "Icon 48x48:"
+msgstr ""
 
 #: lazarusidestrconsts.lisa2pinvalidancestortype
 msgid "Invalid Ancestor Type"
@@ -4298,7 +4312,9 @@ msgid "Page Name too long"
 msgstr "ページ名が長すぎます"
 
 #: lazarusidestrconsts.lisa2ppalettepage
-msgid "Palette Page:"
+#, fuzzy
+#| msgid "Palette Page:"
+msgid "Palette page:"
 msgstr "パレットページ"
 
 #: lazarusidestrconsts.lisa2ppascalunitsmusthavetheextensionpporpas
@@ -4387,29 +4403,19 @@ msgstr "ユニット名\"%s\"はこのパッケージに既に存在していま
 msgid "The unit name \"%s\"%sand filename \"%s\" differ."
 msgstr "ユニット名 \"%s\"%s とファイル名 \"%s\" が異なります。"
 
-#: lazarusidestrconsts.lisa2ptheunitnamedoesnotcorrespondtothefilename
-msgid "The unit name \"%s\" does not correspond to the filename."
-msgstr "ユニット名\"%s\"がファイル名と一致してません。"
-
 #: lazarusidestrconsts.lisa2ptheunitnameisthesameasanregisteredcomponent
 msgid "The unit name \"%s\" is the same as a registered component.%sUsing this can cause strange error messages."
 msgstr "ユニット名\"%s\"は登録済みコンポーネントと同じです。%sこのままでは奇妙なエラーが起きてしまいます。"
 
-#: lazarusidestrconsts.lisa2punitfilename2
-msgid "Unit File Name:"
-msgstr "ユニットファイル名:"
-
 #: lazarusidestrconsts.lisa2punitname
-msgid "Unit Name:"
+#, fuzzy
+#| msgid "Unit Name:"
+msgid "Unit name:"
 msgstr "ユニット名:"
 
 #: lazarusidestrconsts.lisa2punitnamealreadyexists
 msgid "Unitname already exists"
 msgstr "ユニット名がすでに存在します"
-
-#: lazarusidestrconsts.lisa2punitnameinvalid
-msgid "Unit Name Invalid"
-msgstr "ユニット名は無効です"
 
 #: lazarusidestrconsts.lisabandonchanges
 msgid "Abandon changes?"
@@ -18369,10 +18375,6 @@ msgstr "タスクバーのタイトルはproject1.lpi - Lazarusなどと表示�
 #: lazarusidestrconsts.listitleleaveemptyfordefault
 msgid "Title (leave empty for default)"
 msgstr "タイトル（デフォルトの場合空欄にしておいて下さい）"
-
-#: lazarusidestrconsts.listitleopencomponenticon24x24
-msgid "Choose a component icon 24x24"
-msgstr "コンポーネントアイコン24x24を選択してください。"
 
 #: lazarusidestrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"

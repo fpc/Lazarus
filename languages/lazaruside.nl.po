@@ -4272,7 +4272,9 @@ msgid "Ambiguous Unit Name"
 msgstr "Dubbelzinnige unit naam"
 
 #: lazarusidestrconsts.lisa2pancestortype
-msgid "Ancestor Type"
+#, fuzzy
+#| msgid "Ancestor Type"
+msgid "Ancestor type"
 msgstr "Ancestor Type"
 
 #: lazarusidestrconsts.lisa2papascalunitmusthavetheextensionpporpas
@@ -4308,6 +4310,10 @@ msgstr ""
 msgid "Dependency"
 msgstr "Afhankelijkheid"
 
+#: lazarusidestrconsts.lisa2pdirectoryforunitfile
+msgid "Directory for unit file:"
+msgstr ""
+
 #: lazarusidestrconsts.lisa2pexistingfile2
 msgid "Existing file: \"%s\""
 msgstr ""
@@ -4334,8 +4340,16 @@ msgstr "Bestandsnaam"
 msgid "File not unit"
 msgstr "Bestand is geen unit"
 
-#: lazarusidestrconsts.lisa2piconandsize
-msgid "Icon (maximum 24x24):"
+#: lazarusidestrconsts.lisa2picon24x24
+msgid "Icon 24x24:"
+msgstr ""
+
+#: lazarusidestrconsts.lisa2picon36x36
+msgid "Icon 36x36:"
+msgstr ""
+
+#: lazarusidestrconsts.lisa2picon48x48
+msgid "Icon 48x48:"
 msgstr ""
 
 #: lazarusidestrconsts.lisa2pinvalidancestortype
@@ -4391,7 +4405,9 @@ msgid "Page Name too long"
 msgstr "Naam van pagina te lang"
 
 #: lazarusidestrconsts.lisa2ppalettepage
-msgid "Palette Page:"
+#, fuzzy
+#| msgid "Palette Page:"
+msgid "Palette page:"
 msgstr "Palette pagina:"
 
 #: lazarusidestrconsts.lisa2ppascalunitsmusthavetheextensionpporpas
@@ -4507,33 +4523,21 @@ msgstr "De unitnaam \"%s\" bestaat al in dit package."
 msgid "The unit name \"%s\"%sand filename \"%s\" differ."
 msgstr "De naam van de unit \"%s\"%sen de bestandsnaam \"%s\" verschillen"
 
-#: lazarusidestrconsts.lisa2ptheunitnamedoesnotcorrespondtothefilename
-#, fuzzy
-#| msgid "The unit name %s%s%s does not correspond to the filename."
-msgid "The unit name \"%s\" does not correspond to the filename."
-msgstr "De unitnaam \"%s\" correspondeert niet met de bestandsnaam."
-
 #: lazarusidestrconsts.lisa2ptheunitnameisthesameasanregisteredcomponent
 #, fuzzy
 #| msgid "The unit name %s%s%s is the same as a registered component.%sUsing this can cause strange error messages."
 msgid "The unit name \"%s\" is the same as a registered component.%sUsing this can cause strange error messages."
 msgstr "De unitnaam \"%s\" is gelijk aan die van een geregistreerd component.%sDit kan tot vreemde foutmeldingen leiden."
 
-#: lazarusidestrconsts.lisa2punitfilename2
-msgid "Unit File Name:"
-msgstr "Unit bestand naam:"
-
 #: lazarusidestrconsts.lisa2punitname
-msgid "Unit Name:"
+#, fuzzy
+#| msgid "Unit Name:"
+msgid "Unit name:"
 msgstr "Unitnaam:"
 
 #: lazarusidestrconsts.lisa2punitnamealreadyexists
 msgid "Unitname already exists"
 msgstr "Unitnaam bestaat al"
-
-#: lazarusidestrconsts.lisa2punitnameinvalid
-msgid "Unit Name Invalid"
-msgstr "Unitnaam ongeldig"
 
 #: lazarusidestrconsts.lisabandonchanges
 msgid "Abandon changes?"
@@ -18992,10 +18996,6 @@ msgstr ""
 
 #: lazarusidestrconsts.listitleleaveemptyfordefault
 msgid "Title (leave empty for default)"
-msgstr ""
-
-#: lazarusidestrconsts.listitleopencomponenticon24x24
-msgid "Choose a component icon 24x24"
 msgstr ""
 
 #: lazarusidestrconsts.listmfunctionappendpathdelimiter

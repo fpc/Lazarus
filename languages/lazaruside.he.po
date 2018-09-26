@@ -4375,7 +4375,9 @@ msgid "Ambiguous Unit Name"
 msgstr "שם יחידה רב משמעי"
 
 #: lazarusidestrconsts.lisa2pancestortype
-msgid "Ancestor Type"
+#, fuzzy
+#| msgid "Ancestor Type"
+msgid "Ancestor type"
 msgstr "סוג קדום"
 
 #: lazarusidestrconsts.lisa2papascalunitmusthavetheextensionpporpas
@@ -4411,6 +4413,10 @@ msgstr ""
 msgid "Dependency"
 msgstr "תלות"
 
+#: lazarusidestrconsts.lisa2pdirectoryforunitfile
+msgid "Directory for unit file:"
+msgstr ""
+
 #: lazarusidestrconsts.lisa2pexistingfile2
 msgid "Existing file: \"%s\""
 msgstr ""
@@ -4437,8 +4443,16 @@ msgstr "שם קובץ"
 msgid "File not unit"
 msgstr "הקובץ אינו יחידה"
 
-#: lazarusidestrconsts.lisa2piconandsize
-msgid "Icon (maximum 24x24):"
+#: lazarusidestrconsts.lisa2picon24x24
+msgid "Icon 24x24:"
+msgstr ""
+
+#: lazarusidestrconsts.lisa2picon36x36
+msgid "Icon 36x36:"
+msgstr ""
+
+#: lazarusidestrconsts.lisa2picon48x48
+msgid "Icon 48x48:"
 msgstr ""
 
 #: lazarusidestrconsts.lisa2pinvalidancestortype
@@ -4494,7 +4508,9 @@ msgid "Page Name too long"
 msgstr "שם הדף ארוך מידי"
 
 #: lazarusidestrconsts.lisa2ppalettepage
-msgid "Palette Page:"
+#, fuzzy
+#| msgid "Palette Page:"
+msgid "Palette page:"
 msgstr "עמוד לוח:"
 
 #: lazarusidestrconsts.lisa2ppascalunitsmusthavetheextensionpporpas
@@ -4611,33 +4627,21 @@ msgstr "שם הקובץ s%s%s% כבר קיים בחבילה."
 msgid "The unit name \"%s\"%sand filename \"%s\" differ."
 msgstr "שם היחידה s%s%s%  ושם הקובץ s%s%s% שונים."
 
-#: lazarusidestrconsts.lisa2ptheunitnamedoesnotcorrespondtothefilename
-#, fuzzy,badformat
-#| msgid "The unit name %s%s%s does not correspond to the filename."
-msgid "The unit name \"%s\" does not correspond to the filename."
-msgstr "שם היחידה s%s%s%  לא מתאים לשם הקובץ."
-
 #: lazarusidestrconsts.lisa2ptheunitnameisthesameasanregisteredcomponent
 #, fuzzy
 #| msgid "The unit name %s%s%s is the same as a registered component.%sUsing this can cause strange error messages."
 msgid "The unit name \"%s\" is the same as a registered component.%sUsing this can cause strange error messages."
 msgstr "שם היחידה s%s%s%  הוא שם של רכיב רשום. השמוש בו עלול לגרום להודעות שגיאה מוזרות."
 
-#: lazarusidestrconsts.lisa2punitfilename2
-msgid "Unit File Name:"
-msgstr "שם קובץ היחידה:"
-
 #: lazarusidestrconsts.lisa2punitname
-msgid "Unit Name:"
+#, fuzzy
+#| msgid "Unit Name:"
+msgid "Unit name:"
 msgstr "שם היחידה:"
 
 #: lazarusidestrconsts.lisa2punitnamealreadyexists
 msgid "Unitname already exists"
 msgstr "שם היחידה כבר קיים"
-
-#: lazarusidestrconsts.lisa2punitnameinvalid
-msgid "Unit Name Invalid"
-msgstr "שם היחידה שגוי"
 
 #: lazarusidestrconsts.lisabandonchanges
 msgid "Abandon changes?"
@@ -19617,10 +19621,6 @@ msgstr "הכותרת בסרגל המשימות מראה למשל: project1.lpi -
 #: lazarusidestrconsts.listitleleaveemptyfordefault
 msgid "Title (leave empty for default)"
 msgstr "כותרת (השאר ריק לברירת מחדל)"
-
-#: lazarusidestrconsts.listitleopencomponenticon24x24
-msgid "Choose a component icon 24x24"
-msgstr ""
 
 #: lazarusidestrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"

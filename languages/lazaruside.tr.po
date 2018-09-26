@@ -4191,7 +4191,9 @@ msgid "Ambiguous Unit Name"
 msgstr "Belirsiz Birim Adı"
 
 #: lazarusidestrconsts.lisa2pancestortype
-msgid "Ancestor Type"
+#, fuzzy
+#| msgid "Ancestor Type"
+msgid "Ancestor type"
 msgstr "Ancestor Type"
 
 #: lazarusidestrconsts.lisa2papascalunitmusthavetheextensionpporpas
@@ -4223,6 +4225,10 @@ msgstr "Yeni Gereksinimi Yarat"
 msgid "Dependency"
 msgstr "Bağımlılık"
 
+#: lazarusidestrconsts.lisa2pdirectoryforunitfile
+msgid "Directory for unit file:"
+msgstr ""
+
 #: lazarusidestrconsts.lisa2pexistingfile2
 msgid "Existing file: \"%s\""
 msgstr "Varolan dosya: \" %s \\ \""
@@ -4249,9 +4255,17 @@ msgstr "Dosya adı"
 msgid "File not unit"
 msgstr "Dosya değil birim"
 
-#: lazarusidestrconsts.lisa2piconandsize
-msgid "Icon (maximum 24x24):"
-msgstr "Simge (maksimum 24x24):"
+#: lazarusidestrconsts.lisa2picon24x24
+msgid "Icon 24x24:"
+msgstr ""
+
+#: lazarusidestrconsts.lisa2picon36x36
+msgid "Icon 36x36:"
+msgstr ""
+
+#: lazarusidestrconsts.lisa2picon48x48
+msgid "Icon 48x48:"
+msgstr ""
 
 #: lazarusidestrconsts.lisa2pinvalidancestortype
 msgid "Invalid Ancestor Type"
@@ -4304,7 +4318,9 @@ msgid "Page Name too long"
 msgstr "Sayfa Adı çok uzun"
 
 #: lazarusidestrconsts.lisa2ppalettepage
-msgid "Palette Page:"
+#, fuzzy
+#| msgid "Palette Page:"
+msgid "Palette page:"
 msgstr "Palet Sayfası:"
 
 #: lazarusidestrconsts.lisa2ppascalunitsmusthavetheextensionpporpas
@@ -4398,30 +4414,20 @@ msgstr "\" \\ \" %s \" birim adı bu pakette zaten mevcut. "
 msgid "The unit name \"%s\"%sand filename \"%s\" differ."
 msgstr "Birim adı \" %s \\ \"% kum dosya adı \" %s \\ \"farklı."
 
-#: lazarusidestrconsts.lisa2ptheunitnamedoesnotcorrespondtothefilename
-msgid "The unit name \"%s\" does not correspond to the filename."
-msgstr "\" \\ \" %s \" birim adı dosya adına karşılık gelmiyor. "
-
 #: lazarusidestrconsts.lisa2ptheunitnameisthesameasanregisteredcomponent
 #, fuzzy,badformat
 msgid "The unit name \"%s\" is the same as a registered component.%sUsing this can cause strange error messages."
 msgstr "\" \"\" %s \\ \"birim adı kayıtlı bir bileşen ile aynıdır.% SBunu kullanmak garip hata m'ye neden olabili"
 
-#: lazarusidestrconsts.lisa2punitfilename2
-msgid "Unit File Name:"
-msgstr "Birim Dosya Adı:"
-
 #: lazarusidestrconsts.lisa2punitname
-msgid "Unit Name:"
+#, fuzzy
+#| msgid "Unit Name:"
+msgid "Unit name:"
 msgstr "Birim Adı:"
 
 #: lazarusidestrconsts.lisa2punitnamealreadyexists
 msgid "Unitname already exists"
 msgstr "Birim adı zaten var"
-
-#: lazarusidestrconsts.lisa2punitnameinvalid
-msgid "Unit Name Invalid"
-msgstr "Birim Adı Geçersiz"
 
 #: lazarusidestrconsts.lisabandonchanges
 msgid "Abandon changes?"
@@ -18669,10 +18675,6 @@ msgstr "Görev çubuğundaki başlık, örneğin şunu gösterir: project1.lpi -
 #: lazarusidestrconsts.listitleleaveemptyfordefault
 msgid "Title (leave empty for default)"
 msgstr "Başlık (varsayılan olarak boş bırakın)"
-
-#: lazarusidestrconsts.listitleopencomponenticon24x24
-msgid "Choose a component icon 24x24"
-msgstr "Bir bileşen simgesi seçin 24x24"
 
 #: lazarusidestrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"

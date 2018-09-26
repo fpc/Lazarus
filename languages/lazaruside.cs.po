@@ -4196,7 +4196,9 @@ msgid "Ambiguous Unit Name"
 msgstr "Víceznačné jméno jednotky"
 
 #: lazarusidestrconsts.lisa2pancestortype
-msgid "Ancestor Type"
+#, fuzzy
+#| msgid "Ancestor Type"
+msgid "Ancestor type"
 msgstr "Typ předka"
 
 #: lazarusidestrconsts.lisa2papascalunitmusthavetheextensionpporpas
@@ -4228,6 +4230,10 @@ msgstr "Vytvořit nový požadavek"
 msgid "Dependency"
 msgstr "Závislost"
 
+#: lazarusidestrconsts.lisa2pdirectoryforunitfile
+msgid "Directory for unit file:"
+msgstr ""
+
 #: lazarusidestrconsts.lisa2pexistingfile2
 msgid "Existing file: \"%s\""
 msgstr "Existující soubor: \"%s\""
@@ -4254,9 +4260,17 @@ msgstr "Jméno souboru"
 msgid "File not unit"
 msgstr "Soubor není jednotka"
 
-#: lazarusidestrconsts.lisa2piconandsize
-msgid "Icon (maximum 24x24):"
-msgstr "Ikona (maximálně 24x24):"
+#: lazarusidestrconsts.lisa2picon24x24
+msgid "Icon 24x24:"
+msgstr ""
+
+#: lazarusidestrconsts.lisa2picon36x36
+msgid "Icon 36x36:"
+msgstr ""
+
+#: lazarusidestrconsts.lisa2picon48x48
+msgid "Icon 48x48:"
+msgstr ""
 
 #: lazarusidestrconsts.lisa2pinvalidancestortype
 msgid "Invalid Ancestor Type"
@@ -4307,7 +4321,9 @@ msgid "Page Name too long"
 msgstr "Jméno stránky je příliš dlouhé"
 
 #: lazarusidestrconsts.lisa2ppalettepage
-msgid "Palette Page:"
+#, fuzzy
+#| msgid "Palette Page:"
+msgid "Palette page:"
 msgstr "Stránka sady:"
 
 #: lazarusidestrconsts.lisa2ppascalunitsmusthavetheextensionpporpas
@@ -4396,29 +4412,19 @@ msgstr "Jméno jednotky \"%s\" již existuje v tomto balíčku."
 msgid "The unit name \"%s\"%sand filename \"%s\" differ."
 msgstr "Jméno jednotky \"%s\"%sa jméno souboru \"%s\" se liší."
 
-#: lazarusidestrconsts.lisa2ptheunitnamedoesnotcorrespondtothefilename
-msgid "The unit name \"%s\" does not correspond to the filename."
-msgstr "Jméno jednotky \"%s\" nesouhlasí s názvem souboru."
-
 #: lazarusidestrconsts.lisa2ptheunitnameisthesameasanregisteredcomponent
 msgid "The unit name \"%s\" is the same as a registered component.%sUsing this can cause strange error messages."
 msgstr "Jméno jednotky \"%s\" je stejné jaké má registrované komponenta.%sToto použití může způsobit podivná chybová hlášení."
 
-#: lazarusidestrconsts.lisa2punitfilename2
-msgid "Unit File Name:"
-msgstr "Jméno souboru jednotky:"
-
 #: lazarusidestrconsts.lisa2punitname
-msgid "Unit Name:"
+#, fuzzy
+#| msgid "Unit Name:"
+msgid "Unit name:"
 msgstr "Jméno jednotky:"
 
 #: lazarusidestrconsts.lisa2punitnamealreadyexists
 msgid "Unitname already exists"
 msgstr "Jméno jednotky už existuje"
-
-#: lazarusidestrconsts.lisa2punitnameinvalid
-msgid "Unit Name Invalid"
-msgstr "Neplatné jméno jednotky"
 
 #: lazarusidestrconsts.lisabandonchanges
 msgid "Abandon changes?"
@@ -18484,10 +18490,6 @@ msgstr "Titulek v panelu úloh zobrazí například: projekt1.lpi - Lazarus"
 #: lazarusidestrconsts.listitleleaveemptyfordefault
 msgid "Title (leave empty for default)"
 msgstr "Název (nechejte prázdné pro výchozí)"
-
-#: lazarusidestrconsts.listitleopencomponenticon24x24
-msgid "Choose a component icon 24x24"
-msgstr "Vybrat ikonu komponenty 24x24"
 
 #: lazarusidestrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"
