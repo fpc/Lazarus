@@ -38,7 +38,7 @@ uses
   FileUtil, LazFileUtils,
   // IDEIntf
   NewItemIntf, PackageIntf, FormEditingIntf, IDEWindowIntf, ComponentReg,
-  IDEDialogs, IDEImagesIntf,
+  IDEDialogs,
   // IDE
   LazarusIDEStrConsts, InputHistory, IDEDefs, EnvironmentOpts,
   PackageSystem, PackageDefs, ProjPackChecks;
@@ -59,7 +59,9 @@ type
     FileType: TPkgFileType;
     PkgFileFlags: TPkgFileFlags;
     UsedUnitname: string;
-    IconFile: string;
+    IconNormFile: string;
+    Icon150File: string;
+    Icon200File: string;
     AutoAddLFMFile: boolean;
     AutoAddLRSFile: boolean;
     NewItem: TNewIDEItemTemplate;
@@ -71,6 +73,19 @@ type
   TOnGetUnitRegisterInfo = procedure(Sender: TObject; const AFilename: string;
     out TheUnitName: string; out HasRegisterProc: boolean) of object;
 
+  { TIconGuiStuff }
+
+  TIconGuiStuff = class
+  // Join icon related GUI controls together. Streamlines the code.
+  private
+    Btn: TBitBtn;
+    InfoLabel: TLabel;
+    Title: string;
+    FileName: string;
+    constructor Create(aBtn: TBitBtn; aInfoLabel: TLabel; aTitle: string);
+    procedure LoadIcon(aLazPackage: TLazPackage; aFileName: string);
+  end;
+
   { TAddToPackageDlg }
 
   TAddToPackageDlg = class(TForm)
@@ -80,15 +95,22 @@ type
     ButtonPanel1: TButtonPanel;
     ClassNameEdit: TEdit;
     ClassNameLabel: TLabel;
-    ComponentIconBitBtn: TBitBtn;
-    ComponentIconLabel: TLabel;
+    Icon200Label: TLabel;
+    IconNormBitBtn: TBitBtn;
+    Icon150BitBtn: TBitBtn;
+    Icon150InfoLabel: TLabel;
+    Icon200InfoLabel: TLabel;
+    IconNormLabel: TLabel;
     ComponentUnitFileBrowseButton: TButton;
-    ComponentUnitFileEdit: TEdit;
-    ComponentUnitFileLabel: TLabel;
+    UnitDirectoryEdit: TEdit;
+    UnitDirectoryLabel: TLabel;
     ComponentUnitFileShortenButton: TButton;
-    ComponentUnitNameEdit: TEdit;
-    ComponentUnitNameLabel: TLabel;
-    LabelIconInfo: TLabel;
+    UnitNameEdit: TEdit;
+    UnitNameLabel: TLabel;
+    Icon200BitBtn: TBitBtn;
+    Icon150Label: TLabel;
+    IconNormInfoLabel: TLabel;
+    UnitFilenameLabel: TLabel;
     PalettePageCombobox: TComboBox;
     PalettePageLabel: TLabel;
     procedure AddToPackageDlgClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
@@ -96,30 +118,32 @@ type
     procedure AncestorComboBoxCloseUp(Sender: TObject);
     procedure AncestorShowAllCheckBoxClick(Sender: TObject);
     procedure ClassNameEditChange(Sender: TObject);
-    procedure ComponentIconBitBtnClick(Sender: TObject);
+    procedure IconBitBtnClick(Sender: TObject);
     procedure ComponentUnitFileBrowseButtonClick(Sender: TObject);
     procedure ComponentUnitFileShortenButtonClick(Sender: TObject);
-    procedure ComponentUnitNameEditChange(Sender: TObject);
+    procedure UnitDirectoryEditChange(Sender: TObject);
+    procedure UnitNameEditChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure NewComponentButtonClick(Sender: TObject);
   private
-    fLastNewComponentAncestorType: string;
-    fLastNewComponentClassName: string;
+    fLastNewAncestorType: string;
+    fLastNewClassName: string;
     FLazPackage: TLazPackage;
     FOnGetIDEFileInfo: TGetIDEFileStateEvent;
     FOnGetUnitRegisterInfo: TOnGetUnitRegisterInfo;
     fPkgComponents: TAVLTree;// tree of TPkgComponent
     fPackages: TAVLTree;// tree of  TLazPackage or TPackageLink
-    FComponentIconFilename: string;
     fParams: TAddToPkgResult;
+    fIconNormGUI: TIconGuiStuff;
+    fIcon150GUI: TIconGuiStuff;
+    fIcon200GUI: TIconGuiStuff;
+    function GenerateUnitFileName: string;
     procedure SetLazPackage(const AValue: TLazPackage);
     procedure OnIterateComponentClasses(PkgComponent: TPkgComponent);
     function CheckNewCompOk: Boolean;
     procedure AutoCompleteNewComponent;
     procedure AutoCompleteNewComponentUnitName;
-    function SwitchRelativeAbsoluteFilename(const Filename: string): string;
-    procedure LoadComponentIcon(AFilename: string);
   public
     procedure UpdateAvailableAncestorTypes;
     procedure UpdateAvailablePageNames;
@@ -162,6 +186,48 @@ begin
   end;
 end;
 
+{ TIconGuiStuff }
+
+constructor TIconGuiStuff.Create(aBtn: TBitBtn; aInfoLabel: TLabel; aTitle: string);
+begin
+  Btn:=aBtn;
+  InfoLabel:=aInfoLabel;
+  Title:=aTitle;
+  // Set button Width and Height. (Is this needed?)
+  Btn.Width:=ComponentPaletteBtnWidth;
+  Btn.Height:=ComponentPaletteBtnHeight;
+  InfoLabel.Caption:='';
+end;
+
+procedure TIconGuiStuff.LoadIcon(aLazPackage: TLazPackage; aFileName: string);
+var
+  ShortFN: String;
+  Image: TImage;
+begin
+  Filename:=aFileName;
+  try
+    Image:=TImage.Create(nil);
+    try
+      Image.Picture.LoadFromFile(Filename);
+      Btn.Glyph.Assign(Image.Picture.Graphic);
+      ShortFN:=Filename;
+      aLazPackage.ShortenFilename(ShortFN,true);
+      InfoLabel.Caption:=Format('%s (%dx%d)',[ShortFN, Btn.Glyph.Width, Btn.Glyph.Height]);
+    finally
+      Image.Free;
+    end;
+  except
+    on E: Exception do begin
+      IDEMessageDialog(lisCCOErrorCaption,
+        Format(lisErrorLoadingFile2,[FileName]) + LineEnding + E.Message,
+        mtError, [mbCancel]);
+      Btn.Glyph.Clear;
+      InfoLabel.Caption:=lisNoneClickToChooseOne;
+      FileName:='';
+    end;
+  end;
+end;
+
 { TAddToPackageDlg }
 
 procedure TAddToPackageDlg.FormCreate(Sender: TObject);
@@ -170,7 +236,7 @@ begin
   fPkgComponents:=TAVLTree.Create(@CompareIDEComponentByClassName);
   fPackages:=TAVLTree.Create(@CompareLazPackageID);
   fParams:=TAddToPkgResult.Create;
-  IDEDialogLayoutList.ApplyLayout(Self,500,260);
+  IDEDialogLayoutList.ApplyLayout(Self,700,390);
   // Setup Components
   ButtonPanel1.OkButton.Caption:=lisA2PCreateNewComp;
   ButtonPanel1.OkButton.OnClick:=@NewComponentButtonClick;
@@ -182,8 +248,9 @@ begin
   ClassNameEdit.Text:='';
   PalettePageLabel.Caption:=lisA2PPalettePage;
   PalettePageCombobox.Text:='';
-  ComponentUnitFileLabel.Caption:=lisA2PUnitFileName2;
-  ComponentUnitFileEdit.Text:='';
+  UnitDirectoryLabel.Caption:=lisA2PDirectoryForUnitFile;
+  UnitDirectoryEdit.Text:='';
+  UnitFilenameLabel.Caption:='';
   with ComponentUnitFileBrowseButton do begin
     Caption:='...';
     ShowHint:=true;
@@ -194,18 +261,25 @@ begin
     ShowHint:=true;
     Hint:=lisA2PShortenOrExpandFilename;
   end;
-  ComponentUnitNameLabel.Caption:=lisA2PUnitName;
-  ComponentUnitNameEdit.Text:='';
-  ComponentIconLabel.Caption:=lisA2PIconAndSize;
-  ComponentIconBitBtn.Width:=ComponentPaletteBtnWidth;
-  ComponentIconBitBtn.Height:=ComponentPaletteBtnHeight;
+  UnitNameLabel.Caption:=lisA2PUnitName;
+  UnitNameEdit.Text:='';
+  IconNormLabel.Caption:=lisA2PIcon24x24;
+  Icon150Label.Caption:=lisA2PIcon36x36;
+  Icon200Label.Caption:=lisA2PIcon48x48;
+  // Helper objects to join icon related GUI controls together
+  fIconNormGUI:=TIconGuiStuff.Create(IconNormBitBtn, IconNormInfoLabel, lisA2PIcon24x24);
+  fIcon150GUI:=TIconGuiStuff.Create(Icon150BitBtn, Icon150InfoLabel, lisA2PIcon36x36);
+  fIcon200GUI:=TIconGuiStuff.Create(Icon200BitBtn, Icon200InfoLabel, lisA2PIcon48x48);
 end;
 
 procedure TAddToPackageDlg.FormDestroy(Sender: TObject);
 begin
-  FreeAndNil(fPkgComponents);
-  FreeAndNil(fPackages);
+  FreeAndNil(fIcon200GUI);
+  FreeAndNil(fIcon150GUI);
+  FreeAndNil(fIconNormGUI);
   FreeAndNil(fParams);
+  FreeAndNil(fPackages);
+  FreeAndNil(fPkgComponents);
 end;
 
 procedure TAddToPackageDlg.AddToPackageDlgClose(Sender: TObject;
@@ -221,7 +295,7 @@ end;
 
 procedure TAddToPackageDlg.AncestorComboBoxCloseUp(Sender: TObject);
 begin
-  if fLastNewComponentAncestorType<>AncestorComboBox.Text then
+  if fLastNewAncestorType<>AncestorComboBox.Text then
     AutoCompleteNewComponent;
 end;
 
@@ -236,15 +310,35 @@ begin
   CheckNewCompOk;
 end;
 
-procedure TAddToPackageDlg.ComponentIconBitBtnClick(Sender: TObject);
+procedure TAddToPackageDlg.IconBitBtnClick(Sender: TObject);
 var
   Dlg: TOpenPictureDialog;
+
+  function RelatedIconFile(aSuffix: string): string;
+  var
+    Ext: String;
+  begin
+    Ext := ExtractFileExt(Dlg.FileName);
+    Result := ExtractFileNameWithoutExt(Dlg.FileName)+ASuffix+Ext;
+  end;
+
+var
+  Btn: TBitBtn;
+  IconGUI: TIconGuiStuff;
+  OtherIconFile: string;
 begin
+  Btn:=Sender as TBitBtn;
   Dlg:=TOpenPictureDialog.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(Dlg);
-    Dlg.InitialDir:=LazPackage.GetFileDialogInitialDir(ExtractFilePath(ComponentUnitFileEdit.Text));
-    Dlg.Title:=lisTitleOpenComponentIcon24x24;
+    Dlg.InitialDir:=LazPackage.GetFileDialogInitialDir(UnitDirectoryEdit.Text);
+    if Btn = IconNormBitBtn then
+      IconGUI:=fIconNormGUI
+    else if Btn = Icon150BitBtn then
+      IconGUI:=fIcon150GUI
+    else if Btn = Icon200BitBtn then
+      IconGUI:=fIcon200GUI;
+    Dlg.Title:=IconGUI.Title;
     Dlg.Options:=Dlg.Options+[ofPathMustExist];
     Dlg.Filter:=Format('%s|*.png|%s|*.bmp|%s|*.xpm|%s|%s',
       [dlgFilterImagesPng,
@@ -253,7 +347,18 @@ begin
        dlgFilterAll, GetAllFilesMask]);
 
     if Dlg.Execute then begin
-      LoadComponentIcon(Dlg.FileName);
+      IconGUI.LoadIcon(LazPackage, Dlg.FileName);
+      // Load high resolution icons automatically if found.
+      if Btn = IconNormBitBtn then begin
+        // 150%
+        OtherIconFile:=RelatedIconFile('_150');
+        if FileExists(OtherIconFile) then
+          fIcon150GUI.LoadIcon(LazPackage, OtherIconFile);
+        // 200%
+        OtherIconFile:=RelatedIconFile('_200');
+        if FileExists(OtherIconFile) then
+          fIcon200GUI.LoadIcon(LazPackage, OtherIconFile);
+      end;
     end;
     InputHistories.StoreFileDialogSettings(Dlg);
   finally
@@ -263,42 +368,51 @@ end;
 
 procedure TAddToPackageDlg.ComponentUnitFileBrowseButtonClick(Sender: TObject);
 var
-  SaveDialog: TSaveDialog;
-  AFilename: string;
+  DirDialog: TSelectDirectoryDialog;
 begin
-  SaveDialog:=TSaveDialog.Create(nil);
+  DirDialog:=TSelectDirectoryDialog.Create(nil);
   try
-    InputHistories.ApplyFileDialogSettings(SaveDialog);
-    SaveDialog.InitialDir := LazPackage.GetFileDialogInitialDir(SaveDialog.InitialDir);
-    SaveDialog.Title := lisSaveAs;
-    SaveDialog.Options := SaveDialog.Options+[ofPathMustExist];
-    SaveDialog.Filter := Format('%s|*.pas;*.pp', [dlgFilterPascalFile]);
-    if SaveDialog.Execute then begin
-      AFilename := CleanAndExpandFilename(SaveDialog.Filename);
-      if FilenameIsPascalUnit(AFilename) then begin
-        LazPackage.ShortenFilename(AFilename,true);
-        ComponentUnitFileEdit.Text := AFilename;
-      end else begin
-        IDEMessageDialog(lisA2PInvalidFile,
-         lisA2PAPascalUnitMustHaveTheExtensionPPOrPas,
-         mtError,[mbCancel]);
-      end;
+    InputHistories.ApplyFileDialogSettings(DirDialog);
+    DirDialog.InitialDir:=LazPackage.Directory;
+    DirDialog.Title:=lisA2PDirectoryForUnitFile;
+    //DirDialog.Options:=DirDialog.Options+[ofPathMustExist];
+    //DirDialog.Filter:=Format('%s|*.pas;*.pp', [dlgFilterPascalFile]);
+    if DirDialog.Execute then begin
+      UnitDirectoryEdit.Text:=DirDialog.Filename;
+      UnitFilenameLabel.Caption:=AppendPathDelim(UnitDirectoryEdit.Text)+GenerateUnitFileName;
     end;
-    InputHistories.StoreFileDialogSettings(SaveDialog);
+    InputHistories.StoreFileDialogSettings(DirDialog);
   finally
-    SaveDialog.Free;
+    DirDialog.Free;
   end;
 end;
 
 procedure TAddToPackageDlg.ComponentUnitFileShortenButtonClick(Sender: TObject);
+var
+  S: string;
 begin
-  if ''=ComponentUnitFileEdit.Text then exit;
-  ComponentUnitFileEdit.Text:=SwitchRelativeAbsoluteFilename(ComponentUnitFileEdit.Text);
+  Assert(LazPackage.HasDirectory and FilenameIsAbsolute(LazPackage.Directory),
+         'Unexpected package directory');
+  S:=UnitDirectoryEdit.Text;
+  if (S='') then
+    S:='.';
+  // Toggle between absolute and relative paths.
+  if FilenameIsAbsolute(S) then
+    UnitDirectoryEdit.Text:=CreateRelativePath(S,LazPackage.Directory,True)
+  else
+    UnitDirectoryEdit.Text:=CreateAbsolutePath(S,LazPackage.Directory);
+  UnitFilenameLabel.Caption:=AppendPathDelim(UnitDirectoryEdit.Text)+GenerateUnitFileName;
 end;
 
-procedure TAddToPackageDlg.ComponentUnitNameEditChange(Sender: TObject);
+procedure TAddToPackageDlg.UnitDirectoryEditChange(Sender: TObject);
+begin
+  UnitFilenameLabel.Caption:=AppendPathDelim(UnitDirectoryEdit.Text)+GenerateUnitFileName;
+end;
+
+procedure TAddToPackageDlg.UnitNameEditChange(Sender: TObject);
 begin
   CheckNewCompOk;
+  UnitFilenameLabel.Caption:=AppendPathDelim(UnitDirectoryEdit.Text)+GenerateUnitFileName;
 end;
 
 procedure TAddToPackageDlg.NewComponentButtonClick(Sender: TObject);
@@ -306,6 +420,7 @@ var
   PkgFile: TPkgFile;
   PkgComponent: TPkgComponent;
   ARequiredPackage: TLazPackage;
+  ThePath: String;
 begin
   fParams.Clear;
   fParams.FileType:=pftUnit;
@@ -313,10 +428,21 @@ begin
   fParams.AncestorType:=AncestorComboBox.Text;
   fParams.NewClassName:=ClassNameEdit.Text;
   fParams.PageName:=PalettePageCombobox.Text;
-  fParams.Unit_Name:=ComponentUnitNameEdit.Text;
-  fParams.UnitFilename:=ComponentUnitFileEdit.Text;
+  fParams.Unit_Name:=UnitNameEdit.Text;
   fParams.UsedUnitname:='';
-  fParams.IconFile:=FComponentIconFilename;
+  fParams.IconNormFile:=fIconNormGUI.Filename;
+  fParams.Icon150File:=fIcon150GUI.Filename;
+  fParams.Icon200File:=fIcon200GUI.Filename;
+
+  // prepend path to unit filename
+  ThePath:=UnitDirectoryEdit.Text;
+  if ThePath='' then
+    ThePath:='.';
+  ThePath:=CreateAbsolutePath(ThePath,LazPackage.Directory);
+  if not DirectoryExists(ThePath) then
+    if not ForceDirectories(ThePath) then
+      raise Exception.Create('NewComponentButtonClick: Cannot create directory '+ThePath);
+  fParams.UnitFilename:=AppendPathDelim(ThePath)+GenerateUnitFileName;
 
   // check Ancestor Type
   if not IsValidIdent(fParams.AncestorType) then begin
@@ -325,7 +451,6 @@ begin
       mtError,[mbCancel]);
     exit;
   end;
-
   // check pagename
   if length(fParams.PageName)>100 then begin
     IDEMessageDialog(lisA2PPageNameTooLong,
@@ -333,16 +458,6 @@ begin
       mtError,[mbCancel]);
     exit;
   end;
-
-  // check unitname - filename redundancy
-  if CompareText(fParams.Unit_name,ExtractFileNameOnly(fParams.UnitFilename))<>0
-  then begin
-    IDEMessageDialog(lisA2PUnitNameInvalid,
-      Format(lisA2PTheUnitNameDoesNotCorrespondToTheFilename, [fParams.Unit_Name]),
-      mtError,[mbCancel]);
-    exit;
-  end;
-
   // check classname
   if not IsValidIdent(fParams.NewClassName) then begin
     IDEMessageDialog(lisA2PInvalidClassName,
@@ -350,7 +465,6 @@ begin
       mtError,[mbCancel]);
     exit;
   end;
-
   // check classname<>ancestortype
   if CompareText(fParams.NewClassName,fParams.AncestorType)=0 then begin
     IDEMessageDialog(lisA2PInvalidCircularDependency,
@@ -358,7 +472,6 @@ begin
       mtError,[mbCancel]);
     exit;
   end;
-
   // check ancestor type is not unitname
   PkgFile:=PackageGraph.FindUnit(LazPackage,fParams.AncestorType,true,true);
   if PkgFile<>nil then begin
@@ -369,7 +482,6 @@ begin
     then
       exit;
   end;
-
   // check classname does not interfere with an existing unitname
   PkgFile:=PackageGraph.FindUnit(LazPackage,fParams.NewClassName,true,true);
   if PkgFile<>nil then begin
@@ -380,7 +492,6 @@ begin
     then
       exit;
   end;
-
   // check if classname already exists
   PkgComponent:=TPkgComponent(IDEComponentPalette.FindComponent(fParams.NewClassname));
   if PkgComponent<>nil then begin
@@ -391,7 +502,6 @@ begin
     then
       exit;
   end;
-
   // check filename
   if not CheckAddingPackageUnit(LazPackage, d2ptNewComponent,
     OnGetIDEFileInfo, fParams.UnitFilename) then exit;
@@ -403,7 +513,7 @@ begin
     ARequiredPackage:=PkgComponent.PkgFile.LazPackage;
     ARequiredPackage:=TLazPackage(PackageEditingInterface.RedirectPackageDependency(ARequiredPackage));
     if (LazPackage<>ARequiredPackage)
-    and (not LazPackage.Requires(PkgComponent.PkgFile.LazPackage))
+    and not LazPackage.Requires(PkgComponent.PkgFile.LazPackage)
     then
       fParams.Dependency:=ARequiredPackage.CreateDependencyWithOwner(nil);
   end;
@@ -421,7 +531,7 @@ end;
 
 function TAddToPackageDlg.CheckNewCompOk: Boolean;
 begin
-  Result:=(AncestorComboBox.Text<>'') and (ClassNameEdit.Text<>'') and (ComponentUnitNameEdit.Text<>'');
+  Result:=(AncestorComboBox.Text<>'') and (ClassNameEdit.Text<>'') and (UnitNameEdit.Text<>'');
   ButtonPanel1.OKButton.Enabled:=Result;
 end;
 
@@ -431,22 +541,28 @@ begin
     fPkgComponents.Add(PkgComponent);
 end;
 
+function TAddToPackageDlg.GenerateUnitFileName: string;
+begin
+  Result:=UnitNameEdit.Text;
+  if Result='' then Exit;
+  if EnvironmentOptions.CharcaseFileAction in [ccfaAsk, ccfaAutoRename] then
+    Result:=LowerCase(Result);
+  // append pascal file extension
+  Result:=Result+PascalExtension[EnvironmentOptions.PascalFileExtension];
+end;
+
 procedure TAddToPackageDlg.AutoCompleteNewComponent;
 var
   PkgComponent: TPkgComponent;
 begin
-  fLastNewComponentAncestorType:=AncestorComboBox.Text;
-  if not IsValidIdent(fLastNewComponentAncestorType) then exit;
-  PkgComponent:=TPkgComponent(
-    IDEComponentPalette.FindComponent(fLastNewComponentAncestorType));
+  fLastNewAncestorType:=AncestorComboBox.Text;
+  if not IsValidIdent(fLastNewAncestorType) then exit;
+  PkgComponent:=TPkgComponent(IDEComponentPalette.FindComponent(fLastNewAncestorType));
 
   // create unique classname
-  if not IsValidIdent(ClassNameEdit.Text) then
-    ClassNameEdit.Text:=IDEComponentPalette.CreateNewClassName(
-                                                 fLastNewComponentAncestorType);
+  ClassNameEdit.Text:=IDEComponentPalette.CreateNewClassName(fLastNewAncestorType);
   // choose the same page name
-  if (PalettePageCombobox.Text='')
-  and (PkgComponent<>nil) and (PkgComponent.RealPage<>nil) then
+  if (PkgComponent<>nil) and (PkgComponent.RealPage<>nil) then
     PalettePageCombobox.Text:=PkgComponent.RealPage.PageName;
   // filename
   AutoCompleteNewComponentUnitName;
@@ -461,73 +577,19 @@ var
 begin
   // check if update needed
   CurClassName:=ClassNameEdit.Text;
-  if fLastNewComponentClassName=CurClassName then exit;
-  fLastNewComponentClassName:=CurClassName;
-
+  if fLastNewClassName=CurClassName then exit;
+  fLastNewClassName:=CurClassName;
   // check classname
   if not IsValidIdent(CurClassName) then exit;
-
   // create unitname
   NewUnitName:=CurClassName;
   if NewUnitName[1]='T' then
     NewUnitName:=copy(NewUnitName,2,length(NewUnitName)-1);
   NewUnitName:=PackageGraph.CreateUniqueUnitName(NewUnitName);
-  ComponentUnitNameEdit.Text:=NewUnitName;
-
-  // create filename
-  NewFileName:=NewUnitName;
-
-  if EnvironmentOptions.CharcaseFileAction in [ccfaAsk, ccfaAutoRename] then
-    NewFileName:=lowercase(NewFileName);
-
-  // append pascal file extension
-  NewFileName:=NewFileName
-       +EnvironmentOpts.PascalExtension[EnvironmentOptions.PascalFileExtension];
-  // prepend path
-  if LazPackage.HasDirectory then
-    NewFileName:=LazPackage.Directory+NewFileName;
-  ComponentUnitFileEdit.Text:=NewFileName;
-end;
-
-function TAddToPackageDlg.SwitchRelativeAbsoluteFilename(const Filename: string): string;
-begin
-  Result:=Filename;
-  if (not LazPackage.HasDirectory)
-  or (not FilenameIsAbsolute(LazPackage.Directory)) then exit;
-  if FilenameIsAbsolute(Filename) then
-    Result:=TrimFilename(CreateRelativePath(Filename,LazPackage.Directory))
-  else
-    Result:=TrimFilename(CreateAbsoluteSearchPath(Filename,LazPackage.Directory));
-end;
-
-procedure TAddToPackageDlg.LoadComponentIcon(AFilename: string);
-var
-  ShortFilename: String;
-  Image: TImage;
-begin
-  try
-    Image:=TImage.Create(nil);
-    try
-      Image.Picture.LoadFromFile(AFilename);
-      ComponentIconBitBtn.Glyph.Assign(Image.Picture.Graphic);
-      ShortFilename:=AFilename;
-      LazPackage.ShortenFilename(ShortFilename,true);
-      LabelIconInfo.Caption:= Format('%s (%dx%d)',
-        [ShortFilename, ComponentIconBitBtn.Glyph.Width, ComponentIconBitBtn.Glyph.Height]);
-      FComponentIconFilename:=AFilename;
-    finally
-      Image.Free;
-    end;
-  except
-    on E: Exception do begin
-      IDEMessageDialog(lisCCOErrorCaption,
-        Format(lisErrorLoadingFile2,[AFilename]) + LineEnding + E.Message,
-        mtError, [mbCancel]);
-      ComponentIconBitBtn.Glyph.Clear;
-      FComponentIconFilename:='';
-      LabelIconInfo.Caption:=lisNoneClickToChooseOne;
-    end;
-  end;
+  UnitNameEdit.Text:=NewUnitName;
+  // default directory
+  UnitDirectoryEdit.Text:=LazPackage.Directory;
+  UnitFilenameLabel.Caption:=AppendPathDelim(UnitDirectoryEdit.Text)+GenerateUnitFileName;
 end;
 
 procedure TAddToPackageDlg.UpdateAvailableAncestorTypes;
@@ -584,7 +646,7 @@ end;
 
 procedure TAddToPkgResult.Clear;
 begin
-  Dependency:=nil;
+  FreeAndNil(Dependency);
   UnitFilename:='';
   Unit_Name:='';
   AncestorType:='';
@@ -601,6 +663,7 @@ end;
 destructor TAddToPkgResult.Destroy;
 begin
   FreeThenNil(Next);
+  FreeAndNil(Dependency);
   inherited Destroy;
 end;
 

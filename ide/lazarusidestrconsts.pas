@@ -1551,7 +1551,6 @@ resourcestring
   lisPkgMangThePackageFailedToCompileRemoveItFromTheInstallati = 'The package "%s" '
     +'failed to compile.%sRemove it from the installation list?';
   lisEnvOptDlgTestDirNotFoundMsg = 'Test directory "%s" not found.';
-  lisTitleOpenComponentIcon24x24 = 'Choose a component icon 24x24';
 
   // open-dialog filters
   dlgFilterAll = 'All files';
@@ -4531,8 +4530,6 @@ resourcestring
   lisA2PPageNameTooLong = 'Page Name too long';
   lisA2PThePageNameIsTooLongMax100Chars = 'The page name "%s" is too long (max 100 chars).';
   lisA2PUnitNameInvalid = 'Unit Name Invalid';
-  lisA2PTheUnitNameDoesNotCorrespondToTheFilename = 'The unit name "%s" '
-    +'does not correspond to the filename.';
   lisA2PInvalidClassName = 'Invalid Class Name';
   lisA2PTheClassNameIsNotAValidPascalIdentifier = 'The class name "%s" is '
     +'not a valid Pascal identifier.';
@@ -4557,15 +4554,18 @@ resourcestring
     +'%sFor example: 1.0.20.10';
   lisA2PNewFile = 'New File';
   lisA2PAddFiles = 'Add Files';
-  lisA2PAncestorType = 'Ancestor Type';
+  lisA2PAncestorType = 'Ancestor type';
   lisA2PShowAll = 'Show all';
   lisA2PNewClassName = 'New class name:';
-  lisA2PPalettePage = 'Palette Page:';
-  lisA2PUnitFileName2 = 'Unit File Name:';
-  lisA2PUnitName = 'Unit Name:';
+  lisA2PPalettePage = 'Palette page:';
+  lisA2PDirectoryForUnitFile = 'Directory for unit file:';
+  lisA2PUnitName = 'Unit name:';
   lisA2PShortenOrExpandFilename = 'Shorten or expand filename';
   lisA2PSaveFileDialog = 'Save file dialog';
-  lisA2PIconAndSize = 'Icon (maximum 24x24):';
+  lisA2PIcon24x24 = 'Icon 24x24:';
+  lisA2PIcon36x36 = 'Icon 36x36:';
+  lisA2PIcon48x48 = 'Icon 48x48:';
+
   lisMoveSelectedUp = 'Move selected item up (Ctrl+Up)';
   lisMoveSelectedDown = 'Move selected item down (Ctrl+Down)';
 

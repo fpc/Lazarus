@@ -39,6 +39,7 @@ interface
 
 {$I ide.inc}
 
+{$DEFINE UseLRS}
 {off $DEFINE VerbosePkgEditDrag}
 
 uses
@@ -121,7 +122,6 @@ type
                               out HasRegisterProc: boolean);
     function PackageGraphCheckInterPkgFiles(IDEObject: TObject;
                           PkgList: TFPList; out FilesChanged: boolean): boolean;
-
     // package graph
     function PackageGraphExplorerOpenPackage(Sender: TObject;
                                            APackage: TLazPackage): TModalResult;
@@ -138,7 +138,6 @@ type
     procedure PackageGraphEndUpdate(Sender: TObject; GraphChanged: boolean);
     procedure PackageGraphFindFPCUnit(const AUnitName, Directory: string;
                                       var Filename: string);
-
     // menu
     procedure MainIDEitmPkgOpenPackageFileClick(Sender: TObject);
     procedure MainIDEitmPkgPkgGraphClick(Sender: TObject);
@@ -177,6 +176,9 @@ type
   private
     // helper functions
     FLastLazarusSrcDir: string;
+    {$IFDEF UseLRS}
+    FIconLRSSource: string;
+    {$ENDIF}
     function DoShowSavePackageAsDialog(APackage: TLazPackage): TModalResult;
     function CheckPackageGraphForCompilation(APackage: TLazPackage;
                                  FirstDependency: TPkgDependency;
@@ -192,6 +194,7 @@ type
     procedure LoadAutoInstallPackages;
     procedure AddUnitToProjectMainUsesSection(AProject: TProject;
                                     const AnUnitName, AnUnitInFilename: string);
+    procedure AddToIconResource(const aIconFile, aResName: string);
     // move files
     function CheckDrag(Sender, Source: TObject; X, Y: Integer;
       out SrcFilesEdit, TargetFilesEdit: IFilesEditorInterface;
@@ -721,6 +724,48 @@ begin
   Result:=DoCreatePackageFpmakefile(APackage,false);
 end;
 
+{$IFDEF UseLRS}
+procedure TPkgManager.AddToIconResource(const aIconFile, aResName: string);
+var
+  BinFileStream: TFileStreamUTF8;
+  ResMemStream: TMemoryStream;
+  BinExt, ResType, S: String;
+  Len: integer;
+begin
+  try
+    BinFileStream:=TFileStreamUTF8.Create(aIconFile,fmOpenRead);
+    try
+      ResMemStream:=TMemoryStream.Create;
+      try
+        Assert(BinFileStream.Position=0, 'TPkgManager.AddToIconResource: Stream.Position > 0');
+        BinExt:=UpperCase(ExtractFileExt(aIconFile));
+        ResType:=Copy(BinExt,2,length(BinExt)-1);
+        BinaryToLazarusResourceCode(BinFileStream,ResMemStream,aResName,ResType);
+        ResMemStream.Position:=0;
+        Len:=ResMemStream.Size;
+        if Len>0 then begin
+          SetLength(S,Len);
+          ResMemStream.Read(S[1],Len);
+        end;
+        FIconLRSSource:=FIconLRSSource+S;
+      finally
+        ResMemStream.Free;
+      end;
+    finally
+      BinFileStream.Free;
+    end;
+  except
+    on E: Exception do begin
+      MessageDlg(lisCCOErrorCaption,
+        Format(lisErrorLoadingFile2,[aIconFile]) + LineEnding + E.Message,
+      mtError, [mbCancel], 0);
+    end;
+  end;
+end;
+{$ELSE}
+  ToDo: Use FPC's resource type (.res)
+{$ENDIF}
+
 function TPkgManager.OnPackageEditorCreateFile(Sender: TObject;
   Params: TAddToPkgResult): TModalResult;
 var
@@ -729,73 +774,44 @@ var
   NewSource: String;
   UnitDirectives: String;
   IconLRSFilename: String;
-  BinFileStream: TFileStreamUTF8;
-  BinMemStream: TMemoryStream;
-  BinExt: String;
-  ResType: String;
   ResName: String;
-  ResMemStream: TMemoryStream;
   CodeBuf: TCodeBuffer;
 begin
   Result:=mrCancel;
-
   // create icon resource
-  IconLRSFilename:='';
-  if Params.IconFile<>'' then begin
+  if Params.IconNormFile<>'' then
+  begin
     IconLRSFilename:=ChangeFileExt(Params.UnitFilename,'')+'_icon.lrs';
     CodeBuf:=CodeToolBoss.CreateFile(IconLRSFilename);
     if CodeBuf=nil then begin
       debugln(['Error: (lazarus) [TPkgManager.OnPackageEditorCreateFile] file create failed: ',IconLRSFilename]);
       exit;
     end;
-    try
-      BinFileStream:=TFileStreamUTF8.Create(Params.IconFile,fmOpenRead);
-      try
-        BinMemStream:=TMemoryStream.Create;
-        ResMemStream:=TMemoryStream.Create;
-        try
-          BinMemStream.CopyFrom(BinFileStream,BinFileStream.Size);
-          BinMemStream.Position:=0;
-          BinExt:=uppercase(ExtractFileExt(Params.IconFile));
-          ResType:=copy(BinExt,2,length(BinExt)-1);
-          ResName:=ExtractFileNameOnly(Params.NewClassName);
-          BinaryToLazarusResourceCode(BinMemStream,ResMemStream,ResName,ResType);
-          ResMemStream.Position:=0;
-          CodeBuf.LoadFromStream(ResMemStream);
-          Result:=SaveCodeBuffer(CodeBuf);
-          if Result<>mrOk then exit;
-        finally
-          BinMemStream.Free;
-          ResMemStream.Free;
-        end;
-      finally
-        BinFileStream.Free;
-      end;
-    except
-      on E: Exception do begin
-        MessageDlg(lisCCOErrorCaption,
-          Format(lisErrorLoadingFile2,[Params.IconFile]) + LineEnding + E.Message,
-        mtError, [mbCancel], 0);
-      end;
-    end;
-  end;
-
-  // create sourcecode
-  LE:=LineEnding;
-  if PackageGraph.FindDependencyRecursively(Params.Pkg.FirstRequiredDependency,
-    'LCL')<>nil
-  then
-    UsesLine:='Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs'
+    FIconLRSSource:='';
+    ResName:=ExtractFileNameOnly(Params.NewClassName);
+    AddToIconResource(Params.IconNormFile, ResName);
+    if Params.Icon150File<>'' then
+      AddToIconResource(Params.Icon150File, ResName+'_150');
+    if Params.Icon200File<>'' then
+      AddToIconResource(Params.Icon200File, ResName+'_200');
+    CodeBuf.Source:=FIconLRSSource;
+    Result:=SaveCodeBuffer(CodeBuf);
+    if Result<>mrOk then exit;
+  end
   else
-    UsesLine:='Classes, SysUtils';
-  if (System.Pos(Params.UsedUnitname,UsesLine)<1)
-  and (Params.UsedUnitname<>'') then
+    IconLRSFilename:='';
+  // create sourcecode
+  UsesLine:='Classes, SysUtils';
+  if PackageGraph.FindDependencyRecursively(Params.Pkg.FirstRequiredDependency,'LCL')<>nil
+  then
+    UsesLine:=UsesLine+', LResources, Forms, Controls, Graphics, Dialogs';
+  if (System.Pos(Params.UsedUnitname,UsesLine)<1) and (Params.UsedUnitname<>'') then
     UsesLine:=UsesLine+', '+Params.UsedUnitname;
   UnitDirectives:='{$mode objfpc}{$H+}';
   if Params.Pkg<>nil then
     UnitDirectives:=TFileDescPascalUnit.CompilerOptionsToUnitDirectives(
                                                     Params.Pkg.CompilerOptions);
-
+  LE:=LineEnding;
   NewSource:=
      'unit '+Params.Unit_Name+';'+LE
     +LE
