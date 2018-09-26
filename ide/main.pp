@@ -7206,7 +7206,8 @@ begin
 
     SplitCmdLine(ExeCmdLine,ExeFile,Params);
     Process.Executable := ExeFile;
-    Process.Parameters.Text := Params;
+    if Params<>'' then
+      CommandToList(Params, Process.Parameters);
     ARunMode := Project1.RunParameterOptions.GetActiveMode;
 
     if RunAppBundle and FileExistsUTF8(Process.Executable)
