@@ -4529,7 +4529,6 @@ resourcestring
     +'is not a valid Pascal identifier.';
   lisA2PPageNameTooLong = 'Page Name too long';
   lisA2PThePageNameIsTooLongMax100Chars = 'The page name "%s" is too long (max 100 chars).';
-  lisA2PUnitNameInvalid = 'Unit Name Invalid';
   lisA2PInvalidClassName = 'Invalid Class Name';
   lisA2PTheClassNameIsNotAValidPascalIdentifier = 'The class name "%s" is '
     +'not a valid Pascal identifier.';
