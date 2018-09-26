@@ -95,24 +95,6 @@ begin
   Result:=false;
 end;
 
-function ExtractFileNameWithoutExt(const AFilename: string): string;
-var
-  p: Integer;
-begin
-  Result:=AFilename;
-  p:=length(Result);
-  while (p>0) do begin
-    case Result[p] of
-      PathDelim: exit;
-      {$ifdef windows}
-      '/': if ('/' in AllowDirectorySeparators) then exit;
-      {$endif}
-      '.': exit(copy(Result,1, p-1));
-    end;
-    dec(p);
-  end;
-end;
-
 function DeleteDirectory(const DirectoryName: string; OnlyChildren: boolean): boolean;
 const
   //Don't follow symlinks on *nix, just delete them

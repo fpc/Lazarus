@@ -29,9 +29,7 @@ uses
 function CompareFilenames(const Filename1, Filename2: string): integer; overload;
 function CompareFilenamesIgnoreCase(const Filename1, Filename2: string): integer;
 function CompareFileExt(const Filename, Ext: string;
-                        CaseSensitive: boolean): integer; overload;
-function CompareFileExt(const Filename, Ext: string): integer; overload;
-
+                        CaseSensitive: boolean = False): integer;
 function CompareFilenameStarts(const Filename1, Filename2: string): integer;
 function CompareFilenames(Filename1: PChar; Len1: integer;
   Filename2: PChar; Len2: integer): integer; overload;
@@ -42,6 +40,7 @@ function CompareFilenamesP(Filename1, Filename2: PChar;
 function DirPathExists(DirectoryName: string): boolean;
 function DirectoryIsWritable(const DirectoryName: string): boolean;
 function ExtractFileNameOnly(const AFilename: string): string;
+function ExtractFileNameWithoutExt(const AFilename: string): string;
 function FilenameIsAbsolute(const TheFilename: string):boolean;
 function FilenameIsWinAbsolute(const TheFilename: string):boolean;
 function FilenameIsUnixAbsolute(const TheFilename: string):boolean;
@@ -64,9 +63,9 @@ function CleanAndExpandDirectory(const Filename: string): string; // empty strin
 function TrimAndExpandFilename(const Filename: string; const BaseDir: string = ''): string; // empty string returns empty string
 function TrimAndExpandDirectory(const Filename: string; const BaseDir: string = ''): string; // empty string returns empty string
 function TryCreateRelativePath(const Dest, Source: String; UsePointDirectory: boolean;
-                               AlwaysRequireSharedBaseFolder: Boolean; out RelPath: String): Boolean;
+  AlwaysRequireSharedBaseFolder: Boolean; out RelPath: String): Boolean;
 function CreateRelativePath(const Filename, BaseDirectory: string;
-                            UsePointDirectory: boolean = false; AlwaysRequireSharedBaseFolder: Boolean = True): string;
+  UsePointDirectory: boolean = false; AlwaysRequireSharedBaseFolder: Boolean = True): string;
 function FileIsInPath(const Filename, Path: string): boolean;
 
 type
@@ -294,11 +293,6 @@ begin
     if Result > 0 then Result := 1;
 end;
 
-function CompareFileExt(const Filename, Ext: string): integer;
-begin
-  Result := CompareFileExt(Filename, Ext, False);
-end;
-
 function ExtractFileNameOnly(const AFilename: string): string;
 var
   StartPos: Integer;
@@ -315,6 +309,24 @@ begin
     dec(ExtPos);
   if (ExtPos<StartPos) then ExtPos:=length(AFilename)+1;
   Result:=copy(AFilename,StartPos,ExtPos-StartPos);
+end;
+
+function ExtractFileNameWithoutExt(const AFilename: string): string;
+var
+  p: Integer;
+begin
+  Result:=AFilename;
+  p:=length(Result);
+  while (p>0) do begin
+    case Result[p] of
+      PathDelim: exit;
+      {$ifdef windows}
+      '/': if ('/' in AllowDirectorySeparators) then exit;
+      {$endif}
+      '.': exit(copy(Result,1, p-1));
+    end;
+    dec(p);
+  end;
 end;
 
 {$IFDEF darwin}

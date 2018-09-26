@@ -247,7 +247,7 @@ end;
 }
 
 function TryCreateRelativePath(const Dest, Source: String; UsePointDirectory: boolean;
-                               AlwaysRequireSharedBaseFolder: Boolean; out RelPath: String): Boolean;
+  AlwaysRequireSharedBaseFolder: Boolean; out RelPath: String): Boolean;
 Const
   MaxDirs = 129;
 Type
@@ -416,7 +416,7 @@ begin
 end;
 
 function CreateRelativePath(const Filename, BaseDirectory: string;
-  UsePointDirectory: boolean;  AlwaysRequireSharedBaseFolder: Boolean): string;
+  UsePointDirectory: boolean; AlwaysRequireSharedBaseFolder: Boolean): string;
 var
   RelPath: String;
 begin
