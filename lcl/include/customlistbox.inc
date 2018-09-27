@@ -632,6 +632,7 @@ end;
 procedure TCustomListBox.Clear;
 begin
   FItems.Clear;
+  FItemIndex := -1;
 end;
 
 procedure TCustomListBox.ClearSelection;
