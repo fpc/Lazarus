@@ -213,6 +213,20 @@ begin
   Result:=(TheFilename<>'') and (TheFilename[1]='/');
 end;
 
+function CreateAbsolutePath(const Filename, BaseDirectory: string): string;
+begin
+  if (Filename='') or FilenameIsAbsolute(Filename) then
+    Result:=Filename
+  {$IFDEF Windows}
+  else if (Filename[1]='\') then
+    // only use drive of BaseDirectory
+    Result:=ExtractFileDrive(BaseDirectory)+Filename
+  {$ENDIF}
+  else
+    Result:=AppendPathDelim(BaseDirectory)+Filename;
+  Result:=TrimFilename(Result);
+end;
+
 
 {
   Returns True if it is possible to create a relative path from Source to Dest
@@ -245,7 +259,6 @@ end;
   - Dest = /foo Source = /bar AlwaysRequireSharedBaseFolder = True Result = False
   - Dest = /foo Source = /bar AlwaysRequireSharedBaseFolder = False Result = True RelPath = ../foo
 }
-
 function TryCreateRelativePath(const Dest, Source: String; UsePointDirectory: boolean;
   AlwaysRequireSharedBaseFolder: Boolean; out RelPath: String): Boolean;
 Const

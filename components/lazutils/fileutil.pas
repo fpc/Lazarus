@@ -62,10 +62,12 @@ function ProgramDirectoryWithBundle: string;
 function ExpandUNCFileNameUTF8(const FileName: string): string;
 function FileSize(const Filename: string): int64; overload; inline;
 function FilenameIsPascalUnit(const Filename: string): boolean;
-function CreateAbsoluteSearchPath(const SearchPath, BaseDirectory: string): string;
-function CreateAbsolutePath(const Filename, BaseDirectory: string): string;
 function FileIsInPath(const Filename, Path: string): boolean;
 function FileIsInDirectory(const Filename, Directory: string): boolean;
+
+function ExtractFileNameWithoutExt(const AFilename: string): string; deprecated 'Use the function from unit LazFileUtils';
+function CreateAbsoluteSearchPath(const SearchPath, BaseDirectory: string): string; deprecated 'Use the function from unit LazFileUtils';
+function CreateAbsolutePath(const Filename, BaseDirectory: string): string; deprecated 'Use the function from unit LazFileUtils';
 
 function GetAllFilesMask: string; inline;
 function GetExeExt: string; inline;

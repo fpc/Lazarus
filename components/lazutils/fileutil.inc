@@ -154,59 +154,6 @@ begin
     Result:=ExtractFilePath(LeftStr(Result,Length(Result)-Length(BundlePostFix)));
 end;
 
-function CreateAbsoluteSearchPath(const SearchPath, BaseDirectory: string): string;
-var
-  PathLen: Integer;
-  EndPos: Integer;
-  StartPos: Integer;
-  CurDir: String;
-  NewCurDir: String;
-  DiffLen: Integer;
-  BaseDir: String;
-begin
-  Result:=SearchPath;
-  if (SearchPath='') or (BaseDirectory='') then exit;
-  BaseDir:=AppendPathDelim(BaseDirectory);
-
-  PathLen:=length(Result);
-  EndPos:=1;
-  while EndPos<=PathLen do begin
-    StartPos:=EndPos;
-    while (Result[StartPos]=';') do begin
-      inc(StartPos);
-      if StartPos>PathLen then exit;
-    end;
-    EndPos:=StartPos;
-    while (EndPos<=PathLen) and (Result[EndPos]<>';') do inc(EndPos);
-    CurDir:=copy(Result,StartPos,EndPos-StartPos);
-    if not FilenameIsAbsolute(CurDir) then begin
-      NewCurDir:=BaseDir+CurDir;
-      if NewCurDir<>CurDir then begin
-        DiffLen:=length(NewCurDir)-length(CurDir);
-        Result:=copy(Result,1,StartPos-1)+NewCurDir
-                +copy(Result,EndPos,PathLen-EndPos+1);
-        inc(EndPos,DiffLen);
-        inc(PathLen,DiffLen);
-      end;
-    end;
-    StartPos:=EndPos;
-  end;
-end;
-
-function CreateAbsolutePath(const Filename, BaseDirectory: string): string;
-begin
-  if (Filename='') or FilenameIsAbsolute(Filename) then
-    Result:=Filename
-  {$IFDEF Windows}
-  else if (Filename[1]='\') then
-    // only use drive of BaseDirectory
-    Result:=ExtractFileDrive(BaseDirectory)+Filename
-  {$ENDIF}
-  else
-    Result:=AppendPathDelim(BaseDirectory)+Filename;
-  Result:=TrimFilename(Result);
-end;
-
 function FileIsInPath(const Filename, Path: string): boolean;
 var
   ExpFile: String;
@@ -236,6 +183,21 @@ begin
   while (p>0) and not (ExpFile[p] in AllowDirectorySeparators) do dec(p);
   Result:=(p=LenDir) and (p<LenFile)
           and (CompareFilenames(ExpDir,LeftStr(ExpFile,p))=0);
+end;
+
+function ExtractFileNameWithoutExt(const AFilename: string): string;
+begin
+  Result:=LazFileUtils.ExtractFileNameWithoutExt(AFilename);
+end;
+
+function CreateAbsoluteSearchPath(const SearchPath, BaseDirectory: string): string;
+begin
+  Result:=LazFileUtils.CreateAbsoluteSearchPath(SearchPath, BaseDirectory);
+end;
+
+function CreateAbsolutePath(const Filename, BaseDirectory: string): string;
+begin
+  Result:=LazFileUtils.CreateAbsolutePath(Filename, BaseDirectory);
 end;
 
 function CopyFile(const SrcFilename, DestFilename: String;
