@@ -80,7 +80,6 @@ type
   protected
   public
     destructor Destroy; override;
-    property Handle: TLCLIntfHandle read GetHandle; deprecated;
     property HandleAllocated: Boolean read GetReferenceAllocated;
     property ReferenceAllocated: Boolean read GetReferenceAllocated;
   end;

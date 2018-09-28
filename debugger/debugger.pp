@@ -1770,7 +1770,6 @@ const
     );
 
 function DBGCommandNameToCommand(const s: string): TDBGCommand;
-function DBGStateNameToState(const s: string): TDBGState; deprecated;
 function DBGBreakPointActionNameToAction(const s: string): TIDEBreakPointAction;
 
 function dbgs(AFlag: TDebuggerLocationFlag): String; overload;
@@ -1819,13 +1818,6 @@ begin
   for Result:=Low(TDBGCommand) to High(TDBGCommand) do
     if AnsiCompareText(s,DBGCommandNames[Result])=0 then exit;
   Result:=dcStop;
-end;
-
-function DBGStateNameToState(const s: string): TDBGState;
-begin
-  for Result:=Low(TDBGState) to High(TDBGState) do
-    if AnsiCompareText(s,DBGStateNames[Result])=0 then exit;
-  Result:=dsNone;
 end;
 
 function DBGBreakPointActionNameToAction(const s: string): TIDEBreakPointAction;

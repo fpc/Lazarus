@@ -420,8 +420,6 @@ type
     function FindIncludeDirective(Code: TCodeBuffer; StartX, StartY: integer;
           out NewCode: TCodeBuffer; out NewX, NewY, NewTopLine: integer;
           const Filename: string = ''; SearchInCleanSrc: boolean = true): boolean;
-    function AddIncludeDirective(Code: TCodeBuffer; const Filename: string;
-          const NewSrc: string = ''): boolean; deprecated;
     function AddIncludeDirectiveForInit(Code: TCodeBuffer; const Filename: string;
           const NewSrc: string = ''): boolean;
     function AddUnitWarnDirective(Code: TCodeBuffer; WarnID, Comment: string;
@@ -3438,12 +3436,6 @@ begin
       on e: Exception do Result:=HandleException(e);
     end;
   end;
-end;
-
-function TCodeToolManager.AddIncludeDirective(Code: TCodeBuffer;
-  const Filename: string; const NewSrc: string): boolean;
-begin
-  Result:=AddIncludeDirectiveForInit(Code,Filename,NewSrc);
 end;
 
 function TCodeToolManager.AddIncludeDirectiveForInit(Code: TCodeBuffer;

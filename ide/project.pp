@@ -471,7 +471,6 @@ type
     property Source: TCodeBuffer read fSource write SetSource;
     property DefaultSyntaxHighlighter: TLazSyntaxHighlighter
                                read FDefaultSyntaxHighlighter write SetDefaultSyntaxHighlighter;
-    property SrcUnitName: String read FUnitName write SetUnitName; deprecated 'Use Unit_Name instead.';
     property UserReadOnly: Boolean read fUserReadOnly write SetUserReadOnly;
     property SourceDirectoryReferenced: boolean read FSourceDirectoryReferenced;
     property AutoReferenceSourceDir: boolean read FAutoReferenceSourceDir
@@ -1095,7 +1094,6 @@ type
     property OnSaveUnitSessionInfo: TOnSaveUnitSessionInfoInfo
       read FOnSaveUnitSessionInfo write FOnSaveUnitSessionInfo;
     property POOutputDirectory: string read FPOOutputDirectory write SetPOOutputDirectory;
-    property ProjectDirectory: string read GetDirectory; deprecated 'Use Directory instead.';
     property ProjectInfoFile: string read GetProjectInfoFile write SetProjectInfoFile;
     property PublishOptions: TPublishProjectOptions read FPublishOptions write FPublishOptions;
     property ProjResources: TProjectResources read GetProjResources;

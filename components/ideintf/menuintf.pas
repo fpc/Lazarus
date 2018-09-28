@@ -163,9 +163,6 @@ type
     function NeedBottomSeparator: boolean;
     function GetFirstChildSameContainer: TIDEMenuItem;
     function GetLastChildSameContainer: TIDEMenuItem;
-    procedure BeginUpdate; deprecated;
-    procedure EndUpdate; deprecated;
-
     procedure NotifySubSectionOnShow(Sender: TObject;
                                      WithChildren: Boolean = true); virtual;
     procedure RemoveAllHandlersOfObject(AnObject: TObject);
@@ -178,8 +175,6 @@ type
   public
     property ChildrenAsSubMenu: boolean read FChildrenAsSubMenu
                                           write SetChildrenAsSubMenu default true;
-    property ChildsAsSubMenu: boolean read FChildrenAsSubMenu
-                                          write SetChildrenAsSubMenu default true; deprecated;// use ChildrenAsSubMenu instead
     property SubMenuImages: TCustomImageList read FSubMenuImages
                                              write SetSubMenuImages;
     property Items[Index: Integer]: TIDEMenuItem read GetItems; default;
@@ -1464,16 +1459,6 @@ begin
       exit(ChildSection);
     Result:=ChildSection.GetLastChildSameContainer;
   end;
-end;
-
-procedure TIDEMenuSection.BeginUpdate;
-begin
-
-end;
-
-procedure TIDEMenuSection.EndUpdate;
-begin
-
 end;
 
 procedure TIDEMenuSection.RemoveAllHandlersOfObject(AnObject: TObject);

@@ -77,7 +77,6 @@ function UTF8CodepointSize(p: PChar): integer; inline;
 function UTF8CharacterLength(p: PChar): integer; deprecated 'Use UTF8CodepointSize instead.';
 // Fast version of UTF8CodepointSize. Assumes the UTF-8 codepoint is valid.
 function UTF8CodepointSizeFast(p: PChar): integer; inline;
-function UTF8CharacterLengthFast(p: PChar): integer; deprecated 'Use UTF8CodepointSizeFast instead.';
 
 function UTF8Length(const s: string): PtrInt; inline;
 function UTF8Length(p: PChar; ByteCount: PtrInt): PtrInt;
@@ -155,7 +154,7 @@ function UTF8WrapText(S: string; MaxCol: integer): string; overload;
 
 type
   TEscapeMode = (emPascal, emHexPascal, emHexC, emC, emAsciiControlNames);
-function ValidUTF8String(const s: String): String; inline; deprecated 'Use Utf8EscapeControlChars() instead.'; // deprecated in 1.7
+
 function Utf8EscapeControlChars(S: String; EscapeMode: TEscapeMode = emPascal): String;
 
 type
@@ -467,11 +466,6 @@ begin
 
     else Result := 1; // An optimization + prevents compiler warning about uninitialized Result.
   end;
-end;
-
-function UTF8CharacterLengthFast(p: PChar): integer;
-begin
-  Result := UTF8CodepointSizeFast(p);
 end;
 
 function UTF8Length(const s: string): PtrInt;
@@ -2869,11 +2863,6 @@ end;
 function FindInvalidUTF8Character(p: PChar; Count: PtrInt; StopOnNonUTF8: Boolean = true): PtrInt;
 begin
   Result := FindInvalidUTF8Codepoint(p, Count, StopOnNonUTF8);
-end;
-
-function ValidUTF8String(const s: String): String; inline;
-begin
-  Result := Utf8EscapeControlChars(s, emPascal);
 end;
 
 {

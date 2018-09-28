@@ -294,9 +294,6 @@ type
     function FindIncludeDirective(const CursorPos: TCodeXYPosition;
           out NewPos: TCodeXYPosition; out NewTopLine: integer;
           const Filename: string = ''): boolean;
-    function AddIncludeDirective(const Filename: string;
-          SourceChangeCache: TSourceChangeCache; const NewSrc: string = ''
-          ): boolean; deprecated;
     function AddIncludeDirectiveForInit(const Filename: string;
           SourceChangeCache: TSourceChangeCache; const NewSrc: string = ''
           ): boolean;
@@ -6508,12 +6505,6 @@ begin
     exit;
   end;
   Result:=CleanPosToCaretAndTopLine(CleanCursorPos,NewPos,NewTopLine);
-end;
-
-function TStandardCodeTool.AddIncludeDirective(const Filename: string;
-  SourceChangeCache: TSourceChangeCache; const NewSrc: string): boolean;
-begin
-  Result:=AddIncludeDirectiveForInit(Filename,SourceChangeCache,NewSrc);
 end;
 
 function TStandardCodeTool.AddIncludeDirectiveForInit(const Filename: string;

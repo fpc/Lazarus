@@ -206,7 +206,6 @@ type
     function SkipResourceDirective(StartPos: integer): integer;
 
     function UpdateNeeded(Range: TLinkScannerRange): boolean;
-    function UpdateNeeded(OnlyInterfaceNeeded: boolean): boolean; deprecated; // use UpdateNeeded(lsrImplementationStart) or UpdateNeeded(lsrEnd)
     procedure BeginParsing(Range: TLinkScannerRange); virtual;
     procedure BeginParsingAndGetCleanPos(
         Range: TLinkScannerRange; CursorPos: TCodeXYPosition;
@@ -3007,14 +3006,6 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn('TCustomCodeTool.UpdateNeeded END  Result=',dbgs(Result));
   {$ENDIF}
-end;
-
-function TCustomCodeTool.UpdateNeeded(OnlyInterfaceNeeded: boolean): boolean;
-begin
-  if OnlyInterfaceNeeded then
-    Result:=UpdateNeeded(lsrImplementationStart)
-  else
-    Result:=UpdateNeeded(lsrEnd);
 end;
 
 function TCustomCodeTool.CompareSrcIdentifiers(Identifier1, Identifier2: PChar

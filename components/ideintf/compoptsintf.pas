@@ -149,7 +149,6 @@ type
     fOwner: TObject;
     SetEmulatedFloatOpcodes: boolean;
     function GetDebugInfoTypeStr: String;
-    function GetGenerateDwarf: Boolean;
     procedure SetAllowLabel(const AValue: Boolean);
     procedure SetAssemblerStyle(const AValue: Integer);
     procedure SetCMacros(const AValue: Boolean);
@@ -161,7 +160,6 @@ type
     procedure SetDontUseConfigFile(const AValue: Boolean);
     procedure SetExecutableType(const AValue: TCompilationExecutableType);
     procedure SetGenDebugInfo(const AValue: Boolean);
-    procedure SetGenerateDwarf(const AValue: Boolean);
     procedure SetGenGProfCode(const AValue: Boolean);
     procedure SetHeapSize(const AValue: Integer);
     procedure SetIncludeAssertionCode(const AValue: Boolean);
@@ -432,7 +430,6 @@ type
     property GenerateDebugInfo: Boolean read fGenDebugInfo write SetGenDebugInfo;
     property DebugInfoType: TCompilerDbgSymbolType read FDebugInfoType write SetDebugInfoType;
     property DebugInfoTypeStr: String read GetDebugInfoTypeStr;
-    property GenerateDwarf: Boolean read GetGenerateDwarf write SetGenerateDwarf; deprecated 'use DebugInfoType';
     property UseLineInfoUnit: Boolean read fUseLineInfoUnit write SetUseLineInfoUnit;
     property UseHeaptrc: Boolean read fUseHeaptrc write SetUseHeaptrc;
     property TrashVariables: Boolean read fTrashVariables write SetTrashVariables;
@@ -719,11 +716,6 @@ begin
   IncreaseChangeStamp;
 end;
 
-function TLazCompilerOptions.GetGenerateDwarf: Boolean;
-begin
-  Result := FDebugInfoType in [dsDwarf2, dsDwarf2Set];
-end;
-
 function TLazCompilerOptions.GetDebugInfoTypeStr: String;
 begin
   WriteStr(Result, FDebugInfoType);
@@ -797,14 +789,6 @@ procedure TLazCompilerOptions.SetGenDebugInfo(const AValue: Boolean);
 begin
   if fGenDebugInfo=AValue then exit;
   fGenDebugInfo:=AValue;
-  IncreaseChangeStamp;
-end;
-
-procedure TLazCompilerOptions.SetGenerateDwarf(const AValue: Boolean);
-begin
-  if (FDebugInfoType = dsDwarf2) = AValue then exit;
-  if AValue then
-    FDebugInfoType := dsDwarf2;
   IncreaseChangeStamp;
 end;
 

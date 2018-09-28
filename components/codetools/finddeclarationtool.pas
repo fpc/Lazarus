@@ -936,17 +936,12 @@ type
       BuildTheTree: Boolean): TCodeTreeNode;// search for type, const, var, proc, prop
     function FindSubDeclaration(Identifier: string; ParentNode: TCodeTreeNode
       ): TCodeTreeNode; // search for type, const, var, proc, prop
-
-    function FindInitializationSection: TCodeTreeNode; deprecated 'Use FindInitializationNode instead.';
-    function FindMainUsesSection(UseContainsSection: boolean = false): TCodeTreeNode; deprecated 'Use FindMainUsesNode instead.';
-    function FindImplementationUsesSection: TCodeTreeNode; deprecated 'Use FindImplementationUsesNode instead.';
     function FindNameInUsesSection(UsesNode: TCodeTreeNode; const AUnitName: string): TCodeTreeNode;
     function FindUnitInUsesSection(UsesNode: TCodeTreeNode; const AnUnitName: string;
           out NamePos, InPos: TAtomPosition): boolean;
     function FindUnitInAllUsesSections(const AnUnitName: string;
           out NamePos, InPos: TAtomPosition): boolean;
     function GetUnitNameForUsesSection(TargetTool: TFindDeclarationTool): string;
-    function GetUnitForUsesSection(TargetTool: TFindDeclarationTool): string; deprecated 'use GetUnitNameForUsesSection instead';
     function IsHiddenUsedUnit(TheUnitName: PChar): boolean;
 
     function FindCodeToolForUsedUnit(const AnUnitName, AnUnitInFilename: string;
@@ -957,7 +952,6 @@ type
     function FindUnitCaseInsensitive(var AnUnitName,
                                      AnUnitInFilename: string): string;
     procedure GatherUnitAndSrcPath(var UnitPath, CompleteSrcPath: string);
-    function SearchUnitInUnitLinks(const TheUnitName: string): string; deprecated;
     function SearchUnitInUnitSet(const TheUnitName: string): string;
     function GetNameSpaces: string;
 
@@ -2793,17 +2787,6 @@ begin
   Result:=nil;
 end;
 
-function TFindDeclarationTool.FindMainUsesSection(UseContainsSection: boolean
-  ): TCodeTreeNode;
-begin
-  Result := FindMainUsesNode(UseContainsSection);
-end;
-
-function TFindDeclarationTool.FindImplementationUsesSection: TCodeTreeNode;
-begin
-  Result := FindImplementationUsesNode;
-end;
-
 function TFindDeclarationTool.FindNameInUsesSection(UsesNode: TCodeTreeNode;
   const AUnitName: string): TCodeTreeNode;
 var
@@ -2919,12 +2902,6 @@ begin
   end;
 end;
 
-function TFindDeclarationTool.GetUnitForUsesSection(
-  TargetTool: TFindDeclarationTool): string;
-begin
-  Result:=GetUnitNameForUsesSection(TargetTool);
-end;
-
 function TFindDeclarationTool.IsHiddenUsedUnit(TheUnitName: PChar): boolean;
 var
   HiddenUnits: String;
@@ -2942,11 +2919,6 @@ begin
     end;
   end;
   Result:=false;
-end;
-
-function TFindDeclarationTool.FindInitializationSection: TCodeTreeNode;
-begin
-  Result:=FindInitializationNode;
 end;
 
 function TFindDeclarationTool.FindDeclarationInUsesSection(
@@ -3144,14 +3116,7 @@ begin
   //DebugLn('TFindDeclarationTool.GatherUnitAndSrcPath UnitPath="',UnitPath,'" CompleteSrcPath="',CompleteSrcPath,'"');
 end;
 
-function TFindDeclarationTool.SearchUnitInUnitLinks(const TheUnitName: string
-  ): string;
-begin
-  Result:=DirectoryCache.FindUnitLink(TheUnitName);
-end;
-
-function TFindDeclarationTool.SearchUnitInUnitSet(const TheUnitName: string
-  ): string;
+function TFindDeclarationTool.SearchUnitInUnitSet(const TheUnitName: string): string;
 begin
   Result:=DirectoryCache.FindUnitInUnitSet(TheUnitName);
 end;

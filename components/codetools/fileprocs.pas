@@ -100,8 +100,6 @@ const
   CTInvalidChangeStamp = LUInvalidChangeStamp;
   CTInvalidChangeStamp64 = LUInvalidChangeStamp64; // using a value outside integer to spot wrong types early
 
-function GetFilenameOnDisk(const AFilename: string): string; inline; deprecated; // use FindDiskFilename
-
 function CompareAnsiStringFilenames(Data1, Data2: Pointer): integer;
 function CompareFilenameOnly(Filename: PChar; FilenameLen: integer;
    NameOnly: PChar; NameOnlyLen: integer; CaseSensitive: boolean): integer;
@@ -508,11 +506,6 @@ begin
     end;
     StartPos:=EndPos+1;
   until StartPos>length(Result);
-end;
-
-function GetFilenameOnDisk(const AFilename: string): string;
-begin
-  Result:=FindDiskFilename(AFilename);
 end;
 
 function CompareAnsiStringFilenames(Data1, Data2: Pointer): integer;

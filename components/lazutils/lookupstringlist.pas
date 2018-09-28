@@ -53,9 +53,6 @@ type
     function IndexOf(const S: string): Integer; override;
   end;
 
-  TDictionaryStringList = class(TLookupStringList)
-  end deprecated 'The class was renamed to TLookupStringList.';
-
 function Deduplicate(AStrings: TStrings): Boolean;
 
 implementation

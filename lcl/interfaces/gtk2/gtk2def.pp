@@ -426,8 +426,6 @@ type
     property ROP2: Integer read GetRop2 write SetRop2;
   end;
 
-  TGtk2DeviceContext = TGtkDeviceContext deprecated;
-
   // memory system for TDeviceContext(s) ---------------------------------------------
 
   { TDeviceContextMemManager }

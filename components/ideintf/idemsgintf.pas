@@ -96,11 +96,6 @@ type
       aSrcFilename: string = ''; LineNumber: integer = 0; Column: integer = 0;
       const ViewCaption: string = ''): TMessageLine; virtual; abstract;
     function GetSelectedLine: TMessageLine; virtual; abstract;
-
-    procedure BeginBlock(ClearOldBlocks: Boolean = true); deprecated; // not needed anymore
-    procedure AddMsg(const Msg, {%H-}CurDir: string; {%H-}OriginalIndex: integer;
-      Parts: TStrings = nil); deprecated; // use AddCustomMessages instead or create a new view via GetView or CreateView
-    procedure EndBlock; deprecated; // not needed anymore
   end;
 
 var
@@ -135,102 +130,6 @@ begin
     Result:=IDEMessagesWindow.AddCustomMessage(TheUrgency,Msg,aSrcFilename,LineNumber,Column,ViewCaption)
   else
     Result:=nil;
-end;
-
-{ TIDEMessagesWindowInterface }
-
-procedure TIDEMessagesWindowInterface.BeginBlock(ClearOldBlocks: Boolean);
-begin
-  if ClearOldBlocks then
-    Clear;
-end;
-
-procedure TIDEMessagesWindowInterface.AddMsg(const Msg, CurDir: string;
-  OriginalIndex: integer; Parts: TStrings);
-
-  function StrToUrgency(s: string; Def: TMessageLineUrgency): TMessageLineUrgency;
-  begin
-    if CompareText(s,'Error')=0 then
-      Result:=mluError
-    else if CompareText(s,'Warning')=0 then
-      Result:=mluWarning
-    else if CompareText(s,'Note')=0 then
-      Result:=mluNote
-    else if CompareText(s,'Hint')=0 then
-      Result:=mluHint
-    else
-      Result:=Def;
-  end;
-
-var
-  s: String;
-  Urgency: TMessageLineUrgency;
-  Line: Integer;
-  Column: Integer;
-  p: SizeInt;
-  ColonPos: SizeInt;
-  Filename: String;
-  Message: String;
-begin
-  Urgency:=mluImportant;
-  Line:=0;
-  Column:=0;
-  Filename:='';
-  Message:=Msg;
-  ColonPos:=Pos(':',Message);
-  if ColonPos>0 then begin
-    // check for
-    //  urgency: Msg
-    //  filename(line) urgency: Msg
-    //  filename(line,col) urgency: Msg
-    s:=LeftStr(Message,ColonPos-1);
-    p:=Pos('(',s);
-    if p>0 then begin
-      // has filename(...:
-      Filename:=TrimFilename(LeftStr(s,p-1));
-      Delete(s,1,p);
-      // get line number
-      p:=1;
-      while (p<=length(s)) and (s[p] in ['0'..'9']) do inc(p);
-      Line:=StrToIntDef(LeftStr(s,p-1),0);
-      Delete(s,1,p-1);
-      if (p<=length(s)) and (s[p]=',') then begin
-        // get column
-        Delete(s,1,1);
-        while (p<=length(s)) and (s[p] in ['0'..'9']) do inc(p);
-        Column:=StrToIntDef(LeftStr(s,p-1),0);
-        Delete(s,1,p-1);
-      end;
-      if (p<=length(s)) and (s[p]=')') then begin
-        inc(p);
-        while (p<=length(s)) and (s[p]=' ') do inc(p);
-        Delete(s,1,p-1);
-      end;
-    end;
-    // check for urgency (a single word)
-    p:=1;
-    while (p<=length(s)) and (s[p] in ['a'..'z','A'..'Z',#128..#255]) do inc(p);
-    if (p>1) and (p<length(s)) then begin
-      Urgency:=StrToUrgency(s,Urgency);
-      Delete(Message,1,ColonPos);
-      Message:=Trim(Message);
-    end;
-  end;
-  if Parts<>nil then begin
-    Urgency:=StrToUrgency(Parts.Values['Type'],Urgency);
-    Line:=StrToIntDef(Parts.Values['Line'],Line);
-    Column:=StrToIntDef(Parts.Values['Column'],Column);
-    if Parts.Values['Filename']<>'' then
-      Filename:=Parts.Values['Filename'];
-    if Parts.Values['Message']<>'' then
-      Message:=Parts.Values['Message'];
-  end;
-  AddCustomMessage(Urgency,Message,Filename,Line,Column);
-end;
-
-procedure TIDEMessagesWindowInterface.EndBlock;
-begin
-
 end;
 
 { TMsgQuickFix }
