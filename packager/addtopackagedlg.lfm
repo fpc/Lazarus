@@ -1,11 +1,11 @@
 object AddToPackageDlg: TAddToPackageDlg
   Left = 383
-  Height = 391
+  Height = 413
   Top = 297
   Width = 696
   BorderIcons = [biSystemMenu, biMaximize]
   Caption = 'New component'
-  ClientHeight = 391
+  ClientHeight = 413
   ClientWidth = 696
   KeyPreview = True
   OnClose = AddToPackageDlgClose
@@ -15,8 +15,8 @@ object AddToPackageDlg: TAddToPackageDlg
   LCLVersion = '2.1.0.0'
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 30
-    Top = 355
+    Height = 34
+    Top = 373
     Width = 684
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -33,11 +33,11 @@ object AddToPackageDlg: TAddToPackageDlg
   object AncestorComboBox: TComboBox
     AnchorSideLeft.Side = asrBottom
     Left = 184
-    Height = 33
+    Height = 31
     Top = 6
     Width = 200
     BorderSpacing.Top = 6
-    ItemHeight = 25
+    ItemHeight = 0
     OnChange = AncestorComboBoxChange
     OnCloseUp = AncestorComboBoxCloseUp
     TabOrder = 0
@@ -50,8 +50,8 @@ object AddToPackageDlg: TAddToPackageDlg
     AnchorSideRight.Control = AncestorComboBox
     AnchorSideRight.Side = asrBottom
     Left = 184
-    Height = 33
-    Top = 45
+    Height = 31
+    Top = 43
     Width = 200
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
@@ -66,11 +66,11 @@ object AddToPackageDlg: TAddToPackageDlg
     AnchorSideRight.Control = AncestorComboBox
     AnchorSideRight.Side = asrBottom
     Left = 184
-    Height = 33
-    Top = 84
+    Height = 31
+    Top = 80
     Width = 200
     BorderSpacing.Top = 6
-    ItemHeight = 25
+    ItemHeight = 0
     TabOrder = 3
     Text = 'PalettePageCombobox'
   end
@@ -80,9 +80,9 @@ object AddToPackageDlg: TAddToPackageDlg
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = ComponentUnitFileBrowseButton
     Left = 184
-    Height = 33
-    Top = 162
-    Width = 442
+    Height = 31
+    Top = 154
+    Width = 443
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
     OnChange = UnitDirectoryEditChange
@@ -96,8 +96,8 @@ object AddToPackageDlg: TAddToPackageDlg
     AnchorSideRight.Control = AncestorComboBox
     AnchorSideRight.Side = asrBottom
     Left = 184
-    Height = 33
-    Top = 123
+    Height = 31
+    Top = 117
     Width = 200
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
@@ -111,11 +111,13 @@ object AddToPackageDlg: TAddToPackageDlg
     AnchorSideTop.Side = asrBottom
     Left = 184
     Height = 32
-    Top = 223
-    Width = 50
+    Top = 213
+    Width = 32
     BorderSpacing.Top = 6
-    Constraints.MinWidth = 50
+    Constraints.MinHeight = 32
+    Constraints.MinWidth = 32
     GlyphShowMode = gsmAlways
+    Layout = blGlyphBottom
     OnClick = IconBitBtnClick
     TabOrder = 8
   end
@@ -124,10 +126,10 @@ object AddToPackageDlg: TAddToPackageDlg
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = IconNormLabel
     AnchorSideTop.Side = asrCenter
-    Left = 240
+    Left = 222
     Height = 19
-    Top = 230
-    Width = 125
+    Top = 220
+    Width = 124
     BorderSpacing.Around = 6
     Caption = 'IconNormInfoLabel'
     ParentColor = False
@@ -138,9 +140,9 @@ object AddToPackageDlg: TAddToPackageDlg
     AnchorSideTop.Control = AncestorComboBox
     AnchorSideTop.Side = asrCenter
     Left = 390
-    Height = 23
+    Height = 21
     Top = 11
-    Width = 199
+    Width = 190
     BorderSpacing.Left = 6
     Caption = 'AncestorShowAllCheckBox'
     Checked = True
@@ -153,10 +155,10 @@ object AddToPackageDlg: TAddToPackageDlg
     AnchorSideTop.Control = UnitDirectoryEdit
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = ComponentUnitFileShortenButton
-    Left = 626
+    Left = 627
     Height = 25
     Hint = 'Save file dialog'
-    Top = 166
+    Top = 157
     Width = 25
     Anchors = [akTop, akRight]
     Caption = '...'
@@ -170,11 +172,11 @@ object AddToPackageDlg: TAddToPackageDlg
     AnchorSideTop.Control = UnitDirectoryEdit
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Side = asrBottom
-    Left = 651
-    Height = 29
+    Left = 652
+    Height = 33
     Hint = 'Shorten or expand filename'
-    Top = 164
-    Width = 29
+    Top = 153
+    Width = 28
     Anchors = [akTop, akRight]
     AutoSize = True
     BorderSpacing.Right = 6
@@ -189,8 +191,8 @@ object AddToPackageDlg: TAddToPackageDlg
     AnchorSideTop.Side = asrCenter
     Left = 5
     Height = 19
-    Top = 230
-    Width = 99
+    Top = 220
+    Width = 98
     Caption = 'IconNormLabel'
     ParentColor = False
   end
@@ -199,8 +201,8 @@ object AddToPackageDlg: TAddToPackageDlg
     AnchorSideTop.Side = asrCenter
     Left = 5
     Height = 19
-    Top = 130
-    Width = 100
+    Top = 123
+    Width = 99
     Caption = 'UnitNameLabel'
     ParentColor = False
   end
@@ -209,8 +211,8 @@ object AddToPackageDlg: TAddToPackageDlg
     AnchorSideTop.Side = asrCenter
     Left = 5
     Height = 19
-    Top = 169
-    Width = 121
+    Top = 160
+    Width = 119
     Caption = 'UnitDirectoryLabel'
     ParentColor = False
   end
@@ -219,7 +221,7 @@ object AddToPackageDlg: TAddToPackageDlg
     AnchorSideTop.Side = asrCenter
     Left = 5
     Height = 19
-    Top = 91
+    Top = 86
     Width = 111
     Caption = 'PalettePageLabel'
     ParentColor = False
@@ -229,8 +231,8 @@ object AddToPackageDlg: TAddToPackageDlg
     AnchorSideTop.Side = asrCenter
     Left = 5
     Height = 19
-    Top = 52
-    Width = 106
+    Top = 49
+    Width = 104
     Caption = 'ClassNameLabel'
     ParentColor = False
   end
@@ -239,8 +241,8 @@ object AddToPackageDlg: TAddToPackageDlg
     AnchorSideTop.Side = asrCenter
     Left = 5
     Height = 19
-    Top = 13
-    Width = 122
+    Top = 12
+    Width = 120
     Caption = 'AncestorTypeLabel'
     ParentColor = False
   end
@@ -250,10 +252,11 @@ object AddToPackageDlg: TAddToPackageDlg
     AnchorSideTop.Side = asrBottom
     Left = 184
     Height = 32
-    Top = 261
-    Width = 50
+    Top = 251
+    Width = 32
     BorderSpacing.Top = 6
-    Constraints.MinWidth = 50
+    Constraints.MinHeight = 32
+    Constraints.MinWidth = 32
     GlyphShowMode = gsmAlways
     OnClick = IconBitBtnClick
     TabOrder = 10
@@ -264,10 +267,11 @@ object AddToPackageDlg: TAddToPackageDlg
     AnchorSideTop.Side = asrBottom
     Left = 184
     Height = 32
-    Top = 299
-    Width = 50
+    Top = 289
+    Width = 32
     BorderSpacing.Top = 6
-    Constraints.MinWidth = 50
+    Constraints.MinHeight = 32
+    Constraints.MinWidth = 32
     GlyphShowMode = gsmAlways
     OnClick = IconBitBtnClick
     TabOrder = 11
@@ -278,7 +282,7 @@ object AddToPackageDlg: TAddToPackageDlg
     AnchorSideTop.Side = asrCenter
     Left = 5
     Height = 19
-    Top = 268
+    Top = 258
     Width = 85
     Caption = 'Icon150Label'
     ParentColor = False
@@ -289,7 +293,7 @@ object AddToPackageDlg: TAddToPackageDlg
     AnchorSideTop.Side = asrCenter
     Left = 5
     Height = 19
-    Top = 306
+    Top = 296
     Width = 85
     Caption = 'Icon200Label'
     ParentColor = False
@@ -299,9 +303,9 @@ object AddToPackageDlg: TAddToPackageDlg
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = Icon150BitBtn
     AnchorSideTop.Side = asrCenter
-    Left = 240
+    Left = 222
     Height = 19
-    Top = 268
+    Top = 258
     Width = 111
     BorderSpacing.Around = 6
     Caption = 'Icon150InfoLabel'
@@ -312,9 +316,9 @@ object AddToPackageDlg: TAddToPackageDlg
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = Icon200BitBtn
     AnchorSideTop.Side = asrCenter
-    Left = 240
+    Left = 222
     Height = 19
-    Top = 306
+    Top = 296
     Width = 111
     BorderSpacing.Around = 6
     Caption = 'Icon200InfoLabel'
@@ -326,8 +330,8 @@ object AddToPackageDlg: TAddToPackageDlg
     AnchorSideTop.Side = asrBottom
     Left = 195
     Height = 19
-    Top = 198
-    Width = 120
+    Top = 188
+    Width = 118
     BorderSpacing.Left = 11
     BorderSpacing.Top = 3
     Caption = 'UnitFilenameLabel'

@@ -729,8 +729,8 @@ procedure TPkgManager.AddToIconResource(const aIconFile, aResName: string);
 var
   BinFileStream: TFileStreamUTF8;
   ResMemStream: TMemoryStream;
-  BinExt, ResType, S: String;
-  Len: integer;
+  ResType: String;
+  OldLen, NewLen: integer;
 begin
   try
     BinFileStream:=TFileStreamUTF8.Create(aIconFile,fmOpenRead);
@@ -738,16 +738,17 @@ begin
       ResMemStream:=TMemoryStream.Create;
       try
         Assert(BinFileStream.Position=0, 'TPkgManager.AddToIconResource: Stream.Position > 0');
-        BinExt:=UpperCase(ExtractFileExt(aIconFile));
-        ResType:=Copy(BinExt,2,length(BinExt)-1);
+        ResType:=UpperCase(ExtractFileExt(aIconFile));
+        if ResType<>'' then
+          Delete(ResType, 1, 1);
         BinaryToLazarusResourceCode(BinFileStream,ResMemStream,aResName,ResType);
         ResMemStream.Position:=0;
-        Len:=ResMemStream.Size;
-        if Len>0 then begin
-          SetLength(S,Len);
-          ResMemStream.Read(S[1],Len);
+        OldLen:=Length(FIconLRSSource);
+        NewLen:=ResMemStream.Size;
+        if NewLen>0 then begin
+          SetLength(FIconLRSSource,OldLen+NewLen);
+          ResMemStream.Read(FIconLRSSource[OldLen+1],NewLen);
         end;
-        FIconLRSSource:=FIconLRSSource+S;
       finally
         ResMemStream.Free;
       end;
