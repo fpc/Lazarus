@@ -1135,9 +1135,24 @@ end;
   Makes sure Visible = true for page which has index FPageIndex
  ------------------------------------------------------------------------------}
 procedure TCustomTabControl.ShowCurrentPage;
+
+  function HasFocusedControl(APage: TCustomPage): Boolean;
+  var
+    i: Integer;
+    lForm: TCustomForm;
+  begin
+    Result := False;
+    lForm := GetParentForm(APage);
+    if not Assigned(lForm) then Exit;
+    for i := 0 to APage.ControlCount - 1 do
+      if APage.Controls[i] = lForm.ActiveControl then
+        Exit(True);
+  end;
+
 var
   CurPage: TCustomPage;
 begin
+  CurPage := nil;
   if (FPageIndex >= 0) and (FPageIndex < PageCount) then
   begin
     CurPage := Page[FPageIndex];
@@ -1147,6 +1162,8 @@ begin
   if (FPageIndexOnLastChange >= 0) and (FPageIndexOnLastChange < PageCount) and
      (FPageIndexOnLastChange <> FPageIndex) then
   begin
+    if Assigned(CurPage) and HasFocusedControl(Page[FPageIndexOnLastChange]) then
+      CurPage.SetFocus;
     Page[FPageIndexOnLastChange].Visible := False;
   end;
 end;
