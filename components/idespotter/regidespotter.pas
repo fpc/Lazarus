@@ -41,13 +41,14 @@ Procedure Register;
 
 implementation
 
-uses IDESpotterOptions,forms, graphics,lcltype,idecommands,toolbarintf,menuintf, frmspotter;
+uses IDESpotterOptions,forms, graphics,lcltype,idecommands,toolbarintf, idewindowintf, menuintf, frmspotter;
 
 Procedure IdeMenuClicked(Sender : TObject);
 
 begin
   ShowSpotterForm;
 end;
+
 
 Procedure Register;
 
@@ -80,6 +81,7 @@ begin
                                               IDESpotteroptionsFrameID)^.Index;
   RegisterIDEMenuCommand(itmViewIDEInternalsWindows, 'Spotter', 'Spotter', nil,
     @IDEMenuClicked,IDECommand);
+  IDEWindowCreators.Add('IDESpotter',@CreateSpotterWindow,nil,'40%','10%','+500','+240');
 end;
 
 Initialization

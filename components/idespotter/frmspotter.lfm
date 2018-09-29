@@ -18,19 +18,19 @@ object SpotterForm: TSpotterForm
   LCLVersion = '2.1.0.0'
   Visible = True
   object LBMatches: TListBox
-    Left = 3
-    Height = 196
-    Top = 33
-    Width = 491
+    Left = 6
+    Height = 187
+    Top = 39
+    Width = 485
     Align = alClient
-    BorderSpacing.Around = 3
+    BorderSpacing.Around = 6
     ClickOnSelChange = False
     ItemHeight = 0
     OnClick = LBMatchesClick
     OnDrawItem = LBMatchesDrawItem
     OnKeyUp = LBMatchesKeyUp
     ParentShowHint = False
-    ScrollWidth = 489
+    ScrollWidth = 483
     ShowHint = True
     Style = lbOwnerDrawFixed
     TabOrder = 0
@@ -38,12 +38,12 @@ object SpotterForm: TSpotterForm
     TopIndex = -1
   end
   object ESearch: TEditButton
-    Left = 3
+    Left = 6
     Height = 27
-    Top = 3
-    Width = 491
+    Top = 6
+    Width = 485
     Align = alTop
-    BorderSpacing.Around = 3
+    BorderSpacing.Around = 6
     ButtonWidth = 23
     Flat = True
     Glyph.Data = {

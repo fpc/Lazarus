@@ -137,10 +137,11 @@ Procedure ShowSpotterForm;
 Procedure ApplySpotterOptions;
 Procedure SaveSpotterOptions;
 procedure LoadSpotterOptions;
+procedure CreateSpotterWindow(Sender: TObject; aFormName: string; var AForm: TCustomForm; DoDisableAutoSizing: boolean);
 
 implementation
 
-Uses PackageIntf, BaseIDEIntf, LazConfigStorage, StrUtils, LCLIntf, LCLProc, srceditorintf;
+Uses PackageIntf, BaseIDEIntf, LazConfigStorage, StrUtils, LCLIntf, LCLProc, IDEWindowIntf, srceditorintf;
 
 {$R *.lfm}
 
@@ -218,16 +219,29 @@ begin
     end;
 end;
 
-Procedure ShowSpotterForm;
+Procedure MaybeCreateSpotterForm;
 
 begin
   if SpotterForm=Nil then
     begin
     SpotterForm:=TSpotterForm.Create(Application);
-
     ApplySpotterOptions;
     end;
-  SpotterForm.Show;
+end;
+
+Procedure ShowSpotterForm;
+
+begin
+  MaybeCreateSpotterForm;
+  IDEWindowCreators.ShowForm(SpotterForm,True,vmAlwaysMoveToVisible);
+end;
+
+
+procedure CreateSpotterWindow(Sender: TObject; aFormName: string;
+  var AForm: TCustomForm; DoDisableAutoSizing: boolean);
+begin
+  MaybeCreateSpotterForm;
+  aForm:=SpotterForm;
 end;
 
 { TOpenFileItem }
@@ -428,19 +442,12 @@ begin
     RemoveHandlerAddToRecentPackageFiles(@ProjectOpened);
     end;
   FreeAndNil(FSearchItems);
+  SpotterForm:=Nil;
 end;
 
 procedure TSpotterForm.FormShow(Sender: TObject);
-Var
-  MF : TForm;
+
 begin
-  MF:=LazarusIDE.GetMainBar;
-  if MF=nil then MF:=Application.MainForm;
-  if Assigned(MF) then
-    begin
-    Top:=MF.ClientOrigin.y+32; // Note: docked or not docked
-    Left:=MF.ClientOrigin.x+(MF.Width-Width) div 2;
-    end;
   ESearch.Clear;
   LBMatches.Clear;
   RefreshCaption(-1);
