@@ -674,18 +674,14 @@ begin
   For I:=0 to IDEComponentPalette.Comps.Count-1 do
     begin
     RC:=IDEComponentPalette.Comps[I];
-    Writeln('Considering ',RC.ComponentClass.ClassName);
     if RC.CanBeCreatedInDesigner then
       begin
-      Writeln('Class',RC.ComponentClass.ClassName,'OK');
       CC:=RC.ComponentClass.ClassName+' ('+RC.GetUnitName+')';
       Prefix:='Component: ';
       SI:=TSearchItem.Create(TComponentItem.Create(RC),True);
       SI.Prefix:=Prefix;
       FSearchItems.AddObject(UTF8LowerCase(Prefix+CC),SI);
-      end
-    else
-      Writeln('Class ',RC.ComponentClass.ClassName,'Cannot be created');
+      end;
     end;
 end;
 
