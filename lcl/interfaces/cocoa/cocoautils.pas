@@ -256,6 +256,10 @@ function MacCodeToVK(AKey: Word): Word;
 
 procedure ApplicationWillShowModal;
 
+const
+  // Shift, Control, Alt and Command
+  KeysModifiers = NSShiftKeyMask or NSControlKeyMask or NSAlternateKeyMask or NSCommandKeyMask;
+
 implementation
 
 procedure ApplicationWillShowModal;

@@ -124,6 +124,7 @@ var
   tb : Boolean;
   ar : Boolean;
   ks : Boolean;
+  rt : Boolean;
 const
   WantTab   : array [boolean] of integer = (0, DLGC_WANTTAB);
   WantArrow : array [boolean] of integer = (0, DLGC_WANTARROWS);
@@ -140,7 +141,9 @@ begin
         tb := false;
         ar := false;
         ks := false;
-        vw.lclExpectedKeys(tb, ar, ks);
+        rt := false;
+        vw.lclExpectedKeys(tb, ar, rt, ks);
+        ks := ks or rt; // Return is handled by LCL as part of ALLKey
         TLMessage(Message).Result := TLMessage(Message).Result or WantTab[tb] or WantArrow[ar] or WantKeys[ks];
       end;
 

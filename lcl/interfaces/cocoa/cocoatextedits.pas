@@ -133,6 +133,7 @@ type
 
     // delegate methods
     procedure textDidChange(notification: NSNotification); message 'textDidChange:';
+    procedure lclExpectedKeys(var wantTabs, wantArrows, wantReturn, wantAll: Boolean); override;
   end;
 
   { TCocoaFieldEditor }
@@ -141,6 +142,7 @@ type
   public
     function lclGetCallback: ICommonCallback; override;
     // mouse
+    procedure keyDown(event: NSEvent); override;
     procedure mouseDown(event: NSEvent); override;
     procedure mouseUp(event: NSEvent); override;
     procedure rightMouseDown(event: NSEvent); override;
@@ -473,6 +475,22 @@ function TCocoaFieldEditor.lclGetCallback: ICommonCallback;
 begin
   if Assigned(delegate) then Result := NSObject(delegate).lclGetCallback
   else Result := nil;
+end;
+
+procedure TCocoaFieldEditor.keyDown(event: NSEvent);
+begin
+  if event.keyCode = kVK_Return then
+    // 10.6 cocoa handles the editors Return key as "insertNewLine" command (that makes sense)
+    // which turns into textDidEndEditting done command (that also makes sense)
+    // however, it ends up in an endless loop of "end-editing" calls.
+    //
+    // By default, "Return" key would select the contents of the field
+    // so, inforcing it manually.
+    //
+    // todo: find the reason for the endless loop and resolve it properly
+    selectAll(self)
+  else
+    inherited keyDown(event);
 end;
 
 procedure TCocoaFieldEditor.mouseDown(event: NSEvent);
@@ -821,6 +839,15 @@ procedure TCocoaTextView.textDidChange(notification: NSNotification);
 begin
   if (callback <> nil) and (supressTextChangeEvent = 0) then
     callback.SendOnTextChanged;
+end;
+
+procedure TCocoaTextView.lclExpectedKeys(var wantTabs, wantArrows, wantReturn,
+  wantAll: Boolean);
+begin
+  wantTabs := true;
+  wantArrows := true;
+  wantReturn := true;
+  wantAll := true;
 end;
 
 { TCocoaSecureTextField }

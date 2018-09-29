@@ -103,7 +103,7 @@ type
     procedure mouseMoved(event: NSEvent); override;
     // key
     procedure keyUp(event: NSEvent); override;
-    procedure lclExpectedKeys(var wantTabs, wantKeys, wantAllKeys: Boolean); override;
+    procedure lclExpectedKeys(var wantTabs, wantKeys, wantReturn, wantAllKeys: Boolean); override;
     procedure lclSetFirstColumCheckboxes(acheckboxes: Boolean); message 'lclSetFirstColumCheckboxes:';
     procedure lclSetImagesInCell(aimagesInCell: Boolean); message 'lclSetImagesInCell:';
 
@@ -356,11 +356,13 @@ end;
 
 { TCocoaTableListView }
 
-procedure TCocoaTableListView.lclExpectedKeys(var wantTabs, wantKeys,
+procedure TCocoaTableListView.lclExpectedKeys(var wantTabs, wantKeys, wantReturn,
   wantAllKeys: Boolean);
 begin
   wantTabs := false;
   wantKeys := true;
+  wantReturn := false; // todo: this should be "true" for editting purposes.
+                       //       or false, to let LCL handle editting
   wantAllKeys := false;
 end;
 

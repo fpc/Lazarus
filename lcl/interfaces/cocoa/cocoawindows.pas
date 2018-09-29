@@ -222,6 +222,28 @@ procedure WindowPerformKeyDown(win: NSWindow; event: NSEvent; out processed: Boo
 
 implementation
 
+
+function NeedsReturn(rsp: NSResponder): Boolean;
+var
+  t, a, r, l: Boolean;
+begin
+  if Assigned(rsp) then begin
+    t := false; a := false; r := false; l := false;
+    rsp.lclExpectedKeys(t, a, r, l);
+    Result := r;
+  end else
+    Result := false;
+end;
+
+function AllowKeyEqForResponders(first: NSResponder; event: NSEvent): Boolean;
+begin
+  Result := not (
+    // "Return" is a keyEquivalent for a "default" button
+    // LCL provides its own mechanism for handling default buttons
+    (event.keyCode = kVK_Return) and ((event.modifierFlags and KeysModifiers)= 0) and NeedsReturn(first)
+  );
+end;
+
 // Cocoa emulation routine.
 //
 // For whatever reason, the default keyDown: event processing, is triggerring
@@ -241,11 +263,9 @@ var
   mn : NSMenu;
   cb : ICommonCallback;
   allowcocoa : Boolean;
-
 begin
   fr := win.firstResponder;
   r := fr;
-  processed := false;
   allowcocoa := true;
 
   if Assigned(fr) then
@@ -264,12 +284,16 @@ begin
   try
     if not allowcocoa then Exit;
 
+    processed := false;
+
     // let controls to performKeyEquivalent first
-    while Assigned(r) and not processed do begin
-      if r.respondsToSelector(objcselector('performKeyEquivalent:')) then
-        processed := r.performKeyEquivalent(event);
-      if not processed then r := r.nextResponder;
-    end;
+    if AllowKeyEqForResponders(fr, event) then
+      while Assigned(r) and not processed do begin
+        if r.respondsToSelector(objcselector('performKeyEquivalent:')) then
+          processed := r.performKeyEquivalent(event);
+        if not processed then r := r.nextResponder;
+      end;
+
     if processed then Exit;
 
     // let menus do the hot key, if controls don't like it.

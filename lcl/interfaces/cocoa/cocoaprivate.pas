@@ -138,7 +138,7 @@ type
     function lclDeliverMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): LResult; message 'lclDeliverMessage:::';
     function lclContentView: NSView; message 'lclContentView';
     procedure lclOffsetMousePos(var Point: NSPoint); message 'lclOffsetMousePos:';
-    procedure lclExpectedKeys(var wantTabs, wantArrows, wantAll: Boolean); message 'lclExpectedKeys:::';
+    procedure lclExpectedKeys(var wantTabs, wantArrows, wantReturn, wantAll: Boolean); message 'lclExpectedKeys::::';
     function lclIsMouseInAuxArea(Event: NSEvent): Boolean; message 'lclMouseInAuxArea:';
   end;
 
@@ -336,7 +336,7 @@ type
 
     procedure lclAddManTick(atick : integer); message 'lclAddManTick:';
     procedure lclSetManTickDraw(adraw: Boolean); message 'lclSetManTickDraw:';
-    procedure lclExpectedKeys(var wantTabs, wantArrows, wantAll: Boolean); override;
+    procedure lclExpectedKeys(var wantTabs, wantArrows, wantReturn, wantAll: Boolean); override;
   end;
 
   TCocoaSliderCell = objcclass(NSSliderCell)
@@ -805,10 +805,11 @@ begin
 end;
 
 procedure LCLObjectExtension.lclExpectedKeys(var wantTabs, wantArrows,
-  wantAll: Boolean);
+  wantReturn, wantAll: Boolean);
 begin
   wantTabs := false;
   wantArrows := false;
+  wantReturn := false;
   wantAll := false;
 end;
 
@@ -1474,11 +1475,12 @@ begin
   self.setNeedsDisplay;
 end;
 
-procedure TCocoaSlider.lclExpectedKeys(var wantTabs, wantArrows,
+procedure TCocoaSlider.lclExpectedKeys(var wantTabs, wantArrows, wantReturn,
   wantAll: Boolean);
 begin
   wantTabs := false;
   wantArrows := true;
+  wantReturn := false;
   wantAll := false;
 end;
 
