@@ -253,7 +253,10 @@ procedure TCustomComboBox.CloseUp;
 begin
   if [csLoading,csDestroying,csDesigning]*ComponentState<>[] then exit;
   if Style in [csSimple, csDropDown, csOwnerDrawEditableFixed, csOwnerDrawEditableVariable] then
+  begin
     EditingDone;
+    FEditingDone := False;
+  end;
   if Assigned(FOnCloseUp) then FOnCloseUp(Self);
   if FAutoSelect then
    begin
@@ -490,6 +493,7 @@ var
   Skip, UserDropDown, PreventDropDown: Boolean;
 begin
   FDroppingDown := False;
+  FEditingDone := Key = VK_RETURN;
   Skip := False;
   UserDropDown := ((Shift *[ssAlt] = [ssAlt]) and (Key = VK_DOWN));
   PreventDropDown := Key in [VK_TAB, VK_RETURN, VK_ESCAPE];
@@ -1066,8 +1070,9 @@ end;
 procedure TCustomComboBox.KeyUpAfterInterface(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyUpAfterInterface(Key, Shift);
-  if Key = VK_RETURN then
+  if (Key = VK_RETURN) and (FEditingDone) then
     EditingDone;
+  FEditingDone := False;
 end;
 
 {------------------------------------------------------------------------------

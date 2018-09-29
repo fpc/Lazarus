@@ -277,6 +277,7 @@ type
     FDropDownCount: Integer;
     FDroppedDown: boolean;
     FDroppingDown: Boolean;
+    FEditingDone: Boolean;
     FItemHeight: integer;
     FItemIndex: integer;
     FItemWidth: integer;
