@@ -11,7 +11,7 @@ object IDESpotterOptionsFrame: TIDESpotterOptionsFrame
   DesignTop = 164
   object CGSearch: TCheckGroup
     Left = 0
-    Height = 136
+    Height = 168
     Top = 0
     Width = 427
     Align = alTop
@@ -25,24 +25,26 @@ object IDESpotterOptionsFrame: TIDESpotterOptionsFrame
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 118
+    ClientHeight = 150
     ClientWidth = 425
     Items.Strings = (
       'Commands'
       'Recent Projects'
       'Recent Files'
       'Recent Packages'
+      'Components'
     )
     OnClick = CGSearchClick
+    OnItemClick = CGSearchItemClick
     TabOrder = 0
     Data = {
-      0400000002020202
+      050000000202020202
     }
   end
   object Options: TGroupBox
     Left = 0
     Height = 105
-    Top = 136
+    Top = 168
     Width = 427
     Align = alTop
     Caption = 'Options'
@@ -68,12 +70,12 @@ object IDESpotterOptionsFrame: TIDESpotterOptionsFrame
   end
   object Colors: TGroupBox
     Left = 0
-    Height = 271
-    Top = 241
+    Height = 100
+    Top = 273
     Width = 427
     Align = alTop
     Caption = 'Colors'
-    ClientHeight = 253
+    ClientHeight = 82
     ClientWidth = 425
     TabOrder = 2
     object CBMatchColor: TColorBox
@@ -111,6 +113,61 @@ object IDESpotterOptionsFrame: TIDESpotterOptionsFrame
       Caption = '&Shortcut key'
       FocusControl = CBShortCutColor
       ParentColor = False
+    end
+  end
+  object GBComponents: TGroupBox
+    Left = 0
+    Height = 105
+    Top = 373
+    Width = 427
+    Align = alTop
+    Caption = 'Components'
+    ClientHeight = 87
+    ClientWidth = 425
+    TabOrder = 3
+    object CBSelectComponent: TCheckBox
+      Left = 8
+      Height = 22
+      Top = 16
+      Width = 210
+      Caption = 'Only select on component palette'
+      TabOrder = 0
+    end
+    object SEComponentDefaultWidth: TSpinEdit
+      Left = 98
+      Height = 27
+      Top = 58
+      Width = 54
+      TabOrder = 1
+    end
+    object Label1: TLabel
+      Left = 8
+      Height = 27
+      Top = 58
+      Width = 80
+      Alignment = taRightJustify
+      AutoSize = False
+      Caption = 'Default width'
+      Layout = tlCenter
+      ParentColor = False
+    end
+    object LComponentheight: TLabel
+      Left = 163
+      Height = 27
+      Top = 58
+      Width = 53
+      Alignment = taRightJustify
+      AutoSize = False
+      Caption = 'height'
+      Layout = tlCenter
+      ParentColor = False
+    end
+    object SEComponentDefaultHeight: TSpinEdit
+      Left = 224
+      Height = 27
+      Top = 58
+      Width = 66
+      TabOrder = 2
     end
   end
 end

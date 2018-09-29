@@ -34,11 +34,11 @@ unit frmspotter;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LazUTF8, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, FileUtil, LazUTF8, Forms, Controls, Graphics, Dialogs, ComponentReg,
   StdCtrls, EditBtn, IDECommands, LazIDEIntf, Types, LCLType, IDEOptionsIntf, IDEOptEditorIntf;
 
 Type
-  TSpotHighlight = (shCommands,shRecentProjects,shRecentFiles,shRecentPackages);
+  TSpotHighlight = (shCommands,shRecentProjects,shRecentFiles,shRecentPackages,shComponents);
   TSpotHighlights = set of TSpotHighlight;
 
   { TSearchItem }
@@ -76,6 +76,28 @@ Type
     Property FileName : String Read FFileName;
     Property Handler : TIDERecentHandler Read FHandler;
   end;
+
+  { TComponentItem }
+
+  TComponentItem = class(TObject)
+  private
+    Class Var
+      LastParent : TComponent;
+      LastLeft,LastTop : integer;
+    function FindParent: TComponent;
+  private
+    FComponent : TRegisteredComponent;
+  public
+    Class Var
+      Drop : Boolean;
+      DefaultWidth, DefaultHeight : integer;
+  Public
+    constructor Create(aComponent: TRegisteredComponent);
+    Procedure Execute;
+    Property Component : TRegisteredComponent Read FComponent;
+  end;
+
+
   { TSpotterForm }
 
   TSpotterForm = class(TForm)
@@ -95,6 +117,7 @@ Type
     procedure LBMatchesKeyUp(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState
       );
   private
+    FRefresh,
     FHighlights: TSpotHighlights;
     FKeyStrokeColor: TColor;
     FMatchColor: TColor;
@@ -102,6 +125,9 @@ Type
     FSearchItems: TStringList;
     FOrgCaption : String;
     FShowShortCutKey: Boolean;
+    procedure ClearRefreshableItems;
+    procedure FillComponents;
+    Procedure RefreshList;
     procedure FillRecent(aType: TIDERecentHandler);
     Procedure Initialize;
     procedure ExecuteSelected;
@@ -141,7 +167,8 @@ procedure CreateSpotterWindow(Sender: TObject; aFormName: string; var AForm: TCu
 
 implementation
 
-Uses PackageIntf, BaseIDEIntf, LazConfigStorage, StrUtils, LCLIntf, LCLProc, IDEWindowIntf, srceditorintf;
+Uses
+  StrUtils, LCLIntf, LCLProc,  PackageIntf, BaseIDEIntf, LazConfigStorage, IDEWindowIntf, propedits, srceditorintf, componenteditors;
 
 {$R *.lfm}
 
@@ -157,9 +184,13 @@ Const
   KeyShowShortCut = 'showShortCut/value';
   KeyShortCutColor = 'ShortCutColor/value';
   KeyMatchColor = 'MatchColor/value';
+  KeyDefaultComponentWidth = 'Components/DefaultWidth';
+  KeyDefaultComponentHeight = 'Components/DefaultHeight';
+  KeyDropComponent = 'Components/Drop';
+
 
   HighlightNames : Array[TSpotHighlight] of string =
-    ('Commands','Projects','Files','Packages');
+    ('Commands','Projects','Files','Packages','Components');
 
 procedure LoadSpotterOptions;
 var
@@ -175,6 +206,9 @@ begin
      if Cfg.GetValue(KeyHighLight+HighlightNames[SH],SH In SpotHighlights) then
        Include(SHS,SH);
     SpotHighlights:=SHS;
+    TComponentItem.DefaultWidth:=Cfg.GetValue(KeyDefaultComponentWidth,TComponentItem.DefaultWidth);
+    TComponentItem.DefaultHeight:=Cfg.GetValue(KeyDefaultComponentHeight,TComponentItem.DefaultHeight);
+    TComponentItem.Drop:=Cfg.GetValue(KeyDropComponent,TComponentItem.Drop);
     ShowCmdCategory:=Cfg.GetValue(KeyShowCategory,ShowCmdCategory);
     ShowShortCutKey:=Cfg.GetValue(KeyShowShortCut,ShowShortCutKey);
     KeyStrokeColor:=TColor(Cfg.GetValue(KeyShortCutColor,Ord(KeyStrokeColor)));
@@ -196,6 +230,9 @@ begin
   try
     for SH in TSpotHighlight do
       Cfg.SetValue(KeyHighLight+HighlightNames[SH],SH In SpotHighlights);
+    Cfg.SetValue(KeyDefaultComponentWidth,TComponentItem.DefaultWidth);
+    Cfg.SetValue(KeyDefaultComponentHeight,TComponentItem.DefaultHeight);
+    Cfg.SetValue(KeyDropComponent,TComponentItem.Drop);
     Cfg.SetValue(KeyShowCategory,ShowCmdCategory);
     Cfg.SetValue(KeyShowShortCut,ShowShortCutKey);
     Cfg.SetValue(KeyShortCutColor,Ord(KeyStrokeColor));
@@ -242,6 +279,65 @@ procedure CreateSpotterWindow(Sender: TObject; aFormName: string;
 begin
   MaybeCreateSpotterForm;
   aForm:=SpotterForm;
+end;
+
+{ TComponentItem }
+
+constructor TComponentItem.Create(aComponent: TRegisteredComponent);
+begin
+  FComponent:=aComponent;
+end;
+
+Function TComponentItem.FindParent : TComponent;
+
+Var
+  ASelections: TPersistentSelectionList;
+begin
+  Result:=Nil;
+  ASelections := TPersistentSelectionList.Create;
+  try
+    GlobalDesignHook.GetSelection(ASelections);
+    if (ASelections.Count>0) and (ASelections[0] is TComponent) then
+      Result := TComponent(ASelections[0])
+    else if GlobalDesignHook.LookupRoot is TComponent then
+      Result:= TComponent(GlobalDesignHook.LookupRoot)
+    else
+      Result := nil;
+  finally
+    ASelections.Free;
+  end;
+end;
+
+procedure TComponentItem.Execute;
+
+var
+  NewParent: TComponent;
+  RootDesigner : TIDesigner;
+  CompDesigner : TComponentEditorDesigner;
+
+begin
+  IDEComponentPalette.SetSelectedComp(FComponent,False);
+  if not Drop then
+    exit;
+  NewParent:=FindParent;
+  if NewParent=nil then
+      Exit;
+  RootDesigner:=FindRootDesigner(NewParent);
+  if not (RootDesigner is TComponentEditorDesigner) then
+    exit;
+  CompDesigner:=RootDesigner as TComponentEditorDesigner;
+  CompDesigner.AddComponentCheckParent(NewParent, NewParent, nil, FComponent.ComponentClass);
+  if NewParent=nil then
+    Exit;
+  if LastParent<>NewParent then
+    begin
+    LastLeft := 0;
+    LastTop := 0;
+    LastParent := NewParent;
+    end;
+  Inc(LastLeft, 8);
+  Inc(LastTop, 8);
+  CompDesigner.AddComponent(FComponent, FComponent.ComponentClass, NewParent, Lastleft, LastTop, DefaultWidth, DefaultHeight);
 end;
 
 { TOpenFileItem }
@@ -451,6 +547,8 @@ begin
   ESearch.Clear;
   LBMatches.Clear;
   RefreshCaption(-1);
+  if FRefresh<>[] then
+    RefreshList;
 end;
 
 procedure TSpotterForm.LBMatchesClick(Sender: TObject);
@@ -532,6 +630,8 @@ begin
     Itm:=LBMatches.Items.Objects[Idx] as TSearchItem;
     if Itm.Source is TIDECommand then
       TIDECommand(Itm.Source).Execute(SourceEditorManagerIntf.ActiveEditor)
+    else if Itm.Source is TComponentItem then
+      TComponentItem(Itm.Source).Execute
     else if Itm.Source is TOpenFileItem then
       TOpenFileItem(Itm.Source).Execute;
     end;
@@ -562,13 +662,89 @@ begin
   end;
 end;
 
+procedure TSpotterForm.FillComponents;
+
+Var
+  I : integer;
+  Prefix,CC : String;
+  RC : TRegisteredComponent;
+  SI : TSearchItem;
+
+begin
+  For I:=0 to IDEComponentPalette.Comps.Count-1 do
+    begin
+    RC:=IDEComponentPalette.Comps[I];
+    Writeln('Considering ',RC.ComponentClass.ClassName);
+    if RC.CanBeCreatedInDesigner then
+      begin
+      Writeln('Class',RC.ComponentClass.ClassName,'OK');
+      CC:=RC.ComponentClass.ClassName+' ('+RC.GetUnitName+')';
+      Prefix:='Component: ';
+      SI:=TSearchItem.Create(TComponentItem.Create(RC),True);
+      SI.Prefix:=Prefix;
+      FSearchItems.AddObject(UTF8LowerCase(Prefix+CC),SI);
+      end
+    else
+      Writeln('Class ',RC.ComponentClass.ClassName,'Cannot be created');
+    end;
+end;
+
+procedure TSpotterForm.ClearRefreshableItems;
+
+Var
+  I : Integer;
+  Si : TSearchItem;
+  SH : Set of TIDERecentHandler;
+
+begin
+  SH:=[];
+  if shRecentFiles in FRefresh then
+    Include(SH,irhOpenFiles);
+  if shRecentProjects in FRefresh then
+    Include(SH,irhProjectFiles);
+  if shRecentPackages in FRefresh then
+    Include(SH,irhPackageFiles);
+  I:=FSearchItems.Count-1;
+  While I>=0 do
+    begin
+    SI:=TSearchItem(FSearchItems.Objects[i]);
+    if (SI.Source is TOpenFileItem) then
+      if TOpenFileItem(SI.Source).Handler in SH then
+         FSearchItems.Delete(I);
+    Dec(I);
+    end;
+end;
+
+procedure TSpotterForm.RefreshList;
+
+begin
+  FSearchItems.Sorted:=False;
+  FSearchItems.BeginUpdate;
+  try
+    ClearRefreshableItems;
+    if shRecentFiles in FRefresh then
+      FillRecent(irhOpenFiles);
+    if shRecentProjects in FRefresh then
+      FillRecent(irhProjectFiles);
+    if shRecentPackages in FRefresh then
+      FillRecent(irhPackageFiles);
+    FRefresh:=[];
+  finally
+    FSearchItems.Sorted:=True;
+    FSearchItems.EndUpdate;
+  end;
+end;
+
 procedure TSpotterForm.Initialize;
 begin
   FSearchItems.Sorted:=False;
+  FSearchItems.BeginUpdate;
   try
     FSearchItems.Clear;
     if shCommands in Highlights then
       FillCommands;
+    if shComponents in Highlights then
+      FillComponents;
     if shRecentFiles in Highlights then
       begin
       IDEEnvironmentOptions.AddHandlerAddToRecentOpenFiles(@FileOpened,False);
@@ -586,6 +762,7 @@ begin
       end;
   finally
     FSearchItems.Sorted:=True;
+    FSearchItems.EndUpdate;
   end;
 end;
 
@@ -619,19 +796,19 @@ end;
 procedure TSpotterForm.PackageOpened(Sender: TObject; AFileName: string;
   var AAllow: Boolean);
 begin
-
+  Include(FRefresh,shRecentPackages);
 end;
 
 procedure TSpotterForm.FileOpened(Sender: TObject; AFileName: string;
   var AAllow: Boolean);
 begin
-
+  Include(FRefresh,shRecentFiles);
 end;
 
 procedure TSpotterForm.ProjectOpened(Sender: TObject; AFileName: string;
   var AAllow: Boolean);
 begin
-
+  Include(FRefresh,shRecentProjects);
 end;
 
 procedure TSpotterForm.FillCommands;

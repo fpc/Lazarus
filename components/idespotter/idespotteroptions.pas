@@ -51,11 +51,18 @@ Type
     CBMatchColor: TColorBox;
     CBShortCutColor: TColorBox;
     CBShowCategory: TCheckBox;
+    CBSelectComponent: TCheckBox;
     Colors: TGroupBox;
+    GBComponents: TGroupBox;
+    Label1: TLabel;
+    LComponentheight: TLabel;
     LCBShortCut: TLabel;
     LCBMatchColor: TLabel;
     Options: TGroupBox;
+    SEComponentDefaultWidth: TSpinEdit;
+    SEComponentDefaultHeight: TSpinEdit;
     procedure CGSearchClick(Sender: TObject);
+    procedure CGSearchItemClick(Sender: TObject; Index: integer);
   private
   public
     function GetTitle: String; override;
@@ -74,6 +81,13 @@ implementation
 procedure TIDESpotterOptionsFrame.CGSearchClick(Sender: TObject);
 begin
 
+end;
+
+procedure TIDESpotterOptionsFrame.CGSearchItemClick(Sender: TObject;
+  Index: integer);
+begin
+  if Index=Ord(shComponents) then
+    GBComponents.Enabled:=CGsearch.Checked[Index];
 end;
 
 function TIDESpotterOptionsFrame.GetTitle: String;
@@ -96,6 +110,9 @@ Var
 begin
   for SH in TSpotHighlight do
     CGSearch.Checked[Ord(SH)]:=SH in SpotHighlights;
+  CBSelectComponent.Checked:=Not TComponentItem.Drop;
+  SEComponentDefaultHeight.Value:=TComponentItem.DefaultHeight;
+  SEComponentDefaultWidth.Value:=TComponentItem.DefaultWidth;
   CBShowCategory.Checked  := ShowCmdCategory;
   CBShowShortCut.Checked  := ShowShortCutKey;
   CBMatchColor.Selected   := MatchColor;
@@ -114,6 +131,9 @@ begin
     if CGSearch.Checked[Ord(SH)] then
       Include(SHS,SH);
   SpotHighlights:=SHS;
+  TComponentItem.Drop:=not CBSelectComponent.Checked;
+  TComponentItem.DefaultHeight:=SEComponentDefaultHeight.Value;
+  TComponentItem.DefaultWidth:=SEComponentDefaultWidth.Value;
   ShowCmdCategory:=CBShowCategory.Checked;
   ShowShortCutKey:=CBShowShortCut.Checked;
   MatchColor:=CBMatchColor.Selected;
