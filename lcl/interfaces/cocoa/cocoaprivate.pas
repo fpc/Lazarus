@@ -233,7 +233,7 @@ type
     //todo: consider the use Cocoa native types, instead of FPC TAlignment
     function GetBarItem(idx: Integer; var txt: String;
       var width: Integer; var align: TAlignment): Boolean;
-    //todo: add a method for OwnerDraw Panels support
+    procedure DrawPanel(idx: Integer; const r: TRect; var NeedDraw: Boolean);
   end;
 
   TCocoaStatusBar = objcclass(TCocoaCustomControl)
@@ -1093,6 +1093,7 @@ var
   txt  : string;
   cnt  : Integer;
   w    : Integer;
+  nd   : Boolean;
 const
   CocoaAlign: array [TAlignment] of Integer = (NSNaturalTextAlignment, NSRightTextAlignment, NSCenterTextAlignment);
 begin
@@ -1116,15 +1117,21 @@ begin
 
     if not barcallback.GetBarItem(i, txt, w, al) then Continue;
 
+
     if i = cnt - 1 then w := r.Right - x;
     nr.size.width := w;
     nr.origin.x := x;
 
-    cs := NSStringUtf8(txt);
-    panelCell.setTitle(cs);
-    panelCell.setAlignment(CocoaAlign[al]);
-    panelCell.drawWithFrame_inView(nr, Self);
-    cs.release;
+    nd := false;
+    barcallback.DrawPanel(i, NSRectToRect(nr), nd);
+    if nd then
+    begin
+      cs := NSStringUtf8(txt);
+      panelCell.setTitle(cs);
+      panelCell.setAlignment(CocoaAlign[al]);
+      panelCell.drawWithFrame_inView(nr, Self);
+      cs.release;
+    end;
     inc(x, w);
     if x > r.Right then break; // no place left
   end;

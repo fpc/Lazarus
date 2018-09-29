@@ -29,6 +29,7 @@ type
   TStatusBarCallback = class(TLCLCommonCallback, IStatusBarCallback, ICommonCallback)
     function GetBarsCount: Integer;
     function GetBarItem(idx: Integer; var txt: String; var width: Integer; var align: TAlignment): Boolean;
+    procedure DrawPanel(idx: Integer; const r: TRect; var NeedDraw: Boolean);
   end;
 
   TCocoaWSStatusBar = class(TWSStatusBar)
@@ -317,6 +318,41 @@ begin
     txt := sb.Panels[idx].Text;
     width := sb.Panels[idx].Width;
     align := sb.Panels[idx].Alignment;
+  end;
+end;
+
+procedure TStatusBarCallback.DrawPanel(idx: Integer; const r: TRect;
+  var NeedDraw: Boolean);
+var
+  sb  : TStatusBar;
+  msg : TLMDrawItems;
+  ctx : TCocoaContext;
+  dr  : TDrawItemStruct;
+  fr  : TRect;
+begin
+  sb := TStatusBar(Target);
+  NeedDraw := true;
+  if sb.SimplePanel then Exit;
+  if (idx<0) or (idx >= sb.Panels.Count) then Exit;
+
+  NeedDraw := sb.Panels[idx].Style <> psOwnerDraw;
+  if NeedDraw then Exit;
+
+  ctx := TCocoaContext.Create(NSGraphicsContext.currentContext);
+  try
+    FillChar(msg, sizeof(msg), 0);
+    FillChar(dr, sizeof(dr), 0);
+    msg.Ctl := Target.Handle;
+    msg.Msg := LM_DRAWITEM;
+    msg.DrawItemStruct := @dr;
+    dr.itemID := idx;
+    dr._hDC := HDC(ctx);
+    dr.rcItem := r;
+    fr := NSView(Owner).lclFrame;
+    ctx.InitDraw(fr.Right-fr.Left, fr.Bottom-fr.Top);
+    LCLMessageGlue.DeliverMessage(Target, msg);
+  finally
+    ctx.Free;
   end;
 end;
 
