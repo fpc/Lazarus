@@ -206,7 +206,6 @@ type
     procedure mouseMoved(event: NSEvent); override;
     procedure scrollWheel(event: NSEvent); override;
     // key
-    procedure keyDown(event: NSEvent); override;
     procedure keyUp(event: NSEvent); override;
     procedure flagsChanged(event: NSEvent); override;
     // nsview
@@ -337,6 +336,7 @@ type
 
     procedure lclAddManTick(atick : integer); message 'lclAddManTick:';
     procedure lclSetManTickDraw(adraw: Boolean); message 'lclSetManTickDraw:';
+    procedure lclExpectedKeys(var wantTabs, wantArrows, wantAll: Boolean); override;
   end;
 
   TCocoaSliderCell = objcclass(NSSliderCell)
@@ -602,23 +602,6 @@ procedure TCocoaCustomControl.scrollWheel(event: NSEvent);
 begin
   if not Assigned(callback) or not callback.scrollWheel(event) then
     inherited scrollWheel(event);
-end;
-
-procedure TCocoaCustomControl.keyDown(event: NSEvent);
-var
-  cb  : ICommonCallback;
-  res : Boolean;
-begin
-  cb := lclGetCallback;
-  if Assigned(cb) then
-  begin
-    cb.KeyEvPrepare(event);
-    cb.KeyEvBefore(res);
-    if res then inherited keyDown(event);
-    cb.KeyEvAfter;
-  end else
-    inherited keyDown(event);
-
 end;
 
 procedure TCocoaCustomControl.keyUp(event: NSEvent);
@@ -1358,8 +1341,7 @@ begin
     MK_RIGHT    : SnapToInteger(1);
   else
     // If this isn't done callback.KeyEvent will cause arrow left/right to change control
-    if Assigned(callback) then callback.KeyEvent(event)
-    else inherited keyDown(event);
+    inherited keyDown(event);
   end;
 end;
 
@@ -1490,6 +1472,14 @@ begin
   if mn.draw=adraw then Exit;
   mn.draw:=adraw;
   self.setNeedsDisplay;
+end;
+
+procedure TCocoaSlider.lclExpectedKeys(var wantTabs, wantArrows,
+  wantAll: Boolean);
+begin
+  wantTabs := false;
+  wantArrows := true;
+  wantAll := false;
 end;
 
 type

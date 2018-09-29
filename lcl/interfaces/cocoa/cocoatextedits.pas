@@ -63,7 +63,6 @@ type
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
     // key
-    //procedure keyDown(event: NSEvent); override; -> keyDown doesn't work in NSTextField
     procedure keyUp(event: NSEvent); override;
     procedure textDidChange(notification: NSNotification); override;
     // mouse
@@ -85,7 +84,6 @@ type
     function acceptsFirstResponder: Boolean; override;
     procedure resetCursorRects; override;
     // key
-    //procedure keyDown(event: NSEvent); override; -> keyDown doesn't work in NSTextField
     procedure keyUp(event: NSEvent); override;
     // mouse
     procedure mouseDown(event: NSEvent); override;
@@ -115,7 +113,6 @@ type
 
     procedure changeColor(sender: id); override;
     // key
-    procedure keyDown(event: NSEvent); override;
     procedure keyUp(event: NSEvent); override;
     procedure flagsChanged(event: NSEvent); override;
     // mouse
@@ -143,8 +140,6 @@ type
   TCocoaFieldEditor = objcclass(NSTextView)
   public
     function lclGetCallback: ICommonCallback; override;
-    // keyboard
-    procedure keyDown(event: NSEvent); override;
     // mouse
     procedure mouseDown(event: NSEvent); override;
     procedure mouseUp(event: NSEvent); override;
@@ -480,30 +475,6 @@ begin
   else Result := nil;
 end;
 
-procedure TCocoaFieldEditor.keyDown(event: NSEvent);
-var
-  cb  : ICommonCallback;
-  res : Boolean;
-  v   : NSView;
-begin
-  v := GetEditBox(Self);
-  if Assigned(v) then
-    cb := v.lclGetCallback
-  else
-    cb := nil;
-
-  if not Assigned(cb) then
-  begin
-    inherited keyDown(event);
-    Exit;
-  end;
-
-  cb.KeyEvPrepare(event);
-  cb.KeyEvBefore(res);
-  if res then inherited keyDown(event);
-  cb.KeyEvAfter;
-end;
-
 procedure TCocoaFieldEditor.mouseDown(event: NSEvent);
 var
   v : NSView;
@@ -722,20 +693,6 @@ procedure TCocoaTextView.changeColor(sender: id);
 begin
   //preventing text color from being changed
   //inherited changeColor(sender);
-end;
-
-procedure TCocoaTextView.keyDown(event: NSEvent);
-var
-  res : Boolean;
-begin
-  if Assigned(callback) then
-  begin
-    callback.KeyEvPrepare(event);
-    callback.KeyEvBefore(res);
-    if res then inherited keyDown(event);
-    callback.KeyEvAfter;
-  end else
-    inherited keyDown(event);
 end;
 
 procedure TCocoaTextView.keyUp(event: NSEvent);

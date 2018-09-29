@@ -239,36 +239,61 @@ var
   r : NSResponder;
   fr : NSResponder;
   mn : NSMenu;
+  cb : ICommonCallback;
+  allowcocoa : Boolean;
+
 begin
   fr := win.firstResponder;
   r := fr;
   processed := false;
+  allowcocoa := true;
 
-  // let controls to performKeyEquivalent first
-  while Assigned(r) and not processed do begin
-    if r.respondsToSelector(objcselector('performKeyEquivalent:')) then
-      processed := r.performKeyEquivalent(event);
-    if not processed then r := r.nextResponder;
-  end;
-  if processed then Exit;
-
-  // let menus do the hot key, if controls don't like it.
-  if not processed then
+  if Assigned(fr) then
   begin
-    mn := NSApplication(NSApp).mainMenu;
-    if Assigned(mn) then
-      processed := mn.performKeyEquivalent(event);
-  end;
-  if processed then Exit;
-
-  r := fr;
-  while Assigned(r) and not processed do begin
-    if r.respondsToSelector(objcselector('keyDown:')) then
+    cb := fr.lclGetCallback;
+    if Assigned(cb) then
     begin
-      r.keyDown(event);
-      processed := true;
+      cb.KeyEvPrepare(event);
+      cb.KeyEvBefore(allowcocoa);
     end;
-    if not processed then r := r.nextResponder;
+  end else
+    cb := nil;
+
+  // try..finally here is to handle "Exit"s
+  // rather than excepting any exceptions to happen
+  try
+    if not allowcocoa then Exit;
+
+    // let controls to performKeyEquivalent first
+    while Assigned(r) and not processed do begin
+      if r.respondsToSelector(objcselector('performKeyEquivalent:')) then
+        processed := r.performKeyEquivalent(event);
+      if not processed then r := r.nextResponder;
+    end;
+    if processed then Exit;
+
+    // let menus do the hot key, if controls don't like it.
+    if not processed then
+    begin
+      mn := NSApplication(NSApp).mainMenu;
+      if Assigned(mn) then
+        processed := mn.performKeyEquivalent(event);
+    end;
+    if processed then Exit;
+
+    r := fr;
+    while Assigned(r) and not processed do begin
+      if r.respondsToSelector(objcselector('keyDown:')) then
+      begin
+        r.keyDown(event);
+        processed := true;
+      end;
+      if not processed then r := r.nextResponder;
+    end;
+
+  finally
+    if Assigned(cb) then
+      cb.KeyEvAfter;
   end;
 
 end;
@@ -950,19 +975,8 @@ begin
 end;
 
 procedure TCocoaWindow.keyDown(event: NSEvent);
-var
-  cb  : ICommonCallback;
-  res : Boolean;
 begin
-  cb := lclGetCallback;
-  if Assigned(cb) then
-  begin
-    cb.KeyEvPrepare(event);
-    cb.KeyEvBefore(res);
-    inherited keyDown(event);
-    cb.KeyEvAfter;
-  end else
-    inherited keyDown(event);
+  inherited keyDown(event);
 end;
 
 procedure TCocoaWindow.keyUp(event: NSEvent);
