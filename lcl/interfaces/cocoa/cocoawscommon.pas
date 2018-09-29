@@ -811,10 +811,8 @@ procedure TLCLCommonCallback.KeyEvPrepare(Event: NSEvent;
   AForceAsKeyDown: Boolean);
 var
   KeyCode: word;
-  UTF8VKCharacter: TUTF8Char; // char without modifiers, used for VK_ key value
   UTF8Character: TUTF8Char;   // char to send via IntfUtf8KeyPress
   KeyChar : char;          // Ascii char, when possible (xx_(SYS)CHAR)
-  VKKeyChar: char;         // Ascii char without modifiers
   SendChar: boolean;       // Should we send char?
   VKKeyCode: word;         // VK_ code
   IsSysKey: Boolean;       // Is alt (option) key down?
@@ -824,7 +822,6 @@ begin
 
   UTF8Character := '';
   KeyChar := #0;
-  VKKeyChar := #0;
 
   IsSysKey := (Event.modifierFlags and NSCommandKeyMask) <> 0;
   KeyData := (Ord(Event.isARepeat) + 1) or Event.keyCode shl 16;
@@ -834,21 +831,34 @@ begin
 
   VKKeyCode := MacCodeToVK(KeyCode);
 
-  //printable keys
-  //for these keys, send char or UTF8KeyPress
-  UTF8Character := NSStringToString(Event.characters);
+  case VKKeyCode of
+    // for sure, these are "non-printable" keys
+    VK_LEFT, VK_RIGHT, VK_UP, VK_DOWN, VK_DELETE:
+      SendChar := false;
+    // for sure, these are "printable" keys
+    VK_TAB, VK_BACK, VK_RETURN, VK_ESCAPE:
+    begin
+      SendChar := true;
+      KeyChar := char(VKKeyCode);
+      UTF8Character := UTF8Character;
+    end;
+  else
+    //printable keys
+    //for these keys, send char or UTF8KeyPress
+    UTF8Character := NSStringToString(Event.characters);
 
-  if Length(UTF8Character) > 0 then
-  begin
-    SendChar := True;
-    if Utf8Character[1] <= #127 then
-      // ANSI layout character
-      KeyChar := Utf8Character[1]
-    else
-      // it's non ANSI character. KeyChar must be assinged anything but #0
-      // otherise the message could be surpressed.
-      // In Windows world this would be an "Ansi" char in current locale
-      KeyChar := #$FF;
+    if Length(UTF8Character) > 0 then
+    begin
+      SendChar := True;
+      if Utf8Character[1] <= #127 then
+        // ANSI layout character
+        KeyChar := Utf8Character[1]
+      else
+        // it's non ANSI character. KeyChar must be assinged anything but #0
+        // otherise the message could be surpressed.
+        // In Windows world this would be an "Ansi" char in current locale
+        KeyChar := #$FF;
+    end;
   end;
 
   FillChar(_KeyMsg, SizeOf(_KeyMsg), 0);
