@@ -170,6 +170,7 @@ type
 
 procedure ArrangeTabOrder(const AWinControl: TWinControl);
 function HWNDToForm(AFormHandle: HWND): TCustomForm;
+procedure WindowSetFormStyle(win: NSWindow; AFormStyle: TFormStyle);
 
 implementation
 
@@ -208,6 +209,25 @@ begin
     Result := bsSizeable
   else
     Result := AForm.BorderStyle;
+end;
+
+procedure WindowSetFormStyle(win: NSWindow; AFormStyle: TFormStyle);
+var
+  lvl : NSInteger;
+begin
+  if not (AFormStyle in [fsNormal, fsMDIChild, fsMDIForm]) then
+  begin
+    lvl := FormStyleToWindowLevel[AFormStyle];
+    win.setHidesOnDeactivate(FormStyleToHideOnDeactivate[AFormStyle]);
+  end
+  else
+  begin
+    lvl := 0;
+    win.setHidesOnDeactivate(false);
+  end;
+  win.setLevel(lvl);
+  if win.isKindOfClass(TCocoaWindow) then
+    TCocoaWindow(win).keepWinLevel := lvl;
 end;
 
 { TCocoaWSHintWindow }
@@ -323,6 +343,9 @@ begin
     ACustForm.SetFocusedControl(ACustForm.ActiveControl);
 
     IsActivating:=False;
+
+    if CocoaWidgetSet.isModalSession then
+      NSView(ACustForm.Handle).window.orderFront(nil);
   end;
 end;
 
@@ -580,12 +603,8 @@ begin
     UpdateWindowIcons(win, GetDesigningBorderStyle(Form), Form.BorderIcons);
     // For safety, it is better to not apply any setLevel & similar if the form is just a standard style
     // see issue http://bugs.freepascal.org/view.php?id=28473
-    if not (Form.FormStyle in [fsNormal, fsMDIChild, fsMDIForm])
-      and not (csDesigning in AWinControl.ComponentState) then
-    begin
-      win.setLevel(FormStyleToWindowLevel[Form.FormStyle]);
-      win.setHidesOnDeactivate(FormStyleToHideOnDeactivate[Form.FormStyle]);
-    end;
+    if not (csDesigning in AWinControl.ComponentState) then
+      WindowSetFormStyle(win, Form.FormStyle);
     win.enableCursorRects;
 
     TCocoaWindow(win).callback := cb;
@@ -831,11 +850,7 @@ begin
   if AForm.HandleAllocated and not (csDesigning in AForm.ComponentState) then
   begin
     win := TCocoaWindowContent(AForm.Handle).lclOwnWindow;
-    if Assigned(win) then
-    begin
-      win.setLevel(FormStyleToWindowLevel[AFormStyle]);
-      win.setHidesOnDeactivate(FormStyleToHideOnDeactivate[AFormStyle]);
-    end;
+    WindowSetFormStyle(win, AFormStyle);
   end;
 end;
 

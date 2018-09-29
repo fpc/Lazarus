@@ -177,6 +177,7 @@ type
     procedure SetMainMenu(const AMenu: HMENU; const ALCLMenu: TMenu);
     function StartModal(awin: NSWindow; hasMenu: Boolean): Boolean;
     procedure EndModal(awin: NSWindow);
+    function isModalSession: Boolean;
 
     {todo:}
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
@@ -580,11 +581,19 @@ end;
 function TCocoaWidgetSet.StartModal(awin: NSWindow; hasMenu: Boolean): Boolean;
 var
   sess : NSModalSession;
+  lvl : NSInteger;
 begin
   Result := false;
   if not Assigned(awin) then Exit;
+
+  lvl := awin.level;
+
   sess := NSApplication(NSApp).beginModalSessionForWindow(awin);
   if not Assigned(sess) then Exit;
+
+  // beginModalSession "configures" the modality and potentially is changing window level
+  awin.setLevel(lvl);
+
   if not Assigned(Modals) then Modals := TList.Create;
 
   // If a modal menu has it's menu, then SetMainMenu has already been called
@@ -619,6 +628,10 @@ begin
   Modals.Delete(Modals.Count-1);
 end;
 
+function TCocoaWidgetSet.isModalSession: Boolean;
+begin
+  Result := Assigned(Modals) and (Modals.Count > 0);
+end;
 
 initialization
 //  {$I Cocoaimages.lrs}
