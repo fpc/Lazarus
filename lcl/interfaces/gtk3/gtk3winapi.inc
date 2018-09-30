@@ -456,7 +456,7 @@ begin
     else
       APen.Style := psSolid;
     end;
-    APen.Color := lopnColor;
+    APen.Color := TColor(lopnColor);
     APen.Cosmetic := lopnWidth.X <= 0 ;
     if not APen.Cosmetic then
       APen.Width := lopnWidth.X;
@@ -3524,12 +3524,6 @@ begin
 end;
 
 function TGtk3WidgetSet.SetBkColor(DC: HDC; Color: TColorRef): TColorRef;
-var
-  ACairoPattern: Pcairo_pattern_t;
-  R: Double;
-  G: Double;
-  B: Double;
-  A: Double;
 begin
   {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
   // DebugLn('WARNING: TGtk3WidgetSet.SetBkColor not implemented ...');
@@ -3538,7 +3532,7 @@ begin
   if not IsValidDC(DC) then
     exit;
   Result := TGtk3DeviceContext(DC).CurrentBrush.Color;
-  TGtk3DeviceContext(DC).CurrentBrush.Color := ColorToRGB(Color);
+  TGtk3DeviceContext(DC).CurrentBrush.Color := TColor(ColorToRGB(TColor(Color)));
 end;
 
 function TGtk3WidgetSet.SetBkMode(DC: HDC; bkMode: Integer): Integer;
