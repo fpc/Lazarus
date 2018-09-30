@@ -244,7 +244,7 @@ type
     FClipRectLock: Integer;
 
     procedure CalculateTransformationCoeffs(const AMargin: TRect);
-    procedure DrawReticule(ADrawer: IChartDrawer);
+    procedure DrawReticule(ADrawer: IChartDrawer);  deprecated 'Use DatapointCrosshairTool instead';
     procedure FindComponentClass(
       AReader: TReader; const AClassName: String; var AClass: TComponentClass);
     function GetChartHeight: Integer;
@@ -253,7 +253,7 @@ type
     function GetRenderingParams: TChartRenderingParams;
     function GetSeriesCount: Integer;
     function GetToolset: TBasicChartToolset;
-    procedure HideReticule;
+    procedure HideReticule; deprecated 'Use DatapointCrosshairTool instead';
 
     procedure SetAntialiasingMode(AValue: TChartAntialiasingMode);
     procedure SetAxisList(AValue: TChartAxisList);
@@ -281,11 +281,11 @@ type
     procedure SetOnBeforeDrawBackWall(AValue: TChartBeforeDrawEvent);
     procedure SetOnChartPaint(AValue: TChartPaintEvent);
     procedure SetOnDrawLegend(AValue: TChartDrawLegendEvent);
-    procedure SetOnDrawReticule(AValue: TDrawReticuleEvent);
+    procedure SetOnDrawReticule(AValue: TDrawReticuleEvent); deprecated 'Use DatapointCrosshairTool instead';
     procedure SetProportional(AValue: Boolean);
     procedure SetRenderingParams(AValue: TChartRenderingParams);
-    procedure SetReticuleMode(AValue: TReticuleMode);
-    procedure SetReticulePos(const AValue: TPoint);
+    procedure SetReticuleMode(AValue: TReticuleMode); deprecated 'Use DatapointCrosshairTool instead';
+    procedure SetReticulePos(const AValue: TPoint); deprecated 'Use DatapointCrosshairTool instead';
     procedure SetTitle(Value: TChartTitle);
     procedure SetToolset(AValue: TBasicChartToolset);
     procedure VisitSources(
@@ -388,7 +388,7 @@ type
     property PrevLogicalExtent: TDoubleRect read FPrevLogicalExtent;
     property RenderingParams: TChartRenderingParams
       read GetRenderingParams write SetRenderingParams;
-    property ReticulePos: TPoint read FReticulePos write SetReticulePos; deprecated;
+    property ReticulePos: TPoint read FReticulePos write SetReticulePos; deprecated 'Use DatapointCrosshairTool instead';
     property SeriesCount: Integer read GetSeriesCount;
     property XGraphMax: Double read FCurrentExtent.b.X;
     property XGraphMin: Double read FCurrentExtent.a.X;

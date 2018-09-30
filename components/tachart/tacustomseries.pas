@@ -268,7 +268,7 @@ type
     procedure SetMarkPositions(AValue: TLinearMarkPositions);
     procedure SetPointer(AValue: TSeriesPointer);
     procedure SetStacked(AValue: Boolean);
-    procedure SetUseReticule(AValue: Boolean);
+    procedure SetUseReticule(AValue: Boolean); deprecated 'Use DatapointCrosshairTool instead';
   strict protected
     FGraphPoints: array of TDoublePoint;
     FLoBound: Integer;
@@ -337,6 +337,7 @@ type
     property ToolTargets default [nptPoint, nptYList];
     property UseReticule: Boolean
       read FUseReticule write SetUseReticule default false;
+      deprecated 'Use DatapointCrosshairTool instead';
     property ExtentPointIndexFirst: Integer read FLoBound;
     property ExtentPointIndexLast: Integer read FUpBound;
   end;

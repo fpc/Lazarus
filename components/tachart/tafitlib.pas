@@ -60,7 +60,7 @@ function LinearFit(const x, y, dy: TArbFloatArray;
   FitParams: TFitParamArray): TFitResults;
 
 // Some basic fit basis functions for linear least-squares fitting
-function FitBaseFunc_Const(x: ArbFloat; Param: Integer): ArbFloat;
+function FitBaseFunc_Const({%H-}x: ArbFloat; {%H-}Param: Integer): ArbFloat;
 function FitBaseFunc_Linear(x: ArbFloat; {%H-}Param: Integer): ArbFloat;
 function FitBaseFunc_Square(x: ArbFloat; {%H-}Param: Integer): ArbFloat;
 function FitBaseFunc_Cube(x: ArbFloat; {%H-}Param: Integer): ArbFloat;
@@ -212,7 +212,7 @@ var
   n, m, mfit: Integer;
   i, j, k, jk, kj: Integer;
   hasSig: Boolean;
-  ym, wt, sig2, totalsig2, chi2: ArbFloat;
+  ym, wt, sig2, chi2: ArbFloat;
   ca: ArbFloat = 0.0;
   term: ArbInt = 0;
 begin

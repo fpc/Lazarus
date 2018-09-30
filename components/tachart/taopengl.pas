@@ -119,7 +119,7 @@ begin
         expanded_data[2*(i + j*ATextureWidth) + 1] := 0  // Alpha
       else begin
         c := FImg.Colors[i,j];
-        expanded_data[2*(i + j*ATextureWidth) + 1] := FImg.Colors[i, j].Alpha shr 8;
+        expanded_data[2*(i + j*ATextureWidth) + 1] := c.Alpha shr 8;
       end;
     end;
 

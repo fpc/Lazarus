@@ -1513,6 +1513,7 @@ end;
   comprehensive property "FitStatistics".}
 function TFitSeries.CalcGoodnessOfFit(var x,y: ArbFloat; n: Integer): Double;
 begin
+  Unused(x, y, n);
   Result := FFitStatistics.R2;
 end;
 
@@ -1645,13 +1646,12 @@ var
 
   procedure TryFit;
   var
-    i, j, ns, np, n: Integer;
+    i, j, ns, n: Integer;
     xv, yv, dy: array of ArbFloat;
     yp, yn: Double;
     fitRes: TFitResults;
     hasErrorBars: Boolean;
   begin
-    np := ParamCount;
     ns := Source.Count;
 
     CalcXRange(xmin, xmax);
@@ -1731,11 +1731,9 @@ end;
 procedure TFitSeries.GetConfidenceLimits(AIndex: Integer; out ALower, AUpper: Double);
 var
   val, sig, t: Double;
-  alpha: Double;
 begin
   val := GetParam_RawValue(AIndex);
   sig := GetParam_RawError(AIndex);
-  alpha := 1.0 - FConfidenceLevel;
   t := FitStatistics.tValue;
   ALower := val - sig*t;
   AUpper := val + sig*t;
