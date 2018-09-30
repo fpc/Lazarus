@@ -233,7 +233,7 @@ type
     //todo: consider the use Cocoa native types, instead of FPC TAlignment
     function GetBarItem(idx: Integer; var txt: String;
       var width: Integer; var align: TAlignment): Boolean;
-    procedure DrawPanel(idx: Integer; const r: TRect; var NeedDraw: Boolean);
+    procedure DrawPanel(idx: Integer; const r: TRect);
   end;
 
   TCocoaStatusBar = objcclass(TCocoaCustomControl)
@@ -1093,7 +1093,6 @@ var
   txt  : string;
   cnt  : Integer;
   w    : Integer;
-  nd   : Boolean;
 const
   CocoaAlign: array [TAlignment] of Integer = (NSNaturalTextAlignment, NSRightTextAlignment, NSCenterTextAlignment);
 begin
@@ -1122,16 +1121,12 @@ begin
     nr.size.width := w;
     nr.origin.x := x;
 
-    nd := false;
-    barcallback.DrawPanel(i, NSRectToRect(nr), nd);
-    if nd then
-    begin
-      cs := NSStringUtf8(txt);
-      panelCell.setTitle(cs);
-      panelCell.setAlignment(CocoaAlign[al]);
-      panelCell.drawWithFrame_inView(nr, Self);
-      cs.release;
-    end;
+    cs := NSStringUtf8(txt);
+    panelCell.setTitle(cs);
+    panelCell.setAlignment(CocoaAlign[al]);
+    panelCell.drawWithFrame_inView(nr, Self);
+    cs.release;
+    barcallback.DrawPanel(i, NSRectToRect(nr));
     inc(x, w);
     if x > r.Right then break; // no place left
   end;

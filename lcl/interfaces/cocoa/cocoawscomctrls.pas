@@ -29,7 +29,7 @@ type
   TStatusBarCallback = class(TLCLCommonCallback, IStatusBarCallback, ICommonCallback)
     function GetBarsCount: Integer;
     function GetBarItem(idx: Integer; var txt: String; var width: Integer; var align: TAlignment): Boolean;
-    procedure DrawPanel(idx: Integer; const r: TRect; var NeedDraw: Boolean);
+    procedure DrawPanel(idx: Integer; const r: TRect);
   end;
 
   TCocoaWSStatusBar = class(TWSStatusBar)
@@ -315,30 +315,30 @@ begin
   end else begin
     Result := (idx >= 0) and (idx < sb.Panels.Count);
     if not Result then Exit;
-    txt := sb.Panels[idx].Text;
+    if sb.Panels[idx].Style = psOwnerDraw
+      then txt := ''
+      else txt := sb.Panels[idx].Text;
     width := sb.Panels[idx].Width;
     align := sb.Panels[idx].Alignment;
   end;
 end;
 
-procedure TStatusBarCallback.DrawPanel(idx: Integer; const r: TRect;
-  var NeedDraw: Boolean);
+procedure TStatusBarCallback.DrawPanel(idx: Integer; const r: TRect);
 var
   sb  : TStatusBar;
   msg : TLMDrawItems;
   ctx : TCocoaContext;
   dr  : TDrawItemStruct;
   fr  : TRect;
+  sv  : Integer;
 begin
   sb := TStatusBar(Target);
-  NeedDraw := true;
   if sb.SimplePanel then Exit;
   if (idx<0) or (idx >= sb.Panels.Count) then Exit;
-
-  NeedDraw := sb.Panels[idx].Style <> psOwnerDraw;
-  if NeedDraw then Exit;
+  if sb.Panels[idx].Style <> psOwnerDraw then Exit;
 
   ctx := TCocoaContext.Create(NSGraphicsContext.currentContext);
+  sv := ctx.SaveDC;
   try
     FillChar(msg, sizeof(msg), 0);
     FillChar(dr, sizeof(dr), 0);
@@ -352,6 +352,7 @@ begin
     ctx.InitDraw(fr.Right-fr.Left, fr.Bottom-fr.Top);
     LCLMessageGlue.DeliverMessage(Target, msg);
   finally
+    ctx.RestoreDC(sv);
     ctx.Free;
   end;
 end;
