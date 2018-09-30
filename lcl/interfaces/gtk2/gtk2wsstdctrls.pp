@@ -91,6 +91,7 @@ type
                         WithThemeSpace: Boolean); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
+    class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
   end;
 
   { TGtk2WSGroupBox }
@@ -2442,6 +2443,36 @@ class procedure TGtk2WSCustomGroupBox.SetText(const AWinControl: TWinControl;
 begin
   if not WSCheckHandleAllocated(AWinControl, 'SetText') then Exit;
   SetLabel(GetFrameWidget({%H-}PGtkEventBox(AWinControl.Handle)), AText);
+end;
+
+class procedure TGtk2WSCustomGroupBox.SetBounds(const AWinControl: TWinControl;
+  const ALeft, ATop, AWidth, AHeight: Integer);
+var
+  GroubBox: TCustomGroupBox absolute AWinControl;
+  Frame: PGtkFrame;
+  Lbl: PGtkWidget;
+  MinWidth: NativeInt;
+begin
+  Frame := GetFrameWidget({%H-}PGTKEventBox(AWinControl.Handle));
+  Lbl := gtk_frame_get_label_widget(Frame);
+  if Lbl <> nil then
+  begin
+    MinWidth := Lbl^.allocation.x * 2;
+    if AWidth < MinWidth then
+    begin
+      SetText(AWinControl, '');
+      g_object_set_data(PGObject(Frame), 'lcl-groupbox-min-width', {%H-}gPointer(MinWidth));
+    end;
+  end
+  else if GroubBox.Caption <> '' then
+  begin
+    {%H-}gPointer(MinWidth) := g_object_get_data(PGObject(Frame), 'lcl-groupbox-min-width');
+    if (MinWidth > 0) and (AWidth >= MinWidth) then begin
+      SetText(AWinControl, GroubBox.Caption);
+      g_object_set_data(PGObject(Frame), 'lcl-groupbox-min-width', nil);
+    end;
+  end;
+  TGtk2WSWinControl.SetBounds(AWinControl, ALeft, ATop, AWidth, AHeight);
 end;
 
 function Gtk2WSButton_Clicked(AWidget: PGtkWidget; AInfo: PWidgetInfo): GBoolean; cdecl;
