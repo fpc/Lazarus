@@ -1349,6 +1349,10 @@ var
   I, Count: NSUInteger;
   transform : NSAffineTransform;
 begin
+  Range := FLayout.glyphRangeForTextContainer(FTextContainer);
+  if Range.length = 0 then
+    Exit; // cannot render anything. string is empty or invalid characters
+
   if not ctx.isFlipped then
     Context := NSGraphicsContext.graphicsContextWithGraphicsPort_flipped(ctx.graphicsPort, True)
   else
@@ -1369,7 +1373,6 @@ begin
     transform.concat;
   end;
 
-  Range := FLayout.glyphRangeForTextContainer(FTextContainer);
   Pt.x := X;
   Pt.y := Y;
   if Assigned(DX) then
