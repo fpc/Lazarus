@@ -101,7 +101,7 @@ type
     property Stacked default true;
     property Styles;
     property ToolTargets default [nptPoint, nptYList, nptCustom];
-    property UseReticule;
+    property UseReticule; deprecated 'Use DatapointCrosshairTool instead';
     property ZeroLevel: Double
       read FZeroLevel write SetZeroLevel stored IsZeroLevelStored;
   published
@@ -177,7 +177,7 @@ type
     property Stacked default true;
     property Styles;
     property ToolTargets;
-    property UseReticule;
+    property UseReticule; deprecated 'Use DatapointCrosshairTool instead';
     property UseZeroLevel: Boolean
       read FUseZeroLevel write SetUseZeroLevel default false;
     property ZeroLevel: Double
@@ -242,7 +242,7 @@ type
     property Source;
     property Styles;
     property ToolTargets;
-    property UseReticule default true;
+    property UseReticule default true; deprecated 'Use DatapointCrosshairTool instead';
     property XErrorBars;
     property YErrorBars;
     // Events
@@ -275,7 +275,7 @@ type
     property SeriesColor: TColor
       read FSeriesColor write SetSeriesColor default clBlack;
     property Source;
-    property UseReticule;
+    property UseReticule; deprecated 'Use DatapointCrosshairTool instead';
   end;
 
   TLineStyle = (lsVertical, lsHorizontal);

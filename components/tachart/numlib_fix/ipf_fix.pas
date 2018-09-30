@@ -780,6 +780,8 @@ var
   i : ArbInt;
   dks : array of ArbFloat;
 begin
+  Assert(hst <> hstMonotone);
+
   term:=1;
   if n < 1 then
   begin
