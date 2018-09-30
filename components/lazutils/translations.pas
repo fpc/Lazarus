@@ -99,7 +99,6 @@ type
     Duplicate: boolean;
     constructor Create(const TheIdentifierLow, TheOriginal, TheTranslated: string);
     procedure ModifyFlag(const AFlag: string; Check: boolean);
-    property Identifier: string read IdentifierLow; deprecated;
   end;
 
   { TPOFile }

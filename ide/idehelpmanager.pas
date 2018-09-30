@@ -189,10 +189,7 @@ type
     FRTLHelpDBPath: THelpBaseURLObject;
     FLazUtilsHelpDB: THelpDatabase;
     FLazUtilsHelpDBPath: THelpBaseURLObject;
-    // Used by CreateHint
-    FHtmlHelpProvider: TAbstractIDEHTMLProvider;
-    FHintWindow: THintWindow;
-    function HtmlHelpProvider: TAbstractIDEHTMLProvider;
+
     procedure RegisterIDEHelpDatabases;
     procedure RegisterDefaultIDEHelpViewers;
     procedure FindDefaultBrowser(var DefaultBrowser, Params: string);
@@ -214,9 +211,6 @@ type
     procedure ShowHelpForMessage; override;
     procedure ShowHelpForObjectInspector(Sender: TObject); override;
     procedure ShowHelpForIDEControl(Sender: TControl); override;
-    function CreateHint(aHintWindow: THintWindow; ScreenPos: TPoint;
-      const {%H-}BaseURL: string; var TheHint: string; out HintWinRect: TRect): boolean;
-      override; deprecated 'Use THintWindowManager class instead';
     function GetHintForSourcePosition(const ExpandedFilename: string;
       const CodePos: TPoint; out BaseURL, HTMLHint: string;
       Flags: TIDEHelpManagerCreateHintFlags = []): TShowHelpResult; override;
@@ -1601,60 +1595,6 @@ procedure TIDEHelpManager.ShowHelpForIDEControl(Sender: TControl);
 begin
   LoadIDEWindowHelp;
   IDEWindowHelpNodes.InvokeHelp(Sender);
-end;
-
-function TIDEHelpManager.HtmlHelpProvider: TAbstractIDEHTMLProvider;
-var
-  HelpControl: TControl;
-begin
-  Assert(Assigned(FHintWindow), 'TIDEHelpManager.HtmlHelpProvider: FHintWindow is not assigned.');
-  if FHtmlHelpProvider = nil then
-  begin
-    HelpControl := CreateIDEHTMLControl(FHintWindow, FHtmlHelpProvider, [ihcWithClipboardMenu]);
-    HelpControl.Parent := FHintWindow;
-    HelpControl.Align := alClient;
-  end;
-  Result := FHtmlHelpProvider;
-end;
-
-function TIDEHelpManager.CreateHint(aHintWindow: THintWindow; ScreenPos: TPoint;
-  const BaseURL: string; var TheHint: string; out HintWinRect: TRect): boolean;
-var
-  ms: TMemoryStream;
-  NewWidth, NewHeight: integer;
-begin
-  if CompareText(copy(TheHint,1,6),'<HTML>')=0 then begin  // Text is HTML
-    ms:=TMemoryStream.Create;
-    try
-      if TheHint<>'' then
-        ms.Write(TheHint[1],length(TheHint));
-      ms.Position:=0;
-      HtmlHelpProvider.ControlIntf.SetHTMLContent(ms,'');
-      //FHtmlHelpProvider.BaseURL:=BaseURL; //Not needed
-    finally
-      ms.Free;
-    end;
-    FHtmlHelpProvider.ControlIntf.GetPreferredControlSize(NewWidth,NewHeight);
-
-    if NewWidth <= 0 then
-      NewWidth := 500
-    else
-      inc(NewWidth, 8); // border
-
-    if NewHeight <= 0 then
-      NewHeight := 200
-    else
-      inc(NewHeight, 8); // border
-
-    HintWinRect := Rect(0, 0, NewWidth, NewHeight);
-    TheHint:='';
-  end else begin
-    HintWinRect := aHintWindow.CalcHintRect(Screen.Width, TheHint, Nil);
-    aHintWindow.HintRect := HintWinRect;      // Adds borders.
-  end;
-  OffsetRect(HintWinRect, ScreenPos.X, ScreenPos.Y+30);
-
-  Result:=true;
 end;
 
 function TIDEHelpManager.GetHintForSourcePosition(const ExpandedFilename: string;

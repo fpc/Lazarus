@@ -8066,7 +8066,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- function Visibility: default -->
       <element name="StringToColor">
         <short>
-          <var>StringToColor</var> - given a colour name like 'Blue', returns the corresponding colour value</short>
+          <var>StringToColor</var> - given a colour name like 'clBlue', returns the corresponding colour value</short>
         <descr/>
         <errors/>
         <seealso/>

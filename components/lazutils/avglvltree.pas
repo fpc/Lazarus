@@ -240,9 +240,7 @@ type
     procedure Add(const Name, Value: string); inline;
     procedure Add(const Name, Value, Delimiter: string);
     procedure AddNameValues(List: TStrings);
-    procedure AddValues(List: TStrings); inline; deprecated; // use AddNames
     procedure AddNames(List: TStrings);
-    procedure Delete(const Name: string); inline; deprecated; // use Remove
     property Values[const s: string]: string read GetValues write SetValues; default;
     function GetNodeData(Node: TAVLTreeNode): PStringToStringItem; inline;
     function AsText: string;
@@ -673,22 +671,12 @@ begin
     Values[List.Names[i]]:=List.ValueFromIndex[i];
 end;
 
-procedure TStringToStringTree.AddValues(List: TStrings);
-begin
-  AddNames(List);
-end;
-
 procedure TStringToStringTree.AddNames(List: TStrings);
 var
   i: Integer;
 begin
   for i:=0 to List.Count-1 do
     Values[List[i]]:='';
-end;
-
-procedure TStringToStringTree.Delete(const Name: string);
-begin
-  Remove(Name);
 end;
 
 function TStringToStringTree.GetNodeData(Node: TAVLTreeNode): PStringToStringItem;

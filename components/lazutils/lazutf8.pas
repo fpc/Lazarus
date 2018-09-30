@@ -77,7 +77,6 @@ function UTF8CodepointSize(p: PChar): integer; inline;
 function UTF8CharacterLength(p: PChar): integer; deprecated 'Use UTF8CodepointSize instead.';
 // Fast version of UTF8CodepointSize. Assumes the UTF-8 codepoint is valid.
 function UTF8CodepointSizeFast(p: PChar): integer; inline;
-function UTF8CharacterLengthFast(p: PChar): integer; deprecated 'Use UTF8CodepointSizeFast instead.';
 
 function UTF8Length(const s: string): PtrInt; inline;
 function UTF8Length(p: PChar; ByteCount: PtrInt): PtrInt;
@@ -155,7 +154,7 @@ function UTF8WrapText(S: string; MaxCol: integer): string; overload;
 
 type
   TEscapeMode = (emPascal, emHexPascal, emHexC, emC, emAsciiControlNames);
-function ValidUTF8String(const s: String): String; inline; deprecated 'Use Utf8EscapeControlChars() instead.'; // deprecated in 1.7
+
 function Utf8EscapeControlChars(S: String; EscapeMode: TEscapeMode = emPascal): String;
 
 type
@@ -467,11 +466,6 @@ begin
 
     else Result := 1; // An optimization + prevents compiler warning about uninitialized Result.
   end;
-end;
-
-function UTF8CharacterLengthFast(p: PChar): integer;
-begin
-  Result := UTF8CodepointSizeFast(p);
 end;
 
 function UTF8Length(const s: string): PtrInt;
@@ -2871,11 +2865,6 @@ begin
   Result := FindInvalidUTF8Codepoint(p, Count, StopOnNonUTF8);
 end;
 
-function ValidUTF8String(const s: String): String; inline;
-begin
-  Result := Utf8EscapeControlChars(s, emPascal);
-end;
-
 {
   Translates escape characters inside an UTF8 encoded string into
   human readable format.
@@ -2888,8 +2877,8 @@ function Utf8EscapeControlChars(S: String; EscapeMode: TEscapeMode = emPascal): 
 const
   //lookuptables are about 1.8 to 1.3 times faster than a function using IntToStr or IntToHex
   PascalEscapeStrings: Array[#0..#31] of string = (
-    '#0' , '#1' , '#2' , '#3' , '#4' , '#5' , '#6' , '#7' ,
-    '#8' , '#9' , '#10', '#11', '#12', '#13', '#14', '#15',
+    '#00', '#01', '#02', '#03', '#04', '#05', '#06', '#07',
+    '#08', '#09', '#10', '#11', '#12', '#13', '#14', '#15',
     '#16', '#17', '#18', '#19', '#20', '#21', '#22', '#23',
     '#24', '#25', '#26', '#27', '#28', '#29', '#30', '#31');
   CEscapeStrings: Array[#0..#31] of string = (

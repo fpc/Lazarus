@@ -259,7 +259,6 @@ type
 
     procedure ValidateToolDependencies; virtual;
     procedure BuildTree(Range: TLinkScannerRange);
-    procedure BuildTree(OnlyInterface: boolean); deprecated;
     procedure BuildTreeAndGetCleanPos(TreeRange: TTreeRange;
         ScanRange: TLinkScannerRange;
         const CursorPos: TCodeXYPosition; out CleanCursorPos: integer;
@@ -994,14 +993,6 @@ begin
   {$IFDEF MEM_CHECK}
   CheckHeap('TPascalParserTool.BuildTree END '+IntToStr(MemCheck_GetMem_Cnt));
   {$ENDIF}
-end;
-
-procedure TPascalParserTool.BuildTree(OnlyInterface: boolean);
-begin
-  if OnlyInterface then
-    BuildTree(lsrImplementationStart)
-  else
-    BuildTree(lsrEnd);
 end;
 
 procedure TPascalParserTool.BuildSubTreeForBeginBlock(BeginNode: TCodeTreeNode);
