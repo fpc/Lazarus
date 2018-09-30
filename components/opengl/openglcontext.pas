@@ -275,6 +275,7 @@ type
     class function CreateHandle(const AWinControl: TWinControl;
                                 const AParams: TCreateParams): HWND; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
+    class function GetDoubleBuffered(const AWinControl: TWinControl): Boolean; override;
   end;
 
 
@@ -721,6 +722,11 @@ begin
   LOpenGLDestroyContextInfo(AWinControl);
   // do not use "inherited DestroyHandle", because the LCL changes the hierarchy at run time
   TWSWinControlClass(ClassParent).DestroyHandle(AWinControl);
+end;
+
+class function TWSOpenGLControl.GetDoubleBuffered(const AWinControl: TWinControl): Boolean;
+begin
+  Result := False;
 end;
 
 initialization

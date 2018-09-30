@@ -4293,13 +4293,32 @@ begin
 end;
 
 function TGtk3MenuItem.CreateWidget(const Params: TCreateParams): PGtkWidget;
+var
+  ndx:integer;
+  pmenu:TMenuItem;
+  pl:PGsList;
 begin
   FWidgetType := [wtWidget, wtMenuItem];
   if MenuItem.Caption = cLineCaption then
     Result := TGtkSeparatorMenuItem.new
   else
   if MenuItem.RadioItem and not MenuItem.HasIcon then
-    Result := TGtkRadioMenuItem.new(nil)
+  begin
+    Result := TGtkRadioMenuItem.new(nil);
+    if Assigned(menuItem.Parent) then
+    begin
+      ndx:=menuItem.Parent.IndexOf(MenuItem);
+      if (ndx>0) then
+      begin
+        pMenu:=menuItem.Parent.Items[ndx-1];
+        if (MenuItem.GroupIndex>0) and (pMenu.GroupIndex=MenuItem.GroupIndex) then
+        begin
+          pl:=PGtkRadioMenuItem(TGtk3MenuItem(pMenu.Handle).Widget)^.get_group;
+          PGtkRadioMenuItem(Result)^.set_group(pl);
+        end;
+      end;
+    end;
+  end
   else
   if MenuItem.IsCheckItem or MenuItem.HasIcon then
     Result := TGtkCheckMenuItem.new
