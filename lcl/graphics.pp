@@ -314,7 +314,7 @@ const
   clDontMask = clBlack;
 
   // !! deprecated colors !!
-  {$warnings off}
+  {$IFDEF DefineCLXColors}
   // CLX base, mapped, pseudo, rgb values
   clForeground = TColor(-1) deprecated;
   clButton = TColor(-2) deprecated;
@@ -391,7 +391,7 @@ type
   TColorRole = (crForeground, crButton, crLight, crMidlight, crDark, crMid,
     crText, crBrightText, crButtonText, crBase, crBackground, crShadow,
     crHighlight, crHighlightText, crNoRole);
-  {$warnings on}
+  {$ENDIF}
 
 const
   cmBlackness = BLACKNESS;
@@ -2346,7 +2346,11 @@ type
 const
   FirstDeprecatedColorIndex = 53;
   LastDeprecatedColorIndex = 106;
+  {$IFDEF DefineCLXColors}
   Colors: array[0..106] of TIdentMapEntry = (
+  {$ELSE}
+  Colors: array[0..52] of TIdentMapEntry = (
+  {$ENDIF}
     // standard colors
     (Value: clBlack; Name: 'clBlack'),
     (Value: clMaroon; Name: 'clMaroon'),
@@ -2409,11 +2413,11 @@ const
     (Value: clGradientInactiveCaption; Name: 'clGradientInactiveCaption'),
 
     // one our special color
-    (Value: clForm; Name: 'clForm'),
+    (Value: clForm; Name: 'clForm')
 
-    {$warnings off}
+    {$IFDEF DefineCLXColors}
     // CLX base, mapped, pseudo, rgb values
-    (Value: clForeground; Name: 'clForeground'),
+   ,(Value: clForeground; Name: 'clForeground'),
     (Value: clButton; Name: 'clButton'),
     (Value: clLight; Name: 'clLight'),
     (Value: clMidlight; Name: 'clMidlight'),
@@ -2475,7 +2479,7 @@ const
     (Value: clActiveShadow; Name: 'clActiveShadow'),
     (Value: clActiveHighlight; Name: 'clActiveHighlight'),
     (Value: clActiveHighlightedText; Name: 'clActiveHighlightedText')
-    {$warnings on}
+    {$ENDIF}
     );
 
 function IdentEntry(Entry: Longint; out MapEntry: TIdentMapEntry): boolean;
@@ -2515,8 +2519,8 @@ end;
 function SysColorToSysColorIndex(Color: TColor): integer;
 begin
   if (Cardinal(Color) and Cardinal(SYS_COLOR_BASE)) <> 0 then begin
+    {$IFDEF DefineCLXColors}
     case Color of
-    {$warnings off}
     clHighlightedText..clForeground:   // Deprecated values!
       Result:=clForeground+COLOR_clForeground-Color;
     clNormalHighlightedText..clNormalForeground:
@@ -2525,10 +2529,12 @@ begin
       Result:=clDisabledForeground+COLOR_clDisabledForeground-Color;
     clActiveHighlightedText..clActiveForeground:
       Result:=clActiveForeground+COLOR_clActiveForeground-Color;
-    {$warnings on}
     else
+    {$ENDIF}
       Result:=Color and $FF;
+    {$IFDEF DefineCLXColors}
     end;
+    {$ENDIF}
   end else begin
     Result:=-1;
   end;

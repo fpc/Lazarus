@@ -1706,7 +1706,7 @@ const
   SYS_COLOR_BASE = TColorRef($80000000);
 
   // !! deprecated colors !!
-
+  {$IFDEF DefineCLXColors}
   // CLX base, mapped, pseudo, rgb values
   COLOR_clForeground =  32;
   COLOR_clButton =  COLOR_clForeground+1;
@@ -1770,6 +1770,7 @@ const
   COLOR_clActiveShadow =  COLOR_clActiveForeground+11;
   COLOR_clActiveHighlight =  COLOR_clActiveForeground+12;
   COLOR_clActiveHighlightedText =  COLOR_clActiveForeground+13;
+  {$ENDIF}
 
 //==============================================
 // Stock Objects
