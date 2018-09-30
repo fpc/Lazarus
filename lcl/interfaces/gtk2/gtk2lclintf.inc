@@ -788,7 +788,10 @@ begin
 
     if (SizeConstraints.Control=nil) then exit;
 
-    if SizeConstraints.Control is TScrollBar then begin
+    if (SizeConstraints.Control is TGroupBox) then begin
+      MinWidth:=10;
+    end
+    else if SizeConstraints.Control is TScrollBar then begin
       // TScrollBar
       if TScrollBar(SizeConstraints.Control).Kind=sbHorizontal then begin
         Widget:=GetStyleWidget(lgsHorizontalScrollbar);
