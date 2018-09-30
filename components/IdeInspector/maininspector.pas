@@ -93,7 +93,6 @@ type
     procedure TreeView1Change(Sender: TObject; Node: TTreeNode);
     procedure TreeView1Click(Sender: TObject);
   private
-    { private declarations }
     FSelected: TComponent;
     FFollowFrames: Boolean;
     FHistoryList: TList;
@@ -118,7 +117,6 @@ type
     procedure DisplayCurrent;
     procedure UpdateHistory(ForceAdd: Boolean = False);
   public
-    { public declarations }
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
   end;
@@ -128,7 +126,7 @@ var
 
 resourcestring
   ideinspInspectIDE = 'Inspect IDE';
-  ideinspApplcicationComponents = 'Applcication.Components';
+  ideinspApplicationComponents = 'Application.Components';
   ideinspScreenForms = 'Screen.Forms';
   ideinspQuickLinks = 'Quick links';
   ideinspComponentsOwned = 'Components (Owned)';
@@ -390,7 +388,7 @@ begin
   popComponent.Items.Clear;
 
   m := TExtMenuItem.Create(Self);
-  m.Caption := ideinspApplcicationComponents + ' (' + IntToStr(Application.ComponentCount) + ')' ;
+  m.Caption := ideinspApplicationComponents + ' (' + IntToStr(Application.ComponentCount) + ')' ;
   m.Enabled := False;
   popComponent.Items.Add(m);
   for i := 0 to Application.ComponentCount - 1 do begin
