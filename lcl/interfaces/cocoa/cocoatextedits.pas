@@ -217,8 +217,6 @@ type
     list: TCocoaComboBoxList;
     resultNS: NSString;  //use to return values to combo
     function acceptsFirstResponder: Boolean; override;
-    procedure textDidChange(notification: NSNotification); override;
-    procedure textDidEndEditing(notification: NSNotification); override;
     // NSComboBoxDataSourceProtocol
     function comboBox_objectValueForItemAtIndex_(combo: TCocoaComboBox; row: NSInteger): id; message 'comboBox:objectValueForItemAtIndex:';
     function comboBox_indexOfItemWithStringValue(aComboBox: NSComboBox; string_: NSString): NSUInteger; message 'comboBox:indexOfItemWithStringValue:';
@@ -1038,26 +1036,6 @@ end;
 function TCocoaComboBox.acceptsFirstResponder: Boolean;
 begin
   Result := True;
-end;
-
-procedure TCocoaComboBox.textDidChange(notification: NSNotification);
-var
-  TheEvent: NSEvent;
-begin
-  inherited textDidChange(notification);
-  TheEvent := nsapp.currentevent;
-  if assigned(callback) and (TheEvent.type_ = NSKeyDown) then
-    callback.KeyEvent(TheEvent)
-end;
-
-procedure TCocoaComboBox.textDidEndEditing(notification: NSNotification);
-var
-  TheEvent: NSEvent;
-begin
-  inherited textDidEndEditing(notification);
-  TheEvent := nsapp.currentevent;
-  if assigned(callback) and (TheEvent.type_ = NSKeyDown) then
-    callback.KeyEvent(TheEvent)
 end;
 
 function TCocoaComboBox.comboBox_objectValueForItemAtIndex_(combo:TCocoaComboBox;
