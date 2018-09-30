@@ -19,10 +19,13 @@ type
   TCheckGroupStringList = class(TStringList)
   private
     FCheckGroup: TCustomCheckGroup;
+    procedure RestoreCheckStates(const AStates: TByteDynArray);
+    procedure SaveCheckStates(out AStates: TByteDynArray);
   protected
     procedure Changed; override;
   public
     constructor Create(TheCheckGroup: TCustomCheckGroup);
+    procedure Delete(AIndex: Integer); override;
   end;
 
 { TCheckGroupStringList }
@@ -41,6 +44,46 @@ begin
   inherited Create;
   FCheckGroup := TheCheckGroup;
 end;
+
+procedure TCheckGroupStringList.Delete(AIndex: Integer);
+// Deleting destroys the checked state of the items -> we must save and restore it
+// Issue https://bugs.freepascal.org/view.php?id=34327.
+var
+  b: TByteDynArray;
+  i: Integer;
+begin
+  SaveCheckStates(b);
+
+  inherited Delete(AIndex);
+
+  for i:= AIndex to High(b)-1 do b[i] := b[i+1];
+  SetLength(b, Length(b)-1);
+  RestoreCheckStates(b);
+end;
+
+procedure TCheckGroupStringList.RestoreCheckStates(const AStates: TByteDynArray);
+var
+  i: Integer;
+begin
+  Assert(Length(AStates) = FCheckGroup.Items.Count);
+  for i:=0 to FCheckgroup.Items.Count-1 do begin
+    FCheckGroup.Checked[i] := AStates[i] and 1 <> 0;
+    FCheckGroup.CheckEnabled[i] := AStates[i] and 2 <> 0;
+  end;
+end;
+
+procedure TCheckGroupStringList.SaveCheckStates(out AStates: TByteDynArray);
+var
+  i: Integer;
+begin
+  SetLength(AStates, FCheckgroup.Items.Count);
+  for i:=0 to FCheckgroup.Items.Count-1 do begin
+    AStates[i] := 0;
+    if FCheckGroup.Checked[i] then inc(AStates[i]);
+    if FCheckGroup.CheckEnabled[i] then inc(AStates[i], 2);
+  end;
+end;
+
 
 { TCustomCheckGroup }
 
