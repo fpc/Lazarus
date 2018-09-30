@@ -4182,7 +4182,9 @@ msgid "Ambiguous Unit Name"
 msgstr "Nom d'unité équivoque"
 
 #: lazarusidestrconsts.lisa2pancestortype
-msgid "Ancestor Type"
+#, fuzzy
+#| msgid "Ancestor Type"
+msgid "Ancestor type"
 msgstr "Type d'ancêtre"
 
 #: lazarusidestrconsts.lisa2papascalunitmusthavetheextensionpporpas
@@ -4214,6 +4216,10 @@ msgstr "Créer une nouvelle exigence"
 msgid "Dependency"
 msgstr "Dépendance"
 
+#: lazarusidestrconsts.lisa2pdirectoryforunitfile
+msgid "Directory for unit file:"
+msgstr ""
+
 #: lazarusidestrconsts.lisa2pexistingfile2
 msgid "Existing file: \"%s\""
 msgstr "Fichier existant : \"%s\""
@@ -4238,9 +4244,17 @@ msgstr "Nom de fichier/URL"
 msgid "File not unit"
 msgstr "Le fichier n'est pas une unité"
 
-#: lazarusidestrconsts.lisa2piconandsize
-msgid "Icon (maximum 24x24):"
-msgstr "Icône (24x24 maximum) :"
+#: lazarusidestrconsts.lisa2picon24x24
+msgid "Icon 24x24:"
+msgstr ""
+
+#: lazarusidestrconsts.lisa2picon36x36
+msgid "Icon 36x36:"
+msgstr ""
+
+#: lazarusidestrconsts.lisa2picon48x48
+msgid "Icon 48x48:"
+msgstr ""
 
 #: lazarusidestrconsts.lisa2pinvalidancestortype
 msgid "Invalid Ancestor Type"
@@ -4291,7 +4305,9 @@ msgid "Page Name too long"
 msgstr "Nom de page trop long"
 
 #: lazarusidestrconsts.lisa2ppalettepage
-msgid "Palette Page:"
+#, fuzzy
+#| msgid "Palette Page:"
+msgid "Palette page:"
 msgstr "Page de palette :"
 
 #: lazarusidestrconsts.lisa2ppascalunitsmusthavetheextensionpporpas
@@ -4380,29 +4396,19 @@ msgstr "Le nom d'unité \"%s\" existe déjà dans ce paquet."
 msgid "The unit name \"%s\"%sand filename \"%s\" differ."
 msgstr "Le nom d'unité \"%s\"%set le nom de fichier \"%s\" diffèrent."
 
-#: lazarusidestrconsts.lisa2ptheunitnamedoesnotcorrespondtothefilename
-msgid "The unit name \"%s\" does not correspond to the filename."
-msgstr "Le nom d'unité \"%s\" ne correspond pas au nom de fichier."
-
 #: lazarusidestrconsts.lisa2ptheunitnameisthesameasanregisteredcomponent
 msgid "The unit name \"%s\" is the same as a registered component.%sUsing this can cause strange error messages."
 msgstr "Le nom de l'unité \"%s\" est le même qu'un composant installé.%sUtiliser ce nom peut causer d'étranges messages d'erreurs."
 
-#: lazarusidestrconsts.lisa2punitfilename2
-msgid "Unit File Name:"
-msgstr "Nom du fichier de l'unité :"
-
 #: lazarusidestrconsts.lisa2punitname
-msgid "Unit Name:"
+#, fuzzy
+#| msgid "Unit Name:"
+msgid "Unit name:"
 msgstr "Nom d'unité :"
 
 #: lazarusidestrconsts.lisa2punitnamealreadyexists
 msgid "Unitname already exists"
 msgstr "Nom d'unité déjà existant"
-
-#: lazarusidestrconsts.lisa2punitnameinvalid
-msgid "Unit Name Invalid"
-msgstr "Nom d'unité incorrect"
 
 #: lazarusidestrconsts.lisabandonchanges
 msgid "Abandon changes?"
@@ -18367,10 +18373,6 @@ msgstr "Le titre de la barre des tâches montre par exemple : project1.lpi - Laz
 #: lazarusidestrconsts.listitleleaveemptyfordefault
 msgid "Title (leave empty for default)"
 msgstr "Titre (laisser vide pour la valeur par défaut)"
-
-#: lazarusidestrconsts.listitleopencomponenticon24x24
-msgid "Choose a component icon 24x24"
-msgstr "Choisir une icône de composant 24x24"
 
 #: lazarusidestrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"

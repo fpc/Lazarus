@@ -4155,7 +4155,9 @@ msgid "Ambiguous Unit Name"
 msgstr "Ristiriitainen käännösyksikön nimi"
 
 #: lazarusidestrconsts.lisa2pancestortype
-msgid "Ancestor Type"
+#, fuzzy
+#| msgid "Ancestor Type"
+msgid "Ancestor type"
 msgstr "Kantatyyppi"
 
 #: lazarusidestrconsts.lisa2papascalunitmusthavetheextensionpporpas
@@ -4187,6 +4189,10 @@ msgstr "Luo uusi riippuvuus"
 msgid "Dependency"
 msgstr "Riippuvuus"
 
+#: lazarusidestrconsts.lisa2pdirectoryforunitfile
+msgid "Directory for unit file:"
+msgstr ""
+
 #: lazarusidestrconsts.lisa2pexistingfile2
 msgid "Existing file: \"%s\""
 msgstr "Olemassaoleva tiedosto: \"%s\""
@@ -4213,9 +4219,17 @@ msgstr "Tiedoston nimi"
 msgid "File not unit"
 msgstr "Tiedosto ei ole käännösyksikkö"
 
-#: lazarusidestrconsts.lisa2piconandsize
-msgid "Icon (maximum 24x24):"
-msgstr "Kuvake (maximi 24x24):"
+#: lazarusidestrconsts.lisa2picon24x24
+msgid "Icon 24x24:"
+msgstr ""
+
+#: lazarusidestrconsts.lisa2picon36x36
+msgid "Icon 36x36:"
+msgstr ""
+
+#: lazarusidestrconsts.lisa2picon48x48
+msgid "Icon 48x48:"
+msgstr ""
 
 #: lazarusidestrconsts.lisa2pinvalidancestortype
 msgid "Invalid Ancestor Type"
@@ -4266,7 +4280,9 @@ msgid "Page Name too long"
 msgstr "Sivun nimi on liian pitkä"
 
 #: lazarusidestrconsts.lisa2ppalettepage
-msgid "Palette Page:"
+#, fuzzy
+#| msgid "Palette Page:"
+msgid "Palette page:"
 msgstr "Palettisivu:"
 
 #: lazarusidestrconsts.lisa2ppascalunitsmusthavetheextensionpporpas
@@ -4355,29 +4371,19 @@ msgstr "Käännösyksikkö \"%s\" on jo tässä paketissa."
 msgid "The unit name \"%s\"%sand filename \"%s\" differ."
 msgstr "Käännösyksikön \"%s\"%sja tiedoston \"%s\" nimet eroavat."
 
-#: lazarusidestrconsts.lisa2ptheunitnamedoesnotcorrespondtothefilename
-msgid "The unit name \"%s\" does not correspond to the filename."
-msgstr "Käännösyksikön nimi \"%s\" ei vastaa tiedoston nimeä."
-
 #: lazarusidestrconsts.lisa2ptheunitnameisthesameasanregisteredcomponent
 msgid "The unit name \"%s\" is the same as a registered component.%sUsing this can cause strange error messages."
 msgstr "Käännösyksikön nimi \"%s\" on sama kuin rekisteröidyllä komponentilla.%sSen käyttö voi aiheuttaa outoja virheitä."
 
-#: lazarusidestrconsts.lisa2punitfilename2
-msgid "Unit File Name:"
-msgstr "Käännösyksikön tiedostonimi:"
-
 #: lazarusidestrconsts.lisa2punitname
-msgid "Unit Name:"
+#, fuzzy
+#| msgid "Unit Name:"
+msgid "Unit name:"
 msgstr "Käännösyksikön nimi:"
 
 #: lazarusidestrconsts.lisa2punitnamealreadyexists
 msgid "Unitname already exists"
 msgstr "Käännösyksikkö on jo olemassa"
-
-#: lazarusidestrconsts.lisa2punitnameinvalid
-msgid "Unit Name Invalid"
-msgstr "Kelvoton käännösyksikön nimi"
 
 #: lazarusidestrconsts.lisabandonchanges
 msgid "Abandon changes?"
@@ -18223,10 +18229,6 @@ msgstr "Tehtäväpalkin otsikko näyttää esim: project1.lpi - Lazarus"
 #: lazarusidestrconsts.listitleleaveemptyfordefault
 msgid "Title (leave empty for default)"
 msgstr "Otsikko (oletusotsikko jos tyhjä)"
-
-#: lazarusidestrconsts.listitleopencomponenticon24x24
-msgid "Choose a component icon 24x24"
-msgstr "Valitse komponentin kuvake 24x24"
 
 #: lazarusidestrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"

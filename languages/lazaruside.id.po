@@ -4280,7 +4280,9 @@ msgid "Ambiguous Unit Name"
 msgstr "Nama Unit Dwimakna"
 
 #: lazarusidestrconsts.lisa2pancestortype
-msgid "Ancestor Type"
+#, fuzzy
+#| msgid "Ancestor Type"
+msgid "Ancestor type"
 msgstr "Tipe Karuhun"
 
 #: lazarusidestrconsts.lisa2papascalunitmusthavetheextensionpporpas
@@ -4316,6 +4318,10 @@ msgstr ""
 msgid "Dependency"
 msgstr "Dependensi"
 
+#: lazarusidestrconsts.lisa2pdirectoryforunitfile
+msgid "Directory for unit file:"
+msgstr ""
+
 #: lazarusidestrconsts.lisa2pexistingfile2
 msgid "Existing file: \"%s\""
 msgstr ""
@@ -4342,8 +4348,16 @@ msgstr "Nama file"
 msgid "File not unit"
 msgstr "File bukan unit"
 
-#: lazarusidestrconsts.lisa2piconandsize
-msgid "Icon (maximum 24x24):"
+#: lazarusidestrconsts.lisa2picon24x24
+msgid "Icon 24x24:"
+msgstr ""
+
+#: lazarusidestrconsts.lisa2picon36x36
+msgid "Icon 36x36:"
+msgstr ""
+
+#: lazarusidestrconsts.lisa2picon48x48
+msgid "Icon 48x48:"
 msgstr ""
 
 #: lazarusidestrconsts.lisa2pinvalidancestortype
@@ -4399,7 +4413,9 @@ msgid "Page Name too long"
 msgstr "Nama Halaman terlalu panjang"
 
 #: lazarusidestrconsts.lisa2ppalettepage
-msgid "Palette Page:"
+#, fuzzy
+#| msgid "Palette Page:"
+msgid "Palette page:"
 msgstr "Halaman Palet:"
 
 #: lazarusidestrconsts.lisa2ppascalunitsmusthavetheextensionpporpas
@@ -4515,33 +4531,21 @@ msgstr "Nama unit %s%s%s sudah ada dalam paket ini."
 msgid "The unit name \"%s\"%sand filename \"%s\" differ."
 msgstr "Nama unit %s%s%s dan nama file %s%s%s berbeda."
 
-#: lazarusidestrconsts.lisa2ptheunitnamedoesnotcorrespondtothefilename
-#, fuzzy,badformat
-#| msgid "The unit name %s%s%s does not correspond to the filename."
-msgid "The unit name \"%s\" does not correspond to the filename."
-msgstr "Nama unit %s%s%s tidak terkait ke nama file."
-
 #: lazarusidestrconsts.lisa2ptheunitnameisthesameasanregisteredcomponent
 #, fuzzy,badformat
 #| msgid "The unit name %s%s%s is the same as a registered component.%sUsing this can cause strange error messages."
 msgid "The unit name \"%s\" is the same as a registered component.%sUsing this can cause strange error messages."
 msgstr "Nama unit %s%s%s sama dengan komponen terdaftar.%sMenggunakan ini bisa menyebabkan pesan kesalahan aneh."
 
-#: lazarusidestrconsts.lisa2punitfilename2
-msgid "Unit File Name:"
-msgstr "Nama File Unit:"
-
 #: lazarusidestrconsts.lisa2punitname
-msgid "Unit Name:"
+#, fuzzy
+#| msgid "Unit Name:"
+msgid "Unit name:"
 msgstr "Nama Unit:"
 
 #: lazarusidestrconsts.lisa2punitnamealreadyexists
 msgid "Unitname already exists"
 msgstr "Nama unit sudah ada"
-
-#: lazarusidestrconsts.lisa2punitnameinvalid
-msgid "Unit Name Invalid"
-msgstr "Nama Unit tidak benar"
 
 #: lazarusidestrconsts.lisabandonchanges
 msgid "Abandon changes?"
@@ -19104,10 +19108,6 @@ msgstr ""
 
 #: lazarusidestrconsts.listitleleaveemptyfordefault
 msgid "Title (leave empty for default)"
-msgstr ""
-
-#: lazarusidestrconsts.listitleopencomponenticon24x24
-msgid "Choose a component icon 24x24"
 msgstr ""
 
 #: lazarusidestrconsts.listmfunctionappendpathdelimiter

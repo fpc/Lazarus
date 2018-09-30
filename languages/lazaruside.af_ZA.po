@@ -4122,7 +4122,7 @@ msgid "Ambiguous Unit Name"
 msgstr ""
 
 #: lazarusidestrconsts.lisa2pancestortype
-msgid "Ancestor Type"
+msgid "Ancestor type"
 msgstr ""
 
 #: lazarusidestrconsts.lisa2papascalunitmusthavetheextensionpporpas
@@ -4154,6 +4154,10 @@ msgstr ""
 msgid "Dependency"
 msgstr ""
 
+#: lazarusidestrconsts.lisa2pdirectoryforunitfile
+msgid "Directory for unit file:"
+msgstr ""
+
 #: lazarusidestrconsts.lisa2pexistingfile2
 msgid "Existing file: \"%s\""
 msgstr ""
@@ -4178,8 +4182,16 @@ msgstr ""
 msgid "File not unit"
 msgstr ""
 
-#: lazarusidestrconsts.lisa2piconandsize
-msgid "Icon (maximum 24x24):"
+#: lazarusidestrconsts.lisa2picon24x24
+msgid "Icon 24x24:"
+msgstr ""
+
+#: lazarusidestrconsts.lisa2picon36x36
+msgid "Icon 36x36:"
+msgstr ""
+
+#: lazarusidestrconsts.lisa2picon48x48
+msgid "Icon 48x48:"
 msgstr ""
 
 #: lazarusidestrconsts.lisa2pinvalidancestortype
@@ -4231,7 +4243,7 @@ msgid "Page Name too long"
 msgstr ""
 
 #: lazarusidestrconsts.lisa2ppalettepage
-msgid "Palette Page:"
+msgid "Palette page:"
 msgstr ""
 
 #: lazarusidestrconsts.lisa2ppascalunitsmusthavetheextensionpporpas
@@ -4318,28 +4330,16 @@ msgstr ""
 msgid "The unit name \"%s\"%sand filename \"%s\" differ."
 msgstr ""
 
-#: lazarusidestrconsts.lisa2ptheunitnamedoesnotcorrespondtothefilename
-msgid "The unit name \"%s\" does not correspond to the filename."
-msgstr ""
-
 #: lazarusidestrconsts.lisa2ptheunitnameisthesameasanregisteredcomponent
 msgid "The unit name \"%s\" is the same as a registered component.%sUsing this can cause strange error messages."
 msgstr ""
 
-#: lazarusidestrconsts.lisa2punitfilename2
-msgid "Unit File Name:"
-msgstr ""
-
 #: lazarusidestrconsts.lisa2punitname
-msgid "Unit Name:"
+msgid "Unit name:"
 msgstr ""
 
 #: lazarusidestrconsts.lisa2punitnamealreadyexists
 msgid "Unitname already exists"
-msgstr ""
-
-#: lazarusidestrconsts.lisa2punitnameinvalid
-msgid "Unit Name Invalid"
 msgstr ""
 
 #: lazarusidestrconsts.lisabandonchanges
@@ -18255,10 +18255,6 @@ msgstr ""
 
 #: lazarusidestrconsts.listitleleaveemptyfordefault
 msgid "Title (leave empty for default)"
-msgstr ""
-
-#: lazarusidestrconsts.listitleopencomponenticon24x24
-msgid "Choose a component icon 24x24"
 msgstr ""
 
 #: lazarusidestrconsts.listmfunctionappendpathdelimiter

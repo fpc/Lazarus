@@ -2150,8 +2150,7 @@ var
     if (AddParams.Dependency<>nil)
     and (not PkgDependsOn(AddParams.Dependency.PackageName)) then
       PackageGraph.AddDependencyToPackage(LazPackage,AddParams.Dependency);
-    if (AddParams.IconFile<>'')
-    and (not PkgDependsOn('LCL')) then
+    if (AddParams.IconNormFile<>'') and (not PkgDependsOn('LCL')) then
       PackageGraph.AddDependencyToPackage(LazPackage,PackageGraph.LCLPackage);
     PackageEditors.DeleteAmbiguousFiles(LazPackage,AddParams.UnitFilename);
     // open file in editor

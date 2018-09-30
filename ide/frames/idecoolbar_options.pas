@@ -446,7 +446,6 @@ begin
       I := FTempCoolBar.FindByToolBar((CoolBar.Bands.Items[ToDelete].Control as TToolBar));
       if I <> -1 then
         FTempCoolBar.ToolBars.Delete(I);
-      CoolBar.Bands.Delete(ToDelete);
     end;
   end;
   EnableDisableToolbarButtons;

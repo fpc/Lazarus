@@ -5,12 +5,12 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-09-14 15:23+0300\n"
+"PO-Revision-Date: 2018-09-27 01:53+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
 "Language: ru\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 1.7.7\n"
 
 #: lazarusidestrconsts.dbgbreakgroupdlgcaption
 msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaption"
@@ -4120,7 +4120,7 @@ msgid "Ambiguous Unit Name"
 msgstr "Дублирующееся имя модуля"
 
 #: lazarusidestrconsts.lisa2pancestortype
-msgid "Ancestor Type"
+msgid "Ancestor type"
 msgstr "Тип предка"
 
 #: lazarusidestrconsts.lisa2papascalunitmusthavetheextensionpporpas
@@ -4152,6 +4152,10 @@ msgstr "Создать новую зависимость"
 msgid "Dependency"
 msgstr "Зависимость"
 
+#: lazarusidestrconsts.lisa2pdirectoryforunitfile
+msgid "Directory for unit file:"
+msgstr "Каталог файла модуля:"
+
 #: lazarusidestrconsts.lisa2pexistingfile2
 msgid "Existing file: \"%s\""
 msgstr "Существующий файл: \"%s\""
@@ -4176,9 +4180,17 @@ msgstr "Имя файла либо адрес"
 msgid "File not unit"
 msgstr "Файл не является модулем"
 
-#: lazarusidestrconsts.lisa2piconandsize
-msgid "Icon (maximum 24x24):"
-msgstr "Значок (не более 24x24):"
+#: lazarusidestrconsts.lisa2picon24x24
+msgid "Icon 24x24:"
+msgstr "Значок 24x24:"
+
+#: lazarusidestrconsts.lisa2picon36x36
+msgid "Icon 36x36:"
+msgstr "Значок 36x36:"
+
+#: lazarusidestrconsts.lisa2picon48x48
+msgid "Icon 48x48:"
+msgstr "Значок 48x48:"
 
 #: lazarusidestrconsts.lisa2pinvalidancestortype
 msgid "Invalid Ancestor Type"
@@ -4229,7 +4241,7 @@ msgid "Page Name too long"
 msgstr "Имя вкладки слишком длинное"
 
 #: lazarusidestrconsts.lisa2ppalettepage
-msgid "Palette Page:"
+msgid "Palette page:"
 msgstr "Вкладка палитры:"
 
 #: lazarusidestrconsts.lisa2ppascalunitsmusthavetheextensionpporpas
@@ -4316,29 +4328,17 @@ msgstr "Имя модуля \"%s\" уже существует в этом па�
 msgid "The unit name \"%s\"%sand filename \"%s\" differ."
 msgstr "Имя модуля \"%s\"%sи имя файла \"%s\" различаются."
 
-#: lazarusidestrconsts.lisa2ptheunitnamedoesnotcorrespondtothefilename
-msgid "The unit name \"%s\" does not correspond to the filename."
-msgstr "Имя модуля \"%s\" не соответствует имени файла."
-
 #: lazarusidestrconsts.lisa2ptheunitnameisthesameasanregisteredcomponent
 msgid "The unit name \"%s\" is the same as a registered component.%sUsing this can cause strange error messages."
 msgstr "Имя модуля \"%s\" совпадает с зарегистрированным компонентом.%sЭто может привести к странным сообщениям об ошибках."
 
-#: lazarusidestrconsts.lisa2punitfilename2
-msgid "Unit File Name:"
-msgstr "Имя файла модуля:"
-
 #: lazarusidestrconsts.lisa2punitname
-msgid "Unit Name:"
+msgid "Unit name:"
 msgstr "Имя модуля:"
 
 #: lazarusidestrconsts.lisa2punitnamealreadyexists
 msgid "Unitname already exists"
 msgstr "Модуль с таким именем уже существует"
-
-#: lazarusidestrconsts.lisa2punitnameinvalid
-msgid "Unit Name Invalid"
-msgstr "Имя модуля недопустимо"
 
 #: lazarusidestrconsts.lisabandonchanges
 msgid "Abandon changes?"
@@ -18229,10 +18229,6 @@ msgstr "Заголовок в панели задач имеет следующ�
 #: lazarusidestrconsts.listitleleaveemptyfordefault
 msgid "Title (leave empty for default)"
 msgstr "Название (оставьте пустым для значения по умолчанию)"
-
-#: lazarusidestrconsts.listitleopencomponenticon24x24
-msgid "Choose a component icon 24x24"
-msgstr "Выберите значок компонента (24x24)"
 
 #: lazarusidestrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"
