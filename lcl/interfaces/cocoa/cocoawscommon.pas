@@ -832,15 +832,27 @@ begin
   VKKeyCode := MacCodeToVK(KeyCode);
 
   case VKKeyCode of
-    // for sure, these are "non-printable" keys
-    VK_LEFT, VK_RIGHT, VK_UP, VK_DOWN, VK_DELETE:
+    // for sure, these are "non-printable" keys (see http://wiki.lazarus.freepascal.org/LCL_Key_Handling)
+    VK_F1..VK_F24,                     // Function keys (F1-F12)
+    VK_PRINT, VK_SCROLL, VK_PAUSE,     // Print Screen, Scroll Lock, Pause
+    VK_CAPITAL, VK_TAB,                // Caps Lock, Tab
+    VK_INSERT, VK_DELETE,              // Insert,  Delete
+    VK_HOME, VK_END,                   // Home, End
+    VK_PRIOR,VK_NEXT,                  // Page Up,Down
+    VK_LEFT, VK_RIGHT, VK_UP, VK_DOWN, // Arrow Keys
+    VK_NUMLOCK,                        // Num Lock
+    VK_SLEEP, VK_APPS  // power/sleep, context menu
+    :
       SendChar := false;
+
     // for sure, these are "printable" keys
-    VK_TAB, VK_BACK, VK_RETURN, VK_ESCAPE:
+    VK_ESCAPE,
+    VK_BACK,
+    VK_RETURN:
     begin
       SendChar := true;
       KeyChar := char(VKKeyCode);
-      UTF8Character := UTF8Character;
+      UTF8Character := KeyChar;
     end;
   else
     //printable keys
