@@ -38,11 +38,11 @@ type
     function GetSectionIndex(const SectionName: AnsiString): Integer;
 
     function GetSection(const AName: String): PDbgImageSection; override;
-    procedure AddSubFilesToLoaderList(ALoaderList: TObject; PrimaryLoader: TObject); override;
   public
     class function isValid(ASource: TDbgFileLoader): Boolean; override;
     class function UserName: AnsiString; override;
     class procedure LoadSubFiles(ASubFiles: TStrings; ALoaderList: TFPObjectList);
+    procedure AddSubFilesToLoaderList(ALoaderList: TObject; PrimaryLoader: TObject); override;
     procedure ParseSymbolTable(AfpSymbolInfo: TfpSymbolList); override;
   public
     constructor Create(ASource: TDbgFileLoader; ADebugMap: TObject; OwnSource: Boolean); override;
