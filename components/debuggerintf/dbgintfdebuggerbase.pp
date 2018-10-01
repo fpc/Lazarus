@@ -422,13 +422,13 @@ type
     FMaster: TDBGBreakPoint;
     procedure SetMaster(AValue: TDBGBreakPoint);
   protected
-    procedure BeginUpdate; override;
     procedure DoEndUpdate; override;
     procedure ReleaseMaster;
     property Master: TDBGBreakPoint read FMaster write SetMaster;
     // TODO: move TBaseBreakPoint properties from IDE te IDEBase
   public
     destructor Destroy; override;
+    procedure BeginUpdate; override;
   end;
 
   { TBaseBreakPoints }
@@ -3708,8 +3708,6 @@ begin
 end;
 
 procedure TBaseBreakPoint.DoEndUpdate;
-var
-  c: TDbgBpChangeIndicators;
 begin
   inherited DoEndUpdate;
   MarkPropertiesChanged([]);
