@@ -260,37 +260,6 @@ type
 
 implementation
 
-function CocoaTabIndexToLCLIndex(trg: TObject; src: TCocoaTabControl; aTabIndex: Integer): Integer;
-var
-  i : integer;
-  tb: TCustomTabControl;
-  hnd: HWND;
-  tbitem: TCocoaTabPage;
-begin
-  Result:=aTabIndex;
-  if not Assigned(trg) or not (trg is TCustomTabControl) then Exit;
-  if (aTabIndex<0) or (atabIndex>=src.fulltabs.count) then
-  begin
-    aTabIndex:=-1;
-    Exit;
-  end;
-
-  tbitem:=TCocoaTabPage(src.fulltabs.objectAtIndex(aTabIndex));
-  if NSView(tbitem.view).subviews.count=0 then
-  begin
-    aTabIndex:=-1;
-    Exit;
-  end;
-  hnd := HWND(NSView(tbitem.view).subviews.objectAtIndex(0));
-
-  tb:=TCustomTabControl(trg);
-  for i:=0 to tb.PageCount-1 do
-    if tb.Page[i].Handle = hnd then begin
-      Result:=i;
-      Exit;
-    end;
-end;
-
 { TStatusBarCallback }
 
 function TStatusBarCallback.GetBarsCount: Integer;
@@ -372,7 +341,7 @@ begin
 
   Hdr.hwndFrom := FTarget.Handle;
   Hdr.Code := TCN_SELCHANGING;
-  Hdr.idFrom := CocoaTabIndexToLCLIndex(Target, TCocoaTabControl(Owner), aTabIndex);
+  Hdr.idFrom := TTabControl(Target).TabToPageIndex(ATabIndex);
   Msg.NMHdr := @Hdr;
   Msg.Result := 0;
   LCLMessageGlue.DeliverMessage(Target, Msg);
@@ -391,7 +360,7 @@ begin
 
   Hdr.hwndFrom := FTarget.Handle;
   Hdr.Code := TCN_SELCHANGE;
-  Hdr.idFrom := CocoaTabIndexToLCLIndex(Target, TCocoaTabControl(Owner), aTabIndex);
+  Hdr.idFrom := TTabControl(Target).TabToPageIndex(ATabIndex);
   Msg.NMHdr := @Hdr;
   Msg.Result := 0;
   LCLMessageGlue.DeliverMessage(Target, Msg);
@@ -696,10 +665,7 @@ end;
 
 class procedure TCocoaWSCustomTabControl.SetPageIndex(const ATabControl: TCustomTabControl; const AIndex: integer);
 var
-  lTabControl: TCocoaTabControl;
-  lTabCount: NSInteger;
-  h : id;
-  i : NSUInteger;
+  i  : NSInteger;
   tb : TCocoaTabPageView;
 begin
   {$IFDEF COCOA_DEBUG_TABCONTROL}
