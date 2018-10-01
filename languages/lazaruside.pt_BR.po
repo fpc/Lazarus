@@ -4119,10 +4119,8 @@ msgid "Ambiguous Unit Name"
 msgstr "Nome da Unidade Ambíguo"
 
 #: lazarusidestrconsts.lisa2pancestortype
-#, fuzzy
-#| msgid "Ancestor Type"
 msgid "Ancestor type"
-msgstr "Tipo Ancestral"
+msgstr "Tipo ancestral"
 
 #: lazarusidestrconsts.lisa2papascalunitmusthavetheextensionpporpas
 msgctxt "lazarusidestrconsts.lisa2papascalunitmusthavetheextensionpporpas"
@@ -4155,7 +4153,7 @@ msgstr "Dependência"
 
 #: lazarusidestrconsts.lisa2pdirectoryforunitfile
 msgid "Directory for unit file:"
-msgstr ""
+msgstr "Diretório para arquivo de unidade:"
 
 #: lazarusidestrconsts.lisa2pexistingfile2
 msgid "Existing file: \"%s\""
@@ -4183,15 +4181,15 @@ msgstr "Arquivo nao é uma unidade"
 
 #: lazarusidestrconsts.lisa2picon24x24
 msgid "Icon 24x24:"
-msgstr ""
+msgstr "Ícone 24x24:"
 
 #: lazarusidestrconsts.lisa2picon36x36
 msgid "Icon 36x36:"
-msgstr ""
+msgstr "Ícone 36x36:"
 
 #: lazarusidestrconsts.lisa2picon48x48
 msgid "Icon 48x48:"
-msgstr ""
+msgstr "Ícone 48x48:"
 
 #: lazarusidestrconsts.lisa2pinvalidancestortype
 msgid "Invalid Ancestor Type"
@@ -4242,10 +4240,8 @@ msgid "Page Name too long"
 msgstr "Nome da Página muito longo"
 
 #: lazarusidestrconsts.lisa2ppalettepage
-#, fuzzy
-#| msgid "Palette Page:"
 msgid "Palette page:"
-msgstr "Página da Paleta:"
+msgstr "Página da paleta:"
 
 #: lazarusidestrconsts.lisa2ppascalunitsmusthavetheextensionpporpas
 msgid "Pascal units must have the extension .pp or .pas"
@@ -4336,10 +4332,8 @@ msgid "The unit name \"%s\" is the same as a registered component.%sUsing this c
 msgstr "O nome da unidade \"%s\" é o mesmo de um componente registrado.%sUsá-lo pode causar estranhas mensagens de erro."
 
 #: lazarusidestrconsts.lisa2punitname
-#, fuzzy
-#| msgid "Unit Name:"
 msgid "Unit name:"
-msgstr "Nome da Unidade:"
+msgstr "Nome da unidade:"
 
 #: lazarusidestrconsts.lisa2punitnamealreadyexists
 msgid "Unitname already exists"
@@ -7048,7 +7042,7 @@ msgstr "Adicionar comentário após substituição"
 
 #: lazarusidestrconsts.lisconvaddedmodedelphimodifier
 msgid "Added MODE Delphi syntax modifier after unit name."
-msgstr ""
+msgstr "Adicionado \"MODE\" modificador de sintaxe Delphi após o nome da unidade."
 
 #: lazarusidestrconsts.lisconvaddingflagforregister
 msgid "Adding flag for \"Register\" procedure in unit %s."
@@ -14320,11 +14314,11 @@ msgstr "Abrir arquivo sob o cursor"
 
 #: lazarusidestrconsts.lisopeninfileman
 msgid "Open in file manager"
-msgstr ""
+msgstr "Abrir no gerenciador de arquivos"
 
 #: lazarusidestrconsts.lisopeninfilemanhint
 msgid "Open destination directory in file manager"
-msgstr ""
+msgstr "Abrir diretório de destino no gerenciador de arquivos"
 
 #: lazarusidestrconsts.lisopenlfm
 msgid "Open %s"

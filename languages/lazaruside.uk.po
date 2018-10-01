@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-09-09 21:52+0200\n"
+"PO-Revision-Date: 2018-10-01 20:16+0200\n"
 "Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -4122,8 +4122,6 @@ msgid "Ambiguous Unit Name"
 msgstr "Двозначна назва модуля"
 
 #: lazarusidestrconsts.lisa2pancestortype
-#, fuzzy
-#| msgid "Ancestor Type"
 msgid "Ancestor type"
 msgstr "Тип предка"
 
@@ -4158,7 +4156,7 @@ msgstr "Залежність"
 
 #: lazarusidestrconsts.lisa2pdirectoryforunitfile
 msgid "Directory for unit file:"
-msgstr ""
+msgstr "Тека для файлу модуля:"
 
 #: lazarusidestrconsts.lisa2pexistingfile2
 msgid "Existing file: \"%s\""
@@ -4186,15 +4184,15 @@ msgstr "Файл не є модулем"
 
 #: lazarusidestrconsts.lisa2picon24x24
 msgid "Icon 24x24:"
-msgstr ""
+msgstr "Піктограма 24x24:"
 
 #: lazarusidestrconsts.lisa2picon36x36
 msgid "Icon 36x36:"
-msgstr ""
+msgstr "Піктограма 36x36:"
 
 #: lazarusidestrconsts.lisa2picon48x48
 msgid "Icon 48x48:"
-msgstr ""
+msgstr "Піктограма 48x48:"
 
 #: lazarusidestrconsts.lisa2pinvalidancestortype
 msgid "Invalid Ancestor Type"
@@ -4245,8 +4243,6 @@ msgid "Page Name too long"
 msgstr "Задовга назва сторінки"
 
 #: lazarusidestrconsts.lisa2ppalettepage
-#, fuzzy
-#| msgid "Palette Page:"
 msgid "Palette page:"
 msgstr "Сторінка палітри:"
 
@@ -4339,8 +4335,6 @@ msgid "The unit name \"%s\" is the same as a registered component.%sUsing this c
 msgstr "Назва модуля \"%s\" збігається із зареєстрованим компонентом.%sЦе може призвести до непередбачуваних повідомлень про помилки."
 
 #: lazarusidestrconsts.lisa2punitname
-#, fuzzy
-#| msgid "Unit Name:"
 msgid "Unit name:"
 msgstr "Назва модуля:"
 
@@ -6770,7 +6764,7 @@ msgstr "Компілювати"
 
 #: lazarusidestrconsts.liscompilefollowingmodes
 msgid "Compile the following modes"
-msgstr ""
+msgstr "Компілювати в таких режимах"
 
 #: lazarusidestrconsts.liscompileproject
 msgid "Compile Project"
@@ -7021,7 +7015,7 @@ msgstr "Після заміни додати коментар"
 
 #: lazarusidestrconsts.lisconvaddedmodedelphimodifier
 msgid "Added MODE Delphi syntax modifier after unit name."
-msgstr ""
+msgstr "Після назви модуля додано модифікатор синтаксису MODE Delphi."
 
 #: lazarusidestrconsts.lisconvaddingflagforregister
 msgid "Adding flag for \"Register\" procedure in unit %s."
@@ -14287,11 +14281,11 @@ msgstr "Відкрити файл біля курсору"
 
 #: lazarusidestrconsts.lisopeninfileman
 msgid "Open in file manager"
-msgstr ""
+msgstr "Відкрити у файловому менеджері"
 
 #: lazarusidestrconsts.lisopeninfilemanhint
 msgid "Open destination directory in file manager"
-msgstr ""
+msgstr "Відкрити цільову теку у файловому менеджері"
 
 #: lazarusidestrconsts.lisopenlfm
 msgid "Open %s"
@@ -15792,7 +15786,7 @@ msgstr "Відкрийте модуль перед запуском."
 
 #: lazarusidestrconsts.lispleaseselectatleastonebuildmode
 msgid "Please select at least one build mode."
-msgstr ""
+msgstr "Виберіть принаймні один режим побудови."
 
 #: lazarusidestrconsts.lispleaseselectsomecodetoextractanewproceduremethod
 msgid "Please select some code to extract a new procedure/method."
@@ -17024,7 +17018,7 @@ msgstr "Повідомлення, вибране у вікні повідомл�
 
 #: lazarusidestrconsts.lisselectedmodeswerecompiled
 msgid "Selected %d modes were successfully compiled."
-msgstr ""
+msgstr "Вибрані %d режимів успішно скомпільовано."
 
 #: lazarusidestrconsts.lisselectedrightneighbour
 msgid "(selected right neighbour)"

@@ -1400,7 +1400,7 @@ msgstr "O número de segundos após o qual o gerenciador de pacotes derruba a co
 
 #: opkman_const.rsoptions_lbdaystoshownewpackages_caption
 msgid "Show different icon for newly added packages for (days):"
-msgstr "Exibir ícones diferentes para novos pacotes adicionados para (dias):"
+msgstr "Exibir ícones diferentes para novos pacotes adicionados por (dias):"
 
 #: opkman_const.rsoptions_lbexcludefiles_hint
 msgctxt "opkman_const.rsoptions_lbexcludefiles_hint"
