@@ -792,7 +792,6 @@ var
   ACommand: String;
   Command: String;
   I: Integer;
-  msg: String;
 begin
   for I := 0 to ACommands.Count-1 do
   begin
