@@ -28,8 +28,6 @@ uses
   Classes, SysUtils,
   // LCL
   LCLProc, Controls, Buttons, Forms, StdCtrls, Graphics, ComCtrls, Grids,
-  // LazUtils
-  Laz2_XMLCfg, LazMethodList,
   // IdeIntf
   IDEOptionsIntf, EditorSyntaxHighlighterDef;
 
