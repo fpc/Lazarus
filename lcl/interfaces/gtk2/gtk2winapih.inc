@@ -47,7 +47,7 @@ function ClipboardGetFormats(ClipboardType: TClipboardType;
 function ClipboardGetOwnerShip(ClipboardType: TClipboardType;
   OnRequestProc: TClipboardRequestEvent;  FormatCount: integer;
   Formats: PClipboardFormat): boolean; override;
-function ClipboardFormatNeedsNullByte(const AFormat: TPredefinedClipboardFormat): Boolean; override;
+function ClipboardFormatNeedsNullByte(const {%H-}AFormat: TPredefinedClipboardFormat): Boolean; override;
 function ClipboardRegisterFormat(const AMimeType: string): TClipboardFormat; override;
 
 function CombineRgn(Dest, Src1, Src2 : HRGN; fnCombineMode : Longint) : Longint;  override;
