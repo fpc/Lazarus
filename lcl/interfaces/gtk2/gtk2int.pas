@@ -43,7 +43,7 @@ uses
   // LCL
   Dialogs, Controls, Forms, LCLStrConsts,
   LMessages, LCLProc, LCLIntf, LCLType, GraphType, GraphMath,
-  Graphics, Menus, Themes, Buttons, StdCtrls, CheckLst, ComCtrls, Spin, ExtCtrls,
+  Graphics, Menus, Themes, Buttons, StdCtrls, CheckLst, ComCtrls, ExtCtrls,
   LCLPlatformDef, InterfaceBase,
   WSLCLClasses, WSControls,
   Gtk2WinApiWindow, Gtk2Globals, Gtk2Proc, Gtk2Def, Gtk2FontCache, Gtk2Extra,
