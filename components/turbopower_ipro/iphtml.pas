@@ -916,7 +916,7 @@ type
     FSrc: string;
     FWidth: TIpHtmlLength;
     FFrame : TIpHtmlFrame;
-    procedure SetAlign(const Value: TIpHtmlAlign);
+    procedure SetAlign(const Value: TIpHtmlAlign); overload;
     procedure SetFrameBorder(const Value: Integer);
     procedure SetMarginHeight(const Value: Integer);
     procedure SetMarginWidth(const Value: Integer);
@@ -4038,7 +4038,7 @@ end;
 
 procedure TIpHtmlBaseLayouter.ProcessDuplicateLFs;
 var
-  i, ilast: Integer;
+  i: Integer;
   elem: PIpHtmlElement;
   prevelem: PIpHtmlElement;
 begin
@@ -10338,7 +10338,6 @@ end;
 
 procedure TIpHtmlNodeA.ClearAreaList;
 var
-  a: Pointer;
   m: Pointer;
 begin
   inherited;
@@ -10550,9 +10549,9 @@ end;
 procedure TIpHtmlNodeDIV.Enqueue;
 var
   elem: PIpHtmlElement;
-  hf, h: Integer;
+  h: Integer;
 begin
-  hf := Props.FontSize;
+  //hf := Props.FontSize;
   if FChildren.Count > 0 then begin
     h := GetMargin(Props.ElemMarginTop, 0); //hf div 4);
     elem := Owner.BuildLinefeedEntry(etSoftLF, h);
@@ -11829,10 +11828,10 @@ end;
 
 procedure TIpHtmlNodePRE.Enqueue;
 var
-  h, hf: Integer;
+  h: Integer;
   elem: PIpHtmlElement;
 begin
-  hf := Props.FontSize;
+  //hf := Props.FontSize;
   if FChildren.Count > 0 then begin
     h := GetMargin(Props.ElemMarginTop, 0);
     elem := Owner.BuildLineFeedEntry(etSoftLF, h);
@@ -12731,7 +12730,6 @@ end;
 procedure TIpHtmlNodeCore.ClearAreaList;
 var
   a: Pointer;
-  m: Pointer;
 begin
   while FAreaList.Count > 0 do begin
     a := FAreaList[0];

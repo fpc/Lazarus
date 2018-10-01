@@ -376,8 +376,6 @@ var
   WDelta, WMod : Integer;
 
   function CalcDelta: Integer;     // Returns dx
-  var
-    m : Integer;
   begin
     WDelta := 0;
     WMod := 0;
