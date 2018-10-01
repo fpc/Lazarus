@@ -38,8 +38,8 @@ type
     FImages_12: TLCLGlyphs;
     FImages_16: TLCLGlyphs;
     FImages_24: TLCLGlyphs;
-    procedure FImages_24_GetWidthForPPI(Sender: TCustomImageList; AImageWidth,
-      APPI: Integer; var AResultWidth: Integer);
+    procedure FImages_24_GetWidthForPPI(Sender: TCustomImageList; {%H-}AImageWidth,
+      {%H-}APPI: Integer; var AResultWidth: Integer);
     function GetImages(Size: Integer): TLCLGlyphs;
   protected
     function GetImages_12: TLCLGlyphs;
