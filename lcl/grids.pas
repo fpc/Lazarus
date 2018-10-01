@@ -6702,7 +6702,6 @@ begin
         P:=MouseToLogcell(Point(X,Y));
         if gfNeedsSelectActive in GridFlags then
           SelectActive := (P.x<>FPivot.x)or(P.y<>FPivot.y);
-        MoveExtend(False, P.x, P.y, False);
       end;
     gsColMoving:
       if goColMoving in Options then
