@@ -117,6 +117,8 @@ type
     function lclGetLabelRect(ARow, ACol: Integer; const BoundsRect: TRect): TRect; message 'lclGetLabelRect:::';
     function lclGetIconRect(ARow, ACol: Integer; const BoundsRect: TRect): TRect; message 'lclGetIconRect:::';
 
+    procedure lclInsDelRow(Arow: Integer; inserted: Boolean); message 'lclInsDelRow::';
+
     // NSTableViewDataSourceProtocol
     function numberOfRowsInTableView(tableView: NSTableView): NSInteger; message 'numberOfRowsInTableView:';
     //procedure tableView_sortDescriptorsDidChange(tableView: NSTableView; oldDescriptors: NSArray); message 'tableView:sortDescriptorsDidChange:';
@@ -191,6 +193,7 @@ type
     function tableView_objectValueForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): id; message 'tableView:objectValueForTableColumn:row:';
     procedure tableView_setObjectValue_forTableColumn_row(tableView: NSTableView; object_: id; tableColumn: NSTableColumn; row: NSInteger); message 'tableView:setObjectValue:forTableColumn:row:';
     function tableView_dataCellForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): NSCell; message 'tableView:dataCellForTableColumn:row:';
+    procedure lclInsDelRow(Arow: Integer; inserted: Boolean); override;
   end;
 
   // View based NSTableView
@@ -234,6 +237,7 @@ type
     procedure checkboxAction(sender: NSButton); message 'checkboxAction:';
 
     function lclGetLabelRect(ARow, ACol: Integer; const BoundsRect: TRect): TRect; override;
+    procedure lclInsDelRow(Arow: Integer; inserted: Boolean); override;
   end;
 
 function AllocCocoaTableListView: TCocoaTableListView;
@@ -432,6 +436,13 @@ function TCocoaTableListView.lclGetIconRect(ARow, ACol: Integer;
   const BoundsRect: TRect): TRect;
 begin
   Result := BoundsRect;
+end;
+
+procedure TCocoaTableListView.lclInsDelRow(Arow: Integer; inserted: Boolean);
+begin
+  // a row has been inserted or removed
+  // the following rows needs to be invalidated
+  // as well as number of total items in the table should be marked as modified
 end;
 
 function TCocoaTableListView.acceptsFirstResponder: Boolean;
@@ -873,6 +884,11 @@ begin
   Result := btn;
 end;
 
+procedure TCellCocoaTableListView.lclInsDelRow(Arow: Integer; inserted: Boolean);
+begin
+  noteNumberOfRowsChanged;
+end;
+
 function TCellCocoaTableListView.tableView_objectValueForTableColumn_row(
   tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): id;
 var
@@ -1142,6 +1158,17 @@ begin
   lTableItemLV := TCocoaTableListItem(viewAtColumn_row_makeIfNecessary(ACol, ARow, False));
   Result.Left := Round(lTableItemLV.textFrame.origin.x - 1);
   Result.Width := Round(lTableItemLV.textFrame.size.width);
+end;
+
+procedure TViewCocoaTableListView.lclInsDelRow(Arow: Integer; inserted: Boolean);
+var
+  rows: NSIndexSet;
+begin
+  rows := NSIndexSet.indexSetWithIndexesInRange(NSMakeRange(Arow,1));
+  if inserted then
+    insertRowsAtIndexes_withAnimation(rows, 0)
+  else
+    removeRowsAtIndexes_withAnimation(rows, 0);
 end;
 
 end.

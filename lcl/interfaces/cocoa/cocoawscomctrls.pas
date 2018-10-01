@@ -1000,24 +1000,16 @@ var
   lCocoaLV: TCocoaListView;
   lTableLV: TCocoaTableListView;
   lclcb : TLCLListViewCallback;
-  lStr: NSString;
-  cols, rows: NSIndexSet;
 begin
   {$IFDEF COCOA_DEBUG_TABCONTROL}
   WriteLn(Format('[TCocoaWSCustomListView.ItemDelete] AIndex=%d', [AIndex]));
   {$ENDIF}
   if not CheckParamsCb(lCocoaLV, lTableLV, lclcb, ALV) then Exit;
-  //lTableLV.deleteItemForRow(AIndex);
 
-  // TListView item would actually be removed after call to ItemDelete()
-  // thus have to decrease the count, as reloadDate might
-  // request the updated itemCount immediately
   lclcb.tempItemsCountDelta := -1;
   lclcb.checkedIdx.shiftIndexesStartingAtIndex_by(AIndex, -1);
 
-  cols := NSIndexSet.indexSetWithIndexesInRange(NSMakeRange(0, lTableLV.numberOfColumns));
-  rows := NSIndexSet.indexSetWithIndexesInRange(NSMakeRange(AIndex, lTableLV.numberOfRows - AIndex));
-  lTableLV.reloadDataForRowIndexes_columnIndexes(rows, cols);
+  lTableLV.lclInsDelRow(AIndex, false);
 
   lclcb.tempItemsCountDelta := 0;
 end;
@@ -1082,39 +1074,16 @@ class procedure TCocoaWSCustomListView.ItemInsert(const ALV: TCustomListView;
 var
   lCocoaLV: TCocoaListView;
   lTableLV: TCocoaTableListView;
-  i, lColumnCount: Integer;
-  lColumn: NSTableColumn;
-  lStr: string;
-  lNSStr: NSString;
   lclcb: TLCLListViewCallback;
-  cols, rows: NSIndexSet;
 begin
   {$IFDEF COCOA_DEBUG_TABCONTROL}
   WriteLn(Format('[TCocoaWSCustomListView.ItemInsert] AIndex=%d', [AIndex]));
   {$ENDIF}
   if not CheckParamsCb(lCocoaLV, lTableLV, lclcb, ALV) then Exit;
-  lColumnCount := lTableLV.tableColumns.count();
-  {$IFDEF COCOA_DEBUG_TABCONTROL}
-  WriteLn(Format('[TCocoaWSCustomListView.ItemInsert]=> lColumnCount=%d', [lColumnCount]));
-  {$ENDIF}
-  {for i := 0 to lColumnCount-1 do
-  begin
-    lColumn := lTableLV.tableColumns.objectAtIndex(i);
-    if i = 0 then
-      lStr := AItem.Caption
-    else if (i-1 < AItem.SubItems.Count) then
-      lStr := AItem.SubItems.Strings[i-1]
-    else
-      lStr := '';
-    lNSStr := NSStringUTF8(lStr);
-    lTableLV.setStringValue_forCol_row(lNSStr, i, AIndex);
-    lNSStr.release;
-  end;}
+
   lclcb.checkedIdx.shiftIndexesStartingAtIndex_by(AIndex, 1);
 
-  cols := NSIndexSet.indexSetWithIndexesInRange(NSMakeRange(0, lTableLV.numberOfColumns));
-  rows := NSIndexSet.indexSetWithIndexesInRange(NSMakeRange(AIndex - 1, lTableLV.numberOfRows - AIndex));
-  lTableLV.reloadDataForRowIndexes_columnIndexes(rows, cols);
+  lTableLV.lclInsDelRow(AIndex, true);
 
   lTableLV.sizeToFit();
 end;

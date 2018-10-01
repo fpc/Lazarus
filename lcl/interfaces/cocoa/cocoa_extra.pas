@@ -108,12 +108,18 @@ type
 
   NSUserInterfaceItemIdentifier = NSString;
 
+  NSTableViewAnimationOptions = NSUInteger;
+
   NSTableViewFix = objccategory external (NSTableView)
     // 10.7
     function rowForView(AView: NSView): NSInteger; message 'rowForView:';
     function columnForView(AView: NSView): NSInteger; message 'columnForView:';
     function makeViewWithIdentifier_owner(identifier_: NSUserInterfaceItemIdentifier; owner: id): NSView ; message 'makeViewWithIdentifier:owner:';
     function viewAtColumn_row_makeIfNecessary(column, row: NSInteger; makeifNecessary: Boolean): NSview; message 'viewAtColumn:row:makeIfNecessary:';
+    procedure insertRowsAtIndexes_withAnimation(indexes: NSIndexSet; withAnimation: NSTableViewAnimationOptions);
+      message 'insertRowsAtIndexes:withAnimation:';
+    procedure removeRowsAtIndexes_withAnimation(indexes: NSIndexSet; withAnimation: NSTableViewAnimationOptions);
+      message 'removeRowsAtIndexes:withAnimation:';
   end;
 
   {// private since 10.5, doesn't seam to do anything in 10.10
@@ -176,6 +182,27 @@ const
 
 const
   NSKeyCodeTab  = 48;
+
+{ NSTableView Animation Options }
+
+const
+  { Use to not apply any animation effect (the default).
+     Specifying any animation from the effect groups below
+     negates this effect.  }
+  NSTableViewAnimationEffectNone = $0;
+
+  { Row animation Effect (optional). The effect can be combined
+    with other any NSTableViewRowAnimationSlide* option.
+   }
+  NSTableViewAnimationEffectFade = $1; // Fades in new rows.
+  NSTableViewAnimationEffectGap  = $2; // Creates a gap for newly inserted rows. This is useful for drag and drop animations that animate to a newly opened gap and should be used in -tableView:acceptDrop:row:dropOperation:.
+
+  {Row Animation Sliding (optional). Currently only one option from this group may be specified at a time.
+   }
+  NSTableViewAnimationSlideUp    = $10; // Animates a row in or out by sliding upward.
+  NSTableViewAnimationSlideDown  = $20; // Animates a row in or out by sliding downward.
+  NSTableViewAnimationSlideLeft  = $30; // Animates a row in by sliding from the left. Animates a row out by sliding towards the left.
+  NSTableViewAnimationSlideRight = $40; // Animates a row in by sliding from the right. Animates a row out by sliding towards the right.
 
 implementation
 
