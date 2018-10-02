@@ -195,7 +195,7 @@ begin
   for Origi:=0 to fOriginalData.Count-1 do begin
     s:=fOriginalData[Origi];
     if (fOwner.Filter='') or
-        fOwner.DoDefaultFilterItem(s,fOwner.Filter,nil) then begin
+        fOwner.DoDefaultFilterItem(s,nil) then begin
       i:=fSortedData.Count-1;
       while i>=0 do begin
         if CompareFNs(s,fSortedData[i])>=0 then break;
