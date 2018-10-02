@@ -2202,7 +2202,9 @@ begin
     MessI.Result := 0;
     NotifyApplicationUserInput(AWinControl, MessI.Msg);
     DeliverMessage(AWinControl, MessI);
-    if MessI.Result <> 0 then
+    if not AWinControl.HandleAllocated then
+      Result := True
+    else if MessI.Result <> 0 then
     begin
       // issue #19914
       if GTK_IS_NOTEBOOK(Widget) then
