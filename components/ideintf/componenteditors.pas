@@ -82,8 +82,6 @@ type
     function InsertFromStream(s: TStream; Parent: TWinControl;
                               Flags: TComponentPasteSelectionFlags
                               ): Boolean; virtual; abstract;
-    function InvokeComponentEditor(AComponent: TComponent;
-                                   {%H-}MenuIndex: integer): boolean; deprecated;
     function InvokeComponentEditor(AComponent: TComponent): boolean; virtual; abstract;
     function ChangeClass: boolean; virtual; abstract;
 
@@ -1581,12 +1579,6 @@ begin
   else
     FChangeStamp:=Low(FChangeStamp);
   FHandlers[cedhtModified].CallNotifyEvents(Self);
-end;
-
-function TComponentEditorDesigner.InvokeComponentEditor(AComponent: TComponent;
-  MenuIndex: integer): boolean;
-begin
-  Result:=InvokeComponentEditor(AComponent,-1){%H-};
 end;
 
 procedure TComponentEditorDesigner.DisconnectComponent;

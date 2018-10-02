@@ -1691,11 +1691,9 @@ begin
 
   { Messages }
   p:=Path+'Other/';
-  fShowErrors := aXMLConfig.GetValue(p+'Verbosity/ShowErrors/Value', true);
   ShowWarn := aXMLConfig.GetValue(p+'Verbosity/ShowWarn/Value', true);
   ShowNotes := aXMLConfig.GetValue(p+'Verbosity/ShowNotes/Value', true);
   ShowHints := aXMLConfig.GetValue(p+'Verbosity/ShowHints/Value', true);
-  fShowGenInfo := aXMLConfig.GetValue(p+'Verbosity/ShowGenInfo/Value', true);
   ShowLineNum := aXMLConfig.GetValue(p+'Verbosity/ShoLineNum/Value', false);
   ShowAll := aXMLConfig.GetValue(p+'Verbosity/ShowAll/Value', false);
   ShowDebugInfo := aXMLConfig.GetValue(p+'Verbosity/ShowDebugInfo/Value', false);
@@ -1704,7 +1702,6 @@ begin
   ShowCompProc := aXMLConfig.GetValue(p+'Verbosity/ShowCompProc/Value', false);
   ShowCond := aXMLConfig.GetValue(p+'Verbosity/ShowCond/Value', false);
   ShowExecInfo := aXMLConfig.GetValue(p+'Verbosity/ShowExecInfo/Value', false);
-  fShowSummary := aXMLConfig.GetValue(p+'Verbosity/ShowSummary/Value', false);
   ShowHintsForUnusedUnitsInMainSrc := aXMLConfig.GetValue(p+'Verbosity/ShowHintsForUnusedUnitsInMainSrc/Value', false);
   ShowHintsForSenderNotUsed := aXMLConfig.GetValue(p+'Verbosity/ShowHintsForSenderNotUsed/Value', false);
   WriteFPCLogo := aXMLConfig.GetValue(p+'WriteFPCLogo/Value', true);
@@ -1885,11 +1882,9 @@ begin
 
   { Messages }
   p:=Path+'Other/';
-  aXMLConfig.SetDeleteValue(p+'Verbosity/ShowErrors/Value', fShowErrors,true);
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowWarn/Value', ShowWarn,true);
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowNotes/Value', ShowNotes,true);
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowHints/Value', ShowHints,true);
-  aXMLConfig.SetDeleteValue(p+'Verbosity/ShowGenInfo/Value', fShowGenInfo,true);
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShoLineNum/Value', ShowLineNum,false);
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowAll/Value', ShowAll,false);
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowDebugInfo/Value', ShowDebugInfo,false);
@@ -1898,7 +1893,6 @@ begin
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowCompProc/Value', ShowCompProc,false);
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowCond/Value', ShowCond,false);
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowExecInfo/Value', ShowExecInfo,false);
-  aXMLConfig.SetDeleteValue(p+'Verbosity/ShowSummary/Value', fShowSummary,false);
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowHintsForUnusedUnitsInMainSrc/Value', ShowHintsForUnusedUnitsInMainSrc,false);
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowHintsForSenderNotUsed/Value', ShowHintsForSenderNotUsed,false);
   aXMLConfig.SetDeleteValue(p+'WriteFPCLogo/Value', WriteFPCLogo,true);
@@ -3380,11 +3374,9 @@ begin
   ExecutableType := cetProgram;
 
   // messages
-  fShowErrors := true;
   fShowWarn := true;
   fShowNotes := true;
   fShowHints := true;
-  fShowGenInfo := true;
   fShowLineNum := false;
   fShowAll := false;
   fShowDebugInfo := false;
@@ -3393,7 +3385,6 @@ begin
   fShowCompProc := false;
   fShowCond := false;
   fShowExecInfo := false;
-  fShowSummary := false;
   fShowHintsForUnusedUnitsInMainSrc := false;
   fShowHintsForSenderNotUsed := false;
   fWriteFPCLogo := true;
@@ -3494,11 +3485,9 @@ begin
   UseExternalDbgSyms := CompOpts.UseExternalDbgSyms;
 
   // Verbosity
-  fShowErrors := CompOpts.fShowErrors;
   fShowWarn := CompOpts.fShowWarn;
   fShowNotes := CompOpts.fShowNotes;
   fShowHints := CompOpts.fShowHints;
-  fShowGenInfo := CompOpts.fShowGenInfo;
   fShowLineNum := CompOpts.fShowLineNum;
   fShowAll := CompOpts.fShowAll;
   fShowDebugInfo := CompOpts.fShowDebugInfo;
@@ -3507,7 +3496,6 @@ begin
   fShowCompProc := CompOpts.fShowCompProc;
   fShowCond := CompOpts.fShowCond;
   fShowExecInfo := CompOpts.fShowExecInfo;
-  fShowSummary := CompOpts.FShowSummary;
   fShowHintsForUnusedUnitsInMainSrc := CompOpts.fShowHintsForUnusedUnitsInMainSrc;
   fShowHintsForSenderNotUsed := CompOpts.fShowHintsForSenderNotUsed;
   fWriteFPCLogo := CompOpts.fWriteFPCLogo;
@@ -3647,11 +3635,9 @@ begin
 
   // verbosity
   if Tool<>nil then Tool.Path:='Verbosity';
-  if Done(Tool.AddDiff('ShowErrors',fShowErrors,CompOpts.fShowErrors)) then exit;
   if Done(Tool.AddDiff('ShowWarn',fShowWarn,CompOpts.fShowWarn)) then exit;
   if Done(Tool.AddDiff('ShowNotes',fShowNotes,CompOpts.fShowNotes)) then exit;
   if Done(Tool.AddDiff('ShowHints',fShowHints,CompOpts.fShowHints)) then exit;
-  if Done(Tool.AddDiff('ShowGenInfo',fShowGenInfo,CompOpts.fShowGenInfo)) then exit;
   if Done(Tool.AddDiff('ShowLineNum',fShowLineNum,CompOpts.fShowLineNum)) then exit;
   if Done(Tool.AddDiff('ShowAll',fShowAll,CompOpts.fShowAll)) then exit;
   if Done(Tool.AddDiff('ShowDebugInfo',fShowDebugInfo,CompOpts.fShowDebugInfo)) then exit;
@@ -3660,7 +3646,6 @@ begin
   if Done(Tool.AddDiff('ShowCompProc',fShowCompProc,CompOpts.fShowCompProc)) then exit;
   if Done(Tool.AddDiff('ShowCond',fShowCond,CompOpts.fShowCond)) then exit;
   if Done(Tool.AddDiff('ShowExecInfo',fShowExecInfo,CompOpts.fShowExecInfo)) then exit;
-  if Done(Tool.AddDiff('ShowSummary',fShowSummary,CompOpts.fShowSummary)) then exit;
   if Done(Tool.AddDiff('ShowHintsForUnusedUnitsInMainSrc',fShowHintsForUnusedUnitsInMainSrc,CompOpts.fShowHintsForUnusedUnitsInMainSrc)) then exit;
   if Done(Tool.AddDiff('ShowHintsForSenderNotUsed',fShowHintsForSenderNotUsed,CompOpts.fShowHintsForSenderNotUsed)) then exit;
   if Done(Tool.AddDiff('WriteFPCLogo',fWriteFPCLogo,CompOpts.fWriteFPCLogo)) then exit;

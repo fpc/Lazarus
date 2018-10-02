@@ -1413,7 +1413,7 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     GetPrivateDirectory: AnsiString;
-    constructor Create; overload; deprecated; // use Create(TComponent) instead
+    constructor Create; overload; deprecated 'Use Create(TComponent) instead';
     destructor Destroy; override;
 
     // lookup root
