@@ -348,7 +348,8 @@ type
 implementation
 
 uses
-  Math, PropEdits, StrUtils, TAGeometry, TAMath, Types;
+  Math, PropEdits, StrUtils, LResources, Types,
+  TAGeometry, TAMath;
 
 function CreateLazIntfImage(
   out ARawImage: TRawImage; const ASize: TPoint): TLazIntfImage;
@@ -1794,10 +1795,10 @@ begin
 end;
 
 procedure SkipObsoleteProperties;
+const
+  LEGEND_NOTE = 'Obsolete, use TCustomChartSeries.ShowInLegend instead';
 begin
-  RegisterPropertyEditor(
-    TypeInfo(Boolean), TCustomChartSeries,
-    'ShowInLegend', THiddenPropertyEditor);
+  RegisterPropertyToSkip(TCustomChartSeries, 'ShowInLegend', LEGEND_NOTE, '');
 end;
 
 initialization

@@ -235,8 +235,6 @@ type
     property Inverted: Boolean read FInverted write SetInverted default false;
     property ItemFillOrder: TLegendItemFillOrder
       read FItemFillOrder write SetItemFillOrder default lfoColRow;
-    property Margin: TChartDistance
-      read FMarginX write SetMargin stored false; deprecated;
     property MarginX: TChartDistance
       read FMarginX write SetMarginX default DEF_LEGEND_MARGIN;
     property MarginY: TChartDistance
@@ -307,7 +305,8 @@ type
 implementation
 
 uses
-  Math, PropEdits, Types, TADrawerCanvas, TAGeometry;
+  Math, PropEdits, Types, LResources,
+  TADrawerCanvas, TAGeometry;
 
 const
   SYMBOL_TEXT_SPACING = 4;
@@ -1032,9 +1031,10 @@ begin
 end;
 
 procedure SkipObsoleteProperties;
+const
+  MARGIN_NOTE = 'Obsolete, use Legend.MarginX instead';
 begin
-  RegisterPropertyEditor(
-    TypeInfo(TChartDistance), TChartLegend, 'Margin', THiddenPropertyEditor);
+  RegisterPropertyToSkip(TChartLegend, 'Margin', MARGIN_NOTE, '');
 end;
 
 initialization

@@ -246,15 +246,9 @@ type
     property XErrorBars;
     property YErrorBars;
     // Events
-    property OnDrawPointer: TSeriesPointerDrawEvent
-      read FOnDrawPointer write FOnDrawPointer; deprecated 'Use OnCustomDrawPointer';
     property OnCustomDrawPointer;
     property OnGetPointerStyle;
   end;
-
-  // 'TSerie' alias is for compatibility with older versions of TAChart.
-  // Use TLineSeries instead.
-  TSerie = TLineSeries deprecated;
 
   // Scatter plot displaying a single pixel per data point.
   // Optimized to work efficiently for millions of points.
@@ -333,10 +327,6 @@ type
     property UseBounds: Boolean read FUseBounds write SetUseBounds default true;
     property ZPosition;
   end;
-
-  // 'TLine' alias is for compatibility with older versions of TAChart.
-  // Use TConstantLine instead.
-  TLine = class(TConstantLine) end deprecated;
 
   TSeriesDrawEvent = procedure (ACanvas: TCanvas; const ARect: TRect) of object;
   TSeriesGetBoundsEvent = procedure (var ABounds: TDoubleRect) of object;
@@ -1824,13 +1814,13 @@ end;
 procedure SkipObsoleteProperties;
 const
   STAIRS_NOTE = 'Obsolete, use ConnectType instead';
+  DRAWPOINTER_NOTE = 'Obsolete, use OnCustomDrawPointer instead';
 begin
-  RegisterPropertyEditor(
-    TypeInfo(Boolean), TLineSeries, 'ShowLines', THiddenPropertyEditor);
   RegisterPropertyEditor(
     TypeInfo(TChartAxisIndex), TConstantLine, 'AxisIndexX', THiddenPropertyEditor);
   RegisterPropertyToSkip(TAreaSeries, 'Stairs', STAIRS_NOTE, '');
   RegisterPropertyToSkip(TAreaSeries, 'InvertedStairs', STAIRS_NOTE, '');
+  RegisterPropertyToSkip(TLineSeries, 'OnDrawPointer', DRAWPOINTER_NOTE, '');
 end;
 
 initialization

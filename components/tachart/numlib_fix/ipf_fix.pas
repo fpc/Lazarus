@@ -108,6 +108,8 @@ procedure splineparameters
 
 implementation
 
+uses
+  Math;
 
 procedure ipffsn(n: ArbInt; var x, y, a, d2a: ArbFloat; var term: ArbInt);
 
@@ -233,7 +235,7 @@ var                       i, sr, n1s, ns1, ns2: ArbInt;
           c:=a; fc:=fa; x:=b
         end;
       k:=0;
-      tol:=ae+re*spemax(abs(a), abs(b));
+      tol:=ae+re*max(abs(a), abs(b));
       w1:=abs(b-a); stop:=false;
       while (abs(b-a)>tol) and (fb<>0) and (not stop) do
         begin
@@ -246,8 +248,8 @@ var                       i, sr, n1s, ns1, ns2: ArbInt;
               x:=(b*fc-c*fb)/(fc-fb);
               if abs(b-x)<tol
               then
-                x:=b-tol*spesgn(b-a);
-              if spesgn(x-m)=spesgn(x-b)
+                x:=b-tol*sign(b-a);
+              if sign(x-m)=sign(x-b)
               then
                 x:=m
             end;
@@ -255,7 +257,7 @@ var                       i, sr, n1s, ns1, ns2: ArbInt;
           if term=2
           then
             exit;
-          if spesgn(fa)*spesgn(fb)>0
+          if sign(fa)*sign(fb)>0
           then
             begin
               a:=c; fa:=fc; k:=0
@@ -267,7 +269,7 @@ var                       i, sr, n1s, ns1, ns2: ArbInt;
             begin
               c:=b; fc:=fb; x:=a; b:=a; fb:=fa; a:=c; fa:=fc; k:=0
             end;
-          tol:=ae+re*spemax(abs(a), abs(b));
+          tol:=ae+re*max(abs(a), abs(b));
           w2:=abs(b-a);
           if w2>=w1
           then
