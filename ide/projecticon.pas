@@ -193,10 +193,7 @@ begin
     exit(true);
   // write ico file
   try
-    if FileExistsUTF8(FIcoFileName) then
-      fs:=TFileStreamUTF8.Create(IcoFileName,fmOpenWrite)
-    else
-      fs:=TFileStreamUTF8.Create(IcoFileName,fmCreate);
+    fs:=TFileStreamUTF8.Create(IcoFileName,fmCreate);
     try
       fs.Write(FData[0],length(FData));
       InvalidateFileStateCache(IcoFileName);
