@@ -325,7 +325,8 @@ type
     procedure dealloc; override;
     function updateStepper: boolean; message 'updateStepper';
     procedure UpdateControl(min, max, inc, avalue: double; ADecimalPlaces: Integer); message 'UpdateControl:::::';
-    procedure CreateSubcontrols(const AParams: TCreateParams); message 'CreateSubControls:';
+    procedure lclCreateSubcontrols(const AParams: TCreateParams); message 'lclCreateSubControls:';
+    procedure lclReleaseSubcontrols; message 'lclReleaseSubcontrols';
     procedure PositionSubcontrols(const ALeft, ATop, AWidth, AHeight: Integer); message 'PositionSubcontrols:ATop:AWidth:AHeight:';
     procedure StepperChanged(sender: NSObject); message 'StepperChanged:';
     procedure textDidEndEditing(notification: NSNotification); message 'textDidEndEditing:'; override;
@@ -1524,11 +1525,7 @@ end;
 
 procedure TCocoaSpinEdit.dealloc;
 begin
-  if Stepper <> nil then
-    Stepper.release;
-  if NumberFormatter <> nil then
-    NumberFormatter.release;
-
+  lclReleaseSubControls;
   inherited dealloc;
 end;
 
@@ -1574,7 +1571,7 @@ begin
   end;
 end;
 
-procedure TCocoaSpinEdit.CreateSubcontrols(const AParams: TCreateParams);
+procedure TCocoaSpinEdit.lclCreateSubcontrols(const AParams: TCreateParams);
 var
   lParams: TCreateParams;
 begin
@@ -1619,6 +1616,21 @@ begin
   lNSStr.release;
   NumberFormatter.setNumberStyle(NSNumberFormatterDecimalStyle);
   setFormatter(NumberFormatter);}
+end;
+
+procedure TCocoaSpinEdit.lclReleaseSubcontrols;
+begin
+  if Assigned(Stepper) then
+  begin
+    Stepper.removeFromSuperview;
+    Stepper.release;
+    Stepper := nil;
+  end;
+  if Assigned(NumberFormatter) then
+  begin
+    NumberFormatter.release;
+    NumberFormatter := nil;
+  end;
 end;
 
 procedure TCocoaSpinEdit.PositionSubcontrols(const ALeft, ATop, AWidth, AHeight: Integer);
