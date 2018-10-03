@@ -361,6 +361,7 @@ begin
     overlay.retain;
     overlay.removeFromSuperview;
     addSubview_positioned_relativeTo(overlay, NSWindowAbove, nil);
+    overlay.release;
   end;
   inherited didAddSubview(aview);
 end;
