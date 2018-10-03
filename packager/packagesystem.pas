@@ -1920,16 +1920,15 @@ begin
     end;
     {$ENDIF}
     if (IDEComponentPalette<>nil)
-    and (IDEComponentPalette.FindComponent(CurClassname)<>nil) then begin
-      RegistrationError(
-        Format(lisPkgSysComponentClassAlreadyDefined, [CurComponent.ClassName]));
-    end;
+    and (IDEComponentPalette.FindComponent(CurClassname)<>nil) then
+      RegistrationError(Format(lisPkgSysComponentClassAlreadyDefined,[CurClassname]));
     if AbortRegistration then exit;
     // add the component to the package owning the file
     // (e.g. a designtime package can register units of a runtime packages)
     NewPkgComponent:=
       FRegistrationFile.LazPackage.AddComponent(FRegistrationFile,Page,CurComponent);
-    //debugln('TLazPackageGraph.RegisterComponentsHandler Page="',Page,'" CurComponent=',CurComponent.ClassName,' FRegistrationFile=',FRegistrationFile.Filename);
+    //DebugLn('TLazPackageGraph.RegisterComponentsHandler Page="',Page,
+    //        '" CurComponent=',CurClassname,' FRegistrationFile=',FRegistrationFile.Filename);
     if IDEComponentPalette<>nil then
       IDEComponentPalette.AddComponent(NewPkgComponent);
   end;
