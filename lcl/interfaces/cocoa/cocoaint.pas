@@ -477,11 +477,21 @@ begin
   if Assigned(Result)
     and ((mode = NSEventTrackingRunLoopMode) or mode.isEqualToString(NSEventTrackingRunLoopMode))
     and Assigned(TrackedControl)
-    and isMouseMoveEvent(Result.type_)
-  then begin
-    cb := TrackedControl.lclGetCallback;
-    if Assigned(cb) then cb.MouseMove(Result);
+  then
+  begin
+    if Result.type_ = NSLeftMouseUp then
+    begin
+      //todo: send callback!
+      TrackedControl := nil;
+    end
+    else
+    if isMouseMoveEvent(Result.type_) then
+    begin
+      cb := TrackedControl.lclGetCallback;
+      if Assigned(cb) then cb.MouseMove(Result);
+    end;
   end;
+
 end;
 
 function TCocoaApplication.runModalForWindow(theWindow: NSWindow): NSInteger;
