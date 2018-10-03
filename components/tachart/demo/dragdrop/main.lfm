@@ -2,10 +2,10 @@ object Form1: TForm1
   Left = 404
   Height = 550
   Top = 180
-  Width = 539
+  Width = 571
   Caption = 'Form1'
   ClientHeight = 550
-  ClientWidth = 539
+  ClientWidth = 571
   OnCreate = FormCreate
   Position = poScreenCenter
   LCLVersion = '2.1.0.0'
@@ -13,20 +13,20 @@ object Form1: TForm1
     Left = 0
     Height = 550
     Top = 0
-    Width = 539
-    ActivePage = tsBars
+    Width = 571
+    ActivePage = tsPoints
     Align = alClient
-    TabIndex = 1
+    TabIndex = 0
     TabOrder = 0
     object tsPoints: TTabSheet
       Caption = 'Points'
       ClientHeight = 522
-      ClientWidth = 531
+      ClientWidth = 563
       object chPoints: TChart
         Left = 0
         Height = 486
         Top = 36
-        Width = 531
+        Width = 563
         AutoFocus = True
         AxisList = <        
           item
@@ -75,12 +75,12 @@ object Form1: TForm1
         Left = 0
         Height = 36
         Top = 0
-        Width = 531
+        Width = 563
         Align = alTop
         AutoSize = True
         BevelOuter = bvNone
         ClientHeight = 36
-        ClientWidth = 531
+        ClientWidth = 563
         TabOrder = 1
         object cbSorted: TCheckBox
           AnchorSideLeft.Control = Panel1
@@ -100,13 +100,12 @@ object Form1: TForm1
     object tsBars: TTabSheet
       Caption = 'Bars'
       ClientHeight = 522
-      ClientWidth = 531
+      ClientWidth = 563
       object chBars: TChart
         Left = 0
-        Height = 522
-        Top = 0
-        Width = 531
-        AutoFocus = True
+        Height = 486
+        Top = 36
+        Width = 563
         AxisList = <        
           item
             Marks.LabelBrush.Style = bsClear
@@ -125,7 +124,7 @@ object Form1: TForm1
         Title.Brush.Color = clBtnFace
         Title.Font.Color = clBlue
         Title.Text.Strings = (
-          'Drag end of bars while holding SHIFT key down'
+          'Drag bars while holding SHIFT key down'
         )
         Title.Visible = True
         Toolset = ctBars
@@ -133,6 +132,60 @@ object Form1: TForm1
         DoubleBuffered = True
         object chBarsBarSeries1: TBarSeries
           BarBrush.Color = clRed
+          ToolTargets = [nptPoint, nptYList]
+        end
+      end
+      object Panel2: TPanel
+        Left = 0
+        Height = 36
+        Top = 0
+        Width = 563
+        Align = alTop
+        AutoSize = True
+        BevelOuter = bvNone
+        ClientHeight = 36
+        ClientWidth = 563
+        TabOrder = 1
+        object rbDragY: TRadioButton
+          AnchorSideLeft.Control = Panel2
+          AnchorSideTop.Control = Panel2
+          AnchorSideTop.Side = asrCenter
+          Left = 8
+          Height = 19
+          Top = 9
+          Width = 179
+          BorderSpacing.Around = 8
+          Caption = 'Drag y value (grab bars at top)'
+          Checked = True
+          OnChange = rbDragYChange
+          TabOrder = 0
+          TabStop = True
+        end
+        object rbDragX: TRadioButton
+          AnchorSideLeft.Control = rbDragY
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = Panel2
+          AnchorSideTop.Side = asrCenter
+          Left = 203
+          Height = 19
+          Top = 9
+          Width = 198
+          BorderSpacing.Left = 16
+          Caption = 'Drag x value (grab bars anywhere)'
+          OnChange = rbDragYChange
+          TabOrder = 1
+        end
+        object cbConstBarWidth: TCheckBox
+          AnchorSideLeft.Control = rbDragX
+          AnchorSideLeft.Side = asrBottom
+          Left = 409
+          Height = 19
+          Top = 8
+          Width = 119
+          BorderSpacing.Around = 8
+          Caption = 'constant bar width'
+          OnChange = cbConstBarWidthChange
+          TabOrder = 2
         end
       end
     end
@@ -166,8 +219,8 @@ object Form1: TForm1
       Shift = [ssShift, ssLeft]
       GrabRadius = 30
       ActiveCursor = crSizeNS
+      Targets = [nptPoint, nptXList, nptYList]
       OnDrag = ctBarsDataPointDragTool1Drag
-      OnDragStart = ctBarsDataPointDragTool1DragStart
     end
   end
   object RandomChartSource1: TRandomChartSource
