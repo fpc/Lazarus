@@ -316,6 +316,25 @@ type
     function fittingSize: NSSize; override;
   end;
 {$ELSE}
+
+  { TCocoaSpinEditStepper }
+
+  TCocoaSpinEditStepper = objcclass(NSStepper)
+    callback: ICommonCallback;
+    function acceptsFirstMouse(event: NSEvent): Boolean; override;
+    procedure mouseDown(event: NSEvent); override;
+    procedure mouseUp(event: NSEvent); override;
+    procedure rightMouseDown(event: NSEvent); override;
+    procedure rightMouseUp(event: NSEvent); override;
+    procedure rightMouseDragged(event: NSEvent); override;
+    procedure otherMouseDown(event: NSEvent); override;
+    procedure otherMouseUp(event: NSEvent); override;
+    procedure otherMouseDragged(event: NSEvent); override;
+    procedure mouseDragged(event: NSEvent); override;
+    procedure mouseMoved(event: NSEvent); override;
+    procedure scrollWheel(event: NSEvent); override;
+  end;
+
   TCocoaSpinEdit = objcclass(NSTextField, NSTextFieldDelegateProtocol)
     callback: ICommonCallback;
     Stepper: NSStepper;
@@ -341,6 +360,19 @@ type
     procedure lclSetFrame(const r: TRect); override;
     // NSViewFix
     function fittingSize: NSSize; override;
+    // mouse
+    function acceptsFirstMouse(event: NSEvent): Boolean; override;
+    procedure mouseDown(event: NSEvent); override;
+    procedure mouseUp(event: NSEvent); override;
+    procedure rightMouseDown(event: NSEvent); override;
+    procedure rightMouseUp(event: NSEvent); override;
+    procedure rightMouseDragged(event: NSEvent); override;
+    procedure otherMouseDown(event: NSEvent); override;
+    procedure otherMouseUp(event: NSEvent); override;
+    procedure otherMouseDragged(event: NSEvent); override;
+    procedure mouseDragged(event: NSEvent); override;
+    procedure mouseMoved(event: NSEvent); override;
+    procedure scrollWheel(event: NSEvent); override;
   end;
 {$ENDIF}
 
@@ -372,6 +404,83 @@ begin
   begin
     Result := TCocoaFieldEditor(lText);
   end;
+end;
+
+{ TCocoaSpinEditStepper }
+
+function TCocoaSpinEditStepper.acceptsFirstMouse(event: NSEvent): Boolean;
+begin
+  Result:=true;
+end;
+
+procedure TCocoaSpinEditStepper.mouseDown(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+  begin
+    inherited mouseDown(event);
+    if Assigned(Callback) then
+      callback.MouseUpDownEvent(event, true);
+  end;
+end;
+
+procedure TCocoaSpinEditStepper.mouseUp(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited mouseUp(event);
+end;
+
+procedure TCocoaSpinEditStepper.rightMouseDown(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited rightMouseDown(event);
+end;
+
+procedure TCocoaSpinEditStepper.rightMouseUp(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited rightMouseUp(event);
+end;
+
+procedure TCocoaSpinEditStepper.rightMouseDragged(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited rightMouseDragged(event);
+end;
+
+procedure TCocoaSpinEditStepper.otherMouseDown(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited otherMouseDown(event);
+end;
+
+procedure TCocoaSpinEditStepper.otherMouseUp(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited otherMouseUp(event);
+end;
+
+procedure TCocoaSpinEditStepper.otherMouseDragged(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseMove(event) then
+    inherited otherMouseDragged(event);
+end;
+
+procedure TCocoaSpinEditStepper.mouseDragged(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseMove(event) then
+    inherited mouseDragged(event);
+end;
+
+procedure TCocoaSpinEditStepper.mouseMoved(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseMove(event) then
+    inherited mouseMoved(event);
+end;
+
+procedure TCocoaSpinEditStepper.scrollWheel(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.scrollWheel(event) then
+    inherited scrollWheel(event);
 end;
 
 { TCocoaReadOnlyView }
@@ -1069,12 +1178,7 @@ end;
 
 procedure TCocoaComboBox.dealloc;
 begin
-  if Assigned(list) then
-  begin
-    list.Free;
-    list:=nil;
-  end;
-  resultNS.release;
+  if Assigned(resultNS) then resultNS.release;
   inherited dealloc;
 end;
 
@@ -1586,7 +1690,8 @@ begin
   // Stepper
   lParams.X := AParams.X + AParams.Width - SPINEDIT_DEFAULT_STEPPER_WIDTH;
   lParams.Width := SPINEDIT_DEFAULT_STEPPER_WIDTH;
-  Stepper := NSStepper.alloc.lclInitWithCreateParams(lParams);
+  Stepper := TCocoaSpinEditStepper.alloc.lclInitWithCreateParams(lParams);
+  TCocoaSpinEditStepper(Stepper).callback := callback;
   Stepper.setValueWraps(False);
 
   // Change event for the stepper
@@ -1737,6 +1842,81 @@ begin
   {$IFDEF COCOA_SPIN_DEBUG}
   WriteLn('[TCocoaSpinEdit.fittingSize] width=', Result.width:0:0, ' height=', Result.height:0:0);
   {$ENDIF}
+end;
+
+function TCocoaSpinEdit.acceptsFirstMouse(event: NSEvent): Boolean;
+begin
+  Result:=true;
+end;
+
+procedure TCocoaSpinEdit.mouseDown(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+  begin
+    inherited mouseDown(event);
+    if Assigned(callback) then
+      callback.MouseUpDownEvent(event, true);
+  end;
+end;
+
+procedure TCocoaSpinEdit.mouseUp(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited mouseUp(event);
+end;
+
+procedure TCocoaSpinEdit.rightMouseDown(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited rightMouseDown(event);
+end;
+
+procedure TCocoaSpinEdit.rightMouseUp(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited rightMouseUp(event);
+end;
+
+procedure TCocoaSpinEdit.rightMouseDragged(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited rightMouseDragged(event);
+end;
+
+procedure TCocoaSpinEdit.otherMouseDown(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited otherMouseDown(event);
+end;
+
+procedure TCocoaSpinEdit.otherMouseUp(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited otherMouseUp(event);
+end;
+
+procedure TCocoaSpinEdit.otherMouseDragged(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseMove(event) then
+    inherited otherMouseDragged(event);
+end;
+
+procedure TCocoaSpinEdit.mouseDragged(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseMove(event) then
+    inherited mouseDragged(event);
+end;
+
+procedure TCocoaSpinEdit.mouseMoved(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseMove(event) then
+    inherited mouseMoved(event);
+end;
+
+procedure TCocoaSpinEdit.scrollWheel(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.scrollWheel(event) then
+    inherited scrollWheel(event);
 end;
 
 {$ENDIF}
