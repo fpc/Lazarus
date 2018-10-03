@@ -1617,24 +1617,22 @@ var
   obj: NSObject;
   Callback: ICommonCallback;
   CallbackObject: TObject;
-  pool: NSAutoreleasePool;
 begin
   if not AWinControl.HandleAllocated then
     Exit;
-  pool := NSAutoreleasePool.alloc.init;
+
   obj := NSObject(AWinControl.Handle);
   if obj.isKindOfClass_(NSView) then
   begin
-    //todo: removeFromSuperview + autorelease pool seems to be releasing the object
-    // retain prevents an error of .release below need to be updated
-    // according to the latest Apple recommendations of ATC
-    NSView(obj).retain;
+    // no need to "retain" prior to "removeFromSuperview"
+    // the original referecnce count with "alloc" is not being released
+    // after "addToSuperview"
     NSView(obj).removeFromSuperview;
   end
   else
   if obj.isKindOfClass_(NSWindow) then
     NSWindow(obj).close;
-  pool.release;
+
   // destroy the callback
   Callback := obj.lclGetCallback;
   if Assigned(Callback) then
@@ -1935,18 +1933,14 @@ end;
 
 class procedure TCocoaWSWinControl.ShowHide(const AWinControl: TWinControl);
 var
-  pool: NSAutoreleasePool;   // called outside apploop on startup - therefore has to be enframed by pool
   lShow: Boolean;
 begin
   //WriteLn(Format('[TCocoaWSWinControl.ShowHide] AWinControl=%s %s', [AWinControl.Name, AWinControl.ClassName]));
   if AWinControl.HandleAllocated then
   begin
-    pool := NSAutoreleasePool.alloc.init;
     lShow := AWinControl.HandleObjectShouldBeVisible;
 
     NSObject(AWinControl.Handle).lclSetVisible(lShow);
-
-    pool.release;
   end;
 end;
 
