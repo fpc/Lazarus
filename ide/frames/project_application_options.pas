@@ -153,8 +153,8 @@ end;
 
 procedure TProjectApplicationOptionsFrame.ClearIconButtonClick(Sender: TObject);
 begin
-  fIconChanged:=true;
   IconImage.Picture.Clear;
+  fIconChanged:=true;
 end;
 
 procedure TProjectApplicationOptionsFrame.CreateAppBundleButtonClick(Sender: TObject);
@@ -170,9 +170,11 @@ end;
 
 procedure TProjectApplicationOptionsFrame.LoadIconButtonClick(Sender: TObject);
 begin
+  if OpenPictureDialog1.InitialDir='' then
+    OpenPictureDialog1.InitialDir:=FProject.Directory;
   if not OpenPictureDialog1.Execute then exit;
   try
-    IconImage.Picture.LoadFromFile(OpenPictureDialog1.FileName);
+    IconImage.Picture.Icon.LoadFromFile(OpenPictureDialog1.FileName);
     fIconChanged:=true;
   except
     on E: Exception do
@@ -183,7 +185,7 @@ end;
 procedure TProjectApplicationOptionsFrame.SaveIconButtonClick(Sender: TObject);
 begin
   if SavePictureDialog1.Execute then
-    IconImage.Picture.SaveToFile(SavePictureDialog1.FileName);
+    IconImage.Picture.Icon.SaveToFile(SavePictureDialog1.FileName);
 end;
 
 procedure TProjectApplicationOptionsFrame.EnableManifest(aEnable: Boolean);
