@@ -355,6 +355,8 @@ end;
 { TCocoaWindowContent }
 
 procedure TCocoaWindowContent.didAddSubview(aview: NSView);
+const
+  mustHaveSizing = (NSViewWidthSizable or NSViewHeightSizable);
 begin
   if Assigned(aview) and Assigned(overlay) and (overlay<>aview) then
   begin
@@ -362,6 +364,9 @@ begin
     overlay.removeFromSuperview;
     addSubview_positioned_relativeTo(overlay, NSWindowAbove, nil);
     overlay.release;
+    overlay.setFrame(frame);
+    if (overlay.autoresizingMask and mustHaveSizing) <> mustHaveSizing then
+      overlay.setAutoresizingMask(overlay.autoresizingMask or mustHaveSizing);
   end;
   inherited didAddSubview(aview);
 end;
