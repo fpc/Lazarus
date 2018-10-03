@@ -571,7 +571,6 @@ var
   cnt: TCocoaWindowContent;
   ns: NSString;
   R: NSRect;
-  pool:NSAutoReleasePool;
   lDestView: NSView;
   ds: TCocoaDesignOverlay;
   cb: TLCLWindowCallback;
@@ -580,7 +579,6 @@ begin
   //      if parent is specified neither Window nor Panel needs to be created
   //      the only thing that needs to be created is Content
 
-  pool := NSAutoreleasePool.alloc.init;
   R := CreateParamsToNSRect(AParams);
   cnt := TCocoaWindowContent.alloc.initWithFrame(R);
   cb := TLCLWindowCallback.Create(cnt, AWinControl, cnt);
@@ -593,7 +591,6 @@ begin
 
     if not Assigned(win) then
     begin
-      pool.release;
       Result := 0;
       Exit;
     end;
@@ -660,7 +657,6 @@ begin
     end;
   end;
 
-  pool.release;
   Result := TLCLIntfHandle(cnt);
 end;
 
@@ -926,15 +922,12 @@ end;
 
 class procedure TCocoaWSCustomForm.SetBounds(const AWinControl: TWinControl;
   const ALeft, ATop, AWidth, AHeight: Integer);
-var pool: NSAutoreleasePool;
 begin
   if AWinControl.HandleAllocated then
   begin
-    pool := NSAutoreleasePool.alloc.init;
     //debugln('TCocoaWSCustomForm.SetBounds: '+AWinControl.Name+'Bounds='+dbgs(Bounds(ALeft, ATop, AWidth, AHeight)));
     NSObject(AWinControl.Handle).lclSetFrame(Bounds(ALeft, ATop, AWidth, AHeight));
     TCocoaWindowContent(AwinControl.Handle).callback.boundsDidChange(NSObject(AWinControl.Handle));
-    pool.release;
   end;
 end;
 
