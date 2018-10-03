@@ -10,8 +10,11 @@ uses
   Forms, main, TAChartLazarusPkg
   { you can add units after this };
 
+{$R *.res}
+
 begin
-  Application.Title := 'TAChart legend demo';
+  Application.Scaled:=True;
+  Application.Title:='TAChart legend demo';
   Application.Initialize;
   Application.CreateForm(TForm1, Form1);
   Application.Run;

@@ -6,7 +6,7 @@ interface
 
 uses
   SysUtils, Classes, ComCtrls, db, DBGrids, memds, Forms, ExtCtrls, StdCtrls,
-  TADbSource, TAGraph, TASeries, TACustomSource, Grids;
+  TADbSource, TAGraph, TASeries, TACustomSource, Grids, Dialogs;
 
 type
 
@@ -28,6 +28,7 @@ type
     procedure DBGrid1DrawColumnCell(Sender: TObject; const Rect: TRect;
       DataCol: Integer; Column: TColumn; State: TGridDrawState);
     procedure FormCreate(Sender: TObject);
+    procedure MemDataset1AfterPost(DataSet: TDataSet);
   end;
 
 var
@@ -109,6 +110,11 @@ begin
     FColor.AsInteger := RgbToColor(Random(255), Random(255), Random(255));
     MemDataset1.Post;
   end;
+end;
+
+procedure TForm1.MemDataset1AfterPost(DataSet: TDataSet);
+begin
+  Chart1.Invalidate;
 end;
 
 end.

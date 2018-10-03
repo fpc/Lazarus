@@ -8,15 +8,15 @@ object Form1: TForm1
   ClientWidth = 529
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '1.7'
+  LCLVersion = '2.1.0.0'
   object PageControl1: TPageControl
     Left = 0
     Height = 459
     Top = 0
     Width = 529
-    ActivePage = tsOHLC
+    ActivePage = tsBubble
     Align = alClient
-    TabIndex = 3
+    TabIndex = 0
     TabOrder = 0
     object tsBubble: TTabSheet
       Caption = 'Bubble'
@@ -29,16 +29,18 @@ object Form1: TForm1
         Width = 521
         AxisList = <        
           item
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
             Title.LabelFont.Orientation = 900
+            Title.LabelBrush.Style = bsClear
           end        
           item
             TickLength = 0
             Alignment = calBottom
             Marks.Attachment = maCenter
             Marks.Distance = 0
-            Marks.LabelBrush.Style = bsSolid
             Minors = <>
+            Title.LabelBrush.Style = bsClear
           end>
         Foot.Brush.Color = clBtnFace
         Foot.Font.Color = clBlue
@@ -67,17 +69,21 @@ object Form1: TForm1
       ClientWidth = 521
       object chStacked: TChart
         Left = 0
-        Height = 389
+        Height = 372
         Top = 0
         Width = 521
         AxisList = <        
           item
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
             Title.LabelFont.Orientation = 900
+            Title.LabelBrush.Style = bsClear
           end        
           item
             Alignment = calBottom
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
+            Title.LabelBrush.Style = bsClear
           end>
         Depth = 10
         Foot.Brush.Color = clBtnFace
@@ -142,34 +148,35 @@ object Form1: TForm1
         end
       end
       object pnStackedControls: TPanel
-        Left = 0
-        Height = 42
-        Top = 389
-        Width = 521
+        Left = 4
+        Height = 51
+        Top = 376
+        Width = 513
         Align = alBottom
+        AutoSize = True
+        BorderSpacing.Around = 4
         BevelOuter = bvNone
-        ClientHeight = 42
-        ClientWidth = 521
+        ClientHeight = 51
+        ClientWidth = 513
         TabOrder = 1
         object rgStackedSeries: TRadioGroup
           Left = 0
-          Height = 42
+          Height = 51
           Top = 0
-          Width = 181
+          Width = 175
           Align = alLeft
-          AutoFill = True
+          AutoFill = False
+          AutoSize = True
           Caption = ' Type '
-          ChildSizing.LeftRightSpacing = 6
+          ChildSizing.LeftRightSpacing = 12
           ChildSizing.TopBottomSpacing = 6
-          ChildSizing.HorizontalSpacing = 6
-          ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
-          ChildSizing.EnlargeVertical = crsHomogenousChildResize
+          ChildSizing.HorizontalSpacing = 12
           ChildSizing.ShrinkHorizontal = crsScaleChilds
           ChildSizing.ShrinkVertical = crsScaleChilds
           ChildSizing.Layout = cclLeftToRightThenTopToBottom
           ChildSizing.ControlsPerLine = 3
-          ClientHeight = 22
-          ClientWidth = 177
+          ClientHeight = 31
+          ClientWidth = 171
           Columns = 3
           ItemIndex = 0
           Items.Strings = (
@@ -181,32 +188,37 @@ object Form1: TForm1
           TabOrder = 0
         end
         object cbPercentage: TCheckBox
-          Left = 192
+          AnchorSideLeft.Control = rgStackedSeries
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = rgStackedSeries
+          Left = 207
           Height = 19
-          Top = 15
+          Top = 23
           Width = 79
+          BorderSpacing.Left = 32
+          BorderSpacing.Top = 23
           Caption = 'Percentage'
           OnChange = cbPercentageChange
           TabOrder = 1
         end
         object cgShowStackLevels: TCheckGroup
-          Left = 297
-          Height = 42
+          Left = 331
+          Height = 51
           Top = 0
-          Width = 224
+          Width = 182
           Align = alRight
-          AutoFill = True
+          AutoFill = False
+          AutoSize = True
           Caption = 'Show levels'
-          ChildSizing.LeftRightSpacing = 6
+          ChildSizing.LeftRightSpacing = 12
           ChildSizing.TopBottomSpacing = 6
-          ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
-          ChildSizing.EnlargeVertical = crsHomogenousChildResize
+          ChildSizing.HorizontalSpacing = 12
           ChildSizing.ShrinkHorizontal = crsScaleChilds
           ChildSizing.ShrinkVertical = crsScaleChilds
           ChildSizing.Layout = cclLeftToRightThenTopToBottom
           ChildSizing.ControlsPerLine = 3
-          ClientHeight = 22
-          ClientWidth = 220
+          ClientHeight = 31
+          ClientWidth = 178
           Columns = 3
           Items.Strings = (
             'red'
@@ -233,12 +245,16 @@ object Form1: TForm1
         AxisList = <        
           item
             Grid.Visible = False
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
             Title.LabelFont.Orientation = 900
+            Title.LabelBrush.Style = bsClear
           end        
           item
             Alignment = calBottom
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
+            Title.LabelBrush.Style = bsClear
           end>
         Foot.Brush.Color = clBtnFace
         Foot.Font.Color = clBlue
@@ -273,13 +289,17 @@ object Form1: TForm1
           item
             Grid.Color = clGray
             TickLength = 0
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
             Title.LabelFont.Orientation = 900
+            Title.LabelBrush.Style = bsClear
           end        
           item
             Grid.Visible = False
             Alignment = calBottom
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
+            Title.LabelBrush.Style = bsClear
           end>
         ExpandPercentage = 5
         Foot.Brush.Color = clBtnFace
@@ -305,7 +325,6 @@ object Form1: TForm1
           LinePen.Color = clBlue
           LinePen.EndCap = pecSquare
           LinePen.Width = 2
-          Mode = mOHLC
           TickWidth = 30
         end
       end
@@ -322,13 +341,17 @@ object Form1: TForm1
         AxisList = <        
           item
             Grid.Visible = False
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
             Title.LabelFont.Orientation = 900
+            Title.LabelBrush.Style = bsClear
           end        
           item
             Grid.Visible = False
             Alignment = calBottom
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
+            Title.LabelBrush.Style = bsClear
           end>
         BackColor = clWhite
         Foot.Brush.Color = clBtnFace

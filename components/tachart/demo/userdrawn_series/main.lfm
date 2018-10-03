@@ -8,7 +8,7 @@ object MainForm: TMainForm
   ClientWidth = 595
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '2.1.0.0'
   object Chart: TChart
     Left = 0
     Height = 386
@@ -83,6 +83,7 @@ object MainForm: TMainForm
     object DataPointDragTool: TDataPointDragTool
       Shift = [ssLeft]
       AffectedSeries = '0'
+      GrabRadius = 16
       ActiveCursor = crSizeNS
     end
   end

@@ -8,7 +8,7 @@ object Form1: TForm1
   ClientWidth = 578
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '2.1.0.0'
   object Chart1: TChart
     Left = 0
     Height = 268
@@ -16,12 +16,16 @@ object Form1: TForm1
     Width = 303
     AxisList = <    
       item
+        Marks.LabelBrush.Style = bsClear
         Minors = <>
         Title.LabelFont.Orientation = 900
+        Title.LabelBrush.Style = bsClear
       end    
       item
         Alignment = calBottom
+        Marks.LabelBrush.Style = bsClear
         Minors = <>
+        Title.LabelBrush.Style = bsClear
       end>
     AxisVisible = False
     BackColor = clForm
@@ -46,6 +50,7 @@ object Form1: TForm1
       Legend.Multiplicity = lmPoint
       Marks.Format = '%2:s'
       Marks.Style = smsLabel
+      Exploded = True
       Source = DbChartSource1
     end
   end
@@ -132,6 +137,7 @@ object Form1: TForm1
         Name = 'Color'
         DataType = ftInteger
       end>
+    AfterPost = MemDataset1AfterPost
     left = 144
     top = 64
   end
@@ -144,6 +150,7 @@ object Form1: TForm1
     DataSource = Datasource1
     FieldColor = 'Color'
     FieldText = 'Txt'
+    FieldX = 'X'
     FieldY = 'Y'
     left = 144
     top = 192

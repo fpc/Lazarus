@@ -7,7 +7,7 @@ object Form1: TForm1
   ClientHeight = 494
   ClientWidth = 610
   Position = poScreenCenter
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '2.1.0.0'
   object Chart1: TChart
     Left = 0
     Height = 374
@@ -17,15 +17,19 @@ object Form1: TForm1
     AxisList = <    
       item
         Grid.Color = clGray
+        Marks.LabelBrush.Style = bsClear
         Minors = <>
         Title.LabelFont.Orientation = 900
         Title.Visible = True
+        Title.LabelBrush.Style = bsClear
       end    
       item
         Grid.Color = clGray
         Alignment = calBottom
+        Marks.LabelBrush.Style = bsClear
         Minors = <>
         Title.Visible = True
+        Title.LabelBrush.Style = bsClear
       end>
     Foot.Alignment = taLeftJustify
     Foot.Brush.Color = clBtnFace

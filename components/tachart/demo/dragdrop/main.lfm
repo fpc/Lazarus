@@ -8,34 +8,38 @@ object Form1: TForm1
   ClientWidth = 539
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '1.1'
+  LCLVersion = '2.1.0.0'
   object PageControl1: TPageControl
     Left = 0
     Height = 550
     Top = 0
     Width = 539
-    ActivePage = tsPoints
+    ActivePage = tsBars
     Align = alClient
-    TabIndex = 0
+    TabIndex = 1
     TabOrder = 0
     object tsPoints: TTabSheet
       Caption = 'Points'
-      ClientHeight = 524
+      ClientHeight = 522
       ClientWidth = 531
       object chPoints: TChart
         Left = 0
-        Height = 490
-        Top = 34
+        Height = 486
+        Top = 36
         Width = 531
         AutoFocus = True
         AxisList = <        
           item
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
             Title.LabelFont.Orientation = 900
+            Title.LabelBrush.Style = bsClear
           end        
           item
             Alignment = calBottom
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
+            Title.LabelBrush.Style = bsClear
           end>
         Foot.Brush.Color = clBtnFace
         Foot.Font.Color = clBlue
@@ -54,7 +58,6 @@ object Form1: TForm1
         Toolset = ctPoints
         Align = alClient
         DoubleBuffered = True
-        ParentColor = False
         object chPointsLineSeries1: TLineSeries
           Marks.Clipped = False
           Marks.Format = '%0:.9g'
@@ -64,23 +67,30 @@ object Form1: TForm1
           Pointer.HorizSize = 6
           Pointer.Style = psDiamond
           Pointer.VertSize = 6
+          Pointer.Visible = True
           ShowPoints = True
         end
       end
       object Panel1: TPanel
         Left = 0
-        Height = 34
+        Height = 36
         Top = 0
         Width = 531
         Align = alTop
-        ClientHeight = 34
+        AutoSize = True
+        BevelOuter = bvNone
+        ClientHeight = 36
         ClientWidth = 531
         TabOrder = 1
         object cbSorted: TCheckBox
-          Left = 12
-          Height = 17
-          Top = 8
-          Width = 52
+          AnchorSideLeft.Control = Panel1
+          AnchorSideTop.Control = Panel1
+          AnchorSideTop.Side = asrCenter
+          Left = 8
+          Height = 19
+          Top = 9
+          Width = 54
+          BorderSpacing.Around = 8
           Caption = 'Sorted'
           OnChange = cbSortedChange
           TabOrder = 0
@@ -89,33 +99,38 @@ object Form1: TForm1
     end
     object tsBars: TTabSheet
       Caption = 'Bars'
-      ClientHeight = 524
+      ClientHeight = 522
       ClientWidth = 531
       object chBars: TChart
         Left = 0
-        Height = 524
+        Height = 522
         Top = 0
         Width = 531
+        AutoFocus = True
         AxisList = <        
           item
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
             Title.LabelFont.Orientation = 900
+            Title.LabelBrush.Style = bsClear
           end        
           item
             Alignment = calBottom
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
+            Title.LabelBrush.Style = bsClear
           end>
         Foot.Brush.Color = clBtnFace
         Foot.Font.Color = clBlue
         Title.Brush.Color = clBtnFace
         Title.Font.Color = clBlue
         Title.Text.Strings = (
-          'TAChart'
+          'Drag end of bars while holding SHIFT key down'
         )
+        Title.Visible = True
         Toolset = ctBars
         Align = alClient
         DoubleBuffered = True
-        ParentColor = False
         object chBarsBarSeries1: TBarSeries
           BarBrush.Color = clRed
         end
@@ -148,9 +163,9 @@ object Form1: TForm1
     left = 127
     top = 224
     object ctBarsDataPointDragTool1: TDataPointDragTool
-      Shift = [ssLeft]
-      OnBeforeKeyDown = ctBarsDataPointDragTool1BeforeKeyDown
+      Shift = [ssShift, ssLeft]
       GrabRadius = 30
+      ActiveCursor = crSizeNS
       OnDrag = ctBarsDataPointDragTool1Drag
       OnDragStart = ctBarsDataPointDragTool1DragStart
     end

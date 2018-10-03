@@ -32,8 +32,6 @@ type
     procedure cbSortedChange(Sender: TObject);
     procedure chPointsLineSeries1GetMark(out AFormattedMark: String;
       AIndex: Integer);
-    procedure ctBarsDataPointDragTool1BeforeKeyDown(ATool: TChartTool;
-      APoint: TPoint);
     procedure ctBarsDataPointDragTool1Drag(ASender: TDataPointDragTool;
       var AGraphPoint: TDoublePoint);
     procedure ctBarsDataPointDragTool1DragStart(ASender: TDataPointDragTool;
@@ -71,12 +69,6 @@ begin
       AFormattedMark := Source.FormatItem(Marks.Format, AIndex, 0)
   else
     AFormattedMark := '';
-end;
-
-procedure TForm1.ctBarsDataPointDragTool1BeforeKeyDown(ATool: TChartTool;
-  APoint: TPoint);
-begin
-  TDataPointDragTool(ATool).GrabRadius := chBarsBarSeries1.GetBarWidth(0);
 end;
 
 procedure TForm1.ctBarsDataPointDragTool1Drag(ASender: TDataPointDragTool;

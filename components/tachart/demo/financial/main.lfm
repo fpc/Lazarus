@@ -7,7 +7,7 @@ object MainForm: TMainForm
   ClientHeight = 466
   ClientWidth = 891
   OnCreate = FormCreate
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '2.1.0.0'
   object FinancialChart: TChart
     Left = 0
     Height = 385
