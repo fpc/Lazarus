@@ -1,16 +1,15 @@
 object frmMain: TfrmMain
   Left = 261
-  Height = 434
+  Height = 459
   Top = 153
   Width = 484
   Caption = 'frmMain'
-  ClientHeight = 434
+  ClientHeight = 459
   ClientWidth = 484
-  OnCreate = FormCreate
   LCLVersion = '2.1.0.0'
   object Chart1: TChart
     Left = 0
-    Height = 223
+    Height = 217
     Top = 38
     Width = 484
     AxisList = <    
@@ -21,6 +20,7 @@ object frmMain: TfrmMain
         Title.LabelBrush.Style = bsClear
       end    
       item
+        Intervals.MaxLength = 80
         Alignment = calBottom
         Marks.LabelBrush.Style = bsClear
         Minors = <>
@@ -59,17 +59,16 @@ object frmMain: TfrmMain
   object ListView1: TListView
     Left = 0
     Height = 150
-    Top = 261
+    Top = 286
     Width = 484
     Align = alBottom
-    Color = clBtnFace
+    Color = clWhite
     Columns = <>
     Items.LazData = {
-      940000000400000000000000FFFFFFFFFFFFFFFF000000000F0000006C697374
-      76696577206974656D203001000000FFFFFFFFFFFFFFFF000000000F0000006C
-      69737476696577206974656D203102000000FFFFFFFFFFFFFFFF000000000F00
-      00006C69737476696577206974656D203203000000FFFFFFFFFFFFFFFF000000
-      000F0000006C69737476696577206974656D2033
+      6C0000000400000000000000FFFFFFFFFFFFFFFF00000000050000004974656D
+      3001000000FFFFFFFFFFFFFFFF00000000050000004974656D3102000000FFFF
+      FFFFFFFFFFFF00000000050000004974656D3203000000FFFFFFFFFFFFFFFF00
+      000000050000004974656D34
     }
     SmallImages = ChartImageList
     TabOrder = 1
@@ -84,7 +83,7 @@ object frmMain: TfrmMain
     ButtonWidth = 23
     Caption = 'ToolBar1'
     EdgeBorders = [ebBottom]
-    Images = ToolbarImages
+    Images = ChartImageList
     ShowCaptions = True
     TabOrder = 2
     object tbAdd: TToolButton
@@ -112,9 +111,19 @@ object frmMain: TfrmMain
   object StatusBar1: TStatusBar
     Left = 0
     Height = 23
-    Top = 411
+    Top = 436
     Width = 484
     Panels = <>
+  end
+  object Label1: TLabel
+    Left = 0
+    Height = 15
+    Top = 271
+    Width = 484
+    Align = alBottom
+    BorderSpacing.Top = 16
+    Caption = 'This ImageList displays all images contained in the ChartImagelist:'
+    ParentColor = False
   end
   object RandomChartSource1: TRandomChartSource
     PointsNumber = 10
@@ -130,12 +139,6 @@ object frmMain: TfrmMain
     Chart = Chart1
     OnPopulate = ChartImageListPopulate
     left = 192
-    top = 97
-    Bitmap = {
-    }
-  end
-  object ToolbarImages: TImageList
-    left = 328
     top = 97
     Bitmap = {
       4C69020000001000000010000000FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
