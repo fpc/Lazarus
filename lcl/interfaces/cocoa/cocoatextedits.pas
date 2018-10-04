@@ -1166,8 +1166,14 @@ begin
     // this is used for the case of the same items in the combobox
     Result:=idx
   else
+  begin
     // todo: consider a faster search?
-    Result := list.IndexOf(string_.UTF8String);
+    idx := list.IndexOf(string_.UTF8String);
+    if idx<0 then
+      Result := NSNotFound
+    else
+      Result := idx;
+  end;
 end;
 
 function TCocoaComboBox.numberOfItemsInComboBox(combo:TCocoaComboBox):NSInteger;
