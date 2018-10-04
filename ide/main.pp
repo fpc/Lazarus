@@ -6881,13 +6881,6 @@ begin
         end;
       end;
 
-      // update project resource files
-      if not Project1.ProjResources.Regenerate(Project1.MainFilename, False, True, TargetExeDirectory)
-      then begin
-        debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] ProjResources.Regenerate failed']);
-        exit;
-      end;
-
       if (AReason in Project1.CompilerOptions.CompileReasons)
       and (not (pbfDoNotCompileProject in Flags)) then begin
         // compile
