@@ -1319,13 +1319,15 @@ end;
 function TCocoaTextLayout.GetSize: TSize;
 var
   Range: NSRange;
+  bnds: NSRect;
 begin
   Range := FLayout.glyphRangeForTextContainer(FTextContainer);
-  with FLayout.boundingRectForGlyphRange_inTextContainer(Range, FTextContainer).size do
-  begin
-    Result.cx := Round(width);
-    Result.cy := Round(height);
-  end;
+  //for text with soft-breaks (#13) the vertical bounds is too high!
+  //(feels like it tryes to span it from top to bottom)
+  //bnds := FLayout.boundingRectForGlyphRange_inTextContainer(Range, FTextContainer);
+  bnds := FLayout.usedRectForTextContainer(FTextContainer);
+  Result.cx := Round(bnds.size.width);
+  Result.cy := Round(bnds.size.height);
 end;
 
 function TCocoaTextLayout.GetGlyphs: TGlyphArray;
