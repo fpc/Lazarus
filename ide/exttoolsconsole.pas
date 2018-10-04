@@ -60,9 +60,6 @@ type
   { TExternalToolsConsole }
 
   TExternalToolsConsole = class(TExternalTools)
-  private
-    function RunExtToolHandler(ToolOptions: TIDEExternalToolOptions): boolean;
-  protected
   public
     constructor Create(aOwner: TComponent); override;
     destructor Destroy; override;
@@ -219,21 +216,11 @@ constructor TExternalToolsConsole.Create(aOwner: TComponent);
 begin
   inherited Create(aOwner);
   FToolClass := TExternalToolConsole;
-  RunExternalTool := @RunExtToolHandler;
 end;
 
 destructor TExternalToolsConsole.Destroy;
 begin
   inherited Destroy;
-end;
-
-function TExternalToolsConsole.RunExtToolHandler(ToolOptions: TIDEExternalToolOptions): boolean;
-begin
-  {$IFDEF VerboseExtToolThread}
-  debugln(['TExternalToolsConsole.RunExtToolHandler ',ToolOptions.Title,' exe="',ToolOptions.Executable,'" params="',ToolOptions.CmdLineParams,'"']);
-  {$ENDIF}
-  Assert(ToolOptions.Parsers.Count=0, 'TExternalToolsConsole.RunExtToolHandler: Parsers.Count>0.');
-  Result := RunToolWithParsers(ToolOptions);
 end;
 
 function TExternalToolsConsole.GetIDEObject(ToolData: TIDEExternalToolData): TObject;

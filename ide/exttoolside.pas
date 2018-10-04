@@ -32,9 +32,6 @@ type
   { TExternalToolsIDE }
 
   TExternalToolsIDE = class(TExternalTools)
-  private
-    function RunExtToolHandler(ToolOptions: TIDEExternalToolOptions): boolean;
-  protected
   public
     constructor Create(aOwner: TComponent); override;
     destructor Destroy; override;
@@ -87,7 +84,6 @@ constructor TExternalToolsIDE.Create(aOwner: TComponent);
 begin
   inherited Create(aOwner);
   FToolClass := TExternalToolIDE;
-  RunExternalTool := @RunExtToolHandler;
 end;
 
 destructor TExternalToolsIDE.Destroy;
@@ -111,15 +107,6 @@ end;
 procedure TExternalToolsIDE.HandleMesages;
 begin
   Application.ProcessMessages;
-end;
-
-function TExternalToolsIDE.RunExtToolHandler(ToolOptions: TIDEExternalToolOptions): boolean;
-begin
-  {$IFDEF VerboseExtToolThread}
-  debugln(['TExternalToolsIDE.RunExtToolHandler ',ToolOptions.Title,' exe="',ToolOptions.Executable,'" params="',ToolOptions.CmdLineParams,'"']);
-  {$ENDIF}
-  //if ToolOptions.Parsers.Count=0 then
-  Result := RunToolAndDetach(ToolOptions)
 end;
 
 end.
