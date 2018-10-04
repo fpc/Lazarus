@@ -392,6 +392,7 @@ begin
   MsgContext.XPos := Round(MousePos.X);
   MsgContext.YPos := Round(MousePos.Y);
   Rcp := Owner;
+  Res := 1;
   repeat
     cb := Rcp.lclGetCallback;
     if Assigned(cb) then
