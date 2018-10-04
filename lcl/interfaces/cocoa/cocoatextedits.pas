@@ -1327,13 +1327,7 @@ end;
 
 procedure TCocoaReadOnlyComboBox.dealloc;
 begin
-  if Assigned(list) then
-  begin
-    list.Free;
-    list:=nil;
-  end;
-  if resultNS <> nil then
-    resultNS.release;
+  if resultNS <> nil then resultNS.release;
   inherited dealloc;
 end;
 
