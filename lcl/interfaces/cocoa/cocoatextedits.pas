@@ -212,11 +212,14 @@ type
   end;
 
   TCocoaComboBox = objcclass(NSComboBox, NSComboBoxDataSourceProtocol, NSComboBoxDelegateProtocol)
+  private
+    userSel: boolean;
   public
     callback: IComboboxCallBack;
     list: TCocoaComboBoxList;
     resultNS: NSString;  //use to return values to combo
     function acceptsFirstResponder: Boolean; override;
+    procedure textDidChange(notification: NSNotification); override;
     // NSComboBoxDataSourceProtocol
     function comboBox_objectValueForItemAtIndex_(combo: TCocoaComboBox; row: NSInteger): id; message 'comboBox:objectValueForItemAtIndex:';
     function comboBox_indexOfItemWithStringValue(aComboBox: NSComboBox; string_: NSString): NSUInteger; message 'comboBox:indexOfItemWithStringValue:';
@@ -1113,7 +1116,7 @@ begin
 
   inherited setStringValue(avalue);
 
-  if ch and Assigned(callback) then
+  if ch and userSel and Assigned(callback) then
     callback.SendOnChange;
 end;
 
@@ -1146,6 +1149,13 @@ end;
 function TCocoaComboBox.acceptsFirstResponder: Boolean;
 begin
   Result := True;
+end;
+
+procedure TCocoaComboBox.textDidChange(notification: NSNotification);
+begin
+  inherited textDidChange(notification);
+  if Assigned(callback) then
+    callback.SendOnChange;
 end;
 
 function TCocoaComboBox.comboBox_objectValueForItemAtIndex_(combo:TCocoaComboBox;
@@ -1220,11 +1230,14 @@ var
 begin
   txt := comboBox_objectValueForItemAtIndex_(self, indexOfSelectedItem);
   if Assigned(txt) then setStringValue( txt );
-  callback.ComboBoxSelectionDidChange;
+  if userSel then
+    callback.ComboBoxSelectionDidChange;
+  userSel := false;
 end;
 
 procedure TCocoaComboBox.comboBoxSelectionIsChanging(notification: NSNotification);
 begin
+  userSel := true;
   callback.ComboBoxSelectionIsChanging;
 end;
 
