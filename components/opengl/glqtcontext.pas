@@ -20,7 +20,8 @@ uses
   InterfaceBase,
   WSLCLClasses,glx,
   // Bindings
-  qt4,
+  {$IFDEF LCLQt}qt4,{$ENDIF}
+  {$IFDEF LCLQt5}qt5,{$ENDIF}
   qtwidgets, qtobjects, qtproc, qtint,
   QtWSControls;
 
@@ -120,7 +121,7 @@ type
 
 function TQtGLWidget.GetGLXDrawable: GLXDrawable;
 begin
-  result:=QWidget_winID(Widget);
+  result := QWidget_winID(Widget);
 end;
 
 procedure LOpenGLViewport(Handle: HWND; Left, Top, Width, Height: integer);
