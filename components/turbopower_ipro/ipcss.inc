@@ -398,6 +398,7 @@ end;
 function ColorFromString(S: String): TColor;
 var
   R, G, B, Err : Integer;
+  L: TStringList;
 begin
   Result := -1;
   if S = '' then
@@ -420,6 +421,24 @@ begin
     end
   else
   if BinSearchNamedColor(S, result) then exit
+  else
+  if pos('RGB', S) = 1 then begin
+    S := Copy(S, 4, MaxInt);
+    while (S <> '') and (IsWhiteSpace(S[1]) or (S[1] = '(')) do
+      Delete(S, 1, 1);
+    while (S <> '') and (IsWhiteSpace(S[Length(S)]) or (S[Length(S)] = ')')) do
+      SetLength(S, Length(S)-1);
+    L := TStringList.Create;
+    try
+      L.CommaText := S;
+      if L.Count > 0 then R := StrToIntDef(L[0], 255);
+      if L.Count > 1 then G := StrToIntDef(L[1], 255);
+      if L.Count > 2 then B := StrToIntDef(L[2], 255);
+      Exit(RGB(R, G, B));
+    finally
+      L.Free;
+    end;
+  end
   else
   if length(S) = 6 then
     try
@@ -582,12 +601,14 @@ var
   Start: Integer;
   Quote: char;
   WantChar: Boolean;
+  WantPar: Boolean;
   Len: Integer;
 begin
   Result := TStringList.Create;
   Start := Pos(':', ACommand)+1;
 
   WantArg := True;
+  WantPar := false;
   Quote := #0;
   for i := Start to Length(ACommand) do
   begin
@@ -616,7 +637,9 @@ begin
     else // we have an arg we are reading ...
     begin
       WantChar:=not (ACommand[i] in [';',' ',#9]);
-      if (i<Length(ACommand)) and WantChar
+      if ACommand[i] = '(' then WantPar := True;
+      if ACommand[i] = ')' then WantPar := False;
+      if (i<Length(ACommand)) and (WantChar or WantPar)
       then
         continue;
       WantArg := True;
