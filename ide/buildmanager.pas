@@ -1906,8 +1906,11 @@ var
   Code: TCodeBuffer;
 begin
   Result:=mrOk;
+  Assert(not Project1.ProjResources.Modified, 'UpdateProjectAutomaticFiles: Resources are modified!');
   // update project resource
-  Project1.ProjResources.Regenerate(Project1.MainFileName, False, True, TestDir);
+  if TestDir<>'' then
+    Project1.ProjResources.Regenerate(Project1.MainFileName, False, True, TestDir);
+  // Iterate project units
   AnUnitInfo := Project1.FirstPartOfProject;
   while AnUnitInfo<>nil do 
   begin

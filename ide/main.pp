@@ -5048,7 +5048,7 @@ var
 var
   aFilename: String;
 begin
-  //debugln(['TMainIDE.DoProjectOptionsAfterWrite ',DbgSName(Sender),' Restore=',Restore]);
+  //debugln(['TMainIDE.ProjectOptionsAfterWrite ',DbgSName(Sender),' Restore=',Restore]);
   if not (Sender is TProjectIDEOptions) then exit;
   AProject:=TProjectIDEOptions(Sender).Project;
   Assert(Assigned(AProject), 'TMainIDE.ProjectOptionsAfterWrite: Project=Nil.');
@@ -5065,7 +5065,7 @@ begin
       SetAutoCreateForms;
       AProject.AutoAddOutputDirToIncPath;  // extend include path
       if AProject.ProjResources.Modified then
-        if not AProject.ProjResources.Regenerate(AProject.MainFilename, True, False, '') then
+        if not AProject.ProjResources.Regenerate(AProject.MainFilename, True, True, '') then
           IDEMessageDialog(lisCCOWarningCaption, AProject.ProjResources.Messages.Text,
                            mtWarning, [mbOk]);
     end;
