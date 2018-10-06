@@ -1491,8 +1491,7 @@ var
   AUnitName: String;
 begin
   if EnvironmentOptions.AmbiguousFileAction=afaIgnore then exit(mrOK);
-  if EnvironmentOptions.AmbiguousFileAction
-    in [afaAsk,afaAutoDelete,afaAutoRename]
+  if EnvironmentOptions.AmbiguousFileAction in [afaAsk,afaAutoDelete,afaAutoRename]
   then begin
     ADirectory:=AppendPathDelim(ExtractFilePath(Filename));
     if FindFirstUTF8(ADirectory+GetAllFilesMask,faAnyFile,FileInfo)=0 then

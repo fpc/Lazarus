@@ -301,7 +301,7 @@ type
     FUnitResourceFileformat: TUnitResourcefileFormatClass;
 
     function GetEditorInfo(Index: Integer): TUnitEditorInfo;
-    function GetHasResources:boolean;
+    function GetHasResources: boolean;
     function GetModified: boolean;
     function GetNextAutoRevertLockedUnit: TUnitInfo;
     function GetNextLoadedUnit: TUnitInfo;

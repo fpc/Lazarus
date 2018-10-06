@@ -126,16 +126,14 @@ end;
 
 { TResourceItem }
 
-procedure TResourceItem.ReadFromProjectFile(AConfig: TXMLConfig;
-  const Path: String);
+procedure TResourceItem.ReadFromProjectFile(AConfig: TXMLConfig; const Path: String);
 begin
   FileName := AConfig.GetValue(Path + 'FileName', '');
   ResType := StrToResourceType(AConfig.GetValue(Path + 'Type', ''));
   ResName := AConfig.GetValue(Path + 'ResourceName', '');
 end;
 
-procedure TResourceItem.WriteToProjectFile(AConfig: TXMLConfig;
-  const Path: String);
+procedure TResourceItem.WriteToProjectFile(AConfig: TXMLConfig; const Path: String);
 begin
   AConfig.SetValue(Path + 'FileName', FileName);
   AConfig.SetValue(Path + 'Type', ResourceTypeToStr[ResType]);
@@ -256,8 +254,7 @@ begin
   end;
 end;
 
-procedure TProjectUserResources.WriteToProjectFile(AConfig: TObject;
-  const Path: String);
+procedure TProjectUserResources.WriteToProjectFile(AConfig: TObject; const Path: String);
 var
   I: Integer;
 begin
@@ -266,8 +263,7 @@ begin
     List[I]^.WriteToProjectFile(TXMLConfig(AConfig), Path + 'General/Resources/Resource_' + IntToStr(I) + '/')
 end;
 
-procedure TProjectUserResources.ReadFromProjectFile(AConfig: TObject;
-  const Path: String);
+procedure TProjectUserResources.ReadFromProjectFile(AConfig: TObject; const Path: String);
 var
   I, Count: Integer;
 begin

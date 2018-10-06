@@ -69,7 +69,7 @@ type
 
     resFileName: String;
     lrsFileName: String;
-    LastResFilename: String;
+    LastResFileName: String;
     LastLrsFileName: String;
 
     function GetProjectIcon: TProjectIcon;
@@ -384,10 +384,8 @@ begin
   begin
     FModified := AValue;
     if not FModified then
-    begin
       for i := 0 to FResources.Count - 1 do
         FResources[i].Modified := False;
-    end;
     if Assigned(FOnModified) then
       OnModified(Self);
   end;
@@ -510,7 +508,8 @@ end;
 function TProjectResources.Regenerate(const MainFileName: String; UpdateSource,
   PerformSave: boolean; const SaveToTestDir: string): Boolean;
 begin
-  //DebugLn(['TProjectResources.Regenerate MainFilename=',MainFilename,' UpdateSource=',UpdateSource,' PerformSave=',PerformSave]);
+  //DebugLn(['TProjectResources.Regenerate MainFilename=',MainFilename,
+  //         ' UpdateSource=',UpdateSource,' PerformSave=',PerformSave]);
   //DumpStack;
   Result := False;
 
@@ -518,7 +517,7 @@ begin
     Exit(true);
 
   // remember old codebuffer filenames
-  LastResFilename := resFileName;
+  LastResFileName := resFileName;
   LastLrsFileName := lrsFileName;
   SetFileNames(MainFileName, SaveToTestDir);
 
@@ -671,8 +670,7 @@ begin
     if FLrsIncludeAllowed and HasLazarusResources then
     begin
       //debugln(['TProjectResources.UpdateMainSourceFile include directive not found: FCanHaveLrsInclude=',FLrsIncludeAllowed,' HasLazarusResources=',HasLazarusResources]);
-      if not CodeToolBoss.AddIncludeDirectiveForInit(CodeBuf,
-        Filename,'') then
+      if not CodeToolBoss.AddIncludeDirectiveForInit(CodeBuf,Filename,'') then
       begin
         Result := False;
         Messages.Add(Format(lisCouldNotAddIToMainSource, [Filename]));
@@ -720,7 +718,7 @@ begin
   if CodeBuf = nil then
     Exit;
 
-  LastResFilename := resFileName;
+  LastResFileName := resFileName;
   LastLrsFileName := lrsFileName;
   try
     SetFileNames(CurFileName, '');
@@ -850,7 +848,7 @@ procedure TProjectResources.DeleteLastCodeBuffers;
   end;
 
 begin
-  CleanCodeBuffer(LastResFilename, resFileName);
+  CleanCodeBuffer(LastResFileName, resFileName);
   CleanCodeBuffer(LastLrsFileName, lrsFileName);
 end;
 

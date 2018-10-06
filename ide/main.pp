@@ -7688,8 +7688,7 @@ begin
   end;
 end;
 
-function TMainIDE.DoBuildFile(ShowAbort: Boolean; Filename: string
-  ): TModalResult;
+function TMainIDE.DoBuildFile(ShowAbort: Boolean; Filename: string): TModalResult;
 var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
