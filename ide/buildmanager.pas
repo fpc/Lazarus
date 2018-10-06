@@ -2551,7 +2551,7 @@ begin
     // compute macro values
 
     if ParseOpts.MacroValuesParsing then begin
-      if ConsoleVerbosity>=-1 then
+      if ConsoleVerbosity>=0 then
         debugln(['Warning: (lazarus) [TBuildManager.OnGetBuildMacroValues] cycle computing macros of ',dbgsname(Options.Owner)]);
       exit;
     end;

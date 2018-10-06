@@ -3340,7 +3340,7 @@ begin
         continue;
       end;
       if FileAgeCached(Filename)>StateFileAge then begin
-        if ConsoleVerbosity>=-1 then
+        if ConsoleVerbosity>=0 then
           debugln(['Hint: (lazarus) global unit "',Filename,'" is newer than state file of package ',ID]);
         Note+='Global unit "'+Filename+'" is newer than state file of '+ID+':'+LineEnding
           +'  Unit age='+FileAgeToStr(FileAgeCached(Filename))+LineEnding
@@ -4696,7 +4696,7 @@ begin
   if FileIsExecutableCached(Executable) then begin
     if (not NeedFPCMake)
     and (FileAgeUTF8(MakefileFPCFilename)<FileAgeCached(Executable)) then begin
-      if ConsoleVerbosity>=-1 then
+      if ConsoleVerbosity>=0 then
         debugln(['Hint: (lazarus) [TLazPackageGraph.WriteMakeFile] "',Executable,'" is newer than "',MakefileFPCFilename,'"']);
       NeedFPCMake:=true;// fpcmake is newer than Makefile.fpc
     end;

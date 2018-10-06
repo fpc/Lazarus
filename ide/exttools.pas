@@ -614,7 +614,7 @@ begin
     Thread.Tool:=Self;
     FThread.FreeOnTerminate:=true;
   end;
-  if ConsoleVerbosity>=-1 then begin
+  if ConsoleVerbosity>=0 then begin
     debugln(['Info: (lazarus) Execute Title="',Title,'"']);
     debugln(['Info: (lazarus) Working Directory="',Process.CurrentDirectory,'"']);
     debugln(['Info: (lazarus) Executable="',Process.Executable,'"']);

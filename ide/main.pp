@@ -6766,7 +6766,7 @@ begin
         if  (AReason = crRun)
         and (not (pfAlwaysBuild in Project1.Flags)) then begin
           if Result=mrNo then begin
-            debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] MainBuildBoss.DoCheckIfProjectNeedsCompilation nothing to be done']);
+            debugln(['Note: (lazarus) [TMainIDE.DoBuildProject] MainBuildBoss.DoCheckIfProjectNeedsCompilation nothing to be done']);
             Result:=mrOk;
             // continue for now, check if 'Before' tool is required
             NoBuildNeeded:= true;
