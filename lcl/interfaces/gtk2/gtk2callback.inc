@@ -1964,6 +1964,11 @@ var
 
 begin
   Result := 0;
+
+  if GTK_IS_TREE_VIEW(widget)
+  and (gtk_tree_view_get_bin_window(PGtkTreeView(widget)) <> Event^.window) then
+    Exit;
+
   CheckTransparentWindow({%H-}TLCLIntfHandle(widget), AWinControl);
   if (widget=nil) or (AWinControl=nil) then
     Exit;
