@@ -1919,23 +1919,8 @@ begin
           if Result = mrIgnore then Result:=mrOk;
           if Result <> mrOk then exit;
         end;
-      rtRes:
-        begin
-          Result:=mrCancel;
-          if (AnUnitInfo.Source=nil) and (not AnUnitInfo.IsVirtual) then begin
-            AnUnitInfo.Source:=CodeToolBoss.LoadFile(AnUnitInfo.Filename,true,false);
-            Code:=AnUnitInfo.Source;
-            if (Code<>nil) and (Code.DiskEncoding<>EncodingUTF8) then begin
-              if ConsoleVerbosity>=0 then
-                DebugLn(['Note: (lazarus) fixing encoding of ',Code.Filename,' from ',Code.DiskEncoding,' to ',EncodingUTF8]);
-              Code.DiskEncoding:=EncodingUTF8;
-              if Code.Save then
-                Result:=mrOk
-              else if ConsoleVerbosity>=0 then
-                DebugLn(['Note: (lazarus) [TBuildManager.UpdateProjectAutomaticFiles] failed to save file ',Code.Filename]);
-            end;
-          end;
-
+      rtRes:  // This fixed encoding of source files but only if rtRes type. Why?
+        begin // Source was read in every time although encoding is correct most of times.
         end;
       end;
     end;
