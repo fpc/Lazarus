@@ -92,7 +92,7 @@ uses
   frmpas2jsnodejsprojectoptions,
   frmpas2jsbrowserprojectoptions,
   pjsprojectoptions,
-  pjscontroller, strpas2jsdesign, MenuIntf;
+  pjscontroller, strpas2jsdesign, IDECommands, ToolbarIntf, MenuIntf;
 
 procedure ShowServerDialog(Sender: TObject);
 begin
@@ -100,7 +100,14 @@ begin
   TPasJSWebserverProcessesForm.Instance.BringToFront;
 end;
 
+Const
+  sPas2JSWebserversName = 'Pas2JSWebservers';
+
 procedure Register;
+
+Var
+  ViewCategory : TIDECommandCategory;
+  IDECommand : TIDECommand;
 
 begin
   PJSOptions:=TPas2jsOptions.Create;
@@ -112,7 +119,15 @@ begin
   // add IDE options frame
   PJSOptionsFrameID:=RegisterIDEOptionsEditor(GroupEnvironment,TPas2jsOptionsFrame,
                                               PJSOptionsFrameID)^.Index;
-  RegisterIdeMenuCommand(itmViewDebugWindows,'Pas2JSWebservers',SPasJSWebserversCaption,nil,@ShowServerDialog);
+  ViewCategory := IDECommandList.FindCategoryByName(CommandCategoryViewName);
+  if ViewCategory <> nil then
+    begin
+    IDECommand := RegisterIDECommand(ViewCategory,SPas2JSWebserversName,SPasJSWebserversCaption,
+                                     CleanIDEShortCut,CleanIDEShortCut,Nil,@ShowServerDialog);
+    if IDECommand <> nil then
+      RegisterIDEButtonCommand(IDECommand);
+    end;
+  RegisterIdeMenuCommand(itmViewDebugWindows,SPas2JSWebserversName,SPasJSWebserversCaption,nil,@ShowServerDialog);
   // Add project options frame
   RegisterIDEOptionsEditor(GroupProject,TPas2JSProjectOptionsFrame, Pas2JSOptionsIndex);
 end;
