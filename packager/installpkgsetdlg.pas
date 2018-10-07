@@ -399,6 +399,7 @@ var
   ImgIndex: Integer;
   Unknown: Boolean;
   PackageLink: TPackageLink;
+  ImagesRes: TScaledImageListResolution;
 begin
   Tree:=Sender as TTreeView;
   if Stage=cdPostPaint then begin
@@ -420,25 +421,27 @@ begin
     else
       PackageLink := FindOnlinePackageLink(Info.ID.Name);
     Images:=Tree.Images;
+    if Images = nil then exit;
+    ImagesRes := Images.ResolutionForPPI[Tree.ImagesWidth, Font.PixelsPerInch, GetCanvasScaleFactor];
     CurCanvas:=Tree.Canvas;
 
     NodeRect:=Node.DisplayRect(False);
     x:=Node.DisplayIconLeft+1;
-    y:=(NodeRect.Top+NodeRect.Bottom-Images.Height) div 2;
+    y:=(NodeRect.Top+NodeRect.Bottom-ImagesRes.Height) div 2;
     // draw image
     ImgIndex:=GetPkgImgIndex(Installed,PackageInInstallList(PkgName), PackageLink <> nil);
-    Images.Draw(CurCanvas,x,y,ImgIndex);
+    ImagesRes.Draw(CurCanvas,x,y,ImgIndex);
     // draw overlays
     if InLazSrc then
-      Images.Draw(CurCanvas,x,y,ImgIndexOverlayLazarusPackage);
+      ImagesRes.Draw(CurCanvas,x,y,ImgIndexOverlayLazarusPackage);
     if IsBase then
-      Images.Draw(CurCanvas,x,y,ImgIndexOverlayBasePackage);
+      ImagesRes.Draw(CurCanvas,x,y,ImgIndexOverlayBasePackage);
     if PkgType=lptRunTimeOnly then
-      Images.Draw(CurCanvas,x,y,ImgIndexOverlayRuntimePackage);
+      ImagesRes.Draw(CurCanvas,x,y,ImgIndexOverlayRuntimePackage);
     if PkgType=lptDesignTime then
-      Images.Draw(CurCanvas,x,y,ImgIndexOverlayDesigntimePackage);
+      ImagesRes.Draw(CurCanvas,x,y,ImgIndexOverlayDesigntimePackage);
     if Unknown then
-      Images.Draw(CurCanvas,x,y,ImgIndexOverlayUnknown);
+      ImagesRes.Draw(CurCanvas,x,y,ImgIndexOverlayUnknown);
   end;
   PaintImages:=false;
 end;
