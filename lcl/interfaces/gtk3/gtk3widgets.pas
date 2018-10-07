@@ -22,11 +22,13 @@ unit gtk3widgets;
 interface
 
 uses
-  Classes, SysUtils, Controls, Graphics, Dialogs, Forms, StdCtrls, ComCtrls, Menus,
-  types,
-  LCLType, LCLProc, LMessages, LCLMessageGlue, LCLIntf,
+  Classes, SysUtils, types, math,
+  // LCL
+  Controls, StdCtrls, ExtCtrls, ComCtrls, Graphics, Dialogs, Forms, Menus, ExtDlgs,
+  Spin, CheckLst, LCLType, LCLProc, LMessages, LCLMessageGlue, LCLIntf,
+  // GTK3
   LazGtk3, LazGdk3, LazGObject2, LazGLib2, LazCairo1, LazPango1, LazGdkPixbuf2,
-  gtk3objects;
+  gtk3objects, gtk3procs, gtk3private, Gtk3CellRenderer;
 
 type
   TByteSet = set of byte;
@@ -680,8 +682,10 @@ type
   { TGtk3RadioButton }
 
   TGtk3RadioButton = class(TGtk3CheckBox)
+  private
   protected
     function CreateWidget(const Params: TCreateParams):PGtkWidget; override;
+    procedure InitializeWidget; override;
   public
   end;
 
@@ -789,8 +793,8 @@ type
 function Gtk3WidgetEvent(widget: PGtkWidget; event: PGdkEvent; data: GPointer): gboolean; cdecl;
 
 implementation
-uses Spin, gtk3int, gtk3procs, gtk3private, Gtk3CellRenderer, ExtDlgs, math,
-  CheckLst;
+
+uses gtk3int;
 
 function Gtk3EventToStr(AEvent: TGdkEventType): String;
 begin
@@ -6258,8 +6262,42 @@ end;
 { TGtk3RadioButton }
 
 function TGtk3RadioButton.CreateWidget(const Params: TCreateParams): PGtkWidget;
+var
+  w: PGtkWidget;
+  ctl, Parent: TWinControl;
+  rb: TRadioButton;
+  pl: PGsList;
 begin
+  if Self.LCLObject.Name='HiddenRadioButton' then
+    exit;
   Result := PGtkWidget(TGtkRadioButton.new(nil));
+  ctl := Self.LCLObject;
+  if Assigned(ctl) then
+  begin
+    Parent := ctl.Parent;
+    if (Parent is TRadioGroup) and (TRadioGroup(Parent).Items.Count>0) then
+    begin
+      rb := TRadioButton(Parent.Controls[0]);
+      if rb<>ctl then
+      begin
+        w := TGtk3RadioButton(rb.Handle).Widget;
+        pl := PGtkRadioButton(w)^.get_group;
+        PGtkRadioButton(Result)^.set_group(pl);
+      end;
+    end;
+  end;
+end;
+
+procedure TGtk3RadioButton.InitializeWidget;
+begin
+  if Self.LCLObject.Name='HiddenRadioButton' then
+  begin
+    exit;
+   { PGtkRadioButton(Self.Widget)^.set_group(nil);
+   // PGtkRadioButton(Self.Widget)^.set_inconsistent(true);
+    PGtkRadioButton(Self.Widget)^.set_visible(false);}
+  end;
+  inherited InitializeWidget;
 end;
 
 { TGtk3CustomControl }
