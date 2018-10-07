@@ -1,10 +1,10 @@
-object SpotterForm: TSpotterForm
+object IDEScoutForm: TIDEScoutForm
   Left = 404
   Height = 232
   Top = 195
   Width = 497
   BorderStyle = bsSizeToolWin
-  Caption = 'Spotter'
+  Caption = 'IDE Scout'
   ClientHeight = 232
   ClientWidth = 497
   FormStyle = fsStayOnTop

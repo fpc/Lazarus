@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <Package Version="4">
-    <Name Value="idespotter"/>
+    <Name Value="idescout"/>
     <Type Value="DesignTime"/>
     <Author Value="Michael Van Canneyt"/>
     <CompilerOptions>
@@ -10,27 +10,27 @@
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
     </CompilerOptions>
-    <Description Value="IDE addon showing the &quot;IDE Spotter&quot; - a quick search window for IDE commands.
+    <Description Value="IDE addon showing the &quot;IDE Scout&quot; - a quick search window for IDE commands.
 See the ReadMe.txt included in the package for a more detailed explanation."/>
     <License Value="Modified LGPL-2"/>
     <Version Release="1"/>
     <Files Count="4">
       <Item1>
-        <Filename Value="regidespotter.pas"/>
+        <Filename Value="regidescout.pas"/>
         <HasRegisterProc Value="True"/>
-        <UnitName Value="RegIDESpotter"/>
+        <UnitName Value="RegIDEScout"/>
       </Item1>
       <Item2>
-        <Filename Value="frmspotter.pas"/>
-        <UnitName Value="frmspotter"/>
+        <Filename Value="frmscout.pas"/>
+        <UnitName Value="frmscout"/>
       </Item2>
       <Item3>
         <Filename Value="ReadMe.txt"/>
         <Type Value="Binary"/>
       </Item3>
       <Item4>
-        <Filename Value="idespotteroptions.pas"/>
-        <UnitName Value="IDESPotterOptions"/>
+        <Filename Value="idescoutoptions.pas"/>
+        <UnitName Value="IDEScoutOptions"/>
       </Item4>
     </Files>
     <i18n>

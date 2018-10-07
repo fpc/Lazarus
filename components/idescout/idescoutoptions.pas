@@ -1,4 +1,4 @@
-{ IDE options frame for IDE Spotter options
+{ IDE options frame for IDE Scout options
 
   Copyright (C) 2018  Michael van Canneyt  michael@freepascal.org
 
@@ -27,7 +27,7 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.
 }
-unit IDESPotterOptions;
+unit IDEScoutOptions;
 
 {$mode objfpc}{$H+}
 {$Inline on}
@@ -39,13 +39,13 @@ uses
   // LCL
   Forms, StdCtrls, Dialogs, Spin, ExtCtrls, ColorBox,
   // IdeIntf
-  IDEOptionsIntf, IDEOptEditorIntf, IDEUtils, frmSpotter;
+  IDEOptionsIntf, IDEOptEditorIntf, IDEUtils, frmScout;
 
 
 Type
-  { TIDESpotterOptionsFrame }
+  { TIDEScoutOptionsFrame }
 
-  TIDESpotterOptionsFrame = class(TAbstractIDEOptionsEditor)
+  TIDEScoutOptionsFrame = class(TAbstractIDEOptionsEditor)
     CGSearch: TCheckGroup;
     CBShowShortCut: TCheckBox;
     CBMatchColor: TColorBox;
@@ -76,40 +76,40 @@ implementation
 
 {$R *.lfm}
 
-{ TIDESpotterOptionsFrame }
+{ TIDEScoutOptionsFrame }
 
-procedure TIDESpotterOptionsFrame.CGSearchClick(Sender: TObject);
+procedure TIDEScoutOptionsFrame.CGSearchClick(Sender: TObject);
 begin
 
 end;
 
-procedure TIDESpotterOptionsFrame.CGSearchItemClick(Sender: TObject;
+procedure TIDEScoutOptionsFrame.CGSearchItemClick(Sender: TObject;
   Index: integer);
 begin
-  if Index=Ord(shComponents) then
+  if Index=Ord(stComponents) then
     GBComponents.Enabled:=CGsearch.Checked[Index];
 end;
 
-function TIDESpotterOptionsFrame.GetTitle: String;
+function TIDEScoutOptionsFrame.GetTitle: String;
 begin
-  Result:='IDE Spotter';
+  Result:='IDE Scout';
 end;
 
-procedure TIDESpotterOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
+procedure TIDEScoutOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 
 
 begin
   // Do nothing, maybe localize ?
 end;
 
-procedure TIDESpotterOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
+procedure TIDEScoutOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 
 Var
-  sh : TSpotHighlight;
+  st : TScoutTerrain;
 
 begin
-  for SH in TSpotHighlight do
-    CGSearch.Checked[Ord(SH)]:=SH in SpotHighlights;
+  for St in TScoutTerrain do
+    CGSearch.Checked[Ord(St)]:=St in ScoutTerrains;
   CBSelectComponent.Checked:=Not TComponentItem.Drop;
   SEComponentDefaultHeight.Value:=TComponentItem.DefaultHeight;
   SEComponentDefaultWidth.Value:=TComponentItem.DefaultWidth;
@@ -119,18 +119,18 @@ begin
   CBShortCutColor.Selected := KeyStrokeColor;
 end;
 
-procedure TIDESpotterOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
+procedure TIDEScoutOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 
 Var
-  sh : TSpotHighlight;
-  SHS : TSpotHighlights;
+  st : TScoutTerrain;
+  STS : TScoutTerrains;
 
 begin
-  SHS:=[];
-  for SH in TSpotHighlight do
-    if CGSearch.Checked[Ord(SH)] then
-      Include(SHS,SH);
-  SpotHighlights:=SHS;
+  STS:=[];
+  for ST in TScoutTerrain do
+    if CGSearch.Checked[Ord(ST)] then
+      Include(STS,ST);
+  ScoutTerrains:=STS;
   TComponentItem.Drop:=not CBSelectComponent.Checked;
   TComponentItem.DefaultHeight:=SEComponentDefaultHeight.Value;
   TComponentItem.DefaultWidth:=SEComponentDefaultWidth.Value;
@@ -138,11 +138,11 @@ begin
   ShowShortCutKey:=CBShowShortCut.Checked;
   MatchColor:=CBMatchColor.Selected;
   KeyStrokeColor:=CBShortCutColor.Selected;
-  SaveSpotterOptions;
-  ApplySpotterOptions;
+  SaveScoutOptions;
+  ApplyScoutOptions;
 end;
 
-class function TIDESpotterOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
+class function TIDEScoutOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
   Result:=IDEEditorGroups.GetByIndex(GroupEnvironment)^.GroupClass;
 end;

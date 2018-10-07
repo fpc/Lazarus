@@ -1,4 +1,4 @@
-{ Form for the spotter window
+{ Form for the scout window
 
   Copyright (C) 2018  Michael van Canneyt  michael@freepascal.org
 
@@ -27,7 +27,7 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.
 }
-unit frmspotter;
+unit frmscout;
 
 {$mode objfpc}{$H+}
 
@@ -38,8 +38,8 @@ uses
   StdCtrls, EditBtn, IDECommands, LazIDEIntf, Types, LCLType, IDEOptionsIntf, IDEOptEditorIntf;
 
 Type
-  TSpotHighlight = (shCommands,shRecentProjects,shRecentFiles,shRecentPackages,shComponents);
-  TSpotHighlights = set of TSpotHighlight;
+  TScoutTerrain = (stCommands,stRecentProjects,stRecentFiles,stRecentPackages,stComponents);
+  TScoutTerrains = set of TScoutTerrain;
 
   { TSearchItem }
   TMatchPos = Array of Integer;
@@ -98,9 +98,9 @@ Type
   end;
 
 
-  { TSpotterForm }
+  { TIDEScoutForm }
 
-  TSpotterForm = class(TForm)
+  TIDEScoutForm = class(TForm)
     ESearch: TEditButton;
     LBMatches: TListBox;
     procedure ECommandChange(Sender: TObject);
@@ -118,7 +118,7 @@ Type
       );
   private
     FRefresh,
-    FHighlights: TSpotHighlights;
+    FHighlights: TScoutTerrains;
     FKeyStrokeColor: TColor;
     FMatchColor: TColor;
     FShowCategory: Boolean;
@@ -144,26 +144,26 @@ Type
     Property ShowShortCutKey : Boolean Read FShowShortCutKey Write FShowShortCutKey;
     property KeyStrokeColor : TColor Read FKeyStrokeColor Write FKeyStrokeColor;
     property MatchColor : TColor Read FMatchColor Write FMatchColor;
-    Property Highlights : TSpotHighlights Read FHighlights Write FHighlights;
+    Property Highlights : TScoutTerrains Read FHighlights Write FHighlights;
   end;
 
 
 Const
-  AllSpots = [shCommands,shRecentProjects,shRecentFiles,shRecentPackages];
+  AllTerrains = [stCommands,stRecentProjects,stRecentFiles,stRecentPackages];
 
 Var
-  SpotHighlights : TSpotHighlights = AllSpots;
+  ScoutTerrains : TScoutTerrains = AllTerrains;
   ShowCmdCategory : Boolean = True;
   ShowShortCutKey : Boolean = True;
   MatchColor : TColor = clMaroon;
   KeyStrokeColor : TColor = clNavy;
   SettingsClass : TAbstractIDEOptionsEditorClass = Nil;
 
-Procedure ShowSpotterForm;
-Procedure ApplySpotterOptions;
-Procedure SaveSpotterOptions;
-procedure LoadSpotterOptions;
-procedure CreateSpotterWindow(Sender: TObject; aFormName: string; var AForm: TCustomForm; DoDisableAutoSizing: boolean);
+Procedure ShowScoutForm;
+Procedure ApplyScoutOptions;
+Procedure SaveScoutOptions;
+procedure LoadScoutOptions;
+procedure CreateScoutWindow(Sender: TObject; aFormName: string; var AForm: TCustomForm; DoDisableAutoSizing: boolean);
 
 implementation
 
@@ -173,11 +173,11 @@ Uses
 {$R *.lfm}
 
 var
-  SpotterForm: TSpotterForm;
+  ScoutForm: TIDEScoutForm;
 
 
 Const
-  IDESpotterOptsFile = 'idespotter.xml';
+  IDEScoutOptsFile = 'idescout.xml';
 
   KeyHighLight = 'highlight/';
   KeyShowCategory = 'showcategory/value';
@@ -189,23 +189,23 @@ Const
   KeyDropComponent = 'Components/Drop';
 
 
-  HighlightNames : Array[TSpotHighlight] of string =
+  HighlightNames : Array[TScoutTerrain] of string =
     ('Commands','Projects','Files','Packages','Components');
 
-procedure LoadSpotterOptions;
+procedure LoadScoutOptions;
 var
   Cfg: TConfigStorage;
-  SH  : TSpotHighlight;
-  SHS : TSpotHighlights;
+  SH  : TScoutTerrain;
+  SHS : TScoutTerrains;
 
 begin
-  Cfg:=GetIDEConfigStorage(IDESpotterOptsFile,true);
+  Cfg:=GetIDEConfigStorage(IDEScoutOptsFile,true);
   try
    SHS:=[];
-   for SH in TSpotHighlight do
-     if Cfg.GetValue(KeyHighLight+HighlightNames[SH],SH In SpotHighlights) then
+   for SH in TScoutTerrain do
+     if Cfg.GetValue(KeyHighLight+HighlightNames[SH],SH In ScoutTerrains) then
        Include(SHS,SH);
-    SpotHighlights:=SHS;
+    ScoutTerrains:=SHS;
     TComponentItem.DefaultWidth:=Cfg.GetValue(KeyDefaultComponentWidth,TComponentItem.DefaultWidth);
     TComponentItem.DefaultHeight:=Cfg.GetValue(KeyDefaultComponentHeight,TComponentItem.DefaultHeight);
     TComponentItem.Drop:=Cfg.GetValue(KeyDropComponent,TComponentItem.Drop);
@@ -213,23 +213,23 @@ begin
     ShowShortCutKey:=Cfg.GetValue(KeyShowShortCut,ShowShortCutKey);
     KeyStrokeColor:=TColor(Cfg.GetValue(KeyShortCutColor,Ord(KeyStrokeColor)));
     MatchColor:=TColor(Cfg.GetValue(KeyMatchColor,Ord(MatchColor)));
-    ApplySpotterOptions;
+    ApplyScoutOptions;
   finally
     Cfg.Free;
   end;
 end;
 
 
-procedure SaveSpotterOptions;
+procedure SaveScoutOptions;
 var
   Cfg: TConfigStorage;
-  SH  : TSpotHighlight;
+  SH  : TScoutTerrain;
 
 begin
-  Cfg:=GetIDEConfigStorage(IDESpotterOptsFile,false);
+  Cfg:=GetIDEConfigStorage(IDEScoutOptsFile,false);
   try
-    for SH in TSpotHighlight do
-      Cfg.SetValue(KeyHighLight+HighlightNames[SH],SH In SpotHighlights);
+    for SH in TScoutTerrain do
+      Cfg.SetValue(KeyHighLight+HighlightNames[SH],SH In ScoutTerrains);
     Cfg.SetValue(KeyDefaultComponentWidth,TComponentItem.DefaultWidth);
     Cfg.SetValue(KeyDefaultComponentHeight,TComponentItem.DefaultHeight);
     Cfg.SetValue(KeyDropComponent,TComponentItem.Drop);
@@ -242,43 +242,43 @@ begin
   end;
 end;
 
-Procedure ApplySpotterOptions;
+Procedure ApplyScoutOptions;
 
 begin
-  if Assigned(SpotterForm) then
+  if Assigned(ScoutForm) then
     begin
-    SpotterForm.ShowCategory:=ShowCmdCategory;
-    SpotterForm.MatchColor:=MatchColor;
-    SpotterForm.KeyStrokeColor:=KeyStrokeColor;
-    SpotterForm.ShowShortCutKey:=ShowShortCutKey;
-    SpotterForm.Highlights:=SpotHighlights;
-    SpotterForm.Initialize;
+    ScoutForm.ShowCategory:=ShowCmdCategory;
+    ScoutForm.MatchColor:=MatchColor;
+    ScoutForm.KeyStrokeColor:=KeyStrokeColor;
+    ScoutForm.ShowShortCutKey:=ShowShortCutKey;
+    ScoutForm.Highlights:=ScoutTerrains;
+    ScoutForm.Initialize;
     end;
 end;
 
-Procedure MaybeCreateSpotterForm;
+Procedure MaybeCreateScoutForm;
 
 begin
-  if SpotterForm=Nil then
+  if ScoutForm=Nil then
     begin
-    SpotterForm:=TSpotterForm.Create(Application);
-    ApplySpotterOptions;
+    ScoutForm:=TIDEScoutForm.Create(Application);
+    ApplyScoutOptions;
     end;
 end;
 
-Procedure ShowSpotterForm;
+Procedure ShowScoutForm;
 
 begin
-  MaybeCreateSpotterForm;
-  IDEWindowCreators.ShowForm(SpotterForm,True,vmAlwaysMoveToVisible);
+  MaybeCreateScoutForm;
+  IDEWindowCreators.ShowForm(ScoutForm,True,vmAlwaysMoveToVisible);
 end;
 
 
-procedure CreateSpotterWindow(Sender: TObject; aFormName: string;
+procedure CreateScoutWindow(Sender: TObject; aFormName: string;
   var AForm: TCustomForm; DoDisableAutoSizing: boolean);
 begin
-  MaybeCreateSpotterForm;
-  aForm:=SpotterForm;
+  MaybeCreateScoutForm;
+  aForm:=ScoutForm;
 end;
 
 { TComponentItem }
@@ -378,14 +378,14 @@ begin
   Inherited;
 end;
 
-{ TSpotterForm }
+{ TIDEScoutForm }
 
-procedure TSpotterForm.ECommandChange(Sender: TObject);
+procedure TIDEScoutForm.ECommandChange(Sender: TObject);
 begin
   FilterList(ESearch.Text);
 end;
 
-procedure TSpotterForm.ECommandKeyDown(Sender: TObject; var Key: Word;
+procedure TIDEScoutForm.ECommandKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   Case Key of
@@ -410,25 +410,25 @@ begin
   end;
 end;
 
-procedure TSpotterForm.ESearchButtonClick(Sender: TObject);
+procedure TIDEScoutForm.ESearchButtonClick(Sender: TObject);
 begin
-  LazarusIDE.DoOpenIDEOptions(SettingsClass,'IDE Spotter');
+  LazarusIDE.DoOpenIDEOptions(SettingsClass,'IDE Scout');
   Close;
 end;
 
 
-procedure TSpotterForm.FormActivate(Sender: TObject);
+procedure TIDEScoutForm.FormActivate(Sender: TObject);
 begin
   ESearch.SetFocus;
 end;
 
-procedure TSpotterForm.FormClose(Sender: TObject;
+procedure TIDEScoutForm.FormClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
   CloseAction:=caHide;
 end;
 
-procedure TSpotterForm.RefreshCaption(aCount : Integer);
+procedure TIDEScoutForm.RefreshCaption(aCount : Integer);
 
 begin
   if ACount=-1 then
@@ -437,7 +437,7 @@ begin
     Caption:=FOrgCaption+Format(' (%d/%d)',[aCount,FSearchItems.Count]);
 end;
 
-procedure TSpotterForm.FilterList(aSearchTerm: String);
+procedure TIDEScoutForm.FilterList(aSearchTerm: String);
 
 Var
   i : Integer;
@@ -497,7 +497,7 @@ begin
   end;
 end;
 
-procedure TSpotterForm.AddFileToList(aFileName: String; aType: TIDERecentHandler; CheckDuplicate : Boolean = False);
+procedure TIDEScoutForm.AddFileToList(aFileName: String; aType: TIDERecentHandler; CheckDuplicate : Boolean = False);
 
 Var
   F : TOpenFileItem;
@@ -522,14 +522,14 @@ begin
 
 end;
 
-procedure TSpotterForm.FormCreate(Sender: TObject);
+procedure TIDEScoutForm.FormCreate(Sender: TObject);
 begin
   FSearchItems:=TStringList.Create;
   FSearchItems.OwnsObjects:=True;
   FOrgCaption:=Caption;
 end;
 
-procedure TSpotterForm.FormDestroy(Sender: TObject);
+procedure TIDEScoutForm.FormDestroy(Sender: TObject);
 begin
   With IDEEnvironmentOptions  do
     begin
@@ -538,10 +538,10 @@ begin
     RemoveHandlerAddToRecentPackageFiles(@ProjectOpened);
     end;
   FreeAndNil(FSearchItems);
-  SpotterForm:=Nil;
+  ScoutForm:=Nil;
 end;
 
-procedure TSpotterForm.FormShow(Sender: TObject);
+procedure TIDEScoutForm.FormShow(Sender: TObject);
 
 begin
   ESearch.Clear;
@@ -551,13 +551,13 @@ begin
     RefreshList;
 end;
 
-procedure TSpotterForm.LBMatchesClick(Sender: TObject);
+procedure TIDEScoutForm.LBMatchesClick(Sender: TObject);
 
 begin
   ExecuteSelected;
 end;
 
-procedure TSpotterForm.LBMatchesDrawItem(Control: TWinControl; Index: Integer;
+procedure TIDEScoutForm.LBMatchesDrawItem(Control: TWinControl; Index: Integer;
   ARect: TRect; State: TOwnerDrawState);
 
 Const
@@ -616,7 +616,7 @@ begin
     end;
 end;
 
-procedure TSpotterForm.ExecuteSelected;
+procedure TIDEScoutForm.ExecuteSelected;
 
 Var
   idx: Integer;
@@ -638,14 +638,14 @@ begin
 end;
 
 
-procedure TSpotterForm.LBMatchesKeyUp(Sender: TObject; var Key: Word;
+procedure TIDEScoutForm.LBMatchesKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key=VK_ESCAPE then
     Hide;
 end;
 
-procedure TSpotterForm.FillRecent(aType : TIDERecentHandler);
+procedure TIDEScoutForm.FillRecent(aType : TIDERecentHandler);
 
 Var
   L : TStringList;
@@ -662,7 +662,7 @@ begin
   end;
 end;
 
-procedure TSpotterForm.FillComponents;
+procedure TIDEScoutForm.FillComponents;
 
 Var
   I : integer;
@@ -685,7 +685,7 @@ begin
     end;
 end;
 
-procedure TSpotterForm.ClearRefreshableItems;
+procedure TIDEScoutForm.ClearRefreshableItems;
 
 Var
   I : Integer;
@@ -694,11 +694,11 @@ Var
 
 begin
   SH:=[];
-  if shRecentFiles in FRefresh then
+  if stRecentFiles in FRefresh then
     Include(SH,irhOpenFiles);
-  if shRecentProjects in FRefresh then
+  if stRecentProjects in FRefresh then
     Include(SH,irhProjectFiles);
-  if shRecentPackages in FRefresh then
+  if stRecentPackages in FRefresh then
     Include(SH,irhPackageFiles);
   I:=FSearchItems.Count-1;
   While I>=0 do
@@ -711,18 +711,18 @@ begin
     end;
 end;
 
-procedure TSpotterForm.RefreshList;
+procedure TIDEScoutForm.RefreshList;
 
 begin
   FSearchItems.Sorted:=False;
   FSearchItems.BeginUpdate;
   try
     ClearRefreshableItems;
-    if shRecentFiles in FRefresh then
+    if stRecentFiles in FRefresh then
       FillRecent(irhOpenFiles);
-    if shRecentProjects in FRefresh then
+    if stRecentProjects in FRefresh then
       FillRecent(irhProjectFiles);
-    if shRecentPackages in FRefresh then
+    if stRecentPackages in FRefresh then
       FillRecent(irhPackageFiles);
     FRefresh:=[];
   finally
@@ -731,27 +731,27 @@ begin
   end;
 end;
 
-procedure TSpotterForm.Initialize;
+procedure TIDEScoutForm.Initialize;
 begin
   FSearchItems.Sorted:=False;
   FSearchItems.BeginUpdate;
   try
     FSearchItems.Clear;
-    if shCommands in Highlights then
+    if stCommands in Highlights then
       FillCommands;
-    if shComponents in Highlights then
+    if stComponents in Highlights then
       FillComponents;
-    if shRecentFiles in Highlights then
+    if stRecentFiles in Highlights then
       begin
       IDEEnvironmentOptions.AddHandlerAddToRecentOpenFiles(@FileOpened,False);
       FillRecent(irhOpenFiles);
       end;
-    if shRecentProjects in Highlights then
+    if stRecentProjects in Highlights then
       begin
       IDEEnvironmentOptions.AddHandlerAddToRecentProjectFiles(@ProjectOpened,False);
       FillRecent(irhProjectFiles);
       end;
-    if shRecentPackages in Highlights then
+    if stRecentPackages in Highlights then
       begin
       IDEEnvironmentOptions.AddHandlerAddToRecentPackageFiles(@PackageOpened,False);
       FillRecent(irhPackageFiles);
@@ -762,7 +762,7 @@ begin
   end;
 end;
 
-function TSpotterForm.GetCommandCategoryString(Cmd: TIDECommand): String;
+function TIDEScoutForm.GetCommandCategoryString(Cmd: TIDECommand): String;
 
 Const
   Cmds = ' commands';
@@ -789,25 +789,25 @@ begin
     end;
 end;
 
-procedure TSpotterForm.PackageOpened(Sender: TObject; AFileName: string;
+procedure TIDEScoutForm.PackageOpened(Sender: TObject; AFileName: string;
   var AAllow: Boolean);
 begin
-  Include(FRefresh,shRecentPackages);
+  Include(FRefresh,stRecentPackages);
 end;
 
-procedure TSpotterForm.FileOpened(Sender: TObject; AFileName: string;
+procedure TIDEScoutForm.FileOpened(Sender: TObject; AFileName: string;
   var AAllow: Boolean);
 begin
-  Include(FRefresh,shRecentFiles);
+  Include(FRefresh,stRecentFiles);
 end;
 
-procedure TSpotterForm.ProjectOpened(Sender: TObject; AFileName: string;
+procedure TIDEScoutForm.ProjectOpened(Sender: TObject; AFileName: string;
   var AAllow: Boolean);
 begin
-  Include(FRefresh,shRecentProjects);
+  Include(FRefresh,stRecentProjects);
 end;
 
-procedure TSpotterForm.FillCommands;
+procedure TIDEScoutForm.FillCommands;
 var
   I, J: Integer;
   Itm : TSearchItem;

@@ -2,21 +2,21 @@
   This source is only used to compile and install the package.
  }
 
-unit idespotter;
+unit idescout;
 
 {$warn 5023 off : no warning about unused units}
 interface
 
 uses
-  RegIDESpotter, frmspotter, IDESPotterOptions, LazarusPackageIntf;
+  RegIDEScout, frmscout, IDEScoutOptions, LazarusPackageIntf;
 
 implementation
 
 procedure Register;
 begin
-  RegisterUnit('RegIDESpotter', @RegIDESpotter.Register);
+  RegisterUnit('RegIDEScout', @RegIDEScout.Register);
 end;
 
 initialization
-  RegisterPackage('idespotter', @Register);
+  RegisterPackage('idescout', @Register);
 end.

@@ -1,4 +1,4 @@
-object IDESpotterOptionsFrame: TIDESpotterOptionsFrame
+object IDEScoutOptionsFrame: TIDEScoutOptionsFrame
   Left = 0
   Height = 504
   Top = 0

@@ -1,4 +1,4 @@
-{ Register IDE Spotter unit
+{ Register IDE Scout unit
 
   Copyright (C) 2018  Michael van Canneyt  michael@freepascal.org
 
@@ -27,7 +27,7 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.
 }
-unit RegIDESpotter;
+unit RegIDEScout;
 
 {$mode objfpc}{$H+}
 
@@ -41,12 +41,12 @@ Procedure Register;
 
 implementation
 
-uses IDESpotterOptions,forms, graphics,lcltype,idecommands,toolbarintf, idewindowintf, menuintf, frmspotter;
+uses IDEScoutOptions,forms, graphics,lcltype,idecommands,toolbarintf, idewindowintf, menuintf, frmscout;
 
 Procedure IdeMenuClicked(Sender : TObject);
 
 begin
-  ShowSpotterForm;
+  ShowScoutForm;
 end;
 
 
@@ -64,27 +64,27 @@ var
   IDEShortCutX: TIDEShortCut;
   IDECommandCategory: TIDECommandCategory;
   IDECommand: TIDECommand;
-  IDESpotteroptionsFrameID: Integer = 2000;
+  IDEScoutOptionsFrameID: Integer = 2000;
 
 begin
-  LoadSpotterOptions;
+  LoadScoutOptions;
   IDEShortCutX := IDEShortCut(VK_P, ShiftKeys, VK_UNKNOWN, []);
   IDECommandCategory := IDECommandList.FindCategoryByName(CommandCategoryViewName);
   if IDECommandCategory <> nil then
   begin
-    IDECommand := RegisterIDECommand(IDECommandCategory, 'Spotter', 'Open Spotter',
+    IDECommand := RegisterIDECommand(IDECommandCategory, 'IDEScout', 'Open IDE Scout',
       IDEShortCutX, nil, @IDEMenuClicked);
     if IDECommand <> nil then
       RegisterIDEButtonCommand(IDECommand);
   end;
-  IDESpotteroptionsFrameID:=RegisterIDEOptionsEditor(GroupEnvironment,TIDESpotterOptionsFrame,
-                                              IDESpotteroptionsFrameID)^.Index;
-  RegisterIDEMenuCommand(itmViewIDEInternalsWindows, 'Spotter', 'Spotter', nil,
+  IDEScoutOptionsFrameID:=RegisterIDEOptionsEditor(GroupEnvironment,TIDEScoutOptionsFrame,
+                                              IDEScoutOptionsFrameID)^.Index;
+  RegisterIDEMenuCommand(itmViewIDEInternalsWindows, 'IDEScout', 'Open IDE Scout', nil,
     @IDEMenuClicked,IDECommand);
-  IDEWindowCreators.Add('IDESpotter',@CreateSpotterWindow,nil,'40%','10%','+500','+240');
+  IDEWindowCreators.Add('IDEScout',@CreateScoutWindow,nil,'40%','10%','+500','+240');
 end;
 
 Initialization
-  SettingsClass:=TIDESpotterOptionsFrame;
+  SettingsClass:=TIDEScoutOptionsFrame;
 end.
 
