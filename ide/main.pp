@@ -5065,7 +5065,7 @@ begin
       SetAutoCreateForms;
       AProject.AutoAddOutputDirToIncPath;  // extend include path
       if AProject.ProjResources.Modified then
-        if not AProject.ProjResources.Regenerate(AProject.MainFilename, True, True, '') then
+        if not AProject.ProjResources.Regenerate(AProject.MainFilename, True, False, '') then
           IDEMessageDialog(lisCCOWarningCaption, AProject.ProjResources.Messages.Text,
                            mtWarning, [mbOk]);
     end;

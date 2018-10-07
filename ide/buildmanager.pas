@@ -1902,14 +1902,10 @@ end;
 function TBuildManager.UpdateProjectAutomaticFiles(TestDir: string): TModalResult;
 var
   AnUnitInfo: TUnitInfo;
-  Code: TCodeBuffer;
 begin
   Result:=mrOk;
-  Assert(not Project1.ProjResources.Modified, 'UpdateProjectAutomaticFiles: Resources are modified!');
   // update project resource
-  if TestDir<>'' then
-    Project1.ProjResources.Regenerate(Project1.MainFileName, False, True, TestDir);
-  // Iterate project units
+  Project1.ProjResources.Regenerate(Project1.MainFileName, False, True, TestDir);
   AnUnitInfo := Project1.FirstPartOfProject;
   while AnUnitInfo<>nil do 
   begin
