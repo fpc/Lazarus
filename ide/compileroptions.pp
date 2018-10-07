@@ -342,9 +342,10 @@ type
     procedure SetHasParser(aParserName: string; const AValue: boolean);
     procedure SetParsers(const AValue: TStrings);
   protected
+    procedure SetCommand(AValue: string); override;
     procedure SubstituteMacros(var s: string); virtual;
   public
-    constructor Create(TheOwner: TObject); override;
+    constructor Create(TheOwner: TLazCompilerOptions); override;
     destructor Destroy; override;
     procedure Clear; override;
     function CreateDiff(CompOpts: TCompilationToolOptions;
@@ -362,7 +363,6 @@ type
     property Parsers: TStrings read FParsers write SetParsers;
     property HasParser[aParserName: string]: boolean read GetHasParser write SetHasParser;
   end;
-  TCompilationToolClass = class of TCompilationToolOptions;
 
   TCompilerMsgIdFlag = record
     MsgId: integer;
@@ -426,7 +426,6 @@ type
     FCreateMakefileOnBuild: boolean;
     function GetExecuteAfter: TCompilationToolOptions;
     function GetExecuteBefore: TCompilationToolOptions;
-    procedure OnItemChanged(Sender: TObject);
     procedure SetCreateMakefileOnBuild(AValue: boolean);
   protected
     function GetCompilerPath: String; override;
@@ -465,8 +464,7 @@ type
     procedure SetDefaultMakeOptionsFlags(const AValue: TCompilerCmdLineOptions);
   public
     constructor Create(const AOwner: TObject); override;
-    constructor Create(const AOwner: TObject;
-                       const AToolClass: TCompilationToolClass);
+    constructor Create(const AOwner: TObject; const AToolClass: TLazCompilationToolClass);
     destructor Destroy; override;
     procedure Clear; virtual;
     class function GetInstance: TAbstractIDEOptions; override;
@@ -1103,15 +1101,13 @@ end;
   TBaseCompilerOptions Constructor
 ------------------------------------------------------------------------------}
 constructor TBaseCompilerOptions.Create(const AOwner: TObject;
-  const AToolClass: TCompilationToolClass);
+  const AToolClass: TLazCompilationToolClass);
 begin
   inherited Create(AOwner);
   FParsedOpts := TParsedCompilerOptions.Create(Self);
   FOtherDefines := TStringList.Create;
   FExecuteBefore := AToolClass.Create(Self);
-  FExecuteBefore.OnChanged := @OnItemChanged;
   FExecuteAfter := AToolClass.Create(Self);
-  fExecuteAfter.OnChanged := @OnItemChanged;
   fBuildMacros := TIDEBuildMacros.Create(Self);
   fMessageFlags:=TCompilerMsgIDFlags.Create;
   Clear;
@@ -1303,14 +1299,6 @@ end;
 function TBaseCompilerOptions.GetModified: boolean;
 begin
   Result:=(inherited GetModified) or MessageFlags.Modified;
-end;
-
-procedure TBaseCompilerOptions.OnItemChanged(Sender: TObject);
-begin
-  {$IFDEF VerboseIDEModified}
-  debugln(['TBaseCompilerOptions.OnItemChanged ',DbgSName(Sender)]);
-  {$ENDIF}
-  IncreaseChangeStamp;
 end;
 
 procedure TBaseCompilerOptions.SetCreateMakefileOnBuild(AValue: boolean);
@@ -4235,7 +4223,7 @@ begin
     if not AValue then exit;
     FParsers.Add(aParserName);
   end;
-  IncreaseChangeStamp;
+  Owner.IncreaseChangeStamp;
 end;
 
 procedure TCompilationToolOptions.SetParsers(const AValue: TStrings);
@@ -4245,7 +4233,13 @@ begin
   debugln(['TCompilationToolOptions.SetParsers ',AValue.Text]);
   {$ENDIF}
   FParsers.Assign(AValue);
-  IncreaseChangeStamp;
+  Owner.IncreaseChangeStamp;
+end;
+
+procedure TCompilationToolOptions.SetCommand(AValue: string);
+begin
+  inherited SetCommand(AValue);
+  Inc(FParsedCommandStamp);
 end;
 
 procedure TCompilationToolOptions.SubstituteMacros(var s: string);
@@ -4253,7 +4247,7 @@ begin
   IDEMacros.SubstituteMacros(s);
 end;
 
-constructor TCompilationToolOptions.Create(TheOwner: TObject);
+constructor TCompilationToolOptions.Create(TheOwner: TLazCompilerOptions);
 begin
   inherited Create(TheOwner);
   FParsers:=TStringList.Create;

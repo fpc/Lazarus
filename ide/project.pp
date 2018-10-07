@@ -490,7 +490,7 @@ type
     procedure SetCompileReasons(const AValue: TCompileReasons); override;
     procedure SubstituteMacros(var s: string); override;
   public
-    constructor Create(TheOwner: TObject); override;
+    constructor Create(TheOwner: TLazCompilerOptions); override;
     function CreateDiff(CompOpts: TCompilationToolOptions;
                         Tool: TCompilerDiffTool): boolean; override;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
@@ -5983,7 +5983,7 @@ end;
 
 { TProjectCompilationToolOptions }
 
-constructor TProjectCompilationToolOptions.Create(TheOwner: TObject);
+constructor TProjectCompilationToolOptions.Create(TheOwner: TLazCompilerOptions);
 begin
   inherited Create(TheOwner);
   FDefaultCompileReasons:=crAll;
@@ -6029,14 +6029,14 @@ procedure TProjectCompilationToolOptions.SetCompileReasons(const AValue: TCompil
 begin
   if FCompileReasons=AValue then exit;
   FCompileReasons:=AValue;
-  IncreaseChangeStamp;
+  Owner.IncreaseChangeStamp;
 end;
 
 procedure TProjectCompilationToolOptions.SetDefaultCompileReasons(const AValue: TCompileReasons);
 begin
   if FDefaultCompileReasons=AValue then exit;
   FDefaultCompileReasons:=AValue;
-  IncreaseChangeStamp;
+  Owner.IncreaseChangeStamp;
 end;
 
 procedure TProjectCompilationToolOptions.SubstituteMacros(var s: string);

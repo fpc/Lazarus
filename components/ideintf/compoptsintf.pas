@@ -18,7 +18,7 @@ interface
 uses
   Classes, SysUtils,
   // LazUtils
-  LazMethodList, LazFileCache,
+  LazMethodList,
   // IdeIntf
   IDEOptionsIntf;
 
@@ -116,30 +116,29 @@ const
   crAll = [crCompile, crBuild, crRun];
 
 type
+  TLazCompilerOptions = class;
+
   { TLazCompilationToolOptions }
 
   TLazCompilationToolOptions = class
   private
-    FOwner: TObject;
-    FChangeStamp: int64;
+    FOwner: TLazCompilerOptions;
     FCommand: string;
-    FOnChanged: TNotifyEvent;
-    procedure SetCommand(AValue: string);
   protected
     FCompileReasons: TCompileReasons;
+    procedure SetCommand(AValue: string); virtual;
     procedure SetCompileReasons(const {%H-}AValue: TCompileReasons); virtual;
   public
-    constructor Create(TheOwner: TObject); virtual;
+    constructor Create(TheOwner: TLazCompilerOptions); virtual;
     procedure Clear; virtual;
     procedure Assign(Src: TLazCompilationToolOptions); virtual;
-    procedure IncreaseChangeStamp;
   public
-    property Owner: TObject read FOwner;
-    property ChangeStamp: int64 read FChangeStamp;
+    property Owner: TLazCompilerOptions read FOwner;
     property Command: string read FCommand write SetCommand;
     property CompileReasons: TCompileReasons read FCompileReasons write SetCompileReasons;
-    property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
   end;
+
+  TLazCompilationToolClass = class of TLazCompilationToolOptions;
 
   { TLazCompilerOptions }
 
@@ -209,17 +208,13 @@ type
     FChangeStamp: int64;
     FSavedChangeStamp: int64;
     fOnChanged: TMethodList;
-
     // Paths:
-
     // conditionals / build modes
     FConditionals: string;
     fBuildMacros: TLazBuildMacros;
-
     // Parsing:
     // assembler style
     fAssemblerStyle: Integer;
-
     // syntax options
     FSyntaxMode: string;
     fCStyleOp: Boolean;
@@ -230,7 +225,6 @@ type
     fCMacros: Boolean;
     fInitConst: Boolean;
     fStaticKeyword: Boolean;
-
     // Code generation:
     fSmartLinkUnit: Boolean;
     fRelocatableUnit: Boolean;
@@ -249,7 +243,6 @@ type
     fVarsInReg: Boolean;
     fUncertainOpt: Boolean;
     FSmallerCode: boolean;
-
     // Linking:
     fGenDebugInfo: Boolean;
     FDebugInfoType: TCompilerDbgSymbolType;
@@ -268,7 +261,6 @@ type
     fTargetFileExt: string;
     fTargetFilename: string;
     FTargetFilenameAppplyConventions: boolean;
-
     // Messages:
     fShowWarn: Boolean;
     fShowNotes: Boolean;
@@ -287,11 +279,9 @@ type
     fStopAfterErrCount: integer;
     // Turn specific types of compiler messages on or off
     fMessageFlags: TAbstractCompilerMsgIDFlags;
-
     // Other tools:
     fExecuteBefore: TLazCompilationToolOptions;
     fExecuteAfter: TLazCompilationToolOptions;
-
     // Other:
     fDontUseConfigFile: Boolean;
     fCustomConfigFile: Boolean;
@@ -477,7 +467,7 @@ implementation
 
 { TLazCompilationToolOptions }
 
-constructor TLazCompilationToolOptions.Create(TheOwner: TObject);
+constructor TLazCompilationToolOptions.Create(TheOwner: TLazCompilerOptions);
 begin
   FOwner:=TheOwner;
   FCompileReasons:=crAll; // This default can be used in some comparisons.
@@ -495,18 +485,11 @@ begin
   FCompileReasons := Src.CompileReasons;
 end;
 
-procedure TLazCompilationToolOptions.IncreaseChangeStamp;
-begin
-  LUIncreaseChangeStamp64(FChangeStamp);
-  if Assigned(OnChanged) then
-    OnChanged(Self);
-end;
-
 procedure TLazCompilationToolOptions.SetCommand(AValue: string);
 begin
   if FCommand=AValue then exit;
   FCommand:=AValue;
-  IncreaseChangeStamp;
+  FOwner.IncreaseChangeStamp;
 end;
 
 procedure TLazCompilationToolOptions.SetCompileReasons(const AValue: TCompileReasons);
@@ -927,7 +910,7 @@ end;
 function TLazCompilerOptions.GetModified: boolean;
 begin
   Result:=(FSavedChangeStamp=InvalidChangeStamp)
-         or (FSavedChangeStamp<>FChangeStamp);
+       or (FSavedChangeStamp<>FChangeStamp);
 end;
 
 constructor TLazCompilerOptions.Create(const TheOwner: TObject);
