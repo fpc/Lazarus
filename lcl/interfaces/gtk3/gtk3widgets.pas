@@ -5743,6 +5743,7 @@ begin
     begin
       Path := nil;
       Column := nil;
+      Cell := nil;
       if IsTreeView then
         PGtkTreeView(GetContainerWidget)^.get_cursor(@Path, Column)
       else
@@ -6017,10 +6018,7 @@ begin
 end;
 
 function GtkPopupCloseUp(AData: Pointer): gboolean; cdecl;
-var
-  ComboBox: TCustomComboBox;
 begin
-  ComboBox := TCustomComboBox(TGtk3Widget(AData).LCLObject);
   LCLSendCloseUpMsg(TGtk3Widget(AData).LCLObject);
   Result := False;// stop the timer
 end;
@@ -6221,8 +6219,7 @@ begin
   g_signal_connect_data(FWidget, 'toggled', TGCallback(@Gtk3Toggled), Self, nil, 0);
 end;
 
-function TGtk3ToggleButton.CreateWidget(const Params: TCreateParams
-  ): PGtkWidget;
+function TGtk3ToggleButton.CreateWidget(const Params: TCreateParams): PGtkWidget;
 begin
   Result := PGtkWidget(TGtkToggleButton.new);
 end;
@@ -6267,8 +6264,7 @@ end;
 
 { TGtk3CustomControl }
 
-function TGtk3CustomControl.CreateWidget(const Params: TCreateParams
-  ): PGtkWidget;
+function TGtk3CustomControl.CreateWidget(const Params: TCreateParams): PGtkWidget;
 var
   FUseLayout: Boolean;
 begin
