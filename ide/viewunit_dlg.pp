@@ -376,13 +376,17 @@ end;
 
 procedure TViewUnitDialog.ListboxDrawItem(Control: TWinControl; Index: Integer;
   ARect: TRect; State: TOwnerDrawState);
+var
+  aTop: Integer;
 begin
   if Index < 0 then Exit;
   with ListBox do
   begin
     Canvas.FillRect(ARect);
-    IDEImages.Images_16.Draw(Canvas, 1, ARect.Top, FImageIndex);
-    Canvas.TextRect(ARect, ARect.Left + IDEImages.Images_16.Width + Scale96ToFont(4), ARect.Top, Items[Index]);
+    aTop := (ARect.Bottom + ARect.Top - IDEImages.Images_16.Height) div 2;
+    IDEImages.Images_16.Draw(Canvas, 1, aTop, FImageIndex);
+    aTop := (ARect.Bottom + ARect.Top - Canvas.TextHeight('Šj9')) div 2;
+    Canvas.TextRect(ARect, ARect.Left + IDEImages.Images_16.Width + Scale96ToFont(4), aTop, Items[Index]);
   end;
 end;
 
