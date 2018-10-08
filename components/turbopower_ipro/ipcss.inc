@@ -142,6 +142,16 @@ type
     constructor Create(AStream: TStream; AGlobalProps: TCSSGlobalProps);
   end;
 
+function ForceRange(x, xmin, xmax: Integer): Integer;
+begin
+  if x < xmin then
+    Result := xmin
+  else if x > xmax then
+    Result := xmax
+  else
+    Result := x;
+end;
+
 function IsWhiteSpace(AChar: Char; ExcludeSpaces: Boolean = False): Boolean;
 begin
   Result := AChar in [#9, #10, #11, #13];
@@ -397,66 +407,108 @@ end;
 
 function ColorFromString(S: String): TColor;
 var
-  R, G, B, Err : Integer;
+  vR, vG, vB, Err : Integer;
+  vH: Integer = 255;
+  vL: Integer = 255;
+  vS: Integer = 255;
   L: TStringList;
-begin
-  Result := -1;
-  if S = '' then
-    Exit;
-  S := UpperCase(S);
-  if S[1] = '#' then
-    if length(S) <> 7 then
-      exit
-    else begin
-      val('$'+Copy(S,2,2), R, Err);
-      if Err <> 0 then
-        R := 255;
-      val('$'+Copy(S,4,2), G, Err);
-      if Err <> 0 then
-        G := 255;
-      val('$'+Copy(S,6,2), B, Err);
-      if Err <> 0 then
-        B := 255;
-      Exit(RGB(R, G, B));
-    end
-  else
-  if BinSearchNamedColor(S, result) then exit
-  else
-  if pos('RGB', S) = 1 then begin
-    S := Copy(S, 4, MaxInt);
+
+  procedure SplitAfter(S: String; AIndex: Integer; AList: TStrings);
+  begin
+    S := Copy(S, AIndex, MaxInt);
     while (S <> '') and (IsWhiteSpace(S[1]) or (S[1] = '(')) do
       Delete(S, 1, 1);
     while (S <> '') and (IsWhiteSpace(S[Length(S)]) or (S[Length(S)] = ')')) do
       SetLength(S, Length(S)-1);
-    L := TStringList.Create;
-    try
-      L.CommaText := S;
-      if L.Count > 0 then R := StrToIntDef(L[0], 255);
-      if L.Count > 1 then G := StrToIntDef(L[1], 255);
-      if L.Count > 2 then B := StrToIntDef(L[2], 255);
-      Exit(RGB(R, G, B));
-    finally
-      L.Free;
-    end;
-  end
-  else
-  if length(S) = 6 then
-    try
-      val('$'+Copy(S,1,2), R, Err);
-      if Err <> 0 then
-        R := 255;
-      val('$'+Copy(S,3,2), G, Err);
-      if Err <> 0 then
-        G := 255;
-      val('$'+Copy(S,5,2), B, Err);
-      if Err <> 0 then
-        B := 255;
-      Result := RGB(R, G, B);
-    except
-        Result := -1;
-    end
-  //else WriteLn('>>>>> Unknwn Color! = ', S);
+    AList.CommaText := S;
+  end;
 
+  function TrimPercent(S: String): String;
+  var
+    n: Integer;
+  begin
+    Result := S;
+    n := Length(Result);
+    While (n > 0) and (IsWhiteSpace(Result[n]) or (Result[n] = '%')) do begin
+      SetLength(Result, n - 1);
+      n := Length(Result);
+    end;
+  end;
+
+begin
+  Result := clWhite;
+  if S = '' then
+    Exit;
+  S := UpperCase(S);
+  if S[1] = '#' then
+    if Length(S) <> 7 then
+      exit
+    else begin
+      val('$'+Copy(S,2,2), vR, Err);
+      if Err <> 0 then
+        vR := 255;
+      val('$'+Copy(S,4,2), vG, Err);
+      if Err <> 0 then
+        vG := 255;
+      val('$'+Copy(S,6,2), vB, Err);
+      if Err <> 0 then
+        vB := 255;
+      Exit(RGB(ForceRange(vR, 0, 255), ForceRange(vG, 0, 255), ForceRange(vB, 0, 255)));
+    end
+  else
+  if BinSearchNamedColor(S, result) then
+    exit
+  else
+    case S[1] of
+      'R':
+        if (pos('RGB', S) = 1) then begin
+          L := TStringList.Create;
+          try
+            SplitAfter(S, 4, L);
+            if L.Count > 0 then vR := StrToIntDef(L[0], 255) else vR := 255;
+            if L.Count > 1 then vG := StrToIntDef(L[1], 255) else vG := 255;
+            if L.Count > 2 then vB := StrToIntDef(L[2], 255) else vB := 255;
+            Exit(RGB(ForceRange(vR, 0, 255), ForceRange(vG, 0, 255), ForceRange(vB, 0, 255)));
+          finally
+            L.Free;
+          end;
+        end;
+      'H':
+        if (pos('HSL', S) = 1) then begin
+          L := TStringList.Create;
+          try
+            SplitAfter(S, 4, L);
+            if L.Count > 0 then begin
+              if L[0][Length(L[0])] = '%' then
+                vH := StrToIntDef(TrimPercent(L[0]), 100) * 255 div 100
+              else
+                vH := StrToIntDef(L[0], 360) * 255 div 360;
+            end;
+            if L.Count > 1 then vS := StrToIntDef(TrimPercent(L[1]), 100) * 255 div 100;
+            if L.Count > 2 then vL := StrToIntDef(TrimPercent(L[2]), 100) * 255 div 100;
+            Exit(HLSToColor(ForceRange(vH, 0, 255), ForceRange(vL, 0, 255), ForceRange(vS, 0, 255)));
+          finally
+            L.Free;
+          end;
+        end;
+      else
+        if length(S) = 6 then
+          try
+            val('$'+Copy(S,1,2), vR, Err);
+            if Err <> 0 then
+              vR := 255;
+            val('$'+Copy(S,3,2), vG, Err);
+            if Err <> 0 then
+              vG := 255;
+            val('$'+Copy(S,5,2), vB, Err);
+            if Err <> 0 then
+              vB := 255;
+            Exit(RGB(ForceRange(vR, 0, 255), ForceRange(vG, 0, 255), ForceRange(vB, 0, 255)));
+          except
+            Exit(clWhite);
+          end
+        //else WriteLn('>>>>> Unknwn Color! = ', S);
+    end;   // case S[1]...
 end;
 
 function SizePxFromString(S: String): Integer;
