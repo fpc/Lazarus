@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.8.7.1\n"
 
 #: printer4lazstrconst.p4lrsadvanced
 msgid "Advanced"
@@ -17,7 +17,7 @@ msgstr "Haladó"
 
 #: printer4lazstrconst.p4lrsallpages
 msgid "All"
-msgstr ""
+msgstr "Mind"
 
 #: printer4lazstrconst.p4lrsbanners
 msgid "Banners"
@@ -25,11 +25,11 @@ msgstr "Kísérőlapok"
 
 #: printer4lazstrconst.p4lrsbuttonlessarrow
 msgid "<< Less"
-msgstr ""
+msgstr "<< Kevesebb"
 
 #: printer4lazstrconst.p4lrsbuttonmorearrow
 msgid "More >>"
-msgstr ""
+msgstr "Több >>"
 
 #: printer4lazstrconst.p4lrscancel
 msgid "Cancel"
@@ -45,23 +45,23 @@ msgstr "Általános"
 
 #: printer4lazstrconst.p4lrsjobstateaccepting
 msgid "(Accepting jobs)"
-msgstr ""
+msgstr "(Feladatokat elfogad)"
 
 #: printer4lazstrconst.p4lrsjobstateprinting
 msgid "Printing"
-msgstr ""
+msgstr "Nyomtatás"
 
 #: printer4lazstrconst.p4lrsjobstateready
 msgid "Ready"
-msgstr ""
+msgstr "Kész"
 
 #: printer4lazstrconst.p4lrsjobstaterejecting
 msgid "(Rejecting jobs)"
-msgstr ""
+msgstr "(Feladatokat elutasít)"
 
 #: printer4lazstrconst.p4lrsjobstatestopped
 msgid "Stopped"
-msgstr ""
+msgstr "Leállítva"
 
 #: printer4lazstrconst.p4lrslandscape
 msgid "Landscape"
@@ -73,7 +73,7 @@ msgstr "Margók"
 
 #: printer4lazstrconst.p4lrsnodefaultprinter
 msgid "No default printer found."
-msgstr ""
+msgstr "Nem található alapértelmezett nyomtató."
 
 #: printer4lazstrconst.p4lrsok
 msgid "Ok"
@@ -85,11 +85,11 @@ msgstr "Tájolás"
 
 #: printer4lazstrconst.p4lrspageeven
 msgid "Even"
-msgstr ""
+msgstr "Páros"
 
 #: printer4lazstrconst.p4lrspageodd
 msgid "Odd"
-msgstr ""
+msgstr "Páratlan"
 
 #: printer4lazstrconst.p4lrspagespersheet
 msgid "Pages per sheet"
@@ -129,11 +129,11 @@ msgstr "Álló (fordítva)"
 
 #: printer4lazstrconst.p4lrsshortunitsinches
 msgid "(inches)"
-msgstr ""
+msgstr "(hüvelyk)"
 
 #: printer4lazstrconst.p4lrsshortunitsmm
 msgid "(mm)"
-msgstr ""
+msgstr "(mm)"
 
 #: printer4lazstrconst.p4lrsstart
 msgid "Start"

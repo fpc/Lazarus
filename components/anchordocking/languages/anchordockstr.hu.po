@@ -136,10 +136,8 @@ msgid "Highlight focused"
 msgstr "Kiválasztott elem kiemelése"
 
 #: anchordockstr.adrshighlightfocusedhint
-#, fuzzy
-#| msgid "Highlight focused docked controls"
 msgid "Highlight header of focused docked control"
-msgstr "Kiválasztott dokkolt vezérlők kiemelése"
+msgstr "Kiválasztott dokkolt vezérlők fejlécének kiemelése"
 
 #: anchordockstr.adrsleft
 msgid "left"

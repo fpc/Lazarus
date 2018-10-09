@@ -4,13 +4,13 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
+"PO-Revision-Date: 2018-10-08 11:08+0200\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
-"Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
+"Language-Team: http://lazarus.developpez.com/\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr_FR\n"
-"X-Generator: Poedit 1.8.11\n"
+"X-Generator: Poedit 2.1.1\n"
 
 #: lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml
 msgctxt "lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml"
@@ -42,11 +42,11 @@ msgstr "ne peut pas exécuter %s"
 
 #: lazutilsstrconsts.lrscreatinggdbcatchableerror
 msgid "Creating gdb catchable error:"
-msgstr ""
+msgstr "Création d'erreur capturable gdb :"
 
 #: lazutilsstrconsts.lrserrorincode
 msgid "ERROR in code: "
-msgstr ""
+msgstr "ERREUR dans le code :"
 
 #: lazutilsstrconsts.lrsevalinvalidargcount
 msgid "Invalid number of function arguments"

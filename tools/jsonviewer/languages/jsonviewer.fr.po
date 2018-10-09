@@ -4,13 +4,13 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2015-04-29 15:02+0100\n"
-"PO-Revision-Date: 2018-05-02 08:17+0200\n"
+"PO-Revision-Date: 2018-10-08 11:59+0200\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr_FR\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 2.1.1\n"
 
 #: msgjsonviewer.sarray
 msgid "Array (%d elements)"
@@ -99,25 +99,25 @@ msgstr "Enregistrer les changements"
 
 #: msgjsonviewer.stabcaptionraw
 msgid "Raw"
-msgstr ""
+msgstr "Brut"
 
 #: msgjsonviewer.stabcaptionvisual
 msgid "Visual"
-msgstr ""
+msgstr "Visuel"
 
 #: tauthenticationform.caption
 msgctxt "tauthenticationform.caption"
 msgid "HTTP Authentication"
-msgstr ""
+msgstr "Authentification HTTP"
 
 #: tauthenticationform.lcbusername.caption
 msgctxt "tauthenticationform.lcbusername.caption"
 msgid "&Username"
-msgstr ""
+msgstr "Nom d'&utilisateur"
 
 #: tauthenticationform.lepassword.caption
 msgid "&Password"
-msgstr ""
+msgstr "Mot de &passe"
 
 #: tcreatecodeform.caption
 msgctxt "tcreatecodeform.caption"
@@ -174,23 +174,21 @@ msgstr "Options"
 
 #: theaderform.caption
 msgid "Request header"
-msgstr ""
+msgstr "En-tête de requête"
 
 #: theaderform.lcbname.caption
-#, fuzzy
 msgctxt "theaderform.lcbname.caption"
 msgid "&Name"
 msgstr "&Nom"
 
 #: theaderform.lcbvalue.caption
-#, fuzzy
 msgctxt "theaderform.lcbvalue.caption"
 msgid "&Value"
 msgstr "&Valeur"
 
 #: tmainform.aaddtofavourites.caption
 msgid "Add request to favourites"
-msgstr ""
+msgstr "Ajouter la requête aux favoris"
 
 #: tmainform.aclose.caption
 msgid "&Close"
@@ -364,7 +362,7 @@ msgstr "&Éditer"
 
 #: tmainform.mfavourites.caption
 msgid "Favourites"
-msgstr ""
+msgstr "Favoris"
 
 #: tmainform.mfile.caption
 msgid "&File"
@@ -421,7 +419,7 @@ msgstr "TBJSON"
 
 #: tmainform.tbshowrest.caption
 msgid "Show &REST query"
-msgstr ""
+msgstr "Montrer la question &REST"
 
 #: tmainform.toolbutton1.caption
 msgid "ToolButton1"
@@ -477,85 +475,85 @@ msgstr "&Valeur"
 #: trestframe.aaddheader.caption
 msgctxt "trestframe.aaddheader.caption"
 msgid "Add Header"
-msgstr ""
+msgstr "Ajouter un en-tête"
 
 #: trestframe.aaddheader.hint
 msgctxt "trestframe.aaddheader.hint"
 msgid "Add Header"
-msgstr ""
+msgstr "Ajouter un en-tête"
 
 #: trestframe.aaddtofavourites.caption
 msgid "Add to favourites..."
-msgstr ""
+msgstr "Ajouter aux favoris..."
 
 #: trestframe.aauthentication.caption
 msgctxt "trestframe.aauthentication.caption"
 msgid "HTTP Basic authentication"
-msgstr ""
+msgstr "Authentification HTTP de base"
 
 #: trestframe.aauthentication.hint
 msgctxt "trestframe.aauthentication.hint"
 msgid "HTTP Basic authentication"
-msgstr ""
+msgstr "Authentification HTTP de base"
 
 #: trestframe.adeleteheader.caption
 msgctxt "trestframe.adeleteheader.caption"
 msgid "Delete Header"
-msgstr ""
+msgstr "Supprimer l'en-tête"
 
 #: trestframe.adeleteheader.hint
 msgctxt "trestframe.adeleteheader.hint"
 msgid "Delete Header"
-msgstr ""
+msgstr "Supprimer l'en-tête"
 
 #: trestframe.aeditheader.caption
 msgctxt "trestframe.aeditheader.caption"
 msgid "Edit Header"
-msgstr ""
+msgstr "Éditer l'en-tête"
 
 #: trestframe.aeditheader.hint
 msgctxt "trestframe.aeditheader.hint"
 msgid "Edit Header"
-msgstr ""
+msgstr "Éditer l'en-tête"
 
 #: trestframe.asend.caption
 msgid "&Send"
-msgstr ""
+msgstr "&Envoyer"
 
 #: trestframe.asend.hint
 msgid "Send request"
-msgstr ""
+msgstr "Envoyer la requête"
 
 #: trestframe.cbusecurrenttabcontent.caption
 msgctxt "trestframe.cbusecurrenttabcontent.caption"
 msgid "Use current tab as content"
-msgstr ""
+msgstr "Utiliser le volet en cours comme contenu"
 
 #: trestframe.lhttpstatus.caption
 msgid "HTTP"
-msgstr ""
+msgstr "HTTP"
 
 #: trestframe.tsheaders.caption
 msgid "Request headers"
-msgstr ""
+msgstr "En-têtes de la requête"
 
 #: trestframe.tsrequestcontent.caption
 msgid "Request content"
-msgstr ""
+msgstr "Contenu de la requête"
 
 #: trestframe.tsresult.caption
 msgid "Request result"
-msgstr ""
+msgstr "Résultat de la requête"
 
 #: tsaverequestdataform.caption
 msgid "Save request data as favourite"
-msgstr ""
+msgstr "Sauvegarder les données de la requête dans les favoris"
 
 #: tsaverequestdataform.cbsavecontent.caption
 msgid "Save request content"
-msgstr ""
+msgstr "Sauvegarder le contenu de la requête"
 
 #: tsaverequestdataform.label1.caption
 msgid "Name"
-msgstr ""
+msgstr "Nom"
 

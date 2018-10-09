@@ -3,13 +3,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2015-04-14 07:54+0100\n"
-"PO-Revision-Date: 2017-09-22 10:10+0200\n"
+"PO-Revision-Date: 2018-10-08 11:08+0200\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
-"X-Generator: Poedit 2.0.4\n"
+"X-Generator: Poedit 2.1.1\n"
 
 #: anchordockstr.adrsafreesideofasplittermustnotbeanchorednodetypeancho
 msgid "A free side of a splitter must not be anchored: Node=\"%s\" Type=%s Anchors[%s]=\"%s\""
@@ -136,10 +136,8 @@ msgid "Highlight focused"
 msgstr "Mettre en évidence l'élément ciblé"
 
 #: anchordockstr.adrshighlightfocusedhint
-#, fuzzy
-#| msgid "Highlight focused docked controls"
 msgid "Highlight header of focused docked control"
-msgstr "Mettre en évidence les contrôles ancrés et ciblés"
+msgstr "Mettre en évidence l'en-tête du contrôle ancré ciblé"
 
 #: anchordockstr.adrsleft
 msgid "left"
@@ -195,7 +193,7 @@ msgstr "Pas d'enfants autorisés pour le Nœud = \"%s\" Type = %s"
 
 #: anchordockstr.adrsnotsupportedhasparent
 msgid "Not supported: %s has parent %s"
-msgstr "Non supporté : %s a comme parent %s"
+msgstr "Non pris en charge : %s a comme parent %s"
 
 #: anchordockstr.adrsquit
 msgid "Quit %s"

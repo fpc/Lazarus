@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.8.7.1\n"
 
 #: gdbmistringconstants.dlggroupdebugger
 msgid "Debugger"
@@ -136,24 +136,20 @@ msgid "The GNU debugger through SSH allows to remote debug via a SSH connection.
 msgstr "A GNU hibakereső SSH-n keresztül lehetővé teszi a távoli hibakeresést. Részletek a docs/RemoteDebugging.txt fájlban. Az elsődleges elérési útvonalak (path) egyikének tartalmaznia kell az SSH klienst. Az SSH_Startup_Options használatával kell megadni a gazdagép és felhasználó nevét, a Remote_GDB_Exe használatával pedig a távoli gépen található GDB fájlnevét."
 
 #: gdbmistringconstants.lisresponsecontinue
-#, fuzzy
-#| msgid "Response: %sContinue ?"
 msgid "Response: %sContinue?"
 msgstr "Válasz: %sFolytatás?"
 
 #: gdbmistringconstants.lissshdebuggertimeout
 msgid "Timeout has occurred:"
-msgstr ""
+msgstr "Időtúllépés történt:"
 
 #: gdbmistringconstants.lisunexpectedresultthedebuggerwillterminate
-#, fuzzy
-#| msgid "Unexpected result:%sThe debugger will terminate"
 msgid "Unexpected result:%sThe debugger will terminate."
-msgstr "Váratlan eredmény:%sA hibakereső leállni"
+msgstr "Váratlan eredmény:%sA hibakereső le fog állni."
 
 #: gdbmistringconstants.synffailedtodownloadapplicationexecutable
 msgid "Failed to download application executable"
-msgstr ""
+msgstr "Nem sikerült letölteni a futtatható alkalmazást"
 
 #: gdbmistringconstants.synffailedtoinitializedebugger
 msgid "Failed to initialize debugger"

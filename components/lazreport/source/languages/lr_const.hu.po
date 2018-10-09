@@ -258,141 +258,140 @@ msgstr "Megerősítés"
 
 #: lr_const.scrosseditoraverage
 msgid "Average"
-msgstr ""
+msgstr "Átlag"
 
 #: lr_const.scrosseditorblue
 msgid "Blue"
-msgstr ""
+msgstr "Kék"
 
 #: lr_const.scrosseditorbluewhite
 msgid "Blue and White"
-msgstr ""
+msgstr "Kék és fehér"
 
 #: lr_const.scrosseditorcaption
 msgid "Cross tab editor"
-msgstr ""
+msgstr "Kereszttábla szerkesztő"
 
 #: lr_const.scrosseditorcount
 msgid "Count"
-msgstr ""
+msgstr "Darabszám"
 
 #: lr_const.scrosseditorcyan
 msgid "Cyan"
-msgstr ""
+msgstr "Türkizkék"
 
 #: lr_const.scrosseditorgray
 msgid "Gray"
-msgstr ""
+msgstr "Szürke"
 
 #: lr_const.scrosseditorgreen
 msgid "Green"
-msgstr ""
+msgstr "Zöld"
 
 #: lr_const.scrosseditorgreenorange
 msgid "Green and Orange"
-msgstr ""
+msgstr "Zöld és narancssárga"
 
 #: lr_const.scrosseditormax
 msgid "Max"
-msgstr ""
+msgstr "Max"
 
 #: lr_const.scrosseditormin
 msgid "Min"
-msgstr ""
+msgstr "Min"
 
 #: lr_const.scrosseditornone
-#, fuzzy
 msgctxt "lr_const.scrosseditornone"
 msgid "None"
 msgstr "Nincs"
 
 #: lr_const.scrosseditororange
 msgid "Orange"
-msgstr ""
+msgstr "Narancssárga"
 
 #: lr_const.scrosseditorshowcolheader
 msgid "Show column header"
-msgstr ""
+msgstr "Oszlop fejlécének megjelenítése"
 
 #: lr_const.scrosseditorshowcoltotal
 msgid "Show column total"
-msgstr ""
+msgstr "Oszlop összegzésének megjelenítése"
 
 #: lr_const.scrosseditorshowcorner1
 msgid "Show corner 1"
-msgstr ""
+msgstr "1. sarok megjelenítése"
 
 #: lr_const.scrosseditorshowcorner2
 msgid "Show corner 2"
-msgstr ""
+msgstr "2. sarok megjelenítése"
 
 #: lr_const.scrosseditorshowgrantotal
 msgid "Show grand total"
-msgstr ""
+msgstr "Végösszeg megjelenítése"
 
 #: lr_const.scrosseditorshowrowheader
 msgid "Show row header"
-msgstr ""
+msgstr "Sor fejlécének megjelenítése"
 
 #: lr_const.scrosseditorshowrowtotal
 msgid "Show row total"
-msgstr ""
+msgstr "Sor összegzésének megjelenítése"
 
 #: lr_const.scrosseditorshowtitle
 msgid "Show title"
-msgstr ""
+msgstr "Cím megjelenítése"
 
 #: lr_const.scrosseditorsource
 msgid "Source data"
-msgstr ""
+msgstr "Adatok forrása"
 
 #: lr_const.scrosseditorstructure
 msgid "Cross-tab structure"
-msgstr ""
+msgstr "Kereszttábla szerkezete"
 
 #: lr_const.scrosseditorstyle
 msgid "Select style"
-msgstr ""
+msgstr "Stílus választása"
 
 #: lr_const.scrosseditorsum
 msgid "Sum"
-msgstr ""
+msgstr "Összeg"
 
 #: lr_const.scrosseditorwhite
 msgid "White"
-msgstr ""
+msgstr "Fehér"
 
 #: lr_const.scrosstabcoltitle
 msgid "Col title"
-msgstr ""
+msgstr "Oszlop címkéje"
 
 #: lr_const.scrosstabcoltotal
 msgid "Col total"
-msgstr ""
+msgstr "Oszlop összegzése"
 
 #: lr_const.scrosstabdata
 msgid "Data"
-msgstr ""
+msgstr "Adat"
 
 #: lr_const.scrosstabgrantotal
 msgid "Grand total"
-msgstr ""
+msgstr "Végösszeg"
 
 #: lr_const.scrosstabrowtitle
 msgid "Row title"
-msgstr ""
+msgstr "Sor címkéje"
 
 #: lr_const.scrosstabrowtotal
 msgid "Row total"
-msgstr ""
+msgstr "Sor összegzése"
 
 #: lr_const.scrosstabtotalchcell
 msgid "Total CH cell"
-msgstr ""
+msgstr "Oszlopfejlécek összefoglalása"
 
 #: lr_const.scrosstabtotalrhcell
 msgid "Total RH cell"
-msgstr ""
+msgstr "Sorfejlécek összefoglalása"
 
 #: lr_const.scsvfile
 msgid "CSV File"
@@ -404,10 +403,9 @@ msgstr "Jegyzet:"
 
 #: lr_const.sdatainspfields
 msgid "Fields"
-msgstr ""
+msgstr "Mezők"
 
 #: lr_const.sdatainspvariables
-#, fuzzy
 msgctxt "lr_const.sdatainspvariables"
 msgid "Variables"
 msgstr "Változók"
@@ -478,7 +476,7 @@ msgstr "FRAC(<Érték>)/A lebegőpontos <Érték> tört részét adja vissza."
 
 #: lr_const.sdescriptionif
 msgid "IF(<expression>, <Value1>, <Value2>)/Returns <Value1>, if <expression> is true; otherwise returns <Value2>."
-msgstr ""
+msgstr "IF(<Kifejezés>, <Érték1>, <Érték2>)/Ha a <Kifejezés> igaz akkor <Érték1>-et, ha hamis akkor <Érték2>-t adja vissza."
 
 #: lr_const.sdescriptioninc
 msgid "INC(<Value>)/Increment <Value>."
@@ -632,7 +630,7 @@ msgstr "Hüvelyk"
 
 #: lr_const.sdesoptionsforminplace
 msgid "Use inplace editor"
-msgstr ""
+msgstr "Szerkesztés helyben"
 
 #: lr_const.sdesoptionsformmm
 msgid "&MM"
@@ -1637,7 +1635,7 @@ msgstr "Hüvelyk"
 
 #: lr_const.sinsbarcode
 msgid "Insert Barcode object"
-msgstr "Vonalkód objektum beszúrása"
+msgstr "Vonalkód beszúrása"
 
 #: lr_const.sinschart
 msgid "Insert Chart object"
@@ -1649,7 +1647,7 @@ msgstr "Jelölőnégyzet beszúrása"
 
 #: lr_const.sinscrosstab
 msgid "Insert Cross-tab object"
-msgstr ""
+msgstr "Kereszttábla beszúrása"
 
 #: lr_const.sinsert
 msgid "Insert"
