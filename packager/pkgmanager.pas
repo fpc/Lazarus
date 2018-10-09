@@ -5244,7 +5244,7 @@ begin
   // save
   Result:=DoSavePackage(APackage,SaveFlags);
   if Result<>mrOk then exit;
-  Result:=CurEditor.ShowAddDialog;  // show new component dialog
+  Result:=CurEditor.ShowNewCompDialog;  // show new component dialog
 end;
 
 function TPkgManager.SavePackageFiles(APackage: TLazPackage): TModalResult;

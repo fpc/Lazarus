@@ -373,7 +373,7 @@ type
     procedure DoSave(SaveAs: boolean);
     procedure DoSortFiles;
     function DoOpenPkgFile(PkgFile: TPkgFile): TModalResult;
-    function ShowAddDialog: TModalResult;
+    function ShowNewCompDialog: TModalResult;
     function ShowAddDepDialog: TModalResult;
     function ShowAddFPMakeDepDialog: TModalResult;
     function PkgNameToFormName(const PkgName: string): string;
@@ -1074,7 +1074,7 @@ end;
 
 procedure TPackageEditorForm.mnuAddNewCompClick(Sender: TObject);
 begin
-  ShowAddDialog;
+  ShowNewCompDialog;
 end;
 
 procedure TPackageEditorForm.mnuAddNewReqrClick(Sender: TObject);
@@ -2128,7 +2128,7 @@ begin
   end;
 end;
 
-function TPackageEditorForm.ShowAddDialog: TModalResult;
+function TPackageEditorForm.ShowNewCompDialog: TModalResult;
 var
   IgnoreUnitPaths: TFilenameToStringTree;
 
@@ -2140,19 +2140,25 @@ var
 
   procedure AddNewComponent(AddParams: TAddToPkgResult);
   begin
-    ExtendUnitIncPathForNewUnit(AddParams.UnitFilename,'',IgnoreUnitPaths);
+    ExtendUnitIncPathForNewUnit(AddParams.UnitFilename, '', IgnoreUnitPaths);
     // add file
     with AddParams do
-      LazPackage.AddFile(UnitFilename,Unit_Name,FileType,PkgFileFlags,cpNormal);
-    FreeAndNil(FNextSelectedPart);
-    FNextSelectedPart:=TPENodeData.Create(penFile,AddParams.UnitFilename,false);
-    // add dependency
-    if (AddParams.Dependency<>nil)
-    and (not PkgDependsOn(AddParams.Dependency.PackageName)) then
-      PackageGraph.AddDependencyToPackage(LazPackage,AddParams.Dependency);
-    if (AddParams.IconNormFile<>'') and (not PkgDependsOn('LCL')) then
-      PackageGraph.AddDependencyToPackage(LazPackage,PackageGraph.LCLPackage);
-    PackageEditors.DeleteAmbiguousFiles(LazPackage,AddParams.UnitFilename);
+    begin
+      Assert(FilenameIsAbsolute(UnitFilename), 'AddNewComponent: Filename is relative.');
+      // This file can also replace an existing file.
+      if LazPackage.FindPkgFile(UnitFilename,true,false)=nil then
+        LazPackage.AddFile(UnitFilename, Unit_Name, FileType, PkgFileFlags, cpNormal)
+      else
+        LazPackage.Modified:=True;
+      FreeAndNil(FNextSelectedPart);
+      FNextSelectedPart:=TPENodeData.Create(penFile, UnitFilename, false);
+      // add dependency
+      if (Dependency<>nil) and not PkgDependsOn(Dependency.PackageName) then
+        PackageGraph.AddDependencyToPackage(LazPackage, Dependency);
+      if (IconNormFile<>'') and not PkgDependsOn('LCL') then
+        PackageGraph.AddDependencyToPackage(LazPackage, PackageGraph.LCLPackage);
+      PackageEditors.DeleteAmbiguousFiles(LazPackage, UnitFilename);
+    end;
     // open file in editor
     PackageEditors.CreateNewFile(Self,AddParams);
   end;
@@ -2165,9 +2171,7 @@ begin
     exit(mrCancel);
   end;
 
-  Result:=ShowAddToPackageDlg(LazPackage, AddParams,
-                              PackageEditors.OnGetIDEFileInfo,
-                              PackageEditors.OnGetUnitRegisterInfo);
+  Result:=ShowAddToPackageDlg(LazPackage, AddParams);
   if Result<>mrOk then exit;
 
   PackageGraph.BeginUpdate(false);

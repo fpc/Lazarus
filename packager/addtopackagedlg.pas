@@ -101,10 +101,11 @@ type
     Icon150InfoLabel: TLabel;
     Icon200InfoLabel: TLabel;
     IconNormLabel: TLabel;
-    ComponentUnitFileBrowseButton: TButton;
+    UnitFilenameExistsLabel: TLabel;
+    UnitDirectoryBrowseButton: TButton;
     UnitDirectoryEdit: TEdit;
     UnitDirectoryLabel: TLabel;
-    ComponentUnitFileShortenButton: TButton;
+    UnitDirectoryShortenButton: TButton;
     UnitNameEdit: TEdit;
     UnitNameLabel: TLabel;
     Icon200BitBtn: TBitBtn;
@@ -119,8 +120,8 @@ type
     procedure AncestorShowAllCheckBoxClick(Sender: TObject);
     procedure ClassNameEditChange(Sender: TObject);
     procedure IconBitBtnClick(Sender: TObject);
-    procedure ComponentUnitFileBrowseButtonClick(Sender: TObject);
-    procedure ComponentUnitFileShortenButtonClick(Sender: TObject);
+    procedure UnitDirectoryBrowseButtonClick(Sender: TObject);
+    procedure UnitDirectoryShortenButtonClick(Sender: TObject);
     procedure UnitDirectoryEditChange(Sender: TObject);
     procedure UnitNameEditChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -130,8 +131,6 @@ type
     fLastNewAncestorType: string;
     fLastNewClassName: string;
     FLazPackage: TLazPackage;
-    FOnGetIDEFileInfo: TGetIDEFileStateEvent;
-    FOnGetUnitRegisterInfo: TOnGetUnitRegisterInfo;
     fPkgComponents: TAVLTree;// tree of TPkgComponent
     fPackages: TAVLTree;// tree of  TLazPackage or TPackageLink
     fParams: TAddToPkgResult;
@@ -146,37 +145,28 @@ type
     function CheckNewCompOk: Boolean;
     procedure AutoCompleteNewComponent;
     procedure AutoCompleteUnitName;
+    procedure UpdateUnitFilename;
   public
     procedure UpdateAvailableAncestorTypes;
     procedure UpdateAvailablePageNames;
   public
     property LazPackage: TLazPackage read FLazPackage write SetLazPackage;
-    property OnGetIDEFileInfo: TGetIDEFileStateEvent read FOnGetIDEFileInfo
-                                                     write FOnGetIDEFileInfo;
-    property OnGetUnitRegisterInfo: TOnGetUnitRegisterInfo
-                       read FOnGetUnitRegisterInfo write FOnGetUnitRegisterInfo;
   end;
   
-function ShowAddToPackageDlg(Pkg: TLazPackage; out Params: TAddToPkgResult;
-  OnGetIDEFileInfo: TGetIDEFileStateEvent;
-  OnGetUnitRegisterInfo: TOnGetUnitRegisterInfo): TModalResult;
+function ShowAddToPackageDlg(Pkg: TLazPackage; out Params: TAddToPkgResult): TModalResult;
 
 
 implementation
 
 {$R *.lfm}
 
-function ShowAddToPackageDlg(Pkg: TLazPackage; out Params: TAddToPkgResult;
-  OnGetIDEFileInfo: TGetIDEFileStateEvent;
-  OnGetUnitRegisterInfo: TOnGetUnitRegisterInfo): TModalResult;
+function ShowAddToPackageDlg(Pkg: TLazPackage; out Params: TAddToPkgResult): TModalResult;
 var
   AddDlg: TAddToPackageDlg;
 begin
   Params:=nil;
   AddDlg:=TAddToPackageDlg.Create(nil);
   try
-    AddDlg.OnGetIDEFileInfo:=OnGetIDEFileInfo;
-    AddDlg.OnGetUnitRegisterInfo:=OnGetUnitRegisterInfo;
     AddDlg.LazPackage:=Pkg;
     Result:=AddDlg.ShowModal;
     if Result=mrOk then begin
@@ -257,12 +247,13 @@ begin
   UnitDirectoryLabel.Caption:=lisA2PDirectoryForUnitFile;
   UnitDirectoryEdit.Text:='';
   UnitFilenameLabel.Caption:='';
-  with ComponentUnitFileBrowseButton do begin
+  UnitFilenameExistsLabel.Caption:='';
+  with UnitDirectoryBrowseButton do begin
     Caption:='...';
     ShowHint:=true;
-    Hint:=lisA2PSaveFileDialog;
+    Hint:=lisChooseDirectory; // Remove lisA2PSaveFileDialog later.
   end;
-  with ComponentUnitFileShortenButton do begin
+  with UnitDirectoryShortenButton do begin
     Caption:='<>';
     ShowHint:=true;
     Hint:=lisA2PShortenOrExpandFilename;
@@ -365,7 +356,7 @@ begin
   end;
 end;
 
-procedure TAddToPackageDlg.ComponentUnitFileBrowseButtonClick(Sender: TObject);
+procedure TAddToPackageDlg.UnitDirectoryBrowseButtonClick(Sender: TObject);
 var
   DirDialog: TSelectDirectoryDialog;
 begin
@@ -378,7 +369,7 @@ begin
     //DirDialog.Filter:=Format('%s|*.pas;*.pp', [dlgFilterPascalFile]);
     if DirDialog.Execute then begin
       UnitDirectoryEdit.Text:=DirDialog.Filename;
-      UnitFilenameLabel.Caption:=AppendPathDelim(UnitDirectoryEdit.Text)+GenerateUnitFileName;
+      UpdateUnitFilename;
     end;
     InputHistories.StoreFileDialogSettings(DirDialog);
   finally
@@ -386,7 +377,7 @@ begin
   end;
 end;
 
-procedure TAddToPackageDlg.ComponentUnitFileShortenButtonClick(Sender: TObject);
+procedure TAddToPackageDlg.UnitDirectoryShortenButtonClick(Sender: TObject);
 var
   S: string;
 begin
@@ -400,12 +391,12 @@ begin
     UnitDirectoryEdit.Text:=CreateRelativePath(S,LazPackage.Directory,True)
   else
     UnitDirectoryEdit.Text:=CreateAbsolutePath(S,LazPackage.Directory);
-  UnitFilenameLabel.Caption:=AppendPathDelim(UnitDirectoryEdit.Text)+GenerateUnitFileName;
+  UpdateUnitFilename;
 end;
 
 procedure TAddToPackageDlg.UnitDirectoryEditChange(Sender: TObject);
 begin
-  UnitFilenameLabel.Caption:=AppendPathDelim(UnitDirectoryEdit.Text)+GenerateUnitFileName;
+  UpdateUnitFilename;
   if UnitDirectoryEdit.Text<>'' then
     fIconDlg.InitialDir:=UnitDirectoryEdit.Text;
 end;
@@ -413,7 +404,7 @@ end;
 procedure TAddToPackageDlg.UnitNameEditChange(Sender: TObject);
 begin
   CheckNewCompOk;
-  UnitFilenameLabel.Caption:=AppendPathDelim(UnitDirectoryEdit.Text)+GenerateUnitFileName;
+  UpdateUnitFilename;
 end;
 
 procedure TAddToPackageDlg.NewComponentButtonClick(Sender: TObject);
@@ -445,6 +436,13 @@ begin
       raise Exception.Create('NewComponentButtonClick: Cannot create directory '+ThePath);
   fParams.UnitFilename:=AppendPathDelim(ThePath)+GenerateUnitFileName;
 
+  // check if package is readonly
+  if LazPackage.ReadOnly then begin
+    IDEMessageDialog(lisAF2PPackageIsReadOnly,
+      Format(lisAF2PThePackageIsReadOnly, [LazPackage.IDAsString]),
+      mtError,[mbCancel]);
+    exit;
+  end;
   // check Ancestor Type
   if not IsValidIdent(fParams.AncestorType) then begin
     IDEMessageDialog(lisA2PInvalidAncestorType,
@@ -503,9 +501,14 @@ begin
     then
       exit;
   end;
-  // check filename
-  if not CheckAddingPackageUnit(LazPackage, d2ptNewComponent,
-    OnGetIDEFileInfo, fParams.UnitFilename) then exit;
+  // check if unitname is a componentclass
+  if IDEComponentPalette.FindComponent(fParams.Unit_Name)<>nil then begin
+    if IDEMessageDialog(lisA2PAmbiguousUnitName,
+      Format(lisA2PTheUnitNameIsTheSameAsAnRegisteredComponent,[fParams.Unit_Name,LineEnding]),
+      mtWarning,[mbCancel,mbIgnore])<>mrIgnore
+    then
+      exit;
+  end;
 
   // create dependency if needed
   PkgComponent:=TPkgComponent(IDEComponentPalette.FindComponent(fParams.AncestorType));
@@ -588,6 +591,15 @@ begin
   UnitNameEdit.Text:=NewUnitName;
   // default directory
   UnitDirectoryEdit.Text:=LazPackage.Directory;
+end;
+
+procedure TAddToPackageDlg.UpdateUnitFilename;
+begin
+  UnitFilenameLabel.Caption:=AppendPathDelim(UnitDirectoryEdit.Text)+GenerateUnitFileName;
+  if FileExists(UnitFilenameLabel.Caption) then
+    UnitFilenameExistsLabel.Caption:=lisA2PFileAlreadyExists
+  else
+    UnitFilenameExistsLabel.Caption:='';
 end;
 
 procedure TAddToPackageDlg.UpdateAvailableAncestorTypes;
