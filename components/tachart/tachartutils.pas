@@ -978,19 +978,28 @@ end;
 procedure TPublishedIntegerSet.SetAsString(AValue: String);
 var
   sl: TStringList;
-  i, p: Integer;
+  i, p, pc, ps, pp: Integer;
   s: String;
 begin
   AllSet := AValue = PUB_INT_SET_ALL;
   if AllSet then exit;
   sl := TStringList.Create;
   try
-    if pos(',', AValue) > 0 then
+    pc := pos(',', AValue);
+    ps := pos(';', AValue);
+    pp := pos('|', AValue);
+    if (pc = 0) and (ps = 0) and (pp = 0) then
+      if TryStrToInt(AValue, i) then begin
+        SetLength(FData, 1);
+        FData[0] := i;
+        exit;
+      end;
+    if pc > 0 then
       sl.CommaText := AValue
-    else if pos(';', AValue) > 0 then begin
+    else if ps > 0 then begin
       sl.Delimiter := ';';
       sl.DelimitedText := AValue;
-    end else if pos('|', AValue) > 0 then begin
+    end else if pp > 0 then begin
       sl.Delimiter := '|';
       sl.DelimitedText := AValue;
     end;

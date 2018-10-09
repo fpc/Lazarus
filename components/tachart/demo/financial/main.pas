@@ -107,18 +107,10 @@ end;
 
 procedure TMainForm.cbColorChange(Sender: TObject);
 begin
-  case ohlcSeries.Mode of
-    mOHLC:
-      begin
-        ohlcSeries.LinePen.Color := cbUpColor.Selected;
-        ohlcSeries.DownLinePen.Color := cbDownColor.Selected;
-      end;
-    mCandleStick:
-      begin
-        ohlcSeries.CandlestickUpBrush.Color := cbUpColor.Selected;
-        ohlcSeries.CandleStickDownBrush.Color := cbDownColor.Selected;
-      end;
-  end;
+  ohlcSeries.LinePen.Color := cbUpColor.Selected;
+  ohlcSeries.DownLinePen.Color := cbDownColor.Selected;
+  ohlcSeries.CandlestickUpBrush.Color := cbUpColor.Selected;
+  ohlcSeries.CandleStickDownBrush.Color := cbDownColor.Selected;
 end;
 
 procedure TMainForm.cbCandleStickSameColorChange(Sender: TObject);

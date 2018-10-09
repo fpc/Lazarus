@@ -348,9 +348,6 @@ type
     procedure GetLowerPredictionInterval(const Ax: Double; out AY: Double);
     procedure GetUpperPredictionInterval(const Ax: Double; out AY: Double);
     {$IFEND}
-    function GetFitEquationString(
-      ANumFormat: String; AXText: String = 'x'; AYText: String = 'y'): String;
-      deprecated 'Use EquationText';
     function GetNearestPoint(
       const AParams: TNearestPointParams;
       out AResults: TNearestPointResults): Boolean; override;
@@ -482,14 +479,12 @@ type
       read FOnCalculate write SetOnCalculate;
   end;
 
-
   // Builds an equation string based on the parameters and the type of equation.
   // AXText and AYText are placeholders for the x and y variables, respectively.
   // Parameters are formatted by passing ANumFormat to the "Format" function.
   function ParamsToEquation(
     AEquation: TFitEquation; const AParams: array of Double;
     ANumFormat: String; AXText: String = 'x'; AYText: String = 'y'): String;
-    deprecated 'Use IFitEquationText';
 
 implementation
 
@@ -1785,11 +1780,13 @@ begin
 end;
 {$IFEND}
 
+{ Function removed, but left here commented to show useage of IEquationText.
 function TFitSeries.GetFitEquationString(ANumFormat: String; AXText: String;
   AYText: String): String;
 begin
   Result := EquationText.NumFormat(ANumFormat).X(AXText).Y(AYText);
 end;
+}
 
 procedure TFitSeries.GetLegendItems(AItems: TChartLegendItems);
 var

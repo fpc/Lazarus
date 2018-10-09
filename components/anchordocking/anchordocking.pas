@@ -649,6 +649,7 @@ type
     // simplification/garbage collection
     procedure BeginUpdate;
     procedure EndUpdate;
+    function IsReleasing(AControl: TControl): Boolean;
     procedure NeedSimplify(AControl: TControl);
     procedure NeedFree(AControl: TControl);
     procedure SimplifyPendingLayouts;
@@ -3439,6 +3440,11 @@ begin
     SimplifyPendingLayouts;
 end;
 
+function TAnchorDockMaster.IsReleasing(AControl: TControl): Boolean;
+begin
+  Result := fNeedFree.IndexOf(AControl) >= 0;
+end;
+
 procedure TAnchorDockMaster.NeedSimplify(AControl: TControl);
 begin
   if Self=nil then exit;
@@ -3460,7 +3466,7 @@ end;
 procedure TAnchorDockMaster.NeedFree(AControl: TControl);
 begin
   //debugln(['TAnchorDockMaster.NeedFree ',DbgSName(AControl),' ',csDestroying in AControl.ComponentState]);
-  if fNeedFree.IndexOf(AControl)>=0 then exit;
+  if IsReleasing(AControl) then exit;
   if csDestroying in AControl.ComponentState then exit;
   fNeedFree.Add(AControl);
   AControl.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}(ADAutoSizingReason){$ENDIF};
@@ -3484,7 +3490,7 @@ begin
       while i>=0 do begin
         AControl:=TControl(fNeedSimplify[i]);
         if (csDestroying in AControl.ComponentState)
-        or (fNeedFree.IndexOf(AControl)>=0) then begin
+        or IsReleasing(AControl) then begin
           fNeedSimplify.Delete(i);
           Changed:=true;
         end else if (AControl is TAnchorDockHostSite) then begin
@@ -3513,7 +3519,7 @@ begin
     // free unneeded controls
     for i := fNeedFree.Count - 1 downto 0 do
       if not (csDestroying in TControl(fNeedFree[i]).ComponentState) then
-        TControl(fNeedFree[i]).Free;
+        Application.ReleaseComponent(TComponent(fNeedFree[i]));
     fNeedFree.Clear;
   finally
     fSimplifying:=false;
@@ -3736,7 +3742,7 @@ begin
   try
     BeginUpdateLayout;
     try
-      DockMaster.QueueSimplify:=True;
+      DockMaster.SimplifyPendingLayouts;
       NewControl.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockHostSite.ExecuteDock NewControl'){$ENDIF};
 
       if (NewControl.Parent=Self) and (SiteType=adhstLayout) then begin
@@ -4470,6 +4476,7 @@ var
   Site: TAnchorDockHostSite;
 begin
   if Pages=nil then exit;
+  if DockMaster.IsReleasing(Pages) then exit;
   if Pages.PageCount=1 then begin
     {$IFDEF VerboseAnchorDockPages}
     debugln(['TAnchorDockHostSite.SimplifyPages "',Caption,'" PageCount=1']);
@@ -4486,7 +4493,7 @@ begin
       if SiteType=adhstPages then
         FSiteType:=adhstOneControl;
       // free Pages
-      FreePages;
+      DockMaster.NeedFree(Pages);
       if SiteType=adhstOneControl then
         SimplifyOneControl;
     finally
@@ -4731,7 +4738,7 @@ procedure TAnchorDockHostSite.DoDock(NewDockSite: TWinControl; var ARect: TRect)
 begin
   inherited DoDock(NewDockSite, ARect);
   if DockMaster <> nil then
-    DockMaster.QueueSimplify:=True; // Async call to SimplifyPendingLayouts;
+    DockMaster.SimplifyPendingLayouts;
 end;
 
 procedure TAnchorDockHostSite.SetParent(NewParent: TWinControl);
@@ -6706,7 +6713,7 @@ begin
   if Site=nil then exit;
   DockMaster.RestoreLayouts.Add(DockMaster.CreateRestoreLayout(Site),true);
   Site.CloseSite;
-  DockMaster.QueueSimplify:=True;
+  DockMaster.SimplifyPendingLayouts;
 end;
 
 procedure TAnchorDockPageControl.MoveLeftButtonClick(Sender: TObject);

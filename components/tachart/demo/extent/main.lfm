@@ -7,22 +7,26 @@ object Form1: TForm1
   ClientHeight = 397
   ClientWidth = 396
   OnCreate = FormCreate
-  LCLVersion = '1.1'
+  LCLVersion = '2.1.0.0'
   object Chart1: TChart
     Left = 0
-    Height = 307
+    Height = 309
     Top = 0
     Width = 396
     AxisList = <    
       item
         Grid.Visible = False
+        Marks.LabelBrush.Style = bsClear
         Minors = <>
         Title.LabelFont.Orientation = 900
+        Title.LabelBrush.Style = bsClear
       end    
       item
         Grid.Visible = False
         Alignment = calBottom
+        Marks.LabelBrush.Style = bsClear
         Minors = <>
+        Title.LabelBrush.Style = bsClear
       end>
     Extent.XMax = 1.7
     Extent.XMin = -1.7
@@ -38,11 +42,11 @@ object Form1: TForm1
     Toolset = ChartToolset1
     OnExtentChanged = Chart1ExtentChanged
     Align = alClient
-    ParentColor = False
     object Chart1LineSeries: TLineSeries
       LinePen.Color = clRed
       Pointer.Brush.Color = clRed
       Pointer.Pen.Color = clRed
+      Pointer.Visible = True
       ShowPoints = True
       Source = RandomChartSource1
     end
@@ -75,28 +79,35 @@ object Form1: TForm1
   end
   object Panel1: TPanel
     Left = 0
-    Height = 90
-    Top = 307
+    Height = 88
+    Top = 309
     Width = 396
     Align = alBottom
-    ClientHeight = 90
+    AutoSize = True
+    ClientHeight = 88
     ClientWidth = 396
     TabOrder = 1
     object lblBoundValue: TLabel
-      Left = 160
-      Height = 13
+      AnchorSideLeft.Control = cgUseBounds
+      AnchorSideLeft.Side = asrBottom
+      Left = 172
+      Height = 15
       Top = 21
-      Width = 26
+      Width = 28
+      BorderSpacing.Left = 16
       Caption = 'Value'
       ParentColor = False
     end
     object cgUseBounds: TCheckGroup
-      Left = 1
-      Height = 88
-      Top = 1
+      Left = 9
+      Height = 70
+      Top = 9
       Width = 147
       Align = alLeft
       AutoFill = True
+      BorderSpacing.Left = 8
+      BorderSpacing.Top = 8
+      BorderSpacing.Bottom = 8
       Caption = ' Use bounds '
       ChildSizing.LeftRightSpacing = 8
       ChildSizing.TopBottomSpacing = 6
@@ -105,9 +116,10 @@ object Form1: TForm1
       ChildSizing.ShrinkHorizontal = crsScaleChilds
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
-      ChildSizing.ControlsPerLine = 1
-      ClientHeight = 70
+      ChildSizing.ControlsPerLine = 2
+      ClientHeight = 50
       ClientWidth = 143
+      Columns = 2
       Items.Strings = (
         'Left'
         'Right'
@@ -121,10 +133,15 @@ object Form1: TForm1
       }
     end
     object fseBounds: TFloatSpinEdit
-      Left = 204
-      Height = 21
+      AnchorSideLeft.Control = lblBoundValue
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      Left = 208
+      Height = 23
       Top = 17
       Width = 50
+      BorderSpacing.Left = 8
+      BorderSpacing.Top = 16
       Increment = 0.1
       MaxValue = 10
       MinValue = 1
@@ -133,19 +150,26 @@ object Form1: TForm1
       Value = 1.7
     end
     object btnPrevExtent: TButton
-      Left = 159
+      AnchorSideLeft.Control = lblBoundValue
+      Left = 172
       Height = 25
       Top = 49
-      Width = 95
+      Width = 106
+      AutoSize = True
       Caption = 'Previous extent'
       OnClick = btnPrevExtentClick
       TabOrder = 2
     end
     object lblHistory: TLabel
-      Left = 264
-      Height = 13
-      Top = 57
-      Width = 44
+      AnchorSideLeft.Control = btnPrevExtent
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = btnPrevExtent
+      AnchorSideTop.Side = asrCenter
+      Left = 294
+      Height = 15
+      Top = 54
+      Width = 51
+      BorderSpacing.Left = 16
       Caption = 'lblHistory'
       ParentColor = False
     end
@@ -161,8 +185,8 @@ object Form1: TForm1
     top = 118
   end
   object ChartToolset1: TChartToolset
-    left = 336
-    top = 320
+    left = 320
+    top = 312
     object ChartToolset1PanDragTool1: TPanDragTool
       Shift = [ssRight]
       LimitToExtent = [pdLeft, pdUp, pdRight, pdDown]
@@ -171,6 +195,7 @@ object Form1: TForm1
       Shift = [ssLeft]
       AnimationInterval = 100
       AnimationSteps = 5
+      Brush.Style = bsClear
     end
   end
 end

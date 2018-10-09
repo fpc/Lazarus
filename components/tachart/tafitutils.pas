@@ -389,8 +389,10 @@ end;
 
 procedure TFitStatistics.CalcTValue;
 begin
+  fTValue := NaN;
   {$IF FPC_FullVersion >= 30004}
-  fTValue := invtdist(fAlpha, fN - fM, 2)
+  if (fAlpha > 0) and (fN > fM) then
+    fTValue := invtdist(fAlpha, fN - fM, 2)
   {$IFEND}
 end;
 
@@ -411,7 +413,7 @@ end;
 
 function TFitStatistics.F: Double;
 begin
-  if M > 1 then
+  if (M > 1) and (N <> M) and (SSE <> 0) then
     Result := (SSR/(M-1)) / (SSE/(N-M))
   else
     Result := NaN;

@@ -1,38 +1,38 @@
 object Form1: TForm1
   Left = 495
-  Height = 590
+  Height = 594
   Top = 225
-  Width = 786
+  Width = 817
   Caption = 'Form1'
-  ClientHeight = 590
-  ClientWidth = 786
+  ClientHeight = 594
+  ClientWidth = 817
   OnCreate = FormCreate
-  LCLVersion = '1.3'
+  LCLVersion = '2.1.0.0'
   object PageControl1: TPageControl
     Left = 0
-    Height = 590
+    Height = 594
     Top = 0
-    Width = 786
+    Width = 817
     ActivePage = tsMain
     Align = alClient
     TabIndex = 0
     TabOrder = 0
     object tsMain: TTabSheet
       Caption = 'Main'
-      ClientHeight = 562
-      ClientWidth = 778
+      ClientHeight = 566
+      ClientWidth = 809
       object StatusBar1: TStatusBar
         Left = 0
         Height = 23
-        Top = 539
-        Width = 778
+        Top = 543
+        Width = 809
         Panels = <>
       end
       object Panel2: TPanel
         Left = 0
         Height = 36
-        Top = 503
-        Width = 778
+        Top = 507
+        Width = 809
         Align = alBottom
         BevelOuter = bvNone
         Caption = 'Left-drag --> measure 1st distance, Shift to zoom while dragging         Ctrl+left-drag --> measure 2nd distance          Right-drag --> show values'
@@ -43,21 +43,28 @@ object Form1: TForm1
         TabOrder = 1
       end
       object Panel1: TPanel
-        Left = 0
-        Height = 108
-        Top = 395
-        Width = 778
+        Left = 4
+        Height = 92
+        Top = 407
+        Width = 797
         Align = alBottom
+        BorderSpacing.Left = 4
+        BorderSpacing.Top = 8
+        BorderSpacing.Right = 8
+        BorderSpacing.Bottom = 8
         BevelOuter = bvNone
-        ClientHeight = 108
-        ClientWidth = 778
+        ClientHeight = 92
+        ClientWidth = 797
         TabOrder = 2
         object rgSnapMode: TRadioGroup
-          Left = 8
-          Height = 101
-          Top = 5
-          Width = 96
+          AnchorSideLeft.Control = Panel1
+          AnchorSideTop.Control = Panel1
+          Left = 0
+          Height = 89
+          Top = 0
+          Width = 103
           AutoFill = True
+          AutoSize = True
           Caption = 'Snapping mode'
           ChildSizing.LeftRightSpacing = 6
           ChildSizing.TopBottomSpacing = 6
@@ -67,8 +74,8 @@ object Form1: TForm1
           ChildSizing.ShrinkVertical = crsScaleChilds
           ChildSizing.Layout = cclLeftToRightThenTopToBottom
           ChildSizing.ControlsPerLine = 1
-          ClientHeight = 83
-          ClientWidth = 92
+          ClientHeight = 69
+          ClientWidth = 99
           ItemIndex = 0
           Items.Strings = (
             'cdmXY'
@@ -79,11 +86,16 @@ object Form1: TForm1
           TabOrder = 0
         end
         object rgDrawingMode: TRadioGroup
-          Left = 208
-          Height = 101
-          Top = 5
-          Width = 97
+          AnchorSideLeft.Control = rgMeasureMode
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = Panel1
+          Left = 217
+          Height = 89
+          Top = 0
+          Width = 98
           AutoFill = True
+          AutoSize = True
+          BorderSpacing.Left = 8
           Caption = 'Drawing mode'
           ChildSizing.LeftRightSpacing = 6
           ChildSizing.TopBottomSpacing = 6
@@ -93,8 +105,8 @@ object Form1: TForm1
           ChildSizing.ShrinkVertical = crsScaleChilds
           ChildSizing.Layout = cclLeftToRightThenTopToBottom
           ChildSizing.ControlsPerLine = 1
-          ClientHeight = 83
-          ClientWidth = 93
+          ClientHeight = 69
+          ClientWidth = 94
           ItemIndex = 1
           Items.Strings = (
             'tdmDefault'
@@ -105,10 +117,14 @@ object Form1: TForm1
           TabOrder = 1
         end
         object cbRotateLabel: TCheckBox
-          Left = 420
+          AnchorSideLeft.Control = cbShowLabel
+          AnchorSideTop.Control = cbShowLabel
+          AnchorSideTop.Side = asrBottom
+          Left = 439
           Height = 19
-          Top = 29
+          Top = 27
           Width = 82
+          BorderSpacing.Top = 4
           Caption = 'Rotate label'
           Checked = True
           OnClick = cbRotateLabelClick
@@ -116,10 +132,15 @@ object Form1: TForm1
           TabOrder = 2
         end
         object cbShowLabel: TCheckBox
-          Left = 420
+          AnchorSideLeft.Control = rgDataPointMode
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = Panel1
+          Left = 439
           Height = 19
-          Top = 5
+          Top = 4
           Width = 77
+          BorderSpacing.Left = 8
+          BorderSpacing.Top = 4
           Caption = 'Show label'
           Checked = True
           OnClick = cbShowLabelClick
@@ -127,10 +148,15 @@ object Form1: TForm1
           TabOrder = 3
         end
         object clrPenColor: TColorButton
-          Left = 692
+          AnchorSideLeft.Control = clrBackgroundColor
+          AnchorSideTop.Control = clrBackgroundColor
+          AnchorSideTop.Side = asrBottom
+          Left = 697
           Height = 25
-          Top = 41
+          Top = 31
           Width = 78
+          BorderSpacing.Top = 4
+          BorderSpacing.Right = 8
           BorderWidth = 2
           ButtonColorAutoSize = False
           ButtonColorSize = 16
@@ -140,10 +166,15 @@ object Form1: TForm1
           OnColorChanged = clrPenColorColorChanged
         end
         object clrFontColor: TColorButton
-          Left = 692
+          AnchorSideLeft.Control = clrBackgroundColor
+          AnchorSideTop.Control = clrPenColor
+          AnchorSideTop.Side = asrBottom
+          Left = 697
           Height = 25
-          Top = 70
+          Top = 60
           Width = 78
+          BorderSpacing.Top = 4
+          BorderSpacing.Right = 8
           BorderWidth = 2
           ButtonColorAutoSize = False
           ButtonColorSize = 16
@@ -153,10 +184,15 @@ object Form1: TForm1
           OnColorChanged = clrFontColorColorChanged
         end
         object clrBackgroundColor: TColorButton
-          Left = 692
+          AnchorSideLeft.Control = edEndbarLength
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = edEndbarLength
+          Left = 697
           Height = 25
-          Top = 8
+          Top = 2
           Width = 78
+          BorderSpacing.Left = 8
+          BorderSpacing.Right = 8
           BorderWidth = 2
           ButtonColorAutoSize = False
           ButtonColorSize = 16
@@ -166,38 +202,57 @@ object Form1: TForm1
           OnColorChanged = clrBackgroundColorColorChanged
         end
         object edEndbarLength: TSpinEdit
-          Left = 628
+          AnchorSideLeft.Control = lblEndBarLength
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = cbShowLabel
+          AnchorSideTop.Side = asrCenter
+          Left = 639
           Height = 23
-          Top = 5
+          Top = 2
           Width = 50
+          BorderSpacing.Left = 4
           MaxValue = 1000
           OnChange = edEndbarLengthChange
           TabOrder = 4
           Value = 1000
         end
         object lblEndBarLength: TLabel
-          Left = 548
+          AnchorSideLeft.Control = cbHide
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = edEndbarLength
+          AnchorSideTop.Side = asrCenter
+          Left = 561
           Height = 15
-          Top = 8
+          Top = 6
           Width = 74
+          BorderSpacing.Left = 8
           Caption = 'Endbar length'
           ParentColor = False
         end
         object cbHide: TCheckBox
-          Left = 420
+          AnchorSideLeft.Control = cbShowLabel
+          AnchorSideTop.Control = cbFlipLabel
+          AnchorSideTop.Side = asrBottom
+          Left = 439
           Height = 19
-          Top = 81
+          Top = 73
           Width = 114
+          BorderSpacing.Top = 4
           Caption = 'Hide at mouse up'
           OnClick = cbHideClick
           TabOrder = 5
         end
         object rgMeasureMode: TRadioGroup
-          Left = 108
-          Height = 101
-          Top = 5
-          Width = 97
+          AnchorSideLeft.Control = rgSnapMode
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = Panel1
+          Left = 111
+          Height = 89
+          Top = 0
+          Width = 98
           AutoFill = True
+          AutoSize = True
+          BorderSpacing.Left = 8
           Caption = 'Measure mode'
           ChildSizing.LeftRightSpacing = 6
           ChildSizing.TopBottomSpacing = 6
@@ -207,8 +262,8 @@ object Form1: TForm1
           ChildSizing.ShrinkVertical = crsScaleChilds
           ChildSizing.Layout = cclLeftToRightThenTopToBottom
           ChildSizing.ControlsPerLine = 1
-          ClientHeight = 83
-          ClientWidth = 93
+          ClientHeight = 69
+          ClientWidth = 94
           ItemIndex = 0
           Items.Strings = (
             'cdmXY'
@@ -219,10 +274,16 @@ object Form1: TForm1
           TabOrder = 6
         end
         object mDistanceText: TMemo
-          Left = 548
-          Height = 53
-          Top = 42
-          Width = 126
+          AnchorSideLeft.Control = lblEndBarLength
+          AnchorSideRight.Control = edEndbarLength
+          AnchorSideRight.Side = asrBottom
+          AnchorSideBottom.Control = cbHide
+          AnchorSideBottom.Side = asrBottom
+          Left = 561
+          Height = 42
+          Top = 50
+          Width = 128
+          Anchors = [akTop, akLeft, akRight, akBottom]
           Lines.Strings = (
             'axis dist = %0:.4g'
             'graph dist = %1:.4g'
@@ -231,11 +292,16 @@ object Form1: TForm1
           TabOrder = 7
         end
         object rgDataPointMode: TRadioGroup
-          Left = 308
-          Height = 101
-          Top = 5
-          Width = 97
+          AnchorSideLeft.Control = rgDrawingMode
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = Panel1
+          Left = 323
+          Height = 89
+          Top = 0
+          Width = 108
           AutoFill = True
+          AutoSize = True
+          BorderSpacing.Left = 8
           Caption = 'Data point mode'
           ChildSizing.LeftRightSpacing = 6
           ChildSizing.TopBottomSpacing = 6
@@ -245,8 +311,8 @@ object Form1: TForm1
           ChildSizing.ShrinkVertical = crsScaleChilds
           ChildSizing.Layout = cclLeftToRightThenTopToBottom
           ChildSizing.ControlsPerLine = 1
-          ClientHeight = 83
-          ClientWidth = 93
+          ClientHeight = 69
+          ClientWidth = 104
           ItemIndex = 0
           Items.Strings = (
             'Free'
@@ -257,10 +323,14 @@ object Form1: TForm1
           TabOrder = 8
         end
         object cbFlipLabel: TCheckBox
-          Left = 420
+          AnchorSideLeft.Control = cbShowLabel
+          AnchorSideTop.Control = cbRotateLabel
+          AnchorSideTop.Side = asrBottom
+          Left = 439
           Height = 19
-          Top = 53
+          Top = 50
           Width = 67
+          BorderSpacing.Top = 4
           Caption = 'Flip label'
           OnClick = cbFlipLabelClick
           TabOrder = 9
@@ -268,9 +338,9 @@ object Form1: TForm1
       end
       object Chart1: TChart
         Left = 0
-        Height = 395
+        Height = 399
         Top = 0
-        Width = 778
+        Width = 809
         AutoFocus = True
         AxisList = <        
           item
@@ -278,13 +348,17 @@ object Form1: TForm1
             AxisPen.Color = clBlue
             AxisPen.Visible = True
             Marks.LabelFont.Color = clBlue
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
             Title.LabelFont.Orientation = 900
+            Title.LabelBrush.Style = bsClear
             Transformations = ChartAxisTransformations1
           end        
           item
             Alignment = calBottom
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
+            Title.LabelBrush.Style = bsClear
           end        
           item
             Grid.Visible = False
@@ -293,7 +367,9 @@ object Form1: TForm1
             AxisPen.Color = clTeal
             AxisPen.Visible = True
             Marks.LabelFont.Color = clTeal
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
+            Title.LabelBrush.Style = bsClear
             Transformations = ChartAxisTransformations3
           end>
         BackColor = clCream
@@ -311,7 +387,7 @@ object Form1: TForm1
         Toolset = ctDist
         Align = alClient
         DoubleBuffered = True
-        ParentColor = False
+        ParentColor = True
         object Chart1LineSeries1: TLineSeries
           AxisIndexX = 1
           AxisIndexY = 0
@@ -332,6 +408,7 @@ object Form1: TForm1
           LinePen.Width = 3
           Pointer.Brush.Color = clMoneyGreen
           Pointer.Style = psCircle
+          Pointer.Visible = True
           ShowPoints = True
           Source = RandomChartSource3
         end
@@ -339,34 +416,39 @@ object Form1: TForm1
     end
     object tsFit: TTabSheet
       Caption = 'Fit'
-      ClientHeight = 564
-      ClientWidth = 795
+      ClientHeight = 566
+      ClientWidth = 809
       object pnlFit: TPanel
         Left = 0
-        Height = 66
+        Height = 71
         Top = 0
-        Width = 795
+        Width = 809
         Align = alTop
-        ClientHeight = 66
-        ClientWidth = 795
+        AutoSize = True
+        ClientHeight = 71
+        ClientWidth = 809
         TabOrder = 0
         object rgFitParamCount: TRadioGroup
-          Left = 12
-          Height = 50
-          Top = 6
-          Width = 450
-          AutoFill = True
+          AnchorSideLeft.Control = pnlFit
+          AnchorSideTop.Control = pnlFit
+          Left = 9
+          Height = 53
+          Top = 9
+          Width = 285
+          AutoFill = False
+          AutoSize = True
+          BorderSpacing.Around = 8
+          BorderSpacing.InnerBorder = 4
           Caption = 'Measure (by dragging right mouse button)'
-          ChildSizing.LeftRightSpacing = 6
-          ChildSizing.TopBottomSpacing = 6
-          ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
-          ChildSizing.EnlargeVertical = crsHomogenousChildResize
+          ChildSizing.LeftRightSpacing = 12
+          ChildSizing.TopBottomSpacing = 3
+          ChildSizing.HorizontalSpacing = 24
           ChildSizing.ShrinkHorizontal = crsScaleChilds
           ChildSizing.ShrinkVertical = crsScaleChilds
           ChildSizing.Layout = cclLeftToRightThenTopToBottom
           ChildSizing.ControlsPerLine = 3
-          ClientHeight = 32
-          ClientWidth = 446
+          ClientHeight = 33
+          ClientWidth = 281
           Columns = 3
           ItemIndex = 0
           Items.Strings = (
@@ -378,10 +460,15 @@ object Form1: TForm1
           TabOrder = 0
         end
         object lblFit: TLabel
-          Left = 472
-          Height = 13
-          Top = 8
-          Width = 22
+          AnchorSideLeft.Control = rgFitParamCount
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = rgFitParamCount
+          AnchorSideTop.Side = asrCenter
+          Left = 326
+          Height = 15
+          Top = 28
+          Width = 26
+          BorderSpacing.Left = 32
           Caption = 'lblFit'
           ParentColor = False
           Visible = False
@@ -389,17 +476,21 @@ object Form1: TForm1
       end
       object chFit: TChart
         Left = 0
-        Height = 498
-        Top = 66
-        Width = 795
+        Height = 495
+        Top = 71
+        Width = 809
         AxisList = <        
           item
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
             Title.LabelFont.Orientation = 900
+            Title.LabelBrush.Style = bsClear
           end        
           item
             Alignment = calBottom
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
+            Title.LabelBrush.Style = bsClear
           end>
         Foot.Brush.Color = clBtnFace
         Foot.Font.Color = clBlue
@@ -411,19 +502,16 @@ object Form1: TForm1
         Toolset = ctFit
         Align = alClient
         DoubleBuffered = True
-        ParentColor = False
         object chFitLineSeries1: TLineSeries
           LineType = ltNone
           Pointer.Brush.Color = clRed
           Pointer.HorizSize = 3
           Pointer.VertSize = 3
+          Pointer.Visible = True
           ShowPoints = True
         end
         object chFitFitSeries1: TFitSeries
           Active = False
-          FitRange.Min = 1
-          FitRange.UseMax = True
-          FitRange.UseMin = True
           ParamCount = 1
           Pen.Color = clLime
           Pen.Width = 3
@@ -469,9 +557,11 @@ object Form1: TForm1
       Marks.LinkPen.Color = clBlue
       PointerEnd.Brush.Style = bsClear
       PointerEnd.VertSize = 1000
+      PointerEnd.Visible = True
       PointerStart.Brush.Style = bsClear
       PointerStart.Pen.Color = clRed
       PointerStart.VertSize = 1000
+      PointerStart.Visible = True
       Transparency = 128
       OnMeasure = ctDistance1Measure
     end
@@ -481,9 +571,11 @@ object Form1: TForm1
       PointerEnd.HorizSize = 8
       PointerEnd.Style = psRightTriangle
       PointerEnd.VertSize = 8
+      PointerEnd.Visible = True
       PointerStart.Brush.Style = bsClear
       PointerStart.Style = psLeftBracket
       PointerStart.VertSize = 8
+      PointerStart.Visible = True
       OnMeasure = ctDistance1Measure
     end
     object ctDistPanMouseWheelTool1: TPanMouseWheelTool
@@ -532,6 +624,7 @@ object Form1: TForm1
     end
     object ctFitZoomDragTool1: TZoomDragTool
       Shift = [ssLeft]
+      Brush.Style = bsClear
     end
   end
 end

@@ -53,8 +53,6 @@ type
   published
     property Caption: String read FCaption write SetCaption;
     property Distance default DEF_TITLE_DISTANCE;
-    // Use LabelFont instead.
-    property Font: TFont read GetFont write SetFont stored false; deprecated;
     property Frame;
     property LabelBrush;
     property PositionOnMarks: Boolean
@@ -276,7 +274,7 @@ type
 implementation
 
 uses
-  Math, SysUtils,
+  Math, SysUtils, LResources,
   TAGeometry, TAMath;
 
 { TChartMinorAxisMarks }
@@ -788,5 +786,15 @@ begin
   Marks.Stripes.Apply(ADrawer, AIndex);
   AIndex += 1;
 end;
+
+procedure SkipObsoleteProperties;
+const
+  FONT_NOTE = 'Obsolete, use ChartTitle.LabelFont instead';
+begin
+  RegisterPropertyToSkip(TChartAxisTitle, 'Font', FONT_NOTE, '');
+end;
+
+initialization
+  SkipObsoleteProperties;
 
 end.

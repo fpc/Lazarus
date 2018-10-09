@@ -333,7 +333,6 @@ type
   public // Helpers for series drawing
     procedure DrawLineHoriz(ADrawer: IChartDrawer; AY: Integer);
     procedure DrawLineVert(ADrawer: IChartDrawer; AX: Integer);
-    procedure DrawOnCanvas(Rect: TRect; ACanvas: TCanvas); deprecated;
     function IsPointInViewPort(const AP: TDoublePoint): Boolean;
 
   public
@@ -1028,11 +1027,6 @@ procedure TChart.DrawLineVert(ADrawer: IChartDrawer; AX: Integer);
 begin
   if (FClipRect.Left < AX) and (AX < FClipRect.Right) then
     ADrawer.Line(AX, FClipRect.Top, AX, FClipRect.Bottom);
-end;
-
-procedure TChart.DrawOnCanvas(Rect: TRect; ACanvas: TCanvas);
-begin
-  PaintOnCanvas(ACanvas, Rect);
 end;
 
 procedure TChart.DrawReticule(ADrawer: IChartDrawer);

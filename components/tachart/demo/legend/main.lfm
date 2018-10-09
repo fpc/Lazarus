@@ -9,7 +9,7 @@ object Form1: TForm1
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  LCLVersion = '1.3'
+  LCLVersion = '2.1.0.0'
   object PageControl1: TPageControl
     Left = 0
     Height = 511
@@ -25,56 +25,80 @@ object Form1: TForm1
       ClientWidth = 582
       object pnControls: TPanel
         Left = 0
-        Height = 134
-        Top = 349
+        Height = 135
+        Top = 348
         Width = 582
         Align = alBottom
-        ClientHeight = 134
+        AutoSize = True
+        BevelOuter = bvNone
+        ClientHeight = 135
         ClientWidth = 582
         TabOrder = 0
         object lblMarginY: TLabel
+          AnchorSideLeft.Control = lblMarginX
+          AnchorSideTop.Control = seMarginY
+          AnchorSideTop.Side = asrCenter
           Left = 8
           Height = 15
-          Top = 33
+          Top = 35
           Width = 48
           Caption = 'Y margin'
           ParentColor = False
         end
         object seMarginY: TSpinEdit
-          Left = 68
+          AnchorSideLeft.Control = seMarginX
+          AnchorSideTop.Control = seMarginX
+          AnchorSideTop.Side = asrBottom
+          Left = 64
           Height = 23
-          Top = 33
+          Top = 31
           Width = 54
+          BorderSpacing.Top = 4
           MaxValue = 20
           OnChange = seMarginYChange
           TabOrder = 0
           Value = 4
         end
         object seSymbolWidth: TSpinEdit
-          Left = 212
+          AnchorSideLeft.Control = lblSymbolWidth
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = seMarginX
+          Left = 215
           Height = 23
-          Top = 8
+          Top = 4
           Width = 54
+          BorderSpacing.Left = 8
           MaxValue = 50
           OnChange = seSymbolWidthChange
           TabOrder = 1
           Value = 20
         end
         object lblSymbolWidth: TLabel
-          Left = 128
+          AnchorSideLeft.Control = seMarginX
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = seSymbolWidth
+          AnchorSideTop.Side = asrCenter
+          Left = 134
           Height = 15
           Top = 8
           Width = 73
+          BorderSpacing.Left = 16
           Caption = 'Symbol width'
           ParentColor = False
         end
         object rgAlignment: TRadioGroup
-          Left = 283
-          Height = 132
-          Top = 1
-          Width = 298
+          AnchorSideLeft.Control = seSymbolWidth
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideBottom.Side = asrBottom
+          Left = 285
+          Height = 135
+          Top = 0
+          Width = 289
           Align = alRight
+          Anchors = [akTop, akLeft, akRight, akBottom]
           AutoFill = True
+          BorderSpacing.Left = 16
+          BorderSpacing.Right = 8
           Caption = ' Alignment '
           ChildSizing.LeftRightSpacing = 6
           ChildSizing.TopBottomSpacing = 6
@@ -84,8 +108,8 @@ object Form1: TForm1
           ChildSizing.ShrinkVertical = crsScaleChilds
           ChildSizing.Layout = cclTopToBottomThenLeftToRight
           ChildSizing.ControlsPerLine = 3
-          ClientHeight = 114
-          ClientWidth = 294
+          ClientHeight = 115
+          ClientWidth = 285
           Columns = 3
           ItemIndex = 6
           Items.Strings = (
@@ -103,10 +127,14 @@ object Form1: TForm1
           TabOrder = 2
         end
         object cbUseSidebar: TCheckBox
+          AnchorSideLeft.Control = lblMarginX
+          AnchorSideTop.Control = seMarginY
+          AnchorSideTop.Side = asrBottom
           Left = 8
           Height = 19
-          Top = 60
+          Top = 62
           Width = 59
+          BorderSpacing.Top = 8
           Caption = 'Sidebar'
           Checked = True
           OnChange = cbUseSidebarChange
@@ -114,17 +142,24 @@ object Form1: TForm1
           TabOrder = 3
         end
         object lblSpacing: TLabel
-          Left = 128
+          AnchorSideTop.Control = seSpacing
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = lblSymbolWidth
+          AnchorSideRight.Side = asrBottom
+          Left = 165
           Height = 15
-          Top = 33
+          Top = 35
           Width = 42
+          Anchors = [akTop, akRight]
           Caption = 'Spacing'
           ParentColor = False
         end
         object seSpacing: TSpinEdit
-          Left = 212
+          AnchorSideLeft.Control = seSymbolWidth
+          AnchorSideTop.Control = seMarginY
+          Left = 215
           Height = 23
-          Top = 33
+          Top = 31
           Width = 54
           MaxValue = 20
           OnChange = seSpacingChange
@@ -132,86 +167,121 @@ object Form1: TForm1
           Value = 4
         end
         object lblMarginX: TLabel
+          AnchorSideLeft.Control = pnControls
+          AnchorSideTop.Control = seMarginX
+          AnchorSideTop.Side = asrCenter
           Left = 8
           Height = 15
           Top = 8
           Width = 48
+          BorderSpacing.Left = 8
           Caption = 'X margin'
           ParentColor = False
         end
         object seMarginX: TSpinEdit
-          Left = 68
+          AnchorSideLeft.Control = lblMarginX
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = pnControls
+          Left = 64
           Height = 23
-          Top = 8
+          Top = 4
           Width = 54
+          BorderSpacing.Left = 8
+          BorderSpacing.Top = 4
           MaxValue = 20
           OnChange = seMarginXChange
           TabOrder = 5
           Value = 4
         end
         object cbSeries: TComboBox
-          Left = 102
+          AnchorSideRight.Control = seSymbolWidth
+          AnchorSideRight.Side = asrBottom
+          AnchorSideBottom.Control = cbGrid
+          AnchorSideBottom.Side = asrBottom
+          Left = 105
           Height = 22
-          Top = 91
+          Top = 105
           Width = 164
+          Anchors = [akRight, akBottom]
           ItemHeight = 16
           OnDrawItem = cbSeriesDrawItem
-          ReadOnly = True
           Style = csOwnerDrawFixed
           TabOrder = 6
         end
         object lblColumnCount: TLabel
-          Left = 128
+          AnchorSideTop.Control = seColumnCount
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = lblSymbolWidth
+          AnchorSideRight.Side = asrBottom
+          Left = 159
           Height = 15
-          Top = 60
+          Top = 62
           Width = 48
+          Anchors = [akTop, akRight]
           Caption = 'Columns'
           ParentColor = False
         end
         object seColumnCount: TSpinEdit
-          Left = 212
+          AnchorSideLeft.Control = seSymbolWidth
+          AnchorSideTop.Control = seSpacing
+          AnchorSideTop.Side = asrBottom
+          Left = 215
           Height = 23
-          Top = 60
+          Top = 58
           Width = 54
+          BorderSpacing.Top = 4
           MinValue = 1
           OnChange = seColumnCountChange
           TabOrder = 7
           Value = 1
         end
         object cbByRows: TCheckBox
+          AnchorSideLeft.Control = cbUseSidebar
+          AnchorSideTop.Control = cbUseSidebar
+          AnchorSideTop.Side = asrBottom
           Left = 8
           Height = 19
-          Top = 84
+          Top = 85
           Width = 61
+          BorderSpacing.Top = 4
           Caption = 'By rows'
           OnChange = cbByRowsChange
           TabOrder = 8
         end
         object cbGrid: TCheckBox
+          AnchorSideLeft.Control = cbUseSidebar
+          AnchorSideTop.Control = cbByRows
+          AnchorSideTop.Side = asrBottom
           Left = 8
           Height = 19
           Top = 108
           Width = 42
+          BorderSpacing.Top = 4
+          BorderSpacing.Bottom = 8
           Caption = 'Grid'
           OnChange = cbGridChange
           TabOrder = 9
         end
       end
       object Chart1: TChart
-        Left = 0
-        Height = 349
-        Top = 0
-        Width = 582
+        Left = 8
+        Height = 332
+        Top = 8
+        Width = 566
         AxisList = <        
           item
             Visible = False
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
             Title.LabelFont.Orientation = 900
+            Title.LabelBrush.Style = bsClear
           end        
           item
             Visible = False
             Alignment = calBottom
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
+            Title.LabelBrush.Style = bsClear
           end>
         BackColor = clSkyBlue
         Foot.Brush.Color = clBtnFace
@@ -230,12 +300,13 @@ object Form1: TForm1
           'TAChart'
         )
         Align = alClient
+        BorderSpacing.Around = 8
         Color = clOlive
-        ParentColor = False
         object Chart1LineSeries1: TLineSeries
           Title = 'Line'
           LinePen.Color = clRed
           Pointer.Brush.Color = clRed
+          Pointer.Visible = True
           ShowPoints = True
         end
         object Chart1AreaSeries1: TAreaSeries
@@ -262,9 +333,9 @@ object Form1: TForm1
           Extent.UseXMin = True
           Extent.XMax = 5
           Title = 'Function'
-          OnCalculate = Chart1FuncSeries1Calculate
           Pen.Color = clPurple
           Pen.Width = 2
+          OnCalculate = Chart1FuncSeries1Calculate
         end
       end
     end
@@ -273,28 +344,32 @@ object Form1: TForm1
       ClientHeight = 483
       ClientWidth = 582
       object Chart2: TChart
-        Left = 0
-        Height = 483
-        Top = 0
-        Width = 582
+        Left = 8
+        Height = 467
+        Top = 8
+        Width = 566
         AxisList = <        
           item
             Grid.Color = clSilver
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
             Title.LabelFont.Height = -16
             Title.LabelFont.Orientation = 900
             Title.LabelFont.Style = [fsBold]
             Title.Visible = True
             Title.Caption = 'y axis'
+            Title.LabelBrush.Style = bsClear
           end        
           item
             Grid.Visible = False
             Alignment = calBottom
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
             Title.LabelFont.Height = -16
             Title.LabelFont.Style = [fsBold]
             Title.Visible = True
             Title.Caption = 'x axis'
+            Title.LabelBrush.Style = bsClear
           end>
         BackColor = clWhite
         Foot.Brush.Color = clBtnFace
@@ -307,11 +382,12 @@ object Form1: TForm1
         )
         OnDrawLegend = Chart2DrawLegend
         Align = alClient
-        ParentColor = False
+        BorderSpacing.Around = 8
         object GradientLineSeries: TLineSeries
           Title = '1.0'
           LineType = ltNone
           Pointer.Style = psCircle
+          Pointer.Visible = True
           ShowPoints = True
         end
       end

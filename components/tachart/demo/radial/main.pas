@@ -45,6 +45,7 @@ type
     procedure ChartPieMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure cbShowPointsChange(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
     procedure sbTransparencyChange(Sender: TObject);
     procedure seWordsChange(Sender: TObject);
     procedure seLabelAngleChange(Sender: TObject);
@@ -86,6 +87,11 @@ procedure TForm1.cbShowPointsChange(Sender: TObject);
 begin
   ChartPolarSeries1.ShowPoints := cbShowPoints.Checked;
   ChartPolarSeries2.ShowPoints := cbShowPoints.Checked;
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  seWordsChange(nil);
 end;
 
 procedure TForm1.ChartPieMouseDown(

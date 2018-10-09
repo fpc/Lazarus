@@ -6,8 +6,8 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
-  Spin, ValEdit, Grids, TAGraph, TASources, TASeries, TAChartListbox,
-  TAFuncSeries, TADrawUtils, TAChartCombos, TACustomSource;
+  Spin, Grids, TAGraph, TASources, TASeries, TAChartListbox,
+  TAFuncSeries, TAChartCombos, TACustomSource;
 
 type
 

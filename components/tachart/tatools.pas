@@ -226,10 +226,8 @@ type
     FSelectionRect: TRect;
     function CalculateNewExtent: TDoubleRect;
     function CalculateDrawRect: TRect;
-    function GetProportional: Boolean;
     procedure SetBrush(AValue: TZoomDragBrush);
     procedure SetFrame(AValue: TChartPen);
-    procedure SetProportional(AValue: Boolean);
     procedure SetSelectionRect(AValue: TRect);
   strict protected
     procedure Cancel; override;
@@ -249,9 +247,6 @@ type
     property DrawingMode;
     property EscapeCancels;
     property Frame: TChartPen read FFrame write SetFrame;
-    property Proportional: Boolean
-      read GetProportional write SetProportional stored false default false;
-      deprecated;
     property RatioLimit: TZoomRatioLimit
       read FRatioLimit write FRatioLimit default zrlNone;
     property RestoreExtentOn: TRestoreExtentOnSet
@@ -606,6 +601,7 @@ var
 implementation
 
 uses
+  LResources,
   TAChartStrConsts, TACustomSeries, TAEnumerators, TAGeometry, TAMath;
 
 function InitBuiltinTools(AChart: TChart): TBasicChartToolset;
@@ -1222,11 +1218,6 @@ begin
   ADrawer.SetTransparency(0);
 end;
 
-function TZoomDragTool.GetProportional: Boolean;
-begin
-  Result := RatioLimit = zrlProportional;
-end;
-
 procedure TZoomDragTool.MouseDown(APoint: TPoint);
 begin
   if not FChart.AllowZoom then exit;
@@ -1293,14 +1284,6 @@ end;
 procedure TZoomDragTool.SetFrame(AValue: TChartPen);
 begin
   FFrame.Assign(AValue);
-end;
-
-procedure TZoomDragTool.SetProportional(AValue: Boolean);
-begin
-  if AValue then
-    RatioLimit := zrlProportional
-  else
-    RatioLimit := zrlNone;
 end;
 
 procedure TZoomDragTool.SetSelectionRect(AValue: TRect);
@@ -2044,6 +2027,14 @@ begin
   end;
 end;
 
+procedure SkipObsoleteProperties;
+const
+  PROPORTIONAL_NOTE = 'Obsolete, use TZoomDragTool.RatioLimit=zlrProportional instead';
+begin
+  RegisterPropertyToSkip(TZoomDragTool, 'Proportional', PROPORTIONAL_NOTE, '');
+end;
+
+
 initialization
 
   ToolsClassRegistry := TClassRegistry.Create;
@@ -2060,6 +2051,8 @@ initialization
   RegisterChartToolClass(TDataPointHintTool, @rsDataPointHint);
   RegisterChartToolClass(TDataPointCrosshairTool, @rsDataPointCrosshair);
   RegisterChartToolClass(TUserDefinedTool, @rsUserDefinedTool);
+
+  SkipObsoleteProperties;
 
 finalization
 

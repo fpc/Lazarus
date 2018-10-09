@@ -9,7 +9,7 @@ object Form1: TForm1
   ClientWidth = 599
   Constraints.MinHeight = 520
   Position = poScreenCenter
-  LCLVersion = '1.7'
+  LCLVersion = '2.1.0.0'
   object Chart1: TChart
     Left = 0
     Height = 346
@@ -18,12 +18,16 @@ object Form1: TForm1
     AutoFocus = True
     AxisList = <    
       item
+        Marks.LabelBrush.Style = bsClear
         Minors = <>
         Title.LabelFont.Orientation = 900
+        Title.LabelBrush.Style = bsClear
       end    
       item
         Alignment = calBottom
+        Marks.LabelBrush.Style = bsClear
         Minors = <>
+        Title.LabelBrush.Style = bsClear
       end>
     Extent.UseXMax = True
     Extent.UseXMin = True
@@ -45,8 +49,8 @@ object Form1: TForm1
     Align = alClient
     DoubleBuffered = True
     object Chart1FuncSeries1: TFuncSeries
-      OnCalculate = Chart1FuncSeries1Calculate
       Pen.Color = clMaroon
+      OnCalculate = Chart1FuncSeries1Calculate
     end
     object Chart1BarSeries1: TBarSeries
       BarBrush.Color = clRed
@@ -196,6 +200,7 @@ object Form1: TForm1
       Enabled = False
       Shift = [ssLeft]
       AnimationInterval = 100
+      Brush.Style = bsClear
     end
     object ChartToolset1PanAny: TPanDragTool
       Shift = [ssRight]

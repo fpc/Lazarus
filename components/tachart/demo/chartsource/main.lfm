@@ -7,7 +7,7 @@ object Form1: TForm1
   ClientHeight = 438
   ClientWidth = 637
   OnCreate = FormCreate
-  LCLVersion = '1.7'
+  LCLVersion = '2.1.0.0'
   object Splitter1: TSplitter
     Left = 632
     Height = 438
@@ -49,12 +49,16 @@ object Form1: TForm1
         Width = 333
         AxisList = <        
           item
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
             Title.LabelFont.Orientation = 900
+            Title.LabelBrush.Style = bsClear
           end        
           item
             Alignment = calBottom
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
+            Title.LabelBrush.Style = bsClear
           end>
         Foot.Brush.Color = clBtnFace
         Foot.Font.Color = clBlue
@@ -67,6 +71,7 @@ object Form1: TForm1
         object Chart2LineSeries1: TLineSeries
           LinePen.Color = clRed
           Pointer.Brush.Color = clRed
+          Pointer.Visible = True
           ShowPoints = True
           Source = RandomChartSource1
         end
@@ -83,12 +88,16 @@ object Form1: TForm1
         Width = 291
         AxisList = <        
           item
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
             Title.LabelFont.Orientation = 900
+            Title.LabelBrush.Style = bsClear
           end        
           item
             Alignment = calBottom
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
+            Title.LabelBrush.Style = bsClear
           end>
         Foot.Brush.Color = clBtnFace
         Foot.Font.Color = clBlue
@@ -106,6 +115,7 @@ object Form1: TForm1
           ZPosition = 1
           LinePen.Color = clBlue
           Pointer.Brush.Color = clBlue
+          Pointer.Visible = True
           ShowPoints = True
           Source = ListChartSource1
         end
@@ -117,17 +127,21 @@ object Form1: TForm1
       ClientWidth = 624
       object chCalc: TChart
         Left = 0
-        Height = 376
+        Height = 369
         Top = 0
         Width = 624
         AxisList = <        
           item
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
             Title.LabelFont.Orientation = 900
+            Title.LabelBrush.Style = bsClear
           end        
           item
             Alignment = calBottom
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
+            Title.LabelBrush.Style = bsClear
           end>
         Foot.Brush.Color = clBtnFace
         Foot.Font.Color = clBlue
@@ -145,6 +159,7 @@ object Form1: TForm1
         object chCalcLineSeries1: TLineSeries
           Title = 'Data'
           LineType = ltNone
+          Pointer.Visible = True
           ShowPoints = True
           Source = RandomChartSource2
         end
@@ -164,18 +179,23 @@ object Form1: TForm1
       end
       object Panel2: TPanel
         Left = 0
-        Height = 34
-        Top = 376
+        Height = 41
+        Top = 369
         Width = 624
         Align = alBottom
-        ClientHeight = 34
+        AutoSize = True
+        ClientHeight = 41
         ClientWidth = 624
         TabOrder = 1
         object cbCumulative: TCheckBox
-          Left = 8
+          AnchorSideLeft.Control = Panel2
+          AnchorSideTop.Control = Panel2
+          AnchorSideTop.Side = asrCenter
+          Left = 9
           Height = 19
-          Top = 7
+          Top = 11
           Width = 81
+          BorderSpacing.Left = 8
           Caption = 'Cumulative'
           Checked = True
           OnChange = cbCumulativeChange
@@ -183,10 +203,17 @@ object Form1: TForm1
           TabOrder = 0
         end
         object cbAccDirStatistics: TComboBox
-          Left = 108
+          AnchorSideLeft.Control = cbCumulative
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = Panel2
+          AnchorSideTop.Side = asrCenter
+          Left = 114
           Height = 23
-          Top = 7
+          Top = 9
           Width = 100
+          BorderSpacing.Left = 24
+          BorderSpacing.Top = 8
+          BorderSpacing.Bottom = 8
           ItemHeight = 15
           ItemIndex = 0
           Items.Strings = (
@@ -207,23 +234,27 @@ object Form1: TForm1
       ClientWidth = 624
       object chDerivative: TChart
         Left = 0
-        Height = 325
+        Height = 317
         Top = 0
         Width = 624
         AxisList = <        
           item
             Grid.Color = clSilver
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
             Title.LabelFont.Orientation = 900
             Title.Visible = True
             Title.Caption = 'y, dy/dx'
+            Title.LabelBrush.Style = bsClear
           end        
           item
             Grid.Color = clSilver
             Alignment = calBottom
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
             Title.Visible = True
             Title.Caption = 'x'
+            Title.LabelBrush.Style = bsClear
           end>
         BackColor = clWhite
         Foot.Brush.Color = clBtnFace
@@ -251,7 +282,7 @@ object Form1: TForm1
       object rgDataShape: TRadioGroup
         Left = 0
         Height = 54
-        Top = 325
+        Top = 317
         Width = 624
         Align = alBottom
         AutoFill = True
@@ -283,36 +314,53 @@ object Form1: TForm1
       end
       object Panel1: TPanel
         Left = 0
-        Height = 31
-        Top = 379
+        Height = 39
+        Top = 371
         Width = 624
         Align = alBottom
+        AutoSize = True
         BevelOuter = bvNone
-        ClientHeight = 31
+        ClientHeight = 39
         ClientWidth = 624
         TabOrder = 2
         object lblAccumulationRange: TLabel
+          AnchorSideLeft.Control = Panel1
+          AnchorSideTop.Control = Panel1
+          AnchorSideTop.Side = asrCenter
           Left = 8
           Height = 15
-          Top = 9
+          Top = 12
           Width = 108
+          BorderSpacing.Left = 8
           Caption = 'AccumulationRange'
           ParentColor = False
         end
         object seAccumulationRange: TSpinEdit
+          AnchorSideLeft.Control = lblAccumulationRange
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = Panel1
+          AnchorSideTop.Side = asrCenter
           Left = 124
           Height = 23
-          Top = 4
+          Top = 8
           Width = 74
+          BorderSpacing.Left = 8
           OnChange = seAccumulationRangeChange
           TabOrder = 0
           Value = 2
         end
         object cbAccDirDerivative: TComboBox
-          Left = 216
+          AnchorSideLeft.Control = seAccumulationRange
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = Panel1
+          AnchorSideTop.Side = asrCenter
+          Left = 214
           Height = 23
-          Top = 4
+          Top = 8
           Width = 100
+          BorderSpacing.Left = 16
+          BorderSpacing.Top = 8
+          BorderSpacing.Bottom = 8
           ItemHeight = 15
           ItemIndex = 0
           Items.Strings = (
@@ -326,10 +374,15 @@ object Form1: TForm1
           Text = 'Backward'
         end
         object cbSmooth: TCheckBox
-          Left = 332
+          AnchorSideLeft.Control = cbAccDirDerivative
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = Panel1
+          AnchorSideTop.Side = asrCenter
+          Left = 330
           Height = 19
-          Top = 5
+          Top = 10
           Width = 62
+          BorderSpacing.Left = 16
           Caption = 'Smooth'
           OnChange = cbSmoothChange
           TabOrder = 2

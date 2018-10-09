@@ -7,7 +7,7 @@ object MainForm: TMainForm
   ClientHeight = 488
   ClientWidth = 637
   OnCreate = FormCreate
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '2.1.0.0'
   object TabControl: TTabControl
     Left = 0
     Height = 347
@@ -15,7 +15,7 @@ object MainForm: TMainForm
     Width = 637
     MultiLine = True
     OnChange = TabControlChange
-    TabIndex = 0
+    TabIndex = 4
     Tabs.Strings = (
       'Line series'
       'Bar series'
@@ -76,6 +76,7 @@ object MainForm: TMainForm
         Active = False
         Title = 'Line series'
         Pointer.Style = psCircle
+        Pointer.Visible = True
         ShowPoints = True
         Stacked = True
         Source = ListChartSource
@@ -88,7 +89,6 @@ object MainForm: TMainForm
         BarBrush.Color = clRed
         BarWidthStyle = bwPercentMin
         Source = ListChartSource
-        Stacked = True
         Styles = ChartStyles
       end
       object AreaSeries: TAreaSeries
@@ -106,6 +106,7 @@ object MainForm: TMainForm
         Pointer.HorizSize = 5
         Pointer.Style = psDiamond
         Pointer.VertSize = 5
+        Pointer.Visible = True
         ShowPoints = True
         Source = ListChartSource
       end
@@ -116,6 +117,7 @@ object MainForm: TMainForm
         Pointer.HorizSize = 6
         Pointer.Style = psFullStar
         Pointer.VertSize = 6
+        Pointer.Visible = True
         Source = ListChartSource
         Pen.Color = clRed
       end
@@ -128,6 +130,7 @@ object MainForm: TMainForm
         Pointer.HorizSize = 7
         Pointer.Style = psHexagon
         Pointer.VertSize = 7
+        Pointer.Visible = True
       end
       object OHLCSeries: TOpenHighLowCloseSeries
         Active = False
@@ -184,7 +187,7 @@ object MainForm: TMainForm
         Pointer.HorizSize = 5
         Pointer.Style = psCircle
         Pointer.VertSize = 5
-        Pointer.Visible = False
+        Pointer.Visible = True
       end
       object PieSeries: TPieSeries
         Title = 'Pie series'

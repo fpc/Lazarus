@@ -1,26 +1,26 @@
 object Form1: TForm1
-  Left = 1345
+  Left = 559
   Height = 434
-  Top = 166
+  Top = 158
   Width = 533
   Caption = 'TAChart axis transformation demo'
   ClientHeight = 434
   ClientWidth = 533
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '1.1'
+  LCLVersion = '2.1.0.0'
   object PageControl1: TPageControl
     Left = 0
     Height = 434
     Top = 0
     Width = 533
-    ActivePage = tsLinear
+    ActivePage = tsUser
     Align = alClient
-    TabIndex = 0
+    TabIndex = 4
     TabOrder = 0
     object tsLinear: TTabSheet
       Caption = 'Linear'
-      ClientHeight = 408
+      ClientHeight = 406
       ClientWidth = 525
       object ChartT: TChart
         Left = 0
@@ -33,20 +33,24 @@ object Form1: TForm1
             TickColor = clRed
             Marks.LabelFont.Color = clRed
             Marks.AtDataOnly = True
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
             Title.LabelFont.Color = clRed
             Title.LabelFont.Orientation = 900
             Title.Visible = True
             Title.Caption = 'Summer temperature, °C'
+            Title.LabelBrush.Style = bsClear
             Transformations = catTAuto
           end        
           item
             Intervals.MaxLength = 100
             Intervals.MinLength = 20
             Alignment = calBottom
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
             Title.Visible = True
             Title.Caption = 'Year'
+            Title.LabelBrush.Style = bsClear
           end        
           item
             Grid.Visible = False
@@ -55,11 +59,13 @@ object Form1: TForm1
             Marks.Distance = 4
             Marks.LabelFont.Color = clBlue
             Marks.AtDataOnly = True
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
             Title.LabelFont.Color = clBlue
             Title.LabelFont.Orientation = 900
             Title.Visible = True
             Title.Caption = 'Winter temperature, °F'
+            Title.LabelBrush.Style = bsClear
             Transformations = catT
           end>
         Foot.Brush.Color = clBtnFace
@@ -71,7 +77,6 @@ object Form1: TForm1
           'TAChart'
         )
         Align = alClient
-        ParentColor = False
         object ChartTSummer: TLineSeries
           AxisIndexY = 0
           LinePen.Color = clRed
@@ -93,18 +98,25 @@ object Form1: TForm1
       end
       object pnlAutoControls: TPanel
         Left = 0
-        Height = 29
+        Height = 27
         Top = 379
         Width = 525
         Align = alBottom
-        ClientHeight = 29
+        AutoSize = True
+        BevelOuter = bvNone
+        ClientHeight = 27
         ClientWidth = 525
         TabOrder = 1
         object cbAuto: TCheckBox
+          AnchorSideLeft.Control = pnlAutoControls
+          AnchorSideTop.Control = pnlAutoControls
           Left = 4
-          Height = 17
-          Top = 5
-          Width = 70
+          Height = 19
+          Top = 4
+          Width = 75
+          BorderSpacing.Left = 4
+          BorderSpacing.Top = 4
+          BorderSpacing.Bottom = 4
           Caption = 'Auto scale'
           OnChange = cbAutoChange
           TabOrder = 0
@@ -113,11 +125,11 @@ object Form1: TForm1
     end
     object tsIndependent: TTabSheet
       Caption = 'Independent scale'
-      ClientHeight = 408
+      ClientHeight = 406
       ClientWidth = 525
       object ChartIndependent: TChart
         Left = 0
-        Height = 366
+        Height = 351
         Top = 0
         Width = 525
         AxisList = <        
@@ -127,15 +139,19 @@ object Form1: TForm1
             TickColor = clNavy
             Marks.LabelFont.Color = clNavy
             Marks.LabelFont.Style = [fsBold]
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
             Title.LabelFont.Orientation = 900
+            Title.LabelBrush.Style = bsClear
             Transformations = catIndependent1
           end        
           item
             Grid.Visible = False
             Alignment = calBottom
             Marks.Visible = False
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
+            Title.LabelBrush.Style = bsClear
           end        
           item
             Grid.Visible = False
@@ -144,7 +160,9 @@ object Form1: TForm1
             Alignment = calRight
             Marks.LabelFont.Color = clGreen
             Marks.LabelFont.Style = [fsBold]
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
+            Title.LabelBrush.Style = bsClear
             Transformations = catIndependent2
           end>
         BackColor = clWhite
@@ -157,7 +175,6 @@ object Form1: TForm1
         )
         Align = alClient
         Color = clWhite
-        ParentColor = False
         object ChartIndependentLineSeries1: TLineSeries
           AxisIndexY = 0
           LinePen.Color = clNavy
@@ -170,19 +187,27 @@ object Form1: TForm1
         end
       end
       object pnlIndependentControls: TPanel
-        Left = 0
-        Height = 42
-        Top = 366
-        Width = 525
+        Left = 4
+        Height = 47
+        Top = 355
+        Width = 517
         Align = alBottom
-        ClientHeight = 42
-        ClientWidth = 525
+        AutoSize = True
+        BorderSpacing.Around = 4
+        BevelOuter = bvNone
+        ClientHeight = 47
+        ClientWidth = 517
         TabOrder = 1
         object fseIndependent1: TFloatSpinEdit
-          Left = 60
-          Height = 21
-          Top = 9
+          AnchorSideLeft.Control = lblIndependentScale1
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = rgSyncAxisMarks
+          AnchorSideTop.Side = asrCenter
+          Left = 63
+          Height = 23
+          Top = 12
           Width = 70
+          BorderSpacing.Left = 8
           Increment = 0.1
           MaxValue = 10
           MinValue = 0.1
@@ -191,10 +216,15 @@ object Form1: TForm1
           Value = 1
         end
         object fseIndependent2: TFloatSpinEdit
-          Left = 188
-          Height = 21
-          Top = 9
+          AnchorSideLeft.Control = lblIndependentScale2
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = rgSyncAxisMarks
+          AnchorSideTop.Side = asrCenter
+          Left = 196
+          Height = 23
+          Top = 12
           Width = 70
+          BorderSpacing.Left = 8
           Increment = 0.1
           MaxValue = 10
           MinValue = 0.1
@@ -203,10 +233,14 @@ object Form1: TForm1
           Value = 1
         end
         object lblIndependentScale1: TLabel
+          AnchorSideLeft.Control = pnlIndependentControls
+          AnchorSideTop.Control = fseIndependent1
+          AnchorSideTop.Side = asrCenter
           Left = 16
-          Height = 13
-          Top = 13
-          Width = 40
+          Height = 15
+          Top = 16
+          Width = 39
+          BorderSpacing.Left = 16
           Caption = 'Scale 1'
           Font.Color = clNavy
           Font.Style = [fsBold]
@@ -214,10 +248,15 @@ object Form1: TForm1
           ParentFont = False
         end
         object lblIndependentScale2: TLabel
-          Left = 144
-          Height = 13
-          Top = 13
-          Width = 40
+          AnchorSideLeft.Control = fseIndependent1
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = fseIndependent2
+          AnchorSideTop.Side = asrCenter
+          Left = 149
+          Height = 15
+          Top = 16
+          Width = 39
+          BorderSpacing.Left = 16
           Caption = 'Scale 2'
           Font.Color = clGreen
           Font.Style = [fsBold]
@@ -225,23 +264,26 @@ object Form1: TForm1
           ParentFont = False
         end
         object rgSyncAxisMarks: TRadioGroup
-          Left = 308
-          Height = 40
-          Top = 1
-          Width = 216
+          AnchorSideRight.Side = asrBottom
+          Left = 336
+          Height = 47
+          Top = 0
+          Width = 181
           Align = alRight
           AutoFill = True
+          AutoSize = True
+          BorderSpacing.InnerBorder = 4
           Caption = ' Synchronize marks '
           ChildSizing.LeftRightSpacing = 6
-          ChildSizing.TopBottomSpacing = 6
+          ChildSizing.HorizontalSpacing = 10
           ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
           ChildSizing.EnlargeVertical = crsHomogenousChildResize
           ChildSizing.ShrinkHorizontal = crsScaleChilds
           ChildSizing.ShrinkVertical = crsScaleChilds
           ChildSizing.Layout = cclLeftToRightThenTopToBottom
           ChildSizing.ControlsPerLine = 3
-          ClientHeight = 22
-          ClientWidth = 212
+          ClientHeight = 27
+          ClientWidth = 177
           Columns = 3
           ItemIndex = 1
           Items.Strings = (
@@ -256,11 +298,11 @@ object Form1: TForm1
     end
     object tsLog: TTabSheet
       Caption = 'Logarithm'
-      ClientHeight = 408
+      ClientHeight = 406
       ClientWidth = 525
       object ChartLog: TChart
         Left = 0
-        Height = 378
+        Height = 375
         Top = 0
         Width = 525
         AxisList = <        
@@ -268,6 +310,7 @@ object Form1: TForm1
             Intervals.Count = 10
             Intervals.Options = [aipGraphCoords, aipUseCount, aipUseMinLength, aipUseNiceSteps]
             Intervals.Tolerance = 5
+            Marks.LabelBrush.Style = bsClear
             Marks.Stripes = csStripes
             Minors = <            
               item
@@ -275,34 +318,43 @@ object Form1: TForm1
                 Intervals.Count = 9
                 Intervals.MinLength = 5
                 Intervals.Options = [aipUseCount, aipUseMaxLength, aipUseMinLength, aipUseNiceSteps]
+                Marks.LabelBrush.Style = bsClear
               end>
             Title.LabelFont.Orientation = 900
             Title.Visible = True
             Title.Caption = 'Left'
+            Title.LabelBrush.Style = bsClear
             Transformations = catLog
           end        
           item
             Grid.Visible = False
             Alignment = calBottom
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
             Title.Distance = 0
             Title.Visible = True
             Title.Caption = 'Bottom'
+            Title.LabelBrush.Style = bsClear
           end        
           item
             Grid.Visible = False
             Alignment = calRight
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
             Title.LabelFont.Orientation = 900
             Title.Visible = True
             Title.Caption = 'Right 1'
+            Title.LabelBrush.Style = bsClear
           end        
           item
             Grid.Visible = False
             Alignment = calTop
+            Arrow.Inverted = True
             Inverted = True
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
             Title.Caption = 'Top'
+            Title.LabelBrush.Style = bsClear
           end>
         Foot.Brush.Color = clBtnFace
         Foot.Font.Color = clBlue
@@ -312,11 +364,11 @@ object Form1: TForm1
           'TAChart'
         )
         Align = alClient
-        ParentColor = False
         object clsLogPoints: TLineSeries
           AxisIndexY = 0
           LineType = ltNone
           Pointer.Brush.Color = clMaroon
+          Pointer.Visible = True
           ShowPoints = True
         end
         object cfsLog: TFuncSeries
@@ -329,19 +381,25 @@ object Form1: TForm1
         end
       end
       object pnlLogControls: TPanel
-        Left = 0
-        Height = 30
-        Top = 378
-        Width = 525
+        Left = 4
+        Height = 23
+        Top = 379
+        Width = 517
         Align = alBottom
-        ClientHeight = 30
-        ClientWidth = 525
+        AutoSize = True
+        BorderSpacing.Around = 4
+        BevelOuter = bvNone
+        ClientHeight = 23
+        ClientWidth = 517
         TabOrder = 1
         object cbLog: TCheckBox
-          Left = 4
-          Height = 17
-          Top = 5
-          Width = 64
+          AnchorSideLeft.Control = pnlLogControls
+          AnchorSideTop.Control = seTolerance
+          AnchorSideTop.Side = asrCenter
+          Left = 0
+          Height = 19
+          Top = 2
+          Width = 69
           Caption = 'Log scale'
           Checked = True
           OnChange = cbLogChange
@@ -349,18 +407,27 @@ object Form1: TForm1
           TabOrder = 0
         end
         object seTolerance: TSpinEdit
-          Left = 140
-          Height = 21
-          Top = 5
+          AnchorSideLeft.Control = lblTolerance
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = pnlLogControls
+          Left = 144
+          Height = 23
+          Top = 0
           Width = 50
+          BorderSpacing.Left = 8
           OnChange = seToleranceChange
           TabOrder = 1
         end
         object lblTolerance: TLabel
-          Left = 88
-          Height = 13
-          Top = 8
-          Width = 47
+          AnchorSideLeft.Control = cbLog
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = seTolerance
+          AnchorSideTop.Side = asrCenter
+          Left = 85
+          Height = 15
+          Top = 4
+          Width = 51
+          BorderSpacing.Left = 16
           Caption = 'Tolerance'
           ParentColor = False
         end
@@ -368,11 +435,11 @@ object Form1: TForm1
     end
     object tsCumulNormDistr: TTabSheet
       Caption = 'Normal distribution'
-      ClientHeight = 408
+      ClientHeight = 406
       ClientWidth = 525
       object ChartCumulNormDistr: TChart
         Left = 0
-        Height = 342
+        Height = 340
         Top = 66
         Width = 525
         AxisList = <        
@@ -382,22 +449,26 @@ object Form1: TForm1
             Intervals.Count = 30
             Intervals.Options = [aipUseCount, aipUseNiceSteps]
             Intervals.Tolerance = 1
+            Marks.LabelBrush.Style = bsClear
             Marks.OverlapPolicy = opHideNeighbour
             Minors = <>
             Title.LabelFont.Orientation = 900
             Title.LabelFont.Style = [fsBold]
             Title.Visible = True
             Title.Caption = 'Cumulative probability'
+            Title.LabelBrush.Style = bsClear
             Transformations = catCumulNormDistr
           end        
           item
             Grid.Color = clSilver
             Grid.Visible = False
             Alignment = calBottom
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
             Title.LabelFont.Style = [fsBold]
             Title.Visible = True
             Title.Caption = 'Random number'
+            Title.LabelBrush.Style = bsClear
           end>
         BackColor = clWhite
         Extent.XMax = 3
@@ -415,7 +486,6 @@ object Form1: TForm1
           'TAChart'
         )
         Align = alClient
-        ParentColor = False
         object ChartCumulNormDistrLineSeries1: TLineSeries
           AxisIndexX = 1
           AxisIndexY = 0
@@ -424,6 +494,7 @@ object Form1: TForm1
           Pointer.Pen.Color = clBlue
           Pointer.Style = psCircle
           Pointer.VertSize = 2
+          Pointer.Visible = True
           ShowPoints = True
         end
       end
@@ -433,28 +504,32 @@ object Form1: TForm1
         Top = 0
         Width = 525
         Align = alTop
+        AutoSize = True
         BevelOuter = bvNone
         ClientHeight = 66
         ClientWidth = 525
         TabOrder = 1
         object rgRandDistr: TRadioGroup
-          Left = 0
-          Height = 66
-          Top = 0
-          Width = 185
+          Left = 4
+          Height = 58
+          Top = 4
+          Width = 175
           Align = alLeft
           AutoFill = True
+          AutoSize = True
+          BorderSpacing.Left = 4
+          BorderSpacing.Top = 4
+          BorderSpacing.Bottom = 4
           Caption = ' Random number generation '
-          ChildSizing.LeftRightSpacing = 6
-          ChildSizing.TopBottomSpacing = 6
+          ChildSizing.LeftRightSpacing = 12
           ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
           ChildSizing.EnlargeVertical = crsHomogenousChildResize
           ChildSizing.ShrinkHorizontal = crsScaleChilds
           ChildSizing.ShrinkVertical = crsScaleChilds
           ChildSizing.Layout = cclLeftToRightThenTopToBottom
           ChildSizing.ControlsPerLine = 1
-          ClientHeight = 48
-          ClientWidth = 181
+          ClientHeight = 38
+          ClientWidth = 171
           ItemIndex = 1
           Items.Strings = (
             'uniform distribution'
@@ -465,28 +540,40 @@ object Form1: TForm1
           TabOrder = 0
         end
         object cbPercent: TCheckBox
-          Left = 192
-          Height = 17
-          Top = 43
-          Width = 57
+          AnchorSideLeft.Control = lblDataCount
+          AnchorSideTop.Control = edDataCount
+          AnchorSideTop.Side = asrBottom
+          Left = 195
+          Height = 19
+          Top = 39
+          Width = 60
+          BorderSpacing.Top = 8
           Caption = 'Percent'
           OnChange = cbPercentChange
           TabOrder = 1
         end
         object cbUseAxisTransform: TCheckBox
-          Left = 280
-          Height = 17
-          Top = 43
-          Width = 110
+          AnchorSideLeft.Control = edDataCount
+          AnchorSideTop.Control = cbPercent
+          Left = 264
+          Height = 19
+          Top = 39
+          Width = 118
+          BorderSpacing.Bottom = 4
           Caption = 'Use AxisTransform'
           OnChange = cbUseAxisTransformChange
           TabOrder = 2
         end
         object edDataCount: TSpinEdit
-          Left = 281
-          Height = 21
-          Top = 10
+          AnchorSideLeft.Control = lblDataCount
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = pnCumulNormDistr
+          Left = 264
+          Height = 23
+          Top = 8
           Width = 82
+          BorderSpacing.Left = 8
+          BorderSpacing.Top = 8
           Increment = 50
           MaxValue = 1000000
           OnChange = edDataCountChange
@@ -494,10 +581,15 @@ object Form1: TForm1
           Value = 300
         end
         object lblDataCount: TLabel
-          Left = 194
-          Height = 13
-          Top = 14
-          Width = 57
+          AnchorSideLeft.Control = rgRandDistr
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = edDataCount
+          AnchorSideTop.Side = asrCenter
+          Left = 195
+          Height = 15
+          Top = 12
+          Width = 61
+          BorderSpacing.Left = 16
           Caption = 'Data count:'
           ParentColor = False
         end
@@ -505,17 +597,19 @@ object Form1: TForm1
     end
     object tsUser: TTabSheet
       Caption = 'User defined'
-      ClientHeight = 408
+      ClientHeight = 406
       ClientWidth = 525
       object ChartUser: TChart
         Left = 0
-        Height = 408
+        Height = 406
         Top = 0
         Width = 525
         AxisList = <        
           item
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
             Title.LabelFont.Orientation = 900
+            Title.LabelBrush.Style = bsClear
           end        
           item
             Grid.Visible = False
@@ -524,7 +618,9 @@ object Form1: TForm1
             Intervals.NiceSteps = '0.2|0.25|0.4|0.5|1.0'
             Intervals.Options = [aipGraphCoords, aipUseCount, aipUseMaxLength, aipUseMinLength, aipUseNiceSteps]
             Alignment = calBottom
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
+            Title.LabelBrush.Style = bsClear
             Transformations = catUser
           end>
         Foot.Brush.Color = clBtnFace
@@ -537,13 +633,12 @@ object Form1: TForm1
         Title.Visible = True
         Toolset = ChartToolset1
         Align = alClient
-        ParentColor = False
         object ChartUserLineSeries1: TLineSeries
           AxisIndexX = 1
           Source = rcsUser
         end
         object ChartUserConstantLine1: TConstantLine
-          AxisIndexX = 1
+          AxisIndex = 1
           LineStyle = lsVertical
           Pen.Color = clFuchsia
           Pen.Width = 2

@@ -10,7 +10,10 @@ uses
   Forms, Main, TAChartLazarusPkg
   { you can add units after this };
 
+{$R *.res}
+
 begin
+  Application.Scaled:=True;
   Application.Initialize;
   Application.CreateForm(TForm1, Form1);
   Application.Run;

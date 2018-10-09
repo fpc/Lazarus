@@ -138,7 +138,11 @@ end;
 procedure TForm1.clrPenColorColorChanged(Sender: TObject);
 begin
   ctDistance1.LinePen.Color := clrPenColor.ButtonColor;
+  ctDistance1.PointerStart.Pen.Color := clrPenColor.ButtonColor;
+  ctDistance1.PointerEnd.Pen.Color := clrPenColor.ButtonColor;
   ctDistance2.LinePen.Color := clrPenColor.ButtonColor;
+  ctDistance2.PointerStart.Pen.Color := clrPenColor.ButtonColor;
+  ctDistance2.PointerEnd.Pen.Color := clrPenColor.ButtonColor;
   ctCrosshair.CrosshairPen.Color := clrPenColor.ButtonColor;
 end;
 
@@ -208,6 +212,13 @@ begin
   with chFitFitSeries1.FitRange do begin
     Min := xmin;
     Max := xmax;
+    if xmin < xmax then begin
+      UseMax := true;
+      UseMin := true;
+    end else begin
+      UseMin := true;
+      UseMax := true;
+    end;
   end;
   case rgFitParamCount.ItemIndex of
     0: AText := Format('Mean value: %f', [chFitFitSeries1.Param[0]]);

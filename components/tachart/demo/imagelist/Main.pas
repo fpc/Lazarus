@@ -16,7 +16,8 @@ type
     Chart1: TChart;
     Chart1FuncSeries1: TFuncSeries;
     Chart1FuncSeries2: TFuncSeries;
-    ChartImageList1: TChartImageList;
+    ChartImageList: TChartImageList;
+    ToolbarImages: TImageList;
     ListView1: TListView;
     RandomChartSource1: TRandomChartSource;
     StatusBar1: TStatusBar;
@@ -26,7 +27,8 @@ type
     tbSep1: TToolButton;
     procedure Chart1FuncSeries1Calculate(const AX: Double; out AY: Double);
     procedure Chart1FuncSeries2Calculate(const AX: Double; out AY: Double);
-    procedure ChartImageList1Populate(Sender: TObject);
+    procedure ChartImageListPopulate(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
     procedure tbAddClick(Sender: TObject);
     procedure tbQuitClick(Sender: TObject);
   end;
@@ -53,13 +55,20 @@ begin
   AY := Cos(AX);
 end;
 
-procedure TfrmMain.ChartImageList1Populate(Sender: TObject);
+procedure TfrmMain.ChartImageListPopulate(Sender: TObject);
 begin
-  with ChartImageList1 do
+  with ChartImageList do
     StatusBar1.SimpleText := Format(
       'Now %d images in image list. ' +
       'Among them %d series images starting at index %d',
       [Count, SeriesCount, FirstSeriesIndex]);
+end;
+
+procedure TfrmMain.FormCreate(Sender: TObject);
+begin
+  ChartImageList.Chart := nil;
+  ChartImageList.AddImages(ToolbarImages);
+  ChartImageList.Chart := Chart1;
 end;
 
 procedure TfrmMain.tbAddClick(Sender: TObject);
@@ -79,7 +88,7 @@ begin
   Chart1.AddSeries(series);
   with Listview1.Items.Add do begin
     Caption := Format('run item %d', [ListView1.Items.Count]);
-    ImageIndex := ChartImageList1.Count - 1;
+    ImageIndex := ChartImageList.Count - 1;
   end;
 end;
 

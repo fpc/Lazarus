@@ -6,8 +6,9 @@ object Form1: TForm1
   Caption = 'Form1'
   ClientHeight = 433
   ClientWidth = 566
+  OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '1.7'
+  LCLVersion = '2.1.0.0'
   object PageControl1: TPageControl
     Left = 0
     Height = 433
@@ -23,19 +24,23 @@ object Form1: TForm1
       ClientWidth = 558
       object ChartPie: TChart
         Left = 0
-        Height = 346
-        Top = 59
+        Height = 337
+        Top = 68
         Width = 558
         AxisList = <        
           item
             Visible = False
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
             Title.LabelFont.Orientation = 900
+            Title.LabelBrush.Style = bsClear
           end        
           item
             Visible = False
             Alignment = calBottom
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
+            Title.LabelBrush.Style = bsClear
           end>
         Foot.Brush.Color = clBtnFace
         Foot.Font.Color = clBlue
@@ -57,41 +62,56 @@ object Form1: TForm1
         end
       end
       object Panel1: TPanel
+        AnchorSideTop.Side = asrCenter
         Left = 0
-        Height = 59
+        Height = 68
         Top = 0
         Width = 558
         Align = alTop
         Alignment = taLeftJustify
-        Caption = 'Click on the slice to explode/unexplode it'
-        ClientHeight = 59
+        AutoSize = True
+        Caption = '  Click on a slice to explode/unexplode it'
+        ClientHeight = 68
         ClientWidth = 558
         TabOrder = 1
         object seWords: TSpinEdit
-          Left = 488
+          AnchorSideTop.Control = Panel1
+          AnchorSideRight.Control = Panel1
+          AnchorSideRight.Side = asrBottom
+          Left = 491
           Height = 23
-          Top = 6
+          Top = 9
           Width = 58
           Anchors = [akTop, akRight]
+          BorderSpacing.Top = 8
+          BorderSpacing.Right = 8
           MaxValue = 10
           OnChange = seWordsChange
           TabOrder = 0
+          Value = 1
         end
         object lblWords: TLabel
-          Left = 419
+          AnchorSideTop.Control = seWords
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = seWords
+          Left = 420
           Height = 15
-          Top = 10
+          Top = 13
           Width = 63
           Anchors = [akTop, akRight]
+          BorderSpacing.Right = 8
           Caption = 'Label words'
           ParentColor = False
         end
         object seLabelAngle: TSpinEdit
-          Left = 360
+          AnchorSideTop.Control = seWords
+          AnchorSideRight.Control = lblWords
+          Left = 354
           Height = 23
-          Top = 6
+          Top = 9
           Width = 50
           Anchors = [akTop, akRight]
+          BorderSpacing.Right = 16
           Increment = 5
           MaxValue = 360
           MinValue = -360
@@ -99,29 +119,44 @@ object Form1: TForm1
           TabOrder = 1
         end
         object lblLabelAngle: TLabel
+          AnchorSideTop.Control = seLabelAngle
+          AnchorSideTop.Side = asrCenter
           Left = 291
           Height = 15
-          Top = 10
+          Top = 13
           Width = 60
           Anchors = [akTop, akRight]
           Caption = 'Label angle'
           ParentColor = False
         end
         object cbRotate: TCheckBox
-          Left = 459
+          AnchorSideTop.Control = cbMarkPositions
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = seWords
+          AnchorSideRight.Side = asrBottom
+          Left = 462
           Height = 19
-          Top = 30
+          Top = 38
           Width = 87
           Anchors = [akTop, akRight]
+          BorderSpacing.Top = 4
+          BorderSpacing.Bottom = 8
           Caption = 'Rotate labels'
           OnChange = cbRotateChange
           TabOrder = 2
         end
         object cbMarkPositions: TComboBox
-          Left = 310
+          AnchorSideTop.Control = lblLabelAngle
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = seLabelAngle
+          AnchorSideRight.Side = asrBottom
+          Left = 291
           Height = 23
-          Top = 30
-          Width = 100
+          Top = 36
+          Width = 113
+          Anchors = [akTop, akRight]
+          BorderSpacing.Top = 8
+          BorderSpacing.Bottom = 8
           ItemHeight = 15
           ItemIndex = 0
           Items.Strings = (
@@ -147,12 +182,16 @@ object Form1: TForm1
         Width = 420
         AxisList = <        
           item
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
             Title.LabelFont.Orientation = 900
+            Title.LabelBrush.Style = bsClear
           end        
           item
             Alignment = calBottom
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
+            Title.LabelBrush.Style = bsClear
           end>
         Foot.Brush.Color = clBtnFace
         Foot.Font.Color = clBlue
@@ -169,7 +208,6 @@ object Form1: TForm1
           Pointer.HorizSize = 6
           Pointer.Style = psDiamond
           Pointer.VertSize = 6
-          Pointer.Visible = False
           ShowPoints = False
           Source = RandomChartSource1
         end
@@ -179,7 +217,6 @@ object Form1: TForm1
           OriginY = 5
           Pointer.Brush.Color = clRed
           Pointer.Style = psCircle
-          Pointer.Visible = False
           ShowPoints = False
           Source = RandomChartSource1
         end
