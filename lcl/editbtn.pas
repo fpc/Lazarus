@@ -220,6 +220,7 @@ type
   TCustomControlFilterEdit = class(TCustomEditButton)
   private
     fFilter: string;
+    fFilterLowercase: string;
     fFilterOptions: TFilterStringOptions;
     fIdleConnected: Boolean;
     fSortData: Boolean;             // Data needs to be sorted.
@@ -237,8 +238,10 @@ type
     fOnFilterItemEx: TFilterItemExEvent;
     fOnCheckItem: TCheckItemEvent;
     procedure DestroyWnd; override;
+    function DoDefaultFilterItem(const ACaption: string;
+      const ItemData: Pointer): Boolean; virtual;
     function DoFilterItem(const ACaption, AFilter: string;
-      ItemData: Pointer): Boolean;
+      ItemData: Pointer): Boolean; virtual;
     procedure EditKeyDown(var Key: Word; Shift: TShiftState); override;
     procedure EditChange; override;
     procedure BuddyClick; override;
@@ -256,8 +259,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function DoDefaultFilterItem(const ACaption, AFilter: string;
-      const ItemData: Pointer): Boolean; virtual;
     procedure InvalidateFilter;
     procedure ResetFilter;
     function ForceFilter(AFilter: String) : String;
@@ -1135,18 +1136,18 @@ begin
   inherited DestroyWnd;
 end;
 
-function TCustomControlFilterEdit.DoDefaultFilterItem(const ACaption,
-  AFilter: string; const ItemData: Pointer): Boolean;
+function TCustomControlFilterEdit.DoDefaultFilterItem(const ACaption: string;
+  const ItemData: Pointer): Boolean;
 var
   NPos: integer;
 begin
-  if AFilter='' then
+  if fFilter='' then
     exit(True);
 
   if fsoCaseSensitive in fFilterOptions then
-    NPos := Pos(AFilter, ACaption)
+    NPos := Pos(fFilter, ACaption)
   else
-    NPos := Pos(UTF8LowerCase(AFilter), UTF8LowerCase(ACaption));
+    NPos := Pos(fFilterLowercase, UTF8LowerCase(ACaption));
 
   if fsoMatchOnlyAtStart in fFilterOptions then
     Result := NPos=1
@@ -1172,7 +1173,7 @@ begin
 
   // Filter by item's caption text if needed.
   if not (Result or Done) then
-    Result := DoDefaultFilterItem(ACaption, AFilter, ItemData);
+    Result := DoDefaultFilterItem(ACaption, ItemData);
 end;
 
 procedure TCustomControlFilterEdit.OnIdle(Sender: TObject; var Done: Boolean);
@@ -1190,6 +1191,7 @@ begin
   if fFilter=AValue then
     Exit;
   fFilter:=AValue;
+  fFilterLowercase:=UTF8LowerCase(fFilter);
   ApplyFilter;
 end;
 
