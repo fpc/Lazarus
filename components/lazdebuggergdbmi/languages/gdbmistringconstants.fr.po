@@ -3,12 +3,12 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
+"PO-Revision-Date: 2018-10-08 11:08+0200\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 2.1.1\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "Language: fr\n"
 
@@ -22,11 +22,11 @@ msgstr "Le débogueur a rencontré une erreur en essayant d'exécuter l'applicat
 
 #: gdbmistringconstants.gdbmicommandstartmainbreakerror
 msgid "The debugger could not set a breakpoint on the application's entry point.%0:sThis may be caused by missing debug info."
-msgstr "Le débogueur pourrait ne pas placer un point d'arrêt sur le point d'entrée de l'application. %0:sCeci peut être dû à l'absence d'informations de débogage."
+msgstr "Le débogueur n'a pas pu placer un point d'arrêt sur le point d'entrée de l'application. %0:sCeci peut être dû à l'absence d'informations de débogage."
 
 #: gdbmistringconstants.gdbmicommandstartmainrunerror
 msgid "The debugger could not run the application.%0:sThis may be caused by missing debug info."
-msgstr "Le débogueur pourrait ne pas lancer l'application. %0:sCeci pourrait être dû à l'absence d'informations de débogage."
+msgstr "Le débogueur n'a pas pu lancer l'application. %0:sCeci pourrait être dû à l'absence d'informations de débogage."
 
 #: gdbmistringconstants.gdbmicommandstartmainrunnopiderror
 msgid "The debugger failed to get the application's PID.%0:sThis may be caused by missing debug info."
@@ -34,7 +34,7 @@ msgstr "Le débogueur n'a pas pu obtenir le PID de l'application.%0:sCeci peut �
 
 #: gdbmistringconstants.gdbmicommandstartmainruntostoperror
 msgid "The debugger was unable to initialize itself.%0:sThe application did run (and terminated) before the debugger could set any breakpoints. %0:sThis may be caused by missing debug info."
-msgstr "Le débogueur n'a pas été capable de s'initialiser. %0:sL'application a été lancée (et arrêtée) avant que le débogueur n'ait pu mettre un point d'arrêt. %0:sCela peut être dû à l'absence d'informations de débogage."
+msgstr "Le débogueur n'a pas pu de s'initialiser. %0:sL'application a été lancée (et arrêtée) avant que le débogueur n'ait pu mettre un point d'arrêt. %0:sCela peut être dû à l'absence d'informations de débogage."
 
 #: gdbmistringconstants.gdbmierroronruncommand
 msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
@@ -150,7 +150,7 @@ msgstr "Résultat inattendu :%sLe débogueur va s'arrêter."
 
 #: gdbmistringconstants.synffailedtodownloadapplicationexecutable
 msgid "Failed to download application executable"
-msgstr ""
+msgstr "Impossible de télécharger l'exécutable de l'application"
 
 #: gdbmistringconstants.synffailedtoinitializedebugger
 msgid "Failed to initialize debugger"

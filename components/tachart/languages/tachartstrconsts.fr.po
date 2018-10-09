@@ -3,13 +3,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2015-04-14 07:54+0100\n"
-"PO-Revision-Date: 2017-12-01 11:58+0100\n"
-"Last-Translator: h.mira@free.fr\n"
+"PO-Revision-Date: 2018-10-08 11:44+0200\n"
+"Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
-"X-Generator: Poedit 2.0.4\n"
+"X-Generator: Poedit 2.1.1\n"
 
 #: tachartstrconsts.descolor
 msgid "Color"
@@ -182,55 +182,55 @@ msgstr "Séries de champs vectoriels"
 
 #: tachartstrconsts.rsfitadjcoefficientofdetermination
 msgid "Adj. coefficient of determination"
-msgstr ""
+msgstr "Adj. coefficient de détermination"
 
 #: tachartstrconsts.rsfitchisquared
 msgid "Chi-squared"
-msgstr ""
+msgstr "Khi carré"
 
 #: tachartstrconsts.rsfitcoefficientofdetermination
 msgid "Coefficient of determination (R2)"
-msgstr ""
+msgstr "Coefficient de détermination (R2)"
 
 #: tachartstrconsts.rsfitdegreesoffreedom
 msgid "Degrees of freedom"
-msgstr ""
+msgstr "Degrés de liberté"
 
 #: tachartstrconsts.rsfiterrorsumofsquares
 msgid "Error sum of squares (SSE)"
-msgstr ""
+msgstr "Erreur dans la somme des carrés (SSE)"
 
 #: tachartstrconsts.rsfitnumfitparams
 msgid "Number of fit parameters"
-msgstr ""
+msgstr "Nombre de paramètres d'ajustement"
 
 #: tachartstrconsts.rsfitnumobservations
 msgid "Number of observations"
-msgstr ""
+msgstr "Nombre d'observations"
 
 #: tachartstrconsts.rsfitpvalue
 msgid "p value"
-msgstr ""
+msgstr "p-valeur"
 
 #: tachartstrconsts.rsfitreducedchisquared
 msgid "Reduced Chi-squared"
-msgstr ""
+msgstr "Khi carré réduit"
 
 #: tachartstrconsts.rsfitregressionsumofsquares
 msgid "Regression sum of squares (SSR)"
-msgstr ""
+msgstr "Régression de la somme des carrés (SSR)"
 
 #: tachartstrconsts.rsfitresidualstandarderror
 msgid "Residual standard error"
-msgstr ""
+msgstr "Erreur standard résiduelle"
 
 #: tachartstrconsts.rsfittotalsumofsquares
 msgid "Total sum of squares (SST)"
-msgstr ""
+msgstr "Total de la somme des carrés (SST)"
 
 #: tachartstrconsts.rsfitvarianceratio
 msgid "Variance ratio F"
-msgstr ""
+msgstr "Rapport de variance F"
 
 #: tachartstrconsts.rsfullstarsymbol
 msgid "Star (full)"

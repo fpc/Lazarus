@@ -3,14 +3,14 @@ msgstr ""
 "Project-Id-Version: lazaruside\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-05-01 20:09+0200\n"
+"PO-Revision-Date: 2018-10-08 11:32+0200\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 2.1.1\n"
 
 #: printer4lazstrconst.p4lrsadvanced
 msgid "Advanced"
@@ -18,7 +18,7 @@ msgstr "Avancé"
 
 #: printer4lazstrconst.p4lrsallpages
 msgid "All"
-msgstr ""
+msgstr "Tous"
 
 #: printer4lazstrconst.p4lrsbanners
 msgid "Banners"
@@ -26,11 +26,11 @@ msgstr "Bannières"
 
 #: printer4lazstrconst.p4lrsbuttonlessarrow
 msgid "<< Less"
-msgstr ""
+msgstr "<< Moins"
 
 #: printer4lazstrconst.p4lrsbuttonmorearrow
 msgid "More >>"
-msgstr ""
+msgstr "Plus >>"
 
 #: printer4lazstrconst.p4lrscancel
 msgid "Cancel"
@@ -46,23 +46,23 @@ msgstr "Général"
 
 #: printer4lazstrconst.p4lrsjobstateaccepting
 msgid "(Accepting jobs)"
-msgstr ""
+msgstr "(Travaux en cours d'acceptation)"
 
 #: printer4lazstrconst.p4lrsjobstateprinting
 msgid "Printing"
-msgstr ""
+msgstr "Impression en cours"
 
 #: printer4lazstrconst.p4lrsjobstateready
 msgid "Ready"
-msgstr ""
+msgstr "Prêt"
 
 #: printer4lazstrconst.p4lrsjobstaterejecting
 msgid "(Rejecting jobs)"
-msgstr ""
+msgstr "(Travaux en cours de rejet"
 
 #: printer4lazstrconst.p4lrsjobstatestopped
 msgid "Stopped"
-msgstr ""
+msgstr "Arrêté"
 
 #: printer4lazstrconst.p4lrslandscape
 msgid "Landscape"
@@ -86,11 +86,11 @@ msgstr "Orientation"
 
 #: printer4lazstrconst.p4lrspageeven
 msgid "Even"
-msgstr ""
+msgstr "Pair"
 
 #: printer4lazstrconst.p4lrspageodd
 msgid "Odd"
-msgstr ""
+msgstr "Impair"
 
 #: printer4lazstrconst.p4lrspagespersheet
 msgid "Pages per sheet"

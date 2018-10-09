@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
-"Last-Translator: h.mira@free.fr\n"
+"Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
-"PO-Revision-Date: 2017-12-01 11:55+0100\n"
+"PO-Revision-Date: 2018-10-08 11:49+0200\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "MIME-Version: 1.0\n"
 "POT-Creation-Date: \n"
 "Project-Id-Version: \n"
 "Language: fr\n"
-"X-Generator: Poedit 2.0.4\n"
+"X-Generator: Poedit 2.1.1\n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
 msgid "Browser \"%s\" not executable."
@@ -482,7 +482,6 @@ msgid "--sync                Call XSynchronize (display, True) after the Xserver
 msgstr "--sync                Appeler \"XSynchronize(display, True)\" après que la connexion au serveur X a été établie. Le débogage des erreurs du protocole X sera ainsi plus facile parce que les demandes de buffer par X seront désactivées et que les erreurs de X seront reçues immédiatement après que la requête du protocole qui aura produit l'erreur aura été traitée par le serveur X."
 
 #: lclstrconsts.rshelp
-#, fuzzy
 msgctxt "lclstrconsts.rshelp"
 msgid "Help"
 msgstr "Aide"
@@ -696,7 +695,7 @@ msgstr "Marron"
 
 #: lclstrconsts.rsmbabort
 msgid "Abort"
-msgstr "Abandonner"
+msgstr "Arrêter"
 
 #: lclstrconsts.rsmball
 msgid "&All"
@@ -778,7 +777,7 @@ msgstr "Texte de menu"
 
 #: lclstrconsts.rsmodified
 msgid "  modified "
-msgstr "  modifié"
+msgstr "  modifié "
 
 #: lclstrconsts.rsmoneygreencolorcaption
 msgid "Money Green"
@@ -1026,7 +1025,7 @@ msgstr "Argent"
 
 #: lclstrconsts.rssize
 msgid "  size "
-msgstr "  taille"
+msgstr "  taille "
 
 #: lclstrconsts.rsskybluecolorcaption
 msgid "Sky Blue"
