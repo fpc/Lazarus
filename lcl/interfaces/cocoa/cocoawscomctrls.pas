@@ -717,7 +717,6 @@ begin
   Result := False;
   AScroll := nil;
   ATableControl := nil;
-  ALV.HandleNeeded();
   if not Assigned(ALV) or not ALV.HandleAllocated then Exit;
   AScroll := TCocoaListView(ALV.Handle);
 
