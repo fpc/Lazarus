@@ -256,7 +256,7 @@ msgstr "Típus:"
 
 #: objinspstrconsts.fpflowpaneleditor
 msgid "FlowPanel Editor"
-msgstr ""
+msgstr "FlowPanel szerkesztő"
 
 #: objinspstrconsts.ilesadd
 msgctxt "objinspstrconsts.ilesadd"
@@ -743,7 +743,7 @@ msgstr "Nyomjon le egy billentyűt ..."
 
 #: objinspstrconsts.oispressakeyegctrlp
 msgid "You can press e.g. Ctrl+P ..."
-msgstr ""
+msgstr "Használható pl. a Ctrl+P ..."
 
 #: objinspstrconsts.oisproperties
 msgid "Properties"
@@ -1319,11 +1319,11 @@ msgstr "Hozzá&adás ..."
 
 #: objinspstrconsts.sccsiledtaddmoreresolutions
 msgid "Add more resolutions ..."
-msgstr ""
+msgstr "További felbontások hozzáadása ..."
 
 #: objinspstrconsts.sccsiledtaddnewresolution
 msgid "New resolution ..."
-msgstr ""
+msgstr "Új felbontás ..."
 
 #: objinspstrconsts.sccsiledtadjustment
 msgid "Adjustment"
@@ -1336,7 +1336,7 @@ msgstr "&Alkalmazás"
 
 #: objinspstrconsts.sccsiledtcannotdeleteresolution
 msgid "Cannot delete default resolution."
-msgstr ""
+msgstr "Az alapértelmezett felbontás nem törölhető."
 
 #: objinspstrconsts.sccsiledtcaption
 msgid "ImageList Editor"
@@ -1362,11 +1362,11 @@ msgstr "&Törlés"
 
 #: objinspstrconsts.sccsiledtdeleteresolution
 msgid "Delete resolution ..."
-msgstr ""
+msgstr "Felbontás törlése ..."
 
 #: objinspstrconsts.sccsiledtdeleteresolutionconfirmation
 msgid "Select the resolution to delete."
-msgstr ""
+msgstr "A törlendő felbontás kiválasztása."
 
 #: objinspstrconsts.sccsiledtgrplcaption
 msgid "Images"
@@ -1378,7 +1378,7 @@ msgstr "Kijelölt kép"
 
 #: objinspstrconsts.sccsiledtimagewidthofnewresolution
 msgid "Image width of the new resolution:"
-msgstr ""
+msgstr "Az új felbontás szélessége:"
 
 #: objinspstrconsts.sccsiledtmovedown
 msgctxt "objinspstrconsts.sccsiledtmovedown"
@@ -1412,7 +1412,7 @@ msgstr "Csere ..."
 
 #: objinspstrconsts.sccsiledtreplaceallresolutions
 msgid "Replace all resolutions ..."
-msgstr ""
+msgstr "Az összes felbontás cseréléje ..."
 
 #: objinspstrconsts.sccsiledtsave
 msgctxt "objinspstrconsts.sccsiledtsave"

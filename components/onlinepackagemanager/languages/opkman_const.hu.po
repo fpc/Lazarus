@@ -62,11 +62,11 @@ msgstr "Válasszon ki (jelöljön be) egy vagy több kategóriát"
 #: opkman_const.rscolors_caption
 msgctxt "opkman_const.rscolors_caption"
 msgid "Colors"
-msgstr ""
+msgstr "Színek"
 
 #: opkman_const.rscolors_cd_title
 msgid "Select color"
-msgstr ""
+msgstr "Szín választása"
 
 #: opkman_const.rscreatejsonforupdatesfrm_bclose_caption
 msgctxt "opkman_const.rscreatejsonforupdatesfrm_bclose_caption"
@@ -628,11 +628,11 @@ msgstr "Csökkenő"
 
 #: opkman_const.rsmainfrm_mifromexternalsource
 msgid "From external source"
-msgstr ""
+msgstr "Külső forrásból"
 
 #: opkman_const.rsmainfrm_mifromrepository
 msgid "From repository"
-msgstr ""
+msgstr "Tárolóból"
 
 #: opkman_const.rsmainfrm_mijsonhide
 msgid "Hide JSON"
@@ -648,10 +648,9 @@ msgstr "Rendezés"
 
 #: opkman_const.rsmainfrm_miload
 msgid "Load packages"
-msgstr ""
+msgstr "Csomagok betöltése"
 
 #: opkman_const.rsmainfrm_miloadinstalled
-#, fuzzy
 msgctxt "opkman_const.rsmainfrm_miloadinstalled"
 msgid "Installed"
 msgstr "Telepítve"
@@ -662,11 +661,11 @@ msgstr "Értékelés visszavonása"
 
 #: opkman_const.rsmainfrm_misave
 msgid "Save packages"
-msgstr ""
+msgstr "Csomagok mentése"
 
 #: opkman_const.rsmainfrm_misavechecked
 msgid "Checked"
-msgstr ""
+msgstr "Ellenőrizve"
 
 #: opkman_const.rsmainfrm_misavetofile
 msgid "Save to file"
@@ -685,28 +684,20 @@ msgid "A package with the same name already exists!"
 msgstr "Egy csomag már létezik ugyanezzel a névvel!"
 
 #: opkman_const.rsmainfrm_packageupdate0
-#, fuzzy
-#| msgid "The following repository packages are not installed or don't have a valid external download link. The packages will be skipped. Continue?"
 msgid "The following repository packages are not available externally. The packages will be skipped. Continue?"
-msgstr "A következő tárolócsomagok nincsenek telepítve vagy nincs hozzájuk megadva érvényes külső letöltési hivatkozás. A csomagok ki lesznek hagyva. Folytatás?"
+msgstr "A következő tárolócsomagok nem érhetők el külső tárolóban. A csomagok ki lesznek hagyva. Folytatás?"
 
 #: opkman_const.rsmainfrm_packageupdate1
-#, fuzzy
-#| msgid "None of the checked repository packages is installed or has a valid external download link."
 msgid "None of the checked repository packages are available externally."
-msgstr "A kijelölt tárolócsomagok egyike sincs telepítve vagy nincs hozzájuk megadva érvényes külső letöltési hivatkozás."
+msgstr "A kijelölt tárolócsomagok egyike sem érhető el külső tárolóban."
 
 #: opkman_const.rsmainfrm_packageupdatewarning
-#, fuzzy
-#| msgid ""
-#| "Updating packages from external link is not without a risk!\n"
-#| "Only update if you trust the package maintainer. Continue?\n"
 msgid ""
 "Installing packages from external link is not without a risk!\n"
 "Only install if you trust the package maintainer. Continue?\n"
 msgstr ""
-"A külső hivatkozásról történő frissítés nem kockázatmentes!\n"
-"Csak akkor frissítsen ha megbízik a csomag karbantartójában. Folytatás?\n"
+"A csomagok külső hivatkozásról történő telepítése nem kockázatmentes!\n"
+"Csak akkor telepítse ha megbízik a csomag karbantartójában. Folytatás?\n"
 
 #: opkman_const.rsmainfrm_resmessagechecksloaded
 msgid "%s packages successfully loaded from file!"
@@ -718,7 +709,7 @@ msgstr "%s csomag sikeresen fájlba mentve!"
 
 #: opkman_const.rsmainfrm_rsdestdirerror
 msgid "Cannot create directory \"%s\". Operation aborted."
-msgstr ""
+msgstr "A(z) \"%s\"  könyvtár nem hozható létre. A művelet megszakadt."
 
 #: opkman_const.rsmainfrm_rsmessagechangingrepository
 msgid "Changing repository. Please wait..."
@@ -758,7 +749,7 @@ msgstr "Legalább egy csomagot ki kell jelölni!"
 
 #: opkman_const.rsmainfrm_rsmessagenothinginstalled
 msgid "No packages are installed. Please install at least one package first."
-msgstr ""
+msgstr "Nincsenek telepítve csomagok. Először telepíteni kell legalább egyet."
 
 #: opkman_const.rsmainfrm_rsmessageparsingjson
 msgid "Parsing JSON. Please wait..."
@@ -773,14 +764,12 @@ msgid "Package \"%s\" depends on package \"%s\". Resolve dependency?"
 msgstr "A(z) \"%s\" csomag függ a(z) \"%s\" csomagtól. Függőség feloldása?"
 
 #: opkman_const.rsmainfrm_rspackagedependency1
-#, fuzzy
-#| msgid "Not resolving dependencies might lead to install failure!"
 msgid "Not resolving dependencies might lead to install failure! Continue?"
-msgstr "A feloldatlan függőségek a telepítés sikertelenségét okozhatják!"
+msgstr "A feloldatlan függőségek a telepítés sikertelenségét okozhatják! Folytatás?"
 
 #: opkman_const.rsmainfrm_rspackageinformation
 msgid "Quick package information for \"%s\""
-msgstr ""
+msgstr "Gyors csomaginformációk: \"%s\""
 
 #: opkman_const.rsmainfrm_rspackagerating
 msgid "Your vote for package \"%s\" is: %s. Thank you for voting!"
@@ -856,11 +845,9 @@ msgid "Install packages"
 msgstr "Csomagok telepítése"
 
 #: opkman_const.rsmainfrm_tbopenrepo_caption
-#, fuzzy
-#| msgid "Open"
 msgctxt "opkman_const.rsmainfrm_tbopenrepo_caption"
 msgid "Local repo"
-msgstr "Megnyitás"
+msgstr "Helyi tároló"
 
 #: opkman_const.rsmainfrm_tbopenrepo_hint
 msgid "Open local repository"
@@ -936,11 +923,9 @@ msgid "Repository"
 msgstr "Tároló"
 
 #: opkman_const.rsmainfrm_vstheadercolumn_update
-#, fuzzy
-#| msgid "Update"
 msgctxt "opkman_const.rsmainfrm_vstheadercolumn_update"
 msgid "External"
-msgstr "Frissítés"
+msgstr "Külső"
 
 #: opkman_const.rsmainfrm_vsttext_author
 msgctxt "opkman_const.rsmainfrm_vsttext_author"
@@ -954,11 +939,11 @@ msgstr "Kategória"
 
 #: opkman_const.rsmainfrm_vsttext_comdesc
 msgid "Community description for metapackage"
-msgstr ""
+msgstr "Metacsomag leírása"
 
 #: opkman_const.rsmainfrm_vsttext_communitydescription
 msgid "Community description"
-msgstr ""
+msgstr "Leírás"
 
 #: opkman_const.rsmainfrm_vsttext_dependecies
 msgctxt "opkman_const.rsmainfrm_vsttext_dependecies"
@@ -975,11 +960,9 @@ msgid "Description"
 msgstr "Leírás"
 
 #: opkman_const.rsmainfrm_vsttext_downloadurl
-#, fuzzy
-#| msgid "Update link (JSON)"
 msgctxt "opkman_const.rsmainfrm_vsttext_downloadurl"
 msgid "External link (JSON)"
-msgstr "Frissítési hivatkozás (JSON)"
+msgstr "Külső hivatkozás (JSON)"
 
 #: opkman_const.rsmainfrm_vsttext_fpccompatibility
 msgctxt "opkman_const.rsmainfrm_vsttext_fpccompatibility"
@@ -1162,15 +1145,13 @@ msgid "Up to date"
 msgstr "Naprakész"
 
 #: opkman_const.rsmainfrm_vsttext_packagestate6
-#, fuzzy
-#| msgid "New updates available"
 msgctxt "opkman_const.rsmainfrm_vsttext_packagestate6"
 msgid "New version available"
-msgstr "Új frissítések érhetők el"
+msgstr "Új változat érhető el"
 
 #: opkman_const.rsmainfrm_vsttext_packagestate7
 msgid "Ahead of OPM"
-msgstr ""
+msgstr "Frissebb a kezelt csomagnál"
 
 #: opkman_const.rsmainfrm_vsttext_packagestatus
 msgid "Package status"
@@ -1238,25 +1219,24 @@ msgstr "Változat"
 
 #: opkman_const.rsopminterfacerebuildconf
 msgid "In order for the changes to take effect you must rebuild the IDE. Rebuild now?"
-msgstr ""
+msgstr "A változások érvényre jutásához újra kell építeni az IDE-t. Újraépíti most?"
 
 #: opkman_const.rsopmintfpackagelistfrm_caption
 msgid "Install online packages"
-msgstr ""
+msgstr "Hálózati csomagok telepítése"
 
 #: opkman_const.rsopmintfpackagelistfrm_pninfo
 msgid "Please check before install: Lazarus/FPC compatibility, widgetset support, license and version info"
-msgstr ""
+msgstr "Telepítés előtt olvassa el: Lazarus/FPC kompatibilitás, vezérlőkészlet támogatás, engedély- és változatinformációk"
 
 #: opkman_const.rsopmintfpackagelistfrm_vstheadercolumn_data
-#, fuzzy
 msgctxt "opkman_const.rsopmintfpackagelistfrm_vstheadercolumn_data"
 msgid "Data"
 msgstr "Adat"
 
 #: opkman_const.rsopmintfpackagelistfrm_vstheadercolumn_lazaruspackage
 msgid "Lazarus Package"
-msgstr ""
+msgstr "Lazarus csomag"
 
 #: opkman_const.rsoptions_badd_caption
 msgctxt "opkman_const.rsoptions_badd_caption"
@@ -1266,7 +1246,7 @@ msgstr "Hozzáadás"
 #: opkman_const.rsoptions_bcolors_caption
 msgctxt "opkman_const.rsoptions_bcolors_caption"
 msgid "Colors"
-msgstr ""
+msgstr "Színek"
 
 #: opkman_const.rsoptions_bdelete_caption
 msgctxt "opkman_const.rsoptions_bdelete_caption"
@@ -1280,7 +1260,7 @@ msgstr "Szerkesztés"
 
 #: opkman_const.rsoptions_bpoptions_bhelp
 msgid "Restore defaults"
-msgstr ""
+msgstr "Alapértelmezések visszaállítása"
 
 #: opkman_const.rsoptions_cbcheckforupdates_item0
 msgid "Every few minutes"
@@ -1491,19 +1471,19 @@ msgstr "Adja meg a proxy kiszolgáló címét!"
 
 #: opkman_const.rsoptions_rbhintformoptions_caption
 msgid "Quick info for repository packages"
-msgstr ""
+msgstr "Gyors infó a tárolócsomagokról"
 
 #: opkman_const.rsoptions_rbhintformoptions_item0
 msgid "Behaves like a regular hint window"
-msgstr ""
+msgstr "Úgy viselkedik, mint egy tipp ablak"
 
 #: opkman_const.rsoptions_rbhintformoptions_item1
 msgid "It's triggered by SHIFT, moves with the mouse"
-msgstr ""
+msgstr "Megjelenítés SHIFT gombbal, mozgatás egérrel"
 
 #: opkman_const.rsoptions_rbhintformoptions_item2
 msgid "Off"
-msgstr ""
+msgstr "Kikapcsolva"
 
 #: opkman_const.rsoptions_remoterepository_information
 msgid "Please enter the remote repository address!"

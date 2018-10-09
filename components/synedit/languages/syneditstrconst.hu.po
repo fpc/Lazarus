@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.8.7.1\n"
 
 #: syneditstrconst.syns_attrannotation
 msgid "Annotation"
@@ -293,7 +293,7 @@ msgstr "Előző érték"
 
 #: syneditstrconst.syns_attrprocedureheadername
 msgid "Procedure header name"
-msgstr ""
+msgstr "Eljárásnév a fejlécben"
 
 #: syneditstrconst.syns_attrprocessinginstr
 msgid "Processing Instruction"
@@ -453,7 +453,7 @@ msgstr "Kód összecsukása"
 
 #: syneditstrconst.syns_emccodefoldcollaps_opt
 msgid "Nodes,One,All,\"At Caret\",\"Current Node\""
-msgstr "Csomópontok,Egy,Mind,\"Kurzor alatt\",\"Aktuális csomópont\""
+msgstr "Csomópontok,Egy,Mind,\"Beszúrási jelnél\",\"Aktuális csomópont\""
 
 #: syneditstrconst.syns_emccodefoldcontextmenu
 msgid "Fold Menu"
@@ -473,7 +473,7 @@ msgstr "Helyi menü"
 
 #: syneditstrconst.syns_emccontextmenucaretmove_opt
 msgid "\"Move caret, when selection exists\", Never, \"Click outside\", Always"
-msgstr "\"Kurzor mozgatása kijelölés létezésekor\", Soha, \"Kattintás kívülre\", Mindig"
+msgstr "\"Beszúrási jel mozgatása ha van kijelölés\", Soha, \"Kattintás kívülre\", Mindig"
 
 #: syneditstrconst.syns_emcmouselink
 msgid "Source Link"
@@ -501,11 +501,11 @@ msgstr "Kijelölés gyors beillesztése"
 
 #: syneditstrconst.syns_emcpluginmulticaretselectiontocarets
 msgid "Set carets at EOL in selected lines"
-msgstr "Kurzorok elhelyezése a kijelölt sorok végein"
+msgstr "Beszúrási jelek elhelyezése a kijelölt sorok végein"
 
 #: syneditstrconst.syns_emcpluginmulticarettogglecaret
 msgid "Toggle extra caret"
-msgstr "Extra kurzor ki/be"
+msgstr "Extra beszúrási jel ki/be"
 
 #: syneditstrconst.syns_emcselection_opt
 msgid "Mode,Begin,Continue"
@@ -537,7 +537,7 @@ msgstr "Kijelölés húzása"
 
 #: syneditstrconst.syns_emcstartdragmove_opt
 msgid "\"Caret on up if not dragged\",yes,no"
-msgstr "\"Kurzor a felengedéshez ha nem volt húzás\",Igen,Nem"
+msgstr "\"Beszúrási jel mozgatása a felengedés helyéhez ha nem volt húzás\",Igen,Nem"
 
 #: syneditstrconst.syns_emcstartlineselections
 msgid "Line Selection"

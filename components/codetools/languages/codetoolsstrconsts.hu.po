@@ -149,7 +149,7 @@ msgstr "Átalakító könyvtára"
 
 #: codetoolsstrconsts.ctscursorposoutsideofcode
 msgid "cursor pos outside of code"
-msgstr "a kurzor pozíciója a kódon kívülre esik"
+msgstr "a beszúrási jel pozíciója a kódon kívülre esik"
 
 #: codetoolsstrconsts.ctscustomcomponentsdirectory
 msgid "Custom Components Directory"
@@ -619,7 +619,7 @@ msgstr "új eljárástest nem található"
 
 #: codetoolsstrconsts.ctsnocontextnodefoundatcursor
 msgid "no context node found at cursor"
-msgstr "nincs csomópont a kurzornál"
+msgstr "nincs csomópont a beszúrási jelnél"
 
 #: codetoolsstrconsts.ctsnodefaultspecifierdefinedtwice
 msgid "nodefault specifier defined twice"

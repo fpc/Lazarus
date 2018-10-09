@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.8.7.1\n"
 
 #: codystrconsts.crsaddassignmethod
 msgid "Add Assign Method"
@@ -78,7 +78,7 @@ msgstr "Öröklött hívása csak nem megfelelő osztály esetén"
 
 #: codystrconsts.crscamcursorisnotinapascalclassdeclaration
 msgid "cursor is not in a pascal class declaration"
-msgstr "a kurzor nem egy pascal osztály leírásában van"
+msgstr "a beszúrási jel nem egy pascal osztály leírásában van"
 
 #: codystrconsts.crscamexistsalready
 msgid "exists already"
@@ -118,7 +118,7 @@ msgstr "Paraméter típusa:"
 
 #: codystrconsts.crscampleasepositionthecursorofthesourceeditorinapascalc
 msgid "Please position the cursor of the source editor in a pascal class declaration before invoking \"Add Assign method\"."
-msgstr "Helyezze a forráskódszerkesztő kurzorát egy pascal osztály deklarációjának belsejébe az \"Assign metódus hozzáadása\" előtt!"
+msgstr "Helyezze a forráskódszerkesztő beszúrási jelét egy pascal osztály deklarációjának belsejébe az \"Assign metódus hozzáadása\" előtt!"
 
 #: codystrconsts.crscamprivate
 msgid "private"
@@ -240,11 +240,11 @@ msgstr "Pascal (*.pas;*.pp)|*.pas;*.pp"
 
 #: codystrconsts.crscupleaseplacethecursorofthesourceeditorinanimplement
 msgid "Please place the cursor of the source editor in an implementation of an overridden method."
-msgstr "Helyezze a forráskódszerkesztő kurzorát egy felülbírált eljárás kidolgozásába!"
+msgstr "Helyezze a forráskódszerkesztő beszúrási jelét egy felülbírált eljárás kidolgozásába!"
 
 #: codystrconsts.crscuselectfiletoinsertatcursor
 msgid "Select file to insert at cursor"
-msgstr "Fájl kiválasztása a beszúráshoz a kurzornál"
+msgstr "Fájl kiválasztása a beszúráshoz a beszúrási jelnél"
 
 #: codystrconsts.crscutdeclarationtoclipboard
 msgid "Cut declaration to Clipboard"
@@ -268,7 +268,7 @@ msgstr "Hiba"
 
 #: codystrconsts.crscwpleaseplacethecursorofthesourceeditoronawithvariab
 msgid "Please place the cursor of the source editor on a With variable."
-msgstr "Helyezze a forráskódszerkesztő kurzorát egy \"With\" változóra!"
+msgstr "Helyezze a forráskódszerkesztő beszúrási jelét egy \"With\" változóra!"
 
 #: codystrconsts.crsdeclarevariable
 msgid "Declare Variable"
@@ -304,7 +304,7 @@ msgstr "Hiba: %s"
 
 #: codystrconsts.crserrorcursorisnotinaprojectunit
 msgid "Error: cursor is not in a project unit"
-msgstr "Hiba: A kurzor nem a projekt egyik unit-jában van"
+msgstr "Hiba: A beszúrási jel nem a projekt egyik unit-jában van"
 
 #: codystrconsts.crserrorneedsourceeditoratprocedurecallordeclaration
 msgid "Error: Need source editor at procedure call or declaration"
@@ -441,7 +441,7 @@ msgstr "Öröklött hívásának beszúrása"
 
 #: codystrconsts.crsinsertfileatcursor
 msgid "Insert File Contents at Cursor ..."
-msgstr "Fájl tartalmának beszúrása a kurzornál ..."
+msgstr "Fájl tartalmának beillesztése a beszúrási jelnél ..."
 
 #: codystrconsts.crsinsertint64idyyyyddmmhhnnss
 msgid "Insert int64 ID YYYYDDMMhhnnss"
@@ -601,11 +601,11 @@ msgstr "Előbb meg kell nyitni egy projektet!"
 
 #: codystrconsts.crspleaseplacethecursorofthesourceeditoratanidentifie
 msgid "Please place the cursor of the source editor at an identifier in a statement.%sFor example:%sMyVar:=3;"
-msgstr "Helyezze a forráskódszerkesztő kurzorát egy azonosítóra valamelyik állományban!%sPéldául:%sMyVar:=3;"
+msgstr "Helyezze a forráskódszerkesztő beszúrási jelét egy azonosítóra valamelyik állományban!%sPéldául:%sMyVar:=3;"
 
 #: codystrconsts.crspleaseplacethecursorofthesourceeditoronanidentifie
 msgid "Please place the cursor of the source editor on an identifier of a declaration."
-msgstr "Helyezze a forráskódszerkesztő kurzorát egy deklaráció azonosítójára!"
+msgstr "Helyezze a forráskódszerkesztő beszúrási jelét egy deklaráció azonosítójára!"
 
 #: codystrconsts.crspleaseselectsomecodeinthesourceeditor
 msgid "Please select some code in the Source Editor."
