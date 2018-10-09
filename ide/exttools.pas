@@ -135,12 +135,13 @@ type
     function GetRunningTools(Index: integer): TExternalTool;
     procedure AddRunningTool(Tool: TExternalTool); // (worker thread)
     procedure RemoveRunningTool(Tool: TExternalTool); // (worker thread)
+    function RunExtToolHandler(ToolOptions: TIDEExternalToolOptions): boolean;
+    function RunToolAndDetach(ToolOptions: TIDEExternalToolOptions): boolean;
+    function RunToolWithParsers(ToolOptions: TIDEExternalToolOptions): boolean;
   protected
     FToolClass: TExternalToolClass;
     function GetParsers(Index: integer): TExtToolParserClass; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    function RunToolAndDetach(ToolOptions: TIDEExternalToolOptions): boolean;
-    function RunToolWithParsers(ToolOptions: TIDEExternalToolOptions): boolean;
   public
     constructor Create(aOwner: TComponent); override;
     destructor Destroy; override;
@@ -890,6 +891,18 @@ end;
 
 { TExternalTools }
 
+function TExternalTools.RunExtToolHandler(ToolOptions: TIDEExternalToolOptions): boolean;
+begin
+  {$IFDEF VerboseExtToolThread}
+  debugln(['TExternalTools.RunExtToolHandler ',ToolOptions.Title,
+           ' exe="',ToolOptions.Executable,'" params="',ToolOptions.CmdLineParams,'"']);
+  {$ENDIF}
+  if ToolOptions.Parsers.Count=0 then
+    Result := RunToolAndDetach(ToolOptions)
+  else
+    Result := RunToolWithParsers(ToolOptions)
+end;
+
 function TExternalTools.RunToolAndDetach(ToolOptions: TIDEExternalToolOptions): boolean;
 // simply run and detach
 var
@@ -1122,6 +1135,7 @@ begin
     ExternalToolList:=Self;
   if ExternalTools=nil then
     ExternalTools:=Self;
+  RunExternalTool := @RunExtToolHandler;
 end;
 
 destructor TExternalTools.Destroy;

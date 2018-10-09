@@ -160,10 +160,6 @@ begin
                        + EnvironmentOptions.BackupInfoProjectFiles.SubDirectory);
   COpts := FProjPack.LazCompilerOptions as TBaseCompilerOptions;
   FLibDir := COpts.GetUnitOutPath(True,coptParsed);
-  DebugLn(['TPublisher: Source      Directory = ', FSrcDir]);
-  DebugLn(['TPublisher: Destination Directory = ', FDestDir]);
-  DebugLn(['TPublisher: Backup      Directory = ', FBackupDir]);
-  DebugLn(['TPublisher: Lib         Directory = ', FLibDir]);
   FCopiedFiles := TStringList.Create;
   FProjDirs := TStringList.Create;
 end;
@@ -183,33 +179,19 @@ var
   CurDir: string;
 begin
   if FCopiedFiles.IndexOf(FileName) >= 0 then
-  begin
-    DebugLn(['DoFileFound: Already copied file ', FileName]);
     Exit;
-  end;
   CurDir := ExtractFilePath(FileName);
   if (CurDir = FBackupDir) or (CurDir = FLibDir) then
-  begin
-    DebugLn(['DoFileFound: In Backup or Output directory, not copied: ', FileName]);
     Exit;
-  end;
   if AnsiStartsStr(FDestDir, CurDir) then
-  begin
-    DebugLn(['DoFileFound: In destination directory, not copied: ', FileName]);
     Exit;
-  end;
   if FOptions.FileCanBePublished(FileName) then
-  begin
     if CopyAFile(FileName) <> mrOK then
       Inc(FCopyFailedCount);
-  end
-  else
-    DebugLn(['DoFileFound: Rejected file ', FileName]);
 end;
 
 procedure TPublisher.DoDirectoryFound;
 begin
-  DebugLn(['DoDirectoryFound: ', FileName]);
   // Directory is already created by the cffCreateDestDirectory flag.
 end;
 
@@ -232,10 +214,7 @@ begin
     Adjusted := True;
   end;
   if Adjusted then
-  begin
     FTopDir := ResolveDots(FTopDir);
-    DebugLn(['Adjusted TopDir: ', FTopDir, ' based on file ', AFilename]);
-  end;
 end;
 
 function TPublisher.CopyAFile(const AFileName: string): TModalResult;
@@ -249,9 +228,7 @@ begin
   Drive := ExtractFileDrive(RelPath);
   if Trim(Drive) <> '' then
     RelPath := StringReplace(RelPath, AppendPathDelim(Drive), '', [rfIgnoreCase]);
-  DebugLn(['CopyAFile: File ', AFilename, ' -> ', FDestDir+RelPath]);
-  if CopyFile(AFilename, FDestDir + RelPath,
-              [cffCreateDestDirectory,cffPreserveTime]) then
+  if CopyFile(AFilename, FDestDir+RelPath, [cffCreateDestDirectory,cffPreserveTime]) then
   begin
     FCopiedFiles.Add(AFilename);
     if FilenameIsPascalUnit(AFilename) then
@@ -347,8 +324,6 @@ begin
   CurProject := TProject(FOptions.Owner);
   NewProjFilename := FDestDir + ExtractRelativePath(FTopDir, CurProject.ProjectInfoFile);
   DeleteFileUTF8(NewProjFilename);
-  DebugLn(['WriteProjectInfo: ProjectInfo = ', CurProject.ProjectInfoFile,
-           ', NewProjFilename = ', NewProjFilename]);
   Assert(CurProject.PublishOptions = FOptions, 'CurProject.PublishOptions <> FOptions');
   FCopiedFiles.Add(CurProject.ProjectInfoFile); // Do not later by filter.
   Result := CurProject.WriteProject(
@@ -510,7 +485,6 @@ begin
     FCopyFailedCount:=0;
     for I := 0 to FProjDirs.Count - 1 do
     begin
-      DebugLn(['Copy extra directory ', FProjDirs.Strings[I]]);
       if IsDrive(FProjDirs.Strings[I]) then
         Search(FProjDirs.Strings[I], '', False)
       else
