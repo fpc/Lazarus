@@ -123,8 +123,6 @@ begin
         SetScrollPos(Handle, SB_CTL, FMax - FPosition, True);
     Change;
   end;
-
-
   if HandleAllocated then
     TWSScrollBarClass(WidgetSetClass).SetParams(Self);
 end;

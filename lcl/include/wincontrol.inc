@@ -4332,7 +4332,7 @@ begin
       SizeType := 6; // force realign
       if (FWidth  < Low(Word)) or (FWidth  > High(Word))
       or (FHeight < Low(Word)) or (FHeight > High(Word)) then
-        raise Exception.CreateFmt('Size range overflow in %s.SendMoveSizeMessages:'
+        raise ELayoutException.CreateFmt('Size range overflow in %s.SendMoveSizeMessages:'
                                  +' Width=%d, Height=%d.', [Name, FWidth, FHeight]);
       Width := FWidth;
       Height := FHeight;
@@ -4352,7 +4352,7 @@ begin
       MoveType:= 1;
       if (FLeft < Low(Smallint)) or (FLeft > High(Smallint))
       or (FTop  < Low(Smallint)) or (FTop  > High(Smallint)) then
-        raise Exception.CreateFmt('Position range overflow in %s.SendMoveSizeMessages:'
+        raise ELayoutException.CreateFmt('Position range overflow in %s.SendMoveSizeMessages:'
                                  +' Left=%d, Top=%d.', [Name, FLeft, FTop]);
       XPos := FLeft;
       YPos := FTop;
@@ -6922,7 +6922,7 @@ var
 
   procedure RaiseLoop;
   begin
-    raise Exception.Create('TWinControl.WMMove loop detected: '+DbgSName(Self)+' BoundsRealized='+dbgs(FBoundsRealized)+' NewBoundsRealized='+dbgs(NewBoundsRealized));
+    raise ELayoutException.Create('TWinControl.WMMove loop detected: '+DbgSName(Self)+' BoundsRealized='+dbgs(FBoundsRealized)+' NewBoundsRealized='+dbgs(NewBoundsRealized));
   end;
 
 begin
@@ -6999,7 +6999,7 @@ var
       or (OldClientSize.cy<>NewClientSize.cy)
     then
       s:=s+' OldClientSize='+dbgs(OldClientSize)+' NewClientSize='+dbgs(NewClientSize);
-    raise Exception.Create(s);
+    raise ELayoutException.Create(s);
   end;
 
 begin
@@ -7124,7 +7124,7 @@ var
 
   procedure RaiseLoop;
   begin
-    raise Exception.Create('TWinControl.WMWindowPosChanged loop detected: '+DbgSName(Self)+' BoundsRealized='+dbgs(FBoundsRealized)+' NewBoundsRealized='+dbgs(NewBoundsRealized));
+    raise ELayoutException.Create('TWinControl.WMWindowPosChanged loop detected: '+DbgSName(Self)+' BoundsRealized='+dbgs(FBoundsRealized)+' NewBoundsRealized='+dbgs(NewBoundsRealized));
   end;
 
 begin
@@ -7947,7 +7947,8 @@ end;
 procedure TWinControl.EndUpdateBounds;
 begin
   if FBoundsLockCount <= 0 then
-    raise EInvalidOperation.CreateFmt('TWinControl.EndUpdateBounds %s too many calls.', [DbgSName(Self)]);
+    raise ELayoutException.CreateFmt('TWinControl.EndUpdateBounds %s too many calls.',
+                                     [DbgSName(Self)]);
   dec(FBoundsLockCount);
   if FBoundsLockCount = 0 then
     SetBounds(Left, Top, Width, Height);
@@ -8110,9 +8111,11 @@ procedure TWinControl.SetBounds(ALeft, ATop, AWidth, AHeight: integer);
     if FRealizeBoundsLockCount > 0 then Exit;
     // the user changed the bounds
     if AWidth < 0 then
-      raise EInvalidOperation.CreateFmt('TWinControl.SetBounds (%s): Negative width %d not allowed.', [DbgSName(Self), AWidth]);
+      raise ELayoutException.CreateFmt('TWinControl.SetBounds (%s): Negative width %d not allowed.',
+                                       [DbgSName(Self), AWidth]);
     if AHeight < 0 then
-      raise EInvalidOperation.CreateFmt('TWinControl.SetBounds (%s): Negative height %d not allowed.', [DbgSName(Self), AHeight]);
+      raise ELayoutException.CreateFmt('TWinControl.SetBounds (%s): Negative height %d not allowed.',
+                                       [DbgSName(Self), AHeight]);
   end;
 
 var

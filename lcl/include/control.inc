@@ -332,7 +332,7 @@ procedure TControl.AdjustSize;
 
   procedure RaiseLoop;
   begin
-    raise Exception.Create('TControl.AdjustSize loop detected '+DbgSName(Self)+' Bounds='+dbgs(BoundsRect));
+    raise ELayoutException.Create('TControl.AdjustSize loop detected '+DbgSName(Self)+' Bounds='+dbgs(BoundsRect));
   end;
 
 begin
@@ -665,10 +665,9 @@ begin
 
   // check for loop.
   if (not KeepBase) and (cfKillChangeBounds in GetTopParent.FControlFlags) then
-    raise Exception.Create('TControl.ChangeBounds loop detected '+DbgSName(Self)
-      +' Left='+dbgs(Left)+',Top='+dbgs(Top)+',Width='+dbgs(Width)+',Height='+dbgs(Height)
-      +' NewLeft='+dbgs(aLeft)+',NewTop='+dbgs(aTop)+',NewWidth='+dbgs(aWidth)+',NewHeight='+dbgs(aHeight)
-      );
+    raise ELayoutException.CreateFmt('TControl.ChangeBounds loop detected %s '+
+      'Left=%d,Top=%d,Width=%d,Height=%d NewLeft=%d,NewTop=%d,NewWidth=%d,NewHeight=%d',
+            [DbgSName(Self), Left,Top,Width,Height, aLeft,aTop,aWidth,aHeight]);
   OldLeft := FLeft;
   OldTop := FTop;
   OldWidth := FWidth;
@@ -4244,13 +4243,11 @@ procedure TControl.SetWidth(Value: Integer);
   begin
     // the user changed the width
     if Value<0 then
-      raise EInvalidOperation.Create(
-        'TWinControl.SetBounds ('+DbgSName(Self)+'): Negative width '
-          +dbgs(Value)+' not allowed.');
+      raise ELayoutException.CreateFmt('TWinControl.SetBounds (%s): Negative width %d not allowed.',
+                                       [DbgSName(Self), Value]);
     if Value>=10000 then
-      raise EInvalidOperation.Create(
-        'TWinControl.SetBounds ('+DbgSName(Self)+'): Width '
-          +dbgs(Value)+' not allowed.');
+      raise ELayoutException.CreateFmt('TWinControl.SetBounds (%s): Width %d not allowed.',
+                                       [DbgSName(Self), Value]);
   end;
 
 begin
@@ -4288,13 +4285,11 @@ procedure TControl.SetHeight(Value: Integer);
   begin
     // the user changed the height
     if Value<0 then
-      raise EInvalidOperation.Create(
-        'TWinControl.SetHeight ('+DbgSName(Self)+'): Negative height '
-          +dbgs(Value)+' not allowed.');
+      raise ELayoutException.CreateFmt('TWinControl.SetHeight (%s): Negative height %d not allowed.',
+                                       [DbgSName(Self), Value]);
     if Value>=10000 then
-      raise EInvalidOperation.Create(
-        'TWinControl.SetBounds ('+DbgSName(Self)+'): Height '
-          +dbgs(Value)+' not allowed.');
+      raise ELayoutException.CreateFmt('TWinControl.SetBounds (%s): Height %d not allowed.',
+                                       [DbgSName(Self), Value]);
   end;
 
 begin
@@ -5628,7 +5623,7 @@ procedure TControl.InvalidatePreferredSize;
 
   procedure RaiseLoop;
   begin
-    raise Exception.Create('TControl.InvalidatePreferredSize loop detected '+DbgSName(Self)+' Bounds='+dbgs(BoundsRect));
+    raise ELayoutException.Create('TControl.InvalidatePreferredSize loop detected '+DbgSName(Self)+' Bounds='+dbgs(BoundsRect));
   end;
 
 var
@@ -5725,10 +5720,9 @@ begin
   {$IFDEF DebugDisableAutoSizing}
   CheckReason;
   {$ENDIF}
-
   if FAutoSizingLockCount<=0 then
-    raise EInvalidOperation.Create('TControl.EnableAutoSizing '+DbgSName(Self)+': missing DisableAutoSizing');
-
+    raise ELayoutException.CreateFmt('TControl.EnableAutoSizing %s: missing DisableAutoSizing',
+                                     [DbgSName(Self)]);
   dec(FAutoSizingLockCount);
   //DebugLn([Space(FAutoSizingLockCount*2),'TControl.EnableAutoSizing ',DbgSName(Self),' ',FAutoSizingLockCount]);
   if (FAutoSizingLockCount=0) then

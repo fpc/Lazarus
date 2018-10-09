@@ -926,6 +926,8 @@ type
 
   { TControl }
 
+  ELayoutException = class(Exception);
+
   TControlAutoSizePhase = (
     caspNone,
     caspChangingProperties,
