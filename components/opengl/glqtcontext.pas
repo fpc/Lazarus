@@ -84,6 +84,7 @@ function CreateOpenGLContextAttrList(DoubleBuffered: boolean; RGBA: boolean;
 
 
 implementation
+uses LMessages, Forms;
 
 function XVisualAsString(AVisual: PVisual): string;
 begin
@@ -118,15 +119,79 @@ type
   { TQtGLWidget }
 
   TQtGLWidget = class(TQtWidget)
+  protected
+    function PaintGLControl(Sender: QObjectH; Event: QEventH): boolean; cdecl;
   public
     xdisplay: PDisplay;
     visual: PXVisualInfo;
     glxcontext: TGLXContext;
     ref_count: integer;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     function GetGLXDrawable: GLXDrawable;
   end;
 
 { TQtGLWidget }
+
+function TQtGLWidget.PaintGLControl(Sender: QObjectH; Event: QEventH): boolean;
+  cdecl;
+var
+  Msg: TLMPaint;
+  AStruct: PPaintStruct;
+  B: Boolean;
+begin
+  Result := False;
+  QEvent_accept(Event);
+  if CanSendLCLMessage and (LCLObject is TWinControl) then
+  begin
+    FillChar(Msg{%H-}, SizeOf(Msg), #0);
+
+    Msg.Msg := LM_PAINT;
+    New(AStruct);
+    try
+      try
+        FillChar(AStruct^, SizeOf(TPaintStruct), 0);
+        // QWidget_geometry(Widget, @AStruct^.rcPaint);
+        QPaintEvent_rect(QPaintEventH(Event), @AStruct^.rcPaint);
+        AStruct^.hdc := PtrUInt(Self.glxcontext); // HDC(QOpenGLWidget_context(QOpenGLWidgetH(Sender)));
+        Msg.PaintStruct := AStruct;
+
+        Msg.DC := AStruct^.hdc;
+        LCLObject.WindowProc(TLMessage(Msg));
+
+        QEvent_ignore(Event);
+        Result := True; {let Qt finish}
+      finally
+        Dispose(AStruct);
+      end;
+    except
+      // prevent recursive repainting !
+      B := (Sender <> nil) and QtWidgetSet.IsValidHandle(HWND(Self));
+      if B then
+        QWidget_setUpdatesEnabled(QWidgetH(Sender), False);
+      try
+        Application.HandleException(nil);
+      finally
+        if B and Assigned(Application) and not Application.Terminated then
+          QWidget_setUpdatesEnabled(QWidgetH(Sender), True);
+      end;
+    end;
+
+  end else
+  begin
+    DebugLn('TQtGLWidget.PaintGLControl error CanSendLCLMessage=',dbgs(CanSendLCLMessage),' LCLObject=',dbgsName(LCLObject));
+  end;
+end;
+
+function TQtGLWidget.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
+  cdecl;
+begin
+  Result := False;
+  if QEvent_type(Event) = QEventPaint then
+  begin
+    PaintGLControl(Sender, Event);
+  end else
+    Result := inherited EventFilter(Sender, Event);
+end;
 
 function TQtGLWidget.GetGLXDrawable: GLXDrawable;
 begin
@@ -233,11 +298,14 @@ begin
     NewQtWidget.setAttribute(QtWA_PaintOnScreen);
     NewQtWidget.setAttribute(QtWA_NoSystemBackground);
     NewQtWidget.setAttribute(QtWA_OpaquePaintEvent);
-    NewQtWidget.HasPaint := true;
+    NewQtWidget.HasPaint := false;
     NewQtWidget.xdisplay := QX11Info_display;
-    NewQtWidget.visual:=glXChooseVisual(NewQtWidget.xdisplay,
+    NewQtWidget.visual := glXChooseVisual(NewQtWidget.xdisplay,
       DefaultScreen(NewQtWidget.xdisplay), @attrList.AttributeList[0]);
     direct := false;
+    {$IFDEF LCLQt5}
+    NewQtWidget.GetGLXDrawable;
+    {$ENDIF}
     {$IFDEF ModernGL}
     if GLX_version_1_3(NewQtWidget.xdisplay) then
     begin
@@ -295,7 +363,7 @@ begin
       XVInfo:=glXGetVisualFromFBConfig(NewQtWidget.xdisplay, FBConfig);
       if XVInfo=nil then
         raise Exception.Create('QT no visual found');
-      if (GLX_ARB_create_context(NewQtWidget.xdisplay, DefaultScreen(NewQtWidget.xdisplay))) then // and (AttrList.MajorVersion>0) then
+      if (GLX_ARB_create_context(NewQtWidget.xdisplay, DefaultScreen(NewQtWidget.xdisplay))) then
       begin
 		    // install custom X error handler
 		    XSetErrorHandler(@CustomXErrorHandler);
