@@ -93,6 +93,7 @@ type
     procedure SetLHelpPath(AValue: string);
   public
     constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
     function ShowNode(Node: THelpNode; var ErrMsg: string): TShowHelpResult; override;
     procedure Assign(Source: TPersistent); override;
     procedure Load(Storage: TConfigStorage); override;
@@ -128,6 +129,12 @@ constructor TLHelpConnector.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   AddSupportedMimeType(CHMMimeType);
+end;
+
+destructor TLHelpConnector.Destroy;
+begin
+  FConnection.Free;
+  inherited;
 end;
 
 function TLHelpConnector.ShowNode(Node: THelpNode; var ErrMsg: string
