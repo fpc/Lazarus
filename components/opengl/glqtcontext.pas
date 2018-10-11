@@ -13,6 +13,7 @@ unit GLQTContext;
 {$LinkLib GL}
 {$PACKRECORDS C}
 {$DEFINE ModernGL}
+//{$DEFINE VerboseMultiSampling}
 interface
 
 uses
@@ -80,7 +81,7 @@ function LOpenGLCreateContext(AWinControl: TWinControl;
 procedure LOpenGLDestroyContextInfo(AWinControl: TWinControl);
 function CreateOpenGLContextAttrList(DoubleBuffered: boolean; RGBA: boolean;
              const RedBits, GreenBits, BlueBits, AlphaBits, DepthBits,
-             StencilBits,  AUXBuffers: Cardinal): PInteger;
+             StencilBits,  AUXBuffers, MultiSampling: Cardinal): PInteger;
 
 
 implementation
@@ -290,9 +291,12 @@ var
   AttrList: TContextAttribs;
   NewQtWidget: TQtGLWidget;
   direct: boolean;
+  {$IFDEF VerboseMultiSampling}
+  samp_buf, visual_id, red_size, blue_size, green_size, alpha_size: integer;
+  {$ENDIF}
 begin
   if WSPrivate=nil then ;
-  AttrList.AttributeList := CreateOpenGLContextAttrList(DoubleBuffered,RGBA,RedBits,GreenBits,BlueBits,AlphaBits,DepthBits,StencilBits,AUXBuffers);
+  AttrList.AttributeList := CreateOpenGLContextAttrList(DoubleBuffered,RGBA,RedBits,GreenBits,BlueBits,AlphaBits,DepthBits,StencilBits,AUXBuffers, MultiSampling);
   try
     NewQtWidget:=TQtGLWidget.Create(AWinControl,AParams);
     NewQtWidget.setAttribute(QtWA_PaintOnScreen);
@@ -354,6 +358,18 @@ begin
         end;
           //raise Exception.Create('BestFBConfig '+inttostr(BestFBConfig));
 	      FBConfig := FBConfigs[BestFBConfig];
+	      {$IFDEF VerboseMultiSampling}
+	      //HTTPS://WWW.OPENGL.ORG/DISCUSSION_BOARDS/SHOWTHREAD.PHP/168359-OPENGL-3-X-AND-QT-FRAMEWORK?STYLEID=12
+	      GLXGETFBCONFIGATTRIB(XDISPLAY, FBCONFIG, GLX_SAMPLE_BUFFERS, SAMP_BUF);
+	      GLXGETFBCONFIGATTRIB(XDISPLAY, FBCONFIG, GLX_SAMPLES, SAMPLES);
+	      GLXGETFBCONFIGATTRIB(XDISPLAY, FBCONFIG, GLX_VISUAL_ID, VISUAL_ID);
+	      GLXGETFBCONFIGATTRIB(XDISPLAY, FBCONFIG, GLX_RED_SIZE, RED_SIZE);
+	      GLXGETFBCONFIGATTRIB(XDISPLAY, FBCONFIG, GLX_BLUE_SIZE, BLUE_SIZE);
+	      GLXGETFBCONFIGATTRIB(XDISPLAY, FBCONFIG, GLX_GREEN_SIZE, GREEN_SIZE);
+	      GLXGETFBCONFIGATTRIB(XDISPLAY, FBCONFIG, GLX_ALPHA_SIZE, ALPHA_SIZE);
+	      DEBUGLN(FORMAT('OPENGL FBCONFIG %D, ID 0X%X, SAMPLE_BUFFERS %D, SAMPLES %D, R%D G%D B%D A%D',
+              [BESTFBCONFIG, VISUAL_ID, SAMP_BUF, SAMPLES, RED_SIZE, BLUE_SIZE, GREEN_SIZE, ALPHA_SIZE]));
+        {$ENDIF}
       end else
       begin
   	    { just choose the first FB config from the FBConfigs list.
@@ -418,7 +434,7 @@ end;
 
 function CreateOpenGLContextAttrList(DoubleBuffered: boolean; RGBA: boolean;
   const RedBits, GreenBits, BlueBits, AlphaBits, DepthBits, StencilBits,
-  AUXBuffers: Cardinal): PInteger;
+  AUXBuffers, MultiSampling: Cardinal): PInteger;
 var
   p: integer;
   UseFBConfig: boolean;
@@ -468,7 +484,13 @@ var
     begin
       Add(GLX_AUX_BUFFERS);  Add(AUXBuffers);
     end;
-
+    {$IFDEF ModernGL}
+	  if MultiSampling>0 then
+    begin
+      Add(GLX_SAMPLE_BUFFERS);  Add(1);
+      Add(GLX_SAMPLES);  Add(MultiSampling);
+	  end;
+    {$ENDIF}
     Add(0); { 0 = X.None (be careful: GLX_NONE is something different) }
   end;
 
@@ -489,4 +511,5 @@ end;
 
 
 end.
+
 
