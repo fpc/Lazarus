@@ -1670,6 +1670,7 @@ begin
         EndUpdate;
       end;
     end else
+    if FSelected <> nil then
       FSelected.Selected := False;
     FSelected := nil;
     Include(FFlags,lffSelectedValid);
