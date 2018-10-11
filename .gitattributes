@@ -2017,12 +2017,22 @@ components/ideintf/imagelisteditor.lfm svneol=native#text/plain
 components/ideintf/imagelisteditor.pp svneol=native#text/pascal
 components/ideintf/images/build.bat svneol=native#text/pascal
 components/ideintf/images/delete_selection.png -text
+components/ideintf/images/delete_selection_150.png -text svneol=unset#image/png
+components/ideintf/images/delete_selection_200.png -text svneol=unset#image/png
 components/ideintf/images/ideintf_images.res -text
 components/ideintf/images/ideintf_images_list.txt svneol=native#text/pascal
 components/ideintf/images/laz_copy.png -text svneol=unset#image/png
+components/ideintf/images/laz_copy_150.png -text svneol=unset#image/png
+components/ideintf/images/laz_copy_200.png -text svneol=unset#image/png
 components/ideintf/images/laz_cut.png -text svneol=unset#image/png
+components/ideintf/images/laz_cut_150.png -text svneol=unset#image/png
+components/ideintf/images/laz_cut_200.png -text svneol=unset#image/png
 components/ideintf/images/laz_paste.png -text svneol=unset#image/png
+components/ideintf/images/laz_paste_150.png -text svneol=unset#image/png
+components/ideintf/images/laz_paste_200.png -text svneol=unset#image/png
 components/ideintf/images/oi_options.png -text svneol=unset#image/png
+components/ideintf/images/oi_options_150.png -text svneol=unset#image/png
+components/ideintf/images/oi_options_200.png -text svneol=unset#image/png
 components/ideintf/images/propertygrid/issue_carbon.png -text svneol=unset#image/png
 components/ideintf/images/propertygrid/issue_fpgui.png -text svneol=unset#image/png
 components/ideintf/images/propertygrid/issue_gtk.png -text svneol=unset#image/png
