@@ -12,10 +12,15 @@ unit GLQTContext;
 {$mode objfpc}{$H+}
 {$LinkLib GL}
 {$PACKRECORDS C}
-
+{$DEFINE ModernGL}
 interface
 
 uses
+  //  Classes, SysUtils, ctypes, LCLProc, LCLType, X, XUtil, XLib, gl,
+  //InterfaceBase,
+  //glx,
+  //WSLCLClasses,
+  {$IFDEF ModernGL} ctypes,{$ENDIF}
   Classes, SysUtils, Controls, LCLProc, LCLType, X, XUtil, XLib, gl,
   InterfaceBase,
   WSLCLClasses,glx,
@@ -60,6 +65,7 @@ const
 type
   TGLXContext = pointer;
 
+
 procedure LOpenGLViewport(Handle: HWND; Left, Top, Width, Height: integer);
 procedure LOpenGLSwapBuffers(Handle: HWND);
 function LOpenGLMakeCurrent(Handle: HWND): boolean;
@@ -81,9 +87,11 @@ implementation
 
 function XVisualAsString(AVisual: PVisual): string;
 begin
-  if AVisual=nil then begin
+  if AVisual=nil then
+  begin
     Result:='nil';
-  end else begin
+  end else
+  begin
     Result:=''
         +' bits_per_rgb='+dbgs(AVisual^.bits_per_rgb)
         +' red_mask='+hexstr(AVisual^.red_mask,8)
@@ -96,16 +104,17 @@ end;
 
 function XDisplayAsString(ADisplay: PDisplay): string;
 begin
-  if ADisplay=nil then begin
+  if ADisplay=nil then
+  begin
     Result:='nil';
-  end else begin
+  end else
+  begin
     Result:=''
         +'';
   end;
 end;
 
 type
-
   { TQtGLWidget }
 
   TQtGLWidget = class(TQtWidget)
@@ -168,6 +177,24 @@ begin
   Result := glXMakeCurrent(Widget.xdisplay, 0, nil);
 end;
 
+{$IFDEF ModernGL}
+function CustomXErrorHandler({%H-}para1:PDisplay; para2:PXErrorEvent):cint;cdecl;
+begin
+  if para2^.error_code=8 then begin
+    raise Exception.Create('A BadMatch X error occured. Most likely the requested OpenGL version is invalid.');
+  end;
+  Result:=0;
+end;
+{$ENDIF}
+
+type
+  TContextAttribs = record
+    AttributeList: PLongint;
+    MajorVersion: Cardinal;
+    MinorVersion: Cardinal;
+    MultiSampling: Cardinal;
+    ContextFlags: Cardinal;
+  end;
 
 {function LOpenGLCreateContext(AWinControl: TWinControl;
   WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
@@ -182,31 +209,136 @@ function LOpenGLCreateContext(AWinControl: TWinControl;
                           const AParams: TCreateParams): HWND;
 
 var
-  AttrList: PInteger;
+  {$IFDEF ModernGL} { Used with glXCreateContextAttribsARB to select 3.X and above context }
+  Context3X: array [0..6] of Integer;
+  ScreenNum: cint;
+  FBConfig: TGLXFBConfig;
+  FBConfigs: PGLXFBConfig;
+  FBConfigsCount: Integer;
+  i: Integer;
+  Samples: cint;
+  BestSamples: Integer;
+  BestFBConfig: Integer;
+  XVInfo: PXVisualInfo;
+  XDisplay: PDisplay;
+  {$ENDIF}
+  AttrList: TContextAttribs;
   NewQtWidget: TQtGLWidget;
   direct: boolean;
 begin
   if WSPrivate=nil then ;
-  AttrList:=CreateOpenGLContextAttrList(DoubleBuffered,RGBA,RedBits,GreenBits,BlueBits,AlphaBits,DepthBits,StencilBits,AUXBuffers);
+  AttrList.AttributeList := CreateOpenGLContextAttrList(DoubleBuffered,RGBA,RedBits,GreenBits,BlueBits,AlphaBits,DepthBits,StencilBits,AUXBuffers);
   try
     NewQtWidget:=TQtGLWidget.Create(AWinControl,AParams);
     NewQtWidget.setAttribute(QtWA_PaintOnScreen);
     NewQtWidget.setAttribute(QtWA_NoSystemBackground);
     NewQtWidget.setAttribute(QtWA_OpaquePaintEvent);
-    NewQtWidget.HasPaint:=true;
+    NewQtWidget.HasPaint := true;
     NewQtWidget.xdisplay := QX11Info_display;
     NewQtWidget.visual:=glXChooseVisual(NewQtWidget.xdisplay,
-      DefaultScreen(NewQtWidget.xdisplay), @attrList[0]);
-    direct:=false;
-    NewQtWidget.glxcontext := glXCreateContext(NewQtWidget.xdisplay,
-                                               NewQtWidget.visual, nil, direct);
+      DefaultScreen(NewQtWidget.xdisplay), @attrList.AttributeList[0]);
+    direct := false;
+    {$IFDEF ModernGL}
+    if GLX_version_1_3(NewQtWidget.xdisplay) then
+    begin
+      //use approach recommended since glX 1.3
+      direct := true;
+      XDisplay := NewQtWidget.xdisplay;
+      ScreenNum := DefaultScreen (XDisplay);
+      AttrList.MajorVersion:=MajorVersion;
+      AttrList.MinorVersion:=MinorVersion;
+      // fill in context flags
+      AttrList.ContextFlags:=0;
+      //if DebugContext then
+      // AttrList.ContextFlags:=Attribs.ContextFlags or GLX_CONTEXT_DEBUG_BIT_ARB;
+      if (MultiSampling > 1) and GLX_ARB_multisample(XDisplay,ScreenNum) then
+	      AttrList.MultiSampling := MultiSampling
+      else
+	      AttrList.MultiSampling:=0;
+
+      FBConfigsCount:=0;
+      FBConfigs:=glXChooseFBConfig(XDisplay, ScreenNum, @AttrList.AttributeList[0], FBConfigsCount);
+      if FBConfigsCount = 0 then
+      	raise Exception.Create('Could not find FB config');
+
+        // if multisampling is requested try to get a number of sample buffers as
+        // close to the specified number as possible
+      if AttrList.MultiSampling > 0 then
+      begin
+    	  BestSamples:=0;
+	      for i := 0 to FBConfigsCount-1 do
+        begin
+	        Samples:=0;
+	        glXGetFBConfigAttrib(NewQtWidget.xdisplay, FBConfigs[i], GLX_SAMPLES_ARB, Samples);
+	        if Samples = AttrList.MultiSampling then
+          begin
+            BestSamples := Samples;
+		        BestFBConfig := i;
+      		  break;
+	        end else
+          begin
+      		  if (Samples>BestSamples) and (Samples<AttrList.MultiSampling) then
+            begin
+		          BestSamples := Samples;
+		          BestFBConfig := i;
+            end;
+    		  end;
+        end;
+          //raise Exception.Create('BestFBConfig '+inttostr(BestFBConfig));
+	      FBConfig := FBConfigs[BestFBConfig];
+      end else
+      begin
+  	    { just choose the first FB config from the FBConfigs list.
+  	        More involved selection possible. }
+  	    FBConfig := FBConfigs^;
+      end;
+      XVInfo:=glXGetVisualFromFBConfig(NewQtWidget.xdisplay, FBConfig);
+      if XVInfo=nil then
+        raise Exception.Create('QT no visual found');
+      if (GLX_ARB_create_context(NewQtWidget.xdisplay, DefaultScreen(NewQtWidget.xdisplay))) then // and (AttrList.MajorVersion>0) then
+      begin
+		    // install custom X error handler
+		    XSetErrorHandler(@CustomXErrorHandler);
+		    Context3X[0] := GLX_CONTEXT_MAJOR_VERSION_ARB;
+        if AttrList.MajorVersion = 0 then
+  		    Context3X[1] := 1
+        else
+  		    Context3X[1] := AttrList.MajorVersion;
+		    Context3X[2] := GLX_CONTEXT_MINOR_VERSION_ARB;
+		    Context3X[3] := AttrList.MinorVersion;
+		    Context3X[4] := GLX_CONTEXT_FLAGS_ARB;
+		    Context3X[5] := AttrList.ContextFlags;
+		    Context3X[6] := None;
+		    //if (ShareList<>nil) then begin
+		    //	NewQtWidget.glxcontext:=glXCreateContextAttribsARB(NewQtWidget.xdisplay, FBConfig,PrivateShareList^.glxcontext, direct, Context3X);
+	      //end else begin
+		    NewQtWidget.glxcontext := glXCreateContextAttribsARB(NewQtWidget.xdisplay, FBConfig, Nil, direct, Context3X);
+		    //end;
+        //raise Exception.Create('key '+inttostr(BestFBConfig));
+		    // restore default error handler
+		    XSetErrorHandler(nil);
+      end else
+      begin
+		    //if (ShareList<>nil) then begin
+		    //	NewQtWidget.glxcontext:=glXCreateNewContext(NewQtWidget.xdisplay, FBConfig, GLX_RGBA_TYPE,PrivateShareList^.glxcontext, direct)
+		    //end else begin
+        NewQtWidget.glxcontext := glXCreateNewContext(NewQtWidget.xdisplay, FBConfig, GLX_RGBA_TYPE, Nil, direct);
+		    //end;
+	    end;
+	    if FBConfigs<>nil then
+		    XFree(FBConfigs);
+
+    end else
+    {$ENDIF}
+      NewQtWidget.glxcontext := glXCreateContext(NewQtWidget.xdisplay,
+        NewQtWidget.visual, nil, direct);
     NewQtWidget.ref_count := 1;
 
     NewQtWidget.AttachEvents;
 
-    Result:=HWND(PtrUInt(Pointer(NewQtWidget)));
+    Result:=HWND(NewQtWidget);
   finally
-    FreeMem(AttrList);
+    FreeMem(AttrList.AttributeList);
   end;
 end;
 
@@ -233,7 +365,8 @@ var
   procedure CreateList;
   begin
     p:=0;
-    if UseFBConfig then begin
+    if UseFBConfig then
+    begin
       Add(GLX_X_RENDERABLE); Add(1);
       Add(GLX_X_VISUAL_TYPE); Add(GLX_TRUE_COLOR);
     end;
@@ -275,7 +408,11 @@ begin
   {$IFDEF VerboseMultiSampling}
   debugln(['CreateOpenGLContextAttrList MultiSampling=',MultiSampling]);
   {$ENDIF}
-  UseFBConfig := false; //GLX_version_1_3(GetDefaultXDisplay);
+   {$IFDEF ModernGL}
+  UseFBConfig := GLX_version_1_3(QX11Info_display());
+  {$ELSE}
+  UseFBConfig := false;
+  {$ENDIF}
   Result:=nil;
   CreateList;
   GetMem(Result,SizeOf(integer)*p);
