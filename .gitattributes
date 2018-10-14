@@ -7856,21 +7856,35 @@ images/icons/transparent.ico -text svneol=unset#image/ico
 images/ide_icon48x48.png -text svneol=unset#image/png
 images/includefile.ico -text svneol=unset#image/x-icon
 images/items/item_character.png -text svneol=unset#image/png
+images/items/item_character_150.png -text svneol=unset#image/png
+images/items/item_character_200.png -text svneol=unset#image/png
 images/items/item_filter.png -text svneol=unset#image/png
+images/items/item_filter_150.png -text svneol=unset#image/png
+images/items/item_filter_200.png -text svneol=unset#image/png
 images/items/item_font.png -text svneol=unset#image/png
+images/items/item_font_150.png -text svneol=unset#image/png
+images/items/item_font_200.png -text svneol=unset#image/png
 images/items/item_form.png -text svneol=unset#image/png
 images/items/item_form_150.png -text
 images/items/item_form_200.png -text
 images/items/item_keyboard.png -text svneol=unset#image/png
+images/items/item_keyboard_150.png -text svneol=unset#image/png
+images/items/item_keyboard_200.png -text svneol=unset#image/png
 images/items/item_library.png -text svneol=unset#image/png
+images/items/item_library_150.png -text svneol=unset#image/png
+images/items/item_library_200.png -text svneol=unset#image/png
 images/items/item_package.png -text svneol=unset#image/png
+images/items/item_package_150.png -text svneol=unset#image/png
+images/items/item_package_200.png -text svneol=unset#image/png
 images/items/item_project.png -text svneol=unset#image/png
-images/items/item_project_150.png -text
-images/items/item_project_200.png -text
+images/items/item_project_150.png -text svneol=unset#image/png
+images/items/item_project_200.png -text svneol=unset#image/png
 images/items/item_project_source.png -text
 images/items/item_project_source_150.png -text
 images/items/item_project_source_200.png -text
 images/items/item_todo.png -text svneol=unset#image/png
+images/items/item_todo_150.png -text svneol=unset#image/png
+images/items/item_todo_200.png -text svneol=unset#image/png
 images/items/item_unit.png -text svneol=unset#image/png
 images/items/item_unit_150.png -text
 images/items/item_unit_200.png -text
@@ -8291,36 +8305,98 @@ images/mimetypes/text-lazarus-project-information.png -text
 images/mimetypes/text-lazarus-project-source.png -text
 images/mimetypes/text-x-pascal.png -text
 images/packages/pkg_add.png -text svneol=unset#image/png
+images/packages/pkg_add_150.png -text svneol=unset#image/png
+images/packages/pkg_add_200.png -text svneol=unset#image/png
 images/packages/pkg_binary.png -text svneol=unset#image/png
+images/packages/pkg_binary_150.png -text svneol=unset#image/png
+images/packages/pkg_binary_200.png -text svneol=unset#image/png
 images/packages/pkg_compile.png -text svneol=unset#image/png
+images/packages/pkg_compile_150.png -text svneol=unset#image/png
+images/packages/pkg_compile_200.png -text svneol=unset#image/png
 images/packages/pkg_conflict.png -text svneol=unset#image/png
+images/packages/pkg_conflict_150.png -text svneol=unset#image/png
+images/packages/pkg_conflict_200.png -text svneol=unset#image/png
 images/packages/pkg_core_overlay.png -text svneol=unset#image/png
+images/packages/pkg_core_overlay_150.png -text svneol=unset#image/png
+images/packages/pkg_core_overlay_200.png -text svneol=unset#image/png
 images/packages/pkg_design_overlay.png -text svneol=unset#image/png
+images/packages/pkg_design_overlay_150.png -text svneol=unset#image/png
+images/packages/pkg_design_overlay_200.png -text svneol=unset#image/png
 images/packages/pkg_files.png -text svneol=unset#image/png
+images/packages/pkg_files_150.png -text svneol=unset#image/png
+images/packages/pkg_files_200.png -text svneol=unset#image/png
 images/packages/pkg_fpc_overlay.png -text svneol=unset#image/png
+images/packages/pkg_fpc_overlay_150.png -text svneol=unset#image/png
+images/packages/pkg_fpc_overlay_200.png -text svneol=unset#image/png
 images/packages/pkg_graph.png -text svneol=unset#image/png
+images/packages/pkg_graph_150.png -text svneol=unset#image/png
+images/packages/pkg_graph_200.png -text svneol=unset#image/png
 images/packages/pkg_hierarchical.png -text svneol=unset#image/png
+images/packages/pkg_hierarchical_150.png -text svneol=unset#image/png
+images/packages/pkg_hierarchical_200.png -text svneol=unset#image/png
 images/packages/pkg_include.png -text svneol=unset#image/png
+images/packages/pkg_include_150.png -text svneol=unset#image/png
+images/packages/pkg_include_200.png -text svneol=unset#image/png
 images/packages/pkg_inherited.png -text svneol=unset#image/png
+images/packages/pkg_inherited_150.png -text svneol=unset#image/png
+images/packages/pkg_inherited_200.png -text svneol=unset#image/png
 images/packages/pkg_install.png -text svneol=unset#image/png
+images/packages/pkg_install_150.png -text svneol=unset#image/png
+images/packages/pkg_install_200.png -text svneol=unset#image/png
 images/packages/pkg_installed.png -text svneol=unset#image/png
+images/packages/pkg_installed_150.png -text svneol=unset#image/png
+images/packages/pkg_installed_200.png -text svneol=unset#image/png
 images/packages/pkg_issues.png -text svneol=unset#image/png
+images/packages/pkg_issues_150.png -text svneol=unset#image/png
+images/packages/pkg_issues_200.png -text svneol=unset#image/png
 images/packages/pkg_lazarus_overlay.png -text svneol=unset#image/png
+images/packages/pkg_lazarus_overlay_150.png -text svneol=unset#image/png
+images/packages/pkg_lazarus_overlay_200.png -text svneol=unset#image/png
 images/packages/pkg_lfm.png -text svneol=unset#image/png
+images/packages/pkg_lfm_150.png -text svneol=unset#image/png
+images/packages/pkg_lfm_200.png -text svneol=unset#image/png
 images/packages/pkg_lrs.png -text svneol=unset#image/png
+images/packages/pkg_lrs_150.png -text svneol=unset#image/png
+images/packages/pkg_lrs_200.png -text svneol=unset#image/png
 images/packages/pkg_open.png -text svneol=unset#image/png
+images/packages/pkg_open_150.png -text svneol=unset#image/png
+images/packages/pkg_open_200.png -text svneol=unset#image/png
 images/packages/pkg_package_autoinstall.png -text svneol=unset#image/png
+images/packages/pkg_package_autoinstall_150.png -text svneol=unset#image/png
+images/packages/pkg_package_autoinstall_200.png -text svneol=unset#image/png
 images/packages/pkg_package_circle.png -text svneol=unset#image/png
+images/packages/pkg_package_circle_150.png -text svneol=unset#image/png
+images/packages/pkg_package_circle_200.png -text svneol=unset#image/png
 images/packages/pkg_package_uninstall.png -text svneol=unset#image/png
+images/packages/pkg_package_uninstall_150.png -text svneol=unset#image/png
+images/packages/pkg_package_uninstall_200.png -text svneol=unset#image/png
 images/packages/pkg_properties.png -text svneol=unset#image/png
+images/packages/pkg_properties_150.png -text svneol=unset#image/png
+images/packages/pkg_properties_200.png -text svneol=unset#image/png
 images/packages/pkg_registerunit.png -text svneol=unset#image/png
+images/packages/pkg_registerunit_150.png -text svneol=unset#image/png
+images/packages/pkg_registerunit_200.png -text svneol=unset#image/png
 images/packages/pkg_removedfiles.png -text svneol=unset#image/png
+images/packages/pkg_removedfiles_150.png -text svneol=unset#image/png
+images/packages/pkg_removedfiles_200.png -text svneol=unset#image/png
 images/packages/pkg_removedrequired.png -text svneol=unset#image/png
+images/packages/pkg_removedrequired_150.png -text svneol=unset#image/png
+images/packages/pkg_removedrequired_200.png -text svneol=unset#image/png
 images/packages/pkg_required.png -text svneol=unset#image/png
+images/packages/pkg_required_150.png -text svneol=unset#image/png
+images/packages/pkg_required_200.png -text svneol=unset#image/png
 images/packages/pkg_runtime_overlay.png -text svneol=unset#image/png
+images/packages/pkg_runtime_overlay_150.png -text svneol=unset#image/png
+images/packages/pkg_runtime_overlay_200.png -text svneol=unset#image/png
 images/packages/pkg_sortalphabetically.png -text svneol=unset#image/png
+images/packages/pkg_sortalphabetically_150.png -text svneol=unset#image/png
+images/packages/pkg_sortalphabetically_200.png -text svneol=unset#image/png
 images/packages/pkg_text.png -text svneol=unset#image/png
+images/packages/pkg_text_150.png -text svneol=unset#image/png
+images/packages/pkg_text_200.png -text svneol=unset#image/png
 images/packages/pkg_unit.png -text svneol=unset#image/png
+images/packages/pkg_unit_150.png -text svneol=unset#image/png
+images/packages/pkg_unit_200.png -text svneol=unset#image/png
 images/powered-by.svg -text svneol=unset#image/svg%2Bxml
 images/powered_by.png -text svneol=unset#image/png
 images/sourceeditor/ActiveBreakPoint.png -text
