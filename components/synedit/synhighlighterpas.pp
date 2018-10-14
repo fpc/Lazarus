@@ -971,7 +971,7 @@ begin
     else
     if (TopPascalCodeFoldBlockType = cfbtCase) then begin
       EndPascalCodeFoldBlock();
-      StartPascalCodeFoldBlock(cfbtCase);
+      StartPascalCodeFoldBlock(cfbtCase, True);
       fRange := fRange + [rsAtCaseLabel];
     end;
   end
@@ -1082,7 +1082,7 @@ begin
   end
   else if KeyComp('Case') then begin
     if TopPascalCodeFoldBlockType in PascalStatementBlocks + [cfbtUnitSection] then
-      StartPascalCodeFoldBlock(cfbtCase);
+      StartPascalCodeFoldBlock(cfbtCase, True);
     Result := tkKey;
   end
   else
@@ -1204,7 +1204,7 @@ begin
     end else
     if TopPascalCodeFoldBlockType = cfbtCase then begin
       FTokenIsCaseLabel := True;
-      StartPascalCodeFoldBlock(cfbtCaseElse);
+      StartPascalCodeFoldBlock(cfbtCaseElse, True);
     end
   end
   else if KeyComp('Var') then begin
@@ -2019,7 +2019,7 @@ begin
       EndPascalCodeFoldBlockLastLine;
     end;
     if TopPascalCodeFoldBlockType = cfbtCase then begin
-      StartPascalCodeFoldBlock(cfbtCaseElse);
+      StartPascalCodeFoldBlock(cfbtCaseElse, True);
       FTokenIsCaseLabel := True;
     end;
   end
