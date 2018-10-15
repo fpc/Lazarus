@@ -1441,12 +1441,12 @@ begin
     CreateMenuItem(ParentMI,itmToolConvertEncoding,'itmToolConvertEncoding',lisMenuConvertEncoding);
     CreateMenuItem(ParentMI,itmToolCheckLFM,'itmToolCheckLFM',lisMenuCheckLFM, 'menu_tool_check_lfm');
 
-    CreateMenuSubSection(mnuTools,itmDelphiConversion,'itmDelphiConversion',lisMenuDelphiConversion,'menu_tool_dfm_to_lfm');
+    CreateMenuSubSection(mnuTools,itmDelphiConversion,'itmDelphiConversion',lisMenuDelphiConversion,'menu_tool_del_to_laz');
     ParentMI:=itmDelphiConversion;
-    CreateMenuItem(ParentMI,itmToolConvertDelphiUnit,'itmToolConvertDelphiUnit',lisMenuConvertDelphiUnit,'menu_tool_dfm_to_lfm');
-    CreateMenuItem(ParentMI,itmToolConvertDelphiProject,'itmToolConvertDelphiProject',lisMenuConvertDelphiProject,'menu_tool_dfm_to_lfm');
-    CreateMenuItem(ParentMI,itmToolConvertDelphiPackage,'itmToolConvertDelphiPackage',lisMenuConvertDelphiPackage,'menu_tool_dfm_to_lfm');
-    CreateMenuItem(ParentMI,itmToolConvertDFMtoLFM,'itmToolConvertDFMtoLFM',lisMenuConvertDFMtoLFM,'menu_tool_dfm_to_lfm');
+    CreateMenuItem(ParentMI,itmToolConvertDelphiUnit,'itmToolConvertDelphiUnit',lisMenuConvertDelphiUnit,'menu_tool_del_to_laz_unit');
+    CreateMenuItem(ParentMI,itmToolConvertDelphiProject,'itmToolConvertDelphiProject',lisMenuConvertDelphiProject,'menu_tool_del_to_laz_project');
+    CreateMenuItem(ParentMI,itmToolConvertDelphiPackage,'itmToolConvertDelphiPackage',lisMenuConvertDelphiPackage,'menu_tool_del_to_laz_pkg');
+    CreateMenuItem(ParentMI,itmToolConvertDFMtoLFM,'itmToolConvertDFMtoLFM',lisMenuConvertDFMtoLFM,'menu_tool_del_to_laz_form');
 
     CreateMenuSeparatorSection(mnuTools,itmBuildingLazarus,'itmBuildingLazarus');
     ParentMI:=itmBuildingLazarus;

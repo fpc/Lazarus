@@ -2017,12 +2017,22 @@ components/ideintf/imagelisteditor.lfm svneol=native#text/plain
 components/ideintf/imagelisteditor.pp svneol=native#text/pascal
 components/ideintf/images/build.bat svneol=native#text/pascal
 components/ideintf/images/delete_selection.png -text
+components/ideintf/images/delete_selection_150.png -text svneol=unset#image/png
+components/ideintf/images/delete_selection_200.png -text svneol=unset#image/png
 components/ideintf/images/ideintf_images.res -text
 components/ideintf/images/ideintf_images_list.txt svneol=native#text/pascal
 components/ideintf/images/laz_copy.png -text svneol=unset#image/png
+components/ideintf/images/laz_copy_150.png -text svneol=unset#image/png
+components/ideintf/images/laz_copy_200.png -text svneol=unset#image/png
 components/ideintf/images/laz_cut.png -text svneol=unset#image/png
+components/ideintf/images/laz_cut_150.png -text svneol=unset#image/png
+components/ideintf/images/laz_cut_200.png -text svneol=unset#image/png
 components/ideintf/images/laz_paste.png -text svneol=unset#image/png
+components/ideintf/images/laz_paste_150.png -text svneol=unset#image/png
+components/ideintf/images/laz_paste_200.png -text svneol=unset#image/png
 components/ideintf/images/oi_options.png -text svneol=unset#image/png
+components/ideintf/images/oi_options_150.png -text svneol=unset#image/png
+components/ideintf/images/oi_options_200.png -text svneol=unset#image/png
 components/ideintf/images/propertygrid/issue_carbon.png -text svneol=unset#image/png
 components/ideintf/images/propertygrid/issue_fpgui.png -text svneol=unset#image/png
 components/ideintf/images/propertygrid/issue_gtk.png -text svneol=unset#image/png
@@ -7635,16 +7645,38 @@ images/componenttreeview/oi_item.png -text svneol=unset#image/png
 images/componenttreeview_list.txt svneol=native#text/plain
 images/copyright.txt svneol=native#text/plain
 images/debugger/callstack_bottom.png -text
+images/debugger/callstack_bottom_150.png -text svneol=unset#image/png
+images/debugger/callstack_bottom_200.png -text svneol=unset#image/png
 images/debugger/callstack_goto.png -text
+images/debugger/callstack_goto_150.png -text svneol=unset#image/png
+images/debugger/callstack_goto_200.png -text svneol=unset#image/png
 images/debugger/callstack_more.png -text
+images/debugger/callstack_more_150.png -text svneol=unset#image/png
+images/debugger/callstack_more_200.png -text svneol=unset#image/png
 images/debugger/callstack_show.png -text
+images/debugger/callstack_show_150.png -text svneol=unset#image/png
+images/debugger/callstack_show_200.png -text svneol=unset#image/png
 images/debugger/callstack_top.png -text
+images/debugger/callstack_top_150.png -text svneol=unset#image/png
+images/debugger/callstack_top_200.png -text svneol=unset#image/png
 images/debugger/camera.png -text
+images/debugger/camera_150.png -text svneol=unset#image/png
+images/debugger/camera_200.png -text svneol=unset#image/png
 images/debugger/camera_add.png -text
+images/debugger/camera_add_150.png -text svneol=unset#image/png
+images/debugger/camera_add_200.png -text svneol=unset#image/png
 images/debugger/camera_go.png -text
+images/debugger/camera_go_150.png -text svneol=unset#image/png
+images/debugger/camera_go_200.png -text svneol=unset#image/png
 images/debugger/clock.png -text
+images/debugger/clock_150.png -text svneol=unset#image/png
+images/debugger/clock_200.png -text svneol=unset#image/png
 images/debugger/debugger.png -text svneol=unset#image/png
+images/debugger/debugger_150.png -text svneol=unset#image/png
+images/debugger/debugger_200.png -text svneol=unset#image/png
 images/debugger/debugger_breakpoints.png -text svneol=unset#image/png
+images/debugger/debugger_breakpoints_150.png -text svneol=unset#image/png
+images/debugger/debugger_breakpoints_200.png -text svneol=unset#image/png
 images/debugger/debugger_call_stack.png -text svneol=unset#image/png
 images/debugger/debugger_call_stack_150.png -text
 images/debugger/debugger_call_stack_200.png -text
@@ -7661,29 +7693,61 @@ images/debugger/debugger_current_line_disabled_breakpoint_150.png -text
 images/debugger/debugger_current_line_disabled_breakpoint_200.png -text
 images/debugger/debugger_current_line_disabled_breakpoint_300.png -text
 images/debugger/debugger_disable.png -text svneol=unset#images/png
+images/debugger/debugger_disable_150.png -text svneol=unset#image/png
+images/debugger/debugger_disable_200.png -text svneol=unset#image/png
 images/debugger/debugger_disable_all.png -text svneol=unset#images/png
+images/debugger/debugger_disable_all_150.png -text svneol=unset#image/png
+images/debugger/debugger_disable_all_200.png -text svneol=unset#image/png
 images/debugger/debugger_enable.png -text svneol=unset#images/png
+images/debugger/debugger_enable_150.png -text svneol=unset#image/png
+images/debugger/debugger_enable_200.png -text svneol=unset#image/png
 images/debugger/debugger_enable_all.png -text svneol=unset#images/png
+images/debugger/debugger_enable_all_150.png -text svneol=unset#image/png
+images/debugger/debugger_enable_all_200.png -text svneol=unset#image/png
 images/debugger/debugger_evaluate.png -text svneol=unset#images/png
+images/debugger/debugger_evaluate_150.png -text svneol=unset#image/png
+images/debugger/debugger_evaluate_200.png -text svneol=unset#image/png
 images/debugger/debugger_event_log.png -text svneol=unset#image/png
+images/debugger/debugger_event_log_150.png -text svneol=unset#image/png
+images/debugger/debugger_event_log_200.png -text svneol=unset#image/png
 images/debugger/debugger_inspect.png -text svneol=unset#images/png
+images/debugger/debugger_inspect_150.png -text svneol=unset#image/png
+images/debugger/debugger_inspect_200.png -text svneol=unset#image/png
 images/debugger/debugger_modify.png -text svneol=unset#images/png
+images/debugger/debugger_modify_150.png -text svneol=unset#image/png
+images/debugger/debugger_modify_200.png -text svneol=unset#image/png
 images/debugger/debugger_nosource_line.png -text
 images/debugger/debugger_nosource_line_150.png -text
 images/debugger/debugger_nosource_line_200.png -text
 images/debugger/debugger_nosource_line_300.png -text
 images/debugger/debugger_options.png -text svneol=unset#image/png
+images/debugger/debugger_options_150.png -text svneol=unset#image/png
+images/debugger/debugger_options_200.png -text svneol=unset#image/png
 images/debugger/debugger_output.png -text svneol=unset#image/png
+images/debugger/debugger_output_150.png -text svneol=unset#image/png
+images/debugger/debugger_output_200.png -text svneol=unset#image/png
 images/debugger/debugger_power.png -text svneol=unset#images/png
+images/debugger/debugger_power_150.png -text svneol=unset#image/png
+images/debugger/debugger_power_200.png -text svneol=unset#image/png
 images/debugger/debugger_power_grey.png -text svneol=unset#images/png
+images/debugger/debugger_power_grey_150.png -text svneol=unset#image/png
+images/debugger/debugger_power_grey_200.png -text svneol=unset#image/png
 images/debugger/debugger_show_execution_point.png -text svneol=unset#image/png
+images/debugger/debugger_show_execution_point_150.png -text svneol=unset#image/png
+images/debugger/debugger_show_execution_point_200.png -text svneol=unset#image/png
 images/debugger/debugger_source_line.png -text
 images/debugger/debugger_source_line_150.png -text
 images/debugger/debugger_source_line_200.png -text
 images/debugger/debugger_source_line_300.png -text
 images/debugger/debugger_watches.png -text svneol=unset#image/png
+images/debugger/debugger_watches_150.png -text svneol=unset#image/png
+images/debugger/debugger_watches_200.png -text svneol=unset#image/png
 images/debugger/evaluate_no_hist.png -text
+images/debugger/evaluate_no_hist_150.png -text svneol=unset#image/png
+images/debugger/evaluate_no_hist_200.png -text svneol=unset#image/png
 images/debugger/evaluate_up.png -text
+images/debugger/evaluate_up_150.png -text svneol=unset#image/png
+images/debugger/evaluate_up_200.png -text svneol=unset#image/png
 images/designer/Order_back_one.png -text
 images/designer/Order_forward_one.png -text
 images/designer/Order_move_back.png -text
@@ -7780,21 +7844,35 @@ images/icons/transparent.ico -text svneol=unset#image/ico
 images/ide_icon48x48.png -text svneol=unset#image/png
 images/includefile.ico -text svneol=unset#image/x-icon
 images/items/item_character.png -text svneol=unset#image/png
+images/items/item_character_150.png -text svneol=unset#image/png
+images/items/item_character_200.png -text svneol=unset#image/png
 images/items/item_filter.png -text svneol=unset#image/png
+images/items/item_filter_150.png -text svneol=unset#image/png
+images/items/item_filter_200.png -text svneol=unset#image/png
 images/items/item_font.png -text svneol=unset#image/png
+images/items/item_font_150.png -text svneol=unset#image/png
+images/items/item_font_200.png -text svneol=unset#image/png
 images/items/item_form.png -text svneol=unset#image/png
 images/items/item_form_150.png -text
 images/items/item_form_200.png -text
 images/items/item_keyboard.png -text svneol=unset#image/png
+images/items/item_keyboard_150.png -text svneol=unset#image/png
+images/items/item_keyboard_200.png -text svneol=unset#image/png
 images/items/item_library.png -text svneol=unset#image/png
+images/items/item_library_150.png -text svneol=unset#image/png
+images/items/item_library_200.png -text svneol=unset#image/png
 images/items/item_package.png -text svneol=unset#image/png
+images/items/item_package_150.png -text svneol=unset#image/png
+images/items/item_package_200.png -text svneol=unset#image/png
 images/items/item_project.png -text svneol=unset#image/png
-images/items/item_project_150.png -text
-images/items/item_project_200.png -text
+images/items/item_project_150.png -text svneol=unset#image/png
+images/items/item_project_200.png -text svneol=unset#image/png
 images/items/item_project_source.png -text
 images/items/item_project_source_150.png -text
 images/items/item_project_source_200.png -text
 images/items/item_todo.png -text svneol=unset#image/png
+images/items/item_todo_150.png -text svneol=unset#image/png
+images/items/item_todo_200.png -text svneol=unset#image/png
 images/items/item_unit.png -text svneol=unset#image/png
 images/items/item_unit_150.png -text
 images/items/item_unit_200.png -text
@@ -7818,6 +7896,8 @@ images/lprfile.ico -text svneol=unset#image/x-icon
 images/mainicon.ico -text svneol=unset#image/ico
 images/mainiconproject.ico -text svneol=unset#image/x-icon
 images/menu/SelCompPage.png -text svneol=unset#image/png
+images/menu/SelCompPage_150.png -text svneol=unset#image/png
+images/menu/SelCompPage_200.png -text svneol=unset#image/png
 images/menu/bug_small.png -text
 images/menu/menu_abort_build.png -text svneol=unset#image/png
 images/menu/menu_abort_build_150.png -text
@@ -7829,6 +7909,8 @@ images/menu/menu_build_all.png -text svneol=unset#image/png
 images/menu/menu_build_all_150.png -text
 images/menu/menu_build_all_200.png -text
 images/menu/menu_build_clean.png -text svneol=unset#image/png
+images/menu/menu_build_clean_150.png -text svneol=unset#image/png
+images/menu/menu_build_clean_200.png -text svneol=unset#image/png
 images/menu/menu_build_file.png -text svneol=unset#image/png
 images/menu/menu_build_file_150.png -text
 images/menu/menu_build_file_200.png -text
@@ -7839,6 +7921,8 @@ images/menu/menu_build_run_file.png -text
 images/menu/menu_build_run_file_150.png -text
 images/menu/menu_build_run_file_200.png -text
 images/menu/menu_clean.png -text svneol=unset#image/png
+images/menu/menu_clean_150.png -text svneol=unset#image/png
+images/menu/menu_clean_200.png -text svneol=unset#image/png
 images/menu/menu_clear_all_bookmarks.png -text
 images/menu/menu_clear_all_bookmarks_150.png -text
 images/menu/menu_clear_all_bookmarks_200.png -text
@@ -7852,20 +7936,44 @@ images/menu/menu_close_all.png -text svneol=unset#image/png
 images/menu/menu_close_all_150.png -text
 images/menu/menu_close_all_200.png -text
 images/menu/menu_codetoolsdefineseditor.png -text svneol=unset#image/png
+images/menu/menu_codetoolsdefineseditor_150.png -text svneol=unset#image/png
+images/menu/menu_codetoolsdefineseditor_200.png -text svneol=unset#image/png
 images/menu/menu_codetoolsoptions.png -text svneol=unset#image/png
+images/menu/menu_codetoolsoptions_150.png -text svneol=unset#image/png
+images/menu/menu_codetoolsoptions_200.png -text svneol=unset#image/png
 images/menu/menu_comment.png -text
 images/menu/menu_comment_150.png -text
 images/menu/menu_comment_200.png -text
 images/menu/menu_compiler_options.png -text svneol=unset#image/png
+images/menu/menu_compiler_options_150.png -text svneol=unset#image/png
+images/menu/menu_compiler_options_200.png -text svneol=unset#image/png
 images/menu/menu_configure_build_lazarus.png -text svneol=unset#image/png
+images/menu/menu_configure_build_lazarus_150.png -text svneol=unset#image/png
+images/menu/menu_configure_build_lazarus_200.png -text svneol=unset#image/png
 images/menu/menu_configure_help.png -text svneol=unset#image/png
+images/menu/menu_configure_help_150.png -text svneol=unset#image/png
+images/menu/menu_configure_help_200.png -text svneol=unset#image/png
 images/menu/menu_edit_lowercase.png -text svneol=unset#image/png
+images/menu/menu_edit_lowercase_150.png -text svneol=unset#image/png
+images/menu/menu_edit_lowercase_200.png -text svneol=unset#image/png
 images/menu/menu_edit_sort.png -text
+images/menu/menu_edit_sort_150.png -text svneol=unset#image/png
+images/menu/menu_edit_sort_200.png -text svneol=unset#image/png
 images/menu/menu_edit_uppercase.png -text svneol=unset#image/png
+images/menu/menu_edit_uppercase_150.png -text svneol=unset#image/png
+images/menu/menu_edit_uppercase_200.png -text svneol=unset#image/png
 images/menu/menu_editor_options.png -text svneol=unset#image/png
+images/menu/menu_editor_options_150.png -text svneol=unset#image/png
+images/menu/menu_editor_options_200.png -text svneol=unset#image/png
 images/menu/menu_environment_options.png -text svneol=unset#image/png
+images/menu/menu_environment_options_150.png -text svneol=unset#image/png
+images/menu/menu_environment_options_200.png -text svneol=unset#image/png
 images/menu/menu_exit.png -text svneol=unset#image/png
+images/menu/menu_exit_150.png -text svneol=unset#image/png
+images/menu/menu_exit_200.png -text svneol=unset#image/png
 images/menu/menu_file_print.png -text
+images/menu/menu_file_print_150.png -text svneol=unset#image/png
+images/menu/menu_file_print_200.png -text svneol=unset#image/png
 images/menu/menu_file_revert.png -text svneol=unset#image/png
 images/menu/menu_file_revert_150.png -text
 images/menu/menu_file_revert_200.png -text
@@ -7909,6 +8017,8 @@ images/menu/menu_indent.png -text svneol=unset#image/png
 images/menu/menu_indent_150.png -text
 images/menu/menu_indent_200.png -text
 images/menu/menu_information.png -text svneol=unset#image/png
+images/menu/menu_information_150.png -text svneol=unset#image/png
+images/menu/menu_information_200.png -text svneol=unset#image/png
 images/menu/menu_jumpto_implementation.png -text svneol=unset#image/png
 images/menu/menu_jumpto_implementation_150.png -text
 images/menu/menu_jumpto_implementation_200.png -text
@@ -7925,7 +8035,11 @@ images/menu/menu_jumpto_interfaceuses.png -text svneol=unset#image/png
 images/menu/menu_jumpto_interfaceuses_150.png -text
 images/menu/menu_jumpto_interfaceuses_200.png -text
 images/menu/menu_jumpto_procedurebegin.png -text svneol=unset#image/png
+images/menu/menu_jumpto_procedurebegin_150.png -text svneol=unset#image/png
+images/menu/menu_jumpto_procedurebegin_200.png -text svneol=unset#image/png
 images/menu/menu_jumpto_procedureheader.png -text svneol=unset#image/png
+images/menu/menu_jumpto_procedureheader_150.png -text svneol=unset#image/png
+images/menu/menu_jumpto_procedureheader_200.png -text svneol=unset#image/png
 images/menu/menu_manage_desktops.png -text svneol=unset#image/png
 images/menu/menu_manage_desktops_150.png -text
 images/menu/menu_manage_desktops_200.png -text
@@ -7987,6 +8101,8 @@ images/menu/menu_redo.png -text svneol=unset#image/png
 images/menu/menu_redo_150.png -text
 images/menu/menu_redo_200.png -text
 images/menu/menu_reportingbug.png -text svneol=unset#image/png
+images/menu/menu_reportingbug_150.png -text svneol=unset#image/png
+images/menu/menu_reportingbug_200.png -text svneol=unset#image/png
 images/menu/menu_reset_debugger.png -text svneol=unset#image/png
 images/menu/menu_reset_debugger_150.png -text
 images/menu/menu_reset_debugger_200.png -text
@@ -8045,7 +8161,11 @@ images/menu/menu_search_replace.png -text svneol=unset#image/png
 images/menu/menu_search_replace_150.png -text
 images/menu/menu_search_replace_200.png -text
 images/menu/menu_search_set_bookmark.png -text svneol=unset#image/png
+images/menu/menu_search_set_bookmark_150.png -text svneol=unset#image/png
+images/menu/menu_search_set_bookmark_200.png -text svneol=unset#image/png
 images/menu/menu_select_all.png -text svneol=unset#image/png
+images/menu/menu_select_all_150.png -text svneol=unset#image/png
+images/menu/menu_select_all_200.png -text svneol=unset#image/png
 images/menu/menu_set_free_bookmark.png -text
 images/menu/menu_set_free_bookmark_150.png -text
 images/menu/menu_set_free_bookmark_200.png -text
@@ -8053,6 +8173,8 @@ images/menu/menu_stepinto.png -text svneol=unset#image/png
 images/menu/menu_stepinto_150.png -text
 images/menu/menu_stepinto_200.png -text
 images/menu/menu_stepinto_instr.png -text svneol=unset#image/png
+images/menu/menu_stepinto_instr_150.png -text svneol=unset#image/png
+images/menu/menu_stepinto_instr_200.png -text svneol=unset#image/png
 images/menu/menu_stepout.png -text svneol=unset#image/png
 images/menu/menu_stepout_150.png -text
 images/menu/menu_stepout_200.png -text
@@ -8060,6 +8182,8 @@ images/menu/menu_stepover.png -text svneol=unset#image/png
 images/menu/menu_stepover_150.png -text
 images/menu/menu_stepover_200.png -text
 images/menu/menu_stepover_instr.png -text svneol=unset#image/png
+images/menu/menu_stepover_instr_150.png -text svneol=unset#image/png
+images/menu/menu_stepover_instr_200.png -text svneol=unset#image/png
 images/menu/menu_stop.png -text svneol=unset#image/png
 images/menu/menu_stop_150.png -text
 images/menu/menu_stop_200.png -text
@@ -8099,9 +8223,27 @@ images/menu/menu_toggle_bookmarks_200.png -text
 images/menu/menu_tool_check_lfm.png -text svneol=unset#image/png
 images/menu/menu_tool_check_lfm_150.png -text
 images/menu/menu_tool_check_lfm_200.png -text
-images/menu/menu_tool_dfm_to_lfm.png -text svneol=unset#image/png
+images/menu/menu_tool_del_to_laz.png -text svneol=unset#image/png
+images/menu/menu_tool_del_to_laz_150.png -text svneol=unset#image/png
+images/menu/menu_tool_del_to_laz_200.png -text svneol=unset#image/png
+images/menu/menu_tool_del_to_laz_form.png -text svneol=unset#image/png
+images/menu/menu_tool_del_to_laz_form_150.png -text svneol=unset#image/png
+images/menu/menu_tool_del_to_laz_form_200.png -text svneol=unset#image/png
+images/menu/menu_tool_del_to_laz_pkg.png -text svneol=unset#image/png
+images/menu/menu_tool_del_to_laz_pkg_150.png -text svneol=unset#image/png
+images/menu/menu_tool_del_to_laz_pkg_200.png -text svneol=unset#image/png
+images/menu/menu_tool_del_to_laz_project.png -text svneol=unset#image/png
+images/menu/menu_tool_del_to_laz_project_150.png -text svneol=unset#image/png
+images/menu/menu_tool_del_to_laz_project_200.png -text svneol=unset#image/png
+images/menu/menu_tool_del_to_laz_unit.png -text svneol=unset#image/png
+images/menu/menu_tool_del_to_laz_unit_150.png -text svneol=unset#image/png
+images/menu/menu_tool_del_to_laz_unit_200.png -text svneol=unset#image/png
 images/menu/menu_tool_diff.png -text svneol=unset#image/png
+images/menu/menu_tool_diff_150.png -text svneol=unset#image/png
+images/menu/menu_tool_diff_200.png -text svneol=unset#image/png
 images/menu/menu_tool_make_resourcestring.png -text svneol=unset#image/png
+images/menu/menu_tool_make_resourcestring_150.png -text svneol=unset#image/png
+images/menu/menu_tool_make_resourcestring_200.png -text svneol=unset#image/png
 images/menu/menu_tool_syntax_check.png -text svneol=unset#image/png
 images/menu/menu_tool_syntax_check_150.png -text
 images/menu/menu_tool_syntax_check_200.png -text
@@ -8145,6 +8287,8 @@ images/menu/menu_view_source_editor.png -text svneol=unset#image/png
 images/menu/menu_view_source_editor_150.png -text
 images/menu/menu_view_source_editor_200.png -text
 images/menu/menu_view_todo.png -text svneol=unset#image/png
+images/menu/menu_view_todo_150.png -text svneol=unset#image/png
+images/menu/menu_view_todo_200.png -text svneol=unset#image/png
 images/menu/menu_view_toggle_form_unit.png -text svneol=unset#image/png
 images/menu/menu_view_toggle_form_unit_150.png -text
 images/menu/menu_view_toggle_form_unit_200.png -text
@@ -8161,36 +8305,98 @@ images/mimetypes/text-lazarus-project-information.png -text
 images/mimetypes/text-lazarus-project-source.png -text
 images/mimetypes/text-x-pascal.png -text
 images/packages/pkg_add.png -text svneol=unset#image/png
+images/packages/pkg_add_150.png -text svneol=unset#image/png
+images/packages/pkg_add_200.png -text svneol=unset#image/png
 images/packages/pkg_binary.png -text svneol=unset#image/png
+images/packages/pkg_binary_150.png -text svneol=unset#image/png
+images/packages/pkg_binary_200.png -text svneol=unset#image/png
 images/packages/pkg_compile.png -text svneol=unset#image/png
+images/packages/pkg_compile_150.png -text svneol=unset#image/png
+images/packages/pkg_compile_200.png -text svneol=unset#image/png
 images/packages/pkg_conflict.png -text svneol=unset#image/png
+images/packages/pkg_conflict_150.png -text svneol=unset#image/png
+images/packages/pkg_conflict_200.png -text svneol=unset#image/png
 images/packages/pkg_core_overlay.png -text svneol=unset#image/png
+images/packages/pkg_core_overlay_150.png -text svneol=unset#image/png
+images/packages/pkg_core_overlay_200.png -text svneol=unset#image/png
 images/packages/pkg_design_overlay.png -text svneol=unset#image/png
+images/packages/pkg_design_overlay_150.png -text svneol=unset#image/png
+images/packages/pkg_design_overlay_200.png -text svneol=unset#image/png
 images/packages/pkg_files.png -text svneol=unset#image/png
+images/packages/pkg_files_150.png -text svneol=unset#image/png
+images/packages/pkg_files_200.png -text svneol=unset#image/png
 images/packages/pkg_fpc_overlay.png -text svneol=unset#image/png
+images/packages/pkg_fpc_overlay_150.png -text svneol=unset#image/png
+images/packages/pkg_fpc_overlay_200.png -text svneol=unset#image/png
 images/packages/pkg_graph.png -text svneol=unset#image/png
+images/packages/pkg_graph_150.png -text svneol=unset#image/png
+images/packages/pkg_graph_200.png -text svneol=unset#image/png
 images/packages/pkg_hierarchical.png -text svneol=unset#image/png
+images/packages/pkg_hierarchical_150.png -text svneol=unset#image/png
+images/packages/pkg_hierarchical_200.png -text svneol=unset#image/png
 images/packages/pkg_include.png -text svneol=unset#image/png
+images/packages/pkg_include_150.png -text svneol=unset#image/png
+images/packages/pkg_include_200.png -text svneol=unset#image/png
 images/packages/pkg_inherited.png -text svneol=unset#image/png
+images/packages/pkg_inherited_150.png -text svneol=unset#image/png
+images/packages/pkg_inherited_200.png -text svneol=unset#image/png
 images/packages/pkg_install.png -text svneol=unset#image/png
+images/packages/pkg_install_150.png -text svneol=unset#image/png
+images/packages/pkg_install_200.png -text svneol=unset#image/png
 images/packages/pkg_installed.png -text svneol=unset#image/png
+images/packages/pkg_installed_150.png -text svneol=unset#image/png
+images/packages/pkg_installed_200.png -text svneol=unset#image/png
 images/packages/pkg_issues.png -text svneol=unset#image/png
+images/packages/pkg_issues_150.png -text svneol=unset#image/png
+images/packages/pkg_issues_200.png -text svneol=unset#image/png
 images/packages/pkg_lazarus_overlay.png -text svneol=unset#image/png
+images/packages/pkg_lazarus_overlay_150.png -text svneol=unset#image/png
+images/packages/pkg_lazarus_overlay_200.png -text svneol=unset#image/png
 images/packages/pkg_lfm.png -text svneol=unset#image/png
+images/packages/pkg_lfm_150.png -text svneol=unset#image/png
+images/packages/pkg_lfm_200.png -text svneol=unset#image/png
 images/packages/pkg_lrs.png -text svneol=unset#image/png
+images/packages/pkg_lrs_150.png -text svneol=unset#image/png
+images/packages/pkg_lrs_200.png -text svneol=unset#image/png
 images/packages/pkg_open.png -text svneol=unset#image/png
+images/packages/pkg_open_150.png -text svneol=unset#image/png
+images/packages/pkg_open_200.png -text svneol=unset#image/png
 images/packages/pkg_package_autoinstall.png -text svneol=unset#image/png
+images/packages/pkg_package_autoinstall_150.png -text svneol=unset#image/png
+images/packages/pkg_package_autoinstall_200.png -text svneol=unset#image/png
 images/packages/pkg_package_circle.png -text svneol=unset#image/png
+images/packages/pkg_package_circle_150.png -text svneol=unset#image/png
+images/packages/pkg_package_circle_200.png -text svneol=unset#image/png
 images/packages/pkg_package_uninstall.png -text svneol=unset#image/png
+images/packages/pkg_package_uninstall_150.png -text svneol=unset#image/png
+images/packages/pkg_package_uninstall_200.png -text svneol=unset#image/png
 images/packages/pkg_properties.png -text svneol=unset#image/png
+images/packages/pkg_properties_150.png -text svneol=unset#image/png
+images/packages/pkg_properties_200.png -text svneol=unset#image/png
 images/packages/pkg_registerunit.png -text svneol=unset#image/png
+images/packages/pkg_registerunit_150.png -text svneol=unset#image/png
+images/packages/pkg_registerunit_200.png -text svneol=unset#image/png
 images/packages/pkg_removedfiles.png -text svneol=unset#image/png
+images/packages/pkg_removedfiles_150.png -text svneol=unset#image/png
+images/packages/pkg_removedfiles_200.png -text svneol=unset#image/png
 images/packages/pkg_removedrequired.png -text svneol=unset#image/png
+images/packages/pkg_removedrequired_150.png -text svneol=unset#image/png
+images/packages/pkg_removedrequired_200.png -text svneol=unset#image/png
 images/packages/pkg_required.png -text svneol=unset#image/png
+images/packages/pkg_required_150.png -text svneol=unset#image/png
+images/packages/pkg_required_200.png -text svneol=unset#image/png
 images/packages/pkg_runtime_overlay.png -text svneol=unset#image/png
+images/packages/pkg_runtime_overlay_150.png -text svneol=unset#image/png
+images/packages/pkg_runtime_overlay_200.png -text svneol=unset#image/png
 images/packages/pkg_sortalphabetically.png -text svneol=unset#image/png
+images/packages/pkg_sortalphabetically_150.png -text svneol=unset#image/png
+images/packages/pkg_sortalphabetically_200.png -text svneol=unset#image/png
 images/packages/pkg_text.png -text svneol=unset#image/png
+images/packages/pkg_text_150.png -text svneol=unset#image/png
+images/packages/pkg_text_200.png -text svneol=unset#image/png
 images/packages/pkg_unit.png -text svneol=unset#image/png
+images/packages/pkg_unit_150.png -text svneol=unset#image/png
+images/packages/pkg_unit_200.png -text svneol=unset#image/png
 images/powered-by.svg -text svneol=unset#image/svg%2Bxml
 images/powered_by.png -text svneol=unset#image/png
 images/sourceeditor/ActiveBreakPoint.png -text
