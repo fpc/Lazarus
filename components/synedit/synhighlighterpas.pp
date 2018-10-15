@@ -3708,6 +3708,7 @@ var
   PasBlockType: TPascalCodeFoldBlockType;
   EndOffs: Integer;
   OneLine: Boolean;
+  t: TSynCustomFoldConfig;
 begin
   PasBlockType := TPascalCodeFoldBlockType(PtrUint(ABlockType));
 
@@ -3729,8 +3730,11 @@ begin
     if (PasBlockType in [cfbtClassSection]) then
       Include( aActions, sfaOutlineMergeParent);
 
-    if (PasBlockType in [cfbtProcedure]) then
-      aActions := aActions + [sfaOutlineKeepLevel,sfaOutlineNoColor];
+    if (PasBlockType in [cfbtProcedure]) then begin
+      t := FFoldConfig[ord(cfbtTopBeginEnd)];
+      if t.Enabled and (sfaOutline in t.FoldActions) then
+        aActions := aActions + [sfaOutlineKeepLevel,sfaOutlineNoColor];
+    end;
 
     //if (PasBlockType in [cfbtProcedure]) and (InProcLevel > 0) then //nested
     //  aActions := aActions + [sfaOutlineForceIndent];
