@@ -927,8 +927,9 @@ end;
 function TSynPasSyn.Func15: TtkTokenKind;
 begin
   if KeyComp('If') then begin
-//TODO: case a of 1: while x do if e then ...
-    StartPascalCodeFoldBlock(cfbtIfThen, TopPascalCodeFoldBlockType in [cfbtCase, cfbtIfThen]);
+// Anything that may be nested in a "case", and does not have an end (like "end", "until",...)
+    StartPascalCodeFoldBlock(cfbtIfThen,
+      TopPascalCodeFoldBlockType in [cfbtCase, cfbtIfThen, cfbtIfElse, cfbtForDo, cfbtWhileDo, cfbtWithDo]);
     Result := tkKey
   end
   else
@@ -1030,6 +1031,8 @@ begin
           EndPascalCodeFoldBlock(True);
         end;
         fStringLen := sl;
+      end else if tfb = cfbtProcedure then begin
+//        EndPascalCodeFoldBlock; // wrong source: procedure end, without begin
       end else if tfb = cfbtUnitSection then begin
         EndPascalCodeFoldBlockLastLine;
         if TopPascalCodeFoldBlockType = cfbtUnit then // "Unit".."end."
@@ -1276,7 +1279,8 @@ begin
     // in a "case", we need to distinguish a possible follwing "else"
     if (TopPascalCodeFoldBlockType = cfbtIfThen) then
       EndPascalCodeFoldBlock;
-    StartPascalCodeFoldBlock(cfbtIfThen, TopPascalCodeFoldBlockType in [cfbtCase, cfbtIfThen]);
+    StartPascalCodeFoldBlock(cfbtIfThen,
+      TopPascalCodeFoldBlockType in [cfbtCase, cfbtIfThen, cfbtIfElse, cfbtForDo, cfbtWhileDo, cfbtWithDo]);
   end
   else
     Result := tkIdentifier;
