@@ -3727,8 +3727,11 @@ begin
     //if (PasBlockType in [cfbtIfElse]) then
     //  Include( aActions, sfaOutlineMergeLevelOnWrongCol);
 
-    if (PasBlockType in [cfbtClassSection]) then
-      Include( aActions, sfaOutlineMergeParent);
+    if (PasBlockType in [cfbtClassSection]) then begin
+      t := FFoldConfig[ord(cfbtClass)];
+      if t.Enabled and (sfaOutline in t.FoldActions) then
+        Include( aActions, sfaOutlineMergeParent);
+    end;
 
     if (PasBlockType in [cfbtProcedure]) then begin
       t := FFoldConfig[ord(cfbtTopBeginEnd)];
@@ -3739,8 +3742,11 @@ begin
     //if (PasBlockType in [cfbtProcedure]) and (InProcLevel > 0) then //nested
     //  aActions := aActions + [sfaOutlineForceIndent];
 
-    if (PasBlockType in [cfbtExcept]) then
-      Include( aActions, sfaOutlineMergeParent);
+    if (PasBlockType in [cfbtExcept]) then begin
+      t := FFoldConfig[ord(cfbtTry)];
+      if t.Enabled and (sfaOutline in t.FoldActions) then
+        Include( aActions, sfaOutlineMergeParent);
+    end;
 
    // if (PasBlockType in [cfbtIfThen, cfbtClass,cfbtRecord]) then
     //  aActions := aActions + [sfaOutlineNoLine];
