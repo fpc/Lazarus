@@ -927,8 +927,9 @@ end;
 function TSynPasSyn.Func15: TtkTokenKind;
 begin
   if KeyComp('If') then begin
-//TODO: case a of 1: while x do if e then ...
-    StartPascalCodeFoldBlock(cfbtIfThen, TopPascalCodeFoldBlockType in [cfbtCase, cfbtIfThen]);
+// Anything that may be nested in a "case", and does not have an end (like "end", "until",...)
+    StartPascalCodeFoldBlock(cfbtIfThen,
+      TopPascalCodeFoldBlockType in [cfbtCase, cfbtIfThen, cfbtIfElse, cfbtForDo, cfbtWhileDo, cfbtWithDo]);
     Result := tkKey
   end
   else
@@ -971,7 +972,7 @@ begin
     else
     if (TopPascalCodeFoldBlockType = cfbtCase) then begin
       EndPascalCodeFoldBlock();
-      StartPascalCodeFoldBlock(cfbtCase);
+      StartPascalCodeFoldBlock(cfbtCase, True);
       fRange := fRange + [rsAtCaseLabel];
     end;
   end
@@ -1030,6 +1031,8 @@ begin
           EndPascalCodeFoldBlock(True);
         end;
         fStringLen := sl;
+      end else if tfb = cfbtProcedure then begin
+//        EndPascalCodeFoldBlock; // wrong source: procedure end, without begin
       end else if tfb = cfbtUnitSection then begin
         EndPascalCodeFoldBlockLastLine;
         if TopPascalCodeFoldBlockType = cfbtUnit then // "Unit".."end."
@@ -1082,7 +1085,7 @@ begin
   end
   else if KeyComp('Case') then begin
     if TopPascalCodeFoldBlockType in PascalStatementBlocks + [cfbtUnitSection] then
-      StartPascalCodeFoldBlock(cfbtCase);
+      StartPascalCodeFoldBlock(cfbtCase, True);
     Result := tkKey;
   end
   else
@@ -1204,7 +1207,7 @@ begin
     end else
     if TopPascalCodeFoldBlockType = cfbtCase then begin
       FTokenIsCaseLabel := True;
-      StartPascalCodeFoldBlock(cfbtCaseElse);
+      StartPascalCodeFoldBlock(cfbtCaseElse, True);
     end
   end
   else if KeyComp('Var') then begin
@@ -1276,7 +1279,8 @@ begin
     // in a "case", we need to distinguish a possible follwing "else"
     if (TopPascalCodeFoldBlockType = cfbtIfThen) then
       EndPascalCodeFoldBlock;
-    StartPascalCodeFoldBlock(cfbtIfThen, TopPascalCodeFoldBlockType in [cfbtCase, cfbtIfThen]);
+    StartPascalCodeFoldBlock(cfbtIfThen,
+      TopPascalCodeFoldBlockType in [cfbtCase, cfbtIfThen, cfbtIfElse, cfbtForDo, cfbtWhileDo, cfbtWithDo]);
   end
   else
     Result := tkIdentifier;
@@ -2019,7 +2023,7 @@ begin
       EndPascalCodeFoldBlockLastLine;
     end;
     if TopPascalCodeFoldBlockType = cfbtCase then begin
-      StartPascalCodeFoldBlock(cfbtCaseElse);
+      StartPascalCodeFoldBlock(cfbtCaseElse, True);
       FTokenIsCaseLabel := True;
     end;
   end
@@ -3708,6 +3712,7 @@ var
   PasBlockType: TPascalCodeFoldBlockType;
   EndOffs: Integer;
   OneLine: Boolean;
+  t: TSynCustomFoldConfig;
 begin
   PasBlockType := TPascalCodeFoldBlockType(PtrUint(ABlockType));
 
@@ -3726,17 +3731,26 @@ begin
     //if (PasBlockType in [cfbtIfElse]) then
     //  Include( aActions, sfaOutlineMergeLevelOnWrongCol);
 
-    if (PasBlockType in [cfbtClassSection]) then
-      Include( aActions, sfaOutlineMergeParent);
+    if (PasBlockType in [cfbtClassSection]) then begin
+      t := FFoldConfig[ord(cfbtClass)];
+      if t.Enabled and (sfaOutline in t.FoldActions) then
+        Include( aActions, sfaOutlineMergeParent);
+    end;
 
-    if (PasBlockType in [cfbtProcedure]) then
-      aActions := aActions + [sfaOutlineKeepLevel,sfaOutlineNoColor];
+    if (PasBlockType in [cfbtProcedure]) then begin
+      t := FFoldConfig[ord(cfbtTopBeginEnd)];
+      if t.Enabled and (sfaOutline in t.FoldActions) then
+        aActions := aActions + [sfaOutlineKeepLevel,sfaOutlineNoColor];
+    end;
 
     //if (PasBlockType in [cfbtProcedure]) and (InProcLevel > 0) then //nested
     //  aActions := aActions + [sfaOutlineForceIndent];
 
-    if (PasBlockType in [cfbtExcept]) then
-      Include( aActions, sfaOutlineMergeParent);
+    if (PasBlockType in [cfbtExcept]) then begin
+      t := FFoldConfig[ord(cfbtTry)];
+      if t.Enabled and (sfaOutline in t.FoldActions) then
+        Include( aActions, sfaOutlineMergeParent);
+    end;
 
    // if (PasBlockType in [cfbtIfThen, cfbtClass,cfbtRecord]) then
     //  aActions := aActions + [sfaOutlineNoLine];
