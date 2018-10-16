@@ -2161,7 +2161,7 @@ msgstr "Retraido"
 
 #: lazarusidestrconsts.dlgguttercolor
 msgid "Gutter Color"
-msgstr "Cor da Medianiz"
+msgstr "Cor da medianiz"
 
 #: lazarusidestrconsts.dlggutteredgecolor
 msgid "Gutter Edge Color"
@@ -2205,11 +2205,11 @@ msgstr "Ocultar aba de janelas em páginas únicas"
 
 #: lazarusidestrconsts.dlghighlightcolor
 msgid "Highlight Color"
-msgstr "Realçar Cor"
+msgstr "Cor de destaque"
 
 #: lazarusidestrconsts.dlghighlightfontcolor
 msgid "Highlight Font Color"
-msgstr "Realçar Cor Fonte"
+msgstr "Cor de destaque da fonte"
 
 #: lazarusidestrconsts.dlghighlightleftofcursor
 msgid "Left Of Caret"
@@ -6674,7 +6674,7 @@ msgstr "Erro de Escrita"
 
 #: lazarusidestrconsts.liscodetoolsoptsat
 msgid "At"
-msgstr "Em"
+msgstr "Arroba"
 
 #: lazarusidestrconsts.liscodetoolsoptsbracket
 msgid "Bracket"
