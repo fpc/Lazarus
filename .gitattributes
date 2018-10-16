@@ -7159,16 +7159,26 @@ images/actions/autocomplete.png -text
 images/actions/autocomplete_150.png -text
 images/actions/autocomplete_200.png -text
 images/actions/execute.png -text
+images/actions/execute_150.png -text svneol=unset#image/png
+images/actions/execute_200.png -text svneol=unset#image/png
 images/actions/laz_add.png -text svneol=unset#image/png
 images/actions/laz_add_150.png -text
 images/actions/laz_add_200.png -text
 images/actions/laz_cancel.png -text svneol=unset#image/png
+images/actions/laz_cancel_150.png -text svneol=unset#image/png
+images/actions/laz_cancel_200.png -text svneol=unset#image/png
 images/actions/laz_delete.png -text svneol=unset#image/png
 images/actions/laz_delete_150.png -text
 images/actions/laz_delete_200.png -text
 images/actions/laz_edit.png -text svneol=unset#image/png
+images/actions/laz_edit_150.png -text svneol=unset#image/png
+images/actions/laz_edit_200.png -text svneol=unset#image/png
 images/actions/laz_export.png -text svneol=unset#image/png
+images/actions/laz_export_150.png -text svneol=unset#image/png
+images/actions/laz_export_200.png -text svneol=unset#image/png
 images/actions/laz_highlighter.png -text svneol=unset#image/png
+images/actions/laz_highlighter_150.png -text svneol=unset#image/png
+images/actions/laz_highlighter_200.png -text svneol=unset#image/png
 images/actions/laz_open.png -text svneol=unset#image/png
 images/actions/laz_open_150.png -text
 images/actions/laz_open_200.png -text
@@ -7179,12 +7189,20 @@ images/actions/laz_open_unit.png -text
 images/actions/laz_open_unit_150.png -text
 images/actions/laz_open_unit_200.png -text
 images/actions/laz_refresh.png -text svneol=unset#image/png
+images/actions/laz_refresh_150.png -text svneol=unset#image/png
+images/actions/laz_refresh_200.png -text svneol=unset#image/png
 images/actions/laz_save.png -text svneol=unset#image/png
 images/actions/laz_save_150.png -text
 images/actions/laz_save_200.png -text
 images/actions/laz_tick.png -text svneol=unset#image/png
+images/actions/laz_tick_150.png -text svneol=unset#image/png
+images/actions/laz_tick_200.png -text svneol=unset#image/png
 images/actions/laz_wand.png -text svneol=unset#image/png
+images/actions/laz_wand_150.png -text svneol=unset#image/png
+images/actions/laz_wand_200.png -text svneol=unset#image/png
 images/actions/preferences.png -text
+images/actions/preferences_150.png -text svneol=unset#image/png
+images/actions/preferences_200.png -text svneol=unset#image/png
 images/actions/restore_default.png -text svneol=unset#image/png
 images/actions/restore_default_150.png -text svneol=unset#image/png
 images/actions/restore_default_200.png -text svneol=unset#image/png
