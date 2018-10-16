@@ -9,7 +9,7 @@ msgstr ""
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "Language: fr\n"
-"X-Generator: Poedit 2.0.2\n"
+"X-Generator: Poedit 2.1.1\n"
 
 #: syneditstrconst.syns_attrannotation
 msgid "Annotation"
@@ -293,7 +293,7 @@ msgstr "Valeur précédente"
 
 #: syneditstrconst.syns_attrprocedureheadername
 msgid "Procedure header name"
-msgstr ""
+msgstr "Nom de l'en-tête de procédure"
 
 #: syneditstrconst.syns_attrprocessinginstr
 msgid "Processing Instruction"
@@ -537,7 +537,7 @@ msgstr "Déplacer la sélection"
 
 #: syneditstrconst.syns_emcstartdragmove_opt
 msgid "\"Caret on up if not dragged\",yes,no"
-msgstr "Curseur sur place s'il n'est pas déplacé : oui, non"
+msgstr "\"Curseur sur place s'il n'est pas déplacé\",oui,non"
 
 #: syneditstrconst.syns_emcstartlineselections
 msgid "Line Selection"
@@ -585,7 +585,7 @@ msgstr "Roulette défilement vers le haut"
 
 #: syneditstrconst.syns_emcwheelscroll_opt
 msgid "Speed,\"System settings\",Lines,Pages,\"Pages (less one line)\""
-msgstr "Vitesse, \"Paramètres du système\", Lignes, Pages, \"Pages (moins une ligne)\""
+msgstr "Vitesse,\"Paramètres du système\", Lignes, Pages,\"Pages (moins une ligne)\""
 
 #: syneditstrconst.syns_emcwheelvertscrolldown
 msgid "Wheel scroll down (Vertical)"
