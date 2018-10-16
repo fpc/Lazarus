@@ -68,6 +68,13 @@ unit OpenGLContext;
   {$DEFINE HasRGBBits}
   {$DEFINE OpenGLTargetDefined}
 {$ENDIF}
+{$IFDEF LCLQT5}
+  {$DEFINE UseQTGLX}
+  {$DEFINE UsesModernGL}
+  {$DEFINE HasRGBA}
+  {$DEFINE HasRGBBits}
+  {$DEFINE OpenGLTargetDefined}
+{$ENDIF}
 {$IFNDEF OpenGLTargetDefined}
   {$ERROR this LCL widgetset/OS is not yet supported}
 {$ENDIF}
