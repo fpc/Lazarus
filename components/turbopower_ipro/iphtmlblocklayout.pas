@@ -1267,6 +1267,7 @@ var
   OldFontColor: TColor;
   OldFontStyle: TFontStyles;
   OldBrushStyle: TBrushStyle;
+  ts: TTextStyle;
 
   procedure saveCanvasProperties;
   begin
@@ -1322,8 +1323,11 @@ begin
   if FCanvas.Font.color = -1 then
     FCanvas.Font.color := clBlack;
   {$ENDIF}
-  if aCurWord.AnsiWord <> NAnchorChar then
-    FCanvas.TextRect(R, P.x, P.y, NoBreakToSpace(aCurWord.AnsiWord));
+  if aCurWord.AnsiWord <> NAnchorChar then begin
+    ts := FCanvas.TextStyle;
+    ts.Opaque := true;
+    FCanvas.TextRect(R, P.x, P.y, NoBreakToSpace(aCurWord.AnsiWord), ts);
+  end;
   {$IFDEF IP_LAZARUS}
   restoreCanvasProperties;
   {$ENDIF}
