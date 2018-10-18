@@ -415,13 +415,12 @@ end;
 
 procedure THelpForm.ApplyLayoutPreferencesOnce;
 begin
-  if not(assigned(fConfig)) then exit;
-  if (not(fHide)) and
-    (not(fLayoutApplied)) then
+  if not Assigned(fConfig) then exit;
+  if (not fHide) and (not fLayoutApplied) then
   begin
-    if (fConfig.GetValue('Position/Maximized', false)=true) then
+    if fConfig.GetValue('Position/Maximized', false) then
     begin
-      Windowstate:=wsMaximized
+      Windowstate := wsMaximized
     end
     else
     begin
@@ -507,9 +506,10 @@ procedure THelpForm.SavePreferences;
 var
   i: Integer;
 begin
-  if not(assigned(fConfig)) then
+  if not Assigned(fConfig) then
     exit; //silently abort
-  if not (WindowState = wsMaximized) then
+
+  if (WindowState <> wsMaximized) then
   begin
     fConfig.SetValue('Position/Maximized', false);
     fConfig.SetValue('Position/Left/Value', Left);
@@ -734,8 +734,8 @@ var
   Filename: String;
 begin
   FillChar(IsHandled{%H-}, 51, 0);
-  X:=1;
-  while X<=ParamCount do
+  X := 1;
+  while X <= ParamCount do
   begin
     if LowerCase(ParamStrUTF8(X)) = '--ipcname' then
     begin
@@ -768,7 +768,7 @@ begin
     end
     else
     begin
-      IsHandled[X]:=copy(ParamStrUTF8(X),1,1)='-'; // ignore other parameters
+      IsHandled[X] := copy(ParamStrUTF8(X),1,1)='-'; // ignore other parameters
       inc(X);
     end;
   end;
@@ -778,14 +778,15 @@ begin
     if not IsHandled[X] then
     begin
       //DoOpenChm(ParamStrUTF8(X));
-      URL:=ParamStrUTF8(X);
+      URL := ParamStrUTF8(X);
       if Pos('://', URL) = 0 then
         URL := 'file://'+URL;
       Filename:=URL;
-      if copy(Filename,1,length('file://'))='file://' then
+      //      if copy(Filename,1,length('file://'))='file://' then
+      if pos('file://', FileName) = 1 then
       begin
         System.Delete(Filename,1,length('file://'));
-        Filename:=SetDirSeparators(Filename);
+        Filename := SetDirSeparators(Filename);
         if not FileExistsUTF8(Filename) then
         begin
           debugln(['THelpForm.ReadCommandLineOptions file not found "',Filename,'"']);

@@ -51,7 +51,7 @@ object HelpForm: THelpForm
   OnKeyUp = FormKeyUp
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '2.1.0.0'
   Visible = True
   object PageControl: TPageControl
     Left = 0
