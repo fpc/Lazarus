@@ -11866,18 +11866,12 @@ procedure TIpHtmlNodePhrase.ApplyProps(const RenderProps: TIpHtmlProps);
 begin
   Props.Assign(RenderProps);
   case Style of
-  hpsEM :
+  hpsEM, hpsVAR, hpsCITE :
     Props.FontStyle := Props.FontStyle + [fsItalic];
   hpsSTRONG :
     Props.FontStyle := Props.FontStyle + [fsBold];
-  hpsCODE :
+  hpsCODE, hpsKBD, hpsSAMP :
     Props.FontName := Owner.FixedTypeface;
-  hpsKBD :
-    Props.FontName := Owner.FixedTypeface;
-  hpsVAR :
-    Props.FontStyle := Props.FontStyle + [fsItalic];
-  hpsCITE :
-    Props.FontStyle := Props.FontStyle + [fsItalic];
   end;
   
   case Style of
