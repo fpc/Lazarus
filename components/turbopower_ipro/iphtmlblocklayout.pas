@@ -1267,7 +1267,6 @@ var
   OldFontColor: TColor;
   OldFontStyle: TFontStyles;
   OldBrushStyle: TBrushStyle;
-  ts: TTextStyle;
 
   procedure saveCanvasProperties;
   begin
@@ -1323,13 +1322,10 @@ begin
   if FCanvas.Font.color = -1 then
     FCanvas.Font.color := clBlack;
   {$ENDIF}
-  if aCurWord.AnsiWord <> NAnchorChar then begin
-    ts := FCanvas.TextStyle;
-    ts.Opaque := true;
-    FCanvas.TextRect(R, P.x, P.y, NoBreakToSpace(aCurWord.AnsiWord), ts);
-  end;
+  if aCurWord.AnsiWord <> NAnchorChar then
+    FCanvas.TextRect(R, P.x, P.y, NoBreakToSpace(aCurWord.AnsiWord));
   {$IFDEF IP_LAZARUS}
-  restoreCanvasProperties;
+  RestoreCanvasProperties;
   {$ENDIF}
 
   FIpHtml.AddRect(aCurWord.WordRect2, aCurWord, FBlockOwner);
