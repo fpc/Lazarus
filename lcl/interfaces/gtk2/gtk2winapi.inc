@@ -4723,10 +4723,10 @@ begin
   //we will also have to add internal support for Papersizes etc..
 
   LOGPIXELSX : { Logical pixels per inch in X }
-    Result := RoundToInt(gdk_screen_width / (GetScreenWidthMM / 25.4));
+    Result := ScreenInfo.PixelsPerInchX;
 
   LOGPIXELSY : { Logical pixels per inch in Y }
-    Result := RoundToInt(gdk_screen_height / (GetScreenHeightMM / 25.4));
+    Result := ScreenInfo.PixelsPerInchY;
 
   SIZEPALETTE: { number of entries in color palette }
     if GetVisual then
