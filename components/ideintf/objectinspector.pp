@@ -2990,9 +2990,11 @@ var
     OldFont: TFont;
     X, Y: Integer;
     lclPlatform: TLCLPlatform;
+    ImagesRes: TScaledImageListResolution;
   begin
+    ImagesRes := IDEImages.Images_16.ResolutionForPPI[0, Font.PixelsPerInch, GetCanvasScaleFactor];
     X := NameRect.Right - 2;
-    Y := (NameRect.Top + NameRect.Bottom - IDEImages.Images_16.Height) div 2;
+    Y := (NameRect.Top + NameRect.Bottom - ImagesRes.Height) div 2;
     OldFont:=Canvas.Font;
     Canvas.Font:=FNameFont;
     Canvas.Font.Color := clRed;
@@ -3000,8 +3002,8 @@ var
     begin
       if lclPlatform in CurRow.FWidgetSets then
       begin
-        Dec(X, IDEImages.Images_16.Width);
-        IDEImages.Images_16.Draw(Canvas, X, Y,
+        Dec(X, ImagesRes.Width);
+        ImagesRes.Draw(Canvas, X, Y,
           IDEImages.LoadImage('issue_'+LCLPlatformDirNames[lclPlatform]));
       end;
     end;
@@ -5316,9 +5318,13 @@ var
   lclPlatform: TLCLPlatform;
   None: Boolean;
   OldStyle: TBrushStyle;
+  ImagesRes: TScaledImageListResolution;
+  dist: Integer;
 begin
+  ImagesRes := IDEImages.Images_16.ResolutionForPPI[0, Font.PixelsPerInch, GetCanvasScaleFactor];
+  dist := Scale96ToForm(4);
   X := 0;
-  Y := (ABox.Height - IDEImages.Images_16.Height) div 2;
+  Y := (ABox.Height - ImagesRes.Height) div 2;
   OldStyle := ABox.Canvas.Brush.Style;
   try
     ABox.Canvas.Brush.Style := bsClear;
@@ -5327,11 +5333,12 @@ begin
     begin
       if ARestrictions[lclPlatform] = 0 then continue;
       None := False;
-      IDEImages.Images_16.Draw(
+      ImagesRes.Draw(
         ABox.Canvas, X, Y,
-        IDEImages.LoadImage('issue_' + LCLPlatformDirNames[lclPlatform]));
-      Inc(X, Scale96ToForm(16));
+        IDEImages.LoadImage('issue_'+LCLPlatformDirNames[lclPlatform]));
+      Inc(X, ImagesRes.Width);
       Inc(X, Scale96ToForm(OutVertCentered(X, IntToStr(ARestrictions[lclPlatform])).CX));
+      Inc(X, dist);
     end;
 
     if None then
