@@ -69,7 +69,7 @@ const
     'fpGUI (alpha)',
     'NoGUI',
     'cocoa (alpha)',
-    'customdraw (alpha)',
+    'customdrawn (alpha)',
     'MUI'
     );
 

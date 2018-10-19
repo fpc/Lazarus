@@ -19,9 +19,9 @@ propertygrid/issue_carbon_200.png
 propertygrid/issue_cocoa.png
 propertygrid/issue_cocoa_150.png
 propertygrid/issue_cocoa_200.png
-propertygrid/issue_customdraw.png
-propertygrid/issue_customdraw_150.png
-propertygrid/issue_customdraw_200.png
+propertygrid/issue_customdrawn.png
+propertygrid/issue_customdrawn_150.png
+propertygrid/issue_customdrawn_200.png
 propertygrid/issue_fpgui.png
 propertygrid/issue_fpgui_150.png
 propertygrid/issue_fpgui_200.png
