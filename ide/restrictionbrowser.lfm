@@ -7,25 +7,29 @@ object RestrictionBrowserView: TRestrictionBrowserView
   ClientHeight = 405
   ClientWidth = 674
   OnCreate = FormCreate
-  LCLVersion = '1.5'
+  LCLVersion = '2.1.0.0'
   object IssueMemo: TMemo
-    Left = 311
-    Height = 405
-    Top = 0
-    Width = 363
+    Left = 323
+    Height = 393
+    Top = 6
+    Width = 345
     Align = alClient
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 6
     ReadOnly = True
     ScrollBars = ssAutoVertical
     TabOrder = 2
   end
   object Panel1: TPanel
-    Left = 0
-    Height = 405
-    Top = 0
+    Left = 6
+    Height = 393
+    Top = 6
     Width = 306
     Align = alLeft
+    BorderSpacing.Around = 6
     BevelOuter = bvNone
-    ClientHeight = 405
+    ClientHeight = 393
     ClientWidth = 306
     TabOrder = 0
     object IssueFilterGroupBox: TGroupBox
@@ -34,29 +38,29 @@ object RestrictionBrowserView: TRestrictionBrowserView
       Top = 0
       Width = 306
       Align = alTop
+      BorderSpacing.Bottom = 6
       Caption = 'IssueFilterGroupBox'
-      ClientHeight = 76
+      ClientHeight = 77
       ClientWidth = 302
       TabOrder = 0
       object NameLabel: TLabel
         Left = 10
-        Height = 15
+        Height = 17
         Top = 44
-        Width = 60
+        Width = 77
         Caption = 'NameLabel'
         ParentColor = False
       end
       object FilterEdit: TTreeFilterEdit
         AnchorSideLeft.Control = NameLabel
         AnchorSideLeft.Side = asrBottom
-        Left = 76
-        Height = 23
+        Left = 93
+        Height = 27
         Top = 41
         Width = 156
-        UseFormActivate = True
         ButtonWidth = 23
-        NumGlyphs = 1
         BorderSpacing.Left = 6
+        NumGlyphs = 1
         MaxLength = 0
         TabOrder = 0
         FilteredTreeview = IssueTreeView
@@ -64,12 +68,11 @@ object RestrictionBrowserView: TRestrictionBrowserView
     end
     object IssueTreeView: TTreeView
       Left = 0
-      Height = 309
-      Top = 96
+      Height = 291
+      Top = 102
       Width = 306
       Align = alClient
       Anchors = [akTop, akLeft, akBottom]
-      DefaultItemHeight = 18
       HideSelection = False
       Indent = 2
       ReadOnly = True
@@ -84,7 +87,7 @@ object RestrictionBrowserView: TRestrictionBrowserView
     end
   end
   object Splitter1: TSplitter
-    Left = 306
+    Left = 318
     Height = 405
     Top = 0
     Width = 5
