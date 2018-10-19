@@ -904,12 +904,17 @@ type
     constructor Create(TheOwner: TComponent); override;
     property FocusControl;
   published
+    property AnchorSideLeft stored False;
+    property AnchorSideTop stored False;
+    property AnchorSideRight stored False;
+    property AnchorSideBottom stored False;
+    property Left stored False;
+    property Top stored False;
     property Caption;
     property Color;
     property DragCursor;
     property DragMode;
     property Height;
-    property Left;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
