@@ -528,6 +528,14 @@ begin
     X(AXText).Y(AYText).NumFormat(ANumFormat).Params(AParams);
 end;
 
+// Workaround for numlib issue with too-small arguments of exp()
+// https://bugs.freepascal.org/view.php?id=34434
+function exp(x: ArbFloat): ArbFloat;
+begin
+  Result := system.exp(x);
+end;
+
+
 { TColorMapLegendItem }
 
 constructor TLegendItemColorMap.Create(
