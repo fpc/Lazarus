@@ -7948,11 +7948,23 @@ images/lazaruspackage.ico -text svneol=unset#image/x-icon
 images/lazdoc.bat svneol=native#text/x-msdos-program
 images/lazdoc.txt svneol=native#text/plain
 images/lazdoc/formatbold.png -text
+images/lazdoc/formatbold_150.png -text svneol=unset#image/png
+images/lazdoc/formatbold_200.png -text svneol=unset#image/png
 images/lazdoc/formatitalic.png -text
+images/lazdoc/formatitalic_150.png -text svneol=unset#image/png
+images/lazdoc/formatitalic_200.png -text svneol=unset#image/png
 images/lazdoc/formatunderline.png -text
+images/lazdoc/formatunderline_150.png -text svneol=unset#image/png
+images/lazdoc/formatunderline_200.png -text svneol=unset#image/png
 images/lazdoc/insertcodetag.png -text
+images/lazdoc/insertcodetag_150.png -text svneol=unset#image/png
+images/lazdoc/insertcodetag_200.png -text svneol=unset#image/png
 images/lazdoc/insertremark.png -text
+images/lazdoc/insertremark_150.png -text svneol=unset#image/png
+images/lazdoc/insertremark_200.png -text svneol=unset#image/png
 images/lazdoc/insertvartag.png -text
+images/lazdoc/insertvartag_150.png -text svneol=unset#image/png
+images/lazdoc/insertvartag_200.png -text svneol=unset#image/png
 images/lprfile.ico -text svneol=unset#image/x-icon
 images/mainicon.ico -text svneol=unset#image/ico
 images/mainiconproject.ico -text svneol=unset#image/x-icon
