@@ -3,7 +3,7 @@ msgstr "Content-Type: text/plain; charset=UTF-8"
 
 #: lazchmhelp.help_category_idecmd
 msgid "CHM Help"
-msgstr ""
+msgstr "CHM ohje"
 
 #: lazchmhelp.help_current_idecmd
 msgid "Show help"

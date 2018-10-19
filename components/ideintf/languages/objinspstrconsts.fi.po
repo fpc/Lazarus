@@ -249,7 +249,7 @@ msgstr "&Tyyppi"
 
 #: objinspstrconsts.fpflowpaneleditor
 msgid "FlowPanel Editor"
-msgstr ""
+msgstr "FlowPanel muokkain"
 
 #: objinspstrconsts.ilesadd
 msgctxt "objinspstrconsts.ilesadd"
@@ -294,7 +294,7 @@ msgstr "Jäsentäjää työkalulle \"%s\" ei löydy"
 
 #: objinspstrconsts.lisunabletofindparserwithname
 msgid "Unable to find parser with name \"%s\""
-msgstr ""
+msgstr "Jäsentäjää nimellä \"%s\" ei löydy"
 
 #: objinspstrconsts.nbcesaddpage
 msgctxt "objinspstrconsts.nbcesaddpage"
@@ -366,7 +366,6 @@ msgid "ActionList Editor"
 msgstr "Toimintolistan muokkain"
 
 #: objinspstrconsts.oisadd
-#, fuzzy
 msgctxt "objinspstrconsts.oisadd"
 msgid "Add"
 msgstr "Lisää"
@@ -384,7 +383,6 @@ msgid "Add fields from FieldDefs"
 msgstr "Lisää kenttiä määritellyistä"
 
 #: objinspstrconsts.oisaddpage
-#, fuzzy
 msgctxt "objinspstrconsts.oisaddpage"
 msgid "Add Page"
 msgstr "Lisää välilehti"
@@ -512,7 +510,7 @@ msgstr "Poistetaanko \"%s\"?"
 
 #: objinspstrconsts.oisdeletepagequestion
 msgid "Do you want to delete the page?"
-msgstr ""
+msgstr "Tahdotko poistaa sivun?"
 
 #: objinspstrconsts.oisdeleteselectedfields
 msgid "Delete selected field(s)"
@@ -560,7 +558,7 @@ msgstr "Hyppää määrittelyyn"
 
 #: objinspstrconsts.oisfloat
 msgid "Float"
-msgstr ""
+msgstr "Kelluva"
 
 #: objinspstrconsts.oishelp
 msgid "&Help"
@@ -584,7 +582,7 @@ msgstr "Syöttö maski:"
 
 #: objinspstrconsts.oisinsertpagename
 msgid "Insert Page Name"
-msgstr ""
+msgstr "Lisää sivun nimi"
 
 #: objinspstrconsts.oisint64
 msgid "Int64"
@@ -600,7 +598,7 @@ msgstr "Rajapinta"
 
 #: objinspstrconsts.oisinvalid
 msgid "(Invalid)"
-msgstr ""
+msgstr "(Kelvoton)"
 
 #: objinspstrconsts.oisinvalidpropertyvalue
 msgid "Invalid property value"
@@ -616,7 +614,7 @@ msgstr "%u kohtaa valittu"
 
 #: objinspstrconsts.oisjumptodeclarationof
 msgid "Jump to declaration of %s"
-msgstr "Hyppää %s:n määritykseen"
+msgstr "Hyppää %s:n määrittelyyn"
 
 #: objinspstrconsts.oisload
 msgid "&Load"
@@ -709,11 +707,11 @@ msgstr "Siirrä eteen"
 
 #: objinspstrconsts.oispages
 msgid "Pages"
-msgstr ""
+msgstr "Sivut"
 
 #: objinspstrconsts.oispageseditordialog
 msgid "Pages Editor"
-msgstr ""
+msgstr "Sivujen muokkain"
 
 #: objinspstrconsts.oispastecomponents
 msgctxt "objinspstrconsts.oispastecomponents"
@@ -738,7 +736,7 @@ msgstr "Paina jotain näppäintä ..."
 
 #: objinspstrconsts.oispressakeyegctrlp
 msgid "You can press e.g. Ctrl+P ..."
-msgstr ""
+msgstr "Voit painaa esim. Ctrl+P ..."
 
 #: objinspstrconsts.oisproperties
 msgid "Properties"
@@ -758,11 +756,11 @@ msgstr "Poista suosikeista"
 
 #: objinspstrconsts.oisrename
 msgid "Rename"
-msgstr ""
+msgstr "Nimeä uudelleen"
 
 #: objinspstrconsts.oisrenamepage
 msgid "Rename Page"
-msgstr ""
+msgstr "Nimeä sivu uudelleen"
 
 #: objinspstrconsts.oisrestricted
 msgid "Restricted"
@@ -846,7 +844,7 @@ msgstr "Aseta ominaisuuden arvoksi oletus"
 
 #: objinspstrconsts.oisshowalloutputlines
 msgid "Show all output lines"
-msgstr ""
+msgstr "Näytä kaikki tulosterivit"
 
 #: objinspstrconsts.oisshowclasses
 msgid "Show classes"
@@ -1314,11 +1312,11 @@ msgstr "&Lisää ..."
 
 #: objinspstrconsts.sccsiledtaddmoreresolutions
 msgid "Add more resolutions ..."
-msgstr ""
+msgstr "Lisää tarkkuuksia ..."
 
 #: objinspstrconsts.sccsiledtaddnewresolution
 msgid "New resolution ..."
-msgstr ""
+msgstr "Uusi tarkkuus ..."
 
 #: objinspstrconsts.sccsiledtadjustment
 msgid "Adjustment"
@@ -1331,7 +1329,7 @@ msgstr "&Käytä"
 
 #: objinspstrconsts.sccsiledtcannotdeleteresolution
 msgid "Cannot delete default resolution."
-msgstr ""
+msgstr "Oletustarkkuutta ei voi poistaa."
 
 #: objinspstrconsts.sccsiledtcaption
 msgid "ImageList Editor"
@@ -1357,11 +1355,11 @@ msgstr "&Poista"
 
 #: objinspstrconsts.sccsiledtdeleteresolution
 msgid "Delete resolution ..."
-msgstr ""
+msgstr "Poista tarkkuus ..."
 
 #: objinspstrconsts.sccsiledtdeleteresolutionconfirmation
 msgid "Select the resolution to delete."
-msgstr ""
+msgstr "Valitse poistettava tarkkuus."
 
 #: objinspstrconsts.sccsiledtgrplcaption
 msgid "Images"
@@ -1373,7 +1371,7 @@ msgstr "Valittu kuva"
 
 #: objinspstrconsts.sccsiledtimagewidthofnewresolution
 msgid "Image width of the new resolution:"
-msgstr ""
+msgstr "Uuden tarkkuuden kuvan leveys:"
 
 #: objinspstrconsts.sccsiledtmovedown
 msgctxt "objinspstrconsts.sccsiledtmovedown"
@@ -1407,7 +1405,7 @@ msgstr "&Korvaa ..."
 
 #: objinspstrconsts.sccsiledtreplaceallresolutions
 msgid "Replace all resolutions ..."
-msgstr ""
+msgstr "Korvaa kaikki tarkkuudet ..."
 
 #: objinspstrconsts.sccsiledtsave
 msgctxt "objinspstrconsts.sccsiledtsave"

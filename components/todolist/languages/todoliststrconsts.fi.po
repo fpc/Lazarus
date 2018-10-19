@@ -15,19 +15,19 @@ msgstr "Lisää Makro"
 
 #: todoliststrconsts.lishelp
 msgid "Help"
-msgstr ""
+msgstr "Ohje"
 
 #: todoliststrconsts.lisoptions
 msgid "Options"
-msgstr ""
+msgstr "Asetukset"
 
 #: todoliststrconsts.lispackages
 msgid "Packages"
-msgstr ""
+msgstr "Paketit"
 
 #: todoliststrconsts.lispackageshint
 msgid "Extends \"%s\" and \"%s\" options by units from used packages"
-msgstr ""
+msgstr "Laajentaa \"%s\" ja \"%s\" asetukset käytettyjen pakettien käännösyksiköillä"
 
 #: todoliststrconsts.lispkgfiletypetext
 msgid "Text"
@@ -35,12 +35,12 @@ msgstr "Teksti"
 
 #: todoliststrconsts.lissourceeditor
 msgid "Editor"
-msgstr ""
+msgstr "Muokkain"
 
 #: todoliststrconsts.lissourceeditorhint
 msgctxt "todoliststrconsts.lissourceeditorhint"
 msgid "Add units in source editor"
-msgstr ""
+msgstr "Lisää käännösyksiköt editorista"
 
 #: todoliststrconsts.listddinserttodo
 msgid "Insert ToDo"
@@ -72,11 +72,11 @@ msgstr "ToDo luettelo"
 
 #: todoliststrconsts.listodolisted
 msgid "Listed"
-msgstr ""
+msgstr "Luetteloidut"
 
 #: todoliststrconsts.listodolistedhint
 msgid "Add units listed in project inspector/package editor"
-msgstr ""
+msgstr "Lisää projektinhallinnan/pakettimuokkaimen käännösyksiköt"
 
 #: todoliststrconsts.listodolistgotoline
 msgid "Goto selected source line"
@@ -100,11 +100,11 @@ msgstr "Tärkeys"
 
 #: todoliststrconsts.listodoused
 msgid "Used"
-msgstr ""
+msgstr "Käytetty"
 
 #: todoliststrconsts.listodousedhint
 msgid "Add units used by main source file"
-msgstr ""
+msgstr "Lisää pää-lähdekoodin käännösyksiköt"
 
 #: todoliststrconsts.listtodolcategory
 msgid "Category"

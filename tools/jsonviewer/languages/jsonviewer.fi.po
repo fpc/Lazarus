@@ -16,7 +16,7 @@ msgstr "Ei liitetä uutta dataa"
 #: msgjsonviewer.scaption
 msgctxt "msgjsonviewer.scaption"
 msgid "JSON Viewer"
-msgstr ""
+msgstr "JSON katselija"
 
 #: msgjsonviewer.sdiscard
 msgid "Discard changes"
@@ -27,24 +27,20 @@ msgid "JSON document modified"
 msgstr "JSON dokumenttia muokattu"
 
 #: msgjsonviewer.sdocumentmodifiedaction
-#, fuzzy,badformat
-#| msgid ""
-#| "The JSON data was changed but not saved.\n"
-#| "What do want to do ?\n"
 msgid ""
 "The JSON data in \"%s\" was changed but not saved.\n"
 "What do want to do ?\n"
 msgstr ""
-"JSON data on muuttunut mutta ei tallennettu.\n"
+"JSON data \"%s\":ssa on muuttunut mutta ei tallennettu.\n"
 "Mitä tehdään ?\n"
 
 #: msgjsonviewer.sduplicatemembername
 msgid "Duplicate member name \"%s\"."
-msgstr ""
+msgstr "Kahdennettu jäsenen nimi \"%s\"."
 
 #: msgjsonviewer.sefilenameneeded
 msgid "Filename needed for generated code"
-msgstr ""
+msgstr "Luotu koodi tarvitsee tiedoston nimen"
 
 #: msgjsonviewer.selement
 msgid "Element nr. %d"
@@ -56,7 +52,7 @@ msgstr "Tyhjä dokumentti"
 
 #: msgjsonviewer.serrcreatingconfigdir
 msgid "Could not create the configuration files directory \"%s\""
-msgstr ""
+msgstr "Ei voitu luoda asetustiedostojen hakemistoa \"%s\""
 
 #: msgjsonviewer.serrinvalidvalue
 msgid "Invalid value or wrong type: \"%s\""
@@ -92,11 +88,11 @@ msgstr "Tallenna muutokset"
 
 #: msgjsonviewer.stabcaptionraw
 msgid "Raw"
-msgstr ""
+msgstr "Raaka"
 
 #: msgjsonviewer.stabcaptionvisual
 msgid "Visual"
-msgstr ""
+msgstr "Näkyvä"
 
 #: tauthenticationform.caption
 msgctxt "tauthenticationform.caption"
@@ -106,88 +102,86 @@ msgstr ""
 #: tauthenticationform.lcbusername.caption
 msgctxt "tauthenticationform.lcbusername.caption"
 msgid "&Username"
-msgstr ""
+msgstr "&Käyttäjänimi"
 
 #: tauthenticationform.lepassword.caption
 msgid "&Password"
-msgstr ""
+msgstr "&Salasana"
 
 #: tcreatecodeform.caption
 msgctxt "tcreatecodeform.caption"
 msgid "Create pascal code"
-msgstr ""
+msgstr "Luo Pascal koodi"
 
 #: tcreatecodeform.cgoptions.caption
 msgid "Other options"
-msgstr ""
+msgstr "Muut optiot"
 
 #: tcreatecodeform.eextraunitnames.texthint
 msgid "Unit names, separated by commas"
-msgstr ""
+msgstr "Pilkulla erotetut käännösyksikön nimet"
 
 #: tcreatecodeform.leconstructorargslabel1.caption
 msgid "Constructor arguments"
-msgstr ""
+msgstr "Constructor parametrit"
 
 #: tcreatecodeform.lepropertytypesuffix.caption
 msgid "Property type suffix"
-msgstr ""
+msgstr "Property tyypin liite"
 
 #: tcreatecodeform.leunitname.caption
 msgid "Unit name"
-msgstr ""
+msgstr "Käännösyksikön nimi"
 
 #: tcreatecodeform.leunitname1.caption
 msgid "Field Prefix"
-msgstr ""
+msgstr "Kentän etuliite"
 
 #: tcreatecodeform.lextraunitnames.caption
 msgid "Extra units in uses"
-msgstr ""
+msgstr "Uses osion lisä-käännösyksiköt"
 
 #: tcreatecodeform.lfecode.caption
 msgid "File"
-msgstr ""
+msgstr "Tiedosto"
 
 #: tcreatecodeform.lparentname.caption
 msgid "Object Parent class"
-msgstr ""
+msgstr "Olion kantaluokka"
 
 #: tcreatecodeform.lseindent.caption
 msgid "Indent"
-msgstr ""
+msgstr "Sisennys"
 
 #: tcreatecodeform.tscode.caption
 msgid "Preview"
-msgstr ""
+msgstr "Esikatselu"
 
 #: tcreatecodeform.tsoptions.caption
 msgid "Options"
-msgstr ""
+msgstr "Optiot"
 
 #: theaderform.caption
 msgid "Request header"
 msgstr ""
 
 #: theaderform.lcbname.caption
-#, fuzzy
 msgctxt "theaderform.lcbname.caption"
 msgid "&Name"
-msgstr "Nimi"
+msgstr "&Nimi"
 
 #: theaderform.lcbvalue.caption
-#, fuzzy
 msgctxt "theaderform.lcbvalue.caption"
 msgid "&Value"
-msgstr "Arvo"
+msgstr "&Arvo"
 
 #: tmainform.aaddtofavourites.caption
 msgid "Add request to favourites"
-msgstr ""
+msgstr "Lisää pyyntö suosikkeihin"
 
 #: tmainform.aclose.caption
 msgid "&Close"
-msgstr ""
+msgstr "&Sulje"
 
 #: tmainform.acopy.caption
 msgid "&Copy"
@@ -200,11 +194,11 @@ msgstr "Kopio JSON-muodossa leikepöydälle valittu solmu"
 #: tmainform.acreatecode.caption
 msgctxt "tmainform.acreatecode.caption"
 msgid "Create pascal code"
-msgstr ""
+msgstr "Luo Pascal koodi"
 
 #: tmainform.acut.caption
 msgid "C&ut"
-msgstr "Leikkaa"
+msgstr "&Leikkaa"
 
 #: tmainform.acut.hint
 msgid "Cut selected node to clipboard as JSON"
@@ -212,7 +206,7 @@ msgstr "Leikkaa JSON-muodossa leikepöydälle valittu solmu"
 
 #: tmainform.adeletevalue.caption
 msgid "&Delete value"
-msgstr "Poista arvo"
+msgstr "&Poista arvo"
 
 #: tmainform.adeletevalue.hint
 msgid "Delete the selected value"
@@ -220,7 +214,7 @@ msgstr "Poista valittu arvo"
 
 #: tmainform.aexpandall.caption
 msgid "E&xpand all nodes"
-msgstr "Avaa laajennettuna kaikki solmut"
+msgstr "&Avaa laajennettuna kaikki solmut"
 
 #: tmainform.aexpandall.hint
 msgid "Expand all nodes in the document"
@@ -236,7 +230,7 @@ msgstr "Avaa laajennettuna kaikki solmut nykyisessä oliossa/taulukossa"
 
 #: tmainform.afind.caption
 msgid "&Find"
-msgstr "Etsi"
+msgstr "&Etsi"
 
 #: tmainform.afindnext.caption
 msgid "Find &next occurrence"
@@ -244,7 +238,7 @@ msgstr "Etsi seuraava esiintymä"
 
 #: tmainform.anew.caption
 msgid "&New"
-msgstr "Uusi"
+msgstr "&Uusi"
 
 #: tmainform.anew.hint
 msgid "Create new JSON document"
@@ -252,7 +246,7 @@ msgstr "Luo uusi JSON dokumentti"
 
 #: tmainform.anewarray.caption
 msgid "New &Array"
-msgstr "Uusi taulukko"
+msgstr "Uusi &taulukko"
 
 #: tmainform.anewarray.hint
 msgid "Add a new JSON array"
@@ -260,7 +254,7 @@ msgstr "Lisää uusi JSON taulukko"
 
 #: tmainform.anewbooleanvalue.caption
 msgid "New &boolean value"
-msgstr "Uusi boolean arvo"
+msgstr "Uusi &boolean arvo"
 
 #: tmainform.anewbooleanvalue.hint
 msgid "Add a new boolean value"
@@ -268,7 +262,7 @@ msgstr "Lisää uusi boolean arvo"
 
 #: tmainform.anewnullvalue.caption
 msgid "New N&ull value"
-msgstr "Uusi Null arvo"
+msgstr "Uusi &Null arvo"
 
 #: tmainform.anewnullvalue.hint
 msgid "Add a new null value"
@@ -276,7 +270,7 @@ msgstr "Lisää uusi null arvo"
 
 #: tmainform.anewnumbervalue.caption
 msgid "&New numerical Value"
-msgstr "Uusi numeroarvo"
+msgstr "&Uusi numeroarvo"
 
 #: tmainform.anewnumbervalue.hint
 msgid "Add a new number value"
@@ -284,7 +278,7 @@ msgstr "Lisää uusi numeroarvo"
 
 #: tmainform.anewobject.caption
 msgid "New &Object"
-msgstr "Uusi olio"
+msgstr "Uusi &olio"
 
 #: tmainform.anewobject.hint
 msgid "Add a new JSON object"
@@ -292,7 +286,7 @@ msgstr "Lisää uusi JSON olio"
 
 #: tmainform.anewstringvalue.caption
 msgid "New &string value"
-msgstr "Uusi merkkijono arvo"
+msgstr "Uusi &merkkijono arvo"
 
 #: tmainform.anewstringvalue.hint
 msgid "Add a new string value"
@@ -300,7 +294,7 @@ msgstr "Lisää uusi merkkijono arvo"
 
 #: tmainform.aopen.caption
 msgid "&Open"
-msgstr "Avaa"
+msgstr "&Avaa"
 
 #: tmainform.aopen.hint
 msgid "Open JSON document from file"
@@ -308,7 +302,7 @@ msgstr "Avaa tiedostosta JSON dokumentti"
 
 #: tmainform.apaste.caption
 msgid "&Paste"
-msgstr "Liitä"
+msgstr "&Liitä"
 
 #: tmainform.apaste.hint
 msgid "Paste JSON data in clipboard as new member"
@@ -324,7 +318,7 @@ msgstr "Liitä JSON data leikepöydältä uutena dokumenttina"
 
 #: tmainform.aquit.caption
 msgid "&Quit"
-msgstr "Lopeta"
+msgstr "&Lopeta"
 
 #: tmainform.aquit.hint
 msgid "Exit the program"
@@ -332,7 +326,7 @@ msgstr "Sulje ohjelma"
 
 #: tmainform.asave.caption
 msgid "&Save"
-msgstr "Tallenna"
+msgstr "&Tallenna"
 
 #: tmainform.asave.hint
 msgid "Save the JSON document to file"
@@ -340,7 +334,7 @@ msgstr "Tallenna JSON dokumentti tiedostoon"
 
 #: tmainform.asaveas.caption
 msgid "Save &as"
-msgstr "Tallenna nimellä"
+msgstr "Tallenna &nimellä"
 
 #: tmainform.asaveas.hint
 msgid "Save JSON document with a new name"
@@ -349,44 +343,44 @@ msgstr "Tallenna JSON dokumentti uudella nimellä"
 #: tmainform.caption
 msgctxt "tmainform.caption"
 msgid "JSON Viewer"
-msgstr ""
+msgstr "JSON katselija"
 
 #: tmainform.medit.caption
 msgid "&Edit"
-msgstr "Muokkaa"
+msgstr "&Muokkaa"
 
 #: tmainform.mfavourites.caption
 msgid "Favourites"
-msgstr ""
+msgstr "Suosikit"
 
 #: tmainform.mfile.caption
 msgid "&File"
-msgstr "Tiedosto"
+msgstr "&Tiedosto"
 
 #: tmainform.miallowcomments.caption
 msgctxt "tmainform.miallowcomments.caption"
 msgid "Allow comments"
-msgstr ""
+msgstr "Salli kommentit"
 
 #: tmainform.miallowtrailingcomma.caption
 msgid "Allow trailing comma"
-msgstr ""
+msgstr "Salli pilkku perässä"
 
 #: tmainform.micompact.caption
 msgid "Compact display"
-msgstr ""
+msgstr "Kompakti näyttö"
 
 #: tmainform.midocument.caption
 msgid "&New document with object"
-msgstr "Uusi dokumentti oliolla"
+msgstr "&Uusi dokumentti oliolla"
 
 #: tmainform.miinsert.caption
 msgid "&Values"
-msgstr "Arvot"
+msgstr "&Arvot"
 
 #: tmainform.miquotestrings.caption
 msgid "Quote string values"
-msgstr ""
+msgstr "Merkkijonot lainausmerkkeihin"
 
 #: tmainform.misortmembers.caption
 msgid "Sort object members"
@@ -398,7 +392,7 @@ msgstr ""
 
 #: tmainform.moptions.caption
 msgid "&Options"
-msgstr "Optiot"
+msgstr "&Optiot"
 
 #: tmainform.odjson.title
 msgid "Select a JSON file"
@@ -414,7 +408,7 @@ msgstr ""
 
 #: tmainform.tbshowrest.caption
 msgid "Show &REST query"
-msgstr ""
+msgstr "Näytä &REST haku"
 
 #: tmainform.toolbutton1.caption
 msgid "ToolButton1"
@@ -434,7 +428,7 @@ msgstr "Aseta true arvoon"
 
 #: tnewbooleanform.label1.caption
 msgid "&Member name"
-msgstr "Jäsenen nimi"
+msgstr "&Jäsenen nimi"
 
 #: tnewnumberform.caption
 msgid "New number value"
@@ -443,7 +437,7 @@ msgstr "Uusi numeroarvo"
 #: tnewnumberform.label1.caption
 msgctxt "tnewnumberform.label1.caption"
 msgid "&Name"
-msgstr "Nimi"
+msgstr "&Nimi"
 
 #: tnewnumberform.label2.caption
 msgid "Value"
@@ -460,26 +454,26 @@ msgstr "Uusi merkkijonoarvo"
 #: tnewstringform.label1.caption
 msgctxt "tnewstringform.label1.caption"
 msgid "&Name"
-msgstr "Nimi"
+msgstr "&Nimi"
 
 #: tnewstringform.label2.caption
 msgctxt "tnewstringform.label2.caption"
 msgid "&Value"
-msgstr "Arvo"
+msgstr "&Arvo"
 
 #: trestframe.aaddheader.caption
 msgctxt "trestframe.aaddheader.caption"
 msgid "Add Header"
-msgstr ""
+msgstr "Lisää otsikko"
 
 #: trestframe.aaddheader.hint
 msgctxt "trestframe.aaddheader.hint"
 msgid "Add Header"
-msgstr ""
+msgstr "Lisää otsikko"
 
 #: trestframe.aaddtofavourites.caption
 msgid "Add to favourites..."
-msgstr ""
+msgstr "Lisää suosikkeihin..."
 
 #: trestframe.aauthentication.caption
 msgctxt "trestframe.aauthentication.caption"
@@ -494,22 +488,22 @@ msgstr ""
 #: trestframe.adeleteheader.caption
 msgctxt "trestframe.adeleteheader.caption"
 msgid "Delete Header"
-msgstr ""
+msgstr "Poista otsikko"
 
 #: trestframe.adeleteheader.hint
 msgctxt "trestframe.adeleteheader.hint"
 msgid "Delete Header"
-msgstr ""
+msgstr "Poista otsikko"
 
 #: trestframe.aeditheader.caption
 msgctxt "trestframe.aeditheader.caption"
 msgid "Edit Header"
-msgstr ""
+msgstr "Muokkaa otsikkoa"
 
 #: trestframe.aeditheader.hint
 msgctxt "trestframe.aeditheader.hint"
 msgid "Edit Header"
-msgstr ""
+msgstr "Muokkaa otsikkoa"
 
 #: trestframe.asend.caption
 msgid "&Send"
@@ -517,12 +511,12 @@ msgstr ""
 
 #: trestframe.asend.hint
 msgid "Send request"
-msgstr ""
+msgstr "Lähetä pyyntö"
 
 #: trestframe.cbusecurrenttabcontent.caption
 msgctxt "trestframe.cbusecurrenttabcontent.caption"
 msgid "Use current tab as content"
-msgstr ""
+msgstr "Käytä nykyistä välilehteä sisältönä"
 
 #: trestframe.lhttpstatus.caption
 msgid "HTTP"
@@ -530,25 +524,25 @@ msgstr ""
 
 #: trestframe.tsheaders.caption
 msgid "Request headers"
-msgstr ""
+msgstr "Pyynnön otsikot"
 
 #: trestframe.tsrequestcontent.caption
 msgid "Request content"
-msgstr ""
+msgstr "Pyynnön sisältö"
 
 #: trestframe.tsresult.caption
 msgid "Request result"
-msgstr ""
+msgstr "Pyynnön tulos"
 
 #: tsaverequestdataform.caption
 msgid "Save request data as favourite"
-msgstr ""
+msgstr "Tallenna pyynnön tieto suosikkeihin"
 
 #: tsaverequestdataform.cbsavecontent.caption
 msgid "Save request content"
-msgstr ""
+msgstr "Tallenna pyynnön sisältö"
 
 #: tsaverequestdataform.label1.caption
 msgid "Name"
-msgstr ""
+msgstr "Nimi"
 
