@@ -33,6 +33,7 @@ uses
   // Widgetset
   WSMenus, WSLCLClasses,
   // LCL Cocoa
+  Cocoa_extra,
   CocoaPrivate, CocoaWSCommon, CocoaUtils, CocoaGDIObjects;
 
 type
@@ -544,7 +545,11 @@ begin
     TCocoaMenuItem(item).menuItemCallback:=TLCLMenuItemCallback.Create(item, AMenuItem);
 
     // initial set of properties
+    {$ifdef BOOLFIX}
+    item.setEnabled_(Ord(AMenuItem.Enabled));
+    {$else}
     item.setEnabled(AMenuItem.Enabled);
+    {$endif}
     Do_SetCheck(item, AMenuItem.Checked);
 
     if AMenuItem.HasIcon and ((AMenuItem.ImageIndex>=0) or (AMenuItem.HasBitmap)) then
@@ -640,7 +645,11 @@ class procedure TCocoaWSMenuItem.SetVisible(const AMenuItem: TMenuItem;
   const Visible: boolean);
 begin
   if not Assigned(AMenuItem) or (AMenuItem.Handle=0) then Exit;
+  {$ifdef BOOLFIX}
+  NSMenuItem(AMenuItem.Handle).setHidden_( Ord(not Visible) );
+  {$else}
   NSMenuItem(AMenuItem.Handle).setHidden( not Visible );
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -679,7 +688,11 @@ class function TCocoaWSMenuItem.SetEnable(const AMenuItem: TMenuItem;
 begin
   Result:=Assigned(AMenuItem) and (AMenuItem.Handle<>0);
   if not Result then Exit;
+  {$ifdef BOOLFIX}
+  NSMenuItem(AMenuItem.Handle).setEnabled_( Ord(Enabled) );
+  {$else}
   NSMenuItem(AMenuItem.Handle).setEnabled( Enabled );
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -810,7 +823,11 @@ begin
       enb := not Assigned(TCocoaMenuItem(it).FMenuItemTarget)
          or ( TCocoaMenuItem(it).FMenuItemTarget.Enabled );
     end;
+    {$ifdef BOOLFIX}
+    it.setEnabled_( Ord(enb));
+    {$else}
     it.setEnabled(enb);
+    {$endif}
     if (it.hasSubmenu) then
     begin
       ToggleAppNSMenu(it.submenu, ALogicalEnabled);

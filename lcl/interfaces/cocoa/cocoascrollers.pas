@@ -18,6 +18,7 @@ unit CocoaScrollers;
 {$modeswitch objectivec1}
 {$modeswitch objectivec2}
 {$interfaces corba}
+{$include cocoadefines.inc}
 
 interface
 
@@ -325,8 +326,13 @@ procedure allocScroller(parent: TCocoaManualScrollView; var sc: NSScroller; dst:
 begin
   sc:=TCocoaScrollBar(TCocoaScrollBar.alloc).initWithFrame(dst);
   parent.addSubview(sc);
+  {$ifdef BOOLFIX}
+  sc.setEnabled_(Ord(true));
+  sc.setHidden_(Ord(not AVisible));
+  {$else}
   sc.setEnabled(true);
   sc.setHidden(not AVisible);
+  {$endif}
   TCocoaScrollBar(sc).preventBlock := true;
   //Suppress scrollers notifications.
   TCocoaScrollBar(sc).callback := parent.callback;
@@ -399,13 +405,21 @@ begin
 
     if fvscroll.isHidden then
     begin
+      {$ifdef BOOLFIX}
+      fvscroll.setHidden_(Ord(false));
+      {$else}
       fvscroll.setHidden(false);
+      {$endif}
       ch := true;
     end;
   end
   else if Assigned(fvscroll) and not fvscroll.isHidden then
   begin
+    {$ifdef BOOLFIX}
+    fvscroll.setHidden_(Ord(true));
+    {$else}
     fvscroll.setHidden(true);
+    {$endif}
     ch := true;
   end;
   if ch then
@@ -429,13 +443,21 @@ begin
     end;
     if fhscroll.isHidden then
     begin
+      {$ifdef BOOLFIX}
+      fhscroll.setHidden_(Ord(false));
+      {$else}
       fhscroll.setHidden(false);
+      {$endif}
       ch := true;
     end;
   end
   else if Assigned(fhscroll) and (not fhscroll.isHidden) then
   begin
+    {$ifdef BOOLFIX}
+    fhscroll.setHidden_(Ord(true));
+    {$else}
     fhscroll.setHidden(true);
+    {$endif}
     ch := true;
   end;
 

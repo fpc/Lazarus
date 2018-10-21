@@ -16,6 +16,7 @@ unit Cocoa_Extra;
 
 {$mode objfpc}{$H+}
 {$modeswitch objectivec1}
+{$include cocoadefines.inc}
 
 interface
 
@@ -39,6 +40,23 @@ type
     function itemAtIndex(index: NSInteger): NSMenuItem; message 'itemAtIndex:';
   end;
 
+  {$ifdef BOOLFIX}
+  ObjCBool = ShortInt; // Matches BOOL declaration in ObjC "signed char"
+
+  NSMenuItemFix = objccategory external (NSMenuItem)
+    procedure setEnabled_(aenabled: ObjCBool); message 'setEnabled:';
+    procedure setHidden_(ahidden: ObjCBool); message 'setHidden:';
+  end;
+
+  NSControlFix = objccategory external (NSControl)
+    procedure setEnabled_(aenabled: ObjCBool); message 'setEnabled:';
+  end;
+
+  NSStatusItemFix = objccategory external (NSStatusItem)
+    procedure setEnabled_(aenabled: ObjCBool); message 'setEnabled:';
+  end;
+  {$endif}
+
   NSEdgeInsets = packed record
     top     : CGFloat;
     left    : CGFloat;
@@ -52,6 +70,9 @@ type
     function alignmentRectInsets: NSEdgeInsets; message 'alignmentRectInsets';
     function alignmentRectForFrame(ns: NSRect): NSRect; message 'alignmentRectForFrame:';
     function frameForAlignmentRect(ns: NSRect): NSRect; message 'frameForAlignmentRect:';
+    {$ifdef BOOLFIX}
+    procedure setHidden_(flag: Byte); message 'setHidden:';
+    {$endif}
   end;
 
   NSLayoutConstraint = objcclass external (NSObject)
@@ -104,6 +125,9 @@ type
   NSTableColumnFix = objccategory external (NSTableColumn)
     procedure setTitle(atitle: NSString); message 'setTitle:';
     function title: NSString; message 'title';
+    {$ifdef BOOLFIX}
+    procedure setHidden_(flag: Byte); message 'setHidden:';
+    {$endif}
   end;
 
   NSUserInterfaceItemIdentifier = NSString;

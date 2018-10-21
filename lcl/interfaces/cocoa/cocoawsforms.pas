@@ -522,8 +522,13 @@ class procedure TCocoaWSCustomForm.UpdateWindowIcons(AWindow: NSWindow;
     Btn := AWindow.standardWindowButton(AButton);
     if Assigned(Btn) then
     begin
+      {$ifdef BOOLFIX}
+      Btn.setHidden_(Ord(not AVisible));
+      Btn.setEnabled_(Ord(AEnabled));
+      {$else}
       Btn.setHidden(not AVisible);
       Btn.setEnabled(AEnabled);
+      {$endif}
     end;
   end;
 

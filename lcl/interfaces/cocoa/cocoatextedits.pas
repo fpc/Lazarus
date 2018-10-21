@@ -18,6 +18,7 @@ unit CocoaTextEdits;
 {$modeswitch objectivec1}
 {$modeswitch objectivec2}
 {$interfaces corba}
+{$include cocoadefines.inc}
 
 {.$DEFINE COCOA_DEBUG_SETBOUNDS}
 {.$DEFINE COCOA_SPIN_DEBUG}
@@ -1810,7 +1811,11 @@ end;
 procedure TCocoaSpinEdit.lclSetVisible(AVisible: Boolean);
 begin
   inherited lclSetVisible(AVisible);
+  {$ifdef BOOLFIX}
+  Stepper.setHidden_(Ord(not AVisible));
+  {$else}
   Stepper.setHidden(not AVisible);
+  {$endif}
 end;
 
 procedure TCocoaSpinEdit.lclSetFrame(const r: TRect);

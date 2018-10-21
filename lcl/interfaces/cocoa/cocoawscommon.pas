@@ -2,6 +2,7 @@ unit CocoaWSCommon;
 
 {$mode objfpc}{$H+}
 {$modeswitch objectivec1}
+{$include cocoadefines.inc}
 {.$DEFINE COCOA_DEBUG_SETBOUNDS}
 
 interface
@@ -185,11 +186,19 @@ begin
   Result := TCocoaScrollView.alloc.initWithFrame(NSNullRect);
   if Assigned(p) then p.addSubView(Result);
   Result.lclSetFrame(r);
+  {$ifdef BOOLFIX}
+  Result.setHidden_(Ord(AView.isHidden));
+  {$else}
   Result.setHidden(AView.isHidden);
+  {$endif}
   Result.setDocumentView(AView);
   Result.setDrawsBackground(false); // everything is covered anyway
   if AReleaseView then AView.release;
+  {$ifdef BOOLFIX}
+  AView.setHidden_(Ord(false));
+  {$else}
   AView.setHidden(false);
+  {$endif}
   SetViewDefaults(Result);
 end;
 
@@ -208,9 +217,17 @@ begin
   Result := TCocoaManualScrollView.alloc.initWithFrame(NSNullRect);
   if Assigned(p) then p.addSubView(Result);
   Result.lclSetFrame(r);
+  {$ifdef BOOLFIX}
+  Result.setHidden_(Ord(AView.isHidden));
+  {$else}
   Result.setHidden(AView.isHidden);
+  {$endif}
   Result.setDocumentView(AView);
+  {$ifdef BOOLFIX}
+  AView.setHidden_(Ord(false));
+  {$else}
   AView.setHidden(false);
+  {$endif}
   SetViewDefaults(Result);
   if AView.isKindOfClass(TCocoaCustomControl) then
     TCocoaCustomControl(AView).auxMouseByParent := true;

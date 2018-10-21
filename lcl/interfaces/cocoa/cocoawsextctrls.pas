@@ -18,6 +18,7 @@ unit CocoaWSExtCtrls;
 
 {$mode delphi}
 {$modeswitch objectivec1}
+{$include cocoadefines.inc}
 
 interface
 
@@ -29,7 +30,8 @@ uses
   // widgetset
   WSExtCtrls, WSLCLClasses, WSControls, WSProc,
   // LCL Cocoa
-  CocoaPrivate, CocoaWSMenus, CocoaWSCommon, CocoaGDIObjects, CocoaScrollers;
+  CocoaPrivate, CocoaWSMenus, CocoaWSCommon, CocoaGDIObjects, CocoaScrollers
+  ,Cocoa_Extra;
 
 type
 

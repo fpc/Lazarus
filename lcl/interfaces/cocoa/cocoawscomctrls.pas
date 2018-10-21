@@ -4,6 +4,7 @@ interface
 
 {$mode delphi}
 {$modeswitch objectivec1}
+{$include cocoadefines.inc}
 
 {.$DEFINE COCOA_DEBUG_TABCONTROL}
 {.$DEFINE COCOA_DEBUG_LISTVIEW}
@@ -989,8 +990,11 @@ var
   lNSColumn: NSTableColumn;
 begin
   if not CheckColumnParams(lTableLV, lNSColumn, ALV, AIndex) then Exit;
-
+  {$ifdef BOOLFIX}
+  lNSColumn.setHidden_(Ord(not AVisible));
+  {$else}
   lNSColumn.setHidden(not AVisible);
+  {$endif}
 end;
 
 class procedure TCocoaWSCustomListView.ItemDelete(const ALV: TCustomListView;

@@ -18,6 +18,7 @@ unit CocoaPrivate;
 {$modeswitch objectivec1}
 {$modeswitch objectivec2}
 {$interfaces corba}
+{$include cocoadefines.inc}
 
 {.$DEFINE COCOA_DEBUG_SETBOUNDS}
 {.$DEFINE COCOA_SPIN_DEBUG}
@@ -849,7 +850,11 @@ end;
 
 procedure LCLControlExtension.lclSetEnabled(AEnabled:Boolean);
 begin
-  SetEnabled(AEnabled and ((not Assigned(superview)) or (superview.lclisEnabled)) );
+  {$ifdef BOOLFIX}
+  SetEnabled_( Ord(AEnabled and ((not Assigned(superview)) or (superview.lclisEnabled))) );
+  {$else}
+  SetEnabled( AEnabled and ((not Assigned(superview)) or (superview.lclisEnabled)) );
+  {$endif}
   inherited lclSetEnabled(AEnabled);
 end;
 
@@ -891,7 +896,11 @@ begin
   if not Assigned(Result) then
     Exit;
 
+  {$ifdef BOOLFIX}
+  setHidden_(Ord(AParams.Style and WS_VISIBLE = 0));
+  {$else}
   setHidden(AParams.Style and WS_VISIBLE = 0);
+  {$endif}
 
   if Assigned(p) then
     p.lclContentView.addSubview(Result);
@@ -921,7 +930,11 @@ end;
 
 procedure LCLViewExtension.lclSetVisible(AVisible: Boolean);
 begin
+  {$ifdef BOOLFIX}
+  setHidden_(Ord(not AVisible));
+  {$else}
   setHidden(not AVisible);
+  {$endif}
   {$IFDEF COCOA_DEBUG_SETBOUNDS}
   WriteLn(Format('LCLViewExtension.lclSetVisible: %s AVisible=%d',
     [NSStringToString(Self.ClassName), Integer(AVisible)]));

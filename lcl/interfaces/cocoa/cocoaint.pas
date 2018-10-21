@@ -265,7 +265,11 @@ begin
   end;
 
   dl:=mx-mn;
-  bar.setEnabled(dl<>0);
+  {$ifdef BOOLFIX}
+  bar.setEnabled_(Ord(dl<>0));
+  {$else}
+  bar.SetEnabled(dl<>0);
+  {$endif}
 
   // if changed page or range, the knob changes
   if ScrollInfo.fMask and (SIF_RANGE or SIF_PAGE)>0 then

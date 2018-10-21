@@ -18,6 +18,7 @@ unit CocoaTables;
 {$modeswitch objectivec1}
 {$modeswitch objectivec2}
 {$interfaces corba}
+{$include cocoadefines.inc}
 
 {.$DEFINE COCOA_DEBUG_LISTVIEW}
 
@@ -981,14 +982,22 @@ end;
 procedure TCocoaTableListItem.setImage(AImage: NSImage);
 begin
   imageSubView.setImage(AImage);
+  {$ifdef BOOLFIX}
+  imageSubView.setHidden_(Ord(AImage = nil));
+  {$else}
   imageSubView.setHidden(AImage = nil);
+  {$endif}
   resizeSubviewsWithOldSize(GetNSSize(column.width, column.tableView.rowHeight));
 end;
 
 procedure TCocoaTableListItem.setCheckState(AState: NSInteger);
 begin
   checkedSubView.setState(AState);
+  {$ifdef BOOLFIX}
+  checkedSubView.setHidden_(Ord(AState = -1));
+  {$else}
   checkedSubView.setHidden(AState = -1);
+  {$endif}
   resizeSubviewsWithOldSize(GetNSSize(column.width, column.tableView.rowHeight));
 end;
 

@@ -18,6 +18,7 @@ unit CocoaWindows;
 {$modeswitch objectivec1}
 {$modeswitch objectivec2}
 {$interfaces corba}
+{$include cocoadefines.inc}
 
 interface
 
@@ -518,7 +519,11 @@ var
 begin
   if isembedded then
   begin
+    {$ifdef BOOLFIX}
+    inherited setHidden_(Ord(aisHidden));
+    {$else}
     inherited setHidden(aisHidden);
+    {$endif}
   end
   else
   begin

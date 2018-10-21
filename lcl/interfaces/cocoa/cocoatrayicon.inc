@@ -92,7 +92,11 @@ begin
   StatusItemHandle.lclSetTrayIcon(ATrayIcon);
 
   statusitem.setHighlightMode(True);
+  {$ifdef BOOLFIX}
+  statusitem.setEnabled_(Ord(True));
+  {$else}
   statusitem.setEnabled(True);
+  {$endif}
 
   Result := True;
   

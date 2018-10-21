@@ -18,6 +18,7 @@ unit CocoaTabControls;
 {$modeswitch objectivec1}
 {$modeswitch objectivec2}
 {$interfaces corba}
+{$include cocoadefines.inc}
 
 interface
 
@@ -288,9 +289,17 @@ var
 begin
   ReviseTabs(aview, showPrev, showNExt);
   if Assigned(aview.prevarr) then
+    {$ifdef BOOLFIX}
+    aview.prevarr.setHidden_(Ord(not showPrev));
+    {$else}
     aview.prevarr.setHidden(not showPrev);
+    {$endif}
   if Assigned(aview.nextarr) then
+    {$ifdef BOOLFIX}
+    aview.nextarr.setHidden_(Ord(not showNext));
+    {$else}
     aview.nextarr.setHidden(not showNext);
+    {$endif}
 end;
 
 function IndexOfTab(ahost: TCocoaTabControl; atab: NSTabViewItem): Integer;
