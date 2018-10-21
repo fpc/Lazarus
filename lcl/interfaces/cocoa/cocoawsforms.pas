@@ -218,12 +218,20 @@ begin
   if not (AFormStyle in [fsNormal, fsMDIChild, fsMDIForm]) then
   begin
     lvl := FormStyleToWindowLevel[AFormStyle];
+    {$ifdef BOOLFIX}
+    win.setHidesOnDeactivate_(Ord(FormStyleToHideOnDeactivate[AFormStyle]));
+    {$else}
     win.setHidesOnDeactivate(FormStyleToHideOnDeactivate[AFormStyle]);
+    {$endif}
   end
   else
   begin
     lvl := 0;
+    {$ifdef BOOLFIX}
+    win.setHidesOnDeactivate_(Ord(false));
+    {$else}
     win.setHidesOnDeactivate(false);
+    {$endif}
   end;
   win.setLevel(lvl);
   if win.isKindOfClass(TCocoaWindow) then
@@ -252,15 +260,32 @@ begin
   end;
 
   R := CreateParamsToNSRect(AParams);
+  {$ifdef BOOLFIX}
+  win := TCocoaPanel(win.initWithContentRect_styleMask_backing_defer_(R, WinMask, NSBackingStoreBuffered, Ord(False)));
+  {$else}
   win := TCocoaPanel(win.initWithContentRect_styleMask_backing_defer(R, WinMask, NSBackingStoreBuffered, False));
+  {$endif}
   win.enableCursorRects;
   win.setLevel(HintWindowLevel);
   win.setDelegate(win);
+  {$ifdef BOOLFIX}
+  win.setHasShadow_(Ord(true));
+  {$else}
   win.setHasShadow(true);
+  {$endif}
   if AWinControl.Perform(WM_NCHITTEST, 0, 0)=HTTRANSPARENT then
+    {$ifdef BOOLFIX}
+    win.setIgnoresMouseEvents_(Ord(True))
+    {$else}
     win.setIgnoresMouseEvents(True)
+    {$endif}
   else
+    {$ifdef BOOLFIX}
+    win.setAcceptsMouseMovedEvents_(Ord(True));
+    {$else}
     win.setAcceptsMouseMovedEvents(True);
+    {$endif}
+
 
   R.origin.x := 0;
   R.origin.y := 0;
@@ -600,8 +625,13 @@ begin
       Exit;
     end;
 
+    {$ifdef BOOLFIX}
+    win := TCocoaWindow(win.initWithContentRect_styleMask_backing_defer_(R,
+      GetStyleMaskFor(GetDesigningBorderStyle(Form), Form.BorderIcons), NSBackingStoreBuffered, Ord(False)));
+    {$else}
     win := TCocoaWindow(win.initWithContentRect_styleMask_backing_defer(R,
       GetStyleMaskFor(GetDesigningBorderStyle(Form), Form.BorderIcons), NSBackingStoreBuffered, False));
+    {$endif}
     UpdateWindowIcons(win, GetDesigningBorderStyle(Form), Form.BorderIcons);
     // For safety, it is better to not apply any setLevel & similar if the form is just a standard style
     // see issue http://bugs.freepascal.org/view.php?id=28473
@@ -616,14 +646,25 @@ begin
     ns := NSStringUtf8(AWinControl.Caption);
     win.setTitle(ns);
     ns.release;
+    {$ifdef BOOLFIX}
+    win.setReleasedWhenClosed_(Ord(False)); // do not release automatically
+    win.setAcceptsMouseMovedEvents_(Ord(True));
+    {$else}
     win.setReleasedWhenClosed(False); // do not release automatically
     win.setAcceptsMouseMovedEvents(True);
+    {$endif}
 
     if win.respondsToSelector(ObjCSelector('setTabbingMode:')) then
       win.setTabbingMode(NSWindowTabbingModeDisallowed);
 
     if AWinControl.Perform(WM_NCHITTEST, 0, 0)=HTTRANSPARENT then
+    begin
+      {$ifdef BOOLFIX}
+      win.setIgnoresMouseEvents_(Ord(True));
+      {$else}
       win.setIgnoresMouseEvents(True);
+      {$endif}
+    end;
 
     cnt.callback := TCocoaWindow(win).callback;
     cnt.callback.IsOpaque:=true;

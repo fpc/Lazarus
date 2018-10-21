@@ -403,7 +403,11 @@ begin
   window := afield.window;
   if window = nil then Exit;
 
+  {$ifdef BOOLFIX}
+  lText := window.fieldEditor_forObject_(Ord(True), afield);
+  {$else}
   lText := window.fieldEditor_forObject(True, afield);
+  {$endif}
   if (lText <> nil) and lText.isKindOfClass_(TCocoaFieldEditor) then
   begin
     Result := TCocoaFieldEditor(lText);

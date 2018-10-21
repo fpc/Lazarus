@@ -1842,7 +1842,11 @@ begin
     // if we will want a postmessage using notification center
     // NSDistributedNotificationCenter.defaultCenter.postNotificationName_object_userInfo_deliverImmediately(NSMessageNotification, nil, Info, False);
     Event := PrepareUserEvent(Handle, Info, False);
+    {$ifdef BOOLFIX}
+    NSApp.postEvent_atStart_(Event, Ord(False));
+    {$else}
     NSApp.postEvent_atStart(Event, False);
+    {$endif}
   end;
 end;
 
@@ -2315,7 +2319,11 @@ begin
   Result := HWnd <> 0;
   if Result then
   begin
+    {$ifdef BOOLFIX}
+    NSApp.activateIgnoringOtherApps_(Ord(True));
+    {$else}
     NSApp.activateIgnoringOtherApps(True);
+    {$endif}
     Obj := NSObject(HWnd);
     lWin := NSWindow(GetNSObjectWindow(Obj));
     if lWin <> nil then

@@ -1315,7 +1315,11 @@ begin
   h:=lclGetTopBarHeight;
   ns.size.height:=ns.size.height+h;
   ns.origin.y:=ns.origin.y-h;
+  {$ifdef BOOLFIX}
+  setFrame_display_(ns, Ord(isVisible));
+  {$else}
   setFrame_display(ns, isVisible);
+  {$endif}
 end;
 
 function LCLWindowExtension.lclClientFrame: TRect;

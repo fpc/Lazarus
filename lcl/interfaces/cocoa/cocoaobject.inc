@@ -59,7 +59,11 @@ begin
     LCLEventSubTypeMessage,
     LM_NULL,
     AppHandle);
+  {$ifdef BOOLFIX}
+  NSApp.postEvent_atStart_(Event, Ord(False));
+  {$else}
   NSApp.postEvent_atStart(Event, False);
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -97,7 +101,11 @@ var
 begin
   repeat
     pool := NSAutoreleasePool.alloc.init;
+    {$ifdef BOOLFIX}
+    event := NSApp.nextEventMatchingMask_untilDate_inMode_dequeue_(NSAnyEventMask, nil, NSDefaultRunLoopMode, Ord(true));
+    {$else}
     event := NSApp.nextEventMatchingMask_untilDate_inMode_dequeue(NSAnyEventMask, nil, NSDefaultRunLoopMode, true);
+    {$endif}
     if event <> nil then
     begin
       if (event.type_ = NSApplicationDefined) and (event.subtype = LCLEventSubTypeMessage) and (event.data1 = LM_NULL) and (event.data2 = AppHandle) then
@@ -125,7 +133,11 @@ var
   pool:NSAutoReleasePool;
 begin
   pool := NSAutoreleasePool.alloc.init;
+  {$ifdef BOOLFIX}
+  event := NSApp.nextEventMatchingMask_untilDate_inMode_dequeue_(NSAnyEventMask, NSDate.distantFuture, NSDefaultRunLoopMode, Ord(true));
+  {$else}
   event := NSApp.nextEventMatchingMask_untilDate_inMode_dequeue(NSAnyEventMask, NSDate.distantFuture, NSDefaultRunLoopMode, true);
+  {$endif}
   if event <> nil then
   begin
     if (event.type_ = NSApplicationDefined) and (event.subtype = LCLEventSubTypeMessage) and (event.data1 = LM_NULL) and (event.data2 = AppHandle) then
@@ -252,7 +264,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCocoaWidgetSet.AppBringToFront;
 begin
+  {$ifdef BOOLFIX}
+  NSApp.activateIgnoringOtherApps_(Ord(True));
+  {$else}
   NSApp.activateIgnoringOtherApps(True);
+  {$endif}
 end;
 
 procedure TCocoaWidgetSet.AppSetIcon(const Small, Big: HICON);

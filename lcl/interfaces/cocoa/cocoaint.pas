@@ -476,8 +476,13 @@ function TCocoaApplication.nextEventMatchingMask_untilDate_inMode_dequeue(
 var
   cb : ICommonCallback;
 begin
+  {$ifdef BOOLFIX}
+  Result:=inherited nextEventMatchingMask_untilDate_inMode_dequeue_(mask,
+    expiration, mode, Ord(deqFlag));
+  {$else}
   Result:=inherited nextEventMatchingMask_untilDate_inMode_dequeue(mask,
     expiration, mode, deqFlag);
+  {$endif}
   if Assigned(Result)
     and ((mode = NSEventTrackingRunLoopMode) or mode.isEqualToString(NSEventTrackingRunLoopMode))
     and Assigned(TrackedControl)

@@ -55,6 +55,12 @@ type
   NSStatusItemFix = objccategory external (NSStatusItem)
     procedure setEnabled_(aenabled: ObjCBool); message 'setEnabled:';
   end;
+
+  NSApplicationFix = objccategory external (NSApplication)
+    procedure activateIgnoringOtherApps_(flag: ObjCBool); message 'activateIgnoringOtherApps:';
+    function nextEventMatchingMask_untilDate_inMode_dequeue_(mask: NSUInteger; expiration: NSDate; mode: NSString; deqFlag: ObjCBool): NSEvent; message 'nextEventMatchingMask:untilDate:inMode:dequeue:';
+    procedure postEvent_atStart_(event: NSEvent; flag: ObjCBool); message 'postEvent:atStart:';
+  end;
   {$endif}
 
   NSEdgeInsets = packed record
@@ -71,7 +77,7 @@ type
     function alignmentRectForFrame(ns: NSRect): NSRect; message 'alignmentRectForFrame:';
     function frameForAlignmentRect(ns: NSRect): NSRect; message 'frameForAlignmentRect:';
     {$ifdef BOOLFIX}
-    procedure setHidden_(flag: Byte); message 'setHidden:';
+    procedure setHidden_(flag: ObjCBool); message 'setHidden:';
     {$endif}
   end;
 
@@ -120,13 +126,23 @@ type
     function tabbingMode: NSWindowTabbingMode; message 'tabbingMode';
     class procedure setAllowsAutomaticWindowTabbing(aflag: Boolean); message 'setAllowsAutomaticWindowTabbing:';
     class function allowsAutomaticWindowTabbing: Boolean; message 'allowsAutomaticWindowTabbing';
+    {$ifdef BOOLFIX}
+    function initWithContentRect_styleMask_backing_defer_(contentRect: NSRect; aStyle: NSUInteger; bufferingType: NSBackingStoreType; flag: ObjCBool): id; message 'initWithContentRect:styleMask:backing:defer:';
+    procedure setFrame_display_(frameRect: NSRect; flag: ObjCBool); message 'setFrame:display:';
+    function fieldEditor_forObject_(createFlag: ObjCBool; anObject: id): NSText; message 'fieldEditor:forObject:';
+    procedure setReleasedWhenClosed_(flag: ObjCBool); message 'setReleasedWhenClosed:';
+    procedure setAcceptsMouseMovedEvents_(flag: ObjCBool); message 'setAcceptsMouseMovedEvents:';
+    procedure setHidesOnDeactivate_(flag: ObjCBool); message 'setHidesOnDeactivate:';
+    procedure setHasShadow_(hasShadow_: ObjCBool); message 'setHasShadow:';
+    procedure setIgnoresMouseEvents_(flag: ObjCBool); message 'setIgnoresMouseEvents:';
+    {$endif}
   end;
 
   NSTableColumnFix = objccategory external (NSTableColumn)
     procedure setTitle(atitle: NSString); message 'setTitle:';
     function title: NSString; message 'title';
     {$ifdef BOOLFIX}
-    procedure setHidden_(flag: Byte); message 'setHidden:';
+    procedure setHidden_(flag: ObjCBool); message 'setHidden:';
     {$endif}
   end;
 
