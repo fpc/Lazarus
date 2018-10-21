@@ -54,7 +54,6 @@ type
     FilterEdit: TTreeFilterEdit;
     lblMenuTree: TLabel;
     lblToolbar: TLabel;
-    lblSelect: TLabel;
     lvToolbar: TListView;
     miAll: TMenuItem;
     miCustom: TMenuItem;
@@ -171,7 +170,6 @@ procedure TToolBarConfig.FormCreate(Sender: TObject);
 begin
   inherited;
   pnlButtons.Color := clBtnFace;
-  lblSelect.Caption := '';
   // load button images
   IDEImages.AssignImage(btnAdd, 'arrow__darkgreen_right');
   IDEImages.AssignImage(btnRemove, 'arrow__darkred_left');
@@ -338,16 +336,8 @@ end;
 
 procedure TToolBarConfig.lvToolbarSelectItem(Sender: TObject;
   Item: TListItem; Selected: Boolean);
-var
-  RealCount: integer;
 begin
   UpdateButtonsState;
-  // Update selection status label.
-  RealCount := lvToolbar.Items.Count-1;
-  if lvToolbar.ItemIndex < RealCount then
-    lblSelect.Caption := Format('%d / %d', [lvToolbar.ItemIndex+1, RealCount])
-  else
-    lblSelect.Caption := Format('%d+ / %d', [lvToolbar.ItemIndex, RealCount])
 end;
 
 procedure TToolBarConfig.MoveUpDown(aOffset: integer);
