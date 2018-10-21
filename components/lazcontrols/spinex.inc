@@ -417,7 +417,11 @@ end;
 
 procedure TCustomFloatSpinEditEx.SetDecimals(ADecimals: Integer);
 begin
-  if FDecimals = ADecimals then Exit;
+  if (FDecimals = ADecimals) or (ADecimals < 0) then Exit;
+  //if we increment DecimalPlaces first set FValue to correctly have the current DecimalPlaces decimals,
+  //and only then do the increment (GetValue will update FValue to have FDecimalPlaces decimals)
+  //Issue #0034370
+  if (ADecimals > FDecimals) then GetValue;
   FDecimals := ADecimals;
   UpdateControl;
 end;
