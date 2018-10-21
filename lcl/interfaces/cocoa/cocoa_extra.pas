@@ -61,6 +61,19 @@ type
     function nextEventMatchingMask_untilDate_inMode_dequeue_(mask: NSUInteger; expiration: NSDate; mode: NSString; deqFlag: ObjCBool): NSEvent; message 'nextEventMatchingMask:untilDate:inMode:dequeue:';
     procedure postEvent_atStart_(event: NSEvent; flag: ObjCBool); message 'postEvent:atStart:';
   end;
+
+  NSButtonFix = objccategory external(NSButton)
+    procedure setBordered_(flag: ObjCBool); message 'setBordered:';
+    procedure setAllowsMixedState_(flag: ObjCBool); message 'setAllowsMixedState:';
+  end;
+
+  NSTextFieldFix = objccategory external(NSTextField)
+    procedure setDrawsBackground_(flag: ObjCBool); message 'setDrawsBackground:';
+    procedure setBordered_(flag: ObjCBool); message 'setBordered:';
+    procedure setBezeled_(flag: ObjCBool); message 'setBezeled:';
+    procedure setEditable_(flag: ObjCBool); message 'setEditable:';
+    procedure setSelectable_(flag: ObjCBool); message 'setSelectable:';
+  end;
   {$endif}
 
   NSEdgeInsets = packed record
@@ -78,6 +91,8 @@ type
     function frameForAlignmentRect(ns: NSRect): NSRect; message 'frameForAlignmentRect:';
     {$ifdef BOOLFIX}
     procedure setHidden_(flag: ObjCBool); message 'setHidden:';
+    procedure setAutoresizesSubviews_(flag: ObjCBool); message 'setAutoresizesSubviews:';
+    procedure setNeedsDisplay__(flag: ObjCBool); message 'setNeedsDisplay:';
     {$endif}
   end;
 

@@ -19,6 +19,7 @@ unit CocoaWSStdCtrls;
 {$mode objfpc}{$H+}
 {$modeswitch objectivec1}
 {$modeswitch objectivec2}
+{$include cocoadefines.inc}
 
 interface
 
@@ -33,7 +34,7 @@ uses
   WSStdCtrls, WSLCLClasses, WSControls, WSProc,
   // LCL Cocoa
   CocoaWSCommon, CocoaPrivate, CocoaUtils, CocoaGDIObjects, CocoaButtons,
-  CocoaTables, CocoaTextEdits, CocoaScrollers;
+  CocoaTables, CocoaTextEdits, CocoaScrollers, Cocoa_Extra;
 
 type
 
@@ -404,10 +405,11 @@ end;
 procedure TextFieldSetBorderStyle(txt: NSTextField; astyle: TBorderStyle);
 begin
   if not Assigned(txt) then Exit;
-  if astyle = bsNone then
-    txt.setBezeled(false)
-  else
-    txt.setBezeled(true);
+  {$ifdef BOOLFIX}
+  txt.setBezeled_(Ord(astyle <> bsNone));
+  {$else}
+  txt.setBezeled(astyle <> bsNone);
+  {$endif}
 end;
 
 procedure RadioButtonSwitchSiblings(checkedRadio: NSButton);
@@ -453,8 +455,11 @@ end;
 
 procedure ComboBoxSetBorderStyle(box: NSComboBox; astyle: TBorderStyle);
 begin
-  if astyle = bsNone then box.setBezeled(false)
-  else box.setBezeled(true);
+  {$IFDEF BOOLFIX}
+  box.setBezeled_(Ord(astyle <> bsNone));
+  {$else}
+  box.setBezeled(astyle <> bsNone);
+  {$endif}
 end;
 
 { TLCLRadioButtonCallback }
@@ -731,7 +736,11 @@ begin
   // changes in AllowGrayed are never sent to WS!
   // so it should be checked at create time (and at SetNextState?)
   if TCustomCheckBox(AWinControl).AllowGrayed then
+    {$ifdef BOOLFIX}
+    NSButton(btn).setAllowsMixedState_(Ord(true));
+    {$else}
     NSButton(btn).setAllowsMixedState(true);
+    {$endif}
   Result := TLCLIntfHandle(btn);
 end;
 
@@ -771,7 +780,11 @@ begin
   if ACustomCheckBox.HandleAllocated then
   begin
     if NewState = cbGrayed then
+      {$ifdef BOOLFIX}
+      NSButton(ACustomCheckBox.Handle).setAllowsMixedState_(Ord(true));
+      {$else}
       NSButton(ACustomCheckBox.Handle).setAllowsMixedState(true);
+      {$endif}
     NSButton(ACustomCheckBox.Handle).setState(buttonState[NewState]);
   end;
 end;
@@ -838,10 +851,17 @@ var
   field: NSTextField;
 begin
   field := NSTextField(AllocTextField(AWinControl, AParams));
+  {$ifdef BOOLFIX}
+  field.setBezeled_(Ord(False));
+  field.setDrawsBackground_(Ord(False));
+  field.setEditable_(Ord(False));
+  field.setSelectable_(Ord(False));
+  {$else}
   field.setBezeled(False);
   field.setDrawsBackground(False);
   field.setEditable(False);
   field.setSelectable(False);
+  {$endif}
   Result:=TLCLIntfHandle(field);
 end;
 

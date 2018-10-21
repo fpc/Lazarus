@@ -2577,7 +2577,11 @@ begin
   // todo: parse the passed parameters.
   //       the content of the window could be already prepared
   //       thus not entire control should be invalided
+  {$ifdef BOOLFIX}
+  v.setNeedsDisplay__(Ord(true));
+  {$else}
   v.setNeedsDisplay_(true);
+  {$endif}
 end;
 
 function TCocoaWidgetSet.SelectClipRGN(DC: hDC; RGN: HRGN): Longint;

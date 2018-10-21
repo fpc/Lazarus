@@ -493,7 +493,12 @@ begin
   if Assigned(aview) then
   begin
     // forcing LCL compatible "auto-move" mode. Sticking to left/top corner
-    if not autoresizesSubviews then setAutoresizesSubviews(true);
+    if not autoresizesSubviews then
+      {$ifdef BOOLFIX}
+      setAutoresizesSubviews_(Ord(true));
+      {$else}
+      setAutoresizesSubviews(true);
+      {$endif}
     aview.setAutoresizingMask(NSViewMaxXMargin or NSViewMinYMargin);
   end;
 end;
@@ -961,12 +966,20 @@ end;
 
 procedure LCLViewExtension.lclInvalidate;
 begin
+  {$ifdef BOOLFIX}
+  setNeedsDisplay__(Ord(True));
+  {$else}
   setNeedsDisplay_(True);
+  {$endif}
 end;
 
 procedure LCLViewExtension.lclUpdate;
 begin
-  setNeedsDisplay_(true);
+  {$ifdef BOOLFIX}
+  setNeedsDisplay__(Ord(True));
+  {$else}
+  setNeedsDisplay_(True);
+  {$endif}
   //display;
 end;
 

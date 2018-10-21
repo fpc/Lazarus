@@ -131,7 +131,11 @@ begin
   else
     btn.setImage( NSImage.imageNamed( NSImageNameRightFacingTriangleTemplate ));
 
+  {$ifdef BOOLFIX}
+  btn.setBordered_(Ord(false));
+  {$else}
   btn.setBordered(false);
+  {$endif}
   btn.setTitle(NSString.string_);
   btn.sizeToFit();
   if not isPrev then btn.setAutoresizingMask(NSViewMinXMargin);

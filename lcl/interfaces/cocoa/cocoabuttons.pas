@@ -18,6 +18,7 @@ unit CocoaButtons;
 {$modeswitch objectivec1}
 {$modeswitch objectivec2}
 {$interfaces corba}
+{$include cocoadefines.inc}
 
 interface
 
@@ -140,7 +141,11 @@ begin
       // so it could be then switched to "On" by Cocoa
       if state = NSMixedState then
         inherited setState(NSOffState);
+      {$ifdef BOOLFIX}
+      setAllowsMixedState_(Ord(false));
+      {$else}
       setAllowsMixedState(false);
+      {$endif}
     end;
   end;
 end;

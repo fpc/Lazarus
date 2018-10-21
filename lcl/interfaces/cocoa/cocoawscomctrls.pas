@@ -417,7 +417,11 @@ end;
 class procedure TCocoaWSStatusBar.Update(const AStatusBar: TStatusBar);
 begin
   if not Assigned(AStatusBar) or not (AStatusBar.HandleAllocated) then Exit;
+  {$ifdef BOOLFIX}
+  TCocoaStatusBar(AStatusBar.Handle).setNeedsDisplay__(Ord(true));
+  {$else}
   TCocoaStatusBar(AStatusBar.Handle).setNeedsDisplay_(true);
+  {$endif}
 end;
 
 class procedure TCocoaWSStatusBar.GetPreferredSize(const AWinControl: TWinControl;
@@ -925,7 +929,11 @@ begin
   else
     lNSColumn.headerCell.setStringValue(lNSCaption);
 
+  {$ifdef BOOLFIX}
+  lTableLV.headerView.setNeedsDisplay__(Ord(true)); // forces the newly set Value (even for setTitle!)
+  {$else}
   lTableLV.headerView.setNeedsDisplay_(true); // forces the newly set Value (even for setTitle!)
+  {$endif}
   lNSCaption.release;
 end;
 
@@ -1329,8 +1337,17 @@ begin
 
   ScrollViewSetScrollStyles(lCocoaLV, AValue);
 
+  {$ifdef BOOLFIX}
+  lCocoaLV.setNeedsDisplay__(Ord(true));
+  {$else}
   lCocoaLV.setNeedsDisplay_(true);
+  {$endif}
+
+  {$ifdef BOOLFIX}
+  lCocoaLV.documentView.setNeedsDisplay__(Ord(true));
+  {$else}
   lCocoaLV.documentView.setNeedsDisplay_(true);
+  {$endif}
 end;
 
 { TCocoaWSProgressBar }

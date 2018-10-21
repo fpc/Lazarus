@@ -193,7 +193,11 @@ begin
   // todo: call scroll event?
   sc.setDoubleValue(v);
 
+  {$ifdef BOOLFIX}
+  sc.setNeedsDisplay__(Ord(true));
+  {$else}
   sc.setNeedsDisplay_(true);
+  {$endif}
 end;
 
 function AdjustScrollerArrow(sc: TCocoaScrollBar; prt: NSScrollerPart): Boolean;
@@ -224,7 +228,11 @@ begin
   begin
   // todo: call scroll event?
     sc.setDoubleValue(v);
+    {$ifdef BOOLFIX}
+    sc.setNeedsDisplay__(Ord(true));
+    {$else}
     sc.setNeedsDisplay_(true);
+    {$endif}
   end;
 end;
 
@@ -386,7 +394,11 @@ begin
   if not NSEqualRects(doc.frame, f) then
   begin
     doc.setFrame(f);
+    {$ifdef BOOLFIX}
+    doc.setNeedsDisplay__(Ord(true));
+    {$else}
     doc.setNeedsDisplay_(true);
+    {$endif}
   end;
 end;
 

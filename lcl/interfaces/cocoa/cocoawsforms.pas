@@ -312,7 +312,11 @@ begin
   //      Need to figure out why this is happening and resolve at the proper place.
   //      In the mean time - invalidating contents every time Caption is change
   if (AWinControl.HandleAllocated) then
+    {$ifdef BOOLFIX}
+    NSView(AWinControl.Handle).setNeedsDisplay__(Ord(true));
+    {$else}
     NSView(AWinControl.Handle).setNeedsDisplay_(true);
+    {$endif}
 end;
 
 { TLCLWindowCallback }

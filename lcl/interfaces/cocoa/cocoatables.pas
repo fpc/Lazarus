@@ -944,7 +944,11 @@ var
   Img: NSImage;
 begin
   Result := inherited initWithFrame(frameRect);
+  {$ifdef BOOLFIX}
+  Result.setAutoresizesSubviews_(Ord(True));
+  {$else}
   Result.setAutoresizesSubviews(True);
+  {$endif}
 
   checkedSubview := NSButton.alloc.init;
   checkedSubview.setButtonType(NSSwitchButton);
