@@ -25,7 +25,7 @@ uses
   Classes, SysUtils, types, math,
   // LCL
   Controls, StdCtrls, ExtCtrls, ComCtrls, Graphics, Dialogs, Forms, Menus, ExtDlgs,
-  Spin, CheckLst, LCLType, LCLProc, LMessages, LCLMessageGlue, LCLIntf,
+  Spin, CheckLst, PairSplitter, LCLType, LCLProc, LMessages, LCLMessageGlue, LCLIntf,
   // GTK3
   LazGtk3, LazGdk3, LazGObject2, LazGLib2, LazCairo1, LazPango1, LazGdkPixbuf2,
   gtk3objects, gtk3procs, gtk3private, Gtk3CellRenderer;
@@ -383,6 +383,22 @@ type
 
   end;
 
+
+  { TGtk3Paned }
+
+  TGtk3Paned = class(TGtk3Container)
+  protected
+    function CreateWidget(const Params: TCreateParams):PGtkWidget; override;
+  end;
+
+  { TGtk3SplitterSide }
+
+  TGtk3SplitterSide = class(TGtk3Container)
+  protected
+    function CreateWidget(const Params: TCreateParams):PGtkWidget; override;
+  end;
+
+
   { TGtk3MenuShell }
 
   TGtk3MenuShell = class(TGtk3Container)
@@ -710,6 +726,13 @@ type
     protected
       function CreateWidget(const Params: TCreateParams):PGtkWidget; override;
   end;
+
+  { TGtk3Splitter }
+
+  TGtk3Splitter = class(TGtk3Panel)
+  public
+  end;
+
 
   { TGtk3Window }
 
@@ -1591,6 +1614,25 @@ begin
   // DebugLn('Gtk3ScrollEvent for ', dbgsName(TGtk3Widget(AData).LCLObject),' Result ',dbgs(Result));
 end;
 
+{ TGtk3SplitterSide }
+
+function TGtk3SplitterSide.CreateWidget(const Params: TCreateParams): PGtkWidget;
+begin
+  Result:=TGtkScrolledWindow.new(nil, nil);
+end;
+
+{ TGtk3Paned }
+
+function TGtk3Paned.CreateWidget(const Params: TCreateParams): PGtkWidget;
+const
+  ornt:array[TPairSplitterType] of TGtkOrientation=(
+    GTK_ORIENTATION_HORIZONTAL,
+    GTK_ORIENTATION_VERTICAL
+    );
+begin
+  Result:=TGtkPaned.new(ornt[TPairSplitter(Self.LCLObject).SplitterType]);
+end;
+
 { TGtk3Widget }
 
 function TGtk3Widget.GtkEventMouseEnterLeave(Sender: PGtkWidget; Event: PGdkEvent): Boolean;
@@ -1598,23 +1640,22 @@ function TGtk3Widget.GtkEventMouseEnterLeave(Sender: PGtkWidget; Event: PGdkEven
 var
   Msg: TLMessage;
   // MouseMsg: TLMMouseMove absolute Msg;
+  {$IFDEF GTK3DEBUGCORE}
   MousePos: TPoint;
+  {$ENDIF}
 begin
   Result := False;
   FillChar(Msg, SizeOf(Msg), #0);
   if Event^.type_ = GDK_ENTER_NOTIFY then
-  begin
-    Msg.Msg := LM_MOUSEENTER;
-  end else
-  begin
+    Msg.Msg := LM_MOUSEENTER
+  else
     Msg.Msg := LM_MOUSELEAVE;
-  end;
 
-  MousePos.X := Round(Event^.crossing.x);
-  MousePos.Y := Round(Event^.crossing.y);
   NotifyApplicationUserInput(LCLObject, Msg.Msg);
   Result := DeliverMessage(Msg, True) <> 0;
   {$IFDEF GTK3DEBUGCORE}
+  MousePos.X := Round(Event^.crossing.x);
+  MousePos.Y := Round(Event^.crossing.y);
   DebugLn('GtkEventMouseEnterLeave: mousePos ',dbgs(MousePos),' Object ',dbgsName(LCLObject),
     ' IsEnter ',dbgs(Event^.type_ = GDK_ENTER_NOTIFY),' Result=',dbgs(Result));
   {$ENDIF}
@@ -3881,10 +3922,7 @@ begin
   AToolBar := TToolBar(LCLObject);
   FHasPaint := False;
   FWidgetType := [wtWidget, wtContainer];
-  Result := PGtkWidget(TGtkHBox.new(GTK_ORIENTATION_HORIZONTAL, 0));
-  FCentralWidget := PGtkWidget(TGtkFixed.new);
-  PGtkHBox(Result)^.add(FCentralWidget);
-  PGtkFixed(FCentralWidget)^.set_has_window(True);
+  Result:=PGtkWidget(TGtkToolbar.new);
 end;
 
 { TGtk3Page }
@@ -6453,7 +6491,7 @@ end;
 
 function TGtk3Window.GetTitle: String;
 begin
-  Result := '';
+  Result:=PGtkWindow(FWidget)^.get_title();
 end;
 
 procedure TGtk3Window.SetIcon(AValue: PGdkPixBuf);
@@ -6557,9 +6595,15 @@ begin
   FHasPaint := True;
   AForm := TCustomForm(LCLObject);
 
-  FWidgetType := [wtWidget, wtLayout, wtScrollingWin, wtWindow];
-
-  Result := TGtkWindow.new(GTK_WINDOW_TOPLEVEL);
+  if not Assigned(LCLObject.Parent) then
+  begin
+    Result := TGtkWindow.new(GTK_WINDOW_TOPLEVEL);
+    FWidgetType := [wtWidget, wtLayout, wtScrollingWin, wtWindow];
+  end else
+  begin
+    Result := PGtkScrolledWindow(TGtkScrolledWindow.new(nil, nil));
+    FWidgetType := [wtWidget, wtLayout, wtScrollingWin, wtCustomControl]
+  end;
 
   FBox := TGtkVBox.new(GTK_ORIENTATION_VERTICAL, 0);
 

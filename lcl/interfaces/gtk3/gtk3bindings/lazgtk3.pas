@@ -283,8 +283,8 @@ type
   TGtkOrientation = Integer;
 const
   { GtkOrientation }
-  GTK_ORIENTATION_HORIZONTAL: TGtkOrientation = 0;
-  GTK_ORIENTATION_VERTICAL: TGtkOrientation = 1;
+  GTK_ORIENTATION_HORIZONTAL = TGtkOrientation(0);
+  GTK_ORIENTATION_VERTICAL = TGtkOrientation(1);
 
 type
   TGtkDestDefaults = Integer;

@@ -21,7 +21,7 @@ interface
 uses
   Classes, Controls, ComCtrls, Calendar, StdCtrls, Arrow, Spin,
   Dialogs, ExtCtrls, ExtDlgs, Buttons, CheckLst, Forms, Grids, Menus,
-  PairSplitter, ImgList, WSLCLClasses;
+  ImgList, PairSplitter, WSLCLClasses;
 
 
 // imglist
@@ -137,7 +137,7 @@ uses
 uses
   Gtk3WSImgList, Gtk3WSControls, Gtk3WSForms, Gtk3WSButtons, Gtk3WSStdCtrls,
   Gtk3WSComCtrls, Gtk3WSExtCtrls, Gtk3WSSpin, Gtk3WSMenus, Gtk3WSCalendar,
-  Gtk3WSDialogs, Gtk3WSCheckLst, Gtk3WSExtDlgs;
+  Gtk3WSDialogs, Gtk3WSCheckLst, Gtk3WSExtDlgs, gtk3wssplitter;
 
 // imglist
 function RegisterCustomImageListResolution: Boolean; alias : 'WSRegisterCustomImageListResolution';
@@ -402,9 +402,8 @@ end;
 
 function RegisterCustomSplitter: Boolean; alias : 'WSRegisterCustomSplitter';
 begin
-//  RegisterWSComponent(TCustomSplitter, TGtk2WSCustomSplitter);
-//  RegisterWSComponent(TSplitter, TGtk2WSSplitter);
-  Result := False;
+  RegisterWSComponent(TCustomSplitter, TGtk3WSCustomSplitter);
+  Result := true;
 end;
 
 function RegisterPaintBox: Boolean; alias : 'WSRegisterPaintBox';
@@ -597,16 +596,14 @@ end;
 
 function RegisterPairSplitterSide: Boolean; alias : 'WSRegisterPairSplitterSide';
 begin
-//  RegisterWSComponent(TPairSplitterSide, TGtk2WSPairSplitterSide); { GTK1 }
-//  RegisterWSComponent(TPairSplitterSide, TGtk2WSPairSplitterSide);
-  Result := False;
+  RegisterWSComponent(TPairSplitterSide, TGtk3WSPairSplitterSide);
+  Result := true;
 end;
 
 function RegisterCustomPairSplitter: Boolean; alias : 'WSRegisterCustomPairSplitter';
 begin
-  // RegisterWSComponent(TCustomPairSplitter, TGtk2WSCustomPairSplitter, TGtkPrivatePaned); { GTK1 }
-  // RegisterWSComponent(TCustomPairSplitter, TGtk2WSCustomPairSplitter);
-  Result := False;
+  RegisterWSComponent(TCustomPairSplitter, TGtk3WSCustomPairSplitter);
+  Result := true;
 end;
 
 function RegisterCustomFloatSpinEdit: Boolean; alias : 'WSRegisterCustomFloatSpinEdit';

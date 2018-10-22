@@ -29,45 +29,22 @@ begin
   if dy < 0 then
     dy := 0;
 
-  (*
   // rubber band is just a window without a title
-  Result := {%H-}HWND(gtk_window_new(GTK_WINDOW_POPUP));
+  Result := {%H-}HWND(gtk_window_new(GTK_WINDOW_TOPLEVEL));
   gtk_window_set_default_size({%H-}PGtkWindow(Result), dx, dy);
-  gtk_widget_set_uposition(Widget, ARect.Left, ARect.Top);
-  gtk_widget_set_app_paintable(Widget, True);
+
   gtk_widget_realize(Widget);
+
   gdk_window_set_decorations(Widget^.window, 0);
   gdk_window_set_functions(Widget^.window, GDK_FUNC_RESIZE or GDK_FUNC_CLOSE);
-  gtk_window_set_opacity({%H-}PGtkWindow(Result), 0.25);
-  if ABrush = 0 then
-    SetWidgetColor(Widget, clNone, clGradientActiveCaption, [GTK_STATE_NORMAL])
-  else
-  if {%H-}PGDIObject(ABrush)^.GDIBrushFill = GDK_SOLID then
-    SetWidgetColor(Widget, clNone, {%H-}PGDIObject(ABrush)^.GDIBrushColor.ColorRef, [GTK_STATE_NORMAL])
-  else
-  begin
-    Pixmap := gdk_pixmap_new(Widget^.window, dx, dy, -1);
-    gc := gdk_gc_new(Pixmap);
-    AColor := AllocGDKColor(clWhite);
-    gdk_gc_set_foreground(gc, @AColor);
-    gdk_gc_set_fill(gc, {%H-}PGDIObject(ABrush)^.GDIBrushFill);
-    case {%H-}PGDIObject(ABrush)^.GDIBrushFill of
-      GDK_TILED: gdk_gc_set_tile(gc, {%H-}PGDIObject(ABrush)^.GDIBrushPixMap);
-      GDK_STIPPLED: gdk_gc_set_stipple(gc, {%H-}PGDIObject(ABrush)^.GDIBrushPixMap);
-    end;
-    gdk_draw_rectangle(Pixmap, gc, -1, 0, 0, dx, dy);
-    gdk_gc_unref(gc);
-    gdk_window_set_back_pixmap(Widget^.window, Pixmap, False);
-    g_object_unref(Pixmap);
-  end;
+  gtk_widget_set_opacity(Widget, 0.25);
 
   gtk_widget_show(Widget);
-  *)
 end;
 
 procedure TGtk3WidgetSet.DestroyRubberBand(ARubberBand: HWND);
 begin
-  // TODO: gtk_widget_destroy({%H-}PGtkWidget(ARubberBand));
+  gtk_widget_destroy({%H-}PGtkWidget(ARubberBand));
 end;
 
 procedure TGtk3WidgetSet.DrawDefaultDockImage(AOldRect, ANewRect: TRect;
