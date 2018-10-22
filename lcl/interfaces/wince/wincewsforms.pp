@@ -22,11 +22,10 @@ interface
 
 uses
   // RTL, FCL, LCL
-  Windows, LCLProc, Classes,
-  SysUtils, Controls, LCLType, Forms, InterfaceBase,
+  Forms, Controls, LCLType, Classes, SysUtils,
   // Widgetset
-  winceproc, wincewscontrols, winceextra,
-  WSForms, WSProc, WSLCLClasses;
+  WSForms, WSProc, WSLCLClasses,
+  Windows, WinCEProc, WinCEWSControls;
 
 type
 
@@ -119,7 +118,11 @@ type
 
 implementation
 
-uses Winceint, wincewsmenus;
+uses WinCEInt, WinCEWSMenus;
+
+type
+  TWinControlAccess = class(TWinControl)
+  end;
 
 { TWinCEWSScrollBox }
 
@@ -147,20 +150,41 @@ end;
 
 { TWinCEWSCustomForm }
 
+function GetDesigningBorderStyle(const AForm: TCustomForm): TFormBorderStyle;
+begin
+  if csDesigning in AForm.ComponentState then
+    Result := bsSizeable
+  else
+    Result := AForm.BorderStyle;
+end;
+
 class function TWinCEWSCustomForm.CalcBorderIconsFlags(const AForm: TCustomForm): dword;
 var
   BorderIcons: TBorderIcons;
 begin
   Result := 0;
   BorderIcons := AForm.BorderIcons;
-  if biSystemMenu in BorderIcons then
+  if (biSystemMenu in BorderIcons) or (csDesigning in AForm.ComponentState) then
     Result := Result or WS_SYSMENU;
-  if AForm.BorderStyle in [bsNone, bsSingle, bsSizeable] then
+  if GetDesigningBorderStyle(AForm) in [bsNone, bsSingle, bsSizeable] then
   begin
     if biMinimize in BorderIcons then
-      Result := Result or WS_MINIMIZE;
+      Result := Result or WS_MINIMIZEBOX;
     if biMaximize in BorderIcons then
-      Result := Result or WS_MAXIMIZE;
+      Result := Result or WS_MAXIMIZEBOX;
+  end;
+end;
+
+function CalcBorderIconsFlagsEx(const AForm: TCustomForm): DWORD;
+var
+  BorderIcons: TBorderIcons;
+begin
+  Result := 0;
+  BorderIcons := AForm.BorderIcons;
+  if GetDesigningBorderStyle(AForm) in [bsSingle, bsSizeable, bsDialog] then
+  begin
+    if biHelp in BorderIcons then
+      Result := Result or WS_EX_CONTEXTHELP;
   end;
 end;
 
@@ -174,9 +198,10 @@ begin
   if AForm.Parent <> nil then
     Flags := (Flags or WS_CHILD) and not WS_POPUP;
   FlagsEx := BorderStyleToWinAPIFlagsEx(AForm, BorderStyle);
-  if (AForm.FormStyle in fsAllStayOnTop) then
+  if (AForm.FormStyle in fsAllStayOnTop) and not (csDesigning in AForm.ComponentState) then
     FlagsEx := FlagsEx or WS_EX_TOPMOST;
   Flags := Flags or CalcBorderIconsFlags(AForm);
+  FlagsEx := FlagsEx or CalcBorderIconsFlagsEx(AForm);
 end;
 
 class procedure TWinCEWSCustomForm.CalculateDialogPosition(
@@ -343,15 +368,14 @@ end;
 class procedure TWinCEWSCustomForm.SetBounds(const AWinControl: TWinControl;
     const ALeft, ATop, AWidth, AHeight: Integer);
 var
-  SizeRect: Windows.RECT;
+  AForm: TCustomForm absolute AWinControl;
+  SizeRect, WR, CurRect: Windows.RECT;
   BorderStyle: TFormBorderStyle;
-  WR: Windows.RECT;
+  L, T, W, H: integer;
 begin
-  { User selected LCL window size }
-  SizeRect.Top := ATop;
-  SizeRect.Left := ALeft;
-  SizeRect.Bottom := ATop + AHeight;
-  SizeRect.Right := ALeft + AWidth;
+  // the LCL defines the size of a form without border, wince with.
+  // -> adjust size according to BorderStyle
+  SizeRect := Bounds(ALeft, ATop, AWidth, AHeight);
 
   BorderStyle := TCustomForm(AWinControl).BorderStyle;
 
@@ -381,9 +405,33 @@ begin
   Windows.AdjustWindowRectEx(@SizeRect, BorderStyleToWinAPIFlags(
       BorderStyle), false, BorderStyleToWinAPIFlagsEx(TCustomForm(AWinControl), BorderStyle));
 
+  L := ALeft;
+  T := ATop;
+  W := SizeRect.Right - SizeRect.Left;
+  H := SizeRect.Bottom - SizeRect.Top;
+
+  // we are calling setbounds in TWinControl.Initialize
+  // if position is default it will be changed to designed. We do not want this.
+  if wcfInitializing in TWinControlAccess(AWinControl).FWinControlFlags then
+  begin
+    if GetWindowRect(AForm.Handle, CurRect) then
+    begin
+      if AForm.Position in [poDefault, poDefaultPosOnly] then
+      begin
+        L := CurRect.Left;
+        T := CurRect.Top;
+      end;
+
+      if AForm.Position in [poDefault, poDefaultSizeOnly] then
+      begin
+        W := CurRect.Right - CurRect.Left;
+        H := CurRect.Bottom - CurRect.Top;
+      end;
+    end;
+  end;
+
   // rect adjusted, pass to inherited to do real work
-  TWinCEWSWinControl.SetBounds(AWinControl, SizeRect.Left, SizeRect.Top,
-    SizeRect.Right - SizeRect.Left, SizeRect.Bottom - SizeRect.Top);
+  TWinCEWSWinControl.SetBounds(AWinControl, L, T, W, H);
 
   {$IFDEF VerboseSizeMsg}
   DebugLn(
