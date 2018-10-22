@@ -147,20 +147,28 @@ end;
 
 { TWinCEWSCustomForm }
 
+function GetDesigningBorderStyle(const AForm: TCustomForm): TFormBorderStyle;
+begin
+  if csDesigning in AForm.ComponentState then
+    Result := bsSizeable
+  else
+    Result := AForm.BorderStyle;
+end;
+
 class function TWinCEWSCustomForm.CalcBorderIconsFlags(const AForm: TCustomForm): dword;
 var
   BorderIcons: TBorderIcons;
 begin
   Result := 0;
   BorderIcons := AForm.BorderIcons;
-  if biSystemMenu in BorderIcons then
+  if (biSystemMenu in BorderIcons) or (csDesigning in AForm.ComponentState) then
     Result := Result or WS_SYSMENU;
-  if AForm.BorderStyle in [bsNone, bsSingle, bsSizeable] then
+  if GetDesigningBorderStyle(AForm) in [bsNone, bsSingle, bsSizeable] then
   begin
     if biMinimize in BorderIcons then
-      Result := Result or WS_MINIMIZE;
+      Result := Result or WS_MINIMIZEBOX;
     if biMaximize in BorderIcons then
-      Result := Result or WS_MAXIMIZE;
+      Result := Result or WS_MAXIMIZEBOX;
   end;
 end;
 
