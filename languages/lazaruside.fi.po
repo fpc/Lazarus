@@ -7918,9 +7918,10 @@ msgid "There is no debugger specified.%sSetting breakpoints have no effect until
 msgstr "Virheenjäljitintä ei ole valittu.%sKeskeytyskohdalla ei ole vaikutusta ennenkuin 'Käyttöliittymä'-valikon 'Virheenjäljittimen asetus' on asetettu."
 
 #: lazarusidestrconsts.lisdbgterminal
+#, fuzzy
 msgctxt "lazarusidestrconsts.lisdbgterminal"
 msgid "Console In/Output"
-msgstr ""
+msgstr "Komentorivin syöttö/tuloste"
 
 #: lazarusidestrconsts.lisdbgwinpower
 msgid "On/Off"
@@ -15759,7 +15760,7 @@ msgid "Private Method"
 msgstr "Yksityinen metodi"
 
 #: lazarusidestrconsts.lisprobablyyouneedtoinstallsomepackagesforbeforeconti
-msgid    "Probably you need to install some packages before continuing.%sWarning:%sThe project uses the following design time packages which might be needed to open the form in the designer. If you continue, you might get errors about missing components and the form loading will probably create very unpleasant results.%sIt is recommended to cancel and install these packages first."
+msgid "Probably you need to install some packages before continuing.%sWarning:%sThe project uses the following design time packages which might be needed to open the form in the designer. If you continue, you might get errors about missing components and the form loading will probably create very unpleasant results.%sIt is recommended to cancel and install these packages first."
 msgstr "Joitain paketteja pitää ehkä asentaa ennen jatkamista.%sVaroitus:%sProjekti käyttää seuraavia design-paketteja, joita ehkä tarvitaan avaamaan suunniteltava lomake. Jatkettaessa voi tulla virheitä puuttuvista komponenteista ja lomakkeen lataus epäonnistuu.%sOn suositeltavaa peruuttaa ja asentaa nuo paketit ensin."
 
 #: lazarusidestrconsts.lisprocedure
