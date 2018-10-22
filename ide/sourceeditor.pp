@@ -3560,7 +3560,7 @@ var
 begin
   with EditorComponent do
     P := ClientToScreen(Point(CaretXPix, CaretYPix));
-  ABounds := Screen.MonitorFromPoint(P).BoundsRect;
+  ABounds := Screen.MonitorFromPoint(P).WorkareaRect;
   Left := EditorComponent.ClientOrigin.X + (EditorComponent.Width - Width) div 2;
   Top := P.Y - Height - 3 * EditorComponent.LineHeight;
   if Top < ABounds.Top + 10 then
