@@ -22,11 +22,10 @@ interface
 
 uses
   // RTL, FCL, LCL
-  Windows, LCLProc, Classes,
-  SysUtils, Controls, LCLType, Forms, InterfaceBase,
+  Forms, Controls, LCLType, Classes, SysUtils,
   // Widgetset
-  winceproc, wincewscontrols, winceextra,
-  WSForms, WSProc, WSLCLClasses;
+  WSForms, WSProc, WSLCLClasses,
+  Windows, WinCEProc, WinCEWSControls;
 
 type
 
@@ -119,7 +118,7 @@ type
 
 implementation
 
-uses Winceint, wincewsmenus;
+uses WinCEInt, WinCEWSMenus;
 
 { TWinCEWSScrollBox }
 
