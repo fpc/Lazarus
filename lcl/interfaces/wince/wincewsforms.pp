@@ -172,6 +172,19 @@ begin
   end;
 end;
 
+function CalcBorderIconsFlagsEx(const AForm: TCustomForm): DWORD;
+var
+  BorderIcons: TBorderIcons;
+begin
+  Result := 0;
+  BorderIcons := AForm.BorderIcons;
+  if GetDesigningBorderStyle(AForm) in [bsSingle, bsSizeable, bsDialog] then
+  begin
+    if biHelp in BorderIcons then
+      Result := Result or WS_EX_CONTEXTHELP;
+  end;
+end;
+
 class procedure TWinCEWSCustomForm.CalcFormWindowFlags(const AForm: TCustomForm;
   var Flags, FlagsEx: dword);
 var
@@ -182,9 +195,10 @@ begin
   if AForm.Parent <> nil then
     Flags := (Flags or WS_CHILD) and not WS_POPUP;
   FlagsEx := BorderStyleToWinAPIFlagsEx(AForm, BorderStyle);
-  if (AForm.FormStyle in fsAllStayOnTop) then
+  if (AForm.FormStyle in fsAllStayOnTop) and not (csDesigning in AForm.ComponentState) then
     FlagsEx := FlagsEx or WS_EX_TOPMOST;
   Flags := Flags or CalcBorderIconsFlags(AForm);
+  FlagsEx := FlagsEx or CalcBorderIconsFlagsEx(AForm);
 end;
 
 class procedure TWinCEWSCustomForm.CalculateDialogPosition(
