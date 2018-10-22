@@ -109,7 +109,7 @@ msgstr ""
 
 #: lclstrconsts.rsascannothaveasparent
 msgid "Class %s cannot have %s as parent."
-msgstr ""
+msgstr "Luokalla %s ei voi olla %s kantaluokkana."
 
 #: lclstrconsts.rsbackgroundcolorcaption
 msgid "Desktop"
@@ -182,7 +182,7 @@ msgstr "Luokan '%s' kontrollin lapsi ei voi olla luokan '%s' kontrolli"
 
 #: lclstrconsts.rscontrolhasnoparentformorframe
 msgid "Control '%s' has no parent form or frame"
-msgstr ""
+msgstr "Kontrolli '%s':lla ei ole emolomaketta tai -kehystä."
 
 #: lclstrconsts.rscontrolhasnoparentwindow
 msgid "Control '%s' has no parent window"
@@ -480,7 +480,6 @@ msgid "--sync                Call XSynchronize (display, True) after the Xserver
 msgstr "--sync                Kutsu XSynchronize (näyttö, True) kun Xserver yhteys on muodostettu. Näin X protokollan virheiden debuggaus helpottuu, koska X kutsuja ei puskuroida ja X virheet saadaan välittömästi kun X palvelin on käsitellyt virheen aiheuttaneen protokollakutsun."
 
 #: lclstrconsts.rshelp
-#, fuzzy
 msgctxt "lclstrconsts.rshelp"
 msgid "Help"
 msgstr "Apu"
@@ -1044,7 +1043,7 @@ msgstr "Teksti"
 
 #: lclstrconsts.rsthebuiltinurlisreadonlychangethebaseurlinstead
 msgid "The built-in URL is read only. Change the BaseURL instead."
-msgstr ""
+msgstr "Sisäistä URL:a voi vain lukea. Muuta sen sijaan BaseURL."
 
 #: lclstrconsts.rstiff
 msgid "Tagged Image File Format"
@@ -1147,7 +1146,7 @@ msgstr "Ei voi fokusoida estettyä tai näkymätöntä ikkunaa"
 
 #: lclstrconsts.scannotsetdesigntimeppi
 msgid "Cannot set design time PPI."
-msgstr ""
+msgstr "Suunnitteluaikaisen PPI:n muuttaminen ei onnistu."
 
 #: lclstrconsts.sduplicatemenus
 msgid "Duplicate menus"

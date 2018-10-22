@@ -74,7 +74,7 @@ msgstr "odotettiin avaavaa sulkua, saatiin %s"
 
 #: codetoolsstrconsts.ctscannotaddaunittotheimplementationbecauseonlyaunith
 msgid "cannot add a unit to the implementation, because only a unit has one"
-msgstr ""
+msgstr "käännösyksikköä ei voi lisätä implementation osaan, koska vain käännösyksiköllä on sellainen"
 
 #: codetoolsstrconsts.ctscharacterconstantoutofrange
 msgid "character constant out of range"
@@ -98,7 +98,7 @@ msgstr "luokkaa \"%s\" ei löydy"
 
 #: codetoolsstrconsts.ctsclassnotfound2
 msgid "class not found \"%s\""
-msgstr ""
+msgstr "luokkaa ei löydy \"%s\""
 
 #: codetoolsstrconsts.ctsclassofdefinitionnotresolved
 msgid "\"class of\" definition not resolved: %s"
@@ -286,7 +286,7 @@ msgstr "virhe lisättäessä uusia luokan osia"
 
 #: codetoolsstrconsts.ctserrorduringinsertingnewusessection
 msgid "error during inserting new units to the main uses section"
-msgstr "virhe lisättäessä uusia käännösyksikköjä pää-uses-lauseenseen"
+msgstr "virhe lisättäessä uusia käännösyksikköjä pää uses osioon"
 
 #: codetoolsstrconsts.ctserrorindirectiveexpression
 msgid "error in directive expression"
@@ -384,7 +384,7 @@ msgstr ""
 
 #: codetoolsstrconsts.ctshelperisnotallowed
 msgid "Helper after %s is not allowed"
-msgstr ""
+msgstr "Avustaja %s:n jälkeen on kielletty"
 
 #: codetoolsstrconsts.ctsidedirectory
 msgid "IDE Directory"
@@ -492,7 +492,7 @@ msgstr "Asennushakemistot"
 
 #: codetoolsstrconsts.ctsinterfacesectionnotfound
 msgid "interface section not found"
-msgstr "interface-lausetta ei löydy"
+msgstr "interface osiota ei löydy"
 
 #: codetoolsstrconsts.ctsinvalidclassname
 msgid "invalid class name=\"%s\""
@@ -520,7 +520,7 @@ msgstr "Kelvoton operaattori %s"
 
 #: codetoolsstrconsts.ctsinvalidpositionforinsertionofstatements
 msgid "invalid position for insertion of statements"
-msgstr ""
+msgstr "kelvoton sijainti lausekkeen lisäämiselle"
 
 #: codetoolsstrconsts.ctsinvalidsubrange
 msgid "invalid subrange"
@@ -560,7 +560,7 @@ msgstr "Lazarus lähdekoodit"
 
 #: codetoolsstrconsts.ctsmethodhasnodeclaration
 msgid "method \"%s\" has no declaration"
-msgstr ""
+msgstr "metodilla \"%s\" ei ole määrittelyä"
 
 #: codetoolsstrconsts.ctsmethodname
 msgid "method name"
@@ -846,7 +846,7 @@ msgstr "odottamaton avainsana \"%s\" löydettiin kun lohkoja luettiin taaksepäi
 
 #: codetoolsstrconsts.ctsunexpectedsectionkeyword
 msgid "unexpected section keyword %s found"
-msgstr ""
+msgstr "odottamaton osion avainsana %s löytyi"
 
 #: codetoolsstrconsts.ctsunexpectedsubrangeoperatorfound
 msgid "unexpected subrange operator '..' found"
