@@ -942,15 +942,16 @@ Var
     OldUTF8Char, UTF8Char: TUTF8Char;
     WS: WideString;
   begin
-    Result := false;
+    Result := False;
     UTF8Char := UTF16ToUTF8(widestring(WideChar(AChar)));
     OldUTF8Char := UTF8Char;
     if Assigned(lWinControl) then
     begin
+      // if somewhere key is changed to '' then don't process this message
       Result := lWinControl.IntfUTF8KeyPress(UTF8Char, 1, False);
       // if somewhere key is changed then don't perform a regular keypress
       Result := Result or (UTF8Char <> OldUTF8Char);
-      if OldUTF8Char <> UTF8Char then
+      if Result then
       begin
         WS := UTF8ToUTF16(UTF8Char);
         if Length(WS) > 0 then
