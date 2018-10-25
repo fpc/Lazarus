@@ -1857,8 +1857,6 @@ begin
       DebugLn('WM_SETFOCUS received for window ', IntToHex(Window, 8));
 {$endif}
       LMessage.Msg := LM_SETFOCUS;
-      if (lWinControl <> nil) and (lWinControl.FCompStyle = csEdit) then
-        Windows.SendMessage(Window, EM_SETSEL, 0, -1);
     end;
     WM_SHOWWINDOW:
     begin
