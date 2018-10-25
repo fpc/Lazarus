@@ -538,11 +538,11 @@ type
                        ALocation: TDBGFieldLocation; AFlags: TDBGFieldFlags = [];
                        AClassName: String = '');
     destructor Destroy; override;
-    property Name: String read FName;
+    property Name: String read FName write FName;
     property DBGType: TDBGType read FDBGType;
     property Location: TDBGFieldLocation read FLocation;
     property Flags: TDBGFieldFlags read FFlags;
-    property ClassName: String read FClassName; // the class in which the field was declared
+    property ClassName: String read FClassName write FClassName; // the class in which the field was declared
   end;
 
   { TDBGFields }
