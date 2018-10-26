@@ -112,9 +112,10 @@ type
     FListForm: TGenericCheckListForm;
     function Show: Boolean;
   public
-    constructor Create(DlgMsg: String);
+    constructor Create(InfoCaption: String);
     destructor Destroy; override;
     function IsSelected(AIndex: Integer): Boolean;
+    procedure SelectFirst;
   end;
 
 function ShowBuildModesDlg(aShowSession: Boolean): TModalResult;
@@ -215,22 +216,23 @@ var
   BMList: TBuildModesCheckList;
 begin
   Result:=True;
-  DlgMsg:='';
-  BMList:=TBuildModesCheckList.Create(DlgMsg);
+  if IsIncludeFile then begin
+    DlgCapt:=lisAddToIncludeSearchPath;
+    DlgMsg:=lisTheNewIncludeFileIsNotYetInTheIncludeSearchPathAdd;
+  end
+  else begin
+    DlgCapt:=lisAddToUnitSearchPath;
+    DlgMsg:=lisTheNewUnitIsNotYetInTheUnitSearchPathAddDirectory;
+  end;
+  BMList:=TBuildModesCheckList.Create(DlgCapt);
   try
-    if IsIncludeFile then begin
-      DlgCapt:=lisAddToIncludeSearchPath;
-      DlgMsg:=lisTheNewIncludeFileIsNotYetInTheIncludeSearchPathAdd;
-    end
-    else begin
-      DlgCapt:=lisAddToUnitSearchPath;
-      DlgMsg:=lisTheNewUnitIsNotYetInTheUnitSearchPathAddDirectory;
-    end;
-    DlgMsg:=Format(DlgMsg,[LineEnding,CurDirectory]);
     if Project1.BuildModes.Count > 1 then
       Ok:=BMList.Show
-    else
-      Ok:=IDEMessageDialog(DlgCapt,DlgMsg,mtConfirmation,[mbYes,mbNo])=mrYes;
+    else begin
+      Ok:=IDEMessageDialog(DlgCapt, Format(DlgMsg,[LineEnding,CurDirectory]),
+                           mtConfirmation,[mbYes,mbNo]) = mrYes;
+      BMList.SelectFirst; // The only (Default) build mode must be selected.
+    end;
     if not Ok then Exit(False);
     for i:=0 to Project1.BuildModes.Count-1 do
       if BMList.IsSelected(i) then
@@ -858,12 +860,22 @@ end;
 
 { TBuildModesCheckList }
 
-constructor TBuildModesCheckList.Create(DlgMsg: String);
+constructor TBuildModesCheckList.Create(InfoCaption: String);
+var
+  i: Integer;
+  BM: String;
 begin
   FListForm:=TGenericCheckListForm.Create(Nil);
   //lisApplyForBuildModes = 'Apply for build modes:';
   FListForm.Caption:=lisAvailableProjectBuildModes;
-  FListForm.InfoLabel.Caption:=DlgMsg;
+  FListForm.InfoLabel.Caption:=InfoCaption;
+  // Add project build modes to a CheckListBox.
+  for i:=0 to Project1.BuildModes.Count-1 do begin
+    BM:=Project1.BuildModes[i].Identifier;
+    FListForm.CheckListBox1.Items.Add(BM);
+    if EnvironmentOptions.ManyBuildModesSelection.IndexOf(BM) >= 0 then
+      FListForm.CheckListBox1.Checked[i]:=True;
+  end;
 end;
 
 destructor TBuildModesCheckList.Destroy;
@@ -890,18 +902,15 @@ begin
   Result := FListForm.CheckListBox1.Checked[AIndex];
 end;
 
-function TBuildModesCheckList.Show: Boolean;
-var
-  i: Integer;
-  BM: String;
+procedure TBuildModesCheckList.SelectFirst;
 begin
-  for i:=0 to Project1.BuildModes.Count-1 do begin
-    BM:=Project1.BuildModes[i].Identifier;
-    FListForm.CheckListBox1.Items.Add(BM);
-    if EnvironmentOptions.ManyBuildModesSelection.IndexOf(BM) >= 0 then
-      FListForm.CheckListBox1.Checked[i]:=True;
-  end;
-  Result:=FListForm.ShowModal=mrOK;
+  Assert(FListForm.CheckListBox1.Items.Count>0, 'TBuildModesCheckList.SelectFirst: Build modes count < 1');
+  FListForm.CheckListBox1.Checked[0] := True;
+end;
+
+function TBuildModesCheckList.Show: Boolean;
+begin
+  Result := FListForm.ShowModal=mrOK;
 end;
 
 end.
