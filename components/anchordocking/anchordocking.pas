@@ -2354,7 +2354,7 @@ begin
       // simplify layouts
       ControlNames.Sort;
       {$IFDEF VerboseAnchorDockRestore}
-      debugln(['TAnchorDockMaster.LoadLayoutFromConfig controls: ']);
+      debugln(['TAnchorDockMaster.FullRestoreLayout controls: ']);
       debugln(ControlNames.Text);
       {$ENDIF}
       // if some forms/controls could not be created the layout needs to be adapted
@@ -2363,7 +2363,7 @@ begin
       // reuse existing sites to reduce flickering
       MapTreeToControls(Tree);
       {$IFDEF VerboseAnchorDockRestore}
-      fTreeNameToDocker.WriteDebugReport('TAnchorDockMaster.LoadLayoutFromConfig Map');
+      fTreeNameToDocker.WriteDebugReport('TAnchorDockMaster.FullRestoreLayout Map');
       {$ENDIF}
 
       // create sites, move controls
