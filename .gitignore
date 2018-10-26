@@ -535,10 +535,10 @@ tools/install/cross_unix/*.bak
 tools/install/cross_unix/debian_crosswin32/*.bak
 tools/install/cross_unix/debian_crosswin32/units
 tools/install/cross_unix/units
+tools/install/debian_fpc-laz/*.bak
+tools/install/debian_fpc-laz/units
 tools/install/debian_fpc-src/*.bak
 tools/install/debian_fpc-src/units
-tools/install/debian_fpc/*.bak
-tools/install/debian_fpc/units
 tools/install/debian_lazarus/*.bak
 tools/install/debian_lazarus/units
 tools/install/macosx/*.bak

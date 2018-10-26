@@ -7,7 +7,7 @@ Maintainer: Mattias Gaertner <mattias@freepascal.org>
 Architecture: ARCH
 Replaces: lazarus, lazarus-doc, lazarus-ide, lazarus-ide-gtk2, lazarus-ide-qt4, lazarus-src
 Conflicts: lazarus, lazarus-doc, lazarus-ide, lazarus-ide-gtk2, lazarus-ide-qt4, lazarus-src
-Depends: libgtk2.0-dev (>=2.6.0), fpc (=FPCVERSION) | fp-compiler (=FPCVERSION), fpc-src (=FPCVERSION) | fpc-source (=FPCVERSION), fpc (>=FPCVERSION) | fp-ide (>=FPCVERSION), fpc (>=FPCVERSION) | fp-units-base (>=FPCVERSION), fpc (>=FPCVERSION) | fp-units-db (>=FPCVERSION), fpc (>=FPCVERSION) | fp-units-fcl (>=FPCVERSION), fpc (>=FPCVERSION) | fp-units-fv (>=FPCVERSION), fpc (>=FPCVERSION) | fp-units-gfx (>=FPCVERSION), fpc (>=FPCVERSION) | fp-units-gnome1 (>=FPCVERSION), fpc (>=FPCVERSION) | fp-units-gtk (>=FPCVERSION), fpc (>=FPCVERSION) | fp-units-gtk2 (>=FPCVERSION), fpc (>=FPCVERSION) | fp-units-misc (>=FPCVERSION), fpc (>=FPCVERSION) | fp-units-net (>=FPCVERSION), fpc (>=FPCVERSION) | fp-units-rtl (>=FPCVERSION), fpc (>=FPCVERSION) | fp-utils (>=FPCVERSION)
+Depends: libgtk2.0-dev (>=2.6.0), fpc-laz (=FPCVERSION), fpc-src (=FPCVERSION)
 Installed-Size: LAZSIZE
 Description: RAD tool for freepascal
  Lazarus is a free and opensource IDE and RAD tool for Free Pascal using the
