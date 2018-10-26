@@ -793,16 +793,14 @@ var
   TM: TextMetric;
   DC: HDC;
   Handle: HWND;
-  TheWinControl: TWinControl;
+  TheWinControl: TWinControl absolute Sender;
   ARect: TRect;
-  Ignore: Integer;
 begin
   Result:=false;
   if (Sender = nil) or (not (Sender is TWinControl)) then exit;
-  TheWinControl:=TWinControl(Sender);
-  FillChar(ORect, SizeOf(ORect), 0);
   if not TheWinControl.HandleAllocated then exit;
   Handle := TheWinControl.Handle;
+  FillChar(ORect, SizeOf(ORect), 0);
   if TheWinControl is TScrollingWinControl then
     with TScrollingWinControl(TheWinControl) do
     begin

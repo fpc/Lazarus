@@ -329,7 +329,7 @@ const
 
 
 function ScrollBarWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
-    LParam: Windows.LParam): LResult; {$ifdef Win32}stdcall;{$else}cdecl;{$endif}
+    LParam: Windows.LParam): LResult; {$ifdef win32}stdcall;{$else}cdecl;{$endif}
 begin
   case Msg of
     WM_PAINT,
@@ -412,11 +412,11 @@ begin
   // customization of Params
   with Params do
   begin
+    SubClassWndProc := @GroupBoxPanelWindowProc;
     pClassName := @ButtonClsName;
     WindowTitle := StrCaption;
   end;
   // create window
-  Params.SubClassWndProc := @GroupBoxPanelWindowProc;
   FinishCreateWindow(AWinControl, Params, false);
   Result := Params.Window;
 end;
