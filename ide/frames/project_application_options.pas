@@ -10,7 +10,7 @@ uses
   FileUtil,
   // LCL
   LCLProc, LCLType, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls, Buttons,
-  ComCtrls, ExtDlgs,
+  ComCtrls, ExtDlgs, LCLStrConsts,
   // LazControls
   DividerBevel,
   // IdeIntf
@@ -287,6 +287,8 @@ begin
   IconImage.KeepOriginXWhenClipped := True;
   IconImage.KeepOriginYWhenClipped := True;
   IconImagePictureChanged(nil);
+  OpenPictureDialog1.Filter := GraphicFilter(TIcon)+'|'+
+                       Format(rsAllFiles,[GetAllFilesMask, GetAllFilesMask,'']);
 end;
 
 procedure TProjectApplicationOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
