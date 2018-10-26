@@ -23,7 +23,7 @@ type
 
   Enumerates and removes properties for the target window
  -----------------------------------------------------------------------------}
-function PropEnumProc(Window: Hwnd; Str: PChar; Data: Handle): LongBool; stdcall;
+function PropEnumProc(Window: Hwnd; Str: PChar; Data: Handle): LongBool; cdecl;
 begin
   Result:=false;
   if PtrUInt(Str) <= $FFFF then exit; // global atom handle
@@ -1553,18 +1553,27 @@ begin
       end;
       {$endif}
 
-      MouseDownTime := GetTickCount;
-      MouseDownWindow := Window;
-      GetCursorPos(MouseDownPos);
       NotifyUserInput := True;
       PLMsg:=@LMMouse;
       with LMMouse Do
       begin
         Msg := LM_LBUTTONDOWN;
-        XPos := SmallInt(Lo(LParam));
-        YPos := SmallInt(Hi(LParam));
+        XPos := GET_X_LPARAM(LParam);
+        YPos := GET_Y_LPARAM(LParam);
         Keys := WParam;
       end;
+(*
+      if (GetTickCount-MouseDownTime < GetDoubleClickTime()) and
+         (MouseDownWindow = Window) and
+         (Abs(LMMouse.XPos - MouseDownPos.x) < GetSystemMetrics(SM_CXDOUBLECLK)) and
+         (Abs(LMMouse.YPos - MouseDownPos.y) < GetSystemMetrics(SM_CYDOUBLECLK)) then
+      begin
+        LMMouse.Msg := LM_LBUTTONDBLCLK;
+      end;
+*)
+      MouseDownTime := GetTickCount();
+      MouseDownWindow := Window;
+      GetCursorPos(MouseDownPos);
 
       // CheckListBox functionality
       if lWinControl is TCheckListBox then
@@ -1582,8 +1591,8 @@ begin
       with LMMouse Do
       begin
         Msg := LM_LBUTTONUP;
-        XPos := SmallInt(Lo(LParam));
-        YPos := SmallInt(Hi(LParam));
+        XPos := GET_X_LPARAM(LParam);
+        YPos := GET_Y_LPARAM(LParam);
         Keys := WParam;
       end;
     end;
@@ -2200,8 +2209,8 @@ begin
     case Msg of
       WM_NCDESTROY:
       begin
-        //roozbeh : test this....
-         // free our own data associated with window
+        //roozbeh : test this.... WinCE does not support WM_NCDESTROY message #24452
+        // free our own data associated with window
         if DisposeWindowInfo(Window) then
           WindowInfo := nil;
         //EnumProps(Window, @PropEnumProc);
@@ -2314,7 +2323,7 @@ end;
 {$ifdef MSG_DEBUG}
 
 function WindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
-    LParam: Windows.LParam): LResult; {$ifdef Wince}cdecl;{$else}stdcall;{$endif}
+    LParam: Windows.LParam): LResult; {$ifdef wince}cdecl;{$else}stdcall;{$endif}
 begin
   DebugLn('WindowProc called for window=', IntToHex(Window, 8),' msg=',
     WM_To_String(msg),' wparam=', IntToHex(WParam, 8), ' lparam=', IntToHex(lparam, 8));
