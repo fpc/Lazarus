@@ -288,7 +288,7 @@ begin
   IconImage.KeepOriginYWhenClipped := True;
   IconImagePictureChanged(nil);
   OpenPictureDialog1.Filter := GraphicFilter(TIcon)+'|'+
-                       Format(rsAllFiles,[GetAllFilesMask, GetAllFilesMask,'']);
+                         Format(rsAllFiles,[GetAllFilesMask,GetAllFilesMask,'']);
 end;
 
 procedure TProjectApplicationOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
