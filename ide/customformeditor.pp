@@ -1312,7 +1312,12 @@ begin
           DebugLn(['TCustomFormEditor.CreateComponent Inline ',DbgSName(TypeClass)]);
           SetComponentInlineMode(NewComponent,true);
         end;
-        NewComponent.Create(OwnerComponent);
+        try
+          NewComponent.Create(OwnerComponent);
+        except
+          NewComponent:=nil;
+          raise;
+        end;
       except
         on e: Exception do begin
           DumpExceptionBackTrace;
