@@ -3962,7 +3962,6 @@ resourcestring
   lisUnableToCopyFileTo = 'Unable to copy file "%s"%sto "%s"';
   lisCanNotCreateFile = 'Cannot create file "%s"';
   lisExtendUnitPath = 'Extend unit path?';
-  lisTheDirectoryIsNotYetInTheUnitPathAddIt = 'The directory "%s" is not yet in the unit path.%sAdd it?';
   lisUnableToWrite2 = 'Unable to write "%s"';
   lisUnableToWriteFile = 'Unable to write file';
   lisUnableToWriteFile2 = 'Unable to write file "%s".';
@@ -4560,7 +4559,6 @@ resourcestring
   lisA2PDirectoryForUnitFile = 'Directory for unit file:';
   lisA2PUnitName = 'Unit name:';
   lisA2PShortenOrExpandFilename = 'Shorten or expand filename';
-  lisA2PSaveFileDialog = 'Save file dialog';
   lisA2PIcon24x24 = 'Icon 24x24:';
   lisA2PIcon36x36 = 'Icon 36x36:';
   lisA2PIcon48x48 = 'Icon 48x48:';
