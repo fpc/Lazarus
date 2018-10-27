@@ -123,14 +123,14 @@ procedure SwitchBuildMode(aBuildModeID: string);
 procedure UpdateBuildModeCombo(aCombo: TComboBox);
 
 // Functions dealing with many BuildModes. They depend on TBuildModesCheckList.
-function AddPathToBuildModes(aPath, CurDirectory: string; IsIncludeFile: Boolean): Boolean;
+function AddPathToBuildModes(aDir: string; IsIncludeFile: Boolean): Boolean;
 procedure RemovePathFromBuildModes(ObsoletePaths: String; pcos: TParsedCompilerOptString);
 function BuildManyModes: Boolean;
 
 // Check if UnitDirectory is part of the Unit Search Paths.
 //  If not, ask user if he wants to extend dependencies or the Unit Search Paths.
 // Not strictly for many BuildModes but it adds a path to them all.
-function CheckDirIsInSearchPath(UnitInfo: TUnitInfo; AllowAddingDependencies, IsIncludeFile: Boolean): Boolean;
+function CheckDirIsInSearchPath(UnitInfo: TUnitInfo; IsIncludeFile: Boolean): Boolean;
 
 var
   OnLoadIDEOptionsHook: TOnLoadIDEOptions;
@@ -208,7 +208,7 @@ begin
   end;
 end;
 
-function AddPathToBuildModes(aPath, CurDirectory: string; IsIncludeFile: Boolean): Boolean;
+function AddPathToBuildModes(aDir: string; IsIncludeFile: Boolean): Boolean;
 var
   DlgCapt, DlgMsg: String;
   i: Integer;
@@ -229,17 +229,20 @@ begin
     if Project1.BuildModes.Count > 1 then
       Ok:=BMList.Show
     else begin
-      Ok:=IDEMessageDialog(DlgCapt, Format(DlgMsg,[LineEnding,CurDirectory]),
+      Ok:=IDEMessageDialog(DlgCapt, Format(DlgMsg,[LineEnding,aDir]),
                            mtConfirmation,[mbYes,mbNo]) = mrYes;
       BMList.SelectFirst; // The only (Default) build mode must be selected.
     end;
     if not Ok then Exit(False);
+    if not Project1.IsVirtual then
+      aDir:=CreateRelativePath(aDir, Project1.Directory);
     for i:=0 to Project1.BuildModes.Count-1 do
       if BMList.IsSelected(i) then
-        if IsIncludeFile then
-          Project1.BuildModes[i].CompilerOptions.MergeToIncludePaths(aPath)
-        else
-          Project1.BuildModes[i].CompilerOptions.MergeToUnitPaths(aPath);
+        with Project1.BuildModes[i].CompilerOptions do
+          if IsIncludeFile then
+            MergeToIncludePaths(aDir)
+          else
+            MergeToUnitPaths(aDir);
   finally
     BMList.Free;
   end;
@@ -374,15 +377,11 @@ begin
   end;
 end;
 
-function CheckDirIsInSearchPath(UnitInfo: TUnitInfo;
-  AllowAddingDependencies, IsIncludeFile: Boolean): Boolean;
+function CheckDirIsInSearchPath(UnitInfo: TUnitInfo; IsIncludeFile: Boolean): Boolean;
 // Check if the given unit's path is on Unit- or Include-search path.
 // Returns true if it is OK to add the unit to current project.
 var
-  CurDirectory, CurPath, ShortDir: String;
-  Owners: TFPList;
-  APackage: TLazPackage;
-  i: Integer;
+  UnitDir, CurPath: String;
 begin
   Result:=True;
   if UnitInfo.IsVirtual then exit;
@@ -390,36 +389,10 @@ begin
     CurPath:=Project1.CompilerOptions.GetIncludePath(false)
   else
     CurPath:=Project1.CompilerOptions.GetUnitPath(false);
-  CurDirectory:=AppendPathDelim(UnitInfo.GetDirectory);
-  if SearchDirectoryInSearchPath(CurPath,CurDirectory)<1 then
-  begin
-    if AllowAddingDependencies then begin
-      Owners:=PkgBoss.GetPossibleOwnersOfUnit(UnitInfo.Filename,[]);
-      try
-        if (Owners<>nil) then begin
-          for i:=0 to Owners.Count-1 do begin
-            if TObject(Owners[i]) is TLazPackage then begin
-              APackage:=TLazPackage(Owners[i]);
-              if IDEMessageDialog(lisAddPackageRequirement,
-                Format(lisAddPackageToProject, [APackage.IDAsString]),
-                mtConfirmation,[mbYes,mbCancel],'')<>mrYes
-              then
-                Exit(True);
-              PkgBoss.AddProjectDependency(Project1,APackage);
-              Exit(False);
-            end;
-          end;
-        end;
-      finally
-        Owners.Free;
-      end;
-    end;
-    // unit is not in a package => extend unit path
-    ShortDir:=CurDirectory;
-    if (not Project1.IsVirtual) then
-      ShortDir:=CreateRelativePath(ShortDir,Project1.Directory);
-    Result:=AddPathToBuildModes(ShortDir,CurDirectory,IsIncludeFile);
-  end;
+  UnitDir:=AppendPathDelim(UnitInfo.GetDirectory);
+  if SearchDirectoryInSearchPath(CurPath,UnitDir)<1 then
+    // unit is not in search path => extend it
+    Result:=AddPathToBuildModes(UnitDir,IsIncludeFile);
 end;
 
 { TBuildModesForm }

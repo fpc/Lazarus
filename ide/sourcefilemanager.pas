@@ -1850,9 +1850,9 @@ begin
   then begin
     OkToAdd:=True;
     if FilenameIsPascalUnit(ActiveUnitInfo.Filename) then
-      OkToAdd:=CheckDirIsInSearchPath(ActiveUnitInfo,False,False)
+      OkToAdd:=CheckDirIsInSearchPath(ActiveUnitInfo,False)
     else if CompareFileExt(ActiveUnitInfo.Filename,'inc',false)=0 then
-      OkToAdd:=CheckDirIsInSearchPath(ActiveUnitInfo,False,True);
+      OkToAdd:=CheckDirIsInSearchPath(ActiveUnitInfo,True);
     if OkToAdd then begin
       ActiveUnitInfo.IsPartOfProject:=true;
       Project1.Modified:=true;
@@ -5308,22 +5308,11 @@ begin
 
     // add new path to unit path
     if AnUnitInfo.IsPartOfProject
-    and (not Project1.IsVirtual)
     and (FilenameIsPascalUnit(NewFilename))
     and (CompareFilenames(NewFilePath,Project1.Directory)<>0) then begin
       OldUnitPath:=Project1.CompilerOptions.GetUnitPath(false);
-
-      if SearchDirectoryInSearchPath(OldUnitPath,NewFilePath,1)<1 then begin
-        //DebugLn('RenameUnit NewFilePath="',NewFilePath,'" OldUnitPath="',OldUnitPath,'"');
-        if IDEMessageDialog(lisExtendUnitPath,
-          Format(lisTheDirectoryIsNotYetInTheUnitPathAddIt,[NewFilePath,LineEnding]),
-          mtConfirmation,[mbYes,mbNo])=mrYes then
-        begin
-          Project1.CompilerOptions.OtherUnitFiles:=
-                       Project1.CompilerOptions.OtherUnitFiles+';'
-                       +CreateRelativePath(NewFilePath,Project1.Directory);
-        end;
-      end;
+      if SearchDirectoryInSearchPath(OldUnitPath,NewFilePath,1)<1 then
+        AddPathToBuildModes(NewFilePath, False);
     end;
 
     // rename lfm file
@@ -5382,8 +5371,7 @@ begin
       Result:=ForceDirectoryInteractive(ExtractFilePath(NewLRSFilename),[mbRetry,mbIgnore]);
       if Result=mrCancel then exit;
       if Result=mrOk then begin
-        if not CodeToolBoss.SaveBufferAs(LRSCode,NewLRSFilename,LRSCode)
-        then
+        if not CodeToolBoss.SaveBufferAs(LRSCode,NewLRSFilename,LRSCode) then
           DebugLn(['RenameUnit CodeToolBoss.SaveBufferAs failed: NewResFilename="',NewLRSFilename,'"']);
       end;
 
