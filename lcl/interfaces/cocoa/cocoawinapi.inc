@@ -1983,6 +1983,8 @@ var
   rsp : NSResponder;
   view : NSView;
   dl   : NSObject;
+  cb   : ICommonCallback;
+  cbobj : TObject;
 begin
   Result := 0;
   win := NSApp.keyWindow;
@@ -2006,12 +2008,18 @@ begin
     if Assigned(dl) and (dl.isKindOfClass(NSView)) and Assigned(dl.lclGetCallback) then
       Result := HWND(dl);
   end
-  else if (rsp.isKindOfClass(NSView)) then
+  else
   begin
-    if Assigned(NSView(rsp).enclosingScrollView) then
-      Result := HWND(NSView(rsp).enclosingScrollView)
+    cb := rsp.lclGetCallback;
+    if Assigned(cb) then
+      cbobj := cb.GetCallbackObject
     else
-      Result := HWND(rsp);
+      cbobj := nil;
+
+    if (cbobj is TLCLCommonCallback) then
+      Result := HWND(TLCLCommonCallback(cbobj).HandleFrame)
+    else
+      Result := 0;
   end;
 end;
 
