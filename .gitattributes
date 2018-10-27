@@ -9466,6 +9466,7 @@ lcl/interfaces/gtk3/gtk3wsforms.pp svneol=native#text/plain
 lcl/interfaces/gtk3/gtk3wsimglist.pp svneol=native#text/plain
 lcl/interfaces/gtk3/gtk3wsmenus.pp svneol=native#text/plain
 lcl/interfaces/gtk3/gtk3wsspin.pp svneol=native#text/plain
+lcl/interfaces/gtk3/gtk3wssplitter.pas svneol=native#text/pascal
 lcl/interfaces/gtk3/gtk3wsstdctrls.pp svneol=native#text/plain
 lcl/interfaces/gtk3/interfaces.pp svneol=native#text/plain
 lcl/interfaces/gtk3/issues.xml svneol=native#text/plain

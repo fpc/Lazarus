@@ -3677,10 +3677,8 @@ end;
 
 function TGtk3WidgetSet.SetParent(hWndChild: HWND; hWndParent: HWND): HWND;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  DebugLn('WARNING: TGtk3WidgetSet.SetParent not implemented ...');
-  {$ENDIF}
-  Result:=inherited SetParent(hWndChild, hWndParent);
+  Result := HWND(TGtk3Widget(hWndChild).getParent);
+  TGtk3Widget(hWndChild).SetParent(TGtk3Widget(hWndParent),0,0)
 end;
 
 function TGtk3WidgetSet.SetProp(Handle: hwnd; Str: PChar; Data: Pointer

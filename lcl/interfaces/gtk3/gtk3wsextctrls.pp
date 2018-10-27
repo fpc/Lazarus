@@ -50,6 +50,8 @@ type
 
   TGtk3WSCustomSplitter = class(TWSCustomSplitter)
   published
+    class function CreateHandle(const AWinControl: TWinControl;
+      const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
   { TGtk3WSSplitter }
@@ -145,6 +147,17 @@ implementation
 
 uses
   gtk3widgets;
+
+{ TGtk3WSCustomSplitter }
+
+class function TGtk3WSCustomSplitter.CreateHandle(
+  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+var
+  ASplitter: TGtk3Splitter;
+begin
+  ASplitter := TGtk3Splitter.Create(AWinControl, AParams);
+  Result := TLCLIntfHandle(ASplitter);
+end;
 
 { TGtk3WSCustomPanel }
 
