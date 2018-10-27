@@ -499,7 +499,7 @@ begin
         for y := 0 to ImageRep.pixelsHigh - 1 do
           for x := 0 to ImageRep.pixelsWide - 1 do
           begin
-            RGBColor := NSBitmapImageRep(ImageRep).colorAtX_y(x, y).colorUsingColorSpaceName(NSCalibratedRGBColorSpace);
+            RGBColor := NSBitmapImageRep(ImageRep).colorAtX_y(x, y).colorUsingColorSpaceName(NSDeviceRGBColorSpace);
             if Assigned(RGBColor) then
             begin
               if (x = 0) and (y = 0) then

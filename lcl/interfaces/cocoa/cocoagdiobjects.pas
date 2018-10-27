@@ -1061,9 +1061,9 @@ end;
 function TCocoaBitmap.GetColorSpace: NSString;
 begin
   if FType in [cbtMono, cbtGray] then
-    Result := NSCalibratedWhiteColorSpace
+    Result := NSDeviceWhiteColorSpace
   else
-    Result := NSCalibratedRGBColorSpace;
+    Result := NSDeviceRGBColorSpace;
 end;
 
 // Cocoa cannot create a context unless the image has alpha pre-multiplied
@@ -2990,7 +2990,7 @@ begin
   FColor := AColor;
   FColor.retain;
 
-  RGBColor := AColor.colorUsingColorSpaceName(NSCalibratedRGBColorSpace);
+  RGBColor := AColor.colorUsingColorSpaceName(NSDeviceRGBColorSpace);
 
   if Assigned(RGBColor) then
     SetColor(NSColorToRGB(RGBColor), True)
@@ -3054,7 +3054,7 @@ begin
   FCGPattern := nil;
   FBitmap := nil;
   FImage := nil;
-  RGBColor := AColor.colorUsingColorSpaceName(NSCalibratedRGBColorSpace);
+  RGBColor := AColor.colorUsingColorSpaceName(NSDeviceRGBColorSpace);
   if Assigned(RGBColor) then
     inherited Create(NSColorToRGB(RGBColor), True, AGlobal)
   else
