@@ -17,7 +17,6 @@
         <Verbosity>
           <ShowNotes Value="False"/>
           <ShowHints Value="False"/>
-          <ShowGenInfo Value="False"/>
         </Verbosity>
         <CustomOptions Value="$(IDEBuildOptions)"/>
       </Other>
@@ -26,7 +25,7 @@
 "/>
     <License Value="modified LGPL-2
 "/>
-    <Version Major="2" Build="1"/>
+    <Version Major="2" Build="2"/>
     <Files Count="287">
       <Item1>
         <Filename Value="checklst.pas"/>
