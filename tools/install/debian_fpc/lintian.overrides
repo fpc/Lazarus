@@ -1,3 +1,0 @@
-# ignore statically linked files
-fpc: statically-linked-binary
-fpc: missing-dependency-on-libc

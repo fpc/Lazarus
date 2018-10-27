@@ -17,7 +17,7 @@ TmpDir=$TmpDir/fpc_patchdir
 # what package should be built ...
 PackageName=""
 if [ "$1" = fpc ]; then
-    PackageName=$1
+    PackageName=fpc-laz
 fi
 if [ "$1" = fpc-src ]; then
     PackageName=$1
@@ -216,7 +216,7 @@ if [ "$PackageName" = "fpc-src" ]; then
     cp -a $FPCSrcDir/* $DebianSourceDir/
 fi
 
-if [ "$PackageName" = "fpc" ]; then
+if [ "$PackageName" = "fpc-laz" ]; then
   # build fpc
   mkdir -p $FPCBuildDir/etc
   cd $FPCSrcDir

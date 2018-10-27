@@ -1,0 +1,3 @@
+# ignore statically linked files
+fpc-laz: statically-linked-binary
+fpc-laz: missing-dependency-on-libc
