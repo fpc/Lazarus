@@ -5891,7 +5891,6 @@ resourcestring
   lisAddPackageRequirement = 'Add package requirement?';
   lisTheUnitBelongsToPackage = 'The unit belongs to package %s.';
   lisAddUnitNotRecommended = 'Add unit (not recommended)';
-  lisAddPackageToProject = 'Add package %s to project?';
   lisAddPackageToProject2 = 'Add package to project';
   lisOnBreakLineIEReturnOrEnterKey = 'On break line (i.e. return or enter key)';
   lisSetupDefaultIndentation = '(Set up default indentation)';
