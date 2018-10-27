@@ -11997,7 +11997,7 @@ var
   procedure PutValuesInTypeRecord(const AType: TDBGType; const ATextInfo: String);
   var
     GDBParser: TGDBStringIterator;
-    Payload: String;
+    Payload, s: String;
     Composite: Boolean;
     StopChar: Char;
     j: Integer;
@@ -12023,10 +12023,15 @@ var
         Break;
       end;
 
-      if Payload <> AType.Fields[j].Name
+      s := uppercase(AType.Fields[j].Name);
+      if uppercase(Payload) <> s
       then begin
         debugln(DBGMI_STRUCT_PARSER, 'Field name does not match, expected "', AType.Fields[j].Name, '" but found "', Payload,'"');
         Break;
+      end;
+      if (Payload <> AType.Fields[j].Name) and (s = AType.Fields[j].Name) then begin
+        // gdb returned different case
+        AType.Fields[j].Name := Payload;
       end;
 
       if StopChar <> '='
@@ -12098,7 +12103,7 @@ var
     procedure ProcessAncestor(ATypeName: String);
     var
       HelpPtr, HelpPtr2: PChar;
-      NewName, NewVal: String;
+      NewName, NewVal, Sn, Sc: String;
       i: Integer;
       NewField: TDBGField;
     begin
@@ -12138,7 +12143,7 @@ var
       while (StartPtr <= EndPtr) and (StartPtr^ <> '}') do begin
         HelpPtr := StartPtr;
         while (HelpPtr < EndPtr) and not (HelpPtr^ in [' ', '=', ',']) do inc(HelpPtr);
-        NewName := uppercase(copy(StartPtr, 1, HelpPtr - StartPtr));  // name of field
+        NewName := copy(StartPtr, 1, HelpPtr - StartPtr);  // name of field
 
         StartPtr := HelpPtr;
         SkipSpaces;
@@ -12159,13 +12164,15 @@ var
         NewVal := copy(HelpPtr, 1, HelpPtr2 + 1 - HelpPtr);  // name of field
 
         i := AType.Fields.Count - 1;
+        Sn := UpperCase(NewName);
+        Sc := UpperCase(ATypeName);
         while (i >= 0)
-        and ( (uppercase(AType.Fields[i].Name) <> NewName)
-           or (uppercase(AType.Fields[i].ClassName) <> ATypeName) )
+        and ( (uppercase(AType.Fields[i].Name) <> Sn)
+           or (uppercase(AType.Fields[i].ClassName) <> Sc) )
         do dec(i);
 
         if i < 0 then begin
-          if (uppercase(ATypeName) <> 'TOBJECT') or (pos('VPTR', uppercase(NewName)) < 1) then begin
+          if (Sc <> 'TOBJECT') or (pos('VPTR', Sn) < 1) then begin
             if not(defFullTypeInfo in FEvalFlags) then begin
               NewField := TDBGField.Create(NewName, TGDBType.Create(skSimple, ''), flPublic, [], '');
               AType.Fields.Add(NewField);
@@ -12175,8 +12182,17 @@ var
               debugln(DBGMI_STRUCT_PARSER, 'WARNING: PutValuesInClass: No field for "' + ATypeName + '"."' + NewName + '"');
           end;
         end
-        else
+        else begin
+          if (AType.Fields[i].Name <> NewName) and
+             (uppercase(AType.Fields[i].Name) = AType.Fields[i].Name)
+          then
+            AType.Fields[i].Name := NewName; // Adjust to mixed case
+          if (AType.Fields[i].ClassName <> ATypeName) and
+             (uppercase(AType.Fields[i].ClassName) = AType.Fields[i].ClassName)
+          then
+            AType.Fields[i].ClassName := ATypeName; // Adjust to mixed case
           AType.Fields[i].DBGType.Value.AsString := HexCToHexPascal(NewVal);
+        end;
 
         if (StartPtr^ <> '}') then inc(StartPtr);
         SkipSpaces;
