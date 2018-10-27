@@ -889,8 +889,20 @@ procedure TIDEInspectDlg.UpdateData;
 var
   Opts: TDBGEvaluateFlags;
 begin
+  if DebugBoss.State in [dsRun, dsStop, dsIdle] then begin
+    // No request can be running
+    FUpdateLock := False;
+    FTestUpdateLock := False;
+  end;
+
   if FUpdateLock then begin
     FUpdateNeeded := True;
+    exit;
+  end;
+
+  if FExpression = '' then begin
+    Clear;
+    StatusBar1.SimpleText := '';
     exit;
   end;
 
@@ -898,12 +910,6 @@ begin
   FUpdateNeeded := False;
   try
     FreeAndNil(FDBGInfo);
-    if FExpression = ''
-    then begin
-      Clear;
-      StatusBar1.SimpleText := '';
-      exit;
-    end;
 
     InputHistories.HistoryLists.Add(ClassName, FExpression,rltCaseSensitive);
     if EdInspect.Items.IndexOf(FExpression) = -1
