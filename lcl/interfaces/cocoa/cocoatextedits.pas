@@ -1766,6 +1766,9 @@ var
   lNSStr: NSString;
   lStr: string;
 begin
+  // Stepper not might be assigend while creating or destroying handle
+  if not Assigned(Stepper) then Exit;
+
   lStr := Format('%.*f', [DecimalPlaces, Stepper.doubleValue()]);
   lNSStr := CocoaUtils.NSStringUtf8(lStr);
   setStringValue(lNSStr);
