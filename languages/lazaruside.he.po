@@ -4517,10 +4517,6 @@ msgstr "עמוד לוח:"
 msgid "Pascal units must have the extension .pp or .pas"
 msgstr "יחידה בפסקל חייבת להיות עם סיומת pp. או pas."
 
-#: lazarusidestrconsts.lisa2psavefiledialog
-msgid "Save file dialog"
-msgstr "דו-שיח שמירת קובץ"
-
 #: lazarusidestrconsts.lisa2pshortenorexpandfilename
 msgid "Shorten or expand filename"
 msgstr "כווץ או הארך שם קובץ"
@@ -4835,11 +4831,6 @@ msgstr "הוסף דרישות חבילה?"
 #: lazarusidestrconsts.lisaddpackagestolistofinstalledpackagescombinewithbui
 msgid "add package(s) to list of installed packages (combine with --build-ide to rebuild IDE)."
 msgstr ""
-
-#: lazarusidestrconsts.lisaddpackagetoproject
-#, fuzzy,badformat
-msgid "Add package %s to project?"
-msgstr "הוסף חבילה s% לפרוייקט?"
 
 #: lazarusidestrconsts.lisaddpackagetoproject2
 msgid "Add package to project"
@@ -19032,12 +19023,6 @@ msgstr "התיקייה %s%s%s%s אינה דרושה עוד בנתיב היחיד
 #| msgid "The directory %s%s%s is not writable."
 msgid "The directory \"%s\" is not writable."
 msgstr "התיקייה %s%s%s%s אינה מורשה לכתיבה."
-
-#: lazarusidestrconsts.listhedirectoryisnotyetintheunitpathaddit
-#, fuzzy,badformat
-#| msgid "The directory %s%s%s is not yet in the unit path.%sAdd it?"
-msgid "The directory \"%s\" is not yet in the unit path.%sAdd it?"
-msgstr "התיקייה %s%s%s%s עדיין אינה בנתיב היחידה. להוסיף אותה?"
 
 #: lazarusidestrconsts.listhedirectorywasnotfound
 msgid "The directory %s was not found."

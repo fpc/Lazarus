@@ -4355,10 +4355,6 @@ msgstr "Pagina palette:"
 msgid "Pascal units must have the extension .pp or .pas"
 msgstr "Le unit pascal devono avere l'estensione .pp o .pas"
 
-#: lazarusidestrconsts.lisa2psavefiledialog
-msgid "Save file dialog"
-msgstr "Salva file video"
-
 #: lazarusidestrconsts.lisa2pshortenorexpandfilename
 msgid "Shorten or expand filename"
 msgstr "Riduci o espandi il nome del file"
@@ -4640,10 +4636,6 @@ msgstr "Aggiungi requisiti di pacchetto?"
 #: lazarusidestrconsts.lisaddpackagestolistofinstalledpackagescombinewithbui
 msgid "add package(s) to list of installed packages (combine with --build-ide to rebuild IDE)."
 msgstr "aggiungere pacchetto(i) alla lista dei pacchetti installati (unisci a --build-ide per ricompilare l'IDE)."
-
-#: lazarusidestrconsts.lisaddpackagetoproject
-msgid "Add package %s to project?"
-msgstr "Aggiungi pacchetto %s al progetto?"
 
 #: lazarusidestrconsts.lisaddpackagetoproject2
 msgid "Add package to project"
@@ -18032,10 +18024,6 @@ msgstr "La cartella \"%s\" non è più usata nel percorso delle unit.%s La rimuo
 #: lazarusidestrconsts.listhedirectoryisnotwritable
 msgid "The directory \"%s\" is not writable."
 msgstr "La cartella \"%s\" non è scrivibile."
-
-#: lazarusidestrconsts.listhedirectoryisnotyetintheunitpathaddit
-msgid "The directory \"%s\" is not yet in the unit path.%sAdd it?"
-msgstr "La cartella \"%s\" non è presente nel percorso dei moduli.%sAggiungerla?"
 
 #: lazarusidestrconsts.listhedirectorywasnotfound
 msgid "The directory %s was not found."

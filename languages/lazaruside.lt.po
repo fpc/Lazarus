@@ -4322,10 +4322,6 @@ msgstr "Paletės lapas:"
 msgid "Pascal units must have the extension .pp or .pas"
 msgstr "Paskalio modulių failų plėtinys turi būti .pp arba .pas"
 
-#: lazarusidestrconsts.lisa2psavefiledialog
-msgid "Save file dialog"
-msgstr "Įrašyti failą"
-
 #: lazarusidestrconsts.lisa2pshortenorexpandfilename
 msgid "Shorten or expand filename"
 msgstr "Suskleisti ar išplėsti failo pavadinimą"
@@ -4606,10 +4602,6 @@ msgstr "Pridėti paketo priklausomybę?"
 #: lazarusidestrconsts.lisaddpackagestolistofinstalledpackagescombinewithbui
 msgid "add package(s) to list of installed packages (combine with --build-ide to rebuild IDE)."
 msgstr "į įdiegtų paketų sąrašą įdėti paketą ar paketus (darant IKA kombinuotina su „--build-ide“)."
-
-#: lazarusidestrconsts.lisaddpackagetoproject
-msgid "Add package %s to project?"
-msgstr "Į projektą įdėti paketą „%s“?"
 
 #: lazarusidestrconsts.lisaddpackagetoproject2
 msgid "Add package to project"
@@ -17889,10 +17881,6 @@ msgstr "Aplanko įrašas „%s“ nebebūtinas modulių kelyje.%sPašalinti apla
 #: lazarusidestrconsts.listhedirectoryisnotwritable
 msgid "The directory \"%s\" is not writable."
 msgstr "Aplanke „%s“ rašyti draudžiama."
-
-#: lazarusidestrconsts.listhedirectoryisnotyetintheunitpathaddit
-msgid "The directory \"%s\" is not yet in the unit path.%sAdd it?"
-msgstr "Aplankas „%s“ nefigūruoja modulių kelyje.%sPridėti aplanką prie modulio kelio?"
 
 #: lazarusidestrconsts.listhedirectorywasnotfound
 msgid "The directory %s was not found."

@@ -4404,10 +4404,6 @@ msgstr "Pàgina de paleta:"
 msgid "Pascal units must have the extension .pp or .pas"
 msgstr "Les unitats pascal han de tenir l'extensió .pp o .pas"
 
-#: lazarusidestrconsts.lisa2psavefiledialog
-msgid "Save file dialog"
-msgstr ""
-
 #: lazarusidestrconsts.lisa2pshortenorexpandfilename
 msgid "Shorten or expand filename"
 msgstr "Acurta o allarga nom d'arxiu"
@@ -4714,10 +4710,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisaddpackagestolistofinstalledpackagescombinewithbui
 msgid "add package(s) to list of installed packages (combine with --build-ide to rebuild IDE)."
-msgstr ""
-
-#: lazarusidestrconsts.lisaddpackagetoproject
-msgid "Add package %s to project?"
 msgstr ""
 
 #: lazarusidestrconsts.lisaddpackagetoproject2
@@ -18339,10 +18331,6 @@ msgstr ""
 
 #: lazarusidestrconsts.listhedirectoryisnotwritable
 msgid "The directory \"%s\" is not writable."
-msgstr ""
-
-#: lazarusidestrconsts.listhedirectoryisnotyetintheunitpathaddit
-msgid "The directory \"%s\" is not yet in the unit path.%sAdd it?"
 msgstr ""
 
 #: lazarusidestrconsts.listhedirectorywasnotfound

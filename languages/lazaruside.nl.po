@@ -4414,10 +4414,6 @@ msgstr "Palette pagina:"
 msgid "Pascal units must have the extension .pp or .pas"
 msgstr "Pascal units moeten de .pp of .pas extensie hebben"
 
-#: lazarusidestrconsts.lisa2psavefiledialog
-msgid "Save file dialog"
-msgstr "Bewaar bestand dialoogvenster"
-
 #: lazarusidestrconsts.lisa2pshortenorexpandfilename
 msgid "Shorten or expand filename"
 msgstr "Verkort of verleng bestandsnaam"
@@ -4728,10 +4724,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisaddpackagestolistofinstalledpackagescombinewithbui
 msgid "add package(s) to list of installed packages (combine with --build-ide to rebuild IDE)."
-msgstr ""
-
-#: lazarusidestrconsts.lisaddpackagetoproject
-msgid "Add package %s to project?"
 msgstr ""
 
 #: lazarusidestrconsts.lisaddpackagetoproject2
@@ -18457,12 +18449,6 @@ msgstr "De directory \"%s\" is overbodig in het unit pad.%sDirectory verwijderen
 #: lazarusidestrconsts.listhedirectoryisnotwritable
 msgid "The directory \"%s\" is not writable."
 msgstr ""
-
-#: lazarusidestrconsts.listhedirectoryisnotyetintheunitpathaddit
-#, fuzzy
-#| msgid "The directory %s%s%s is not yet in the unit path.%sAdd it?"
-msgid "The directory \"%s\" is not yet in the unit path.%sAdd it?"
-msgstr "De directory \"%s\" is nog niet in het unit path.%sDirectory toevoegen?"
 
 #: lazarusidestrconsts.listhedirectorywasnotfound
 msgid "The directory %s was not found."

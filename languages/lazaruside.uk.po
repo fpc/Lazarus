@@ -4250,10 +4250,6 @@ msgstr "Сторінка палітри:"
 msgid "Pascal units must have the extension .pp or .pas"
 msgstr "Модулі паскаля повинні мати розширення .pp або .pas"
 
-#: lazarusidestrconsts.lisa2psavefiledialog
-msgid "Save file dialog"
-msgstr "Зберегти файл діалогу"
-
 #: lazarusidestrconsts.lisa2pshortenorexpandfilename
 msgid "Shorten or expand filename"
 msgstr "Скоротити або розширити назву файлу"
@@ -4528,10 +4524,6 @@ msgstr "Додати залежності пакунка?"
 #: lazarusidestrconsts.lisaddpackagestolistofinstalledpackagescombinewithbui
 msgid "add package(s) to list of installed packages (combine with --build-ide to rebuild IDE)."
 msgstr "додати пакунки до списку встановлених пакунків (комбінуйте з --build-ide для перезбирання ІСР)."
-
-#: lazarusidestrconsts.lisaddpackagetoproject
-msgid "Add package %s to project?"
-msgstr "Додати пакунок %s до проекту?"
 
 #: lazarusidestrconsts.lisaddpackagetoproject2
 msgid "Add package to project"
@@ -17731,10 +17723,6 @@ msgstr "Тека \"%s\" більше не потрібна у шляху до м
 #: lazarusidestrconsts.listhedirectoryisnotwritable
 msgid "The directory \"%s\" is not writable."
 msgstr "Тека \"%s\" недоступна для запису."
-
-#: lazarusidestrconsts.listhedirectoryisnotyetintheunitpathaddit
-msgid "The directory \"%s\" is not yet in the unit path.%sAdd it?"
-msgstr "Теки \"%s\" немає у шляху до модулів.%sДодати її?"
 
 #: lazarusidestrconsts.listhedirectorywasnotfound
 msgid "The directory %s was not found."

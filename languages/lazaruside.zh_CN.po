@@ -4321,10 +4321,6 @@ msgstr "组件板页:"
 msgid "Pascal units must have the extension .pp or .pas"
 msgstr "Pascal单元必须有扩展名.pp或者.pas"
 
-#: lazarusidestrconsts.lisa2psavefiledialog
-msgid "Save file dialog"
-msgstr "保存文件对话框"
-
 #: lazarusidestrconsts.lisa2pshortenorexpandfilename
 msgid "Shorten or expand filename"
 msgstr ""
@@ -4622,10 +4618,6 @@ msgstr "添加必要的包"
 #: lazarusidestrconsts.lisaddpackagestolistofinstalledpackagescombinewithbui
 msgid "add package(s) to list of installed packages (combine with --build-ide to rebuild IDE)."
 msgstr ""
-
-#: lazarusidestrconsts.lisaddpackagetoproject
-msgid "Add package %s to project?"
-msgstr "添加包%s 到工程?"
 
 #: lazarusidestrconsts.lisaddpackagetoproject2
 msgid "Add package to project"
@@ -18064,10 +18056,6 @@ msgstr "目录\"%s\"不再被需要在单元路径.%s移除?"
 #: lazarusidestrconsts.listhedirectoryisnotwritable
 msgid "The directory \"%s\" is not writable."
 msgstr "目录\"%s\"是不可写."
-
-#: lazarusidestrconsts.listhedirectoryisnotyetintheunitpathaddit
-msgid "The directory \"%s\" is not yet in the unit path.%sAdd it?"
-msgstr "目录\"%s\"还不在单元路径.%s添加?"
 
 #: lazarusidestrconsts.listhedirectorywasnotfound
 #, fuzzy,badformat

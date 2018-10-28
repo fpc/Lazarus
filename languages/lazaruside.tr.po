@@ -4327,10 +4327,6 @@ msgstr "Palet Sayfası:"
 msgid "Pascal units must have the extension .pp or .pas"
 msgstr "Pascal birimlerinin uzantısı .pp veya .pas olmalıdır"
 
-#: lazarusidestrconsts.lisa2psavefiledialog
-msgid "Save file dialog"
-msgstr "Dosyayı kaydet\" iletişim kutus"
-
 #: lazarusidestrconsts.lisa2pshortenorexpandfilename
 msgid "Shorten or expand filename"
 msgstr "Dosya adını kısaltın veya genişletin"
@@ -4619,10 +4615,6 @@ msgstr "Paket gereksinimi ekle?"
 #: lazarusidestrconsts.lisaddpackagestolistofinstalledpackagescombinewithbui
 msgid "add package(s) to list of installed packages (combine with --build-ide to rebuild IDE)."
 msgstr "\" \"paket (ler) in kurulu paketlerin listesine eklenmesi (IDE'yi yeniden derlemek  için --build-ide ile birleşin)."
-
-#: lazarusidestrconsts.lisaddpackagetoproject
-msgid "Add package %s to project?"
-msgstr " %s paketini projeye eklensin mi?"
 
 #: lazarusidestrconsts.lisaddpackagetoproject2
 msgid "Add package to project"
@@ -18124,11 +18116,6 @@ msgstr "\" \\ \" %s \" dizini birim yolunda artık gerekli değil %sRemove it? "
 #: lazarusidestrconsts.listhedirectoryisnotwritable
 msgid "The directory \"%s\" is not writable."
 msgstr "\" %s \\ \"dizini yazılabilir değil."
-
-#: lazarusidestrconsts.listhedirectoryisnotyetintheunitpathaddit
-#, fuzzy,badformat
-msgid "The directory \"%s\" is not yet in the unit path.%sAdd it?"
-msgstr "\" %s \\ \"dizini henüz birlik yolunda değil.% SY ì¶ê° mı?"
 
 #: lazarusidestrconsts.listhedirectorywasnotfound
 msgid "The directory %s was not found."

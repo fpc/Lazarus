@@ -4249,10 +4249,6 @@ msgstr "Page de palette :"
 msgid "Pascal units must have the extension .pp or .pas"
 msgstr "Les unités Pascal doivent avoir l'extension .pp ou .pas"
 
-#: lazarusidestrconsts.lisa2psavefiledialog
-msgid "Save file dialog"
-msgstr "Dialogue de sauvegarde de fichier"
-
 #: lazarusidestrconsts.lisa2pshortenorexpandfilename
 msgid "Shorten or expand filename"
 msgstr "Raccourcir ou développer le nom de fichier"
@@ -4527,10 +4523,6 @@ msgstr "Voulez-vous ajouter l'exigence de paquet ?"
 #: lazarusidestrconsts.lisaddpackagestolistofinstalledpackagescombinewithbui
 msgid "add package(s) to list of installed packages (combine with --build-ide to rebuild IDE)."
 msgstr "ajouter le(s) paquet(s) à la liste des paquets installés (combiner avec --build-ide pour reconstruire l'EDI)."
-
-#: lazarusidestrconsts.lisaddpackagetoproject
-msgid "Add package %s to project?"
-msgstr "Voulez-vous ajouter le paquet %s au projet ?"
 
 #: lazarusidestrconsts.lisaddpackagetoproject2
 msgid "Add package to project"
@@ -17735,10 +17727,6 @@ msgstr "Le répertoire \"%s\" n'est plus requis dans le chemin des unités. %sVo
 #: lazarusidestrconsts.listhedirectoryisnotwritable
 msgid "The directory \"%s\" is not writable."
 msgstr "Le répertoire \"%s\" n'est pas accessible en écriture."
-
-#: lazarusidestrconsts.listhedirectoryisnotyetintheunitpathaddit
-msgid "The directory \"%s\" is not yet in the unit path.%sAdd it?"
-msgstr "Le répertoire \"%s\" n'est pas encore dans le chemin des unités.%sFaut-il l'ajouter ?"
 
 #: lazarusidestrconsts.listhedirectorywasnotfound
 msgid "The directory %s was not found."

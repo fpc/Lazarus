@@ -4321,10 +4321,6 @@ msgstr "パレットページ"
 msgid "Pascal units must have the extension .pp or .pas"
 msgstr "Pascalユニットの拡張子は.ppもしくは.pasでなければなりません。"
 
-#: lazarusidestrconsts.lisa2psavefiledialog
-msgid "Save file dialog"
-msgstr "ファイル保存ダイアログ"
-
 #: lazarusidestrconsts.lisa2pshortenorexpandfilename
 msgid "Shorten or expand filename"
 msgstr "ファイル名を短縮もしくは拡張"
@@ -4605,10 +4601,6 @@ msgstr "パッケージに必要な物を追加しますか？"
 #: lazarusidestrconsts.lisaddpackagestolistofinstalledpackagescombinewithbui
 msgid "add package(s) to list of installed packages (combine with --build-ide to rebuild IDE)."
 msgstr "（IDEを構築するのに --build-ide を組み合わせる）インストールされたパッケージのリストにパッケージを追加"
-
-#: lazarusidestrconsts.lisaddpackagetoproject
-msgid "Add package %s to project?"
-msgstr "プロジェクトにパッケージ%sを追加しますか？"
 
 #: lazarusidestrconsts.lisaddpackagetoproject2
 msgid "Add package to project"
@@ -17860,10 +17852,6 @@ msgstr "ディレクトリ\"%s\"はもうユニットパスに必要ではあり
 #: lazarusidestrconsts.listhedirectoryisnotwritable
 msgid "The directory \"%s\" is not writable."
 msgstr "フォルダ \"%s\" は、書き込み可能ではありません。"
-
-#: lazarusidestrconsts.listhedirectoryisnotyetintheunitpathaddit
-msgid "The directory \"%s\" is not yet in the unit path.%sAdd it?"
-msgstr "ディレクトリ\"%s\"はまだユニットパスにありません。%s追加しますか？"
 
 #: lazarusidestrconsts.listhedirectorywasnotfound
 msgid "The directory %s was not found."

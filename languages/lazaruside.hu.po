@@ -4247,10 +4247,6 @@ msgstr "Paletta lap:"
 msgid "Pascal units must have the extension .pp or .pas"
 msgstr "Pascal unit-oknak .pp vagy .pas kiterjsztéssel kell rendelkezniük"
 
-#: lazarusidestrconsts.lisa2psavefiledialog
-msgid "Save file dialog"
-msgstr "Fájl mentése ablak"
-
 #: lazarusidestrconsts.lisa2pshortenorexpandfilename
 msgid "Shorten or expand filename"
 msgstr "Fájlnév rövidítése vagy hosszabbítása"
@@ -4525,10 +4521,6 @@ msgstr "Csomag követelmény hozzáadása?"
 #: lazarusidestrconsts.lisaddpackagestolistofinstalledpackagescombinewithbui
 msgid "add package(s) to list of installed packages (combine with --build-ide to rebuild IDE)."
 msgstr "Csomag(ok) hozzáadása a telepítettek listájához (az IDE újraépítéséhez a --build-ide kapcsolóval)"
-
-#: lazarusidestrconsts.lisaddpackagetoproject
-msgid "Add package %s to project?"
-msgstr "A(z) %s csomag hozzáadása a projekthez?"
 
 #: lazarusidestrconsts.lisaddpackagetoproject2
 msgid "Add package to project"
@@ -17727,10 +17719,6 @@ msgstr "A(z) \"%s\" könyvtár többé nem szükséges a unit elérési útban.%
 #: lazarusidestrconsts.listhedirectoryisnotwritable
 msgid "The directory \"%s\" is not writable."
 msgstr "A(z) \"%s\" könyvtár nem írható."
-
-#: lazarusidestrconsts.listhedirectoryisnotyetintheunitpathaddit
-msgid "The directory \"%s\" is not yet in the unit path.%sAdd it?"
-msgstr "A(z) \"%s\" könyvtár még nem szerepel a unit elérési útban.%sHozzáadja?"
 
 #: lazarusidestrconsts.listhedirectorywasnotfound
 msgid "The directory %s was not found."

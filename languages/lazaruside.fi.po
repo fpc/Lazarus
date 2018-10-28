@@ -4214,10 +4214,6 @@ msgstr "Palettisivu:"
 msgid "Pascal units must have the extension .pp or .pas"
 msgstr "Pascal-käännösyksikön pääte on joko .pp tai .pas"
 
-#: lazarusidestrconsts.lisa2psavefiledialog
-msgid "Save file dialog"
-msgstr "Tiedoston tallennusikkuna"
-
 #: lazarusidestrconsts.lisa2pshortenorexpandfilename
 msgid "Shorten or expand filename"
 msgstr "Supista tai laajenna tiedostonimeä"
@@ -4492,10 +4488,6 @@ msgstr "Lisää pakettiriippuvuus?"
 #: lazarusidestrconsts.lisaddpackagestolistofinstalledpackagescombinewithbui
 msgid "add package(s) to list of installed packages (combine with --build-ide to rebuild IDE)."
 msgstr "Lisää paketti asennettujen pakettien luetteloon (yhdistä --build-ide:n kanssa kootaksesi IDE:n)."
-
-#: lazarusidestrconsts.lisaddpackagetoproject
-msgid "Add package %s to project?"
-msgstr "Lisää paketti %s projektiin?"
 
 #: lazarusidestrconsts.lisaddpackagetoproject2
 msgid "Add package to project"
@@ -17556,10 +17548,6 @@ msgstr "Kansiota \"%s\" ei enää tarvita käännösyksikön tiedostopolussa.%sP
 #: lazarusidestrconsts.listhedirectoryisnotwritable
 msgid "The directory \"%s\" is not writable."
 msgstr "Hakemistoon \"%s\" ei voi kirjoittaa."
-
-#: lazarusidestrconsts.listhedirectoryisnotyetintheunitpathaddit
-msgid "The directory \"%s\" is not yet in the unit path.%sAdd it?"
-msgstr "Kansio \"%s\" ei vielä ole käännösyksikön polussa.%sLisätäänkö se sinne?"
 
 #: lazarusidestrconsts.listhedirectorywasnotfound
 msgid "The directory %s was not found."

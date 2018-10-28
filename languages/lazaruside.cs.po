@@ -4330,10 +4330,6 @@ msgstr "Stránka sady:"
 msgid "Pascal units must have the extension .pp or .pas"
 msgstr "Pascalovské jednotky musí mít příponu .pp nebo .pas"
 
-#: lazarusidestrconsts.lisa2psavefiledialog
-msgid "Save file dialog"
-msgstr "Dialog uložení souboru"
-
 #: lazarusidestrconsts.lisa2pshortenorexpandfilename
 msgid "Shorten or expand filename"
 msgstr "Zkrátit nebo rozšířit jméno souboru"
@@ -4614,10 +4610,6 @@ msgstr "Přidat požadavky balíčku?"
 #: lazarusidestrconsts.lisaddpackagestolistofinstalledpackagescombinewithbui
 msgid "add package(s) to list of installed packages (combine with --build-ide to rebuild IDE)."
 msgstr "přidat balíček (balíčky) do seznamu instalovaných balíčků (použijte s --build-ide k opětovnému sestavení IDE)"
-
-#: lazarusidestrconsts.lisaddpackagetoproject
-msgid "Add package %s to project?"
-msgstr "Přidat balíček %s do projektu?"
 
 #: lazarusidestrconsts.lisaddpackagetoproject2
 msgid "Add package to project"
@@ -17974,10 +17966,6 @@ msgstr "Adresář \"%s\" nadále není potřeba v cestě jednotek.%sOdstranit je
 #: lazarusidestrconsts.listhedirectoryisnotwritable
 msgid "The directory \"%s\" is not writable."
 msgstr "Adresář \"%s\" není zapisovatelný."
-
-#: lazarusidestrconsts.listhedirectoryisnotyetintheunitpathaddit
-msgid "The directory \"%s\" is not yet in the unit path.%sAdd it?"
-msgstr "Adresář \"%s\" ještě není v cestě jednotek.%sPřidat jej?"
 
 #: lazarusidestrconsts.listhedirectorywasnotfound
 msgid "The directory %s was not found."

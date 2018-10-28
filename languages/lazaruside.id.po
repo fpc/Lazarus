@@ -4422,10 +4422,6 @@ msgstr "Halaman Palet:"
 msgid "Pascal units must have the extension .pp or .pas"
 msgstr "Unit pascal harus mempunyai ekstensi .pp atau .pas"
 
-#: lazarusidestrconsts.lisa2psavefiledialog
-msgid "Save file dialog"
-msgstr "Simpan dialog file"
-
 #: lazarusidestrconsts.lisa2pshortenorexpandfilename
 msgid "Shorten or expand filename"
 msgstr "Nama file pendek atau panjang"
@@ -4738,10 +4734,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisaddpackagestolistofinstalledpackagescombinewithbui
 msgid "add package(s) to list of installed packages (combine with --build-ide to rebuild IDE)."
-msgstr ""
-
-#: lazarusidestrconsts.lisaddpackagetoproject
-msgid "Add package %s to project?"
 msgstr ""
 
 #: lazarusidestrconsts.lisaddpackagetoproject2
@@ -18567,12 +18559,6 @@ msgstr "Direktori %s%s%s tidak dibutuhkan lagi dalam path unit.%sHapus?"
 #: lazarusidestrconsts.listhedirectoryisnotwritable
 msgid "The directory \"%s\" is not writable."
 msgstr ""
-
-#: lazarusidestrconsts.listhedirectoryisnotyetintheunitpathaddit
-#, fuzzy,badformat
-#| msgid "The directory %s%s%s is not yet in the unit path.%sAdd it?"
-msgid "The directory \"%s\" is not yet in the unit path.%sAdd it?"
-msgstr "Direktori %s%s%s belum ada dalam path unit.%sTambahkan?"
 
 #: lazarusidestrconsts.listhedirectorywasnotfound
 msgid "The directory %s was not found."
