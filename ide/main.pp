@@ -12352,7 +12352,7 @@ begin
   BeginCodeTool(ActiveSourceEditor,ActiveUnitInfo,[]);
   OkToAdd:=True;
   if FilenameIsPascalUnit(AnUnitInfo.Filename) then begin
-    OkToAdd:=CheckDirIsInSearchPath(AnUnitInfo,False,False);
+    OkToAdd:=CheckDirIsInSearchPath(AnUnitInfo,False);
     if (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags) then begin
       AnUnitInfo.ReadUnitNameFromSource(false);
       ShortUnitName:=AnUnitInfo.Unit_Name;
@@ -12369,7 +12369,7 @@ begin
     end;
   end
   else if CompareFileExt(AnUnitInfo.Filename,'inc',false)=0 then
-    OkToAdd:=CheckDirIsInSearchPath(AnUnitInfo,False,True);
+    OkToAdd:=CheckDirIsInSearchPath(AnUnitInfo,True);
   if OkToAdd then
     ;
   Project1.Modified:=true;
