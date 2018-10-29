@@ -212,7 +212,6 @@ constructor TPseudoConsoleDlg.Create(TheOwner: TComponent);
 
 begin
   inherited Create(TheOwner);
-  font.Name := 'monospace';
   Caption:= lisDbgTerminal;
   ttyHandle := handleUnopened;
   fRowsPerScreen := -1;
