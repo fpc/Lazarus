@@ -1944,6 +1944,7 @@ resourcestring
   dlgPasKeywordsOutline = 'Outline';
   dlgMarkupWordBracket = 'Keyword brackets on caret (global)';
   dlgMarkupOutline = 'Outline (global)';
+  dlgMarkupOutlineWarnNoColor = 'Warning: There are no colors configured for the selected language';
   dlgPasExtKeywords = 'Highlight control statements as keywords';
   dlgPasStringKeywords = 'Highlight "String" keyword(s)';
   dlgPasStringKeywordsOptDefault = 'Default';
