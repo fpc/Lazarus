@@ -2495,6 +2495,10 @@ msgstr ""
 msgid "Outline (global)"
 msgstr ""
 
+#: lazarusidestrconsts.dlgmarkupoutlinewarnnocolor
+msgid "Warning: There are no colors configured for the selected language"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupuserdefined
 msgid "User defined markup"
 msgstr ""

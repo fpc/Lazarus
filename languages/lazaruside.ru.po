@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-09-27 01:53+0300\n"
+"PO-Revision-Date: 2018-10-30 01:47+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -2486,6 +2486,10 @@ msgstr "Подсветка всех экземпляров слова под к�
 #: lazarusidestrconsts.dlgmarkupoutline
 msgid "Outline (global)"
 msgstr "Отображать контур блока (глобально)"
+
+#: lazarusidestrconsts.dlgmarkupoutlinewarnnocolor
+msgid "Warning: There are no colors configured for the selected language"
+msgstr "Предупреждение: цвета для выбранного языка не настроены"
 
 #: lazarusidestrconsts.dlgmarkupuserdefined
 msgctxt "lazarusidestrconsts.dlgmarkupuserdefined"

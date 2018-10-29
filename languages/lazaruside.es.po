@@ -2561,6 +2561,10 @@ msgstr "Resaltado de la palabra bajo el Cursor de Texto"
 msgid "Outline (global)"
 msgstr "Contorno (global)"
 
+#: lazarusidestrconsts.dlgmarkupoutlinewarnnocolor
+msgid "Warning: There are no colors configured for the selected language"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupuserdefined
 msgctxt "lazarusidestrconsts.dlgmarkupuserdefined"
 msgid "User defined markup"

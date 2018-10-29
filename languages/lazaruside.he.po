@@ -2638,6 +2638,10 @@ msgstr "הדגשת מילים תחת הסמן"
 msgid "Outline (global)"
 msgstr ""
 
+#: lazarusidestrconsts.dlgmarkupoutlinewarnnocolor
+msgid "Warning: There are no colors configured for the selected language"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupuserdefined
 msgctxt "lazarusidestrconsts.dlgmarkupuserdefined"
 msgid "User defined markup"

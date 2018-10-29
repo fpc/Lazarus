@@ -2534,6 +2534,10 @@ msgstr "キャレットの下の単語を強調"
 msgid "Outline (global)"
 msgstr "輪郭 (グローバル)"
 
+#: lazarusidestrconsts.dlgmarkupoutlinewarnnocolor
+msgid "Warning: There are no colors configured for the selected language"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupuserdefined
 msgctxt "lazarusidestrconsts.dlgmarkupuserdefined"
 msgid "User defined markup"

@@ -2486,6 +2486,10 @@ msgstr "Realçar todas as ocorrências da palavra sob o cursor texto"
 msgid "Outline (global)"
 msgstr "Contorno"
 
+#: lazarusidestrconsts.dlgmarkupoutlinewarnnocolor
+msgid "Warning: There are no colors configured for the selected language"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupuserdefined
 msgctxt "lazarusidestrconsts.dlgmarkupuserdefined"
 msgid "User defined markup"

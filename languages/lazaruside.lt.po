@@ -2535,6 +2535,10 @@ msgstr "Paryškinti žodį, esantį ties žymekliu"
 msgid "Outline (global)"
 msgstr "Kontūras (globaliai)"
 
+#: lazarusidestrconsts.dlgmarkupoutlinewarnnocolor
+msgid "Warning: There are no colors configured for the selected language"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupuserdefined
 msgctxt "lazarusidestrconsts.dlgmarkupuserdefined"
 msgid "User defined markup"

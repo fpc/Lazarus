@@ -2486,6 +2486,10 @@ msgstr "A beszúrási jel alatti szó összes előfordulásának kiemelése"
 msgid "Outline (global)"
 msgstr "Körvonal (globális)"
 
+#: lazarusidestrconsts.dlgmarkupoutlinewarnnocolor
+msgid "Warning: There are no colors configured for the selected language"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupuserdefined
 msgctxt "lazarusidestrconsts.dlgmarkupuserdefined"
 msgid "User defined markup"

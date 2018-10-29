@@ -2489,6 +2489,10 @@ msgstr "Підсвітка всіх входжень слова під курс�
 msgid "Outline (global)"
 msgstr "Контур (глобально)"
 
+#: lazarusidestrconsts.dlgmarkupoutlinewarnnocolor
+msgid "Warning: There are no colors configured for the selected language"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupuserdefined
 msgctxt "lazarusidestrconsts.dlgmarkupuserdefined"
 msgid "User defined markup"
