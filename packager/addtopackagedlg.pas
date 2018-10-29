@@ -251,7 +251,7 @@ begin
   with UnitDirectoryBrowseButton do begin
     Caption:='...';
     ShowHint:=true;
-    Hint:=lisChooseDirectory; // Remove lisA2PSaveFileDialog later.
+    Hint:=lisChooseDirectory;
   end;
   with UnitDirectoryShortenButton do begin
     Caption:='<>';

@@ -2615,6 +2615,10 @@ msgstr "Podświetlenie słowa przy kursorze"
 msgid "Outline (global)"
 msgstr ""
 
+#: lazarusidestrconsts.dlgmarkupoutlinewarnnocolor
+msgid "Warning: There are no colors configured for the selected language"
+msgstr ""
+
 #: lazarusidestrconsts.dlgmarkupuserdefined
 msgctxt "lazarusidestrconsts.dlgmarkupuserdefined"
 msgid "User defined markup"
@@ -4470,10 +4474,6 @@ msgstr "Zakładka palet:"
 msgid "Pascal units must have the extension .pp or .pas"
 msgstr "Moduły pascala muszą mieć rozszerzenie .pp lub .pas"
 
-#: lazarusidestrconsts.lisa2psavefiledialog
-msgid "Save file dialog"
-msgstr ""
-
 #: lazarusidestrconsts.lisa2pshortenorexpandfilename
 msgid "Shorten or expand filename"
 msgstr ""
@@ -4756,10 +4756,6 @@ msgstr ""
 #: lazarusidestrconsts.lisaddpackagestolistofinstalledpackagescombinewithbui
 msgid "add package(s) to list of installed packages (combine with --build-ide to rebuild IDE)."
 msgstr ""
-
-#: lazarusidestrconsts.lisaddpackagetoproject
-msgid "Add package %s to project?"
-msgstr "Dodać pakiet %s do projektu?"
 
 #: lazarusidestrconsts.lisaddpackagetoproject2
 msgid "Add package to project"
@@ -18145,10 +18141,6 @@ msgstr ""
 
 #: lazarusidestrconsts.listhedirectoryisnotwritable
 msgid "The directory \"%s\" is not writable."
-msgstr ""
-
-#: lazarusidestrconsts.listhedirectoryisnotyetintheunitpathaddit
-msgid "The directory \"%s\" is not yet in the unit path.%sAdd it?"
 msgstr ""
 
 #: lazarusidestrconsts.listhedirectorywasnotfound
