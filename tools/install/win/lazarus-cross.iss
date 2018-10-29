@@ -56,6 +56,7 @@ ShowTasksTreeLines=true
 PrivilegesRequired=none
 ; since appid can change, UsePreviousLanguage must be off
 UsePreviousLanguage=no
+DisableDirPage=no
 
 [Files]
 Source: {#BuildDir}\image\*.*; DestDir: {app}; Flags: recursesubdirs

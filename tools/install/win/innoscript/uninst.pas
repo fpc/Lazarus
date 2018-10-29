@@ -103,6 +103,7 @@ begin
   if UninstallState = uiDone then exit;
 
   UnInstaller := RemoveQuotes(GetUninstallData('UninstallString'));
+  Log(' UnInstaller:  '+UnInstaller);  
   if (UnInstaller <> '') and FileExists(UnInstaller) then
   begin
     OldPath := RemoveQuotes((GetUninstallData('Inno Setup: App Path')));
@@ -110,6 +111,7 @@ begin
 
     PathEqual := (OldPath <> '') and
                  (CompareText(RemoveBackslashUnlessRoot(OldPath), RemoveBackslashUnlessRoot(WizardDirValue)) = 0);
+    Log(' OldPath: '+OldPath+'  OldName: '+ OldName);
 	if PathEqual then
       UninstallState := uiDestNeeded
 	else
@@ -128,6 +130,11 @@ begin
   begin
 	if (IsSecondaryCheckBoxChecked) or IsSecondaryUpdate then
     begin
+	  if ForcePrimaryAppId then begin
+	    Log('UpdateUninstallInfo recursion detected');
+	    UninstallState := uiInconsistent;
+	    exit;
+	  end;
       ForcePrimaryAppId := True;
       Log('REDO UninstallState '+GetUninstallData('Inno Setup: App Path')+' // '+WizardDirValue);
       if CompareText(RemoveBackslashUnlessRoot(RemoveQuotes(GetUninstallData('Inno Setup: App Path'))),
