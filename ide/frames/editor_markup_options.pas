@@ -57,6 +57,7 @@ type
     divKeywords: TDividerBevel;
     divMatchingBrackets: TDividerBevel;
     divWordGroup: TDividerBevel;
+    lbMarkupWarnNoColor: TLabel;
     LanguageComboBox: TComboBox;
     LanguageLabel: TLabel;
     lblPasStringKeywords: TLabel;
@@ -103,7 +104,9 @@ type
     function GetHighlighter(SynType: TLazSyntaxHighlighter;
       CreateIfNotExists: Boolean): TSrcIDEHighlighter;
     procedure UpdateMarkupCheckBoxes;
-
+    procedure UpdateOutlineColorWarning;
+  protected
+    procedure VisibleChanged; override;
   public
     function GetTitle: String; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
@@ -286,6 +289,7 @@ var
 begin
   if ComboBox.Items.IndexOf(ComboBox.Text) >= 0 then
     LanguageComboBoxExit(Sender);
+  UpdateMarkupCheckBoxes;
 end;
 
 procedure TEditorMarkupOptionsFrame.LanguageComboBoxExit(Sender: TObject);
@@ -317,6 +321,7 @@ begin
     end;
   end;
   UpdateMarkupCheckBoxes;
+  UpdateOutlineColorWarning;
 end;
 
 procedure TEditorMarkupOptionsFrame.LanguageComboBoxKeyDown(Sender: TObject;
@@ -387,6 +392,55 @@ begin
   FModeLock := False;
 end;
 
+procedure TEditorMarkupOptionsFrame.UpdateOutlineColorWarning;
+var
+  aha: TAdditionalHilightAttribute;
+  LangScheme: TColorSchemeLanguage;
+  Attri: TColorSchemeAttribute;
+  r: Boolean;
+  col: TEditorColorOptionsFrame;
+  SynColorSchemeName: String;
+  Scheme: TColorScheme;
+begin
+  col := TEditorColorOptionsFrame(FDialog.FindEditor(TEditorColorOptionsFrame));
+
+  r := false;
+  if (FCurHighlighter <> nil) and cbMarkupOutline.Checked then begin
+    if (col = nil) or (col.UnsavedColorSchemeDefaultNames = nil) then
+      SynColorSchemeName := EditorOpts.ReadColorScheme(FCurHighlighter.LanguageName)
+    else
+      SynColorSchemeName := col.UnsavedColorSchemeDefaultNames.Values[FCurHighlighter.LanguageName];
+    Scheme := nil;
+    if (SynColorSchemeName <> '') then
+      Scheme := col.UnsavedColorSchemeSettings.ColorSchemeGroup[SynColorSchemeName];
+    LangScheme := nil;
+    if Scheme <> nil then
+      LangScheme := Scheme.ColorSchemeBySynClass[FCurHighlighter.ClassType];
+
+
+    if (LangScheme <> nil) then
+      for aha := ahaOutlineLevel1Color to ahaOutlineLevel10Color do begin
+        Attri := LangScheme.AttributeByEnum[aha];
+        if Attri = nil then Continue;
+        if Attri.IsUsingSchemeGlobals then begin
+          Attri := Attri.GetSchemeGlobal;
+          if Attri = nil then Continue;
+        end;
+
+        r := r or Attri.IsEnabled;
+        if r then break;
+      end;
+  end;
+  lbMarkupWarnNoColor.Visible := cbMarkupOutline.Checked and not r;
+end;
+
+procedure TEditorMarkupOptionsFrame.VisibleChanged;
+begin
+  if HandleAllocated then
+    UpdateOutlineColorWarning;
+  inherited VisibleChanged;
+end;
+
 function TEditorMarkupOptionsFrame.GetTitle: String;
 begin
   Result := lisAutoMarkup;
@@ -429,6 +483,7 @@ begin
   cbOutline.Caption := dlgPasKeywordsOutline;
   cbMarkupWordBracket.Caption := dlgMarkupWordBracket;
   cbMarkupOutline.Caption := dlgMarkupOutline;
+  lbMarkupWarnNoColor.Caption := dlgMarkupOutlineWarnNoColor;
 
   with LanguageComboBox.Items do begin
     BeginUpdate;

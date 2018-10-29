@@ -1,17 +1,17 @@
 object EditorMarkupOptionsFrame: TEditorMarkupOptionsFrame
   Left = 0
-  Height = 492
+  Height = 506
   Top = 0
   Width = 634
   HorzScrollBar.Page = 1
   VertScrollBar.Page = 1
   AutoScroll = True
-  ClientHeight = 492
+  ClientHeight = 506
   ClientWidth = 634
   TabOrder = 0
   Visible = False
-  DesignLeft = 263
-  DesignTop = 222
+  DesignLeft = 408
+  DesignTop = 211
   object MarkupWordDelayLabel: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = MarkupWordTimeTrackBar
@@ -414,5 +414,21 @@ object EditorMarkupOptionsFrame: TEditorMarkupOptionsFrame
     Caption = 'cbMarkupOutline'
     OnChange = cbMarkupOutlineChange
     TabOrder = 13
+  end
+  object lbMarkupWarnNoColor: TLabel
+    AnchorSideLeft.Control = cbMarkupOutline
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = cbMarkupOutline
+    AnchorSideTop.Side = asrCenter
+    Left = 139
+    Height = 15
+    Top = 328
+    Width = 124
+    BorderSpacing.Left = 20
+    Caption = 'lbMarkupWarnNoColor'
+    Font.Color = clRed
+    ParentColor = False
+    ParentFont = False
+    Visible = False
   end
 end

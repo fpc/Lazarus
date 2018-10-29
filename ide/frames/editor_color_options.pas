@@ -188,6 +188,8 @@ type
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
     procedure SelectAhaColor(aha: TAdditionalHilightAttribute);
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
+    property UnsavedColorSchemeSettings: TColorSchemeFactory read FTempColorSchemeSettings;
+    property UnsavedColorSchemeDefaultNames: TStringList read FColorSchemes;
   end;
 
 implementation
