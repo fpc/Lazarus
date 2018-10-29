@@ -1528,7 +1528,8 @@ type
 
     function ExtensionToLazSyntaxHighlighter(Ext: String): TLazSyntaxHighlighter; override;
     function CreateSyn(LazSynHilighter: TLazSyntaxHighlighter): TSrcIDEHighlighter;
-    function ReadColorScheme(const LanguageName: String): String;
+    function ReadColorScheme(const LanguageName: String): String; // TODO: rename ReadColorSchemeName
+    function GetColorSchemeLanguage(aHighLighter: TSynCustomHighlighter; SynColorSchemeName: String = ''): TColorSchemeLanguage;
     function ReadPascalColorScheme: String;
     procedure WriteColorScheme(const LanguageName, SynColorScheme: String);
     procedure ReadHighlighterSettings(Syn: TSrcIDEHighlighter;
@@ -5385,6 +5386,25 @@ begin
   end;
 end;
 
+function TEditorOptions.GetColorSchemeLanguage(aHighLighter: TSynCustomHighlighter;
+  SynColorSchemeName: String): TColorSchemeLanguage;
+var
+  Scheme: TColorScheme;
+  LangScheme: TColorSchemeLanguage;
+begin
+  Result := nil;
+  // initialize with defaults
+  if SynColorSchemeName = '' then
+    SynColorSchemeName := ReadColorScheme(aHighLighter.LanguageName);
+  if (SynColorSchemeName = '') then
+    exit;
+
+  Scheme := UserColorSchemeGroup.ColorSchemeGroup[SynColorSchemeName];
+  if Scheme = nil then
+    exit;
+  Result := Scheme.ColorSchemeBySynClass[aHighLighter.ClassType];
+end;
+
 procedure TEditorOptions.WriteColorScheme(const LanguageName, SynColorScheme: String);
 begin
   if (LanguageName = '') or (SynColorScheme = '') then
@@ -5399,20 +5419,9 @@ procedure TEditorOptions.ReadHighlighterSettings(Syn: TSrcIDEHighlighter;
   SynColorScheme: String);
 // if SynColorScheme='' then default ColorScheme will be used
 var
-  Scheme: TColorScheme;
   LangScheme: TColorSchemeLanguage;
 begin
-  // initialize with defaults
-  if SynColorScheme = '' then
-    SynColorScheme := ReadColorScheme(Syn.LanguageName);
-  //DebugLn(['TEditorOptions.ReadHighlighterSettings ',SynColorScheme,' Syn.ClassName=',Syn.ClassName]);
-  if (SynColorScheme = '') or (Syn.LanguageName = '') then
-    exit;
-
-  Scheme := UserColorSchemeGroup.ColorSchemeGroup[SynColorScheme];
-  if Scheme = nil then
-    exit;
-  LangScheme := Scheme.ColorSchemeBySynClass[Syn.ClassType];
+  LangScheme := GetColorSchemeLanguage(Syn, SynColorScheme);
   if LangScheme = nil then
     exit;
 
@@ -5638,14 +5647,9 @@ begin
   end;
 
   // get current colorscheme:
-  SynColorScheme := ReadColorScheme(aSynEd.Highlighter.LanguageName);
-  SchemeGrp := UserColorSchemeGroup.ColorSchemeGroup[SynColorScheme];
-  if SchemeGrp = nil then
-    exit;
-  Scheme := SchemeGrp.ColorSchemeBySynClass[aSynEd.Highlighter.ClassType];
+  Scheme := GetColorSchemeLanguage(aSynEd.Highlighter);
 
   if Assigned(Scheme) then Scheme.ApplyTo(aSynEd);
-
 end;
 
 procedure TEditorOptions.SetMarkupColor(Syn : TSrcIDEHighlighter;
@@ -5657,11 +5661,7 @@ var
   Attrib: TColorSchemeAttribute;
 begin
   if assigned(Syn) then begin
-    SynColorScheme := ReadColorScheme(Syn.LanguageName);
-    SchemeGrp := UserColorSchemeGroup.ColorSchemeGroup[SynColorScheme];
-    if SchemeGrp = nil then
-      exit;
-    Scheme := SchemeGrp.ColorSchemeBySynClass[Syn.ClassType];
+    Scheme := GetColorSchemeLanguage(Syn);
   end else begin
     SchemeGrp := UserColorSchemeGroup.ColorSchemeGroup[DefaultColorSchemeName];
     if SchemeGrp = nil then
