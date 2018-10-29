@@ -220,6 +220,7 @@ begin
   begin
     Updates.StopUpdate;
     Updates.Terminate;
+    Updates.WaitFor;
     Updates := nil;
   end;
 end;

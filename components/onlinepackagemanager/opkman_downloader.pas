@@ -343,7 +343,8 @@ begin
     end;
     if Assigned(FTimer) and FTimer.Enabled then
       FTimer.StopTimer;
-    Synchronize(@DoOnJSONDownloadCompleted);
+    if not FNeedToBreak then
+      Synchronize(@DoOnJSONDownloadCompleted);
   end
   else if FDownloadType = dtPackage then //download from repository
   begin
@@ -505,6 +506,7 @@ begin
     if FTimer.Enabled then
       FTimer.StopTimer;
     FTimer.Terminate;
+    FTimer.WaitFor;
   end;
   FHTTPClient.Free;
   FMS.Free;
@@ -517,7 +519,7 @@ begin
   FRemoteJSONFile := Options.RemoteRepository[Options.ActiveRepositoryIndex] + cRemoteJSONFile;
   FDownloadType := dtJSON;
   FSilent := ASilent;
-  if (Assigned(LazarusIDE) and LazarusIDE.IDEStarted and (not LazarusIDE.IDEIsClosing)) then
+  if Assigned(LazarusIDE) and LazarusIDE.IDEStarted and not LazarusIDE.IDEIsClosing then
   begin
     FTimer := TThreadTimer.Create;
     FTimer.Interval := ATimeOut;
@@ -543,7 +545,7 @@ begin
       FTotSize := FTotSize + SerializablePackages.Items[I].RepositoryFileSize;
     end;
   end;
-  if (Assigned(LazarusIDE) and LazarusIDE.IDEStarted and (not LazarusIDE.IDEIsClosing)) then
+  if Assigned(LazarusIDE) and LazarusIDE.IDEStarted and not LazarusIDE.IDEIsClosing then
   begin
     FTimer := TThreadTimer.Create;
     FTimer.OnTimer := @DoOnTimer;

@@ -59,7 +59,7 @@ constructor TThreadTimer.Create;
 begin
   inherited Create(True);
   FreeOnTerminate := True;
-  FInterval := 1000;
+  FInterval := 10000;
   FEnabled := False;
 end;
 
@@ -79,8 +79,8 @@ procedure TThreadTimer.Execute;
 begin
   while not Terminated do
   begin
-    Sleep(100);
-    if (GetTickCount64 - FTime > FInterval) and (FEnabled) then
+    Sleep(1000);
+    if (GetTickCount64 - FTime > FInterval) and FEnabled and not Terminated then
     begin
       FTime := GetTickCount64;
       DoOnTimer;
