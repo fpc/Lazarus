@@ -67,8 +67,8 @@ procedure GetFormatSettingsUTF8;
 procedure GetLocaleFormatSettingsUTF8(LCID: Integer; var aFormatSettings: TFormatSettings);
 {$endif}
 
-Function GetEnvironmentVariableCountUTF8: Integer;
-function GetEnvironmentStringUTF8(Index: Integer): string;
+Function GetEnvironmentVariableCountUTF8: Integer; inline;
+function GetEnvironmentStringUTF8(Index: Integer): string; inline;
 function GetEnvironmentVariableUTF8(const EnvVar: string): String;
 function SysErrorMessageUTF8(ErrorCode: Integer): String;
 
@@ -89,7 +89,7 @@ function UTF8CodepointToUnicode(p: PChar; out CodepointLen: integer): Cardinal;
 function UTF8CharacterToUnicode(p: PChar; out CharLen: integer): Cardinal; deprecated 'Use UTF8CodepointToUnicode instead.';
 function UnicodeToUTF8(CodePoint: cardinal): string; // UTF32 to UTF8
 function UnicodeToUTF8(CodePoint: cardinal; Buf: PChar): integer; // UTF32 to UTF8
-function UnicodeToUTF8SkipErrors(CodePoint: cardinal; Buf: PChar): integer; // UTF32 to UTF8
+function UnicodeToUTF8SkipErrors(CodePoint: cardinal; Buf: PChar): integer; inline; // UTF32 to UTF8
 function UnicodeToUTF8Inline(CodePoint: cardinal; Buf: PChar): integer; inline; // UTF32 to UTF8
 function UTF8ToDoubleByteString(const s: string): string;
 function UTF8ToDoubleByte(UTF8Str: PChar; Len: PtrInt; DBStr: PByte): PtrInt;
@@ -125,9 +125,9 @@ function UTF8StringReplace(const S, OldPattern, NewPattern: String;
   Flags: TReplaceFlags; ALanguage: string=''): String;
 
 function UTF8LowerCase(const AInStr: string; ALanguage: string=''): string;
-function UTF8LowerString(const s: string): string;
+function UTF8LowerString(const s: string): string; inline;
 function UTF8UpperCase(const AInStr: string; ALanguage: string=''): string;
-function UTF8UpperString(const s: string): string;
+function UTF8UpperString(const s: string): string; inline;
 function UTF8SwapCase(const AInStr: string; ALanguage: string=''): string;
 // Capitalize the first letters of every word
 function UTF8ProperCase(const AInStr: string; const WordDelims: TSysCharSet): string;
@@ -136,10 +136,10 @@ function FindInvalidUTF8Character(p: PChar; Count: PtrInt; StopOnNonUTF8: Boolea
 function UTF8StringOfChar(AUtf8Char: String; N: Integer): String;
 function UTF8AddChar(AUtf8Char: String; const S: String; N: Integer): String;
 function UTF8AddCharR(AUtf8Char: String; const S: String; N: Integer): String;
-function UTF8PadLeft(const S: String; const N: Integer; const AUtf8Char: String = #32): String;
-function UTF8PadRight(const S: String; const N: Integer; const AUtf8Char: String = #32): String;
+function UTF8PadLeft(const S: String; const N: Integer; const AUtf8Char: String = #32): String; inline;
+function UTF8PadRight(const S: String; const N: Integer; const AUtf8Char: String = #32): String; inline;
 function UTF8PadCenter(const S: String; const N: Integer; const AUtf8Char: String = #32): String;
-function UTF8LeftStr(const AText: String; const ACount: Integer): String;
+function UTF8LeftStr(const AText: String; const ACount: Integer): String; inline;
 function UTF8RightStr(const AText: String; const ACount: Integer): String;
 function UTF8QuotedStr(const S, Quote: string): string;
 //Utf8 version of MidStr is just Utf8Copy with same parameters, so it is not implemented here
@@ -194,9 +194,9 @@ function ConvertUTF16ToUTF8(Dest: PChar; DestCharCount: SizeUInt;
   Src: PWideChar; SrcWideCharCount: SizeUInt; Options: TConvertOptions;
   out ActualCharCount: SizeUInt): TConvertResult;
 
-function UTF8ToUTF16(const S: AnsiString): UnicodeString; overload;
+function UTF8ToUTF16(const S: AnsiString): UnicodeString; overload; inline;
 function UTF8ToUTF16(const P: PChar; ByteCnt: SizeUInt): UnicodeString; overload;
-function UTF16ToUTF8(const S: UnicodeString): AnsiString; overload;
+function UTF16ToUTF8(const S: UnicodeString): AnsiString; overload; inline;
 function UTF16ToUTF8(const P: PWideChar; WideCnt: SizeUInt): AnsiString; overload;
 
 // locale
@@ -355,7 +355,7 @@ begin
   {$ENDIF}
 end;
 
-function GetEnvironmentVariableCountUTF8: Integer;
+function GetEnvironmentVariableCountUTF8: Integer; inline;
 begin
   {$IF defined(FPC_RTL_UNICODE) or not defined(MSWindows)} //also WinCE, issue #0031788
   Result:=SysUtils.GetEnvironmentVariableCount;
@@ -364,7 +364,7 @@ begin
   {$ENDIF}
 end;
 
-function GetEnvironmentStringUTF8(Index: Integer): string;
+function GetEnvironmentStringUTF8(Index: Integer): string; inline;
 begin
   {$IFDEF FPC_RTL_UNICODE}
   Result:=UTF16ToUTF8(SysUtils.GetEnvironmentString(Index));
@@ -636,7 +636,7 @@ begin
     RaiseInvalidUnicode;
 end;
 
-function UnicodeToUTF8SkipErrors(CodePoint: cardinal; Buf: PChar): integer;
+function UnicodeToUTF8SkipErrors(CodePoint: cardinal; Buf: PChar): integer; inline;
 begin
   Result:=UnicodeToUTF8Inline(CodePoint,Buf);
 end;
@@ -2399,7 +2399,7 @@ begin
   SetLength(Result,OutStr - PChar(Result));
 end;
 
-function UTF8LowerString(const s: string): string;
+function UTF8LowerString(const s: string): string; inline;
 begin
   Result:=UTF8LowerCase(s);
 end;
@@ -2787,7 +2787,7 @@ begin
   SetLength(Result,OutCounter);
 end;
 
-function UTF8UpperString(const s: string): string;
+function UTF8UpperString(const s: string): string; inline;
 begin
   Result:=UTF8UpperCase(s);
 end;
@@ -2997,12 +2997,12 @@ begin
     Result := Result + Utf8StringOfChar(AUtf8Char, N-l);
 end;
 
-function UTF8PadLeft(const S: String; const N: Integer; const AUtf8Char: String = #32): String;
+function UTF8PadLeft(const S: String; const N: Integer; const AUtf8Char: String = #32): String; inline;
 begin
   Result := Utf8AddChar(AUtf8Char, S, N);
 end;
 
-function UTF8PadRight(const S: String; const N: Integer; const AUtf8Char: String = #32): String;
+function UTF8PadRight(const S: String; const N: Integer; const AUtf8Char: String = #32): String; inline;
 begin
   Result := Utf8AddCharR(AUtf8Char, S, N);
 end;
@@ -3021,7 +3021,7 @@ begin
     Result := S;
 end;
 
-function UTF8LeftStr(const AText: String; const ACount: Integer): String;
+function UTF8LeftStr(const AText: String; const ACount: Integer): String; inline;
 begin
   Result := Utf8Copy(AText,1,ACount);
 end;
@@ -3772,7 +3772,7 @@ end;
   Avoid copying the result string since on windows a widestring requires a full
   copy
  ------------------------------------------------------------------------------}
-function UTF8ToUTF16(const S: AnsiString): UnicodeString;
+function UTF8ToUTF16(const S: AnsiString): UnicodeString; inline;
 begin
   Result:=UTF8ToUTF16(PChar(S),length(S));
 end;
@@ -3798,7 +3798,7 @@ end;
 
   Converts the specified UTF-16 encoded string (system endian) to UTF-8 encoded
  ------------------------------------------------------------------------------}
-function UTF16ToUTF8(const S: UnicodeString): AnsiString;
+function UTF16ToUTF8(const S: UnicodeString): AnsiString; inline;
 begin
   Result := UTF16ToUTF8(PWideChar(S),length(S));
 end;
