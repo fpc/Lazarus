@@ -4274,10 +4274,27 @@ end;
 
 procedure TCompilationToolOptions.LoadFromXMLConfig(XMLConfig: TXMLConfig;
   const Path: string; DoSwitchPathDelims: boolean);
+var
+  ParamList: TStringList;
+  Cmd, Param: String;
+  i: Integer;
 begin
   //debugln(['TCompilationToolOptions.LoadFromXMLConfig ',Command,' Path=',Path,' DoSwitchPathDelims=',DoSwitchPathDelims]);
-  Command:=SwitchPathDelims(XMLConfig.GetValue(Path+'Command/Value',''),
-                            DoSwitchPathDelims);
+  Cmd:=XMLConfig.GetValue(Path+'Command/Value','');
+  ParamList:=TStringList.Create;
+  try
+    SplitCmdLineParams(Cmd, ParamList);
+    for i:=0 to ParamList.Count-1 do
+    begin                   // Try to switch path delimiters only for filenames.
+      Param:=ParamList[i];  // Example: "cmd /C \\server\path\executable.exe"
+      if (Length(Param)<>2) or (Param[1]<>'/') then
+        ParamList[i]:=SwitchPathDelims(Param,DoSwitchPathDelims);
+    end;
+    ParamList.Delimiter:=' ';
+    Command:=ParamList.DelimitedText;
+  finally
+    ParamList.Free;
+  end;
   LoadStringList(XMLConfig,Parsers,Path+'Parsers/');
   if Parsers.Count=0 then begin
     // read old format
