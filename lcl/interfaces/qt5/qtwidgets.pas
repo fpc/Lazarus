@@ -3740,7 +3740,7 @@ begin
     if AIsKeyEvent then
       Result := Result or KF_ALTDOWN
     else
-      Result := Result or $20000000;
+      Result := Result or MK_ALT;
   end;
     // $20000000;
   { TODO: add support for ALT, META and NUMKEYPAD }
@@ -3888,7 +3888,7 @@ begin
     Msg.State := [ssShift];
   if (ModifierState and MK_CONTROL) <> 0 then
     Msg.State := [ssCtrl] + Msg.State;
-  if (ModifierState and $20000000) <> 0 then
+  if (ModifierState and MK_ALT) <> 0 then
     Msg.State := [ssAlt] + Msg.State;
 
   LastMouse.WinControl := LCLObject;

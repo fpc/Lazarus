@@ -2836,6 +2836,7 @@ const
   MK_DOUBLECLICK = $80;
   MK_TRIPLECLICK = $100;
   MK_QUADCLICK = $200;
+  MK_ALT = $20000000;
 
 //==============================================
 // Constants from commctrl

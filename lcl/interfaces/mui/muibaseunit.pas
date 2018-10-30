@@ -1574,9 +1574,9 @@ function KeyboardShiftState(State: Word): PtrInt;
 begin
   Result := 0;
   if State and IEQUALIFIER_LALT <> 0 then
-    Result := Result or $20000000;
+    Result := Result or MK_ALT;
   //if State and IEQUALIFIER_RALT <> 0 then
-  //  Result := Result or $20000000;
+  //  Result := Result or MK_ALT;
   //writeln('ShiftState AROS: ', HexStr(Pointer(State)), ' and ', HexStr(Pointer(IEQUALIFIER_LALT)),' -> ', HexStr(Pointer(Result)));
 end;
 

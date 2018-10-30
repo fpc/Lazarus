@@ -815,7 +815,7 @@ begin
   VK_SCROLL    : Result := MK_SCRLOCK;
   VK_SHIFT     : Result := MK_SHIFTKEY;
   VK_CONTROL   : Result := MK_COMMAND;
-  VK_MENU      : Result := MK_ALT;
+  VK_MENU      : Result := CocoaUtils.MK_ALT; // LCLType.MK_ALT exists
   VK_OEM_3     : Result := MK_TILDE;
   VK_OEM_MINUS : Result := MK_MINUS;
   VK_OEM_PLUS  : Result := MK_EQUAL;

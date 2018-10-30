@@ -329,7 +329,7 @@ begin
   VK_SCROLL    : Result := MK_SCRLOCK;
   VK_SHIFT     : Result := MK_SHIFTKEY;
   VK_CONTROL   : Result := MK_COMMAND;
-  VK_MENU      : Result := MK_ALT;
+  VK_MENU      : Result := CarbonProc.MK_ALT; // see LCLType.MK_ALT
   VK_OEM_3     : Result := MK_TILDE;
 //VK_OEM_MINUS : Result := MK_MINUS;
   VK_OEM_PLUS  : Result := MK_EQUAL;
@@ -482,7 +482,7 @@ begin
   if (ButtonState and 4)         > 0 then Inc(Result, MK_MButton);
   if (shiftKey    and Modifiers) > 0 then Inc(Result, MK_Shift);
   if (controlKey  and Modifiers) > 0 then Inc(Result, MK_Control);
-  if (optionKey   and Modifiers) > 0 then Inc(Result, $20000000);
+  if (optionKey   and Modifiers) > 0 then Inc(Result, LCLType.MK_ALT); // see CarbonProc.MK_ALT
 
   //DebugLn('GetCarbonMsgKeyState Result=',dbgs(KeysToShiftState(Result)),' Modifiers=',hexstr(Modifiers,8),' ButtonState=',hexstr(ButtonState,8));
 end;

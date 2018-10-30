@@ -253,7 +253,7 @@ begin
   if AModifiers and NSControlKeyMask <> 0 then
     Result := Result or MK_CONTROL;
   if AModifiers and NSAlternateKeyMask <> 0 then
-    Result := Result or $20000000;
+    Result := Result or LCLType.MK_ALT; // see CocoaUtils.MK_ALT
 end;
 
 class function TLCLCommonCallback.CocoaPressedMouseButtonsToKeyState(AMouseButtons: NSUInteger): PtrInt;
@@ -474,7 +474,8 @@ var
     IsSysKey := (Event.modifierFlags and NSCommandKeyMask) <> 0;
     KeyData := (Ord(Event.isARepeat) + 1) or Event.keyCode shl 16;
     if (Event.modifierFlags and NSAlternateKeyMask) <> 0 then
-      KeyData := KeyData or $20000000;   // So that MsgKeyDataToShiftState recognizes Alt key, see bug 30129
+      KeyData := KeyData or LCLType.MK_ALT;   // So that MsgKeyDataToShiftState recognizes Alt key, see bug 30129
+                                              // see CocoaUtils.MK_ALT
     KeyCode := Event.keyCode;
 
     //non-printable keys (see mackeycodes.inc)
@@ -844,7 +845,8 @@ begin
   IsSysKey := (Event.modifierFlags and NSCommandKeyMask) <> 0;
   KeyData := (Ord(Event.isARepeat) + 1) or Event.keyCode shl 16;
   if (Event.modifierFlags and NSAlternateKeyMask) <> 0 then
-    KeyData := KeyData or $20000000;   // So that MsgKeyDataToShiftState recognizes Alt key, see bug 30129
+    KeyData := KeyData or LCLType.MK_ALT;   // So that MsgKeyDataToShiftState recognizes Alt key, see bug 30129
+                                            // see CocoaUtils.MK_ALT
   KeyCode := Event.keyCode;
 
   VKKeyCode := MacCodeToVK(KeyCode);
