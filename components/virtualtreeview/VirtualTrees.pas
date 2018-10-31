@@ -235,6 +235,8 @@ const
   {$endif}
 
   DEFAULT_CHECK_WIDTH = 16;
+  DEFAULT_NODE_HEIGHT = 18;
+
 var // Clipboard format IDs used in OLE drag'n drop and clipboard transfers.
   CF_VIRTUALTREE,
   CF_VTREFERENCE,
@@ -2399,6 +2401,7 @@ type
     procedure InitializeFirstColumnValues(var PaintInfo: TVTPaintInfo);
     procedure InitRootNode(OldSize: Cardinal = 0);
     procedure InterruptValidation;
+    function IsDefaultNodeHeightStored: Boolean;
     function IsFirstVisibleChild(Parent, Node: PVirtualNode): Boolean;
     function IsLastVisibleChild(Parent, Node: PVirtualNode): Boolean;
     //lcl
@@ -2815,7 +2818,7 @@ type
     property Colors: TVTColors read FColors write SetColors;
     property CustomCheckImages: TCustomImageList read FCustomCheckImages write SetCustomCheckImages;
     property DefaultHintKind: TVTHintKind read GetDefaultHintKind;
-    property DefaultNodeHeight: Cardinal read FDefaultNodeHeight write SetDefaultNodeHeight default 18;
+    property DefaultNodeHeight: Cardinal read FDefaultNodeHeight write SetDefaultNodeHeight stored IsDefaultNodeHeightStored;
     property DefaultPasteMode: TVTNodeAttachMode read FDefaultPasteMode write FDefaultPasteMode default amAddChildLast;
     property DragHeight: Integer read FDragHeight write FDragHeight default 350;
     property DragImageKind: TVTDragImageKind read FDragImageKind write FDragImageKind default diComplete;
@@ -2998,6 +3001,10 @@ type
   protected
     function GetRealCheckImagesWidth: Integer;
     function GetRealCheckImagesHeight: Integer;
+  {$IF LCL_FullVersion >= 1080000}
+    procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
+      const AXProportion, AYProportion: Double); override;
+  {$IFEND}
 
   // LCL multi-resolution imagelist support
   {$IF LCL_FullVersion >= 2000000}
@@ -12049,7 +12056,6 @@ begin
   Height := 100;
   TabStop := True;
   ParentColor := False;
-  FDefaultNodeHeight := 18;
   FDragOperations := [doCopy, doMove];
   FHotCursor := crDefault;
   FScrollBarOptions := TScrollBarOptions.Create(Self);
@@ -12057,6 +12063,12 @@ begin
   FDragImageKind := diComplete;
   FLastSelectionLevel := -1;
   FSelectionBlendFactor := 128;
+
+  {$IF LCL_FullVersion >= 1080000}
+  FDefaultNodeHeight := Scale96ToFont(DEFAULT_NODE_HEIGHT);
+  {$ELSE}
+  FDefaultNodeHeight := DEFAULT_NODE_HEIGHT;
+  {$IFEND}
 
   FIndent := 18;
 
@@ -13734,6 +13746,17 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
+function TBaseVirtualTree.IsDefaultNodeHeightStored: Boolean;
+begin
+  {$IF LCL_FullVersion >= 1080000}
+  Result := FDefaultNodeHeight <> Scale96ToFont(DEFAULT_NODE_HEIGHT);
+  {$ELSE}
+  Result := FDefaultNodeHeight <> DEFAULT_NODE_HEIGHT;
+  {$IFEND}
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
 function TBaseVirtualTree.IsFirstVisibleChild(Parent, Node: PVirtualNode): Boolean;
 
 // Helper method to check if Node is the same as the first visible child of Parent.
@@ -14494,7 +14517,11 @@ procedure TBaseVirtualTree.SetDefaultNodeHeight(Value: Cardinal);
 
 begin
   if Value = 0 then
-    Value := 18;
+    {$IF LCL_FullVersion >= 2000000}
+    Value := Scale96ToFont(DEFAULT_NODE_HEIGHT);
+    {$ELSE}
+    Value := DEFAULT_NODE_HEIGHT;
+    {$IFEND}
   if FDefaultNodeHeight <> Value then
   begin
     Inc(Integer(FRoot.TotalHeight), Integer(Value) - Integer(FDefaultNodeHeight));
@@ -23801,7 +23828,6 @@ procedure TBaseVirtualTree.PaintCheckImage(Canvas: TCanvas; const ImageInfo: TVT
     DrawFrameControl(Canvas.Handle, R, DFC_BUTTON, ButtonType or ButtonState);
   end;
 
-
 var
   R: TRect;
   {$ifdef ThemeSupport}
@@ -26345,6 +26371,26 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
+{$IF LCL_FullVersion >= 1080000}
+procedure TBaseVirtualTree.DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
+  const AXProportion, AYProportion: Double);
+begin
+  inherited;
+  if AMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
+  begin
+    DisableAutoSizing;
+    try
+      if IsDefaultNodeHeightStored then
+        FDefaultNodeHeight := Round(FDefaultNodeHeight * AYProportion);
+    finally
+      EnableAutoSizing;
+    end;
+  end;
+end;
+{$IFEND}
+
+//----------------------------------------------------------------------------------------------------------------------
+
 function TBaseVirtualTree.Dragging: Boolean;
 
 begin
@@ -26699,7 +26745,6 @@ var
   MaxUnclippedHeight: Integer;
   TM: TTextMetric;
   ExtraVerticalMargin: Integer;
-
 begin
   //{$ifdef DEBUG_VTV}Logger.EnterMethod([lcPaintHeader],'GetDisplayRect');{$endif}
   Assert(Assigned(Node), 'Node must not be nil.');
@@ -27665,6 +27710,7 @@ begin
       StateImageOffset := FStateImages.Width + 2
     else
       StateImageOffset := 0;
+
     if Assigned(FCheckImages) then
       CheckOffset := GetRealCheckImagesWidth + 2
     else
@@ -33263,8 +33309,6 @@ begin
   end;
   {$ifdef DEBUG_VTV}Logger.ExitMethod([lcPaintDetails],'PaintStaticText');{$endif}
 end;
-
-//----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
 
