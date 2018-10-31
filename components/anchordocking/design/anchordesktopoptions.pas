@@ -98,7 +98,7 @@ begin
   Path := Path + 'AnchorDocking/';
   try
     {$IFDEF VerboseAnchorDocking}
-    debugln(['TIDEAnchorDockMaster.LoadUserLayout ',Filename]);
+    debugln(['TIDEAnchorDockMaster.LoadUserLayout ',Path]);
     {$ENDIF}
     if aXMLCfg.GetValue(Path+'MainConfig/Nodes/ChildCount',0) > 0 then//config is not empty
     begin
@@ -215,7 +215,7 @@ begin
   Path := Path + 'AnchorDocking/';
   try
     {$IF defined(VerboseAnchorDocking) or defined(VerboseAnchorDockRestore)}
-    debugln(['TIDEAnchorDockMaster.SaveDefaultLayout ',Filename]);
+    debugln(['TIDEAnchorDockMaster.SaveDefaultLayout ',Path]);
     {$ENDIF}
     SaveLayoutToConfig(Path, aXMLCfg);
   except
