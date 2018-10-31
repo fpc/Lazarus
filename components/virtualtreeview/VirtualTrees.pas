@@ -235,6 +235,7 @@ const
   {$endif}
 
   DEFAULT_CHECK_WIDTH = 16;
+  DEFAULT_COLUMN_WIDTH = 50;
   DEFAULT_HEADER_HEIGHT = 19;
   DEFAULT_NODE_HEIGHT = 18;
 
@@ -987,6 +988,7 @@ type
     function IsBiDiModeStored: Boolean;
     function IsCaptionAlignmentStored: Boolean;
     function IsColorStored: Boolean;
+    function IsWidthStored: Boolean;
     procedure SetAlignment(const Value: TAlignment);
     procedure SetBiDiMode(Value: TBiDiMode);
     procedure SetCaptionAlignment(const Value: TAlignment);
@@ -1054,7 +1056,7 @@ type
     property Style: TVirtualTreeColumnStyle read FStyle write SetStyle default vsText;
     property Tag: NativeInt read FTag write FTag default 0;
     property Text: TTranslateString read GetText write SetText;
-    property Width: Integer read FWidth write SetWidth default 50;
+    property Width: Integer read FWidth write SetWidth stored IsWidthStored;
   end;
 
   TVirtualTreeColumnClass = class of TVirtualTreeColumn;
@@ -1079,6 +1081,7 @@ type
 
     function GetItem(Index: TColumnIndex): TVirtualTreeColumn;
     function GetNewIndex(P: TPoint; var OldIndex: TColumnIndex): Boolean;
+    function IsDefaultWidthStored: Boolean;
     procedure SetDefaultWidth(Value: Integer);
     procedure SetItem(Index: TColumnIndex; Value: TVirtualTreeColumn);
   protected
@@ -1143,7 +1146,7 @@ type
     function TotalWidth: Integer;
 
     property ClickIndex: TColumnIndex read FClickIndex;
-    property DefaultWidth: Integer read FDefaultWidth write SetDefaultWidth default 50;
+    property DefaultWidth: Integer read FDefaultWidth write SetDefaultWidth stored IsDefaultWidthStored;
     property Items[Index: TColumnIndex]: TVirtualTreeColumn read GetItem write SetItem; default;
     property Header: TVTHeader read FHeader;
     property TrackIndex: TColumnIndex read FTrackIndex;
@@ -6803,6 +6806,7 @@ begin
 
   FWidth := Owner.FDefaultWidth;
   FLastWidth := Owner.FDefaultWidth;
+
   //lcl: setting FPosition here will override the Design time value
   //FPosition := Owner.Count - 1;
   // Read parent bidi mode and color values as default values.
@@ -6912,6 +6916,13 @@ function TVirtualTreeColumn.IsColorStored: Boolean;
 
 begin
   Result := not (coParentColor in FOptions);
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function TVirtualTreeColumn.IsWidthStored: Boolean;
+begin
+  Result := FWidth <> Owner.DefaultWidth;
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -7932,7 +7943,11 @@ begin
   FClickIndex := NoColumn;
   FDropTarget := NoColumn;
   FTrackIndex := NoColumn;
-  FDefaultWidth := 50;
+  {$IF LCL_FullVersion >= 1080000}
+  FDefaultWidth := Header.TreeView.Scale96ToFont(DEFAULT_COLUMN_WIDTH);
+  {$ELSE}
+  FDefaultWidth := DEFAULT_COLUMN_WIDTH;
+  {$IFEND}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -7973,6 +7988,17 @@ begin
       FHeader.Invalidate(Items[OldIndex]);
     Result := True;
   end;
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function TVirtualTreeColumns.IsDefaultWidthStored: Boolean;
+begin
+  {$IF LCL_FullVersion >= 1080000}
+  Result := FDefaultWidth <> Header.TreeView.Scale96ToFont(DEFAULT_COLUMN_WIDTH);
+  {$ELSE}
+  Result := FDefaultWidth <> DEFAULT_COLUMN_WIDTH;
+  {$IFEND}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -11259,12 +11285,24 @@ end;
 
 {$IF LCL_FullVersion >= 1080000}
 procedure TVTHeader.AutoAdjustLayout(const AXProportion, AYProportion: Double);
+var
+  i: Integer;
+  col: TVirtualTreeColumn;
 begin
   if IsDefaultHeightStored then
     FDefaultHeight := Round(FDefaultHeight * AYProportion);
 
   if IsHeightStored then
     FHeight := Round(FHeight * AYProportion);
+
+  if Columns.IsDefaultWidthStored then
+    Columns.DefaultWidth := Round(Columns.DefaultWidth * AXProportion);
+
+  for i := 0 to Columns.Count-1 do begin
+    col := Columns[i];
+    if col.IsWidthStored then
+      col.Width := Round(col.Width * AXProportion);
+  end;
 end;
 {$IFEND}
 
