@@ -14257,9 +14257,27 @@ var
 
   //--------------- end local function ----------------------------------------
 
+var
+   p9, p8, p6, p4, p2, p1: Integer;
 begin
-  Size.cx := 9;
-  Size.cy := 9;
+  {$IF LCL_FullVersion >= 1080000}
+  p1 := Scale96ToFont(1);
+  p2 := Scale96ToFont(2);
+  p4 := p2 + p2;
+  p6 := p4 + p2;
+  p8 := p4 + p4;
+  p9 := p8 + p1;
+  if not odd(p9) then dec(p9);
+  {$ELSE}
+  p9 := 9;
+  p8 := 8;
+  p6 := 6;
+  p4 := 4;
+  p2 := 2;
+  p1 := 1;
+  {$IFEND}
+  Size.cx := p9;
+  Size.cy := Size.cx;
 
   {$ifdef ThemeSupport}
   //todo
@@ -14295,9 +14313,12 @@ begin
             Brush.Color := clBlack;
             Pen.Color := clBlack;
             if BiDiMode = bdLeftToRight then
-              Polygon([Point(2, 0), Point(6, 4), Point(2, 8)])
+              Polygon([Point(p1, p8-p1), Point(p8-p1, p8-p1), Point(p8-p1, p1)])
             else
-              Polygon([Point(6, 0), Point(2, 4), Point(6, 8)]);
+              Polygon([Point(p1, p1), Point(p1, p8-p1), Point(p8-p1, p8-p1)]);
+
+            // or?
+            //Polygon([Point(0, p2), Point(p8, p2), Point(p4, p6)]);
           end
           else
           begin
@@ -14313,11 +14334,11 @@ begin
               Pen.Color := FColors.TreeLineColor;
               Rectangle(0, 0, Width, Height);
               Pen.Color := FColors.NodeFontColor;
-              MoveTo(2, Width div 2);
-              LineTo(Width - 2, Width div 2);
+              MoveTo(p2, Width div 2);
+              LineTo(Width - p2, Width div 2);
             end
             else
-              FMinusBM.LoadFromResourceName(0, 'VT_XPBUTTONMINUS');
+              LoadBitmapFromResource(FMinusBM, 'vt_xpbuttonminus');
             FHotMinusBM.Canvas.Draw(0, 0, FMinusBM);
           end;
         end;
@@ -14336,7 +14357,10 @@ begin
           begin
             Brush.Color := clBlack;
             Pen.Color := clBlack;
-            Polygon([Point(2, 0), Point(6, 4), Point(2, 8)]);
+            if BiDiMode = bdLeftToRight then
+              Polygon([Point(p2, 0), Point(p6, p4), Point(p2, p8)])
+            else
+              Polygon([Point(p2, p4), Point(p6, 0), Point(p6, p8)])
           end
           else
           begin
@@ -14355,11 +14379,11 @@ begin
               Pen.Color := FColors.NodeFontColor;
               MoveTo(2, Width div 2);
               LineTo(Width - 2, Width div 2);
-              MoveTo(Width div 2, 2);
-              LineTo(Width div 2, Width - 2);
+              MoveTo(Width div 2, p2);
+              LineTo(Width div 2, Width - p2);
             end
             else
-              FPlusBM.LoadFromResourceName(0, 'VT_XPBUTTONPLUS');
+              LoadBitmapFromResource(FPlusBM, 'vt_xpbuttonplus');
             FHotPlusBM.Canvas.Draw(0, 0, FPlusBM);
           end;
         end;
