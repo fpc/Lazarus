@@ -235,6 +235,7 @@ const
   {$endif}
 
   DEFAULT_CHECK_WIDTH = 16;
+  DEFAULT_HEADER_HEIGHT = 19;
   DEFAULT_NODE_HEIGHT = 18;
 
 var // Clipboard format IDs used in OLE drag'n drop and clipboard transfers.
@@ -1264,7 +1265,9 @@ type
     procedure FontChanged(Sender: TObject);
     function GetMainColumn: TColumnIndex;
     function GetUseColumns: Boolean;
+    function IsDefaultHeightStored: Boolean;
     function IsFontStored: Boolean;
+    function IsHeightStored: Boolean;
     procedure SetAutoSizeIndex(Value: TColumnIndex);
     procedure SetBackground(Value: TColor);
     procedure SetColumns(Value: TVirtualTreeColumns);
@@ -1285,7 +1288,7 @@ type
     FDragStart: TPoint;                // initial mouse drag position
     FTrackStart: TPoint;               // client coordinates of the tracking start point
     FTrackPoint: TPoint;               // Client coordinate where the tracking started.
-    
+
     function CanSplitterResize(P: TPoint): Boolean;
     function CanWriteColumns: Boolean; virtual;
     procedure ChangeScale(M, D: Integer); virtual;
@@ -1322,6 +1325,9 @@ type
 
     function AllowFocus(ColumnIndex: TColumnIndex): Boolean;
     procedure Assign(Source: TPersistent); override;
+    {$IF LCL_FullVersion >= 1080000}
+    procedure AutoAdjustLayout(const AXProportion, AYProportion: Double);
+    {$IFEND}
     procedure AutoFitColumns(Animated: Boolean = True; SmartAutoFitType: TSmartAutoFitType = smaUseColumnOption;
       RangeStartCol: Integer = NoColumn; RangeEndCol: Integer = NoColumn); virtual;
     function InHeader(const P: TPoint): Boolean; virtual;
@@ -1341,10 +1347,10 @@ type
     property AutoSizeIndex: TColumnIndex read FAutoSizeIndex write SetAutoSizeIndex;
     property Background: TColor read FBackground write SetBackground default clBtnFace;
     property Columns: TVirtualTreeColumns read FColumns write SetColumns;
-    property DefaultHeight: Integer read FDefaultHeight write SetDefaultHeight default 19;
+    property DefaultHeight: Integer read FDefaultHeight write SetDefaultHeight stored IsDefaultHeightStored;
     property Font: TFont read FFont write SetFont stored IsFontStored;
     property FixedAreaConstraints: TVTFixedAreaConstraints read FFixedAreaConstraints write FFixedAreaConstraints;
-    property Height: Integer read FHeight write SetHeight default 19;
+    property Height: Integer read FHeight write SetHeight stored IsHeightStored;
     property Images: TCustomImageList read FImages write SetImages;
     property MainColumn: TColumnIndex read GetMainColumn write SetMainColumn default 0;
     property MaxHeight: Integer read FMaxHeight write SetMaxHeight default 10000;
@@ -9639,8 +9645,13 @@ begin
   inherited Create;
   FOwner := AOwner;
   FColumns := GetColumnsClass.Create(Self);
-  FHeight := 19;
-  FDefaultHeight := 19;
+  {$IF LCL_FullVersion >= 1080000}
+  FHeight := FOwner.Scale96ToFont(DEFAULT_HEADER_HEIGHT);
+  FDefaultHeight := FOwner.Scale96ToFont(DEFAULT_HEADER_HEIGHT);
+  {$ELSE}
+  FHeight := DEFAULT_HEADER_HEIGHT;
+  FDefaultHeight := DEFAULT_HEADER_HEIGHT;
+  {$IFEND}
   FMinHeight := 10;
   FMaxHeight := 10000;
   FFont := TFont.Create;
@@ -9733,10 +9744,32 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
+function TVTHeader.IsDefaultHeightStored: Boolean;
+begin
+  {$IF LCL_FullVersion >= 1080000}
+  Result := FDefaultHeight <> FOwner.Scale96ToFont(DEFAULT_HEADER_HEIGHT);
+  {$ELSE}
+  Result := FDefaultHeight <> DEFAULT_HEADER_HEIGHT;
+  {$IFEND}
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
 function TVTHeader.IsFontStored: Boolean;
 
 begin
   Result := not ParentFont;
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function TVTHeader.IsHeightStored: Boolean;
+begin
+  {$IF LCL_FullVersion >= 1080000}
+  Result := FHeight <> FOwner.Scale96ToFont(DEFAULT_HEADER_HEIGHT);
+  {$ELSE}
+  Result := FHeight <> DEFAULT_HEADER_HEIGHT;
+  {$IFEND}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -11221,6 +11254,19 @@ begin
   else
     inherited;
 end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+{$IF LCL_FullVersion >= 1080000}
+procedure TVTHeader.AutoAdjustLayout(const AXProportion, AYProportion: Double);
+begin
+  if IsDefaultHeightStored then
+    FDefaultHeight := Round(FDefaultHeight * AYProportion);
+
+  if IsHeightStored then
+    FHeight := Round(FHeight * AYProportion);
+end;
+{$IFEND}
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -26382,6 +26428,7 @@ begin
     try
       if IsDefaultNodeHeightStored then
         FDefaultNodeHeight := Round(FDefaultNodeHeight * AYProportion);
+      FHeader.AutoAdjustLayout(AXProportion, AYProportion);
     finally
       EnableAutoSizing;
     end;
