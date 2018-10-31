@@ -30,11 +30,11 @@ unit opkman_updates;
 interface
 
 uses
-  Classes, SysUtils, fpjson, fpjsonrtti, dateutils,
+  Classes, SysUtils, fpjson, fpjsonrtti, jsonparser, dateutils,
   // LazUtils
   Laz2_XMLCfg, LazIDEIntf,
   // OpkMan
-  opkman_serializablepackages, opkman_options, opkman_common,
+  opkman_serializablepackages, opkman_options, opkman_common, opkman_visualtree,
   {$IFDEF MSWINDOWS}
     opkman_const,
     {$IFDEF FPC311}zipper,{$ELSE}opkman_zip,{$ENDIF}
@@ -108,12 +108,11 @@ type
     FBusyUpdating: Boolean;
     FBusySaving: Boolean;
     FOpenSSLAvailable: Boolean;
-    FOnUpdate: TNotifyEvent;
     FTime: QWORD;
     FInterval: Cardinal;
     FFileName: String;
+    FStarted: Boolean;
     function GetUpdateInfo(const AURL: String; var AJSON: TJSONStringType): Boolean;
-    procedure DoOnUpdate;
     procedure Load;
     procedure Save;
     procedure AssignPackageData(AMetaPackage: TMetaPackage);
@@ -126,10 +125,8 @@ type
   public
     constructor Create(const AFileName: String);
     destructor Destroy; override;
-    procedure StartUpdate;
+    procedure StartUpdate(const AOnlyInit: Boolean = False);
     procedure StopUpdate;
-  published
-    property OnUpdate: TNotifyEvent read FOnUpdate write FOnUpdate;
   end;
 
 var
@@ -166,6 +163,20 @@ begin
   inherited Destroy;
 end;
 
+function IsValidJSON(const AJSON: TJSONStringType): Boolean;
+var
+  {%H-}JSONData: TJSONData;
+begin
+  Result := True;
+  try
+    JSONData := GetJSON(AJSON);
+    JSONData.Free;
+  except
+    on E: EJSONParser do
+      Result := False;
+  end;
+end;
+
 function TUpdatePackage.LoadFromJSON(const AJSON: TJSONStringType): Boolean;
 var
   DeStreamer: TJSONDeStreamer;
@@ -174,8 +185,11 @@ begin
   try
     Clear;
     try
-      DeStreamer.JSONToObject(AJSON, Self);
-      Result := True;
+      if IsValidJSON(AJSON) then
+      begin
+        DeStreamer.JSONToObject(AJSON, Self);
+        Result := True;
+      end;
     except
       on E: Exception do
       begin
@@ -256,6 +270,7 @@ destructor TUpdates.Destroy;
 begin
   FHTTPClient.Free;
   FUpdatePackage.Free;
+  Updates := nil;
   inherited Destroy;
 end;
 
@@ -312,8 +327,6 @@ begin
   finally
     FXML.Free;
   end;
-  if Assigned(FOnUpdate) and (not FNeedToBreak) then
-    Synchronize(@DoOnUpdate);
 end;
 
 procedure TUpdates.Save;
@@ -505,12 +518,6 @@ begin
   end;
 end;
 
-procedure TUpdates.DoOnUpdate;
-begin
-  if Assigned(FOnUpdate) then
-    FOnUpdate(Self);
-end;
-
 procedure TUpdates.CheckForUpdates;
 var
   I: Integer;
@@ -537,8 +544,6 @@ begin
       else
         ResetPackageData(SerializablePackages.Items[I]);
     end;
-    if Assigned(FOnUpdate) and (not FNeedToBreak) then
-      Synchronize(@DoOnUpdate);
   finally
     FBusyUpdating := False;
   end;
@@ -548,21 +553,28 @@ procedure TUpdates.Execute;
 begin
   while not Terminated do
   begin
-    Sleep(1);
-    if (GetTickCount64 - FTime > FInterval) then
-    begin
-      FTime := GetTickCount64;
-      if IsTimeToUpdate then
-        CheckForUpdates;
-    end;
     if FNeedToBreak then
       Break;
+    Sleep(50);
+    if (GetTickCount64 - FTime > FInterval)then
+    begin
+      FTime := GetTickCount64;
+      if (IsTimeToUpdate) then
+      begin
+         CheckForUpdates;
+         if (not FNeedToBreak) and Assigned(VisualTree) then
+           Synchronize(@VisualTree.UpdatePackageUStatus)
+      end;
+    end;
   end;
 end;
 
-procedure TUpdates.StartUpdate;
+procedure TUpdates.StartUpdate(const AOnlyInit: Boolean = False);
 begin
   Load;
+  if AOnlyInit then
+    Exit;
+  FStarted := True;
   CheckForOpenSSL;
   FTime := GetTickCount64;
   FInterval := 6000;
@@ -571,6 +583,7 @@ end;
 
 procedure TUpdates.StopUpdate;
 begin
+  FStarted := False;
   Save;
   FHTTPClient.Terminate;
   FNeedToBreak := True;

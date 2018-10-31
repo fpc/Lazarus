@@ -200,7 +200,7 @@ begin
   if Assigned(FOnPackageInstallProgress) then
     FOnPackageInstallProgress(Self, FCnt, FTotCnt, FFileName, AInstallMessage);
   if AInstallMessage <> imPackageCompleted then
-    Sleep(1000);
+    Sleep(50);
 end;
 
 procedure TPackageInstaller.DoOnPackageInstallError(const AInstallMessage: TInstallMessage;
@@ -222,7 +222,7 @@ begin
   ALazarusPkg.PackageStates := ALazarusPkg.PackageStates + [psError];
   if Assigned(FOnPackageInstallError) then
     FOnPackageInstallError(Self, FFileName, ErrMsg);
-  Sleep(1000);
+  Sleep(50);
 end;
 
 procedure TPackageInstaller.Execute;

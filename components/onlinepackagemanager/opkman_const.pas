@@ -166,8 +166,8 @@ resourcestring
   rsMainFrm_TBOptions_Hint = 'Show options dialog';
   rsMainFrm_TBHelp_Caption = 'Help';
   rsMainFrm_TBHelp_Hint = 'Help (' + cHelpPage + ')';
-  rsMainFrm_miFromRepository = 'From repository';
-  rsMainFrm_miFromExternalSource = 'From external source';
+  rsMainFrm_miFromRepository = 'From official repository';
+  rsMainFrm_miFromExternalSource = 'From third party repository';
   rsMainFrm_miCreateRepositoryPackage = 'Create repository package';
   rsMainFrm_miCreateJSONForUpdates = 'Create JSON for updates';
   rsMainFrm_miCreateRepository = 'Create private repository';

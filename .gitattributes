@@ -3725,7 +3725,6 @@ components/onlinepackagemanager/opkman_showhint.lfm -text svneol=native#plain/te
 components/onlinepackagemanager/opkman_showhint.pas svneol=native#text/pascal
 components/onlinepackagemanager/opkman_showhintbase.lfm -text svneol=native#plain/text
 components/onlinepackagemanager/opkman_showhintbase.pas svneol=native#text/pascal
-components/onlinepackagemanager/opkman_timer.pas svneol=native#text/pascal
 components/onlinepackagemanager/opkman_updates.pas svneol=native#text/pascal
 components/onlinepackagemanager/opkman_uploader.pas svneol=native#text/pascal
 components/onlinepackagemanager/opkman_visualtree.pas svneol=native#text/pascal

@@ -17,7 +17,7 @@ object ProgressFrm: TProgressFrm
   OnShow = FormShow
   PopupMode = pmExplicit
   Position = poOwnerFormCenter
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '2.1.0.0'
   object pnLabels: TPanel
     Left = 0
     Height = 249

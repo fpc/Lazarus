@@ -223,14 +223,17 @@ begin
   else
     lbReceived.Caption := rsProgressFrm_lbReceived_Caption0 + '  ' + FormatSize(ACurPos) + ' / ' + rsProgressFrm_Caption5;
   lbReceived.Update;
-  pb.Position := Round((ACurPos/ACurSize) * 100);
+  if ACurSize > 0 then
+    pb.Position := Round((ACurPos/ACurSize) * 100);
   pb.Update;
   lbReceivedTotal.Caption := rsProgressFrm_lbReceivedTotal_Caption0 + '  ' + FormatSize(ATotPos) + ' / ' + FormatSize(ATotSize);
   lbReceivedTotal.Update;
-  pbTotal.Position := Round((ATotPos/ATotSize) * 100);
+  if ATotSize > 0 then
+    pbTotal.Position := Round((ATotPos/ATotSize) * 100);
   pbTotal.Update;
   FCnt := ACnt;
   FTotCnt := ATotCnt;
+  Application.ProcessMessages;
 end;
 
 procedure TProgressFrm.DoOnPackageDownloadError(Sender: TObject; APackageName: String;
@@ -286,14 +289,17 @@ begin
   lbRemainingData.Update;
   lbReceived.Caption := rsProgressFrm_lbReceived_Caption1 + '  ' + FormatSize(ACurPos) + ' / ' + FormatSize(ACurSize);
   lbReceived.Update;
-  pb.Position := Round((ACurPos/ACurSize) * 100);
+  if ACurSize > 0 then
+    pb.Position := Round((ACurPos/ACurSize) * 100);
   pb.Update;
   lbReceivedTotal.Caption := rsProgressFrm_lbReceivedTotal_Caption1 + '  ' + FormatSize(ATotPos) + ' / ' + FormatSize(ATotSize);
   lbReceivedTotal.Update;
-  pbTotal.Position := Round((ATotPos/ATotSize) * 100);
+  if ATotSize > 0 then
+    pbTotal.Position := Round((ATotPos/ATotSize) * 100);
   pbTotal.Update;
   FCnt := ACnt;
   FTotCnt := ATotCnt;
+  Application.ProcessMessages;
 end;
 
 procedure TProgressFrm.DoOnZipError(Sender: TObject; APackageName: String; const AErrMsg: String);
@@ -464,6 +470,7 @@ begin
   end;
   Data^.FImageIndex := AUTyp;
   FVST.TopNode := Node;
+  Application.ProcessMessages;
 end;
 
 procedure TProgressFrm.DoOnPackageUpdateCompleted(Sender: TObject;

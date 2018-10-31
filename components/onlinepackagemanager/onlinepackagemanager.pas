@@ -10,22 +10,21 @@ interface
 uses
   onlinepackagemanagerintf, opkman_mainfrm, opkman_optionsfrm, opkman_const, 
   opkman_visualtree, opkman_serializablepackages, opkman_downloader, 
-  opkman_common, opkman_progressfrm, opkman_zipper, opkman_timer, 
-  opkman_installer, opkman_packagelistfrm, opkman_options, 
-  opkman_createrepositorypackagefrm, opkman_categoriesfrm, 
-  opkman_packagedetailsfrm, opkman_updates, opkman_createjsonforupdatesfrm, 
-  opkman_uploader, opkman_repositories, opkman_createrepositoryfrm, 
-  opkman_repositorydetailsfrm, opkman_addrepositorypackagefrm, opkman_intf, 
-  opkman_intf_packagelistfrm, opkman_showhint, opkman_showhintbase, 
-  opkman_colorsfrm, LazarusPackageIntf;
+  opkman_common, opkman_progressfrm, opkman_zipper, opkman_installer, 
+  opkman_packagelistfrm, opkman_options, opkman_createrepositorypackagefrm, 
+  opkman_categoriesfrm, opkman_packagedetailsfrm, opkman_updates, 
+  opkman_createjsonforupdatesfrm, opkman_uploader, opkman_repositories, 
+  opkman_createrepositoryfrm, opkman_repositorydetailsfrm, 
+  opkman_addrepositorypackagefrm, opkman_intf, opkman_intf_packagelistfrm, 
+  opkman_showhint, opkman_showhintbase, opkman_colorsfrm, LazarusPackageIntf;
 
 implementation
 
 procedure Register;
 begin
-  RegisterUnit('onlinepackagemanagerintf', @onlinepackagemanagerintf.Register);
+  RegisterUnit('onlinepackagemanagerintf', @ onlinepackagemanagerintf.Register);
 end;
 
 initialization
-  RegisterPackage('OnlinePackageManager', @Register);
+  RegisterPackage('OnlinePackageManager', @ Register);
 end.

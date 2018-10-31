@@ -15,6 +15,7 @@ object MainFrm: TMainFrm
   OnKeyPress = FormKeyPress
   OnShow = FormShow
   Position = poScreenCenter
+  LCLVersion = '2.1.0.0'
   object pnMain: TPanel
     Left = 0
     Height = 580
@@ -432,6 +433,7 @@ object MainFrm: TMainFrm
         Caption = 'Create'
         DropdownMenu = pmCreate
         ImageIndex = 7
+        OnClick = tbCreateClick
         ParentShowHint = False
         ShowHint = True
         Style = tbsDropDown

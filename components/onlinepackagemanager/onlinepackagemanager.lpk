@@ -25,7 +25,7 @@
 For more info please visit: http://wiki.freepascal.org/Online_Package_Manager"/>
     <License Value="GPL"/>
     <Version Major="1" Release="1" Build="2"/>
-    <Files Count="29">
+    <Files Count="28">
       <Item1>
         <Filename Value="onlinepackagemanagerintf.pas"/>
         <HasRegisterProc Value="True"/>
@@ -71,83 +71,79 @@ For more info please visit: http://wiki.freepascal.org/Online_Package_Manager"/>
         <UnitName Value="opkman_zipper"/>
       </Item10>
       <Item11>
-        <Filename Value="opkman_timer.pas"/>
-        <UnitName Value="opkman_timer"/>
-      </Item11>
-      <Item12>
         <Filename Value="opkman_installer.pas"/>
         <UnitName Value="opkman_installer"/>
-      </Item12>
-      <Item13>
+      </Item11>
+      <Item12>
         <Filename Value="opkman_packagelistfrm.pas"/>
         <UnitName Value="opkman_packagelistfrm"/>
         <ResourceBaseClass Value="Form"/>
-      </Item13>
-      <Item14>
+      </Item12>
+      <Item13>
         <Filename Value="opkman_options.pas"/>
         <UnitName Value="opkman_options"/>
-      </Item14>
-      <Item15>
+      </Item13>
+      <Item14>
         <Filename Value="opkman_createrepositorypackagefrm.pas"/>
         <UnitName Value="opkman_createrepositorypackagefrm"/>
         <ResourceBaseClass Value="Form"/>
-      </Item15>
-      <Item16>
+      </Item14>
+      <Item15>
         <Filename Value="opkman_categoriesfrm.pas"/>
         <UnitName Value="opkman_categoriesfrm"/>
-      </Item16>
-      <Item17>
+      </Item15>
+      <Item16>
         <Filename Value="opkman_packagedetailsfrm.pas"/>
         <UnitName Value="opkman_packagedetailsfrm"/>
-      </Item17>
-      <Item18>
+      </Item16>
+      <Item17>
         <Filename Value="opkman_updates.pas"/>
         <UnitName Value="opkman_updates"/>
-      </Item18>
-      <Item19>
+      </Item17>
+      <Item18>
         <Filename Value="opkman_createjsonforupdatesfrm.pas"/>
         <UnitName Value="opkman_createjsonforupdatesfrm"/>
-      </Item19>
-      <Item20>
+      </Item18>
+      <Item19>
         <Filename Value="opkman_uploader.pas"/>
         <UnitName Value="opkman_uploader"/>
-      </Item20>
-      <Item21>
+      </Item19>
+      <Item20>
         <Filename Value="opkman_repositories.pas"/>
         <UnitName Value="opkman_repositories"/>
-      </Item21>
-      <Item22>
+      </Item20>
+      <Item21>
         <Filename Value="opkman_createrepositoryfrm.pas"/>
         <UnitName Value="opkman_createrepositoryfrm"/>
-      </Item22>
-      <Item23>
+      </Item21>
+      <Item22>
         <Filename Value="opkman_repositorydetailsfrm.pas"/>
         <UnitName Value="opkman_repositorydetailsfrm"/>
-      </Item23>
-      <Item24>
+      </Item22>
+      <Item23>
         <Filename Value="opkman_addrepositorypackagefrm.pas"/>
         <UnitName Value="opkman_addrepositorypackagefrm"/>
-      </Item24>
-      <Item25>
+      </Item23>
+      <Item24>
         <Filename Value="opkman_intf.pas"/>
         <UnitName Value="opkman_intf"/>
-      </Item25>
-      <Item26>
+      </Item24>
+      <Item25>
         <Filename Value="opkman_intf_packagelistfrm.pas"/>
         <UnitName Value="opkman_intf_packagelistfrm"/>
-      </Item26>
-      <Item27>
+      </Item25>
+      <Item26>
         <Filename Value="opkman_showhint.pas"/>
         <UnitName Value="opkman_showhint"/>
-      </Item27>
-      <Item28>
+      </Item26>
+      <Item27>
         <Filename Value="opkman_showhintbase.pas"/>
         <UnitName Value="opkman_showhintbase"/>
-      </Item28>
-      <Item29>
+      </Item27>
+      <Item28>
         <Filename Value="opkman_colorsfrm.pas"/>
         <UnitName Value="opkman_colorsfrm"/>
-      </Item29>
+      </Item28>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

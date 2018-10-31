@@ -29,19 +29,19 @@ unit opkman_mainfrm;
 interface
 
 uses
-  Classes, SysUtils, fpjson, md5, Graphics, VirtualTrees,
+  Classes, SysUtils, fpjson, Graphics, VirtualTrees,
   // LCL
   Forms, Controls, Dialogs, StdCtrls, ExtCtrls, Buttons, Menus, ComCtrls, Clipbrd,
   LCLIntf, LCLVersion, LCLProc,
   // LazUtils
-  LazFileUtils,
+  LazFileUtils, LazIDEIntf,
   // IdeIntf
   IDECommands, PackageIntf,
   // OpkMan
-  opkman_downloader, opkman_installer,
+  opkman_downloader, opkman_installer, opkman_updates,
   opkman_serializablepackages, opkman_visualtree, opkman_const, opkman_common,
   opkman_progressfrm, opkman_zipper, opkman_packagelistfrm, opkman_options,
-  opkman_optionsfrm, opkman_createrepositorypackagefrm, opkman_updates,
+  opkman_optionsfrm, opkman_createrepositorypackagefrm,
   opkman_createjsonforupdatesfrm, opkman_createrepositoryfrm;
 
 type
@@ -127,6 +127,7 @@ type
     procedure miSaveToFileClick(Sender: TObject);
     procedure pnToolBarResize(Sender: TObject);
     procedure tbCleanUpClick(Sender: TObject);
+    procedure tbCreateClick(Sender: TObject);
     procedure tbDownloadClick(Sender: TObject);
     procedure tbHelpClick(Sender: TObject);
     procedure tbInstallClick(Sender: TObject);
@@ -163,15 +164,12 @@ type
     procedure DoOnJSONProgress(Sender: TObject);
     procedure DoOnJSONDownloadCompleted(Sender: TObject; AJSON: TJSONStringType; AErrTyp: TErrorType; const AErrMsg: String = '');
     procedure DoOnProcessJSON(Sender: TObject);
-    procedure DoOnUpdate(Sender: TObject);
     procedure DoDeactivate(Sender: TObject);
     function IsSomethingChecked(const AResolveDependencies: Boolean = True): Boolean;
     function Download(const ADstDir: String; var ADoExtract: Boolean): TModalResult;
     function Extract(const ASrcDir, ADstDir: String; var ADoOpen: Boolean; const AIsUpdate: Boolean = False): TModalResult;
     function Install(var AInstallStatus: TInstallStatus; var ANeedToRebuild: Boolean): TModalResult;
     function UpdateP(const ADstDir: String; var ADoExtract: Boolean): TModalResult;
-    procedure StartUpdates;
-    procedure StopUpdates;
     procedure Rebuild;
     function CheckDstDir(const ADstDir: String): Boolean;
   public
@@ -198,31 +196,6 @@ begin
   FHintTimeOut := Application.HintHidePause;
   Application.HintHidePause := 1000000;
   Application.AddOnDeactivateHandler(@DoDeactivate, False);
- {$IF LCL_FULLVERSION >= 1070000}
-  tbInstall.Style := tbsButtonDrop;
-  tbCreate.Style := tbsButtonDrop;
- {$ENDIF}
-end;
-
-procedure TMainFrm.StartUpdates;
-var
-  FileName: String;
-begin
-  FileName := Format(LocalRepositoryUpdatesFile, [MD5Print(MD5String(Options.RemoteRepository[Options.ActiveRepositoryIndex]))]);
-  Updates := TUpdates.Create(FileName);
-  Updates.OnUpdate := @DoOnUpdate;
-  Updates.StartUpdate;
-end;
-
-procedure TMainFrm.StopUpdates;
-begin
-  if Assigned(Updates) then
-  begin
-    Updates.StopUpdate;
-    Updates.Terminate;
-    Updates.WaitFor;
-    Updates := nil;
-  end;
 end;
 
 procedure TMainFrm.FormDestroy(Sender: TObject);
@@ -230,9 +203,9 @@ begin
   SerializablePackages.OnProcessJSON := nil;
   PackageDownloader.OnJSONProgress := nil;
   PackageDownloader.OnJSONDownloadCompleted := nil;
-  StopUpdates;
   Application.RemoveOnDeactivateHandler(@DoDeactivate);
   VisualTree.Free;
+  VisualTree := nil;
   Application.HintHidePause := FHintTimeOut;
 end;
 
@@ -250,9 +223,6 @@ begin
     SetupColors;
     GetPackageList;
   end
-  else
-    if not Application.Terminated then
-      StartUpdates;
 end;
 
 procedure TMainFrm.GetPackageList(const ARepositoryHasChanged: Boolean = False);
@@ -268,7 +238,6 @@ begin
     SetupMessage(rsMainFrm_rsMessageChangingRepository);
     Sleep(1500);
   end;
-  StopUpdates;
   SetupMessage(rsMainFrm_rsMessageDownload);
   PackageDownloader.DownloadJSON(Options.ConTimeOut*1000);
 end;
@@ -339,19 +308,14 @@ begin
   ProgressFrm := TProgressFrm.Create(MainFrm);
   try
     PackageUnzipper := TPackageUnzipper.Create;
-    try
-      ProgressFrm.SetupControls(1);
-      PackageUnzipper.OnZipProgress := @ProgressFrm.DoOnZipProgress;
-      PackageUnzipper.OnZipError := @ProgressFrm.DoOnZipError;
-      PackageUnzipper.OnZipCompleted := @ProgressFrm.DoOnZipCompleted;
-      PackageUnzipper.StartUnZip(ASrcDir, ADstDir, AIsUpdate);
-      Result := ProgressFrm.ShowModal;
-      if Result = mrOk then
-        ADoOpen := ProgressFrm.cbExtractOpen.Checked;
-    finally
-      if Assigned(PackageUnzipper) then
-        PackageUnzipper := nil;
-    end;
+    ProgressFrm.SetupControls(1);
+    PackageUnzipper.OnZipProgress := @ProgressFrm.DoOnZipProgress;
+    PackageUnzipper.OnZipError := @ProgressFrm.DoOnZipError;
+    PackageUnzipper.OnZipCompleted := @ProgressFrm.DoOnZipCompleted;
+    PackageUnzipper.StartUnZip(ASrcDir, ADstDir, AIsUpdate);
+    Result := ProgressFrm.ShowModal;
+    if Result = mrOk then
+      ADoOpen := ProgressFrm.cbExtractOpen.Checked;
  finally
    ProgressFrm.Free;
  end;
@@ -413,10 +377,12 @@ begin
           Exit;
         end;
         VisualTree.PopulateTree;
+        if Assigned (Updates) then
+          Updates.StartUpdate(True);
+        VisualTree.UpdatePackageUStatus;
         EnableDisableControls(True);
         SetupMessage;
         mJSON.Text := AJSON;
-        StartUpdates;
         cbAll.Checked := False;
         Caption := rsLazarusPackageManager + ' ' + SerializablePackages.QuickStatistics;
       end;
@@ -447,11 +413,6 @@ end;
 procedure TMainFrm.DoOnProcessJSON(Sender: TObject);
 begin
   Application.ProcessMessages;
-end;
-
-procedure TMainFrm.DoOnUpdate(Sender: TObject);
-begin
-  VisualTree.UpdatePackageUStatus;
 end;
 
 procedure TMainFrm.DoDeactivate(Sender: TObject);
@@ -704,7 +665,6 @@ begin
 
   if CanGo then
   begin
-    StopUpdates;
     Options.LastDownloadDir := DstDir;
     Options.Changed := True;
     PackageAction := paDownloadTo;
@@ -726,7 +686,6 @@ begin
     end;
   end;
   SerializablePackages.RemoveErrorState;
-  StartUpdates;
 end;
 
 procedure TMainFrm.Rebuild;
@@ -768,7 +727,6 @@ begin
     if MessageDlgEx(rsMainFrm_PackageUpdateWarning, mtConfirmation, [mbYes, mbNo], Self) <> mrYes then
       Exit;
 
-    StopUpdates;
     PackageAction := paUpdate;
     VisualTree.UpdatePackageStates;
     if SerializablePackages.DownloadCount > 0 then
@@ -809,10 +767,7 @@ begin
     end;
   end;
   if not NeedToRebuild then
-  begin
     SerializablePackages.RemoveErrorState;
-    StartUpdates;
-  end;
 end;
 
 procedure TMainFrm.tbUninstallClick(Sender: TObject);
@@ -874,7 +829,6 @@ begin
    end;
 
   NeedToRebuild := False;
-  StopUpdates;
   for I := 0 to SerializablePackages.Count - 1 do
   begin
     for J := 0 to SerializablePackages.Items[I].LazarusPackages.Count - 1 do
@@ -899,7 +853,6 @@ begin
               begin
                 NeedToRebuild := False;
                 MessageDlgEx(Format(rsMainFrm_rsUninstall_Error, [LazarusPackage.Name]), mtError, [mbOk], Self);
-                StartUpdates;
                 Exit;
               end
               else
@@ -940,7 +893,6 @@ begin
 
   if CanGo then
   begin
-    StopUpdates;
     PackageAction := paInstall;
     VisualTree.UpdatePackageStates;
     if SerializablePackages.DownloadCount > 0 then
@@ -980,10 +932,7 @@ begin
     end;
   end;
   if not NeedToRebuild then
-  begin
     SerializablePackages.RemoveErrorState;
-    StartUpdates;
-  end;
 end;
 
 procedure TMainFrm.miFromRepositoryClick(Sender: TObject);
@@ -1019,6 +968,17 @@ begin
   end;
 end;
 
+procedure TMainFrm.tbCreateClick(Sender: TObject);
+begin
+  CreateRepositoryPackagesFrm := TCreateRepositoryPackagesFrm.Create(MainFrm);
+  try
+    CreateRepositoryPackagesFrm.SetType(0);
+    CreateRepositoryPackagesFrm.ShowModal;
+  finally
+    CreateRepositoryPackagesFrm.Free;
+  end;
+end;
+
 procedure TMainFrm.pnToolBarResize(Sender: TObject);
 var
   I: Integer;
@@ -1038,13 +998,7 @@ end;
 
 procedure TMainFrm.miCreateRepositoryPackageClick(Sender: TObject);
 begin
-  CreateRepositoryPackagesFrm := TCreateRepositoryPackagesFrm.Create(MainFrm);
-  try
-    CreateRepositoryPackagesFrm.SetType(0);
-    CreateRepositoryPackagesFrm.ShowModal;
-  finally
-    CreateRepositoryPackagesFrm.Free;
-  end;
+  tbCreateClick(tbCreate);
 end;
 
 procedure TMainFrm.miCreateJSONForUpdatesClick(Sender: TObject);
@@ -1266,7 +1220,6 @@ procedure TMainFrm.miJSONShowClick(Sender: TObject);
 begin
   if not mJSON.Visible then
   begin
-    StopUpdates;
     EnableDisableControls(False);
     mJSON.Visible := True;
     mJSON.BringToFront;
@@ -1276,7 +1229,6 @@ begin
     mJSON.SendToBack;
     mJSON.Visible := False;
     EnableDisableControls(True);
-    StartUpdates;
   end;
 end;
 
