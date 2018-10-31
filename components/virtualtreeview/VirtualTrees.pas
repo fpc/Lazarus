@@ -236,8 +236,13 @@ const
 
   DEFAULT_CHECK_WIDTH = 16;
   DEFAULT_COLUMN_WIDTH = 50;
+  DEFAULT_DRAG_HEIGHT = 350;
+  DEFAULT_DRAG_WIDTH = 200;
   DEFAULT_HEADER_HEIGHT = 19;
+  DEFAULT_INDENT = 18;
+  DEFAULT_MARGIN = 4;
   DEFAULT_NODE_HEIGHT = 18;
+  DEFAULT_SPACING = 3;
 
 var // Clipboard format IDs used in OLE drag'n drop and clipboard transfers.
   CF_VIRTUALTREE,
@@ -988,6 +993,8 @@ type
     function IsBiDiModeStored: Boolean;
     function IsCaptionAlignmentStored: Boolean;
     function IsColorStored: Boolean;
+    function IsMarginStored: Boolean;
+    function IsSpacingStored: Boolean;
     function IsWidthStored: Boolean;
     procedure SetAlignment(const Value: TAlignment);
     procedure SetBiDiMode(Value: TBiDiMode);
@@ -1047,12 +1054,12 @@ type
     property Hint: TTranslateString read FHint write FHint stored False;
     property ImageIndex: TImageIndex read FImageIndex write SetImageIndex default -1;
     property Layout: TVTHeaderColumnLayout read FLayout write SetLayout default blGlyphLeft;
-    property Margin: Integer read FMargin write SetMargin default 4;
+    property Margin: Integer read FMargin write SetMargin stored IsMarginStored;
     property MaxWidth: Integer read FMaxWidth write SetMaxWidth default 10000;
     property MinWidth: Integer read FMinWidth write SetMinWidth default 10;
     property Options: TVTColumnOptions read FOptions write SetOptions default DefaultColumnOptions;
     property Position: TColumnPosition read FPosition write SetPosition;
-    property Spacing: Integer read FSpacing write SetSpacing default 3;
+    property Spacing: Integer read FSpacing write SetSpacing stored IsSpacingStored;
     property Style: TVirtualTreeColumnStyle read FStyle write SetStyle default vsText;
     property Tag: NativeInt read FTag write FTag default 0;
     property Text: TTranslateString read GetText write SetText;
@@ -2411,8 +2418,14 @@ type
     procedure InitRootNode(OldSize: Cardinal = 0);
     procedure InterruptValidation;
     function IsDefaultNodeHeightStored: Boolean;
+    function IsDragHeightStored: Boolean;
+    function IsDragWidthStored: Boolean;
     function IsFirstVisibleChild(Parent, Node: PVirtualNode): Boolean;
+    function IsIndentStored: Boolean;
     function IsLastVisibleChild(Parent, Node: PVirtualNode): Boolean;
+    function IsMarginStored: Boolean;
+    function IsSelectionCurveRadiusStored: Boolean;
+    function IsTextMarginStored: Boolean;
     //lcl
     procedure LoadPanningCursors;
     function MakeNewNode: PVirtualNode;
@@ -2829,13 +2842,13 @@ type
     property DefaultHintKind: TVTHintKind read GetDefaultHintKind;
     property DefaultNodeHeight: Cardinal read FDefaultNodeHeight write SetDefaultNodeHeight stored IsDefaultNodeHeightStored;
     property DefaultPasteMode: TVTNodeAttachMode read FDefaultPasteMode write FDefaultPasteMode default amAddChildLast;
-    property DragHeight: Integer read FDragHeight write FDragHeight default 350;
+    property DragHeight: Integer read FDragHeight write FDragHeight stored IsDragHeightStored;
     property DragImageKind: TVTDragImageKind read FDragImageKind write FDragImageKind default diComplete;
     property DragOperations: TDragOperations read FDragOperations write FDragOperations default [doCopy, doMove];
     property DragSelection: TNodeArray read FDragSelection;
     property LastDragEffect: LongWord read FLastDragEffect;
     property DragType: TVTDragType read FDragType write FDragType default dtOLE;
-    property DragWidth: Integer read FDragWidth write FDragWidth default 200;
+    property DragWidth: Integer read FDragWidth write FDragWidth stored IsDragWidthStored;
     property DrawSelectionMode: TVTDrawSelectionMode read FDrawSelectionMode write FDrawSelectionMode
       default smDottedRectangle;
     property EditColumn: TColumnIndex read FEditColumn write FEditColumn;
@@ -2851,13 +2864,13 @@ type
     property IncrementalSearchDirection: TVTSearchDirection read FSearchDirection write FSearchDirection default sdForward;
     property IncrementalSearchStart: TVTSearchStart read FSearchStart write FSearchStart default ssFocusedNode;
     property IncrementalSearchTimeout: Cardinal read FSearchTimeout write FSearchTimeout default 1000;
-    property Indent: Cardinal read FIndent write SetIndent default 18;
+    property Indent: Cardinal read FIndent write SetIndent stored IsIndentStored;
     property LastClickPos: TPoint read FLastClickPos write FLastClickPos;
     property LastDropMode: TDropMode read FLastDropMode write FLastDropMode;
     property LastHintRect: TRect read FLastHintRect write FLastHintRect;
     property LineMode: TVTLineMode read FLineMode write SetLineMode default lmNormal;
     property LineStyle: TVTLineStyle read FLineStyle write SetLineStyle default lsDotted;
-    property Margin: Integer read FMargin write SetMargin default 4;
+    property Margin: Integer read FMargin write SetMargin stored IsMarginStored;
     property NextNodeToSelect: PVirtualNode read FNextNodeToSelect; // Next tree node that we would like to select if the current one gets deleted
     property NodeAlignment: TVTNodeAlignment read FNodeAlignment write SetNodeAlignment default naProportional;
     property NodeDataSize: Integer read FNodeDataSize write SetNodeDataSize default -1;
@@ -2871,9 +2884,9 @@ type
     property RootNodeCount: Cardinal read GetRootNodeCount write SetRootNodeCount default 0;
     property ScrollBarOptions: TScrollBarOptions read FScrollBarOptions write SetScrollBarOptions;
     property SelectionBlendFactor: Byte read FSelectionBlendFactor write FSelectionBlendFactor default 128;
-    property SelectionCurveRadius: Cardinal read FSelectionCurveRadius write SetSelectionCurveRadius default 0;
+    property SelectionCurveRadius: Cardinal read FSelectionCurveRadius write SetSelectionCurveRadius stored IsSelectionCurveRadiusStored;
     property StateImages: TCustomImageList read FStateImages write SetStateImages;
-    property TextMargin: Integer read FTextMargin write SetTextMargin default 4;
+    property TextMargin: Integer read FTextMargin write SetTextMargin stored IsTextMarginStored;
     property TotalInternalDataSize: Cardinal read FTotalInternalDataSize;
     property TreeOptions: TCustomVirtualTreeOptions read FOptions write SetOptions;
     property WantTabs: Boolean read FWantTabs write FWantTabs default False;
@@ -6786,8 +6799,6 @@ begin
   FMinWidth := 10;
   FMaxWidth := 10000;
   FImageIndex := -1;
-  FMargin := 4;
-  FSpacing := 3;
   //FText := '';
   FOptions := DefaultColumnOptions;
   FAlignment := taLeftJustify;
@@ -6803,6 +6814,14 @@ begin
   FDefaultSortDirection := sdAscending;
 
   inherited Create(Collection);
+
+  {$IF LCL_FullVersion >= 1080000}
+  FMargin := Owner.Header.TreeView.Scale96ToFont(DEFAULT_MARGIN);
+  FSpacing := Owner.Header.TreeView.Scale96ToFont(DEFAULT_SPACING);
+  {$ELSE}
+  FMargin := DEFAULT_MARGIN;
+  FSpacing := DEFAULT_SPACING;
+  {$IFEND}
 
   FWidth := Owner.FDefaultWidth;
   FLastWidth := Owner.FDefaultWidth;
@@ -6916,6 +6935,28 @@ function TVirtualTreeColumn.IsColorStored: Boolean;
 
 begin
   Result := not (coParentColor in FOptions);
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function TVirtualTreeColumn.IsMarginStored: Boolean;
+begin
+  {$IF LCL_FullVersion >= 1080000}
+  Result := FMargin <> Owner.Header.TreeView.Scale96ToFont(DEFAULT_MARGIN);
+  {$ELSE}
+  Result := FMargin <> DEFAULT_MARGIN;
+  {$IFEND}
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function TVirtualTreeColumn.IsSpacingStored: Boolean;
+begin
+  {$IF LCL_FullVersion >= 1080000}
+  Result := FSpacing <> Owner.Header.TreeView.Scale96ToFont(DEFAULT_SPACING);
+  {$ELSE}
+  Result := FSpacing <> DEFAULT_SPACING;
+  {$IFEND}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -11302,6 +11343,10 @@ begin
     col := Columns[i];
     if col.IsWidthStored then
       col.Width := Round(col.Width * AXProportion);
+    if col.IsSpacingStored then
+      col.Spacing := Round(col.Spacing * AXProportion);
+    if col.IsMarginStored then
+      col.Margin := Round(col.Margin * AXProportion);
   end;
 end;
 {$IFEND}
@@ -12150,11 +12195,19 @@ begin
 
   {$IF LCL_FullVersion >= 1080000}
   FDefaultNodeHeight := Scale96ToFont(DEFAULT_NODE_HEIGHT);
+  FIndent := Scale96ToFont(DEFAULT_INDENT);
+  FMargin := Scale96ToFont(DEFAULT_MARGIN);
+  FTextMargin := Scale96ToFont(DEFAULT_MARGIN);
+  FDragHeight := Scale96ToFont(DEFAULT_DRAG_HEIGHT);
+  FDragWidth := Scale96ToFont(DEFAULT_DRAG_WIDTH);
   {$ELSE}
   FDefaultNodeHeight := DEFAULT_NODE_HEIGHT;
+  FIndent := DEFAULT_INDENT;
+  FMargin := DEFAULT_MARGIN;
+  FTextMargin := DEFAULT_MARGIN;
+  FDragHeight := DEFAULT_DRAG_HEIGHT;
+  FDragWidth := DEFAULT_DRAG_WIDTH;
   {$IFEND}
-
-  FIndent := 18;
 
   FPlusBM := TBitmap.Create;
   FHotPlusBM := TBitmap.Create;
@@ -12187,12 +12240,8 @@ begin
   FBackground := TPicture.Create;
 
   FDefaultPasteMode := amAddChildLast;
-  FMargin := 4;
-  FTextMargin := 4;
   FLastDragEffect := DROPEFFECT_NONE;
   FDragType := dtOLE;
-  FDragHeight := 350;
-  FDragWidth := 200;
 
   FColors := TVTColors.Create(Self);
   FEditDelay := 1000;
@@ -13873,6 +13922,68 @@ begin
     Run := Run.PrevSibling;
 
   Result := Assigned(Run) and (Run = Node);
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function TBaseVirtualTree.IsDragHeightStored: Boolean;
+begin
+  {$IF LCL_FullVersion >= 1080000}
+  Result := FDragHeight <> Scale96ToFont(DEFAULT_DRAG_HEIGHT);
+  {$ELSE}
+  Result := FDragHeight <> DEFAULT_DRAG_HEIGHT;
+  {$IFEND}
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function TBaseVirtualTree.IsDragWidthStored: Boolean;
+begin
+  {$IF LCL_FullVersion >= 1080000}
+  Result := FDragWidth <> Scale96ToFont(DEFAULT_DRAG_WIDTH);
+  {$ELSE}
+  Result := FDragWidth <> DEFAULT_DRAG_WIDTH;
+  {$IFEND}
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function TBaseVirtualTree.IsIndentStored: Boolean;
+begin
+  {$IF LCL_FullVersion >= 1080000}
+  Result := FIndent <> Scale96ToFont(DEFAULT_INDENT);
+  {$ELSE}
+  Result := FIndent <> DEFAULT_INDENT;
+  {$IFEND}
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function TBaseVirtualTree.IsMarginStored: Boolean;
+begin
+  {$IF LCL_FullVersion >= 1080000}
+  Result := FMargin <> Scale96ToFont(DEFAULT_MARGIN);
+  {$ELSE}
+  Result := FMargin <> DEFAULT_MARGIN;
+  {$IFEND}
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function TBaseVirtualTree.IsSelectionCurveRadiusStored: Boolean;
+begin
+  Result := FSelectionCurveRadius <> 0;
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function TBaseVirtualTree.IsTextMarginStored: Boolean;
+begin
+  {$IF LCL_FullVersion >= 1080000}
+  Result := FTextMargin <> Scale96ToFont(DEFAULT_MARGIN);
+  {$ELSE}
+  Result := FTextMargin <> DEFAULT_MARGIN;
+  {$IFEND}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -26466,6 +26577,18 @@ begin
     try
       if IsDefaultNodeHeightStored then
         FDefaultNodeHeight := Round(FDefaultNodeHeight * AYProportion);
+      if IsIndentStored then
+        FIndent := Round(FIndent * AYProportion);
+      if IsMarginStored then
+        FMargin := Round(FMargin * AXProportion);
+      if IsTextMarginStored then
+        FTextMargin := Round(FTextMargin * AXProportion);
+      if IsSelectionCurveRadiusStored then
+        FSelectionCurveRadius := Round(FSelectionCurveRadius * AXProportion);
+      if IsDragHeightStored then
+        FDragHeight := Round(FDragHeight * AYProportion);
+      if IsDragWidthStored then
+        FDragWidth := Round(FDragWidth * AXProportion);
       FHeader.AutoAdjustLayout(AXProportion, AYProportion);
     finally
       EnableAutoSizing;
