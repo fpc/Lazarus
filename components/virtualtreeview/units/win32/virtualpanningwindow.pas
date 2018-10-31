@@ -75,6 +75,7 @@ end;
 procedure TVirtualPanningWindow.Start(OwnerHandle: THandle; const Position: TPoint);
 var
   TempClass: TWndClass;
+  lSize: TSize;
 begin
   // Register the helper window class.
   if not GetClassInfo(HInstance, PanningWindowClass.lpszClassName, {%H-}TempClass) then
@@ -82,11 +83,14 @@ begin
     PanningWindowClass.hInstance := HInstance;
     Windows.RegisterClass(PanningWindowClass);
   end;
-  
+
   // Create the helper window and show it at the given position without activating it.
+  lSize.CX := MulDiv(32, ScreenInfo.PixelsPerInchX, 96);
+  lSize.CY := MulDiv(32, ScreenInfo.PixelsPerInchY, 96);
   with Position do
-    FHandle := CreateWindowEx(WS_EX_TOOLWINDOW, PanningWindowClass.lpszClassName, nil, WS_POPUP, X - 16, Y - 16,
-      32, 32, OwnerHandle, 0, HInstance, nil);
+    FHandle := CreateWindowEx(WS_EX_TOOLWINDOW, PanningWindowClass.lpszClassName,
+      nil, WS_POPUP, X - lSize.CX div 2, Y - lSize.CY div 2, lSize.CX, lSize.CY,
+      OwnerHandle, 0, HInstance, nil);
   //todo use SetWindowLongPtr later
   SetWindowLong(FHandle,GWL_USERDATA,PtrInt(Self));
   

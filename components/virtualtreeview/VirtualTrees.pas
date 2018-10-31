@@ -25109,6 +25109,8 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 procedure TBaseVirtualTree.StartWheelPanning(const Position: TPoint);
+const
+  TRANSPARENT_COLOR = $FFFFFE;
 
 // Called when wheel panning should start. A little helper window is created to indicate the reference position,
 // which determines in which direction and how far wheel panning/scrolling will happen.
@@ -25139,10 +25141,10 @@ procedure TBaseVirtualTree.StartWheelPanning(const Position: TPoint);
         for X := 0 to ImageWidth - 1 do
         begin
           // Start a new span if we found a non-transparent pixel and no span is currently started.
-          if (Start = -1) and (Pixels[X, Y] <> clFuchsia) then
+          if (Start = -1) and (Pixels[X, Y] <> TRANSPARENT_COLOR) then
             Start := X
           else
-            if (Start > -1) and (Pixels[X, Y] = clFuchsia) then
+            if (Start > -1) and (Pixels[X, Y] = TRANSPARENT_COLOR) then
             begin
               // A non-transparent span is finished. Add it to the result region.
               Temp := CreateRectRgn(Start, Y, X, Y + 1);
@@ -25168,6 +25170,7 @@ procedure TBaseVirtualTree.StartWheelPanning(const Position: TPoint);
 
 var
   ImageName: string;
+  bm: TCustomBitmap;
 
 begin
   // Set both panning and scrolling flag. One will be removed shortly depending on whether the middle mouse button is
@@ -25194,7 +25197,16 @@ begin
   else
     ImageName := 'VT_MOVENS_BMP';
 
-  FPanningWindow.Image.LoadFromResourceName(0, ImageName);
+  bm := CreateBitmapFromResourceName(0, BuildResourceName(ImageName));  // is png!
+  try
+    FPanningWindow.Image.SetSize(bm.Width, bm.Height);
+    FPanningWindow.Image.Canvas.Brush.Color := TRANSPARENT_COLOR;
+    FPanningWindow.Image.Canvas.FillRect(0, 0, bm.Width, bm.Height);
+    FPanningWindow.Image.Transparent := true;
+    FPanningWindow.Image.Canvas.Draw(0, 0, bm);
+  finally
+    bm.Free;
+  end;
 
   FPanningWindow.Show(CreateClipRegion);
 
