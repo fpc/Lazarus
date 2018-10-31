@@ -2132,6 +2132,7 @@ type
     FDrawSelectionMode: TVTDrawSelectionMode;    // determines the paint mode for draw selection
 
     {$IF LCL_FullVersion >= 2000000}
+    FImagesWidth: Integer;                       // needed for high-dpi imagelist support
     FCustomCheckImagesWidth: Integer;
     FCheckImagesWidth: Integer;
     {$IFEND}
@@ -3021,6 +3022,8 @@ type
 
   // LCL scaling support
   protected
+    function GetRealImagesWidth: Integer;
+    function GetRealImagesHeight: Integer;
     function GetRealCheckImagesWidth: Integer;
     function GetRealCheckImagesHeight: Integer;
   {$IF LCL_FullVersion >= 1080000}
@@ -3031,9 +3034,11 @@ type
   // LCL multi-resolution imagelist support
   {$IF LCL_FullVersion >= 2000000}
   private
+    procedure SetImagesWidth(const Value: integer);
     procedure SetCustomCheckImagesWidth(const Value: Integer);
   protected
     { multi-resolution imagelist support }
+    property ImagesWidth: Integer read FImagesWidth write SetImagesWidth default 0;
     property CustomCheckImagesWidth: Integer read FCustomCheckImagesWidth write SetCustomCheckImagesWidth default 0;
   {$IFEND}
 
@@ -3647,6 +3652,7 @@ type
     property Visible;
     property WantTabs;
     {$IF LCL_FullVersion >= 2000000}
+    property ImagesWidth;
     property CustomCheckImagesWidth;
     {$IFEND}
 
@@ -3912,6 +3918,7 @@ type
     property Visible;
     property WantTabs;
     {$IF LCL_FullVersion >= 2000000}
+    property ImagesWidth;
     property CustomCheckImagesWidth;
     {$IFEND}
 
@@ -14969,6 +14976,14 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 {$IF LCL_FullVersion >= 2000000}
+procedure TBaseVirtualTree.SetImagesWidth(const Value: Integer);
+begin
+  if Value <> FImagesWidth then begin
+    FImagesWidth := Value;
+    Invalidate;
+  end;
+end;
+
 procedure TBaseVirtualTree.SetCustomCheckImagesWidth(const Value: Integer);
 begin
   if Value <> FCustomCheckImagesWidth then begin
@@ -17984,7 +17999,7 @@ procedure TBaseVirtualTree.AdjustImageBorder(Images: TCustomImageList; BidiMode:
 // Depending on the width of the image list as well as the given bidi mode R must be adjusted.
 
 begin
-  AdjustImageBorder(Images.Width, Images.Height, BidiMode, VAlign, R, ImageInfo);
+  AdjustImageBorder(GetRealImagesWidth, GetRealImagesHeight, BidiMode, VAlign, R, ImageInfo);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -21857,8 +21872,8 @@ function TBaseVirtualTree.GetNodeImageSize(Node: PVirtualNode): TSize;
 begin
   if Assigned(FImages) then
   begin
-    Result.cx := FImages.Width;
-    Result.cy := FImages.Height;
+    Result.cx := GetRealImagesWidth;
+    Result.cy := GetRealImagesHeight;
   end
   else
   begin
@@ -21894,7 +21909,8 @@ begin
   if Assigned(FStateImages) then
     Inc(NodeLeft, FStateImages.Width + 2);
   if Assigned(FImages) then
-    Inc(NodeLeft, FImages.Width + 2);
+    Inc(NodeLeft, GetRealImagesWidth + 2);
+
   WithCheck := (toCheckSupport in FOptions.FMiscOptions) and Assigned(FCheckImages);
   if WithCheck then
     CheckOffset := GetRealCheckImagesWidth + 2
@@ -21957,6 +21973,28 @@ function TBaseVirtualTree.GetOptionsClass: TTreeOptionsClass;
 
 begin
   Result := TCustomVirtualTreeOptions;
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function TBaseVirtualTree.GetRealImagesWidth: Integer;
+begin
+  {$IF LCL_FullVersion >= 2000000}
+  Result := FImages.ResolutionForPPI[FImagesWidth, Font.PixelsPerInch, GetCanvasScaleFactor].Width;
+  {$ELSE}
+  Result := FImages.Width;
+  {$IFEND}
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function TBaseVirtualTree.GetRealImagesHeight: Integer;
+begin
+  {$IF LCL_FullVersion >= 2000000}
+  Result := FImages.ResolutionForPPI[FImagesWidth, Font.PixelsPerInch, GetCanvasScaleFactor].Height;
+  {$ELSE}
+  Result := FImages.Height;
+  {$IFEND}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -24118,6 +24156,9 @@ var
   CutNode: Boolean;
   PaintFocused: Boolean;
   DrawEffect: TGraphicsDrawEffect;
+ {$IF LCL_FullVersion >= 2000000}
+  ImageRes: TScaledImageListResolution;
+ {$IFEND}
 
 begin
   with PaintInfo do
@@ -24164,7 +24205,12 @@ begin
       if (vsSelected in Node.States) and not Ghosted then
         Images.BlendColor := clDefault;
 
+     {$IF LCL_FullVersion >= 2000000}
+      ImageRes := Images.ResolutionForPPI[ImagesWidth, Font.PixelsPerInch, GetCanvasScaleFactor];
+      ImageRes.Draw(Canvas, XPos, YPos, Index, DrawEffect);
+     {$ELSE}
       Images.Draw(Canvas, XPos, YPos, Index, DrawEffect);
+     {$IFEND}
 
       // Now, draw the overlay.
       // Delphi version has the ability to use the built in overlay indices of windows system image lists
@@ -24172,7 +24218,12 @@ begin
 
       // Note: XPos and YPos are those of the normal images.
       if PaintInfo.ImageInfo[iiOverlay].Index >= 0 then
+       {$IF LCL_FullVersion >= 2000000}
+        ImageRes := ImageInfo[iiOverlay].Images.ResolutionForPPI[ImagesWidth, Font.PixelsPerInch, GetCanvasScaleFactor];
+        ImageRes.Draw(Canvas, XPos, YPos, ImageInfo[iiOverlay].Index);
+       {$ELSE}
         ImageInfo[iiOverlay].Images.Draw(Canvas, XPos, YPos, ImageInfo[iiOverlay].Index);
+       {$IFEND}
     end;
   end;
 end;
@@ -25940,6 +25991,7 @@ begin
       Self.SelectionBlendFactor := SelectionBlendFactor;
       Self.EmptyListMessage := EmptyListMessage;
       {$IF LCL_FullVersion >= 2000000}
+      Self.ImagesWidth := ImagesWidth;
       Self.CustomCheckImagesWidth := CustomCheckImagesWidth;
       {$IFEND}
     end
