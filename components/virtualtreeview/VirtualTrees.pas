@@ -78,7 +78,7 @@ uses
   {$ifdef DEBUG_VTV}
   VTLogger,
   {$endif}
-  LCLType, LMessages, Types,
+  LCLType, LMessages, LCLVersion, Types,
   SysUtils, Classes, Graphics, Controls, Forms, ImgList, StdCtrls, Menus, Printers,
   SyncObjs,  // Thread support
   Clipbrd // Clipboard support
@@ -234,6 +234,7 @@ const
     ssCtrlOS = ssCtrl;
   {$endif}
 
+  DEFAULT_CHECK_WIDTH = 16;
 var // Clipboard format IDs used in OLE drag'n drop and clipboard transfers.
   CF_VIRTUALTREE,
   CF_VTREFERENCE,
@@ -2112,6 +2113,11 @@ type
                                                  // faded if enabled.
     FDrawSelectionMode: TVTDrawSelectionMode;    // determines the paint mode for draw selection
 
+    {$IF LCL_FullVersion >= 2000000}
+    FCustomCheckImagesWidth: Integer;
+    FCheckImagesWidth: Integer;
+    {$IFEND}
+
     // alignment and directionality support
     FAlignment: TAlignment;                      // default alignment of the tree if no columns are shown
 
@@ -2987,6 +2993,21 @@ type
     property OnStateChange: TVTStateChangeEvent read FOnStateChange write FOnStateChange;
     property OnStructureChange: TVTStructureChangeEvent read FOnStructureChange write FOnStructureChange;
     property OnUpdating: TVTUpdatingEvent read FOnUpdating write FOnUpdating;
+
+  // LCL scaling support
+  protected
+    function GetRealCheckImagesWidth: Integer;
+    function GetRealCheckImagesHeight: Integer;
+
+  // LCL multi-resolution imagelist support
+  {$IF LCL_FullVersion >= 2000000}
+  private
+    procedure SetCustomCheckImagesWidth(const Value: Integer);
+  protected
+    { multi-resolution imagelist support }
+    property CustomCheckImagesWidth: Integer read FCustomCheckImagesWidth write SetCustomCheckImagesWidth default 0;
+  {$IFEND}
+
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -3596,6 +3617,9 @@ type
     property TreeOptions: TStringTreeOptions read GetOptions write SetOptions;
     property Visible;
     property WantTabs;
+    {$IF LCL_FullVersion >= 2000000}
+    property CustomCheckImagesWidth;
+    {$IFEND}
 
     property OnAddToSelection;
     property OnAdvancedHeaderDraw;
@@ -3858,6 +3882,9 @@ type
     property TreeOptions: TVirtualTreeOptions read GetOptions write SetOptions;
     property Visible;
     property WantTabs;
+    {$IF LCL_FullVersion >= 2000000}
+    property CustomCheckImagesWidth;
+    {$IFEND}
 
     property OnAddToSelection;
     property OnAdvancedHeaderDraw;
@@ -5125,12 +5152,60 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
+{$IF LCL_FullVersion >= 2000000}
+function GetScalePercent: Integer;
+// adapted from IDEImagesIntf
+begin
+  if ScreenInfo.PixelsPerInchX <= 120 then
+    Result := 100 // 100-125% (96-120 DPI): no scaling
+  else
+  if ScreenInfo.PixelsPerInchX <= 168 then
+    Result := 150 // 126%-175% (144-168 DPI): 150% scaling
+  else
+    Result := Round(ScreenInfo.PixelsPerInchX/96) * 100; // 200, 300, 400, ...
+end;
+{$IFEND}
+
+function BuildResourceName(AResName: String): String;
+var
+  percent: Integer;
+begin
+  Result := AResName;
+  {$IF LCL_FullVersion >= 2000000}
+  percent := GetScalePercent;
+  if percent = 150 then
+    Result := Result + '_150'
+  else if percent <> 100 then
+    Result := Result + '_200';
+  {$IFEND}
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
 function CreateCheckImageList(CheckKind: TCheckImageKind): TImageList;
+{$IF LCL_FullVersion >= 2000000}
+var
+  bm: TCustomBitmap;
+  resName: String;
+{$ENDIF}
 begin
   Result := TImageList.Create(nil);
   Result.Height := 16;
   Result.Width := 16;
+  {$IF LCL_FullVersion >= 2000000}
+  Result.RegisterResolutions([16, 24, 32]);
+  Result.Scaled := true;
+  resname := BuildResourceName(CheckImagesStrings[CheckKind]);
+  bm := CreateBitmapFromResourceName(0, resname);
+  try
+    bm.Transparent := true;
+    Result.AddSliced(bm, 25, 1);
+  finally
+    bm.Free;
+  end;
+  {$ELSE}
   Result.AddResourceName(0, CheckImagesStrings[CheckKind], clFuchsia);
+  {$IFEND}
 end;
 
 function GetCheckImageList(var ImageList: TImageList; CheckKind: TCheckImageKind): TImageList;
@@ -7238,7 +7313,7 @@ begin
         with Self.Owner.Header.Treeview do
         begin
           if Assigned(FCheckImages) then
-            HeaderGlyphSize := Point(FCheckImages.Width, FCheckImages.Height);
+            HeaderGlyphSize := Point(GetRealCheckImagesWidth, GetRealCheckImagesHeight);
         end
     else
       HeaderGlyphSize := Point(0, 0);
@@ -9132,6 +9207,7 @@ var
     Pos: TRect;
     DrawHot: Boolean;
     ImageWidth: Integer;
+    w, h: Integer;
   begin
     ColImageInfo.Ghosted := False;
     PaintInfo.Column := Items[AColumn];
@@ -9251,6 +9327,8 @@ var
           begin
             ColImageInfo.Images := Images;
             Images.Draw(TargetCanvas, GlyphPos.X, GlyphPos.Y, FImageIndex, IsEnabled);
+            w := Images.Width;
+            h := Images.Height;
           end
           else
           begin
@@ -9260,6 +9338,8 @@ var
               ColImageInfo.Index := GetCheckImage(nil, FCheckType, FCheckState, IsEnabled);
               ColImageInfo.XPos := GlyphPos.X;
               ColImageInfo.YPos := GlyphPos.Y;
+              w := ColImageInfo.Images.Width;
+              h := ColImageInfo.Images.Height;
               PaintCheckImage(TargetCanvas, ColImageInfo, False);
             end;
           end;
@@ -9269,8 +9349,8 @@ var
           begin
             Left := GlyphPos.X;
             Top := GlyphPos.Y;
-            Right := Left + ColImageInfo.Images.Width;
-            Bottom := Top + ColImageInfo.Images.Height;
+            Right := Left + w;
+            Bottom := Top + h;
           end;
         end;
 
@@ -12463,7 +12543,7 @@ begin
   else
     StateImageOffset := 0;
   if WithCheck then
-    CheckOffset := FCheckImages.Width + 2
+    CheckOffset := GetRealCheckImagesWidth + 2
   else
     CheckOffset := 0;
   AutoSpan := FHeader.UseColumns and (toAutoSpanColumns in FOptions.FAutoOptions);
@@ -12640,7 +12720,7 @@ begin
   else
     StateImageOffset := 0;
   if WithCheck then
-    CheckOffset := FCheckImages.Width + 2
+    CheckOffset := GetRealCheckImagesWidth + 2
   else
     CheckOffset := 0;
   AutoSpan := FHeader.UseColumns and (toAutoSpanColumns in FOptions.FAutoOptions);
@@ -14201,6 +14281,11 @@ begin
     FCheckImages := GetCheckImageListFor(Value);
     if not Assigned(FCheckImages) then
       FCheckImages := FCustomCheckImages;
+    {$IF LCL_FullVersion >= 2000000}
+    FCheckImagesWidth := 0;
+    if FCheckImages = FCustomCheckImages then
+      FCheckImagesWidth := FCustomCheckImagesWidth;
+    {$IFEND}
     if HandleAllocated and (FUpdateCount = 0) and not (csLoading in ComponentState) then
       InvalidateRect(Handle, nil, False);
   end;
@@ -14637,6 +14722,7 @@ begin
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
+
 procedure TBaseVirtualTree.SetImages(const Value: TCustomImageList);
 
 begin
@@ -14657,6 +14743,18 @@ begin
       Invalidate;
   end;
 end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+{$IF LCL_FullVersion >= 2000000}
+procedure TBaseVirtualTree.SetCustomCheckImagesWidth(const Value: Integer);
+begin
+  if Value <> FCustomCheckImagesWidth then begin
+    FCustomCheckImagesWidth := Value;
+    Invalidate;
+  end;
+end;
+{$IFEND}
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -18508,7 +18606,7 @@ begin
       // Check support is only available for the main column.
       if MainColumnHit and (toCheckSupport in FOptions.FMiscOptions) and Assigned(FCheckImages) and
         (HitInfo.HitNode.CheckType <> ctNone) then
-        Inc(ImageOffset, FCheckImages.Width + 2);
+        Inc(ImageOffset, GetRealCheckImagesWidth + 2);
 
       if MainColumnHit and (Offset < ImageOffset) then
       begin
@@ -18645,7 +18743,7 @@ begin
       // Check support is only available for the main column.
       if MainColumnHit and (toCheckSupport in FOptions.FMiscOptions) and Assigned(FCheckImages) and
         (HitInfo.HitNode.CheckType <> ctNone) then
-        Dec(ImageOffset, FCheckImages.Width + 2);
+        Dec(ImageOffset, GetRealCheckImagesWidth + 2);
 
       if MainColumnHit and (Offset > ImageOffset) then
       begin
@@ -21577,7 +21675,7 @@ begin
     Inc(NodeLeft, FImages.Width + 2);
   WithCheck := (toCheckSupport in FOptions.FMiscOptions) and Assigned(FCheckImages);
   if WithCheck then
-    CheckOffset := FCheckImages.Width + 2
+    CheckOffset := GetRealCheckImagesWidth + 2
   else
     CheckOffset := 0;
 
@@ -21637,6 +21735,28 @@ function TBaseVirtualTree.GetOptionsClass: TTreeOptionsClass;
 
 begin
   Result := TCustomVirtualTreeOptions;
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function TBaseVirtualTree.GetRealCheckImagesWidth: Integer;
+begin
+  {$IF LCL_FullVersion >= 2000000}
+  Result := FCheckImages.ResolutionForPPI[FCheckImagesWidth, Font.PixelsPerInch, GetCanvasScaleFactor].Width;
+  {$ELSE}
+  Result := FCheckImages.Width;
+  {$IFEND}
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function TBaseVirtualTree.GetRealCheckImagesHeight: Integer;
+begin
+  {$IF LCL_FullVersion >= 2000000}
+  Result := FCheckImages.ResolutionForPPI[FCheckImagesWidth, Font.PixelsPerInch, GetCanvasScaleFactor].Height;
+  {$ELSE}
+  Result := FCheckImages.Height;
+  {$IFEND}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -23689,9 +23809,17 @@ var
   {$endif}
   UseThemes: Boolean;
   DrawEffect: TGraphicsDrawEffect;
+  checkSize: Integer;
 
 begin
   {$ifdef DEBUG_VTV}Logger.EnterMethod([lcCheck],'PaintCheckImage');{$endif}
+
+  {$if LCL_FullVersion >= 1080000}
+  checkSize := Scale96ToFont(DEFAULT_CHECK_WIDTH);
+  {$else}
+  checkSize := DEFAULT_CHECK_WIDTH;
+  {$ifend}
+
   with ImageInfo do
   begin
     UseThemes := (tsUseThemes in FStates) and (FCheckImageKind = ckSystemDefault);
@@ -23699,7 +23827,9 @@ begin
     begin
       if UseThemes then
       begin
-        R := Rect(XPos - 1, YPos, XPos + 16, YPos + 16);
+        Details := ThemeServices.GetElementDetails(tbCheckBoxCheckedNormal);
+        checkSize := ThemeServices.GetDetailSize(Details).CX;
+        R := Rect(XPos, YPos, XPos + checkSize, YPos + checkSize);
         Details.Element := teButton;
         case Index of
           0..8: // radio buttons
@@ -23716,6 +23846,7 @@ begin
             begin
               Details.Part := BP_PUSHBUTTON;
               Details.State := Index - 20;
+              InflateRect(R, 1, 1);
             end;
         else
           Details.Part := 0;
@@ -23736,7 +23867,7 @@ begin
       end
       else
       begin
-        R := Rect(XPos + 1, YPos + 1, XPos + 14, YPos + 14);
+        R := Rect(XPos + 1, YPos + 1, XPos + checkSize-2, YPos + checkSize-2);
         DrawCheckButton(Canvas, Index - 1, R, FCheckImageKind = ckSystemFlat);
       end;
     end
@@ -23748,7 +23879,11 @@ begin
         else
           DrawEffect := gdeShadowed;
 
+        {$IF LCL_FullVersion >= 2000000}
+        DrawForPPI(Canvas, XPos-1, YPos-1, Index, 0, Font.PixelsPerInch, GetCanvasScaleFactor, DrawEffect);
+        {$ELSE}
         Draw(Canvas, XPos, YPos, Index, DrawEffect);
+        {$IFEND}
       end;
     end;
   {$ifdef DEBUG_VTV}Logger.ExitMethod([lcCheck],'PaintCheckImage');{$endif}
@@ -25583,6 +25718,9 @@ begin
       Self.SelectionCurveRadius := SelectionCurveRadius;
       Self.SelectionBlendFactor := SelectionBlendFactor;
       Self.EmptyListMessage := EmptyListMessage;
+      {$IF LCL_FullVersion >= 2000000}
+      Self.CustomCheckImagesWidth := CustomCheckImagesWidth;
+      {$IFEND}
     end
     else
       inherited;
@@ -26652,8 +26790,9 @@ begin
       if toShowRoot in FOptions.FPaintOptions then
         Inc(Offset, FIndent);
       if (toCheckSupport in FOptions.FMiscOptions) and Assigned(FCheckImages) and (Node.CheckType <> ctNone) then
-        Inc(Offset, FCheckImages.Width + 2);
+        Inc(Offset, GetRealCheckImagesWidth + 2);
     end;
+
     // Consider associated images.
     if Assigned(FStateImages) and HasImage(Node, ikState, Column) then
       Inc(Offset, FStateImages.Width + 2);
@@ -27527,7 +27666,7 @@ begin
     else
       StateImageOffset := 0;
     if Assigned(FCheckImages) then
-      CheckOffset := FCheckImages.Width + 2
+      CheckOffset := GetRealCheckImagesWidth + 2
     else
       CheckOffset := 0;
 
