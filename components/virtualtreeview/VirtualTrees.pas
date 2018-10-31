@@ -1267,6 +1267,9 @@ type
     FFixedAreaConstraints: TVTFixedAreaConstraints; // Percentages for the fixed area (header, fixed columns).
     FImages: TCustomImageList;
     FImageChangeLink: TChangeLink;     // connections to the image list to get notified about changes
+    {$IF LCL_FullVersion >= 2000000}
+    FImagesWidth: Integer;
+    {$IFEND}
     FSortColumn: TColumnIndex;
     FSortDirection: TSortDirection;
     FDragImage: TVTDragImage;          // drag image management during header drag
@@ -1285,6 +1288,9 @@ type
     procedure SetFont(const Value: TFont);
     procedure SetHeight(Value: Integer);
     procedure SetImages(const Value: TCustomImageList);
+    {$IF LCL_FullVersion >= 2000000}
+    procedure SetImagesWidth(const Value: Integer);
+    {$IFEND}
     procedure SetMainColumn(Value: TColumnIndex);
     procedure SetMaxHeight(Value: Integer);
     procedure SetMinHeight(Value: Integer);
@@ -1362,6 +1368,9 @@ type
     property FixedAreaConstraints: TVTFixedAreaConstraints read FFixedAreaConstraints write FFixedAreaConstraints;
     property Height: Integer read FHeight write SetHeight stored IsHeightStored;
     property Images: TCustomImageList read FImages write SetImages;
+    {$IF LCL_FullVersion >= 2000000}
+    property ImagesWidth: Integer read FImagesWidth write SetImagesWidth default 0;
+    {$IFEND}
     property MainColumn: TColumnIndex read GetMainColumn write SetMainColumn default 0;
     property MaxHeight: Integer read FMaxHeight write SetMaxHeight default 10000;
     property MinHeight: Integer read FMinHeight write SetMinHeight default 10;
@@ -7386,9 +7395,14 @@ begin
   with Owner, Header do
   begin
     if UseHeaderGlyph then
-      if not FCheckBox then
+      if not FCheckBox then begin
+        {$IF LCL_FullVersion >= 2000000}
+        with FImages.ResolutionForPPI[FImagesWidth, Font.PixelsPerInch, Self.Owner.Header.TreeView.GetCanvasScaleFactor] do
+          HeaderGlyphSize := Point(Width, Height);
+        {$ELSE}
         HeaderGlyphSize := Point(FImages.Width, FImages.Height)
-      else
+        {$IFEND}
+      end else
         with Self.Owner.Header.Treeview do
         begin
           if Assigned(FCheckImages) then
@@ -9206,6 +9220,9 @@ var
   PaintInfo: THeaderPaintInfo;
   RequestedElements,
   ActualElements: THeaderPaintElements;
+  {$IF LCL_FullVersion >= 2000000}
+  ImagesRes: TScaledImageListResolution;
+  {$IFEND}
 
   //--------------- local functions -------------------------------------------
 
@@ -9410,7 +9427,11 @@ var
         // main glyph
         FHasImage := False;
         if Assigned(Images) then
+          {$IF LCL_FullVersion >= 2000000}
+          ImageWidth := ImagesRes.Width
+          {$ELSE}
           ImageWidth := Images.Width
+          {$IFEND}
         else
           ImageWidth := 0;
 
@@ -9420,9 +9441,15 @@ var
           if not FCheckBox then
           begin
             ColImageInfo.Images := Images;
+            {$IF LCL_FullVersion >= 2000000}
+            ImagesRes.Draw(TargetCanvas, GlyphPos.X, GlyphPos.Y, FImageIndex, IsEnabled);
+            w := ImagesRes.Width;
+            h := ImagesRes.Height;
+            {$ELSE}
             Images.Draw(TargetCanvas, GlyphPos.X, GlyphPos.Y, FImageIndex, IsEnabled);
             w := Images.Width;
             h := Images.Height;
+            {$IFEND}
           end
           else
           begin
@@ -9547,6 +9574,10 @@ begin
     // Use shortcuts for the images and the font.
     Images := FHeader.FImages;
     Font := FHeader.FFont;
+    {$IF LCL_FullVersion >= 2000000}
+    if Images <> nil then
+      ImagesRes := Images.ResolutionForPPI[FHeader.ImagesWidth, Font.PixelsPerInch, Header.TreeView.GetCanvasScaleFactor];
+    {$IFEND}
 
     PrepareButtonStyles;
 
@@ -9976,6 +10007,18 @@ begin
       Invalidate(nil);
   end;
 end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+{$IF LCL_FullVersion >= 2000000}
+procedure TVTHeader.SetImagesWidth(const Value: Integer);
+begin
+  if Value <> FImagesWidth then begin
+    FImagesWidth := Value;
+    Invalidate(nil);
+  end;
+end;
+{$IFEND}
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -11329,6 +11372,9 @@ begin
     SortColumn := TVTHeader(Source).SortColumn;
     SortDirection := TVTHeader(Source).SortDirection;
     Style := TVTHeader(Source).Style;
+    {$IF LCL_FullVersion >= 2000000}
+    ImagesWidth := TVTHeader(Source).ImagesWidth;
+    {$IFEND}
 
     RescaleHeader;
   end
