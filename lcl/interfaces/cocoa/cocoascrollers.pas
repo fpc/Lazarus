@@ -69,6 +69,9 @@ type
     function lclContentView: NSView; override;
     function lclClientFrame: TRect; override;
     function lclIsMouseInAuxArea(event: NSEvent): Boolean; override;
+    procedure lclUpdate; override;
+    procedure lclInvalidateRect(const r: TRect); override;
+    procedure lclInvalidate; override;
 
     procedure setDocumentView(AView: NSView); message 'setDocumentView:';
     function documentView: NSView; message 'documentView';
@@ -303,6 +306,21 @@ end;
 function TCocoaManualScrollView.lclIsMouseInAuxArea(event: NSEvent): Boolean;
 begin
   Result := isMouseEventInScrollBar(Self, event);
+end;
+
+procedure TCocoaManualScrollView.lclUpdate;
+begin
+  documentView.lclUpdate;
+end;
+
+procedure TCocoaManualScrollView.lclInvalidateRect(const r: TRect);
+begin
+  documentView.lclInvalidateRect(r);
+end;
+
+procedure TCocoaManualScrollView.lclInvalidate;
+begin
+  documentView.lclInvalidate;
 end;
 
 procedure TCocoaManualScrollView.setDocumentView(AView: NSView);
