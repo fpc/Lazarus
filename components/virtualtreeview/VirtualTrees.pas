@@ -226,13 +226,13 @@ const
   crVT_MOVEN = TCursor(73);
   crVT_MOVES = TCursor(74);
 
-  UtilityImageSize = 16; // Needed by descendants for hittests.
-
   {$if defined(LCLCarbon) or defined(LCLCocoa)}
     ssCtrlOS = ssMeta;     // Mac OS X fix
   {$else}
     ssCtrlOS = ssCtrl;
   {$endif}
+
+  cUtilityImageSize = 16; // Needed by descendants for hittests.
 
   DEFAULT_CHECK_WIDTH = 16;
   DEFAULT_COLUMN_WIDTH = 50;
@@ -255,6 +255,8 @@ var // Clipboard format IDs used in OLE drag'n drop and clipboard transfers.
 
   MMXAvailable: Boolean; // necessary to know because the blend code uses MMX instructions
   IsWinVistaOrAbove: Boolean;
+
+  UtilityImageSize: Integer = cUtilityImageSize;
 
 type
   // The exception used by the trees.
@@ -4357,7 +4359,7 @@ var
   XPImages,                            // global XP style check images
   SystemCheckImages,                   // global system check images
   SystemFlatCheckImages: TImageList;   // global flat system check images
-  UtilityImages: TBitmap;              // some small additional images (e.g for header dragging)
+  UtilityImages: TCustomBitmap;        // some small additional images (e.g for header dragging)
   Initialized: Boolean;                // True if global structures have been initialized.
   NeedToUnitialize: Boolean;           // True if the OLE subsystem could be initialized successfully.
 
@@ -5232,6 +5234,20 @@ begin
   {$IFEND}
 end;
 
+// Support resources with bmp as well as png
+procedure LoadBitmapFromResource(ABitmap: TBitmap; AResName: String);
+var
+  bm: TCustomBitmap;
+begin
+  bm := CreateBitmapFromResourceName(0, BuildResourceName(AResName));
+  try
+    bm.Transparent := true;
+    ABitmap.Assign(bm);
+  finally
+    bm.Free;
+  end;
+end;
+
 //----------------------------------------------------------------------------------------------------------------------
 
 function CreateCheckImageList(CheckKind: TCheckImageKind): TImageList;
@@ -5436,9 +5452,8 @@ begin
   // Register the tree reference clipboard format. Others will be handled in InternalClipboarFormats.
   CF_VTREFERENCE := ClipboardRegisterFormat(CFSTR_VTREFERENCE);
 
-  UtilityImages := TBitmap.Create;
-  UtilityImages.Transparent := True;
-  UtilityImages.LoadFromResourceName(0, 'VT_UTILITIES');
+  UtilityImages := CreateBitmapFromResourceName(0, BuildResourceName('vt_utilities'));
+  UtilityImageSize := UtilityImages.Height;
 
   SystemCheckImages := CreateCheckImageList(ckSystemDefault);
 
@@ -9319,6 +9334,7 @@ var
     DrawHot: Boolean;
     ImageWidth: Integer;
     w, h: Integer;
+    Rsrc, Rdest: TRect;
   begin
     ColImageInfo.Ghosted := False;
     PaintInfo.Column := Items[AColumn];
@@ -9490,6 +9506,8 @@ var
         // sort glyph
         if not (hpeSortGlyph in ActualElements) and ShowSortGlyph then
         begin
+          Rsrc := Rect(0, 0, UtilityImageSize-1, UtilityImageSize-1);
+          Rdest := Rsrc;
           if tsUseExplorerTheme in FHeader.Treeview.FStates then
           begin
             Pos.TopLeft := SortGlyphPos;
@@ -9505,13 +9523,9 @@ var
           else
           begin
             SortIndex := SortGlyphs[FHeader.FSortDirection, tsUseThemes in FHeader.Treeview.FStates];
-            {$ifdef USE_DELPHICOMPAT}
-            DirectMaskBlt(FHeaderBitmap.Canvas.Handle, SortGlyphPos.X, SortGlyphPos.Y, UtilityImageSize, UtilityImageSize, UtilityImages.Canvas.Handle,
-              SortIndex * UtilityImageSize, 0, UtilityImages.MaskHandle);
-            {$else}
-            StretchMaskBlt(FHeaderBitmap.Canvas.Handle, SortGlyphPos.X, SortGlyphPos.Y, UtilityImageSize, UtilityImageSize, UtilityImages.Canvas.Handle,
-              SortIndex * UtilityImageSize, 0, UtilityImageSize, UtilityImageSize, UtilityImages.MaskHandle,SortIndex * UtilityImageSize, 0, SRCCOPY);
-            {$endif}
+            OffsetRect(Rsrc, SortIndex * UtilityImageSize, 0);
+            OffsetRect(Rdest, SortGlyphPos.x, SortGlyphPos.y);
+            FHeaderBitmap.Canvas.CopyRect(Rdest, UtilityImages.Canvas, Rsrc);
           end;
         end;
 
