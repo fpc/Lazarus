@@ -2133,6 +2133,7 @@ type
 
     {$IF LCL_FullVersion >= 2000000}
     FImagesWidth: Integer;                       // needed for high-dpi imagelist support
+    FStateImagesWidth: Integer;
     FCustomCheckImagesWidth: Integer;
     FCheckImagesWidth: Integer;
     {$IFEND}
@@ -3024,6 +3025,8 @@ type
   protected
     function GetRealImagesWidth: Integer;
     function GetRealImagesHeight: Integer;
+    function GetRealStateImagesWidth: Integer;
+    function GetRealStateImagesHeight: Integer;
     function GetRealCheckImagesWidth: Integer;
     function GetRealCheckImagesHeight: Integer;
   {$IF LCL_FullVersion >= 1080000}
@@ -3035,10 +3038,12 @@ type
   {$IF LCL_FullVersion >= 2000000}
   private
     procedure SetImagesWidth(const Value: integer);
+    procedure SetStateImagesWidth(const Value: Integer);
     procedure SetCustomCheckImagesWidth(const Value: Integer);
   protected
     { multi-resolution imagelist support }
     property ImagesWidth: Integer read FImagesWidth write SetImagesWidth default 0;
+    property StateImagesWidth: Integer read FStateImagesWidth write SetStateImagesWidth default 0;
     property CustomCheckImagesWidth: Integer read FCustomCheckImagesWidth write SetCustomCheckImagesWidth default 0;
   {$IFEND}
 
@@ -3653,6 +3658,7 @@ type
     property WantTabs;
     {$IF LCL_FullVersion >= 2000000}
     property ImagesWidth;
+    property StateImagesWidth;
     property CustomCheckImagesWidth;
     {$IFEND}
 
@@ -3919,6 +3925,7 @@ type
     property WantTabs;
     {$IF LCL_FullVersion >= 2000000}
     property ImagesWidth;
+    property StateImagesWidth;
     property CustomCheckImagesWidth;
     {$IFEND}
 
@@ -12465,7 +12472,7 @@ begin
       if ShowImages then
         VAlign := GetNodeImageSize(Node).cy
       else
-        VAlign := FStateImages.Height;
+        VAlign := GetRealStateImagesHeight;
       VAlign := MulDiv((Integer(NodeHeight[Node]) - VAlign), Node.Align, 100) + VAlign div 2;
     end
     else
@@ -12691,7 +12698,7 @@ begin
   WithImages := Assigned(FImages);
   WithStateImages := Assigned(FStateImages);
   if WithStateImages then
-    StateImageOffset := FStateImages.Width + 2
+    StateImageOffset := GetRealStateImagesWidth + 2
   else
     StateImageOffset := 0;
   if WithCheck then
@@ -12868,7 +12875,7 @@ begin
   WithImages := Assigned(FImages);
   WithStateImages := Assigned(FStateImages);
   if WithStateImages then
-    StateImageOffset := FStateImages.Width + 2
+    StateImageOffset := GetRealStateImagesWidth + 2
   else
     StateImageOffset := 0;
   if WithCheck then
@@ -14980,6 +14987,14 @@ procedure TBaseVirtualTree.SetImagesWidth(const Value: Integer);
 begin
   if Value <> FImagesWidth then begin
     FImagesWidth := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TBaseVirtualTree.SetStateImagesWidth(const Value: Integer);
+begin
+  if Value <> FStateImagesWidth then begin
+    FStateImagesWidth := Value;
     Invalidate;
   end;
 end;
@@ -18018,7 +18033,7 @@ begin
   end
   else
   begin
-    ImageInfo.XPos := R.Right - Images.Width;
+    ImageInfo.XPos := R.Right - ImageWidth;
     Dec(R.Right, ImageWidth + 2);
   end;
   ImageInfo.YPos := R.Top + VAlign - ImageHeight div 2;
@@ -18854,7 +18869,7 @@ begin
       else
       begin
         if Assigned(FStateImages) and HasImage(HitInfo.HitNode, ikState, HitInfo.HitColumn) then
-          Inc(ImageOffset, FStateImages.Width + 2);
+          Inc(ImageOffset, GetRealStateImagesWidth + 2);
         if Offset < ImageOffset then
           Include(HitInfo.HitPositions, hiOnStateIcon)
         else
@@ -18991,7 +19006,7 @@ begin
       else
       begin
         if Assigned(FStateImages) and HasImage(HitInfo.HitNode, ikState, HitInfo.HitColumn) then
-          Dec(ImageOffset, FStateImages.Width + 2);
+          Dec(ImageOffset, GetRealStateImagesWidth + 2);
         if Offset > ImageOffset then
           Include(HitInfo.HitPositions, hiOnStateIcon)
         else
@@ -21907,7 +21922,8 @@ begin
     NodeLeft := GetNodeLevel(Node) * FIndent;
 
   if Assigned(FStateImages) then
-    Inc(NodeLeft, FStateImages.Width + 2);
+    Inc(NodeLeft, GetRealStateImagesWidth + 2);
+
   if Assigned(FImages) then
     Inc(NodeLeft, GetRealImagesWidth + 2);
 
@@ -21994,6 +22010,28 @@ begin
   Result := FImages.ResolutionForPPI[FImagesWidth, Font.PixelsPerInch, GetCanvasScaleFactor].Height;
   {$ELSE}
   Result := FImages.Height;
+  {$IFEND}
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function TBaseVirtualTree.GetRealStateImagesWidth: Integer;
+begin
+  {$IF LCL_FullVersion >= 2000000}
+  Result := FStateImages.ResolutionForPPI[FStateImagesWidth, Font.PixelsPerInch, GetCanvasScaleFactor].Width;
+  {$ELSE}
+  Result := FStateImages.Width;
+  {$IFEND}
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+function TBaseVirtualTree.GetRealStateImagesHeight: Integer;
+begin
+  {$IF LCL_FullVersion >= 2000000}
+  Result := FStateImages.ResolutionForPPI[FStateImagesWidth, Font.PixelsPerInch, GetCanvasScaleFactor].Height;
+  {$ELSE}
+  Result := FStateImages.Height;
   {$IFEND}
 end;
 
@@ -25992,6 +26030,7 @@ begin
       Self.EmptyListMessage := EmptyListMessage;
       {$IF LCL_FullVersion >= 2000000}
       Self.ImagesWidth := ImagesWidth;
+      Self.StateImagesWidth := StateImagesWidth;
       Self.CustomCheckImagesWidth := CustomCheckImagesWidth;
       {$IFEND}
     end
@@ -27100,7 +27139,7 @@ begin
 
     // Consider associated images.
     if Assigned(FStateImages) and HasImage(Node, ikState, Column) then
-      Inc(Offset, FStateImages.Width + 2);
+      Inc(Offset, GetRealStateImagesWidth + 2);
     if Assigned(FImages) and HasImage(Node, ikNormal, Column) then
       Inc(Offset, GetNodeImageSize(Node).cx + 2);
 
@@ -27967,7 +28006,7 @@ begin
 
     WithStateImages := Assigned(FStateImages);
     if WithStateImages then
-      StateImageOffset := FStateImages.Width + 2
+      StateImageOffset := GetRealStateImagesWidth + 2
     else
       StateImageOffset := 0;
 
@@ -30655,7 +30694,7 @@ begin
                           begin
                             GetImageIndex(PaintInfo, ikState, iiState, FStateImages);
                             if ImageInfo[iiState].Index > -1 then
-                              AdjustImageBorder(FStateImages.Width, FStateImages.Height, BidiMode, VAlign, ContentRect, ImageInfo[iiState]);
+                              AdjustImageBorder(GetRealStateImagesWidth, GetRealStateImagesHeight, BidiMode, VAlign, ContentRect, ImageInfo[iiState]);
                           end
                           else
                             ImageInfo[iiState].Index := -1;
