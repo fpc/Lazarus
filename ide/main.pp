@@ -467,6 +467,7 @@ type
     procedure SrcNotebookEditorDoGotoBookmark(Sender: TObject; ID: Integer; Backward: Boolean);
     procedure SrcNotebookEditorChanged(Sender: TObject);
     procedure SrcNotebookEditorMoved(Sender: TObject);
+    procedure SrcNotebookEditorCreated(Sender: TObject);
     procedure SrcNotebookEditorClosed(Sender: TObject);
     procedure SrcNotebookCurCodeBufferChanged(Sender: TObject);
     procedure SrcNotebookFileNew(Sender: TObject);
@@ -2157,6 +2158,7 @@ begin
   SourceEditorManager.RegisterChangeEvent(semEditorActivate, @SrcNotebookEditorActived);
   SourceEditorManager.RegisterChangeEvent(semEditorStatus, @SrcNotebookEditorChanged);
   SourceEditorManager.OnEditorMoved := @SrcNotebookEditorMoved;
+  SourceEditorManager.RegisterChangeEvent(semEditorCreate, @SrcNotebookEditorCreated);
   SourceEditorManager.RegisterChangeEvent(semEditorDestroy, @SrcNotebookEditorClosed);
   SourceEditorManager.OnPlaceBookmark := @SrcNotebookEditorPlaceBookmark;
   SourceEditorManager.OnClearBookmark := @SrcNotebookEditorClearBookmark;
@@ -11042,6 +11044,12 @@ begin
   end;
 end;
 
+procedure TMainIDE.SrcNotebookEditorCreated(Sender: TObject);
+begin
+  inc(BookmarksStamp); // updates are OnIdle. So any bookmarks changed before next idle will be updated
+  // TODO: maybe an event semBookmarkSet/Changed should be implemented?
+end;
+
 procedure TMainIDE.SrcNotebookEditorClosed(Sender: TObject);
 var
   SrcEditor: TSourceEditor;
@@ -11051,6 +11059,7 @@ begin
   p :=Project1.EditorInfoWithEditorComponent(SrcEditor);
   if (p <> nil) then
     p.EditorComponent := nil; // Set EditorIndex := -1
+  inc(BookmarksStamp); // Editor may have had bookmarks
 end;
 
 procedure TMainIDE.SrcNotebookCurCodeBufferChanged(Sender: TObject);
