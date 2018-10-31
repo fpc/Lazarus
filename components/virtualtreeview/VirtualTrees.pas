@@ -9532,23 +9532,17 @@ var
         // Show an indication if this column is the current drop target in a header drag operation.
         if not (hpeDropMark in ActualElements) and (DropMark <> dmmNone) then
         begin
+          Rsrc := Rect(0, 0, UtilityImageSize-1, UtilityImageSize-1);
+          Rdest := Rsrc;
           Y := (PaintRectangle.Top + PaintRectangle.Bottom - UtilityImages.Height) div 2;
-          if DropMark = dmmLeft then
-            {$ifdef USE_DELPHICOMPAT}
-            DirectMaskBlt(FHeaderBitmap.Canvas.Handle, PaintRectangle.Left, Y, UtilityImageSize, UtilityImageSize, UtilityImages.Canvas.Handle,
-              0, 0, UtilityImages.MaskHandle)
-            {$else}
-            StretchMaskBlt(FHeaderBitmap.Canvas.Handle, PaintRectangle.Left, Y, UtilityImageSize, UtilityImageSize, UtilityImages.Canvas.Handle,
-              0, 0, UtilityImageSize, UtilityImageSize, UtilityImages.MaskHandle, 0, 0, SRCCOPY)
-            {$endif}
-          else
-            {$ifdef USE_DELPHICOMPAT}
-            DirectMaskBlt(FHeaderBitmap.Canvas.Handle, PaintRectangle.Right - 16, Y, UtilityImageSize, UtilityImageSize, UtilityImages.Canvas.Handle,
-              UtilityImageSize, 0, UtilityImages.MaskHandle);
-            {$else}
-            StretchMaskBlt(FHeaderBitmap.Canvas.Handle, PaintRectangle.Right - 16, Y, UtilityImageSize, UtilityImageSize, UtilityImages.Canvas.Handle,
-              UtilityImageSize, 0, UtilityImageSize, UtilityImageSize, UtilityImages.MaskHandle, UtilityImageSize, 0, SRCCOPY);
-            {$endif}
+          if DropMark = dmmLeft then begin
+            OffsetRect(Rdest, PaintRectangle.Left, Y);
+            FHeaderBitmap.Canvas.CopyRect(Rdest, UtilityImages.Canvas, Rsrc);
+          end else begin
+            OffsetRect(Rdest, PaintRectangle.Right - UtilityImageSize, Y);
+            OffsetRect(Rsrc, UtilityImageSize, 0);
+            FHeaderBitmap.Canvas.CopyRect(Rdest, UtilityImages.Canvas, Rsrc);
+          end;
         end;
 
         if ActualElements <> [] then
