@@ -69,7 +69,7 @@ unit VTHeaderPopup;
 interface
 
 uses
-  Menus, VirtualTrees;
+  Menus, LCLVersion, VirtualTrees;
 
 type
   TVTHeaderPopupOption = (
@@ -168,6 +168,14 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 resourcestring
   sResizeToFit = '&Resize All Columns To Fit';
+
+{$IF LCL_FullVersion < 2000000}
+function NewLineMI: TMenuItem;
+begin
+  Result := TMenuItem.Create(nil);
+  Result.Caption := cLineCaption;
+end;
+{$IFEND}
 
 procedure TVTHeaderPopupMenu.Popup(x, y: Integer);
 
