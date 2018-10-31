@@ -649,11 +649,11 @@ msgid "Descendent"
 msgstr "Mažejantis"
 
 #: opkman_const.rsmainfrm_mifromexternalsource
-msgid "From external source"
+msgid "From third party repository"
 msgstr ""
 
 #: opkman_const.rsmainfrm_mifromrepository
-msgid "From repository"
+msgid "From official repository"
 msgstr ""
 
 #: opkman_const.rsmainfrm_mijsonhide

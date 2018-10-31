@@ -627,12 +627,12 @@ msgid "Descendent"
 msgstr "По убыванию"
 
 #: opkman_const.rsmainfrm_mifromexternalsource
-msgid "From external source"
-msgstr "Из внешнего источника"
+msgid "From third party repository"
+msgstr "Из стороннего репозитория"
 
 #: opkman_const.rsmainfrm_mifromrepository
-msgid "From repository"
-msgstr "Из репозитория"
+msgid "From official repository"
+msgstr "Из официального репозитория"
 
 #: opkman_const.rsmainfrm_mijsonhide
 msgid "Hide JSON"
