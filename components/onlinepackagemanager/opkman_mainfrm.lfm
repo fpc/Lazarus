@@ -352,6 +352,27 @@ object MainFrm: TMainFrm
       TabOrder = 1
       Visible = False
     end
+    object pnReturn: TPanel
+      Left = 0
+      Height = 0
+      Top = 60
+      Width = 900
+      Align = alTop
+      ClientHeight = 0
+      ClientWidth = 900
+      Color = clBtnFace
+      ParentColor = False
+      TabOrder = 3
+      object bReturn: TButton
+        Left = 384
+        Height = 31
+        Top = 8
+        Width = 144
+        Caption = 'Return'
+        OnClick = bReturnClick
+        TabOrder = 0
+      end
+    end
   end
   object pnToolBar: TPanel
     Left = 0

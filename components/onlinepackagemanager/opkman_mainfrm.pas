@@ -49,6 +49,7 @@ type
   { TMainFrm }
 
   TMainFrm = class(TForm)
+    bReturn: TButton;
     cbFilterBy: TComboBox;
     cbPackageCategory: TComboBox;
     cbPackageState: TComboBox;
@@ -78,6 +79,7 @@ type
     miCreateJSONForUpdates: TMenuItem;
     miCreateRepositoryPackage: TMenuItem;
     OD: TOpenDialog;
+    pnReturn: TPanel;
     pmInstall: TPopupMenu;
     SD: TSaveDialog;
     tbCleanUp1: TToolButton;
@@ -113,6 +115,7 @@ type
     tbCreate: TToolButton;
     tbUpdate: TToolButton;
     tbOpenRepo: TToolButton;
+    procedure bReturnClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure miCopyToClpBrdClick(Sender: TObject);
     procedure miCreateJSONForUpdatesClick(Sender: TObject);
@@ -1221,7 +1224,11 @@ procedure TMainFrm.miJSONShowClick(Sender: TObject);
 begin
   if not mJSON.Visible then
   begin
-    EnableDisableControls(False);
+    VisualTree.VST.Visible := False;
+    pnTop.Visible := False;
+    pnToolBar.Visible := False;
+    pnReturn.Height := 50;
+    pnReturn.Visible := True;
     mJSON.Visible := True;
     mJSON.BringToFront;
   end
@@ -1229,9 +1236,18 @@ begin
   begin
     mJSON.SendToBack;
     mJSON.Visible := False;
-    EnableDisableControls(True);
+    pnReturn.Visible := False;
+    pnTop.Visible := True;
+    pnToolBar.Visible := True;
+    VisualTree.VST.Visible := True;
   end;
 end;
+
+procedure TMainFrm.bReturnClick(Sender: TObject);
+begin
+  miJSONShowClick(miJSONShow);
+end;
+
 
 procedure TMainFrm.miNameAscClick(Sender: TObject);
 var
