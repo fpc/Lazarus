@@ -21,6 +21,7 @@ type
 
   TIntfPackageListFrm = class(TForm)
     ButtonPanel1: TButtonPanel;
+    imSB: TImageList;
     imTree: TImageList;
     pnExpCol: TPanel;
     pnInfo: TPanel;

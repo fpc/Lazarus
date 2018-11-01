@@ -53,6 +53,7 @@ type
     cbPackageCategory: TComboBox;
     cbPackageState: TComboBox;
     cbPackageType: TComboBox;
+    imSB: TImageList;
     miSaveChecked: TMenuItem;
     miFromExteranlSource: TMenuItem;
     miFromRepository: TMenuItem;
