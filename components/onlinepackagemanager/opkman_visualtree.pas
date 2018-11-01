@@ -106,6 +106,7 @@ type
     FMouseEnter: Boolean;
     FShowHintFrm: TShowHintFrm;
     FOldButtonNode: PVirtualNode;
+    FStarSize: Integer;
     procedure VSTBeforeCellPaint(Sender: TBaseVirtualTree;
       TargetCanvas: TCanvas; Node: PVirtualNode; {%H-}Column: TColumnIndex;
       {%H-}CellPaintMode: TVTCellPaintMode; CellRect: TRect; var {%H-}ContentRect: TRect);
@@ -176,6 +177,9 @@ var
   VisualTree: TVisualTree = nil;
 
 implementation
+
+uses
+  imgList;
 
 { TVisualTree }
 
@@ -294,6 +298,10 @@ begin
      OnScroll := @VSTScroll;
    end;
   FShowHintFrm := TShowHintFrm.Create(nil);
+  if AImgList <> nil then
+    FStarSize := AImgList.WidthForPPI[FVSt.ImagesWidth, FVST.Font.PixelsPerInch]
+  else
+    FStarSize := 0;
 end;
 
 destructor TVisualTree.Destroy;
@@ -645,24 +653,17 @@ end;
 
 procedure TVisualTree.DrawStars(ACanvas: TCanvas; AStartIndex: Integer;
   P: TPoint; AAvarage: Double);
+var
+  imgres: TScaledImageListResolution;
 
-  procedure Draw(const AX, AY: Integer; ATyp, ACnt: Integer);
+  procedure Draw(const AX, AY: Integer; ATyp, ACnt, AWidth: Integer);
   var
-    Bmp: TBitMap;
     I: Integer;
   begin
-    Bmp := TBitmap.Create;
-    try
-      Bmp.Width := 16;
-      Bmp.Height := 16;
-      if AStartIndex + ATyp > 25 then
-        ShowMessage('crap');
-      TImageList(FVST.Images).GetBitmap(AStartIndex + ATyp, Bmp);
-      for I := 0 to ACnt - 1 do
-        ACanvas.Draw(AX + I*16 + 5, AY, Bmp);
-    finally
-      Bmp.Free;
-    end;
+    if AStartIndex + ATyp > 25 then
+      ShowMessage('crap');
+    for I := 0 to ACnt - 1 do
+      imgres.Draw(ACanvas, AX + I*AWidth + 5, AY, AStartIndex + ATyp);
   end;
 
 var
@@ -671,6 +672,8 @@ var
   Stars, NoStars: Integer;
   HalfStar: Boolean;
 begin
+  imgres := FVST.Images.ResolutionForPPI[FVST.ImagesWidth, FVST.Font.PixelsPerInch, FVST.GetCanvasScaleFactor];
+
   HalfStar := False;
   F := Frac(AAvarage);
   I := Trunc(AAvarage);
@@ -697,14 +700,14 @@ begin
   end;
   X := P.X;
   Y := P.Y;
-  Draw(X, Y, 0, Stars);
-  Inc(X, Stars*16);
+  Draw(X, Y, 0, Stars, FStarSize);
+  Inc(X, Stars*FStarSize);
   if HalfStar then
   begin
-    Draw(X, Y, 2, 1);
-    Inc(X, 16);
+    Draw(X, Y, 2, 1, FStarSize);
+    Inc(X, FStarSize);
   end;
-  Draw(X, Y, 1, NoStars);
+  Draw(X, Y, 1, NoStars, FStarSize);
 end;
 
 procedure TVisualTree.VSTAfterCellPaint(Sender: TBaseVirtualTree;
@@ -723,10 +726,10 @@ begin
     begin
       R := FVST.GetDisplayRect(Node, Column, False);
       P.X := R.Left + 1;
-      P.Y := ((R.Bottom - R.Top - 16) div 2) + 1;
+      P.Y := ((R.Bottom - R.Top - FStarSize) div 2) + 1;
       if (Node = FHoverNode) and (not FLeaving) and (FHoverP.X >= P.X + 1) and (Abs(FHoverP.X - P.X) <= R.Right - R.Bottom) then
       begin
-        Stars := Trunc((FHoverP.X - P.X)/16) + 1;
+        Stars := Trunc((FHoverP.X - P.X)/FStarSize) + 1;
         if Stars > 5 then
           Stars := 5;
         DrawStars(TargetCanvas, 23, P, Stars)
