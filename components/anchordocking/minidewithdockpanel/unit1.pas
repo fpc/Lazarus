@@ -322,6 +322,7 @@ begin
     try
       // save the current layout of all forms
       DockMaster.SaveLayoutToConfig(XMLConfig);
+      DockMaster.SaveSettingsToConfig(XMLConfig);
       XMLConfig.WriteToDisk;
     finally
       XMLConfig.Free;
@@ -346,6 +347,7 @@ begin
       // restore the layout
       // this will close unneeded forms and call OnCreateControl for all needed
       DockMaster.LoadLayoutFromConfig(XMLConfig,true);
+      DockMaster.LoadSettingsFromConfig(XMLConfig);
     finally
       XMLConfig.Free;
     end;
