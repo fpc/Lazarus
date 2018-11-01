@@ -129,6 +129,7 @@ type
     procedure miSaveCheckedClick(Sender: TObject);
     procedure miSaveInstalledClick(Sender: TObject);
     procedure miSaveToFileClick(Sender: TObject);
+    procedure pnReturnResize(Sender: TObject);
     procedure pnToolBarResize(Sender: TObject);
     procedure tbCleanUpClick(Sender: TObject);
     procedure tbCreateClick(Sender: TObject);
@@ -1290,6 +1291,12 @@ begin
       Ms.Free;
     end;
   end;
+end;
+
+procedure TMainFrm.pnReturnResize(Sender: TObject);
+begin
+  bReturn.Left := (pnReturn.Width - bReturn.Width) div 2 ;
+  bReturn.Top := (pnReturn.Height - bReturn.Height) div 2;
 end;
 
 procedure TMainFrm.SetupControls;
