@@ -15,7 +15,7 @@ object OptionsFrm: TOptionsFrm
   OnKeyPress = FormKeyPress
   PopupMode = pmExplicit
   Position = poOwnerFormCenter
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '2.1.0.0'
   object pnBottom: TPanel
     Left = 0
     Height = 46
@@ -52,10 +52,10 @@ object OptionsFrm: TOptionsFrm
     Height = 498
     Top = 6
     Width = 623
-    ActivePage = tsFolders
+    ActivePage = tsGeneral
     Align = alClient
     BorderSpacing.Around = 6
-    TabIndex = 2
+    TabIndex = 0
     TabOrder = 0
     object tsGeneral: TTabSheet
       Caption = 'General'
@@ -368,17 +368,17 @@ object OptionsFrm: TOptionsFrm
     end
     object tsProxy: TTabSheet
       Caption = 'Proxy'
-      ClientHeight = 484
-      ClientWidth = 570
+      ClientHeight = 470
+      ClientWidth = 615
       object pnProxy: TPanel
         Left = 0
-        Height = 484
+        Height = 470
         Top = 0
-        Width = 570
+        Width = 615
         Align = alClient
         BevelOuter = bvNone
-        ClientHeight = 484
-        ClientWidth = 570
+        ClientHeight = 470
+        ClientWidth = 615
         ParentColor = False
         TabOrder = 0
         object cbProxy: TCheckBox
