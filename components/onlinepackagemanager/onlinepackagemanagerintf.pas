@@ -36,16 +36,22 @@ uses
 procedure Register;
 
 implementation
-uses opkman_const, opkman_mainfrm, opkman_intf;
+uses opkman_const, opkman_mainfrm, opkman_maindm, opkman_intf;
 
 procedure IDEMenuSectionClicked(Sender: TObject);
 begin
-  MainFrm := TMainFrm.Create(nil);
+  MainDM := TMainDM.Create(nil);
   try
-    MainFrm.ShowModal;
+    MainFrm := TMainFrm.Create(nil);
+    try
+      MainFrm.ShowModal;
+    finally
+      MainFrm.Free;
+      MainFrm := nil;
+    end;
   finally
-    MainFrm.Free;
-    MainFrm := nil;
+    MainDM.Free;
+    MainDM := nil;
   end;
 end;
 

@@ -25,7 +25,7 @@
 For more info please visit: http://wiki.freepascal.org/Online_Package_Manager"/>
     <License Value="GPL"/>
     <Version Major="1" Release="1" Build="2"/>
-    <Files Count="28">
+    <Files Count="29">
       <Item1>
         <Filename Value="onlinepackagemanagerintf.pas"/>
         <HasRegisterProc Value="True"/>
@@ -144,6 +144,10 @@ For more info please visit: http://wiki.freepascal.org/Online_Package_Manager"/>
         <Filename Value="opkman_colorsfrm.pas"/>
         <UnitName Value="opkman_colorsfrm"/>
       </Item28>
+      <Item29>
+        <Filename Value="opkman_maindm.pas"/>
+        <UnitName Value="opkman_maindm"/>
+      </Item29>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

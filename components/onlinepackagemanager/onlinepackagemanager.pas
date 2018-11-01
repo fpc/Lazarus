@@ -16,15 +16,16 @@ uses
   opkman_createjsonforupdatesfrm, opkman_uploader, opkman_repositories, 
   opkman_createrepositoryfrm, opkman_repositorydetailsfrm, 
   opkman_addrepositorypackagefrm, opkman_intf, opkman_intf_packagelistfrm, 
-  opkman_showhint, opkman_showhintbase, opkman_colorsfrm, LazarusPackageIntf;
+  opkman_showhint, opkman_showhintbase, opkman_colorsfrm, opkman_maindm, 
+  LazarusPackageIntf;
 
 implementation
 
 procedure Register;
 begin
-  RegisterUnit('onlinepackagemanagerintf', @ onlinepackagemanagerintf.Register);
+  RegisterUnit('onlinepackagemanagerintf', @onlinepackagemanagerintf.Register);
 end;
 
 initialization
-  RegisterPackage('OnlinePackageManager', @ Register);
+  RegisterPackage('OnlinePackageManager', @Register);
 end.

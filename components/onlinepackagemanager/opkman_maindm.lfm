@@ -1,0 +1,13 @@
+object MainDM: TMainDM
+  OldCreateOrder = False
+  Height = 246
+  HorizontalOffset = 360
+  VerticalOffset = 142
+  Width = 316
+  PPI = 96
+  object ImageList1: TImageList
+    Tag = 5
+    left = 104
+    top = 82
+  end
+end

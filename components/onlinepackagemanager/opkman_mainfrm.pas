@@ -41,7 +41,7 @@ uses
   opkman_downloader, opkman_installer, opkman_updates,
   opkman_serializablepackages, opkman_visualtree, opkman_const, opkman_common,
   opkman_progressfrm, opkman_zipper, opkman_packagelistfrm, opkman_options,
-  opkman_optionsfrm, opkman_createrepositorypackagefrm,
+  opkman_optionsfrm, opkman_createrepositorypackagefrm, opkman_maindm,
   opkman_createjsonforupdatesfrm, opkman_createrepositoryfrm;
 
 type
