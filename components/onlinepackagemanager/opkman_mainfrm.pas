@@ -53,6 +53,7 @@ type
     cbPackageCategory: TComboBox;
     cbPackageState: TComboBox;
     cbPackageType: TComboBox;
+    imTBDis: TImageList;
     imSB: TImageList;
     miSaveChecked: TMenuItem;
     miFromExteranlSource: TMenuItem;
@@ -103,7 +104,7 @@ type
     spClear: TSpeedButton;
     spExpand: TSpeedButton;
     tbButtons: TToolBar;
-    imTB: TImageList;
+    imTBNor: TImageList;
     tbDownload: TToolButton;
     tbInstall: TToolButton;
     tbHelp: TToolButton;
