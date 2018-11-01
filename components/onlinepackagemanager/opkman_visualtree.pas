@@ -246,7 +246,7 @@ begin
      begin
         Position := 5;
         Alignment := taCenter;
-        Width := 88;
+        Width := MulDiv(88, Screen.PixelsPerInch, 96);
         Options := Options - [coResizable];
         Text := rsMainFrm_VSTHeaderColumn_Rating;
       end;
