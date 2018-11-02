@@ -9,598 +9,481 @@ Creative Commons. Author and source mentioned.
 
 ---
 
-Following images were created by FTurtle:
+Following images were created by FTurtle (this holds also for the equally named
+files with appendix _150 and _200):
 
 actions directory:
-
-arrow__darkgreen_down.png
-arrow__darkgreen_down_150.png
-arrow__darkgreen_down_200.png
-arrow__darkgreen_left.png
-arrow__darkgreen_left_150.png
-arrow__darkgreen_left_200.png
-arrow__darkgreen_right.png
-arrow__darkgreen_right_150.png
-arrow__darkgreen_right_200.png
-arrow__darkgreen_up.png
-arrow__darkgreen_up_150.png
-arrow__darkgreen_up_200.png
-arrow__darkred_down.png
-arrow__darkred_down_150.png
-arrow__darkred_down_200.png
-arrow__darkred_left.png
-arrow__darkred_left_150.png
-arrow__darkred_left_200.png
-arrow__darkred_right.png
-arrow__darkred_right_150.png
-arrow__darkred_right_200.png
-arrow__darkred_up.png
-arrow__darkred_up_150.png
-arrow__darkred_up_200.png
-autocomplete.png
-autocomplete_150.png
-autocomplete_200.png
-laz_open.png
-laz_open_150.png
-laz_open_200.png
-laz_open_recent.png
-laz_open_recent_150.png
-laz_open_recent_200.png
-laz_open_unit.png
-laz_open_unit_150.png
-laz_open_unit_200.png
-laz_save.png
-laz_save_150.png
-laz_save_200.png
-restore_default.png
-restore_default_150.png
-restore_default_200.png
-restore_defaults.png
-restore_defaults_150.png
-restore_defaults_200.png
+	arrow__darkgreen_down.png
+	arrow__darkgreen_left.png
+	arrow__darkgreen_right.png
+	arrow__darkgreen_up.png
+	arrow__darkred_down.png
+	arrow__darkred_left.png
+	arrow__darkred_right.png
+	arrow__darkred_up.png
+	autocomplete.png
+	laz_open.png
+	laz_open_recent.png
+	laz_open_unit.png
+	laz_save.png
+	restore_default.png
+	restore_defaults.png
 
 debugger directory:
-
-debugger_call_stack.png
-debugger_call_stack_150.png
-debugger_call_stack_200.png
+	debugger_call_stack.png
 
 designer directory:
-
-anchor_bottom_bottom.png
-anchor_bottom_bottom_150.png
-anchor_bottom_bottom_200.png
-anchor_bottom_center.png
-anchor_bottom_center_150.png
-anchor_bottom_center_200.png
-anchor_bottom_top.png
-anchor_bottom_top_150.png
-anchor_bottom_top_200.png
-anchor_left_center.png
-anchor_left_center_150.png
-anchor_left_center_200.png
-anchor_left_left.png
-anchor_left_left_150.png
-anchor_left_left_200.png
-anchor_left_right.png
-anchor_left_right_150.png
-anchor_left_right_200.png
-anchor_right_center.png
-anchor_right_center_150.png
-anchor_right_center_200.png
-anchor_right_left.png
-anchor_right_left_150.png
-anchor_right_left_200.png
-anchor_right_right.png
-anchor_right_right_150.png
-anchor_right_right_200.png
-anchor_top_bottom.png
-anchor_top_bottom_150.png
-anchor_top_bottom_200.png
-anchor_top_center.png
-anchor_top_center_150.png
-anchor_top_center_200.png
-anchor_top_top.png
-anchor_top_top_150.png
-anchor_top_top_200.png
-tab_order.png
-tab_order_150.png
-tab_order_200.png
+	anchor_bottom_bottom.png
+	anchor_bottom_center.png
+	anchor_bottom_top.png
+	anchor_left_center.png
+	anchor_left_left.png
+	anchor_left_right.png
+	anchor_right_center.png
+	anchor_right_left.png
+	anchor_right_right.png
+	anchor_top_bottom.png
+	anchor_top_center.png
+	anchor_top_top.png
+	tab_order.png
 
 items directory:
-
-item_form.png
-item_form_150.png
-item_form_200.png
-item_project.png
-item_project_150.png
-item_project_200.png
-item_project_source.png
-item_project_source_150.png
-item_project_source_200.png
-item_unit.png
-item_unit_150.png
-item_unit_200.png
+	item_form.png
+	item_project.png
+	item_project_source.png
+	item_unit.png
 
 menu directory:
-
-menu_clear_all_bookmarks.png
-menu_clear_all_bookmarks_150.png
-menu_clear_all_bookmarks_200.png
-menu_clear_file_bookmarks.png
-menu_clear_file_bookmarks_150.png
-menu_clear_file_bookmarks_200.png
-menu_close.png
-menu_close_150.png
-menu_close_200.png
-menu_close_all.png
-menu_close_all_150.png
-menu_close_all_200.png
-menu_file_revert.png
-menu_file_revert_150.png
-menu_file_revert_200.png
-menu_goto_bookmark0.png
-menu_goto_bookmark0_150.png
-menu_goto_bookmark0_200.png
-menu_goto_bookmark1.png
-menu_goto_bookmark1_150.png
-menu_goto_bookmark1_200.png
-menu_goto_bookmark2.png
-menu_goto_bookmark2_150.png
-menu_goto_bookmark2_200.png
-menu_goto_bookmark3.png
-menu_goto_bookmark3_150.png
-menu_goto_bookmark3_200.png
-menu_goto_bookmark4.png
-menu_goto_bookmark4_150.png
-menu_goto_bookmark4_200.png
-menu_goto_bookmark5.png
-menu_goto_bookmark5_150.png
-menu_goto_bookmark5_200.png
-menu_goto_bookmark6.png
-menu_goto_bookmark6_150.png
-menu_goto_bookmark6_200.png
-menu_goto_bookmark7.png
-menu_goto_bookmark7_150.png
-menu_goto_bookmark7_200.png
-menu_goto_bookmark8.png
-menu_goto_bookmark8_150.png
-menu_goto_bookmark8_200.png
-menu_goto_bookmark9.png
-menu_goto_bookmark9_150.png
-menu_goto_bookmark9_200.png
-menu_goto_bookmarks.png
-menu_goto_bookmarks_150.png
-menu_goto_bookmarks_200.png
-menu_goto_line.png
-menu_goto_line_150.png
-menu_goto_line_200.png
-menu_indent.png
-menu_indent_150.png
-menu_indent_200.png
-menu_jumpto_implementation.png
-menu_jumpto_implementationuses.png
-menu_jumpto_implementationuses_150.png
-menu_jumpto_implementationuses_200.png
-menu_jumpto_implementation_150.png
-menu_jumpto_implementation_200.png
-menu_jumpto_initialization.png
-menu_jumpto_initialization_150.png
-menu_jumpto_initialization_200.png
-menu_jumpto_interface.png
-menu_jumpto_interfaceuses.png
-menu_jumpto_interfaceuses_150.png
-menu_jumpto_interfaceuses_200.png
-menu_jumpto_interface_150.png
-menu_jumpto_interface_200.png
-menu_manage_desktops.png
-menu_manage_desktops_150.png
-menu_manage_desktops_200.png
-menu_manage_source_editors.png
-menu_manage_source_editors_150.png
-menu_manage_source_editors_200.png
-menu_new.png
-menu_new_150.png
-menu_new_200.png
-menu_new_form.png
-menu_new_form_150.png
-menu_new_form_200.png
-menu_new_search.png
-menu_new_search_150.png
-menu_new_search_200.png
-menu_new_unit.png
-menu_new_unit_150.png
-menu_new_unit_200.png
-menu_pause.png
-menu_pause_150.png
-menu_pause_200.png
-menu_project_add.png
-menu_project_add_150.png
-menu_project_add_200.png
-menu_project_close.png
-menu_project_close_150.png
-menu_project_close_200.png
-menu_project_from_file.png
-menu_project_from_file_150.png
-menu_project_from_file_200.png
-menu_project_inspector.png
-menu_project_inspector_150.png
-menu_project_inspector_200.png
-menu_project_new.png
-menu_project_new_150.png
-menu_project_new_200.png
-menu_project_open.png
-menu_project_open_150.png
-menu_project_open_200.png
-menu_project_open_recent.png
-menu_project_open_recent_150.png
-menu_project_open_recent_200.png
-menu_project_options.png
-menu_project_options_150.png
-menu_project_options_200.png
-menu_project_remove.png
-menu_project_remove_150.png
-menu_project_remove_200.png
-menu_project_save.png
-menu_project_save_150.png
-menu_project_save_200.png
-menu_project_save_as.png
-menu_project_save_as_150.png
-menu_project_save_as_200.png
-menu_redo.png
-menu_redo_150.png
-menu_redo_200.png
-menu_run.png
-menu_run_150.png
-menu_run_200.png
-menu_run_cursor.png
-menu_run_cursor_150.png
-menu_run_cursor_200.png
-menu_run_parameters.png
-menu_run_parameters_150.png
-menu_run_parameters_200.png
-menu_run_withoutdebugging.png
-menu_run_withoutdebugging_150.png
-menu_run_withoutdebugging_200.png
-menu_saveas.png
-menu_saveas_150.png
-menu_saveas_200.png
-menu_save_all.png
-menu_save_all_150.png
-menu_save_all_200.png
-menu_search_files.png
-menu_search_files_150.png
-menu_search_files_200.png
-menu_search_find.png
-menu_search_find_150.png
-menu_search_find_200.png
-menu_search_find_next.png
-menu_search_find_next_150.png
-menu_search_find_next_200.png
-menu_search_find_previous.png
-menu_search_find_previous_150.png
-menu_search_find_previous_200.png
-menu_search_incremental.png
-menu_search_incremental_150.png
-menu_search_incremental_200.png
-menu_search_jumpback.png
-menu_search_jumpback_150.png
-menu_search_jumpback_200.png
-menu_search_jumpforward.png
-menu_search_jumpforward_150.png
-menu_search_jumpforward_200.png
-menu_search_next_bookmark.png
-menu_search_next_bookmark_150.png
-menu_search_next_bookmark_200.png
-menu_search_openfile_atcursor.png
-menu_search_openfile_atcursor_150.png
-menu_search_openfile_atcursor_200.png
-menu_search_previous_bookmark.png
-menu_search_previous_bookmark_150.png
-menu_search_previous_bookmark_200.png
-menu_search_replace.png
-menu_search_replace_150.png
-menu_search_replace_200.png
-menu_search_set_bookmark.png
-menu_set_free_bookmark.png
-menu_set_free_bookmark_150.png
-menu_set_free_bookmark_200.png
-menu_stepinto.png
-menu_stepinto_150.png
-menu_stepinto_200.png
-menu_stepout.png
-menu_stepout_150.png
-menu_stepout_200.png
-menu_stepover.png
-menu_stepover_150.png
-menu_stepover_200.png
-menu_stop.png
-menu_stop_150.png
-menu_stop_200.png
-menu_toggle_bookmark0.png
-menu_toggle_bookmark0_150.png
-menu_toggle_bookmark0_200.png
-menu_toggle_bookmark1.png
-menu_toggle_bookmark1_150.png
-menu_toggle_bookmark1_200.png
-menu_toggle_bookmark2.png
-menu_toggle_bookmark2_150.png
-menu_toggle_bookmark2_200.png
-menu_toggle_bookmark3.png
-menu_toggle_bookmark3_150.png
-menu_toggle_bookmark3_200.png
-menu_toggle_bookmark4.png
-menu_toggle_bookmark4_150.png
-menu_toggle_bookmark4_200.png
-menu_toggle_bookmark5.png
-menu_toggle_bookmark5_150.png
-menu_toggle_bookmark5_200.png
-menu_toggle_bookmark6.png
-menu_toggle_bookmark6_150.png
-menu_toggle_bookmark6_200.png
-menu_toggle_bookmark7.png
-menu_toggle_bookmark7_150.png
-menu_toggle_bookmark7_200.png
-menu_toggle_bookmark8.png
-menu_toggle_bookmark8_150.png
-menu_toggle_bookmark8_200.png
-menu_toggle_bookmark9.png
-menu_toggle_bookmark9_150.png
-menu_toggle_bookmark9_200.png
-menu_toggle_bookmarks.png
-menu_toggle_bookmarks_150.png
-menu_toggle_bookmarks_200.png
-menu_tool_check_lfm.png
-menu_tool_check_lfm_150.png
-menu_tool_check_lfm_200.png
-menu_tool_syntax_check.png
-menu_tool_syntax_check_150.png
-menu_tool_syntax_check_200.png
-menu_undo.png
-menu_undo_150.png
-menu_undo_200.png
-menu_unindent.png
-menu_unindent_150.png
-menu_unindent_200.png
-menu_view_anchor_editor.png
-menu_view_anchor_editor_150.png
-menu_view_anchor_editor_200.png
-menu_view_code_browser.png
-menu_view_code_browser_150.png
-menu_view_code_browser_200.png
-menu_view_code_explorer.png
-menu_view_code_explorer_150.png
-menu_view_code_explorer_200.png
-menu_view_components.png
-menu_view_components_150.png
-menu_view_components_200.png
-menu_view_forms.png
-menu_view_forms_150.png
-menu_view_forms_200.png
-menu_view_inspector.png
-menu_view_inspector_150.png
-menu_view_inspector_200.png
-menu_view_messages.png
-menu_view_messages_150.png
-menu_view_messages_200.png
-menu_view_restriction_browser.png
-menu_view_restriction_browser_150.png
-menu_view_restriction_browser_200.png
-menu_view_search_results.png
-menu_view_search_results_150.png
-menu_view_search_results_200.png
-menu_view_source_editor.png
-menu_view_source_editor_150.png
-menu_view_source_editor_200.png
-menu_view_toggle_form_unit.png
-menu_view_toggle_form_unit_150.png
-menu_view_toggle_form_unit_200.png
-menu_view_units.png
-menu_view_units_150.png
-menu_view_units_200.png
-menu_view_unit_info.png
-menu_view_unit_info_150.png
-menu_view_unit_info_200.png
+	menu_clear_all_bookmarks.png
+	menu_clear_file_bookmarks.png
+	menu_close.png
+	menu_close_all.png
+	menu_file_revert.png
+	menu_goto_bookmark0.png
+	menu_goto_bookmark1.png
+	menu_goto_bookmark2.png
+	menu_goto_bookmark3.png
+	menu_goto_bookmark4.png
+	menu_goto_bookmark5.png
+	menu_goto_bookmark6.png
+	menu_goto_bookmark7.png
+	menu_goto_bookmark8.png
+	menu_goto_bookmark9.png
+	menu_goto_bookmarks.png
+	menu_goto_line.png
+	menu_indent.png
+	menu_jumpto_implementation.png
+	menu_jumpto_implementationuses.png
+	menu_jumpto_initialization.png
+	menu_jumpto_interface.png
+	menu_jumpto_interfaceuses.png
+	menu_manage_desktops.png
+	menu_manage_source_editors.png
+	menu_new.png
+	menu_new_form.png
+	menu_new_search.png
+	menu_new_unit.png
+	menu_project_add.png
+	menu_project_close.png
+	menu_project_from_file.png
+	menu_project_inspector.png
+	menu_project_new.png
+	menu_project_open.png
+	menu_project_open_recent.png
+	menu_project_options.png
+	menu_project_remove.png
+	menu_project_save.png
+	menu_project_save_as.png
+	menu_redo.png
+	menu_saveas.png
+	menu_save_all.png
+	menu_search_files.png
+	menu_search_find.png
+	menu_search_find_next.png
+	menu_search_find_previous.png
+	menu_search_incremental.png
+	menu_search_jumpback.png
+	menu_search_jumpforward.png
+	menu_search_next_bookmark.png
+	menu_search_openfile_atcursor.png
+	menu_search_previous_bookmark.png
+	menu_search_replace.png
+	menu_search_set_bookmark.png
+	menu_set_free_bookmark.png
+	menu_stepinto.png
+	menu_stepout.png
+	menu_stepover.png
+	menu_toggle_bookmark0.png
+	menu_toggle_bookmark1.png
+	menu_toggle_bookmark2.png
+	menu_toggle_bookmark3.png
+	menu_toggle_bookmark4.png
+	menu_toggle_bookmark5.png
+	menu_toggle_bookmark6.png
+	menu_toggle_bookmark7.png
+	menu_toggle_bookmark8.png
+	menu_toggle_bookmark9.png
+	menu_toggle_bookmarks.png
+	menu_tool_check_lfm.png
+	menu_tool_syntax_check.png
+	menu_undo.png
+	menu_unindent.png
+	menu_view_anchor_editor.png
+	menu_view_code_browser.png
+	menu_view_code_explorer.png
+	menu_view_components.png
+	menu_view_forms.png
+	menu_view_inspector.png
+	menu_view_messages.png
+	menu_view_restriction_browser.png
+	menu_view_search_results.png
+	menu_view_source_editor.png
+	menu_view_toggle_form_unit.png
+	menu_view_units.png
+	menu_view_unit_info.png
 
 sourceeditor directory:
-
-bookmark0.png
-bookmark0_150.png
-bookmark0_200.png
-bookmark0_300.png
-bookmark1.png
-bookmark1_150.png
-bookmark1_200.png
-bookmark1_300.png
-bookmark2.png
-bookmark2_150.png
-bookmark2_200.png
-bookmark2_300.png
-bookmark3.png
-bookmark3_150.png
-bookmark3_200.png
-bookmark3_300.png
-bookmark4.png
-bookmark4_150.png
-bookmark4_200.png
-bookmark4_300.png
-bookmark5.png
-bookmark5_150.png
-bookmark5_200.png
-bookmark5_300.png
-bookmark6.png
-bookmark6_150.png
-bookmark6_200.png
-bookmark6_300.png
-bookmark7.png
-bookmark7_150.png
-bookmark7_200.png
-bookmark7_300.png
-bookmark8.png
-bookmark8_150.png
-bookmark8_200.png
-bookmark8_300.png
-bookmark9.png
-bookmark9_150.png
-bookmark9_200.png
-bookmark9_300.png
+	bookmark0.png
+	bookmark1.png
+	bookmark2.png
+	bookmark3.png
+	bookmark4.png
+	bookmark5.png
+	bookmark6.png
+	bookmark7.png
+	bookmark8.png
+	bookmark9.png
 
 states directory:
-
-state_warning_69.png
-state_warning_75.png
-state_warning.png
-state_warning_150.png
-state_warning_200.png
+	state_warning.png
+	state_warning_69.png
+	state_warning_75.png
+	state_warning_150.png
+	state_warning_200.png
 
 --------------------------------------------------------------------------------
 
-The following component palette and menu/toolbar icons were created by
-Roland Hahn (no restrictions). svg sources can be found on Lazarus Components and
-Code Repository, folder image_sources.
+The following component palette and menu/toolbar icons (including equally named
+files with appendix _150 and _200) were created by Roland Hahn (no restrictions). 
+svg sources can be found on Lazarus Components and Code Repository, 
+folder image_sources.
 
+actions folder:
+	execute.png
+	laz_cancel.png
+	laz_edit.png
+	laz_export.png
+	laz_highlighter.png
+	laz_refresh.png
+	laz_tick.png
+	laz_wand.png
+	preferences.png
+	
+codeexplorer folder:
+	ce_classinterface.png
+	ce_cycleimplementation.png
+	ce_cycleinterface.png
+	ce_default.png
+	ce_deprecated.png
+	ce_experimental.png
+	ce_finalization.png
+	ce_helper.png
+	ce_implementation.png
+	ce_initialization.png
+	ce_interface.png
+	ce_library.png
+	ce_platform.png
+	ce_program.png
+	ce_property_readonly.png
+	ce_section.png
+	ce_unimplemented.png
+	show_category.png
+	show_source.png
+	
+codetoolsdefines folder:
+	da_block.png
+	da_define.png
+	da_definerecurse.png
+	da_define.png
+	da_directory.png
+	da_else.png
+	da_elseif.png
+	da_if.png
+	da_ifdef.png
+	da_ifndef.png
+	da_undefine.png
+	da_undefineall.png
+	da_undefinerecurse.png
+	
 components folder:
+	default.png
+	tactionlist.png
+	tapplicationproperties.png
+	tarrow.png
+	tasyncprocess.png
+	tbevel.png
+	tbitbtn.png
+	tbufdataset.png
+	tbutton.png
+	tbuttonpanel.png
+	tcalcedit.png
+	tcalculatordialog.png
+	tcalendar.png
+	tcalendardialog.png
+	tcheckbox.png
+	tcheckcombobox.png
+	tcheckgroup.png
+	tchecklistbox.png
+	tcolorbox.png
+	tcolorbutton.png
+	tcolordialog.png
+	tcolorlistbox.png
+	tcombobox.png
+	tcomboboxex.png
+	tcontrolbar.png
+	tcoolbar.png
+	tdatasource.png
+	tdateedit.png
+	tdbcalendar.png
+	tdbcheckbox.png
+	tdbcombobox.png
+	tdbdateedit.png
+	tdbedit.png
+	tdbgrid.png
+	tdbgroupbox.png
+	tdbimage.png
+	tdblistbox.png
+	tdblookupcombobox.png
+	tdblookuplistbox.png
+	tdbmemo.png
+	tdbnavigator.png
+	tdbradiogroup.png
+	tdbtext.png
+	tdirectoryedit.png
+	tdrawgrid.png
+	tedit.png
+	teditbutton.png
+	teventlog.png
+	tfilelistbox.png
+	tfilenameedit.png
+	tfiltercombobox.png
+	tfinddialog.png
+	tfloatspinedit.png
+	tflowpanel.png
+	tfontdialog.png
+	tframe.png
+	tgroupbox.png
+	theadercontrol.png
+	thtmlbrowserhelpviewer.png
+	thtmlhelpdatabase.png
+	tidedialoglayoutstorage.png
+	tidletimer.png
+	timage.png
+	timagelist.png
+	tinipropstorage.png
+	tjsonpropstorage.png
+	tlabel.png
+	tlabelededit.png
+	tlazcomponentqueue.png
+	tlistbox.png
+	tlistview.png
+	tmainmenu.png
+	tmaskedit.png
+	tmemo.png
+	tmouse.png
+	tnotebook.png
+	topendialog.png
+	topenpicturedialog.png
+	tpagecontrol.png
+	tpaintbox.png
+	tpairsplitter.png
+	tpanel.png
+	tpicture.png
+	tpopupmenu.png
+	tpopupnotifier.png
+	tprocess.png
+	tprocessutf8.png
+	tprogressbar.png
+	tradiobutton.png
+	tradiogroup.png
+	treplacedialog.png
+	tsavedialog.png
+	tsavepicturedialog.png
+	tscrollbar.png
+	tscrollbox.png
+	tselectdirectorydialog.png
+	tservicemanager.png
+	tshape.png
+	tshelllistview.png
+	tshelltreeview.png
+	tsimpleipcclient.png
+	tsimpleipcserver.png
+	tspeedbutton.png
+	tspinedit.png
+	tsplitter.png
+	tstatictext.png
+	tstatusbar.png
+	tstringgrid.png
+	ttabcontrol.png
+	ttaskdialog.png
+	ttimeedit.png
+	ttimer.png
+	ttogglebox.png
+	ttoolbar.png
+	ttrackbar.png
+	ttrayicon.png
+	ttreeview.png
+	tupdown.png
+	tvaluelisteditor.png
+	txmlconfig.png
+	txmlpropstorage.png
+	unregisteredcomponent.png
+	
+componenttreeview directory
+	oi_box.png
+	oi_collection.png
+	oi_comp.png
+	oi_control.png
+	oi_form.png
+	oi_item.pnt
+	
+debugger directory
+	callstack_bottom.png
+	callstack_goto.png
+	callstack_more.png
+	callstack_show.png
+	callstack_top.png
+	camera.png
+	camera_add.png
+	camera_go.png
+	clock.png
+	debugger.png
+	debugger_breakpoints.png
+	debugger_disable.png
+	debugger_disable_all.png
+	debugger_enable.png
+	debugger_enable_all.png
+	debugger_evaluate.png
+	debugger_event_log.png
+	debugger_inspect.png
+	debugger_modify.png
+	debugger_options.png
+	debugger_output.png
+	debugger_power.png
+	debugger_power_grey.png
+	debugger_show_execution_point.png
+	debugger_watches.png
+	evaluate_no_hist.png
+	evaluate_up.png
 
-default.png, default_150.png, default_200.png
-tactionlist.png, tactionlist_150.png, tactionlist_200.png
-tapplicationproperties.png, tapplicationproperties_150.png, tapplicationproperties_200.png
-tarrow.png, tarrow_150.png, tarrow_200.png
-tasyncprocess.png, tasyncprocess_150.png, tasyncprocess_200.png
-tbevel.png, tbevel_150.png, tbevel_200.png
-tbitbtn.png, tbitbtn_150.png, tbitbtn_200.png
-tbufdataset.png, tbufdataset_150.png, tbufdataset_200.png
-tbutton.png, tbutton_150.png, tbutton_200.png
-tbuttonpanel.png, tbuttonpanel_150, tbuttonpanel_200.pgn
-tcalcedit.png, tcalcedit_150.png, tcalcedit_200.pgn
-tcalculatordialog.png, tcalculatordialog_150.png, tcalculatordialog_200.png
-tcalendar.png, tcalendar_150.png, tcalendar_200.png
-tcalendardialog.png, tcalendardialog_150.png, tcalendardialog_200.png
-tcheckbox.png, tcheckbox_150.png, tcheckbox_200.png
-tcheckcombobox.png, tcheckcombobox_150.png, tcheckbox_200.png
-tcheckgroup.png, tcheckgroup_150.png, tcheckgroup_200.png
-tchecklistbox.png, tchecklistbox_150.png, tchecklistbox_200.png
-tcolorbox.png, tcolorbox_150.png, tcolorbox_200.png
-tcolorbutton.png, tcolorbutton_150.png, tcolorbutton_200.png
-tcolordialog.png, tcolordialog_150.png, tcolordialog_200.png
-tcolorlistbox.png, tcolorlistbox_150.png, tcolorlistbox_200.png
-tcombobox.png, tcombobox_150.png, tcombobox_200.png
-tcomboboxex.png, tcomboboxex_150.png, tcomboboxex_200.png
-tcontrolbar.png, tcontrolbar_150.png, tcontrolbar_200.png
-tcoolbar.png, tcoolbar_150.png, tcoolbar_200.png
-tdatasource.png, tdatasource_150.png, tdatasource_200.png
-tdateedit.png, tdateedit_150.png, tdateedit_200.png
-tdbcalendar.png, tdbcalendar_150.png, tdbcalendar_200.png
-tdbcheckbox.png, tdbcheckbox_150.png, tdbcheckbox_200.png
-tdbcombobox.png, tdbcombobox_150.png, tdbcombobox_200.png
-tdbdateedit.png, tdbdateedit_150.png, tdbdateedit_200.png
-tdbedit.png, tdbedit_150.png, tdbedit_200.png
-tdbgrid.png, tdbgrid_150.png, tdbgrid_200.png
-tdbgroupbox.png, tdbgroupbox_150.png, tdbgroupbox_200.png
-tdbimage.png, tdbimage_150.png, tdbimage_200.png
-tdblistbox.png, tdblistbox_150.png, tdblistbox_200.png
-tdblookupcombobox.png, tdblookupcombobox_150.png, tdblookupcombobox_200.png
-tdblookuplistbox.png, tdblookuplistbox_150.png, tdblookuplistbox_200.png
-tdbmemo.png, tdbmemo_150.pgn, tdbmemo_200.png
-tdbnavigator.png, tdbnavigator_150.png, tdbnavigator_200.png
-tdbradiogroup.png, tdbradiogroup_150.png, tdbradiogroup_200.png
-tdbtext.png, tdbtext_150.png, tdbtext_200.png
-tdirectoryedit.png, tdirectoryedit_150.png, tdirectoryedit_200.png
-tdrawgrid.png, tdrawgrid_150.png, tdrawgrid_200.png
-tedit.png, tedit_150.png, tedit_200.png
-teditbutton.png, teditbutton_150.png, teditbutton_200.png
-teventlog.png, teventlog_150.png, teventlog_200.png
-tfilelistbox.png, tfilelistbox_150.png, tfilelistbox_200.png
-tfilenameedit.png, tfilenameedit_150.png, tfilenameedit_200.png
-tfiltercombobox.png, tfiltercombobox_150.png, tfiltercombobox_200.png
-tfinddialog.png, tfinddialog_150.png, tfinddialog_200.png
-tfloatspinedit.png, tfloatspinedit_150.png, tfloatspinedit_200.png
-tflowpanel.png, tflowpanel_150.png, tflowpanel_200.png
-tfontdialog.png, tfontdialog_150.png, tfontdialog_200.png
-tframe.png, tframe_150.png, tframe_200.png
-tgroupbox.png, tgroupbox_150.png, tgroupbox_200.png
-theadercontrol.png, theadercontrol_150.png, theadercontrol_200.png
-thtmlbrowserhelpviewer.png, thtmlbrowserhelpviewer_150.png, thtmlbrowserhelpviewer_200.png
-thtmlhelpdatabase.png, thtmlhelpdatabase_150.png, thtmlhelpdatabase_200.png
-tidedialoglayoutstorage.png, tidedialoglayoutstorage_150.png, tidedialoglayoutstorage_200.png
-tidletimer.png, tidletimer_150.png, tidletimer_200.pgn
-timage.png, timage_150.png timage_200.png
-timagelist.png timagelist_150.pgn timagelist_200.pgn
-tinipropstorage.png, tinipropstorage_150.png, tinipropstorage_200.png
-tjsonpropstorage.png, tjsonpropstorage_150.png, tjsonpropstorage_200.png
-tlabel.png, tlabel_150.png, tlabel_200.png
-tlabelededit.png, tlabelededit_150.png, tlabelededit_200.png
-tlazcomponentqueue.png, tlazcomponentqueue_150.png, tlazcomponentqueue_200.png
-tlistbox.png, tlistbox_150.png, tlistbox_200.png
-tlistview.png, tlistview_150.png, tlistview_200.png
-tmainmenu.png, tmainmenu_150.png, tmainmenu_200.png
-tmaskededit.png, tmaskededit_150.png, tmaskededit_200.pgn
-tmemo.png, tmemo_150.png, tmemo_200.png
-tmouse.png, tmouse_150.png, tmouse_200.png
-tnotebook.png, tnotebook_150.png, tnotebook_200.png
-topendialog.png, topendialog_150.png, topendialog_200.png
-tpagecontrol.png, tpagecontrol_150.png, tpagecontrol_200.png
-tpaintbox.png, tpaintbox_150.png, tpaintbox_200.png
-tpairsplitter.png, tpairsplitter_150.png, tpairsplitter_200.png
-tpanel.png, tpanel_150.png, tpanel_200.png
-tpopupmenu.png, tpopupmenu_150.png tpopupmenu_200.png
-tpopupnotifier.png, tpopupnptifier_150.png, tpopupnotifier_200.png
-tprocess.png, tprocess_150.png, tprocess_200.png
-tprocessuf8.png, tprocessutf8_150.png, tprocessutf8_200.png
-tprogressbar.png, tprogressbar_150.png, tprogressbar_200.png
-tradiobutton.png, tradiobutton_150.png, tradiobutton_200.png
-tradiogroup.png, tradiogroup_150.png, tradiogroup_200.png
-treplacedialog.png, treplacedialog_150.png, treplacedialog_200.png
-tsavedialog.png, tsavedialog_150.png, tsavedialog_200.png
-tsavepicturedialog.png, tsavepicturedialog_150.png, tsavepicturedialog_200.png
-tscrollbar.png, tscrollbar_150.png, tscrollbar_200.png
-tscrollbox.png, tscrollbox_150.png, tscrollbox_200.png
-tselectdirectorydialog.png, tselectdirectorydialog_150.png, tselectdirectorydialog_200.png
-tservicemanager.png, tservicemanager_150.png, tservicemanager_200.png
-tshape.png, tshape_150.png, tshape_200.png
-tshelllistview.png, tshelllistview_150.png, tshelllistview_200.png
-tshelltreeview.png, tsheeltreeview_150.png, tshelltreeview_200.png
-tsimpleipcclient.png, tsimpleipcclient_150.png, tsimpleipcclient_200.png
-tsimpleipcserver.png, tsimpleipcserver_150.png, tsimpleipcserver_200.png
-tspeedbutton.png, tspeedbutton_150.png, tspeedbutton_200.png
-tspinedit.png, tspinedit_150.png, tspinedit_200.png
-tsplitter.png, tsplitter_150.png, tsplitter_200.png
-tstatictext.png, tstatictext_150.png, tstatictext_200.png
-tstatusbar.png, tstatusbar_150.png, tstatusbar_200.png
-tstringgrid.png, tstringgrid_150.png, tstringgrid_200.png
-ttabcontrol.png, ttabcontrol_150.png, ttabcontrol_200.png
-ttaskdialog.png, ttaskdialog_150.png, ttaskdialog_200.png
-ttimeedit.png, ttimeedit_150.png, ttimeedit_200.png
-ttimer.png, ttimer_150.png, ttimer_200.png
-ttogglebox.png, ttogglebox_150.png, ttogglebox_200.png
-ttoolbar.png, ttoolbar_150.png, ttoolbar_200.png
-ttrackbar.png, ttrackbar_150.png, ttrackbar_200.png
-ttrayicon.png, ttrayicon_150.png, ttrayicon_200.png
-ttreeview.png, ttreeview_150.png, ttreeview_200.png
-tupdown.png, tupdown_150.png, tupdown_200.png
-tvaluelisteditor.png, tvaluelisteditor_150.png, tvaluelisteditor_200.png
-txmlconfig.png, txmlconfig_150.png, txmlconfig_200.png
-txmlpropstorage.png, txmlpropstorage_150.png, txmlpropstorage_200.png
-unregisteredcomponent.png, unregisteredcomponent_150.png, unregisteredcomponent_200.png
+items directory
+	item_character.png
+	item_filter.png
+	item_font.png
+	item_keyboard.png
+	item_library.png
+	item_package.png
+	item_todo.png
 
+lazdoc directory
+	formatbold.png
+	formatitalic.png
+	formatunderline.png
+	insertcodetag.png
+	insertremark.png
+	insertvartag.png
+	
 menu directory
+	menu_abort_build.png
+	menu_build.png
+	menu_build_all.png
+	menu_build_clean.png
+	menu_build_file.png
+	menu_build_lazarus.png
+	menu_build_run_file.png
+	menu_clean.png
+	menu_codetoolsdefineseditor.png
+	menu_codetoolsoptions.png
+	menu_comment.png
+	menu_compiler_options.png
+	menu_configure_build_lazarus.png
+	menu_configure_help.png
+	menu_editor_options.png
+	menu_edit_lowercase.png
+	menu_edit_sort.png
+	menu_edit_uppercase.png
+	menu_environment_options.png
+	menu_exit.png
+	menu_file_print.png
+	menu_information.png
+	menu_jumpto_procedurebegin.png
+	menu_jumptoprocedureheader.png
+	menu_pause.png
+	menu_quick_compile.png
+	menu_reportingbug.png
+	menu_reset_debugger.png
+	menu_run_file.png
+	menu_run_cursor.png
+	menu_run_file.png
+	menu_run_parameters.png
+	menu_run_withoutdebuggin.png
+	menu_search_set_bookmark.png
+	menu_select_all.png
+	menu_stepinto_instr.png
+	menu_stepinto_instr_run_file.png
+	menu_stepover:instr.png
+	menu_stop.png
+	menu_tool_del_to_laz.png
+	menu_tool_del_to_laz_form.png
+	menu_tool_del_to_laz_pkg.png
+	menu_tool_del_to_laz_project.png
+	menu_tool_del_to_laz_unit.png
+	menu_tool_diff.png
+	menu_tool_make_resourcestring.png
+	menu_uncomment.png
+	menu_view_todo.png
+	SelCompPage.png
 
-menu_abort_build.png, menu_abort_build_150.png, menu_abort_build_200.png
-menu_build.png, menu_build_150.png, menu_build_200.png
-menu_build_all.png, menu_build_all_150.png, menu_build_all_200.png
-menu_build_file.png, menu_build_file_150.png, menu_build_file_200.png
-menu_build_lazarus.png, menu_build_lazarus_150.png, menu_build_lazarus_200.png
-menu_build_run_file.png, menu_build_run_file_150.png, menu_build_run_file_200.png
-menu_comment.png, menu_comment_150.png, menu_comment_200.png
-menu_quick_compile.png, menu_quick_compile_150.png, menu_quick_compile_200.png
-menu_reset_debugger.png, menu_reset_debugger_150.png, menu_reset_debugger_200.png
-menu_run_file.png, menu_run_file_150.png, menu_run_file_200.png
-menu_uncomment.png, menu_uncomment_150.png, menu_uncomment_200.png
+packages directory
+	pkg_add.png
+	pkg_binary.png
+	pkg_compile.png
+	pkg_conflict.png
+	pkg_core_overlay.png
+	pkg_design_overlay.png
+	pkg_files.png
+	pkg_fpc_overlay.png
+	pkg_graph.png
+	pkg_hierarchical.png
+	pkg_include.png
+	pkg_inherited.png
+	pkg_install.png
+	pkg_installed.png
+	pkg_issues.png
+	pkg_lazarus_overlay.png
+	pkg_lfm.png
+	pkg_lrs.png
+	pkg_open.png
+	pkg_package_autoinstall.png
+	pkg_package_circle.png
+	pkg_package_uninstall.png
+	pkg_properties.png
+	pkg_registerunit.png
+	pkg_removedfiles.png
+	pkg_removedrequired.png
+	pkg_required.png
+	pkg_runtime_overlay.png
+	pkg_sortalphabetically.png
+	pkg_text.png
+	pkg_unit.png
+	
+images root folder
+	folder.png
+	template.png
 
+-----------------------------------------
 
-
----
-
-Following images were created by regs:
+The following images were created by regs:
 
 codecompletion folder:
 cc_class.png, cc_class_150.png, cc_class_200.png
