@@ -572,6 +572,10 @@ msgstr "Csomag könyvtárának kiválasztása"
 msgid "Online Package Manager"
 msgstr "Hálózati Csomagkezelő"
 
+#: opkman_const.rsmainfrm_breturn_caption
+msgid "Return"
+msgstr ""
+
 #: opkman_const.rsmainfrm_cball_caption
 msgid "All/None"
 msgstr "Mind/Semmi"

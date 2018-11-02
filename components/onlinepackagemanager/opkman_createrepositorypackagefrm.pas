@@ -59,7 +59,6 @@ type
     edHomePageURL: TEdit;
     edLazCompatibility: TEdit;
     edSupportedWidgetset: TEdit;
-    imTree: TImageList;
     lbCategory: TLabel;
     lbDownloadURL: TLabel;
     lbDisplayName: TLabel;
@@ -155,9 +154,14 @@ var
 implementation
 
 uses opkman_const, opkman_common, opkman_options, opkman_categoriesfrm,
-     opkman_mainfrm, opkman_updates;
+     opkman_mainfrm, opkman_maindm, opkman_updates;
 
 {$R *.lfm}
+
+const
+  IMAGE_INDEX_MAP: array[0..7] of Integer = (
+    IMG_PKG_PLUS, IMG_PKG_FILE, IMG_REPO_FILE, IMG_DESCRIPTION, IMG_AUTHOR,
+    IMG_PKG_TYPE, IMG_DEPENDENCIES, IMG_LICENSE);
 
 { TCreateRepositoryPackagesFrm }
 
@@ -221,7 +225,7 @@ begin
     Parent := pnPackages;
     Align := alClient;
     Anchors := [akLeft, akTop, akRight];
-    Images := imTree;
+    Images := MainDM.Images;
     if not Options.UseDefaultTheme then
       Color := clBtnFace;
     DefaultNodeHeight := 25;
@@ -259,7 +263,7 @@ begin
     Align := alTop;
     Height := 200;
     Anchors := [akLeft, akTop, akRight];
-    Images := imTree;
+    Images := MainDM.Images;
     if not Options.UseDefaultTheme then
       Color := clBtnFace;
     DefaultNodeHeight := 25;
@@ -708,7 +712,7 @@ procedure TCreateRepositoryPackagesFrm.VSTPackagesGetImageIndex(
   Column: TColumnIndex; var Ghosted: Boolean; var ImageIndex: Integer);
 begin
   if Column = 0 then
-    ImageIndex := FVSTPackages.GetNodeLevel(Node);
+    ImageIndex := IMAGE_INDEX_MAP[FVSTPackages.GetNodeLevel(Node)];
 end;
 
 procedure TCreateRepositoryPackagesFrm.SaveExtraInfo(const ANode: PVirtualNode);
@@ -871,7 +875,7 @@ begin
   if Column = 0 then
   begin
     Data := FVSTPackageData.GetNodeData(Node);
-    ImageIndex := Data^.FDataType;
+    ImageIndex := IMAGE_INDEX_MAP[Data^.FDataType];
   end;
 end;
 

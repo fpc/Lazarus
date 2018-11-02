@@ -32,7 +32,7 @@ uses
   Forms, Controls, Graphics, Dialogs, ComCtrls, StdCtrls, ExtCtrls, ButtonPanel,
   // OpkMan
   opkman_installer, opkman_common, opkman_const, opkman_downloader, opkman_zipper,
-  opkman_options;
+  opkman_options, opkman_maindm;
 
 type
 
@@ -40,7 +40,6 @@ type
 
   TProgressFrm = class(TForm)
     cbExtractOpen: TCheckBox;
-    imTree: TImageList;
     lbElapsed: TLabel;
     lbElapsedData: TLabel;
     lbPackage: TLabel;
@@ -153,7 +152,7 @@ begin
     Parent := Self;
     Align := alClient;
     Anchors := [akLeft, akTop, akRight];
-    Images := imTree;
+    Images := MainDM.Images;
     if not Options.UseDefaultTheme then
       Color := clBtnFace;
     DefaultNodeHeight := 25;
@@ -358,32 +357,32 @@ begin
     imOpenPackage:
        begin
          Data^.FName := rsProgressFrm_Info5 + ' "' + APackageName + '".';
-         Data^.FImageIndex := 0;
+         Data^.FImageIndex := IMG_INFO;
        end;
     imOpenPackageSuccess:
        begin
          Data^.FName := rsProgressFrm_Info1;
-         Data^.FImageIndex := 1;
+         Data^.FImageIndex := IMG_OK;
        end;
     imCompilePackage:
        begin
          Data^.FName := rsProgressFrm_Info6 + ' "' + APackageName + '".';
-         Data^.FImageIndex := 0;
+         Data^.FImageIndex := IMG_INFO;
        end;
     imCompilePackageSuccess:
        begin
          Data^.FName := rsProgressFrm_Info1;
-         Data^.FImageIndex := 1;
+         Data^.FImageIndex := IMG_OK;
        end;
     imInstallPackage:
        begin
          Data^.FName := rsProgressFrm_Info0 + ' "' + APackageName + '".';
-         Data^.FImageIndex := 0;
+         Data^.FImageIndex := IMG_INFO;
        end;
     imInstallPackageSuccess:
        begin
          Data^.FName := rsProgressFrm_Info1;
-         Data^.FImageIndex := 1;
+         Data^.FImageIndex := IMG_OK;
        end;
     imPackageCompleted:
        begin
@@ -408,7 +407,7 @@ begin
   Node := FVST.AddChild(nil);
   Data := FVST.GetNodeData(Node);
   Data^.FName := AErrMsg;
-  Data^.FImageIndex := 2;
+  Data^.FImageIndex := IMG_ERROR;
   FVST.TopNode := Node;
   if ((FMdlRes = mrNone) or (FMdlRes = mrYes) or (FMdlRes = mrNo)) then
   begin
@@ -451,6 +450,8 @@ end;
 
 procedure TProgressFrm.DoOnPackageUpdateProgress(Sender: TObject; AUPackageName,
   AUPackageURL: String; ACnt, ATotCnt: Integer; AUTyp: Integer; AUErrMsg: String);
+const
+  IMG_UTyp: array[0..2] of Integer = (IMG_INFO, IMG_OK, IMG_ERROR);
 var
   Node: PVirtualNode;
   Data: PData;
@@ -468,7 +469,7 @@ begin
        else
          Data^.FName := rsProgressFrm_Error5 + '.';
   end;
-  Data^.FImageIndex := AUTyp;
+  Data^.FImageIndex := IMG_UTyp[AUTyp];
   FVST.TopNode := Node;
   Application.ProcessMessages;
 end;
@@ -484,7 +485,7 @@ begin
     Node := FVST.AddChild(nil);
     Data := FVST.GetNodeData(Node);
     Data^.FName := rsProgressFrm_Info3;
-    Data^.FImageIndex := 0;
+    Data^.FImageIndex := IMG_INFO;
     FVST.TopNode := Node;
     FVST.RepaintNode(Node);
     Application.ProcessMessages;
@@ -496,7 +497,7 @@ begin
     Node := FVST.AddChild(nil);
     Data := FVST.GetNodeData(Node);
     Data^.FName := rsProgressFrm_Error6;
-    Data^.FImageIndex := 2;
+    Data^.FImageIndex := IMG_ERROR;
     FVST.TopNode := Node;
     FVST.RepaintNode(Node);
     Sleep(2000);

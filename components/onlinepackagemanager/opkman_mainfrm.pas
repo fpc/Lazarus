@@ -55,7 +55,6 @@ type
     cbPackageState: TComboBox;
     cbPackageType: TComboBox;
     imTBDis: TImageList;
-    imSB: TImageList;
     miSaveChecked: TMenuItem;
     miFromExteranlSource: TMenuItem;
     miFromRepository: TMenuItem;
@@ -88,7 +87,6 @@ type
     tbOptions: TToolButton;
     cbAll: TCheckBox;
     edFilter: TEdit;
-    imTree: TImageList;
     lbFilterBy: TLabel;
     miJSONShow: TMenuItem;
     miJSONHide: TMenuItem;
@@ -192,12 +190,22 @@ implementation
 
 procedure TMainFrm.FormCreate(Sender: TObject);
 begin
-  VisualTree := TVisualTree.Create(pnMain, imTree, pmTree);
+  if MainDM = nil then
+    MainDM := TMainDM.Create(self);
+  VisualTree := TVisualTree.Create(pnMain, MainDM.Images, pmTree);
   VisualTree.OnChecking := @DoOnChecking;
   VisualTree.OnChecked := @DoOnChecked;
   SerializablePackages.OnProcessJSON := @DoOnProcessJSON;
   PackageDownloader.OnJSONProgress := @DoOnJSONProgress;
   PackageDownloader.OnJSONDownloadCompleted := @DoOnJSONDownloadCompleted;
+  spExpand.Caption := '';
+  spExpand.Images := MainDM.Images;
+  spExpand.ImageIndex := IMG_EXPAND;
+  spCollapse.Caption := '';
+  spCollapse.Images := MainDM.Images;
+  spCollapse.ImageIndex := IMG_COLLAPSE;
+  spClear.Images := MainDM.Images;
+  spClear.ImageIndex := IMG_CLEAR;
   FHintTimeOut := Application.HintHidePause;
   Application.HintHidePause := 1000000;
   Application.AddOnDeactivateHandler(@DoDeactivate, False);

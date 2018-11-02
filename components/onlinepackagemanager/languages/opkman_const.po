@@ -550,6 +550,10 @@ msgstr ""
 msgid "Online Package Manager"
 msgstr ""
 
+#: opkman_const.rsmainfrm_breturn_caption
+msgid "Return"
+msgstr ""
+
 #: opkman_const.rsmainfrm_cball_caption
 msgid "All/None"
 msgstr ""

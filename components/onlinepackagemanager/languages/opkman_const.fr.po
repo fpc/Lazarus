@@ -573,6 +573,10 @@ msgstr "Choisir le répertoire des paquets"
 msgid "Online Package Manager"
 msgstr "Gestionnaire de paquets en ligne"
 
+#: opkman_const.rsmainfrm_breturn_caption
+msgid "Return"
+msgstr ""
+
 #: opkman_const.rsmainfrm_cball_caption
 msgid "All/None"
 msgstr "Tous/Aucun"

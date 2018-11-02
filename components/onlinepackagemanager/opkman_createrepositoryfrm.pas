@@ -37,7 +37,7 @@ uses
   // LazUtils
   LazFileUtils, LazUTF8,
   // OpkMan
-  opkman_serializablepackages;
+  opkman_serializablepackages, opkman_maindm;
 
 type
 
@@ -58,7 +58,6 @@ type
     bDelete: TBitBtn;
     bOpen: TButton;
     bCreate: TButton;
-    imTree: TImageList;
     miRepDetails: TMenuItem;
     ODRep: TOpenDialog;
     pnButtons: TPanel;
@@ -168,8 +167,12 @@ begin
   bOpen.Hint := rsCreateRepositoryFrm_bOpen_Hint;
   bAdd.Caption := rsCreateRepositoryFrm_bAdd_Caption;
   bAdd.Hint := rsCreateRepositoryFrm_bAdd_Hint;
+  bAdd.Images := MainDM.Images;
+  bAdd.ImageIndex := IMG_PKG_PLUS;
   bDelete.Caption := rsCreateRepositoryFrm_bDelete_Caption;
   bDelete.Hint := rsCreateRepositoryFrm_bDelete_Hint;
+  bDelete.Images := MainDM.Images;
+  bDelete.ImageIndex := IMG_PKG_MINUS;
   bCancel.Caption := rsCreateRepositoryFrm_bCancel_Caption;
   bCancel.Hint := rsCreateRepositoryFrm_bCancel_Hint;
   miRepDetails.Caption := rsCreateRepositoryFrm_miRepDetails_Caption;
@@ -184,7 +187,7 @@ begin
     NodeDataSize := SizeOf(TData);
     Parent := pnPackages;
     Align := alClient;
-    Images := imTree;
+    Images := MainDM.Images;
     if not Options.UseDefaultTheme then
       Color := clBtnFace;
     DefaultNodeHeight := 25;
@@ -225,7 +228,7 @@ begin
     NodeDataSize := SizeOf(TData);
     Parent := pnDetails;
     Align := alClient;
-    Images := imTree;
+    Images := MainDM.Images;
     if not Options.UseDefaultTheme then
       Color := clBtnFace;
     DefaultNodeHeight := 25;

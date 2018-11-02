@@ -13,7 +13,7 @@ uses
   PackageIntf,
   // OpkMan
   opkman_const, opkman_serializablepackages, opkman_options,
-  opkman_Common;
+  opkman_Common, opkman_maindm;
 
 type
 
@@ -21,8 +21,6 @@ type
 
   TIntfPackageListFrm = class(TForm)
     ButtonPanel1: TButtonPanel;
-    imSB: TImageList;
-    imTree: TImageList;
     pnExpCol: TPanel;
     pnInfo: TPanel;
     spCollapse: TSpeedButton;
@@ -75,6 +73,13 @@ type
     Button: TSpeedButton;
   end;
 
+const
+  IMAGE_INDEX_MAP: array[0..9] of Integer = (
+    IMG_PKG_FILE, IMG_DESCRIPTION, IMG_AUTHOR,                   // 0..2
+    IMG_LAZ_COMPATIBILITY, IMG_FPC_COMPATIBILITY, IMG_WIDGETSET, // 3..5
+    IMG_PKG_TYPE, IMG_LICENSE, IMG_DEPENDENCIES,                 // 6..8
+    IMG_FILE_VERSION);                                           // 9
+
 { TIntfPackageListFrm }
 
 procedure TIntfPackageListFrm.FormCreate(Sender: TObject);
@@ -83,13 +88,19 @@ begin
   pnInfo.Caption := '  ' + rsOPMIntfPackageListFrm_pnInfo;
   if not Options.UseDefaultTheme then
     Self.Color := clBtnFace;
+  spExpand.Caption := '';
+  spExpand.Images := MainDM.Images;
+  spExpand.ImageIndex := IMG_EXPAND;
+  spCollapse.Caption := '';
+  spCollapse.Images := MainDM.Images;
+  spCollapse.ImageIndex := IMG_COLLAPSE;
   FVST := TVirtualStringTree.Create(nil);
   with FVST do
   begin
     Parent := Self;
     Align := alClient;
     Anchors := [akLeft, akTop, akRight];
-    Images := ImTree;
+    Images := MainDM.Images;
     DefaultNodeHeight := MulDiv(25, Screen.PixelsPerInch, 96);
     Indent := 22;
     TabOrder := 0;
@@ -185,7 +196,7 @@ var
 begin
   Data := FVST.GetNodeData(Node);
   if Column = 0 then
-    ImageIndex := Data^.DataType
+    ImageIndex := IMAGE_INDEX_MAP[Data^.DataType];
 end;
 
 procedure TIntfPackageListFrm.VSTCompareNodes(Sender: TBaseVirtualTree; Node1,

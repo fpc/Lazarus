@@ -573,6 +573,10 @@ msgstr "Виберіть теку пакунка"
 msgid "Online Package Manager"
 msgstr "Мережевий диспетчер пакунків"
 
+#: opkman_const.rsmainfrm_breturn_caption
+msgid "Return"
+msgstr ""
+
 #: opkman_const.rsmainfrm_cball_caption
 msgid "All/None"
 msgstr "Все/нічого"

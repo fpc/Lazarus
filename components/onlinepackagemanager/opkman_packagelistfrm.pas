@@ -30,7 +30,8 @@ uses
   // LCL
   Forms, Controls, Graphics, ExtCtrls, StdCtrls, VirtualTrees,
   // OpkMan
-  opkman_const, opkman_serializablepackages, opkman_options, opkman_visualtree;
+  opkman_const, opkman_serializablepackages, opkman_options, opkman_visualtree,
+  opkman_maindm;
 
 type
 
@@ -40,7 +41,6 @@ type
     bOk: TButton;
     bYes: TButton;
     bNo: TButton;
-    imTree: TImageList;
     lbMessage: TLabel;
     pnUpDown: TPanel;
     pnMessage: TPanel;
@@ -151,7 +151,7 @@ begin
           Node := FVST.AddChild(nil);
           Data := FVST.GetNodeData(Node);
           Data^.FName := LazarusPkg.Name + '(' + LazarusPkg.InstalledFileVersion + ')';
-          Data^.FImageIndex := 1;
+          Data^.FImageIndex := IMG_PKG_FILE;
         end;
       end;
     end
@@ -165,7 +165,7 @@ begin
           Data^.FName := SerializablePackages.Items[I].DisplayName
         else
           Data^.FName := SerializablePackages.Items[I].Name;
-        Data^.FImageIndex := 0;
+        Data^.FImageIndex := IMG_PKG_PLUS;
       end;
     end
     else if ATyp = 2 then
@@ -184,7 +184,7 @@ begin
             Data^.FName := SerializablePackages.Items[I].DisplayName
           else
             Data^.FName := SerializablePackages.Items[I].Name;
-          Data^.FImageIndex := 0;
+          Data^.FImageIndex := IMG_PKG_PLUS;
           SerializablePackages.Items[I].ChangePackageStates(ctAdd, psError);
         end;
       end;
@@ -217,7 +217,7 @@ begin
     Parent := Self;
     Align := alClient;
     Anchors := [akLeft, akTop, akRight];
-    Images := imTree;
+    Images := MainDM.Images;
     if not Options.UseDefaultTheme then
       Color := clBtnFace;
     DefaultNodeHeight := 25;

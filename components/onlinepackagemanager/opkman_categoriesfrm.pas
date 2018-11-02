@@ -32,7 +32,7 @@ uses
   // LCL
   Forms, Controls, Graphics, ExtCtrls, StdCtrls, ButtonPanel, VirtualTrees,
   // OpkMan
-  opkman_const, opkman_common, opkman_options;
+  opkman_const, opkman_common, opkman_options, opkman_maindm;
 
 type
 
@@ -40,7 +40,6 @@ type
 
   TCategoriesFrm = class(TForm)
     ButtonPanel1: TButtonPanel;
-    imTree: TImageList;
     lbMessage: TLabel;
     pnMessage: TPanel;
     procedure bOkClick(Sender: TObject);
@@ -124,7 +123,7 @@ begin
     Parent := Self;
     Align := alClient;
     Anchors := [akLeft, akTop, akRight];
-    Images := imTree;
+    Images := MainDM.Images;
     if not Options.UseDefaultTheme then
       Color := clBtnFace;
     DefaultNodeHeight := 25;

@@ -572,6 +572,10 @@ msgstr "Выберите каталог пакета"
 msgid "Online Package Manager"
 msgstr "Сетевой диспетчер пакетов"
 
+#: opkman_const.rsmainfrm_breturn_caption
+msgid "Return"
+msgstr ""
+
 #: opkman_const.rsmainfrm_cball_caption
 msgid "All/None"
 msgstr "Всё/ничего"

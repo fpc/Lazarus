@@ -613,6 +613,10 @@ msgstr "Seleccionar directorio del paquete"
 msgid "Online Package Manager"
 msgstr "Administrador de Paquetes en Línea"
 
+#: opkman_const.rsmainfrm_breturn_caption
+msgid "Return"
+msgstr ""
+
 #: opkman_const.rsmainfrm_cball_caption
 msgid "All/None"
 msgstr "Todos/Ninguno"

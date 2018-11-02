@@ -33,7 +33,7 @@ uses
   Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls, LCLIntf,
   // OpkMan
   opkman_serializablepackages, opkman_const, opkman_common, opkman_updates,
-  opkman_options;
+  opkman_options, opkman_maindm;
 
 type
 
@@ -45,7 +45,6 @@ type
     bHelp: TButton;
     bTest: TButton;
     edLinkToZip: TEdit;
-    imTree: TImageList;
     lbLinkToZip: TLabel;
     pnTop: TPanel;
     pnButtons: TPanel;
@@ -109,7 +108,7 @@ begin
      Parent := Self;
      Align := alClient;
      Anchors := [akLeft, akTop, akRight];
-     Images := imTree;
+     Images := MainDM.Images;
      if not Options.UseDefaultTheme then
        Color := clBtnFace;
      DefaultNodeHeight := 25;
