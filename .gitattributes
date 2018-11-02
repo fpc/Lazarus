@@ -7910,11 +7910,23 @@ images/components_images_list.txt svneol=native#text/plain
 images/componenttreeview.bat svneol=native#text/x-msdos-program
 images/componenttreeview.res -text
 images/componenttreeview/oi_box.png -text svneol=unset#image/png
+images/componenttreeview/oi_box_150.png -text svneol=unset#image/png
+images/componenttreeview/oi_box_200.png -text svneol=unset#image/png
 images/componenttreeview/oi_collection.png -text svneol=unset#image/png
+images/componenttreeview/oi_collection_150.png -text svneol=unset#image/png
+images/componenttreeview/oi_collection_200.png -text svneol=unset#image/png
 images/componenttreeview/oi_comp.png -text svneol=unset#image/png
+images/componenttreeview/oi_comp_150.png -text svneol=unset#image/png
+images/componenttreeview/oi_comp_200.png -text svneol=unset#image/png
 images/componenttreeview/oi_control.png -text svneol=unset#image/png
+images/componenttreeview/oi_control_150.png -text svneol=unset#image/png
+images/componenttreeview/oi_control_200.png -text svneol=unset#image/png
 images/componenttreeview/oi_form.png -text svneol=unset#image/png
+images/componenttreeview/oi_form_150.png -text svneol=unset#image/png
+images/componenttreeview/oi_form_200.png -text svneol=unset#image/png
 images/componenttreeview/oi_item.png -text svneol=unset#image/png
+images/componenttreeview/oi_item_150.png -text svneol=unset#image/png
+images/componenttreeview/oi_item_200.png -text svneol=unset#image/png
 images/componenttreeview_list.txt svneol=native#text/plain
 images/copyright.txt svneol=native#text/plain
 images/debugger/callstack_bottom.png -text
