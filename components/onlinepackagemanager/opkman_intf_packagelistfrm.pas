@@ -101,24 +101,24 @@ begin
     Align := alClient;
     Anchors := [akLeft, akTop, akRight];
     Images := MainDM.Images;
-    DefaultNodeHeight := MulDiv(25, Screen.PixelsPerInch, 96);
-    Indent := 22;
+    DefaultNodeHeight := Scale96ToForm(25);
+    Indent := Scale96ToForm(22);
     TabOrder := 0;
     DefaultText := '';
     Header.AutoSizeIndex := 1;
     Header.SortColumn := 0;
-    Header.Height := MulDiv(25, Screen.PixelsPerInch, 96);
+    Header.Height := Scale96ToForm(25);
     Colors.DisabledColor := clBlack;
     with Header.Columns.Add do
     begin
       Position := 0;
-      Width := MulDiv(200, Screen.PixelsPerInch, 96);
+      Width := Scale96ToForm(200);
       Text := rsOPMIntfPackageListFrm_VSTHeaderColumn_LazarusPackage;
     end;
     with Header.Columns.Add do
     begin
       Position := 1;
-      Width := MulDiv(200, Screen.PixelsPerInch, 96);
+      Width := Scale96ToForm(200);
       Text := rsOPMIntfPackageListFrm_VSTHeaderColumn_Data;
     end;
     Header.Options := [hoAutoResize, hoColumnResize, hoRestrictDrag, hoShowSortGlyphs, hoVisible];

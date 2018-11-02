@@ -111,34 +111,34 @@ begin
      Images := MainDM.Images;
      if not Options.UseDefaultTheme then
        Color := clBtnFace;
-     DefaultNodeHeight := 25;
+     DefaultNodeHeight := Scale96ToForm(25);
      Indent := 0;
      TabOrder := 1;
      DefaultText := '';
      Header.AutoSizeIndex := 0;
-     Header.Height := 25;
+     Header.Height := Scale96ToForm(25);
      Colors.BorderColor := clBlack;
-     BorderSpacing.Top := 15;
-     BorderSpacing.Left := 15;
-     BorderSpacing.Right := 15;
+     BorderSpacing.Top := Scale96ToForm(15);
+     BorderSpacing.Left := Scale96ToForm(15);
+     BorderSpacing.Right := Scale96ToForm(15);
      BorderSpacing.Bottom := 0;
      with Header.Columns.Add do
      begin
        Position := 0;
-       Width := 250;
+       Width := Scale96ToForm(250);
        Text := rsCreateJSONForUpdatesFrm_Column0_Text;
      end;
      with Header.Columns.Add do
      begin
        Position := 1;
-       Width := 75;
+       Width := Scale96ToForm(75);
        Text := rsCreateJSONForUpdatesFrm_Column1_Text;
        Alignment := taCenter;
      end;
      with Header.Columns.Add do
      begin
        Position := 2;
-       Width := 100;
+       Width := Scale96ToForm(100);
        Text := rsCreateJSONForUpdatesFrm_Column2_Text;
        Alignment := taCenter;
        Options := Options - [coVisible];
@@ -146,7 +146,7 @@ begin
      with Header.Columns.Add do
      begin
        Position := 3;
-       Width := 100;
+       Width := Scale96ToForm(100);
        Text := rsCreateJSONForUpdatesFrm_Column3_Text;
        Alignment := taCenter;
        Options := Options - [coVisible];

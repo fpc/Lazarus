@@ -194,24 +194,24 @@ begin
      Anchors := [akLeft, akTop, akRight];
      Images := AImgList;
      PopupMenu := APopupMenu;
-     DefaultNodeHeight := MulDiv(25, Screen.PixelsPerInch, 96);
-     Indent := 22;
+     DefaultNodeHeight := FVST.Scale96ToForm(25);
+     Indent := FVST.Scale96ToForm(22);
      TabOrder := 1;
      DefaultText := '';
      Header.AutoSizeIndex := 4;
-     Header.Height := MulDiv(25, Screen.PixelsPerInch, 96);
+     Header.Height := FVST.Scale96ToForm(25);
      Colors.DisabledColor := clBlack;
      with Header.Columns.Add do
      begin
        Position := 0;
-       Width := MulDiv(270, Screen.PixelsPerInch, 96);
+       Width := FVST.Scale96ToForm(270);
        Text := rsMainFrm_VSTHeaderColumn_PackageName;
      end;
      with Header.Columns.Add do
      begin
        Position := 1;
        Alignment := taCenter;
-       Width := MulDiv(90, Screen.PixelsPerInch, 96);
+       Width := FVST.Scale96ToForm(90);
        {$IFDEF LCLCarbon}
        Options := Options - [coResizable];
        {$ENDIF}
@@ -221,7 +221,7 @@ begin
      begin
        Position := 2;
        Alignment := taCenter;
-       Width := MulDiv(90, Screen.PixelsPerInch, 96);
+       Width := FVST.Scale96ToForm(90);
        {$IFDEF LCLCarbon}
        Options := Options - [coResizable];
        {$ENDIF}
@@ -231,7 +231,7 @@ begin
      begin
        Position := 3;
        Alignment := taCenter;
-       Width := MulDiv(90, Screen.PixelsPerInch, 96);
+       Width := FVST.Scale96ToForm(90);
        {$IFDEF LCLCarbon}
        Options := Options - [coResizable];
        {$ENDIF}
@@ -240,7 +240,7 @@ begin
      with Header.Columns.Add do
      begin
         Position := 4;
-        Width := MulDiv(280, Screen.PixelsPerInch, 96);
+        Width := FVST.Scale96ToForm(280);
         {$IFDEF LCLCarbon}
         Options := Options - [coResizable];
         {$ENDIF}
@@ -250,7 +250,7 @@ begin
      begin
         Position := 5;
         Alignment := taCenter;
-        Width := MulDiv(88, Screen.PixelsPerInch, 96);
+        Width := FVST.Scale96ToForm(88);
         Options := Options - [coResizable];
         Text := rsMainFrm_VSTHeaderColumn_Rating;
       end;
@@ -258,7 +258,7 @@ begin
      begin
         Position := 6;
         Alignment := taCenter;
-        Width := MulDiv(20, Screen.PixelsPerInch, 96);
+        Width := FVST.Scale96ToForm(20);
         Options := Options - [coResizable];
      end;
      Header.Options := [hoAutoResize, hoColumnResize, hoRestrictDrag, hoShowSortGlyphs, hoVisible];

@@ -190,16 +190,16 @@ begin
     Images := MainDM.Images;
     if not Options.UseDefaultTheme then
       Color := clBtnFace;
-    DefaultNodeHeight := 25;
-    Indent := 15;
+    DefaultNodeHeight := Scale96ToForm(25);
+    Indent := Scale96ToForm(15);
     TabOrder := 1;
     DefaultText := '';
     Header.AutoSizeIndex := 0;
-    Header.Height := 25;
+    Header.Height := Scale96ToForm(25);
     Colors.BorderColor := clBlack;
     with Header.Columns.Add do begin
       Position := 0;
-      Width := 300;
+      Width := Scale96ToForm(300);
       Text := rsCreateRepositoryFrm_VSTPackages_Column0;
     end;
     Header.Options := [hoAutoResize, hoColumnResize, hoRestrictDrag, hoVisible, hoAutoSpring];
@@ -231,21 +231,21 @@ begin
     Images := MainDM.Images;
     if not Options.UseDefaultTheme then
       Color := clBtnFace;
-    DefaultNodeHeight := 25;
-    Indent := 15;
+    DefaultNodeHeight := Scale96ToForm(25);
+    Indent := Scale96ToForm(15);
     TabOrder := 0;
     DefaultText := '';
     Header.AutoSizeIndex := 1;
-    Header.Height := 25;
+    Header.Height := Scale96ToForm(25);
     Colors.BorderColor := clBlack;
     with Header.Columns.Add do begin
       Position := 0;
-      Width := 200;
+      Width := Scale96ToForm(200);
       Text := rsCreateRepositoryFrm_VSTDetails_Column0;
     end;
     with Header.Columns.Add do begin
       Position := 1;
-      Width := 250;
+      Width := Scale96ToForm(250);
       Text := rsCreateRepositoryFrm_VSTDetails_Column1;
     end;
     Header.Options := [hoAutoResize, hoColumnResize, hoRestrictDrag, hoVisible, hoAutoSpring];

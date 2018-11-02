@@ -220,19 +220,19 @@ begin
     Images := MainDM.Images;
     if not Options.UseDefaultTheme then
       Color := clBtnFace;
-    DefaultNodeHeight := 25;
+    DefaultNodeHeight := Scale96ToForm(25);
     Indent := 0;
     TabOrder := 1;
     DefaultText := '';
     Header.AutoSizeIndex := 0;
-    Header.Height := 25;
+    Header.Height := Scale96ToForm(25);
     Colors.BorderColor := clBlack;
-    BorderSpacing.Top := 5;
-    BorderSpacing.Left := 15;
-    BorderSpacing.Right := 15;
+    BorderSpacing.Top := Scale96ToForm(5);
+    BorderSpacing.Left := Scale96ToForm(15);
+    BorderSpacing.Right := Scale96ToForm(15);
     with Header.Columns.Add do begin
       Position := 0;
-      Width := 250;
+      Width := Scale96ToForm(250);
       Text := 'PackageName';
     end;
     Header.Options := [hoAutoResize, hoColumnResize, hoRestrictDrag, hoShowSortGlyphs, hoAutoSpring];

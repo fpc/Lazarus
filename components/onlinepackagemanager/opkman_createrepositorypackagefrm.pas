@@ -228,16 +228,16 @@ begin
     Images := MainDM.Images;
     if not Options.UseDefaultTheme then
       Color := clBtnFace;
-    DefaultNodeHeight := 25;
-    Indent := 15;
+    DefaultNodeHeight := Scale96ToForm(25);
+    Indent := Scale96ToForm(15);
     TabOrder := 1;
     DefaultText := '';
     Header.AutoSizeIndex := 0;
-    Header.Height := 25;
+    Header.Height := Scale96ToForm(25);
     Colors.BorderColor := clBlack;
     with Header.Columns.Add do begin
       Position := 0;
-      Width := 250;
+      Width := Scale96ToForm(250);
       Text := rsCreateRepositoryPackageFrm_pnCaption_Caption0;
     end;
     Header.Options := [hoAutoResize, hoColumnResize, hoRestrictDrag, hoVisible, hoAutoSpring];
@@ -261,26 +261,26 @@ begin
   begin
     Parent := pnData;
     Align := alTop;
-    Height := 200;
+    Height := Scale96ToForm(200);
     Anchors := [akLeft, akTop, akRight];
     Images := MainDM.Images;
     if not Options.UseDefaultTheme then
       Color := clBtnFace;
-    DefaultNodeHeight := 25;
-    Indent := 15;
+    DefaultNodeHeight := Scale96ToForm(25);
+    Indent := Scale96ToForm(15);
     TabOrder := 1;
     DefaultText := '';
     Header.AutoSizeIndex := 1;
-    Header.Height := 25;
+    Header.Height := Scale96ToForm(25);
     Colors.BorderColor := clBlack;
     with Header.Columns.Add do begin
       Position := 0;
-      Width := 150;
+      Width := Scale96ToForm(150);
       Text := rsCreateRepositoryPackageFrm_pnCaption_Caption1;
     end;
     with Header.Columns.Add do begin
       Position := 1;
-      Width := 250;
+      Width := Scale96ToForm(250);
       Text := rsCreateRepositoryPackageFrm_pnCaption_Caption2;
     end;
     Header.Options := [hoAutoResize, hoColumnResize, hoRestrictDrag, hoVisible, hoAutoSpring];
