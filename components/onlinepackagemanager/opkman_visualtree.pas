@@ -660,8 +660,6 @@ var
   var
     I: Integer;
   begin
-    if AStartIndex + ATyp > 25 then
-      ShowMessage('crap');
     for I := 0 to ACnt - 1 do
       imgres.Draw(ACanvas, AX + I*AWidth + 5, AY, AStartIndex + ATyp);
   end;

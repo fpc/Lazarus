@@ -470,7 +470,7 @@ begin
   Result := Assigned(SerializablePackages) and (FOpenSSLAvailable) and
             (not FBusyUpdating) and (not FNeedToBreak);
   case Options.CheckForUpdates of
-    0: Result := MinutesBetween(Now, Options.LastUpdate) >= 2;
+    0: Result := MinutesBetween(Now, Options.LastUpdate) >= 15;
     1: Result := HoursBetween(Now, Options.LastUpdate) >= 1;
     2: Result := DaysBetween(Now, Options.LastUpdate) >= 1;
     3: Result := WeeksBetween(Now, Options.LastUpdate) >= 1;

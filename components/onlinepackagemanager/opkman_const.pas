@@ -142,6 +142,7 @@ resourcestring
   rsMainFrm_cbAll_Hint = 'Check/Uncheck packages';
   rsMainFrm_lbFilter_Caption = 'Filter by:';
   rsMainFrm_cbFilterBy_Hint = 'Filter package list by:';
+  rsMainFrm_bReturn_Caption = 'Return';
   rsMainFrm_edFilter_Hint = 'Type filter text';
   rsMainFrm_spClear_Hint = 'Clear filter text';
   rsMainFrm_spExpand_Hint = 'Expand package tree';

@@ -1400,7 +1400,7 @@ begin
   lbFilterBy.Top := cbFilterBy.Top + (cbFilterBy.Height - lbFilterBy.Height) div 2;
   lbFilterBy.Caption := rsMainFrm_lbFilter_Caption;
   cbFilterBy.Hint := rsMainFrm_cbFilterBy_Hint;
-
+  bReturn.Caption := rsMainFrm_bReturn_Caption;
   cbPackageCategory.Visible := False;
   cbPackageType.Visible := False;
   cbPackageState.Visible := False;

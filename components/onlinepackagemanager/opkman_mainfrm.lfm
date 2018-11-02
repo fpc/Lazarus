@@ -358,6 +358,7 @@ object MainFrm: TMainFrm
       Top = 60
       Width = 900
       Align = alTop
+      BevelOuter = bvNone
       ClientHeight = 0
       ClientWidth = 900
       Color = clBtnFace
