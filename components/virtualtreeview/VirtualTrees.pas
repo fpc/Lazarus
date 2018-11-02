@@ -14377,8 +14377,8 @@ begin
               Pen.Color := FColors.TreeLineColor;
               Rectangle(0, 0, Width, Height);
               Pen.Color := FColors.NodeFontColor;
-              MoveTo(2, Width div 2);
-              LineTo(Width - 2, Width div 2);
+              MoveTo(p2, Width div 2);
+              LineTo(Width - p2, Width div 2);
               MoveTo(Width div 2, p2);
               LineTo(Width div 2, Width - p2);
             end
