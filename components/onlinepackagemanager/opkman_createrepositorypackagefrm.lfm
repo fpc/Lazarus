@@ -85,7 +85,7 @@ object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
       Width = 714
       OnAcceptDirectory = edPackageDirAcceptDirectory
       ShowHidden = False
-      ButtonWidth = 50
+      ButtonWidth = 23
       NumGlyphs = 1
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 6
@@ -313,10 +313,10 @@ object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
         ParentColor = False
         TabOrder = 0
         object spCategories: TSpeedButton
-          Left = 301
+          Left = 328
           Height = 23
           Top = 0
-          Width = 50
+          Width = 23
           Align = alRight
           Caption = '...'
           OnClick = spCategoriesClick
@@ -327,7 +327,7 @@ object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
           Left = 0
           Height = 23
           Top = 0
-          Width = 301
+          Width = 328
           Align = alClient
           AutoSize = False
           ParentShowHint = False
