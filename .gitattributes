@@ -3775,6 +3775,9 @@ components/onlinepackagemanager/images/Tree_Buttons/magnifier-plus_200.png -text
 components/onlinepackagemanager/images/Tree_Buttons/package_del.png -text svneol=unset#image/png
 components/onlinepackagemanager/images/Tree_Buttons/package_del_150.png -text svneol=unset#image/png
 components/onlinepackagemanager/images/Tree_Buttons/package_del_200.png -text svneol=unset#image/png
+components/onlinepackagemanager/images/Tree_Buttons/package_minus.png -text svneol=unset#image/png
+components/onlinepackagemanager/images/Tree_Buttons/package_minus_150.png -text svneol=unset#image/png
+components/onlinepackagemanager/images/Tree_Buttons/package_minus_200.png -text svneol=unset#image/png
 components/onlinepackagemanager/images/readme.txt svneol=native#text/plain
 components/onlinepackagemanager/languages/opkman_const.de.po svneol=native#text/plain
 components/onlinepackagemanager/languages/opkman_const.es.po svneol=native#text/plain
