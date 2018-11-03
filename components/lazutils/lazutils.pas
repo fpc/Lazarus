@@ -22,7 +22,7 @@ uses
   TTFile, TTGLoad, TTInterp, TTLoad, TTMemory, TTObjs, TTProfile, TTRASTER, 
   TTTables, TTTypes, UTF8Process, HTML2TextRender, Laz_AVL_Tree, 
   CompWriterPas, LazPasReadUtil, IntegerList, LazVersion, UITypes, GraphType, 
-  LazTracer, LazStringUtils, LazarusPackageIntf;
+  LazTracer, LazStringUtils, LazUTF8SysUtils, LazarusPackageIntf;
 
 implementation
 
