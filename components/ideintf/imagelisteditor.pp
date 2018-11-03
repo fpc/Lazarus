@@ -810,7 +810,6 @@ var
   SrcBmp, DestBmp: TBitmap;
   Picture: TPicture;
   P: TGlyphInfo = nil;
-  i, j: Integer;
 begin
   SaveDialog.InitialDir := ExtractFileDir(FileName);
   SrcBmp := nil;
