@@ -56,24 +56,24 @@ end;"/>
         <UnitName Value="registervirtualtreeview"/>
       </Item3>
       <Item4>
-        <Filename Value="ideicons.lrs"/>
-        <Type Value="LRS"/>
-      </Item4>
-      <Item5>
         <Filename Value="VTConfig.inc"/>
         <Type Value="Include"/>
-      </Item5>
-      <Item6>
+      </Item4>
+      <Item5>
         <Filename Value="VTGraphics.pas"/>
         <UnitName Value="VTGraphics"/>
-      </Item6>
-      <Item7>
+      </Item5>
+      <Item6>
         <Filename Value="VirtualTrees.res"/>
         <Type Value="Binary"/>
-      </Item7>
-      <Item8>
+      </Item6>
+      <Item7>
         <Filename Value="VTIDEEditors.pas"/>
         <UnitName Value="VTIDEEditors"/>
+      </Item7>
+      <Item8>
+        <Filename Value="ideicons.res"/>
+        <Type Value="Binary"/>
       </Item8>
     </Files>
     <i18n>
@@ -98,7 +98,6 @@ end;"/>
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>
-      <IgnoreBinaries Value="False"/>
     </PublishOptions>
     <CustomOptions Items="ExternHelp" Version="2">
       <_ExternHelp Items="Count"/>
