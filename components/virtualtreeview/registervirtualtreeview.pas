@@ -9,6 +9,8 @@ procedure Register;
 
 implementation
 
+{$R ideicons.res}
+
 uses
   Classes, SysUtils, LResources, LazarusPackageIntf,
   VirtualTrees, VTHeaderPopup, VTIDEEditors, ComponentEditors;
@@ -32,7 +34,4 @@ begin
   RegisterUnit('VTHeaderPopup', @RegisterUnitVTHeaderPopup);
 end;
 
-initialization
-{$i ideicons.lrs}
- 
 end.

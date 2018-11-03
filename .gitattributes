@@ -5431,7 +5431,20 @@ components/virtualtreeview/VTHeaderPopup.pas svneol=native#text/pascal
 components/virtualtreeview/VTIDEEditors.pas svneol=native#text/pascal
 components/virtualtreeview/VirtualTrees.pas svneol=native#text/pascal
 components/virtualtreeview/VirtualTrees.res -text
-components/virtualtreeview/ideicons.lrs svneol=native#text/plain
+components/virtualtreeview/ideicons.res -text
+components/virtualtreeview/images/components/tvirtualdrawtree.png -text svneol=unset#image/png
+components/virtualtreeview/images/components/tvirtualdrawtree_150.png -text svneol=unset#image/png
+components/virtualtreeview/images/components/tvirtualdrawtree_200.png -text svneol=unset#image/png
+components/virtualtreeview/images/components/tvirtualexplorertree.png -text svneol=unset#image/png
+components/virtualtreeview/images/components/tvirtualexplorertree_150.png -text svneol=unset#image/png
+components/virtualtreeview/images/components/tvirtualexplorertree_200.png -text svneol=unset#image/png
+components/virtualtreeview/images/components/tvirtualstringtree.png -text svneol=unset#image/png
+components/virtualtreeview/images/components/tvirtualstringtree_150.png -text svneol=unset#image/png
+components/virtualtreeview/images/components/tvirtualstringtree_200.png -text svneol=unset#image/png
+components/virtualtreeview/images/components/tvtheaderpopupmenu.png -text svneol=unset#image/png
+components/virtualtreeview/images/components/tvtheaderpopupmenu_150.png -text svneol=unset#image/png
+components/virtualtreeview/images/components/tvtheaderpopupmenu_200.png -text svneol=unset#image/png
+components/virtualtreeview/images/ideicons_list.txt svneol=native#text/plain
 components/virtualtreeview/images/make_res.bat svneol=native#text/plain
 components/virtualtreeview/images/virtualtrees_list.txt svneol=native#text/plain
 components/virtualtreeview/images/vt_check_dark.png -text svneol=unset#image/png
