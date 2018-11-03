@@ -1325,6 +1325,14 @@ msgstr "Добавить других разрешений ..."
 msgid "New resolution ..."
 msgstr "Новое разрешение ..."
 
+#: objinspstrconsts.sccsiledtaddsliced
+msgid "Add sliced..."
+msgstr ""
+
+#: objinspstrconsts.sccsiledtaddslicediconerror
+msgid "Adding sliced icons is not supported."
+msgstr ""
+
 #: objinspstrconsts.sccsiledtadjustment
 msgid "Adjustment"
 msgstr "Выравнивание"
@@ -1337,6 +1345,10 @@ msgstr "&Применить"
 #: objinspstrconsts.sccsiledtcannotdeleteresolution
 msgid "Cannot delete default resolution."
 msgstr "Невозможно удалить разрешение по умолчанию."
+
+#: objinspstrconsts.sccsiledtcannotslice
+msgid "Source image size must be an integer multiple of the ImageList's Width and Height."
+msgstr ""
 
 #: objinspstrconsts.sccsiledtcaption
 msgid "ImageList Editor"

@@ -247,6 +247,7 @@ begin
 
   BtnAdd.Caption := sccsILEdtAdd;
   BtnAddMoreResolutions.Caption := sccsILEdtAddMoreResolutions;
+  BtnAddSliced.Caption := sccsILEdtAddSliced;
   BtnDelete.Caption := sccsILEdtDelete;
   BtnReplace.Caption := sccsILEdtReplace;
   BtnReplaceAll.Caption := sccsILEdtReplaceAllResolutions;
@@ -882,7 +883,7 @@ begin
   try
     Picture.LoadFromFile(FileName);
     if Picture.Graphic is TCustomIcon then begin
-      MessageDlg('Adding sliced icons is not supported.', mtError, [mbOK], 0);
+      MessageDlg(sccsILEdtAddSlicedIconError, mtError, [mbOK], 0);
       exit;
     end;
 
@@ -902,7 +903,7 @@ begin
         end;
         ImageListbox.ItemIndex := ImageListbox.Count - 1;
       end else
-        MessageDlg('Source image is not a multiple of ImageList.Width and .Height', mtError, [mbOK], 0);
+        MessageDlg(sccsILEdtCannotSlice, mtError, [mbOK], 0);
     finally
       DestBmp.Free;
       SrcBmp.Free;

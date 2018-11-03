@@ -1318,6 +1318,14 @@ msgstr "Lisää tarkkuuksia ..."
 msgid "New resolution ..."
 msgstr "Uusi tarkkuus ..."
 
+#: objinspstrconsts.sccsiledtaddsliced
+msgid "Add sliced..."
+msgstr ""
+
+#: objinspstrconsts.sccsiledtaddslicediconerror
+msgid "Adding sliced icons is not supported."
+msgstr ""
+
 #: objinspstrconsts.sccsiledtadjustment
 msgid "Adjustment"
 msgstr "Säätö"
@@ -1330,6 +1338,10 @@ msgstr "&Käytä"
 #: objinspstrconsts.sccsiledtcannotdeleteresolution
 msgid "Cannot delete default resolution."
 msgstr "Oletustarkkuutta ei voi poistaa."
+
+#: objinspstrconsts.sccsiledtcannotslice
+msgid "Source image size must be an integer multiple of the ImageList's Width and Height."
+msgstr ""
 
 #: objinspstrconsts.sccsiledtcaption
 msgid "ImageList Editor"

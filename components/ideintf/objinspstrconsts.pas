@@ -134,6 +134,7 @@ resourcestring
   sccsILEdtGrpRCaption = 'Selected Image';
   sccsILEdtAdd         = '&Add ...';
   sccsILEdtAddMoreResolutions = 'Add more resolutions ...';
+  sccsILEdtAddSliced   = 'Add sliced...';
   sccsILEdtReplace     = '&Replace ...';
   sccsILEdtReplaceAllResolutions = 'Replace all resolutions ...';
   sccsILEdtDelete      = '&Delete';
@@ -151,6 +152,8 @@ resourcestring
   sccsILEdtransparentColor = 'Transparent Color:';
   sccsILEdtAdjustment  = 'Adjustment';
   sccsILEdtNone        = 'None';
+  sccsILEdtAddSlicedIconError = 'Adding sliced icons is not supported.';
+  sccsILEdtCannotSlice = 'Source image size must be an integer multiple of the ImageList''s Width and Height.';
   liisIf               = 'If';
   liisIfDef            = 'IfDef';
   liisIfNDef           = 'IfNDef';
