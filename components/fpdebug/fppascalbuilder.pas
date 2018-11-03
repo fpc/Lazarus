@@ -680,7 +680,10 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
       exit;
     end;
 
-    Cache := MemManager.CacheManager.AddCache(AValue.DataAddress.Address, AValue.DataSize);
+    if (MemManager <> nil) and (MemManager.CacheManager <> nil) then
+      Cache := MemManager.CacheManager.AddCache(AValue.DataAddress.Address, AValue.DataSize)
+    else
+      Cache := nil;
     try
 
       if (ppvCreateDbgType in AFlags) then begin
@@ -764,7 +767,8 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
         APrintedValue := '(' + APrintedValue + ')';
       Result := True;
     finally
-      MemManager.CacheManager.RemoveCache(Cache)
+      if Cache <> nil then
+        MemManager.CacheManager.RemoveCache(Cache)
     end;
   end;
 
