@@ -132,6 +132,15 @@ type
     constructor Create();
   end;
 
+  { TLldbInstructionProcessInterrupt }
+
+  TLldbInstructionProcessInterrupt = class(TLldbInstruction)
+  protected
+    function ProcessInputFromDbg(const AData: String): Boolean; override;
+  public
+    constructor Create();
+  end;
+
   { TLldbInstructionBreakOrWatchSet }
 
   TLldbInstructionBreakOrWatchSet = class(TLldbInstruction)
@@ -719,6 +728,20 @@ end;
 constructor TLldbInstructionProcessKill.Create();
 begin
   inherited Create('process kill');
+end;
+
+{ TLldbInstructionProcessInterrupt }
+
+function TLldbInstructionProcessInterrupt.ProcessInputFromDbg(
+  const AData: String): Boolean;
+begin
+  Result := True;
+  SetContentReceieved;
+end;
+
+constructor TLldbInstructionProcessInterrupt.Create();
+begin
+  inherited Create('process interrupt');
 end;
 
 { TLldbInstructionBreakSet }

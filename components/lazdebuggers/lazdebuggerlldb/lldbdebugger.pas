@@ -37,6 +37,7 @@ type
   public
     constructor Create(ADebugger: TLldbDebugger);
     destructor Destroy; override;
+    procedure CancelAll;
     procedure LockQueueRun;
     procedure UnLockQueueRun;
     property Items[Index: Integer]: TLldbDebuggerCommand read Get write Put; default;
@@ -50,12 +51,14 @@ type
   TLldbDebuggerCommand = class(TRefCountedObject)
   private
     FOwner: TLldbDebugger;
+    FIsRunning: Boolean;
     function GetDebuggerState: TDBGState;
     function GetCommandQueue: TLldbDebuggerCommandQueue;
     function GetInstructionQueue: TLldbInstructionQueue;
   protected
     procedure DoLineDataReceived(var ALine: String); virtual;
     procedure DoExecute; virtual; abstract;
+    procedure DoCancel; virtual;
     procedure Finished;
 
     procedure InstructionSucceeded(AnInstruction: TObject);
@@ -71,6 +74,7 @@ type
     constructor Create(AOwner: TLldbDebugger);
     destructor Destroy; override;
     procedure Execute;
+    procedure Cancel;
   end;
 
   { TLldbDebuggerCommandInit }
@@ -117,6 +121,7 @@ type
   protected
     FStepAction: TLldbInstructionProcessStepAction;
     procedure DoLineDataReceived(var ALine: String); override;
+    procedure DoCancel; override;
   public
     constructor Create(AOwner: TLldbDebugger);
     destructor Destroy; override;
@@ -253,6 +258,7 @@ type
     function  LldbRun: Boolean;
     function  LldbStep(AStepAction: TLldbInstructionProcessStepAction): Boolean;
     function  LldbStop: Boolean;
+    function  LldbPause: Boolean;
     function  LldbEvaluate(const AExpression: String; EvalFlags: TDBGEvaluateFlags; ACallback: TDBGEvaluateResultCallback): Boolean;
     function  LldbEnvironment(const AVariable: String; const ASet: Boolean): Boolean;
   protected
@@ -1007,6 +1013,14 @@ begin
     exit; // handle in main debugger
   end;
 
+end;
+
+procedure TLldbDebuggerCommandRun.DoCancel;
+begin
+  InstructionQueue.CancelAllForCommand(Self); // in case there still are any
+  DeleteTempBreakPoint;
+  // Must not call Finished; => would cancel DeleteTempBreakPoint;
+  CommandQueue.CommandFinished(Self);
 end;
 
 procedure TLldbDebuggerCommandRun.RunInstructionSucceeded(AnInstruction: TObject
@@ -1838,6 +1852,21 @@ DebugLnExit(['<<< CommandQueue.Run (Destroy)', FRunningCommand.ClassName, ', ', 
   inherited Destroy;
 end;
 
+procedure TLldbDebuggerCommandQueue.CancelAll;
+var
+  i: Integer;
+begin
+  i := Count - 1;
+  while i >= 0 do begin
+    Items[i].Cancel;
+    dec(i);
+    if i > Count then
+      i := Count - 1;
+  end;
+  if FRunningCommand <> nil then
+    FRunningCommand.Cancel;
+end;
+
 procedure TLldbDebuggerCommandQueue.LockQueueRun;
 begin
   inc(FLockQueueRun);
@@ -1914,6 +1943,7 @@ procedure TLldbDebuggerCommand.Execute;
 var
   d: TLldbDebugger;
 begin
+  FIsRunning := True;
   d := Debugger;
   try
     d.LockRelease;
@@ -1923,7 +1953,19 @@ begin
   end;
 end;
 
+procedure TLldbDebuggerCommand.Cancel;
+begin
+  Debugger.CommandQueue.Remove(Self); // current running command is not on queue // dec refcount, may call destroy
+  if FIsRunning then
+    DoCancel;  // should call CommandQueue.CommandFinished
+end;
+
 procedure TLldbDebuggerCommand.DoLineDataReceived(var ALine: String);
+begin
+  //
+end;
+
+procedure TLldbDebuggerCommand.DoCancel;
 begin
   //
 end;
@@ -2432,9 +2474,20 @@ begin
   DebugLn('*** Stop');
   Result := True;
 
+  CommandQueue.CancelAll;
   Cmd := TLldbDebuggerCommandStop.Create(Self);
   QueueCommand(Cmd);
   Cmd.ReleaseReference;
+end;
+
+function TLldbDebugger.LldbPause: Boolean;
+var
+  Instr: TLldbInstruction;
+begin
+  Result := True;
+  Instr := TLldbInstructionProcessInterrupt.Create();
+  FDebugInstructionQueue.QueueInstruction(Instr);
+  Instr.ReleaseReference;
 end;
 
 function TLldbDebugger.LldbEvaluate(const AExpression: String;
@@ -2569,8 +2622,8 @@ end;
 function TLldbDebugger.GetSupportedCommands: TDBGCommands;
 begin
   Result := [dcRun, dcStop, dcStepOver, dcStepInto, dcStepOut, dcEvaluate,
-             dcStepOverInstr, dcStepIntoInstr, dcEnvironment];
-//  Result := [dcPause, dcRunTo, dcAttach, dcDetach, dcJumpto,
+             dcStepOverInstr, dcStepIntoInstr, dcPause, dcEnvironment];
+//  Result := [dcRunTo, dcAttach, dcDetach, dcJumpto,
 //             dcBreak, dcWatch, dcLocal, dcEvaluate, dcModify,
 //             dcSetStackFrame, dcDisassemble
 //            ];
@@ -2585,7 +2638,7 @@ begin
   try
     case ACommand of
       dcRun:         Result := LldbRun;
-      //dcPause:       Result := ;
+      dcPause:       Result := LldbPause;
       dcStop:        Result := LldbStop;
       dcStepOver:    Result := LldbStep(saOver);
       dcStepInto:    Result := LldbStep(saInto);
