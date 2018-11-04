@@ -3053,6 +3053,7 @@ type
     procedure SetCustomCheckImagesWidth(const Value: Integer);
   protected
     { multi-resolution imagelist support }
+    function GetImagesWidth(Images: TCustomImageList): Integer;
     property ImagesWidth: Integer read FImagesWidth write SetImagesWidth default 0;
     property StateImagesWidth: Integer read FStateImagesWidth write SetStateImagesWidth default 0;
     property CustomCheckImagesWidth: Integer read FCustomCheckImagesWidth write SetCustomCheckImagesWidth default 0;
@@ -18096,8 +18097,19 @@ procedure TBaseVirtualTree.AdjustImageBorder(Images: TCustomImageList; BidiMode:
 
 // Depending on the width of the image list as well as the given bidi mode R must be adjusted.
 
+var
+  W, H: Integer;
 begin
-  AdjustImageBorder(GetRealImagesWidth, GetRealImagesHeight, BidiMode, VAlign, R, ImageInfo);
+  {$IF LCL_FullVersion >= 2000000}
+  with Images.ResolutionForPPI[GetImagesWidth(Images), Font.PixelsPerInch, GetCanvasScaleFactor] do
+  {$ELSE}
+  with Images do
+  {$IFEND}
+  begin
+    W := Width;
+    H := Height;
+  end;
+  AdjustImageBorder(W, H, BidiMode, VAlign, R, ImageInfo);
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -21953,6 +21965,22 @@ begin
       ImageInfo[InfoIndex].Images := DefaultImages;
   end;
 end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+{$IF LCL_FullVersion >= 2000000}
+function TBaseVirtualTree.GetImagesWidth(Images: TCustomImageList): Integer;
+begin
+  if Images = FImages then
+    Result := FImagesWidth
+  else if Images = FStateImages then
+    Result := FStateImagesWidth
+  else if Images = FCheckImages then
+    Result := FCheckImagesWidth
+  else
+    Result := 0;
+end;
+{$IFEND}
 
 //----------------------------------------------------------------------------------------------------------------------
 
