@@ -9475,8 +9475,13 @@ var
               ColImageInfo.Index := GetCheckImage(nil, FCheckType, FCheckState, IsEnabled);
               ColImageInfo.XPos := GlyphPos.X;
               ColImageInfo.YPos := GlyphPos.Y;
-              w := ColImageInfo.Images.Width;
-              h := ColImageInfo.Images.Height;
+              if ColImageInfo.Images <> nil then begin
+                w := ColImageInfo.Images.Width;
+                h := ColImageInfo.Images.Height;
+              end else begin
+                w := 0;
+                h := 0;
+              end;
               PaintCheckImage(TargetCanvas, ColImageInfo, False);
             end;
           end;
@@ -22073,66 +22078,84 @@ end;
 
 function TBaseVirtualTree.GetRealImagesWidth: Integer;
 begin
-  {$IF LCL_FullVersion >= 2000000}
-  Result := FImages.ResolutionForPPI[FImagesWidth, Font.PixelsPerInch, GetCanvasScaleFactor].Width;
-  {$ELSE}
-  Result := FImages.Width;
-  {$IFEND}
+  if FImages = nil then
+    Result := 0
+  else
+    {$IF LCL_FullVersion >= 2000000}
+    Result := FImages.ResolutionForPPI[FImagesWidth, Font.PixelsPerInch, GetCanvasScaleFactor].Width;
+    {$ELSE}
+    Result := FImages.Width;
+    {$IFEND}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
 function TBaseVirtualTree.GetRealImagesHeight: Integer;
 begin
-  {$IF LCL_FullVersion >= 2000000}
-  Result := FImages.ResolutionForPPI[FImagesWidth, Font.PixelsPerInch, GetCanvasScaleFactor].Height;
-  {$ELSE}
-  Result := FImages.Height;
-  {$IFEND}
+  if FImages = nil then
+    Result := 0
+  else
+    {$IF LCL_FullVersion >= 2000000}
+    Result := FImages.ResolutionForPPI[FImagesWidth, Font.PixelsPerInch, GetCanvasScaleFactor].Height;
+    {$ELSE}
+    Result := FImages.Height;
+    {$IFEND}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
 function TBaseVirtualTree.GetRealStateImagesWidth: Integer;
 begin
-  {$IF LCL_FullVersion >= 2000000}
-  Result := FStateImages.ResolutionForPPI[FStateImagesWidth, Font.PixelsPerInch, GetCanvasScaleFactor].Width;
-  {$ELSE}
-  Result := FStateImages.Width;
-  {$IFEND}
+  if FStateImages = nil then
+    Result := 0
+  else
+    {$IF LCL_FullVersion >= 2000000}
+    Result := FStateImages.ResolutionForPPI[FStateImagesWidth, Font.PixelsPerInch, GetCanvasScaleFactor].Width;
+    {$ELSE}
+    Result := FStateImages.Width;
+    {$IFEND}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
 function TBaseVirtualTree.GetRealStateImagesHeight: Integer;
 begin
-  {$IF LCL_FullVersion >= 2000000}
-  Result := FStateImages.ResolutionForPPI[FStateImagesWidth, Font.PixelsPerInch, GetCanvasScaleFactor].Height;
-  {$ELSE}
-  Result := FStateImages.Height;
-  {$IFEND}
+  if FStateImages = nil then
+    Result := 0
+  else
+    {$IF LCL_FullVersion >= 2000000}
+    Result := FStateImages.ResolutionForPPI[FStateImagesWidth, Font.PixelsPerInch, GetCanvasScaleFactor].Height;
+    {$ELSE}
+    Result := FStateImages.Height;
+    {$IFEND}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
 function TBaseVirtualTree.GetRealCheckImagesWidth: Integer;
 begin
-  {$IF LCL_FullVersion >= 2000000}
-  Result := FCheckImages.ResolutionForPPI[FCheckImagesWidth, Font.PixelsPerInch, GetCanvasScaleFactor].Width;
-  {$ELSE}
-  Result := FCheckImages.Width;
-  {$IFEND}
+  if FCheckImages = nil then
+    Result := 0
+  else
+    {$IF LCL_FullVersion >= 2000000}
+    Result := FCheckImages.ResolutionForPPI[FCheckImagesWidth, Font.PixelsPerInch, GetCanvasScaleFactor].Width;
+    {$ELSE}
+    Result := FCheckImages.Width;
+    {$IFEND}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
 function TBaseVirtualTree.GetRealCheckImagesHeight: Integer;
 begin
-  {$IF LCL_FullVersion >= 2000000}
-  Result := FCheckImages.ResolutionForPPI[FCheckImagesWidth, Font.PixelsPerInch, GetCanvasScaleFactor].Height;
-  {$ELSE}
-  Result := FCheckImages.Height;
-  {$IFEND}
+  if FCheckImages = nil then
+    Result := 0
+  else
+    {$IF LCL_FullVersion >= 2000000}
+    Result := FCheckImages.ResolutionForPPI[FCheckImagesWidth, Font.PixelsPerInch, GetCanvasScaleFactor].Height;
+    {$ELSE}
+    Result := FCheckImages.Height;
+    {$IFEND}
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
