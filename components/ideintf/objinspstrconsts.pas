@@ -134,7 +134,7 @@ resourcestring
   sccsILEdtGrpRCaption = 'Selected Image';
   sccsILEdtAdd         = '&Add ...';
   sccsILEdtAddMoreResolutions = 'Add more resolutions ...';
-  sccsILEdtAddSliced   = 'Add sliced...';
+  sccsILEdtAddSliced   = 'Add sliced ...';
   sccsILEdtReplace     = '&Replace ...';
   sccsILEdtReplaceAllResolutions = 'Replace all resolutions ...';
   sccsILEdtDelete      = '&Delete';

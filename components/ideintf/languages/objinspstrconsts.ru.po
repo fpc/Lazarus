@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-09-22 01:14+0300\n"
+"PO-Revision-Date: 2018-11-05 01:40+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -1326,12 +1326,12 @@ msgid "New resolution ..."
 msgstr "Новое разрешение ..."
 
 #: objinspstrconsts.sccsiledtaddsliced
-msgid "Add sliced..."
-msgstr ""
+msgid "Add sliced ..."
+msgstr "Добавить с разрезанием ..."
 
 #: objinspstrconsts.sccsiledtaddslicediconerror
 msgid "Adding sliced icons is not supported."
-msgstr ""
+msgstr "Добавление значков с разрезанием не поддерживается."
 
 #: objinspstrconsts.sccsiledtadjustment
 msgid "Adjustment"
@@ -1348,7 +1348,7 @@ msgstr "Невозможно удалить разрешение по умолч
 
 #: objinspstrconsts.sccsiledtcannotslice
 msgid "Source image size must be an integer multiple of the ImageList's Width and Height."
-msgstr ""
+msgstr "Размер исходного изображения должен делиться без остатка на значения свойств Width и Height в ImageList."
 
 #: objinspstrconsts.sccsiledtcaption
 msgid "ImageList Editor"

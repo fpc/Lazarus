@@ -1319,7 +1319,7 @@ msgid "New resolution ..."
 msgstr "Uusi tarkkuus ..."
 
 #: objinspstrconsts.sccsiledtaddsliced
-msgid "Add sliced..."
+msgid "Add sliced ..."
 msgstr ""
 
 #: objinspstrconsts.sccsiledtaddslicediconerror

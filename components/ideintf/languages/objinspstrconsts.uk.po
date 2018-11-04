@@ -1329,7 +1329,7 @@ msgid "New resolution ..."
 msgstr "Нова роздільність ..."
 
 #: objinspstrconsts.sccsiledtaddsliced
-msgid "Add sliced..."
+msgid "Add sliced ..."
 msgstr ""
 
 #: objinspstrconsts.sccsiledtaddslicediconerror
