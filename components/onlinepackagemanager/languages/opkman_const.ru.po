@@ -574,7 +574,7 @@ msgstr "Сетевой диспетчер пакетов"
 
 #: opkman_const.rsmainfrm_breturn_caption
 msgid "Return"
-msgstr ""
+msgstr "Вернуться"
 
 #: opkman_const.rsmainfrm_cball_caption
 msgid "All/None"
