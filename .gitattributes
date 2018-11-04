@@ -8816,27 +8816,56 @@ images/splash_logo.res -text
 images/splash_logo.xpm -text svneol=native#image/x-xpixmap
 images/splash_source/cheetah.jpg -text svneol=unset#image/jpeg
 images/splash_source/paw.png -text svneol=unset#image/png
+images/states/quickfix.png -text svneol=unset#image/png
+images/states/quickfix_150.png -text svneol=unset#image/png
+images/states/quickfix_200.png -text svneol=unset#image/png
+images/states/quickfix_69.png -text svneol=unset#image/png
 images/states/quickfix_75.png -text
 images/states/state_circular_reference.png -text svneol=unset#image/png
+images/states/state_circular_reference_150.png -text svneol=unset#image/png
+images/states/state_circular_reference_200.png -text svneol=unset#image/png
+images/states/state_circular_reference_69.png -text svneol=unset#image/png
+images/states/state_circular_reference_75.png -text svneol=unset#image/png
 images/states/state_error.png -text svneol=unset#image/png
+images/states/state_error_150.png -text svneol=unset#image/png
+images/states/state_error_200.png -text svneol=unset#image/png
 images/states/state_error_69.png -text
 images/states/state_error_75.png -text
 images/states/state_fatal.png -text svneol=unset#image/png
+images/states/state_fatal_150.png -text svneol=unset#image/png
+images/states/state_fatal_200.png -text svneol=unset#image/png
 images/states/state_fatal_69.png -text
 images/states/state_fatal_75.png -text
 images/states/state_hint.png -text svneol=unset#image/png
+images/states/state_hint_150.png -text svneol=unset#image/png
+images/states/state_hint_200.png -text svneol=unset#image/png
 images/states/state_hint_69.png -text
 images/states/state_hint_75.png -text
 images/states/state_information.png -text svneol=unset#image/png
+images/states/state_information_150.png -text svneol=unset#image/png
+images/states/state_information_200.png -text svneol=unset#image/png
 images/states/state_information_69.png -text
 images/states/state_information_75.png -text
 images/states/state_not_found.png -text svneol=unset#image/png
+images/states/state_not_found_150.png -text svneol=unset#image/png
+images/states/state_not_found_200.png -text svneol=unset#image/png
+images/states/state_not_found_69.png -text svneol=unset#image/png
+images/states/state_not_found_75.png -text svneol=unset#image/png
 images/states/state_note.png -text svneol=unset#image/png
+images/states/state_note_150.png -text svneol=unset#image/png
+images/states/state_note_200.png -text svneol=unset#image/png
 images/states/state_note_69.png -text
 images/states/state_note_75.png -text
 images/states/state_unit_circular_reference.png -text svneol=unset#image/png
+images/states/state_unit_circular_reference_150.png -text svneol=unset#image/png
+images/states/state_unit_circular_reference_200.png -text svneol=unset#image/png
+images/states/state_unit_circular_reference_69.png -text svneol=unset#image/png
+images/states/state_unit_circular_reference_75.png -text svneol=unset#image/png
 images/states/state_unknown.png -text svneol=unset#image/png
+images/states/state_unknown_150.png -text svneol=unset#image/png
+images/states/state_unknown_200.png -text svneol=unset#image/png
 images/states/state_unknown_69.png -text
+images/states/state_unknown_75.png -text svneol=unset#image/png
 images/states/state_warning.png -text svneol=unset#image/png
 images/states/state_warning_150.png -text
 images/states/state_warning_200.png -text

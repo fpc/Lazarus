@@ -477,6 +477,19 @@ packages directory
 	pkg_text.png
 	pkg_unit.png
 	
+states directory (also variants with appendix _69 and _75)
+	quickfix
+	state_circular_reference
+	state_error
+	state_fatal
+	state_hint
+	state_information
+	state_note
+	state_not_found
+	state_unit_circular_reference
+	state_unknown
+	state_warning
+
 images root folder
 	folder.png
 	template.png
