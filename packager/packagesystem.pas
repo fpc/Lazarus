@@ -953,6 +953,11 @@ begin
       PkgLink.LPKFileDateValid:=false;
       exit(mrCancel);
     end;
+    if DirectoryExistsUTF8(AFilename) then begin
+      DebugLn('Note: (lazarus) Invalid Package Link: file "'+AFilename+'" is a directory.');
+      PkgLink.LPKFileDateValid:=false;
+      exit(mrCancel);
+    end;
     if pvPkgSearch in Verbosity then
       debugln(['Info: (lazarus) Open dependency: package file found: "'+AFilename+'". Parsing lpk ...']);
     try
