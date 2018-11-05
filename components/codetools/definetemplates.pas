@@ -6100,7 +6100,8 @@ begin
   Step:='Init';
   try
     CmdLine:=CompilerPath+' -va ';
-    if FileExistsCached(EnglishErrorMsgFilename) then
+    if (Pos('pas2js',lowercase(ExtractFileName(CompilerPath)))<1)
+        and FileExistsCached(EnglishErrorMsgFilename) then
       CmdLine:=CmdLine+'-Fr'+EnglishErrorMsgFilename+' ';
     if CompilerOptions<>'' then
       CmdLine:=CmdLine+CompilerOptions+' ';
