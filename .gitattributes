@@ -7336,17 +7336,41 @@ images/codeexplorer/show_source.png -text
 images/codeexplorer/show_source_150.png -text svneol=unset#image/png
 images/codeexplorer/show_source_200.png -text svneol=unset#image/png
 images/codetoolsdefines/da_block.png -text svneol=unset#image/png
+images/codetoolsdefines/da_block_150.png -text svneol=unset#image/png
+images/codetoolsdefines/da_block_200.png -text svneol=unset#image/png
 images/codetoolsdefines/da_define.png -text svneol=unset#image/png
+images/codetoolsdefines/da_define_150.png -text svneol=unset#image/png
+images/codetoolsdefines/da_define_200.png -text svneol=unset#image/png
 images/codetoolsdefines/da_definerecurse.png -text svneol=unset#image/png
+images/codetoolsdefines/da_definerecurse_150.png -text svneol=unset#image/png
+images/codetoolsdefines/da_definerecurse_200.png -text svneol=unset#image/png
 images/codetoolsdefines/da_directory.png -text svneol=unset#image/png
+images/codetoolsdefines/da_directory_150.png -text svneol=unset#image/png
+images/codetoolsdefines/da_directory_200.png -text svneol=unset#image/png
 images/codetoolsdefines/da_else.png -text svneol=unset#image/png
+images/codetoolsdefines/da_else_150.png -text svneol=unset#image/png
+images/codetoolsdefines/da_else_200.png -text svneol=unset#image/png
 images/codetoolsdefines/da_elseif.png -text svneol=unset#image/png
+images/codetoolsdefines/da_elseif_150.png -text svneol=unset#image/png
+images/codetoolsdefines/da_elseif_200.png -text svneol=unset#image/png
 images/codetoolsdefines/da_if.png -text svneol=unset#image/png
+images/codetoolsdefines/da_if_150.png -text svneol=unset#image/png
+images/codetoolsdefines/da_if_200.png -text svneol=unset#image/png
 images/codetoolsdefines/da_ifdef.png -text svneol=unset#image/png
+images/codetoolsdefines/da_ifdef_150.png -text svneol=unset#image/png
+images/codetoolsdefines/da_ifdef_200.png -text svneol=unset#image/png
 images/codetoolsdefines/da_ifndef.png -text svneol=unset#image/png
+images/codetoolsdefines/da_ifndef_150.png -text svneol=unset#image/png
+images/codetoolsdefines/da_ifndef_200.png -text svneol=unset#image/png
 images/codetoolsdefines/da_undefine.png -text svneol=unset#image/png
+images/codetoolsdefines/da_undefine_150.png -text svneol=unset#image/png
+images/codetoolsdefines/da_undefine_200.png -text svneol=unset#image/png
 images/codetoolsdefines/da_undefineall.png -text svneol=unset#image/png
+images/codetoolsdefines/da_undefineall_150.png -text svneol=unset#image/png
+images/codetoolsdefines/da_undefineall_200.png -text svneol=unset#image/png
 images/codetoolsdefines/da_undefinerecurse.png -text svneol=unset#image/png
+images/codetoolsdefines/da_undefinerecurse_150.png -text svneol=unset#image/png
+images/codetoolsdefines/da_undefinerecurse_200.png -text svneol=unset#image/png
 images/components/default.png -text svneol=unset#image/png
 images/components/default_150.png -text
 images/components/default_200.png -text
@@ -7724,11 +7748,23 @@ images/components_images_list.txt svneol=native#text/plain
 images/componenttreeview.bat svneol=native#text/x-msdos-program
 images/componenttreeview.res -text
 images/componenttreeview/oi_box.png -text svneol=unset#image/png
+images/componenttreeview/oi_box_150.png -text svneol=unset#image/png
+images/componenttreeview/oi_box_200.png -text svneol=unset#image/png
 images/componenttreeview/oi_collection.png -text svneol=unset#image/png
+images/componenttreeview/oi_collection_150.png -text svneol=unset#image/png
+images/componenttreeview/oi_collection_200.png -text svneol=unset#image/png
 images/componenttreeview/oi_comp.png -text svneol=unset#image/png
+images/componenttreeview/oi_comp_150.png -text svneol=unset#image/png
+images/componenttreeview/oi_comp_200.png -text svneol=unset#image/png
 images/componenttreeview/oi_control.png -text svneol=unset#image/png
+images/componenttreeview/oi_control_150.png -text svneol=unset#image/png
+images/componenttreeview/oi_control_200.png -text svneol=unset#image/png
 images/componenttreeview/oi_form.png -text svneol=unset#image/png
+images/componenttreeview/oi_form_150.png -text svneol=unset#image/png
+images/componenttreeview/oi_form_200.png -text svneol=unset#image/png
 images/componenttreeview/oi_item.png -text svneol=unset#image/png
+images/componenttreeview/oi_item_150.png -text svneol=unset#image/png
+images/componenttreeview/oi_item_200.png -text svneol=unset#image/png
 images/componenttreeview_list.txt svneol=native#text/plain
 images/copyright.txt svneol=native#text/plain
 images/debugger/callstack_bottom.png -text
@@ -8577,27 +8613,56 @@ images/splash_logo.res -text
 images/splash_logo.xpm -text svneol=native#image/x-xpixmap
 images/splash_source/cheetah.jpg -text svneol=unset#image/jpeg
 images/splash_source/paw.png -text svneol=unset#image/png
+images/states/quickfix.png -text svneol=unset#image/png
+images/states/quickfix_150.png -text svneol=unset#image/png
+images/states/quickfix_200.png -text svneol=unset#image/png
+images/states/quickfix_69.png -text svneol=unset#image/png
 images/states/quickfix_75.png -text
 images/states/state_circular_reference.png -text svneol=unset#image/png
+images/states/state_circular_reference_150.png -text svneol=unset#image/png
+images/states/state_circular_reference_200.png -text svneol=unset#image/png
+images/states/state_circular_reference_69.png -text svneol=unset#image/png
+images/states/state_circular_reference_75.png -text svneol=unset#image/png
 images/states/state_error.png -text svneol=unset#image/png
+images/states/state_error_150.png -text svneol=unset#image/png
+images/states/state_error_200.png -text svneol=unset#image/png
 images/states/state_error_69.png -text
 images/states/state_error_75.png -text
 images/states/state_fatal.png -text svneol=unset#image/png
+images/states/state_fatal_150.png -text svneol=unset#image/png
+images/states/state_fatal_200.png -text svneol=unset#image/png
 images/states/state_fatal_69.png -text
 images/states/state_fatal_75.png -text
 images/states/state_hint.png -text svneol=unset#image/png
+images/states/state_hint_150.png -text svneol=unset#image/png
+images/states/state_hint_200.png -text svneol=unset#image/png
 images/states/state_hint_69.png -text
 images/states/state_hint_75.png -text
 images/states/state_information.png -text svneol=unset#image/png
+images/states/state_information_150.png -text svneol=unset#image/png
+images/states/state_information_200.png -text svneol=unset#image/png
 images/states/state_information_69.png -text
 images/states/state_information_75.png -text
 images/states/state_not_found.png -text svneol=unset#image/png
+images/states/state_not_found_150.png -text svneol=unset#image/png
+images/states/state_not_found_200.png -text svneol=unset#image/png
+images/states/state_not_found_69.png -text svneol=unset#image/png
+images/states/state_not_found_75.png -text svneol=unset#image/png
 images/states/state_note.png -text svneol=unset#image/png
+images/states/state_note_150.png -text svneol=unset#image/png
+images/states/state_note_200.png -text svneol=unset#image/png
 images/states/state_note_69.png -text
 images/states/state_note_75.png -text
 images/states/state_unit_circular_reference.png -text svneol=unset#image/png
+images/states/state_unit_circular_reference_150.png -text svneol=unset#image/png
+images/states/state_unit_circular_reference_200.png -text svneol=unset#image/png
+images/states/state_unit_circular_reference_69.png -text svneol=unset#image/png
+images/states/state_unit_circular_reference_75.png -text svneol=unset#image/png
 images/states/state_unknown.png -text svneol=unset#image/png
+images/states/state_unknown_150.png -text svneol=unset#image/png
+images/states/state_unknown_200.png -text svneol=unset#image/png
 images/states/state_unknown_69.png -text
+images/states/state_unknown_75.png -text svneol=unset#image/png
 images/states/state_warning.png -text svneol=unset#image/png
 images/states/state_warning_150.png -text
 images/states/state_warning_200.png -text

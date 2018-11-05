@@ -4274,10 +4274,50 @@ end;
 
 procedure TCompilationToolOptions.LoadFromXMLConfig(XMLConfig: TXMLConfig;
   const Path: string; DoSwitchPathDelims: boolean);
+var
+  Params: TStrings;
+  param, cmd: String;
+  p, p2, i, j: Integer;
 begin
   //debugln(['TCompilationToolOptions.LoadFromXMLConfig ',Command,' Path=',Path,' DoSwitchPathDelims=',DoSwitchPathDelims]);
-  Command:=SwitchPathDelims(XMLConfig.GetValue(Path+'Command/Value',''),
-                            DoSwitchPathDelims);
+  Command:=XMLConfig.GetValue(Path+'Command/Value','');
+  if DoSwitchPathDelims then begin
+    if (Command<>'')
+    and (PathDelim='\') then begin
+      // specialhandling on windows to not switch path delimiters in options
+      Params:=TStringList.Create;
+      try
+        SplitCmdLineParams(Command,Params);
+        cmd:=SwitchPathDelims(Params[0],True);
+        for i:=1 to Params.Count-1 do begin
+          param:=Params[i];
+          p:=-1;
+          p2:=-1;
+          for j:=1 to length(param) do
+            if p>1 then
+              break
+            else if param[j]='/' then
+              p:=j
+            else if param[j]=':' then
+              p2:=j;
+          if p=1 then
+            // param is option (the only / is at pos 1)
+            if p2<>-1 then
+              // potential filename after colon in option
+              cmd+=' '+copy(param,1,p2)+SwitchPathDelims(Copy(param,p2+1,length(param)-p2),True)
+            else
+              cmd+=' '+param
+          else
+            cmd+=' '+SwitchPathDelims(param,True);
+        end;
+        Command:=cmd;
+      finally
+        Params.Free;
+      end;
+    end else begin
+      Command:=SwitchPathDelims(Command,DoSwitchPathDelims);
+    end;
+  end;
   LoadStringList(XMLConfig,Parsers,Path+'Parsers/');
   if Parsers.Count=0 then begin
     // read old format
