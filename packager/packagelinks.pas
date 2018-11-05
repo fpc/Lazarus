@@ -269,7 +269,7 @@ end;
 function TLazPackageLink.GetEffectiveFilename: string;
 begin
   Result:=LPKFilename;
-  if not FilenameIsAbsolute(Result) then
+  if (Result<>'') and not FilenameIsAbsolute(Result) then
     Result:=TrimFilename(EnvironmentOptions.GetParsedLazarusDirectory+PathDelim+Result);
 end;
 
