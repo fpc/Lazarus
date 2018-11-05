@@ -14,11 +14,9 @@
 
 function DBCSToUTF8(const s: string; CodeP: integer): string;
 var
-  len:  SizeInt;
-  Src:  PChar;
-  Dest: PChar;
-  c:    char;
-  l: Integer;
+  len, l: Integer;
+  Src, Dest: PChar;
+  c: char;
   code: word;
 begin
   if s = '' then
@@ -189,13 +187,10 @@ end;
 
 function UTF8ToDBCS(const s: string; const UTF8CharConvFunc: TUnicodeToCharID): string;
 var
-  len:  integer;
-  Src:  PChar;
-  Dest: PChar;
-  c:    char;
+  len, i, CharLen: integer;
+  Src, Dest: PChar;
+  c: char;
   Unicode: longword;
-  CharLen: integer;
-  i:    integer;
 begin
   if s = '' then
   begin
@@ -232,7 +227,10 @@ begin
         else
           Dest^ := chr(i);
         Inc(Dest);
-      end;
+      end
+      else
+      if ConvertEncodingFromUtf8RaisesException then
+        raise EConvertError.Create('Cannot convert UTF8 to DBCS code page');
     end;
   until false;
   //SetLength(Result, Dest - PChar(Result));

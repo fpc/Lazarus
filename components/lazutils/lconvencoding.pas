@@ -31,6 +31,9 @@ uses
   SysUtils, Classes, dos, LazUTF8
   {$IFDEF EnableIconvEnc},iconvenc{$ENDIF};
 
+var
+  ConvertEncodingFromUtf8RaisesException: boolean = False;
+
 //encoding names
 const
   EncodingUTF8 = 'utf8';
@@ -6998,16 +7001,12 @@ begin
 end;
 {$ENDIF}
 
-function UTF8ToSingleByte(const s: string;
-  const UTF8CharConvFunc: TUnicodeToCharID): string;
+function UTF8ToSingleByte(const s: string; const UTF8CharConvFunc: TUnicodeToCharID): string;
 var
-  len: Integer;
-  Src: PChar;
-  Dest: PChar;
+  len, i, CharLen: Integer;
+  Src, Dest: PChar;
   c: Char;
   Unicode: LongWord;
-  CharLen: integer;
-  i: integer;
 begin
   if s='' then begin
     Result:='';
@@ -7033,7 +7032,10 @@ begin
       if i>=0 then begin
         Dest^:=chr(i);
         inc(Dest);
-      end;
+      end
+      else
+      if ConvertEncodingFromUtf8RaisesException then
+        raise EConvertError.Create('Cannot convert UTF8 to single byte');
     end;
   end;
   SetLength(Result,Dest-PChar(Result));
