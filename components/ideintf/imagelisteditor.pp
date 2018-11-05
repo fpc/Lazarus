@@ -61,6 +61,7 @@ type
     BtnSave: TButton;
     btnSaveAll: TButton;
     BtnPanel: TButtonPanel;
+    BtnAddSliced: TButton;
     ColorBoxTransparent: TColorBox;
     GroupBoxL: TGroupBox;
     GroupBoxR: TGroupBox;
@@ -76,6 +77,7 @@ type
     BtnAddMoreResolutions: TButton;
     btnDeleteResolution: TButton;
     procedure BtnAddClick(Sender: TObject);
+    procedure BtnAddSlicedClick(Sender: TObject);
     procedure BtnClearClick(Sender: TObject);
     procedure BtnDeleteClick(Sender: TObject);
     procedure BtnReplaceClick(Sender: TObject);
@@ -116,6 +118,7 @@ type
     procedure SaveToImageList;
 
     procedure AddImageToList(const FileName: String; AddType: TAddType);
+    procedure AddSlicedImagesToList(const FileName: String);
   end;
 
   //Editor call by Lazarus with 1 verbe only
@@ -244,6 +247,7 @@ begin
 
   BtnAdd.Caption := sccsILEdtAdd;
   BtnAddMoreResolutions.Caption := sccsILEdtAddMoreResolutions;
+  BtnAddSliced.Caption := sccsILEdtAddSliced;
   BtnDelete.Caption := sccsILEdtDelete;
   BtnReplace.Caption := sccsILEdtReplace;
   BtnReplaceAll.Caption := sccsILEdtReplaceAllResolutions;
@@ -364,6 +368,23 @@ begin
         else
           AddImageToList(TrimRight(OpenDialog.Files[I]), atReplace);
       end;
+    finally
+      ImageListBox.Items.EndUpdate;
+      ImageList.EndUpdate;
+    end;
+    ImageListBox.SetFocus;
+  end;
+end;
+
+procedure TImageListEditorDlg.BtnAddSlicedClick(Sender: TObject);
+begin
+  OpenDialog.Title := sccsILEdtOpenDialog;
+  if OpenDialog.Execute then
+  begin
+    ImageList.BeginUpdate;
+    ImageListBox.Items.BeginUpdate;
+    try
+      AddSlicedImagesToList(OpenDialog.Filename);
     finally
       ImageListBox.Items.EndUpdate;
       ImageList.EndUpdate;
@@ -618,6 +639,7 @@ begin
   AlignButtons([
     BtnAdd,
     BtnAddMoreResolutions,
+    BtnAddSliced,
     BtnReplace,
     BtnReplaceAll,
     BtnDelete,
@@ -787,7 +809,7 @@ procedure TImageListEditorDlg.AddImageToList(const FileName: String;
 var
   SrcBmp, DestBmp: TBitmap;
   Picture: TPicture;
-  P: TGlyphInfo;
+  P: TGlyphInfo = nil;
 begin
   SaveDialog.InitialDir := ExtractFileDir(FileName);
   SrcBmp := nil;
@@ -844,6 +866,53 @@ begin
     ImageList.EndUpdate;
   end;
 end;
+
+procedure TImageListEditorDlg.AddSlicedImagesToList(const FileName: String);
+var
+  SrcBmp, DestBmp: TBitmap;
+  Picture: TPicture;
+  P: TGlyphInfo = nil;
+  i, j: Integer;
+begin
+  SaveDialog.InitialDir := ExtractFileDir(FileName);
+  SrcBmp := nil;
+
+  ImageList.BeginUpdate;
+  Picture := TPicture.Create;
+  try
+    Picture.LoadFromFile(FileName);
+    if Picture.Graphic is TCustomIcon then begin
+      MessageDlg(sccsILEdtAddSlicedIconError, mtError, [mbOK], 0);
+      exit;
+    end;
+
+    SrcBmp := TBitmap.Create;
+    SrcBmp.Assign(Picture.Graphic);
+    DestBmp := CreateGlyph(SrcBmp, SrcBmp.Width, SrcBmp.Height, gaNone, clDefault);
+    try
+      if (DestBmp.Width mod ImageList.Width = 0) and (DestBmp.Height mod ImageList.Height = 0) then
+      begin
+        j := ImageList.AddSliced(DestBmp, DestBmp.Width div ImageList.Width, DestBmp.Height div ImageList.Height);
+        for i:=j to ImageList.Count - 1 do begin
+          P := TGlyphInfo.Create;
+          ImageList.GetBitmap(i, P.Bitmap);
+          P.TransparentColor := clDefault;
+          P.Adjustment := gaNone;
+          ImageListbox.Items.AddObject('', P);
+        end;
+        ImageListbox.ItemIndex := ImageListbox.Count - 1;
+      end else
+        MessageDlg(sccsILEdtCannotSlice, mtError, [mbOK], 0);
+    finally
+      DestBmp.Free;
+      SrcBmp.Free;
+    end;
+  finally
+    Picture.Free;
+    ImageList.EndUpdate;
+  end;
+end;
+
 
 { TImageListComponentEditor }
 
