@@ -276,6 +276,7 @@ begin
     exit;
   end;
   FpDebugger.FPrettyPrinter.AddressSize := ctx.SizeOfAddress;
+  FpDebugger.FPrettyPrinter.MemManager := ctx.MemManager;
 
   ALocals.Clear;
   for i := 0 to ProcVal.MemberCount - 1 do begin

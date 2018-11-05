@@ -85,6 +85,7 @@ type
     procedure Timer1Timer(Sender: TObject);
     procedure ToolButtonPowerClick(Sender: TObject);
   private
+    FWheelAccu: Integer;
     FDebugger: TDebuggerIntf;
     FDebugManager: TBaseDebugManager;
     FDisassembler: TIDEDisassembler;
@@ -598,7 +599,12 @@ begin
   if not ToolButtonPower.Down then exit;
   Handled := True;
 
-  j := WheelDelta div 120;
+  FWheelAccu := FWheelAccu + WheelDelta;
+  j := FWheelAccu div 120;
+  if j = 0 then
+    exit;
+
+  FWheelAccu := FWheelAccu - j * 120;
   i := FTopLine ;
   if FSelectLine <> MaxInt
   then SetSelection(FSelectLine - j, False, ssShift in Shift);
