@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-10-17 22:56+0200\n"
+"PO-Revision-Date: 2018-11-05 18:07+0100\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
 "Language: de\n"
-"X-Generator: Poedit 2.0.1\n"
+"X-Generator: Poedit 2.1.1\n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
 msgid "(All)"
@@ -158,7 +158,7 @@ msgstr "Dies wird alle Titel aus dem Dataset ersetzen. Fortfahren?"
 
 #: objinspstrconsts.dpeunabletoretrievefieldsdefinitions
 msgid "Unable to retrieve fields definition from dataset."
-msgstr ""
+msgstr "Die Feld-Definitionen können nicht aus dem Datensatz extrahiert werden."
 
 #: objinspstrconsts.fescalculated
 msgid "&Calculated"
@@ -183,7 +183,7 @@ msgstr "&Dataset:"
 
 #: objinspstrconsts.fesfetitle
 msgid "Edit Fields ..."
-msgstr "Felder bearbeiten"
+msgstr "Felder bearbeiten ..."
 
 #: objinspstrconsts.fesfieldcantbec
 msgid "Field %s cannot be created!"
@@ -327,7 +327,7 @@ msgstr "Seite nach rechts bewegen"
 
 #: objinspstrconsts.nbcesshowpage
 msgid "Show Page"
-msgstr "Seite anzeigen ..."
+msgstr "Seite anzeigen"
 
 #: objinspstrconsts.oicoleditadd
 msgctxt "objinspstrconsts.oicoleditadd"
@@ -466,7 +466,7 @@ msgstr "Komponentenname \"%s\" ist kein gültiger Bezeichner"
 
 #: objinspstrconsts.oiscomponentrestrictions
 msgid "Component restrictions: "
-msgstr "Bedingte Komponenteneigenschaften"
+msgstr "Bedingte Komponenteneigenschaften: "
 
 #: objinspstrconsts.oisconfirmdelete
 msgid "Confirm delete"
@@ -479,7 +479,7 @@ msgstr "Komponente kopieren"
 
 #: objinspstrconsts.oiscreateanewpascalunit
 msgid "Create a new pascal unit."
-msgstr "Eine neue Pascal-Unit erzeugen"
+msgstr "Eine neue Pascal-Unit erzeugen."
 
 #: objinspstrconsts.oiscreatedefaultevent
 msgid "Create default event"
@@ -896,7 +896,7 @@ msgstr "Zeichenketteneditor"
 
 #: objinspstrconsts.oistdactcolorselect1headline
 msgid "Select &Color ..."
-msgstr "Farbauswahl"
+msgstr "Farbauswahl ..."
 
 #: objinspstrconsts.oistdactcolorselecthint
 msgid "Color Select"
@@ -1078,7 +1078,7 @@ msgstr "Beenden"
 
 #: objinspstrconsts.oistdactfileopenheadline
 msgid "&Open ..."
-msgstr "Öffnen"
+msgstr "Öffnen ..."
 
 #: objinspstrconsts.oistdactfileopenhint
 msgctxt "objinspstrconsts.oistdactfileopenhint"
@@ -1107,7 +1107,7 @@ msgstr "Sichern als"
 
 #: objinspstrconsts.oistdactfonteditheadline
 msgid "Select &Font ..."
-msgstr "Schri&ftauswahl"
+msgstr "Schri&ftauswahl..."
 
 #: objinspstrconsts.oistdactfontedithint
 msgid "Font Select"
@@ -1187,7 +1187,7 @@ msgstr "Testeingabe"
 
 #: objinspstrconsts.oistheidentifierisnotamethodpresscanceltoundopressign
 msgid "The identifier \"%s\" is not a method.%sPress Cancel to undo,%spress Ignore to force it."
-msgstr "Der Bezeichner \"%s\" ist keine Methode.%sZurücknehmen mit Cancel,%sÜbergehen um ihn zu erzwingen"
+msgstr "Der Bezeichner \"%s\" ist keine Methode.%sZurücknehmen mit Cancel,%sÜbergehen um ihn zu erzwingen."
 
 #: objinspstrconsts.oisthemethodisincompatibletothiseventpresscanceltound
 msgid "The method \"%s\" is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
@@ -1233,7 +1233,7 @@ msgstr "Bedingte Eigenschaften anzeigen"
 
 #: objinspstrconsts.oiswidgetsetrestrictions
 msgid "General widget set restrictions: "
-msgstr "Allgem. Beschränkungen durch d. Widget-Set:"
+msgstr "Allgemeine Widget-Set-Beschränkungen: "
 
 #: objinspstrconsts.oisword
 msgid "Word"
@@ -1316,23 +1316,23 @@ msgstr "Sections-Editor .."
 
 #: objinspstrconsts.sccsiledtadd
 msgid "&Add ..."
-msgstr "Hinzufügen"
+msgstr "Hinzufügen …"
 
 #: objinspstrconsts.sccsiledtaddmoreresolutions
 msgid "Add more resolutions ..."
-msgstr ""
+msgstr "Mehrere Größen hinzufügen …"
 
 #: objinspstrconsts.sccsiledtaddnewresolution
 msgid "New resolution ..."
-msgstr ""
+msgstr "Neue Größe/Auflösung ..."
 
 #: objinspstrconsts.sccsiledtaddsliced
 msgid "Add sliced ..."
-msgstr ""
+msgstr "Zerteilen und hinzufügen …"
 
 #: objinspstrconsts.sccsiledtaddslicediconerror
 msgid "Adding sliced icons is not supported."
-msgstr ""
+msgstr "Zerteilen eines Icons wird nicht unterstützt."
 
 #: objinspstrconsts.sccsiledtadjustment
 msgid "Adjustment"
@@ -1345,11 +1345,11 @@ msgstr "Zuweisen"
 
 #: objinspstrconsts.sccsiledtcannotdeleteresolution
 msgid "Cannot delete default resolution."
-msgstr ""
+msgstr "Die Standardauflösung kann nicht gelöscht werden."
 
 #: objinspstrconsts.sccsiledtcannotslice
 msgid "Source image size must be an integer multiple of the ImageList's Width and Height."
-msgstr ""
+msgstr "Die Größe des Ausgangsbildes muss ein ganzzahliges Vielfaches der Parameter Width und Height der Bilderliste sein."
 
 #: objinspstrconsts.sccsiledtcaption
 msgid "ImageList Editor"
@@ -1375,11 +1375,11 @@ msgstr "Löschen"
 
 #: objinspstrconsts.sccsiledtdeleteresolution
 msgid "Delete resolution ..."
-msgstr ""
+msgstr "Größe/Auflösung löschen ..."
 
 #: objinspstrconsts.sccsiledtdeleteresolutionconfirmation
 msgid "Select the resolution to delete."
-msgstr ""
+msgstr "Auflösung auswählen, die gelöscht werden soll."
 
 #: objinspstrconsts.sccsiledtgrplcaption
 msgid "Images"
@@ -1391,7 +1391,7 @@ msgstr "Ausgewähltes Bild"
 
 #: objinspstrconsts.sccsiledtimagewidthofnewresolution
 msgid "Image width of the new resolution:"
-msgstr ""
+msgstr "Bild-Breite für die neue Auflösung:"
 
 #: objinspstrconsts.sccsiledtmovedown
 msgctxt "objinspstrconsts.sccsiledtmovedown"
@@ -1413,7 +1413,7 @@ msgstr "Bilder hinzufügen"
 
 #: objinspstrconsts.sccsiledtopendialogn
 msgid "New Image"
-msgstr ""
+msgstr "Neues Bild"
 
 #: objinspstrconsts.sccsiledtransparentcolor
 msgid "Transparent Color:"
@@ -1425,7 +1425,7 @@ msgstr "E&rsetzen ..."
 
 #: objinspstrconsts.sccsiledtreplaceallresolutions
 msgid "Replace all resolutions ..."
-msgstr ""
+msgstr "Alle Größen ersetzen …"
 
 #: objinspstrconsts.sccsiledtsave
 msgctxt "objinspstrconsts.sccsiledtsave"
@@ -1446,7 +1446,7 @@ msgstr "Dehnen"
 
 #: objinspstrconsts.sccslvcoledt
 msgid "Edit Columns ..."
-msgstr "Spalten bearbeiten"
+msgstr "Spalten bearbeiten ..."
 
 #: objinspstrconsts.sccslvedt
 msgctxt "objinspstrconsts.sccslvedt"
@@ -1489,12 +1489,12 @@ msgstr "Titel:"
 #: objinspstrconsts.sccslvedtlabelimageindex
 msgctxt "objinspstrconsts.sccslvedtlabelimageindex"
 msgid "Image Index:"
-msgstr "Bildindex"
+msgstr "Bildindex:"
 
 #: objinspstrconsts.sccslvedtlabelstateindex
 msgctxt "objinspstrconsts.sccslvedtlabelstateindex"
 msgid "State Index:"
-msgstr "Status-Index"
+msgstr "Status-Index:"
 
 #: objinspstrconsts.sccslvedtnewitem
 msgctxt "objinspstrconsts.sccslvedtnewitem"
@@ -1595,11 +1595,11 @@ msgstr "Eintrag"
 #: objinspstrconsts.sccstredtlabelimageindex
 msgctxt "objinspstrconsts.sccstredtlabelimageindex"
 msgid "Image Index:"
-msgstr "Bildindex"
+msgstr "Bildindex:"
 
 #: objinspstrconsts.sccstredtlabelselindex
 msgid "Selected Index:"
-msgstr "Ausgewählter Index"
+msgstr "Ausgewählter Index:"
 
 #: objinspstrconsts.sccstredtlabelstateindex
 msgctxt "objinspstrconsts.sccstredtlabelstateindex"
@@ -1649,7 +1649,7 @@ msgstr "Als Einzelbild hinzufügen"
 
 #: objinspstrconsts.s_confirm_clear
 msgid "Are you sure to clear image list?"
-msgstr ""
+msgstr "Soll die Bilderliste wirklich gelöscht werden?"
 
 #: objinspstrconsts.s_splitimage
 msgid "Split image"
@@ -1694,4 +1694,3 @@ msgstr "Tab nach links bewegen"
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
 msgstr "Tab nach rechts bewegen"
-
