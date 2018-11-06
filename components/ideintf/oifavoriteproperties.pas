@@ -49,11 +49,10 @@ type
   protected
     FWidgetSets: TLCLPlatforms;
   public
-
     function IsRestricted(AClass: TPersistentClass;
                           const APropertyName: string): TLCLPlatforms;
-    procedure CheckRestrictions(
-      AClass: TClass; var ARestrictions: TWidgetSetRestrictionsArray);
+    procedure CheckRestrictions(AClass: TClass;
+      var ARestrictions: TWidgetSetRestrictionsArray);// check restrictions for non properties
 
     property WidgetSets: TLCLPlatforms read FWidgetSets write FWidgetSets;
   end;

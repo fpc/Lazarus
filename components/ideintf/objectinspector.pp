@@ -5358,16 +5358,18 @@ procedure TObjectInspectorDlg.ComponentRestrictedPaint(Sender: TObject);
 var
   I, J: Integer;
   WidgetSetRestrictions: TWidgetSetRestrictionsArray;
+  RestrProp: TOIRestrictedProperty;
 begin
   if (RestrictedProps = nil) or (Selection = nil) then exit;
 
   FillChar(WidgetSetRestrictions{%H-}, SizeOf(WidgetSetRestrictions), 0);
   for I := 0 to RestrictedProps.Count - 1 do
   begin
-    if RestrictedProps.Items[I] is TOIRestrictedProperty then
-      for J := 0 to Selection.Count - 1 do
-        with RestrictedProps.Items[I] as TOIRestrictedProperty do
-          CheckRestrictions(Selection[J].ClassType, WidgetSetRestrictions);
+    if not (RestrictedProps.Items[I] is TOIRestrictedProperty) then continue;
+    RestrProp:=TOIRestrictedProperty(RestrictedProps.Items[I]);
+    for J := 0 to Selection.Count - 1 do
+      with RestrProp do
+        CheckRestrictions(Selection[J].ClassType, WidgetSetRestrictions);
   end;
 
   RestrictedPaint(ComponentRestrictedBox, WidgetSetRestrictions);
