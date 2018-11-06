@@ -480,7 +480,7 @@ type
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
-    property ReadOnly; deprecated 'Will be removed in 1.10 - use extended Style values instead.';
+    property ReadOnly; deprecated 'Will be removed in 2.2 - use extended Style values instead.';
     property ShowHint;
     property Sorted;
     property Style;
