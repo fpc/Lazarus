@@ -8103,6 +8103,8 @@ images/designer/add_submenu_right.png -text svneol=unset#image/png
 images/designer/add_submenu_right_150.png -text
 images/designer/add_submenu_right_200.png -text
 images/designer/align.png -text
+images/designer/align_150.png -text svneol=unset#image/png
+images/designer/align_200.png -text svneol=unset#image/png
 images/designer/anchor_bottom_bottom.png -text
 images/designer/anchor_bottom_bottom_150.png -text
 images/designer/anchor_bottom_bottom_200.png -text
@@ -8140,9 +8142,25 @@ images/designer/anchor_top_top.png -text
 images/designer/anchor_top_top_150.png -text
 images/designer/anchor_top_top_200.png -text
 images/designer/mirror_horizontal.png -text
+images/designer/mirror_horizontal_150.png -text svneol=unset#image/png
+images/designer/mirror_horizontal_200.png -text svneol=unset#image/png
 images/designer/mirror_vertical.png -text
+images/designer/mirror_vertical_150.png -text svneol=unset#image/png
+images/designer/mirror_vertical_200.png -text svneol=unset#image/png
+images/designer/order_back_one_150.png -text svneol=unset#image/png
+images/designer/order_back_one_200.png -text svneol=unset#image/png
+images/designer/order_forward_one_150.png -text svneol=unset#image/png
+images/designer/order_forward_one_200.png -text svneol=unset#image/png
+images/designer/order_move_back_150.png -text svneol=unset#image/png
+images/designer/order_move_back_200.png -text svneol=unset#image/png
+images/designer/order_move_front_150.png -text svneol=unset#image/png
+images/designer/order_move_front_200.png -text svneol=unset#image/png
 images/designer/scale.png -text
+images/designer/scale_150.png -text svneol=unset#image/png
+images/designer/scale_200.png -text svneol=unset#image/png
 images/designer/size.png -text
+images/designer/size_150.png -text svneol=unset#image/png
+images/designer/size_200.png -text svneol=unset#image/png
 images/designer/tab_order.png -text
 images/designer/tab_order_150.png -text
 images/designer/tab_order_200.png -text
