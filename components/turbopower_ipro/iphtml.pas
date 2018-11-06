@@ -4779,7 +4779,7 @@ var
   P : TPoint;
 begin
   if ScaleBitmaps then begin
-    Owner.Target.Brush.Color := clWhite;
+    Owner.Target.Brush.Color := Owner.BgColor;
     Owner.Target.FillRect(Owner.ClientRect);
   end else begin
     {$IFDEF IP_LAZARUS}
