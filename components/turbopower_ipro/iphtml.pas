@@ -2870,6 +2870,7 @@ type
     {$IFDEF VERSION4}
     property Anchors;
     {$ENDIF}
+    property BgColor;
     property BorderWidth;
     property BorderStyle;
     {$IFDEF VERSION4}
@@ -4787,7 +4788,7 @@ begin
         Owner.Target.Brush.Color := BGColor;
         Owner.Target.FillRect(Owner.ClientRect);
       end else begin
-        Owner.Target.Brush.Color := clWhite;
+        Owner.Target.Brush.Color := Owner.BGColor;
         Owner.Target.FillRect(Owner.ClientRect);
       end;
     end;
@@ -4822,7 +4823,7 @@ begin
           Inc(Y, BgPicture.Height);
         end;
       end else begin
-        Owner.Target.Brush.Color := clWhite;
+        Owner.Target.Brush.Color := Owner.BgColor;
         Owner.Target.FillRect(Owner.ClientRect);
       end;
     end;
@@ -14744,6 +14745,7 @@ begin
   FHtml.LinkColor := FViewer.LinkColor;
   FHtml.ALinkColor := FViewer.ALinkColor;
   FHtml.VLinkColor := FViewer.VLinkColor;
+  FHtml.BgColor := FViewer.BgColor;
   FHtml.LinksUnderlined := FViewer.LinksUnderlined;
   if FViewer.DataProvider <> nil then
     FHtml.OnGetImageX := FViewer.DataProvider.DoGetImage;
