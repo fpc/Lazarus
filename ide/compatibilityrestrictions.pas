@@ -233,6 +233,7 @@ var
   AClass: TPersistentClass;
   AProperty: String;
   P: Integer;
+  Platform: TLCLPlatform;
 begin
   if RestrictedName = '' then Exit;
 
@@ -247,16 +248,18 @@ begin
     AClass := FClassList.Find(Copy(RestrictedName, 0, P - 1));
     AProperty := Copy(RestrictedName, P + 1, MaxInt);
   end;
-  
+
+  Platform:=DirNameToLCLPlatform(WidgetSetName);
   if AClass = nil then
   begin
     // add as generic widgetset issue
-    FRestrictedProperties.WidgetSetRestrictions[DirNameToLCLPlatform(WidgetSetName)] := FRestrictedProperties.WidgetSetRestrictions[DirNameToLCLPlatform(WidgetSetName)] + 1;
+    //debugln('TRestrictedManager.AddRestrictedProperty ',RestrictedName,' ',WidgetSetName);
+    inc(FRestrictedProperties.WidgetSetRestrictions[Platform]);
     Exit;
   end;
   
   Issue := TOIRestrictedProperty.Create(AClass, AProperty, True);
-  Issue.WidgetSets := [DirNameToLCLPlatform(WidgetSetName)];
+  Issue.WidgetSets := [Platform];
   FRestrictedProperties.Add(Issue);
 end;
 

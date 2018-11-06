@@ -5357,22 +5357,22 @@ end;
 procedure TObjectInspectorDlg.ComponentRestrictedPaint(Sender: TObject);
 var
   I, J: Integer;
-  WidgetSetRestrictions: TWidgetSetRestrictionsArray;
+  WSRestrictions: TWidgetSetRestrictionsArray;
   RestrProp: TOIRestrictedProperty;
 begin
   if (RestrictedProps = nil) or (Selection = nil) then exit;
 
-  FillChar(WidgetSetRestrictions{%H-}, SizeOf(WidgetSetRestrictions), 0);
+  FillChar(WSRestrictions{%H-}, SizeOf(WSRestrictions), 0);
   for I := 0 to RestrictedProps.Count - 1 do
   begin
     if not (RestrictedProps.Items[I] is TOIRestrictedProperty) then continue;
     RestrProp:=TOIRestrictedProperty(RestrictedProps.Items[I]);
     for J := 0 to Selection.Count - 1 do
       with RestrProp do
-        CheckRestrictions(Selection[J].ClassType, WidgetSetRestrictions);
+        CheckRestrictions(Selection[J].ClassType, WSRestrictions);
   end;
 
-  RestrictedPaint(ComponentRestrictedBox, WidgetSetRestrictions);
+  RestrictedPaint(ComponentRestrictedBox, WSRestrictions);
 end;
 
 procedure TObjectInspectorDlg.TopSplitterMoved(Sender: TObject);
