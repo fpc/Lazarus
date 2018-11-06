@@ -376,6 +376,17 @@ debugger directory
 	evaluate_no_hist.png
 	evaluate_up.png
 
+designer directory
+	align.png
+	mirror_horizontal.png
+	mirror_vertical.png
+	order_back_one.png
+	order_forward_one.png
+	order_move_back.png
+	order_move_front.png
+	scale.png
+	size.png
+	
 items directory
 	item_character.png
 	item_filter.png
