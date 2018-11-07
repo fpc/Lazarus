@@ -117,11 +117,12 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %{_bindir}/*
 %{_libdir}/%{name}
-%ifarch x86_64
-%{_prefix}/lib64/lib*.so
-%endif
+%{_libdir}/libpas2jslib.so
 
 %changelog
+* Sat Nov 7 2018 Mattias Gaertner <mattias@freepascal.org> 3.3.1
+- added libpas2jslib.so
+
 * Sat Feb 25 2017 Mattias Gaertner <mattias@freepascal.org> 3.0.2
 - 64bit
 - removed src and doc
