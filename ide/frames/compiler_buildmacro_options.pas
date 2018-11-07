@@ -447,6 +447,8 @@ begin
     if PrefixType=cbmpLong then
       Result:=Result+'macro';
   end;
+
+  Result := Result.Replace('.', '_')
 end;
 
 procedure TCompOptBuildMacrosFrame.UpdateItemPropertyControls;
