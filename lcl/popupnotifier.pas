@@ -241,7 +241,7 @@ begin
 
   HandleResize(Self);
 
-  Color := $DCFFFF; // Doesn't work on Gtk
+  Color := clInfoBk;
 
   // Connects the methods to events
   OnClick := HideForm;
