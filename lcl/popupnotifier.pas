@@ -103,7 +103,7 @@ type
     property Title: string read GetTitle write SetTitle;
     property TitleFont: TFont read GetTitleFont write SetTitleFont;
     property Visible: Boolean read GetVisible write SetVisible;
-    property OnClose: TCloseEvent  read GetOnClose write SetOnClose;
+    property OnClose: TCloseEvent read GetOnClose write SetOnClose;
   end;
 
 const
@@ -231,7 +231,9 @@ begin
   lblTitle.Font.Name := 'default';
   lblTitle.Font.Size := 0;
   lblTitle.Font.Color := clDefault;
+  lblTitle.Font.Style := [fsBold];
   lblTitle.Caption := 'Caption';
+  lblTitle.Wordwrap := true;
   lblTitle.ParentColor := True;
   lblTitle.OnClick := HideForm;
 
@@ -279,8 +281,6 @@ end;
 procedure TNotifierForm.CreateHandle;
 begin
   inherited;
-  if lblTitle.Font.IsDefault then
-    lblTitle.Font.Style := [fsBold];
   if lblText.Font.Color = clDefault then
     lblText.Font.Color := clInfoText;
   if lblTitle.Font.Color = clDefault then
@@ -303,10 +303,11 @@ end;
 *  Utilized for events that hide the form, such as clicking on it
 *******************************************************************}
 procedure TNotifierForm.HideForm(Sender: TObject);
-Var NoValue :TCloseAction;
+Var
+  NoValue :TCloseAction;
 begin
-if Assigned(OnClose) then
-   OnClose(Self,NoValue);
+  if Assigned(OnClose) then
+    OnClose(Self, NoValue);
   Hide;
 end;
 
@@ -329,12 +330,20 @@ begin
   else
     IconAdjust := 0;
 
+  if (BtnX <> nil) then
+  begin
+    BtnX.Left := Width - (btnSize + Scale96ToForm(5));
+    BtnX.Top := spc;
+    BtnX.Width := btnSize;
+    BtnX.Height := btnSize;
+  end;
+
   if (lblTitle <> nil) then
   begin
     lblTitle.Left := IconAdjust + spc;
     lblTitle.Top := spc;
     lblTitle.AutoSize := false;
-    lblTitle.Constraints.MaxWidth := Width - (lblTitle.Left + spc);
+    lblTitle.Constraints.MaxWidth := Width - (lblTitle.Left + spc + btnsize + spc);
     lblTitle.AutoSize := true;
   end;
 
@@ -344,14 +353,6 @@ begin
     lblText.Top := LblTitle.Top + LblTitle.Height + spc;
     lblText.Width := Width - (lblText.Left + spc);
     lblText.Height := Height - (lblText.Top + spc);
-  end;
-
-  if (BtnX <> nil) then
-  begin
-    BtnX.Left := Width - (btnSize + Scale96ToForm(5));
-    BtnX.Top := spc;
-    BtnX.Width := btnSize;
-    BtnX.Height := btnSize;
   end;
 end;
 
