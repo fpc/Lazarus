@@ -573,7 +573,7 @@ msgstr "Gerenciador de Pacotes Online"
 
 #: opkman_const.rsmainfrm_breturn_caption
 msgid "Return"
-msgstr ""
+msgstr "Retornar"
 
 #: opkman_const.rsmainfrm_cball_caption
 msgid "All/None"

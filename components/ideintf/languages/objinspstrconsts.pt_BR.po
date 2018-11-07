@@ -1327,11 +1327,11 @@ msgstr "Nova resolução ..."
 
 #: objinspstrconsts.sccsiledtaddsliced
 msgid "Add sliced ..."
-msgstr ""
+msgstr "Adicionar fatiados ..."
 
 #: objinspstrconsts.sccsiledtaddslicediconerror
 msgid "Adding sliced icons is not supported."
-msgstr ""
+msgstr "Adicionar ícones fatiados não é suportado."
 
 #: objinspstrconsts.sccsiledtadjustment
 msgid "Adjustment"
@@ -1348,7 +1348,7 @@ msgstr "Incapaz de excluir a resolução padrão."
 
 #: objinspstrconsts.sccsiledtcannotslice
 msgid "Source image size must be an integer multiple of the ImageList's Width and Height."
-msgstr ""
+msgstr "Tamanho da imagem origem deve ser um inteiro múltiplo da altura e largura do \"ImageList\"."
 
 #: objinspstrconsts.sccsiledtcaption
 msgid "ImageList Editor"
