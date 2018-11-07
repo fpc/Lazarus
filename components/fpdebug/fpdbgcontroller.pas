@@ -129,6 +129,7 @@ type
   private
     FEnvironment: TStrings;
     FExecutableFilename: string;
+    FForceNewConsoleWin: boolean;
     FNextOnlyStopOnStartLine: boolean;
     FOnCreateProcessEvent: TOnCreateProcessEvent;
     FOnDebugInfoLoaded: TNotifyEvent;
@@ -179,6 +180,7 @@ type
     property Environment: TStrings read FEnvironment write SetEnvironment;
     property WorkingDirectory: string read FWorkingDirectory write FWorkingDirectory;
     property RedirectConsoleOutput: boolean read FRedirectConsoleOutput write FRedirectConsoleOutput;
+    property ForceNewConsoleWin: boolean read FForceNewConsoleWin write FForceNewConsoleWin; // windows only
     property ConsoleTty: string read FConsoleTty write FConsoleTty;
     // With this parameter set a 'next' will only stop if the current
     // instruction is the first instruction of a line according to the
@@ -641,6 +643,8 @@ begin
 end;
 
 function TDbgController.Run: boolean;
+var
+  Flags: TStartInstanceFlags;
 begin
   result := False;
   if assigned(FMainProcess) then
@@ -661,7 +665,10 @@ begin
     Exit;
     end;
 
-  FCurrentProcess := OSDbgClasses.DbgProcessClass.StartInstance(FExecutableFilename, Params, Environment, WorkingDirectory, FConsoleTty , @Log, RedirectConsoleOutput);
+  Flags := [];
+  if RedirectConsoleOutput then Include(Flags, siRediretOutput);
+  if ForceNewConsoleWin then Include(Flags, siForceNewConsole);
+  FCurrentProcess := OSDbgClasses.DbgProcessClass.StartInstance(FExecutableFilename, Params, Environment, WorkingDirectory, FConsoleTty , @Log, Flags);
   if assigned(FCurrentProcess) then
     begin
     FProcessMap.Add(FCurrentProcess.ProcessID, FCurrentProcess);

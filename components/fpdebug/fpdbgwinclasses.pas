@@ -109,7 +109,7 @@ type
     procedure Interrupt;
     function  HandleDebugEvent(const ADebugEvent: TDebugEvent): Boolean;
 
-    class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string; AOnLog: TOnLog; ReDirectOutput: boolean): TDbgProcess; override;
+    class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string; AOnLog: TOnLog; AFlags: TStartInstanceFlags): TDbgProcess; override;
     function Continue(AProcess: TDbgProcess; AThread: TDbgThread; SingleStep: boolean): boolean; override;
     function WaitForDebugEvent(out ProcessIdentifier, ThreadIdentifier: THandle): boolean; override;
     function AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent; override;
@@ -458,8 +458,9 @@ begin
   end;
 end;
 
-class function TDbgWinProcess.StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string;
-  AOnLog: TOnLog; ReDirectOutput: boolean): TDbgProcess;
+class function TDbgWinProcess.StartInstance(AFileName: string; AParams,
+  AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string; AOnLog: TOnLog;
+  AFlags: TStartInstanceFlags): TDbgProcess;
 var
   AProcess: TProcessUTF8;
 begin
@@ -467,6 +468,8 @@ begin
   AProcess := TProcessUTF8.Create(nil);
   try
     AProcess.Options:=[poDebugProcess, poNewProcessGroup];
+    if siForceNewConsole in AFlags then
+      AProcess.Options:=AProcess.Options+[poNewConsole];
     AProcess.Executable:=AFilename;
     AProcess.Parameters:=AParams;
     AProcess.Environment:=AnEnvironment;

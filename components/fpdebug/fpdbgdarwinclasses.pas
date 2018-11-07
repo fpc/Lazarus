@@ -144,7 +144,7 @@ type
     function CreateThread(AthreadIdentifier: THandle; out IsMainThread: boolean): TDbgThread; override;
     function AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent; override;
   public
-    class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string; AOnLog: TOnLog; ReDirectOutput: boolean): TDbgProcess; override;
+    class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string; AOnLog: TOnLog; AFlags: TStartInstanceFlags): TDbgProcess; override;
     constructor Create(const AName: string; const AProcessID, AThreadID: Integer; AOnLog: TOnLog); override;
     destructor Destroy; override;
 
@@ -698,7 +698,9 @@ begin
   inherited Destroy;
 end;
 
-class function TDbgDarwinProcess.StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string; AOnLog: TOnLog; ReDirectOutput: boolean): TDbgProcess;
+class function TDbgDarwinProcess.StartInstance(AFileName: string; AParams,
+  AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string; AOnLog: TOnLog;
+  AFlags: TStartInstanceFlags): TDbgProcess;
 var
   PID: TPid;
   AProcess: TProcessUTF8;
@@ -725,7 +727,7 @@ begin
     end;
 
   AMasterPtyFd:=-1;
-  if ReDirectOutput then
+  if siRediretOutput in AFlags then
     begin
     if AConsoleTty<>'' then
       AOnLog('It is of no use to provide a console-tty when the console output is being redirected.', dllInfo);

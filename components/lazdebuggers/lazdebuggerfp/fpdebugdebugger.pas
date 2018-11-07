@@ -61,6 +61,9 @@ type
   TFpDebugDebuggerProperties = class(TDebuggerProperties)
   private
     FConsoleTty: string;
+    {$ifdef windows}
+    FForceNewConsole: boolean;
+    {$endif windows}
     FNextOnlyStopOnStartLine: boolean;
   public
     constructor Create; override;
@@ -71,6 +74,9 @@ type
     property ConsoleTty: string read FConsoleTty write FConsoleTty;
   published
     property NextOnlyStopOnStartLine: boolean read FNextOnlyStopOnStartLine write FNextOnlyStopOnStartLine;
+    {$ifdef windows}
+    property ForceNewConsole: boolean read FForceNewConsole write FForceNewConsole;
+    {$endif windows}
   end;
 
   { TFpDebugDebugger }
@@ -417,6 +423,9 @@ begin
   if Source is TFpDebugDebuggerProperties then begin
     FNextOnlyStopOnStartLine := TFpDebugDebuggerProperties(Source).NextOnlyStopOnStartLine;
     FConsoleTty:=TFpDebugDebuggerProperties(Source).ConsoleTty;
+    {$ifdef windows}
+    FForceNewConsole:=TFpDebugDebuggerProperties(Source).FForceNewConsole;
+    {$endif windows}
   end;
 end;
 
@@ -1664,6 +1673,9 @@ begin
           CommandToList(Arguments, FDbgController.Params);
         FDbgController.WorkingDirectory:=WorkingDir;
         FDbgController.Environment:=Environment;
+        {$ifdef windows}
+        FDbgController.ForceNewConsoleWin:=TFpDebugDebuggerProperties(GetProperties).ForceNewConsole;
+        {$endif windows}
         FFpDebugThread := TFpDebugThread.Create(Self);
         RTLeventWaitFor(FFpDebugThread.DebugLoopStoppedEvent);
         RTLeventResetEvent(FFpDebugThread.DebugLoopStoppedEvent);
