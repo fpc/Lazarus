@@ -99,9 +99,9 @@ begin
 
   TstName := 'All';
   TestCompile(AppDir + 'ExceptPrg.pas', TestExeName, '_raise_at', '-gt -gh -dTEST_EXCEPTION_AT');
+  FGotExceptCount := 0;
+  dbg := StartGDB(AppDir, TestExeName);
   try
-    FGotExceptCount := 0;
-    dbg := StartGDB(AppDir, TestExeName);
     dbg.OnException      := @DoDebuggerException;
 
     dbg.Run;
@@ -157,9 +157,9 @@ begin
 
   TstName := 'RunError';
   TestCompile(AppDir + 'ExceptPrg.pas', TestExeName, '_runerr', '-gt -gh -dTEST_SKIP_EXCEPTION_1 -dTEST_RUNERR');
+  FGotExceptCount := 0;
+  dbg := StartGDB(AppDir, TestExeName);
   try
-    FGotExceptCount := 0;
-    dbg := StartGDB(AppDir, TestExeName);
     dbg.OnException      := @DoDebuggerException;
 
     dbg.Run;
@@ -180,9 +180,9 @@ begin
 
   TstName := 'Assert';
   TestCompile(AppDir + 'ExceptPrg.pas', TestExeName, '_assert', '-gt -gh -dTEST_SKIP_EXCEPTION_1 -dTEST_ASSERT');
+  FGotExceptCount := 0;
+  dbg := StartGDB(AppDir, TestExeName);
   try
-    FGotExceptCount := 0;
-    dbg := StartGDB(AppDir, TestExeName);
     dbg.OnException      := @DoDebuggerException;
 
     dbg.Run;
@@ -203,9 +203,9 @@ begin
 
   TestCompile(AppDir + 'ExceptPrg.pas', TestExeName, 'no_etype',
               '-dTEST_NO_EXCEPTION_TYPE -gt -gh');
+  FGotExceptCount := 0; TstName := 'no_exp_type';
+  dbg := StartGDB(AppDir, TestExeName);
   try
-    FGotExceptCount := 0; TstName := 'no_exp_type';
-    dbg := StartGDB(AppDir, TestExeName);
     dbg.OnException      := @DoDebuggerException;
 
     dbg.Run;
@@ -223,9 +223,9 @@ begin
 
   TestCompile(AppDir + 'ExceptPrg.pas', TestExeName, 'no_etype_ptr',
               '-dTEST_NO_EXCEPTION_TYPE -dTEST_NO_POINTER_VAR -gt -gh');
+  FGotExceptCount := 0; TstName := 'no_exp_type_ptr';
+  dbg := StartGDB(AppDir, TestExeName);
   try
-    FGotExceptCount := 0; TstName := 'no_exp_type_ptr';
-    dbg := StartGDB(AppDir, TestExeName);
     dbg.OnException      := @DoDebuggerException;
 
     dbg.Run;
@@ -243,9 +243,9 @@ begin
 
   TestCompile(AppDir + 'ExceptPrg.pas', TestExeName, 'no_etype_str',
               '-dTEST_NO_EXCEPTION_TYPE -dTEST_NO_STRING_VAR -gt -gh');
+  FGotExceptCount := 0; TstName := 'no_exp_type_str';
+  dbg := StartGDB(AppDir, TestExeName);
   try
-    FGotExceptCount := 0; TstName := 'no_exp_type_str';
-    dbg := StartGDB(AppDir, TestExeName);
     dbg.OnException      := @DoDebuggerException;
 
     dbg.Run;
@@ -263,9 +263,9 @@ begin
 
   TestCompile(AppDir + 'ExceptPrg.pas', TestExeName, 'no_etype_ptr_str',
                '-dTEST_NO_EXCEPTION_TYPE -dTEST_NO_POINTER_VAR -gt -gh');
+  FGotExceptCount := 0; TstName := 'no_exp_type_ptr_str';
+  dbg := StartGDB(AppDir, TestExeName);
   try
-    FGotExceptCount := 0; TstName := 'no_exp_type_ptr_str';
-    dbg := StartGDB(AppDir, TestExeName);
     dbg.OnException      := @DoDebuggerException;
 
     dbg.Run;
@@ -283,9 +283,9 @@ begin
 
   TestCompile(AppDir + 'ExceptPrg.pas', TestExeName, 'no_etype_ptr_str_var',
                '-dTEST_NO_EXCEPTION_TYPE -dTEST_NO_POINTER_VAR -dTEST_NO_EXCEPTION_VAR -gt -gh');
+  FGotExceptCount := 0; TstName := 'no_exp_type_ptr_str_var';
+  dbg := StartGDB(AppDir, TestExeName);
   try
-    FGotExceptCount := 0; TstName := 'no_exp_type_ptr_str_var';
-    dbg := StartGDB(AppDir, TestExeName);
     dbg.OnException      := @DoDebuggerException;
 
     dbg.Run;
@@ -304,9 +304,9 @@ begin
 
 
   TestCompile(AppDir + 'ExceptPrg.pas', TestExeName, 'with_hplus', '-dTEST_WITH_HPLUS -gt -gh');
+  FGotExceptCount := 0; TstName := 'with_hplus';
+  dbg := StartGDB(AppDir, TestExeName);
   try
-    FGotExceptCount := 0; TstName := 'with_hplus';
-    dbg := StartGDB(AppDir, TestExeName);
     dbg.OnException      := @DoDebuggerException;
 
     dbg.Run;
@@ -345,9 +345,9 @@ begin
   FContinue := False;
 
   TestCompile(AppDir + 'ExceptPrgStep.pas', TestExeName, '', '');
+  FGotExceptCount := 0; TstName := 'STEP';
+  dbg := StartGDB(AppDir, TestExeName);
   try
-    FGotExceptCount := 0; TstName := 'STEP';
-    dbg := StartGDB(AppDir, TestExeName);
     dbg.OnException      := @DoDebuggerException;
     dbg.OnCurrent        := @DoCurrent;
 
@@ -414,9 +414,9 @@ begin
   FContinue := True;
 
   TestCompile(AppDir + 'ExceptPrgStepOver.pas', TestExeName, '', '');
+  FGotExceptCount := 0; TstName := 'STEPOVER ';
+  dbg := StartGDB(AppDir, TestExeName);
   try
-    FGotExceptCount := 0; TstName := 'STEPOVER ';
-    dbg := StartGDB(AppDir, TestExeName);
     dbg.OnException      := @DoDebuggerException;
     dbg.OnCurrent        := @DoCurrent;
 

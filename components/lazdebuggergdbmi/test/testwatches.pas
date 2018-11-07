@@ -1771,8 +1771,8 @@ begin
     end;
   end;
 
+  dbg := StartGDB(AppDir, TestExeName);
   try
-    dbg := StartGDB(AppDir, TestExeName);
     FWatches := Watches.Watches;
 
     with dbg.BreakPoints.Add('WatchesPrg.pas', BREAK_LINE_FOOFUNC) do begin
