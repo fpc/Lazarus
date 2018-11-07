@@ -11617,7 +11617,10 @@ begin
     InternalSetAddr(ACmd, iblAddrOfNamed, GetInfoAddr(ACmd));
 
   // SetNamedOnFail includes if blocked
-  If SetNamedOnFail and (FBreaks[iblNamed].BreakGdbId < 0) then
+  If SetNamedOnFail and (FBreaks[iblNamed].BreakGdbId < 0) and
+     (FBreaks[iblAddrOfNamed].BreakGdbId < 0) and
+     ( (FMainAddrFound = 0) or (not HasBreakAtAddr(FMainAddrFound)) )
+  then
     BreakSet(ACmd, FName, iblNamed, coKeepIfSet);
 end;
 
