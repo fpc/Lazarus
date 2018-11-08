@@ -3493,6 +3493,8 @@ begin
   inherited UpdateShowing;
   if fMarkupManager <> nil then
     fMarkupManager.DoVisibleChanged(IsVisible);
+  if HandleAllocated then
+    UpdateScreenCaret;
 end;
 
 procedure TCustomSynEdit.SetColor(Value: TColor);
@@ -8356,7 +8358,7 @@ end;
 procedure TCustomSynEdit.VisibleChanged;
 begin
   inherited VisibleChanged;
-  UpdateScreenCaret;
+  UpdateScreenCaret; // This may no longer be needed. It is now done in UpdateShowing
 end;
 
 procedure TCustomSynEdit.DoAutoAdjustLayout(
