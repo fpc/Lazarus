@@ -263,6 +263,8 @@ function EndPagePrinter(hprinter: THANDLE): BOOL; stdcall; external LibWinSpool 
 function AbortPrinter(hPrinter: THANDLE): BOOL; stdcall; external LibWinSpool Name 'AbortPrinter';
 function WritePrinter(hPrinter: THANDLE; Buffer: Pointer; Count: DWord; Written: PDWORD): BOOL; stdcall; external LibWinSpool Name 'WritePrinter';
 
+function ResetDCW(DC: HDC; const p2: TDeviceModeW):HDC; stdcall; external 'gdi32.dll' name 'ResetDCW';
+
 implementation
 
 { TPrinterDevice }

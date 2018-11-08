@@ -82,6 +82,8 @@ type
     function DoExecute: Boolean; override;
   public
     constructor Create(TheOwner: TComponent); override;
+    property OnDialogResult;
+    property AttachTo;
   published
     property PageWidth: integer read FPageWidth write FPageWidth default 0;
     property PageHeight: integer read FPageHeight write FPageHeight default 0;
@@ -96,12 +98,15 @@ type
     property Options: TPageSetupDialogOptions read FOptions write FOptions default cDefaultPageSetupDialogOptions;
     property Units: TPageMeasureUnits read FUnits write FUnits default pmDefault;
   end;
-
-  { TPrinterDialog }
   
+  { TPrinterSetupDialog }
+
   TPrinterSetupDialog = class(TCustomPrinterSetupDialog)
   protected
     function DoExecute: Boolean; override;
+  public
+    property OnDialogResult;
+    property AttachTo;
   end;
 
   { TPrintDialog }
@@ -109,6 +114,9 @@ type
   TPrintDialog = class(TCustomPrintDialog)
   protected
     function DoExecute: Boolean; override;
+  public
+    property OnDialogResult;
+    property AttachTo;
   published
     property Collate;
     property Copies;
@@ -141,7 +149,7 @@ implementation
       {$ENDIF}
     {$ENDIF}
     {$IFDEF LCLCocoa}
-      uses Math, CocoaAll, MacOSAll, LCLProc;
+      uses Math, CocoaAll, MacOSAll, LCLProc, cocoaprndelegate;
       {$I cocoaprndialogs.inc}
     {$ENDIF}
     {$IFDEF LCLQt}

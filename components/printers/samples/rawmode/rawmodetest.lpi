@@ -1,7 +1,7 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="8"/>
+    <Version Value="11"/>
     <General>
       <Flags>
         <SaveClosedFiles Value="False"/>
@@ -9,23 +9,49 @@
         <LRSInOutputDirectory Value="False"/>
       </Flags>
       <MainUnit Value="0"/>
-      <TargetFileExt Value=".exe"/>
-      <ActiveWindowIndexAtStart Value="0"/>
     </General>
-    <VersionInfo>
-      <StringTable Comments="" CompanyName="" FileDescription="" FileVersion="0.0.0.0" InternalName="" LegalCopyright="" LegalTrademarks="" OriginalFilename="" ProductName="" ProductVersion=""/>
-    </VersionInfo>
+    <BuildModes Count="2">
+      <Item1 Name="default" Default="True"/>
+      <Item2 Name="Cocoa">
+        <MacroValues Count="1">
+          <Macro1 Name="LCLWidgetType" Value="cocoa"/>
+        </MacroValues>
+        <CompilerOptions>
+          <Version Value="11"/>
+          <Parsing>
+            <SyntaxOptions>
+              <UseAnsiStrings Value="False"/>
+            </SyntaxOptions>
+          </Parsing>
+          <CodeGeneration>
+            <TargetCPU Value="x86_64"/>
+          </CodeGeneration>
+          <Linking>
+            <Options>
+              <Win32>
+                <GraphicApplication Value="True"/>
+              </Win32>
+            </Options>
+          </Linking>
+        </CompilerOptions>
+      </Item2>
+      <SharedMatrixOptions Count="2">
+        <Item1 ID="577313873316" Modes="Cocoa" Type="IDEMacro" MacroName="LCLWidgetType" Value="cocoa"/>
+        <Item2 ID="377808742865" Modes="Cocoa" Value="-O- -O1 -gw2 -godwarfsets"/>
+      </SharedMatrixOptions>
+    </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
-      <IgnoreBinaries Value="False"/>
-      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
-      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
     </PublishOptions>
     <RunParams>
-      <local>
-        <FormatVersion Value="1"/>
-        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
-      </local>
+      <FormatVersion Value="2"/>
+      <Modes Count="1">
+        <Mode0 Name="default">
+          <local>
+            <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+          </local>
+        </Mode0>
+      </Modes>
     </RunParams>
     <RequiredPackages Count="2">
       <Item1>
@@ -39,33 +65,26 @@
       <Unit0>
         <Filename Value="rawmodetest.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="rawmodetest"/>
-        <TopLine Value="1"/>
         <CursorPos X="40" Y="17"/>
-        <UsageCount Value="23"/>
+        <UsageCount Value="27"/>
       </Unit0>
       <Unit1>
         <Filename Value="unitmain.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="Form1"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="unitmain"/>
         <IsVisibleTab Value="True"/>
-        <EditorIndex Value="0"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="74"/>
-        <CursorPos X="30" Y="91"/>
-        <UsageCount Value="23"/>
+        <TopLine Value="135"/>
+        <CursorPos Y="167"/>
+        <UsageCount Value="27"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit1>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="9"/>
-    <SearchPaths>
-      
-    </SearchPaths>
+    <Version Value="11"/>
     <Parsing>
       <SyntaxOptions>
         <UseAnsiStrings Value="False"/>
@@ -78,9 +97,6 @@
         </Win32>
       </Options>
     </Linking>
-    <Other>
-      <CompilerPath Value="$(CompPath)"/>
-    </Other>
   </CompilerOptions>
   <Debugging>
     <Exceptions Count="2">

@@ -1,23 +1,23 @@
 object Form1: TForm1
   Left = 265
-  Height = 369
+  Height = 400
   Top = 181
-  Width = 452
+  Width = 478
   HorzScrollBar.Page = 427
   VertScrollBar.Page = 301
   ActiveControl = ListBox1
   Caption = 'RawMode Print Test'
-  ClientHeight = 369
-  ClientWidth = 452
+  ClientHeight = 400
+  ClientWidth = 478
   Constraints.MaxHeight = 400
   Constraints.MinHeight = 240
   OnCreate = FormCreate
-  LCLVersion = '0.9.29'
+  LCLVersion = '2.1.0.0'
   object Label1: TLabel
     Left = 12
     Height = 16
     Top = 8
-    Width = 80
+    Width = 79
     Caption = 'Printers List:'
     ParentColor = False
   end
@@ -25,15 +25,15 @@ object Form1: TForm1
     Left = 11
     Height = 16
     Top = 144
-    Width = 80
+    Width = 84
     Caption = 'Text to print:'
     ParentColor = False
   end
   object Label3: TLabel
     Left = 96
-    Height = 71
-    Top = 292
-    Width = 344
+    Height = 87
+    Top = 307
+    Width = 370
     Anchors = [akLeft, akRight, akBottom]
     AutoSize = False
     Caption = 'NOTE: This sample is meant to sent an alphanumeric string to a Dot-Matrix class printer which doesn''t need special codes to start printing. Label, LaserJet or DeskJet printers might need'#10'some special prefix codes to work correctly.'
@@ -44,16 +44,15 @@ object Form1: TForm1
     Left = 11
     Height = 115
     Top = 25
-    Width = 430
+    Width = 456
     Anchors = [akTop, akLeft, akRight]
     ItemHeight = 0
     TabOrder = 0
-    TopIndex = -1
   end
   object Button1: TButton
     Left = 11
     Height = 25
-    Top = 334
+    Top = 307
     Width = 75
     Anchors = [akLeft, akBottom]
     BorderSpacing.InnerBorder = 4
@@ -63,9 +62,9 @@ object Form1: TForm1
   end
   object Memo1: TMemo
     Left = 11
-    Height = 125
+    Height = 140
     Top = 162
-    Width = 430
+    Width = 456
     Anchors = [akTop, akLeft, akRight, akBottom]
     Lines.Strings = (
       ''
@@ -77,5 +76,15 @@ object Form1: TForm1
       'And it''s portable!'
     )
     TabOrder = 2
+  end
+  object btnZPL: TButton
+    Left = 11
+    Height = 25
+    Hint = 'Select a Zebra printer from the list'#10'and press this button.  A label should'#10'be printed.'
+    Top = 341
+    Width = 75
+    Caption = 'Zebra Test'
+    OnClick = btnZPLClick
+    TabOrder = 3
   end
 end

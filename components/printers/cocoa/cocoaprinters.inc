@@ -2,293 +2,279 @@
 {**************************************************************
 Implementation for carbonprinter
 ***************************************************************}
-uses InterfaceBase, LCLIntf, LCLProc;
+uses InterfaceBase, LCLIntf, LCLProc, CocoaPrnDelegate;
 
 const
   CleanPMRect: PMRect = (top: 0; left: 0; bottom: 0; right: 0);
-  CleanPMOrientation: PMOrientation = 0;
+  //CleanPMOrientation: PMOrientation = 0;
+
+{ TCocoaPrinterCanvas }
+
+procedure ReleaseMemoryStream(info: UnivPtr; data: UnivPtr; size: size_t); mwpascal;
+begin
+  TMemoryStream(info).free;
+end;
+
+function TCocoaPrinterCanvas.GetCGContext: CGContextRef;
+begin
+  result := TCocoaContext(Handle).CGContext;
+end;
+
+procedure TCocoaPrinterCanvas.DoEllipse(const Bounds: TRect);
+var
+  R: CGRect;
+begin
+  R := CGRectMake(bounds.left, bounds.top, bounds.Width, bounds.Height);
+  CGContextFillEllipseInRect(CGContext, R);
+end;
+
+procedure TCocoaPrinterCanvas.DoEllipseFill(const Bounds: TRect);
+var
+  R: CGRect;
+begin
+  R := CGRectMake(bounds.left, bounds.top, bounds.Width, bounds.Height);
+  CGContextStrokeEllipseInRect(CGContext, R);
+end;
+
+procedure TCocoaPrinterCanvas.DoEllipseAndFill(const Bounds: TRect);
+var
+  R: CGRect;
+begin
+  R := CGRectMake(bounds.left, bounds.top, bounds.Width, bounds.Height);
+  CGContextFillEllipseInRect(CGContext, R);
+  CGContextStrokeEllipseInRect(CGContext, R);
+end;
+
+{ TPrinterEnumerator }
+
+constructor TPrinterEnumerator.Create(objType: TObjType; aPrinterRef: PMPrinter);
+begin
+  inherited create;
+  fArray := nil;
+  fObjType := objType;
+  fIndex := -1;
+  fPrinterRef := aPrinterRef;
+end;
+
+destructor TPrinterEnumerator.Destroy;
+begin
+  if (fObjType=otPrinters) and (fArray<>nil) then
+    CFRelease(fArray);
+  inherited destroy;
+end;
+
+function TPrinterEnumerator.MoveNext: boolean;
+var
+  res: OSStatus;
+begin
+
+  if fIndex<0 then
+  begin
+
+    case fObjType of
+      otPrinters:
+        res := PMServerCreatePrinterList(kPMServerLocal, fArray);
+
+      otPapers:
+        res := PMPrinterGetPaperList(fPrinterRef, fArray);
+    end;
+
+    result := (res=noErr) and (fArray<>nil);
+    if not result then
+      exit;
+  end;
+
+  inc(fIndex);
+  result := fIndex<CFArrayGetCount(fArray);
+  if result then
+    fCurrent := CFArrayGetValueAtIndex(fArray, fIndex);
+end;
+
+function TPrinterEnumerator.GetEnumerator: TPrinterEnumerator;
+begin
+  result := self;
+end;
 
 { TCocoaPrinterView }
 
-function TCocoaPrinterView.initWithFrame(frameRect: NSRect): id;
-begin
-  PageMin := 1;
-  PageMax := 1;
-  PageFrom := 1;
-  PageTo := 1;
-  Result:=inherited initWithFrame(frameRect);
-  //Image := NSImage.alloc.initWithSize(Size);
-end;
-
-procedure TCocoaPrinterView.dealloc;
-begin
-  //Image.release();
-  inherited dealloc();
-end;
-
 procedure TCocoaPrinterView.drawRect(dirtyRect: NSRect);
 var
-  pageHeight: Double;
-  lRect: NSRect;
-  lCurPage: Integer;
+  Context: NSGraphicsContext;
 begin
-  // image page printing alternative
-  //Image.drawInRect_fromRect_operation_fraction(Self.frame, NSZeroRect, NSCompositeSourceAtop, 1.0);
+  Context := NSGraphicsContext.currentContext;
 
-  if Canvas = nil then Exit;
-
-  pageHeight := calculatePrintHeight();
-  lRect := updateSize(False);
-
-  // figure out which page this is
-  lCurPage := Round((lRect.size.height - dirtyRect.origin.y) / pageHeight);
-
-  Canvas.DrawRecording(Self, dirtyRect, lCurPage - PageFrom);
+  CGContextDrawPDFDocument(context.lclCGContext, CGRect(dirtyRect), doc, pageNum);
 end;
 
 // Return the number of pages available for printing
 function TCocoaPrinterView.knowsPageRange(range: NSRangePointer): Boolean;
 begin
-  updateSize(True);
-  range^.location := PageFrom;
-  range^.length := PageTo - PageFrom + 1;
+  range^.location := 1;
+  range^.length := CGPDFDocumentGetNumberOfPages(doc);
   Result := True;
 end;
 
 function TCocoaPrinterView.rectForPage(page: NSInteger): NSRect;
 var
-  lBounds: NSRect;
-  pageHeight, pageWidth: Double;
+  aPage: CGPDFPageRef;
 begin
-  pageHeight := calculatePrintHeight();
-  pageWidth := calculatePrintWidth();
-  // page Y starting pos is Bottom-Left of page 1 - (pagenr-zero-based) * pageHeight, so:
-  // pageHeight * ((PageTo - PageFrom) - (page - PageFrom)), which simplifies to:
-  Result := NSMakeRect(0, pageHeight * (PageTo - page),
-    pageWidth, pageHeight);
+  pageNum := page;
+  aPage := CGPDFDocumentGetPage(Doc, pageNum);
+  result := NSRect(CGPDFPageGetBoxRect(aPage, kCGPDFMediaBox));
+  self.setBounds(result);
 end;
 
-// Calculate the vertical size of the view that fits on a single page
-function TCocoaPrinterView.calculatePrintHeight: Double;
-var
-  pi: NSPrintInfo;
-  paperSize: NSSize;
-  pageHeight, scale: Double;
+function TCocoaPrinterView.isFlipped: boolean;
 begin
-  // Obtain the print info object for the current operation
-  pi := NSPrintOperation.currentOperation.printInfo;
-
-  // Calculate the page height in points
-  paperSize := pi.paperSize;
-  pageHeight := paperSize.height - pi.topMargin - pi.bottomMargin;
-
-  // Convert height to the scaled view
-  scale := pi.dictionary.objectForKey(NSPrintScalingFactor).floatValue;
-  Result := pageHeight / scale;
+  Result := true;
 end;
 
-function TCocoaPrinterView.calculatePrintWidth: Double;
-var
-  pi: NSPrintInfo;
-  paperSize: NSSize;
-  pageWidth, scale: Double;
-begin
-  // Obtain the print info object for the current operation
-  pi := NSPrintOperation.currentOperation.printInfo;
-
-  // Calculate the page width in points
-  paperSize := pi.paperSize;
-  pageWidth := paperSize.width - pi.leftMargin - pi.rightMargin;
-
-  // Convert height to the scaled view
-  scale := pi.dictionary.objectForKey(NSPrintScalingFactor).floatValue;
-  Result := pageWidth / scale;
-end;
-
-function TCocoaPrinterView.updateSize(ADoSetFrame: Boolean): NSRect;
-var
-  Size: NSSize;
-begin
-  Size.height := calculatePrintHeight();
-  Size.height := Size.height * (PageTo - PageFrom + 1);
-  Size.width := calculatePrintWidth();
-  if ADoSetFrame then
-    Self.setFrameSize(Size);
-  Result := NSMakeRect(0, 0, Size.width, Size.height);
-end;
 
 { TCocoaPrinter }
 
-function TCocoaPrinter.CreatePageFormat(APaper: String): PMPageFormat;
+
+procedure TCocoaPrinter.ResetPapersList(aPrinter: PMPrinter);
 var
-  I: Integer;
-  S: TStringList;
-const
-  SName = 'CreatePageFormat';
+  aPaper: PMPaper;
+  aName: CFStringRef;
+  res: OSStatus;
+  pageFormat: PMPageFormat;
+  paperR, pageR: PMRect;
+  i: Integer;
+  aInfo: NSPrintInfo;
+  validationResult: Boolean;
+  pmOr: PMOrientation;
 begin
-{  if APaper = '' then
-  begin
-    I := -1;
-    S := nil;
-  end
+  aInfo := NSPrintInfo.sharedPrintInfo;
+  if aInfo.orientation=NSPortraitOrientation then
+    pmOr := kPMPortrait
   else
+    pmOr := kPMLandscape;
+
+  SetLength(fPapersList, 0);
+  for aPaper in self.GetPMPrinterEnumerator(otPapers, aPrinter) do
   begin
-    S := TStringList.Create;
-    BeginEnumPapers(S);
-    I := S.IndexOf(APaper);
+
+    aName := nil;
+    pageFormat := nil;
+    res := PMPaperCreateLocalizedName(aPaper, aPrinter, aName);
+    if res<>noErr then continue;
+
+    if res<>noErr then continue;
+    res := PMCreatePageFormatWithPMPaper(pageFormat, aPaper);
+    if res<>noErr then continue;
+    res := PMSetOrientation(pageFormat, pmOr, false);
+    if res<>noErr then continue;
+
+    res := PMSessionValidatePageFormat(aInfo.PMPrintSession, pageFormat, @validationResult);
+    if res<>noErr then continue;
+
+    paperR:=CleanPMRect;
+    res := PMGetAdjustedPaperRect(pageFormat, paperR);
+    if res<>noErr then begin PMRelease(pageFormat); continue; end;
+
+    pageR:=CleanPMRect;
+    res := PMGetAdjustedPageRect(pageFormat, pageR);
+    PMRelease(pageFormat);
+    if res<>noErr then continue;
+
+    i:= Length(fPapersList);
+    SetLength(fPapersList, i+1);
+
+    with fPapersList[i] do
+    begin
+      PaperName := CFStringToString(aName);
+      CFRelease(aName);
+
+      PaperRect.PhysicalRect.Left := 0;
+      PaperRect.PhysicalRect.Top := 0;
+      PaperRect.PhysicalRect.Right := Round(paperR.right - paperR.left);
+      PaperRect.PhysicalRect.Bottom := Round(paperR.bottom - paperR.top);
+
+      PaperRect.WorkRect.Left := Round(-paperR.left);
+      PaperRect.WorkRect.Top := Round(-paperR.top);
+      PaperRect.WorkRect.Right := Round(pageR.right - pageR.left - paperR.left);
+      PaperRect.WorkRect.Bottom := Round(pageR.bottom - pageR.top - paperR.top);
+    end;
   end;
-    
-  try
-    if I < 0 then
-    begin
-      Result:=nil;
-      if OSError(PMCreatePageFormat(Result), Self, SName, 'PMCreatePageFormat') then
-        raise EPrinter.Create('Error initializing printing for Carbon: Unable to create page format!');
 
-      OSError(PMSessionDefaultPageFormat(PrintSession, Result), Self, SName, 'PMSessionDefaultPageFormat');
-    end
-    else
-    begin
-      OSError(PMCreatePageFormatWithPMPaper(Result,
-          PMPaper(CFArrayGetValueAtIndex(FPaperArray, I))),
-        Self, SName, 'PMCreatePageFormatWithPMPaper');
-
-    end;
-  finally
-    if S <> nil then
-    begin
-      EndEnumPapers;
-      S.Free;
-    end;
-  end;  }
 end;
 
-function TCocoaPrinter.ValidatePageFormat: Boolean;
+function TCocoaPrinter.GetDefaultPaperFromPPDFile: string;
+var
+  pInfo: NSPrintInfo;
+  aStatus: NSPrinterTableStatus;
+  aValue: NSString;
 begin
-  Result := False;
-  if PMSessionValidatePageFormat(GetPrintSession(), GetPageFormat(), @Result) <> noErr then Exit;
+  result := '';
+
+  pInfo := NSPrintInfo.sharedPrintInfo;
+  aStatus := pInfo.printer.statusForTable(NSSTR('PPD'));
+  if aStatus=NSPrinterTableOK then
+  begin
+    // it is a shame that the NSPrinter functions available for querying
+    // PPD key and values are deprecated (except by StatusForTable)
+    // if using deprecated functions hurt too much we can always parse the
+    // ppd file directly as done in the the carbon printer.
+    aValue := pInfo.printer.stringForKey_inTable(NSSTR('DefaultPageSize'), NSSTR('PPD'));
+    if aValue<>nil then
+      result := aValue.UTF8String;
+  end;
+
 end;
 
-function TCocoaPrinter.ValidatePrintSettings: Boolean;
+function TCocoaPrinter.GetCurrentPrinterName: string;
+var
+  aInfo: NSPrintInfo;
 begin
-  Result := False;
-  if PMSessionValidatePrintSettings(GetPrintSession(), GetPrintSettings(), @Result) <> noErr then Exit;
+  aInfo := NSPrintInfo.sharedPrintInfo;
+  result := aInfo.printer.name.UTF8String;
 end;
 
-function TCocoaPrinter.GetCurrentCarbonPrinter: PMPrinter;
+function TCocoaPrinter.GetCurrentPrinter: PMPrinter;
+var
+  pInfo: NSPrintInfo;
 begin
   Result := nil;
-  if PMSessionGetCurrentPrinter(GetPrintSession(), Result) <> noErr then Exit;
-  { Result := CFStringToStr(PMPrinterGetName(P));
-  if Trim(Result) = '' then
-    Result := '';  }
+  pInfo := NSPrintInfo.sharedPrintInfo;
+  if PMSessionGetCurrentPrinter(pInfo.PMPrintSession, Result) <> noErr then Exit;
 end;
 
-function TCocoaPrinter.GetPrintSession: PMPrintSession;
+function TCocoaPrinter.GetPMPrinterEnumerator(objType: TObjType;
+  printerRef: PMPrinter): TPrinterEnumerator;
 begin
-  Result := FPrintInfo.PMPrintSession();
-end;
-
-function TCocoaPrinter.GetPrintSettings: PMPrintSettings;
-begin
-  Result := FPrintInfo.PMPrintSettings();
-end;
-
-function TCocoaPrinter.GetPageFormat: PMPageFormat;
-begin
-  Result := FPrintInfo.PMPageFormat();
-end;
-
-procedure TCocoaPrinter.BeginPage;
-{var
-  PaperRect: PMRect;  }
-begin
-  {if FBeginDocumentStatus = noErr then
-  begin
-    FNewPageStatus := PMSessionBeginPage(PrintSession, nil, nil);
-    OSError(FNewPageStatus, Self, 'BeginPage', 'PMSessionBeginPage', '', kPMCancel);
-    
-    // update printer context
-    if OSError(PMSessionGetCGGraphicsContext(PrintSession, FPrinterContext.CGContext),
-      Self, 'BeginPage', 'PMSessionGetCGGraphicsContext') then
-        FPrinterContext.Release
-      else
-        FPrinterContext.Reset;
-
-    // translate the context from his paper (0,0) origin
-    // to our working imageable area
-    if PMGetAdjustedPaperRect(PageFormat, PaperRect{%H-})=noErr then
-      CGContextTranslateCTM(FPrinterContext.CGContext, -PaperRect.left, -PaperRect.top);
-
-    if Assigned(Canvas) then
-      Canvas.Handle := HDC(FPrinterContext);
-  end;   }
-end;
-
-procedure TCocoaPrinter.EndPage;
-begin
-  {FPrinterContext.Release;
-  if Assigned(Canvas) then Canvas.Handle := 0;
-  
-  if FBeginDocumentStatus = noErr then
-  begin
-    if FNewPageStatus = noErr then
-      OSError(PMSessionEndPage(PrintSession), Self, 'EndPage', 'PMSessionEndPage', '', kPMCancel);
-  end;   }
+  result := TPrinterEnumerator.create(objType, printerRef);
 end;
 
 procedure TCocoaPrinter.FindDefaultPrinter;
-{var
-  P: PMPrinter;
-  I, C: CFIndex;
-  pa: CFArrayRef;  }
+var
+  aPrinter: PMPrinter;
 begin
-  {pa:=nil;
-  if OSError(PMServerCreatePrinterList(kPMServerLocal, pa),
-    Self, 'DoEnumPrinters', 'PMServerCreatePrinterList') then Exit;
+  FDefaultPrinter := '';
 
-  if not Assigned(pa) then Exit;
-
-  C := CFArrayGetCount(pa);
-  for I := 0 to C - 1 do
+  for aPrinter in GetPMPrinterEnumerator(otPrinters) do
   begin
-    P := CFArrayGetValueAtIndex(pa, I);
-
-    if PMPrinterIsDefault(P) then
+    if PMPrinterIsDefault(aPrinter) then
     begin
-      FDefaultPrinter := CFStringToStr(PMPrinterGetName(P));
-      Break;
+      FDefaultPrinter := CFStringToStr(PMPrinterGetName(aPrinter));
+      break;
     end;
   end;
-  CFRelease(pa);    }
 end;
 
 constructor TCocoaPrinter.Create;
-var
-  FPrintViewRect: NSRect;
 begin
   inherited Create;
 
-  FPrintViewRect := GetNSRect(0, 0, 1000, 1000);
-  FPrintView := TCocoaPrinterView.alloc.initWithFrame(FPrintViewRect);
-  FPrintView.Canvas := Canvas as TCocoaPrinterCanvas;
+  CanvasClass := TCocoaPrinterCanvas;
 
-  FPrintOp := NSPrintOperation.printOperationWithView(FPrintView);
-  FPrintInfo := FPrintOp.printInfo();
-
-  //CreatePrintSettings;
-  //FPageFormat := CreatePageFormat('');
-  //FindDefaultPrinter;
-  //UpdatePrinter;
-
-  //DebugLn('Current ' + GetCurrentPrinterName);
-  //DebugLn('Default ' + FDefaultPrinter);
+  FindDefaultPrinter;
+  UpdatePrinter;
+  Validate;
 end;
 
 procedure TCocoaPrinter.DoDestroy;
 begin
-  FPrintView.release();
-  
   inherited DoDestroy;
 end;
 
@@ -296,8 +282,27 @@ function TCocoaPrinter.Write(const Buffer; Count: Integer; out Written: Integer)
 begin
   Result := False;
   CheckRawMode(True);
-  Written := 0;
-  DebugLn('TCocoaPrinter.Write Error: Raw mode is not supported for Cocoa!');
+  Written := FStream.Write(buffer, count);
+  result := (Written=Count);
+end;
+
+procedure TCocoaPrinter.CheckPrinterList;
+var
+  orgList,curList: TStringList;
+begin
+  orgList := TStringList.create;
+  curList := TStringList.create;
+  try
+    orgList.Assign(Printers);
+    DoEnumPrinters(curList);
+    orgList.Sort;
+    curList.Sort;
+    if not curList.Equals(orgList) then
+      Refresh;
+  finally
+    curList.Free;
+    orgList.Free;
+  end;
 end;
 
 procedure TCocoaPrinter.RawModeChanging;
@@ -308,56 +313,83 @@ end;
 procedure TCocoaPrinter.Validate;
 var
   P: String;
+  aPrinter: PMPrinter;
+  aPaper: PMPaper;
+  aPaperName: CFStringRef;
+  papersList: TStrings;
+  found: Boolean;
 begin
-  ValidatePrintSettings();
-  ValidatePageFormat();
-  
+  aPrinter := GetCurrentPrinter;
+  ResetPapersList(aPrinter);
+  PaperSize.SupportedPapers.Clear; // refill on next query, ie. next line
+
+  papersList := PaperSize.SupportedPapers;
+
   // if target paper is not supported, use the default
   P := DoGetPaperName();
-  if PaperSize.SupportedPapers.IndexOf(P) = -1 then
-    DoSetPaperName(DoGetDefaultPaperName());
+  if papersList.IndexOf(P) = -1 then
+  begin
+    P := DoGetDefaultPaperName();
+    if papersList.IndexOf(P) < 0 then
+    begin
+      // neither the current paper or the default one exists in the supported
+      // list of papers, instead of randomly choose one, let's try a bit harder
+      // as some printer ppd files have a hint about the default paper.
+      found := false;
+      P := GetDefaultPaperFromPPDFile;
+      if p<>'' then
+      begin
+        for aPaper in GetPMPrinterEnumerator(otPapers, aPrinter) do
+        begin
+          aPaperName := nil;
+          PMPaperGetPPDPaperName(aPaper, aPaperName);
+          if (aPapername<>nil) and (CFStringToString(aPaperName)=P) then
+          begin
+            aPaperName := nil;
+            PMPaperCreateLocalizedName(aPaper, aPrinter, aPapername);
+            if aPaperName<>nil then
+            begin
+              P := CFStringToString(aPaperName);
+              CFRelease(aPapername);
+              found := (papersList.IndexOf(P)>=0);
+              break;
+            end;
+          end;
+        end;
+      end;
+
+      if not found then
+        p := papersList[0];
+
+    end;
+    DoSetPaperName(P);
+  end;
 end;
 
 procedure TCocoaPrinter.UpdatePrinter;
-{var
+var
   s: string;
-  Res: PMResolution;}
+  pInfo: NSPrintInfo;
 begin
-  {s := GetCurrentPrinterName;
+  pInfo := NSPrintInfo.sharedPrintInfo;
+  s := pInfo.printer.name.UTF8String;
   if trim(s) = '' then // Observed if Default printer set to "Use last printer", and no printing done
     s := '*';     // so select lcl default
   SetPrinter(s);
-  // set the page format resolution
-  Res := GetOutputResolution;
-  PMSetResolution(PageFormat, Res);
-  Validate; }
 end;
 
 function TCocoaPrinter.GetOutputResolution: PMResolution;
 var
   res: OSStatus;
-  FPrintSettings: PMPrintSettings;
+  pInfo: NSPrintInfo;
 begin
-  FPrintSettings := GetPrintSettings();
-  res := PMPrinterGetOutputResolution(GetCurrentCarbonPrinter(), FPrintSettings, Result);
+  pInfo := NSPrintInfo.sharedPrintInfo;
+  res := PMPrinterGetOutputResolution(GetCurrentPrinter(), pInfo.PMPrintSettings, result{%H-});
   if res <> noErr then
   begin
     Result.vRes := 72;
     Result.hRes := 72;
   end;
-end;
-
-function TCocoaPrinter.DoDoGetPaperName(APageFormat: PMPageFormat): string;
-var
-  FPaper: PMPaper = nil;
-  lCFString: CFStringRef = nil;
-begin
-  Result := '';
-  if APageFormat = nil then APageFormat := GetPageFormat();
-  if PMGetPageFormatPaper(APageFormat, FPaper) <> noErr then Exit;
-  if PMPaperGetName(FPaper, lCFString) <> noErr then Exit;
-
-  Result := CFStringToStr(lCFString);
 end;
 
 function TCocoaPrinter.GetXDPI: Integer;
@@ -376,34 +408,269 @@ begin
   result := round(dpi.hRes);
 end;
 
+{$define ToPrinter}
+
 procedure TCocoaPrinter.DoBeginDoc;
+var
+  //pInfo: NSPrintInfo;
+  consumer: CGDataConsumerRef;
+  gr: NSGraphicsContext;
+  //path: CStringPtr;
+  //url: CFUrlRef;
+  R: TRect;
 begin
-  inherited DoBeginDoc;
-  
-  //DebugLn('TCocoaPrinter.DoBeginDoc ' + DbgS(Printing));
-  Validate;
 
-  //FBeginDocumentStatus := PMSessionBeginCGDocument(PrintSession, PrintSettings, PageFormat);
-  //OSError(FBeginDocumentStatus, Self, 'DoBeginDoc', 'PMSessionBeginCGDocument', '', kPMCancel);
+  fDocStarted := true;
+  if RawMode then
+  begin
 
-  BeginPage;
+    fStream := TMemoryStream.create;
+
+  end else
+  begin
+
+    // TODO: margins ???
+    //
+    // Initially NSPrintInfo do not carry the printer real margins
+    // (from the imageable area) set up in the printer ppd file but some
+    // standard defined (undocumented but I guess they corresponds
+    // to the "Any Printer" printer). It is even documented somewhere
+    // that in order to use the real printer margins one have to
+    // run the PageLayout dialog and choose the real printer instead
+    // of the "Any Printer" and this way the margins will match the
+    // real printer ones. Check later this stuff...
+    //
+    // * We don't use margins in the calc of the mediabox because
+    //   Apple doesn't implement a custom margins dialog and ...
+    // * In order to implement custom margins we have to probably
+    //   add some accessory panel, but as we currently don't do that
+    //   it makes no sense to use them.
+    //
+    //pInfo := NSPrintInfo.sharedPrintInfo;
+    //pInfo.setLeftMargin(0);
+    //pInfo.setTopMargin(0);
+    //pInfo.setRightMargin(0);
+    //pInfo.setBottomMargin(0);
+
+    R := PaperSize.PaperRect.WorkRect;
+    pdfMediaBox := CGRectMake(0, 0, r.Width, r.Height);
+
+    {$ifdef ToPrinter}
+    if pdfData<>nil then
+      CFRelease(pdfData);
+    pdfData := CFDataCreateMutable(nil, 0);
+    consumer := CGDataConsumerCreateWithCFData(pdfData);
+    {$else}
+    path := 'salida.pdf';
+    url := CFURLCreateFromFileSystemRepresentation(nil, path, length(path), false);
+    consumer := CGDataConsumerCreateWithURL(url);
+    CFRelease(url);
+    {$endif}
+    pdfContext := CGPDFContextCreate(consumer, pdfMediabox, nil);
+    CGDataConsumerRelease(consumer);
+
+    gr := NSGraphicsContext.graphicsContextWithGraphicsPort_flipped(pdfContext, false);
+    FPrinterContext := TCocoaContext.Create(gr);
+
+  end;
+
 end;
 
-procedure TCocoaPrinter.DoNewPage;
+procedure TCocoaPrinter.DoBeginPage;
+var
+  mediaBox: CGRect;
+  R: TRect;
+  rgn: TCocoaRegion;
 begin
-  inherited DoNewPage;
 
-  EndPage;
-  BeginPage;
+  if RawMode then
+    exit;
+
+  R := PaperSize.PaperRect.WorkRect;
+  mediaBox := CGRectMake(0, 0, r.Width, r.Height);
+
+  //CGPDFContextBeginPage(pdfContext, nil);
+  CGContextBeginPage(pdfContext, mediabox);
+  CGContextSaveGState(pdfContext);
+
+  if Assigned(Canvas) then
+    Canvas.Handle := HDC(FPrinterContext);
+
+  rgn := TCocoaRegion.Create(0, 0, r.Width, r.height);
+  FPrinterContext.SetClipRegion(Rgn, cc_Copy);
+  rgn.Free;
+end;
+
+procedure TCocoaPrinter.DoEndPage;
+
+  procedure ResetCanvasHandle;
+  begin
+    if Assigned(Canvas) then
+      Canvas.Handle := HDC(0);
+  end;
+
+begin
+
+  if RawMode then
+    exit;
+
+  if not fDocStarted then
+  begin
+    ResetcanvasHandle;
+    exit;
+  end;
+
+  if Aborted then
+  begin
+    ResetcanvasHandle;
+    exit;
+  end;
+
+  CGContextRestoreGState(pdfContext);
+  CGContextEndPage(pdfContext);
+
+  ResetCanvasHandle;
+
+end;
+
+// starts a raw mode print job
+procedure TCocoaPrinter.StartRawModePrintJob(Sender: TObject);
+var
+  pInfo: NSPrintInfo;
+  printDestination: PMDestinationType;
+  aPrinter: PMPrinter;
+  mimeType: CFStringRef;
+  mimeTypes: CFArrayRef;
+  arrayCount: CFIndex;
+  provider: CGDataProviderRef;
+  status: OSStatus;
+
+  procedure Error(s:string);
+  begin
+    //DebugLn(s);
+    try
+      fStream.free;
+    except
+      // DebugLn
+    end;
+    fStream := nil;
+    raise Exception.Create(s);
+  end;
+
+begin
+
+  pInfo := NSPrintInfo.sharedPrintInfo;
+  printDestination := kPMDestinationInvalid;
+
+  if PMSessionGetDestinationType(pInfo.PMPrintSession, pInfo.PMPrintSettings, printDestination)=noErr then
+  begin
+    if printDestination=kPMDestinationPrinter then
+    begin
+      aPrinter := GetCurrentPrinter;
+      if aPrinter<>nil then
+      begin
+        status := PMPrinterGetMimeTypes(aPrinter, pInfo.PMPrintSettings, mimeTypes);
+        if (status=noErr) and (mimeTypes<>nil) then
+        begin
+          mimeType := CFSTR('application/vnd.cups-raw');
+          arrayCount := CFArrayGetCount(mimeTypes);
+          if CFArrayContainsValue(mimeTypes, CFRangeMake(0, arrayCount), mimeType) then
+          begin
+            provider := CGDataProviderCreateWithData(fStream, fStream.Memory, fStream.Size, @ReleaseMemoryStream);
+            status := PMPrinterPrintWithProvider(aPrinter, pInfo.PMPrintSettings, pInfo.PMPageFormat, mimeType, provider);
+            CGDataProviderRelease(provider);
+            if status<>noErr then
+              Error('Error '+IntToStr(status)+'while raw printing')
+            else
+              fStream := nil;
+          end else
+            Error('Printer do not support raw printing');
+        end else
+          Error('Error while getting supported mime types');
+      end else
+        Error('Error, couldn''t get the current printer');
+    end else
+      Error('Error, destination is not printer');
+  end else
+    Error('Error on getting DestinationType');
 end;
 
 procedure TCocoaPrinter.DoEndDoc(aAborded: Boolean);
+var
+  preview: TCocoaPrinterView;
+  op: NSPrintOperation;
+  provider: CGDataProviderRef;
+  pInfo: NSPrintInfo;
 begin
-  inherited DoEndDoc(aAborded);
 
-  EndPage;
-  FPrintOp.setShowsPrintPanel(False);
-  FPrintOp.runOperation();
+  if not fDocStarted then
+    exit;
+
+  if aAborded then
+  begin
+    // TODO: check leaks ...
+  end;
+
+  try
+
+    pInfo := NSPrintInfo.SharedPrintInfo;
+    if not RawMode then
+    begin
+      FPrinterContext.Free;
+      FPrinterContext := nil;
+      CGPDFContextClose(pdfContext);
+      //path := 'salida2.pdf';
+      //url := CFURLCreateFromFileSystemRepresentation(nil, path, length(path), false);
+      //if not CFURLWriteDataAndPropertiesToResource(url, pdfData, nil, err) then
+      //  WriteLn('Error al guardar pdfdata: ', err)
+      //else
+      //  WriteLn('pdf data guardado exitosamente');
+      preview  := TCocoaPrinterView.alloc.initWithFrame(NSRect(pdfMediabox));
+      provider := CGDataProviderCreateWithCFData(pdfData);
+      preview.Doc := CGPDFDocumentCreateWithProvider(provider);
+      CGDataProviderRelease(provider);
+    end;
+    // here for
+    //     rawmode: we have a fStream with data ready to print
+    // not rawmode: we have a view that can render pdf content
+    //
+    // check if we want to print directly or through a print dialog.
+    if printDelegate<>nil then
+    begin
+
+      printDelegate.sender := self;
+      printDelegate.OnStartJob := nil;
+      printDelegate.renderView := nil;
+      if RawMode then
+        printDelegate.OnStartJob := @StartRawModePrintJob
+      else
+        printDelegate.renderView := preview;
+
+      try
+        printDelegate.RunPrintJob;
+      finally
+        printDelegate := nil;
+      end;
+
+    end else
+    begin
+
+      if RawMode then
+        StartRawModePrintJob(self)
+      else
+      begin
+        // run print operation without print dialog
+        op := NSPrintOperation.printOperationWithView_printInfo(preview, pInfo);
+        op.setShowsPrintPanel(false);
+        op.runOperation;
+      end;
+
+    end;
+
+  finally
+    fDocStarted := false;
+  end;
+
 end;
 
 procedure TCocoaPrinter.DoAbort;
@@ -416,31 +683,18 @@ end;
 //Enum all defined printers. First printer it's default
 procedure TCocoaPrinter.DoEnumPrinters(Lst: TStrings);
 var
-  I, PrinterCount: CFIndex;
-  NewPrinterNSName: NSString;
-  NewPrinterName: String;
-  FPrinterArray: NSArray;
-  //NewPrinter: NSPrinter;
+  aName: String;
+  aPrinter: PMPrinter;
 begin
-  FPrinterArray := NSPrinter.printerNames();
-  FPrinterArray.retain;
-  if FPrinterArray = nil then Exit;
-
-  for I := 0 to FPrinterArray.count - 1 do
+  Lst.Clear;
+  for aprinter in GetPMPrinterEnumerator(otPrinters) do
   begin
-    NewPrinterNSName := NSString(FPrinterArray.objectAtIndex(i));
-    NewPrinterName := NSStringToString(NewPrinterNSName);
-
-    // Felipe: This could be used for appending the printer to the TStrings, but what for?
-    // also it would be hard to release the NSPrinter later
-    //NewPrinter := NSPrinter.printerWithName(NewPrinterNSName);
-    //NewPrinter.retain;
-
-    //DebugLn(DbgS(I) + ' ' + PrinterName);
-    if NewPrinterName = FDefaultPrinter then
-      Lst.InsertObject(0, NewPrinterName, nil{TObject(NewPrinter)})
+    aName := CFStringToStr(PMPrinterGetName(aPrinter));
+    if aName=FDefaultPrinter then begin
+      Lst.Insert(0, aName);
+    end
     else
-      Lst.AddObject(NewPrinterName, nil{TObject(NewPrinter)});
+      Lst.Add(aName);
   end;
 end;
 
@@ -449,204 +703,190 @@ begin
   inherited DoResetPrintersList;
 end;
 
-// Cocoa doesn't support this =( We need to use Carbon here
+// We need to use Core Printing here, see:
 // http://lists.apple.com/archives/cocoa-dev/2005/Nov/msg01227.html
 // See Also "Using Cocoa and Core Printing Together"
 // https://developer.apple.com/library/mac/technotes/tn2248/_index.html
 procedure TCocoaPrinter.DoEnumPapers(Lst: TStrings);
 var
-  P: PMPaper;
-  FPaperArray: CFArrayRef;
-  I, C: CFIndex;
+  aPaper: PMPaper;
   CFString: CFStringRef;
-  PaperName: String;
-  CarbonCurrentPrinter: PMPrinter;
+  aPrinter: PMPrinter;
+  locName: string;
 begin
-  FPaperArray := nil;
-
-  CarbonCurrentPrinter := GetCurrentCarbonPrinter();
-
-  if PMPrinterGetPaperList(CarbonCurrentPrinter, FPaperArray) <> noErr then Exit;
-  FPaperArray := CFRetain(FPaperArray);
-
-  C := CFArrayGetCount(FPaperArray);
-  for I := 0 to C - 1 do
+  aPrinter := GetCurrentPrinter;
+  for aPaper in GetPMPrinterEnumerator(otPapers, aPrinter) do
   begin
-    P := CFArrayGetValueAtIndex(FPaperArray, I);
-    CFString:=nil;
-    if PMPaperGetName(P, CFString) <> noErr then Continue;
-    PaperName := CFStringToStr(CFString);
-    Lst.Add(PaperName);
+    CFString := nil;
+    PMPaperCreateLocalizedName(aPaper, aPrinter, CFString);
+    if CFString<>nil then
+    begin
+      locName := CFStringToStr(CFString);
+      CFRelease(CFString);
+      CFString := nil;
+      Lst.Add(locName);
+    end;
   end;
-
-  if FPaperArray<>nil then
-    CFRelease(FPaperArray);
 end;
 
-function TCocoaPrinter.DoGetPaperName: string;
+function TCocoaPrinter.DoGetPaperName(): string;
+var
+  pInfo: NSPrintInfo;
 begin
-  Result := DoDoGetPaperName(FPrintInfo.PMPageFormat());
+  pInfo := NSPrintInfo.sharedPrintInfo;
+  result := NSStringToString(pInfo.localizedPaperName);
 end;
 
 function TCocoaPrinter.DoGetDefaultPaperName: string;
 var
-  FPageFormat: PMPageFormat;
+  pageFormat: PMPageFormat = nil;
+  pInfo: NSPrintInfo;
+  aPaper: PMPaper = nil;
+  aPapername: CFStringRef = nil;
 begin
   Result := '';
-  
-  FPageFormat := CreatePageFormat('');
-  Result := DoDoGetPaperName(FPageFormat);
+
+  pInfo := NSPrintInfo.sharedPrintInfo;
+
+  if PMCreatePageFormat(pageFormat) <> noErr then exit;
+  try
+    if PMSessionDefaultPageFormat(pInfo.PMPrintSession, pageFormat) <> noErr then exit;
+    if PMGetPageFormatPaper(pageFormat, aPaper) <> noErr then exit;
+    if PMPaperCreateLocalizedName(aPaper, GetCurrentPrinter, aPapername) <> noErr then exit;
+    result := CFStringToString(aPapername);
+  finally
+    PMRelease(pageFormat);
+  end;
+
 end;
 
 procedure TCocoaPrinter.DoSetPaperName(aName: string);
 var
-  FOrientation: TPrinterOrientation;
+  anOrientation: TPrinterOrientation;
+  aPrinter: PMPrinter;
+  aPaper: PMPaper;
+  orgFormat: PMPageFormat;
+  pageFormat: PMPageFormat = nil;
+  aPapername: CFStringRef;
+  pInfo: NSPrintInfo;
+  curName: String;
 begin
-  FOrientation := DoGetOrientation();
-  {if FPageFormat <> nil then PMRelease(PMObject(FPageFormat));
-  
-  FPageFormat := CreatePageFormat(AName);
-  DoSetOrientation(FOrientation);}
-  
-  ValidatePageFormat;
+  pInfo := NSPrintInfo.sharedPrintInfo;
+  anOrientation := DoGetOrientation();
+  aPrinter := GetCurrentPrinter;
+  for aPaper in Self.GetPMPrinterEnumerator(otPapers, aPrinter) do
+  begin
+    aPapername := nil;
+    PMPaperCreateLocalizedName(aPaper, aPrinter, aPaperName);
+    if aPapername<>nil then
+    begin
+      curName := CFStringToString(aPapername);
+      CFRelease(aPapername);
+      if curName=aName then
+      begin
+        PMCreatePageFormatWithPMPaper(pageFormat, aPaper);
+        orgFormat := pInfo.PMPageFormat;
+        PMCopyPageFormat(pageFormat, orgFormat);
+        pInfo.updateFromPMPageFormat;
+        PMRelease(pageFormat);
+        DoSetOrientation(anOrientation);
+        break;
+      end;
+    end;
+  end;
 end;
 
 function TCocoaPrinter.DoGetPaperRect(aName: string; var aPaperRc: TPaperRect
   ): Integer;
-{var
-  T: PMPageFormat;
-  PaperRect, PageRect: PMRect;
-  S: Double;
-  O: PMOrientation;
-  Res: PMResolution;
-const
-  SName = 'DoGetPaperRect';    }
+var
+  i: Integer;
 begin
-  {Result := -1;
-  
-  T := CreatePageFormat(AName);
-  try
-    // copy scale
-    S:=0.0;
-    OSError(PMGetScale(PageFormat, S), Self, SName, 'PMGetScale');
-    OSError(PMSetScale(T, S), Self, SName, 'PMSetScale');
-    
-    // copy orientation
-    O:=CleanPMOrientation;
-    OSError(PMGetOrientation(PageFormat, O), Self, SName, 'PMGetOrientation');
-    OSError(PMSetOrientation(T, O, False), Self, SName, 'PMSetOrientation');
-
-    // copy resolution
-    Res := GetOutputResolution;
-    OSError(PMSetResolution(T, Res), self, SName, 'PMSetResolution');
-    
-    // update
-    OSError(PMSessionValidatePageFormat(PrintSession, T, nil),
-      Self, SName, 'PMSessionValidatePageFormat');
-
-    PaperRect:=CleanPMRect;
-    OSError(PMGetAdjustedPaperRect(T, PaperRect), Self, SName, 'PMGetAdjustedPaperRect');
-    PageRect:=CleanPMRect;
-    OSError(PMGetAdjustedPageRect(T, PageRect),  Self, SName, 'PMGetAdjustedPageRect');
-  finally
-    PMRelease(PMObject(T));
+  Result := -1;
+  for i:=0 to Length(fPapersList)-1 do
+  begin
+    if aName=fPapersList[i].PaperName then
+    begin
+      aPaperRc := fPapersList[i].PaperRect;
+      result := i;
+      break;
+    end;
   end;
-  
-  ValidatePageFormat;
-  
-  APaperRc.PhysicalRect.Left := 0;
-  APaperRc.PhysicalRect.Top := 0;
-  APaperRc.PhysicalRect.Right := Round(PaperRect.right - PaperRect.left);
-  APaperRc.PhysicalRect.Bottom := Round(PaperRect.bottom - PaperRect.top);
-  
-  APaperRc.WorkRect.Left := Round(-PaperRect.left);
-  APaperRc.WorkRect.Top := Round(-PaperRect.top);
-  APaperRc.WorkRect.Right := Round(PageRect.right - PageRect.left - PaperRect.left);
-  APaperRc.WorkRect.Bottom := Round(PageRect.bottom - PageRect.top - PaperRect.top);
-  
-  Result := 1;  }
 end;
 
 function TCocoaPrinter.DoSetPrinter(aName: string): Integer;
-{var
-  S: TStringList;
-  P: PMPrinter; }
+var
+  aPrinter: PMPrinter;
+  curName: String;
+  pInfo: NSPrintInfo;
 begin
-  {S := TStringList.Create;
-  BeginEnumPrinters(S);
-  try
-    Result := S.IndexOf(AName);
-    if Result >= 0 then
+
+  result := -1;
+  for aPrinter in Self.GetPMPrinterEnumerator(otPrinters) do
+  begin
+    curName := CFStringToStr(PMPrinterGetName(aPrinter));
+    if curName=aName then
     begin
-      //DebugLn('DoSetPrinter ' + DbgS(Result));
-      //DebugLn('TCocoaPrinter.DoSetPrinter ' + AName + ' ' + DbgS(PrintSession) + ' ' + DbgS(Printers.Objects[Result]));
-      P := PMPrinter(CFArrayGetValueAtIndex(FPrinterArray, Integer(S.Objects[Result])));
-      PMRetain(PMObject(P));
-      if OSError(PMSessionSetCurrentPMPrinter(PrintSession, P),
-        Self, 'DoSetPrinter', 'PMSessionSetCurrentPMPrinter') then
-          raise EPrinter.CreateFmt('The system is unable to select printer "%s"!', [AName]);
+      result := Printers.IndexOf(aName);
+      //
+      pInfo := NSPrintInfo.sharedPrintInfo;
+      PMSessionSetCurrentPMPrinter( pInfo.PMPrintSession, aPrinter);
+
+      ResetPapersList(aPrinter);
+      break;
     end;
-  finally
-    EndEnumPrinters;
-    S.Free;
-  end;   }
+  end;
+
 end;
 
 function TCocoaPrinter.DoGetCopies: Integer;
 var
   NumCopies: UInt32;
+  pInfo: NSPrintInfo;
 begin
-  Result := inherited DoGetCopies;
+  Result := 1;
   NumCopies := 0;
-  if PMGetCopies(GetPrintSettings(), NumCopies) <> noErr then Exit;
+  pInfo := NSPrintInfo.sharedPrintInfo;
+  if PMGetCopies(pInfo.PMPrintSettings, NumCopies) <> noErr then Exit;
   Result := NumCopies;
 end;
 
 procedure TCocoaPrinter.DoSetCopies(aValue: Integer);
+var
+  pInfo: NSPrintInfo;
 begin
-  inherited DoSetCopies(AValue);
-  if PMSetCopies(GetPrintSettings(), AValue, False) <> noErr then Exit;
-  FPrintInfo.updateFromPMPrintSettings();
-  
-  ValidatePrintSettings;
+  pInfo := NSPrintInfo.sharedPrintInfo;
+  if PMSetCopies(pInfo.PMPrintSettings, AValue, False) <> noErr then
+    Exit;
+  pInfo.updateFromPMPrintSettings();
 end;
 
 function TCocoaPrinter.DoGetOrientation: TPrinterOrientation;
 var
-  FOrientation: PMOrientation;
-  FPageFormat: PMPageFormat;
+  info: NSPrintInfo;
 begin
-  Result := inherited DoGetOrientation;
-  FOrientation := CleanPMOrientation;
-  FPageFormat := FPrintInfo.PMPageFormat();
-  if PMGetOrientation(FPageFormat, FOrientation) <> noErr then Exit;
-  
-  case FOrientation of
-    kPMPortrait: Result := poPortrait;
-    kPMLandscape: Result := poLandscape;
-    kPMReversePortrait: Result := poReversePortrait;
-    kPMReverseLandscape: Result := poReverseLandscape;
-  end;
+  info := NSPrintInfo.sharedPrintInfo;
+  if info.orientation=NSPortraitOrientation then
+    result := poPortrait
+  else
+    result := poLandscape;
 end;
 
 procedure TCocoaPrinter.DoSetOrientation(aValue: TPrinterOrientation);
 var
-  FOrientation: PMOrientation;
-  FPageFormat: PMPageFormat;
+  info: NSPrintInfo;
+  oldValue: NSPrintingOrientation;
 begin
-  inherited DoSetOrientation(aValue);
 
-  case AValue of
-    poPortrait: FOrientation := kPMPortrait;
-    poLandscape: FOrientation := kPMLandscape;
-    poReversePortrait: FOrientation := kPMReversePortrait;
-    poReverseLandscape: FOrientation := kPMReverseLandscape;
+  info := NSPrintInfo.sharedPrintInfo;
+  oldValue := info.orientation;
+  case aValue of
+    poPortrait, poReversePortrait:
+      info.setOrientation(NSPortraitOrientation);
+    else
+      info.setOrientation(NSLandscapeOrientation);
   end;
-  
-  FPageFormat := FPrintInfo.PMPageFormat();
-  PMSetOrientation(FPageFormat, FOrientation, kPMUnlocked);
-  FPrintInfo.updateFromPMPageFormat();
-  ValidatePageFormat;
+  if oldValue<>info.orientation then
+    ResetPapersList(GetCurrentPrinter);
 end;
 
 function TCocoaPrinter.GetPrinterType: TPrinterType;
@@ -655,7 +895,7 @@ var
 begin
   Result := ptLocal;
   IsRemote := false;
-  if PMPrinterIsRemote(GetCurrentCarbonPrinter(), IsRemote) <> noErr then Exit;
+  if PMPrinterIsRemote(GetCurrentPrinter(), IsRemote) <> noErr then Exit;
   if IsRemote then Result := ptNetwork;
 end;
 
@@ -667,18 +907,13 @@ begin
   Result := psNoDefine;
 
   State:=0;
-  if PMPrinterGetState(GetCurrentCarbonPrinter(), State) <> noErr then Exit;
+  if PMPrinterGetState(GetCurrentPrinter(), State) <> noErr then Exit;
   
   case State of
     kPMPrinterIdle: Result := psReady;
     kPMPrinterProcessing: Result := psPrinting;
     kPMPrinterStopped: Result := psStopped;
   end;
-end;
-
-function TCocoaPrinter.DoGetDefaultCanvasClass: TPrinterCanvasRef;
-begin
-  Result := TCocoaPrinterCanvas;
 end;
 
 function TCocoaPrinter.GetCanPrint: Boolean;

@@ -30,7 +30,7 @@
     <License Value="LGPL
 "/>
     <Version Minor="5"/>
-    <Files Count="40">
+    <Files Count="41">
       <Item1>
         <Filename Value="printersdlgs.pp"/>
         <HasRegisterProc Value="True"/>
@@ -205,6 +205,11 @@
         <Filename Value="printer4lazstrconst.pas"/>
         <UnitName Value="Printer4LazStrConst"/>
       </Item40>
+      <Item41>
+        <Filename Value="cocoa\cocoaprndelegate.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="cocoaprndelegate"/>
+      </Item41>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
@@ -220,7 +225,6 @@
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>
-      <CommandAfter Value="tar czf $MakeFile($(ProjPublishDir)).tgz $(ProjPublishDir)"/>
     </PublishOptions>
     <CustomOptions Items="ExternHelp" Version="2">
       <_ExternHelp Items="Count"/>
