@@ -77,6 +77,7 @@ uses
     EditorMacroScript,
     RegisterVirtualTreeView,
     OnlinePackageManager,
+	LazDebuggerLldb, LazDebuggerFpLldb,
   {$ENDIF}
   MainBase;
 
