@@ -1,0 +1,64 @@
+#   File generated automatically by Lazarus Package Manager
+#
+#   Makefile.fpc for fpdebug 0.0
+#
+#   This file was generated on 09/11/2018
+
+[package]
+name=fpdebug
+version=0.0
+
+[compiler]
+unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)
+unitdir=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+options= -MObjFPC -Scghi -O1 -g -gl -l -venibq -vw-h- -vm3057 -gh -g -gw -godwarfsets     -dCR   -Criot   -gttt  -Sa  -dXe  -Se10  -ve -vw -vn  -vi   -O-  -CX  -WC -dWITH_REFCOUNT_DEBUG -dWITH_REFCOUNT_LEAK_DEBUG -dFPDBG_DWARF_WARNINGS -dFPDBG_DWARF_ERRORS -dFPGDBDBG_ERROR -dDBG_WARNINGS -dDBG_CMD_ECHO -dDBGMI_QUEUE_DEBUG -dDBG_WITH_DEBUGGER_DEBUG -dDBG_WITH_GDB_WATCHES -dSynCheckPaintLock -dSynClipboardExceptions -dAssertSynMemIndex -dSynAssert -dSynAssertFold -dWithSynMultiCaret -dWithTSynEditStringMemoryNEW -dEnableNestedComponentsWithoutLFM -dEnableCodyExperiments -dEnableComponentPaletteOptions $(DBG_OPTIONS)
+
+[target]
+units=fpdebug.pas
+
+[clean]
+files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) \
+      $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+
+[prerules]
+# LCL Platform
+ifndef LCL_PLATFORM
+ifeq ($(OS_TARGET),win32)
+LCL_PLATFORM=win32
+else
+ifeq ($(OS_TARGET),win64)
+LCL_PLATFORM=win32
+else
+ifeq ($(OS_TARGET),darwin)
+LCL_PLATFORM=carbon
+else
+LCL_PLATFORM=gtk2
+endif
+endif
+endif
+endif
+export LCL_PLATFORM
+
+DBG_OPTIONS=
+ifeq ($(OS_TARGET),darwin)
+DBG_OPTIONS=-gw
+endif
+
+[rules]
+.PHONY: cleartarget compiled all
+
+cleartarget:
+        -$(DEL) $(COMPILER_UNITTARGETDIR)/fpdebug$(PPUEXT)
+
+compiled:
+        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/fpdebug.compiled
+
+all: cleartarget $(COMPILER_UNITTARGETDIR) fpdebug$(PPUEXT) compiled
+
+distclean: clean
+        ${DELTREE} lib/*
