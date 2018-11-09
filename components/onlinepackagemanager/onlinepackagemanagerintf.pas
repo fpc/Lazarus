@@ -26,6 +26,8 @@ unit onlinepackagemanagerintf;
 
 interface
 
+{$R opkman.res}
+
 uses
   Classes,
   // LCL
@@ -69,7 +71,8 @@ begin
     if IDECommand <> nil then
       RegisterIDEButtonCommand(IDECommand);
   end;
-  RegisterIDEMenuCommand(itmPkgGraphSection, 'Online Package Manager', rsLazarusPackageManager, nil, @IDEMenuSectionClicked, IDECommand);
+  RegisterIDEMenuCommand(itmPkgGraphSection, 'Online Package Manager',
+    rsLazarusPackageManager, nil, @IDEMenuSectionClicked, IDECommand, 'pkg_opm');
 end;
 
 initialization

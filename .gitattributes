@@ -3783,6 +3783,11 @@ components/onlinepackagemanager/images/Tree_Buttons/package_del_200.png -text sv
 components/onlinepackagemanager/images/Tree_Buttons/package_minus.png -text svneol=unset#image/png
 components/onlinepackagemanager/images/Tree_Buttons/package_minus_150.png -text svneol=unset#image/png
 components/onlinepackagemanager/images/Tree_Buttons/package_minus_200.png -text svneol=unset#image/png
+components/onlinepackagemanager/images/build_res.bat svneol=native#text/plain
+components/onlinepackagemanager/images/filelist.txt svneol=native#text/plain
+components/onlinepackagemanager/images/ide/pkg_opm.png -text svneol=unset#image/png
+components/onlinepackagemanager/images/ide/pkg_opm_150.png -text svneol=unset#image/png
+components/onlinepackagemanager/images/ide/pkg_opm_200.png -text svneol=unset#image/png
 components/onlinepackagemanager/images/readme.txt svneol=native#text/plain
 components/onlinepackagemanager/languages/opkman_const.de.po svneol=native#text/plain
 components/onlinepackagemanager/languages/opkman_const.es.po svneol=native#text/plain
@@ -3814,6 +3819,7 @@ components/onlinepackagemanager/onlinepackagemanager.lpk svneol=native#text/plai
 components/onlinepackagemanager/onlinepackagemanager.lps svneol=native#text/plain
 components/onlinepackagemanager/onlinepackagemanager.pas svneol=native#text/pascal
 components/onlinepackagemanager/onlinepackagemanagerintf.pas svneol=native#text/pascal
+components/onlinepackagemanager/opkman.res -text
 components/onlinepackagemanager/opkman_addrepositorypackagefrm.lfm svneol=native#text/plain
 components/onlinepackagemanager/opkman_addrepositorypackagefrm.pas svneol=native#text/pascal
 components/onlinepackagemanager/opkman_categoriesfrm.lfm svneol=native#text/plain
