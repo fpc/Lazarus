@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <Makefile Value="2"/>
-  <Params Value=" -Fu.;../../packager/units/$(CPU_TARGET)-$(OS_TARGET);../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET);../../lcl/units/$(CPU_TARGET)-$(OS_TARGET);../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)  -MObjFPC -Scghi -O1 -g -gl -l -venibq -vw-h- -vm3057 -gh -g -gw -godwarfsets     -dCR   -Criot   -gttt  -Sa  -dXe  -Se10  -ve -vw -vn  -vi   -O-  -CX  -WC -dWITH_REFCOUNT_DEBUG -dWITH_REFCOUNT_LEAK_DEBUG -dFPDBG_DWARF_WARNINGS -dFPDBG_DWARF_ERRORS -dFPGDBDBG_ERROR -dDBG_WARNINGS -dDBG_CMD_ECHO -dDBGMI_QUEUE_DEBUG -dDBG_WITH_DEBUGGER_DEBUG -dDBG_WITH_GDB_WATCHES -dSynCheckPaintLock -dSynClipboardExceptions -dAssertSynMemIndex -dSynAssert -dSynAssertFold -dWithSynMultiCaret -dWithTSynEditStringMemoryNEW -dEnableNestedComponentsWithoutLFM -dEnableCodyExperiments -dEnableComponentPaletteOptions fpdebug.pas"/>
+  <Params Value=" -Fu.;../../packager/units/$(CPU_TARGET)-$(OS_TARGET);../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET);../../lcl/units/$(CPU_TARGET)-$(OS_TARGET);../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)  -MObjFPC -Scghi -O1 -g -gl -l -venibq -vw-h- -vm3057 fpdebug.pas"/>
 </CONFIG>
