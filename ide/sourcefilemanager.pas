@@ -4659,10 +4659,12 @@ begin
             Format(lisThisLooksLikeAPascalFileItIsRecommendedToUseLowerC,
                    [LineEnding, LineEnding]),
             mtWarning, [mrYes, lisRenameToLowercase,
-                        mrNoToAll, lisKeepName,
+                        mrNo, lisKeepName,
                         mrAbort, lisAbort], not CanAbort);
-        if Result=mrYes then
-          NewFileName:=ExtractFilePath(NewFilename)+lowercase(AText);
+        case Result of
+        mrYes: NewFileName:=ExtractFilePath(NewFilename)+lowercase(AText);
+        mrAbort, mrCancel: exit;
+        end;
         Result:=mrOk;
       end;
     end else begin
