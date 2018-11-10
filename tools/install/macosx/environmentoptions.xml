@@ -31,7 +31,7 @@
         <Item3 Value="$ENV(TMPDIR)"/>
       </History>
     </TestBuildDirectory>
-    <Debugger Class="TGDBMIDebugger"/>
-    <DebuggerFilename Value="/usr/bin/gdb"/>
+    <Debugger Class="TFpLldbDebugger"/>
+    <DebuggerFilename Value="/usr/bin/lldb"/>
   </EnvironmentOptions>
 </CONFIG>
