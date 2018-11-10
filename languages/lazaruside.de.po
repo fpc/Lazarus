@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-11-06 11:10+0100\n"
+"PO-Revision-Date: 2018-11-09 15:41+0100\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -17288,7 +17288,7 @@ msgstr "Sonderzeichen anzeigen"
 
 #: lazarusidestrconsts.lisshowstatusbarinobjectinspector
 msgid "Show statusbar"
-msgstr "Statusbalken anzeigen"
+msgstr "Statusleiste anzeigen"
 
 #: lazarusidestrconsts.lisshowunits
 msgid "Show units"
@@ -21569,4 +21569,3 @@ msgstr "Schreibgeschützt"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
-
