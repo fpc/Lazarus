@@ -2265,7 +2265,8 @@ begin
       FI.Colors[X-SourceRect.Left, Y-SourceRect.Top] := C;
     end;
 
-    if SourceRect.Right-SourceRect.Left=TargetWidth then
+    if (SourceRect.Right-SourceRect.Left=TargetWidth) and
+       (SourceRect.Bottom-SourceRect.Top=TargetHeight) then
       ScFI := FI
     else
     begin
