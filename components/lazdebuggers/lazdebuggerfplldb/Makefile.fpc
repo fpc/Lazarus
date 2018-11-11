@@ -11,7 +11,7 @@ version=0.0
 [compiler]
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)
 unitdir=../../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../cmdlinedebuggerbase/lib/$(CPU_TARGET)-$(OS_TARGET) ../../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../../fpdebug/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggerlldb/lib/$(CPU_TARGET)-$(OS_TARGET) .
-options= -MObjFPC -Scghi -O1 -g -gl -l -vewnhibq -gh -g -gw -godwarfsets     -dCR   -Criot   -gttt  -Sa  -dXe  -Se10  -ve -vw -vn  -vi   -O-  -CX  -WC -dWITH_REFCOUNT_DEBUG -dWITH_REFCOUNT_LEAK_DEBUG -dFPDBG_DWARF_WARNINGS -dFPDBG_DWARF_ERRORS -dFPGDBDBG_ERROR -dDBG_WARNINGS -dDBG_CMD_ECHO -dDBGMI_QUEUE_DEBUG -dDBG_WITH_DEBUGGER_DEBUG -dDBG_WITH_GDB_WATCHES -dSynCheckPaintLock -dSynClipboardExceptions -dAssertSynMemIndex -dSynAssert -dSynAssertFold -dWithSynMultiCaret -dWithTSynEditStringMemoryNEW -dEnableNestedComponentsWithoutLFM -dEnableCodyExperiments -dEnableComponentPaletteOptions $(DBG_OPTIONS)
+options= -MObjFPC -Scghi -O1 -g -gl -l -vewnhibq $(DBG_OPTIONS)
 
 [target]
 units=lazdebuggerfplldb.pas
