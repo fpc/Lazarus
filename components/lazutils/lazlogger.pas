@@ -259,6 +259,12 @@ procedure TLazLoggerFileHandleMainThread.WriteToFile(const s: string);
 var
   Data: PWriteListEntry;
 begin
+  if (not System.IsMultiThread) or (GetCurrentThreadID = MainThreadID) then begin
+    if FFirst <> nil then MainThreadWrite; // Dirty read of FFirst is ok
+    inherited WriteToFile(s);
+    exit;
+  end;
+
   New(Data);
   Data^.Data := s;
   Data^.Ln := False;
@@ -280,6 +286,12 @@ procedure TLazLoggerFileHandleMainThread.WriteLnToFile(const s: string);
 var
   Data: PWriteListEntry;
 begin
+  if (not System.IsMultiThread) or (GetCurrentThreadID = MainThreadID) then begin
+    if FFirst <> nil then MainThreadWrite; // Dirty read of FFirst is ok
+    inherited WriteLnToFile(s);
+    exit;
+  end;
+
   New(Data);
   Data^.Data := s;
   Data^.Ln := True;
