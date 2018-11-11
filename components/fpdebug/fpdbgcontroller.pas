@@ -624,9 +624,24 @@ begin
 end;
 
 destructor TDbgController.Destroy;
+var
+  it: TMapIterator;
+  p: TDbgProcess;
 begin
-  FMainProcess.Free;
+  if Assigned(FMainProcess) then begin
+    FProcessMap.Delete(FMainProcess.ProcessID);
+    FMainProcess.Free;
+  end;
+
+  it := TMapIterator.Create(FProcessMap);
+  while not it.EOM do begin
+    it.GetData(p);
+    p.Free;
+    it.Next;
+  end;
+  it.Free;
   FProcessMap.Free;
+
   FParams.Free;
   FEnvironment.Free;
   inherited Destroy;
@@ -753,6 +768,13 @@ begin
     if not GetProcess(AProcessIdentifier, FCurrentProcess) then
       begin
       // A second/third etc process has been started.
+      (* A process was created/forked
+         However the debugger currently does not attach to it on all platforms
+           so maybe other processes should be ignored?
+           It seems on windows/linux it does NOT attach.
+           On Mac, it may attempt to attach.
+         If the process is not debugged, it may not receive an deExitProcess
+      *)
       FCurrentProcess := OSDbgClasses.DbgProcessClass.Create('', AProcessIdentifier, AThreadIdentifier, OnLog);
       FProcessMap.Add(AProcessIdentifier, FCurrentProcess);
       Continue;
