@@ -76,6 +76,7 @@ uses
     TodoListLaz, DateTimeCtrls, SQLDBLaz, DBFLaz, pascalscript,
     EditorMacroScript, RegisterVirtualTreeView, OnlinePackageManager,
     LazDebuggerFpLldb,
+	LazDebuggerLldb, LazDebuggerFpLldb,
   {$ENDIF}
   MainBase;
 
