@@ -87,6 +87,11 @@ INSTALLOPTS="FPC=${NEWPP} FPCMAKE=${FPCMAKE} DATA2INC=${DATA2INC} \
                INSTALL_BASEDIR=%{buildroot}%{_libdir}/%{name}/${FPCVERSION} \
                INSTALL_BINDIR=%{buildroot}%{_bindir}"
 make install ${INSTALLOPTS}
+%ifarch x86_64
+    if [ -f %{buildroot}%{_libdir}/../lib/libpas2jslib.so ]; then
+        mv %{buildroot}%{_libdir}/../lib/libpas2jslib.so %{buildroot}%{_libdir}/libpas2jslib.so
+    fi
+%endif
 
 # create link
 ln -sf %{_libdir}/%{name}/${FPCVERSION}/%{ppcname} %{buildroot}%{_bindir}/%{ppcname}
@@ -112,6 +117,9 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %{_bindir}/*
 %{_libdir}/%{name}
+%ifarch x86_64
+%{_prefix}/lib64/lib*.so
+%endif
 
 %changelog
 * Sat Feb 25 2017 Mattias Gaertner <mattias@freepascal.org> 3.0.2
