@@ -1485,7 +1485,7 @@ begin
       case AMessage.SyncLogLevel of
         dllDebug: DebugLn(AMessage.SyncLogMessage);
         dllInfo:  ShowMessage(AMessage.SyncLogMessage);
-        dllError: raise exception.Create(AMessage.SyncLogMessage);
+        dllError: MessageDlg(AMessage.SyncLogMessage, mtError, [mbOK], 0);
       end; {case}
       AMessage.Free;
       end;
@@ -2006,6 +2006,7 @@ destructor TFpDebugDebugger.Destroy;
 begin
   if assigned(FFpDebugThread) then
     FreeDebugThread;
+  DoLog();
   FreeAndNil(FDbgController);
   FreeAndNil(FPrettyPrinter);
   FreeAndNil(FWatchEvalList);
