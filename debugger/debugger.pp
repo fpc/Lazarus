@@ -4613,7 +4613,7 @@ function TIDEBreakPoint.DebugText: string;
 var
   s: String;
 begin
-  WriteStr(s, FKind);
+  //WriteStr(s, FKind);
   Result := dbgs(self) + ' ' + s + ' at ' + Source +':' + IntToStr(Line);
 end;
 {$ENDIF}
