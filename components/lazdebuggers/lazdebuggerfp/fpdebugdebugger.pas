@@ -96,8 +96,6 @@ type
     FMemReader: TDbgMemReader;
     FMemManager: TFpDbgMemManager;
     FConsoleOutputThread: TThread;
-    FReleaseLock: Integer;
-    FReleaseNeeded: Boolean;
     {$ifdef linux}
     FCacheLine: cardinal;
     FCacheFileName: string;
@@ -120,8 +118,6 @@ type
     procedure DoWatchFreed(Sender: TObject);
     procedure ProcessASyncWatches({%H-}Data: PtrInt);
     procedure DoLog();
-    procedure IncReleaseLock;
-    procedure DecReleaseLock;
   protected
     procedure ScheduleWatchValueEval(AWatchValue: TWatchValue);
     function EvaluateExpression(AWatchValue: TWatchValue;
@@ -439,7 +435,8 @@ begin
   begin
     s := FFpDebugDebugger.FDbgController.CurrentProcess.GetConsoleOutput;
     RTLeventSetEvent(FHasConsoleOutputQueued);
-    FFpDebugDebugger.OnConsoleOutput(self, s);
+    if Assigned(FFpDebugDebugger.OnConsoleOutput) then
+      FFpDebugDebugger.OnConsoleOutput(self, s);
   end;
 end;
 
@@ -1231,13 +1228,13 @@ begin
   {$PUSH}{$R-}
   DoDbgEvent(ecProcess, etProcessExit, Format('Process exited with exit-code %d',[AExitCode]));
   {$POP}
-  IncReleaseLock;
+  LockRelease;
   try
     SetState(dsStop);
     FreeAndNil(FRaiseExceptionBreakpoint);
     FreeDebugThread;
   finally
-    DecReleaseLock;
+    UnlockRelease;
   end;
 end;
 
@@ -1492,18 +1489,6 @@ begin
   finally
     AnObjList.Free;
   end;
-end;
-
-procedure TFpDebugDebugger.IncReleaseLock;
-begin
-  inc(FReleaseLock);
-end;
-
-procedure TFpDebugDebugger.DecReleaseLock;
-begin
-  dec(FReleaseLock);
-  if FReleaseNeeded and (FReleaseLock = 0) then
-    DoRelease;
 end;
 
 function TFpDebugDebugger.GetClassInstanceName(AnAddr: TDBGPtr): string;
@@ -1826,7 +1811,7 @@ procedure TFpDebugDebugger.DebugLoopFinished;
 var
   Cont: boolean;
 begin
-  IncReleaseLock;
+  LockRelease;
   try
     {$ifdef DBG_FPDEBUG_VERBOSE}
     DebugLn('DebugLoopFinished');
@@ -1842,7 +1827,7 @@ begin
       StartDebugLoop;
       end
   finally
-    DecReleaseLock;
+    UnlockRelease;
   end;
 end;
 
@@ -1853,16 +1838,21 @@ end;
 
 procedure TFpDebugDebugger.DoRelease;
 begin
-  if FReleaseLock > 0 then begin
-    FReleaseNeeded := True;
-    exit;
+  DebugLn(['++++ dorelase  ', Dbgs(ptrint(FDbgController)), dbgs(state)]);
+//  SetState(dsDestroying);
+  if (State <> dsDestroying) and //assigned(FFpDebugThread) and //???
+     (FDbgController <> nil) and (FDbgController.MainProcess <> nil)
+  then begin
+    FDbgController.Stop;
+    FDbgControllerProcessExitEvent(0); // Force exit;
   end;
+
   inherited DoRelease;
 end;
 
 procedure TFpDebugDebugger.DoState(const OldState: TDBGState);
 begin
-  IncReleaseLock;
+  LockRelease;
   try
     inherited DoState(OldState);
     if not (State in [dsPause, dsInternalPause]) then
@@ -1872,7 +1862,7 @@ begin
       FWatchAsyncQueued := False;
       end;
   finally
-    DecReleaseLock;
+    UnlockRelease;
   end;
 end;
 
