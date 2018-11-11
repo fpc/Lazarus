@@ -4,6 +4,7 @@
     <PathDelim Value="\"/>
     <Name Value="LazDebuggerLldb"/>
     <Type Value="RunAndDesignTime"/>
+    <Author Value="Martin Friebe"/>
     <CompilerOptions>
       <Version Value="11"/>
       <PathDelim Value="\"/>
@@ -14,6 +15,26 @@
         <CustomOptions Value="$(IDEBuildOptions)"/>
       </Other>
     </CompilerOptions>
+    <Description Value="Debugger-Backend for the Lazarus IDE. (requires the external LLDB debugger) (Alpha)
+
+This package allows the IDE to provide debugging by using lldb as external back-end. It controls all communication between the IDE and LLDB
+"/>
+    <License Value="GPL Version 2 or 3 or later at the users choice
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 2, 3 or any later version
+    of the License (at your option).
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see &lt;https://www.gnu.org/licenses/>.
+
+"/>
     <Files Count="3">
       <Item1>
         <Filename Value="lldbdebugger.pas"/>
