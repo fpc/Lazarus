@@ -12010,9 +12010,17 @@ msgctxt "lazarusidestrconsts.lislocals"
 msgid "Local Variables"
 msgstr "Locales"
 
+#: lazarusidestrconsts.lislocalsdlgcopyall
+msgid "Copy &all"
+msgstr ""
+
 #: lazarusidestrconsts.lislocalsdlgcopyname
 msgid "&Copy Name"
 msgstr "&Copiar Nombre"
+
+#: lazarusidestrconsts.lislocalsdlgcopynamevalue
+msgid "Co&py Name and Value"
+msgstr ""
 
 #: lazarusidestrconsts.lislocalsdlgcopyrawvalue
 msgid "Copy &RAW Value"

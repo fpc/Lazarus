@@ -11794,9 +11794,17 @@ msgctxt "lazarusidestrconsts.lislocals"
 msgid "Local Variables"
 msgstr "Lokale Variablen"
 
+#: lazarusidestrconsts.lislocalsdlgcopyall
+msgid "Copy &all"
+msgstr ""
+
 #: lazarusidestrconsts.lislocalsdlgcopyname
 msgid "&Copy Name"
 msgstr "Namen kopieren"
+
+#: lazarusidestrconsts.lislocalsdlgcopynamevalue
+msgid "Co&py Name and Value"
+msgstr ""
 
 #: lazarusidestrconsts.lislocalsdlgcopyrawvalue
 msgid "Copy &RAW Value"
@@ -21569,3 +21577,4 @@ msgstr "Schreibgeschützt"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
+

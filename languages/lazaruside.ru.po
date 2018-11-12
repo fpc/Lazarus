@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-10-30 01:47+0300\n"
+"PO-Revision-Date: 2018-11-13 01:40+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -11729,9 +11729,17 @@ msgctxt "lazarusidestrconsts.lislocals"
 msgid "Local Variables"
 msgstr "Локальные переменные"
 
+#: lazarusidestrconsts.lislocalsdlgcopyall
+msgid "Copy &all"
+msgstr "Копировать &всё"
+
 #: lazarusidestrconsts.lislocalsdlgcopyname
 msgid "&Copy Name"
 msgstr "Копировать &имя"
+
+#: lazarusidestrconsts.lislocalsdlgcopynamevalue
+msgid "Co&py Name and Value"
+msgstr "Копировать имя и зна&чение"
 
 #: lazarusidestrconsts.lislocalsdlgcopyrawvalue
 msgid "Copy &RAW Value"

@@ -11818,9 +11818,17 @@ msgctxt "lazarusidestrconsts.lislocals"
 msgid "Local Variables"
 msgstr "ローカル"
 
+#: lazarusidestrconsts.lislocalsdlgcopyall
+msgid "Copy &all"
+msgstr ""
+
 #: lazarusidestrconsts.lislocalsdlgcopyname
 msgid "&Copy Name"
 msgstr "名前をコピー(&C)"
+
+#: lazarusidestrconsts.lislocalsdlgcopynamevalue
+msgid "Co&py Name and Value"
+msgstr ""
 
 #: lazarusidestrconsts.lislocalsdlgcopyrawvalue
 msgid "Copy &RAW Value"
