@@ -48,6 +48,8 @@ type
   TRegistersDlg = class(TDebuggerDlg)
     actCopyName: TAction;
     actCopyValue: TAction;
+    actCopyNameValue: TAction;
+    actCopyAll: TAction;
     actPower: TAction;
     ActionList1: TActionList;
     ImageList1: TImageList;
@@ -58,6 +60,8 @@ type
     DispOct: TMenuItem;
     DispDec: TMenuItem;
     DispRaw: TMenuItem;
+    popCopyAll: TMenuItem;
+    popCopyNameValue: TMenuItem;
     PopDispDefault: TMenuItem;
     PopDispHex: TMenuItem;
     PopDispBin: TMenuItem;
@@ -74,7 +78,9 @@ type
     ToolButton1: TToolButton;
     ToolButtonDispType: TToolButton;
     ToolButtonPower: TToolButton;
+    procedure actCopyAllExecute(Sender: TObject);
     procedure actCopyNameExecute(Sender: TObject);
+    procedure actCopyNameValueExecute(Sender: TObject);
     procedure actCopyValueExecute(Sender: TObject);
     procedure actPowerExecute(Sender: TObject);
     procedure DispDefaultClick(Sender: TObject);
@@ -153,6 +159,8 @@ begin
 
   actCopyName.Caption := lisLocalsDlgCopyName;
   actCopyValue.Caption := lisLocalsDlgCopyValue;
+  actCopyNameValue.Caption := lisLocalsDlgCopyNameValue;
+  actCopyAll.Caption := lisLocalsDlgCopyAll;
 
   ToolButtonDispType.Hint := regdlgDisplayTypeForSelectedRegisters;
 
@@ -224,6 +232,31 @@ begin
   Clipboard.Close;
 end;
 
+procedure TRegistersDlg.actCopyNameValueExecute(Sender: TObject);
+begin
+  Clipboard.Open;
+  Clipboard.AsText := Concat(lvRegisters.Selected.Caption, '=',
+    lvRegisters.Selected.SubItems[0]);
+  Clipboard.Close;
+end;
+
+procedure TRegistersDlg.actCopyAllExecute(Sender: TObject);
+var
+  T: string;
+  I: Integer;
+  LI: TListItem;
+begin
+  Clipboard.Open;
+  T := '';
+  for I := 0 to Pred(lvRegisters.Items.Count) do
+  begin
+    LI := lvRegisters.Items[I];
+    T := Concat(T, LI.Caption, '=', LI.SubItems[0], sLineBreak);
+  end;
+  Clipboard.AsText := T;
+  Clipboard.Close;
+end;
+
 procedure TRegistersDlg.DispDefaultClick(Sender: TObject);
 var
   n: Integer;
@@ -282,6 +315,8 @@ begin
   popFormat.Enabled := j > 0;
   actCopyName.Enabled := j > 0;
   actCopyValue.Enabled := j > 0;
+  actCopyNameValue.Enabled := j > 0;
+  actCopyAll.Enabled := lvRegisters.Items.Count > 0;
 
   PopDispDefault.Checked := False;
   PopDispHex.Checked := False;

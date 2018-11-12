@@ -5529,6 +5529,8 @@ resourcestring
   lisEvaluateModify = '&Evaluate/Modify';
   lisLocalsDlgCopyName = '&Copy Name';
   lisLocalsDlgCopyValue = 'C&opy Value';
+  lisLocalsDlgCopyNameValue = 'Co&py Name and Value';
+  lisLocalsDlgCopyAll = 'Copy &all';
   lisLocalsDlgCopyRAWValue = 'Copy &RAW Value';
 
   // Registers Dialog

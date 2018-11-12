@@ -8,7 +8,8 @@ inherited RegistersDlg: TRegistersDlg
   Caption = 'Registers'
   ClientHeight = 253
   ClientWidth = 346
-  object lvRegisters: TListView[0]
+  LCLVersion = '2.1.0.0'
+  object lvRegisters: TListView
     Left = 0
     Height = 227
     Top = 26
@@ -31,7 +32,7 @@ inherited RegistersDlg: TRegistersDlg
     ViewStyle = vsReport
     OnSelectItem = lvRegistersSelectItem
   end
-  object ToolBar1: TToolBar[1]
+  object ToolBar1: TToolBar
     Left = 0
     Height = 26
     Top = 0
@@ -67,11 +68,11 @@ inherited RegistersDlg: TRegistersDlg
       Style = tbsDropDown
     end
   end
-  object ImageList1: TImageList[2]
+  object ImageList1: TImageList
     Height = 8
     Width = 8
-    left = 112
-    top = 93
+    Left = 112
+    Top = 93
     Bitmap = {
       4C69010000000800000008000000000000000000000000000000000000000000
       000000000000000000000000000000000000000000005CDD8AFF33D56FFF65DE
@@ -84,26 +85,41 @@ inherited RegistersDlg: TRegistersDlg
       0000000000000000000000000000
     }
   end
-  object ActionList1: TActionList[3]
-    left = 200
-    top = 112
+  object ActionList1: TActionList
+    Left = 200
+    Top = 112
     object actPower: TAction
+      Enabled = False
       OnExecute = actPowerExecute
     end
     object actCopyName: TAction
       Category = 'copy'
       Caption = 'actCopyName'
+      Enabled = False
       OnExecute = actCopyNameExecute
     end
     object actCopyValue: TAction
       Category = 'copy'
       Caption = 'actCopyValue'
+      Enabled = False
       OnExecute = actCopyValueExecute
     end
+    object actCopyNameValue: TAction
+      Category = 'copy'
+      Caption = 'actCopyNameValue'
+      Enabled = False
+      OnExecute = actCopyNameValueExecute
+    end
+    object actCopyAll: TAction
+      Category = 'copy'
+      Caption = 'actCopyAll'
+      Enabled = False
+      OnExecute = actCopyAllExecute
+    end
   end
-  object PopupDispType: TPopupMenu[4]
-    left = 200
-    top = 176
+  object PopupDispType: TPopupMenu
+    Left = 200
+    Top = 176
     object DispDefault: TMenuItem
       Caption = 'New Item1'
       OnClick = DispDefaultClick
@@ -129,9 +145,9 @@ inherited RegistersDlg: TRegistersDlg
       OnClick = DispDefaultClick
     end
   end
-  object PopupMenu1: TPopupMenu[5]
-    left = 95
-    top = 178
+  object PopupMenu1: TPopupMenu
+    Left = 95
+    Top = 178
     object popFormat: TMenuItem
       Caption = 'New Item1'
       object PopDispDefault: TMenuItem
@@ -167,6 +183,12 @@ inherited RegistersDlg: TRegistersDlg
     end
     object popCopyValue: TMenuItem
       Action = actCopyValue
+    end
+    object popCopyNameValue: TMenuItem
+      Action = actCopyNameValue
+    end
+    object popCopyAll: TMenuItem
+      Action = actCopyAll
     end
   end
 end
