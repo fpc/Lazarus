@@ -1564,7 +1564,7 @@ var
     b0 := FGraphPoints[AEnd];
 
     // Collect points of top-most curve
-    UpdateGraphPoints(Source.YCount-2, AStart, AEnd, FStacked);
+    UpdateGraphPoints(Source.YCount-2, FLoBound, FUpBound, FStacked);
       // Index (1st parameter) refers to YList --> one less than usual!)
     numPts := 0;
     CollectPoints(AStart, AEnd);
@@ -1579,7 +1579,7 @@ var
 
       if (j > -1) then begin
         // Stack level points
-        UpdateGraphPoints(j - 1, AStart, AEnd, FStacked);
+        UpdateGraphPoints(j - 1, FLoBound, FUpBound, FStacked);
         CollectPoints(AStart, AEnd);
         numSavedPts := numPts;
         for i := 0 to numPrevPts-1 do
