@@ -192,9 +192,6 @@ begin
 
   popFormat.Caption := regdlgFormat;
 
-  actCopyName.Caption := lisLocalsDlgCopyName;
-  actCopyValue.Caption := lisLocalsDlgCopyValue;
-
   for i := low(COL_WIDTHS) to high(COL_WIDTHS) do
     lvRegisters.Column[i].Width := COL_WIDTHS[i];
 end;
