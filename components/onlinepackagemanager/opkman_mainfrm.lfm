@@ -147,7 +147,7 @@ object MainFrm: TMainFrm
         Height = 23
         Top = 10
         Width = 200
-        DropDownCount = 9
+        DropDownCount = 30
         ItemHeight = 15
         Items.Strings = (
           ''
@@ -168,7 +168,7 @@ object MainFrm: TMainFrm
         Height = 23
         Top = 10
         Width = 200
-        DropDownCount = 9
+        DropDownCount = 25
         ItemHeight = 15
         Items.Strings = (
           ''
@@ -186,7 +186,7 @@ object MainFrm: TMainFrm
         Height = 23
         Top = 10
         Width = 200
-        DropDownCount = 9
+        DropDownCount = 25
         ItemHeight = 15
         ItemIndex = 1
         Items.Strings = (
