@@ -2,14 +2,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lazarus LCL\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-11-14 16:19+0100\n"
+"PO-Revision-Date: 2018-11-13 10:36+0100\n"
 "Last-Translator: Chronos <robie@centrum.cz>\n"
 "Language-Team: Czech <vaclav@valicek.name>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: cs\n"
-"X-Generator: Poedit 1.8.4\n"
+"X-Generator: Poedit 2.2\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
@@ -113,7 +113,7 @@ msgstr "Vodní"
 
 #: lclstrconsts.rsascannothaveasparent
 msgid "Class %s cannot have %s as parent."
-msgstr ""
+msgstr "Třída %s nemůže mít jako rodiče %s."
 
 #: lclstrconsts.rsbackgroundcolorcaption
 msgid "Desktop"
@@ -186,7 +186,7 @@ msgstr "Prvek třídy '%s' nemůže mít prvek třídy '%s' jako dítě"
 
 #: lclstrconsts.rscontrolhasnoparentformorframe
 msgid "Control '%s' has no parent form or frame"
-msgstr ""
+msgstr "Prvek '%s' nemá rodičovský formulář nebo rámec"
 
 #: lclstrconsts.rscontrolhasnoparentwindow
 msgid "Control '%s' has no parent window"
@@ -484,7 +484,6 @@ msgid "--sync                Call XSynchronize (display, True) after the Xserver
 msgstr "--sync                Volat XSynchronize (displej, True) po stabilizaci připojení k X Serveru. Toto dělá ladění chyb X protokolu jednodušší, protože kešování X žádostí bude vypnuto a chyby X budou doručeny okamžitě po žádosti, která vyvolala chybu."
 
 #: lclstrconsts.rshelp
-#, fuzzy
 msgctxt "lclstrconsts.rshelp"
 msgid "Help"
 msgstr "Nápověda"
@@ -866,7 +865,7 @@ msgstr "Odeslat"
 
 #: lclstrconsts.rspressoktoignoreandriskdatacorruptionpressaborttok
 msgid "%s%sPress OK to ignore and risk data corruption.%sPress Abort to kill the program."
-msgstr ""
+msgstr "%s%sStiskněte OK pro ignorování a riskování poškození dat.%sStiskněte Přerušit pro zabití programu."
 
 #: lclstrconsts.rspriorrecordhint
 msgctxt "lclstrconsts.rspriorrecordhint"
@@ -1048,7 +1047,7 @@ msgstr "Text"
 
 #: lclstrconsts.rsthebuiltinurlisreadonlychangethebaseurlinstead
 msgid "The built-in URL is read only. Change the BaseURL instead."
-msgstr ""
+msgstr "Vestavěné URL je pouze pro čtení. Místo toho změnte BaseURL."
 
 #: lclstrconsts.rstiff
 msgid "Tagged Image File Format"
@@ -1151,7 +1150,7 @@ msgstr "Nelze zaktivnit zakázané nebo neviditelné okno"
 
 #: lclstrconsts.scannotsetdesigntimeppi
 msgid "Cannot set design time PPI."
-msgstr ""
+msgstr "Nelze nastavit návrhové PPI."
 
 #: lclstrconsts.sduplicatemenus
 msgid "Duplicate menus"
