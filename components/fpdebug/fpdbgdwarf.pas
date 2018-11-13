@@ -1868,6 +1868,9 @@ end;
 function TFpDwarfValueChar.GetAsString: AnsiString;
 begin
   // Can typecast, because of FSize = 1, GetAsCardinal only read one byte
+  if FSize = 2 then
+    Result := GetAsWideString  // temporary workaround for WideChar
+  else
   if FSize <> 1 then
     Result := inherited GetAsString
   else
@@ -1941,7 +1944,7 @@ begin
     while (i > 0) and (not MemManager.ReadMemory(DataAddress, 2000, @Result[1])) do
       i := i div 2;
     SetLength(Result,i);
-    if t.Size = 2 then // widestring
+    if t.Size = 2 then // widestring // should be in GetAsWideString;
       i := pos(#0#0, Result)
     else
       i := pos(#0, Result);
