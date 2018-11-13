@@ -1868,6 +1868,9 @@ end;
 function TFpDwarfValueChar.GetAsString: AnsiString;
 begin
   // Can typecast, because of FSize = 1, GetAsCardinal only read one byte
+  if FSize = 2 then
+    Result := GetAsWideString  // temporary workaround for WideChar
+  else
   if FSize <> 1 then
     Result := inherited GetAsString
   else
@@ -1941,7 +1944,10 @@ begin
     while (i > 0) and (not MemManager.ReadMemory(DataAddress, 2000, @Result[1])) do
       i := i div 2;
     SetLength(Result,i);
-    i := pos(#0, Result);
+    if t.Size = 2 then // widestring // should be in GetAsWideString;
+      i := pos(#0#0, Result)
+    else
+      i := pos(#0, Result);
     if i > 0 then
       SetLength(Result,i-1);
     exit;
@@ -3279,6 +3285,7 @@ begin
     DW_ATE_signed_char:   SetKind(skChar);
     DW_ATE_unsigned:      SetKind(skCardinal);
     DW_ATE_unsigned_char: SetKind(skChar);
+    DW_ATE_numeric_string:SetKind(skChar); // temporary for widestring
     else
       begin
         DebugLn(FPDBG_DWARF_WARNINGS, ['TFpDwarfSymbolTypeBasic.KindNeeded: Unknown encoding ', DwarfBaseTypeEncodingToString(Encoding), ' for ', DwarfTagToString(InformationEntry.AbbrevTag)]);
