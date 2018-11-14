@@ -191,6 +191,7 @@ object AboutForm: TAboutForm
         AnchorSideRight.Control = AboutPage
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = OfficialLabel
+        BorderSpacing.Around = 6
         Left = 0
         Height = 253
         Top = 0
