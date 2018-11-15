@@ -401,7 +401,10 @@ begin
     end;
     end;
 
-  CurrentThreads.CurrentThreadId := TFpDebugDebugger(Debugger).FDbgController.CurrentThread.ID;
+  if TFpDebugDebugger(Debugger).FDbgController.CurrentThread = nil then
+    CurrentThreads.CurrentThreadId := 0 // TODO: only until controller is guranteed to have a currentthread
+  else
+    CurrentThreads.CurrentThreadId := TFpDebugDebugger(Debugger).FDbgController.CurrentThread.ID;
   CurrentThreads.SetValidity(ddsValid);
 end;
 

@@ -447,6 +447,9 @@ begin
   Result := False;
   case ADebugEvent.dwDebugEventCode of
     EXIT_THREAD_DEBUG_EVENT: begin
+      // The thread event will be freed later, may still be used
+      // will be freed, in "TDbgWinProcess.Continue"
+      // This relies on the thread being removed, to be the same as FCurrentThread in FPDbgController
       RemoveThread(ADebugEvent.dwThreadId);
     end;
     LOAD_DLL_DEBUG_EVENT: begin

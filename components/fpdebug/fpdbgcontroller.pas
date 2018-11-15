@@ -739,6 +739,8 @@ var
   IsHandled: boolean;
   IsFinished: boolean;
   EventProcess: TDbgProcess;
+  DummyThread: TDbgThread;
+  ctid: Integer;
 
 begin
   AExit:=false;
@@ -747,6 +749,9 @@ begin
       FMainProcess:=FCurrentProcess
     else
     begin
+      ctid := 0;
+      if FCurrentThread <> nil then
+        ctid := FCurrentThread.ID;
       if not assigned(FCommand) then
         begin
         {$ifdef DBG_FPDEBUG_VERBOSE}
@@ -761,6 +766,11 @@ begin
         {$endif DBG_FPDEBUG_VERBOSE}
         FCommand.DoContinue(FCurrentProcess, FCurrentThread);
         end;
+
+        // TODO: replace the dangling pointer with the next best value....
+        // There is still a race condition, for another thread to access it...
+        if (ctid <> 0) and not FCurrentProcess.GetThread(ctid, DummyThread) then
+          FCurrentThread := nil;
     end;
     if not FCurrentProcess.WaitForDebugEvent(AProcessIdentifier, AThreadIdentifier) then Continue;
 
@@ -771,6 +781,11 @@ begin
            and if it were debugged, *all* debugged processes may need to be paused)
        - The LazFpDebugger may try to access FCurrentThread. If that is nil, it may crash.
          e.g. TFPThreads.RequestMasterData
+
+       This may need 3 threads: main, user-selected (thread win), current-event
+
+       deExitProcess relies on only the main process receiving this.
+
     *)
     //FCurrentProcess := nil;
     //FCurrentThread := nil;
@@ -791,7 +806,8 @@ begin
       *)
       //FCurrentProcess := OSDbgClasses.DbgProcessClass.Create('', AProcessIdentifier, AThreadIdentifier, OnLog);
       //FProcessMap.Add(AProcessIdentifier, FCurrentProcess);
-      Continue;
+
+      Continue; // ***** This will swallow all FPDEvent for unknow processes *****
       end;
 
     if EventProcess<>FMainProcess then
@@ -802,6 +818,11 @@ begin
     if not FCurrentProcess.GetThread(AThreadIdentifier, FCurrentThread) then
       FCurrentThread := FCurrentProcess.AddThread(AThreadIdentifier);
 
+    (* TODO: ExitThread **********
+       at least the winprocess handles exitthread in the next line.
+       this will remove CurrentThread form the list of threads
+       CurrentThread is then destroyed in the next call to continue....
+    *)
     FPDEvent:=FCurrentProcess.ResolveDebugEvent(FCurrentThread);
     {$ifdef DBG_FPDEBUG_VERBOSE}
     log('Process stopped with event %s. IP=%s, SP=%s, BSP=%s.', [FPDEventNames[FPDEvent],
@@ -854,6 +875,7 @@ begin
   case FPDEvent of
     deCreateProcess:
       begin
+      (* Only events for the main process get here / See ProcessLoop *)
         FCurrentProcess.LoadInfo;
         if not FCurrentProcess.DbgInfo.HasInfo then
           Log('No Dwarf-debug information available. The debugger will not function properly. [CurrentProcess='+dbgsname(FCurrentProcess)+',DbgInfo='+dbgsname(FCurrentProcess.DbgInfo)+']',dllInfo);
@@ -872,6 +894,7 @@ begin
       end;
     deExitProcess:
       begin
+      (* Only events for the main process get here / See ProcessLoop *)
         if FCurrentProcess = FMainProcess then FMainProcess := nil;
 
         if assigned(OnProcessExitEvent) then
