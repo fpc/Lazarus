@@ -8997,7 +8997,7 @@ msgstr "Habilitar opção -Xg"
 msgid "Enable = pressing Return replaces whole identifier and Shift+Return replaces prefix, Disable = pressing Return replaces prefix and Shift+Return replaces whole identifier"
 msgstr ""
 "Habilitado = pressionando \"Return\" substitue o identificador inteiro e \"Shift+Return\" o prefixo,\n"
-"Desabilitado = pressionando \"Return\" substitue o prefixo e \"Shift+Return\" o identificador inteiro\n"
+"Desabilitado = pressionando \"Return\" substitue o prefixo e \"Shift+Return\" o identificador inteiro.\n"
 
 #: lazarusidestrconsts.lisenclose
 msgid "Enclose"
