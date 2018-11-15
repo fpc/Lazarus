@@ -70,6 +70,7 @@ type
     function GetInstructionPointerRegisterValue: TDbgPtr; override;
     function GetStackBasePointerRegisterValue: TDbgPtr; override;
     function GetStackPointerRegisterValue: TDbgPtr; override;
+    property Process;
   end;
 
 
@@ -823,9 +824,19 @@ begin
       end;
       CREATE_PROCESS_DEBUG_EVENT: begin
         //DumpEvent('CREATE_PROCESS_DEBUG_EVENT');
-        StartProcess(MDebugEvent.dwThreadId, MDebugEvent.CreateProcessInfo);
-        FJustStarted := true;
-        result := deCreateProcess;
+        if MDebugEvent.dwProcessId = TDbgWinThread(AThread).Process.ProcessID then begin;
+          //main process
+          StartProcess(MDebugEvent.dwThreadId, MDebugEvent.CreateProcessInfo); // hfile will be closed by TDbgImageLoader
+          FJustStarted := true;
+          result := deCreateProcess;
+        end
+        else begin
+          //child process: ignore
+          // we currently do not use the file handle => close it
+          if MDebugEvent.CreateProcessInfo.hFile <> 0 then
+            CloseHandle(MDebugEvent.CreateProcessInfo.hFile);
+          result := deInternalContinue;
+        end;
       end;
       EXIT_THREAD_DEBUG_EVENT: begin
         //DumpEvent('EXIT_THREAD_DEBUG_EVENT');
