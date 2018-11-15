@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-10-01 20:16+0200\n"
+"PO-Revision-Date: 2018-11-14 21:51+0200\n"
 "Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -2491,7 +2491,7 @@ msgstr "Контур (глобально)"
 
 #: lazarusidestrconsts.dlgmarkupoutlinewarnnocolor
 msgid "Warning: There are no colors configured for the selected language"
-msgstr ""
+msgstr "Попередження: кольори для вибраної мови не налаштовано"
 
 #: lazarusidestrconsts.dlgmarkupuserdefined
 msgctxt "lazarusidestrconsts.dlgmarkupuserdefined"
@@ -11735,7 +11735,7 @@ msgstr "Локальні змінні"
 
 #: lazarusidestrconsts.lislocalsdlgcopyall
 msgid "Copy &all"
-msgstr ""
+msgstr "Копіювати &всі"
 
 #: lazarusidestrconsts.lislocalsdlgcopyname
 msgid "&Copy Name"
@@ -11743,7 +11743,7 @@ msgstr "&Копіювати назву"
 
 #: lazarusidestrconsts.lislocalsdlgcopynamevalue
 msgid "Co&py Name and Value"
-msgstr ""
+msgstr "Ко&піювати назву і значення"
 
 #: lazarusidestrconsts.lislocalsdlgcopyrawvalue
 msgid "Copy &RAW Value"

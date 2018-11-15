@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
-"PO-Revision-Date: 2018-09-09 21:54+0200\n"
+"PO-Revision-Date: 2018-11-14 21:50+0200\n"
 "Project-Id-Version: \n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -575,7 +575,7 @@ msgstr "Мережевий диспетчер пакунків"
 
 #: opkman_const.rsmainfrm_breturn_caption
 msgid "Return"
-msgstr ""
+msgstr "Повернутися"
 
 #: opkman_const.rsmainfrm_cball_caption
 msgid "All/None"
@@ -632,16 +632,12 @@ msgid "Descendent"
 msgstr "За спаданням"
 
 #: opkman_const.rsmainfrm_mifromexternalsource
-#, fuzzy
-#| msgid "From external source"
 msgid "From third party repository"
-msgstr "З зовнішнього джерела"
+msgstr "Зі стороннього сховища"
 
 #: opkman_const.rsmainfrm_mifromrepository
-#, fuzzy
-#| msgid "From repository"
 msgid "From official repository"
-msgstr "Зі сховища"
+msgstr "З офіційного сховища"
 
 #: opkman_const.rsmainfrm_mijsonhide
 msgid "Hide JSON"
