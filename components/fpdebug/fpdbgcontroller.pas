@@ -738,6 +738,7 @@ var
   AExit: boolean;
   IsHandled: boolean;
   IsFinished: boolean;
+  EventProcess: TDbgProcess;
 
 begin
   AExit:=false;
@@ -763,9 +764,19 @@ begin
     end;
     if not FCurrentProcess.WaitForDebugEvent(AProcessIdentifier, AThreadIdentifier) then Continue;
 
-    FCurrentProcess := nil;
-    FCurrentThread := nil;
-    if not GetProcess(AProcessIdentifier, FCurrentProcess) then
+    (* Do not change CurrentProcess/Thread,
+       unless the debugger can actually controll/debug those processes
+       - If FCurrentProcess is not set to FMainProcess then Pause will fail
+          (because a process that is not debugged, can not be paused,
+           and if it were debugged, *all* debugged processes may need to be paused)
+       - The LazFpDebugger may try to access FCurrentThread. If that is nil, it may crash.
+         e.g. TFPThreads.RequestMasterData
+    *)
+    //FCurrentProcess := nil;
+    //FCurrentThread := nil;
+    EventProcess := nil;
+//    if not GetProcess(AProcessIdentifier, FCurrentProcess) then
+    if not GetProcess(AProcessIdentifier, EventProcess) then
       begin
       // A second/third etc process has been started.
       (* A process was created/forked
@@ -775,12 +786,16 @@ begin
            On Mac, it may attempt to attach.
          If the process is not debugged, it may not receive an deExitProcess
       *)
-      FCurrentProcess := OSDbgClasses.DbgProcessClass.Create('', AProcessIdentifier, AThreadIdentifier, OnLog);
-      FProcessMap.Add(AProcessIdentifier, FCurrentProcess);
+      (* As above, currently do not change those variables,
+         just continue the process-loop (as "FCurrentProcess<>FMainProcess" would do)
+      *)
+      //FCurrentProcess := OSDbgClasses.DbgProcessClass.Create('', AProcessIdentifier, AThreadIdentifier, OnLog);
+      //FProcessMap.Add(AProcessIdentifier, FCurrentProcess);
       Continue;
       end;
 
-    if FCurrentProcess<>FMainProcess then
+    if EventProcess<>FMainProcess then
+    //if FCurrentProcess<>FMainProcess then
       // Just continue the process. Only the main-process is being debugged.
       Continue;
 
