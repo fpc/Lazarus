@@ -9,13 +9,15 @@ object PkgGraphExplorerDlg: TPkgGraphExplorerDlg
   KeyPreview = True
   OnCreate = FormCreate
   OnShow = PkgGraphExplorerShow
-  LCLVersion = '1.5'
+  LCLVersion = '2.1.0.0'
   object InfoMemo: TMemo
-    Left = 0
+    Left = 6
     Height = 144
-    Top = 329
-    Width = 675
+    Top = 332
+    Width = 663
     Align = alBottom
+    BorderSpacing.Left = 6
+    BorderSpacing.Right = 6
     Lines.Strings = (
       'InfoMemo'
     )
@@ -26,29 +28,31 @@ object PkgGraphExplorerDlg: TPkgGraphExplorerDlg
   object VerticalSplitter: TSplitter
     Cursor = crVSplit
     Left = 0
-    Height = 5
-    Top = 324
+    Height = 6
+    Top = 326
     Width = 675
     Align = alBottom
     ResizeAnchor = akBottom
   end
   object Panel1: TPanel
     Left = 0
-    Height = 324
+    Height = 326
     Top = 0
     Width = 675
     Align = alClient
     BevelOuter = bvNone
     Caption = 'Panel1'
-    ClientHeight = 324
+    ClientHeight = 326
     ClientWidth = 675
     TabOrder = 0
     object LvlGraphControl1: TLvlGraphControl
-      Left = 199
-      Height = 324
-      Top = 0
-      Width = 476
+      Left = 206
+      Height = 320
+      Top = 6
+      Width = 463
       Align = alClient
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
       NodeStyle.Shape = lgnsNone
       NodeStyle.GapTop = 2
       NodeStyle.GapBottom = 6
@@ -63,11 +67,13 @@ object PkgGraphExplorerDlg: TPkgGraphExplorerDlg
       TabStop = False
     end
     object PkgTreeView: TTreeView
-      Left = 0
-      Height = 324
-      Top = 0
+      Left = 6
+      Height = 320
+      Top = 6
       Width = 194
       Align = alLeft
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
       PopupMenu = PkgPopupMenu
       ReadOnly = True
       TabOrder = 0
@@ -77,16 +83,16 @@ object PkgGraphExplorerDlg: TPkgGraphExplorerDlg
       Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
     end
     object Splitter1: TSplitter
-      Left = 194
-      Height = 324
+      Left = 200
+      Height = 326
       Top = 0
-      Width = 5
+      Width = 6
     end
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 29
-    Top = 479
+    Height = 26
+    Top = 482
     Width = 663
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
