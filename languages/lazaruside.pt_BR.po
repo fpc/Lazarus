@@ -8997,7 +8997,7 @@ msgstr "Habilitar opção -Xg"
 msgid "Enable = pressing Return replaces whole identifier and Shift+Return replaces prefix, Disable = pressing Return replaces prefix and Shift+Return replaces whole identifier"
 msgstr ""
 "Habilitado = pressionando \"Return\" substitue o identificador inteiro e \"Shift+Return\" o prefixo,\n"
-"Desabilitado = pressionando \"Return\" substitue o prefixo e \"Shift+Return\" o identificador inteiro\n"
+"Desabilitado = pressionando \"Return\" substitue o prefixo e \"Shift+Return\" o identificador inteiro.\n"
 
 #: lazarusidestrconsts.lisenclose
 msgid "Enclose"
@@ -11768,7 +11768,7 @@ msgstr "Variáveis locais"
 
 #: lazarusidestrconsts.lislocalsdlgcopyall
 msgid "Copy &all"
-msgstr ""
+msgstr "Copiar &tudo"
 
 #: lazarusidestrconsts.lislocalsdlgcopyname
 msgid "&Copy Name"
@@ -11776,7 +11776,7 @@ msgstr "&Copiar Nome"
 
 #: lazarusidestrconsts.lislocalsdlgcopynamevalue
 msgid "Co&py Name and Value"
-msgstr ""
+msgstr "Co&piar nome e valor"
 
 #: lazarusidestrconsts.lislocalsdlgcopyrawvalue
 msgid "Copy &RAW Value"
