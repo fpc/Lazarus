@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lazarus\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-11-13 13:58+0100\n"
+"PO-Revision-Date: 2018-11-16 10:40+0100\n"
 "Last-Translator: Chronos <robie@centrum.cz>\n"
 "Language-Team: Czech <vaclav@valicek.name>\n"
 "MIME-Version: 1.0\n"
@@ -5206,7 +5206,7 @@ msgstr "Nelze odstranit poslední režim."
 
 #: lazarusidestrconsts.liscannotexecute
 msgid "cannot execute \"%s\""
-msgstr "nelze spustit \"	%s\""
+msgstr "nelze spustit \"%s\""
 
 #: lazarusidestrconsts.liscannotfind
 msgid "Cannot find %s"
@@ -12172,9 +12172,8 @@ msgid "Add &submenu right"
 msgstr "Přidat &podnabídku napravo"
 
 #: lazarusidestrconsts.lismenueditoranewmenutemplatehasbeensaved
-#, fuzzy,badformat
 msgid "A new menu template described as \"%s\" has been saved based on %s, with %d sub items"
-msgstr "Nová šablona menu popsaná jako \"%s% byla uložena na základě %s, s %d podpoložkami"
+msgstr "Nová šablona menu popsaná jako \"%s\" byla uložena na základě %s, s %d podpoložkami"
 
 #: lazarusidestrconsts.lismenueditorbasiceditmenutemplate
 msgid "&Edit,Basic edit menu,&Undo,Ctrl+Z,&Redo,,-,,Select &All,Ctrl+A,C&ut,Ctrl+X,C&opy,Ctrl+C,P&aste,Ctrl+V,Paste &Special,,-,,F&ind,,R&eplace,,&Go to ...,,"
@@ -12499,9 +12498,8 @@ msgid "Save menu shown as a new template"
 msgstr "Uložit zobrazenou nabídku jako novou šablonu"
 
 #: lazarusidestrconsts.lismenueditorsconflictswiths
-#, fuzzy,badformat
 msgid "%s conflicts with %s"
-msgstr "% koliduje s %s"
+msgstr "%s koliduje s %s"
 
 #: lazarusidestrconsts.lismenueditorseparators
 msgid "Se&parators"
@@ -17315,9 +17313,8 @@ msgid "Sort Unicode range list alphabetically"
 msgstr "Řadit Unicode seznam rozsahu abecedně"
 
 #: lazarusidestrconsts.lissourceanddestinationaresame
-#, fuzzy,badformat
 msgid "Source \"%s\"%sand Destination \"%s\"%sdirectories are the same. Please select another directory."
-msgstr "Zdrojový \"%s\"%a cílový \"%s\"%sadresář je stejný. Prosím vyberte jiný adresář."
+msgstr "Zdrojový \"%s\"%sa cílový \"%s\"%sadresář je stejný. Prosím vyberte jiný adresář."
 
 #: lazarusidestrconsts.lissourceanddestinationarethesame
 msgid "Source and Destination are the same:%s%s"

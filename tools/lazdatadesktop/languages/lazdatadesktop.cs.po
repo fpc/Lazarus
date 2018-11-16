@@ -3,12 +3,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-03-10 13:47+0100\n"
-"Last-Translator: Václav Valíček <Valicek1994@gmail.com>\n"
+"PO-Revision-Date: 2018-11-16 12:50+0100\n"
+"Last-Translator: Chronos <robie@centrum.cz>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.5\n"
+"X-Generator: Poedit 2.2\n"
+"Language: cs\n"
 
 #: lazdatadeskstr.eoaddterminator
 msgid "Add terminator"
@@ -225,8 +226,6 @@ msgid "Save SQL statement to file"
 msgstr "Uložit SQL příkaz do souboru"
 
 #: lazdatadeskstr.simportdictinto
-#, fuzzy
-#| msgid "Import datadictionary"
 msgid "Import data dictionary"
 msgstr "Importovat datový slovník"
 
@@ -412,10 +411,8 @@ msgid "Save &as"
 msgstr "Uložit &jako"
 
 #: lazdatadeskstr.sld_actionsaveash
-#, fuzzy
-#| msgid "Save datadictionary as"
 msgid "Save data dictionary as"
-msgstr "Uložit slovník jako"
+msgstr "Uložit datový slovník jako"
 
 #: lazdatadeskstr.sld_actionsaveh
 msgid "Save Data Dictionary"
@@ -457,10 +454,8 @@ msgid "Connections/Dictionaries"
 msgstr ""
 
 #: lazdatadeskstr.sld_connecttoadatabase
-#, fuzzy,badformat
-#| msgid "Connect to a database"
 msgid "Connect to a database of type %s"
-msgstr "Připojit k databázi"
+msgstr "Připojit k databázi typu %s"
 
 #: lazdatadeskstr.sld_createfulltablecreationsql
 msgid "Create full table creation SQL"
@@ -505,10 +500,8 @@ msgid "Host"
 msgstr "Hostitel"
 
 #: lazdatadeskstr.sld_importupdatedatadictionary
-#, fuzzy
-#| msgid "Import/Update datadictionary"
 msgid "Import/Update data dictionary"
-msgstr "Importovat/Aktualizvoat datový slovník"
+msgstr "Importovat/Aktualizovat datový slovník"
 
 #: lazdatadeskstr.sld_indent
 msgid "I&ndent"
@@ -560,11 +553,9 @@ msgid "&OK"
 msgstr "&OK"
 
 #: lazdatadeskstr.sld_opendatadictionaryfilter
-#, fuzzy
-#| msgid "Data dictionary files|*.fpd|Ini files|*.ini|All files|*.*"
 msgctxt "lazdatadeskstr.sld_opendatadictionaryfilter"
 msgid "Data dictionary files (fdd)|*.fdd|Ini files|*.ini|All files|*.*"
-msgstr "Soubory datových slovníků|*.fpd|Ini files|*.ini|All files|*.*"
+msgstr "Soubory datových slovníků (fdd)|*.fdd|Ini soubory|*.ini|Všechny soubory|*.*"
 
 #: lazdatadeskstr.sld_opendatadictionarytitle
 msgid "Open data dictionary"
@@ -593,11 +584,9 @@ msgid "Last used on"
 msgstr "Naposledy použito"
 
 #: lazdatadeskstr.sld_savefileasfilter
-#, fuzzy
-#| msgid "Data dictionary files|*.fpd|Ini files|*.ini|All files|*.*"
 msgctxt "lazdatadeskstr.sld_savefileasfilter"
 msgid "Data dictionary files (fdd)|*.fdd|Ini files|*.ini|All files|*.*"
-msgstr "Soubory datových slovníků|*.fpd|Ini files|*.ini|All files|*.*"
+msgstr "Soubory datových slovníků (fdd)|*.fdd|Ini soubory|*.ini|Všechny soubory|*.*"
 
 #: lazdatadeskstr.sld_savefileastitle
 msgid "Save file as"
@@ -692,10 +681,8 @@ msgid "New connection"
 msgstr "Nové připojení"
 
 #: lazdatadeskstr.snewdictionary
-#, fuzzy
-#| msgid "New database"
 msgid "New data dictionary"
-msgstr "Nová databáze"
+msgstr "Nová datový slovník"
 
 #: lazdatadeskstr.snewdomain
 msgid "Create new domain"
@@ -759,8 +746,6 @@ msgid "Database"
 msgstr "Databáze"
 
 #: lazdatadeskstr.snodedatadictionary
-#, fuzzy
-#| msgid "Datadictionary"
 msgid "Data dictionary"
 msgstr "Datový slovník"
 
@@ -836,10 +821,8 @@ msgid "Retry the statement"
 msgstr ""
 
 #: lazdatadeskstr.srowsaffected
-#, fuzzy
-#| msgid "Query executed succesfully: %d rows affected."
 msgid "Query executed successfully: %d rows affected."
-msgstr "Dotaz vykonán úspěšně: %d záznamů ovlivněno"
+msgstr "Dotaz vykonán úspěšně: %d záznamů ovlivněno."
 
 #: lazdatadeskstr.ssave
 msgid "Save SQL"

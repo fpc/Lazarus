@@ -2,14 +2,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-01-09 16:21+0100\n"
-"Last-Translator: Václav Valíček <Valicek1994@gmail.com>\n"
+"PO-Revision-Date: 2018-11-16 10:51+0100\n"
+"Last-Translator: Chronos <robie@centrum.cz>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: cs\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 2.2\n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
 msgid "(All)"
@@ -133,15 +133,15 @@ msgstr "Nahoru"
 
 #: objinspstrconsts.dceaddfields
 msgid "Add Fields"
-msgstr ""
+msgstr "Přidat položky"
 
 #: objinspstrconsts.dcecolumneditor
 msgid "DBGrid Columns Editor"
-msgstr ""
+msgstr "Editor sloupců DBGrid"
 
 #: objinspstrconsts.dcedeleteall
 msgid "Delete All"
-msgstr ""
+msgstr "Smazat vše"
 
 #: objinspstrconsts.dcefetchlabels
 msgid "Fetch Labels"
@@ -149,7 +149,7 @@ msgstr ""
 
 #: objinspstrconsts.dceoktodelete
 msgid "This will delete all columns. Continue?"
-msgstr ""
+msgstr "Toto smaže všechny sloupce. Pokračovat?"
 
 #: objinspstrconsts.dcewillreplacecontinue
 msgid "This will replace all captions from dataset. Continue?"
@@ -256,7 +256,7 @@ msgstr "Typ:"
 
 #: objinspstrconsts.fpflowpaneleditor
 msgid "FlowPanel Editor"
-msgstr ""
+msgstr "Editor FlowPanel"
 
 #: objinspstrconsts.ilesadd
 msgctxt "objinspstrconsts.ilesadd"
@@ -265,7 +265,7 @@ msgstr "Přidat"
 
 #: objinspstrconsts.itcssearchandreplace
 msgid "Search and replace"
-msgstr ""
+msgstr "Hledat a nahradit"
 
 #: objinspstrconsts.liisaddvalue
 msgid "Add value"
@@ -297,11 +297,11 @@ msgstr "Nastavit hodnotu"
 
 #: objinspstrconsts.lisunabletofindparserfortool
 msgid "Unable to find parser for tool \"%s\""
-msgstr ""
+msgstr "Nelze najít parser pro nástroj \"%s\""
 
 #: objinspstrconsts.lisunabletofindparserwithname
 msgid "Unable to find parser with name \"%s\""
-msgstr ""
+msgstr "Nelze najít parser se jménem \"%s\""
 
 #: objinspstrconsts.nbcesaddpage
 msgctxt "objinspstrconsts.nbcesaddpage"
@@ -373,7 +373,6 @@ msgid "ActionList Editor"
 msgstr "Editor ActionList"
 
 #: objinspstrconsts.oisadd
-#, fuzzy
 msgctxt "objinspstrconsts.oisadd"
 msgid "Add"
 msgstr "Přidat"
@@ -391,7 +390,6 @@ msgid "Add fields from FieldDefs"
 msgstr "Přidat položky z FieldDefs"
 
 #: objinspstrconsts.oisaddpage
-#, fuzzy
 msgctxt "objinspstrconsts.oisaddpage"
 msgid "Add Page"
 msgstr "Přidat stránku"
@@ -414,11 +412,11 @@ msgstr "Logická hodnota"
 
 #: objinspstrconsts.oisbtncomponents
 msgid "Co&mponents"
-msgstr ""
+msgstr "Ko&mponenty"
 
 #: objinspstrconsts.oisbtnproperties
 msgid "&Properties"
-msgstr ""
+msgstr "&Vlastnosti"
 
 #: objinspstrconsts.oiscancel
 msgctxt "objinspstrconsts.oiscancel"
@@ -435,11 +433,11 @@ msgstr "Odstranit?"
 
 #: objinspstrconsts.oischangeclass
 msgid "Change Class ..."
-msgstr ""
+msgstr "Změnit třídu ..."
 
 #: objinspstrconsts.oischangeparent
 msgid "Change Parent"
-msgstr ""
+msgstr "Změnit rodiče"
 
 #: objinspstrconsts.oischar
 msgid "Char"
@@ -462,10 +460,8 @@ msgid "Clear picture"
 msgstr "Vyčistit obrázek"
 
 #: objinspstrconsts.oiscomponentnameisnotavalididentifier
-#, fuzzy,badformat
-#| msgid "Component name %s%s%s is not a valid identifier"
 msgid "Component name \"%s\" is not a valid identifier"
-msgstr "Jméno komponenty %s%s%s není platný identifikátor"
+msgstr "Jméno komponenty \"%s\" není platný identifikátor"
 
 #: objinspstrconsts.oiscomponentrestrictions
 msgid "Component restrictions: "
@@ -494,11 +490,11 @@ msgstr "Vytvořit nové pole a přidat je na aktuální pozici"
 
 #: objinspstrconsts.oiscurrentparent
 msgid "Current parent"
-msgstr ""
+msgstr "Aktuální rodič"
 
 #: objinspstrconsts.oiscurrentparents
 msgid "Current parents"
-msgstr ""
+msgstr "Aktuální rodiče"
 
 #: objinspstrconsts.oiscutcomponents
 msgctxt "objinspstrconsts.oiscutcomponents"
@@ -516,14 +512,12 @@ msgid "&Delete"
 msgstr "&Smazat"
 
 #: objinspstrconsts.oisdeleteitem
-#, fuzzy,badformat
-#| msgid "Delete item %s%s%s?"
 msgid "Delete item \"%s\"?"
-msgstr "Smazat položku %s%s%s?"
+msgstr "Smazat položku \"%s\"?"
 
 #: objinspstrconsts.oisdeletepagequestion
 msgid "Do you want to delete the page?"
-msgstr ""
+msgstr "Chcete smazat stránku?"
 
 #: objinspstrconsts.oisdeleteselectedfields
 msgid "Delete selected field(s)"
@@ -550,10 +544,8 @@ msgid "Error loading image"
 msgstr "Chyba načítání obrázku"
 
 #: objinspstrconsts.oiserrorloadingimage2
-#, fuzzy,badformat
-#| msgid "Error loading image %s%s%s:%s%s"
 msgid "Error loading image \"%s\":%s%s"
-msgstr "Chyba načítání obrázku %s%s%s:%s%s"
+msgstr "Chyba načítání souboru \"%s\":%s%s"
 
 #: objinspstrconsts.oiserrorwhiledeletingaction
 msgid "Error while deleting action:%s%s"
@@ -597,7 +589,7 @@ msgstr "Vstupní maska:"
 
 #: objinspstrconsts.oisinsertpagename
 msgid "Insert Page Name"
-msgstr ""
+msgstr "Vložit jméno stránky"
 
 #: objinspstrconsts.oisint64
 msgid "Int64"
@@ -613,17 +605,17 @@ msgstr "Rozhraní"
 
 #: objinspstrconsts.oisinvalid
 msgid "(Invalid)"
-msgstr ""
+msgstr "(Neplatný)"
 
 #: objinspstrconsts.oisinvalidpropertyvalue
 msgid "Invalid property value"
 msgstr "Neplatná hodnota vlastnosti"
 
 #: objinspstrconsts.oisisnotavalidmethodname
-#, fuzzy,badformat
+#, fuzzy
 #| msgid "%s%s%s is not a valid method name."
 msgid "\"%s\" is not a valid method name."
-msgstr "%s%s%s není platné jméno metody"
+msgstr "\"%s\" není platné jméno jednotky."
 
 #: objinspstrconsts.oisitemsselected
 msgid "%u items selected"
@@ -655,7 +647,7 @@ msgstr "Metoda"
 
 #: objinspstrconsts.oismixed
 msgid "(Mixed)"
-msgstr ""
+msgstr "(Smíšený)"
 
 #: objinspstrconsts.oismovedown
 msgid "Move &Down"
@@ -724,11 +716,11 @@ msgstr "Přesunout dopředu"
 
 #: objinspstrconsts.oispages
 msgid "Pages"
-msgstr ""
+msgstr "Stránky"
 
 #: objinspstrconsts.oispageseditordialog
 msgid "Pages Editor"
-msgstr ""
+msgstr "Editor stránek"
 
 #: objinspstrconsts.oispastecomponents
 msgctxt "objinspstrconsts.oispastecomponents"
@@ -749,7 +741,7 @@ msgstr "Uložit obrázek jako"
 
 #: objinspstrconsts.oispressakey
 msgid "Press a key ..."
-msgstr ""
+msgstr "Stiskněte klávestu ..."
 
 #: objinspstrconsts.oispressakeyegctrlp
 msgid "You can press e.g. Ctrl+P ..."
@@ -773,11 +765,11 @@ msgstr "Odebrat z oblíbených"
 
 #: objinspstrconsts.oisrename
 msgid "Rename"
-msgstr ""
+msgstr "Přejmenovat"
 
 #: objinspstrconsts.oisrenamepage
 msgid "Rename Page"
-msgstr ""
+msgstr "Přejmenovat stránku"
 
 #: objinspstrconsts.oisrestricted
 msgid "Restricted"
@@ -785,7 +777,7 @@ msgstr "Omezené"
 
 #: objinspstrconsts.oisreverttoinherited
 msgid "Revert to inherited"
-msgstr ""
+msgstr "Vrátit na zděděné"
 
 #: objinspstrconsts.oissamplemasks
 msgid "Sample Masks:"
@@ -817,15 +809,15 @@ msgstr "Vybrat všechna pole"
 
 #: objinspstrconsts.oisselectedcontrol
 msgid "Selected control"
-msgstr ""
+msgstr "Vybraný prvek"
 
 #: objinspstrconsts.oisselectedcontrols
 msgid "Selected controls"
-msgstr ""
+msgstr "Vybrané prvky"
 
 #: objinspstrconsts.oisselectedproperties
 msgid "&Selected Properties"
-msgstr ""
+msgstr "&Vybrané vlastnosti"
 
 #: objinspstrconsts.oisselectshortcut
 msgid "Select short cut"
@@ -861,11 +853,11 @@ msgstr "Natavit hodnotu vlastnosti jako Výchozí"
 
 #: objinspstrconsts.oisshowalloutputlines
 msgid "Show all output lines"
-msgstr ""
+msgstr "Ukázat všechny výstupní řádky"
 
 #: objinspstrconsts.oisshowclasses
 msgid "Show classes"
-msgstr ""
+msgstr "Ukázat třídy"
 
 #: objinspstrconsts.oisshowcomponenttree
 msgid "Show Component Tree"
@@ -877,11 +869,11 @@ msgstr "Ukázat pokyny"
 
 #: objinspstrconsts.oisshowinfobox
 msgid "Show Information Box"
-msgstr ""
+msgstr "Ukázat informační rámeček"
 
 #: objinspstrconsts.oisshowstatusbar
 msgid "Show Status Bar"
-msgstr ""
+msgstr "Ukázat stavovou lištu"
 
 #: objinspstrconsts.oissort
 msgid "Sort"
@@ -1195,28 +1187,20 @@ msgid "Test Input"
 msgstr "Zkušební vstup"
 
 #: objinspstrconsts.oistheidentifierisnotamethodpresscanceltoundopressign
-#, fuzzy,badformat
-#| msgid "The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore to force it."
 msgid "The identifier \"%s\" is not a method.%sPress Cancel to undo,%spress Ignore to force it."
-msgstr "Identifikátor %s%s%s není metoda.%sStiskněte Zrušit k návratu zpět,%sstiskněte Ignorovat k vynucení."
+msgstr "Identifikátor \"%s\" není metoda.%sStiskněte Zrušit k návratu zpět,%sstiskněte Ignorovat k vynucení."
 
 #: objinspstrconsts.oisthemethodisincompatibletothiseventpresscanceltound
-#, fuzzy,badformat
-#| msgid "The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
 msgid "The method \"%s\" is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
-msgstr "Metoda %s%s%s není kompatibilní s touto událostí (%s).%sStiskněte Zrušit pro návrat zpět, %sstiskněte Ignorovat pro vynucení."
+msgstr "Metoda \"%s\" není kompatibilní s touto událostí (%s).%sStiskněte Zrušit pro návrat zpět, %sstiskněte Ignorovat pro vynucení."
 
 #: objinspstrconsts.oisthemethodisnotpublishedpresscanceltoundopressignor
-#, fuzzy,badformat
-#| msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
 msgid "The method \"%s\" is not published.%sPress Cancel to undo,%spress Ignore to force it."
-msgstr "Metoda %s%s%s není zveřejněná.%sStiskněte Zrušit pro návrat zpět,%sstiskněte Ignorovat pro vynucení."
+msgstr "Metoda \"%s\" není zveřejněná.%sStiskněte Zrušit pro návrat zpět,%sstiskněte Ignorovat pro vynucení."
 
 #: objinspstrconsts.oisunabletochangeparentofcontroltonewparent
-#, fuzzy,badformat
-#| msgid "Unable to change parent of control %s%s%s to new parent %s%s%s.%s%s"
 msgid "Unable to change parent of control \"%s\" to new parent \"%s\".%s%s"
-msgstr "Nelze změnit rodiče ovládacího prvku %s%s%s na nového rodiče %s%s%s.%s%s"
+msgstr "Nelze změnit rodiče ovládacího prvku \"%s\" na nového rodiče \"%s\".%s%s"
 
 #: objinspstrconsts.oisundo
 msgctxt "objinspstrconsts.oisundo"
@@ -1337,15 +1321,15 @@ msgstr "Přidat ..."
 
 #: objinspstrconsts.sccsiledtaddmoreresolutions
 msgid "Add more resolutions ..."
-msgstr ""
+msgstr "Přidat více rozlišení ..."
 
 #: objinspstrconsts.sccsiledtaddnewresolution
 msgid "New resolution ..."
-msgstr ""
+msgstr "Nové rozlišení ..."
 
 #: objinspstrconsts.sccsiledtaddsliced
 msgid "Add sliced ..."
-msgstr ""
+msgstr "Přidat "
 
 #: objinspstrconsts.sccsiledtaddslicediconerror
 msgid "Adding sliced icons is not supported."
@@ -1362,7 +1346,7 @@ msgstr "Použít"
 
 #: objinspstrconsts.sccsiledtcannotdeleteresolution
 msgid "Cannot delete default resolution."
-msgstr ""
+msgstr "Nelze smazat výchozí rozlišení."
 
 #: objinspstrconsts.sccsiledtcannotslice
 msgid "Source image size must be an integer multiple of the ImageList's Width and Height."
@@ -1392,11 +1376,11 @@ msgstr "Odstranit"
 
 #: objinspstrconsts.sccsiledtdeleteresolution
 msgid "Delete resolution ..."
-msgstr ""
+msgstr "Smazat rozlišení ..."
 
 #: objinspstrconsts.sccsiledtdeleteresolutionconfirmation
 msgid "Select the resolution to delete."
-msgstr ""
+msgstr "Vybrat rozlišení ke smazání."
 
 #: objinspstrconsts.sccsiledtgrplcaption
 msgid "Images"
@@ -1408,7 +1392,7 @@ msgstr "Vybraný obrázek"
 
 #: objinspstrconsts.sccsiledtimagewidthofnewresolution
 msgid "Image width of the new resolution:"
-msgstr ""
+msgstr "Šířka obrázku nového rozlišení"
 
 #: objinspstrconsts.sccsiledtmovedown
 msgctxt "objinspstrconsts.sccsiledtmovedown"
@@ -1430,7 +1414,7 @@ msgstr "Přidat obrázky"
 
 #: objinspstrconsts.sccsiledtopendialogn
 msgid "New Image"
-msgstr ""
+msgstr "Nový obrázek"
 
 #: objinspstrconsts.sccsiledtransparentcolor
 msgid "Transparent Color:"
@@ -1438,11 +1422,11 @@ msgstr "Průhledná barva:"
 
 #: objinspstrconsts.sccsiledtreplace
 msgid "&Replace ..."
-msgstr ""
+msgstr "&Nahradit"
 
 #: objinspstrconsts.sccsiledtreplaceallresolutions
 msgid "Replace all resolutions ..."
-msgstr ""
+msgstr "Nahradit všechny rozlišení ..."
 
 #: objinspstrconsts.sccsiledtsave
 msgctxt "objinspstrconsts.sccsiledtsave"
