@@ -2685,6 +2685,9 @@ begin
       if Result in [mrAbort,mrCancel] then exit;
       Result:=mrOk;
     end;
+    // mark file as unmodified
+    if (AnUnitInfo.Source<>nil) and AnUnitInfo.Source.Modified then
+      AnUnitInfo.Source.Clear;
 
     // add to recent file list
     if (not AnUnitInfo.IsVirtual) and (not (cfProjectClosing in Flags)) then
@@ -4047,6 +4050,8 @@ begin
 end;
 
 function CloseProject: TModalResult;
+var
+  SrcEdit: TSourceEditor;
 begin
   if Project1=nil then exit(mrOk);
 
@@ -4066,14 +4071,16 @@ begin
   SourceEditorManager.IncUpdateLock;
   try
     while SourceEditorManager.SourceEditorCount > 0 do begin
-      Result:=CloseEditorFile(
-        SourceEditorManager.SourceEditors[SourceEditorManager.SourceEditorCount-1],
-        [cfProjectClosing]);
+      SrcEdit:=SourceEditorManager.SourceEditors[SourceEditorManager.SourceEditorCount-1];
+      Result:=CloseEditorFile(SrcEdit,[cfProjectClosing]);
       if Result=mrAbort then exit;
     end;
   finally
     SourceEditorManager.DecUpdateLock;
   end;
+  // remove all source modifications
+  CodeToolBoss.SourceCache.ClearAllModified;
+
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('CloseProject B');{$ENDIF}
   IncreaseCompilerParseStamp;
 
