@@ -198,6 +198,7 @@ type
     procedure Clear;
     procedure ClearAllSourceLogEntries;
     procedure ClearIncludedByEntry(const IncludeFilename: string);
+    procedure ClearAllModified;
     procedure OnBufferSetFileName(Sender: TCodeBuffer;
           const OldFilename: string);
     procedure OnBufferSetScanner(Sender: TCodeBuffer);
@@ -530,6 +531,20 @@ begin
     Node:=FindIncludeLinkAVLNode(IncludeFilename);
     if Node<>nil then
       FIncludeLinks.FreeAndDelete(Node);
+  end;
+end;
+
+procedure TCodeCache.ClearAllModified;
+var
+  Code: TCodeBuffer;
+  ANode: TAVLTreeNode;
+begin
+  ANode:=FItems.FindLowest;
+  while ANode<>nil do begin
+    Code:=TCodeBuffer(ANode.Data);
+    if Code.Modified then
+      Code.Clear;
+    ANode:=FItems.FindSuccessor(ANode);
   end;
 end;
 
