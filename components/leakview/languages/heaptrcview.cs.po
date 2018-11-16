@@ -8,6 +8,8 @@ msgstr ""
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: cs\n"
+"X-Generator: Poedit 2.2\n"
 
 #: heaptrcview.rsdtimes
 msgid " (%d times)"
@@ -18,10 +20,8 @@ msgid "Error while parsing trace file"
 msgstr "Chyba při rozkládání stopovacího souboru"
 
 #: heaptrcview.rsleakview
-#, fuzzy
-#| msgid "Find source lines for leak/stack-traces"
 msgid "Leaks and Traces"
-msgstr "Prohlížeč úniků"
+msgstr "Úniky a trasování"
 
 #: heaptrcview.sbtnclipbrd
 msgid "Paste Clipboard"
@@ -29,7 +29,7 @@ msgstr "Vložit ze schránky"
 
 #: heaptrcview.sbtnresolve
 msgid "Resolve"
-msgstr ""
+msgstr "Vyřešit"
 
 #: heaptrcview.sbtnupdate
 msgid "Update"
@@ -44,18 +44,16 @@ msgid "Stay on top"
 msgstr "Zůstat nahoře"
 
 #: heaptrcview.sfrmcap
-#, fuzzy
-#| msgid "LeakView - HeapTrc output viewer"
 msgid "Leaks and Traces - HeapTrc and GDB backtrace output viewer"
-msgstr "Prohlížeč úniků(LeakView) - prohlížeč výstupu HeapTrc"
+msgstr "Úniky a trasování - Prohlížeš výstupu HeapTrc a zpětného trasování GDB"
 
 #: heaptrcview.sfrmselectfilewithdebuginfo
 msgid "Select file with debug info"
-msgstr ""
+msgstr "Vyberte soubor s ladícími informacemi"
 
 #: heaptrcview.sfrmselecttrcfile
 msgid "Select file with trace log"
-msgstr ""
+msgstr "Vyberte soubor se záznamem trasování"
 
 #: heaptrcview.slbltrace
 msgid ".trc file"
@@ -82,13 +80,10 @@ msgid "Leaking Blocks Count: %d"
 msgstr "Počet uniklých bloků: %d"
 
 #: heaptrcview.strleakingmemsize
-#, fuzzy,badformat
 msgid "Leaking Mem Size: %d"
-msgstr "Velikost uniklé paměti: %s"
+msgstr "Velikost uniklé paměti: %d"
 
 #: heaptrcview.strtotalmemalloc
-#, fuzzy
-#| msgid "Total Mem alloced: %d"
 msgid "Total Mem allocated: %d"
 msgstr "Celkem přidělené paměti: %d"
 

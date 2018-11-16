@@ -2,14 +2,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-03-09 21:18+0100\n"
-"Last-Translator: Václav Valíček <Valicek1994@gmail.com>\n"
+"PO-Revision-Date: 2018-11-16 12:26+0100\n"
+"Last-Translator: Chronos <robie@centrum.cz>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: cs\n"
-"X-Generator: Poedit 1.5.5\n"
+"X-Generator: Poedit 2.2\n"
 
 #: codetoolsstrconsts.crsbracketnotfound
 msgid "bracket ) not found"
@@ -69,7 +69,7 @@ msgstr "dvojkový operátor"
 
 #: codetoolsstrconsts.ctsbracketcloseexpectedbutatomfound
 msgid "bracket close expected, but %s found"
-msgstr "očekávána uzavírací závorka, ale nalezeno %s "
+msgstr "očekávána uzavírací závorka, ale nalezeno %s"
 
 #: codetoolsstrconsts.ctsbracketnotfound
 msgid "bracket %s not found"
@@ -77,11 +77,11 @@ msgstr "závorka %s nenalezena"
 
 #: codetoolsstrconsts.ctsbracketopenexpectedbutatomfound
 msgid "bracket open expected, but %s found"
-msgstr "očekávána otvírací závorka, ale nalezeno %s "
+msgstr "očekávána otvírací závorka, ale nalezeno %s"
 
 #: codetoolsstrconsts.ctscannotaddaunittotheimplementationbecauseonlyaunith
 msgid "cannot add a unit to the implementation, because only a unit has one"
-msgstr ""
+msgstr "nelze přidat jednotku do implementace, protože pouze jednotka jednu má"
 
 #: codetoolsstrconsts.ctscharacterconstantoutofrange
 msgid "character constant out of range"
@@ -100,14 +100,12 @@ msgid "class node without parent node"
 msgstr "uzel třídy bez rodičovského uzlu"
 
 #: codetoolsstrconsts.ctsclassnotfound
-#, fuzzy,badformat
-#| msgid "class %s%s%s not found"
 msgid "class \"%s\" not found"
-msgstr "třída %s%s%s nenalezena"
+msgstr "třída \"%s\" nenalezena"
 
 #: codetoolsstrconsts.ctsclassnotfound2
 msgid "class not found \"%s\""
-msgstr ""
+msgstr "třída nenalezena \"%s\""
 
 #: codetoolsstrconsts.ctsclassofdefinitionnotresolved
 msgid "\"class of\" definition not resolved: %s"
@@ -175,7 +173,7 @@ msgstr "výchozí dispinterface předek IDispatch nenalezen"
 
 #: codetoolsstrconsts.ctsdefaultfpcsource2operatingsystem
 msgid "Default fpc source Operating System 2"
-msgstr "Výchozí zdrojový Operační systém 2 fpc "
+msgstr "Výchozí zdrojový Operační systém 2 fpc"
 
 #: codetoolsstrconsts.ctsdefaultfpcsourceoperatingsystem
 msgid "Default fpc source Operating System"
@@ -195,7 +193,7 @@ msgstr "Výchozí cílový procesor fpc"
 
 #: codetoolsstrconsts.ctsdefaultinterfaceancestoriinterfacenotfound
 msgid "default interface ancestor IInterface not found"
-msgstr "Nenalezen výchozí předek rozhraní IInterface"
+msgstr "nenalezen výchozí předek rozhraní IInterface"
 
 #: codetoolsstrconsts.ctsdefaultjavaclassancestorjlobjectnotfound
 msgid "default java class ancestor JLObject not found"
@@ -215,7 +213,7 @@ msgstr "výchozí specifikátor předefinován"
 
 #: codetoolsstrconsts.ctsdefine
 msgid "Define "
-msgstr "Definice"
+msgstr "Definice "
 
 #: codetoolsstrconsts.ctsdefinelcl
 msgid "Define LCL"
@@ -393,7 +391,7 @@ msgstr "HasError"
 
 #: codetoolsstrconsts.ctshelperisnotallowed
 msgid "Helper after %s is not allowed"
-msgstr ""
+msgstr "Není povolen helper za %s"
 
 #: codetoolsstrconsts.ctsidedirectory
 msgid "IDE Directory"
@@ -401,7 +399,7 @@ msgstr "Adresář IDE"
 
 #: codetoolsstrconsts.ctsidentexpectedbutatomfound
 msgid "identifier expected, but %s found"
-msgstr "Očekáván identifikátor, ale nalezen %s"
+msgstr "očekáván identifikátor, ale nalezen %s"
 
 #: codetoolsstrconsts.ctsidentexpectedbuteoffound
 msgid "unexpected end of file (identifier expected)"
@@ -413,7 +411,7 @@ msgstr "očekáván identifikátor, ale nalezeno klíčové slovo %s"
 
 #: codetoolsstrconsts.ctsidentifier
 msgid "identifier"
-msgstr "Identifikátor"
+msgstr "identifikátor"
 
 #: codetoolsstrconsts.ctsidentifieralreadydefined
 msgid "Identifier %s already defined"
@@ -421,7 +419,7 @@ msgstr "Identifikátor %s již definován"
 
 #: codetoolsstrconsts.ctsidentifiernotfound
 msgid "identifier not found: %s"
-msgstr "Identifikátor nenalezen: %s"
+msgstr "identifikátor nenalezen: %s"
 
 #: codetoolsstrconsts.ctsifdefdarwin
 msgid "IfDef Darwin"
@@ -504,16 +502,12 @@ msgid "interface section not found"
 msgstr "nenalezena sekce interface"
 
 #: codetoolsstrconsts.ctsinvalidclassname
-#, fuzzy,badformat
-#| msgid "invalid class name=%s%s%s"
 msgid "invalid class name=\"%s\""
-msgstr "neplatné jméno třídy=%s%s%s"
+msgstr "neplatné jméno třídy=\"%s\""
 
 #: codetoolsstrconsts.ctsinvalidclassname2
-#, fuzzy,badformat
-#| msgid "invalid class name %s%s%s"
 msgid "invalid class name \"%s\""
-msgstr "neplatné jméno třídy %s%s%s"
+msgstr "neplatné jméno třídy \"%s\""
 
 #: codetoolsstrconsts.ctsinvalidflagvaluefordirective
 msgid "invalid flag value \"%s\" for directive %s"
@@ -533,7 +527,7 @@ msgstr "neplatný opetátor %s"
 
 #: codetoolsstrconsts.ctsinvalidpositionforinsertionofstatements
 msgid "invalid position for insertion of statements"
-msgstr ""
+msgstr "neplatná pozice pro vložení příkazů"
 
 #: codetoolsstrconsts.ctsinvalidsubrange
 msgid "invalid subrange"
@@ -544,16 +538,12 @@ msgid "invalid type"
 msgstr "neplatný typ"
 
 #: codetoolsstrconsts.ctsinvalidvariablename
-#, fuzzy,badformat
-#| msgid "invalid variable name %s%s%s"
 msgid "invalid variable name \"%s\""
-msgstr "neplatné jméno proměnné %s%s%s"
+msgstr "neplatné jméno proměnné \"%s\""
 
 #: codetoolsstrconsts.ctsinvalidvariabletype
-#, fuzzy,badformat
-#| msgid "invalid variable type %s%s%s"
 msgid "invalid variable type \"%s\""
-msgstr "neplatný typ proměnné %s%s%s"
+msgstr "neplatný typ proměnné \"%s\""
 
 #: codetoolsstrconsts.ctskeyword
 msgid "keyword"
@@ -577,7 +567,7 @@ msgstr "Zdroje Lazarusu"
 
 #: codetoolsstrconsts.ctsmethodhasnodeclaration
 msgid "method \"%s\" has no declaration"
-msgstr ""
+msgstr "metoda \"%s\" nemá deklaraci"
 
 #: codetoolsstrconsts.ctsmethodname
 msgid "method name"
@@ -617,7 +607,7 @@ msgstr "%s Projekt"
 
 #: codetoolsstrconsts.ctsneededbymode
 msgid " (needed by mode \"%s\")"
-msgstr ""
+msgstr " (vyžadováno režimem \"%s\")"
 
 #: codetoolsstrconsts.ctsnesteddefinitionsarenotallowed
 msgid "Nested %s definitions are not allowed"
@@ -727,7 +717,7 @@ msgstr "očekáván typ vlastnosti, ale nalezeno %s"
 
 #: codetoolsstrconsts.ctspropertycurrentnotfound
 msgid "property Current not found"
-msgstr "Nenalezena vlastnost Current"
+msgstr "nenalezena vlastnost Current"
 
 #: codetoolsstrconsts.ctspropertyspecifieralreadydefined
 msgid "property specifier already defined: %s"
@@ -778,20 +768,16 @@ msgid "source is not unit"
 msgstr "zdroj není jednotka"
 
 #: codetoolsstrconsts.ctssourcenotfoundunit
-#, fuzzy
-#| msgid "source not found: unit %s"
 msgid "source not found: unit %s. Check your FPC source directory."
-msgstr "nenalezen zdroj: jednotka %s"
+msgstr "nenalezen zdroj: jednotka %s. Zkontrolujte váš zdrojový adresář FPC."
 
 #: codetoolsstrconsts.ctssrcpathinitialization
 msgid "SrcPath Initialization"
 msgstr "Inicializace SrcPath"
 
 #: codetoolsstrconsts.ctsstrexpectedbutatomfound
-#, fuzzy
-#| msgid "%s expected, but %s found"
 msgid "expected %s, but %s found"
-msgstr "%s očekáváno, ale nalezeno %s"
+msgstr "očekáváno %s, ale nalezeno %s"
 
 #: codetoolsstrconsts.ctsstringconstant
 msgid "string constant"
@@ -839,7 +825,7 @@ msgstr "nelze dokončit vlastnost"
 
 #: codetoolsstrconsts.ctsundefine
 msgid "Undefine "
-msgstr "Nedefinovat"
+msgstr "Nedefinovat "
 
 #: codetoolsstrconsts.ctsunexpectedendofsource
 msgid "unexpected end of source"
@@ -855,7 +841,7 @@ msgstr "neočekáváné klíčové slovo %s"
 
 #: codetoolsstrconsts.ctsunexpectedkeywordinasmblock
 msgid "unexpected keyword \"%s\" in asm block found"
-msgstr "nalezeno neočekávané klíčové slovo \"%s\" v bloku asm "
+msgstr "nalezeno neočekávané klíčové slovo \"%s\" v bloku asm"
 
 #: codetoolsstrconsts.ctsunexpectedkeywordinbeginendblock
 msgid "unexpected keyword \"%s\" in begin..end found"
@@ -867,7 +853,7 @@ msgstr "nalezeno neočekávané klíčové slovo \"%s\" při zpětném čtení b
 
 #: codetoolsstrconsts.ctsunexpectedsectionkeyword
 msgid "unexpected section keyword %s found"
-msgstr ""
+msgstr "nalezeno neočekávané klíčové slovo sekce %s"
 
 #: codetoolsstrconsts.ctsunexpectedsubrangeoperatorfound
 msgid "unexpected subrange operator '..' found"
@@ -903,11 +889,11 @@ msgstr "použitá jednotka není pascalovská jednotka"
 
 #: codetoolsstrconsts.ctsutilsdirectories
 msgid "Utils directories"
-msgstr "Adresáře nástrojů:"
+msgstr "Adresáře nástrojů"
 
 #: codetoolsstrconsts.ctsvarisonlyallowedingenericsendofclassnotfound
 msgid "var is only allowed in generics, end of class not found"
-msgstr "var je povolen pouze v generikách, nenalezen konec třídy "
+msgstr "var je povolen pouze v generikách, nenalezen konec třídy"
 
 #: codetoolsstrconsts.ctswordnotfound
 msgid "\"%s\" not found"
