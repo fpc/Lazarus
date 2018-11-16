@@ -240,7 +240,7 @@ type
     procedure DestroyWnd; override;
     function DoDefaultFilterItem(const ACaption: string;
       const ItemData: Pointer): Boolean; virtual;
-    function DoFilterItem(const ACaption, AFilter: string;
+    function DoFilterItem(const ACaption: string;
       ItemData: Pointer): Boolean; virtual;
     procedure EditKeyDown(var Key: Word; Shift: TShiftState); override;
     procedure EditChange; override;
@@ -266,6 +266,7 @@ type
     procedure RestoreSelection; virtual; abstract;
   public
     property Filter: string read fFilter write SetFilter;
+    property FilterLowercase: string read fFilterLowercase;
     property IdleConnected: Boolean read fIdleConnected write SetIdleConnected;
     property SortData: Boolean read fSortData write fSortData;
     property SelectedPart: TObject read fSelectedPart write fSelectedPart;
@@ -1155,8 +1156,8 @@ begin
     Result := NPos>0;
 end;
 
-function TCustomControlFilterEdit.DoFilterItem(const ACaption,
-  AFilter: string; ItemData: Pointer): Boolean;
+function TCustomControlFilterEdit.DoFilterItem(const ACaption: string;
+  ItemData: Pointer): Boolean;
 var
   Done: Boolean;
 begin

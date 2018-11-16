@@ -53,7 +53,7 @@ type
     fOriginalData: TListViewDataList;
     // Data sorted for viewing.
     fFilteredData: TListViewDataList;
-    function MatchesFilter(aData: TListViewDataItem; const AFilter: string): Boolean;
+    function MatchesFilter(aData: TListViewDataItem): Boolean;
     procedure SetFilteredListview(const AValue: TCustomListView);
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -174,8 +174,7 @@ begin
   end;
 end;
 
-function TListViewFilterEdit.MatchesFilter(aData: TListViewDataItem;
-  const AFilter: string): Boolean;
+function TListViewFilterEdit.MatchesFilter(aData: TListViewDataItem): Boolean;
 var
   i, EndInd: Integer;
 begin
@@ -184,7 +183,7 @@ begin
   else
     EndInd := 0;
   for i := 0 to EndInd do begin
-    if DoFilterItem(aData.StringArray[i], AFilter, aData.Data) then
+    if DoFilterItem(aData.StringArray[i], aData.Data) then
       Exit(True);
   end;
   Result := False;
@@ -211,7 +210,7 @@ begin
   fFilteredData.Clear;
   for Origi:=0 to fOriginalData.Count-1 do begin
     Data:=fOriginalData[Origi];
-    if MatchesFilter(Data, Filter) then
+    if MatchesFilter(Data) then
       fFilteredData.Add(Data);
   end;
 end;

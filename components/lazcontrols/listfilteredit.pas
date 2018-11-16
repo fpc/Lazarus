@@ -176,7 +176,7 @@ begin
   fSortedData.Clear;
   for Origi:=0 to fOriginalData.Count-1 do begin
     Capt:=fOriginalData[Origi];
-    if DoFilterItem(Capt, Filter, fOriginalData.Objects[Origi]) then begin
+    if DoFilterItem(Capt, fOriginalData.Objects[Origi]) then begin
       i:=fSortedData.Count-1;       // Always sort the data.
       while i>=0 do begin
         if CompareFNs(Capt,fSortedData[i])>=0 then break;

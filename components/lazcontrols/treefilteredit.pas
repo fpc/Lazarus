@@ -195,7 +195,7 @@ begin
   for Origi:=0 to fOriginalData.Count-1 do begin
     s:=fOriginalData[Origi];
     if (fOwner.Filter='') or
-        fOwner.DoFilterItem(s, fOwner.Filter, nil) then begin
+        fOwner.DoFilterItem(s, nil) then begin
       i:=fSortedData.Count-1;
       while i>=0 do begin
         if CompareFNs(s,fSortedData[i]) >= 0 then break;
@@ -477,7 +477,7 @@ begin
     if Assigned(fOnFilterNode) then
       Pass := fOnFilterNode(Node, Done);
     if not (Pass and Done) then
-      Pass := DoFilterItem(Node.Text, Filter, Node.Data);
+      Pass := DoFilterItem(Node.Text, Node.Data);
     if Pass and (fFirstPassedNode=Nil) then
       fFirstPassedNode:=Node;
     // Recursive call for child nodes.
