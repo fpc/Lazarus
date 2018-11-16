@@ -1275,7 +1275,7 @@ function TFpDebugDebugger.EvaluateExpression(AWatchValue: TWatchValue; AExpressi
 var
   AContext: TFpDbgInfoContext;
   AController: TDbgController;
-  APasExpr: TFpPascalExpression;
+  APasExpr, PasExpr2: TFpPascalExpression;
   ADbgInfo: TDbgInfo;
   DispFormat: TWatchDisplayFormat;
   RepeatCnt: Integer;
@@ -1285,6 +1285,10 @@ var
   RegList: TDbgRegisterValueList;
   Reg: TDbgRegisterValue;
   StackList: TCallStackBase;
+  ResValue: TFpDbgValue;
+  CastName: String;
+  ClassAddr, CNameAddr: TFpDbgMemLocation;
+  NameLen: QWord;
 begin
   Result := False;
   AResText := '';
@@ -1298,6 +1302,7 @@ begin
     ThreadId := AWatchValue.ThreadId;
     DispFormat := AWatchValue.DisplayFormat;
     RepeatCnt := AWatchValue.RepeatCount;
+    EvalFlags := AWatchValue.EvaluateFlags;
   end
   else begin
     ThreadId := Threads.CurrentThreads.CurrentThreadId;
@@ -1358,6 +1363,35 @@ begin
       begin
       FPrettyPrinter.AddressSize:=AContext.SizeOfAddress;
       FPrettyPrinter.MemManager := AContext.MemManager;
+
+      ResValue := APasExpr.ResultValue;
+      if (ResValue.Kind = skClass) and (ResValue.AsCardinal <> 0) and (defClassAutoCast in EvalFlags)
+      then begin
+        CastName := '';
+        if FMemManager.ReadAddress(ResValue.DataAddress, AContext.SizeOfAddress, ClassAddr) then begin
+          ClassAddr.Address := ClassAddr.Address + 3 * AContext.SizeOfAddress;
+          if FMemManager.ReadAddress(ClassAddr, AContext.SizeOfAddress, CNameAddr) then begin
+            if (FMemManager.ReadUnsignedInt(CNameAddr, 1, NameLen)) then
+              if NameLen > 0 then begin
+                SetLength(CastName, NameLen);
+                CNameAddr.Address := CNameAddr.Address + 1;
+                FMemManager.ReadMemory(CNameAddr, NameLen, @CastName[1]);
+                PasExpr2 := TFpPascalExpression.Create(CastName+'('+AExpression+')', AContext);
+                PasExpr2.ResultValue;
+                if PasExpr2.Valid then begin
+                  APasExpr.Free;
+                  APasExpr := PasExpr2;
+                  ResValue := APasExpr.ResultValue;
+                end
+                else
+                  PasExpr2.Free;
+              end;
+          end;
+        end;
+      end;
+
+
+
       if defNoTypeInfo in EvalFlags then
         Res := FPrettyPrinter.PrintValue(AResText, APasExpr.ResultValue, DispFormat, RepeatCnt)
       else
