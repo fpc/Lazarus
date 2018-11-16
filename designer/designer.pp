@@ -3999,9 +3999,13 @@ var
   OneControlSelected: Boolean;
   SelectionVisible: Boolean;
   SrcFile: TLazProjectFile;
-  UnitIsVirtual, DesignerCanCopy, HasChangeParentCandidates: Boolean;
+  UnitIsVirtual, DesignerCanCopy, HasChangeParentCandidates,
+    HasAncestorComponent: Boolean;
   PersistentSelection: TPersistentSelectionList;
   ChangeParentCandidates: TFPList;
+  i: Integer;
+  Item: TSelectedControl;
+  AComponent, AncestorComponent: TComponent;
 begin
   SrcFile:=LazarusIDE.GetProjectFileWithDesigner(Self);
   ControlSelIsNotEmpty:=(Selection.Count>0)
@@ -4017,9 +4021,23 @@ begin
   PersistentSelection:=TPersistentSelectionList.Create;
   try
     Selection.GetSelection(PersistentSelection);
+
     ChangeParentCandidates:=GetChangeParentCandidates(GlobalDesignHook,PersistentSelection);
     HasChangeParentCandidates:=ChangeParentCandidates.Count>0;
     FreeAndNil(ChangeParentCandidates);
+
+    HasAncestorComponent:=false;
+    for i:=0 to Selection.Count-1 do
+    begin
+      Item:=Selection[i];
+      AComponent:=TComponent(Item.Persistent);
+      AncestorComponent:=TheFormEditor.GetAncestorInstance(AComponent);
+      if AncestorComponent<>nil then
+      begin
+        HasAncestorComponent:=true;
+        break;
+      end;
+    end;
   finally
     FreeAndNil(PersistentSelection);
   end;
@@ -4031,7 +4049,7 @@ begin
   DesignerMenuMirrorVertical.Enabled := MultiCompsAreSelected and not OnlyNonVisualsAreSelected;
   DesignerMenuScale.Enabled := CompsAreSelected and not OnlyNonVisualsAreSelected;
   DesignerMenuSize.Enabled := CompsAreSelected and not OnlyNonVisualsAreSelected;
-  DesignerMenuReset.Enabled := CompsAreSelected;
+  DesignerMenuReset.Enabled := HasAncestorComponent;
 
   DesignerMenuAnchorEditor.Enabled := (FLookupRoot is TWinControl) and (TWinControl(FLookupRoot).ControlCount > 0);
   DesignerMenuTabOrder.Enabled := (FLookupRoot is TWinControl) and (TWinControl(FLookupRoot).ControlCount > 0);
