@@ -2798,6 +2798,11 @@ begin
     exit;
   inherited ShowCaret;
   Result := LCLIntf.ShowCaret(Handle);
+  {$IFDEF LCLQt}
+  // workaround for issue: https://bugs.freepascal.org/view.php?id=34563
+  // assume that if ShowCaret works, the cared has been created ok
+  FCreated := FCreated or Result;
+  {$ENDIF}
 end;
 
 function TSynEditScreenCaretPainterSystem.SetCaretPosEx(x, y: Integer): Boolean;
