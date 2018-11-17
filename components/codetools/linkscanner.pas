@@ -221,7 +221,8 @@ type
     // not yet in FPC, supported by pas2js:
     cmsPrefixedAttributes, { allow Delphi attributes, disable FPC [] proc modifier }
     cmsExternalClass,      { pas2js: allow  class external [pkgname] name [symbol] }
-    cmsIgnoreAttributes    { pas2js: ignore attributes }
+    cmsIgnoreAttributes,   { pas2js: ignore attributes }
+    cmsOmitRTTI            { pas2js: treat class section 'published' as 'public' and typeinfo does not work on symbols declared with this switch }
     );
   TCompilerModeSwitches = set of TCompilerModeSwitch;
 const
@@ -306,7 +307,8 @@ const
     'ARRAYOPERATORS',
     'PREFIXEDATTRIBUTES',
     'EXTERNALCLASS',
-    'IGNOREATTRIBUTES'
+    'IGNOREATTRIBUTES',
+    'OMITRTTI'
     );
 
 
