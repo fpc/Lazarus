@@ -2744,7 +2744,7 @@ begin
   if FSplitterX<>AdjustedValue then begin
     FSplitterX:=AdjustedValue;
     AlignEditComponents;
-    Invalidate;
+    Repaint;
   end;
 end;
 
@@ -2758,10 +2758,10 @@ begin
   if NewTopY < 0 then
     NewTopY := 0;
   if FTopY<>NewTopY then begin
-    Invalidate;
     FTopY:=NewTopY;
     UpdateScrollBar;
     AlignEditComponents;
+    Repaint;
   end;
 end;
 
