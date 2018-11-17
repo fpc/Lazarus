@@ -1736,7 +1736,7 @@ begin
       end;
     dcPause:
       begin
-        FDbgController.Pause;
+        Result := FDbgController.Pause;
       end;
     dcRunTo:
       begin
