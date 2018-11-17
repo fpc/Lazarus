@@ -1390,7 +1390,11 @@ begin
         if AWatchValue <> nil then
           begin
           AWatchValue.Value := AResText; //IntToStr(APasExpr.ResultValue.AsInteger);
-          AWatchValue.Validity := ddsValid;
+          AWatchValue.TypeInfo := ATypeInfo;
+          if IsError(ResValue.LastError) then
+            AWatchValue.Validity := ddsError
+          else
+            AWatchValue.Validity := ddsValid;
           end;
         end
       else
@@ -1398,6 +1402,7 @@ begin
         AResText := 'Error';
         if AWatchValue <> nil then
           AWatchValue.Validity := ddsInvalid;
+        FreeAndNil(ATypeInfo);
         end;
       end;
   finally
@@ -1473,7 +1478,6 @@ begin
   WatchValue.RemoveFreeNotification(@DoWatchFreed);
 
   EvaluateExpression(WatchValue, WatchValue.Expression, AVal, AType);
-  AType.Free;
 
   if (not FWatchAsyncQueued) and (FWatchEvalList.Count > 0) then
     begin
