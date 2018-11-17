@@ -196,6 +196,7 @@ begin
   FFileName := AFileName;
   FFileLoader := TDbgFileLoader.Create(AFileName);
   FImgReader := GetImageReader(FFileLoader, ADebugMap, True);
+  if FImgReader = nil then FreeAndNil(FFileLoader);
 end;
 
 procedure TDbgImageLoader.ParseSymbolTable(AFpSymbolInfo: TfpSymbolList);
@@ -209,6 +210,7 @@ constructor TDbgImageLoader.Create(AFileHandle: THandle; ADebugMap: TObject = ni
 begin
   FFileLoader := TDbgFileLoader.Create(AFileHandle);
   FImgReader := GetImageReader(FFileLoader, ADebugMap, True);
+  if FImgReader = nil then FreeAndNil(FFileLoader);
 end;
 {$endif}
 
