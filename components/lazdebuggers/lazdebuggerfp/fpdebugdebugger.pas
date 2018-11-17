@@ -251,6 +251,7 @@ type
     procedure DoStateEnterPause; override;
   public
     procedure RequestMasterData; override;
+    procedure ChangeCurrentThread(ANewId: Integer); override;
   end;
 
   { TFPDBGDisassembler }
@@ -365,6 +366,7 @@ begin
   ThreadArray := TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.GetThreadArray;
   for i := 0 to high(ThreadArray) do
     begin
+    ThreadArray[i].PrepareCallStackEntryList(1);
     CallStack := ThreadArray[i].CallStackEntryList;
     if ThreadArray[i].ID = TFpDebugDebugger(Debugger).FDbgController.CurrentThread.ID then
       State := 'stopped'
@@ -406,6 +408,19 @@ begin
   else
     CurrentThreads.CurrentThreadId := TFpDebugDebugger(Debugger).FDbgController.CurrentThread.ID;
   CurrentThreads.SetValidity(ddsValid);
+end;
+
+procedure TFPThreads.ChangeCurrentThread(ANewId: Integer);
+begin
+  inherited ChangeCurrentThread(ANewId);
+  if not(Debugger.State in [dsPause, dsInternalPause]) then exit;
+
+  {$IFDEF windows}
+  TFpDebugDebugger(Debugger).FDbgController.CurrentThreadId := ANewId;
+  if CurrentThreads <> nil
+  then CurrentThreads.CurrentThreadId := ANewId;
+  Changed;
+  {$ENDIF}
 end;
 
 { TFpDebugDebuggerProperties }
@@ -517,9 +532,9 @@ end;
 procedure TFPCallStackSupplier.DoStateLeavePause;
 begin
   if (TFpDebugDebugger(Debugger).FDbgController <> nil) and
-     (TFpDebugDebugger(Debugger).FDbgController.CurrentThread <> nil)
+     (TFpDebugDebugger(Debugger).FDbgController.CurrentProcess <> nil)
   then
-    TFpDebugDebugger(Debugger).FDbgController.CurrentThread.ClearCallStack;
+    TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.ThreadsClearCallStack;
   inherited DoStateLeavePause;
 end;
 
@@ -1663,8 +1678,8 @@ end;
 
 procedure TFpDebugDebugger.FDbgControllerCreateProcessEvent(var continue: boolean);
 begin
-  // This will trigger setting the breakpoints, but won't trigger the evaluation
-  // of the callstack or disassembler.
+  // This will trigger setting the breakpoints,
+  // may also trigger the evaluation of the callstack or disassembler.
   SetState(dsInternalPause);
 
   if not SetSoftwareExceptionBreakpoint then
@@ -1857,6 +1872,13 @@ begin
     {$ifdef DBG_FPDEBUG_VERBOSE}
     DebugLn('DebugLoopFinished');
     {$endif DBG_FPDEBUG_VERBOSE}
+
+    (* Need to ensure CurrentThreadId is correct,
+       because any callstack (never mind which to which IDE-thread object it belongs
+       will always get the data for the current thread only
+     TODO: callstacks need a field with the thread-id to which they belong *)
+    if (Threads <> nil) and (Threads.CurrentThreads <> nil) then
+      Threads.CurrentThreads.CurrentThreadId := FDbgController.CurrentThreadId;
 
     FDbgController.SendEvents(Cont); // This may free the TFpDebugDebugger (self)
 

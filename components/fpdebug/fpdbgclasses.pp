@@ -341,6 +341,8 @@ type
 
     function AddThread(AThreadIdentifier: THandle): TDbgThread;
     function GetThreadArray: TFPDThreadArray;
+    procedure ThreadsBeforeContinue;
+    procedure ThreadsClearCallStack;
     procedure LoadInfo; override;
 
     function WriteData(const AAdress: TDbgPtr; const ASize: Cardinal; const AData): Boolean; virtual;
@@ -1025,6 +1027,44 @@ begin
       Iterator.GetData(Thread);
       Result[I] := Thread;
       Inc(I);
+      iterator.Next;
+    end;
+  finally
+    Iterator.Free;
+  end;
+end;
+
+procedure TDbgProcess.ThreadsBeforeContinue;
+var
+  Iterator: TMapIterator;
+  Thread: TDbgThread;
+begin
+  Iterator := TMapIterator.Create(FThreadMap);
+  try
+    Iterator.First;
+    while not Iterator.EOM do
+    begin
+      Iterator.GetData(Thread);
+      Thread.BeforeContinue;
+      iterator.Next;
+    end;
+  finally
+    Iterator.Free;
+  end;
+end;
+
+procedure TDbgProcess.ThreadsClearCallStack;
+var
+  Iterator: TMapIterator;
+  Thread: TDbgThread;
+begin
+  Iterator := TMapIterator.Create(FThreadMap);
+  try
+    Iterator.First;
+    while not Iterator.EOM do
+    begin
+      Iterator.GetData(Thread);
+      Thread.ClearCallStack;
       iterator.Next;
     end;
   finally

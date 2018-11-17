@@ -515,9 +515,9 @@ begin
       AThread.NextIsSingleStep:=SingleStep;
       if SingleStep or assigned(FCurrentBreakpoint) then
         TDbgWinThread(AThread).SetSingleStep;
-      AThread.BeforeContinue;
     end;
   end;
+  AProcess.ThreadsBeforeContinue;
 
   case MDebugEvent.Exception.ExceptionRecord.ExceptionCode of
    EXCEPTION_BREAKPOINT,

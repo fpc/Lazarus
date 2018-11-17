@@ -143,6 +143,8 @@ type
     FConsoleTty: string;
     FRedirectConsoleOutput: boolean;
     FWorkingDirectory: string;
+    function GetCurrentThreadId: Integer;
+    procedure SetCurrentThreadId(AValue: Integer);
     procedure SetEnvironment(AValue: TStrings);
     procedure SetExecutableFilename(AValue: string);
     procedure SetOnLog(AValue: TOnLog);
@@ -175,6 +177,7 @@ type
     property OnLog: TOnLog read FOnLog write SetOnLog;
     property CurrentProcess: TDbgProcess read FCurrentProcess;
     property CurrentThread: TDbgThread read FCurrentThread;
+    property CurrentThreadId: Integer read GetCurrentThreadId write SetCurrentThreadId;
     property MainProcess: TDbgProcess read FMainProcess;
     property Params: TStringList read FParams write SetParams;
     property Environment: TStrings read FEnvironment write SetEnvironment;
@@ -615,6 +618,25 @@ procedure TDbgController.SetEnvironment(AValue: TStrings);
 begin
   if FEnvironment=AValue then Exit;
   FEnvironment.Assign(AValue);
+end;
+
+function TDbgController.GetCurrentThreadId: Integer;
+begin
+  Result := FCurrentThread.ID;
+end;
+
+procedure TDbgController.SetCurrentThreadId(AValue: Integer);
+var
+  ExistingThread: TDbgThread;
+begin
+  if FCurrentThread.ID = AValue then Exit;
+
+  if not FCurrentProcess.GetThread(AValue, ExistingThread) then begin
+    debugln(['SetCurrentThread() unknown thread id: ', AValue]);
+    // raise ...
+    exit;
+  end;
+  FCurrentThread := ExistingThread;
 end;
 
 procedure TDbgController.SetOnLog(AValue: TOnLog);
