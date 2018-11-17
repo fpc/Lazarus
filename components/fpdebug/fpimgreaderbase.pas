@@ -186,7 +186,7 @@ begin
   FModulePtr := MapViewOfFile(FMapHandle, FILE_MAP_READ, 0, 0, 0);
   if FModulePtr = nil
   then begin
-    raise Exception.Create('Could not map view');
+    raise Exception.Create('Could not map view: ' + IntToStr(GetLastOSError));
     Exit;
   end;
 
