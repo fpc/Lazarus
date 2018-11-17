@@ -739,7 +739,8 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
         if (m = nil) or (m.Kind in [skProcedure, skFunction]) then
           continue;
         s := '';
-        InternalPrintValue(MbVal, m, AnAddressSize, fl, ANestLevel+1, AnIndent, ADisplayFormat, -1, nil, AOptions);
+        // ppoStackParam: Do not expand nested structures // may need ppoSingleLine?
+        InternalPrintValue(MbVal, m, AnAddressSize, fl, ANestLevel+1, AnIndent, ADisplayFormat, -1, nil, AOptions+[ppoStackParam]);
         if m.DbgSymbol <> nil then begin
           MbName := m.DbgSymbol.Name;
           s := MbName + ' = ' + MbVal;
@@ -752,7 +753,7 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
         if not Result then begin
           if APrintedValue = ''
           then APrintedValue := s
-          else APrintedValue := APrintedValue + '; ' + s2 + s;
+          else APrintedValue := APrintedValue + ';' + LineEnding + s2 + s;
         end;
         if (ppvCreateDbgType in AFlags) then begin
           s := '';
