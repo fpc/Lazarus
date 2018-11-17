@@ -65,7 +65,6 @@ function GetLastErrorText: String; {$IFNDEF FPC} overload; {$ENDIF}
 
 {$ifdef windows}
 var
-  GCurrentContext: PContext;
   MDebugEvent: TDebugEvent;
 {$endif}
 
@@ -121,17 +120,5 @@ begin
 {$endif}
 end;
 
-{$ifdef windows}
-var
-  _UnAligendContext: record
-    C: TContext;
-    dummy: array[1..16] of byte;
-  end;
-
-
-initialization
-
-  GCurrentContext := Pointer((PtrUInt(@_UnAligendContext) + 15) and not PtrUInt($F));
-{$endif}
 end.
 

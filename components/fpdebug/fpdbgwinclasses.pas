@@ -58,6 +58,11 @@ type
   TDbgWinThread = class(TDbgThread)
   protected
     FThreadContextChanged: boolean;
+    FCurrentContext: PContext; // FCurrentContext := Pointer((PtrUInt(@_UnAligendContext) + 15) and not PtrUInt($F));
+    _UnAligendContext: record
+      C: TContext;
+      dummy: array[1..16] of byte;
+    end;
     procedure LoadRegisterValues; override;
   public
     procedure SetSingleStep;
@@ -687,19 +692,20 @@ function TDbgWinProcess.AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent;
     DebugLn('Thread ID: '+ IntToStr(MDebugEvent.dwThreadId));
 
     if AThread = nil then Exit;
+    if TDbgWinThread(AThread).FCurrentContext = nil then Exit;
 
 {$PUSH}{$R-}
     {$ifdef cpui386}
-    with GCurrentContext^ do DebugLn(Format('DS: 0x%x, ES: 0x%x, FS: 0x%x, GS: 0x%x', [SegDs, SegEs, SegFs, SegGs]));
-    with GCurrentContext^ do DebugLn(Format('EAX: 0x%x, EBX: 0x%x, ECX: 0x%x, EDX: 0x%x, EDI: 0x%x, ESI: 0x%x', [Eax, Ebx, Ecx, Edx, Edi, Esi]));
-    with GCurrentContext^ do DebugLn(Format('CS: 0x%x, SS: 0x%x, EBP: 0x%x, EIP: 0x%x, ESP: 0x%x, EFlags: 0x%x [', [SegCs, SegSs, Ebp, Eip, Esp, EFlags]));
+    with TDbgWinThread(AThread).FCurrentContext^ do DebugLn(Format('DS: 0x%x, ES: 0x%x, FS: 0x%x, GS: 0x%x', [SegDs, SegEs, SegFs, SegGs]));
+    with TDbgWinThread(AThread).FCurrentContext^ do DebugLn(Format('EAX: 0x%x, EBX: 0x%x, ECX: 0x%x, EDX: 0x%x, EDI: 0x%x, ESI: 0x%x', [Eax, Ebx, Ecx, Edx, Edi, Esi]));
+    with TDbgWinThread(AThread).FCurrentContext^ do DebugLn(Format('CS: 0x%x, SS: 0x%x, EBP: 0x%x, EIP: 0x%x, ESP: 0x%x, EFlags: 0x%x [', [SegCs, SegSs, Ebp, Eip, Esp, EFlags]));
     {$else}
-    with GCurrentContext^ do DebugLn(Format('SegDS: 0x%4.4x, SegES: 0x%4.4x, SegFS: 0x%4.4x, SegGS: 0x%4.4x', [SegDs, SegEs, SegFs, SegGs]));
-    with GCurrentContext^ do DebugLn(Format('RAX: 0x%16.16x, RBX: 0x%16.16x, RCX: 0x%16.16x, RDX: 0x%16.16x, RDI: 0x%16.16x, RSI: 0x%16.16x, R9: 0x%16.16x, R10: 0x%16.16x, R11: 0x%16.16x, R12: 0x%16.16x, R13: 0x%16.16x, R14: 0x%16.16x, R15: 0x%16.16x', [Rax, Rbx, Rcx, Rdx, Rdi, Rsi, R9, R10, R11, R12, R13, R14, R15]));
-    with GCurrentContext^ do DebugLn(Format('SegCS: 0x%4.4x, SegSS: 0x%4.4x, RBP: 0x%16.16x, RIP: 0x%16.16x, RSP: 0x%16.16x, EFlags: 0x%8.8x [', [SegCs, SegSs, Rbp, Rip, Rsp, EFlags]));
+    with TDbgWinThread(AThread).FCurrentContext^ do DebugLn(Format('SegDS: 0x%4.4x, SegES: 0x%4.4x, SegFS: 0x%4.4x, SegGS: 0x%4.4x', [SegDs, SegEs, SegFs, SegGs]));
+    with TDbgWinThread(AThread).FCurrentContext^ do DebugLn(Format('RAX: 0x%16.16x, RBX: 0x%16.16x, RCX: 0x%16.16x, RDX: 0x%16.16x, RDI: 0x%16.16x, RSI: 0x%16.16x, R9: 0x%16.16x, R10: 0x%16.16x, R11: 0x%16.16x, R12: 0x%16.16x, R13: 0x%16.16x, R14: 0x%16.16x, R15: 0x%16.16x', [Rax, Rbx, Rcx, Rdx, Rdi, Rsi, R9, R10, R11, R12, R13, R14, R15]));
+    with TDbgWinThread(AThread).FCurrentContext^ do DebugLn(Format('SegCS: 0x%4.4x, SegSS: 0x%4.4x, RBP: 0x%16.16x, RIP: 0x%16.16x, RSP: 0x%16.16x, EFlags: 0x%8.8x [', [SegCs, SegSs, Rbp, Rip, Rsp, EFlags]));
     {$endif}
     // luckely flag and debug registers are named the same
-    with GCurrentContext^ do
+    with TDbgWinThread(AThread).FCurrentContext^ do
     begin
       if EFlags and (1 shl 0) <> 0 then DebugLn('CF ');
       if EFlags and (1 shl 2) <> 0 then DebugLn('PF ');
@@ -783,8 +789,6 @@ begin
   if HandleDebugEvent(MDebugEvent)
   then result := deBreakpoint
   else begin
-    FillChar(GCurrentContext^, SizeOf(GCurrentContext^), $EE);
-
     if AThread <> nil
     then begin
       // TODO: move to TDbgThread
@@ -1009,8 +1013,10 @@ end;
 
 procedure TDbgWinThread.LoadRegisterValues;
 begin
+  if FCurrentContext = nil then
+    ReadThreadState;
   {$ifdef cpui386}
-  with GCurrentContext^ do
+  with FCurrentContext^ do
   begin
     FRegisterValueList.DbgRegisterAutoCreate['eax'].SetValue(Eax, IntToStr(Eax),4,0);
     FRegisterValueList.DbgRegisterAutoCreate['ecx'].SetValue(Ecx, IntToStr(Ecx),4,1);
@@ -1032,7 +1038,7 @@ begin
     FRegisterValueList.DbgRegisterAutoCreate['gs'].SetValue(SegGs, IntToStr(SegGs),4,0);
   end;
 {$else}
-  with GCurrentContext^ do
+  with FCurrentContext^ do
   begin
     FRegisterValueList.DbgRegisterAutoCreate['rax'].SetValue(rax, IntToStr(rax),8,0);
     FRegisterValueList.DbgRegisterAutoCreate['rbx'].SetValue(rbx, IntToStr(rbx),8,3);
@@ -1068,17 +1074,19 @@ end;
 
 procedure TDbgWinThread.SetSingleStep;
 begin
-  GCurrentContext^.EFlags := GCurrentContext^.EFlags or FLAG_TRACE_BIT;
+  if FCurrentContext = nil then
+    ReadThreadState;
+  FCurrentContext^.EFlags := FCurrentContext^.EFlags or FLAG_TRACE_BIT;
   FThreadContextChanged:=true;
 end;
 
 function TDbgWinThread.AddWatchpoint(AnAddr: TDBGPtr): integer;
   function SetBreakpoint(var dr: {$ifdef cpui386}DWORD{$else}DWORD64{$endif}; ind: byte): boolean;
   begin
-    if (Dr=0) and ((GCurrentContext^.Dr7 and (1 shl ind))=0) then
+    if (Dr=0) and ((FCurrentContext^.Dr7 and (1 shl ind))=0) then
     begin
-      GCurrentContext^.Dr7 := GCurrentContext^.Dr7 or (1 shl (ind*2));
-      GCurrentContext^.Dr7 := GCurrentContext^.Dr7 or ($30000 shl (ind*4));
+      FCurrentContext^.Dr7 := FCurrentContext^.Dr7 or (1 shl (ind*2));
+      FCurrentContext^.Dr7 := FCurrentContext^.Dr7 or ($30000 shl (ind*4));
       Dr:=AnAddr;
       FThreadContextChanged:=true;
       Result := True;
@@ -1088,14 +1096,16 @@ function TDbgWinThread.AddWatchpoint(AnAddr: TDBGPtr): integer;
   end;
 
 begin
+  if FCurrentContext = nil then
+    ReadThreadState;
   result := -1;
-  if SetBreakpoint(GCurrentContext^.Dr0, 0) then
+  if SetBreakpoint(FCurrentContext^.Dr0, 0) then
     result := 0
-  else if SetBreakpoint(GCurrentContext^.Dr1, 1) then
+  else if SetBreakpoint(FCurrentContext^.Dr1, 1) then
     result := 1
-  else if SetBreakpoint(GCurrentContext^.Dr2, 2) then
+  else if SetBreakpoint(FCurrentContext^.Dr2, 2) then
     result := 2
-  else if SetBreakpoint(GCurrentContext^.Dr3, 3) then
+  else if SetBreakpoint(FCurrentContext^.Dr3, 3) then
     result := 3
   else
     Process.Log('No hardware breakpoint available.');
@@ -1105,10 +1115,10 @@ function TDbgWinThread.RemoveWatchpoint(AnId: integer): boolean;
 
   function RemoveBreakpoint(var dr: {$ifdef cpui386}DWORD{$else}DWORD64{$endif}; ind: byte): boolean;
   begin
-    if (Dr<>0) and ((GCurrentContext^.Dr7 and (1 shl (ind*2)))<>0) then
+    if (Dr<>0) and ((FCurrentContext^.Dr7 and (1 shl (ind*2)))<>0) then
     begin
-      GCurrentContext^.Dr7 := GCurrentContext^.Dr7 xor (1 shl (ind*2));
-      GCurrentContext^.Dr7 := GCurrentContext^.Dr7 xor ($30000 shl (ind*4));
+      FCurrentContext^.Dr7 := FCurrentContext^.Dr7 xor (1 shl (ind*2));
+      FCurrentContext^.Dr7 := FCurrentContext^.Dr7 xor ($30000 shl (ind*4));
       Dr:=0;
       FThreadContextChanged:=true;
       Result := True;
@@ -1121,29 +1131,35 @@ function TDbgWinThread.RemoveWatchpoint(AnId: integer): boolean;
   end;
 
 begin
+  if FCurrentContext = nil then
+    ReadThreadState;
   case AnId of
-    0: result := RemoveBreakpoint(GCurrentContext^.Dr0, 0);
-    1: result := RemoveBreakpoint(GCurrentContext^.Dr1, 1);
-    2: result := RemoveBreakpoint(GCurrentContext^.Dr2, 2);
-    3: result := RemoveBreakpoint(GCurrentContext^.Dr3, 3);
+    0: result := RemoveBreakpoint(FCurrentContext^.Dr0, 0);
+    1: result := RemoveBreakpoint(FCurrentContext^.Dr1, 1);
+    2: result := RemoveBreakpoint(FCurrentContext^.Dr2, 2);
+    3: result := RemoveBreakpoint(FCurrentContext^.Dr3, 3);
   end
 end;
 
 procedure TDbgWinThread.BeforeContinue;
 begin
-  if GCurrentContext^.Dr6 <> $ffff0ff0 then
+  if (FCurrentContext <> nil) and
+     (FCurrentContext^.Dr6 <> $ffff0ff0) then
   begin
-    GCurrentContext^.Dr6:=$ffff0ff0;
+    FCurrentContext^.Dr6:=$ffff0ff0;
     FThreadContextChanged:=true;
   end;
 
   if FThreadContextChanged then
   begin
-    if SetThreadContext(Handle, GCurrentContext^) then
+    Assert(FCurrentContext <> nil, 'TDbgWinThread.BeforeContinue: none existing context was changed');
+    if SetThreadContext(Handle, FCurrentContext^) then
       FThreadContextChanged:=false
     else
       Log('Thread %u: Unable to set context', [ID])
   end;
+  FThreadContextChanged := False;
+  FCurrentContext := nil;
 end;
 
 function TDbgWinThread.ResetInstructionPointerAfterBreakpoint: boolean;
@@ -1173,13 +1189,16 @@ begin
     Exit;
   end;
 
+  if FCurrentContext = nil then
+    ReadThreadState;
+
   Context^.ContextFlags := CONTEXT_CONTROL;
   {$ifdef cpui386}
   Dec(Context^.Eip);
-  dec(GCurrentContext^.Eip);
+  dec(FCurrentContext^.Eip);
   {$else}
   Dec(Context^.Rip);
-  dec(GCurrentContext^.Rip);
+  dec(FCurrentContext^.Rip);
   {$endif}
 
   if not SetThreadContext(Handle, Context^)
@@ -1193,36 +1212,43 @@ end;
 
 function TDbgWinThread.ReadThreadState: boolean;
 begin
-  GCurrentContext^.ContextFlags := CONTEXT_SEGMENTS or CONTEXT_INTEGER or CONTEXT_CONTROL or CONTEXT_DEBUG_REGISTERS;
+  FCurrentContext := Pointer((PtrUInt(@_UnAligendContext) + 15) and not PtrUInt($F));
+  FCurrentContext^.ContextFlags := CONTEXT_SEGMENTS or CONTEXT_INTEGER or CONTEXT_CONTROL or CONTEXT_DEBUG_REGISTERS;
   SetLastError(0);
-  result := GetThreadContext(Handle, GCurrentContext^);
+  result := GetThreadContext(Handle, FCurrentContext^);
   FRegisterValueListValid:=False;
 end;
 
 function TDbgWinThread.GetInstructionPointerRegisterValue: TDbgPtr;
 begin
+  if FCurrentContext = nil then
+    ReadThreadState;
 {$ifdef cpui386}
-  Result := GCurrentContext^.Eip;
+  Result := FCurrentContext^.Eip;
 {$else}
-  Result := GCurrentContext^.Rip;
+  Result := FCurrentContext^.Rip;
 {$endif}
 end;
 
 function TDbgWinThread.GetStackBasePointerRegisterValue: TDbgPtr;
 begin
+  if FCurrentContext = nil then
+    ReadThreadState;
 {$ifdef cpui386}
-  Result := GCurrentContext^.Ebp;
+  Result := FCurrentContext^.Ebp;
 {$else}
-  Result := GCurrentContext^.Rbp;
+  Result := FCurrentContext^.Rbp;
 {$endif}
 end;
 
 function TDbgWinThread.GetStackPointerRegisterValue: TDbgPtr;
 begin
+  if FCurrentContext = nil then
+    ReadThreadState;
 {$ifdef cpui386}
-  Result := GCurrentContext^.Esp;
+  Result := FCurrentContext^.Esp;
 {$else}
-  Result := GCurrentContext^.Rsp;
+  Result := FCurrentContext^.Rsp;
 {$endif}
 end;
 
