@@ -118,6 +118,7 @@ begin
 
   ATextPropertyName := '';
   AText := '';
+  Result:=false;
 end;
 
 procedure SetComponentText(AComponent: TComponent; AText, ATextPropertyName: string);
