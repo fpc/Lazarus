@@ -7740,6 +7740,7 @@ function QPrinterInfo_isNull(handle: QPrinterInfoH): Boolean; cdecl; external Qt
 function QPrinterInfo_isDefault(handle: QPrinterInfoH): Boolean; cdecl; external Qt5PasLib name 'QPrinterInfo_isDefault';
 procedure QPrinterInfo_supportedPaperSizes(handle: QPrinterInfoH; retval: PPtrIntArray); cdecl; external Qt5PasLib name 'QPrinterInfo_supportedPaperSizes';
 procedure QPrinterInfo_availablePrinters(retval: PPtrIntArray); cdecl; external Qt5PasLib name 'QPrinterInfo_availablePrinters';
+procedure QPrinterInfo_availablePrinterNames(retval: QStringListH); cdecl; external Qt5PasLib name 'QPrinterInfo_availablePrinterNames';
 procedure QPrinterInfo_defaultPrinter(retval: QPrinterInfoH); cdecl; external Qt5PasLib name 'QPrinterInfo_defaultPrinter';
 procedure QPrinterInfo_printerInfo(retval: QPrinterInfoH; printerName: PWideString); cdecl; external Qt5PasLib name 'QPrinterInfo_printerInfo';
 
