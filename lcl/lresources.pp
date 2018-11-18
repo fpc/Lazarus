@@ -374,8 +374,8 @@ type
     procedure HandleAlphaNum;
     procedure HandleNumber;
     procedure HandleHexNumber;
-    function HandleQuotedString : string;
-    function HandleDecimalString(var IsWideString: Boolean): string;
+    function HandleQuotedString: string;
+    function HandleDecimalString: string;
     procedure HandleString;
     procedure HandleMinus;
     procedure HandleUnknown;
@@ -5628,8 +5628,9 @@ begin
   end;
 end;
 
-function TUTF8Parser.HandleDecimalString(var IsWideString: Boolean): string;
-var i : integer;
+function TUTF8Parser.HandleDecimalString: string;
+var
+  i: integer;
 begin
   Result:='';
   inc(fPos);
@@ -5642,13 +5643,7 @@ begin
   end;
   if not TryStrToInt(Result,i) then
     i:=0;
-  if i > 255 then begin
-    Result:=UnicodeToUTF8(i); // widestring
-    IsWideString:=true;
-  end else if i > 127 then
-    Result:=SysToUTF8(chr(i)) // windows codepage
-  else
-    Result:=chr(i); // ascii, does not happen
+  Result:=UnicodeToUTF8(i); // widestring
 end;
 
 procedure TUTF8Parser.HandleString;
@@ -5660,12 +5655,15 @@ begin
   while true do begin
     case fBuf[fPos] of
       '''' : fLastTokenStr:=fLastTokenStr+HandleQuotedString;
-      '#'  : fLastTokenStr:=fLastTokenStr+HandleDecimalString(IsWideString);
+      '#'  : begin
+               fLastTokenStr:=fLastTokenStr+HandleDecimalString;
+               IsWideString:=true;
+             end;
       else break;
     end;
   end;
   if IsWideString then
-    fToken:=toWString
+    fToken:=Classes.toWString
   else
     fToken:=Classes.toString;
 end;
