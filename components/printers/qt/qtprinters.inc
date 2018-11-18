@@ -151,6 +151,9 @@ var
   PrinterList: TStringList;
   Info: QPrinterInfoH;
   Arr: TPtrIntArray;
+  {$IFDEF LCLQt5}
+  APrnName: WideString;
+  {$ENDIF}
   CurrentPageSize, PageSize: QtLCLPrinterPageSize;
   Index: Integer;
   customPaperAdded: boolean;
@@ -221,8 +224,17 @@ begin
     Index := PrinterList.IndexOf(UTF8Encode(QtDefaultPrinter.PrinterName));
     if Index>=0 then
     begin
+      {$IFDEF LCLQt5}
+      Info := QPrinterInfo_create();
+      APrnName := PrinterList{%H-}[Index];
+      QPrinterInfo_printerInfo(Info, @APrnName);
+      {$ELSE}
       Info := QPrinterInfoH(PrinterList.Objects[Index]);
+      {$ENDIF}
       QPrinterInfo_supportedPaperSizes(Info, @Arr);
+      {$IFDEF LCLQt5}
+      QPrinterInfo_destroy(Info);
+      {$ENDIF}
       for PageSize in Arr do
         {$IFDEF LCLQt5}
         for Index := QPagedPaintDeviceA4 to QPagedPaintDeviceCustom do
