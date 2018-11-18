@@ -264,7 +264,7 @@ type
   private
     FAutoUseSingleIdent: Boolean;
     Form: TSynBaseCompletionForm;
-    FAddedPersistentCaret: boolean;
+    FAddedPersistentCaret, FChangedNoneBlink: boolean;
     FOnExecute: TNotifyEvent;
     FWidth: Integer;
     function GetCaseSensitive: boolean;
@@ -1458,6 +1458,7 @@ begin
 
   //Todo: This is dangerous, if other plugins also change/changed the flag.
   FAddedPersistentCaret := False;
+  FChangedNoneBlink := False;
 
   CurrentString := s;
   if Assigned(OnExecute) then
@@ -1474,8 +1475,11 @@ begin
   if (Form.CurrentEditor is TCustomSynEdit) then begin
     CurSynEdit:=TCustomSynEdit(Form.CurrentEditor);
     FAddedPersistentCaret := not(eoPersistentCaret in CurSynEdit.Options);
+    FChangedNoneBlink := (eoPersistentCaretStopBlink in CurSynEdit.Options2);
     if FAddedPersistentCaret then
       CurSynEdit.Options:=CurSynEdit.Options+[eoPersistentCaret];
+    if FChangedNoneBlink then
+      CurSynEdit.Options2:=CurSynEdit.Options2-[eoPersistentCaretStopBlink];
   end;
   Form.SetBounds(x,y,Form.Width,Form.Height);
   Form.Show;
@@ -1713,11 +1717,13 @@ procedure TSynBaseCompletion.Deactivate;
 var
   CurSynEdit: TCustomSynEdit;
 begin
-  if FAddedPersistentCaret and
-     (Form<>nil) and (Form.CurrentEditor is TCustomSynEdit)
+  if (Form<>nil) and (Form.CurrentEditor is TCustomSynEdit)
   then begin
     CurSynEdit:=TCustomSynEdit(Form.CurrentEditor);
-    CurSynEdit.Options:=CurSynEdit.Options-[eoPersistentCaret];
+    if FAddedPersistentCaret then
+      CurSynEdit.Options:=CurSynEdit.Options-[eoPersistentCaret];
+    if FChangedNoneBlink then
+      CurSynEdit.Options2:=CurSynEdit.Options2+[eoPersistentCaretStopBlink];
   end;
   if Assigned(Form) then Form.Deactivate;
 end;
