@@ -383,8 +383,12 @@ begin
             QStyleCC_TitleBar, QStyleCC_MdiControls:
             begin
               opt := QStyleOptionTitleBar_create();
-              QStyleOptionTitleBar_setTitleBarFlags(QStyleOptionTitleBarH(opt),
-                QtWindow or QtWindowSystemMenuHint);
+              if Element.SubControls = QStyleSC_TitleBarLabel then
+                QStyleOptionTitleBar_setTitleBarFlags(QStyleOptionTitleBarH(opt),
+                  QtWindow or QtWindowTitleHint)
+              else
+                QStyleOptionTitleBar_setTitleBarFlags(QStyleOptionTitleBarH(opt),
+                  QtWindow or QtWindowSystemMenuHint);
               // workaround: qt has own minds about position of requested part -
               // but we need a way to draw it at our position
               Context.translate(ARect.Left, ARect.Top);
@@ -827,7 +831,8 @@ begin
   end;
   if (Details.Element = teWindow) then
   begin
-    if Details.Part in [WP_FRAMELEFT,
+    if Details.Part in [WP_SMALLCAPTION,
+          WP_FRAMELEFT,
           WP_FRAMERIGHT,
           WP_FRAMEBOTTOM,
           WP_SMALLFRAMELEFT,
@@ -1116,7 +1121,7 @@ begin
             Result.StandardPixmap := QStyleSP_TitleBarCloseButton;
             exit;
           end;
-
+          WP_SMALLCAPTION: Result.SubControls := QStyleSC_TitleBarLabel;
           WP_SYSBUTTON: Result.SubControls := QStyleSC_TitleBarSysMenu;
           WP_MINBUTTON: Result.SubControls := QStyleSC_TitleBarMinButton;
           WP_MAXBUTTON: Result.SubControls := QStyleSC_TitleBarMaxButton;
