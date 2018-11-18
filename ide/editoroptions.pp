@@ -5390,7 +5390,6 @@ function TEditorOptions.GetColorSchemeLanguage(aHighLighter: TSynCustomHighlight
   SynColorSchemeName: String): TColorSchemeLanguage;
 var
   Scheme: TColorScheme;
-  LangScheme: TColorSchemeLanguage;
 begin
   Result := nil;
   // initialize with defaults
@@ -5636,8 +5635,6 @@ end;
 procedure TEditorOptions.SetMarkupColors(aSynEd: TSynEdit);
 var
   Scheme: TColorSchemeLanguage;
-  SchemeGrp: TColorScheme;
-  SynColorScheme: String;
 begin
   // Find current color scheme for default colors
   if (aSynEd.Highlighter = nil) then begin
@@ -5655,7 +5652,6 @@ end;
 procedure TEditorOptions.SetMarkupColor(Syn : TSrcIDEHighlighter;
   AddHilightAttr : TAdditionalHilightAttribute; aMarkup : TSynSelectedColor);
 var
-  SynColorScheme: String;
   SchemeGrp: TColorScheme;
   Scheme: TColorSchemeLanguage;
   Attrib: TColorSchemeAttribute;
