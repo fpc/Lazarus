@@ -2628,6 +2628,7 @@ begin
   {$ELSE}
   Interval := 500;
   {$ENDIF}
+  RestartCycle;
 end;
 
 procedure TSynEditScreenCaretTimer.RestartCycle;
