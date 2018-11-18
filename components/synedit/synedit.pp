@@ -61,6 +61,35 @@ unit SynEdit;
                            // gtk2.12 paints faster directly
 {$ENDIF}
 
+{$IFDEF Windows}
+  (* * On Windows 10 there is an issue, where under certain conditions a "ghost" of the text caret remains visible.
+     That is one or a series of vertical black lines remain on the screen.
+     * This can be reproduced, by moving part (eg bottom) of editor off screen (not just behind the taskbar, but
+     off screen). Then press caret down to scroll. Ghost carets will scroll in with the new text.
+     Similar move caret to a place off-screen, unfocus editor, and refocus by clicking into the editor (move caret
+     while setting focus).
+     To reproduce, the editor must have a visible gutter; and must not have "current line" highlight.
+     * The conditions to cause this:
+     - Caret must be in part of editor that is outside the screen.
+     - Carte must be destroyed (maybe only hidden?), or ScrollWindowEx must affect caret
+     - Caret must be in a part of the editor for which NO call to "invalidate" was made,
+       but which will be repainted.
+       E.g. the gutter, but not the line area received an invalidate, and another line above/below was invalidated
+       (can happen through ScrollWindowEx). -> In this case the paint message receives a rect, that contains the caret,
+       even though the part containing the caret was never explicitly invalidated.
+     If this happens, while the caret is on screen (even if hidden behind another window/taskbar) then all works ok.
+     But if the caret was off screen, a permanent image of the caret will remain (once scrolled/moved into the screen area).
+     It seem that in this case windows does not update the information, that the caret became "invisible" when paint did paint
+     over it. So if the already overpainted caret, is later (by Windows) attempted to be hidden by a final "xor", then it actually
+     is made permanently visible.
+
+     As a solution, in the above conditions, the full line (actually the text part with the caret) must be invalidated too.
+     Since this is hard to track, the workaround will invalidate the full line, in any case that potentially could meet the
+     conditions
+  *)
+  {$DEFINE Windows10GhostCaretIssue}
+{$ENDIF}
+
 interface
 
 { $DEFINE SYNSCROLLDEBUG}
@@ -2822,6 +2851,10 @@ begin
   if Visible and HandleAllocated then begin
     {$IFDEF VerboseSynEditInvalidate}
     DebugLnEnter(['TCustomSynEdit.InvalidateGutterLines ',DbgSName(self), ' FirstLine=',FirstLine, ' LastLine=',LastLine]);
+    {$ENDIF}
+    {$IFDEF Windows10GhostCaretIssue}
+    if (FLeftGutter.Visible or FRightGutter.Visible) and (sfCaretChanged in fStateFlags) then
+      InvalidateLines(FirstLine, LastLine);
     {$ENDIF}
     if (FirstLine = -1) and (LastLine = -1) then begin
       FPaintArea.InvalidateGutterLines(-1, -1);
