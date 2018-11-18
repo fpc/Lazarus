@@ -266,7 +266,6 @@ type
     procedure SelectDateTimePart(const DateTimePart: TDateTimePart);
     procedure MoveSelectionLR(const ToLeft: Boolean);
     procedure DestroyCalendarForm;
-    procedure DropDownCalendarForm;
     procedure UpdateShowArrowButton;
     procedure DestroyUpDown;
     procedure DestroyArrowBtn;
@@ -287,6 +286,8 @@ type
 
     procedure ConfirmChanges; virtual;
     procedure UndoChanges; virtual;
+
+    procedure DropDownCalendarForm;
 
     function GetCheckBoxRect(IgnoreRightToLeft: Boolean = False): TRect;
     function GetDateTimePartFromTextPart(TextPart: TTextPart): TDateTimePart;
