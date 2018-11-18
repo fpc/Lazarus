@@ -35,7 +35,7 @@ unit PseudoTerminalDlg;
 interface
 
 uses
-  IDEWindowIntf, Classes, Graphics, Forms, StdCtrls, DebuggerDlg,
+  IDEWindowIntf, LazUTF8, Classes, Graphics, Forms, StdCtrls, DebuggerDlg,
   BaseDebugManager, LazarusIDEStrConsts, LCLType, ComCtrls, ExtCtrls, MaskEdit,
   PairSplitter;
 
@@ -358,7 +358,8 @@ end { TPseudoConsoleDlg.consoleSizeChanged } ;
 
 
 procedure TPseudoConsoleDlg.AddOutput(const AText: String);
-
+const
+  dot = #$C2#$B7;                        // ·
 var
   lineLimit, numLength, i: integer;
   buffer: TStringList;
@@ -367,7 +368,7 @@ var
   (* Translate C0 control codes to "control pictures", and optionally C1 codes
     to the same glyph but with an underbar.
   *)
-  function withControlPictures(const str: string; c1Underbar: boolean): widestring;
+  function withControlPictures(const str: string; c1Underbar: boolean): string;
 
   const
     nul= #$2400;                        // ␀
@@ -408,9 +409,10 @@ var
   var
     i, test, masked: integer;
     changed: boolean;
+    u: unicodestring;
 
   begin
-    SetLength(result, Length(str));
+    SetLength(u, Length(str));
 
   (* This should probably be recoded to use a persistent table, but doing it    *)
   (* this way results in no lookup for plain text which is likely to be the     *)
@@ -427,54 +429,55 @@ var
         masked := test;
       changed := true;
       case masked of
-        $00: result[i] := nul;
-        $01: result[i] := soh;
-        $02: result[i] := stx;
-        $03: result[i] := etx;
-        $04: result[i] := eot;
-        $05: result[i] := enq;
-        $06: result[i] := ack;
-        $07: result[i] := bel;
-        $08: result[i] := bs;
-        $09: result[i] := ht;
-        $0a: result[i] := lf;
-        $0b: result[i] := vt;
-        $0c: result[i] := ff;
-        $0d: result[i] := cr;
-        $0e: result[i] := so;
-        $0f: result[i] := si;
-        $10: result[i] := dle;
-        $11: result[i] := dc1;
-        $12: result[i] := dc2;
-        $13: result[i] := dc3;
-        $14: result[i] := dc4;
-        $15: result[i] := nak;
-        $16: result[i] := syn;
-        $17: result[i] := etb;
-        $18: result[i] := can;
-        $19: result[i] := em;
-        $1a: result[i] := sub;
-        $1b: result[i] := esc;
-        $1c: result[i] := fs;
-        $1d: result[i] := gs;
-        $1e: result[i] := rs;
-        $1f: result[i] := us;
-        $7f: result[i] := del
+        $00: u[i] := nul;
+        $01: u[i] := soh;
+        $02: u[i] := stx;
+        $03: u[i] := etx;
+        $04: u[i] := eot;
+        $05: u[i] := enq;
+        $06: u[i] := ack;
+        $07: u[i] := bel;
+        $08: u[i] := bs;
+        $09: u[i] := ht;
+        $0a: u[i] := lf;
+        $0b: u[i] := vt;
+        $0c: u[i] := ff;
+        $0d: u[i] := cr;
+        $0e: u[i] := so;
+        $0f: u[i] := si;
+        $10: u[i] := dle;
+        $11: u[i] := dc1;
+        $12: u[i] := dc2;
+        $13: u[i] := dc3;
+        $14: u[i] := dc4;
+        $15: u[i] := nak;
+        $16: u[i] := syn;
+        $17: u[i] := etb;
+        $18: u[i] := can;
+        $19: u[i] := em;
+        $1a: u[i] := sub;
+        $1b: u[i] := esc;
+        $1c: u[i] := fs;
+        $1d: u[i] := gs;
+        $1e: u[i] := rs;
+        $1f: u[i] := us;
+        $7f: u[i] := del
       otherwise
-        result[i] := Chr(test);
+        u[i] := Chr(test);
         changed := false;
       end;
       if c1Underbar and changed and     (* Now fix changed C1 characters        *)
                                 (masked <> test) then
-        Insert(bar, result, i)
-    end
+        Insert(bar, u, i)
+    end;
+    Result:=string(u);
   end { withControlPictures } ;
 
 
   (* Translate C0 control codes to "pretty pictures", and optionally C1 codes
     to the same glyph but with an underbar.
   *)
-  function withIso2047(const str: string; c1Underbar: boolean): widestring;
+  function withIso2047(const str: string; c1Underbar: boolean): string;
 
   (* I've not got access to a pukka copy of ISO-2047, so like (it appears)      *)
   (* almost everybody else I'm assuming that the Wikipedia page is correct.     *)
@@ -497,7 +500,7 @@ var
     enq=  #$22A0;                       // ⊠
     ack=  #$2713;                       // ✓
     bel=  #$237E;                       // ⍾
-    bsW=  #$232B;                       // ⌫
+    //bsW=  #$232B;                       // ⌫
     bsB=  #$2196;                       // ↖ The ECMA glyph is slightly curved
     bs=   bsB;                          //   and has no Unicode representation.
     ht=   #$2AAB;                       // ⪫
@@ -505,7 +508,7 @@ var
     vt=   #$2A5B;                       // ⩛
     ff=   #$21A1;                       // ↡
     crW=  #$2aaa;                       // ⪪ ECMA the same
-    crB=  #$25bf;                       // ▿
+    //crB=  #$25bf;                       // ▿
     cr=   crW;
     so=   #$2297;                       // ⊗
     si=   #$2299;                       // ⊙
@@ -523,13 +526,13 @@ var
     esc=  #$2296;                       // ⊖
     fs=   #$25F0;                       // ◰ Nota bene: these rotate widdershins
     gsW=  #$25F1;                       // ◱ ECMA the same
-    gsB=  #$25b5;                       // ▵
+    //gsB=  #$25b5;                       // ▵
     gs=   gsW;
     rsW=  #$25F2;                       // ◲ ECMA the same
-    rsB=  #$25c3;                       // ◃
+    //rsB=  #$25c3;                       // ◃
     rs=   rsW;
     usW=  #$25F3;                       // ◳ ECMA the same
-    usB=  #$25b9;                       // ▹
+    //usB=  #$25b9;                       // ▹
     us=   usW;
     del=  #$2425;                       // ␥
     bar=  #$033c;                       // ̼'
@@ -541,9 +544,10 @@ var
   var
     i, test, masked: integer;
     changed: boolean;
+    u: unicodestring;
 
   begin
-    SetLength(result, Length(str));
+    SetLength(u, Length(str));
 
   (* This should probably be recoded to use a persistent table, but doing it    *)
   (* this way results in no lookup for plain text which is likely to be the     *)
@@ -560,47 +564,48 @@ var
         masked := test;
       changed := true;
       case masked of
-        $00: result[i] := nul;
-        $01: result[i] := soh;
-        $02: result[i] := stx;
-        $03: result[i] := etx;
-        $04: result[i] := eot;
-        $05: result[i] := enq;
-        $06: result[i] := ack;
-        $07: result[i] := bel;
-        $08: result[i] := bs;
-        $09: result[i] := ht;
-        $0a: result[i] := lf;
-        $0b: result[i] := vt;
-        $0c: result[i] := ff;
-        $0d: result[i] := cr;
-        $0e: result[i] := so;
-        $0f: result[i] := si;
-        $10: result[i] := dle;
-        $11: result[i] := dc1;
-        $12: result[i] := dc2;
-        $13: result[i] := dc3;
-        $14: result[i] := dc4;
-        $15: result[i] := nak;
-        $16: result[i] := syn;
-        $17: result[i] := etb;
-        $18: result[i] := can;
-        $19: result[i] := em;
-        $1a: result[i] := sub;
-        $1b: result[i] := esc;
-        $1c: result[i] := fs;
-        $1d: result[i] := gs;
-        $1e: result[i] := rs;
-        $1f: result[i] := us;
-        $7f: result[i] := del
+        $00: u[i] := nul;
+        $01: u[i] := soh;
+        $02: u[i] := stx;
+        $03: u[i] := etx;
+        $04: u[i] := eot;
+        $05: u[i] := enq;
+        $06: u[i] := ack;
+        $07: u[i] := bel;
+        $08: u[i] := bs;
+        $09: u[i] := ht;
+        $0a: u[i] := lf;
+        $0b: u[i] := vt;
+        $0c: u[i] := ff;
+        $0d: u[i] := cr;
+        $0e: u[i] := so;
+        $0f: u[i] := si;
+        $10: u[i] := dle;
+        $11: u[i] := dc1;
+        $12: u[i] := dc2;
+        $13: u[i] := dc3;
+        $14: u[i] := dc4;
+        $15: u[i] := nak;
+        $16: u[i] := syn;
+        $17: u[i] := etb;
+        $18: u[i] := can;
+        $19: u[i] := em;
+        $1a: u[i] := sub;
+        $1b: u[i] := esc;
+        $1c: u[i] := fs;
+        $1d: u[i] := gs;
+        $1e: u[i] := rs;
+        $1f: u[i] := us;
+        $7f: u[i] := del
       otherwise
-        result[i] := Chr(test);
+        u[i] := Chr(test);
         changed := false;
       end;
       if c1Underbar and changed and     (* Now fix changed C1 characters        *)
                                 (masked <> test) then
-        Insert(bar, result, i)
-    end
+        Insert(bar, u, i)
+    end;
+    Result:=string(u);
   end { withIso2047 } ;
 
 
@@ -608,27 +613,32 @@ var
     it's mostly a dummy operation, except that there might be widget-set-specific
     hacks.
   *)
-  function widen(const str: string): widestring;
-
-  const
-    dot= #$00B7;                        // ·
-
+  function widen(const str: string): string;
   var
-    i: integer;
+    i, j: integer;
 
   begin
     SetLength(result, Length(str));
+    j:=1;
     for i := Length(str) downto 1 do
+    begin
       case str[i] of
-        ' ': result[i] := ' ';          (* Satisfy syntax requirement           *)
-        #$00: result[i] := dot;         (* GTK2 really doesn't like seeing this *)
-//        #$01..#$0f:   result[i] := dot;
-//        #$10..#$1f: result[i] := dot;
-//        #$7f:       result[i] := dot;
-//        #$80..#$ff: result[i] := dot
+        ' ': result[j] := ' ';          (* Satisfy syntax requirement           *)
+        #$00:
+        //        #$01..#$0f,
+        //        #$10..#$1f,
+        //        #$7f,
+        //        #$80..#$ff,
+          begin
+          ReplaceSubstring(Result,j,length(dot),dot);         (* GTK2 really doesn't like seeing this *)
+          inc(j,length(dot));
+          continue;
+          end;
       otherwise
-        result[i] := str[i]
-      end
+        result[j] := str[i];
+      end;
+      inc(j);
+    end;
   end { widen } ;
 
 
@@ -655,7 +665,7 @@ var
       (* The parameter is a line number as text or an equivalent run of spaces.
         The result is a line of hex + ASCII data.
       *)
-      function oneHexLine(const lineNum: string): widestring;
+      function oneHexLine(const lineNum: string): string;
 
       var
         i: integer;
@@ -673,7 +683,7 @@ var
             case dataAsByteArray[start + i] of
               $20..$7e: result += Chr(dataAsByteArray[start + i])
             otherwise
-              result += #$00B7          // ·
+              result += dot
             end
       end { oneHexLine } ;
 
