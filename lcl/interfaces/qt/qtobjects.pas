@@ -4435,7 +4435,8 @@ var
   Str: WideString;
 begin
   Str := AValue;
-  QPrinter_setPrinterName(FHandle, @Str);
+  if getPrinterName <> AValue then
+    QPrinter_setPrinterName(FHandle, @Str);
 end;
 
 function TQtPrinter.getPrinterName: WideString;
