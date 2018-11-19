@@ -1570,6 +1570,8 @@ begin
   result := '';
   if not ReadAddress(AnAddr, StrAddr) then
     Exit;
+  if StrAddr = 0 then
+    exit;
   ReadAddress(StrAddr-DBGPTRSIZE[FDbgController.CurrentProcess.Mode], len);
   setlength(result, len);
   if not ReadData(StrAddr, len, result[1]) then
