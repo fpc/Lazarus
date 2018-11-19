@@ -56,6 +56,7 @@ type
   private
     FInstallFPMakeDependencies: Boolean;
     FConfFileName: string;
+    FUseFPMakeWhenPossible: Boolean;
     function GetConfFileName: string;
   public
     class function GetGroupCaption: string; override;
@@ -65,12 +66,14 @@ type
     procedure DoAfterWrite(Restore: boolean); override;
   published
     property InstallFPMakeDependencies: Boolean read FInstallFPMakeDependencies write FInstallFPMakeDependencies;
+    property UseFPMakeWhenPossible: Boolean read FUseFPMakeWhenPossible write FUseFPMakeWhenPossible;
   end;
 
   { TFppkgEnvironmentOptionsFrame }
 
   TFppkgEnvironmentOptionsFrame = class(TAbstractIDEOptionsEditor)
     cbInstallDependencies: TCheckBox;
+    cbUseFPMakeWhenPossible: TCheckBox;
   public
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
@@ -117,6 +120,7 @@ var
 begin
   FppkgOptions := AOptions as TFppkgEnvironmentOptions;
   cbInstallDependencies.Checked := FppkgOptions.InstallFPMakeDependencies;
+  cbUseFPMakeWhenPossible.Checked := FppkgOptions.UseFPMakeWhenPossible;
 end;
 
 procedure TFppkgEnvironmentOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
@@ -125,6 +129,7 @@ var
 begin
   FppkgOptions := AOptions as TFppkgEnvironmentOptions;
   FppkgOptions.InstallFPMakeDependencies := cbInstallDependencies.Checked;
+  FppkgOptions.UseFPMakeWhenPossible := cbUseFPMakeWhenPossible.Checked;
 end;
 
 class function TFppkgEnvironmentOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
@@ -168,6 +173,7 @@ begin
     try
       XMLConfig.Filename := GetConfFileName;
       InstallFPMakeDependencies := XMLConfig.GetValue('InstallDependencies/Value',False);
+      UseFPMakeWhenPossible := XMLConfig.GetValue('UseFPMakeWhenPossible/Value',False);
     finally
       XMLConfig.Free;
     end;
@@ -187,6 +193,7 @@ begin
     try
       XMLConfig.Filename:=GetConfFileName;
       XMLConfig.SetValue('InstallDependencies/Value',InstallFPMakeDependencies);
+      XMLConfig.SetValue('UseFPMakeWhenPossible/Value',UseFPMakeWhenPossible);
 
       XMLConfig.Flush;
     finally

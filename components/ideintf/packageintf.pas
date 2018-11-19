@@ -20,7 +20,7 @@ uses
   // LazUtils
   LazConfigStorage, LazMethodList, LazLoggerBase, UITypes,
   // IdeIntf
-  NewItemIntf, ProjPackIntf, PackageDependencyIntf;
+  NewItemIntf, ProjPackIntf, PackageDependencyIntf, IDEOptionsIntf;
   
 const
   PkgDescGroupName = 'Package';
@@ -148,6 +148,13 @@ type
     pitDynamic
     );
 
+// FPMake/Lazarus build mode
+  TBuildMethod = (
+    bmLazarus,
+    bmFPMake,
+    bmBoth
+    );
+
   { TIDEPackage }
 
   TIDEPackage = class(TLazPackageID)
@@ -157,6 +164,7 @@ type
     FChangeStamp: integer;
     FCustomOptions: TConfigStorage;
     FPackageType: TLazPackageType;
+    FBuildMethod: TBuildMethod;
     function GetDirectoryExpanded: string; virtual; abstract;
     function GetFileCount: integer; virtual; abstract;
     function GetPkgFiles(Index: integer): TLazPackageFile; virtual; abstract;
@@ -188,6 +196,7 @@ type
     property Modified: boolean read GetModified write SetModified;
     property RemovedFilesCount: integer read GetRemovedCount;
     property RemovedFiles[Index: integer]: TLazPackageFile read GetRemovedPkgFiles;
+    property BuildMethod: TBuildMethod read FBuildMethod write FBuildMethod;
   end;
 
 type
@@ -394,6 +403,14 @@ type
   public
     property ChangeStamp: Int64 read FChangeStamp;
   end;
+
+  TAbstractPackageIDEOptions = class(TAbstractIDEOptions)
+  protected
+    function GetPackage: TIDEPackage; virtual; abstract;
+  public
+    property Package: TIDEPackage read GetPackage;
+  end;
+
 
 var
   PackageDescriptors: TPackageDescriptors; // will be set by the IDE

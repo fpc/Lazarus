@@ -3953,6 +3953,7 @@ begin
 
           // add dependencies between packages
           aDependency:=CurPkg.FirstRequiredDependency;
+          // ToDo: Add fpmake-dependencies!
           while aDependency<>nil do begin
             RequiredBuildItem:=PkgToBuildItem(aDependency.RequiredPackage);
             aDependency:=aDependency.NextRequiresDependency;
@@ -4070,6 +4071,7 @@ var
   WorkingDir: String;
   ToolTitle: String;
   ExtToolData: TLazPkgGraphExtToolData;
+  BuildMethod: TBuildMethod;
 begin
   Result:=mrCancel;
 
@@ -4164,7 +4166,7 @@ begin
       end;
 
       // create fpmake.pp
-      if ((pcfCreateFpmakeFile in Flags)
+      if ((pcfCreateFpmakeFile in Flags) or (APackage.BuildMethod in [bmBoth, bmFPMake])
       or (APackage.CompilerOptions.CreateMakefileOnBuild)) then begin
         Result:=WriteFpmake(APackage);
         if Result<>mrOk then begin
@@ -4198,23 +4200,36 @@ begin
 
       if (not APackage.CompilerOptions.SkipCompiler)
       and (not (pcfDoNotCompilePackage in Flags)) then begin
-        CompilerFilename:=APackage.GetCompilerFilename;
-
-        // change compiler parameters for compiling clean
-        CompilerParams:=GetPackageCompilerParams(APackage);
-        EffectiveCompilerParams:=CompilerParams;
-        if (pcfCleanCompile in Flags) or NeedBuildAllFlag then begin
-          if EffectiveCompilerParams<>'' then
-            EffectiveCompilerParams:='-B '+EffectiveCompilerParams
+        BuildMethod:=APackage.BuildMethod;
+        if BuildMethod=bmBoth then begin
+          if Assigned(FppkgInterface) and FppkgInterface.UseFPMakeWhenPossible then
+            BuildMethod:=bmFPMake
           else
-            EffectiveCompilerParams:='-B';
+            BuildMethod:=bmLazarus;
+        end;
+        if BuildMethod=bmLazarus then begin
+          CompilerFilename:=APackage.GetCompilerFilename;
+
+          // change compiler parameters for compiling clean
+          CompilerParams:=GetPackageCompilerParams(APackage);
+          EffectiveCompilerParams:=CompilerParams;
+          if (pcfCleanCompile in Flags) or NeedBuildAllFlag then begin
+            if EffectiveCompilerParams<>'' then
+              EffectiveCompilerParams:='-B '+EffectiveCompilerParams
+            else
+              EffectiveCompilerParams:='-B';
+          end;
+
+          WarnSuspiciousCompilerOptions('Compile checks','package '+APackage.IDAsString+':',CompilerParams);
+        end else begin
+          CompilerFilename:='fppkg';
+          EffectiveCompilerParams:='install -b';
         end;
 
-        WarnSuspiciousCompilerOptions('Compile checks','package '+APackage.IDAsString+':',CompilerParams);
-
-        PkgCompileTool:=ExternalToolList.Add(Format(lisPkgMangCompilePackage, [APackage.IDAsString]));
         ExtToolData:=TLazPkgGraphExtToolData.Create(IDEToolCompilePackage,
           APackage.Name,APackage.Filename);
+
+        PkgCompileTool:=ExternalToolList.Add(Format(lisPkgMangCompilePackage, [APackage.IDAsString]));
         PkgCompileTool.Data:=ExtToolData;
         PkgCompileTool.FreeData:=true;
         if BuildItem<>nil then

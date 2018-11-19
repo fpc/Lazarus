@@ -478,9 +478,11 @@ type
 
   { TPackageIDEOptions }
 
-  TPackageIDEOptions = class(TAbstractIDEOptions)
+  TPackageIDEOptions = class(TAbstractPackageIDEOptions)
   private
     FPackage: TLazPackage;
+  protected
+    function GetPackage: TIDEPackage; override;
   public
     constructor Create(APackage: TLazPackage);
     destructor Destroy; override;
@@ -2068,6 +2070,11 @@ end;
 
 { TPackageIDEOptions }
 
+function TPackageIDEOptions.GetPackage: TIDEPackage;
+begin
+  Result := FPackage;
+end;
+
 constructor TPackageIDEOptions.Create(APackage: TLazPackage);
 begin
   inherited Create;
@@ -2807,6 +2814,8 @@ begin
   Name:=XMLConfig.GetValue(Path+'Name/Value','');
   FPackageType:=LazPackageTypeIdentToType(XMLConfig.GetValue(Path+'Type/Value',
                                           LazPackageTypeIdents[lptRunTime]));
+  FBuildMethod:=StringToBuildMethod(XMLConfig.GetValue(Path+'BuildMethod/Value',
+                                    SBuildMethod[bmLazarus]));
   FAddToProjectUsesSection:=XMLConfig.GetValue(Path+'AddToProjectUsesSection/Value',
     FileVersion<4); // since version 4 the default is false
   FAuthor:=XMLConfig.GetValue(Path+'Author/Value','');
@@ -2897,6 +2906,8 @@ begin
   XMLConfig.SetDeleteValue(Path+'Name/Value',Name,'');
   XMLConfig.SetDeleteValue(Path+'Type/Value',LazPackageTypeIdents[FPackageType],
                            LazPackageTypeIdents[lptRunTime]);
+  XMLConfig.SetDeleteValue(Path+'BuildMethod/Value',SBuildMethod[FBuildMethod],
+                           SBuildMethod[bmLazarus]);
   XMLConfig.SetDeleteValue(Path+'AddToProjectUsesSection/Value',
                            FAddToProjectUsesSection,false);
   XMLConfig.SetDeleteValue(Path+'Author/Value',FAuthor,'');

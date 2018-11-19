@@ -19,7 +19,7 @@
     <Description Value="A packagemanager based on FPC's fppkg"/>
     <License Value="GPL"/>
     <Version Minor="1"/>
-    <Files Count="12">
+    <Files Count="13">
       <Item1>
         <Filename Value="lazfppkgmanagerintf.pas"/>
         <HasRegisterProc Value="True"/>
@@ -70,6 +70,10 @@
         <Filename Value="fppkg_interface.pas"/>
         <UnitName Value="fppkg_interface"/>
       </Item12>
+      <Item13>
+        <Filename Value="fppkg_packageoptionsfrm.pas"/>
+        <UnitName Value="fppkg_packageoptionsfrm"/>
+      </Item13>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

@@ -1,0 +1,55 @@
+object FppkgPackageOptionsFrm: TFppkgPackageOptionsFrm
+  Left = 0
+  Height = 240
+  Top = 0
+  Width = 320
+  ClientHeight = 240
+  ClientWidth = 320
+  TabOrder = 0
+  DesignLeft = 831
+  DesignTop = 330
+  object gbBuildMethod: TGroupBox
+    Left = 0
+    Height = 240
+    Top = 0
+    Width = 320
+    Align = alClient
+    Caption = 'Build method'
+    ClientHeight = 220
+    ClientWidth = 318
+    TabOrder = 0
+    object Panel1: TPanel
+      Left = 3
+      Height = 42
+      Top = 3
+      Width = 312
+      Align = alTop
+      BorderSpacing.Around = 3
+      BevelOuter = bvNone
+      ClientHeight = 42
+      ClientWidth = 312
+      TabOrder = 0
+      object cbBuildMethod: TComboBox
+        Left = 88
+        Height = 42
+        Top = 0
+        Width = 224
+        Align = alRight
+        ItemHeight = 0
+        Style = csDropDownList
+        TabOrder = 0
+      end
+      object Label1: TLabel
+        Left = 3
+        Height = 36
+        Top = 3
+        Width = 55
+        Align = alLeft
+        BorderSpacing.Around = 3
+        Caption = 'Package'
+        Layout = tlCenter
+        ParentColor = False
+      end
+    end
+  end
+end

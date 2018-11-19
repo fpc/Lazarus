@@ -39,8 +39,17 @@ uses
   StdCtrls, ExtCtrls,
   // CodeTools
   BasicCodeTools, FileProcs, CodeToolManager, CodeToolsConfig, CodeCache,
+  PackageIntf,
   // IDE
   LazConf;
+
+const
+  SBuildMethod: array[TBuildMethod] of string = (
+    'Lazarus',
+    'FPMake',
+    'Both'
+    );
+function StringToBuildMethod(const BuildMethod: string): TBuildMethod;
 
 // file operations
 function BackupFileForWrite(const Filename, BackupFilename: string): boolean;
@@ -681,6 +690,16 @@ begin
       StartPos:=EndPos+1;
     end;
   end;
+end;
+
+function StringToBuildMethod(const BuildMethod: string): TBuildMethod;
+begin
+  if BuildMethod=SBuildMethod[bmFPMake] then
+    result := bmFPMake
+  else if BuildMethod=SBuildMethod[bmBoth] then
+    result := bmBoth
+  else
+    result := bmLazarus;
 end;
 
 function ChompEndNumber(const s: string): string;
