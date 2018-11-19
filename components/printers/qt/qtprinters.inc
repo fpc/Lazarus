@@ -50,39 +50,38 @@ var
   PrnInfo: QPrinterInfoH;
   {$IFDEF LCLQt5}
   AList: QStringListH;
+  DefaultPrn: WideString;
   {$ELSE}
   Prntr: QPrinterInfoH;
   PrnList: TPtrIntArray;
   {$ENDIF}
   PrnName: WideString;
 begin
-
   inherited DoEnumPrinters(Lst);
   {$IFDEF LCLQt5}
   Lst.Clear;
   AList := QStringList_create();
+  PrnInfo := QPrinterInfo_create();
   try
     QPrinterInfo_availablePrinterNames(AList);
+    QPrinterInfo_defaultPrinter(PrnInfo);
+    QPrinterInfo_printerName(PrnInfo, @DefaultPrn);
     for i := 0 to QStringList_size(AList) - 1 do
     begin
       QStringList_at(AList, @PrnName, I);
-      PrnInfo := QPrinterInfo_create();
-      try
-        QPrinterInfo_printerInfo(PrnInfo, @PrnName);
-        if QPrinterInfo_isDefault(PrnInfo) then
-          Lst.InsertObject(0, PrnName{%H-}, PrnInfo)
-        else
-          Lst.AddObject(PrnName{%H-}, PrnInfo);
-      finally
-        QPrinterInfo_destroy(PrnInfo);
-      end;
+      if DefaultPrn = PrnName then
+        Lst.InsertObject(0, PrnName{%H-}, nil)
+      else
+        Lst.AddObject(PrnName{%H-}, nil);
     end;
   finally
+    QPrinterInfo_destroy(PrnInfo);
     QStringList_destroy(AList);
   end;
   {$ELSE}
   PrnInfo := QPrinterInfo_create();
   try
+    PrnInfo := QPrinterInfo_create();
     Lst.Clear;
     QPrinterInfo_availablePrinters(@PrnList);
     for i := Low(PrnList) to High(PrnList) do
@@ -220,6 +219,7 @@ begin
   PrinterList := TStringList.Create;
   try
     CurrentPageSize := QtDefaultPrinter.PageSize;
+
     EnumQPrinters(PrinterList);
     Index := PrinterList.IndexOf(UTF8Encode(QtDefaultPrinter.PrinterName));
     if Index>=0 then
@@ -495,12 +495,16 @@ begin
   DebugLn('TQtPrinters.DoSetPrinter() aName=', aName);
   {$ENDIF}
   StrList := TStringList.Create;
-  EnumQPrinters(StrList);
+  if (Printers.Count = 0) or (Printers.IndexOf(aName) = -1) then
+    EnumQPrinters(StrList)
+  else
+    StrList.Assign(Printers);
   try
     Result := StrList.IndexOf(AName);
     if Result >= 0 then
     begin
-      if not QtDefaultPrinter.PrinterActive then begin
+      if not QtDefaultPrinter.PrinterActive then
+      begin
         QtDefaultPrinter.PrinterName := UTF8Decode(aName);
         {$ifdef UsePrinterSupportedPapers}
         CachePapers(true);
