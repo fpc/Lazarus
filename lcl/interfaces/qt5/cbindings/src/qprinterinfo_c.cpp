@@ -83,6 +83,11 @@ void QPrinterInfo_availablePrinters(PPtrIntArray retval)
 	copyQListTemplateToPtrIntArrayWithNew(t_retval, retval);
 }
 
+void QPrinterInfo_availablePrinterNames(QStringListH retval)
+{
+  *(QStringList *)retval = QPrinterInfo::availablePrinterNames();
+}
+
 void QPrinterInfo_defaultPrinter(QPrinterInfoH retval)
 {
 	*(QPrinterInfo *)retval = QPrinterInfo::defaultPrinter();

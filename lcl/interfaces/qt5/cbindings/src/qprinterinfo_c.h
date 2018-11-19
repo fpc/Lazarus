@@ -27,6 +27,7 @@ C_EXPORT bool QPrinterInfo_isNull(QPrinterInfoH handle);
 C_EXPORT bool QPrinterInfo_isDefault(QPrinterInfoH handle);
 C_EXPORT void QPrinterInfo_supportedPaperSizes(QPrinterInfoH handle, PPtrIntArray retval);
 C_EXPORT void QPrinterInfo_availablePrinters(PPtrIntArray retval);
+C_EXPORT void QPrinterInfo_availablePrinterNames(QStringListH retval);
 C_EXPORT void QPrinterInfo_defaultPrinter(QPrinterInfoH retval);
 C_EXPORT void QPrinterInfo_printerInfo(QPrinterInfoH retval, PWideString printerName);
 
