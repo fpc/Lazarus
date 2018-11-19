@@ -326,7 +326,7 @@ begin
     ' FWidth=',FWidth,' FHeight=',FHeight,' FWidget=',dbghex(PtrUInt(FWidget)));
   {$ENDIF}
 
-  Result := IsValid;
+  Result := Assigned(FPixmap);
   FTimer.Enabled := True;
 end;
 
@@ -400,7 +400,7 @@ begin
         SetPos(FPos);
     end;
   end;
-  Result := IsValid;
+  Result := Assigned(FPixmap);
   FVisible := Result;
   SetPos(FPos);
   //writeln('TEmulatedCaret.Show END Result=',Result,' IsValid=',IsValid,' Handle=',QtWidgetSet.IsValidHandle(HWND(FWidget)),' FPixmap=',FPixmap<>nil,' FWidget.Context=',FWidget.Context<>0);
