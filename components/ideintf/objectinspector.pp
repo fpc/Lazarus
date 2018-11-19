@@ -2750,7 +2750,9 @@ end;
 
 procedure TOICustomPropertyGrid.SetTopY(const NewValue:integer);
 var
-  NewTopY: integer;
+  NewTopY, d: integer;
+  r: TRect;
+  f: UINT;
 begin
   NewTopY := TopMax;
   if NewValue < NewTopY then
@@ -2758,10 +2760,21 @@ begin
   if NewTopY < 0 then
     NewTopY := 0;
   if FTopY<>NewTopY then begin
+    r := ClientRect;
+    f := SW_INVALIDATE;
+    d := FTopY-NewTopY;
+    // SW_SCROLLCHILDREN can only be used, if the active editor is not
+    // "scrolling in" (i.e., partly outside the clientrect)
+    if (FCurrentEdit = nil) or
+       ( (d > 0) and (FCurrentEdit.Top >= 0) ) or
+       ( (d < 0) and (FCurrentEdit.Top <  Height - FCurrentEdit.Height) )
+    then
+      f := f + SW_SCROLLCHILDREN;
+    if not ScrollWindowEx(Handle,0,d,@r,@r,0,nil, f) then
+      Invalidate;
     FTopY:=NewTopY;
     UpdateScrollBar;
     AlignEditComponents;
-    Repaint;
   end;
 end;
 
