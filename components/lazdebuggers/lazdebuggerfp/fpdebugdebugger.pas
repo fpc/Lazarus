@@ -1553,9 +1553,14 @@ var
   ClassNameAddr: TDBGPtr;
   b: byte;
 begin
+  Result := '';
   // Read address of the vmt
   ReadAddress(AnAddr, VMTAddr);
+  if VMTAddr = 0 then
+    exit;
   ReadAddress(VMTAddr+3*DBGPTRSIZE[FDbgController.CurrentProcess.Mode], ClassNameAddr);
+  if ClassNameAddr = 0 then
+    exit;
   // read classname (as shortstring)
   ReadData(ClassNameAddr, 1, b);
   setlength(result,b);
@@ -1621,8 +1626,12 @@ begin
 
   AnExceptionLocation:=GetLocationRec(FDbgController.CurrentThread.RegisterValueList.FindRegisterByDwarfIndex(RegDxDwarfIndex).NumValue);
   AnExceptionObjectLocation:=FDbgController.CurrentThread.RegisterValueList.FindRegisterByDwarfIndex(0).NumValue;
-  ExceptionClass := GetClassInstanceName(AnExceptionObjectLocation);
-  ExceptionMessage := ReadAnsiString(AnExceptionObjectLocation+DBGPTRSIZE[FDbgController.CurrentProcess.Mode]);
+  ExceptionClass := '';
+  ExceptionMessage := '';
+  if AnExceptionObjectLocation <> 0 then begin
+    ExceptionClass := GetClassInstanceName(AnExceptionObjectLocation);
+    ExceptionMessage := ReadAnsiString(AnExceptionObjectLocation+DBGPTRSIZE[FDbgController.CurrentProcess.Mode]);
+  end;
 
   DoException(deInternal, ExceptionClass, AnExceptionLocation, ExceptionMessage, continue);
 end;
