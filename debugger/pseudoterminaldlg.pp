@@ -619,7 +619,7 @@ var
 
   begin
     Result:=str;
-    j:=length(result)+1;
+    j:=length(result);
     for i := Length(str) downto 1 do
     begin
       case str[i] of
