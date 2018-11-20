@@ -618,8 +618,8 @@ var
     i, j: integer;
 
   begin
-    SetLength(result, Length(str));
-    j:=1;
+    Result:=str;
+    j:=length(result)+1;
     for i := Length(str) downto 1 do
     begin
       case str[i] of
@@ -630,14 +630,10 @@ var
         //        #$7f,
         //        #$80..#$ff,
           begin
-          ReplaceSubstring(Result,j,length(dot),dot);         (* GTK2 really doesn't like seeing this *)
-          inc(j,length(dot));
-          continue;
+          ReplaceSubstring(Result,j,1,dot);         (* GTK2 really doesn't like seeing this *)
           end;
-      otherwise
-        result[j] := str[i];
       end;
-      inc(j);
+      dec(j);
     end;
   end { widen } ;
 
