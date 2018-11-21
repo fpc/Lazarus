@@ -122,9 +122,9 @@ end;
 function CanTest(id: Pointer): Boolean;
 begin
   Result := TTreeNode(id).StateIndex = ord(tsChecked);
-  while TTreeNode(id).Parent <> nil do begin
+  while Result and (TTreeNode(id).Parent <> nil) do begin
     id := TTreeNode(id).Parent;
-    Result := TTreeNode(id).StateIndex = ord(tsChecked);
+    Result := Result and TTreeNode(id).StateIndex = ord(tsChecked);
   end;
 end;
 
