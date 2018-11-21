@@ -1197,7 +1197,7 @@ begin
 
   if (Src <> nil) then
     for i := 0 to Src.BlockHandlerCount - 1 do
-      AddBlockHandler(BlockHandler[i]);
+      AddBlockHandler(Src.BlockHandler[i]);
 end;
 
 function TLazLoggerWithGroupParam.RegisterLogGroup(const AConfigName: String): PLazLoggerLogGroup;
