@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-11-09 15:41+0100\n"
+"PO-Revision-Date: 2018-11-21 07:53+0100\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -980,7 +980,7 @@ msgstr "Automatisches Speichern"
 
 #: lazarusidestrconsts.dlgcheckpackagesonformcreate
 msgid "Check packages on form create"
-msgstr "Packages auf Form-Erzeugung prüfen"
+msgstr "Packages bei Form-Erzeugung prüfen"
 
 #: lazarusidestrconsts.dlgcheckpackagesonformcreatehint
 msgid "The form may require a package to work. Install such a package automatically."
@@ -21577,4 +21577,3 @@ msgstr "Schreibgeschützt"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versionsinformation"
-
