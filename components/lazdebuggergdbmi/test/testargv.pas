@@ -5,8 +5,9 @@ unit TestArgV;
 interface
 
 uses
-  SysUtils, fpcunit, testutils, testregistry, TestGDBMIControl,
-  TestBase, GDBMIDebugger, LCLProc, FileUtil, LazUTF8, DbgIntfDebuggerBase, TestWatches;
+  SysUtils, fpcunit, testutils, testregistry, TestBase,
+  GDBMIDebugger, LCLProc, FileUtil, LazUTF8, DbgIntfDebuggerBase,
+  TestDbgControl, TestDbgTestSuites, TestWatches;
 
 const
   BREAK_LINE_ARGV = 26;
@@ -24,6 +25,9 @@ type
 
 implementation
 
+var
+  ControlTestArgV: Pointer;
+
 { TTestArgV }
 
 procedure TTestArgV.TestArgv;
@@ -34,7 +38,7 @@ var
   i: Integer;
 begin
   if SkipTest then exit;
-  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestArgV')] then exit;
+  if not TestControlCanTest(ControlTestArgV) then exit;
 
   ClearTestErrors;
   TestCompile(AppDir + 'ArgVPrg.pas', TestExeName);
@@ -77,8 +81,7 @@ end;
 
 initialization
   RegisterDbgTest(TTestArgV);
-  RegisterTestSelectors(['TTestArgV'
-                        ]);
+  ControlTestArgV         := TestControlRegisterTest('TTestArgV');
 
 end.
 

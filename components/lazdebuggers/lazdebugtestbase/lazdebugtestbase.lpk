@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="4">
+    <PathDelim Value="\"/>
+    <Name Value="LazDebugTestBase"/>
+    <Type Value="RunAndDesignTime"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <Other>
+        <CustomOptions Value="$(IDEBuildOptions)"/>
+      </Other>
+    </CompilerOptions>
+    <Version Minor="1"/>
+    <Files Count="9">
+      <Item1>
+        <Filename Value="testdbgconfig.pas"/>
+        <UnitName Value="TestDbgConfig"/>
+      </Item1>
+      <Item2>
+        <Filename Value="testdbgtestsuites.pas"/>
+        <UnitName Value="TestDbgTestSuites"/>
+      </Item2>
+      <Item3>
+        <Filename Value="ttestdbgexecuteables.pas"/>
+        <UnitName Value="TTestDbgExecuteables"/>
+      </Item3>
+      <Item4>
+        <Filename Value="testdbgcompilerprocess.pas"/>
+        <UnitName Value="TestDbgCompilerProcess"/>
+      </Item4>
+      <Item5>
+        <Filename Value="testdbgcontrolform.pas"/>
+        <UnitName Value="TestDbgControlForm"/>
+      </Item5>
+      <Item6>
+        <Filename Value="testdbgcontrol.pas"/>
+        <UnitName Value="TestDbgControl"/>
+      </Item6>
+      <Item7>
+        <Filename Value="testoutputlogger.pas"/>
+        <UnitName Value="TestOutputLogger"/>
+      </Item7>
+      <Item8>
+        <Filename Value="ttestdebuggerclasses.pas"/>
+        <UnitName Value="TTestDebuggerClasses"/>
+      </Item8>
+      <Item9>
+        <Filename Value="ttestwatchutilities.pas"/>
+        <UnitName Value="ttestwatchutilities"/>
+      </Item9>
+    </Files>
+    <RequiredPkgs Count="5">
+      <Item1>
+        <PackageName Value="DebuggerIntf"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="virtualtreeview_package"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="LCL"/>
+      </Item3>
+      <Item4>
+        <PackageName Value="LCLBase"/>
+      </Item4>
+      <Item5>
+        <PackageName Value="FCL"/>
+      </Item5>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <UseFileFilters Value="True"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

@@ -494,7 +494,7 @@
       procedure TClassTCast2.ClassTCast2Method1;
       begin
         // break on next line
-        writeln(1);
+        Freemem(GetMem(1));
       end;
     {$ENDIF}
 

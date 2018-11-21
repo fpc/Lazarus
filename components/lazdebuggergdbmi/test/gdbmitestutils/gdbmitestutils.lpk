@@ -16,42 +16,36 @@
           <DebugInfoType Value="dsDwarf2Set"/>
         </Debugging>
       </Linking>
+      <Other>
+        <CustomOptions Value="$(IDEBuildOptions)"/>
+      </Other>
     </CompilerOptions>
     <Description Value="Test helper units for LazDebuggerGDBMI"/>
     <License Value="GPL2"/>
     <Version Minor="1"/>
-    <Files Count="5">
+    <Files Count="2">
       <Item1>
         <Filename Value="testbase.pas"/>
         <UnitName Value="TestBase"/>
       </Item1>
       <Item2>
-        <Filename Value="compilehelpers.pas"/>
-        <UnitName Value="CompileHelpers"/>
-      </Item2>
-      <Item3>
-        <Filename Value="testgdbmicontrol.pas"/>
-        <UnitName Value="TestGDBMIControl"/>
-      </Item3>
-      <Item4>
-        <Filename Value="testgdbmicontrol.lfm"/>
-        <Type Value="LFM"/>
-      </Item4>
-      <Item5>
         <Filename Value="testwatchutils.pas"/>
         <UnitName Value="TestWatchUtils"/>
-      </Item5>
+      </Item2>
     </Files>
-    <RequiredPkgs Count="3">
+    <RequiredPkgs Count="4">
       <Item1>
-        <PackageName Value="FPCUnitTestRunner"/>
+        <PackageName Value="LazDebugTestBase"/>
       </Item1>
       <Item2>
-        <PackageName Value="LazDebuggerGdbmi"/>
+        <PackageName Value="FPCUnitTestRunner"/>
       </Item2>
       <Item3>
-        <PackageName Value="FCL"/>
+        <PackageName Value="LazDebuggerGdbmi"/>
       </Item3>
+      <Item4>
+        <PackageName Value="FCL"/>
+      </Item4>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>

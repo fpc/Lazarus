@@ -23,6 +23,6 @@ begin
     end;
     s := s + ' ';
   end;
-  WriteLn(s);
+  Freemem(GetMem(1));
 end.
 

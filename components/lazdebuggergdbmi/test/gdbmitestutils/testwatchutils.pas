@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, RegExpr, TestBase, LazLoggerBase,
-  DbgIntfBaseTypes, DbgIntfDebuggerBase;
+  DbgIntfBaseTypes, DbgIntfDebuggerBase, TestDbgConfig, TTestDebuggerClasses;
 
 type
 

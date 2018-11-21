@@ -203,7 +203,7 @@ var
       { procedure/function/method }
       {$I WatchesPrgProc.inc}
     {$UNDEF Sub_FooFunc_Body}
-    writeln(1); // nested break
+    Freemem(GetMem(1)); // nested break
   end;
 
 begin
@@ -227,7 +227,7 @@ begin
 
   SubFoo(VarInt, ArgInt);
   // break on next line
-  writeln(1);
+  Freemem(GetMem(1));
   {$IFDEF WITH_SLEEP} sleep(50);sleep(50);sleep(50);sleep(50);sleep(50);sleep(50);sleep(50);sleep(50);sleep(50);sleep(50); {$ENDIF};
 end;
 
@@ -251,7 +251,7 @@ begin
   {$UNDEF FooFunc_Body}
 
   // break on next line
-  writeln(1);
+  Freemem(GetMem(1));
 end;
 
 

@@ -5,8 +5,8 @@ unit TestException;
 interface
 
 uses
-  Classes, sysutils, fpcunit, testutils, testregistry, TestGDBMIControl,
-  TestBase, GDBMIDebugger, LCLProc, DbgIntfDebuggerBase;
+  Classes, sysutils, fpcunit, testutils, testregistry, TestBase, GDBMIDebugger,
+  LCLProc, DbgIntfDebuggerBase, TestDbgControl, TestDbgTestSuites;
 
 type
 
@@ -60,6 +60,9 @@ const
 
 
 implementation
+var
+  ControlTestExceptionOne, ControlTestExceptionOneException, ControlTestExceptionOneExceptionStepOut, ControlTestExceptionOneExceptionStepOver: Pointer;
+
 
     //dbg.OnBreakPointHit := @DebuggerBreakPointHit;
     //dbg.OnState         := @DebuggerChangeState;
@@ -92,8 +95,7 @@ var
   dbg: TGDBMIDebugger;
 begin
   if SkipTest then exit;
-  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestExceptionOne')] then exit;
-  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('  TTestException')] then exit;
+  if not TestControlCanTest(ControlTestExceptionOneException) then exit;
   ClearTestErrors;
   FContinue := False;
 
@@ -339,8 +341,7 @@ var
   dbg: TGDBMIDebugger;
 begin
   if SkipTest then exit;
-  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestExceptionOne')] then exit;
-  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('  TTestExceptionStepOut')] then exit;
+  if not TestControlCanTest(ControlTestExceptionOneExceptionStepOut) then exit;
   ClearTestErrors;
   FContinue := False;
 
@@ -408,8 +409,7 @@ var
   dbg: TGDBMIDebugger;
 begin
   if SkipTest then exit;
-  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestExceptionOne')] then exit;
-  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('  TTestExceptionStepOver')] then exit;
+  if not TestControlCanTest(ControlTestExceptionOneExceptionStepOver) then exit;
   ClearTestErrors;
   FContinue := True;
 
@@ -493,8 +493,9 @@ end;
 
 initialization
   RegisterDbgTest(TTestExceptionOne);
-  RegisterTestSelectors(['TTestExceptionOne', '  TTestException', '  TTestExceptionStepOut', '  TTestExceptionStepOver'
-                        ]);
-
+  ControlTestExceptionOne                  := TestControlRegisterTest('TTestExceptionOne');
+  ControlTestExceptionOneException         := TestControlRegisterTest('Exception', ControlTestExceptionOne);
+  ControlTestExceptionOneExceptionStepOut  := TestControlRegisterTest('ExceptionStepOut', ControlTestExceptionOne);
+  ControlTestExceptionOneExceptionStepOver := TestControlRegisterTest('ExceptionStepOver', ControlTestExceptionOne);
 end.
 

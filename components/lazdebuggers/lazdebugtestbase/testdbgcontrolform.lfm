@@ -1,0 +1,336 @@
+object DbgTestControlForm: TDbgTestControlForm
+  Left = 1354
+  Height = 491
+  Top = 267
+  Width = 855
+  BorderIcons = []
+  Caption = 'TestControl'
+  ClientHeight = 491
+  ClientWidth = 855
+  LCLVersion = '2.1.0.0'
+  object Panel1: TPanel
+    Left = 0
+    Height = 44
+    Top = 0
+    Width = 855
+    Align = alTop
+    AutoSize = True
+    BorderSpacing.Bottom = 5
+    ClientHeight = 44
+    ClientWidth = 855
+    TabOrder = 0
+    object CheckWriteLogs: TCheckBox
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = Panel1
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      Left = 1
+      Height = 19
+      Top = 1
+      Width = 76
+      Caption = 'Write Logs'
+      TabOrder = 0
+    end
+    object Label1: TLabel
+      AnchorSideLeft.Control = Panel1
+      Left = 1
+      Height = 15
+      Top = 20
+      Width = 41
+      Align = alCustom
+      BorderSpacing.Right = 5
+      Caption = 'Log Dir:'
+      ParentColor = False
+    end
+    object WriteLogsOnErr: TCheckBox
+      AnchorSideLeft.Control = CheckWriteLogs
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = CheckWriteLogs
+      Left = 87
+      Height = 19
+      Top = 1
+      Width = 123
+      BorderSpacing.Left = 10
+      Caption = 'Write Logs On Error'
+      Checked = True
+      State = cbChecked
+      TabOrder = 1
+    end
+    object EditLogDir: TFileNameEdit
+      AnchorSideLeft.Control = Label1
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = CheckWriteLogs
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      Left = 47
+      Height = 23
+      Top = 20
+      Width = 807
+      FilterIndex = 0
+      HideDirectories = False
+      ButtonWidth = 23
+      NumGlyphs = 1
+      Anchors = [akTop, akLeft, akRight]
+      MaxLength = 0
+      TabOrder = 2
+    end
+  end
+  object Panel2: TPanel
+    Left = 0
+    Height = 442
+    Top = 49
+    Width = 225
+    Align = alLeft
+    ClientHeight = 442
+    ClientWidth = 225
+    TabOrder = 1
+    object ToolBar1: TToolBar
+      Left = 1
+      Height = 26
+      Top = 1
+      Width = 223
+      Caption = 'ToolBar1'
+      ShowCaptions = True
+      TabOrder = 0
+      object btnTestAll: TToolButton
+        Left = 1
+        Top = 2
+        Caption = 'All'
+        OnClick = btnTestAllClick
+      end
+      object btnTestNone: TToolButton
+        Left = 24
+        Top = 2
+        Caption = 'None'
+        OnClick = btnTestNoneClick
+      end
+    end
+    object Edit1: TEdit
+      Left = 1
+      Height = 23
+      Top = 418
+      Width = 223
+      Align = alBottom
+      TabOrder = 1
+    end
+    object chkTests: TTreeView
+      Left = 1
+      Height = 391
+      Top = 27
+      Width = 223
+      Align = alClient
+      ReadOnly = True
+      RightClickSelect = True
+      StateImages = ilNodeStates
+      TabOrder = 2
+      OnMouseDown = chkTestsMouseDown
+      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+    end
+  end
+  object Splitter1: TSplitter
+    Left = 225
+    Height = 442
+    Top = 49
+    Width = 5
+  end
+  object Panel3: TPanel
+    Left = 230
+    Height = 442
+    Top = 49
+    Width = 225
+    Align = alLeft
+    ClientHeight = 442
+    ClientWidth = 225
+    TabOrder = 3
+    object ToolBar2: TToolBar
+      Left = 1
+      Height = 26
+      Top = 1
+      Width = 223
+      Caption = 'ToolBar1'
+      ShowCaptions = True
+      TabOrder = 0
+      object btnFpcAll: TToolButton
+        Left = 1
+        Top = 2
+        Caption = 'All'
+        OnClick = btnFpcAllClick
+      end
+      object btnFpcNone: TToolButton
+        Left = 24
+        Top = 2
+        Caption = 'None'
+        OnClick = btnFpcNoneClick
+      end
+    end
+    object chkFpc: TTreeView
+      Left = 1
+      Height = 414
+      Top = 27
+      Width = 223
+      Align = alClient
+      ReadOnly = True
+      RightClickSelect = True
+      StateImages = ilNodeStates
+      TabOrder = 1
+      OnMouseDown = chkTestsMouseDown
+      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+    end
+  end
+  object Splitter2: TSplitter
+    Left = 455
+    Height = 442
+    Top = 49
+    Width = 5
+  end
+  object Panel4: TPanel
+    Left = 690
+    Height = 442
+    Top = 49
+    Width = 150
+    Align = alLeft
+    ClientHeight = 442
+    ClientWidth = 150
+    TabOrder = 5
+    object chkSym: TCheckListBox
+      Left = 1
+      Height = 215
+      Top = 1
+      Width = 148
+      Align = alTop
+      ItemHeight = 0
+      TabOrder = 0
+    end
+    object chkBit: TCheckListBox
+      Left = 1
+      Height = 191
+      Top = 216
+      Width = 148
+      Align = alTop
+      ItemHeight = 0
+      TabOrder = 1
+    end
+  end
+  object Splitter3: TSplitter
+    Left = 685
+    Height = 442
+    Top = 49
+    Width = 5
+  end
+  object Panel5: TPanel
+    Left = 460
+    Height = 442
+    Top = 49
+    Width = 225
+    Align = alLeft
+    ClientHeight = 442
+    ClientWidth = 225
+    TabOrder = 7
+    object ToolBar4: TToolBar
+      Left = 1
+      Height = 26
+      Top = 1
+      Width = 223
+      Caption = 'ToolBar1'
+      ShowCaptions = True
+      TabOrder = 0
+      object btnGdbAll: TToolButton
+        Left = 1
+        Top = 2
+        Caption = 'All'
+        OnClick = btnGdbAllClick
+      end
+      object btnGdbNone: TToolButton
+        Left = 24
+        Top = 2
+        Caption = 'None'
+        OnClick = btnGdbNoneClick
+      end
+    end
+    object chkDbg: TTreeView
+      Left = 1
+      Height = 414
+      Top = 27
+      Width = 223
+      Align = alClient
+      ReadOnly = True
+      RightClickSelect = True
+      StateImages = ilNodeStates
+      TabOrder = 1
+      OnMouseDown = chkTestsMouseDown
+      Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+    end
+  end
+  object ilNodeStates: TImageList
+    left = 220
+    top = 380
+    Bitmap = {
+      4C69020000001000000010000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFF00000000FFFFFFFF000000FF000000FF000000FF0000
+      00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+      00FF000000FFFFFFFFFF00000000FFFFFFFF000000FF000000FF000000FF0000
+      00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+      00FF000000FFFFFFFFFF00000000FFFFFFFF000000FF000000FFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000
+      00FF000000FFFFFFFFFF00000000FFFFFFFF000000FF000000FFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000
+      00FF000000FFFFFFFFFF00000000FFFFFFFF000000FF000000FFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000
+      00FF000000FFFFFFFFFF00000000FFFFFFFF000000FF000000FFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000
+      00FF000000FFFFFFFFFF00000000FFFFFFFF000000FF000000FFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000
+      00FF000000FFFFFFFFFF00000000FFFFFFFF000000FF000000FFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000
+      00FF000000FFFFFFFFFF00000000FFFFFFFF000000FF000000FFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000
+      00FF000000FFFFFFFFFF00000000FFFFFFFF000000FF000000FFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000
+      00FF000000FFFFFFFFFF00000000FFFFFFFF000000FF000000FFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000
+      00FF000000FFFFFFFFFF00000000FFFFFFFF000000FF000000FF000000FF0000
+      00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+      00FF000000FFFFFFFFFF00000000FFFFFFFF000000FF000000FF000000FF0000
+      00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+      00FF000000FFFFFFFFFF00000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFF00000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFF00000000FFFFFFFF000000FF000000FF000000FF0000
+      00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+      00FF000000FFFFFFFFFF00000000FFFFFFFF000000FF000000FF000000FF0000
+      00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+      00FF000000FFFFFFFFFF00000000FFFFFFFF000000FF000000FFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000
+      00FF000000FFFFFFFFFF00000000FFFFFFFF000000FF000000FFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF000000FFFFFFFFFF0000
+      00FF000000FFFFFFFFFF00000000FFFFFFFF000000FF000000FFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF000000FF000000FFFFFFFFFF0000
+      00FF000000FFFFFFFFFF00000000FFFFFFFF000000FF000000FFFFFFFFFF0000
+      00FFFFFFFFFFFFFFFFFFFFFFFFFF000000FF000000FF000000FFFFFFFFFF0000
+      00FF000000FFFFFFFFFF00000000FFFFFFFF000000FF000000FFFFFFFFFF0000
+      00FF000000FFFFFFFFFF000000FF000000FF000000FFFFFFFFFFFFFFFFFF0000
+      00FF000000FFFFFFFFFF00000000FFFFFFFF000000FF000000FFFFFFFFFF0000
+      00FF000000FF000000FF000000FF000000FFFFFFFFFFFFFFFFFFFFFFFFFF0000
+      00FF000000FFFFFFFFFF00000000FFFFFFFF000000FF000000FFFFFFFFFFFFFF
+      FFFF000000FF000000FF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000
+      00FF000000FFFFFFFFFF00000000FFFFFFFF000000FF000000FFFFFFFFFFFFFF
+      FFFFFFFFFFFF000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000
+      00FF000000FFFFFFFFFF00000000FFFFFFFF000000FF000000FFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000
+      00FF000000FFFFFFFFFF00000000FFFFFFFF000000FF000000FF000000FF0000
+      00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+      00FF000000FFFFFFFFFF00000000FFFFFFFF000000FF000000FF000000FF0000
+      00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+      00FF000000FFFFFFFFFF00000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      FFFFFFFFFFFFFFFFFFFF00000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000
+    }
+  end
+end
