@@ -1066,7 +1066,14 @@ begin
   if FBreakPoints = nil then Exit;
   if ABreakpoint = nil then Exit;
 
-  FCurrentBreakPoint := FBreakPoints.Find(ABreakPoint.Source, ABreakPoint.Line);
+  FCurrentBreakpoint := nil;
+  if (ABreakPoint is TDBGBreakPoint) and (TDBGBreakPoint(ABreakPoint).Slave is TIDEBreakPoint) then
+    FCurrentBreakpoint := TIDEBreakPoint(TDBGBreakPoint(ABreakPoint).Slave)
+  else
+    DebugLn('ERROR: Breakpoint does not have correct class, or IDE slave breakpoint');
+  // TODO: remove / fallback to old behaviour
+  if FCurrentBreakpoint = nil then
+    FCurrentBreakPoint := FBreakPoints.Find(ABreakPoint.Source, ABreakPoint.Line);
 end;
 
 procedure TDebugManager.mnuViewDebugDialogClick(Sender: TObject);
