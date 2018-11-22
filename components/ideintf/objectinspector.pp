@@ -312,6 +312,7 @@ type
     FKeySearchText: string;
     FHideClassNames: Boolean;
     FPropNameFilter : String;
+    FPaintRc: TRect;
 
     // hint stuff
     FLongHintTimer: TTimer;
@@ -3069,6 +3070,8 @@ var
 begin
   CurRow := Rows[ARow];
   FullRect := RowRect(ARow);
+  if (FullRect.Bottom < FPaintRc.Top) or (FullRect.Top > FPaintRc.Bottom) then
+    exit;
   NameRect := FullRect;
   ValueRect := FullRect;
   Inc(FullRect.Bottom, FRowSpacing);
@@ -3175,6 +3178,8 @@ var
   SpaceRect: TRect;
   GutterX: Integer;
 begin
+  FPaintRc := Canvas.ClipRect;
+
   BuildPropertyList(true);
   if not PaintOnlyChangedValues then
   begin
