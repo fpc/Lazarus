@@ -894,14 +894,14 @@ begin
     if Length(UTF8Character) > 0 then
     begin
       SendChar := True;
-      if Utf8Character[1] <= #127 then
+      if Length(UTF8Character)=1 then
         // ANSI layout character
         KeyChar := Utf8Character[1]
       else
         // it's non ANSI character. KeyChar must be assinged anything but #0
         // otherise the message could be surpressed.
         // In Windows world this would be an "Ansi" char in current locale
-        KeyChar := #$FF;
+        KeyChar := '?';
     end;
   end;
 
