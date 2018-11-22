@@ -1,11 +1,11 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: X\n"
+"Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: http://www.microsystem.studio\n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
@@ -34,7 +34,7 @@ msgstr "自定义CGI应用程序"
 
 #: weblazideintf.rscustomcgiapp2
 msgid "Custom CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal. The program source is automatically maintained by Lazarus."
-msgstr "Custom CGI应用%s一个CGI (通用网关接口)程序在Free Pascal使用webmodules中.这个程序的source是由Lazarus自动地维护"
+msgstr "Custom CGI应用%s一个CGI (通用网关接口)程序在Free Pasca中.这个程序的source是由Lazarus自动地维护"
 
 #: weblazideintf.rscustomfastcg
 msgid "Custom FastCGI Application"
@@ -42,7 +42,7 @@ msgstr "自定义FastCGI应用程序"
 
 #: weblazideintf.rscustomfastcg2
 msgid "Custom FastCGI Application%sA FastCGI (Common Gateway Interface) program in Free Pascal. The program source is automatically maintained by Lazarus."
-msgstr "Custom FastCGI 应用%s一个FastCGI (通用网关接口)程序在Free Pascal使用webmodules中.这个程序的source是由Lazarus自动地维护"
+msgstr "自定义FastCGI 应用%s一个FastCGI (通用网关接口)程序在Free Pascal中.这个程序的source是由Lazarus自动地维护."
 
 #: weblazideintf.rsfastcgiappli
 msgid "FastCGI Application"
@@ -50,7 +50,7 @@ msgstr "FastCGI应用程序"
 
 #: weblazideintf.rsfastcgiappli2
 msgid "FastCGI Application%sA FastCGI (Common Gateway Interface) program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
-msgstr "FastCGI 应用%s一个FastCGI (通用网关接口)程序在Free Pascal使用webmodules中.这个程序的source是由Lazarus自动地维护"
+msgstr "FastCGI 应用%s一个FastCGI (通用网关接口)程序在Free Pascal中使用webmodules.这个程序的source是由Lazarus自动地维护"
 
 #: weblazideintf.rshtmlwebmodul
 msgid "HTML Web Module"
@@ -66,7 +66,7 @@ msgstr "HTTP server应用程序"
 
 #: weblazideintf.rshttpappli2
 msgid "HTTP server Application. Complete HTTP Server program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
-msgstr "HTTP server应用.完整的HTTP Server程序在Free Pascal使用webmodules中.这个程序的source是由Lazarus自动地维护"
+msgstr "HTTP server应用.完整的HTTP Server程序在Free Pascal中使用webmodules.这个程序的source是由Lazarus自动地维护"
 
 #: weblazideintf.rswebdataprovi
 msgid "Web DataProvider Module"

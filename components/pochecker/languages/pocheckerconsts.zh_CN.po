@@ -1,11 +1,11 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: X-1.6\n"
+"Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: http://www.microsystem.studio\n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
@@ -13,10 +13,8 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: pocheckerconsts.rspochecker
-#, fuzzy
-#| msgid "PO File Checker"
 msgid "Check PO Files ..."
-msgstr "PO文件检查器"
+msgstr "检查PO文件…"
 
 #: pocheckerconsts.rs_lang_af_za
 msgid "Afrikaans"
@@ -92,7 +90,7 @@ msgstr "波兰语"
 
 #: pocheckerconsts.rs_lang_pt
 msgid "Portuguese"
-msgstr ""
+msgstr "葡萄牙语"
 
 #: pocheckerconsts.rs_lang_pt_br
 msgid "Brazilian Portuguese"
@@ -124,7 +122,7 @@ msgstr "所有语言"
 
 #: pocheckerconsts.scannotwritefileyoucanpressretrytorefreshthistransl
 msgid "Cannot write file%s%s%s%sYou can press \"Retry\" to refresh this translation family again and continue."
-msgstr ""
+msgstr "不能写入文件%s%s%s%s你可以按\"重试\"来再次刷新这个翻译家族并继续."
 
 #: pocheckerconsts.scheckforincompatibleformatarguments
 msgid "Check for incompatible format arguments"
@@ -146,7 +144,7 @@ msgstr "检查项目数量"
 
 #: pocheckerconsts.sclearlistbox
 msgid "Clear"
-msgstr "清除"
+msgstr "清理"
 
 #: pocheckerconsts.scopy
 msgid "&Copy"
@@ -215,7 +213,7 @@ msgstr ""
 
 #: pocheckerconsts.sfuzzystringstotal
 msgid "Fuzzy strings (total: %s)"
-msgstr ""
+msgstr "模糊的(Fuzzy)字符串(总计:%s)"
 
 #: pocheckerconsts.sgeneralinfo
 msgid "General Info"
@@ -259,7 +257,7 @@ msgstr "标识符[%s]找到在%s,但是它在%s中不存在"
 
 #: pocheckerconsts.snofileslefttocheck
 msgid "There are no files left to check."
-msgstr "哪里没有剩余文件来检查."
+msgstr "那里没有剩余文件来检查."
 
 #: pocheckerconsts.snotestselected
 msgid "There are no tests selected."
@@ -275,7 +273,7 @@ msgstr "发现%d错误."
 
 #: pocheckerconsts.snrofitemsmismatch
 msgid "Mismatch in number of items for master and child"
-msgstr "不匹配在主项和子项目的数字"
+msgstr "不匹配的主项和子项的项目的数字"
 
 #: pocheckerconsts.snrofitemsmismatchd
 msgid "%s: %d items"
@@ -307,53 +305,47 @@ msgstr ""
 
 #: pocheckerconsts.sopenfileinexternaleditor
 msgid "Open file in external editor"
-msgstr ""
+msgstr "打开文件在外部编辑器"
 
 #: pocheckerconsts.sopenfileinideeditor
 msgid "Open file in IDE editor"
-msgstr ""
+msgstr "打开文件在IDE编辑器"
 
 #: pocheckerconsts.sopenfileinsystempoeditor
 msgid "Open file in system PO editor"
-msgstr ""
+msgstr "打开文件在系统PO 编辑器"
 
 #: pocheckerconsts.soriginal
 msgid "Original"
 msgstr "原始"
 
 #: pocheckerconsts.spercfuzzy
-#, fuzzy
-#| msgid "%s: %4.1f%% fuzzy strings."
 msgid "%s: %5.1f%% fuzzy strings."
-msgstr "%s:%4.1f%%模糊不清的字符串."
+msgstr "%s:%5.1f%%模糊不清的字符串."
 
 #: pocheckerconsts.sperctranslated
-#, fuzzy
-#| msgid "%s: %4.1f%% translated strings."
 msgid "%s: %5.1f%% translated strings."
-msgstr "%s:%4.1f%%已翻译的字符串."
+msgstr "%s:%5.1f%%已翻译的字符串."
 
 #: pocheckerconsts.spercuntranslated
-#, fuzzy
-#| msgid "%s: %4.1f%% untranslated strings."
 msgid "%s: %5.1f%% untranslated strings."
-msgstr "%s: %4.1f%%未翻译的字符串."
+msgstr "%s:%5.1f%%未翻译的字符串."
 
 #: pocheckerconsts.sprocessingtranslationfamily
 msgid "Processing translation family..."
-msgstr ""
+msgstr "处理(Processing)翻译家族..."
 
 #: pocheckerconsts.sprocessingtranslationfamilyof
 msgid "Processing translation family %s of %s"
-msgstr ""
+msgstr "处理(Processing)翻译家族%s属于(of) %s"
 
 #: pocheckerconsts.srefreshalltranslationfamilies
 msgid "Refresh all translation families"
-msgstr ""
+msgstr "刷新所有翻译家族"
 
 #: pocheckerconsts.srefreshcurrenttranslationfamily
 msgid "Refresh current translation family"
-msgstr ""
+msgstr "刷新当前翻译家族"
 
 #: pocheckerconsts.sresults
 msgid "Results"
@@ -372,7 +364,7 @@ msgid ""
 "Error saving file:\n"
 "%s\n"
 msgstr ""
-"保存文件错误:\n"
+"错误保存文件:\n"
 "%s\n"
 
 #: pocheckerconsts.sscandir
@@ -389,7 +381,7 @@ msgstr "选择所有文件"
 
 #: pocheckerconsts.sselectalltests
 msgid "Select &All"
-msgstr "选择所有(&A)"
+msgstr "全选(&A)"
 
 #: pocheckerconsts.sselecttesttypes
 msgid "Select test types"
@@ -400,30 +392,24 @@ msgid "Show statistics graph"
 msgstr "显示统计图"
 
 #: pocheckerconsts.sstathint
-#, fuzzy
-#| msgid ""
-#| "%3d Translated (%3.1f%%)\n"
-#| "%3d UnTranslated (%3.1f%%)\n"
-#| "%3d Fuzzy (%3.1f%%)\n"
-#| "%d Error(s) in Selected Tests\n"
 msgid ""
 "Translated: %d (%.1f%%)\n"
 "Untranslated: %d (%.1f%%)\n"
 "Fuzzy: %d (%.1f%%)\n"
 "Errors in selected tests: %d\n"
 msgstr ""
-"%3d已翻译的(%3.1f%%)\n"
-"%3d未翻译的(%3.1f%%)\n"
-"%3d模糊不清的(%3.1f%%)\n"
-"%d错误在选项的测试\n"
+"翻译的: %d (%.1f%%)\n"
+"未翻译的: %d (%.1f%%)\n"
+"模糊的(Fuzzy): %d (%.1f%%)\n"
+"错误在选择的测试中: %d\n"
 
 #: pocheckerconsts.sthefollowingmissingmasterpofileswereremoved
 msgid "The following %s missing master .po file(s) were removed from the list:"
-msgstr ""
+msgstr "下面的%s缺少主要的.po文件 将被移除从该列表:"
 
 #: pocheckerconsts.sthefollowingorphanedpofilesfound
 msgid "The following %s orphaned .po file(s) found:"
-msgstr ""
+msgstr "下面%s孤立的.po文件找到:"
 
 #: pocheckerconsts.stotalerrors
 #, fuzzy
@@ -437,15 +423,15 @@ msgstr ""
 
 #: pocheckerconsts.stotalfuzzystrings
 msgid "Total fuzzy strings: %s"
-msgstr ""
+msgstr "全部模糊不清的字符串: %s"
 
 #: pocheckerconsts.stotaltranslatedstrings
 msgid "Total translated strings: %s (%.1f%%)"
-msgstr ""
+msgstr "总计翻译的字符串: %s (%.1f%%)"
 
 #: pocheckerconsts.stotaluntranslatedstrings
 msgid "Total untranslated strings: %s"
-msgstr ""
+msgstr "全部未翻译的字符串: %s"
 
 #: pocheckerconsts.stotalwarnings
 #, fuzzy
@@ -459,19 +445,21 @@ msgstr ""
 
 #: pocheckerconsts.stranslatedstringstotal
 msgid "Translated strings (total: %s [%.1f%%])"
-msgstr ""
+msgstr "翻译的字符串(总计: %s [%.1f%%)"
 
 #: pocheckerconsts.stranslation
 msgid "Translation"
 msgstr "翻译"
 
 #: pocheckerconsts.stranslationstatistics
+#, fuzzy
+#| msgid "Translation statistics per language:"
 msgid "Translation Statistics"
-msgstr ""
+msgstr "翻译统计每种语言:"
 
 #: pocheckerconsts.stroublesomefiles
 msgid "Troublesome files"
-msgstr ""
+msgstr "麻烦的(Troublesome)文件"
 
 #: pocheckerconsts.sunselectalltests
 msgid "&Unselect All"
@@ -487,5 +475,5 @@ msgstr ""
 
 #: pocheckerconsts.suntranslatedstringstotal
 msgid "Untranslated strings (total: %s)"
-msgstr ""
+msgstr "未翻译的字符串(总计:%s)"
 

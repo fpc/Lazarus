@@ -1,11 +1,11 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: X\n"
+"Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: http://www.microsystem.studio\n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
@@ -50,11 +50,11 @@ msgstr ""
 
 #: le_e_spreadsheet_consts.sexportpagefooter
 msgid "Export page footer"
-msgstr ""
+msgstr "导出页脚"
 
 #: le_e_spreadsheet_consts.sexportpageheader
 msgid "Export page header"
-msgstr ""
+msgstr "导出页眉"
 
 #: le_e_spreadsheet_consts.sexportpictures
 msgid "Export pictures"
@@ -62,15 +62,15 @@ msgstr "导出图片"
 
 #: le_e_spreadsheet_consts.sexportprintrange
 msgid "Export print range"
-msgstr ""
+msgstr "导出打印范围"
 
 #: le_e_spreadsheet_consts.sexportreportsummary
 msgid "Export report summary"
-msgstr ""
+msgstr "导出报告摘要"
 
 #: le_e_spreadsheet_consts.sexportreporttitle
 msgid "Export report title"
-msgstr ""
+msgstr "导出报告标题"
 
 #: le_e_spreadsheet_consts.sexportsettings
 msgid "Export settings"
@@ -82,11 +82,11 @@ msgstr "导出到电子表格(spreadsheet)"
 
 #: le_e_spreadsheet_consts.sexporturl
 msgid "Export URL"
-msgstr ""
+msgstr "导出URL"
 
 #: le_e_spreadsheet_consts.sgeneral
 msgid "General"
-msgstr "通常"
+msgstr "一般"
 
 #: le_e_spreadsheet_consts.slikethereport
 msgid "Like the report"

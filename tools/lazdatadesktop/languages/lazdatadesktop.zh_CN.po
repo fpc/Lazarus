@@ -1,11 +1,11 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: X-1.6\n"
+"Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: http://www.microsystem.studio\n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
@@ -22,11 +22,11 @@ msgstr "放置括号在AND术语周围"
 
 #: lazdatadeskstr.eolinefeedafterandterm
 msgid "Linefeed after AND terms"
-msgstr "换号在AND术语后"
+msgstr "换行在AND术语后"
 
 #: lazdatadeskstr.eolinefeedafterfield
 msgid "Linefeed after each field"
-msgstr "换号在每个字段后"
+msgstr "换行在每个字段后"
 
 #: lazdatadeskstr.eoquotefieldnames
 msgid "Quote field names"
@@ -42,7 +42,7 @@ msgstr "使用OLD前缀在参数位置"
 
 #: lazdatadeskstr.sabortscript
 msgid "Abort the script"
-msgstr ""
+msgstr "中止"
 
 #: lazdatadeskstr.sclose
 msgid "Close result"
@@ -84,12 +84,12 @@ msgid ""
 "There is already a connection named \"%s\"\n"
 "Would you like to override the connection data ?\n"
 msgstr ""
-"这里已经有一个连接命名\"%s\"\n"
+"这里已经有一个连接命为\"%s\"\n"
 "你想覆盖该连接的数据?\n"
 
 #: lazdatadeskstr.screatecode
 msgid "Create code"
-msgstr "创建code"
+msgstr "创建代码"
 
 #: lazdatadeskstr.screateconnection
 msgid "Would you like to create a new connection for this database ?"
@@ -100,8 +100,8 @@ msgid ""
 "Data dictionary \"%s\" has changed.\n"
 "What do you want to do with the changes?\n"
 msgstr ""
-"数据字典\"%s\"已经改变.\n"
-"你想做这些改变?\n"
+"数据字典\"%s\"已经更改.\n"
+"你想做这些更改?\n"
 
 #: lazdatadeskstr.sdeleteobject
 msgid "Delete this %s"
@@ -122,7 +122,7 @@ msgstr "不要关闭编辑器"
 
 #: lazdatadeskstr.sdontsave
 msgid "Discard changes"
-msgstr "丢弃更改"
+msgstr "放弃更改"
 
 #: lazdatadeskstr.senginetype
 msgid "Engine"
@@ -130,17 +130,19 @@ msgstr "引擎"
 
 #: lazdatadeskstr.serrcommitnotsupported
 msgid "COMMIT Not supported yet"
-msgstr ""
+msgstr "提交(COMMIT)还不支持"
 
 #: lazdatadeskstr.serrinscript
 msgid "Error in SQL script"
-msgstr ""
+msgstr "错误在SQL脚本"
 
 #: lazdatadeskstr.serrinscriptchoice
 msgid ""
 "An error occurred in the SQL script.\n"
 "How would you like to continue ?\n"
 msgstr ""
+"一个错误发生在SQL脚本.\n"
+"你想要继续吗?\n"
 
 #: lazdatadeskstr.serrnoengine
 msgid "No database engine !"
@@ -148,7 +150,7 @@ msgstr "无数据库引擎!"
 
 #: lazdatadeskstr.serrorexecutingsql
 msgid "Error executing SQL statement:"
-msgstr ""
+msgstr "错误执行SQL声明(statement):"
 
 #: lazdatadeskstr.serrselectfields
 msgid "No fields selected. Please select some fields"
@@ -160,7 +162,7 @@ msgstr "没有table选择.请选择一个table"
 
 #: lazdatadeskstr.serrunknowndirective
 msgid "Unknown directive: %s (args: %s)"
-msgstr ""
+msgstr "未知指令:%s(args(参数):%s)"
 
 #: lazdatadeskstr.serrunknowntype
 msgid "Unknown object type: %d"
@@ -180,7 +182,7 @@ msgstr ""
 
 #: lazdatadeskstr.sexecutiontime
 msgid "Execution time: %s"
-msgstr ""
+msgstr "执行时间:%s"
 
 #: lazdatadeskstr.sexport
 msgid "Export data"
@@ -200,7 +202,7 @@ msgstr "关闭查询结果数据面板"
 
 #: lazdatadeskstr.shintcreatecode
 msgid "Create pascal code for this data"
-msgstr "创建pascal代码用于这个数据"
+msgstr "创建pascal代码对于这个数据"
 
 #: lazdatadeskstr.shintexecute
 msgid "Execute SQL statement"
@@ -260,11 +262,11 @@ msgstr "添加一个数列"
 
 #: lazdatadeskstr.sld_actionclose
 msgid "&Close"
-msgstr "(&C)关闭"
+msgstr "关闭(&C)"
 
 #: lazdatadeskstr.sld_actioncloseall
 msgid "Close &All"
-msgstr "关闭(&A)所有"
+msgstr "关闭所有(&A)"
 
 #: lazdatadeskstr.sld_actioncloseallh
 msgid "Close all Data Dictionaries"
@@ -276,7 +278,7 @@ msgstr "关闭当前Data字典"
 
 #: lazdatadeskstr.sld_actioncopy
 msgid "&Copy"
-msgstr "(&C)复制"
+msgstr "复制(&C)"
 
 #: lazdatadeskstr.sld_actioncopyconnection
 msgid "&Copy connection"
@@ -288,11 +290,11 @@ msgstr "复制"
 
 #: lazdatadeskstr.sld_actioncreatecode
 msgid "Create &code"
-msgstr "创建code(&c)"
+msgstr "创建代码(&c)"
 
 #: lazdatadeskstr.sld_actioncreatecodeh
 msgid "Create code from definition or data"
-msgstr "创建code从definition或data"
+msgstr "创建代码从definition或data"
 
 #: lazdatadeskstr.sld_actioncut
 msgid "Cu&t"
@@ -329,7 +331,7 @@ msgstr "退出这个程序"
 
 #: lazdatadeskstr.sld_actiongeneratesql
 msgid "&Generate SQL"
-msgstr "生产SQL 文件(&G)"
+msgstr "产生SQL (&G)"
 
 #: lazdatadeskstr.sld_actiongeneratesqlh
 msgid "Generate SQL statements for the current table"
@@ -409,7 +411,7 @@ msgstr "保存(&S)"
 
 #: lazdatadeskstr.sld_actionsaveas
 msgid "Save &as"
-msgstr "另存为 ...(&A)"
+msgstr "另存为(&a)"
 
 #: lazdatadeskstr.sld_actionsaveash
 msgid "Save data dictionary as"
@@ -438,7 +440,7 @@ msgstr "驱动"
 
 #: lazdatadeskstr.sld_connectionlv3
 msgid "Last used"
-msgstr "输出使用的"
+msgstr "上次使用"
 
 #: lazdatadeskstr.sld_connectionlv4
 msgctxt "lazdatadeskstr.sld_connectionlv4"
@@ -456,9 +458,8 @@ msgstr ""
 
 #: lazdatadeskstr.sld_connecttoadatabase
 #, fuzzy,badformat
-#| msgid "Connect to a database"
 msgid "Connect to a database of type %s"
-msgstr "连接到database"
+msgstr "连接到类型%c的一个数据库"
 
 #: lazdatadeskstr.sld_createfulltablecreationsql
 msgid "Create full table creation SQL"
@@ -500,7 +501,7 @@ msgstr "生成SQL声明"
 
 #: lazdatadeskstr.sld_host
 msgid "Host"
-msgstr "Host"
+msgstr "主机"
 
 #: lazdatadeskstr.sld_importupdatedatadictionary
 msgid "Import/Update data dictionary"
@@ -524,7 +525,7 @@ msgstr "Lazarus Database桌面"
 
 #: lazdatadeskstr.sld_legacyview
 msgid "Legacy List View"
-msgstr ""
+msgstr "Legacy(遗产?)查看列表"
 
 #: lazdatadeskstr.sld_linelength
 msgid "Line Length"
@@ -556,8 +557,6 @@ msgid "&OK"
 msgstr "确定(&O)"
 
 #: lazdatadeskstr.sld_opendatadictionaryfilter
-#, fuzzy
-#| msgid "Data dictionary files|*.fpd|Ini files|*.ini|All files|*.*"
 msgctxt "lazdatadeskstr.sld_opendatadictionaryfilter"
 msgid "Data dictionary files (fdd)|*.fdd|Ini files|*.ini|All files|*.*"
 msgstr "数据字典文件|*.fpd|Ini文件|*.ini|所有文件|*.*"
@@ -573,7 +572,7 @@ msgstr "选项"
 
 #: lazdatadeskstr.sld_password
 msgid "Password"
-msgstr "Password"
+msgstr "密码"
 
 #: lazdatadeskstr.sld_recentlv1
 msgctxt "lazdatadeskstr.sld_recentlv1"
@@ -589,8 +588,6 @@ msgid "Last used on"
 msgstr "上次使用在"
 
 #: lazdatadeskstr.sld_savefileasfilter
-#, fuzzy
-#| msgid "Data dictionary files|*.fpd|Ini files|*.ini|All files|*.*"
 msgctxt "lazdatadeskstr.sld_savefileasfilter"
 msgid "Data dictionary files (fdd)|*.fdd|Ini files|*.ini|All files|*.*"
 msgstr "数据字典文件|*.fpd|Ini文件|*.ini|所有文件|*.*"
@@ -605,15 +602,15 @@ msgstr "选择(&S)"
 
 #: lazdatadeskstr.sld_selectaconnectiontype
 msgid "Select a conection type"
-msgstr "选择连接类型"
+msgstr "选择一个连接类型"
 
 #: lazdatadeskstr.sld_selectall
 msgid "Select &all"
-msgstr "选择所有(&A)"
+msgstr "选择所有(&a)"
 
 #: lazdatadeskstr.sld_selectnone
 msgid "Select &none"
-msgstr "全部不选(&n)"
+msgstr "全部none(&n)"
 
 #: lazdatadeskstr.sld_selectupdateinsertfields
 msgid "Select/Update/Insert fields"
@@ -625,15 +622,15 @@ msgstr "-"
 
 #: lazdatadeskstr.sld_startempty
 msgid "Thanks, I know what to do"
-msgstr ""
+msgstr "谢谢,我知道做什么"
 
 #: lazdatadeskstr.sld_startnewconnection
 msgid "Create new connection"
-msgstr ""
+msgstr "创建新连接"
 
 #: lazdatadeskstr.sld_startnewdict
 msgid "Start new dictionary"
-msgstr ""
+msgstr "开始新字典"
 
 #: lazdatadeskstr.sld_succesconnecting
 msgid "Connection established successfully!"
@@ -641,7 +638,7 @@ msgstr ""
 
 #: lazdatadeskstr.sld_table
 msgid "Ta&ble"
-msgstr "Table(&b)"
+msgstr "Ta&ble"
 
 #: lazdatadeskstr.sld_tableandfields
 msgid "Tables and &Fields"
@@ -649,11 +646,11 @@ msgstr "Tables和字段(&F)"
 
 #: lazdatadeskstr.sld_testconnection
 msgid "Test connection"
-msgstr ""
+msgstr "测试连接"
 
 #: lazdatadeskstr.sld_unknowntype
 msgid "Unknown type"
-msgstr ""
+msgstr "未知类型"
 
 #: lazdatadeskstr.sld_update
 msgid "&Update"
@@ -669,7 +666,7 @@ msgstr "用户名"
 
 #: lazdatadeskstr.sld_view
 msgid "View"
-msgstr ""
+msgstr "查看"
 
 #: lazdatadeskstr.sload
 msgid "Load SQL"
@@ -677,7 +674,7 @@ msgstr "加载SQL"
 
 #: lazdatadeskstr.snamefor
 msgid "Enter a name for the new %s"
-msgstr "输入一个名称用于新%s"
+msgstr "输入一个名称对于新%s"
 
 #: lazdatadeskstr.snew
 msgid "New %s"
@@ -697,7 +694,7 @@ msgstr "创建新domain"
 
 #: lazdatadeskstr.snewdomainname
 msgid "Enter a name for the new domain:"
-msgstr "输入一个名称用于新domain:"
+msgstr "输入一个名称对于新domain:"
 
 #: lazdatadeskstr.snewfield
 msgid "Create new field in table %s"
@@ -705,7 +702,7 @@ msgstr "创建新字段在table%s"
 
 #: lazdatadeskstr.snewfieldname
 msgid "Enter a name for the new field:"
-msgstr "输入一个名称用于新字段:"
+msgstr "输入一个名称对于新字段:"
 
 #: lazdatadeskstr.snewforeignkey
 msgid "Create new foreign key in table %s"
@@ -713,7 +710,7 @@ msgstr "创建新foreign key在table%s"
 
 #: lazdatadeskstr.snewforeignkeyname
 msgid "Enter a name for the new foreign key:"
-msgstr "输入一个名称用于新foreign key:"
+msgstr "输入一个名称对于新foreign key:"
 
 #: lazdatadeskstr.snewindex
 msgid "Create new index on table %s"
@@ -721,7 +718,7 @@ msgstr "创建新索引关于table%s"
 
 #: lazdatadeskstr.snewindexname
 msgid "Enter a name for the new index:"
-msgstr "输入一个名称用于新索引:"
+msgstr "输入一个名称对于新索引:"
 
 #: lazdatadeskstr.snewobject
 msgid "Create new %s"
@@ -733,15 +730,15 @@ msgstr "创建新数列"
 
 #: lazdatadeskstr.snewsequencename
 msgid "Enter a name for the new sequence:"
-msgstr "输入一个名称用于新数列:"
+msgstr "输入一个名称对于新数列:"
 
 #: lazdatadeskstr.snewtable
 msgid "Create new table"
-msgstr "创建一个新的table"
+msgstr "创建新的table"
 
 #: lazdatadeskstr.snewtablename
 msgid "Enter a name for the new table:"
-msgstr "输入一个名称用于新table:"
+msgstr "输入一个名称对于新table:"
 
 #: lazdatadeskstr.snext
 msgid "Next"
@@ -817,7 +814,7 @@ msgstr "运行查询"
 
 #: lazdatadeskstr.sreadyforsql
 msgid "Ready to execute SQL statements"
-msgstr ""
+msgstr "准备执行SQL声明(statements)"
 
 #: lazdatadeskstr.srecordsfetched
 msgid "Records fetched: %d"
@@ -828,9 +825,8 @@ msgid "Retry the statement"
 msgstr ""
 
 #: lazdatadeskstr.srowsaffected
-#, fuzzy,badformat
 msgid "Query executed successfully: %d rows affected."
-msgstr "查询成功地执行:％d行受到影响."
+msgstr ""
 
 #: lazdatadeskstr.ssave
 msgid "Save SQL"
@@ -846,7 +842,7 @@ msgstr ""
 
 #: lazdatadeskstr.sscriptcompleted
 msgid "Executed %d statements from script"
-msgstr ""
+msgstr "执行%d声明(statements)从脚本"
 
 #: lazdatadeskstr.sscripterrorcount
 msgid "%d script statements resulted in errors"
@@ -858,7 +854,7 @@ msgstr "选择一个目录带有DBF文件"
 
 #: lazdatadeskstr.sselectedobject
 msgid "Selected object"
-msgstr "选择的object"
+msgstr "选择对象"
 
 #: lazdatadeskstr.ssequence
 msgid "Sequence"
@@ -866,7 +862,7 @@ msgstr "数列(Sequence)"
 
 #: lazdatadeskstr.ssqlerrorcode
 msgid "SQL Error code: %d"
-msgstr ""
+msgstr "SQL错误代码:%d"
 
 #: lazdatadeskstr.ssqlexecutedok
 msgid "%s : Statement executed succesfully."
@@ -878,15 +874,15 @@ msgstr "SQL文件|*.sql|所有文件|*.*"
 
 #: lazdatadeskstr.ssqlstatus
 msgid "SQL State: %s"
-msgstr ""
+msgstr "SQL状态(State):%s"
 
 #: lazdatadeskstr.sstopnoerror
 msgid "Continue, ignore all errors"
-msgstr ""
+msgstr "继续,忽略所有错误"
 
 #: lazdatadeskstr.sstoponnexterror
 msgid "Continue, stop on the next error"
-msgstr ""
+msgstr "继续,在下一个错误上停止"
 
 #: lazdatadeskstr.stable
 msgid "Table"

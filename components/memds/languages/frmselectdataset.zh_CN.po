@@ -1,16 +1,16 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: X\n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-12-01 22:47+0800\n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: http://www.microsystem.studio\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-SourceCharset: UTF-8\n"
+"Project-Id-Version: X-1.9\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Language-Team: \n"
 "Language: zh_CN\n"
 "X-Generator: Poedit 1.8.7.1\n"
+"X-Poedit-SourceCharset: UTF-8\n"
 
 #: frmselectdataset.scancelbtn
 msgid "Cancel"
@@ -18,7 +18,7 @@ msgstr "取消"
 
 #: frmselectdataset.scaption
 msgid "Select dataset to copy from"
-msgstr "选择Dataset来复制"
+msgstr "选择dataset来复制"
 
 #: frmselectdataset.scopymeta
 msgid "Copy only metadata"
@@ -30,7 +30,7 @@ msgstr "Dataset来复制:(&D)"
 
 #: frmselectdataset.serrcomponentnotfound
 msgid "Error: Component \"%s\" not found"
-msgstr "错误:未找到 组件\"%s\""
+msgstr "错误: 组件\"%s\"未找到"
 
 #: frmselectdataset.serrselectdataset
 msgid "Please select a dataset first"

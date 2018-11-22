@@ -1,0 +1,143 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: X-1.9\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"X-Generator: Poedit 1.8.7.1\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+#: glazresmain.cbtncancel
+msgid "Cancel"
+msgstr "取消"
+
+#: glazresmain.defilter
+msgctxt "glazresmain.defilter"
+msgid "Lazarus Resource Files|*.lrs|All Files|*"
+msgstr "Lazarus资源文件|*.lrs|所有文件|*"
+
+#: glazresmain.desaveresourcefileas
+msgctxt "glazresmain.desaveresourcefileas"
+msgid "Save resourcefile as"
+msgstr "保持资源文件为"
+
+#: glazresmain.errconverttotext
+msgid "ERROR: unable to convert Delphi form to text: \"%s\""
+msgstr "错误:不能转换Delphi窗体(form)为文本:\"%s\""
+
+#: glazresmain.errcreate
+msgid "ERROR: Cannot create \"%s\""
+msgstr "错误:不能创建\"%s\""
+
+#: glazresmain.errfileisresource
+msgid "ERROR: Cannot add resource file to itself (\"%s\")"
+msgstr "错误:不能添加资源文件到它自身(\"%s\")"
+
+#: glazresmain.errfilenotfound
+msgid "ERROR: File not found: \"%s\""
+msgstr "错误:文件未找到:\"%s\""
+
+#: glazresmain.errnoresourcename
+msgid "ERROR: No resourcename found for \"%s\""
+msgstr "错误:没有资源名称找到对于\"%s\""
+
+#: glazresmain.errread
+msgid "ERROR: Cannot read from \"%s\""
+msgstr "错误:不能读取从\"%s\""
+
+#: glazresmain.msgcreatinglrs
+msgid "Creating \"%s\""
+msgstr "创建\"%s\""
+
+#: glazresmain.msgprocessing
+msgid "Processing \"%s\""
+msgstr "处理(Processing)\"%s\""
+
+#: glazresmain.msgresourcenametype
+msgid " Resource name = \"%s\", Type = \"%s\""
+msgstr "资源名称= \"%s\",类型= \"%s\""
+
+#: glazresmain.msgsuccess
+msgid ""
+"Done.\n"
+"Number of resources added: %d.\n"
+msgstr ""
+"完成.\n"
+"添加的资源数量(Number of resources added):%d.\n"
+
+#: glazresmain.msgwrongext
+msgid "Filename does not have the required extension: fix it?"
+msgstr "文件名称没有需要的扩展名:修复它?"
+
+#: glazresmain.odopenexistingfile
+msgctxt "glazresmain.odopenexistingfile"
+msgid "Open existing file"
+msgstr "打开存在的文件"
+
+#: glazresmain.opdfilter
+msgctxt "glazresmain.opdfilter"
+msgid "Graphic (*.png;*.xpm;*.bmp;*.cur;*.ico;*.icns;*.jpeg;*.jpg;*.jpe;*.jfif;*.tif;*.tiff;*.gif;*.pbm;*.pgm;*.ppm;*.gif;*.tga)|*.png;*.xpm;*.bmp;*.cur;*.ico;*.icns;*.jpeg;*.jpg;*.jpe;*.jfif;*.tif;*.tiff;*.gif;*.pbm;*.pgm;*.ppm;*.gif;*.tga|Portable Network Graphic (*.png)|*.png|Pixmap (*.xpm)|*.xpm|Bitmaps (*.bmp)|*.bmp|Cursor (*.cur)|*.cur|Icon (*.ico)|*.ico|Mac OS X Icon (*.icns)|*.icns|Joint Picture Expert Group (*.jpeg;*.jpg;*.jpe;*.jfif)|*.jpeg;*.jpg;*.jpe;*.jfif|Tagged Image File Format (*.tif;*.tiff)|*.tif;*.tiff|Graphics Interchange Format (*.gif)|*.gif|Portable PixMap (*.pbm;*.pgm;*.ppm)|*.pbm;*.pgm;*.ppm|Animated GIF (*.gif)|*.gif|TGA Image File (*.tga)|*.tga|"
+msgstr "图形(*.png;*.xpm;*.bmp;*.cur;*.ico;*.icns;*.jpeg;*.jpg;*.jpe;*.jfif;*.tif;*.tiff;*.gif;*.pbm;*.pgm;*.ppm;*.gif;*.tga)|*.png;*.xpm;*.bmp;*.cur;*.ico;*.icns;*.jpeg;*.jpg;*.jpe;*.jfif;*.tif;*.tiff;*.gif;*.pbm;*.pgm;*.ppm;*.gif;*.tga|便携式网络图形(*.png)|*.png|像素图(*.xpm)|*.xpm|位图(*.bmp)|*.bmp|Cursor (*.cur)|*.cur|图标(*.ico)|*.ico|Mac OS X图标 (*.icns)|*.icns|联合图片专家组(*.jpeg;*.jpg;*.jpe;*.jfif)|*.jpeg;*.jpg;*.jpe;*.jfif|标记图像文件格式(*.tif;*.tiff)|*.tif;*.tiff|图形交换格式 (*.gif)|*.gif|便携式像素图(*.pbm;*.pgm;*.ppm)|*.pbm;*.pgm;*.ppm|动画GIF(*.gif)|*.gif|TGA图像文件(*.tga)|*.tga|"
+
+#: glazresmain.opdfilterall
+msgid "All files"
+msgstr "所有文件"
+
+#: glazresmain.opdopenexistingpicture
+msgctxt "glazresmain.opdopenexistingpicture"
+msgid "Open existing picture"
+msgstr "打开存在的图片"
+
+#: tglazresform.addanybtn.hint
+msgid "Add (any kind of) files to the list"
+msgstr "添加(任何种类)文件到列表"
+
+#: tglazresform.addimgbtn.hint
+msgid "Add images to the list"
+msgstr "添加图像到列表"
+
+#: tglazresform.caption
+msgid "LRS Builder"
+msgstr "LRS构建器(Builder)"
+
+#: tglazresform.clearbtn.caption
+msgid "Clear"
+msgstr "清理"
+
+#: tglazresform.clearbtn.hint
+msgid "Cleare the entire list"
+msgstr "清理该整个列表"
+
+#: tglazresform.closebtn.hint
+msgid "Exit the program"
+msgstr "退出程序"
+
+#: tglazresform.deletebtn.hint
+msgid "Delete selected files from the list"
+msgstr "删除选择的文件从列表"
+
+#: tglazresform.fileslabel.caption
+msgid "Files to include"
+msgstr "文件予以包含(include)"
+
+#: tglazresform.lrslabel.caption
+msgid "Lazarus Resource Filename"
+msgstr "Lazarus资源文件名称"
+
+#: tglazresform.messageslabel.caption
+msgid "Messages"
+msgstr "信息"
+
+#: tglazresform.startbtn.caption
+msgid "Create LRS"
+msgstr "创建LRS"
+
+#: tglazresform.startbtn.hint
+msgid "Create the output LRS file"
+msgstr "创建输出LRS文件"
+

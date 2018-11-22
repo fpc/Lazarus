@@ -1,0 +1,293 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: X-1.9\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"X-Generator: Poedit 1.8.7.1\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+#: fppkg_mainfrm.sactarchivepackages
+msgid "create archive(s) for package(s)"
+msgstr "为包创建档案文件(archive)"
+
+#: fppkg_mainfrm.sactbuildpackages
+msgid "build package(s)"
+msgstr "构建包"
+
+#: fppkg_mainfrm.sactcleanpackages
+msgid "clean package(s)"
+msgstr "清理包"
+
+#: fppkg_mainfrm.sactcompilepackages
+msgid "compile packages"
+msgstr "编译包"
+
+#: fppkg_mainfrm.sactdownloadpackages
+msgid "download packages"
+msgstr "下载包"
+
+#: fppkg_mainfrm.sactfixbroken
+msgid "fix broken packages"
+msgstr "修复损坏包"
+
+#: fppkg_mainfrm.sactinitializefppkg
+msgid "initialize fppkg"
+msgstr "初始化fppkg"
+
+#: fppkg_mainfrm.sactinstallpackages
+msgid "install package(s)"
+msgstr "安装包"
+
+#: fppkg_mainfrm.sactuninstpackages
+msgid "uninstall package(s)"
+msgstr "卸载包"
+
+#: fppkg_mainfrm.sactupdate
+msgid "update repository"
+msgstr "更新存储库"
+
+#: fppkg_mainfrm.serractionfailed
+msgid ""
+"Failed to %s: \n"
+"\n"
+"%s\n"
+msgstr ""
+"失败to(对于) %s: \n"
+"\n"
+"%s\n"
+
+#: fppkg_mainfrm.smsgactionsucceeded
+msgid "%s succeeded."
+msgstr "%s成功."
+
+#: fppkg_mainfrm.smsgfppkgrunning
+msgid "A prior command is still in progress."
+msgstr "一个先前的命令仍然在进程中."
+
+#: tfppkgform.archivebutton.caption
+msgid "Archive"
+msgstr "档案文件(Archive)"
+
+#: tfppkgform.archivebutton.hint
+msgid "Create archive of package"
+msgstr "创建包档案文件(archive)"
+
+#: tfppkgform.buildbutton.caption
+msgid "Build"
+msgstr "构建"
+
+#: tfppkgform.buildbutton.hint
+msgid "Build package"
+msgstr "构建包"
+
+#: tfppkgform.caption
+msgid "FppkgForm"
+msgstr "FppkgForm"
+
+#: tfppkgform.categorieslabel.caption
+msgid "Categories:"
+msgstr "类别:"
+
+#: tfppkgform.cleanbutton.caption
+msgid "Clean"
+msgstr "清理"
+
+#: tfppkgform.cleanbutton.hint
+msgid "Clean package"
+msgstr "清理包"
+
+#: tfppkgform.compilebutton.caption
+msgid "Compile"
+msgstr "编译"
+
+#: tfppkgform.compilebutton.hint
+msgid "Compile package"
+msgstr "编译包"
+
+#: tfppkgform.downloadbutton.caption
+msgid "Download"
+msgstr "下载"
+
+#: tfppkgform.downloadbutton.hint
+msgid "Download package"
+msgstr "下载包"
+
+#: tfppkgform.fixbrokenbutton.caption
+msgid "Fix broken"
+msgstr "修复损坏的"
+
+#: tfppkgform.installbutton.caption
+msgid "Install"
+msgstr "安装"
+
+#: tfppkgform.installbutton.hint
+msgid "Install package"
+msgstr "安装包"
+
+#: tfppkgform.menuitem1.caption
+msgid "&Tools"
+msgstr "工具(&T)"
+
+#: tfppkgform.menuitem2.caption
+msgid "&Options..."
+msgstr "选项...(&O)"
+
+#: tfppkgform.menuitem3.caption
+msgid "&Help"
+msgstr "帮助(&H)"
+
+#: tfppkgform.menuitem4.caption
+msgid "&About"
+msgstr "关于(&A)"
+
+#: tfppkgform.micleanmessages.caption
+msgid "Clean messages"
+msgstr "清理信息"
+
+#: tfppkgform.miexit.caption
+msgid "&Exit"
+msgstr "退出(&E)"
+
+#: tfppkgform.mifile.caption
+msgid "&File"
+msgstr "文件(&F)"
+
+#: tfppkgform.miselect.caption
+msgid "Select"
+msgstr "选择"
+
+#: tfppkgform.mishowdetails.caption
+msgid "Show details"
+msgstr "显示详细内容"
+
+#: tfppkgform.miunselect.caption
+msgid "Unselect"
+msgstr "不选择"
+
+#: tfppkgform.packagelistview.columns[0].caption
+msgid "Name"
+msgstr "名称"
+
+#: tfppkgform.packagelistview.columns[1].caption
+msgid "State"
+msgstr "状态"
+
+#: tfppkgform.packagelistview.columns[2].caption
+msgid "Installed"
+msgstr "已经安装"
+
+#: tfppkgform.packagelistview.columns[3].caption
+msgid "Available"
+msgstr "可用的"
+
+#: tfppkgform.packagelistview.columns[4].caption
+msgid "Description"
+msgstr "描述"
+
+#: tfppkgform.searchbutton.hint
+msgid "Search for keywords"
+msgstr "关键字搜索"
+
+#: tfppkgform.searchlabel.caption
+msgid "Search"
+msgstr "查找"
+
+#: tfppkgform.supportcheckgroup.caption
+msgid "Support"
+msgstr "支持"
+
+#: tfppkgform.supportcheckgroup.hint
+msgid "Filter packages on support level"
+msgstr "过滤器包在支持等级上"
+
+#: tfppkgform.toolbar.caption
+msgid "ToolBar"
+msgstr "工具条"
+
+#: tfppkgform.uninstallbutton.caption
+msgid "Uninstall"
+msgstr "卸载"
+
+#: tfppkgform.updatebutton.caption
+msgid "Update"
+msgstr "更新"
+
+#: tfppkgform.updatebutton.hint
+msgid "Update packages list"
+msgstr "更新包列表"
+
+#: tinitializeoptionsform.advancedcheckbox.caption
+msgid "Advanced"
+msgstr "高级"
+
+#: tinitializeoptionsform.caption
+msgid "Create configuration files"
+msgstr "创建配置文件"
+
+#: tinitializeoptionsform.compilerlabel.caption
+msgid "Compiler:"
+msgstr "编译器:"
+
+#: tinitializeoptionsform.fpcbuttonpanel.closebutton.caption
+msgctxt "tinitializeoptionsform.fpcbuttonpanel.closebutton.caption"
+msgid "&Close"
+msgstr "关闭(&C)"
+
+#: tinitializeoptionsform.fpcbuttonpanel.okbutton.caption
+msgctxt "tinitializeoptionsform.fpcbuttonpanel.okbutton.caption"
+msgid "&Write Fppkg configuration files"
+msgstr "写入Fppkg配置文件(&W)"
+
+#: tinitializeoptionsform.fpcdirectoryedit.texthint
+msgctxt "tinitializeoptionsform.fpcdirectoryedit.texthint"
+msgid "This location normally contains the compiler-executable along with a 'units' and 'fpmkinst' directory."
+msgstr "这个位置通常包含编译器可执行文件以及一个'units'和'fpmkinst'"
+
+#: tinitializeoptionsform.initializefppkglabel.caption
+msgctxt "tinitializeoptionsform.initializefppkglabel.caption"
+msgid "Create new configuration files for fppkg."
+msgstr "为fppkg创建新配置文件."
+
+#: tinitializeoptionsform.initializelazaruslabel.caption
+msgid "Create new Lazarus configuration file for fppkg."
+msgstr "为fppkg创建新Lazarus配置文件."
+
+#: tinitializeoptionsform.label1.caption
+msgctxt "tinitializeoptionsform.label1.caption"
+msgid "Please give the location where FPC is installed."
+msgstr "请给出FPC安装位置"
+
+#: tinitializeoptionsform.label2.caption
+msgctxt "tinitializeoptionsform.label2.caption"
+msgid "Please give the location where Lazarus is installed."
+msgstr "请给出Lazarus安装位置"
+
+#: tinitializeoptionsform.lazarusbuttonpanel.closebutton.caption
+msgctxt "tinitializeoptionsform.lazarusbuttonpanel.closebutton.caption"
+msgid "&Close"
+msgstr "关闭(&C)"
+
+#: tinitializeoptionsform.lazarusbuttonpanel.okbutton.caption
+msgctxt "tinitializeoptionsform.lazarusbuttonpanel.okbutton.caption"
+msgid "&Write Lazarus configuration file"
+msgstr "写入Lazarus配置文件(&W)"
+
+#: tinitializeoptionsform.lazarusdirectoryedit.texthint
+msgctxt "tinitializeoptionsform.lazarusdirectoryedit.texthint"
+msgid "This location normally contains the compiler-executable along with a 'units' and 'fpmkinst' directory."
+msgstr "这个位置通常包含编译器可执行文件以及一个'units'和'fpmkinst'目录."
+
+#: tinitializeoptionsform.pathlabel.caption
+msgid "Path:"
+msgstr "路径:"
+
+#: tinitializeoptionsform.prefixlabel.caption
+msgid "Prefix:"
+msgstr "前缀(prefix)"
+

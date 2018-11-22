@@ -1,0 +1,74 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: X-1.9\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"X-Generator: Poedit 1.8.7.1\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+#: opkman_zip.serrbufsizechange
+msgid "Changing buffer size is not allowed while (un)zipping."
+msgstr "更改缓冲区大小是不运行的 在(解)压缩时."
+
+#: opkman_zip.serrcorruptzip
+msgid "Corrupt ZIP file %s."
+msgstr "损坏的ZIP文件%s."
+
+#: opkman_zip.serrencryptionnotsupported
+msgid "Cannot unzip item \"%s\": encryption is not supported."
+msgstr "不能解压缩项目\"%s\":加密不支持."
+
+#: opkman_zip.serrfilechange
+msgid "Changing output file name is not allowed while (un)zipping."
+msgstr "更改输出文件名称是不运行的 在(解)压缩时."
+
+#: opkman_zip.serrfiledoesnotexist
+msgid "File \"%s\" does not exist."
+msgstr "文件\"%s\"不存在."
+
+#: opkman_zip.serrinvalidcrc
+msgid "Invalid CRC checksum while unzipping %s."
+msgstr "无效的CRC checksum 在解压缩%s."
+
+#: opkman_zip.serrmaxentries
+msgid "Encountered %d file entries; maximum supported is %d."
+msgstr "遇到%d文件入口(entries);最大支持是%d."
+
+#: opkman_zip.serrmissingarchivename
+msgid "Missing archive filename in streamed entry %d."
+msgstr "丢失档案文件名在流的入口(entry)%d."
+
+#: opkman_zip.serrmissingfilename
+msgid "Missing filename in entry %d."
+msgstr "丢失文件名在入口(entry)%d."
+
+#: opkman_zip.serrnofilename
+msgid "No archive filename for examine operation."
+msgstr "没有档案文件名用于检查操作."
+
+#: opkman_zip.serrnostream
+msgid "No stream is opened."
+msgstr "没有流是打开的."
+
+#: opkman_zip.serrpatchsetnotsupported
+msgid "Cannot unzip item \"%s\": patch sets are not supported."
+msgstr "不能解压缩项目\"%s\": patch sets (补丁集)不支持."
+
+#: opkman_zip.serrpostoolarge
+msgid "Position/offset %d is larger than maximum supported %d."
+msgstr "位置/补偿(offset)%d大于支持的%d最大值."
+
+#: opkman_zip.serrunsupportedcompressionformat
+msgid "Unsupported compression format %d."
+msgstr "不支持压缩格式%d."
+
+#: opkman_zip.serrunsupportedmultiplediskscd
+msgid "A central directory split over multiple disks is unsupported."
+msgstr "一个中心目录分割到多个磁盘是不支持的."
+

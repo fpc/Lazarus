@@ -3,11 +3,11 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Project-Id-Version: X-1.6\n"
+"Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: http://www.microsystem.studio\n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Language-Team: \n"
 "Language: zh_CN\n"
 "X-Generator: Poedit 1.8.7.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -50,7 +50,7 @@ msgstr ""
 
 #: lr_const.sband1
 msgid "Report title"
-msgstr "报告标题"
+msgstr "报告标题(title)"
 
 #: lr_const.sband10
 msgid "Detail footer"
@@ -90,7 +90,7 @@ msgstr "组footer"
 
 #: lr_const.sband19
 msgid "Cross header"
-msgstr ""
+msgstr "跨平台"
 
 #: lr_const.sband2
 msgid "Report summary"
@@ -112,7 +112,7 @@ msgstr ""
 #: lr_const.sband23
 msgctxt "lr_const.sband23"
 msgid "None"
-msgstr "无"
+msgstr "None"
 
 #: lr_const.sband3
 msgid "Page header"
@@ -179,7 +179,7 @@ msgstr "代码(&C)"
 #: lr_const.sbarcodeformdbfld
 msgctxt "lr_const.sbarcodeformdbfld"
 msgid "Insert DB field"
-msgstr "插入DB field"
+msgstr "插入DB字段"
 
 #: lr_const.sbarcodeformopts
 msgctxt "lr_const.sbarcodeformopts"
@@ -212,7 +212,7 @@ msgstr "放大"
 
 #: lr_const.sbmpfile
 msgid "Bitmap file"
-msgstr "Bitmap文件"
+msgstr "位图文件"
 
 #: lr_const.sbreaked
 msgid "Breaked"
@@ -259,15 +259,15 @@ msgstr "确认"
 
 #: lr_const.scrosseditoraverage
 msgid "Average"
-msgstr ""
+msgstr "平均"
 
 #: lr_const.scrosseditorblue
 msgid "Blue"
-msgstr ""
+msgstr "蓝色"
 
 #: lr_const.scrosseditorbluewhite
 msgid "Blue and White"
-msgstr ""
+msgstr "蓝白色"
 
 #: lr_const.scrosseditorcaption
 msgid "Cross tab editor"
@@ -275,45 +275,44 @@ msgstr ""
 
 #: lr_const.scrosseditorcount
 msgid "Count"
-msgstr ""
+msgstr "计数"
 
 #: lr_const.scrosseditorcyan
 msgid "Cyan"
-msgstr ""
+msgstr "蓝绿色"
 
 #: lr_const.scrosseditorgray
 msgid "Gray"
-msgstr ""
+msgstr "灰色"
 
 #: lr_const.scrosseditorgreen
 msgid "Green"
-msgstr ""
+msgstr "绿色"
 
 #: lr_const.scrosseditorgreenorange
 msgid "Green and Orange"
-msgstr ""
+msgstr "绿橙色"
 
 #: lr_const.scrosseditormax
 msgid "Max"
-msgstr ""
+msgstr "最大"
 
 #: lr_const.scrosseditormin
 msgid "Min"
-msgstr ""
+msgstr "最大"
 
 #: lr_const.scrosseditornone
-#, fuzzy
 msgctxt "lr_const.scrosseditornone"
 msgid "None"
-msgstr "无"
+msgstr "None"
 
 #: lr_const.scrosseditororange
 msgid "Orange"
-msgstr ""
+msgstr "橙色"
 
 #: lr_const.scrosseditorshowcolheader
 msgid "Show column header"
-msgstr ""
+msgstr "显示列header"
 
 #: lr_const.scrosseditorshowcoltotal
 msgid "Show column total"
@@ -321,11 +320,11 @@ msgstr ""
 
 #: lr_const.scrosseditorshowcorner1
 msgid "Show corner 1"
-msgstr ""
+msgstr "显示角1"
 
 #: lr_const.scrosseditorshowcorner2
 msgid "Show corner 2"
-msgstr ""
+msgstr "显示角2"
 
 #: lr_const.scrosseditorshowgrantotal
 msgid "Show grand total"
@@ -333,7 +332,7 @@ msgstr ""
 
 #: lr_const.scrosseditorshowrowheader
 msgid "Show row header"
-msgstr ""
+msgstr "显示行header"
 
 #: lr_const.scrosseditorshowrowtotal
 msgid "Show row total"
@@ -341,11 +340,11 @@ msgstr ""
 
 #: lr_const.scrosseditorshowtitle
 msgid "Show title"
-msgstr ""
+msgstr "显示标题(title)"
 
 #: lr_const.scrosseditorsource
 msgid "Source data"
-msgstr ""
+msgstr "源代码数据"
 
 #: lr_const.scrosseditorstructure
 msgid "Cross-tab structure"
@@ -353,7 +352,7 @@ msgstr ""
 
 #: lr_const.scrosseditorstyle
 msgid "Select style"
-msgstr ""
+msgstr "选择样式"
 
 #: lr_const.scrosseditorsum
 msgid "Sum"
@@ -361,7 +360,7 @@ msgstr ""
 
 #: lr_const.scrosseditorwhite
 msgid "White"
-msgstr ""
+msgstr "白色"
 
 #: lr_const.scrosstabcoltitle
 msgid "Col title"
@@ -373,7 +372,7 @@ msgstr ""
 
 #: lr_const.scrosstabdata
 msgid "Data"
-msgstr ""
+msgstr "数据"
 
 #: lr_const.scrosstabgrantotal
 msgid "Grand total"
@@ -401,33 +400,32 @@ msgstr "CSV文件"
 
 #: lr_const.scurmemo
 msgid "Memo:"
-msgstr ""
+msgstr "Memo:"
 
 #: lr_const.sdatainspfields
 msgid "Fields"
-msgstr ""
+msgstr "字段"
 
 #: lr_const.sdatainspvariables
-#, fuzzy
 msgctxt "lr_const.sdatainspvariables"
 msgid "Variables"
 msgstr "变量"
 
 #: lr_const.sdateformat1
 msgid "mm.dd.yy"
-msgstr "mm.dd.yy"
+msgstr ""
 
 #: lr_const.sdateformat2
 msgid "mm.dd.yyyy"
-msgstr "mm.dd.yyyy"
+msgstr ""
 
 #: lr_const.sdateformat3
 msgid "d mmm yyyy"
-msgstr "d mmm yyyy"
+msgstr ""
 
 #: lr_const.sdateformat4
 msgid "d mmmm yyyy"
-msgstr "d mmmm yyyy"
+msgstr ""
 
 #: lr_const.sdatetimecategory
 msgid "Date and time"
@@ -495,7 +493,7 @@ msgstr ""
 
 #: lr_const.sdescriptionlength
 msgid "LENGTH(<String>)/Returns length of <String>."
-msgstr "LENGTH(<String>)/返回长度对于 <String>."
+msgstr ""
 
 #: lr_const.sdescriptionlowercase
 msgid "LOWERCASE(<String>)/Converts <String> symbols to lower case."
@@ -539,7 +537,7 @@ msgstr ""
 
 #: lr_const.sdescriptionpos
 msgid "POS(<SubString>, <String>)/Returns position of substring in given string."
-msgstr ""
+msgstr "POS(<SubString>, <String>)/返回在所给字符串中的子字符串的位置."
 
 #: lr_const.sdescriptionround
 msgid "ROUND(<Value>)/Rounds the floating point <Value> to nearest integer number."
@@ -559,11 +557,11 @@ msgstr ""
 
 #: lr_const.sdescriptionstrtodate
 msgid "STRTODATE(<String>)/Converts <String> to date."
-msgstr "STRTODATE(<String>)/转换<String>为日期."
+msgstr ""
 
 #: lr_const.sdescriptionstrtotime
 msgid "STRTOTIME(<String>)/Converts <String> to time."
-msgstr "STRTOTIME(<String>)/转换<String>为时间."
+msgstr ""
 
 #: lr_const.sdescriptionsum
 msgid "SUM(<Expression> [,BandName [,1]])/Calculates the sum of <Expression> for [BandName] row given. If [1] parameter is used, calculates sum for non-visible rows too."
@@ -659,7 +657,7 @@ msgstr "像素(&P)"
 
 #: lr_const.sdesoptionsformshape
 msgid "S&hape"
-msgstr ""
+msgstr "形状(&h)"
 
 #: lr_const.sdesoptionsformshowband
 msgid "Show band &titles"
@@ -725,11 +723,11 @@ msgstr ""
 
 #: lr_const.sdocoptformsubject
 msgid "Subject"
-msgstr "主题"
+msgstr "主题(Subject)"
 
 #: lr_const.sdocoptformtitle
 msgid "Title"
-msgstr "标题"
+msgstr "标题(Title)"
 
 #: lr_const.sdocrelease
 msgid "Release"
@@ -741,7 +739,7 @@ msgstr "版本"
 
 #: lr_const.sduplicatedobjectname
 msgid "An object named \"%s\" already exists"
-msgstr "一个单元命名\"%s\"已经存在"
+msgstr "一个对象名称\"%s\"已经存在"
 
 #: lr_const.seditor
 msgid "Editor"
@@ -779,7 +777,7 @@ msgstr ""
 
 #: lr_const.seditorformscript
 msgid "&Script"
-msgstr ""
+msgstr "Script(脚本)(&S)"
 
 #: lr_const.seditorformvar
 msgctxt "lr_const.seditorformvar"
@@ -792,35 +790,35 @@ msgstr ""
 
 #: lr_const.serrexpectedassign
 msgid "Expected \":=\""
-msgstr ""
+msgstr "要求\":=\""
 
 #: lr_const.serrexpectedclosingbracket1
 msgid "Expected \")\""
-msgstr ""
+msgstr "要求\")\""
 
 #: lr_const.serrexpectedclosingbracket2
 msgid "Expected \"]\""
-msgstr ""
+msgstr "要求\"]\""
 
 #: lr_const.serrexpectedcomma
 msgid "Expected \",\" or \")\""
-msgstr ""
+msgstr "要求\",\"或\")\""
 
 #: lr_const.serrexpecteddo
 msgid "Expected \"do\""
-msgstr ""
+msgstr "要求\"do\""
 
 #: lr_const.serrexpectedend
 msgid "Expected \";\" or \"end\""
-msgstr ""
+msgstr "要求\";\"或\"end\""
 
 #: lr_const.serrexpectedthen
 msgid "Expected \"then\""
-msgstr ""
+msgstr "要求\"then\""
 
 #: lr_const.serrexpecteduntil
 msgid "Expected \";\" or \"until\""
-msgstr ""
+msgstr "要求\";\"或\"until\""
 
 #: lr_const.serrlabelgoto
 msgid "Label in goto must be a number"
@@ -828,15 +826,15 @@ msgstr ""
 
 #: lr_const.serrline
 msgid "Line"
-msgstr ""
+msgstr "行"
 
 #: lr_const.serrneeddo
 msgid "Need \"do\" here"
-msgstr ""
+msgstr "需要\"do\"在这里"
 
 #: lr_const.serrneedto
 msgid "Need \"to\" here"
-msgstr ""
+msgstr "需要\"to\"在这里"
 
 #: lr_const.serror
 msgid "Error"
@@ -886,7 +884,7 @@ msgstr ""
 #: lr_const.sfieldsforminsert
 msgctxt "lr_const.sfieldsforminsert"
 msgid "Insert DB field"
-msgstr "插入DB field"
+msgstr "插入DB字段"
 
 #: lr_const.sfilenotfound
 msgid "File not found"
@@ -907,12 +905,12 @@ msgstr "查找文本"
 
 #: lr_const.sfindtextcase
 msgid "&Case sensitive"
-msgstr "大小写敏感(&C)"
+msgstr "区分大小写(&C)"
 
 #: lr_const.sfindtextcurrentpg
 msgctxt "lr_const.sfindtextcurrentpg"
 msgid "Current &page"
-msgstr "当前页(&p)"
+msgstr "当前页面(&p)"
 
 #: lr_const.sfindtextfirstpg
 msgid "&1st page"
@@ -967,23 +965,23 @@ msgstr "字体..."
 #: lr_const.sformat11
 msgctxt "lr_const.sformat11"
 msgid "[None]"
-msgstr "[无]"
+msgstr "[None]"
 
 #: lr_const.sformat21
 msgid "1234,5"
-msgstr "1234,5"
+msgstr ""
 
 #: lr_const.sformat22
 msgid "1234,50"
-msgstr "1234,50"
+msgstr ""
 
 #: lr_const.sformat23
 msgid "1 234,5"
-msgstr "1 234,5"
+msgstr ""
 
 #: lr_const.sformat24
 msgid "1 234,50"
-msgstr "1 234,50"
+msgstr ""
 
 #: lr_const.sformat25
 msgctxt "lr_const.sformat25"
@@ -992,19 +990,19 @@ msgstr "自定义"
 
 #: lr_const.sformat31
 msgid "11.15.98"
-msgstr "98.11.15"
+msgstr ""
 
 #: lr_const.sformat32
 msgid "11.15.1998"
-msgstr "1998.11.15"
+msgstr ""
 
 #: lr_const.sformat33
 msgid "15 nov 1998"
-msgstr "1998年11月15日"
+msgstr ""
 
 #: lr_const.sformat34
 msgid "15 november 1998"
-msgstr "1998年11月15日"
+msgstr ""
 
 #: lr_const.sformat35
 msgctxt "lr_const.sformat35"
@@ -1013,15 +1011,15 @@ msgstr "自定义"
 
 #: lr_const.sformat41
 msgid "02:43:35"
-msgstr "02:43:35"
+msgstr ""
 
 #: lr_const.sformat42
 msgid "2:43:35"
-msgstr "2:43:35"
+msgstr ""
 
 #: lr_const.sformat43
 msgid "02:43"
-msgstr "02:43"
+msgstr ""
 
 #: lr_const.sformat44
 msgid "2:43"
@@ -1072,11 +1070,11 @@ msgstr ""
 #: lr_const.sfrdesignerformaddpg
 msgctxt "lr_const.sfrdesignerformaddpg"
 msgid "Add page"
-msgstr "添加页"
+msgstr "添加页面"
 
 #: lr_const.sfrdesignerformalign
 msgid "Alignment"
-msgstr "对齐方式"
+msgstr "对齐"
 
 #: lr_const.sfrdesignerformalignbottoms
 msgid "Align bottoms"
@@ -1092,11 +1090,11 @@ msgstr "水平居中对齐"
 
 #: lr_const.sfrdesignerformalignleftedge
 msgid "Align left edges"
-msgstr "对齐左边"
+msgstr "对齐左边缘"
 
 #: lr_const.sfrdesignerformalignrightedge
 msgid "Align right edges"
-msgstr "对齐右边"
+msgstr "对齐右边缘"
 
 #: lr_const.sfrdesignerformalignvertcenter
 msgid "Align vertical centers"
@@ -1141,11 +1139,11 @@ msgstr "中心对齐"
 
 #: lr_const.sfrdesignerformcenterhwind
 msgid "Center horizontally in window"
-msgstr ""
+msgstr "在窗体中水平居中"
 
 #: lr_const.sfrdesignerformcentervertwing
 msgid "Center vertically in window"
-msgstr ""
+msgstr "在窗体中垂直居中"
 
 #: lr_const.sfrdesignerformclose
 msgid "Close"
@@ -1165,7 +1163,7 @@ msgstr "剪切"
 
 #: lr_const.sfrdesignerformdrawline
 msgid "Draw lines"
-msgstr ""
+msgstr "画线"
 
 #: lr_const.sfrdesignerformfitgrid
 msgid "Fit to grid"
@@ -1203,7 +1201,7 @@ msgstr "网格对齐"
 #: lr_const.sfrdesignerformhightlight
 msgctxt "lr_const.sfrdesignerformhightlight"
 msgid "Highlight attributes"
-msgstr "高亮属性"
+msgstr "高亮属性(attributes)"
 
 #: lr_const.sfrdesignerforminsband
 msgid "Insert band"
@@ -1215,7 +1213,7 @@ msgstr "插入图片"
 
 #: lr_const.sfrdesignerforminsrect
 msgid "Insert rectangle object"
-msgstr "插入rectangle对象"
+msgstr "插入矩形(rectangle)对象"
 
 #: lr_const.sfrdesignerforminssub
 msgid "Insert subreport"
@@ -1240,7 +1238,7 @@ msgstr "新建报告"
 
 #: lr_const.sfrdesignerformnoframe
 msgid "No frame"
-msgstr ""
+msgstr "没有框架(frame)"
 
 #: lr_const.sfrdesignerformnormaltext
 msgid "Normal text / 90 degrees"
@@ -1321,7 +1319,7 @@ msgstr "标准"
 #: lr_const.sfrdesignerformtext
 msgctxt "lr_const.sfrdesignerformtext"
 msgid "Text"
-msgstr "Text"
+msgstr "文本"
 
 #: lr_const.sfrdesignerformtools
 msgid "Tools"
@@ -1361,7 +1359,7 @@ msgstr "关于...(&A)"
 
 #: lr_const.sfrdesignerform_addpg
 msgid "&Add page"
-msgstr "添加页(&A)"
+msgstr "添加页面(&A)"
 
 #: lr_const.sfrdesignerform_alignpalette
 msgid "&Alignment palette"
@@ -1435,7 +1433,7 @@ msgstr "行样式"
 
 #: lr_const.sfrdesignerform_modified
 msgid "Modified"
-msgstr "已更改"
+msgstr "已经修改"
 
 #: lr_const.sfrdesignerform_new
 msgid "&New ..."
@@ -1447,11 +1445,11 @@ msgstr "对象(&O)"
 
 #: lr_const.sfrdesignerform_open
 msgid "&Open ..."
-msgstr "打开...(&O)"
+msgstr "打开(&O)..."
 
 #: lr_const.sfrdesignerform_opts
 msgid "&Options ..."
-msgstr "选项...(&O)"
+msgstr "选项...(&P)"
 
 #: lr_const.sfrdesignerform_paste
 msgid "&Paste"
@@ -1567,7 +1565,7 @@ msgstr "伸展(&S)"
 #: lr_const.sgroupeditorformadddbfield
 msgctxt "lr_const.sgroupeditorformadddbfield"
 msgid "Insert DB field"
-msgstr "插入DB field"
+msgstr "插入DB字段"
 
 #: lr_const.sgroupeditorformcapt
 msgid "Group"
@@ -1584,7 +1582,7 @@ msgstr ""
 
 #: lr_const.shilightformback
 msgid "Background"
-msgstr "背景"
+msgstr "背景颜色"
 
 #: lr_const.shilightformbold
 msgid "&Bold"
@@ -1610,7 +1608,7 @@ msgstr "字体"
 #: lr_const.shilightformhilitattr
 msgctxt "lr_const.shilightformhilitattr"
 msgid "Highlight attributes"
-msgstr "高亮属性"
+msgstr "高亮属性(attributes)"
 
 #: lr_const.shilightformitalic
 msgid "&Italic"
@@ -1638,7 +1636,7 @@ msgstr "英寸"
 
 #: lr_const.sinsbarcode
 msgid "Insert Barcode object"
-msgstr ""
+msgstr "插入Barcode对象"
 
 #: lr_const.sinschart
 msgid "Insert Chart object"
@@ -1646,11 +1644,11 @@ msgstr "插入Chart对象"
 
 #: lr_const.sinscheckbox
 msgid "Insert CheckBox object"
-msgstr "插入CheckBox对象"
+msgstr "插入CheckBox控制"
 
 #: lr_const.sinscrosstab
 msgid "Insert Cross-tab object"
-msgstr ""
+msgstr "插入Cross-tab对象"
 
 #: lr_const.sinsert
 msgid "Insert"
@@ -1662,11 +1660,11 @@ msgstr "插入表达式"
 
 #: lr_const.sinsertfields
 msgid "Insert DB fields"
-msgstr "插入DB fields"
+msgstr "插入DB字段"
 
 #: lr_const.sinsertfieldsformaviabledset
 msgid "&Available datasets"
-msgstr "可用的datasets(&A)"
+msgstr ""
 
 #: lr_const.sinsertfieldsformband
 msgid "Include &bands"
@@ -1686,11 +1684,11 @@ msgstr "水平(&H)"
 
 #: lr_const.sinsertfieldsformplace
 msgid "Placement"
-msgstr "放置"
+msgstr "安置(Placement)"
 
 #: lr_const.sinsertfieldsformvert
 msgid "&Vertical"
-msgstr "垂直(&V)"
+msgstr ""
 
 #: lr_const.sinsroundrect
 msgid "Insert a RoundRect with shadow area"
@@ -1718,7 +1716,7 @@ msgstr "无效报告格式"
 
 #: lr_const.sinvalidvariablename
 msgid "\"%s\" is not a valid variable name."
-msgstr "\"%s\"不是一个有效的变量名."
+msgstr ""
 
 #: lr_const.skeepaspectratio
 msgid "Keep aspect ratio"
@@ -1738,7 +1736,7 @@ msgstr "LazReport模板"
 
 #: lr_const.smathcategory
 msgid "Math"
-msgstr ""
+msgstr "数学"
 
 #: lr_const.smemoeditor
 msgid "Memo editor"
@@ -1759,15 +1757,15 @@ msgstr "否"
 #: lr_const.snotassigned
 msgctxt "lr_const.snotassigned"
 msgid "[None]"
-msgstr "[无]"
+msgstr "[None]"
 
 #: lr_const.snovalidexportfilenamewassupplied
 msgid "No valid export filename was supplied"
-msgstr ""
+msgstr "没有有效的导入文件名称被支持"
 
 #: lr_const.snovalidfilterclasswassupplied
 msgid "No valid filterclass was supplied"
-msgstr ""
+msgstr "没有有效的过滤器类被支持"
 
 #: lr_const.sobjectinspector
 msgid "Object inspector"
@@ -1800,7 +1798,7 @@ msgstr "其他"
 
 #: lr_const.spagepreparing
 msgid "Processing page:"
-msgstr "处理页面:"
+msgstr ""
 
 #: lr_const.spageprinting
 msgid "Printing page:"
@@ -1856,7 +1854,7 @@ msgstr ""
 
 #: lr_const.spaper11
 msgid "A5 148 x 210 mm"
-msgstr "A5 148 x 210mm"
+msgstr ""
 
 #: lr_const.spaper110
 msgid "DMPAPER_PENV_2_ROTATED 176X102"
@@ -2033,7 +2031,7 @@ msgstr ""
 
 #: lr_const.spaper42
 msgid "B4 (ISO) 250 x 353 mm"
-msgstr "B4 (ISO) 250 x 353mm"
+msgstr ""
 
 #: lr_const.spaper43
 msgid "Japanese Postcard 100 x 148 mm"
@@ -2306,7 +2304,7 @@ msgstr "列"
 
 #: lr_const.spgoptformdontuse
 msgid "&Don't use"
-msgstr "不能使用(&D)"
+msgstr "不使用(&D)"
 
 #: lr_const.spgoptformheight
 msgid "&Height, mm"
@@ -2367,7 +2365,7 @@ msgstr "大小"
 
 #: lr_const.spgoptformtop
 msgid "&Top, mm"
-msgstr "A3 297 x 420 mm"
+msgstr "上,mm(&T)"
 
 #: lr_const.spgoptformwidth
 msgid "&Width, mm"
@@ -2400,7 +2398,7 @@ msgstr "双页(&T)"
 #: lr_const.spreviewformadd
 msgctxt "lr_const.spreviewformadd"
 msgid "Add page"
-msgstr "添加页"
+msgstr "添加页面"
 
 #: lr_const.spreviewformclose
 msgid "Close preview"
@@ -2455,7 +2453,7 @@ msgstr ""
 
 #: lr_const.sprintererror
 msgid "Selected printer is not valid"
-msgstr ""
+msgstr "选择的打印机是无效的"
 
 #: lr_const.sprintformall
 msgid "&All"
@@ -2472,7 +2470,7 @@ msgstr "副本:(&C)"
 #: lr_const.sprintformcurpg
 msgctxt "lr_const.sprintformcurpg"
 msgid "Current &page"
-msgstr "当前页(&p)"
+msgstr "当前页面(&p)"
 
 #: lr_const.sprintforminfo
 msgid "Enter page numbers and/or page ranges, separated by commas. For example, 1,3,5-12"
@@ -2533,7 +2531,7 @@ msgstr "报告上次修改日期"
 
 #: lr_const.sreportloadingerror
 msgid "Error while loading report"
-msgstr "加载报告是错误"
+msgstr "加载报告错误"
 
 #: lr_const.sreportpreparing
 msgid "Preparing report"
@@ -2581,7 +2579,7 @@ msgstr "样例:"
 
 #: lr_const.sroundrectformshadow
 msgid "Shadow width"
-msgstr ""
+msgstr "阴影宽度 "
 
 #: lr_const.sroundrectformstyle
 msgid "Style"
@@ -2601,7 +2599,7 @@ msgstr ""
 
 #: lr_const.srtffile
 msgid "Rich Text file"
-msgstr "Rich Text文件"
+msgstr "富文本文件"
 
 #: lr_const.ssavechanges
 msgid "Save changes"
@@ -2622,23 +2620,23 @@ msgstr "圆角矩形"
 
 #: lr_const.sshape3
 msgid "Ellipse"
-msgstr ""
+msgstr "椭圆"
 
 #: lr_const.sshape4
 msgid "Triangle"
-msgstr ""
+msgstr "三角形"
 
 #: lr_const.sshape5
 msgid "Diagonal1"
-msgstr ""
+msgstr "对角线(Diagonal)1"
 
 #: lr_const.sshape6
 msgid "Diagonal2"
-msgstr ""
+msgstr "对角线(Diagonal)2"
 
 #: lr_const.sshapeformcaption
 msgid "Shape"
-msgstr ""
+msgstr "形状"
 
 #: lr_const.sshapeformkind
 msgid "Shape kind"
@@ -2651,7 +2649,7 @@ msgstr "其他"
 
 #: lr_const.sstretched
 msgid "Stretched"
-msgstr ""
+msgstr "拉伸"
 
 #: lr_const.sstringcategory
 msgid "String"
@@ -2688,19 +2686,19 @@ msgstr "ASCII文本文件"
 
 #: lr_const.stimeformat1
 msgid "hh:nn:ss"
-msgstr "hh:nn:ss"
+msgstr ""
 
 #: lr_const.stimeformat2
 msgid "h:nn:ss"
-msgstr "h:nn:ss"
+msgstr ""
 
 #: lr_const.stimeformat3
 msgid "hh:nn"
-msgstr "hh:nn"
+msgstr ""
 
 #: lr_const.stimeformat4
 msgid "h:nn"
-msgstr "h:nn"
+msgstr ""
 
 #: lr_const.sto
 msgid "to"
@@ -2712,11 +2710,11 @@ msgstr "透明"
 
 #: lr_const.sunabletoreadversion
 msgid "Unable to read report version"
-msgstr ""
+msgstr "不能读取报告版本"
 
 #: lr_const.suntitled
 msgid "Untitled"
-msgstr "无标题"
+msgstr "无标题(Untitled)"
 
 #: lr_const.susefixedfontsettings
 msgid "Use fixed font settings"
@@ -2758,7 +2756,7 @@ msgstr ""
 
 #: lr_const.svar7
 msgid "Column#"
-msgstr ""
+msgstr "列#"
 
 #: lr_const.svar8
 msgid "Current line#"
@@ -2766,7 +2764,7 @@ msgstr "当前行#"
 
 #: lr_const.svar9
 msgid "TotalPages"
-msgstr "TotalPages"
+msgstr "总页数(TotalPages)"
 
 #: lr_const.svaredformcapt
 msgid "Variables list"
@@ -2787,7 +2785,7 @@ msgstr "变量"
 
 #: lr_const.svarformcat
 msgid "&Category:"
-msgstr ""
+msgstr "分类(&C):"
 
 #: lr_const.svariable
 msgid "Variable"
@@ -2813,7 +2811,7 @@ msgstr ""
 
 #: lr_const.svirtualdataset
 msgid "Virtual Dataset"
-msgstr "虚拟Dataset"
+msgstr ""
 
 #: lr_const.swordbreak
 msgid "Word break"

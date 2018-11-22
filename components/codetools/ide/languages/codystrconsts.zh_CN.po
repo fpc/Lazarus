@@ -1,11 +1,11 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: X-1.6\n"
+"Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: http://www.microsystem.studio\n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
@@ -27,7 +27,7 @@ msgstr "添加一个\"With\"语句块"
 #: codystrconsts.crsaddunittoimplementationusessection
 msgctxt "codystrconsts.crsaddunittoimplementationusessection"
 msgid "Add unit to implementation uses section"
-msgstr ""
+msgstr "添加单元到implementation Uses section(实现使用部分)"
 
 #: codystrconsts.crsaddwithblock
 msgid "Add \"With\" Block"
@@ -79,7 +79,7 @@ msgstr ""
 
 #: codystrconsts.crscamcursorisnotinapascalclassdeclaration
 msgid "cursor is not in a pascal class declaration"
-msgstr ""
+msgstr "光标不在pascal类声明中"
 
 #: codystrconsts.crscamexistsalready
 msgid "exists already"
@@ -87,7 +87,7 @@ msgstr "已经存在"
 
 #: codystrconsts.crscaminherited
 msgid "Inherited:"
-msgstr "继承的:"
+msgstr "继承:"
 
 #: codystrconsts.crscaminvalididentifier
 msgid "invalid identifier"
@@ -99,7 +99,7 @@ msgstr "方法:"
 
 #: codystrconsts.crscammethodname
 msgid "Method name:"
-msgstr "方法名称"
+msgstr "方法名称:"
 
 #: codystrconsts.crscamnewmethod
 msgid "New method:"
@@ -107,7 +107,7 @@ msgstr "新建方法:"
 
 #: codystrconsts.crscamoverride
 msgid "Override"
-msgstr "重写"
+msgstr "覆盖"
 
 #: codystrconsts.crscamparametername
 msgid "Parameter name:"
@@ -123,7 +123,7 @@ msgstr ""
 
 #: codystrconsts.crscamprivate
 msgid "private"
-msgstr "private"
+msgstr "private(私有)"
 
 #: codystrconsts.crscamproperty
 msgid "%s property"
@@ -131,15 +131,15 @@ msgstr "%s属性"
 
 #: codystrconsts.crscamprotected
 msgid "protected"
-msgstr "protected"
+msgstr "protected(保护)"
 
 #: codystrconsts.crscampublic
 msgid "public"
-msgstr "public"
+msgstr "public(公共)"
 
 #: codystrconsts.crscampublished
 msgid "published"
-msgstr "公布"
+msgstr "发布"
 
 #: codystrconsts.crscamselectmemberstoassign
 msgid "Select members to assign:"
@@ -159,11 +159,11 @@ msgstr "?可视性?"
 
 #: codystrconsts.crscamwrittenbyproperty
 msgid "%s, written by property %s"
-msgstr "%s,属性书写%s"
+msgstr "%s,经由属性写入%s"
 
 #: codystrconsts.crscaretoutsideofcode
 msgid "Caret outside of code"
-msgstr ""
+msgstr "光标在代码区外"
 
 #: codystrconsts.crscheetaheditor
 msgid "Cheetah Editor"
@@ -220,11 +220,11 @@ msgstr "继续"
 
 #: codystrconsts.crscopydeclarationtoclipboard
 msgid "Copy declaration to Clipboard"
-msgstr "复制声明到剪切板"
+msgstr "复制声明到剪贴板"
 
 #: codystrconsts.crscount
 msgid "Count"
-msgstr ""
+msgstr "计数"
 
 #: codystrconsts.crscousespath
 msgctxt "codystrconsts.crscousespath"
@@ -233,7 +233,7 @@ msgstr "使用路径"
 
 #: codystrconsts.crscuallfiles
 msgid "%s|All files (%s)|%s"
-msgstr "%s所有文件(%s)|%s"
+msgstr "%s|所有文件(%s)|%s"
 
 #: codystrconsts.crscupascalpaspppaspp
 msgid "Pascal (*.pas;*.pp)|*.pas;*.pp"
@@ -249,7 +249,7 @@ msgstr "选择文件在光标出插入"
 
 #: codystrconsts.crscutdeclarationtoclipboard
 msgid "Cut declaration to Clipboard"
-msgstr "剪切声明到剪切板"
+msgstr "剪切声明到剪贴板"
 
 #: codystrconsts.crscuthefileseemstobeabinaryproceed
 msgid "The file seems to be a binary. Proceed?"
@@ -285,11 +285,11 @@ msgstr "声明变量\"%s\""
 
 #: codystrconsts.crsdeletepackage
 msgid "Delete package?"
-msgstr "删除package?"
+msgstr "删除包?"
 
 #: codystrconsts.crsdeleteunit
 msgid "Delete unit?"
-msgstr "删除unit?"
+msgstr "删除单元?"
 
 #: codystrconsts.crsdistance
 msgid "Distance"
@@ -301,7 +301,7 @@ msgstr "\"%s\"是一个关键字."
 
 #: codystrconsts.crserror
 msgid "Error: %s"
-msgstr "错误r: %s"
+msgstr "错误: %s"
 
 #: codystrconsts.crserrorcursorisnotinaprojectunit
 msgid "Error: cursor is not in a project unit"
@@ -333,7 +333,7 @@ msgstr "文件"
 
 #: codystrconsts.crsfiledoesnotexistanymore
 msgid "File \"%s\" does not exist anymore."
-msgstr "文件\"%s\"现在不在存在"
+msgstr "文件\"%s\"现在不在存在."
 
 #: codystrconsts.crsfilenotfound
 msgid "File not found"
@@ -389,7 +389,7 @@ msgstr "隐藏抽象方法和类接口方法"
 
 #: codystrconsts.crshideunitsofotherprojects
 msgid "Hide units of other projects"
-msgstr "其他工程的单元隐藏"
+msgstr "隐藏其他工程的单元"
 
 #: codystrconsts.crsideintegration
 msgid "IDE Integration"
@@ -446,7 +446,7 @@ msgstr "插入文件内容在光标..."
 
 #: codystrconsts.crsinsertint64idyyyyddmmhhnnss
 msgid "Insert int64 ID YYYYDDMMhhnnss"
-msgstr ""
+msgstr "插入int64 ID YYYYDDMMhhnnss"
 
 #: codystrconsts.crsjump
 msgid "Jump"
@@ -486,7 +486,7 @@ msgstr "Main source文件: %s"
 
 #: codystrconsts.crsmbytes
 msgid "Mbytes"
-msgstr "Mbytes"
+msgstr "MB"
 
 #: codystrconsts.crsmemberof
 msgid "%s member of %s %s"
@@ -530,7 +530,7 @@ msgstr "没有单元被选择"
 
 #: codystrconsts.crsonclipboard
 msgid "On clipboard"
-msgstr "关于剪切板"
+msgstr "在剪贴板上"
 
 #: codystrconsts.crsonlydescendantsof
 msgid "Only descendants of %s"
@@ -574,7 +574,7 @@ msgstr "包:%s"
 
 #: codystrconsts.crspackagenotfound
 msgid "Package not found"
-msgstr "未找到包"
+msgstr "包未找到"
 
 #: codystrconsts.crspackagenotfounditshouldbein
 msgid "Package \"%s\" not found. It should be in \"%s\"."
@@ -634,7 +634,7 @@ msgstr "工程\"%s\"的PPU文件"
 
 #: codystrconsts.crsprivate
 msgid "Private"
-msgstr "私有"
+msgstr "private(私有)"
 
 #: codystrconsts.crsprojecthasnomainsourcefile
 msgid "Project has no main source file."
@@ -646,15 +646,15 @@ msgstr "工程输出"
 
 #: codystrconsts.crsprotected
 msgid "Protected"
-msgstr "Protected"
+msgstr "Protected(保护)"
 
 #: codystrconsts.crspublic
 msgid "Public"
-msgstr "public"
+msgstr "Public(公共)"
 
 #: codystrconsts.crspublished
 msgid "Published"
-msgstr "公布"
+msgstr "发布"
 
 #: codystrconsts.crsreallydeletethepackagefromthedatabasenotethisdoe
 msgid "Really delete the package from the database?%sNote: This does not change the source or any configuration.%s%s\"%s\""
@@ -682,7 +682,7 @@ msgstr ""
 
 #: codystrconsts.crssavedictionarynow
 msgid "Save dictionary now"
-msgstr "现在保存数据"
+msgstr "现在保存字典"
 
 #: codystrconsts.crssavetofile
 msgid "Save to file %s"
@@ -822,7 +822,7 @@ msgstr "单元"
 
 #: codystrconsts.crsunitsharedlibraries
 msgid "Unit shared libraries"
-msgstr "Unit共享库"
+msgstr "单元共享库"
 
 #: codystrconsts.crsunitss
 msgid "Units: %s"
@@ -830,11 +830,11 @@ msgstr "单元:%s"
 
 #: codystrconsts.crsunitstaticlibraries
 msgid "Unit static libraries"
-msgstr "Unit静态库"
+msgstr "单元静态库"
 
 #: codystrconsts.crsusedby
 msgid "Used by"
-msgstr "被使用通过"
+msgstr "使用经由"
 
 #: codystrconsts.crsuseidentifier
 msgid "&Use identifier"

@@ -1,12 +1,11 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
-"Project-Id-Version: X\n"
+"Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: http://www.microsystem.studio\n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
@@ -19,11 +18,11 @@ msgstr "所有测试"
 
 #: guitestrunner.rserrors
 msgid "%s    Errors: %s"
-msgstr "%s错误: %s"
+msgstr "%s错误:%s"
 
 #: guitestrunner.rsexception
 msgid "Exception: %s"
-msgstr "异常: %s"
+msgstr "异常:%s"
 
 #: guitestrunner.rsexceptioncla
 msgid "Exception class: %s"
@@ -47,7 +46,7 @@ msgstr "信息: %s"
 
 #: guitestrunner.rsmethodname
 msgid "Method name: %s"
-msgstr "method 名称: %s"
+msgstr "Method名称: %s"
 
 #: guitestrunner.rsnumberofexec
 msgid "Number of executed tests: %s  Time elapsed: %s"
@@ -59,7 +58,7 @@ msgstr "运行"
 
 #: guitestrunner.rsrunning
 msgid "Running %s"
-msgstr "正在运行%s"
+msgstr "运行%s"
 
 #: guitestrunner.rsruns
 msgid "Runs: %s/%s"
@@ -70,77 +69,61 @@ msgid "Unit name: %s"
 msgstr "Unit名称: %s"
 
 #: guitestrunner.sactcheckall
-#, fuzzy
-#| msgid "Check all Tests"
 msgid "Select all tests"
-msgstr "检查所有测试"
+msgstr "选择所有测试"
 
 #: guitestrunner.sactcheckcurrentsuite
-#, fuzzy
-#| msgid "Check the Current Suite"
 msgid "Select current suite"
-msgstr "检查当前套件"
+msgstr "选择当前套件"
 
 #: guitestrunner.sactcloseform
 msgid "Quit"
 msgstr "退出"
 
 #: guitestrunner.sactcloseformh
-#, fuzzy
-#| msgid "Quit Testting"
 msgid "Quit testing"
-msgstr "退出测试..."
+msgstr "退出测试"
 
 #: guitestrunner.sactcopyalltoclipboard
 msgid "Copy text to clipboard"
-msgstr ""
+msgstr "复制文本到剪贴板"
 
 #: guitestrunner.sactcopyalltoclipboardh
 msgid "Copy the entire text to clipboard"
-msgstr ""
+msgstr "复制整个文本到剪贴板"
 
 #: guitestrunner.sactrunaction
-#, fuzzy
-#| msgid "&Run"
 msgid "&Run all"
-msgstr "运行(&R)"
+msgstr "运行所有(&R)"
 
 #: guitestrunner.sactrunactionh
-#, fuzzy
-#| msgid "Run all checked test(s)"
 msgid "Run all checked tests"
-msgstr "运行所有测试"
+msgstr "运行所有选择的(检查的)测试"
 
 #: guitestrunner.sactrunhighlightedtest
-#, fuzzy
-#| msgid "Run highlighted test"
 msgctxt "guitestrunner.sactrunhighlightedtest"
 msgid "Run selected"
-msgstr "运行高亮的测试"
+msgstr "运行选择的"
 
 #: guitestrunner.sactrunhighlightedtesth
 msgid "Run selected test"
-msgstr ""
+msgstr "运行选择的测试"
 
 #: guitestrunner.sactsaveresults
 msgid "Save results"
-msgstr ""
+msgstr "保存结果"
 
 #: guitestrunner.sactsaveresultsh
 msgid "Save XML results to file"
-msgstr ""
+msgstr "保存XML结果到文件"
 
 #: guitestrunner.sactuncheckall
-#, fuzzy
-#| msgid "Uncheck all tests"
 msgid "Deselect all tests"
-msgstr "不检查所有测试"
+msgstr "取消选择所有测试"
 
 #: guitestrunner.sactuncheckcurrentsuite
-#, fuzzy
-#| msgid "Uncheck the Current Suite"
 msgid "Deselect current suite"
-msgstr "不检查当前套件"
+msgstr "取消选择当前套件"
 
 #: guitestrunner.sbtnclose
 msgid "Close"
@@ -161,15 +144,15 @@ msgstr "FPCUnit-运行unit测试"
 
 #: guitestrunner.smiactions
 msgid "Actions"
-msgstr ""
+msgstr "动作"
 
 #: guitestrunner.smiedit
 msgid "Edit"
-msgstr ""
+msgstr "编辑"
 
 #: guitestrunner.smitesttree
 msgid "Test tree"
-msgstr ""
+msgstr "测试树"
 
 #: guitestrunner.stshresults
 msgid "Results XML"
@@ -177,5 +160,5 @@ msgstr "产生XML"
 
 #: guitestrunner.stshtree
 msgid "Testcase tree"
-msgstr "测试用例树"
+msgstr "Testcase树"
 

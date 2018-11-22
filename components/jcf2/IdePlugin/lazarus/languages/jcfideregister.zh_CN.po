@@ -1,11 +1,11 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: X\n"
+"Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: http://www.microsystem.studio\n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
@@ -42,7 +42,7 @@ msgstr "所有打开窗口(&O)"
 #: jcfideregister.format_project_menu
 msgctxt "jcfideregister.format_project_menu"
 msgid "&All Files in Project"
-msgstr "工作中的所有文件(&A)"
+msgstr "工程中的所有文件(&A)"
 
 #: jcfideregister.format_settings_menu
 msgid "&Format Settings"

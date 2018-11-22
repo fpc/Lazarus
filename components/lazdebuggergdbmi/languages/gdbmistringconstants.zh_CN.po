@@ -1,11 +1,11 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: X-1.6\n"
+"Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: http://www.microsystem.studio\n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
@@ -94,7 +94,7 @@ msgstr "进程开始: %s"
 
 #: gdbmistringconstants.gdbmifailedtolaunchexternaldbg
 msgid "Failed to create process for GDB"
-msgstr "GDB创建进程失败"
+msgstr "为创建GDB进程失败"
 
 #: gdbmistringconstants.gdbmifailedtoterminategdb
 msgid "The IDE was unable to terminate the GDB process. This process may be left running outside the control of IDE.%0:sTo ensure the process is not affecting your System, you should locate and terminate it yourself."
@@ -138,18 +138,14 @@ msgid "The GNU debugger through SSH allows to remote debug via a SSH connection.
 msgstr "GNU调试器通过SSH允许remote调试经由SSH连接.查看docs/RemoteDebugging.txt详情.路径必须包含SSH客户端.使用SSH_Startup_Options对于hostname和可选择的username.使用Remote_GDB_Exe 对于GDB是文件名在remote计算机上."
 
 #: gdbmistringconstants.lisresponsecontinue
-#, fuzzy
-#| msgid "Response: %sContinue ?"
 msgid "Response: %sContinue?"
 msgstr "响应:%s继续?"
 
 #: gdbmistringconstants.lissshdebuggertimeout
 msgid "Timeout has occurred:"
-msgstr ""
+msgstr "超时发送:"
 
 #: gdbmistringconstants.lisunexpectedresultthedebuggerwillterminate
-#, fuzzy
-#| msgid "Unexpected result:%sThe debugger will terminate"
 msgid "Unexpected result:%sThe debugger will terminate."
 msgstr "意外结果:%s调试器将终止"
 
@@ -171,5 +167,5 @@ msgstr "加载可执行应用失败"
 
 #: gdbmistringconstants.synfthedebuggerwasunabletosetallbreakpointsduringiniti
 msgid "The debugger was unable to set all breakpoints during initialization.%0:sYou may wish to check if all sources were compiled with debug-info.%0:sPress OK to ignore this and continue."
-msgstr "调试器不能设置所有的断点 在初始化.%0:s你可能想要检查 是否所有源代码编译带调试信息.%0:s按确认来忽略并继续."
+msgstr "调试器不能设置所有的断点 在初始化.%0:s你可能想要检查 是否所有源代码编译带调试信息.%0:s按OK来忽略并继续."
 

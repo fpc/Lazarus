@@ -1,11 +1,11 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: X-1.6\n"
+"Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: http://www.microsystem.studio\n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
@@ -60,11 +60,11 @@ msgstr "示例代码文件"
 
 #: lazdemsg.scopyright1
 msgid "This application is (c) by  Michael Van Canneyt and the Lazarus team"
-msgstr "这个应用程序是 (c) 由Michael Van Canneyt和the Lazarus team"
+msgstr "这个应用程序是 (c) 由Michael Van Canneyt和Lazarus团队"
 
 #: lazdemsg.scopyright2
 msgid "It is released under the terms of the  GENERAL PUBLIC LICENSE:"
-msgstr "它是在\"GENERAL PUBLIC LICENSE\"限制下发布"
+msgstr "它是在\"GENERAL PUBLIC LICENSE\"限制下发布的"
 
 #: lazdemsg.scpu
 msgid "CPU"
@@ -239,7 +239,7 @@ msgstr "插入bulleted(项目符号?)列表"
 #: lazdemsg.shintinsertelement
 msgctxt "lazdemsg.shintinsertelement"
 msgid "New element"
-msgstr "新建元素"
+msgstr "新建element"
 
 #: lazdemsg.shintinsertlink
 msgctxt "lazdemsg.shintinsertlink"
@@ -249,12 +249,12 @@ msgstr "插入链接"
 #: lazdemsg.shintinsertmodule
 msgctxt "lazdemsg.shintinsertmodule"
 msgid "New module"
-msgstr "新建模块"
+msgstr "新建module"
 
 #: lazdemsg.shintinsertnumberedlist
 msgctxt "lazdemsg.shintinsertnumberedlist"
 msgid "Insert numbered list"
-msgstr "插入编号列表"
+msgstr "插入numbered列表"
 
 #: lazdemsg.shintinsertpackage
 msgctxt "lazdemsg.shintinsertpackage"
@@ -307,7 +307,7 @@ msgstr "导入目录文件"
 #: lazdemsg.sinsertbulletedlist
 msgctxt "lazdemsg.sinsertbulletedlist"
 msgid "Insert bulleted list"
-msgstr "插入项目符号列表"
+msgstr "插入bulleted(项目符号?)列表"
 
 #: lazdemsg.sinsertexamplecode
 msgid "Insert example code"
@@ -321,7 +321,7 @@ msgstr "插入链接"
 #: lazdemsg.sinsertnumberedlist
 msgctxt "lazdemsg.sinsertnumberedlist"
 msgid "Insert numbered list"
-msgstr "插入编号列表"
+msgstr "插入numbered列表"
 
 #: lazdemsg.sinsertprintshortlink
 msgid "Insert short description link"
@@ -346,7 +346,7 @@ msgstr "链接到"
 
 #: lazdemsg.slinktarget
 msgid "Link target"
-msgstr "链接目标"
+msgstr "连接目标"
 
 #: lazdemsg.slinktext
 msgid "Link text"
@@ -427,7 +427,7 @@ msgstr "保存(&S)"
 
 #: lazdemsg.smenufilesaveas
 msgid "Save &as"
-msgstr "另存为(&a)"
+msgstr "另存为 ...(&a)"
 
 #: lazdemsg.smenuformat
 msgid "Format"
@@ -472,7 +472,7 @@ msgstr "帮助(&H)"
 
 #: lazdemsg.smenuhelpabout
 msgid "&About ..."
-msgstr "关于(&A)..."
+msgstr "关于...(&A)"
 
 #: lazdemsg.smenuinsert
 msgid "&Insert"
@@ -500,7 +500,7 @@ msgstr "模块(&M)"
 
 #: lazdemsg.smenuinsertnumberedlist
 msgid "Numbered list"
-msgstr "编号列表"
+msgstr "Numbered列表"
 
 #: lazdemsg.smenuinsertpackage
 msgctxt "lazdemsg.smenuinsertpackage"
@@ -546,7 +546,7 @@ msgstr "新建文档"
 #: lazdemsg.snewelement
 msgctxt "lazdemsg.snewelement"
 msgid "New element"
-msgstr "新建元素"
+msgstr "新建element"
 
 #: lazdemsg.snewfile
 msgctxt "lazdemsg.snewfile"
@@ -556,7 +556,7 @@ msgstr "新建文件"
 #: lazdemsg.snewmodule
 msgctxt "lazdemsg.snewmodule"
 msgid "New module"
-msgstr "新建模块"
+msgstr "新建module"
 
 #: lazdemsg.snewpackage
 msgctxt "lazdemsg.snewpackage"
@@ -676,7 +676,7 @@ msgstr "你没有保存变更在\"%s\".%s它们应该被保存 以便于可见�
 
 #: lazdemsg.sseealso
 msgid "See Also"
-msgstr "请参阅"
+msgstr "参考"
 
 #: lazdemsg.sselectoutputdirectory
 msgid "Select output directory"
@@ -688,7 +688,7 @@ msgstr "选择输出文件名称"
 
 #: lazdemsg.sselectsometext
 msgid "Select some text."
-msgstr "选择一些text."
+msgstr "选择一些文本"
 
 #: lazdemsg.sshortdescription
 msgid "Short"
@@ -732,7 +732,7 @@ msgstr "目标操作系统"
 
 #: lazdemsg.susingcommand
 msgid "Building docs using command: "
-msgstr "构建docs使用命令"
+msgstr "构建docs使用命令:"
 
 #: lazdemsg.swarnifnodocumentationnodefound
 msgid "Warn if no documentation node found"

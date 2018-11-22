@@ -1,20 +1,20 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: X-1.6\n"
+"Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: http://www.microsystem.studio\n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
 "X-Generator: Poedit 1.8.7.1\n"
-"X-Poedit-SourceCharset: UTF-8 (推荐\n"
+"X-Poedit-SourceCharset: UTF-8\n"
 
 #: externhelpfrm.ehrsaddnewitem
 msgid "Add new item"
-msgstr "添加新项目"
+msgstr "添加新建项目"
 
 #: externhelpfrm.ehrsbrowse
 msgid "Browse ..."
@@ -26,19 +26,19 @@ msgstr "浏览路径"
 
 #: externhelpfrm.ehrschooseapascalunit
 msgid "Choose a pascal unit"
-msgstr "关闭一个pascal单元"
+msgstr "选择一个pascal单元"
 
 #: externhelpfrm.ehrsdeleteitem
 msgid "Delete item"
-msgstr "删除项"
+msgstr "删除项目"
 
 #: externhelpfrm.ehrsdirectorynotfound
 msgid "Directory not found: %s"
-msgstr "未找到目录: %s"
+msgstr "目录未找到: %s"
 
 #: externhelpfrm.ehrseditorfile
 msgid "Editor file ..."
-msgstr "编辑文件..."
+msgstr "编辑器文件..."
 
 #: externhelpfrm.ehrsexternal
 msgid "External"
@@ -46,7 +46,7 @@ msgstr "外部"
 
 #: externhelpfrm.ehrsfilenotfound
 msgid "File not found: %s"
-msgstr "未找到文件: %s"
+msgstr "文件未找到: %s"
 
 #: externhelpfrm.ehrsgeneral
 msgid "General"
