@@ -1221,7 +1221,6 @@ begin
     if TopY > ATopMax then
       TopY := ATopMax;
     ScrollInfo.nPos := TopY;
-    ShowScrollBar(Handle, SB_VERT, True);
     SetScrollInfo(Handle, SB_VERT, ScrollInfo, True);
   end;
 end;
@@ -1280,6 +1279,7 @@ procedure TOICustomPropertyGrid.CreateWnd;
 begin
   inherited CreateWnd;
   // handle just created, set scrollbar
+  ShowScrollBar(Handle, SB_VERT, True);
   UpdateScrollBar;
 end;
 
@@ -2754,7 +2754,6 @@ end;
 procedure TOICustomPropertyGrid.SetTopY(const NewValue:integer);
 var
   NewTopY, d: integer;
-  r: TRect;
   f: UINT;
 begin
   NewTopY := TopMax;
@@ -2763,7 +2762,6 @@ begin
   if NewTopY < 0 then
     NewTopY := 0;
   if FTopY<>NewTopY then begin
-    r := ClientRect;
     f := SW_INVALIDATE;
     d := FTopY-NewTopY;
     // SW_SCROLLCHILDREN can only be used, if the active editor is not
@@ -2773,7 +2771,7 @@ begin
        ( (d < 0) and (FCurrentEdit.Top <  Height - FCurrentEdit.Height) )
     then
       f := f + SW_SCROLLCHILDREN;
-    if not ScrollWindowEx(Handle,0,d,@r,@r,0,nil, f) then
+    if not ScrollWindowEx(Handle,0,d,nil,nil,0,nil, f) then
       Invalidate;
     FTopY:=NewTopY;
     UpdateScrollBar;
@@ -2905,8 +2903,12 @@ begin
       {$ENDIF}
       end;
       //debugln('TOICustomPropertyGrid.AlignEditComponents A ',dbgsName(FCurrentEdit),' ',dbgs(EditCompRect));
-      if FCurrentEdit.BoundsRect <> EditCompRect then
+      if ( ( (FCurrentEdit.BoundsRect.Bottom >= 0) and (FCurrentEdit.BoundsRect.Top <= Height) ) or
+           ( (EditCompRect.Bottom >= 0) and (EditCompRect.Top <= Height) ) ) and
+         ( FCurrentEdit.BoundsRect <> EditCompRect )
+      then begin
         FCurrentEdit.BoundsRect := EditCompRect;
+      end;
     end;
   end;
 end;
