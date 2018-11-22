@@ -254,6 +254,8 @@ const
 
 function MacCodeToVK(AKey: Word): Word;
 
+function MacCharToVK(achar: unichar): Word;
+
 procedure ApplicationWillShowModal;
 
 const
@@ -437,6 +439,37 @@ begin
     kVK_DownArrow     : Result := VK_DOWN;
     kVK_UpArrow       : Result := VK_UP;
 
+  else
+    Result := VK_UNKNOWN;
+  end;
+end;
+
+function MacCharToVK(achar: unichar): Word;
+var
+  ch : AnsiChar;
+begin
+  // only handle printable characters here in Ansi range
+  // all other should be taken care of in MacCodeToVk
+  if (achar < 32) or (achar>127) then begin
+    Result := VK_UNKNOWN;
+    Exit;
+  end;
+  ch := AnsiChar(achar and $FF);
+  case ch of
+    'a'..'z': Result := VK_A+ord(ch)-ord('a');
+    'A'..'Z': Result := ord(ch);
+    '`','~':  Result := VK_LCL_TILDE;
+    '[','{':  Result := VK_LCL_OPEN_BRAKET;
+    ']','}':  Result := VK_LCL_CLOSE_BRAKET;
+    '\','|':  Result := VK_LCL_BACKSLASH;
+    ';',':':  Result := VK_LCL_SEMI_COMMA;
+    '''','"': Result := VK_LCL_QUOTE;
+    ',','<':  Result := VK_LCL_COMMA;
+    '>','.':  Result := VK_LCL_POINT;
+    // make sure that KeyCodes are not related to numpad
+    '=','+':  Result := VK_LCL_EQUAL;
+    '-','_':  Result := VK_LCL_MINUS;
+    '/','?':  Result := VK_LCL_SLASH;
   else
     Result := VK_UNKNOWN;
   end;

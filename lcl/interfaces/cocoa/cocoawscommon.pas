@@ -836,6 +836,7 @@ var
   VKKeyCode: word;         // VK_ code
   IsSysKey: Boolean;       // Is alt (option) key down?
   KeyData: PtrInt;         // Modifiers (ctrl, alt, mouse buttons...)
+  ignModChr: NSString;
 begin
   SendChar := False;
 
@@ -849,7 +850,18 @@ begin
                                             // see CocoaUtils.MK_ALT
   KeyCode := Event.keyCode;
 
-  VKKeyCode := MacCodeToVK(KeyCode);
+  ignModChr := Event.charactersIgnoringModifiers;
+  if Assigned(ignModChr)
+    and (ignModChr.length=1)
+    and ((Event.modifierFlags and NSNumericPadKeyMask) = 0) // num pad should be checked by KeyCode
+  then
+  begin
+    VKKeyCode := MacCharToVK(ignModChr.characterAtIndex(0));
+    if VKKeyCode = VK_UNKNOWN then
+      VKKeyCode := MacCodeToVK(KeyCode); // fallback
+  end
+  else
+    VKKeyCode := MacCodeToVK(KeyCode);
 
   case VKKeyCode of
     // for sure, these are "non-printable" keys (see http://wiki.lazarus.freepascal.org/LCL_Key_Handling)
