@@ -1,11 +1,11 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: X\n"
+"Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: http://www.microsystem.studio\n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
@@ -50,7 +50,7 @@ msgstr "发件人姓名"
 
 #: lremailexportfilter.shost
 msgid "Host"
-msgstr "Host"
+msgstr "主机"
 
 #: lremailexportfilter.slogin
 msgid "Login"

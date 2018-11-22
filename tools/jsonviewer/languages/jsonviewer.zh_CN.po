@@ -1,11 +1,11 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: X\n"
+"Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: http://www.microsystem.studio\n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
@@ -31,7 +31,7 @@ msgstr "JSON查看器"
 
 #: msgjsonviewer.sdiscard
 msgid "Discard changes"
-msgstr "丢弃更改"
+msgstr "放弃更改"
 
 #: msgjsonviewer.sdocumentmodified
 msgid "JSON document modified"
@@ -63,7 +63,7 @@ msgstr "Element nr. %d"
 
 #: msgjsonviewer.sempty
 msgid "Empty document"
-msgstr "空文件"
+msgstr "空文档 "
 
 #: msgjsonviewer.serrcreatingconfigdir
 msgid "Could not create the configuration files directory \"%s\""
@@ -95,7 +95,7 @@ msgstr "null"
 
 #: msgjsonviewer.sobject
 msgid "Object (%d members)"
-msgstr "对象(%d members成员"
+msgstr "对象(%d members成员)"
 
 #: msgjsonviewer.ssavedata
 msgid "Save the changes"
@@ -110,12 +110,10 @@ msgid "Visual"
 msgstr ""
 
 #: tauthenticationform.caption
-msgctxt "tauthenticationform.caption"
 msgid "HTTP Authentication"
 msgstr ""
 
 #: tauthenticationform.lcbusername.caption
-msgctxt "tauthenticationform.lcbusername.caption"
 msgid "&Username"
 msgstr ""
 
@@ -181,14 +179,16 @@ msgid "Request header"
 msgstr ""
 
 #: theaderform.lcbname.caption
+#, fuzzy
 msgctxt "theaderform.lcbname.caption"
 msgid "&Name"
-msgstr ""
+msgstr "名称(&N)"
 
 #: theaderform.lcbvalue.caption
+#, fuzzy
 msgctxt "theaderform.lcbvalue.caption"
 msgid "&Value"
-msgstr ""
+msgstr "值(&V)"
 
 #: tmainform.aaddtofavourites.caption
 msgid "Add request to favourites"
@@ -225,7 +225,7 @@ msgstr "删除值(&D)"
 
 #: tmainform.adeletevalue.hint
 msgid "Delete the selected value"
-msgstr "删除选中的值"
+msgstr "删除选择的值"
 
 #: tmainform.aexpandall.caption
 msgid "E&xpand all nodes"
@@ -265,7 +265,7 @@ msgstr "新建数组(&A)"
 
 #: tmainform.anewarray.hint
 msgid "Add a new JSON array"
-msgstr "添加一个新建JSON数组"
+msgstr "添加一个新JSON数组"
 
 #: tmainform.anewbooleanvalue.caption
 msgid "New &boolean value"
@@ -321,15 +321,15 @@ msgstr "粘贴(&P)"
 
 #: tmainform.apaste.hint
 msgid "Paste JSON data in clipboard as new member"
-msgstr "粘贴在剪切板中JSON 数据作为新成员"
+msgstr "粘贴剪切板中的JSON 数据作为新成员"
 
 #: tmainform.apasteasdocument.caption
 msgid "Paste as new document"
-msgstr "作为新文档粘贴"
+msgstr "粘贴作为新文档"
 
 #: tmainform.apasteasdocument.hint
 msgid "Paste JSON data in clipboard as new document"
-msgstr "粘贴在剪切板中JSON 数据作为新文档"
+msgstr "粘贴剪切板中的JSON 数据作为新文档"
 
 #: tmainform.aquit.caption
 msgid "&Quit"
@@ -356,7 +356,6 @@ msgid "Save JSON document with a new name"
 msgstr "用新名称保存JSON文档"
 
 #: tmainform.caption
-#, fuzzy
 msgctxt "tmainform.caption"
 msgid "JSON Viewer"
 msgstr "JSON查看器"
@@ -374,16 +373,17 @@ msgid "&File"
 msgstr "文件(&F)"
 
 #: tmainform.miallowcomments.caption
+msgctxt "tmainform.miallowcomments.caption"
 msgid "Allow comments"
-msgstr ""
+msgstr "允许注释"
 
 #: tmainform.miallowtrailingcomma.caption
 msgid "Allow trailing comma"
-msgstr ""
+msgstr "Allow允许 trailing comma"
 
 #: tmainform.micompact.caption
 msgid "Compact display"
-msgstr ""
+msgstr "紧凑显示"
 
 #: tmainform.midocument.caption
 msgid "&New document with object"
@@ -395,7 +395,7 @@ msgstr "值(&V)"
 
 #: tmainform.miquotestrings.caption
 msgid "Quote string values"
-msgstr ""
+msgstr "引用字符串值"
 
 #: tmainform.misortmembers.caption
 msgid "Sort object members"
@@ -411,11 +411,11 @@ msgstr "选项(&O)"
 
 #: tmainform.odjson.title
 msgid "Select a JSON file"
-msgstr ""
+msgstr "选择一个JSON文件"
 
 #: tmainform.sdjson.title
 msgid "Save JSON document to file"
-msgstr ""
+msgstr "保存JSON文档到文件"
 
 #: tmainform.tbjson.caption
 msgid "TBJSON"
@@ -435,46 +435,46 @@ msgstr "工具按钮4"
 
 #: tnewbooleanform.caption
 msgid "New boolean value"
-msgstr ""
+msgstr "新建布尔值"
 
 #: tnewbooleanform.cbvalue.caption
 msgid "Set to true"
-msgstr ""
+msgstr "设置为true "
 
 #: tnewbooleanform.label1.caption
 msgid "&Member name"
-msgstr ""
+msgstr "成员名(&M)"
 
 #: tnewnumberform.caption
 msgid "New number value"
-msgstr ""
+msgstr "新建数字值"
 
 #: tnewnumberform.label1.caption
 msgctxt "tnewnumberform.label1.caption"
 msgid "&Name"
-msgstr ""
+msgstr "名称(&N)"
 
 #: tnewnumberform.label2.caption
 msgid "Value"
-msgstr ""
+msgstr "值"
 
 #: tnewnumberform.rgtype.caption
 msgid "Number Type"
-msgstr ""
+msgstr "数字类型"
 
 #: tnewstringform.caption
 msgid "New String value"
-msgstr ""
+msgstr "新建字符串值"
 
 #: tnewstringform.label1.caption
 msgctxt "tnewstringform.label1.caption"
 msgid "&Name"
-msgstr ""
+msgstr "名称(&N)"
 
 #: tnewstringform.label2.caption
 msgctxt "tnewstringform.label2.caption"
 msgid "&Value"
-msgstr ""
+msgstr "值(&V)"
 
 #: trestframe.aaddheader.caption
 msgctxt "trestframe.aaddheader.caption"
@@ -529,7 +529,6 @@ msgid "Send request"
 msgstr ""
 
 #: trestframe.cbusecurrenttabcontent.caption
-msgctxt "trestframe.cbusecurrenttabcontent.caption"
 msgid "Use current tab as content"
 msgstr ""
 

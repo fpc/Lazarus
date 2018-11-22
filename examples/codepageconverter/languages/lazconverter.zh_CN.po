@@ -1,11 +1,11 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: X\n"
+"Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: http://www.microsystem.studio\n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
@@ -27,11 +27,11 @@ msgstr "转换"
 #: tlazconverterform.caption
 msgctxt "TLAZCONVERTERFORM.CAPTION"
 msgid "Codepage LazConverter for PAS, LFM, LRS, LRT & INC files v0.0.6"
-msgstr "Codepage LazConverter用于PAS, LFM, LRS, LRT & INC文件v0.0.6"
+msgstr "Codepage LazConverter对于PAS, LFM, LRS, LRT & INC文件v0.0.6"
 
 #: tlazconverterform.label1.caption
 msgid "Path to your project:"
-msgstr "路径到您的项目:"
+msgstr "路径到您的工程:"
 
 #: tlazconverterform.label2.caption
 msgid "Convert From:"

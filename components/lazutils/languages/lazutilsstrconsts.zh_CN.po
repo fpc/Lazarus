@@ -1,11 +1,11 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: X-1.6\n"
+"Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: http://www.microsystem.studio\n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
@@ -50,11 +50,11 @@ msgstr ""
 
 #: lazutilsstrconsts.lrsevalinvalidargcount
 msgid "Invalid number of function arguments"
-msgstr "无效的函数参数数量(number)"
+msgstr "函数参数的无效的数量"
 
 #: lazutilsstrconsts.lrsevalunknownfunction
 msgid "Unknown function: \"%s\""
-msgstr "未知的函数:\"%s\""
+msgstr "未知的函数: \"%s\""
 
 #: lazutilsstrconsts.lrsevalunknownvariable
 msgid "Unknown variable: \"%s\""
@@ -66,7 +66,7 @@ msgstr "文件\"%s\"不存在"
 
 #: lazutilsstrconsts.lrsfileisadirectoryandnotanexecutable
 msgid "file \"%s\" is a directory and not an executable"
-msgstr "文件\"%s\"是一个目录 不是一个可执行文件"
+msgstr "文件\"%s\"是一个目录并不是一个可执行文件"
 
 #: lazutilsstrconsts.lrshasacircularsymboliclink
 msgid "%s has a circular symbolic link"
@@ -79,7 +79,7 @@ msgstr "内存不足"
 #: lazutilsstrconsts.lrsinvalidcharset
 msgctxt "lazutilsstrconsts.lrsinvalidcharset"
 msgid "The char set in mask \"%s\" is not valid!"
-msgstr "字符集在掩码\"%s\"不是有效的!"
+msgstr "字符集在掩码/扩展名\"%s\"不是有效的!"
 
 #: lazutilsstrconsts.lrsisnotasymboliclink
 msgid "%s is not a symbolic link"
@@ -90,12 +90,14 @@ msgid "%s is not executable"
 msgstr "%s是不可执行的"
 
 #: lazutilsstrconsts.lrslistindexexceedsbounds
+msgctxt "lazutilsstrconsts.lrslistindexexceedsbounds"
 msgid "List index exceeds bounds (%d)"
-msgstr ""
+msgstr "list索引超过限制 (%d)"
 
 #: lazutilsstrconsts.lrslistmustbeempty
+msgctxt "lazutilsstrconsts.lrslistmustbeempty"
 msgid "List must be empty"
-msgstr ""
+msgstr "列表必须为空"
 
 #: lazutilsstrconsts.lrsmodified
 msgctxt "lazutilsstrconsts.lrsmodified"
@@ -169,7 +171,7 @@ msgstr "字符串文字没有关闭"
 #: lazutilsstrconsts.lrssize
 msgctxt "lazutilsstrconsts.lrssize"
 msgid "  size "
-msgstr "  大小"
+msgstr "大小"
 
 #: lazutilsstrconsts.lrsstring
 msgid "string"
@@ -177,9 +179,9 @@ msgstr "字符串"
 
 #: lazutilsstrconsts.lrsunabletocreateconfigdirectorys
 msgid "Unable to create config directory \"%s\""
-msgstr "不能创建config目录\"%s\""
+msgstr "不能创建配置目录\"%s\""
 
 #: lazutilsstrconsts.lrsvarnoconversion
 msgid "Conversion from %s to %s not possible"
-msgstr "不能从%s到%s 转换"
+msgstr "不能从%s到%s转换"
 

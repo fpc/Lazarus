@@ -1,0 +1,74 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: X-1.9\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"X-Generator: Poedit 1.8.7.1\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+#: strpas2jsdesign.pjsdnodejsappdescription
+msgid "A pas2js program running in node.js"
+msgstr "一个pas2js程序运行在node.js"
+
+#: strpas2jsdesign.pjsdnodejsapplication
+msgid "Node.js Application"
+msgstr "Node.js应用程序"
+
+#: strpas2jsdesign.pjsdwebappdescription
+msgid "A pas2js program running in the browser"
+msgstr "一个pas2js程序运行在浏览器"
+
+#: strpas2jsdesign.pjsdwebapplication
+msgid "Web Browser Application"
+msgstr "网页浏览器(Web Browser)应用程序"
+
+#: strpas2jsdesign.spasjswebserverscaption
+msgid "Pas2JS WebServers"
+msgstr "Pas2JS Web服务器(WebServers)"
+
+#: strpas2jsdesign.sstatuserror
+msgid "Error starting"
+msgstr "错误开始(starting)"
+
+#: strpas2jsdesign.sstatusrunning
+msgid "Running"
+msgstr "运行"
+
+#: strpas2jsdesign.sstatusstopped
+msgid "Stopped"
+msgstr "停止"
+
+#: strpas2jsdesign.swebserversbasedir
+msgid "Root directory"
+msgstr "Root目录"
+
+#: strpas2jsdesign.swebserverscaption
+msgid "Web server processes"
+msgstr "Web服务器进程(server processes)"
+
+#: strpas2jsdesign.swebserverscount
+msgid "Number of webserver processes:"
+msgstr "Web服务器进程(server processes)的数量"
+
+#: strpas2jsdesign.swebserversextra
+msgid "Additional info"
+msgstr "附加信息"
+
+#: strpas2jsdesign.swebserversport
+msgid "Port"
+msgstr "端口"
+
+#: strpas2jsdesign.swebserversproject
+msgid "Project"
+msgstr "工程"
+
+#: strpas2jsdesign.swebserversstatus
+msgid "Status"
+msgstr "状态"
+

@@ -1,11 +1,11 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: X-1.6\n"
+"Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: http://www.microsystem.studio\n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
@@ -70,7 +70,7 @@ msgstr "删除"
 
 #: svnclasses.rsdiffactivefile
 msgid "Diff active file"
-msgstr "比较活动文件"
+msgstr "比较活动(active)文件"
 
 #: svnclasses.rsedit
 msgid "Edit"
@@ -86,15 +86,15 @@ msgstr "文件不是本地作业的副本的一部分(现在)"
 
 #: svnclasses.rsfilestatus
 msgid "File status"
-msgstr "文件状态"
+msgstr "文件状态(status)"
 
 #: svnclasses.rsindexoutofboundsd
 msgid "Index out of bounds (%d)"
-msgstr "索引超过边界(%d)"
+msgstr "索引超过边界(bounds)(%d)"
 
 #: svnclasses.rslazarussvncommit
 msgid "LazarusSVN Commit"
-msgstr "LazarusSVN提交"
+msgstr "LazarusSVN提交(Commit)"
 
 #: svnclasses.rslazarussvndiff
 msgid "%s - LazarusSVN Diff ..."
@@ -110,7 +110,7 @@ msgstr "%s - LazarusSVN更新..."
 
 #: svnclasses.rsmerged
 msgid "Merged"
-msgstr "合并"
+msgstr "合并(Merged)"
 
 #: svnclasses.rsmessage
 msgid "Message"
@@ -118,7 +118,7 @@ msgstr "信息"
 
 #: svnclasses.rsnoauthor
 msgid "(no author)"
-msgstr "(无作者)"
+msgstr "(没有作者)"
 
 #: svnclasses.rsonlymodifieditemscanbediffed
 msgid "Only modified (M) Items can be diffed"
@@ -126,11 +126,11 @@ msgstr "仅修改的(M)项目能被比较"
 
 #: svnclasses.rsopenfileineditor
 msgid "Open file in editor"
-msgstr "在编辑器中打开文件"
+msgstr "打开文件在编辑器"
 
 #: svnclasses.rsopenpreviousrevisionineditor
 msgid "Open previous revision in editor"
-msgstr "在编辑器中打开前面的修订本"
+msgstr "在编辑器中打开先前的修订本"
 
 #: svnclasses.rsopenthisrevisionineditor
 msgid "Open this revision in editor"
@@ -146,11 +146,11 @@ msgstr "工程文件名称"
 
 #: svnclasses.rsprojectisactive
 msgid "Project is active"
-msgstr "工程处于激活状态"
+msgstr "工程处于激活状态(active)"
 
 #: svnclasses.rsprojectisnotactiveinsvnsettingspleaseactivatefirst
 msgid "Project is not active in SVN settings, please activate first."
-msgstr "工程在SVN设置中处于非激活状态,请先激活."
+msgstr "工程在SVN设置中处于非激活状态,请先激活(activate )."
 
 #: svnclasses.rsprojectname
 msgid "Project name"
@@ -162,7 +162,7 @@ msgstr "工程选项"
 
 #: svnclasses.rspropertystatus
 msgid "Property status"
-msgstr "属性状态"
+msgstr "属性状态(status)"
 
 #: svnclasses.rsrefresh
 msgid "Refresh"
@@ -178,11 +178,11 @@ msgstr "存储库路径"
 
 #: svnclasses.rsrevert
 msgid "Revert"
-msgstr "重新打开"
+msgstr "重新打开(Revert)"
 
 #: svnclasses.rsrevision
 msgid "Revision"
-msgstr "修订版本:"
+msgstr "修订版本"
 
 #: svnclasses.rssave
 msgid "Save"
@@ -202,15 +202,15 @@ msgstr "显示局部变更的不同"
 
 #: svnclasses.rsshowdiffcountrev
 msgid "Show Last X Commits"
-msgstr "显示最后的X提交"
+msgstr "显示最后的X提交(Commits)"
 
 #: svnclasses.rsshowdiffhead
 msgid "Show Diff Against HEAD"
-msgstr "显示对比HEAD的不同"
+msgstr "显示不同对比HEAD"
 
 #: svnclasses.rsshowdiffprev
 msgid "Show Diff Against Previous Version"
-msgstr "显示对比以前的版本的不同"
+msgstr "显示不同对比先前的版本"
 
 #: svnclasses.rsshowlog
 msgid "Show log"
@@ -218,7 +218,7 @@ msgstr "显示日志"
 
 #: svnclasses.rssourcefiledoesnotbelongtotheprojectpleaseaddfirst
 msgid "Source file does not belong to the project. Please add first."
-msgstr "Source文件不属于本工程.请先添加."
+msgstr "源代码文件不属于该工程.请先添加."
 
 #: svnclasses.rssvnsettings
 msgid "SVN settings"

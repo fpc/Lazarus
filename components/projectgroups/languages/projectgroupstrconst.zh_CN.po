@@ -1,0 +1,462 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: X-1.9\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"X-Generator: Poedit 1.8.7.1\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+#: projectgroupstrconst.lisabort
+msgid "Abort"
+msgstr "取消"
+
+#: projectgroupstrconst.lisabortloadingprojectgroup
+msgid "Abort loading project group"
+msgstr "取消(Abort)加载工程组"
+
+#: projectgroupstrconst.lisactivetarget
+msgid "Target: %s"
+msgstr "目标:%s"
+
+#: projectgroupstrconst.lisallfiles
+msgid "All files"
+msgstr "所有文件"
+
+#: projectgroupstrconst.lisbepatient
+msgid "Be patient!"
+msgstr "要有耐心!"
+
+#: projectgroupstrconst.lisbuildmode
+msgid ", build mode \"%s\""
+msgstr ",构建模式\"%s\""
+
+#: projectgroupstrconst.lisbuildmode2
+msgid "Build Mode \"%s\""
+msgstr "构建模式%s"
+
+#: projectgroupstrconst.lisbuildmodenotfound
+msgid "Build mode not found"
+msgstr "构建模式未找到"
+
+#: projectgroupstrconst.lisbuildmodenotfound2
+msgid "Build mode \"%s\" not found."
+msgstr "构建模式\"%s\"未找到"
+
+#: projectgroupstrconst.liscompilepackage
+msgid "Compile Package %s"
+msgstr "编译包%s"
+
+#: projectgroupstrconst.liscompileproject
+msgid "Compile Project %s"
+msgstr "编译工程%s"
+
+#: projectgroupstrconst.lisdiscard
+msgid "Discard changes"
+msgstr "放弃(Discard)更改"
+
+#: projectgroupstrconst.liserrnosuchfile
+msgid ""
+"Could not find target file\n"
+"\"%s\"\n"
+"What do you want to do?\n"
+msgstr ""
+"不能找到目标(target)文件\n"
+"\"%s\"\n"
+"你想做什么?\n"
+
+#: projectgroupstrconst.liserronlyprojectgroupallowed
+msgid "Only target type \"projectgroup\" is allowed for root project group."
+msgstr "仅目标(target)类型\"工程组\"被允许用于root工程组."
+
+#: projectgroupstrconst.liserrorreadingprojectgroupfile
+msgid "Error reading project group file \"%s\"%s%s"
+msgstr "错误 读取工程组文件\"%s\"%s%s"
+
+#: projectgroupstrconst.liserrtargetdoesnotexist
+msgid "Target does not exist. Remove?"
+msgstr "目标(Target)不存在.移除?"
+
+#: projectgroupstrconst.lisinvalidcycleaprojectgroupcannothaveitselfastarget
+msgid "Invalid cycle. A project group cannot have itself as target."
+msgstr "无效循环.一个工程组不能由它自身作为目标(target)组成."
+
+#: projectgroupstrconst.lisinvalidfile
+msgid "Invalid File"
+msgstr "无效文件"
+
+#: projectgroupstrconst.lisinvalidxmlfilename
+msgid "Invalid XML file name \"%s\"."
+msgstr "无效XML 文件名称\"%s\"."
+
+#: projectgroupstrconst.lislazaruspackageslpk
+msgid "Lazarus packages (*.lpk)"
+msgstr "Lazarus包(*.lpk)"
+
+#: projectgroupstrconst.lislazarusprojectgroupslpg
+msgid "Lazarus project groups (*.lpg)"
+msgstr "Lazarus工程组(*.lpg)"
+
+#: projectgroupstrconst.lislazarusprojectslpi
+msgid "Lazarus projects (*.lpi)"
+msgstr "Lazarus工程(*.lpi)"
+
+#: projectgroupstrconst.lislazbuildnotfound
+msgid "lazbuild not found"
+msgstr "lazbuild未找到"
+
+#: projectgroupstrconst.lismore
+msgid "More"
+msgstr "更多"
+
+#: projectgroupstrconst.lisneedsave
+msgid "Need save"
+msgstr "需要保存"
+
+#: projectgroupstrconst.lisnewprojectgroup
+msgid "New project group"
+msgstr "新工程组"
+
+#: projectgroupstrconst.lisnewprojectgroupmenuc
+msgid "New Project group ..."
+msgstr "新工程组..."
+
+#: projectgroupstrconst.lisnodebuildmodes
+msgid "Build Modes"
+msgstr "构建模式"
+
+#: projectgroupstrconst.lisnodedependencies
+msgid "Dependencies"
+msgstr "依赖(Dependencies)"
+
+#: projectgroupstrconst.lisnodefiles
+msgid "Files"
+msgstr "文件"
+
+#: projectgroupstrconst.lisnoderemoveddependencies
+msgid "Removed dependencies"
+msgstr "移除依赖(dependencies)"
+
+#: projectgroupstrconst.lisnoderemovedfiles
+msgid "Removed files"
+msgstr "移除的文件"
+
+#: projectgroupstrconst.lisnoderemovedtargets
+msgid "Removed targets"
+msgstr "移除目标(targets)"
+
+#: projectgroupstrconst.lisnodetargets
+msgid "Targets"
+msgstr "目标(Targets)"
+
+#: projectgroupstrconst.lisopenprojectgroup
+msgid "Open Project Group ..."
+msgstr "打开工程组..."
+
+#: projectgroupstrconst.lisopenrecentprojectgroup
+msgid "Open Recent Project Group"
+msgstr "打开最近工程组"
+
+#: projectgroupstrconst.lisotherproject
+msgid "Other Project"
+msgstr "其他工程"
+
+#: projectgroupstrconst.lispackage
+msgid "Package"
+msgstr "包"
+
+#: projectgroupstrconst.lispackagenotfound
+msgid "Package not found"
+msgstr "包未找到"
+
+#: projectgroupstrconst.lispackagenotfound2
+msgid "Package \"%s\" not found."
+msgstr "包\"%s\"未找到."
+
+#: projectgroupstrconst.lispascalfilepasppp
+msgid "Pascal files (*.pas;*.pp;*.p)"
+msgstr "Pascal文件(*.pas;*.pp;*.p)"
+
+#: projectgroupstrconst.lispleasesaveyourchangesbeforereloadingtheprojectgrou
+msgctxt "projectgroupstrconst.lispleasesaveyourchangesbeforereloadingtheprojectgrou"
+msgid "Please save your changes before reloading the project group."
+msgstr "请保存你的更改 在重新加载该工程组前."
+
+#: projectgroupstrconst.lisprojectgroup
+msgid "Project group %s"
+msgstr "工程组%s"
+
+#: projectgroupstrconst.lisprojectgroup2
+msgid "Project Group: %s"
+msgstr "工程组:%s"
+
+#: projectgroupstrconst.lisprojectgroupaddexistingcaption
+msgid "Add"
+msgstr "添加"
+
+#: projectgroupstrconst.lisprojectgroupaddexistinghint
+msgid "Add existing target to project group"
+msgstr "添加存在的目标(target)到工程组"
+
+#: projectgroupstrconst.lisprojectgroupaddnewcaption
+msgid "New"
+msgstr "新建"
+
+#: projectgroupstrconst.lisprojectgroupaddnewhint
+msgid "Add new target to project group"
+msgstr "添加新目标(target)到工程组"
+
+#: projectgroupstrconst.lisprojectgroupdeletecaption
+msgid "Remove"
+msgstr "移除"
+
+#: projectgroupstrconst.lisprojectgroupdeletehint
+msgid "Remove target from project group"
+msgstr "移除目标(target)从工程组"
+
+#: projectgroupstrconst.lisprojectgroupmodified
+msgid "Project group modified"
+msgstr "工程组已修改"
+
+#: projectgroupstrconst.lisprojectgroupmodifiedconfirm
+msgid ""
+"Project group \"%s\" is modified.\n"
+"What do you want to do?\n"
+msgstr ""
+"工程组\"%s\"被修改.\n"
+"你想做什么?\n"
+
+#: projectgroupstrconst.lisprojectgroupreload
+msgid "Reload"
+msgstr "重新加载"
+
+#: projectgroupstrconst.lisprojectgroups
+msgid "Project Groups"
+msgstr "工程组"
+
+#: projectgroupstrconst.lisprojectgroupsaveascaption
+msgid "Save As ..."
+msgstr "另存为 ..."
+
+#: projectgroupstrconst.lisprojectgroupsaveashint
+msgid "Save project group with a new name"
+msgstr "保存工程组带有一个新名称"
+
+#: projectgroupstrconst.lisprojectgroupsavecaption
+msgid "Save"
+msgstr "保存"
+
+#: projectgroupstrconst.lisprojectgroupsavehint
+msgctxt "projectgroupstrconst.lisprojectgroupsavehint"
+msgid "Save project group"
+msgstr "保存工程组"
+
+#: projectgroupstrconst.lisreaderror
+msgid "Read error"
+msgstr "读取错误"
+
+#: projectgroupstrconst.lisremovetarget
+msgctxt "projectgroupstrconst.lisremovetarget"
+msgid "Remove target"
+msgstr "移除目标(target)"
+
+#: projectgroupstrconst.lissavepg
+msgctxt "projectgroupstrconst.lissavepg"
+msgid "Save project group"
+msgstr "保存工程组"
+
+#: projectgroupstrconst.lissaveprojectgroup
+msgctxt "projectgroupstrconst.lissaveprojectgroup"
+msgid "Save Project Group"
+msgstr "保存工程组"
+
+#: projectgroupstrconst.lissaveprojectgroupas
+msgid "Save Project Group As ..."
+msgstr "保存工程组为..."
+
+#: projectgroupstrconst.lisskipalltargets
+msgid "Remove all invalid targets"
+msgstr "移除所有无效目标(targets)"
+
+#: projectgroupstrconst.listargetactivate
+msgid "Activate target"
+msgstr "激活目标(target)"
+
+#: projectgroupstrconst.listargetactivatecaption
+msgid "Activate"
+msgstr "激活"
+
+#: projectgroupstrconst.listargetactivatehint
+msgid "Activate selected target"
+msgstr "激活选择目标(target)"
+
+#: projectgroupstrconst.listargetadd
+msgid "Add target"
+msgstr "添加目标(target)"
+
+#: projectgroupstrconst.listargetcompile
+msgctxt "projectgroupstrconst.listargetcompile"
+msgid "Compile"
+msgstr "编译"
+
+#: projectgroupstrconst.listargetcompilecaption
+msgctxt "projectgroupstrconst.listargetcompilecaption"
+msgid "Compile"
+msgstr "编译"
+
+#: projectgroupstrconst.listargetcompileclean
+msgctxt "projectgroupstrconst.listargetcompileclean"
+msgid "Compile clean"
+msgstr "编译清理"
+
+#: projectgroupstrconst.listargetcompilecleancaption
+msgctxt "projectgroupstrconst.listargetcompilecleancaption"
+msgid "Compile clean"
+msgstr "编译清理"
+
+#: projectgroupstrconst.listargetcompilecleanhint
+msgid "Compile selected target clean"
+msgstr "编译选择的目标(target)清理"
+
+#: projectgroupstrconst.listargetcompilefromhere
+msgid "Compile from here"
+msgstr "编译从这里"
+
+#: projectgroupstrconst.listargetcompilehint
+msgid "Compile selected target"
+msgstr "编译选择的目标(target)"
+
+#: projectgroupstrconst.listargetcopyfilename
+msgid "Copy file name"
+msgstr "复制文件名称"
+
+#: projectgroupstrconst.listargetcount
+msgid "%d targets"
+msgstr "%d目标(targets)"
+
+#: projectgroupstrconst.listargetearlier
+msgid "Compile target earlier"
+msgstr "编译目标(target)早期的(earlier)"
+
+#: projectgroupstrconst.listargetearliercaption
+msgid "Earlier"
+msgstr "早期的(Earlier)"
+
+#: projectgroupstrconst.listargetearlierhint
+msgid "Build target earlier"
+msgstr "构建目标(target)早期的(earlier)"
+
+#: projectgroupstrconst.listargetinstall
+msgctxt "projectgroupstrconst.listargetinstall"
+msgid "Install"
+msgstr "安装"
+
+#: projectgroupstrconst.listargetinstallcaption
+msgctxt "projectgroupstrconst.listargetinstallcaption"
+msgid "Install"
+msgstr "安装"
+
+#: projectgroupstrconst.listargetinstallhint
+msgid "Install selected target"
+msgstr "安装选择的目标(target)"
+
+#: projectgroupstrconst.listargetlater
+msgid "Compile target later"
+msgstr "编译目标(target)后期的(later)"
+
+#: projectgroupstrconst.listargetlatercaption
+msgid "Later"
+msgstr "后期的(Later)"
+
+#: projectgroupstrconst.listargetlaterhint
+msgid "Build target later"
+msgstr "构建目标(target)后期的(later)"
+
+#: projectgroupstrconst.listargetopen
+msgid "Open Target"
+msgstr "打开目标(Target)"
+
+#: projectgroupstrconst.listargetopencaption
+msgid "Open"
+msgstr "打开"
+
+#: projectgroupstrconst.listargetopenhint
+msgid "Open selected target"
+msgstr "安装载选择的目标(target)"
+
+#: projectgroupstrconst.listargetproperties
+msgid "Target properties"
+msgstr "目标(Target)属性"
+
+#: projectgroupstrconst.listargetpropertiescaption
+msgid "Properties"
+msgstr "属性"
+
+#: projectgroupstrconst.listargetpropertieshint
+msgid "Show property dialog for selected target"
+msgstr "显示属性对话框对于选择的目标(target)"
+
+#: projectgroupstrconst.listargetremove
+msgctxt "projectgroupstrconst.listargetremove"
+msgid "Remove target"
+msgstr "移除目标(target)"
+
+#: projectgroupstrconst.listargetrun
+msgid "Run Target"
+msgstr "运行目标(target)"
+
+#: projectgroupstrconst.listargetruncaption
+msgid "Run"
+msgstr "运行"
+
+#: projectgroupstrconst.listargetrunhint
+msgid "Run selected target"
+msgstr "运行选择的目标(target)"
+
+#: projectgroupstrconst.listargetuninstall
+msgctxt "projectgroupstrconst.listargetuninstall"
+msgid "Uninstall"
+msgstr "卸载"
+
+#: projectgroupstrconst.listargetuninstallcaption
+msgctxt "projectgroupstrconst.listargetuninstallcaption"
+msgid "Uninstall"
+msgstr "卸载"
+
+#: projectgroupstrconst.listargetuninstallhint
+msgid "Uninstall selected target"
+msgstr "卸载选择的目标(target)"
+
+#: projectgroupstrconst.listhelazbuildwasnotfound
+msgid "The lazbuild%s was not found."
+msgstr "lazbuild%s未找到."
+
+#: projectgroupstrconst.listhereisstillanotherbuildinprogress
+msgid "There is still another build in progress."
+msgstr "这里仍然有另一个构建在进程中."
+
+#: projectgroupstrconst.lisunabletocreatefile
+msgid "Unable to create file \"%s\": %s"
+msgstr "不能创建文件\"%s\": %s"
+
+#: projectgroupstrconst.lisunabletoloadfile
+msgid "Unable to load file \"%s\""
+msgstr "不能加载文件\"%s\""
+
+#: projectgroupstrconst.lisunabletowriteprojectgroupfile
+msgid "Unable to write project group file \"%s\"%s%s"
+msgstr "不能写入工程组文件\"%s\"%s%s"
+
+#: projectgroupstrconst.liswriteerror
+msgid "Write error"
+msgstr "写入错误"
+
+#: projectgroupstrconst.lisxmlsyntaxerrorinfile
+msgid "XML syntax error in file \"%s\": %s"
+msgstr "XML语法错误在文件\"%s\": %s"
+

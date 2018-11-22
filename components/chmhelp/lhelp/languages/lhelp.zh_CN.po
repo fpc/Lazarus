@@ -1,11 +1,11 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: X\n"
+"Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: http://www.microsystem.studio\n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
@@ -18,7 +18,7 @@ msgstr "关于"
 
 #: lhelpstrconsts.slhelp_about2
 msgid "&About ..."
-msgstr "关于(&A)"
+msgstr "关于...(&A)"
 
 #: lhelpstrconsts.slhelp_cannothandlethistypeofcontentforurl
 msgid "Cannot handle this type of content. \"%s\" for url:%s%s"
@@ -82,7 +82,7 @@ msgstr "索引加载..."
 
 #: lhelpstrconsts.slhelp_ipcnamethenameoftheipcservertolistenonforprogramsw
 msgid "    --ipcname  :  The name of the IPC server to listen on for%s              programs who wish to control the viewer"
-msgstr "    --ipcname  :IPC服务器来监听%s       程序 谁想要控制查看器的名称"
+msgstr "    --ipcname  :IPC服务器来监听想要控制查看器%s       程序 的名称"
 
 #: lhelpstrconsts.slhelp_keyword
 msgid "Keyword:"
@@ -98,11 +98,11 @@ msgstr "LHelp - %s"
 
 #: lhelpstrconsts.slhelp_lhelpchmfileviewerversioncopyrightcandrewhaineslaz
 msgid "LHelp (CHM file viewer)%sVersion %s%sCopyright (C) Andrew Haines, %sLazarus contributors"
-msgstr "LHelp (CHM文件浏览器)%s版本%s%s版权(C) Andrew Haines, %sLazarus贡献者"
+msgstr "LHelp (CHM文件查看器)%s版本%s%s版权(C) Andrew Haines, %sLazarus贡献值"
 
 #: lhelpstrconsts.slhelp_lhelpoptions
 msgid "  LHelp options:"
-msgstr "LHelp选项:"
+msgstr "  LHelp选项:"
 
 #: lhelpstrconsts.slhelp_loadedinms
 msgid "Loaded: %s in %sms"
@@ -110,15 +110,15 @@ msgstr "加载:%s在%sms"
 
 #: lhelpstrconsts.slhelp_loading
 msgid "Loading: %s"
-msgstr "加载: %s"
+msgstr "加载:%s"
 
 #: lhelpstrconsts.slhelp_noresults
 msgid "No Results"
-msgstr "没有结果"
+msgstr "没有结果(Results)"
 
 #: lhelpstrconsts.slhelp_notfound
 msgid "%s not found!"
-msgstr "%s未找到"
+msgstr "%s未找到!"
 
 #: lhelpstrconsts.slhelp_ok
 msgid "Ok"
@@ -134,15 +134,15 @@ msgstr "打开存在的文件"
 
 #: lhelpstrconsts.slhelp_opennewfileinseparatetab
 msgid "Open new file in separate tab"
-msgstr "打开新建文件在另外的选项卡(tab)"
+msgstr "打开新文件在独立标签页(separate tab)"
 
 #: lhelpstrconsts.slhelp_opennewtabwithstatusbar
 msgid "Open new tab with status bar"
-msgstr "打开带状态栏的新选项卡(tab)"
+msgstr "打开新标签页(tab)带有状态(status)条"
 
 #: lhelpstrconsts.slhelp_openrecent
 msgid "Open Recent"
-msgstr "打开最近"
+msgstr "打开最近的"
 
 #: lhelpstrconsts.slhelp_openurl
 msgid "Open &URL ..."
@@ -150,7 +150,7 @@ msgstr "打开URL...(&U)"
 
 #: lhelpstrconsts.slhelp_pagecannotbefound
 msgid "Page cannot be found!"
-msgstr "找不到页面!"
+msgstr "页面不能找到!"
 
 #: lhelpstrconsts.slhelp_pleaseenteraurl
 msgid "Please enter a URL"
@@ -158,35 +158,35 @@ msgstr "请输入一个URL"
 
 #: lhelpstrconsts.slhelp_search
 msgid "Search"
-msgstr "查找"
+msgstr "搜索"
 
 #: lhelpstrconsts.slhelp_searchresults
 msgid "Search Results:"
-msgstr "查找结果"
+msgstr "搜索结果:"
 
 #: lhelpstrconsts.slhelp_showcontents
 msgid "Show contents"
-msgstr "显示目录"
+msgstr "显示目录(contents)"
 
 #: lhelpstrconsts.slhelp_supportedurltypes
 msgid "Supported URL type(s): (%s)"
-msgstr "支持URL类型: (%s)"
+msgstr "支持的URL类型:(%s)"
 
 #: lhelpstrconsts.slhelp_tableofcontentsloading
 msgid "Table of Contents Loading ..."
-msgstr "目录表加载"
+msgstr "目录表(Table)加载..."
 
 #: lhelpstrconsts.slhelp_tableofcontentsloadingpleasewait
 msgid "Table of Contents Loading. Please Wait ..."
-msgstr "目录表加载.请等候..."
+msgstr "目录表(Table)加载.请等候..."
 
 #: lhelpstrconsts.slhelp_untitled
 msgid "untitled"
-msgstr "无标题"
+msgstr "无标题(untitled)"
 
 #: lhelpstrconsts.slhelp_usagelhelpfilenamecontextidhideipcnamelhelpmyapp
 msgid "    Usage: lhelp [[filename] [--context id] [--hide] [--ipcname lhelp-myapp]]"
-msgstr "    Usage: lhelp [[文件名] [--context id] [--hide] [--ipcname lhelp-myapp]]"
+msgstr "    Usage(用法): lhelp [[filename(文件名称)] [--context(上下文) id] [--hide(隐藏)] [--ipcname lhelp-myapp]]"
 
 #: lhelpstrconsts.slhelp_view
 msgid "&View"

@@ -1,11 +1,11 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: X\n"
+"Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: http://www.microsystem.studio\n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
@@ -26,21 +26,19 @@ msgstr "插入宏"
 
 #: todoliststrconsts.lishelp
 msgid "Help"
-msgstr ""
+msgstr "帮助"
 
 #: todoliststrconsts.lisoptions
-#, fuzzy
-msgctxt "todoliststrconsts.lisoptions"
 msgid "Options"
 msgstr "选项"
 
 #: todoliststrconsts.lispackages
 msgid "Packages"
-msgstr ""
+msgstr "包"
 
 #: todoliststrconsts.lispackageshint
 msgid "Extends \"%s\" and \"%s\" options by units from used packages"
-msgstr ""
+msgstr "展开(Extends)\"%s\"和\"%s\"选项 从使用的包单元"
 
 #: todoliststrconsts.lispkgfiletypetext
 msgid "Text"
@@ -48,11 +46,12 @@ msgstr "文本"
 
 #: todoliststrconsts.lissourceeditor
 msgid "Editor"
-msgstr ""
+msgstr "编辑器"
 
 #: todoliststrconsts.lissourceeditorhint
+msgctxt "todoliststrconsts.lissourceeditorhint"
 msgid "Add units in source editor"
-msgstr ""
+msgstr "添加单元在源文件编辑器"
 
 #: todoliststrconsts.listddinserttodo
 msgid "Insert ToDo"
@@ -84,11 +83,11 @@ msgstr "ToDo列表"
 
 #: todoliststrconsts.listodolisted
 msgid "Listed"
-msgstr ""
+msgstr "列表"
 
 #: todoliststrconsts.listodolistedhint
 msgid "Add units listed in project inspector/package editor"
-msgstr ""
+msgstr "添加单元列表 在工程查看/包编辑器"
 
 #: todoliststrconsts.listodolistgotoline
 msgid "Goto selected source line"
@@ -112,11 +111,11 @@ msgstr "优先级"
 
 #: todoliststrconsts.listodoused
 msgid "Used"
-msgstr ""
+msgstr "使用"
 
 #: todoliststrconsts.listodousedhint
 msgid "Add units used by main source file"
-msgstr ""
+msgstr "由main源代码文件添加使用的单元"
 
 #: todoliststrconsts.listtodolcategory
 msgid "Category"

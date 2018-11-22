@@ -1,13 +1,13 @@
 msgid ""
 msgstr ""
-"MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Project-Id-Version: X\n"
+"Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: http://www.microsystem.studio\n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
 "X-Generator: Poedit 1.8.7.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -33,7 +33,7 @@ msgstr "编辑报告"
 
 #: maincalleditor.cerhintcloseapp
 msgid "Close application"
-msgstr "关闭应用"
+msgstr "应用应用程序"
 
 #: maincalleditor.cerhintcomposite
 msgid "This Action will Load and Preview a composite Report"
@@ -53,7 +53,7 @@ msgstr "打开一个存在的报告"
 
 #: maincalleditor.cerhintprevgrid
 msgid "Print preview current DbGrid content"
-msgstr "打印预览当前DbGrid目录"
+msgstr "打印预览当前DbGrid目录/内容"
 
 #: maincalleditor.cerhintprevreport
 msgid "Preview active report"
@@ -82,7 +82,7 @@ msgstr "新建报告"
 
 #: maincalleditor.cernone
 msgid "none"
-msgstr "无"
+msgstr "none"
 
 #: maincalleditor.ceropenreport
 msgid "Open report"
@@ -94,7 +94,7 @@ msgstr "先打开报告"
 
 #: maincalleditor.cerpreparefailed
 msgid "PrepareReport Failed!"
-msgstr "准备报告失败!"
+msgstr "PrepareReport失败!"
 
 #: maincalleditor.cerpreviewreport
 msgid "Preview report"
@@ -106,7 +106,7 @@ msgstr "打印网格"
 
 #: maincalleditor.cerprintreport
 msgid "Print report"
-msgstr "打印预览"
+msgstr "打印报告"
 
 #: maincalleditor.certhumbnails
 msgctxt "maincalleditor.certhumbnails"
@@ -141,11 +141,11 @@ msgstr "导出调试"
 
 #: tfrmmain.accexporttohtml.caption
 msgid "Export to html"
-msgstr "导出为HTML"
+msgstr "导出为html"
 
 #: tfrmmain.accexporttotext.caption
 msgid "Export to text"
-msgstr "导出为文本"
+msgstr "导出为text"
 
 #: tfrmmain.accnewreport.caption
 msgid "New Report"

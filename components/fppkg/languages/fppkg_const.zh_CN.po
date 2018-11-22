@@ -1,11 +1,11 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: X\n"
+"Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: http://www.microsystem.studio\n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
@@ -38,7 +38,7 @@ msgstr "编译器目标"
 
 #: fppkg_const.rscompilerversion
 msgid "Compiler version"
-msgstr "编译器版本号"
+msgstr "编译器版本"
 
 #: fppkg_const.rscustomfpmakeoptions
 msgid "Custom fpmake options"
@@ -70,11 +70,11 @@ msgstr "fppkg选项"
 
 #: fppkg_const.rsfppkgsfailedresultds
 msgid "Fppkg %s failed: Result %d%s%s"
-msgstr "Fppkg %s失败: 导致%d%s%s"
+msgstr "Fppkg %s失败: 导致/结果%d%s%s"
 
 #: fppkg_const.rsfreepascalpackagemanagerforlazarus
 msgid "Free Pascal package manager for Lazarus"
-msgstr "用于Lazarus的Free Pascal package管理器"
+msgstr "Free Pascal包管理器用于Lazarus"
 
 #: fppkg_const.rsglobalinstalldir
 msgid "Global install dir"
@@ -82,7 +82,7 @@ msgstr "整体安装目录"
 
 #: fppkg_const.rsglobalprefix
 msgid "Global prefix"
-msgstr "整体prefix(前置代号)"
+msgstr "整体prefix(前置代码)"
 
 #: fppkg_const.rslocalinstalldir
 msgid "Local install dir"
@@ -90,7 +90,7 @@ msgstr "本地安装目录"
 
 #: fppkg_const.rslocalprefix
 msgid "Local prefix"
-msgstr "局部prefix(前置代号)"
+msgstr "局部prefix(前置代码)"
 
 #: fppkg_const.rslocalrepository
 msgid "Local repository"
@@ -114,5 +114,5 @@ msgstr "远程存储库"
 
 #: fppkg_const.rsshowfppkgpackagemanager
 msgid "Show Fppkg Package Manager"
-msgstr ""
+msgstr "显示Fppkg包管理器"
 

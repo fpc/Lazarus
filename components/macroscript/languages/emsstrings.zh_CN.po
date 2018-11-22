@@ -1,11 +1,11 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: X\n"
+"Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: http://www.microsystem.studio\n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
@@ -14,7 +14,7 @@ msgstr ""
 
 #: emsstrings.emsactive
 msgid "Scripting active."
-msgstr "Scripting激活状态"
+msgstr "Scripting激活"
 
 #: emsstrings.emsbtntestagain
 msgid "Test again"
@@ -34,7 +34,7 @@ msgstr "Scripting非活跃状态.不支持这个平台或者CPU."
 
 #: emsstrings.emspending
 msgid "Scripting not active. Selftest will run next time the IDE is started."
-msgstr "Scripting非激活状态.自检将在IDE下次启动时运行 Selftest will run next time the IDE is started."
+msgstr "Scripting非激活状态.自检将在IDE下次启动时运行."
 
 #: emsstrings.emsselftesterrcaption
 msgid "Error in EditorMacroScript"
@@ -42,11 +42,11 @@ msgstr "编辑器宏脚本错误"
 
 #: emsstrings.emsselftestfailed
 msgid "The package EditorMacroScript (pascalscript macros) has detected a problem and was deactivated.%0:sThe package failed its selftest with the message:%0:s\"%1:s\""
-msgstr "EditorMacroScript (pascalscript macros)包检测到一个问题并被停用.%0:s包自检失败的信息:%0:s\"%1:s\""
+msgstr "包EditorMacroScript (pascalscript macros)检测到一个问题并被停用.%0:s包自检失败带有信息:%0:s\"%1:s\""
 
 #: emsstrings.emsselftestfailedlasttime
 msgid "The package EditorMacroScript (pascalscript macros) has detected a problem and was deactivated.%0:sThe package selftest was not completed during the last start of the IDE."
-msgstr "EditorMacroScript (pascalscript macros)包检测到一个问题并被停用.%0:s包自检在上次IDE启动时没有完成"
+msgstr "包EditorMacroScript (pascalscript macros)检测到一个问题并被停用.%0:s包自检在上次IDE启动时没有完成."
 
 #: emsstrings.emsstatustitle
 msgid "Status"

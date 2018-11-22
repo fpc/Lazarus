@@ -1,11 +1,11 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: X\n"
+"Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: http://www.microsystem.studio\n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
@@ -14,7 +14,7 @@ msgstr ""
 
 #: sdb_consts.scancelrecordsexported
 msgid "Exported %d before user canceled."
-msgstr "导出%d在用户取消以前"
+msgstr "导出%d在用户取消以前."
 
 #: sdb_consts.sdb_availableexportformats
 msgid "Available export formats:"
@@ -42,7 +42,7 @@ msgstr "文件名:"
 
 #: sdb_consts.sdb_formatting
 msgid "Formatting"
-msgstr "格式化..."
+msgstr "格式化"
 
 #: sdb_consts.sdb_moveselectedfielddown
 msgid "Move selected field down"
@@ -66,7 +66,7 @@ msgstr "选择字段导出(&e)"
 
 #: sdb_consts.serrnodatasetassigned
 msgid "DataExporter has no Dataset assigned."
-msgstr "DataExporter没有分配的数据集?)."
+msgstr "DataExporter没有Dataset assigned(分配的数据集?)."
 
 #: sdb_consts.serropeningdataset
 msgid "Could not open dataset for exporting: %s"

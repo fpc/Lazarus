@@ -1,11 +1,11 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: X\n"
+"Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: http://www.microsystem.studio\n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
@@ -26,7 +26,7 @@ msgstr "添加一个IDE菜单项目到创建的新程序"
 
 #: eduoptions.ersaddaspeedbuttontotheidetoolbartocreateanewprogram
 msgid "Add a speed button to the IDE toolbar to create a new program"
-msgstr "添加一个Speed Buttons(进度按钮)到IDE工具栏来创建一个新程序"
+msgstr "添加一个Speed Buttons(快速按钮)到IDE工具栏来创建一个新程序"
 
 #: eduoptions.ersaddicon
 msgid "Add icon"
@@ -50,7 +50,7 @@ msgstr "组件面板"
 
 #: eduoptions.erseduenvoptsframetitle
 msgid "General"
-msgstr "通常"
+msgstr "一般"
 
 #: eduoptions.ersedumenutitle
 msgid "Menus"
@@ -71,7 +71,7 @@ msgstr "属性和事件"
 
 #: eduoptions.ersedusbtitle
 msgid "Speed Buttons"
-msgstr "Speed Buttons(进度按钮)"
+msgstr "Speed Buttons(快速按钮)"
 
 #: eduoptions.ersenableeducheckboxcaption
 msgid "Enable education settings"
@@ -156,7 +156,7 @@ msgstr "显示所有"
 
 #: eduoptions.ersshowallchilds
 msgid "Show all children"
-msgstr "显示所有孩子"
+msgstr "显示所有子"
 
 #: eduoptions.ersshowextended
 msgid "Show Extended"
@@ -184,7 +184,7 @@ msgstr "源代码"
 
 #: eduoptions.erssttexteventsext
 msgid "OnClick, OnChange, OnMouseMove, OnDblClick, OnCreate, OnKeyPress, OnFormCreate"
-msgstr "OnClick, OnChange, OnMouseMove, OnDblClick, OnCreate, OnKeyPress, OnFormCreate"
+msgstr ""
 
 #: eduoptions.erssttexteventsfull
 msgid "All Events available"
@@ -192,11 +192,11 @@ msgstr "所有事件可用"
 
 #: eduoptions.erssttexteventsmin
 msgid "OnClick, OnChange, OnMouseMove"
-msgstr "OnClick, OnChange, OnMouseMov"
+msgstr ""
 
 #: eduoptions.erssttextpropsext
 msgid "Align, Left, Top, Hint, ShowHint, ParentFont, TabOrder, ParentShowHint, WordWrap, FixedCols, FixedRows, DefaultColWidth, DefaultRowHeight, ColCount, RowCount, Borderstyle, Glyph, State, Interval, DataSource, DataField + DB-Properties"
-msgstr "Align, Left, Top, Hint, ShowHint, ParentFont, TabOrder, ParentShowHint, WordWrap, FixedCols, FixedRows, DefaultColWidth, DefaultRowHeight, ColCount, RowCount, Borderstyle, Glyph, State, Interval, DataSource, DataField + DB-Properties"
+msgstr ""
 
 #: eduoptions.erssttextpropsfull
 msgid "All Properties available"
@@ -204,7 +204,7 @@ msgstr "所有属性可用"
 
 #: eduoptions.erssttextpropsmin
 msgid "Name, Caption, Visible, Text, Checked, Items, Font, Color, Enabled, Height, Width, MaxLength, Picture, Columns"
-msgstr "Name, Caption, Visible, Text, Checked, Items, Font, Color, Enabled, Height, Width, MaxLength, Picture, Columns"
+msgstr ""
 
 #: eduoptions.ersvisiblecomponents
 msgid "Visible components"
@@ -212,5 +212,5 @@ msgstr "可视化组件"
 
 #: eduoptions.ersvisiblespeedbuttons
 msgid "Visible SpeedButtons"
-msgstr "可视化SpeedButtons"
+msgstr "可视化SpeedButtons(快速按钮)"
 

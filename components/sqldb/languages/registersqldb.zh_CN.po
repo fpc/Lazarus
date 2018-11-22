@@ -1,16 +1,16 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: X\n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-12-01 22:54+0800\n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: http://www.microsystem.studio\n"
-"MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: X-1.9\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-SourceCharset: UTF-8\n"
 "Language: zh_CN\n"
 "X-Generator: Poedit 1.8.7.1\n"
+"X-Poedit-SourceCharset: UTF-8\n"
 
 #: registersqldb.sfirebirddatabases
 msgid "Firebird databases"
@@ -26,7 +26,7 @@ msgstr "共享库"
 
 #: registersqldb.ssqlite3databases
 msgid "SQLite3 databases"
-msgstr ""
+msgstr "SQLite3数据库"
 
 #: registersqldb.ssqlscript
 msgid "SQL Script file"
@@ -38,7 +38,7 @@ msgstr "创建一个新的SQL脚本文件"
 
 #: registersqldb.ssqlsource
 msgid "Insert your SQL statements here"
-msgstr "在此处插入SQL语句"
+msgstr "在此处插入你的SQL语句"
 
 #: registersqldb.ssqlstringspropertyeditordlgtitle
 msgid "Editing %s"

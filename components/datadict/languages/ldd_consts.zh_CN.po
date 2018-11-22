@@ -1,11 +1,11 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: X\n"
+"Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: http://www.microsystem.studio\n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
@@ -38,7 +38,7 @@ msgstr "Database桌面应用程序"
 
 #: ldd_consts.ldd_datadictionary
 msgid "Data dictionary &file:"
-msgstr "Data目录文件(&f)"
+msgstr "Data字典文件(&f)"
 
 #: ldd_consts.ldd_defaultdatadictdirectory
 msgid "Default data dictionary directory"
@@ -54,7 +54,7 @@ msgstr "字段来产生代码对于"
 
 #: ldd_consts.ldd_filenameapplicationsfilter
 msgid "Applications|*.exe|Any file|*.*"
-msgstr "应用|*.exe|任何文件|*.*"
+msgstr "应用程序|*.exe|任何文件|*.*"
 
 #: ldd_consts.ldd_filenameedit
 msgid "Data dictionary|*.fdd|Any file|*.*"
@@ -62,11 +62,11 @@ msgstr "Data字典|*.fdd|任何文件|*.*"
 
 #: ldd_consts.ldd_generatedcode
 msgid "Generated code"
-msgstr "生产的代码"
+msgstr "产生的代码"
 
 #: ldd_consts.ldd_knowndatadictionary
 msgid "Known data dictionary"
-msgstr "已知的data字典"
+msgstr "已知的数据字典"
 
 #: ldd_consts.ldd_ok
 msgid "&OK"
@@ -110,11 +110,11 @@ msgstr "设置工程数据字典"
 
 #: ldd_consts.ldd_showgeneratedcode
 msgid "Show generated code"
-msgstr "显示生产的代码"
+msgstr "显示产生的代码"
 
 #: ldd_consts.ldd_usedatadictionary
 msgid "&Use Data dictionary for this project"
-msgstr "这个工程使用数据字典(&U)"
+msgstr "使用数据字典对于这个工程(&U)"
 
 #: ldd_consts.sapplicationfilter
 msgid "Applications|*"
@@ -202,11 +202,11 @@ msgstr "打开"
 
 #: ldd_consts.snotyetimplemted
 msgid "Not yet implemented"
-msgstr "尚未实现"
+msgstr "Not yet implemented(尚未实现)"
 
 #: ldd_consts.swarningnoddforfield
 msgid "Warning: No definition in data dictionary for field %s"
-msgstr "警告:对于字段%s没有定义在数据字典"
+msgstr "警告:没有定义在数据字典对于字段%s"
 
 #: ldd_consts.swrongselection
 msgid "Wrong selection count : %d"

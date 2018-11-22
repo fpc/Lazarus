@@ -1,11 +1,11 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: X-1.6\n"
+"Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: http://www.microsystem.studio\n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
@@ -26,7 +26,7 @@ msgstr ""
 
 #: anchordockstr.adrsanchornotfoundnodeanchors
 msgid "Anchor not found: Node=\"%s\" Anchors[%s]=\"%s\""
-msgstr ""
+msgstr "锚/固定(Anchor)未找到:节点=\"%s\"锚/固定(Anchors)[%s]=\"%s\""
 
 #: anchordockstr.adrsanchortowrongsideofsplitternodeanchors
 msgid "Anchor to wrong side of splitter: Node=\"%s\" Anchors[%s]=\"%s\""
@@ -38,7 +38,7 @@ msgstr ""
 
 #: anchordockstr.adrsautomatically
 msgid "Automatically"
-msgstr ""
+msgstr "自动地"
 
 #: anchordockstr.adrsbottom
 msgid "bottom"
@@ -62,7 +62,7 @@ msgstr ""
 
 #: anchordockstr.adrsdockingoptions
 msgid "Docking options"
-msgstr "停靠选项"
+msgstr "停靠(Docking)选项"
 
 #: anchordockstr.adrsdraganddockc
 msgid "Use the mouse to drag and dock window \"%s\""
@@ -74,7 +74,7 @@ msgstr ""
 
 #: anchordockstr.adrsduplicatename
 msgid "Duplicate name: "
-msgstr "复制名称:"
+msgstr ""
 
 #: anchordockstr.adrseachdockedwindowhasaheaderthatallowsdragginghasaco
 msgid "Each docked window has a header that allows dragging, has a context menu with extra layout functions and shows the caption of the docked window"
@@ -94,7 +94,7 @@ msgstr ""
 
 #: anchordockstr.adrsfilledheaders
 msgid "Fill headers"
-msgstr "填充headers"
+msgstr ""
 
 #: anchordockstr.adrsfilledheadershint
 msgid "Fill headers of docked controls"
@@ -110,7 +110,7 @@ msgstr ""
 
 #: anchordockstr.adrsgeneraldockingoptions
 msgid "General docking options"
-msgstr "一般停靠选项"
+msgstr "一般停靠(docking)选项"
 
 #: anchordockstr.adrsheaderalignleft
 msgid "Header align left"
@@ -126,7 +126,7 @@ msgstr "Header位置"
 
 #: anchordockstr.adrsheaderstyle
 msgid "Header Style:"
-msgstr "Header样式"
+msgstr "Header样式:"
 
 #: anchordockstr.adrshideheadercaptionsforsiteswithonlyonedockedcontrol
 msgid "Hide header captions for sites with only one docked control, as that is already shown in the normal window title"
@@ -134,7 +134,7 @@ msgstr ""
 
 #: anchordockstr.adrshighlightfocused
 msgid "Highlight focused"
-msgstr ""
+msgstr "高亮聚焦"
 
 #: anchordockstr.adrshighlightfocusedhint
 msgid "Highlight header of focused docked control"
@@ -162,11 +162,11 @@ msgstr ""
 
 #: anchordockstr.adrsmoveheadertoleftwhenwidthheight100headeralignleft
 msgid "Move header to left when (Width/Height)*100>=HeaderAlignLeft"
-msgstr "移动header到左侧部 当(宽/高)*100>=HeaderAlignLeft"
+msgstr "移动header到左侧 当(宽度/高度)*100>=Header左对齐"
 
 #: anchordockstr.adrsmoveheadertotopwhenwidthheight100headeraligntop
 msgid "Move header to top when (Width/Height)*100<=HeaderAlignTop"
-msgstr "移动header到顶部 当(宽/高)*100<=HeaderAlignTop"
+msgstr "移动header到顶侧 当(宽度/高度)*100<=Header顶部对齐"
 
 #: anchordockstr.adrsmovepageleft
 msgid "Move page left"
@@ -202,7 +202,7 @@ msgstr "退出%s"
 
 #: anchordockstr.adrsrequestedbutcreated
 msgid "%s requested, but %s created"
-msgstr "%s请求,但是%s被创建"
+msgstr "%s被要求(requested),但是%s被创建"
 
 #: anchordockstr.adrsright
 msgid "right"
@@ -210,7 +210,7 @@ msgstr "右"
 
 #: anchordockstr.adrsscaleonresize
 msgid "Scale on resize"
-msgstr "缩放调整大小"
+msgstr "规模调整大小(Scale on resize)"
 
 #: anchordockstr.adrsscalesubsiteswhenasiteisresized
 msgid "Scale sub sites when a site is resized"
@@ -246,13 +246,13 @@ msgstr ""
 
 #: anchordockstr.adrstop
 msgid "top"
-msgstr "上部"
+msgstr "顶部"
 
 #: anchordockstr.adrstouseanchordockingyoumustfirstuninstall
 msgid "To use anchordocking you must first uninstall %s"
-msgstr "为使用锚停靠(anchordocking)你必须首先卸载%s"
+msgstr ""
 
 #: anchordockstr.adrsundock
 msgid "Undock"
-msgstr "取消停靠"
+msgstr "(取消停靠)(Undock"
 

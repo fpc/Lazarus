@@ -1,11 +1,11 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: X\n"
+"Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: http://www.microsystem.studio\n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
@@ -18,7 +18,7 @@ msgstr "添加"
 
 #: sqlitecompstrings.satablenamedalreadyexistsareyousureyouwanttoreplace
 msgid "A Table named \"%s\" already exists. Are you sure you want to replace this table?%sAll data stored will be lost."
-msgstr "Table名为\"%s\"已经存在.你确定想替换这个table?%s所有data存储将丢失"
+msgstr "一个Table名为\"%s\"已经存在.你确定想替换这个table?%s所有data存储将丢失"
 
 #: sqlitecompstrings.sclose
 msgid "Close"
@@ -62,7 +62,7 @@ msgstr "不能创建table."
 
 #: sqlitecompstrings.snofieldsaddedtablewillnotbecreated
 msgid "No fields added. Table will not be created."
-msgstr "没有字段天剑.Table will not be created."
+msgstr "没有字段添加.Table将不被创建."
 
 #: sqlitecompstrings.stablecreatedsuccessfully
 msgid "Table created successfully."

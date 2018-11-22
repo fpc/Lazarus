@@ -1,11 +1,11 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: X\n"
+"Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: http://www.microsystem.studio\n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
@@ -50,7 +50,7 @@ msgstr "条形图系列"
 
 #: tachartstrconsts.rsbottom
 msgid "Bottom"
-msgstr ""
+msgstr "底部"
 
 #: tachartstrconsts.rsboxandwhiskerseries
 msgid "Box-and-whiskers series"
@@ -58,35 +58,36 @@ msgstr "盒须图系列"
 
 #: tachartstrconsts.rsbsbdiagonal
 msgid "backward-diagonal hatch"
-msgstr ""
+msgstr "反向对角阴影(backward-diagonal hatch)"
 
 #: tachartstrconsts.rsbsclear
+msgctxt "tachartstrconsts.rsbsclear"
 msgid "no fill"
-msgstr ""
+msgstr "没有填充(fill)"
 
 #: tachartstrconsts.rsbscross
 msgid "crossed"
-msgstr ""
+msgstr "交叉(crossed)"
 
 #: tachartstrconsts.rsbsdiagcross
 msgid "diagonally crossed"
-msgstr ""
+msgstr "对角交叉(diagonally crossed)"
 
 #: tachartstrconsts.rsbsfdiagonal
 msgid "forward-diagonal hatch"
-msgstr ""
+msgstr "正向对角阴影(forward-diagonal hatch)"
 
 #: tachartstrconsts.rsbshorizontal
 msgid "horizontally hatched"
-msgstr ""
+msgstr "水平阴影(horizontally hatched)"
 
 #: tachartstrconsts.rsbsimage
 msgid "image fill"
-msgstr ""
+msgstr "图像填充(fill)"
 
 #: tachartstrconsts.rsbspattern
 msgid "pattern fill"
-msgstr ""
+msgstr "图案填充(fill)"
 
 #: tachartstrconsts.rsbsplineseries
 msgid "B-Spline series"
@@ -94,11 +95,11 @@ msgstr "B-样条系列"
 
 #: tachartstrconsts.rsbssolid
 msgid "solid fill"
-msgstr ""
+msgstr "实体(solid)填充(fill)"
 
 #: tachartstrconsts.rsbsvertical
 msgid "vertically hatched"
-msgstr ""
+msgstr "垂直阴影(vertically hatched)"
 
 #: tachartstrconsts.rsbubbleseries
 msgid "Bubble series"
@@ -106,7 +107,7 @@ msgstr "散点图系列"
 
 #: tachartstrconsts.rscirclesymbol
 msgid "Circle"
-msgstr ""
+msgstr "圆(Circle)"
 
 #: tachartstrconsts.rscolormapseries
 msgid "Color map series"
@@ -118,7 +119,7 @@ msgstr "恒线(Constant)"
 
 #: tachartstrconsts.rscrosssymbol
 msgid "Plus"
-msgstr ""
+msgstr "加(Plus)"
 
 #: tachartstrconsts.rscubicsplineseries
 msgid "Cubic spline series"
@@ -150,11 +151,11 @@ msgstr "删除"
 
 #: tachartstrconsts.rsdiagcrosssymbol
 msgid "Cross"
-msgstr ""
+msgstr "交叉(Cross)"
 
 #: tachartstrconsts.rsdiamondsymbol
 msgid "Diamond"
-msgstr ""
+msgstr "菱形"
 
 #: tachartstrconsts.rsdistancemeasurement
 msgid "Distance measurement"
@@ -162,23 +163,23 @@ msgstr "距离测量"
 
 #: tachartstrconsts.rsdowntrianglesymbol
 msgid "Down triangle"
-msgstr ""
+msgstr "下三角形"
 
 #: tachartstrconsts.rserrinvalidresulttype
 msgid "Expression result type must be integer or float. Got \"%s\"."
-msgstr ""
+msgstr "表达式结果类型必须是整型(integer)或浮点型(float).得到\"%s\"."
 
 #: tachartstrconsts.rsexpressioncolormapseries
 msgid "Math expression color map series"
-msgstr ""
+msgstr "数学表达式彩色图系列"
 
 #: tachartstrconsts.rsexpressionseries
 msgid "Math expression series"
-msgstr ""
+msgstr "数学表达式系列"
 
 #: tachartstrconsts.rsfieldseries
 msgid "Vector field series"
-msgstr ""
+msgstr "向量场系列"
 
 #: tachartstrconsts.rsfitadjcoefficientofdetermination
 msgid "Adj. coefficient of determination"
@@ -234,7 +235,7 @@ msgstr ""
 
 #: tachartstrconsts.rsfullstarsymbol
 msgid "Star (full)"
-msgstr ""
+msgstr "星(完全的)"
 
 #: tachartstrconsts.rsfunctionseries
 msgid "Function series"
@@ -242,19 +243,19 @@ msgstr "函数系列"
 
 #: tachartstrconsts.rshexagonsymbol
 msgid "Hexagon"
-msgstr ""
+msgstr "六角形"
 
 #: tachartstrconsts.rshidden
 msgid "hidden"
-msgstr ""
+msgstr "隐藏"
 
 #: tachartstrconsts.rshighbracketsymbol
 msgid "High bracket"
-msgstr ""
+msgstr "高括号(High bracket)"
 
 #: tachartstrconsts.rshorbarsymbol
 msgid "Horizontal bar"
-msgstr ""
+msgstr "水平条(Horizontal bar)"
 
 #: tachartstrconsts.rsinvalidlogbase
 msgid "Logarithm base must be > 0 and <> 1."
@@ -262,7 +263,7 @@ msgstr "对数技术必须>0和<>1."
 
 #: tachartstrconsts.rsinverted
 msgid "inverted"
-msgstr ""
+msgstr "反向的(inverted)"
 
 #: tachartstrconsts.rsleastsquaresfitseries
 msgid "Least-squares fit series"
@@ -270,15 +271,15 @@ msgstr "最小二乘拟合系列"
 
 #: tachartstrconsts.rsleft
 msgid "Left"
-msgstr ""
+msgstr "左"
 
 #: tachartstrconsts.rsleftbracketsymbol
 msgid "Left bracket"
-msgstr ""
+msgstr "左括号"
 
 #: tachartstrconsts.rslefttrianglesymbol
 msgid "Left triangle"
-msgstr ""
+msgstr "左三角形"
 
 #: tachartstrconsts.rslinear
 msgid "Linear"
@@ -294,7 +295,7 @@ msgstr "对数的"
 
 #: tachartstrconsts.rslowbracketsymbol
 msgid "Low bracket"
-msgstr ""
+msgstr "低括号(Low bracket)"
 
 #: tachartstrconsts.rsmanhattanplotseries
 msgid "Manhattan plot series"
@@ -310,7 +311,7 @@ msgstr "上移"
 
 #: tachartstrconsts.rsnosymbol
 msgid "(none)"
-msgstr ""
+msgstr "(没有)"
 
 #: tachartstrconsts.rsopenhighlowcloseseries
 msgid "Open-high-low-close series"
@@ -338,71 +339,72 @@ msgstr "饼图系列"
 
 #: tachartstrconsts.rspointsymbol
 msgid "Point"
-msgstr ""
+msgstr "点"
 
 #: tachartstrconsts.rspolarseries
 msgid "Polar series"
 msgstr "极线系列(Polar)"
 
 #: tachartstrconsts.rspsclear
+msgctxt "tachartstrconsts.rspsclear"
 msgid "no line"
-msgstr ""
+msgstr "没有行"
 
 #: tachartstrconsts.rspsdash
 msgid "dashed line"
-msgstr ""
+msgstr "虚线"
 
 #: tachartstrconsts.rspsdashdot
 msgid "dash-dot"
-msgstr ""
+msgstr "点划线"
 
 #: tachartstrconsts.rspsdashdotdot
 msgid "dash-dot-dot"
-msgstr ""
+msgstr "双点划线"
 
 #: tachartstrconsts.rspsdot
 msgid "dotted line"
-msgstr ""
+msgstr "点线(dotted line)"
 
 #: tachartstrconsts.rspsinsideframe
 msgid "solid (inside frame)"
-msgstr ""
+msgstr "实心的(内部骨架)(inside frame)"
 
 #: tachartstrconsts.rspspattern
 msgid "patterned line"
-msgstr ""
+msgstr "图案线"
 
 #: tachartstrconsts.rspssolid
 msgid "solid line"
-msgstr ""
+msgstr "实心的线"
 
 #: tachartstrconsts.rsrectanglesymbol
 msgid "Rectangle"
-msgstr ""
+msgstr "矩形"
 
 #: tachartstrconsts.rsright
 msgid "Right"
-msgstr ""
+msgstr "右"
 
 #: tachartstrconsts.rsrightbracketsymbol
 msgid "Right bracket"
-msgstr ""
+msgstr "右括号"
 
 #: tachartstrconsts.rsrighttrianglesymbol
 msgid "Right triangle"
-msgstr ""
+msgstr "直角三角形"
 
 #: tachartstrconsts.rsstarsymbol
 msgid "Star (lines)"
-msgstr ""
+msgstr "星(线)"
 
 #: tachartstrconsts.rstop
 msgid "Top"
-msgstr ""
+msgstr "上部"
 
 #: tachartstrconsts.rstrianglesymbol
 msgid "Triangle"
-msgstr ""
+msgstr "三角形"
 
 #: tachartstrconsts.rsuserdefined
 msgctxt "tachartstrconsts.rsuserdefined"
@@ -420,7 +422,7 @@ msgstr "用户绘制系列"
 
 #: tachartstrconsts.rsvertbarsymbol
 msgid "Vertical bar"
-msgstr ""
+msgstr "垂直条(Vertical bar)"
 
 #: tachartstrconsts.rszoombyclick
 msgid "Zoom by click"

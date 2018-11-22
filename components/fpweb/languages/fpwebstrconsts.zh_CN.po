@@ -1,11 +1,11 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: X-1.6\n"
+"Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: http://www.microsystem.studio\n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
@@ -90,7 +90,7 @@ msgstr "最大长宽"
 
 #: fpwebstrconsts.shtmlinputformname
 msgid "Name"
-msgstr "名称"
+msgstr "称"
 
 #: fpwebstrconsts.shtmlinputformsize
 msgid "Size"
@@ -122,7 +122,7 @@ msgstr "新建HTML table ..."
 
 #: fpwebstrconsts.shtmltableformcellpadding
 msgid "Cell padding"
-msgstr "单元格填充"
+msgstr "单元格填充(Cell padding)"
 
 #: fpwebstrconsts.shtmltableformcellspacing
 msgid "Cell spacing"

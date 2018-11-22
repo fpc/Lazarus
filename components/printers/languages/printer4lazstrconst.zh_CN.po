@@ -1,11 +1,11 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: X\n"
+"Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: http://www.microsystem.studio\n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
@@ -42,7 +42,7 @@ msgstr "结束"
 
 #: printer4lazstrconst.p4lrsgeneral
 msgid "General"
-msgstr "普通"
+msgstr "一般"
 
 #: printer4lazstrconst.p4lrsjobstateaccepting
 msgid "(Accepting jobs)"
@@ -66,7 +66,7 @@ msgstr ""
 
 #: printer4lazstrconst.p4lrslandscape
 msgid "Landscape"
-msgstr "横向格式"
+msgstr "横排格式"
 
 #: printer4lazstrconst.p4lrsmargins
 msgid "Margins"
@@ -94,11 +94,11 @@ msgstr ""
 
 #: printer4lazstrconst.p4lrspagespersheet
 msgid "Pages per sheet"
-msgstr "每张打印页数"
+msgstr "每张页数"
 
 #: printer4lazstrconst.p4lrspapersize
 msgid "Paper size"
-msgstr "大小"
+msgstr "页面大小"
 
 #: printer4lazstrconst.p4lrspapersource
 msgid "Paper source"
@@ -110,7 +110,7 @@ msgstr "纸张类型"
 
 #: printer4lazstrconst.p4lrsportrait
 msgid "Portrait"
-msgstr "纵向格式"
+msgstr "竖排格式"
 
 #: printer4lazstrconst.p4lrsprinterproperties
 msgid "Printer properties"
@@ -126,7 +126,7 @@ msgstr "横向翻转"
 
 #: printer4lazstrconst.p4lrsreverseportrait
 msgid "Reverse portrait"
-msgstr "纵向翻转"
+msgstr "反向直印"
 
 #: printer4lazstrconst.p4lrsshortunitsinches
 msgid "(inches)"

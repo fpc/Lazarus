@@ -1,11 +1,11 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: X-1.6\n"
+"Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean  <robsean@126.com>\n"
-"Language-Team: http://www.microsystem.studio\n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
@@ -80,7 +80,7 @@ msgstr "你选择%s."
 #: stringsunit.rsyouselectedat
 msgctxt "stringsunit.rsyouselectedat"
 msgid "You selected %0:s at %1:s."
-msgstr "你在%1:s选择%0:s."
+msgstr "你选择%0:s在%1:s."
 
 #: tform2.caption
 msgid "Second Form"
@@ -89,7 +89,7 @@ msgstr "第二个窗体"
 #: tform2.checkgroup.caption
 msgctxt "TFORM2.CHECKGROUP.CAPTION"
 msgid "Several items"
-msgstr "数个项目"
+msgstr "一些项目"
 
 #: tform2.groupbox1.caption
 msgid "Please select"
@@ -108,7 +108,7 @@ msgstr "打开第二个窗体"
 #: tmainform.button2.caption
 msgctxt "TMAINFORM.BUTTON2.CAPTION"
 msgid "What did you select?"
-msgstr "你选择什么?"
+msgstr "你选择了什么?"
 
 #: tmainform.caption
 msgctxt "TMAINFORM.CAPTION"
