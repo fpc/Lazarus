@@ -701,6 +701,8 @@ type
     FOnShowOptions: TNotifyEvent;
     FOnUpdateRestricted: TNotifyEvent;
     FOnViewRestricted: TNotifyEvent;
+    FLastTreeSize: TRect;
+
     // These event handlers are assigned at run-time, no need for default published section.
     procedure ComponentTreeDblClick(Sender: TObject);
     procedure ComponentTreeGetNodeImageIndex(APersistent: TPersistent; var AIndex: integer);
@@ -5616,8 +5618,11 @@ end;
 procedure TObjectInspectorDlg.Resize;
 begin
   inherited Resize;
-  if Assigned(ComponentTree) then
+  // BUG: resize gets called, even if nothing changed
+  if Assigned(ComponentTree) and (FLastTreeSize <> ComponentTree.BoundsRect) then begin
     ComponentTree.Invalidate;  // Update Scrollbars.
+    FLastTreeSize := ComponentTree.BoundsRect;
+  end;
 end;
 
 procedure TObjectInspectorDlg.ComponentTreeModified(Sender: TObject);
