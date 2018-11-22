@@ -217,8 +217,7 @@ begin
   PackageDownloader.OnJSONProgress := nil;
   PackageDownloader.OnJSONDownloadCompleted := nil;
   Application.RemoveOnDeactivateHandler(@DoDeactivate);
-  VisualTree.Free;
-  VisualTree := nil;
+  FreeAndNil(VisualTree);
   Application.HintHidePause := FHintTimeOut;
 end;
 

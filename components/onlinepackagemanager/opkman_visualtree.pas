@@ -1120,6 +1120,9 @@ var
   MetaPkg: TMetaPackage;
   LazarusPkg: TLazarusPackage;
 begin
+  if VisualTree = nil then
+    exit;
+
   Node := FVST.GetFirst;
   while Assigned(Node) do
   begin
