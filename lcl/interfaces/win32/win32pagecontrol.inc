@@ -324,19 +324,22 @@ var
   LMessage: TLMessage;
 begin
   case Msg of
-    // prevent flickering
     WM_ERASEBKGND:
       begin
-        Control := GetWin32WindowInfo(Window)^.WinControl;
-        LMessage.msg := Msg;
-        LMessage.wParam := WParam;
-        LMessage.lParam := LParam;
-        LMessage.Result := 0;
-        Result := DeliverMessage(Control, LMessage);
+        if not ThemeServices.ThemesEnabled then
+        begin
+          // prevent flickering
+          Control := GetWin32WindowInfo(Window)^.WinControl;
+          LMessage.msg := Msg;
+          LMessage.wParam := WParam;
+          LMessage.lParam := LParam;
+          LMessage.Result := 0;
+          Result := DeliverMessage(Control, LMessage);
+          Exit;
+        end;
       end;
-    else
-      Result := WindowProc(Window, Msg, WParam, LParam);
   end;
+  Result := WindowProc(Window, Msg, WParam, LParam);
 end;
 
 class function TWin32WSCustomTabControl.CreateHandle(const AWinControl: TWinControl;
