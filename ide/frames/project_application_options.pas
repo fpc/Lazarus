@@ -25,6 +25,7 @@ type
 
   TProjectApplicationOptionsFrame = class(TAbstractIDEOptionsEditor)
     AppSettingsGroupBox: TGroupBox;
+    LongPathCheckBox: TCheckBox;
     DarwinDividerBevel: TDividerBevel;
     NameEdit: TEdit;
     DescriptionEdit: TEdit;
@@ -195,6 +196,7 @@ begin
   ExecutionLevelLabel.Enabled := aEnable;
   ExecutionLevelComboBox.Enabled := aEnable;
   UIAccessCheckBox.Enabled := aEnable;
+  LongPathCheckBox.Enabled := aEnable;
   NameEdit.Enabled := aEnable;
   DescriptionEdit.Enabled := aEnable;
 end;
@@ -263,6 +265,7 @@ begin
   for DpiLevel in TXPManifestDpiAware do
     DpiAwareComboBox.Items.Add(DpiLevelNames[DpiLevel] + ' (' + ManifestDpiAwareValues[DpiLevel] + ')');
   UIAccessCheckBox.Caption := dlgPOUIAccess;
+  LongPathCheckBox.Caption := dlgPOLongPathAware;
   NameLabel.Caption := lisName;
   DescriptionLabel.Caption := lisCodeHelpDescrTag;
 
@@ -308,6 +311,7 @@ begin
       DpiAwareComboBox.ItemIndex := Ord(DpiAware);
       ExecutionLevelComboBox.ItemIndex := Ord(ExecutionLevel);
       UIAccessCheckBox.Checked := UIAccess;
+      LongPathCheckBox.Checked := LongPathAware;
       NameEdit.Text := TextName;
       DescriptionEdit.Text := TextDesc;
     end;
@@ -347,6 +351,7 @@ begin
       DpiAware := TXPManifestDpiAware(DpiAwareComboBox.ItemIndex);
       ExecutionLevel := TXPManifestExecutionLevel(ExecutionLevelComboBox.ItemIndex);
       UIAccess := UIAccessCheckBox.Checked;
+      LongPathAware := LongPathCheckBox.Checked;
       TextName := NameEdit.Text;
       TextDesc := DescriptionEdit.Text;
     end;

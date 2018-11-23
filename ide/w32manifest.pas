@@ -68,12 +68,14 @@ type
     FDpiAware: TXPManifestDpiAware;
     FUIAccess: Boolean;
     FUseManifest: boolean;
+    FLongPathAware: Boolean;
     FTextName: string;
     FTextDesc: string;
     procedure SetDpiAware(AValue: TXPManifestDpiAware);
     procedure SetExecutionLevel(AValue: TXPManifestExecutionLevel);
     procedure SetUIAccess(AValue: Boolean);
     procedure SetUseManifest(const AValue: boolean);
+    procedure SetLongPathAware(AValue: Boolean);
     procedure SetTextName(const AValue: string);
     procedure SetTextDesc(const AValue: string);
   public
@@ -86,6 +88,7 @@ type
     property DpiAware: TXPManifestDpiAware read FDpiAware write SetDpiAware;
     property ExecutionLevel: TXPManifestExecutionLevel read FExecutionLevel write SetExecutionLevel;
     property UIAccess: Boolean read FUIAccess write SetUIAccess;
+    property LongPathAware: Boolean read FLongPathAware write SetLongPathAware;
     property TextName: string read FTextName write SetTextName;
     property TextDesc: string read FTextDesc write SetTextDesc;
   end;
@@ -153,6 +156,7 @@ const
     '  </asmv3:windowsSettings>'#$D#$A+
     '  <asmv3:windowsSettings xmlns="http://schemas.microsoft.com/SMI/2016/WindowsSettings">'#$D#$A+
     '   %s'#$D#$A+
+    '   <longPathAware>%s</longPathAware>'#$D#$A+
     '  </asmv3:windowsSettings>'#$D#$A+
     ' </asmv3:application>'#$D#$A+
     '</assembly>';
@@ -175,6 +179,13 @@ procedure TProjectXPManifest.SetUseManifest(const AValue: boolean);
 begin
   if FUseManifest = AValue then exit;
   FUseManifest := AValue;
+  Modified := True;
+end;
+
+procedure TProjectXPManifest.SetLongPathAware(AValue: Boolean);
+begin
+  if FLongPathAware = AValue then exit;
+  FLongPathAware := AValue;
   Modified := True;
 end;
 
@@ -221,6 +232,7 @@ begin
   DpiAware := xmdaFalse;
   ExecutionLevel := xmelAsInvoker;
   UIAccess := False;
+  LongPathAware := False;
   TextName := DefaultXPManifestTextName;
   TextDesc := DefaultXPManifestTextDesc;
 end;
@@ -246,7 +258,9 @@ begin
       ExecutionLevelToStr[ExecutionLevel],
       BoolToStr(UIAccess, 'true', 'false'),
       ManifestDpiAwareValues[DpiAware],
-      ManifestDpiAwarenessValues[DpiAware]]);
+      ManifestDpiAwarenessValues[DpiAware],
+      BoolToStr(LongPathAware, 'true', 'false')
+      ]);
     Res.RawData.Write(ManifestFileData[1], Length(ManifestFileData));
     AResources.AddSystemResource(Res);
   end;
@@ -259,6 +273,7 @@ begin
   TXMLConfig(AConfig).SetDeleteValue(Path+'General/XPManifest/DpiAware/Value', ManifestDpiAwareValues[DpiAware], ManifestDpiAwareValues[xmdaFalse]);
   TXMLConfig(AConfig).SetDeleteValue(Path+'General/XPManifest/ExecutionLevel/Value', ExecutionLevelToStr[ExecutionLevel], ExecutionLevelToStr[xmelAsInvoker]);
   TXMLConfig(AConfig).SetDeleteValue(Path+'General/XPManifest/UIAccess/Value', UIAccess, False);
+  TXMLConfig(AConfig).SetDeleteValue(Path+'General/XPManifest/LongPathAware/Value', LongPathAware, False);
   TXMLConfig(AConfig).SetDeleteValue(Path+'General/XPManifest/TextName/Value', TextName, DefaultXPManifestTextName);
   TXMLConfig(AConfig).SetDeleteValue(Path+'General/XPManifest/TextDesc/Value', TextDesc, DefaultXPManifestTextDesc);
 end;
@@ -287,6 +302,7 @@ begin
     ExecutionLevel := StrToXPManifestExecutionLevel(Cfg.GetValue(Path+'General/XPManifest/ExecutionLevel/Value', ''));
 
   UIAccess := Cfg.GetValue(Path+'General/XPManifest/UIAccess/Value', False);
+  LongPathAware := Cfg.GetValue(Path+'General/XPManifest/LongPathAware/Value', False);
   TextName := Cfg.GetValue(Path+'General/XPManifest/TextName/Value', TextName);
   TextDesc := Cfg.GetValue(Path+'General/XPManifest/TextDesc/Value', TextDesc);
 end;
