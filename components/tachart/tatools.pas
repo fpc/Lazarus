@@ -1220,7 +1220,7 @@ end;
 
 procedure TZoomDragTool.MouseDown(APoint: TPoint);
 begin
-  if not FChart.AllowZoom then exit;
+  if FChart.UsesBuiltinToolset and (not FChart.AllowZoom) then exit;
   Activate;
   with APoint do
     FSelectionRect := Rect(X, Y, X, Y);
@@ -1461,6 +1461,8 @@ end;
 
 procedure TPanDragTool.MouseDown(APoint: TPoint);
 begin
+  if FChart.UsesBuiltinToolset and (not FChart.AllowPanning) then
+    exit;
   FOrigin := APoint;
   FPrev := APoint;
   if MinDragRadius = 0 then begin
@@ -1473,6 +1475,9 @@ procedure TPanDragTool.MouseMove(APoint: TPoint);
 var
   d: TPoint;
 begin
+  if FChart.UsesBuiltinToolset and (not FChart.AllowPanning) then
+    exit;
+
   if not IsActive then begin
     if PointDist(FOrigin, APoint) < Sqr(MinDragRadius) then
       exit;

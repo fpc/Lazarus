@@ -185,6 +185,7 @@ type
   TChart = class(TCustomChart, ICoordTransformer)
   strict private // Property fields
     FAllowZoom: Boolean;
+    FAllowPanning: Boolean;
     FAntialiasingMode: TChartAntialiasingMode;
     FAxisList: TChartAxisList;
     FAxisVisible: Boolean;
@@ -357,6 +358,7 @@ type
     procedure SaveToFile(AClass: TRasterImageClass; AFileName: String);
     function SaveToImage(AClass: TRasterImageClass): TRasterImage;
     procedure StyleChanged(Sender: TObject); override;
+    function UsesBuiltinToolset: Boolean;
     procedure ZoomFull(AImmediateRecalc: Boolean = false); override;
     property Drawer: IChartDrawer read FConnectorData.FDrawer;
 
@@ -396,6 +398,7 @@ type
 
   published
     property AutoFocus: Boolean read FAutoFocus write FAutoFocus default false;
+    property AllowPanning: Boolean read FAllowPanning write FAllowPanning default true;
     property AllowZoom: Boolean read FAllowZoom write FAllowZoom default true;
     property AntialiasingMode: TChartAntialiasingMode
       read FAntialiasingMode write SetAntialiasingMode default amDontCare;
@@ -682,6 +685,7 @@ begin
   FBroadcaster := TBroadcaster.Create;
   FExtentBroadcaster := TBroadcaster.Create;
   FAllowZoom := true;
+  FAllowPanning := true;
   FAntialiasingMode := amDontCare;
   FAxisVisible := true;
   FConnectorData.FCanvas := Canvas;
@@ -1835,6 +1839,11 @@ procedure TChart.UnlockCliprect;
 begin
   dec(FClipRectLock);
   if FClipRectLock = 0 then Invalidate;
+end;
+
+function TChart.UsesBuiltinToolset: Boolean;
+begin
+  Result := (GetToolset = FBuiltinToolset);
 end;
 
 procedure TChart.VisitSources(
