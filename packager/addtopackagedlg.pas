@@ -40,8 +40,8 @@ uses
   NewItemIntf, PackageIntf, FormEditingIntf, IDEWindowIntf, ComponentReg,
   IDEDialogs,
   // IDE
-  LazarusIDEStrConsts, InputHistory, IDEDefs, EnvironmentOpts,
-  PackageSystem, PackageDefs, ProjPackChecks;
+  LazarusIDEStrConsts, InputHistory, EnvironmentOpts,
+  PackageSystem, PackageDefs;
   
 type
 
@@ -82,6 +82,7 @@ type
     InfoLabel: TLabel;
     Title: string;
     FileName: string;
+  public
     constructor Create(aBtn: TBitBtn; aInfoLabel: TLabel; aTitle: string);
     procedure LoadIcon(aLazPackage: TLazPackage; aFileName: string);
   end;
