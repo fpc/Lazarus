@@ -2808,7 +2808,7 @@ begin
     MsgType:=mluHint;
   end else if ReadString(p,'Note:') then begin
     MsgType:=mluNote;
-  end else if ReadString(p,'Warn:') then begin
+  end else if ReadString(p,'Warn:') or ReadString(p,'Warning: ') then begin
     MsgType:=mluWarning;
   end else if ReadString(p,'Error:') then begin
     MsgType:=mluError;
