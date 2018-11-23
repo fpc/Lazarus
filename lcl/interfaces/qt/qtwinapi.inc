@@ -5697,8 +5697,15 @@ begin
 
   W := TQtWidget(HWND);
   if ((Flags and SW_SCROLLCHILDREN) <> 0) then
-    W.scroll(dx, dy, nil)
-  else
+  begin
+    if Assigned(W.LCLObject) then {mantis #34589}
+      W.WidgetState := W.WidgetState + [qtwsForceSendMove];
+
+    W.scroll(dx, dy, nil);
+
+    if Assigned(W.LCLObject) then {mantis #34589}
+      W.WidgetState := W.WidgetState - [qtwsForceSendMove];
+  end else
   if (PrcScroll = nil) then
   begin
     R := W.getClientBounds;
