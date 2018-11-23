@@ -460,7 +460,7 @@ begin
       // don't indent the case label again
       if pt.HasParentNode(nCaseLabel, 6) then
         Dec(liIndentCount)
-      else if (pt.TokenType = ttElse) and pt.HasParentNode(nElseCase, 1) then
+      else if (pt.TokenType in [ttElse, ttOtherwise]) and pt.HasParentNode(nElseCase, 1) then
         Dec(liIndentCount);
 
       if not FormattingSettings.Indent.IndentCaseElse then

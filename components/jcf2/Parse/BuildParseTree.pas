@@ -3268,7 +3268,7 @@ end;
 
 procedure TBuildParseTree.RecogniseCaseStmnt;
 begin
-  // CaseStmt -> CASE Expression OF CaseSelector/';'... [ELSE Statement] [';'] END
+  // CaseStmt -> CASE Expression OF CaseSelector/';'... [ELSE / OTHERWISE Statement] [';'] END
   PushNode(nCaseStatement);
 
   Recognise(ttCase);
@@ -3279,13 +3279,13 @@ begin
 
   Recognise(ttOf);
 
-  while not (fcTokenList.FirstSolidTokenType in [ttElse, ttEnd]) do
+  while not (fcTokenList.FirstSolidTokenType in [ttElse, ttOtherwise, ttEnd]) do
     RecogniseCaseSelector;
 
-  if fcTokenList.FirstSolidTokenType = ttElse then
+  if fcTokenList.FirstSolidTokenType in [ttElse, ttOtherwise] then
   begin
     PushNode(nElseCase);
-    Recognise(ttElse);
+    Recognise(fcTokenList.FirstSolidTokenType);
     RecogniseStatementList([ttEnd]);
     PopNode;
   end;
