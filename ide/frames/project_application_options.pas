@@ -25,15 +25,16 @@ type
 
   TProjectApplicationOptionsFrame = class(TAbstractIDEOptionsEditor)
     AppSettingsGroupBox: TGroupBox;
+    DefaultIconButton: TBitBtn;
     LongPathCheckBox: TCheckBox;
     DarwinDividerBevel: TDividerBevel;
     NameEdit: TEdit;
     DescriptionEdit: TEdit;
     NameLabel: TLabel;
     DescriptionLabel: TLabel;
+    IconBtnsPanel: TPanel;
     UseLCLScalingCheckBox: TCheckBox;
     CreateAppBundleButton: TBitBtn;
-    DefaultIconButton: TButton;
     DpiAwareLabel: TLabel;
     DpiAwareComboBox: TComboBox;
     WindowsDividerBevel: TDividerBevel;
@@ -284,6 +285,7 @@ begin
   if LoadIconButton.Glyph.Empty then
     IDEImages.AssignImage(LoadIconButton, 'laz_open');
   SaveIconButton.LoadGlyphFromStock(idButtonSave);
+  IDEImages.AssignImage(DefaultIconButton, 'restore_default');
   if SaveIconButton.Glyph.Empty then
     IDEImages.AssignImage(SaveIconButton, 'laz_save');
   IDEImages.AssignImage(ClearIconButton, 'menu_clean');
