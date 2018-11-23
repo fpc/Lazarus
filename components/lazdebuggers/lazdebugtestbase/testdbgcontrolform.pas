@@ -124,7 +124,7 @@ begin
   Result := TTreeNode(id).StateIndex = ord(tsChecked);
   while Result and (TTreeNode(id).Parent <> nil) do begin
     id := TTreeNode(id).Parent;
-    Result := Result and TTreeNode(id).StateIndex = ord(tsChecked);
+    Result := Result and (TTreeNode(id).StateIndex = ord(tsChecked));
   end;
 end;
 
