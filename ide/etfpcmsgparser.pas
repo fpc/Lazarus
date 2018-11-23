@@ -1340,7 +1340,7 @@ begin
       CheckFinalNote;
     end;
   end
-  else if ReadString(p,'Warn: ') then
+  else if ReadString(p,'Warn: ') or ReadString(p,'Warning:') then
     MsgType:=mluWarning
   else if ReadString(p,'Note: ') then
     MsgType:=mluNote
