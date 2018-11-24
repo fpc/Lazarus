@@ -35,9 +35,23 @@ uses
 
 type
 
+  { TCocoaCheckStringList }
+
+  TCocoaCheckStringList = class(TCocoaStringList)
+  protected
+    procedure ExchangeItems(Index1, Index2: Integer); override;
+  public
+    ChkState : array of SInt8;
+    procedure InsertItem(Index: Integer; const S: string; O: TObject); override;
+    procedure Delete(Index: Integer); override;
+    procedure Clear; override;
+  end;
+
   { TLCLCheckboxListCallback }
 
   TLCLCheckboxListCallback = class(TLCLListBoxCallback, IListViewCallback)
+  protected
+    function AllocStrings(ATable: NSTableView): TCocoaStringList; override;
   public
     checklist: TCustomCheckListBox;
     constructor Create(AOwner: NSObject; ATarget: TWinControl; AHandleView: NSView); override;
@@ -78,7 +92,58 @@ begin
     cb := nil;
 end;
 
+{ TCocoaCheckStringList }
+
+procedure TCocoaCheckStringList.ExchangeItems(Index1, Index2: Integer);
+var
+  t : Integer;
+begin
+  inherited ExchangeItems(Index1, Index2);
+  t := ChkState[Index1];
+  ChkState[Index1] := ChkState[Index2];
+  ChkState[Index2] := t;
+end;
+
+procedure TCocoaCheckStringList.InsertItem(Index: Integer; const S: string;
+  O: TObject);
+var
+  cnt : integer;
+  sz : integer;
+begin
+  cnt := Count;
+  inherited InsertItem(Index, S, O);
+
+  if length(ChkState)<Capacity then
+    SetLength(ChkState, Capacity);
+
+  sz := (cnt - Index) * sizeof(SInt8);
+  if sz>0 then System.Move(ChkState[Index], ChkState[Index+1], sz);
+
+  ChkState[Index] := 0;
+end;
+
+procedure TCocoaCheckStringList.Delete(Index: Integer);
+var
+  sz  : Integer;
+begin
+  inherited Delete(Index);
+  sz := (Count - Index) * sizeof(SInt8);
+  if (sz>0) and (Index < Count) then
+    System.Move(ChkState[Index+1], ChkState[Index], sz);
+end;
+
+procedure TCocoaCheckStringList.Clear;
+begin
+  inherited Clear;
+  SetLength(ChkState, 0);
+end;
+
 { TLCLCheckboxListCallback }
+
+function TLCLCheckboxListCallback.AllocStrings(ATable: NSTableView): TCocoaStringList;
+begin
+  Result:=TCocoaCheckStringList.Create(ATable);
+end;
 
 constructor TLCLCheckboxListCallback.Create(AOwner: NSObject; ATarget: TWinControl; AHandleView: NSView);
 begin
@@ -103,23 +168,31 @@ begin
 end;
 
 function TLCLCheckboxListCallback.GetCheckState(Index: Integer; var AState: Integer): Boolean;
+var
+  chkstr : TCocoaCheckStringList;
 begin
   Result := Assigned(strings) and (Index>=0) and (Index<strings.Count);
   if Result then
-    AState := Integer(PtrInt(strings.Objects[Index]))
+  begin
+    chkstr := TCocoaCheckStringList(strings);
+    AState := chkstr.ChkState[Index];
+  end
   else
     ASTate := 0;
 end;
 
 function TLCLCheckboxListCallback.SetCheckState(Index: Integer; AState: Integer;
   InvalidateCocoa: Boolean = true): Boolean;
+var
+  chkstr : TCocoaCheckStringList;
 begin
   Result := Assigned(Strings) and (Index>=0) and (Index<strings.Count);
   if not Result then Exit;
-  Result := strings.Objects[Index] <> TObject(PtrInt(AState));
+  chkstr := TCocoaCheckStringList(strings);
+  Result := chkstr.ChkState[Index] <> AState;
   if Result then
   begin
-    strings.Objects[Index] := TObject(PtrInt(AState));
+    chkstr.ChkState[Index] := AState;
     if InvalidateCocoa and Assigned(listview) then
       listview.reloadDataForRow_column(Index, 0);
   end;

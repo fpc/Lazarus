@@ -220,6 +220,8 @@ type
   { TLCLListBoxCallback }
 
   TLCLListBoxCallback = class(TLCLCommonCallback, IListViewCallBack)
+  protected
+    function AllocStrings(ATable: NSTableView): TCocoaStringList; virtual;
   public
     listview : TCocoaTableListView;
     strings  : TCocoaStringList;
@@ -516,13 +518,19 @@ end;
 
 { TLCLListBoxCallback }
 
+function TLCLListBoxCallback.AllocStrings(ATable: NSTableView
+  ): TCocoaStringList;
+begin
+  Result := TCocoaStringList.Create(ATable);
+end;
+
 constructor TLCLListBoxCallback.CreateWithView(AOwner: TCocoaTableListView;
   ATarget: TWinControl);
 begin
   Create(AOwner, ATarget);
 
-  listview:=AOwner;
-  strings := TCocoaStringList.Create(AOwner);
+  listview := AOwner;
+  strings := AllocStrings(AOwner);
 end;
 
 destructor TLCLListBoxCallback.Destroy;
