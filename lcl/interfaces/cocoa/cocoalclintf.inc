@@ -61,6 +61,13 @@ begin
     Result := 0;
   end;
 end;
+
+function TCocoaWidgetSet.FontCanUTF8(Font: HFont): boolean;
+begin
+  // no so deprecated, after all. SynEdit is still using it and caused the issue #34594
+  Result:=true;
+end;
+
 (*
 {------------------------------------------------------------------------------
   Method:  DrawGrid
