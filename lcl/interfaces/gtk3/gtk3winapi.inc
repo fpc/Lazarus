@@ -2629,9 +2629,6 @@ end;
 
 function TGtk3WidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer;
   var Size: TSize): Boolean;
-var
-  ACharWidth: gint;
-  ADigitWidth: gint;
 begin
   Result := False;
   if not IsValidDC(DC) then
@@ -2642,17 +2639,7 @@ begin
     Exit;
   end;
   TGtk3DeviceContext(DC).CurrentFont.Layout^.set_text(Str, Count);
-  //this is not accurate when comparing to gtk2 or qt. Text width is smaller so we add avg size of digit char
-  //until this is fixed somehow.
   TGtk3DeviceContext(DC).CurrentFont.Layout^.get_pixel_size(@Size.Cx, @Size.CY);
-  // Ascent := TGtk3DeviceContext(DC).CurrentFont.Layout^.get_context^.get_metrics(TGtk3DeviceContext(DC).CurrentFont.Layout^.get_font_description, TGtk3DeviceContext(DC).CurrentFont.Layout^.get_context^.get_language)^.get_ascent;
-  // Descent := TGtk3DeviceContext(DC).CurrentFont.Layout^.get_context^.get_metrics(TGtk3DeviceContext(DC).CurrentFont.Layout^.get_font_description, TGtk3DeviceContext(DC).CurrentFont.Layout^.get_context^.get_language)^.get_descent;
-  ACharWidth := TGtk3DeviceContext(DC).CurrentFont.Layout^.get_context^.get_metrics(TGtk3DeviceContext(DC).CurrentFont.Layout^.get_font_description, TGtk3DeviceContext(DC).CurrentFont.Layout^.get_context^.get_language)^.get_approximate_char_width;
-  ADigitWidth := TGtk3DeviceContext(DC).CurrentFont.Layout^.get_context^.get_metrics(TGtk3DeviceContext(DC).CurrentFont.Layout^.get_font_description, TGtk3DeviceContext(DC).CurrentFont.Layout^.get_context^.get_language)^.get_approximate_digit_width;
-  // get_layout^.get_pixel_size(@Ascent, @Descent);
-  // TGtk3DeviceContext(DC).CurrentFont.Layout^.get_context^.get_metrics(TGtk3DeviceContext(DC).CurrentFont.Layout^.get_font_description, TGtk3DeviceContext(DC).CurrentFont.Layout^.get_context^.get_language)^.
-  inc(Size.cx, (ADigitWidth div PANGO_SCALE) + 1);
-  // dec(Size.cy, Descent div PANGO_SCALE);
   // DebugLn('TGtk3WidgetSet.GetTextExtentPoint pixel size is ',dbgs(Size),
   //  ' avgcharwidth ',dbgs(ACharWidth div PANGO_SCALE),' avgdigitwidth ',dbgs(ADigitWidth div PANGO_SCALE));
   Result := True;
