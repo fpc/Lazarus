@@ -5237,10 +5237,11 @@ var
         Canvas.Font.Color := FHotTrackColor;
     end;
 
+    NodeRect.Offset(ScaleX(2, 96), 0);
     if (tvoThemedDraw in Options) then
-      ThemeServices.DrawText(Canvas, Details, AText, NodeRect, DT_CENTER or DT_VCENTER or DT_SINGLELINE or DT_NOPREFIX, 0)
+      ThemeServices.DrawText(Canvas, Details, AText, NodeRect, DT_LEFT or DT_VCENTER or DT_SINGLELINE or DT_NOPREFIX, 0)
     else
-      DrawText(Canvas.Handle, PChar(AText), -1, NodeRect, DT_CENTER or DT_VCENTER or DT_SINGLELINE or DT_NOPREFIX);
+      DrawText(Canvas.Handle, PChar(AText), -1, NodeRect, DT_LEFT or DT_VCENTER or DT_SINGLELINE or DT_NOPREFIX);
 
     if NeedUnderline then
     begin
@@ -5363,7 +5364,7 @@ begin
     begin
       CurTextRect := NodeRect;
       CurTextRect.Left := x;
-      CurTextRect.Right := x + TextWidth(Node.Text) + RealIndent div 2;
+      CurTextRect.Right := x + TextWidth(Node.Text) + (FDefItemSpace * 2);
       DrawNodeText(NodeSelected, CurTextRect, Node.Text);
     end;
 
