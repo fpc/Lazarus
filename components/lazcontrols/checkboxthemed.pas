@@ -373,8 +373,8 @@ begin
       aTextSize.cx := Right;
       aTextSize.cy := Bottom;
     end;
-    aCaptionPoint.Y := (ARect.Bottom + ARect.Top - aTextSize.cy) div 2;
-    aCheckBoxPoint.Y := (ARect.Bottom + ARect.Top - CheckBoxSize.cy) div 2;
+    aCaptionPoint.Y := ARect.Top + (ARect.Bottom - ARect.Top - aTextSize.cy) div 2;
+    aCheckBoxPoint.Y := ARect.Top + (ARect.Bottom - ARect.Top - CheckBoxSize.cy) div 2;
     if ARightToLeft xor (AAlignment = taLeftJustify) then begin  { Caption is on the Left }
       aCheckBoxPoint.X := ARect.Right - CheckBoxSize.cx;
       aCaptionPoint.X := ARect.Left;
