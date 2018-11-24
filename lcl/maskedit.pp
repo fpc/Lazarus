@@ -74,6 +74,10 @@ const
   cMask_NumberPlusMin = '#'; // only a number or + or -, but not necessary
   cMask_HourSeparator = ':'; // automatically put the hour separator char
   cMask_DateSeparator = '/'; // automatically but the date separator char
+  cMask_Hex           = 'h'; // a hexadecimal character (['0'..'9','a'..'f']) but not necessary  (Lazarus extension, not supported by Delphi)
+  cMask_HexFixed      = 'H'; // a hexadecimal character                                          (Lazarus extension, not supported by Delphi)
+  cMask_Binary        = 'b'; // a binary character (['0'..'1']) but not necessary (Lazarus extension, not supported by Delphi)
+  cMask_BinaryFixed   = 'B'; // a binary character                                (Lazarus extension, not supported by Delphi)
 { cMask_SpaceOnly     = '_'; // automatically put a space          //not Delphi compatible        }
   cMask_NoLeadingBlanks = '!'; //Trim leading blanks, otherwise trim trailing blanks from the data
 
@@ -109,7 +113,15 @@ type
                 {Char_Space,                 //not Delphi compatible, see notes above  }
                  Char_HourSeparator,
                  Char_DateSeparator,
-                 Char_Stop);
+                 Char_Hex,                   //Lazarus extension, not supported by Delphi
+                 Char_HexFixed,              //Lazarus extension, not supported by Delphi
+                 Char_HexUpCase,             //Lazarus extension, not supported by Delphi
+                 Char_HexDownCase,           //Lazarus extension, not supported by Delphi
+                 Char_HexFixedUpCase,        //Lazarus extension, not supported by Delphi
+                 Char_HexFixedDownCase,      //Lazarus extension, not supported by Delphi
+                 Char_Binary,                //Lazarus extension, not supported by Delphi
+                 Char_BinaryFixed,           //Lazarus extension, not supported by Delphi
+                 Char_Stop); {currently we have 31 enums, I think we cannot add more  BB}
 
 
   TInternalMask = array[1..255] of TUtf8Char;
@@ -678,6 +690,32 @@ begin
              cMask_DateSeparator: AddToMask(MaskToChar(Char_DateSeparator));
 
             {cMask_SpaceOnly: AddToMask(MaskToChar(Char_Space)); //not Delphi compatible, see remarks above}
+              cMask_Hex: begin
+                 if InUp
+                 then
+                   AddToMask(MaskToChar(Char_HexUpCase))
+                 else
+                   if InDown
+                   then
+                     AddToMask(MaskToChar(Char_HexDownCase))
+                   else
+                     AddToMask(MaskToChar(Char_Hex))
+              end;
+
+              cMask_HexFixed: begin
+                 if InUp
+                 then
+                   AddToMask(MaskToChar(Char_HexFixedUpCase))
+                 else
+                   if InDown
+                   then
+                     AddToMask(MaskToChar(Char_HexFixedDownCase))
+                   else
+                     AddToMask(MaskToChar(Char_HexFixed))
+              end;
+
+              cMask_Binary: AddToMask(MaskToChar(Char_Binary));
+              cMask_BinaryFixed: AddToMask(MaskToChar(Char_BinaryFixed));
 
              cMask_NoLeadingBlanks:
              begin
@@ -976,17 +1014,23 @@ begin
     Char_AlphaNumDownCase    : OK := (Length(Ch) = 1) and (Ch[1] in ['a'..'z', '0'..'9',#32]);
     Char_AlphaNumFixedUpCase : OK := (Length(Ch) = 1) and (Ch[1] in ['A'..'Z', '0'..'9']);
     Char_AlphaNumFixedDowncase:OK := (Length(Ch) = 1) and (Ch[1] in ['a'..'z', '0'..'9']);
-    //ToDo: make this UTF8 compatible, for now
-    //limit this to lower ASCII set
-    Char_All                 : OK := True; //Ch in [#32..#126]; //True;
-    Char_AllFixed            : OK := True; //Ch in [#32..#126]; //True;
-    Char_AllUpCase           : OK := True; //Ch in [#32..#126]; // (Utf8UpperCase(Ch) = Ch);             ???????
-    Char_AllDownCase         : OK := True; //Ch in [#32..#126]; // (Utf8LowerCase(Ch) = Ch);             ???????
-    Char_AllFixedUpCase      : OK := True; //Ch in [#32..#126]; // (Utf8UpperCase(Ch) = Ch);             ???????
-    Char_AllFixedDownCase    : OK := True; //Ch in [#32..#126]; // (Utf8LowerCase(Ch) = Ch);             ???????
+    Char_All                 : OK := True;
+    Char_AllFixed            : OK := True;
+    Char_AllUpCase           : OK := True;
+    Char_AllDownCase         : OK := True;
+    Char_AllFixedUpCase      : OK := True;
+    Char_AllFixedDownCase    : OK := True;
    {Char_Space               : OK := (Length(Ch) = 1) and (Ch in [' ', '_']);  //not Delphi compatible, see notes above}
     Char_HourSeparator       : OK := (Ch = DefaultFormatSettings.TimeSeparator);
     Char_DateSeparator       : OK := (Ch = DefaultFormatSettings.DateSeparator);
+    Char_Hex                 : OK := (Length(Ch) = 1) and (Ch[1] In ['0'..'9','a'..'f','A'..'F',#32]);
+    Char_HexFixed            : OK := (Length(Ch) = 1) and (Ch[1] In ['0'..'9','a'..'f','A'..'F']);
+    Char_HexUpCase           : OK := (Length(Ch) = 1) and (Ch[1] In ['0'..'9','A'..'F',#32]);
+    Char_HexDownCase         : OK := (Length(Ch) = 1) and (Ch[1] In ['0'..'9','a'..'f',#32]);
+    Char_HexFixedUpCase      : OK := (Length(Ch) = 1) and (Ch[1] In ['0'..'9','A'..'F']);
+    Char_HexFixedDownCase    : OK := (Length(Ch) = 1) and (Ch[1] In ['0'..'9','a'..'f']);
+    Char_Binary              : OK := (Length(Ch) = 1) and (Ch[1] In ['0'..'1',#32]);
+    Char_BinaryFixed         : OK := (Length(Ch) = 1) and (Ch[1] In ['0'..'1']);
     else//it's a literal
     begin
       OK := (Ch = FMask[Position]);
@@ -1172,7 +1216,15 @@ begin
     Char_AllUpCase,
     Char_AllDownCase,
     Char_AllFixedUpCase,
-    Char_AllFixedDownCase     : Result := FSpaceChar;
+    Char_AllFixedDownCase,
+    Char_Hex,
+    Char_HexFixed,
+    Char_HexUpCase,
+    Char_HexDownCase,
+    Char_HexFixedUpCase,
+    Char_HexFixedDownCase,
+    Char_Binary,
+    Char_BinaryFixed          : Result := FSpaceChar;
     {Char_Space               : Result := #32; //FSpaceChar?; //not Delphi compatible, see notes above}
      Char_HourSeparator       : Result := DefaultFormatSettings.TimeSeparator;
      Char_DateSeparator       : Result := DefaultFormatSettings.DateSeparator;
@@ -1223,7 +1275,10 @@ Begin
      (Current = Char_AllUpCase        ) Or
      (Current = Char_AllFixedUpCase   ) or
      (Current = Char_AlphaNumUpcase   ) or
-     (Current = Char_AlphaNumFixedUpCase)
+     (Current = Char_AlphaNumFixedUpCase) or
+     (Current = Char_HexUpCase          ) or
+     (Current = Char_HexFixedUpCase     )
+
      then
        Ch := Utf8UpperCase(Ch);
 
@@ -1233,7 +1288,9 @@ Begin
      (Current = Char_AllDownCase        ) Or
      (Current = Char_AllFixedDownCase   ) or
      (Current = Char_AlphaNumDownCase   ) or
-     (Current = Char_AlphaNumFixedDownCase )
+     (Current = Char_AlphaNumFixedDownCase ) or
+     (Current = Char_HexDownCase           ) or
+     (Current = Char_HexFixedDownCase      )
      then
        Ch := Utf8LowerCase(Ch);
 
@@ -1263,13 +1320,22 @@ Begin
       {Char_Space               : Result := Ch in [' ', '_'];  //not Delphi compatible, see notes above}
        Char_HourSeparator       : Result := (Ch = DefaultFormatSettings.TimeSeparator);
        Char_DateSeparator       : Result := (Ch = DefaultFormatSettings.DateSeparator);
+       Char_Hex                 : Result := (Length(Ch) = 1) and (Ch[1] In ['0'..'9','a'..'f','A'..'F',#32]);
+       Char_HexFixed            : Result := (Length(Ch) = 1) and (Ch[1] In ['0'..'9','a'..'f','A'..'F']);
+       Char_HexUpCase           : Result := (Length(Ch) = 1) and (Ch[1] In ['0'..'9','A'..'F',#32]);
+       Char_HexDownCase         : Result := (Length(Ch) = 1) and (Ch[1] In ['0'..'9','a'..'f',#32]);
+       Char_HexFixedUpCase      : Result := (Length(Ch) = 1) and (Ch[1] In ['0'..'9','A'..'F']);
+       Char_HexFixedDownCase    : Result := (Length(Ch) = 1) and (Ch[1] In ['0'..'9','a'..'f']);
+       Char_Binary              : Result := (Length(Ch) = 1) and (Ch[1] In ['0'..'1',#32]);
+       Char_BinaryFixed         : Result := (Length(Ch) = 1) and (Ch[1] In ['0'..'1']);
+
   end;
-  //while typing a space iis not allowed in these cases, whilst pasting Delphi allows it nevertheless
+  //while typing a space is not allowed in these cases, whilst pasting Delphi allows it nevertheless
   if not Result and IsPasting and (Ch = #32) and
     (Current in [Char_Number, Char_Letter, Char_LetterUpCase, Char_LetterDownCase,
-                 Char_AlphaNum, Char_AlphaNumUpCase, Char_AlphaNumDownCase]) then
+                 Char_AlphaNum, Char_AlphaNumUpCase, Char_AlphaNumDownCase,
+                 Char_Hex, Char_HexUpCase, Char_HexDownCase, Char_Binary]) then
     Result := True;
-
 end;
 
 
