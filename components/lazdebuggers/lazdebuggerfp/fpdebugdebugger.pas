@@ -21,7 +21,7 @@ uses
   DbgIntfDebuggerBase,
   FpdMemoryTools,
   FpPascalParser,
-  FPDbgController, FpDbgDwarfDataClasses;
+  FPDbgController, FpDbgDwarfDataClasses, FpDbgDwarfFreePascal;
 
 type
 
