@@ -2820,10 +2820,6 @@ end;
   To get a correct behavior we need to sum the text's height to the Y coordinate.
  ------------------------------------------------------------------------------}
 procedure TQtDeviceContext.drawText(x: Integer; y: Integer; s: PWideString);
-{$IFDEF DARWIN}
-var
-  OldBkMode: Integer;
-{$ENDIF}
 begin
   {$ifdef VerboseQt}
   Write('TQtDeviceContext.drawText TargetX: ', X, ' TargetY: ', Y);
@@ -2844,17 +2840,11 @@ begin
 
   // The ascent is only applied here, because it also needs
   // to be rotated
-  {$IFDEF DARWIN}
-  OldBkMode := SetBkMode(TRANSPARENT);
-  {$ENDIF}
   if Font.Angle <> 0 then
     QPainter_drawText(Widget, 0, Metrics.ascent, s)
   else
     QPainter_drawText(Widget, x, y, s);
-  {$IFDEF DARWIN}
-  SetBkMode(OldBkMode);
-  {$ENDIF}
-  
+
   RestorePenColor;
   
   // Restore previous angle
@@ -2877,10 +2867,6 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 procedure TQtDeviceContext.drawText(x, y, w, h, flags: Integer; s: PWideString);
-{$IFDEF DARWIN}
-var
-  OldBkMode: Integer;
-{$ENDIF}
 begin
   {$ifdef VerboseQt}
   Write('TQtDeviceContext.drawText x: ', X, ' Y: ', Y,' w: ',w,' h: ',h);
@@ -2895,16 +2881,10 @@ begin
   end;
 
   RestoreTextColor;
-  {$IFDEF DARWIN}
-  OldBkMode := SetBkMode(TRANSPARENT);
-  {$ENDIF}
   if Font.Angle <> 0 then
     QPainter_DrawText(Widget, 0, 0, w, h, Flags, s)
   else
     QPainter_DrawText(Widget, x, y, w, h, Flags, s);
-  {$IFDEF DARWIN}
-  SetBkMode(OldBkMode);
-  {$ENDIF}
   RestorePenColor;
 
   // Restore previous angle
