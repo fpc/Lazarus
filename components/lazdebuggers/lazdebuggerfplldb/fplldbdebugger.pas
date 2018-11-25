@@ -28,7 +28,7 @@ uses
   Classes, sysutils, math, FpdMemoryTools, FpDbgInfo, LldbDebugger,
   LldbInstructions, LldbHelper, DbgIntfBaseTypes, DbgIntfDebuggerBase, LCLProc,
   Forms, FpDbgLoader, FpDbgDwarf, LazLoggerBase, LazClasses, FpPascalParser,
-  FpPascalBuilder, FpErrorMessages, FpDbgDwarfDataClasses;
+  FpPascalBuilder, FpErrorMessages, FpDbgDwarfDataClasses, FpDbgDwarfFreePascal;
 
 type
 
