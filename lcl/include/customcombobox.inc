@@ -545,6 +545,7 @@ procedure TCustomComboBox.KeyUp(var Key: Word; Shift: TShiftState);
 var
   iSelStart: Integer; // char position
   sCompleteText, sPrefixText, sResultText: string;
+  Utf8TextLen: Integer;
 begin
   if DroppingDown then
   begin
@@ -576,23 +577,25 @@ begin
       iSelStart := SelStart;//Capture original cursor position
       //DebugLn(['TCustomComboBox.UTF8KeyPress SelStart=',SelStart,' Text=',Text]);
       //End of line completion
-      if ((iSelStart < UTF8Length(Text)) and
-         (cbactEndOfLineComplete in FAutoCompleteText)) then
+      Utf8TextLen := UTF8Length(Text);
+      if (iSelStart < Utf8TextLen) and (cbactEndOfLineComplete in FAutoCompleteText) then
         Exit;
       sPrefixText := UTF8Copy(Text, 1, iSelStart);
       sCompleteText := GetCompleteText(Text, iSelStart,
-                                       (cbactSearchCaseSensitive in FAutoCompleteText),
-                                       (cbactSearchAscending in FAutoCompleteText), Items);
+                                       cbactSearchCaseSensitive in FAutoCompleteText,
+                                       cbactSearchAscending in FAutoCompleteText, Items);
       //DebugLn(['TCustomComboBox.UTF8KeyPress sCompleteText=',sCompleteText,' Text=',Text]);
-      if (sCompleteText <> Text) then
+      if (sCompleteText <> Text) or (Utf8TextLen = 1) then
       begin
         sResultText := sCompleteText;
-        if ((cbactEndOfLineComplete in FAutoCompleteText) and
-            (cbactRetainPrefixCase in FAutoCompleteText)) then
-        begin//Retain Prefix Character cases
+        if (cbactEndOfLineComplete in FAutoCompleteText)
+        and (cbactRetainPrefixCase in FAutoCompleteText) then
+        begin //Retain Prefix Character cases
           UTF8Delete(sResultText, 1, iSelStart);
           UTF8Insert(sPrefixText, sResultText, 1);
         end;
+        if Utf8TextLen = 1 then
+          Text := '';
         Text := sResultText;
         SelStart := iSelStart;
         SelLength := UTF8Length(Text);
@@ -601,7 +604,6 @@ begin
     end;
   end;
 end;
-
 
 procedure TCustomComboBox.UTF8KeyPress(var UTF8Key: TUTF8Char);
 begin
