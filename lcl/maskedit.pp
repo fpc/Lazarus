@@ -1320,13 +1320,13 @@ Begin
       {Char_Space               : Result := Ch in [' ', '_'];  //not Delphi compatible, see notes above}
        Char_HourSeparator       : Result := (Ch = DefaultFormatSettings.TimeSeparator);
        Char_DateSeparator       : Result := (Ch = DefaultFormatSettings.DateSeparator);
-       Char_Hex                 : Result := (Length(Ch) = 1) and (Ch[1] In ['0'..'9','a'..'f','A'..'F',#32]);
+       Char_Hex                 : Result := (Length(Ch) = 1) and (Ch[1] In ['0'..'9','a'..'f','A'..'F']);
        Char_HexFixed            : Result := (Length(Ch) = 1) and (Ch[1] In ['0'..'9','a'..'f','A'..'F']);
-       Char_HexUpCase           : Result := (Length(Ch) = 1) and (Ch[1] In ['0'..'9','A'..'F',#32]);
-       Char_HexDownCase         : Result := (Length(Ch) = 1) and (Ch[1] In ['0'..'9','a'..'f',#32]);
+       Char_HexUpCase           : Result := (Length(Ch) = 1) and (Ch[1] In ['0'..'9','A'..'F']);
+       Char_HexDownCase         : Result := (Length(Ch) = 1) and (Ch[1] In ['0'..'9','a'..'f']);
        Char_HexFixedUpCase      : Result := (Length(Ch) = 1) and (Ch[1] In ['0'..'9','A'..'F']);
        Char_HexFixedDownCase    : Result := (Length(Ch) = 1) and (Ch[1] In ['0'..'9','a'..'f']);
-       Char_Binary              : Result := (Length(Ch) = 1) and (Ch[1] In ['0'..'1',#32]);
+       Char_Binary              : Result := (Length(Ch) = 1) and (Ch[1] In ['0'..'1']);
        Char_BinaryFixed         : Result := (Length(Ch) = 1) and (Ch[1] In ['0'..'1']);
 
   end;
