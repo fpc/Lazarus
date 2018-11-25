@@ -7059,6 +7059,9 @@ begin
       QMdiSubWindowH(Widget))
   else
     inherited Activate;
+  {$IFDEF DARWIN}
+  QWidget_raise(Widget);
+  {$ENDIF}
   {$IFDEF HASX11}
   if (QtWidgetSet.WindowManagerName = 'xfwm4') and not IsMDIChild and
     QWidget_isModal(Widget) then
