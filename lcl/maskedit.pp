@@ -78,7 +78,6 @@ const
   cMask_HexFixed      = 'H'; // a hexadecimal character                                          (Lazarus extension, not supported by Delphi)
   cMask_Binary        = 'b'; // a binary character (['0'..'1']) but not necessary (Lazarus extension, not supported by Delphi)
   cMask_BinaryFixed   = 'B'; // a binary character                                (Lazarus extension, not supported by Delphi)
-{ cMask_SpaceOnly     = '_'; // automatically put a space          //not Delphi compatible        }
   cMask_NoLeadingBlanks = '!'; //Trim leading blanks, otherwise trim trailing blanks from the data
 
   {Delphi compatibility: user can change these at runtime}
@@ -367,7 +366,7 @@ const
      cMask_Letter, cMask_LetterFixed, cMask_Letter, cMask_Letter, cMask_LetterFixed, cMask_LetterFixed,
      cMask_AlphaNum, cMask_AlphaNumFixed, cMask_AlphaNum, cMask_AlphaNum, cMask_AlphaNumFixed, cMask_AlphaNumFixed,
      cMask_AllChars, cMask_AllCharsFixed, cMask_AllChars, cMask_AllChars, cMask_AllCharsFixed, cMask_AllCharsFixed,
-     (*cMask_SpaceOnly,*) cMask_HourSeparator, cMask_DateSeparator, #0);
+     cMask_HourSeparator, cMask_DateSeparator, #0);
 {$endif}
 
 const
@@ -689,7 +688,6 @@ begin
 
              cMask_DateSeparator: AddToMask(MaskToChar(Char_DateSeparator));
 
-            {cMask_SpaceOnly: AddToMask(MaskToChar(Char_Space)); //not Delphi compatible, see remarks above}
               cMask_Hex: begin
                  if InUp
                  then
