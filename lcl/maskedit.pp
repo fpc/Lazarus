@@ -1296,37 +1296,36 @@ Begin
 
   // Check the input (check the valid range)
   case Current Of
-       Char_Number              : Result := (Length(Ch) = 1) and (Ch[1] In ['0'..'9']);
+       Char_Number,
        Char_NumberFixed         : Result := (Length(Ch) = 1) and (Ch[1] In ['0'..'9']);
        Char_NumberPlusMin       : Result := (Length(Ch) = 1) and (Ch[1] in ['0'..'9','+','-',#32]); //yes Delphi allows a space here
-       Char_Letter              : Result := (Length(Ch) = 1) and (Ch[1] In ['a'..'z', 'A'..'Z']);
+       Char_Letter,
        Char_LetterFixed         : Result := (Length(Ch) = 1) and (Ch[1] In ['a'..'z', 'A'..'Z']);
-       Char_LetterUpCase        : Result := (Length(Ch) = 1) and (Ch[1] In ['A'..'Z']);
-       Char_LetterDownCase      : Result := (Length(Ch) = 1) and (Ch[1] In ['a'..'z']);
+       Char_LetterUpCase,
        Char_LetterFixedUpCase   : Result := (Length(Ch) = 1) and (Ch[1] In ['A'..'Z']);
+       Char_LetterDownCase,
        Char_LetterFixedDownCase : Result := (Length(Ch) = 1) and (Ch[1] In ['a'..'z']);
-       Char_AlphaNum            : Result := (Length(Ch) = 1) and (Ch[1] in ['a'..'z', 'A'..'Z', '0'..'9']);
+       Char_AlphaNum,
        Char_AlphaNumFixed       : Result := (Length(Ch) = 1) and (Ch[1] in ['a'..'z', 'A'..'Z', '0'..'9']);
-       Char_AlphaNumUpCase      : Result := (Length(Ch) = 1) and (Ch[1] in ['A'..'Z', '0'..'9']);
-       Char_AlphaNumDownCase    : Result := (Length(Ch) = 1) and (Ch[1] in ['a'..'z', '0'..'9']);
+       Char_AlphaNumUpCase,
        Char_AlphaNumFixedUpCase : Result := (Length(Ch) = 1) and (Ch[1] in ['A'..'Z', '0'..'9']);
+       Char_AlphaNumDownCase,
        Char_AlphaNumFixedDowncase:Result := (Length(Ch) = 1) and (Ch[1] in ['a'..'z', '0'..'9']);
-       Char_All                 : Result := True;
-       Char_AllFixed            : Result := True;
-       Char_AllUpCase           : Result := True;
-       Char_AllDownCase         : Result := True;
-       Char_AllFixedUpCase      : Result := True;
+       Char_All,
+       Char_AllFixed,
+       Char_AllUpCase,
+       Char_AllDownCase,
+       Char_AllFixedUpCase,
        Char_AllFixedDownCase    : Result := True;
-      {Char_Space               : Result := Ch in [' ', '_'];  //not Delphi compatible, see notes above}
        Char_HourSeparator       : Result := (Ch = DefaultFormatSettings.TimeSeparator);
        Char_DateSeparator       : Result := (Ch = DefaultFormatSettings.DateSeparator);
-       Char_Hex                 : Result := (Length(Ch) = 1) and (Ch[1] In ['0'..'9','a'..'f','A'..'F']);
+       Char_Hex,
        Char_HexFixed            : Result := (Length(Ch) = 1) and (Ch[1] In ['0'..'9','a'..'f','A'..'F']);
-       Char_HexUpCase           : Result := (Length(Ch) = 1) and (Ch[1] In ['0'..'9','A'..'F']);
-       Char_HexDownCase         : Result := (Length(Ch) = 1) and (Ch[1] In ['0'..'9','a'..'f']);
+       Char_HexUpCase,
        Char_HexFixedUpCase      : Result := (Length(Ch) = 1) and (Ch[1] In ['0'..'9','A'..'F']);
+       Char_HexDownCase,
        Char_HexFixedDownCase    : Result := (Length(Ch) = 1) and (Ch[1] In ['0'..'9','a'..'f']);
-       Char_Binary              : Result := (Length(Ch) = 1) and (Ch[1] In ['0'..'1']);
+       Char_Binary,
        Char_BinaryFixed         : Result := (Length(Ch) = 1) and (Ch[1] In ['0'..'1']);
 
   end;
