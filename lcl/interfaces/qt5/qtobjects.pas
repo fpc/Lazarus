@@ -3416,7 +3416,9 @@ var
   ARenderHint: Boolean;
   ATransformation: QtTransformationMode;
   ARenderHints: QPainterRenderHints;
-
+  {$IFDEF DARWIN}
+  BMacPrinter: boolean;
+  {$ENDIF}
   function NeedScaling: boolean;
   var
     R: TRect;
@@ -3444,6 +3446,10 @@ begin
   {$endif}
   ScaledImage := nil;
   LocalRect := targetRect^;
+
+  {$IFDEF DARWIN}
+  BMacPrinter := (PaintEngine <> nil) and (QPaintEngine_type(PaintEngine) = QPaintEngineMacPrinter);
+  {$ENDIF}
 
   if mask <> nil then
   begin
@@ -3580,7 +3586,18 @@ begin
         if ARenderHint and (QImage_format(image) = QImageFormat_ARGB32) and (flags = QtAutoColor) and
           not EqualRect(LocalRect, sourceRect^) then
             QPainter_setRenderHint(Widget, QPainterSmoothPixmapTransform, True);
-        QPainter_drawImage(Widget, PRect(@LocalRect), image, sourceRect, flags);
+
+        {$IFDEF DARWIN}
+        if BMacPrinter then
+        begin
+          ScaledImage := QImage_create();
+          QImage_convertToFormat(Image, ScaledImage, QImageFormat_ARGB32_Premultiplied);
+          QPainter_drawImage(Widget, PRect(@LocalRect), ScaledImage, sourceRect, flags);
+          QImage_destroy(ScaledImage);
+        end else
+        {$ENDIF}
+          QPainter_drawImage(Widget, PRect(@LocalRect), image, sourceRect, flags);
+
         if ARenderHint then
           QPainter_setRenderHint(Widget, QPainterSmoothPixmapTransform, not ARenderHint);
       end;
