@@ -3329,6 +3329,10 @@ msgstr "（なし）"
 msgid "&Load Icon"
 msgstr "アイコンを読み込む(&L)"
 
+#: lazarusidestrconsts.dlgpolongpathaware
+msgid "Long path awareness"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpomisc
 msgctxt "lazarusidestrconsts.dlgpomisc"
 msgid "Miscellaneous"

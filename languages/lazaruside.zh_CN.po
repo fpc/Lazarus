@@ -3366,6 +3366,10 @@ msgstr "(none)"
 msgid "&Load Icon"
 msgstr "加载图标(&L)"
 
+#: lazarusidestrconsts.dlgpolongpathaware
+msgid "Long path awareness"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpomisc
 msgctxt "lazarusidestrconsts.dlgpomisc"
 msgid "Miscellaneous"

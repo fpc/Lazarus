@@ -3269,6 +3269,10 @@ msgstr "(žádné)"
 msgid "&Load Icon"
 msgstr "Načíst ikonu"
 
+#: lazarusidestrconsts.dlgpolongpathaware
+msgid "Long path awareness"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpomisc
 msgctxt "lazarusidestrconsts.dlgpomisc"
 msgid "Miscellaneous"

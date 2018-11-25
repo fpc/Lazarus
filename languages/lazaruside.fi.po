@@ -3237,6 +3237,10 @@ msgstr "(ei mitään)"
 msgid "&Load Icon"
 msgstr "&Lataa kuvake"
 
+#: lazarusidestrconsts.dlgpolongpathaware
+msgid "Long path awareness"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpomisc
 msgctxt "lazarusidestrconsts.dlgpomisc"
 msgid "Miscellaneous"

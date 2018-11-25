@@ -3335,6 +3335,10 @@ msgstr "(Yok)"
 msgid "&Load Icon"
 msgstr "& Simge Yükle"
 
+#: lazarusidestrconsts.dlgpolongpathaware
+msgid "Long path awareness"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpomisc
 msgctxt "lazarusidestrconsts.dlgpomisc"
 msgid "Miscellaneous"

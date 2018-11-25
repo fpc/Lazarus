@@ -3270,6 +3270,10 @@ msgstr "(немає)"
 msgid "&Load Icon"
 msgstr "&Завантажити значок"
 
+#: lazarusidestrconsts.dlgpolongpathaware
+msgid "Long path awareness"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpomisc
 msgctxt "lazarusidestrconsts.dlgpomisc"
 msgid "Miscellaneous"
