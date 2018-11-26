@@ -491,6 +491,7 @@ begin
   tr('TargetFile',lisTargetFilenameOfProject);
   tr('TargetCmdLine',lisTargetFilenamePlusParams);
   tr('RunCmdLine',lisLaunchingCmdLine);
+  tr('OutputFile',lisOutputFilenameOfProject);
   tr('ProjPublishDir',lisPublishProjDir);
   tr('ProjNamespaces',lisProjectNamespaces);
   tr('ProjUnitPath',lisProjectUnitPath);
