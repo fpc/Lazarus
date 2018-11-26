@@ -235,6 +235,7 @@ resourcestring
   lisSaveAllModified = 'Save all modified files';
   lisTargetFilenameOfProject = 'Target filename of project';
   lisTargetFilenamePlusParams = 'Target filename + params';
+  lisOutputFilenameOfProject = 'Output filename of project';
   lisTestDirectory = 'Test directory';
   lisLaunchingCmdLine = 'Launching target command line';
   lisPublishProjDir = 'Publish project directory';

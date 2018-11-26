@@ -486,7 +486,7 @@ type
     function MakeOptionsString(Flags: TCompilerCmdLineOptions): String; virtual;
     function GetSyntaxOptionsString(Kind: TPascalCompiler): string; virtual;
     function CreatePPUFilename(const SourceFileName: string): string; override;
-    function CreateTargetFilename: string; virtual;
+    function CreateTargetFilename: string; override;
     function GetTargetFileExt: string; virtual;
     function GetTargetFilePrefix: string; virtual;
     procedure GetInheritedCompilerOptions(var OptionsList: TFPList // list of TAdditionalCompilerOptions

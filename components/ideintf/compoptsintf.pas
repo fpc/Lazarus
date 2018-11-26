@@ -323,6 +323,7 @@ type
     function IsActive: boolean; virtual;
     function TrimCustomOptions(o: string): string; virtual; abstract;
     function CreatePPUFilename(const SourceFileName: string): string; virtual; abstract;
+    function CreateTargetFilename: string; virtual; abstract;
     function GetUnitOutputDirectory(RelativeToBaseDir: boolean): string; virtual; abstract;
   public
     property Owner: TObject read fOwner write fOwner;

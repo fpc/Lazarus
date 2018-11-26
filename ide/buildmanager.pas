@@ -143,6 +143,8 @@ type
                                 var {%H-}Abort: boolean): string;
     function MacroFuncTargetFile(const {%H-}Param: string; const {%H-}Data: PtrInt;
                                  var {%H-}Abort: boolean): string;
+    function MacroFuncOutputFile(const {%H-}Param: string; const {%H-}Data: PtrInt;
+                                 var {%H-}Abort: boolean): string;
     function MacroFuncTargetOS(const {%H-}Param: string; const Data: PtrInt;
                                var {%H-}Abort: boolean): string;
     function MacroFuncIDEBuildOptions(const {%H-}Param: string; const Data: PtrInt;
@@ -414,6 +416,8 @@ begin
                       lisTargetFilenamePlusParams,@MacroFuncTargetCmdLine,[]));
   GlobalMacroList.Add(TTransferMacro.Create('RunCmdLine','',
                       lisLaunchingCmdLine,@MacroFuncRunCmdLine,[]));
+  GlobalMacroList.Add(TTransferMacro.Create('OutputFile','',
+                      lisOutputFilenameOfProject,@MacroFuncOutputFile,[]));
   GlobalMacroList.Add(TTransferMacro.Create('ProjPublishDir','',
                       lisPublishProjDir,@MacroFuncProjPublishDir,[]));
   GlobalMacroList.Add(TTransferMacro.Create('ProjNamespaces','',
@@ -2183,6 +2187,15 @@ function TBuildManager.MacroFuncTargetFile(const Param: string;
 begin
   if Project1<>nil then
     Result:=GetProjectTargetFilename(Project1)
+  else
+    Result:='';
+end;
+
+function TBuildManager.MacroFuncOutputFile(const Param: string;
+  const Data: PtrInt; var Abort: boolean): string;
+begin
+  if Project1<>nil then
+    Result:=Project1.CompilerOptions.CreateTargetFilename
   else
     Result:='';
 end;
