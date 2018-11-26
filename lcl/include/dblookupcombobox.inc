@@ -43,7 +43,7 @@ end;
 
 function TDBLookupComboBox.DoEdit: boolean;
 begin
-  if (FDataLink.DataSource=nil) or (DataField='') then begin
+  if IsUnbound then begin
     if DetectedEvents and DBCBEVENT_SELECT <>0 then begin
       UpdateData(self);
       DoOnSelect;
@@ -53,6 +53,11 @@ begin
   end
   else
     Result := inherited DoEdit;
+end;
+
+function TDBLookupComboBox.IsUnbound: boolean;
+begin
+  result := (FDataLink.DataSource=nil) or (DataField='');
 end;
 
 procedure TDBLookupComboBox.ActiveChange(Sender: TObject);
@@ -93,7 +98,7 @@ end;
 
 procedure TDBLookupComboBox.UTF8KeyPress(var UTF8Key: TUTF8Char);
 begin
-  if not FDataLink.CanModify then
+  if (not IsUnbound) and (not FDataLink.CanModify) then
     UTF8Key := '';
   inherited UTF8KeyPress(UTF8Key);
 end;
