@@ -2430,15 +2430,15 @@ end;
 constructor TvTable.create(APage: TvPage);
 begin
   inherited Create(APage);
-
   Rows := TFPList.Create;
 
-  Borders.Left.Width := 1;
-  Borders.Right.Width := 1;
-  Borders.Top.Width := 1;
-  Borders.Bottom.Width := 1;
-  Borders.InsideHoriz.Width := 1;
-  Borders.InsideVert.Width := 1;
+  // Use default cell border widths of 0.5 pts, like Word or Writer.
+  Borders.Left.Width := 0.5 * FPV_TEXT_POINT_TO_MM;
+  Borders.Right.Width := 0.5 * FPV_TEXT_POINT_TO_MM;
+  Borders.Top.Width := 0.5 * FPV_TEXT_POINT_TO_MM;
+  Borders.Bottom.Width := 0.5 * FPV_TEXT_POINT_TO_MM;
+  Borders.InsideHoriz.Width := 0.5 * FPV_TEXT_POINT_TO_MM;
+  Borders.InsideVert.Width := 0.5 * FPV_TEXT_POINT_TO_MM;
 end;
 
 destructor TvTable.destroy;
