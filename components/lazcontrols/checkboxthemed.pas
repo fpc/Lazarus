@@ -387,7 +387,7 @@ begin
       aCheckBoxPoint.X := ARect.Left
     else
       aCheckBoxPoint.X := ARect.Right - CheckBoxSize.cx;
-    aCheckBoxPoint.Y := (ARect.Bottom - CheckBoxSize.cy) div 2;
+    aCheckBoxPoint.Y := ARect.Top + (ARect.Bottom - ARect.Top - CheckBoxSize.cy) div 2;
   end;
   { Paint Caption }
   if ACaption <> '' then begin
