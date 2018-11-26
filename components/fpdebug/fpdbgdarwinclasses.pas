@@ -1,7 +1,7 @@
 unit FpDbgDarwinClasses;
 
 {$mode objfpc}{$H+}
-{$linkframework security}
+{$linkframework Security}
 
 interface
 
