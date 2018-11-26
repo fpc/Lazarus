@@ -14518,6 +14518,10 @@ msgstr "paketo „%s“ kitų pirminių kodų paieškos kelyje figūruoja aplank
 msgid "output directory of %s contains Pascal unit source \"%s\""
 msgstr "„%s“ išvesties aplanke yra Paskalio pirminio kodo failas „%s“"
 
+#: lazarusidestrconsts.lisoutputfilenameofproject
+msgid "Output filename of project"
+msgstr ""
+
 #: lazarusidestrconsts.lisoverridelanguage
 msgid "Override language. For example --language=de. For possible values see files in the languages directory."
 msgstr "Viršesnė kalba. Pavyzdžiui: --language=de. Galimas vertes galite sužinoti žvilgtelėję į kalbų aplanką."

@@ -14752,6 +14752,10 @@ msgstr ""
 msgid "output directory of %s contains Pascal unit source \"%s\""
 msgstr ""
 
+#: lazarusidestrconsts.lisoutputfilenameofproject
+msgid "Output filename of project"
+msgstr ""
+
 #: lazarusidestrconsts.lisoverridelanguage
 msgid "Override language. For example --language=de. For possible values see files in the languages directory."
 msgstr ""

@@ -14392,6 +14392,10 @@ msgstr "список шляхів до \"інших модулів\" пакун�
 msgid "output directory of %s contains Pascal unit source \"%s\""
 msgstr "кінцева тека %s містить джерело модуля Pascal \"%s\""
 
+#: lazarusidestrconsts.lisoutputfilenameofproject
+msgid "Output filename of project"
+msgstr ""
+
 #: lazarusidestrconsts.lisoverridelanguage
 msgid "Override language. For example --language=de. For possible values see files in the languages directory."
 msgstr "Підмінити мову. Наприклад --language=de.  Для можливих величин див. теку languages"

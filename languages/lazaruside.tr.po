@@ -14675,6 +14675,10 @@ msgstr "\"% S \\ \"paketinin diğer kaynakları% \" %s \\ \"dizini içeriyor; bu
 msgid "output directory of %s contains Pascal unit source \"%s\""
 msgstr ""
 
+#: lazarusidestrconsts.lisoutputfilenameofproject
+msgid "Output filename of project"
+msgstr ""
+
 #: lazarusidestrconsts.lisoverridelanguage
 msgid "Override language. For example --language=de. For possible values see files in the languages directory."
 msgstr "Dili geçersiz kılmak - örneğin --language = de. Olası değerler için"

@@ -14719,6 +14719,10 @@ msgstr "Otros trayectos de fuente de paquete \"%s\" contienen el directorio \"%s
 msgid "output directory of %s contains Pascal unit source \"%s\""
 msgstr "directorio de salida de %s contiene la fuente de la unidad de Pascal \"%s\""
 
+#: lazarusidestrconsts.lisoutputfilenameofproject
+msgid "Output filename of project"
+msgstr ""
+
 #: lazarusidestrconsts.lisoverridelanguage
 msgid "Override language. For example --language=de. For possible values see files in the languages directory."
 msgstr "Reemplazar lenguaje. Por ejemplo --languaje=de. Para los valores posibles mirar los archivos en el directorio languages"

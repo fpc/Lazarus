@@ -14486,6 +14486,10 @@ msgstr "パッケージ\"%s\"の他のソースパスはディレクトリ\"%s\"
 msgid "output directory of %s contains Pascal unit source \"%s\""
 msgstr "%sの出力ディレクトリはPascalユニットソース\"%s\"を含んでいます"
 
+#: lazarusidestrconsts.lisoutputfilenameofproject
+msgid "Output filename of project"
+msgstr ""
+
 #: lazarusidestrconsts.lisoverridelanguage
 msgid "Override language. For example --language=de. For possible values see files in the languages directory."
 msgstr "言語指定をオーバーライド。例：--language=de。可能な値は languages ディレクトリを参照のこと。"

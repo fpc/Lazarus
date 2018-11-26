@@ -14362,6 +14362,10 @@ msgstr "jiná zdrojová cesta balíčku \"%s\" obsahuje adresář \"%s\", který
 msgid "output directory of %s contains Pascal unit source \"%s\""
 msgstr "výstupní adresář %s obsahuje Pascalovskou zdrojovou jednotku \"%s\""
 
+#: lazarusidestrconsts.lisoutputfilenameofproject
+msgid "Output filename of project"
+msgstr ""
+
 #: lazarusidestrconsts.lisoverridelanguage
 msgid "Override language. For example --language=de. For possible values see files in the languages directory."
 msgstr "Vybrat jazyk. Na příklad --language=cz. Pro možné varianty se podívejte na soubory ve složce jazyků."
