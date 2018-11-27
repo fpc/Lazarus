@@ -1088,6 +1088,7 @@ begin
   Point := convertPoint_fromView(Point, nil);
 
   es := enclosingScrollView;
+  if es.documentView <> self then es := nil;
   if not isFlipped then
     Point.y := bounds.size.height - Point.y;
 

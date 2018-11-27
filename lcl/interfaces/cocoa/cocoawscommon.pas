@@ -47,7 +47,7 @@ type
     _UTF8Character : TUTF8Char;
     class function CocoaModifiersToKeyState(AModifiers: NSUInteger): PtrInt; static;
     class function CocoaPressedMouseButtonsToKeyState(AMouseButtons: NSUInteger): PtrInt; static;
-    procedure OffsetMousePos(LocInWin: NSPoint; out PtInBounds, PtInClient: TPoint );
+    procedure OffsetMousePos(LocInWin: NSPoint; out PtInBounds, PtInClient, PtForChildCtrls: TPoint );
     procedure ScreenMousePos(var Point: NSPoint);
   public
     Owner: NSObject;
@@ -271,17 +271,20 @@ begin
     Result := Result or MK_XBUTTON2;
 end;
 
-procedure TLCLCommonCallback.OffsetMousePos(LocInWin: NSPoint; out PtInBounds, PtInClient: TPoint);
+procedure TLCLCommonCallback.OffsetMousePos(LocInWin: NSPoint; out PtInBounds, PtInClient, PtForChildCtrls: TPoint);
 var
   lView: NSView;
   pt: NSPoint;
   cr: TRect;
+  es: NSScrollView;
+  r: NSRect;
 begin
   if Owner.isKindOfClass(NSWindow) then
   begin
     PtInBounds.x := Round(LocInWin.x);
     PtInBounds.y := Round(NSWindow(Owner).contentView.bounds.size.height - LocInWin.y);
     PtInClient := PtInBounds; // todo: it's different. But Owner is never NSWindow (it's TConentWindowView instead)
+    PtForChildCtrls := PtInClient;
   end
   else if Owner.isKindOfClass(NSView) then
   begin
@@ -296,11 +299,23 @@ begin
     cr := NSView(Owner).lclClientFrame;
     PtInClient.x := Round({PtInBounds.x - }pt.x - cr.Left);
     PtInClient.y := Round({PtInBounds.y - }pt.y - cr.Top);
+    PtForChildCtrls := PtInClient;
+
+    es := NSView(Owner).enclosingScrollView;
+    if Assigned(es) and (es.documentView = NSView(Owner)) then begin
+      r := es.documentVisibleRect;
+      if NSView(Owner).isFlipped then
+        r.origin.y := (es.documentView.frame.size.height - r.size.height - r.origin.y);
+      inc(PtForChildCtrls.y, Round(r.origin.y));
+      inc(PtForChildCtrls.x, Round(r.origin.x));
+    end;
+
   end else
   begin
     PtInBounds.x := Round(LocInWin.x);
     PtInBounds.y := Round(LocInWin.y);
     PtInClient := PtInBounds;
+    PtForChildCtrls := PtInClient;
   end;
 end;
 
@@ -1103,7 +1118,8 @@ var
   //Str: string;
   lEventType: NSEventType;
 
-  bndPt, clPt: TPoint;
+  bndPt, clPt, srchPt: TPoint; // clPt - is the one to send to LCL
+                               // srchPt - is the one to use for each chidlren (clPt<>srchPt for TScrollBox)
 begin
   if Assigned(Owner) and not Owner.lclIsEnabled then
   begin
@@ -1129,7 +1145,7 @@ begin
   FillChar(Msg, SizeOf(Msg), #0);
 
   MousePos := Event.locationInWindow;
-  OffsetMousePos(MousePos, bndPt, clPt);
+  OffsetMousePos(MousePos, bndPt, clPt, srchPt);
 
   Msg.Keys := CocoaModifiersToKeyState(Event.modifierFlags) or CocoaPressedMouseButtonsToKeyState(NSEvent.pressedMouseButtons);
 
@@ -1215,6 +1231,7 @@ var
   childControl:TWinControl;
   bndPt, clPt: TPoint;
   MouseTargetLookup: Boolean;
+  srchPt: TPoint;
 begin
   if Assigned(Owner) and not Owner.lclIsEnabled then
   begin
@@ -1228,7 +1245,7 @@ begin
   Result := Assigned(Target) and (csDesigning in Target.ComponentState);
 
   MousePos := Event.locationInWindow;
-  OffsetMousePos(MousePos, bndPt, clPt);
+  OffsetMousePos(MousePos, bndPt, clPt, srchPt);
 
   // For "dragged" events, the same "Target" should be used
   MouseTargetLookup := Event.type_ = NSMouseMoved;
@@ -1264,7 +1281,7 @@ begin
         begin
           childControl:=TWinControl(Target.Controls[i]);
           rect:=childControl.BoundsRect;
-          if Types.PtInRect(rect, clPt) and childControl.Visible and childControl.Enabled then
+          if Types.PtInRect(rect, srchPt) and childControl.Visible and childControl.Enabled then
           begin
             targetControl:=childControl;
             break;
@@ -1315,7 +1332,7 @@ var
   Msg: TLMMouseEvent;
   MousePos: NSPoint;
   MButton: NSInteger;
-  bndPt, clPt: TPoint;
+  bndPt, clPt, srchPt: TPoint;
 begin
   Result := False; // allow cocoa to handle message
 
@@ -1323,7 +1340,7 @@ begin
     Exit;
 
   MousePos := Event.locationInWindow;
-  OffsetMousePos(MousePos, bndPt, clPt);
+  OffsetMousePos(MousePos, bndPt, clPt, srchPt);
 
   MButton := event.buttonNumber;
   if MButton >= 3 then
