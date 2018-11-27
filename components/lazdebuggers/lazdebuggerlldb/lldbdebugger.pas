@@ -764,6 +764,7 @@ const
     ExcClass, ExcMsg: String;
     CanContinue: Boolean;
     Instr: TLldbInstructionStackTrace;
+    ExceptItem: TBaseException;
   begin
     if exiClass in FCurrentExceptionInfo.FHasCommandData then
       ExcClass := FCurrentExceptionInfo.FExceptClass
@@ -773,6 +774,14 @@ const
       ExcMsg := FCurrentExceptionInfo.FExceptMsg
     else
       ExcMsg := '<Unknown Message>'; // TODO: move to IDE
+
+    ExceptItem := Debugger.Exceptions.Find(ExcClass);
+    if (ExceptItem <> nil) and (ExceptItem.Enabled)
+    then begin
+      FState := crStoppedRaise;
+      ContinueRunning;
+      exit;
+    end;
 
     CanContinue := Debugger.DoExceptionHit(ExcClass, ExcMsg);
 
