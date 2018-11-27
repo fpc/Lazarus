@@ -1058,7 +1058,10 @@ procedure TLldbDebuggerCommandRun.ResetStateToRun;
 begin
   FState := crRunning;
   FCurBrkId := 0;
-  FThreadInstr := nil;
+  if FThreadInstr <> nil then begin
+    FThreadInstr.ReleaseReference;
+    FThreadInstr := nil;
+  end;
   FCurrentExceptionInfo.FHasCommandData := [];
 end;
 
