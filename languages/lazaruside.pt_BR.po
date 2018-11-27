@@ -3212,7 +3212,7 @@ msgstr "Carregar &padrão"
 
 #: lazarusidestrconsts.dlgpodpiawareness
 msgid "DPI awareness"
-msgstr "reconhecimento DPI"
+msgstr "A par do DPI"
 
 #: lazarusidestrconsts.dlgpodpiawarenessoff
 msgid "off"
