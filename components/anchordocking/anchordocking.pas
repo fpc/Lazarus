@@ -109,6 +109,37 @@ uses
 const ADAutoSizingReason = 'TAnchorDockMaster Delayed';
 {$ENDIF}
 
+const EmptyMouseTimeStartX=low(Integer);
+      MouseNoMoveDelta=5;
+      MouseNoMoveTime=500;
+      HideOverlappingFormByMouseLoseTime=500;
+      ButtonBorderSpacingAround=4;
+      OppositeAnchorKind2Align: array[TAnchorKind] of TAlign = (
+        alBottom, // akTop,
+        alRight,  // akLeft,
+        alLeft,   // akRight,
+        alTop     // akBottom
+        );
+      OppositeAnchorKind: array[TAnchorKind] of TAnchorKind = (
+        akBottom, // akTop,
+        akRight,  // akLeft,
+        akLeft,   // akRight,
+        akTop     // akBottom
+        );
+      {AnchorKind2Align: array[TAnchorKind] of TAlign = (
+        alTop,  // akTop,
+        alLeft, // akLeft,
+        alRight,// akRight,
+        alBottom// akBottom
+        );}
+      OppositeAnchorKind2TADLHeaderPosition: array[TAnchorKind] of TADLHeaderPosition = (
+        adlhpBottom, // akTop,
+        adlhpRight,  // akLeft,
+        adlhpLeft,   // akRight,
+        adlhpTop     // akBottom
+        );
+
+
 type
   TAnchorDockHostSite = class;
 
@@ -123,6 +154,14 @@ type
            PreferredHeight: integer; {%H-}WithThemeSpace: Boolean); override;
   end;
 
+  TAnchorDockMinimizeButton = class(TCustomSpeedButton)
+  protected
+    function GetDrawDetails: TThemedElementDetails; override;
+    procedure CalculatePreferredSize(var PreferredWidth,
+           PreferredHeight: integer; {%H-}WithThemeSpace: Boolean); override;
+  end;
+
+
   { TAnchorDockHeader
     The panel of a TAnchorDockHostSite containing the close button and the
     caption when the form is docked. The header can be shown at any of the four
@@ -133,9 +172,13 @@ type
   TAnchorDockHeader = class(TCustomPanel)
   private
     FCloseButton: TCustomSpeedButton;
+    FMinimizeButton: TCustomSpeedButton;
     FHeaderPosition: TADLHeaderPosition;
     fFocused:Boolean;
+    fUseTimer:Boolean;
+    FMouseTimeStartX,FMouseTimeStartY:Integer;
     procedure CloseButtonClick(Sender: TObject);
+    procedure MinimizeButtonClick(Sender: TObject);
     procedure HeaderPositionItemClick(Sender: TObject);
     procedure UndockButtonClick(Sender: TObject);
     procedure MergeButtonClick(Sender: TObject);
@@ -147,6 +190,11 @@ type
           PreferredHeight: integer; WithThemeSpace: Boolean); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X,
              Y: Integer); override;
+    procedure MouseMove(Shift: TShiftState; X,Y: Integer); override;
+    procedure MouseLeave;  override;
+    procedure StartMouseNoMoveTimer(X, Y: Integer);
+    procedure StopMouseNoMoveTimer;
+    procedure DoMouseNoMoveTimer(Sender: TObject);
     procedure UpdateHeaderControls;
     procedure SetAlign(Value: TAlign); override;
     procedure DoOnShowHint(HintInfo: PHintInfo); override;
@@ -154,6 +202,7 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     property CloseButton: TCustomSpeedButton read FCloseButton;
+    property MinimizeButton: TCustomSpeedButton read FMinimizeButton;
     property HeaderPosition: TADLHeaderPosition read FHeaderPosition write SetHeaderPosition;
     property BevelOuter default bvNone;
   end;
@@ -190,6 +239,7 @@ type
     procedure SetBoundsKeepDockBounds(ALeft, ATop, AWidth, AHeight: integer); // movement for scaling keeps the DockBounds
     function SideAnchoredControlCount(Side: TAnchorKind): integer;
     function HasAnchoredControls: boolean;
+    function GetSpliterBoundsWithUnminimizedDockSites:TRect;
     procedure SaveLayout(LayoutNode: TAnchorDockLayoutTreeNode);
     function HasOnlyOneSibling(Side: TAnchorKind; MinPos, MaxPos: integer): TControl;
     property DockRestoreBounds: TRect read FDockRestoreBounds write FDockRestoreBounds;
@@ -241,6 +291,14 @@ type
   end;
   TAnchorDockPageControlClass = class of TAnchorDockPageControl;
 
+
+  TAnchorDockOverlappingForm = class(TCustomForm)
+  public
+    AnchorDockHostSite:TAnchorDockHostSite;
+    Panel:TPanel;
+    constructor CreateNew(AOwner: TComponent; Num: Integer = 0); override;
+  end;
+
   { TAnchorDockHostSite
     This form is the dockhostsite for all controls.
     When docked together they build a tree structure with the docked controls
@@ -262,7 +320,10 @@ type
     FPages: TAnchorDockPageControl;
     FSiteType: TAnchorDockHostSiteType;
     FBoundSplitter: TAnchorDockSplitter;
-    fUpdateLayout: integer;
+    fUpdateLayout: Integer;
+    FMinimized: Boolean;
+    fMinimization: Boolean;
+    FMinimizedControl: TControl;
     procedure SetHeaderSide(const AValue: TAnchorKind);
   protected
     procedure DoEnter; override;
@@ -319,6 +380,10 @@ type
     destructor Destroy; override;
     function CloseQuery: boolean; override;
     function CloseSite: boolean; virtual;
+    procedure MinimizeSite; virtual;
+    procedure AsyncMinimizeSite(Data: PtrInt);
+    procedure ShowMinimizedControl;
+    procedure HideMinimizedControl;
     procedure RemoveControl(AControl: TControl); override;
     procedure InsertControl(AControl: TControl; Index: integer); override;
     procedure GetSiteInfo(Client: TControl; var InfluenceRect: TRect;
@@ -329,6 +394,7 @@ type
     procedure UpdateDockCaption(Exclude: TControl = nil); override;
     procedure UpdateHeaderAlign;
     procedure UpdateHeaderShowing;
+    function CanBeMinimized(out Splitter: TAnchorDockSplitter; out SplitterAnchorKind:TAnchorKind):boolean;
     procedure BeginUpdateLayout;
     procedure EndUpdateLayout;
     function UpdatingLayout: boolean;
@@ -337,6 +403,7 @@ type
     procedure SaveLayout(LayoutTree: TAnchorDockLayoutTree;
                          LayoutNode: TAnchorDockLayoutTreeNode);
     property DockRestoreBounds: TRect read FDockRestoreBounds write FDockRestoreBounds;
+    function GetDockEdge(const MousePos: TPoint): TAlign; override;
 
     property HeaderSide: TAnchorKind read FHeaderSide write SetHeaderSide;
     property Header: TAnchorDockHeader read FHeader;
@@ -431,6 +498,7 @@ type
     FShowHeader: boolean;
     FShowHeaderCaption: boolean;
     FSplitterWidth: integer;
+    FDockSitesCanBeMinimized: boolean;
     procedure SetAllowDragging(AValue: boolean);
     procedure SetDockOutsideMargin(AValue: integer);
     procedure SetDockParentMargin(AValue: integer);
@@ -448,6 +516,7 @@ type
     procedure SetHeaderFlatten(AValue: boolean);
     procedure SetHeaderFilled(AValue: boolean);
     procedure SetHeaderHighlightFocused(AValue: boolean);
+    procedure SetDockSitesCanBeMinimized(AValue: boolean);
   public
     property DragTreshold: integer read FDragTreshold write SetDragTreshold;
     property DockOutsideMargin: integer read FDockOutsideMargin write SetDockOutsideMargin;
@@ -466,6 +535,7 @@ type
     property HeaderFlatten: boolean read FHeaderFlatten write SetHeaderFlatten;
     property HeaderFilled: boolean read FHeaderFilled write SetHeaderFilled;
     property HeaderHighlightFocused: boolean read FHeaderHighlightFocused write SetHeaderHighlightFocused;
+    property DockSitesCanBeMinimized: boolean read FDockSitesCanBeMinimized write SetDockSitesCanBeMinimized;
     procedure IncreaseChangeStamp; inline;
     property ChangeStamp: integer read FChangeStamp;
     procedure LoadFromConfig(Config: TConfigStorage); overload;
@@ -502,6 +572,7 @@ type
     FHeaderFlatten: boolean;
     FHeaderFilled: boolean;
     FHeaderHighlightFocused: boolean;
+    FDockSitesCanBeMinimized: boolean;
     FIdleConnected: Boolean;
     FManagerClass: TAnchorDockManagerClass;
     FOnCreateControl: TADCreateControlEvent;
@@ -531,6 +602,7 @@ type
     fPopupMenu: TPopupMenu;
     // Used by RestoreLayout:
     WorkArea, SrcWorkArea: TRect;
+    FOverlappingForm:TAnchorDockOverlappingForm;
 
     function GetControls(Index: integer): TControl;
     function GetLocalizedHeaderHint: string;
@@ -541,6 +613,9 @@ type
     function GetNodeSite(Node: TAnchorDockLayoutTreeNode): TAnchorDockHostSite;
     procedure MapTreeToControls(Tree: TAnchorDockLayoutTree);
     function RestoreLayout(Tree: TAnchorDockLayoutTree; Scale: boolean): boolean;
+    procedure SetMinimizedState(Tree: TAnchorDockLayoutTree);
+    procedure UpdateHeaders;
+    procedure SetnodeMinimizedState(ANode: TAnchorDockLayoutTreeNode);
     procedure EnableAllAutoSizing;
     procedure ClearLayoutProperties(AControl: TControl; NewAlign: TAlign = alClient);
     procedure PopupMenuPopup(Sender: TObject);
@@ -561,6 +636,7 @@ type
     procedure SetHeaderFlatten(AValue: boolean);
     procedure SetHeaderFilled(AValue: boolean);
     procedure SetHeaderHighlightFocused(AValue: boolean);
+    procedure SetDockSitesCanBeMinimized(AValue: boolean);
 
     procedure SetShowMenuItemShowHeader(AValue: boolean);
     procedure SetupSite(Site: TWinControl; ANode: TAnchorDockLayoutTreeNode;
@@ -584,8 +660,12 @@ type
     procedure SetHideHeaderCaptionFloatingControl(const AValue: boolean);
     procedure SetSplitterWidth(const AValue: integer);
     procedure OnIdle(Sender: TObject; var Done: Boolean);
+    procedure StartHideOverlappingTimer;
+    procedure StopHideOverlappingTimer;
     procedure AsyncSimplify({%H-}Data: PtrInt);
   public
+    procedure ShowOverlappingForm;
+    procedure HideOverlappingForm(Sender: TObject);
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function FullRestoreLayout(Tree: TAnchorDockLayoutTree; Scale: Boolean): Boolean;
@@ -680,6 +760,7 @@ type
     property HeaderFlatten: boolean read FHeaderFlatten write SetHeaderFlatten default true;
     property HeaderFilled: boolean read FHeaderFilled write SetHeaderFilled default true;
     property HeaderHighlightFocused: boolean read FHeaderHighlightFocused write SetHeaderHighlightFocused default false;
+    property DockSitesCanBeMinimized: boolean read FDockSitesCanBeMinimized write SetDockSitesCanBeMinimized default false;
 
     property SplitterWidth: integer read FSplitterWidth write SetSplitterWidth default 4;
     property ScaleOnResize: boolean read FScaleOnResize write SetScaleOnResize default true; // scale children when resizing a site
@@ -698,8 +779,14 @@ type
 
 var
   DockMaster: TAnchorDockMaster = nil;
+  DockTimer: TTimer = nil;
+
+  PreferredButtonWidth:integer=-1;
+  PreferredButtonHeight:integer=-1;
+
 
 const
+  HardcodedButtonSize:integer=13;
   ADHeaderStyleNames: array[TADHeaderStyle] of string = (
     'Frame3D',
     'Line',
@@ -928,7 +1015,7 @@ function GetDockSplitter(Control: TControl; Side: TAnchorKind; out
 begin
   Result:=false;
   Splitter:=nil;
-  if not assigned(Control) or not (Side in Control.Anchors) then exit;
+  if not Assigned(Control) or not (Side in Control.Anchors) then exit;
   Splitter:=TAnchorDockSplitter(Control.AnchorSide[Side].Control);
   if not (Splitter is TAnchorDockSplitter) then begin
     Splitter:=nil;
@@ -968,6 +1055,27 @@ begin
     and (Neighbour.AnchorSide[OppositeAnchor[Side]].Control=Control) then
       inc(Result);
   end;
+end;
+
+function CountAndReturnOnlyOneMinimizedAnchoredControls(Control: TControl; Side: TAnchorKind): TAnchorDockHostSite;
+var
+  i,Counter: Integer;
+  Neighbour: TControl;
+begin
+  Counter:=0;
+  for i:=0 to Control.AnchoredControlCount-1 do begin
+    Neighbour:=Control.AnchoredControls[i];
+    if Neighbour.Visible then
+    if Neighbour is TAnchorDockHostSite then
+    if (OppositeAnchor[Side] in Neighbour.Anchors)
+    and (Neighbour.AnchorSide[OppositeAnchor[Side]].Control=Control) then begin
+      inc(Counter);
+      result:=TAnchorDockHostSite(Neighbour);
+    end;
+  end;
+  if (Counter=1) and (result is TAnchorDockHostSite) and ((result as TAnchorDockHostSite).FMinimized) then
+  else
+    result:=Nil;
 end;
 
 function NeighbourCanBeShrinked(EnlargeControl, Neighbour: TControl;
@@ -1361,6 +1469,13 @@ begin
   IncreaseChangeStamp;
 end;
 
+procedure TAnchorDockSettings.SetDockSitesCanBeMinimized(AValue: boolean);
+begin
+  if FDockSitesCanBeMinimized=AValue then Exit;
+  FDockSitesCanBeMinimized:=AValue;
+  IncreaseChangeStamp;
+end;
+
 procedure TAnchorDockSettings.Assign(Source: TAnchorDockSettings);
 begin
   FAllowDragging := Source.FAllowDragging;
@@ -1381,6 +1496,7 @@ begin
   FShowHeaderCaption := Source.FShowHeaderCaption;
   FSplitterWidth := Source.FSplitterWidth;
   FHeaderHighlightFocused:=Source.FHeaderHighlightFocused;
+  FDockSitesCanBeMinimized:=Source.FDockSitesCanBeMinimized;
 end;
 
 procedure TAnchorDockSettings.IncreaseChangeStamp;
@@ -1407,6 +1523,7 @@ begin
   HeaderFlatten:=Config.GetValue('HeaderFlatten',true);
   HeaderFilled:=Config.GetValue('HeaderFilled',true);
   HeaderHighlightFocused:=Config.GetValue('HeaderHighlightFocused',False);
+  DockSitesCanBeMinimized:=Config.GetValue('DockSitesCanBeMinimized',False);
   Config.UndoAppendBasePath;
 end;
 
@@ -1429,6 +1546,7 @@ begin
   Config.SetDeleteValue(Path+'HeaderFlatten',HeaderFlatten,true);
   Config.SetDeleteValue(Path+'HeaderFilled',HeaderFilled,true);
   Config.SetDeleteValue(Path+'HeaderHighlightFocused',HeaderHighlightFocused,False);
+  Config.SetDeleteValue(Path+'DockSitesCanBeMinimized',DockSitesCanBeMinimized,False);
 end;
 
 procedure TAnchorDockSettings.SaveToConfig(Config: TConfigStorage);
@@ -1450,6 +1568,7 @@ begin
   Config.SetDeleteValue('HeaderFlatten',HeaderFlatten,true);
   Config.SetDeleteValue('HeaderFilled',HeaderFilled,true);
   Config.SetDeleteValue('HeaderHighlightFocused',HeaderHighlightFocused,False);
+  Config.SetDeleteValue('DockSitesCanBeMinimized',DockSitesCanBeMinimized,False);
   Config.UndoAppendBasePath;
 end;
 
@@ -1472,6 +1591,7 @@ begin
       and (HeaderFlatten=Settings.HeaderFlatten)
       and (HeaderFilled=Settings.HeaderFilled)
       and (HeaderHighlightFocused=Settings.HeaderHighlightFocused)
+      and (DockSitesCanBeMinimized=Settings.DockSitesCanBeMinimized)
       ;
 end;
 
@@ -1494,6 +1614,7 @@ begin
   HeaderFlatten:=Config.GetValue(Path+'HeaderFlatten',true);
   HeaderFilled:=Config.GetValue(Path+'HeaderFilled',true);
   HeaderHighlightFocused:=Config.GetValue(Path+'HeaderHighlightFocused',False);
+  DockSitesCanBeMinimized:=Config.GetValue(Path+'DockSitesCanBeMinimized',False);
 end;
 
 { TAnchorDockMaster }
@@ -1610,7 +1731,7 @@ var
       if result=adlclWrongly then exit;
     end;
     realsubcontrolcoun:=0;
-    if (AControl is TAnchorDockHostSite)or(AControl is TAnchorDockPanel) then
+    if (AControl is TAnchorDockHostSite) or (AControl is TAnchorDockPanel) then
     begin
        RealChildrenCount(AControl as TWinControl,realsubcontrolcoun);
        if SubControlsCount<>realsubcontrolcoun then Exit(adlclWrongly);
@@ -2021,6 +2142,8 @@ begin
     aHostSite:=TAnchorDockHostSite(Site);
     aHostSite.Header.HeaderPosition:=ANode.HeaderPosition;
     aHostSite.DockRestoreBounds:=NewBounds;
+    //aHostSite.FMinimized:=ANode.Minimized;
+    //we update aHostSite.FMinimized in TAnchorDockMaster.SetMinimizedState
     if (ANode.NodeType<>adltnPages) and (aHostSite.Pages<>nil) then
       aHostSite.FreePages;
   end;
@@ -2038,6 +2161,25 @@ begin
   Result:=CreateSite;
   fDisabledAutosizing.Add(Result);
   fTreeNameToDocker[Node.Name]:=Result;
+end;
+
+procedure TAnchorDockMaster.SetNodeMinimizedState(ANode: TAnchorDockLayoutTreeNode);
+var
+  HostSite:TAnchorDockHostSite;
+  i:integer;
+begin
+  HostSite:=GetNodeSite(ANode);
+  if Assigned(HostSite) then
+    if HostSite.FMinimized<>ANode.Minimized then
+      Application.QueueAsyncCall(@HostSite.AsyncMinimizeSite,0);
+      //HostSite.MinimizeSite;
+  for i:=0 to ANode.Count-1 do
+    SetnodeMinimizedState(ANode.Nodes[i]);
+end;
+
+procedure TAnchorDockMaster.SetMinimizedState(Tree: TAnchorDockLayoutTree);
+begin
+  SetnodeMinimizedState(Tree.Root);
 end;
 
 function TAnchorDockMaster.RestoreLayout(Tree: TAnchorDockLayoutTree;
@@ -2193,7 +2335,7 @@ function TAnchorDockMaster.RestoreLayout(Tree: TAnchorDockLayoutTree;
       try
         SetupSite(Site,ANode,AParent);
         Site.FSiteType:=adhstPages;
-        Site.Header.Parent:=nil;
+        //Site.Header.Parent:=nil;
         if Site.Pages=nil then
           Site.CreatePages;
         for i:=0 to ANode.Count-1 do begin
@@ -2358,7 +2500,7 @@ begin
       debugln(ControlNames.Text);
       {$ENDIF}
       // if some forms/controls could not be created the layout needs to be adapted
-      Tree.Root.Simplify(ControlNames);
+      Tree.Root.Simplify(ControlNames,false);
 
       // reuse existing sites to reduce flickering
       MapTreeToControls(Tree);
@@ -2368,6 +2510,7 @@ begin
 
       // create sites, move controls
       RestoreLayout(Tree,Scale);
+      SetMinimizedState(Tree);
     finally
       EndUpdate;
     end;
@@ -2422,11 +2565,54 @@ begin
   OptionsChanged;
 end;
 
+procedure TAnchorDockMaster.StartHideOverlappingTimer;
+begin
+  if not DockTimer.Enabled then begin
+    DockTimer.Interval:=HideOverlappingFormByMouseLoseTime;
+    DockTimer.OnTimer:=@HideOverlappingForm;
+    DockTimer.Enabled:=true;
+  end;
+end;
+
+procedure TAnchorDockMaster.StopHideOverlappingTimer;
+begin
+  DockTimer.Enabled:=False;
+  DockTimer.Interval:=0;
+  DockTimer.OnTimer:=nil;
+end;
+
+function IsParentControl(aParent, aControl: TControl): boolean;
+begin
+  while (aControl <> nil) and (aControl.Parent <> nil) do
+  begin
+    if (aControl=aParent) then
+      exit(true);
+    aControl := aControl.Parent;
+  end;
+  result:=aControl=aParent;
+end;
+
+
 procedure TAnchorDockMaster.OnIdle(Sender: TObject; var Done: Boolean);
+var
+  MousePos: TPoint;
+  Bounds:Trect;
 begin
   if Done then ;
-  IdleConnected:=false;
   Restoring:=false;
+  if FOverlappingForm=nil then
+    IdleConnected:=false
+  else begin
+    GetCursorPos(MousePos);
+    Bounds.TopLeft:=FOverlappingForm.ClientToScreen(point(0,0));
+    Bounds.BottomRight:=FOverlappingForm.ClientToScreen(point(FOverlappingForm.Width,FOverlappingForm.Height));
+    if not IsParentControl(FOverlappingForm, GetCaptureControl) then begin
+      if not PtInRect(Bounds,MousePos) then
+          StartHideOverlappingTimer
+        else
+          StopHideOverlappingTimer;
+    end;
+  end;
 end;
 
 procedure TAnchorDockMaster.AsyncSimplify(Data: PtrInt);
@@ -2514,6 +2700,18 @@ begin
   InvalidateHeaders;
 end;
 
+procedure TAnchorDockMaster.SetDockSitesCanBeMinimized(AValue: boolean);
+var
+  i:integer;
+  Site: TAnchorDockHostSite;
+begin
+  if FDockSitesCanBeMinimized=AValue then Exit;
+  FDockSitesCanBeMinimized:=AValue;
+  UpdateHeaders;
+  InvalidateHeaders;
+  EnableAllAutoSizing;
+  OptionsChanged;
+end;
 procedure TAnchorDockMaster.SetScaleOnResize(AValue: boolean);
 begin
   if FScaleOnResize=AValue then Exit;
@@ -2598,6 +2796,9 @@ begin
     if (Site.Header<>nil) then begin
       DisableControlAutoSizing(Site);
       Site.UpdateHeaderShowing;
+      if Site.fminimized then
+        if not AValue then
+          site.MinimizeSite;
     end;
   end;
   EnableAllAutoSizing;
@@ -2668,6 +2869,20 @@ begin
     EnableAllAutoSizing;
 end;
 
+procedure TAnchorDockMaster.ShowOverlappingForm;
+begin
+  FOverlappingForm.Show;
+  IdleConnected:=true;
+end;
+
+procedure TAnchorDockMaster.HideOverlappingForm(Sender: TObject);
+begin
+  StopHideOverlappingTimer;
+  FOverlappingForm.Hide;
+  FOverlappingForm.AnchorDockHostSite.HideMinimizedControl;
+  IdleConnected:=false;
+end;
+
 constructor TAnchorDockMaster.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -2698,14 +2913,14 @@ begin
   FPageClass:=TAnchorDockPage;
   FRestoreLayouts:=TAnchorDockRestoreLayouts.Create;
   FHeaderHighlightFocused:=false;
+  FDockSitesCanBeMinimized:=false;
+  FOverlappingForm:=nil;
 end;
 
 destructor TAnchorDockMaster.Destroy;
 var
   AControl: TControl;
-  {$IFDEF VerboseAnchorDocking}
-  i: Integer;
-  {$ENDIF}
+  i, j: Integer;
 begin
   QueueSimplify:=false;
   FreeAndNil(FRestoreLayouts);
@@ -2727,6 +2942,12 @@ begin
     debugln(['TAnchorDockMaster.Destroy ',i,'/',ComponentCount,' ',DbgSName(Components[i])]);
   end;
   {$ENDIF}
+  for i:=0 to ComponentCount-1 do begin
+    for j:=0 to ComponentCount-1 do begin
+      if i<>j then
+        TControl(Components[i]).RemoveAllHandlersOfObject(TControl(Components[j]));
+  end;
+  end;
   inherited Destroy;
 end;
 
@@ -2914,6 +3135,7 @@ begin
       raise Exception.Create('TAnchorDockMaster.MakeDockable '+Format(
         adrsNotSupportedHasParent, [DbgSName(AControl), DbgSName(AControl)]));
     end;
+    site.UpdateHeaderShowing;
     if (Site<>nil) and Show then
       MakeVisible(Site,BringToFront);
   finally
@@ -3018,7 +3240,8 @@ begin
   i:=Screen.CustomFormCount-1;
   while i>=0 do begin
     AForm:=GetParentForm(Screen.CustomForms[i]);
-    AForm.Hide;
+    if Assigned(AForm)then
+      AForm.Hide;
     i:=Min(i,Screen.CustomFormCount)-1;
   end;
 
@@ -3062,8 +3285,11 @@ begin
   end;
 end;
 
-function GetParentFormOrDockPanel(Control: TControl): TCustomForm;
+function GetParentFormOrDockPanel(Control: TControl; TopForm:Boolean=true): TCustomForm;
+var
+  oldControl: TControl;
 begin
+  oldControl:=Control;
   while (Control <> nil) and (Control.Parent <> nil) do
   begin
     if (Control is TAnchorDockPanel) then
@@ -3076,6 +3302,18 @@ begin
     Result := TCustomForm(Control)
   else
     Result := nil;
+  if not TopForm then begin
+    if Control is TAnchorDockPanel then
+      exit;
+    Control:=oldControl;
+    while (Control <> nil) and (Control.Parent <> nil) do
+    begin
+      Control := Control.Parent;
+      if (Control is TCustomForm) then
+        Break;
+    end;
+    Result := TCustomForm(Control);
+  end;
 end;
 
 procedure TAnchorDockMaster.SaveMainLayoutToTree(LayoutTree: TAnchorDockLayoutTree);
@@ -3088,12 +3326,12 @@ var
   AFormOrDockPanel: TWinControl;
   VisibleControls: TStringList;
 
-  procedure SaveFormOrDockPanel(theFormOrDockPanel: TWinControl; SaveChildren: boolean);
+  procedure SaveFormOrDockPanel(theFormOrDockPanel: TWinControl; SaveChildren: boolean; AMinimized:boolean);
   begin
     // custom dock site
     LayoutNode:=LayoutTree.NewNode(LayoutTree.Root);
     LayoutNode.NodeType:=adltnCustomSite;
-    LayoutNode.Assign(theFormOrDockPanel,theFormOrDockPanel is TAnchorDockPanel);
+    LayoutNode.Assign(theFormOrDockPanel,theFormOrDockPanel is TAnchorDockPanel,AMinimized);
     // can have one normal dock site
     if SaveChildren then
     begin
@@ -3124,7 +3362,7 @@ begin
       debugln(['TAnchorDockMaster.SaveMainLayoutToTree AForm=',DbgSName(AFormOrDockPanel)]);
       DebugWriteChildAnchors(AFormOrDockPanel,true,true);
       if AFormOrDockPanel is TAnchorDockPanel then begin
-        SaveFormOrDockPanel(GetParentFormOrDockPanel(AFormOrDockPanel),{false}true);
+        SaveFormOrDockPanel(GetParentFormOrDockPanel(AFormOrDockPanel),true,false);
         //LayoutNode:=LayoutTree.NewNode(LayoutTree.Root);
         //TAnchorDockPanel(AFormOrDockPanel).SaveLayout(LayoutTree,LayoutNode);
       end else if AFormOrDockPanel is TAnchorDockHostSite then begin
@@ -3132,12 +3370,12 @@ begin
         LayoutNode:=LayoutTree.NewNode(LayoutTree.Root);
         Site.SaveLayout(LayoutTree,LayoutNode);
       end else if IsCustomSite(AFormOrDockPanel) then begin
-        SaveFormOrDockPanel(AFormOrDockPanel,true);
+        SaveFormOrDockPanel(AFormOrDockPanel,true,false);
       end else
         raise EAnchorDockLayoutError.Create('invalid root control for save: '+DbgSName(AControl));
     end;
     // remove invisible controls
-    LayoutTree.Root.Simplify(VisibleControls);
+    LayoutTree.Root.Simplify(VisibleControls,false);
   finally
     VisibleControls.Free;
     SavedSites.Free;
@@ -3157,7 +3395,7 @@ begin
     (AControl as TAnchorDockPanel).SaveLayout(LayoutTree,LayoutTree.Root);
   end else if IsCustomSite(AControl) then begin
     LayoutTree.Root.NodeType:=adltnCustomSite;
-    LayoutTree.Root.Assign(AControl);
+    LayoutTree.Root.Assign(AControl,false,false);
     // can have one normal dock site
     Site:=TAnchorDockManager(AControl.DockManager).GetChildSite;
     if Site<>nil then begin
@@ -3252,7 +3490,7 @@ begin
       debugln(ControlNames.Text);
       {$ENDIF}
       // if some forms/controls could not be created the layout needs to be adapted
-      Tree.Root.Simplify(ControlNames);
+      Tree.Root.Simplify(ControlNames,false);
 
       // reuse existing sites to reduce flickering
       MapTreeToControls(Tree);
@@ -3262,6 +3500,7 @@ begin
 
       // create sites, move controls
       RestoreLayout(Tree,Scale);
+      SetMinimizedState(Tree);
     finally
       EndUpdate;
     end;
@@ -3323,6 +3562,7 @@ begin
   HeaderFlatten                    := Settings.HeaderFlatten;
   HeaderFilled                     := Settings.HeaderFilled;
   HeaderHighlightFocused           := Settings.HeaderHighlightFocused;
+  DockSitesCanBeMinimized          := Settings.DockSitesCanBeMinimized;
 end;
 
 procedure TAnchorDockMaster.SaveSettings(Settings: TAnchorDockSettings);
@@ -3343,6 +3583,7 @@ begin
   Settings.HeaderFlatten:=HeaderFlatten;
   Settings.HeaderFilled:=HeaderFilled;
   Settings.HeaderHighlightFocused:=HeaderHighlightFocused;
+  Settings.DockSitesCanBeMinimized:=DockSitesCanBeMinimized;
 end;
 
 function TAnchorDockMaster.SettingsAreEqual(Settings: TAnchorDockSettings
@@ -3436,8 +3677,11 @@ begin
   if fUpdateCount<=0 then
     RaiseGDBException('');
   dec(fUpdateCount);
-  if fUpdateCount=0 then
+  if fUpdateCount=0 then begin
     SimplifyPendingLayouts;
+    UpdateHeaders;
+    InvalidateHeaders;
+  end;
 end;
 
 function TAnchorDockMaster.IsReleasing(AControl: TControl): Boolean;
@@ -3664,6 +3908,24 @@ begin
   LUIncreaseChangeStamp64(FOptionsChangeStamp);
 end;
 
+procedure TAnchorDockMaster.UpdateHeaders;
+var
+  i: Integer;
+  AControl: TControl;
+  AHostSite: TAnchorDockHostSite;
+begin
+    for i:=0 to ControlCount-1 do begin
+      AControl:=Controls[i];
+      if not DockedControlIsVisible(AControl) then continue;
+      while Assigned(AControl) do
+      begin
+        if AControl is TAnchorDockHostSite then
+          TAnchorDockHostSite(AControl).UpdateHeaderShowing;
+        AControl:=AControl.parent;
+      end;
+    end;
+end;
+
 { TAnchorDockHostSite }
 
 procedure TAnchorDockHostSite.SetHeaderSide(const AValue: TAnchorKind);
@@ -3680,6 +3942,7 @@ begin
     AControl:=TControl(Sender);
     if not (csDestroying in ComponentState) then begin
       if (not AControl.Visible)
+      and (not FMinimized)
       and (not ((AControl is TAnchorDockHeader)
                or (AControl is TAnchorDockSplitter)
                or (AControl is TAnchorDockHostSite)))
@@ -4119,6 +4382,8 @@ begin
 end;
 
 procedure TAnchorDockHostSite.FreePages;
+var
+  i:Integer;
 begin
   FreeAndNil(FPages);
 end;
@@ -4233,6 +4498,14 @@ procedure TAnchorDockHostSite.RemoveControlFromLayout(AControl: TControl);
         akRight: NewBounds.Right:=AControl.Left+AControl.Width;
         akBottom: NewBounds.Bottom:=AControl.Top+AControl.Height;
         end;
+        if (sibling is TAnchorDockHostSite) then
+        if (sibling as TAnchorDockHostSite).FMinimized then begin
+          (sibling as TAnchorDockHostSite).FMinimized:=false;
+          (sibling as TAnchorDockHostSite).FMinimizedControl.Parent:=(sibling as TAnchorDockHostSite);
+          (sibling as TAnchorDockHostSite).FMinimizedControl.Visible:=True;
+          (sibling as TAnchorDockHostSite).FMinimizedControl:=nil;
+          (sibling as TAnchorDockHostSite).UpdateHeaderAlign;
+        end;
         Sibling.BoundsRect:=NewBounds;
       end;
     end;
@@ -4306,6 +4579,13 @@ procedure TAnchorDockHostSite.RemoveControlFromLayout(AControl: TControl);
       FSiteType:=adhstOneControl;
       OnlySiteLeft.Align:=alClient;
       Header.Parent:=Self;
+      if OnlySiteLeft.FMinimized then begin
+        OnlySiteLeft.FMinimized:=false;
+        OnlySiteLeft.FMinimizedControl.Parent:=OnlySiteLeft;
+        OnlySiteLeft.FMinimizedControl.Visible:=True;
+        OnlySiteLeft.FMinimizedControl:=nil;
+        UpdateHeaderAlign;
+      end;
       UpdateHeaderAlign;
 
       //debugln(['TAnchorDockHostSite.RemoveControlFromLayout.ConvertToOneControlType AFTER CONVERT "',Caption,'" to onecontrol OnlySiteLeft="',OnlySiteLeft.Caption,'"']);
@@ -4465,7 +4745,7 @@ begin
     debugln(['TAnchorDockHostSite.Simplify ',DbgSName(Self),' ',DbgSName(AControl)]);
     if AControl is TAnchorDockHostSite then
       SimplifyOneControl
-    else if (AControl=nil) or (csDestroying in AControl.ComponentState) then
+    else if ((AControl=nil) or (csDestroying in AControl.ComponentState)) then
       DockMaster.NeedFree(Self);
   end;
 end;
@@ -4577,7 +4857,8 @@ begin
     Result:=Controls[i];
     if Result.Owner<>Self then exit;
   end;
-  Result:=nil;
+  result:=FMinimizedControl;
+  //Result:=nil;
 end;
 
 function TAnchorDockHostSite.GetSiteCount: integer;
@@ -5165,6 +5446,125 @@ begin
   Result:=Check(Self);
 end;
 
+function CheckOposite(Side:TAnchorKind;AControl: TControl;out Splitter: TAnchorDockSplitter; out SplitterAnchorKind:TAnchorKind):boolean;
+begin
+  result:=GetDockSplitter(AControl,Side,Splitter);
+  if result then begin
+    if CountAnchoredControls(Splitter,OppositeAnchor[Side])=1 then begin
+      SplitterAnchorKind:=Side;
+      exit;
+    end;
+  end;
+  result:=false
+end;
+
+function FindNearestSpliter(AControl: TControl;out Splitter: TAnchorDockSplitter;out SplitterAnchorKind:TAnchorKind):boolean;
+begin
+  result:=CheckOposite(akTop,AControl,Splitter,SplitterAnchorKind);
+  if result then exit;
+  result:=CheckOposite(akRight,AControl,Splitter,SplitterAnchorKind);
+  if result then exit;
+  result:=CheckOposite(akBottom,AControl,Splitter,SplitterAnchorKind);
+  if result then exit;
+  result:=CheckOposite(akLeft,AControl,Splitter,SplitterAnchorKind);
+end;
+
+function TAnchorDockHostSite.CanBeMinimized(out Splitter: TAnchorDockSplitter;
+                                            out SplitterAnchorKind:TAnchorKind):boolean;
+var
+  //AControl: TControl;
+  OpositeDockHostSite:TAnchorDockHostSite;
+  OpositeSplitter: TAnchorDockSplitter;
+begin
+  result:=false;
+  if FindNearestSpliter(self,Splitter,SplitterAnchorKind) then begin
+    OpositeDockHostSite:=CountAndReturnOnlyOneMinimizedAnchoredControls(Splitter,SplitterAnchorKind);
+    if (Splitter.Enabled and (OpositeDockHostSite=nil)) then begin
+      result:=true;
+      if CheckOposite(OppositeAnchorKind[SplitterAnchorKind],self,OpositeSplitter,SplitterAnchorKind) then
+      if Assigned(OpositeSplitter) then
+      if not OpositeSplitter.Enabled then
+        result:=false;
+    end;
+  end;
+end;
+
+procedure TAnchorDockHostSite.MinimizeSite;
+begin
+  //Application.QueueAsyncCall(@AsyncMinimizeSite,0);
+  AsyncMinimizeSite(0);
+end;
+
+procedure TAnchorDockHostSite.AsyncMinimizeSite(Data: PtrInt);
+var
+  AControl: TControl;
+  //OpositeDockHostSite:TAnchorDockHostSite;
+  Splitter: TAnchorDockSplitter;
+  SplitterAnchorKind:TAnchorKind;
+  //SpliterPercentPosition:Single;
+begin
+  fMinimization:=true;
+  debugln(['TAnchorDockHostSite.MinimizeSite ',DbgSName(Self),' SiteType=',dbgs(SiteType)]);
+  if FMinimized then
+    AControl:=FMinimizedControl
+  else
+    AControl:=GetOneControl;
+  if CanBeMinimized(Splitter,SplitterAnchorKind) or FMinimized then begin
+    FMinimized:=not FMinimized;
+    if FMinimized then begin
+      FMinimizedControl:=AControl;
+      AControl.Visible:=False;
+      AControl.Parent:=nil;
+      //self.DoDockOver(); OnDockOver;
+    end else begin
+      AControl.Parent:=self;
+      AControl.Visible:=True;
+      FMinimizedControl:=nil;
+    end;
+    Splitter.Enabled:=AControl.Visible;
+    UpdateHeaderAlign;
+    dockmaster.UpdateHeaders;
+    dockmaster.InvalidateHeaders;
+    Splitter.SetBoundsPercentually;
+  end;
+  fMinimization:=false;
+end;
+
+procedure TAnchorDockHostSite.ShowMinimizedControl;
+var
+  Splitter: TAnchorDockSplitter;
+  SplitterAnchorKind:TAnchorKind;
+  SpliterRect,OverlappingFormRect:TRect;
+begin
+  if FindNearestSpliter(self,Splitter,SplitterAnchorKind) then begin
+    SpliterRect:=Splitter.GetSpliterBoundsWithUnminimizedDockSites;
+    OverlappingFormRect:=BoundsRect;
+    case SplitterAnchorKind of
+         akTop:OverlappingFormRect.Top:=SpliterRect.Bottom;
+        akLeft:OverlappingFormRect.Left:=SpliterRect.Right;
+       akRight:OverlappingFormRect.Right:=SpliterRect.Left;
+      akBottom:OverlappingFormRect.Bottom:=SpliterRect.Top;
+    end;
+    DockMaster.FOverlappingForm:=TAnchorDockOverlappingForm.CreateNew(self);
+    DockMaster.FOverlappingForm.BoundsRect:=OverlappingFormRect;
+    DockMaster.FOverlappingForm.Parent:=GetParentFormOrDockPanel(self,false);
+    DockMaster.FOverlappingForm.AnchorDockHostSite:=self;
+    header.Parent:=DockMaster.FOverlappingForm;
+    FMinimizedControl.Parent:=DockMaster.FOverlappingForm.Panel;
+    FMinimizedControl.Show;
+    DockMaster.ShowOverlappingForm;
+  end;
+end;
+
+procedure TAnchorDockHostSite.HideMinimizedControl;
+begin
+   FMinimizedControl.Hide;
+   header.Parent:=self;
+   header.UpdateHeaderControls;
+   FMinimizedControl.Parent:=nil;
+   FreeAndNil(DockMaster.FOverlappingForm);
+end;
+
 function TAnchorDockHostSite.CloseSite: boolean;
 var
   AControl: TControl;
@@ -5281,21 +5681,24 @@ var
 begin
   if csDestroying in ComponentState then exit;
   NewCaption:='';
-  for i:=0 to ControlCount-1 do begin
-    Child:=Controls[i];
-    if Child=Exclude then continue;
-    if (Child.HostDockSite=Self) or (Child is TAnchorDockHostSite)
-    or (Child is TAnchorDockPageControl) then begin
-      if NewCaption<>'' then
-        NewCaption:=NewCaption+',';
-      NewCaption:=NewCaption+Child.Caption;
+  if FMinimized then
+    NewCaption:=FMinimizedControl.Caption
+  else
+    for i:=0 to ControlCount-1 do begin
+      Child:=Controls[i];
+      if Child=Exclude then continue;
+      if (Child.HostDockSite=Self) or (Child is TAnchorDockHostSite)
+      or (Child is TAnchorDockPageControl) then begin
+        if NewCaption<>'' then
+          NewCaption:=NewCaption+',';
+        NewCaption:=NewCaption+Child.Caption;
+      end;
     end;
-  end;
   OldCaption:=Caption;
   Caption:=NewCaption;
   //debugln(['TAnchorDockHostSite.UpdateDockCaption Caption="',Caption,'" NewCaption="',NewCaption,'" HasParent=',Parent<>nil,' ',DbgSName(Header)]);
-  if ((Parent=nil) and DockMaster.HideHeaderCaptionFloatingControl)
-  or (not DockMaster.ShowHeaderCaption) then
+  if {((Parent=nil) and DockMaster.HideHeaderCaptionFloatingControl)
+  or (not DockMaster.ShowHeaderCaption)}false then
     Header.Caption:=''
   else
     Header.Caption:=Caption;
@@ -5306,9 +5709,8 @@ begin
     if Parent is TAnchorDockPage then
       TAnchorDockPage(Parent).UpdateDockCaption;
   end;
-
   // do not show close button for mainform
-  Header.CloseButton.Visible:=not IsParentOf(Application.MainForm);
+  Header.CloseButton.Visible:=(not IsParentOf(Application.MainForm));
 end;
 
 procedure TAnchorDockHostSite.GetSiteInfo(Client: TControl;
@@ -5339,7 +5741,8 @@ begin
   end;
 
   CanDock:=(Client is TAnchorDockHostSite)
-           and not DockMaster.AutoFreedIfControlIsRemoved(Self,Client);
+           and not DockMaster.AutoFreedIfControlIsRemoved(Self,Client)
+           and not FMinimized;
   //debugln(['TAnchorDockHostSite.GetSiteInfo ',DbgSName(Self),' ',dbgs(BoundsRect),' ',Caption,' CanDock=',CanDock,' PtIn=',PtInRect(InfluenceRect,MousePos)]);
 
   if Assigned(OnGetSiteInfo) then
@@ -5362,9 +5765,20 @@ begin
 end;
 
 procedure TAnchorDockHostSite.UpdateHeaderAlign;
+var
+  NeededHeaderPosition:TADLHeaderPosition;
+  Splitter: TAnchorDockSplitter;
+  SplitterAnchorKind:TAnchorKind;
 begin
   if Header=nil then exit;
-  case Header.HeaderPosition of
+  if FMinimized then begin
+    if FindNearestSpliter(self,Splitter,SplitterAnchorKind) then begin
+      NeededHeaderPosition:=OppositeAnchorKind2TADLHeaderPosition[SplitterAnchorKind];
+    end else
+      NeededHeaderPosition:=Header.HeaderPosition;
+  end else
+    NeededHeaderPosition:=Header.HeaderPosition;
+  case NeededHeaderPosition of
   adlhpAuto:
     if Header.Align in [alLeft,alRight] then begin
       if (ClientHeight>0)
@@ -5388,10 +5802,16 @@ begin
 end;
 
 procedure TAnchorDockHostSite.UpdateHeaderShowing;
+var
+  Splitter: TAnchorDockSplitter;
+  SplitterAnchorKind:TAnchorKind;
 begin
   if Header=nil then exit;
-  if HeaderNeedsShowing then
-    Header.Parent:=Self
+  if HeaderNeedsShowing then begin
+    Header.Parent:=Self;
+    Header.MinimizeButton.Visible:=(DockMaster.DockSitesCanBeMinimized and CanBeMinimized(Splitter,SplitterAnchorKind))or FMinimized;
+    Header.MinimizeButton.Parent:=Header;
+  end
   else
     Header.Parent:=nil;
 end;
@@ -5415,6 +5835,31 @@ begin
   Result:=(fUpdateLayout>0) or (csDestroying in ComponentState);
 end;
 
+function AcceptAlign(Site:TAnchorDockHostSite; AlignCandidate:TAlign):TAlign;
+var
+  i:integer;
+  Splitter: TAnchorDockSplitter;
+  SplitterAnchorKind:TAnchorKind;
+  MinimizedSiteAlign:TAlign;
+begin
+  for i:=0 to Site.ControlCount-1 do
+    if Site.Controls[i] is TAnchorDockHostSite then
+      if (Site.Controls[i] as TAnchorDockHostSite).FMinimized then begin
+        if FindNearestSpliter(Site.Controls[i] as TAnchorDockHostSite,Splitter,SplitterAnchorKind) then begin
+          MinimizedSiteAlign:=OppositeAnchorKind2Align[SplitterAnchorKind];
+          if AlignCandidate=MinimizedSiteAlign then
+            exit(alNone);
+        end
+      end;
+  result:=AlignCandidate;
+end;
+
+function TAnchorDockHostSite.GetDockEdge(const MousePos: TPoint): TAlign;
+begin
+  result:=inherited;
+  result:=AcceptAlign(self,result);
+end;
+
 procedure TAnchorDockHostSite.SaveLayout(
   LayoutTree: TAnchorDockLayoutTree; LayoutNode: TAnchorDockLayoutTreeNode);
 var
@@ -5432,7 +5877,7 @@ begin
   if (SiteType=adhstOneControl) and (OneControl<>nil)
   and (not (OneControl is TAnchorDockHostSite)) then begin
     LayoutNode.NodeType:=adltnControl;
-    LayoutNode.Assign(Self);
+    LayoutNode.Assign(Self,false,FMinimized);
     LayoutNode.Name:=OneControl.Name;
     LayoutNode.HeaderPosition:=Header.HeaderPosition;
   end else if (SiteType in [adhstLayout,adhstOneControl]) then begin
@@ -5450,7 +5895,7 @@ begin
         Splitter.SaveLayout(ChildNode);
       end;
     end;
-    LayoutNode.Assign(Self);
+    LayoutNode.Assign(Self,false,FMinimized);
     LayoutNode.HeaderPosition:=Header.HeaderPosition;
   end else if SiteType=adhstPages then begin
     LayoutNode.NodeType:=adltnPages;
@@ -5461,7 +5906,7 @@ begin
         Site.SaveLayout(LayoutTree,ChildNode);
       end;
     end;
-    LayoutNode.Assign(Self);
+    LayoutNode.Assign(Self,false,FMinimized);
     LayoutNode.HeaderPosition:=Header.HeaderPosition;
   end else
     LayoutNode.NodeType:=adltnNone;
@@ -5476,6 +5921,9 @@ end;
 constructor TAnchorDockHostSite.CreateNew(AOwner: TComponent; Num: Integer);
 begin
   inherited CreateNew(AOwner,Num);
+  FMinimized:=false;
+  fMinimization:=false;
+  FMinimizedControl:=Nil;
   Visible:=false;
   FHeaderSide:=akTop;
   FHeader:=DockMaster.HeaderClass.Create(Self);
@@ -5490,13 +5938,13 @@ begin
 end;
 
 destructor TAnchorDockHostSite.Destroy;
-//var i: Integer;
+var i: Integer;
 begin
-  //debugln(['TAnchorDockHostSite.Destroy ',DbgSName(Self),' Caption="',Caption,'" Self=',dbgs(Pointer(Self)),' ComponentCount=',ComponentCount,' ControlCount=',ControlCount]);
-  {for i:=0 to ComponentCount-1 do
+  debugln(['TAnchorDockHostSite.Destroy ',DbgSName(Self),' Caption="',Caption,'" Self=',dbgs(Pointer(Self)),' ComponentCount=',ComponentCount,' ControlCount=',ControlCount]);
+  for i:=0 to ComponentCount-1 do
     debugln(['TAnchorDockHostSite.Destroy Component ',i,'/',ComponentCount,' ',DbgSName(Components[i])]);
   for i:=0 to ControlCount-1 do
-    debugln(['TAnchorDockHostSite.Destroy Control ',i,'/',ControlCount,' ',DbgSName(Controls[i])]);}
+    debugln(['TAnchorDockHostSite.Destroy Control ',i,'/',ControlCount,' ',DbgSName(Controls[i])]);
   FreePages;
   inherited Destroy;
 end;
@@ -5562,10 +6010,31 @@ begin
 end;
 
 procedure TAnchorDockHeader.CloseButtonClick(Sender: TObject);
+var
+  HeaderParent:TAnchorDockHostSite;
 begin
-  if Parent is TAnchorDockHostSite then begin
-    DockMaster.RestoreLayouts.Add(DockMaster.CreateRestoreLayout(Parent),true);
-    TAnchorDockHostSite(Parent).CloseSite;
+  TWinControl(HeaderParent):=Parent;
+  if HeaderParent=TWinControl(DockMaster.FOverlappingForm) then begin
+    HeaderParent:=DockMaster.FOverlappingForm.AnchorDockHostSite;
+    HeaderParent.HideMinimizedControl;
+  end;
+  if HeaderParent is TAnchorDockHostSite then begin
+    DockMaster.RestoreLayouts.Add(DockMaster.CreateRestoreLayout(HeaderParent),true);
+    HeaderParent.CloseSite;
+  end;
+end;
+
+procedure TAnchorDockHeader.MinimizeButtonClick(Sender: TObject);
+var
+  HeaderParent:TAnchorDockHostSite;
+begin
+  TWinControl(HeaderParent):=Parent;
+  if HeaderParent=TWinControl(DockMaster.FOverlappingForm) then begin
+    HeaderParent:=DockMaster.FOverlappingForm.AnchorDockHostSite;
+    HeaderParent.HideMinimizedControl;
+  end;
+  if HeaderParent is TAnchorDockHostSite then begin
+    HeaderParent.MinimizeSite;
   end;
 end;
 
@@ -5635,9 +6104,16 @@ begin
 
   if CloseButton.IsControlVisible and (CloseButton.Parent=Self) then begin
     if Align in [alLeft,alRight] then
-      r.Top:=CloseButton.Top+CloseButton.Height+1
+      r.Top:=CloseButton.Top+CloseButton.Height+ButtonBorderSpacingAround
     else
-      r.Right:=CloseButton.Left-1;
+      r.Right:=CloseButton.Left-ButtonBorderSpacingAround;
+  end;
+
+  if MinimizeButton.IsControlVisible and (MinimizeButton.Parent=Self) then begin
+    if Align in [alLeft,alRight] then
+      r.Top:=MinimizeButton.Top+MinimizeButton.Height+ButtonBorderSpacingAround
+    else
+      r.Right:=MinimizeButton.Left-ButtonBorderSpacingAround;
   end;
 
   // caption
@@ -5728,26 +6204,127 @@ begin
     end else begin
       PreferredHeight:=Max(NeededHeight,PreferredHeight);
     end;
+  end else begin
+    NeededHeight:=CloseButton.Height;
+    if Align in [alLeft,alRight] then begin
+      PreferredWidth:=Max(NeededHeight,PreferredWidth);
+    end else begin
+      PreferredHeight:=Max(NeededHeight,PreferredHeight);
+  end;
   end;
 end;
 
 procedure TAnchorDockHeader.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
+var
+  SiteMinimized:Boolean;
 begin
   inherited MouseDown(Button, Shift, X, Y);
-  if (Button=mbLeft) and DockMaster.AllowDragging then
-    DragManager.DragStart(Parent,false,DockMaster.DragTreshold);
+  SiteMinimized:=False;
+  fUseTimer:=false;
+  StopMouseNoMoveTimer;
+  if Parent is TAnchorDockHostSite then
+    SiteMinimized:=(Parent as TAnchorDockHostSite).FMinimized;
+  if SiteMinimized then begin
+    DoMouseNoMoveTimer(nil);
+  end else
+    begin
+      if parent<>nil then
+        if DockMaster.FOverlappingForm<>nil then
+          //if parent=DockMaster.FOverlappingForm.Panel then
+            DockMaster.HideOverlappingForm(nil);
+      if (Button=mbLeft) and (DockMaster.AllowDragging) and (DockMaster.FOverlappingForm=nil) then
+        DragManager.DragStart(Parent,false,DockMaster.DragTreshold);
+    end;
+end;
+
+procedure  TAnchorDockHeader.MouseMove(Shift: TShiftState; X,Y: Integer);
+begin
+  inherited MouseMove(Shift, X, Y);
+  if parent<>nil then
+    if parent is TAnchorDockHostSite then
+      if (parent as TAnchorDockHostSite).FMinimized then
+        if DockMaster.FOverlappingForm=nil then
+          if FMouseTimeStartX=EmptyMouseTimeStartX then
+            StartMouseNoMoveTimer(X, Y)
+          else begin
+            if (abs(FMouseTimeStartX-X)>MouseNoMoveDelta) or (abs(FMouseTimeStartY-Y)>MouseNoMoveDelta)then
+            StopMouseNoMoveTimer;
+          end;
+  if (parent is TAnchorDockHostSite) and (DockMaster.FOverlappingForm=nil)then
+    fUseTimer:=true;
+end;
+
+procedure TAnchorDockHeader.MouseLeave;
+begin
+  inherited;
+  StopMouseNoMoveTimer;
+end;
+
+procedure TAnchorDockHeader.StartMouseNoMoveTimer(X, Y: Integer);
+begin
+  if fUseTimer then begin
+    if DockTimer.Enabled then DockTimer.Enabled:=false;
+    DockTimer.Interval:=MouseNoMoveTime;
+    DockTimer.OnTimer:=@DoMouseNoMoveTimer;
+    DockTimer.Enabled:=true;
+  end;
+end;
+
+procedure TAnchorDockHeader.StopMouseNoMoveTimer;
+begin
+  FMouseTimeStartX:=EmptyMouseTimeStartX;
+  DockTimer.OnTimer:=nil;
+  DockTimer.Enabled:=false;
+end;
+
+procedure TAnchorDockHeader.DoMouseNoMoveTimer(Sender: TObject);
+begin
+  StopMouseNoMoveTimer;
+  //if fUseTimer then
+    if parent<>nil then
+      if parent is TAnchorDockHostSite then
+        if (parent as TAnchorDockHostSite).FMinimized then
+          (parent as TAnchorDockHostSite).ShowMinimizedControl;
 end;
 
 procedure TAnchorDockHeader.UpdateHeaderControls;
 begin
   if Align in [alLeft,alRight] then begin
-    if CloseButton<>nil then
-      CloseButton.Align:=alTop;
+    if CloseButton<>nil then begin
+      //MinimizeButton.Align:=alTop;
+      //CloseButton.Align:=alTop;
+      CloseButton.AnchorSide[akRight].Side := asrCenter;
+      CloseButton.AnchorSide[akRight].Control := self;
+      CloseButton.AnchorSide[akTop].Side := asrTop;
+      CloseButton.AnchorSide[akTop].Control := self;
+      CloseButton.Anchors := CloseButton.Anchors + [akTop] + [akRight];
+
+      MinimizeButton.AnchorSide[akRight].Side := asrCenter;
+      MinimizeButton.AnchorSide[akRight].Control := CloseButton;
+      MinimizeButton.AnchorSide[akTop].Side := asrBottom;
+      MinimizeButton.AnchorSide[akTop].Control := CloseButton;
+      MinimizeButton.Anchors := MinimizeButton.Anchors + [akTop] + [akRight];
+    end;
   end else begin
-    if CloseButton<>nil then
-      CloseButton.Align:=alRight;
+    if CloseButton<>nil then begin
+      //MinimizeButton.Align:=alRight;
+      //CloseButton.Align:=alRight;
+      CloseButton.AnchorSide[akRight].Side := asrRight;
+      CloseButton.AnchorSide[akRight].Control := self;
+      CloseButton.AnchorSide[akTop].Side := asrCenter;
+      CloseButton.AnchorSide[akTop].Control := self;
+      CloseButton.Anchors := CloseButton.Anchors - [akLeft] + [akRight];
+
+      MinimizeButton.AnchorSide[akRight].Side := asrLeft;
+      MinimizeButton.AnchorSide[akRight].Control := CloseButton;
+      MinimizeButton.AnchorSide[akTop].Side := asrCenter;
+      MinimizeButton.AnchorSide[akTop].Control := CloseButton;
+      MinimizeButton.Anchors := MinimizeButton.Anchors - [akLeft] + [akRight];
+    end;
   end;
+  CloseButton.BorderSpacing.Around:=ButtonBorderSpacingAround;
+  MinimizeButton.BorderSpacing.Around:=ButtonBorderSpacingAround;
   //debugln(['TAnchorDockHeader.UpdateHeaderControls ',dbgs(Align),' ',dbgs(CloseButton.Align)]);
 end;
 
@@ -5787,9 +6364,9 @@ constructor TAnchorDockHeader.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FHeaderPosition:=adlhpAuto;
-  FCloseButton:=TAnchorDockCloseButton.Create(Self);
   BevelOuter:=bvNone;
   BorderWidth:=0;
+  FCloseButton:=TAnchorDockCloseButton.Create(Self);
   with FCloseButton do begin
     Name:='CloseButton';
     Parent:=Self;
@@ -5799,11 +6376,23 @@ begin
     OnClick:=@CloseButtonClick;
     AutoSize:=true;
   end;
+  FMinimizeButton:=TAnchorDockMinimizeButton.Create(Self);
+  with FMinimizeButton do begin
+    Name:='MinimizeButton';
+    Parent:=Self;
+    Flat:=true;
+    ShowHint:=true;
+    Hint:=adrsMinimize;
+    OnClick:=@MinimizeButtonClick;
+    AutoSize:=true;
+  end;
   Align:=alTop;
   AutoSize:=true;
   ShowHint:=true;
   PopupMenu:=DockMaster.GetPopupMenu;
   fFocused:=false;
+  FMouseTimeStartX:=EmptyMouseTimeStartX;
+  fUseTimer:=true;
 end;
 
 { TAnchorDockCloseButton }
@@ -5830,6 +6419,31 @@ begin
   Result := ThemeServices.GetElementDetails(WindowPart);
 end;
 
+procedure SizeCorrector(var current,recomend:integer);
+begin
+  if recomend<0 then begin
+    if current>0 then
+      recomend:=current
+    else
+      current:=HardcodedButtonSize;
+  end else begin
+      if current>recomend then
+        current:=recomend
+      else begin
+        if current>0 then
+         recomend:=current
+        else
+         current:=recomend;
+      end;
+  end;
+end;
+
+procedure ButtonSizeCorrector(var w,h:integer);
+begin
+  SizeCorrector(w,PreferredButtonWidth);
+  SizeCorrector(h,PreferredButtonHeight);
+end;
+
 procedure TAnchorDockCloseButton.CalculatePreferredSize(var PreferredWidth,
   PreferredHeight: integer; WithThemeSpace: Boolean);
 begin
@@ -5837,6 +6451,46 @@ begin
   begin
     PreferredWidth:=cx;
     PreferredHeight:=cy;
+    ButtonSizeCorrector(PreferredWidth,PreferredHeight);
+    {$IF defined(LCLGtk2) or defined(Carbon)}
+    inc(PreferredWidth,2);
+    inc(PreferredHeight,2);
+    {$ENDIF}
+  end;
+end;
+
+{ TAnchorDockMinimizeButton }
+
+function TAnchorDockMinimizeButton.GetDrawDetails: TThemedElementDetails;
+
+function WindowPart: TThemedWindow;
+  begin
+    // no check states available
+    Result := twMinButtonNormal;
+    if not IsEnabled then
+      Result := {$IFDEF LCLGtk2}twMDIRestoreButtonDisabled{$ELSE}twMinButtonDisabled{$ENDIF}
+    else
+    if FState in [bsDown, bsExclusive] then
+      Result := {$IFDEF LCLGtk2}twMDIRestoreButtonPushed{$ELSE}twMinButtonPushed{$ENDIF}
+    else
+    if FState = bsHot then
+      Result := {$IFDEF LCLGtk2}twMDIRestoreButtonHot{$ELSE}twMinButtonHot{$ENDIF}
+    else
+      Result := {$IFDEF LCLGtk2}twMDIRestoreButtonNormal{$ELSE}twMinButtonNormal{$ENDIF};
+  end;
+
+begin
+  Result := ThemeServices.GetElementDetails(WindowPart);
+end;
+
+procedure TAnchorDockMinimizeButton.CalculatePreferredSize(var PreferredWidth,
+  PreferredHeight: integer; WithThemeSpace: Boolean);
+begin
+  with ThemeServices.GetDetailSize(ThemeServices.GetElementDetails({$IFDEF LCLGtk2}twMDIRestoreButtonNormal{$ELSE}twMinButtonNormal{$ENDIF})) do
+  begin
+    PreferredWidth:=cx;
+    PreferredHeight:=cy;
+    ButtonSizeCorrector(PreferredWidth,PreferredHeight);
     {$IF defined(LCLGtk2) or defined(Carbon)}
     inc(PreferredWidth,2);
     inc(PreferredHeight,2);
@@ -6213,6 +6867,9 @@ begin
   ClientRectChanged:=(WidthDiff<>0) or (HeightDiff<>0);
   if ClientRectChanged or PreferredSiteSizeAsSiteMinimum then
     AlignChilds;
+  if ClientRectChanged then
+    if DockMaster.FOverlappingForm<>nil then
+      DockMaster.HideOverlappingForm(nil);
 end;
 
 procedure TAnchorDockManager.SaveToStream(Stream: TStream);
@@ -6287,6 +6944,11 @@ begin
       ADockObject.DropOnControl:=Site
     else
       ADockObject.DropOnControl:=nil;
+    if Site is TAnchorDockHostSite then begin
+      ADockObject.DropAlign:=AcceptAlign(Site as TAnchorDockHostSite,ADockObject.DropAlign);
+      if ADockObject.DropAlign=alNone then
+        exit(false);
+    end;
   end;
   //debugln(['TAnchorDockManager.GetDockEdge ADockObject.DropAlign=',dbgs(ADockObject.DropAlign),' DropOnControl=',DbgSName(ADockObject.DropOnControl)]);
   Result:=true;
@@ -6505,32 +7167,67 @@ end;
 procedure TAnchorDockSplitter.SetBoundsPercentually;
 var
   NewLeft, NewTop: Integer;
+  AControl: TControl;
+  SplitterAnchorKind:TAnchorKind;
 begin
-  if ResizeAnchor in [akLeft,akRight] then
-  begin
-    if DockParentClientSize.cx> 0 then
+  if Enabled then begin
+    if ResizeAnchor in [akLeft,akRight] then
     begin
-      if (FPercentPosition > 0) or SameValue(FPercentPosition, 0) then
-        NewLeft := Round(FPercentPosition*Parent.ClientWidth)
-      else
-        NewLeft := (DockBounds.Left*Parent.ClientWidth) div DockParentClientSize.cx;
-      NewTop := Top;
-      SetBoundsKeepDockBounds(NewLeft,NewTop,Width,Height);
+      if DockParentClientSize.cx > 0 then
+      begin
+        if (FPercentPosition > 0) or SameValue(FPercentPosition, 0) then
+          NewLeft := Round(FPercentPosition*Parent.ClientWidth)
+        else
+          NewLeft := (DockBounds.Left*Parent.ClientWidth) div DockParentClientSize.cx;
+        NewTop := Top;
+        SetBoundsKeepDockBounds(NewLeft,NewTop,Width,Height);
+      end;
+    end else
+    begin
+      if DockParentClientSize.cy > 0 then
+      begin
+        NewLeft := Left;
+        if (FPercentPosition > 0) or SameValue(FPercentPosition, 0) then
+          NewTop := Round(FPercentPosition*Parent.ClientHeight)
+        else
+          NewTop := (DockBounds.Top*Parent.ClientHeight) div DockParentClientSize.cy;
+        SetBoundsKeepDockBounds(NewLeft,NewTop,Width,Height);
+      end;
     end;
-  end else
-  begin
-    if DockParentClientSize.cy> 0 then
-    begin
-      NewLeft := Left;
-      if (FPercentPosition > 0) or SameValue(FPercentPosition, 0) then
-        NewTop := Round(FPercentPosition*Parent.ClientHeight)
-      else
-        NewTop := (DockBounds.Top*Parent.ClientHeight) div DockParentClientSize.cy;
+    if FPercentPosition < 0 then
+      UpdatePercentPosition;
+  end else begin
+    SplitterAnchorKind:=akTop;
+    AControl:=CountAndReturnOnlyOneMinimizedAnchoredControls(self,SplitterAnchorKind);
+    if AControl=nil then begin
+      SplitterAnchorKind:=akRight;
+      AControl:=CountAndReturnOnlyOneMinimizedAnchoredControls(self,SplitterAnchorKind);
+    end;
+    if AControl=nil then begin
+      SplitterAnchorKind:=akBottom;
+      AControl:=CountAndReturnOnlyOneMinimizedAnchoredControls(self,SplitterAnchorKind);
+    end;
+    if AControl=nil then begin
+      SplitterAnchorKind:=akLeft;
+      AControl:=CountAndReturnOnlyOneMinimizedAnchoredControls(self,SplitterAnchorKind);
+    end;
+
+    if AControl is TAnchorDockHostSite then begin
+      (AControl as TAnchorDockHostSite).UpdateHeaderAlign;
+      NewTop := (AControl as TAnchorDockHostSite).Header.Left;
+      NewTop := (AControl as TAnchorDockHostSite).Header.Height;
+      NewLeft := left;
+      NewTop := top;
+      (AControl as TAnchorDockHostSite).UpdateHeaderAlign;
+      case SplitterAnchorKind of
+        akTop: NewTop := AControl.Top+(AControl as TAnchorDockHostSite).Header.Height;
+        akBottom: NewTop := AControl.Top+AControl.Height-(AControl as TAnchorDockHostSite).Header.Height-Height;
+        akLeft: NewLeft := AControl.Left+(AControl as TAnchorDockHostSite).Header.Width;
+        akRight: NewLeft := AControl.Left+AControl.Width-(AControl as TAnchorDockHostSite).Header.Width-Width;
+      end;
       SetBoundsKeepDockBounds(NewLeft,NewTop,Width,Height);
     end;
   end;
-  if FPercentPosition < 0 then
-    UpdatePercentPosition;
 end;
 
 function TAnchorDockSplitter.SideAnchoredControlCount(Side: TAnchorKind): integer;
@@ -6560,14 +7257,47 @@ begin
   end;
 end;
 
+function TAnchorDockSplitter.GetSpliterBoundsWithUnminimizedDockSites:TRect;
+var
+  NewLeft, NewTop: Integer;
+begin
+  if ResizeAnchor in [akLeft,akRight] then
+  begin
+    if DockParentClientSize.cx > 0 then
+    begin
+      if (FPercentPosition > 0) or SameValue(FPercentPosition, 0) then
+        NewLeft := Round(FPercentPosition*Parent.ClientWidth)
+      else
+        NewLeft := (DockBounds.Left*Parent.ClientWidth) div DockParentClientSize.cx;
+      NewTop := Top;
+    end;
+  end else
+  begin
+    if DockParentClientSize.cy > 0 then
+    begin
+      NewLeft := Left;
+      if (FPercentPosition > 0) or SameValue(FPercentPosition, 0) then
+        NewTop := Round(FPercentPosition*Parent.ClientHeight)
+      else
+        NewTop := (DockBounds.Top*Parent.ClientHeight) div DockParentClientSize.cy;
+    end;
+  end;
+  result:=Rect(NewLeft,NewTop,NewLeft+Width,NewTop+Height);
+end;
+
 procedure TAnchorDockSplitter.SaveLayout(
   LayoutNode: TAnchorDockLayoutTreeNode);
+var
+  NewLeft, NewTop: Integer;
 begin
   if ResizeAnchor in [akLeft,akRight] then
     LayoutNode.NodeType:=adltnSplitterVertical
   else
     LayoutNode.NodeType:=adltnSplitterHorizontal;
-  LayoutNode.Assign(Self);
+  LayoutNode.Assign(Self,false,false);
+  if not Enabled then begin
+    LayoutNode.BoundsRect:=GetSpliterBoundsWithUnminimizedDockSites;
+  end
 end;
 
 function TAnchorDockSplitter.HasOnlyOneSibling(Side: TAnchorKind; MinPos,
@@ -6645,7 +7375,7 @@ var
 begin
   inherited MouseDown(Button, Shift, X, Y);
   ATabIndex := IndexOfPageAt(X, Y);
-  if (Button = mbLeft) and DockMaster.AllowDragging and (ATabIndex >= 0) then
+  if (Button = mbLeft) and DockMaster.AllowDragging and (ATabIndex >= 0) and (DockMaster.FOverlappingForm=nil) then
   begin
     APage:=Page[ATabIndex];
     if (APage.ControlCount>0) and (APage.Controls[0] is TAnchorDockHostSite) then
@@ -6782,6 +7512,20 @@ begin
   PopupMenu:=DockMaster.GetPopupMenu;
 end;
 
+{ TAnchorDockOverlappingForm }
+
+constructor TAnchorDockOverlappingForm.CreateNew(AOwner: TComponent; Num: Integer = 0);
+begin
+  inherited;
+  BorderStyle:=bsNone;
+  AnchorDockHostSite:=nil;
+  Panel:=TPanel.Create(self);
+  Panel.BorderStyle:=bsSingle;
+  Panel.Align:=alClient;
+  Panel.Parent:=self;
+  Panel.Visible:=true;
+end;
+
 { TAnchorDockPage }
 
 procedure TAnchorDockPage.UpdateDockCaption(Exclude: TControl);
@@ -6835,9 +7579,11 @@ end;
 
 initialization
   DockMaster:=TAnchorDockMaster.Create(nil);
+  DockTimer:=TTimer.Create(nil);
 
 finalization
   FreeAndNil(DockMaster);
+  FreeAndNil(DockTimer);
 
 end.
 

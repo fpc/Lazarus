@@ -37,6 +37,7 @@ type
     HeaderStyleLabel: TLabel;
     HideHeaderCaptionForFloatingCheckBox: TCheckBox;
     HighlightFocusedCheckBox: TCheckBox;
+    DockSitesCanBeMinimized: TCheckBox;
     ScaleOnResizeCheckBox: TCheckBox;
     ShowHeaderCaptionCheckBox: TCheckBox;
     ShowHeaderCheckBox: TCheckBox;
@@ -202,7 +203,7 @@ begin
 
       HeaderAlignTopSpinEdit.Visible:=true;
       HeaderAlignTopTrackBar.Visible:=false;
-      HeaderAlignTopSpinEdit.AnchorToNeighbour(akTop,6,HighlightFocusedCheckBox);
+      HeaderAlignTopSpinEdit.AnchorToNeighbour(akTop,6,DockSitesCanBeMinimized);
       HeaderAlignTopLabel.AnchorVerticalCenterTo(HeaderAlignTopSpinEdit);
       UpdateHeaderAlignTopLabel;
 
@@ -299,6 +300,7 @@ begin
   HeaderStyleLabel.Enabled:=HasHeaders;
   HeaderStyleComboBox.Enabled:=HasHeaders;
   HighlightFocusedCheckBox.Enabled:=HasHeaders;
+  DockSitesCanBeMinimized.Enabled:=HasHeaders;
 end;
 
 constructor TAnchorDockOptionsFrame.Create(TheOwner: TComponent);
@@ -356,6 +358,7 @@ begin
   TheSettings.HeaderFilled:=FilledHeadersCheckBox.Checked;
   TheSettings.HeaderStyle:=TADHeaderStyle(HeaderStyleComboBox.ItemIndex);
   TheSettings.HeaderHighlightFocused:=HighlightFocusedCheckBox.Checked;
+  TheSettings.DockSitesCanBeMinimized:=DockSitesCanBeMinimized.Checked;
 end;
 
 procedure TAnchorDockOptionsFrame.LoadFromSettings(
@@ -429,6 +432,10 @@ begin
   HighlightFocusedCheckBox.Checked:=TheSettings.HeaderHighlightFocused;
   HighlightFocusedCheckBox.Caption:=adrsHighlightFocused;
   HighlightFocusedCheckBox.Hint:=adrsHighlightFocusedHint;
+
+  DockSitesCanBeMinimized.Checked:=TheSettings.DockSitesCanBeMinimized;
+  DockSitesCanBeMinimized.Caption:=adrsDockSitesCanBeMinimized;
+  DockSitesCanBeMinimized.Hint:=adrsDockSitesCanBeMinimizedHint;
 end;
 
 end.

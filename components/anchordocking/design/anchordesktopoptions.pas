@@ -272,7 +272,7 @@ begin
         // custom dock site
         LayoutNode:=FTree.NewNode(FTree.Root);
         LayoutNode.NodeType:=adltnCustomSite;
-        LayoutNode.Assign(AForm);
+        LayoutNode.Assign(AForm,false,false);
         // can have one normal dock site
         Site:=TAnchorDockManager(AForm.DockManager).GetChildSite;
         if Site<>nil then begin
@@ -287,7 +287,7 @@ begin
         raise EAnchorDockLayoutError.Create('invalid root control for save: '+DbgSName(AControl));
     end;
     // remove invisible controls
-    FTree.Root.Simplify(VisibleControls);
+    FTree.Root.Simplify(VisibleControls,false);
   finally
     VisibleControls.Free;
     SavedSites.Free;
