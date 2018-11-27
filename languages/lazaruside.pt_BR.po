@@ -3212,7 +3212,7 @@ msgstr "Carregar &padrão"
 
 #: lazarusidestrconsts.dlgpodpiawareness
 msgid "DPI awareness"
-msgstr "reconhecimento DPI"
+msgstr "A par do DPI"
 
 #: lazarusidestrconsts.dlgpodpiawarenessoff
 msgid "off"
@@ -3269,7 +3269,7 @@ msgstr "&Carregar ícone"
 
 #: lazarusidestrconsts.dlgpolongpathaware
 msgid "Long path awareness"
-msgstr ""
+msgstr "A par de caminhos longos"
 
 #: lazarusidestrconsts.dlgpomisc
 msgctxt "lazarusidestrconsts.dlgpomisc"
@@ -14427,7 +14427,7 @@ msgstr "diretório de saída de %s contém fonte de unidade pascal \"%s\""
 
 #: lazarusidestrconsts.lisoutputfilenameofproject
 msgid "Output filename of project"
-msgstr ""
+msgstr "Nome de arquivo de saída do projeto"
 
 #: lazarusidestrconsts.lisoverridelanguage
 msgid "Override language. For example --language=de. For possible values see files in the languages directory."
