@@ -5,6 +5,10 @@ msgstr "Content-Type: text/plain; charset=UTF-8"
 msgid "A free side of a splitter must not be anchored: Node=\"%s\" Type=%s Anchors[%s]=\"%s\""
 msgstr ""
 
+#: anchordockstr.adrsallowdocksitestobeminimized
+msgid "Allow dock sites to be minimized"
+msgstr ""
+
 #: anchordockstr.adrsamountofpixelthemousehastodragbeforedragstarts
 msgid "Amount of pixel the mouse has to drag before drag starts"
 msgstr ""
@@ -139,6 +143,10 @@ msgstr ""
 
 #: anchordockstr.adrsmerge
 msgid "Merge"
+msgstr ""
+
+#: anchordockstr.adrsminimize
+msgid "Minimize"
 msgstr ""
 
 #: anchordockstr.adrsmissingcontrolname

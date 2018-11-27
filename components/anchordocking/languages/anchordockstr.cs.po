@@ -18,6 +18,10 @@ msgstr ""
 msgid "A free side of a splitter must not be anchored: Node=\"%s\" Type=%s Anchors[%s]=\"%s\""
 msgstr "Volná strana děliče nesmí být ukotvena: Uzel=\"%s\" Typ=%s Kotvy[%s]=\"%s\""
 
+#: anchordockstr.adrsallowdocksitestobeminimized
+msgid "Allow dock sites to be minimized"
+msgstr ""
+
 #: anchordockstr.adrsamountofpixelthemousehastodragbeforedragstarts
 msgid "Amount of pixel the mouse has to drag before drag starts"
 msgstr "Počet pixelů které musí myš táhnout, než posouvání začne"
@@ -155,6 +159,10 @@ msgstr "Uzamčeno"
 #: anchordockstr.adrsmerge
 msgid "Merge"
 msgstr "Sloučit"
+
+#: anchordockstr.adrsminimize
+msgid "Minimize"
+msgstr ""
 
 #: anchordockstr.adrsmissingcontrolname
 msgid "missing control name"

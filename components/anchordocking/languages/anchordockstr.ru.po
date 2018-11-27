@@ -15,6 +15,10 @@ msgstr ""
 msgid "A free side of a splitter must not be anchored: Node=\"%s\" Type=%s Anchors[%s]=\"%s\""
 msgstr "Свободная сторона разделителя не должна иметь привязки: Узел=\"%s\" Тип=%s Anchors[%s]=\"%s\""
 
+#: anchordockstr.adrsallowdocksitestobeminimized
+msgid "Allow dock sites to be minimized"
+msgstr "Разрешать областям стыковки сворачиваться"
+
 #: anchordockstr.adrsamountofpixelthemousehastodragbeforedragstarts
 msgid "Amount of pixel the mouse has to drag before drag starts"
 msgstr "Число пикселов, на которые должна переместиться мышь для начала операции перетаскивания"
@@ -150,6 +154,10 @@ msgstr "Зафиксирован"
 #: anchordockstr.adrsmerge
 msgid "Merge"
 msgstr "Объединить"
+
+#: anchordockstr.adrsminimize
+msgid "Minimize"
+msgstr "Свернуть"
 
 #: anchordockstr.adrsmissingcontrolname
 msgid "missing control name"

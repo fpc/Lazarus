@@ -17,6 +17,10 @@ msgstr ""
 msgid "A free side of a splitter must not be anchored: Node=\"%s\" Type=%s Anchors[%s]=\"%s\""
 msgstr "Un lato libero di uno splitter non deve essere ancorato: Nodo=\"%s\" Tipo=%s Ancore[%s]=\"%s\""
 
+#: anchordockstr.adrsallowdocksitestobeminimized
+msgid "Allow dock sites to be minimized"
+msgstr ""
+
 #: anchordockstr.adrsamountofpixelthemousehastodragbeforedragstarts
 msgid "Amount of pixel the mouse has to drag before drag starts"
 msgstr "Di quanti pixel deve spostarsi il mouse per far partire il trascinamento"
@@ -152,6 +156,10 @@ msgstr "Bloccato"
 #: anchordockstr.adrsmerge
 msgid "Merge"
 msgstr "Unisci"
+
+#: anchordockstr.adrsminimize
+msgid "Minimize"
+msgstr ""
 
 #: anchordockstr.adrsmissingcontrolname
 msgid "missing control name"

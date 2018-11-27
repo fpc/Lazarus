@@ -17,6 +17,10 @@ msgstr ""
 msgid "A free side of a splitter must not be anchored: Node=\"%s\" Type=%s Anchors[%s]=\"%s\""
 msgstr "Laisvoji skyriklio kraštinė neturi būti pririšta: mazgas = „%0:s“, tipas = %1:s, prieraišos[%2:s] = „%3:s“"
 
+#: anchordockstr.adrsallowdocksitestobeminimized
+msgid "Allow dock sites to be minimized"
+msgstr ""
+
 #: anchordockstr.adrsamountofpixelthemousehastodragbeforedragstarts
 msgid "Amount of pixel the mouse has to drag before drag starts"
 msgstr "Pelės judesio kelias pikseliais, po kurio pradedamas tempimo veiksmas"
@@ -152,6 +156,10 @@ msgstr "Užrakintas"
 #: anchordockstr.adrsmerge
 msgid "Merge"
 msgstr "Sulieti"
+
+#: anchordockstr.adrsminimize
+msgid "Minimize"
+msgstr ""
 
 #: anchordockstr.adrsmissingcontrolname
 msgid "missing control name"

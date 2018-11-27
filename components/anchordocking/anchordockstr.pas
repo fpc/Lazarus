@@ -83,8 +83,7 @@ resourcestring
   adrsFilledHeadersHint = 'Fill headers of docked controls';
   adrsHighlightFocused = 'Highlight focused';
   adrsHighlightFocusedHint = 'Highlight header of focused docked control';
-  adrsDockSitesCanBeMinimized = 'Dock sites can be minimized';
-  adrsDockSitesCanBeMinimizedHint = 'Dock sites can be minimized';
+  adrsAllowDockSitesToBeMinimized = 'Allow dock sites to be minimized';
 
 implementation
 

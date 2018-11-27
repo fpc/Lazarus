@@ -44,7 +44,6 @@ type
     SplitterWidthLabel: TLabel;
     SplitterWidthSpinEdit: TSpinEdit;
     SplitterWidthTrackBar: TTrackBar;
-    procedure FrameClick(Sender: TObject);
     procedure HeaderStyleComboBoxDrawItem(Control: TWinControl; Index: Integer;
       ARect: TRect; {%H-}State: TOwnerDrawState);
     procedure OkClick(Sender: TObject);
@@ -151,11 +150,6 @@ procedure TAnchorDockOptionsFrame.HeaderStyleComboBoxDrawItem(
   Control: TWinControl; Index: Integer; ARect: TRect; State: TOwnerDrawState);
 begin
   DrawADHeader(TComboBox(Control).Canvas,TADHeaderStyle(Index),ARect,true,False);
-end;
-
-procedure TAnchorDockOptionsFrame.FrameClick(Sender: TObject);
-begin
-
 end;
 
 procedure TAnchorDockOptionsFrame.DragThresholdTrackBarChange(Sender: TObject);
@@ -434,8 +428,8 @@ begin
   HighlightFocusedCheckBox.Hint:=adrsHighlightFocusedHint;
 
   DockSitesCanBeMinimized.Checked:=TheSettings.DockSitesCanBeMinimized;
-  DockSitesCanBeMinimized.Caption:=adrsDockSitesCanBeMinimized;
-  DockSitesCanBeMinimized.Hint:=adrsDockSitesCanBeMinimizedHint;
+  DockSitesCanBeMinimized.Caption:=adrsAllowDockSitesToBeMinimized;
+  DockSitesCanBeMinimized.Hint:=adrsAllowDockSitesToBeMinimized;
 end;
 
 end.
