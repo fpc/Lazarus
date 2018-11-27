@@ -2701,9 +2701,6 @@ begin
 end;
 
 procedure TAnchorDockMaster.SetDockSitesCanBeMinimized(AValue: boolean);
-var
-  i:integer;
-  Site: TAnchorDockHostSite;
 begin
   if FDockSitesCanBeMinimized=AValue then Exit;
   FDockSitesCanBeMinimized:=AValue;
@@ -3912,7 +3909,6 @@ procedure TAnchorDockMaster.UpdateHeaders;
 var
   i: Integer;
   AControl: TControl;
-  AHostSite: TAnchorDockHostSite;
 begin
     for i:=0 to ControlCount-1 do begin
       AControl:=Controls[i];
@@ -4382,8 +4378,6 @@ begin
 end;
 
 procedure TAnchorDockHostSite.FreePages;
-var
-  i:Integer;
 begin
   FreeAndNil(FPages);
 end;
@@ -7287,8 +7281,6 @@ end;
 
 procedure TAnchorDockSplitter.SaveLayout(
   LayoutNode: TAnchorDockLayoutTreeNode);
-var
-  NewLeft, NewTop: Integer;
 begin
   if ResizeAnchor in [akLeft,akRight] then
     LayoutNode.NodeType:=adltnSplitterVertical
