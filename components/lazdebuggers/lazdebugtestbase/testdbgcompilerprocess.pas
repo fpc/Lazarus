@@ -341,9 +341,10 @@ begin
 
   Result := CallCompiler(CmdLine, ExtractFileDir(PascalPrgFile));
 
-  if not FileExists(ExeName) then
-    raise EAssertionFailedError.Create('Missing compiled exe ' + ExeName);
-  CreatedExecutableList.AddExe(ExeName, CmdLine);
+  if FileExists(ExeName) then
+    CreatedExecutableList.AddExe(ExeName, CmdLine)
+  else
+    Result := False;
 end;
 
 function TCompilerProcess.TestCompileUnits(const FpcExe, FpcOpts, SrcDirName,
@@ -367,9 +368,10 @@ begin
   CreateDirUTF8(OutLibName);
   Result := CallCompiler(CmdLine, ExtractFileDir(SrcDirName));
 
-  if not DirectoryExists(AppendPathDelim(OutLibName)) then
-    raise EAssertionFailedError.Create('Missing compiled lib dir ' + OutLibName);
-  CreatedLibDirList.AddExe(OutLibName, CmdLine);
+  if DirectoryExists(AppendPathDelim(OutLibName)) then
+    CreatedLibDirList.AddExe(OutLibName, CmdLine)
+  else
+    Result := False;
 end;
 
 

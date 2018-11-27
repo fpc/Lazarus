@@ -1,0 +1,28 @@
+//This is a sample config for the test
+//
+//This file contains the list of all fpc that should be tested
+//Entries start with a line in [] brackets, giving a name that is
+//displayed by the test.
+//There must be an entry starting with exe=
+//The symbols= line specifies, with which debug info this fpc should be tested.
+//The bits= line can be used to match 32/64 bit compiler to the correct gdb.
+
+[fpc 2.4.2]
+exe=c:\FPC\rel_2_4_2\bin\i386-win32\fpc.exe
+symbols=gs,gw,gwset
+bits=32
+//symbols=none,gs,gw,gwset
+
+[fpc 2.4.4]
+exe=c:\FPC\rel_2_4_4\bin\i386-win32\fpc.exe
+symbols=gs,gw,gwset
+bits=64
+
+[fpc trunk]
+exe=c:\FPC\trunk\bin\i386-win32\fpc.exe
+symbols=gs,gw,gwset,gw3
+
+[fpc trunk external linker]
+exe=c:\FPC\trunk\bin\i386-win32\fpc.exe
+symbols=gs,gw,gwset,gw3
+opts=-Xe

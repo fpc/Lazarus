@@ -23,6 +23,9 @@ interface
 uses
   Classes, SysUtils, LCLProc;
 
+var
+  AppDir, ConfDir: String;
+
 type
   TSymbolType = (stNone, stStabs, stDwarf, stDwarfSet, stDwarf3);
   TSymbolTypes = set of TSymbolType;

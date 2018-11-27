@@ -6,8 +6,8 @@ interface
 
 uses
   Classes, SysUtils, fgl, TestDbgConfig, TestDbgCompilerProcess,
-  TestOutputLogger, TTestDebuggerClasses, LazFileUtils, FileUtil,
-  DbgIntfDebuggerBase, fpcunit;
+  TestOutputLogger, TTestDebuggerClasses, TestCommonSources, LazFileUtils,
+  FileUtil, DbgIntfDebuggerBase, fpcunit;
 
 type
 
@@ -47,6 +47,7 @@ type
     FSymbolType: TSymbolType;
     FCpuBitType: TCpuBitType;
     function GetCpuBitType: TCpuBitType;
+    function GetLastCompileOutput: String;
     function GetSymbolType: TSymbolType;
   public
     constructor Create(AnExternalExeInfo: TExternalExeInfo;
@@ -67,6 +68,7 @@ type
                           NamePostFix: String=''; ExtraArgs: String=''
                          ); overload;
     property LastCompileCommandLine: String read FLastCompileCommandLine;
+    property LastCompileOutput: String read GetLastCompileOutput;
 
   end;
 
@@ -107,6 +109,10 @@ type
     function StartDebugger(AppDir, TestExeName: String): boolean; virtual;
     procedure FreeDebugger;
     function WaitForFinishRun(ATimeOut: Integer = 5000; AWaitForInternal: Boolean = False): Boolean;
+
+    procedure SetBreakPoint(AFileName: String; ALine: Integer);
+    procedure SetBreakPoint(ACommonSource: TCommonSource; AName: String);
+    procedure SetBreakPoint(ACommonSource: TCommonSource; ASourceName, AName: String);
 
     procedure CleanAfterTestDone; virtual;
 
@@ -195,6 +201,11 @@ end;
 function TTestDbgCompiler.GetCpuBitType: TCpuBitType;
 begin
   Result := FCpuBitType;
+end;
+
+function TTestDbgCompiler.GetLastCompileOutput: String;
+begin
+  Result := FCompileProcess.CompilerOutput;
 end;
 
 function TTestDbgCompiler.GetSymbolType: TSymbolType;
@@ -400,6 +411,27 @@ begin
     else
       d := high(d) - t + d;
   until d > ATimeOut;
+end;
+
+procedure TTestDbgDebugger.SetBreakPoint(AFileName: String; ALine: Integer);
+begin
+  with LazDebugger.BreakPoints.Add(AFileName, ALine) do begin
+    InitialEnabled := True;
+    Enabled := True;
+  end;
+end;
+
+procedure TTestDbgDebugger.SetBreakPoint(ACommonSource: TCommonSource;
+  AName: String);
+begin
+  SetBreakPoint(ACommonSource.FileName, ACommonSource.BreakPoints[AName]);
+end;
+
+procedure TTestDbgDebugger.SetBreakPoint(ACommonSource: TCommonSource;
+  ASourceName, AName: String);
+begin
+  ACommonSource := ACommonSource.OtherSrc[ASourceName];
+  SetBreakPoint(ACommonSource.FileName, ACommonSource.BreakPoints[AName]);
 end;
 
 procedure TTestDbgDebugger.CleanAfterTestDone;

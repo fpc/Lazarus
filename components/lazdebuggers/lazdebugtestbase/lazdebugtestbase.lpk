@@ -15,7 +15,7 @@
       </Other>
     </CompilerOptions>
     <Version Minor="1"/>
-    <Files Count="9">
+    <Files Count="14">
       <Item1>
         <Filename Value="testdbgconfig.pas"/>
         <UnitName Value="TestDbgConfig"/>
@@ -50,8 +50,30 @@
       </Item8>
       <Item9>
         <Filename Value="ttestwatchutilities.pas"/>
-        <UnitName Value="ttestwatchutilities"/>
+        <UnitName Value="TTestWatchUtilities"/>
       </Item9>
+      <Item10>
+        <Filename Value="testcommonsources.pas"/>
+        <UnitName Value="TestCommonSources"/>
+      </Item10>
+      <Item11>
+        <Filename Value="sources.rc"/>
+        <Type Value="Text"/>
+      </Item11>
+      <Item12>
+        <Filename Value="testapps\WatchesScopePrg.pas"/>
+        <Type Value="Include"/>
+      </Item12>
+      <Item13>
+        <Filename Value="testapps\WatchesScopeUnit1.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="WatchesScopeUnit1"/>
+      </Item13>
+      <Item14>
+        <Filename Value="testapps\WatchesScopeUnit2.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="WatchesScopeUnit2"/>
+      </Item14>
     </Files>
     <RequiredPkgs Count="5">
       <Item1>

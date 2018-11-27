@@ -12,7 +12,7 @@ uses
 
 type
   TWatchExpectationResultKind = (
-    rkMatch, rkInteger, rkCardinal,
+    rkMatch, rkInteger, rkCardinal, rkEnum,
     rkChar, rkAnsiString, rkShortString,
     rkClass, rkObject, rkRecord, rkField,
     rkStatArray, rkDynArray
@@ -31,7 +31,9 @@ type
      ehCharFromIndex,     // Debugger is allowed Pchar: 'x' String 'y'
 
      ehExpectNotFound,
-     ehExpectError
+     ehExpectError,       // watch is invalid (less specific, than not found / maybe invalid expression ?)
+
+     ehNotImplemented     // The debugger is known to fail this test // same as ehIgnAll
     );
   TWatchExpErrorHandlingFlags = set of TWatchExpErrorHandlingFlag;
 
@@ -65,6 +67,10 @@ type
        with TWatchExpectation do ...
      blocks
   *)
+  PWatchExpectation = ^TWatchExpectation;
+
+  { TWatchExpectation }
+
   TWatchExpectation = record
     TstTestName: String;
     TstWatch: TTestWatch;
@@ -80,8 +86,10 @@ type
 
     //TstUserData, TstUserData2: Pointer;
     //TstOnBeforeTest: TWatchExpectOnBeforeTest;
+
+    function AddFlag(AFlag: TWatchExpErrorHandlingFlag; ASymTypes: TSymbolTypes = []): PWatchExpectation;
+    function AddFlag(AFlags: TWatchExpErrorHandlingFlags; ASymTypes: TSymbolTypes = []): PWatchExpectation;
   end;
-  PWatchExpectation = ^TWatchExpectation;
 
   TWatchExpTestCurrentData = record
     WatchExp: TWatchExpectation;
@@ -103,6 +111,7 @@ type
     function GetDebugger: TTestDbgDebugger;
     function GetLazDebugger: TDebuggerIntf;
   protected
+    function EvaluateWatch(AWatchExp: TWatchExpectation; AThreadId: Integer): Boolean; virtual;
     procedure WaitWhileEval; virtual;
 
     function TestMatches(Name: string; Expected, Got: string; AContext: TWatchExpTestCurrentData; AIgnoreReason: String): Boolean;
@@ -120,6 +129,7 @@ type
 
     function CheckResultMatch(AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean; virtual;
     function CheckResultNum(AContext: TWatchExpTestCurrentData; IsCardinal: Boolean; AnIgnoreRsn: String): Boolean; virtual;
+    function CheckResultEnum(AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean; virtual;
     function CheckResultChar(AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean; virtual;
     function CheckResultAnsiStr(AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean; virtual;
     function CheckResultShortStr(AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean; virtual;
@@ -157,6 +167,8 @@ function weMatch(AExpVal: String; ASymKind: TDBGSymbolKind; ATypeName: String=''
 
 function weInteger(AExpVal: Integer; ATypeName: String=#1; ASize: Integer = 4): TWatchExpectationResult;
 function weCardinal(AExpVal: Integer; ATypeName: String=#1; ASize: Integer = 4): TWatchExpectationResult;
+
+function weEnum(AExpVal: string; ATypeName: String=#1): TWatchExpectationResult;
 
 function weChar(AExpVal: char; ATypeName: String=#1): TWatchExpectationResult;
 function weAnsiStr(AExpVal: string; ATypeName: String=#1): TWatchExpectationResult;
@@ -214,6 +226,16 @@ begin
   Result.expCardinalSize  := ASize;
 end;
 
+function weEnum(AExpVal: string; ATypeName: String): TWatchExpectationResult;
+begin
+  Result := Default(TWatchExpectationResult);
+  if ATypeName = #1 then ATypeName := '';
+  Result.ExpResultKind := rkEnum;
+  Result.ExpSymKind := skEnum;
+  Result.ExpTypeName := ATypeName;
+  Result.ExpTextData := AExpVal;
+end;
+
 function weChar(AExpVal: char; ATypeName: String): TWatchExpectationResult;
 begin
   Result := Default(TWatchExpectationResult);
@@ -260,6 +282,30 @@ begin
 
 end;
 
+{ TWatchExpectation }
+
+function TWatchExpectation.AddFlag(AFlag: TWatchExpErrorHandlingFlag;
+  ASymTypes: TSymbolTypes): PWatchExpectation;
+var
+  i: TSymbolType;
+begin
+  if ASymTypes = [] then ASymTypes := [low(ASymTypes)..high(ASymTypes)];
+  for i := low(ASymTypes) to high(ASymTypes) do
+    TstExpected.ExpErrorHandlingFlags[i] := TstExpected.ExpErrorHandlingFlags[i] + [AFlag];
+  Result := @Self;
+end;
+
+function TWatchExpectation.AddFlag(AFlags: TWatchExpErrorHandlingFlags;
+  ASymTypes: TSymbolTypes): PWatchExpectation;
+var
+  i: TSymbolType;
+begin
+  if ASymTypes = [] then ASymTypes := [low(ASymTypes)..high(ASymTypes)];
+  for i := low(ASymTypes) to high(ASymTypes) do
+    TstExpected.ExpErrorHandlingFlags[i] := TstExpected.ExpErrorHandlingFlags[i] + AFlags;
+  Result := @Self;
+end;
+
 { TWatchExpectationList }
 
 function TWatchExpectationList.GetDebugger: TTestDbgDebugger;
@@ -275,6 +321,25 @@ end;
 function TWatchExpectationList.GetLazDebugger: TDebuggerIntf;
 begin
   Result := Debugger.LazDebugger;
+end;
+
+function TWatchExpectationList.EvaluateWatch(AWatchExp: TWatchExpectation;
+  AThreadId: Integer): Boolean;
+var
+  i: Integer;
+begin
+  FTest.LogText('###### ' + AWatchExp.TstTestName + ' // ' + AWatchExp.TstWatch.Expression +
+    ' (AT '+ LazDebugger.GetLocation.SrcFile + ':' + IntToStr(LazDebugger.GetLocation.SrcLine) +')' +
+    '###### '+LineEnding);
+  AWatchExp.TstWatch.Values[AThreadId, AWatchExp.TstStackFrame].Value;
+
+  for i := 1 to 5 do begin
+    WaitWhileEval;
+    Result := AWatchExp.TstWatch.Values[AThreadId, AWatchExp.TstStackFrame].Validity <> ddsRequested;
+    if Result then break;
+  end;
+  FTest.LogText('<<<<< ' + dbgs(AWatchExp.TstWatch.Values[AThreadId, AWatchExp.TstStackFrame].Validity) + ': ' +
+    AWatchExp.TstWatch.Values[AThreadId, AWatchExp.TstStackFrame].Value );
 end;
 
 procedure TWatchExpectationList.WaitWhileEval;
@@ -342,7 +407,9 @@ begin
   Context.HasTypeInfo := False;
   with AnWatchExp do begin
     try
-      FTest.TestBaseName := FTest.TestBaseName + ' ' + TstTestName + ' (AT '+ LazDebugger.GetLocation.SrcFile + ':' + IntToStr(LazDebugger.GetLocation.SrcLine) +')';
+      FTest.TestBaseName := FTest.TestBaseName + ' ' + TstTestName + ' ('+TstWatch.Expression+' AT '+ LazDebugger.GetLocation.SrcFile + ':' + IntToStr(LazDebugger.GetLocation.SrcLine) +')';
+      if TstStackFrame > 0 then
+        FTest.TestBaseName := FTest.TestBaseName + ' (Stack: ' + IntToStr(TstStackFrame) + ')';
       if not VerifyDebuggerState then
         exit;
       FTest.LogText('###### ' + TstTestName + ' // ' + TstWatch.Expression + '###### '+LineEnding);
@@ -351,18 +418,25 @@ begin
       ehf := Context.Expectation.ExpErrorHandlingFlags[Compiler.SymbolType];
       if ehIgnAll in ehf then
         AnIgnoreRsn := AnIgnoreRsn + 'All ignored';
+      if ehNotImplemented in ehf then
+        AnIgnoreRsn := AnIgnoreRsn + 'Not implemented';
 
       Thread := LazDebugger.Threads.CurrentThreads.CurrentThreadId;
       Stack  := TstStackFrame;
       WatchVal := TstWatch.Values[Thread, Stack];
       Context.WatchVal := WatchVal;
-TestLogger.DebugLn(['>>> ', dbgs(WatchVal.Validity), ' / ',WatchVal.Value]);
 
       if not VerifyDebuggerState then
         exit;
 
       if ehExpectError in ehf then begin
-        Result := TestTrue('TstWatch.value is NOT valid', WatchVal.Validity = ddsInvalid, Context, AnIgnoreRsn);
+//TODO
+        Result := TestTrue('TstWatch.value is NOT valid', WatchVal.Validity in [ddsError, ddsInvalid], Context, AnIgnoreRsn);
+        exit;
+      end;
+      if ehExpectNotFound in ehf then begin
+        Result := TestMatches('TstWatch.value NOT found', 'not found', WatchVal.Value, Context, AnIgnoreRsn);
+        Result := TestTrue('TstWatch.value NOT found', WatchVal.Validity in [ddsError, ddsInvalid], Context, AnIgnoreRsn);
         exit;
       end;
       if not TestTrue('TstWatch.value is valid', WatchVal.Validity = ddsValid, Context, AnIgnoreRsn) then
@@ -380,6 +454,7 @@ TestLogger.DebugLn(['>>> ', dbgs(WatchVal.Validity), ' / ',WatchVal.Value]);
         rkMatch:       Result := CheckResultMatch(Context, AnIgnoreRsn);
         rkInteger:     Result := CheckResultNum(Context, False, AnIgnoreRsn);
         rkCardinal:    Result := CheckResultNum(Context, True, AnIgnoreRsn);
+        rkEnum:        Result := CheckResultEnum(Context, AnIgnoreRsn);
         rkChar:        Result := CheckResultChar(Context, AnIgnoreRsn);
         rkAnsiString:  Result := CheckResultAnsiStr(Context, AnIgnoreRsn);
         rkShortString: Result := CheckResultShortStr(Context, AnIgnoreRsn);
@@ -532,6 +607,19 @@ begin
   end;
 end;
 
+function TWatchExpectationList.CheckResultEnum(
+  AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean;
+var
+  Expect: TWatchExpectationResult;
+begin
+  with AContext.WatchExp do begin
+    Result := True;
+    Expect := AContext.Expectation;
+
+    Result := TestEquals('Data', Expect.ExpTextData, AContext.WatchVal.Value, EqIgnoreCase, AContext, AnIgnoreRsn);
+  end;
+end;
+
 function TWatchExpectationList.CheckResultChar(
   AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean;
 var
@@ -557,12 +645,17 @@ function TWatchExpectationList.CheckResultAnsiStr(
   AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean;
 var
   Expect: TWatchExpectationResult;
+  v: String;
 begin
   with AContext.WatchExp do begin
     Result := True;
     Expect := AContext.Expectation;
 
-    Result := TestEquals('Data', Expect.ExpTextData, AContext.WatchVal.Value, AContext, AnIgnoreRsn);
+    v := AContext.WatchVal.Value;
+    if (Expect.ExpTypeName <> '') and FTest.Matches(Expect.ExpTypeName+'\(\$[0-9a-fA-F]+\) ', v) then
+      delete(v, 1, pos(') ', v)+1);
+
+    Result := TestEquals('Data', Expect.ExpTextData, v, AContext, AnIgnoreRsn);
   end;
 end;
 
@@ -621,7 +714,7 @@ function TWatchExpectationList.Add(AnExpr: string;
   AnExpect: TWatchExpectationResult; AStackFrame: Integer; AMinFpc: Integer;
   AMinDbg: Integer): PWatchExpectation;
 begin
-  Result := Add(AnExpr, AnExpr, AnExpect, AStackFrame, AMinFpc, AMinDbg);
+  Result := Add('', AnExpr, AnExpect, AStackFrame, AMinFpc, AMinDbg);
 end;
 
 procedure TWatchExpectationList.AddTypeNameAlias(ATypeName, AnAliases: String);
@@ -646,16 +739,11 @@ var
   i, t, c: Integer;
 begin
   t := LazDebugger.Threads.CurrentThreads.CurrentThreadId;
-  for i := 0 to Length(FList)-1 do
-    FList[i].TstWatch.Values[t, FList[i].TstStackFrame].Value;
-  i := Length(FList)-1;
-  c := Length(FList);
-  while c > 0 do begin
-    WaitWhileEval;
-    Result := FList[i].TstWatch.Values[t, FList[i].TstStackFrame].Validity <> ddsRequested;
-    if Result then break;
-    dec(c);
+  for i := 0 to Length(FList)-1 do begin
+    EvaluateWatch(FList[i], t);
+    if (i mod 16) = 0 then TestLogger.DbgOut('.');
   end;
+  TestLogger.DebugLn('');
 end;
 
 procedure TWatchExpectationList.CheckResults;

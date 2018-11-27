@@ -6,7 +6,8 @@ interface
 
 uses
   Classes, SysUtils, TTestDbgExecuteables, TestDbgControl, TestDbgConfig,
-  TestOutputLogger, LazFileUtils, LazLogger, fpcunit, testregistry, RegExpr;
+  TestOutputLogger, TestCommonSources, LazFileUtils, LazLogger,
+  DbgIntfDebuggerBase, fpcunit, testregistry, RegExpr;
 
 const
   EqIgnoreCase = False; // for TestEquals(..., CaseSense, ...);
@@ -14,6 +15,7 @@ const
 
 type
   TDBGTestsuite = class;
+  TDBGStates = set of TDBGState;
 
   { TDBGTestCase }
 
@@ -63,6 +65,10 @@ type
     Procedure TestCompile(const PrgName: string; out ExeName: string; NamePostFix: String=''; ExtraArgs: String=''); overload;
     Procedure TestCompile(const PrgName: string; out ExeName: string; UsesDirs: array of TUsesDir;
                           NamePostFix: String=''; ExtraArgs: String=''); overload;
+    Procedure TestCompile(const Prg: TCommonSource; out ExeName: string; NamePostFix: String=''; ExtraArgs: String=''); overload;
+    Procedure TestCompile(const Prg: TCommonSource; out ExeName: string; UsesDirs: array of TUsesDir;
+                          NamePostFix: String=''; ExtraArgs: String=''); overload;
+
     // Logging
     procedure LogText(const s: string; CopyToTestLogger: Boolean = False);
     procedure LogError(const s: string; CopyToTestLogger: Boolean = False);
@@ -90,6 +96,10 @@ type
     function TestTrue(Name: string; Got: Boolean; MinDbgVers: Integer; MinFpcVers: Integer; AIgnoreReason: String = ''): Boolean;
     function TestFalse(Name: string; Got: Boolean; MinDbgVers: Integer = 0; AIgnoreReason: String = ''): Boolean;
     function TestFalse(Name: string; Got: Boolean; MinDbgVers: Integer; MinFpcVers: Integer; AIgnoreReason: String = ''): Boolean;
+
+    procedure AssertDebuggerState(AState: TDBGState; AName: String = '');
+    procedure AssertDebuggerState(AStates: TDBGStates; AName: String = '');
+    procedure AssertDebuggerNotInErrorState;
 
     property Parent: TDBGTestsuite read FParent;
     property Compiler: TTestDbgCompiler read GetCompiler;
@@ -255,6 +265,8 @@ begin
     LogError('================= Unexpected Success'+LineEnding);
     LogError(FUnexpectedSuccess);
     LogError('================='+LineEnding);
+    FIgnoredErrors := '';
+    FUnexpectedSuccess := '';
   end;
   if s <> '' then begin
     Fail(s1+ LineEnding + s);
@@ -393,6 +405,28 @@ begin
   else AddTestError(Name + ': Expected "False", Got "True"', MinDbgVers, MinFpcVers, AIgnoreReason);
 end;
 
+procedure TDBGTestCase.AssertDebuggerState(AState: TDBGState; AName: String);
+begin
+  if not TestEquals('Debugger State '+AName, dbgs(AState), dbgs(Debugger.LazDebugger.State)) then
+    AssertTestErrors;
+end;
+
+procedure TDBGTestCase.AssertDebuggerState(AStates: TDBGStates; AName: String);
+begin
+  If not (Debugger.LazDebugger.State in AStates) then begin
+    TestTrue('Debugger State not in expected, got: ' + dbgs(Debugger.LazDebugger.State) + ' ' +AName, False);
+    AssertTestErrors;
+  end;
+end;
+
+procedure TDBGTestCase.AssertDebuggerNotInErrorState;
+begin
+  If (Debugger.LazDebugger.State = dsError) then begin
+    TestTrue('Debugger State should not be dsError', False);
+    AssertTestErrors;
+  end;
+end;
+
 function TDBGTestCase.GetLogActive: Boolean;
 begin
   Result := (TestControlGetWriteLog = wlAlways) or FLogFileCreated;
@@ -514,11 +548,16 @@ begin
 end;
 
 procedure TDBGTestCase.SetUp;
+var
+  i: Integer;
 begin
   ClearTestErrors;
   FTotalErrorCnt := 0;
   FTotalIgnoredErrorCnt := 0;
   FTotalUnexpectedSuccessCnt := 0;
+
+  for i := 0 to DebugLogger.LogGroupList.Count - 1 do
+    DebugLogger.LogGroupList[i]^.Enabled := True;
 
   InitLog;
   DebugLogger.OnDbgOut  := @DoDbgOut;
@@ -532,7 +571,7 @@ begin
   DebugLogger.OnDbgOut  := nil;
   DebugLogger.OnDebugLn := nil;
   FinishLog;
-  FRegX.Free;
+  FreeAndNil(FRegX);
 end;
 
 procedure TDBGTestCase.RunTest;
@@ -565,9 +604,30 @@ end;
 procedure TDBGTestCase.TestCompile(const PrgName: string; out ExeName: string;
   UsesDirs: array of TUsesDir; NamePostFix: String; ExtraArgs: String);
 begin
-  LogText(LineEnding+LineEnding + '******************* compile '+PrgName + ' ' + ExtraArgs +LineEnding );
-  Compiler.TestCompile(PrgName, ExeName, UsesDirs, NamePostFix, ExtraArgs);
-  LogText(Compiler.LastCompileCommandLine+LineEnding + '*******************' +LineEnding+LineEnding );
+  try
+    LogText(LineEnding+LineEnding + '******************* compile '+PrgName + ' ' + ExtraArgs +LineEnding );
+    Compiler.TestCompile(PrgName, ExeName, UsesDirs, NamePostFix, ExtraArgs);
+    LogText(Compiler.LastCompileCommandLine+LineEnding + '*******************' +LineEnding+LineEnding );
+  except
+    On E: Exception do begin
+      TestTrue('Compile '+PrgName + ' GOT: '+ Compiler.LastCompileOutput, False);
+      AssertTestErrors;
+    end;
+  end;
+end;
+
+procedure TDBGTestCase.TestCompile(const Prg: TCommonSource; out
+  ExeName: string; NamePostFix: String; ExtraArgs: String);
+begin
+  TestCompile(Prg, ExeName, [], NamePostFix, ExtraArgs);
+end;
+
+procedure TDBGTestCase.TestCompile(const Prg: TCommonSource; out
+  ExeName: string; UsesDirs: array of TUsesDir; NamePostFix: String;
+  ExtraArgs: String);
+begin
+  Prg.Save(AppDir);
+  TestCompile(Prg.FullFileName, ExeName, UsesDirs, NamePostFix, ExtraArgs);
 end;
 
 { TDBGTestWrapper }

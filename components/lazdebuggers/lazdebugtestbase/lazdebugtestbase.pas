@@ -11,7 +11,7 @@ uses
   TestDbgConfig, TestDbgTestSuites, TTestDbgExecuteables, 
   TestDbgCompilerProcess, TestDbgControlForm, TestDbgControl, 
   TestOutputLogger, TTestDebuggerClasses, TTestWatchUtilities, 
-  LazarusPackageIntf;
+  TestCommonSources, LazarusPackageIntf;
 
 implementation
 
