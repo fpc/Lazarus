@@ -506,10 +506,13 @@ begin
 
       if TCustomForm(AWinControl).BorderStyle <> bsNone then
       begin
+        {$ifdef darwin}
+        Flags := QtWindowSystemMenuHint;
+        if (TCustomForm(AWinControl).BorderStyle in [bsSizeable, bsSizeToolWin]) then
+          Flags := Flags or QtWindowMaximizeButtonHint;
+        {$endif}
         QWidget_setWindowFlags(Widget.Widget, QtDialog or
-          {$ifdef darwin}
-          QtWindowSystemMenuHint or
-          {$endif}
+          {$ifdef darwin}Flags or {$endif}
           GetQtBorderIcons(TCustomForm(AWinControl).BorderStyle,
             TCustomForm(AWinControl).BorderIcons));
       end;
@@ -914,7 +917,8 @@ begin
   if (biMinimize in ABorderIcons) then
     Result := Result or QtWindowMinimizeButtonHint;
 
-  if (biMaximize in ABorderIcons) then
+  if (biMaximize in ABorderIcons)
+  {$ifdef darwin} or (AFormBorderStyle = bsSizeToolWin) {$endif} then
     Result := Result or QtWindowMaximizeButtonHint;
 
   if (biHelp in ABorderIcons) then
