@@ -1,4 +1,4 @@
-#The following people contributed to Lazarus:
+﻿#The following people contributed to Lazarus:
 
 A. J. Venter
 Алексей Лагунов
@@ -13,6 +13,7 @@ Andreas Hausladen
 Andreas Schneider
 Andrew Haines
 Andrew Johnson
+Andrey Zubarev
 Anton A. Panferov
 Anton Kavalenka
 Antônio Galvão
