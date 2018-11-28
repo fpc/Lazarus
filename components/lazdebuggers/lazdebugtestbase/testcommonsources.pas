@@ -78,7 +78,7 @@ var
 begin
   i := FBreakPoints.IndexOf(AName);
   if (i < 0) or (FBreakPoints.Objects[i] = nil) then
-    raise Exception.Create('Break unknown');
+    raise Exception.Create('Break unknown '+AName);
   Result := Integer(PtrInt(FBreakPoints.Objects[i]));
 TestLogger.DebugLn(['Break: ',AName, '  ',Result]);
 end;
@@ -172,7 +172,7 @@ begin
     if i > 0 then begin
       i := i + 16;
       if FBreakPoints.IndexOf(copy(FData[Line], i, MaxInt)) >= 0 then
-        raise Exception.Create('dup brkpoint name');
+        raise Exception.Create('dup brkpoint name in: '+FFileName+' '+IntToStr(Line));
       FBreakPoints.AddObject(copy(FData[Line], i, MaxInt), TObject(Line + 1));
     end;
   end;

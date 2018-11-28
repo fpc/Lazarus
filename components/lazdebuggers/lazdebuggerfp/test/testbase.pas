@@ -137,7 +137,7 @@ initialization
       end;
   end;
   ConfDir := AppDir;
-  AppDir := AppendPathDelim(AppDir + 'TestApps');
+  AppDir := AppendPathDelim(AppDir + 'testapps');
 
   if DirectoryExistsUTF8(ConfDir+'logs') then
     TestControlSetLogPath(ConfDir+'logs'+DirectorySeparator)

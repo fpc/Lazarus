@@ -19,6 +19,10 @@ type
     Int_TClassMainBase: Integer;
     procedure MethodMainBase; override;
     procedure MethodMain; virtual;
+  private
+  type
+    TMainBaseEnum = (mmB1, mmB2);
+    THideMainEnum = (hmB1, hmB2);
   end;
 
 procedure Unit1Init;
@@ -40,7 +44,13 @@ end;
 { TClassMainBase }
 
 procedure TClassMainBase.MethodMainBase;
+var
+  e1: TMainBaseEnum;
+  e2: THideMainEnum;
 begin
+  e1 := mmB1;
+  e2 := hmB1;
+
   Int_TClassMainBase      := 170;
   Int_TClassMainBase_Prot := 171;
   Int_TClassMainBase_Priv := 172;

@@ -33,7 +33,10 @@ type
      ehExpectNotFound,
      ehExpectError,       // watch is invalid (less specific, than not found / maybe invalid expression ?)
 
-     ehNotImplemented     // The debugger is known to fail this test // same as ehIgnAll
+     ehNotImplemented,     // The debugger is known to fail this test // same as ehIgnAll
+     ehNotImplementedKind, // skSimple...
+     ehNotImplementedType, // typename
+     ehNotImplementedData
     );
   TWatchExpErrorHandlingFlags = set of TWatchExpErrorHandlingFlag;
 
@@ -450,6 +453,8 @@ begin
 
       if ehIgnData in ehf then
         AnIgnoreRsn := AnIgnoreRsn + 'Test ignored (Data)';
+      if ehNotImplementedData in ehf then
+        AnIgnoreRsn := AnIgnoreRsn + 'Not implemented (Data)';
       case TstExpected.ExpResultKind of
         rkMatch:       Result := CheckResultMatch(Context, AnIgnoreRsn);
         rkInteger:     Result := CheckResultNum(Context, False, AnIgnoreRsn);
@@ -502,6 +507,8 @@ begin
     else
     if (ehIgnKindPtr in ehf) and (t = skPointer) then
       AnIgnoreRsn := 'Ignored by flag (Kind may be Ptr)';
+    if ehNotImplementedKind in ehf then
+      AnIgnoreRsn := AnIgnoreRsn + 'Not implemented (symkind)';
 
     n := '';
     if (t = skSimple) and (Expect.ExpSymKind in AcceptSkSimple) then begin
@@ -533,6 +540,8 @@ begin
     ehf := Expect.ExpErrorHandlingFlags[Compiler.SymbolType];
     if ehIgnTypeName in ehf then
       AnIgnoreRsn := AnIgnoreRsn + 'Test ignored';
+    if ehNotImplementedType in ehf then
+      AnIgnoreRsn := AnIgnoreRsn + 'Not implemented (typename)';
 
     WtchTpName := AContext.WatchVal.TypeInfo.TypeName;
 

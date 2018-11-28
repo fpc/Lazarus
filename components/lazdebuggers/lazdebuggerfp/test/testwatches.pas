@@ -126,6 +126,16 @@ procedure TTestWatches.TestWatchesScope;
       t.Add(n + '; Hide, view MainChild', 'TObject(Self).Int_HideTest_Class' , 0, f)^.AddFlag([ehExpectNotFound]);
 
       t.Add(n + '; Hide, view MainChild', 'Int_HideTest_Unit' , 3010, f);
+
+      t.Add(n, 'TMethodMainChildNestedTwiceEnum(1)', weEnum('mmCNT2'), f);
+      t.Add(n, 'TMethodMainChildNestedEnum(1)',      weEnum('mmCN2'),  f);
+      t.Add(n, 'TMethodMainChildEnum(1)',            weEnum('mmC2'),   f);
+      t.Add(n, 'TMainEnum(1)',                       weEnum('mm2'),    f);
+      t.Add(n, 'TMainBaseEnum(1)',                   weEnum('mmB2'),   f);
+      t.Add(n, 'TMainGlobEnum(1)',                   weEnum('mmG2'),   f);
+
+      t.Add(n, 'THideMainEnum(1)', weEnum('hmCNT2'), f);
+
     end;
 
     n := AName + ' (Stack: MethodMainChildNested)';
@@ -153,6 +163,15 @@ procedure TTestWatches.TestWatchesScope;
 
       t.Add(n + '; Hide, view MainChild', 'Int_HideTest_Class' , 3001, f);
       t.Add(n + '; Hide, view MainChild', 'Int_HideTest_Unit' , 3010, f);
+
+      t.Add(n, 'TMethodMainChildNestedTwiceEnum(1)', weEnum('mmCNT2'), f)^.AddFlag(ehExpectNotFound);
+      t.Add(n, 'TMethodMainChildNestedEnum(1)',      weEnum('mmCN2'),  f);
+      t.Add(n, 'TMethodMainChildEnum(1)',            weEnum('mmC2'),   f);
+      t.Add(n, 'TMainEnum(1)',                       weEnum('mm2'),    f);
+      t.Add(n, 'TMainBaseEnum(1)',                   weEnum('mmB2'),   f);
+      t.Add(n, 'TMainGlobEnum(1)',                   weEnum('mmG2'),   f);
+
+      t.Add(n, 'THideMainEnum(1)', weEnum('hmCN2'), f);
     end;
 
     n := AName + ' (Stack: MethodMainChild)';
@@ -180,6 +199,15 @@ procedure TTestWatches.TestWatchesScope;
 
       t.Add(n + '; Hide, view MainChild', 'Int_HideTest_Class' , 3001, f);
       t.Add(n + '; Hide, view MainChild', 'Int_HideTest_Unit' , 3010, f);
+
+      t.Add(n, 'TMethodMainChildNestedTwiceEnum(1)', weEnum('mmCNT2'), f)^.AddFlag(ehExpectNotFound);
+      t.Add(n, 'TMethodMainChildNestedEnum(1)',      weEnum('mmCN2'),  f)^.AddFlag(ehExpectNotFound);
+      t.Add(n, 'TMethodMainChildEnum(1)',            weEnum('mmC2'),   f);
+      t.Add(n, 'TMainEnum(1)',                       weEnum('mm2'),    f);
+      t.Add(n, 'TMainBaseEnum(1)',                   weEnum('mmB2'),   f);
+      t.Add(n, 'TMainGlobEnum(1)',                   weEnum('mmG2'),   f);
+
+      t.Add(n, 'THideMainEnum(1)', weEnum('hmC2'), f);
     end;
 
     n := AName + ' (Stack: MethodMain)';
@@ -206,6 +234,15 @@ procedure TTestWatches.TestWatchesScope;
       t.Add(n, 'Int_GlobalUnit2'               , 202, f);
 
       t.Add(n + ', Hide, view glob Prg', 'Int_HideTest_Class' , 3000, f)^.AddFlag([ehExpectNotFound, ehNotImplemented]);
+
+      t.Add(n, 'TMethodMainChildNestedTwiceEnum(1)', weEnum('mmCNT2'), f)^.AddFlag(ehExpectNotFound);
+      t.Add(n, 'TMethodMainChildNestedEnum(1)',      weEnum('mmCN2'),  f)^.AddFlag(ehExpectNotFound);
+      t.Add(n, 'TMethodMainChildEnum(1)',            weEnum('mmC2'),   f)^.AddFlag(ehExpectNotFound);
+      t.Add(n, 'TMainEnum(1)',                       weEnum('mm2'),    f);
+      t.Add(n, 'TMainBaseEnum(1)',                   weEnum('mmB2'),   f);
+      t.Add(n, 'TMainGlobEnum(1)',                   weEnum('mmG2'),   f);
+
+      t.Add(n, 'THideMainEnum(1)', weEnum('hmB2'), f)^.AddFlag(ehNotImplementedData);
     end;
 
     n := AName + ' (Stack: MethodMainBase)';
@@ -270,6 +307,15 @@ procedure TTestWatches.TestWatchesScope;
 
       t.Add(n + '; Hide, view MainChild', 'Int_HideTest_Class' , 1001, f);
       t.Add(n + '; Hide, view MainChild', 'Int_HideTest_Unit' , 1010, f);
+
+      t.Add(n, 'TMethodMainChildNestedTwiceEnum(1)', weEnum('mmCNT2'), f)^.AddFlag(ehExpectNotFound);
+      t.Add(n, 'TMethodMainChildNestedEnum(1)',      weEnum('mmCN2'),  f)^.AddFlag(ehExpectNotFound);
+      t.Add(n, 'TMethodMainChildEnum(1)',            weEnum('mmC2'),   f)^.AddFlag(ehExpectNotFound);
+      t.Add(n, 'TMainEnum(1)',                       weEnum('mm2'),    f)^.AddFlag([ehExpectNotFound, ehNotImplemented]); // found in other unit
+      t.Add(n, 'TMainBaseEnum(1)',                   weEnum('mmB2'),   f);
+      t.Add(n, 'TMainGlobEnum(1)',                   weEnum('mmG2'),   f)^.AddFlag([ehExpectNotFound, ehNotImplemented]);
+
+      t.Add(n, 'THideMainEnum(1)', weEnum('hmB2'), f);  // found via unit / but otherwise ehNotImplemented;
     end;
 
     n := AName + ' (Stack: MethodMainBaseBase)';
@@ -297,6 +343,15 @@ procedure TTestWatches.TestWatchesScope;
 
       t.Add(n + '; Hide, view MainChild', 'Int_HideTest_Class' , 2001, f);
       t.Add(n + '; Hide, view MainChild', 'Int_HideTest_Unit' , 2010, f);
+
+      t.Add(n, 'TMethodMainChildNestedTwiceEnum(1)', weEnum('mmCNT2'), f)^.AddFlag(ehExpectNotFound);
+      t.Add(n, 'TMethodMainChildNestedEnum(1)',      weEnum('mmCN2'),  f)^.AddFlag(ehExpectNotFound);
+      t.Add(n, 'TMethodMainChildEnum(1)',            weEnum('mmC2'),   f)^.AddFlag(ehExpectNotFound);
+      t.Add(n, 'TMainEnum(1)',                       weEnum('mm2'),    f)^.AddFlag([ehExpectNotFound, ehNotImplemented]); // found in other unit
+      t.Add(n, 'TMainBaseEnum(1)',                   weEnum('mmB2'),   f)^.AddFlag([ehExpectNotFound, ehNotImplemented]); // found in other unit
+      t.Add(n, 'TMainGlobEnum(1)',                   weEnum('mmG2'),   f)^.AddFlag([ehExpectNotFound, ehNotImplemented]);
+
+      t.Add(n, 'THideMainEnum(1)', weEnum('x'), f)^.AddFlag([ehExpectNotFound, ehNotImplemented]); // will find main unit
     end;
 
     n := AName + ' (Stack: main)';
@@ -324,6 +379,15 @@ procedure TTestWatches.TestWatchesScope;
 
       t.Add(n + '; Hide, view MainChild', 'Int_HideTest_Class' , 3000, f);
       t.Add(n + '; Hide, view MainChild', 'Int_HideTest_Unit' , 3010, f);
+
+      t.Add(n, 'TMethodMainChildNestedTwiceEnum(1)', weEnum('mmCNT2'), f)^.AddFlag(ehExpectNotFound);
+      t.Add(n, 'TMethodMainChildNestedEnum(1)',      weEnum('mmCN2'),  f)^.AddFlag(ehExpectNotFound);
+      t.Add(n, 'TMethodMainChildEnum(1)',            weEnum('mmC2'),   f)^.AddFlag(ehExpectNotFound);
+      t.Add(n, 'TMainEnum(1)',                       weEnum('mm2'),    f)^.AddFlag([ehExpectNotFound, ehNotImplemented]); // found in unit scope
+      t.Add(n, 'TMainBaseEnum(1)',                   weEnum('mmB2'),   f)^.AddFlag([ehExpectNotFound, ehNotImplemented]); // found in unit scope
+      t.Add(n, 'TMainGlobEnum(1)',                   weEnum('mmG2'),   f);
+
+      t.Add(n, 'THideMainEnum(1)', weEnum('hmG2'), f)^.AddFlag([ehNotImplementedData]); // may find the class scope
     end;
   end;
 
@@ -403,8 +467,11 @@ begin
     Debugger.SetBreakPoint(Src, 'MethodMain');
     Debugger.SetBreakPoint(Src, 'WatchesScopeUnit1.pas', 'MethodMainBase');
     Debugger.SetBreakPoint(Src, 'WatchesScopeUnit2.pas', 'MethodMainBaseBase');
+
     Debugger.SetBreakPoint(Src, 'Prg');
     AssertDebuggerNotInErrorState;
+
+    (* ************ Nested Functions ************* *)
 
     dbg.Run;
     Debugger.WaitForFinishRun();
@@ -438,28 +505,7 @@ begin
     t.EvaluateWatches;
     t.CheckResults;
 
-(*
-
-
-    t.Add('TestEnum', weEnum('te3', 'TTestEnum'));
-    t.Add('TTestEnum(x)', weEnum('te2', 'TTestEnum'));
-    t.Add('TTestEnum(y)', weEnum('te1', 'TTestEnum'));
-    t.Add('TTestEnum(1)', weEnum('te1', 'TTestEnum'));
-
-    t.Add('Integer', weEnum('XX', '')); // TODO
-    t.Add('TTestEnum', weEnum('TTestEnum = (te1, te2, te3)', '')); // TODO
-
-
-
-    t.Add('TestEnum', weEnum('te3', 'TTestEnum'));
-    t.Add('TTestEnum(x)', weEnum('te2', 'TTestEnum'));
-    t.Add('TTestEnum(y)', weEnum('te1', 'TTestEnum'))^.AddFlag(ehExpectNotFound);
-    t.Add('TTestEnum(1)', weEnum('te1', 'TTestEnum'));
-
-    t.Add('Integer', weEnum('XX', '')); // TODO
-    t.Add('TTestEnum', weEnum('TTestEnum = (te1, te2, te3)', '')); // TODO
-
-*)
+    (* ************ Class ************* *)
 
     dbg.Run;
     Debugger.WaitForFinishRun(); // MethodMainChildNestedTwice
@@ -509,8 +555,10 @@ begin
     t.EvaluateWatches;
     t.CheckResults;
 
+    (* ************ Program level ************* *)
+
     dbg.Run;
-    Debugger.WaitForFinishRun(); // MethodMainBaseBase
+    Debugger.WaitForFinishRun();
     AssertDebuggerState(dsPause);
     t.Clear;
     AddWatchesForClassMethods(t, 'Scope in Prg', 6);
