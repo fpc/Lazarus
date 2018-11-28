@@ -32,20 +32,17 @@ procedure HLStoRGB(const H, L, S: Byte; out R, G, B: Byte);
 
 // specific things:
 
-{
-  Draw gradient from top to bottom with parabolic color grow
-}
+{ Draw gradient from top to bottom with parabolic color grow }
 procedure DrawVerticalGradient(Canvas: TCanvas; ARect: TRect; TopColor, BottomColor: TColor);
 
-{
- Draw nice looking window with Title
-}
+{ Draw nice looking window with Title }
 procedure DrawGradientWindow(Canvas: TCanvas; WindowRect: TRect; TitleHeight: Integer; BaseColor: TColor);
 
+{ Stretch-draw a bitmap in an anti-aliased way to another bitmap }
+procedure AntiAliasedStretchDrawBitmap(SourceBitmap, DestBitmap: TCustomBitmap;
+  DestWidth, DestHeight: integer);
 
-{
- Draw arrows
-}
+{ Draw arrows }
 type TScrollDirection=(sdLeft,sdRight,sdUp,sdDown);
      TArrowType = (atSolid, atArrows);
 const NiceArrowAngle=45*pi/180;
@@ -67,7 +64,11 @@ function GetShadowColor(const Color: TColor; Luminance: Integer = -50): TColor;
 function NormalizeRect(const R: TRect): TRect;
 procedure WaveTo(ADC: HDC; X, Y, R: Integer);
 
+
 implementation
+
+uses
+  fpcanvas, IntfGraphics, LazCanvas;
 
 //TODO: Check code on endianess
 
@@ -441,6 +442,37 @@ begin
   InflateRect(WindowRect, -1, -1);
   WindowRect.Bottom := WindowRect.Top + TitleHeight;
   DrawVerticalGradient(Canvas, WindowRect, GetHighLightColor(BaseColor), GetShadowColor(BaseColor));
+end;
+
+procedure AntiAliasedStretchDrawBitmap(SourceBitmap, DestBitmap: TCustomBitmap;
+  DestWidth, DestHeight: integer);
+var
+  DestIntfImage, SourceIntfImage: TLazIntfImage;
+  DestCanvas: TLazCanvas;
+begin
+  DestIntfImage := TLazIntfImage.Create(0, 0);
+  try
+    DestIntfImage.LoadFromBitmap(DestBitmap.Handle, DestBitmap.MaskHandle);
+    DestCanvas := TLazCanvas.Create(DestIntfImage);
+    try
+      SourceIntfImage := SourceBitmap.CreateIntfImage;
+      try
+        DestCanvas.Interpolation := TFPBaseInterpolation.Create;
+        try
+          DestCanvas.StretchDraw(0, 0, DestWidth, DestHeight, SourceIntfImage);
+          DestBitmap.LoadFromIntfImage(DestIntfImage);
+        finally
+          DestCanvas.Interpolation.Free;
+        end;
+      finally
+        SourceIntfImage.Free;
+      end;
+    finally
+      DestCanvas.Free;
+    end;
+  finally
+    DestIntfImage.Free;
+  end;
 end;
 
 procedure WaveTo(ADC: HDC; X, Y, R: Integer);
