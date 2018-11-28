@@ -120,6 +120,7 @@ type
   TFileSearcher = class(TFileIterator)
   private
     FMaskSeparator: char;
+    FPathSeparator: char;
     FFollowSymLink: Boolean;
     FOnFileFound: TFileFoundEvent;
     FOnDirectoryFound: TDirectoryFoundEvent;
@@ -137,6 +138,7 @@ type
       ASearchSubDirs: Boolean = True; CaseSensitive: Boolean = False);
   public
     property MaskSeparator: char read FMaskSeparator write FMaskSeparator;
+    property PathSeparator: char read FPathSeparator write FPathSeparator;
     property FollowSymLink: Boolean read FFollowSymLink write FFollowSymLink;
     property FileAttribute: Word read FFileAttribute write FFileAttribute default faAnyfile;
     property DirectoryAttribute: Word read FDirectoryAttribute write FDirectoryAttribute default faDirectory;
@@ -168,14 +170,16 @@ type
   end;
 
 function FindAllFiles(const SearchPath: String; SearchMask: String = '';
-  SearchSubDirs: Boolean = True; DirAttr: Word = faDirectory): TStringList; overload;
+  SearchSubDirs: Boolean = True; DirAttr: Word = faDirectory;
+  MaskSeparator: char = ';'; PathSeparator: char = ';'): TStringList; overload;
 procedure FindAllFiles(AList: TStrings; const SearchPath: String;
-  SearchMask: String = ''; SearchSubDirs: Boolean = True; DirAttr: Word = faDirectory); overload;
+  SearchMask: String = ''; SearchSubDirs: Boolean = True; DirAttr: Word = faDirectory;
+  MaskSeparator: char = ';'; PathSeparator: char = ';'); overload;
 
 function FindAllDirectories(const SearchPath: string;
-  SearchSubDirs: Boolean = True): TStringList; overload;
+  SearchSubDirs: Boolean = True; PathSeparator: char = ';'): TStringList; overload;
 procedure FindAllDirectories(AList: TStrings; const SearchPath: String;
-  SearchSubDirs: Boolean = true); overload;
+  SearchSubDirs: Boolean = true; PathSeparator: char = ';'); overload;
 
 // flags for copy
 type

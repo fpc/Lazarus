@@ -626,12 +626,15 @@ begin
 end;
 
 procedure FindAllFiles(AList: TStrings; const SearchPath: String;
-  SearchMask: String; SearchSubDirs: Boolean; DirAttr: Word);
+  SearchMask: String; SearchSubDirs: Boolean; DirAttr: Word;
+  MaskSeparator: char; PathSeparator: char);
 var
   Searcher: TListFileSearcher;
 begin
   Searcher := TListFileSearcher.Create(AList);
   Searcher.DirectoryAttribute := DirAttr;
+  Searcher.MaskSeparator := MaskSeparator;
+  Searcher.PathSeparator := PathSeparator;
   try
     Searcher.Search(SearchPath, SearchMask, SearchSubDirs);
   finally
@@ -640,10 +643,11 @@ begin
 end;
 
 function FindAllFiles(const SearchPath: String; SearchMask: String;
-  SearchSubDirs: Boolean; DirAttr: Word): TStringList;
+  SearchSubDirs: Boolean; DirAttr: Word;
+  MaskSeparator: char; PathSeparator: char): TStringList;
 begin
   Result := TStringList.Create;
-  FindAllFiles(Result, SearchPath, SearchMask, SearchSubDirs, DirAttr);
+  FindAllFiles(Result, SearchPath, SearchMask, SearchSubDirs, DirAttr, MaskSeparator, PathSeparator);
 end;
 
 { TListDirectoriesSearcher }
@@ -660,19 +664,20 @@ begin
 end;
 
 function FindAllDirectories(const SearchPath : string;
-  SearchSubDirs: Boolean = True): TStringList;
+  SearchSubDirs: Boolean; PathSeparator: char): TStringList;
 begin
   Result := TStringList.Create;
-  FindAllDirectories(Result, SearchPath, SearchSubDirs);
+  FindAllDirectories(Result, SearchPath, SearchSubDirs, PathSeparator);
 end;
 
 procedure FindAllDirectories(AList: TStrings; const SearchPath: String;
-  SearchSubDirs: Boolean = true);
+  SearchSubDirs: Boolean; PathSeparator: char);
 var
   Searcher :TFileSearcher;
 begin
   Assert(AList <> nil);
   Searcher := TListDirectoriesSearcher.Create(AList);
+  Searcher.PathSeparator := PathSeparator;
   try
     Searcher.Search(SearchPath, AllFilesMask, SearchSubDirs);
   finally
@@ -816,7 +821,7 @@ begin
   SearchDirectories:=TStringList.Create;
   try
     while ASearchPath<>'' do begin
-      p:=Pos(';',ASearchPath);
+      p:=Pos(FPathSeparator,ASearchPath);
       if p<1 then
         p:=length(ASearchPath)+1;
       Dir:=TrimFilename(LeftStr(ASearchPath,p-1));
