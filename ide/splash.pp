@@ -63,6 +63,9 @@ var
 
 implementation
 
+uses
+  GraphUtil;
+
 {$R *.lfm}
 {$R ../images/splash_logo.res}
 
@@ -121,11 +124,18 @@ begin
 end;
 
 procedure TSplashForm.LoadSplash;
+var
+  pic: TPicture;
 begin
-  Image.Picture.LoadFromResourceName(hInstance, 'splash_logo', TPortableNetworkGraphic);
-
-  Width := Scale96ToFont(Image.Picture.Width);
-  Height := Scale96ToFont(Image.Picture.Height);
+  pic := TPicture.Create;
+  try
+    pic.LoadFromResourceName(hInstance, 'splash_logo', TPortableNetworkGraphic);
+    Width := round(Height * pic.Width / pic.Height);
+    Image.Picture.Bitmap.SetSize(Width, Height);
+    AntiAliasedStretchDrawBitmap(pic.Bitmap, Image.Picture.Bitmap, Width, Height);
+  finally
+    pic.Free;
+  end;
 end;
 
 procedure TSplashForm.Show;
