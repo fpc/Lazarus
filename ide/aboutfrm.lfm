@@ -10,6 +10,7 @@ object AboutForm: TAboutForm
   ClientWidth = 460
   OnClose = FormClose
   OnCreate = AboutFormCreate
+  OnShow = FormShow
   PopupMenu = PopupMenu1
   Position = poScreenCenter
   ShowHint = True
@@ -37,8 +38,6 @@ object AboutForm: TAboutForm
         Height = 300
         Top = -1
         Width = 450
-        Proportional = True
-        Stretch = True
       end
       object VersionLabel: TLabel
         AnchorSideLeft.Control = LogoImage
@@ -191,12 +190,12 @@ object AboutForm: TAboutForm
         AnchorSideRight.Control = AboutPage
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = OfficialLabel
-        BorderSpacing.Around = 6
         Left = 0
         Height = 253
         Top = 0
         Width = 458
         Anchors = [akTop, akLeft, akRight, akBottom]
+        BorderSpacing.Around = 6
         ReadOnly = True
         ScrollBars = ssAutoBoth
         TabOrder = 0
