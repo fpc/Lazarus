@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lazaruside\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-10-08 14:19+0200\n"
+"PO-Revision-Date: 2018-11-28 17:31+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "Language: fr_FR\n"
@@ -2490,7 +2490,7 @@ msgstr "Schéma (global)"
 
 #: lazarusidestrconsts.dlgmarkupoutlinewarnnocolor
 msgid "Warning: There are no colors configured for the selected language"
-msgstr ""
+msgstr "Attention : aucune couleur n'est configurée pour la langue sélectionnée"
 
 #: lazarusidestrconsts.dlgmarkupuserdefined
 msgctxt "lazarusidestrconsts.dlgmarkupuserdefined"
@@ -3271,7 +3271,7 @@ msgstr "&Charger une icône"
 
 #: lazarusidestrconsts.dlgpolongpathaware
 msgid "Long path awareness"
-msgstr ""
+msgstr "Prise en charge des chemins longs"
 
 #: lazarusidestrconsts.dlgpomisc
 msgctxt "lazarusidestrconsts.dlgpomisc"
@@ -11740,7 +11740,7 @@ msgstr "Variables locales"
 
 #: lazarusidestrconsts.lislocalsdlgcopyall
 msgid "Copy &all"
-msgstr ""
+msgstr "Tout &copier"
 
 #: lazarusidestrconsts.lislocalsdlgcopyname
 msgid "&Copy Name"
@@ -11748,7 +11748,7 @@ msgstr "&Copier le nom"
 
 #: lazarusidestrconsts.lislocalsdlgcopynamevalue
 msgid "Co&py Name and Value"
-msgstr ""
+msgstr "Co&pier le nom et la valeur"
 
 #: lazarusidestrconsts.lislocalsdlgcopyrawvalue
 msgid "Copy &RAW Value"
@@ -14398,7 +14398,7 @@ msgstr "le répertoire de sortie de %s contient l'unité Pascal \"%s\""
 
 #: lazarusidestrconsts.lisoutputfilenameofproject
 msgid "Output filename of project"
-msgstr ""
+msgstr "Fichier de sortie du projet"
 
 #: lazarusidestrconsts.lisoverridelanguage
 msgid "Override language. For example --language=de. For possible values see files in the languages directory."

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-10-08 11:14+0200\n"
+"PO-Revision-Date: 2018-11-28 17:27+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "Language: fr_FR\n"
@@ -1328,11 +1328,11 @@ msgstr "Nouvelle résolution..."
 
 #: objinspstrconsts.sccsiledtaddsliced
 msgid "Add sliced ..."
-msgstr ""
+msgstr "Ajouter des icônes en tranches..."
 
 #: objinspstrconsts.sccsiledtaddslicediconerror
 msgid "Adding sliced icons is not supported."
-msgstr ""
+msgstr "L'ajout d'icônes en tranches n'est pas pris en charge."
 
 #: objinspstrconsts.sccsiledtadjustment
 msgid "Adjustment"
@@ -1349,7 +1349,7 @@ msgstr "Impossible de supprimer la résolution par défaut."
 
 #: objinspstrconsts.sccsiledtcannotslice
 msgid "Source image size must be an integer multiple of the ImageList's Width and Height."
-msgstr ""
+msgstr "La taille de l'image source doit être un multiple entier de la largeur et de la hauteur de l'ImageList."
 
 #: objinspstrconsts.sccsiledtcaption
 msgid "ImageList Editor"

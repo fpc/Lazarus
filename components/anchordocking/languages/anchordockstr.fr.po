@@ -3,7 +3,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2015-04-14 07:54+0100\n"
-"PO-Revision-Date: 2018-10-08 11:08+0200\n"
+"PO-Revision-Date: 2018-11-28 17:23+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "MIME-Version: 1.0\n"
@@ -17,7 +17,7 @@ msgstr "Un côté libre du séparateur ne doit pas être ancré : Nœud = \"%s\"
 
 #: anchordockstr.adrsallowdocksitestobeminimized
 msgid "Allow dock sites to be minimized"
-msgstr ""
+msgstr "Autoriser les sites d'ancrage à être réduits"
 
 #: anchordockstr.adrsamountofpixelthemousehastodragbeforedragstarts
 msgid "Amount of pixel the mouse has to drag before drag starts"
@@ -157,7 +157,7 @@ msgstr "Fusionner"
 
 #: anchordockstr.adrsminimize
 msgid "Minimize"
-msgstr ""
+msgstr "Réduire"
 
 #: anchordockstr.adrsmissingcontrolname
 msgid "missing control name"

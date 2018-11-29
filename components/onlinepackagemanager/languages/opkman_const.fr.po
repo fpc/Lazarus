@@ -3,7 +3,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2017-02-06 11:11+0100\n"
-"PO-Revision-Date: 2018-10-08 11:29+0200\n"
+"PO-Revision-Date: 2018-11-28 17:34+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "Language: fr_FR\n"
@@ -575,7 +575,7 @@ msgstr "Gestionnaire de paquets en ligne"
 
 #: opkman_const.rsmainfrm_breturn_caption
 msgid "Return"
-msgstr ""
+msgstr "Retour"
 
 #: opkman_const.rsmainfrm_cball_caption
 msgid "All/None"
@@ -632,16 +632,12 @@ msgid "Descendent"
 msgstr "Descendant"
 
 #: opkman_const.rsmainfrm_mifromexternalsource
-#, fuzzy
-#| msgid "From external source"
 msgid "From third party repository"
-msgstr "Depuis une source externe"
+msgstr "Depuis un dépôt tiers"
 
 #: opkman_const.rsmainfrm_mifromrepository
-#, fuzzy
-#| msgid "From repository"
 msgid "From official repository"
-msgstr "Depuis le dépôt"
+msgstr "Depuis le dépôt officiel"
 
 #: opkman_const.rsmainfrm_mijsonhide
 msgid "Hide JSON"
