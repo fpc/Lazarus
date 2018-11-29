@@ -841,6 +841,7 @@ Type
   TDBLookupComboBox = class(TCustomDBComboBox)
   protected
     function DoEdit: boolean; override;
+    function IsUnbound: boolean;
   private
     FLookup: TDBLookup;
     FScrollListDataset: Boolean;
