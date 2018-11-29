@@ -765,7 +765,7 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
         end;
       end;
       if not Result then
-        APrintedValue := '(' + APrintedValue + ')';
+        APrintedValue := ResTypeName + ' (' + APrintedValue + ')';
       Result := True;
     finally
       if Cache <> nil then
