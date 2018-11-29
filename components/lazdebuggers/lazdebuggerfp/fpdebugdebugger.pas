@@ -150,6 +150,9 @@ type
     procedure DoRelease; override;
     procedure DoState(const OldState: TDBGState); override;
     {$ifdef linux}
+  protected
+    FCallStackEntryListThread: TDbgThread;
+    FCallStackEntryListFrameRequired: Integer;
     procedure DoAddBreakLine;
     procedure DoAddBreakLocation;
     procedure DoReadData;
@@ -161,7 +164,7 @@ type
     procedure FreeBreakpoint(const ABreakpoint: TFpInternalBreakpoint);
     function ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData): Boolean;
     function ReadAddress(const AAdress: TDbgPtr; out AData: TDBGPtr): Boolean;
-    procedure PrepareCallStackEntryList;
+    procedure PrepareCallStackEntryList(AFrameRequired: Integer = -1; AThread: TDbgThread = nil);
 
     property DebugInfo: TDbgInfo read GetDebugInfo;
   public
@@ -308,6 +311,13 @@ type
   TFpDbgMemReader = class(TDbgMemReader)
   private
     FFpDebugDebugger: TFpDebugDebugger;
+    {$ifdef linux}
+    FRegNum: Cardinal;
+    FRegValue: TDbgPtr;
+    FRegContext: TFpDbgAddressContext;
+    FRegResult: Boolean;
+    procedure DoReadRegister;
+    {$endif linux}
   protected
     function GetDbgProcess: TDbgProcess; override;
     function GetDbgThread(AContext: TFpDbgAddressContext): TDbgThread; override;
@@ -315,6 +325,8 @@ type
     constructor create(AFpDebugDebuger: TFpDebugDebugger);
     function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
     function ReadMemoryEx(AnAddress, AnAddressSpace: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
+    function ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr;
+      AContext: TFpDbgAddressContext): Boolean; override;
   end;
 
   { TFpWaitForConsoleOutputThread }
@@ -366,7 +378,7 @@ begin
   ThreadArray := TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.GetThreadArray;
   for i := 0 to high(ThreadArray) do
     begin
-    ThreadArray[i].PrepareCallStackEntryList(1);
+    TFpDebugDebugger(Debugger).PrepareCallStackEntryList(1, ThreadArray[i]);
     CallStack := ThreadArray[i].CallStackEntryList;
     if ThreadArray[i].ID = TFpDebugDebugger(Debugger).FDbgController.CurrentThread.ID then
       State := 'stopped'
@@ -506,6 +518,13 @@ begin
     Result := FFpDebugDebugger.FDbgController.CurrentThread;
 end;
 
+{$ifdef linux}
+procedure TFpDbgMemReader.DoReadRegister;
+begin
+  FRegResult := inherited ReadRegister(FRegNum, FRegValue, FRegContext);
+end;
+{$endif linux}
+
 constructor TFpDbgMemReader.create(AFpDebugDebuger: TFpDebugDebugger);
 begin
   FFpDebugDebugger := AFpDebugDebuger;
@@ -520,6 +539,20 @@ function TFpDbgMemReader.ReadMemoryEx(AnAddress, AnAddressSpace: TDbgPtr; ASize:
 begin
   Assert(AnAddressSpace>0,'TFpDbgMemReader.ReadMemoryEx ignores AddressSpace');
   result := FFpDebugDebugger.ReadData(AnAddress, ASize, ADest^);
+end;
+
+function TFpDbgMemReader.ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr;
+  AContext: TFpDbgAddressContext): Boolean;
+begin
+{$ifdef linux}
+  FRegNum := ARegNum;
+  FRegContext := AContext;
+  FFpDebugDebugger.ExecuteInDebugThread(@DoReadRegister);
+  AValue := FRegValue;
+  result := FRegResult;
+{$else linux}
+  result := inherited ReadRegister(ARegNum, AValue, AContext);
+{$endif linux}
 end;
 
 { TFPCallStackSupplier }
@@ -718,7 +751,7 @@ begin
 
   if CurStackFrame > 0 then
     begin
-    AController.CurrentThread.PrepareCallStackEntryList(CurStackFrame);
+    TFpDebugDebugger(Debugger).PrepareCallStackEntryList(CurStackFrame);
     AFrame := AController.CurrentThread.CallStackEntryList[CurStackFrame];
     if AFrame = nil then
       begin
@@ -1332,7 +1365,7 @@ begin
 
   if StackFrame > 0 then
     begin
-    FDbgController.CurrentThread.PrepareCallStackEntryList(StackFrame);
+    PrepareCallStackEntryList(StackFrame);
     AFrame := FDbgController.CurrentThread.CallStackEntryList[StackFrame];
     if AFrame = nil then
       begin
@@ -1967,7 +2000,7 @@ end;
 
 procedure TFpDebugDebugger.DoPrepareCallStackEntryList;
 begin
-  FDbgController.CurrentThread.PrepareCallStackEntryList;
+  FCallStackEntryListThread.PrepareCallStackEntryList(FCallStackEntryListFrameRequired);
 end;
 
 procedure TFpDebugDebugger.DoFreeBreakpoint;
@@ -2046,12 +2079,22 @@ begin
   end;
 end;
 
-procedure TFpDebugDebugger.PrepareCallStackEntryList;
+procedure TFpDebugDebugger.PrepareCallStackEntryList(AFrameRequired: Integer;
+  AThread: TDbgThread);
 begin
+  if AThread = nil then
+    AThread := FDbgController.CurrentThread;
+  // In case of linux, check if required, before handind to other thread
+  if (AFrameRequired >= 0) and
+     (AThread.CallStackEntryList <> nil) and
+     (AFrameRequired < AThread.CallStackEntryList.Count) then
+    exit;
 {$ifdef linux}
+  FCallStackEntryListThread := AThread;
+  FCallStackEntryListFrameRequired := AFrameRequired;
   ExecuteInDebugThread(@DoPrepareCallStackEntryList);
 {$else linux}
-  FDbgController.CurrentThread.PrepareCallStackEntryList;
+  AThread.PrepareCallStackEntryList(AFrameRequired);
 {$endif linux}
 end;
 
