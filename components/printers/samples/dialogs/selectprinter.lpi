@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="9"/>
+    <Version Value="11"/>
     <PathDelim Value="\"/>
     <General>
       <Flags>
@@ -12,8 +12,8 @@
       <MainUnit Value="0"/>
       <Title Value="selectprinter"/>
     </General>
-    <BuildModes Count="2">
-      <Item1 Name="default" Default="True"/>
+    <BuildModes Count="4">
+      <Item1 Name="Default" Default="True"/>
       <Item2 Name="Qt">
         <MacroValues Count="1">
           <Macro1 Name="LCLWidgetType" Value="qt"/>
@@ -21,9 +21,6 @@
         <CompilerOptions>
           <Version Value="11"/>
           <PathDelim Value="\"/>
-          <SearchPaths>
-            
-          </SearchPaths>
           <Parsing>
             <SyntaxOptions>
               <SyntaxMode Value="Delphi"/>
@@ -47,27 +44,100 @@
               </Win32>
             </Options>
           </Linking>
-          <Other>
-            <CompilerPath Value="$(CompPath)"/>
-          </Other>
           <CompileReasons Run="False"/>
         </CompilerOptions>
       </Item2>
-      <SharedMatrixOptions Count="1">
+      <Item3 Name="Cocoa">
+        <MacroValues Count="1">
+          <Macro2 Name="LCLWidgetType" Value="cocoa"/>
+        </MacroValues>
+        <CompilerOptions>
+          <Version Value="11"/>
+          <PathDelim Value="\"/>
+          <Parsing>
+            <SyntaxOptions>
+              <SyntaxMode Value="Delphi"/>
+              <IncludeAssertionCode Value="True"/>
+            </SyntaxOptions>
+          </Parsing>
+          <CodeGeneration>
+            <Checks>
+              <IOChecks Value="True"/>
+              <RangeChecks Value="True"/>
+              <OverflowChecks Value="True"/>
+            </Checks>
+            <TargetCPU Value="x86_64"/>
+          </CodeGeneration>
+          <Linking>
+            <Debugging>
+              <DebugInfoType Value="dsStabs"/>
+            </Debugging>
+            <Options>
+              <Win32>
+                <GraphicApplication Value="True"/>
+              </Win32>
+            </Options>
+          </Linking>
+          <CompileReasons Run="False"/>
+        </CompilerOptions>
+      </Item3>
+      <Item4 Name="Carbon">
+        <MacroValues Count="1">
+          <Macro4 Name="LCLWidgetType" Value="carbon"/>
+        </MacroValues>
+        <CompilerOptions>
+          <Version Value="11"/>
+          <PathDelim Value="\"/>
+          <Parsing>
+            <SyntaxOptions>
+              <SyntaxMode Value="Delphi"/>
+              <IncludeAssertionCode Value="True"/>
+            </SyntaxOptions>
+          </Parsing>
+          <CodeGeneration>
+            <Checks>
+              <IOChecks Value="True"/>
+              <RangeChecks Value="True"/>
+              <OverflowChecks Value="True"/>
+            </Checks>
+            <TargetCPU Value="i386"/>
+          </CodeGeneration>
+          <Linking>
+            <Debugging>
+              <DebugInfoType Value="dsStabs"/>
+            </Debugging>
+            <Options>
+              <Win32>
+                <GraphicApplication Value="True"/>
+              </Win32>
+            </Options>
+          </Linking>
+          <CompileReasons Run="False"/>
+        </CompilerOptions>
+      </Item4>
+      <SharedMatrixOptions Count="5">
         <Item1 ID="441400682089" Modes="Qt" Type="IDEMacro" MacroName="LCLWidgetType" Value="qt"/>
+        <Item2 ID="217535258523" Modes="Cocoa" Type="IDEMacro" MacroName="LCLWidgetType" Value="cocoa"/>
+        <Item3 ID="945254460597" Modes="Cocoa" Value="-O- -O1 -gw2 -godwarfsets"/>
+        <Item4 ID="285475122441" Modes="Carbon" Type="IDEMacro" MacroName="LCLWidgetType" Value="carbon"/>
+        <Item5 ID="888753776585" Modes="Carbon" Value="-O- -O1 -gw2 -godwarfsets"/>
       </SharedMatrixOptions>
     </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
-      <IgnoreBinaries Value="False"/>
-      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
-      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
     </PublishOptions>
     <RunParams>
       <local>
-        <FormatVersion Value="1"/>
         <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
+      <FormatVersion Value="2"/>
+      <Modes Count="1">
+        <Mode0 Name="default">
+          <local>
+            <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
+          </local>
+        </Mode0>
+      </Modes>
     </RunParams>
     <RequiredPackages Count="2">
       <Item1>
@@ -82,7 +152,6 @@
       <Unit0>
         <Filename Value="selectprinter.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="selectprinter"/>
       </Unit0>
       <Unit1>
         <Filename Value="frmselprinter.pas"/>
@@ -90,16 +159,12 @@
         <ComponentName Value="Form1"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="frmselprinter"/>
       </Unit1>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="11"/>
     <PathDelim Value="\"/>
-    <SearchPaths>
-      
-    </SearchPaths>
     <Parsing>
       <SyntaxOptions>
         <SyntaxMode Value="Delphi"/>
@@ -118,9 +183,6 @@
         <DebugInfoType Value="dsStabs"/>
       </Debugging>
     </Linking>
-    <Other>
-      <CompilerPath Value="$(CompPath)"/>
-    </Other>
     <CompileReasons Run="False"/>
   </CompilerOptions>
 </CONFIG>

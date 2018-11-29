@@ -81,10 +81,14 @@ type
                           cdecWSNOCanCloseSupport);
   TCDWSEventCapabilities = set of TCDWSEventCapability;
 
+  TDialogResultEvent = procedure(sender: TObject; Success: boolean) of object;
+
   TCommonDialog = class(TLCLComponent)
   private
+    FAttachTo: TCustomForm;
     FHandle : THandle;
     FHeight: integer;
+    FOnDialogResult: TDialogResultEvent;
     FWidth: integer;
     FOnCanClose: TCloseQueryEvent;
     FOnShow, FOnClose : TNotifyEvent;
@@ -107,6 +111,8 @@ type
     procedure SetHeight(const AValue: integer); virtual;
     procedure SetWidth(const AValue: integer); virtual;
     procedure ResetShowCloseFlags;
+    property AttachTo: TCustomForm read FAttachTo write FAttachTo; platform;
+    property OnDialogResult:TDialogResultEvent read FOnDialogResult write FOnDialogResult; platform;
   public
     FCompStyle : LongInt;
     constructor Create(TheOwner: TComponent); override;
@@ -494,7 +500,7 @@ type
 
   TPrintRange = (prAllPages, prSelection, prPageNums, prCurrentPage);
   TPrintDialogOption = (poPrintToFile, poPageNums, poSelection, poWarning,
-    poHelp, poDisablePrintToFile);
+    poHelp, poDisablePrintToFile, poBeforeBeginDoc);
   TPrintDialogOptions = set of TPrintDialogOption;
 
   TCustomPrintDialog = class(TCommonDialog)

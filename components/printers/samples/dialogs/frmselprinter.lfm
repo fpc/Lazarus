@@ -1,20 +1,20 @@
 object Form1: TForm1
   Left = 106
-  Height = 683
+  Height = 787
   Top = 121
   Width = 489
   ActiveControl = Button7
   Caption = 'Form1'
-  ClientHeight = 683
+  ClientHeight = 787
   ClientWidth = 489
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '1.3'
+  LCLVersion = '1.9.0.0'
   object Label1: TLabel
     Left = 12
-    Height = 13
+    Height = 15
     Top = 4
-    Width = 229
+    Width = 254
     Caption = 'This sample show how to use the printer dialogs'
     ParentColor = False
   end
@@ -40,8 +40,8 @@ object Form1: TForm1
   end
   object SGrid: TStringGrid
     Left = 8
-    Height = 411
-    Top = 264
+    Height = 459
+    Top = 320
     Width = 469
     AlternateColor = clCream
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -85,10 +85,10 @@ object Form1: TForm1
     TabOrder = 2
   end
   object btnDirectPrint: TButton
-    Left = 200
+    Left = 202
     Height = 27
     Top = 152
-    Width = 128
+    Width = 126
     BorderSpacing.InnerBorder = 4
     Caption = 'Direct Print'
     OnClick = btnDirectPrintClick
@@ -125,24 +125,24 @@ object Form1: TForm1
     TabOrder = 6
   end
   object chkTestImgs: TCheckBox
-    Left = 407
-    Height = 17
+    Left = 392
+    Height = 19
     Top = 100
-    Width = 65
+    Width = 71
     Caption = 'Test Imgs'
     TabOrder = 8
   end
   object chkOutputFile: TCheckBox
     Left = 195
-    Height = 17
+    Height = 19
     Top = 27
-    Width = 71
+    Width = 79
     Caption = 'Output File'
     TabOrder = 9
   end
   object txtOutputFile: TFileNameEdit
     Left = 195
-    Height = 21
+    Height = 23
     Top = 48
     Width = 261
     DialogKind = dkSave
@@ -156,55 +156,55 @@ object Form1: TForm1
     TabOrder = 10
   end
   object Label2: TLabel
-    Left = 20
-    Height = 13
-    Top = 188
-    Width = 94
+    Left = 61
+    Height = 15
+    Top = 192
+    Width = 103
     Alignment = taRightJustify
     Caption = 'PageSetupDlg Title:'
     ParentColor = False
   end
   object Label3: TLabel
-    Left = 5
-    Height = 13
+    Left = 49
+    Height = 15
     Top = 212
-    Width = 102
+    Width = 112
     Alignment = taRightJustify
     Caption = 'PrinterSetupDlg Title:'
     ParentColor = False
   end
   object txtPageSetupDlgTitle: TEdit
-    Left = 184
-    Height = 21
+    Left = 202
+    Height = 23
     Top = 188
-    Width = 293
+    Width = 275
     Anchors = [akTop, akLeft, akRight]
     TabOrder = 11
     Text = 'Printer Dialogs Tests: PageSetupDialog'
   end
   object txtPrinterSetupDlgTitle: TEdit
-    Left = 184
-    Height = 21
+    Left = 202
+    Height = 23
     Top = 212
-    Width = 293
+    Width = 275
     Anchors = [akTop, akLeft, akRight]
     TabOrder = 12
     Text = 'Printer Dialogs Tests: PrinterSetupDialog'
   end
   object Label4: TLabel
-    Left = 38
-    Height = 13
+    Left = 78
+    Height = 15
     Top = 236
-    Width = 78
+    Width = 88
     Alignment = taRightJustify
     Caption = 'PrintDialog Title:'
     ParentColor = False
   end
   object txtPrintDialogTitle: TEdit
-    Left = 184
-    Height = 21
+    Left = 202
+    Height = 23
     Top = 236
-    Width = 293
+    Width = 275
     Anchors = [akTop, akLeft, akRight]
     TabOrder = 13
     Text = 'Printer Dialogs Tests: PrinterDialog'
@@ -240,52 +240,114 @@ object Form1: TForm1
   end
   object comboTests: TComboBox
     Left = 200
-    Height = 21
+    Height = 23
     Top = 120
     Width = 272
-    ItemHeight = 13
-    ItemIndex = 0
+    ItemHeight = 15
     Items.Strings = (
       'Single Page'
       'Single Page with Images'
       'Multi-Page'
+      'Multipage with paper changes'
     )
+    OnSelect = comboTestsSelect
     Style = csDropDownList
     TabOrder = 17
-    Text = 'Single Page'
   end
   object Label5: TLabel
-    Left = 200
-    Height = 13
+    Left = 202
+    Height = 15
     Top = 104
-    Width = 30
+    Width = 29
     Caption = 'Tests:'
     ParentColor = False
   end
+  object chkAsSheet: TCheckBox
+    Left = 360
+    Height = 19
+    Hint = 'Cocoa Only:'#10'Attach the dialogs to the main form:'#10'use the dialogs AttachTo property'#10'to select the target formulary.'
+    Top = 4
+    Width = 65
+    Caption = 'As Sheet'
+    Enabled = False
+    TabOrder = 18
+  end
+  object cbPrinters: TComboBox
+    Left = 202
+    Height = 23
+    Top = 264
+    Width = 275
+    ItemHeight = 15
+    OnSelect = cbPrintersSelect
+    TabOrder = 19
+    Text = 'cbPrinters'
+  end
+  object cbPapers: TComboBox
+    Left = 202
+    Height = 23
+    Top = 288
+    Width = 275
+    ItemHeight = 15
+    OnSelect = cbPapersSelect
+    TabOrder = 20
+    Text = 'cbPapers'
+  end
+  object Label6: TLabel
+    Left = 1
+    Height = 15
+    Top = 264
+    Width = 153
+    Alignment = taRightJustify
+    Caption = 'Programmatically set printer:'
+    ParentColor = False
+  end
+  object Label7: TLabel
+    Left = 8
+    Height = 15
+    Top = 288
+    Width = 148
+    Alignment = taRightJustify
+    Caption = 'Programmatically set paper:'
+    ParentColor = False
+  end
+  object chkNativeDlg: TCheckBox
+    Left = 360
+    Height = 19
+    Hint = 'Cocoa Only: '#10'Checked State: (default) Use the native cocoa look with print preview.'#10'Uncheck State: Use a dialog without print preview.'#10#10'By default the sistem uses the native look, to force the old look'#10'turn the print dialog option poBeforeBeginDoc on'
+    Top = 22
+    Width = 91
+    Caption = 'Native Dialog'
+    Checked = True
+    Enabled = False
+    ParentShowHint = False
+    ShowHint = True
+    State = cbChecked
+    TabOrder = 21
+  end
   object PSD: TPrinterSetupDialog
     Title = 'Testing dialog title'
-    left = 172
-    top = 452
+    Left = 172
+    Top = 452
   end
   object PD: TPrintDialog
     Title = 'Testing title'
     Collate = True
-    FromPage = 2
-    MinPage = 2
-    MaxPage = 5
+    FromPage = 1
+    MinPage = 1
+    MaxPage = 1
     Options = [poPrintToFile, poPageNums, poSelection, poWarning, poHelp]
     PrintToFile = True
-    ToPage = 3
-    left = 172
-    top = 484
+    ToPage = 1
+    Left = 172
+    Top = 484
   end
   object PopupMenu1: TPopupMenu
-    left = 212
-    top = 452
+    Left = 212
+    Top = 452
   end
   object PAGED: TPageSetupDialog
     Title = 'Ustawienie strony raportu'
-    left = 172
-    top = 516
+    Left = 172
+    Top = 516
   end
 end
