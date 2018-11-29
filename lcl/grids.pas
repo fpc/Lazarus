@@ -6669,10 +6669,10 @@ begin
                 EditorShow(true);
               end;
               MoveSelection;
-            end;
+            end else
+              FGridState:=gsSelecting;
           finally
             exclude(fGridFlags, gfEditingDone);
-            fGridState:=gsSelecting;
           end;
 
         end;
@@ -6702,6 +6702,7 @@ begin
         P:=MouseToLogcell(Point(X,Y));
         if gfNeedsSelectActive in GridFlags then
           SelectActive := (P.x<>FPivot.x)or(P.y<>FPivot.y);
+        MoveExtend(false, P.X, P.Y, false);
       end;
     gsColMoving:
       if goColMoving in Options then
