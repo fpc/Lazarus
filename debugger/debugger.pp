@@ -1846,6 +1846,7 @@ end;
 
 function TIdeThreadFrameEntry.GetUnitInfoProvider: TDebuggerUnitInfoProvider;
 begin
+  assert(FThread <> nil, 'FThread <> nil');
   Result := FThread.GetUnitInfoProvider;
 end;
 
@@ -6174,6 +6175,7 @@ end;
 
 function TIdeCallStackEntry.GetUnitInfoProvider: TDebuggerUnitInfoProvider;
 begin
+  assert(FOwner <> nil, 'FOwner <> nil');
   Result := (FOwner as TCurrentCallStack).FMonitor.UnitInfoProvider;
 end;
 
