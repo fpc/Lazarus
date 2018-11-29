@@ -21,7 +21,7 @@ uses
   DbgIntfDebuggerBase,
   FpdMemoryTools,
   FpPascalParser,
-  FPDbgController, FpDbgDwarfDataClasses;
+  FPDbgController, FpDbgDwarfDataClasses, FpDbgDwarfFreePascal;
 
 type
 
@@ -1591,6 +1591,7 @@ var
   ExceptionClass: string;
   ExceptionMessage: string;
   RegDxDwarfIndex: byte;
+  ExceptItem: TBaseException;
 begin
   // Using regvar:
   // In all their wisdom, people decided to give the (r)dx register dwarf index
@@ -1608,6 +1609,14 @@ begin
     ExceptionClass := GetClassInstanceName(AnExceptionObjectLocation);
     ExceptionMessage := ReadAnsiString(AnExceptionObjectLocation+DBGPTRSIZE[FDbgController.CurrentProcess.Mode]);
   end;
+
+  ExceptItem := Exceptions.Find(ExceptionClass);
+  if (ExceptItem <> nil) and (ExceptItem.Enabled)
+  then begin
+    continue := True;
+    exit;
+  end;
+
 
   DoException(deInternal, ExceptionClass, AnExceptionLocation, ExceptionMessage, continue);
 end;

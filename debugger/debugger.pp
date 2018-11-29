@@ -1348,6 +1348,9 @@ type
     FThread: TIdeThreadEntry;
   protected
     function GetUnitInfoProvider: TDebuggerUnitInfoProvider; override;
+  public
+    function CreateCopy: TCallStackEntry; override;
+    procedure Assign(AnOther: TCallStackEntry); override;
   end;
 
   { TThreadEntry }
@@ -1844,6 +1847,20 @@ end;
 function TIdeThreadFrameEntry.GetUnitInfoProvider: TDebuggerUnitInfoProvider;
 begin
   Result := FThread.GetUnitInfoProvider;
+end;
+
+function TIdeThreadFrameEntry.CreateCopy: TCallStackEntry;
+begin
+  Result := TIdeThreadFrameEntry.Create;
+  Result.Assign(Self);
+end;
+
+procedure TIdeThreadFrameEntry.Assign(AnOther: TCallStackEntry);
+begin
+  inherited Assign(AnOther);
+  if AnOther is TIdeThreadFrameEntry then begin
+    FThread := TIdeThreadFrameEntry(AnOther).FThread;
+  end;
 end;
 
 { TIDEBreakPointGroupList }

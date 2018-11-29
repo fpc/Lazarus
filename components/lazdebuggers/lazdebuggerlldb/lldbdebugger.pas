@@ -682,11 +682,13 @@ var
   i: SizeInt;
 begin
   // (char * ) $2 = 0x005c18d0 "\tException"
+  // (char *) $10 = 0x00652d44 "\x04TXXX"
   s := TLldbInstructionReadExpression(Sender).Res;
   i := pos('"', s);
   if i > 0 then begin
-    if s[i+1] = '\' then inc(i);
-    s := copy(s, i+2, Length(s)-i-2);
+    if s[i+1] = '\' then inc(i, 2);
+    if s[i] = 'x' then inc(i, 2);
+    s := copy(s, i+1, Length(s)-i-1);
   end;
   FCurrentExceptionInfo.FExceptClass := s;
   Include(FCurrentExceptionInfo.FHasCommandData, exiClass);
@@ -764,6 +766,7 @@ const
     ExcClass, ExcMsg: String;
     CanContinue: Boolean;
     Instr: TLldbInstructionStackTrace;
+    ExceptItem: TBaseException;
   begin
     if exiClass in FCurrentExceptionInfo.FHasCommandData then
       ExcClass := FCurrentExceptionInfo.FExceptClass
@@ -773,6 +776,14 @@ const
       ExcMsg := FCurrentExceptionInfo.FExceptMsg
     else
       ExcMsg := '<Unknown Message>'; // TODO: move to IDE
+
+    ExceptItem := Debugger.Exceptions.Find(ExcClass);
+    if (ExceptItem <> nil) and (ExceptItem.Enabled)
+    then begin
+      FState := crStoppedRaise;
+      ContinueRunning;
+      exit;
+    end;
 
     CanContinue := Debugger.DoExceptionHit(ExcClass, ExcMsg);
 
@@ -1047,7 +1058,10 @@ procedure TLldbDebuggerCommandRun.ResetStateToRun;
 begin
   FState := crRunning;
   FCurBrkId := 0;
-  FThreadInstr := nil;
+  if FThreadInstr <> nil then begin
+    FThreadInstr.ReleaseReference;
+    FThreadInstr := nil;
+  end;
   FCurrentExceptionInfo.FHasCommandData := [];
 end;
 
