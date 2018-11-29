@@ -2820,10 +2820,6 @@ end;
   To get a correct behavior we need to sum the text's height to the Y coordinate.
  ------------------------------------------------------------------------------}
 procedure TQtDeviceContext.drawText(x: Integer; y: Integer; s: PWideString);
-{$IFDEF DARWIN}
-var
-  OldBkMode: Integer;
-{$ENDIF}
 begin
   {$ifdef VerboseQt}
   Write('TQtDeviceContext.drawText TargetX: ', X, ' TargetY: ', Y);
@@ -2844,17 +2840,11 @@ begin
 
   // The ascent is only applied here, because it also needs
   // to be rotated
-  {$IFDEF DARWIN}
-  OldBkMode := SetBkMode(TRANSPARENT);
-  {$ENDIF}
   if Font.Angle <> 0 then
     QPainter_drawText(Widget, 0, Metrics.ascent, s)
   else
     QPainter_drawText(Widget, x, y, s);
-  {$IFDEF DARWIN}
-  SetBkMode(OldBkMode);
-  {$ENDIF}
-  
+
   RestorePenColor;
   
   // Restore previous angle
@@ -2877,10 +2867,6 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 procedure TQtDeviceContext.drawText(x, y, w, h, flags: Integer; s: PWideString);
-{$IFDEF DARWIN}
-var
-  OldBkMode: Integer;
-{$ENDIF}
 begin
   {$ifdef VerboseQt}
   Write('TQtDeviceContext.drawText x: ', X, ' Y: ', Y,' w: ',w,' h: ',h);
@@ -2895,16 +2881,10 @@ begin
   end;
 
   RestoreTextColor;
-  {$IFDEF DARWIN}
-  OldBkMode := SetBkMode(TRANSPARENT);
-  {$ENDIF}
   if Font.Angle <> 0 then
     QPainter_DrawText(Widget, 0, 0, w, h, Flags, s)
   else
     QPainter_DrawText(Widget, x, y, w, h, Flags, s);
-  {$IFDEF DARWIN}
-  SetBkMode(OldBkMode);
-  {$ENDIF}
   RestorePenColor;
 
   // Restore previous angle
@@ -3436,7 +3416,9 @@ var
   ARenderHint: Boolean;
   ATransformation: QtTransformationMode;
   ARenderHints: QPainterRenderHints;
-
+  {$IFDEF DARWIN}
+  BMacPrinter: boolean;
+  {$ENDIF}
   function NeedScaling: boolean;
   var
     R: TRect;
@@ -3464,6 +3446,10 @@ begin
   {$endif}
   ScaledImage := nil;
   LocalRect := targetRect^;
+
+  {$IFDEF DARWIN}
+  BMacPrinter := (PaintEngine <> nil) and (QPaintEngine_type(PaintEngine) = QPaintEngineMacPrinter);
+  {$ENDIF}
 
   if mask <> nil then
   begin
@@ -3600,7 +3586,18 @@ begin
         if ARenderHint and (QImage_format(image) = QImageFormat_ARGB32) and (flags = QtAutoColor) and
           not EqualRect(LocalRect, sourceRect^) then
             QPainter_setRenderHint(Widget, QPainterSmoothPixmapTransform, True);
-        QPainter_drawImage(Widget, PRect(@LocalRect), image, sourceRect, flags);
+
+        {$IFDEF DARWIN}
+        if BMacPrinter then
+        begin
+          ScaledImage := QImage_create();
+          QImage_convertToFormat(Image, ScaledImage, QImageFormat_ARGB32_Premultiplied);
+          QPainter_drawImage(Widget, PRect(@LocalRect), ScaledImage, sourceRect, flags);
+          QImage_destroy(ScaledImage);
+        end else
+        {$ENDIF}
+          QPainter_drawImage(Widget, PRect(@LocalRect), image, sourceRect, flags);
+
         if ARenderHint then
           QPainter_setRenderHint(Widget, QPainterSmoothPixmapTransform, not ARenderHint);
       end;

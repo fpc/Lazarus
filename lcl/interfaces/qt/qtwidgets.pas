@@ -60,7 +60,8 @@ type
   {state is setted up only when LCL is doing changes.}
   TQtWidgetState = (qtwsColorUpdating, qtwsFontUpdating, qtwsSizeUpdating,
     qtwsPositionUpdating, qtwsInsideRightMouseButtonPressEvent,
-    qtwsHiddenInsideRightMouseButtonPressEvent);
+    qtwsHiddenInsideRightMouseButtonPressEvent,
+    qtwsForceSendMove {mantis #34589 , LM_MOVE from ScrollWindowEx(SW_SCROLLCHILDREN)});
 
   TQtWidgetStates = set of TQtWidgetState;
 
@@ -4048,6 +4049,7 @@ var
   {$ENDIF}
   {$ENDIF}
   FrameRect, WindowRect: TRect;
+  ForceSendMove: boolean;
 begin
   {$ifdef VerboseQt}
     WriteLn('TQtWidget.SlotMove');
@@ -4059,6 +4061,14 @@ begin
   if InUpdate then
     exit;
 
+  ForceSendMove := False; {mantis #34589}
+  if not QEvent_spontaneous(Event) and Assigned(LCLObject) and Assigned(LCLObject.Parent) then
+    // only children of 1st level should move.
+    ForceSendMove := qtwsForceSendMove in TQtWidget(LCLObject.Parent.Handle).WidgetState;
+
+  if ForceSendMove then
+    // send message mantis #34589
+  else
   if not QEvent_spontaneous(Event) or
     (not QEvent_spontaneous(Event) and
     ((Self is TQtMainWindow) and not

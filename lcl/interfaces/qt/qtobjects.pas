@@ -2847,6 +2847,9 @@ begin
   // The ascent is only applied here, because it also needs
   // to be rotated
   {$IFDEF DARWIN}
+  if getBKMode = OPAQUE then
+    QPainter_fillRect(Widget, x, y - Metrics.ascent, Font.Metrics.width(s), Font.Metrics.height, QPainter_brush(Widget));
+
   OldBkMode := SetBkMode(TRANSPARENT);
   {$ENDIF}
   if Font.Angle <> 0 then
@@ -2898,6 +2901,9 @@ begin
 
   RestoreTextColor;
   {$IFDEF DARWIN}
+  if getBKMode = OPAQUE then
+    QPainter_fillRect(Widget, x, y, w, h, QPainter_brush(Widget));
+
   OldBkMode := SetBkMode(TRANSPARENT);
   {$ENDIF}
   if Font.Angle <> 0 then
