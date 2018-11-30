@@ -259,8 +259,16 @@ begin
 
   ScreenDC := GetDC(0);
   try
+    {$IFDEF DARWIN}
+    // this code is removed in r57679, and cocoa/carbon are fixed separatelly, so
+    // qt/qt5 wasn't good with standard mac ppi 72. Cocoa ws uses CocoaBasePPI const.
+    // issue #34625
+    ScreenInfo.PixelsPerInchX := 96;
+    ScreenInfo.PixelsPerInchY := 96;
+	  {$ELSE}
     ScreenInfo.PixelsPerInchX := GetDeviceCaps(ScreenDC, LOGPIXELSX);
     ScreenInfo.PixelsPerInchY := GetDeviceCaps(ScreenDC, LOGPIXELSY);
+	  {$ENDIF}
     ScreenInfo.ColorDepth := GetDeviceCaps(ScreenDC, BITSPIXEL);
   finally
     ReleaseDC(0, ScreenDC);
