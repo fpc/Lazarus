@@ -1855,7 +1855,7 @@ type
     procedure DoCurrent(const ALocation: TDBGLocationRec);
     procedure DoDbgOutput(const AText: String);
     procedure DoDbgEvent(const ACategory: TDBGEventCategory; const AEventType: TDBGEventType; const AText: String);
-      deprecated 'swich to EventLogHandler';
+      deprecated 'switch to EventLogHandler';
     procedure DoException(const AExceptionType: TDBGExceptionType;
                           const AExceptionClass: String;
                           const AExceptionLocation: TDBGLocationRec;
@@ -1972,7 +1972,7 @@ type
     property OnCurrent: TDBGCurrentLineEvent read FOnCurrent write FOnCurrent;   // Passes info about the current line being debugged
     property OnDbgOutput: TDBGOutputEvent read FOnDbgOutput write FOnDbgOutput;  // Passes all debuggeroutput
     property OnDbgEvent: TDBGEventNotify read FOnDbgEvent write FOnDbgEvent;     // Passes recognized debugger events, like library load or unload
-      deprecated 'swich to EventLogHandler';
+      deprecated 'switch to EventLogHandler';
     property OnException: TDBGExceptionEvent read FOnException write FOnException;  // Fires when the debugger received an ecxeption
     property OnOutput: TDBGOutputEvent read FOnOutput write FOnOutput;           // Passes all output of the debugged target
     property OnBeforeState: TDebuggerStateChangedEvent read FOnBeforeState write FOnBeforeState;   // Fires when the current state of the debugger changes
