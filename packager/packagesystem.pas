@@ -4878,6 +4878,10 @@ begin
   s:=s+'  P : TPackage;'+e;
   s:=s+'  T : TTarget;'+e;
   s:=s+''+e;
+
+  if Assigned(FppkgInterface) then
+    s := s + FppkgInterface.ConstructFpMakeInterfaceSection(APackage);
+
   s:=s+'begin'+e;
   s:=s+'  with Installer do'+e;
   s:=s+'    begin'+e;
@@ -4901,23 +4905,31 @@ begin
   s := s + StringToFpmakeOptionGroup('    P.IncludePath.Add',IncPath);
   s := s + StringToFpmakeOptionGroup('    P.UnitPath.Add', UnitPath);
 
+  if Assigned(FppkgInterface) then
+    s := s + FppkgInterface.ConstructFpMakeImplementationSection(APackage);
+
   s:=s+'    T:=P.Targets.AddUnit('''+MainSrcFile+''');'+e;
-  for i := 0 to APackage.FileCount-1 do
-    if (APackage.Files[i].FileType=pftUnit) then
-      s:=s+'    t.Dependencies.AddUnit('''+ExtractFileNameOnly(APackage.Files[i].Filename)+''');'+e;
+  if Assigned(FppkgInterface) then
+    s := s + FppkgInterface.ConstructFpMakeDependenciesFileSection(APackage)
+  else
+  begin
+    for i := 0 to APackage.FileCount-1 do
+      if (APackage.Files[i].FileType=pftUnit) then
+        s:=s+'    t.Dependencies.AddUnit('''+ExtractFileNameOnly(APackage.Files[i].Filename)+''');'+e;
 
-  s:=s+''+e;
+    s:=s+''+e;
 
-  for i := 0 to APackage.FileCount-1 do
-    if (APackage.Files[i].FileType=pftUnit) then
-    begin
-      if (pffAddToPkgUsesSection in APackage.Files[i].Flags) then
-        s:=s+'    T:=P.Targets.AddUnit('''+CreateRelativePath(APackage.Files[i].Filename,APackage.Directory)+''');'+e
-      else
+    for i := 0 to APackage.FileCount-1 do
+      if (APackage.Files[i].FileType=pftUnit) then
       begin
-        s:=s+'    P.Targets.AddImplicitUnit('''+CreateRelativePath(APackage.Files[i].Filename,APackage.Directory)+''');'+e;
+        if (pffAddToPkgUsesSection in APackage.Files[i].Flags) then
+          s:=s+'    T:=P.Targets.AddUnit('''+CreateRelativePath(APackage.Files[i].Filename,APackage.Directory)+''');'+e
+        else
+        begin
+          s:=s+'    P.Targets.AddImplicitUnit('''+CreateRelativePath(APackage.Files[i].Filename,APackage.Directory)+''');'+e;
+        end;
       end;
-    end;
+  end;
 
   s:=s+''+e;
   s:=s+'    // copy the compiled file, so the IDE knows how the package was compiled'+e;

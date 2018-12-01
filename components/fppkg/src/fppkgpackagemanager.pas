@@ -10,7 +10,7 @@ interface
 uses
   lazfppkgmanagerintf, fppkg_const, fppkg_details, fppkg_mainfrm, fppkg_optionsfrm, laz_pkgrepos, 
   FppkgWorkerThread, Fppkg_EnvironmentOptions, Fppkg_Interface, fppkg_packageoptionsfrm, 
-  LazarusPackageIntf;
+  fppkg_packagevariant, LazarusPackageIntf;
 
 implementation
 

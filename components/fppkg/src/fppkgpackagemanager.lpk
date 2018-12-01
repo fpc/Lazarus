@@ -19,7 +19,7 @@
     <Description Value="A packagemanager based on FPC's fppkg"/>
     <License Value="GPL"/>
     <Version Minor="1"/>
-    <Files Count="13">
+    <Files Count="14">
       <Item1>
         <Filename Value="lazfppkgmanagerintf.pas"/>
         <HasRegisterProc Value="True"/>
@@ -64,32 +64,39 @@
       <Item11>
         <Filename Value="fppkg_environmentoptions.pas"/>
         <HasRegisterProc Value="True"/>
-        <UnitName Value="fppkg_environmentoptions"/>
+        <UnitName Value="Fppkg_EnvironmentOptions"/>
       </Item11>
       <Item12>
         <Filename Value="fppkg_interface.pas"/>
-        <UnitName Value="fppkg_interface"/>
+        <UnitName Value="Fppkg_Interface"/>
       </Item12>
       <Item13>
         <Filename Value="fppkg_packageoptionsfrm.pas"/>
         <UnitName Value="fppkg_packageoptionsfrm"/>
       </Item13>
+      <Item14>
+        <Filename Value="fppkg_packagevariant.pas"/>
+        <UnitName Value="fppkg_packagevariant"/>
+      </Item14>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
       <OutDir Value="..\languages"/>
     </i18n>
-    <RequiredPkgs Count="3">
+    <RequiredPkgs Count="4">
       <Item1>
-        <PackageName Value="IDEIntf"/>
+        <PackageName Value="SynEdit"/>
       </Item1>
       <Item2>
-        <PackageName Value="LCL"/>
+        <PackageName Value="IDEIntf"/>
       </Item2>
       <Item3>
+        <PackageName Value="LCL"/>
+      </Item3>
+      <Item4>
         <PackageName Value="FCL"/>
         <MinVersion Major="1" Release="1" Valid="True"/>
-      </Item3>
+      </Item4>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>
