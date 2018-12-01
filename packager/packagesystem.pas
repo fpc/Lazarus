@@ -1520,7 +1520,7 @@ function TLazPackageGraph.FindDependencyRecursively(
         Result:=CurDependency;
         exit;
       end;
-      if CurDependency.LoadPackageResult=lprSuccess then begin
+      if (CurDependency.DependencyType=pdtLazarus) and (CurDependency.LoadPackageResult=lprSuccess) then begin
         RequiredPackage:=CurDependency.RequiredPackage;
         if (not (lpfVisited in RequiredPackage.Flags)) then begin
           RequiredPackage.Flags:=RequiredPackage.Flags+[lpfVisited];
@@ -2580,14 +2580,14 @@ function TLazPackageGraph.FindPath(StartPackage: TLazPackage;
       if SysUtils.CompareText(Dependency.PackageName,EndPackageName)=0 then begin
         // path found
         PathList:=TFPList.Create;
-        if Dependency.LoadPackageResult=lprSuccess then begin
+        if (Dependency.DependencyType=pdtLazarus) and (Dependency.LoadPackageResult=lprSuccess) then begin
           PathList.Add(Dependency.RequiredPackage);
         end else begin
           PathList.Add(Dependency);
         end;
         exit;
       end;
-      if Dependency.LoadPackageResult=lprSuccess then begin
+      if (Dependency.DependencyType=pdtLazarus) and (Dependency.LoadPackageResult=lprSuccess) then begin
         // dependency ok
         RequiredPackage:=Dependency.RequiredPackage;
         if not (lpfVisited in RequiredPackage.Flags) then begin
