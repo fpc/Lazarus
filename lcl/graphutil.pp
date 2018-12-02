@@ -38,9 +38,10 @@ procedure DrawVerticalGradient(Canvas: TCanvas; ARect: TRect; TopColor, BottomCo
 { Draw nice looking window with Title }
 procedure DrawGradientWindow(Canvas: TCanvas; WindowRect: TRect; TitleHeight: Integer; BaseColor: TColor);
 
-{ Stretch-draw a bitmap in an anti-aliased way to another bitmap }
+{ Stretch-draw a bitmap in an anti-aliased way }
 procedure AntiAliasedStretchDrawBitmap(SourceBitmap, DestBitmap: TCustomBitmap;
   DestWidth, DestHeight: integer);
+procedure AntiAliasedStretchBitmap(ABitmap: TCustomBitmap; AWidth, AHeight: Integer);
 
 { Draw arrows }
 type TScrollDirection=(sdLeft,sdRight,sdUp,sdDown);
@@ -442,6 +443,34 @@ begin
   InflateRect(WindowRect, -1, -1);
   WindowRect.Bottom := WindowRect.Top + TitleHeight;
   DrawVerticalGradient(Canvas, WindowRect, GetHighLightColor(BaseColor), GetShadowColor(BaseColor));
+end;
+
+procedure AntiAliasedStretchBitmap(ABitmap: TCustomBitmap;
+  AWidth, AHeight: Integer);
+var
+  SrcImg, DestImg: TLazIntfImage;
+  DestCanvas: TLazCanvas;
+begin
+  SrcImg := ABitmap.CreateIntfImage;
+  try
+    DestImg := TLazIntfImage.Create(0, 0); 
+    DestImg.LoadFromBitmap(ABitmap.Handle, ABitmap.MaskHandle);
+    try
+      DestCanvas := TLazCanvas.Create(DestImg);
+      try
+        DestCanvas.Interpolation := TFPBaseInterpolation.Create;
+        DestCanvas.StretchDraw(0, 0, AWidth, AHeight, SrcImg);
+        ABitmap.LoadFromIntfImage(DestImg);
+        ABitmap.SetSize(AWidth, AHeight);
+      finally
+        DestCanvas.Free;
+      end;
+    finally
+      DestImg.Free;
+    end;
+  finally
+    SrcImg.Free;
+  end;
 end;
 
 procedure AntiAliasedStretchDrawBitmap(SourceBitmap, DestBitmap: TCustomBitmap;

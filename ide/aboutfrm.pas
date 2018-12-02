@@ -307,20 +307,9 @@ begin
 end;
 
 procedure TAboutForm.LoadLogo;
-var
-  pic: TPicture;
-  W, H: Integer;
 begin
-  pic := TPicture.Create;
-  try
-    pic.LoadFromResourceName(hInstance, 'splash_logo', TPortableNetworkGraphic);
-    W := LogoImage.Width;
-    H := LogoImage.Height;
-    LogoImage.Picture.Bitmap.SetSize(W, H);
-    AntiAliasedStretchDrawBitmap(pic.Bitmap, LogoImage.Picture.Bitmap, W, H);
-  finally
-    pic.Free;
-  end;
+  LogoImage.Picture.LoadFromResourceName(hInstance, 'splash_logo', TPortableNetworkGraphic);
+  AntiAliasedStretchBitmap(LogoImage.Picture.Bitmap, LogoImage.Width, LogoImage.Height);
 end;
 
 

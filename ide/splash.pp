@@ -124,18 +124,10 @@ begin
 end;
 
 procedure TSplashForm.LoadSplash;
-var
-  pic: TPicture;
 begin
-  pic := TPicture.Create;
-  try
-    pic.LoadFromResourceName(hInstance, 'splash_logo', TPortableNetworkGraphic);
-    Width := round(Height * pic.Width / pic.Height);
-    Image.Picture.Bitmap.SetSize(Width, Height);
-    AntiAliasedStretchDrawBitmap(pic.Bitmap, Image.Picture.Bitmap, Width, Height);
-  finally
-    pic.Free;
-  end;
+  Image.Picture.LoadFromResourceName(hInstance, 'splash_logo', TPortableNetworkGraphic);
+  Width := round(Height * Image.Picture.Width / Image.Picture.Height);
+  AntiAliasedStretchBitmap(Image.Picture.Bitmap, Width, Height);
 end;
 
 procedure TSplashForm.Show;
