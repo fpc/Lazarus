@@ -2839,9 +2839,11 @@ end;
 
 procedure TCustomDBGrid.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
-  if (fGridState=gsSelecting) and not Dragging then
-    exit
-  else
+  if (fGridState=gsSelecting) and not Dragging then begin
+    if Assigned(OnMouseMove) then
+      OnMouseMove(Self, Shift, x, y);
+    exit;
+  end else
     inherited MouseMove(Shift, X, Y);
 end;
 
