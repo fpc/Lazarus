@@ -428,6 +428,9 @@ var
   var
     AForm: TCustomForm;
     AWidget: QWidgetH;
+    {$IFDEF DARWIN}
+    AFlag: Cardinal;
+    {$ENDIF}
   begin
     Result := False;
     AForm := TCustomForm(AWinControl);
@@ -437,15 +440,25 @@ var
       not (AForm.FormStyle in fsAllStayOnTop) and
       (AForm.Parent = nil) and
       (QApplication_activeModalWidget() <> nil) and
+      {$IFDEF DARWIN}
+      not Assigned(AForm.PopupParent) then
+      {$ELSE}
       (AForm.BorderStyle in [bsDialog, bsSingle, bsSizeable]) and
       (AForm.PopupParent = nil) and (AForm.PopupMode = pmNone) then
+      {$ENDIF}
     begin
       AWidget := TQtWidget(AForm.Handle).Widget;
       {$IFDEF DARWIN}
       QWidget_setParent(AWidget, QApplication_activeWindow());
-      QWidget_setWindowFlags(Widget.Widget, QtSheet or
-        GetQtBorderIcons(TCustomForm(AWinControl).BorderStyle,
-          TCustomForm(AWinControl).BorderIcons));
+      if AForm.BorderStyle = bsNone then
+      begin
+        SetCapture(0);
+        AFlag := QtPopup;
+      end else
+        AFlag := QtSheet;
+      AFlag := AFlag or GetQtBorderIcons(TCustomForm(AWinControl).BorderStyle,
+          TCustomForm(AWinControl).BorderIcons);
+      QWidget_setWindowFlags(Widget.Widget, AFlag);
       {$ELSE}
       QWidget_setParent(AWidget, QApplication_desktop());
       {$IFDEF MSWINDOWS}
