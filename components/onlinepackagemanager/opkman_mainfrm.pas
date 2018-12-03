@@ -38,7 +38,7 @@ uses
   // IdeIntf
   IDECommands, PackageIntf,
   // OpkMan
-  opkman_downloader, opkman_installer, opkman_updates,
+  opkman_downloader, opkman_installer,
   opkman_serializablepackages, opkman_visualtree, opkman_const, opkman_common,
   opkman_progressfrm, opkman_zipper, opkman_packagelistfrm, opkman_options,
   opkman_optionsfrm, opkman_createrepositorypackagefrm, opkman_maindm,
@@ -389,8 +389,6 @@ begin
           Exit;
         end;
         VisualTree.PopulateTree;
-        if Assigned (Updates) then
-          Updates.StartUpdate(True);
         VisualTree.UpdatePackageUStatus;
         EnableDisableControls(True);
         SetupMessage;

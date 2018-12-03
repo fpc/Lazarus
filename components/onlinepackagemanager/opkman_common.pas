@@ -116,6 +116,7 @@ var
   LocalRepositoryUpdatesFile: String;
   PackageAction: TPackageAction;
   InstallPackageList: TObjectList;
+  CriticalSection: TRTLCriticalSection;
 
 function MessageDlgEx(const AMsg: String; ADlgType: TMsgDlgType;  AButtons:
   TMsgDlgButtons; AParent: TForm): TModalResult;

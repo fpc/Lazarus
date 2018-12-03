@@ -31,7 +31,7 @@ unit opkman_serializablepackages;
 interface
 
 uses
-  Classes, SysUtils, Variants, contnrs, dateutils, fpjson, jsonparser,
+  Classes, SysUtils, Variants, contnrs, dateutils, fpjson, jsonparser, md5,
   // LazUtils
   FileUtil, Laz2_XMLCfg, LazFileUtils,
   // IdeIntf
@@ -237,6 +237,7 @@ type
     FLastError: String;
     FOnProcessJSON: TNotifyEvent;
     FOnUpdatePackageLinks: TNotifyEvent;
+    FUpdates: String;
     function GetCount: Integer;
     function GetDownloadCount: Integer;
     function GetExtractCount: Integer;
@@ -255,6 +256,8 @@ type
     function GetPackageVersion(const APath: String): String;
     function GetPackageDescription(const APath: String): String;
     function GetPackageLicense(const APath: String): String;
+    procedure LoadUpdateInfo;
+    procedure SaveUpdateInfo;
   public
     constructor Create;
     destructor Destroy; override;
@@ -590,10 +593,13 @@ end;
 constructor TSerializablePackages.Create;
 begin
   FMetaPackages := TCollection.Create(TMetaPackage);
+  FUpdates := Format(LocalRepositoryUpdatesFile, [MD5Print(MD5String(Options.RemoteRepository[Options.ActiveRepositoryIndex]))]);
 end;
 
 destructor TSerializablePackages.Destroy;
 begin
+  if Count > 0 then
+    SaveUpdateInfo;
   Clear;
   FMetaPackages.Free;
   inherited Destroy;
@@ -968,8 +974,11 @@ begin
     Parser.Free;
   end;
   if Result then
+  begin
+    LoadUpdateInfo;
     if Assigned(FOnUpdatePackageLinks) then
       FOnUpdatePackageLinks(Self);
+  end;
 end;
 
 function TSerializablePackages.LazarusPackagesToJSON(AMetaPackage: TMetaPackage;
@@ -1115,6 +1124,97 @@ begin
   end;
 end;
 
+procedure TSerializablePackages.LoadUpdateInfo;
+var
+  PackageCount: Integer;
+  LazarusPkgCount: Integer;
+  I, J: Integer;
+  Path, SubPath: String;
+  PackageName: String;
+  LazarusPkgName: String;
+  MetaPkg: TMetaPackage;
+  LazarusPkg: TLazarusPackage;
+  HasUpdate: Boolean;
+  FXML: TXMLConfig;
+begin
+  if not FileExists(FUpdates) then
+    Exit;
+  FXML := TXMLConfig.Create(FUpdates);
+  try
+    PackageCount := FXML.GetValue('Count/Value', 0);
+    for I := 0 to PackageCount - 1 do
+    begin
+      Path := 'Package' + IntToStr(I) + '/';
+      PackageName := FXML.GetValue(Path + 'Name', '');
+      MetaPkg := FindMetaPackage(PackageName, fpbPackageName);
+      if MetaPkg <> nil then
+      begin
+        HasUpdate := False;
+        MetaPkg.DownloadZipURL := FXML.GetValue(Path + 'DownloadZipURL', '');
+        MetaPkg.DisableInOPM := FXML.GetValue(Path + 'DisableInOPM', False);
+        MetaPkg.Rating := FXML.GetValue(Path + 'Rating', 0);
+        LazarusPkgCount := FXML.GetValue(Path + 'Count', 0);
+        for J := 0 to LazarusPkgCount - 1 do
+        begin
+          SubPath := Path + 'PackageFile' +  IntToStr(J) + '/';
+          LazarusPkgName := FXML.GetValue(SubPath + 'Name', '');
+          LazarusPkg := MetaPkg.FindLazarusPackage(LazarusPkgName);
+          if LazarusPkg <> nil then
+          begin
+            LazarusPkg.UpdateVersion := FXML.GetValue(SubPath + 'UpdateVersion', '');
+            LazarusPkg.ForceNotify := FXML.GetValue(SubPath + 'ForceNotify', False);
+            LazarusPkg.InternalVersion := FXML.GetValue(SubPath + 'InternalVersion', 0);;
+            LazarusPkg.InternalVersionOld := FXML.GetValue(SubPath + 'InternalVersionOld', 0);
+            LazarusPkg.RefreshHasUpdate;
+            if not HasUpdate then
+              HasUpdate := (LazarusPkg.HasUpdate) and (LazarusPkg.InstalledFileVersion < LazarusPkg.UpdateVersion);
+          end;
+        end;
+        MetaPkg.HasUpdate := HasUpdate;
+      end;
+    end;
+  finally
+    FXML.Free;
+  end;
+end;
+
+procedure TSerializablePackages.SaveUpdateInfo;
+var
+  I, J: Integer;
+  Path, SubPath: String;
+  MetaPkg: TMetaPackage;
+  LazarusPkg: TLazarusPackage;
+  FXML: TXMLConfig;
+begin
+  FXML := TXMLConfig.CreateClean(FUpdates);
+  try
+    FXML.SetDeleteValue('Version/Value', OpkVersion, 0);
+    FXML.SetDeleteValue('Count/Value', Count, 0);
+    for I := 0 to Count - 1 do
+    begin
+      MetaPkg := Items[I];
+      Path := 'Package' + IntToStr(I) + '/';
+      FXML.SetDeleteValue(Path + 'Name', MetaPkg.Name, '');
+      FXML.SetDeleteValue(Path + 'DownloadZipURL', MetaPkg.DownloadZipURL, '');
+      FXML.SetDeleteValue(Path + 'DisableInOPM', MetaPkg.DisableInOPM, False);
+      FXML.SetDeleteValue(Path + 'Rating', MetaPkg.Rating, 0);
+      FXML.SetDeleteValue(Path + 'Count', Items[I].LazarusPackages.Count, 0);
+      for J := 0 to Items[I].LazarusPackages.Count - 1 do
+      begin
+        SubPath := Path + 'PackageFile' +  IntToStr(J) + '/';
+        LazarusPkg := TLazarusPackage(Items[I].LazarusPackages.Items[J]);
+        FXML.SetDeleteValue(SubPath + 'Name', LazarusPkg.Name, '');
+        FXML.SetDeleteValue(SubPath + 'UpdateVersion', LazarusPkg.UpdateVersion, '');
+        FXML.SetDeleteValue(SubPath + 'ForceNotify', LazarusPkg.ForceNotify, False);
+        FXML.SetDeleteValue(SubPath + 'InternalVersion', LazarusPkg.InternalVersion, 0);
+        FXML.SetDeleteValue(SubPath + 'InternalVersionOld', LazarusPkg.InternalVersionOld, 0);
+      end;
+    end;
+    FXML.Flush;
+  finally
+    FXML.Free;
+  end;
+end;
 
 function TSerializablePackages.IsPackageInstalled(const ALazarusPkg: TLazarusPackage;
   const APackageBaseDir: String): Boolean;

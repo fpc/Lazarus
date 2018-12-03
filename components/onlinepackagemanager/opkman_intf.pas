@@ -80,6 +80,7 @@ uses opkman_common, opkman_options, opkman_const, opkman_progressfrm, opkman_zip
 
 constructor TOPMInterfaceEx.Create;
 begin
+  InitCriticalSection(CriticalSection);
   Application.AddOnExceptionHandler(@DoHandleException);
   FPackageLinks := TObjectList.Create(False);
   FPackagesToDownload := TObjectList.Create(False);
@@ -107,23 +108,25 @@ begin
   SerializablePackages.Free;
   Options.Free;
   InstallPackageList.Free;
+  DoneCriticalsection(CriticalSection);
   inherited Destroy;
 end;
 
 procedure TOPMInterfaceEx.DoOnIDEClose(Sender: TObject);
 begin
+  if Assigned(PackageDownloader) then
+    if PackageDownloader.DownloadingJSON then
+      PackageDownloader.Cancel;
   if Assigned(Updates) then
   begin
     Updates.StopUpdate;
     Updates.Terminate;
-    Sleep(100);
+    Updates.WaitFor;
   end;
 end;
 
 
 procedure TOPMInterfaceEx.DoOnTimer(Sender: TObject);
-var
-  FileName: String;
 begin
   if Assigned(LazarusIDE) and Assigned(PackageEditingInterface) and (not LazarusIDE.IDEIsClosing) then
   begin
@@ -141,11 +144,12 @@ begin
       if (not LazarusIDE.IDEIsClosing) then
       begin
         if Options.CheckForUpdates <> 5 then
+        begin
           PackageDownloader.DownloadJSON(Options.ConTimeOut*1000, True);
-        LazarusIDE.AddHandlerOnIDEClose(@DoOnIDEClose);
-        FileName := Format(LocalRepositoryUpdatesFile, [MD5Print(MD5String(Options.RemoteRepository[Options.ActiveRepositoryIndex]))]);
-        Updates := TUpdates.Create(FileName);
-        Updates.StartUpdate;
+          LazarusIDE.AddHandlerOnIDEClose(@DoOnIDEClose);
+          Updates := TUpdates.Create;
+          Updates.StartUpdate;
+        end;
       end;
     end;
   end;
