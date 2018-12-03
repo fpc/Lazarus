@@ -4863,10 +4863,18 @@ begin
       QtFont := QWidget_font(AMenu);
       QFont_family(QtFont, @AName);
       Font.Name := AName{%H-};
+      {$ifdef darwin}
+      // issue #34625
+      if QFont_pointSize(QtFont) > 0 then
+        Font.Height := -Round(QFont_pointSizeF(QtFont))
+      else
+        Font.Height := QFont_pixelSize(QtFont);
+      {$else}
       if QFont_pointSize(QtFont) > 0 then
         Font.Size := QFont_pointSize(QtFont)
       else
         Font.Height := QFont_pixelSize(QtFont);
+      {$endif}
       if QFont_bold(QtFont) then
         Font.Style := Font.Style + [fsBold];
       if QFont_italic(QtFont) then
@@ -4890,10 +4898,18 @@ begin
         QApplication_font(QtFont);
       QFont_family(QtFont, @AName);
       Font.Name := AName{%H-};
+      {$ifdef darwin}
+      // issue #34625
+      if QFont_pointSize(QtFont) > 0 then
+        Font.Height := -Round(QFont_pointSizeF(QtFont))
+      else
+        Font.Height := QFont_pixelSize(QtFont);
+      {$else}
       if QFont_pointSize(QtFont) > 0 then
         Font.Size := QFont_pointSize(QtFont)
       else
         Font.Height := QFont_pixelSize(QtFont);
+      {$endif}
       if QFont_bold(QtFont) then
         Font.Style := Font.Style + [fsBold];
       if QFont_italic(QtFont) then
