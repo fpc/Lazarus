@@ -807,13 +807,15 @@ procedure TMainFrm.tbUninstallClick(Sender: TObject);
   function GetIDEPackage(const AFileName: String): TIDEPackage;
   var
     I: Integer;
+    IDEPackge: TIDEPackage;
   begin
     Result := nil;
     for I := 0 to PackageEditingInterface.GetPackageCount - 1 do
     begin
-      if UpperCase(PackageEditingInterface.GetPackages(I).Filename) = UpperCase(AFileName) then
+      IDEPackge := PackageEditingInterface.GetPackages(I);
+      if UpperCase(IDEPackge.Filename) = UpperCase(AFileName) then
       begin
-        Result := PackageEditingInterface.GetPackages(I);
+        Result := IDEPackge;
         Break;
       end;
     end;
@@ -858,7 +860,7 @@ begin
           end;
           lptDesignTime, lptRunAndDesignTime:
           begin
-            IDEPackage := GetIDEPackage(LazarusPackage.PackageAbsolutePath);
+            IDEPackage := GetIDEPackage(LazarusPackage.InstalledFileName);
             if IDEPackage <> nil then
             begin
               if PackageEditingInterface.UninstallPackage(IDEPackage, False) <> mrOk then

@@ -1121,30 +1121,27 @@ function TSerializablePackages.IsPackageInstalled(const ALazarusPkg: TLazarusPac
 
   function CheckIDEPackages: Boolean;
   var
-    PackageCnt: Integer;
-    I: Integer;
-    Package: TIDEPackage;
+    IDEPkg: TIDEPackage;
+    PkgExt: String;
+    PkgName: String;
   begin
     Result := False;
-    PackageCnt := PackageEditingInterface.GetPackageCount;
-    for I := 0 to PackageCnt - 1 do
+    PkgExt := ExtractFileExt(ALazarusPkg.Name);
+    PkgName := StringReplace(ALazarusPkg.Name, PkgExt, '', [rfIgnoreCase]);
+    IDEPkg := PackageEditingInterface.IsPackageInstalled(PkgName);
+    if IDEPkg <> nil then
     begin
-      Package := PackageEditingInterface.GetPackages(I);
-      if ExtractFileName(Package.FileName) = ALazarusPkg.Name then
-      begin
-        ALazarusPkg.InstalledFileName := Package.Filename;
-        ALazarusPkg.InstalledFileVersion := IntToStr(Package.Version.Major) + '.' +
-                                             IntToStr(Package.Version.Minor) + '.' +
-                                             IntToStr(Package.Version.Release) + '.' +
-                                             IntToStr(Package.Version.Build);
-        if FileExists(ALazarusPkg.InstalledFileName) then
-        begin
-          ALazarusPkg.InstalledFileDescription := GetPackageDescription(Package.Filename);
-          ALazarusPkg.InstalledFileLincese := GetPackageLicense(Package.Filename);
-        end;
-        Result := True;
-        Break;
-      end;
+      ALazarusPkg.InstalledFileName := IDEPkg.Filename;
+      ALazarusPkg.InstalledFileVersion := IntToStr(IDEPkg.Version.Major) + '.' +
+                                          IntToStr(IDEPkg.Version.Minor) + '.' +
+                                          IntToStr(IDEPkg.Version.Release) + '.' +
+                                          IntToStr(IDEPkg.Version.Build);
+     if FileExists(ALazarusPkg.InstalledFileName) then
+     begin
+       ALazarusPkg.InstalledFileDescription := GetPackageDescription(IDEPkg.Filename);
+       ALazarusPkg.InstalledFileLincese := GetPackageLicense(IDEPkg.Filename);
+     end;
+     Result := True;
     end;
   end;
 
