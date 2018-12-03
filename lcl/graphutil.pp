@@ -459,9 +459,13 @@ begin
       DestCanvas := TLazCanvas.Create(DestImg);
       try
         DestCanvas.Interpolation := TFPBaseInterpolation.Create;
-        DestCanvas.StretchDraw(0, 0, AWidth, AHeight, SrcImg);
-        ABitmap.LoadFromIntfImage(DestImg);
-        ABitmap.SetSize(AWidth, AHeight);
+        try
+          DestCanvas.StretchDraw(0, 0, AWidth, AHeight, SrcImg);
+          ABitmap.LoadFromIntfImage(DestImg);
+          ABitmap.SetSize(AWidth, AHeight);
+        finally
+          DestCanvas.Interpolation.Free;
+        end;
       finally
         DestCanvas.Free;
       end;
