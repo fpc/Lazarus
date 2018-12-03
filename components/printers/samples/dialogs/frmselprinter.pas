@@ -36,16 +36,10 @@ type
     btnRotateBin: TButton;
     btnRestoreDefaultBin: TButton;
     btnPrintWithDlg: TButton;
-    chkNativeDlg: TCheckBox;
-    chkAsSheet: TCheckBox;
     chkOutputFile: TCheckBox;
     chkTestImgs: TCheckBox;
-    cbPrinters: TComboBox;
-    cbPapers: TComboBox;
     comboTests: TComboBox;
     Label5: TLabel;
-    Label6: TLabel;
-    Label7: TLabel;
     txtPageSetupDlgTitle: TEdit;
     txtPrinterSetupDlgTitle: TEdit;
     txtPrintDialogTitle: TEdit;
@@ -69,16 +63,11 @@ type
     procedure Button7Click(Sender: TObject);
     procedure btnRotateBinClick(Sender: TObject);
     procedure btnRestoreDefaultBinClick(Sender: TObject);
-    procedure cbPapersSelect(Sender: TObject);
-    procedure cbPrintersSelect(Sender: TObject);
-    procedure comboTestsSelect(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure SGridSelectCell(Sender: TObject; aCol, aRow: Integer;
       var CanSelect: Boolean);
   private
     ck : Integer;
-    procedure OnPrintDialogAsSetupResult(sender: TObject; Success: boolean);
-    procedure OnPrintSetupDialogResult(sender: TObject; Success: boolean);
     procedure UpdatePrinterInfo;
     procedure AddInfo(const Desc : String; Const Info : String);
     procedure DrawGraphic(X,Y,AWidth,AHeight:Integer; Graphic: TGraphic);
@@ -90,7 +79,7 @@ type
     function FormatDots(Dots: Integer):string;
     procedure PrintSamplePage(PrintImgs:boolean);
     procedure PrintMultiPage;
-    procedure PrintMultiPageMultiPaper;
+    procedure doPrintDialog(withSample: boolean);
     procedure PrintTest;
   public
   
@@ -105,18 +94,6 @@ uses
   Printers,OsPrinters,LCLType,LClProc;
 
 {$R *.lfm}
-
-const
-  PAGE_COUNT = 2;
-  MULTIPAPER_COUNT = 4;
-  {$ifdef Darwin}
-  PAPER_LEGAL   = 'US Legal';
-  PAPER_LETTER  = 'US Letter';
-  {$else}
-  PAPER_LEGAL   = 'Legal';
-  PAPER_LETTER  = 'Letter';
-  {$endif}
-
 
 { TForm1 }
 
@@ -193,8 +170,9 @@ end;
 procedure TForm1.PrintSamplePage(PrintImgs: boolean);
 var
   Pic: TPicture;
-  pgw,pgh: Integer;
+  d, pgw,pgh: Integer;
   Hin: Integer; // half inch
+  s: string;
 begin
   try
     Printer.Title := 'Printer test for printers4lazarus package';
@@ -205,10 +183,10 @@ begin
     Printer.BeginDoc;
 
     // some often used consts
-    pgw := Printer.PageWidth;
-    pgh := Printer.PageHeight;
+    pgw := Printer.PageWidth-1;
+    pgh := Printer.PageHeight-1;
     Hin := Inch(0.5);
-    //DebugLn('Page width=%d height=%d',[pgw, pgh]);
+    DebugLn('Page width=%d height=%d',[pgw, pgh]);
 
     // center title text on page width
     Printer.Canvas.Font.Size := 12;
@@ -225,7 +203,7 @@ begin
     CenterText(Hin, Hin, '1');
 
     Printer.Canvas.Pen.Color := clRed;
-    Printer.Canvas.Pen.Width := 1;
+    Printer.Canvas.Pen.Width := 3;
     Printer.Canvas.Frame(0,0,pgw,pgh);
 
     Printer.Canvas.Pen.Color := clBlack;
@@ -264,9 +242,10 @@ end;
 
 procedure TForm1.PrintMultiPage;
 const
+  PAGE_COUNT = 2;
   ColorArray: array[1..PAGE_COUNT] of TColor = (clAqua, clLime);
 var
-  {%H-}pgw, {%H-}pgh, Hin, Page: Integer;
+  pgw, pgh, Hin, Page: Integer;
   R: TRect;
   te: TTextStyle;
 begin
@@ -313,63 +292,6 @@ begin
 
 end;
 
-procedure TForm1.PrintMultiPageMultiPaper;
-const
-  ColorArray: array[1..MULTIPAPER_COUNT] of TColor = (clAqua, clLime, clFuchsia, clYellow);
-  PaperArray: array[1..MULTIPAPER_COUNT] of string[20] = (PAPER_LETTER{dummy}, PAPER_LEGAL, 'A4', PAPER_LETTER);
-var
-  {%H-}pgw, {%H-}pgh, Hin, Page: Integer;
-  R: TRect;
-  te: TTextStyle;
-begin
-  try
-    Printer.Title := 'Multipapers Sample';
-
-    if chkOutputFile.Checked then
-      Printer.FileName := txtOutputFile.FileName
-    else
-      Printer.FileName := '';
-
-    Printer.BeginDoc;
-
-    // some often used consts
-    pgw := Printer.PageWidth-1;
-    pgh := Printer.PageHeight-1;
-    Hin := Inch(0.5);
-
-    Te := Printer.Canvas.TextStyle;
-    Te.Alignment := taCenter;
-    Te.Layout := tlCenter;
-
-    Printer.Canvas.Font.Size:=20;
-    Page := 1;
-    while Page<=MULTIPAPER_COUNT do begin
-      Printer.Canvas.Pen.Color := clBlack;
-      Printer.Canvas.Brush.Color := ColorArray[Page];
-      R := Rect(0, 0, 5*Hin, Hin);
-      Printer.Canvas.Rectangle(R);
-      Printer.canvas.TextRect(R, R.Left, R.Top, format('Page %d: %s',[Page, Printer.PaperSize.PaperName]), Te);
-      if Page<>MULTIPAPER_COUNT then begin
-        Printer.EndPage;
-        Printer.PaperSize.PaperName := PaperArray[Page+1];
-        //Printer.Orientation := PaperOrArray[Page+1];  // needs fixing under macOS, should work under windows
-        Printer.BeginPage;
-      end;
-      inc(page);
-    end;
-
-    Printer.EndDoc;
-
-  except
-    on E:Exception do
-    begin
-      Printer.Abort;
-      Application.MessageBox(pChar(e.message),'Error',mb_iconhand);
-    end;
-  end;
-
-end;
-
 procedure TForm1.UpdatePrinterInfo;
 var
   i: Integer;
@@ -377,8 +299,6 @@ var
   hRes,vRes: Integer;
 begin
   try
-    cbPrinters.Clear;
-    cbPapers.Clear;
     ck := SGrid.FixedRows;
     SGrid.Clean;
     with Printer do
@@ -388,17 +308,6 @@ begin
         AddInfo('printer', 'no printers are installed');
         exit;
       end;
-      cbPrinters.Items.Assign(Printers);
-      cbPrinters.ItemIndex := PrinterIndex;
-
-      cbPapers.items.Assign(PaperSize.SupportedPapers);
-      if cbPapers.items.Count>0 then
-      begin
-        s := PaperSize.PaperName;
-        i := cbPapers.Items.IndexOf(s);
-        cbPapers.ItemIndex := i;
-      end;
-
       AddInfo('Printer',Printers[PrinterIndex]);
       case Orientation of
         poPortrait : AddInfo('Orientation','Portrait');
@@ -444,26 +353,15 @@ begin
           'Warning',mb_iconexclamation);
     end;
   except on E:Exception do
-    begin
       Application.MessageBox(PChar(e.message),'Error',mb_iconhand);
-    end;
   end;
-end;
-
-procedure TForm1.OnPrintSetupDialogResult(sender: TObject; Success: boolean);
-begin
-  if Success then
-    UpdatePrinterInfo;
 end;
 
 procedure TForm1.Button2Click(Sender: TObject);
 begin
   PSD.Title := txtPrinterSetupDlgTitle.Text;
-  PSD.AttachTo := nil;
-  PSD.OnDialogResult := @OnPrintSetupDialogResult;
-  if chkAsSheet.Checked then
-    PSD.AttachTo := Self;
-  PSD.Execute;
+  if PSD.Execute then
+    UpdatePrinterInfo;
 end;
 
 procedure TForm1.Button3Click(Sender: TObject);
@@ -501,18 +399,18 @@ begin
   begin
     UpdatePrinterInfo;
     with PAGED  do begin
-      if PAGED.Units = pmMillimeters then
+      if PAGED.Units = unMM then
       begin
         s :=' milimeters';
-        s := Format('[%d,%d,%d,%d] %s',[MarginTop div 100,
-          MarginLeft div 100, MarginBottom div 100, MarginRight div 100,
+        s := Format('[%d,%d,%d,%d] %s',[Margins.Top div 100,
+          Margins.Left div 100, Margins.Bottom div 100, Margins.Right div 100,
           s]);
       end
       else
       begin
         s :=' inches';
-        s := Format('[%d,%d,%d,%d] %s',[MarginTop div 1000,
-          MarginLeft div 1000,MarginBottom div 1000,MarginRight div 1000,
+        s := Format('[%d,%d,%d,%d] %s',[Margins.Top div 1000,
+          Margins.Left div 1000,Margins.Bottom div 1000,Margins.Right div 1000,
           s]);
       end;
       AddInfo('Margins',s);
@@ -522,8 +420,8 @@ end;
 
 procedure TForm1.btnRotateBinClick(Sender: TObject);
 var
-  i: Integer;
-  cur: String;
+  i,j: Integer;
+  cur,def: String;
   Lst: TStrings;
 begin
 
@@ -552,40 +450,11 @@ begin
   UpdatePrinterInfo;
 end;
 
-procedure TForm1.cbPapersSelect(Sender: TObject);
-begin
-  Printer.PaperSize.PaperName := cbPapers.Text;
-  UpdatePrinterInfo;
-end;
-
-procedure TForm1.cbPrintersSelect(Sender: TObject);
-begin
-  Printer.PrinterIndex := cbPrinters.ItemIndex;
-  UpdatePrinterInfo;
-end;
-
-procedure TForm1.comboTestsSelect(Sender: TObject);
-var
-  aMin, aMax: Integer;
-begin
-  aMin := 1;
-  aMax := 1;
-  case comboTests.ItemIndex of
-    2: aMax := PAGE_COUNT;
-    3: aMax := MULTIPAPER_COUNT;
-  end;
-  PD.MinPage := aMin;
-  PD.MaxPage := aMax;
-  PD.FromPage := aMin;
-  PD.ToPage := aMax;
-end;
-
 procedure TForm1.FormCreate(Sender: TObject);
+var
+  rowCount: Integer;
 begin
-  {$ifdef LCLCocoa}
-  chkAsSheet.enabled := true;
-  chkNativeDlg.Enabled := true;
-  {$endif}
+  rowCount := SGrid.RowCount;
   if SGrid.FixedRows=1 then
     SGrid.RowHeights[0] := btnTPrintDialog.Height;
   UpdatePrinterInfo;
@@ -597,6 +466,29 @@ begin
   CanSelect := ACol>0;
 end;
 
+procedure TForm1.doPrintDialog(withSample: boolean);
+var
+ s,x : String;
+begin
+  PD.Title := txtPrintDialogTitle.Text;
+  PD.PrintToFile := false;
+  if PD.Execute then
+  begin
+    UpdatePrinterInfo;
+    if PD.Collate then AddInfo('Collate','true')
+    else               AddInfo('Collate','false');
+    if PD.PrintRange=prPageNums then x :='Pages range,';
+    if PD.PrintRange=prSelection then x :='Selection,';
+    if PD.PrintToFile then x := x + ' ,PrintToFile,';
+    if withSample then
+      PrintTest
+    else begin
+      s := Format(x + ' From : %d to %d,Copies:%d',[PD.FromPage,PD.ToPage,PD.Copies]);
+      Application.MessageBox(pChar(s),'Info',mb_iconinformation);
+    end;
+  end;
+end;
+
 procedure TForm1.PrintTest;
 begin
   case comboTests.ItemIndex of
@@ -604,80 +496,19 @@ begin
       PrintSamplePage(true);
     2:
       PrintMultiPage;
-    3:
-      PrintMultiPageMultiPaper;
     else
       PrintSamplePage(false);
   end;
 end;
 
-procedure TForm1.OnPrintDialogAsSetupResult(sender: TObject; Success: boolean);
-var
-  s,x: String;
-begin
-  if Success then
-  begin
-    x := '';
-    UpdatePrinterInfo;
-    if PD.Collate then AddInfo('Collate','true')
-    else               AddInfo('Collate','false');
-    if PD.PrintRange=prPageNums then x :='Pages range,';
-    if PD.PrintRange=prSelection then x :='Selection,';
-    if PD.PrintToFile then x := x + ' ,PrintToFile,';
-
-    s := Format(x + ' From : %d to %d,Copies:%d',[PD.FromPage,PD.ToPage,PD.Copies]);
-    Application.MessageBox(pChar(s),'Info',mb_iconinformation);
-  end;
-end;
-
 procedure TForm1.btnTPrintDialogClick(Sender: TObject);
-var
- before: boolean;
 begin
-  {$ifdef LCLCOCOA}
-  //PD.Options := PD.Options + [poBeforeBeginDoc];
-  before := poBeforeBeginDoc in PD.Options;
-  {$else}
-  before := true;
-  {$endif}
-  if before then
-  begin
-    PD.Title := txtPrintDialogTitle.Text;
-    PD.PrintToFile := false;
-    PD.AttachTo := nil;
-    if chkAsSheet.Checked then
-      PD.AttachTo := Self;
-    PD.OnDialogResult := @OnPrintDialogAsSetupResult;
-    PD.Execute;
-  end else
-  begin
-    ShowMessage(
-      'Using the print dialog as a printer setup dialog'^M+
-      'is disabled by default in the LCL Cocoa widgetset.'^M^M+
-      'If you want to enable it, turn on the print dialog'^M+
-      'option poBeforeBeginDoc'
-      );
-  end;
+  doPrintDialog(false);
 end;
 
 procedure TForm1.btnPrintWithDlgClick(Sender: TObject);
 begin
-  PD.Title := txtPrintDialogTitle.Text;
-  PD.PrintToFile := false;
-  PD.AttachTo := nil;
-  if chkNativeDlg.Checked then begin
-    PD.OnDialogResult := nil;  // dialog result is uninteresting in this case
-    PD.Options := PD.Options - [poBeforeBeginDoc];
-  end
-  else
-  begin
-    PD.OnDialogResult := @OnPrintDialogAsSetupResult;
-    PD.Options := PD.Options + [poBeforeBeginDoc];
-  end;
-  if chkAsSheet.Checked then
-    PD.AttachTo := Self;
-  if PD.Execute then
-    PrintTest
+  doPrintDialog(true);
 end;
 
 end.

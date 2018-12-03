@@ -44,8 +44,6 @@ Type
     function GetDefaultPrinter: string;
     procedure DoBeginDoc; override;
     procedure DoNewPage; override;
-    procedure DoBeginPage; override;
-    procedure DoEndPage; override;
     procedure DoEndDoc(aAborded : Boolean); override;
     procedure DoAbort; override;
 

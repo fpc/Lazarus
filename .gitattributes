@@ -3887,7 +3887,6 @@ components/printers/carbon/ppdresolution.pas svneol=native#text/pascal
 components/printers/cocoa/cocoaprintcanvas.pas svneol=native#text/plain
 components/printers/cocoa/cocoaprinters.inc svneol=native#text/plain
 components/printers/cocoa/cocoaprinters_h.inc svneol=native#text/plain
-components/printers/cocoa/cocoaprndelegate.pas svneol=native#text/pascal
 components/printers/cocoa/cocoaprndialogs.inc svneol=native#text/plain
 components/printers/design/Makefile svneol=native#text/plain
 components/printers/design/Makefile.compiled svneol=native#text/plain
