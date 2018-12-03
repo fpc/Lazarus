@@ -99,13 +99,11 @@ procedure Register;
 var
   OptionsGroup: Integer;
 begin
-  FppkgOptions := TFppkgEnvironmentOptions.Create;
+  TFppkgEnvironmentOptions.GetInstance;
 
   OptionsGroup := GetFreeIDEOptionsGroupIndex(GroupEditor);
   RegisterIDEOptionsGroup(OptionsGroup, TFppkgEnvironmentOptions);
   RegisterIDEOptionsEditor(OptionsGroup, TFppkgEnvironmentOptionsFrame, 1);
-
-  FppkgOptions.Load();
 end;
 
 { TFppkgEnvironmentOptionsFrame }
@@ -161,6 +159,11 @@ end;
 
 class function TFppkgEnvironmentOptions.GetInstance: TAbstractIDEOptions;
 begin
+  if not Assigned(FppkgOptions) then
+    begin
+    FppkgOptions := TFppkgEnvironmentOptions.Create;
+    FppkgOptions.Load();
+    end;
   Result:=FppkgOptions;
 end;
 

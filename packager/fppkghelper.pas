@@ -27,6 +27,7 @@ type
     class function Instance: TFppkgHelper;
     function HasPackage(const PackageName: string): Boolean;
     procedure ListPackages(AList: TStringList);
+    function GetPackageUnitPath(const PackageName: string): string;
   end;
 
 implementation
@@ -121,6 +122,14 @@ begin
       end;
     end;
 {$ENDIF VER3_0}
+end;
+
+function TFppkgHelper.GetPackageUnitPath(const PackageName: string): string;
+var
+  FppkgPackage: TFPPackage;
+begin
+  FppkgPackage := FFPpkg.FindPackage(PackageName, pkgpkInstalled);
+  Result := FppkgPackage.PackagesStructure.GetUnitDirectory(FppkgPackage);
 end;
 
 finalization

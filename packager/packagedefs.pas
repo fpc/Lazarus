@@ -53,7 +53,7 @@ uses
   // IDE
   EditDefineTree, CompilerOptions, CompOptsModes, IDEOptionDefs, ProjPackCommon,
   LazarusIDEStrConsts, IDEProcs, TransferMacros, FileReferenceList,
-  PublishModule, ImgList;
+  PublishModule, ImgList, FppkgHelper, FppkgIntf;
 
 type
   TLazPackage = class;
@@ -644,6 +644,7 @@ type
     function NeedsDefineTemplates: boolean;
     function SubstitutePkgMacros(const s: string; PlatformIndependent: boolean): string;
     procedure WriteInheritedUnparsedOptions;
+    function GetActiveBuildMethod: TBuildMethod;
     // files
     function IndexOfPkgFile(PkgFile: TPkgFile): integer;
     function SearchShortFilename(const ShortFilename: string;
@@ -2143,7 +2144,7 @@ begin
     if SysUtils.CompareText(MacroName,'PkgOutDir')=0 then begin
       Handled:=true;
       if Data=CompilerOptionMacroNormal then
-        s:=CompilerOptions.ParsedOpts.GetParsedValue(pcosOutputDir)
+        s:=GetOutputDirectory()
       else
         s:=CompilerOptions.ParsedOpts.GetParsedPIValue(pcosOutputDir);
       exit;
@@ -2212,6 +2213,17 @@ begin
         ' UnitPath="',AddOptions.GetOption(icoUnitPath),'"');
     end;
     OptionsList.Free;
+  end;
+end;
+
+function TLazPackage.GetActiveBuildMethod: TBuildMethod;
+begin
+  Result:=BuildMethod;
+  if Result=bmBoth then begin
+    if Assigned(FppkgInterface) and FppkgInterface.UseFPMakeWhenPossible then
+      Result:=bmFPMake
+    else
+      Result:=bmLazarus;
   end;
 end;
 
@@ -3741,7 +3753,11 @@ end;
 function TLazPackage.GetOutputDirectory(UseOverride: boolean = true): string;
 begin
   if HasDirectory then begin
-    Result:=CompilerOptions.ParsedOpts.GetParsedValue(pcosOutputDir,UseOverride);
+    if GetActiveBuildMethod = bmFPMake then begin
+      Result :=TFppkgHelper.Instance.GetPackageUnitPath(name);
+    end else begin
+      Result:=CompilerOptions.ParsedOpts.GetParsedValue(pcosOutputDir,UseOverride);
+    end;
   end else
     Result:='';
 end;

@@ -4200,13 +4200,7 @@ begin
 
       if (not APackage.CompilerOptions.SkipCompiler)
       and (not (pcfDoNotCompilePackage in Flags)) then begin
-        BuildMethod:=APackage.BuildMethod;
-        if BuildMethod=bmBoth then begin
-          if Assigned(FppkgInterface) and FppkgInterface.UseFPMakeWhenPossible then
-            BuildMethod:=bmFPMake
-          else
-            BuildMethod:=bmLazarus;
-        end;
+        BuildMethod:=APackage.GetActiveBuildMethod;
         if BuildMethod=bmLazarus then begin
           CompilerFilename:=APackage.GetCompilerFilename;
 
