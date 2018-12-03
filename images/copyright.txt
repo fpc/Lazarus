@@ -26,6 +26,7 @@ actions directory:
 	laz_open_recent.png
 	laz_open_unit.png
 	laz_save.png
+	pastel_colors.png
 	restore_default.png
 	restore_defaults.png
 

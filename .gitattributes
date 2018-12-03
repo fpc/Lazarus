@@ -7470,6 +7470,9 @@ images/actions/laz_tick_200.png -text svneol=unset#image/png
 images/actions/laz_wand.png -text svneol=unset#image/png
 images/actions/laz_wand_150.png -text svneol=unset#image/png
 images/actions/laz_wand_200.png -text svneol=unset#image/png
+images/actions/pastel_colors.png -text svneol=unset#image/png
+images/actions/pastel_colors_150.png -text svneol=unset#image/png
+images/actions/pastel_colors_200.png -text svneol=unset#image/png
 images/actions/preferences.png -text
 images/actions/preferences_150.png -text svneol=unset#image/png
 images/actions/preferences_200.png -text svneol=unset#image/png

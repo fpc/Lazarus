@@ -50,7 +50,7 @@ type
     MsgColorGroupBox: TGroupBox;
     MWAlwaysDrawFocusedCheckBox: TCheckBox;
     MWFocusCheckBox: TCheckBox;
-    MWSetPastelColorsButton: TButton;
+    MWSetPastelColorsButton: TBitBtn;
     MWShowFPCMsgLinesCompiledCheckBox: TCheckBox;
     MWShowIconsCheckBox: TCheckBox;
     MWMaxProcsLabel: TLabel;
@@ -229,6 +229,7 @@ begin
   MWSetDefaultColorsButton.Caption:=lisLazarusDefault;
   IDEImages.AssignImage(MWSetDefaultColorsButton, 'restore_defaults');
   MWSetPastelColorsButton.Caption:=lisPastelColors;
+  IDEImages.AssignImage(MWSetPastelColorsButton, 'pastel_colors');
   MWSetEditorColorsButton.Caption:=lisEditorColors;
   MWShowIconsCheckBox.Caption:=dlgShowMessagesIcons;
   MWShowIconsCheckBox.Hint:=dlgAnIconForErrorWarningHintIsShown;
