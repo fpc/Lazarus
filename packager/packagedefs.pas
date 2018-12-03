@@ -952,7 +952,9 @@ begin
     PkgDependency.LoadFromXMLConfig(XMLConfig,ThePath+'Item'+IntToStr(i+1)+'/',
                                     FileVersion);
     PkgDependency.HoldPackage:=HoldPackages;
-    if PkgDependency.IsMakingSense then
+    // IsMakingSense checks if the package-name is a valid identifier. This is
+    // not applicable to FPMake-packages.
+    if (PkgDependency.DependencyType=pdtFPMake) or PkgDependency.IsMakingSense then
       List.Add(PkgDependency)
     else
       PkgDependency.Free;
