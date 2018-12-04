@@ -71,9 +71,9 @@ type
     //nsGL: NSOpenGLContext;
     callback: TLCLCommonCallback;
     backingScaleFactor: Single;
-    function acceptsFirstResponder: Boolean; override;
-    function becomeFirstResponder: Boolean; override;
-    function resignFirstResponder: Boolean; override;
+    function acceptsFirstResponder: LCLObjCBoolean; override;
+    function becomeFirstResponder: LCLObjCBoolean; override;
+    function resignFirstResponder: LCLObjCBoolean; override;
     procedure drawRect(dirtyRect: NSRect); override;
     procedure dealloc; override;
     function lclGetCallback: ICommonCallback; override;
@@ -391,18 +391,18 @@ end;              *)
 
 { TCocoaOpenGLView }
 
-function TCocoaOpenGLView.acceptsFirstResponder: Boolean;
+function TCocoaOpenGLView.acceptsFirstResponder: LCLObjCBoolean;
 begin
   Result := True;
 end;
 
-function TCocoaOpenGLView.becomeFirstResponder: Boolean;
+function TCocoaOpenGLView.becomeFirstResponder: LCLObjCBoolean;
 begin
   Result:=inherited becomeFirstResponder;
   callback.BecomeFirstResponder;
 end;
 
-function TCocoaOpenGLView.resignFirstResponder: Boolean;
+function TCocoaOpenGLView.resignFirstResponder: LCLObjCBoolean;
 begin
   Result:=inherited resignFirstResponder;
   callback.ResignFirstResponder;
