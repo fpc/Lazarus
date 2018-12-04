@@ -827,7 +827,7 @@ destructor TDbgProcess.Destroy;
 begin
   FProcessID:=0;
 
-  Assert(FBreakMap.Count=0, 'No breakpoints left');
+  //Assert(FBreakMap.Count=0, 'No breakpoints left');
   //FreeItemsInMap(FBreakMap);
   FreeItemsInMap(FThreadMap);
   FreeItemsInMap(FLibMap);
