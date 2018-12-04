@@ -89,10 +89,10 @@ type
     procedure windowDidMove(notification: NSNotification); message 'windowDidMove:';
   public
     callback: IWindowCallback;
-    function acceptsFirstResponder: Boolean; override;
-    function canBecomeKeyWindow: Boolean; override;
-    function becomeFirstResponder: Boolean; override;
-    function resignFirstResponder: Boolean; override;
+    function acceptsFirstResponder: LCLObjCBoolean; override;
+    function canBecomeKeyWindow: LCLObjCBoolean; override;
+    function becomeFirstResponder: LCLObjCBoolean; override;
+    function resignFirstResponder: LCLObjCBoolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     // mouse
@@ -142,10 +142,10 @@ type
     keepWinLevel : NSInteger;
     //LCLForm: TCustomForm;
     procedure dealloc; override;
-    function acceptsFirstResponder: Boolean; override;
-    function canBecomeKeyWindow: Boolean; override;
-    function becomeFirstResponder: Boolean; override;
-    function resignFirstResponder: Boolean; override;
+    function acceptsFirstResponder: LCLObjCBoolean; override;
+    function canBecomeKeyWindow: LCLObjCBoolean; override;
+    function becomeFirstResponder: LCLObjCBoolean; override;
+    function resignFirstResponder: LCLObjCBoolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     // mouse
@@ -173,9 +173,9 @@ type
     procedure flagsChanged(event: NSEvent); override;
     // NSDraggingDestinationCategory
     function draggingEntered(sender: NSDraggingInfoProtocol): NSDragOperation; override;
-    function performDragOperation(sender: NSDraggingInfoProtocol): Boolean; override;
+    function performDragOperation(sender: NSDraggingInfoProtocol): LCLObjCBoolean; override;
     // windows
-    function makeFirstResponder(r: NSResponder): Boolean; override;
+    function makeFirstResponder(r: NSResponder): LCLObjCBoolean; override;
     // menu support
     procedure lclItemSelected(sender: id); message 'lclItemSelected:';
 
@@ -188,7 +188,7 @@ type
   TCocoaDesignOverlay = objcclass(NSView)
     callback  : ICommonCallback;
     procedure drawRect(r: NSRect); override;
-    function acceptsFirstResponder: Boolean; override;
+    function acceptsFirstResponder: LCLObjCBoolean; override;
     function hitTest(aPoint: NSPoint): NSView; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
@@ -207,7 +207,7 @@ type
     fswin: NSWindow; // window that was used as a content prior to switching to old-school fullscreen
     popup_parent: HWND; // if not 0, indicates that we should set the popup parent
     overlay: NSView;
-    function performKeyEquivalent(event: NSEvent): Boolean; override;
+    function performKeyEquivalent(event: NSEvent): LCLObjCBoolean; override;
     procedure resolvePopupParent(); message 'resolvePopupParent';
     function lclOwnWindow: NSWindow; message 'lclOwnWindow';
     procedure lclSetFrame(const r: TRect); override;
@@ -216,7 +216,7 @@ type
     procedure viewDidMoveToWindow; override;
     procedure viewWillMoveToWindow(newWindow: CocoaAll.NSWindow); override;
     procedure dealloc; override;
-    procedure setHidden(aisHidden: Boolean); override;
+    procedure setHidden(aisHidden: LCLObjCBoolean); override;
     procedure didAddSubview(aview: NSView); override;
   end;
 
@@ -333,7 +333,7 @@ begin
   inherited drawRect(r);
 end;
 
-function TCocoaDesignOverlay.acceptsFirstResponder: Boolean;
+function TCocoaDesignOverlay.acceptsFirstResponder: LCLObjCBoolean;
 begin
   Result:=false; // no focus
 end;
@@ -384,7 +384,7 @@ begin
     callback.DidResignKeyNotification;
 end;
 
-function TCocoaWindowContent.performKeyEquivalent(event: NSEvent): Boolean;
+function TCocoaWindowContent.performKeyEquivalent(event: NSEvent): LCLObjCBoolean;
 var
   resp : NSResponder;
   wn   : NSWindow;
@@ -513,7 +513,7 @@ begin
   inherited dealloc;
 end;
 
-procedure TCocoaWindowContent.setHidden(aisHidden: Boolean);
+procedure TCocoaWindowContent.setHidden(aisHidden: LCLObjCBoolean);
 var
   cw : TCocoaWindow;
 begin
@@ -593,24 +593,24 @@ begin
     callback.Move;
 end;
 
-function TCocoaPanel.acceptsFirstResponder: Boolean;
+function TCocoaPanel.acceptsFirstResponder: LCLObjCBoolean;
 begin
   Result := True;
 end;
 
-function TCocoaPanel.canBecomeKeyWindow: Boolean;
+function TCocoaPanel.canBecomeKeyWindow: LCLObjCBoolean;
 begin
   Result := Assigned(callback) and callback.CanActivate;
 end;
 
-function TCocoaPanel.becomeFirstResponder: Boolean;
+function TCocoaPanel.becomeFirstResponder: LCLObjCBoolean;
 begin
   Result := inherited becomeFirstResponder;
 //  if Assigned(callback) then
 //    callback.BecomeFirstResponder;
 end;
 
-function TCocoaPanel.resignFirstResponder: Boolean;
+function TCocoaPanel.resignFirstResponder: LCLObjCBoolean;
 begin
   Result := inherited resignFirstResponder;
 //  if Assigned(callback) then
@@ -837,17 +837,17 @@ begin
   inherited dealloc;
 end;
 
-function TCocoaWindow.acceptsFirstResponder: Boolean;
+function TCocoaWindow.acceptsFirstResponder: LCLObjCBoolean;
 begin
   Result := True;
 end;
 
-function TCocoaWindow.canBecomeKeyWindow: Boolean;
+function TCocoaWindow.canBecomeKeyWindow: LCLObjCBoolean;
 begin
   Result := Assigned(callback) and callback.CanActivate;
 end;
 
-function TCocoaWindow.becomeFirstResponder: Boolean;
+function TCocoaWindow.becomeFirstResponder: LCLObjCBoolean;
 begin
   Result := inherited becomeFirstResponder;
   // uncommenting the following lines starts an endless focus loop
@@ -856,7 +856,7 @@ begin
 //    callback.BecomeFirstResponder;
 end;
 
-function TCocoaWindow.resignFirstResponder: Boolean;
+function TCocoaWindow.resignFirstResponder: LCLObjCBoolean;
 begin
   Result := inherited resignFirstResponder;
 //  if Assigned(callback) then
@@ -1046,7 +1046,7 @@ begin
     Result := sender.draggingSourceOperationMask();
 end;
 
-function TCocoaWindow.performDragOperation(sender: NSDraggingInfoProtocol): Boolean;
+function TCocoaWindow.performDragOperation(sender: NSDraggingInfoProtocol): LCLObjCBoolean;
 var
   draggedURLs{, lClasses}: NSArray;
   lFiles: array of string;
@@ -1086,7 +1086,7 @@ begin
   Result := True;
 end;
 
-function TCocoaWindow.makeFirstResponder(r: NSResponder): Boolean;
+function TCocoaWindow.makeFirstResponder(r: NSResponder): LCLObjCBoolean;
 var
   cbnew: ICommonCallback;
 begin

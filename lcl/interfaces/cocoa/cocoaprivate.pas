@@ -42,6 +42,20 @@ const
   SPINEDIT_EDIT_SPACING_FOR_SELECTION = 4;
   STATUSBAR_DEFAULT_HEIGHT = 18;
 
+{$if (FPC_VERSION>3) or ((FPC_VERSION=3) and (FPC_RELEASE>=2))}
+{$define HASBOOLEAN8}
+{$endif}
+
+type
+  // Due to backwards incompatible changes in FPC sources
+  // (switching from Boolean to Boolean8), LCL has to adopt
+  // either type, depending on FPC version
+  LCLObjCBoolean = {$ifdef HASBOOLEAN8}
+                   Boolean8  // FPC 3.2.0 and earlier are using "boolean8" type
+                   {$else}
+                   Boolean   // FPC 3.0.4 and earlier are using "boolean" type
+                   {$endif};
+
 type
 
   { ICommonCallback }
@@ -186,13 +200,13 @@ type
     callback: ICommonCallback;
     auxMouseByParent: Boolean;
     procedure dealloc; override;
-    function acceptsFirstResponder: Boolean; override;
+    function acceptsFirstResponder: LCLObjCBoolean; override;
     procedure drawRect(dirtyRect: NSRect); override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     function lclIsMouseInAuxArea(Event: NSevent): Boolean; override;
     // mouse
-    function acceptsFirstMouse(event: NSEvent): Boolean; override;
+    function acceptsFirstMouse(event: NSEvent): LCLObjCBoolean; override;
     procedure mouseDown(event: NSEvent); override;
     procedure mouseUp(event: NSEvent); override;
     procedure rightMouseDown(event: NSEvent); override;
@@ -251,7 +265,7 @@ type
   TCocoaGroupBox = objcclass(NSBox)
   public
     callback: ICommonCallback;
-    function acceptsFirstResponder: Boolean; override;
+    function acceptsFirstResponder: LCLObjCBoolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
@@ -270,14 +284,14 @@ type
 
   TCocoaProgressIndicator = objcclass(NSProgressIndicator)
     callback: ICommonCallback;
-    function acceptsFirstResponder: Boolean; override;
+    function acceptsFirstResponder: LCLObjCBoolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
     function lclGetFrameToLayoutDelta: TRect; override;
     procedure lclSetFrame(const r: TRect); override;
     // mouse
-    function acceptsFirstMouse(event: NSEvent): Boolean; override;
+    function acceptsFirstMouse(event: NSEvent): LCLObjCBoolean; override;
     procedure mouseDown(event: NSEvent); override;
     procedure mouseUp(event: NSEvent); override;
     procedure rightMouseDown(event: NSEvent); override;
@@ -311,7 +325,7 @@ type
     procedure dealloc; override;
     procedure drawRect(dirtyRect: NSRect); override;
 
-    function acceptsFirstResponder: Boolean; override;
+    function acceptsFirstResponder: LCLObjCBoolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
@@ -322,7 +336,7 @@ type
     procedure SnapToInteger(AExtraFactor: Integer = 0); message 'SnapToInteger:';
     procedure sliderAction(sender: id); message 'sliderAction:';
     // mouse
-    function acceptsFirstMouse(event: NSEvent): Boolean; override;
+    function acceptsFirstMouse(event: NSEvent): LCLObjCBoolean; override;
     procedure mouseDown(event: NSEvent); override;
     procedure mouseUp(event: NSEvent); override;
     procedure rightMouseDown(event: NSEvent); override;
@@ -448,7 +462,7 @@ begin
   Result.Bottom := -4;
 end;
 
-function TCocoaGroupBox.acceptsFirstResponder: Boolean;
+function TCocoaGroupBox.acceptsFirstResponder: LCLObjCBoolean;
 begin
   Result := True;
 end;
@@ -509,12 +523,12 @@ begin
   inherited dealloc;
 end;
 
-function TCocoaCustomControl.acceptsFirstResponder: Boolean;
+function TCocoaCustomControl.acceptsFirstResponder: LCLObjCBoolean;
 begin
   Result := True;
 end;
 
-function TCocoaCustomControl.acceptsFirstMouse(event: NSEvent): Boolean;
+function TCocoaCustomControl.acceptsFirstMouse(event: NSEvent): LCLObjCBoolean;
 begin
   // By default, a mouse-down event in a window that isn’t the key window
   // simply brings the window forward and makes it key; the event isn’t sent
@@ -1167,7 +1181,7 @@ end;
 
 { TCocoaProgressIndicator }
 
-function TCocoaProgressIndicator.acceptsFirstResponder: Boolean;
+function TCocoaProgressIndicator.acceptsFirstResponder: LCLObjCBoolean;
 begin
   Result:=True;
 end;
@@ -1212,7 +1226,7 @@ begin
   inherited lclSetFrame(r);
 end;
 
-function TCocoaProgressIndicator.acceptsFirstMouse(event: NSEvent): Boolean;
+function TCocoaProgressIndicator.acceptsFirstMouse(event: NSEvent): LCLObjCBoolean;
 begin
   Result:=true;
 end;
@@ -1338,7 +1352,7 @@ begin
   inherited drawRect(dirtyRect);
 end;
 
-function TCocoaSlider.acceptsFirstResponder: Boolean;
+function TCocoaSlider.acceptsFirstResponder: LCLObjCBoolean;
 begin
   Result := True;
 end;
@@ -1408,7 +1422,7 @@ begin
   end;
 end;
 
-function TCocoaSlider.acceptsFirstMouse(event: NSEvent): Boolean;
+function TCocoaSlider.acceptsFirstMouse(event: NSEvent): LCLObjCBoolean;
 begin
   Result:=true;
 end;

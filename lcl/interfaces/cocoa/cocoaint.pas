@@ -68,10 +68,10 @@ type
     modals : NSMutableDictionary;
 
     procedure dealloc; override;
-    function isRunning: Boolean; override;
+    function isRunning: LCLObjCBoolean; override;
     procedure run; override;
     procedure sendEvent(theEvent: NSEvent); override;
-    function nextEventMatchingMask_untilDate_inMode_dequeue(mask: NSUInteger; expiration: NSDate; mode: NSString; deqFlag: Boolean): NSEvent; override;
+    function nextEventMatchingMask_untilDate_inMode_dequeue(mask: NSUInteger; expiration: NSDate; mode: NSString; deqFlag: LCLObjCBoolean): NSEvent; override;
 
     function runModalForWindow(theWindow: NSWindow): NSInteger; override;
   end;
@@ -398,7 +398,7 @@ begin
   inherited dealloc;
 end;
 
-function TCocoaApplication.isRunning: Boolean;
+function TCocoaApplication.isRunning: LCLObjCBoolean;
 begin
   Result:=isrun;
 end;
@@ -471,7 +471,7 @@ begin
 end;
 
 function TCocoaApplication.nextEventMatchingMask_untilDate_inMode_dequeue(
-  mask: NSUInteger; expiration: NSDate; mode: NSString; deqFlag: Boolean
+  mask: NSUInteger; expiration: NSDate; mode: NSString; deqFlag: LCLObjCBoolean
   ): NSEvent;
 var
   cb : ICommonCallback;

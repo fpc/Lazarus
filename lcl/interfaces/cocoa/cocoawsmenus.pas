@@ -76,13 +76,13 @@ type
     menuItemCallback: IMenuItemCallback;
     attachedAppleMenuItems: Boolean;
     FMenuItemTarget: TMenuItem;
-    procedure UncheckSiblings(AIsChangingToChecked: Boolean = False); message 'UncheckSiblings:';
+    procedure UncheckSiblings(AIsChangingToChecked: LCLObjCBoolean = False); message 'UncheckSiblings:';
     function GetMenuItemHandle(): TMenuItem; message 'GetMenuItemHandle';
     procedure lclItemSelected(sender: id); message 'lclItemSelected:';
     function lclGetCallback: IMenuItemCallback; override;
     procedure lclClearCallback; override;
     procedure attachAppleMenuItems(); message 'attachAppleMenuItems';
-    function isValidAppleMenu(): Boolean; message 'isValidAppleMenu';
+    function isValidAppleMenu(): LCLObjCBoolean; message 'isValidAppleMenu';
     procedure menuNeedsUpdate(AMenu: NSMenu); message 'menuNeedsUpdate:';
   end;
 

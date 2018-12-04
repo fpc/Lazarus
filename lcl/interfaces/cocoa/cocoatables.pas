@@ -77,7 +77,7 @@ type
 
     smallimages : NSMutableDictionary;
 
-    function acceptsFirstResponder: Boolean; override;
+    function acceptsFirstResponder: LCLObjCBoolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
 
@@ -446,7 +446,7 @@ begin
   // as well as number of total items in the table should be marked as modified
 end;
 
-function TCocoaTableListView.acceptsFirstResponder: Boolean;
+function TCocoaTableListView.acceptsFirstResponder: LCLObjCBoolean;
 begin
   Result := True;
 end;

@@ -69,7 +69,7 @@ type
     adjustFontToControlSize: Boolean;
     procedure dealloc; override;
     function initWithFrame(frameRect: NSRect): id; override;
-    function acceptsFirstResponder: Boolean; override;
+    function acceptsFirstResponder: LCLObjCBoolean; override;
     procedure drawRect(dirtyRect: NSRect); override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
@@ -234,7 +234,7 @@ begin
   end;
 end;
 
-function TCocoaButton.acceptsFirstResponder: Boolean;
+function TCocoaButton.acceptsFirstResponder: LCLObjCBoolean;
 begin
   Result := True;
 end;

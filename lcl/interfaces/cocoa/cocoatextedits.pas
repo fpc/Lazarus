@@ -59,7 +59,7 @@ type
 
   TCocoaTextField = objcclass(NSTextField)
     callback: ICommonCallback;
-    function acceptsFirstResponder: Boolean; override;
+    function acceptsFirstResponder: LCLObjCBoolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
@@ -82,7 +82,7 @@ type
   TCocoaSecureTextField = objcclass(NSSecureTextField)
   public
     callback: ICommonCallback;
-    function acceptsFirstResponder: Boolean; override;
+    function acceptsFirstResponder: LCLObjCBoolean; override;
     procedure resetCursorRects; override;
     // key
     procedure keyUp(event: NSEvent); override;
@@ -107,7 +107,7 @@ type
 
     supressTextChangeEvent: Integer; // if above zero, then don't send text change event
 
-    function acceptsFirstResponder: Boolean; override;
+    function acceptsFirstResponder: LCLObjCBoolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
@@ -219,7 +219,7 @@ type
     callback: IComboboxCallBack;
     list: TCocoaComboBoxList;
     resultNS: NSString;  //use to return values to combo
-    function acceptsFirstResponder: Boolean; override;
+    function acceptsFirstResponder: LCLObjCBoolean; override;
     procedure textDidChange(notification: NSNotification); override;
     // NSComboBoxDataSourceProtocol
     function comboBox_objectValueForItemAtIndex_(combo: TCocoaComboBox; row: NSInteger): id; message 'comboBox:objectValueForItemAtIndex:';
@@ -240,7 +240,7 @@ type
     procedure setStringValue(avalue: NSString); override;
     function lclGetFrameToLayoutDelta: TRect; override;
     // mouse
-    function acceptsFirstMouse(event: NSEvent): Boolean; override;
+    function acceptsFirstMouse(event: NSEvent): LCLObjCBoolean; override;
     procedure mouseDown(event: NSEvent); override;
     procedure mouseUp(event: NSEvent); override;
     procedure rightMouseDown(event: NSEvent); override;
@@ -275,7 +275,7 @@ type
 
     isOwnerDrawn: Boolean;
     isOwnerMeasure: Boolean;
-    function acceptsFirstResponder: Boolean; override;
+    function acceptsFirstResponder: LCLObjCBoolean; override;
     procedure dealloc; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
@@ -284,7 +284,7 @@ type
     procedure comboboxAction(sender: id); message 'comboboxAction:';
     function stringValue: NSString; override;
     // mouse
-    function acceptsFirstMouse(event: NSEvent): Boolean; override;
+    function acceptsFirstMouse(event: NSEvent): LCLObjCBoolean; override;
     procedure mouseDown(event: NSEvent); override;
     procedure mouseUp(event: NSEvent); override;
     procedure rightMouseDown(event: NSEvent); override;
@@ -325,7 +325,7 @@ type
 
   TCocoaSpinEditStepper = objcclass(NSStepper)
     callback: ICommonCallback;
-    function acceptsFirstMouse(event: NSEvent): Boolean; override;
+    function acceptsFirstMouse(event: NSEvent): LCLObjCBoolean; override;
     procedure mouseDown(event: NSEvent); override;
     procedure mouseUp(event: NSEvent); override;
     procedure rightMouseDown(event: NSEvent); override;
@@ -356,7 +356,7 @@ type
     // NSTextFieldDelegateProtocol
     procedure controlTextDidChange(obj: NSNotification); override;
     // lcl
-    function acceptsFirstResponder: Boolean; override;
+    function acceptsFirstResponder: LCLObjCBoolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
@@ -365,7 +365,7 @@ type
     // NSViewFix
     function fittingSize: NSSize; override;
     // mouse
-    function acceptsFirstMouse(event: NSEvent): Boolean; override;
+    function acceptsFirstMouse(event: NSEvent): LCLObjCBoolean; override;
     procedure mouseDown(event: NSEvent); override;
     procedure mouseUp(event: NSEvent); override;
     procedure rightMouseDown(event: NSEvent); override;
@@ -416,7 +416,7 @@ end;
 
 { TCocoaSpinEditStepper }
 
-function TCocoaSpinEditStepper.acceptsFirstMouse(event: NSEvent): Boolean;
+function TCocoaSpinEditStepper.acceptsFirstMouse(event: NSEvent): LCLObjCBoolean;
 begin
   Result:=true;
 end;
@@ -722,7 +722,7 @@ end;
 
 { TCocoaTextField }
 
-function TCocoaTextField.acceptsFirstResponder: Boolean;
+function TCocoaTextField.acceptsFirstResponder: LCLObjCBoolean;
 begin
   Result := True;
 end;
@@ -850,7 +850,7 @@ begin
   inherited flagsChanged(event);
 end;
 
-function TCocoaTextView.acceptsFirstResponder: Boolean;
+function TCocoaTextView.acceptsFirstResponder: LCLObjCBoolean;
 begin
   Result := True;
 end;
@@ -968,7 +968,7 @@ end;
 
 { TCocoaSecureTextField }
 
-function TCocoaSecureTextField.acceptsFirstResponder: Boolean;
+function TCocoaSecureTextField.acceptsFirstResponder: LCLObjCBoolean;
 begin
   Result := True;
 end;
@@ -1151,7 +1151,7 @@ begin
   end;
 end;
 
-function TCocoaComboBox.acceptsFirstResponder: Boolean;
+function TCocoaComboBox.acceptsFirstResponder: LCLObjCBoolean;
 begin
   Result := True;
 end;
@@ -1261,7 +1261,7 @@ begin
   inherited keyUp(event);
 end;
 
-function TCocoaComboBox.acceptsFirstMouse(event: NSEvent): Boolean;
+function TCocoaComboBox.acceptsFirstMouse(event: NSEvent): LCLObjCBoolean;
 begin
   Result:=true;
 end;
@@ -1338,7 +1338,7 @@ end;
 
 { TCocoaReadOnlyComboBox }
 
-function TCocoaReadOnlyComboBox.acceptsFirstResponder: Boolean;
+function TCocoaReadOnlyComboBox.acceptsFirstResponder: LCLObjCBoolean;
 begin
   Result := True;
 end;
@@ -1409,7 +1409,7 @@ begin
     Result:=inherited stringValue;
 end;
 
-function TCocoaReadOnlyComboBox.acceptsFirstMouse(event: NSEvent): Boolean;
+function TCocoaReadOnlyComboBox.acceptsFirstMouse(event: NSEvent): LCLObjCBoolean;
 begin
   Result:=true;
 end;
@@ -1791,7 +1791,7 @@ begin
   if Assigned(callback) then callback.SendOnTextChanged;
 end;
 
-function TCocoaSpinEdit.acceptsFirstResponder: Boolean;
+function TCocoaSpinEdit.acceptsFirstResponder: LCLObjCBoolean;
 begin
   Result := True;
 end;
@@ -1869,7 +1869,7 @@ begin
   {$ENDIF}
 end;
 
-function TCocoaSpinEdit.acceptsFirstMouse(event: NSEvent): Boolean;
+function TCocoaSpinEdit.acceptsFirstMouse(event: NSEvent): LCLObjCBoolean;
 begin
   Result:=true;
 end;

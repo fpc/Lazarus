@@ -44,7 +44,7 @@ type
     function initWithFrame(ns: NSRect): id; override;
     procedure dealloc; override;
     procedure setFrame(aframe: NSRect); override;
-    function acceptsFirstResponder: Boolean; override;
+    function acceptsFirstResponder: LCLObjCBoolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
@@ -87,7 +87,7 @@ type
     function allocHorizontalScroller(avisible: Boolean): NSScroller; message 'allocHorizontalScroller:';
     function allocVerticalScroller(avisible: Boolean): NSScroller; message 'allocVerticalScroller:';
     // mouse
-    function acceptsFirstMouse(event: NSEvent): Boolean; override;
+    function acceptsFirstMouse(event: NSEvent): LCLObjCBoolean; override;
     procedure mouseDown(event: NSEvent); override;
     procedure mouseUp(event: NSEvent); override;
     procedure rightMouseDown(event: NSEvent); override;
@@ -115,14 +115,14 @@ type
 
     procedure actionScrolling(sender: NSObject); message 'actionScrolling:';
     function IsHorizontal: Boolean; message 'IsHorizontal';
-    function acceptsFirstResponder: Boolean; override;
+    function acceptsFirstResponder: LCLObjCBoolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
     function lclPos: Integer; message 'lclPos';
     procedure lclSetPos(aPos: integer); message 'lclSetPos:';
     // mouse
-    function acceptsFirstMouse(event: NSEvent): Boolean; override;
+    function acceptsFirstMouse(event: NSEvent): LCLObjCBoolean; override;
     procedure mouseDown(event: NSEvent); override;
     procedure mouseUp(event: NSEvent); override;
     procedure rightMouseDown(event: NSEvent); override;
@@ -553,7 +553,7 @@ begin
   end;
 end;
 
-function TCocoaManualScrollView.acceptsFirstMouse(event: NSEvent): Boolean;
+function TCocoaManualScrollView.acceptsFirstMouse(event: NSEvent): LCLObjCBoolean;
 begin
   Result:=true;
 end;
@@ -789,7 +789,7 @@ begin
   end;
 end;
 
-function TCocoaScrollView.acceptsFirstResponder: Boolean;
+function TCocoaScrollView.acceptsFirstResponder: LCLObjCBoolean;
 begin
   Result := True;
 end;
@@ -862,7 +862,7 @@ begin
   end;
 end;
 
-function TCocoaScrollBar.acceptsFirstMouse(event: NSEvent): Boolean;
+function TCocoaScrollBar.acceptsFirstMouse(event: NSEvent): LCLObjCBoolean;
 begin
   Result:=true;
 end;
@@ -975,7 +975,7 @@ begin
     inherited scrollWheel(event);
 end;
 
-function TCocoaScrollBar.acceptsFirstResponder: Boolean;
+function TCocoaScrollBar.acceptsFirstResponder: LCLObjCBoolean;
 begin
   Result := True;
 end;
