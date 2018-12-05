@@ -125,11 +125,17 @@ begin
 end;
 
 function TFppkgHelper.GetPackageUnitPath(const PackageName: string): string;
+{$IFNDEF VER3_0}
 var
   FppkgPackage: TFPPackage;
+{$ENDIF VER3_0}
 begin
+{$IFNDEF VER3_0}
   FppkgPackage := FFPpkg.FindPackage(PackageName, pkgpkInstalled);
   Result := FppkgPackage.PackagesStructure.GetUnitDirectory(FppkgPackage);
+{$ELSE }
+  Result := '';
+{$ENDIF VER3_0}
 end;
 
 finalization
