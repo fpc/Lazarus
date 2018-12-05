@@ -469,6 +469,11 @@ type
                               AnInformationEntry: TDwarfInformationEntry = nil;
                               ASucessOnMissingTag: Boolean = False
                              ): Boolean;
+    function  ConstantFromTag(ATag: Cardinal; out AConstData: TByteDynArray;
+                              var AnAddress: TFpDbgMemLocation; // kept, if tag does not exist
+                              AnInformationEntry: TDwarfInformationEntry = nil;
+                              ASucessOnMissingTag: Boolean = False
+                             ): Boolean;
     // GetDataAddress: data of a class, or string
     function GetDataAddress(AValueObj: TFpDwarfValue; var AnAddress: TFpDbgMemLocation;
                             ATargetType: TFpDwarfSymbolType; ATargetCacheIndex: Integer): Boolean;
@@ -857,6 +862,8 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   { TFpDwarfSymbolValueVariable }
 
   TFpDwarfSymbolValueVariable = class(TFpDwarfSymbolValueWithLocation)
+  private
+    FConstData: TByteDynArray;
   protected
     function GetValueAddress(AValueObj: TFpDwarfValue; out AnAddress: TFpDbgMemLocation): Boolean; override;
     function HasAddress: Boolean; override;
@@ -2333,7 +2340,8 @@ begin
       FValueSymbol.GetValueAddress(Self, t);
       assert(SizeOf(FDataAddress) >= AddressSize, 'TDbgDwarfStructSymbolValue.GetDataAddress');
       if (MemManager <> nil) then begin
-        FDataAddress := MemManager.ReadAddress(t, AddressSize);
+// TODO: wrong for records (const / DW_AT_FORM) // use GetDwarfDataAddress??
+          FDataAddress := MemManager.ReadAddress(t, AddressSize);
         if not IsValidLoc(FDataAddress) then
           FLastError := MemManager.LastError;
       end;
@@ -2885,7 +2893,7 @@ begin
     if not Result then
       AnAddress := InvalidLoc;
     if not Result then
-    DebugLn(['LocationFromTag: failed to read DW_AT_location / ASucessOnMissingTag=', dbgs(ASucessOnMissingTag)]);
+      DebugLn(['LocationFromTag: failed to read DW_AT_location / ASucessOnMissingTag=', dbgs(ASucessOnMissingTag)]);
     exit;
   end;
 
@@ -2904,7 +2912,7 @@ begin
     SetLastError(LocationParser.LastError);
 
   if LocationParser.ResultKind in [lseValue] then begin
-    AnAddress := TargetLoc(LocationParser.ResultData);
+    AnAddress := TargetLoc(LocationParser.ResultData);// TODO: wrong, if origin was selfmem
     if ATag=DW_AT_location then
       AnAddress.Address :=CompilationUnit.MapAddressToNewValue(AnAddress.Address);
     Result := True;
@@ -2918,6 +2926,41 @@ begin
     debugln(['TDbgDwarfIdentifier.LocationFromTag  FAILED']); // TODO
 
   LocationParser.Free;
+end;
+
+function TFpDwarfSymbol.ConstantFromTag(ATag: Cardinal; out
+  AConstData: TByteDynArray; var AnAddress: TFpDbgMemLocation;
+  AnInformationEntry: TDwarfInformationEntry; ASucessOnMissingTag: Boolean
+  ): Boolean;
+var
+  i: Integer;
+  v: QWord;
+  s: string;
+  dummy: pointer;
+begin
+  AConstData := nil;
+  i := InformationEntry.AttribIdx(DW_AT_const_value, dummy);
+  if i >= 0 then
+    case InformationEntry.AttribForm[i] of
+      DW_FORM_string, DW_FORM_strp,
+      DW_FORM_block, DW_FORM_block1, DW_FORM_block2, DW_FORM_block4: begin
+        Result := InformationEntry.ReadValue(DW_AT_const_value, AConstData, True);
+        if Result then
+          if Length(AConstData) > 0 then
+            AnAddress := SelfLoc(@AConstData[0])
+          else
+            AnAddress := InvalidLoc; // TODO: ???
+      end;
+      DW_FORM_data1, DW_FORM_data2, DW_FORM_data4, DW_FORM_data8, DW_FORM_sdata, DW_FORM_udata: begin
+        Result := InformationEntry.ReadValue(DW_AT_const_value, v);
+        if Result then
+          AnAddress := ConstLoc(v);
+      end;
+      else
+        Result := False; // ASucessOnMissingTag ?
+    end
+  else
+    Result := ASucessOnMissingTag;
 end;
 
 function TFpDwarfSymbol.GetDataAddress(AValueObj: TFpDwarfValue;
@@ -4699,13 +4742,17 @@ begin
   Result := IsValidLoc(AnAddress);
   if IsInitializedLoc(AnAddress) then
     exit;
-  Result := LocationFromTag(DW_AT_location, AValueObj, AnAddress);
+  if InformationEntry.HasAttrib(DW_AT_location) then
+    Result := LocationFromTag(DW_AT_location, AValueObj, AnAddress)
+  else
+    Result := ConstantFromTag(DW_AT_const_value, FConstData, AnAddress);
   AValueObj.DataAddressCache[0] := AnAddress;
 end;
 
 function TFpDwarfSymbolValueVariable.HasAddress: Boolean;
 begin
-  Result := InformationEntry.HasAttrib(DW_AT_location);
+  Result := InformationEntry.HasAttrib(DW_AT_location) or
+            InformationEntry.HasAttrib(DW_AT_const_value);
 end;
 
 { TFpDwarfSymbolValueParameter }

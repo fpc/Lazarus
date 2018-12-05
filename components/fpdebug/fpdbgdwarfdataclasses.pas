@@ -280,6 +280,7 @@ type
     FAbstractOrigin: TDwarfInformationEntry;
     FFlags: set of (dieAbbrevValid, dieAbbrevDataValid, dieAbstractOriginValid);
 
+    function GetAttribForm(AnIdx: Integer): Cardinal;
     procedure PrepareAbbrev; inline;
     function  PrepareAbbrevData: Boolean; inline;
     function  PrepareAbstractOrigin: Boolean; inline; // Onli call, if abbrev is valid AND dafHasAbstractOrigin set
@@ -299,6 +300,7 @@ type
 
     function AttribIdx(AnAttrib: Cardinal; out AInfoPointer: pointer): Integer; inline;
     function HasAttrib(AnAttrib: Cardinal): Boolean; inline;
+    property AttribForm[AnIdx: Integer]: Cardinal read GetAttribForm;
 
     function GoNamedChild(AName: String): Boolean;
     // find in enum too // TODO: control search with a flags param, if needed
@@ -318,7 +320,7 @@ type
     function ReadValue(AnAttrib: Cardinal; out AValue: QWord): Boolean;
     function ReadValue(AnAttrib: Cardinal; out AValue: PChar): Boolean;
     function ReadValue(AnAttrib: Cardinal; out AValue: String): Boolean;
-    function ReadValue(AnAttrib: Cardinal; out AValue: TByteDynArray): Boolean;
+    function ReadValue(AnAttrib: Cardinal; out AValue: TByteDynArray; AnFormString: Boolean = False): Boolean;
     function ReadReference(AnAttrib: Cardinal; out AValue: Pointer; out ACompUnit: TDwarfCompilationUnit): Boolean;
 
     function  ReadName(out AName: String): Boolean; inline;
@@ -550,7 +552,7 @@ type
     function ReadValue(AAttribute: Pointer; AForm: Cardinal; out AValue: QWord): Boolean;
     function ReadValue(AAttribute: Pointer; AForm: Cardinal; out AValue: String): Boolean;
     function ReadValue(AAttribute: Pointer; AForm: Cardinal; out AValue: PChar): Boolean;
-    function ReadValue(AAttribute: Pointer; AForm: Cardinal; out AValue: TByteDynArray): Boolean;
+    function ReadValue(AAttribute: Pointer; AForm: Cardinal; out AValue: TByteDynArray; AnFormString: Boolean = False): Boolean;
     // Read a value that contains an address. The address is evaluated using MapAddressToNewValue
     function ReadAddressValue(AAttribute: Pointer; AForm: Cardinal; out AValue: QWord): Boolean;
 
@@ -802,7 +804,7 @@ begin
   until Stop or (n > 128);
 
   // sign extend when msbit = 1
-  if (p[-1] and $40) <> 0
+  if ((p[-1] and $40) <> 0) and (n < 64) // only supports 64 bit
   then Result := Result or (Int64(-1) shl n);
 end;
 
@@ -2211,6 +2213,11 @@ begin
   Include(FFlags, dieAbbrevValid);
 end;
 
+function TDwarfInformationEntry.GetAttribForm(AnIdx: Integer): Cardinal;
+begin
+  Result := FAbbrevData[AnIdx].Form;
+end;
+
 function TDwarfInformationEntry.PrepareAbbrevData: Boolean;
 var
   AbbrList: TDwarfAbbrevList;
@@ -2641,7 +2648,7 @@ begin
 end;
 
 function TDwarfInformationEntry.ReadValue(AnAttrib: Cardinal; out
-  AValue: TByteDynArray): Boolean;
+  AValue: TByteDynArray; AnFormString: Boolean): Boolean;
 var
   AData: pointer;
   i: Integer;
@@ -2649,11 +2656,11 @@ begin
   i := AttribIdx(AnAttrib, AData);
   if i < 0 then begin
     if (dafHasAbstractOrigin in FAbbrev^.flags) and PrepareAbstractOrigin
-    then Result := FAbstractOrigin.ReadValue(AnAttrib, AValue)
+    then Result := FAbstractOrigin.ReadValue(AnAttrib, AValue, AnFormString)
     else Result := False;
   end
   else
-    Result := FCompUnit.ReadValue(AData, FAbbrevData[i].Form, AValue);
+    Result := FCompUnit.ReadValue(AData, FAbbrevData[i].Form, AValue, AnFormString);
 end;
 
 function TDwarfInformationEntry.ReadReference(AnAttrib: Cardinal; out AValue: Pointer; out
@@ -4315,9 +4322,11 @@ begin
   end;
 end;
 
-function TDwarfCompilationUnit.ReadValue(AAttribute: Pointer; AForm: Cardinal; out AValue: TByteDynArray): Boolean;
+function TDwarfCompilationUnit.ReadValue(AAttribute: Pointer; AForm: Cardinal;
+  out AValue: TByteDynArray; AnFormString: Boolean): Boolean;
 var
   Size: Cardinal;
+  mx, i: Pointer;
 begin
   Result := True;
   case AForm of
@@ -4335,6 +4344,26 @@ begin
     DW_FORM_block4   : begin
       Size := PLongWord(AAttribute)^;
       Inc(AAttribute, 4);
+    end;
+    DW_FORM_strp, DW_FORM_string: begin
+      Result := AnFormString;
+      Size := 0;
+      if Result then begin
+        mx := FDebugFile^.Sections[dsInfo].RawData +FDebugFile^.Sections[dsInfo].Size;
+        if AForm = DW_FORM_strp then begin
+          AAttribute := FDebugFile^.Sections[dsStr].RawData+PDWord(AAttribute)^;
+          mx := FDebugFile^.Sections[dsStr].RawData +FDebugFile^.Sections[dsStr].Size;
+        end;
+        i := AAttribute;
+        while (PByte(i)^ <> 0) and (i < mx) do Inc(i);
+        if i = mx then begin
+          DebugLn(FPDBG_DWARF_ERRORS, 'String exceeds section');
+          Result := False;
+        end
+        else begin
+          Size := i + 1 - AAttribute; // include #0
+        end;
+      end;
     end;
   else
     Result := False;
