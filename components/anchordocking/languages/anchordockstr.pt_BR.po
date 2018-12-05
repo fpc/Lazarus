@@ -17,7 +17,7 @@ msgstr "Um lado livre de um \"splitter\" não deve estar ancorado: Nó=\"%s\" Ti
 
 #: anchordockstr.adrsallowdocksitestobeminimized
 msgid "Allow dock sites to be minimized"
-msgstr ""
+msgstr "Permitir que locais de ancoragem sejam minimizados"
 
 #: anchordockstr.adrsamountofpixelthemousehastodragbeforedragstarts
 msgid "Amount of pixel the mouse has to drag before drag starts"
@@ -157,7 +157,7 @@ msgstr "Mesclar"
 
 #: anchordockstr.adrsminimize
 msgid "Minimize"
-msgstr ""
+msgstr "Minimizar"
 
 #: anchordockstr.adrsmissingcontrolname
 msgid "missing control name"
