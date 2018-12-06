@@ -196,7 +196,7 @@ constructor TDbgImageLoader.Create(AFileName: String; ADebugMap: TObject = nil);
 begin
   FFileName := AFileName;
   FFileLoader := TDbgFileLoader.Create(AFileName);
-  FImgReader := GetImageReader(FFileLoader, ADebugMap, True);
+  FImgReader := GetImageReader(FFileLoader, ADebugMap, False);
   if FImgReader = nil then FreeAndNil(FFileLoader);
 end;
 
@@ -210,7 +210,7 @@ end;
 constructor TDbgImageLoader.Create(AFileHandle: THandle; ADebugMap: TObject = nil);
 begin
   FFileLoader := TDbgFileLoader.Create(AFileHandle);
-  FImgReader := GetImageReader(FFileLoader, ADebugMap, True);
+  FImgReader := GetImageReader(FFileLoader, ADebugMap, False);
   if FImgReader = nil then FreeAndNil(FFileLoader);
 end;
 {$endif}
@@ -218,12 +218,14 @@ end;
 destructor TDbgImageLoader.Destroy;
 begin
   FreeAndNil(FImgReader);
+  FreeAndNil(FFileLoader);
   inherited Destroy;
 end;
 
 procedure TDbgImageLoader.CloseFileLoader;
 begin
-  FFileLoader.Close;
+  if FFileLoader <> nil then
+    FFileLoader.Close;
 end;
 
 procedure TDbgImageLoader.AddToLoaderList(ALoaderList: TDbgImageLoaderList);
