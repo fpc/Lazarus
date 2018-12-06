@@ -10,7 +10,8 @@ implementation
 
 uses
   Graphics, Classes, Math, PropEdits, SysUtils, LCLIntf, typinfo,
-  TATypes, TADrawUtils, TADrawerCanvas, TACustomSeries, TASeries, TALegend, TAGraph;
+  TATypes, TADrawUtils, TADrawerCanvas, TACustomSeries, TASeries, TALegend,
+  TAGraph, TAChartCombos;
 
 type
   TAxisIndexPropertyEditor = class(TOrdinalPropertyEditor)
@@ -42,6 +43,8 @@ begin
     TypeInfo(TChartAxisIndex), TCustomChartSeries, '', TAxisIndexPropertyEditor);
   RegisterPropertyEditor(
     TypeInfo(TSeriesPointerStyle), TSeriesPointer, '', TSeriesPointerStylePropertyEditor);
+  RegisterPropertyEditor(
+    TypeInfo(TSeriesPointerStyle), TChartComboBox, '', TSeriespointerStylePropertyEditor);
 end;
 
 { TAxisIndexPropertyEditor }
@@ -147,13 +150,15 @@ begin
     oldPenStyle := Pen.Style;
 
     try
+      {
       // white out the background
       Brush.Color := clWindow;
       FillRect(ARect);
+      }
 
       // set things up and do work
       i := GetEnumValue(GetPropInfo^.PropType, CurValue);
-      DrawPointer(ACanvas, lRect, TSeriesPointerStyle(i), clWindowText, clWindow);
+      DrawPointer(ACanvas, lRect, TSeriesPointerStyle(i), clWindowText, clWindowText);
     finally
       // restore the things we twiddled with
       Brush.Color := oldBrushColor;
