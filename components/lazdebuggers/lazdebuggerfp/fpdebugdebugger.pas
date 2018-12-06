@@ -1647,19 +1647,27 @@ var
   AnExceptionObjectLocation: TDBGPtr;
   ExceptionClass: string;
   ExceptionMessage: string;
-  RegDxDwarfIndex: byte;
+  RegDxDwarfIndex, RegFirstArg: Cardinal;
   ExceptItem: TBaseException;
 begin
   // Using regvar:
   // In all their wisdom, people decided to give the (r)dx register dwarf index
   // 1 on for x86_64 and index 2 for i386.
-  if FDbgController.CurrentProcess.Mode=dm32 then
-    RegDxDwarfIndex:=2
-  else
+  if FDbgController.CurrentProcess.Mode=dm32 then begin
+    RegDxDwarfIndex:=2;
+    RegFirstArg := 0; // AX
+  end else begin
     RegDxDwarfIndex:=1;
+    {$IFDEF windows}
+    // Must be Win64
+    RegFirstArg := 2; // RCX
+    {$ELSE}
+    RegFirstArg := 5; // RDI
+    {$ENDIF}
+  end;
 
   AnExceptionLocation:=GetLocationRec(FDbgController.CurrentThread.RegisterValueList.FindRegisterByDwarfIndex(RegDxDwarfIndex).NumValue);
-  AnExceptionObjectLocation:=FDbgController.CurrentThread.RegisterValueList.FindRegisterByDwarfIndex(0).NumValue;
+  AnExceptionObjectLocation:=FDbgController.CurrentThread.RegisterValueList.FindRegisterByDwarfIndex(RegFirstArg).NumValue;
   ExceptionClass := '';
   ExceptionMessage := '';
   if AnExceptionObjectLocation <> 0 then begin
