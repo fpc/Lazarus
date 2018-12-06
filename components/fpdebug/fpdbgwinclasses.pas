@@ -538,6 +538,15 @@ begin
   result := Windows.WaitForDebugEvent(MDebugEvent, INFINITE);
   ProcessIdentifier:=MDebugEvent.dwProcessId;
   ThreadIdentifier:=MDebugEvent.dwThreadId;
+
+  // Should be done in AnalyseDebugEvent, but that is not called for forked processes
+  if (MDebugEvent.dwDebugEventCode = CREATE_PROCESS_DEBUG_EVENT) and
+     (MDebugEvent.dwProcessId <> ProcessID) and
+     (MDebugEvent.CreateProcessInfo.hFile <> 0)
+  then begin
+    CloseHandle(MDebugEvent.CreateProcessInfo.hFile);
+    MDebugEvent.CreateProcessInfo.hFile := 0;
+  end;
 end;
 
 function TDbgWinProcess.AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent;
