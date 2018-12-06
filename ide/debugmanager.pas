@@ -1163,8 +1163,11 @@ procedure TDebugManager.DebuggerException(Sender: TObject;
       Result := ExtractFileName(FDebugger.FileName);
   end;
 
+const
+  MAX_CLASSNAME_LEN = 256; // shortstring
+  MAX_MSG_DISPLAY_LEN = 2048; // just sanity
 var
-  ExceptMsg: string;
+  ExpClassName, ExceptMsg: string;
   msg, SrcText: String;
   Ignore: Boolean;
   Editor: TSourceEditor;
@@ -1178,18 +1181,24 @@ begin
   else
     AContinue := False;
 
+  ExpClassName := AExceptionClass;
+  if Length(ExpClassName) > MAX_CLASSNAME_LEN then
+    ExpClassName := copy(ExpClassName, 1, MAX_CLASSNAME_LEN) + '...';
+
   if AExceptionText = ''
   then
     msg := Format(lisProjectSRaisedExceptionClassS,
-                  [GetTitle, AExceptionClass])
+                  [GetTitle, ExpClassName])
   else begin
     ExceptMsg := AExceptionText;
+    if Length(ExceptMsg) > MAX_MSG_DISPLAY_LEN then
+      ExceptMsg := copy(ExceptMsg, 1, MAX_MSG_DISPLAY_LEN) + '...';
     // if AExceptionText is not a valid UTF8 string,
     // then assume it has the ansi encoding and convert it
     if FindInvalidUTF8Codepoint(pchar(ExceptMsg),length(ExceptMsg)) > 0 then
       ExceptMsg := AnsiToUtf8(ExceptMsg);
     msg := Format(lisProjectSRaisedExceptionClassSWithMessageSS,
-                  [GetTitle, AExceptionClass, LineEnding, ExceptMsg]);
+                  [GetTitle, ExpClassName, LineEnding, ExceptMsg]);
   end;
 
   if AExceptionLocation.SrcFile <> '' then begin
@@ -1225,8 +1234,8 @@ begin
   if (AExceptionType in [deInternal, deRunError]) then begin
     AContinue := ExecuteExceptionDialog(msg, Ignore, AExceptionType in [deInternal, deRunError]) = mrCancel;
     if Ignore then begin
-      Exceptions.AddIfNeeded(AExceptionClass);
-      Exceptions.Find(AExceptionClass).Enabled := True;
+      Exceptions.AddIfNeeded(ExpClassName);
+      Exceptions.Find(ExpClassName).Enabled := True;
     end;
   end
   else begin

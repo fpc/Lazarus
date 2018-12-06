@@ -28,7 +28,8 @@ unit ExceptionDlg;
 interface
 
 uses
-  Classes, Forms, Dialogs, StdCtrls, Buttons, IDEImagesIntf, LazarusIDEStrConsts;
+  Classes, math, Forms, Dialogs, StdCtrls, Buttons, IDEImagesIntf,
+  LazarusIDEStrConsts;
 
 type
   
@@ -88,6 +89,8 @@ end;
 
 function TIDEExceptionDlg.Execute(AMessage: String; out IgnoreException: Boolean): TModalResult;
 begin
+  lblMessage.Constraints.MaxWidth := max(1, Screen.DesktopWidth-10);
+  lblMessage.Constraints.MaxHeight := max(1, Screen.DesktopHeight-100);
   lblMessage.Caption := AMessage;
   Result := ShowModal;
   IgnoreException := cbIgnoreExceptionType.Checked;
