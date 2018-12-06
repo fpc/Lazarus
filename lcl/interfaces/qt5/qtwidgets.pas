@@ -14963,6 +14963,7 @@ begin
     FHeader := TQtHeaderView.CreateFrom(LCLObject, QTreeView_header(QTreeViewH(Widget)));
     FHeader.FOwner := Self;
     FHeader.FChildOfComplexWidget := ccwTreeWidget;
+    QHeaderView_setSectionsMovable(QHeaderViewH(FHeader.Widget), False);
     {$IFDEF TEST_QT_SORTING}
     FSortChanged := QHeaderView_hook_create(FHeader.Widget);
     QHeaderView_hook_hook_sortIndicatorChanged(FSortChanged,
