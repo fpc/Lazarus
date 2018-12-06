@@ -77,7 +77,7 @@ type
 
   TAppleDwarfDebugMap = class(TObject)
   private
-    FAddressMap: TDbgAddressMapList;
+    //FAddressMap: TDbgAddressMapList;
     FDir: string;
     FGlobalList: TDbgAddressMapHashList;
     FObjectFile: string;
@@ -87,6 +87,7 @@ type
   public
     constructor create;
     destructor destroy; override;
+    procedure clear;
     property Offset: TDBGPtr read FOffset write FOffset;
     property Dir: string read FDir write FDir;
     property ObjectFile: string read FObjectFile write FObjectFile;
@@ -101,7 +102,7 @@ type
     // in the main executable.
     // This property is only available in the debug-map for a specific
     // object-file.
-    property AddressMap: TDbgAddressMapList read FAddressMap;
+    //property AddressMap: TDbgAddressMapList read FAddressMap;
   end;
 
 function isValidMachoStream(ASource: TDbgFileLoader): Boolean;
@@ -131,14 +132,25 @@ end;
 constructor TAppleDwarfDebugMap.create;
 begin
   FGlobalList := TDbgAddressMapHashList.Create;
-  FAddressMap := TDbgAddressMapList.Create;
+  //FAddressMap := TDbgAddressMapList.Create;
 end;
 
 destructor TAppleDwarfDebugMap.destroy;
 begin
-  FAddressMap.Free;
+  //FAddressMap.Free;
   FGlobalList.Free;
   inherited destroy;
+end;
+
+procedure TAppleDwarfDebugMap.clear;
+begin
+  //FAddressMap.Clear;
+  FDir := '';
+  FGlobalList.Clear;
+  FObjectFile := '';
+  FObjFileAge := 0;
+  FOffset := 0;
+  FSourceFile := '';
 end;
 
 { TDbgMachoDataSource }
@@ -638,9 +650,10 @@ begin
           begin
             if SymbolType = N_SO then
             begin
-              if assigned(DwarfDebugMap) then
-                DwarfDebugMap.Free;
-              DwarfDebugMap := TAppleDwarfDebugMap.Create;
+              if not assigned(DwarfDebugMap) then
+                DwarfDebugMap := TAppleDwarfDebugMap.Create
+              else
+                DwarfDebugMap.clear;
               DwarfDebugMap.Dir := pchar(SymbolStr+StringOffset);
               state := dtsDir;
             end;
