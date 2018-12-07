@@ -894,14 +894,21 @@ end;
 class function TCocoaWSCustomEdit.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
 var
   field : NSTextField;
+  cell  : NSTextFieldCell;
 begin
   if TCustomEdit(AWinControl).PasswordChar=#0
     then field:=NSTextField(AllocTextField(AWinControl, AParams))
     else field:=NSTextField(AllocSecureTextField(AWinControl, AParams));
-  NSCell(field.cell).setWraps(false);
-  NSCell(field.cell).setScrollable(true);
+  if (field.respondsToSelector(ObjCSelector('cell'))) and Assigned(field.cell) then
+  begin
+    cell := NSTextFieldCell(field.cell);
+    cell.setWraps(false);
+    cell.setScrollable(true);
+    cell.setUsesSingleLineMode(true);
+  end;
   TextFieldSetAllignment(field, TCustomEdit(AWinControl).Alignment);
   TextFieldSetBorderStyle(field, TCustomEdit(AWinControl).BorderStyle);
+
   Result:=TLCLIntfHandle(field);
 end;
 
@@ -1585,6 +1592,8 @@ begin
     cmb.setDelegate(cmb);
     cmb.setStringValue(NSStringUtf8(AParams.Caption));
     cmb.callback:=TLCLComboboxCallback.Create(cmb, AWinControl);
+    if (cmb.respondsToSelector(ObjCSelector('cell'))) and Assigned(cmb.cell) then
+      NSTextFieldCell(cmb.cell).setUsesSingleLineMode(true);
     // default BorderStyle for TComboBox is bsNone! and it looks ugly!
     // also, Win32 doesn't suppot borderstyle for TComboBox at all.
     // to be tested and considered
