@@ -4,7 +4,7 @@ type
 
   { TCocoaStatusItemHandle }
 
-  TCocoaStatusItemHandle = objcclass(NSObject)
+  TCocoaStatusItemHandle = objcclass(NSObject, NSMenuDelegateProtocol)
   public
     { Fields }
     statusitem: NSStatusItem;
@@ -12,6 +12,7 @@ type
     { Methods }
     procedure lclAction(sender: id); message 'lclAction:';
     procedure lclSetTrayIcon(ATrayIcon: TCustomTrayIcon); message 'lclSetTrayIcon:';
+    procedure menuWillOpen(menu: NSMenu); message 'menuWillOpen:';
   end;
 
 { TCocoaStatusItemHandle }
@@ -41,8 +42,23 @@ begin
   if (ATrayIcon.PopUpMenu <> nil) then
   begin
     ATrayIcon.PopUpMenu.HandleNeeded();
+    //ATrayIcon.PopUpMenu.
+    if Assigned(statusitem.menu) and (statusitem.menu.delegate = NSMenuDelegateProtocol(self)) then
+      statusitem.menu.setDelegate(nil);
+
     statusitem.setMenu(TCocoaMenu(ATrayIcon.PopUpMenu.Handle));
+
+    TCocoaMenu(ATrayIcon.PopUpMenu.Handle).setDelegate( self);
   end;
+end;
+
+procedure TCocoaStatusItemHandle.menuWillOpen(menu: NSMenu);
+begin
+  if Assigned(statusitem)
+    and (statusitem.menu=menu)
+    and (TrayIcon.PopUpMenu = nil) // LCL changes the value w/o letting WS know! :(
+  then
+    menu.cancelTrackingWithoutAnimation;
 end;
 
 { TCocoaWSCustomTrayIcon }
