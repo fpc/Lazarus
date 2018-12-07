@@ -588,10 +588,12 @@ begin
     if Assigned(menuitem.menu) then
       menuitem.menu.removeItem(menuitem);
     AMenuItem.Handle := 0;
+    menuitem.release; // TCocoaMenuItems are "alloced" - thus should be released;
   end else if item.isKindOfClass_(NSMenuItem) then begin
     nsitem := NSMenuItem(item);
     if nsitem.isSeparatorItem and Assigned(nsitem.menu) then
       nsitem.menu.removeItem(nsitem);
+    // separator items are not "alloced", thus should not be released
   end;
 
 end;
