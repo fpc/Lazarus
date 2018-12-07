@@ -569,29 +569,28 @@ class procedure TCocoaWSMenuItem.DestroyHandle(const AMenuItem: TMenuItem);
 var
   callback: IMenuItemCallback;
   callbackObject: TObject;
-  item    : NSObject;
-  parItem : NSObject;
+  item     : NSObject;
+  menuitem : TCocoaMenuItem;
 begin
   if AMenuItem.Caption <> '-' then
-    begin
+  begin
     item:=NSObject(AMenuItem.Handle);
     if item.isKindOfClass_(TCocoaMenuItem) then
-      begin
-      callback := TCocoaMenuItem(item).lclGetCallback;
+    begin
+      menuitem := TCocoaMenuItem(item);
+      callback := menuitem.lclGetCallback;
       if Assigned(callback) then
-        begin
+      begin
         callbackObject := callback.GetCallbackObject;
         callback := nil;
-        TCocoaMenuItem(item).lclClearCallback;
+        menuitem.lclClearCallback;
         callbackObject.Free;
-        end;
-      parItem := TCocoaMenuItem(Item).parentItem;
-      if assigned(parItem) and parItem.isKindOfClass_(NSMenuItem) then
-        NSMenuItem(paritem).submenu.removeItem(NSMenuItem(item));
-      //Item.Release;
+      end;
+      if Assigned(menuitem.menu) then
+        menuitem.menu.removeItem(menuitem);
       AMenuItem.Handle := 0;
-      end
-    end;
+    end
+  end;
 end;
 
 {------------------------------------------------------------------------------
