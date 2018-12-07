@@ -384,6 +384,32 @@ begin
     callback.DidResignKeyNotification;
 end;
 
+procedure NSResponderHotKeys(asender: NSResponder; event: NSEvent; var handled: LCLObjCBoolean; atarget: id);
+begin
+  // todo: system keys could be overriden. thus need to review the current
+  //       keyboard configuration first. See "Key Bindings" at
+  //       https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/EventOverview/TextDefaultsBindings/TextDefaultsBindings.html
+
+  handled := false;
+  if (event.type_ = NSKeyDown) then
+  begin
+    if ((event.modifierFlags and NSCommandKeyMask) = 0) then Exit;
+
+    if Assigned(event.charactersIgnoringModifiers.UTF8String) then
+    begin
+      case event.charactersIgnoringModifiers.UTF8String^ of
+        // redo/undo are not implemented in either of TextControls?
+        //'Z': handled := NSApplication(NSApp).sendAction_to_from(objcselector('redo:'), atarget, asender);
+        'a': handled := NSApplication(NSApp).sendAction_to_from(objcselector('selectAll:'), atarget, asender);
+        'c': handled := NSApplication(NSApp).sendAction_to_from(objcselector('copy:'), atarget, asender);
+        'v': handled := NSApplication(NSApp).sendAction_to_from(objcselector('paste:'), atarget, asender);
+        'x': handled := NSApplication(NSApp).sendAction_to_from(objcselector('cut:'), atarget, asender);
+        //'z': handled := NSApplication(NSApp).sendAction_to_from(objcselector('undo:'), atarget, asender);
+      end;
+    end;
+  end;
+end;
+
 function TCocoaWindowContent.performKeyEquivalent(event: NSEvent): LCLObjCBoolean;
 var
   resp : NSResponder;
