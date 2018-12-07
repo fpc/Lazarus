@@ -6,8 +6,7 @@ unit CocoaDatePicker;
 interface
 
 uses
-  Classes, SysUtils,// DateUtils,
-  //LclType,
+  Classes, SysUtils,
   CocoaAll, CocoaUtils, CocoaPrivate, cocoa_extra;
 
 
