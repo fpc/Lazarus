@@ -571,26 +571,29 @@ var
   callbackObject: TObject;
   item     : NSObject;
   menuitem : TCocoaMenuItem;
+  nsitem   : NSMenuItem;
 begin
-  if AMenuItem.Caption <> '-' then
+  item:=NSObject(AMenuItem.Handle);
+  if item.isKindOfClass_(TCocoaMenuItem) then
   begin
-    item:=NSObject(AMenuItem.Handle);
-    if item.isKindOfClass_(TCocoaMenuItem) then
+    menuitem := TCocoaMenuItem(item);
+    callback := menuitem.lclGetCallback;
+    if Assigned(callback) then
     begin
-      menuitem := TCocoaMenuItem(item);
-      callback := menuitem.lclGetCallback;
-      if Assigned(callback) then
-      begin
-        callbackObject := callback.GetCallbackObject;
-        callback := nil;
-        menuitem.lclClearCallback;
-        callbackObject.Free;
-      end;
-      if Assigned(menuitem.menu) then
-        menuitem.menu.removeItem(menuitem);
-      AMenuItem.Handle := 0;
-    end
+      callbackObject := callback.GetCallbackObject;
+      callback := nil;
+      menuitem.lclClearCallback;
+      callbackObject.Free;
+    end;
+    if Assigned(menuitem.menu) then
+      menuitem.menu.removeItem(menuitem);
+    AMenuItem.Handle := 0;
+  end else if item.isKindOfClass_(NSMenuItem) then begin
+    nsitem := NSMenuItem(item);
+    if nsitem.isSeparatorItem and Assigned(nsitem.menu) then
+      nsitem.menu.removeItem(nsitem);
   end;
+
 end;
 
 {------------------------------------------------------------------------------
