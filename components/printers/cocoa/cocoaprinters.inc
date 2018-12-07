@@ -107,7 +107,7 @@ begin
 end;
 
 // Return the number of pages available for printing
-function TCocoaPrinterView.knowsPageRange(range: NSRangePointer): Boolean;
+function TCocoaPrinterView.knowsPageRange(range: NSRangePointer): LCLObjCBoolean;
 begin
   range^.location := 1;
   range^.length := CGPDFDocumentGetNumberOfPages(doc);
@@ -124,7 +124,7 @@ begin
   self.setBounds(result);
 end;
 
-function TCocoaPrinterView.isFlipped: boolean;
+function TCocoaPrinterView.isFlipped: LCLObjCBoolean;
 begin
   Result := true;
 end;

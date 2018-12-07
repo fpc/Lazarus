@@ -7,7 +7,7 @@ uses
   // fpc
   MacOSAll, CocoaAll, Classes, SysUtils,
   // lcl-widgetset
-  CocoaUtils, CocoaGDIObjects,
+  CocoaUtils, CocoaGDIObjects, CocoaPrivate,
   // lcl
   Printers, LCLType;
 
@@ -25,9 +25,9 @@ type
     // drawing
     procedure drawRect(dirtyRect: NSRect); override;
     // manual paging, see https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/Printing/osxp_pagination/osxp_pagination.html
-    function knowsPageRange(range: NSRangePointer): Boolean; override;
+    function knowsPageRange(range: NSRangePointer): LCLObjCBoolean; override;
     function rectForPage(page: NSInteger): NSRect; override;
-    function isFlipped: boolean; override;
+    function isFlipped: LCLObjCBoolean; override;
   end;
 
 
