@@ -275,7 +275,7 @@ end;
 
 { TCocoaMenuITem }
 
-procedure TCocoaMenuItem.UncheckSiblings(AIsChangingToChecked: Boolean);
+procedure TCocoaMenuItem.UncheckSiblings(AIsChangingToChecked: LCLObjCBoolean);
 var
   i: Integer;
   lMenuItem, lSibling, lParentMenu: TMenuItem;
@@ -369,7 +369,7 @@ begin
   attachedAppleMenuItems := True;
 end;
 
-function TCocoaMenuItem.isValidAppleMenu(): Boolean;
+function TCocoaMenuItem.isValidAppleMenu(): LCLObjCBoolean;
 begin
   Result := hasSubmenu() and (submenu() <> nil);
   Result := Result and ('' = NSStringToString(title));
