@@ -11905,8 +11905,12 @@ type
   QFontDialogFontDialogOption = cardinal; // QFontDialog::FontDialogOption
   QFontDialogFontDialogOptions = QFontDialogFontDialogOption; //QFlags<> (3)
 const
-  QFontDialogNoButtons =   $00000001;
-  QFontDialogDontUseNativeDialog =   $00000002;
+  QFontDialogNoButtons = $00000001;
+  QFontDialogDontUseNativeDialog = $00000002;
+  QFontDialogScalableFonts = $00000004;
+  QFontDialogNonScalableFonts = $00000008;
+  QFontDialogMonospacedFonts = $00000010;
+  QFontDialogProportionalFonts = $00000020;
 
 function QFontDialog_Create(parent: QWidgetH = nil): QFontDialogH; cdecl; external Qt5PasLib name 'QFontDialog_Create';
 procedure QFontDialog_Destroy(handle: QFontDialogH); cdecl; external Qt5PasLib name 'QFontDialog_Destroy'; 
