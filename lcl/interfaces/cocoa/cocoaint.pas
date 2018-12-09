@@ -35,7 +35,7 @@ uses
   // private
   CocoaAll, CocoaPrivate, CocoaUtils, CocoaGDIObjects,
   cocoa_extra, CocoaWSMenus, CocoaWSForms, CocoaWindows, CocoaScrollers,
-  CocoaWSClipboard, CocoaTextEdits,
+  CocoaWSClipboard, CocoaTextEdits, CocoaWSCommon,
   // LCL
   LCLStrConsts, LMessages, LCLMessageGlue, LCLProc, LCLIntf, LCLType,
   Controls, Forms, Themes, Menus,
@@ -65,10 +65,32 @@ type
   TCocoaApplication = objcclass(NSApplication)
     aloop : TApplicationMainLoop;
     isrun : Boolean;
-    function isRunning: Boolean; override;
+    modals : NSMutableDictionary;
+
+    procedure dealloc; override;
+    function isRunning: LCLObjCBoolean; override;
     procedure run; override;
     procedure sendEvent(theEvent: NSEvent); override;
-    function nextEventMatchingMask_untilDate_inMode_dequeue(mask: NSUInteger; expiration: NSDate; mode: NSString; deqFlag: Boolean): NSEvent; override;
+    function nextEventMatchingMask_untilDate_inMode_dequeue(mask: NSUInteger; expiration: NSDate; mode: NSString; deqFlag: LCLObjCBoolean): NSEvent; override;
+
+    function runModalForWindow(theWindow: NSWindow): NSInteger; override;
+  end;
+
+  { TModalSession }
+
+  TModalSession = class(TObject)
+    window : NSWindow;
+    sess   : NSModalSession;
+    // recording menu state for the modality stack
+    // there's no limitation for a modal window to have its own menu
+    // if it override the mainMenu, we still need the information
+    // to restore the previous state of the mainmenu
+    prevMenuEnabled: Boolean;
+    cocoaMenu : NSMenu;
+    lclMenu   : TMenu;
+    constructor Create(awin: NSWindow; asess: NSModalSession;
+      APrevMenuEnabled: Boolean;
+      amainmenu: NSMenu; ALCL: TMenu);
   end;
 
   { TCocoaWidgetSet }
@@ -113,9 +135,17 @@ type
 
     procedure SendCheckSynchronizeMessage;
     procedure OnWakeMainThread(Sender: TObject);
+
+    procedure DoSetMainMenu(AMenu: NSMenu; ALCLMenu: TMenu);
   public
     // modal session
-    CurModalForm: TCustomForm;
+    CurModalForm: NSWindow;
+    Modals : TList;
+    MainMenuEnabled: Boolean; // the latest main menu status
+    PrevMenu : NSMenu;
+    PrevLCLMenu : TMenu;
+    CurLCLMenu: TMenu;
+    PrevMenuEnabled: Boolean; // previous mainmenu status
 
     constructor Create; override;
     destructor Destroy; override;
@@ -145,7 +175,9 @@ type
     procedure FreeSysColorBrushes;
 
     procedure SetMainMenu(const AMenu: HMENU; const ALCLMenu: TMenu);
-    function IsControlDisabledDueToModal(AControl: NSView): Boolean;
+    function StartModal(awin: NSWindow; hasMenu: Boolean): Boolean;
+    procedure EndModal(awin: NSWindow);
+    function isModalSession: Boolean;
 
     {todo:}
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
@@ -184,8 +216,6 @@ procedure NSScrollerGetScrollInfo(docSz, pageSz: CGFloat; rl: NSSCroller; Var Sc
 procedure NSScrollViewGetScrollInfo(sc: NSScrollView; BarFlag: Integer; Var ScrollInfo: TScrollInfo);
 procedure NSScrollerSetScrollInfo(docSz, pageSz: CGFloat; rl: NSSCroller; const ScrollInfo: TScrollInfo);
 procedure NSScrollViewSetScrollPos(sc: NSScrollView; BarFlag: Integer; const ScrollInfo: TScrollInfo);
-function HandleToNSObject(AHWnd: HWND): id;
-
 
 function CocoaPromptUser(const DialogCaption, DialogMessage: String;
     DialogType: longint; Buttons: PLongint; ButtonCount, DefaultIndex,
@@ -193,6 +223,7 @@ function CocoaPromptUser(const DialogCaption, DialogMessage: String;
     sheetOfWindow: NSWindow = nil): Longint;
 
 implementation
+
 
 // NSCursor doesn't support any wait cursor, so we need to use a non-native one
 // Not supporting it at all would result in crashes in Screen.Cursor := crHourGlass;
@@ -234,7 +265,11 @@ begin
   end;
 
   dl:=mx-mn;
-  bar.setEnabled(dl<>0);
+  {$ifdef BOOLFIX}
+  bar.setEnabled_(Ord(dl<>0));
+  {$else}
+  bar.SetEnabled(dl<>0);
+  {$endif}
 
   // if changed page or range, the knob changes
   if ScrollInfo.fMask and (SIF_RANGE or SIF_PAGE)>0 then
@@ -342,15 +377,28 @@ begin
   ns.scrollRectToVisible(vr);
 end;
 
-function HandleToNSObject(AHWnd: HWND): id;
+{ TModalSession }
+
+constructor TModalSession.Create(awin: NSWindow; asess: NSModalSession;
+  APrevMenuEnabled: Boolean; amainmenu: NSMenu; ALCL: TMenu);
 begin
-  if (AHwnd=0) or not NSObject(AHWnd).lclisHandle then Result:=nil
-  else Result:=NSObject(AHwnd);
+  inherited Create;
+  window := awin;
+  sess := asess;
+  prevMenuEnabled := APrevMenuEnabled;
+  cocoaMenu := amainmenu;
+  lclMenu   := alcl;
 end;
 
 { TCocoaApplication }
 
-function TCocoaApplication.isRunning: Boolean;
+procedure TCocoaApplication.dealloc;
+begin
+  if Assigned(modals) then modals.release;
+  inherited dealloc;
+end;
+
+function TCocoaApplication.isRunning: LCLObjCBoolean;
 begin
   Result:=isrun;
 end;
@@ -423,21 +471,43 @@ begin
 end;
 
 function TCocoaApplication.nextEventMatchingMask_untilDate_inMode_dequeue(
-  mask: NSUInteger; expiration: NSDate; mode: NSString; deqFlag: Boolean
+  mask: NSUInteger; expiration: NSDate; mode: NSString; deqFlag: LCLObjCBoolean
   ): NSEvent;
 var
   cb : ICommonCallback;
 begin
+  {$ifdef BOOLFIX}
+  Result:=inherited nextEventMatchingMask_untilDate_inMode_dequeue_(mask,
+    expiration, mode, Ord(deqFlag));
+  {$else}
   Result:=inherited nextEventMatchingMask_untilDate_inMode_dequeue(mask,
     expiration, mode, deqFlag);
+  {$endif}
   if Assigned(Result)
     and ((mode = NSEventTrackingRunLoopMode) or mode.isEqualToString(NSEventTrackingRunLoopMode))
     and Assigned(TrackedControl)
-    and isMouseMoveEvent(Result.type_)
-  then begin
-    cb := TrackedControl.lclGetCallback;
-    if Assigned(cb) then cb.MouseMove(Result);
+  then
+  begin
+    if Result.type_ = NSLeftMouseUp then
+    begin
+      //todo: send callback!
+      TrackedControl := nil;
+    end
+    else
+    if isMouseMoveEvent(Result.type_) then
+    begin
+      cb := TrackedControl.lclGetCallback;
+      if Assigned(cb) then cb.MouseMove(Result);
+    end;
   end;
+
+end;
+
+function TCocoaApplication.runModalForWindow(theWindow: NSWindow): NSInteger;
+begin
+  ApplicationWillShowModal;
+
+  Result:=inherited runModalForWindow(theWindow);
 end;
 
 // the implementation of the utility methods
@@ -465,6 +535,121 @@ end;
 procedure InternalFinal;
 begin
   if Assigned(MainPool) then MainPool.release;
+end;
+
+
+procedure TCocoaWidgetSet.DoSetMainMenu(AMenu: NSMenu; ALCLMenu: TMenu);
+var
+  i: Integer;
+  lCurItem: TMenuItem;
+  lMenuObj: NSObject;
+  lNSMenu: NSMenu absolute AMenu;
+begin
+  if Assigned(PrevMenu) then PrevMenu.release;
+  PrevMenu := NSApplication(NSApp).mainMenu;
+  PrevMenu.retain;
+
+  PrevLCLMenu := CurLCLMenu;
+  NSApp.setMainMenu(lNSMenu);
+  CurLCLMenu := ALCLMenu;
+
+  if (ALCLMenu = nil) or not ALCLMenu.HandleAllocated then Exit;
+
+  // Find the Apple menu, if the user provided any by setting the Caption to 
+  // Some older docs say we should use setAppleMenu to obtain the Services/Hide/Quit items,
+  // but its now private and in 10.10 it doesn't seam to do anything
+  // NSApp.setAppleMenu(NSMenu(lMenuObj));
+  for i := 0 to ALCLMenu.Items.Count-1 do
+  begin
+    lCurItem := ALCLMenu.Items.Items[i];
+    if not lNSMenu.isKindOfClass_(TCocoaMenu) then Break;
+    if not lCurItem.HandleAllocated then Continue;
+
+    lMenuObj := NSObject(lCurItem.Handle);
+    if not lMenuObj.isKindOfClass_(TCocoaMenuItem) then Continue;
+    if TCocoaMenuItem(lMenuObj).isValidAppleMenu() then
+    begin
+      TCocoaMenu(lNSMenu).overrideAppleMenu(TCocoaMenuItem(lMenuObj));
+      Break;
+    end;
+  end;
+end;
+
+procedure TCocoaWidgetSet.SetMainMenu(const AMenu: HMENU; const ALCLMenu: TMenu);
+begin
+  if AMenu<>0 then
+  begin
+    DoSetMainMenu(NSMenu(AMenu), ALCLMenu);
+
+    PrevMenuEnabled := MainMenuEnabled;
+    MainMenuEnabled := true;
+    ToggleAppMenu(true);
+    //if not Assigned(ACustomForm.Menu) then ToggleAppMenu(false);
+
+    // for modal windows work around bug, but doesn't work :(
+    {$ifdef COCOA_USE_NATIVE_MODAL}
+    {if CurModalForm <> nil then
+    for i := 0 to lNSMenu.numberOfItems()-1 do
+    begin
+      lNSMenu.itemAtIndex(i).setTarget(TCocoaWSCustomForm.GetWindowFromHandle(CurModalForm));
+    end;}
+    {$endif}
+  end;
+end;
+
+function TCocoaWidgetSet.StartModal(awin: NSWindow; hasMenu: Boolean): Boolean;
+var
+  sess : NSModalSession;
+  lvl : NSInteger;
+begin
+  Result := false;
+  if not Assigned(awin) then Exit;
+
+  lvl := awin.level;
+
+  sess := NSApplication(NSApp).beginModalSessionForWindow(awin);
+  if not Assigned(sess) then Exit;
+
+  // beginModalSession "configures" the modality and potentially is changing window level
+  awin.setLevel(lvl);
+
+  if not Assigned(Modals) then Modals := TList.Create;
+
+  // If a modal menu has it's menu, then SetMainMenu has already been called
+  // (Show is called for modal windows prior to ShowModal. Show triggers Activate and Active is doing MainMenu)
+  if not hasMenu then begin
+    Modals.Add( TModalSession.Create(awin, sess, MainMenuEnabled, NSApplication(NSApp).mainMenu, CurLCLMenu));
+    MainMenuEnabled := false;
+    ToggleAppMenu(false); // modal menu doesn't have a window, disabling it
+  end else
+    // if modal window has its own menu, then the prior window is rescord in "Prev" fields
+    Modals.Add( TModalSession.Create(awin, sess, PrevMenuEnabled, PrevMenu, PrevLCLMenu));
+
+  Result := true;
+end;
+
+procedure TCocoaWidgetSet.EndModal(awin: NSWindow);
+var
+  ms : TModalSession;
+begin
+  if not Assigned(Modals) or (Modals.Count = 0) then Exit;
+  ms := TModalSession(Modals[Modals.Count-1]);
+  if (ms.window <> awin) then Exit;
+  NSApplication(NSApp).endModalSession(ms.sess);
+
+  // restoring the menu status that was before the modality
+  DoSetMainMenu(ms.cocoaMenu, ms.lclMenu);
+  PrevMenuEnabled := MainMenuEnabled;
+  MainMenuEnabled := ms.prevMenuEnabled;
+  ToggleAppMenu(ms.prevMenuEnabled); // modal menu doesn't have a window, disabling it
+
+  ms.Free;
+  Modals.Delete(Modals.Count-1);
+end;
+
+function TCocoaWidgetSet.isModalSession: Boolean;
+begin
+  Result := Assigned(Modals) and (Modals.Count > 0);
 end;
 
 initialization

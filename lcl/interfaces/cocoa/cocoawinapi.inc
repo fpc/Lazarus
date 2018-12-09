@@ -124,6 +124,7 @@ var
   tb : Boolean;
   ar : Boolean;
   ks : Boolean;
+  rt : Boolean;
 const
   WantTab   : array [boolean] of integer = (0, DLGC_WANTTAB);
   WantArrow : array [boolean] of integer = (0, DLGC_WANTARROWS);
@@ -140,7 +141,9 @@ begin
         tb := false;
         ar := false;
         ks := false;
-        vw.lclExpectedKeys(tb, ar, ks);
+        rt := false;
+        vw.lclExpectedKeys(tb, ar, rt, ks);
+        ks := ks or rt; // Return is handled by LCL as part of ALLKey
         TLMessage(Message).Result := TLMessage(Message).Result or WantTab[tb] or WantArrow[ar] or WantKeys[ks];
       end;
 
@@ -1278,10 +1281,19 @@ begin
 end;
 
 function TCocoaWidgetSet.IsWindow(handle: HWND): boolean;
+var
+  cbi : ICommonCallback;
+  obj : TObject;
 begin
   if handle <> 0 then
   begin
-    Result := NSObject(handle).lclIsHandle;
+    cbi := NSObject(handle).lclGetCallback;
+    Result := Assigned(cbi);
+    if not Result then Exit;
+
+    obj := cbi.GetCallbackObject;
+    Result :=  (obj is TLCLCommonCallback)
+      and (HWND(TLCLCommonCallback(obj).HandleFrame)=handle);
   end
   else
     Result := False;
@@ -1290,21 +1302,27 @@ end;
 function ViewFromPoint(view: NSView;Point: TPoint): HWND;
 var rect: TRect;
     p:TPoint;
+    cb: ICommonCallback;
+    cbo: TObject;
 begin
   Result:=0;
   if not assigned(view) then
      exit;
-  if view.lclIsHandle then
-      begin
-      p:=Point;
-      view.lclScreenToLocal(p.X,p.Y);
-      rect:=view.lclClientFrame;
-      if PtInRect(rect, p) then
-         Result:=HWND(view);
-      //debugln('Point:'+DbgS(p)+'  Rect:'+DbgS(rect)+' Result:'+dbgS(Result));
-      end
-  //else
-    //  debugln('No lcl');
+  cb := view.lclGetCallback;
+  if Assigned(cb) then
+  begin
+    cbo := cb.GetCallbackObject;
+    p:=Point;
+    view.lclScreenToLocal(p.X,p.Y);
+    rect:=view.lclClientFrame;
+    if PtInRect(rect, p) then
+    begin
+      if cbo is TLCLCommonCallback then
+        Result := HWND(TLCLCommonCallback(cbo).HandleFrame)
+      else
+        Result:=0;
+    end;
+  end
 end;
 
 function RecurseSubviews(view: NSView;Point: TPoint):HWND;
@@ -1331,13 +1349,11 @@ var
   window, windowbelowpoint: NSWindow;
   p:NSPoint;
   winnr:NSInteger;
-  pool:NSAutoReleasePool;
 begin
   Result := 0;
   if not assigned(NSApp) then
     Exit;
 
-  pool := NSAutoreleasePool.alloc.init;
   windows := NSApp.windows;
   for win := 0 to windows.count - 1 do
   begin
@@ -1351,12 +1367,10 @@ begin
       Result:=RecurseSubviews(window.contentView, Point);
       if Result<>0 then
       begin
-        pool.release;
         exit;
       end;
     end;
   end;
-  pool.release;
 end;
 
 
@@ -1422,7 +1436,7 @@ var
   sc  : NSScrollView;
   obj : NSObject;
 begin
-  obj := HandleToNSObject(Handle);
+  obj := NSObject(Handle);
   Result := 0;
   if not Assigned(obj) then Exit;
 
@@ -1445,7 +1459,7 @@ var
   sc  : NSScrollView;
   mn  : TCocoaManualScrollView;
 begin
-  obj := HandleToNSObject(Handle);
+  obj := NSObject(Handle);
   Result := Assigned(obj);
   if not Result then Exit;
 
@@ -1479,7 +1493,7 @@ var
   sc : NSScrollView;
   obj : NSObject;
 begin
-  obj := HandleToNSObject(Handle);
+  obj := NSObject(Handle);
   Result := Assigned(obj);
   if not Result then Exit;
 
@@ -1638,7 +1652,7 @@ var
   sz  : NSSize;
   flg : NSUInteger;
 begin
-  obj := HandleToNSObject(Handle);
+  obj := NSObject(Handle);
   Result := 0;
   if not Assigned(obj) then Exit;
 
@@ -1707,7 +1721,7 @@ var
   sc  : TCocoaScrollView;
   mn  : TCocoaManualScrollView;
 begin
-  obj := NSObject(HandleToNSObject(Handle));
+  obj := NSObject(Handle);
   Result := Assigned(obj);
   if not Result then Exit;
 
@@ -1828,7 +1842,11 @@ begin
     // if we will want a postmessage using notification center
     // NSDistributedNotificationCenter.defaultCenter.postNotificationName_object_userInfo_deliverImmediately(NSMessageNotification, nil, Info, False);
     Event := PrepareUserEvent(Handle, Info, False);
+    {$ifdef BOOLFIX}
+    NSApp.postEvent_atStart_(Event, Ord(False));
+    {$else}
     NSApp.postEvent_atStart(Event, False);
+    {$endif}
   end;
 end;
 
@@ -1965,6 +1983,8 @@ var
   rsp : NSResponder;
   view : NSView;
   dl   : NSObject;
+  cb   : ICommonCallback;
+  cbobj : TObject;
 begin
   Result := 0;
   win := NSApp.keyWindow;
@@ -1988,12 +2008,18 @@ begin
     if Assigned(dl) and (dl.isKindOfClass(NSView)) and Assigned(dl.lclGetCallback) then
       Result := HWND(dl);
   end
-  else if (rsp.isKindOfClass(NSView)) then
+  else
   begin
-    if Assigned(NSView(rsp).enclosingScrollView) then
-      Result := HWND(NSView(rsp).enclosingScrollView)
+    cb := rsp.lclGetCallback;
+    if Assigned(cb) then
+      cbobj := cb.GetCallbackObject
     else
-      Result := HWND(rsp);
+      cbobj := nil;
+
+    if (cbobj is TLCLCommonCallback) then
+      Result := HWND(TLCLCommonCallback(cbobj).HandleFrame)
+    else
+      Result := 0;
   end;
 end;
 
@@ -2297,34 +2323,47 @@ function TCocoaWidgetSet.SetForegroundWindow(HWnd: HWND): boolean;
 var
   Obj: NSObject;
   lWin: NSWindow;
-  pool: NSAutoreleasePool;
 begin
   Result := HWnd <> 0;
   if Result then
   begin
-    pool := NSAutoreleasePool.alloc.init;
+    {$ifdef BOOLFIX}
+    NSApp.activateIgnoringOtherApps_(Ord(True));
+    {$else}
     NSApp.activateIgnoringOtherApps(True);
+    {$endif}
     Obj := NSObject(HWnd);
     lWin := NSWindow(GetNSObjectWindow(Obj));
     if lWin <> nil then
       lWin.makeKeyAndOrderFront(NSApp)
     else
       Result := False;
-    pool.release;
   end;
 end;
 
 function TCocoaWidgetSet.SetMenu(AWindowHandle: HWND; AMenuHandle: HMENU): Boolean;
 var
   lWin: NSWindow;
+  frm : TCustomForm;
 begin
   Result := False;
+
   lWin := NSWindow(GetNSObjectWindow(NSObject(AWindowHandle)));
+
+  frm := HWNDToForm(AWindowHandle);
+  if Assigned(frm) and (csDesigning in frm.ComponentState) then begin
+    Result := true;
+    Exit;
+  end;
+  if not Assigned(frm) then Exit;
+
   if (lWin <> nil) and lWin.isKindOfClass(TCocoaWindow) and
-     (TCocoaWindow(lWin).LCLForm.Menu.Handle = AMenuHandle) then
+     //todo: why is Menu handle checked here?
+     (frm.Menu.Handle = AMenuHandle)
+  then
   begin
     if lWin.isKeyWindow or lWin.isMainWindow then
-      SetMainMenu(AMenuHandle, TCocoaWindow(lWin).LCLForm.Menu);
+      SetMainMenu(AMenuHandle, frm.Menu);
     Result := True;
   end;
 end;
@@ -2538,7 +2577,7 @@ var
   obj: NSOBject;
   v : NSView;
 begin
-  obj:=NSObject(HandleToNSObject(hWnd));
+  obj:=NSObject(hWnd);
   Result:=Assigned(obj) and (obj.isKindOfClass(NSView));
   if not Result then Exit;
 
@@ -2546,7 +2585,11 @@ begin
   // todo: parse the passed parameters.
   //       the content of the window could be already prepared
   //       thus not entire control should be invalided
+  {$ifdef BOOLFIX}
+  v.setNeedsDisplay__(Ord(true));
+  {$else}
   v.setNeedsDisplay_(true);
+  {$endif}
 end;
 
 function TCocoaWidgetSet.SelectClipRGN(DC: hDC; RGN: HRGN): Longint;

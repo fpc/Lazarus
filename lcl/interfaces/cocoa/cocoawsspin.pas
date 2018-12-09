@@ -35,6 +35,7 @@ type
   TCocoaWSCustomFloatSpinEdit = class(TWSCustomFloatSpinEdit)
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class function  GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): Double; override;
     class procedure UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit); override;
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
@@ -66,8 +67,15 @@ begin
   Result := TLCLIntfHandle(lSpin);
   if Result = 0 then Exit;
   lSpin.decimalPlaces := -1;
-  lSpin.CreateSubcontrols(AParams);
+  lSpin.lclCreateSubcontrols(AParams);
   lSpin.callback := TLCLCommonCallback.Create(lSpin, AWinControl);
+end;
+
+class procedure TCocoaWSCustomFloatSpinEdit.DestroyHandle(const AWinControl: TWinControl);
+begin
+  if not AWinControl.HandleAllocated then Exit;
+  TCocoaSpinEdit(AWinControl.Handle).lclReleaseSubcontrols;
+  TCocoaWSWinControl.DestroyHandle(AWinControl);
 end;
 
 {------------------------------------------------------------------------------

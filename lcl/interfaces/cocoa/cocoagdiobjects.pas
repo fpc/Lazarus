@@ -492,10 +492,29 @@ function CheckDC(dc: HDC; Str: string): Boolean;
 function CheckGDIOBJ(obj: HGDIOBJ): TCocoaGDIObject;
 function CheckBitmap(ABitmap: HBITMAP; AStr: string): Boolean;
 
+type
+
+  { LCLNSGraphicsContext }
+
+  LCLNSGraphicsContext = objccategory (NSGraphicsContext)
+    function lclCGContext: CGContextRef; message 'lclCGContext';
+  end;
+
 implementation
 
 uses
   CocoaInt;
+
+
+{ LCLNSGraphicsContext }
+
+function LCLNSGraphicsContext.lclCGcontext: CGContextRef;
+begin
+  if NSAppKitVersionNumber >= NSAppKitVersionNumber10_10 then
+    Result := CGContext
+  else
+    Result := CGContextRef(graphicsPort);
+end;
 
 //todo: a better check!
 
@@ -1042,9 +1061,9 @@ end;
 function TCocoaBitmap.GetColorSpace: NSString;
 begin
   if FType in [cbtMono, cbtGray] then
-    Result := NSCalibratedWhiteColorSpace
+    Result := NSDeviceWhiteColorSpace
   else
-    Result := NSCalibratedRGBColorSpace;
+    Result := NSDeviceRGBColorSpace;
 end;
 
 // Cocoa cannot create a context unless the image has alpha pre-multiplied
@@ -1300,13 +1319,15 @@ end;
 function TCocoaTextLayout.GetSize: TSize;
 var
   Range: NSRange;
+  bnds: NSRect;
 begin
   Range := FLayout.glyphRangeForTextContainer(FTextContainer);
-  with FLayout.boundingRectForGlyphRange_inTextContainer(Range, FTextContainer).size do
-  begin
-    Result.cx := Round(width);
-    Result.cy := Round(height);
-  end;
+  //for text with soft-breaks (#13) the vertical bounds is too high!
+  //(feels like it tryes to span it from top to bottom)
+  //bnds := FLayout.boundingRectForGlyphRange_inTextContainer(Range, FTextContainer);
+  bnds := FLayout.usedRectForTextContainer(FTextContainer);
+  Result.cx := Round(bnds.size.width);
+  Result.cy := Round(bnds.size.height);
 end;
 
 function TCocoaTextLayout.GetGlyphs: TGlyphArray;
@@ -1330,6 +1351,10 @@ var
   I, Count: NSUInteger;
   transform : NSAffineTransform;
 begin
+  Range := FLayout.glyphRangeForTextContainer(FTextContainer);
+  if Range.length = 0 then
+    Exit; // cannot render anything. string is empty or invalid characters
+
   if not ctx.isFlipped then
     Context := NSGraphicsContext.graphicsContextWithGraphicsPort_flipped(ctx.graphicsPort, True)
   else
@@ -1350,7 +1375,6 @@ begin
     transform.concat;
   end;
 
-  Range := FLayout.glyphRangeForTextContainer(FTextContainer);
   Pt.x := X;
   Pt.y := Y;
   if Assigned(DX) then
@@ -1378,7 +1402,7 @@ end;
 
 function TCocoaContext.CGContext: CGContextRef;
 begin
-  Result := CGContextRef(ctx.graphicsPort);
+  Result := CGContextRef(ctx.lclCGContext);
 end;
 
 procedure TCocoaContext.SetAntialiasing(AValue: Boolean);
@@ -2966,7 +2990,7 @@ begin
   FColor := AColor;
   FColor.retain;
 
-  RGBColor := AColor.colorUsingColorSpaceName(NSCalibratedRGBColorSpace);
+  RGBColor := AColor.colorUsingColorSpaceName(NSDeviceRGBColorSpace);
 
   if Assigned(RGBColor) then
     SetColor(NSColorToRGB(RGBColor), True)
@@ -3030,7 +3054,7 @@ begin
   FCGPattern := nil;
   FBitmap := nil;
   FImage := nil;
-  RGBColor := AColor.colorUsingColorSpaceName(NSCalibratedRGBColorSpace);
+  RGBColor := AColor.colorUsingColorSpaceName(NSDeviceRGBColorSpace);
   if Assigned(RGBColor) then
     inherited Create(NSColorToRGB(RGBColor), True, AGlobal)
   else

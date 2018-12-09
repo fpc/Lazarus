@@ -19,6 +19,7 @@ unit CocoaWSStdCtrls;
 {$mode objfpc}{$H+}
 {$modeswitch objectivec1}
 {$modeswitch objectivec2}
+{$include cocoadefines.inc}
 
 interface
 
@@ -33,7 +34,7 @@ uses
   WSStdCtrls, WSLCLClasses, WSControls, WSProc,
   // LCL Cocoa
   CocoaWSCommon, CocoaPrivate, CocoaUtils, CocoaGDIObjects, CocoaButtons,
-  CocoaTables, CocoaTextEdits, CocoaScrollers;
+  CocoaTables, CocoaTextEdits, CocoaScrollers, Cocoa_Extra;
 
 type
 
@@ -72,6 +73,8 @@ type
   TCocoaWSCustomComboBox = class(TWSCustomComboBox)
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
+
     {class function  GetSelStart(const ACustomComboBox: TCustomComboBox): integer; override;
     class function  GetSelLength(const ACustomComboBox: TCustomComboBox): integer; override;}
     class function  GetItemIndex(const ACustomComboBox: TCustomComboBox): integer; override;
@@ -109,7 +112,7 @@ type
     class function GetTopIndex(const ACustomListBox: TCustomListBox): integer; override;
 
     class procedure SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean); override;
-    //class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
+    class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
     //class procedure SetBorder(const ACustomListBox: TCustomListBox); override;
     class procedure SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer); override;
     class procedure SetSelectionMode(const ACustomListBox: TCustomListBox; const AExtendedSelect, AMultiSelect: boolean); override;
@@ -128,6 +131,7 @@ type
 
     // WSControl functions
     class procedure SetColor(const AWinControl: TWinControl); override;
+    class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
 
     // WSEdit functions
     class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
@@ -216,6 +220,8 @@ type
   { TLCLListBoxCallback }
 
   TLCLListBoxCallback = class(TLCLCommonCallback, IListViewCallBack)
+  protected
+    function AllocStrings(ATable: NSTableView): TCocoaStringList; virtual;
   public
     listview : TCocoaTableListView;
     strings  : TCocoaStringList;
@@ -311,6 +317,7 @@ procedure TextViewSetWordWrap(txt: NSTextView; lScroll: NSScrollView; NewWordWra
 function AlignmentLCLToCocoa(al: TAlignment): NSTextAlignment;
 procedure TextViewSetAllignment(txt: NSTextView; align: TAlignment);
 procedure TextFieldSetAllignment(txt: NSTextField; align: TAlignment);
+procedure TextFieldSetBorderStyle(txt: NSTextField; astyle: TBorderStyle);
 procedure RadioButtonSwitchSiblings(checkedRadio: NSButton);
 
 procedure ScrollViewSetScrollStyles(AScroll: TCocoaScrollView; AStyles: TScrollStyle);
@@ -319,6 +326,7 @@ function ComboBoxStyleIsReadOnly(AStyle: TComboBoxStyle): Boolean;
 function ComboBoxIsReadOnly(cmb: TCustomComboBox): Boolean;
 function ComboBoxIsOwnerDrawn(AStyle: TComboBoxStyle): Boolean;
 function ComboBoxIsVariable(AStyle: TComboBoxStyle): Boolean;
+procedure ComboBoxSetBorderStyle(box: NSComboBox; astyle: TBorderStyle);
 
 implementation
 
@@ -396,6 +404,16 @@ begin
   end;
 end;
 
+procedure TextFieldSetBorderStyle(txt: NSTextField; astyle: TBorderStyle);
+begin
+  if not Assigned(txt) then Exit;
+  {$ifdef BOOLFIX}
+  txt.setBezeled_(Ord(astyle <> bsNone));
+  {$else}
+  txt.setBezeled(astyle <> bsNone);
+  {$endif}
+end;
+
 procedure RadioButtonSwitchSiblings(checkedRadio: NSButton);
 var
   SubView : NSView;
@@ -435,6 +453,15 @@ end;
 function ComboBoxIsVariable(AStyle: TComboBoxStyle): Boolean;
 begin
   Result := AStyle in [csOwnerDrawVariable, csOwnerDrawEditableVariable];
+end;
+
+procedure ComboBoxSetBorderStyle(box: NSComboBox; astyle: TBorderStyle);
+begin
+  {$IFDEF BOOLFIX}
+  box.setBezeled_(Ord(astyle <> bsNone));
+  {$else}
+  box.setBezeled(astyle <> bsNone);
+  {$endif}
 end;
 
 { TLCLRadioButtonCallback }
@@ -491,13 +518,19 @@ end;
 
 { TLCLListBoxCallback }
 
+function TLCLListBoxCallback.AllocStrings(ATable: NSTableView
+  ): TCocoaStringList;
+begin
+  Result := TCocoaStringList.Create(ATable);
+end;
+
 constructor TLCLListBoxCallback.CreateWithView(AOwner: TCocoaTableListView;
   ATarget: TWinControl);
 begin
   Create(AOwner, ATarget);
 
-  listview:=AOwner;
-  strings := TCocoaStringList.Create(AOwner);
+  listview := AOwner;
+  strings := AllocStrings(AOwner);
 end;
 
 destructor TLCLListBoxCallback.Destroy;
@@ -711,7 +744,11 @@ begin
   // changes in AllowGrayed are never sent to WS!
   // so it should be checked at create time (and at SetNextState?)
   if TCustomCheckBox(AWinControl).AllowGrayed then
+    {$ifdef BOOLFIX}
+    NSButton(btn).setAllowsMixedState_(Ord(true));
+    {$else}
     NSButton(btn).setAllowsMixedState(true);
+    {$endif}
   Result := TLCLIntfHandle(btn);
 end;
 
@@ -751,7 +788,11 @@ begin
   if ACustomCheckBox.HandleAllocated then
   begin
     if NewState = cbGrayed then
+      {$ifdef BOOLFIX}
+      NSButton(ACustomCheckBox.Handle).setAllowsMixedState_(Ord(true));
+      {$else}
       NSButton(ACustomCheckBox.Handle).setAllowsMixedState(true);
+      {$endif}
     NSButton(ACustomCheckBox.Handle).setState(buttonState[NewState]);
   end;
 end;
@@ -818,10 +859,17 @@ var
   field: NSTextField;
 begin
   field := NSTextField(AllocTextField(AWinControl, AParams));
+  {$ifdef BOOLFIX}
+  field.setBezeled_(Ord(False));
+  field.setDrawsBackground_(Ord(False));
+  field.setEditable_(Ord(False));
+  field.setSelectable_(Ord(False));
+  {$else}
   field.setBezeled(False);
   field.setDrawsBackground(False);
   field.setEditable(False);
   field.setSelectable(False);
+  {$endif}
   Result:=TLCLIntfHandle(field);
 end;
 
@@ -846,13 +894,21 @@ end;
 class function TCocoaWSCustomEdit.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
 var
   field : NSTextField;
+  cell  : NSTextFieldCell;
 begin
   if TCustomEdit(AWinControl).PasswordChar=#0
     then field:=NSTextField(AllocTextField(AWinControl, AParams))
     else field:=NSTextField(AllocSecureTextField(AWinControl, AParams));
-  NSCell(field.cell).setWraps(false);
-  NSCell(field.cell).setScrollable(true);
+  if (field.respondsToSelector(ObjCSelector('cell'))) and Assigned(field.cell) then
+  begin
+    cell := NSTextFieldCell(field.cell);
+    cell.setWraps(false);
+    cell.setScrollable(true);
+    cell.setUsesSingleLineMode(true);
+  end;
   TextFieldSetAllignment(field, TCustomEdit(AWinControl).Alignment);
+  TextFieldSetBorderStyle(field, TCustomEdit(AWinControl).BorderStyle);
+
   Result:=TLCLIntfHandle(field);
 end;
 
@@ -867,6 +923,12 @@ begin
     field.setBackgroundColor( NSColor.textBackgroundColor )
   else
     field.setBackgroundColor( ColorToNSColor(ColorToRGB(AWinControl.Color)));
+end;
+
+class procedure TCocoaWSCustomEdit.SetBorderStyle(
+  const AWinControl: TWinControl; const ABorderStyle: TBorderStyle);
+begin
+  inherited SetBorderStyle(AWinControl, ABorderStyle);
 end;
 
 class function TCocoaWSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit): integer;
@@ -1257,8 +1319,7 @@ begin
   scr.setAutohidesScrollers(ScrollerAutoHide[TMemo(AWinControl).ScrollBars]);
   scr.setDrawsBackground(false);
 
-  if TCustomMemo(AWinControl).BorderStyle=bsSingle then
-     scr.setBorderType(NSBezelBorder);
+  ScrollViewSetBorderStyle(scr, TCustomMemo(AWinControl).BorderStyle);
 
   nr:=scr.documentVisibleRect;
   txt.setFrame(nr);
@@ -1281,7 +1342,7 @@ begin
   // This makes NSTextView to be responsive to theme color change (Mojave 10.14)
   txt.setTextColor(NSColor.textColor);
   txt.setBackgroundColor(NSColor.textBackgroundColor);
-  scr.setBackgroundColor(NSColor.textBackgroundColor);
+  scr.setFocusRingType(NSFocusRingTypeExterior);
 
   txt.callback := TLCLCommonCallback.Create(txt, AWinControl);
   txt.setDelegate(txt);
@@ -1496,6 +1557,10 @@ end;
 
 { TCocoaWSCustomComboBox }
 
+type
+  TCustomComboBoxAccess = class(TCustomComboBox)
+  end;
+
 class function TCocoaWSCustomComboBox.CreateHandle(const AWinControl:TWinControl;
   const AParams:TCreateParams):TLCLIntfHandle;
 var
@@ -1527,11 +1592,35 @@ begin
     cmb.setDelegate(cmb);
     cmb.setStringValue(NSStringUtf8(AParams.Caption));
     cmb.callback:=TLCLComboboxCallback.Create(cmb, AWinControl);
+    if (cmb.respondsToSelector(ObjCSelector('cell'))) and Assigned(cmb.cell) then
+      NSTextFieldCell(cmb.cell).setUsesSingleLineMode(true);
+    // default BorderStyle for TComboBox is bsNone! and it looks ugly!
+    // also, Win32 doesn't suppot borderstyle for TComboBox at all.
+    // to be tested and considered
+    //ComboBoxSetBorderStyle(cmb, TCustomComboBoxAccess(AWinControl).BorderStyle);
     Result:=TLCLIntfHandle(cmb);
   end;
   //todo: 26 pixels is the height of 'normal' combobox. The value is taken from the Interface Builder!
   //      use the correct way to set the size constraints
   AWinControl.Constraints.SetInterfaceConstraints(0,COMBOBOX_MINI_HEIGHT,0,COMBOBOX_REG_HEIGHT);
+end;
+
+class procedure TCocoaWSCustomComboBox.SetBorderStyle(
+  const AWinControl: TWinControl; const ABorderStyle: TBorderStyle);
+var
+  ACustomComboBox : TCustomComboBox;
+begin
+  if not Assigned(AWinControl) or not AWinControl.HandleAllocated then Exit;
+  ACustomComboBox:= TCustomComboBox(AWinControl);
+
+  if ACustomComboBox.ReadOnly then
+    //Result := TCocoaReadOnlyComboBox(ACustomComboBox.Handle).indexOfSelectedItem
+  else
+  begin
+    //todo: consider the use of border style
+    //ComboBoxSetBorderStyle(TCocoaComboBox(ACustomComboBox.Handle), ABorderStyle);
+  end;
+
 end;
 
 class function TCocoaWSCustomComboBox.GetItemIndex(const ACustomComboBox:
@@ -1792,6 +1881,8 @@ begin
   scroll.callback := list.callback;
   scroll.setHasVerticalScroller(true);
   scroll.setAutohidesScrollers(true);
+  ScrollViewSetBorderStyle(scroll, lclListBox.BorderStyle);
+
   Result := TLCLIntfHandle(scroll);
 end;
 
@@ -1891,6 +1982,17 @@ begin
     list.deselectRow(AIndex);
 end;
 
+class procedure TCocoaWSCustomListBox.SetBorderStyle(
+  const AWinControl: TWinControl; const ABorderStyle: TBorderStyle);
+var
+  list: TCocoaTableListView;
+begin
+  list := GetListBox(AWinControl);
+  if not Assigned(list) then Exit;
+
+  ScrollViewSetBorderStyle(list.enclosingScrollView, ABorderStyle);
+end;
+
 class procedure TCocoaWSCustomListBox.SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer);
 var
   list: TCocoaTableListView;
@@ -1898,7 +2000,7 @@ begin
   list := GetListBox(ACustomListBox);
   if not Assigned(list) then Exit();
 
-  list.selectRowIndexes_byExtendingSelection(NSIndexSet.indexSetWithIndex(AIndex), True)
+  list.selectRowIndexes_byExtendingSelection(NSIndexSet.indexSetWithIndex(AIndex), false);
 end;
 
 class procedure TCocoaWSCustomListBox.SetSelectionMode(const ACustomListBox: TCustomListBox; const AExtendedSelect, AMultiSelect: boolean);

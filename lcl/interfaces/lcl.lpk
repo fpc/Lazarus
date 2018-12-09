@@ -129,7 +129,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="2" Build="2"/>
-    <Files Count="484">
+    <Files Count="486">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
         <AddToUsesPkgSection Value="False"/>
@@ -2396,6 +2396,16 @@ end;"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="cocoawsclipboard"/>
       </Item484>
+      <Item485>
+        <Filename Value="cocoa/cocoawschecklst.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CocoaWSCheckLst"/>
+      </Item485>
+      <Item486>
+        <Filename Value="cocoa/cocoadatepicker.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CocoaDatePicker"/>
+      </Item486>
     </Files>
     <LazDoc Paths="../../docs/xml/lcl"/>
     <i18n>

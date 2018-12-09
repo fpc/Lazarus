@@ -59,7 +59,11 @@ begin
     LCLEventSubTypeMessage,
     LM_NULL,
     AppHandle);
+  {$ifdef BOOLFIX}
+  NSApp.postEvent_atStart_(Event, Ord(False));
+  {$else}
   NSApp.postEvent_atStart(Event, False);
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -97,7 +101,11 @@ var
 begin
   repeat
     pool := NSAutoreleasePool.alloc.init;
+    {$ifdef BOOLFIX}
+    event := NSApp.nextEventMatchingMask_untilDate_inMode_dequeue_(NSAnyEventMask, nil, NSDefaultRunLoopMode, Ord(true));
+    {$else}
     event := NSApp.nextEventMatchingMask_untilDate_inMode_dequeue(NSAnyEventMask, nil, NSDefaultRunLoopMode, true);
+    {$endif}
     if event <> nil then
     begin
       if (event.type_ = NSApplicationDefined) and (event.subtype = LCLEventSubTypeMessage) and (event.data1 = LM_NULL) and (event.data2 = AppHandle) then
@@ -125,7 +133,11 @@ var
   pool:NSAutoReleasePool;
 begin
   pool := NSAutoreleasePool.alloc.init;
+  {$ifdef BOOLFIX}
+  event := NSApp.nextEventMatchingMask_untilDate_inMode_dequeue_(NSAnyEventMask, NSDate.distantFuture, NSDefaultRunLoopMode, Ord(true));
+  {$else}
   event := NSApp.nextEventMatchingMask_untilDate_inMode_dequeue(NSAnyEventMask, NSDate.distantFuture, NSDefaultRunLoopMode, true);
+  {$endif}
   if event <> nil then
   begin
     if (event.type_ = NSApplicationDefined) and (event.subtype = LCLEventSubTypeMessage) and (event.data1 = LM_NULL) and (event.data2 = AppHandle) then
@@ -252,7 +264,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCocoaWidgetSet.AppBringToFront;
 begin
+  {$ifdef BOOLFIX}
+  NSApp.activateIgnoringOtherApps_(Ord(True));
+  {$else}
   NSApp.activateIgnoringOtherApps(True);
+  {$endif}
 end;
 
 procedure TCocoaWidgetSet.AppSetIcon(const Small, Big: HICON);
@@ -476,65 +492,6 @@ var
 begin
   for i := Low(FSysColorBrushes) to High(FSysColorBrushes) do
     DeleteAndNilObject(FSysColorBrushes[i]);
-end;
-
-procedure TCocoaWidgetSet.SetMainMenu(const AMenu: HMENU; const ALCLMenu: TMenu);
-var
-  i: Integer;
-  lCurItem: TMenuItem;
-  lMenuObj: NSObject;
-  lNSMenu: NSMenu absolute AMenu;
-begin
-  if AMenu<>0 then
-  begin
-    NSApp.setMainMenu(lNSMenu);
-    if (ALCLMenu = nil) or not ALCLMenu.HandleAllocated then Exit;
-
-    // Find the Apple menu, if the user provided any by setting the Caption to 
-    // Some older docs say we should use setAppleMenu to obtain the Services/Hide/Quit items,
-    // but its now private and in 10.10 it doesn't seam to do anything
-    // NSApp.setAppleMenu(NSMenu(lMenuObj));
-    for i := 0 to ALCLMenu.Items.Count-1 do
-    begin
-      lCurItem := ALCLMenu.Items.Items[i];
-      if not lNSMenu.isKindOfClass_(TCocoaMenu) then Break;
-      if not lCurItem.HandleAllocated then Continue;
-
-      lMenuObj := NSObject(lCurItem.Handle);
-      if not lMenuObj.isKindOfClass_(TCocoaMenuItem) then Continue;
-      if TCocoaMenuItem(lMenuObj).isValidAppleMenu() then
-      begin
-        TCocoaMenu(lNSMenu).overrideAppleMenu(TCocoaMenuItem(lMenuObj));
-        Break;
-      end;
-    end;
-
-    // for modal windows work around bug, but doesn't work :(
-    {$ifdef COCOA_USE_NATIVE_MODAL}
-    {if CurModalForm <> nil then
-    for i := 0 to lNSMenu.numberOfItems()-1 do
-    begin
-      lNSMenu.itemAtIndex(i).setTarget(TCocoaWSCustomForm.GetWindowFromHandle(CurModalForm));
-    end;}
-    {$endif}
-  end;
-end;
-
-function TCocoaWidgetSet.IsControlDisabledDueToModal(AControl: NSView): Boolean;
-var
-  lNSObj: NSWindow;
-  lNSWin: TCocoaWindow absolute lNSObj;
-begin
-  Result := False;
-  Exit; // todo: the whole function might need to go away
-  {$ifndef COCOA_USE_NATIVE_MODAL}
-  if CurModalForm = nil then Exit;
-  lNSObj := NSWindow(AControl.window());
-  if lNSObj = nil then Exit;
-  if not lNSObj.isKindOfClass_(TCocoaWindow) then Exit;
-  if lNSWin.LCLForm = CurModalForm then Exit;
-  Result := True;
-  {$endif}
 end;
 
 {------------------------------------------------------------------------------

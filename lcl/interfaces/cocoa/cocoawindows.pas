@@ -18,6 +18,7 @@ unit CocoaWindows;
 {$modeswitch objectivec1}
 {$modeswitch objectivec2}
 {$interfaces corba}
+{$include cocoadefines.inc}
 
 interface
 
@@ -29,7 +30,8 @@ uses
   MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects,
   cocoa_extra, CocoaPrivate, CocoaTextEdits,
   // LCL
-  Forms, LCLType, LCLProc;
+  //Forms,
+  LCLType, LCLProc;
 
 type
 
@@ -69,6 +71,9 @@ type
     function GetEnabled: Boolean;
     procedure SetEnabled(AValue: Boolean);
 
+    function AcceptFilesDrag: Boolean;
+    procedure DropFiles(const FileNames: array of string);
+
     property Enabled: Boolean read GetEnabled write SetEnabled;
   end;
 
@@ -84,10 +89,10 @@ type
     procedure windowDidMove(notification: NSNotification); message 'windowDidMove:';
   public
     callback: IWindowCallback;
-    function acceptsFirstResponder: Boolean; override;
-    function canBecomeKeyWindow: Boolean; override;
-    function becomeFirstResponder: Boolean; override;
-    function resignFirstResponder: Boolean; override;
+    function acceptsFirstResponder: LCLObjCBoolean; override;
+    function canBecomeKeyWindow: LCLObjCBoolean; override;
+    function becomeFirstResponder: LCLObjCBoolean; override;
+    function resignFirstResponder: LCLObjCBoolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     // mouse
@@ -104,7 +109,6 @@ type
     procedure mouseExited(event: NSEvent); override;
     procedure mouseMoved(event: NSEvent); override;
     procedure sendEvent(event: NSEvent); override;
-    function lclIsHandle: Boolean; override;
   end;
 
   { TCocoaWindow }
@@ -118,6 +122,10 @@ type
     isInFullScreen: Boolean;
     orderOutAfterFS : Boolean;
     fsview: TCocoaWindowContent;
+
+    responderSwitch: Integer;
+    respInitCb : ICommonCallback;
+
     function windowShouldClose(sender : id): LongBool; message 'windowShouldClose:';
     procedure windowWillClose(notification: NSNotification); message 'windowWillClose:';
     function windowWillReturnFieldEditor_toObject(sender: NSWindow; client: id): id; message 'windowWillReturnFieldEditor:toObject:';
@@ -131,12 +139,13 @@ type
     procedure windowDidExitFullScreen(notification: NSNotification); message 'windowDidExitFullScreen:';
   public
     callback: IWindowCallback;
-    LCLForm: TCustomForm;
+    keepWinLevel : NSInteger;
+    //LCLForm: TCustomForm;
     procedure dealloc; override;
-    function acceptsFirstResponder: Boolean; override;
-    function canBecomeKeyWindow: Boolean; override;
-    function becomeFirstResponder: Boolean; override;
-    function resignFirstResponder: Boolean; override;
+    function acceptsFirstResponder: LCLObjCBoolean; override;
+    function canBecomeKeyWindow: LCLObjCBoolean; override;
+    function becomeFirstResponder: LCLObjCBoolean; override;
+    function resignFirstResponder: LCLObjCBoolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     // mouse
@@ -154,10 +163,19 @@ type
     procedure mouseMoved(event: NSEvent); override;
     procedure scrollWheel(event: NSEvent); override;
     procedure sendEvent(event: NSEvent); override;
-    function lclIsHandle: Boolean; override;
+    // key
+    // in practice those key-handling methods should NOT be needed, because a window
+    // always have TCocoaWindowContent view. However, on some instances
+    // the focus is not switched to CocoaWindowContent, and the window itself
+    // remains the firstResponder. (ie CodeCompletion window, see bug #34301)
+    procedure keyDown(event: NSEvent); override;
+    procedure keyUp(event: NSEvent); override;
+    procedure flagsChanged(event: NSEvent); override;
     // NSDraggingDestinationCategory
     function draggingEntered(sender: NSDraggingInfoProtocol): NSDragOperation; override;
-    function performDragOperation(sender: NSDraggingInfoProtocol): Boolean; override;
+    function performDragOperation(sender: NSDraggingInfoProtocol): LCLObjCBoolean; override;
+    // windows
+    function makeFirstResponder(r: NSResponder): LCLObjCBoolean; override;
     // menu support
     procedure lclItemSelected(sender: id); message 'lclItemSelected:';
 
@@ -170,7 +188,7 @@ type
   TCocoaDesignOverlay = objcclass(NSView)
     callback  : ICommonCallback;
     procedure drawRect(r: NSRect); override;
-    function acceptsFirstResponder: Boolean; override;
+    function acceptsFirstResponder: LCLObjCBoolean; override;
     function hitTest(aPoint: NSPoint): NSView; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
@@ -189,7 +207,7 @@ type
     fswin: NSWindow; // window that was used as a content prior to switching to old-school fullscreen
     popup_parent: HWND; // if not 0, indicates that we should set the popup parent
     overlay: NSView;
-    function performKeyEquivalent(event: NSEvent): Boolean; override;
+    function performKeyEquivalent(event: NSEvent): LCLObjCBoolean; override;
     procedure resolvePopupParent(); message 'resolvePopupParent';
     function lclOwnWindow: NSWindow; message 'lclOwnWindow';
     procedure lclSetFrame(const r: TRect); override;
@@ -198,12 +216,113 @@ type
     procedure viewDidMoveToWindow; override;
     procedure viewWillMoveToWindow(newWindow: CocoaAll.NSWindow); override;
     procedure dealloc; override;
-    procedure setHidden(aisHidden: Boolean); override;
-    function lclIsHandle: Boolean; override;
+    procedure setHidden(aisHidden: LCLObjCBoolean); override;
     procedure didAddSubview(aview: NSView); override;
   end;
 
+procedure WindowPerformKeyDown(win: NSWindow; event: NSEvent; out processed: Boolean);
+
 implementation
+
+
+function NeedsReturn(rsp: NSResponder): Boolean;
+var
+  t, a, r, l: Boolean;
+begin
+  if Assigned(rsp) then begin
+    t := false; a := false; r := false; l := false;
+    rsp.lclExpectedKeys(t, a, r, l);
+    Result := r;
+  end else
+    Result := false;
+end;
+
+function AllowKeyEqForResponders(first: NSResponder; event: NSEvent): Boolean;
+begin
+  Result := not (
+    // "Return" is a keyEquivalent for a "default" button
+    // LCL provides its own mechanism for handling default buttons
+    (event.keyCode = kVK_Return) and ((event.modifierFlags and KeysModifiers)= 0) and NeedsReturn(first)
+  );
+end;
+
+// Cocoa emulation routine.
+//
+// For whatever reason, the default keyDown: event processing, is triggerring
+// some macOSX hot keys PRIOR to reaching keyDown: (Which is a little bit unpredictable)
+// So the below Key-event-Path is a light version of what is described, in Cocoa
+// documentation.
+// first - run controls and menus, for performKeyEquivalent
+// then pass keyDown through
+//
+// The order can be reverted and let Controls do the key processing first
+// and menu to handle the event after.
+
+procedure WindowPerformKeyDown(win: NSWindow; event: NSEvent; out processed: Boolean);
+var
+  r : NSResponder;
+  fr : NSResponder;
+  mn : NSMenu;
+  cb : ICommonCallback;
+  allowcocoa : Boolean;
+begin
+  fr := win.firstResponder;
+  r := fr;
+  allowcocoa := true;
+
+  if Assigned(fr) then
+  begin
+    cb := fr.lclGetCallback;
+    if Assigned(cb) then
+    begin
+      cb.KeyEvPrepare(event);
+      cb.KeyEvBefore(allowcocoa);
+    end;
+  end else
+    cb := nil;
+
+  // try..finally here is to handle "Exit"s
+  // rather than excepting any exceptions to happen
+  try
+    if not allowcocoa then Exit;
+
+    processed := false;
+
+    // let controls to performKeyEquivalent first
+    if AllowKeyEqForResponders(fr, event) then
+      while Assigned(r) and not processed do begin
+        if r.respondsToSelector(objcselector('performKeyEquivalent:')) then
+          processed := r.performKeyEquivalent(event);
+        if not processed then r := r.nextResponder;
+      end;
+
+    if processed then Exit;
+
+    // let menus do the hot key, if controls don't like it.
+    if not processed then
+    begin
+      mn := NSApplication(NSApp).mainMenu;
+      if Assigned(mn) then
+        processed := mn.performKeyEquivalent(event);
+    end;
+    if processed then Exit;
+
+    r := fr;
+    while Assigned(r) and not processed do begin
+      if r.respondsToSelector(objcselector('keyDown:')) then
+      begin
+        r.keyDown(event);
+        processed := true;
+      end;
+      if not processed then r := r.nextResponder;
+    end;
+
+  finally
+    if Assigned(cb) then
+      cb.KeyEvAfter;
+  end;
+
+end;
 
 { TCocoaDesignOverlay }
 
@@ -214,7 +333,7 @@ begin
   inherited drawRect(r);
 end;
 
-function TCocoaDesignOverlay.acceptsFirstResponder: Boolean;
+function TCocoaDesignOverlay.acceptsFirstResponder: LCLObjCBoolean;
 begin
   Result:=false; // no focus
 end;
@@ -236,18 +355,19 @@ end;
 
 { TCocoaWindowContent }
 
-function TCocoaWindowContent.lclIsHandle: Boolean;
-begin
-  Result:=true;
-end;
-
 procedure TCocoaWindowContent.didAddSubview(aview: NSView);
+const
+  mustHaveSizing = (NSViewWidthSizable or NSViewHeightSizable);
 begin
   if Assigned(aview) and Assigned(overlay) and (overlay<>aview) then
   begin
     overlay.retain;
     overlay.removeFromSuperview;
     addSubview_positioned_relativeTo(overlay, NSWindowAbove, nil);
+    overlay.release;
+    overlay.setFrame(frame);
+    if (overlay.autoresizingMask and mustHaveSizing) <> mustHaveSizing then
+      overlay.setAutoresizingMask(overlay.autoresizingMask or mustHaveSizing);
   end;
   inherited didAddSubview(aview);
 end;
@@ -264,7 +384,33 @@ begin
     callback.DidResignKeyNotification;
 end;
 
-function TCocoaWindowContent.performKeyEquivalent(event: NSEvent): Boolean;
+procedure NSResponderHotKeys(asender: NSResponder; event: NSEvent; var handled: LCLObjCBoolean; atarget: id);
+begin
+  // todo: system keys could be overriden. thus need to review the current
+  //       keyboard configuration first. See "Key Bindings" at
+  //       https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/EventOverview/TextDefaultsBindings/TextDefaultsBindings.html
+
+  handled := false;
+  if (event.type_ = NSKeyDown) then
+  begin
+    if ((event.modifierFlags and NSCommandKeyMask) = 0) then Exit;
+
+    if Assigned(event.charactersIgnoringModifiers.UTF8String) then
+    begin
+      case event.charactersIgnoringModifiers.UTF8String^ of
+        // redo/undo are not implemented in either of TextControls?
+        //'Z': handled := NSApplication(NSApp).sendAction_to_from(objcselector('redo:'), atarget, asender);
+        'a': handled := NSApplication(NSApp).sendAction_to_from(objcselector('selectAll:'), atarget, asender);
+        'c': handled := NSApplication(NSApp).sendAction_to_from(objcselector('copy:'), atarget, asender);
+        'v': handled := NSApplication(NSApp).sendAction_to_from(objcselector('paste:'), atarget, asender);
+        'x': handled := NSApplication(NSApp).sendAction_to_from(objcselector('cut:'), atarget, asender);
+        //'z': handled := NSApplication(NSApp).sendAction_to_from(objcselector('undo:'), atarget, asender);
+      end;
+    end;
+  end;
+end;
+
+function TCocoaWindowContent.performKeyEquivalent(event: NSEvent): LCLObjCBoolean;
 var
   resp : NSResponder;
   wn   : NSWindow;
@@ -288,6 +434,7 @@ end;
 procedure TCocoaWindowContent.resolvePopupParent();
 var
   lWindow: NSWindow;
+  isfront: Boolean;
 begin
   lWindow := nil;
   if (popup_parent <> 0) then
@@ -303,7 +450,15 @@ begin
     end;
   end;
   if lWindow <> nil then
+  begin
+    isfront:=NSApplication(NSApp).mainWindow=self.window;
+
     lWindow.addChildWindow_ordered(Self.window, NSWindowAbove);
+
+    // adding a window as a child, would bring the "child" form to the bottom
+    // of Zorder. need to restore the order.
+    if isfront then self.window.makeKeyAndOrderFront(nil);
+  end;
   popup_parent := 0;
 end;
 
@@ -384,13 +539,17 @@ begin
   inherited dealloc;
 end;
 
-procedure TCocoaWindowContent.setHidden(aisHidden: Boolean);
+procedure TCocoaWindowContent.setHidden(aisHidden: LCLObjCBoolean);
 var
   cw : TCocoaWindow;
 begin
   if isembedded then
   begin
+    {$ifdef BOOLFIX}
+    inherited setHidden_(Ord(aisHidden));
+    {$else}
     inherited setHidden(aisHidden);
+    {$endif}
   end
   else
   begin
@@ -419,11 +578,6 @@ begin
 end;
 
 { TCocoaPanel }
-
-function TCocoaPanel.lclIsHandle: Boolean;
-begin
-  Result:=true;
-end;
 
 function TCocoaPanel.windowShouldClose(sender: id): LongBool;
 var
@@ -465,24 +619,24 @@ begin
     callback.Move;
 end;
 
-function TCocoaPanel.acceptsFirstResponder: Boolean;
+function TCocoaPanel.acceptsFirstResponder: LCLObjCBoolean;
 begin
   Result := True;
 end;
 
-function TCocoaPanel.canBecomeKeyWindow: Boolean;
+function TCocoaPanel.canBecomeKeyWindow: LCLObjCBoolean;
 begin
   Result := Assigned(callback) and callback.CanActivate;
 end;
 
-function TCocoaPanel.becomeFirstResponder: Boolean;
+function TCocoaPanel.becomeFirstResponder: LCLObjCBoolean;
 begin
   Result := inherited becomeFirstResponder;
 //  if Assigned(callback) then
 //    callback.BecomeFirstResponder;
 end;
 
-function TCocoaPanel.resignFirstResponder: Boolean;
+function TCocoaPanel.resignFirstResponder: LCLObjCBoolean;
 begin
   Result := inherited resignFirstResponder;
 //  if Assigned(callback) then
@@ -608,11 +762,6 @@ end;
 
 { TCocoaWindow }
 
-function TCocoaWindow.lclIsHandle: Boolean;
-begin
-  Result:=true;
-end;
-
 function TCocoaWindow.windowShouldClose(sender: id): LongBool;
 var
   canClose: Boolean;
@@ -647,6 +796,18 @@ end;
 
 procedure TCocoaWindow.windowDidBecomeKey(notification: NSNotification);
 begin
+  // forcing to keep the level as all other LCL windows
+  // Modal windows tend to "restore" their elevated level
+  // And that doesn't work for modal windows that are "Showing" other windows
+
+  // Another approach is to set elevated levels for windows, shown during modal session
+  // That requires to revoke the elevated level from windows on closing a window session
+  // This might be the way to go, if FormStyle (such as fsStayOnTop) would come
+  // in conflict with modality
+  if level <> keepWinLevel then begin
+    setLevel(keepWinLevel);
+  end;
+
   if Assigned(callback) then
     callback.Activate;
 end;
@@ -702,17 +863,17 @@ begin
   inherited dealloc;
 end;
 
-function TCocoaWindow.acceptsFirstResponder: Boolean;
+function TCocoaWindow.acceptsFirstResponder: LCLObjCBoolean;
 begin
   Result := True;
 end;
 
-function TCocoaWindow.canBecomeKeyWindow: Boolean;
+function TCocoaWindow.canBecomeKeyWindow: LCLObjCBoolean;
 begin
   Result := Assigned(callback) and callback.CanActivate;
 end;
 
-function TCocoaWindow.becomeFirstResponder: Boolean;
+function TCocoaWindow.becomeFirstResponder: LCLObjCBoolean;
 begin
   Result := inherited becomeFirstResponder;
   // uncommenting the following lines starts an endless focus loop
@@ -721,7 +882,7 @@ begin
 //    callback.BecomeFirstResponder;
 end;
 
-function TCocoaWindow.resignFirstResponder: Boolean;
+function TCocoaWindow.resignFirstResponder: LCLObjCBoolean;
 begin
   Result := inherited resignFirstResponder;
 //  if Assigned(callback) then
@@ -830,7 +991,7 @@ var
   Epos: NSPoint;
   cr : NSRect;
   fr : NSRect;
-  trackEvent: Boolean;
+  prc: Boolean;
 begin
   if event.type_ = NSApplicationDefined then
   begin
@@ -880,38 +1041,38 @@ begin
     else
       inherited sendEvent(event);
   end
-  else  if event.type_ = NSKeyDown then
-  begin
-    if Assigned(firstResponder) and (firstResponder.isKindOfClass_(TCocoaCustomControl)) then
-    begin
-      //todo: (hack!) for whatever Cocoa prevents the processing of Control+Left, Control+Right (Control+Arrow Keys)
-      //      events in IDE configuration. The standalone test is working just fine.
-      //      presumably NSWindow.sendEvent() should call keyDown() directly
-      //      (the only keys supressesed by Cocoa are Tab or Shift+Tab)
-      //      So, instead of figuring out why Cocoa suppresses the navigation
-      //      the overrride method simply forces keyDown() call
-      firstResponder.keyDown(event);
-    end else
-      inherited sendEvent(event);
-  end
+  else
+  if event.type_ = NSKeyDown then
+    WindowPerformKeyDown(self, event, prc)
   else
     inherited sendEvent(event);
 end;
 
-function TCocoaWindow.draggingEntered(sender: NSDraggingInfoProtocol): NSDragOperation;
-var
-  lTarget: TCustomForm = nil;
+procedure TCocoaWindow.keyDown(event: NSEvent);
 begin
-  Result := NSDragOperationNone;
-  if (callback <> nil) and (callback.GetTarget() <> nil) and (callback.GetTarget() is TCustomForm) then
-    lTarget := TCustomForm(callback.GetTarget());
-  if (lTarget <> nil) and (lTarget.OnDropFiles <> nil) then
-  begin
-    Result := sender.draggingSourceOperationMask();
-  end;
+  inherited keyDown(event);
 end;
 
-function TCocoaWindow.performDragOperation(sender: NSDraggingInfoProtocol): Boolean;
+procedure TCocoaWindow.keyUp(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.KeyEvent(event) then
+    inherited keyUp(event);
+end;
+
+procedure TCocoaWindow.flagsChanged(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.KeyEvent(event) then
+    inherited flagsChanged(event);
+end;
+
+function TCocoaWindow.draggingEntered(sender: NSDraggingInfoProtocol): NSDragOperation;
+begin
+  Result := NSDragOperationNone;
+  if (callback <> nil) and (callback.AcceptFilesDrag) then
+    Result := sender.draggingSourceOperationMask();
+end;
+
+function TCocoaWindow.performDragOperation(sender: NSDraggingInfoProtocol): LCLObjCBoolean;
 var
   draggedURLs{, lClasses}: NSArray;
   lFiles: array of string;
@@ -946,9 +1107,36 @@ begin
     end;
   end;}
 
-  if (Length(lFiles) > 0) and (callback <> nil) and (callback.GetTarget() <> nil) then
-    TCustomForm(callback.GetTarget()).IntfDropFiles(lFiles);
+  if (Length(lFiles) > 0) and (callback <> nil)  then
+    callback.DropFiles(lFiles);
   Result := True;
+end;
+
+function TCocoaWindow.makeFirstResponder(r: NSResponder): LCLObjCBoolean;
+var
+  cbnew: ICommonCallback;
+begin
+  if (responderSwitch = 0) then
+    respInitCb := firstResponder.lclGetCallback;
+
+  // makeFirstResponder calls can be recursive!
+  // the resulting NSResponder can be the same object  (i.e. fieldEditor)
+  // yet, the callback should be the different anyway
+
+  inc(responderSwitch);
+  Result:=inherited makeFirstResponder(r);
+  dec(responderSwitch);
+
+  if (responderSwitch = 0) then
+  begin
+    cbnew := firstResponder.lclGetCallback;
+
+    if not isCallbackForSameObject(respInitCb, cbnew) then
+    begin
+      if Assigned(respInitCb) then respInitCb.ResignFirstResponder;
+      if Assigned(cbnew) then cbnew.BecomeFirstResponder;
+    end;
+  end;
 end;
 
 procedure TCocoaWindow.lclItemSelected(sender: id);
@@ -1153,7 +1341,11 @@ begin
   h:=lclGetTopBarHeight;
   ns.size.height:=ns.size.height+h;
   ns.origin.y:=ns.origin.y-h;
+  {$ifdef BOOLFIX}
+  setFrame_display_(ns, Ord(isVisible));
+  {$else}
   setFrame_display(ns, isVisible);
+  {$endif}
 end;
 
 function LCLWindowExtension.lclClientFrame: TRect;

@@ -41,7 +41,7 @@ type
     IsActivating: boolean;
   public
     window : CocoaAll.NSWindow;
-    constructor Create(AOwner: NSObject; ATarget: TWinControl); override;
+    constructor Create(AOwner: NSObject; ATarget: TWinControl; AHandleView: NSView); override;
     destructor Destroy; override;
 
     function CanActivate: Boolean; virtual;
@@ -55,6 +55,9 @@ type
     function GetEnabled: Boolean; virtual;
     procedure SetEnabled(AValue: Boolean); virtual;
 
+    function AcceptFilesDrag: Boolean;
+    procedure DropFiles(const FileNames: array of string);
+
     property Enabled: Boolean read GetEnabled write SetEnabled;
   end;
 
@@ -65,7 +68,8 @@ type
   private
   protected
   public
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
   end;
 
   { TCocoaWSScrollBox }
@@ -165,6 +169,8 @@ type
   end;
 
 procedure ArrangeTabOrder(const AWinControl: TWinControl);
+function HWNDToForm(AFormHandle: HWND): TCustomForm;
+procedure WindowSetFormStyle(win: NSWindow; AFormStyle: TFormStyle);
 
 implementation
 
@@ -205,6 +211,33 @@ begin
     Result := AForm.BorderStyle;
 end;
 
+procedure WindowSetFormStyle(win: NSWindow; AFormStyle: TFormStyle);
+var
+  lvl : NSInteger;
+begin
+  if not (AFormStyle in [fsNormal, fsMDIChild, fsMDIForm]) then
+  begin
+    lvl := FormStyleToWindowLevel[AFormStyle];
+    {$ifdef BOOLFIX}
+    win.setHidesOnDeactivate_(Ord(FormStyleToHideOnDeactivate[AFormStyle]));
+    {$else}
+    win.setHidesOnDeactivate(FormStyleToHideOnDeactivate[AFormStyle]);
+    {$endif}
+  end
+  else
+  begin
+    lvl := 0;
+    {$ifdef BOOLFIX}
+    win.setHidesOnDeactivate_(Ord(false));
+    {$else}
+    win.setHidesOnDeactivate(false);
+    {$endif}
+  end;
+  win.setLevel(lvl);
+  if win.isKindOfClass(TCocoaWindow) then
+    TCocoaWindow(win).keepWinLevel := lvl;
+end;
+
 { TCocoaWSHintWindow }
 
 class function TCocoaWSHintWindow.CreateHandle(const AWinControl: TWinControl;
@@ -227,20 +260,37 @@ begin
   end;
 
   R := CreateParamsToNSRect(AParams);
+  {$ifdef BOOLFIX}
+  win := TCocoaPanel(win.initWithContentRect_styleMask_backing_defer_(R, WinMask, NSBackingStoreBuffered, Ord(False)));
+  {$else}
   win := TCocoaPanel(win.initWithContentRect_styleMask_backing_defer(R, WinMask, NSBackingStoreBuffered, False));
+  {$endif}
   win.enableCursorRects;
   win.setLevel(HintWindowLevel);
   win.setDelegate(win);
+  {$ifdef BOOLFIX}
+  win.setHasShadow_(Ord(true));
+  {$else}
   win.setHasShadow(true);
+  {$endif}
   if AWinControl.Perform(WM_NCHITTEST, 0, 0)=HTTRANSPARENT then
+    {$ifdef BOOLFIX}
+    win.setIgnoresMouseEvents_(Ord(True))
+    {$else}
     win.setIgnoresMouseEvents(True)
+    {$endif}
   else
+    {$ifdef BOOLFIX}
+    win.setAcceptsMouseMovedEvents_(Ord(True));
+    {$else}
     win.setAcceptsMouseMovedEvents(True);
+    {$endif}
+
 
   R.origin.x := 0;
   R.origin.y := 0;
   cnt := TCocoaWindowContent.alloc.initWithFrame(R);
-  cb := TLCLWindowCallback.Create(cnt, AWinControl);
+  cb := TLCLWindowCallback.Create(cnt, AWinControl, cnt);
   cb.window := win;
   cnt.callback := cb;
   cnt.preventKeyOnShow := true;
@@ -262,7 +312,11 @@ begin
   //      Need to figure out why this is happening and resolve at the proper place.
   //      In the mean time - invalidating contents every time Caption is change
   if (AWinControl.HandleAllocated) then
+    {$ifdef BOOLFIX}
+    NSView(AWinControl.Handle).setNeedsDisplay__(Ord(true));
+    {$else}
     NSView(AWinControl.Handle).setNeedsDisplay_(true);
+    {$endif}
 end;
 
 { TLCLWindowCallback }
@@ -272,7 +326,7 @@ begin
   Result := Enabled;
 end;
 
-constructor TLCLWindowCallback.Create(AOwner: NSObject; ATarget: TWinControl);
+constructor TLCLWindowCallback.Create(AOwner: NSObject; ATarget: TWinControl; AHandleView: NSView);
 begin
   inherited;
   IsActivating:=false;
@@ -292,6 +346,10 @@ begin
   begin
     IsActivating:=True;
     ACustForm := Target as TCustomForm;
+
+    if (csDesigning in ACustForm.ComponentState)
+      or (Assigned(ACustForm.Menu) and (csDesigning in ACustForm.Menu.ComponentState))
+      then Exit;
 
     if (ACustForm.Menu <> nil) and
        (ACustForm.Menu.HandleAllocated) then
@@ -314,6 +372,9 @@ begin
     ACustForm.SetFocusedControl(ACustForm.ActiveControl);
 
     IsActivating:=False;
+
+    if CocoaWidgetSet.isModalSession then
+      NSView(ACustForm.Handle).window.orderFront(nil);
   end;
 end;
 
@@ -331,7 +392,7 @@ begin
   CanClose := LCLSendCloseQueryMsg(Target) > 0;
 
   // Special code for modal forms, which otherwise would get 0 here and not call Close
-  if (CocoaWidgetSet.CurModalForm = FTarget) and
+  if (CocoaWidgetSet.CurModalForm = window) and
     (TCustomForm(Target).ModalResult <> mrNone) then
   begin
     {$IFDEF COCOA_USE_NATIVE_MODAL}
@@ -383,6 +444,17 @@ begin
   Owner.lclSetEnabled(AValue);
 end;
 
+function TLCLWindowCallback.AcceptFilesDrag: Boolean;
+begin
+  Result := Assigned(Target) and Assigned(TCustomForm(Target).OnDropFiles);
+end;
+
+procedure TLCLWindowCallback.DropFiles(const FileNames: array of string);
+begin
+  if Assigned(Target) then
+    TCustomForm(Target).IntfDropFiles(FileNames);
+end;
+
 { TCocoaWSScrollingWinControl}
 
 class function  TCocoaWSScrollingWinControl.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
@@ -399,14 +471,21 @@ begin
   scrollcon.setHasVerticalScroller(True);
   scrollcon.isCustomRange := true;
 
-  lcl := TLCLCommonCallback.Create(docview, AWinControl);
+  lcl := TLCLCommonCallback.Create(docview, AWinControl, scrollcon);
   lcl.BlockCocoaUpDown := true;
   docview.callback := lcl;
   docview.setAutoresizingMask(NSViewWidthSizable or NSViewHeightSizable);
   scrollcon.callback := lcl;
-  lcl.Frame:=scrollcon;
   scrollcon.setDocumentView(docview);
+  ScrollViewSetBorderStyle(scrollcon, TScrollingWinControl(AWincontrol).BorderStyle);
   Result := TLCLIntfHandle(scrollcon);
+end;
+
+class procedure TCocoaWSScrollingWinControl.SetBorderStyle(
+  const AWinControl: TWinControl; const ABorderStyle: TBorderStyle);
+begin
+  if not Assigned(AWinControl) or not AWincontrol.HandleAllocated then Exit;
+  ScrollViewSetBorderStyle( NSScrollView(AWinControl.Handle), ABorderStyle);
 end;
 
 
@@ -472,8 +551,13 @@ class procedure TCocoaWSCustomForm.UpdateWindowIcons(AWindow: NSWindow;
     Btn := AWindow.standardWindowButton(AButton);
     if Assigned(Btn) then
     begin
+      {$ifdef BOOLFIX}
+      Btn.setHidden_(Ord(not AVisible));
+      Btn.setEnabled_(Ord(AEnabled));
+      {$else}
       Btn.setHidden(not AVisible);
       Btn.setEnabled(AEnabled);
+      {$endif}
     end;
   end;
 
@@ -521,7 +605,6 @@ var
   cnt: TCocoaWindowContent;
   ns: NSString;
   R: NSRect;
-  pool:NSAutoReleasePool;
   lDestView: NSView;
   ds: TCocoaDesignOverlay;
   cb: TLCLWindowCallback;
@@ -530,10 +613,9 @@ begin
   //      if parent is specified neither Window nor Panel needs to be created
   //      the only thing that needs to be created is Content
 
-  pool := NSAutoreleasePool.alloc.init;
   R := CreateParamsToNSRect(AParams);
   cnt := TCocoaWindowContent.alloc.initWithFrame(R);
-  cb := TLCLWindowCallback.Create(cnt, AWinControl);
+  cb := TLCLWindowCallback.Create(cnt, AWinControl, cnt);
   cnt.callback := cb;
 
   if (AParams.Style and WS_CHILD) = 0 then
@@ -543,22 +625,22 @@ begin
 
     if not Assigned(win) then
     begin
-      pool.release;
       Result := 0;
       Exit;
     end;
 
+    {$ifdef BOOLFIX}
+    win := TCocoaWindow(win.initWithContentRect_styleMask_backing_defer_(R,
+      GetStyleMaskFor(GetDesigningBorderStyle(Form), Form.BorderIcons), NSBackingStoreBuffered, Ord(False)));
+    {$else}
     win := TCocoaWindow(win.initWithContentRect_styleMask_backing_defer(R,
       GetStyleMaskFor(GetDesigningBorderStyle(Form), Form.BorderIcons), NSBackingStoreBuffered, False));
+    {$endif}
     UpdateWindowIcons(win, GetDesigningBorderStyle(Form), Form.BorderIcons);
     // For safety, it is better to not apply any setLevel & similar if the form is just a standard style
     // see issue http://bugs.freepascal.org/view.php?id=28473
-    if not (Form.FormStyle in [fsNormal, fsMDIChild, fsMDIForm])
-      and not (csDesigning in AWinControl.ComponentState) then
-    begin
-      win.setLevel(FormStyleToWindowLevel[Form.FormStyle]);
-      win.setHidesOnDeactivate(FormStyleToHideOnDeactivate[Form.FormStyle]);
-    end;
+    if not (csDesigning in AWinControl.ComponentState) then
+      WindowSetFormStyle(win, Form.FormStyle);
     win.enableCursorRects;
 
     TCocoaWindow(win).callback := cb;
@@ -568,18 +650,28 @@ begin
     ns := NSStringUtf8(AWinControl.Caption);
     win.setTitle(ns);
     ns.release;
+    {$ifdef BOOLFIX}
+    win.setReleasedWhenClosed_(Ord(False)); // do not release automatically
+    win.setAcceptsMouseMovedEvents_(Ord(True));
+    {$else}
     win.setReleasedWhenClosed(False); // do not release automatically
     win.setAcceptsMouseMovedEvents(True);
+    {$endif}
 
     if win.respondsToSelector(ObjCSelector('setTabbingMode:')) then
       win.setTabbingMode(NSWindowTabbingModeDisallowed);
 
     if AWinControl.Perform(WM_NCHITTEST, 0, 0)=HTTRANSPARENT then
+    begin
+      {$ifdef BOOLFIX}
+      win.setIgnoresMouseEvents_(Ord(True));
+      {$else}
       win.setIgnoresMouseEvents(True);
+      {$endif}
+    end;
 
     cnt.callback := TCocoaWindow(win).callback;
     cnt.callback.IsOpaque:=true;
-    win.LCLForm := Form;
     win.setContentView(cnt);
 
     // Don't call addChildWindow_ordered here because this function can cause
@@ -615,7 +707,6 @@ begin
     end;
   end;
 
-  pool.release;
   Result := TLCLIntfHandle(cnt);
 end;
 
@@ -693,28 +784,13 @@ end;
 
 class procedure TCocoaWSCustomForm.CloseModal(const ACustomForm: TCustomForm);
 begin
-  {$ifdef COCOA_MODAL_USE_SESSION}
-  if ACustomForm.HandleAllocated then
-    NSPanel(ACustomForm.Handle).setStyleMask(NSwindow(ACustomForm.Handle).styleMask and not NSDocModalWindowMask);
-  if CocoaWidgetSet.CurModalSession <> nil then
-    NSApp.endModalSession(CocoaWidgetSet.CurModalSession);
-  CocoaWidgetSet.CurModalSession := nil;
-  {$endif}
-
-  {$ifdef COCOA_USE_NATIVE_MODAL}
-  NSApp.stopModal();
-  {$endif}
-
-  CocoaWidgetSet.CurModalForm := nil;
+  CocoaWidgetSet.EndModal(NSView(ACustomForm.Handle).window);
 end;
 
 class procedure TCocoaWSCustomForm.ShowModal(const ACustomForm: TCustomForm);
 var
   lWinContent: TCocoaWindowContent;
-  {$ifdef COCOA_MODAL_USE_SESSION}
   win: TCocoaWindow;
-  CurModalSession: NSModalSession;
-  {$endif}
   {$ifdef COCOA_USE_NATIVE_MODAL}
   win: TCocoaWindow;
   {$endif}
@@ -731,10 +807,10 @@ begin
 
   // A window opening in full screen doesn't like to be added as someones popup
   // Thus resolvePopupParent should only be used for non full-screens forms
-  if (lWinContent <> nil) and (not fullscreen) then
-    lWinContent.resolvePopupParent();
+  //if (lWinContent <> nil) and (not fullscreen) then
+    //lWinContent.resolvePopupParent();
 
-  CocoaWidgetSet.CurModalForm := ACustomForm;
+  CocoaWidgetSet.CurModalForm := lWinContent.lclOwnWindow;
   // LCL initialization code would cause the custom form to be disabled
   // (due to the fact, ShowModal() has not been called yet, and a previous form
   // might be disabled at the time.
@@ -750,12 +826,9 @@ begin
 
   // Another possible implementation is using a session, but this requires
   //  disabling the other windows ourselves
-  {$ifdef COCOA_MODAL_USE_SESSION}
   win := TCocoaWSCustomForm.GetWindowFromHandle(ACustomForm);
   if win = nil then Exit;
-  CocoaWidgetSet.CurModalSession := NSApp.beginModalSessionForWindow(win);
-  NSApp.runModalSession(CocoaWidgetSet.CurModalSession);}
-  {$endif}
+  CocoaWidgetSet.StartModal(NSView(ACustomForm.Handle).window, Assigned(ACustomForm.Menu));
 
   // Another possible implementation is using runModalForWindow
   {$ifdef COCOA_USE_NATIVE_MODAL}
@@ -769,7 +842,7 @@ end;
 class procedure TCocoaWSCustomForm.SetModalResult(const ACustomForm: TCustomForm;
   ANewValue: TModalResult);
 begin
-  if (CocoaWidgetSet.CurModalForm = ACustomForm) and (ANewValue <> 0) then
+  if (CocoaWidgetSet.CurModalForm = NSView(ACustomForm.Handle).window) and (ANewValue <> 0) then
     CloseModal(ACustomForm);
 end;
 
@@ -823,11 +896,7 @@ begin
   if AForm.HandleAllocated and not (csDesigning in AForm.ComponentState) then
   begin
     win := TCocoaWindowContent(AForm.Handle).lclOwnWindow;
-    if Assigned(win) then
-    begin
-      win.setLevel(FormStyleToWindowLevel[AFormStyle]);
-      win.setHidesOnDeactivate(FormStyleToHideOnDeactivate[AFormStyle]);
-    end;
+    WindowSetFormStyle(win, AFormStyle);
   end;
 end;
 
@@ -841,8 +910,10 @@ begin
   win := TCocoaWindowContent(ACustomForm.Handle).lclOwnWindow;
   if Assigned(win.parentWindow) then
     win.parentWindow.removeChildWindow(win);
-  if Assigned(APopupParent) then
+  if Assigned(APopupParent) then begin
+     writeln('SetRealPopupParent ',APopupParent.ClassName);
     NSWindow( NSView(APopupParent.Handle).window).addChildWindow_ordered(win, NSWindowAbove);
+  end;
 end;
 
 class procedure TCocoaWSCustomForm.ShowHide(const AWinControl: TWinControl);
@@ -901,16 +972,23 @@ end;
 
 class procedure TCocoaWSCustomForm.SetBounds(const AWinControl: TWinControl;
   const ALeft, ATop, AWidth, AHeight: Integer);
-var pool: NSAutoreleasePool;
 begin
   if AWinControl.HandleAllocated then
   begin
-    pool := NSAutoreleasePool.alloc.init;
     //debugln('TCocoaWSCustomForm.SetBounds: '+AWinControl.Name+'Bounds='+dbgs(Bounds(ALeft, ATop, AWidth, AHeight)));
     NSObject(AWinControl.Handle).lclSetFrame(Bounds(ALeft, ATop, AWidth, AHeight));
     TCocoaWindowContent(AwinControl.Handle).callback.boundsDidChange(NSObject(AWinControl.Handle));
-    pool.release;
   end;
+end;
+
+function HWNDToForm(AFormHandle: HWND): TCustomForm;
+var
+  obj : TObject;
+begin
+  obj := HWNDToTargetObject(AFormHandle);
+  if Assigned(obj) and (obj is TCustomForm)
+    then Result := TCustomForm(obj)
+    else Result := nil;
 end;
 
 end.

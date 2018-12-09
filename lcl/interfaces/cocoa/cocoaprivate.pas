@@ -18,6 +18,7 @@ unit CocoaPrivate;
 {$modeswitch objectivec1}
 {$modeswitch objectivec2}
 {$interfaces corba}
+{$include cocoadefines.inc}
 
 {.$DEFINE COCOA_DEBUG_SETBOUNDS}
 {.$DEFINE COCOA_SPIN_DEBUG}
@@ -40,6 +41,20 @@ const
   SPINEDIT_DEFAULT_STEPPER_WIDTH = 15;
   SPINEDIT_EDIT_SPACING_FOR_SELECTION = 4;
   STATUSBAR_DEFAULT_HEIGHT = 18;
+
+{$if (FPC_VERSION>3) or ((FPC_VERSION=3) and (FPC_RELEASE>=2))}
+{$define HASBOOLEAN8}
+{$endif}
+
+type
+  // Due to backwards incompatible changes in FPC sources
+  // (switching from Boolean to Boolean8), LCL has to adopt
+  // either type, depending on FPC version
+  LCLObjCBoolean = {$ifdef HASBOOLEAN8}
+                   Boolean8  // FPC 3.2.0 and earlier are using "boolean8" type
+                   {$else}
+                   Boolean   // FPC 3.0.4 and earlier are using "boolean" type
+                   {$endif};
 
 type
 
@@ -136,10 +151,9 @@ type
     function lclGetPropStorage: TStringList; message 'lclGetPropStorage';
     function lclGetTarget: TObject; message 'lclGetTarget';
     function lclDeliverMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): LResult; message 'lclDeliverMessage:::';
-    function lclIsHandle: Boolean; message 'lclIsHandle';
     function lclContentView: NSView; message 'lclContentView';
     procedure lclOffsetMousePos(var Point: NSPoint); message 'lclOffsetMousePos:';
-    procedure lclExpectedKeys(var wantTabs, wantArrows, wantAll: Boolean); message 'lclExpectedKeys:::';
+    procedure lclExpectedKeys(var wantTabs, wantArrows, wantReturn, wantAll: Boolean); message 'lclExpectedKeys::::';
     function lclIsMouseInAuxArea(Event: NSEvent): Boolean; message 'lclMouseInAuxArea:';
   end;
 
@@ -186,15 +200,13 @@ type
     callback: ICommonCallback;
     auxMouseByParent: Boolean;
     procedure dealloc; override;
-    function acceptsFirstResponder: Boolean; override;
-    function becomeFirstResponder: Boolean; override;
-    function resignFirstResponder: Boolean; override;
+    function acceptsFirstResponder: LCLObjCBoolean; override;
     procedure drawRect(dirtyRect: NSRect); override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     function lclIsMouseInAuxArea(Event: NSevent): Boolean; override;
     // mouse
-    function acceptsFirstMouse(event: NSEvent): Boolean; override;
+    function acceptsFirstMouse(event: NSEvent): LCLObjCBoolean; override;
     procedure mouseDown(event: NSEvent); override;
     procedure mouseUp(event: NSEvent); override;
     procedure rightMouseDown(event: NSEvent); override;
@@ -209,14 +221,12 @@ type
     procedure mouseMoved(event: NSEvent); override;
     procedure scrollWheel(event: NSEvent); override;
     // key
-    procedure keyDown(event: NSEvent); override;
     procedure keyUp(event: NSEvent); override;
     procedure flagsChanged(event: NSEvent); override;
     // nsview
     procedure setFrame(aframe: NSRect); override;
     // other
     procedure resetCursorRects; override;
-    function lclIsHandle: Boolean; override;
     // value
     procedure setStringValue(avalue: NSString); override;
     function stringValue: NSString; override;
@@ -238,7 +248,7 @@ type
     //todo: consider the use Cocoa native types, instead of FPC TAlignment
     function GetBarItem(idx: Integer; var txt: String;
       var width: Integer; var align: TAlignment): Boolean;
-    //todo: add a method for OwnerDraw Panels support
+    procedure DrawPanel(idx: Integer; const r: TRect);
   end;
 
   TCocoaStatusBar = objcclass(TCocoaCustomControl)
@@ -255,13 +265,10 @@ type
   TCocoaGroupBox = objcclass(NSBox)
   public
     callback: ICommonCallback;
-    function acceptsFirstResponder: Boolean; override;
-    function becomeFirstResponder: Boolean; override;
-    function resignFirstResponder: Boolean; override;
+    function acceptsFirstResponder: LCLObjCBoolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
-    function lclIsHandle: Boolean; override;
     function lclClientFrame: TRect; override;
     function lclContentView: NSView; override;
     function lclGetFrameToLayoutDelta: TRect; override;
@@ -277,16 +284,14 @@ type
 
   TCocoaProgressIndicator = objcclass(NSProgressIndicator)
     callback: ICommonCallback;
-    function acceptsFirstResponder: Boolean; override;
-    function becomeFirstResponder: Boolean; override;
-    function resignFirstResponder: Boolean; override;
+    function acceptsFirstResponder: LCLObjCBoolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
     function lclGetFrameToLayoutDelta: TRect; override;
     procedure lclSetFrame(const r: TRect); override;
     // mouse
-    function acceptsFirstMouse(event: NSEvent): Boolean; override;
+    function acceptsFirstMouse(event: NSEvent): LCLObjCBoolean; override;
     procedure mouseDown(event: NSEvent); override;
     procedure mouseUp(event: NSEvent); override;
     procedure rightMouseDown(event: NSEvent); override;
@@ -320,9 +325,7 @@ type
     procedure dealloc; override;
     procedure drawRect(dirtyRect: NSRect); override;
 
-    function acceptsFirstResponder: Boolean; override;
-    function becomeFirstResponder: Boolean; override;
-    function resignFirstResponder: Boolean; override;
+    function acceptsFirstResponder: LCLObjCBoolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
@@ -333,7 +336,7 @@ type
     procedure SnapToInteger(AExtraFactor: Integer = 0); message 'SnapToInteger:';
     procedure sliderAction(sender: id); message 'sliderAction:';
     // mouse
-    function acceptsFirstMouse(event: NSEvent): Boolean; override;
+    function acceptsFirstMouse(event: NSEvent): LCLObjCBoolean; override;
     procedure mouseDown(event: NSEvent); override;
     procedure mouseUp(event: NSEvent); override;
     procedure rightMouseDown(event: NSEvent); override;
@@ -348,6 +351,7 @@ type
 
     procedure lclAddManTick(atick : integer); message 'lclAddManTick:';
     procedure lclSetManTickDraw(adraw: Boolean); message 'lclSetManTickDraw:';
+    procedure lclExpectedKeys(var wantTabs, wantArrows, wantReturn, wantAll: Boolean); override;
   end;
 
   TCocoaSliderCell = objcclass(NSSliderCell)
@@ -371,9 +375,16 @@ var
   // todo: this should be a threadvar
   TrackedControl : NSObject = nil;
 
+function isCallbackForSameObject(cb1, cb2: ICommonCallback): Boolean;
+
 implementation
 
-uses CocoaInt;
+function isCallbackForSameObject(cb1, cb2: ICommonCallback): Boolean;
+begin
+  Result := Assigned(cb1) and Assigned(cb2);
+  if Result then
+    Result := (cb1 = cb2) or (cb1.GetTarget = cb2.GetTarget);
+end;
 
 {$I mackeycodes.inc}
 
@@ -427,11 +438,6 @@ end;
 
 { TCocoaGroupBox }
 
-function TCocoaGroupBox.lclIsHandle: Boolean;
-begin
-  Result := True;
-end;
-
 function TCocoaGroupBox.lclClientFrame: TRect;
 var
   v : NSView;
@@ -456,23 +462,9 @@ begin
   Result.Bottom := -4;
 end;
 
-function TCocoaGroupBox.acceptsFirstResponder: Boolean;
+function TCocoaGroupBox.acceptsFirstResponder: LCLObjCBoolean;
 begin
   Result := True;
-end;
-
-function TCocoaGroupBox.becomeFirstResponder: Boolean;
-begin
-  Result := inherited becomeFirstResponder;
-  if Assigned(callback) then
-    callback.BecomeFirstResponder;
-end;
-
-function TCocoaGroupBox.resignFirstResponder: Boolean;
-begin
-  Result := inherited resignFirstResponder;
-  if Assigned(callback) then
-    callback.ResignFirstResponder;
 end;
 
 function TCocoaGroupBox.lclGetCallback: ICommonCallback;
@@ -492,11 +484,6 @@ begin
 end;
 
 { TCocoaCustomControl }
-
-function TCocoaCustomControl.lclIsHandle: Boolean;
-begin
-  Result := True;
-end;
 
 procedure TCocoaCustomControl.setStringValue(avalue: NSString);
 begin
@@ -520,7 +507,12 @@ begin
   if Assigned(aview) then
   begin
     // forcing LCL compatible "auto-move" mode. Sticking to left/top corner
-    if not autoresizesSubviews then setAutoresizesSubviews(true);
+    if not autoresizesSubviews then
+      {$ifdef BOOLFIX}
+      setAutoresizesSubviews_(Ord(true));
+      {$else}
+      setAutoresizesSubviews(true);
+      {$endif}
     aview.setAutoresizingMask(NSViewMaxXMargin or NSViewMinYMargin);
   end;
 end;
@@ -531,26 +523,12 @@ begin
   inherited dealloc;
 end;
 
-function TCocoaCustomControl.acceptsFirstResponder: Boolean;
+function TCocoaCustomControl.acceptsFirstResponder: LCLObjCBoolean;
 begin
   Result := True;
 end;
 
-function TCocoaCustomControl.becomeFirstResponder: Boolean;
-begin
-  Result := inherited becomeFirstResponder;
-  if Assigned(callback) then
-    callback.BecomeFirstResponder;
-end;
-
-function TCocoaCustomControl.resignFirstResponder: Boolean;
-begin
-  Result := inherited resignFirstResponder;
-  if Assigned(callback) then
-    callback.ResignFirstResponder;
-end;
-
-function TCocoaCustomControl.acceptsFirstMouse(event: NSEvent): Boolean;
+function TCocoaCustomControl.acceptsFirstMouse(event: NSEvent): LCLObjCBoolean;
 begin
   // By default, a mouse-down event in a window that isn’t the key window
   // simply brings the window forward and makes it key; the event isn’t sent
@@ -644,12 +622,6 @@ procedure TCocoaCustomControl.scrollWheel(event: NSEvent);
 begin
   if not Assigned(callback) or not callback.scrollWheel(event) then
     inherited scrollWheel(event);
-end;
-
-procedure TCocoaCustomControl.keyDown(event: NSEvent);
-begin
-  if not Assigned(callback) or not callback.KeyEvent(event) then
-    inherited keyDown(event);
 end;
 
 procedure TCocoaCustomControl.keyUp(event: NSEvent);
@@ -842,11 +814,6 @@ begin
     Result := 0;
 end;
 
-function LCLObjectExtension.lclIsHandle: Boolean;
-begin
-result:=false;
-end;
-
 function LCLObjectExtension.lclContentView: NSView;
 begin
   Result := nil;
@@ -858,10 +825,11 @@ begin
 end;
 
 procedure LCLObjectExtension.lclExpectedKeys(var wantTabs, wantArrows,
-  wantAll: Boolean);
+  wantReturn, wantAll: Boolean);
 begin
   wantTabs := false;
   wantArrows := false;
+  wantReturn := false;
   wantAll := false;
 end;
 
@@ -897,12 +865,15 @@ end;
 function LCLControlExtension.lclIsEnabled:Boolean;
 begin
   Result := IsEnabled;
-  if Result and CocoaWidgetSet.IsControlDisabledDueToModal(Self) then Result := False;
 end;
 
 procedure LCLControlExtension.lclSetEnabled(AEnabled:Boolean);
 begin
-  SetEnabled(AEnabled and ((not Assigned(superview)) or (superview.lclisEnabled)) );
+  {$ifdef BOOLFIX}
+  SetEnabled_( Ord(AEnabled and ((not Assigned(superview)) or (superview.lclisEnabled))) );
+  {$else}
+  SetEnabled( AEnabled and ((not Assigned(superview)) or (superview.lclisEnabled)) );
+  {$endif}
   inherited lclSetEnabled(AEnabled);
 end;
 
@@ -944,7 +915,11 @@ begin
   if not Assigned(Result) then
     Exit;
 
+  {$ifdef BOOLFIX}
+  setHidden_(Ord(AParams.Style and WS_VISIBLE = 0));
+  {$else}
   setHidden(AParams.Style and WS_VISIBLE = 0);
+  {$endif}
 
   if Assigned(p) then
     p.lclContentView.addSubview(Result);
@@ -974,7 +949,11 @@ end;
 
 procedure LCLViewExtension.lclSetVisible(AVisible: Boolean);
 begin
+  {$ifdef BOOLFIX}
+  setHidden_(Ord(not AVisible));
+  {$else}
   setHidden(not AVisible);
+  {$endif}
   {$IFDEF COCOA_DEBUG_SETBOUNDS}
   WriteLn(Format('LCLViewExtension.lclSetVisible: %s AVisible=%d',
     [NSStringToString(Self.ClassName), Integer(AVisible)]));
@@ -1001,12 +980,20 @@ end;
 
 procedure LCLViewExtension.lclInvalidate;
 begin
+  {$ifdef BOOLFIX}
+  setNeedsDisplay__(Ord(True));
+  {$else}
   setNeedsDisplay_(True);
+  {$endif}
 end;
 
 procedure LCLViewExtension.lclUpdate;
 begin
-  setNeedsDisplay_(true);
+  {$ifdef BOOLFIX}
+  setNeedsDisplay__(Ord(True));
+  {$else}
+  setNeedsDisplay_(True);
+  {$endif}
   //display;
 end;
 
@@ -1115,6 +1102,7 @@ begin
   Point := convertPoint_fromView(Point, nil);
 
   es := enclosingScrollView;
+  if es.documentView <> self then es := nil;
   if not isFlipped then
     Point.y := bounds.size.height - Point.y;
 
@@ -1169,6 +1157,7 @@ begin
 
     if not barcallback.GetBarItem(i, txt, w, al) then Continue;
 
+
     if i = cnt - 1 then w := r.Right - x;
     nr.size.width := w;
     nr.origin.x := x;
@@ -1178,6 +1167,7 @@ begin
     panelCell.setAlignment(CocoaAlign[al]);
     panelCell.drawWithFrame_inView(nr, Self);
     cs.release;
+    barcallback.DrawPanel(i, NSRectToRect(nr));
     inc(x, w);
     if x > r.Right then break; // no place left
   end;
@@ -1191,21 +1181,9 @@ end;
 
 { TCocoaProgressIndicator }
 
-function TCocoaProgressIndicator.acceptsFirstResponder: Boolean;
+function TCocoaProgressIndicator.acceptsFirstResponder: LCLObjCBoolean;
 begin
   Result:=True;
-end;
-
-function TCocoaProgressIndicator.becomeFirstResponder: Boolean;
-begin
-  Result := inherited becomeFirstResponder;
-  callback.BecomeFirstResponder;
-end;
-
-function TCocoaProgressIndicator.resignFirstResponder: Boolean;
-begin
-  Result := inherited resignFirstResponder;
-  callback.ResignFirstResponder;
 end;
 
 function TCocoaProgressIndicator.lclGetCallback: ICommonCallback;
@@ -1248,7 +1226,7 @@ begin
   inherited lclSetFrame(r);
 end;
 
-function TCocoaProgressIndicator.acceptsFirstMouse(event: NSEvent): Boolean;
+function TCocoaProgressIndicator.acceptsFirstMouse(event: NSEvent): LCLObjCBoolean;
 begin
   Result:=true;
 end;
@@ -1374,21 +1352,9 @@ begin
   inherited drawRect(dirtyRect);
 end;
 
-function TCocoaSlider.acceptsFirstResponder: Boolean;
+function TCocoaSlider.acceptsFirstResponder: LCLObjCBoolean;
 begin
   Result := True;
-end;
-
-function TCocoaSlider.becomeFirstResponder: Boolean;
-begin
-  Result := inherited becomeFirstResponder;
-  callback.BecomeFirstResponder;
-end;
-
-function TCocoaSlider.resignFirstResponder: Boolean;
-begin
-  Result := inherited resignFirstResponder;
-  callback.ResignFirstResponder;
 end;
 
 function TCocoaSlider.lclGetCallback: ICommonCallback;
@@ -1419,8 +1385,7 @@ begin
     MK_RIGHT    : SnapToInteger(1);
   else
     // If this isn't done callback.KeyEvent will cause arrow left/right to change control
-    if Assigned(callback) then callback.KeyEvent(event)
-    else inherited keyDown(event);
+    inherited keyDown(event);
   end;
 end;
 
@@ -1457,7 +1422,7 @@ begin
   end;
 end;
 
-function TCocoaSlider.acceptsFirstMouse(event: NSEvent): Boolean;
+function TCocoaSlider.acceptsFirstMouse(event: NSEvent): LCLObjCBoolean;
 begin
   Result:=true;
 end;
@@ -1551,6 +1516,15 @@ begin
   if mn.draw=adraw then Exit;
   mn.draw:=adraw;
   self.setNeedsDisplay;
+end;
+
+procedure TCocoaSlider.lclExpectedKeys(var wantTabs, wantArrows, wantReturn,
+  wantAll: Boolean);
+begin
+  wantTabs := false;
+  wantArrows := true;
+  wantReturn := false;
+  wantAll := false;
 end;
 
 type

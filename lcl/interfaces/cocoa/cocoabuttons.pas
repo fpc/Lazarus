@@ -18,6 +18,7 @@ unit CocoaButtons;
 {$modeswitch objectivec1}
 {$modeswitch objectivec2}
 {$interfaces corba}
+{$include cocoadefines.inc}
 
 interface
 
@@ -68,9 +69,7 @@ type
     adjustFontToControlSize: Boolean;
     procedure dealloc; override;
     function initWithFrame(frameRect: NSRect): id; override;
-    function acceptsFirstResponder: Boolean; override;
-    function becomeFirstResponder: Boolean; override;
-    function resignFirstResponder: Boolean; override;
+    function acceptsFirstResponder: LCLObjCBoolean; override;
     procedure drawRect(dirtyRect: NSRect); override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
@@ -92,7 +91,6 @@ type
     procedure mouseMoved(event: NSEvent); override;
     procedure resetCursorRects; override;
     // lcl overrides
-    function lclIsHandle: Boolean; override;
     procedure lclSetFrame(const r: TRect); override;
     procedure lclCheckMixedAllowance; message 'lclCheckMixedAllowance';
     function lclGetFrameToLayoutDelta: TRect; override;
@@ -103,11 +101,6 @@ type
 implementation
 
 { TCocoaButton }
-
-function TCocoaButton.lclIsHandle: Boolean;
-begin
-  Result := True;
-end;
 
 procedure TCocoaButton.lclSetFrame(const r: TRect);
 var
@@ -148,7 +141,11 @@ begin
       // so it could be then switched to "On" by Cocoa
       if state = NSMixedState then
         inherited setState(NSOffState);
+      {$ifdef BOOLFIX}
+      setAllowsMixedState_(Ord(false));
+      {$else}
       setAllowsMixedState(false);
+      {$endif}
     end;
   end;
 end;
@@ -237,23 +234,9 @@ begin
   end;
 end;
 
-function TCocoaButton.acceptsFirstResponder: Boolean;
+function TCocoaButton.acceptsFirstResponder: LCLObjCBoolean;
 begin
   Result := True;
-end;
-
-function TCocoaButton.becomeFirstResponder: Boolean;
-begin
-  Result := inherited becomeFirstResponder;
-  if Assigned(callback) then
-    callback.BecomeFirstResponder;
-end;
-
-function TCocoaButton.resignFirstResponder: Boolean;
-begin
-  Result := inherited resignFirstResponder;
-  if Assigned(callback) then
-    callback.ResignFirstResponder;
 end;
 
 procedure TCocoaButton.drawRect(dirtyRect: NSRect);
@@ -275,16 +258,10 @@ begin
 end;
 
 procedure TCocoaButton.keyDown(event: NSEvent);
-const
-  KeyCode_Space = 49;
 begin
-  if not Assigned(callback) or not callback.KeyEvent(event) then
-  begin
-    // space would attempt to change checked status
-    if event.keyCode = KeyCode_Space then
-      lclCheckMixedAllowance;
-    inherited keyDown(event);
-  end;
+  if event.keyCode = kVK_Space then
+    lclCheckMixedAllowance;
+  inherited keyDown(event);
 end;
 
 procedure TCocoaButton.keyUp(event: NSEvent);

@@ -26,7 +26,7 @@
   Params:  ACursor - Cursor type
   Returns: Cursor object in Cocoa for the specified cursor type
  ------------------------------------------------------------------------------}
-function TCocoaWidgetSet.CreateStandardCursor(ACursor: SmallInt): HCursor;
+function TCocoaWidgetSet.CreateStandardCursor(ACursor: SmallInt): hCursor;
 begin
   case ACursor of
     crArrow,
@@ -61,6 +61,13 @@ begin
     Result := 0;
   end;
 end;
+
+function TCocoaWidgetSet.FontCanUTF8(Font: HFont): boolean;
+begin
+  // no so deprecated, after all. SynEdit is still using it and caused the issue #34594
+  Result:=true;
+end;
+
 (*
 {------------------------------------------------------------------------------
   Method:  DrawGrid
@@ -255,6 +262,8 @@ begin
         end;
       end;
 
+      ApplicationWillShowModal;
+
       if Assigned(sheetOfWindow) then
       begin
         anAlert.beginSheetModalForWindow_modalDelegate_didEndSelector_contextInfo(
@@ -292,13 +301,9 @@ end;  {TCocoaWidgetSet.PromptUser}
   Shows modal dialog with the specified caption, message and buttons and prompts
   user to push one.
  ------------------------------------------------------------------------------}
-function TCocoaWidgetSet.PromptUser(const DialogCaption : string;
-                                     const DialogMessage : string;
-                                           DialogType    : LongInt;
-                                           Buttons       : PLongInt;
-                                           ButtonCount   : LongInt;
-                                           DefaultIndex  : LongInt;
-                                           EscapeResult  : LongInt) : LongInt;
+function TCocoaWidgetSet.PromptUser(const DialogCaption, DialogMessage: String;
+  DialogType: longint; Buttons: PLongint; ButtonCount, DefaultIndex,
+  EscapeResult: Longint): Longint;
 begin
   Result := CocoaPromptUser(DialogCaption, DialogMessage, DialogType, Buttons, ButtonCount,
     DefaultIndex, EscapeResult);

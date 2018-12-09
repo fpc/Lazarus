@@ -6,8 +6,7 @@ unit CocoaDatePicker;
 interface
 
 uses
-  Classes, SysUtils, DateUtils,
-  LclType,
+  Classes, SysUtils,
   CocoaAll, CocoaUtils, CocoaPrivate, cocoa_extra;
 
 
@@ -29,11 +28,7 @@ type
     procedure mouseDown(event: NSEvent); override;
     procedure mouseMoved(event: NSEvent); override;
 
-    function acceptsFirstResponder: Boolean; override;
-    function becomeFirstResponder: Boolean; override;
-    function resignFirstResponder: Boolean; override;
-
-    function lclIsHandle: Boolean; override;
+    function acceptsFirstResponder: LCLObjCBoolean; override;
 
     procedure setFrame(aframe: NSRect); override;
   end;
@@ -47,14 +42,14 @@ begin
   if assigned(callback) then
   begin
     // Save Date BEFORE mouse click/down event
-    oldDate:= NSDateToDateTime(NSDatePickerCell(TLCLIntfHandle(Self)).dateValue);
+    oldDate:= NSDateToDateTime(Self.dateValue);
 
     if not callback.MouseUpDownEvent(event) then
       // Without this, Cocoa will not update our NSDatePicker date...
       inherited mouseDown(event);
 
     // After mouse event, has our date changed
-    newDate:= NSDateToDateTime(NSDatePickerCell(TLCLIntfHandle(Self)).dateValue);
+    newDate:= NSDateToDateTime(Self.dateValue);
     if oldDate <> newDate then
       callback.SendOnChange;
 
@@ -70,33 +65,14 @@ begin
 end;
 
 
-function TCocoaDatePicker.acceptsFirstResponder: Boolean;
+function TCocoaDatePicker.acceptsFirstResponder: LCLObjCBoolean;
 begin
   Result := True;
-end;
-
-function TCocoaDatePicker.becomeFirstResponder: Boolean;
-begin
-  Result := inherited becomeFirstResponder;
-  if Assigned(callback) then
-    callback.BecomeFirstResponder;
-end;
-
-function TCocoaDatePicker.resignFirstResponder: Boolean;
-begin
-  Result := inherited resignFirstResponder;
-  if Assigned(callback) then
-    callback.ResignFirstResponder;
 end;
 
 function TCocoaDatePicker.lclGetCallback: ICommonCallback;
 begin
   Result := callback;
-end;
-
-function TCocoaDatePicker.lclIsHandle: Boolean;
-begin
-  Result:= True;
 end;
 
 procedure TCocoaDatePicker.setFrame(aframe: NSRect);

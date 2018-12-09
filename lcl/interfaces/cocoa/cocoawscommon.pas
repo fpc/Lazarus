@@ -2,6 +2,7 @@ unit CocoaWSCommon;
 
 {$mode objfpc}{$H+}
 {$modeswitch objectivec1}
+{$include cocoadefines.inc}
 {.$DEFINE COCOA_DEBUG_SETBOUNDS}
 
 interface
@@ -46,22 +47,24 @@ type
     _UTF8Character : TUTF8Char;
     class function CocoaModifiersToKeyState(AModifiers: NSUInteger): PtrInt; static;
     class function CocoaPressedMouseButtonsToKeyState(AMouseButtons: NSUInteger): PtrInt; static;
-    procedure OffsetMousePos(LocInWin: NSPoint; out PtInBounds, PtInClient: TPoint );
+    procedure OffsetMousePos(LocInWin: NSPoint; out PtInBounds, PtInClient, PtForChildCtrls: TPoint );
     procedure ScreenMousePos(var Point: NSPoint);
   public
     Owner: NSObject;
-    Frame: NSObject;
+    HandleFrame: NSView; // HWND and "frame" (rectangle) of the a control
     BlockCocoaUpDown: Boolean;
+    BlockCocoaKeyDown: Boolean;
     SuppressTabDown: Boolean; // all tabs should be suppressed, so Cocoa would not switch focus
 
     class constructor Create;
-    constructor Create(AOwner: NSObject; ATarget: TWinControl); virtual;
+    constructor Create(AOwner: NSObject; ATarget: TWinControl; AHandleFrame: NSView = nil); virtual;
     destructor Destroy; override;
     function GetPropStorage: TStringList;
     function GetContext: TCocoaContext;
     function GetTarget: TObject;
     function GetCallbackObject: TObject;
     function GetCaptureControlCallback: ICommonCallBack;
+    procedure SendContextMenu(Event: NSEvent);
     function MouseUpDownEvent(Event: NSEvent; AForceAsMouseUp: Boolean = False; AOverrideBlock: Boolean = False): Boolean; virtual;
     function KeyEvent(Event: NSEvent; AForceAsKeyDown: Boolean = False): Boolean; virtual;
 
@@ -146,6 +149,10 @@ type
 function EmbedInScrollView(AView: NSView; AReleaseView: Boolean = true): TCocoaScrollView;
 function EmbedInManualScrollView(AView: NSView): TCocoaManualScrollView;
 
+function HWNDToTargetObject(AFormHandle: HWND): TObject;
+
+procedure ScrollViewSetBorderStyle(sv: NSScrollView; astyle: TBorderStyle);
+
 implementation
 
 uses
@@ -155,6 +162,17 @@ var
   LastMouse: TLastMouseInfo;
 
 {$I mackeycodes.inc}
+
+procedure ScrollViewSetBorderStyle(sv: NSScrollView; astyle: TBorderStyle);
+const
+  NSBorderStyle : array [TBorderStyle] of NSBorderType = (
+    NSNoBorder,   // bsNone
+    NSBezelBorder // bsSingle     (NSLineBorder is too thick)
+  );
+begin
+  if not Assigned(sv) then Exit;
+  sv.setBorderType( NSBorderStyle[astyle] );
+end;
 
 function EmbedInScrollView(AView: NSView; AReleaseView: Boolean): TCocoaScrollView;
 var
@@ -168,11 +186,19 @@ begin
   Result := TCocoaScrollView.alloc.initWithFrame(NSNullRect);
   if Assigned(p) then p.addSubView(Result);
   Result.lclSetFrame(r);
+  {$ifdef BOOLFIX}
+  Result.setHidden_(Ord(AView.isHidden));
+  {$else}
   Result.setHidden(AView.isHidden);
+  {$endif}
   Result.setDocumentView(AView);
   Result.setDrawsBackground(false); // everything is covered anyway
   if AReleaseView then AView.release;
+  {$ifdef BOOLFIX}
+  AView.setHidden_(Ord(false));
+  {$else}
   AView.setHidden(false);
+  {$endif}
   SetViewDefaults(Result);
 end;
 
@@ -191,9 +217,17 @@ begin
   Result := TCocoaManualScrollView.alloc.initWithFrame(NSNullRect);
   if Assigned(p) then p.addSubView(Result);
   Result.lclSetFrame(r);
+  {$ifdef BOOLFIX}
+  Result.setHidden_(Ord(AView.isHidden));
+  {$else}
   Result.setHidden(AView.isHidden);
+  {$endif}
   Result.setDocumentView(AView);
+  {$ifdef BOOLFIX}
+  AView.setHidden_(Ord(false));
+  {$else}
   AView.setHidden(false);
+  {$endif}
   SetViewDefaults(Result);
   if AView.isKindOfClass(TCocoaCustomControl) then
     TCocoaCustomControl(AView).auxMouseByParent := true;
@@ -237,17 +271,20 @@ begin
     Result := Result or MK_XBUTTON2;
 end;
 
-procedure TLCLCommonCallback.OffsetMousePos(LocInWin: NSPoint; out PtInBounds, PtInClient: TPoint);
+procedure TLCLCommonCallback.OffsetMousePos(LocInWin: NSPoint; out PtInBounds, PtInClient, PtForChildCtrls: TPoint);
 var
   lView: NSView;
   pt: NSPoint;
   cr: TRect;
+  es: NSScrollView;
+  r: NSRect;
 begin
   if Owner.isKindOfClass(NSWindow) then
   begin
     PtInBounds.x := Round(LocInWin.x);
     PtInBounds.y := Round(NSWindow(Owner).contentView.bounds.size.height - LocInWin.y);
     PtInClient := PtInBounds; // todo: it's different. But Owner is never NSWindow (it's TConentWindowView instead)
+    PtForChildCtrls := PtInClient;
   end
   else if Owner.isKindOfClass(NSView) then
   begin
@@ -262,11 +299,23 @@ begin
     cr := NSView(Owner).lclClientFrame;
     PtInClient.x := Round({PtInBounds.x - }pt.x - cr.Left);
     PtInClient.y := Round({PtInBounds.y - }pt.y - cr.Top);
+    PtForChildCtrls := PtInClient;
+
+    es := NSView(Owner).enclosingScrollView;
+    if Assigned(es) and (es.documentView = NSView(Owner)) then begin
+      r := es.documentVisibleRect;
+      if NSView(Owner).isFlipped then
+        r.origin.y := (es.documentView.frame.size.height - r.size.height - r.origin.y);
+      inc(PtForChildCtrls.y, Round(r.origin.y));
+      inc(PtForChildCtrls.x, Round(r.origin.x));
+    end;
+
   end else
   begin
     PtInBounds.x := Round(LocInWin.x);
     PtInBounds.y := Round(LocInWin.y);
     PtInClient := PtInBounds;
+    PtForChildCtrls := PtInClient;
   end;
 end;
 
@@ -289,11 +338,14 @@ begin
   PrevKeyModifiers := 0;
 end;
 
-constructor TLCLCommonCallback.Create(AOwner: NSObject; ATarget: TWinControl);
+constructor TLCLCommonCallback.Create(AOwner: NSObject; ATarget: TWinControl; AHandleFrame: NSView);
 begin
   inherited Create;
   Owner := AOwner;
-  Frame := AOwner;
+  if Assigned(AHandleFrame) then
+    HandleFrame := AHandleFrame
+  else if Owner.isKindOfClass(NSView) then
+    HandleFrame := NSView(AOwner);
   FTarget := ATarget;
   FContext := nil;
   FHasCaret := False;
@@ -350,52 +402,53 @@ begin
   end;
 end;
 
-function MacKeyToVK(KeyCode: Word): Word; // according to mackeycodes.inc this is risky
+{ If a window does not display a shortcut menu it should pass
+  this message to the DefWindowProc function. If a window is
+  a child window, DefWindowProc sends the message to the parent. }
+procedure TLCLCommonCallback.SendContextMenu(event: NSEvent);
+var
+  MsgContext: TLMContextMenu;
+  MousePos : NSPoint;
+  Res: PtrInt;
+  Rcp : NSObject;
+  Trg : TObject;
+  cb    : ICommonCallback;
+  obj   : TObject;
+  cbobj : TLCLCommonCallback;
 begin
-  case KeyCode of
-    MK_QWERTY_Q: Result := VK_Q;
-    MK_QWERTY_W: Result := VK_W;
-    MK_QWERTY_E: Result := VK_E;
-    MK_QWERTY_R: Result := VK_R;
-    MK_QWERTY_T: Result := VK_T;
-    MK_QWERTY_Y: Result := VK_Y;
-    MK_QWERTY_U: Result := VK_U;
-    MK_QWERTY_I: Result := VK_I;
-    MK_QWERTY_O: Result := VK_O;
-    MK_QWERTY_P: Result := VK_P;
-    MK_QWERTY_A: Result := VK_A;
-    MK_QWERTY_S: Result := VK_S;
-    MK_QWERTY_D: Result := VK_D;
-    MK_QWERTY_F: Result := VK_F;
-    MK_QWERTY_G: Result := VK_G;
-    MK_QWERTY_H: Result := VK_H;
-    MK_QWERTY_J: Result := VK_J;
-    MK_QWERTY_K: Result := VK_K;
-    MK_QWERTY_L: Result := VK_L;
-    MK_QWERTY_Z: Result := VK_Z;
-    MK_QWERTY_X: Result := VK_X;
-    MK_QWERTY_C: Result := VK_C;
-    MK_QWERTY_V: Result := VK_V;
-    MK_QWERTY_B: Result := VK_B;
-    MK_QWERTY_N: Result := VK_N;
-    MK_QWERTY_M: Result := VK_M;
-    //MK_QWERTY_LEFTBR:  Result := VK_;
-    //MK_QWERTY_RIGHTBR: = 30;
-    MK_QWERTY_BACKSLASH: Result := VK_BACK;
-
-    //MK_QWERTY_SEMICOLON: Result := VK_s
-    //MK_QWERTY_QUOTE: = 39;
-    //MK_QWERTY_ENTER: = 36;
-
-    //MK_QWERTY_COMMA: := 43;
-    //MK_QWERTY_PERIOD: := 47;
-    //MK_QWERTY_FRWSLASH: := 44;
-
-  else
-    Result:=VK_UNKNOWN;
-  end;
+  FillChar(MsgContext, SizeOf(MsgContext), #0);
+  MsgContext.Msg := LM_CONTEXTMENU;
+  MsgContext.hWnd := HWND(HandleFrame);
+  MousePos := Event.locationInWindow;
+  ScreenMousePos(MousePos);
+  MsgContext.XPos := Round(MousePos.X);
+  MsgContext.YPos := Round(MousePos.Y);
+  Rcp := Owner;
+  Res := 1;
+  repeat
+    cb := Rcp.lclGetCallback;
+    if Assigned(cb) then
+    begin
+      Trg := cb.GetTarget;
+      Res := LCLMessageGlue.DeliverMessage(Trg, MsgContext);
+      // not processed, need to find parent
+      if Res = 0 then
+      begin
+        cbobj := nil;
+        if Assigned(cb) then
+        begin
+          obj := cb.GetCallbackObject;
+          if obj is TLCLCommonCallback then cbobj := TLCLCommonCallback(obj);
+        end;
+        if not Assigned(cbobj) then
+          Rcp := nil
+        else
+          Rcp := cbobj.HandleFrame.superView;
+      end;
+    end else
+      Rcp := nil;
+  until (Res <> 0) or not Assigned(Rcp);
 end;
-
 
 function TLCLCommonCallback.KeyEvent(Event: NSEvent; AForceAsKeyDown: Boolean): Boolean;
 var
@@ -556,7 +609,7 @@ var
           MK_PERIOD: VKKeyCode := VK_OEM_PERIOD;
           MK_SLASH:  VKKeyCode := VK_OEM_2;
         else
-          VKKeyCode := MacKeyToVK(KeyCode); // according to mackeycodes.inc this is risky
+          VKKeyCode := MacCodeToVK(KeyCode); // according to mackeycodes.inc this is risky
         end;
       end;
 
@@ -791,20 +844,18 @@ procedure TLCLCommonCallback.KeyEvPrepare(Event: NSEvent;
   AForceAsKeyDown: Boolean);
 var
   KeyCode: word;
-  UTF8VKCharacter: TUTF8Char; // char without modifiers, used for VK_ key value
   UTF8Character: TUTF8Char;   // char to send via IntfUtf8KeyPress
   KeyChar : char;          // Ascii char, when possible (xx_(SYS)CHAR)
-  VKKeyChar: char;         // Ascii char without modifiers
   SendChar: boolean;       // Should we send char?
   VKKeyCode: word;         // VK_ code
   IsSysKey: Boolean;       // Is alt (option) key down?
   KeyData: PtrInt;         // Modifiers (ctrl, alt, mouse buttons...)
+  ignModChr: NSString;
 begin
   SendChar := False;
 
   UTF8Character := '';
   KeyChar := #0;
-  VKKeyChar := #0;
 
   IsSysKey := (Event.modifierFlags and NSCommandKeyMask) <> 0;
   KeyData := (Ord(Event.isARepeat) + 1) or Event.keyCode shl 16;
@@ -812,53 +863,43 @@ begin
     KeyData := KeyData or $20000000;   // So that MsgKeyDataToShiftState recognizes Alt key, see bug 30129
   KeyCode := Event.keyCode;
 
-  //non-printable keys (see mackeycodes.inc)
-  //for these keys, only send keydown/keyup (not char or UTF8KeyPress)
-  case KeyCode of
-    MK_F1       : VKKeyCode:=VK_F1;
-    MK_F2       : VKKeyCode:=VK_F2;
-    MK_F3       : VKKeyCode:=VK_F3;
-    MK_F4       : VKKeyCode:=VK_F4;
-    MK_F5       : VKKeyCode:=VK_F5;
-    MK_F6       : VKKeyCode:=VK_F6;
-    MK_F7       : VKKeyCode:=VK_F7;
-    MK_F8       : VKKeyCode:=VK_F8;
-    MK_F9       : VKKeyCode:=VK_F9;
-    MK_F10      : VKKeyCode:=VK_F10;
-    MK_F11      : VKKeyCode:=VK_F11;
-    MK_F12      : VKKeyCode:=VK_F12;
-    MK_F13      : VKKeyCode:=VK_SNAPSHOT;
-    MK_F14      : VKKeyCode:=VK_SCROLL;
-    MK_F15      : VKKeyCode:=VK_PAUSE;
-    MK_POWER    : VKKeyCode:=VK_SLEEP; //?
-    MK_TAB      : VKKeyCode:=VK_TAB; //strangely enough, tab is "non printable"
-    MK_INS      : VKKeyCode:=VK_INSERT;
-    MK_DEL      : VKKeyCode:=VK_DELETE;
-    MK_HOME     : VKKeyCode:=VK_HOME;
-    MK_END      : VKKeyCode:=VK_END;
-    MK_PAGUP    : VKKeyCode:=VK_PRIOR;
-    MK_PAGDN    : VKKeyCode:=VK_NEXT;
-    MK_UP       : VKKeyCode:=VK_UP;
-    MK_DOWN     : VKKeyCode:=VK_DOWN;
-    MK_LEFT     : VKKeyCode:= VK_LEFT;
-    MK_RIGHT    : VKKeyCode:= VK_RIGHT;
-    MK_NUMLOCK  : VKKeyCode:= VK_NUMLOCK;
-  else
-    VKKeyCode := VK_UNKNOWN;
-  end;
-
-  if VKKeyCode = VK_UNKNOWN then
+  ignModChr := Event.charactersIgnoringModifiers;
+  if Assigned(ignModChr)
+    and (ignModChr.length=1)
+    and ((Event.modifierFlags and NSNumericPadKeyMask) = 0) // num pad should be checked by KeyCode
+  then
   begin
-    // check non-translated characters
-    UTF8VKCharacter := NSStringToString(Event.charactersIgnoringModifiers);
-    if Length(UTF8VKCharacter) > 0 then
-    begin
-      if UTF8VKCharacter[1] <= #127 then
-        VKKeyChar := UTF8VKCharacter[1]
-      else
-        VKKeyChar := #0;
-    end;
+    VKKeyCode := MacCharToVK(ignModChr.characterAtIndex(0));
+    if VKKeyCode = VK_UNKNOWN then
+      VKKeyCode := MacCodeToVK(KeyCode); // fallback
+  end
+  else
+    VKKeyCode := MacCodeToVK(KeyCode);
 
+  case VKKeyCode of
+    // for sure, these are "non-printable" keys (see http://wiki.lazarus.freepascal.org/LCL_Key_Handling)
+    VK_F1..VK_F24,                     // Function keys (F1-F12)
+    VK_PRINT, VK_SCROLL, VK_PAUSE,     // Print Screen, Scroll Lock, Pause
+    VK_CAPITAL, VK_TAB,                // Caps Lock, Tab
+    VK_INSERT, VK_DELETE,              // Insert,  Delete
+    VK_HOME, VK_END,                   // Home, End
+    VK_PRIOR,VK_NEXT,                  // Page Up,Down
+    VK_LEFT, VK_RIGHT, VK_UP, VK_DOWN, // Arrow Keys
+    VK_NUMLOCK,                        // Num Lock
+    VK_SLEEP, VK_APPS  // power/sleep, context menu
+    :
+      SendChar := false;
+
+    // for sure, these are "printable" keys
+    VK_ESCAPE,
+    VK_BACK,
+    VK_RETURN:
+    begin
+      SendChar := true;
+      KeyChar := char(VKKeyCode);
+      UTF8Character := KeyChar;
+    end;
+  else
     //printable keys
     //for these keys, send char or UTF8KeyPress
     UTF8Character := NSStringToString(Event.characters);
@@ -866,85 +907,14 @@ begin
     if Length(UTF8Character) > 0 then
     begin
       SendChar := True;
-
-      if Utf8Character[1] <= #127 then
+      if Length(UTF8Character)=1 then
         // ANSI layout character
         KeyChar := Utf8Character[1]
       else
         // it's non ANSI character. KeyChar must be assinged anything but #0
         // otherise the message could be surpressed.
         // In Windows world this would be an "Ansi" char in current locale
-        KeyChar := #$FF;
-
-      // the VKKeyCode is independent of the modifier
-      // => use the VKKeyChar instead of the KeyChar
-      case VKKeyChar of
-        'a'..'z': VKKeyCode:=VK_A+ord(VKKeyChar)-ord('a');
-        'A'..'Z': VKKeyCode:=ord(VKKeyChar);
-        #27     : VKKeyCode:=VK_ESCAPE;
-        #8      : VKKeyCode:=VK_BACK;
-        ' '     : VKKeyCode:=VK_SPACE;
-        #13     : VKKeyCode:=VK_RETURN;
-        '0'..'9':
-          case KeyCode of
-            MK_NUMPAD0: VKKeyCode:=VK_NUMPAD0;
-            MK_NUMPAD1: VKKeyCode:=VK_NUMPAD1;
-            MK_NUMPAD2: VKKeyCode:=VK_NUMPAD2;
-            MK_NUMPAD3: VKKeyCode:=VK_NUMPAD3;
-            MK_NUMPAD4: VKKeyCode:=VK_NUMPAD4;
-            MK_NUMPAD5: VKKeyCode:=VK_NUMPAD5;
-            MK_NUMPAD6: VKKeyCode:=VK_NUMPAD6;
-            MK_NUMPAD7: VKKeyCode:=VK_NUMPAD7;
-            MK_NUMPAD8: VKKeyCode:=VK_NUMPAD8;
-            MK_NUMPAD9: VKKeyCode:=VK_NUMPAD9
-            else VKKeyCode:=ord(VKKeyChar);
-          end;
-        else
-        case KeyCode of
-          MK_PADDIV  : VKKeyCode:=VK_DIVIDE;
-          MK_PADMULT : VKKeyCode:=VK_MULTIPLY;
-          MK_PADSUB  : VKKeyCode:=VK_SUBTRACT;
-          MK_PADADD  : VKKeyCode:=VK_ADD;
-          MK_PADDEC  : VKKeyCode:=VK_DECIMAL;
-          MK_BACKSPACE:
-            begin
-              VKKeyCode := VK_BACK;
-              VKKeyChar := #8;
-              UTF8Character := #8;
-            end;
-          MK_PADENTER:
-            begin
-              VKKeyCode:=VK_RETURN;
-              VKKeyChar:=#13;
-              UTF8Character:=VKKeyChar;
-            end;
-          MK_TILDE: VKKeyCode := VK_OEM_3;
-          MK_MINUS: VKKeyCode := VK_OEM_MINUS;
-          MK_EQUAL: VKKeyCode := VK_OEM_PLUS;
-          MK_BACKSLASH:    VKKeyCode := VK_OEM_5;
-          MK_LEFTBRACKET:  VKKeyCode := VK_OEM_4;
-          MK_RIGHTBRACKET: VKKeyCode := VK_OEM_6;
-          MK_SEMICOLON:    VKKeyCode := VK_OEM_1;
-          MK_QUOTE:  VKKeyCode := VK_OEM_7;
-          MK_COMMA:  VKKeyCode := VK_OEM_COMMA;
-          MK_PERIOD: VKKeyCode := VK_OEM_PERIOD;
-          MK_SLASH:  VKKeyCode := VK_OEM_2;
-        else
-          VKKeyCode := MacKeyToVK(KeyCode); // according to mackeycodes.inc this is risky
-        end;
-      end;
-
-      if VKKeyCode = VK_UNKNOWN then
-      begin
-        // There is no known VK_ code for this characther. Use a dummy keycode
-        // (E8, which is unused by Windows) so that KeyUp/KeyDown events will be
-        // triggered by LCL.
-        // Note: we can't use the raw mac keycode, since it could collide with
-        // well known VK_ keycodes (e.g on my italian ADB keyboard, keycode for
-        // "&egrave;" is 33, which is the same as VK_PRIOR)
-        VKKeyCode := $E8;
-      end;
-      //Result := True;
+        KeyChar := '?';
     end;
   end;
 
@@ -1108,8 +1078,13 @@ begin
   AllowCocoaHandle := true;
   if _IsKeyDown then begin
     KeyEvBeforeDown(AllowCocoaHandle);
-    if AllowCocoaHandle and SuppressTabDown and (_KeyMsg.CharCode = VK_TAB) then
-      AllowCocoaHandle := false;
+    if AllowCocoaHandle then
+    begin
+      if SuppressTabDown and (_KeyMsg.CharCode = VK_TAB) then
+        AllowCocoaHandle := false
+      else if BlockCocoaKeyDown then
+        AllowCocoaHandle := false;
+    end;
   end else
     KeyEvBeforeUp(AllowCocoaHandle);
 end;
@@ -1135,14 +1110,14 @@ const
   MSGKINDUP: array[0..3] of Integer = (LM_LBUTTONUP, LM_RBUTTONUP, LM_MBUTTONUP, LM_XBUTTONUP);
 var
   Msg: TLMMouse;
-  MsgContext: TLMContextMenu;
   MousePos: NSPoint;
   MButton: NSInteger;
   lCaptureControlCallback: ICommonCallback;
   //Str: string;
   lEventType: NSEventType;
 
-  bndPt, clPt: TPoint;
+  bndPt, clPt, srchPt: TPoint; // clPt - is the one to send to LCL
+                               // srchPt - is the one to use for each chidlren (clPt<>srchPt for TScrollBox)
 begin
   if Assigned(Owner) and not Owner.lclIsEnabled then
   begin
@@ -1168,7 +1143,7 @@ begin
   FillChar(Msg, SizeOf(Msg), #0);
 
   MousePos := Event.locationInWindow;
-  OffsetMousePos(MousePos, bndPt, clPt);
+  OffsetMousePos(MousePos, bndPt, clPt, srchPt);
 
   Msg.Keys := CocoaModifiersToKeyState(Event.modifierFlags) or CocoaPressedMouseButtonsToKeyState(NSEvent.pressedMouseButtons);
 
@@ -1207,16 +1182,7 @@ begin
 
       // TODO: Check if Cocoa has special context menu check event
       if (Event.type_ = NSRightMouseDown) and (GetTarget is TControl) then
-      begin
-        FillChar(MsgContext, SizeOf(MsgContext), #0);
-        MsgContext.Msg := LM_CONTEXTMENU;
-        MsgContext.hWnd := HWND(Owner);
-        MousePos := Event.locationInWindow;
-        ScreenMousePos(MousePos);
-        MsgContext.XPos := Round(MousePos.X);
-        MsgContext.YPos := Round(MousePos.Y);
-        DeliverMessage(MsgContext);
-      end;
+        SendContextMenu(Event);
     end;
     NSLeftMouseUp,
     NSRightMouseUp,
@@ -1263,6 +1229,7 @@ var
   childControl:TWinControl;
   bndPt, clPt: TPoint;
   MouseTargetLookup: Boolean;
+  srchPt: TPoint;
 begin
   if Assigned(Owner) and not Owner.lclIsEnabled then
   begin
@@ -1276,7 +1243,7 @@ begin
   Result := Assigned(Target) and (csDesigning in Target.ComponentState);
 
   MousePos := Event.locationInWindow;
-  OffsetMousePos(MousePos, bndPt, clPt);
+  OffsetMousePos(MousePos, bndPt, clPt, srchPt);
 
   // For "dragged" events, the same "Target" should be used
   MouseTargetLookup := Event.type_ = NSMouseMoved;
@@ -1312,7 +1279,7 @@ begin
         begin
           childControl:=TWinControl(Target.Controls[i]);
           rect:=childControl.BoundsRect;
-          if Types.PtInRect(rect, clPt) and childControl.Visible and childControl.Enabled then
+          if Types.PtInRect(rect, srchPt) and childControl.Visible and childControl.Enabled then
           begin
             targetControl:=childControl;
             break;
@@ -1363,7 +1330,7 @@ var
   Msg: TLMMouseEvent;
   MousePos: NSPoint;
   MButton: NSInteger;
-  bndPt, clPt: TPoint;
+  bndPt, clPt, srchPt: TPoint;
 begin
   Result := False; // allow cocoa to handle message
 
@@ -1371,7 +1338,7 @@ begin
     Exit;
 
   MousePos := Event.locationInWindow;
-  OffsetMousePos(MousePos, bndPt, clPt);
+  OffsetMousePos(MousePos, bndPt, clPt, srchPt);
 
   MButton := event.buttonNumber;
   if MButton >= 3 then
@@ -1418,7 +1385,7 @@ var
   Resized, Moved, ClientResized: Boolean;
   SizeType: Integer;
 begin
-  NewBounds := Frame.lclFrame;
+  NewBounds := HandleFrame.lclFrame;
 
   //debugln('Newbounds='+ dbgs(newbounds));
   // send window pos changed
@@ -1451,8 +1418,8 @@ begin
     (OldBounds.Left <> NewBounds.Left) or
     (OldBounds.Top <> NewBounds.Top);
 
-  ClientResized := (sender <> Frame)
-    and not EqualRect(Target.ClientRect, Frame.lclClientFrame);
+  ClientResized := (sender <> HandleFrame)
+    and not EqualRect(Target.ClientRect, HandleFrame.lclClientFrame);
 
   // update client rect
   if ClientResized or Resized or Target.ClientRectNeedsInterfaceUpdate then
@@ -1554,7 +1521,7 @@ end;
 procedure TLCLCommonCallback.Draw(ControlContext: NSGraphicsContext;
   const bounds, dirty: NSRect);
 var
-  PS: PPaintStruct;
+  PS: TPaintStruct;
   nsr:NSRect;
 begin
   // todo: think more about draw call while previous draw still active
@@ -1577,17 +1544,12 @@ begin
         //debugln('Background '+Target.name+Dbgs(NSRectToRect(dirty)));
       end;
 
-      New(PS);
-      try
-        FillChar(PS^, SizeOf(TPaintStruct), 0);
-        PS^.hdc := HDC(FContext);
-        PS^.rcPaint := NSRectToRect(nsr);
-        LCLSendPaintMsg(Target, HDC(FContext), PS);
-        if FHasCaret then
-          DrawCaret;
-      finally
-        Dispose(PS);
-      end;
+      FillChar(PS, SizeOf(TPaintStruct), 0);
+      PS.hdc := HDC(FContext);
+      PS.rcPaint := NSRectToRect(nsr);
+      LCLSendPaintMsg(Target, HDC(FContext), @PS);
+      if FHasCaret then
+        DrawCaret;
     end;
   finally
     FreeAndNil(FContext);
@@ -1702,24 +1664,22 @@ var
   obj: NSObject;
   Callback: ICommonCallback;
   CallbackObject: TObject;
-  pool: NSAutoreleasePool;
 begin
   if not AWinControl.HandleAllocated then
     Exit;
-  pool := NSAutoreleasePool.alloc.init;
+
   obj := NSObject(AWinControl.Handle);
   if obj.isKindOfClass_(NSView) then
   begin
-    //todo: removeFromSuperview + autorelease pool seems to be releasing the object
-    // retain prevents an error of .release below need to be updated
-    // according to the latest Apple recommendations of ATC
-    NSView(obj).retain;
+    // no need to "retain" prior to "removeFromSuperview"
+    // the original referecnce count with "alloc" is not being released
+    // after "addToSuperview"
     NSView(obj).removeFromSuperview;
   end
   else
   if obj.isKindOfClass_(NSWindow) then
     NSWindow(obj).close;
-  pool.release;
+
   // destroy the callback
   Callback := obj.lclGetCallback;
   if Assigned(Callback) then
@@ -2020,18 +1980,14 @@ end;
 
 class procedure TCocoaWSWinControl.ShowHide(const AWinControl: TWinControl);
 var
-  pool: NSAutoreleasePool;   // called outside apploop on startup - therefore has to be enframed by pool
   lShow: Boolean;
 begin
   //WriteLn(Format('[TCocoaWSWinControl.ShowHide] AWinControl=%s %s', [AWinControl.Name, AWinControl.ClassName]));
   if AWinControl.HandleAllocated then
   begin
-    pool := NSAutoreleasePool.alloc.init;
     lShow := AWinControl.HandleObjectShouldBeVisible;
 
     NSObject(AWinControl.Handle).lclSetVisible(lShow);
-
-    pool.release;
   end;
 end;
 
@@ -2053,13 +2009,25 @@ begin
   ctrl := TCocoaCustomControl(TCocoaCustomControl.alloc.lclInitWithCreateParams(AParams));
   lcl := TLCLCommonCallback.Create(ctrl, AWinControl);
   lcl.BlockCocoaUpDown := true;
+  lcl.BlockCocoaKeyDown := true; // prevent "dings" on keyDown for custom controls (i.e. SynEdit)
   ctrl.callback := lcl;
 
   sl := EmbedInManualScrollView(ctrl);
   sl.callback := ctrl.callback;
-  lcl.frame:=sl;
+  lcl.HandleFrame:=sl;
 
   Result := TLCLIntfHandle(sl);
+end;
+
+function HWNDToTargetObject(AFormHandle: HWND): TObject;
+var
+  cb : ICommonCallback;
+begin
+  Result := nil;
+  if AFormHandle = 0 then Exit;
+  cb := NSObject(AFormHandle).lclGetCallback;
+  if not Assigned(cb) then Exit;
+  Result := cb.GetTarget;
 end;
 
 end.

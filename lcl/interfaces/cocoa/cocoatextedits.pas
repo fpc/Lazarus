@@ -18,6 +18,7 @@ unit CocoaTextEdits;
 {$modeswitch objectivec1}
 {$modeswitch objectivec2}
 {$interfaces corba}
+{$include cocoadefines.inc}
 
 {.$DEFINE COCOA_DEBUG_SETBOUNDS}
 {.$DEFINE COCOA_SPIN_DEBUG}
@@ -58,16 +59,11 @@ type
 
   TCocoaTextField = objcclass(NSTextField)
     callback: ICommonCallback;
-    function acceptsFirstResponder: Boolean; override;
-    function becomeFirstResponder: Boolean; override;
-    function RealResignFirstResponder: Boolean; message 'RealResignFirstResponder';
-    function resignFirstResponder: Boolean; override;
+    function acceptsFirstResponder: LCLObjCBoolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
-    function lclIsHandle: Boolean; override;
     // key
-    //procedure keyDown(event: NSEvent); override; -> keyDown doesn't work in NSTextField
     procedure keyUp(event: NSEvent); override;
     procedure textDidChange(notification: NSNotification); override;
     // mouse
@@ -86,14 +82,9 @@ type
   TCocoaSecureTextField = objcclass(NSSecureTextField)
   public
     callback: ICommonCallback;
-    function acceptsFirstResponder: Boolean; override;
-    function becomeFirstResponder: Boolean; override;
-    function RealResignFirstResponder: Boolean; message 'RealResignFirstResponder';
-    function resignFirstResponder: Boolean; override;
+    function acceptsFirstResponder: LCLObjCBoolean; override;
     procedure resetCursorRects; override;
-    function lclIsHandle: Boolean; override;
     // key
-    //procedure keyDown(event: NSEvent); override; -> keyDown doesn't work in NSTextField
     procedure keyUp(event: NSEvent); override;
     // mouse
     procedure mouseDown(event: NSEvent); override;
@@ -116,17 +107,13 @@ type
 
     supressTextChangeEvent: Integer; // if above zero, then don't send text change event
 
-    function acceptsFirstResponder: Boolean; override;
-    function becomeFirstResponder: Boolean; override;
-    function resignFirstResponder: Boolean; override;
+    function acceptsFirstResponder: LCLObjCBoolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
-    function lclIsHandle: Boolean; override;
 
     procedure changeColor(sender: id); override;
     // key
-    procedure keyDown(event: NSEvent); override;
     procedure keyUp(event: NSEvent); override;
     procedure flagsChanged(event: NSEvent); override;
     // mouse
@@ -147,16 +134,16 @@ type
 
     // delegate methods
     procedure textDidChange(notification: NSNotification); message 'textDidChange:';
+    procedure lclExpectedKeys(var wantTabs, wantArrows, wantReturn, wantAll: Boolean); override;
   end;
 
   { TCocoaFieldEditor }
 
   TCocoaFieldEditor = objcclass(NSTextView)
   public
-    function resignFirstResponder: Boolean; override;
-    // keyboard
-    procedure keyDown(event: NSEvent); override;
+    function lclGetCallback: ICommonCallback; override;
     // mouse
+    procedure keyDown(event: NSEvent); override;
     procedure mouseDown(event: NSEvent); override;
     procedure mouseUp(event: NSEvent); override;
     procedure rightMouseDown(event: NSEvent); override;
@@ -226,17 +213,17 @@ type
   end;
 
   TCocoaComboBox = objcclass(NSComboBox, NSComboBoxDataSourceProtocol, NSComboBoxDelegateProtocol)
+  private
+    userSel: boolean;
   public
     callback: IComboboxCallBack;
     list: TCocoaComboBoxList;
     resultNS: NSString;  //use to return values to combo
-    function acceptsFirstResponder: Boolean; override;
-    function becomeFirstResponder: Boolean; override;
-    function resignFirstResponder: Boolean; override;
+    function acceptsFirstResponder: LCLObjCBoolean; override;
     procedure textDidChange(notification: NSNotification); override;
-    procedure textDidEndEditing(notification: NSNotification); override;
     // NSComboBoxDataSourceProtocol
     function comboBox_objectValueForItemAtIndex_(combo: TCocoaComboBox; row: NSInteger): id; message 'comboBox:objectValueForItemAtIndex:';
+    function comboBox_indexOfItemWithStringValue(aComboBox: NSComboBox; string_: NSString): NSUInteger; message 'comboBox:indexOfItemWithStringValue:';
     function numberOfItemsInComboBox(combo: TCocoaComboBox): NSInteger; message 'numberOfItemsInComboBox:';
     //
     procedure dealloc; override;
@@ -250,11 +237,10 @@ type
     procedure comboBoxSelectionIsChanging(notification: NSNotification); message 'comboBoxSelectionIsChanging:';
     //
     procedure keyUp(event: NSEvent); override;
-    function lclIsHandle: Boolean; override;
     procedure setStringValue(avalue: NSString); override;
     function lclGetFrameToLayoutDelta: TRect; override;
     // mouse
-    function acceptsFirstMouse(event: NSEvent): Boolean; override;
+    function acceptsFirstMouse(event: NSEvent): LCLObjCBoolean; override;
     procedure mouseDown(event: NSEvent); override;
     procedure mouseUp(event: NSEvent); override;
     procedure rightMouseDown(event: NSEvent); override;
@@ -289,19 +275,16 @@ type
 
     isOwnerDrawn: Boolean;
     isOwnerMeasure: Boolean;
-    function acceptsFirstResponder: Boolean; override;
-    function becomeFirstResponder: Boolean; override;
-    function resignFirstResponder: Boolean; override;
+    function acceptsFirstResponder: LCLObjCBoolean; override;
     procedure dealloc; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     function lclGetFrameToLayoutDelta: TRect; override;
     procedure resetCursorRects; override;
-    function lclIsHandle: Boolean; override;
     procedure comboboxAction(sender: id); message 'comboboxAction:';
     function stringValue: NSString; override;
     // mouse
-    function acceptsFirstMouse(event: NSEvent): Boolean; override;
+    function acceptsFirstMouse(event: NSEvent): LCLObjCBoolean; override;
     procedure mouseDown(event: NSEvent); override;
     procedure mouseUp(event: NSEvent); override;
     procedure rightMouseDown(event: NSEvent); override;
@@ -331,15 +314,31 @@ type
     procedure StepperChanged(sender: NSObject); message 'StepperChanged:';
     // lcl
     function acceptsFirstResponder: Boolean; override;
-    function becomeFirstResponder: Boolean; override;
-    function resignFirstResponder: Boolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
-    function lclIsHandle: Boolean; override;
     // NSViewFix
     function fittingSize: NSSize; override;
   end;
 {$ELSE}
+
+  { TCocoaSpinEditStepper }
+
+  TCocoaSpinEditStepper = objcclass(NSStepper)
+    callback: ICommonCallback;
+    function acceptsFirstMouse(event: NSEvent): LCLObjCBoolean; override;
+    procedure mouseDown(event: NSEvent); override;
+    procedure mouseUp(event: NSEvent); override;
+    procedure rightMouseDown(event: NSEvent); override;
+    procedure rightMouseUp(event: NSEvent); override;
+    procedure rightMouseDragged(event: NSEvent); override;
+    procedure otherMouseDown(event: NSEvent); override;
+    procedure otherMouseUp(event: NSEvent); override;
+    procedure otherMouseDragged(event: NSEvent); override;
+    procedure mouseDragged(event: NSEvent); override;
+    procedure mouseMoved(event: NSEvent); override;
+    procedure scrollWheel(event: NSEvent); override;
+  end;
+
   TCocoaSpinEdit = objcclass(NSTextField, NSTextFieldDelegateProtocol)
     callback: ICommonCallback;
     Stepper: NSStepper;
@@ -349,25 +348,35 @@ type
     procedure dealloc; override;
     function updateStepper: boolean; message 'updateStepper';
     procedure UpdateControl(min, max, inc, avalue: double; ADecimalPlaces: Integer); message 'UpdateControl:::::';
-    procedure CreateSubcontrols(const AParams: TCreateParams); message 'CreateSubControls:';
+    procedure lclCreateSubcontrols(const AParams: TCreateParams); message 'lclCreateSubControls:';
+    procedure lclReleaseSubcontrols; message 'lclReleaseSubcontrols';
     procedure PositionSubcontrols(const ALeft, ATop, AWidth, AHeight: Integer); message 'PositionSubcontrols:ATop:AWidth:AHeight:';
     procedure StepperChanged(sender: NSObject); message 'StepperChanged:';
     procedure textDidEndEditing(notification: NSNotification); message 'textDidEndEditing:'; override;
     // NSTextFieldDelegateProtocol
     procedure controlTextDidChange(obj: NSNotification); override;
     // lcl
-    function acceptsFirstResponder: Boolean; override;
-    function becomeFirstResponder: Boolean; override;
-    function RealResignFirstResponder: Boolean; message 'RealResignFirstResponder';
-    function resignFirstResponder: Boolean; override;
+    function acceptsFirstResponder: LCLObjCBoolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
-    function lclIsHandle: Boolean; override;
     procedure lclSetVisible(AVisible: Boolean); override;
     procedure lclSetFrame(const r: TRect); override;
     // NSViewFix
     function fittingSize: NSSize; override;
+    // mouse
+    function acceptsFirstMouse(event: NSEvent): LCLObjCBoolean; override;
+    procedure mouseDown(event: NSEvent); override;
+    procedure mouseUp(event: NSEvent); override;
+    procedure rightMouseDown(event: NSEvent); override;
+    procedure rightMouseUp(event: NSEvent); override;
+    procedure rightMouseDragged(event: NSEvent); override;
+    procedure otherMouseDown(event: NSEvent); override;
+    procedure otherMouseUp(event: NSEvent); override;
+    procedure otherMouseDragged(event: NSEvent); override;
+    procedure mouseDragged(event: NSEvent); override;
+    procedure mouseMoved(event: NSEvent); override;
+    procedure scrollWheel(event: NSEvent); override;
   end;
 {$ENDIF}
 
@@ -383,8 +392,6 @@ function GetFieldEditor(afield: NSTextField): TCocoaFieldEditor;
 
 implementation
 
-uses CocoaInt;
-
 function GetFieldEditor(afield: NSTextField): TCocoaFieldEditor;
 var
   lFieldEditor: TCocoaFieldEditor;
@@ -396,11 +403,92 @@ begin
   window := afield.window;
   if window = nil then Exit;
 
+  {$ifdef BOOLFIX}
+  lText := window.fieldEditor_forObject_(Ord(True), afield);
+  {$else}
   lText := window.fieldEditor_forObject(True, afield);
+  {$endif}
   if (lText <> nil) and lText.isKindOfClass_(TCocoaFieldEditor) then
   begin
     Result := TCocoaFieldEditor(lText);
   end;
+end;
+
+{ TCocoaSpinEditStepper }
+
+function TCocoaSpinEditStepper.acceptsFirstMouse(event: NSEvent): LCLObjCBoolean;
+begin
+  Result:=true;
+end;
+
+procedure TCocoaSpinEditStepper.mouseDown(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+  begin
+    inherited mouseDown(event);
+    if Assigned(Callback) then
+      callback.MouseUpDownEvent(event, true);
+  end;
+end;
+
+procedure TCocoaSpinEditStepper.mouseUp(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited mouseUp(event);
+end;
+
+procedure TCocoaSpinEditStepper.rightMouseDown(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited rightMouseDown(event);
+end;
+
+procedure TCocoaSpinEditStepper.rightMouseUp(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited rightMouseUp(event);
+end;
+
+procedure TCocoaSpinEditStepper.rightMouseDragged(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited rightMouseDragged(event);
+end;
+
+procedure TCocoaSpinEditStepper.otherMouseDown(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited otherMouseDown(event);
+end;
+
+procedure TCocoaSpinEditStepper.otherMouseUp(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited otherMouseUp(event);
+end;
+
+procedure TCocoaSpinEditStepper.otherMouseDragged(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseMove(event) then
+    inherited otherMouseDragged(event);
+end;
+
+procedure TCocoaSpinEditStepper.mouseDragged(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseMove(event) then
+    inherited mouseDragged(event);
+end;
+
+procedure TCocoaSpinEditStepper.mouseMoved(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseMove(event) then
+    inherited mouseMoved(event);
+end;
+
+procedure TCocoaSpinEditStepper.scrollWheel(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.scrollWheel(event) then
+    inherited scrollWheel(event);
 end;
 
 { TCocoaReadOnlyView }
@@ -415,6 +503,7 @@ begin
 
   ctx := TCocoaContext.Create(NSGraphicsContext.currentContext);
   try
+    ctx.InitDraw(Round(dirtyRect.size.width), Round(dirtyRect.size.height));
     combobox.callback.ComboBoxDrawItem(itemIndex, ctx, NSRectToRect(frame), false);
   finally
     ctx.Free;
@@ -498,48 +587,26 @@ begin
     Result := NSView(v);
 end;
 
-function TCocoaFieldEditor.resignFirstResponder: Boolean;
-var
-  v : NSObject;
+function TCocoaFieldEditor.lclGetCallback: ICommonCallback;
 begin
-  v := GetEditBox(Self);
-  //DebugLn('[TCocoaFieldEditor.resignFirstResponder]');
-  if (v <> nil) then
-  begin
-    if v.isKindOfClass_(TCocoaTextField) then
-    begin
-      TCocoaTextField(v).RealResignFirstResponder();
-    end
-    else if v.isKindOfClass_(TCocoaSecureTextField) then
-    begin
-      TCocoaSecureTextField(v).RealResignFirstResponder();
-    end;
-  end;
-  Result := inherited resignFirstResponder;
+  if Assigned(delegate) then Result := NSObject(delegate).lclGetCallback
+  else Result := nil;
 end;
 
 procedure TCocoaFieldEditor.keyDown(event: NSEvent);
-var
-  cb  : ICommonCallback;
-  res : Boolean;
-  v   : NSView;
 begin
-  v := GetEditBox(Self);
-  if Assigned(v) then
-    cb := v.lclGetCallback
+  if event.keyCode = kVK_Return then
+    // 10.6 cocoa handles the editors Return key as "insertNewLine" command (that makes sense)
+    // which turns into textDidEndEditting done command (that also makes sense)
+    // however, it ends up in an endless loop of "end-editing" calls.
+    //
+    // By default, "Return" key would select the contents of the field
+    // so, inforcing it manually.
+    //
+    // todo: find the reason for the endless loop and resolve it properly
+    selectAll(self)
   else
-    cb := nil;
-
-  if not Assigned(cb) then
-  begin
     inherited keyDown(event);
-    Exit;
-  end;
-
-  cb.KeyEvPrepare(event);
-  cb.KeyEvBefore(res);
-  if res then inherited keyDown(event);
-  cb.KeyEvAfter;
 end;
 
 procedure TCocoaFieldEditor.mouseDown(event: NSEvent);
@@ -655,38 +722,9 @@ end;
 
 { TCocoaTextField }
 
-function TCocoaTextField.lclIsHandle: Boolean;
+function TCocoaTextField.acceptsFirstResponder: LCLObjCBoolean;
 begin
   Result := True;
-end;
-
-function TCocoaTextField.acceptsFirstResponder: Boolean;
-begin
-  Result := True;
-end;
-
-function TCocoaTextField.becomeFirstResponder: Boolean;
-begin
-  Result := inherited becomeFirstResponder;
-  callback.BecomeFirstResponder;
-end;
-
-function TCocoaTextField.RealResignFirstResponder: Boolean;
-begin
-  callback.ResignFirstResponder;
-  Result := True;
-end;
-
-// Do not propagate this event to the LCL,
-// because Cocoa NSTextField loses focus as soon as it receives it
-// and the shared editor gets focus instead.
-// see NSWindow.fieldEditor:forObject:
-// See http://www.cocoabuilder.com/archive/cocoa/103607-resignfirstresponder-called-immediately.html
-// See http://stackoverflow.com/questions/3192905/nstextfield-not-noticing-lost-focus-when-pressing-tab
-function TCocoaTextField.resignFirstResponder: Boolean;
-begin
-  //DebugLn('[TCocoaTextField.resignFirstResponder]');
-  Result := inherited resignFirstResponder;
 end;
 
 function TCocoaTextField.lclGetCallback: ICommonCallback;
@@ -785,29 +823,10 @@ end;
 
 { TCocoaTextView }
 
-function TCocoaTextView.lclIsHandle: Boolean;
-begin
-  Result := True;
-end;
-
 procedure TCocoaTextView.changeColor(sender: id);
 begin
   //preventing text color from being changed
   //inherited changeColor(sender);
-end;
-
-procedure TCocoaTextView.keyDown(event: NSEvent);
-var
-  res : Boolean;
-begin
-  if Assigned(callback) then
-  begin
-    callback.KeyEvPrepare(event);
-    callback.KeyEvBefore(res);
-    if res then inherited keyDown(event);
-    callback.KeyEvAfter;
-  end else
-    inherited keyDown(event);
 end;
 
 procedure TCocoaTextView.keyUp(event: NSEvent);
@@ -831,21 +850,9 @@ begin
   inherited flagsChanged(event);
 end;
 
-function TCocoaTextView.acceptsFirstResponder: Boolean;
+function TCocoaTextView.acceptsFirstResponder: LCLObjCBoolean;
 begin
   Result := True;
-end;
-
-function TCocoaTextView.becomeFirstResponder: Boolean;
-begin
-  Result := inherited becomeFirstResponder;
-  callback.BecomeFirstResponder;
-end;
-
-function TCocoaTextView.resignFirstResponder: Boolean;
-begin
-  Result := inherited resignFirstResponder;
-  callback.ResignFirstResponder;
 end;
 
 function TCocoaTextView.lclGetCallback: ICommonCallback;
@@ -937,7 +944,6 @@ end;
 function TCocoaTextView.lclIsEnabled: Boolean;
 begin
   Result := FEnabled;
-  if Result and CocoaWidgetSet.IsControlDisabledDueToModal(Self) then Result := False;
 end;
 
 procedure TCocoaTextView.lclSetEnabled(AEnabled: Boolean);
@@ -951,34 +957,20 @@ begin
     callback.SendOnTextChanged;
 end;
 
+procedure TCocoaTextView.lclExpectedKeys(var wantTabs, wantArrows, wantReturn,
+  wantAll: Boolean);
+begin
+  wantTabs := true;
+  wantArrows := true;
+  wantReturn := true;
+  wantAll := true;
+end;
+
 { TCocoaSecureTextField }
 
-function TCocoaSecureTextField.lclIsHandle: Boolean;
+function TCocoaSecureTextField.acceptsFirstResponder: LCLObjCBoolean;
 begin
   Result := True;
-end;
-
-function TCocoaSecureTextField.acceptsFirstResponder: Boolean;
-begin
-  Result := True;
-end;
-
-function TCocoaSecureTextField.becomeFirstResponder: Boolean;
-begin
-  Result := inherited becomeFirstResponder;
-  callback.BecomeFirstResponder;
-end;
-
-function TCocoaSecureTextField.RealResignFirstResponder: Boolean;
-begin
-  callback.ResignFirstResponder;
-  Result := True;
-end;
-
-function TCocoaSecureTextField.resignFirstResponder: Boolean;
-begin
-  //DebugLn('[TCocoaTextField.resignFirstResponder]');
-  Result := inherited resignFirstResponder;
 end;
 
 procedure TCocoaSecureTextField.resetCursorRects;
@@ -1117,11 +1109,6 @@ end;
 
 { TCocoaComboBox }
 
-function TCocoaComboBox.lclIsHandle: Boolean;
-begin
-  Result:=true;
-end;
-
 procedure TCocoaComboBox.setStringValue(avalue: NSString);
 var
   ch : Boolean;
@@ -1134,7 +1121,7 @@ begin
 
   inherited setStringValue(avalue);
 
-  if ch and Assigned(callback) then
+  if ch and userSel and Assigned(callback) then
     callback.SendOnChange;
 end;
 
@@ -1164,41 +1151,16 @@ begin
   end;
 end;
 
-function TCocoaComboBox.acceptsFirstResponder: Boolean;
+function TCocoaComboBox.acceptsFirstResponder: LCLObjCBoolean;
 begin
   Result := True;
 end;
 
-function TCocoaComboBox.becomeFirstResponder: Boolean;
-begin
-  Result := inherited becomeFirstResponder;
-  callback.BecomeFirstResponder;
-end;
-
-function TCocoaComboBox.resignFirstResponder: Boolean;
-begin
-  Result := inherited resignFirstResponder;
-  callback.ResignFirstResponder;
-end;
-
 procedure TCocoaComboBox.textDidChange(notification: NSNotification);
-var
-  TheEvent: NSEvent;
 begin
   inherited textDidChange(notification);
-  TheEvent := nsapp.currentevent;
-  if assigned(callback) and (TheEvent.type_ = NSKeyDown) then
-    callback.KeyEvent(TheEvent)
-end;
-
-procedure TCocoaComboBox.textDidEndEditing(notification: NSNotification);
-var
-  TheEvent: NSEvent;
-begin
-  inherited textDidEndEditing(notification);
-  TheEvent := nsapp.currentevent;
-  if assigned(callback) and (TheEvent.type_ = NSKeyDown) then
-    callback.KeyEvent(TheEvent)
+  if Assigned(callback) then
+    callback.SendOnChange;
 end;
 
 function TCocoaComboBox.comboBox_objectValueForItemAtIndex_(combo:TCocoaComboBox;
@@ -1209,6 +1171,26 @@ begin
     else Result:=NSStringUtf8(list[row]);
 end;
 
+function TCocoaComboBox.comboBox_indexOfItemWithStringValue(
+  aComboBox: NSComboBox; string_: NSString): NSUInteger;
+var
+  idx : integer;
+begin
+  idx := indexOfSelectedItem;
+  if (idx>=0) and (idx<list.Count) and (list[idx]=string_.UTF8String) then
+    // this is used for the case of the same items in the combobox
+    Result:=idx
+  else
+  begin
+    // todo: consider a faster search?
+    idx := list.IndexOf(string_.UTF8String);
+    if idx<0 then
+      Result := NSNotFound
+    else
+      Result := idx;
+  end;
+end;
+
 function TCocoaComboBox.numberOfItemsInComboBox(combo:TCocoaComboBox):NSInteger;
 begin
   if not Assigned(list) then Result:=0
@@ -1217,12 +1199,7 @@ end;
 
 procedure TCocoaComboBox.dealloc;
 begin
-  if Assigned(list) then
-  begin
-    list.Free;
-    list:=nil;
-  end;
-  resultNS.release;
+  if Assigned(resultNS) then resultNS.release;
   inherited dealloc;
 end;
 
@@ -1258,11 +1235,14 @@ var
 begin
   txt := comboBox_objectValueForItemAtIndex_(self, indexOfSelectedItem);
   if Assigned(txt) then setStringValue( txt );
-  callback.ComboBoxSelectionDidChange;
+  if userSel then
+    callback.ComboBoxSelectionDidChange;
+  userSel := false;
 end;
 
 procedure TCocoaComboBox.comboBoxSelectionIsChanging(notification: NSNotification);
 begin
+  userSel := true;
   callback.ComboBoxSelectionIsChanging;
 end;
 
@@ -1281,7 +1261,7 @@ begin
   inherited keyUp(event);
 end;
 
-function TCocoaComboBox.acceptsFirstMouse(event: NSEvent): Boolean;
+function TCocoaComboBox.acceptsFirstMouse(event: NSEvent): LCLObjCBoolean;
 begin
   Result:=true;
 end;
@@ -1358,32 +1338,14 @@ end;
 
 { TCocoaReadOnlyComboBox }
 
-function TCocoaReadOnlyComboBox.acceptsFirstResponder: Boolean;
+function TCocoaReadOnlyComboBox.acceptsFirstResponder: LCLObjCBoolean;
 begin
   Result := True;
 end;
 
-function TCocoaReadOnlyComboBox.becomeFirstResponder: Boolean;
-begin
-  Result := inherited becomeFirstResponder;
-  callback.BecomeFirstResponder;
-end;
-
-function TCocoaReadOnlyComboBox.resignFirstResponder: Boolean;
-begin
-  Result := inherited resignFirstResponder;
-  callback.ResignFirstResponder;
-end;
-
 procedure TCocoaReadOnlyComboBox.dealloc;
 begin
-  if Assigned(list) then
-  begin
-    list.Free;
-    list:=nil;
-  end;
-  if resultNS <> nil then
-    resultNS.release;
+  if resultNS <> nil then resultNS.release;
   inherited dealloc;
 end;
 
@@ -1429,11 +1391,6 @@ begin
     inherited resetCursorRects;
 end;
 
-function TCocoaReadOnlyComboBox.lclIsHandle: Boolean;
-begin
-  Result:=true;
-end;
-
 procedure TCocoaReadOnlyComboBox.comboboxAction(sender: id);
 begin
   //setTitle(NSSTR(PChar(Format('%d=%d', [indexOfSelectedItem, lastSelectedItemIndex])))); // <= for debugging
@@ -1452,7 +1409,7 @@ begin
     Result:=inherited stringValue;
 end;
 
-function TCocoaReadOnlyComboBox.acceptsFirstMouse(event: NSEvent): Boolean;
+function TCocoaReadOnlyComboBox.acceptsFirstMouse(event: NSEvent): LCLObjCBoolean;
 begin
   Result:=true;
 end;
@@ -1665,20 +1622,6 @@ begin
   Result := True;
 end;
 
-function TCocoaSpinEdit.becomeFirstResponder: Boolean;
-begin
-  Result := Edit.becomeFirstResponder;
-  if Assigned(callback) then
-    callback.BecomeFirstResponder;
-end;
-
-function TCocoaSpinEdit.resignFirstResponder: Boolean;
-begin
-  Result := inherited resignFirstResponder;
-  if Assigned(callback) then
-    callback.ResignFirstResponder;
-end;
-
 function TCocoaSpinEdit.lclGetCallback: ICommonCallback;
 begin
   Result := callback;
@@ -1687,11 +1630,6 @@ end;
 procedure TCocoaSpinEdit.lclClearCallback;
 begin
   callback := nil;
-end;
-
-function TCocoaSpinEdit.lclIsHandle: Boolean;
-begin
-  Result := True;
 end;
 
 function TCocoaSpinEdit.fittingSize: NSSize;
@@ -1705,20 +1643,11 @@ begin
   {$ENDIF}
 end;
 
-function TCocoaTextField.lclIsHandle: Boolean;
-begin
-  Result := True;
-end;
-
 {$ELSE}
 
 procedure TCocoaSpinEdit.dealloc;
 begin
-  if Stepper <> nil then
-    Stepper.release;
-  if NumberFormatter <> nil then
-    NumberFormatter.release;
-
+  lclReleaseSubControls;
   inherited dealloc;
 end;
 
@@ -1764,7 +1693,7 @@ begin
   end;
 end;
 
-procedure TCocoaSpinEdit.CreateSubcontrols(const AParams: TCreateParams);
+procedure TCocoaSpinEdit.lclCreateSubcontrols(const AParams: TCreateParams);
 var
   lParams: TCreateParams;
 begin
@@ -1779,7 +1708,8 @@ begin
   // Stepper
   lParams.X := AParams.X + AParams.Width - SPINEDIT_DEFAULT_STEPPER_WIDTH;
   lParams.Width := SPINEDIT_DEFAULT_STEPPER_WIDTH;
-  Stepper := NSStepper.alloc.lclInitWithCreateParams(lParams);
+  Stepper := TCocoaSpinEditStepper.alloc.lclInitWithCreateParams(lParams);
+  TCocoaSpinEditStepper(Stepper).callback := callback;
   Stepper.setValueWraps(False);
 
   // Change event for the stepper
@@ -1811,6 +1741,21 @@ begin
   setFormatter(NumberFormatter);}
 end;
 
+procedure TCocoaSpinEdit.lclReleaseSubcontrols;
+begin
+  if Assigned(Stepper) then
+  begin
+    Stepper.removeFromSuperview;
+    Stepper.release;
+    Stepper := nil;
+  end;
+  if Assigned(NumberFormatter) then
+  begin
+    NumberFormatter.release;
+    NumberFormatter := nil;
+  end;
+end;
+
 procedure TCocoaSpinEdit.PositionSubcontrols(const ALeft, ATop, AWidth, AHeight: Integer);
 begin
   lclSetFrame(Types.Bounds(ALeft, ATop, AWidth, AHeight));
@@ -1821,6 +1766,9 @@ var
   lNSStr: NSString;
   lStr: string;
 begin
+  // Stepper not might be assigend while creating or destroying handle
+  if not Assigned(Stepper) then Exit;
+
   lStr := Format('%.*f', [DecimalPlaces, Stepper.doubleValue()]);
   lNSStr := CocoaUtils.NSStringUtf8(lStr);
   setStringValue(lNSStr);
@@ -1843,28 +1791,9 @@ begin
   if Assigned(callback) then callback.SendOnTextChanged;
 end;
 
-function TCocoaSpinEdit.acceptsFirstResponder: Boolean;
+function TCocoaSpinEdit.acceptsFirstResponder: LCLObjCBoolean;
 begin
   Result := True;
-end;
-
-function TCocoaSpinEdit.becomeFirstResponder: Boolean;
-begin
-  Result := inherited becomeFirstResponder;
-  callback.BecomeFirstResponder;
-end;
-
-function TCocoaSpinEdit.RealResignFirstResponder: Boolean;
-begin
-  callback.ResignFirstResponder;
-  Result := True;
-end;
-
-// See TCocoaTextField.resignFirstResponder as to why this is done here
-function TCocoaSpinEdit.resignFirstResponder: Boolean;
-begin
-  //DebugLn('[TCocoaTextField.resignFirstResponder]');
-  Result := inherited resignFirstResponder;
 end;
 
 function TCocoaSpinEdit.lclGetCallback: ICommonCallback;
@@ -1886,15 +1815,14 @@ begin
     inherited resetCursorRects;
 end;
 
-function TCocoaSpinEdit.lclIsHandle: Boolean;
-begin
-  Result := True;
-end;
-
 procedure TCocoaSpinEdit.lclSetVisible(AVisible: Boolean);
 begin
   inherited lclSetVisible(AVisible);
+  {$ifdef BOOLFIX}
+  Stepper.setHidden_(Ord(not AVisible));
+  {$else}
   Stepper.setHidden(not AVisible);
+  {$endif}
 end;
 
 procedure TCocoaSpinEdit.lclSetFrame(const r: TRect);
@@ -1939,6 +1867,81 @@ begin
   {$IFDEF COCOA_SPIN_DEBUG}
   WriteLn('[TCocoaSpinEdit.fittingSize] width=', Result.width:0:0, ' height=', Result.height:0:0);
   {$ENDIF}
+end;
+
+function TCocoaSpinEdit.acceptsFirstMouse(event: NSEvent): LCLObjCBoolean;
+begin
+  Result:=true;
+end;
+
+procedure TCocoaSpinEdit.mouseDown(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+  begin
+    inherited mouseDown(event);
+    if Assigned(callback) then
+      callback.MouseUpDownEvent(event, true);
+  end;
+end;
+
+procedure TCocoaSpinEdit.mouseUp(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited mouseUp(event);
+end;
+
+procedure TCocoaSpinEdit.rightMouseDown(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited rightMouseDown(event);
+end;
+
+procedure TCocoaSpinEdit.rightMouseUp(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited rightMouseUp(event);
+end;
+
+procedure TCocoaSpinEdit.rightMouseDragged(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited rightMouseDragged(event);
+end;
+
+procedure TCocoaSpinEdit.otherMouseDown(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited otherMouseDown(event);
+end;
+
+procedure TCocoaSpinEdit.otherMouseUp(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseUpDownEvent(event) then
+    inherited otherMouseUp(event);
+end;
+
+procedure TCocoaSpinEdit.otherMouseDragged(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseMove(event) then
+    inherited otherMouseDragged(event);
+end;
+
+procedure TCocoaSpinEdit.mouseDragged(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseMove(event) then
+    inherited mouseDragged(event);
+end;
+
+procedure TCocoaSpinEdit.mouseMoved(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.MouseMove(event) then
+    inherited mouseMoved(event);
+end;
+
+procedure TCocoaSpinEdit.scrollWheel(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.scrollWheel(event) then
+    inherited scrollWheel(event);
 end;
 
 {$ENDIF}

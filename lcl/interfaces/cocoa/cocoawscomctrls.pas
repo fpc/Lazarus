@@ -4,6 +4,7 @@ interface
 
 {$mode delphi}
 {$modeswitch objectivec1}
+{$include cocoadefines.inc}
 
 {.$DEFINE COCOA_DEBUG_TABCONTROL}
 {.$DEFINE COCOA_DEBUG_LISTVIEW}
@@ -29,6 +30,7 @@ type
   TStatusBarCallback = class(TLCLCommonCallback, IStatusBarCallback, ICommonCallback)
     function GetBarsCount: Integer;
     function GetBarItem(idx: Integer; var txt: String; var width: Integer; var align: TAlignment): Boolean;
+    procedure DrawPanel(idx: Integer; const r: TRect);
   end;
 
   TCocoaWSStatusBar = class(TWSStatusBar)
@@ -113,7 +115,7 @@ type
                               // when initiated by Cocoa itself.
     checkedIdx : NSMutableIndexSet;
 
-    constructor Create(AOwner: NSObject; ATarget: TWinControl); override;
+    constructor Create(AOwner: NSObject; ATarget: TWinControl; AHandleView: NSView); override;
     destructor Destroy; override;
     function ItemsCount: Integer;
     function GetItemTextAt(ARow, ACol: Integer; var Text: String): Boolean;
@@ -138,6 +140,7 @@ type
       out ANSColumn: NSTableColumn; const ALV: TCustomListView; const AIndex: Integer; ASecondIndex: Integer = -1): Boolean;
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
     // Column
     class procedure ColumnDelete(const ALV: TCustomListView; const AIndex: Integer); override;
     class function  ColumnGetWidth(const ALV: TCustomListView; const AIndex: Integer; const {%H-}AColumn: TListColumn): Integer; override;
@@ -258,37 +261,6 @@ type
 
 implementation
 
-function CocoaTabIndexToLCLIndex(trg: TObject; src: TCocoaTabControl; aTabIndex: Integer): Integer;
-var
-  i : integer;
-  tb: TCustomTabControl;
-  hnd: HWND;
-  tbitem: TCocoaTabPage;
-begin
-  Result:=aTabIndex;
-  if not Assigned(trg) or not (trg is TCustomTabControl) then Exit;
-  if (aTabIndex<0) or (atabIndex>=src.fulltabs.count) then
-  begin
-    aTabIndex:=-1;
-    Exit;
-  end;
-
-  tbitem:=TCocoaTabPage(src.fulltabs.objectAtIndex(aTabIndex));
-  if NSView(tbitem.view).subviews.count=0 then
-  begin
-    aTabIndex:=-1;
-    Exit;
-  end;
-  hnd := HWND(NSView(tbitem.view).subviews.objectAtIndex(0));
-
-  tb:=TCustomTabControl(trg);
-  for i:=0 to tb.PageCount-1 do
-    if tb.Page[i].Handle = hnd then begin
-      Result:=i;
-      Exit;
-    end;
-end;
-
 { TStatusBarCallback }
 
 function TStatusBarCallback.GetBarsCount: Integer;
@@ -313,9 +285,45 @@ begin
   end else begin
     Result := (idx >= 0) and (idx < sb.Panels.Count);
     if not Result then Exit;
-    txt := sb.Panels[idx].Text;
+    if sb.Panels[idx].Style = psOwnerDraw
+      then txt := ''
+      else txt := sb.Panels[idx].Text;
     width := sb.Panels[idx].Width;
     align := sb.Panels[idx].Alignment;
+  end;
+end;
+
+procedure TStatusBarCallback.DrawPanel(idx: Integer; const r: TRect);
+var
+  sb  : TStatusBar;
+  msg : TLMDrawItems;
+  ctx : TCocoaContext;
+  dr  : TDrawItemStruct;
+  fr  : TRect;
+  sv  : Integer;
+begin
+  sb := TStatusBar(Target);
+  if sb.SimplePanel then Exit;
+  if (idx<0) or (idx >= sb.Panels.Count) then Exit;
+  if sb.Panels[idx].Style <> psOwnerDraw then Exit;
+
+  ctx := TCocoaContext.Create(NSGraphicsContext.currentContext);
+  sv := ctx.SaveDC;
+  try
+    FillChar(msg, sizeof(msg), 0);
+    FillChar(dr, sizeof(dr), 0);
+    msg.Ctl := Target.Handle;
+    msg.Msg := LM_DRAWITEM;
+    msg.DrawItemStruct := @dr;
+    dr.itemID := idx;
+    dr._hDC := HDC(ctx);
+    dr.rcItem := r;
+    fr := NSView(Owner).lclFrame;
+    ctx.InitDraw(fr.Right-fr.Left, fr.Bottom-fr.Top);
+    LCLMessageGlue.DeliverMessage(Target, msg);
+  finally
+    ctx.RestoreDC(sv);
+    ctx.Free;
   end;
 end;
 
@@ -334,7 +342,7 @@ begin
 
   Hdr.hwndFrom := FTarget.Handle;
   Hdr.Code := TCN_SELCHANGING;
-  Hdr.idFrom := CocoaTabIndexToLCLIndex(Target, TCocoaTabControl(Owner), aTabIndex);
+  Hdr.idFrom := TTabControl(Target).TabToPageIndex(ATabIndex);
   Msg.NMHdr := @Hdr;
   Msg.Result := 0;
   LCLMessageGlue.DeliverMessage(Target, Msg);
@@ -353,7 +361,7 @@ begin
 
   Hdr.hwndFrom := FTarget.Handle;
   Hdr.Code := TCN_SELCHANGE;
-  Hdr.idFrom := CocoaTabIndexToLCLIndex(Target, TCocoaTabControl(Owner), aTabIndex);
+  Hdr.idFrom := TTabControl(Target).TabToPageIndex(ATabIndex);
   Msg.NMHdr := @Hdr;
   Msg.Result := 0;
   LCLMessageGlue.DeliverMessage(Target, Msg);
@@ -409,7 +417,11 @@ end;
 class procedure TCocoaWSStatusBar.Update(const AStatusBar: TStatusBar);
 begin
   if not Assigned(AStatusBar) or not (AStatusBar.HandleAllocated) then Exit;
+  {$ifdef BOOLFIX}
+  TCocoaStatusBar(AStatusBar.Handle).setNeedsDisplay__(Ord(true));
+  {$else}
   TCocoaStatusBar(AStatusBar.Handle).setNeedsDisplay_(true);
+  {$endif}
 end;
 
 class procedure TCocoaWSStatusBar.GetPreferredSize(const AWinControl: TWinControl;
@@ -460,10 +472,7 @@ begin
     tv.callback := TLCLCommonCallback.Create(tv, AWinControl);
     TLCLCommonCallback(tv.callback.GetCallbackObject).BlockCocoaUpDown := true;
     lControl.callback := tv.callback;
-
-    // view.addSubview works better than setView, no idea why
-    lControl.view.setAutoresizesSubviews(True);
-    lControl.view.addSubview(tv);
+    lControl.setView(tv);
 
     Result := TLCLIntfHandle(tv);
   end;
@@ -562,6 +571,7 @@ begin
   Result := nil;
   if ATabControl = nil then Exit;
   if not ATabControl.HandleAllocated then Exit;
+  if not (ATabControl is TPageControl) then Exit;
   Result := TCocoaTabControl(ATabControl.Handle);
 end;
 
@@ -571,16 +581,23 @@ var
   lTabControl: TCustomTabControl = nil;
   lTabStyle: NSTabViewType = NSTopTabsBezelBorder;
 begin
-  lTabControl := TCustomTabControl(AWinControl);
-  lControl := TCocoaTabControl.alloc.lclInitWithCreateParams(AParams);
-  lTabStyle := LCLTabPosToNSTabStyle(lTabControl.ShowTabs, lTabControl.BorderWidth, lTabControl.TabPosition);
-  lControl.setTabViewType(lTabStyle);
-  lControl.lclEnabled := AWinControl.Enabled;
-  Result := TLCLIntfHandle(lControl);
-  if Result <> 0 then
+  if (AWinControl is TPageControl) then
   begin
-    lControl.callback := TLCLTabControlCallback.Create(lControl, AWinControl);
-    lControl.setDelegate(lControl);
+    lTabControl := TCustomTabControl(AWinControl);
+    lControl := TCocoaTabControl.alloc.lclInitWithCreateParams(AParams);
+    lTabStyle := LCLTabPosToNSTabStyle(lTabControl.ShowTabs, lTabControl.BorderWidth, lTabControl.TabPosition);
+    lControl.setTabViewType(lTabStyle);
+    lControl.lclEnabled := AWinControl.Enabled;
+    Result := TLCLIntfHandle(lControl);
+    if Result <> 0 then
+    begin
+      lControl.callback := TLCLTabControlCallback.Create(lControl, AWinControl);
+      lControl.setDelegate(lControl);
+    end;
+  end
+  else
+  begin
+    Result := TCocoaWSCustomGroupBox.CreateHandle(AWinControl, AParams);
   end;
 end;
 
@@ -593,12 +610,14 @@ begin
   WriteLn('[TCocoaWSCustomTabControl.AddPage] AChild='+IntToStr(PtrInt(AChild)));
   {$ENDIF}
   if not Assigned(ATabControl) or not ATabControl.HandleAllocated then Exit;
+  if not (ATabControl is TPageControl) then Exit;
   lTabControl := TCocoaTabControl(ATabControl.Handle);
   AChild.HandleNeeded();
   if not Assigned(AChild) or not AChild.HandleAllocated then Exit;
   lTabPage := TCocoaWSCustomPage.GetCocoaTabPageFromHandle(AChild.Handle);
 
   lTabControl.exttabInsertTabViewItem_atIndex(lTabPage, AIndex);
+
   {$IFDEF COCOA_DEBUG_TABCONTROL}
   WriteLn('[TCocoaWSCustomTabControl.AddPage] END');
   {$ENDIF}
@@ -610,6 +629,7 @@ var
   lTabPage: TCocoaTabPage;
 begin
   if not Assigned(ATabControl) or not ATabControl.HandleAllocated then Exit;
+  if not (ATabControl is TPageControl) then Exit;
   lTabControl := TCocoaTabControl(ATabControl.Handle);
   AChild.HandleNeeded();
   if not Assigned(AChild) or not AChild.HandleAllocated then Exit;
@@ -625,6 +645,7 @@ var
   lTabPage: NSTabViewItem;
 begin
   if not Assigned(ATabControl) or not ATabControl.HandleAllocated then Exit;
+  if not (ATabControl is TPageControl) then Exit;
   lTabControl := TCocoaTabControl(ATabControl.Handle);
 
   lTabPage := NSTabViewItem(lTabControl.fulltabs.objectAtIndex(AIndex));
@@ -640,6 +661,7 @@ var
 begin
   Result := -1;
   if not Assigned(ATabControl) or not ATabControl.HandleAllocated then Exit;
+  if not (ATabControl is TPageControl) then Exit;
   lTabControl := TCocoaTabControl(ATabControl.Handle);
 
   pt.x := Round(AClientPos.x + lTabControl.contentRect.origin.x);
@@ -661,16 +683,14 @@ end;
 
 class procedure TCocoaWSCustomTabControl.SetPageIndex(const ATabControl: TCustomTabControl; const AIndex: integer);
 var
-  lTabControl: TCocoaTabControl;
-  lTabCount: NSInteger;
-  h : id;
-  i : NSUInteger;
+  i  : NSInteger;
   tb : TCocoaTabPageView;
 begin
   {$IFDEF COCOA_DEBUG_TABCONTROL}
   WriteLn('[TCocoaWSCustomTabControl.SetPageIndex]');
   {$ENDIF}
   if not Assigned(ATabControl) or not ATabControl.HandleAllocated then Exit;
+  if not (ATabControl is TPageControl) then Exit;
   if (AIndex<0) or (AIndex>=ATabControl.PageCount) then Exit;
   tb := TCocoaTabPageView(ATabControl.Page[AIndex].Handle);
   if not Assigned(tb) then Exit;
@@ -687,6 +707,7 @@ var
   lOldTabStyle, lTabStyle: NSTabViewType;
 begin
   if not Assigned(ATabControl) or not ATabControl.HandleAllocated then Exit;
+  if not (ATabControl is TPageControl) then Exit;
   lTabControl := TCocoaTabControl(ATabControl.Handle);
 
   lOldTabStyle := lTabControl.tabViewType();
@@ -700,6 +721,7 @@ var
   lOldTabStyle, lTabStyle: NSTabViewType;
 begin
   if not Assigned(ATabControl) or not ATabControl.HandleAllocated then Exit;
+  if not (ATabControl is TPageControl) then Exit;
   lTabControl := TCocoaTabControl(ATabControl.Handle);
 
   lOldTabStyle := lTabControl.tabViewType();
@@ -716,7 +738,6 @@ begin
   Result := False;
   AScroll := nil;
   ATableControl := nil;
-  ALV.HandleNeeded();
   if not Assigned(ALV) or not ALV.HandleAllocated then Exit;
   AScroll := TCocoaListView(ALV.Handle);
 
@@ -789,17 +810,27 @@ begin
     lCocoaLV.setDocumentView(lTableLV);
     lCocoaLV.setHasVerticalScroller(True);
 
-    lclcb := TLCLListViewCallback.Create(lTableLV, AWinControl);
+    lclcb := TLCLListViewCallback.Create(lTableLV, AWinControl, lCocoaLV);
     lclcb.listView := TCustomListView(AWinControl);
     lTableLV.callback := lclcb;
     lTableLV.setDataSource(lTableLV);
     lTableLV.setDelegate(lTableLV);
     lTableLV.setAllowsColumnReordering(False);
     lCocoaLV.callback := lclcb;
+
+    ScrollViewSetBorderStyle(lCocoaLV, TCustomListView(AWinControl).BorderStyle);
+
     {$IFDEF COCOA_DEBUG_LISTVIEW}
     WriteLn(Format('[TCocoaWSCustomListView.CreateHandle] headerView=%d', [PtrInt(lTableLV.headerView)]));
     {$ENDIF}
   end;
+end;
+
+class procedure TCocoaWSCustomListView.SetBorderStyle(
+  const AWinControl: TWinControl; const ABorderStyle: TBorderStyle);
+begin
+  if not Assigned(AWinControl) or not AWinControl.HandleAllocated then Exit;
+  ScrollViewSetBorderStyle(NSScrollView(AWinControl.Handle), ABorderStyle);
 end;
 
 class procedure TCocoaWSCustomListView.ColumnDelete(const ALV: TCustomListView;
@@ -861,6 +892,7 @@ begin
   lTitle := NSStringUTF8(AColumn.Caption);
   lNSColumn := NSTableColumn.alloc.initWithIdentifier(lTitle);
   lNSColumn.headerCell.setStringValue(lTitle);
+  lNSColumn.setResizingMask(NSTableColumnUserResizingMask);
   lTableLV.addTableColumn(lNSColumn);
   lTitle.release;
 end;
@@ -892,7 +924,7 @@ var
 begin
   if not CheckColumnParams(lTableLV, lNSColumn, ALV, AIndex) then Exit;
 
-  if AAutoSize then lResizeMask := NSTableColumnAutoresizingMask
+  if AAutoSize then lResizeMask := NSTableColumnAutoresizingMask or NSTableColumnUserResizingMask
   else lResizeMask := NSTableColumnUserResizingMask;
   lNSColumn.setResizingMask(lResizeMask);
 end;
@@ -913,7 +945,11 @@ begin
   else
     lNSColumn.headerCell.setStringValue(lNSCaption);
 
+  {$ifdef BOOLFIX}
+  lTableLV.headerView.setNeedsDisplay__(Ord(true)); // forces the newly set Value (even for setTitle!)
+  {$else}
   lTableLV.headerView.setNeedsDisplay_(true); // forces the newly set Value (even for setTitle!)
+  {$endif}
   lNSCaption.release;
 end;
 
@@ -978,8 +1014,11 @@ var
   lNSColumn: NSTableColumn;
 begin
   if not CheckColumnParams(lTableLV, lNSColumn, ALV, AIndex) then Exit;
-
+  {$ifdef BOOLFIX}
+  lNSColumn.setHidden_(Ord(not AVisible));
+  {$else}
   lNSColumn.setHidden(not AVisible);
+  {$endif}
 end;
 
 class procedure TCocoaWSCustomListView.ItemDelete(const ALV: TCustomListView;
@@ -988,21 +1027,16 @@ var
   lCocoaLV: TCocoaListView;
   lTableLV: TCocoaTableListView;
   lclcb : TLCLListViewCallback;
-  lStr: NSString;
 begin
   {$IFDEF COCOA_DEBUG_TABCONTROL}
   WriteLn(Format('[TCocoaWSCustomListView.ItemDelete] AIndex=%d', [AIndex]));
   {$ENDIF}
   if not CheckParamsCb(lCocoaLV, lTableLV, lclcb, ALV) then Exit;
-  //lTableLV.deleteItemForRow(AIndex);
 
-  // TListView item would actually be removed after call to ItemDelete()
-  // thus have to decrease the count, as reloadDate might
-  // request the updated itemCount immediately
   lclcb.tempItemsCountDelta := -1;
   lclcb.checkedIdx.shiftIndexesStartingAtIndex_by(AIndex, -1);
 
-  lTableLV.reloadData();
+  lTableLV.lclInsDelRow(AIndex, false);
 
   lclcb.tempItemsCountDelta := 0;
 end;
@@ -1017,6 +1051,10 @@ begin
   Result:=Bounds(0,0,0,0);
   if not CheckParams(lCocoaLV, lTableLV, ALV) then Exit;
   LCLGetItemRect(lTableLV, AIndex, ASubItem, Result);
+  case ACode of
+    drLabel: Result := lTableLV.lclGetLabelRect(AIndex, ASubItem, Result);
+    drIcon:  Result := lTableLV.lclGetIconRect(AIndex, ASubItem, Result);
+  end;
 end;
 
 class function TCocoaWSCustomListView.ItemGetChecked(
@@ -1063,35 +1101,17 @@ class procedure TCocoaWSCustomListView.ItemInsert(const ALV: TCustomListView;
 var
   lCocoaLV: TCocoaListView;
   lTableLV: TCocoaTableListView;
-  i, lColumnCount: Integer;
-  lColumn: NSTableColumn;
-  lStr: string;
-  lNSStr: NSString;
   lclcb: TLCLListViewCallback;
 begin
   {$IFDEF COCOA_DEBUG_TABCONTROL}
   WriteLn(Format('[TCocoaWSCustomListView.ItemInsert] AIndex=%d', [AIndex]));
   {$ENDIF}
   if not CheckParamsCb(lCocoaLV, lTableLV, lclcb, ALV) then Exit;
-  lColumnCount := lTableLV.tableColumns.count();
-  {$IFDEF COCOA_DEBUG_TABCONTROL}
-  WriteLn(Format('[TCocoaWSCustomListView.ItemInsert]=> lColumnCount=%d', [lColumnCount]));
-  {$ENDIF}
-  {for i := 0 to lColumnCount-1 do
-  begin
-    lColumn := lTableLV.tableColumns.objectAtIndex(i);
-    if i = 0 then
-      lStr := AItem.Caption
-    else if (i-1 < AItem.SubItems.Count) then
-      lStr := AItem.SubItems.Strings[i-1]
-    else
-      lStr := '';
-    lNSStr := NSStringUTF8(lStr);
-    lTableLV.setStringValue_forCol_row(lNSStr, i, AIndex);
-    lNSStr.release;
-  end;}
+
   lclcb.checkedIdx.shiftIndexesStartingAtIndex_by(AIndex, 1);
-  lTableLV.reloadData();
+
+  lTableLV.lclInsDelRow(AIndex, true);
+
   lTableLV.sizeToFit();
 end;
 
@@ -1333,8 +1353,17 @@ begin
 
   ScrollViewSetScrollStyles(lCocoaLV, AValue);
 
+  {$ifdef BOOLFIX}
+  lCocoaLV.setNeedsDisplay__(Ord(true));
+  {$else}
   lCocoaLV.setNeedsDisplay_(true);
+  {$endif}
+
+  {$ifdef BOOLFIX}
+  lCocoaLV.documentView.setNeedsDisplay__(Ord(true));
+  {$else}
   lCocoaLV.documentView.setNeedsDisplay_(true);
+  {$endif}
 end;
 
 { TCocoaWSProgressBar }
@@ -1414,9 +1443,9 @@ end; *)
 type
   TProtCustomListView = class(TCustomListView);
 
-constructor TLCLListViewCallback.Create(AOwner: NSObject; ATarget: TWinControl);
+constructor TLCLListViewCallback.Create(AOwner: NSObject; ATarget: TWinControl; AHandleView: NSView);
 begin
-  inherited Create(AOwner, ATarget);
+  inherited Create(AOwner, ATarget, AHandleView);
   checkedIdx := NSMutableIndexSet.alloc.init;
 end;
 
@@ -1460,9 +1489,19 @@ end;
 function TLCLListViewCallback.GetItemImageAt(ARow, ACol: Integer;
   var imgIdx: Integer): Boolean;
 begin
-  Result := (ARow >= 0) and (ARow<listView.Items.Count);
+  Result := (ACol >= 0) and (ACol < listView.ColumnCount)
+    and (ARow >= 0) and (ARow < listView.Items.Count);
+
   if not Result then Exit;
-  imgIdx := listView.Items[ARow].ImageIndex;
+
+  if ACol = 0 then
+    imgIdx := listView.Items[ARow].ImageIndex
+  else
+  begin
+    dec(ACol);
+    if (ACol >=0) and (ACol < listView.Items[ARow].SubItems.Count) then
+      imgIdx := listView.Items[ARow].SubItemImages[ACol];
+  end;
 end;
 
 type

@@ -18,6 +18,7 @@ unit CocoaScrollers;
 {$modeswitch objectivec1}
 {$modeswitch objectivec2}
 {$interfaces corba}
+{$include cocoadefines.inc}
 
 interface
 
@@ -43,13 +44,10 @@ type
     function initWithFrame(ns: NSRect): id; override;
     procedure dealloc; override;
     procedure setFrame(aframe: NSRect); override;
-    function acceptsFirstResponder: Boolean; override;
-    function becomeFirstResponder: Boolean; override;
-    function resignFirstResponder: Boolean; override;
+    function acceptsFirstResponder: LCLObjCBoolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
-    function lclIsHandle: Boolean; override;
     function lclClientFrame: TRect; override;
     function lclContentView: NSView; override;
     procedure setDocumentView(aView: NSView); override;
@@ -68,10 +66,12 @@ type
     callback: ICommonCallback;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
-    function lclIsHandle: Boolean; override;
     function lclContentView: NSView; override;
     function lclClientFrame: TRect; override;
     function lclIsMouseInAuxArea(event: NSEvent): Boolean; override;
+    procedure lclUpdate; override;
+    procedure lclInvalidateRect(const r: TRect); override;
+    procedure lclInvalidate; override;
 
     procedure setDocumentView(AView: NSView); message 'setDocumentView:';
     function documentView: NSView; message 'documentView';
@@ -87,7 +87,7 @@ type
     function allocHorizontalScroller(avisible: Boolean): NSScroller; message 'allocHorizontalScroller:';
     function allocVerticalScroller(avisible: Boolean): NSScroller; message 'allocVerticalScroller:';
     // mouse
-    function acceptsFirstMouse(event: NSEvent): Boolean; override;
+    function acceptsFirstMouse(event: NSEvent): LCLObjCBoolean; override;
     procedure mouseDown(event: NSEvent); override;
     procedure mouseUp(event: NSEvent); override;
     procedure rightMouseDown(event: NSEvent); override;
@@ -115,17 +115,14 @@ type
 
     procedure actionScrolling(sender: NSObject); message 'actionScrolling:';
     function IsHorizontal: Boolean; message 'IsHorizontal';
-    function acceptsFirstResponder: Boolean; override;
-    function becomeFirstResponder: Boolean; override;
-    function resignFirstResponder: Boolean; override;
+    function acceptsFirstResponder: LCLObjCBoolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
-    function lclIsHandle: Boolean; override;
     function lclPos: Integer; message 'lclPos';
     procedure lclSetPos(aPos: integer); message 'lclSetPos:';
     // mouse
-    function acceptsFirstMouse(event: NSEvent): Boolean; override;
+    function acceptsFirstMouse(event: NSEvent): LCLObjCBoolean; override;
     procedure mouseDown(event: NSEvent); override;
     procedure mouseUp(event: NSEvent); override;
     procedure rightMouseDown(event: NSEvent); override;
@@ -199,7 +196,11 @@ begin
   // todo: call scroll event?
   sc.setDoubleValue(v);
 
+  {$ifdef BOOLFIX}
+  sc.setNeedsDisplay__(Ord(true));
+  {$else}
   sc.setNeedsDisplay_(true);
+  {$endif}
 end;
 
 function AdjustScrollerArrow(sc: TCocoaScrollBar; prt: NSScrollerPart): Boolean;
@@ -230,7 +231,11 @@ begin
   begin
   // todo: call scroll event?
     sc.setDoubleValue(v);
+    {$ifdef BOOLFIX}
+    sc.setNeedsDisplay__(Ord(true));
+    {$else}
     sc.setNeedsDisplay_(true);
+    {$endif}
   end;
 end;
 
@@ -284,11 +289,6 @@ begin
   callback := nil;
 end;
 
-function TCocoaManualScrollView.lclIsHandle: Boolean;
-begin
-  Result := true;
-end;
-
 function TCocoaManualScrollView.lclContentView: NSView;
 begin
   Result:=fdocumentView;
@@ -306,6 +306,21 @@ end;
 function TCocoaManualScrollView.lclIsMouseInAuxArea(event: NSEvent): Boolean;
 begin
   Result := isMouseEventInScrollBar(Self, event);
+end;
+
+procedure TCocoaManualScrollView.lclUpdate;
+begin
+  documentView.lclUpdate;
+end;
+
+procedure TCocoaManualScrollView.lclInvalidateRect(const r: TRect);
+begin
+  documentView.lclInvalidateRect(r);
+end;
+
+procedure TCocoaManualScrollView.lclInvalidate;
+begin
+  documentView.lclInvalidate;
 end;
 
 procedure TCocoaManualScrollView.setDocumentView(AView: NSView);
@@ -337,8 +352,13 @@ procedure allocScroller(parent: TCocoaManualScrollView; var sc: NSScroller; dst:
 begin
   sc:=TCocoaScrollBar(TCocoaScrollBar.alloc).initWithFrame(dst);
   parent.addSubview(sc);
+  {$ifdef BOOLFIX}
+  sc.setEnabled_(Ord(true));
+  sc.setHidden_(Ord(not AVisible));
+  {$else}
   sc.setEnabled(true);
   sc.setHidden(not AVisible);
+  {$endif}
   TCocoaScrollBar(sc).preventBlock := true;
   //Suppress scrollers notifications.
   TCocoaScrollBar(sc).callback := parent.callback;
@@ -392,7 +412,11 @@ begin
   if not NSEqualRects(doc.frame, f) then
   begin
     doc.setFrame(f);
+    {$ifdef BOOLFIX}
+    doc.setNeedsDisplay__(Ord(true));
+    {$else}
     doc.setNeedsDisplay_(true);
+    {$endif}
   end;
 end;
 
@@ -411,13 +435,21 @@ begin
 
     if fvscroll.isHidden then
     begin
+      {$ifdef BOOLFIX}
+      fvscroll.setHidden_(Ord(false));
+      {$else}
       fvscroll.setHidden(false);
+      {$endif}
       ch := true;
     end;
   end
   else if Assigned(fvscroll) and not fvscroll.isHidden then
   begin
+    {$ifdef BOOLFIX}
+    fvscroll.setHidden_(Ord(true));
+    {$else}
     fvscroll.setHidden(true);
+    {$endif}
     ch := true;
   end;
   if ch then
@@ -441,13 +473,21 @@ begin
     end;
     if fhscroll.isHidden then
     begin
+      {$ifdef BOOLFIX}
+      fhscroll.setHidden_(Ord(false));
+      {$else}
       fhscroll.setHidden(false);
+      {$endif}
       ch := true;
     end;
   end
   else if Assigned(fhscroll) and (not fhscroll.isHidden) then
   begin
+    {$ifdef BOOLFIX}
+    fhscroll.setHidden_(Ord(true));
+    {$else}
     fhscroll.setHidden(true);
+    {$endif}
     ch := true;
   end;
 
@@ -513,7 +553,7 @@ begin
   end;
 end;
 
-function TCocoaManualScrollView.acceptsFirstMouse(event: NSEvent): Boolean;
+function TCocoaManualScrollView.acceptsFirstMouse(event: NSEvent): LCLObjCBoolean;
 begin
   Result:=true;
 end;
@@ -618,11 +658,6 @@ end;
 
 
 { TCocoaScrollView }
-
-function TCocoaScrollView.lclIsHandle: Boolean;
-begin
-  Result := True;
-end;
 
 function TCocoaScrollView.lclClientFrame: TRect;
 begin
@@ -754,23 +789,9 @@ begin
   end;
 end;
 
-function TCocoaScrollView.acceptsFirstResponder: Boolean;
+function TCocoaScrollView.acceptsFirstResponder: LCLObjCBoolean;
 begin
   Result := True;
-end;
-
-function TCocoaScrollView.becomeFirstResponder: Boolean;
-begin
-  Result := inherited becomeFirstResponder;
-  if Assigned(callback) then
-    callback.BecomeFirstResponder;
-end;
-
-function TCocoaScrollView.resignFirstResponder: Boolean;
-begin
-  Result := inherited resignFirstResponder;
-  if Assigned(callback) then
-    callback.ResignFirstResponder;
 end;
 
 function TCocoaScrollView.lclGetCallback: ICommonCallback;
@@ -821,11 +842,6 @@ begin
   Result := frame.size.width > frame.size.height;
 end;
 
-function TCocoaScrollBar.lclIsHandle: Boolean;
-begin
-  Result := True;
-end;
-
 function TCocoaScrollBar.lclPos: Integer;
 begin
   Result:=round( floatValue * (maxint-minInt-pageInt)) + minInt;
@@ -846,7 +862,7 @@ begin
   end;
 end;
 
-function TCocoaScrollBar.acceptsFirstMouse(event: NSEvent): Boolean;
+function TCocoaScrollBar.acceptsFirstMouse(event: NSEvent): LCLObjCBoolean;
 begin
   Result:=true;
 end;
@@ -959,23 +975,9 @@ begin
     inherited scrollWheel(event);
 end;
 
-function TCocoaScrollBar.acceptsFirstResponder: Boolean;
+function TCocoaScrollBar.acceptsFirstResponder: LCLObjCBoolean;
 begin
   Result := True;
-end;
-
-function TCocoaScrollBar.becomeFirstResponder: Boolean;
-begin
-  Result := inherited becomeFirstResponder;
-  if Assigned(callback) then
-    callback.BecomeFirstResponder;
-end;
-
-function TCocoaScrollBar.resignFirstResponder: Boolean;
-begin
-  Result := inherited resignFirstResponder;
-  if Assigned(callback) then
-    callback.ResignFirstResponder;
 end;
 
 function TCocoaScrollBar.lclGetCallback: ICommonCallback;

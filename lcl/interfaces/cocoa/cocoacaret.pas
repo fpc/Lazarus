@@ -114,7 +114,9 @@ begin
   GlobalCaretNeeded;
 
   if Assigned(GlobalCaret) then
-    Result := GlobalCaret.CreateCaret(View, Bitmap, Width, Height);
+    Result := GlobalCaret.CreateCaret(View, Bitmap, Width, Height)
+  else
+    Result := false;
 end;
 
 function GetCaretBlinkTime: Cardinal;

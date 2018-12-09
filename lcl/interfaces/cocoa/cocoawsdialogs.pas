@@ -18,6 +18,7 @@ unit CocoaWSDialogs;
 {$mode objfpc}{$H+}
 {$modeswitch objectivec1}
 {$modeswitch objectivec2}
+{$include cocoadefines.inc}
 
 interface
 
@@ -188,10 +189,17 @@ var
 
     // "Format:" label
     lText := NSTextField.alloc.initWithFrame(NSNullRect);
+    {$ifdef BOOLFIX}
+    lText.setBezeled_(Ord(False));
+    lText.setDrawsBackground_(Ord(False));
+    lText.setEditable_(Ord(False));
+    lText.setSelectable_(Ord(False));
+    {$else}
     lText.setBezeled(False);
     lText.setDrawsBackground(False);
     lText.setEditable(False);
     lText.setSelectable(False);
+    {$endif}
     lTextStr := NSStringUTF8('Format:');
     lText.setStringValue(lTextStr);
     lText.sizeToFit;

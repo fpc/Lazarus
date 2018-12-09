@@ -86,6 +86,8 @@ type
     constructor Create(APrinter: TPrinter); virtual;
     procedure BeginDoc; virtual;
     procedure NewPage;  virtual;
+    procedure BeginPage; virtual;
+    procedure EndPage; virtual;
     procedure EndDoc; virtual;
     procedure Changing; override;
 
@@ -228,6 +230,8 @@ type
      
      procedure DoBeginDoc; virtual;
      procedure DoNewPage; virtual;
+     procedure DoBeginPage; virtual;
+     procedure DoEndPage; virtual;
      procedure DoEndDoc(aAborded : Boolean); virtual;
      procedure DoAbort; virtual;
      procedure DoResetPrintersList; virtual;
@@ -273,6 +277,8 @@ type
      procedure BeginDoc;
      procedure EndDoc;
      procedure NewPage;
+     procedure BeginPage;
+     procedure EndPage;
      procedure Refresh;
      procedure SetPrinter(aName : String);
      Procedure RestoreDefaultBin; virtual;
@@ -367,7 +373,9 @@ begin
   end;
   //Call the specifique Begindoc
   DoBeginDoc;
-  
+
+  BeginPage;
+
   // Set font resolution
   if not RawMode then
     Canvas.Font.PixelsPerInch := YDPI;
@@ -376,6 +384,9 @@ end;
 //End the current document
 procedure TPrinter.EndDoc;
 begin
+
+  EndPage;
+
   //Check if Printer print otherwise, exception
   CheckPrinting(True);
 
@@ -392,11 +403,36 @@ end;
 //Create an new page
 procedure TPrinter.NewPage;
 begin
+  if TMethod(@Self.DoNewPage).Code = Pointer(@TPrinter.DoNewPage) then
+  begin
+    // DoNewPage has not been overriden, use the new method
+    EndPage;
+    BeginPage;
+  end else
+  begin
+    // Use the old method as DoNewPage has been overriden in descendat TPrinter
+    CheckPrinting(True);
+    Inc(fPageNumber);
+    if not RawMode then
+      TPrinterCanvas(Canvas).NewPage;
+    DoNewPage;
+  end;
+end;
+
+procedure TPrinter.BeginPage;
+begin
   CheckPrinting(True);
-  Inc(fPageNumber);
+  inc(fPageNumber);
   if not RawMode then
-    TPrinterCanvas(Canvas).NewPage;
-  DoNewPage;
+    TPrinterCanvas(Canvas).BeginPage;
+  DoBeginPage;
+end;
+
+procedure TPrinter.EndPage;
+begin
+  if not RawMode then
+    TPrinterCanvas(Canvas).EndPage;
+  DoEndPage;
 end;
 
 //Clear Printers & Fonts list
@@ -485,7 +521,7 @@ begin
   Written := 0;
 end;
 
-function TPrinter.Write(const S: ansistring): Boolean; overload;
+function TPrinter.Write(const s: ansistring): boolean;
 var
   Written: integer;
 begin
@@ -768,6 +804,16 @@ begin
 end;
 
 procedure TPrinter.DoNewPage;
+begin
+  //Override this method
+end;
+
+procedure TPrinter.DoBeginPage;
+begin
+  //Override this method
+end;
+
+procedure TPrinter.DoEndPage;
 begin
   //Override this method
 end;
@@ -1301,7 +1347,17 @@ end;
 
 procedure TPrinterCanvas.NewPage;
 begin
+  BeginPage;
+end;
+
+procedure TPrinterCanvas.BeginPage;
+begin
   Inc(fPageNum);
+end;
+
+procedure TPrinterCanvas.EndPage;
+begin
+
 end;
 
 procedure TPrinterCanvas.EndDoc;

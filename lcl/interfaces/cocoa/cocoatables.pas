@@ -18,6 +18,7 @@ unit CocoaTables;
 {$modeswitch objectivec1}
 {$modeswitch objectivec2}
 {$interfaces corba}
+{$include cocoadefines.inc}
 
 {.$DEFINE COCOA_DEBUG_LISTVIEW}
 
@@ -76,9 +77,7 @@ type
 
     smallimages : NSMutableDictionary;
 
-    function acceptsFirstResponder: Boolean; override;
-    function becomeFirstResponder: Boolean; override;
-    function resignFirstResponder: Boolean; override;
+    function acceptsFirstResponder: LCLObjCBoolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
 
@@ -104,16 +103,22 @@ type
     procedure mouseExited(event: NSEvent); override;
     procedure mouseMoved(event: NSEvent); override;
     // key
-    procedure keyDown(event: NSEvent); override;
     procedure keyUp(event: NSEvent); override;
-    function lclIsHandle: Boolean; override;
-    procedure lclExpectedKeys(var wantTabs, wantKeys, wantAllKeys: Boolean); override;
+    procedure lclExpectedKeys(var wantTabs, wantKeys, wantReturn, wantAllKeys: Boolean); override;
     procedure lclSetFirstColumCheckboxes(acheckboxes: Boolean); message 'lclSetFirstColumCheckboxes:';
     procedure lclSetImagesInCell(aimagesInCell: Boolean); message 'lclSetImagesInCell:';
 
     procedure lclRegisterSmallImage(idx: Integer; img: NSImage); message 'lclRegisterSmallImage::';
     function lclGetSmallImage(idx: INteger): NSImage; message 'lclGetSmallImage:';
     function lclGetItemImageAt(ARow, ACol: Integer): NSImage; message 'lclGetItemImageAt::';
+
+    // BoundsRect - is the rectangle of the cell, speciifed of aRow, acol.
+    // so the function lclGetLabelRect, lclGetIconRect should only adjust "BoundsRect"
+    // and return the adjusted rectangle
+    function lclGetLabelRect(ARow, ACol: Integer; const BoundsRect: TRect): TRect; message 'lclGetLabelRect:::';
+    function lclGetIconRect(ARow, ACol: Integer; const BoundsRect: TRect): TRect; message 'lclGetIconRect:::';
+
+    procedure lclInsDelRow(Arow: Integer; inserted: Boolean); message 'lclInsDelRow::';
 
     // NSTableViewDataSourceProtocol
     function numberOfRowsInTableView(tableView: NSTableView): NSInteger; message 'numberOfRowsInTableView:';
@@ -189,6 +194,7 @@ type
     function tableView_objectValueForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): id; message 'tableView:objectValueForTableColumn:row:';
     procedure tableView_setObjectValue_forTableColumn_row(tableView: NSTableView; object_: id; tableColumn: NSTableColumn; row: NSInteger); message 'tableView:setObjectValue:forTableColumn:row:';
     function tableView_dataCellForTableColumn_row(tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): NSCell; message 'tableView:dataCellForTableColumn:row:';
+    procedure lclInsDelRow(Arow: Integer; inserted: Boolean); override;
   end;
 
   // View based NSTableView
@@ -230,6 +236,9 @@ type
 
     procedure textFieldAction(sender: NSTextField); message 'textFieldAction:';
     procedure checkboxAction(sender: NSButton); message 'checkboxAction:';
+
+    function lclGetLabelRect(ARow, ACol: Integer; const BoundsRect: TRect): TRect; override;
+    procedure lclInsDelRow(Arow: Integer; inserted: Boolean); override;
   end;
 
 function AllocCocoaTableListView: TCocoaTableListView;
@@ -352,16 +361,13 @@ end;
 
 { TCocoaTableListView }
 
-function TCocoaTableListView.lclIsHandle: Boolean;
-begin
-  Result:=true;
-end;
-
-procedure TCocoaTableListView.lclExpectedKeys(var wantTabs, wantKeys,
+procedure TCocoaTableListView.lclExpectedKeys(var wantTabs, wantKeys, wantReturn,
   wantAllKeys: Boolean);
 begin
   wantTabs := false;
   wantKeys := true;
+  wantReturn := false; // todo: this should be "true" for editting purposes.
+                       //       or false, to let LCL handle editting
   wantAllKeys := false;
 end;
 
@@ -421,21 +427,28 @@ begin
   Result := img;
 end;
 
-function TCocoaTableListView.acceptsFirstResponder: Boolean;
+function TCocoaTableListView.lclGetLabelRect(ARow, ACol: Integer;
+  const BoundsRect: TRect): TRect;
+begin
+  Result := BoundsRect;
+end;
+
+function TCocoaTableListView.lclGetIconRect(ARow, ACol: Integer;
+  const BoundsRect: TRect): TRect;
+begin
+  Result := BoundsRect;
+end;
+
+procedure TCocoaTableListView.lclInsDelRow(Arow: Integer; inserted: Boolean);
+begin
+  // a row has been inserted or removed
+  // the following rows needs to be invalidated
+  // as well as number of total items in the table should be marked as modified
+end;
+
+function TCocoaTableListView.acceptsFirstResponder: LCLObjCBoolean;
 begin
   Result := True;
-end;
-
-function TCocoaTableListView.becomeFirstResponder: Boolean;
-begin
-  Result := inherited becomeFirstResponder;
-  callback.BecomeFirstResponder;
-end;
-
-function TCocoaTableListView.resignFirstResponder: Boolean;
-begin
-  Result := inherited resignFirstResponder;
-  callback.ResignFirstResponder;
 end;
 
 function TCocoaTableListView.lclGetCallback: ICommonCallback;
@@ -471,13 +484,16 @@ begin
   if not isCustomDraw then Exit;
   if not Assigned(callback) then Exit;
   ctx := TCocoaContext.Create(NSGraphicsContext.currentContext);
+  try
+    ItemState := [];
+    if isRowSelected(row) then Include(ItemState, odSelected);
+    if lclIsEnabled then Include(ItemState, odDisabled);
+    if Assigned(window) and (window.firstResponder = self) then Include(ItemState, odFocused);
 
-  ItemState := [];
-  if isRowSelected(row) then Include(ItemState, odSelected);
-  if lclIsEnabled then Include(ItemState, odDisabled);
-  if Assigned(window) and (window.firstResponder = self) then Include(ItemState, odFocused);
-
-  callback.DrawRow(row, ctx, NSRectToRect(rectOfRow(row)), ItemState);
+    callback.DrawRow(row, ctx, NSRectToRect(rectOfRow(row)), ItemState);
+  finally
+    ctx.Free;
+  end;
 end;
 
 function TCocoaTableListView.getIndexOfColumn(ACol: NSTableColumn): NSInteger;
@@ -552,21 +568,6 @@ end;
 procedure TCocoaTableListView.mouseMoved(event: NSEvent);
 begin
   inherited mouseMoved(event);
-end;
-
-procedure TCocoaTableListView.keyDown(event: NSEvent);
-var
-  allow : Boolean;
-begin
-  if not Assigned(callback) then
-    inherited keyDown(event)
-  else
-  begin
-    callback.KeyEvPrepare(event);
-    callback.KeyEvBefore(allow);
-    if allow then inherited KeyDown(event);
-    callback.KeyEvAfter;
-  end;
 end;
 
 procedure TCocoaTableListView.keyUp(event: NSEvent);
@@ -884,6 +885,11 @@ begin
   Result := btn;
 end;
 
+procedure TCellCocoaTableListView.lclInsDelRow(Arow: Integer; inserted: Boolean);
+begin
+  noteNumberOfRowsChanged;
+end;
+
 function TCellCocoaTableListView.tableView_objectValueForTableColumn_row(
   tableView: NSTableView; tableColumn: NSTableColumn; row: NSInteger): id;
 var
@@ -938,7 +944,11 @@ var
   Img: NSImage;
 begin
   Result := inherited initWithFrame(frameRect);
+  {$ifdef BOOLFIX}
+  Result.setAutoresizesSubviews_(Ord(True));
+  {$else}
   Result.setAutoresizesSubviews(True);
+  {$endif}
 
   checkedSubview := NSButton.alloc.init;
   checkedSubview.setButtonType(NSSwitchButton);
@@ -976,14 +986,22 @@ end;
 procedure TCocoaTableListItem.setImage(AImage: NSImage);
 begin
   imageSubView.setImage(AImage);
+  {$ifdef BOOLFIX}
+  imageSubView.setHidden_(Ord(AImage = nil));
+  {$else}
   imageSubView.setHidden(AImage = nil);
+  {$endif}
   resizeSubviewsWithOldSize(GetNSSize(column.width, column.tableView.rowHeight));
 end;
 
 procedure TCocoaTableListItem.setCheckState(AState: NSInteger);
 begin
   checkedSubView.setState(AState);
+  {$ifdef BOOLFIX}
+  checkedSubView.setHidden_(Ord(AState = -1));
+  {$else}
   checkedSubView.setHidden(AState = -1);
+  {$endif}
   resizeSubviewsWithOldSize(GetNSSize(column.width, column.tableView.rowHeight));
 end;
 
@@ -1142,6 +1160,28 @@ begin
   row := rowForView(sender);
   callback.SetItemCheckedAt(row, 0, sender.state);
   reloadDataForRow_column(row, 0);
+end;
+
+function TViewCocoaTableListView.lclGetLabelRect(ARow, ACol: Integer;
+  const BoundsRect: TRect): TRect;
+var
+  lTableItemLV: TCocoaTableListItem;
+begin
+  Result := BoundsRect;
+  lTableItemLV := TCocoaTableListItem(viewAtColumn_row_makeIfNecessary(ACol, ARow, False));
+  Result.Left := Round(lTableItemLV.textFrame.origin.x - 1);
+  Result.Width := Round(lTableItemLV.textFrame.size.width);
+end;
+
+procedure TViewCocoaTableListView.lclInsDelRow(Arow: Integer; inserted: Boolean);
+var
+  rows: NSIndexSet;
+begin
+  rows := NSIndexSet.indexSetWithIndexesInRange(NSMakeRange(Arow,1));
+  if inserted then
+    insertRowsAtIndexes_withAnimation(rows, 0)
+  else
+    removeRowsAtIndexes_withAnimation(rows, 0);
 end;
 
 end.
