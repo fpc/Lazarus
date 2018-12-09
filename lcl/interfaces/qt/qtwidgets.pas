@@ -12888,6 +12888,7 @@ var
   ALCLEvent: QLCLMessageEventH;
   R: TRect;
   DC: TQtDeviceContext;
+  AMsgData: PtrUInt;
 
   procedure SendEventToParent;
   begin
@@ -12935,6 +12936,8 @@ begin
           QListWidgetItem_checkState(Item)) then
         begin
           MousePos := QtPoint(0, 0); // shutup compiler
+          if QLCLMessageEvent_getMsg(ALCLEvent) > 0 then
+            QListWidgetItem_setCheckState(Item, GetItemLastCheckState(Item));
           HandleCheckChangedEvent(MousePos, Item, Event);
         end;
       end else
@@ -12967,7 +12970,11 @@ begin
             Item := itemAt(MousePos.x, MousePos.y);
             if (Item <> nil) then
             begin
-              ALCLEvent := QLCLMessageEvent_create(LCLQt_ItemViewAfterMouseRelease, 0,
+              if Assigned(LCLObject) and LCLObject.Dragging then
+                AMsgData := Ord(QListWidgetItem_checkState(Item)) + 1
+              else
+                AMsgData := 0;
+              ALCLEvent := QLCLMessageEvent_create(LCLQt_ItemViewAfterMouseRelease, AMsgData,
                 PtrUInt(Item), PtrUInt(Item), 0);
               QCoreApplication_postEvent(Sender, ALCLEvent);
             end;
@@ -14543,6 +14550,7 @@ var
   MousePos: TQtPoint;
   Item: QTreeWidgetItemH;
   ALCLEvent: QLCLMessageEventH;
+  AMsgData: PtrUInt;
   W: QHeaderViewH;
   R: TRect;
   DC: TQtDeviceContext;
@@ -14580,6 +14588,9 @@ begin
           QTreeWidgetItem_checkState(Item, 0)) then
         begin
           MousePos := QtPoint(0, 0); // shutup compiler
+          if QLCLMessageEvent_getMsg(ALCLEvent) > 0 then
+            QTreeWidgetItem_setCheckState(Item, 0, GetItemLastCheckStateInternal(Item));
+
           HandleCheckChangedEvent(MousePos, Item, Event);
         end;
       end else
@@ -14621,13 +14632,34 @@ begin
             if Item <> nil then
             begin
               Item := topLevelItem(GetRow(Item));
-              ALCLEvent := QLCLMessageEvent_create(LCLQt_ItemViewAfterMouseRelease, 0,
+              if Assigned(LCLObject) and LCLObject.Dragging then
+                AMsgData := Ord(QTreeWidgetItem_checkState(Item, 0)) + 1
+              else
+                AMsgData := 0;
+              ALCLEvent := QLCLMessageEvent_create(LCLQt_ItemViewAfterMouseRelease, AMsgData,
                 PtrUInt(Item), PtrUInt(Item), 0);
               QCoreApplication_postEvent(Sender, ALCLEvent);
             end;
           end;
           Result := inherited itemViewViewportEventFilter(Sender, Event);
         end;
+      end else
+      if (QEvent_type(Event) = QEventMouseMove) and (LCLObject <> nil) then
+      begin
+        W := QTreeView_header(QTreeViewH(Widget));
+        if QWidget_isVisible(W) and QWidget_isVisibleTo(W, Widget) then
+        begin
+          BeginEventProcessing;
+          try
+            Result := SlotMouseMove(Sender, Event);
+            // allow dnd inside listview (vsReport and vsList only).
+            if not Result and Assigned(LCLObject) and LCLObject.Dragging then
+              Result := True;
+          finally
+            EndEventProcessing;
+          end;
+        end else
+          Result := inherited itemViewViewportEventFilter(Sender, Event);
       end;
     end else
     begin
@@ -15045,6 +15077,7 @@ begin
     FHeader := TQtHeaderView.CreateFrom(LCLObject, QTreeView_header(QTreeViewH(Widget)));
     FHeader.FOwner := Self;
     FHeader.FChildOfComplexWidget := ccwTreeWidget;
+    QHeaderView_setMovable(QHeaderViewH(FHeader.Widget), False);
     {$IFDEF TEST_QT_SORTING}
     FSortChanged := QHeaderView_hook_create(FHeader.Widget);
     QHeaderView_hook_hook_sortIndicatorChanged(FSortChanged,
