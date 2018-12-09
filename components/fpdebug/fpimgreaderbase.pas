@@ -52,6 +52,7 @@ type
     FMapHandle: THandle;
     FModulePtr: Pointer;
     {$else}
+    FFileName: String;
     FStream: TStream;
     FList: TList;
     {$endif}
@@ -61,6 +62,7 @@ type
     constructor Create(AFileHandle: THandle);
     {$endif}
     destructor Destroy; override;
+    procedure Close;
     function  Read(AOffset, ASize: QWord; AMem: Pointer): QWord;
     function  LoadMemory(AOffset, ASize: QWord; out AMem: Pointer): QWord;
     procedure UnloadMemory({%H-}AMem: Pointer);
@@ -122,6 +124,7 @@ begin
     try
       if cls.isValid(ASource) then begin
         Result := cls.Create(ASource, ADebugMap, OwnSource);
+        ASource.Close;
         Exit;
       end
       else
@@ -132,6 +135,7 @@ begin
       end;
     end;
   end;
+  ASource.Close;
   Result := nil;
 end;
 
@@ -162,6 +166,7 @@ begin
     if (FileExists(s)) then AFileName := s
   end;
   {$ENDIF}
+  FFileName := AFileName;
   FStream := TFileStreamUTF8.Create(AFileName, fmOpenRead or fmShareDenyNone);
   inherited Create;
   {$endif}
@@ -212,6 +217,13 @@ begin
   {$endif}
 end;
 
+procedure TDbgFileLoader.Close;
+begin
+  {$ifNdef USE_WIN_FILE_MAPPING}
+  FreeAndNil(FStream);
+  {$endif}
+end;
+
 function TDbgFileLoader.Read(AOffset, ASize: QWord; AMem: Pointer): QWord;
 begin
   {$ifdef USE_WIN_FILE_MAPPING}
@@ -221,6 +233,8 @@ begin
   Result := 0;
   if AMem = nil then
     exit;
+  if FStream = nil then
+    FStream := TFileStreamUTF8.Create(FFileName, fmOpenRead or fmShareDenyNone);
   FStream.Position := AOffset;
   Result := FStream.Read(AMem^, ASize);
   {$endif}
@@ -236,6 +250,8 @@ begin
   AMem := AllocMem(ASize);
   if AMem = nil then
     exit;
+  if FStream = nil then
+    FStream := TFileStreamUTF8.Create(FFileName, fmOpenRead or fmShareDenyNone);
   FList.Add(AMem);
   FStream.Position := AOffset;
   Result := FStream.Read(AMem^, ASize);

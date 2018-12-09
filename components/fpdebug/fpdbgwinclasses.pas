@@ -508,14 +508,17 @@ begin
     end;
   end;
 
-  case MDebugEvent.Exception.ExceptionRecord.ExceptionCode of
-   EXCEPTION_BREAKPOINT,
-   EXCEPTION_SINGLE_STEP: begin
-     Windows.ContinueDebugEvent(MDebugEvent.dwProcessId, MDebugEvent.dwThreadId, DBG_CONTINUE);
-   end
+  if MDebugEvent.dwDebugEventCode = EXCEPTION_DEBUG_EVENT then
+    case MDebugEvent.Exception.ExceptionRecord.ExceptionCode of
+     EXCEPTION_BREAKPOINT,
+     EXCEPTION_SINGLE_STEP: begin
+       Windows.ContinueDebugEvent(MDebugEvent.dwProcessId, MDebugEvent.dwThreadId, DBG_CONTINUE);
+     end
+    else
+      Windows.ContinueDebugEvent(MDebugEvent.dwProcessId, MDebugEvent.dwThreadId, DBG_EXCEPTION_NOT_HANDLED);
+    end
   else
-    Windows.ContinueDebugEvent(MDebugEvent.dwProcessId, MDebugEvent.dwThreadId, DBG_EXCEPTION_NOT_HANDLED);
-  end;
+    Windows.ContinueDebugEvent(MDebugEvent.dwProcessId, MDebugEvent.dwThreadId, DBG_CONTINUE);
   result := true;
 end;
 
@@ -524,6 +527,15 @@ begin
   result := Windows.WaitForDebugEvent(MDebugEvent, INFINITE);
   ProcessIdentifier:=MDebugEvent.dwProcessId;
   ThreadIdentifier:=MDebugEvent.dwThreadId;
+
+  // Should be done in AnalyseDebugEvent, but that is not called for forked processes
+  if (MDebugEvent.dwDebugEventCode = CREATE_PROCESS_DEBUG_EVENT) and
+     (MDebugEvent.dwProcessId <> ProcessID) and
+     (MDebugEvent.CreateProcessInfo.hFile <> 0)
+  then begin
+    CloseHandle(MDebugEvent.CreateProcessInfo.hFile);
+    MDebugEvent.CreateProcessInfo.hFile := 0;
+  end;
 end;
 
 function TDbgWinProcess.AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent;
@@ -818,7 +830,7 @@ begin
       end;
       CREATE_PROCESS_DEBUG_EVENT: begin
         //DumpEvent('CREATE_PROCESS_DEBUG_EVENT');
-        if MDebugEvent.dwProcessId = TDbgWinThread(AThread).Process.ProcessID then begin;
+        if MDebugEvent.dwProcessId = TDbgWinThread(AThread).Process.ProcessID then begin
           //main process
           StartProcess(MDebugEvent.dwThreadId, MDebugEvent.CreateProcessInfo); // hfile will be closed by TDbgImageLoader
           FJustStarted := true;

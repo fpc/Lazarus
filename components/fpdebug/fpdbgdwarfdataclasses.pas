@@ -2948,6 +2948,7 @@ begin
       FFiles[i].Sections[Section].Size := p^.Size;
       FFiles[i].Sections[Section].VirtualAddress := p^.VirtualAddress;
     end;
+    ALoaderList[i].CloseFileLoader;
   end;
 end;
 

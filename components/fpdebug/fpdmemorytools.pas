@@ -245,7 +245,7 @@ type
     * TODO: allow to pre-read and cache Target mem (e.g. before reading all fields of a record
   *)
   TFpDbgMemLocationType = (
-    mlfUninitialized := 0,   // like invalid, but not known // 0 means objet fields will start wint this
+    mlfUninitialized := 0,   // like invalid, but not known // This (0) is the initial value
     mlfInvalid,
     mlfTargetMem,            // an address in the target (debuggee) process
     mlfSelfMem,              // an address in this(the debuggers) process memory; the data is  in TARGET format (endian, ...)
@@ -747,7 +747,7 @@ begin
   if ACache = nil then
     exit;
 
-  FCaches.Remove(ACache);
+  FCaches.RemovePointer(ACache);
   ACache.Free;
 end;
 
