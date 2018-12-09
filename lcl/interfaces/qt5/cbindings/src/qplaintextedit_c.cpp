@@ -355,6 +355,21 @@ void QPlainTextEdit_zoomOut(QPlainTextEditH handle, int range)
 	((QPlainTextEdit *)handle)->zoomOut(range);
 }
 
+void QPlainTextEdit_placeholderText(QPlainTextEditH handle, PWideString retval)
+{
+	QString t_retval;
+	t_retval = ((QPlainTextEdit *)handle)->placeholderText();
+	copyQStringToPWideString(t_retval, retval);
+}
+
+void QPlainTextEdit_setPlaceholderText(QPlainTextEditH handle, PWideString text)
+{
+	QString t_text;
+	copyPWideStringToQString(text, t_text);
+	((QPlainTextEdit *)handle)->setPlaceholderText(t_text);
+}
+
+
 QPlainTextDocumentLayoutH QPlainTextDocumentLayout_Create(QTextDocumentH document)
 {
 	return (QPlainTextDocumentLayoutH) new QPlainTextDocumentLayout((QTextDocument*)document);
