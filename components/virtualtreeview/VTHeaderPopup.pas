@@ -191,7 +191,7 @@ begin
     if poResizeToFitItem in Self.Options then begin
       NewMenuItem := NewItem(sResizeToFit, 0, False, True, OnMenuItemClick, 0, cResizeToFitMenuItemName);
       Items.Add(NewMenuItem);
-      Items.Add(NewLineMI());
+      Items.Add(NewLine());
     end;//poResizeToFitItem
 
     // Add column menu items.

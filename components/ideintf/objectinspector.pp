@@ -5673,7 +5673,7 @@ var
     // insert the separator
     if VerbCount > 0 then
     begin
-      PropertyEditorVerbSeparator := Menus.NewLineMI;
+      PropertyEditorVerbSeparator := Menus.NewLine;
       PropertyEditorVerbSeparator.Name := PropertyEditorMIPrefix + IntToStr(VerbCount);
       MainPopupMenu.Items.Insert(VerbCount, PropertyEditorVerbSeparator);
     end;
@@ -5706,7 +5706,7 @@ var
     // insert the separator
     if VerbCount > 0 then
     begin
-      ComponentEditorVerbSeparator := Menus.NewLineMI;
+      ComponentEditorVerbSeparator := Menus.NewLine;
       ComponentEditorVerbSeparator.Name := ComponentEditorMIPrefix + IntToStr(VerbCount);
       MainPopupMenu.Items.Insert(VerbCount, ComponentEditorVerbSeparator);
     end;
@@ -5719,7 +5719,7 @@ var
     Item := NewItem(oisAddCollectionItem, 0, False, True,
       @CollectionAddItem, 0, ComponentEditorMIPrefix+'0');
     MainPopupMenu.Items.Insert(0, Item);
-    ComponentEditorVerbSeparator := NewLineMI;
+    ComponentEditorVerbSeparator := NewLine;
     ComponentEditorVerbSeparator.Name := ComponentEditorMIPrefix+'1';
     MainPopupMenu.Items.Insert(1, ComponentEditorVerbSeparator);
   end;
@@ -5749,7 +5749,7 @@ var
       MainPopupMenu.Items.Insert(ComponentEditorVerbSeparator.MenuIndex + 1, ZItem)
     else
       MainPopupMenu.Items.Insert(0, ZItem);
-    Item := NewLineMI;
+    Item := NewLine;
     Item.Name := ComponentEditorMIPrefix+'ZOrderSeparator';
     MainPopupMenu.Items.Insert(ZItem.MenuIndex + 1, Item);
   end;
