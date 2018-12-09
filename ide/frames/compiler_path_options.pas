@@ -443,7 +443,7 @@ function TCompilerPathOptionsFrame.PathEditBtnExecuted(Context: String; var NewP
 var
   ExpandedPath: string;
 begin
-  NewPath := FCompilerOpts.ShortenPath(NewPath, False);
+  NewPath := FCompilerOpts.ShortenPath(NewPath);
   ExpandedPath := TrimSearchPath(NewPath, FCompilerOpts.BaseDirectory, true);
   Result := CheckSearchPath(Context, ExpandedPath, ccomlHints);
 end;
@@ -452,7 +452,6 @@ procedure TCompilerPathOptionsFrame.FileBrowseBtnClick(Sender: TObject);
 var
   OpenDialog: TOpenDialog;
   DefaultFilename: string;
-  NewFilename: string;
 begin
   OpenDialog := TSelectDirectoryDialog.Create(Self);
   try
@@ -470,12 +469,8 @@ begin
     else
       OpenDialog.InitialDir := FCompilerOpts.BaseDirectory;
     if OpenDialog.Execute then
-    begin
-      NewFilename := TrimFilename(OpenDialog.Filename);
-      NewFilename := FCompilerOpts.ShortenPath(NewFilename, False);
       if Sender = btnUnitOutputDir then
         UnitOutputDirEdit.Text := OpenDialog.Filename;
-    end;
   finally
     OpenDialog.Free;
   end;
