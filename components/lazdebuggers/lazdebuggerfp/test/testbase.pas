@@ -37,7 +37,8 @@ begin
   DbgInfo.CpuBitTypes := [cpu32,cpu64];
   {$IFDEF WIN64} // Windows can not cross debug
   DbgInfo.CpuBitTypes := [cpu64];
-  {$ELSE}
+  {$ENDIF}
+  {$IFDEF WIN32} // Windows can not cross debug
   DbgInfo.CpuBitTypes := [cpu32];
   {$ENDIF}
   DbgInfo.SymbolTypes := [stDwarf, stDwarfSet, stDwarf3];
