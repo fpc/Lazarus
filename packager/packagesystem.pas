@@ -209,6 +209,7 @@ type
     FTree: TAVLTree; // sorted tree of TLazPackage
     FUpdateLock: integer;
     FLockedChangeStamp: int64;
+    FHasCompiledFpmakePackages: Boolean;
     FVerbosity: TPkgVerbosityFlags;
     FFindFileCache: TLazPackageGraphFileCache;
     function CreateDefaultPackage: TLazPackage;
@@ -1161,6 +1162,7 @@ begin
   if FUpdateLock=1 then begin
     fChanged:=Change;
     FLockedChangeStamp:=0;
+    FHasCompiledFpmakePackages := False;
     if Assigned(OnBeginUpdate) then OnBeginUpdate(Self);
   end else
     fChanged:=fChanged or Change;
@@ -4217,7 +4219,10 @@ begin
           WarnSuspiciousCompilerOptions('Compile checks','package '+APackage.IDAsString+':',CompilerParams);
         end else begin
           CompilerFilename:='fppkg';
-          EffectiveCompilerParams:='install -b';
+          EffectiveCompilerParams:='install --skipbroken --broken';
+          // Do not recompile all broken fppkg packages on each package that is
+          // installed, but run 'fppkg fixbroken' once.
+          FHasCompiledFpmakePackages := True;
         end;
 
         ExtToolData:=TLazPkgGraphExtToolData.Create(IDEToolCompilePackage,
@@ -4266,8 +4271,32 @@ begin
         end;
       end;
 
-      // run compilation tool 'After'
       if not (pcfDoNotCompilePackage in Flags) then begin
+        if FHasCompiledFpmakePackages and (BuildItem = nil) then begin
+          // Make sure all dependees of changed FPMake-packages are
+          // recompiled
+
+          PkgCompileTool := ExternalToolList.Add('Recompile and install broken Fppkg packages');
+          PkgCompileTool.Reference(Self,Classname);
+
+          FPCParser:=TFPCParser(PkgCompileTool.AddParsers(SubToolFPC));
+          FPCParser.HideHintsSenderNotUsed:=not APackage.CompilerOptions.ShowHintsForSenderNotUsed;
+          FPCParser.HideHintsUnitNotUsedInMainSource:=not APackage.CompilerOptions.ShowHintsForUnusedUnitsInMainSrc;
+          PkgCompileTool.Process.CurrentDirectory:=APackage.Directory;
+          PkgCompileTool.Process.Executable:='fppkg';
+          PkgCompileTool.CmdLineParams:='fixbroken';
+          PkgCompileTool.Hint:='Check for Fppkg packages that depend on just installed packages and recompile them';
+
+          PkgCompileTool.Execute();
+          PkgCompileTool.WaitForExit;
+          if PkgCompileTool.ErrorMessage<>'' then begin
+            DebugLn(['Error: (lazarus) [TLazPackageGraph.CompilePackage] Fppkg FixBroken failed']);
+            // Note: messages window already contains error message
+            exit(mrCancel);
+          end;
+        end;
+
+        // run compilation tool 'After'
         WorkingDir:=APackage.Directory;
         ToolTitle:='Package '+APackage.IDAsString+': '+lisExecutingCommandAfter;
         if BuildItem<>nil then
