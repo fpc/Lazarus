@@ -15,7 +15,8 @@ type
   TDwarfAbbrevDecoder = class(TObject)
   private
     FCU: TDwarfCompilationUnit;
-    function  ReadAddressAtPointer(var AData: Pointer; AIncPointer: Boolean = False): TFpDbgMemLocation;
+    function  ReadTargetAddressFromDwarfSection(var AData: Pointer; AIncPointer: Boolean = False): TFpDbgMemLocation;
+    function  ReadDwarfSectionOffsetOrLenFromDwarfSection(var AData: Pointer; AIncPointer: Boolean = False): TFpDbgMemLocation;
     procedure InternalDecode(AData: Pointer; AMaxData: Pointer; const AIndent: String = '');
   protected
     procedure DecodeLocation(AData: PByte; ASize: QWord; const AIndent: String = '');
@@ -338,7 +339,17 @@ begin
 
 end;
 
-function TDwarfAbbrevDecoder.ReadAddressAtPointer(var AData: Pointer;
+function TDwarfAbbrevDecoder.ReadTargetAddressFromDwarfSection(
+  var AData: Pointer; AIncPointer: Boolean): TFpDbgMemLocation;
+begin
+  // do not need mem reader, address is in dwarf. Should be in correct format
+  if FCU.AddressSize = 4
+  then Result := TargetLoc(PLongWord(AData)^)
+  else Result := TargetLoc(PQWord(AData)^);
+  if AIncPointer then inc(AData, FCU.AddressSize);
+end;
+
+function TDwarfAbbrevDecoder.ReadDwarfSectionOffsetOrLenFromDwarfSection(var AData: Pointer;
   AIncPointer: Boolean): TFpDbgMemLocation;
 begin
   // do not need mem reader, address is in dwarf. Should be in correct format
@@ -434,7 +445,7 @@ p := AData;
         DbgOut(FPDBG_DWARF_VERBOSE, [', value: ']);
         case Form of
           DW_FORM_addr     : begin
-            Value := LocToAddrOrNil(ReadAddressAtPointer(AData));
+            Value := LocToAddrOrNil(ReadTargetAddressFromDwarfSection(AData));
             ValuePtr := {%H-}Pointer(PtrUInt(Value));
             ValueSize := FCU.AddressSize;
             DbgOut(FPDBG_DWARF_VERBOSE, ['$'+IntToHex(Value, FCU.AddressSize * 2)]);
@@ -540,7 +551,7 @@ p := AData;
             DbgOut(FPDBG_DWARF_VERBOSE, ['$'+IntToHex(Value, ValueSize * 2)]);
           end;
           DW_FORM_ref_addr : begin
-            Value := LocToAddrOrNil(ReadAddressAtPointer(AData));
+            Value := LocToAddrOrNil(ReadDwarfSectionOffsetOrLenFromDwarfSection(AData));
             ValuePtr := {%H-}Pointer(PtrUInt(Value));
             ValueSize := FCU.AddressSize;
             DbgOut(FPDBG_DWARF_VERBOSE, ['$'+IntToHex(Value, FCU.AddressSize * 2)]);
@@ -552,7 +563,7 @@ p := AData;
             ValueSize := {%H-}PtrUInt(AData) - {%H-}PtrUInt(ValuePtr);
           end;
           DW_FORM_strp     : begin
-            Value := LocToAddrOrNil(ReadAddressAtPointer(AData));
+            Value := LocToAddrOrNil(ReadDwarfSectionOffsetOrLenFromDwarfSection(AData));
             ValueSize := FCU.AddressSize;
             DbgOut(FPDBG_DWARF_VERBOSE, ['$'+IntToHex(Value, FCU.AddressSize * 2)]);
             Inc(AData, FCU.AddressSize);

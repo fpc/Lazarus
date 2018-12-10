@@ -535,7 +535,8 @@ type
     procedure BuildAddressMap;
     function GetAddressMap: TMap;
     function GetUnitName: String;
-    function  ReadAddressAtPointer(var AData: Pointer; AIncPointer: Boolean = False): TFpDbgMemLocation;
+    function  ReadTargetAddressFromDwarfSection(var AData: Pointer; AIncPointer: Boolean = False): TFpDbgMemLocation;
+    function  ReadDwarfSectionOffsetOrLenFromDwarfSection(var AData: Pointer; AIncPointer: Boolean = False): TFpDbgMemLocation;
   protected
     function LocateEntry(ATag: Cardinal; out AResultScope: TDwarfScopeInfo): Boolean;
     function InitLocateAttributeList(AEntry: Pointer; var AList: TAttribPointerList): Boolean;
@@ -576,6 +577,14 @@ type
     property Version: Word read FVersion;
     //property AbbrevOffset: QWord read FAbbrevOffset;
     property AddressSize: Byte read FAddressSize;  // the address size of the target in bytes
+    (* IsDwarf64, From the spec:
+     In the 64-bit DWARF format, all values that
+ *** "represent lengths of DWARF sections and offsets relative to the beginning of DWARF sections" ***
+     are represented using 64-bits.
+
+     A special convention applies to the initial length field of certain DWARF sections, as well as the CIE and FDE structures,
+     so that the 32-bit and 64-bit DWARF formats can coexist and be distinguished within a single linked object.
+    *)
     property IsDwarf64: Boolean read FIsDwarf64; // Set if the dwarf info in this unit is 64bit
     property Owner: TFpDwarfInfo read FOwner;
     property DebugFile: PDwarfDebugFile read FDebugFile;
@@ -1858,7 +1867,7 @@ begin
     inc(CurData);
     case CurInstr^ of
       DW_OP_nop: ;
-      DW_OP_addr:  FStack.Push(FCU.ReadAddressAtPointer(CurData, True), lseValue);
+      DW_OP_addr:  FStack.Push(FCU.ReadTargetAddressFromDwarfSection(CurData, True), lseValue);
       DW_OP_deref: begin
           if not AssertAddressOnStack then exit;
           if not ReadAddressFromMemory(FStack.Pop.Value, AddrSize, NewLoc) then exit;
@@ -3616,7 +3625,6 @@ constructor TDwarfCompilationUnit.Create(AOwner: TFpDwarfInfo; ADebugFile: PDwar
     then begin
       if FVersion < 3 then
         DebugLn(FPDBG_DWARF_WARNINGS, ['Unexpected 64 bit signature found for DWARF version 2']); // or version 1...
-      FLineInfo.Addr64 := True;
       UnitLength := LNP64^.UnitLength;
       FLineInfo.DataEnd := Pointer(@LNP64^.Version) + UnitLength;
       Version := LNP64^.Version;
@@ -3624,10 +3632,6 @@ constructor TDwarfCompilationUnit.Create(AOwner: TFpDwarfInfo; ADebugFile: PDwar
       Info := @LNP64^.Info;
     end
     else begin
-      if (FVersion < 3) and (FAddressSize = 8) then
-        FLineInfo.Addr64 := True
-      else
-        FLineInfo.Addr64 := False;
       UnitLength := LNP32^.UnitLength;
       FLineInfo.DataEnd := Pointer(@LNP32^.Version) + UnitLength;
       Version := LNP32^.Version;
@@ -3635,6 +3639,7 @@ constructor TDwarfCompilationUnit.Create(AOwner: TFpDwarfInfo; ADebugFile: PDwar
       Info := @LNP32^.Info;
     end;
     if Version=0 then ;
+    FLineInfo.Addr64 := FAddressSize = 8;
     FLineInfo.DataStart := PByte(Info) + HeaderLength;
 
     FLineInfo.MinimumInstructionLength := Info^.MinimumInstructionLength;
@@ -4103,7 +4108,18 @@ begin
 
 end;
 
-function TDwarfCompilationUnit.ReadAddressAtPointer(var AData: Pointer;
+function TDwarfCompilationUnit.ReadTargetAddressFromDwarfSection(var AData: Pointer;
+  AIncPointer: Boolean): TFpDbgMemLocation;
+begin
+  // do not need mem reader, address is in dwarf. Should be in correct format
+  if (FAddressSize = 8) then
+    Result := TargetLoc(PQWord(AData)^)
+  else
+    Result := TargetLoc(PLongWord(AData)^);
+  if AIncPointer then inc(AData, FAddressSize);
+end;
+
+function TDwarfCompilationUnit.ReadDwarfSectionOffsetOrLenFromDwarfSection(var AData: Pointer;
   AIncPointer: Boolean): TFpDbgMemLocation;
 begin
   // do not need mem reader, address is in dwarf. Should be in correct format
@@ -4141,9 +4157,10 @@ function TDwarfCompilationUnit.ReadValue(AAttribute: Pointer; AForm: Cardinal; o
 begin
   Result := True;
   case AForm of
-    DW_FORM_addr,
+    DW_FORM_addr:
+      AValue := LocToAddrOrNil(ReadTargetAddressFromDwarfSection(AAttribute));
     DW_FORM_ref_addr : begin
-      AValue := LocToAddrOrNil(ReadAddressAtPointer(AAttribute));
+      AValue := LocToAddrOrNil(ReadDwarfSectionOffsetOrLenFromDwarfSection(AAttribute));
     end;
     DW_FORM_flag,
     DW_FORM_ref1,
@@ -4178,9 +4195,10 @@ function TDwarfCompilationUnit.ReadValue(AAttribute: Pointer; AForm: Cardinal; o
 begin
   Result := True;
   case AForm of
-    DW_FORM_addr,
+    DW_FORM_addr:
+      AValue := LocToAddrOrNil(ReadTargetAddressFromDwarfSection(AAttribute));
     DW_FORM_ref_addr : begin
-      AValue := LocToAddrOrNil(ReadAddressAtPointer(AAttribute));
+      AValue := LocToAddrOrNil(ReadDwarfSectionOffsetOrLenFromDwarfSection(AAttribute));
     end;
     DW_FORM_flag,
     DW_FORM_ref1,
@@ -4215,9 +4233,10 @@ function TDwarfCompilationUnit.ReadValue(AAttribute: Pointer; AForm: Cardinal; o
 begin
   Result := True;
   case AForm of
-    DW_FORM_addr,
+    DW_FORM_addr:
+      AValue := LocToAddrOrNil(ReadTargetAddressFromDwarfSection(AAttribute));
     DW_FORM_ref_addr : begin
-      AValue := LocToAddrOrNil(ReadAddressAtPointer(AAttribute));
+      AValue := LocToAddrOrNil(ReadDwarfSectionOffsetOrLenFromDwarfSection(AAttribute));
     end;
     DW_FORM_flag,
     DW_FORM_ref1,
@@ -4267,9 +4286,10 @@ function TDwarfCompilationUnit.ReadValue(AAttribute: Pointer; AForm: Cardinal; o
 begin
   Result := True;
   case AForm of
-    DW_FORM_addr,
+    DW_FORM_addr:
+      AValue := LocToAddrOrNil(ReadTargetAddressFromDwarfSection(AAttribute));
     DW_FORM_ref_addr : begin
-      AValue := LocToAddrOrNil(ReadAddressAtPointer(AAttribute));
+      AValue := LocToAddrOrNil(ReadDwarfSectionOffsetOrLenFromDwarfSection(AAttribute));
     end;
     DW_FORM_flag,
     DW_FORM_ref1,
