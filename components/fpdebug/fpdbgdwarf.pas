@@ -1005,7 +1005,8 @@ begin
 
   if ASym.SymbolType = stValue then begin
     Result := ASym.Value;
-    Result.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FlastResult, 'FindSymbol'){$ENDIF};
+    if Result <> nil then
+      Result.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FlastResult, 'FindSymbol'){$ENDIF};
   end
   else begin
     Result := TFpDwarfValueTypeDefinition.Create(ASym);
