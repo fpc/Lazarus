@@ -91,7 +91,7 @@ type
     procedure setSelection(const AStart, ALength: Integer);
     procedure setBorder(const ABorder: Boolean);
     procedure setCursorPosition(const ACursorPosition: Integer);
-    procedure setTextHint(ATextHint: string);
+    procedure setTextHint(const ATextHint: string);
     procedure Cut;
     procedure Copy;
     procedure Paste;
@@ -848,7 +848,7 @@ type
     procedure setTextMargins(ARect: TRect);
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
-    procedure setTextHint(ATextHint: string);
+    procedure setTextHint(const ATextHint: string);
   public
     function getAlignment: QtAlignment;
     function getCursorPosition: TPoint;
@@ -901,7 +901,7 @@ type
     procedure SetAcceptRichText(AValue: Boolean);
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
-    procedure setTextHint(ATextHint: string);
+    procedure setTextHint(const ATextHint: string);
   public
     FList: TStrings;
     procedure Append(const AStr: WideString);
@@ -1048,7 +1048,7 @@ type
     procedure setReadOnly(const AReadOnly: Boolean);
     procedure setSelection(const AStart, ALength: Integer);
     procedure setCursorPosition(const ACursorPosition: Integer);
-    procedure setTextHint(ATextHint: string);
+    procedure setTextHint(const ATextHint: string);
     procedure Cut;
     procedure Copy;
     procedure Paste;
@@ -1123,7 +1123,7 @@ type
     procedure setSelection(const AStart, ALength: Integer);
     procedure setCursorPosition(const ACursorPosition: Integer);
     procedure SignalLineEditTextChanged(AnonParam1: PWideString); virtual; cdecl;
-    procedure setTextHint(ATextHint: string);
+    procedure setTextHint(const ATextHint: string);
     procedure Cut;
     procedure Copy;
     procedure Paste;
@@ -9766,7 +9766,7 @@ begin
   QLineEdit_setText(QLineEditH(Widget), @AText);
 end;
 
-procedure TQtLineEdit.setTextHint(ATextHint: string);
+procedure TQtLineEdit.setTextHint(const ATextHint: string);
 var
   W: WideString;
 begin
@@ -10122,7 +10122,7 @@ begin
   QTextEdit_setPlainText(QTextEditH(Widget), @AText);
 end;
 
-procedure TQtTextEdit.setTextHint(ATextHint: string);
+procedure TQtTextEdit.setTextHint(const ATextHint: string);
 var
   W: WideString;
 begin
@@ -11128,7 +11128,7 @@ begin
     LineEdit.setCursorPosition(ACursorPosition);
 end;
 
-procedure TQtComboBox.setTextHint(ATextHint: string);
+procedure TQtComboBox.setTextHint(const ATextHint: string);
 begin
   if getEditable then
     LineEdit.setTextHint(ATextHint);
@@ -11789,7 +11789,7 @@ begin
     DeliverMessage(Msg);
 end;
 
-procedure TQtAbstractSpinBox.setTextHint(ATextHint: string);
+procedure TQtAbstractSpinBox.setTextHint(const ATextHint: string);
 var
   W: WideString;
 begin
