@@ -17,11 +17,12 @@ type
   TTestWatches = class(TDBGTestCase)
   published
     procedure TestWatchesScope;
+    procedure TestWatchesValue;
   end;
 
 implementation
 var
-  ControlTestWatch: Pointer;
+  ControlTestWatch, ControlTestWatchScope, ControlTestWatchValue: Pointer;
 
 procedure TTestWatches.TestWatchesScope;
 
@@ -441,7 +442,7 @@ var
   Src: TCommonSource;
 begin
   if SkipTest then exit;
-  if not TestControlCanTest(ControlTestWatch) then exit;
+  if not TestControlCanTest(ControlTestWatchScope) then exit;
   t := nil;
 
   Src := GetCommonSourceFor('WatchesScopePrg.Pas');
@@ -575,10 +576,203 @@ begin
   end;
 end;
 
+procedure TTestWatches.TestWatchesValue;
+
+  //function IncStr(s: AnsiString; n: Integer): AnsiString;
+  //begin
+  //  Result := s;
+  //  if s <> '' then s[1] := char(ord(s[1])+n);
+  //end;
+
+  procedure AddWatches(t: TWatchExpectationList; AName: String; APrefix: String; AOffs: Integer; AChr1: Char);
+  var
+    p: String;
+    n: Integer;
+  begin
+    p := APrefix;
+    n := AOffs;
+
+    t.Add(AName, p+'Byte',       weCardinal(1+n,                    'Byte',     1));
+    t.Add(AName, p+'Word',       weCardinal(100+n,                  'Word',     2));
+    t.Add(AName, p+'Longword',   weCardinal(1000+n,                 'Longword', 4));
+    t.Add(AName, p+'QWord',      weCardinal(10000+n,                'QWord',    5));
+    t.Add(AName, p+'Shortint',   weInteger (50+n,                   'Shortint', 1));
+    t.Add(AName, p+'Smallint',   weInteger (500+n,                  'Smallint', 2));
+    t.Add(AName, p+'Longint',    weInteger (5000+n,                 'Longint',  4));
+    t.Add(AName, p+'Int64',      weInteger (50000+n,                'Int64',    8));
+
+    t.Add(AName, p+'Byte_2',     weCardinal(250+n,                  'Byte',     1));
+    t.Add(AName, p+'Word_2',     weCardinal(65501+n,                'Word',     2));
+    t.Add(AName, p+'Longword_2', weCardinal(4123456789+n,           'Longword', 4));
+    t.Add(AName, p+'QWord_2',    weCardinal(15446744073709551610+n, 'QWord',    8));
+    t.Add(AName, p+'Shortint_2', weInteger (122+n,                  'Shortint', 1));
+    t.Add(AName, p+'Smallint_2', weInteger (32012+n,                'Smallint', 2));
+    t.Add(AName, p+'Longint_2',  weInteger (20123456+n,             'Longint',  4));
+    t.Add(AName, p+'Int64_2',    weInteger (9123372036854775801+n,  'Int64',    8));
+
+    t.Add(AName, p+'Shortint_3', weInteger(-122+n,                 'Shortint', 1));
+    t.Add(AName, p+'Smallint_3', weInteger(-32012+n,               'Smallint', 2));
+    t.Add(AName, p+'Longint_3',  weInteger(-20123456+n,            'Longint',  4));
+    t.Add(AName, p+'Int64_3',    weInteger(-9123372036854775801+n, 'Int64',    8));
+
+    t.Add(AName, p+'Real',       weFloat(50.25+n,                 'Real'       ));
+    t.Add(AName, p+'Single',     weSingle(100.125+n,              'Single'     ));
+    t.Add(AName, p+'Double',     weDouble(1000.125+n,             'Double'     ));
+    t.Add(AName, p+'Extended',   weFloat(10000.175+n,             ''   )); // Double ?
+    //t.Add(p+'Comp',       weInteger(150.125+n,              'Comp'       ));
+    t.Add(AName, p+'Currency',   weFloat(125.123+n,               'Currency'   ))^.AddFlag([ehNotImplementedData]);
+
+    t.Add(AName, p+'Real_2',     weFloat(-50.25+n,                'Real'       ));
+    t.Add(AName, p+'Single_2',   weSingle(-100.125+n,             'Single'     ));
+    t.Add(AName, p+'Double_2',   weDouble(-1000.125+n,            'Double'     ));
+    t.Add(AName, p+'Extended_2', weFloat(-10000.175+n,            ''   )); // Double ?
+    //t.Add(p+'Comp_2',     weFloat(-150.125+n,             'Comp'       ));
+    t.Add(AName, p+'Currency_2', weFloat(-125.123+n,              'Currency'   ))^.AddFlag([ehNotImplementedData]);
+
+    t.Add(AName, p+'Char',       weChar(AChr1));
+    t.Add(AName, p+'Char2',      weChar(#0));
+    t.Add(AName, p+'Char3',      weChar(' '));
+
+if not(p = 'gc') then begin
+    t.Add(AName, p+'String1',    weShortStr(AChr1, 'ShortStr1'));
+    t.Add(AName, p+'String1e',   weShortStr('',    'ShortStr1'));
+    t.Add(AName, p+'String10',   weShortStr(AChr1+'bc1',               'ShortStr10'));
+    t.Add(AName, p+'String10e',  weShortStr('',                        'ShortStr10'));
+    t.Add(AName, p+'String10x',  weShortStr(AChr1+'S'#0'B'#9'b'#10#13, 'ShortStr10'));
+    t.Add(AName, p+'String255',  weShortStr(AChr1+'bcd0123456789', 'ShortStr255'));
+
+    t.Add(AName, p+'Ansi1',      weAnsiStr(Succ(AChr1)))^.AddFlag([ehIgnKindPtr]);
+    t.Add(AName, p+'Ansi2',      weAnsiStr(AChr1+'abcd0123'))^.AddFlag([ehIgnKindPtr]);
+    t.Add(AName, p+'Ansi3',      weAnsiStr(''))^.AddFlag([ehIgnKindPtr]);
+    t.Add(AName, p+'Ansi4',      weAnsiStr(AChr1+'A'#0'B'#9'b'#10#13))^.AddFlag([ehIgnKindPtr, ehIgnData]); // cut off at #0
+    t.Add(AName, p+'Ansi5',      weAnsiStr(AChr1+'bcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghij'
+      ) )^.AddFlag([ehIgnKindPtr]);
+
+//TODO wePchar
+    t.Add(AName, p+'PChar',      wePointer(weAnsiStr(''), 'PChar'));
+
+    t.Add(AName, p+'WideChar',       weChar(AChr1));
+    t.Add(AName, p+'WideChar2',      weChar(#0));
+    t.Add(AName, p+'WideChar3',      weChar(' '));
+
+    t.Add(AName, p+'WideString1',    weWideStr(Succ(AChr1)))^.AddFlag([ehIgnKindPtr]);
+    t.Add(AName, p+'WideString2',    weWideStr(AChr1+'abcX0123'))^.AddFlag([ehIgnKindPtr]);
+    t.Add(AName, p+'WideString3',    weWideStr(''))^.AddFlag([ehIgnKindPtr]);
+    t.Add(AName, p+'WideString4',    weWideStr(AChr1+'A'#0'X'#9'b'#10#13))^.AddFlag([ehIgnKindPtr, ehIgnData]); // cut off at #0
+    t.Add(AName, p+'WideString5',    weWideStr(AChr1+'XcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghij',
+      'TWStrTA'))^.AddFlag([ehIgnKindPtr]);
+
+//TODO wePWidechar
+    t.Add(AName, p+'PWideChar',      wePointer(weAnsiStr(''), 'PWideChar'));
+
+    // TODO
+    t.Add(AName, p+'ShortRec',     weMatch(''''+AChr1+''', *''b'', *'''+AChr1+'''', skRecord));
+    t.Add(AName, p+'CharDynArray', weMatch('\(\)|nil', skArray));
+    t.Add(AName, p+'WCharDynArray', weMatch('\(\)|nil', skArray));
+    t.Add(AName, p+'CharStatArray', weMatch('\('''+AChr1+''', *''b'', *'''+AChr1+'''', skArray));
+    t.Add(AName, p+'WCharStatArray', weMatch('\('''+AChr1+''', *''b'', *'''+AChr1+'''', skArray));
+end;
+
+  end;
+
+var
+  ExeName: String;
+  dbg: TDebuggerIntf;
+  t: TWatchExpectationList;
+  Src: TCommonSource;
+  n: Integer;
+begin
+  if SkipTest then exit;
+  if not TestControlCanTest(ControlTestWatchValue) then exit;
+  t := nil;
+
+  Src := GetCommonSourceFor('WatchesValuePrg.Pas');
+  TestCompile(Src, ExeName);
+
+  AssertTrue('Start debugger', Debugger.StartDebugger(AppDir, ExeName));
+  dbg := Debugger.LazDebugger;
+
+  try
+    t := TWatchExpectationList.Create(Self);
+    t.AcceptSkSimple := [skInteger, skCardinal, skBoolean, skChar, skFloat, skString, skAnsiString, skCurrency, skVariant, skWideString];
+    t.AddTypeNameAlias('integer', 'integer|longint');
+    t.AddTypeNameAlias('ShortStr255', 'ShortStr255|ShortString');
+
+
+    Debugger.SetBreakPoint(Src, 'Prg');
+    AssertDebuggerNotInErrorState;
+
+    (* ************ Nested Functions ************* *)
+
+    dbg.Run;
+    Debugger.WaitForFinishRun();
+    AssertDebuggerState(dsPause);
+    t.Clear;
+
+    AddWatches(t, 'glob const', 'gc', 000, 'A');
+    AddWatches(t, 'glob var',   'gv', 001, 'B');
+
+    //t.Add( 'gcInt64_3',    weInteger(-9123372036854775801+0, 'Int64',    8));
+    //t.Add( 'gcString1',    weShortStr(IncStr('A',0)));
+
+    //n := 001;
+    //t.Add('gvByte',       weCardinal(1+n,                    'Byte',     1));
+    //t.Add('gvWord',       weCardinal(100+n,                  'Word',     2));
+    //t.Add('gvLongword',   weCardinal(1000+n,                 'Longword', 4));
+    //t.Add('gvQWord',      weCardinal(10000+n,                'QWord',    5));
+    //t.Add('gvShortint',   weInteger (50+n,                   'Shortint', 1));
+    //t.Add('gvSmallint',   weInteger (500+n,                  'Smallint', 2));
+    //t.Add('gvLongint',    weInteger (5000+n,                 'Longint',  4));
+    //t.Add('gvInt64',      weInteger (50000+n,                'Int64',    8));
+    //
+    //t.Add('gvByte_2',     weCardinal(250+n,                  'Byte',     1));
+    //t.Add('gvWord_2',     weCardinal(65501+n,                'Word',     2));
+    //t.Add('gvLongword_2', weCardinal(4123456789+n,           'Longword', 4));
+    //t.Add('gvQWord_2',    weCardinal(15446744073709551610+n, 'QWord',    8));
+    //t.Add('gvShortint_2', weInteger (122+n,                  'Shortint', 1));
+    //t.Add('gvSmallint_2', weInteger (32012+n,                'Smallint', 2));
+    //t.Add('gvLongint_2',  weInteger (20123456+n,             'Longint',  4));
+    //t.Add('gvInt64_2',    weInteger (9123372036854775801+n,  'Int64',    8));
+    //
+    //t.Add('gvShortint_3', weInteger(-122+n,                 'Shortint', 1));
+    //t.Add('gvSmallint_3', weInteger(-32012+n,               'Smallint', 2));
+    //t.Add('gvLongint_3',  weInteger(-20123456+n,            'Longint',  4));
+    //t.Add('gvInt64_3',    weInteger(-9123372036854775801+n, 'Int64',    8));
+    //
+    //t.Add('gvReal',       weFloat(50.25+n,                 'Real'       ));
+    //t.Add('gvSingle',     weSingle(100.125+n,              'Single'     ));
+    //t.Add('gvDouble',     weDouble(1000.125+n,             'Double'     ));
+    //t.Add('gvExtended',   weFloat(10000.175+n,             'Extended'   ));
+    ////t.Add('gvComp',       weInteger(150.125+n,              'Comp'       ));
+    //t.Add('gvCurrency',   weFloat(125.123+n,               'Currency'   ));
+    ////
+    //t.Add('gvReal_2',     weFloat(-50.25+n,                'Real'       ));
+    //t.Add('gvSingle_2',   weSingle(-100.125+n,             'Single'     ));
+    //t.Add('gvDouble_2',   weDouble(-1000.125+n,            'Double'     ));
+    //t.Add('gvExtended_2', weFloat(-10000.175+n,            'Extended'   ));
+    ////t.Add('gvComp_2',     weFloat(-150.125+n,             'Comp'       ));
+    //t.Add('gvCurrency_2', weFloat(-125.123+n,              'Currency'   ));
+
+
+    t.EvaluateWatches;
+    t.CheckResults;
+
+
+  finally
+    t.Free;
+    Debugger.ClearDebuggerMonitors;
+    Debugger.FreeDebugger;
+
+    AssertTestErrors;
+  end;
+end;
+
 
 initialization
   RegisterDbgTest(TTestWatches);
   ControlTestWatch         := TestControlRegisterTest('TTestWatch');
+  ControlTestWatchScope    := TestControlRegisterTest('Scope', ControlTestWatch);
+  ControlTestWatchValue    := TestControlRegisterTest('Value', ControlTestWatch);
 
 end.
 

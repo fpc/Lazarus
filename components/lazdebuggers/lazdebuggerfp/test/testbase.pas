@@ -35,6 +35,11 @@ begin
 
   DbgInfo.Name := 'FpDebug';
   DbgInfo.CpuBitTypes := [cpu32,cpu64];
+  {$IFDEF WIN64} // Windows can not cross debug
+  DbgInfo.CpuBitTypes := [cpu64];
+  {$ELSE}
+  DbgInfo.CpuBitTypes := [cpu32];
+  {$ENDIF}
   DbgInfo.SymbolTypes := [stDwarf, stDwarfSet, stDwarf3];
   GdbList := TBaseList.Create;
   GdbList.Add(DbgInfo);

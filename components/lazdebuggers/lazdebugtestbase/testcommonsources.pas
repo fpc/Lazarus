@@ -5,7 +5,7 @@ unit TestCommonSources;
 interface
 
 uses
-  Classes, SysUtils, LCLType, LazFileUtils, TestOutputLogger;
+  Classes, SysUtils, LCLType, strutils, LazFileUtils, TestOutputLogger;
 
 {$R sources.rc}
 
@@ -122,24 +122,12 @@ TestLogger.DebugLn(['OTHER: ',n]);
     FOtherSources[i] := GetCommonSourceFor(n);
   end;
 
-//  procedure AddBreak(Num, Line: Integer);
-//  var
-//    i: Integer;
-//  begin
-//TestLogger.DebugLn(['BREAK: ',FFileName,' ',Num, ' ',Line]);
-//    if (Num < 1) or (Num > 99) then
-//      raise Exception.Create('Break out of range');
-//    i := Length(FBreakPoints);
-//    if Num >= i then
-//      SetLength(FBreakPoints, Num+1);
-//    FBreakPoints[Num] := Line;
-//  end;
-
 var
   r: TResourceStream;
-  Other: String;
+  Other, s, s2: String;
   i, Line, j: Integer;
   OwnBlockRecurseName: Boolean;
+  i2: SizeInt;
 begin
   OwnBlockRecurseName := BlockRecurseName = '';
   if OwnBlockRecurseName then
@@ -154,6 +142,7 @@ begin
   FBreakPoints := TStringList.Create;
   if FData.Count < 1 then exit;
 
+  // TEST_USES
   Other := FData[0];
   i := pos('TEST_USES=', Other);
   if i > 0 then begin
@@ -167,6 +156,30 @@ begin
     AddOther(Other);
   end;
 
+  // TEST_PREPOCESS(file, subst=val, subst=val ....)
+  s := FData.Text;
+  i := pos('TEST_PREPOCESS(', s);
+  while i > 0 do begin
+    i2 := i+1;
+    while (i2 <= length(s)) and (s[i2] <> ')') do
+      if s[i2]='"'
+      then i2 := PosEx('"', s, i2+1) + 1
+      else i2 := i2 + 1;
+//    i2 := PosEx(')', s, i+14);
+    FData.CommaText := copy(s, i+15, i2 - (i+15));
+    s2 := OtherSrc[FData[0]].FData.Text;
+    FData.Delete(0);
+    while FData.Count > 0 do begin
+      s2 := ReplaceStr(s2, FData.Names[0], FData.Values[FData.Names[0]]);
+      FData.Delete(0);
+    end;
+    Delete(s, i, i2-i+1);
+    Insert(s2, s, i);
+    i := pos('TEST_PREPOCESS', s);
+  end;
+  FData.Text := s;
+
+  // TEST_BREAKPOINT
   for Line := 0 to FData.Count - 1 do begin
     i := pos('TEST_BREAKPOINT=', FData[Line]);
     if i > 0 then begin

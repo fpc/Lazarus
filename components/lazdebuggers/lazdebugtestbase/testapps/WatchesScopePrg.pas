@@ -65,7 +65,7 @@
 
 *)
 
-program WatchesPrg;
+program WatchesScopePrg;
 {$H-}
 
 uses sysutils, Classes, WatchesScopeUnit1, WatchesScopeUnit2;

@@ -1,4 +1,6 @@
 WatchesScopePrg.pas         RCDATA "testapps/WatchesScopePrg.pas"
 WatchesScopeUnit1.pas         RCDATA "testapps/WatchesScopeUnit1.pas"
 WatchesScopeUnit2.pas         RCDATA "testapps/WatchesScopeUnit2.pas"
+WatchesValuePrg.pas         RCDATA "testapps/WatchesValuePrg.pas"
+WatchesValuePrgIdent.inc         RCDATA "testapps/WatchesValuePrgIdent.inc"
 

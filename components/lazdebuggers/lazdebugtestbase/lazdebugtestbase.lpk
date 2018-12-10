@@ -15,7 +15,7 @@
       </Other>
     </CompilerOptions>
     <Version Minor="1"/>
-    <Files Count="14">
+    <Files Count="15">
       <Item1>
         <Filename Value="testdbgconfig.pas"/>
         <UnitName Value="TestDbgConfig"/>
@@ -74,23 +74,30 @@
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="WatchesScopeUnit2"/>
       </Item14>
+      <Item15>
+        <Filename Value="testapps\WatchesValuePrg.pas"/>
+        <Type Value="Include"/>
+      </Item15>
     </Files>
-    <RequiredPkgs Count="5">
+    <RequiredPkgs Count="6">
       <Item1>
-        <PackageName Value="DebuggerIntf"/>
+        <PackageName Value="fpdebug"/>
       </Item1>
       <Item2>
-        <PackageName Value="virtualtreeview_package"/>
+        <PackageName Value="DebuggerIntf"/>
       </Item2>
       <Item3>
-        <PackageName Value="LCL"/>
+        <PackageName Value="virtualtreeview_package"/>
       </Item3>
       <Item4>
-        <PackageName Value="LCLBase"/>
+        <PackageName Value="LCL"/>
       </Item4>
       <Item5>
-        <PackageName Value="FCL"/>
+        <PackageName Value="LCLBase"/>
       </Item5>
+      <Item6>
+        <PackageName Value="FCL"/>
+      </Item6>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>

@@ -500,16 +500,22 @@ begin
   FLogBufferText := '';
 end;
 
+function EscapeText(s: String): String;
+begin
+  Result := s;
+  Result := StringReplace(Result, #0, '\\x00', [rfReplaceAll]);
+end;
+
 procedure TDBGTestCase.LogText(const s: string; CopyToTestLogger: Boolean);
 begin
   if GetLogActive then begin
     CreateLog;
-    writeln(FLogFile, s);
+    writeln(FLogFile, EscapeText(s));
   end
   else begin
     if length(FLogBufferText) > 50000000 then
       Delete(FLogBufferText, 1 , Length(s + LineEnding));
-    FLogBufferText := FLogBufferText + s + LineEnding;
+    FLogBufferText := FLogBufferText + EscapeText(s) + LineEnding;
   end;
   if CopyToTestLogger then
     TestLogger.DebugLn(s);
@@ -519,7 +525,7 @@ procedure TDBGTestCase.LogError(const s: string; CopyToTestLogger: Boolean);
 begin
   if GetLogActive or (TestControlGetWriteLog = wlOnError) then
     CreateLog;
-  writeln(FLogFile, s);
+  writeln(FLogFile, EscapeText(s));
   if CopyToTestLogger then
     TestLogger.DebugLn(s);
 end;

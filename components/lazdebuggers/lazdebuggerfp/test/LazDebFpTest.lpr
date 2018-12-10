@@ -7,7 +7,7 @@ uses
   cthreads,
   {$ENDIF}
   TestDbgControlForm,
-  Interfaces, Forms, GuiTestRunner,  TestWatches, TestBase;
+  Interfaces, Forms, GuiTestRunner, TestVarious,  TestWatches, TestBase;
 
 {$R *.res}
 

@@ -138,9 +138,6 @@ function GetCompilers: TCompilerList;
 function GetDebuggers: TDebuggerList;
 
 var
-  AppDir: String;
-  ConfDir: String;
-
   TestGdbClass: TGDBMIDebuggerClass = TGDBMIDebugger;
   // TestGdbClass: TGDBMIDebuggerClass = TFPGDBMIDebugger;
 

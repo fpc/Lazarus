@@ -6,14 +6,14 @@ unit TTestWatchUtilities;
 interface
 
 uses
-  Classes, SysUtils, DbgIntfBaseTypes, DbgIntfDebuggerBase, RegExpr,
-  TestDbgTestSuites, TTestDebuggerClasses, TTestDbgExecuteables, TestDbgConfig,
-  TestOutputLogger;
+  Classes, SysUtils, DbgIntfBaseTypes, DbgIntfDebuggerBase, FpPascalBuilder,
+  RegExpr, TestDbgTestSuites, TTestDebuggerClasses, TTestDbgExecuteables,
+  TestDbgConfig, TestOutputLogger;
 
 type
   TWatchExpectationResultKind = (
-    rkMatch, rkInteger, rkCardinal, rkEnum,
-    rkChar, rkAnsiString, rkShortString,
+    rkMatch, rkInteger, rkCardinal, rkFloat, rkEnum,
+    rkChar, rkAnsiString, rkShortString, rkPointer, rkPointerAddr,
     rkClass, rkObject, rkRecord, rkField,
     rkStatArray, rkDynArray
   );
@@ -62,6 +62,12 @@ type
       rkCardinal: (
         ExpCardinalValue: QWord;
         ExpCardinalSize: Integer; // Byte=1, Word=2, ...
+      );
+      rkFloat: (
+        ExpFloatValue: Extended;
+      );
+      rkPointerAddr: (
+        ExpPointerValue: Pointer;
       );
   end;
 
@@ -132,10 +138,13 @@ type
 
     function CheckResultMatch(AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean; virtual;
     function CheckResultNum(AContext: TWatchExpTestCurrentData; IsCardinal: Boolean; AnIgnoreRsn: String): Boolean; virtual;
+    function CheckResultFloat(AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean; virtual;
     function CheckResultEnum(AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean; virtual;
     function CheckResultChar(AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean; virtual;
     function CheckResultAnsiStr(AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean; virtual;
     function CheckResultShortStr(AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean; virtual;
+    function CheckResultPointer(AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean; virtual;
+    function CheckResultPointerAddr(AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean; virtual;
 
     property Compiler: TTestDbgCompiler read GetCompiler;
     property Debugger: TTestDbgDebugger read GetDebugger;
@@ -168,20 +177,30 @@ type
 
 function weMatch(AExpVal: String; ASymKind: TDBGSymbolKind; ATypeName: String=''): TWatchExpectationResult;
 
-function weInteger(AExpVal: Integer; ATypeName: String=#1; ASize: Integer = 4): TWatchExpectationResult;
-function weCardinal(AExpVal: Integer; ATypeName: String=#1; ASize: Integer = 4): TWatchExpectationResult;
+function weInteger(AExpVal: Int64; ATypeName: String=#1; ASize: Integer = 4): TWatchExpectationResult;
+function weCardinal(AExpVal: QWord; ATypeName: String=#1; ASize: Integer = 4): TWatchExpectationResult;
+function weSingle(AExpVal: Extended; ATypeName: String=#1): TWatchExpectationResult;
+function weDouble(AExpVal: Extended; ATypeName: String=#1): TWatchExpectationResult;
+function weFloat(AExpVal: Extended; ATypeName: String=''): TWatchExpectationResult;
 
 function weEnum(AExpVal: string; ATypeName: String=#1): TWatchExpectationResult;
 
 function weChar(AExpVal: char; ATypeName: String=#1): TWatchExpectationResult;
 function weAnsiStr(AExpVal: string; ATypeName: String=#1): TWatchExpectationResult;
 function weShortStr(AExpVal: string; ATypeName: String=#1): TWatchExpectationResult;
+function weWideStr(AExpVal: string; ATypeName: String=#1): TWatchExpectationResult;
+
+function wePointer(AExpVal: TWatchExpectationResult; ATypeName: String=''): TWatchExpectationResult;
+function wePointerAddr(AExpVal: Pointer; ATypeName: String=''): TWatchExpectationResult;
+
+//function weAStatArray(AExpVal: string; AData: array of TWatchExpectationResult; ATypeName: String=#1): TWatchExpectationResult;
 
 function weClass(AExpClass: String; AExpFields: array of TWatchExpectationResult; ATypeName: String=#1): TWatchExpectationResult;
 function weField(AExpName: String; AExpVal: TWatchExpectationResult; ATypeName: String=#1): TWatchExpectationResult;
 
 operator := (a:string): TWatchExpectationResult;
 operator := (a:integer): TWatchExpectationResult;
+operator := (a:pointer): TWatchExpectationResult;
 
 
 
@@ -197,15 +216,21 @@ begin
   Result := weInteger(a);
 end;
 
+operator := (a: pointer): TWatchExpectationResult;
+begin
+  Result := wePointerAddr(a);
+end;
+
 function weMatch(AExpVal: String; ASymKind: TDBGSymbolKind; ATypeName: String
   ): TWatchExpectationResult;
 begin
+  Result := Default(TWatchExpectationResult);
   Result.ExpResultKind := rkMatch;
   Result.ExpSymKind := ASymKind;
   Result.ExpTextData := AExpVal;
 end;
 
-function weInteger(AExpVal: Integer; ATypeName: String; ASize: Integer
+function weInteger(AExpVal: Int64; ATypeName: String; ASize: Integer
   ): TWatchExpectationResult;
 begin
   Result := Default(TWatchExpectationResult);
@@ -217,7 +242,7 @@ begin
   Result.expIntSize  := ASize;
 end;
 
-function weCardinal(AExpVal: Integer; ATypeName: String; ASize: Integer
+function weCardinal(AExpVal: QWord; ATypeName: String; ASize: Integer
   ): TWatchExpectationResult;
 begin
   Result := Default(TWatchExpectationResult);
@@ -227,6 +252,29 @@ begin
   Result.ExpTypeName := ATypeName;
   Result.expCardinalValue := AExpVal;
   Result.expCardinalSize  := ASize;
+end;
+
+function weSingle(AExpVal: Extended; ATypeName: String
+  ): TWatchExpectationResult;
+begin
+  if ATypeName = #1 then ATypeName := 'Single';
+  Result := weFloat(AExpVal, ATypeName);
+end;
+
+function weDouble(AExpVal: Extended; ATypeName: String
+  ): TWatchExpectationResult;
+begin
+  if ATypeName = #1 then ATypeName := 'Double';
+  Result := weFloat(AExpVal, ATypeName);
+end;
+
+function weFloat(AExpVal: Extended; ATypeName: String): TWatchExpectationResult;
+begin
+  Result := Default(TWatchExpectationResult);
+  Result.ExpResultKind := rkFloat;
+  Result.ExpSymKind := skFloat;
+  Result.ExpTypeName := ATypeName;
+  Result.ExpFloatValue := AExpVal;
 end;
 
 function weEnum(AExpVal: string; ATypeName: String): TWatchExpectationResult;
@@ -265,9 +313,40 @@ begin
   Result := Default(TWatchExpectationResult);
   if ATypeName = #1 then ATypeName := 'ShortString';
   Result.ExpResultKind := rkShortString;
-  Result.ExpSymKind := skSimple; // skShortString does not (yet) exist
+  Result.ExpSymKind := skString;
   Result.ExpTypeName := ATypeName;
   Result.ExpTextData := AExpVal;
+end;
+
+function weWideStr(AExpVal: string; ATypeName: String): TWatchExpectationResult;
+begin
+  Result := Default(TWatchExpectationResult);
+  if ATypeName = #1 then ATypeName := 'WideString';
+  Result.ExpResultKind := rkAnsiString;
+  Result.ExpSymKind := skAnsiString; // TODO
+  Result.ExpTypeName := ATypeName;
+  Result.ExpTextData := AExpVal;
+end;
+
+function wePointer(AExpVal: TWatchExpectationResult; ATypeName: String
+  ): TWatchExpectationResult;
+begin
+  Result := Default(TWatchExpectationResult);
+  Result.ExpResultKind := rkPointer;
+  Result.ExpSymKind := skPointer;
+  Result.ExpTypeName := ATypeName;
+  SetLength(Result.ExpSubResults, 1);
+  Result.ExpSubResults[0] := AExpVal;
+end;
+
+function wePointerAddr(AExpVal: Pointer; ATypeName: String
+  ): TWatchExpectationResult;
+begin
+  Result := Default(TWatchExpectationResult);
+  Result.ExpResultKind := rkPointerAddr;
+  Result.ExpSymKind := skPointer;
+  Result.ExpTypeName := ATypeName;
+  Result.ExpPointerValue := AExpVal;
 end;
 
 function weClass(AExpClass: String;
@@ -459,10 +538,13 @@ begin
         rkMatch:       Result := CheckResultMatch(Context, AnIgnoreRsn);
         rkInteger:     Result := CheckResultNum(Context, False, AnIgnoreRsn);
         rkCardinal:    Result := CheckResultNum(Context, True, AnIgnoreRsn);
+        rkFloat:       Result := CheckResultFloat(Context, AnIgnoreRsn);
         rkEnum:        Result := CheckResultEnum(Context, AnIgnoreRsn);
         rkChar:        Result := CheckResultChar(Context, AnIgnoreRsn);
         rkAnsiString:  Result := CheckResultAnsiStr(Context, AnIgnoreRsn);
         rkShortString: Result := CheckResultShortStr(Context, AnIgnoreRsn);
+        rkPointer:     Result := CheckResultPointer(Context, AnIgnoreRsn);
+        rkPointerAddr: Result := CheckResultPointerAddr(Context, AnIgnoreRsn);
         rkClass: ;
         rkObject: ;
         rkRecord: ;
@@ -613,6 +695,22 @@ begin
       s := IntToStr(Expect.expIntValue);
 
     Result := TestEquals('Data', s, AContext.WatchVal.Value, AContext, AnIgnoreRsn);
+
+    //if not TestEquals('DataSize', Expect.ExpIntSize, AContext.WatchVal.TypeInfo.Len, AContext, AnIgnoreRsn) then
+    //  Result := False;
+  end;
+end;
+
+function TWatchExpectationList.CheckResultFloat(
+  AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean;
+var
+  Expect: TWatchExpectationResult;
+begin
+  with AContext.WatchExp do begin
+    Result := True;
+    Expect := AContext.Expectation;
+
+    Result := TestEquals('Data', FloatToStr(Expect.ExpFloatValue), AContext.WatchVal.Value, EqIgnoreCase, AContext, AnIgnoreRsn);
   end;
 end;
 
@@ -634,19 +732,22 @@ function TWatchExpectationList.CheckResultChar(
 var
   Expect: TWatchExpectationResult;
   ehf: TWatchExpErrorHandlingFlags;
+  e: String;
 begin
   with AContext.WatchExp do begin
     Result := True;
     Expect := AContext.Expectation;
 
+    e := QuoteText(Expect.ExpTextData);
+
     ehf := Expect.ExpErrorHandlingFlags[Compiler.SymbolType];
     if ehCharFromIndex in ehf then begin
-      Result := TestMatches('Data', '([Pp][Cc]har|[Ss]tring):? *'''+Expect.ExpTextData+'''',
+      Result := TestMatches('Data', '([Pp][Cc]har|[Ss]tring):? *'+e+'',
         AContext.WatchVal.Value, EqMatchCase, AContext, AnIgnoreRsn);
       exit;
     end;
 
-    Result := TestEquals('Data', Expect.ExpTextData, AContext.WatchVal.Value, AContext, AnIgnoreRsn);
+    Result := TestEquals('Data', e, AContext.WatchVal.Value, AContext, AnIgnoreRsn);
   end;
 end;
 
@@ -654,17 +755,25 @@ function TWatchExpectationList.CheckResultAnsiStr(
   AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean;
 var
   Expect: TWatchExpectationResult;
-  v: String;
+  v, e: String;
 begin
   with AContext.WatchExp do begin
     Result := True;
     Expect := AContext.Expectation;
 
     v := AContext.WatchVal.Value;
-    if (Expect.ExpTypeName <> '') and FTest.Matches(Expect.ExpTypeName+'\(\$[0-9a-fA-F]+\) ', v) then
-      delete(v, 1, pos(') ', v)+1);
+    if (Expect.ExpTypeName <> '') then begin
+      if (Expect.ExpTextData = '') and
+         FTest.Matches('^'+Expect.ExpTypeName+'\(nil\)', v)
+      then
+        v := ''''''
+      else
+      if FTest.Matches('^'+Expect.ExpTypeName+'\(\$[0-9a-fA-F]+\) ', v) then
+        delete(v, 1, pos(') ', v)+1);
+    end;
 
-    Result := TestEquals('Data', Expect.ExpTextData, v, AContext, AnIgnoreRsn);
+    e := QuoteText(Expect.ExpTextData);
+    Result := TestEquals('Data', e, v, AContext, AnIgnoreRsn);
   end;
 end;
 
@@ -672,12 +781,81 @@ function TWatchExpectationList.CheckResultShortStr(
   AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean;
 var
   Expect: TWatchExpectationResult;
+  e: String;
+begin
+  with AContext.WatchExp do begin
+    Result := True;
+    Expect := AContext.Expectation;
+    e := QuoteText(Expect.ExpTextData);
+
+    Result := TestEquals('Data', e, AContext.WatchVal.Value, AContext, AnIgnoreRsn);
+  end;
+end;
+
+function TWatchExpectationList.CheckResultPointer(
+  AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean;
+var
+  Expect: TWatchExpectationResult;
+  g, e: String;
+  i, i2: SizeInt;
 begin
   with AContext.WatchExp do begin
     Result := True;
     Expect := AContext.Expectation;
 
-    Result := TestEquals('Data', Expect.ExpTextData, AContext.WatchVal.Value, AContext, AnIgnoreRsn);
+    e := '(\$[0-9a-fA-F]*|nil)';
+    if Expect.ExpTypeName <> '' then
+      e := Expect.ExpTypeName+'\('+e+'\)';
+    e := '^'+e;
+
+    Result := TestMatches('Data', e, AContext.WatchVal.Value, AContext, AnIgnoreRsn);
+
+    // TODO: methods to test sub expressions
+    case Expect.ExpSubResults[0].ExpResultKind of
+      //rkMatch: ;
+      rkChar, rkAnsiString, rkShortString: begin
+        g := AContext.WatchVal.Value;
+        i := pos(' ', g);
+        i2 := pos('nil', g);
+
+        if (Expect.ExpSubResults[0].ExpTextData = '') and  // nil
+           (i2 > 0) and ( (i2 < i) or (i < 1) )
+        then begin
+          Result := TestTrue('DerefData nil', True, AContext, AnIgnoreRsn);
+          exit;
+        end;
+
+        if i < 1 then
+          g := ''
+        else
+          Delete(g, 1, i);
+        e := QuoteText(Expect.ExpSubResults[0].ExpTextData);
+        Result := TestEquals('DerefData', e, g, AContext, AnIgnoreRsn);
+      end;
+      //rkPointer: ;
+      else
+        TestTrue('pointer for type not implemented in testsuite', False, AContext, AnIgnoreRsn);
+    end;
+
+  end;
+end;
+
+function TWatchExpectationList.CheckResultPointerAddr(
+  AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean;
+var
+  Expect: TWatchExpectationResult;
+  e: String;
+begin
+  with AContext.WatchExp do begin
+    Result := True;
+    Expect := AContext.Expectation;
+
+    e := '\$0*'+IntToHex(PtrUInt(Expect.ExpPointerValue), 8);
+    if Expect.ExpTypeName <> '' then
+      e := Expect.ExpTypeName+'\('+e+'\)';
+    e := '^'+e;
+
+    Result := TestMatches('Data', e, AContext.WatchVal.Value, AContext, AnIgnoreRsn);
   end;
 end;
 

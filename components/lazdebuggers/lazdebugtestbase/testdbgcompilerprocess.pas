@@ -317,8 +317,10 @@ begin
     OutputLines.Free;
   end;
   Result := FLastError = 0;
-  if not Result then
-    DebugLn(['**** compile error: ', FCompilerOutput]);
+  if not Result then begin
+    DebugLn(['**** compile error: ', FCompilerOutput, '  FLastError: ', FLastError, ' OS: ',GetLastOSError, ' ACurDir:', ACurDir]);
+    TestLogger.DebugLn(['**** compile error: ', FCompilerOutput, '  FLastError: ', FLastError, ' OS: ',GetLastOSError, ' ACurDir:', ACurDir]);
+  end;
 end;
 
 function TCompilerProcess.TestCompile(const FpcExe, FpcOpts, PascalPrgFile,
