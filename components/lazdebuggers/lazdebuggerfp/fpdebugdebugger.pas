@@ -90,8 +90,6 @@ type
     FFpDebugThread: TFpDebugThread;
     FQuickPause: boolean;
     FRaiseExceptionBreakpoint: TFpInternalBreakpoint;
-    FDbgLogMessageList: TFPObjectList;
-    FLogCritSection: TRTLCriticalSection;
     FMemConverter: TFpDbgMemConvertorLittleEndian;
     FMemReader: TDbgMemReader;
     FMemManager: TFpDbgMemManager;
@@ -303,6 +301,10 @@ implementation
 uses
   FpDbgUtil,
   FpDbgDisasX86;
+
+var
+  DbgLogCritSection: TRTLCriticalSection;
+  DbgLogMessageList: TFPObjectList;
 
 type
 
@@ -1549,21 +1551,25 @@ end;
 procedure TFpDebugDebugger.DoLog();
 var
   AMessage: TFpDbgLogMessage;
-  AnObjList: TFPObjectList;
+  AnObjList, t: TFPObjectList;
   i: Integer;
 begin
-  AnObjList:=TFPObjectList.Create(false);
+  // Do *NOT* access SELF. It may have been destroyed already
+  AnObjList := nil;
   try
-    EnterCriticalsection(FLogCritSection);
+    EnterCriticalsection(DbgLogCritSection);
     try
-      while FDbgLogMessageList.Count > 0 do
-        begin
-        AnObjList.Add(FDbgLogMessageList[0]);
-        FDbgLogMessageList.Delete(0);
-        end;
+      if DbgLogMessageList.Count > 0 then begin
+        t := TFPObjectList.Create(false);
+        AnObjList := DbgLogMessageList;
+        DbgLogMessageList := t;
+      end;
     finally
-      LeaveCriticalsection(FLogCritSection);
+      LeaveCriticalsection(DbgLogCritSection);
     end;
+
+    if AnObjList = nil then
+      exit;
 
     for i := 0 to AnObjList.Count-1 do
       begin
@@ -1897,11 +1903,11 @@ begin
   AMessage := TFpDbgLogMessage.Create;
   AMessage.SyncLogLevel:=ALogLevel;
   AMessage.SyncLogMessage:=AString;
-  EnterCriticalsection(FLogCritSection);
+  EnterCriticalsection(DbgLogCritSection);
   try
-    FDbgLogMessageList.Add(AMessage);
+    DbgLogMessageList.Add(AMessage);
   finally
-    LeaveCriticalsection(FLogCritSection);
+    LeaveCriticalsection(DbgLogCritSection);
   end;
   TThread.Queue(nil, @DoLog);
 end;
@@ -2111,8 +2117,6 @@ begin
   inherited Create(AExternalDebugger);
   FWatchEvalList := TFPList.Create;
   FPrettyPrinter := TFpPascalPrettyPrinter.Create(sizeof(pointer));
-  FDbgLogMessageList := TFPObjectList.Create(false);
-  InitCriticalSection(FLogCritSection);
   FMemReader := TFpDbgMemReader.Create(self);
   FMemConverter := TFpDbgMemConvertorLittleEndian.Create;
   FMemManager := TFpDbgMemManager.Create(FMemReader, FMemConverter);
@@ -2137,8 +2141,6 @@ begin
   FreeAndNil(FMemManager);
   FreeAndNil(FMemConverter);
   FreeAndNil(FMemReader);
-  FreeAndNil(FDbgLogMessageList);
-  DoneCriticalsection(FLogCritSection);
   inherited Destroy;
 end;
 
@@ -2219,6 +2221,14 @@ begin
   Result:=[dcRun, dcStop, dcStepIntoInstr, dcStepOverInstr, dcStepOver,
            dcRunTo, dcPause, dcStepOut, dcStepInto, dcEvaluate, dcSendConsoleInput];
 end;
+
+initialization
+  InitCriticalSection(DbgLogCritSection);
+  DbgLogMessageList := TFPObjectList.Create(false);
+
+finalization
+  FreeAndNil(DbgLogMessageList);
+  DoneCriticalsection(DbgLogCritSection);
 
 end.
 
