@@ -472,3 +472,17 @@ void QTextEdit_zoomOut(QTextEditH handle, int range)
 	((QTextEdit *)handle)->zoomOut(range);
 }
 
+void QTextEdit_placeholderText(QTextEditH handle, PWideString retval)
+{
+	QString t_retval;
+	t_retval = ((QTextEdit *)handle)->placeholderText();
+	copyQStringToPWideString(t_retval, retval);
+}
+
+void QTextEdit_setPlaceholderText(QTextEditH handle, PWideString text)
+{
+	QString t_text;
+	copyPWideStringToQString(text, t_text);
+	((QTextEdit *)handle)->setPlaceholderText(t_text);
+}
+

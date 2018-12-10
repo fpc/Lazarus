@@ -153,6 +153,7 @@ type
     class function GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
+    class procedure SetTextHint(const ACustomEdit: TCustomEdit; const ATextHint: string); override;
 
     //class procedure SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char); override;
     class procedure Cut(const ACustomEdit: TCustomEdit); override;
@@ -1027,6 +1028,17 @@ begin
   AStart := GetSelStart(ACustomEdit);
   if Supports(Widget, IQtEdit, QtEdit) then
     QtEdit.setSelection(AStart, NewLength);
+end;
+
+class procedure TQtWSCustomEdit.SetTextHint(const ACustomEdit: TCustomEdit;
+  const ATextHint: string);
+var
+  Widget: TQtWidget;
+  QtEdit: IQtEdit;
+begin
+  Widget := TQtWidget(ACustomEdit.Handle);
+  if Supports(Widget, IQtEdit, QtEdit) then
+    QtEdit.setTextHint(ATextHint);
 end;
 
 class procedure TQtWSCustomEdit.Cut(const ACustomEdit: TCustomEdit);

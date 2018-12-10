@@ -79,6 +79,9 @@ C_EXPORT void QPlainTextEdit_appendHtml(QPlainTextEditH handle, PWideString html
 C_EXPORT void QPlainTextEdit_centerCursor(QPlainTextEditH handle);
 C_EXPORT void QPlainTextEdit_zoomIn(QPlainTextEditH handle, int range);
 C_EXPORT void QPlainTextEdit_zoomOut(QPlainTextEditH handle, int range);
+C_EXPORT void QPlainTextEdit_placeholderText(QPlainTextEditH handle, PWideString retval);
+C_EXPORT void QPlainTextEdit_setPlaceholderText(QPlainTextEditH handle, PWideString text);
+
 C_EXPORT QPlainTextDocumentLayoutH QPlainTextDocumentLayout_Create(QTextDocumentH document);
 C_EXPORT void QPlainTextDocumentLayout_Destroy(QPlainTextDocumentLayoutH handle);
 C_EXPORT int QPlainTextDocumentLayout_hitTest(QPlainTextDocumentLayoutH handle, const QPointFH AnonParam1, Qt::HitTestAccuracy AnonParam2);

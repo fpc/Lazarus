@@ -9875,6 +9875,8 @@ procedure QPlainTextEdit_appendHtml(handle: QPlainTextEditH; html: PWideString);
 procedure QPlainTextEdit_centerCursor(handle: QPlainTextEditH); cdecl; external Qt5PasLib name 'QPlainTextEdit_centerCursor';
 procedure QPlainTextEdit_zoomIn(handle: QPlainTextEditH; range: Integer = 1); cdecl; external Qt5PasLib name 'QPlainTextEdit_zoomIn';
 procedure QPlainTextEdit_zoomOut(handle: QPlainTextEditH; range: Integer = 1); cdecl; external Qt5PasLib name 'QPlainTextEdit_zoomOut';
+procedure QPlainTextEdit_placeholderText(handle: QPlainTextEditH; retval: PWideString); cdecl; external Qt5PasLib name 'QPlainTextEdit_placeholderText';
+procedure QPlainTextEdit_setPlaceholderText(handle: QPlainTextEditH; AnonParam1: PWideString); cdecl; external Qt5PasLib name 'QPlainTextEdit_setPlaceholderText';
 
 function QPlainTextDocumentLayout_Create(document: QTextDocumentH): QPlainTextDocumentLayoutH; cdecl; external Qt5PasLib name 'QPlainTextDocumentLayout_Create';
 procedure QPlainTextDocumentLayout_Destroy(handle: QPlainTextDocumentLayoutH); cdecl; external Qt5PasLib name 'QPlainTextDocumentLayout_Destroy'; 
@@ -9999,7 +10001,8 @@ procedure QTextEdit_append(handle: QTextEditH; text: PWideString); cdecl; extern
 procedure QTextEdit_scrollToAnchor(handle: QTextEditH; name: PWideString); cdecl; external Qt5PasLib name 'QTextEdit_scrollToAnchor';
 procedure QTextEdit_zoomIn(handle: QTextEditH; range: Integer = 1); cdecl; external Qt5PasLib name 'QTextEdit_zoomIn';
 procedure QTextEdit_zoomOut(handle: QTextEditH; range: Integer = 1); cdecl; external Qt5PasLib name 'QTextEdit_zoomOut';
-
+procedure QTextEdit_placeholderText(handle: QTextEditH; retval: PWideString); cdecl; external Qt5PasLib name 'QTextEdit_placeholderText';
+procedure QTextEdit_setPlaceholderText(handle: QTextEditH; AnonParam1: PWideString); cdecl; external Qt5PasLib name 'QTextEdit_setPlaceholderText';
 
 type
   QTextEdit_textChanged_Event = procedure () of object cdecl;

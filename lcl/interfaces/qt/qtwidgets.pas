@@ -7529,7 +7529,10 @@ begin
           begin
             if (MDIChildArea.ActiveSubWindow = nil) or
               (MDIChildArea.ActiveSubWindow = Widget) then
-              QMdiArea_activatePreviousSubWindow(QMDIAreaH(MDIChildArea.Widget));
+            begin
+              if not QWidget_isVisibleTo(Widget, MDIChildArea.Widget) then
+                QMdiArea_activatePreviousSubWindow(QMDIAreaH(MDIChildArea.Widget));
+            end;
           end;
         end;
       end;
@@ -9784,6 +9787,8 @@ begin
   begin
     Result := TQtComboBox(LCLObject.Handle).InUpdate or
       (csDesigning in LCLObject.ComponentState);
+    if (QEvent_type(Event) = QEventPaint) and (csDesigning in LCLObject.ComponentState) then
+      QObject_event(Sender, Event);
     if Result then
       QEvent_ignore(Event)
     else

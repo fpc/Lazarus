@@ -100,5 +100,7 @@ C_EXPORT void QTextEdit_append(QTextEditH handle, PWideString text);
 C_EXPORT void QTextEdit_scrollToAnchor(QTextEditH handle, PWideString name);
 C_EXPORT void QTextEdit_zoomIn(QTextEditH handle, int range);
 C_EXPORT void QTextEdit_zoomOut(QTextEditH handle, int range);
+C_EXPORT void QTextEdit_placeholderText(QTextEditH handle, PWideString retval);
+C_EXPORT void QTextEdit_setPlaceholderText(QTextEditH handle, PWideString text);
 
 #endif
