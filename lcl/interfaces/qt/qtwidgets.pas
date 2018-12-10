@@ -9787,6 +9787,8 @@ begin
   begin
     Result := TQtComboBox(LCLObject.Handle).InUpdate or
       (csDesigning in LCLObject.ComponentState);
+    if (QEvent_type(Event) = QEventPaint) and (csDesigning in LCLObject.ComponentState) then
+      QObject_event(Sender, Event);
     if Result then
       QEvent_ignore(Event)
     else
