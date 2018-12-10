@@ -35,8 +35,12 @@ program LazRes;
 
 {$mode objfpc}{$H+}
 
+{$IF FPC_FULLVERSION>=30301}
+{$WARN 6058 off : Call to subroutine "$1" marked as inline is not inlined}
+{$ENDIF}
+
 uses
-  Classes, SysUtils, LCLProc, LResources, resource, reswriter,
+  Classes, SysUtils, LazLogger, LResources, resource, reswriter,
   bitmapresource, groupresource, groupiconresource, groupcursorresource,
   LazFileUtils, LazUTF8, LazUTF8Classes;
 
