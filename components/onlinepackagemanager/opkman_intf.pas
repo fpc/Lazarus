@@ -127,7 +127,7 @@ begin
     begin
       if (FPackageLinks.Count = 0) then
       begin
-        if (not PackageDownloader.DownloadingJSON) and (not Application.Terminated) then
+        if (not PackageDownloader.DownloadingJSON) and (not Application.Terminated) and (Options.CheckForUpdates <> 5) then
           PackageDownloader.DownloadJSON(Options.ConTimeOut*1000, True);
         Exit;
       end;
