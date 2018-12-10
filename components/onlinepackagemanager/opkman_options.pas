@@ -268,7 +268,7 @@ begin
   FActiveRepositoryIndex := 0;
   FForceDownloadAndExtract := True;
   FDeleteZipAfterInstall := True;
-  FCheckForUpdates := 0;
+  FCheckForUpdates := 5;
   FLastUpdate := 0.0;
   FConTimeOut := 10;
   FDaysToShowNewPackages := 31;
