@@ -7529,7 +7529,10 @@ begin
           begin
             if (MDIChildArea.ActiveSubWindow = nil) or
               (MDIChildArea.ActiveSubWindow = Widget) then
-              QMdiArea_activatePreviousSubWindow(QMDIAreaH(MDIChildArea.Widget));
+            begin
+              if not QWidget_isVisibleTo(Widget, MDIChildArea.Widget) then
+                QMdiArea_activatePreviousSubWindow(QMDIAreaH(MDIChildArea.Widget));
+            end;
           end;
         end;
       end;
