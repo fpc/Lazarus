@@ -151,13 +151,13 @@ type
     FDataAddressCache: array of TFpDbgMemLocation;
     FStructureValue: TFpDwarfValue;
     FLastMember: TFpDwarfValue;
-    FLastError: TFpError;
     function GetDataAddressCache(AIndex: Integer): TFpDbgMemLocation;
-    function MemManager: TFpDbgMemManager; inline;
     function AddressSize: Byte; inline;
     procedure SetDataAddressCache(AIndex: Integer; AValue: TFpDbgMemLocation);
     procedure SetStructureValue(AValue: TFpDwarfValue);
   protected
+    FLastError: TFpError;
+    function MemManager: TFpDbgMemManager; inline;
     procedure DoReferenceAdded; override;
     procedure DoReferenceReleased; override;
     procedure CircleBackRefActiveChanged(NewActive: Boolean); override;
