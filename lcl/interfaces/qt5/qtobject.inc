@@ -1223,6 +1223,7 @@ begin
     lcReceivesLMClearCutCopyPasteReliably: Result := LCL_CAPABILITY_NO;
     lcRadialGradientBrush: Result := LCL_CAPABILITY_YES;
     lcTransparentWindow: Result := LCL_CAPABILITY_YES;
+    lcTextHint: Result := LCL_CAPABILITY_YES;
   else
     Result := inherited GetLCLCapability(ACapability);
   end;

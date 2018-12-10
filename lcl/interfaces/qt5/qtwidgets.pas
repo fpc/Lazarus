@@ -91,6 +91,7 @@ type
     procedure setSelection(const AStart, ALength: Integer);
     procedure setBorder(const ABorder: Boolean);
     procedure setCursorPosition(const ACursorPosition: Integer);
+    procedure setTextHint(ATextHint: string);
     procedure Cut;
     procedure Copy;
     procedure Paste;
@@ -847,6 +848,7 @@ type
     procedure setTextMargins(ARect: TRect);
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
+    procedure setTextHint(ATextHint: string);
   public
     function getAlignment: QtAlignment;
     function getCursorPosition: TPoint;
@@ -899,6 +901,7 @@ type
     procedure SetAcceptRichText(AValue: Boolean);
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
+    procedure setTextHint(ATextHint: string);
   public
     FList: TStrings;
     procedure Append(const AStr: WideString);
@@ -1045,6 +1048,7 @@ type
     procedure setReadOnly(const AReadOnly: Boolean);
     procedure setSelection(const AStart, ALength: Integer);
     procedure setCursorPosition(const ACursorPosition: Integer);
+    procedure setTextHint(ATextHint: string);
     procedure Cut;
     procedure Copy;
     procedure Paste;
@@ -1119,6 +1123,7 @@ type
     procedure setSelection(const AStart, ALength: Integer);
     procedure setCursorPosition(const ACursorPosition: Integer);
     procedure SignalLineEditTextChanged(AnonParam1: PWideString); virtual; cdecl;
+    procedure setTextHint(ATextHint: string);
     procedure Cut;
     procedure Copy;
     procedure Paste;
@@ -9758,6 +9763,14 @@ begin
   QLineEdit_setText(QLineEditH(Widget), @AText);
 end;
 
+procedure TQtLineEdit.setTextHint(ATextHint: string);
+var
+  W: WideString;
+begin
+  W := UTF8ToUTF16(ATextHint);
+  QLineEdit_setPlaceholderText(QLineEditH(Widget), @W);
+end;
+
 procedure TQtLineEdit.setTextMargins(ARect: TRect);
 begin
   with ARect do
@@ -10106,6 +10119,14 @@ begin
   QTextEdit_setPlainText(QTextEditH(Widget), @AText);
 end;
 
+procedure TQtTextEdit.setTextHint(ATextHint: string);
+var
+  W: WideString;
+begin
+  W := UTF8ToUTF16(ATextHint);
+  QTextEdit_setPlaceholderText(QTextEditH(Widget), @W);
+end;
+
 procedure TQtTextEdit.setReadOnly(const AReadOnly: Boolean);
 begin
   QTextEdit_setReadOnly(QTextEditH(Widget), AReadOnly);
@@ -10152,7 +10173,7 @@ begin
   QTextEdit_undo(QTextEditH(Widget));
 end;
 
-procedure TQtTextEdit.SetAlignment(const AAlignment: QtAlignment);
+procedure TQtTextEdit.setAlignment(const AAlignment: QtAlignment);
 var
   TextCursor: QTextCursorH;
 begin
@@ -11104,6 +11125,12 @@ begin
     LineEdit.setCursorPosition(ACursorPosition);
 end;
 
+procedure TQtComboBox.setTextHint(ATextHint: string);
+begin
+  if getEditable then
+    LineEdit.setTextHint(ATextHint);
+end;
+
 procedure TQtComboBox.Cut;
 begin
   if LineEdit <> nil then
@@ -11757,6 +11784,17 @@ begin
   Msg.Msg := CM_TEXTCHANGED;
   if not InUpdate then
     DeliverMessage(Msg);
+end;
+
+procedure TQtAbstractSpinBox.setTextHint(ATextHint: string);
+var
+  W: WideString;
+begin
+  if Assigned(FLineEdit) and not (csDesigning in LCLObject.ComponentState) then
+  begin
+    W := UTF8ToUTF16(ATextHint);
+    QLineEdit_setPlaceholderText(FLineEdit, @W);
+  end;
 end;
 
 function TQtAbstractSpinBox.CreateWidget(const AParams: TCreateParams): QWidgetH;
