@@ -42,18 +42,12 @@ uses opkman_const, opkman_mainfrm, opkman_maindm, opkman_intf;
 
 procedure IDEMenuSectionClicked(Sender: TObject);
 begin
-  MainDM := TMainDM.Create(nil);
+  MainFrm := TMainFrm.Create(nil);
   try
-    MainFrm := TMainFrm.Create(nil);
-    try
-      MainFrm.ShowModal;
-    finally
-      MainFrm.Free;
-      MainFrm := nil;
-    end;
+    MainFrm.ShowModal;
   finally
-    MainDM.Free;
-    MainDM := nil;
+    MainFrm.Free;
+    MainFrm := nil;
   end;
 end;
 
@@ -76,9 +70,11 @@ begin
 end;
 
 initialization
+  MainDM := TMainDM.Create(nil);
   OPMInterface := TOPMInterfaceEx.Create;
 
 finalization
   OPMInterface.Free;
+  MainDM.Free;
 end.
 
