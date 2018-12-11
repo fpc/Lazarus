@@ -13886,6 +13886,10 @@ msgstr ""
 msgid "No"
 msgstr ""
 
+#: lazarusidestrconsts.lisnoautosaveactivedesktop
+msgid "'Auto save active desktop' option is turned off, you will need to save current desktop manually."
+msgstr ""
+
 #: lazarusidestrconsts.lisnobackupfiles
 msgid "No backup files"
 msgstr ""

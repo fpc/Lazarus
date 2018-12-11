@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-11-27 01:43+0300\n"
+"PO-Revision-Date: 2018-12-12 01:16+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -13915,6 +13915,10 @@ msgstr "Новые модули добавляются в выражения use
 #: lazarusidestrconsts.lisno
 msgid "No"
 msgstr "Нет"
+
+#: lazarusidestrconsts.lisnoautosaveactivedesktop
+msgid "'Auto save active desktop' option is turned off, you will need to save current desktop manually."
+msgstr "Автоматическое сохранение активного рабочего стола отключено, вам потребуется делать это вручную."
 
 #: lazarusidestrconsts.lisnobackupfiles
 msgid "No backup files"

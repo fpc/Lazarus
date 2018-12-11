@@ -14191,6 +14191,10 @@ msgstr "Kullanım bölümlerine yeni birimler eklendi"
 msgid "No"
 msgstr "Yok hayır"
 
+#: lazarusidestrconsts.lisnoautosaveactivedesktop
+msgid "'Auto save active desktop' option is turned off, you will need to save current desktop manually."
+msgstr ""
+
 #: lazarusidestrconsts.lisnobackupfiles
 msgid "No backup files"
 msgstr "Yedekleme dosyası yok"

@@ -13916,6 +13916,10 @@ msgstr "Új unit-ok hozzáadása a uses szakaszhoz"
 msgid "No"
 msgstr "Nem"
 
+#: lazarusidestrconsts.lisnoautosaveactivedesktop
+msgid "'Auto save active desktop' option is turned off, you will need to save current desktop manually."
+msgstr ""
+
 #: lazarusidestrconsts.lisnobackupfiles
 msgid "No backup files"
 msgstr "Nincsenek biztonsági mentés fájlok"

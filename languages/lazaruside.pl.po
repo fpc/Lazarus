@@ -14270,6 +14270,10 @@ msgstr "Dodawanie nowych modułów do sekcji uses:"
 msgid "No"
 msgstr "Nie"
 
+#: lazarusidestrconsts.lisnoautosaveactivedesktop
+msgid "'Auto save active desktop' option is turned off, you will need to save current desktop manually."
+msgstr ""
+
 #: lazarusidestrconsts.lisnobackupfiles
 msgid "No backup files"
 msgstr "Bez kopii zapasowej"

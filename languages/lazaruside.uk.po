@@ -13920,6 +13920,10 @@ msgstr "Нові модулі додаються в секцію uses"
 msgid "No"
 msgstr "Ні"
 
+#: lazarusidestrconsts.lisnoautosaveactivedesktop
+msgid "'Auto save active desktop' option is turned off, you will need to save current desktop manually."
+msgstr ""
+
 #: lazarusidestrconsts.lisnobackupfiles
 msgid "No backup files"
 msgstr "Немає резервних файлів"

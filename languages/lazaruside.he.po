@@ -14902,6 +14902,10 @@ msgstr "יחידות חדשות נוספו לאזור \"משתמש ב\":"
 msgid "No"
 msgstr "לא"
 
+#: lazarusidestrconsts.lisnoautosaveactivedesktop
+msgid "'Auto save active desktop' option is turned off, you will need to save current desktop manually."
+msgstr ""
+
 #: lazarusidestrconsts.lisnobackupfiles
 msgid "No backup files"
 msgstr "ללא קבצי גיבוי"

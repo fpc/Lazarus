@@ -13953,6 +13953,10 @@ msgstr "Novas unidades serão adicionadas à seção \"uses\""
 msgid "No"
 msgstr "Não"
 
+#: lazarusidestrconsts.lisnoautosaveactivedesktop
+msgid "'Auto save active desktop' option is turned off, you will need to save current desktop manually."
+msgstr ""
+
 #: lazarusidestrconsts.lisnobackupfiles
 msgid "No backup files"
 msgstr "Sem arquivo de segurança"

@@ -13890,6 +13890,10 @@ msgstr "Nové jednotky jsou přidány do sekcí uses"
 msgid "No"
 msgstr "Ne"
 
+#: lazarusidestrconsts.lisnoautosaveactivedesktop
+msgid "'Auto save active desktop' option is turned off, you will need to save current desktop manually."
+msgstr ""
+
 #: lazarusidestrconsts.lisnobackupfiles
 msgid "No backup files"
 msgstr "Nezálohovat soubory"

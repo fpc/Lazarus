@@ -13775,6 +13775,10 @@ msgstr "Uudet käännösyksiköt lisätään uses-lauseeseen"
 msgid "No"
 msgstr "Ei"
 
+#: lazarusidestrconsts.lisnoautosaveactivedesktop
+msgid "'Auto save active desktop' option is turned off, you will need to save current desktop manually."
+msgstr ""
+
 #: lazarusidestrconsts.lisnobackupfiles
 msgid "No backup files"
 msgstr "Ei varmuuskopioita"
