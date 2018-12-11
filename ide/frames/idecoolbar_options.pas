@@ -57,6 +57,7 @@ type
     imButtons: TImageList;
     dbAddConfigDelete: TDividerBevel;
     dbGeneralSettings: TDividerBevel;
+    lblNoAutoSaveActiveDesktop: TLabel;
     pnTopCenterLabel: TLabel;
     lbGrabWidth: TLabel;
     lbCoolBarWidth: TLabel;
@@ -162,6 +163,7 @@ begin
   IDEImages.AssignImage(bDelete, 'laz_delete');
   bDefaultToolbar.Caption := lisCoolbarRestoreDefaults;
   IDEImages.AssignImage(bDefaultToolbar, 'restore_defaults');
+  lblNoAutoSaveActiveDesktop.Caption := lisNoAutoSaveActiveDesktop;
 end;
 
 procedure TIdeCoolbarOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -190,6 +192,7 @@ begin
   cbBorderStyle.ItemIndex := Opts.BorderStyle;
   FTempCoolBar.Coolbar.BandBorderStyle := TBorderStyle(Opts.BorderStyle);
   EnableDisableGeneralButtons;
+  lblNoAutoSaveActiveDesktop.Visible := not EnvironmentOptions.AutoSaveActiveDesktop;
 
   // ToDo: More tests?
   if Opts.ToolBars.Count = 0 then

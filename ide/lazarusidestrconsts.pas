@@ -4840,6 +4840,7 @@ resourcestring
   lisEditorToolbarVisible = 'Editor Toolbar is &visible';
   lisEditorToolbarSettings = 'Editor Toolbar Settings';
   lisPosition = 'Position';
+  lisNoAutoSaveActiveDesktop = 'You need save current desktop manually for next sessions because option ''Auto save active desktop'' is turned off';
 
   // components palette settings and list form
   lisCmpPages = 'Pages';
