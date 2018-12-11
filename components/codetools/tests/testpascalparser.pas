@@ -50,6 +50,8 @@ type
     procedure TestParseExternalConcat;
     procedure TestParseExternalConst;
     procedure TestParseModeTP;
+    procedure TestParseProcAnoAssign;
+    procedure TestParseProcAnoArg; // ToDo
   end;
 
 implementation
@@ -472,6 +474,53 @@ begin
   '{$mode tp}',
   '{ {}',
   'begin']);
+  ParseModule;
+end;
+
+procedure TTestPascalParser.TestParseProcAnoAssign;
+begin
+  Add([
+  'program test1;',
+  '{$modeswitch closures}',
+  'procedure DoIt;',
+  'begin',
+  '  p:=procedure begin end;',
+  '  p:=procedure(w: word) begin end;',
+  '  p:=procedure assembler asm end;',
+  '  p:=procedure var w:word; begin end;',
+  '  p:=procedure const c=3; begin end;',
+  '  p:=procedure type p=procedure; begin end;',
+  '  p:=procedure begin p:=function:word begin end end;',
+  '  p:=procedure begin p:=procedure(w:word) begin end; end;',
+  'end;',
+  'begin',
+  '  p:=procedure begin end;',
+  '  p:=procedure begin p:=procedure(w:word) begin end; end;',
+  '']);
+  ParseModule;
+end;
+
+procedure TTestPascalParser.TestParseProcAnoArg;
+begin
+  exit;
+  Add([
+  'program test1;',
+  '{$modeswitch closures}',
+  'procedure DoIt;',
+  'begin',
+  '  DoIt(procedure begin end);',
+  '  DoIt(procedure(var v: word; const c: word; out o: word) begin end);',
+  '  DoIt(procedure assembler asm end);',
+  '  DoIt(procedure var w:word; begin end);',
+  '  DoIt(procedure const c=3; begin end);',
+  '  DoIt(procedure type p=procedure; begin end);',
+  '  DoIt(procedure begin p:=function:word begin end end);',
+  '  DoIt(procedure begin p:=procedure(w:word) begin end; end);',
+  'end;',
+  'begin',
+  '  DoIt(procedure begin end);',
+  '  DoIt(procedure begin p:=procedure(w:word) begin end; end);',
+  '']);
   ParseModule;
 end;
 

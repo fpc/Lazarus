@@ -53,7 +53,7 @@ type
   published
     procedure TestPas2js_ReadSettings;
     procedure TestPas2js_FindDeclaration;
-end;
+  end;
 
 implementation
 

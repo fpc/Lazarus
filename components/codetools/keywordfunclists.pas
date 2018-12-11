@@ -123,6 +123,7 @@ type
 var
   IsKeyWordMethodSpecifier,
   IsKeyWordProcedureSpecifier,
+  IsKeyWordProcedureAnonymousSpecifier,
   IsKeyWordProcedureTypeSpecifier,
   IsKeyWordProcedureBracketSpecifier,
   IsKeyWordCallingConvention,
@@ -965,6 +966,25 @@ begin
     Add('EXPERIMENTAL' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LIBRARY'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('IS'           ,{$ifdef FPC}@{$endif}AllwaysTrue);
+  end;
+
+  IsKeyWordProcedureAnonymousSpecifier:=TKeyWordFunctionList.Create('IsKeyWordProcedureAnonymousSpecifier');
+  KeyWordLists.Add(IsKeyWordProcedureAnonymousSpecifier);
+  with IsKeyWordProcedureAnonymousSpecifier do begin
+    Add('ASSEMBLER'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('CDECL'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('EXTDECL'      ,{$ifdef FPC}@{$endif}AllwaysTrue); // used often for macros
+    Add('FAR'          ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    ADD('MWPASCAL'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('NEAR'         ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('NOSTACKFRAME' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('PASCAL'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('POPSTACK'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('REGISTER'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SAFECALL'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('STDCALL'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('VARARGS'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('VECTORCALL'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
 
   IsKeyWordCallingConvention:=TKeyWordFunctionList.Create('IsKeyWordCallingConvention');

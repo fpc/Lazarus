@@ -248,6 +248,7 @@ type
     procedure ReadSpecializeParams(CreateChildNodes: boolean; Extract: boolean = false;
       Copying: boolean = false; const Attr: TProcHeadAttributes = []);
     procedure ReadAnsiStringParams;
+    function ReadClosure(ExceptionOnError, CreateNodes: boolean): boolean;
     function WordIsPropertyEnd: boolean;
     function AllowAttributes: boolean; inline;
   public
@@ -1027,6 +1028,7 @@ begin
     BeginNode.SubDesc:=BeginNode.SubDesc and (not ctnsNeedJITParsing);
     // set CursorPos on 'begin'
     MoveCursorToNodeStart(BeginNode);
+    CurSection:=ctnImplementation;
     ReadNextAtom;
     if not UpAtomIs('BEGIN') then
       RaiseBeginExpected;
@@ -1042,7 +1044,10 @@ begin
         if not ReadTilBlockEnd(false,true) then
           SaveRaiseEndOfSourceExpected(20170421195401);
       end else if UpAtomIs('WITH') then
-        ReadWithStatement(true,true);
+        ReadWithStatement(true,true)
+      else if (UpAtomIs('PROCEDURE') or UpAtomIs('FUNCTION'))
+      and (cmsClosures in Scanner.CompilerModeSwitches) then
+        ReadClosure(true,true);
     until false;
   except
     {$IFDEF ShowIgnoreErrorAfter}
@@ -2988,6 +2993,9 @@ begin
     end else if UpAtomIs('ON') and (BlockType=ebtTry)
     and (TryType=ttExcept) then begin
       ReadOnStatement(true,CreateNodes);
+    end else if (UpAtomIs('PROCEDURE') or UpAtomIs('FUNCTION'))
+    and (cmsClosures in Scanner.CompilerModeSwitches) then begin
+      ReadClosure(true,CreateNodes);
     end else begin
       // check for unexpected keywords
       case BlockType of
@@ -4874,7 +4882,7 @@ end;
 
 function TPascalParserTool.KeyWordFuncTypeReferenceTo: boolean;
 begin
-  if (cmsCBlocks in Scanner.CompilerModeSwitches)
+  if (Scanner.CompilerModeSwitches*[cmsClosures,cmsCBlocks]<>[])
   or (Scanner.PascalCompiler=pcPas2js) then begin
     CreateChildNode;
     CurNode.Desc:=ctnReferenceTo;
@@ -6021,6 +6029,134 @@ begin
       SaveRaiseCharExpectedButAtomFound(20170421195837,'>');
     end;
   until false;
+end;
+
+function TPascalParserTool.ReadClosure(ExceptionOnError, CreateNodes: boolean
+  ): boolean;
+{ parse parameter list, result type, calling convention, begin..end
+
+ examples:
+   procedure begin end
+   procedure (Parameter: Type) begin end
+   procedure stdcall assembler asm end
+   function: ResultType begin end
+   function (Parameter1: Type1; Parameter2: Type2): ResultType begin end
+}
+var
+  Attr: TProcHeadAttributes;
+  IsFunction, IsBegin: boolean;
+  Last: TAtomPosition;
+begin
+  Result:=false;
+  {$IFDEF VerboseReadClosure}
+  writeln('TPascalParserTool.ReadClosure START Atom=',GetAtom,' CurSection=',NodeDescToStr(CurSection));
+  {$ENDIF}
+  Last:=LastAtoms.GetAtomAt(-1);
+  if not (Last.Flag in [cafAssignment,cafComma,cafEdgedBracketOpen,cafRoundBracketOpen])
+  then begin
+    if ExceptionOnError then
+      SaveRaiseUnexpectedKeyWord(20181211235540)
+    else
+      exit;
+  end;
+  // create node for procedure
+  if CreateNodes then begin
+    CreateChildNode;
+    CurNode.Desc:=ctnProcedure;
+  end;
+  IsFunction:=UpAtomIs('FUNCTION');
+  ReadNextAtom;// read first atom of head
+  {$IFDEF VerboseReadClosure}
+  writeln('TPascalParserTool.ReadClosure head start ',GetAtom);
+  {$ENDIF}
+  if CreateNodes then begin
+    CreateChildNode;
+    CurNode.Desc:=ctnProcedureHead;
+  end;
+  // read parameter list
+  if CurPos.Flag=cafRoundBracketOpen then begin
+    Attr:=[];
+    if CreateNodes then
+      Include(Attr,phpCreateNodes);
+    ReadParamList(true,false,Attr);
+  end;
+  {$IFDEF VerboseReadClosure}
+  writeln('TPascalParserTool.ReadClosure head end ',GetAtom,' CurNode=',NodeDescToStr(CurNode.Desc));
+  {$ENDIF}
+  // read function result
+  if IsFunction then begin
+    if CurPos.Flag<>cafColon then begin
+      if ExceptionOnError then
+        SaveRaiseCharExpectedButAtomFound(20181211233854,':')
+      else
+        exit;
+    end;
+    ReadNextAtom;
+    ReadTypeReference(CreateNodes);
+  end;
+  {$IFDEF VerboseReadClosure}
+  writeln('TPascalParserTool.ReadClosure modifiers ',GetAtom,' CurNode=',NodeDescToStr(CurNode.Desc));
+  {$ENDIF}
+  // read modifiers conventions
+  while (CurPos.StartPos<=SrcLen)
+  and IsKeyWordProcedureAnonymousSpecifier.DoIdentifier(@Src[CurPos.StartPos]) do
+    ReadNextAtom;
+  // close head
+  if CreateNodes then begin
+    // close ctnProcedureHead
+    CurNode.EndPos:=CurPos.StartPos;
+    EndChildNode;
+  end;
+  IsBegin:=false;
+  repeat
+    {$IFDEF VerboseReadClosure}
+    writeln('TPascalParserTool.ReadClosure body ',GetAtom,' CurNode=',NodeDescToStr(CurNode.Desc));
+    {$ENDIF}
+    if CurPos.Flag=cafSemicolon then begin
+      ReadNextAtom;
+    end else if UpAtomIs('BEGIN') then begin
+      IsBegin:=true;
+      break;
+    end else if UpAtomIs('ASM') then begin
+      break;
+    end else if UpAtomIs('TYPE') then begin
+      if not KeyWordFuncType then exit;
+    end else if UpAtomIs('VAR') then begin
+      if not KeyWordFuncVar then exit
+    end else if UpAtomIs('CONST') then begin
+      if not KeyWordFuncConst then exit;
+    end else if UpAtomIs('LABEL') then begin
+      if not KeyWordFuncLabel then exit;
+    end else if UpAtomIs('PROCEDURE') or UpAtomIs('FUNCTION') then begin
+      if not KeyWordFuncProc then exit;
+    end else begin
+      if ExceptionOnError then
+        SaveRaiseStringExpectedButAtomFound(20181211234804,'begin')
+      else
+        exit;
+    end;
+  until false;
+  // read begin block
+  {$IFDEF VerboseReadClosure}
+  writeln('TPascalParserTool.ReadClosure begin/asm ',GetAtom,' CurNode=',NodeDescToStr(CurNode.Desc));
+  {$ENDIF}
+  if CreateNodes then begin
+    CreateChildNode;
+    if IsBegin then
+      CurNode.Desc:=ctnBeginBlock
+    else
+      CurNode.Desc:=ctnAsmBlock;
+  end;
+  // search "end"
+  ReadTilBlockEnd(false,CreateNodes);
+  {$IFDEF VerboseReadClosure}
+  writeln('TPascalParserTool.ReadClosure END ',GetAtom,' CurNode=',NodeDescToStr(CurNode.Desc));
+  {$ENDIF}
+  // close procedure node
+  if CreateNodes then begin
+    CurNode.EndPos:=CurPos.EndPos;
+    EndChildNode;
+  end;
 end;
 
 function TPascalParserTool.WordIsPropertyEnd: boolean;
