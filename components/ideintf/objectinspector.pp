@@ -4978,10 +4978,7 @@ begin
   for i:=0 to ComponentTree.Selection.Count - 1 do begin
     persistent := ComponentTree.Selection[i];
     if persistent.GetInterface(GUID_ObjInspInterface, intf) and not intf.AllowDelete then
-    begin
-      Result := false;
-      exit;
-    end;
+      exit(false);
   end;
 end;
 
@@ -5994,7 +5991,7 @@ end;
 
 function TObjectInspectorDlg.GetComponentPanelHeight: integer;
 begin
-  Result := ComponentPanel.Height
+  Result := ComponentPanel.Height;
 end;
 
 function TObjectInspectorDlg.GetInfoBoxHeight: integer;
