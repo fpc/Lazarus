@@ -107,6 +107,8 @@ type
   private
     FMode: (cmRun, cmRunToCatch, cmRunAfterCatch, cmRunToTmpBrk);
     FState: (crRunning, crReadingThreads, crStopped, crStoppedRaise, crDone);
+    FNextStepAction: TLldbInstructionProcessStepAction;
+    FWaitToResume: Boolean;
     FCurBrkId, FTmpBreakId: Integer;
     FThreadInstr: TLldbInstructionThreadList;
     FCurrentExceptionInfo: record
@@ -129,6 +131,7 @@ type
     procedure RunInstructionSucceeded(AnInstruction: TObject);
     procedure ResetStateToRun;
     procedure SetNextStepCommand(AStepAction: TLldbInstructionProcessStepAction);
+    procedure ResumeWithNextStepCommand;
     procedure SetTempBreakPoint(AnAddr: TDBGPtr);
     procedure DeleteTempBreakPoint;
     Procedure SetDebuggerLocation(AnAddr, AFrame: TDBGPtr; AFuncName, AFile, AFullFile: String; SrcLine: integer);
@@ -136,6 +139,8 @@ type
     FStepAction: TLldbInstructionProcessStepAction;
     procedure DoLineDataReceived(var ALine: String); override;
     procedure DoCancel; override;
+    procedure DoInitialExecute; virtual; abstract;
+    procedure DoExecute; override;
   public
     constructor Create(AOwner: TLldbDebugger);
     destructor Destroy; override;
@@ -146,7 +151,7 @@ type
   TLldbDebuggerCommandRunStep = class(TLldbDebuggerCommandRun)
   private
   protected
-    procedure DoExecute; override;
+    procedure DoInitialExecute; override;
   public
     constructor Create(AOwner: TLldbDebugger; AStepAction: TLldbInstructionProcessStepAction);
   end;
@@ -159,7 +164,7 @@ type
     procedure ExceptBreakInstructionFinished(Sender: TObject);
     procedure TargetCreated(Sender: TObject);
   protected
-    procedure DoExecute; override;
+    procedure DoInitialExecute; override;
     constructor Create(AOwner: TLldbDebugger);
   end;
 
@@ -245,6 +250,7 @@ type
     FDebugProcess: TDebugProcess;
     FDebugInstructionQueue: TLldbInstructionQueue;
     FCommandQueue: TLldbDebuggerCommandQueue;
+    FInIdle: Boolean;
     FCurrentLocation: TDBGLocationRec;
     FCurrentStackFrame: Integer;
     FCurrentThreadId: Integer;
@@ -302,6 +308,7 @@ type
     function  CreateThreads: TThreadsSupplier; override;
     function  GetTargetWidth: Byte; override;
 
+    function GetIsIdle: Boolean; override;
     function  GetSupportedCommands: TDBGCommands; override;
     //function  GetCommands: TDBGCommands; override;
     function  RequestCommand(const ACommand: TDBGCommand;
@@ -1045,7 +1052,16 @@ begin
   InstructionQueue.CancelAllForCommand(Self); // in case there still are any
   DeleteTempBreakPoint;
   // Must not call Finished; => would cancel DeleteTempBreakPoint;
-  CommandQueue.CommandFinished(Self);
+  if CommandQueue.RunningCommand = Self then
+    CommandQueue.CommandFinished(Self);
+end;
+
+procedure TLldbDebuggerCommandRun.DoExecute;
+begin
+  if FWaitToResume then
+    ResumeWithNextStepCommand
+  else
+    DoInitialExecute;
 end;
 
 procedure TLldbDebuggerCommandRun.RunInstructionSucceeded(AnInstruction: TObject
@@ -1067,10 +1083,26 @@ end;
 
 procedure TLldbDebuggerCommandRun.SetNextStepCommand(
   AStepAction: TLldbInstructionProcessStepAction);
+begin
+  FNextStepAction := AStepAction;
+  {$IFDEF LLDB_SKIP_SNAP}
+  ResumeWithNextStepCommand;
+  exit;
+  {$ENDIF}
+  FWaitToResume := True;
+
+  // Run the queue, before continue
+  CommandQueue.QueueCommand(Self);
+  CommandQueue.CommandFinished(Self);
+  //CommandQueue.FRunningCommand := nil;
+  //CommandQueue.Run;
+end;
+
+procedure TLldbDebuggerCommandRun.ResumeWithNextStepCommand;
 var
   Instr: TLldbInstructionProcessStep;
 begin
-  if AStepAction in [saOver, saInto, saOut, saInsOver] then
+  if FNextStepAction in [saOver, saInto, saOut, saInsOver] then
     Debugger.FReRaiseBreak.Enable
   else
     Debugger.FReRaiseBreak.Disable;
@@ -1083,7 +1115,7 @@ begin
   else begin
     Debugger.FCatchesBreak.Disable;
     Debugger.FPopExceptStack.Disable;
-    Instr := TLldbInstructionProcessStep.Create(AStepAction);
+    Instr := TLldbInstructionProcessStep.Create(FNextStepAction);
   end;
   Instr.OnFinish := @RunInstructionSucceeded;
   QueueInstruction(Instr);
@@ -1800,7 +1832,7 @@ procedure TLldbRegisterSupplier.RequestData(ARegisters: TRegisters);
 var
   Cmd: TLldbDebuggerCommandRegister;
 begin
-  if (Debugger = nil) or not(Debugger.State in [dsPause, dsStop]) then
+  if (Debugger = nil) or not(Debugger.State in [dsPause, dsInternalPause, dsStop]) then
     exit;
 
   Cmd := TLldbDebuggerCommandRegister.Create(TLldbDebugger(Debugger), ARegisters);
@@ -1840,8 +1872,18 @@ procedure TLldbDebuggerCommandQueue.Run;
 begin
   if (FRunningCommand <> nil) or (FLockQueueRun > 0) then
     exit;
-  if Count = 0 then
+  {$IFnDEF LLDB_SKIP_IDLE}
+  if Count = 0 then begin
+    if Assigned(FDebugger.OnIdle) and (not FDebugger.FInIdle) then begin
+      FDebugger.FInIdle := True;
+      LockQueueRun;
+      FDebugger.OnIdle(Self);
+      UnLockQueueRun;
+      FDebugger.FInIdle := False;
+    end;
     exit;
+  end;
+  {$ENDIF}
 
   FRunningCommand := Items[0];
   FRunningCommand.AddReference;
@@ -2057,7 +2099,7 @@ end;
 
 { TLldbDebuggerCommandRunStep }
 
-procedure TLldbDebuggerCommandRunStep.DoExecute;
+procedure TLldbDebuggerCommandRunStep.DoInitialExecute;
 begin
   SetNextStepCommand(FStepAction);
 end;
@@ -2201,7 +2243,7 @@ begin
   FRunInstr.ReleaseReference;
 end;
 
-procedure TLldbDebuggerCommandRunLaunch.DoExecute;
+procedure TLldbDebuggerCommandRunLaunch.DoInitialExecute;
 var
   Instr: TLldbInstruction;
 begin
@@ -2426,6 +2468,7 @@ begin
   if State in [dsNone, dsIdle, dsStop] then
     SetState(dsInit);
 
+  FInIdle := False;
   Cmd := TLldbDebuggerCommandRunLaunch.Create(Self);
   QueueCommand(Cmd);
   Cmd.ReleaseReference;
@@ -2488,7 +2531,6 @@ function TLldbDebugger.LldbStep(AStepAction: TLldbInstructionProcessStepAction
 var
   Cmd: TLldbDebuggerCommandRunStep;
 begin
-  // TODO
   Result := True;
   Cmd := TLldbDebuggerCommandRunStep.Create(Self, AStepAction);
   QueueCommand(Cmd);
@@ -2645,6 +2687,11 @@ end;
 function TLldbDebugger.GetTargetWidth: Byte;
 begin
   Result := FTargetWidth;
+end;
+
+function TLldbDebugger.GetIsIdle: Boolean;
+begin
+  Result := FInIdle or ( (CommandQueue.Count = 0) and (CommandQueue.RunningCommand = nil) );
 end;
 
 function TLldbDebugger.GetSupportedCommands: TDBGCommands;
