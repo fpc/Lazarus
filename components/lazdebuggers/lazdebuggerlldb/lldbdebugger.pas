@@ -282,6 +282,7 @@ type
     function  LldbEvaluate(const AExpression: String; EvalFlags: TDBGEvaluateFlags; ACallback: TDBGEvaluateResultCallback): Boolean;
     function  LldbEnvironment(const AVariable: String; const ASet: Boolean): Boolean;
   protected
+    procedure DoBeforeLaunch; virtual;
     procedure DoBeginReceivingLines(Sender: TObject);
     procedure DoEndReceivingLines(Sender: TObject);
     procedure LockRelease; override;
@@ -2469,6 +2470,9 @@ begin
     SetState(dsInit);
 
   FInIdle := False;
+
+  DoBeforeLaunch;
+
   Cmd := TLldbDebuggerCommandRunLaunch.Create(Self);
   QueueCommand(Cmd);
   Cmd.ReleaseReference;
@@ -2588,6 +2592,11 @@ begin
   FDebugInstructionQueue.QueueInstruction(Instr);
   Instr.ReleaseReference;
   Result := True;
+end;
+
+procedure TLldbDebugger.DoBeforeLaunch;
+begin
+  //
 end;
 
 procedure TLldbDebugger.LockRelease;

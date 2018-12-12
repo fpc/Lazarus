@@ -86,6 +86,26 @@ type
     procedure Clear;
   end;
 
+  { TDwarfLoaderThread }
+
+  TDwarfLoaderThread = class(TThread)
+  private
+    FFileName: String;
+    FDebugger: TFpLldbDebugger;
+    FImageLoaderList: TDbgImageLoaderList;
+    FDwarfInfo: TFpDwarfInfo;
+    FMemReader: TFpLldbDbgMemReader;
+    FMemManager: TFpDbgMemManager;
+  public
+    procedure Execute; override;
+    constructor Create(AFileName: String; ADebugger: TFpLldbDebugger);
+
+    property ImageLoaderList: TDbgImageLoaderList read FImageLoaderList;
+    property DwarfInfo: TFpDwarfInfo read FDwarfInfo;
+    property MemReader: TFpLldbDbgMemReader read FMemReader;
+    property MemManager: TFpDbgMemManager read FMemManager;
+  end;
+
 const
   MAX_CTX_CACHE = 30;
 
@@ -100,11 +120,13 @@ type
     FPrettyPrinter: TFpPascalPrettyPrinter;
     FMemReader: TFpLldbDbgMemReader;
     FMemManager: TFpDbgMemManager;
+    FDwarfLoaderThread: TDwarfLoaderThread;
     // cache last context
     FLastContext: array [0..MAX_CTX_CACHE-1] of TFpDbgInfoContext;
     procedure DoBeginReceivingLines(Sender: TObject);
     procedure DoEndReceivingLines(Sender: TObject);
   protected
+    procedure DoBeforeLaunch; override;
     function CreateLineInfo: TDBGLineInfo; override;
     function  CreateWatches: TWatchesSupplier; override;
     function  CreateLocals: TLocalsSupplier; override;
@@ -257,6 +279,50 @@ type
     procedure EntriesFinished;
     property EntryRanges;
   end;
+
+{ TDwarfLoaderThread }
+
+procedure TDwarfLoaderThread.Execute;
+var
+  AnImageLoader: TDbgImageLoader;
+begin
+  debugln(DBG_VERBOSE, ['THREAD TFpLldbDebugger.LoadDwarf ']);
+  AnImageLoader := TDbgImageLoader.Create(FFileName);
+  if not AnImageLoader.IsValid then begin
+    FreeAndNil(AnImageLoader);
+    exit;
+  end;
+  if Terminated then
+    exit;
+
+  FImageLoaderList := TDbgImageLoaderList.Create(True);
+  AnImageLoader.AddToLoaderList(FImageLoaderList);
+  if Terminated then
+    exit;
+
+{$IFdef WithWinMemReader}
+  FMemReader := TFpLldbAndWin32DbgMemReader.Create(FDebugger);
+{$Else}
+  FMemReader := TFpLldbDbgMemReader.Create(FDebugger);
+{$ENDIF}
+  FMemManager := TFpDbgMemManager.Create(FMemReader, TFpDbgMemConvertorLittleEndian.Create);
+  FMemManager.SetCacheManager(TFpLldbDbgMemCacheManagerSimple.Create);
+  if Terminated then
+    exit;
+
+
+  FDwarfInfo := TFpDwarfInfo.Create(FImageLoaderList);
+  FDwarfInfo.MemManager := FMemManager;
+  FDwarfInfo.LoadCompilationUnits;
+  debugln(DBG_VERBOSE, ['finish THREAD TFpLldbDebugger.LoadDwarf ']);
+end;
+
+constructor TDwarfLoaderThread.Create(AFileName: String; ADebugger: TFpLldbDebugger);
+begin
+  FFileName := AFileName;
+  FDebugger := ADebugger;
+  inherited Create(False);
+end;
 
 
 { TFpLldbDebuggerCommandLocals }
@@ -958,8 +1024,26 @@ end;
 procedure TFpLldbDebugger.LoadDwarf;
 var
   AnImageLoader: TDbgImageLoader;
+  Loader: TDwarfLoaderThread;
 begin
+  Loader := FDwarfLoaderThread;
+  FDwarfLoaderThread := nil;
+
   UnLoadDwarf;
+
+  if Loader <> nil then begin
+    debugln(DBG_VERBOSE, ['Getting dwarf from FDwarfLoaderThread ']);
+    Loader.WaitFor;
+    FImageLoaderList := Loader.ImageLoaderList;
+    FMemReader := Loader.MemReader;
+    FMemManager := Loader.MemManager;
+    FDwarfInfo := Loader.DwarfInfo;
+    Loader.Free;
+
+    FPrettyPrinter := TFpPascalPrettyPrinter.Create(SizeOf(Pointer));
+    exit;
+  end;
+
   debugln(DBG_VERBOSE, ['TFpLldbDebugger.LoadDwarf ']);
   AnImageLoader := TDbgImageLoader.Create(FileName);
   if not AnImageLoader.IsValid then begin
@@ -979,6 +1063,7 @@ begin
   FDwarfInfo := TFpDwarfInfo.Create(FImageLoaderList);
   FDwarfInfo.MemManager := FMemManager;
   FDwarfInfo.LoadCompilationUnits;
+
   FPrettyPrinter := TFpPascalPrettyPrinter.Create(SizeOf(Pointer));
 end;
 
@@ -992,6 +1077,13 @@ begin
     FMemManager.TargetMemConvertor.Free;
   FreeAndNil(FMemManager);
   FreeAndNil(FPrettyPrinter);
+
+  if FDwarfLoaderThread <> nil then begin
+    debugln(DBG_VERBOSE, ['Terminate FDwarfLoaderThread ']);
+    FDwarfLoaderThread.FreeOnTerminate := True;
+    FDwarfLoaderThread.Terminate;
+    FDwarfLoaderThread := nil;
+  end;
 end;
 
 function TFpLldbDebugger.RequestCommand(const ACommand: TDBGCommand;
@@ -1354,6 +1446,14 @@ procedure TFpLldbDebugger.DoEndReceivingLines(Sender: TObject);
 begin
   CommandQueue.UnLockQueueRun;
   inherited DoEndReceivingLines(Sender);
+end;
+
+procedure TFpLldbDebugger.DoBeforeLaunch;
+begin
+  inherited DoBeforeLaunch;
+  if FDwarfInfo = nil then begin
+    FDwarfLoaderThread := TDwarfLoaderThread.Create(FileName, Self);
+  end;
 end;
 
 function TFpLldbDebugger.CreateLineInfo: TDBGLineInfo;
