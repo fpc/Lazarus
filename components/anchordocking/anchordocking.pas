@@ -192,7 +192,7 @@ type
              Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X,Y: Integer); override;
     procedure MouseLeave;  override;
-    procedure StartMouseNoMoveTimer(X, Y: Integer);
+    procedure StartMouseNoMoveTimer;
     procedure StopMouseNoMoveTimer;
     procedure DoMouseNoMoveTimer(Sender: TObject);
     procedure UpdateHeaderControls;
@@ -382,7 +382,7 @@ type
     function CloseQuery: boolean; override;
     function CloseSite: boolean; virtual;
     procedure MinimizeSite; virtual;
-    procedure AsyncMinimizeSite(Data: PtrInt);
+    procedure AsyncMinimizeSite({%H-}Data: PtrInt);
     procedure ShowMinimizedControl;
     procedure HideMinimizedControl;
     procedure RemoveControl(AControl: TControl); override;
@@ -2627,6 +2627,7 @@ begin
   if FOverlappingForm=nil then
     IdleConnected:=false
   else begin
+    MousePos:=Point(0, 0);
     GetCursorPos(MousePos);
     Bounds.TopLeft:=FOverlappingForm.ClientToScreen(point(0,0));
     Bounds.BottomRight:=FOverlappingForm.ClientToScreen(point(FOverlappingForm.Width,FOverlappingForm.Height));
@@ -6281,7 +6282,7 @@ begin
       if (parent as TAnchorDockHostSite).Minimized then
         if DockMaster.FOverlappingForm=nil then
           if FMouseTimeStartX=EmptyMouseTimeStartX then
-            StartMouseNoMoveTimer(X, Y)
+            StartMouseNoMoveTimer
           else begin
             if (abs(FMouseTimeStartX-X)>MouseNoMoveDelta) or (abs(FMouseTimeStartY-Y)>MouseNoMoveDelta)then
             StopMouseNoMoveTimer;
@@ -6296,7 +6297,7 @@ begin
   StopMouseNoMoveTimer;
 end;
 
-procedure TAnchorDockHeader.StartMouseNoMoveTimer(X, Y: Integer);
+procedure TAnchorDockHeader.StartMouseNoMoveTimer;
 begin
   if fUseTimer then begin
     if DockTimer.Enabled then DockTimer.Enabled:=false;
