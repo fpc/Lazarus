@@ -275,6 +275,9 @@ type
     property OnMouseWheel;
     property OnMouseWheelDown;
     property OnMouseWheelUp;
+    property OnMouseWheelHorz;
+    property OnMouseWheelLeft;
+    property OnMouseWheelRight;
     property OnPickListSelect;
     property OnPrepareCanvas;
     property OnResize;

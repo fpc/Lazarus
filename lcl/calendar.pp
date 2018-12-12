@@ -143,6 +143,9 @@ type
     property OnMouseWheel;
     property OnMouseWheelDown;
     property OnMouseWheelUp;
+    property OnMouseWheelHorz;
+    property OnMouseWheelLeft;
+    property OnMouseWheelRight;
     property OnResize;
     property OnUTF8KeyPress;
     property OnYearChanged;

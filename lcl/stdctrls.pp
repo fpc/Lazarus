@@ -697,6 +697,9 @@ type
     property OnMouseWheel;
     property OnMouseWheelDown;
     property OnMouseWheelUp;
+    property OnMouseWheelHorz;
+    property OnMouseWheelLeft;
+    property OnMouseWheelRight;
     property OnResize;
     property OnSelectionChange;
     property OnShowHint;
@@ -1023,6 +1026,9 @@ type
     property OnMouseWheel;
     property OnMouseWheelDown;
     property OnMouseWheelUp;
+    property OnMouseWheelHorz;
+    property OnMouseWheelLeft;
+    property OnMouseWheelRight;
     property OnStartDrag;
     property OnUTF8KeyPress;
     property ParentBidiMode;
@@ -1113,6 +1119,9 @@ type
     property OnMouseWheel;
     property OnMouseWheelDown;
     property OnMouseWheelUp;
+    property OnMouseWheelHorz;
+    property OnMouseWheelLeft;
+    property OnMouseWheelRight;
     property OnResize;
     property OnStartDrag;
     property ParentBidiMode;
@@ -1618,6 +1627,9 @@ type
     property OnMouseWheel;
     property OnMouseWheelDown;
     property OnMouseWheelUp;
+    property OnMouseWheelHorz;
+    property OnMouseWheelLeft;
+    property OnMouseWheelRight;
     property OnResize;
     property OnStartDrag;
     property OptimalFill;

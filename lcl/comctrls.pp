@@ -1741,6 +1741,9 @@ type
     property OnMouseWheel;
     property OnMouseWheelDown;
     property OnMouseWheelUp;
+    property OnMouseWheelHorz;
+    property OnMouseWheelLeft;
+    property OnMouseWheelRight;
     property OnResize;
     property OnSelectItem;
     property OnShowHint;
@@ -2769,6 +2772,9 @@ type
     property OnMouseWheel;
     property OnMouseWheelDown;
     property OnMouseWheelUp;
+    property OnMouseWheelHorz;
+    property OnMouseWheelLeft;
+    property OnMouseWheelRight;
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
@@ -3772,6 +3778,9 @@ type
     property OnMouseWheel;
     property OnMouseWheelDown;
     property OnMouseWheelUp;
+    property OnMouseWheelHorz;
+    property OnMouseWheelLeft;
+    property OnMouseWheelRight;
     property OnNodeChanged;
     property OnResize;
     property OnSelectionChanged;
@@ -4029,6 +4038,9 @@ type
     property OnMouseWheel;
     property OnMouseWheelDown;
     property OnMouseWheelUp;
+    property OnMouseWheelHorz;
+    property OnMouseWheelLeft;
+    property OnMouseWheelRight;
     property OnResize;
     property OnSectionClick;
     property OnSectionResize;
