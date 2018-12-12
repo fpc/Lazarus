@@ -623,6 +623,7 @@ type
     CompFilterEdit: TTreeFilterEdit;
     PnlClient: TPanel;
     StatusBar: TStatusBar;
+    procedure FormResize(Sender: TObject);
     procedure MainPopupMenuClose(Sender: TObject);
     procedure MainPopupMenuPopup(Sender: TObject);
     procedure AvailComboBoxCloseUp(Sender: TObject);
@@ -5009,6 +5010,11 @@ end;
 procedure TObjectInspectorDlg.MainPopupMenuClose(Sender: TObject);
 begin
   if FStateOfHintsOnMainPopupMenu then ShowHintPopupMenuItemClick(nil);
+end;
+
+procedure TObjectInspectorDlg.FormResize(Sender: TObject);
+begin
+  ComponentPanel.Constraints.MaxHeight := Height-50;
 end;
 
 procedure TObjectInspectorDlg.GridKeyDown(Sender: TObject; var Key: Word;
