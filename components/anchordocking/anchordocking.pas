@@ -344,6 +344,7 @@ type
     function DockAnotherPage(NewControl: TControl; InFrontOf: TControl): boolean; virtual;
     procedure AddCleanControl(AControl: TControl; TheAlign: TAlign = alNone);
     procedure RemoveControlFromLayout(AControl: TControl);
+    procedure RemoveMinimizedControl;
     procedure RemoveSpiralSplitter(AControl: TControl);
     procedure ClearChildControlAnchorSides(AControl: TControl);
     procedure Simplify;
@@ -407,6 +408,7 @@ type
 
     property HeaderSide: TAnchorKind read FHeaderSide write SetHeaderSide;
     property Header: TAnchorDockHeader read FHeader;
+    property Minimized: Boolean read FMinimized;
     property Pages: TAnchorDockPageControl read FPages;
     property SiteType: TAnchorDockHostSiteType read FSiteType;
     property BoundSplitter: TAnchorDockSplitter read FBoundSplitter;
@@ -4631,6 +4633,11 @@ begin
   ClearChildControlAnchorSides(AControl);
 end;
 
+procedure TAnchorDockHostSite.RemoveMinimizedControl;
+begin
+  FMinimizedControl := nil;
+end;
+
 procedure TAnchorDockHostSite.RemoveSpiralSplitter(AControl: TControl);
 { Merge two splitters and delete one of them.
   Prefer the pair with shortest distance between.
@@ -5676,7 +5683,10 @@ begin
   if csDestroying in ComponentState then exit;
   NewCaption:='';
   if FMinimized then
-    NewCaption:=FMinimizedControl.Caption
+  begin
+    if Assigned(FMinimizedControl) then
+      NewCaption:=FMinimizedControl.Caption;
+  end
   else
     for i:=0 to ControlCount-1 do begin
       Child:=Controls[i];
@@ -6237,7 +6247,7 @@ begin
   inherited MouseMove(Shift, X, Y);
   if parent<>nil then
     if parent is TAnchorDockHostSite then
-      if (parent as TAnchorDockHostSite).FMinimized then
+      if (parent as TAnchorDockHostSite).Minimized then
         if DockMaster.FOverlappingForm=nil then
           if FMouseTimeStartX=EmptyMouseTimeStartX then
             StartMouseNoMoveTimer(X, Y)
@@ -6278,7 +6288,7 @@ begin
   //if fUseTimer then
     if parent<>nil then
       if parent is TAnchorDockHostSite then
-        if (parent as TAnchorDockHostSite).FMinimized then
+        if (parent as TAnchorDockHostSite).Minimized then
           (parent as TAnchorDockHostSite).ShowMinimizedControl;
 end;
 
@@ -6711,9 +6721,13 @@ var
   SplitterWidth: Integer;
 begin
   if DockSite<>nil then
+  begin
     {$IFDEF VerboseAnchorDocking}
-    debugln(['TAnchorDockManager.RemoveControl DockSite="',DockSite.Caption,'" Control=',DbgSName(Control)])
+    debugln(['TAnchorDockManager.RemoveControl DockSite="',DockSite.Caption,'" Control=',DbgSName(Control)]);
     {$ENDIF}
+    if DockSite.Minimized then
+      DockSite.RemoveMinimizedControl;
+  end
   else begin
     {$IFDEF VerboseAnchorDocking}
     debugln(['TAnchorDockManager.RemoveControl Site="',DbgSName(Site),'" Control=',DbgSName(Control)]);
