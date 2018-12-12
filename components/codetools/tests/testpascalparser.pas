@@ -51,7 +51,7 @@ type
     procedure TestParseExternalConst;
     procedure TestParseModeTP;
     procedure TestParseProcAnoAssign;
-    procedure TestParseProcAnoArg; // ToDo
+    procedure TestParseProcAnoArg;
   end;
 
 implementation
@@ -502,9 +502,9 @@ end;
 
 procedure TTestPascalParser.TestParseProcAnoArg;
 begin
-  exit;
   Add([
   'program test1;',
+  '{$mode objfpc}',
   '{$modeswitch closures}',
   'procedure DoIt;',
   'begin',

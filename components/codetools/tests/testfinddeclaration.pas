@@ -101,6 +101,7 @@ type
     procedure TestFindDeclaration_GuessType;
     procedure TestFindDeclaration_Attributes;
     procedure TestFindDeclaration_BracketOpen;
+    procedure TestFindDeclaration_AnonymProc_Assign;
     // test all files in directories:
     procedure TestFindDeclaration_FPCTests;
     procedure TestFindDeclaration_LazTests;
@@ -177,6 +178,8 @@ procedure TCustomTestFindDeclaration.FindDeclarations(aCode: TCodeBuffer);
   end;
 
   function NodeAsPath(Tool: TFindDeclarationTool; Node: TCodeTreeNode): string;
+  var
+    aName: String;
   begin
     Result:='';
     while Node<>nil do begin
@@ -188,7 +191,12 @@ procedure TCustomTestFindDeclaration.FindDeclarations(aCode: TCodeBuffer);
       ctnInterface,ctnUnit:
         PrependPath(Tool.GetSourceName(false),Result);
       ctnProcedure:
-        PrependPath(Tool.ExtractProcName(Node,[]),Result);
+        begin
+        aName:=Tool.ExtractProcName(Node,[]);
+        if aName='' then
+          aName:='$ano';
+        PrependPath(aName,Result);
+        end;
       ctnProperty:
         PrependPath(Tool.ExtractPropName(Node,false),Result);
       ctnUseUnit:
@@ -918,6 +926,32 @@ begin
   '  begin',
   '    WriteStr(c{declaration:c}',
   '  end;',
+  'end;',
+  'begin',
+  'end.',
+  '']);
+  FindDeclarations(Code);
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_AnonymProc_Assign;
+begin
+  StartProgram;
+  Add([
+  '{$mode objfpc}{$modeswitch closures}',
+  'type',
+  '  int = word;',
+  '  TFunc = function(i: int): int;',
+  'var f: TFunc;',
+  'procedure DoIt(a: int);',
+  '  procedure Sub(b: int);',
+  '  begin',
+  '    f:=function(c: int): int',
+  '      begin',
+  '        f{declaration:f}:=nil;',
+  '        a{declaration:doit.a}:=b{declaration:doit.sub.b}+c{declaration:doit.sub.$ano.c};',
+  '      end;',
+  '  end;',
+  'begin',
   'end;',
   'begin',
   'end.',
