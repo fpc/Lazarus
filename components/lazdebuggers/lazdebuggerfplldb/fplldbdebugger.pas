@@ -342,6 +342,7 @@ begin
   end;
 
   FpDebugger.Threads.CurrentThreads.Count; // trigger threads, in case
+  FpDebugger.Registers.CurrentRegistersList[FpDebugger.CurrentThreadId, FpDebugger.CurrentStackFrame].Count;
 
   // Join the queue, registers and threads are needed first
   LocalsCmdObj := TFpLldbDebuggerCommandLocals.Create(Self, ALocals);
