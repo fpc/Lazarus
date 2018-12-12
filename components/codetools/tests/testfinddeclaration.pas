@@ -101,7 +101,7 @@ type
     procedure TestFindDeclaration_GuessType;
     procedure TestFindDeclaration_Attributes;
     procedure TestFindDeclaration_BracketOpen;
-    procedure TestFindDeclaration_AnonymProc_Assign;
+    procedure TestFindDeclaration_AnonymProc;
     // test all files in directories:
     procedure TestFindDeclaration_FPCTests;
     procedure TestFindDeclaration_LazTests;
@@ -933,7 +933,7 @@ begin
   FindDeclarations(Code);
 end;
 
-procedure TTestFindDeclaration.TestFindDeclaration_AnonymProc_Assign;
+procedure TTestFindDeclaration.TestFindDeclaration_AnonymProc;
 begin
   StartProgram;
   Add([
@@ -945,11 +945,15 @@ begin
   'procedure DoIt(a: int);',
   '  procedure Sub(b: int);',
   '  begin',
-  '    f:=function(c: int): int',
+  '    f:=function(c: int{declaration:int}): int{declaration:int}',
   '      begin',
   '        f{declaration:f}:=nil;',
   '        a{declaration:doit.a}:=b{declaration:doit.sub.b}+c{declaration:doit.sub.$ano.c};',
   '      end;',
+  '    DoIt(function(i: int{declaration:int}): int{declaration:int}',
+  '      begin',
+  '        a{declaration:doit.a}:=b{declaration:doit.sub.b}+c{declaration:doit.sub.$ano.c};',
+  '      end);',
   '  end;',
   'begin',
   'end;',
