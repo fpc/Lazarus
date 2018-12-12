@@ -1080,6 +1080,28 @@ begin
     result:=Nil;
 end;
 
+function ReturnAnchoredControlsSize(Control: TControl; Side: TAnchorKind): integer;
+var
+  i: Integer;
+  Neighbour: TControl;
+begin
+  result:=high(integer);
+  for i:=0 to Control.AnchoredControlCount-1 do begin
+    Neighbour:=Control.AnchoredControls[i];
+    if Neighbour.Visible then
+    if Neighbour is TAnchorDockHostSite then
+    if (OppositeAnchor[Side] in Neighbour.Anchors)
+    and (Neighbour.AnchorSide[OppositeAnchor[Side]].Control=Control) then begin
+      case Side of
+   akTop,akBottom: if Neighbour.ClientHeight<result then
+                     result:=Neighbour.ClientHeight;
+   akLeft,akRight: if Neighbour.ClientWidth<result then
+                     result:=Neighbour.ClientWidth;
+      end;
+    end;
+  end;
+end;
+
 function NeighbourCanBeShrinked(EnlargeControl, Neighbour: TControl;
   Side: TAnchorKind): boolean;
 { returns true if Neighbour can be shrinked on the opposite side of Side
@@ -5499,10 +5521,9 @@ end;
 procedure TAnchorDockHostSite.AsyncMinimizeSite(Data: PtrInt);
 var
   AControl: TControl;
-  //OpositeDockHostSite:TAnchorDockHostSite;
   Splitter: TAnchorDockSplitter;
   SplitterAnchorKind:TAnchorKind;
-  //SpliterPercentPosition:Single;
+  MaxSize:integer;
 begin
   fMinimization:=true;
   debugln(['TAnchorDockHostSite.MinimizeSite ',DbgSName(Self),' SiteType=',dbgs(SiteType)]);
@@ -5516,8 +5537,18 @@ begin
       FMinimizedControl:=AControl;
       AControl.Visible:=False;
       AControl.Parent:=nil;
-      //self.DoDockOver(); OnDockOver;
     end else begin
+      MaxSize:=ReturnAnchoredControlsSize(Splitter,SplitterAnchorKind);
+      case SplitterAnchorKind of
+     akTop: if AControl.Height>=MaxSize+Height then
+              Splitter.FPercentPosition:=1-(MaxSize+Height)/(Splitter.Parent.ClientHeight*2);
+  akBottom: if AControl.Height>=MaxSize+Height then
+              Splitter.FPercentPosition:=(MaxSize+Height)/(Splitter.Parent.ClientHeight*2);
+    akLeft: if AControl.Width>=MaxSize+Width then
+              Splitter.FPercentPosition:=1-(MaxSize+Width)/(Splitter.Parent.ClientWidth*2);
+   akRight: if AControl.Width>=MaxSize+Width then
+              Splitter.FPercentPosition:=(MaxSize+Width)/(Splitter.Parent.ClientWidth*2);
+      end;
       AControl.Parent:=self;
       AControl.Visible:=True;
       FMinimizedControl:=nil;
