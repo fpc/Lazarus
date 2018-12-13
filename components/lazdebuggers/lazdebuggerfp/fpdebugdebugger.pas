@@ -1587,7 +1587,8 @@ begin
     Reg := RegList.FindRegisterByDwarfIndex(16);
   if Reg <> nil then begin
     Result := ADbgInfo.FindContext(ThreadId, StackFrame, Reg.NumValue);
-    Result.MemManager.DefaultContext := Result;
+    if Result <> nil then
+      Result.MemManager.DefaultContext := Result;
   end
   else
     Result := nil;
