@@ -1470,7 +1470,9 @@ var
   Side: TAnchorKind;
   Splitter: TAnchorDockLayoutTreeNode;
 begin
+  {$IFDEF VerboseAnchorDocking}
   WriteDebugLayout('TAnchorDockLayoutTreeNode.DeleteNode BEFORE DELETE Self='+Name+' Child='+ChildNode.Name+' ',Self);
+  {$ENDIF}
   ChildNode.Parent:=nil;
   try
     if not ChildNode.IsSplitter then begin
@@ -1501,7 +1503,9 @@ begin
         if Sibling.Anchors[Side]=ChildNode.Name then
           Sibling.Anchors[Side]:='';
     end;
+    {$IFDEF VerboseAnchorDocking}
     WriteDebugLayout('TAnchorDockLayoutTreeNode.DeleteNode AFTER DELETE Self='+Name+' Child='+ChildNode.Name+' ',Self);
+    {$ENDIF}
     // free node
     ChildNode.Free;
   end;
@@ -1624,7 +1628,9 @@ var
   GrandChild: TAnchorDockLayoutTreeNode;
   Side: TAnchorKind;
 begin
+  {$IFDEF VerboseAnchorDocking}
   WriteDebugLayout('TAnchorDockLayoutTreeNode.ReplaceWithChildren BEFORE REPLACE Self='+Name+' Child='+ChildNode.Name+' ',Self);
+  {$ENDIF}
   DebugWriteChildAnchors(Self);
   while ChildNode.Count>0 do begin
     GrandChild:=ChildNode[0];
@@ -1642,7 +1648,9 @@ begin
       end;
     end;
   end;
+  {$IFDEF VerboseAnchorDocking}
   WriteDebugLayout('TAnchorDockLayoutTreeNode.ReplaceWithChildren AFTER REPLACE Self='+Name+' Child='+ChildNode.Name+' ',Self);
+  {$ENDIF}
   ChildNode.Free;
   DebugWriteChildAnchors(Self);
 end;

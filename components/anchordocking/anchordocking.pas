@@ -91,6 +91,7 @@ unit AnchorDocking;
 
 {$mode objfpc}{$H+}
 
+// better use this definitions in project options, as it used in other units too
 { $DEFINE VerboseAnchorDockRestore}
 { $DEFINE VerboseADCustomSite}
 { $DEFINE VerboseAnchorDockPages}
@@ -3381,8 +3382,10 @@ begin
       if AFormOrDockPanel=nil then continue;
       if SavedSites.IndexOf(AFormOrDockPanel)>=0 then continue;
       SavedSites.Add(AFormOrDockPanel);
+      {$IFDEF VerboseAnchorDockRestore}
       debugln(['TAnchorDockMaster.SaveMainLayoutToTree AForm=',DbgSName(AFormOrDockPanel)]);
       DebugWriteChildAnchors(AFormOrDockPanel,true,true);
+      {$ENDIF}
       if AFormOrDockPanel is TAnchorDockPanel then begin
         SaveFormOrDockPanel(GetParentFormOrDockPanel(AFormOrDockPanel),true,false);
         //LayoutNode:=LayoutTree.NewNode(LayoutTree.Root);
@@ -3638,7 +3641,9 @@ var
   aManager: TAnchorDockManager;
   DockObject: TDragDockObject;
 begin
+  {$IFDEF VerboseAnchorDocking}
   debugln(['TAnchorDockMaster.ManualDock SrcSite=',DbgSName(SrcSite),' TargetSite=',DbgSName(TargetSite),' Align=',dbgs(Align),' TargetControl=',DbgSName(TargetControl)]);
+  {$ENDIF}
   if SrcSite=TargetSite then exit;
   if SrcSite.IsParentOf(TargetSite) then
     raise Exception.Create('TAnchorDockMaster.ManualDock SrcSite.IsParentOf(TargetSite)');
@@ -3650,7 +3655,9 @@ begin
     Site:=aManager.GetChildSite;
     if Site=nil then begin
       // dock as first site into custom dock site
+      {$IFDEF VerboseAnchorDocking}
       debugln(['TAnchorDockMaster.ManualDock dock as first site into custom dock site: SrcSite=',DbgSName(SrcSite),' TargetSite=',DbgSName(TargetSite),' Align=',dbgs(Align)]);
+      {$ENDIF}
       BeginUpdate;
       try
         DockObject := TDragDockObject.Create(SrcSite);
@@ -4111,7 +4118,9 @@ var
   OldControl: TControl;
 begin
   Result:=true;
+  {$IFDEF VerboseAnchorDocking}
   debugln(['TAnchorDockHostSite.DockSecondControl Self="',Caption,'" AControl=',DbgSName(NewControl),' Align=',dbgs(DockAlign),' Inside=',Inside]);
+  {$ENDIF}
   if SiteType<>adhstOneControl then
     RaiseGDBException('TAnchorDockHostSite.DockSecondControl inconsistency: not adhstOneControl');
   if not (DockAlign in [alLeft,alTop,alRight,alBottom]) then
@@ -4132,8 +4141,9 @@ begin
   OldSite.BoundsRect:=Rect(0,0,ClientWidth,ClientHeight);
 
   Result:=DockAnotherControl(OldSite,NewControl,DockAlign,Inside);
-
+  {$IFDEF VerboseAnchorDocking}
   debugln(['TAnchorDockHostSite.DockSecondControl END Self="',Caption,'" AControl=',DbgSName(NewControl),' Align=',dbgs(DockAlign),' Inside=',Inside]);
+  {$ENDIF}
 end;
 
 function TAnchorDockHostSite.DockAnotherControl(Sibling, NewControl: TControl;
@@ -4234,8 +4244,10 @@ begin
       BoundsIncreased:=true;
       TAnchorDockManager(Parent.DockManager).FSiteClientRect:=Parent.ClientRect;
     end;
+    {$IFDEF VerboseAnchorDocking}
     debugln(['TAnchorDockHostSite.DockAnotherControl AFTER ENLARGE ',Caption]);
     //DebugWriteChildAnchors(Self,true,true);
+    {$ENDIF}
   end;
 
   // anchors
@@ -4626,7 +4638,9 @@ var
   Sibling: TControl;
   SplitterCount: Integer;
 begin
+  {$IFDEF VerboseAnchorDocking}
   debugln(['TAnchorDockHostSite.RemoveControlFromLayout Self="',Caption,'" AControl=',DbgSName(AControl),'="',AControl.Caption,'"']);
+  {$ENDIF}
   if SiteType<>adhstLayout then
     RaiseGDBException('TAnchorDockHostSite.RemoveControlFromLayout inconsistency');
 
@@ -4769,7 +4783,9 @@ begin
     SimplifyPages
   else if (SiteType=adhstOneControl) then begin
     AControl:=GetOneControl;
+    {$IFDEF VerboseAnchorDocking}
     debugln(['TAnchorDockHostSite.Simplify ',DbgSName(Self),' ',DbgSName(AControl)]);
+    {$ENDIF}
     if AControl is TAnchorDockHostSite then
       SimplifyOneControl
     else if ((AControl=nil) or (csDestroying in AControl.ComponentState)) then
@@ -4826,7 +4842,9 @@ var
 begin
   if SiteType<>adhstOneControl then exit;
   if not IsOneSiteLayout(Site) then exit;
+  {$IFDEF VerboseAnchorDocking}
   debugln(['TAnchorDockHostSite.SimplifyOneControl Self="',Caption,'" Site="',Site.Caption,'"']);
+  {$ENDIF}
   DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockHostSite.SimplifyOneControl'){$ENDIF};
   BeginUpdateLayout;
   try
@@ -5031,7 +5049,9 @@ begin
   BeginUpdateLayout;
   DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockHostSite.CheckIfOneControlHidden'){$ENDIF};
   try
+    {$IFDEF VerboseAnchorDocking}
     debugln(['TAnchorDockHostSite.CheckIfOneControlHidden ',DbgSName(Self),' UpdatingLayout=',UpdatingLayout,' Visible=',Visible,' Parent=',DbgSName(Parent),' csDestroying=',csDestroying in ComponentState,' SiteType=',dbgs(SiteType),' Child=',DbgSName(Child),' Child.csDestroying=',csDestroying in Child.ComponentState]);
+    {$ENDIF}
     Visible:=false;
     Parent:=nil;
   finally
@@ -5529,7 +5549,9 @@ var
   SplitterAnchorKind:TAnchorKind;
   MaxSize:integer;
 begin
+  {$IFDEF VerboseAnchorDocking}
   debugln(['TAnchorDockHostSite.MinimizeSite ',DbgSName(Self),' SiteType=',dbgs(SiteType)]);
+  {$ENDIF}
   if Minimized then
     AControl:=FMinimizedControl
   else
@@ -5613,7 +5635,9 @@ begin
   Result:=CloseQuery;
   if not Result then exit;
 
+  {$IFDEF VerboseAnchorDocking}
   debugln(['TAnchorDockHostSite.CloseSite ',DbgSName(Self),' SiteType=',dbgs(SiteType)]);
+  {$ENDIF}
   case SiteType of
   adhstNone:
     begin
@@ -5977,13 +6001,17 @@ begin
 end;
 
 destructor TAnchorDockHostSite.Destroy;
+{$IFDEF VerboseAnchorDocking}
 var i: Integer;
+{$ENDIF}
 begin
+  {$IFDEF VerboseAnchorDocking}
   debugln(['TAnchorDockHostSite.Destroy ',DbgSName(Self),' Caption="',Caption,'" Self=',dbgs(Pointer(Self)),' ComponentCount=',ComponentCount,' ControlCount=',ControlCount]);
   for i:=0 to ComponentCount-1 do
     debugln(['TAnchorDockHostSite.Destroy Component ',i,'/',ComponentCount,' ',DbgSName(Components[i])]);
   for i:=0 to ControlCount-1 do
     debugln(['TAnchorDockHostSite.Destroy Control ',i,'/',ControlCount,' ',DbgSName(Controls[i])]);
+  {$ENDIF}
   FreePages;
   inherited Destroy;
 end;
@@ -6587,7 +6615,9 @@ begin
     // handled by TAnchorDockHostSite
     //debugln(['TAnchorDockManager.InsertControl DockSite="',DockSite.Caption,'" Control=',DbgSName(ADockObject.Control),' InsertAt=',dbgs(ADockObject.DropAlign)])
   end else begin
+    {$IFDEF VerboseAnchorDocking}
     debugln(['TAnchorDockManager.InsertControl DockSite=nil Site="',DbgSName(Site),'" Control=',DbgSName(ADockObject.Control),' InsertAt=',dbgs(ADockObject.DropAlign),' Site.Bounds=',dbgs(Site.BoundsRect),' Control.Client=',dbgs(ADockObject.Control.ClientRect),' Parent=',DbgSName(ADockObject.Control.Parent)]);
+    {$ENDIF}
     Site.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockManager.InsertControl'){$ENDIF};
     try
       // align dragged Control
@@ -6650,8 +6680,9 @@ begin
 
       // only allow to dock one control
       DragManager.RegisterDockSite(Site,false);
+      {$IFDEF VerboseAnchorDocking}
       debugln(['TAnchorDockManager.InsertControl AFTER Site="',DbgSName(Site),'" Control=',DbgSName(ADockObject.Control),' InsertAt=',dbgs(ADockObject.DropAlign),' Site.Bounds=',dbgs(Site.BoundsRect),' Control.ClientRect=',dbgs(ADockObject.Control.ClientRect)]);
-
+      {$ENDIF}
     finally
       Site.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockManager.InsertControl'){$ENDIF};
     end;
