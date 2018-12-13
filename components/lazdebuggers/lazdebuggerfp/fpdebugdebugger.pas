@@ -83,6 +83,7 @@ type
 
   TFpDebugDebugger = class(TDebuggerIntf)
   private
+    FIsIdle: Boolean;
     FWatchEvalList: TFPList; // Schedule
     FWatchAsyncQueued: Boolean;
     FPrettyPrinter: TFpPascalPrettyPrinter;
@@ -148,6 +149,7 @@ type
     procedure QuickPause;
     procedure DoRelease; override;
     procedure DoState(const OldState: TDBGState); override;
+    function GetIsIdle: Boolean; override;
     {$ifdef linux}
   protected
     FCallStackEntryListThread: TDbgThread;
@@ -590,7 +592,7 @@ procedure TFPCallStackSupplier.RequestCount(ACallstack: TCallStackBase);
 var
   ThreadCallStack: TDbgCallstackEntryList;
 begin
-  if (Debugger = nil) or not(Debugger.State = dsPause)
+  if (Debugger = nil) or not(Debugger.State in [dsPause, dsInternalPause])
   then begin
     ACallstack.SetCountValidity(ddsInvalid);
     exit;
@@ -702,7 +704,7 @@ var
   tid, idx: Integer;
   cs: TCallStackBase;
 begin
-  if (Debugger = nil) or not(Debugger.State = dsPause) then begin
+  if (Debugger = nil) or not(Debugger.State = dsPause) then begin // dsInternalPause ?
     exit;
   end;
 
@@ -1071,7 +1073,7 @@ var
   i: Integer;
   ARegisterValue: TRegisterValue;
 begin
-  if (Debugger = nil) or not(Debugger.State in [dsPause, dsStop]) then
+  if (Debugger = nil) or not(Debugger.State in [dsPause, dsInternalPause, dsStop]) then
     exit;
 
   ARegisterList := TFpDebugDebugger(Debugger).FDbgController.CurrentThread.RegisterValueList;
@@ -2022,10 +2024,29 @@ begin
       if Assigned(FWatchEvalList) then
         FWatchEvalList.Clear;
       FWatchAsyncQueued := False;
+      end
+    else
+    if (State in [dsPause, dsInternalPause]) and
+      not(OldState in [dsPause, dsInternalPause]) and
+      Assigned(OnIdle)
+    then begin
+      FIsIdle := True;
+      try
+        OnIdle(Self);
+      except
+        on E: Exception do
+          DebugLn(['exception during idle ', E.ClassName, ': ', E.Message]);
+      end;
+      FIsIdle := False;
     end;
   finally
     UnlockRelease;
   end;
+end;
+
+function TFpDebugDebugger.GetIsIdle: Boolean;
+begin
+  Result := FIsIdle;
 end;
 
 {$ifdef linux}
