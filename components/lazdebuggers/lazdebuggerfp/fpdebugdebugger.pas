@@ -117,6 +117,7 @@ type
     procedure ProcessASyncWatches({%H-}Data: PtrInt);
     procedure DoLog();
   protected
+    function GetContextForEvaluate(const ThreadId, StackFrame: Integer): TFpDbgInfoContext;
     procedure ScheduleWatchValueEval(AWatchValue: TWatchValue);
     function EvaluateExpression(AWatchValue: TWatchValue;
                                 AExpression: String;
@@ -1324,16 +1325,11 @@ function TFpDebugDebugger.EvaluateExpression(AWatchValue: TWatchValue; AExpressi
   out AResText: String; out ATypeInfo: TDBGType; EvalFlags: TDBGEvaluateFlags): Boolean;
 var
   AContext: TFpDbgInfoContext;
-  AController: TDbgController;
   APasExpr, PasExpr2: TFpPascalExpression;
-  ADbgInfo: TDbgInfo;
   DispFormat: TWatchDisplayFormat;
   RepeatCnt: Integer;
   Res: Boolean;
-  AFrame: TDbgCallstackEntry;
   StackFrame, ThreadId: Integer;
-  RegList: TDbgRegisterValueList;
-  Reg: TDbgRegisterValue;
   StackList: TCallStackBase;
   ResValue: TFpDbgValue;
   CastName: String;
@@ -1343,9 +1339,6 @@ begin
   Result := False;
   AResText := '';
   ATypeInfo := nil;
-
-  AController := FDbgController;
-  ADbgInfo := AController.CurrentProcess.DbgInfo;
 
   if AWatchValue <> nil then begin
     StackFrame := AWatchValue.StackFrame;
@@ -1365,28 +1358,7 @@ begin
     RepeatCnt := -1;
   end;
 
-  if StackFrame > 0 then
-    begin
-    PrepareCallStackEntryList(StackFrame);
-    AFrame := FDbgController.CurrentThread.CallStackEntryList[StackFrame];
-    if AFrame = nil then
-      begin
-      if AWatchValue <> nil then
-        AWatchValue.Validity := ddsInvalid;
-      exit;
-      end;
-    RegList := AFrame.RegisterValueList;
-    end
-  else
-    RegList := AController.CurrentThread.RegisterValueList;
-  if AController.CurrentProcess.Mode = dm32 then
-    Reg := RegList.FindRegisterByDwarfIndex(8)
-  else
-    Reg := RegList.FindRegisterByDwarfIndex(16);
-  if Reg <> nil then
-    AContext := ADbgInfo.FindContext(ThreadId, StackFrame, Reg.NumValue)
-  else
-    AContext := nil;
+  AContext := GetContextForEvaluate(ThreadId, StackFrame);
 
   if AContext = nil then
     begin
@@ -1396,9 +1368,9 @@ begin
     end;
 
   Result := True;
-  AContext.MemManager.DefaultContext := AContext;
-  APasExpr := TFpPascalExpression.Create(AExpression, AContext);
+  APasExpr := nil;
   try
+    APasExpr := TFpPascalExpression.Create(AExpression, AContext);
     APasExpr.ResultValue; // trigger full validation
     if not APasExpr.Valid then
       begin
@@ -1586,6 +1558,41 @@ begin
   end;
 end;
 
+function TFpDebugDebugger.GetContextForEvaluate(const ThreadId,
+  StackFrame: Integer): TFpDbgInfoContext;
+var
+  AController: TDbgController;
+  ADbgInfo: TDbgInfo;
+  Reg: TDbgRegisterValue;
+  RegList: TDbgRegisterValueList;
+  AFrame: TDbgCallstackEntry;
+begin
+  Result := nil;
+  AController := FDbgController;
+  ADbgInfo := AController.CurrentProcess.DbgInfo;
+
+  if StackFrame > 0 then begin
+    PrepareCallStackEntryList(StackFrame);
+    AFrame := FDbgController.CurrentThread.CallStackEntryList[StackFrame];
+    if AFrame = nil then
+      exit;
+    RegList := AFrame.RegisterValueList;
+  end
+  else
+    RegList := AController.CurrentThread.RegisterValueList;
+
+  if AController.CurrentProcess.Mode = dm32 then
+    Reg := RegList.FindRegisterByDwarfIndex(8)
+  else
+    Reg := RegList.FindRegisterByDwarfIndex(16);
+  if Reg <> nil then begin
+    Result := ADbgInfo.FindContext(ThreadId, StackFrame, Reg.NumValue);
+    Result.MemManager.DefaultContext := Result;
+  end
+  else
+    Result := nil;
+end;
+
 function TFpDebugDebugger.GetClassInstanceName(AnAddr: TDBGPtr): string;
 var
   VMTAddr: TDBGPtr;
@@ -1708,31 +1715,55 @@ procedure TFpDebugDebugger.FDbgControllerHitBreakpointEvent(
 var
   ABreakPoint: TDBGBreakPoint;
   ALocationAddr: TDBGLocationRec;
+  Context: TFpDbgInfoContext;
+  PasExpr: TFpPascalExpression;
 begin
   if assigned(Breakpoint) then
     begin
     if BreakPoint=FRaiseExceptionBreakpoint then
       begin
-        HandleSoftwareException(ALocationAddr, continue);
-        if continue then
+        HandleSoftwareException(ALocationAddr, &continue);
+        if &continue then
           exit;
       end
     else
       begin
-        ALocationAddr := GetLocation;
         ABreakPoint := TFPBreakpoints(BreakPoints).Find(Breakpoint);
 
+        // TODO: parse expression when breakpoin is created / so invalid expressions do not need to be handled here
+        if ABreakPoint.Expression <> '' then begin
+          Context := GetContextForEvaluate(FDbgController.CurrentThreadId, 0);
+          if Context <> nil then begin
+            PasExpr := nil;
+            try
+              PasExpr := TFpPascalExpression.Create(ABreakPoint.Expression, Context);
+              PasExpr.ResultValue; // trigger full validation
+              if PasExpr.Valid and (svfBoolean in PasExpr.ResultValue.FieldFlags) and
+                 (not PasExpr.ResultValue.AsBool) // false => do not pause
+              then
+                &continue := True;
+            finally
+              PasExpr.Free;
+              Context.ReleaseReference;
+            end;
+
+            if &continue then
+              exit;
+          end;
+        end;
+
+        ALocationAddr := GetLocation;
         if Assigned(EventLogHandler) then
           EventLogHandler.LogEventBreakPointHit(ABreakpoint, ALocationAddr);
 
         if assigned(ABreakPoint) then
-          ABreakPoint.Hit(continue);
+          ABreakPoint.Hit(&continue);
       end;
     end
   else if FQuickPause then
     begin
       SetState(dsPause);//dsInternalPause;
-      continue:=true;
+      &continue:=true;
       exit;
     end
   else
@@ -1990,7 +2021,7 @@ begin
       if Assigned(FWatchEvalList) then
         FWatchEvalList.Clear;
       FWatchAsyncQueued := False;
-      end;
+    end;
   finally
     UnlockRelease;
   end;
