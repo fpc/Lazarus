@@ -493,11 +493,13 @@ end;
 
 procedure TDbgControllerStepOverLineCmd.ResolveEvent(var AnEvent: TFPDEvent; out Handled, Finished: boolean);
 var
-  OrigEvent: TFPDEvent;
+  EventCopy: TFPDEvent;
 begin
-  OrigEvent := AnEvent;
-  inherited ResolveEvent(AnEvent, Handled, Finished);
-  if (AnEvent=deBreakpoint) and not assigned(FController.CurrentProcess.CurrentBreakpoint) then
+  EventCopy := AnEvent;
+  inherited ResolveEvent(EventCopy, Handled, Finished);
+  // todo: check FHiddenBreakpoint.HasLocation();
+  if (AnEvent=deBreakpoint) and not assigned(FController.CurrentProcess.CurrentBreakpoint)
+  then
   begin
     if (FController.FCurrentThread.CompareStepInfo<>dcsiNewLine) or
       (not FController.FCurrentThread.IsAtStartOfLine and
@@ -509,8 +511,8 @@ begin
       Finished:=false;
     end;
   end;
-  if not Finished then
-    AnEvent := OrigEvent;
+  if Finished then
+    AnEvent := deFinishedStep;
 end;
 
 
@@ -922,8 +924,14 @@ begin
       begin
         continue:=false;
         // if there is a breakpoint at the stepping end, execute its actions
-        if assigned(OnHitBreakpointEvent) and Assigned(FCurrentProcess.CurrentBreakpoint) then
+        if assigned(OnHitBreakpointEvent) and assigned(FCurrentProcess.CurrentBreakpoint) then
           OnHitBreakpointEvent(continue, FCurrentProcess.CurrentBreakpoint);
+        if continue or not assigned(FCurrentProcess.CurrentBreakpoint) then begin
+          // TODO: dedicated event to set pause and location
+          // ensure state = dsPause and location is set
+          continue:=false;
+          OnHitBreakpointEvent(continue, nil);
+        end;
         // but do not continue
         continue:=false;
       end;
