@@ -174,8 +174,8 @@ type
     FCloseButton: TCustomSpeedButton;
     FMinimizeButton: TCustomSpeedButton;
     FHeaderPosition: TADLHeaderPosition;
-    fFocused:Boolean;
-    fUseTimer:Boolean;
+    FFocused: Boolean;
+    FUseTimer: Boolean;
     FMouseTimeStartX,FMouseTimeStartY:Integer;
     procedure CloseButtonClick(Sender: TObject);
     procedure MinimizeButtonClick(Sender: TObject);
@@ -321,7 +321,6 @@ type
     FSiteType: TAnchorDockHostSiteType;
     FBoundSplitter: TAnchorDockSplitter;
     FUpdateLayout: Integer;
-    FMinimization: Boolean;
     FMinimizedControl: TControl;
     function GetMinimized: Boolean;
     procedure SetHeaderSide(const AValue: TAnchorKind);
@@ -3990,7 +3989,7 @@ procedure TAnchorDockHostSite.DoEnter;
 begin
   inherited;
   if Assigned(FHeader) then
-    FHeader.fFocused:=true;
+    FHeader.FFocused:=true;
   invalidate;
 end;
 
@@ -3998,7 +3997,7 @@ procedure TAnchorDockHostSite.DoExit;
 begin
   inherited;
   if Assigned(FHeader) then
-    FHeader.fFocused:=false;
+    FHeader.FFocused:=false;
   invalidate;
 end;
 
@@ -5529,7 +5528,6 @@ var
   SplitterAnchorKind:TAnchorKind;
   MaxSize:integer;
 begin
-  FMinimization:=true;
   debugln(['TAnchorDockHostSite.MinimizeSite ',DbgSName(Self),' SiteType=',dbgs(SiteType)]);
   if Minimized then
     AControl:=FMinimizedControl
@@ -5566,7 +5564,6 @@ begin
     dockmaster.InvalidateHeaders;
     Splitter.SetBoundsPercentually;
   end;
-  FMinimization:=false;
 end;
 
 procedure TAnchorDockHostSite.ShowMinimizedControl;
@@ -5963,7 +5960,6 @@ end;
 constructor TAnchorDockHostSite.CreateNew(AOwner: TComponent; Num: Integer);
 begin
   inherited CreateNew(AOwner,Num);
-  FMinimization:=false;
   FMinimizedControl:=Nil;
   Visible:=false;
   FHeaderSide:=akTop;
@@ -6127,7 +6123,7 @@ begin
   NeedDrawHeaderAfterText:=true;
   NeedHighlightText:=true;
   if DockMaster.HeaderStyle in [adhsThemedCaption,adhsThemedButton] then begin
-      DrawADHeader(Canvas,DockMaster.HeaderStyle,r,not(Align in [alLeft,alRight]),fFocused);
+      DrawADHeader(Canvas,DockMaster.HeaderStyle,r,not(Align in [alLeft,alRight]),FFocused);
       NeedDrawHeaderAfterText:=false;
       NeedHighlightText:=false;
   end else begin
@@ -6159,7 +6155,7 @@ begin
 
   // caption
   if Caption<>'' then begin
-    if fFocused and DockMaster.HeaderHighlightFocused and NeedHighlightText then
+    if FFocused and DockMaster.HeaderHighlightFocused and NeedHighlightText then
       Canvas.Font.Bold:=true
     else
       Canvas.Font.Bold:=False;
@@ -6180,13 +6176,13 @@ begin
         // text fits
         Canvas.TextOut(r.Left+dx-1,r.Bottom-dy,Caption);
         if NeedDrawHeaderAfterText then begin
-          DrawADHeader(Canvas,DockMaster.HeaderStyle,Rect(r.Left,r.Top,r.Right,r.Bottom-dy-TxtW-1),false,fFocused);
-          DrawADHeader(Canvas,DockMaster.HeaderStyle,Rect(r.Left,r.Bottom-dy+1,r.Right,r.Bottom),false,fFocused);
+          DrawADHeader(Canvas,DockMaster.HeaderStyle,Rect(r.Left,r.Top,r.Right,r.Bottom-dy-TxtW-1),false,FFocused);
+          DrawADHeader(Canvas,DockMaster.HeaderStyle,Rect(r.Left,r.Bottom-dy+1,r.Right,r.Bottom),false,FFocused);
         end;
       end else begin
         // text does not fit
         if NeedDrawHeaderAfterText then
-          DrawADHeader(Canvas,DockMaster.HeaderStyle,r,false,fFocused);
+          DrawADHeader(Canvas,DockMaster.HeaderStyle,r,false,FFocused);
       end;
     end else begin
       // horizontal
@@ -6198,21 +6194,21 @@ begin
         // text fits
         Canvas.TextRect(r,dx+2,dy,Caption);
         if NeedDrawHeaderAfterText then begin
-          DrawADHeader(Canvas,DockMaster.HeaderStyle,Rect(r.Left,r.Top,r.Left+dx-1,r.Bottom),true,fFocused);
-          DrawADHeader(Canvas,DockMaster.HeaderStyle,Rect(r.Left+dx+TxtW+2,r.Top,r.Right,r.Bottom),true,fFocused);
+          DrawADHeader(Canvas,DockMaster.HeaderStyle,Rect(r.Left,r.Top,r.Left+dx-1,r.Bottom),true,FFocused);
+          DrawADHeader(Canvas,DockMaster.HeaderStyle,Rect(r.Left+dx+TxtW+2,r.Top,r.Right,r.Bottom),true,FFocused);
         end;
       end else begin
         // text does not fit
         if NeedDrawHeaderAfterText then
-          DrawADHeader(Canvas,DockMaster.HeaderStyle,r,true,fFocused);
+          DrawADHeader(Canvas,DockMaster.HeaderStyle,r,true,FFocused);
       end;
     end;
   end
   else if NeedDrawHeaderAfterText then
     if Align in [alLeft,alRight] then
-      DrawADHeader(Canvas,DockMaster.HeaderStyle,r,false,fFocused)
+      DrawADHeader(Canvas,DockMaster.HeaderStyle,r,false,FFocused)
     else
-      DrawADHeader(Canvas,DockMaster.HeaderStyle,r,true,fFocused);
+      DrawADHeader(Canvas,DockMaster.HeaderStyle,r,true,FFocused);
 end;
 
 procedure TAnchorDockHeader.CalculatePreferredSize(var PreferredWidth,
@@ -6262,7 +6258,7 @@ var
 begin
   inherited MouseDown(Button, Shift, X, Y);
   SiteMinimized:=False;
-  fUseTimer:=false;
+  FUseTimer:=false;
   StopMouseNoMoveTimer;
   if Parent is TAnchorDockHostSite then
     SiteMinimized:=(Parent as TAnchorDockHostSite).Minimized;
@@ -6293,7 +6289,7 @@ begin
             StopMouseNoMoveTimer;
           end;
   if (parent is TAnchorDockHostSite) and (DockMaster.FOverlappingForm=nil)then
-    fUseTimer:=true;
+    FUseTimer:=true;
 end;
 
 procedure TAnchorDockHeader.MouseLeave;
@@ -6304,7 +6300,7 @@ end;
 
 procedure TAnchorDockHeader.StartMouseNoMoveTimer;
 begin
-  if fUseTimer then begin
+  if FUseTimer then begin
     if DockTimer.Enabled then DockTimer.Enabled:=false;
     DockTimer.Interval:=MouseNoMoveTime;
     DockTimer.OnTimer:=@DoMouseNoMoveTimer;
@@ -6322,7 +6318,7 @@ end;
 procedure TAnchorDockHeader.DoMouseNoMoveTimer(Sender: TObject);
 begin
   StopMouseNoMoveTimer;
-  //if fUseTimer then
+  //if FUseTimer then
     if parent<>nil then
       if parent is TAnchorDockHostSite then
         if (parent as TAnchorDockHostSite).Minimized then
@@ -6431,9 +6427,9 @@ begin
   AutoSize:=true;
   ShowHint:=true;
   PopupMenu:=DockMaster.GetPopupMenu;
-  fFocused:=false;
+  FFocused:=false;
   FMouseTimeStartX:=EmptyMouseTimeStartX;
-  fUseTimer:=true;
+  FUseTimer:=true;
 end;
 
 { TAnchorDockCloseButton }
