@@ -290,10 +290,13 @@ begin
     // Single-stepping, so continue silently.
     AnEvent := deInternalContinue;
 
-  if Finished and Assigned(FHiddenBreakpoint) then
+  if Finished then
   begin
-    FProcess.RemoveBreak(FHiddenBreakpoint);
-    FHiddenBreakpoint.Free;
+    AnEvent := deFinishedStep;
+    if Assigned(FHiddenBreakpoint) then begin
+      FProcess.RemoveBreak(FHiddenBreakpoint);
+      FHiddenBreakpoint.Free;
+    end;
   end;
 end;
 
@@ -489,7 +492,10 @@ begin
 end;
 
 procedure TDbgControllerStepOverLineCmd.ResolveEvent(var AnEvent: TFPDEvent; out Handled, Finished: boolean);
+var
+  OrigEvent: TFPDEvent;
 begin
+  OrigEvent := AnEvent;
   inherited ResolveEvent(AnEvent, Handled, Finished);
   if (AnEvent=deBreakpoint) and not assigned(FController.CurrentProcess.CurrentBreakpoint) then
   begin
@@ -503,6 +509,8 @@ begin
       Finished:=false;
     end;
   end;
+  if not Finished then
+    AnEvent := OrigEvent;
 end;
 
 
@@ -550,6 +558,7 @@ begin
   Finished := not (AnEvent in [deInternalContinue, deLoadLibrary]);
   if Finished then
   begin
+    AnEvent := deFinishedStep;
     if assigned(FHiddenBreakpoint) then
     begin
       FController.FCurrentProcess.RemoveBreak(FHiddenBreakpoint);
@@ -867,6 +876,7 @@ begin
       IsHandled:=false;
       IsFinished:=false;
     end;
+
     AExit:=true;
     if not IsHandled then
     begin
@@ -907,6 +917,15 @@ begin
         continue:=true;
         if assigned(OnCreateProcessEvent) then
           OnCreateProcessEvent(continue);
+      end;
+    deFinishedStep:
+      begin
+        continue:=false;
+        // if there is a breakpoint at the stepping end, execute its actions
+        if assigned(OnHitBreakpointEvent) and Assigned(FCurrentProcess.CurrentBreakpoint) then
+          OnHitBreakpointEvent(continue, FCurrentProcess.CurrentBreakpoint);
+        // but do not continue
+        continue:=false;
       end;
     deBreakpoint:
       begin

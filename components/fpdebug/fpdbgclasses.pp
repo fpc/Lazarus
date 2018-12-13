@@ -45,7 +45,7 @@ uses
   FpDbgDwarfDataClasses;
 
 type
-  TFPDEvent = (deExitProcess, deBreakpoint, deException, deCreateProcess, deLoadLibrary, deInternalContinue);
+  TFPDEvent = (deExitProcess, deFinishedStep, deBreakpoint, deException, deCreateProcess, deLoadLibrary, deInternalContinue);
   TFPDMode = (dm32, dm64);
   TFPDLogLevel = (dllDebug, dllInfo, dllError);
   TFPDCompareStepInfo = (dcsiNewLine, dcsiSameLine, dcsiNoLineInfo);
@@ -383,7 +383,7 @@ var
 
 const
   DBGPTRSIZE: array[TFPDMode] of Integer = (4, 8);
-  FPDEventNames: array[TFPDEvent] of string = ('deExitProcess', 'deBreakpoint', 'deException', 'deCreateProcess', 'deLoadLibrary', 'deInternalContinue');
+  FPDEventNames: array[TFPDEvent] of string = ('deExitProcess', 'deFinishedStep', 'deBreakpoint', 'deException', 'deCreateProcess', 'deLoadLibrary', 'deInternalContinue');
 
 function OSDbgClasses: TOSDbgClasses;
 
