@@ -99,6 +99,8 @@ type
   public
     procedure Execute; override;
     constructor Create(AFileName: String; ADebugger: TFpLldbDebugger);
+    destructor Destroy; override;
+    procedure FreeDwarf;
 
     property ImageLoaderList: TDbgImageLoaderList read FImageLoaderList;
     property DwarfInfo: TFpDwarfInfo read FDwarfInfo;
@@ -322,6 +324,23 @@ begin
   FFileName := AFileName;
   FDebugger := ADebugger;
   inherited Create(False);
+end;
+
+destructor TDwarfLoaderThread.Destroy;
+begin
+  if FreeOnTerminate then
+    FreeDwarf;
+  inherited Destroy;
+end;
+
+procedure TDwarfLoaderThread.FreeDwarf;
+begin
+  FreeAndNil(FDwarfInfo);
+  FreeAndNil(FImageLoaderList);
+  FreeAndNil(FMemReader);
+  if FMemManager <> nil then
+    FMemManager.TargetMemConvertor.Free;
+  FreeAndNil(FMemManager);
 end;
 
 
@@ -1080,8 +1099,15 @@ begin
 
   if FDwarfLoaderThread <> nil then begin
     debugln(DBG_VERBOSE, ['Terminate FDwarfLoaderThread ']);
-    FDwarfLoaderThread.FreeOnTerminate := True;
-    FDwarfLoaderThread.Terminate;
+    FDwarfLoaderThread.Suspend;
+    if FDwarfLoaderThread.Finished then begin
+      FDwarfLoaderThread.FreeDwarf;
+      FDwarfLoaderThread.Free
+    end else begin
+      FDwarfLoaderThread.FreeOnTerminate := True;
+      FDwarfLoaderThread.Terminate;
+      FDwarfLoaderThread.Resume;
+    end;
     FDwarfLoaderThread := nil;
   end;
 end;
