@@ -320,10 +320,10 @@ type
     FPages: TAnchorDockPageControl;
     FSiteType: TAnchorDockHostSiteType;
     FBoundSplitter: TAnchorDockSplitter;
-    fUpdateLayout: Integer;
-    FMinimized: Boolean;
-    fMinimization: Boolean;
+    FUpdateLayout: Integer;
+    FMinimization: Boolean;
     FMinimizedControl: TControl;
+    function GetMinimized: Boolean;
     procedure SetHeaderSide(const AValue: TAnchorKind);
   protected
     procedure DoEnter; override;
@@ -408,7 +408,7 @@ type
 
     property HeaderSide: TAnchorKind read FHeaderSide write SetHeaderSide;
     property Header: TAnchorDockHeader read FHeader;
-    property Minimized: Boolean read FMinimized;
+    property Minimized: Boolean read GetMinimized;
     property Pages: TAnchorDockPageControl read FPages;
     property SiteType: TAnchorDockHostSiteType read FSiteType;
     property BoundSplitter: TAnchorDockSplitter read FBoundSplitter;
@@ -1075,7 +1075,7 @@ begin
       result:=TAnchorDockHostSite(Neighbour);
     end;
   end;
-  if (Counter=1) and (result is TAnchorDockHostSite) and ((result as TAnchorDockHostSite).FMinimized) then
+  if (Counter=1) and (result is TAnchorDockHostSite) and ((result as TAnchorDockHostSite).Minimized) then
   else
     result:=Nil;
 end;
@@ -2194,7 +2194,7 @@ var
 begin
   HostSite:=GetNodeSite(ANode);
   if Assigned(HostSite) then
-    if HostSite.FMinimized<>ANode.Minimized then
+    if HostSite.Minimized<>ANode.Minimized then
       Application.QueueAsyncCall(@HostSite.AsyncMinimizeSite,0);
       //HostSite.MinimizeSite;
   for i:=0 to ANode.Count-1 do
@@ -2818,7 +2818,7 @@ begin
     if (Site.Header<>nil) then begin
       DisableControlAutoSizing(Site);
       Site.UpdateHeaderShowing;
-      if Site.fminimized then
+      if Site.Minimized then
         if not AValue then
           site.MinimizeSite;
     end;
@@ -3955,6 +3955,11 @@ begin
   FHeaderSide:=AValue;
 end;
 
+function TAnchorDockHostSite.GetMinimized: Boolean;
+begin
+  Result:=Assigned(FMinimizedControl);
+end;
+
 procedure TAnchorDockHostSite.ChildVisibleChanged(Sender: TObject);
 var
   AControl: TControl;
@@ -3963,7 +3968,7 @@ begin
     AControl:=TControl(Sender);
     if not (csDestroying in ComponentState) then begin
       if (not AControl.Visible)
-      and (not FMinimized)
+      and (not Minimized)
       and (not ((AControl is TAnchorDockHeader)
                or (AControl is TAnchorDockSplitter)
                or (AControl is TAnchorDockHostSite)))
@@ -4518,8 +4523,7 @@ procedure TAnchorDockHostSite.RemoveControlFromLayout(AControl: TControl);
         akBottom: NewBounds.Bottom:=AControl.Top+AControl.Height;
         end;
         if (sibling is TAnchorDockHostSite) then
-        if (sibling as TAnchorDockHostSite).FMinimized then begin
-          (sibling as TAnchorDockHostSite).FMinimized:=false;
+        if (sibling as TAnchorDockHostSite).Minimized then begin
           (sibling as TAnchorDockHostSite).FMinimizedControl.Parent:=(sibling as TAnchorDockHostSite);
           (sibling as TAnchorDockHostSite).FMinimizedControl.Visible:=True;
           (sibling as TAnchorDockHostSite).FMinimizedControl:=nil;
@@ -4598,8 +4602,7 @@ procedure TAnchorDockHostSite.RemoveControlFromLayout(AControl: TControl);
       FSiteType:=adhstOneControl;
       OnlySiteLeft.Align:=alClient;
       Header.Parent:=Self;
-      if OnlySiteLeft.FMinimized then begin
-        OnlySiteLeft.FMinimized:=false;
+      if OnlySiteLeft.Minimized then begin
         OnlySiteLeft.FMinimizedControl.Parent:=OnlySiteLeft;
         OnlySiteLeft.FMinimizedControl.Visible:=True;
         OnlySiteLeft.FMinimizedControl:=nil;
@@ -5526,29 +5529,32 @@ var
   SplitterAnchorKind:TAnchorKind;
   MaxSize:integer;
 begin
-  fMinimization:=true;
+  FMinimization:=true;
   debugln(['TAnchorDockHostSite.MinimizeSite ',DbgSName(Self),' SiteType=',dbgs(SiteType)]);
-  if FMinimized then
+  if Minimized then
     AControl:=FMinimizedControl
   else
     AControl:=GetOneControl;
-  if CanBeMinimized(Splitter,SplitterAnchorKind) or FMinimized then begin
-    FMinimized:=not FMinimized;
-    if FMinimized then begin
+  if CanBeMinimized(Splitter,SplitterAnchorKind) or Minimized then begin
+    if not Minimized then begin
       FMinimizedControl:=AControl;
       AControl.Visible:=False;
       AControl.Parent:=nil;
     end else begin
       MaxSize:=ReturnAnchoredControlsSize(Splitter,SplitterAnchorKind);
       case SplitterAnchorKind of
-     akTop: if AControl.Height>=MaxSize+Height then
-              Splitter.FPercentPosition:=1-(MaxSize+Height)/(Splitter.Parent.ClientHeight*2);
-  akBottom: if AControl.Height>=MaxSize+Height then
-              Splitter.FPercentPosition:=(MaxSize+Height)/(Splitter.Parent.ClientHeight*2);
-    akLeft: if AControl.Width>=MaxSize+Width then
-              Splitter.FPercentPosition:=1-(MaxSize+Width)/(Splitter.Parent.ClientWidth*2);
-   akRight: if AControl.Width>=MaxSize+Width then
-              Splitter.FPercentPosition:=(MaxSize+Width)/(Splitter.Parent.ClientWidth*2);
+        akTop:
+          if AControl.Height>=MaxSize+Height then
+            Splitter.FPercentPosition:=1-(MaxSize+Height)/(Splitter.Parent.ClientHeight*2);
+        akBottom:
+          if AControl.Height>=MaxSize+Height then
+            Splitter.FPercentPosition:=(MaxSize+Height)/(Splitter.Parent.ClientHeight*2);
+        akLeft:
+          if AControl.Width>=MaxSize+Width then
+            Splitter.FPercentPosition:=1-(MaxSize+Width)/(Splitter.Parent.ClientWidth*2);
+        akRight:
+          if AControl.Width>=MaxSize+Width then
+            Splitter.FPercentPosition:=(MaxSize+Width)/(Splitter.Parent.ClientWidth*2);
       end;
       AControl.Parent:=self;
       AControl.Visible:=True;
@@ -5560,7 +5566,7 @@ begin
     dockmaster.InvalidateHeaders;
     Splitter.SetBoundsPercentually;
   end;
-  fMinimization:=false;
+  FMinimization:=false;
 end;
 
 procedure TAnchorDockHostSite.ShowMinimizedControl;
@@ -5714,7 +5720,7 @@ var
 begin
   if csDestroying in ComponentState then exit;
   NewCaption:='';
-  if FMinimized then
+  if Minimized then
   begin
     if Assigned(FMinimizedControl) then
       NewCaption:=FMinimizedControl.Caption;
@@ -5778,7 +5784,7 @@ begin
 
   CanDock:=(Client is TAnchorDockHostSite)
            and not DockMaster.AutoFreedIfControlIsRemoved(Self,Client)
-           and not FMinimized;
+           and not Minimized;
   //debugln(['TAnchorDockHostSite.GetSiteInfo ',DbgSName(Self),' ',dbgs(BoundsRect),' ',Caption,' CanDock=',CanDock,' PtIn=',PtInRect(InfluenceRect,MousePos)]);
 
   if Assigned(OnGetSiteInfo) then
@@ -5807,7 +5813,7 @@ var
   SplitterAnchorKind:TAnchorKind;
 begin
   if Header=nil then exit;
-  if FMinimized then begin
+  if Minimized then begin
     if FindNearestSpliter(self,Splitter,SplitterAnchorKind) then begin
       NeededHeaderPosition:=OppositeAnchorKind2TADLHeaderPosition[SplitterAnchorKind];
     end else
@@ -5845,7 +5851,7 @@ begin
   if Header=nil then exit;
   if HeaderNeedsShowing then begin
     Header.Parent:=Self;
-    Header.MinimizeButton.Visible:=(DockMaster.DockSitesCanBeMinimized and CanBeMinimized(Splitter,SplitterAnchorKind))or FMinimized;
+    Header.MinimizeButton.Visible:=(DockMaster.DockSitesCanBeMinimized and CanBeMinimized(Splitter,SplitterAnchorKind))or Minimized;
     Header.MinimizeButton.Parent:=Header;
   end
   else
@@ -5854,21 +5860,21 @@ end;
 
 procedure TAnchorDockHostSite.BeginUpdateLayout;
 begin
-  inc(fUpdateLayout);
-  if fUpdateLayout=1 then DockMaster.BeginUpdate;
+  inc(FUpdateLayout);
+  if FUpdateLayout=1 then DockMaster.BeginUpdate;
 end;
 
 procedure TAnchorDockHostSite.EndUpdateLayout;
 begin
-  if fUpdateLayout=0 then RaiseGDBException('TAnchorDockHostSite.EndUpdateLayout');
-  dec(fUpdateLayout);
-  if fUpdateLayout=0 then
+  if FUpdateLayout=0 then RaiseGDBException('TAnchorDockHostSite.EndUpdateLayout');
+  dec(FUpdateLayout);
+  if FUpdateLayout=0 then
     DockMaster.EndUpdate;
 end;
 
 function TAnchorDockHostSite.UpdatingLayout: boolean;
 begin
-  Result:=(fUpdateLayout>0) or (csDestroying in ComponentState);
+  Result:=(FUpdateLayout>0) or (csDestroying in ComponentState);
 end;
 
 function AcceptAlign(Site:TAnchorDockHostSite; AlignCandidate:TAlign):TAlign;
@@ -5880,7 +5886,7 @@ var
 begin
   for i:=0 to Site.ControlCount-1 do
     if Site.Controls[i] is TAnchorDockHostSite then
-      if (Site.Controls[i] as TAnchorDockHostSite).FMinimized then begin
+      if (Site.Controls[i] as TAnchorDockHostSite).Minimized then begin
         if FindNearestSpliter(Site.Controls[i] as TAnchorDockHostSite,Splitter,SplitterAnchorKind) then begin
           MinimizedSiteAlign:=OppositeAnchorKind2Align[SplitterAnchorKind];
           if AlignCandidate=MinimizedSiteAlign then
@@ -5913,7 +5919,7 @@ begin
   if (SiteType=adhstOneControl) and (OneControl<>nil)
   and (not (OneControl is TAnchorDockHostSite)) then begin
     LayoutNode.NodeType:=adltnControl;
-    LayoutNode.Assign(Self,false,FMinimized);
+    LayoutNode.Assign(Self,false,Minimized);
     LayoutNode.Name:=OneControl.Name;
     LayoutNode.HeaderPosition:=Header.HeaderPosition;
   end else if (SiteType in [adhstLayout,adhstOneControl]) then begin
@@ -5931,7 +5937,7 @@ begin
         Splitter.SaveLayout(ChildNode);
       end;
     end;
-    LayoutNode.Assign(Self,false,FMinimized);
+    LayoutNode.Assign(Self,false,Minimized);
     LayoutNode.HeaderPosition:=Header.HeaderPosition;
   end else if SiteType=adhstPages then begin
     LayoutNode.NodeType:=adltnPages;
@@ -5942,7 +5948,7 @@ begin
         Site.SaveLayout(LayoutTree,ChildNode);
       end;
     end;
-    LayoutNode.Assign(Self,false,FMinimized);
+    LayoutNode.Assign(Self,false,Minimized);
     LayoutNode.HeaderPosition:=Header.HeaderPosition;
   end else
     LayoutNode.NodeType:=adltnNone;
@@ -5957,8 +5963,7 @@ end;
 constructor TAnchorDockHostSite.CreateNew(AOwner: TComponent; Num: Integer);
 begin
   inherited CreateNew(AOwner,Num);
-  FMinimized:=false;
-  fMinimization:=false;
+  FMinimization:=false;
   FMinimizedControl:=Nil;
   Visible:=false;
   FHeaderSide:=akTop;
@@ -6260,7 +6265,7 @@ begin
   fUseTimer:=false;
   StopMouseNoMoveTimer;
   if Parent is TAnchorDockHostSite then
-    SiteMinimized:=(Parent as TAnchorDockHostSite).FMinimized;
+    SiteMinimized:=(Parent as TAnchorDockHostSite).Minimized;
   if SiteMinimized then begin
     DoMouseNoMoveTimer(nil);
   end else
