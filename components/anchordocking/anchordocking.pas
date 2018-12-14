@@ -6365,33 +6365,33 @@ begin
     if CloseButton<>nil then begin
       //MinimizeButton.Align:=alTop;
       //CloseButton.Align:=alTop;
-      CloseButton.AnchorSide[akRight].Side := asrCenter;
-      CloseButton.AnchorSide[akRight].Control := self;
+      CloseButton.AnchorSide[akLeft].Side := asrCenter;
+      CloseButton.AnchorSide[akLeft].Control := Self;
       CloseButton.AnchorSide[akTop].Side := asrTop;
-      CloseButton.AnchorSide[akTop].Control := self;
-      CloseButton.Anchors := CloseButton.Anchors + [akTop] + [akRight];
+      CloseButton.AnchorSide[akTop].Control := Self;
+      CloseButton.Anchors := [akTop] + [akLeft];
 
-      MinimizeButton.AnchorSide[akRight].Side := asrCenter;
-      MinimizeButton.AnchorSide[akRight].Control := CloseButton;
+      MinimizeButton.AnchorSide[akLeft].Side := asrCenter;
+      MinimizeButton.AnchorSide[akLeft].Control := Self;
       MinimizeButton.AnchorSide[akTop].Side := asrBottom;
       MinimizeButton.AnchorSide[akTop].Control := CloseButton;
-      MinimizeButton.Anchors := MinimizeButton.Anchors + [akTop] + [akRight];
+      MinimizeButton.Anchors := [akTop] + [akLeft];
     end;
   end else begin
     if CloseButton<>nil then begin
       //MinimizeButton.Align:=alRight;
       //CloseButton.Align:=alRight;
       CloseButton.AnchorSide[akRight].Side := asrRight;
-      CloseButton.AnchorSide[akRight].Control := self;
+      CloseButton.AnchorSide[akRight].Control := Self;
       CloseButton.AnchorSide[akTop].Side := asrCenter;
-      CloseButton.AnchorSide[akTop].Control := self;
-      CloseButton.Anchors := CloseButton.Anchors - [akLeft] + [akRight];
+      CloseButton.AnchorSide[akTop].Control := Self;
+      CloseButton.Anchors := [akTop] + [akRight];
 
       MinimizeButton.AnchorSide[akRight].Side := asrLeft;
       MinimizeButton.AnchorSide[akRight].Control := CloseButton;
       MinimizeButton.AnchorSide[akTop].Side := asrCenter;
-      MinimizeButton.AnchorSide[akTop].Control := CloseButton;
-      MinimizeButton.Anchors := MinimizeButton.Anchors - [akLeft] + [akRight];
+      MinimizeButton.AnchorSide[akTop].Control := Self;
+      MinimizeButton.Anchors := [akTop] + [akRight];
     end;
   end;
   CloseButton.BorderSpacing.Around:=ButtonBorderSpacingAround;
