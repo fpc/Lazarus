@@ -315,6 +315,9 @@ begin
 
   FDwarfInfo := TFpDwarfInfo.Create(FImageLoaderList);
   FDwarfInfo.MemManager := FMemManager;
+  if Terminated then
+    exit;
+
   FDwarfInfo.LoadCompilationUnits;
   debugln(DBG_VERBOSE, ['finish THREAD TFpLldbDebugger.LoadDwarf ']);
 end;
@@ -1099,16 +1102,10 @@ begin
 
   if FDwarfLoaderThread <> nil then begin
     debugln(DBG_VERBOSE, ['Terminate FDwarfLoaderThread ']);
-    FDwarfLoaderThread.Suspend;
-    if FDwarfLoaderThread.Finished then begin
-      FDwarfLoaderThread.FreeDwarf;
-      FDwarfLoaderThread.Free
-    end else begin
-      FDwarfLoaderThread.FreeOnTerminate := True;
-      FDwarfLoaderThread.Terminate;
-      FDwarfLoaderThread.Resume;
-    end;
-    FDwarfLoaderThread := nil;
+    FDwarfLoaderThread.Terminate;
+    FDwarfLoaderThread.WaitFor; // This may take a while, but normally the thread should never exist in UnLoadDwarf
+    FDwarfLoaderThread.FreeDwarf;
+    FreeAndNil(FDwarfLoaderThread);
   end;
 end;
 
