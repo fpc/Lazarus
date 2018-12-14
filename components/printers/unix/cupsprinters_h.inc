@@ -110,7 +110,7 @@ type
   protected
      procedure DoBeginDoc; override;
      procedure DoEndDoc(aAborted : Boolean); override;
-
+     procedure DoNewPage; override;
      
      procedure DoResetPrintersList; override;
 

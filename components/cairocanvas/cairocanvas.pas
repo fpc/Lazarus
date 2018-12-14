@@ -34,6 +34,7 @@ type
     {$ifdef pangocairo}
     fFontDesc: PPangoFontDescription;
     fFontDescStr: string;
+    fPageBegun: boolean;
     function StylesToStr(Styles: TFontStyles):string;
     procedure UpdatePangoLayout(Layout: PPangoLayout);
     {$endif}
@@ -89,6 +90,8 @@ type
     procedure BeginDoc; override;
     procedure EndDoc; override;
     procedure NewPage; override;
+    procedure BeginPage; override;
+    procedure EndPage; override;
     procedure FillRect(const ARect: TRect); override;
     procedure Rectangle(X1,Y1,X2,Y2: Integer); override;
     procedure Polyline(Points: PPoint; NumPts: Integer); override;
@@ -113,6 +116,7 @@ type
   public
     procedure MixedRoundRect(X1, Y1, X2, Y2: Integer; RX, RY: Integer; SquaredCorners: TSquaredCorners);
     procedure DrawSurface(const SourceRect, DestRect: TRect; surface: Pcairo_surface_t);
+    procedure UpdatePageSize; virtual;
 {  Not implemented
     procedure FloodFill(X, Y: Integer; FillColor: TColor; FillStyle: TFillStyle); override;
     procedure CopyRect(const Dest: TRect; SrcCanvas: TCanvas; const Source: TRect); override;
@@ -127,7 +131,6 @@ type
     fStream: TStream;
     procedure DestroyCairoHandle; override;
   public
-    procedure UpdatePageSize; virtual;
     property Stream: TStream read fStream write fStream;
   end;
 
@@ -349,15 +352,13 @@ end;
 procedure TCairoPrinterCanvas.BeginDoc;
 begin
   inherited BeginDoc;
-  if assigned(printer) then
-    FLazClipRect:=printer.PaperSize.PaperRect.WorkRect;
+  BeginPage;
 end;
 
 procedure TCairoPrinterCanvas.EndDoc;
 begin
   inherited EndDoc;
-  cairo_show_page(cr);
-  FLazClipRect := Rect(0, 0, 0, 0);
+  EndPage;
   //if caller is printer, then at the end destroy cairo handles (flush output)
   //and establishes CreateCairoHandle call on the next print
   Handle := 0;
@@ -365,8 +366,29 @@ end;
 
 procedure TCairoPrinterCanvas.NewPage;
 begin
-  inherited NewPage;
-  cairo_show_page(cr);
+  EndPage;
+  BeginPage;
+end;
+
+procedure TCairoPrinterCanvas.BeginPage;
+begin
+  if assigned(printer) then
+  begin
+    FLazClipRect:=printer.PaperSize.PaperRect.WorkRect;
+    if HandleAllocated then
+      UpdatePageSize;
+  end;
+  fPageBegun := true;
+end;
+
+procedure TCairoPrinterCanvas.EndPage;
+begin
+  if fPageBegun then
+  begin
+    cairo_show_page(cr);
+    FLazClipRect := Rect(0, 0, 0, 0);
+    fPageBegun := false;
+  end;
 end;
 
 procedure TCairoPrinterCanvas.CreateBrush;
@@ -793,6 +815,10 @@ begin
   cairo_paint(cr);
   cairo_restore(cr);
   Changed;
+end;
+
+procedure TCairoPrinterCanvas.UpdatePageSize;
+begin
 end;
 
 procedure TCairoPrinterCanvas.Ellipse(X1, Y1, X2, Y2: Integer);
@@ -1468,10 +1494,6 @@ begin
   cairo_surface_finish(sf);
   cairo_surface_destroy(sf);
   sf := nil;
-end;
-
-procedure TCairoFileCanvas.UpdatePageSize;
-begin
 end;
 
 { TCairoPdfCanvas }

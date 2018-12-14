@@ -947,6 +947,12 @@ begin
   end;
 end;
 
+procedure TCUPSPrinter.DoNewPage;
+begin
+  // just to flag that we want the old 'newpage' pagination way
+  // instead of the new 'beginpage/endpage'
+end;
+
 procedure TCUPSPrinter.DoResetPrintersList;
 begin
   if Assigned(fcupsPPD) then
