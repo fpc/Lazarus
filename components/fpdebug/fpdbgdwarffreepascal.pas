@@ -5,18 +5,21 @@ unit FpDbgDwarfFreePascal;
 interface
 
 uses
-  Classes, SysUtils, FpDbgDwarfDataClasses, FpDbgDwarf, FpDbgInfo, FpDbgUtil,
-  FpDbgDwarfConst, FpErrorMessages, FpdMemoryTools, DbgIntfBaseTypes,
+  Classes, SysUtils, Types, FpDbgDwarfDataClasses, FpDbgDwarf, FpDbgInfo,
+  FpDbgUtil, FpDbgDwarfConst, FpErrorMessages, FpdMemoryTools, DbgIntfBaseTypes,
   LazLoggerBase;
 
 type
+
+  (* ***** SymbolClassMap *****
+  *)
 
   { TFpDwarfFreePascalSymbolClassMap }
 
   TFpDwarfFreePascalSymbolClassMap = class(TFpDwarfDefaultSymbolClassMap)
   public
     class function HandleCompUnit(ACU: TDwarfCompilationUnit): Boolean; override;
-    //class function GetDwarfSymbolClass(ATag: Cardinal): TDbgDwarfSymbolBaseClass; override;
+    class function GetDwarfSymbolClass(ATag: Cardinal): TDbgDwarfSymbolBaseClass; override;
     class function CreateContext(AThreadId, AStackFrame: Integer; AnAddress: TDBGPtr; ASymbol: TFpDbgSymbol;
       ADwarf: TFpDwarfInfo): TFpDbgInfoContext; override;
     //class function CreateProcSymbol(ACompilationUnit: TDwarfCompilationUnit;
@@ -47,6 +50,9 @@ type
     //  AInfo: PDwarfAddressInfo; AAddress: TDbgPtr): TDbgDwarfSymbolBase; override;
   end;
 
+  (* ***** Context *****
+  *)
+
   { TFpDwarfFreePascalAddressContext }
 
   TFpDwarfFreePascalAddressContext = class(TFpDwarfInfoAddressContext)
@@ -59,6 +65,11 @@ type
   public
     destructor Destroy; override;
   end;
+
+  (* ***** Value & Types *****
+  *)
+
+  (* *** Record vs ShortString *** *)
 
   { TFpDwarf2FreePascalSymbolTypeStructure }
 
@@ -73,9 +84,9 @@ type
     //function GetMemberByName(AIndex: String): TFpDbgSymbol; override;
   end;
 
-  { TFpDwarfValue2FreePascalShortString }
+  { TFpDwarfV2ValueFreePascalShortString }
 
-  TFpDwarfValue2FreePascalShortString = class(TFpDwarfValue)
+  TFpDwarfV2ValueFreePascalShortString = class(TFpDwarfValue)
   private
     FValue: String;
     FValueDone: Boolean;
@@ -85,9 +96,27 @@ type
     function GetAsWideString: WideString; override;
   end;
 
-  { TFpDwarf3FreePascalSymbolTypeArray }
+  (* *** "Open Array" in params *** *)
 
-  TFpDwarf3FreePascalSymbolTypeArray = class(TFpDwarfSymbolTypeArray)
+  { TFpDwarfFreePascalSymbolTypeArray }
+
+  TFpDwarfFreePascalSymbolTypeArray = class(TFpDwarfSymbolTypeArray)
+  protected
+    function GetTypedValueObject(ATypeCast: Boolean): TFpDwarfValue; override;
+  end;
+
+  { TFpDwarfValueFreePascalArray }
+
+  TFpDwarfValueFreePascalArray = class(TFpDwarfValueArray)
+  protected
+    function GetMemberCount: Integer; override;
+  end;
+
+  (* *** Array vs AnsiString *** *)
+
+  { TFpDwarfV3FreePascalSymbolTypeArray }
+
+  TFpDwarfV3FreePascalSymbolTypeArray = class(TFpDwarfFreePascalSymbolTypeArray)
   private type
     TArrayOrStringType = (iasUnknown, iasArray, iasShortString, iasAnsiString);
   private
@@ -98,9 +127,9 @@ type
     procedure KindNeeded; override;
   end;
 
-  { TFpDwarfValue3FreePascalString }
+  { TFpDwarfV3ValueFreePascalString }
 
-  TFpDwarfValue3FreePascalString = class(TFpDwarfValue) // short & ansi...
+  TFpDwarfV3ValueFreePascalString = class(TFpDwarfValue) // short & ansi...
   private
     FValue: String;
     FValueDone: Boolean;
@@ -120,6 +149,17 @@ var
 begin
   s := LowerCase(ACU.Producer);
   Result := pos('free pascal', s) > 0;
+end;
+
+class function TFpDwarfFreePascalSymbolClassMap.GetDwarfSymbolClass(
+  ATag: Cardinal): TDbgDwarfSymbolBaseClass;
+begin
+  case ATag of
+    DW_TAG_array_type:
+      Result := TFpDwarfFreePascalSymbolTypeArray;
+    else
+      Result := inherited GetDwarfSymbolClass(ATag);
+  end;
 end;
 
 class function TFpDwarfFreePascalSymbolClassMap.CreateContext(AThreadId, AStackFrame: Integer;
@@ -175,7 +215,7 @@ class function TFpDwarfFreePascalSymbolClassMapDwarf3.GetDwarfSymbolClass(
 begin
   case ATag of
     DW_TAG_array_type:
-      Result := TFpDwarf3FreePascalSymbolTypeArray;
+      Result := TFpDwarfV3FreePascalSymbolTypeArray;
   //  DW_TAG_structure_type:
   //    Result := TFpDwarf2FreePascalSymbolTypeStructure; // maybe record
   //  // TODO:
@@ -369,7 +409,7 @@ begin
   if not IsShortString then
     Result := inherited GetTypedValueObject(ATypeCast)
   else
-    Result := TFpDwarfValue2FreePascalShortString.Create(Self);
+    Result := TFpDwarfV2ValueFreePascalShortString.Create(Self);
 end;
 
 procedure TFpDwarf2FreePascalSymbolTypeStructure.KindNeeded;
@@ -388,15 +428,15 @@ begin
     Result := inherited GetMemberCount;
 end;
 
-{ TFpDwarfValue2FreePascalShortString }
+{ TFpDwarfV2ValueFreePascalShortString }
 
-function TFpDwarfValue2FreePascalShortString.GetFieldFlags: TFpDbgValueFieldFlags;
+function TFpDwarfV2ValueFreePascalShortString.GetFieldFlags: TFpDbgValueFieldFlags;
 begin
   Result := inherited GetFieldFlags;
   Result := Result + [svfString];
 end;
 
-function TFpDwarfValue2FreePascalShortString.GetAsString: AnsiString;
+function TFpDwarfV2ValueFreePascalShortString.GetAsString: AnsiString;
 var
   len: QWord;
   LenSym, StSym: TFpDwarfValue;
@@ -435,14 +475,70 @@ begin
   FValueDone := True;
 end;
 
-function TFpDwarfValue2FreePascalShortString.GetAsWideString: WideString;
+function TFpDwarfV2ValueFreePascalShortString.GetAsWideString: WideString;
 begin
   Result := GetAsString;
 end;
 
-{ TFpDwarf3FreePascalSymbolTypeArray }
+{ TFpDwarfFreePascalSymbolTypeArray }
 
-function TFpDwarf3FreePascalSymbolTypeArray.GetInternalStringType: TArrayOrStringType;
+function TFpDwarfFreePascalSymbolTypeArray.GetTypedValueObject(
+  ATypeCast: Boolean): TFpDwarfValue;
+begin
+  Result := TFpDwarfValueFreePascalArray.Create(Self);
+end;
+
+{ TFpDwarfValueFreePascalArray }
+
+function TFpDwarfValueFreePascalArray.GetMemberCount: Integer;
+var
+  t, t2: TFpDbgSymbol;
+  Info, Info2: TDwarfInformationEntry;
+  n: AnsiString;
+  UpperBoundSym: TFpDwarfSymbol;
+begin
+  Result := 0;
+  t := TypeInfo;
+  if t.MemberCount < 1 then // IndexTypeCount;
+    exit(inherited GetMemberCount);
+
+  t2 := t.Member[0]; // IndexType[0];
+  if (t is TFpDwarfSymbolTypeArray) and
+     (t2 is TFpDwarfSymbolTypeSubRange) and
+     (DbgSymbol is TFpDwarfSymbolValueParameter) // open array exists only as param
+  then begin
+    Info := TFpDwarfSymbolTypeSubRange(t2).InformationEntry;
+    if Info.HasAttrib(DW_AT_lower_bound) and
+       not Info.HasAttrib(DW_AT_upper_bound)
+    then begin
+      Info2 := TFpDwarfSymbolValueVariable(DbgSymbol).InformationEntry.Clone;
+      Info2.GoNext;
+      if Info2.HasValidScope and
+         Info2.HasAttrib(DW_AT_location) and  // the high param must have a location / cannot be a constant
+         Info2.ReadName(n)
+      then begin
+        if (n <> '') and (n[1] = '$') then // dwarf3 // TODO: make required in dwarf3
+          delete(n, 1, 1);
+        if (copy(n,1,4) = 'high') and (UpperCase(copy(n, 5, length(n))) = UpperCase(DbgSymbol.Name)) then begin
+          UpperBoundSym := TFpDwarfSymbol.CreateSubClass('', Info2);
+          if UpperBoundSym <> nil then begin
+            Result := UpperBoundSym.Value.AsInteger - t2.OrdLowBound + 1;
+            Info2.ReleaseReference;
+            UpperBoundSym.ReleaseReference;
+            exit;
+          end;
+        end;
+      end;
+      Info2.ReleaseReference;
+    end;
+  end;
+
+  Result := inherited GetMemberCount;
+end;
+
+{ TFpDwarfV3FreePascalSymbolTypeArray }
+
+function TFpDwarfV3FreePascalSymbolTypeArray.GetInternalStringType: TArrayOrStringType;
 var
   Info: TDwarfInformationEntry;
   t: Cardinal;
@@ -478,16 +574,16 @@ begin
   Info.ReleaseReference;
 end;
 
-function TFpDwarf3FreePascalSymbolTypeArray.GetTypedValueObject(
+function TFpDwarfV3FreePascalSymbolTypeArray.GetTypedValueObject(
   ATypeCast: Boolean): TFpDwarfValue;
 begin
   if GetInternalStringType in [iasShortString, iasAnsiString] then
-    Result := TFpDwarfValue3FreePascalString.Create(Self)
+    Result := TFpDwarfV3ValueFreePascalString.Create(Self)
   else
     Result := inherited GetTypedValueObject(ATypeCast);
 end;
 
-procedure TFpDwarf3FreePascalSymbolTypeArray.KindNeeded;
+procedure TFpDwarfV3FreePascalSymbolTypeArray.KindNeeded;
 begin
   case GetInternalStringType of
     iasShortString:
@@ -499,15 +595,15 @@ begin
   end;
 end;
 
-{ TFpDwarfValue3FreePascalString }
+{ TFpDwarfV3ValueFreePascalString }
 
-function TFpDwarfValue3FreePascalString.GetFieldFlags: TFpDbgValueFieldFlags;
+function TFpDwarfV3ValueFreePascalString.GetFieldFlags: TFpDbgValueFieldFlags;
 begin
   Result := inherited GetFieldFlags;
   Result := Result + [svfString];
 end;
 
-function TFpDwarfValue3FreePascalString.GetAsString: AnsiString;
+function TFpDwarfV3ValueFreePascalString.GetAsString: AnsiString;
 var
   t, t2: TFpDbgSymbol;
   LowBound, HighBound: Int64;
@@ -553,7 +649,7 @@ begin
 
 end;
 
-function TFpDwarfValue3FreePascalString.GetAsWideString: WideString;
+function TFpDwarfV3ValueFreePascalString.GetAsWideString: WideString;
 begin
   // todo: widestring, but currently that is encoded as PWideChar
   Result := GetAsString;
