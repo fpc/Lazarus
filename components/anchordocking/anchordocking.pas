@@ -1811,12 +1811,16 @@ begin
       // => close site
       if AControl.HostDockSite <> nil then
       begin
+        {$IFDEF VerboseAnchorDocking}
         debugln(['TAnchorDockMaster.CloseUnneededControls Control=',DbgSName(AControl),' Site=',AControl.HostDockSite.Name]);
+        {$ENDIF}
         if AControl.HostDockSite is TAnchorDockHostSite then begin
           if not TAnchorDockHostSite(AControl.HostDockSite).CloseSite then begin
             if FControls.IndexOf(AControl)<0 then
               AControl:=nil;
+            {$IFDEF VerboseAnchorDocking}
             debugln(['TAnchorDockMaster.CloseUnneededControls CloseSite failed Control=',DbgSName(AControl)]);
+            {$ENDIF}
             exit(false);
           end;
         end;
