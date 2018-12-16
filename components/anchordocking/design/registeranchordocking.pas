@@ -361,7 +361,7 @@ begin
               {$IF defined(VerboseAnchorDocking) or defined(VerboseAnchorDockRestore)}
               debugln(['TIDEAnchorDockMaster.ShowForm NewDockSite=',DbgSName(NewDockSite),'="',NewDockSite.Caption,'"']);
               {$ENDIF}
-              DockMaster.ManualDock(Site,NewDockSite,DockAlign);
+              DockMaster.ManualDock(Site,NewDockSite,DockAlign,NewDockSite);
               {$IF defined(VerboseAnchorDocking) or defined(VerboseAnchorDockRestore)}
               debugln(['TIDEAnchorDockMaster.ShowForm after docking: ',DbgSName(AControl),' Floating=',DockMaster.IsFloating(AControl)]);
               {$ENDIF}

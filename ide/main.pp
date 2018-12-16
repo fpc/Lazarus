@@ -2429,7 +2429,7 @@ begin
     NonModalIDEWindowNames[nmiwSourceNoteBookName],alBottom,false,@GetLayoutHandler);
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwCodeExplorerName],
     nil,@CreateIDEWindow,'72%','120','+170','-200',
-    NonModalIDEWindowNames[nmiwSourceNoteBookName],alRight);
+    NonModalIDEWindowNames[nmiwMainIDEName],alRight);
 
   IDEWindowCreators.Add(NonModalIDEWindowNames[nmiwUnitDependenciesName],
     nil,@CreateIDEWindow,'200','200','','');
