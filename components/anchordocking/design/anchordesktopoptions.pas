@@ -93,31 +93,29 @@ end;
 
 procedure TAnchorDesktopOpt.Load(Path: String; aXMLCfg: TRttiXMLConfig);
 begin
-  //new version of old "TIDEAnchorDockMaster.LoadUserLayout"
-
   Path := Path + 'AnchorDocking/';
   try
     {$IFDEF VerboseAnchorDocking}
-    debugln(['TIDEAnchorDockMaster.LoadUserLayout ',Path]);
+    DebugLn(['TAnchorDesktopOpt.LoadUserLayout ',Path]);
     {$ENDIF}
     if aXMLCfg.GetValue(Path+'MainConfig/Nodes/ChildCount',0) > 0 then//config is not empty
     begin
       // loading last layout
       {$IF defined(VerboseAnchorDocking) or defined(VerboseAnchorDockRestore)}
-      debugln(['TIDEAnchorDockMaster.LoadUserLayout restoring ...']);
+      DebugLn(['TAnchorDesktopOpt.LoadUserLayout restoring ...']);
       {$ENDIF}
       LoadLayoutFromConfig(Path,aXMLCfg);
     end else begin
       // loading defaults
       {$IF defined(VerboseAnchorDocking) or defined(VerboseAnchorDockRestore)}
-      debugln(['TIDEAnchorDockMaster.LoadUserLayout loading default layout ...']);
+      DebugLn(['TAnchorDesktopOpt.LoadUserLayout loading default layout ...']);
       {$ENDIF}
       LoadLegacyAnchorDockOptions;
       LoadDefaultLayout;
     end;
   except
     on E: Exception do begin
-      DebugLn(['TIDEAnchorDockMaster.LoadUserLayout loading ',aXMLCfg.GetValue(Path+'Name', ''),' failed: ',E.Message]);
+      DebugLn(['TAnchorDesktopOpt.LoadUserLayout loading ',aXMLCfg.GetValue(Path+'Name', ''),' failed: ',E.Message]);
       Raise;
     end;
   end;
@@ -215,12 +213,12 @@ begin
   Path := Path + 'AnchorDocking/';
   try
     {$IF defined(VerboseAnchorDocking) or defined(VerboseAnchorDockRestore)}
-    debugln(['TIDEAnchorDockMaster.SaveDefaultLayout ',Path]);
+    DebugLn(['TAnchorDesktopOpt.SaveDefaultLayout ',Path]);
     {$ENDIF}
     SaveLayoutToConfig(Path, aXMLCfg);
   except
     on E: Exception do begin
-      DebugLn(['TIDEAnchorDockMaster.SaveDefaultLayout saving ',aXMLCfg.GetValue(Path+'Name', ''),' failed: ',E.Message]);
+      DebugLn(['TAnchorDesktopOpt.SaveDefaultLayout saving ',aXMLCfg.GetValue(Path+'Name', ''),' failed: ',E.Message]);
       Raise;
     end;
   end;
