@@ -5635,6 +5635,7 @@ var
   IsMainForm: Boolean;
   CloseAction: TCloseAction;
   NeedEnableAutoSizing: Boolean;
+  i: Integer;
 begin
   Result:=CloseQuery;
   if not Result then exit;
@@ -5690,6 +5691,33 @@ begin
         end;
         Visible:=false;
         Parent:=nil;
+      finally
+        if NeedEnableAutoSizing then
+          EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockHostSite.CloseSite'){$ENDIF};
+      end;
+    end;
+  adhstPages:
+    begin
+      DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockHostSite.CloseSite'){$ENDIF};
+      NeedEnableAutoSizing:=true;
+      try
+        if Minimized then
+        begin
+          // close all pages
+          for i:=Pages.PageCount-1 downto 0 do begin
+            AControl:=Pages.DockPages[Pages.PageCount-1].GetSite;
+            if AControl is TAnchorDockHostSite then
+              TAnchorDockHostSite(AControl).CloseSite;
+            Pages.Pages.Delete(i);
+          end;
+          Release;
+        end else begin
+          // just close current page
+          AControl:=Pages.DockPages[Pages.PageIndex].GetSite;
+          if AControl is TAnchorDockHostSite then
+            TAnchorDockHostSite(AControl).CloseSite;
+          Pages.Pages.Delete(Pages.PageIndex);
+        end;
       finally
         if NeedEnableAutoSizing then
           EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockHostSite.CloseSite'){$ENDIF};
