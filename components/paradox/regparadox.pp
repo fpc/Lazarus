@@ -59,7 +59,7 @@ end;
 
 function TParadoxBlobFileNamePropertyEditor.GetFilter: String;
 begin
-  Result := SParadoxBlobFiles+' (*.bm)|*.bm';
+  Result := SParadoxBlobFiles+' (*.mb)|*.mb';
   Result:= Result+ '|'+ inherited GetFilter;
 end;
 
