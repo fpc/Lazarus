@@ -251,6 +251,7 @@ type
     function ReadClosure(ExceptionOnError, CreateNodes: boolean): boolean;
     function WordIsPropertyEnd: boolean;
     function AllowAttributes: boolean; inline;
+    function AllowClosures: boolean; inline;
   public
     CurSection: TCodeTreeNodeDesc;
 
@@ -1045,8 +1046,7 @@ begin
           SaveRaiseEndOfSourceExpected(20170421195401);
       end else if UpAtomIs('WITH') then
         ReadWithStatement(true,true)
-      else if (UpAtomIs('PROCEDURE') or UpAtomIs('FUNCTION'))
-      and (cmsClosures in Scanner.CompilerModeSwitches) then
+      else if (UpAtomIs('PROCEDURE') or UpAtomIs('FUNCTION')) and AllowClosures then
         ReadClosure(true,true);
     until false;
   except
@@ -2994,7 +2994,7 @@ begin
     and (TryType=ttExcept) then begin
       ReadOnStatement(true,CreateNodes);
     end else if (UpAtomIs('PROCEDURE') or UpAtomIs('FUNCTION'))
-    and (cmsClosures in Scanner.CompilerModeSwitches) then begin
+    and AllowClosures then begin
       ReadClosure(true,CreateNodes);
     end else begin
       // check for unexpected keywords
@@ -6186,6 +6186,12 @@ end;
 function TPascalParserTool.AllowAttributes: boolean;
 begin
   Result:=Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE,cmOBJFPC];
+end;
+
+function TPascalParserTool.AllowClosures: boolean;
+begin
+  Result:=(cmsClosures in Scanner.CompilerModeSwitches)
+    or (Scanner.PascalCompiler=pcPas2js);
 end;
 
 procedure TPascalParserTool.ValidateToolDependencies;
