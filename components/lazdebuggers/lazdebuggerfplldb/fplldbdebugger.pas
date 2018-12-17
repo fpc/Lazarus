@@ -189,6 +189,7 @@ type
   private
     FOwner: TFPLldbLocals;
     FLocals: TLocals;
+    procedure DoLocalsFreed(Sender: TObject);
   protected
     procedure DoExecute; override;
   public
@@ -260,9 +261,17 @@ type
 
 { TFpLldbDebuggerCommandLocals }
 
+procedure TFpLldbDebuggerCommandLocals.DoLocalsFreed(Sender: TObject);
+begin
+  FLocals := nil;
+end;
+
 procedure TFpLldbDebuggerCommandLocals.DoExecute;
 begin
-  FOwner.ProcessLocals(FLocals);
+  if FLocals <> nil then begin
+    FOwner.ProcessLocals(FLocals);
+    FLocals.RemoveFreeNotification(@DoLocalsFreed);
+  end;
   Finished;
 end;
 
@@ -271,6 +280,7 @@ begin
   inherited Create(AOwner.FpDebugger);
   FOwner := AOwner;
   FLocals := ALocals;
+  FLocals.AddFreeNotification(@DoLocalsFreed);
 //////  Priority := 1; // before watches
 end;
 
@@ -332,6 +342,7 @@ begin
   end;
 
   FpDebugger.Threads.CurrentThreads.Count; // trigger threads, in case
+  FpDebugger.Registers.CurrentRegistersList[FpDebugger.CurrentThreadId, FpDebugger.CurrentStackFrame].Count;
 
   // Join the queue, registers and threads are needed first
   LocalsCmdObj := TFpLldbDebuggerCommandLocals.Create(Self, ALocals);

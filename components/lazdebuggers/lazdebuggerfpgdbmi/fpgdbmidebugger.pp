@@ -166,6 +166,7 @@ type
   private
     FOwner: TFPGDBMILocals;
     FLocals: TLocals;
+    procedure DoLocalsFreed(Sender: TObject);
   protected
     function DoExecute: Boolean; override;
     procedure DoLockQueueExecute; override;
@@ -229,9 +230,17 @@ end;
 
 { TFpGDBMIDebuggerCommandLocals }
 
+procedure TFpGDBMIDebuggerCommandLocals.DoLocalsFreed(Sender: TObject);
+begin
+  FLocals := nil;
+end;
+
 function TFpGDBMIDebuggerCommandLocals.DoExecute: Boolean;
 begin
-  FOwner.ProcessLocals(FLocals);
+  if FLocals <> nil then begin
+    FOwner.ProcessLocals(FLocals);
+    FLocals.RemoveFreeNotification(@DoLocalsFreed);
+  end;
   Result := True;
 end;
 
@@ -250,6 +259,7 @@ begin
   inherited Create(AOwner.FpDebugger);
   FOwner := AOwner;
   FLocals := ALocals;
+  FLocals.AddFreeNotification(@DoLocalsFreed);
   Priority := 1; // before watches
 end;
 
