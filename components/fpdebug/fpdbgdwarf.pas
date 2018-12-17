@@ -151,13 +151,13 @@ type
     FDataAddressCache: array of TFpDbgMemLocation;
     FStructureValue: TFpDwarfValue;
     FLastMember: TFpDwarfValue;
-    FLastError: TFpError;
     function GetDataAddressCache(AIndex: Integer): TFpDbgMemLocation;
-    function MemManager: TFpDbgMemManager; inline;
     function AddressSize: Byte; inline;
     procedure SetDataAddressCache(AIndex: Integer; AValue: TFpDbgMemLocation);
     procedure SetStructureValue(AValue: TFpDwarfValue);
   protected
+    FLastError: TFpError;
+    function MemManager: TFpDbgMemManager; inline;
     procedure DoReferenceAdded; override;
     procedure DoReferenceReleased; override;
     procedure CircleBackRefActiveChanged(NewActive: Boolean); override;
@@ -285,6 +285,7 @@ type
     function GetFieldFlags: TFpDbgValueFieldFlags; override;
     function GetDataAddress: TFpDbgMemLocation; override;
     function GetAsString: AnsiString; override;
+    function GetAsWideString: WideString; override;
     function GetMember(AIndex: Int64): TFpDbgValue; override;
   public
     destructor Destroy; override;
@@ -1939,22 +1940,43 @@ var
 begin
   t := TypeInfo;
   if (t <> nil) then t := t.TypeInfo;
+  if t.Size = 2 then
+    Result := GetAsWideString
+  else
   if  (MemManager <> nil) and (t <> nil) and (t.Kind = skChar) and IsReadableMem(DataAddress) then begin // pchar
     SetLength(Result, 2000);
     i := 2000;
-    while (i > 0) and (not MemManager.ReadMemory(DataAddress, 2000, @Result[1])) do
+    while (i > 0) and (not MemManager.ReadMemory(DataAddress, i, @Result[1])) do
       i := i div 2;
     SetLength(Result,i);
-    if t.Size = 2 then // widestring // should be in GetAsWideString;
-      i := pos(#0#0, Result)
-    else
       i := pos(#0, Result);
     if i > 0 then
       SetLength(Result,i-1);
-    exit;
+  end
+  else
+    Result := inherited GetAsString;
   end;
 
-  Result := inherited GetAsString;
+function TFpDwarfValuePointer.GetAsWideString: WideString;
+var
+  t: TFpDbgSymbol;
+  i: Integer;
+begin
+  t := TypeInfo;
+  if (t <> nil) then t := t.TypeInfo;
+  // skWideChar ???
+  if  (MemManager <> nil) and (t <> nil) and (t.Kind = skChar) and IsReadableMem(DataAddress) then begin // pchar
+    SetLength(Result, 2000);
+    i := 4000; // 2000 * 16 bit
+    while (i > 0) and (not MemManager.ReadMemory(DataAddress, i, @Result[1])) do
+      i := i div 2;
+    SetLength(Result, i);
+    i := pos(#0, Result);
+    if i > 0 then
+      SetLength(Result, i-1);
+  end
+  else
+    Result := inherited GetAsWideString;
 end;
 
 function TFpDwarfValuePointer.GetMember(AIndex: Int64): TFpDbgValue;
