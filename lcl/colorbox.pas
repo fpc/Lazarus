@@ -612,8 +612,6 @@ begin
   r.left := Rect.left + ColorRectOffset;
   r.right := r.left + ColorRectWidth;
 
-  noFill := false;
-
   if not(odBackgroundPainted in State) then
     Canvas.FillRect(Rect);
 
@@ -621,12 +619,9 @@ begin
   PenColor := Canvas.Pen.Color;
 
   NewColor := Colors[Index];
-
-  if NewColor = clNone then
-  begin
-    NewColor := NoneColorColor;
-    noFill := true;
-  end
+  noFill := NewColor = clNone;
+  if noFill then
+    NewColor := NoneColorColor
   else
   if NewColor = clDefault then
     NewColor := DefaultColorColor;
@@ -957,6 +952,7 @@ procedure TCustomColorListBox.DrawItem(Index: Integer; Rect: TRect; State: TOwne
 var
   r: TRect;
   BrushColor, PenColor, NewColor: TColor;
+  noFill: boolean;
 begin
   if Index < 0 then
     Exit;
@@ -973,8 +969,8 @@ begin
   PenColor := Canvas.Pen.Color;
 
   NewColor := Colors[Index];
-
-  if NewColor = clNone then
+  noFill := NewColor = clNone;
+  if noFill then
     NewColor := NoneColorColor
   else
   if NewColor = clDefault then
@@ -984,6 +980,12 @@ begin
   Canvas.Pen.Color := clBlack;
 
   Canvas.Rectangle(BidiFlipRect(r, Rect, UseRightToLeftAlignment));
+
+  if noFill then
+  begin
+    Canvas.Line(r.Left, r.Top, r.Right-1, r.Bottom-1);
+    Canvas.Line(r.Left, r.Bottom-1, r.Right-1, r.Top);
+  end;
 
   Canvas.Brush.Color := BrushColor;
   Canvas.Pen.Color := PenColor;
