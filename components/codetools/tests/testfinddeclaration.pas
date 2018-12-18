@@ -102,6 +102,7 @@ type
     procedure TestFindDeclaration_Attributes;
     procedure TestFindDeclaration_BracketOpen;
     procedure TestFindDeclaration_AnonymProc;
+    procedure TestFindDeclaration_AnonymProc_ExprDot;
     // test all files in directories:
     procedure TestFindDeclaration_FPCTests;
     procedure TestFindDeclaration_LazTests;
@@ -952,10 +953,35 @@ begin
   '      end;',
   '    DoIt(function(i: int{declaration:int}): int{declaration:int}',
   '      begin',
-  '        a{declaration:doit.a}:=b{declaration:doit.sub.b}+c{declaration:doit.sub.$ano.c};',
+  '        a{declaration:doit.a}:=b{declaration:doit.sub.b}+i{declaration:doit.sub.$ano.i};',
   '      end);',
   '  end;',
   'begin',
+  'end;',
+  'begin',
+  'end.',
+  '']);
+  FindDeclarations(Code);
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_AnonymProc_ExprDot;
+begin
+  StartProgram;
+  Add([
+  '{$mode objfpc}{$modeswitch closures}',
+  'type',
+  '  int = word;',
+  '  TFunc = function(i: int): int;',
+  'var f: TFunc;',
+  'function DoIt(f: TProc): TObject{declaration:system.tobject};',
+  'begin',
+  '  DoIt(nil).ClassInfo{declaration:system.tobject.classinfo};',
+  '  DoIt(function(c: int{declaration:int}): int{declaration:int}',
+  '      begin',
+  '        repeat until true;',
+  '        asm end;',
+  '        try except end;',
+  '      end).ClassInfo{declaration:system.tobject.classinfo};',
   'end;',
   'begin',
   'end.',
