@@ -3,16 +3,16 @@ program TestGdbmi;
 {$mode objfpc}{$H+}
 
 uses
-  Interfaces, Forms, GuiTestRunner, CompileHelpers, TestGdbType, TestInstructionQueue,
-  TestDisAss, TestBase, TestException, Testwatches, TestBreakPoint, TestGDBMIControl,
-  TestEnvironment, TestArgV;
+  TestDbgControlForm, // use first
+  Interfaces, Forms, GuiTestRunner, TestGdbType, TestInstructionQueue,
+  TestDisAss, TestException, Testwatches, TestBreakPoint,
+  TestEnvironment, TestArgV, LazLogger;
 
 {$R *.res}
 
 begin
   Application.Initialize;
   Application.CreateForm(TGuiTestRunner, TestRunner);
-  Application.CreateForm(TTestControlForm, TestControlForm);
   Application.Run;
 end.
 

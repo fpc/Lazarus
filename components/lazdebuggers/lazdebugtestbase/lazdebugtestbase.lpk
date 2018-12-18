@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="4">
+    <PathDelim Value="\"/>
+    <Name Value="LazDebugTestBase"/>
+    <Type Value="RunAndDesignTime"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <Other>
+        <CustomOptions Value="$(IDEBuildOptions)"/>
+      </Other>
+    </CompilerOptions>
+    <Version Minor="1"/>
+    <Files Count="15">
+      <Item1>
+        <Filename Value="testdbgconfig.pas"/>
+        <UnitName Value="TestDbgConfig"/>
+      </Item1>
+      <Item2>
+        <Filename Value="testdbgtestsuites.pas"/>
+        <UnitName Value="TestDbgTestSuites"/>
+      </Item2>
+      <Item3>
+        <Filename Value="ttestdbgexecuteables.pas"/>
+        <UnitName Value="TTestDbgExecuteables"/>
+      </Item3>
+      <Item4>
+        <Filename Value="testdbgcompilerprocess.pas"/>
+        <UnitName Value="TestDbgCompilerProcess"/>
+      </Item4>
+      <Item5>
+        <Filename Value="testdbgcontrolform.pas"/>
+        <UnitName Value="TestDbgControlForm"/>
+      </Item5>
+      <Item6>
+        <Filename Value="testdbgcontrol.pas"/>
+        <UnitName Value="TestDbgControl"/>
+      </Item6>
+      <Item7>
+        <Filename Value="testoutputlogger.pas"/>
+        <UnitName Value="TestOutputLogger"/>
+      </Item7>
+      <Item8>
+        <Filename Value="ttestdebuggerclasses.pas"/>
+        <UnitName Value="TTestDebuggerClasses"/>
+      </Item8>
+      <Item9>
+        <Filename Value="ttestwatchutilities.pas"/>
+        <UnitName Value="TTestWatchUtilities"/>
+      </Item9>
+      <Item10>
+        <Filename Value="testcommonsources.pas"/>
+        <UnitName Value="TestCommonSources"/>
+      </Item10>
+      <Item11>
+        <Filename Value="sources.rc"/>
+        <Type Value="Text"/>
+      </Item11>
+      <Item12>
+        <Filename Value="testapps\WatchesScopePrg.pas"/>
+        <Type Value="Include"/>
+      </Item12>
+      <Item13>
+        <Filename Value="testapps\WatchesScopeUnit1.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="WatchesScopeUnit1"/>
+      </Item13>
+      <Item14>
+        <Filename Value="testapps\WatchesScopeUnit2.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="WatchesScopeUnit2"/>
+      </Item14>
+      <Item15>
+        <Filename Value="testapps\WatchesValuePrg.pas"/>
+        <Type Value="Include"/>
+      </Item15>
+    </Files>
+    <RequiredPkgs Count="6">
+      <Item1>
+        <PackageName Value="fpdebug"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="DebuggerIntf"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="virtualtreeview_package"/>
+      </Item3>
+      <Item4>
+        <PackageName Value="LCL"/>
+      </Item4>
+      <Item5>
+        <PackageName Value="LCLBase"/>
+      </Item5>
+      <Item6>
+        <PackageName Value="FCL"/>
+      </Item6>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <UseFileFilters Value="True"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

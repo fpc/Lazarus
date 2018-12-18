@@ -1,15 +1,17 @@
-program TestFpGdbmi;
+program LazDebFpTest;
 
 {$mode objfpc}{$H+}
 
 uses
+  {$IFDEF UNIX}
+  cthreads,
+  {$ENDIF}
   TestDbgControlForm,
-  Interfaces, Forms, GuiTestRunner, TestWatches, FpGdbmiDebugger, TestBase;
+  Interfaces, Forms, GuiTestRunner, TestVarious,  TestWatches, TestBase;
 
 {$R *.res}
 
 begin
-  TestBase.TestGdbClass := TFpGDBMIDebugger;
   Application.Initialize;
   Application.CreateForm(TGuiTestRunner, TestRunner);
   Application.Run;

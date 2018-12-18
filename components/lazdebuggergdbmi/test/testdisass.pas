@@ -6,7 +6,8 @@ interface
 
 uses
   Classes, SysUtils, fpcunit, testutils, testregistry, LCLProc,
-  DbgIntfBaseTypes, DbgIntfDebuggerBase, GDBMIDebugger, TestBase, maps;
+  DbgIntfBaseTypes, DbgIntfDebuggerBase, GDBMIDebugger, TestBase, maps,
+  TTestDebuggerClasses;
 
 type
   TTestDisAssRegion = record

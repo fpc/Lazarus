@@ -5,9 +5,9 @@ unit TestBreakPoint;
 interface
 
 uses
-  SysUtils, fpcunit, testutils, testregistry, TestGDBMIControl, DbgIntfBaseTypes,
+  SysUtils, fpcunit, testutils, testregistry, DbgIntfBaseTypes,
   DbgIntfDebuggerBase, DbgIntfMiscClasses, TestBase, GDBMIDebugger,
-  LCLProc, TestWatches;
+  TestDbgControl, TestDbgTestSuites, LCLProc, TestWatches;
 
 type
 
@@ -46,6 +46,10 @@ const
 
 implementation
 
+var
+  ControlTestTestBreakPoint, ControlTestTestBreakPointStartMethod, ControlTestTestBreakPointBadAddr,
+  ControlTestTestBreakPointBadInterrupt, ControlTestTestBreakPointBadInterruptAll: Pointer;
+
 procedure TTestBrkGDBMIDebugger.TestInterruptTarget;
 begin
   InterruptTarget;
@@ -70,8 +74,7 @@ var
   IgnoreRes: String;
 begin
   if SkipTest then exit;
-  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestBreakPoint')] then exit;
-  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('  TTestBreakPoint.StartMethod')] then exit;
+  if not TestControlCanTest(ControlTestTestBreakPointStartMethod) then exit;
 
   ClearTestErrors;
   FBrkErr := nil;
@@ -118,8 +121,7 @@ var
   IgnoreRes: String;
 begin
   if SkipTest then exit;
-  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestBreakPoint')] then exit;
-  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('  TTestBreakPoint.StartMethod')] then exit;
+  if not TestControlCanTest(ControlTestTestBreakPointStartMethod) then exit;
 
   ClearTestErrors;
   FBrkErr := nil;
@@ -169,8 +171,7 @@ var
   IgnoreRes: String;
 begin
   if SkipTest then exit;
-  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestBreakPoint')] then exit;
-  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('  TTestBreakPoint.StartMethod')] then exit;
+  if not TestControlCanTest(ControlTestTestBreakPointStartMethod) then exit;
 
   ClearTestErrors;
   FBrkErr := nil;
@@ -222,8 +223,7 @@ var
   i: LongInt;
 begin
   if SkipTest then exit;
-  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestBreakPoint')] then exit;
-  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('  TTestBreakPoint.BadAddr')] then exit;
+  if not TestControlCanTest(ControlTestTestBreakPointBadAddr) then exit;
   ClearTestErrors;
   FBrkErr := nil;
 
@@ -278,8 +278,7 @@ var
   i, m: LongInt;
 begin
   if SkipTest then exit;
-  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestBreakPoint')] then exit;
-  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('  TTestBreakPoint.BadInterrupt')] then exit;
+  if not TestControlCanTest(ControlTestTestBreakPointBadInterrupt) then exit;
 
   IgnoreRes := '';
   case DebuggerInfo.Version of
@@ -364,7 +363,7 @@ begin
   end;
 
 
-  if TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('    TTestBreakPoint.BadInterrupt.All')] then begin
+  if TestControlCanTest(ControlTestTestBreakPointBadInterruptAll) then begin
     try
       LogToFile(LineEnding+'######################  with pause -- 2 breaks  ########################'+LineEnding+LineEnding);
       Err := '';
@@ -450,7 +449,7 @@ begin
 
 
   m := 1;
-  if TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('    TTestBreakPoint.BadInterrupt.All')]
+  if TestControlCanTest(ControlTestTestBreakPointBadInterruptAll)
   then m := 5;  // run extra tests of Passed none-pause run
 
   Err := '';
@@ -515,8 +514,7 @@ begin
   TestEquals('Passed none-pause run', '', Err, 0, IgnoreRes);
 
 
-  if TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('    TTestBreakPoint.BadInterrupt.All')] then begin
-
+  if TestControlCanTest(ControlTestTestBreakPointBadInterruptAll) then begin
     try
       LogToFile(LineEnding+'######################  withOUT pause -- with stepping  ########################'+LineEnding+LineEnding);
       Err := '';
@@ -583,12 +581,11 @@ end;
 initialization
 
   RegisterDbgTest(TTestBreakPoint);
-  RegisterTestSelectors(['TTestBreakPoint',
-                         '  TTestBreakPoint.StartMethod',
-                         '  TTestBreakPoint.BadAddr',
-                         '  TTestBreakPoint.BadInterrupt',
-                         '    TTestBreakPoint.BadInterrupt.All'
-                        ]);
+  ControlTestTestBreakPoint                := TestControlRegisterTest('TestBreakPoint');
+  ControlTestTestBreakPointStartMethod     := TestControlRegisterTest('StartMethod', ControlTestTestBreakPoint);
+  ControlTestTestBreakPointBadAddr         := TestControlRegisterTest('BadAddr', ControlTestTestBreakPoint);
+  ControlTestTestBreakPointBadInterrupt    := TestControlRegisterTest('BadInterrupt', ControlTestTestBreakPoint);
+  ControlTestTestBreakPointBadInterruptAll := TestControlRegisterTest('All', ControlTestTestBreakPointBadInterrupt);
 
 end.
 

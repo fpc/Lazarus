@@ -5,9 +5,10 @@ unit RunGdbmiForm;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls, EditBtn, StdCtrls,
-  Buttons, CompileHelpers, TestBase, testregistry, fpcunit, GDBMIDebugger, LCLIntf, DbgIntfDebuggerBase,
-  CheckLst, Spin, CmdLineDebugger, strutils, math;
+  Classes, SysUtils, FileUtil, LazFileUtils, Forms, Controls, Graphics, Dialogs,
+  ExtCtrls, EditBtn, StdCtrls, Buttons, TestBase, testregistry, fpcunit,
+  GDBMIDebugger, LCLIntf, DbgIntfDebuggerBase, CheckLst, Spin, CmdLineDebugger,
+  TTestDbgExecuteables, TestDbgConfig, TestDbgTestSuites, strutils, math;
 
 type
 
@@ -131,10 +132,10 @@ procedure TRunner.DoRun;
     FTesting := False;
     if Form1.chkCSF.Checked
     then begin
-      Form1.AppendToMemo2('"' + EscQ(Parent.Parent.TestName) + ' ' + Name + '",');
+      Form1.AppendToMemo2('"' + EscQ(Parent.TestName) + ' ' + Name + '",');
     end
     else
-      Form1.Memo2.Lines.Add('***** '+ Parent.TestName + ' ' + Parent.Parent.TestName + ' ' + Name);
+      Form1.Memo2.Lines.Add('***** '+ Parent.TestSuiteName + ' ' + Parent.TestName + ' ' + Name);
 
     try
       TestCompile(Form1.edPasFile.Text, TestExeName, UsesDirs, '', Form1.EdDefine.Text);

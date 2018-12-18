@@ -505,7 +505,7 @@ var
 
         case Form of
           DW_FORM_addr     : begin
-            s3 := ToHex(p, 4 {FCU.FAddressSize});
+            s3 := ToHex(p, cu.AddressSize {4} {FCU.FAddressSize});
             PascalTestCAseCode := PascalTestCAseCode +
               Format(namePreFix+'AddAddr(%s, %s, $%s);%s', [s1, s2, s3, LineEnding]);
           end;

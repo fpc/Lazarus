@@ -7,7 +7,7 @@ var
 begin
   s := GetEnvironmentVariable('ETEST1');
   if s = 'ab123c' then
-    writeln(1)
+    Freemem(GetMem(1))
   else
-    writeln(2);
+    Freemem(GetMem(2));
 end.

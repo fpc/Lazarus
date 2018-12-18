@@ -6,16 +6,19 @@
 //There must be an entry starting with exe=
 //The version is specified as one integer, made up from 3 pairs of 2 digits.
 //The symbols= line specifies, with which debug info this gdb should be tested.
+//The bits= line can be used to match 32/64 bit compiler to the correct gdb.
 
 [gdb 6.7.50]
 exe=C:\GDB\6.7.50\gdb.exe
 version=060750
 symbols=none,gs,gw,gwset
+bits=32
 
 [gdb 7.0]
 exe=C:\GDB\7.0\gdb.exe
 version=070000
 symbols=none,gs,gw,gwset
+bits=64
 //symbols=none,gs,gw,gwset,gw3
 
 [gdb 7.3-50 with patches]

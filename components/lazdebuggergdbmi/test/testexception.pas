@@ -5,8 +5,8 @@ unit TestException;
 interface
 
 uses
-  Classes, sysutils, fpcunit, testutils, testregistry, TestGDBMIControl,
-  TestBase, GDBMIDebugger, LCLProc, DbgIntfDebuggerBase;
+  Classes, sysutils, fpcunit, testutils, testregistry, TestBase, GDBMIDebugger,
+  LCLProc, DbgIntfDebuggerBase, TestDbgControl, TestDbgTestSuites;
 
 type
 
@@ -60,6 +60,9 @@ const
 
 
 implementation
+var
+  ControlTestExceptionOne, ControlTestExceptionOneException, ControlTestExceptionOneExceptionStepOut, ControlTestExceptionOneExceptionStepOver: Pointer;
+
 
     //dbg.OnBreakPointHit := @DebuggerBreakPointHit;
     //dbg.OnState         := @DebuggerChangeState;
@@ -92,16 +95,15 @@ var
   dbg: TGDBMIDebugger;
 begin
   if SkipTest then exit;
-  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestExceptionOne')] then exit;
-  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('  TTestException')] then exit;
+  if not TestControlCanTest(ControlTestExceptionOneException) then exit;
   ClearTestErrors;
   FContinue := False;
 
   TstName := 'All';
   TestCompile(AppDir + 'ExceptPrg.pas', TestExeName, '_raise_at', '-gt -gh -dTEST_EXCEPTION_AT');
+  FGotExceptCount := 0;
+  dbg := StartGDB(AppDir, TestExeName);
   try
-    FGotExceptCount := 0;
-    dbg := StartGDB(AppDir, TestExeName);
     dbg.OnException      := @DoDebuggerException;
 
     dbg.Run;
@@ -157,9 +159,9 @@ begin
 
   TstName := 'RunError';
   TestCompile(AppDir + 'ExceptPrg.pas', TestExeName, '_runerr', '-gt -gh -dTEST_SKIP_EXCEPTION_1 -dTEST_RUNERR');
+  FGotExceptCount := 0;
+  dbg := StartGDB(AppDir, TestExeName);
   try
-    FGotExceptCount := 0;
-    dbg := StartGDB(AppDir, TestExeName);
     dbg.OnException      := @DoDebuggerException;
 
     dbg.Run;
@@ -180,9 +182,9 @@ begin
 
   TstName := 'Assert';
   TestCompile(AppDir + 'ExceptPrg.pas', TestExeName, '_assert', '-gt -gh -dTEST_SKIP_EXCEPTION_1 -dTEST_ASSERT');
+  FGotExceptCount := 0;
+  dbg := StartGDB(AppDir, TestExeName);
   try
-    FGotExceptCount := 0;
-    dbg := StartGDB(AppDir, TestExeName);
     dbg.OnException      := @DoDebuggerException;
 
     dbg.Run;
@@ -203,9 +205,9 @@ begin
 
   TestCompile(AppDir + 'ExceptPrg.pas', TestExeName, 'no_etype',
               '-dTEST_NO_EXCEPTION_TYPE -gt -gh');
+  FGotExceptCount := 0; TstName := 'no_exp_type';
+  dbg := StartGDB(AppDir, TestExeName);
   try
-    FGotExceptCount := 0; TstName := 'no_exp_type';
-    dbg := StartGDB(AppDir, TestExeName);
     dbg.OnException      := @DoDebuggerException;
 
     dbg.Run;
@@ -223,9 +225,9 @@ begin
 
   TestCompile(AppDir + 'ExceptPrg.pas', TestExeName, 'no_etype_ptr',
               '-dTEST_NO_EXCEPTION_TYPE -dTEST_NO_POINTER_VAR -gt -gh');
+  FGotExceptCount := 0; TstName := 'no_exp_type_ptr';
+  dbg := StartGDB(AppDir, TestExeName);
   try
-    FGotExceptCount := 0; TstName := 'no_exp_type_ptr';
-    dbg := StartGDB(AppDir, TestExeName);
     dbg.OnException      := @DoDebuggerException;
 
     dbg.Run;
@@ -243,9 +245,9 @@ begin
 
   TestCompile(AppDir + 'ExceptPrg.pas', TestExeName, 'no_etype_str',
               '-dTEST_NO_EXCEPTION_TYPE -dTEST_NO_STRING_VAR -gt -gh');
+  FGotExceptCount := 0; TstName := 'no_exp_type_str';
+  dbg := StartGDB(AppDir, TestExeName);
   try
-    FGotExceptCount := 0; TstName := 'no_exp_type_str';
-    dbg := StartGDB(AppDir, TestExeName);
     dbg.OnException      := @DoDebuggerException;
 
     dbg.Run;
@@ -263,9 +265,9 @@ begin
 
   TestCompile(AppDir + 'ExceptPrg.pas', TestExeName, 'no_etype_ptr_str',
                '-dTEST_NO_EXCEPTION_TYPE -dTEST_NO_POINTER_VAR -gt -gh');
+  FGotExceptCount := 0; TstName := 'no_exp_type_ptr_str';
+  dbg := StartGDB(AppDir, TestExeName);
   try
-    FGotExceptCount := 0; TstName := 'no_exp_type_ptr_str';
-    dbg := StartGDB(AppDir, TestExeName);
     dbg.OnException      := @DoDebuggerException;
 
     dbg.Run;
@@ -283,9 +285,9 @@ begin
 
   TestCompile(AppDir + 'ExceptPrg.pas', TestExeName, 'no_etype_ptr_str_var',
                '-dTEST_NO_EXCEPTION_TYPE -dTEST_NO_POINTER_VAR -dTEST_NO_EXCEPTION_VAR -gt -gh');
+  FGotExceptCount := 0; TstName := 'no_exp_type_ptr_str_var';
+  dbg := StartGDB(AppDir, TestExeName);
   try
-    FGotExceptCount := 0; TstName := 'no_exp_type_ptr_str_var';
-    dbg := StartGDB(AppDir, TestExeName);
     dbg.OnException      := @DoDebuggerException;
 
     dbg.Run;
@@ -304,9 +306,9 @@ begin
 
 
   TestCompile(AppDir + 'ExceptPrg.pas', TestExeName, 'with_hplus', '-dTEST_WITH_HPLUS -gt -gh');
+  FGotExceptCount := 0; TstName := 'with_hplus';
+  dbg := StartGDB(AppDir, TestExeName);
   try
-    FGotExceptCount := 0; TstName := 'with_hplus';
-    dbg := StartGDB(AppDir, TestExeName);
     dbg.OnException      := @DoDebuggerException;
 
     dbg.Run;
@@ -339,15 +341,14 @@ var
   dbg: TGDBMIDebugger;
 begin
   if SkipTest then exit;
-  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestExceptionOne')] then exit;
-  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('  TTestExceptionStepOut')] then exit;
+  if not TestControlCanTest(ControlTestExceptionOneExceptionStepOut) then exit;
   ClearTestErrors;
   FContinue := False;
 
   TestCompile(AppDir + 'ExceptPrgStep.pas', TestExeName, '', '');
+  FGotExceptCount := 0; TstName := 'STEP';
+  dbg := StartGDB(AppDir, TestExeName);
   try
-    FGotExceptCount := 0; TstName := 'STEP';
-    dbg := StartGDB(AppDir, TestExeName);
     dbg.OnException      := @DoDebuggerException;
     dbg.OnCurrent        := @DoCurrent;
 
@@ -408,15 +409,14 @@ var
   dbg: TGDBMIDebugger;
 begin
   if SkipTest then exit;
-  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestExceptionOne')] then exit;
-  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('  TTestExceptionStepOver')] then exit;
+  if not TestControlCanTest(ControlTestExceptionOneExceptionStepOver) then exit;
   ClearTestErrors;
   FContinue := True;
 
   TestCompile(AppDir + 'ExceptPrgStepOver.pas', TestExeName, '', '');
+  FGotExceptCount := 0; TstName := 'STEPOVER ';
+  dbg := StartGDB(AppDir, TestExeName);
   try
-    FGotExceptCount := 0; TstName := 'STEPOVER ';
-    dbg := StartGDB(AppDir, TestExeName);
     dbg.OnException      := @DoDebuggerException;
     dbg.OnCurrent        := @DoCurrent;
 
@@ -493,8 +493,9 @@ end;
 
 initialization
   RegisterDbgTest(TTestExceptionOne);
-  RegisterTestSelectors(['TTestExceptionOne', '  TTestException', '  TTestExceptionStepOut', '  TTestExceptionStepOver'
-                        ]);
-
+  ControlTestExceptionOne                  := TestControlRegisterTest('TTestExceptionOne');
+  ControlTestExceptionOneException         := TestControlRegisterTest('Exception', ControlTestExceptionOne);
+  ControlTestExceptionOneExceptionStepOut  := TestControlRegisterTest('ExceptionStepOut', ControlTestExceptionOne);
+  ControlTestExceptionOneExceptionStepOver := TestControlRegisterTest('ExceptionStepOver', ControlTestExceptionOne);
 end.
 

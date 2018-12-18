@@ -5,8 +5,8 @@ unit TestEnvironment;
 interface
 
 uses
-  SysUtils, fpcunit, testutils, testregistry, TestGDBMIControl,
-  TestBase, GDBMIDebugger, LCLProc, DbgIntfDebuggerBase, TestWatches;
+  SysUtils, fpcunit, testutils, testregistry, TestBase, GDBMIDebugger, LCLProc,
+  DbgIntfDebuggerBase, TestDbgControl, TestDbgTestSuites, TestWatches;
 
 const
   BREAK_LINE_ENV1 = 10;
@@ -26,6 +26,8 @@ type
   end;
 
 implementation
+var
+  ControlTestEnvironment: Pointer;
 
 { TTestEnvironment }
 
@@ -41,7 +43,7 @@ var
   IgnoreRes: String;
 begin
   if SkipTest then exit;
-  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestEnvironment')] then exit;
+  if not TestControlCanTest(ControlTestEnvironment) then exit;
 
   ClearTestErrors;
   TestCompile(AppDir + 'EnvPrg.pas', TestExeName);
@@ -55,8 +57,8 @@ begin
   {$ENDIF}
 
   s := 'env value 1';
+  dbg := StartGDB(AppDir, TestExeName);
   try
-    dbg := StartGDB(AppDir, TestExeName);
     dbg.OnCurrent  := @DoCurrent;
     dbg.Environment.Add('ETEST1=ab123c');
     with dbg.BreakPoints.Add('EnvPrg.pas', BREAK_LINE_ENV1) do begin
@@ -79,8 +81,8 @@ begin
   end;
 
   s := 'env value 2';
+  dbg := StartGDB(AppDir, TestExeName);
   try
-    dbg := StartGDB(AppDir, TestExeName);
     dbg.OnCurrent  := @DoCurrent;
     dbg.Environment.Add('ETEST1=xxx');
     with dbg.BreakPoints.Add('EnvPrg.pas', BREAK_LINE_ENV1) do begin
@@ -108,8 +110,7 @@ end;
 
 initialization
   RegisterDbgTest(TTestEnvironment);
-  RegisterTestSelectors(['TTestEnvironment'
-                        ]);
+  ControlTestEnvironment        := TestControlRegisterTest('TTestEnvironment');
 
 end.
 

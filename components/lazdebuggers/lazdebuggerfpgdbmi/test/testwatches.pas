@@ -6,8 +6,9 @@ interface
 
 uses
   Classes, SysUtils, strutils, fpcunit, testutils, testregistry, RegExpr,
-  TestGDBMIControl, DbgIntfBaseTypes, DbgIntfDebuggerBase, TestBase, FpGdbmiDebugger,
-  LCLProc, TestWatchUtils, GDBMIDebugger, FpErrorMessages;
+  DbgIntfBaseTypes, DbgIntfDebuggerBase, TestBase, FpGdbmiDebugger, LCLProc,
+  TestWatchUtils, GDBMIDebugger, FpErrorMessages, TestDbgControl, TestDbgConfig,
+  TTestDbgExecuteables, TestDbgTestSuites;
 
 const
   BREAK_COUNT_TestWatchesUnitSimple = 17;
@@ -115,6 +116,9 @@ type
   end;
 
 implementation
+
+var
+  ControlTTestWatches: Pointer;
 
 const
   RNoPreQuote  = '(^|[^''])'; // No open qoute (Either at start, or other char)
@@ -1045,11 +1049,11 @@ var
 begin
   TestBaseName := NamePreFix;
   if not HasTestArraysData then exit;
-  Only := StrToIntDef(TestControlForm.EdOnlyWatch.Text, -1);
+  Only := StrToIntDef(TestControlGetTestPattern, -1);
   OnlyNamePart := '';OnlyName := '';
   if Only < 0
   then begin
-    OnlyName := TestControlForm.EdOnlyWatch.Text;
+    OnlyName := TestControlGetTestPattern;
     if (OnlyName <> '') and (OnlyName[1]='*') then begin
       OnlyNamePart := copy(OnlyName, 2, length(OnlyName));
       OnlyName := '';
@@ -1134,7 +1138,7 @@ var
   TestExeName: string;
 begin
   if SkipTest then exit;
-  if not TestControlForm.CheckListBox1.Checked[TestControlForm.CheckListBox1.Items.IndexOf('TTestWatches')] then exit;
+  if not TestControlCanTest(ControlTTestWatches) then exit;
 
   ClearTestErrors;
 
@@ -1153,8 +1157,7 @@ initialization
 
   ErrorHandler := TTestFpErrorHandler.Create;
   RegisterDbgTest(TTestWatches);
-  RegisterTestSelectors(['TTestWatches'
-                        ]);
+  ControlTTestWatches := TestControlRegisterTest('TTestWatches');
 
 end.
 

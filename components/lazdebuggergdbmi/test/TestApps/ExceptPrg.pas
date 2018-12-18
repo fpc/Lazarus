@@ -99,8 +99,8 @@ var
     check();
   end;
   {$ENDIF}
-
 begin
+  IsConsole := true; // dont show unhandled exceptions
   {$IFnDEF TEST_NO_POINTER_VAR}
   p := nil;
   {$ENDIF}
@@ -118,13 +118,13 @@ begin
     on e: Exception do begin
       {$IFnDEF TEST_NO_STRING_VAR}
       s := IntToStr(PtrInt(Pointer(e)));
-      writeln(e.Message + s);
+      Freemem(GetMem(1)); //writeln(e.Message + s);
       {$ELSE}
-      writeln(e.Message);
+      Freemem(GetMem(1)); //writeln(e.Message);
       {$ENDIF}
     end;
   end;
-  writeln(1);
+  Freemem(GetMem(1));
   {$ENDIF}
 
   {$IFDEF TEST_EXCEPTION_AT}
@@ -148,5 +148,5 @@ begin
   foo;
   {$ENDIF}
 
-  writeln(2);
+  Freemem(GetMem(1));
 end.
