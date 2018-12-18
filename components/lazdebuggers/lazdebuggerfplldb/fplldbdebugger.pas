@@ -657,6 +657,7 @@ end;
 
 destructor TFpLldbDbgMemCacheManagerSimple.Destroy;
 begin
+  Clear;
   inherited Destroy;
   FList.Free;
 end;
