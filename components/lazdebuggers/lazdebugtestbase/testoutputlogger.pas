@@ -5,7 +5,7 @@ unit TestOutputLogger;
 interface
 
 uses
-  Classes, SysUtils, LazLogger;
+  Classes, SysUtils, LazLogger, LazClasses;
 
 function GetTestLogger: TLazLoggerFile; inline;
 
@@ -19,6 +19,7 @@ function GetTestLogger: TLazLoggerFile;
 begin
   if TheLogger = nil then begin
     TheLogger := TLazLoggerFile.Create;
+    TheLogger.AddReference;
     TLazLoggerFile(TheLogger).Assign(DebugLogger);
     TheLogger.OnDbgOut := nil;
     TheLogger.OnDebugLn := nil;
@@ -26,6 +27,9 @@ begin
   end;
   Result := TheLogger;
 end;
+
+finalization
+  ReleaseRefAndNil(TheLogger);
 
 end.
 
