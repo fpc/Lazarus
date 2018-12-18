@@ -1913,6 +1913,7 @@ function TCustomCodeTool.ReadTilBracketClose(
 // after call cursor is on the closing bracket
 var CloseBracket, AntiCloseBracket: TCommonAtomFlag;
   Start: TAtomPosition;
+  Node: TCodeTreeNode;
   
   procedure RaiseBracketNotFound;
   begin
@@ -1920,6 +1921,13 @@ var CloseBracket, AntiCloseBracket: TCommonAtomFlag;
       SaveRaiseExceptionFmt(20170421194736,ctsBracketNotFound,[')'],false)
     else
       SaveRaiseExceptionFmt(20170421194740,ctsBracketNotFound,[']'],false);
+  end;
+
+  procedure RaiseAtNicePos;
+  begin
+    SetNiceErrorPos(Start.StartPos);
+    if ExceptionOnNotFound then
+      RaiseBracketNotFound;
   end;
   
 begin
@@ -1942,11 +1950,20 @@ begin
     if (CurPos.StartPos>SrcLen)
     or (CurPos.Flag in [cafEnd,AntiCloseBracket])
     then begin
-      SetNiceErrorPos(Start.StartPos);
-      if ExceptionOnNotFound then begin
-        RaiseBracketNotFound;
-      end;
+      RaiseAtNicePos;
       exit;
+    end;
+    if (CurPos.Flag=cafWord) and (UpAtomIs('PROCEDURE') or UpAtomIs('FUNCTION'))
+    then begin
+      // check for anonymous function
+      Node:=FindDeepestNodeAtPos(CurPos.StartPos+1,false);
+      if (Node<>nil) and (Node.Desc=ctnProcedure) then
+      begin
+        MoveCursorToCleanPos(Node.EndPos);
+      end else begin
+        RaiseAtNicePos;
+        exit;
+      end;
     end;
     if (CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen]) then begin
       if not ReadTilBracketClose(ExceptionOnNotFound) then exit;
@@ -1958,9 +1975,8 @@ end;
 function TCustomCodeTool.ReadBackTilBracketOpen(
   ExceptionOnNotFound: boolean): boolean;
 // reads code brackets (not comment brackets)
-var OpenBracket, AntiOpenBracket: TCommonAtomFlag;
-  Start: TAtomPosition;
-  
+var OpenBracket: TCommonAtomFlag;
+
   procedure RaiseBracketNotFound;
   begin
     if OpenBracket=cafRoundBracketOpen then
@@ -1969,6 +1985,10 @@ var OpenBracket, AntiOpenBracket: TCommonAtomFlag;
       SaveRaiseExceptionFmt(20170421194749,ctsBracketNotFound,['[']);
   end;
   
+var
+  AntiOpenBracket: TCommonAtomFlag;
+  Start: TAtomPosition;
+  Node: TCodeTreeNode;
 begin
   Result:=false;
   if (CurPos.Flag=cafRoundBracketClose) then begin
@@ -1987,12 +2007,18 @@ begin
     ReadPriorAtom;
     if (CurPos.Flag=OpenBracket) then exit(true);
     if (CurPos.StartPos<1)
-    or (CurPos.Flag in [AntiOpenBracket,cafEND])
-    or ((CurPos.Flag=cafWord)
-        and UnexpectedKeyWordInBrackets.DoItCaseInsensitive(Src,
-             CurPos.StartPos,CurPos.EndPos-CurPos.StartPos))
-    then begin
+    or (CurPos.Flag=AntiOpenBracket) then
       break;
+    if (CurPos.Flag=cafEnd) then begin
+      // check if anonymous function
+      Node:=FindDeepestNodeAtPos(CurPos.StartPos,true);
+      if (Node<>nil) and (Node.EndPos=CurPos.EndPos)
+      and (Node.Desc in [ctnBeginBlock,ctnAsmBlock])
+      and (Node.Parent.Desc=ctnProcedure) then
+        // ToDo: check if Node is anonymous procedure
+        MoveCursorToCleanPos(Node.Parent.StartPos)
+      else
+        break;
     end;
     if CurPos.Flag in [cafRoundBracketClose,cafEdgedBracketClose] then begin
       if not ReadBackTilBracketOpen(ExceptionOnNotFound) then exit;
