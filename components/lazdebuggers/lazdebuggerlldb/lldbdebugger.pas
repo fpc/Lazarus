@@ -110,6 +110,7 @@ type
     FNextStepAction: TLldbInstructionProcessStepAction;
     FWaitToResume: Boolean;
     FCurBrkId, FTmpBreakId: Integer;
+    FUnknowStopReason: String;
     FThreadInstr: TLldbInstructionThreadList;
     FCurrentExceptionInfo: record
       FHasCommandData: TExceptionInfoCommands; // cleared in Setstate
@@ -849,6 +850,15 @@ const
     SetDebuggerState(dsPause); // after GetLocation => dsPause may run stack, watches etc
   end;
 
+  procedure DoUnknownStopReason(AStopReason: String);
+  var
+    CanContinue: Boolean;
+  begin
+    Debugger.DoException(deExternal, Format('Debugger stopped with reason: %s', [AStopReason]), Debugger.FCurrentLocation, '', CanContinue);
+
+    SetDebuggerState(dsPause); // after GetLocation => dsPause may run stack, watches etc
+  end;
+
   procedure DoCatchesHit;
   var
     Instr: TLldbInstruction;
@@ -916,6 +926,12 @@ begin
       Process 10992 stopped
       * thread #1, stop reason = breakpoint 6.1
           frame #0: 0x0042b855 &&//FULL: \tmp\New Folder (2)\unit1.pas &&//SHORT: unit1.pas &&//LINE: 54 &&//MOD: project1.exe &&//FUNC: FORMCREATE(this=0x04c81248, SENDER=0x04c81248) <<&&//FRAME
+      ... stop reason = Exception 0xc0000005 encountered at address 0x42e067
+      ... stop reason = EXC_BAD_ACCESS (code=1, address=0x4)
+      ... stop reason = step over
+      ... stop reason = step in
+      ... stop reason = instruction step over
+      ... google stop reason = signal / trace / watchpoint
   *)
 
   {%region exception }
@@ -966,10 +982,20 @@ begin
     FState := crStopped;
     debugln(['Reading stopped thread']);
     SetDebuggerLocation(0, 0, '', '', '', 0);
-    if StrStartsWith(found[1], 'breakpoint ') then
+    if StrStartsWith(found[1], 'breakpoint ') then begin
       FCurBrkId := GetBreakPointId(found[1])
-    else
+    //end else
+    //if StrStartsWith(found[1], 'watchpoint ') then begin
+    end else begin
+      FUnknowStopReason := '';
+      if not( ( StrStartsWith(found[1], 'step ') or StrStartsWith(found[1], 'instruction step ') ) and
+              ( StrContains(found[1], ' in') or StrContains(found[1], ' over') or StrContains(found[1], ' out') )
+            )
+      then
+        FUnknowStopReason := found[1];
+
       FCurBrkId := -1;
+    end;
 
     ParseNewThreadLocation(ALine, AnId, AnIsCurrent, Name, AnAddr,
       Stack, Frame, AFuncName, AnArgs, AFile, AFullFile, SrcLine, AReminder);
@@ -1006,6 +1032,10 @@ begin
         DoStopTemp
       else
         DoBreakPointHit(FCurBrkId);
+    end
+    else
+    if FUnknowStopReason <> '' then begin
+      DoUnknownStopReason(FUnknowStopReason);
     end
     else
       SetDebuggerState(dsPause);
