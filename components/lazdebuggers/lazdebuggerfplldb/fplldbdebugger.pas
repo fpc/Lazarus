@@ -438,6 +438,7 @@ begin
   // If a ExecCmd is running, then defer exec until the exec cmd is done
 //  FpDebugger.QueueCommand(LocalsCmdObj, ForceQueuing);
   FpDebugger.QueueCommand(LocalsCmdObj);
+  LocalsCmdObj.ReleaseReference;
 end;
 
 { TFpLldbDebuggerCommandEvaluate }
