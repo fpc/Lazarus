@@ -37,6 +37,7 @@ interface
 
 { $DEFINE ShowIgnoreErrorAfter}
 { $DEFINE VerboseUpdateNeeded}
+{ $DEFINE VerboseReadClosure}
 
 uses
   {$IFDEF MEM_CHECK}
@@ -6133,6 +6134,7 @@ begin
       else
         exit;
     end;
+    ReadNextAtom;
   until false;
   // read begin block
   {$IFDEF VerboseReadClosure}
