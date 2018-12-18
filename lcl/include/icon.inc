@@ -357,7 +357,7 @@ begin
   then raise EInvalidGraphicOperation.Create(rsDuplicateIconFormat);
   
   UnshareImage(True);
-  if TSharedIcon(FSharedImage).FImages.Add(TIconImage.Create(AFormat, AHeight, AWidth)) = 0
+  if TSharedIcon(FSharedImage).FImages.Add(TSharedIcon(FSharedImage).GetImagesClass.Create(AFormat, AHeight, AWidth)) = 0
   then begin
     // First added
     FCurrent := 0;
@@ -424,7 +424,7 @@ begin
   FreeCanvasContext;
   
   RawImg := ASource.GetRawImagePtr;
-  NewImage := TIconImage.Create(Image.PixelFormat, Image.Height, Image.Width);
+  NewImage := TSharedIcon(FSharedImage).GetImagesClass.Create(Image.PixelFormat, Image.Height, Image.Width);
   try
     NewImage.FImage.Description := RawImg^.Description;
 
@@ -1057,7 +1057,7 @@ begin
       for n := 0 to OldIcon.FImages.Count -1 do
       begin
         OldImage := TIconImage(OldIcon.FImages[n]);
-        NewImage := TIconImage.Create(OldImage.PixelFormat, OldImage.Height, OldImage.Width);
+        NewImage := NewIcon.GetImagesClass.Create(OldImage.PixelFormat, OldImage.Height, OldImage.Width);
         NewIcon.FImages.Add(NewImage);
         NewImage.FImage.Description := OldImage.FImage.Description;
         NewImage.FImage.DataSize := OldImage.FImage.DataSize;
