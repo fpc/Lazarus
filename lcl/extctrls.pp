@@ -1250,6 +1250,7 @@ type
     property BevelWidth;
     property BiDiMode;
     property BorderWidth;
+    property BorderSpacing;
     property BorderStyle;
     property Caption;
     property Color;
