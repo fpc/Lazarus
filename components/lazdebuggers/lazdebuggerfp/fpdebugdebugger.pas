@@ -1334,7 +1334,7 @@ var
   StackFrame, ThreadId: Integer;
   StackList: TCallStackBase;
   ResValue: TFpDbgValue;
-  CastName: String;
+  CastName, ResText2: String;
   ClassAddr, CNameAddr: TFpDbgMemLocation;
   NameLen: QWord;
 begin
@@ -1420,7 +1420,18 @@ begin
         Res := FPrettyPrinter.PrintValue(AResText, APasExpr.ResultValue, DispFormat, RepeatCnt)
       else
         Res := FPrettyPrinter.PrintValue(AResText, ATypeInfo, APasExpr.ResultValue, DispFormat, RepeatCnt);
-      // TODO: PCHAR/String
+
+      // PCHAR/String
+      if APasExpr.HasPCharIndexAccess then begin
+      // TODO: Only dwarf 2
+        APasExpr.FixPCharIndexAccess := True;
+        APasExpr.ResetEvaluation;
+        ResValue := APasExpr.ResultValue;
+        if (ResValue=nil) or (not FPrettyPrinter.PrintValue(ResText2, ResValue, DispFormat, RepeatCnt)) then
+          ResText2 := 'Failed';
+        AResText := 'PChar: '+AResText+ LineEnding + 'String: '+ResText2;
+      end;
+
       if Res then
         begin
         if AWatchValue <> nil then
