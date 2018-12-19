@@ -3406,8 +3406,7 @@ begin
   begin
     Result := WinControl;
     Control := WinControl.ControlAtPos(WinControl.ScreenToClient(Position),
-                        [capfAllowWinControls, capfRecursive,
-                         capfHasScrollOffset] + DisabledFlag[AllowDisabled]);
+                        [capfAllowWinControls, capfRecursive] + DisabledFlag[AllowDisabled]);
     //debugln(['FindControlAtPosition ',dbgs(Position),' ',DbgSName(WinControl),' ',dbgs(WinControl.ScreenToClient(Position)),' ',DbgSName(Control)]);
     if Assigned(Control) then
       Result := Control;

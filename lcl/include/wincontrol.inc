@@ -5151,21 +5151,15 @@ var
   function GetControlAtPos(AControl: TControl): Boolean;
   var
     ControlPos: TPoint;
-    ControlClientBounds: TRect;
   begin
     with AControl do
     begin
-      // MG: Delphi checks for PtInRect(ClientRect,P). But the client area is
-      //     not always at 0,0, so I guess this is a bug in the VCL.
-
       ControlPos := Point(P.X - Left, P.Y - Top);
       Result := (ControlPos.X >= 0) and (ControlPos.Y >= 0) and
                 (ControlPos.X < Width) and (ControlPos.Y < Height);
+
       if Result and (capfOnlyClientAreas in Flags) then
-      begin
-        ControlClientBounds := GetChildrenRect(false);
-        Result:=PtInRect(ControlClientBounds, ControlPos);
-      end;
+        Result := PtInRect(ClientRect, ControlPos);
 
       Result := Result
         and (
@@ -8427,7 +8421,7 @@ begin
   begin
     // don't allow disabled and don't search wincontrols - they receive their
     // message themself
-    Child := ControlAtPos(ScreenToClient(SmallPointToPoint(Message.Pos)), [capfHasScrollOffset]);
+    Child := ControlAtPos(ScreenToClient(SmallPointToPoint(Message.Pos)), []);
     if Assigned(Child) then
       with Message do
       begin
