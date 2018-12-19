@@ -122,7 +122,7 @@ type
   private
     FContext: TFpDbgInfoContext;
   public
-    property Context: TFpDbgInfoContext read FContext;
+    property Context: TFpDbgInfoContext read FContext write FContext;
   end;
 
   { TFpDwarfValueTypeDefinition }
@@ -152,7 +152,6 @@ type
     FStructureValue: TFpDwarfValue;
     FLastMember: TFpDwarfValue;
     function GetDataAddressCache(AIndex: Integer): TFpDbgMemLocation;
-    function AddressSize: Byte; inline;
     procedure SetDataAddressCache(AIndex: Integer; AValue: TFpDbgMemLocation);
     procedure SetStructureValue(AValue: TFpDwarfValue);
   protected
@@ -163,6 +162,7 @@ type
     procedure CircleBackRefActiveChanged(NewActive: Boolean); override;
     procedure SetLastMember(ALastMember: TFpDwarfValue);
     function GetLastError: TFpError; override;
+    function AddressSize: Byte; inline;
 
     // Address of the symbol (not followed any type deref, or location)
     function GetAddress: TFpDbgMemLocation; override;
@@ -186,6 +186,9 @@ type
     function GetDbgSymbol: TFpDbgSymbol; override;
     function GetTypeInfo: TFpDbgSymbol; override;
     function GetContextTypeInfo: TFpDbgSymbol; override;
+
+    property TypeCastTargetType: TFpDwarfSymbolType read FTypeCastTargetType;
+    property TypeCastSourceValue: TFpDbgValue read FTypeCastSourceValue;
   public
     constructor Create(AOwner: TFpDwarfSymbolType);
     destructor Destroy; override;
@@ -4345,7 +4348,7 @@ var
   m: TFpDbgSymbol;
 begin
   Result := inherited GetFlags;
-  if (MemberCount = 1) then begin
+  if (MemberCount = 1) then begin   // TODO: move to freepascal specific
     m := Member[0];
     if (not m.HasBounds) or                // e.g. Subrange with missing upper bound
        (m.OrdHighBound < m.OrdLowBound) or

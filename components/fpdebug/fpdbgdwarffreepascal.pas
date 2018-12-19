@@ -87,6 +87,10 @@ type
   { TFpDwarfV2ValueFreePascalShortString }
 
   TFpDwarfV2ValueFreePascalShortString = class(TFpDwarfValue)
+  protected
+    function IsValidTypeCast: Boolean; override;
+    function GetInternMemberByName(AIndex: String): TFpDbgValue;
+    procedure Reset; override;
   private
     FValue: String;
     FValueDone: Boolean;
@@ -430,6 +434,39 @@ end;
 
 { TFpDwarfV2ValueFreePascalShortString }
 
+function TFpDwarfV2ValueFreePascalShortString.IsValidTypeCast: Boolean;
+begin
+  // currently only allow this / used by array access
+  Result := TypeCastSourceValue is TFpDbgValueConstAddress;
+end;
+
+function TFpDwarfV2ValueFreePascalShortString.GetInternMemberByName(
+  AIndex: String): TFpDbgValue;
+var
+  tmp: TFpDbgSymbol;
+begin
+  if HasTypeCastInfo then begin
+    Result := nil;
+    tmp := TypeCastTargetType.MemberByName[AIndex];
+    if (tmp <> nil) then begin
+      assert((tmp is TFpDwarfSymbolValue), 'TDbgDwarfStructTypeCastSymbolValue.GetMemberByName'+DbgSName(tmp));
+      Result := tmp.Value;
+
+      TFpDwarfValue(Result).StructureValue := Self;
+      if (TFpDwarfValue(Result).Context = nil) then
+        TFpDwarfValue(Result).Context := Context;
+    end;
+  end
+  else
+    Result := MemberByName[AIndex];
+end;
+
+procedure TFpDwarfV2ValueFreePascalShortString.Reset;
+begin
+  inherited Reset;
+  FValueDone := False;
+end;
+
 function TFpDwarfV2ValueFreePascalShortString.GetFieldFlags: TFpDbgValueFieldFlags;
 begin
   Result := inherited GetFieldFlags;
@@ -444,12 +481,7 @@ begin
   if FValueDone then
     exit(FValue);
 
-  if HasTypeCastInfo then begin
-    FLastError := CreateError(fpErrAnyError);
-    exit('');
-  end;
-
-  LenSym := TFpDwarfValue(inherited MemberByName['length']);
+  LenSym := TFpDwarfValue(GetInternMemberByName('length'));
   assert(LenSym is TFpDwarfValue, 'LenSym is TFpDwarfValue');
   len := LenSym.AsCardinal;
 
@@ -458,7 +490,7 @@ begin
     exit('');
   end;
 
-  StSym := TFpDwarfValue(inherited MemberByName['st']);
+  StSym := TFpDwarfValue(GetInternMemberByName('st'));
   assert(StSym is TFpDwarfValue, 'StSym is TFpDwarfValue');
 
 
