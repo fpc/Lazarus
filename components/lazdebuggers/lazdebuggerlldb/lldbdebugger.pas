@@ -110,7 +110,7 @@ type
     FNextStepAction: TLldbInstructionProcessStepAction;
     FWaitToResume: Boolean;
     FCurBrkId, FTmpBreakId: Integer;
-    FUnknowStopReason: String;
+    FUnknownStopReason: String;
     FThreadInstr: TLldbInstructionThreadList;
     FCurrentExceptionInfo: record
       FHasCommandData: TExceptionInfoCommands; // cleared in Setstate
@@ -987,12 +987,12 @@ begin
     //end else
     //if StrStartsWith(found[1], 'watchpoint ') then begin
     end else begin
-      FUnknowStopReason := '';
+      FUnknownStopReason := '';
       if not( ( StrStartsWith(found[1], 'step ') or StrStartsWith(found[1], 'instruction step ') ) and
               ( StrContains(found[1], ' in') or StrContains(found[1], ' over') or StrContains(found[1], ' out') )
             )
       then
-        FUnknowStopReason := found[1];
+        FUnknownStopReason := found[1];
 
       FCurBrkId := -1;
     end;
@@ -1034,8 +1034,8 @@ begin
         DoBreakPointHit(FCurBrkId);
     end
     else
-    if FUnknowStopReason <> '' then begin
-      DoUnknownStopReason(FUnknowStopReason);
+    if FUnknownStopReason <> '' then begin
+      DoUnknownStopReason(FUnknownStopReason);
     end
     else
       SetDebuggerState(dsPause);
