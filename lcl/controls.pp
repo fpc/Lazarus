@@ -3238,7 +3238,7 @@ begin
   begin // runtime - handle multi clicks according to ControlStyle
     if LastMouse.ClickCount > 1 then
     begin
-      TargetControl := AWinControl.ControlAtPos(AWinControl.ScreenToClient(AMousePos), [capfHasScrollOffset]);
+      TargetControl := AWinControl.ControlAtPos(AWinControl.ScreenToClient(AMousePos), []);
       if TargetControl=nil then
         TargetControl := AWinControl;
       case LastMouse.ClickCount of
