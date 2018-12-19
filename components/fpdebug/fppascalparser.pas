@@ -71,6 +71,7 @@ type
     destructor Destroy; override;
     function DebugDump(AWithResults: Boolean = False): String;
     procedure ResetEvaluation;
+    property TextExpression: String read FTextExpression;
     property Error: TFpError read FError;
     property Valid: Boolean read GetValid;
     // Set by GetResultValue
@@ -1024,6 +1025,7 @@ var
   Offs: Int64;
   ti: TFpDbgSymbol;
   IsPChar: Boolean;
+  v: String;
 begin
   Result := nil;
   assert(Count >= 2, 'TFpPascalExpressionPartBracketIndex.DoGetResultValue: Count >= 2');
@@ -1087,11 +1089,29 @@ begin
             SetError('Error dereferencing'); // TODO: set correct error
           if TmpVal2 <> nil then TmpVal2.AddReference;
         end;
-      skString: begin
-          //TODO
-          SetError('Not implemented');
-          TmpVal.ReleaseReference;
-          exit;
+      skString, skAnsiString: begin
+          //TODO: move to FpDwarfValue.member ??
+          if (svfInteger in TmpIndex.FieldFlags) then
+            Offs := TmpIndex.AsInteger
+          else
+          if (svfOrdinal in TmpIndex.FieldFlags) and (TmpIndex.AsCardinal <= high(Int64))
+          then
+            Offs := Int64(TmpIndex.AsCardinal)
+          else
+          begin
+            SetError('Can not calculate Index');
+            TmpVal.ReleaseReference;
+            exit;
+          end;
+
+          v := TmpVal.AsString;
+          if (Offs < 1) or (Offs > Length(v)) then begin
+            SetError('Index out of range');
+            TmpVal.ReleaseReference;
+            exit;
+          end;
+
+          TmpVal2 := TFpDbgValueConstChar.Create(v[Offs]);
         end
       else
         begin

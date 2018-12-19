@@ -241,6 +241,21 @@ type
     constructor Create(AValue: QWord; ASigned: Boolean = True);
   end;
 
+  { TFpDbgValueConstChar }
+
+  TFpDbgValueConstChar = class(TFpDbgValue) // skChar / Not for strings
+  private
+    FValue: String;
+    FSigned: Boolean;
+  protected
+    property Value: String read FValue write FValue;
+    function GetKind: TDbgSymbolKind; override;
+    function GetFieldFlags: TFpDbgValueFieldFlags; override;
+    function GetAsString: AnsiString; override;
+  public
+    constructor Create(AValue: AnsiString);
+  end;
+
   { TFpDbgValueConstFloat }
 
   TFpDbgValueConstFloat = class(TFpDbgValue)
@@ -498,6 +513,29 @@ function dbgs(ADbgSymbolKind: TDbgSymbolKind): String;
 begin
   Result := '';
   WriteStr(Result, ADbgSymbolKind);
+end;
+
+{ TFpDbgValueConstChar }
+
+function TFpDbgValueConstChar.GetKind: TDbgSymbolKind;
+begin
+  Result := skChar;
+end;
+
+function TFpDbgValueConstChar.GetFieldFlags: TFpDbgValueFieldFlags;
+begin
+  Result := [svfString]
+end;
+
+function TFpDbgValueConstChar.GetAsString: AnsiString;
+begin
+  Result := Value;
+end;
+
+constructor TFpDbgValueConstChar.Create(AValue: AnsiString);
+begin
+  inherited Create;
+  FValue := AValue;
 end;
 
 { TFpDbgCircularRefCountedObject }
