@@ -3226,7 +3226,7 @@ begin
   begin // runtime - handle multi clicks according to ControlStyle
     if LastMouse.ClickCount > 1 then
     begin
-      TargetControl := AWinControl.ControlAtPos(AWinControl.ScreenToClient(AMousePos), [capfHasScrollOffset]);
+      TargetControl := AWinControl.ControlAtPos(AWinControl.ScreenToClient(AMousePos), []);
       if TargetControl=nil then
         TargetControl := AWinControl;
       case LastMouse.ClickCount of
@@ -3394,8 +3394,7 @@ begin
   begin
     Result := WinControl;
     Control := WinControl.ControlAtPos(WinControl.ScreenToClient(Position),
-                        [capfAllowWinControls, capfRecursive,
-                         capfHasScrollOffset] + DisabledFlag[AllowDisabled]);
+                        [capfAllowWinControls, capfRecursive] + DisabledFlag[AllowDisabled]);
     //debugln(['FindControlAtPosition ',dbgs(Position),' ',DbgSName(WinControl),' ',dbgs(WinControl.ScreenToClient(Position)),' ',DbgSName(Control)]);
     if Assigned(Control) then
       Result := Control;

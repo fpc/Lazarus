@@ -182,7 +182,6 @@ type
   public
     constructor Create(TheOwner : TComponent); override;
     destructor Destroy; override;
-    function ControlAtPos(const Pos: TPoint; Flags: TControlAtPosFlags): TControl; override;
     function ScreenToClient(const APoint: TPoint): TPoint; override;
     function ClientToScreen(const APoint: TPoint): TPoint; override;
     procedure UpdateScrollbars;
