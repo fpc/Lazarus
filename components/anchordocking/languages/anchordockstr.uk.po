@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-05-22 10:51+0200\n"
+"PO-Revision-Date: 2018-12-05 19:11+0200\n"
 "Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -19,7 +19,7 @@ msgstr "Вільна сторона роздільника не повинна �
 
 #: anchordockstr.adrsallowdocksitestobeminimized
 msgid "Allow dock sites to be minimized"
-msgstr ""
+msgstr "Дозволити згортання областей стикування"
 
 #: anchordockstr.adrsamountofpixelthemousehastodragbeforedragstarts
 msgid "Amount of pixel the mouse has to drag before drag starts"
@@ -59,7 +59,7 @@ msgstr "об'єкт вже є областю стикування"
 
 #: anchordockstr.adrscustomdocksitecanhaveonlyonesite
 msgid "Custom dock site \"%s\" can have only one site."
-msgstr "Користув. область стикування \"%s\" може мати лише одну область."
+msgstr "Власна область стикування \"%s\" може мати лише одну область."
 
 #: anchordockstr.adrsdockinganchordocking
 msgid "Docking / Anchordocking"
@@ -159,7 +159,7 @@ msgstr "Злиття"
 
 #: anchordockstr.adrsminimize
 msgid "Minimize"
-msgstr ""
+msgstr "Згорнути"
 
 #: anchordockstr.adrsmissingcontrolname
 msgid "missing control name"

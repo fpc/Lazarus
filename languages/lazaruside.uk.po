@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-11-14 21:51+0200\n"
+"PO-Revision-Date: 2018-12-20 20:17+0200\n"
 "Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -3272,7 +3272,7 @@ msgstr "&Завантажити значок"
 
 #: lazarusidestrconsts.dlgpolongpathaware
 msgid "Long path awareness"
-msgstr ""
+msgstr "Підтримка довгих шляхів"
 
 #: lazarusidestrconsts.dlgpomisc
 msgctxt "lazarusidestrconsts.dlgpomisc"
@@ -7519,7 +7519,7 @@ msgstr "Копіювати всі/початкові повідомлення д
 
 #: lazarusidestrconsts.liscopyalloutputclipboard
 msgid "Copy all output to clipboard"
-msgstr "Копіювати весь вихід в буфер"
+msgstr "Копіювати весь вивід у буфер"
 
 #: lazarusidestrconsts.liscopyallshownmessagestoclipboard
 msgid "Copy All Shown Messages to Clipboard"
@@ -13922,7 +13922,7 @@ msgstr "Ні"
 
 #: lazarusidestrconsts.lisnoautosaveactivedesktop
 msgid "'Auto save active desktop' option is turned off, you will need to save current desktop manually."
-msgstr ""
+msgstr "Параметр \"Автоматично зберігати активну стільницю\" вимкнено, поточну стільницю буде потрібно зберігати вручну."
 
 #: lazarusidestrconsts.lisnobackupfiles
 msgid "No backup files"
@@ -14398,7 +14398,7 @@ msgstr "кінцева тека %s містить джерело модуля Pa
 
 #: lazarusidestrconsts.lisoutputfilenameofproject
 msgid "Output filename of project"
-msgstr ""
+msgstr "Назва вихідного файлу проекту"
 
 #: lazarusidestrconsts.lisoverridelanguage
 msgid "Override language. For example --language=de. For possible values see files in the languages directory."
