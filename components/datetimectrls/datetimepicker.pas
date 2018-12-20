@@ -907,10 +907,11 @@ begin
   Cal.GetCalendarControl.OnResize := @CalendarResize;
   Cal.GetCalendarControl.OnClick := @CalendarClick;
   if Cal.GetCalendarControl is TWinControl then begin
-    TWinControl(Cal.GetCalendarControl).OnKeyDown := @CalendarKeyDown;
     TWinControl(Cal.GetCalendarControl).TabStop := True;
     TWinControl(Cal.GetCalendarControl).SetFocus;
   end;
+  Self.OnKeyDown := @CalendarKeyDown;
+  Self.KeyPreview := True;
 
   Shape.Parent := Self;
   Cal.GetCalendarControl.Parent := Self;
@@ -920,14 +921,14 @@ end;
 destructor TDTCalendarForm.Destroy;
 begin
   SetClosingCalendarForm;
+
+  OnKeyDown := nil;
   if Assigned(DTPickersParentForm) then
     DTPickersParentForm.RemoveAllHandlersOfObject(Self);
 
   if Assigned(Cal) then begin
     Cal.GetCalendarControl.OnResize := nil;
     Cal.GetCalendarControl.OnClick := nil;
-    if Cal.GetCalendarControl is TWinControl then
-      TWinControl(Cal.GetCalendarControl).OnKeyDown := nil;
     Cal.Free;
     Cal := nil;
   end;
