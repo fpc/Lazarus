@@ -1690,8 +1690,10 @@ begin
   FreeThenNil(IDEQuickFixes);
   FreeThenNil(GlobalDesignHook);
   FreeThenNil(LPKInfoCache);
-  if IDEComponentPalette<>nil then
+  if IDEComponentPalette<>nil then begin
     TComponentPalette(IDEComponentPalette).PageControl:=nil;
+    IDEComponentPalette.Clear; // Clear references to TPkgComponent instances, which will be freed in "FreeThenNil(PkgBoss);"
+  end;
   FreeThenNil(PkgBoss);
   FreeThenNil(IDEComponentPalette);
   FreeThenNil(IDECoolBar);
