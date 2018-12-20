@@ -121,7 +121,6 @@ begin
   begin
     Updates.StopUpdate;
     Updates.Terminate;
-    Updates.WaitFor;
   end;
 end;
 

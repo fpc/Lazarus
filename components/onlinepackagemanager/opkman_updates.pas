@@ -110,6 +110,7 @@ type
     FTime: QWORD;
     FInterval: Cardinal;
     FStarted: Boolean;
+    procedure DoTerminated(Sender: TObject);
     function GetUpdateInfo(const AURL: String; var AJSON: TJSONStringType): Boolean;
     procedure AssignPackageData(AMetaPackage: TMetaPackage);
     procedure ResetPackageData(AMetaPackage: TMetaPackage);
@@ -250,6 +251,7 @@ begin
   inherited Create(True);
   FSP_Temp := TSerializablePackages.Create;
   FreeOnTerminate := True;
+  OnTerminate := @DoTerminated;
   FHTTPClient := TFPHTTPClient.Create(nil);
   {$IFDEF FPC311}
   FHTTPClient.IOTimeout := Options.ConTimeOut*1000;
@@ -270,7 +272,6 @@ begin
   FUpdatePackage.Free;
   FSP_Temp.Clear;
   FSP_Temp.Free;
-  Updates := nil;
   inherited Destroy;
 end;
 
@@ -414,6 +415,11 @@ begin
   finally
     Ms.Free;
   end;
+end;
+
+procedure TUpdates.DoTerminated(Sender: TObject);
+begin
+  Updates := nil;
 end;
 
 procedure TUpdates.CheckForUpdates;
