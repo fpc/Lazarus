@@ -326,14 +326,13 @@ begin
   if n <> 0
   then Inc(ACount, FImageList.FAllocBy - n);
 
-  SetLength(FData, ACount * FWidth * FHeight * SizeOf(FData[0]));
-
-  Inc(FAllocCount, ACount);
+  SetLength(FData, ACount * FWidth * FHeight);
+  FAllocCount := ACount;
 end;
 
 procedure TCustomImageListResolution.CheckIndex(AIndex: Integer;
   AForInsert: Boolean);
-  // aviod exceptionframe generation
+  // avoid exceptionframe generation
   procedure Error;
   begin
     raise EInvalidOperation.Create(SInvalidIndex);
