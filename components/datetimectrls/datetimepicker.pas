@@ -275,7 +275,7 @@ type
     procedure SetFocusIfPossible;
     procedure AutoResizeButton;
     procedure CheckAndApplyKey(const Key: Char);
-    procedure CheckAndApplyKeyCode(var Key: Word);
+    procedure CheckAndApplyKeyCode(var Key: Word; const ShState: TShiftState);
     procedure SetOptions(const aOptions: TDateTimePickerOptions);
 
   protected
@@ -761,6 +761,12 @@ begin
   if (not(Cal.GetCalendarControl is TCustomCalendar))
        or (TCustomCalendar(Cal.GetCalendarControl).GetCalendarView = cvMonth) then
     case Key of
+      VK_UP:
+        if Shift = [ssAlt] then begin
+          Key := 0;
+          CloseCalendarForm;
+        end;
+
       VK_ESCAPE:
         CloseCalendarForm;
 
@@ -2047,7 +2053,7 @@ begin
     if FTextEnabled then
       inherited KeyDown(Key, Shift); // calls OnKeyDown event
 
-    CheckAndApplyKeyCode(Key);
+    CheckAndApplyKeyCode(Key, Shift);
   finally
     Dec(FUserChanging);
   end;
@@ -2777,7 +2783,7 @@ begin
   if FTextEnabled then begin
     if aKey in ['n', 'N'] then begin
       K := VK_N;
-      CheckAndApplyKeyCode(K);
+      CheckAndApplyKeyCode(K, []);
     end else
       CheckAndApplyKey(aKey);
   end;
@@ -2795,7 +2801,7 @@ begin
     end;
   end else begin
     K := Key;
-    CheckAndApplyKeyCode(K);
+    CheckAndApplyKeyCode(K, []);
   end;
 
 end;
@@ -3176,7 +3182,15 @@ end;
 procedure TCustomDateTimePicker.ArrowMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  DropDownCalendarForm;
+  SetFocusIfPossible;
+
+  if FAllowDroppingCalendar then
+    DropDownCalendarForm
+  else begin
+    DestroyCalendarForm;
+    FAllowDroppingCalendar := True;
+  end;
+
 end;
 
 procedure TCustomDateTimePicker.UpDownClick(Sender: TObject;
@@ -3505,7 +3519,8 @@ begin
 
 end;
 
-procedure TCustomDateTimePicker.CheckAndApplyKeyCode(var Key: Word);
+procedure TCustomDateTimePicker.CheckAndApplyKeyCode(var Key: Word;
+  const ShState: TShiftState);
 var
   K: Word;
 begin
@@ -3535,13 +3550,17 @@ begin
           end;
         end;
       VK_DOWN:
-        begin
+        begin                   
           Key := 0;
-          UpdateIfUserChangedText;
-          if not FReadOnly then
-          begin
-            DecreaseCurrentTextPart;
-            DoAutoCheck;
+          if (ShState = [ssAlt]) and Assigned(FArrowButton) then
+            DropDownCalendarForm
+          else begin
+            UpdateIfUserChangedText;
+            if not FReadOnly then
+            begin
+              DecreaseCurrentTextPart;
+              DoAutoCheck;
+            end;
           end;
         end;
       VK_RETURN:
@@ -3582,20 +3601,13 @@ end;
 
 procedure TCustomDateTimePicker.DropDownCalendarForm;
 begin
-  SetFocusIfPossible;
-
-  if FAllowDroppingCalendar then begin
+  if FAllowDroppingCalendar and FTextEnabled and Assigned(FArrowButton) then
     if not (FReadOnly or Assigned(FCalendarForm)
-                          or (csDesigning in ComponentState)) then begin
+                      or (csDesigning in ComponentState))
+    then begin
       FCalendarForm := TDTCalendarForm.CreateNewDTCalendarForm(nil, Self);
       FCalendarForm.Show;
     end;
-
-  end else begin
-    DestroyCalendarForm;
-    FAllowDroppingCalendar := True;
-  end;
-
 end;
 
 { TDTUpDown }
