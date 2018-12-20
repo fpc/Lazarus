@@ -592,6 +592,19 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     function TypeCastValue(AValue: TFpDbgValue): TFpDbgValue; override;
     // TODO: flag bounds as cardinal if needed
     function GetValueBounds({%H-}AValueObj: TFpDwarfValue; out ALowBound, AHighBound: Int64): Boolean; virtual;
+
+    (*TODO: workaround / quickfix // only partly implemented
+      When reading several elements of an array (dyn or stat), the typeinfo is always the same instance (type of array entry)
+      But once that instance has read data (like bounds / dwarf3 bounds are read from app mem), this is cached.
+      So all consecutive entries get the same info...
+        array of string
+        array of shortstring
+        array of {dyn} array
+      This works similar to "Init", but should only clear data that is not static / depends on memory reads
+
+      Bounds (and maybe all such data) should be stored on the value object)
+    *)
+    procedure ResetValueBounds; virtual;
   end;
 
   { TFpDwarfSymbolTypeBasic }
@@ -670,6 +683,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
   public
     function GetValueBounds(AValueObj: TFpDwarfValue; out ALowBound,
       AHighBound: Int64): Boolean; override;
+    procedure ResetValueBounds; override;
   end;
 
   { TFpDwarfSymbolTypePointer }
@@ -3307,6 +3321,11 @@ begin
   AHighBound := OrdHighBound;
 end;
 
+procedure TFpDwarfSymbolType.ResetValueBounds;
+begin
+  //
+end;
+
 class function TFpDwarfSymbolType.CreateTypeSubClass(AName: String;
   AnInformationEntry: TDwarfInformationEntry): TFpDwarfSymbolType;
 var
@@ -3739,6 +3758,14 @@ function TFpDwarfSymbolTypeSubRange.GetValueBounds(AValueObj: TFpDwarfValue; out
 begin
   ReadBounds(AValueObj);
   Result := inherited GetValueBounds(AValueObj, ALowBound, AHighBound);
+end;
+
+procedure TFpDwarfSymbolTypeSubRange.ResetValueBounds;
+begin
+  inherited ResetValueBounds;
+  FLowBoundState := rfNotRead;
+  FHighBoundState := rfNotRead;
+  FCountState := rfNotRead;
 end;
 
 procedure TFpDwarfSymbolTypeSubRange.Init;
