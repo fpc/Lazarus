@@ -138,6 +138,8 @@ type
     FValue: String;
     FValueDone: Boolean;
   protected
+    function IsValidTypeCast: Boolean; override;
+    procedure Reset; override;
     function GetFieldFlags: TFpDbgValueFieldFlags; override;
     function GetAsString: AnsiString; override;
     function GetAsWideString: WideString; override;
@@ -629,6 +631,47 @@ end;
 
 { TFpDwarfV3ValueFreePascalString }
 
+function TFpDwarfV3ValueFreePascalString.IsValidTypeCast: Boolean;
+var
+  f: TFpDbgValueFieldFlags;
+begin
+  Result := HasTypeCastInfo;
+  If not Result then
+    exit;
+
+  assert(TypeCastTargetType.Kind = skString, 'TFpDwarfValueArray.IsValidTypeCast: TypeCastTargetType.Kind = skArray');
+
+  f := TypeCastSourceValue.FieldFlags;
+  if (f * [svfAddress, svfSize, svfSizeOfPointer] = [svfAddress]) then
+    exit;
+
+  //if sfDynArray in TypeCastTargetType.Flags then begin
+  //  // dyn array
+  //  if (svfOrdinal in f)then
+  //    exit;
+  //  if (f * [svfAddress, svfSize] = [svfAddress, svfSize]) and
+  //     (TypeCastSourceValue.Size = FOwner.CompilationUnit.AddressSize)
+  //  then
+  //    exit;
+  //  if (f * [svfAddress, svfSizeOfPointer] = [svfAddress, svfSizeOfPointer]) then
+  //    exit;
+  //end
+  //else begin
+  //  // stat array
+  //  if (f * [svfAddress, svfSize] = [svfAddress, svfSize]) and
+  //     (TypeCastSourceValue.Size = TypeCastTargetType.Size)
+  //  then
+  //    exit;
+  //end;
+  Result := False;
+end;
+
+procedure TFpDwarfV3ValueFreePascalString.Reset;
+begin
+  inherited Reset;
+  FValueDone := False;
+end;
+
 function TFpDwarfV3ValueFreePascalString.GetFieldFlags: TFpDbgValueFieldFlags;
 begin
   Result := inherited GetFieldFlags;
@@ -644,11 +687,6 @@ begin
   if FValueDone then
     exit(FValue);
 
-  if HasTypeCastInfo then begin
-    FLastError := CreateError(fpErrAnyError);
-    exit('');
-  end;
-
   // TODO: error handling
   FValue := '';
   Result := '';
@@ -658,7 +696,10 @@ begin
   t := TypeInfo;
   if t.MemberCount < 1 then // subrange type
     exit;
+
   t2 := t.Member[0]; // subrange type
+  if HasTypeCastInfo then
+    TFpDwarfSymbolType(t2).ResetValueBounds;
   if not( (t2 is TFpDwarfSymbolType) and TFpDwarfSymbolType(t2).GetValueBounds(self, LowBound, HighBound) )
   then
     exit;
