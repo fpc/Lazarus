@@ -13955,7 +13955,7 @@ msgstr "Não"
 
 #: lazarusidestrconsts.lisnoautosaveactivedesktop
 msgid "'Auto save active desktop' option is turned off, you will need to save current desktop manually."
-msgstr ""
+msgstr "A opção \"auto salvar área de trabalho ativa\" está desligada, você precisará salvar a área de trabalho atual manualmente."
 
 #: lazarusidestrconsts.lisnobackupfiles
 msgid "No backup files"
