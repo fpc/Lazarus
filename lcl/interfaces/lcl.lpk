@@ -128,7 +128,7 @@ end;"/>
 "/>
     <License Value="modified LGPL-2
 "/>
-    <Version Major="2" Build="2"/>
+    <Version Major="2" Build="3"/>
     <Files Count="486">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
