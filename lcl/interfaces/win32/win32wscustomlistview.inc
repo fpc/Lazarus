@@ -92,42 +92,51 @@ var
   begin
     LVInfo:= GetWin32WindowInfo(ALV.Handle);
     DataInfo := PNMLVOwnerData(NMHdr);
-    if not Assigned(DataInfo) or (not ALV.OwnerData) then Exit;
-
+    if not Assigned(DataInfo) or (not ALV.OwnerData) then
+      Exit;
     listitem := ALV.Items[DataInfo^.item.iItem];
-    if not Assigned(listitem) then Exit;
-
-    if DataInfo^.item.iSubItem = 0 then
+    if not Assigned(listitem) then
+      Exit;
+    if (DataInfo^.item.mask and LVIF_TEXT) <> 0 then
     begin
-      txt := listitem.Caption;
-      DataInfo^.item.mask := DataInfo^.item.mask or LVIF_IMAGE;
-      DataInfo^.item.iImage := listitem.ImageIndex;
-    end
-    else
-    begin
-      idx := DataInfo^.item.iSubItem - 1;
-      if idx < listitem.SubItems.Count then
-        txt := listitem.SubItems[idx]
+      if DataInfo^.item.iSubItem = 0 then
+        txt := listitem.Caption
       else
-        txt := '';
-    end;
-
-    if txt <> '' then
-    begin
-      if DataInfo^.hdr.code = UInt(LVN_GETDISPINFOA) then
       begin
-        LVInfo^.DispInfoTextA[LVInfo^.DispInfoIndex]:=Utf8ToAnsi(txt);
-        DataInfo^.item.pszText := @(LVInfo^.DispInfoTextA[LVInfo^.DispInfoIndex][1]);
+        idx := DataInfo^.item.iSubItem - 1;
+        if idx < listitem.SubItems.Count then
+          txt := listitem.SubItems[idx]
+        else
+          txt := '';
+      end;
+      if txt <> '' then
+      begin
+        if DataInfo^.hdr.code = UInt(LVN_GETDISPINFOA) then
+        begin
+          LVInfo^.DispInfoTextA[LVInfo^.DispInfoIndex]:=Utf8ToAnsi(txt);
+          DataInfo^.item.pszText := @(LVInfo^.DispInfoTextA[LVInfo^.DispInfoIndex][1]);
+        end
+        else
+        begin
+          LVInfo^.DispInfoTextW[LVInfo^.DispInfoIndex]:=UTF8Decode(txt);
+          DataInfo^.item.pszText := @(LVInfo^.DispInfoTextW[LVInfo^.DispInfoIndex][1]);
+        end;
+        inc(LVInfo^.DispInfoIndex);
+        if LVInfo^.DispInfoIndex=LV_DISP_INFO_COUNT then LVInfo^.DispInfoIndex:=0;
       end
       else
+        DataInfo^.item.pszText := nil;
+    end;
+    if (DataInfo^.item.mask and LVIF_IMAGE) <> 0 then
+    begin
+      DataInfo^.item.iImage := listitem.ImageIndex;
+      if Assigned(ALV.StateImages) then
       begin
-        LVInfo^.DispInfoTextW[LVInfo^.DispInfoIndex]:=UTF8Decode(txt);
-        DataInfo^.item.pszText := @(LVInfo^.DispInfoTextW[LVInfo^.DispInfoIndex][1]);
+        DataInfo^.item.state := IndexToStateImageMask(listitem.StateIndex + 1);
+        DataInfo^.item.stateMask := $F000; // States start from 12 bit
+        DataInfo^.item.mask := DataInfo^.item.mask or LVIF_STATE;
       end;
-      inc(LVInfo^.DispInfoIndex);
-      if LVInfo^.DispInfoIndex=LV_DISP_INFO_COUNT then LVInfo^.DispInfoIndex:=0;
-    end else
-      DataInfo^.item.pszText := nil;
+    end;
   end;
 
   procedure HandleListViewCustomDraw(ALV: TCustomListViewAccess);
