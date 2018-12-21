@@ -64,7 +64,7 @@ type
     function GetTarget: TObject;
     function GetCallbackObject: TObject;
     function GetCaptureControlCallback: ICommonCallBack;
-    procedure SendContextMenu(Event: NSEvent);
+    procedure SendContextMenu(Event: NSEvent; out ContextMenuHandled: Boolean);
     function MouseUpDownEvent(Event: NSEvent; AForceAsMouseUp: Boolean = False; AOverrideBlock: Boolean = False): Boolean; virtual;
     function KeyEvent(Event: NSEvent; AForceAsKeyDown: Boolean = False): Boolean; virtual;
 
@@ -405,7 +405,7 @@ end;
 { If a window does not display a shortcut menu it should pass
   this message to the DefWindowProc function. If a window is
   a child window, DefWindowProc sends the message to the parent. }
-procedure TLCLCommonCallback.SendContextMenu(event: NSEvent);
+procedure TLCLCommonCallback.SendContextMenu(event: NSEvent; out ContextMenuHandled: Boolean);
 var
   MsgContext: TLMContextMenu;
   MousePos : NSPoint;
@@ -416,6 +416,7 @@ var
   obj   : TObject;
   cbobj : TLCLCommonCallback;
 begin
+  ContextMenuHandled := false;
   FillChar(MsgContext, SizeOf(MsgContext), #0);
   MsgContext.Msg := LM_CONTEXTMENU;
   MsgContext.hWnd := HWND(HandleFrame);
@@ -448,6 +449,7 @@ begin
     end else
       Rcp := nil;
   until (Res <> 0) or not Assigned(Rcp);
+  ContextMenuHandled := Res <> 0;
 end;
 
 function TLCLCommonCallback.KeyEvent(Event: NSEvent; AForceAsKeyDown: Boolean): Boolean;
@@ -1107,6 +1109,19 @@ begin
   LCLSendClickedMsg(Target);
 end;
 
+function isContextMenuEvent(event: NSEvent): Boolean;
+begin
+  Result := Assigned(event)
+    and (
+      (Event.type_ = NSRightMouseDown)
+      or(
+        (Event.type_ = NSLeftMouseDown)
+        and (event.modifierFlags_ and NSControlKeyMask <> 0)
+        and (event.clickCount = 1)
+      )
+    );
+end;
+
 function TLCLCommonCallback.MouseUpDownEvent(Event: NSEvent; AForceAsMouseUp: Boolean = False; AOverrideBlock: Boolean = False): Boolean;
 const
   MSGKINDUP: array[0..3] of Integer = (LM_LBUTTONUP, LM_RBUTTONUP, LM_MBUTTONUP, LM_XBUTTONUP);
@@ -1120,6 +1135,7 @@ var
 
   bndPt, clPt, srchPt: TPoint; // clPt - is the one to send to LCL
                                // srchPt - is the one to use for each chidlren (clPt<>srchPt for TScrollBox)
+  menuHandled : Boolean;
 begin
   if Assigned(Owner) and not Owner.lclIsEnabled then
   begin
@@ -1183,8 +1199,13 @@ begin
       DeliverMessage(Msg);
 
       // TODO: Check if Cocoa has special context menu check event
-      if (Event.type_ = NSRightMouseDown) and (GetTarget is TControl) then
-        SendContextMenu(Event);
+      //       it does (menuForEvent:), but it doesn't work all the time
+      //       http://sound-of-silence.com/?article=20150923
+      if (GetTarget is TControl) and isContextMenuEvent(Event) then
+      begin
+        SendContextMenu(Event, menuHandled);
+        if menuHandled then Result := true;
+      end;
     end;
     NSLeftMouseUp,
     NSRightMouseUp,
