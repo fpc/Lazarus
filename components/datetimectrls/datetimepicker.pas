@@ -603,8 +603,6 @@ type
     procedure AdjustCalendarFormScreenPosition;
     procedure CloseCalendarForm(const AndSetTheDate: Boolean = False);
 
-    procedure CalendarKeyDown(Sender: TObject; var Key: Word;
-                                      Shift: TShiftState);
     procedure CalendarResize(Sender: TObject);
     procedure CalendarClick(Sender: TObject);
     procedure VisibleOfParentChanged(Sender: TObject);
@@ -614,6 +612,7 @@ type
     procedure DoShow; override;
     procedure DoClose(var CloseAction: TCloseAction); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
 
     procedure WMActivate(var Message: TLMActivate); message LM_ACTIVATE;
   public
@@ -755,25 +754,37 @@ begin
 
 end;
 
-procedure TDTCalendarForm.CalendarKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
+procedure TDTCalendarForm.KeyDown(var Key: Word; Shift: TShiftState);
+var
+  ApplyTheDate: Boolean;
+
 begin
-  if (not(Cal.GetCalendarControl is TCustomCalendar))
-       or (TCustomCalendar(Cal.GetCalendarControl).GetCalendarView = cvMonth) then
-    case Key of
-      VK_UP:
-        if Shift = [ssAlt] then begin
-          Key := 0;
-          CloseCalendarForm;
-        end;
+  inherited KeyDown(Key, Shift);
 
-      VK_ESCAPE:
+  case Key of
+
+    VK_ESCAPE, VK_RETURN, VK_SPACE, VK_TAB:
+      if (not(Cal.GetCalendarControl is TCustomCalendar))
+         or (TCustomCalendar(Cal.GetCalendarControl).GetCalendarView = cvMonth)
+      then begin
+        ApplyTheDate := Key in [VK_RETURN, VK_SPACE];
+        Key := 0;
+        CloseCalendarForm(ApplyTheDate);
+      end;
+
+    // In Qt VK_UP is not caught here for some reason!? At least, in qt combo boxes do not close on Alt+Up either.
+    VK_UP:
+      if Shift = [ssAlt] then begin
+        Key := 0;
         CloseCalendarForm;
+      end;
 
-      VK_RETURN, VK_SPACE:
-        CloseCalendarForm(True);
+    // Suppress Alt (not doing so can produce SIGSEGV on Win widgetset ?!)
+    VK_MENU, VK_LMENU, VK_RMENU:
+      Key := 0;
 
-    end;
+  end;
+
 end;
 
 procedure TDTCalendarForm.CalendarResize(Sender: TObject);
@@ -910,7 +921,6 @@ begin
     TWinControl(Cal.GetCalendarControl).TabStop := True;
     TWinControl(Cal.GetCalendarControl).SetFocus;
   end;
-  Self.OnKeyDown := @CalendarKeyDown;
   Self.KeyPreview := True;
 
   Shape.Parent := Self;
@@ -922,7 +932,6 @@ destructor TDTCalendarForm.Destroy;
 begin
   SetClosingCalendarForm;
 
-  OnKeyDown := nil;
   if Assigned(DTPickersParentForm) then
     DTPickersParentForm.RemoveAllHandlersOfObject(Self);
 
