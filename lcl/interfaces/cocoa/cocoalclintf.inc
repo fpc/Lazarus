@@ -163,6 +163,14 @@ begin
   fClipboard.Sync;
 end;
 
+type
+
+  { TCocoaAlertController }
+
+  TCocoaAlertController = objcclass(NSWindowController)
+    procedure keyUp(theEvent: NSEvent); override;
+  end;
+
 {------------------------------------------------------------------------------
   Func:    CocoaPromptUser
   Params:  DialogCaption - Dialog caption
@@ -200,6 +208,7 @@ var
   I: Integer;
   aButton: NSButton;
   Str: string;
+  ctrl : TCocoaAlertController;
 begin
   {Str := 'TCocoaWidgetSet.PromptUser DialogCaption: ' + DialogCaption +
     ' DialogMessage: ' + DialogMessage + ' DialogType: ' + DbgS(DialogType) +
@@ -272,7 +281,14 @@ begin
         Result := 0;
       end
       else
-        Result := AnAlert.runModal;
+      begin
+        ctrl := TCocoaAlertController(TCocoaAlertController.alloc).initWithWindow(AnAlert.window);
+        try
+          Result := AnAlert.runModal;
+        finally
+          ctrl.release;
+        end;
+      end;
     finally
       informativeText.release;
       messageText.release;
@@ -285,7 +301,20 @@ begin
   {$IFDEF VerboseLCLIntf}
     DebugLn('TCocoaWidgetSet.PromptUser Result: ' + DbgS(Result));
   {$ENDIF}
-end;  {TCocoaWidgetSet.PromptUser}
+end;
+
+{TCocoaWidgetSet.PromptUser}
+
+{ TCocoaAlertController }
+
+procedure TCocoaAlertController.keyUp(theEvent: NSEvent);
+const
+  NSModalResponseCancel = NSCancelButton; // NSCancelButton is deprecated
+begin
+  inherited keyUp(theEvent);
+  if theEvent.keyCode = kVK_Escape then
+    NSApplication(NSApp).stopModalWithCode(NSModalResponseCancel);
+end;
 
 {------------------------------------------------------------------------------
   Method:  PromptUser
