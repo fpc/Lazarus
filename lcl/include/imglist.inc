@@ -1459,7 +1459,7 @@ begin
         ToR.AllocData(ToR.FCount);
         if ToR.FCount>0 then
         begin
-          DataSize := ToR.FWidth * ToR.FHeight * SizeOf(FData[0]);
+          DataSize := ToR.FWidth * ToR.FHeight; {issue #34708 * SizeOf(FData[0])};
           System.Move(FromR.FData[0], ToR.FData[0], ToR.FCount * DataSize);
         end;
       end;
