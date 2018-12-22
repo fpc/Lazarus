@@ -3986,13 +3986,23 @@ begin
   if QtWidgetSet.IsWidgetAtCache(HWND(Self)) then
     QtWidgetSet.InvalidateWidgetAtCache;
   // do not loop with LCL
-  if InUpdate then
+  if InUpdate {$ifdef darwin} and not (qtwsForceSendMove in WidgetState){$endif} then
     exit;
 
   ForceSendMove := False; {mantis #34589}
   if not QEvent_spontaneous(Event) and Assigned(LCLObject) and Assigned(LCLObject.Parent) then
     // only children of 1st level should move.
     ForceSendMove := qtwsForceSendMove in TQtWidget(LCLObject.Parent.Handle).WidgetState;
+
+  {$ifdef darwin}
+  // issue #34698
+  if not ForceSendMove and not QEvent_spontaneous(Event) and Assigned(LCLObject) and
+    (Self is TQtMainWindow) and not TQtMainWindow(Self).IsMdiChild then
+  begin
+    ForceSendMove := qtwsForceSendMove in WidgetState;
+    Exclude(FWidgetState, qtwsForceSendMove);
+  end;
+  {$endif}
 
   if ForceSendMove then
     // send message mantis #34589
@@ -7811,6 +7821,11 @@ begin
       end;
       QEventResize:
       begin
+        // issue #34698
+        {$ifdef darwin}
+        if (QResizeEvent_oldSize(QResizeEventH(Event))^.cx = -1) and (QResizeEvent_oldSize(QResizeEventH(Event))^.cy = -1) then
+          include(FWidgetState, qtwsForceSendMove);
+        {$endif}
         {$IFDEF QTSCROLLABLEFORMS}
         if not Assigned(ScrollArea) then
         {$ENDIF}
