@@ -1854,6 +1854,7 @@ type
     FActivatedHook: QCalendarWidget_hookH;
     FSelectionChangedHook: QCalendarWidget_hookH;
     FCurrentPageChangedHook: QCalendarWidget_hookH;
+    function DeliverDayChanged(ADate: QDateH): boolean;
     function GetDateTime: TDateTime;
     procedure SetDateTime(const AValue: TDateTime);
     procedure SetSelectedDate(const AValue: QDateH);
@@ -17947,16 +17948,24 @@ end;
 function TQtCalendar.AreaViewEventFilter(Sender: QObjectH; Event: QEventH
   ): Boolean; cdecl;
 var
-  AKey: PtrInt;
+  ADate: QDateH;
+  AKey: Integer;
 begin
   Result := False;
   if (LCLObject <> nil) and ((QEvent_type(Event) = QEventKeyPress) or
     (QEvent_type(Event) = QEventKeyRelease)) then
   begin
     AKey := QKeyEvent_key(QKeyEventH(Event));
-    if (AKey <> QtKey_Up) and (AKey <> QtKey_Left) and (AKey <> QtKey_Right) and
-      (AKey <> QtKey_Down) then
     Result := SlotKey(Widget, Event);
+    if (QEvent_type(Event) = QEventKeyRelease) and
+      ( (AKey = QtKey_Up) or (AKey = QtKey_Left) or
+        (AKey = QtKey_Right) or (AKey = QtKey_Down) ) then
+    begin
+      ADate := QDate_create();
+      QCalendarWidget_selectedDate(QCalendarWidgetH(Widget), ADate);
+      DeliverDayChanged(ADate);
+      QDate_destroy(ADate);
+    end;
   end;
 end;
 
@@ -18052,6 +18061,25 @@ begin
   QCalendarWidget_setSelectionMode(QCalendarWidgetH(Widget), ASelMode);
 end;
 
+function TQtCalendar.DeliverDayChanged(ADate: QDateH): boolean;
+var
+  y,m,d: Integer;
+  Msg: TLMessage;
+begin
+  Result := False;
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
+  Msg.Msg := LM_DAYCHANGED;
+  y := QDate_year(ADate);
+  m := QDate_month(ADate);
+  d := QDate_day(ADate);
+  Result := (y <> aYear) or (m <> aMonth) or (d <> aDay);
+  if Result then
+    DeliverMessage(Msg);
+  aYear := y;
+  aMonth := m;
+  aDay := d;
+end;
+
 {------------------------------------------------------------------------------
   Function: TQtCalendar.SignalActivated
   Params:  None
@@ -18060,8 +18088,6 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtCalendar.SignalActivated(ADate: QDateH); cdecl;
 var
-  y,m,d: Integer;
-  Msg: TLMMouse;
   AKeyEvent: QKeyEventH;
   AMouseEvent: QMouseEventH;
   APos, AGlobalPos: TQtPoint;
@@ -18071,16 +18097,7 @@ begin
   writeln('TQtCalendar.signalActivated ');
   {$ENDIF}
 
-  FillChar(Msg{%H-}, SizeOf(Msg), #0);
-  Msg.Msg := LM_DAYCHANGED;
-  y := QDate_year(ADate);
-  m := QDate_month(ADate);
-  d := QDate_day(ADate);
-  if (y <> aYear) or (m <> aMonth) or (d <> aDay) then
-    DeliverMessage(Msg);
-  aYear := y;
-  aMonth := m;
-  aDay := d;
+  DeliverDayChanged(ADate);
 
   {avoid OnAcceptDate() to trigger twice if doubleclicked
    via FMouseDoubleClicked, also send dummy Key events to LCL when item
@@ -18121,8 +18138,6 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtCalendar.SignalClicked(ADate: QDateH); cdecl;
 var
-  Msg: TLMessage;
-  y, m, d: Integer;
   AEvent: QMouseEventH;
   APos, AGlobalPos: TQtPoint;
   APosF, AGlobalPosF: TQtPointF;
@@ -18130,17 +18145,7 @@ begin
   {$IFDEF VerboseQt}
   writeln('TQtCalendar.signalClicked');
   {$ENDIF}
-  FillChar(Msg{%H-}, SizeOf(Msg), #0);
-  Msg.Msg := LM_DAYCHANGED;
-  y := QDate_year(ADate);
-  m := QDate_month(ADate);
-  d := QDate_day(ADate);
-  if (y <> aYear) or (m <> aMonth) or (d <> aDay) then
-    DeliverMessage(Msg);
-
-  aYear := y;
-  aMonth := m;
-  aDay := d;
+  DeliverDayChanged(ADate);
 
   if QWidget_underMouse(Widget) then
   begin
