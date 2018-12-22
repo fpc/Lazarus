@@ -2703,8 +2703,16 @@ begin
     end;
     exit;
   end;
-  if t2.HasBounds then
-    Result := Integer(t2.OrdHighBound - t2.OrdLowBound + 1);
+  if t2.HasBounds then begin
+    LowBound  := t2.OrdLowBound;
+    HighBound := t2.OrdHighBound;
+    if HighBound < LowBound then
+      exit(0); // empty array // TODO: error
+    // TODO: XXXXX Dynamic max limit
+    if HighBound - LowBound > 3000 then
+      HighBound := LowBound + 3000;
+    Result := Integer(HighBound - LowBound + 1);
+  end;
 end;
 
 function TFpDwarfValueArray.GetMemberCountEx(AIndex: array of Int64): Integer;

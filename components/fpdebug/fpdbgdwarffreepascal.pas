@@ -711,6 +711,10 @@ begin
   if HighBound < LowBound then
     exit; // empty string
 
+  // TODO: XXXXX Dynamic max limit
+  if HighBound - LowBound > 5000 then
+    HighBound := LowBound + 5000;
+
   SetLength(Result, HighBound-LowBound+1);
 
   if not MemManager.ReadMemory(Addr, HighBound-LowBound+1, @Result[1]) then begin
