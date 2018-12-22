@@ -728,14 +728,7 @@ begin
         if AndSetTheDate then begin
           Inc(DTPicker.FUserChanging);
           try
-            if DTPicker.DateIsNull then begin
-              // we'll set the time to 0.0 (midnight):
-              DTPicker.SetDateTime(Int(Cal.GetDate));
-            end else if not EqualDateTime(Int(DTPicker.DateTime),
-                                          Int(Cal.GetDate)) then begin
-              // we'll change the date, but keep the time:
-              DTPicker.SetDateTime(ComposeDateTime(Cal.GetDate, DTPicker.DateTime));
-            end;
+            DTPicker.SetDate(Cal.GetDate);
             DTPicker.DoAutoCheck;
           finally
             Dec(DTPicker.FUserChanging);
@@ -935,12 +928,7 @@ begin
   if Assigned(DTPickersParentForm) then
     DTPickersParentForm.RemoveAllHandlersOfObject(Self);
 
-  if Assigned(Cal) then begin
-    Cal.GetCalendarControl.OnResize := nil;
-    Cal.GetCalendarControl.OnClick := nil;
-    Cal.Free;
-    Cal := nil;
-  end;
+  FreeAndNil(Cal);
   FreeAndNil(Shape);
 
   if Assigned(DTPicker) then begin
