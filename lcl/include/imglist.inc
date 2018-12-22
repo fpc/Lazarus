@@ -326,9 +326,9 @@ begin
   if n <> 0
   then Inc(ACount, FImageList.FAllocBy - n);
 
-  SetLength(FData, ACount * FWidth * FHeight * SizeOf(FData[0]));
+  SetLength(FData, ACount * FWidth * FHeight);
 
-  Inc(FAllocCount, ACount);
+  FAllocCount := ACount;
 end;
 
 procedure TCustomImageListResolution.CheckIndex(AIndex: Integer;
@@ -1461,7 +1461,7 @@ begin
         ToR.AllocData(ToR.FCount);
         if ToR.FCount>0 then
         begin
-          DataSize := ToR.FWidth * ToR.FHeight * SizeOf(FData[0]);
+          DataSize := ToR.FWidth * ToR.FHeight * SizeOf(ToR.FData[0]);
           System.Move(FromR.FData[0], ToR.FData[0], ToR.FCount * DataSize);
         end;
       end;
