@@ -619,6 +619,8 @@ resourcestring
   lisShowMessageTypeID = 'Show Message Type ID';
   lisToolStoppedWithExitCodeUseContextMenuToGetMoreInfo = 'tool stopped with '
     +'exit code %s. Use context menu to get more information.';
+  lisToolStoppedWithExitStatusUseContextMenuToGetMoreInfo = 'tool stopped with '
+    +'ExitCode 0 and ExitStatus %s. Use context menu to get more information.';
   lisErrors2 = ', Errors: %s';
   lisWarnings = ', Warnings: %s';
   lisHints = ', Hints: %s';

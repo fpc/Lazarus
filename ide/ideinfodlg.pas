@@ -219,6 +219,7 @@ begin
     sl.Add('  Process.Running='+dbgs(Tool.Process.Running));
     sl.Add('  CmdLineParams='+AnsiQuotedStr(Tool.CmdLineParams,'"'));
     sl.Add('  ErrorMessage='+AnsiQuotedStr(Tool.ErrorMessage,'"'));
+    sl.Add('  ExitCode='+IntToStr(Tool.ExitCode));
     sl.Add('  ExitStatus='+IntToStr(Tool.ExitStatus));
     sl.Add('  Terminated='+dbgs(Tool.Terminated));
     sl.Add('  ReadStdOutBeforeErr='+dbgs(Tool.ReadStdOutBeforeErr));

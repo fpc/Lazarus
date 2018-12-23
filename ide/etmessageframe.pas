@@ -668,7 +668,7 @@ begin
   inherited ToolExited;
   if Tool.Terminated then begin
     ToolState:=lmvtsFailed;
-  end else if (ExitStatus<>0) then begin
+  end else if (ExitStatus<>0) or (ExitCode<>0) then begin
     // tool stopped with errors
     ErrCount:=0;
     EnterCriticalSection;
@@ -700,9 +700,14 @@ begin
           end;
           MsgLine:=PendingLines.CreateLine(-1);
           MsgLine.Urgency:=mluPanic;
-          MsgLine.Msg:=Format(
-            lisToolStoppedWithExitCodeUseContextMenuToGetMoreInfo, [IntToStr(
-            ExitStatus)]);
+          if ExitCode<>0 then
+            MsgLine.Msg:=Format(
+              lisToolStoppedWithExitCodeUseContextMenuToGetMoreInfo, [IntToStr(
+              ExitCode)])
+          else
+            MsgLine.Msg:=Format(
+              lisToolStoppedWithExitStatusUseContextMenuToGetMoreInfo, [
+              IntToStr(ExitStatus)]);
           PendingLines.Add(MsgLine);
         finally
           LeaveCriticalSection;
@@ -3280,8 +3285,10 @@ begin
       s+='ProcessID:'+LineEnding+IntToStr(Proc.ProcessID)+LineEnding+LineEnding;
       if Tool.Terminated then
         s+='Terminated'+LineEnding+LineEnding
-      else
+      else begin
+        s+='ExitCode:'+LineEnding+IntToStr(Proc.ExitCode)+LineEnding;
         s+='ExitStatus:'+LineEnding+IntToStr(Proc.ExitStatus)+LineEnding+LineEnding;
+      end;
     end;
     if Tool.ErrorMessage<>'' then
       s+=lisError+Tool.ErrorMessage+LineEnding+LineEnding;
