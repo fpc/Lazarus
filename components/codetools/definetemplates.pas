@@ -3604,11 +3604,21 @@ procedure GetTargetProcessors(const TargetCPU: string; aList: TStrings);
   begin
     aList.Add('ARMV3');
     aList.Add('ARMV4');
+    aList.Add('ARMV4T');
     aList.Add('ARMV5');
+    aList.Add('ARMV5T');
+    aList.Add('ARMV5TE');
+    aList.Add('ARMV5TEJ');
     aList.Add('ARMV6');
+    aList.Add('ARMV6K');
+    aList.Add('ARMV6T2');
+    aList.Add('ARMV6Z');
+    aList.Add('ARMV6M');
     aList.Add('ARMV7');
     aList.Add('ARMV7A');
+    aList.Add('ARMV7R');
     aList.Add('ARMV7M');
+    aList.Add('ARMV7EM');
     aList.Add('CORTEXM3');
   end;
 
