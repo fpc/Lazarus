@@ -75,6 +75,7 @@ type
   public
     property Tool: TExternalTool read FTool write SetTool;
     procedure Execute; override;
+    procedure DebuglnThreadLog(const Args: array of const);
     destructor Destroy; override;
   end;
 
@@ -209,8 +210,13 @@ begin
   {$ENDIF}
   EnterCriticalSection;
   try
-    if (not Terminated) and (ExitStatus<>0) and (ErrorMessage='') then
-      ErrorMessage:=Format(lisExitCode, [IntToStr(ExitStatus)]);
+    if (not Terminated) and (ErrorMessage='') then
+    begin
+      if ExitCode<>0 then
+        ErrorMessage:=Format(lisExitCode, [IntToStr(ExitCode)])
+      else if ExitStatus<>0 then
+        ErrorMessage:='ExitStatus '+IntToStr(ExitStatus);
+    end;
     if FStage>=etsStopped then exit;
     FStage:=etsStopped;
   finally
@@ -1495,7 +1501,7 @@ begin
         if (fLines.Count>0)
         and (Abs(int64(GetTickCount64)-LastUpdate)>UpdateTimeDiff) then begin
           {$IFDEF VerboseExtToolThread}
-          DebuglnThreadLog(['TExternalToolThread.Execute ',Title,' ',TimeToStr(Now),' ',IntToStr(GetTickCount),' AddOutputLines ...']);
+          DebuglnThreadLog(['TExternalToolThread.Execute ',Title,' ',TimeToStr(Now),' ',IntToStr(GetTickCount64),' AddOutputLines ...']);
           {$ENDIF}
           Tool.AddOutputLines(fLines);
           {$IFDEF VerboseExtToolThread}
@@ -1539,6 +1545,11 @@ begin
         DebuglnThreadLog(['TExternalToolThread.Execute ',Title,' reading exit status ...']);
         {$ENDIF}
         Tool.ExitStatus:=Tool.Process.ExitStatus;
+        Tool.ExitCode:=Tool.Process.ExitCode;
+        {$IFDEF VerboseExtToolThread}
+        if Tool.ExitStatus<>0 then
+          DebuglnThreadLog(['TExternalToolThread.Execute ',Title,' exit status=',Tool.ExitStatus,' ExitCode=',Tool.ExitCode]);
+        {$ENDIF}
       except
         Tool.ErrorMessage:=lisUnableToReadProcessExitStatus;
       end;
@@ -1589,6 +1600,11 @@ begin
   {$IFDEF VerboseExtToolThread}
   DebuglnThreadLog(['TExternalToolThread.Execute ',Title,' Thread END']);
   {$ENDIF}
+end;
+
+procedure TExternalToolThread.DebuglnThreadLog(const Args: array of const);
+begin
+  debugln(Args);
 end;
 
 destructor TExternalToolThread.Destroy;

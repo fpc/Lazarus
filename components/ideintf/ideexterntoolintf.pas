@@ -379,6 +379,7 @@ type
   TExtToolView = class(TComponent)
   private
     FCaption: string;
+    FExitCode: integer;
     FExitStatus: integer;
     FLines: TMessageLines;
     FMinUrgency: TMessageLineUrgency;
@@ -414,6 +415,7 @@ type
     property Tool: TAbstractExternalTool read FTool;
     property Caption: string read FCaption write FCaption;
     property OnChanged: TNotifyEvent read FOnChanged write FOnChanged; // called in main thread
+    property ExitCode: integer read FExitCode write FExitCode;
     property ExitStatus: integer read FExitStatus write FExitStatus;
     property MinUrgency: TMessageLineUrgency read FMinUrgency write FMinUrgency default DefaultETViewMinUrgency; // hide messages below this
     property MessageLineClass: TMessageLineClass read FMessageLineClass;
@@ -464,6 +466,7 @@ type
     FData: TObject;
     FEnvironmentOverrides: TStrings;
     FEstimatedLoad: int64;
+    FExitCode: integer;
     FExitStatus: integer;
     FFreeData: boolean;
     FGroup: TExternalToolGroup;
@@ -494,7 +497,6 @@ type
                             const AMethod: TMethod);
   protected
     FErrorMessage: string;
-    FExitCode: integer;
     FTerminated: boolean;
     FHandlers: array[TExternalToolHandler] of TMethodList;
     FStage: TExternalToolStage;
@@ -553,6 +555,7 @@ type
     procedure Terminate; virtual; abstract;
     procedure WaitForExit; virtual; abstract;
     property Terminated: boolean read FTerminated;
+    property ExitCode: integer read FExitCode write FExitCode;
     property ExitStatus: integer read FExitStatus write FExitStatus;
     property ErrorMessage: string read FErrorMessage write FErrorMessage; // error executing tool
     property ReadStdOutBeforeErr: boolean read FReadStdOutBeforeErr write FReadStdOutBeforeErr;
@@ -2458,8 +2461,10 @@ begin
   finally
     LeaveCriticalSection;
   end;
-  if Tool<>nil then
+  if Tool<>nil then begin
+    ExitCode:=Tool.ExitCode;
     ExitStatus:=Tool.ExitStatus;
+  end;
   ToolExited;
   if Assigned(OnChanged) then begin
     RemoveAsyncOnChanged;

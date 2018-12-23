@@ -92,9 +92,12 @@ begin
   if Tool.Terminated then begin
     ToolState:=lmvtsFailed;
     debugln('Error: (lazarus) ',Caption,': terminated');
+  end else if (ExitCode<>0) then begin
+    ToolState:=lmvtsFailed;
+    debugln('Error: (lazarus) ',Caption,': stopped with exit code '+IntToStr(ExitCode));
   end else if (ExitStatus<>0) then begin
     ToolState:=lmvtsFailed;
-    debugln('Error: (lazarus) ',Caption,': stopped with exit code '+IntToStr(ExitStatus));
+    debugln('Error: (lazarus) ',Caption,': stopped with exit status '+IntToStr(ExitStatus));
   end else if Tool.ErrorMessage<>'' then begin
     ToolState:=lmvtsFailed;
     debugln('Error: (lazarus) ',Caption,': ',Tool.ErrorMessage);
