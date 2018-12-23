@@ -819,6 +819,32 @@ implementation
 
 uses gtk3int;
 
+const
+  GDK_DEFAULT_EVENTS_MASK: TGdkEventMask =
+    2 +        //GDK_EXPOSURE_MASK
+    4 +        //GDK_POINTER_MOTION_MASK
+    8 +        //GDK_POINTER_MOTION_HINT_MASK
+    16 +       //GDK_BUTTON_MOTION_MASK
+    32 +       //GDK_BUTTON1_MOTION_MASK
+    64 +       //GDK_BUTTON2_MOTION_MASK
+    128 +      //GDK_BUTTON3_MOTION_MASK
+    256 +      //GDK_BUTTON_PRESS_MASK
+    512 +      //GDK_BUTTON_RELEASE_MASK
+    1024 +     //GDK_KEY_PRESS_MASK
+    2048 +     //GDK_KEY_RELEASE_MASK
+    4096 +     //GDK_ENTER_NOTIFY_MASK
+    8192 +     //GDK_LEAVE_NOTIFY_MASK
+    16384 +    //GDK_FOCUS_CHANGE_MASK
+    32768 +    //GDK_STRUCTURE_MASK
+    65536 +    //GDK_PROPERTY_CHANGE_MASK
+    131072 +   //GDK_VISIBILITY_NOTIFY_MASK
+    262144 +   //GDK_PROXIMITY_IN_MASK
+    524288 +   //GDK_PROXIMITY_OUT_MASK
+    1048576 +  //GDK_SUBSTRUCTURE_MASK
+    2097152 +  //GDK_SCROLL_MASK
+    4194304;   //GDK_TOUCH_MASK
+ // 8388608    //GDK_SMOOTH_SCROLL_MASK: there is a bug in GTK3, see https://stackoverflow.com/questions/11775161/gtk3-get-mouse-scroll-direction
+
 function Gtk3EventToStr(AEvent: TGdkEventType): String;
 begin
   Result := 'GDK_NOTHING';
@@ -1330,7 +1356,7 @@ begin
   if (AWindow <> nil) and AWidget^.get_has_window then
   begin
     // do resize to lcl size when mapping widget
-    gdk_window_set_events(AWindow, GDK_ALL_EVENTS_MASK);
+    gdk_window_set_events(AWindow, GDK_DEFAULT_EVENTS_MASK);
     if not (wtWindow in TGtk3Widget(Data).WidgetType) then
     begin
       with TGtk3Widget(Data).LCLObject do
@@ -1525,6 +1551,14 @@ begin
     GDK_SCROLL_DOWN}: Msg.Msg := LM_VSCROLL;
     2, 3{GDK_SCROLL_LEFT,
     GDK_SCROLL_RIGHT}: Msg.Msg := LM_HSCROLL;
+    else
+      begin
+        if AEvent^.scroll.direction = GDK_SCROLL_SMOOTH then
+          DebugLn('Gtk3ScrolledWindowScrollEvent: Use PGtkWidget^.set_events(GDK_DEFAULT_EVENTS_MASK) in CreateWidget to prevent GTK3 bug with GDK_SCROLL_SMOOTH')
+        else
+          DebugLn('Gtk3ScrolledWindowScrollEvent: Unknown scroll direction: ', dbgs(AEvent^.scroll.direction));
+      end;
+      Exit;
   end;
 
   case Msg.Msg of
@@ -2567,7 +2601,7 @@ begin
   LCLIntf.SetProp(HWND(Self),'lclwidget',Self);
 
   // move signal connections into attach events
-  FWidget^.set_events(GDK_ALL_EVENTS_MASK);
+  FWidget^.set_events(GDK_DEFAULT_EVENTS_MASK);
   g_signal_connect_data(FWidget, 'event', TGCallback(@Gtk3WidgetEvent), Self, nil, 0);
 
 
@@ -2586,7 +2620,7 @@ begin
 
   if FCentralWidget <> nil then
   begin
-    FCentralWidget^.set_events(GDK_ALL_EVENTS_MASK);
+    FCentralWidget^.set_events(GDK_DEFAULT_EVENTS_MASK);
     g_signal_connect_data(FCentralWidget, 'event', TGCallback(@Gtk3WidgetEvent), Self, nil, 0);
     for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
     begin
@@ -4420,7 +4454,7 @@ begin
   LCLIntf.SetProp(HWND(Self),'lclwidget',Self);
 
   // move signal connections into attach events
-  FWidget^.set_events(GDK_ALL_EVENTS_MASK);
+  FWidget^.set_events(GDK_DEFAULT_EVENTS_MASK);
   g_signal_connect_data(FWidget, 'event', TGCallback(@Gtk3MenuItemEvent), Self, nil, 0);
   g_signal_connect_data(FWidget,'activate',TGCallBack(@Gtk3MenuItemActivated), Self, nil, 0);
   // must hide all by default
@@ -5930,7 +5964,7 @@ begin
     // when we scroll with mouse wheel over entry our scrollevent doesn't catch entry
     // but parent control with window (eg. form), so we are settint all events mask to
     // catch all mouse events on gtkentry.
-    PGtkEntry(PGtkComboBox(Result)^.get_child)^.set_events(GDK_ALL_EVENTS_MASK);
+    PGtkEntry(PGtkComboBox(Result)^.get_child)^.set_events(GDK_DEFAULT_EVENTS_MASK);
   end else
   begin
     // FCentralWidget := PGtkWidget(TGtkComboBox.new_with_model(PGtkTreeModel(ListStore)));
@@ -6107,7 +6141,7 @@ begin
   end;
   if GetCellView <> nil then
   begin
-    gtk_widget_set_events(FCellView, GDK_ALL_EVENTS_MASK);
+    gtk_widget_set_events(FCellView, GDK_DEFAULT_EVENTS_MASK);
     g_object_set_data(FCellView, 'lclwidget', Self);
     g_signal_connect_data(FCellView, 'event', TGCallback(@Gtk3WidgetEvent), Self, nil, 0);
   end;
