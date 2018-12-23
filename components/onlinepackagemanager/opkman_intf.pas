@@ -121,6 +121,9 @@ begin
   begin
     Updates.StopUpdate;
     Updates.Terminate;
+    while Assigned(Updates) do
+      CheckSynchronize(100); // wait for update thread to terminate
+    // Remains the slightest chance of a mem leak, since the update thread needs still enough cpu time to finish running the destructor
   end;
 end;
 

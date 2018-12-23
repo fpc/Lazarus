@@ -123,7 +123,6 @@ type
     procedure Execute; override;
   public
     constructor Create;
-    destructor Destroy; override;
     procedure StartUpdate;
     procedure StopUpdate;
   end;
@@ -264,15 +263,6 @@ begin
     FHTTPClient.Proxy.Password:= Options.ProxyPassword;
   end;
   FUpdatePackage := TUpdatePackage.Create;
-end;
-
-destructor TUpdates.Destroy;
-begin
-  FHTTPClient.Free;
-  FUpdatePackage.Free;
-  FSP_Temp.Clear;
-  FSP_Temp.Free;
-  inherited Destroy;
 end;
 
 procedure TUpdates.AssignPackageData(AMetaPackage: TMetaPackage);
@@ -420,6 +410,10 @@ end;
 procedure TUpdates.DoTerminated(Sender: TObject);
 begin
   Updates := nil;
+  FHTTPClient.Free;
+  FUpdatePackage.Free;
+  FSP_Temp.Clear;
+  FSP_Temp.Free;
 end;
 
 procedure TUpdates.CheckForUpdates;
