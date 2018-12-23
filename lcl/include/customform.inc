@@ -2689,14 +2689,8 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------
-  Method:  TCustomForm.CreateWnd
-  Params:  None
-  Returns: Nothing
-
-  Creates the interface object.
- ------------------------------------------------------------------------------}
 procedure TCustomForm.CreateWnd;
+// Creates the interface object.
 begin
   //DebugLn('TCustomForm.CreateWnd START ',ClassName);
   FFormState := FFormState - [fsBorderStyleChanged, fsFormStyleChanged];
@@ -2747,21 +2741,14 @@ begin
     Visible := True;
 end;
 
-{------------------------------------------------------------------------------
-  procedure TCustomForm.BeginFormUpdate;
-
-  Called after all children handles are created.
- ------------------------------------------------------------------------------}
 procedure TCustomForm.ChildHandlesCreated;
+// Called after all children handles are created.
 begin
   inherited ChildHandlesCreated;
   if Parent=nil then
     ParentFormHandleInitialized;
 end;
 
-{------------------------------------------------------------------------------
-  procedure TCustomForm.BeginFormUpdate;
- ------------------------------------------------------------------------------}
 procedure TCustomForm.BeginFormUpdate;
 begin
   inc(FFormUpdateCount);
@@ -2769,14 +2756,8 @@ begin
     DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomForm.BeginFormUpdate'){$ENDIF};
 end;
 
-{------------------------------------------------------------------------------
-  Method:  TCustomForm.UpdateShowing
-  Params:  None
-  Returns: Nothing
-
-  Here the initial form left and top are determined.
- ------------------------------------------------------------------------------}
 procedure TCustomForm.UpdateShowing;
+// Here the initial form left and top are determined.
 begin
   if csLoading in ComponentState then exit;
   {$IF defined(CHECK_POSITION) or defined(VerboseFormUpdateShowing) or defined(VerboseShowing)}
