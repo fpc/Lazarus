@@ -681,7 +681,7 @@ begin
     if ErrCount=0 then begin
       // parser did not add an error message
       // => add an error message
-      // add the last 3 lines of output with fatal urgency
+      // add up the last 100 lines of output with panic urgency
       Tool.EnterCriticalSection; // Note: always lock Tool *before* View
       try
         EnterCriticalSection;
