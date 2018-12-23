@@ -2209,6 +2209,7 @@ function TAnchorDockMaster.RestoreLayout(Tree: TAnchorDockLayoutTree;
           for Side:=Low(TAnchorKind) to high(TAnchorKind) do
             AControl.AnchorSide[Side].Control:=nil;
         end;
+        Site.Pages.PageIndex:=ANode.PageIndex;
       finally
         while Site.Pages.PageCount>j do
           Site.Pages.Page[Site.Pages.PageCount-1].Free;
@@ -5465,6 +5466,7 @@ begin
     LayoutNode.Assign(Self);
     LayoutNode.HeaderPosition:=Header.HeaderPosition;
     LayoutNode.TabPosition:=Pages.TabPosition;
+    LayoutNode.PageIndex:=Pages.PageIndex;
   end else
     LayoutNode.NodeType:=adltnNone;
   if BoundSplitter<>nil then begin

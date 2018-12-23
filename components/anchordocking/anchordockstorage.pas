@@ -59,6 +59,7 @@ type
     FName: string;
     FNodes: TFPList; // list of TAnchorDockLayoutTreeNode
     FNodeType: TADLTreeNodeType;
+    FPageIndex: integer;
     FParent: TAnchorDockLayoutTreeNode;
     FWorkAreaRect: TRect;
     FTabPosition: TTabPosition;
@@ -83,6 +84,7 @@ type
     procedure SetMonitor(const AValue: integer);
     procedure SetName(const AValue: string);
     procedure SetNodeType(const AValue: TADLTreeNodeType);
+    procedure SetPageIndex(AValue: integer);
     procedure SetParent(const AValue: TAnchorDockLayoutTreeNode);
     procedure SetRight(const AValue: integer);
     procedure SetWorkAreaRect(const AValue: TRect);
@@ -135,6 +137,7 @@ type
     property Monitor: integer read FMonitor write SetMonitor;
     property HeaderPosition: TADLHeaderPosition read FHeaderPosition write SetHeaderPosition;
     property TabPosition: TTabPosition read FTabPosition write SetTabPosition;
+    property PageIndex: integer read FPageIndex write SetPageIndex;
     function Count: integer;
     function IsSplitter: boolean;
     function IsRootWindow: boolean;
@@ -953,6 +956,13 @@ begin
   IncreaseChangeStamp;
 end;
 
+procedure TAnchorDockLayoutTreeNode.SetPageIndex(AValue: integer);
+begin
+  if FPageIndex = AValue then Exit;
+  FPageIndex := AValue;
+  IncreaseChangeStamp;
+end;
+
 procedure TAnchorDockLayoutTreeNode.SetParent(
   const AValue: TAnchorDockLayoutTreeNode);
 begin
@@ -1036,6 +1046,7 @@ begin
   Align:=alNone;
   HeaderPosition:=adlhpAuto;
   TabPosition:=tpTop;
+  PageIndex:=0;
   BoundSplitterPos:=0;
   WorkAreaRect:=Rect(0,0,0,0);
   for a:=low(TAnchorKind) to high(TAnchorKind) do
@@ -1057,6 +1068,7 @@ begin
   or (WindowState<>Node.WindowState)
   or (HeaderPosition<>Node.HeaderPosition)
   or (TabPosition<>Node.TabPosition)
+  or (PageIndex<>Node.PageIndex)
   or (BoundSplitterPos<>Node.BoundSplitterPos)
   or (not CompareRect(@FWorkAreaRect,@Node.FWorkAreaRect))
   then
@@ -1081,6 +1093,7 @@ begin
   WindowState:=Node.WindowState;
   HeaderPosition:=Node.HeaderPosition;
   TabPosition:=Node.TabPosition;
+  PageIndex:=Node.PageIndex;
   BoundSplitterPos:=Node.BoundSplitterPos;
   WorkAreaRect:=Node.WorkAreaRect;
   Monitor:=Node.Monitor;
@@ -1115,10 +1128,13 @@ begin
     WorkAreaRect:=TCustomForm(AControl).Monitor.WorkareaRect;
   end else
     WindowState:=GetParentForm(AControl).WindowState;
-  if AControl is TCustomTabControl then
-    TabPosition:=TCustomTabControl(AControl).TabPosition
-  else
+  if AControl is TCustomTabControl then begin
+    TabPosition:=TCustomTabControl(AControl).TabPosition;
+    PageIndex:=TCustomTabControl(AControl).PageIndex;
+  end else begin
     TabPosition:=tpTop;
+    PageIndex:=0;
+  end;
   for a:=low(TAnchorKind) to high(TAnchorKind) do begin
     AnchorControl:=AControl.AnchorSide[a].Control;
     if (AnchorControl=nil) or (AnchorControl=AControl.Parent) then
@@ -1151,6 +1167,7 @@ begin
   WindowState:=NameToADLWindowState(Config.GetValue('WindowState',ADLWindowStateNames[wsNormal]));
   HeaderPosition:=NameToADLHeaderPosition(Config.GetValue('Header/Position',ADLHeaderPositionNames[adlhpAuto]));
   TabPosition:=NameToADLTabPosition(Config.GetValue('Header/TabPosition',ADLTabPostionNames[tpTop]));
+  PageIndex:=Config.GetValue('Header/PageIndex',0);
   Monitor:=Config.GetValue('Monitor',0);
   NewCount:=Config.GetValue('ChildCount',0);
   for i:=1 to NewCount do begin
@@ -1185,6 +1202,7 @@ begin
   WindowState:=NameToADLWindowState(Config.GetValue(Path+'WindowState',ADLWindowStateNames[wsNormal]));
   HeaderPosition:=NameToADLHeaderPosition(Config.GetValue(Path+'Header/Position',ADLHeaderPositionNames[adlhpAuto]));
   TabPosition:=NameToADLTabPosition(Config.GetValue(Path+'Header/TabPosition',ADLTabPostionNames[tpTop]));
+  PageIndex:=Config.GetValue(Path+'Header/PageIndex',0);
   Monitor:=Config.GetValue(Path+'Monitor',0);
   NewCount:=Config.GetValue(Path+'ChildCount',0);
   for i:=1 to NewCount do
@@ -1219,6 +1237,7 @@ begin
                                           ADLHeaderPositionNames[adlhpAuto]);
   Config.SetDeleteValue('Header/TabPosition',ADLTabPostionNames[TabPosition],
                                              ADLTabPostionNames[tpTop]);
+  Config.SetDeleteValue('Header/PageIndex',PageIndex,0);
   Config.SetDeleteValue('Monitor',Monitor,0);
   Config.SetDeleteValue('ChildCount',Count,0);
   for i:=1 to Count do begin
@@ -1252,6 +1271,7 @@ begin
                                                ADLHeaderPositionNames[adlhpAuto]);
   Config.SetDeleteValue(Path+'Header/TabPosition',ADLTabPostionNames[TabPosition],
                                                   ADLTabPostionNames[tpTop]);
+  Config.SetDeleteValue(Path+'Header/PageIndex',PageIndex,0);
   Config.SetDeleteValue(Path+'Monitor',Monitor,0);
   Config.SetDeleteValue(Path+'ChildCount',Count,0);
   for i:=1 to Count do
