@@ -957,7 +957,8 @@ begin
       inc(EndPos);
     end;
     if EndPos>StartPos then begin
-      Result:=Result+' '+Switch+copy(OptionStr,StartPos,EndPos-StartPos);
+      if Result<>'' then Result:=Result+' ';
+      Result:=Result+Switch+copy(OptionStr,StartPos,EndPos-StartPos);
     end;
     StartPos:=EndPos;
   end;
@@ -2867,6 +2868,7 @@ begin
 
   if ccloAddCompilerPath in Flags then
     switches:=ConvertOptionsToCmdLine('',RealCompilerFilename);
+  //writeln('TBaseCompilerOptions.MakeOptionsString RealCompilerFilename="',RealCompilerFilename,'" switches="',switches,'"');
 
   CurTargetOS:='';
   CurTargetCPU:='';
