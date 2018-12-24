@@ -1456,6 +1456,7 @@ begin
       begin
         ToR := FData.GetImageLists(FromR.Width, False, FromR.AutoCreatedInDesignTime);
         ToR.FWidth := FromR.FWidth;
+        ToR.FHeight := FromR.FHeight;
         ToR.FCount := FromR.FCount;
         ToR.AllocData(ToR.FCount);
         if ToR.FCount>0 then
