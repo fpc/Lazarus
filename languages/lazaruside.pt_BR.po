@@ -18364,6 +18364,10 @@ msgstr "Cabeçalho ferramenta: Sucesso"
 msgid "tool stopped with exit code %s. Use context menu to get more information."
 msgstr "ferramenta parou com o código de saída %s. Use o menu contexto para obter mais informações."
 
+#: lazarusidestrconsts.listoolstoppedwithexitstatususecontextmenutogetmoreinfo
+msgid "tool stopped with ExitCode 0 and ExitStatus %s. Use context menu to get more information."
+msgstr ""
+
 #: lazarusidestrconsts.listop
 msgctxt "lazarusidestrconsts.listop"
 msgid "Top"

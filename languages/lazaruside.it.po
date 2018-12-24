@@ -18637,6 +18637,10 @@ msgstr "Intestazione strumento: Successo"
 msgid "tool stopped with exit code %s. Use context menu to get more information."
 msgstr "lo strumento ha terminato con codice di uscita %s. Usare il menu contestuale per maggiori informazioni."
 
+#: lazarusidestrconsts.listoolstoppedwithexitstatususecontextmenutogetmoreinfo
+msgid "tool stopped with ExitCode 0 and ExitStatus %s. Use context menu to get more information."
+msgstr ""
+
 #: lazarusidestrconsts.listop
 #, fuzzy
 msgctxt "lazarusidestrconsts.listop"

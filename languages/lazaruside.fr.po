@@ -18326,6 +18326,10 @@ msgstr "En-tête d'outil : Succès"
 msgid "tool stopped with exit code %s. Use context menu to get more information."
 msgstr "outil arrêté avec le code de sortie %s. Utilisez le menu contextuel pour obtenir plus d'informations."
 
+#: lazarusidestrconsts.listoolstoppedwithexitstatususecontextmenutogetmoreinfo
+msgid "tool stopped with ExitCode 0 and ExitStatus %s. Use context menu to get more information."
+msgstr ""
+
 #: lazarusidestrconsts.listop
 msgctxt "lazarusidestrconsts.listop"
 msgid "Top"

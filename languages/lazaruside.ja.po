@@ -18464,6 +18464,10 @@ msgstr "ツールヘッダ：成功"
 msgid "tool stopped with exit code %s. Use context menu to get more information."
 msgstr "ツールが退出コード%sで停止。より多くの情報を得るにはコンテクストメニューを用いて下さい。"
 
+#: lazarusidestrconsts.listoolstoppedwithexitstatususecontextmenutogetmoreinfo
+msgid "tool stopped with ExitCode 0 and ExitStatus %s. Use context menu to get more information."
+msgstr ""
+
 #: lazarusidestrconsts.listop
 #, fuzzy
 msgctxt "lazarusidestrconsts.listop"

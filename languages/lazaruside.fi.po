@@ -18147,6 +18147,10 @@ msgstr "Työkalu otsikko: Onnistui"
 msgid "tool stopped with exit code %s. Use context menu to get more information."
 msgstr "työkalu lopetti koodilla %s. Lisää tietoa pikavalikosta."
 
+#: lazarusidestrconsts.listoolstoppedwithexitstatususecontextmenutogetmoreinfo
+msgid "tool stopped with ExitCode 0 and ExitStatus %s. Use context menu to get more information."
+msgstr ""
+
 #: lazarusidestrconsts.listop
 msgctxt "lazarusidestrconsts.listop"
 msgid "Top"

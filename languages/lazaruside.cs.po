@@ -18281,6 +18281,10 @@ msgstr "Hlavička Nástroje: Úspěch"
 msgid "tool stopped with exit code %s. Use context menu to get more information."
 msgstr "nástroj skončil s kódem %s. Použijte kontextovou nabídku pro více informací."
 
+#: lazarusidestrconsts.listoolstoppedwithexitstatususecontextmenutogetmoreinfo
+msgid "tool stopped with ExitCode 0 and ExitStatus %s. Use context menu to get more information."
+msgstr ""
+
 #: lazarusidestrconsts.listop
 msgctxt "lazarusidestrconsts.listop"
 msgid "Top"

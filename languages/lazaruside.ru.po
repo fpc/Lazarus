@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-12-12 01:16+0300\n"
+"PO-Revision-Date: 2018-12-25 01:30+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -18317,6 +18317,10 @@ msgstr "Заголовок средства: успешное завершени
 #: lazarusidestrconsts.listoolstoppedwithexitcodeusecontextmenutogetmoreinfo
 msgid "tool stopped with exit code %s. Use context menu to get more information."
 msgstr "средство завершило работу с кодом %s. Для получения дополнительных сведений воспользуйтесь контекстным меню."
+
+#: lazarusidestrconsts.listoolstoppedwithexitstatususecontextmenutogetmoreinfo
+msgid "tool stopped with ExitCode 0 and ExitStatus %s. Use context menu to get more information."
+msgstr "средство завершило работу с кодом 0 и состоянием %s. Для получения дополнительных сведений воспользуйтесь контекстным меню."
 
 #: lazarusidestrconsts.listop
 msgctxt "lazarusidestrconsts.listop"

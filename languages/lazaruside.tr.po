@@ -18764,6 +18764,10 @@ msgstr "Araç Başlığı: Başarı"
 msgid "tool stopped with exit code %s. Use context menu to get more information."
 msgstr "Araç %s çıkış koduyla durduruldu, daha fazla bilgi almak için bağlam menüsünü kullanın."
 
+#: lazarusidestrconsts.listoolstoppedwithexitstatususecontextmenutogetmoreinfo
+msgid "tool stopped with ExitCode 0 and ExitStatus %s. Use context menu to get more information."
+msgstr ""
+
 #: lazarusidestrconsts.listop
 msgctxt "lazarusidestrconsts.listop"
 msgid "Top"

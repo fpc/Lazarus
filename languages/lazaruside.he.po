@@ -19710,6 +19710,10 @@ msgstr ""
 msgid "tool stopped with exit code %s. Use context menu to get more information."
 msgstr ""
 
+#: lazarusidestrconsts.listoolstoppedwithexitstatususecontextmenutogetmoreinfo
+msgid "tool stopped with ExitCode 0 and ExitStatus %s. Use context menu to get more information."
+msgstr ""
+
 #: lazarusidestrconsts.listop
 #, fuzzy
 msgctxt "lazarusidestrconsts.listop"

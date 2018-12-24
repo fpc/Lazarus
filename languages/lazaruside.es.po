@@ -18701,6 +18701,10 @@ msgstr "Cabecera de utilidad: Éxito"
 msgid "tool stopped with exit code %s. Use context menu to get more information."
 msgstr "utilidad detenida con código de salida %s. Utiliza el menú contextual para obtener más información."
 
+#: lazarusidestrconsts.listoolstoppedwithexitstatususecontextmenutogetmoreinfo
+msgid "tool stopped with ExitCode 0 and ExitStatus %s. Use context menu to get more information."
+msgstr ""
+
 #: lazarusidestrconsts.listop
 msgctxt "lazarusidestrconsts.listop"
 msgid "Top"
