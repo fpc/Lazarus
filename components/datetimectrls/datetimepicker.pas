@@ -765,7 +765,6 @@ begin
         CloseCalendarForm(ApplyTheDate);
       end;
 
-    // In Qt VK_UP is not caught here for some reason!? At least, in qt combo boxes do not close on Alt+Up either.
     VK_UP:
       if Shift = [ssAlt] then begin
         Key := 0;
