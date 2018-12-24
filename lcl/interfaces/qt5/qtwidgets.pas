@@ -3986,13 +3986,23 @@ begin
   if QtWidgetSet.IsWidgetAtCache(HWND(Self)) then
     QtWidgetSet.InvalidateWidgetAtCache;
   // do not loop with LCL
-  if InUpdate then
+  if InUpdate {$ifdef darwin} and not (qtwsForceSendMove in WidgetState){$endif} then
     exit;
 
   ForceSendMove := False; {mantis #34589}
   if not QEvent_spontaneous(Event) and Assigned(LCLObject) and Assigned(LCLObject.Parent) then
     // only children of 1st level should move.
     ForceSendMove := qtwsForceSendMove in TQtWidget(LCLObject.Parent.Handle).WidgetState;
+
+  {$ifdef darwin}
+  // issue #34698
+  if not ForceSendMove and not QEvent_spontaneous(Event) and Assigned(LCLObject) and
+    (Self is TQtMainWindow) and not TQtMainWindow(Self).IsMdiChild then
+  begin
+    ForceSendMove := qtwsForceSendMove in WidgetState;
+    Exclude(FWidgetState, qtwsForceSendMove);
+  end;
+  {$endif}
 
   if ForceSendMove then
     // send message mantis #34589
@@ -7811,6 +7821,11 @@ begin
       end;
       QEventResize:
       begin
+        // issue #34698
+        {$ifdef darwin}
+        if (QResizeEvent_oldSize(QResizeEventH(Event))^.cx = -1) and (QResizeEvent_oldSize(QResizeEventH(Event))^.cy = -1) then
+          include(FWidgetState, qtwsForceSendMove);
+        {$endif}
         {$IFDEF QTSCROLLABLEFORMS}
         if not Assigned(ScrollArea) then
         {$ENDIF}
@@ -12472,7 +12487,7 @@ var
   TopItem: Integer;
   i: Integer;
   VHeight: Integer; // viewport height
-  RowHeight: Integer;
+  RowHeight, AImagesWidth: Integer;
   item: QListWidgetItemH;
   v, v2, v3: QVariantH;
   WStr: WideString;
@@ -12481,7 +12496,7 @@ var
   AImageIndex: TImageIndex;
   Bmp: TBitmap;
   AIcon: QIconH;
-  AOk: Boolean;
+  AOk, AStateImages: Boolean;
   ASize: TSize;
   ImgListRes: TScaledImageListResolution;
 begin
@@ -12519,11 +12534,21 @@ begin
         if (TopItem < 0) or (TopItem > TCustomListViewHack(LCLObject).Items.Count - 1) then
           break;
 
+        AStateImages := False;
         ImgList := TCustomListViewHack(LCLObject).SmallImages;
+        if Assigned(ImgList) then
+          AImagesWidth := TCustomListViewHack(LCLObject).SmallImagesWidth
+        else
+        begin
+          ImgList := TCustomListViewHack(LCLObject).StateImages;
+          if Assigned(ImgList) then
+            AImagesWidth := TCustomListViewHack(LCLObject).StateImagesWidth;
+          AStateImages := True;
+        end;
         if Assigned(ImgList) then
         begin
           ImgListRes := ImgList.ResolutionForPPI[
-            TCustomListViewHack(LCLObject).SmallImagesWidth,
+            AImagesWidth,
             TCustomListViewHack(LCLObject).Font.PixelsPerInch,
             TCustomListViewHack(LCLObject).GetCanvasScaleFactor];
           QListWidgetItem_sizeHint(item, @ASize);
@@ -12533,7 +12558,10 @@ begin
             ASize.cy := ImgListRes.Height;
             QListWidgetItem_setSizeHint(item, @ASize);
           end;
-          AImageIndex := TCustomListViewHack(LCLObject).Items[TopItem].ImageIndex;
+          if AStateImages then
+            AImageIndex := TCustomListViewHack(LCLObject).Items[TopItem].StateIndex
+          else
+            AImageIndex := TCustomListViewHack(LCLObject).Items[TopItem].ImageIndex;
           if (ImgListRes.Count > 0) and
             ((AImageIndex >= 0) and (AImageIndex < ImgListRes.Count)) then
           begin
@@ -14655,7 +14683,7 @@ var
   j: Integer;
   ChildCount: Integer;
   VHeight: Integer; // viewport height
-  RowHeight: Integer;
+  RowHeight, AImagesWidth: Integer;
   item: QTreeWidgetItemH;
   itemChild: QTreeWidgetItemH;
   v,v2,v3: QVariantH;
@@ -14664,7 +14692,7 @@ var
   ImgList: TCustomImageList;
   AImageIndex: TImageIndex;
   Bmp: TBitmap;
-  AOk: Boolean;
+  AOk, AStateImages: Boolean;
   AIcon: QIconH;
   ASize: TSize;
   ImgListRes: TScaledImageListResolution;
@@ -14719,12 +14747,22 @@ begin
             QVariant_destroy(v2);
           end;
 
+          AStateImages := False;
           // set imageindex, part of comment in issue #27233
           ImgList := TCustomListViewHack(LCLObject).SmallImages;
           if Assigned(ImgList) then
+            AImagesWidth := TCustomListViewHack(LCLObject).SmallImagesWidth
+          else
+          begin
+            ImgList := TCustomListViewHack(LCLObject).StateImages;
+            if Assigned(ImgList) then
+              AImagesWidth := TCustomListViewHack(LCLObject).StateImagesWidth;
+            AStateImages := True;
+          end;
+          if Assigned(ImgList) then
           begin
             ImgListRes := ImgList.ResolutionForPPI[
-              TCustomListViewHack(LCLObject).SmallImagesWidth,
+              AImagesWidth,
               TCustomListViewHack(LCLObject).Font.PixelsPerInch,
               TCustomListViewHack(LCLObject).GetCanvasScaleFactor];
             QTreeWidgetItem_sizeHint(item, @ASize, 0);
@@ -14734,7 +14772,10 @@ begin
               ASize.cy := ImgListRes.Height;
               QTreeWidgetItem_setSizeHint(item, 0, @ASize);
             end;
-            AImageIndex := TCustomListViewHack(LCLObject).Items[TopItem].ImageIndex;
+            if AStateImages then
+              AImageIndex := TCustomListViewHack(LCLObject).Items[TopItem].StateIndex
+            else
+              AImageIndex := TCustomListViewHack(LCLObject).Items[TopItem].ImageIndex;
             if (ImgListRes.Count > 0) and
               ((AImageIndex >= 0) and (AImageIndex < ImgListRes.Count)) then
             begin
