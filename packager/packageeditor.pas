@@ -43,7 +43,7 @@ uses
   // IDEIntf
   IDEImagesIntf, MenuIntf, LazIDEIntf, ProjectIntf,
   FormEditingIntf, PackageDependencyIntf, PackageIntf, IDEHelpIntf, IDEOptionsIntf,
-  NewItemIntf, IDEWindowIntf, IDEDialogs, ComponentReg,
+  NewItemIntf, IDEWindowIntf, IDEDialogs, ComponentReg, IDEOptEditorIntf,
   // IDE
   MainBase, IDEProcs, LazarusIDEStrConsts, IDEDefs, CompilerOptions,
   EnvironmentOpts, DialogProcs, InputHistory, PackageDefs, AddToPackageDlg,
@@ -182,6 +182,12 @@ type
     );
   TPEFlags = set of TPEFlag;
 
+  TIDEPackageOptsDlgAction = (
+    iodaRead,
+    iodaWrite,
+    iodaRestore
+    );
+
   { TPackageEditorForm }
 
   TPackageEditorForm = class(TBasePackageEditor,IFilesEditorInterface)
@@ -233,6 +239,7 @@ type
     UsePopupMenu: TPopupMenu;
     ItemsPopupMenu: TPopupMenu;
     MorePopupMenu: TPopupMenu;
+    EditorsGroupsPanel: TPanel;
     procedure AddToProjectClick(Sender: TObject);
     procedure AddToUsesPkgSectionCheckBoxChange(Sender: TObject);
     procedure ApplyDependencyButtonClick(Sender: TObject);
@@ -320,6 +327,8 @@ type
     FSingleSelectedNode: TTreeNode;
     FSingleSelectedFile: TPkgFile;
     FSingleSelectedDep: TPkgDependency;
+    FHasEditorsGroups: Boolean;
+    FOptionsShownOfFile: TPkgFile;
     FFirstNodeData: array[TPENodeType] of TPENodeData;
     fUpdateLock: integer;
     fForcedFlags: TPEFlags;
@@ -332,6 +341,7 @@ type
     procedure SetShowDirectoryHierarchy(const AValue: boolean);
     procedure SetSortAlphabetically(const AValue: boolean);
     procedure SetupComponents;
+    procedure CreatePackageFileEditors;
     function OnTreeViewGetImageIndex({%H-}Str: String; Data: TObject; var {%H-}AIsEnabled: Boolean): Integer;
     procedure UpdateNodeImage(TVNode: TTreeNode);
     procedure UpdateNodeImage(TVNode: TTreeNode; NodeData: TPENodeData; Item: TObject);
@@ -352,6 +362,10 @@ type
     procedure ExtendIncPathForNewIncludeFile(const AnIncludeFile: string;
       var IgnoreIncPaths: TFilenameToStringTree);
     function CanBeAddedToProject: boolean;
+    procedure TraverseSettings(AOptions: TPackageFileIDEOptions; anAction: TIDEPackageOptsDlgAction);
+    procedure FileOptionsToGui;
+    procedure GuiToFileOptions;
+    procedure FileOptionsChange(Sender: TObject);
   protected
     fFlags: TPEFlags;
     procedure SetLazPackage(const AValue: TLazPackage); override;
@@ -2007,6 +2021,8 @@ begin
     Name:='DirSummaryLabel';
     Parent:=PropsGroupBox;
   end;
+
+  CreatePackageFileEditors;
 end;
 
 procedure TPackageEditorForm.SetDependencyDefaultFilename(AsPreferred: boolean);
@@ -2644,6 +2660,8 @@ var
 begin
   if not CanUpdate(pefNeedUpdateProperties,Immediately) then exit;
 
+  GuiToFileOptions;
+
   FPlugins.Clear;
 
   // check selection
@@ -2783,6 +2801,13 @@ begin
     end
     else begin
       PropsGroupBox.Enabled:=false;
+    end;
+
+    if FSingleSelectedFile<>nil then begin
+      EditorsGroupsPanel.Visible := FHasEditorsGroups;
+      FileOptionsToGui;
+    end else begin
+      EditorsGroupsPanel.Visible := False;
     end;
   finally
     EnableAlign;
@@ -3122,6 +3147,7 @@ end;
 
 procedure TPackageEditorForm.DoSave(SaveAs: boolean);
 begin
+  GuiToFileOptions;
   PackageEditors.SavePackage(LazPackage,SaveAs);
   UpdateTitle;
   UpdateButtons;
@@ -3294,6 +3320,132 @@ end;
 destructor TPackageEditorForm.Destroy;
 begin
   inherited Destroy;
+end;
+
+procedure TPackageEditorForm.TraverseSettings(AOptions: TPackageFileIDEOptions; anAction: TIDEPackageOptsDlgAction);
+
+  procedure Traverse(Control: TWinControl);
+  var
+    i: Integer;
+  begin
+    if Control <> nil then
+    begin
+      if Control is TAbstractIDEOptionsEditor then
+        with TAbstractIDEOptionsEditor(Control) do
+        begin
+          case anAction of
+          iodaRead: ReadSettings(AOptions);
+          iodaWrite: WriteSettings(AOptions);
+          iodaRestore: RestoreSettings(AOptions);
+          end;
+        end;
+      for i := 0 to Control.ControlCount -1 do
+        if Control.Controls[i] is TWinControl then
+        begin
+          Traverse(TWinControl(Control.Controls[i]));
+        end;
+    end;
+  end;
+
+begin
+  Traverse(EditorsGroupsPanel);
+end;
+
+procedure TPackageEditorForm.CreatePackageFileEditors;
+
+var
+  Instance: TAbstractIDEOptionsEditor;
+  i, j: integer;
+  Rec: PIDEOptionsGroupRec;
+  ACaption: string;
+  ItemTabSheet: TTabSheet;
+  GroupPageControl: TPageControl;
+  GroupGroupBox: TGroupBox;
+begin
+  FHasEditorsGroups := False;
+  IDEEditorGroups.Resort;
+
+  for i := 0 to IDEEditorGroups.Count - 1 do
+  begin
+    Rec := IDEEditorGroups[i];
+    DebugLn(['TPackageEditorForm.CreatePackageFileEditors ',Rec^.GroupClass.ClassName]);
+    if (Rec^.GroupClass.InheritsFrom(TAbstractPackageFileIDEOptions)) and (Rec^.Items <> nil) then
+    begin
+      if Rec^.GroupClass<>nil then
+        ACaption := Rec^.GroupClass.GetGroupCaption
+      else
+        ACaption := format('Group<%d>',[i]);
+      GroupGroupBox := TGroupBox.Create(Self);
+      GroupGroupBox.Caption := ACaption;
+      GroupGroupBox.Align := alClient;
+      GroupGroupBox.Parent := EditorsGroupsPanel;
+      GroupPageControl := TPageControl.Create(Self);
+      GroupPageControl.Parent := GroupGroupBox;
+      GroupPageControl.Align := alClient;
+      FHasEditorsGroups := True;
+
+      for j := 0 to Rec^.Items.Count - 1 do
+      begin
+        ItemTabSheet := GroupPageControl.AddTabSheet;
+        ItemTabSheet.Align := alClient;
+
+        Instance := Rec^.Items[j]^.EditorClass.Create(Self);
+//        Instance.OnLoadIDEOptions := @LoadIDEOptions;
+//        Instance.OnSaveIDEOptions := @SaveIDEOptions;
+        // In principle the parameter should be a TAbstractOptionsEditorDialog,
+        // but in this case this is not available, so pass nil.
+        // Better would be to change the structure of the classes to avoid this
+        // problem.
+        Instance.Setup(Nil);
+        Instance.OnChange := @FileOptionsChange;
+        Instance.Tag := Rec^.Items[j]^.Index;
+        Instance.Parent := ItemTabSheet;
+        Instance.Rec := Rec^.Items[j];
+        ItemTabSheet.Caption := Instance.GetTitle;
+      end;
+    end;
+  end;
+  EditorsGroupsPanel.Visible := FHasEditorsGroups;
+end;
+
+procedure TPackageEditorForm.FileOptionsToGui;
+var
+  PackageOptions: TPackageFileIDEOptions;
+begin
+  if Assigned(FSingleSelectedFile) then
+  begin
+    FOptionsShownOfFile := FSingleSelectedFile;
+    PackageOptions := TPackageFileIDEOptions.Create(LazPackage, FOptionsShownOfFile);
+    try
+      PackageOptions.DoBeforeRead;
+      TraverseSettings(PackageOptions, iodaRead);
+      PackageOptions.DoAfterRead;
+    finally;
+      PackageOptions.Free;
+    end;
+  end;
+end;
+
+procedure TPackageEditorForm.GuiToFileOptions;
+var
+  PackageOptions: TPackageFileIDEOptions;
+begin
+  if Assigned(FOptionsShownOfFile) then
+  begin
+    PackageOptions := TPackageFileIDEOptions.Create(LazPackage, FOptionsShownOfFile);
+    try
+      PackageOptions.DoBeforeWrite(False);
+      TraverseSettings(PackageOptions, iodaWrite);
+      PackageOptions.DoAfterWrite(False);
+    finally;
+      PackageOptions.Free;
+    end;
+  end;
+end;
+
+procedure TPackageEditorForm.FileOptionsChange(Sender: TObject);
+begin
+  LazPackage.Modified := True;
 end;
 
 { TPackageEditors }

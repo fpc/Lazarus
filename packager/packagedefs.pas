@@ -788,7 +788,23 @@ type
     procedure UpdateAll(Immediately: boolean = false); virtual; abstract;
     property LazPackage: TLazPackage read GetLazPackage write SetLazPackage;
   end;
-  
+
+
+  { TPackageFileIDEOptions }
+
+  TPackageFileIDEOptions = class(TAbstractPackageFileIDEOptions)
+  private
+    FPackageFile: TLazPackageFile;
+    FLazPackage: TLazPackage;
+  protected
+    function GetPackageFile: TLazPackageFile; override;
+    function GetPackage: TLazPackage; override;
+  public
+    constructor Create(APackage: TLazPackage; APackageFile: TLazPackageFile);
+    class function GetInstance: TAbstractIDEOptions; override;
+    class function GetGroupCaption: string; override;
+  end;
+
 
 const
   LazPkgXMLFileVersion = 4;
@@ -1399,6 +1415,35 @@ begin
     Result:=TPkgDependency(ANode.Data)
   else
     Result:=nil;
+end;
+
+{ TPackageFileIDEOptions }
+
+function TPackageFileIDEOptions.GetPackageFile: TLazPackageFile;
+begin
+  Result := FPackageFile;
+end;
+
+constructor TPackageFileIDEOptions.Create(APackage: TLazPackage; APackageFile: TLazPackageFile);
+begin
+  inherited Create;
+  FLazPackage := APackage;
+  FPackageFile := APackageFile;
+end;
+
+class function TPackageFileIDEOptions.GetGroupCaption: string;
+begin
+  Result := lisPckOptsPackageFileOptions;
+end;
+
+class function TPackageFileIDEOptions.GetInstance: TAbstractIDEOptions;
+begin
+  Result := Nil;
+end;
+
+function TPackageFileIDEOptions.GetPackage: TLazPackage;
+begin
+  Result := FLazPackage;
 end;
 
 { TPkgFile }
@@ -4679,6 +4724,7 @@ end;
 initialization
   RegisterIDEOptionsGroup(GroupPackage, TPackageIDEOptions);
   RegisterIDEOptionsGroup(GroupPkgCompiler, TPkgCompilerOptions);
+  RegisterIDEOptionsGroup(GroupPackageFile, TPackageFileIDEOptions);
   PackageDependencies:=TAVLTree.Create(@ComparePkgDependencyNames);
 
 finalization

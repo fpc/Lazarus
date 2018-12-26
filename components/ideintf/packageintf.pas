@@ -412,6 +412,17 @@ type
     property Package: TIDEPackage read GetPackage;
   end;
 
+  { TAbstractPackageFileIDEOptions }
+
+  TAbstractPackageFileIDEOptions = class(TAbstractIDEOptions)
+  protected
+    function GetPackageFile: TLazPackageFile; virtual; abstract;
+    function GetPackage: TIDEPackage; virtual; abstract;
+  public
+    property PackageFile: TLazPackageFile read GetPackageFile;
+    property Package: TIDEPackage read GetPackage;
+  end;
+
 
 var
   PackageDescriptors: TPackageDescriptors; // will be set by the IDE

@@ -4773,6 +4773,7 @@ resourcestring
     +'%sThis means it will be installed in the IDE.'
     +'%sInstallation packages must be designtime Packages.';
   lisPckOptsPackageOptions = 'Package Options';
+  lisPckOptsPackageFileOptions = 'Additional Package File Options';
 
   // package explorer (package graph)
   lisMenuPackageGraph = 'Package Graph';
