@@ -4202,6 +4202,7 @@ end;
 function TLinkScanner.IfOptDirective: boolean;
 // {$ifopt o+} or {$ifopt o-}
 var Option, c: char;
+  v: String;
 begin
   inc(IfLevel);
   if StoreDirectives then
@@ -4216,7 +4217,8 @@ begin
     if (SrcPos<=SrcLen) then begin
       c:=Src[SrcPos];
       if c in ['+','-'] then begin
-        if (c='-')<>(Values.Variables[CompilerSwitchesNames[Option]]='0') then
+        v:=Values.Variables[CompilerSwitchesNames[Option]];
+        if (c='-')<>((v='0') or (v='')) then
         begin
           SkipTillEndifElse(lssdTillElse);
           exit;
