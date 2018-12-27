@@ -50,6 +50,7 @@ type
     procedure TestParseExternalConcat;
     procedure TestParseExternalConst;
     procedure TestParseModeTP;
+    procedure TestParseIFOpt;
     procedure TestParseProcAnoAssign;
     procedure TestParseProcAnoArg;
   end;
@@ -473,6 +474,25 @@ begin
   'program test1;',
   '{$mode tp}',
   '{ {}',
+  'begin']);
+  ParseModule;
+end;
+
+procedure TTestPascalParser.TestParseIFOpt;
+begin
+  Add([
+  'program test1;',
+  '{$IFOPT R+}',
+  'RNothingError',
+  '{$ENDIF}',
+  '{$R+}',
+  '{$IFOPT R-}',
+  'RMinusError',
+  '{$ENDIF}',
+  '{$R-}',
+  '{$IFOPT R+}',
+  'RPlusError',
+  '{$ENDIF}',
   'begin']);
   ParseModule;
 end;
