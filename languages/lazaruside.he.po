@@ -16005,6 +16005,10 @@ msgstr "משני"
 msgid "Object"
 msgstr "אובייקט"
 
+#: lazarusidestrconsts.lispckoptspackagefileoptions
+msgid "Additional Package File Options"
+msgstr ""
+
 #: lazarusidestrconsts.lispckoptspackageoptions
 msgid "Package Options"
 msgstr "אפשרויות חבילה"

@@ -15244,6 +15244,10 @@ msgstr "Minör"
 msgid "Object"
 msgstr "Nesne"
 
+#: lazarusidestrconsts.lispckoptspackagefileoptions
+msgid "Additional Package File Options"
+msgstr ""
+
 #: lazarusidestrconsts.lispckoptspackageoptions
 msgid "Package Options"
 msgstr "Paket Seçenekleri"

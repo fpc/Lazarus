@@ -14947,6 +14947,10 @@ msgstr "Al"
 msgid "Object"
 msgstr "Objektum"
 
+#: lazarusidestrconsts.lispckoptspackagefileoptions
+msgid "Additional Package File Options"
+msgstr ""
+
 #: lazarusidestrconsts.lispckoptspackageoptions
 msgid "Package Options"
 msgstr "Csomag beállításai"

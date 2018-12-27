@@ -14951,6 +14951,10 @@ msgstr "Другорядний"
 msgid "Object"
 msgstr "Об'єкт"
 
+#: lazarusidestrconsts.lispckoptspackagefileoptions
+msgid "Additional Package File Options"
+msgstr ""
+
 #: lazarusidestrconsts.lispckoptspackageoptions
 msgid "Package Options"
 msgstr "Параметри пакунка"

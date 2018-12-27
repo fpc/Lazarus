@@ -14801,6 +14801,10 @@ msgstr "Pieni"
 msgid "Object"
 msgstr "Objekti"
 
+#: lazarusidestrconsts.lispckoptspackagefileoptions
+msgid "Additional Package File Options"
+msgstr ""
+
 #: lazarusidestrconsts.lispckoptspackageoptions
 msgid "Package Options"
 msgstr "Paketin asetukset"

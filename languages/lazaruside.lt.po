@@ -15077,6 +15077,10 @@ msgstr "Mažasis"
 msgid "Object"
 msgstr "Objektas"
 
+#: lazarusidestrconsts.lispckoptspackagefileoptions
+msgid "Additional Package File Options"
+msgstr ""
+
 #: lazarusidestrconsts.lispckoptspackageoptions
 msgid "Package Options"
 msgstr "Paketo parinktys"

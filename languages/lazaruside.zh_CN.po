@@ -15346,6 +15346,10 @@ msgstr "次要"
 msgid "Object"
 msgstr "对象"
 
+#: lazarusidestrconsts.lispckoptspackagefileoptions
+msgid "Additional Package File Options"
+msgstr ""
+
 #: lazarusidestrconsts.lispckoptspackageoptions
 msgid "Package Options"
 msgstr "包选项"

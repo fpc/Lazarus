@@ -15021,6 +15021,10 @@ msgstr "Unter"
 msgid "Object"
 msgstr "Objekt"
 
+#: lazarusidestrconsts.lispckoptspackagefileoptions
+msgid "Additional Package File Options"
+msgstr ""
+
 #: lazarusidestrconsts.lispckoptspackageoptions
 msgid "Package Options"
 msgstr "Package-Einstellungen"

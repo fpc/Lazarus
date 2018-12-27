@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-12-25 01:30+0300\n"
+"PO-Revision-Date: 2018-12-28 01:52+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -14946,6 +14946,10 @@ msgstr "Младшая"
 #: lazarusidestrconsts.lispckoptsobject
 msgid "Object"
 msgstr "Объект"
+
+#: lazarusidestrconsts.lispckoptspackagefileoptions
+msgid "Additional Package File Options"
+msgstr "Дополнительные параметры файла пакета"
 
 #: lazarusidestrconsts.lispckoptspackageoptions
 msgid "Package Options"

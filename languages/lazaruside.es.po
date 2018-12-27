@@ -15284,6 +15284,10 @@ msgstr "Menor"
 msgid "Object"
 msgstr "Objecto"
 
+#: lazarusidestrconsts.lispckoptspackagefileoptions
+msgid "Additional Package File Options"
+msgstr ""
+
 #: lazarusidestrconsts.lispckoptspackageoptions
 msgid "Package Options"
 msgstr "Opciones de Paquete"

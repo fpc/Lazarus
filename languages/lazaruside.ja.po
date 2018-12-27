@@ -15045,6 +15045,10 @@ msgstr "マイナー"
 msgid "Object"
 msgstr "オブジェクト"
 
+#: lazarusidestrconsts.lispckoptspackagefileoptions
+msgid "Additional Package File Options"
+msgstr ""
+
 #: lazarusidestrconsts.lispckoptspackageoptions
 msgid "Package Options"
 msgstr "パッケージオプション"
