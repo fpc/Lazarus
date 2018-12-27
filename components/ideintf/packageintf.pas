@@ -49,11 +49,14 @@ const
 
 type
   TIDEPackage = class;
+  TAbstractPackageFileIDEOptions = class;
+  TAbstractPackageFileIDEOptionsClass = class of TAbstractPackageFileIDEOptions;
 
   { TLazPackageFile }
 
   TLazPackageFile = class(TIDEOwnedFile)
   private
+    FIDEOptionsList: TFPObjectList;
     FDisableI18NForLFM: boolean;
     FFileType: TPkgFileType;
     FRemoved: boolean;
@@ -65,6 +68,8 @@ type
     procedure SetDisableI18NForLFM(AValue: boolean); virtual;
     procedure SetFileType(const AValue: TPkgFileType); virtual;
   public
+    destructor Destroy; override;
+    function GetOptionsInstanceOf(OptionsClass: TAbstractPackageFileIDEOptionsClass): TAbstractPackageFileIDEOptions;
     property LazPackage: TIDEPackage read GetIDEPackage;
     property Removed: boolean read FRemoved write SetRemoved;
     property DisableI18NForLFM: boolean read FDisableI18NForLFM write SetDisableI18NForLFM;
@@ -419,6 +424,9 @@ type
     function GetPackageFile: TLazPackageFile; virtual; abstract;
     function GetPackage: TIDEPackage; virtual; abstract;
   public
+    constructor Create(APackage: TIDEPackage; APackageFile: TLazPackageFile); virtual; abstract;
+    class function GetInstance: TAbstractIDEOptions; overload; override;
+    class function GetInstance(APackage: TIDEPackage; AFile: TLazPackageFile): TAbstractIDEOptions; overload; virtual; abstract;
     property PackageFile: TLazPackageFile read GetPackageFile;
     property Package: TIDEPackage read GetPackage;
   end;
@@ -484,6 +492,13 @@ begin
     NewItemPkg.Descriptor:=PkgDesc;
     RegisterNewDialogItem(PkgDescGroupName,NewItemPkg);
   end;
+end;
+
+{ TAbstractPackageFileIDEOptions }
+
+class function TAbstractPackageFileIDEOptions.GetInstance: TAbstractIDEOptions;
+begin
+  Result := Nil;
 end;
 
 
@@ -823,6 +838,30 @@ end;
 procedure TLazPackageFile.SetRemoved(const AValue: boolean);
 begin
   FRemoved:=AValue;
+end;
+
+destructor TLazPackageFile.Destroy;
+begin
+  FIDEOptionsList.Free;
+  inherited Destroy;
+end;
+
+function TLazPackageFile.GetOptionsInstanceOf(OptionsClass: TAbstractPackageFileIDEOptionsClass): TAbstractPackageFileIDEOptions;
+var
+  i: Integer;
+begin
+  if not Assigned(FIDEOptionsList) then
+  begin
+    FIDEOptionsList := TFPObjectList.Create(True);
+  end;
+  for i := 0 to FIDEOptionsList.Count -1 do
+    if OptionsClass=FIDEOptionsList.Items[i].ClassType then
+    begin
+      Result := TAbstractPackageFileIDEOptions(FIDEOptionsList.Items[i]);
+      Exit;
+    end;
+  Result := OptionsClass.Create(LazPackage, Self);
+  FIDEOptionsList.Add(Result);
 end;
 
 initialization

@@ -800,8 +800,8 @@ type
     function GetPackageFile: TLazPackageFile; override;
     function GetPackage: TLazPackage; override;
   public
-    constructor Create(APackage: TLazPackage; APackageFile: TLazPackageFile);
-    class function GetInstance: TAbstractIDEOptions; override;
+    constructor Create(APackage: TIDEPackage; APackageFile: TLazPackageFile); override;
+    class function GetInstance(APackage: TIDEPackage; AFile: TLazPackageFile): TAbstractIDEOptions; overload; override;
     class function GetGroupCaption: string; override;
   end;
 
@@ -1424,10 +1424,9 @@ begin
   Result := FPackageFile;
 end;
 
-constructor TPackageFileIDEOptions.Create(APackage: TLazPackage; APackageFile: TLazPackageFile);
+constructor TPackageFileIDEOptions.Create(APackage: TIDEPackage; APackageFile: TLazPackageFile);
 begin
-  inherited Create;
-  FLazPackage := APackage;
+  FLazPackage := APackage as TLazPackage;
   FPackageFile := APackageFile;
 end;
 
@@ -1436,9 +1435,9 @@ begin
   Result := lisPckOptsPackageFileOptions;
 end;
 
-class function TPackageFileIDEOptions.GetInstance: TAbstractIDEOptions;
+class function TPackageFileIDEOptions.GetInstance(APackage: TIDEPackage; AFile: TLazPackageFile): TAbstractIDEOptions;
 begin
-  Result := Nil;
+  Result := AFile.GetOptionsInstanceOf(TPackageFileIDEOptions);
 end;
 
 function TPackageFileIDEOptions.GetPackage: TLazPackage;

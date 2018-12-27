@@ -362,9 +362,10 @@ type
     procedure ExtendIncPathForNewIncludeFile(const AnIncludeFile: string;
       var IgnoreIncPaths: TFilenameToStringTree);
     function CanBeAddedToProject: boolean;
-    procedure TraverseSettings(AOptions: TPackageFileIDEOptions; anAction: TIDEPackageOptsDlgAction);
+    function PassesFilter(rec: PIDEOptionsGroupRec): Boolean;
+    procedure TraverseSettings(AOptions: TAbstractPackageFileIDEOptions; anAction: TIDEPackageOptsDlgAction);
     procedure FileOptionsToGui;
-    procedure GuiToFileOptions;
+    procedure GuiToFileOptions(Restore: boolean);
     procedure FileOptionsChange(Sender: TObject);
   protected
     fFlags: TPEFlags;
@@ -2660,7 +2661,7 @@ var
 begin
   if not CanUpdate(pefNeedUpdateProperties,Immediately) then exit;
 
-  GuiToFileOptions;
+  GuiToFileOptions(False);
 
   FPlugins.Clear;
 
@@ -3147,7 +3148,7 @@ end;
 
 procedure TPackageEditorForm.DoSave(SaveAs: boolean);
 begin
-  GuiToFileOptions;
+  GuiToFileOptions(False);
   PackageEditors.SavePackage(LazPackage,SaveAs);
   UpdateTitle;
   UpdateButtons;
@@ -3322,7 +3323,8 @@ begin
   inherited Destroy;
 end;
 
-procedure TPackageEditorForm.TraverseSettings(AOptions: TPackageFileIDEOptions; anAction: TIDEPackageOptsDlgAction);
+procedure TPackageEditorForm.TraverseSettings(AOptions: TAbstractPackageFileIDEOptions;
+  anAction: TIDEPackageOptsDlgAction);
 
   procedure Traverse(Control: TWinControl);
   var
@@ -3369,7 +3371,7 @@ begin
   begin
     Rec := IDEEditorGroups[i];
     DebugLn(['TPackageEditorForm.CreatePackageFileEditors ',Rec^.GroupClass.ClassName]);
-    if (Rec^.GroupClass.InheritsFrom(TAbstractPackageFileIDEOptions)) and (Rec^.Items <> nil) then
+    if PassesFilter(Rec) then
     begin
       if Rec^.GroupClass<>nil then
         ACaption := Rec^.GroupClass.GetGroupCaption
@@ -3409,36 +3411,88 @@ begin
 end;
 
 procedure TPackageEditorForm.FileOptionsToGui;
+type
+  TStage = (sBefore, sRead, sAfter);
 var
-  PackageOptions: TPackageFileIDEOptions;
+  i: integer;
+  Rec: PIDEOptionsGroupRec;
+  Instance: TAbstractPackageFileIDEOptions;
+  InstanceList: TFPList;
+  stag: TStage;
 begin
   if Assigned(FSingleSelectedFile) then
   begin
     FOptionsShownOfFile := FSingleSelectedFile;
-    PackageOptions := TPackageFileIDEOptions.Create(LazPackage, FOptionsShownOfFile);
-    try
-      PackageOptions.DoBeforeRead;
-      TraverseSettings(PackageOptions, iodaRead);
-      PackageOptions.DoAfterRead;
-    finally;
-      PackageOptions.Free;
+    for stag:=low(TStage) to High(TStage) do
+    begin
+      InstanceList:=TFPList.Create;
+      for i := 0 to IDEEditorGroups.Count - 1 do
+      begin
+        Rec := IDEEditorGroups[i];
+        if not PassesFilter(Rec) then
+          Continue;
+        Instance := TAbstractPackageFileIDEOptions(TAbstractPackageFileIDEOptionsClass(Rec^.GroupClass).GetInstance(LazPackage, FOptionsShownOfFile));
+        if (InstanceList.IndexOf(Instance)<0) and Assigned(Instance) then
+        begin
+          InstanceList.Add(Instance);
+          case stag of
+          sBefore:
+            Instance.DoBeforeRead;
+          sRead:
+            TraverseSettings(Instance,iodaRead);
+          sAfter:
+            Instance.DoAfterRead;
+          end;
+        end;
+      end;
+      if stag=sRead then
+        TraverseSettings(nil,iodaRead); // load settings that does not belong to any group
+      InstanceList.Free;
     end;
   end;
 end;
 
-procedure TPackageEditorForm.GuiToFileOptions;
+procedure TPackageEditorForm.GuiToFileOptions(Restore: boolean);
+type
+  TStage = (sBefore, sWrite, sAfter);
 var
-  PackageOptions: TPackageFileIDEOptions;
+  i: integer;
+  Rec: PIDEOptionsGroupRec;
+  Instance: TAbstractPackageFileIDEOptions;
+  stag: TStage;
 begin
   if Assigned(FOptionsShownOfFile) then
   begin
-    PackageOptions := TPackageFileIDEOptions.Create(LazPackage, FOptionsShownOfFile);
-    try
-      PackageOptions.DoBeforeWrite(False);
-      TraverseSettings(PackageOptions, iodaWrite);
-      PackageOptions.DoAfterWrite(False);
-    finally;
-      PackageOptions.Free;
+    for stag:=low(TStage) to High(TStage) do
+    begin
+      for i := 0 to IDEEditorGroups.Count - 1 do
+      begin
+        Rec := IDEEditorGroups[i];
+        if not PassesFilter(Rec) then
+          Continue;
+        Instance := TAbstractPackageFileIDEOptions(TAbstractPackageFileIDEOptionsClass(Rec^.GroupClass).GetInstance(LazPackage, FOptionsShownOfFile));
+        if Assigned(Instance) then
+        begin
+          case stag of
+          sBefore:
+            Instance.DoBeforeWrite(Restore);
+          sWrite:
+            if Restore then
+              TraverseSettings(Instance,iodaRestore)
+            else
+              TraverseSettings(Instance,iodaWrite);
+          sAfter:
+            Instance.DoAfterWrite(Restore);
+          end;
+        end;
+      end;
+
+      // save settings that do not belong to any group
+      if stag=sWrite then
+        if Restore then
+          TraverseSettings(nil,iodaRestore)
+        else
+          TraverseSettings(nil,iodaWrite);
     end;
   end;
 end;
@@ -3446,6 +3500,11 @@ end;
 procedure TPackageEditorForm.FileOptionsChange(Sender: TObject);
 begin
   LazPackage.Modified := True;
+end;
+
+function TPackageEditorForm.PassesFilter(rec: PIDEOptionsGroupRec): Boolean;
+begin
+  Result := (Rec^.GroupClass.InheritsFrom(TAbstractPackageFileIDEOptions)) and (Rec^.Items <> nil);
 end;
 
 { TPackageEditors }
