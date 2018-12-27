@@ -18,7 +18,10 @@ var
 begin
   Widget := AInfo^.CoreWidget;
   FixWidget := GetFixedWidget(Widget);
-  Window := GetControlWindow(FixWidget);
+  if GTK_IS_TEXT_VIEW(FixWidget) then
+    Window := gtk_text_view_get_window(PGtkTextView(FixWidget), GTK_TEXT_WINDOW_TEXT)
+  else
+    Window := GetControlWindow(FixWidget);
   if Window = nil then Exit;
   // always recurse windows which do not accept controls.
   // this way we will catch all widgets with double windows
