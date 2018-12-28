@@ -2635,6 +2635,7 @@ var
     if (Pkg=nil) then exit;
     Pkg.Flags:=Pkg.Flags+[lpfVisited];
     if (Pkg.FirstRequiredDependency=nil)
+    or (Pkg.GetActiveBuildMethod=bmFPMake) // Packages compiled by FPMake almost always change units in the default fpc-search path. Checking of changed dependencies should be done using the mechanisms of fppkg.
     or Pkg.IsVirtual or (Pkg.AutoUpdate<>pupAsNeeded) then exit;
     // this package is compiled automatically and has dependencies
     OutputDir:=ChompPathDelim(Pkg.GetOutputDirectory);
