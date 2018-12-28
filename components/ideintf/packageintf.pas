@@ -112,14 +112,14 @@ type
   private
     FIDAsString: string;
     FIDAsWord: string;
-    function GetIDAsString: string;
-    function GetIDAsWord: string;
   protected
     FVersion: TPkgVersion;
     procedure SetName(const NewName: TComponentName); override;
     procedure UpdateIDAsString;
     procedure VersionChanged(Sender: TObject); virtual;
     function GetDirectory: string; override;
+    function GetIDAsString: string;
+    function GetIDAsWord: string;
   public
     procedure AssignOptions(Source: TPersistent); virtual;
     constructor Create; virtual; reintroduce;

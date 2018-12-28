@@ -32,6 +32,7 @@ type
       FBoundsReportedToChildren: boolean;
       FIsOpaque:boolean;
       FIsEventRouting:boolean;
+  protected
     function GetHasCaret: Boolean;
     procedure SetHasCaret(AValue: Boolean);
     function GetIsOpaque: Boolean;
