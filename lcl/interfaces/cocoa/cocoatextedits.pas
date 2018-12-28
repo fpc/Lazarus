@@ -141,7 +141,12 @@ type
 
   TCocoaFieldEditor = objcclass(NSTextView)
   public
+    // This flag is used to hack an infinite loop
+    // when switching "editable" (readonly) mode of NSTextField
+    // see TCocoaWSCustomEdit.SetReadOnly
+    goingReadOnly: Boolean;
     function lclGetCallback: ICommonCallback; override;
+    function becomeFirstResponder: Boolean; override;
     // mouse
     procedure keyDown(event: NSEvent); override;
     procedure mouseDown(event: NSEvent); override;
@@ -591,6 +596,12 @@ function TCocoaFieldEditor.lclGetCallback: ICommonCallback;
 begin
   if Assigned(delegate) then Result := NSObject(delegate).lclGetCallback
   else Result := nil;
+end;
+
+function TCocoaFieldEditor.becomeFirstResponder: Boolean;
+begin
+  if goingReadOnly then Result := false
+  else Result:=inherited becomeFirstResponder;
 end;
 
 procedure TCocoaFieldEditor.keyDown(event: NSEvent);

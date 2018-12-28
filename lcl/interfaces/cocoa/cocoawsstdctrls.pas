@@ -977,8 +977,54 @@ end;
 
 
 class procedure TCocoaWSCustomEdit.SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean);
+var
+  lHandle: TCocoaTextField;
+  w : NSWindow;
+  t : NSText;
+  isFocused: Boolean;
+  r : Boolean;
+  b : Boolean;
+  rsp : NSResponder;
+  ed  : TCocoaFieldEditor;
 begin
-//  NSTextField(ACustomEdit.Handle).setEditable(not NewReadOnly);
+  lHandle := GetTextField(ACustomEdit);
+  if not Assigned(lHandle) then Exit;
+
+  ed := nil; //if lHandle is "focused" then ed would be <> nil
+  w := lHandle.window;
+  if not Assigned(w) then t := nil
+  else begin
+    rsp := w.firstResponder;
+    if (Assigned(rsp)) and (rsp.isKindOfClass(TCocoaFieldEditor)) then
+    begin
+      ed := TCocoaFieldEditor(rsp);
+      if (NSObject(ed.delegate) = lHandle) then
+      begin
+        ed.retain;
+        // the hack is needed to prevent infinite loop
+        // on switching editable (ReadOnly) status.
+        // without prevention of Editor focusing, AppKit goes into an infinite loop:
+        // AppKit`-[_NSKeyboardFocusClipView removeFromSuperview] + 55
+        // AppKit`-[NSWindow endEditingFor:] + 429
+        // AppKit`-[NSView removeFromSuperview] + 78
+        // AppKit`-[_NSKeyboardFocusClipView removeFromSuperview] + 55
+        // AppKit`-[NSWindow endEditingFor:] + 429
+        // AppKit`-[NSView removeFromSuperview] + 78
+        // AppKit`-[_NSKeyboardFocusClipView removeFromSuperview] + 55
+        ed.goingReadOnly := true;
+      end
+      else
+        ed := nil; // someone else is focused
+    end;
+  end;
+
+  lHandle.setEditable_(ObjCBool(not NewReadOnly));
+  lHandle.setSelectable_(1); // allow to select read-only text (LCL compatible)
+
+  if Assigned(ed) then begin
+    ed.goingReadOnly := false;
+    ed.release;
+  end;
 end;
 
 class procedure TCocoaWSCustomEdit.SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer);
