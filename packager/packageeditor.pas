@@ -239,7 +239,8 @@ type
     UsePopupMenu: TPopupMenu;
     ItemsPopupMenu: TPopupMenu;
     MorePopupMenu: TPopupMenu;
-    EditorsGroupsPanel: TPanel;
+    PropsPageControl: TPageControl;
+    CommonOptionsTabSheet: TTabSheet;
     procedure AddToProjectClick(Sender: TObject);
     procedure AddToUsesPkgSectionCheckBoxChange(Sender: TObject);
     procedure ApplyDependencyButtonClick(Sender: TObject);
@@ -327,7 +328,6 @@ type
     FSingleSelectedNode: TTreeNode;
     FSingleSelectedFile: TPkgFile;
     FSingleSelectedDep: TPkgDependency;
-    FHasEditorsGroups: Boolean;
     FOptionsShownOfFile: TPkgFile;
     FFirstNodeData: array[TPENodeType] of TPENodeData;
     fUpdateLock: integer;
@@ -2000,6 +2000,7 @@ begin
   ItemsTreeView.EndUpdate;
 
   PropsGroupBox.Caption:=lisPckEditFileProperties;
+  CommonOptionsTabSheet.Caption:=lisPckEditCommonOptions;
 
   CallRegisterProcCheckBox.Caption:=lisPckEditRegisterUnit;
   CallRegisterProcCheckBox.Hint:=Format(lisPckEditCallRegisterProcedureOfSelectedUnit, ['"', '"']);
@@ -2020,7 +2021,7 @@ begin
   with FDirSummaryLabel do
   begin
     Name:='DirSummaryLabel';
-    Parent:=PropsGroupBox;
+    Parent:=CommonOptionsTabSheet;
   end;
 
   CreatePackageFileEditors;
@@ -2805,10 +2806,14 @@ begin
     end;
 
     if FSingleSelectedFile<>nil then begin
-      EditorsGroupsPanel.Visible := FHasEditorsGroups;
+      for i := 2 to PropsPageControl.PageCount -1 do
+        PropsPageControl.pages[i].Visible := True;
       FileOptionsToGui;
+      PropsPageControl.ShowTabs := PropsPageControl.PageCount > 1;
     end else begin
-      EditorsGroupsPanel.Visible := False;
+      for i := 2 to PropsPageControl.PageCount -1 do
+        PropsPageControl.pages[i].Visible := False;
+      PropsPageControl.ShowTabs := False;
     end;
   finally
     EnableAlign;
@@ -3350,7 +3355,7 @@ procedure TPackageEditorForm.TraverseSettings(AOptions: TAbstractPackageFileIDEO
   end;
 
 begin
-  Traverse(EditorsGroupsPanel);
+  Traverse(PropsPageControl);
 end;
 
 procedure TPackageEditorForm.CreatePackageFileEditors;
@@ -3359,12 +3364,12 @@ var
   Instance: TAbstractIDEOptionsEditor;
   i, j: integer;
   Rec: PIDEOptionsGroupRec;
+  AGroupCaption: string;
   ACaption: string;
   ItemTabSheet: TTabSheet;
   GroupPageControl: TPageControl;
   GroupGroupBox: TGroupBox;
 begin
-  FHasEditorsGroups := False;
   IDEEditorGroups.Resort;
 
   for i := 0 to IDEEditorGroups.Count - 1 do
@@ -3374,21 +3379,13 @@ begin
     if PassesFilter(Rec) then
     begin
       if Rec^.GroupClass<>nil then
-        ACaption := Rec^.GroupClass.GetGroupCaption
+        AGroupCaption := Rec^.GroupClass.GetGroupCaption
       else
-        ACaption := format('Group<%d>',[i]);
-      GroupGroupBox := TGroupBox.Create(Self);
-      GroupGroupBox.Caption := ACaption;
-      GroupGroupBox.Align := alClient;
-      GroupGroupBox.Parent := EditorsGroupsPanel;
-      GroupPageControl := TPageControl.Create(Self);
-      GroupPageControl.Parent := GroupGroupBox;
-      GroupPageControl.Align := alClient;
-      FHasEditorsGroups := True;
+        AGroupCaption := '';
 
       for j := 0 to Rec^.Items.Count - 1 do
       begin
-        ItemTabSheet := GroupPageControl.AddTabSheet;
+        ItemTabSheet := PropsPageControl.AddTabSheet;
         ItemTabSheet.Align := alClient;
 
         Instance := Rec^.Items[j]^.EditorClass.Create(Self);
@@ -3403,11 +3400,13 @@ begin
         Instance.Tag := Rec^.Items[j]^.Index;
         Instance.Parent := ItemTabSheet;
         Instance.Rec := Rec^.Items[j];
-        ItemTabSheet.Caption := Instance.GetTitle;
+        ACaption := Instance.GetTitle;
+        if AGroupCaption <> ACaption then
+          ACaption := AGroupCaption + ' - ' + ACaption;
+        ItemTabSheet.Caption := ACaption;
       end;
     end;
   end;
-  EditorsGroupsPanel.Visible := FHasEditorsGroups;
 end;
 
 procedure TPackageEditorForm.FileOptionsToGui;

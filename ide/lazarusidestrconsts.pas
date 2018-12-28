@@ -4661,6 +4661,7 @@ resourcestring
   lisPkgEdMoreFunctionsForThePackage = 'More functions for the package';
   lisPckEditRequiredPackages = 'Required Packages';
   lisPckEditFileProperties = 'File Properties';
+  lisPckEditCommonOptions = 'Common';
   lisPckEditRegisterUnit = 'Register unit';
   lisPckEditCallRegisterProcedureOfSelectedUnit = 'Call %sRegister%s '
     +'procedure of selected unit';

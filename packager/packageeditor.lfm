@@ -24,150 +24,180 @@ object PackageEditorForm: TPackageEditorForm
     AutoSize = True
     ButtonHeight = 46
     ButtonWidth = 23
+    ParentFont = False
     ShowCaptions = True
     TabOrder = 0
   end
   object PropsGroupBox: TGroupBox
     Left = 0
-    Height = 118
+    Height = 216
     Top = 218
     Width = 464
     Align = alBottom
     Caption = 'PropsGroupBox'
-    ClientHeight = 98
+    ClientHeight = 196
     ClientWidth = 462
+    ParentFont = False
     TabOrder = 3
-    object CallRegisterProcCheckBox: TCheckBox
+    object PropsPageControl: TPageControl
       Left = 0
-      Height = 23
+      Height = 196
       Top = 0
-      Width = 202
-      Caption = 'CallRegisterProcCheckBox'
-      OnChange = CallRegisterProcCheckBoxChange
-      ParentShowHint = False
-      ShowHint = True
-      TabOrder = 0
-    end
-    object AddToUsesPkgSectionCheckBox: TCheckBox
-      AnchorSideLeft.Control = CallRegisterProcCheckBox
-      AnchorSideLeft.Side = asrBottom
-      Left = 212
-      Height = 23
-      Top = 0
-      Width = 239
-      BorderSpacing.Left = 10
-      Caption = 'AddToUsesPkgSectionCheckBox'
-      OnChange = AddToUsesPkgSectionCheckBoxChange
-      ParentShowHint = False
-      ShowHint = True
-      TabOrder = 1
-    end
-    object UseMinVersionCheckBox: TCheckBox
-      AnchorSideLeft.Control = PropsGroupBox
-      AnchorSideTop.Control = MinVersionEdit
-      AnchorSideTop.Side = asrCenter
-      Left = 0
-      Height = 23
-      Top = 7
-      Width = 191
-      Caption = 'UseMinVersionCheckBox'
-      OnChange = UseMinVersionCheckBoxChange
-      TabOrder = 2
-    end
-    object MinVersionEdit: TEdit
-      AnchorSideLeft.Control = UseMinVersionCheckBox
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = PropsGroupBox
-      Left = 201
-      Height = 36
-      Top = 0
-      Width = 100
-      BorderSpacing.Left = 10
-      OnChange = MinVersionEditChange
-      TabOrder = 3
-      Text = 'MinVersionEdit'
-    end
-    object UseMaxVersionCheckBox: TCheckBox
-      AnchorSideLeft.Control = PropsGroupBox
-      AnchorSideTop.Control = MaxVersionEdit
-      AnchorSideTop.Side = asrCenter
-      Left = 0
-      Height = 23
-      Top = 45
-      Width = 194
-      Caption = 'UseMaxVersionCheckBox'
-      OnChange = UseMaxVersionCheckBoxChange
-      TabOrder = 4
-    end
-    object MaxVersionEdit: TEdit
-      AnchorSideLeft.Control = UseMaxVersionCheckBox
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = MinVersionEdit
-      AnchorSideTop.Side = asrBottom
-      Left = 204
-      Height = 36
-      Top = 38
-      Width = 100
-      BorderSpacing.Left = 10
-      BorderSpacing.Top = 2
-      OnChange = MaxVersionEditChange
-      TabOrder = 5
-      Text = 'MaxVersionEdit'
-    end
-    object ApplyDependencyButton: TButton
-      AnchorSideLeft.Control = PropsGroupBox
-      AnchorSideTop.Control = MaxVersionEdit
-      AnchorSideTop.Side = asrBottom
-      Left = 0
-      Height = 35
-      Top = 80
-      Width = 178
-      AutoSize = True
-      BorderSpacing.Top = 6
-      Caption = 'ApplyDependencyButton'
-      OnClick = ApplyDependencyButtonClick
-      TabOrder = 6
-    end
-    object RegisteredPluginsGroupBox: TGroupBox
-      Left = 0
-      Height = 71
-      Top = 27
       Width = 462
-      Align = alBottom
-      Anchors = [akTop, akLeft, akRight, akBottom]
-      BorderSpacing.Top = 6
-      Caption = 'RegisteredPluginsGroupBox'
-      ClientHeight = 51
-      ClientWidth = 460
-      TabOrder = 7
-      object RegisteredListBox: TListBox
-        Left = 0
-        Height = 51
-        Top = 0
-        Width = 460
-        Align = alClient
-        ItemHeight = 0
-        OnDrawItem = RegisteredListBoxDrawItem
-        ScrollWidth = 458
-        Style = lbOwnerDrawFixed
-        TabOrder = 0
-        TopIndex = -1
+      ActivePage = CommonOptionsTabSheet
+      Align = alClient
+      ParentFont = False
+      ShowTabs = False
+      TabIndex = 0
+      TabOrder = 0
+      object CommonOptionsTabSheet: TTabSheet
+        Caption = 'Common'
+        ClientHeight = 192
+        ClientWidth = 452
+        ParentFont = False
+        object CallRegisterProcCheckBox: TCheckBox
+          Left = 0
+          Height = 23
+          Top = 0
+          Width = 202
+          Caption = 'CallRegisterProcCheckBox'
+          OnChange = CallRegisterProcCheckBoxChange
+          ParentFont = False
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 0
+        end
+        object AddToUsesPkgSectionCheckBox: TCheckBox
+          AnchorSideLeft.Control = CallRegisterProcCheckBox
+          AnchorSideLeft.Side = asrBottom
+          Left = 212
+          Height = 23
+          Top = 0
+          Width = 239
+          BorderSpacing.Left = 10
+          Caption = 'AddToUsesPkgSectionCheckBox'
+          OnChange = AddToUsesPkgSectionCheckBoxChange
+          ParentFont = False
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 1
+        end
+        object UseMinVersionCheckBox: TCheckBox
+          AnchorSideLeft.Control = PropsGroupBox
+          AnchorSideTop.Control = MinVersionEdit
+          AnchorSideTop.Side = asrCenter
+          Left = 0
+          Height = 23
+          Top = 7
+          Width = 191
+          Caption = 'UseMinVersionCheckBox'
+          OnChange = UseMinVersionCheckBoxChange
+          ParentFont = False
+          TabOrder = 2
+        end
+        object MinVersionEdit: TEdit
+          AnchorSideLeft.Control = UseMinVersionCheckBox
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = PropsGroupBox
+          Left = 201
+          Height = 36
+          Top = 0
+          Width = 100
+          BorderSpacing.Left = 10
+          OnChange = MinVersionEditChange
+          ParentFont = False
+          TabOrder = 3
+          Text = 'MinVersionEdit'
+        end
+        object UseMaxVersionCheckBox: TCheckBox
+          AnchorSideLeft.Control = PropsGroupBox
+          AnchorSideTop.Control = MaxVersionEdit
+          AnchorSideTop.Side = asrCenter
+          Left = 0
+          Height = 23
+          Top = 45
+          Width = 194
+          Caption = 'UseMaxVersionCheckBox'
+          OnChange = UseMaxVersionCheckBoxChange
+          ParentFont = False
+          TabOrder = 4
+        end
+        object MaxVersionEdit: TEdit
+          AnchorSideLeft.Control = UseMaxVersionCheckBox
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = MinVersionEdit
+          AnchorSideTop.Side = asrBottom
+          Left = 204
+          Height = 36
+          Top = 38
+          Width = 100
+          BorderSpacing.Left = 10
+          BorderSpacing.Top = 2
+          OnChange = MaxVersionEditChange
+          ParentFont = False
+          TabOrder = 5
+          Text = 'MaxVersionEdit'
+        end
+        object ApplyDependencyButton: TButton
+          AnchorSideLeft.Control = PropsGroupBox
+          AnchorSideTop.Control = MaxVersionEdit
+          AnchorSideTop.Side = asrBottom
+          Left = 0
+          Height = 35
+          Top = 80
+          Width = 178
+          AutoSize = True
+          BorderSpacing.Top = 6
+          Caption = 'ApplyDependencyButton'
+          OnClick = ApplyDependencyButtonClick
+          ParentFont = False
+          TabOrder = 6
+        end
+        object RegisteredPluginsGroupBox: TGroupBox
+          Left = 0
+          Height = 165
+          Top = 27
+          Width = 452
+          Align = alBottom
+          Anchors = [akTop, akLeft, akRight, akBottom]
+          BorderSpacing.Top = 6
+          Caption = 'RegisteredPluginsGroupBox'
+          ClientHeight = 145
+          ClientWidth = 450
+          ParentFont = False
+          TabOrder = 7
+          object RegisteredListBox: TListBox
+            Left = 0
+            Height = 145
+            Top = 0
+            Width = 450
+            Align = alClient
+            ItemHeight = 0
+            OnDrawItem = RegisteredListBoxDrawItem
+            ParentFont = False
+            ScrollWidth = 448
+            Style = lbOwnerDrawFixed
+            TabOrder = 0
+            TopIndex = -1
+          end
+        end
+        object DisableI18NForLFMCheckBox: TCheckBox
+          AnchorSideLeft.Control = AddToUsesPkgSectionCheckBox
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = AddToUsesPkgSectionCheckBox
+          Left = 457
+          Height = 23
+          Top = 0
+          Width = 225
+          BorderSpacing.Left = 6
+          Caption = 'DisableI18NForLFMCheckBox'
+          OnChange = DisableI18NForLFMCheckBoxChange
+          ParentFont = False
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 8
+        end
       end
-    end
-    object DisableI18NForLFMCheckBox: TCheckBox
-      AnchorSideLeft.Control = AddToUsesPkgSectionCheckBox
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = AddToUsesPkgSectionCheckBox
-      Left = 457
-      Height = 23
-      Top = 0
-      Width = 225
-      BorderSpacing.Left = 6
-      Caption = 'DisableI18NForLFMCheckBox'
-      OnChange = DisableI18NForLFMCheckBoxChange
-      ParentShowHint = False
-      ShowHint = True
-      TabOrder = 8
     end
   end
   object StatusBar: TStatusBar
@@ -176,6 +206,7 @@ object PackageEditorForm: TPackageEditorForm
     Top = 434
     Width = 464
     Panels = <>
+    ParentFont = False
   end
   object Splitter1: TSplitter
     Cursor = crVSplit
@@ -195,6 +226,7 @@ object PackageEditorForm: TPackageEditorForm
     BevelOuter = bvNone
     ClientHeight = 28
     ClientWidth = 464
+    ParentFont = False
     TabOrder = 1
     object DirectoryHierarchyButton: TSpeedButton
       AnchorSideLeft.Control = OpenButton
@@ -215,6 +247,7 @@ object PackageEditorForm: TPackageEditorForm
       GroupIndex = 1
       OnClick = DirectoryHierarchyButtonClick
       ShowHint = True
+      ParentFont = False
       ParentShowHint = False
     end
     object SortAlphabeticallyButton: TSpeedButton
@@ -235,6 +268,7 @@ object PackageEditorForm: TPackageEditorForm
       GroupIndex = 2
       OnClick = SortAlphabeticallyButtonClick
       ShowHint = True
+      ParentFont = False
       ParentShowHint = False
     end
     object FilterEdit: TTreeFilterEdit
@@ -274,6 +308,7 @@ object PackageEditorForm: TPackageEditorForm
       Constraints.MinWidth = 25
       OnClick = OpenFileMenuItemClick
       ShowHint = True
+      ParentFont = False
       ParentShowHint = False
     end
     object MoveUpBtn: TSpeedButton
@@ -291,6 +326,7 @@ object PackageEditorForm: TPackageEditorForm
       Enabled = False
       OnClick = MoveUpBtnClick
       ShowHint = True
+      ParentFont = False
       ParentShowHint = False
     end
     object MoveDownBtn: TSpeedButton
@@ -308,6 +344,7 @@ object PackageEditorForm: TPackageEditorForm
       Enabled = False
       OnClick = MoveDownBtnClick
       ShowHint = True
+      ParentFont = False
       ParentShowHint = False
     end
   end
@@ -320,6 +357,7 @@ object PackageEditorForm: TPackageEditorForm
     BorderSpacing.Top = 1
     DragMode = dmAutomatic
     MultiSelect = True
+    ParentFont = False
     PopupMenu = ItemsPopupMenu
     ReadOnly = True
     RightClickSelect = True
@@ -331,15 +369,6 @@ object PackageEditorForm: TPackageEditorForm
     OnKeyDown = ItemsTreeViewKeyDown
     OnSelectionChanged = ItemsTreeViewSelectionChanged
     Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
-  end
-  object EditorsGroupsPanel: TPanel
-    Left = 0
-    Height = 98
-    Top = 336
-    Width = 464
-    Align = alBottom
-    BevelOuter = bvNone
-    TabOrder = 6
   end
   object ItemsPopupMenu: TPopupMenu
     OnPopup = ItemsPopupMenuPopup
