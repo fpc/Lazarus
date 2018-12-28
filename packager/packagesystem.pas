@@ -1583,7 +1583,7 @@ function TLazPackageGraph.FindRuntimePkgOnlyRecursively(
     RequiredPackage: TLazPackage;
   begin
     while CurDependency<>nil do begin
-      if CurDependency.LoadPackageResult=lprSuccess then begin
+      if (CurDependency.LoadPackageResult=lprSuccess) and (CurDependency.DependencyType=pdtLazarus) then begin
         RequiredPackage:=CurDependency.RequiredPackage;
         if (not (lpfVisited in RequiredPackage.Flags)) then begin
           if RequiredPackage.PackageType=lptRunTimeOnly then
