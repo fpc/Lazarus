@@ -84,6 +84,8 @@ type
     callback: ICommonCallback;
     function acceptsFirstResponder: LCLObjCBoolean; override;
     procedure resetCursorRects; override;
+    function lclGetCallback: ICommonCallback; override;
+    procedure lclClearCallback; override;
     // key
     procedure keyUp(event: NSEvent); override;
     // mouse
@@ -96,7 +98,6 @@ type
     procedure mouseDragged(event: NSEvent); override;
     procedure mouseMoved(event: NSEvent); override;
   end;
-
 
   { TCocoaTextView }
 
@@ -135,6 +136,14 @@ type
     // delegate methods
     procedure textDidChange(notification: NSNotification); message 'textDidChange:';
     procedure lclExpectedKeys(var wantTabs, wantArrows, wantReturn, wantAll: Boolean); override;
+  end;
+
+  { TCococaFieldEditorExt }
+
+  TCococaFieldEditorExt = objccategory(NSTextView)
+    // this override should take care of any Cocoa editors possible
+    // for example NSSecureTextView used with TCocoaSecureField aka NSSecureTextField
+    function lclGetCallback: ICommonCallback; reintroduce;
   end;
 
   { TCocoaFieldEditor }
@@ -417,6 +426,18 @@ begin
   begin
     Result := TCocoaFieldEditor(lText);
   end;
+end;
+
+{ TCococaFieldEditorExt }
+
+function TCococaFieldEditorExt.lclGetCallback: ICommonCallback;
+begin
+  if isFieldEditor and Assigned(delegate) then
+  begin
+    Result := NSObject(delegate).lclGetCallback;
+  end
+  else
+    Result := inherited lclGetCallback;
 end;
 
 { TCocoaSpinEditStepper }
@@ -988,6 +1009,16 @@ procedure TCocoaSecureTextField.resetCursorRects;
 begin
   if not callback.resetCursorRects then
     inherited resetCursorRects;
+end;
+
+function TCocoaSecureTextField.lclGetCallback: ICommonCallback;
+begin
+  Result := callback;
+end;
+
+procedure TCocoaSecureTextField.lclClearCallback;
+begin
+  callback := nil;
 end;
 
 procedure TCocoaSecureTextField.keyUp(event: NSEvent);
