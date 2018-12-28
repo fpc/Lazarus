@@ -404,7 +404,7 @@ type
     fBuilder: TLazarusBuilder;
     fOIActivateLastRow: Boolean;
     function DoBuildLazarusSub(Flags: TBuildLazarusFlags): TModalResult;
-    procedure ProjectOptionsHelper(AFilter: array of TAbstractIDEOptionsClass);
+    procedure ProjectOptionsHelper(const AFilter: array of TAbstractIDEOptionsClass);
     // Global IDE event handlers
     procedure ProcessIDECommand(Sender: TObject; Command: word; var Handled: boolean);
     procedure ExecuteIDEShortCutHandler(Sender: TObject; var Key: word;
@@ -4141,7 +4141,7 @@ begin
   OpenMainUnit(-1,-1,[]);
 end;
 
-procedure TMainIDE.ProjectOptionsHelper(AFilter: array of TAbstractIDEOptionsClass);
+procedure TMainIDE.ProjectOptionsHelper(const AFilter: array of TAbstractIDEOptionsClass);
 var
   Capt: String;
 begin

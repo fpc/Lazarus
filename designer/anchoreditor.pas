@@ -247,7 +247,7 @@ begin
   end;
 end;
 
-procedure SetEnabledControls(AEnabled: Boolean; AControls: array of TControl);
+procedure SetEnabledControls(AEnabled: Boolean; const AControls: array of TControl);
 var
   i: Integer;
 begin

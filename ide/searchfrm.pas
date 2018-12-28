@@ -659,7 +659,7 @@ begin
 end;
 
 procedure TSearchProgressForm.SearchFormCREATE(Sender: TObject);
-  Function MaxWidth(Labs : array of TLabel) : integer;
+  Function MaxWidth(const Labs : array of TLabel) : integer;
   var i,w : integer;
   begin
     Result:=0;

@@ -436,7 +436,7 @@ procedure Test_MergeTETSrcChanges;
 var
   Changes: TETSingleSrcChanges;
 
-  procedure Check(Title: string; aChanges: array of TETSrcChange);
+  procedure Check(Title: string; const aChanges: array of TETSrcChange);
 
     procedure E(Msg: string);
     var
