@@ -1684,6 +1684,7 @@ procedure TPkgFile.LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
 var
   AFilename: String;
   CaseInsensitiveUnitName: String;
+  Config: TXMLOptionsStorage;
 begin
   if FileVersion=1 then ;
   Clear;
@@ -1705,12 +1706,20 @@ begin
   end;
   FResourceBaseClass:=StrToComponentBaseClass(
                          XMLConfig.GetValue(Path+'ResourceBaseClass/Value',''));
+
+  Config:=TXMLOptionsStorage.Create(XMLConfig);
+  try
+    TConfigMemStorage(CustomOptions).LoadFromConfig(Config,Path+'CustomOptions/');
+  finally
+    Config.Free;
+  end;
 end;
 
 procedure TPkgFile.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
   UsePathDelim: TPathDelimSwitch);
 var
   TmpFilename: String;
+  Config: TXMLOptionsStorage;
 begin
   TmpFilename:=Filename;
   FPackage.ShortenFilename(TmpFilename,true);
@@ -1727,6 +1736,13 @@ begin
   XMLConfig.SetDeleteValue(Path+'ResourceBaseClass/Value',
                            PFComponentBaseClassNames[FResourceBaseClass],
                            PFComponentBaseClassNames[pfcbcNone]);
+
+  Config:=TXMLOptionsStorage.Create(XMLConfig);
+  try
+    TConfigMemStorage(CustomOptions).SaveToConfig(Config,Path+'CustomOptions/');
+  finally
+    Config.Free;
+  end;
 end;
 
 procedure TPkgFile.ConsistencyCheck;

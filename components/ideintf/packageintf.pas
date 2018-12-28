@@ -60,6 +60,7 @@ type
     FDisableI18NForLFM: boolean;
     FFileType: TPkgFileType;
     FRemoved: boolean;
+    FCustomOptions: TConfigStorage;
   protected
     function GetInUses: boolean; virtual; abstract;
     procedure SetInUses(AValue: boolean); virtual; abstract;
@@ -68,6 +69,7 @@ type
     procedure SetDisableI18NForLFM(AValue: boolean); virtual;
     procedure SetFileType(const AValue: TPkgFileType); virtual;
   public
+    constructor Create; virtual;
     destructor Destroy; override;
     function GetOptionsInstanceOf(OptionsClass: TAbstractPackageFileIDEOptionsClass): TAbstractPackageFileIDEOptions;
     property LazPackage: TIDEPackage read GetIDEPackage;
@@ -75,6 +77,7 @@ type
     property DisableI18NForLFM: boolean read FDisableI18NForLFM write SetDisableI18NForLFM;
     property FileType: TPkgFileType read FFileType write SetFileType;
     property InUses: boolean read GetInUses write SetInUses; // added to uses section of package
+    property CustomOptions: TConfigStorage read FCustomOptions;
   end;
 
   { PkgDependency flags }
@@ -843,6 +846,7 @@ end;
 destructor TLazPackageFile.Destroy;
 begin
   FIDEOptionsList.Free;
+  FreeAndNil(FCustomOptions);
   inherited Destroy;
 end;
 
@@ -862,6 +866,12 @@ begin
     end;
   Result := OptionsClass.Create(LazPackage, Self);
   FIDEOptionsList.Add(Result);
+end;
+
+constructor TLazPackageFile.Create;
+begin
+  inherited Create;
+  FCustomOptions:=TConfigMemStorage.Create('',false);
 end;
 
 initialization
