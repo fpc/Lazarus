@@ -104,6 +104,10 @@ msgstr "没有找到ppkg可执行文件"
 msgid "Options"
 msgstr "选项"
 
+#: fppkg_const.rspackagefileoptionstitle
+msgid "FPMake"
+msgstr ""
+
 #: fppkg_const.rsremotemirrorsurl
 msgid "Remote mirrors URL"
 msgstr "远程mirrors URL"

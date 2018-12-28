@@ -102,6 +102,10 @@ msgstr "Nessun eseguibile fppkg trovato"
 msgid "Options"
 msgstr "Opzioni"
 
+#: fppkg_const.rspackagefileoptionstitle
+msgid "FPMake"
+msgstr ""
+
 #: fppkg_const.rsremotemirrorsurl
 msgid "Remote mirrors URL"
 msgstr "URL dei mirror remoti"

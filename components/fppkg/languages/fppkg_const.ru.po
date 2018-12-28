@@ -103,6 +103,10 @@ msgstr "Исполнимый файл fppkg не найден"
 msgid "Options"
 msgstr "Параметры"
 
+#: fppkg_const.rspackagefileoptionstitle
+msgid "FPMake"
+msgstr ""
+
 #: fppkg_const.rsremotemirrorsurl
 msgid "Remote mirrors URL"
 msgstr "Адрес списка удалённых зеркал"

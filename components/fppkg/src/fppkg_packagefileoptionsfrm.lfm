@@ -1,0 +1,97 @@
+object FppkgPackageFileOptionsFrm: TFppkgPackageFileOptionsFrm
+  Left = 0
+  Height = 172
+  Top = 0
+  Width = 431
+  Align = alClient
+  ClientHeight = 172
+  ClientWidth = 431
+  ParentFont = False
+  TabOrder = 0
+  DesignLeft = 348
+  DesignTop = 165
+  object FileTargetOSPanel: TPanel
+    Left = 0
+    Height = 172
+    Top = 0
+    Width = 170
+    Align = alLeft
+    BevelOuter = bvNone
+    ClientHeight = 172
+    ClientWidth = 170
+    ParentFont = False
+    TabOrder = 0
+    object FileTargetOSCheckList: TCheckListBox
+      Left = 0
+      Height = 141
+      Top = 31
+      Width = 170
+      Align = alClient
+      ItemHeight = 0
+      OnClickCheck = FileTargetOSCheckListClickCheck
+      ParentFont = False
+      TabOrder = 0
+      TopIndex = -1
+    end
+    object FileTargetOSComboBox: TComboBox
+      Left = 0
+      Height = 31
+      Top = 0
+      Width = 170
+      Align = alTop
+      ItemHeight = 0
+      ItemIndex = 0
+      Items.Strings = (
+        'All OS''es, except:'
+        'No OS''es, except:'
+      )
+      OnChange = FileTargetOSComboBoxChange
+      ParentFont = False
+      Style = csDropDownList
+      TabOrder = 1
+      Text = 'All OS''es, except:'
+    end
+  end
+  object FileTargetCPUPanel: TPanel
+    Left = 170
+    Height = 172
+    Top = 0
+    Width = 170
+    Align = alLeft
+    BevelOuter = bvNone
+    ClientHeight = 172
+    ClientWidth = 170
+    ParentFont = False
+    TabOrder = 1
+    object FileTargetCPUCheckList: TCheckListBox
+      Left = 0
+      Height = 141
+      Top = 31
+      Width = 170
+      Align = alClient
+      ItemHeight = 0
+      OnClickCheck = FileTargetCPUCheckListClickCheck
+      ParentFont = False
+      TabOrder = 0
+      TopIndex = -1
+    end
+    object FileTargetCPUComboBox: TComboBox
+      Left = 0
+      Height = 31
+      Top = 0
+      Width = 170
+      Align = alTop
+      ItemHeight = 0
+      ItemIndex = 0
+      Items.Strings = (
+        'All CPU''s, except:'
+        'No CPU''s, except:'
+      )
+      OnChange = FileTargetCPUComboBoxChange
+      ParentFont = False
+      Style = csDropDownList
+      TabOrder = 1
+      Text = 'All CPU''s, except:'
+    end
+  end
+end

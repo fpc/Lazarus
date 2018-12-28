@@ -103,6 +103,10 @@ msgstr "fppkg nicht gefunden"
 msgid "Options"
 msgstr "Einstellungen"
 
+#: fppkg_const.rspackagefileoptionstitle
+msgid "FPMake"
+msgstr ""
+
 #: fppkg_const.rsremotemirrorsurl
 msgid "Remote mirrors URL"
 msgstr ""

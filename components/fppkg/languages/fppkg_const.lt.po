@@ -104,6 +104,10 @@ msgstr "Nepavyko rasti „fppkg“ vykdomojo failo"
 msgid "Options"
 msgstr "Parinktys"
 
+#: fppkg_const.rspackagefileoptionstitle
+msgid "FPMake"
+msgstr ""
+
 #: fppkg_const.rsremotemirrorsurl
 msgid "Remote mirrors URL"
 msgstr "Nuotolinio dubliuojančio serverio URL"

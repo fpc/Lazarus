@@ -8,9 +8,11 @@ uses
   Classes,
   SysUtils,
   StrUtils,
+  fpmkunit,
   PackageIntf,
   FppkgIntf,
   Fppkg_EnvironmentOptions,
+  fppkg_packagefileoptionsfrm,
   fppkg_packagevariant;
 
 type
@@ -94,6 +96,7 @@ var
   Variant: TFppkgPackageVariant;
   i, j, k: Integer;
   Found: Boolean;
+  FppkgFileOptions: TFppkgPackageFileIDEOptions;
 begin
   Result := '';
   VariantList := TFppkgPackageVariantList.Create(True);
@@ -129,6 +132,8 @@ begin
         if (APackage.Files[i].FileType=pftUnit) then
           begin
           Found := False;
+          FppkgFileOptions := TFppkgPackageFileIDEOptions(APackage.Files[i].GetOptionsInstanceOf(TFppkgPackageFileIDEOptions));
+          FppkgFileOptions.ParseOptions;
 
           for j := 0 to VariantList.Count -1 do
             begin
@@ -151,7 +156,21 @@ begin
             //if (pffAddToPkgUsesSection in APackage.Files[i].Flags) then
             //  Result:=Result+'    T:=P.Targets.AddUnit('''+CreateRelativePath(APackage.Files[i].Filename,APackage.Directory)+''');'+LineEnding)
             //else
-              Result:=Result+'    P.Targets.AddImplicitUnit('''+APackage.Files[i].GetShortFilename(False)+''');'+LineEnding;
+              Result:=Result+'    T := P.Targets.AddImplicitUnit('''+APackage.Files[i].GetShortFilename(False)+''');'+LineEnding;
+              if (FppkgFileOptions.AvailableOnTargetCPUs <> []) then
+              begin
+                if FppkgFileOptions.AvailableOnAllTargetCPUs then
+                  Result:=Result+'    T.CPUs := AllCPUs - ['+CPUSToString(FppkgFileOptions.AvailableOnTargetCPUs)+'];'+LineEnding
+                else
+                  Result:=Result+'    T.CPUs := ['+CPUSToString(FppkgFileOptions.AvailableOnTargetCPUs)+'];'+LineEnding
+              end;
+              if (FppkgFileOptions.AvailableOnTargetOSes <> []) then
+              begin
+                if FppkgFileOptions.AvailableOnAllTargetOSes then
+                  Result:=Result+'    T.OSes := AllOSes - ['+OSesToString(FppkgFileOptions.AvailableOnTargetOSes)+'];'+LineEnding
+                else
+                  Result:=Result+'    T.OSes := ['+OSesToString(FppkgFileOptions.AvailableOnTargetOSes)+'];'+LineEnding
+              end;
             end;
           end;
     finally

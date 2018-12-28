@@ -106,6 +106,10 @@ msgstr "Не знайдено виконуваний файл fppkg"
 msgid "Options"
 msgstr "Параметри"
 
+#: fppkg_const.rspackagefileoptionstitle
+msgid "FPMake"
+msgstr ""
+
 #: fppkg_const.rsremotemirrorsurl
 msgid "Remote mirrors URL"
 msgstr "Адреса віддаленого дзеркала"

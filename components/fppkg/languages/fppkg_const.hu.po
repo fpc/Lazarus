@@ -103,6 +103,10 @@ msgstr "Nincs futtatható fppkg"
 msgid "Options"
 msgstr "Beállítások"
 
+#: fppkg_const.rspackagefileoptionstitle
+msgid "FPMake"
+msgstr ""
+
 #: fppkg_const.rsremotemirrorsurl
 msgid "Remote mirrors URL"
 msgstr "Távoli tükör URL-ek"
