@@ -5,7 +5,6 @@
     <Type Value="RunAndDesignTime"/>
     <BuildMethod Value="Both"/>
     <Author Value="Lazarus Team"/>
-    <AutoUpdate Value="OnRebuildingAll"/>
     <CompilerOptions>
       <Version Value="11"/>
       <SearchPaths>

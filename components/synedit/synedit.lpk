@@ -49,7 +49,8 @@ If you wish to allow use of your version of these files only under the terms of 
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="LazSynIMM"/>
         <CustomOptions Items="FPMake" Version="2">
-          <_FPMake Items="TargetOSes">
+          <_FPMake Items="AllOSes/TargetOSes">
+            <_AllOSes Value="False"/>
             <_TargetOSes Value="win32,win64"/>
           </_FPMake>
         </CustomOptions>

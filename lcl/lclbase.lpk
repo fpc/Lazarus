@@ -5,7 +5,6 @@
     <Type Value="RunAndDesignTime"/>
     <BuildMethod Value="Both"/>
     <Author Value="Lazarus"/>
-    <AutoUpdate Value="OnRebuildingAll"/>
     <CompilerOptions>
       <Version Value="11"/>
       <SearchPaths>
@@ -19,7 +18,6 @@
         <Verbosity>
           <ShowNotes Value="False"/>
           <ShowHints Value="False"/>
-          <ShowGenInfo Value="False"/>
         </Verbosity>
         <CustomOptions Value="$(IDEBuildOptions)"/>
       </Other>
