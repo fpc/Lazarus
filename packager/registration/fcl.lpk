@@ -3,6 +3,7 @@
   <Package Version="4">
     <Name Value="FCL"/>
     <Type Value="RunAndDesignTime"/>
+    <BuildMethod Value="Both"/>
     <Author Value="Lazarus"/>
     <CompilerOptions>
       <Version Value="11"/>
@@ -65,6 +66,16 @@
       </Item9>
     </Files>
     <LazDoc Paths="docs"/>
+    <RequiredPkgs Count="2">
+      <Item1>
+        <PackageName Value="fcl-process"/>
+        <DependencyType Value="FPMake"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="fcl-db"/>
+        <DependencyType Value="FPMake"/>
+      </Item2>
+    </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>
     </UsageOptions>
