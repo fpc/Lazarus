@@ -409,6 +409,7 @@ type
     property HeaderSide: TAnchorKind read FHeaderSide write SetHeaderSide;
     property Header: TAnchorDockHeader read FHeader;
     property Minimized: Boolean read GetMinimized;
+    property MinimizedControl: TControl read FMinimizedControl;
     property Pages: TAnchorDockPageControl read FPages;
     property SiteType: TAnchorDockHostSiteType read FSiteType;
     property BoundSplitter: TAnchorDockSplitter read FBoundSplitter;
@@ -675,6 +676,7 @@ type
     property Controls[Index: integer]: TControl read GetControls;
     function IndexOfControl(const aName: string): integer;
     function FindControl(const aName: string): TControl;
+    function IsMinimizedControl(AControl: TControl; out Site: TAnchorDockHostSite): Boolean;
     function IsSite(AControl: TControl): boolean;
     function IsAnchorSite(AControl: TControl): boolean;
     function IsCustomSite(AControl: TControl): boolean;
@@ -3001,6 +3003,22 @@ begin
     Result:=nil;
 end;
 
+function TAnchorDockMaster.IsMinimizedControl(AControl: TControl; out
+  Site: TAnchorDockHostSite): Boolean;
+var
+  i: Integer;
+begin
+  Result:=False;
+  Site:=nil;
+  if not Assigned(AControl) or (FControls.IndexOf(AControl)<0) then Exit;
+  for i:=0 to ComponentCount-1 do
+    if (Components[i] is TAnchorDockHostSite)
+    and (TAnchorDockHostSite(Components[i]).MinimizedControl = AControl) then begin
+      Site:=TAnchorDockHostSite(Components[i]);
+      Exit(True);
+    end;
+end;
+
 function TAnchorDockMaster.IsSite(AControl: TControl): boolean;
 begin
   Result:=(AControl is TAnchorDockHostSite) or IsCustomSite(AControl);
@@ -3129,32 +3147,35 @@ begin
     if AControl is TAnchorDockHostSite then begin
       // already a site
       Site:=TAnchorDockHostSite(AControl);
-    end else if AControl.Parent=nil then begin
+    end else if AControl.Parent=nil then
+      if IsMinimizedControl(AControl, Site) then begin
+        Site.AsyncMinimizeSite(0);
+      end else begin
 
-      if FControls.IndexOf(AControl)<0 then begin
-        FControls.Add(AControl);
-        AControl.FreeNotification(Self);
-      end;
-
-      // create docksite
-      Site:=CreateSite;
-      try
-        try
-          Site.BoundsRect:=AControl.BoundsRect;
-          ClearLayoutProperties(AControl);
-          // dock
-          AControl.ManualDock(Site);
-          AControl.Visible:=true;
-          if not AddDockHeader then
-            Site.Header.Parent:=nil;
-        except
-          FreeAndNil(Site);
-          raise;
+        if FControls.IndexOf(AControl)<0 then begin
+          FControls.Add(AControl);
+          AControl.FreeNotification(Self);
         end;
-      finally
-        if Site<>nil then
-          Site.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}(ADAutoSizingReason){$ENDIF};
-      end;
+
+        // create docksite
+        Site:=CreateSite;
+        try
+          try
+            Site.BoundsRect:=AControl.BoundsRect;
+            ClearLayoutProperties(AControl);
+            // dock
+            AControl.ManualDock(Site);
+            AControl.Visible:=true;
+            if not AddDockHeader then
+              Site.Header.Parent:=nil;
+          except
+            FreeAndNil(Site);
+            raise;
+          end;
+        finally
+          if Site<>nil then
+            Site.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}(ADAutoSizingReason){$ENDIF};
+        end;
     end else if AControl.Parent is TAnchorDockHostSite then begin
       // AControl is already docked => show site
       Site:=TAnchorDockHostSite(AControl.Parent);
