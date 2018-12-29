@@ -14,6 +14,8 @@ uses
 
 type
 
+  TFppkgPackageVariantArray = array of TStringArray;
+
   { TFppkgHelper }
 
   TFppkgHelper = class
@@ -28,6 +30,9 @@ type
     function HasPackage(const PackageName: string): Boolean;
     procedure ListPackages(AList: TStringList);
     function GetPackageUnitPath(const PackageName: string): string;
+    // Temporary solution, because fpc 3.2.0 does not has support for package-variants
+    // in TFPPackage
+    function GetPackageVariantArray(const PackageName: string): TFppkgPackageVariantArray;
   end;
 
 implementation
@@ -128,14 +133,89 @@ function TFppkgHelper.GetPackageUnitPath(const PackageName: string): string;
 {$IFNDEF VER3_0}
 var
   FppkgPackage: TFPPackage;
+{$IF not (FPC_FULLVERSION>30300)}
+  PackageVariantsArray: TFppkgPackageVariantArray;
+{$ENDIF}
+  i: Integer;
 {$ENDIF VER3_0}
 begin
 {$IFNDEF VER3_0}
   FppkgPackage := FFPpkg.FindPackage(PackageName, pkgpkInstalled);
-  Result := FppkgPackage.PackagesStructure.GetUnitDirectory(FppkgPackage);
+  if Assigned(FppkgPackage) then
+    begin
+    Result := FppkgPackage.PackagesStructure.GetUnitDirectory(FppkgPackage);
+
+    {$IF FPC_FULLVERSION>30300}
+    for i := 0 to FppkgPackage.PackageVariants.Count -1 do
+      begin
+      Result := ConcatPaths([Result, FppkgPackage.PackageVariants.Items[i].Options[0]]);
+      end;
+    {$ELSE}
+    PackageVariantsArray := GetPackageVariantArray(PackageName);
+    for i := 0 to High(PackageVariantsArray) do
+      begin
+      Result := ConcatPaths([Result, PackageVariantsArray[i][1]]);
+      end;
+    {$ENDIF FPC_FULLVERSION>30300}
+    end
+  else
+    begin
+    // The package has not been installed, so there is no unit-path yet.
+    // ToDo: if this leads to problems, we could 'guess' the repository it will
+    // be installed into, and use the corresponding packagestructure.
+    Result := '';
+    end;
 {$ELSE }
   Result := '';
 {$ENDIF VER3_0}
+end;
+
+function TFppkgHelper.GetPackageVariantArray(const PackageName: string): TFppkgPackageVariantArray;
+{$IF FPC_FULLVERSION>30100}
+var
+  FppkgPackage: TFPPackage;
+  UnitConfigFile: TStringList;
+  PackageVariantStr, PackageVariant, UnitConfigFilename: String;
+  PackageVariantOptions: TStringArray;
+  i: Integer;
+{$ENDIF FPC_FULLVERSION>30100}
+begin
+  {$IF FPC_FULLVERSION>30100}
+  Result := [];
+  {$ELSE}
+  SetLength(Result, 0);
+  {$ENDIF FPC_FULLVERSION>30100}
+
+  {$IF FPC_FULLVERSION>30100}
+  FppkgPackage := FFPpkg.FindPackage(PackageName, pkgpkInstalled);
+  if Assigned(FppkgPackage) then
+    begin
+    UnitConfigFilename := FppkgPackage.PackagesStructure.GetConfigFileForPackage(FppkgPackage);
+    if FileExists(UnitConfigFilename) then
+      begin
+      UnitConfigFile := TStringList.Create;
+      try
+        UnitConfigFile.LoadFromFile(UnitConfigFilename);
+        i := 1;
+        repeat
+        PackageVariantStr := UnitConfigFile.Values['PackageVariant_'+IntToStr(i)];
+        if PackageVariantStr<>'' then
+          begin
+          PackageVariant := Copy(PackageVariantStr, 1, pos(':', PackageVariantStr) -1);
+          if RightStr(PackageVariant, 1) = '*' then
+            PackageVariant := Copy(PackageVariant, 1, Length(PackageVariant) -1);
+          PackageVariantOptions := Copy(PackageVariantStr, pos(':', PackageVariantStr) +1).Split(',');
+          Insert(PackageVariant, PackageVariantOptions, -1);
+          Insert(PackageVariantOptions, Result, 100);
+          end;
+        inc(i);
+        until PackageVariantStr='';
+      finally
+        UnitConfigFile.Free;
+      end;
+      end
+    end
+  {$ENDIF FPC_FULLVERSION>30100}
 end;
 
 finalization
