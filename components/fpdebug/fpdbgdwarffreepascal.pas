@@ -545,7 +545,7 @@ begin
     if Info.HasAttrib(DW_AT_lower_bound) and
        not Info.HasAttrib(DW_AT_upper_bound)
     then begin
-      Info2 := TFpDwarfSymbolValueVariable(DbgSymbol).InformationEntry.Clone;
+      Info2 := TFpDwarfSymbolValueParameter(DbgSymbol).InformationEntry.Clone;
       Info2.GoNext;
       if Info2.HasValidScope and
          Info2.HasAttrib(DW_AT_location) and  // the high param must have a location / cannot be a constant
