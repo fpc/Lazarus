@@ -411,9 +411,9 @@ type
     function GetAsCardinal: QWord; override;
     function GetDataAddress: TFpDbgMemLocation; override;
     function GetMember(AIndex: Int64): TFpDbgValue; override;
-    function GetMemberEx(AIndex: array of Int64): TFpDbgValue; override;
+    function GetMemberEx(const AIndex: array of Int64): TFpDbgValue; override;
     function GetMemberCount: Integer; override;
-    function GetMemberCountEx(AIndex: array of Int64): Integer; override;
+    function GetMemberCountEx(const AIndex: array of Int64): Integer; override;
     function GetIndexType(AIndex: Integer): TFpDbgSymbol; override;
     function GetIndexTypeCount: Integer; override;
     function IsValidTypeCast: Boolean; override;
@@ -835,7 +835,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     function GetMember(AIndex: Int64): TFpDbgSymbol; override;
     function GetMemberByName({%H-}AIndex: String): TFpDbgSymbol; override;
     function GetMemberCount: Integer; override;
-    function GetMemberAddress(AValObject: TFpDwarfValue; AIndex: Array of Int64): TFpDbgMemLocation;
+    function GetMemberAddress(AValObject: TFpDwarfValue; const AIndex: Array of Int64): TFpDbgMemLocation;
   public
     destructor Destroy; override;
   end;
@@ -2639,7 +2639,8 @@ begin
   Result := GetMemberEx([AIndex]);
 end;
 
-function TFpDwarfValueArray.GetMemberEx(AIndex: array of Int64): TFpDbgValue;
+function TFpDwarfValueArray.GetMemberEx(const AIndex: array of Int64
+  ): TFpDbgValue;
 var
   Addr: TFpDbgMemLocation;
   i: Integer;
@@ -2715,7 +2716,8 @@ begin
   end;
 end;
 
-function TFpDwarfValueArray.GetMemberCountEx(AIndex: array of Int64): Integer;
+function TFpDwarfValueArray.GetMemberCountEx(const AIndex: array of Int64
+  ): Integer;
 var
   t: TFpDbgSymbol;
 begin
@@ -4415,7 +4417,7 @@ begin
 end;
 
 function TFpDwarfSymbolTypeArray.GetMemberAddress(AValObject: TFpDwarfValue;
-  AIndex: array of Int64): TFpDbgMemLocation;
+  const AIndex: array of Int64): TFpDbgMemLocation;
 var
   Idx, Offs, Factor: Int64;
   LowBound, HighBound: int64;
