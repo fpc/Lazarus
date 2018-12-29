@@ -415,6 +415,10 @@ begin
       finally
         LazPackage.CustomOptions.UndoAppendBasePath;
       end;
+      end
+    else
+      begin
+      LazPackage.CustomOptions.DeletePath('PackageVariants');
       end;
     LazPackage.CustomOptions.SetValue('CustomCode', seCustomFPMakeCode.Lines);
   finally

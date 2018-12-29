@@ -136,6 +136,11 @@ begin
     begin
     Config.AppendBasePath('Items');
     try
+      for i:=Count to Config.GetValue('Count', -1) -1 do
+        begin
+        Config.DeletePath('Item'+IntToStr(i+1));
+        end;
+
       Config.SetDeleteValue('Count', Count, 0);
       for i:=0 to Count-1 do
         begin
@@ -149,6 +154,10 @@ begin
     finally
       Config.UndoAppendBasePath;
     end;
+    end
+  else
+    begin
+    Config.DeletePath('Items');
     end;
 end;
 
