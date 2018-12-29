@@ -1994,7 +1994,7 @@ begin
     i := 4000; // 2000 * 16 bit
     while (i > 0) and (not MemManager.ReadMemory(DataAddress, i, @Result[1])) do
       i := i div 2;
-    SetLength(Result, i);
+    SetLength(Result, i div 2);
     i := pos(#0, Result);
     if i > 0 then
       SetLength(Result, i-1);
