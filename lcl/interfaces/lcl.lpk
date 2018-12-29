@@ -3,6 +3,7 @@
   <Package Version="4">
     <Name Value="LCL"/>
     <Type Value="RunAndDesignTime"/>
+    <BuildMethod Value="Both"/>
     <Author Value="Lazarus"/>
     <CompilerOptions>
       <Version Value="11"/>
@@ -2424,8 +2425,1670 @@ end;"/>
     <PublishOptions>
       <Version Value="2"/>
     </PublishOptions>
-    <CustomOptions Items="ExternHelp" Version="2">
+    <CustomOptions Items="ExternHelp/Fppkg/PackageVariants" Version="2">
       <_ExternHelp Items="Count"/>
+      <_Fppkg Items="CustomCodeCount/CustomCodeItem1/CustomCodeItem2/CustomCodeItem3/CustomCodeItem4/CustomCodeItem5/CustomCodeItem6/CustomCodeItem7/CustomCodeItem8/CustomCodeItem9/PackageVariants">
+        <_CustomCodeCount Value="9"/>
+        <_CustomCodeItem1 Items="Value">
+          <_Value Value="case Defaults.OS of"/>
+        </_CustomCodeItem1>
+        <_CustomCodeItem2 Items="Value">
+          <_Value Value="  darwin        : LCLWidgetTypeVariant.DefaultPackageVariantName:='carbon';"/>
+        </_CustomCodeItem2>
+        <_CustomCodeItem3 Items="Value">
+          <_Value Value="  win32, win64  : LCLWidgetTypeVariant.DefaultPackageVariantName:='win32';"/>
+        </_CustomCodeItem3>
+        <_CustomCodeItem4 Items="Value">
+          <_Value Value="  wince         : LCLWidgetTypeVariant.DefaultPackageVariantName:='wince';"/>
+        </_CustomCodeItem4>
+        <_CustomCodeItem5 Items="Value">
+          <_Value Value="else"/>
+        </_CustomCodeItem5>
+        <_CustomCodeItem6 Items="Value">
+          <_Value Value="  LCLWidgetTypeVariant.DefaultPackageVariantName:='gtk2';"/>
+        </_CustomCodeItem6>
+        <_CustomCodeItem7 Items="Value">
+          <_Value Value="end;"/>
+        </_CustomCodeItem7>
+        <_CustomCodeItem8 Items="Value">
+          <_Value Value="P.Dependencies.Add('gtk2', AllUnixOSes+[Win32,Win64]-[darwin,iphonesim,Android]);"/>
+        </_CustomCodeItem8>
+        <_CustomCodeItem9 Items="Value">
+          <_Value Value="gtk3VariantItem.IncludePath.add('gtk3/gtk3bindings');"/>
+        </_CustomCodeItem9>
+        <_PackageVariants Items="Items">
+          <_Items Items="Count/Item1">
+            <_Count Value="1"/>
+            <_Item1 Items="Items/name">
+              <_Items Items="Count/Item1/Item10/Item11/Item12/Item2/Item3/Item4/Item5/Item6/Item7/Item8/Item9">
+                <_Count Value="12"/>
+                <_Item1 Items="PackageFilesCount/PackageFilesItem1/PackageFilesItem10/PackageFilesItem11/PackageFilesItem12/PackageFilesItem13/PackageFilesItem14/PackageFilesItem15/PackageFilesItem16/PackageFilesItem17/PackageFilesItem18/PackageFilesItem19/PackageFilesItem2/PackageFilesItem20/PackageFilesItem21/PackageFilesItem22/PackageFilesItem23/PackageFilesItem24/PackageFilesItem25/PackageFilesItem26/PackageFilesItem27/PackageFilesItem28/PackageFilesItem29/PackageFilesItem3/PackageFilesItem30/PackageFilesItem31/PackageFilesItem32/PackageFilesItem33/PackageFilesItem34/PackageFilesItem35/PackageFilesItem36/PackageFilesItem37/PackageFilesItem38/PackageFilesItem39/PackageFilesItem4/PackageFilesItem40/PackageFilesItem41/PackageFilesItem42/PackageFilesItem43/PackageFilesItem44/PackageFilesItem45/PackageFilesItem46/PackageFilesItem47/PackageFilesItem48/PackageFilesItem49/PackageFilesItem5/PackageFilesItem50/PackageFilesItem51/PackageFilesItem52/PackageFilesItem53/PackageFilesItem54/PackageFilesItem55/PackageFilesItem56/PackageFilesItem57/PackageFilesItem58/PackageFilesItem59/PackageFilesItem6/PackageFilesItem7/PackageFilesItem8/PackageFilesItem9/name">
+                  <_PackageFilesCount Value="59"/>
+                  <_PackageFilesItem1 Items="Value">
+                    <_Value Value="agl"/>
+                  </_PackageFilesItem1>
+                  <_PackageFilesItem10 Items="Value">
+                    <_Value Value="carbon/carboncalendar.pas"/>
+                  </_PackageFilesItem10>
+                  <_PackageFilesItem11 Items="Value">
+                    <_Value Value="carbon/carboncalendarview.pas"/>
+                  </_PackageFilesItem11>
+                  <_PackageFilesItem12 Items="Value">
+                    <_Value Value="carbon/carboncanvas.pp"/>
+                  </_PackageFilesItem12>
+                  <_PackageFilesItem13 Items="Value">
+                    <_Value Value="carbon/carboncaret.pas"/>
+                  </_PackageFilesItem13>
+                  <_PackageFilesItem14 Items="Value">
+                    <_Value Value="carbon/carbonclipboard.pp"/>
+                  </_PackageFilesItem14>
+                  <_PackageFilesItem15 Items="Value">
+                    <_Value Value="carbon/carbondbgconsts.pp"/>
+                  </_PackageFilesItem15>
+                  <_PackageFilesItem16 Items="Value">
+                    <_Value Value="carbon/carbondebug.pp"/>
+                  </_PackageFilesItem16>
+                  <_PackageFilesItem17 Items="Value">
+                    <_Value Value="carbon/carbondefines.inc"/>
+                  </_PackageFilesItem17>
+                  <_PackageFilesItem18 Items="Value">
+                    <_Value Value="carbon/carbondef.pp"/>
+                  </_PackageFilesItem18>
+                  <_PackageFilesItem19 Items="Value">
+                    <_Value Value="carbon/carbonedits.pp"/>
+                  </_PackageFilesItem19>
+                  <_PackageFilesItem2 Items="Value">
+                    <_Value Value="AllLCLIntfUnits"/>
+                  </_PackageFilesItem2>
+                  <_PackageFilesItem20 Items="Value">
+                    <_Value Value="carbon/carbongdiobjects.pp"/>
+                  </_PackageFilesItem20>
+                  <_PackageFilesItem21 Items="Value">
+                    <_Value Value="carbon/carbonint.pas"/>
+                  </_PackageFilesItem21>
+                  <_PackageFilesItem22 Items="Value">
+                    <_Value Value="carbon/carbonlclintfh.inc"/>
+                  </_PackageFilesItem22>
+                  <_PackageFilesItem23 Items="Value">
+                    <_Value Value="carbon/carbonlclintf.inc"/>
+                  </_PackageFilesItem23>
+                  <_PackageFilesItem24 Items="Value">
+                    <_Value Value="carbon/carbonlistviews.pp"/>
+                  </_PackageFilesItem24>
+                  <_PackageFilesItem25 Items="Value">
+                    <_Value Value="carbon/carbonmenus.pp"/>
+                  </_PackageFilesItem25>
+                  <_PackageFilesItem26 Items="Value">
+                    <_Value Value="carbon/carbonobject.inc"/>
+                  </_PackageFilesItem26>
+                  <_PackageFilesItem27 Items="Value">
+                    <_Value Value="carbon/carbonprivatecommon.inc"/>
+                  </_PackageFilesItem27>
+                  <_PackageFilesItem28 Items="Value">
+                    <_Value Value="carbon/carbonprivatecontrol.inc"/>
+                  </_PackageFilesItem28>
+                  <_PackageFilesItem29 Items="Value">
+                    <_Value Value="carbon/carbonprivate.pp"/>
+                  </_PackageFilesItem29>
+                  <_PackageFilesItem3 Items="Value">
+                    <_Value Value="CarbonBars"/>
+                  </_PackageFilesItem3>
+                  <_PackageFilesItem30 Items="Value">
+                    <_Value Value="carbon/carbonprivatewindow.inc"/>
+                  </_PackageFilesItem30>
+                  <_PackageFilesItem31 Items="Value">
+                    <_Value Value="carbon/carbonproc.pp"/>
+                  </_PackageFilesItem31>
+                  <_PackageFilesItem32 Items="Value">
+                    <_Value Value="carbon/carbonstrings.pp"/>
+                  </_PackageFilesItem32>
+                  <_PackageFilesItem33 Items="Value">
+                    <_Value Value="carbon/carbontabs.pp"/>
+                  </_PackageFilesItem33>
+                  <_PackageFilesItem34 Items="Value">
+                    <_Value Value="carbon/carbonthemes.pas"/>
+                  </_PackageFilesItem34>
+                  <_PackageFilesItem35 Items="Value">
+                    <_Value Value="carbon/carbontrayicon.inc"/>
+                  </_PackageFilesItem35>
+                  <_PackageFilesItem36 Items="Value">
+                    <_Value Value="carbon/carbonutils.pas"/>
+                  </_PackageFilesItem36>
+                  <_PackageFilesItem37 Items="Value">
+                    <_Value Value="carbon/carbonwinapih.inc"/>
+                  </_PackageFilesItem37>
+                  <_PackageFilesItem38 Items="Value">
+                    <_Value Value="carbon/carbonwinapi.inc"/>
+                  </_PackageFilesItem38>
+                  <_PackageFilesItem39 Items="Value">
+                    <_Value Value="carbon/carbonwsbuttons.pp"/>
+                  </_PackageFilesItem39>
+                  <_PackageFilesItem4 Items="Value">
+                    <_Value Value="CarbonButtons"/>
+                  </_PackageFilesItem4>
+                  <_PackageFilesItem40 Items="Value">
+                    <_Value Value="carbon/carbonwsstdctrls.pp"/>
+                  </_PackageFilesItem40>
+                  <_PackageFilesItem41 Items="Value">
+                    <_Value Value="carbon/carbonwscalendar.pp"/>
+                  </_PackageFilesItem41>
+                  <_PackageFilesItem42 Items="Value">
+                    <_Value Value="carbon/carbonwschecklst.pp"/>
+                  </_PackageFilesItem42>
+                  <_PackageFilesItem43 Items="Value">
+                    <_Value Value="carbon/carbonwscomctrls.pp"/>
+                  </_PackageFilesItem43>
+                  <_PackageFilesItem44 Items="Value">
+                    <_Value Value="carbon/carbonwscontrols.pp"/>
+                  </_PackageFilesItem44>
+                  <_PackageFilesItem45 Items="Value">
+                    <_Value Value="carbon/carbonwsdialogs.pp"/>
+                  </_PackageFilesItem45>
+                  <_PackageFilesItem46 Items="Value">
+                    <_Value Value="carbon/carbonwsextctrls.pp"/>
+                  </_PackageFilesItem46>
+                  <_PackageFilesItem47 Items="Value">
+                    <_Value Value="carbon/carbonwsextdlgs.pp"/>
+                  </_PackageFilesItem47>
+                  <_PackageFilesItem48 Items="Value">
+                    <_Value Value="carbon/carbonwsfactory.pas"/>
+                  </_PackageFilesItem48>
+                  <_PackageFilesItem49 Items="Value">
+                    <_Value Value="carbon/carbonwsforms.pp"/>
+                  </_PackageFilesItem49>
+                  <_PackageFilesItem5 Items="Value">
+                    <_Value Value="CarbonCalendar"/>
+                  </_PackageFilesItem5>
+                  <_PackageFilesItem50 Items="Value">
+                    <_Value Value="carbon/carbonwsgrids.pp"/>
+                  </_PackageFilesItem50>
+                  <_PackageFilesItem51 Items="Value">
+                    <_Value Value="carbon/carbonwsimglist.pp"/>
+                  </_PackageFilesItem51>
+                  <_PackageFilesItem52 Items="Value">
+                    <_Value Value="carbon/carbonwsmenus.pp"/>
+                  </_PackageFilesItem52>
+                  <_PackageFilesItem53 Items="Value">
+                    <_Value Value="carbon/carbonwspairsplitter.pp"/>
+                  </_PackageFilesItem53>
+                  <_PackageFilesItem54 Items="Value">
+                    <_Value Value="carbon/carbonwsspin.pp"/>
+                  </_PackageFilesItem54>
+                  <_PackageFilesItem55 Items="Value">
+                    <_Value Value="carbon/glgrab.pas"/>
+                  </_PackageFilesItem55>
+                  <_PackageFilesItem56 Items="Value">
+                    <_Value Value="carbon/interfaces.pas"/>
+                  </_PackageFilesItem56>
+                  <_PackageFilesItem57 Items="Value">
+                    <_Value Value="carbon/issues.xml"/>
+                  </_PackageFilesItem57>
+                  <_PackageFilesItem58 Items="Value">
+                    <_Value Value="carbon/mackeycodes.inc"/>
+                  </_PackageFilesItem58>
+                  <_PackageFilesItem59 Items="Value">
+                    <_Value Value="carbon/opengl.pas"/>
+                  </_PackageFilesItem59>
+                  <_PackageFilesItem6 Items="Value">
+                    <_Value Value="carbon/agl.pp"/>
+                  </_PackageFilesItem6>
+                  <_PackageFilesItem7 Items="Value">
+                    <_Value Value="carbon/alllclintfunits.pas"/>
+                  </_PackageFilesItem7>
+                  <_PackageFilesItem8 Items="Value">
+                    <_Value Value="carbon/carbonbars.pp"/>
+                  </_PackageFilesItem8>
+                  <_PackageFilesItem9 Items="Value">
+                    <_Value Value="carbon/carbonbuttons.pp"/>
+                  </_PackageFilesItem9>
+                  <_name Value="carbon"/>
+                </_Item1>
+                <_Item10 Items="PackageFilesCount/PackageFilesItem1/PackageFilesItem10/PackageFilesItem11/PackageFilesItem12/PackageFilesItem13/PackageFilesItem14/PackageFilesItem15/PackageFilesItem16/PackageFilesItem17/PackageFilesItem18/PackageFilesItem19/PackageFilesItem2/PackageFilesItem20/PackageFilesItem21/PackageFilesItem22/PackageFilesItem23/PackageFilesItem24/PackageFilesItem25/PackageFilesItem26/PackageFilesItem27/PackageFilesItem28/PackageFilesItem29/PackageFilesItem3/PackageFilesItem30/PackageFilesItem31/PackageFilesItem32/PackageFilesItem33/PackageFilesItem34/PackageFilesItem35/PackageFilesItem36/PackageFilesItem37/PackageFilesItem38/PackageFilesItem4/PackageFilesItem5/PackageFilesItem6/PackageFilesItem7/PackageFilesItem8/PackageFilesItem9/name">
+                  <_PackageFilesCount Value="38"/>
+                  <_PackageFilesItem1 Items="Value">
+                    <_Value Value="qt/qtobject.inc"/>
+                  </_PackageFilesItem1>
+                  <_PackageFilesItem10 Items="Value">
+                    <_Value Value="qt/qtwinapi.inc"/>
+                  </_PackageFilesItem10>
+                  <_PackageFilesItem11 Items="Value">
+                    <_Value Value="qt/qtwsbuttons.pp"/>
+                  </_PackageFilesItem11>
+                  <_PackageFilesItem12 Items="Value">
+                    <_Value Value="qt/qtwscalendar.pp"/>
+                  </_PackageFilesItem12>
+                  <_PackageFilesItem13 Items="Value">
+                    <_Value Value="qt/qtwschecklst.pp"/>
+                  </_PackageFilesItem13>
+                  <_PackageFilesItem14 Items="Value">
+                    <_Value Value="qt/qtwscomctrls.pp"/>
+                  </_PackageFilesItem14>
+                  <_PackageFilesItem15 Items="Value">
+                    <_Value Value="qt/qtwscontrols.pp"/>
+                  </_PackageFilesItem15>
+                  <_PackageFilesItem16 Items="Value">
+                    <_Value Value="qt/qtwsdesigner.pp"/>
+                  </_PackageFilesItem16>
+                  <_PackageFilesItem17 Items="Value">
+                    <_Value Value="qt/qtwsdialogs.pp"/>
+                  </_PackageFilesItem17>
+                  <_PackageFilesItem18 Items="Value">
+                    <_Value Value="qt/qtwsextctrls.pp"/>
+                  </_PackageFilesItem18>
+                  <_PackageFilesItem19 Items="Value">
+                    <_Value Value="qt/qtwsextdlgs.pp"/>
+                  </_PackageFilesItem19>
+                  <_PackageFilesItem2 Items="Value">
+                    <_Value Value="qt/qtobjects.pas"/>
+                  </_PackageFilesItem2>
+                  <_PackageFilesItem20 Items="Value">
+                    <_Value Value="qt/qtwsfactory.pas"/>
+                  </_PackageFilesItem20>
+                  <_PackageFilesItem21 Items="Value">
+                    <_Value Value="qt/qtwsforms.pp"/>
+                  </_PackageFilesItem21>
+                  <_PackageFilesItem22 Items="Value">
+                    <_Value Value="qt/qtwsgrids.pp"/>
+                  </_PackageFilesItem22>
+                  <_PackageFilesItem23 Items="Value">
+                    <_Value Value="qt/qtwsimglist.pp"/>
+                  </_PackageFilesItem23>
+                  <_PackageFilesItem24 Items="Value">
+                    <_Value Value="qt/qtwsmenus.pp"/>
+                  </_PackageFilesItem24>
+                  <_PackageFilesItem25 Items="Value">
+                    <_Value Value="qt/qtwspairsplitter.pp"/>
+                  </_PackageFilesItem25>
+                  <_PackageFilesItem26 Items="Value">
+                    <_Value Value="qt/qtwsspin.pp"/>
+                  </_PackageFilesItem26>
+                  <_PackageFilesItem27 Items="Value">
+                    <_Value Value="qt/qtwsstdctrls.pp"/>
+                  </_PackageFilesItem27>
+                  <_PackageFilesItem28 Items="Value">
+                    <_Value Value="qt/qtx11.inc"/>
+                  </_PackageFilesItem28>
+                  <_PackageFilesItem29 Items="Value">
+                    <_Value Value="qt/alllclintfunits.pas"/>
+                  </_PackageFilesItem29>
+                  <_PackageFilesItem3 Items="Value">
+                    <_Value Value="qt/qtpagecontrol.inc"/>
+                  </_PackageFilesItem3>
+                  <_PackageFilesItem30 Items="Value">
+                    <_Value Value="qt/interfaces.pp"/>
+                  </_PackageFilesItem30>
+                  <_PackageFilesItem31 Items="Value">
+                    <_Value Value="qt/issues.xml"/>
+                  </_PackageFilesItem31>
+                  <_PackageFilesItem32 Items="Value">
+                    <_Value Value="qt/qt45.pas"/>
+                  </_PackageFilesItem32>
+                  <_PackageFilesItem33 Items="Value">
+                    <_Value Value="qt/qt4.pas"/>
+                  </_PackageFilesItem33>
+                  <_PackageFilesItem34 Items="Value">
+                    <_Value Value="qt/qtcaret.pas"/>
+                  </_PackageFilesItem34>
+                  <_PackageFilesItem35 Items="Value">
+                    <_Value Value="qt/qtdefines.inc"/>
+                  </_PackageFilesItem35>
+                  <_PackageFilesItem36 Items="Value">
+                    <_Value Value="qt/qtint.pp"/>
+                  </_PackageFilesItem36>
+                  <_PackageFilesItem37 Items="Value">
+                    <_Value Value="qt/qtlclintfh.inc"/>
+                  </_PackageFilesItem37>
+                  <_PackageFilesItem38 Items="Value">
+                    <_Value Value="qt/qtlclintf.inc"/>
+                  </_PackageFilesItem38>
+                  <_PackageFilesItem4 Items="Value">
+                    <_Value Value="qt/qtprivate.pp"/>
+                  </_PackageFilesItem4>
+                  <_PackageFilesItem5 Items="Value">
+                    <_Value Value="qt/qtproc.pp"/>
+                  </_PackageFilesItem5>
+                  <_PackageFilesItem6 Items="Value">
+                    <_Value Value="qt/qtsystemtrayicon.pas"/>
+                  </_PackageFilesItem6>
+                  <_PackageFilesItem7 Items="Value">
+                    <_Value Value="qt/qtthemes.pas"/>
+                  </_PackageFilesItem7>
+                  <_PackageFilesItem8 Items="Value">
+                    <_Value Value="qt/qtwidgets.pas"/>
+                  </_PackageFilesItem8>
+                  <_PackageFilesItem9 Items="Value">
+                    <_Value Value="qt/qtwinapih.inc"/>
+                  </_PackageFilesItem9>
+                  <_name Value="qt"/>
+                </_Item10>
+                <_Item11 Items="PackageFilesCount/PackageFilesItem1/PackageFilesItem10/PackageFilesItem11/PackageFilesItem12/PackageFilesItem13/PackageFilesItem14/PackageFilesItem15/PackageFilesItem16/PackageFilesItem17/PackageFilesItem18/PackageFilesItem19/PackageFilesItem2/PackageFilesItem20/PackageFilesItem21/PackageFilesItem22/PackageFilesItem23/PackageFilesItem24/PackageFilesItem25/PackageFilesItem26/PackageFilesItem27/PackageFilesItem28/PackageFilesItem29/PackageFilesItem3/PackageFilesItem30/PackageFilesItem31/PackageFilesItem32/PackageFilesItem33/PackageFilesItem34/PackageFilesItem35/PackageFilesItem36/PackageFilesItem37/PackageFilesItem38/PackageFilesItem39/PackageFilesItem4/PackageFilesItem40/PackageFilesItem41/PackageFilesItem42/PackageFilesItem43/PackageFilesItem44/PackageFilesItem45/PackageFilesItem46/PackageFilesItem47/PackageFilesItem48/PackageFilesItem49/PackageFilesItem5/PackageFilesItem50/PackageFilesItem51/PackageFilesItem52/PackageFilesItem53/PackageFilesItem54/PackageFilesItem55/PackageFilesItem56/PackageFilesItem57/PackageFilesItem58/PackageFilesItem59/PackageFilesItem6/PackageFilesItem60/PackageFilesItem61/PackageFilesItem62/PackageFilesItem63/PackageFilesItem64/PackageFilesItem7/PackageFilesItem8/PackageFilesItem9/name">
+                  <_PackageFilesCount Value="64"/>
+                  <_PackageFilesItem1 Items="Value">
+                    <_Value Value="customdrawn/alllclintfunits.pas"/>
+                  </_PackageFilesItem1>
+                  <_PackageFilesItem10 Items="Value">
+                    <_Value Value="customdrawn/android/keycodes.pas"/>
+                  </_PackageFilesItem10>
+                  <_PackageFilesItem11 Items="Value">
+                    <_Value Value="customdrawn/android/log.pas"/>
+                  </_PackageFilesItem11>
+                  <_PackageFilesItem12 Items="Value">
+                    <_Value Value="customdrawn/android/looper.pas"/>
+                  </_PackageFilesItem12>
+                  <_PackageFilesItem13 Items="Value">
+                    <_Value Value="customdrawn/android/native_activity.pas"/>
+                  </_PackageFilesItem13>
+                  <_PackageFilesItem14 Items="Value">
+                    <_Value Value="customdrawn/android/native_window.pas"/>
+                  </_PackageFilesItem14>
+                  <_PackageFilesItem15 Items="Value">
+                    <_Value Value="customdrawn/android/rect.pas"/>
+                  </_PackageFilesItem15>
+                  <_PackageFilesItem16 Items="Value">
+                    <_Value Value="customdrawn/cocoagdiobjects.pas"/>
+                  </_PackageFilesItem16>
+                  <_PackageFilesItem17 Items="Value">
+                    <_Value Value="customdrawn/cocoautils.pas"/>
+                  </_PackageFilesItem17>
+                  <_PackageFilesItem18 Items="Value">
+                    <_Value Value="customdrawn/customdrawn_androidproc.pas"/>
+                  </_PackageFilesItem18>
+                  <_PackageFilesItem19 Items="Value">
+                    <_Value Value="customdrawn/customdrawn_cocoaproc.pas"/>
+                  </_PackageFilesItem19>
+                  <_PackageFilesItem2 Items="Value">
+                    <_Value Value="customdrawn/android/android_native_app_glue.pas"/>
+                  </_PackageFilesItem2>
+                  <_PackageFilesItem20 Items="Value">
+                    <_Value Value="customdrawn/customdrawndefines.inc"/>
+                  </_PackageFilesItem20>
+                  <_PackageFilesItem21 Items="Value">
+                    <_Value Value="customdrawn/customdrawnint.pas"/>
+                  </_PackageFilesItem21>
+                  <_PackageFilesItem22 Items="Value">
+                    <_Value Value="customdrawn/customdrawnlclintf_android.inc"/>
+                  </_PackageFilesItem22>
+                  <_PackageFilesItem23 Items="Value">
+                    <_Value Value="customdrawn/customdrawnlclintf_cocoa.inc"/>
+                  </_PackageFilesItem23>
+                  <_PackageFilesItem24 Items="Value">
+                    <_Value Value="customdrawn/customdrawnlclintfh.inc"/>
+                  </_PackageFilesItem24>
+                  <_PackageFilesItem25 Items="Value">
+                    <_Value Value="customdrawn/customdrawnlclintf.inc"/>
+                  </_PackageFilesItem25>
+                  <_PackageFilesItem26 Items="Value">
+                    <_Value Value="customdrawn/customdrawnlclintf_win.inc"/>
+                  </_PackageFilesItem26>
+                  <_PackageFilesItem27 Items="Value">
+                    <_Value Value="customdrawn/customdrawnlclintf_x11.inc"/>
+                  </_PackageFilesItem27>
+                  <_PackageFilesItem28 Items="Value">
+                    <_Value Value="customdrawn/customdrawnobject_android.inc"/>
+                  </_PackageFilesItem28>
+                  <_PackageFilesItem29 Items="Value">
+                    <_Value Value="customdrawn/customdrawnobject_cocoa.inc"/>
+                  </_PackageFilesItem29>
+                  <_PackageFilesItem3 Items="Value">
+                    <_Value Value="customdrawn/android/asset_manager.pas"/>
+                  </_PackageFilesItem3>
+                  <_PackageFilesItem30 Items="Value">
+                    <_Value Value="customdrawn/customdrawnobject.inc"/>
+                  </_PackageFilesItem30>
+                  <_PackageFilesItem31 Items="Value">
+                    <_Value Value="customdrawn/customdrawnobject_win.inc"/>
+                  </_PackageFilesItem31>
+                  <_PackageFilesItem32 Items="Value">
+                    <_Value Value="customdrawn/customdrawnobject_x11.inc"/>
+                  </_PackageFilesItem32>
+                  <_PackageFilesItem33 Items="Value">
+                    <_Value Value="customdrawn/customdrawnprivate.pas"/>
+                  </_PackageFilesItem33>
+                  <_PackageFilesItem34 Items="Value">
+                    <_Value Value="customdrawn/customdrawnproc.pas"/>
+                  </_PackageFilesItem34>
+                  <_PackageFilesItem35 Items="Value">
+                    <_Value Value="customdrawn/customdrawntrayicon_android.inc"/>
+                  </_PackageFilesItem35>
+                  <_PackageFilesItem36 Items="Value">
+                    <_Value Value="customdrawn/customdrawntrayicon_cocoa.inc"/>
+                  </_PackageFilesItem36>
+                  <_PackageFilesItem37 Items="Value">
+                    <_Value Value="customdrawn/customdrawntrayicon_win.inc"/>
+                  </_PackageFilesItem37>
+                  <_PackageFilesItem38 Items="Value">
+                    <_Value Value="customdrawn/customdrawntrayicon_x11.inc"/>
+                  </_PackageFilesItem38>
+                  <_PackageFilesItem39 Items="Value">
+                    <_Value Value="customdrawn/customdrawnwinapi_android.inc"/>
+                  </_PackageFilesItem39>
+                  <_PackageFilesItem4 Items="Value">
+                    <_Value Value="customdrawn/android/bitmap.pas"/>
+                  </_PackageFilesItem4>
+                  <_PackageFilesItem40 Items="Value">
+                    <_Value Value="customdrawn/customdrawnwinapi_cocoa.inc"/>
+                  </_PackageFilesItem40>
+                  <_PackageFilesItem41 Items="Value">
+                    <_Value Value="customdrawn/customdrawnwinapih.inc"/>
+                  </_PackageFilesItem41>
+                  <_PackageFilesItem42 Items="Value">
+                    <_Value Value="customdrawn/customdrawnwinapi.inc"/>
+                  </_PackageFilesItem42>
+                  <_PackageFilesItem43 Items="Value">
+                    <_Value Value="customdrawn/customdrawnwinapi_win.inc"/>
+                  </_PackageFilesItem43>
+                  <_PackageFilesItem44 Items="Value">
+                    <_Value Value="customdrawn/customdrawnwinapi_x11.inc"/>
+                  </_PackageFilesItem44>
+                  <_PackageFilesItem45 Items="Value">
+                    <_Value Value="customdrawn/customdrawn_winproc.pas"/>
+                  </_PackageFilesItem45>
+                  <_PackageFilesItem46 Items="Value">
+                    <_Value Value="customdrawn/customdrawnwsbuttons.pas"/>
+                  </_PackageFilesItem46>
+                  <_PackageFilesItem47 Items="Value">
+                    <_Value Value="customdrawn/customdrawnwscomctrls.pas"/>
+                  </_PackageFilesItem47>
+                  <_PackageFilesItem48 Items="Value">
+                    <_Value Value="customdrawn/customdrawnwscontrols.pp"/>
+                  </_PackageFilesItem48>
+                  <_PackageFilesItem49 Items="Value">
+                    <_Value Value="customdrawn/customdrawnwsdialogs.pas"/>
+                  </_PackageFilesItem49>
+                  <_PackageFilesItem5 Items="Value">
+                    <_Value Value="customdrawn/android/configuration.pas"/>
+                  </_PackageFilesItem5>
+                  <_PackageFilesItem50 Items="Value">
+                    <_Value Value="customdrawn/customdrawnwsextctrls.pas"/>
+                  </_PackageFilesItem50>
+                  <_PackageFilesItem51 Items="Value">
+                    <_Value Value="customdrawn/customdrawnwsfactory.pas"/>
+                  </_PackageFilesItem51>
+                  <_PackageFilesItem52 Items="Value">
+                    <_Value Value="customdrawn/customdrawnwsforms_android.inc"/>
+                  </_PackageFilesItem52>
+                  <_PackageFilesItem53 Items="Value">
+                    <_Value Value="customdrawn/customdrawnwsforms_cocoa.inc"/>
+                  </_PackageFilesItem53>
+                  <_PackageFilesItem54 Items="Value">
+                    <_Value Value="customdrawn/customdrawnwsforms.pp"/>
+                  </_PackageFilesItem54>
+                  <_PackageFilesItem55 Items="Value">
+                    <_Value Value="customdrawn/customdrawnwsforms_win.inc"/>
+                  </_PackageFilesItem55>
+                  <_PackageFilesItem56 Items="Value">
+                    <_Value Value="customdrawn/customdrawnwsforms_x11.inc"/>
+                  </_PackageFilesItem56>
+                  <_PackageFilesItem57 Items="Value">
+                    <_Value Value="customdrawn/customdrawnwslazdeviceapis.pas"/>
+                  </_PackageFilesItem57>
+                  <_PackageFilesItem58 Items="Value">
+                    <_Value Value="customdrawn/customdrawnwsmenus_cocoa.inc"/>
+                  </_PackageFilesItem58>
+                  <_PackageFilesItem59 Items="Value">
+                    <_Value Value="customdrawn/customdrawnwsmenus.pas"/>
+                  </_PackageFilesItem59>
+                  <_PackageFilesItem6 Items="Value">
+                    <_Value Value="customdrawn/android/egl.pas"/>
+                  </_PackageFilesItem6>
+                  <_PackageFilesItem60 Items="Value">
+                    <_Value Value="customdrawn/customdrawnwsspin.pas"/>
+                  </_PackageFilesItem60>
+                  <_PackageFilesItem61 Items="Value">
+                    <_Value Value="customdrawn/customdrawnwsstdctrls.pas"/>
+                  </_PackageFilesItem61>
+                  <_PackageFilesItem62 Items="Value">
+                    <_Value Value="customdrawn/customdrawn_x11proc.pas"/>
+                  </_PackageFilesItem62>
+                  <_PackageFilesItem63 Items="Value">
+                    <_Value Value="customdrawn/interfaces.pas"/>
+                  </_PackageFilesItem63>
+                  <_PackageFilesItem64 Items="Value">
+                    <_Value Value="customdrawn/wincallback.inc"/>
+                  </_PackageFilesItem64>
+                  <_PackageFilesItem7 Items="Value">
+                    <_Value Value="customdrawn/android/gles.pas"/>
+                  </_PackageFilesItem7>
+                  <_PackageFilesItem8 Items="Value">
+                    <_Value Value="customdrawn/android/input.pas"/>
+                  </_PackageFilesItem8>
+                  <_PackageFilesItem9 Items="Value">
+                    <_Value Value="customdrawn/android/jni.pas"/>
+                  </_PackageFilesItem9>
+                  <_name Value="customdrawn"/>
+                </_Item11>
+                <_Item12 Items="PackageFilesCount/PackageFilesItem1/PackageFilesItem10/PackageFilesItem11/PackageFilesItem12/PackageFilesItem13/PackageFilesItem14/PackageFilesItem15/PackageFilesItem16/PackageFilesItem17/PackageFilesItem18/PackageFilesItem19/PackageFilesItem2/PackageFilesItem20/PackageFilesItem21/PackageFilesItem22/PackageFilesItem23/PackageFilesItem24/PackageFilesItem25/PackageFilesItem26/PackageFilesItem27/PackageFilesItem28/PackageFilesItem29/PackageFilesItem3/PackageFilesItem30/PackageFilesItem31/PackageFilesItem32/PackageFilesItem33/PackageFilesItem34/PackageFilesItem35/PackageFilesItem36/PackageFilesItem37/PackageFilesItem38/PackageFilesItem4/PackageFilesItem5/PackageFilesItem6/PackageFilesItem7/PackageFilesItem8/PackageFilesItem9/name">
+                  <_PackageFilesCount Value="38"/>
+                  <_PackageFilesItem1 Items="Value">
+                    <_Value Value="gtk3/gtk3bindings/lazatk1.pas"/>
+                  </_PackageFilesItem1>
+                  <_PackageFilesItem10 Items="Value">
+                    <_Value Value="gtk3/gtk3bindings/lazpango1.pas"/>
+                  </_PackageFilesItem10>
+                  <_PackageFilesItem11 Items="Value">
+                    <_Value Value="gtk3/gtk3bindings/lazpangocairo1.pas"/>
+                  </_PackageFilesItem11>
+                  <_PackageFilesItem12 Items="Value">
+                    <_Value Value="gtk3/gtk3cellrenderer.pas"/>
+                  </_PackageFilesItem12>
+                  <_PackageFilesItem13 Items="Value">
+                    <_Value Value="gtk3/gtk3defines.inc"/>
+                  </_PackageFilesItem13>
+                  <_PackageFilesItem14 Items="Value">
+                    <_Value Value="gtk3/gtk3int.pas"/>
+                  </_PackageFilesItem14>
+                  <_PackageFilesItem15 Items="Value">
+                    <_Value Value="gtk3/gtk3lclintfh.inc"/>
+                  </_PackageFilesItem15>
+                  <_PackageFilesItem16 Items="Value">
+                    <_Value Value="gtk3/gtk3lclintf.inc"/>
+                  </_PackageFilesItem16>
+                  <_PackageFilesItem17 Items="Value">
+                    <_Value Value="gtk3/gtk3object.inc"/>
+                  </_PackageFilesItem17>
+                  <_PackageFilesItem18 Items="Value">
+                    <_Value Value="gtk3/gtk3objects.pas"/>
+                  </_PackageFilesItem18>
+                  <_PackageFilesItem19 Items="Value">
+                    <_Value Value="gtk3/gtk3private.pas"/>
+                  </_PackageFilesItem19>
+                  <_PackageFilesItem2 Items="Value">
+                    <_Value Value="gtk3/gtk3bindings/lazcairo1.pas"/>
+                  </_PackageFilesItem2>
+                  <_PackageFilesItem20 Items="Value">
+                    <_Value Value="gtk3/gtk3procs.pas"/>
+                  </_PackageFilesItem20>
+                  <_PackageFilesItem21 Items="Value">
+                    <_Value Value="gtk3/gtk3widgets.pas"/>
+                  </_PackageFilesItem21>
+                  <_PackageFilesItem22 Items="Value">
+                    <_Value Value="gtk3/gtk3winapih.inc"/>
+                  </_PackageFilesItem22>
+                  <_PackageFilesItem23 Items="Value">
+                    <_Value Value="gtk3/gtk3winapi.inc"/>
+                  </_PackageFilesItem23>
+                  <_PackageFilesItem24 Items="Value">
+                    <_Value Value="gtk3/gtk3wsbuttons.pp"/>
+                  </_PackageFilesItem24>
+                  <_PackageFilesItem25 Items="Value">
+                    <_Value Value="gtk3/gtk3wscalendar.pp"/>
+                  </_PackageFilesItem25>
+                  <_PackageFilesItem26 Items="Value">
+                    <_Value Value="gtk3/gtk3wschecklst.pp"/>
+                  </_PackageFilesItem26>
+                  <_PackageFilesItem27 Items="Value">
+                    <_Value Value="gtk3/gtk3wscomctrls.pp"/>
+                  </_PackageFilesItem27>
+                  <_PackageFilesItem28 Items="Value">
+                    <_Value Value="gtk3/gtk3wscontrols.pp"/>
+                  </_PackageFilesItem28>
+                  <_PackageFilesItem29 Items="Value">
+                    <_Value Value="gtk3/gtk3wsdialogs.pp"/>
+                  </_PackageFilesItem29>
+                  <_PackageFilesItem3 Items="Value">
+                    <_Value Value="gtk3/gtk3bindings/lazgdk3.pas"/>
+                  </_PackageFilesItem3>
+                  <_PackageFilesItem30 Items="Value">
+                    <_Value Value="gtk3/gtk3wsextctrls.pp"/>
+                  </_PackageFilesItem30>
+                  <_PackageFilesItem31 Items="Value">
+                    <_Value Value="gtk3/gtk3wsextdlgs.pp"/>
+                  </_PackageFilesItem31>
+                  <_PackageFilesItem32 Items="Value">
+                    <_Value Value="gtk3/gtk3wsfactory.pas"/>
+                  </_PackageFilesItem32>
+                  <_PackageFilesItem33 Items="Value">
+                    <_Value Value="gtk3/gtk3wsforms.pp"/>
+                  </_PackageFilesItem33>
+                  <_PackageFilesItem34 Items="Value">
+                    <_Value Value="gtk3/gtk3wsimglist.pp"/>
+                  </_PackageFilesItem34>
+                  <_PackageFilesItem35 Items="Value">
+                    <_Value Value="gtk3/gtk3wsmenus.pp"/>
+                  </_PackageFilesItem35>
+                  <_PackageFilesItem36 Items="Value">
+                    <_Value Value="gtk3/gtk3wsspin.pp"/>
+                  </_PackageFilesItem36>
+                  <_PackageFilesItem37 Items="Value">
+                    <_Value Value="gtk3/gtk3wsstdctrls.pp"/>
+                  </_PackageFilesItem37>
+                  <_PackageFilesItem38 Items="Value">
+                    <_Value Value="gtk3/interfaces.pp"/>
+                  </_PackageFilesItem38>
+                  <_PackageFilesItem4 Items="Value">
+                    <_Value Value="gtk3/gtk3bindings/lazgdkpixbuf2.pas"/>
+                  </_PackageFilesItem4>
+                  <_PackageFilesItem5 Items="Value">
+                    <_Value Value="gtk3/gtk3bindings/lazgio2.pas"/>
+                  </_PackageFilesItem5>
+                  <_PackageFilesItem6 Items="Value">
+                    <_Value Value="gtk3/gtk3bindings/lazglib2.pas"/>
+                  </_PackageFilesItem6>
+                  <_PackageFilesItem7 Items="Value">
+                    <_Value Value="gtk3/gtk3bindings/lazgmodule2.pas"/>
+                  </_PackageFilesItem7>
+                  <_PackageFilesItem8 Items="Value">
+                    <_Value Value="gtk3/gtk3bindings/lazgobject2.pas"/>
+                  </_PackageFilesItem8>
+                  <_PackageFilesItem9 Items="Value">
+                    <_Value Value="gtk3/gtk3bindings/lazgtk3.pas"/>
+                  </_PackageFilesItem9>
+                  <_name Value="gtk3"/>
+                </_Item12>
+                <_Item2 Items="CompilerOptionsCount/CompilerOptionsItem1/PackageFilesCount/PackageFilesItem1/PackageFilesItem10/PackageFilesItem11/PackageFilesItem12/PackageFilesItem13/PackageFilesItem14/PackageFilesItem15/PackageFilesItem16/PackageFilesItem17/PackageFilesItem18/PackageFilesItem19/PackageFilesItem2/PackageFilesItem20/PackageFilesItem21/PackageFilesItem22/PackageFilesItem23/PackageFilesItem24/PackageFilesItem25/PackageFilesItem26/PackageFilesItem27/PackageFilesItem28/PackageFilesItem29/PackageFilesItem3/PackageFilesItem30/PackageFilesItem31/PackageFilesItem32/PackageFilesItem33/PackageFilesItem34/PackageFilesItem35/PackageFilesItem36/PackageFilesItem37/PackageFilesItem38/PackageFilesItem39/PackageFilesItem4/PackageFilesItem40/PackageFilesItem41/PackageFilesItem42/PackageFilesItem43/PackageFilesItem44/PackageFilesItem45/PackageFilesItem46/PackageFilesItem47/PackageFilesItem48/PackageFilesItem49/PackageFilesItem5/PackageFilesItem50/PackageFilesItem51/PackageFilesItem52/PackageFilesItem53/PackageFilesItem54/PackageFilesItem55/PackageFilesItem56/PackageFilesItem57/PackageFilesItem58/PackageFilesItem59/PackageFilesItem6/PackageFilesItem60/PackageFilesItem61/PackageFilesItem62/PackageFilesItem63/PackageFilesItem64/PackageFilesItem7/PackageFilesItem8/PackageFilesItem9/name">
+                  <_CompilerOptionsCount Value="1"/>
+                  <_CompilerOptionsItem1 Items="Value">
+                    <_Value Value="-dgtk1"/>
+                  </_CompilerOptionsItem1>
+                  <_PackageFilesCount Value="64"/>
+                  <_PackageFilesItem1 Items="Value">
+                    <_Value Value="gtk/gtk1def.pp"/>
+                  </_PackageFilesItem1>
+                  <_PackageFilesItem10 Items="Value">
+                    <_Value Value="gtk/gtkfiledialogutils.inc"/>
+                  </_PackageFilesItem10>
+                  <_PackageFilesItem11 Items="Value">
+                    <_Value Value="gtk/gtkwsimglist.pp"/>
+                  </_PackageFilesItem11>
+                  <_PackageFilesItem12 Items="Value">
+                    <_Value Value="gtk/gtkwscomctrls.pp"/>
+                  </_PackageFilesItem12>
+                  <_PackageFilesItem13 Items="Value">
+                    <_Value Value="gtk/gtklclintfh.inc"/>
+                  </_PackageFilesItem13>
+                  <_PackageFilesItem14 Items="Value">
+                    <_Value Value="gtk/alllclintfunits.pas"/>
+                  </_PackageFilesItem14>
+                  <_PackageFilesItem15 Items="Value">
+                    <_Value Value="gtk/dragicons.inc"/>
+                  </_PackageFilesItem15>
+                  <_PackageFilesItem16 Items="Value">
+                    <_Value Value="gtk/gtk1devicecontext.inc"/>
+                  </_PackageFilesItem16>
+                  <_PackageFilesItem17 Items="Value">
+                    <_Value Value="gtk/gtk1extrah.inc"/>
+                  </_PackageFilesItem17>
+                  <_PackageFilesItem18 Items="Value">
+                    <_Value Value="gtk/gtk1extra.inc"/>
+                  </_PackageFilesItem18>
+                  <_PackageFilesItem19 Items="Value">
+                    <_Value Value="gtk/gtk1memostringsh.inc"/>
+                  </_PackageFilesItem19>
+                  <_PackageFilesItem2 Items="Value">
+                    <_Value Value="gtk/gtkfiledialogutilsh.inc"/>
+                  </_PackageFilesItem2>
+                  <_PackageFilesItem20 Items="Value">
+                    <_Value Value="gtk/gtk1memostrings.inc"/>
+                  </_PackageFilesItem20>
+                  <_PackageFilesItem21 Items="Value">
+                    <_Value Value="gtk/gtk1privatelist.inc"/>
+                  </_PackageFilesItem21>
+                  <_PackageFilesItem22 Items="Value">
+                    <_Value Value="gtk/gtk1trayicon.inc"/>
+                  </_PackageFilesItem22>
+                  <_PackageFilesItem23 Items="Value">
+                    <_Value Value="gtk/gtk1widgetset.inc"/>
+                  </_PackageFilesItem23>
+                  <_PackageFilesItem24 Items="Value">
+                    <_Value Value="gtk/gtk1wsprivate.pp"/>
+                  </_PackageFilesItem24>
+                  <_PackageFilesItem25 Items="Value">
+                    <_Value Value="gtk/gtkcallback.inc"/>
+                  </_PackageFilesItem25>
+                  <_PackageFilesItem26 Items="Value">
+                    <_Value Value="gtk/gtkcomboboxcallback.inc"/>
+                  </_PackageFilesItem26>
+                  <_PackageFilesItem27 Items="Value">
+                    <_Value Value="gtk/gtkdefines.inc"/>
+                  </_PackageFilesItem27>
+                  <_PackageFilesItem28 Items="Value">
+                    <_Value Value="gtk/gtkdef.pp"/>
+                  </_PackageFilesItem28>
+                  <_PackageFilesItem29 Items="Value">
+                    <_Value Value="gtk/gtkdevicecontext.inc"/>
+                  </_PackageFilesItem29>
+                  <_PackageFilesItem3 Items="Value">
+                    <_Value Value="gtk/gtkglobals.pp"/>
+                  </_PackageFilesItem3>
+                  <_PackageFilesItem30 Items="Value">
+                    <_Value Value="gtk/gtkdragcallback.inc"/>
+                  </_PackageFilesItem30>
+                  <_PackageFilesItem31 Items="Value">
+                    <_Value Value="gtk/gtkfontcache.pas"/>
+                  </_PackageFilesItem31>
+                  <_PackageFilesItem32 Items="Value">
+                    <_Value Value="gtk/gtkimages.lrs"/>
+                  </_PackageFilesItem32>
+                  <_PackageFilesItem33 Items="Value">
+                    <_Value Value="gtk/gtkint.pp"/>
+                  </_PackageFilesItem33>
+                  <_PackageFilesItem34 Items="Value">
+                    <_Value Value="gtk/gtkkeysyms.inc"/>
+                  </_PackageFilesItem34>
+                  <_PackageFilesItem35 Items="Value">
+                    <_Value Value="gtk/gtklclintf.inc"/>
+                  </_PackageFilesItem35>
+                  <_PackageFilesItem36 Items="Value">
+                    <_Value Value="gtk/gtklistsl.inc"/>
+                  </_PackageFilesItem36>
+                  <_PackageFilesItem37 Items="Value">
+                    <_Value Value="gtk/gtkpagecallback.inc"/>
+                  </_PackageFilesItem37>
+                  <_PackageFilesItem38 Items="Value">
+                    <_Value Value="gtk/gtkprivatelist.inc"/>
+                  </_PackageFilesItem38>
+                  <_PackageFilesItem39 Items="Value">
+                    <_Value Value="gtk/gtkprivatewidget.inc"/>
+                  </_PackageFilesItem39>
+                  <_PackageFilesItem4 Items="Value">
+                    <_Value Value="gtk/gtkwsfactory.pas"/>
+                  </_PackageFilesItem4>
+                  <_PackageFilesItem40 Items="Value">
+                    <_Value Value="gtk/gtkproc.inc"/>
+                  </_PackageFilesItem40>
+                  <_PackageFilesItem41 Items="Value">
+                    <_Value Value="gtk/gtkwscontrols.pp"/>
+                  </_PackageFilesItem41>
+                  <_PackageFilesItem42 Items="Value">
+                    <_Value Value="gtk/gtkwscustomlistview.inc"/>
+                  </_PackageFilesItem42>
+                  <_PackageFilesItem43 Items="Value">
+                    <_Value Value="gtk/gtkwsdialogs.pp"/>
+                  </_PackageFilesItem43>
+                  <_PackageFilesItem44 Items="Value">
+                    <_Value Value="gtk/gtkwsextctrls.pp"/>
+                  </_PackageFilesItem44>
+                  <_PackageFilesItem45 Items="Value">
+                    <_Value Value="gtk/gtkwsextdlgs.pp"/>
+                  </_PackageFilesItem45>
+                  <_PackageFilesItem46 Items="Value">
+                    <_Value Value="gtk/gtkwsforms.pp"/>
+                  </_PackageFilesItem46>
+                  <_PackageFilesItem47 Items="Value">
+                    <_Value Value="gtk/gtkwsgrids.pp"/>
+                  </_PackageFilesItem47>
+                  <_PackageFilesItem48 Items="Value">
+                    <_Value Value="gtk/gtkwsmenus.pp"/>
+                  </_PackageFilesItem48>
+                  <_PackageFilesItem49 Items="Value">
+                    <_Value Value="gtk/gtkwspairsplitter.pp"/>
+                  </_PackageFilesItem49>
+                  <_PackageFilesItem5 Items="Value">
+                    <_Value Value="gtk/gtkdebug.pp"/>
+                  </_PackageFilesItem5>
+                  <_PackageFilesItem50 Items="Value">
+                    <_Value Value="gtk/gtkwsprivate.pp"/>
+                  </_PackageFilesItem50>
+                  <_PackageFilesItem51 Items="Value">
+                    <_Value Value="gtk/gtkwsspin.pp"/>
+                  </_PackageFilesItem51>
+                  <_PackageFilesItem52 Items="Value">
+                    <_Value Value="gtk/gtkwsstdctrls.pp"/>
+                  </_PackageFilesItem52>
+                  <_PackageFilesItem53 Items="Value">
+                    <_Value Value="gtk/interfaces.pp"/>
+                  </_PackageFilesItem53>
+                  <_PackageFilesItem54 Items="Value">
+                    <_Value Value="gtk/issues.xml"/>
+                  </_PackageFilesItem54>
+                  <_PackageFilesItem55 Items="Value">
+                    <_Value Value="gtk/gtkproc.pp"/>
+                  </_PackageFilesItem55>
+                  <_PackageFilesItem56 Items="Value">
+                    <_Value Value="gtk/gtkstdpixmaps.inc"/>
+                  </_PackageFilesItem56>
+                  <_PackageFilesItem57 Items="Value">
+                    <_Value Value="gtk/gtkthemes.pas"/>
+                  </_PackageFilesItem57>
+                  <_PackageFilesItem58 Items="Value">
+                    <_Value Value="gtk/gtkwidgetset.inc"/>
+                  </_PackageFilesItem58>
+                  <_PackageFilesItem59 Items="Value">
+                    <_Value Value="gtk/gtkwinapih.inc"/>
+                  </_PackageFilesItem59>
+                  <_PackageFilesItem6 Items="Value">
+                    <_Value Value="gtk/gtklistslh.inc"/>
+                  </_PackageFilesItem6>
+                  <_PackageFilesItem60 Items="Value">
+                    <_Value Value="gtk/gtkwinapi.inc"/>
+                  </_PackageFilesItem60>
+                  <_PackageFilesItem61 Items="Value">
+                    <_Value Value="gtk/gtkwinapiwindow.pp"/>
+                  </_PackageFilesItem61>
+                  <_PackageFilesItem62 Items="Value">
+                    <_Value Value="gtk/gtkwsbuttons.pp"/>
+                  </_PackageFilesItem62>
+                  <_PackageFilesItem63 Items="Value">
+                    <_Value Value="gtk/gtkwscalendar.pp"/>
+                  </_PackageFilesItem63>
+                  <_PackageFilesItem64 Items="Value">
+                    <_Value Value="gtk/gtkwschecklst.pp"/>
+                  </_PackageFilesItem64>
+                  <_PackageFilesItem7 Items="Value">
+                    <_Value Value="gtk/gtkmsgqueue.pp"/>
+                  </_PackageFilesItem7>
+                  <_PackageFilesItem8 Items="Value">
+                    <_Value Value="gtk/gtk1int.pp"/>
+                  </_PackageFilesItem8>
+                  <_PackageFilesItem9 Items="Value">
+                    <_Value Value="gtk/gtkextra.pp"/>
+                  </_PackageFilesItem9>
+                  <_name Value="gtk"/>
+                </_Item2>
+                <_Item3 Items="PackageFilesCount/PackageFilesItem1/PackageFilesItem10/PackageFilesItem11/PackageFilesItem12/PackageFilesItem13/PackageFilesItem14/PackageFilesItem15/PackageFilesItem16/PackageFilesItem17/PackageFilesItem18/PackageFilesItem19/PackageFilesItem2/PackageFilesItem20/PackageFilesItem21/PackageFilesItem22/PackageFilesItem23/PackageFilesItem24/PackageFilesItem25/PackageFilesItem26/PackageFilesItem27/PackageFilesItem28/PackageFilesItem29/PackageFilesItem3/PackageFilesItem30/PackageFilesItem31/PackageFilesItem32/PackageFilesItem33/PackageFilesItem34/PackageFilesItem35/PackageFilesItem36/PackageFilesItem37/PackageFilesItem38/PackageFilesItem39/PackageFilesItem4/PackageFilesItem40/PackageFilesItem41/PackageFilesItem42/PackageFilesItem43/PackageFilesItem44/PackageFilesItem45/PackageFilesItem46/PackageFilesItem47/PackageFilesItem48/PackageFilesItem49/PackageFilesItem5/PackageFilesItem50/PackageFilesItem51/PackageFilesItem52/PackageFilesItem53/PackageFilesItem54/PackageFilesItem55/PackageFilesItem56/PackageFilesItem57/PackageFilesItem58/PackageFilesItem59/PackageFilesItem6/PackageFilesItem60/PackageFilesItem61/PackageFilesItem7/PackageFilesItem8/PackageFilesItem9/name">
+                  <_PackageFilesCount Value="61"/>
+                  <_PackageFilesItem1 Items="Value">
+                    <_Value Value="gtk2windows"/>
+                  </_PackageFilesItem1>
+                  <_PackageFilesItem10 Items="Value">
+                    <_Value Value="gtk2/gtk2pagecontrol.inc"/>
+                  </_PackageFilesItem10>
+                  <_PackageFilesItem11 Items="Value">
+                    <_Value Value="gtk2/gtk2privatelist.inc"/>
+                  </_PackageFilesItem11>
+                  <_PackageFilesItem12 Items="Value">
+                    <_Value Value="gtk2/gtk2privatewidget.inc"/>
+                  </_PackageFilesItem12>
+                  <_PackageFilesItem13 Items="Value">
+                    <_Value Value="gtk2/gtk2proc.inc"/>
+                  </_PackageFilesItem13>
+                  <_PackageFilesItem14 Items="Value">
+                    <_Value Value="gtk2/gtk2proc.pp"/>
+                  </_PackageFilesItem14>
+                  <_PackageFilesItem15 Items="Value">
+                    <_Value Value="gtk2/gtk2stdpixmaps.inc"/>
+                  </_PackageFilesItem15>
+                  <_PackageFilesItem16 Items="Value">
+                    <_Value Value="gtk2/gtk2themes.pas"/>
+                  </_PackageFilesItem16>
+                  <_PackageFilesItem17 Items="Value">
+                    <_Value Value="gtk2/gtk2trayicon.inc"/>
+                  </_PackageFilesItem17>
+                  <_PackageFilesItem18 Items="Value">
+                    <_Value Value="gtk2/gtk2widgetset.inc"/>
+                  </_PackageFilesItem18>
+                  <_PackageFilesItem19 Items="Value">
+                    <_Value Value="gtk2/gtk2winapih.inc"/>
+                  </_PackageFilesItem19>
+                  <_PackageFilesItem2 Items="Value">
+                    <_Value Value="Gtk2WSButtons"/>
+                  </_PackageFilesItem2>
+                  <_PackageFilesItem20 Items="Value">
+                    <_Value Value="gtk2/gtk2winapi.inc"/>
+                  </_PackageFilesItem20>
+                  <_PackageFilesItem21 Items="Value">
+                    <_Value Value="gtk2/gtk2winapiwindow.pp"/>
+                  </_PackageFilesItem21>
+                  <_PackageFilesItem22 Items="Value">
+                    <_Value Value="gtk2/gtk2windows.pas"/>
+                  </_PackageFilesItem22>
+                  <_PackageFilesItem23 Items="Value">
+                    <_Value Value="gtk2/gtk2wsbuttons.pp"/>
+                  </_PackageFilesItem23>
+                  <_PackageFilesItem24 Items="Value">
+                    <_Value Value="gtk2/gtk2wscalendar.pp"/>
+                  </_PackageFilesItem24>
+                  <_PackageFilesItem25 Items="Value">
+                    <_Value Value="gtk2/gtk2wschecklst.pp"/>
+                  </_PackageFilesItem25>
+                  <_PackageFilesItem26 Items="Value">
+                    <_Value Value="gtk2/gtk2wscomctrls.pp"/>
+                  </_PackageFilesItem26>
+                  <_PackageFilesItem27 Items="Value">
+                    <_Value Value="gtk2/gtk2wscontrols.pp"/>
+                  </_PackageFilesItem27>
+                  <_PackageFilesItem28 Items="Value">
+                    <_Value Value="gtk2/gtk2wscustomlistview.inc"/>
+                  </_PackageFilesItem28>
+                  <_PackageFilesItem29 Items="Value">
+                    <_Value Value="gtk2/gtk2wscustommemo.inc"/>
+                  </_PackageFilesItem29>
+                  <_PackageFilesItem3 Items="Value">
+                    <_Value Value="Gtk2WSComCtrls"/>
+                  </_PackageFilesItem3>
+                  <_PackageFilesItem30 Items="Value">
+                    <_Value Value="gtk2/gtk2wsdialogs.pp"/>
+                  </_PackageFilesItem30>
+                  <_PackageFilesItem31 Items="Value">
+                    <_Value Value="gtk2/gtk2wsextctrls.pp"/>
+                  </_PackageFilesItem31>
+                  <_PackageFilesItem32 Items="Value">
+                    <_Value Value="gtk2/gtk2wsextdlgs.pp"/>
+                  </_PackageFilesItem32>
+                  <_PackageFilesItem33 Items="Value">
+                    <_Value Value="gtk2/gtk2wsfactory.pas"/>
+                  </_PackageFilesItem33>
+                  <_PackageFilesItem34 Items="Value">
+                    <_Value Value="gtk2/gtk2wsforms.pp"/>
+                  </_PackageFilesItem34>
+                  <_PackageFilesItem35 Items="Value">
+                    <_Value Value="gtk2/gtk2wsgrids.pp"/>
+                  </_PackageFilesItem35>
+                  <_PackageFilesItem36 Items="Value">
+                    <_Value Value="gtk2/gtk2wsimglist.pp"/>
+                  </_PackageFilesItem36>
+                  <_PackageFilesItem37 Items="Value">
+                    <_Value Value="gtk2/gtk2wsmenus.pp"/>
+                  </_PackageFilesItem37>
+                  <_PackageFilesItem38 Items="Value">
+                    <_Value Value="gtk2/gtk2wspairsplitter.pp"/>
+                  </_PackageFilesItem38>
+                  <_PackageFilesItem39 Items="Value">
+                    <_Value Value="gtk2/gtk2wsprivate.pp"/>
+                  </_PackageFilesItem39>
+                  <_PackageFilesItem4 Items="Value">
+                    <_Value Value="Gtk2WSForms"/>
+                  </_PackageFilesItem4>
+                  <_PackageFilesItem40 Items="Value">
+                    <_Value Value="gtk2/gtk2wsspin.pp"/>
+                  </_PackageFilesItem40>
+                  <_PackageFilesItem41 Items="Value">
+                    <_Value Value="gtk2/gtk2wsstdctrls.pp"/>
+                  </_PackageFilesItem41>
+                  <_PackageFilesItem42 Items="Value">
+                    <_Value Value="gtk2/interfaces.pas"/>
+                  </_PackageFilesItem42>
+                  <_PackageFilesItem43 Items="Value">
+                    <_Value Value="gtk2/issues.xml"/>
+                  </_PackageFilesItem43>
+                  <_PackageFilesItem44 Items="Value">
+                    <_Value Value="gtk2/unitywsctrls.pas"/>
+                  </_PackageFilesItem44>
+                  <_PackageFilesItem45 Items="Value">
+                    <_Value Value="gtk2/alllclintfunits.pas"/>
+                  </_PackageFilesItem45>
+                  <_PackageFilesItem46 Items="Value">
+                    <_Value Value="gtk2/dragicons.inc"/>
+                  </_PackageFilesItem46>
+                  <_PackageFilesItem47 Items="Value">
+                    <_Value Value="gtk2/gtk2callback.inc"/>
+                  </_PackageFilesItem47>
+                  <_PackageFilesItem48 Items="Value">
+                    <_Value Value="gtk2/gtk2debug.pp"/>
+                  </_PackageFilesItem48>
+                  <_PackageFilesItem49 Items="Value">
+                    <_Value Value="gtk2/gtk2defines.inc"/>
+                  </_PackageFilesItem49>
+                  <_PackageFilesItem5 Items="Value">
+                    <_Value Value="gtk2/gtk2def.pp"/>
+                  </_PackageFilesItem5>
+                  <_PackageFilesItem50 Items="Value">
+                    <_Value Value="gtk2/gtk2devicecontext.inc"/>
+                  </_PackageFilesItem50>
+                  <_PackageFilesItem51 Items="Value">
+                    <_Value Value="gtk2/gtk2disableliboverlay.pas"/>
+                  </_PackageFilesItem51>
+                  <_PackageFilesItem52 Items="Value">
+                    <_Value Value="gtk2/gtk2extrah.inc"/>
+                  </_PackageFilesItem52>
+                  <_PackageFilesItem53 Items="Value">
+                    <_Value Value="gtk2/gtk2extra.inc"/>
+                  </_PackageFilesItem53>
+                  <_PackageFilesItem54 Items="Value">
+                    <_Value Value="gtk2/gtk2extra.pp"/>
+                  </_PackageFilesItem54>
+                  <_PackageFilesItem55 Items="Value">
+                    <_Value Value="gtk2/gtk2fontcache.pas"/>
+                  </_PackageFilesItem55>
+                  <_PackageFilesItem56 Items="Value">
+                    <_Value Value="gtk2/gtk2globals.pp"/>
+                  </_PackageFilesItem56>
+                  <_PackageFilesItem57 Items="Value">
+                    <_Value Value="gtk2/gtk2int.pas"/>
+                  </_PackageFilesItem57>
+                  <_PackageFilesItem58 Items="Value">
+                    <_Value Value="gtk2/gtk2lclintfh.inc"/>
+                  </_PackageFilesItem58>
+                  <_PackageFilesItem59 Items="Value">
+                    <_Value Value="gtk2/gtk2lclintf.inc"/>
+                  </_PackageFilesItem59>
+                  <_PackageFilesItem6 Items="Value">
+                    <_Value Value="gtk2/gtk2cellrenderer.pas"/>
+                  </_PackageFilesItem6>
+                  <_PackageFilesItem60 Items="Value">
+                    <_Value Value="gtk2/gtk2listslh.inc"/>
+                  </_PackageFilesItem60>
+                  <_PackageFilesItem61 Items="Value">
+                    <_Value Value="gtk2/gtk2listsl.inc"/>
+                  </_PackageFilesItem61>
+                  <_PackageFilesItem7 Items="Value">
+                    <_Value Value="gtk2/gtk2listviewtreemodel.pas"/>
+                  </_PackageFilesItem7>
+                  <_PackageFilesItem8 Items="Value">
+                    <_Value Value="gtk2/gtk2memostrings.inc"/>
+                  </_PackageFilesItem8>
+                  <_PackageFilesItem9 Items="Value">
+                    <_Value Value="gtk2/gtk2msgqueue.pp"/>
+                  </_PackageFilesItem9>
+                  <_name Value="gtk2"/>
+                </_Item3>
+                <_Item4 Items="PackageFilesCount/PackageFilesItem1/PackageFilesItem10/PackageFilesItem11/PackageFilesItem12/PackageFilesItem13/PackageFilesItem14/PackageFilesItem15/PackageFilesItem16/PackageFilesItem17/PackageFilesItem18/PackageFilesItem19/PackageFilesItem2/PackageFilesItem20/PackageFilesItem21/PackageFilesItem22/PackageFilesItem23/PackageFilesItem24/PackageFilesItem25/PackageFilesItem26/PackageFilesItem27/PackageFilesItem28/PackageFilesItem29/PackageFilesItem3/PackageFilesItem30/PackageFilesItem31/PackageFilesItem32/PackageFilesItem33/PackageFilesItem34/PackageFilesItem35/PackageFilesItem36/PackageFilesItem37/PackageFilesItem38/PackageFilesItem39/PackageFilesItem4/PackageFilesItem40/PackageFilesItem5/PackageFilesItem6/PackageFilesItem7/PackageFilesItem8/PackageFilesItem9/name">
+                  <_PackageFilesCount Value="40"/>
+                  <_PackageFilesItem1 Items="Value">
+                    <_Value Value="win32/alllclintfunits.pas"/>
+                  </_PackageFilesItem1>
+                  <_PackageFilesItem10 Items="Value">
+                    <_Value Value="win32/win32lclintfh.inc"/>
+                  </_PackageFilesItem10>
+                  <_PackageFilesItem11 Items="Value">
+                    <_Value Value="win32/win32lclintf.inc"/>
+                  </_PackageFilesItem11>
+                  <_PackageFilesItem12 Items="Value">
+                    <_Value Value="win32/win32listslh.inc"/>
+                  </_PackageFilesItem12>
+                  <_PackageFilesItem13 Items="Value">
+                    <_Value Value="win32/win32listsl.inc"/>
+                  </_PackageFilesItem13>
+                  <_PackageFilesItem14 Items="Value">
+                    <_Value Value="win32/win32memostrings.inc"/>
+                  </_PackageFilesItem14>
+                  <_PackageFilesItem15 Items="Value">
+                    <_Value Value="win32/win32object.inc"/>
+                  </_PackageFilesItem15>
+                  <_PackageFilesItem16 Items="Value">
+                    <_Value Value="win32/win32pagecontrol.inc"/>
+                  </_PackageFilesItem16>
+                  <_PackageFilesItem17 Items="Value">
+                    <_Value Value="win32/win32proc.pp"/>
+                  </_PackageFilesItem17>
+                  <_PackageFilesItem18 Items="Value">
+                    <_Value Value="win32/win32themes.pas"/>
+                  </_PackageFilesItem18>
+                  <_PackageFilesItem19 Items="Value">
+                    <_Value Value="win32/win32trayicon.inc"/>
+                  </_PackageFilesItem19>
+                  <_PackageFilesItem2 Items="Value">
+                    <_Value Value="win32/interfaces.pp"/>
+                  </_PackageFilesItem2>
+                  <_PackageFilesItem20 Items="Value">
+                    <_Value Value="win32/win32treeview.inc"/>
+                  </_PackageFilesItem20>
+                  <_PackageFilesItem21 Items="Value">
+                    <_Value Value="win32/win32winapih.inc"/>
+                  </_PackageFilesItem21>
+                  <_PackageFilesItem22 Items="Value">
+                    <_Value Value="win32/win32winapi.inc"/>
+                  </_PackageFilesItem22>
+                  <_PackageFilesItem23 Items="Value">
+                    <_Value Value="win32/win32wsbuttons.pp"/>
+                  </_PackageFilesItem23>
+                  <_PackageFilesItem24 Items="Value">
+                    <_Value Value="win32/win32wscalendar.pp"/>
+                  </_PackageFilesItem24>
+                  <_PackageFilesItem25 Items="Value">
+                    <_Value Value="win32/win32wschecklst.pp"/>
+                  </_PackageFilesItem25>
+                  <_PackageFilesItem26 Items="Value">
+                    <_Value Value="win32/win32wscomctrls.pp"/>
+                  </_PackageFilesItem26>
+                  <_PackageFilesItem27 Items="Value">
+                    <_Value Value="win32/win32wscontrols.pp"/>
+                  </_PackageFilesItem27>
+                  <_PackageFilesItem28 Items="Value">
+                    <_Value Value="win32/win32wscustomlistview.inc"/>
+                  </_PackageFilesItem28>
+                  <_PackageFilesItem29 Items="Value">
+                    <_Value Value="win32/win32wsdialogs.pp"/>
+                  </_PackageFilesItem29>
+                  <_PackageFilesItem3 Items="Value">
+                    <_Value Value="win32/issues.xml"/>
+                  </_PackageFilesItem3>
+                  <_PackageFilesItem30 Items="Value">
+                    <_Value Value="win32/win32wsextctrls.pp"/>
+                  </_PackageFilesItem30>
+                  <_PackageFilesItem31 Items="Value">
+                    <_Value Value="win32/win32wsextdlgs.pp"/>
+                  </_PackageFilesItem31>
+                  <_PackageFilesItem32 Items="Value">
+                    <_Value Value="win32/win32wsfactory.pas"/>
+                  </_PackageFilesItem32>
+                  <_PackageFilesItem33 Items="Value">
+                    <_Value Value="win32/win32wsforms.pp"/>
+                  </_PackageFilesItem33>
+                  <_PackageFilesItem34 Items="Value">
+                    <_Value Value="win32/win32wsgrids.pp"/>
+                  </_PackageFilesItem34>
+                  <_PackageFilesItem35 Items="Value">
+                    <_Value Value="win32/win32wsimglist.pp"/>
+                  </_PackageFilesItem35>
+                  <_PackageFilesItem36 Items="Value">
+                    <_Value Value="win32/win32wsmenus.pp"/>
+                  </_PackageFilesItem36>
+                  <_PackageFilesItem37 Items="Value">
+                    <_Value Value="win32/win32wspairsplitter.pp"/>
+                  </_PackageFilesItem37>
+                  <_PackageFilesItem38 Items="Value">
+                    <_Value Value="win32/win32wsspin.pp"/>
+                  </_PackageFilesItem38>
+                  <_PackageFilesItem39 Items="Value">
+                    <_Value Value="win32/win32wsstdctrls.pp"/>
+                  </_PackageFilesItem39>
+                  <_PackageFilesItem4 Items="Value">
+                    <_Value Value="win32/win32callback.inc"/>
+                  </_PackageFilesItem4>
+                  <_PackageFilesItem40 Items="Value">
+                    <_Value Value="win32/win32wstoolwin.pp"/>
+                  </_PackageFilesItem40>
+                  <_PackageFilesItem5 Items="Value">
+                    <_Value Value="win32/win32debug.pp"/>
+                  </_PackageFilesItem5>
+                  <_PackageFilesItem6 Items="Value">
+                    <_Value Value="win32/win32defines.inc"/>
+                  </_PackageFilesItem6>
+                  <_PackageFilesItem7 Items="Value">
+                    <_Value Value="win32/win32def.pp"/>
+                  </_PackageFilesItem7>
+                  <_PackageFilesItem8 Items="Value">
+                    <_Value Value="win32/win32extra.pas"/>
+                  </_PackageFilesItem8>
+                  <_PackageFilesItem9 Items="Value">
+                    <_Value Value="win32/win32int.pp"/>
+                  </_PackageFilesItem9>
+                  <_name Value="win32"/>
+                </_Item4>
+                <_Item5 Items="PackageFilesCount/PackageFilesItem1/PackageFilesItem10/PackageFilesItem11/PackageFilesItem12/PackageFilesItem13/PackageFilesItem14/PackageFilesItem15/PackageFilesItem16/PackageFilesItem17/PackageFilesItem18/PackageFilesItem19/PackageFilesItem2/PackageFilesItem20/PackageFilesItem21/PackageFilesItem22/PackageFilesItem23/PackageFilesItem24/PackageFilesItem25/PackageFilesItem26/PackageFilesItem27/PackageFilesItem28/PackageFilesItem29/PackageFilesItem3/PackageFilesItem30/PackageFilesItem31/PackageFilesItem32/PackageFilesItem4/PackageFilesItem5/PackageFilesItem6/PackageFilesItem7/PackageFilesItem8/PackageFilesItem9/name">
+                  <_PackageFilesCount Value="32"/>
+                  <_PackageFilesItem1 Items="Value">
+                    <_Value Value="wince/alllclintfunits.pas"/>
+                  </_PackageFilesItem1>
+                  <_PackageFilesItem10 Items="Value">
+                    <_Value Value="wince/wincelistslh.inc"/>
+                  </_PackageFilesItem10>
+                  <_PackageFilesItem11 Items="Value">
+                    <_Value Value="wince/wincelistsl.inc"/>
+                  </_PackageFilesItem11>
+                  <_PackageFilesItem12 Items="Value">
+                    <_Value Value="wince/wincememostrings.inc"/>
+                  </_PackageFilesItem12>
+                  <_PackageFilesItem13 Items="Value">
+                    <_Value Value="wince/winceobject.inc"/>
+                  </_PackageFilesItem13>
+                  <_PackageFilesItem14 Items="Value">
+                    <_Value Value="wince/winceproc.pp"/>
+                  </_PackageFilesItem14>
+                  <_PackageFilesItem15 Items="Value">
+                    <_Value Value="wince/wincewinapih.inc"/>
+                  </_PackageFilesItem15>
+                  <_PackageFilesItem16 Items="Value">
+                    <_Value Value="wince/wincewinapi.inc"/>
+                  </_PackageFilesItem16>
+                  <_PackageFilesItem17 Items="Value">
+                    <_Value Value="wince/wincewsbuttons.pp"/>
+                  </_PackageFilesItem17>
+                  <_PackageFilesItem18 Items="Value">
+                    <_Value Value="wince/wincewscalendar.pp"/>
+                  </_PackageFilesItem18>
+                  <_PackageFilesItem19 Items="Value">
+                    <_Value Value="wince/wincewschecklst.pp"/>
+                  </_PackageFilesItem19>
+                  <_PackageFilesItem2 Items="Value">
+                    <_Value Value="wince/interfaces.pp"/>
+                  </_PackageFilesItem2>
+                  <_PackageFilesItem20 Items="Value">
+                    <_Value Value="wince/wincewscomctrls.pp"/>
+                  </_PackageFilesItem20>
+                  <_PackageFilesItem21 Items="Value">
+                    <_Value Value="wince/wincewscontrols.pp"/>
+                  </_PackageFilesItem21>
+                  <_PackageFilesItem22 Items="Value">
+                    <_Value Value="wince/wincewscustomlistview.inc"/>
+                  </_PackageFilesItem22>
+                  <_PackageFilesItem23 Items="Value">
+                    <_Value Value="wince/wincewsdialogs.pp"/>
+                  </_PackageFilesItem23>
+                  <_PackageFilesItem24 Items="Value">
+                    <_Value Value="wince/wincewsextctrls.pp"/>
+                  </_PackageFilesItem24>
+                  <_PackageFilesItem25 Items="Value">
+                    <_Value Value="wince/wincewsfactory.pas"/>
+                  </_PackageFilesItem25>
+                  <_PackageFilesItem26 Items="Value">
+                    <_Value Value="wince/wincewsforms.pp"/>
+                  </_PackageFilesItem26>
+                  <_PackageFilesItem27 Items="Value">
+                    <_Value Value="wince/wincewsgrids.pp"/>
+                  </_PackageFilesItem27>
+                  <_PackageFilesItem28 Items="Value">
+                    <_Value Value="wince/wincewsimglist.pp"/>
+                  </_PackageFilesItem28>
+                  <_PackageFilesItem29 Items="Value">
+                    <_Value Value="wince/wincewsmenus.pp"/>
+                  </_PackageFilesItem29>
+                  <_PackageFilesItem3 Items="Value">
+                    <_Value Value="wince/win32compat.pas"/>
+                  </_PackageFilesItem3>
+                  <_PackageFilesItem30 Items="Value">
+                    <_Value Value="wince/wincewsspin.pp"/>
+                  </_PackageFilesItem30>
+                  <_PackageFilesItem31 Items="Value">
+                    <_Value Value="wince/wincewsstdctrls.pp"/>
+                  </_PackageFilesItem31>
+                  <_PackageFilesItem32 Items="Value">
+                    <_Value Value="wince/winext.pas"/>
+                  </_PackageFilesItem32>
+                  <_PackageFilesItem4 Items="Value">
+                    <_Value Value="wince/wincecallback.inc"/>
+                  </_PackageFilesItem4>
+                  <_PackageFilesItem5 Items="Value">
+                    <_Value Value="wince/wincedef.pp"/>
+                  </_PackageFilesItem5>
+                  <_PackageFilesItem6 Items="Value">
+                    <_Value Value="wince/winceextra.pp"/>
+                  </_PackageFilesItem6>
+                  <_PackageFilesItem7 Items="Value">
+                    <_Value Value="wince/winceint.pp"/>
+                  </_PackageFilesItem7>
+                  <_PackageFilesItem8 Items="Value">
+                    <_Value Value="wince/wincelclintfh.inc"/>
+                  </_PackageFilesItem8>
+                  <_PackageFilesItem9 Items="Value">
+                    <_Value Value="wince/wincelclintf.inc"/>
+                  </_PackageFilesItem9>
+                  <_name Value="wince"/>
+                </_Item5>
+                <_Item6 Items="PackageFilesCount/PackageFilesItem1/PackageFilesItem10/PackageFilesItem11/PackageFilesItem12/PackageFilesItem13/PackageFilesItem14/PackageFilesItem15/PackageFilesItem16/PackageFilesItem17/PackageFilesItem18/PackageFilesItem19/PackageFilesItem2/PackageFilesItem20/PackageFilesItem21/PackageFilesItem22/PackageFilesItem23/PackageFilesItem24/PackageFilesItem25/PackageFilesItem26/PackageFilesItem27/PackageFilesItem28/PackageFilesItem29/PackageFilesItem3/PackageFilesItem30/PackageFilesItem31/PackageFilesItem32/PackageFilesItem33/PackageFilesItem4/PackageFilesItem5/PackageFilesItem6/PackageFilesItem7/PackageFilesItem8/PackageFilesItem9/name">
+                  <_PackageFilesCount Value="33"/>
+                  <_PackageFilesItem1 Items="Value">
+                    <_Value Value="cocoa/alllclintfunits.pas"/>
+                  </_PackageFilesItem1>
+                  <_PackageFilesItem10 Items="Value">
+                    <_Value Value="cocoa/cocoatrayicon.inc"/>
+                  </_PackageFilesItem10>
+                  <_PackageFilesItem11 Items="Value">
+                    <_Value Value="cocoa/cocoaobject.inc"/>
+                  </_PackageFilesItem11>
+                  <_PackageFilesItem12 Items="Value">
+                    <_Value Value="cocoa/cocoawsextctrls.pas"/>
+                  </_PackageFilesItem12>
+                  <_PackageFilesItem13 Items="Value">
+                    <_Value Value="cocoa/cocoawscommon.pas"/>
+                  </_PackageFilesItem13>
+                  <_PackageFilesItem14 Items="Value">
+                    <_Value Value="cocoa/interfaces.pas"/>
+                  </_PackageFilesItem14>
+                  <_PackageFilesItem15 Items="Value">
+                    <_Value Value="cocoa/cocoawinapih.inc"/>
+                  </_PackageFilesItem15>
+                  <_PackageFilesItem16 Items="Value">
+                    <_Value Value="cocoa/mackeycodes.inc"/>
+                  </_PackageFilesItem16>
+                  <_PackageFilesItem17 Items="Value">
+                    <_Value Value="cocoa/cocoawindows.pas"/>
+                  </_PackageFilesItem17>
+                  <_PackageFilesItem18 Items="Value">
+                    <_Value Value="cocoa/cocoabuttons.pas"/>
+                  </_PackageFilesItem18>
+                  <_PackageFilesItem19 Items="Value">
+                    <_Value Value="cocoa/cocoaint.pas"/>
+                  </_PackageFilesItem19>
+                  <_PackageFilesItem2 Items="Value">
+                    <_Value Value="cocoa/cocoacaret.pas"/>
+                  </_PackageFilesItem2>
+                  <_PackageFilesItem20 Items="Value">
+                    <_Value Value="cocoa/cocoaprivate.pas"/>
+                  </_PackageFilesItem20>
+                  <_PackageFilesItem21 Items="Value">
+                    <_Value Value="cocoa/cocoalclintfh.inc"/>
+                  </_PackageFilesItem21>
+                  <_PackageFilesItem22 Items="Value">
+                    <_Value Value="cocoa/cocoalclintf.inc"/>
+                  </_PackageFilesItem22>
+                  <_PackageFilesItem23 Items="Value">
+                    <_Value Value="cocoa/cocoatextedits.pas"/>
+                  </_PackageFilesItem23>
+                  <_PackageFilesItem24 Items="Value">
+                    <_Value Value="cocoa/cocoautils.pas"/>
+                  </_PackageFilesItem24>
+                  <_PackageFilesItem25 Items="Value">
+                    <_Value Value="cocoa/cocoathemes.pas"/>
+                  </_PackageFilesItem25>
+                  <_PackageFilesItem26 Items="Value">
+                    <_Value Value="cocoa/cocoawsbuttons.pas"/>
+                  </_PackageFilesItem26>
+                  <_PackageFilesItem27 Items="Value">
+                    <_Value Value="cocoa/cocoawinapi.inc"/>
+                  </_PackageFilesItem27>
+                  <_PackageFilesItem28 Items="Value">
+                    <_Value Value="cocoa/cocoawsdialogs.pas"/>
+                  </_PackageFilesItem28>
+                  <_PackageFilesItem29 Items="Value">
+                    <_Value Value="cocoa/cocoawschecklst.pas"/>
+                  </_PackageFilesItem29>
+                  <_PackageFilesItem3 Items="Value">
+                    <_Value Value="cocoa/cocoagdiobjects.pas"/>
+                  </_PackageFilesItem3>
+                  <_PackageFilesItem30 Items="Value">
+                    <_Value Value="cocoa/cocoawsfactory.pas"/>
+                  </_PackageFilesItem30>
+                  <_PackageFilesItem31 Items="Value">
+                    <_Value Value="cocoa/cocoawsforms.pas"/>
+                  </_PackageFilesItem31>
+                  <_PackageFilesItem32 Items="Value">
+                    <_Value Value="cocoa/cocoawsstdctrls.pas"/>
+                  </_PackageFilesItem32>
+                  <_PackageFilesItem33 Items="Value">
+                    <_Value Value="cocoa/cocoadatepicker.pas"/>
+                  </_PackageFilesItem33>
+                  <_PackageFilesItem4 Items="Value">
+                    <_Value Value="cocoa/cocoascrollers.pas"/>
+                  </_PackageFilesItem4>
+                  <_PackageFilesItem5 Items="Value">
+                    <_Value Value="cocoa/cocoatabcontrols.pas"/>
+                  </_PackageFilesItem5>
+                  <_PackageFilesItem6 Items="Value">
+                    <_Value Value="cocoa/cocoatables.pas"/>
+                  </_PackageFilesItem6>
+                  <_PackageFilesItem7 Items="Value">
+                    <_Value Value="cocoa/cocoawsmenus.pas"/>
+                  </_PackageFilesItem7>
+                  <_PackageFilesItem8 Items="Value">
+                    <_Value Value="cocoa/cocoawscomctrls.pas"/>
+                  </_PackageFilesItem8>
+                  <_PackageFilesItem9 Items="Value">
+                    <_Value Value="cocoa/cocoawsclipboard.pas"/>
+                  </_PackageFilesItem9>
+                  <_name Value="cocoa"/>
+                </_Item6>
+                <_Item7 Items="PackageFilesCount/PackageFilesItem1/PackageFilesItem10/PackageFilesItem11/PackageFilesItem12/PackageFilesItem13/PackageFilesItem14/PackageFilesItem15/PackageFilesItem16/PackageFilesItem17/PackageFilesItem18/PackageFilesItem19/PackageFilesItem2/PackageFilesItem20/PackageFilesItem21/PackageFilesItem22/PackageFilesItem23/PackageFilesItem24/PackageFilesItem25/PackageFilesItem3/PackageFilesItem4/PackageFilesItem5/PackageFilesItem6/PackageFilesItem7/PackageFilesItem8/PackageFilesItem9/name">
+                  <_PackageFilesCount Value="25"/>
+                  <_PackageFilesItem1 Items="Value">
+                    <_Value Value="fpgui/alllclintfunits.pas"/>
+                  </_PackageFilesItem1>
+                  <_PackageFilesItem10 Items="Value">
+                    <_Value Value="fpgui/fpguiwscontrols.pp"/>
+                  </_PackageFilesItem10>
+                  <_PackageFilesItem11 Items="Value">
+                    <_Value Value="fpgui/fpguiwsforms.pp"/>
+                  </_PackageFilesItem11>
+                  <_PackageFilesItem12 Items="Value">
+                    <_Value Value="fpgui/fpguiwsextctrls.pp"/>
+                  </_PackageFilesItem12>
+                  <_PackageFilesItem13 Items="Value">
+                    <_Value Value="fpgui/fpguiwsbuttons.pp"/>
+                  </_PackageFilesItem13>
+                  <_PackageFilesItem14 Items="Value">
+                    <_Value Value="fpgui/fpguiwscomctrls.pp"/>
+                  </_PackageFilesItem14>
+                  <_PackageFilesItem15 Items="Value">
+                    <_Value Value="fpgui/fpguiwsimglist.pp"/>
+                  </_PackageFilesItem15>
+                  <_PackageFilesItem16 Items="Value">
+                    <_Value Value="fpgui/fpguiproc.pas"/>
+                  </_PackageFilesItem16>
+                  <_PackageFilesItem17 Items="Value">
+                    <_Value Value="fpgui/fpguiwinapih.inc"/>
+                  </_PackageFilesItem17>
+                  <_PackageFilesItem18 Items="Value">
+                    <_Value Value="fpgui/fpguiwsgrids.pp"/>
+                  </_PackageFilesItem18>
+                  <_PackageFilesItem19 Items="Value">
+                    <_Value Value="fpgui/fpguiobjects.pas"/>
+                  </_PackageFilesItem19>
+                  <_PackageFilesItem2 Items="Value">
+                    <_Value Value="fpgui/fpguiint.pp"/>
+                  </_PackageFilesItem2>
+                  <_PackageFilesItem20 Items="Value">
+                    <_Value Value="fpgui/fpguiwinapi.inc"/>
+                  </_PackageFilesItem20>
+                  <_PackageFilesItem21 Items="Value">
+                    <_Value Value="fpgui/fpguiobject.inc"/>
+                  </_PackageFilesItem21>
+                  <_PackageFilesItem22 Items="Value">
+                    <_Value Value="fpgui/fpguiwspairsplitter.pp"/>
+                  </_PackageFilesItem22>
+                  <_PackageFilesItem23 Items="Value">
+                    <_Value Value="fpgui/fpguilclintf.inc"/>
+                  </_PackageFilesItem23>
+                  <_PackageFilesItem24 Items="Value">
+                    <_Value Value="fpgui/fpguiwsstdctrls.pp"/>
+                  </_PackageFilesItem24>
+                  <_PackageFilesItem25 Items="Value">
+                    <_Value Value="fpgui/interfaces.pp"/>
+                  </_PackageFilesItem25>
+                  <_PackageFilesItem3 Items="Value">
+                    <_Value Value="fpgui/fpguilclintfh.inc"/>
+                  </_PackageFilesItem3>
+                  <_PackageFilesItem4 Items="Value">
+                    <_Value Value="fpgui/fpguiwscalendar.pp"/>
+                  </_PackageFilesItem4>
+                  <_PackageFilesItem5 Items="Value">
+                    <_Value Value="fpgui/fpguiwsdialogs.pp"/>
+                  </_PackageFilesItem5>
+                  <_PackageFilesItem6 Items="Value">
+                    <_Value Value="fpgui/fpguiwsmenus.pp"/>
+                  </_PackageFilesItem6>
+                  <_PackageFilesItem7 Items="Value">
+                    <_Value Value="fpgui/fpguiwsfactory.pas"/>
+                  </_PackageFilesItem7>
+                  <_PackageFilesItem8 Items="Value">
+                    <_Value Value="fpgui/fpguiwsprivate.pp"/>
+                  </_PackageFilesItem8>
+                  <_PackageFilesItem9 Items="Value">
+                    <_Value Value="fpgui/fpguiwsextdlgs.pp"/>
+                  </_PackageFilesItem9>
+                  <_name Value="fpgui"/>
+                </_Item7>
+                <_Item8 Items="PackageFilesCount/PackageFilesItem1/PackageFilesItem2/PackageFilesItem3/PackageFilesItem4/name">
+                  <_PackageFilesCount Value="4"/>
+                  <_PackageFilesItem1 Items="Value">
+                    <_Value Value="nogui/alllclintfunits.pas"/>
+                  </_PackageFilesItem1>
+                  <_PackageFilesItem2 Items="Value">
+                    <_Value Value="nogui/interfaces.pp"/>
+                  </_PackageFilesItem2>
+                  <_PackageFilesItem3 Items="Value">
+                    <_Value Value="nogui/noguiint.pp"/>
+                  </_PackageFilesItem3>
+                  <_PackageFilesItem4 Items="Value">
+                    <_Value Value="nogui/noguiwsfactory.pas"/>
+                  </_PackageFilesItem4>
+                  <_name Value="nogui"/>
+                </_Item8>
+                <_Item9 Items="PackageFilesCount/PackageFilesItem1/PackageFilesItem10/PackageFilesItem11/PackageFilesItem12/PackageFilesItem13/PackageFilesItem14/PackageFilesItem15/PackageFilesItem16/PackageFilesItem17/PackageFilesItem18/PackageFilesItem19/PackageFilesItem2/PackageFilesItem20/PackageFilesItem21/PackageFilesItem22/PackageFilesItem23/PackageFilesItem24/PackageFilesItem25/PackageFilesItem26/PackageFilesItem27/PackageFilesItem28/PackageFilesItem29/PackageFilesItem3/PackageFilesItem30/PackageFilesItem31/PackageFilesItem32/PackageFilesItem33/PackageFilesItem34/PackageFilesItem35/PackageFilesItem36/PackageFilesItem37/PackageFilesItem4/PackageFilesItem5/PackageFilesItem6/PackageFilesItem7/PackageFilesItem8/PackageFilesItem9/name">
+                  <_PackageFilesCount Value="37"/>
+                  <_PackageFilesItem1 Items="Value">
+                    <_Value Value="qt5/alllclintfunits.pas"/>
+                  </_PackageFilesItem1>
+                  <_PackageFilesItem10 Items="Value">
+                    <_Value Value="qt5/qtobject.inc"/>
+                  </_PackageFilesItem10>
+                  <_PackageFilesItem11 Items="Value">
+                    <_Value Value="qt5/qtobjects.pas"/>
+                  </_PackageFilesItem11>
+                  <_PackageFilesItem12 Items="Value">
+                    <_Value Value="qt5/qtpagecontrol.inc"/>
+                  </_PackageFilesItem12>
+                  <_PackageFilesItem13 Items="Value">
+                    <_Value Value="qt5/qtprivate.pp"/>
+                  </_PackageFilesItem13>
+                  <_PackageFilesItem14 Items="Value">
+                    <_Value Value="qt5/qtproc.pp"/>
+                  </_PackageFilesItem14>
+                  <_PackageFilesItem15 Items="Value">
+                    <_Value Value="qt5/qtsystemtrayicon.pas"/>
+                  </_PackageFilesItem15>
+                  <_PackageFilesItem16 Items="Value">
+                    <_Value Value="qt5/qtthemes.pas"/>
+                  </_PackageFilesItem16>
+                  <_PackageFilesItem17 Items="Value">
+                    <_Value Value="qt5/qtwidgets.pas"/>
+                  </_PackageFilesItem17>
+                  <_PackageFilesItem18 Items="Value">
+                    <_Value Value="qt5/qtwinapih.inc"/>
+                  </_PackageFilesItem18>
+                  <_PackageFilesItem19 Items="Value">
+                    <_Value Value="qt5/qtwinapi.inc"/>
+                  </_PackageFilesItem19>
+                  <_PackageFilesItem2 Items="Value">
+                    <_Value Value="qt5/interfaces.pp"/>
+                  </_PackageFilesItem2>
+                  <_PackageFilesItem20 Items="Value">
+                    <_Value Value="qt5/qtwsbuttons.pp"/>
+                  </_PackageFilesItem20>
+                  <_PackageFilesItem21 Items="Value">
+                    <_Value Value="qt5/qtwscalendar.pp"/>
+                  </_PackageFilesItem21>
+                  <_PackageFilesItem22 Items="Value">
+                    <_Value Value="qt5/qtwschecklst.pp"/>
+                  </_PackageFilesItem22>
+                  <_PackageFilesItem23 Items="Value">
+                    <_Value Value="qt5/qtwscomctrls.pp"/>
+                  </_PackageFilesItem23>
+                  <_PackageFilesItem24 Items="Value">
+                    <_Value Value="qt5/qtwscontrols.pp"/>
+                  </_PackageFilesItem24>
+                  <_PackageFilesItem25 Items="Value">
+                    <_Value Value="qt5/qtwsdesigner.pp"/>
+                  </_PackageFilesItem25>
+                  <_PackageFilesItem26 Items="Value">
+                    <_Value Value="qt5/qtwsdialogs.pp"/>
+                  </_PackageFilesItem26>
+                  <_PackageFilesItem27 Items="Value">
+                    <_Value Value="qt5/qtwsextctrls.pp"/>
+                  </_PackageFilesItem27>
+                  <_PackageFilesItem28 Items="Value">
+                    <_Value Value="qt5/qtwsextdlgs.pp"/>
+                  </_PackageFilesItem28>
+                  <_PackageFilesItem29 Items="Value">
+                    <_Value Value="qt5/qtwsfactory.pas"/>
+                  </_PackageFilesItem29>
+                  <_PackageFilesItem3 Items="Value">
+                    <_Value Value="qt5/qt56.pas"/>
+                  </_PackageFilesItem3>
+                  <_PackageFilesItem30 Items="Value">
+                    <_Value Value="qt5/qtwsforms.pp"/>
+                  </_PackageFilesItem30>
+                  <_PackageFilesItem31 Items="Value">
+                    <_Value Value="qt5/qtwsgrids.pp"/>
+                  </_PackageFilesItem31>
+                  <_PackageFilesItem32 Items="Value">
+                    <_Value Value="qt5/qtwsimglist.pp"/>
+                  </_PackageFilesItem32>
+                  <_PackageFilesItem33 Items="Value">
+                    <_Value Value="qt5/qtwsmenus.pp"/>
+                  </_PackageFilesItem33>
+                  <_PackageFilesItem34 Items="Value">
+                    <_Value Value="qt5/qtwspairsplitter.pp"/>
+                  </_PackageFilesItem34>
+                  <_PackageFilesItem35 Items="Value">
+                    <_Value Value="qt5/qtwsspin.pp"/>
+                  </_PackageFilesItem35>
+                  <_PackageFilesItem36 Items="Value">
+                    <_Value Value="qt5/qtwsstdctrls.pp"/>
+                  </_PackageFilesItem36>
+                  <_PackageFilesItem37 Items="Value">
+                    <_Value Value="qt5/qtx11.inc"/>
+                  </_PackageFilesItem37>
+                  <_PackageFilesItem4 Items="Value">
+                    <_Value Value="qt5/qt5.pas"/>
+                  </_PackageFilesItem4>
+                  <_PackageFilesItem5 Items="Value">
+                    <_Value Value="qt5/qtcaret.pas"/>
+                  </_PackageFilesItem5>
+                  <_PackageFilesItem6 Items="Value">
+                    <_Value Value="qt5/qtdefines.inc"/>
+                  </_PackageFilesItem6>
+                  <_PackageFilesItem7 Items="Value">
+                    <_Value Value="qt5/qtint.pp"/>
+                  </_PackageFilesItem7>
+                  <_PackageFilesItem8 Items="Value">
+                    <_Value Value="qt5/qtlclintfh.inc"/>
+                  </_PackageFilesItem8>
+                  <_PackageFilesItem9 Items="Value">
+                    <_Value Value="qt5/qtlclintf.inc"/>
+                  </_PackageFilesItem9>
+                  <_name Value="qt5"/>
+                </_Item9>
+              </_Items>
+              <_name Value="LCLWidgetType"/>
+            </_Item1>
+          </_Items>
+        </_PackageVariants>
+      </_Fppkg>
+      <_PackageVariants Items="Count/Items">
+        <_Count Value="2"/>
+        <_Items Items="Count/Item1/Item2/Item3">
+          <_Count Value="1"/>
+          <_Item1 Items="Items/name">
+            <_Items Items="Count/Item1/Item2/Item3/Item4/Item5/Item6">
+              <_Count Value="6"/>
+              <_Item1 Items="CompilerOptionsCount/PackageFilesCount/PackageFilesItem1/PackageFilesItem10/PackageFilesItem2/PackageFilesItem3/PackageFilesItem4/PackageFilesItem5/PackageFilesItem6/PackageFilesItem7/PackageFilesItem8/PackageFilesItem9/name">
+                <_PackageFilesCount Value="10"/>
+                <_PackageFilesItem1 Items="Value">
+                  <_Value Value="agl"/>
+                </_PackageFilesItem1>
+                <_PackageFilesItem10 Items="Value">
+                  <_Value Value="carbon/carboncalendar.pas"/>
+                </_PackageFilesItem10>
+                <_PackageFilesItem2 Items="Value">
+                  <_Value Value="AllLCLIntfUnits"/>
+                </_PackageFilesItem2>
+                <_PackageFilesItem3 Items="Value">
+                  <_Value Value="CarbonBars"/>
+                </_PackageFilesItem3>
+                <_PackageFilesItem4 Items="Value">
+                  <_Value Value="CarbonButtons"/>
+                </_PackageFilesItem4>
+                <_PackageFilesItem5 Items="Value">
+                  <_Value Value="CarbonCalendar"/>
+                </_PackageFilesItem5>
+                <_PackageFilesItem6 Items="Value">
+                  <_Value Value="carbon/agl.pp"/>
+                </_PackageFilesItem6>
+                <_PackageFilesItem7 Items="Value">
+                  <_Value Value="carbon/alllclintfunits.pas"/>
+                </_PackageFilesItem7>
+                <_PackageFilesItem8 Items="Value">
+                  <_Value Value="carbon/carbonbars.pp"/>
+                </_PackageFilesItem8>
+                <_PackageFilesItem9 Items="Value">
+                  <_Value Value="carbon/carbonbuttons.pp"/>
+                </_PackageFilesItem9>
+                <_name Value="carbon"/>
+              </_Item1>
+              <_Item2 Items="CompilerOptionsCount/CompilerOptionsItem1/PackageFilesCount/PackageFilesItem1/name">
+                <_CompilerOptionsCount Value="1"/>
+                <_CompilerOptionsItem1 Items="Value">
+                  <_Value Value="-dgtk1"/>
+                </_CompilerOptionsItem1>
+                <_PackageFilesItem1 Items="Value">
+                  <_Value Value="GtkDef"/>
+                </_PackageFilesItem1>
+                <_name Value="gtk"/>
+              </_Item2>
+              <_Item3 Items="CompilerOptionsCount/PackageFilesCount/PackageFilesItem1/PackageFilesItem2/PackageFilesItem3/PackageFilesItem4/PackageFilesItem5/name">
+                <_PackageFilesCount Value="5"/>
+                <_PackageFilesItem1 Items="Value">
+                  <_Value Value="gtk2windows"/>
+                </_PackageFilesItem1>
+                <_PackageFilesItem2 Items="Value">
+                  <_Value Value="Gtk2WSButtons"/>
+                </_PackageFilesItem2>
+                <_PackageFilesItem3 Items="Value">
+                  <_Value Value="Gtk2WSComCtrls"/>
+                </_PackageFilesItem3>
+                <_PackageFilesItem4 Items="Value">
+                  <_Value Value="Gtk2WSForms"/>
+                </_PackageFilesItem4>
+                <_PackageFilesItem5 Items="Value">
+                  <_Value Value="gtk2/gtk2def.pp"/>
+                </_PackageFilesItem5>
+                <_name Value="gtk2"/>
+              </_Item3>
+              <_Item4 Items="CompilerOptionsCount/PackageFilesCount/name">
+                <_name Value="win32"/>
+              </_Item4>
+              <_Item5 Items="CompilerOptionsCount/PackageFilesCount/name">
+                <_name Value="wince"/>
+              </_Item5>
+              <_Item6 Items="CompilerOptionsCount/PackageFilesCount/name">
+                <_name Value="cocoa"/>
+              </_Item6>
+            </_Items>
+            <_name Value="LCLWidgetType"/>
+          </_Item1>
+        </_Items>
+      </_PackageVariants>
     </CustomOptions>
   </Package>
 </CONFIG>

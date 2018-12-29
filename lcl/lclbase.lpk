@@ -3,7 +3,9 @@
   <Package Version="4">
     <Name Value="LCLBase"/>
     <Type Value="RunAndDesignTime"/>
+    <BuildMethod Value="Both"/>
     <Author Value="Lazarus"/>
+    <AutoUpdate Value="OnRebuildingAll"/>
     <CompilerOptions>
       <Version Value="11"/>
       <SearchPaths>
@@ -1186,10 +1188,14 @@
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
     </i18n>
-    <RequiredPkgs Count="1">
+    <RequiredPkgs Count="2">
       <Item1>
-        <PackageName Value="LazUtils"/>
+        <PackageName Value="chm"/>
+        <DependencyType Value="FPMake"/>
       </Item1>
+      <Item2>
+        <PackageName Value="LazUtils"/>
+      </Item2>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>
@@ -1197,8 +1203,35 @@
     <PublishOptions>
       <Version Value="2"/>
     </PublishOptions>
-    <CustomOptions Items="ExternHelp" Version="2">
+    <CustomOptions Items="ExternHelp/Fppkg" Version="2">
       <_ExternHelp Items="Count"/>
+      <_Fppkg Items="CustomCodeCount/CustomCodeItem1/CustomCodeItem2/CustomCodeItem3/CustomCodeItem4/CustomCodeItem5/CustomCodeItem6/CustomCodeItem7/PackageVariants">
+        <_CustomCodeCount Value="6"/>
+        <_CustomCodeItem1 Items="Value">
+          <_Value Value="    P.InstallFiles.Add('cursors.res', '$(unitinstalldir)');"/>
+        </_CustomCodeItem1>
+        <_CustomCodeItem2 Items="Value">
+          <_Value Value="    P.InstallFiles.Add('btn_icons.res', '$(unitinstalldir)');"/>
+        </_CustomCodeItem2>
+        <_CustomCodeItem3 Items="Value">
+          <_Value Value="    P.InstallFiles.Add('dialog_icons.res', '$(unitinstalldir)');"/>
+        </_CustomCodeItem3>
+        <_CustomCodeItem4 Items="Value">
+          <_Value Value="    P.InstallFiles.Add('lcl_grid_images.res', '$(unitinstalldir)');"/>
+        </_CustomCodeItem4>
+        <_CustomCodeItem5 Items="Value">
+          <_Value Value="    P.InstallFiles.Add('lcl_edbtnimg.res', '$(unitinstalldir)');"/>
+        </_CustomCodeItem5>
+        <_CustomCodeItem6 Items="Value">
+          <_Value Value="    P.InstallFiles.Add('lcl_dock_images.res', '$(unitinstalldir)');"/>
+        </_CustomCodeItem6>
+        <_CustomCodeItem7 Items="Value">
+          <_Value Value="    P.InstallFiles.Add('lcl_dock_images.res', '$(unitinstalldir)');"/>
+        </_CustomCodeItem7>
+        <_PackageVariants Items="Items">
+          <_Items Items="Count"/>
+        </_PackageVariants>
+      </_Fppkg>
     </CustomOptions>
   </Package>
 </CONFIG>

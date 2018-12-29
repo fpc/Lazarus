@@ -4,6 +4,7 @@
     <PathDelim Value="\"/>
     <Name Value="SynEdit"/>
     <Type Value="RunAndDesignTime"/>
+    <BuildMethod Value="Both"/>
     <Author Value="Lazarus Team, SynEdit"/>
     <CompilerOptions>
       <Version Value="11"/>
@@ -14,9 +15,6 @@
         <VerifyObjMethodCallValidity Value="True"/>
       </CodeGeneration>
       <Other>
-        <Verbosity>
-          <ShowGenInfo Value="False"/>
-        </Verbosity>
         <CompilerMessages>
           <IgnoredMessages idx5024="True" idx4055="True"/>
         </CompilerMessages>
@@ -50,6 +48,11 @@ If you wish to allow use of your version of these files only under the terms of 
         <Filename Value="lazsynimm.pas"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="LazSynIMM"/>
+        <CustomOptions Items="FPMake" Version="2">
+          <_FPMake Items="TargetOSes">
+            <_TargetOSes Value="win32,win64"/>
+          </_FPMake>
+        </CustomOptions>
       </Item3>
       <Item4>
         <Filename Value="synedit.pp"/>
@@ -355,11 +358,11 @@ If you wish to allow use of your version of these files only under the terms of 
       </Item78>
       <Item79>
         <Filename Value="synedittextsystemcharwidth.pas"/>
-        <UnitName Value="synedittextsystemcharwidth"/>
+        <UnitName Value="SynEditTextSystemCharWidth"/>
       </Item79>
       <Item80>
         <Filename Value="syneditmarkupifdef.pp"/>
-        <UnitName Value="syneditmarkupifdef"/>
+        <UnitName Value="SynEditMarkupIfDef"/>
       </Item80>
       <Item81>
         <Filename Value="synpluginmulticaret.pp"/>
@@ -379,10 +382,18 @@ If you wish to allow use of your version of these files only under the terms of 
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
     </i18n>
-    <RequiredPkgs Count="1">
+    <RequiredPkgs Count="3">
       <Item1>
-        <PackageName Value="LCL"/>
+        <PackageName Value="fcl-registry"/>
+        <DependencyType Value="FPMake"/>
       </Item1>
+      <Item2>
+        <PackageName Value="regexpr"/>
+        <DependencyType Value="FPMake"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="LCL"/>
+      </Item3>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>
