@@ -14752,6 +14752,10 @@ msgstr "依存関係をクリーンアップ ..."
 msgid "Clear default/preferred filename of dependency"
 msgstr "既定のあるいは望ましい依存関係のファイル名をクリア"
 
+#: lazarusidestrconsts.lispckeditcommonoptions
+msgid "Common"
+msgstr ""
+
 #: lazarusidestrconsts.lispckeditcompileeverything
 msgid "Compile everything?"
 msgstr "全てコンパイルしますか？"

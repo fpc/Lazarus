@@ -14784,6 +14784,10 @@ msgstr "Apvalyti priklausomybes…"
 msgid "Clear default/preferred filename of dependency"
 msgstr "Išvalyti priklausomybės numatytą/pageidautiną failo pavadinimą"
 
+#: lazarusidestrconsts.lispckeditcommonoptions
+msgid "Common"
+msgstr ""
+
 #: lazarusidestrconsts.lispckeditcompileeverything
 msgid "Compile everything?"
 msgstr "Kompiliuoti viską?"

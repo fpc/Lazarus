@@ -14658,6 +14658,10 @@ msgstr "Очистити залежності ..."
 msgid "Clear default/preferred filename of dependency"
 msgstr "Очистити типову/бажану назву файлу залежності"
 
+#: lazarusidestrconsts.lispckeditcommonoptions
+msgid "Common"
+msgstr ""
+
 #: lazarusidestrconsts.lispckeditcompileeverything
 msgid "Compile everything?"
 msgstr "Скомпілювати всі?"

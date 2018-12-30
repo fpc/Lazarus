@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-12-28 01:52+0300\n"
+"PO-Revision-Date: 2018-12-31 01:37+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -14653,6 +14653,10 @@ msgstr "Очистить зависимости ..."
 #: lazarusidestrconsts.lispckeditcleardefaultpreferredfilenameofdependency
 msgid "Clear default/preferred filename of dependency"
 msgstr "Очистить выбранное имя файла зависимости"
+
+#: lazarusidestrconsts.lispckeditcommonoptions
+msgid "Common"
+msgstr "Общие"
 
 #: lazarusidestrconsts.lispckeditcompileeverything
 msgid "Compile everything?"

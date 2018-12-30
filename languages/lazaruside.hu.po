@@ -14654,6 +14654,10 @@ msgstr "Függőségek tisztítása ..."
 msgid "Clear default/preferred filename of dependency"
 msgstr "Törölje a függőség alapértelmezett / előnyben részesített fájlnevét"
 
+#: lazarusidestrconsts.lispckeditcommonoptions
+msgid "Common"
+msgstr ""
+
 #: lazarusidestrconsts.lispckeditcompileeverything
 msgid "Compile everything?"
 msgstr "Mindent lefordít?"

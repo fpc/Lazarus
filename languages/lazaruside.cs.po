@@ -14628,6 +14628,10 @@ msgstr "Vyčistit závislosti ..."
 msgid "Clear default/preferred filename of dependency"
 msgstr "Vyčistit přednastavené/preferované jméno souboru závislosti"
 
+#: lazarusidestrconsts.lispckeditcommonoptions
+msgid "Common"
+msgstr ""
+
 #: lazarusidestrconsts.lispckeditcompileeverything
 msgid "Compile everything?"
 msgstr "Přeložit vše?"

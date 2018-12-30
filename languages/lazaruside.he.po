@@ -15680,6 +15680,10 @@ msgstr ""
 msgid "Clear default/preferred filename of dependency"
 msgstr "נקה את שם קובץ ברירת המחדל/מועדף של התלות"
 
+#: lazarusidestrconsts.lispckeditcommonoptions
+msgid "Common"
+msgstr ""
+
 #: lazarusidestrconsts.lispckeditcompileeverything
 msgid "Compile everything?"
 msgstr "להדר הכל?"

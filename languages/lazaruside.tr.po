@@ -14947,6 +14947,10 @@ msgstr "Bağımlılıkları temizle ..."
 msgid "Clear default/preferred filename of dependency"
 msgstr "Varsayılan / tercih edilen dosya adı bağımlılığını temizle"
 
+#: lazarusidestrconsts.lispckeditcommonoptions
+msgid "Common"
+msgstr ""
+
 #: lazarusidestrconsts.lispckeditcompileeverything
 msgid "Compile everything?"
 msgstr "Her şeyi derleyin?"

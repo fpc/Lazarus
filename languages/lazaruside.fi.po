@@ -14509,6 +14509,10 @@ msgstr "Siivoa riippuvuudet ..."
 msgid "Clear default/preferred filename of dependency"
 msgstr "Tyhjennä riippuvuuden oletus/suositeltu tiedostonimi"
 
+#: lazarusidestrconsts.lispckeditcommonoptions
+msgid "Common"
+msgstr ""
+
 #: lazarusidestrconsts.lispckeditcompileeverything
 msgid "Compile everything?"
 msgstr "Käännä kaikki?"

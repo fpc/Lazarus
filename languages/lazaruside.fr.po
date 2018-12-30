@@ -14662,6 +14662,10 @@ msgstr "Nettoyer les dépendances..."
 msgid "Clear default/preferred filename of dependency"
 msgstr "Effacer le nom de fichier de dépendance par défaut/préféré"
 
+#: lazarusidestrconsts.lispckeditcommonoptions
+msgid "Common"
+msgstr ""
+
 #: lazarusidestrconsts.lispckeditcompileeverything
 msgid "Compile everything?"
 msgstr "Faut-il tout compiler ?"
