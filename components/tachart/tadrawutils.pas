@@ -163,10 +163,10 @@ type
     function GetFontSize: Integer; virtual; abstract;
     function GetFontStyle: TChartFontStyles; virtual; abstract;
     function GetRightToLeft: Boolean;
-    procedure LineTo(AX, AY: Integer); virtual; abstract;
-    procedure LineTo(const AP: TPoint);
-    procedure MoveTo(AX, AY: Integer); virtual; abstract;
-    procedure MoveTo(const AP: TPoint);
+    procedure LineTo(AX, AY: Integer); virtual; abstract; overload;
+    procedure LineTo(const AP: TPoint); overload;
+    procedure MoveTo(AX, AY: Integer); virtual; abstract; overload;
+    procedure MoveTo(const AP: TPoint); overload;
     procedure Polygon(
       const APoints: array of TPoint; AStartIndex, ANumPts: Integer); virtual; abstract;
     procedure PutImage(AX, AY: Integer; AImage: TFPCustomImage); virtual;
@@ -179,8 +179,8 @@ type
     procedure SetRightToLeft(AValue: Boolean);
     procedure SetTransparency(ATransparency: TChartTransparency);
     procedure SetXor(AXor: Boolean);
-    function TextExtent(const AText: String; ATextFormat: TChartTextFormat = tfNormal): TPoint;
-    function TextExtent(AText: TStrings; ATextFormat: TChartTextFormat = tfNormal): TPoint;
+    function TextExtent(const AText: String; ATextFormat: TChartTextFormat = tfNormal): TPoint; overload;
+    function TextExtent(AText: TStrings; ATextFormat: TChartTextFormat = tfNormal): TPoint; overload;
     function TextOut: TChartTextOut;
   end;
 
