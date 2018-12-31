@@ -34,7 +34,7 @@ interface
 
 uses
   // RTL + FCL
-  Classes, SysUtils, Types, TypInfo, Math, FPCanvas,
+  Classes, SysUtils, Types, TypInfo, Math, FPCanvas, HtmlDefs,
   // LCL
   LCLStrConsts, LCLType, LCLIntf, Controls, Graphics, Forms,
   LMessages, StdCtrls, LResources, MaskEdit, Buttons, Clipbrd, Themes, imglist,
@@ -1705,6 +1705,7 @@ type
     //procedure DrawInteriorCells; override;
     //procedure SelectEditor; override;
     procedure SelectionSetText(TheText: String);
+    procedure SelectionSetHTML(TheHTML, TheText: String);
     procedure SetCells(ACol, ARow: Integer; const AValue: string); virtual;
     procedure SetCheckboxState(const aCol, aRow:Integer; const aState: TCheckboxState); override;
     procedure SetEditText(aCol, aRow: Longint; const aValue: string); override;
@@ -11030,12 +11031,13 @@ end;
 
 procedure TCustomStringGrid.CopyCellRectToClipboard(const R: TRect);
 var
-  SelStr: String;
+  SelStr, SelHTMLStr: String;
   aRow,aCol,k: LongInt;
+
   function QuoteText(s: string): string;
   begin
     DoCellProcess(aCol, aRow, cpCopy, s);
-    if (pos(#9, s)>0) or
+    if (pos(#9, s)>0) or //Excel and Calc convert tab symbol # 9 in cell to whitespace.
        (pos(#10, s)>0) or
        (pos(#13, s)>0)
     then
@@ -11043,33 +11045,69 @@ var
     else
       result := s;
   end;
+
+  function PrepareToHTML(s: string): string;
+  var
+    i1: Integer;
+    s1: string;
+  begin
+    Result := '';
+    for i1 := 1 to Length(s) do
+    begin
+      case s[i1] of
+        #13: s1 := '<br>';
+        #10: if i1 > 1 then if s[i1 - 1] = #13 then s1 := '' else s1 := '<br>';
+        '<': s1 := '&lt;';
+        '>': s1 := '&gt;';
+        '"': s1 := '&quot;';
+        '&': s1 := '&amp;';
+        else s1 := s[i1];
+      end;
+      Result := Result + s1;
+    end;
+  end;
+
 begin
   SelStr := '';
-  for aRow:=R.Top to R.Bottom do begin
+  SelHTMLStr := '<table>';
+  for aRow := R.Top to R.Bottom do begin
 
-    for aCol:=R.Left to R.Right do begin
+    SelHTMLStr := SelHTMLStr + '<tr>';
 
-      if Columns.Enabled and (aCol>=FirstGridColumn) then begin
+    for aCol := R.Left to R.Right do begin
+
+      if Columns.Enabled and (aCol >= FirstGridColumn) then begin
 
         k := ColumnIndexFromGridColumn(aCol);
         if not Columns[k].Visible then
           continue;
 
-        if (aRow=0) and (FixedRows>0) then
-          SelStr := SelStr + QuoteText(Columns[k].Title.Caption)
+        if (aRow = 0) and (FixedRows > 0) then
+        begin
+          SelStr := SelStr + QuoteText(Columns[k].Title.Caption);
+          SelHTMLStr := SelHTMLStr + '<td>' + PrepareToHTML(Columns[k].Title.Caption) + '</td>';
+        end
         else
+        begin
           SelStr := SelStr + QuoteText(Cells[aCol,aRow]);
+          SelHTMLStr := SelHTMLStr + '<td>' + PrepareToHTML(Cells[aCol,aRow]) + '</td>';
+        end;
 
       end else
-        SelStr := SelStr + QuoteText(Cells[aCol,aRow]);
+        begin
+          SelStr := SelStr + QuoteText(Cells[aCol,aRow]);
+          SelHTMLStr := SelHTMLStr + '<td>' + PrepareToHTML(Cells[aCol,aRow]) + '</td>';
+        end;
 
-      if aCol<>R.Right then
+      if aCol <> R.Right then
         SelStr := SelStr + #9;
     end;
 
     SelStr := SelStr + sLineBreak;
+    SelHTMLStr := SelHTMLStr + '</tr>';
   end;
-  Clipboard.AsText := SelStr;
+  SelHTMLStr := SelHTMLStr + '</table>';
+  Clipboard.SetAsHtml(SelHTMLStr, SelStr);
 end;
 
 procedure TCustomStringGrid.AssignTo(Dest: TPersistent);
@@ -11259,8 +11297,10 @@ begin
   if HasMultiSelection then
     exit;
 
-  if EditingAllowed(Col) and Clipboard.HasFormat(CF_TEXT) then begin
-    SelectionSetText(Clipboard.AsText);
+  if EditingAllowed(Col) then
+  begin
+    if Clipboard.HasFormat(CF_TEXT) and not Clipboard.HasFormat(CF_HTML) then SelectionSetText(Clipboard.AsText);
+    if Clipboard.HasFormat(CF_TEXT) and Clipboard.HasFormat(CF_HTML) then SelectionSetHTML(Clipboard.GetAsHtml(True), Clipboard.AsText);
   end;
 end;
 
@@ -11382,6 +11422,123 @@ begin
       EditingDone;
   end;
 end;
+
+procedure TCustomStringGrid.SelectionSetHTML(TheHTML, TheText: String);
+var
+  bStartCol, bStartRow, bCol, bRow: Integer;
+  bCellStr: string;
+  bSelRect: TRect;
+
+  bCellData, bTagEnd: Boolean;
+  bStr, bEndStr: PChar;
+
+  function ReplaceEntities(cSt: string): string;
+  var
+    o,a,b: pchar;
+    dName: widestring;
+    dEntity: WideChar;
+  begin
+    while true do begin
+      result := cSt;
+      if cSt = '' then
+        break;
+      o := @cSt[1];
+      a := strscan(o, '&');
+      if a = nil then
+        break;
+      b := strscan(a + 1, ';');
+      if b = nil then
+        break;
+      dName := UTF8Decode(copy(cSt, a - o + 2, b - a - 1));
+      dEntity := ' ';
+      if ResolveHTMLEntityReference(dName, dEntity) then begin
+        system.delete(cSt, a - o + 1, b - a + 1);
+        system.insert(UTF8Encode(dEntity), cSt, a - o + 1);
+      end;
+    end;
+  end;
+
+begin
+  if theHTML <> '' then
+  begin
+    bSelRect := Selection;
+    bStartCol := Selection.Left;
+    bStartRow := Selection.Top;
+    bCol := bStartCol;
+    bRow := bStartRow;
+    bStr := PChar(theHTML);
+    bEndStr := bStr + StrLen(bStr) - 4;
+    bCellStr := '';
+    bCellData := False;
+
+    while bStr < bEndStr do
+    begin
+      if bStr^ = '<' then // tag start sign '<'
+      begin
+        bTagEnd := False;
+        Inc(bStr);
+
+        if UpCase(bStr^) = 'B' then
+        begin
+          Inc(bStr);
+          if (UpCase(bStr^) = 'R') and bCellData then bCellStr := bCellStr + #10; // tag <br> in table cell
+        end;
+
+        if bStr^ = '/' then // close tag sign '/'
+        begin
+          bTagEnd := True;
+          Inc(bStr);
+        end;
+
+        if UpCase(bStr^) = 'T' then
+        begin
+          Inc(bStr);
+
+          if UpCase(bStr^) = 'R' then // table start row tag <tr>
+          begin
+            bCellData := False;
+            if bTagEnd then // table end row tag  </tr>
+            begin
+              bSelRect.Bottom := bRow;
+              Inc(bRow);
+              bCol := bStartCol;
+            end;
+          end;
+
+          if UpCase(bStr^) = 'D' then // table start cell tag <td>
+          begin
+            bCellData := not bTagEnd;
+            if bTagEnd then // table end cell tag </td>
+            begin
+              if (bCol < ColCount) and (bRow < RowCount) then Cells[bCol, bRow] := ReplaceEntities(bCellStr);
+              bSelRect.Right := bCol;
+              Inc(bCol);
+              bCellStr := '';
+            end;
+          end;
+        end;
+
+        while bStr < bEndStr do
+        begin
+          Inc(bStr);
+          if bStr^ = '>' then // tag end sign '>'
+          begin
+            Inc(bStr);
+            Break;
+          end;
+        end;
+      end else
+      begin
+        if (bStr^ <> #13) and (bStr^ <> #10) and (bStr^ <> #9) and bCellData then bCellStr := bCellStr + bStr^;
+        Inc(bStr);
+      end;
+    end;
+
+    if (bCol = bStartCol) and (bRow = bStartRow) then Cells[bCol, bRow] := TheText; //set text in cell if clipboard has CF_HTML fomat, but havent HTML table
+    Selection := bSelRect; // set correct selection
+  end;
+end;
+
 
 procedure TCustomStringGrid.SetCheckboxState(const aCol, aRow: Integer;
   const aState: TCheckboxState);
