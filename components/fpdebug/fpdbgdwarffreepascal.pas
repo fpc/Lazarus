@@ -530,6 +530,8 @@ var
   Info, Info2: TDwarfInformationEntry;
   n: AnsiString;
   UpperBoundSym: TFpDwarfSymbol;
+  val: TFpDbgValue;
+  l, h: Int64;
 begin
   Result := 0;
   t := TypeInfo;
@@ -556,7 +558,17 @@ begin
         if (copy(n,1,4) = 'high') and (UpperCase(copy(n, 5, length(n))) = UpperCase(DbgSymbol.Name)) then begin
           UpperBoundSym := TFpDwarfSymbol.CreateSubClass('', Info2);
           if UpperBoundSym <> nil then begin
-            Result := UpperBoundSym.Value.AsInteger - t2.OrdLowBound + 1;
+            val := UpperBoundSym.Value;
+            TFpDwarfValue(val).Context := Context;
+            l := Val.AsInteger;
+            h := t2.OrdLowBound;
+            if h > l then begin
+              if h - l > 5000 then
+                h := l + 5000;
+            Result := h - l + 1;
+            end
+            else
+              Result := 0;
             Info2.ReleaseReference;
             UpperBoundSym.ReleaseReference;
             exit;
