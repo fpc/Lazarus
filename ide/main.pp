@@ -6845,7 +6845,8 @@ begin
             if Result<>mrIgnore then exit(mrCancel);
           end;
         end else begin
-          if not FileIsInPath(TargetExeDirectory,WorkingDir) then begin
+          if not FileIsInPath(AppendPathDelim(TargetExeDirectory)+'dummy',WorkingDir)
+          then begin
             Result:=IDEQuestionDialog(lisCreateDirectory,
                 Format(lisTheOutputDirectoryIsMissing, [TargetExeDirectory]),
                 mtConfirmation, [mrYes, lisCreateIt,
