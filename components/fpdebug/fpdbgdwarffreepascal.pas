@@ -560,8 +560,8 @@ begin
           if UpperBoundSym <> nil then begin
             val := UpperBoundSym.Value;
             TFpDwarfValue(val).Context := Context;
-            l := Val.AsInteger;
-            h := t2.OrdLowBound;
+            l := t2.OrdLowBound;
+            h := Val.AsInteger;
             if h > l then begin
               if h - l > 5000 then
                 h := l + 5000;
