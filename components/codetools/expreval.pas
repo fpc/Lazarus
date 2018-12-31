@@ -45,33 +45,33 @@ const
 // compiler switches
 const
   CompilerSwitchesNames: array['A'..'Z'] of shortstring=(
-         'ALIGN'          // A
-        ,'BOOLEVAL'       // B
-        ,'ASSERTIONS'     // C
-        ,'DEBUGINFO'      // D
-        ,'EXTENSION'      // E
-        ,''               // F
-        ,'IMPORTEDDATA'   // G
-        ,'LONGSTRINGS'    // H
-        ,'IOCHECKS'       // I
-        ,'WRITEABLECONST' // J
-        ,''               // K
-        ,'LOCALSYMBOLS'   // L
-        ,'TYPEINFO'       // M
-        ,''               // N
-        ,'OPTIMIZATION'   // O
-        ,'OPENSTRINGS'    // P
-        ,'OVERFLOWCHECKS' // Q
-        ,'RANGECHECKS'    // R
-        ,''               // S
-        ,'TYPEADDRESS'    // T
-        ,'SAFEDIVIDE'     // U
-        ,'VARSTRINGCHECKS'// V
-        ,'STACKFRAMES'    // W
-        ,'EXTENDEDSYNTAX' // X
-        ,'REFERENCEINFO'  // Y
-        ,''               // Z
-     );
+     'ALIGN'          // A align fields
+    ,'BOOLEVAL'       // B complete boolean evaluation
+    ,'ASSERTIONS'     // C generate code for assertions
+    ,'DEBUGINFO'      // D generate debuginfo (debug lines), OR: $description 'text'
+    ,'EXTENSION'      // E output file extension
+    ,''               // F
+    ,'IMPORTEDDATA'   // G
+    ,'LONGSTRINGS'    // H String=AnsiString
+    ,'IOCHECKS'       // I generate EInOutError
+    ,'WRITEABLECONST' // J writable typed const
+    ,''               // K
+    ,'LOCALSYMBOLS'   // L generate local symbol information (debug, requires $D+)
+    ,'TYPEINFO'       // M allow published members OR $M minstacksize,maxstacksize
+    ,''               // N
+    ,'OPTIMIZATION'   // O enable safe optimizations (-O1)
+    ,'OPENSTRINGS'    // P deprecated Delphi directive
+    ,'OVERFLOWCHECKS' // Q or $OV
+    ,'RANGECHECKS'    // R
+    ,''               // S
+    ,'TYPEADDRESS'    // T enabled: @variable gives typed pointer, otherwise untyped pointer
+    ,'SAFEDIVIDE'     // U
+    ,'VARSTRINGCHECKS'// V strict shortstring checking, e.g. cannot pass shortstring[3] to shortstring
+    ,'STACKFRAMES'    // W always generate stackframes (debugging)
+    ,'EXTENDEDSYNTAX' // X deprecated Delphi directive
+    ,'REFERENCEINFO'  // Y store for each identifier the declaration location
+    ,''               // Z
+    );
 
 type
   TOnValuesChanged = procedure of object;
