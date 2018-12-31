@@ -2452,6 +2452,9 @@ function TLazPackageGraph.FindBrokenDependencyPath(APackage: TLazPackage;
             end;
           end;
         end;
+      end else if Dependency.DependencyType=pdtFPMake then
+      begin
+        // FPMake packages have no lpk -> ignore
       end else begin
         // broken dependency found
         PathList:=TFPList.Create;
@@ -2486,13 +2489,13 @@ function TLazPackageGraph.FindAllBrokenDependencies(APackage: TLazPackage;
     while Dependency<>nil do begin
       if Dependency.LoadPackageResult=lprSuccess then begin
         // dependency ok
-        if Dependency.DependencyType=pdtLazarus then begin
-          RequiredPackage:=Dependency.RequiredPackage;
-          if not (lpfVisited in RequiredPackage.Flags) then begin
-            RequiredPackage.Flags:=RequiredPackage.Flags+[lpfVisited];
-            FindBroken(RequiredPackage.FirstRequiredDependency,DepList);
-          end;
+        RequiredPackage:=Dependency.RequiredPackage;
+        if not (lpfVisited in RequiredPackage.Flags) then begin
+          RequiredPackage.Flags:=RequiredPackage.Flags+[lpfVisited];
+          FindBroken(RequiredPackage.FirstRequiredDependency,DepList);
         end;
+      end else  if Dependency.DependencyType=pdtFPMake then begin
+        // FPMake package have no lpk -> ignore
       end else begin
         // broken dependency found
         if (DepList=nil) or (DepList.IndexOf(Dependency)<0) then begin
