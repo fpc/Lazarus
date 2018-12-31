@@ -16,6 +16,8 @@ type
 
   TFppkgPackageVariantArray = array of TStringArray;
 
+  TFppkgPropConfigured = (fpcUnknown, fpcYes, fpcNo);
+
   { TFppkgHelper }
 
   TFppkgHelper = class
@@ -23,6 +25,8 @@ type
     {$IFNDEF VER3_0}
     FFPpkg: TpkgFPpkg;
     {$ENDIF}
+    FIsProperlyConfigured: TFppkgPropConfigured;
+    function HasFPCPackagesOnly(const PackageName: string): Boolean;
   public
     constructor Create;
     destructor Destroy; override;
@@ -30,6 +34,7 @@ type
     function HasPackage(const PackageName: string): Boolean;
     procedure ListPackages(AList: TStringList);
     function GetPackageUnitPath(const PackageName: string): string;
+    function IsProperyConfigured: Boolean;
     // Temporary solution, because fpc 3.2.0 does not has support for package-variants
     // in TFPPackage
     function GetPackageVariantArray(const PackageName: string): TFppkgPackageVariantArray;
@@ -89,24 +94,29 @@ end;
 function TFppkgHelper.HasPackage(const PackageName: string): Boolean;
 begin
 {$IFNDEF VER3_0}
-  Result :=
-    Assigned(FFPpkg.FindPackage(PackageName,pkgpkInstalled)) or
-    Assigned(FFPpkg.FindPackage(PackageName,pkgpkAvailable)) or
-    Assigned(FFPpkg.FindPackage(PackageName,pkgpkBoth));
-
-  if not Result then
+  if IsProperyConfigured then
     begin
-    // rescan and try again
-    FFppkg.LoadLocalAvailableMirrors;
-    FFppkg.ScanPackages;
-
     Result :=
       Assigned(FFPpkg.FindPackage(PackageName,pkgpkInstalled)) or
       Assigned(FFPpkg.FindPackage(PackageName,pkgpkAvailable)) or
       Assigned(FFPpkg.FindPackage(PackageName,pkgpkBoth));
-    end;
+
+    if not Result then
+      begin
+      // rescan and try again
+      FFppkg.LoadLocalAvailableMirrors;
+      FFppkg.ScanPackages;
+
+      Result :=
+        Assigned(FFPpkg.FindPackage(PackageName,pkgpkInstalled)) or
+        Assigned(FFPpkg.FindPackage(PackageName,pkgpkAvailable)) or
+        Assigned(FFPpkg.FindPackage(PackageName,pkgpkBoth));
+      end;
+    end
+  else
+    Result := HasFPCPackagesOnly(PackageName);
 {$ELSE }
-  Result := True;
+  Result := HasFPCPackagesOnly(PackageName);
 {$ENDIF VER3_0}
 end;
 
@@ -216,6 +226,157 @@ begin
       end
     end
   {$ENDIF FPC_FULLVERSION>30100}
+end;
+
+function TFppkgHelper.IsProperyConfigured: Boolean;
+begin
+  if FIsProperlyConfigured=fpcUnknown then
+    begin
+    FIsProperlyConfigured := fpcYes;
+    if not HasPackage('rtl') then
+      FIsProperlyConfigured := fpcNo;
+    end;
+  result := FIsProperlyConfigured=fpcYes;
+end;
+
+function TFppkgHelper.HasFPCPackagesOnly(const PackageName: string): Boolean;
+const
+  FpcPackages: array[0..120] of String = (
+    // All packages of fpc-trunk from 20181231
+    'rtl',
+    'rtl-generics',
+    'fcl-res',
+    'fpindexer',
+    'lua',
+    'regexpr',
+    'fcl-db',
+    'cdrom',
+    'paszlib',
+    'libgc',
+    'libtar',
+    'fcl-report',
+    'libcups',
+    'sqlite',
+    'libsee',
+    'newt',
+    'sdl',
+    'gnome1',
+    'ldap',
+    'openssl',
+    'libpng',
+    'graph',
+    'bzip2',
+    'fcl-extra',
+    'dbus',
+    'symbolic',
+    'rtl-objpas',
+    'mad',
+    'httpd24',
+    'fcl-process',
+    'fcl-sound',
+    'gdbint',
+    'rtl-unicode',
+    'gtk1',
+    'fcl-net',
+    'utils-lexyacc',
+    'mysql',
+    'ptc',
+    'libvlc',
+    'fcl-image',
+    'webidl',
+    'fcl-base',
+    'oggvorbis',
+    'a52',
+    'fcl-pdf',
+    'opencl',
+    'pthreads',
+    'libgd',
+    'tcl',
+    'xforms',
+    'iconvenc',
+    'dts',
+    'gmp',
+    'httpd22',
+    'jni',
+    'syslog',
+    'pasjpeg',
+    'users',
+    'postgres',
+    'rtl-extra',
+    'pxlib',
+    'fv',
+    'ncurses',
+    'zlib',
+    'fastcgi',
+    'aspell',
+    'rtl-console',
+    'googleapi',
+    'fpgtk',
+    'bfd',
+    'libusb',
+    'unzip',
+    'libenet',
+    'x11',
+    'libcurl',
+    'utils-pas2js',
+    'chm',
+    'numlib',
+    'fcl-registry',
+    'libxml2',
+    'fcl-web',
+    'imlib',
+    'fpmkunit',
+    'libmicrohttpd',
+    'pcap',
+    'utmp',
+    'odbc',
+    'fcl-xml',
+    'fcl-fpcunit',
+    'ibase',
+    'fcl-passrc',
+    'cairo',
+    'ide',
+    'fppkg',
+    'gtk2',
+    'fcl-async',
+    'pastojs',
+    'hermes',
+    'ggi',
+    'openal',
+    'opengl',
+    'zorba',
+    'hash',
+    'fcl-json',
+    'gdbm',
+    'oracle',
+    'fftw',
+    'uuid',
+    'libfontconfig',
+    'modplug',
+    'rsvg',
+    'fcl-sdo',
+    'fcl-js',
+    'proj4',
+    'dblib',
+    'svgalib',
+    'opengles',
+    'libffi',
+    'odata',
+    'fcl-stl',
+    'imagemagick'
+  );
+var
+  i: Integer;
+begin
+  for i := 0 to High(FpcPackages) do
+    begin
+    if SameText(PackageName, FpcPackages[i]) then
+      begin
+      Result := True;
+      Exit;
+      end;
+    end;
+  Result := False;
 end;
 
 finalization
