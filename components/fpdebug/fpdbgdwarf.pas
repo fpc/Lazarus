@@ -838,6 +838,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     function GetMemberAddress(AValObject: TFpDwarfValue; const AIndex: Array of Int64): TFpDbgMemLocation;
   public
     destructor Destroy; override;
+    procedure ResetValueBounds; override;
   end;
 
   { TFpDwarfSymbolValueProc }
@@ -1693,6 +1694,7 @@ function TFpDwarfValue.SetTypeCastInfo(AStructure: TFpDwarfSymbolType;
   ASource: TFpDbgValue): Boolean;
 begin
   Reset;
+  AStructure.ResetValueBounds;
 
   if FTypeCastSourceValue <> ASource then begin
     if FTypeCastSourceValue <> nil then
@@ -2647,6 +2649,7 @@ var
 begin
   Result := nil;
   assert((FOwner is TFpDwarfSymbolTypeArray) and (FOwner.Kind = skArray));
+
   Addr := TFpDwarfSymbolTypeArray(FOwner).GetMemberAddress(Self, AIndex);
   if not IsReadableLoc(Addr) then exit;
 
@@ -2939,6 +2942,11 @@ begin
   // DW_AT_data_member_location in members [ block or const]
   // DW_AT_location [block or reference] todo: const
   if not AnInformationEntry.ReadValue(ATag, Val) then begin
+    (* if ASucessOnMissingTag = true AND tag does not exist
+       then AnAddress will NOT be modified
+       this can be used for DW_AT_data_member_location, if it does not exist members are on input location
+       TODO: review - better use temp var in caller
+    *)
     Result := ASucessOnMissingTag;
     if not Result then
       AnAddress := InvalidLoc;
@@ -3332,8 +3340,12 @@ begin
 end;
 
 procedure TFpDwarfSymbolType.ResetValueBounds;
+var
+  ti: TFpDwarfSymbolType;
 begin
-  //
+  ti := NestedTypeInfo;
+  if (ti <> nil) then
+    ti.ResetValueBounds;
 end;
 
 class function TFpDwarfSymbolType.CreateTypeSubClass(AName: String;
@@ -3563,9 +3575,11 @@ var
   AnAddress: TFpDbgMemLocation;
   InitLocParserData: TInitLocParserData;
 begin
+  // TODO: assert(AValueObj <> nil, 'TFpDwarfSymbolTypeSubRange.ReadBounds: AValueObj <> nil');
   if FLowBoundState <> rfNotRead then exit;
 
   // Todo: search attrib-IDX only once
+  // Todo: LocationFromTag()
   if InformationEntry.ReadReference(DW_AT_lower_bound, FwdInfoPtr, FwdCompUint) then begin
     NewInfo := TDwarfInformationEntry.Create(FwdCompUint, FwdInfoPtr);
     FLowBoundValue := TFpDwarfSymbolValue.CreateValueSubClass('', NewInfo);
@@ -3610,7 +3624,7 @@ begin
     if assigned(AValueObj) then
       InitLocParserData.ObjectDataAddress := AValueObj.Address;
     InitLocParserData.ObjectDataAddrPush := False;
-    if assigned(AValueObj) and LocationFromTag(DW_AT_upper_bound, AValueObj, AnAddress, @InitLocParserData, InformationEntry, True) then begin
+    if assigned(AValueObj) and LocationFromTag(DW_AT_upper_bound, AValueObj, AnAddress, @InitLocParserData, InformationEntry) then begin
       FHighBoundState := rfConst;
       FHighBoundConst := Int64(AnAddress.Address);
     end
@@ -4502,6 +4516,20 @@ begin
     FreeAndNil(FMembers);
   end;
   inherited Destroy;
+end;
+
+procedure TFpDwarfSymbolTypeArray.ResetValueBounds;
+var
+  i: Integer;
+begin
+  debuglnEnter(['TFpDwarfSymbolTypeArray.ResetValueBounds ' , Self.ClassName, dbgs(self)]); try
+  inherited ResetValueBounds;
+  FDwarfArrayReadFlags := [];
+  if FMembers <> nil then
+    for i := 0 to FMembers.Count - 1 do
+      if TObject(FMembers[i]) is TFpDwarfSymbolType then
+        TFpDwarfSymbolType(FMembers[i]).ResetValueBounds;
+  finally debuglnExit(['TFpDwarfSymbolTypeArray.ResetValueBounds ' ]); end;
 end;
 
 { TDbgDwarfSymbol }
