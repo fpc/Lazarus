@@ -31,6 +31,7 @@ type
     procedure btnLinesClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure FormDropFiles(Sender: TObject; const FileNames: array of String);
   private
     { private declarations }
     NameList: TStringList;
@@ -244,6 +245,7 @@ var
     MaxData: PByte;
     v: Int64;
   begin
+    Result:='';
     MaxData := AData + ASize - 1;
     while AData <= MaxData do
     begin
@@ -515,7 +517,7 @@ var
             stest := ToHexCommaList(p,ValueSize);
             p2 := p;
             s3 := IntToStr(ValueSize) + ': ' + ToHex(p, ValueSize);
-            if (Attribute = DW_AT_location) or (Attribute = DW_AT_data_member_location)  then
+            if (Attribute = DW_AT_location) or (Attribute = DW_AT_data_location) or (Attribute = DW_AT_data_member_location)  then
               PascalTestCAseCode := PascalTestCAseCode +
                 Format(namePreFix+'Add(%s, %s, BytesLenU([%s]));  // %s%s', [s1, s2, DecodeLocation(p2, ValueSize), stest, LineEnding])
             else
@@ -528,7 +530,7 @@ var
             p2 := p;
             stest := ToHexCommaList(p,ValueSize);
             s3 := IntToStr(ValueSize) + ': ' + ToHex(p, ValueSize);
-            if (Attribute = DW_AT_location) or (Attribute = DW_AT_data_member_location)  then
+            if (Attribute = DW_AT_location) or (Attribute = DW_AT_data_location) or (Attribute = DW_AT_data_member_location)  then
               PascalTestCAseCode := PascalTestCAseCode +
                 Format(namePreFix+'Add(%s, %s, BytesLen1([%s])); // %s%s', [s1, s2, DecodeLocation(p2, ValueSize), stest, LineEnding])
             else
@@ -541,7 +543,7 @@ var
             p2 := p;
             stest := ToHexCommaList(p,ValueSize);
             s3 := IntToStr(ValueSize) + ': ' + ToHex(p, ValueSize);
-            if (Attribute = DW_AT_location) or (Attribute = DW_AT_data_member_location)  then
+            if (Attribute = DW_AT_location) or (Attribute = DW_AT_data_location) or (Attribute = DW_AT_data_member_location)  then
               PascalTestCAseCode := PascalTestCAseCode +
                 Format(namePreFix+'Add(%s, %s, BytesLen2([%s])); // %s%s', [s1, s2, DecodeLocation(p2, ValueSize), stest, LineEnding])
             else
@@ -554,7 +556,7 @@ var
             p2 := p;
             stest := ToHexCommaList(p,ValueSize);
             s3 := IntToStr(ValueSize) + ': ' + ToHex(p, ValueSize);
-            if (Attribute = DW_AT_location) or (Attribute = DW_AT_data_member_location)  then
+            if (Attribute = DW_AT_location) or (Attribute = DW_AT_data_location) or (Attribute = DW_AT_data_member_location)  then
               PascalTestCAseCode := PascalTestCAseCode +
                 Format(namePreFix+'Add(%s, %s, BytesLen4([%s])); // %s%s', [s1, s2, DecodeLocation(p2, ValueSize), stest, LineEnding])
             else
@@ -675,7 +677,9 @@ var
 
       if Attribute = DW_AT_name then Result := s3;
 
-      if (Attribute = DW_AT_location) or (Attribute = DW_AT_data_member_location)  then begin
+      if (Attribute = DW_AT_location) or (Attribute = DW_AT_data_location) or (Attribute = DW_AT_data_member_location)
+         or (Attribute = DW_AT_upper_bound) or (Attribute = DW_AT_lower_bound)
+      then begin
         stest := DecodeLocation(p2, ValueSize);
         s3 := s3 + ' // ' +stest;
       end;
@@ -699,6 +703,7 @@ var
     NMLIdx: Integer;
     pre, sName: String;
   begin
+     Result := nil;
      p := s.Entry;
      Abbrev := ULEB128toOrdinal(p);
      p := s.Entry;
@@ -800,6 +805,13 @@ procedure TForm1.FormDestroy(Sender: TObject);
 begin
   UnLoadDwarf;
   FTestCaseTexts.Free;
+end;
+
+procedure TForm1.FormDropFiles(Sender: TObject; const FileNames: array of String
+  );
+begin
+  if Length(FileNames) > 0 then
+    FileNameEdit1.Text := FileNames[0];
 end;
 
 procedure TForm1.UnLoadDwarf;

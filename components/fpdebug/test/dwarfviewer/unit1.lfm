@@ -3,12 +3,14 @@ object Form1: TForm1
   Height = 440
   Top = 211
   Width = 643
+  AllowDropFiles = True
   Caption = 'test fp'
   ClientHeight = 440
   ClientWidth = 643
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '1.9.0.0'
+  OnDropFiles = FormDropFiles
+  LCLVersion = '2.1.0.0'
   object FileNameEdit1: TFileNameEdit
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
