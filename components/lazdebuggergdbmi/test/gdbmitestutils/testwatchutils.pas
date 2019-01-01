@@ -76,7 +76,8 @@ const
                     IgnKind,    IgnKindDw, IgnKindDw3,
                     IgnKindPtr, IgnKindPtrDw, IgnKindPtrDw3,
                     IgnTpName,  IgnTpNameDw, IgnTpNameDw3
-                   ]
+                   ],
+                   []
     );
 
   WatchExpFlagSIgnAll     = [IgnStabs, IgnDwrf, IgnDwrf2, IgnDwrf2IfNoSet, IgnDwrf3];

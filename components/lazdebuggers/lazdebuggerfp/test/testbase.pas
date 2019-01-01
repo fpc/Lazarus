@@ -41,7 +41,7 @@ begin
   {$IFDEF WIN32} // Windows can not cross debug
   DbgInfo.CpuBitTypes := [cpu32];
   {$ENDIF}
-  DbgInfo.SymbolTypes := [stDwarf, stDwarfSet, stDwarf3];
+  DbgInfo.SymbolTypes := [stDwarf, stDwarfSet, stDwarf3, stDwarf4];
   GdbList := TBaseList.Create;
   GdbList.Add(DbgInfo);
 
