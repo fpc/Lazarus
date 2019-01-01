@@ -4171,7 +4171,7 @@ begin
       end;
 
       // create fpmake.pp
-      if ((pcfCreateFpmakeFile in Flags) or (APackage.BuildMethod in [bmBoth, bmFPMake])
+      if ((pcfCreateFpmakeFile in Flags) or (APackage.GetActiveBuildMethod = bmFPMake)
       or (APackage.CompilerOptions.CreateMakefileOnBuild)) then begin
         Result:=WriteFpmake(APackage);
         if Result<>mrOk then begin
