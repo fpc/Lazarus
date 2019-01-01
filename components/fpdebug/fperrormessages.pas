@@ -106,6 +106,8 @@ function CreateError(AnErrorCode: TFpErrorCode): TFpError; inline;
 function CreateError(AnErrorCode: TFpErrorCode; AData: array of const): TFpError; inline;
 function CreateError(AnErrorCode: TFpErrorCode; AnError: TFpError; AData: array of const): TFpError; inline;
 
+function dbgs(AnError: TFpError): string; overload;
+
 implementation
 
 var TheErrorHandler: TFpErrorHandler = nil;
@@ -155,6 +157,14 @@ function CreateError(AnErrorCode: TFpErrorCode; AnError: TFpError;
   AData: array of const): TFpError;
 begin
   Result := ErrorHandler.CreateError(AnErrorCode, AnError, AData);
+end;
+
+function dbgs(AnError: TFpError): string;
+begin
+  if IsError(AnError) then
+    Result := '[['+ GetFpErrorHandler.ErrorAsString(AnError) +']]'
+  else
+    Result := '[[no err]]';
 end;
 
 { TFpErrorHandler }
