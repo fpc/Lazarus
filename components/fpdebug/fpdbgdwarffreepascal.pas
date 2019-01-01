@@ -710,8 +710,6 @@ begin
     exit;
 
   t2 := t.Member[0]; // subrange type
-  if HasTypeCastInfo then
-    TFpDwarfSymbolType(t2).ResetValueBounds;
   if not( (t2 is TFpDwarfSymbolType) and TFpDwarfSymbolType(t2).GetValueBounds(self, LowBound, HighBound) )
   then
     exit;
