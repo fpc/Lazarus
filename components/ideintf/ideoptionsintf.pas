@@ -134,6 +134,7 @@ type
     procedure AddToRecentPackageFiles(const AFilename: string); virtual; abstract;
     procedure RemoveFromRecentPackageFiles(const AFilename: string); virtual; abstract;
 
+    function GetParsedCompilerFilename: string; virtual; abstract;
 
     procedure AddHandlerAddToRecentOpenFiles(Handler: TOnAddToRecent; const AsFirst: boolean = true); // AsFirst means: first to call
     procedure RemoveHandlerAddToRecentOpenFiles(Handler: TOnAddToRecent);

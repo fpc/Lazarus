@@ -684,7 +684,7 @@ type
 
     function GetParsedLazarusDirectory: string;
     function GetParsedTestBuildDirectory: string;
-    function GetParsedCompilerFilename: string;
+    function GetParsedCompilerFilename: string; override;
     function GetParsedFPCSourceDirectory(FPCVer: string = ''): string;
     function GetParsedMakeFilename: string;
     function GetParsedCompilerMessagesFilename: string;
