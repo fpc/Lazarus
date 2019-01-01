@@ -8,6 +8,8 @@ uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls, EditBtn,
   ButtonPanel,
   fpTemplate,
+  // IDEIntf
+  IDEOptionsIntf,
   // fppkg
   pkgglobals, pkgFppkg, pkgoptions, pkgUninstalledSrcsRepo;
 
@@ -43,6 +45,8 @@ type
     procedure OnLazarusButtonClick(Sender: TObject);
   private
     function IsVersionStr(AString: string): Boolean;
+    class function IsValidFPCLocation(APath: string; out Message: string): Boolean;
+    class function GuessFPCLocationFromCompilerExecutable(AnExecutablePath: string): string;
   public
     class function CheckInitialConfiguration: Boolean;
     class function RecreateFppkgConfiguration: Boolean;
@@ -61,47 +65,36 @@ implementation
 
 procedure TInitializeOptionsForm.FPCDirectoryEditChange(Sender: TObject);
 var
-  SR: TSearchRec;
-  Dir: string;
   Prefix, s: RawByteString;
+  Message: string;
+  Dir: string;
 begin
-  Dir := IncludeTrailingPathDelimiter(FPCDirectoryEdit.Text);
-  if not DirectoryExists(Dir) then
-    FPCDirValidationLabel.Caption := 'Directory does not exist'
+  if IsValidFPCLocation(FPCDirectoryEdit.Text, Message) then
+    begin
+    Dir := IncludeTrailingPathDelimiter(FPCDirectoryEdit.Text);
+    FPCDirValidationLabel.Caption := '';
+
+    s := ExtractFileName(ExcludeTrailingPathDelimiter(Dir));
+    Prefix := ExtractFilePath(ExcludeTrailingPathDelimiter(Dir));
+
+    if IsVersionStr(s) then
+      PathEdit.Text := Prefix + '{CompilerVersion}' + PathDelim
+    else
+      PathEdit.Text := Dir;
+
+    Prefix := ExtractFilePath(ExcludeTrailingPathDelimiter(Prefix));
+    Prefix := ExtractFilePath(ExcludeTrailingPathDelimiter(Prefix));
+    PrefixEdit.Text := Prefix;
+
+    s := ConcatPaths([Prefix, 'bin', 'fpc'+ExeExt]);
+    if FileExists(s) then
+      CompilerEdit.Text := s
+    else
+      CompilerEdit.Text := ExeSearch('fpc'+ExeExt,GetEnvironmentVariable('PATH'));
+    end
   else
     begin
-    if FindFirst(Dir+'ppc*'+ExeExt, faAnyFile-faDirectory, SR) = 0 then
-      begin
-      FindClose(SR);
-      if FileExists(Dir+'units') and FileExists(Dir+'fpmkinst') then
-        begin
-        FPCDirValidationLabel.Caption := '';
-
-        s := ExtractFileName(ExcludeTrailingPathDelimiter(Dir));
-        Prefix := ExtractFilePath(ExcludeTrailingPathDelimiter(Dir));
-
-        if IsVersionStr(s) then
-          PathEdit.Text := Prefix + '{CompilerVersion}' + PathDelim
-        else
-          PathEdit.Text := Dir;
-
-        Prefix := ExtractFilePath(ExcludeTrailingPathDelimiter(Prefix));
-        Prefix := ExtractFilePath(ExcludeTrailingPathDelimiter(Prefix));
-        PrefixEdit.Text := Prefix;
-
-        s := ConcatPaths([Prefix, 'bin', 'fpc'+ExeExt]);
-        if FileExists(s) then
-          CompilerEdit.Text := s
-        else
-          CompilerEdit.Text := ExeSearch('fpc'+ExeExt,GetEnvironmentVariable('PATH'));
-        end
-      else
-        FPCDirValidationLabel.Caption := 'This location does not seems to contain a valid fpc-installation'
-      end
-    else
-      begin
-      FPCDirValidationLabel.Caption := 'Compiler not found at given location'
-      end;
+    FPCDirValidationLabel.Caption := Message;
     end;
   FPCButtonPanel.OKButton.Enabled := FPCDirValidationLabel.Caption = '';
 end;
@@ -278,6 +271,7 @@ begin
   Frm := TInitializeOptionsForm.Create(nil);
   try
     Frm.FppkgConfigPanel.Visible := True;
+    Frm.FPCDirectoryEdit.Text := GuessFPCLocationFromCompilerExecutable(IDEEnvironmentOptions.GetParsedCompilerFilename);
     if Frm.ShowModal in [mrClose, mrCancel] then
       Result := False
     else
@@ -310,6 +304,63 @@ begin
   finally
     Frm.Free;
   end;
+end;
+
+class function TInitializeOptionsForm.IsValidFPCLocation(APath: string; out Message: string): Boolean;
+var
+  Dir: string;
+  SR: TRawByteSearchrec;
+begin
+  Result := False;
+  Message := '';
+  Dir := IncludeTrailingPathDelimiter(APath);
+  if not DirectoryExists(Dir) then
+    Message := 'Directory does not exist'
+  else
+    begin
+    if FindFirst(Dir+'ppc*'+ExeExt, faAnyFile-faDirectory, SR) = 0 then
+      begin
+      FindClose(SR);
+      if FileExists(Dir+'units') and FileExists(Dir+'fpmkinst') then
+        Result := True
+      else
+        Message := 'This location does not seems to contain a valid fpc-installation'
+      end
+    else
+      Message := 'Compiler not found at given location'
+    end;
+end;
+
+class function TInitializeOptionsForm.GuessFPCLocationFromCompilerExecutable(AnExecutablePath: string): string;
+var
+  Dir: string;
+  SR: TRawByteSearchRec;
+  Message: string;
+begin
+  Result := '';
+  if IsValidFPCLocation(ExtractFileDir(AnExecutablePath), Message) then
+    begin
+    Result := ExtractFileDir(AnExecutablePath);
+    Exit;
+    end;
+  if ExtractFileName(ExtractFileNameWithoutExt(AnExecutablePath)) = 'fpc' then
+    begin
+    Dir := ExtractFileDir(ExtractFileDir(AnExecutablePath));
+    Dir := ConcatPaths([Dir, 'lib', 'fpc']);
+    if not DirectoryExists(Dir) then
+      Dir := ConcatPaths([Dir, 'lib64', 'fpc']);
+    if DirectoryExists(Dir) then
+      begin
+      if FindFirst(IncludeTrailingPathDelimiter(Dir)+AllFiles, faDirectory, SR) = 0 then
+        begin
+        repeat
+        if (SR.Name<>'.') and (SR.Name<>'..') and IsValidFPCLocation(IncludeTrailingPathDelimiter(Dir)+SR.Name, Message) then
+          Result := IncludeTrailingPathDelimiter(Dir)+SR.Name;
+        until FindNext(Sr) <> 0;
+        FindClose(SR);
+        end;
+      end;
+    end;
 end;
 
 end.
