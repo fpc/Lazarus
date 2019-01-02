@@ -2074,7 +2074,7 @@ begin
         UnitToFPM[CurUnitName]:=FPM;
 
         if FPMSourcePath<>'' then begin
-          debugln(['GatherUnitsInFPMSources ',FPMFilename,' ',FPMSourcePath]);
+          //debugln(['GatherUnitsInFPMSources ',FPMFilename,' ',FPMSourcePath]);
           FPM.UnitToSrc:=GatherUnitSourcesInDirectory(FPMSourcePath,3);
         end;
       end;
@@ -2292,7 +2292,9 @@ begin
       Link:=TUnitNameLink(Node.Data);
       Result[Link.Unit_Name]:=Link.Filename;
       if (Link.ConflictFilename<>'') and (Link.Score>0) then begin
-        //DebugLn(['GatherUnitsInFPCSources Ambiguous: ',Link.Score,' ',Link.Filename,' ',Link.ConflictFilename]);
+        if (DebugUnitName<>'') and (SysUtils.CompareText(Link.Unit_Name,DebugUnitName)=0)
+        then
+          DebugLn(['GatherUnitsInFPCSources Ambiguous: ',Link.Score,' ',Link.Filename,' ',Link.ConflictFilename]);
         if Duplicates<>nil then
           Duplicates[Link.Unit_Name]:=Link.Filename+';'+Link.ConflictFilename;
       end;
