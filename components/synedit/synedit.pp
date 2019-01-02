@@ -2159,6 +2159,7 @@ begin
   FBlockSelection.Caret := FCaret;
   FBlockSelection.InvalidateLinesMethod := @InvalidateLines;
   FBlockSelection.AddChangeHandler(@DoBlockSelectionChanged);
+  FBlockSelection.{%H-}FoldedView := FFoldedLinesView;
 
   FInternalBlockSelection := TSynEditSelection.Create(FTheLinesView, False);
   FInternalBlockSelection.InvalidateLinesMethod := @InvalidateLines;

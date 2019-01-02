@@ -102,6 +102,7 @@ type
 
   TSynEditSelection = class(TSynEditPointBase)
   private
+    FFoldedView: TObject;
     FOnBeforeSetSelText: TSynBeforeSetSelTextList;
     FAutoExtend: Boolean;
     FCaret: TSynEditCaret;
@@ -204,6 +205,8 @@ type
     property  AutoExtend: Boolean read FAutoExtend write SetAutoExtend;
     property  StickyAutoExtend: Boolean read FStickyAutoExtend write FStickyAutoExtend;
     property  Hide: Boolean read FHide write SetHide;
+
+    property FoldedView: TObject read FFoldedView write FFoldedView; experimental; // until FoldedView becomes a TSynEditStrings
   end;
 
   { TSynEditCaret }
@@ -600,6 +603,9 @@ type
   end;
 
 implementation
+
+uses
+  SynEditFoldedView;
 
 { TSynBeforeSetSelTextList }
 
@@ -2262,16 +2268,34 @@ var
 begin
   if FEnabled then begin
     FStickyAutoExtend := False;
+
     Value.y := MinMax(Value.y, 1, fLines.Count);
+
+    // ensure folded block at bottom line is in selection
+    if (ActiveSelectionMode = smLine) and (FFoldedView <> nil)
+    then begin
+      if ( (FStartLinePos > Value.y) or
+           ( (FStartLinePos = Value.y) and (FStartBytePos > Value.x) )
+         ) and
+         (not SelAvail)
+      then
+        FStartLinePos := TSynEditFoldedView(FFoldedView).TextPosAddLines(FStartLinePos, 1) - 1
+      else
+      if (Value.y < fLines.Count) then
+        Value.y := TSynEditFoldedView(FFoldedView).TextPosAddLines(Value.y, 1) - 1;
+    end;
+
     if (FCaret = nil) or FCaret.AllowPastEOL then
       Value.x := Max(Value.x, 1)
     else
       Value.x := MinMax(Value.x, 1, length(Lines[Value.y - 1])+1);
+
     if (ActiveSelectionMode = smNormal) then
       if (Value.y >= 1) and (Value.y <= fLines.Count) then
         Value.x := AdjustBytePosToCharacterStart(Value.y,Value.x)
       else
         Value.x := 1;
+
     if (Value.X <> FEndBytePos) or (Value.Y <> FEndLinePos) then begin
       {$IFDEF SYN_MBCSSUPPORT}
       if Value.Y <= fLines.Count then begin
@@ -2325,6 +2349,14 @@ begin
   FForceSingleLineSelected := AValue;
 
   if WasAvail <> SelAvail then begin
+    // ensure folded block at bottom line is in selection
+    // only when selection is new (WasAvail = False)
+    if SelAvail then begin
+      if IsBackwardSel then
+        FStartLinePos := TSynEditFoldedView(FFoldedView).TextPosAddLines(FStartLinePos, 1) - 1
+      else
+        FEndLinePos := TSynEditFoldedView(FFoldedView).TextPosAddLines(FEndLinePos, 1) - 1;
+    end;
     FInvalidateLinesMethod(Min(FStartLinePos, FEndLinePos),
                            Max(FStartLinePos, FEndLinePos) );
     fOnChangeList.CallNotifyEvents(self);
