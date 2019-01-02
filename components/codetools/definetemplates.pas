@@ -733,7 +733,7 @@ const
 type
 
   { TPCConfigFileState
-    Store if a config file exists and its modification date }
+    Stores if a config file exists and its modification date }
 
   TPCConfigFileState = class
   public
@@ -772,6 +772,25 @@ type
 
   TFPCConfigFileStateList = TPCConfigFileStateList deprecated 'use TPCConfigFileStateList'; // Laz 1.9
 
+  { TPCFPMFileState
+    Stores information about a fppkg .fpm file }
+
+  TPCFPMFileState = class
+  public
+    Name: string;
+    FPMFilename: string;
+    FileDate: longint;
+    SourcePath: string;
+    UnitToSrc: TStringToStringTree; // case insensitive unit name to source file
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear;
+    procedure Assign(List: TPCFPMFileState);
+    function Equals(List: TPCFPMFileState; CheckDates: boolean): boolean; reintroduce;
+    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+  end;
+
   TPCTargetConfigCaches = class;
 
   { TPCTargetConfigCache
@@ -804,6 +823,8 @@ type
     Undefines: TStringToStringTree; // macro
     Units: TStringToStringTree; // unit name to file name
     Includes: TStringToStringTree; // inc name to file name
+    UnitToFPM: TStringToPointerTree; // unitname to TPCFPMFileState
+    FPMNameToFPM: TStringToPointerTree; // fpm name to TPCFPMFileState
     ErrorMsg: string;
     ErrorTranslatedMsg: string;
     Caches: TPCTargetConfigCaches;
@@ -1106,8 +1127,12 @@ function RunFPCVerbose(const CompilerFilename, TestFilename: string;
 procedure GatherUnitsInSearchPaths(SearchUnitPaths, SearchIncludePaths: TStrings;
                     const OnProgress: TDefinePoolProgress;
                     out Units: TStringToStringTree;
-                    out Includes: TStringToStringTree;
-                    CheckFPMkInst: boolean = false); // unit names to full file name
+                    out Includes: TStringToStringTree); // unit names to full file name
+procedure GatherUnitsInFPMSources(Units: TStringToStringTree; // unit names to full file name
+                    out UnitToFPM: TStringToPointerTree;
+                    out FPMNameToFPM: TStringToPointerTree; // TPCFPMFileState
+                    const OnProgress: TDefinePoolProgress = nil
+                    );
 function GatherUnitSourcesInDirectory(Directory: string;
                     MaxLevel: integer = 1): TStringToStringTree; // unit names to full file name
 procedure AdjustFPCSrcRulesForPPUPaths(Units: TStringToStringTree;
@@ -1863,45 +1888,24 @@ end;
 
 procedure GatherUnitsInSearchPaths(SearchUnitPaths, SearchIncludePaths: TStrings;
   const OnProgress: TDefinePoolProgress; out Units: TStringToStringTree;
-  out Includes: TStringToStringTree; CheckFPMkInst: boolean);
+  out Includes: TStringToStringTree);
 { returns a stringtree,
   where name is unitname and value is the full file name
 
   SearchUnitsPaths are searched from last to start
   first found wins
   pas, pp, p replaces ppu
-
-  check for each UnitPath of the form
-    lib/fpc/<FPCVer>/units/<FPCTarget>/<name>/
-  if there is lib/fpc/<FPCVer>/fpmkinst/><FPCTarget>/<name>.fpm
-  and search line SourcePath=<directory>
-  and search source files in this directory including subdirectories
 }
-
-  function SearchPriorPathDelim(var p: integer; const Filename: string): boolean; inline;
-  begin
-    repeat
-      dec(p);
-      if p<1 then exit(false)
-    until Filename[p]=PathDelim;
-    Result:=true;
-  end;
-
 var
   i: Integer;
   Directory: String;
-  FileCount, p, EndPos, FPCTargetEndPos: Integer;
+  FileCount: Integer;
   Abort: boolean;
   FileInfo: TSearchRec;
   ShortFilename: String;
   Filename: String;
   Ext: String;
-  File_Name, PkgName, FPMFilename, FPMSourcePath, Line, SrcFilename: String;
-  AVLNode: TAVLTreeNode;
-  S2SItem: PStringToStringItem;
-  FPMToUnitTree: TStringToPointerTree;// pkgname to TStringToStringTree (unitname to source filename)
-  sl: TStringListUTF8;
-  PkgUnitToFilename: TStringToStringTree;
+  File_Name: String;
 begin
   // units sources
   Units:=TStringToStringTree.Create(false);
@@ -1967,88 +1971,113 @@ begin
       end;
       FindCloseUTF8(FileInfo);
     end;
+end;
 
-  // units ppu
-  if CheckFPMkInst then begin
-    // try to resolve .ppu files via fpmkinst .fpm files
-    FPMToUnitTree:=nil;
-    try
-      AVLNode:=Units.Tree.FindLowest;
-      while AVLNode<>nil do begin
-        S2SItem:=PStringToStringItem(AVLNode.Data);
-        File_Name:=S2SItem^.Name;
-        Filename:=S2SItem^.Value; // trimmed and expanded filename
-        //if Pos('lazmkunit',Filename)>0 then
-        //  debugln(['GatherUnitsInSearchPaths ===== ',Filename]);
-        AVLNode:=Units.Tree.FindSuccessor(AVLNode);
-        if CompareFileExt(Filename,'ppu',false)<>0 then continue;
-        // check if filename has the form
-        //                  /something/lib/fpc/<FPCVer>/units/<FPCTarget>/<pkgname>/
-        // and if there is  /something/lib/fpc/<FPCVer>/fpmkinst/><FPCTarget>/<pkgname>.fpm
-        p:=length(Filename);
-        if not SearchPriorPathDelim(p,Filename) then exit;
-        // <pkgname>
-        EndPos:=p;
-        if not SearchPriorPathDelim(p,Filename) then exit;
-        PkgName:=copy(Filename,p+1,EndPos-p-1);
-        if PkgName='' then continue;
-        FPCTargetEndPos:=p;
-        if not SearchPriorPathDelim(p,Filename) then exit;
-        // <fpctarget>
-        EndPos:=p;
-        if not SearchPriorPathDelim(p,Filename) then exit;
-        // 'units'
-        if (EndPos-p<>6) or (CompareIdentifiers(@Filename[p+1],'units')<>0) then
-          continue;
-        FPMFilename:=copy(Filename,1,p)+'fpmkinst'
-                    +copy(Filename,EndPos,FPCTargetEndPos-EndPos+1)+PkgName+'.fpm';
-        if FPMToUnitTree=nil then begin
-          FPMToUnitTree:=TStringToPointerTree.Create(false);
-          FPMToUnitTree.FreeValues:=true;
-        end;
-        if not FPMToUnitTree.Contains(PkgName) then begin
-          FPMSourcePath:='';
-          if FileExistsCached(FPMFilename) then begin
-            //debugln(['GatherUnitsInSearchPaths Found .fpm: ',FPMFilename]);
-            sl:=TStringListUTF8.Create;
-            try
-              try
-                sl.LoadFromFile(FPMFilename);
-                for i:=0 to sl.Count-1 do begin
-                  Line:=sl[i];
-                  if LeftStr(Line,length('SourcePath='))='SourcePath=' then
-                  begin
-                    FPMSourcePath:=TrimAndExpandDirectory(copy(Line,length('SourcePath=')+1,length(Line)));
-                    break;
-                  end;
-                end;
-              except
-                on E: Exception do
-                  debugln(['Warning: (lazarus) [GatherUnitsInSearchPaths] ',E.Message]);
+procedure GatherUnitsInFPMSources(Units: TStringToStringTree; out
+  UnitToFPM: TStringToPointerTree; out FPMNameToFPM: TStringToPointerTree;
+  const OnProgress: TDefinePoolProgress);
+{ check for each UnitPath of the form
+    lib/fpc/<FPCVer>/units/<FPCTarget>/<name>/
+  if there is lib/fpc/<FPCVer>/fpmkinst/><FPCTarget>/<name>.fpm
+  and search line SourcePath=<directory>
+  then search source files in this directory including subdirectories
+}
+  function SearchPriorPathDelim(var p: integer; const Filename: string): boolean; inline;
+  begin
+    repeat
+      dec(p);
+      if p<1 then exit(false)
+    until Filename[p]=PathDelim;
+    Result:=true;
+  end;
+
+var
+  Abort: boolean;
+  AVLNode: TAVLTreeNode;
+  S2SItem: PStringToStringItem;
+  CurUnitName, Filename, PkgName, FPMFilename, FPMSourcePath, Line: String;
+  p, EndPos, FPCTargetEndPos, i, FileCount: Integer;
+  sl: TStringListUTF8;
+  FPM: TPCFPMFileState;
+begin
+  // try to resolve .ppu files via fpmkinst .fpm files
+  FileCount:=0;
+  UnitToFPM:=TStringToPointerTree.Create(false);
+  FPMNameToFPM:=TStringToPointerTree.Create(false);
+  FPMNameToFPM.FreeValues:=true;
+  Abort:=false;
+  AVLNode:=Units.Tree.FindLowest;
+  while AVLNode<>nil do begin
+    S2SItem:=PStringToStringItem(AVLNode.Data);
+    CurUnitName:=S2SItem^.Name;
+    Filename:=S2SItem^.Value; // trimmed and expanded filename
+    //if Pos('lazmkunit',Filename)>0 then
+      //debugln(['GatherUnitsInFPMSources ===== ',Filename]);
+    AVLNode:=Units.Tree.FindSuccessor(AVLNode);
+    if CompareFileExt(Filename,'ppu',false)<>0 then continue;
+    // check if filename has the form
+    //                  /something/units/<FPCTarget>/<pkgname>/<unitname>.ppu
+    // and if there is  /something/fpmkinst/<FPCTarget>/<pkgname>.fpm
+    p:=length(Filename);
+    if not SearchPriorPathDelim(p,Filename) then exit;
+    // <pkgname>
+    EndPos:=p;
+    if not SearchPriorPathDelim(p,Filename) then exit;
+    PkgName:=copy(Filename,p+1,EndPos-p-1);
+    if PkgName='' then continue;
+    FPCTargetEndPos:=p;
+    if not SearchPriorPathDelim(p,Filename) then exit;
+    // <fpctarget>
+    EndPos:=p;
+    if not SearchPriorPathDelim(p,Filename) then exit;
+    // 'units'
+    if (EndPos-p<>6) or (CompareIdentifiers(@Filename[p+1],'units')<>0) then
+      continue;
+    FPMFilename:=copy(Filename,1,p)+'fpmkinst'
+                +copy(Filename,EndPos,FPCTargetEndPos-EndPos+1)+PkgName+'.fpm';
+
+    FPM:=TPCFPMFileState(FPMNameToFPM[PkgName]);
+    if FPM=nil then begin
+      inc(FileCount);
+      if (FileCount mod 100=0) and Assigned(OnProgress) then begin
+        OnProgress(nil, 0, -1, Format(ctsScannedFiles, [IntToStr(FileCount)]
+          ), Abort);
+        if Abort then break;
+      end;
+      FPMSourcePath:='';
+      if FileExistsCached(FPMFilename) then begin
+        //debugln(['GatherUnitsInFPMSources Found .fpm: ',FPMFilename]);
+        sl:=TStringListUTF8.Create;
+        try
+          try
+            sl.LoadFromFile(FPMFilename);
+            for i:=0 to sl.Count-1 do begin
+              Line:=sl[i];
+              if LeftStr(Line,length('SourcePath='))='SourcePath=' then
+              begin
+                FPMSourcePath:=TrimAndExpandDirectory(copy(Line,length('SourcePath=')+1,length(Line)));
+                break;
               end;
-            finally
-              sl.Free;
             end;
+          except
+            on E: Exception do
+              debugln(['Warning: (lazarus) [GatherUnitsInFPMSources] ',E.Message]);
           end;
-          if FPMSourcePath<>'' then begin
-            PkgUnitToFilename:=GatherUnitSourcesInDirectory(FPMSourcePath,5);
-            FPMToUnitTree[PkgName]:=PkgUnitToFilename;
-            //debugln(['GatherUnitsInSearchPaths Pkg=',PkgName,' UnitsFound=',PkgUnitToFilename.Count]);
-          end else
-            FPMToUnitTree[PkgName]:=nil; // mark as not found
+        finally
+          sl.Free;
         end;
+        FPM:=TPCFPMFileState.Create;
+        FPM.Name:=PkgName;
+        FPM.FPMFilename:=FPMFilename;
+        FPM.SourcePath:=FPMSourcePath;
+        FPMNameToFPM[PkgName]:=FPM;
+        UnitToFPM[CurUnitName]:=FPM;
 
-        PkgUnitToFilename:=TStringToStringTree(FPMToUnitTree[PkgName]);
-        if PkgUnitToFilename=nil then continue;
-        SrcFilename:=PkgUnitToFilename[File_Name];
-        if SrcFilename<>'' then begin
-          // unit source found in fppkg -> replace ppu with src file
-          //debugln(['GatherUnitsInSearchPaths ppu=',Filename,' -> fppkg src=',SrcFilename]);
-          Units[File_Name]:=SrcFilename;
+        if FPMSourcePath<>'' then begin
+          debugln(['GatherUnitsInFPMSources ',FPMFilename,' ',FPMSourcePath]);
+          FPM.UnitToSrc:=GatherUnitSourcesInDirectory(FPMSourcePath,3);
         end;
       end;
-    finally
-      FPMToUnitTree.Free;
     end;
   end;
 end;
@@ -2853,6 +2882,91 @@ begin
     Sources.SaveToXMLConfig(XMLConfig,'FPCSourceDirectories/');
   finally
     XMLConfig.Free;
+  end;
+end;
+
+{ TPCFPMFileState }
+
+constructor TPCFPMFileState.Create;
+begin
+  UnitToSrc:=TStringToStringTree.Create(false);
+end;
+
+destructor TPCFPMFileState.Destroy;
+begin
+  FreeAndNil(UnitToSrc);
+  inherited Destroy;
+end;
+
+procedure TPCFPMFileState.Clear;
+begin
+  UnitToSrc.Clear;
+  FileDate:=-1;
+end;
+
+procedure TPCFPMFileState.Assign(List: TPCFPMFileState);
+begin
+  // do not assign Name
+  FPMFilename:=List.FPMFilename;
+  FileDate:=List.FileDate;
+  SourcePath:=List.SourcePath;
+  UnitToSrc.Assign(List.UnitToSrc);
+end;
+
+function TPCFPMFileState.Equals(List: TPCFPMFileState; CheckDates: boolean
+  ): boolean;
+begin
+  Result:=false;
+  if Name<>List.Name then exit;
+  if FPMFilename<>List.FPMFilename then exit;
+  if CheckDates and (FileDate<>List.FileDate) then exit;
+  if SourcePath<>List.SourcePath then exit;
+  if not UnitToSrc.Equals(List.UnitToSrc) then exit;
+  Result:=true;
+end;
+
+procedure TPCFPMFileState.LoadFromXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string);
+var
+  Cnt, i: Integer;
+  SubPath, CurName, CurFilename: String;
+begin
+  // do not read Name
+  FPMFilename:=XMLConfig.GetValue(Path+'FPMFile','');
+  FileDate:=XMLConfig.GetValue(Path+'FileDate',0);
+  SourcePath:=TrimAndExpandDirectory(XMLConfig.GetValue(Path+'SourcePath',''));
+  UnitToSrc.Clear;
+  Cnt:=XMLConfig.GetValue(Path+'Units/Count',0);
+  for i:=1 to Cnt do begin
+    SubPath:=Path+'Units/Item'+IntToStr(i)+'/';
+    CurName:=XMLConfig.GetValue(SubPath+'Name','');
+    CurFilename:=XMLConfig.GetValue(SubPath+'File','');
+    UnitToSrc[CurName]:=SourcePath+CurFilename;
+  end;
+end;
+
+procedure TPCFPMFileState.SaveToXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string);
+var
+  Node: TAVLTreeNode;
+  S2PItem: PStringToStringItem;
+  i: Integer;
+  SubPath: String;
+begin
+  XMLConfig.SetDeleteValue(Path+'Name',Name,'');
+  XMLConfig.SetDeleteValue(Path+'File',FPMFilename,'');
+  XMLConfig.SetDeleteValue(Path+'FileDate',FileDate,0);
+  XMLConfig.SetDeleteValue(Path+'SourcePath',SourcePath,'');
+  XMLConfig.SetDeleteValue(Path+'Units/Count',UnitToSrc.Count,0);
+  i:=0;
+  Node:=UnitToSrc.Tree.FindLowest;
+  while Node<>nil do begin
+    S2PItem:=PStringToStringItem(Node.Data);
+    inc(i);
+    SubPath:=Path+'Units/Item'+IntToStr(i)+'/';
+    XMLConfig.SetDeleteValue(SubPath+'Name',S2PItem^.Name,'');
+    XMLConfig.SetDeleteValue(SubPath+'File',CreateRelativePath(S2PItem^.Value,SourcePath),'');
+    Node:=Node.Successor;
   end;
 end;
 
@@ -7936,6 +8050,8 @@ begin
   FreeAndNil(UnitScopes);
   FreeAndNil(Units);
   FreeAndNil(Includes);
+  FreeAndNil(UnitToFPM);
+  FreeAndNil(FPMNameToFPM);
 end;
 
 function TPCTargetConfigCache.Equals(Item: TPCTargetConfigCache;
@@ -7967,6 +8083,9 @@ function TPCTargetConfigCache.Equals(Item: TPCTargetConfigCache;
     Result:=true;
   end;
 
+var
+  Node1, Node2: TAVLTreeNode;
+  S2PItem1, S2PItem2: PStringToPointerTreeItem;
 begin
   Result:=false;
   if CompareKey then begin
@@ -7996,12 +8115,50 @@ begin
   if not CompareStrings(UnitScopes,Item.UnitScopes) then exit;
   if not CompareStringTrees(Units,Item.Units) then exit;
   if not CompareStringTrees(Includes,Item.Includes) then exit;
+
+  if UnitToFPM<>nil then begin
+    if Item.UnitToFPM=nil then exit;
+    if UnitToFPM.Count<>Item.UnitToFPM.Count then exit;
+    Node1:=UnitToFPM.Tree.FindLowest;
+    Node2:=Item.UnitToFPM.Tree.FindLowest;
+    while Node1<>nil do begin
+      S2PItem1:=PStringToPointerTreeItem(Node1.Data);
+      S2PItem2:=PStringToPointerTreeItem(Node2.Data);
+      if S2PItem1^.Name<>S2PItem2^.Name then
+        exit;
+      if TPCFPMFileState(S2PItem1^.Value).Name<>TPCFPMFileState(S2PItem2^.Value).Name then
+        exit;
+      Node1:=Node1.Successor;
+      Node2:=Node2.Successor;
+    end;
+  end;
+
+  if FPMNameToFPM<>nil then begin
+    if Item.FPMNameToFPM=nil then exit;
+    if FPMNameToFPM.Count<>Item.FPMNameToFPM.Count then exit;
+    Node1:=FPMNameToFPM.Tree.FindLowest;
+    Node2:=Item.FPMNameToFPM.Tree.FindLowest;
+    while Node1<>nil do begin
+      S2PItem1:=PStringToPointerTreeItem(Node1.Data);
+      S2PItem2:=PStringToPointerTreeItem(Node2.Data);
+      if S2PItem1^.Name<>S2PItem2^.Name then
+        exit;
+      if not TPCFPMFileState(S2PItem1^.Value).Equals(TPCFPMFileState(S2PItem2^.Value),true) then
+        exit;
+      Node1:=Node1.Successor;
+      Node2:=Node2.Successor;
+    end;
+  end;
+
   Result:=true;
 end;
 
 procedure TPCTargetConfigCache.Assign(Source: TPersistent);
 var
   Item: TPCTargetConfigCache;
+  Node: TAVLTreeNode;
+  FPM: TPCFPMFileState;
+  S2PItem: PStringToPointerTreeItem;
 
   procedure AssignStringTree(var Dest: TStringToStringTree; const Src: TStringToStringTree);
   begin
@@ -8050,6 +8207,32 @@ begin
     AssignStringList(UnitScopes,Item.UnitScopes);
     AssignStringTree(Units,Item.Units);
     AssignStringTree(Includes,Item.Includes);
+
+    FreeAndNil(UnitToFPM);
+    FreeAndNil(FPMNameToFPM);
+    if (Item.FPMNameToFPM<>nil) and (Item.UnitToFPM=nil) then begin
+      FPMNameToFPM:=TStringToPointerTree.Create(false);
+      FPMNameToFPM.FreeValues:=true;
+      UnitToFPM:=TStringToPointerTree.Create(false);
+      // clone TPCFPMFileState objects
+      Node:=Item.FPMNameToFPM.Tree.FindLowest;
+      while Node<>nil do begin
+        S2PItem:=PStringToPointerTreeItem(Node.Data);
+        FPM:=TPCFPMFileState.Create;
+        FPM.Name:=S2PItem^.Name;
+        FPM.Assign(TPCFPMFileState(S2PItem^.Value));
+        FPMNameToFPM[FPM.Name]:=FPM;
+        Node:=Node.Successor;
+      end;
+      // clone UnitToFPM
+      Node:=Item.UnitToFPM.Tree.FindLowest;
+      while Node<>nil do begin
+        S2PItem:=PStringToPointerTreeItem(Node.Data);
+        FPM:=TPCFPMFileState(FPMNameToFPM[TPCFPMFileState(S2PItem^.Value).Name]);
+        UnitToFPM[S2PItem^.Name]:=FPM;
+        Node:=Node.Successor;
+      end;
+    end;
 
     ErrorMsg:=Item.ErrorMsg;
     ErrorTranslatedMsg:=Item.ErrorTranslatedMsg;
@@ -8143,10 +8326,11 @@ var
   Cnt: integer;
   SubPath: String;
   DefineName, DefineValue: String;
-  s: String;
+  s, CurUnitName, CurFPMName: String;
   i: Integer;
   p: Integer;
   StartPos: Integer;
+  FPM: TPCFPMFileState;
 begin
   Clear;
 
@@ -8207,6 +8391,38 @@ begin
   // Files
   LoadFilesFor(Units,'Units/');
   LoadFilesFor(Includes,'Includes/');
+
+  // read FPMNameToFPM before UnitToFPM!
+  Cnt:=XMLConfig.GetValue(Path+'FPMs/Count',0);
+  if Cnt>0 then begin
+    FPMNameToFPM:=TStringToPointerTree.Create(false);
+    FPMNameToFPM.FreeValues:=true;
+    UnitToFPM:=TStringToPointerTree.Create(false);
+    for i:=1 to Cnt do begin
+      SubPath:=Path+'FPMs/Item'+IntToStr(i)+'/';
+      FPM:=TPCFPMFileState.Create;
+      FPM.Name:=XMLConfig.GetValue(SubPath+'Name','');
+      if FPM.Name='' then
+        FPM.Free
+      else
+        FPM.LoadFromXMLConfig(XMLConfig,SubPath);
+    end;
+  end;
+
+  // UnitToFPM
+  Cnt:=XMLConfig.GetValue(Path+'UnitToFPM/Count',0);
+  if UnitToFPM<>nil then begin
+    for i:=1 to Cnt do begin
+      SubPath:=Path+'UnitToFPM/Item'+IntToStr(i)+'/';
+      CurUnitName:=XMLConfig.GetValue(SubPath+'Unit','');
+      if CurUnitName='' then continue;
+      CurFPMName:=XMLConfig.GetValue(SubPath+'FPM','');
+      if CurFPMName='' then continue;
+      FPM:=TPCFPMFileState(FPMNameToFPM[CurFPMName]);
+      if FPM=nil then exit;
+      UnitToFPM[CurUnitName]:=FPM;
+    end;
+  end;
 end;
 
 procedure TPCTargetConfigCache.SaveToXMLConfig(XMLConfig: TXMLConfig;
@@ -8296,9 +8512,11 @@ procedure TPCTargetConfigCache.SaveToXMLConfig(XMLConfig: TXMLConfig;
 var
   Node: TAVLTreeNode;
   Item: PStringToStringItem;
-  Cnt: Integer;
+  Cnt, i: Integer;
   SubPath: String;
   s: String;
+  S2PItem: PStringToPointerTreeItem;
+  FPM: TPCFPMFileState;
 begin
   XMLConfig.SetDeleteValue(Path+'Kind',PascalCompilerNames[Kind],PascalCompilerNames[pcFPC]);
   XMLConfig.SetDeleteValue(Path+'TargetOS',TargetOS,'');
@@ -8357,6 +8575,39 @@ begin
   // Files
   SaveFilesFor(Units, 'Units/');
   SaveFilesFor(Includes, 'Includes/');
+
+  // UnitToFPM
+  if UnitToFPM<>nil then begin
+    // write as UnitToFPM/Item<i>/Unit,FPM
+    i:=0;
+    Node:=UnitToFPM.Tree.FindLowest;
+    while Node<>nil do begin
+      inc(i);
+      SubPath:=Path+'UnitToFPM/Item'+IntToStr(i)+'/';
+      S2PItem:=PStringToPointerTreeItem(Node.Data);
+      XMLConfig.SetValue(SubPath+'Unit',S2PItem^.Name);
+      FPM:=TPCFPMFileState(S2PItem^.Value);
+      XMLConfig.SetValue(SubPath+'FPM',FPM.Name);
+      Node:=Node.Successor;
+    end;
+    XMLConfig.SetDeleteValue(Path+'UnitToFPM/Count',i,0);
+  end;
+
+  // FPMNameToFPM
+  if FPMNameToFPM<>nil then begin
+    // write as FPMs/Item<i>/
+    i:=0;
+    Node:=FPMNameToFPM.Tree.FindLowest;
+    while Node<>nil do begin
+      inc(i);
+      SubPath:=Path+'FPMs/Item'+IntToStr(i)+'/';
+      S2PItem:=PStringToPointerTreeItem(Node.Data);
+      FPM:=TPCFPMFileState(S2PItem^.Value);
+      FPM.SaveToXMLConfig(XMLConfig,SubPath);
+      Node:=Node.Successor;
+    end;
+    XMLConfig.SetDeleteValue(Path+'FPMs/Count',i,0);
+  end;
 end;
 
 procedure TPCTargetConfigCache.LoadFromFile(Filename: string);
@@ -8555,7 +8806,8 @@ begin
           ConfigFiles.Add(Filename,CfgFileExists,CfgFileDate);
         end;
       // gather all units and include files in search paths
-      GatherUnitsInSearchPaths(UnitPaths,IncludePaths,OnProgress,Units,Includes,true);
+      GatherUnitsInSearchPaths(UnitPaths,IncludePaths,OnProgress,Units,Includes);
+      GatherUnitsInFPMSources(Units,UnitToFPM,FPMNameToFPM,OnProgress);
       //if Kind=pcPas2js then begin
       //  debugln(['TPCTargetConfigCache.Update Units:']);
       //  for e in Units do

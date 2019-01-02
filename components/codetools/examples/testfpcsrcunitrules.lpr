@@ -30,7 +30,7 @@ program TestFPCSrcUnitRules;
 uses
   Classes, SysUtils, CustApp, Laz_AVL_Tree,
   // LazUtils
-  LazFileUtils, AvgLvlTree,
+  LazFileUtils, AvgLvlTree, LazLogger,
   // CodeTools
   FileProcs, CodeToolManager, DefineTemplates, CodeToolsConfig;
 
@@ -71,9 +71,11 @@ var
   UnitSet: TFPCUnitSetCache;
   ConfigCache: TPCTargetConfigCache;
   Options: TCodeToolsOptions;
+  Rescan: Boolean;
+  SourceCache: TFPCSourceCache;
 begin
   // quick check parameters
-  ErrorMsg:=CheckOptions('hc:T:P:F:u:','help compiler: targetos: targetcpu: fpcsrcdir: checkunit:');
+  ErrorMsg:=CheckOptions('hc:T:P:F:u:','help compiler: targetos: targetcpu: fpcsrcdir: checkunit: rescan');
   if ErrorMsg<>'' then begin
     ShowException(Exception.Create(ErrorMsg));
     Terminate;
@@ -102,6 +104,7 @@ begin
   FPCSrcDir:=GetOptionValue('F','fpcsrcdir');
   FPCSrcDir:=CleanAndExpandDirectory(FPCSrcDir);
   CheckUnitName:=GetOptionValue('u','checkunit');
+  Rescan:=HasOption('rescan');
 
   if not FileExistsUTF8(CompilerFilename) then
     Error('compiler file not found: '+CompilerFilename,false);
@@ -110,8 +113,12 @@ begin
 
   Options:=TCodeToolsOptions.Create;
   Options.InitWithEnvironmentVariables;
-  if FileExistsUTF8(ConfigFilename) then
+  if FileExistsUTF8(ConfigFilename) then begin
+    writeln('loading ',ConfigFilename);
     Options.LoadFromFile(ConfigFilename);
+  end else begin
+    writeln('no config yet: ',ConfigFilename);
+  end;
   Options.FPCPath:=CompilerFilename;
   Options.FPCOptions:='';
   Options.TargetOS:=TargetOS;
@@ -124,11 +131,17 @@ begin
                                           TargetOS,TargetCPU,'',FPCSrcDir,true);
   UnitSet.Init;
 
+  //writeln('saving ',ConfigFilename);
   Options.SaveToFile(ConfigFilename);
   Options.Free;
 
   ConfigCache:=UnitSet.GetConfigCache(false);
-  writeln('FPCSrcDir=',UnitSet.FPCSourceDirectory);
+  if Rescan then begin
+    ConfigCache.Clear;
+    SourceCache:=UnitSet.GetSourceCache(false);
+    SourceCache.Clear;
+    UnitSet.GetUnitToSourceTree(true);
+  end;
   WriteCompilerInfo(ConfigCache);
   WriteNonExistingPPUPaths(ConfigCache);
   WriteDuplicatesInPPUPath(ConfigCache);
@@ -174,6 +187,8 @@ begin
   writeln;
   writeln('  -u <unit name>, --checkunit=<unit name>');
   writeln('         Write a detailed report about this unit.');
+  writeln;
+  writeln('  --rescan  rescan compiler and FPC sources for this combination');
 end;
 
 procedure TTestFPCSourceUnitRules.Error(Msg: string; DoWriteHelp: Boolean);
@@ -410,6 +425,7 @@ var
   SourceCache: TFPCSourceCache;
   aTree: TStringToStringTree;
   SrcRules: TFPCSourceRules;
+  FPM: TPCFPMFileState;
 begin
   writeln;
   writeln('Unit report for ',AnUnitName);
@@ -426,13 +442,28 @@ begin
   else
     writeln('  in PPU search path: ',PPUFile);
 
+  // search in FPC sources
   SourceCache:=UnitSet.GetSourceCache(false);
   SrcRules:=UnitSet.GetSourceRules(false);
   if SourceCache.Files<>nil then begin
     aTree:=GatherUnitsInFPCSources(SourceCache.Files,
       ConfigCache.RealTargetOS,ConfigCache.RealTargetCPU,nil,
       SrcRules,AnUnitName);
+    if (aTree=nil) or (aTree.Count=0) then
+      writeln('  WARNING: no units in FPC sources: ',SourceCache.Directory)
+    else
+      writeln('  in FPC source dir: ',aTree[AnUnitName]);
     aTree.Free;
+  end else
+    writeln('  WARNING: no files in FPC sources: ',SourceCache.Directory);
+
+  // search in FPM
+  if ConfigCache.UnitToFPM<>nil then begin
+    FPM:=TPCFPMFileState(ConfigCache.UnitToFPM[AnUnitName]);
+    if FPM<>nil then begin
+      writeln('  in fpm: ',FPM.Name,' File=',FPM.FPMFilename);
+      writeln('  fpm source: ',FPM.UnitToSrc[AnUnitName]);
+    end;
   end;
 end;
 
