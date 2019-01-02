@@ -69,7 +69,7 @@ type
     procedure SetDisableI18NForLFM(AValue: boolean); virtual;
     procedure SetFileType(const AValue: TPkgFileType); virtual;
   public
-    constructor Create; virtual;
+    constructor Create;
     destructor Destroy; override;
     function GetOptionsInstanceOf(OptionsClass: TAbstractPackageFileIDEOptionsClass): TAbstractPackageFileIDEOptions;
     property LazPackage: TIDEPackage read GetIDEPackage;

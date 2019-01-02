@@ -3367,8 +3367,6 @@ var
   AGroupCaption: string;
   ACaption: string;
   ItemTabSheet: TTabSheet;
-  GroupPageControl: TPageControl;
-  GroupGroupBox: TGroupBox;
 begin
   IDEEditorGroups.Resort;
 
