@@ -1147,6 +1147,10 @@ resourcestring
   lisSaveAllChecked = 'Save All Checked';
   lisActivate = 'Activate';
   lisActivateSelected = 'Activate Selected';
+  lisFppkgInitializeFailedCaption = 'Failed to initialize Fppkg';
+  lisFppkgInitializeFailed =
+    'An error occured during the initialization of Fppkg: %s.' + sLineBreak +
+    'Check your Fppkg configuration and restart Lazarus to be able to use Fppkg''s functionality.';
 
   // hints
   lisHintSaveAll = 'Save all';

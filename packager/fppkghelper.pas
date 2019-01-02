@@ -10,7 +10,10 @@ uses
   {$IFNDEF VER3_0}
   pkgFppkg,
   {$ENDIF VER3_0}
-  fprepos;
+  fprepos,
+  Dialogs,
+  IDEDialogs,
+  LazarusIDEStrConsts;
 
 type
 
@@ -54,18 +57,23 @@ var
 begin
   FPpkg := TpkgFPpkg.Create(nil);
   try
-    FPpkg.InitializeGlobalOptions('');
-    FPpkg.InitializeCompilerOptions;
+    try
+      FPpkg.InitializeGlobalOptions('');
+      FPpkg.InitializeCompilerOptions;
 
-    FPpkg.CompilerOptions.CheckCompilerValues;
-    FPpkg.FpmakeCompilerOptions.CheckCompilerValues;
+      FPpkg.CompilerOptions.CheckCompilerValues;
+      FPpkg.FpmakeCompilerOptions.CheckCompilerValues;
 
-    FPpkg.LoadLocalAvailableMirrors;
+      FPpkg.LoadLocalAvailableMirrors;
 
-    FPpkg.ScanPackages;
+      FPpkg.ScanPackages;
 
-    FFPpkg := FPpkg;
-    FPpkg := nil;
+      FFPpkg := FPpkg;
+      FPpkg := nil;
+    except
+      on E: Exception do
+        IDEMessageDialog(lisFppkgInitializeFailed, Format(lisFppkgInitializeFailed, [E.Message]), mtWarning, [mbOK]);
+    end;
   finally
     FPpkg.Free;
   end;
@@ -128,6 +136,8 @@ var
 {$ENDIF VER3_0}
 begin
 {$IFNDEF VER3_0}
+  if not Assigned(FFPpkg) then
+    Exit;
   for I := 0 to FFPpkg.RepositoryList.Count -1 do
     begin
     Repository := FFPpkg.RepositoryList.Items[I] as TFPRepository;
@@ -150,6 +160,11 @@ var
 {$ENDIF VER3_0}
 begin
 {$IFNDEF VER3_0}
+  if not Assigned(FFPpkg) then
+    begin
+    Result := '';
+    Exit;
+    end;
   FppkgPackage := FFPpkg.FindPackage(PackageName, pkgpkInstalled);
   if Assigned(FppkgPackage) then
     begin
@@ -197,6 +212,12 @@ begin
   {$ENDIF FPC_FULLVERSION>30100}
 
   {$IF FPC_FULLVERSION>30100}
+  if not Assigned(FFPpkg) then
+    begin
+    Result := [];
+    Exit;
+    end;
+
   FppkgPackage := FFPpkg.FindPackage(PackageName, pkgpkInstalled);
   if Assigned(FppkgPackage) then
     begin
@@ -230,7 +251,7 @@ end;
 
 function TFppkgHelper.IsProperyConfigured: Boolean;
 begin
-  if FIsProperlyConfigured=fpcUnknown then
+  if Assigned(FFPpkg) and (FIsProperlyConfigured=fpcUnknown) then
     begin
     FIsProperlyConfigured := fpcYes;
     if not HasPackage('rtl') then
