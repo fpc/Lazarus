@@ -8408,6 +8408,7 @@ begin
         FPM.Free
       else
         FPM.LoadFromXMLConfig(XMLConfig,SubPath);
+      FPMNameToFPM[FPM.Name]:=FPM;
     end;
   end;
 
