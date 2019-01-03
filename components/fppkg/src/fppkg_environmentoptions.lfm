@@ -1,0 +1,34 @@
+object FppkgEnvironmentOptionsFrame: TFppkgEnvironmentOptionsFrame
+  Left = 0
+  Height = 94
+  Top = 0
+  Width = 436
+  ClientHeight = 94
+  ClientWidth = 436
+  ParentFont = False
+  TabOrder = 0
+  DesignLeft = 2988
+  DesignTop = 870
+  object cbInstallDependencies: TCheckBox
+    Left = 10
+    Height = 40
+    Top = 10
+    Width = 416
+    Align = alTop
+    BorderSpacing.Around = 10
+    Caption = 'Install FPMake dependencies on compilation'
+    ParentFont = False
+    TabOrder = 0
+  end
+  object cbUseFPMakeWhenPossible: TCheckBox
+    Left = 10
+    Height = 40
+    Top = 60
+    Width = 416
+    Align = alTop
+    BorderSpacing.Around = 10
+    Caption = 'Use FPMake when possible'
+    ParentFont = False
+    TabOrder = 1
+  end
+end
