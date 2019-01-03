@@ -431,7 +431,10 @@ end;
 function TDbgCallstackEntry.GetSymbol: TFpDbgSymbol;
 begin
   if not FIsSymbolResolved then begin
-    FSymbol := FThread.Process.FindSymbol(FAnAddress);
+    if FIndex > 0 then
+      FSymbol := FThread.Process.FindSymbol(FAnAddress - 1) // -1 => inside the call instruction
+    else
+      FSymbol := FThread.Process.FindSymbol(FAnAddress);
     FIsSymbolResolved := FSymbol <> nil
   end;
   result := FSymbol;
