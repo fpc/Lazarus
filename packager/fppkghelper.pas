@@ -37,7 +37,7 @@ type
     function HasPackage(const PackageName: string): Boolean;
     procedure ListPackages(AList: TStringList);
     function GetPackageUnitPath(const PackageName: string): string;
-    function IsProperyConfigured: Boolean;
+    function IsProperlyConfigured: Boolean;
     // Temporary solution, because fpc 3.2.0 does not has support for package-variants
     // in TFPPackage
     function GetPackageVariantArray(const PackageName: string): TFppkgPackageVariantArray;
@@ -102,7 +102,7 @@ end;
 function TFppkgHelper.HasPackage(const PackageName: string): Boolean;
 begin
 {$IFNDEF VER3_0}
-  if IsProperyConfigured then
+  if IsProperlyConfigured() then
     begin
     Result :=
       Assigned(FFPpkg.FindPackage(PackageName,pkgpkInstalled)) or
@@ -249,14 +249,16 @@ begin
   {$ENDIF FPC_FULLVERSION>30100}
 end;
 
-function TFppkgHelper.IsProperyConfigured: Boolean;
+function TFppkgHelper.IsProperlyConfigured: Boolean;
 begin
+  {$IF FPC_FULLVERSION>30100}
   if Assigned(FFPpkg) and (FIsProperlyConfigured=fpcUnknown) then
     begin
     FIsProperlyConfigured := fpcYes;
     if not HasPackage('rtl') then
       FIsProperlyConfigured := fpcNo;
     end;
+  {$ENDIF FPC_FULLVERSION>30100}
   result := FIsProperlyConfigured=fpcYes;
 end;
 
