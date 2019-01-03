@@ -3301,7 +3301,9 @@ begin
                 if (AnAction.Option <> emcoSelectionContinue) or (not SelAvail) then
                   FBlockSelection.StartLineBytePos := FCaret.LineBytePos;
                 FBlockSelection.ActiveSelectionMode := smLine;
+                FBlockSelection.AutoExtend := True;
                 FBlockSelection.ForceSingleLineSelected := True;
+                FBlockSelection.AutoExtend := AnAction.Option = emcoSelectionContinue;
               end;
             emcStartSelectTokens, emcStartSelectWords, emcStartSelectLines: begin
                 FMouseSelectionCmd := ACommand;

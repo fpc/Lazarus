@@ -2272,7 +2272,8 @@ begin
     Value.y := MinMax(Value.y, 1, fLines.Count);
 
     // ensure folded block at bottom line is in selection
-    if (ActiveSelectionMode = smLine) and (FFoldedView <> nil)
+    if (ActiveSelectionMode = smLine) and (FFoldedView <> nil) and
+       (FAutoExtend or FStickyAutoExtend)
     then begin
       if ( (FStartLinePos > Value.y) or
            ( (FStartLinePos = Value.y) and (FStartBytePos > Value.x) )
@@ -2351,7 +2352,7 @@ begin
   if WasAvail <> SelAvail then begin
     // ensure folded block at bottom line is in selection
     // only when selection is new (WasAvail = False)
-    if SelAvail then begin
+    if SelAvail and (FAutoExtend or FStickyAutoExtend) then begin
       if IsBackwardSel then
         FStartLinePos := TSynEditFoldedView(FFoldedView).TextPosAddLines(FStartLinePos, 1) - 1
       else
