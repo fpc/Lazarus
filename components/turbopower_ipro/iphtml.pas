@@ -10152,15 +10152,19 @@ var
   h: Integer;
   elem: PIpHtmlElement;
 begin
+  h := 0;
+  (*      // wp: is there any reason why h should be > 0 for other node types?
   if (ParentNode is TIpHtmlNodeP) or
      (ParentNode is TIpHtmlNodeDIV) or
      (ParentNode is TIpHtmlNodeLI) or
 //     (ParentNode is TIpHtmlNodePRE) or
-     (ParentNode is TIpHtmlNodeHeader)
+     (ParentNode is TIpHtmlNodeHeader) or
+     (ParentNode is TIpHtmlNodeBody)
   then
     h := 0
   else
     h := Props.FontSize;
+  *)
 
   case Clear of
     hbcNone :
