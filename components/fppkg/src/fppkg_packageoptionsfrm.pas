@@ -76,6 +76,7 @@ type
     function GetCurrentPackageVariant: TFppkgPackageVariant;
     function GetCurrentPackageVariantItem: TFppkgPackageVariantItem;
     procedure seCompilerOptionsChange(Sender: TObject);
+    procedure cbBuildMethodChange(Sender: TObject);
   protected
     FModified: Boolean;
     FPackageVariantList: TFppkgPackageVariantList;
@@ -445,6 +446,11 @@ begin
   FPackageVariantList.Free;
   FPackageList.Free;
   inherited Destroy;
+end;
+
+procedure TFppkgPackageOptionsFrm.cbBuildMethodChange(Sender: TObject);
+begin
+  FModified := True;
 end;
 
 initialization
