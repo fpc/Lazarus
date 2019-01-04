@@ -2159,6 +2159,7 @@ begin
   FBlockSelection.Caret := FCaret;
   FBlockSelection.InvalidateLinesMethod := @InvalidateLines;
   FBlockSelection.AddChangeHandler(@DoBlockSelectionChanged);
+  FBlockSelection.{%H-}FoldedView := FFoldedLinesView;
 
   FInternalBlockSelection := TSynEditSelection.Create(FTheLinesView, False);
   FInternalBlockSelection.InvalidateLinesMethod := @InvalidateLines;
@@ -3300,7 +3301,9 @@ begin
                 if (AnAction.Option <> emcoSelectionContinue) or (not SelAvail) then
                   FBlockSelection.StartLineBytePos := FCaret.LineBytePos;
                 FBlockSelection.ActiveSelectionMode := smLine;
+                FBlockSelection.AutoExtend := True;
                 FBlockSelection.ForceSingleLineSelected := True;
+                FBlockSelection.AutoExtend := AnAction.Option = emcoSelectionContinue;
               end;
             emcStartSelectTokens, emcStartSelectWords, emcStartSelectLines: begin
                 FMouseSelectionCmd := ACommand;
