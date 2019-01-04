@@ -581,7 +581,7 @@ begin
   if (AValue < -1) or (AValue >= PageCount) then Exit;
   //debugln('TCustomTabControl.SetPageIndex A ',dbgsName(Self),' AValue=',dbgs(AValue),' fPageIndex=',dbgs(fPageIndex),' PageCount=',dbgs(PageCount),' HandleAllocated=',dbgs(HandleAllocated),' ',dbgs(ComponentState));
   if FPageIndex = AValue then exit;
-  if not CanChangePageIndex then exit;
+  if (nboDoChangeOnSetIndex in Options) and (not CanChangePageIndex) then exit;  //Delphi does not call CanChange either
   //debugln('TCustomTabControl.SetPageIndex B ',dbgsName(Self),' AValue=',dbgs(AValue),' fPageIndex=',dbgs(fPageIndex),' PageCount=',dbgs(PageCount),' HandleAllocated=',dbgs(HandleAllocated));
 
   InternalSetPageIndex(AValue);
