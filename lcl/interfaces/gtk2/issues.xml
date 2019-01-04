@@ -15,6 +15,9 @@
 		<issue name="TEdit.HideSelection">
 			<short>HideSelection property is not supported</short>
 		</issue>
+		<issue name="TEdit.NumbersOnly">
+			<short>NumbersOnly property is not supported</short>
+		</issue>
 		<issue name="TForm.BorderStyle">
 			<short>Not supported for nested Forms</short>
 			<descr>If you put a form onto another it will have no window borders or title</descr>
