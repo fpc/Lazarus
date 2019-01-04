@@ -1831,7 +1831,7 @@ var
   Instr: TLldbInstructionRegister;
 begin
   // TODO: store thread/frame when command is created
-  Instr := TLldbInstructionRegister.Create(Debugger.FCurrentThreadId, Debugger.FCurrentStackFrame);
+  Instr := TLldbInstructionRegister.Create(FRegisters.ThreadId, FRegisters.StackFrame);
   Instr.OnFinish := @RegisterInstructionFinished;
   QueueInstruction(Instr);
   Instr.ReleaseReference;
