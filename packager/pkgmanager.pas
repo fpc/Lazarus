@@ -259,6 +259,7 @@ type
     function FindPackageWithName(const PkgName: string; IgnorePackage: TIDEPackage = nil): TIDEPackage; override;
     function FindInstalledPackageWithUnit(const AnUnitName: string
       ): TIDEPackage; override;
+    function IsPackageInstalled(const PkgName: string): TIDEPackage; override;
     function IsOwnerDependingOnPkg(AnOwner: TObject; const PkgName: string;
                                    out DependencyOwner: TObject): boolean; override;
     procedure GetRequiredPackages(AnOwner: TObject; out PkgList: TFPList;
@@ -4167,6 +4168,16 @@ begin
     Result:=nil
   else
     Result:=PkgFile.LazPackage;
+end;
+
+function TPkgManager.IsPackageInstalled(const PkgName: string): TIDEPackage;
+var
+  LazPackage: TLazPackage;
+begin
+  Result := nil;
+  LazPackage:=PackageGraph.FindPackageWithName(PkgName, nil);
+  if (LazPackage<>nil) and (LazPackage.Installed<>pitNope) then
+    Result:=LazPackage
 end;
 
 function TPkgManager.RedirectPackageDependency(APackage: TIDEPackage): TIDEPackage;
