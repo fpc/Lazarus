@@ -9790,6 +9790,16 @@ msgstr "Nom du paquet FPDoc. Par défaut, il s'agit du nom du fichier de projet.
 msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
 msgstr "Il y a une erreur de syntaxe dans l'élément FPDoc \"%s\":%s%s"
 
+#: lazarusidestrconsts.lisfppkginitializefailed
+msgid ""
+"An error occurred during the initialization of Fppkg: %s.\n"
+"Check your Fppkg configuration and restart Lazarus to be able to use Fppkg's functionality.\n"
+msgstr ""
+
+#: lazarusidestrconsts.lisfppkginitializefailedcaption
+msgid "Failed to initialize Fppkg"
+msgstr ""
+
 #: lazarusidestrconsts.lisframe
 msgid "Frame"
 msgstr "Cadre"

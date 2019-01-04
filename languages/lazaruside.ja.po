@@ -9884,6 +9884,16 @@ msgstr "FPDocパッケージ名。デフォルトではプロジェクトファ�
 msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
 msgstr "FPDoc要素\"%s\"に表記法エラーがあります:%s%s"
 
+#: lazarusidestrconsts.lisfppkginitializefailed
+msgid ""
+"An error occurred during the initialization of Fppkg: %s.\n"
+"Check your Fppkg configuration and restart Lazarus to be able to use Fppkg's functionality.\n"
+msgstr ""
+
+#: lazarusidestrconsts.lisfppkginitializefailedcaption
+msgid "Failed to initialize Fppkg"
+msgstr ""
+
 #: lazarusidestrconsts.lisframe
 msgid "Frame"
 msgstr "フレーム"

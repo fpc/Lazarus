@@ -9993,6 +9993,16 @@ msgstr "FPDoc paket adı, varsayılan proje dosyası adıdır."
 msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
 msgstr "Fpdoc öğesinde \" %s \\ \"bir sözdizimi hatası var: %s %s"
 
+#: lazarusidestrconsts.lisfppkginitializefailed
+msgid ""
+"An error occurred during the initialization of Fppkg: %s.\n"
+"Check your Fppkg configuration and restart Lazarus to be able to use Fppkg's functionality.\n"
+msgstr ""
+
+#: lazarusidestrconsts.lisfppkginitializefailedcaption
+msgid "Failed to initialize Fppkg"
+msgstr ""
+
 #: lazarusidestrconsts.lisframe
 msgid "Frame"
 msgstr "Çerçeve"

@@ -9791,6 +9791,16 @@ msgstr "Назва пакунка FPDoc. Типовим є назва файлу
 msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
 msgstr "Є синтаксична помилка  в елементі fpdoc \"%s\":%s%s"
 
+#: lazarusidestrconsts.lisfppkginitializefailed
+msgid ""
+"An error occurred during the initialization of Fppkg: %s.\n"
+"Check your Fppkg configuration and restart Lazarus to be able to use Fppkg's functionality.\n"
+msgstr ""
+
+#: lazarusidestrconsts.lisfppkginitializefailedcaption
+msgid "Failed to initialize Fppkg"
+msgstr ""
+
 #: lazarusidestrconsts.lisframe
 msgid "Frame"
 msgstr "Фрейм"

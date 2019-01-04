@@ -10113,6 +10113,16 @@ msgstr "FPDoc包名称.默认是工程文件名称."
 msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
 msgstr "XML语法错误在文件\"%s\": %s"
 
+#: lazarusidestrconsts.lisfppkginitializefailed
+msgid ""
+"An error occurred during the initialization of Fppkg: %s.\n"
+"Check your Fppkg configuration and restart Lazarus to be able to use Fppkg's functionality.\n"
+msgstr ""
+
+#: lazarusidestrconsts.lisfppkginitializefailedcaption
+msgid "Failed to initialize Fppkg"
+msgstr ""
+
 #: lazarusidestrconsts.lisframe
 msgid "Frame"
 msgstr "框架(Frame)"

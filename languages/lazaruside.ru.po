@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-12-31 01:37+0300\n"
+"PO-Revision-Date: 2019-01-04 16:33+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -9785,6 +9785,18 @@ msgstr "Имя пакета FPDoc. По умолчанию использует�
 #: lazarusidestrconsts.lisfpdocthereisasyntaxerrorinthefpdocelement
 msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
 msgstr "В элементе FPDoc \"%s\" имеется синтаксическая ошибка:%s%s"
+
+#: lazarusidestrconsts.lisfppkginitializefailed
+msgid ""
+"An error occurred during the initialization of Fppkg: %s.\n"
+"Check your Fppkg configuration and restart Lazarus to be able to use Fppkg's functionality.\n"
+msgstr ""
+"Произошла ошибка при инициализации Fppkg: %s.\n"
+"Чтобы иметь возможность использовать Fppkg, проверьте корректность его параметров и перезапустите Lazarus.\n"
+
+#: lazarusidestrconsts.lisfppkginitializefailedcaption
+msgid "Failed to initialize Fppkg"
+msgstr "Не удалось инициализировать Fppkg"
 
 #: lazarusidestrconsts.lisframe
 msgid "Frame"
