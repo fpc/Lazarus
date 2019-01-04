@@ -1215,7 +1215,7 @@ begin
   end;
 
   s := CallStack.CurrentCallStackList.EntriesForThreads[AThreadId];
-  if s = nil then begin
+  if (s = nil) or (AStackFrame >= s.Count) then begin
     DebugLn(DBG_ERRORS, ['NO Stackframe list for thread']);
     exit;
   end;
