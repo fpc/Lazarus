@@ -1,12 +1,12 @@
 msgid ""
 msgstr ""
-"Last-Translator: Janusz Tomczak\n"
-"PO-Revision-Date: 2018-02-23 15:27+0100\n"
+"Last-Translator: Sławomir Niedziela <slniedz@poczta.onet.pl>\n"
+"PO-Revision-Date: 2018-12-25 15:44+0100\n"
 "Project-Id-Version: lclstrconsts\n"
 "Language-Team: \n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 2.2\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "POT-Creation-Date: \n"
 "MIME-Version: 1.0\n"
@@ -14,7 +14,7 @@ msgstr ""
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
 msgid "Browser \"%s\" not executable."
-msgstr "Przeglądarka \"%s\" jest niewykonywalna."
+msgstr "Przeglądarka \"%s\" nie jest plikiem wykonywalnym."
 
 #: lclstrconsts.hhshelpbrowsernotfound
 msgid "Browser \"%s\" not found."
@@ -42,11 +42,11 @@ msgstr "Makro %s w przeglądarce BrowserParams zostanie zastąpione przez URL."
 
 #: lclstrconsts.ifsalt
 msgid "Alt"
-msgstr "klawisz Alt"
+msgstr "Alt"
 
 #: lclstrconsts.ifsctrl
 msgid "Ctrl"
-msgstr "klawisz Ctrl"
+msgstr "Ctrl"
 
 #: lclstrconsts.ifsvk_cmd
 msgid "Cmd"
@@ -63,7 +63,7 @@ msgstr "Meta"
 
 #: lclstrconsts.ifsvk_shift
 msgid "Shift"
-msgstr "klawisz Shift"
+msgstr "Shift"
 
 #: lclstrconsts.ifsvk_super
 msgid "Super"
@@ -120,7 +120,7 @@ msgstr "Pulpit"
 
 #: lclstrconsts.rsbackward
 msgid "Backward"
-msgstr "W górę"
+msgstr "Wstecz"
 
 #: lclstrconsts.rsbitmaps
 msgid "Bitmaps"
@@ -352,11 +352,11 @@ msgstr "Pierwszy"
 
 #: lclstrconsts.rsfixedcolstoobig
 msgid "FixedCols can't be > ColCount"
-msgstr "FixedCols nie może być >= ColCount"
+msgstr "FixedCols nie może być > ColCount"
 
 #: lclstrconsts.rsfixedrowstoobig
 msgid "FixedRows can't be > RowCount"
-msgstr "FixedRows nie może być >= RowCount"
+msgstr "FixedRows nie może być > RowCount"
 
 #: lclstrconsts.rsformcolorcaption
 msgid "Form"
@@ -372,7 +372,7 @@ msgstr "Błąd przy zapisie formularza do strumienia  \"%s\": %s"
 
 #: lclstrconsts.rsforward
 msgid "Forward"
-msgstr "W przód"
+msgstr "Do przodu"
 
 #: lclstrconsts.rsfuchsiacolorcaption
 msgid "Fuchsia"
@@ -424,11 +424,11 @@ msgstr "Plik siatki nie istnieje"
 
 #: lclstrconsts.rsgridhasnocols
 msgid "Cannot insert rows into a grid when it has no columns"
-msgstr "Nie można wstawić wierszy do siatki, gdy nie ma kolumn"
+msgstr "Nie można wstawić wierszy do siatki gdy nie ma kolumn"
 
 #: lclstrconsts.rsgridhasnorows
 msgid "Cannot insert columns into a grid when it has no rows"
-msgstr "Nie można wstawić kolumn do siatki, gdy nie ma wierszy"
+msgstr "Nie można wstawić kolumn do siatki gdy nie ma wierszy"
 
 #: lclstrconsts.rsgridindexoutofrange
 msgid "Grid index out of range."
@@ -483,7 +483,6 @@ msgid "--sync                Call XSynchronize (display, True) after the Xserver
 msgstr "--sync                Wywołaj XSynchronize (display, True) Po połączeniu z serwerem X. To ułatwia odpluskwianie protokołu X, ponieważ buforowanie żądań X będzie wyłączone i błędy X będą odbierane natychmiast po przetworzeniu przez serwer X żądania, które spowodowało błąd."
 
 #: lclstrconsts.rshelp
-#, fuzzy
 msgctxt "lclstrconsts.rshelp"
 msgid "Help"
 msgstr "Pomoc"
@@ -758,7 +757,7 @@ msgstr "Tak na &wszystkie"
 
 #: lclstrconsts.rsmedgraycolorcaption
 msgid "Medium Gray"
-msgstr "Średni szay"
+msgstr "Średni szary"
 
 #: lclstrconsts.rsmenubarcolorcaption
 msgid "Menu Bar"
@@ -783,7 +782,7 @@ msgstr " zmodyfikowany "
 
 #: lclstrconsts.rsmoneygreencolorcaption
 msgid "Money Green"
-msgstr "Zieleń Pieniądza"
+msgstr "Zieleń pieniądza"
 
 #: lclstrconsts.rsmtauthentication
 msgid "Authentication"
@@ -795,7 +794,7 @@ msgstr "Potwierdzenie"
 
 #: lclstrconsts.rsmtcustom
 msgid "Custom"
-msgstr "Inny"
+msgstr "Własny"
 
 #: lclstrconsts.rsmterror
 msgctxt "lclstrconsts.rsmterror"
@@ -841,23 +840,23 @@ msgstr "Wybierz datę"
 
 #: lclstrconsts.rspixmap
 msgid "Pixmap"
-msgstr "format Pixmap"
+msgstr "Pixmap"
 
 #: lclstrconsts.rsportablebitmap
 msgid "Portable BitMap"
-msgstr "format Portable BitMap"
+msgstr "Portable BitMap"
 
 #: lclstrconsts.rsportablegraymap
 msgid "Portable GrayMap"
-msgstr "format Portable GrayMap"
+msgstr "Portable GrayMap"
 
 #: lclstrconsts.rsportablenetworkgraphic
 msgid "Portable Network Graphic"
-msgstr "format Portable Network Graphic (PNG)"
+msgstr "Portable Network Graphic (PNG)"
 
 #: lclstrconsts.rsportablepixmap
 msgid "Portable PixMap"
-msgstr "format Portable PixMap"
+msgstr "Portable PixMap"
 
 #: lclstrconsts.rspostrecordhint
 msgid "Post"
@@ -1007,11 +1006,11 @@ msgstr "Nie znaleziono zasobu: %s"
 
 #: lclstrconsts.rsscrollbarcolorcaption
 msgid "ScrollBar"
-msgstr "Pasek Przewijania (ScrollBar)"
+msgstr "Pasek przewijania (ScrollBar)"
 
 #: lclstrconsts.rsscrollbaroutofrange
 msgid "ScrollBar property out of range"
-msgstr "Właściwość Paska Przewijania (ScrollBar) poza zakresem"
+msgstr "Właściwość paska przewijania (ScrollBar) poza zakresem"
 
 #: lclstrconsts.rsselectcolortitle
 msgid "Select color"
@@ -1051,7 +1050,7 @@ msgstr ""
 
 #: lclstrconsts.rstiff
 msgid "Tagged Image File Format"
-msgstr "format Tagged Image File Format (TIFF)"
+msgstr "Tagged Image File Format (TIFF)"
 
 #: lclstrconsts.rstpanelaccessibilitydescription
 msgctxt "lclstrconsts.rstpanelaccessibilitydescription"
@@ -1206,47 +1205,49 @@ msgstr "Alt+"
 
 #: lclstrconsts.smkcbksp
 msgid "BkSp"
-msgstr "klawisz BkSp"
+msgstr "BkSp"
 
 #: lclstrconsts.smkcctrl
 msgid "Ctrl+"
-msgstr "klawisz Ctrl+"
+msgstr "Ctrl+"
 
 #: lclstrconsts.smkcdel
 msgid "Del"
-msgstr "klawisz Del (Usuń)"
+msgstr "Del"
 
 #: lclstrconsts.smkcdown
 msgctxt "lclstrconsts.smkcdown"
 msgid "Down"
-msgstr "klawisz Down (w dół)"
+msgstr "W dół"
 
 #: lclstrconsts.smkcend
+#, fuzzy
 msgctxt "lclstrconsts.smkcend"
 msgid "End"
-msgstr "klawisz End (koniec)"
+msgstr "Klawisz End przenosi do najbliższego końca"
 
 #: lclstrconsts.smkcenter
 msgid "Enter"
-msgstr "klawisz Enter"
+msgstr "Enter"
 
 #: lclstrconsts.smkcesc
 msgid "Esc"
-msgstr "klawisz Esc"
+msgstr "Esc"
 
 #: lclstrconsts.smkchome
+#, fuzzy
 msgctxt "lclstrconsts.smkchome"
 msgid "Home"
-msgstr "klawisz Home (początek)"
+msgstr "Klawisz Home przenosi do najbliższego początku."
 
 #: lclstrconsts.smkcins
 msgid "Ins"
-msgstr "klawisz Ins (wstaw)"
+msgstr "Ins (wstaw)"
 
 #: lclstrconsts.smkcleft
 msgctxt "lclstrconsts.smkcleft"
 msgid "Left"
-msgstr "klawisz Left (w lewo)"
+msgstr "W lewo"
 
 #: lclstrconsts.smkcmeta
 msgid "Meta+"
@@ -1254,20 +1255,20 @@ msgstr "Meta+"
 
 #: lclstrconsts.smkcpgdn
 msgid "PgDn"
-msgstr "klawisz PgDn (strona w dół)"
+msgstr "PgDn (strona w dół)"
 
 #: lclstrconsts.smkcpgup
 msgid "PgUp"
-msgstr "klawisz PgUp (strona w górę)"
+msgstr "PgUp (strona w górę)"
 
 #: lclstrconsts.smkcright
 msgctxt "lclstrconsts.smkcright"
 msgid "Right"
-msgstr "klawisz Right (w prawo)"
+msgstr "W prawo"
 
 #: lclstrconsts.smkcshift
 msgid "Shift+"
-msgstr "klawisz Shift+"
+msgstr "Shift+"
 
 #: lclstrconsts.smkcspace
 msgid "Space"
@@ -1276,12 +1277,12 @@ msgstr "Spacja"
 #: lclstrconsts.smkctab
 msgctxt "lclstrconsts.smkctab"
 msgid "Tab"
-msgstr "klawisz Tab (tabulator)"
+msgstr "Tab (tabulator)"
 
 #: lclstrconsts.smkcup
 msgctxt "lclstrconsts.smkcup"
 msgid "Up"
-msgstr "klawisz Up (w górę)"
+msgstr "W górę"
 
 #: lclstrconsts.snotimers
 msgid "No timers available"

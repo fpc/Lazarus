@@ -1,17 +1,16 @@
 msgid ""
 msgstr ""
-"Last-Translator: Tomasz Wieckowski <tomek@ump.edu.pl>\n"
-"PO-Revision-Date: 2009-08-21 18:50+0100\n"
+"Last-Translator: Sławomir Niedziela <slniedz@poczta.onet.pl>\n"
+"PO-Revision-Date: 2018-12-27 19:46+0100\n"
 "Project-Id-Version: synedit\n"
 "Language-Team: \n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.3\n"
+"X-Generator: Poedit 2.2\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "POT-Creation-Date: \n"
 "MIME-Version: 1.0\n"
-"X-Poedit-Language: Polish\n"
-"X-Poedit-Country: POLAND\n"
+"Language: pl_PL\n"
 
 #: syneditstrconst.syns_attrannotation
 msgid "Annotation"
@@ -75,7 +74,7 @@ msgstr ""
 
 #: syneditstrconst.syns_attrclass
 msgid "Class"
-msgstr ""
+msgstr "Klasa"
 
 #: syneditstrconst.syns_attrcomment
 msgid "Comment"
@@ -83,7 +82,7 @@ msgstr "Komentarz"
 
 #: syneditstrconst.syns_attrcondition
 msgid "Condition"
-msgstr ""
+msgstr "Warunek"
 
 #: syneditstrconst.syns_attrdatatype
 msgid "Data type"
@@ -95,7 +94,7 @@ msgstr ""
 
 #: syneditstrconst.syns_attrdir
 msgid "Direction"
-msgstr ""
+msgstr "Kierunek"
 
 #: syneditstrconst.syns_attrdirective
 msgid "Directive"
@@ -139,7 +138,7 @@ msgstr ""
 
 #: syneditstrconst.syns_attrexception
 msgid "Exception"
-msgstr ""
+msgstr "Wyjątek"
 
 #: syneditstrconst.syns_attrflags
 msgid "Flags"
@@ -147,19 +146,19 @@ msgstr ""
 
 #: syneditstrconst.syns_attrfloat
 msgid "Float"
-msgstr ""
+msgstr "Float"
 
 #: syneditstrconst.syns_attrform
 msgid "Form"
-msgstr ""
+msgstr "Formatka"
 
 #: syneditstrconst.syns_attrfunction
 msgid "Function"
-msgstr ""
+msgstr "funkcja"
 
 #: syneditstrconst.syns_attrhexadecimal
 msgid "Hexadecimal"
-msgstr ""
+msgstr "Szesnastkowo"
 
 #: syneditstrconst.syns_attricon
 msgid "Icon reference"
@@ -171,7 +170,7 @@ msgstr ""
 
 #: syneditstrconst.syns_attridentifier
 msgid "Identifier"
-msgstr ""
+msgstr "Identyfikator"
 
 #: syneditstrconst.syns_attrillegalchar
 msgid "Illegal char"
@@ -179,7 +178,7 @@ msgstr ""
 
 #: syneditstrconst.syns_attrinclude
 msgid "Include"
-msgstr ""
+msgstr "Dołącz"
 
 #: syneditstrconst.syns_attrindirect
 msgid "Indirect"
@@ -195,7 +194,7 @@ msgstr ""
 
 #: syneditstrconst.syns_attrkey
 msgid "Key"
-msgstr ""
+msgstr "Klawisz"
 
 #: syneditstrconst.syns_attrlabel
 msgid "Label"
@@ -231,15 +230,15 @@ msgstr ""
 
 #: syneditstrconst.syns_attrmeasurementunitvalue
 msgid "Measurement unit"
-msgstr ""
+msgstr "Jednostka miary"
 
 #: syneditstrconst.syns_attrmessage
 msgid "Message"
-msgstr ""
+msgstr "Komunikat"
 
 #: syneditstrconst.syns_attrmiscellaneous
 msgid "Miscellaneous"
-msgstr ""
+msgstr "Pozostałe"
 
 #: syneditstrconst.syns_attrnamespaceattrname
 msgid "Namespace Attribute Name"
@@ -263,7 +262,7 @@ msgstr ""
 
 #: syneditstrconst.syns_attrnumber
 msgid "Number"
-msgstr ""
+msgstr "Liczba"
 
 #: syneditstrconst.syns_attroctal
 msgid "Octal"
@@ -355,7 +354,7 @@ msgstr ""
 
 #: syneditstrconst.syns_attrspace
 msgid "Space"
-msgstr ""
+msgstr "Odstęp"
 
 #: syneditstrconst.syns_attrspecialvariable
 msgid "Special variable"
@@ -375,11 +374,11 @@ msgstr ""
 
 #: syneditstrconst.syns_attrstring
 msgid "String"
-msgstr ""
+msgstr "String"
 
 #: syneditstrconst.syns_attrsymbol
 msgid "Symbol"
-msgstr ""
+msgstr "Symbol"
 
 #: syneditstrconst.syns_attrsyntaxerror
 msgid "SyntaxError"
@@ -387,7 +386,7 @@ msgstr ""
 
 #: syneditstrconst.syns_attrsystem
 msgid "System functions and variables"
-msgstr ""
+msgstr "Systemowe funkcje i zmienne "
 
 #: syneditstrconst.syns_attrsystemvalue
 msgid "System value"
@@ -403,11 +402,11 @@ msgstr ""
 
 #: syneditstrconst.syns_attrtexcommand
 msgid "TeX Command"
-msgstr ""
+msgstr "Polecenie TeX"
 
 #: syneditstrconst.syns_attrtext
 msgid "Text"
-msgstr ""
+msgstr "Tekst"
 
 #: syneditstrconst.syns_attrtextmathmode
 msgid "Text in Math Mode"
@@ -427,19 +426,17 @@ msgstr ""
 
 #: syneditstrconst.syns_attrvalue
 msgid "Value"
-msgstr ""
+msgstr "Wartość"
 
 #: syneditstrconst.syns_attrvariable
 msgid "Variable"
-msgstr ""
+msgstr "Zmienna"
 
 #: syneditstrconst.syns_attrwhitespace
 msgid "Whitespace"
 msgstr ""
 
 #: syneditstrconst.syns_duplicateshortcutmsg
-#, fuzzy
-#| msgid "Shortcut already exists"
 msgid "The keystroke \"%s\" is already assigned to another editor command. (%s)"
 msgstr "Klawisz \"%s\" jest już przypisany do innego polecenia edytora. (%s)"
 
@@ -525,11 +522,11 @@ msgstr ""
 
 #: syneditstrconst.syns_emcselectpara
 msgid "Select Paragraph"
-msgstr ""
+msgstr "Zaznacz akapit"
 
 #: syneditstrconst.syns_emcselectword
 msgid "Select Word"
-msgstr ""
+msgstr "Zaznacz słowo"
 
 #: syneditstrconst.syns_emcstartcolumnselections
 msgid "Column Selection"
@@ -601,7 +598,7 @@ msgstr ""
 
 #: syneditstrconst.syns_emcwheelzoomin
 msgid "Wheel zoom in"
-msgstr ""
+msgstr "Powiększanie kółkiem myszy"
 
 #: syneditstrconst.syns_emcwheelzoomnorm
 msgid "Wheel zoom default"
@@ -609,7 +606,7 @@ msgstr ""
 
 #: syneditstrconst.syns_emcwheelzoomout
 msgid "Wheel zoom out"
-msgstr ""
+msgstr "Pomniejszanie kółkiem myszy"
 
 #: syneditstrconst.syns_exporterformathtml
 msgid "HTML"
@@ -741,7 +738,7 @@ msgstr "Pliki PHP (*.php,*.php3,*.phtml,*.inc)|*.php;*.php3;*.phtml;*.inc"
 
 #: syneditstrconst.syns_filterpo
 msgid "Po Files (*.po)|*.po"
-msgstr ""
+msgstr "Pliki Po (*.po)|*.po"
 
 #: syneditstrconst.syns_filterprogress
 msgid "Progress Files (*.w,*.p,*.i)|*.w;*.p;*.i"
@@ -817,5 +814,5 @@ msgstr "<brak>"
 
 #: syneditstrconst.syns_untitled
 msgid "Untitled"
-msgstr ""
+msgstr "Bez tytułu"
 

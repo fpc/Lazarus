@@ -1,0 +1,50 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Sławomir Niedziela <slniedz@poczta.onet.pl>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pl\n"
+"X-Generator: Poedit 1.8.7.1\n"
+
+#: jcfideregister.format_about_menu
+msgid "&About"
+msgstr "Inform&acja"
+
+#: jcfideregister.format_category_idecmd
+msgctxt "jcfideregister.format_category_idecmd"
+msgid "JEDI Code Format"
+msgstr ""
+
+#: jcfideregister.format_current_idecmd
+msgid "Format code in current editor window"
+msgstr "Formatuj kod w bieżącym oknie"
+
+#: jcfideregister.format_current_menu
+msgctxt "jcfideregister.format_current_menu"
+msgid "&Current Editor Window"
+msgstr "&Bieżące okno edytora"
+
+#: jcfideregister.format_menu
+msgid "JEDI Code &Format"
+msgstr ""
+
+#: jcfideregister.format_open_menu
+msgctxt "jcfideregister.format_open_menu"
+msgid "All &Open Windows"
+msgstr "Wszystkie otwarte okna"
+
+#: jcfideregister.format_project_menu
+msgctxt "jcfideregister.format_project_menu"
+msgid "&All Files in Project"
+msgstr "Wszystkie pliki projektu"
+
+#: jcfideregister.format_settings_menu
+msgid "&Format Settings"
+msgstr "Ustawienia formatowania"
+

@@ -1,41 +1,40 @@
 msgid ""
 msgstr ""
-"Last-Translator: AlbercikCD\n"
-"PO-Revision-Date: 2007-01-14 00:09+0100\n"
+"Last-Translator: Sławomir Niedziela <slniedz@poczta.onet.pl>\n"
+"PO-Revision-Date: 2018-12-27 19:39+0100\n"
 "Project-Id-Version: codetoolsstrconsts\n"
 "Language-Team: \n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.3\n"
+"X-Generator: Poedit 2.2\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "POT-Creation-Date: \n"
 "MIME-Version: 1.0\n"
-"X-Poedit-Language: Polish\n"
-"X-Poedit-Country: POLAND\n"
+"Language: pl_PL\n"
 
 #: codetoolsstrconsts.crsbracketnotfound
 msgid "bracket ) not found"
-msgstr ""
+msgstr "nie znaleziono nawiasu )"
 
 #: codetoolsstrconsts.crsbracketnotfound2
 msgid "bracket ] not found"
-msgstr ""
+msgstr "nie znaleziono nawiasu ]"
 
 #: codetoolsstrconsts.crsclosingbracketnotfound
 msgid "closing bracket not found"
-msgstr ""
+msgstr "nie znaleziono nawiasu zamykającego"
 
 #: codetoolsstrconsts.crsfoundunexpectedat
 msgid "%s, found unexpected %s at %s"
-msgstr ""
+msgstr "%s, znaleziono nieoczekiwane %s na pozycji %s"
 
 #: codetoolsstrconsts.crsrecordendnotfound
 msgid "record end not found"
-msgstr ""
+msgstr "nie znaleziono końca rekordu"
 
 #: codetoolsstrconsts.ctsaddsdirtoincludepath
 msgid "adds %s to IncPath"
-msgstr ""
+msgstr "dodaje %s do IncPath"
 
 #: codetoolsstrconsts.ctsaddsdirtosourcepath
 msgid "adds %s to SrcPath"
@@ -102,10 +101,8 @@ msgid "class node without parent node"
 msgstr "brakuje nazwy przodka"
 
 #: codetoolsstrconsts.ctsclassnotfound
-#, fuzzy,badformat
-#| msgid "class %s%s%s not found"
 msgid "class \"%s\" not found"
-msgstr "Nie znaleziono klasy %s%s%s"
+msgstr "Nie znaleziono klasy \"%s\""
 
 #: codetoolsstrconsts.ctsclassnotfound2
 msgid "class not found \"%s\""
@@ -149,7 +146,7 @@ msgstr "stała"
 
 #: codetoolsstrconsts.ctsconverterdirectory
 msgid "Converter Directory"
-msgstr ""
+msgstr "Katalog konwertera"
 
 #: codetoolsstrconsts.ctscursorposoutsideofcode
 msgid "cursor pos outside of code"
@@ -280,10 +277,8 @@ msgid "expected end., but %s found"
 msgstr "zamiast końca programu \"end.\" znaleziono %s"
 
 #: codetoolsstrconsts.ctsendofsourcenotfound
-#, fuzzy
-#| msgid "End of source not found"
 msgid "End of source not found."
-msgstr "Nie znaleziono Końca źródła "
+msgstr "Nie znaleziono końca źródła "
 
 #: codetoolsstrconsts.ctsenumerationtype
 msgid "enumeration type"
@@ -508,16 +503,12 @@ msgid "interface section not found"
 msgstr "brakuje sekcji interfejsu"
 
 #: codetoolsstrconsts.ctsinvalidclassname
-#, fuzzy,badformat
-#| msgid "invalid class name=%s%s%s"
 msgid "invalid class name=\"%s\""
-msgstr "błędna nazwa klasy=%s%s%s"
+msgstr "błędna nazwa klasy=\"%s\""
 
 #: codetoolsstrconsts.ctsinvalidclassname2
-#, fuzzy,badformat
-#| msgid "invalid class name %s%s%s"
 msgid "invalid class name \"%s\""
-msgstr "błędna nazwa klasy %s%s%s"
+msgstr "błędna nazwa klasy \"%s\""
 
 #: codetoolsstrconsts.ctsinvalidflagvaluefordirective
 msgid "invalid flag value \"%s\" for directive %s"
@@ -548,16 +539,12 @@ msgid "invalid type"
 msgstr "błędny typ"
 
 #: codetoolsstrconsts.ctsinvalidvariablename
-#, fuzzy,badformat
-#| msgid "invalid variable name %s%s%s"
 msgid "invalid variable name \"%s\""
-msgstr "błędna nazwa zmiennej %s%s%s"
+msgstr "błędna nazwa zmiennej \"%s\""
 
 #: codetoolsstrconsts.ctsinvalidvariabletype
-#, fuzzy,badformat
-#| msgid "invalid variable type %s%s%s"
 msgid "invalid variable type \"%s\""
-msgstr "błędny typ zmiennej %s%s%s"
+msgstr "błędny typ zmiennej \"%s\""
 
 #: codetoolsstrconsts.ctskeyword
 msgid "keyword"
@@ -782,20 +769,16 @@ msgid "source is not unit"
 msgstr "źródło nie jest modułem"
 
 #: codetoolsstrconsts.ctssourcenotfoundunit
-#, fuzzy
-#| msgid "source not found: unit %s"
 msgid "source not found: unit %s. Check your FPC source directory."
-msgstr "nieznaleziono źródła: moduł %s"
+msgstr "nie znaleziono źródła: moduł %s"
 
 #: codetoolsstrconsts.ctssrcpathinitialization
 msgid "SrcPath Initialization"
 msgstr "Inicjowanie SrcPath"
 
 #: codetoolsstrconsts.ctsstrexpectedbutatomfound
-#, fuzzy
-#| msgid "%s expected, but %s found"
 msgid "expected %s, but %s found"
-msgstr "zamiast: %s znaleziono: %s"
+msgstr "zamiast %s znaleziono %s"
 
 #: codetoolsstrconsts.ctsstringconstant
 msgid "string constant"

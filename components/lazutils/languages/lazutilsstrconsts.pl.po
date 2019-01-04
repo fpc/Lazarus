@@ -1,0 +1,185 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Sławomir Niedziela <slniedz@poczta.onet.pl>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pl\n"
+"X-Generator: Poedit 1.8.7.1\n"
+
+#: lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml
+msgctxt "lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml"
+msgid "a directory component in %s does not exist or is a dangling symlink"
+msgstr "część ścieżki w %s nie istnieje lub jest popsutym dowiązaniem symbolicznym"
+
+#: lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml2
+msgctxt "lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml2"
+msgid "a directory component in %s does not exist or is a dangling symlink"
+msgstr "część ścieżki w %s nie istnieje lub jest popsutym dowiązaniem symbolicznym"
+
+#: lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory
+msgctxt "lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory"
+msgid "a directory component in %s is not a directory"
+msgstr "część ścieżki w %s nie jest katalogiem"
+
+#: lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory2
+msgctxt "lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory2"
+msgid "a directory component in %s is not a directory"
+msgstr "część ścieżki w %s nie jest katalogiem"
+
+#: lazutilsstrconsts.lrsboolean
+msgid "boolean"
+msgstr ""
+
+#: lazutilsstrconsts.lrscannotexecute
+msgid "can not execute %s"
+msgstr ""
+
+#: lazutilsstrconsts.lrscreatinggdbcatchableerror
+msgid "Creating gdb catchable error:"
+msgstr ""
+
+#: lazutilsstrconsts.lrserrorincode
+msgid "ERROR in code: "
+msgstr ""
+
+#: lazutilsstrconsts.lrsevalinvalidargcount
+msgid "Invalid number of function arguments"
+msgstr ""
+
+#: lazutilsstrconsts.lrsevalunknownfunction
+msgid "Unknown function: \"%s\""
+msgstr ""
+
+#: lazutilsstrconsts.lrsevalunknownvariable
+msgid "Unknown variable: \"%s\""
+msgstr ""
+
+#: lazutilsstrconsts.lrsfiledoesnotexist
+msgid "file \"%s\" does not exist"
+msgstr "plik \"%s\" nie istnieje"
+
+#: lazutilsstrconsts.lrsfileisadirectoryandnotanexecutable
+msgid "file \"%s\" is a directory and not an executable"
+msgstr ""
+
+#: lazutilsstrconsts.lrshasacircularsymboliclink
+msgid "%s has a circular symbolic link"
+msgstr "%s ma zapętlone dowązanie symboliczne"
+
+#: lazutilsstrconsts.lrsinsufficientmemory
+msgid "insufficient memory"
+msgstr "brak pamięci"
+
+#: lazutilsstrconsts.lrsinvalidcharset
+msgctxt "lazutilsstrconsts.lrsinvalidcharset"
+msgid "The char set in mask \"%s\" is not valid!"
+msgstr ""
+
+#: lazutilsstrconsts.lrsisnotasymboliclink
+msgid "%s is not a symbolic link"
+msgstr ""
+
+#: lazutilsstrconsts.lrsisnotexecutable
+msgid "%s is not executable"
+msgstr "%s nie jest wykonywalny"
+
+#: lazutilsstrconsts.lrslistindexexceedsbounds
+msgid "List index exceeds bounds (%d)"
+msgstr ""
+
+#: lazutilsstrconsts.lrslistmustbeempty
+msgid "List must be empty"
+msgstr ""
+
+#: lazutilsstrconsts.lrsmodified
+msgctxt "lazutilsstrconsts.lrsmodified"
+msgid "  modified "
+msgstr " zmodyfikowany "
+
+#: lazutilsstrconsts.lrsnodeset
+msgid "node set"
+msgstr ""
+
+#: lazutilsstrconsts.lrsnumber
+msgid "number"
+msgstr ""
+
+#: lazutilsstrconsts.lrsparserbadaxisname
+msgid "Invalid axis name"
+msgstr ""
+
+#: lazutilsstrconsts.lrsparserbadnodetype
+msgid "Invalid node type"
+msgstr ""
+
+#: lazutilsstrconsts.lrsparserexpectedleftbracket
+msgid "Expected \"(\""
+msgstr ""
+
+#: lazutilsstrconsts.lrsparserexpectedrightbracket
+msgid "Expected \")\""
+msgstr ""
+
+#: lazutilsstrconsts.lrsparserexpectedrightsquarebracket
+msgid "Expected \"]\" after predicate"
+msgstr ""
+
+#: lazutilsstrconsts.lrsparsergarbageafterexpression
+msgid "Unrecognized input after expression"
+msgstr ""
+
+#: lazutilsstrconsts.lrsparserinvalidnodetest
+msgid "Invalid node test (syntax error)"
+msgstr ""
+
+#: lazutilsstrconsts.lrsparserinvalidprimexpr
+msgid "Invalid primary expression"
+msgstr ""
+
+#: lazutilsstrconsts.lrsprogramfilenotfound
+msgid "program file not found %s"
+msgstr ""
+
+#: lazutilsstrconsts.lrsreadaccessdeniedfor
+msgid "read access denied for %s"
+msgstr ""
+
+#: lazutilsstrconsts.lrsscannerexpectedvarname
+msgid "Expected variable name after \"$\""
+msgstr ""
+
+#: lazutilsstrconsts.lrsscannerinvalidchar
+msgid "Invalid character"
+msgstr "Niedozwolony znak"
+
+#: lazutilsstrconsts.lrsscannermalformedqname
+msgid "Expected \"*\" or local part after colon"
+msgstr ""
+
+#: lazutilsstrconsts.lrsscannerunclosedstring
+msgid "String literal was not closed"
+msgstr ""
+
+#: lazutilsstrconsts.lrssize
+msgctxt "lazutilsstrconsts.lrssize"
+msgid "  size "
+msgstr "  rozmiar "
+
+#: lazutilsstrconsts.lrsstring
+msgid "string"
+msgstr ""
+
+#: lazutilsstrconsts.lrsunabletocreateconfigdirectorys
+msgid "Unable to create config directory \"%s\""
+msgstr ""
+
+#: lazutilsstrconsts.lrsvarnoconversion
+msgid "Conversion from %s to %s not possible"
+msgstr "Konwersja z %s na %s jest niemożliwa"
+

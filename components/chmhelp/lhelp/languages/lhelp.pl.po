@@ -1,0 +1,194 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Sławomir Niedziela <slniedz@poczta.onet.pl>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pl\n"
+"X-Generator: Poedit 1.8.7.1\n"
+
+#: lhelpstrconsts.slhelp_about
+msgid "About"
+msgstr "Informacja"
+
+#: lhelpstrconsts.slhelp_about2
+msgid "&About ..."
+msgstr "&O..."
+
+#: lhelpstrconsts.slhelp_cannothandlethistypeofcontentforurl
+msgid "Cannot handle this type of content. \"%s\" for url:%s%s"
+msgstr ""
+
+#: lhelpstrconsts.slhelp_cannothandlethistypeofsubcontentforurl
+msgid "Cannot handle this type of subcontent. \"%s\" for url:%s%s"
+msgstr ""
+
+#: lhelpstrconsts.slhelp_close
+msgid "&Close"
+msgstr "&Zamknij"
+
+#: lhelpstrconsts.slhelp_contents
+msgid "Contents"
+msgstr "Zawartość"
+
+#: lhelpstrconsts.slhelp_contextshowthehelpinformationrelatedtothiscontext
+msgid "    --context  :  Show the help information related to this context"
+msgstr ""
+
+#: lhelpstrconsts.slhelp_copy
+msgid "Copy"
+msgstr "Kopiuj"
+
+#: lhelpstrconsts.slhelp_exit
+msgid "E&xit"
+msgstr "&Wyjście"
+
+#: lhelpstrconsts.slhelp_file
+msgid "&File"
+msgstr "&Plik"
+
+#: lhelpstrconsts.slhelp_find
+msgid "Find"
+msgstr "Znajdź"
+
+#: lhelpstrconsts.slhelp_help
+msgid "&Help"
+msgstr "Pomo&c"
+
+#: lhelpstrconsts.slhelp_helpfileschmchmallfiles
+msgid "Help files (*.chm)|*.chm|All files (*.*)|*"
+msgstr "Pliki pomocy (*.chm)|*.chm|Wszystkie pliki (*.*)|*"
+
+#: lhelpstrconsts.slhelp_helpshowthisinformation
+msgid "    --help     :  Show this information"
+msgstr ""
+
+#: lhelpstrconsts.slhelp_hidestarthiddenbutacceptcommunicationsviaipc
+msgid "    --hide     :  Start hidden but accept communications via IPC"
+msgstr ""
+
+#: lhelpstrconsts.slhelp_index
+msgid "Index"
+msgstr "Indeks"
+
+#: lhelpstrconsts.slhelp_indexloading
+msgid "Index Loading ..."
+msgstr "Wczytywanie indeksu..."
+
+#: lhelpstrconsts.slhelp_ipcnamethenameoftheipcservertolistenonforprogramsw
+msgid "    --ipcname  :  The name of the IPC server to listen on for%s              programs who wish to control the viewer"
+msgstr ""
+
+#: lhelpstrconsts.slhelp_keyword
+msgid "Keyword:"
+msgstr "Słowo kluczowe:"
+
+#: lhelpstrconsts.slhelp_lhelp
+msgid "LHelp"
+msgstr ""
+
+#: lhelpstrconsts.slhelp_lhelp2
+msgid "LHelp - %s"
+msgstr ""
+
+#: lhelpstrconsts.slhelp_lhelpchmfileviewerversioncopyrightcandrewhaineslaz
+msgid "LHelp (CHM file viewer)%sVersion %s%sCopyright (C) Andrew Haines, %sLazarus contributors"
+msgstr "LHelp (Przeglądarki plików CHM)%sWersja %s%sCopyright (C) Andrew Haines, %sLazarus contributors"
+
+#: lhelpstrconsts.slhelp_lhelpoptions
+msgid "  LHelp options:"
+msgstr "  Opcje LHelp:"
+
+#: lhelpstrconsts.slhelp_loadedinms
+msgid "Loaded: %s in %sms"
+msgstr "Wczytano: %s w %sms"
+
+#: lhelpstrconsts.slhelp_loading
+msgid "Loading: %s"
+msgstr "Wczytywanie: %s"
+
+#: lhelpstrconsts.slhelp_noresults
+msgid "No Results"
+msgstr "Brak wynikẘ"
+
+#: lhelpstrconsts.slhelp_notfound
+msgid "%s not found!"
+msgstr "Nie znaleziono %s"
+
+#: lhelpstrconsts.slhelp_ok
+msgid "Ok"
+msgstr "OK"
+
+#: lhelpstrconsts.slhelp_open
+msgid "&Open ..."
+msgstr "&Otwórz..."
+
+#: lhelpstrconsts.slhelp_openexistingfile
+msgid "Open existing file"
+msgstr "Otwórz istniejący plik"
+
+#: lhelpstrconsts.slhelp_opennewfileinseparatetab
+msgid "Open new file in separate tab"
+msgstr "Otwórz plik w osobnej zakładce"
+
+#: lhelpstrconsts.slhelp_opennewtabwithstatusbar
+msgid "Open new tab with status bar"
+msgstr "Otwórz nową zakładkę z paskiem stanu"
+
+#: lhelpstrconsts.slhelp_openrecent
+msgid "Open Recent"
+msgstr "Otwórz poprzedni"
+
+#: lhelpstrconsts.slhelp_openurl
+msgid "Open &URL ..."
+msgstr "Otwórz &URL..."
+
+#: lhelpstrconsts.slhelp_pagecannotbefound
+msgid "Page cannot be found!"
+msgstr "Nie znaleziono strony!"
+
+#: lhelpstrconsts.slhelp_pleaseenteraurl
+msgid "Please enter a URL"
+msgstr "Proszę podać URL"
+
+#: lhelpstrconsts.slhelp_search
+msgid "Search"
+msgstr "Szukaj"
+
+#: lhelpstrconsts.slhelp_searchresults
+msgid "Search Results:"
+msgstr "Wyniki wyszukiwania:"
+
+#: lhelpstrconsts.slhelp_showcontents
+msgid "Show contents"
+msgstr "Pokaż zawartość"
+
+#: lhelpstrconsts.slhelp_supportedurltypes
+msgid "Supported URL type(s): (%s)"
+msgstr "Obsługiwane typy URL: (%s)"
+
+#: lhelpstrconsts.slhelp_tableofcontentsloading
+msgid "Table of Contents Loading ..."
+msgstr "Wczytywanie spisu treści..."
+
+#: lhelpstrconsts.slhelp_tableofcontentsloadingpleasewait
+msgid "Table of Contents Loading. Please Wait ..."
+msgstr "Wczytywanie spisu treści. Proszę czekać..."
+
+#: lhelpstrconsts.slhelp_untitled
+msgid "untitled"
+msgstr "bez tytułu"
+
+#: lhelpstrconsts.slhelp_usagelhelpfilenamecontextidhideipcnamelhelpmyapp
+msgid "    Usage: lhelp [[filename] [--context id] [--hide] [--ipcname lhelp-myapp]]"
+msgstr ""
+
+#: lhelpstrconsts.slhelp_view
+msgid "&View"
+msgstr "&Widok"
+

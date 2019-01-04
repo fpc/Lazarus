@@ -1,0 +1,87 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Sławomir Niedziela <slniedz@poczta.onet.pl>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pl\n"
+"X-Generator: Poedit 1.8.7.1\n"
+
+#: sdb_consts.scancelrecordsexported
+msgid "Exported %d before user canceled."
+msgstr "Wyeksportowano %d zanim użytkownik zrezygnował"
+
+#: sdb_consts.sdb_availableexportformats
+msgid "Available export formats:"
+msgstr "Dostępne formaty eksportu:"
+
+#: sdb_consts.sdb_cancel
+msgid "&Cancel"
+msgstr "&Anuluj"
+
+#: sdb_consts.sdb_configuredataexport
+msgid "Configure data export"
+msgstr "Konfiguracja eksportu danych"
+
+#: sdb_consts.sdb_exportprogress
+msgid "Export progress"
+msgstr "Postęp eksportu"
+
+#: sdb_consts.sdb_fields
+msgid "Fields"
+msgstr "Pola"
+
+#: sdb_consts.sdb_filename
+#, fuzzy,badformat
+msgid "Filename:"
+msgstr "Nazwa pliku: %s"
+
+#: sdb_consts.sdb_formatting
+msgid "Formatting"
+msgstr "Formatowanie"
+
+#: sdb_consts.sdb_moveselectedfielddown
+msgid "Move selected field down"
+msgstr "Przesuń wybrane pole w dół"
+
+#: sdb_consts.sdb_moveselectedfieldup
+msgid "Move selected field up"
+msgstr "Przesuń wybrane pole w górę"
+
+#: sdb_consts.sdb_propertiesforselectedfield
+msgid "Properties for selected field:"
+msgstr "Właściwości wybranego pola:"
+
+#: sdb_consts.sdb_selectdataexportformat
+msgid "Select data export Format"
+msgstr "Wybierz format eksportu danych"
+
+#: sdb_consts.sdb_selectfieldstoexport
+msgid "Select fi&elds to export"
+msgstr "Wybi&erz pola do wyeksportowania"
+
+#: sdb_consts.serrnodatasetassigned
+msgid "DataExporter has no Dataset assigned."
+msgstr "DataExporter nie ma przypisanego zbioru danych."
+
+#: sdb_consts.serropeningdataset
+msgid "Could not open dataset for exporting: %s"
+msgstr "Nie można otworzyć zbioru danych do eksportu: %s"
+
+#: sdb_consts.sexecute
+msgid "Execute ..."
+msgstr "Wykonaj..."
+
+#: sdb_consts.snrecordsexported
+msgid "Successfully exported %d records."
+msgstr "Wyeksportowano rekordów: %d"
+
+#: sdb_consts.sprogress
+msgid "Exporting %d records"
+msgstr "Liczba eksportowanych rekordów: %d"
+

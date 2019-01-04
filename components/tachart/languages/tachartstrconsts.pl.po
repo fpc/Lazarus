@@ -1,0 +1,452 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Sławomir Niedziela <slniedz@poczta.onet.pl>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pl\n"
+"X-Generator: Poedit 1.8.7.1\n"
+
+#: tachartstrconsts.descolor
+msgid "Color"
+msgstr "Kolor"
+
+#: tachartstrconsts.desdatapointeditor
+msgid "DataPoints editor"
+msgstr ""
+
+#: tachartstrconsts.desdeleterow
+msgid "Delete row"
+msgstr "Usuń wiersz"
+
+#: tachartstrconsts.desinsertrow
+msgid "Insert row"
+msgstr "Wstaw wiersz"
+
+#: tachartstrconsts.destext
+msgid "Text"
+msgstr "Tekst"
+
+#: tachartstrconsts.rsadd
+msgid "Add"
+msgstr "Dodaj"
+
+#: tachartstrconsts.rsareaseries
+msgid "Area series"
+msgstr ""
+
+#: tachartstrconsts.rsautoscale
+msgid "Auto scale"
+msgstr "Automatyczna skala"
+
+#: tachartstrconsts.rsbarseries
+msgid "Bar series"
+msgstr ""
+
+#: tachartstrconsts.rsbottom
+msgid "Bottom"
+msgstr ""
+
+#: tachartstrconsts.rsboxandwhiskerseries
+msgid "Box-and-whiskers series"
+msgstr ""
+
+#: tachartstrconsts.rsbsbdiagonal
+msgid "backward-diagonal hatch"
+msgstr ""
+
+#: tachartstrconsts.rsbsclear
+msgid "no fill"
+msgstr ""
+
+#: tachartstrconsts.rsbscross
+msgid "crossed"
+msgstr ""
+
+#: tachartstrconsts.rsbsdiagcross
+msgid "diagonally crossed"
+msgstr ""
+
+#: tachartstrconsts.rsbsfdiagonal
+msgid "forward-diagonal hatch"
+msgstr ""
+
+#: tachartstrconsts.rsbshorizontal
+msgid "horizontally hatched"
+msgstr ""
+
+#: tachartstrconsts.rsbsimage
+msgid "image fill"
+msgstr ""
+
+#: tachartstrconsts.rsbspattern
+msgid "pattern fill"
+msgstr ""
+
+#: tachartstrconsts.rsbsplineseries
+msgid "B-Spline series"
+msgstr ""
+
+#: tachartstrconsts.rsbssolid
+msgid "solid fill"
+msgstr ""
+
+#: tachartstrconsts.rsbsvertical
+msgid "vertically hatched"
+msgstr ""
+
+#: tachartstrconsts.rsbubbleseries
+msgid "Bubble series"
+msgstr ""
+
+#: tachartstrconsts.rscirclesymbol
+msgid "Circle"
+msgstr ""
+
+#: tachartstrconsts.rscolormapseries
+msgid "Color map series"
+msgstr ""
+
+#: tachartstrconsts.rsconstantline
+msgid "Constant line"
+msgstr "Stała linia"
+
+#: tachartstrconsts.rscrosssymbol
+msgid "Plus"
+msgstr ""
+
+#: tachartstrconsts.rscubicsplineseries
+msgid "Cubic spline series"
+msgstr ""
+
+#: tachartstrconsts.rscumulativenormaldistribution
+msgid "Cumulative normal distribution"
+msgstr ""
+
+#: tachartstrconsts.rsdatapointclick
+msgid "Data point click"
+msgstr ""
+
+#: tachartstrconsts.rsdatapointcrosshair
+msgid "Data point crosshair"
+msgstr ""
+
+#: tachartstrconsts.rsdatapointdrag
+msgid "Data point drag"
+msgstr ""
+
+#: tachartstrconsts.rsdatapointhint
+msgid "Data point hint"
+msgstr ""
+
+#: tachartstrconsts.rsdelete
+msgid "Delete"
+msgstr "Usuń"
+
+#: tachartstrconsts.rsdiagcrosssymbol
+msgid "Cross"
+msgstr ""
+
+#: tachartstrconsts.rsdiamondsymbol
+msgid "Diamond"
+msgstr ""
+
+#: tachartstrconsts.rsdistancemeasurement
+msgid "Distance measurement"
+msgstr "Pomiar odległości"
+
+#: tachartstrconsts.rsdowntrianglesymbol
+msgid "Down triangle"
+msgstr ""
+
+#: tachartstrconsts.rserrinvalidresulttype
+msgid "Expression result type must be integer or float. Got \"%s\"."
+msgstr ""
+
+#: tachartstrconsts.rsexpressioncolormapseries
+msgid "Math expression color map series"
+msgstr ""
+
+#: tachartstrconsts.rsexpressionseries
+msgid "Math expression series"
+msgstr ""
+
+#: tachartstrconsts.rsfieldseries
+msgid "Vector field series"
+msgstr ""
+
+#: tachartstrconsts.rsfitadjcoefficientofdetermination
+msgid "Adj. coefficient of determination"
+msgstr ""
+
+#: tachartstrconsts.rsfitchisquared
+msgid "Chi-squared"
+msgstr ""
+
+#: tachartstrconsts.rsfitcoefficientofdetermination
+msgid "Coefficient of determination (R2)"
+msgstr ""
+
+#: tachartstrconsts.rsfitdegreesoffreedom
+msgid "Degrees of freedom"
+msgstr ""
+
+#: tachartstrconsts.rsfiterrorsumofsquares
+msgid "Error sum of squares (SSE)"
+msgstr ""
+
+#: tachartstrconsts.rsfitnumfitparams
+msgid "Number of fit parameters"
+msgstr ""
+
+#: tachartstrconsts.rsfitnumobservations
+msgid "Number of observations"
+msgstr ""
+
+#: tachartstrconsts.rsfitpvalue
+msgid "p value"
+msgstr ""
+
+#: tachartstrconsts.rsfitreducedchisquared
+msgid "Reduced Chi-squared"
+msgstr ""
+
+#: tachartstrconsts.rsfitregressionsumofsquares
+msgid "Regression sum of squares (SSR)"
+msgstr ""
+
+#: tachartstrconsts.rsfitresidualstandarderror
+msgid "Residual standard error"
+msgstr ""
+
+#: tachartstrconsts.rsfittotalsumofsquares
+msgid "Total sum of squares (SST)"
+msgstr ""
+
+#: tachartstrconsts.rsfitvarianceratio
+msgid "Variance ratio F"
+msgstr ""
+
+#: tachartstrconsts.rsfullstarsymbol
+msgid "Star (full)"
+msgstr ""
+
+#: tachartstrconsts.rsfunctionseries
+msgid "Function series"
+msgstr ""
+
+#: tachartstrconsts.rshexagonsymbol
+msgid "Hexagon"
+msgstr ""
+
+#: tachartstrconsts.rshidden
+msgid "hidden"
+msgstr ""
+
+#: tachartstrconsts.rshighbracketsymbol
+msgid "High bracket"
+msgstr ""
+
+#: tachartstrconsts.rshorbarsymbol
+msgid "Horizontal bar"
+msgstr ""
+
+#: tachartstrconsts.rsinvalidlogbase
+msgid "Logarithm base must be > 0 and <> 1."
+msgstr ""
+
+#: tachartstrconsts.rsinverted
+msgid "inverted"
+msgstr ""
+
+#: tachartstrconsts.rsleastsquaresfitseries
+msgid "Least-squares fit series"
+msgstr ""
+
+#: tachartstrconsts.rsleft
+msgid "Left"
+msgstr ""
+
+#: tachartstrconsts.rsleftbracketsymbol
+msgid "Left bracket"
+msgstr ""
+
+#: tachartstrconsts.rslefttrianglesymbol
+msgid "Left triangle"
+msgstr ""
+
+#: tachartstrconsts.rslinear
+msgid "Linear"
+msgstr "Liniowy"
+
+#: tachartstrconsts.rslineseries
+msgid "Line series"
+msgstr ""
+
+#: tachartstrconsts.rslogarithmic
+msgid "Logarithmic"
+msgstr "Logarytmiczny"
+
+#: tachartstrconsts.rslowbracketsymbol
+msgid "Low bracket"
+msgstr ""
+
+#: tachartstrconsts.rsmanhattanplotseries
+msgid "Manhattan plot series"
+msgstr ""
+
+#: tachartstrconsts.rsmovedown
+msgid "Down"
+msgstr "W dół"
+
+#: tachartstrconsts.rsmoveup
+msgid "Up"
+msgstr "W górę"
+
+#: tachartstrconsts.rsnosymbol
+msgid "(none)"
+msgstr ""
+
+#: tachartstrconsts.rsopenhighlowcloseseries
+msgid "Open-high-low-close series"
+msgstr ""
+
+#: tachartstrconsts.rspanningbyclick
+msgid "Panning by click"
+msgstr "Przesuwanie kliknięciem"
+
+#: tachartstrconsts.rspanningbydrag
+msgid "Panning by drag"
+msgstr "Przesuwanie przez przeciąganie"
+
+#: tachartstrconsts.rspanningbymousewheel
+msgid "Panning by mouse wheel"
+msgstr "Przesuwanie kółkiem myszy"
+
+#: tachartstrconsts.rsparametriccurveseries
+msgid "Parametric curve series"
+msgstr ""
+
+#: tachartstrconsts.rspieseries
+msgid "Pie series"
+msgstr ""
+
+#: tachartstrconsts.rspointsymbol
+msgid "Point"
+msgstr ""
+
+#: tachartstrconsts.rspolarseries
+msgid "Polar series"
+msgstr ""
+
+#: tachartstrconsts.rspsclear
+msgid "no line"
+msgstr ""
+
+#: tachartstrconsts.rspsdash
+msgid "dashed line"
+msgstr ""
+
+#: tachartstrconsts.rspsdashdot
+msgid "dash-dot"
+msgstr ""
+
+#: tachartstrconsts.rspsdashdotdot
+msgid "dash-dot-dot"
+msgstr ""
+
+#: tachartstrconsts.rspsdot
+msgid "dotted line"
+msgstr ""
+
+#: tachartstrconsts.rspsinsideframe
+msgid "solid (inside frame)"
+msgstr ""
+
+#: tachartstrconsts.rspspattern
+msgid "patterned line"
+msgstr ""
+
+#: tachartstrconsts.rspssolid
+msgid "solid line"
+msgstr ""
+
+#: tachartstrconsts.rsrectanglesymbol
+msgid "Rectangle"
+msgstr ""
+
+#: tachartstrconsts.rsright
+msgid "Right"
+msgstr ""
+
+#: tachartstrconsts.rsrightbracketsymbol
+msgid "Right bracket"
+msgstr ""
+
+#: tachartstrconsts.rsrighttrianglesymbol
+msgid "Right triangle"
+msgstr ""
+
+#: tachartstrconsts.rsstarsymbol
+msgid "Star (lines)"
+msgstr ""
+
+#: tachartstrconsts.rstop
+msgid "Top"
+msgstr ""
+
+#: tachartstrconsts.rstrianglesymbol
+msgid "Triangle"
+msgstr ""
+
+#: tachartstrconsts.rsuserdefined
+msgctxt "tachartstrconsts.rsuserdefined"
+msgid "User-defined"
+msgstr ""
+
+#: tachartstrconsts.rsuserdefinedtool
+msgctxt "tachartstrconsts.rsuserdefinedtool"
+msgid "User-defined"
+msgstr ""
+
+#: tachartstrconsts.rsuserdrawnseries
+msgid "User-drawn series"
+msgstr ""
+
+#: tachartstrconsts.rsvertbarsymbol
+msgid "Vertical bar"
+msgstr ""
+
+#: tachartstrconsts.rszoombyclick
+msgid "Zoom by click"
+msgstr "Powiększanie kliknięciem"
+
+#: tachartstrconsts.rszoombydrag
+msgid "Zoom by drag"
+msgstr "Powiększanie przez przeciąganie"
+
+#: tachartstrconsts.rszoombymousewheel
+msgid "Zoom by mouse-wheel"
+msgstr "Powiększanie kółkiem myszy"
+
+#: tachartstrconsts.sesserieseditortitle
+msgid "Edit series"
+msgstr "Edycja serii"
+
+#: tachartstrconsts.tasaxistransformseditortitle
+msgid "Edit axis transformations"
+msgstr ""
+
+#: tachartstrconsts.tasfailedsubcomponentrename
+msgid "Failed to rename components: %s"
+msgstr ""
+
+#: tachartstrconsts.tastoolseditortitle
+msgid "Edit tools"
+msgstr ""
+

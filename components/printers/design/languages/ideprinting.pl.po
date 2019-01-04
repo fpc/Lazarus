@@ -2,42 +2,40 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ideprinting\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-01-13 22:16+0100\n"
-"Last-Translator: AlbercikCD\n"
+"PO-Revision-Date: 2016-10-08 18:38+0200\n"
+"Last-Translator: Sławomir Niedziela <slniedz@poczta.onet.pl>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: Polish\n"
-"X-Poedit-Country: POLAND\n"
+"Language: pl_PL\n"
+"X-Generator: Poedit 1.8.7.1\n"
 
 #: ideprinting.sdescrformatting
 msgid "Formatting"
-msgstr ""
+msgstr "Formatowanie"
 
 #: ideprinting.sdescrpfselection
-#, fuzzy
-#| msgid "Print..."
 msgid "Print ..."
 msgstr "Drukuj..."
 
 #: ideprinting.spfselectioncmd
 msgid "Print"
-msgstr ""
+msgstr "Druk"
 
 #: ideprinting.sprintfile
 msgid "Complete file"
-msgstr ""
+msgstr "Cały plik"
 
 #: ideprinting.sprintselection
 msgid "Selected text"
-msgstr ""
+msgstr "Zaznaczony tekst"
 
 #: ideprinting.sprintsources
 msgid "Print sources"
-msgstr ""
+msgstr "Co wydrukować"
 
 #: ideprinting.sprintwhat
 msgid "What would you like to print ?"
-msgstr ""
+msgstr "Co chcesz wydrukować?"
 
