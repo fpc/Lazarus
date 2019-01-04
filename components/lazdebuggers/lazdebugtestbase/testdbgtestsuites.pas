@@ -63,10 +63,10 @@ type
   public
     function SkipTest: Boolean; virtual;
     Procedure TestCompile(const PrgName: string; out ExeName: string; NamePostFix: String=''; ExtraArgs: String=''); overload;
-    Procedure TestCompile(const PrgName: string; out ExeName: string; UsesDirs: array of TUsesDir;
+    Procedure TestCompile(const PrgName: string; out ExeName: string; const UsesDirs: array of TUsesDir;
                           NamePostFix: String=''; ExtraArgs: String=''); overload;
     Procedure TestCompile(const Prg: TCommonSource; out ExeName: string; NamePostFix: String=''; ExtraArgs: String=''); overload;
-    Procedure TestCompile(const Prg: TCommonSource; out ExeName: string; UsesDirs: array of TUsesDir;
+    Procedure TestCompile(const Prg: TCommonSource; out ExeName: string; const UsesDirs: array of TUsesDir;
                           NamePostFix: String=''; ExtraArgs: String=''); overload;
 
     // Logging
@@ -608,7 +608,7 @@ begin
 end;
 
 procedure TDBGTestCase.TestCompile(const PrgName: string; out ExeName: string;
-  UsesDirs: array of TUsesDir; NamePostFix: String; ExtraArgs: String);
+  const UsesDirs: array of TUsesDir; NamePostFix: String; ExtraArgs: String);
 begin
   try
     LogText(LineEnding+LineEnding + '******************* compile '+PrgName + ' ' + ExtraArgs +LineEnding );
@@ -629,7 +629,7 @@ begin
 end;
 
 procedure TDBGTestCase.TestCompile(const Prg: TCommonSource; out
-  ExeName: string; UsesDirs: array of TUsesDir; NamePostFix: String;
+  ExeName: string; const UsesDirs: array of TUsesDir; NamePostFix: String;
   ExtraArgs: String);
 begin
   Prg.Save(AppDir);

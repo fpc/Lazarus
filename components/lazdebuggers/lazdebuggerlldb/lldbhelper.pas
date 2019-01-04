@@ -24,8 +24,8 @@ function LastPos(ASearch, AString: string): Integer;
 
 function StrStartsWith(AString, AStart: string; ACheckStartNotEmpty: Boolean = False): Boolean;
 function StrContains(AString, AFind: string): Boolean;
-function StrMatches(AString: string; AFind: array of string): Boolean;
-function StrMatches(AString: string; AFind: array of string; out AGapsContent: TStringArray): Boolean;
+function StrMatches(AString: string; const AFind: array of string): Boolean;
+function StrMatches(AString: string; const AFind: array of string; out AGapsContent: TStringArray): Boolean;
 
 function ParseThreadLocation(AnInput: String; out AnId: Integer;
   out AnIsCurrent: Boolean; out AName: String; out AnAddr: TDBGPtr;
@@ -69,14 +69,14 @@ begin
   Result := pos(AFind, AString) > 0;
 end;
 
-function StrMatches(AString: string; AFind: array of string): Boolean;
+function StrMatches(AString: string; const AFind: array of string): Boolean;
 var
   Dummy: TStringArray;
 begin
   Result := StrMatches(AString, AFind, Dummy);
 end;
 
-function StrMatches(AString: string; AFind: array of string; out
+function StrMatches(AString: string; const AFind: array of string; out
   AGapsContent: TStringArray): Boolean;
 var
   FindIdx, FindLen, j, j2, ResIdx: Integer;

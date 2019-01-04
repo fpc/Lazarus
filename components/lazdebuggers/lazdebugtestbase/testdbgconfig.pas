@@ -27,16 +27,19 @@ var
   AppDir, ConfDir: String;
 
 type
-  TSymbolType = (stNone, stStabs, stDwarf, stDwarfSet, stDwarf3);
+  TSymbolType = (stNone, stStabs, stDwarf, stDwarfSet, stDwarf3, stDwarf4);
   TSymbolTypes = set of TSymbolType;
 
   TCpuBitType = (cpu32, cpu64);
   TCpuBitTypes = set of TCpuBitType;
 
 const
-  SymbolTypeNames: Array [TSymbolType] of String = ('No_Dbg', 'Stabs', 'Dwarf', 'Dwarf+Sets', 'Dwarf3');
-  SymbolTypeSwitches: Array [TSymbolType] of String = ('', '-gs', '-gw', '-gw -godwarfsets', '-gw3');
+  SymbolTypeNames: Array [TSymbolType] of String = ('No_Dbg', 'Stabs', 'Dwarf', 'Dwarf+Sets', 'Dwarf3', 'Dwarf4');
+  SymbolTypeSwitches: Array [TSymbolType] of String = ('', '-gs', '-gw', '-gw -godwarfsets', '-gw3', '-gw4');
   CpuBitNames: Array [TCpuBitType] of String = ('32Bit', '64Bit');
+
+  stDwarf2 = [stDwarf, stDwarfSet];
+  stDwarf3Up = [stDwarf3, stDwarf4];
 
 type
   TExternalExeInfo = record
@@ -100,6 +103,7 @@ begin
     if s2 = 'gw' then Result := Result + [stDwarf];
     if s2 = 'gwset' then Result := Result + [stDwarfSet];
     if s2 = 'gw3' then Result := Result + [stDwarf3];
+    if s2 = 'gw4' then Result := Result + [stDwarf4];
   end;
 end;
 

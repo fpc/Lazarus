@@ -152,8 +152,8 @@ type
     function GetMemberCount: Integer; virtual;
     function GetIndexType({%H-}AIndex: Integer): TFpDbgSymbol; virtual;
     function GetIndexTypeCount: Integer; virtual;
-    function GetMemberCountEx({%H-}AIndex: array of Int64): Integer; virtual;
-    function GetMemberEx({%H-}AIndex: Array of Int64): TFpDbgValue; virtual;
+    function GetMemberCountEx(const AIndex: array of Int64): Integer; virtual;
+    function GetMemberEx(const AIndex: Array of Int64): TFpDbgValue; virtual;
 
     function GetDbgSymbol: TFpDbgSymbol; virtual;
     function GetTypeInfo: TFpDbgSymbol; virtual;
@@ -671,12 +671,12 @@ begin
   Result := 0;
 end;
 
-function TFpDbgValue.GetMemberEx(AIndex: array of Int64): TFpDbgValue;
+function TFpDbgValue.GetMemberEx(const AIndex: array of Int64): TFpDbgValue;
 begin
   Result := nil;
 end;
 
-function TFpDbgValue.GetMemberCountEx(AIndex: array of Int64): Integer;
+function TFpDbgValue.GetMemberCountEx(const AIndex: array of Int64): Integer;
 begin
   Result := 0;
 end;

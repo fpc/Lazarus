@@ -110,9 +110,9 @@ type
     procedure FreeDebugger;
     function WaitForFinishRun(ATimeOut: Integer = 5000; AWaitForInternal: Boolean = False): Boolean;
 
-    procedure SetBreakPoint(AFileName: String; ALine: Integer);
-    procedure SetBreakPoint(ACommonSource: TCommonSource; AName: String);
-    procedure SetBreakPoint(ACommonSource: TCommonSource; ASourceName, AName: String);
+    function SetBreakPoint(AFileName: String; ALine: Integer): TDBGBreakPoint;
+    function SetBreakPoint(ACommonSource: TCommonSource; AName: String): TDBGBreakPoint;
+    function SetBreakPoint(ACommonSource: TCommonSource; ASourceName, AName: String): TDBGBreakPoint;
 
     procedure CleanAfterTestDone; virtual;
 
@@ -413,25 +413,27 @@ begin
   until d > ATimeOut;
 end;
 
-procedure TTestDbgDebugger.SetBreakPoint(AFileName: String; ALine: Integer);
+function TTestDbgDebugger.SetBreakPoint(AFileName: String; ALine: Integer
+  ): TDBGBreakPoint;
 begin
-  with LazDebugger.BreakPoints.Add(AFileName, ALine) do begin
+  Result := LazDebugger.BreakPoints.Add(AFileName, ALine);
+  with Result do begin
     InitialEnabled := True;
     Enabled := True;
   end;
 end;
 
-procedure TTestDbgDebugger.SetBreakPoint(ACommonSource: TCommonSource;
-  AName: String);
+function TTestDbgDebugger.SetBreakPoint(ACommonSource: TCommonSource;
+  AName: String): TDBGBreakPoint;
 begin
-  SetBreakPoint(ACommonSource.FileName, ACommonSource.BreakPoints[AName]);
+  Result := SetBreakPoint(ACommonSource.FileName, ACommonSource.BreakPoints[AName]);
 end;
 
-procedure TTestDbgDebugger.SetBreakPoint(ACommonSource: TCommonSource;
-  ASourceName, AName: String);
+function TTestDbgDebugger.SetBreakPoint(ACommonSource: TCommonSource;
+  ASourceName, AName: String): TDBGBreakPoint;
 begin
   ACommonSource := ACommonSource.OtherSrc[ASourceName];
-  SetBreakPoint(ACommonSource.FileName, ACommonSource.BreakPoints[AName]);
+  Result := SetBreakPoint(ACommonSource.FileName, ACommonSource.BreakPoints[AName]);
 end;
 
 procedure TTestDbgDebugger.CleanAfterTestDone;

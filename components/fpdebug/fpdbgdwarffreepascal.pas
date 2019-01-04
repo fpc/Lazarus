@@ -530,6 +530,8 @@ var
   Info, Info2: TDwarfInformationEntry;
   n: AnsiString;
   UpperBoundSym: TFpDwarfSymbol;
+  val: TFpDbgValue;
+  l, h: Int64;
 begin
   Result := 0;
   t := TypeInfo;
@@ -545,7 +547,7 @@ begin
     if Info.HasAttrib(DW_AT_lower_bound) and
        not Info.HasAttrib(DW_AT_upper_bound)
     then begin
-      Info2 := TFpDwarfSymbolValueVariable(DbgSymbol).InformationEntry.Clone;
+      Info2 := TFpDwarfSymbolValueParameter(DbgSymbol).InformationEntry.Clone;
       Info2.GoNext;
       if Info2.HasValidScope and
          Info2.HasAttrib(DW_AT_location) and  // the high param must have a location / cannot be a constant
@@ -556,7 +558,17 @@ begin
         if (copy(n,1,4) = 'high') and (UpperCase(copy(n, 5, length(n))) = UpperCase(DbgSymbol.Name)) then begin
           UpperBoundSym := TFpDwarfSymbol.CreateSubClass('', Info2);
           if UpperBoundSym <> nil then begin
-            Result := UpperBoundSym.Value.AsInteger - t2.OrdLowBound + 1;
+            val := UpperBoundSym.Value;
+            TFpDwarfValue(val).Context := Context;
+            l := t2.OrdLowBound;
+            h := Val.AsInteger;
+            if h > l then begin
+              if h - l > 5000 then
+                h := l + 5000;
+            Result := h - l + 1;
+            end
+            else
+              Result := 0;
             Info2.ReleaseReference;
             UpperBoundSym.ReleaseReference;
             exit;
@@ -710,6 +722,10 @@ begin
 
   if HighBound < LowBound then
     exit; // empty string
+
+  // TODO: XXXXX Dynamic max limit
+  if HighBound - LowBound > 5000 then
+    HighBound := LowBound + 5000;
 
   SetLength(Result, HighBound-LowBound+1);
 
