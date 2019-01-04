@@ -194,7 +194,6 @@ type
   TFPLldbWatches = class(TWatchesSupplier)
   private
     FWatchEvalLock: Integer;
-    FNeedRegValues: Boolean;
     FEvaluationCmdObj: TFpLldbDebuggerCommandEvaluate;
   protected
     function  FpDebugger: TFpLldbDebugger;
@@ -697,21 +696,22 @@ var
     Result := (FpDebugger.FWatchEvalList.Count > 0) and (FpDebugger.FWatchEvalList[0] = Pointer(WatchValue));
   end;
 begin
-  if FNeedRegValues then begin
-    FNeedRegValues := False;
-    FpDebugger.Registers.CurrentRegistersList[FpDebugger.CurrentThreadId, FpDebugger.CurrentStackFrame].Count;
-    QueueCommand;
+  if (FpDebugger.FWatchEvalList.Count = 0) or (FWatchEvalLock > 0) then
     exit;
-  end;
-debugln(['ProcessEvalList ']);
 
-  if FWatchEvalLock > 0 then
-    exit;
+debugln(['ProcessEvalList ']);
   inc(FWatchEvalLock);
   try // TODO: if the stack/thread is changed, registers will be wrong
     while (FpDebugger.FWatchEvalList.Count > 0) and (FEvaluationCmdObj = nil) do begin
+      WatchValue := TWatchValue(FpDebugger.FWatchEvalList[0]);
+    if FpDebugger.Registers.CurrentRegistersList[WatchValue.ThreadId, WatchValue.StackFrame].Count = 0 then begin
+      // trigger register
+      FpDebugger.Registers.CurrentRegistersList[FpDebugger.CurrentThreadId, FpDebugger.CurrentStackFrame].Count;
+      QueueCommand;
+      exit;
+    end;
+
       try
-        WatchValue := TWatchValue(FpDebugger.FWatchEvalList[0]);
         ResTypeInfo := nil;
         if not FpDebugger.EvaluateExpression(WatchValue, WatchValue.Expression, ResText, ResTypeInfo)
         then begin
@@ -754,12 +754,9 @@ begin
   if FEvaluationCmdObj <> nil then exit;
 
   FpDebugger.Threads.CurrentThreads.Count; // trigger threads, in case
-  if FpDebugger.Registers.CurrentRegistersList[FpDebugger.CurrentThreadId, FpDebugger.CurrentStackFrame].Count = 0 then   // trigger register, in case
-    FNeedRegValues := True
-  else
-  begin
-    FNeedRegValues := False;
-  end;
+  // TODO currentframe should not be needed?
+  FpDebugger.Registers.CurrentRegistersList[FpDebugger.CurrentThreadId, FpDebugger.CurrentStackFrame].Count;  // trigger register, in case
+  FpDebugger.Registers.CurrentRegistersList[AWatchValue.ThreadId, AWatchValue.StackFrame].Count; // trigger register, in case
 
   // Join the queue, registers and threads are needed first
   QueueCommand;
