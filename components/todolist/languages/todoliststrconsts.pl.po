@@ -1,20 +1,20 @@
 msgid ""
 msgstr ""
-"Last-Translator: Tomasz Wieckowski <tomek@ump.edu.pl>\n"
-"PO-Revision-Date: 2011-01-29 22:22+0100\n"
+"Last-Translator: Sławomir Niedziela <slniedz@poczta.onet.pl>\n"
+"PO-Revision-Date: 2018-12-27 19:50+0100\n"
 "Project-Id-Version: todolist\n"
 "Language-Team: \n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
 "MIME-Version: 1.0\n"
-"X-Poedit-Language: Polish\n"
-"X-Poedit-Country: POLAND\n"
 "X-Poedit-SourceCharset: utf-8\n"
+"Language: pl_PL\n"
+"X-Generator: Poedit 2.2\n"
 
 #: todoliststrconsts.dlgfiltercsv
 msgid "CSV files"
-msgstr ""
+msgstr "Pliki CSV"
 
 #: todoliststrconsts.dlgunitdeprefresh
 msgid "Refresh"
@@ -26,15 +26,15 @@ msgstr "Wstaw Makro"
 
 #: todoliststrconsts.lishelp
 msgid "Help"
-msgstr ""
+msgstr "Pomoc"
 
 #: todoliststrconsts.lisoptions
 msgid "Options"
-msgstr ""
+msgstr "Opcje"
 
 #: todoliststrconsts.lispackages
 msgid "Packages"
-msgstr ""
+msgstr "Pakiety"
 
 #: todoliststrconsts.lispackageshint
 msgid "Extends \"%s\" and \"%s\" options by units from used packages"
@@ -46,7 +46,7 @@ msgstr "Tekst"
 
 #: todoliststrconsts.lissourceeditor
 msgid "Editor"
-msgstr ""
+msgstr "Edytor"
 
 #: todoliststrconsts.lissourceeditorhint
 msgctxt "todoliststrconsts.lissourceeditorhint"
@@ -78,8 +78,6 @@ msgid "Module"
 msgstr "Moduł"
 
 #: todoliststrconsts.listodolist
-#, fuzzy
-#| msgid "ToDo list"
 msgid "ToDo List"
 msgstr "Lista \"Do zrobienia\""
 
@@ -89,7 +87,7 @@ msgstr ""
 
 #: todoliststrconsts.listodolistedhint
 msgid "Add units listed in project inspector/package editor"
-msgstr ""
+msgstr "Dodaj moduły wymienione w inspektorze projektu/edytorze pakietu"
 
 #: todoliststrconsts.listodolistgotoline
 msgid "Goto selected source line"
@@ -113,19 +111,17 @@ msgstr "Priorytet"
 
 #: todoliststrconsts.listodoused
 msgid "Used"
-msgstr ""
+msgstr "Użyte"
 
 #: todoliststrconsts.listodousedhint
 msgid "Add units used by main source file"
-msgstr ""
+msgstr "Dodaj moduły użyte w głównym pliku źródłowym"
 
 #: todoliststrconsts.listtodolcategory
 msgid "Category"
 msgstr "Kategoria"
 
 #: todoliststrconsts.lisviewtodolist
-#, fuzzy
-#| msgid "View ToDo list"
 msgid "View ToDo List"
 msgstr "Pokaż listę"
 

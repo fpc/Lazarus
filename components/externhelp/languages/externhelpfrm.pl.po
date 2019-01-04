@@ -1,0 +1,106 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Sławomir Niedziela <slniedz@poczta.onet.pl>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pl\n"
+"X-Generator: Poedit 1.8.7.1\n"
+
+#: externhelpfrm.ehrsaddnewitem
+msgid "Add new item"
+msgstr "Dodaj nowy element"
+
+#: externhelpfrm.ehrsbrowse
+msgid "Browse ..."
+msgstr "Przeglądaj..."
+
+#: externhelpfrm.ehrsbrowseforpath
+msgid "Browse for path"
+msgstr "Przeglądaj ścieżki"
+
+#: externhelpfrm.ehrschooseapascalunit
+msgid "Choose a pascal unit"
+msgstr "Wybierz moduł Pascala"
+
+#: externhelpfrm.ehrsdeleteitem
+msgid "Delete item"
+msgstr "Skasuj element"
+
+#: externhelpfrm.ehrsdirectorynotfound
+msgid "Directory not found: %s"
+msgstr "Nie znaleziono katalogu: %s"
+
+#: externhelpfrm.ehrseditorfile
+msgid "Editor file ..."
+msgstr "Plik w edytorze..."
+
+#: externhelpfrm.ehrsexternal
+msgid "External"
+msgstr "Zewnętrzny"
+
+#: externhelpfrm.ehrsfilenotfound
+msgid "File not found: %s"
+msgstr "Nie znaleziono pliku: %s"
+
+#: externhelpfrm.ehrsgeneral
+msgid "General"
+msgstr "Ogólne"
+
+#: externhelpfrm.ehrsgrouptitle
+msgid "Extern help"
+msgstr "Zewnętrzny plik pomocy"
+
+#: externhelpfrm.ehrshelp
+msgid "Help"
+msgstr "Pomoc"
+
+#: externhelpfrm.ehrsincludesubdirectories
+msgid "Include sub directories"
+msgstr "Uwzględniaj podkatalogi"
+
+#: externhelpfrm.ehrsmacrofy
+msgid "Use macros"
+msgstr "Użyj makr"
+
+#: externhelpfrm.ehrsmysettings
+msgid "My settings (default)"
+msgstr "Moje ustawienia (domyślne)"
+
+#: externhelpfrm.ehrsname
+msgid "Name"
+msgstr "Nazwa"
+
+#: externhelpfrm.ehrsreplacecommondirectorieswithmacros
+msgid "Replace common directories with macros"
+msgstr "Zamieniaj nazwy katalogów makrami"
+
+#: externhelpfrm.ehrsselectafilefromthesourceeditor
+msgid "Select a file from the source editor"
+msgstr "Wybierz plik z edytora źródeł"
+
+#: externhelpfrm.ehrsselectfile
+msgid "Select file"
+msgstr "Wybierz plik"
+
+#: externhelpfrm.ehrsstorethisurlin
+msgid "Store this URL in"
+msgstr "Zapisz ten URL w"
+
+#: externhelpfrm.ehrsunitfileorunitdirectory
+msgid "Unit file or unit directory"
+msgstr "Plik modułu lub katalog modułu"
+
+#: externhelpfrm.ehrsurl
+msgid "URL"
+msgstr "URL"
+
+#: externhelpfrm.ehrswarning
+msgid "Warning"
+msgstr "Ostrzeżenie"
+

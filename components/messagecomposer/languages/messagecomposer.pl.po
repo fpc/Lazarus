@@ -1,0 +1,116 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Sławomir Niedziela <slniedz@poczta.onet.pl>\n"
+"Language-Team: \n"
+"Language: pl\n"
+"X-Generator: Poedit 1.8.7.1\n"
+
+#: messagecomposer.rscancel
+msgid "Cancel"
+msgstr "Anuluj"
+
+#: messagecomposer.rsok
+msgid "OK"
+msgstr "OK"
+
+#: messagecomposer.rstest
+msgid "Test"
+msgstr "Test"
+
+#: messagecomposer.sadd
+msgid "Add"
+msgstr "Dodaj"
+
+#: messagecomposer.sbuttonsarrayofconst
+msgid "Buttons (array of const)"
+msgstr "Przyciski (array of const)"
+
+#: messagecomposer.sbuttonstmsgdlgbuttons
+msgid "Buttons (TMsgDlgButtons)"
+msgstr "Przyciski (TMsgDlgButtons)"
+
+#: messagecomposer.scaseresult
+msgid "\"Case\" result"
+msgstr "Wynik \"case\""
+
+#: messagecomposer.sdefault
+msgid "Default"
+msgstr "Domyślnie"
+
+#: messagecomposer.sdelete
+msgid "Delete"
+msgstr "Usuń"
+
+#: messagecomposer.sdlgcaption
+msgid "Dialog caption"
+msgstr "Nagłówek okna"
+
+#: messagecomposer.sdlgtype
+msgid "Dialog type"
+msgstr "Typ okna"
+
+#: messagecomposer.shelpcontext
+msgid "Help context"
+msgstr "Kontekst pomocy"
+
+#: messagecomposer.shelpfilename
+msgid "Help filename"
+msgstr "Plik pomocy"
+
+#: messagecomposer.shelpkeyword
+msgid "Help keyword"
+msgstr "Słowo kluczowe pomocy"
+
+#: messagecomposer.sifresult
+msgid "\"If\" result"
+msgstr "Wynik \"If\""
+
+#: messagecomposer.skindofmessage
+msgid "Kind of message"
+msgstr "Rodzaj komunikatu"
+
+#: messagecomposer.smaskinput
+msgid "Mask input"
+msgstr "Ukryj znaki"
+
+#: messagecomposer.smessagecomposercaption
+msgctxt "messagecomposer.smessagecomposercaption"
+msgid "Message Composer"
+msgstr "Twórca okna komunikatów"
+
+#: messagecomposer.smessagecomposermenucaption
+msgctxt "messagecomposer.smessagecomposermenucaption"
+msgid "Message Composer ..."
+msgstr "Twórca okna komunikatów..."
+
+#: messagecomposer.smodalresult
+msgid "Modal result"
+msgstr "Wynik okna modalnego"
+
+#: messagecomposer.smsgcaption
+msgid "The message to be shown"
+msgstr "Wyświetlany komunikat"
+
+#: messagecomposer.snotimplementedyet
+msgid "Not implemented yet"
+msgstr "Jeszcze nie zaimplementowane"
+
+#: messagecomposer.spromptcaption
+msgid "Text asking the user for input"
+msgstr "Tekst zachęty do wprowadzenia danych"
+
+#: messagecomposer.ssourcewrapper
+msgid "Source wrapper"
+msgstr "Otocz kodem źródłowym"
+
+#: messagecomposer.svaluevar
+msgid "Value (var)"
+msgstr "Wartość (var)"
+

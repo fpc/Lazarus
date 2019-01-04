@@ -1,31 +1,30 @@
 msgid ""
 msgstr ""
-"Last-Translator: Tomasz Wieckowski <tomek@ump.edu.pl>\n"
-"PO-Revision-Date: 2009-08-21 18:54+0100\n"
+"Last-Translator: Sławomir Niedziela <slniedz@poczta.onet.pl>\n"
+"PO-Revision-Date: 2018-12-27 19:48+0100\n"
 "Project-Id-Version: synmacrorecorder\n"
 "Language-Team: \n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.3\n"
+"X-Generator: Poedit 2.2\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "POT-Creation-Date: \n"
 "MIME-Version: 1.0\n"
-"X-Poedit-Language: Polish\n"
-"X-Poedit-Country: POLAND\n"
+"Language: pl_PL\n"
 
 #: synmacrorecorder.scannotpause
 msgid "Can only pause when recording"
-msgstr "Mozna tylko zatrzymac gdy trwa nagrywanie"
+msgstr "Można tylko zatrzymać gdy trwa nagrywanie"
 
 #: synmacrorecorder.scannotplay
 msgid "Cannot playback macro when recording"
-msgstr "Nie mozna odtwarzac makra gdy trwa nagrywanie"
+msgstr "Nie można odtwarzać makra gdy trwa nagrywanie"
 
 #: synmacrorecorder.scannotrecord
 msgid "Cannot record macro when recording"
-msgstr "Nie mozna nagrac makra podczas nagrywania"
+msgstr "Nie można nagrać makra podczas nagrywania"
 
 #: synmacrorecorder.scannotresume
 msgid "Can only resume when paused"
-msgstr "Mozna tylko wznowic gdy zatrzymane"
+msgstr "Można wznowić tylko gdy zatrzymane"
 

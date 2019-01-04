@@ -1,0 +1,180 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Sławomir Niedziela <slniedz@poczta.onet.pl>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pl\n"
+"X-Generator: Poedit 1.8.7.1\n"
+
+#: guitestrunner.rsalltests
+msgid "All Tests"
+msgstr "Wszystkie testy"
+
+#: guitestrunner.rserrors
+msgid "%s    Errors: %s"
+msgstr ""
+
+#: guitestrunner.rsexception
+msgid "Exception: %s"
+msgstr "Wyjątek: %s"
+
+#: guitestrunner.rsexceptioncla
+msgid "Exception class: %s"
+msgstr "Klasa wyjątku: %s"
+
+#: guitestrunner.rsexceptionmes
+msgid "Exception message: %s"
+msgstr "Komunikat wyjątku: %s"
+
+#: guitestrunner.rsfailures
+msgid "%s     Failures: %s"
+msgstr ""
+
+#: guitestrunner.rslinenumber
+msgid "Line number: %s"
+msgstr "Numer wiersza: %s"
+
+#: guitestrunner.rsmessage
+msgid "Message: %s"
+msgstr "Komunikat: %s"
+
+#: guitestrunner.rsmethodname
+msgid "Method name: %s"
+msgstr "Nazwa metody: %s"
+
+#: guitestrunner.rsnumberofexec
+msgid "Number of executed tests: %s  Time elapsed: %s"
+msgstr "Liczba wykonanych testów: %s Czas wykonania: %s"
+
+#: guitestrunner.rsrun
+msgid "Run "
+msgstr "Uruchom"
+
+#: guitestrunner.rsrunning
+msgid "Running %s"
+msgstr "Uruchomiony %s"
+
+#: guitestrunner.rsruns
+msgid "Runs: %s/%s"
+msgstr "Działa: %s/%s"
+
+#: guitestrunner.rsunitname
+msgid "Unit name: %s"
+msgstr "Nazwa modułu: %s"
+
+#: guitestrunner.sactcheckall
+#, fuzzy
+#| msgid "Check all Tests"
+msgid "Select all tests"
+msgstr "Zaznacz wszystkie testy"
+
+#: guitestrunner.sactcheckcurrentsuite
+#, fuzzy
+#| msgid "Check the Current Suite"
+msgid "Select current suite"
+msgstr "Zaznacz bieżący zestaw"
+
+#: guitestrunner.sactcloseform
+msgid "Quit"
+msgstr "Zakończ"
+
+#: guitestrunner.sactcloseformh
+#, fuzzy
+#| msgid "Quit Testting"
+msgid "Quit testing"
+msgstr "Zakończ testowanie"
+
+#: guitestrunner.sactcopyalltoclipboard
+msgid "Copy text to clipboard"
+msgstr ""
+
+#: guitestrunner.sactcopyalltoclipboardh
+msgid "Copy the entire text to clipboard"
+msgstr ""
+
+#: guitestrunner.sactrunaction
+#, fuzzy
+#| msgid "&Run"
+msgid "&Run all"
+msgstr "U&ruchom"
+
+#: guitestrunner.sactrunactionh
+#, fuzzy
+#| msgid "Run all checked test(s)"
+msgid "Run all checked tests"
+msgstr "Wykonaj wszystkie zaznaczone testy"
+
+#: guitestrunner.sactrunhighlightedtest
+#, fuzzy
+#| msgid "Run highlighted test"
+msgctxt "guitestrunner.sactrunhighlightedtest"
+msgid "Run selected"
+msgstr "Wykonaj wybrany test"
+
+#: guitestrunner.sactrunhighlightedtesth
+msgid "Run selected test"
+msgstr ""
+
+#: guitestrunner.sactsaveresults
+msgid "Save results"
+msgstr ""
+
+#: guitestrunner.sactsaveresultsh
+msgid "Save XML results to file"
+msgstr ""
+
+#: guitestrunner.sactuncheckall
+#, fuzzy
+#| msgid "Uncheck all tests"
+msgid "Deselect all tests"
+msgstr "Odznacz wszystkie testy"
+
+#: guitestrunner.sactuncheckcurrentsuite
+#, fuzzy
+#| msgid "Uncheck the Current Suite"
+msgid "Deselect current suite"
+msgstr "Odznacz bieżący zestaw"
+
+#: guitestrunner.sbtnclose
+msgid "Close"
+msgstr "Zamknij"
+
+#: guitestrunner.sbtnrun
+msgid "Run"
+msgstr "Uruchom"
+
+#: guitestrunner.sbtnrunh
+msgctxt "guitestrunner.sbtnrunh"
+msgid "Run highlighted test"
+msgstr "Wykonaj wybrany test"
+
+#: guitestrunner.sfrmguitest
+msgid "FPCUnit - run unit test"
+msgstr ""
+
+#: guitestrunner.smiactions
+msgid "Actions"
+msgstr ""
+
+#: guitestrunner.smiedit
+msgid "Edit"
+msgstr ""
+
+#: guitestrunner.smitesttree
+msgid "Test tree"
+msgstr ""
+
+#: guitestrunner.stshresults
+msgid "Results XML"
+msgstr "Wynikowy XML"
+
+#: guitestrunner.stshtree
+msgid "Testcase tree"
+msgstr ""
+
