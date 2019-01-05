@@ -1237,11 +1237,16 @@ end;
 
 procedure TLldbDebuggerCommandLocals.DoExecute;
 begin
+  if FLocals = nil then begin
+    Finished;
+    exit;
+  end;
+
   if FLocalsInstr <> nil then begin
     FLocalsInstr.OnFinish := nil;
     ReleaseRefAndNil(FLocalsInstr);
   end;
-  FLocalsInstr := TLldbInstructionLocals.Create();
+  FLocalsInstr := TLldbInstructionLocals.Create(FLocals.ThreadId, FLocals.StackFrame);
   FLocalsInstr.OnFinish := @LocalsInstructionFinished;
   QueueInstruction(FLocalsInstr);
 end;
