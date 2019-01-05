@@ -39,7 +39,7 @@ uses
   // LCL
   Forms, StdCtrls, Dialogs, Spin, ExtCtrls, ColorBox,
   // IdeIntf
-  IDEOptionsIntf, IDEOptEditorIntf, IDEUtils, frmScout;
+  IDEOptionsIntf, IDEOptEditorIntf, frmScout;
 
 
 Type
@@ -54,14 +54,13 @@ Type
     CBSelectComponent: TCheckBox;
     Colors: TGroupBox;
     GBComponents: TGroupBox;
-    Label1: TLabel;
-    LComponentheight: TLabel;
+    LSEComponentDefaultWidth: TLabel;
+    LSEComponentDefaultHeight: TLabel;
     LCBShortCut: TLabel;
     LCBMatchColor: TLabel;
     Options: TGroupBox;
     SEComponentDefaultWidth: TSpinEdit;
     SEComponentDefaultHeight: TSpinEdit;
-    procedure CGSearchClick(Sender: TObject);
     procedure CGSearchItemClick(Sender: TObject; Index: integer);
   private
   public
@@ -77,11 +76,6 @@ implementation
 {$R *.lfm}
 
 { TIDEScoutOptionsFrame }
-
-procedure TIDEScoutOptionsFrame.CGSearchClick(Sender: TObject);
-begin
-
-end;
 
 procedure TIDEScoutOptionsFrame.CGSearchItemClick(Sender: TObject;
   Index: integer);
