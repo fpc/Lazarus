@@ -480,7 +480,6 @@ begin
     AddWatchesForFoo(t, 'Scope in FuncFooNestedTwice', 0);
     t.EvaluateWatches;
     t.CheckResults;
-exit;
 
     dbg.Run;
     Debugger.WaitForFinishRun();
