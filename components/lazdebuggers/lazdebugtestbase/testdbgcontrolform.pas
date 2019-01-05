@@ -7,7 +7,7 @@ interface
 uses
   Interfaces, Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
   EditBtn, ComCtrls, CheckLst, TestDbgControl, TestDbgConfig,
-  TTestDbgExecuteables, VirtualTrees;
+  TTestDbgExecuteables;
 
 type
 

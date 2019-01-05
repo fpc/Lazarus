@@ -8,6 +8,34 @@ uses
   Classes, SysUtils, DbgIntfDebuggerBase;
 
 type
+
+  { TTestCallStack }
+
+  TTestCallStack = class(TCallStackBase)
+  private
+    FList: TList;
+  protected
+    procedure Clear; virtual;
+    function  GetCount: Integer; override;
+    function  GetEntryBase(AIndex: Integer): TCallStackEntry; override;
+    //function  GetEntry(AIndex: Integer): TIdeCallStackEntry; virtual;
+//    procedure AddEntry(AnEntry: TIdeCallStackEntry); virtual; // must be added in correct order
+//    procedure AssignEntriesTo(AnOther: TTestCallStack); virtual;
+//  public
+//    procedure SetCountValidity({%H-}AValidity: TDebuggerDataState); override;
+//    procedure SetHasAtLeastCountInfo({%H-}AValidity: TDebuggerDataState; {%H-}AMinCount: Integer = - 1);  override;
+//    procedure SetCurrentValidity({%H-}AValidity: TDebuggerDataState); override;
+  public
+    constructor Create;
+    destructor Destroy; override;
+//    procedure Assign(AnOther: TCallStackBase); override;
+//    procedure PrepareRange({%H-}AIndex, {%H-}ACount: Integer); override;
+//    procedure ChangeCurrentIndex(ANewIndex: Integer); virtual;
+//    function HasAtLeastCount(ARequiredMinCount: Integer): TNullableBool; virtual; // Can be faster than getting the full count
+//    function CountLimited(ALimit: Integer): Integer; override;
+//    property Entries[AIndex: Integer]: TIdeCallStackEntry read GetEntry;
+  end;
+
   { TTestCallStackList }
 
   TTestCallStackList = class(TCallStackList)
@@ -127,6 +155,40 @@ type
   end;
 
 implementation
+
+{ TTestCallStack }
+
+procedure TTestCallStack.Clear;
+var
+  i: Integer;
+begin
+  for i := 0 to FList.Count - 1 do
+    TObject(FList[i]).Free;
+  FList.Clear;
+end;
+
+function TTestCallStack.GetCount: Integer;
+begin
+  Result := FList.Count;
+end;
+
+function TTestCallStack.GetEntryBase(AIndex: Integer): TCallStackEntry;
+begin
+  Result := TCallStackEntry(FList[AIndex]);
+end;
+
+constructor TTestCallStack.Create;
+begin
+  FList := TList.Create;
+  inherited Create;
+end;
+
+destructor TTestCallStack.Destroy;
+begin
+  inherited Destroy;
+  Clear;
+  FreeAndNil(FList);
+end;
 
 { TTestThreads }
 
@@ -388,7 +450,7 @@ end;
 
 function TTestCallStackList.NewEntryForThread(const AThreadId: Integer): TCallStackBase;
 begin
-  Result := TCallStackBase.Create;
+  Result := TTestCallStack.Create;
   Result.ThreadId := AThreadId;
   add(Result);
 end;

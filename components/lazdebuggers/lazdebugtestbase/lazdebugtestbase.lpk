@@ -79,7 +79,7 @@
         <Type Value="Include"/>
       </Item15>
     </Files>
-    <RequiredPkgs Count="6">
+    <RequiredPkgs Count="5">
       <Item1>
         <PackageName Value="fpdebug"/>
       </Item1>
@@ -87,17 +87,14 @@
         <PackageName Value="DebuggerIntf"/>
       </Item2>
       <Item3>
-        <PackageName Value="virtualtreeview_package"/>
+        <PackageName Value="LCL"/>
       </Item3>
       <Item4>
-        <PackageName Value="LCL"/>
+        <PackageName Value="LCLBase"/>
       </Item4>
       <Item5>
-        <PackageName Value="LCLBase"/>
-      </Item5>
-      <Item6>
         <PackageName Value="FCL"/>
-      </Item6>
+      </Item5>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>

@@ -2635,6 +2635,13 @@ components/lazdebuggers/lazdebuggerfplldb/gpl-2.0.txt svneol=native#text/plain
 components/lazdebuggers/lazdebuggerfplldb/gpl-3.0.txt svneol=native#text/plain
 components/lazdebuggers/lazdebuggerfplldb/lazdebuggerfplldb.lpk svneol=native#text/plain
 components/lazdebuggers/lazdebuggerfplldb/lazdebuggerfplldb.pas svneol=native#text/plain
+components/lazdebuggers/lazdebuggerfplldb/test/TestFpLldb.ico -text
+components/lazdebuggers/lazdebuggerfplldb/test/TestFpLldb.lpi svneol=native#text/pascal
+components/lazdebuggers/lazdebuggerfplldb/test/TestFpLldb.lpr svneol=native#text/pascal
+components/lazdebuggers/lazdebuggerfplldb/test/fpclist.txt.sample svneol=native#text/plain
+components/lazdebuggers/lazdebuggerfplldb/test/lldblist.txt.sample svneol=native#text/plain
+components/lazdebuggers/lazdebuggerfplldb/test/testbase.pas svneol=native#text/pascal
+components/lazdebuggers/lazdebuggerfplldb/test/testwatches.pas svneol=native#text/pascal
 components/lazdebuggers/lazdebuggerlldb/Makefile svneol=native#text/plain
 components/lazdebuggers/lazdebuggerlldb/Makefile.compiled svneol=native#text/plain
 components/lazdebuggers/lazdebuggerlldb/Makefile.fpc svneol=native#text/plain

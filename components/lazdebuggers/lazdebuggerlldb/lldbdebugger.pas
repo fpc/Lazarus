@@ -241,6 +241,20 @@ type
     property OnFinish: TNotifyEvent read FOnFinish write FOnFinish;
   end;
 
+  { TLldbDebuggerCommandRegister }
+
+  TLldbDebuggerCommandRegister = class(TLldbDebuggerCommand)
+  private
+    FRegisters: TRegisters;
+    procedure RegisterInstructionFinished(Sender: TObject);
+  protected
+    procedure DoExecute; override;
+  public
+    constructor Create(AOwner: TLldbDebugger; ARegisters: TRegisters);
+    destructor Destroy; override;
+    property Registers: TRegisters read FRegisters;
+  end;
+
   (*
    *  Debugger
    *)
@@ -338,6 +352,9 @@ type
 procedure Register;
 
 implementation
+
+var
+  DBG_VERBOSE: PLazLoggerLogGroup;
 
 type
 
@@ -481,20 +498,6 @@ type
     *****
     *****     Register
     ***** }
-
-  { TLldbDebuggerCommandRegister }
-
-  TLldbDebuggerCommandRegister = class(TLldbDebuggerCommand)
-  private
-    FRegisters: TRegisters;
-    procedure RegisterInstructionFinished(Sender: TObject);
-  protected
-    procedure DoExecute; override;
-  public
-    constructor Create(AOwner: TLldbDebugger; ARegisters: TRegisters);
-    destructor Destroy; override;
-    property Registers: TRegisters read FRegisters;
-  end;
 
   { TLldbRegisterSupplier }
 
@@ -1237,11 +1240,16 @@ end;
 
 procedure TLldbDebuggerCommandLocals.DoExecute;
 begin
+  if FLocals = nil then begin
+    Finished;
+    exit;
+  end;
+
   if FLocalsInstr <> nil then begin
     FLocalsInstr.OnFinish := nil;
     ReleaseRefAndNil(FLocalsInstr);
   end;
-  FLocalsInstr := TLldbInstructionLocals.Create();
+  FLocalsInstr := TLldbInstructionLocals.Create(FLocals.ThreadId, FLocals.StackFrame);
   FLocalsInstr.OnFinish := @LocalsInstructionFinished;
   QueueInstruction(FLocalsInstr);
 end;
@@ -1831,7 +1839,7 @@ var
   Instr: TLldbInstructionRegister;
 begin
   // TODO: store thread/frame when command is created
-  Instr := TLldbInstructionRegister.Create(Debugger.FCurrentThreadId, Debugger.FCurrentStackFrame);
+  Instr := TLldbInstructionRegister.Create(FRegisters.ThreadId, FRegisters.StackFrame);
   Instr.OnFinish := @RegisterInstructionFinished;
   QueueInstruction(Instr);
   Instr.ReleaseReference;
@@ -2163,7 +2171,8 @@ begin
   end;
 
   If StrMatches(TargetInstr.Res, [''{}, '','('{}, ')',''], found) then begin
-    if (found[1] = '(i386)') or (found[1] = '(i686)') then begin
+    if (found[1] = 'i386') or (found[1] = 'i686') then begin
+      DebugLn(DBG_VERBOSE, ['Target 32 bit: ', found[1]]);
       Debugger.FTargetWidth := 32;
       Debugger.FTargetRegisters[0] := '$eax';
       Debugger.FTargetRegisters[1] := '$edx';
@@ -2171,6 +2180,7 @@ begin
     end
     else
     if (found[1] = '(x86_64)') or  (found[1] = 'x86_64') then begin
+      DebugLn(DBG_VERBOSE, ['Target 64 bit: ', found[1]]);
       Debugger.FTargetWidth := 64;
       // target list  gives more detailed result. But until remote debugging is added, use the current system
       {$IFDEF MSWindows}
@@ -2187,6 +2197,7 @@ begin
   end
   else found := nil;
   if found = nil then begin
+    DebugLn(DBG_VERBOSE, ['Target bitness UNKNOWN']);
     // use architecture of IDE
     {$IFDEF cpu64}
     Debugger.FTargetWidth := 64;
@@ -2885,6 +2896,9 @@ procedure Register;
 begin
   RegisterDebugger(TLldbDebugger);
 end;
+
+initialization
+  DBG_VERBOSE       := DebugLogger.FindOrRegisterLogGroup('DBG_VERBOSE' {$IFDEF DBG_VERBOSE} , True {$ENDIF} );
 
 end.
 

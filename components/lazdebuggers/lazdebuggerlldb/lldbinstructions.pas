@@ -276,7 +276,7 @@ type
     function ProcessInputFromDbg(const AData: String): Boolean; override;
     procedure SendCommandDataToDbg(); override;
   public
-    constructor Create;
+    constructor Create(AThread, AFrame: Integer);
     destructor Destroy; override;
     property Res: TStringList read FRes;
   end;
@@ -1025,9 +1025,9 @@ begin
   Queue.SendDataToDBG(Self, 'version'); // end marker // do not sent before new prompt
 end;
 
-constructor TLldbInstructionLocals.Create;
+constructor TLldbInstructionLocals.Create(AThread, AFrame: Integer);
 begin
-  inherited Create('frame variable -P 1 -D 5'); // TODO: make -D 5 configurable
+  inherited Create('frame variable -P 1 -D 5', AThread, AFrame); // TODO: make -D 5 configurable
   FRes := TStringList.Create;
 end;
 
