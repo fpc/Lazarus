@@ -1523,8 +1523,8 @@ end;
 destructor TFpLldbDebugger.Destroy;
 begin
   UnLoadDwarf;
-  FWatchEvalList.Free;
   inherited Destroy;
+  FWatchEvalList.Free;
 end;
 
 procedure Register;
