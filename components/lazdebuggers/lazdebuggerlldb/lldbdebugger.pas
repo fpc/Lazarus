@@ -339,6 +339,9 @@ procedure Register;
 
 implementation
 
+var
+  DBG_VERBOSE: PLazLoggerLogGroup;
+
 type
 
   {%region
@@ -2168,7 +2171,8 @@ begin
   end;
 
   If StrMatches(TargetInstr.Res, [''{}, '','('{}, ')',''], found) then begin
-    if (found[1] = '(i386)') or (found[1] = '(i686)') then begin
+    if (found[1] = 'i386') or (found[1] = 'i686') then begin
+      DebugLn(DBG_VERBOSE, ['Target 32 bit: ', found[1]]);
       Debugger.FTargetWidth := 32;
       Debugger.FTargetRegisters[0] := '$eax';
       Debugger.FTargetRegisters[1] := '$edx';
@@ -2176,6 +2180,7 @@ begin
     end
     else
     if (found[1] = '(x86_64)') or  (found[1] = 'x86_64') then begin
+      DebugLn(DBG_VERBOSE, ['Target 64 bit: ', found[1]]);
       Debugger.FTargetWidth := 64;
       // target list  gives more detailed result. But until remote debugging is added, use the current system
       {$IFDEF MSWindows}
@@ -2192,6 +2197,7 @@ begin
   end
   else found := nil;
   if found = nil then begin
+    DebugLn(DBG_VERBOSE, ['Target bitness UNKNOWN']);
     // use architecture of IDE
     {$IFDEF cpu64}
     Debugger.FTargetWidth := 64;
@@ -2890,6 +2896,9 @@ procedure Register;
 begin
   RegisterDebugger(TLldbDebugger);
 end;
+
+initialization
+  DBG_VERBOSE       := DebugLogger.FindOrRegisterLogGroup('DBG_VERBOSE' {$IFDEF DBG_VERBOSE} , True {$ENDIF} );
 
 end.
 
