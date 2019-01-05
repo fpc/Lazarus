@@ -30,7 +30,8 @@ type
     FRegX: TRegExpr;
 
     // Logging
-    FLogFile: TextFile;
+    FLogLock: TRTLCriticalSection;
+    FLogFile: TLazLoggerFileHandle;
     FLogFileCreated: Boolean;
     FLogFileName, FLogBufferText: String;
     procedure InitLog;
@@ -467,25 +468,38 @@ var
   dir: String;
 begin
   if FLogFileCreated then exit;
+  EnterCriticalsection(FLogLock);
+  try
+    if FLogFileCreated then exit;
 
-  name := GetLogFileName;
-  for i := 1 to length(name) do
-    if name[i] in ['/', '\', '*', '?', ':'] then
-      name[i] := '_';
+    name := GetLogFileName;
+    for i := 1 to length(name) do
+      if name[i] in ['/', '\', '*', '?', ':'] then
+        name[i] := '_';
 
-  if DirectoryExistsUTF8(TestControlGetLogPath) then
-    dir := TestControlGetLogPath
-  else
-    dir := GetCurrentDirUTF8;
+    if DirectoryExistsUTF8(TestControlGetLogPath) then
+      dir := TestControlGetLogPath
+    else
+      dir := GetCurrentDirUTF8;
 
-  FLogFileName := dir + name;
+    FLogFileName := dir + name;
 
-  AssignFile(FLogFile, FLogFileName + '.log.running');
-  Rewrite(FLogFile);
-  FLogFileCreated := True;
+    {$IFDEF Windows}
+    FLogFile := TLazLoggerFileHandleThreadSave.Create;
+    {$ELSE}
+    FLogFile := TLazLoggerFileHandleMainThread.Create;
+    {$ENDIF}
+    FLogFile.LogName := FLogFileName + '.log.running';
+    //AssignFile(FLogFile, FLogFileName + '.log.running');
+    //Rewrite(FLogFile);
+    FLogFileCreated := True;
 
-  writeln(FLogFile, FLogBufferText);
-  FLogBufferText := '';
+    FLogFile.WriteLnToFile(FLogBufferText);
+    //writeln(FLogFile, FLogBufferText);
+    FLogBufferText := '';
+  finally
+    LeaveCriticalsection(FLogLock);
+  end;
 end;
 
 procedure TDBGTestCase.FinishLog;
@@ -493,8 +507,10 @@ var
   NewName: String;
 begin
   if FLogFileCreated then begin
-    CloseFile(FLogFile);
+    FreeAndNil(FLogFile);
+    //CloseFile(FLogFile);
     NewName := GetFinalLogFileName;
+    sleep(5);
     RenameFileUTF8(FLogFileName + '.log.running', NewName + '.log');
   end;
   FLogBufferText := '';
@@ -510,12 +526,18 @@ procedure TDBGTestCase.LogText(const s: string; CopyToTestLogger: Boolean);
 begin
   if GetLogActive then begin
     CreateLog;
-    writeln(FLogFile, EscapeText(s));
+    FLogFile.WriteLnToFile(EscapeText(s));
+    //writeln(FLogFile, EscapeText(s));
   end
   else begin
-    if length(FLogBufferText) > 50000000 then
-      Delete(FLogBufferText, 1 , Length(s + LineEnding));
-    FLogBufferText := FLogBufferText + EscapeText(s) + LineEnding;
+    EnterCriticalsection(FLogLock);
+    try
+      if length(FLogBufferText) > 20000000 then
+        Delete(FLogBufferText, 1 , Length(s + LineEnding));
+      FLogBufferText := FLogBufferText + EscapeText(s) + LineEnding;
+    finally
+      LeaveCriticalsection(FLogLock);
+    end;
   end;
   if CopyToTestLogger then
     TestLogger.DebugLn(s);
@@ -525,7 +547,8 @@ procedure TDBGTestCase.LogError(const s: string; CopyToTestLogger: Boolean);
 begin
   if GetLogActive or (TestControlGetWriteLog = wlOnError) then
     CreateLog;
-  writeln(FLogFile, EscapeText(s));
+  FLogFile.WriteLnToFile(EscapeText(s));
+  //writeln(FLogFile, EscapeText(s));
   if CopyToTestLogger then
     TestLogger.DebugLn(s);
 end;
@@ -557,6 +580,7 @@ procedure TDBGTestCase.SetUp;
 var
   i: Integer;
 begin
+  InitCriticalSection(FLogLock);
   ClearTestErrors;
   FTotalErrorCnt := 0;
   FTotalIgnoredErrorCnt := 0;
@@ -578,6 +602,7 @@ begin
   DebugLogger.OnDebugLn := nil;
   FinishLog;
   FreeAndNil(FRegX);
+  DoneCriticalsection(FLogLock);
 end;
 
 procedure TDBGTestCase.RunTest;
