@@ -158,6 +158,7 @@ type
                                 EvalFlags: TDBGEvaluateFlags = []): Boolean;
     property CurrentThreadId;
     property CurrentStackFrame;
+    property CommandQueue;
   public
     class function Caption: String; override;
     class function RequiredCompilerOpts(ATargetCPU, ATargetOS: String): TDebugCompilerRequirements; override;
@@ -572,6 +573,8 @@ var
   i: Integer;
   Reg: TRegisters;
   RegVObj: TRegisterDisplayValue;
+  CmdQueue: TLldbDebuggerCommandQueue;
+  QItem: TLldbDebuggerCommand;
 begin
   Result := False;
 
@@ -618,6 +621,29 @@ begin
   assert(AContext <> nil, 'TFpLldbDbgMemReader.ReadRegister: AContext <> nil');
 
   Reg := FDebugger.Registers.CurrentRegistersList[AContext.ThreadId, AContext.StackFrame];
+  Reg.Count; // trigger
+  if (reg.DataValidity = ddsRequested) then begin
+    CmdQueue := FDebugger.CommandQueue;
+    if CmdQueue.Count > 0 then begin;
+      QItem := CmdQueue.Items[CmdQueue.Count - 1];
+      if (QItem is TLldbDebuggerCommandRegister) and (TLldbDebuggerCommandRegister(QItem).Registers = Reg) then begin
+        QItem.AddReference;
+        CmdQueue.Delete(CmdQueue.Count - 1);
+        QItem.Execute;
+        while Reg.DataValidity = ddsRequested do begin
+          Application.ProcessMessages;
+          CheckSynchronize(25);
+        end;
+        QItem.ReleaseReference;
+      end;
+    end;
+  end;
+
+  if (reg.Count = 0) or (reg.DataValidity <> ddsValid) then begin
+    DebugLn(DBG_VERBOSE, ['Cant get Registers for context ', AContext.ThreadId, ', ', AContext.StackFrame, ', ', dbgs(Reg.DataValidity), ' Reg:', rname]);
+    exit;
+  end;
+
   for i := 0 to Reg.Count - 1 do
     if UpperCase(Reg[i].Name) = rname then
       begin

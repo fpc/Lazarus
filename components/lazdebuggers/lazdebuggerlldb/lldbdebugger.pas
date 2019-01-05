@@ -241,6 +241,20 @@ type
     property OnFinish: TNotifyEvent read FOnFinish write FOnFinish;
   end;
 
+  { TLldbDebuggerCommandRegister }
+
+  TLldbDebuggerCommandRegister = class(TLldbDebuggerCommand)
+  private
+    FRegisters: TRegisters;
+    procedure RegisterInstructionFinished(Sender: TObject);
+  protected
+    procedure DoExecute; override;
+  public
+    constructor Create(AOwner: TLldbDebugger; ARegisters: TRegisters);
+    destructor Destroy; override;
+    property Registers: TRegisters read FRegisters;
+  end;
+
   (*
    *  Debugger
    *)
@@ -484,20 +498,6 @@ type
     *****
     *****     Register
     ***** }
-
-  { TLldbDebuggerCommandRegister }
-
-  TLldbDebuggerCommandRegister = class(TLldbDebuggerCommand)
-  private
-    FRegisters: TRegisters;
-    procedure RegisterInstructionFinished(Sender: TObject);
-  protected
-    procedure DoExecute; override;
-  public
-    constructor Create(AOwner: TLldbDebugger; ARegisters: TRegisters);
-    destructor Destroy; override;
-    property Registers: TRegisters read FRegisters;
-  end;
 
   { TLldbRegisterSupplier }
 
