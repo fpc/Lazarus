@@ -1169,6 +1169,8 @@ var
   t: TThreadEntry;
   s: TCallStackBase;
   f: TCallStackEntry;
+  r: TRegisters;
+  v: string;
   //Instr: TLldbDebuggerInstruction;
 begin
 (*
@@ -1209,6 +1211,21 @@ begin
 //    Result := t.TopFrame.Address;
 //    //DebugLn(['Returning addr from Threads', dbgs(Result)]);
     exit;
+  end;
+
+
+  r := Registers.CurrentRegistersList[AThreadId, AStackFrame];
+  if (r <> nil) and (r.DataValidity = ddsValid) then begin
+    try
+      if TargetWidth = 64 then
+        v := r.EntriesByName['RIP'].ValueObjFormat[rdDefault].Value[rdDefault]
+      else
+        v := r.EntriesByName['EIP'].ValueObjFormat[rdDefault].Value[rdDefault];
+      if pos(' ', v) > 1 then v := copy(v, 1, pos(' ', v)-1);
+      Result := StrToQWord(v);
+      exit;
+    except
+    end;
   end;
 
   s := CallStack.CurrentCallStackList.EntriesForThreads[AThreadId];
