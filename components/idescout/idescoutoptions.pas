@@ -39,7 +39,7 @@ uses
   // LCL
   Forms, StdCtrls, Dialogs, Spin, ExtCtrls, ColorBox,
   // IdeIntf
-  IDEOptionsIntf, IDEOptEditorIntf, frmScout;
+  IDEOptionsIntf, IDEOptEditorIntf, frmScout, IDEScoutStrConsts;
 
 
 Type
@@ -52,13 +52,13 @@ Type
     CBShortCutColor: TColorBox;
     CBShowCategory: TCheckBox;
     CBSelectComponent: TCheckBox;
-    Colors: TGroupBox;
+    GBColors: TGroupBox;
     GBComponents: TGroupBox;
     LSEComponentDefaultWidth: TLabel;
     LSEComponentDefaultHeight: TLabel;
     LCBShortCut: TLabel;
     LCBMatchColor: TLabel;
-    Options: TGroupBox;
+    GBOptions: TGroupBox;
     SEComponentDefaultWidth: TSpinEdit;
     SEComponentDefaultHeight: TSpinEdit;
     procedure CGSearchItemClick(Sender: TObject; Index: integer);
@@ -86,14 +86,30 @@ end;
 
 function TIDEScoutOptionsFrame.GetTitle: String;
 begin
-  Result:='IDE Scout';
+  Result:=isrsIDEScout;
 end;
 
 procedure TIDEScoutOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
-
-
 begin
-  // Do nothing, maybe localize ?
+  CGSearch.Caption:=isrsSearchScope;
+  CGSearch.Items[0]:=isrsCommands;
+  CGSearch.Items[1]:=isrsRecentProjects;
+  CGSearch.Items[2]:=isrsRecentFiles;
+  CGSearch.Items[3]:=isrsRecentPackages;
+  CGSearch.Items[4]:=isrsComponents;
+
+  GBOptions.Caption:=isrsOptions;
+  CBShowShortCut.Caption:=isrsShowShOrtcutWhenAvailable;
+  CBShowCategory.Caption:=isrsShowCategoryWhenAvailable;
+
+  GBColors.Caption:=isrsColors;
+  LCBMatchColor.Caption:=isrsMatches;
+  LCBShortCut.Caption:=isrsShortcut;
+
+  GBComponents.Caption:=isrsComponents;
+  CBSelectComponent.Caption:=isrsOnlySelectOnComponentPalette;
+  LSEComponentDefaultWidth.Caption:=isrsDefaultWidth;
+  LSEComponentDefaultHeight.Caption:=isrsDefaultHeight;
 end;
 
 procedure TIDEScoutOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);

@@ -35,7 +35,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LazUTF8, Forms, Controls, Graphics, Dialogs, ComponentReg,
-  StdCtrls, EditBtn, IDECommands, LazIDEIntf, Types, LCLType, IDEOptionsIntf, IDEOptEditorIntf;
+  StdCtrls, EditBtn, IDECommands, LazIDEIntf, Types, LCLType, IDEOptionsIntf, IDEOptEditorIntf, IDEScoutStrConsts;
 
 Type
   TScoutTerrain = (stCommands,stRecentProjects,stRecentFiles,stRecentPackages,stComponents);
@@ -526,7 +526,9 @@ procedure TIDEScoutForm.FormCreate(Sender: TObject);
 begin
   FSearchItems:=TStringList.Create;
   FSearchItems.OwnsObjects:=True;
+  Caption:=isrsIDEScout;
   FOrgCaption:=Caption;
+  ESearch.TextHint:=isrsTypeSearchTerms;
 end;
 
 procedure TIDEScoutForm.FormDestroy(Sender: TObject);

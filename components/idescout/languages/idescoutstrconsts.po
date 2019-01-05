@@ -1,0 +1,79 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: idescoutstrconsts.isrscolors
+msgid "Colors"
+msgstr ""
+
+#: idescoutstrconsts.isrscommands
+msgid "Commands"
+msgstr ""
+
+#: idescoutstrconsts.isrscomponents
+msgid "Components"
+msgstr ""
+
+#: idescoutstrconsts.isrsdefaultheight
+msgid "Default height"
+msgstr ""
+
+#: idescoutstrconsts.isrsdefaultwidth
+msgid "Default width"
+msgstr ""
+
+#: idescoutstrconsts.isrsidescout
+msgid "IDE Scout"
+msgstr ""
+
+#: idescoutstrconsts.isrsmatches
+msgid "&Matches"
+msgstr ""
+
+#: idescoutstrconsts.isrsonlyselectoncomponentpalette
+msgid "Only select on component palette"
+msgstr ""
+
+#: idescoutstrconsts.isrsoptions
+msgid "Options"
+msgstr ""
+
+#: idescoutstrconsts.isrsrecentfiles
+msgid "Recent Files"
+msgstr ""
+
+#: idescoutstrconsts.isrsrecentpackages
+msgid "Recent Packages"
+msgstr ""
+
+#: idescoutstrconsts.isrsrecentprojects
+msgid "Recent Projects"
+msgstr ""
+
+#: idescoutstrconsts.isrssearchscope
+msgid "Search scope"
+msgstr ""
+
+#: idescoutstrconsts.isrsshortcut
+msgid "&Shortcut"
+msgstr ""
+
+#: idescoutstrconsts.isrsshowcategorywhenavailable
+msgid "Show &Category when available"
+msgstr ""
+
+#: idescoutstrconsts.isrsshowidescout
+msgid "Show IDE Scout"
+msgstr ""
+
+#: idescoutstrconsts.isrsshowidescoutmenu
+msgid "Show IDE Scout ..."
+msgstr ""
+
+#: idescoutstrconsts.isrsshowshortcutwhenavailable
+msgid "Show Sh&ortcut when available"
+msgstr ""
+
+#: idescoutstrconsts.isrstypesearchterms
+msgid "Type search terms"
+msgstr ""
+

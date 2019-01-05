@@ -8,7 +8,7 @@ unit idescout;
 interface
 
 uses
-  RegIDEScout, frmscout, IDEScoutOptions, LazarusPackageIntf;
+  RegIDEScout, frmscout, IDEScoutOptions, IDEScoutStrConsts, LazarusPackageIntf;
 
 implementation
 

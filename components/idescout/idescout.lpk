@@ -14,7 +14,7 @@
 See the ReadMe.txt included in the package for a more detailed explanation."/>
     <License Value="Modified LGPL-2"/>
     <Version Release="1"/>
-    <Files Count="4">
+    <Files Count="5">
       <Item1>
         <Filename Value="regidescout.pas"/>
         <HasRegisterProc Value="True"/>
@@ -32,6 +32,10 @@ See the ReadMe.txt included in the package for a more detailed explanation."/>
         <Filename Value="idescoutoptions.pas"/>
         <UnitName Value="IDEScoutOptions"/>
       </Item4>
+      <Item5>
+        <Filename Value="idescoutstrconsts.pas"/>
+        <UnitName Value="IDEScoutStrConsts"/>
+      </Item5>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

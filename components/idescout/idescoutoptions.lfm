@@ -42,20 +42,20 @@ object IDEScoutOptionsFrame: TIDEScoutOptionsFrame
       050000000202020202
     }
   end
-  object Options: TGroupBox
+  object GBOptions: TGroupBox
     Left = 0
     Height = 76
     Top = 151
     Width = 427
     Align = alTop
     AutoSize = True
-    Caption = 'Options'
+    Caption = 'GBOptions'
     ClientHeight = 56
     ClientWidth = 423
     TabOrder = 1
     object CBShowShortCut: TCheckBox
-      AnchorSideLeft.Control = Options
-      AnchorSideTop.Control = Options
+      AnchorSideLeft.Control = GBOptions
+      AnchorSideTop.Control = GBOptions
       Left = 6
       Height = 19
       Top = 6
@@ -66,7 +66,7 @@ object IDEScoutOptionsFrame: TIDEScoutOptionsFrame
       TabOrder = 0
     end
     object CBShowCategory: TCheckBox
-      AnchorSideLeft.Control = Options
+      AnchorSideLeft.Control = GBOptions
       AnchorSideTop.Control = CBShowShortCut
       AnchorSideTop.Side = asrBottom
       Left = 6
@@ -80,14 +80,14 @@ object IDEScoutOptionsFrame: TIDEScoutOptionsFrame
       TabOrder = 1
     end
   end
-  object Colors: TGroupBox
+  object GBColors: TGroupBox
     Left = 0
     Height = 69
     Top = 227
     Width = 427
     Align = alTop
     AutoSize = True
-    Caption = 'Colors'
+    Caption = 'GBColors'
     ClientHeight = 49
     ClientWidth = 423
     TabOrder = 2
@@ -117,8 +117,8 @@ object IDEScoutOptionsFrame: TIDEScoutOptionsFrame
       TabOrder = 1
     end
     object LCBMatchColor: TLabel
-      AnchorSideLeft.Control = Colors
-      AnchorSideTop.Control = Colors
+      AnchorSideLeft.Control = GBColors
+      AnchorSideTop.Control = GBColors
       Left = 6
       Height = 15
       Top = 6

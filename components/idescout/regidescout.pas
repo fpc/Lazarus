@@ -35,13 +35,13 @@ interface
 
 uses
   // IdeIntf
-  IDEOptionsIntf, IDEOptEditorIntf, IDEUtils, Classes, SysUtils;
+  IDEOptionsIntf, IDEOptEditorIntf, Classes, SysUtils;
 
 Procedure Register;
 
 implementation
 
-uses IDEScoutOptions,forms, graphics,lcltype,idecommands,toolbarintf, idewindowintf, menuintf, frmscout;
+uses IDEScoutOptions,forms, graphics,lcltype,idecommands,toolbarintf, idewindowintf, menuintf, frmscout, IDEScoutStrConsts;
 
 Procedure IdeMenuClicked(Sender : TObject);
 
@@ -72,14 +72,16 @@ begin
   IDECommandCategory := IDECommandList.FindCategoryByName(CommandCategoryViewName);
   if IDECommandCategory <> nil then
   begin
-    IDECommand := RegisterIDECommand(IDECommandCategory, 'IDEScout', 'Open IDE Scout',
+    IDECommand := RegisterIDECommand(IDECommandCategory, 'IDEScout',
+      isrsShowIDEScout,
       IDEShortCutX, nil, @IDEMenuClicked);
     if IDECommand <> nil then
       RegisterIDEButtonCommand(IDECommand);
   end;
   IDEScoutOptionsFrameID:=RegisterIDEOptionsEditor(GroupEnvironment,TIDEScoutOptionsFrame,
                                               IDEScoutOptionsFrameID)^.Index;
-  RegisterIDEMenuCommand(itmViewIDEInternalsWindows, 'IDEScout', 'Open IDE Scout', nil,
+  RegisterIDEMenuCommand(itmViewIDEInternalsWindows, 'IDEScout',
+    isrsShowIDEScoutMenu, nil,
     @IDEMenuClicked,IDECommand);
   IDEWindowCreators.Add('IDEScout',@CreateScoutWindow,nil,'40%','10%','+500','+240');
 end;
