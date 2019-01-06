@@ -611,8 +611,11 @@ var
   AddressMap: TDbgAddressMap;
   ProcName: string;
   DwarfDebugMap: TAppleDwarfDebugMap;
+  FullDwarfDebugMap: TDbgAddressMapPointerHashList;
+  ind: THTCustomNode;
 begin
   DwarfDebugMap:=nil;
+  FullDwarfDebugMap := TDbgAddressMapPointerHashList.Create;
   p := Section[_symbol];
   ps := Section[_symbolstrings];
   if assigned(p) and assigned(ps) then
@@ -656,6 +659,12 @@ begin
                 DwarfDebugMap.clear;
               DwarfDebugMap.Dir := pchar(SymbolStr+StringOffset);
               state := dtsDir;
+            end
+            else if (SymbolType in [14,15]) then begin
+              ind := FullDwarfDebugMap.Find(pchar(SymbolStr+StringOffset));
+              if (ind <> nil) and (FullDwarfDebugMap.ItemPointerFromNode(ind)^.NewAddr = 0) then begin
+                FullDwarfDebugMap.ItemPointerFromNode(ind)^.NewAddr := SymbolValue;
+              end;
             end;
           end;
         dtsDir:
@@ -683,12 +692,17 @@ begin
             begin
               inc(state);
             end
-            else if (SymbolType = N_STSYM) then
+            else if (SymbolType = N_STSYM) or (SymbolType = N_GSYM) then
             begin
               AddressMap.NewAddr:=SymbolValue;
               AddressMap.OrgAddr:=0;
               AddressMap.Length:=0;
               DwarfDebugMap.GlobalList.Add(pchar(SymbolStr+StringOffset), AddressMap);
+              if (SymbolType = N_GSYM) and (SymbolValue = 0) then begin
+                ind := DwarfDebugMap.GlobalList.Find(pchar(SymbolStr+StringOffset));
+                FullDwarfDebugMap.Add(pchar(SymbolStr+StringOffset),
+                  DwarfDebugMap.GlobalList.ItemPointerFromNode(ind));
+              end;
             end
             else if (SymbolType = N_SO) and (SymbolSect=1) then
             begin
@@ -725,6 +739,7 @@ begin
       end;
     end;
   end;
+  FullDwarfDebugMap.Free;
 end;
 
 procedure TDbgMachoDataSource.ParseSubAppleDwarfDataMap(ADebugMap: TObject);
@@ -780,7 +795,7 @@ begin
         ind := MainDwarfDebugMap.GlobalList.Find(s);
         if assigned(ind) then
           begin
-            AddressMap:=MainDwarfDebugMap.GlobalList.Items[s];
+            AddressMap:=MainDwarfDebugMap.GlobalList.ItemFromNode(ind);
             AddressMap.OrgAddr:=SymbolValue;
             AddressMapList.Add(AddressMap);
           end;
@@ -791,7 +806,7 @@ begin
         ind := MainDwarfDebugMap.GlobalList.Find(s);
         if assigned(ind) then
           begin
-            AddressMap:=MainDwarfDebugMap.GlobalList.Items[s];
+            AddressMap:=MainDwarfDebugMap.GlobalList.ItemFromNode(ind);
             AddressMap.OrgAddr:=SymbolValue;
             AddressMapList.Add(AddressMap);
           end;
