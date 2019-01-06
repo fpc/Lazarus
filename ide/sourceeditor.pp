@@ -8330,10 +8330,14 @@ end;
 
 procedure TSourceNotebook.CloseTabClicked(Sender: TObject);
 begin
-  if GetKeyShiftState * [ssShift, ssCtrl, ssAlt] = EditorOpts.MiddleTabClickClosesOthersModifier then
+  if (GetKeyShiftState * [ssShift, ssCtrl, ssAlt] = EditorOpts.MiddleTabClickClosesOthersModifier) and
+     (EditorOpts.MiddleTabClickClosesOthersModifier <> [])
+  then
     CloseClicked(Sender, [ceoCloseOthers])
   else
-  if GetKeyShiftState * [ssShift, ssCtrl, ssAlt] = EditorOpts.MiddleTabClickClosesToRightModifier then
+  if (GetKeyShiftState * [ssShift, ssCtrl, ssAlt] = EditorOpts.MiddleTabClickClosesToRightModifier) and
+     (EditorOpts.MiddleTabClickClosesToRightModifier <> [])
+  then
     CloseClicked(Sender, [ceoCloseOthersOnRightSide])
   else
     CloseClicked(Sender, []);
@@ -8616,10 +8620,14 @@ begin
   begin
     TabIndex:=FNotebook.IndexOfPageAt(X, Y);
     if TabIndex>=0 then begin
-      if GetKeyShiftState * [ssShift, ssCtrl, ssAlt] = EditorOpts.MiddleTabClickClosesOthersModifier then
+      if (GetKeyShiftState * [ssShift, ssCtrl, ssAlt] = EditorOpts.MiddleTabClickClosesOthersModifier) and
+         (EditorOpts.MiddleTabClickClosesOthersModifier <> [])
+      then
         CloseClicked(NoteBookPage[TabIndex], [ceoCloseOthers])
       else
-      if GetKeyShiftState * [ssShift, ssCtrl, ssAlt] = EditorOpts.MiddleTabClickClosesToRightModifier then
+      if (GetKeyShiftState * [ssShift, ssCtrl, ssAlt] = EditorOpts.MiddleTabClickClosesToRightModifier) and
+         (EditorOpts.MiddleTabClickClosesToRightModifier <> [])
+      then
         CloseClicked(NoteBookPage[TabIndex], [ceoCloseOthersOnRightSide])
       else
         CloseClicked(NoteBookPage[TabIndex], []);
