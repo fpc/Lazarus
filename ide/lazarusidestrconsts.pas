@@ -1636,7 +1636,8 @@ resourcestring
   dlgScrollHint = 'Show scroll hint';
   lisShowSpecialCharacters = 'Show special characters';
   dlgCloseButtonsNotebook = 'Show close buttons in notebook';
-  dlgCtrlMiddleTabCloseOtherPages = 'Ctrl-middle-click on tab closes all others';
+  dlgMiddleTabCloseOtherPagesMod = 'Middle-click-modifier to close all other tabs';
+  dlgMiddleTabCloseRightPagesMod = 'Middle-click-modifier to close tabs on the right';
   dlgShowFileNameInCaption = 'Show file name in caption';
   dlgSourceEditTabMultiLine = 'Multiline tabs';
   dlgHideSingleTabInNotebook = 'Hide tab in single page windows';
@@ -2814,6 +2815,7 @@ resourcestring
   uemProcedureJump = 'Procedure Jump';
   uemClosePage = '&Close Page';
   uemCloseOtherPages = 'Close All &Other Pages';
+  uemCloseOtherPagesRight = 'Close Pages on the &Right';
   uemLockPage = '&Lock Page';
   uemCopyToNewWindow = 'Clone to New Window';
   uemCopyToOtherWindow = 'Clone to Other Window';

@@ -475,7 +475,7 @@ type
     procedure SrcNotebookFileOpenAtCursor(Sender: TObject);
     procedure SrcNotebookFileSave(Sender: TObject);
     procedure SrcNotebookFileSaveAs(Sender: TObject);
-    procedure SrcNotebookFileClose(Sender: TObject; InvertedClose: boolean);
+    procedure SrcNotebookFileClose(Sender: TObject; ACloseOptions: TCloseSrcEditorOptions);
     procedure SrcNotebookFindDeclaration(Sender: TObject);
     procedure SrcNotebookInitIdentCompletion(Sender: TObject;
       JumpToError: boolean; out Handled, Abort: boolean);
@@ -3146,12 +3146,13 @@ begin
   mnuNewFormClicked(Sender);
 end;
 
-procedure TMainIDE.SrcNotebookFileClose(Sender: TObject; InvertedClose: boolean);
+procedure TMainIDE.SrcNotebookFileClose(Sender: TObject;
+  ACloseOptions: TCloseSrcEditorOptions);
 var
   PageIndex: LongInt;
   SrcNoteBook: TSourceNotebook;
 begin
-  if InvertedClose then begin
+  if ACloseOptions * [ceoCloseOthers, ceoCloseOthersOnRightSide] <> [] then begin
     if Sender is TTabSheet then begin
       SrcNoteBook := SourceEditorManager.SourceWindowWithPage(TTabSheet(Sender));
       if SrcNoteBook = nil then exit;
@@ -3162,7 +3163,7 @@ begin
       PageIndex := SrcNoteBook.PageIndex;
     end;
     // Close all but the active editor
-    InvertedFileClose(PageIndex, SrcNoteBook);
+    InvertedFileClose(PageIndex, SrcNoteBook, ceoCloseOthersOnRightSide in ACloseOptions);
   end
   else
     mnuCloseClicked(Sender);         // close only the clicked source editor

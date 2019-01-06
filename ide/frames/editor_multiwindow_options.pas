@@ -43,9 +43,10 @@ type
     Bevel2a: TBevel;
     Bevel2: TBevel;
     CenterLabel: TLabel;
+    cgCloseOther: TCheckGroup;
+    cgCloseRight: TCheckGroup;
     chkShowFileNameInCaption: TCheckBox;
     chkMultiLine: TCheckBox;
-    chkCtrlMiddleCloseOthers: TCheckBox;
     chkUseTabHistory: TCheckBox;
     chkShowCloseBtn: TCheckBox;
     chkShowNumbers: TCheckBox;
@@ -148,7 +149,6 @@ begin
   chkShowNumbers.Caption := dlgTabNumbersNotebook;
   chkShowCloseBtn.Caption := dlgCloseButtonsNotebook;
   chkUseTabHistory.Caption := dlgUseTabsHistory;
-  chkCtrlMiddleCloseOthers.Caption := dlgCtrlMiddleTabCloseOtherPages;
   chkShowFileNameInCaption.Caption := dlgShowFileNameInCaption;
   chkMultiLine.Caption := dlgSourceEditTabMultiLine;
   EditorTabPositionCheckBox.Items.Add(lisNotebookTabPosTop);
@@ -156,7 +156,8 @@ begin
   EditorTabPositionCheckBox.Items.Add(lisNotebookTabPosLeft);
   EditorTabPositionCheckBox.Items.Add(lisNotebookTabPosRight);
   EditorTabPositionLabel.Caption := dlgNotebookTabPos;
-
+  cgCloseOther.Caption := dlgMiddleTabCloseOtherPagesMod;
+  cgCloseRight.Caption := dlgMiddleTabCloseRightPagesMod;
 end;
 
 procedure TEditorMultiWindowOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -170,7 +171,13 @@ begin
     chkShowNumbers.Checked := ShowTabNumbers;
     chkShowCloseBtn.Checked := ShowTabCloseButtons and chkShowCloseBtn.Enabled;
     chkUseTabHistory.Checked := UseTabHistory;
-    chkCtrlMiddleCloseOthers.Checked := CtrlMiddleTabClickClosesOthers;
+    cgCloseOther.Checked[0] := ssShift in MiddleTabClickClosesOthersModifier;
+    cgCloseOther.Checked[1] := ssCtrl in MiddleTabClickClosesOthersModifier;
+    cgCloseOther.Checked[2] := ssAlt in MiddleTabClickClosesOthersModifier;
+    cgCloseRight.Checked[0] := ssShift in MiddleTabClickClosesToRightModifier;
+    cgCloseRight.Checked[1] := ssCtrl in MiddleTabClickClosesToRightModifier;
+    cgCloseRight.Checked[2] := ssAlt in MiddleTabClickClosesToRightModifier;
+
     chkShowFileNameInCaption.Checked := ShowFileNameInCaption;
     chkMultiLine.Checked := MultiLineTab;
     EditorTabPositionCheckBox.ItemIndex := TabPosToIndex[TabPosition];
@@ -199,7 +206,16 @@ begin
     ShowTabNumbers := chkShowNumbers.Checked;
     ShowTabCloseButtons := chkShowCloseBtn.Checked;
     UseTabHistory := chkUseTabHistory.Checked;
-    CtrlMiddleTabClickClosesOthers := chkCtrlMiddleCloseOthers.Checked;
+
+    MiddleTabClickClosesOthersModifier := [];
+    if cgCloseOther.Checked[0] then MiddleTabClickClosesOthersModifier := MiddleTabClickClosesOthersModifier + [ssShift];
+    if cgCloseOther.Checked[1] then MiddleTabClickClosesOthersModifier := MiddleTabClickClosesOthersModifier + [ssCtrl];
+    if cgCloseOther.Checked[2] then MiddleTabClickClosesOthersModifier := MiddleTabClickClosesOthersModifier + [ssAlt];
+    MiddleTabClickClosesToRightModifier := [];
+    if cgCloseRight.Checked[0] then MiddleTabClickClosesToRightModifier := MiddleTabClickClosesToRightModifier + [ssShift];
+    if cgCloseRight.Checked[1] then MiddleTabClickClosesToRightModifier := MiddleTabClickClosesToRightModifier + [ssCtrl];
+    if cgCloseRight.Checked[2] then MiddleTabClickClosesToRightModifier := MiddleTabClickClosesToRightModifier + [ssAlt];
+
     ShowFileNameInCaption := chkShowFileNameInCaption.Checked;
     MultiLineTab := chkMultiLine.Checked;
     TabPosition := TabIndexToPos[EditorTabPositionCheckBox.ItemIndex];

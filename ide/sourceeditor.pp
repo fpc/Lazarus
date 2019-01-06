@@ -562,6 +562,8 @@ type
   { TSourceNotebook }
 
   TJumpHistoryAction = (jhaBack, jhaForward, jhaViewWindow);
+  TCloseSrcEditorOption = (ceoCloseOthers, ceoCloseOthersOnRightSide);
+  TCloseSrcEditorOptions = set of TCloseSrcEditorOption;
 
   TOnJumpToHistoryPoint = procedure(out NewCaretXY: TPoint;
                                     out NewTopLine: integer;
@@ -571,7 +573,7 @@ type
                   AEditor: TSourceEditor; DeleteForwardHistory: boolean) of object;
   TOnMovingPage = procedure(Sender: TObject;
                             OldPageIndex, NewPageIndex: integer) of object;
-  TOnCloseSrcEditor = procedure(Sender: TObject; InvertedClose: boolean) of object;
+  TOnCloseSrcEditor = procedure(Sender: TObject; ACloseOptions: TCloseSrcEditorOptions) of object;
   TOnShowHintForSource = procedure(SrcEdit: TSourceEditor;
                                    CaretPos: TPoint; AutoShown: Boolean) of object;
   TOnInitIdentCompletion = procedure(Sender: TObject; JumpToError: boolean;
@@ -797,7 +799,7 @@ type
     procedure EndAutoFocusLock;
   protected
     procedure CloseTabClicked(Sender: TObject);
-    procedure CloseClicked(Sender: TObject; CloseOthers: Boolean = False);
+    procedure CloseClicked(Sender: TObject; CloseOptions: TCloseSrcEditorOptions = []);
     procedure ToggleFormUnitClicked(Sender: TObject);
     procedure ToggleObjectInspClicked(Sender: TObject);
 
@@ -1213,6 +1215,7 @@ type
   private
     // Context-Menu
     procedure CloseOtherPagesClicked(Sender: TObject);
+    procedure CloseRightPagesClicked(Sender: TObject);
     procedure ReadOnlyClicked(Sender: TObject);
     procedure ToggleLineNumbersClicked(Sender: TObject);
     procedure ToggleI18NForLFMClicked(Sender: TObject);
@@ -1353,6 +1356,7 @@ var
     SrcEditMenuOpenFileAtCursor: TIDEMenuCommand;
   SrcEditMenuClosePage: TIDEMenuCommand;
   SrcEditMenuCloseOtherPages: TIDEMenuCommand;
+  SrcEditMenuCloseOtherPagesToRight: TIDEMenuCommand;
     // bookmarks
     SrcEditMenuNextBookmark: TIDEMenuCommand;
     SrcEditMenuPrevBookmark: TIDEMenuCommand;
@@ -1535,6 +1539,8 @@ begin
         'Close Page', uemClosePage, nil, @ExecuteIdeMenuClick, nil, 'menu_close');
     SrcEditMenuCloseOtherPages := RegisterIDEMenuCommand(AParent,
         'Close All Other Pages',uemCloseOtherPages, nil, @ExecuteIdeMenuClick);
+    SrcEditMenuCloseOtherPagesToRight := RegisterIDEMenuCommand(AParent,
+        'Close Pages To the Right',uemCloseOtherPagesRight, nil, @ExecuteIdeMenuClick);
 
     {$IFnDEF SingleSrcWindow}
     // Lock Editor
@@ -8319,8 +8325,13 @@ end;
 
 procedure TSourceNotebook.CloseTabClicked(Sender: TObject);
 begin
-  CloseClicked(Sender,
-              (GetKeyState(VK_CONTROL) < 0) and EditorOpts.CtrlMiddleTabClickClosesOthers);
+  if GetKeyShiftState * [ssShift, ssCtrl, ssAlt] = EditorOpts.MiddleTabClickClosesOthersModifier then
+    CloseClicked(Sender, [ceoCloseOthers])
+  else
+  if GetKeyShiftState * [ssShift, ssCtrl, ssAlt] = EditorOpts.MiddleTabClickClosesToRightModifier then
+    CloseClicked(Sender, [ceoCloseOthersOnRightSide])
+  else
+    CloseClicked(Sender, []);
 end;
 
 function TSourceNotebook.GetEditors(Index:integer):TSourceEditor;
@@ -8355,10 +8366,11 @@ begin
     Result:=nil;
 end;
 
-procedure TSourceNotebook.CloseClicked(Sender: TObject; CloseOthers: Boolean);
+procedure TSourceNotebook.CloseClicked(Sender: TObject;
+  CloseOptions: TCloseSrcEditorOptions);
 Begin
   if assigned(Manager) and Assigned(Manager.OnCloseClicked) then
-    Manager.OnCloseClicked(Sender, CloseOthers);
+    Manager.OnCloseClicked(Sender, CloseOptions);
 end;
 
 procedure TSourceNotebook.ToggleFormUnitClicked(Sender: TObject);
@@ -8598,9 +8610,15 @@ begin
   if (Button = mbMiddle) then
   begin
     TabIndex:=FNotebook.IndexOfPageAt(X, Y);
-    if TabIndex>=0 then
-      CloseClicked(NoteBookPage[TabIndex],
-                   (GetKeyState(VK_CONTROL) < 0) and EditorOpts.CtrlMiddleTabClickClosesOthers);
+    if TabIndex>=0 then begin
+      if GetKeyShiftState * [ssShift, ssCtrl, ssAlt] = EditorOpts.MiddleTabClickClosesOthersModifier then
+        CloseClicked(NoteBookPage[TabIndex], [ceoCloseOthers])
+      else
+      if GetKeyShiftState * [ssShift, ssCtrl, ssAlt] = EditorOpts.MiddleTabClickClosesToRightModifier then
+        CloseClicked(NoteBookPage[TabIndex], [ceoCloseOthersOnRightSide])
+      else
+        CloseClicked(NoteBookPage[TabIndex], []);
+    end;
   end else
   if (Button = mbRight) then
   begin
@@ -10674,6 +10692,7 @@ begin
   {%region *** Pages section ***}
     SrcEditMenuClosePage.Command       := GetCommand(ecClose);
     SrcEditMenuCloseOtherPages.OnClick := @SourceEditorManager.CloseOtherPagesClicked;
+    SrcEditMenuCloseOtherPagesToRight.OnClick := @SourceEditorManager.CloseRightPagesClicked;
 
     {$IFnDEF SingleSrcWindow}
     SrcEditMenuEditorLock.Command           := GetCommand(ecLockEditor);
@@ -11306,7 +11325,13 @@ end;
 procedure TSourceEditorManager.CloseOtherPagesClicked(Sender: TObject);
 begin
   if Assigned(OnCloseClicked) then
-    OnCloseClicked(Sender, True);
+    OnCloseClicked(Sender, [ceoCloseOthers]);
+end;
+
+procedure TSourceEditorManager.CloseRightPagesClicked(Sender: TObject);
+begin
+  if Assigned(OnCloseClicked) then
+    OnCloseClicked(Sender, [ceoCloseOthersOnRightSide]);
 end;
 
 procedure TSourceEditorManager.ReadOnlyClicked(Sender: TObject);

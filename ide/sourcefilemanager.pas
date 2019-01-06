@@ -229,7 +229,7 @@ function CloseProject: TModalResult;
 procedure OpenProject(aMenuItem: TIDEMenuItem);
 function CompleteLoadingProjectInfo: TModalResult;
 procedure CloseAll;
-procedure InvertedFileClose(PageIndex: LongInt; SrcNoteBook: TSourceNotebook);
+procedure InvertedFileClose(PageIndex: LongInt; SrcNoteBook: TSourceNotebook; CloseOnRightSideOnly: Boolean = False);
 // designer
 function DesignerUnitIsVirtual(aLookupRoot: TComponent): Boolean;
 function CheckLFMInEditor(LFMUnitInfo: TUnitInfo; Quiet: boolean): TModalResult;
@@ -4258,7 +4258,8 @@ begin
   PkgBoss.DoCloseAllPackageEditors;
 end;
 
-procedure InvertedFileClose(PageIndex: LongInt; SrcNoteBook: TSourceNotebook);
+procedure InvertedFileClose(PageIndex: LongInt; SrcNoteBook: TSourceNotebook;
+  CloseOnRightSideOnly: Boolean);
 // close all source editors except the clicked
 var
   Ed: TSourceEditor;
@@ -4270,7 +4271,11 @@ begin
     // Collect changed editors, except the active one, into a list and maybe save them.
     for i := 0 to SrcNoteBook.EditorCount - 1 do begin
       Ed := SrcNoteBook.Editors[i];
-      if (i <> PageIndex) and CheckEditorNeedsSave(Ed, True) then
+      if ( (i > PageIndex) or // to right
+           ( (i <> PageIndex) and not CloseOnRightSideOnly )
+         ) and
+         CheckEditorNeedsSave(Ed, True)
+      then
         EditorList.Add(Ed);
     end;
     if AskToSaveEditors(EditorList) <> mrOK then Exit;
@@ -4282,7 +4287,11 @@ begin
   try
     repeat
       i:=SrcNoteBook.PageCount-1;
-      if i=PageIndex then dec(i);
+      if i=PageIndex then
+        if CloseOnRightSideOnly then
+          break
+        else
+          dec(i);
       if i<0 then break;
       if CloseEditorFile(SrcNoteBook.FindSourceEditorWithPageIndex(i),[])<>mrOk then exit;
       if i<PageIndex then PageIndex:=i;

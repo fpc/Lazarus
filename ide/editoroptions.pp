@@ -666,7 +666,7 @@ const
     );
 
 const
-  EditorOptsFormatVersion = 12;
+  EditorOptsFormatVersion = 13;
   { * Changes in Version 6:
        - ColorSchemes now have a Global settings part.
          Language specific changes must save UseSchemeGlobals=False (Default is true)
@@ -686,6 +686,8 @@ const
     * Changes in Version 12:
          Used in Colorscheme/Version
          Colors for MarkupFoldColor can now have gaps (before unset colors were filtered)
+    * Changes in Version 13:
+         CtrlMiddleTabClickClosesOthers was replaced by MiddleTabClickClosesOthersModifier
   }
   EditorMouseOptsFormatVersion = 1;
   { * Changes in Version 6:
@@ -1378,6 +1380,8 @@ type
     FBlockTabIndent: Integer;
     FCompletionLongLineHintInMSec: Integer;
     FCompletionLongLineHintType: TSynCompletionLongHintType;
+    FMiddleTabClickClosesOthersModifier: TShiftState;
+    FMiddleTabClickClosesToRightModifier: TShiftState;
     FMultiCaretDefaultColumnSelectMode: TSynPluginMultiCaretDefaultMode;
     FMultiCaretDefaultMode: TSynPluginMultiCaretDefaultMode;
     FMultiCaretDeleteSkipLineBreak: Boolean;
@@ -1718,7 +1722,11 @@ type
 
     // Multi window
     property CtrlMiddleTabClickClosesOthers: Boolean
-      read FCtrlMiddleTabClickClosesOthers write FCtrlMiddleTabClickClosesOthers default True;
+      read FCtrlMiddleTabClickClosesOthers write FCtrlMiddleTabClickClosesOthers stored False default True;
+    property MiddleTabClickClosesOthersModifier: TShiftState
+      read FMiddleTabClickClosesOthersModifier write FMiddleTabClickClosesOthersModifier default [ssCtrl];
+    property MiddleTabClickClosesToRightModifier: TShiftState
+      read FMiddleTabClickClosesToRightModifier write FMiddleTabClickClosesToRightModifier default [];
 
     property ShowFileNameInCaption: Boolean
       read FShowFileNameInCaption write FShowFileNameInCaption default False;
@@ -4668,6 +4676,8 @@ begin
 
   // Multi window
   FCtrlMiddleTabClickClosesOthers := True;
+  FMiddleTabClickClosesOthersModifier := [ssCtrl];
+  FMiddleTabClickClosesToRightModifier := [];
   FShowFileNameInCaption := False;
 
   // Comment
@@ -4942,6 +4952,9 @@ begin
     on E: Exception do
       DebugLn('[TEditorOptions.Load] ERROR: ', e.Message);
   end;
+  if FileVersion < 13 then
+    if not CtrlMiddleTabClickClosesOthers then // user set option to false
+      MiddleTabClickClosesOthersModifier := [];
 end;
 
 procedure TEditorOptions.Save;
