@@ -174,6 +174,8 @@ const
   ecRestart                 = ecFirstLazarus + 213;
   ecQuit                    = ecFirstLazarus + 214;
   ecOpenUnit                = ecFirstLazarus + 215;
+  ecCloseOtherTabs          = ecFirstLazarus + 216;
+  ecCloseRightTabs          = ecFirstLazarus + 217;
 
   // edit menu
   ecMultiPaste              = ecFirstLazarus + 230;
@@ -1924,7 +1926,7 @@ begin
 end;
 
 const
-  IDEEditorCommandStrs: array[0..319] of TIdentMapEntry = (
+  IDEEditorCommandStrs: array[0..321] of TIdentMapEntry = (
   // search
     (Value: ecFind;                                   Name: 'ecFind'),
     (Value: ecFindAgain;                              Name: 'ecFindAgain'),
@@ -2042,6 +2044,8 @@ const
     (Value: ecCleanDirectory;                         Name: 'ecCleanDirectory'),
     (Value: ecRestart;                                Name: 'ecRestart'),
     (Value: ecQuit;                                   Name: 'ecQuit'),
+    (Value: ecCloseOtherTabs;                         Name: 'ecCloseOtherTabs'),
+    (Value: ecCloseRightTabs;                         Name: 'ecCloseRightTabs'),
 
   // edit menu
     (Value: ecMultiPaste;                             Name: 'ecMultiPaste'),

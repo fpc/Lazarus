@@ -515,6 +515,8 @@ begin
     ecSaveAll                 : Result:= lisSaveAll;
     ecClose                   : Result:= lisClose;
     ecCloseAll                : Result:= lisMenuCloseAll;
+    ecCloseOtherTabs          : Result:= uemCloseOtherPages;
+    ecCloseRightTabs          : Result:= uemCloseOtherPagesRight;
     ecCleanDirectory          : Result:= lisMenuCleanDirectory;
     ecRestart                 : Result:= lisRestart;
     ecQuit                    : Result:= lisQuit;
@@ -1258,6 +1260,8 @@ begin
   ecSaveAll:             SetSingle(VK_S,[XCtrl,ssShift]);
   ecClose:               SetSingle(VK_F4,[XCtrl]);
   ecCloseAll:            SetSingle(VK_UNKNOWN,[]);
+  ecCloseOtherTabs:      SetSingle(VK_UNKNOWN,[]);
+  ecCloseRightTabs:      SetSingle(VK_UNKNOWN,[]);
   ecCleanDirectory:      SetSingle(VK_UNKNOWN,[]);
   ecRestart:             SetSingle(VK_UNKNOWN,[]);
   ecQuit:                SetSingle(VK_UNKNOWN,[]);
@@ -1703,6 +1707,8 @@ begin
   ecSaveAll:             SetSingle(VK_F2,[ssShift]);
   ecClose:               SetSingle(VK_F3,[ssAlt]);
   ecCloseAll:            SetSingle(VK_UNKNOWN,[]);
+  ecCloseOtherTabs:      SetSingle(VK_UNKNOWN,[]);
+  ecCloseRightTabs:      SetSingle(VK_UNKNOWN,[]);
   ecCleanDirectory:      SetSingle(VK_UNKNOWN,[]);
   ecRestart:             SetSingle(VK_UNKNOWN,[]);
   ecQuit:                SetSingle(VK_X,[ssAlt]);
@@ -2331,6 +2337,8 @@ begin
   ecSaveAll:             SetSingle(VK_S,[ssMeta,ssAlt]);
   ecClose:               SetSingle(VK_W,[ssMeta,ssShift]);
   ecCloseAll:            SetSingle(VK_UNKNOWN,[]);
+  ecCloseOtherTabs:      SetSingle(VK_UNKNOWN,[]);
+  ecCloseRightTabs:      SetSingle(VK_UNKNOWN,[]);
   ecCleanDirectory:      SetSingle(VK_UNKNOWN,[]);
   ecRestart:             SetSingle(VK_UNKNOWN,[]);
   ecQuit:                SetSingle(VK_UNKNOWN,[]);
@@ -3025,6 +3033,8 @@ begin
   AddDefault(C, 'SaveAll', lisKMSaveAll, ecSaveAll);
   AddDefault(C, 'Close', lisClose, ecClose);
   AddDefault(C, 'CloseAll', lisCloseAll, ecCloseAll);
+  AddDefault(C, 'CloseAllOther', uemCloseOtherPagesPlain, ecCloseOtherTabs);
+  AddDefault(C, 'CloseAllRight', uemCloseOtherPagesRightPlain, ecCloseRightTabs);
   AddDefault(C, 'Clean Directory', lisClDirCleanDirectory, ecCleanDirectory);
   AddDefault(C, 'Restart', lisRestart, ecRestart);
   AddDefault(C, 'Quit', lisQuit, ecQuit);

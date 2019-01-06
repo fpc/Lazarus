@@ -8,11 +8,11 @@ object SourceNotebook: TSourceNotebook
   ClientHeight = 300
   ClientWidth = 400
   OnMouseUp = FormMouseUp
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '2.1.0.0'
   object StatusBar: TStatusBar
     Left = 0
-    Height = 20
-    Top = 280
+    Height = 23
+    Top = 277
     Width = 400
     Panels = <    
       item
@@ -40,8 +40,8 @@ object SourceNotebook: TSourceNotebook
     OnDrawPanel = StatusBarDrawPanel
   end
   object StatusPopUpMenu: TPopupMenu
-    Left = 48
-    Top = 36
+    left = 48
+    top = 36
     object GoToLineMenuItem: TMenuItem
       Caption = 'Goto line ...'
       OnClick = GoToLineMenuItemClick

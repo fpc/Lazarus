@@ -1215,7 +1215,9 @@ type
   private
     // Context-Menu
     procedure CloseOtherPagesClicked(Sender: TObject);
+    procedure CloseOtherPagesClickedAsync(Sender: PtrInt);
     procedure CloseRightPagesClicked(Sender: TObject);
+    procedure CloseRightPagesClickedAsync(Sender: PtrInt);
     procedure ReadOnlyClicked(Sender: TObject);
     procedure ToggleLineNumbersClicked(Sender: TObject);
     procedure ToggleI18NForLFMClicked(Sender: TObject);
@@ -4177,6 +4179,9 @@ Begin
           if EditorComponent.GetBookMark(i,x{%H-},y{%H-}) then
             Manager.OnClearBookmarkId(Self, i);
     end;
+
+  ecCloseOtherTabs: Application.QueueAsyncCall(@Manager.CloseOtherPagesClickedAsync, PtrInt(SourceNotebook.GetNoteBookPage(SourceNotebook.FindPageWithEditor(Self))));
+  ecCloseRightTabs: Application.QueueAsyncCall(@Manager.CloseRightPagesClickedAsync, PtrInt(SourceNotebook.GetNoteBookPage(SourceNotebook.FindPageWithEditor(Self))));
 
   else
     begin
@@ -11328,10 +11333,20 @@ begin
     OnCloseClicked(Sender, [ceoCloseOthers]);
 end;
 
+procedure TSourceEditorManager.CloseOtherPagesClickedAsync(Sender: PtrInt);
+begin
+  CloseOtherPagesClicked(TObject(Sender));
+end;
+
 procedure TSourceEditorManager.CloseRightPagesClicked(Sender: TObject);
 begin
   if Assigned(OnCloseClicked) then
     OnCloseClicked(Sender, [ceoCloseOthersOnRightSide]);
+end;
+
+procedure TSourceEditorManager.CloseRightPagesClickedAsync(Sender: PtrInt);
+begin
+  CloseRightPagesClicked(TObject(Sender));
 end;
 
 procedure TSourceEditorManager.ReadOnlyClicked(Sender: TObject);

@@ -2816,6 +2816,8 @@ resourcestring
   uemClosePage = '&Close Page';
   uemCloseOtherPages = 'Close All &Other Pages';
   uemCloseOtherPagesRight = 'Close Pages on the &Right';
+  uemCloseOtherPagesPlain = 'Close All Other Pages';
+  uemCloseOtherPagesRightPlain = 'Close Pages on the Right';
   uemLockPage = '&Lock Page';
   uemCopyToNewWindow = 'Clone to New Window';
   uemCopyToOtherWindow = 'Clone to Other Window';
