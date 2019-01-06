@@ -206,8 +206,10 @@ type
     FCacheAddress: TDBGPtr;
     FCacheSize: Cardinal;
     FMem: Array of byte;
+    FFailed: Boolean;
   public
     constructor Create(ACacheAddress: TDBGPtr; ACacheSize: Cardinal);
+    function ContainsMemory(AnAddress: TDbgPtr; ASize: Cardinal): Boolean;
     function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean;
     property CacheAddress: TDBGPtr read FCacheAddress;
     property CacheSize: Cardinal read FCacheSize;
@@ -640,15 +642,28 @@ begin
   FCacheSize := ACacheSize;
 end;
 
+function TFpDbgMemCacheSimple.ContainsMemory(AnAddress: TDbgPtr; ASize: Cardinal
+  ): Boolean;
+begin
+  Result := (AnAddress >= FCacheAddress) or (AnAddress + ASize <= FCacheAddress + FCacheSize);
+end;
+
 function TFpDbgMemCacheSimple.ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal;
   ADest: Pointer): Boolean;
 begin
-  if (AnAddress < FCacheAddress) or (AnAddress + ASize > FCacheAddress + FCacheSize) then
-    exit(False);
+  Result := False;
+  if (AnAddress < FCacheAddress) or (AnAddress + ASize > FCacheAddress + FCacheSize) or
+     FFailed
+  then
+    exit;
 
   if FMem = nil then begin
     SetLength(FMem, FCacheSize);
-    MemReader.ReadMemory(FCacheAddress, FCacheSize, @FMem[0]);
+    if not MemReader.ReadMemory(FCacheAddress, FCacheSize, @FMem[0]) then begin
+      FMem := nil;
+      FFailed := True;
+      exit;
+    end;
   end;
 
   Result := true;
@@ -723,9 +738,10 @@ begin
   if Node = nil then
     exit(inherited ReadMemory(AnAddress, ASize, ADest));
 
-  Result := TFpDbgMemCacheSimple(Node.Data).ReadMemory(AnAddress, ASize, ADest);
-  if Result then
+  if TFpDbgMemCacheSimple(Node.Data).ContainsMemory(AnAddress, ASize) then begin
+    Result := TFpDbgMemCacheSimple(Node.Data).ReadMemory(AnAddress, ASize, ADest);
     exit;
+  end;
 
   Result := inherited ReadMemory(AnAddress, ASize, ADest);
 end;
