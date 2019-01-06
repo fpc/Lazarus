@@ -1919,6 +1919,8 @@ begin
     Command := ecNone;
 
   Handled := (Command <> ecNone) or IsStartOfCombo;
+  if IsStartOfCombo then
+    ComboKeyStrokes := FKeyStrokes;
 end;
 
 procedure TSynCustomPluginMultiCaret.RemoveCaretsInSelection;
