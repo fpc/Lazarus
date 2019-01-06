@@ -160,7 +160,7 @@ implementation
 
 uses
   LCLType, Types, TypInfo, Math, FPCanvas,
-  TAChartStrConsts, TAChartUtils, TADrawUtils, TADrawerCanvas, TACustomSeries,
+  TAChartStrConsts, TAChartUtils, TADrawerCanvas, TACustomSeries,
   TASeries, TALegend;
 
 procedure Register;
@@ -292,7 +292,6 @@ var
   x1, x2, y: Integer;
   txt: String;
   bs: TBrushStyle;
-  sps: TSeriesPointerStyle;
   symwidth, symheight: Integer;
   R: TRect;
 begin
@@ -391,7 +390,6 @@ end;
 procedure TChartCombobox.DrawPointer(ACanvas: TCanvas; ARect: TRect;
   AStyle: TSeriesPointerStyle; APenColor, ABrushColor: TColor);
 var
-  id: IChartDrawer;
   pointer: TSeriesPointer;
   c: TPoint;
 begin

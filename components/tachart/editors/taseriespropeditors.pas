@@ -10,7 +10,7 @@ implementation
 
 uses
   Graphics, Classes, Math, PropEdits, SysUtils, LCLIntf, typinfo,
-  TATypes, TADrawUtils, TADrawerCanvas, TACustomSeries, TASeries, TALegend,
+  TATypes, TADrawerCanvas, TACustomSeries, TASeries, TALegend,
   TAGraph, TAChartCombos;
 
 type
@@ -99,7 +99,6 @@ end;
 procedure TSeriesPointerStylePropertyEditor.DrawPointer(ACanvas: TCanvas;
   ARect: TRect; AStyle: TSeriesPointerStyle; APenColor, ABrushColor: TColor);
 var
-  id: IChartDrawer;
   pointer: TSeriesPointer;
   c: TPoint;
 begin
