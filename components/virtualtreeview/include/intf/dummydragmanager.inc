@@ -533,7 +533,9 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TVTDataObject.SetData(const FormatEtc: TFormatEtc; {$ifdef VER2_0}var{$else}const{$endif} Medium: TStgMedium; DoRelease: BOOL): HResult;
+function TVTDataObject.SetData(const FormatEtc: TFormatEtc;
+  {$IF FPC_FullVersion >= 30200}var{$ELSE}const{$IFEND} Medium: TStgMedium;
+  DoRelease: BOOL): HResult;
 
 // Allows dynamic adding to the IDataObject during its existance. Most noteably it is used to implement
 // IDropSourceHelper and allows to set a special format for optimized moves during a shell transfer.
