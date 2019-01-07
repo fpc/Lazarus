@@ -1332,10 +1332,6 @@ msgstr "C++スタイルのインライン"
 msgid "Create new Run Parameters settings"
 msgstr ""
 
-#: lazarusidestrconsts.dlgctrlmiddletabcloseotherpages
-msgid "Ctrl-middle-click on tab closes all others"
-msgstr "タブでCtrl-中クリックすると他のすべてを閉じる"
-
 #: lazarusidestrconsts.dlgcurlycommenttab
 msgid "Curly { }"
 msgstr "波括弧 { }"
@@ -2684,6 +2680,14 @@ msgstr ""
 #: lazarusidestrconsts.dlgmaxrecentprojs
 msgid "Max recent project files"
 msgstr "最近扱ったプロジェクトファイル数の上限"
+
+#: lazarusidestrconsts.dlgmiddletabcloseotherpagesmod
+msgid "Middle-click-modifier to close all other tabs"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmiddletabcloserightpagesmod
+msgid "Middle-click-modifier to close tabs on the right"
+msgstr ""
 
 #: lazarusidestrconsts.dlgmixmethodsandproperties
 msgid "Mix methods and properties"
@@ -21469,6 +21473,18 @@ msgstr ""
 #: lazarusidestrconsts.uemcloseotherpages
 msgid "Close All &Other Pages"
 msgstr "すべての他のページを閉じる(&O)"
+
+#: lazarusidestrconsts.uemcloseotherpagesplain
+msgid "Close All Other Pages"
+msgstr ""
+
+#: lazarusidestrconsts.uemcloseotherpagesright
+msgid "Close Pages on the &Right"
+msgstr ""
+
+#: lazarusidestrconsts.uemcloseotherpagesrightplain
+msgid "Close Pages on the Right"
+msgstr ""
 
 #: lazarusidestrconsts.uemclosepage
 msgid "&Close Page"

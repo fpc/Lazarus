@@ -1319,10 +1319,6 @@ msgstr ""
 msgid "Create new Run Parameters settings"
 msgstr ""
 
-#: lazarusidestrconsts.dlgctrlmiddletabcloseotherpages
-msgid "Ctrl-middle-click on tab closes all others"
-msgstr ""
-
 #: lazarusidestrconsts.dlgcurlycommenttab
 msgid "Curly { }"
 msgstr ""
@@ -2639,6 +2635,14 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgmaxrecentprojs
 msgid "Max recent project files"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmiddletabcloseotherpagesmod
+msgid "Middle-click-modifier to close all other tabs"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmiddletabcloserightpagesmod
+msgid "Middle-click-modifier to close tabs on the right"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmixmethodsandproperties
@@ -21272,6 +21276,18 @@ msgstr ""
 
 #: lazarusidestrconsts.uemcloseotherpages
 msgid "Close All &Other Pages"
+msgstr ""
+
+#: lazarusidestrconsts.uemcloseotherpagesplain
+msgid "Close All Other Pages"
+msgstr ""
+
+#: lazarusidestrconsts.uemcloseotherpagesright
+msgid "Close Pages on the &Right"
+msgstr ""
+
+#: lazarusidestrconsts.uemcloseotherpagesrightplain
+msgid "Close Pages on the Right"
 msgstr ""
 
 #: lazarusidestrconsts.uemclosepage

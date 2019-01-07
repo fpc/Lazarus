@@ -1336,10 +1336,6 @@ msgstr "INLINE Estilizado C++"
 msgid "Create new Run Parameters settings"
 msgstr "Crear un nuevos ajustes de Parámetros de ejecución"
 
-#: lazarusidestrconsts.dlgctrlmiddletabcloseotherpages
-msgid "Ctrl-middle-click on tab closes all others"
-msgstr "Ctrl + clic del botón central del ratón en una pestaña cierra todas las demás"
-
 #: lazarusidestrconsts.dlgcurlycommenttab
 msgid "Curly { }"
 msgstr "Llaves { }"
@@ -2711,6 +2707,14 @@ msgstr "Valor 0 significa sin limites"
 #: lazarusidestrconsts.dlgmaxrecentprojs
 msgid "Max recent project files"
 msgstr "Nº Máximo de archivos de proyecto recientes"
+
+#: lazarusidestrconsts.dlgmiddletabcloseotherpagesmod
+msgid "Middle-click-modifier to close all other tabs"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmiddletabcloserightpagesmod
+msgid "Middle-click-modifier to close tabs on the right"
+msgstr ""
 
 #: lazarusidestrconsts.dlgmixmethodsandproperties
 msgid "Mix methods and properties"
@@ -21682,6 +21686,18 @@ msgstr "Marcador %s"
 #: lazarusidestrconsts.uemcloseotherpages
 msgid "Close All &Other Pages"
 msgstr "Cerrar todas las &Otras páginas"
+
+#: lazarusidestrconsts.uemcloseotherpagesplain
+msgid "Close All Other Pages"
+msgstr ""
+
+#: lazarusidestrconsts.uemcloseotherpagesright
+msgid "Close Pages on the &Right"
+msgstr ""
+
+#: lazarusidestrconsts.uemcloseotherpagesrightplain
+msgid "Close Pages on the Right"
+msgstr ""
 
 #: lazarusidestrconsts.uemclosepage
 msgid "&Close Page"

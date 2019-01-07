@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2019-01-04 16:33+0300\n"
+"PO-Revision-Date: 2019-01-07 17:41+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -1311,10 +1311,6 @@ msgstr "INLINE в стиле C++"
 #: lazarusidestrconsts.dlgcreatenewrunparameterssettings
 msgid "Create new Run Parameters settings"
 msgstr "Создать новый набор параметров запуска"
-
-#: lazarusidestrconsts.dlgctrlmiddletabcloseotherpages
-msgid "Ctrl-middle-click on tab closes all others"
-msgstr "По Ctrl-средней кнопке мыши на вкладке закрывать остальные"
 
 #: lazarusidestrconsts.dlgcurlycommenttab
 msgid "Curly { }"
@@ -2633,6 +2629,14 @@ msgstr "Значение \"0\" соответствует неограничен
 #: lazarusidestrconsts.dlgmaxrecentprojs
 msgid "Max recent project files"
 msgstr "Максимальное количество недавних проектов"
+
+#: lazarusidestrconsts.dlgmiddletabcloseotherpagesmod
+msgid "Middle-click-modifier to close all other tabs"
+msgstr "Закрывать прочие вкладки средней кнопкой мыши при нажатии"
+
+#: lazarusidestrconsts.dlgmiddletabcloserightpagesmod
+msgid "Middle-click-modifier to close tabs on the right"
+msgstr "Закрывать вкладки справа средней кнопкой мыши при нажатии"
 
 #: lazarusidestrconsts.dlgmixmethodsandproperties
 msgid "Mix methods and properties"
@@ -21295,7 +21299,19 @@ msgstr "Закладка %s"
 
 #: lazarusidestrconsts.uemcloseotherpages
 msgid "Close All &Other Pages"
-msgstr "Закрыть &другие вкладки"
+msgstr "Закрыть &прочие вкладки"
+
+#: lazarusidestrconsts.uemcloseotherpagesplain
+msgid "Close All Other Pages"
+msgstr "Закрыть прочие вкладки"
+
+#: lazarusidestrconsts.uemcloseotherpagesright
+msgid "Close Pages on the &Right"
+msgstr "Закрыть вкладки &справа"
+
+#: lazarusidestrconsts.uemcloseotherpagesrightplain
+msgid "Close Pages on the Right"
+msgstr "Закрыть вкладки справа"
 
 #: lazarusidestrconsts.uemclosepage
 msgid "&Close Page"

@@ -1348,10 +1348,6 @@ msgstr "C++样式 INLINE"
 msgid "Create new Run Parameters settings"
 msgstr "创建新运行参数设置"
 
-#: lazarusidestrconsts.dlgctrlmiddletabcloseotherpages
-msgid "Ctrl-middle-click on tab closes all others"
-msgstr ""
-
 #: lazarusidestrconsts.dlgcurlycommenttab
 msgid "Curly { }"
 msgstr "大括号{ }"
@@ -2713,6 +2709,14 @@ msgstr ""
 #: lazarusidestrconsts.dlgmaxrecentprojs
 msgid "Max recent project files"
 msgstr "最大记录最近的工程数"
+
+#: lazarusidestrconsts.dlgmiddletabcloseotherpagesmod
+msgid "Middle-click-modifier to close all other tabs"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmiddletabcloserightpagesmod
+msgid "Middle-click-modifier to close tabs on the right"
+msgstr ""
 
 #: lazarusidestrconsts.dlgmixmethodsandproperties
 msgid "Mix methods and properties"
@@ -21903,6 +21907,18 @@ msgstr ""
 #: lazarusidestrconsts.uemcloseotherpages
 msgid "Close All &Other Pages"
 msgstr "关闭所有其他页面(&O)"
+
+#: lazarusidestrconsts.uemcloseotherpagesplain
+msgid "Close All Other Pages"
+msgstr ""
+
+#: lazarusidestrconsts.uemcloseotherpagesright
+msgid "Close Pages on the &Right"
+msgstr ""
+
+#: lazarusidestrconsts.uemcloseotherpagesrightplain
+msgid "Close Pages on the Right"
+msgstr ""
 
 #: lazarusidestrconsts.uemclosepage
 msgid "&Close Page"

@@ -1313,10 +1313,6 @@ msgstr "INLINE ve stylu C++"
 msgid "Create new Run Parameters settings"
 msgstr "Vytvořit nové nastavení Parametry spuštění"
 
-#: lazarusidestrconsts.dlgctrlmiddletabcloseotherpages
-msgid "Ctrl-middle-click on tab closes all others"
-msgstr "Ctrl-prostřední-klik na záložku zavře všechny ostatní"
-
 #: lazarusidestrconsts.dlgcurlycommenttab
 msgid "Curly { }"
 msgstr "Kudrnaté {}"
@@ -2634,6 +2630,14 @@ msgstr "Hodnota 0 znamená neomezeně."
 #: lazarusidestrconsts.dlgmaxrecentprojs
 msgid "Max recent project files"
 msgstr "Maximum nedávných souborů projektů"
+
+#: lazarusidestrconsts.dlgmiddletabcloseotherpagesmod
+msgid "Middle-click-modifier to close all other tabs"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmiddletabcloserightpagesmod
+msgid "Middle-click-modifier to close tabs on the right"
+msgstr ""
 
 #: lazarusidestrconsts.dlgmixmethodsandproperties
 msgid "Mix methods and properties"
@@ -21257,6 +21261,18 @@ msgstr "Záložka %s"
 #: lazarusidestrconsts.uemcloseotherpages
 msgid "Close All &Other Pages"
 msgstr "Zavřít všechny &ostatní stránky"
+
+#: lazarusidestrconsts.uemcloseotherpagesplain
+msgid "Close All Other Pages"
+msgstr ""
+
+#: lazarusidestrconsts.uemcloseotherpagesright
+msgid "Close Pages on the &Right"
+msgstr ""
+
+#: lazarusidestrconsts.uemcloseotherpagesrightplain
+msgid "Close Pages on the Right"
+msgstr ""
 
 #: lazarusidestrconsts.uemclosepage
 msgid "&Close Page"
