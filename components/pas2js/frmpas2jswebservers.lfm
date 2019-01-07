@@ -10,26 +10,17 @@ object PasJSWebserverProcessesForm: TPasJSWebserverProcessesForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
-  LCLVersion = '1.9.0.0'
-  object LLCount: TLabel
-    Left = 16
-    Height = 17
-    Top = 8
-    Width = 185
-    AutoSize = False
-    Caption = 'Number of webserver processes:'
-    ParentColor = False
-  end
+  LCLVersion = '2.1.0.0'
   object LCount: TLabel
-    AnchorSideLeft.Control = LLCount
-    AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = LLCount
-    Left = 209
-    Height = 17
-    Top = 8
-    Width = 39
-    BorderSpacing.Left = 8
-    Caption = 'LCount'
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
+    Height = 15
+    Top = 6
+    Width = 171
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    Caption = 'Number of webserver processes:'
     ParentColor = False
   end
   object LVProcesses: TListView
@@ -40,15 +31,12 @@ object PasJSWebserverProcessesForm: TPasJSWebserverProcessesForm
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 8
-    Height = 189
-    Top = 48
-    Width = 628
+    Left = 6
+    Height = 195
+    Top = 44
+    Width = 632
     Anchors = [akTop, akLeft, akRight, akBottom]
-    BorderSpacing.Left = 8
-    BorderSpacing.Top = 8
-    BorderSpacing.Right = 8
-    BorderSpacing.Bottom = 8
+    BorderSpacing.Around = 6
     Columns = <    
       item
         Caption = 'Port'
@@ -68,7 +56,7 @@ object PasJSWebserverProcessesForm: TPasJSWebserverProcessesForm
       item
         AutoSize = True
         Caption = 'Additional info'
-        Width = 88
+        Width = 94
       end>
     SmallImages = ILProcesses
     StateImages = ILProcesses
@@ -76,15 +64,18 @@ object PasJSWebserverProcessesForm: TPasJSWebserverProcessesForm
     ViewStyle = vsReport
   end
   object SBrefresh: TSpeedButton
-    AnchorSideTop.Control = LLCount
+    AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 598
+    Left = 606
     Height = 32
-    Top = 8
-    Width = 38
+    Top = 6
+    Width = 32
     Anchors = [akTop, akRight]
-    BorderSpacing.Right = 8
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Constraints.MinHeight = 32
+    Constraints.MinWidth = 32
     Glyph.Data = {
       36040000424D3604000000000000360000002800000010000000100000000100
       2000000000000004000064000000640000000000000000000000FFFFFF00A465

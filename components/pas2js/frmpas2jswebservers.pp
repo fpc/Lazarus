@@ -14,7 +14,6 @@ type
 
   TPasJSWebserverProcessesForm = class(TForm)
     ILProcesses: TImageList;
-    LLCount: TLabel;
     LCount: TLabel;
     LVProcesses: TListView;
     SBrefresh: TSpeedButton;
@@ -72,7 +71,7 @@ end;
 procedure TPasJSWebserverProcessesForm.Localize;
 
 begin
-  LLCount.Caption:= SWebserversCount;
+  LCount.Caption:=Format(SWebserversCount, ['0']);
   Caption:=SWebserversCaption;
   With LVProcesses do
     begin
@@ -145,10 +144,10 @@ begin
   if (C=Nil) or (C.ServerInstances=Nil) or (C.ServerInstances.Count=0) then
     begin
     LVProcesses.Items.Clear;
-    LCount.Caption:='0';
+    LCount.Caption:=Format(SWebserversCount, ['0']);
     exit;
     end;
-  LCount.Caption:=IntToStr(C.ServerInstances.Count);
+  LCount.Caption:=Format(SWebserversCount, [IntToStr(C.ServerInstances.Count)]);
   With LVProcesses.Items do
     try
       BeginUpdate;

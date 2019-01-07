@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ru\n"
-"X-Generator: Poedit 1.8.5\n"
+"X-Generator: Poedit 1.7.7\n"
 
 #: strpas2jsdesign.pjsdnodejsappdescription
 msgid "A pas2js program running in node.js"
@@ -52,8 +52,8 @@ msgid "Web server processes"
 msgstr "Процессы веб-серверов"
 
 #: strpas2jsdesign.swebserverscount
-msgid "Number of webserver processes:"
-msgstr "Количество процессов веб-серверов:"
+msgid "Number of webserver processes: %s"
+msgstr "Количество процессов веб-серверов: %s"
 
 #: strpas2jsdesign.swebserversextra
 msgid "Additional info"
