@@ -151,7 +151,7 @@ type
   public
     constructor Init(AOwner: TDiaElement);
     procedure Assign(const ASource: TDiaPosition);
-    class function Equals(const A, B: TDiaPosition): Boolean;
+    class function Equals(const A, B: TDiaPosition): Boolean; static;
     function Calc(const A, B: TDiaPoint): TDiaPoint;
 
     property Owner: TDiaElement read FOwner;
