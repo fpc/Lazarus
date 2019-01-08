@@ -2,7 +2,7 @@ unit SynPluginMultiCaret;
 
 {$mode objfpc}{$H+}
 
-{$DEFINE SynMultiCaretAssert}
+{off $DEFINE SynMultiCaretAssert}
 {off $DEFINE SynMultiCaretDebug}
 
 {$IfDef SynMultiCaretAssert}
@@ -631,9 +631,9 @@ begin
          )
        )
     then
-      h := Result
+      h := Result      // FCarets[Result] >= (x,y,o)
     else
-      l := Result + 1;
+      l := Result + 1; // FCarets[Result] <  (x,y,o)
     Result := cardinal(l + h) div 2;
   end;
   cp := @FCarets[Result];
@@ -1148,7 +1148,6 @@ end;
 procedure TSynPluginMultiCaretList.SetCurrentCaretKeepX(AValue: Integer);
 begin
   FCurrenCaret^.KeepX := AValue;
-  AdjustAfterChange(FCurrenCaret);
 end;
 
 procedure TSynPluginMultiCaretList.AdjustAfterChange(ACaret: PCaretData);
@@ -1169,37 +1168,42 @@ begin
 
   if (ACaret > FLowCaret) then begin
     NewCaretPos := ACaret - 1;
+    // Compare with previous Caret in list
     if (y <= NewCaretPos^.y) then begin
       x := ACaret^.x;
       if (y < NewCaretPos^.y) or (x <= NewCaretPos^.x) then begin
         o := ACaret^.offs;
         if (x < NewCaretPos^.x) or ( (x = NewCaretPos^.x) and (o <= NewCaretPos^.offs) )
         then begin
+          // ACaret is <= previous Caret in list
+          // TODO: If equal, only check for merge
           HelpCaretPos := NewCaretPos - 1;
           if (HelpCaretPos >= FLowCaret) and
              ( (y < HelpCaretPos^.y) or
                ( (y = HelpCaretPos^.y) and
-                 ( (x < HelpCaretPos^.x) or ( (x = HelpCaretPos^.x) and (o < HelpCaretPos^.offs) ) )
+                 ( (x < HelpCaretPos^.x) or ( (x = HelpCaretPos^.x) and (o <= HelpCaretPos^.offs) ) )
                ) )
           then begin
+            // ACaret is < pre-previous Caret in list
             NewCaretIdx := FindEqOrNextCaretRawIdx(x,y,o, FLowIndex, ToRawIndex(HelpCaretPos));
-            if NewCaretIdx > FHighIndex then NewCaretIdx := FHighIndex;
+            Assert((NewCaretIdx >= FLowIndex) and (NewCaretIdx <= FHighIndex), 'caret idx in range');
             NewCaretPos := @FCarets[NewCaretIdx];
           end;
 
           if (y = NewCaretPos^.y) and (x = NewCaretPos^.x) and (o = NewCaretPos^.offs) then begin
-            if FMergeLock = 0 then
+            if FMergeLock = 0 then begin
               InternalRemoveCaretEx(ToRawIndex(ACaret), ToRawIndex(NewCaretPos));
-            exit;
+              exit;
+            end;
           end;
           v := ACaret^;
           {$IfDef SynMultiCaretDebug}
-      debugln(SynMCaretDebug, ['TSynPluginMultiCaretList.AdjustAfterChange ', ToRawIndex(NewCaretPos), ' ',ToRawIndex(ACaret)]);
+          debugln(SynMCaretDebug, ['TSynPluginMultiCaretList.AdjustAfterChange ', ToRawIndex(NewCaretPos), ' ',ToRawIndex(ACaret)]);
           {$EndIf}
           Move(NewCaretPos^, (NewCaretPos+1)^, Pointer(ACaret)-Pointer(NewCaretPos));
           NewCaretPos^ := v;
 
-          assert(FBeforeNextCaret=nil, 'TSynPluginMultiCaretList.AdjustAfterChange: FBeforeNextCaret=nil');
+          assert(FBeforeNextCaret=nil, 'TSynPluginMultiCaretList.AdjustAfterChange: FBeforeNextCaret=nil Caret changed twice in same iteration');
           FCurrenCaret := NewCaretPos; // move down
           case FIteratoreMode of
             mciUp:   FBeforeNextCaret := ACaret; // continue at ACaret+1;
@@ -1209,6 +1213,8 @@ begin
               inc(FIterationDoneCount);
             end;
           end;
+
+          exit;
         end
       end;
     end;
@@ -1216,29 +1222,46 @@ begin
 
   if (ACaret < FHighCaret) then begin
     NewCaretPos := ACaret + 1;
+    // Compare with next Caret in list
     if (y >= NewCaretPos^.y) then begin
       x := ACaret^.x;
       if (y > NewCaretPos^.y) or (x >= NewCaretPos^.x) then begin
         o := ACaret^.offs;
         if (x > NewCaretPos^.x) or ( (x = NewCaretPos^.x) and (o >= NewCaretPos^.offs) )
         then begin
+          // ACaret is >= next Caret in list
           HelpCaretPos := NewCaretPos + 1;
           if (HelpCaretPos <= FHighCaret) and
              ( (y > HelpCaretPos^.y) or
                ( (y = HelpCaretPos^.y) and
-                 ( (x > HelpCaretPos^.x) or ( (x = HelpCaretPos^.x) and (o > HelpCaretPos^.offs) ) )
+                 ( (x > HelpCaretPos^.x) or ( (x = HelpCaretPos^.x) and (o >= HelpCaretPos^.offs) ) )
                ) )
           then begin
+            // ACaret is > post-next Caret in list
             NewCaretIdx := FindEqOrNextCaretRawIdx(x,y,o, ToRawIndex(HelpCaretPos), FHighIndex);
-            if NewCaretIdx < FLowIndex then NewCaretIdx := FLowIndex;
+            Assert((NewCaretIdx >= FLowIndex + 1) and (NewCaretIdx <= FHighIndex + 1), 'caret idx in range');
+            {$PUSH}{$R-}
             NewCaretPos := @FCarets[NewCaretIdx];
-          end;
+            {$POP}
+            if (NewCaretIdx <= FHighIndex) then begin
+              if (y = NewCaretPos^.y) and (x = NewCaretPos^.x) and (o = NewCaretPos^.offs) then begin
+                if FMergeLock = 0 then begin
+                  InternalRemoveCaretEx(ToRawIndex(ACaret), ToRawIndex(NewCaretPos));
+                  exit;
+                end;
+              end;
+            end;
+            dec(NewCaretPos);
+          end
 
-          if (y = NewCaretPos^.y) and (x = NewCaretPos^.x) and (o = NewCaretPos^.offs) then begin
-            if FMergeLock = 0 then
-              InternalRemoveCaretEx(ToRawIndex(ACaret), ToRawIndex(NewCaretPos));
-            exit;
-          end;
+          else
+            if (y = NewCaretPos^.y) and (x = NewCaretPos^.x) and (o = NewCaretPos^.offs) then begin
+              if FMergeLock = 0 then begin
+                InternalRemoveCaretEx(ToRawIndex(ACaret), ToRawIndex(NewCaretPos));
+                exit;
+              end;
+            end;
+
           v := ACaret^;
           {$IfDef SynMultiCaretDebug}
       debugln(SynMCaretDebug, ['TSynPluginMultiCaretList.AdjustAfterChange ', ToRawIndex(NewCaretPos), ' ',ToRawIndex(ACaret)]);
@@ -1246,7 +1269,7 @@ begin
           Move((ACaret+1)^, ACaret^, Pointer(NewCaretPos)-Pointer(ACaret));
           NewCaretPos^ := v;
 
-          assert(FBeforeNextCaret=nil, 'TSynPluginMultiCaretList.AdjustAfterChange: FBeforeNextCaret=nil');
+          assert(FBeforeNextCaret=nil, 'TSynPluginMultiCaretList.AdjustAfterChange: FBeforeNextCaret=nil Caret changed twice in same iteration');
           FCurrenCaret := NewCaretPos; // move down
           case FIteratoreMode of
             mciDown:   FBeforeNextCaret := ACaret; // continue at ACaret-1;
