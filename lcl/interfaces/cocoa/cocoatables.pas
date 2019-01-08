@@ -852,6 +852,7 @@ var
   idx  : Integer;
   img  : NSImage;
   btn  : NSTableButtonCell;
+  colorTitle : NSMutableAttributedString;
 begin
   Result:=nil;
   if not isFirstColumnCheckboxes and not isImagesInCell then Exit;
@@ -878,6 +879,16 @@ begin
   //Result.setAllowsMixedState(True);
   btn.setButtonType(NSSwitchButton);
   btn.setTitle(nstxt);
+
+  // forced "controlTextColor" provides a better result on unfocused
+  // nstablelist view with checkboxes
+  colorTitle := NSMutableAttributedString.alloc.initWithAttributedString(btn.attributedTitle);
+  colorTitle.addAttribute_value_range(NSForegroundColorAttributeName
+   , NSColor.controlTextColor
+   , NSMakeRange(0, colorTitle.length));
+  btn.setAttributedTitle(colorTitle);
+  colorTitle.release;
+
   if chk then begin
     btn.setIntValue(1);
     btn.setCellAttribute_to(NSCellState, NSOnState);
