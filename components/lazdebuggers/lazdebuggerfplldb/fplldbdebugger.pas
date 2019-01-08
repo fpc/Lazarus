@@ -1557,10 +1557,14 @@ end;
 
 class function TFpLldbDebugger.RequiredCompilerOpts(ATargetCPU, ATargetOS: String): TDebugCompilerRequirements;
 begin
-  {$IFDEF MacOs}
+  {$ifdef CD_Cocoa}
+  Result:=[dcrDwarfOnly];
+  {$ELSE}
+  {$IFDEF DARWIN}
   Result:=[dcrDwarfOnly];
   {$ELSE}
   Result:=[dcrNoExternalDbgInfo, dcrDwarfOnly];
+  {$ENDIF}
   {$ENDIF}
 end;
 
