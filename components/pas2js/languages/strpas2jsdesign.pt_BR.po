@@ -56,10 +56,8 @@ msgid "Web server processes"
 msgstr "Processos servidores web"
 
 #: strpas2jsdesign.swebserverscount
-#, fuzzy,badformat
-#| msgid "Number of webserver processes:"
 msgid "Number of webserver processes: %s"
-msgstr "Número de processos servidores web:"
+msgstr "Número de processos servidores web: %s"
 
 #: strpas2jsdesign.swebserversextra
 msgid "Additional info"

@@ -2631,11 +2631,11 @@ msgstr "Máximo de arquivos de projeto recentes"
 
 #: lazarusidestrconsts.dlgmiddletabcloseotherpagesmod
 msgid "Middle-click-modifier to close all other tabs"
-msgstr ""
+msgstr "Modificador-clique-central para fechar todas as outras abas"
 
 #: lazarusidestrconsts.dlgmiddletabcloserightpagesmod
 msgid "Middle-click-modifier to close tabs on the right"
-msgstr ""
+msgstr "Modificador-clique-central para fechar abas à direita"
 
 #: lazarusidestrconsts.dlgmixmethodsandproperties
 msgid "Mix methods and properties"
@@ -9829,10 +9829,12 @@ msgid ""
 "An error occurred during the initialization of Fppkg: %s.\n"
 "Check your Fppkg configuration and restart Lazarus to be able to use Fppkg's functionality.\n"
 msgstr ""
+"Um erro ocorreu durante a inicialização do Fppkg: %s.\n"
+"Verifique as configurações do Fppkg e reinicie o Lazarus para poder utilizar as suas funcionalidades.\n"
 
 #: lazarusidestrconsts.lisfppkginitializefailedcaption
 msgid "Failed to initialize Fppkg"
-msgstr ""
+msgstr "Falha ao inicializar o Fppkg"
 
 #: lazarusidestrconsts.lisframe
 msgid "Frame"
@@ -14707,7 +14709,7 @@ msgstr "Limpar nome arquivo padrão/preferencial da dependência"
 
 #: lazarusidestrconsts.lispckeditcommonoptions
 msgid "Common"
-msgstr ""
+msgstr "Comum"
 
 #: lazarusidestrconsts.lispckeditcompileeverything
 msgid "Compile everything?"
@@ -15004,7 +15006,7 @@ msgstr "Objeto"
 
 #: lazarusidestrconsts.lispckoptspackagefileoptions
 msgid "Additional Package File Options"
-msgstr ""
+msgstr "Opções de arquivo de pacote adicionais"
 
 #: lazarusidestrconsts.lispckoptspackageoptions
 msgid "Package Options"
@@ -18388,7 +18390,7 @@ msgstr "ferramenta parou com o código de saída %s. Use o menu contexto para ob
 
 #: lazarusidestrconsts.listoolstoppedwithexitstatususecontextmenutogetmoreinfo
 msgid "tool stopped with ExitCode 0 and ExitStatus %s. Use context menu to get more information."
-msgstr ""
+msgstr "ferramenta parou com \"ExitCode 0\" e \"ExitStatus %s\". Use o menu contexto para obter maiores informações."
 
 #: lazarusidestrconsts.listop
 msgctxt "lazarusidestrconsts.listop"
@@ -21352,15 +21354,15 @@ msgstr "Fechar todas as &Outras Páginas"
 
 #: lazarusidestrconsts.uemcloseotherpagesplain
 msgid "Close All Other Pages"
-msgstr ""
+msgstr "Fechar todas as outras páginas"
 
 #: lazarusidestrconsts.uemcloseotherpagesright
 msgid "Close Pages on the &Right"
-msgstr ""
+msgstr "Fechar páginas à &direita"
 
 #: lazarusidestrconsts.uemcloseotherpagesrightplain
 msgid "Close Pages on the Right"
-msgstr ""
+msgstr "Fechar páginas à direita"
 
 #: lazarusidestrconsts.uemclosepage
 msgid "&Close Page"
