@@ -1,10 +1,10 @@
 # Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2016, 2017.
-# admin <lxlalexlxl@ukr.net>, 2017, 2018.
+# admin <lxlalexlxl@ukr.net>, 2017, 2018, 2019.
 msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-12-20 20:17+0200\n"
+"PO-Revision-Date: 2019-01-07 18:14+0200\n"
 "Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -2634,11 +2634,11 @@ msgstr "Максимум останніх файлів проектів"
 
 #: lazarusidestrconsts.dlgmiddletabcloseotherpagesmod
 msgid "Middle-click-modifier to close all other tabs"
-msgstr ""
+msgstr "Модифікатор середньої кнопки для закриття решти вкладок"
 
 #: lazarusidestrconsts.dlgmiddletabcloserightpagesmod
 msgid "Middle-click-modifier to close tabs on the right"
-msgstr ""
+msgstr "Модифікатор середньої кнопки для закриття вкладок праворуч"
 
 #: lazarusidestrconsts.dlgmixmethodsandproperties
 msgid "Mix methods and properties"
@@ -9800,10 +9800,12 @@ msgid ""
 "An error occurred during the initialization of Fppkg: %s.\n"
 "Check your Fppkg configuration and restart Lazarus to be able to use Fppkg's functionality.\n"
 msgstr ""
+"Під час ініціалізації Fppkg трапилась помилка: %s.\n"
+"Перевірте конфігурацію Fppkg і перезапустіть Lazarus, щоб використовувати можливості Fppkg.\n"
 
 #: lazarusidestrconsts.lisfppkginitializefailedcaption
 msgid "Failed to initialize Fppkg"
-msgstr ""
+msgstr "Не вдалось ініціалізувати Fppkg"
 
 #: lazarusidestrconsts.lisframe
 msgid "Frame"
@@ -14674,7 +14676,7 @@ msgstr "Очистити типову/бажану назву файлу зал�
 
 #: lazarusidestrconsts.lispckeditcommonoptions
 msgid "Common"
-msgstr ""
+msgstr "Загальні"
 
 #: lazarusidestrconsts.lispckeditcompileeverything
 msgid "Compile everything?"
@@ -14971,7 +14973,7 @@ msgstr "Об'єкт"
 
 #: lazarusidestrconsts.lispckoptspackagefileoptions
 msgid "Additional Package File Options"
-msgstr ""
+msgstr "Додаткові параметри файлу пакунка"
 
 #: lazarusidestrconsts.lispckoptspackageoptions
 msgid "Package Options"
@@ -18346,7 +18348,7 @@ msgstr "засіб завершив роботу з кодом %s. Скорис�
 
 #: lazarusidestrconsts.listoolstoppedwithexitstatususecontextmenutogetmoreinfo
 msgid "tool stopped with ExitCode 0 and ExitStatus %s. Use context menu to get more information."
-msgstr ""
+msgstr "зупинено з ExitCode 0 і ExitStatus %s. Для детальнішої інформації скористайтесь контекстним меню."
 
 #: lazarusidestrconsts.listop
 msgctxt "lazarusidestrconsts.listop"
@@ -21305,15 +21307,15 @@ msgstr "Закрити всі &інші сторінки"
 
 #: lazarusidestrconsts.uemcloseotherpagesplain
 msgid "Close All Other Pages"
-msgstr ""
+msgstr "Закрити решту сторінок"
 
 #: lazarusidestrconsts.uemcloseotherpagesright
 msgid "Close Pages on the &Right"
-msgstr ""
+msgstr "Закрити сторінки &праворуч"
 
 #: lazarusidestrconsts.uemcloseotherpagesrightplain
 msgid "Close Pages on the Right"
-msgstr ""
+msgstr "Закрити сторінки праворуч"
 
 #: lazarusidestrconsts.uemclosepage
 msgid "&Close Page"

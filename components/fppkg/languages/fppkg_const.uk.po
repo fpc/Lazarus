@@ -1,10 +1,10 @@
 # Igor Paliychuk <mansonigor@gmail.com>, 2012.
-# Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2017, 2018.
+# Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2017, 2018, 2019.
 msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-06-30 13:39+0200\n"
+"PO-Revision-Date: 2019-01-07 18:05+0200\n"
 "Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -108,7 +108,7 @@ msgstr "Параметри"
 
 #: fppkg_const.rspackagefileoptionstitle
 msgid "FPMake"
-msgstr ""
+msgstr "FPMake"
 
 #: fppkg_const.rsremotemirrorsurl
 msgid "Remote mirrors URL"
