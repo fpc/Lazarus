@@ -17,9 +17,6 @@
     </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
-      <IgnoreBinaries Value="False"/>
-      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
-      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
     </PublishOptions>
     <RunParams>
       <local>
@@ -51,7 +48,7 @@
         <PackageName Value="FCL"/>
       </Item5>
     </RequiredPackages>
-    <Units Count="22">
+    <Units Count="23">
       <Unit0>
         <Filename Value="SynTest.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -161,6 +158,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestMarkupFoldColoring"/>
       </Unit21>
+      <Unit22>
+        <Filename Value="testsynmulticaret.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestSynMultiCaret"/>
+      </Unit22>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

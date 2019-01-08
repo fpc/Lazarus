@@ -4,7 +4,7 @@ program SynTest;
 
 uses
   Interfaces, Forms, GuiTestRunner, TestBase, TestBasicSynEdit, TestNavigation,
-  TestSynSelection, TestBlockIndent, TestBookMarks, TestSearch,
+  TestSynSelection, TestSynMultiCaret, TestBlockIndent, TestBookMarks, TestSearch,
   TestSynBeautifier, TestTrimSpace, TestSyncroEdit, TestSynTextArea,
   TestHighlightPas, TestHighlightXml, TestHighlightMulti, TestMarkupwordGroup,
   TestMarkupHighAll, TestFoldedView, TestSynSharedEdits, TestHighlighterLfm,
