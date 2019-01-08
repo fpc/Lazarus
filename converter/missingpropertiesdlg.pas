@@ -325,7 +325,7 @@ begin
     FixWideString(LFMStream, Utf8LFMStream);
     // Save the converted file.
     try
-      Utf8LFMStream.SaveToFile(aFilename);
+      Utf8LFMStream.SaveToFile(ChangeFileExt(aFilename, '.lfm'));
     except
       on E: Exception do begin
         Result:=MessageDlg(lisCodeToolsDefsWriteError,
