@@ -288,7 +288,8 @@ var
 begin
   Result:=false;
   with fCTLink do begin
-    if CodeTool.FindModeDirective(true,InsPos) then exit; // Already has mode directive.
+    if CodeTool.FindModeDirective(true,InsPos) then
+      exit(true);                                  // Already has mode directive.
     Assert(Assigned(CodeTool.Tree.Root), 'AddModeDelphiDirective: Tree root is Nil.');
     if not CodeTool.GetSourceNamePos(NamePos) then exit;  // "unit" or "program"
     CodeTool.MoveCursorToCleanPos(NamePos.EndPos);
