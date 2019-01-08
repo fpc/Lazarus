@@ -1,5 +1,5 @@
 # Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2016, 2017.
-# admin <lxlalexlxl@ukr.net>, 2017, 2018.
+# admin <lxlalexlxl@ukr.net>, 2017, 2018, 2019.
 msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
@@ -18304,7 +18304,7 @@ msgstr "засіб завершив роботу з кодом %s. Скорис�
 
 #: lazarusidestrconsts.listoolstoppedwithexitstatususecontextmenutogetmoreinfo
 msgid "tool stopped with ExitCode 0 and ExitStatus %s. Use context menu to get more information."
-msgstr ""
+msgstr "зупинено з ExitCode 0 і ExitStatus %s. Для детальнішої інформації скористайтесь контекстним меню."
 
 #: lazarusidestrconsts.listop
 msgctxt "lazarusidestrconsts.listop"

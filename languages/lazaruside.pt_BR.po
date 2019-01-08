@@ -18346,7 +18346,7 @@ msgstr "ferramenta parou com o código de saída %s. Use o menu contexto para ob
 
 #: lazarusidestrconsts.listoolstoppedwithexitstatususecontextmenutogetmoreinfo
 msgid "tool stopped with ExitCode 0 and ExitStatus %s. Use context menu to get more information."
-msgstr ""
+msgstr "ferramenta parou com \"ExitCode 0\" e \"ExitStatus %s\". Use o menu contexto para obter maiores informações."
 
 #: lazarusidestrconsts.listop
 msgctxt "lazarusidestrconsts.listop"
