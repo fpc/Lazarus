@@ -58,8 +58,6 @@ type
   private
     fSettings: TConvertSettings;
     fOrigFormat: TLRSStreamOriginalFormat;
-    function FixWideString(aInStream, aOutStream: TMemoryStream): TModalResult;
-    function GetLFMFilename(const DfmFilename: string; KeepCase: boolean): string;
   public
     constructor Create;
     destructor Destroy; override;
@@ -147,54 +145,7 @@ begin
         and (TLFMObjectNode(Node).TypeName<>'');
 end;
 
-{ TDFMConverter }
-
-constructor TDFMConverter.Create;
-begin
-  inherited Create;
-end;
-
-destructor TDFMConverter.Destroy;
-begin
-  inherited Destroy;
-end;
-
-function TDFMConverter.Convert(const DfmFilename: string): TModalResult;
-var
-  s: String;
-  Urgency: TMessageLineUrgency;
-begin
-  Result:=ConvertDfmToLfm(DfmFilename);
-  if Result=mrOK then begin
-    if fOrigFormat=sofBinary then begin
-      s:=Format(lisFileSIsConvertedToTextFormat, [DfmFilename]);
-      Urgency:=mluHint;
-    end
-    else begin
-      s:=Format(lisFileSHasIncorrectSyntax, [DfmFilename]);
-      Urgency:=mluError;
-    end;
-    if Assigned(fSettings) then
-      fSettings.AddLogLine(Urgency, s, DfmFilename)
-    else
-      ShowMessage(s);
-  end;
-end;
-
-function TDFMConverter.GetLFMFilename(const DfmFilename: string;
-  KeepCase: boolean): string;
-begin
-  if DfmFilename<>'' then begin
-    // platform and fpc independent unitnames are lowercase, so are the lfm files
-    Result:=lowercase(ExtractFilenameOnly(DfmFilename));
-    if KeepCase then
-      Result:=ExtractFilenameOnly(DfmFilename);
-    Result:=ExtractFilePath(DfmFilename)+Result+'.lfm';
-  end else
-    Result:='';
-end;
-
-function TDFMConverter.FixWideString(aInStream, aOutStream: TMemoryStream): TModalResult;
+function FixWideString(aInStream, aOutStream: TMemoryStream): TModalResult;
 // Convert Windows WideString syntax (#xxx) to UTF8
 
   function UnicodeNumber(const InS: string; var Ind: integer): string;
@@ -283,6 +234,40 @@ begin
   end;
   // Write data to a new stream.
   aOutStream.Write(OutS[1], Length(OutS));
+end;
+
+{ TDFMConverter }
+
+constructor TDFMConverter.Create;
+begin
+  inherited Create;
+end;
+
+destructor TDFMConverter.Destroy;
+begin
+  inherited Destroy;
+end;
+
+function TDFMConverter.Convert(const DfmFilename: string): TModalResult;
+var
+  s: String;
+  Urgency: TMessageLineUrgency;
+begin
+  Result:=ConvertDfmToLfm(DfmFilename);
+  if Result=mrOK then begin
+    if fOrigFormat=sofBinary then begin
+      s:=Format(lisFileSIsConvertedToTextFormat, [DfmFilename]);
+      Urgency:=mluHint;
+    end
+    else begin
+      s:=Format(lisFileSHasIncorrectSyntax, [DfmFilename]);
+      Urgency:=mluError;
+    end;
+    if Assigned(fSettings) then
+      fSettings.AddLogLine(Urgency, s, DfmFilename)
+    else
+      ShowMessage(s);
+  end;
 end;
 
 function TDFMConverter.ConvertDfmToLfm(const aFilename: string): TModalResult;
