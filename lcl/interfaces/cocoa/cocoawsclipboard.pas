@@ -431,7 +431,7 @@ function TCocoaWSClipboard.CocoaTypeToMimeType(AType: NSString): string;
 begin
   // "default" types must be mapped to a default LCL mime-type
   if AType.isEqualToString(_NSPasteboardTypeString) then
-    Result := 'text/plan'
+    Result := 'text/plain'
   else
     Result := NSStringToString(AType);
 end;
