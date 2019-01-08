@@ -689,10 +689,19 @@ end;
 
 function TFpLldbDbgMemCacheManagerSimple.ReadMemory(AnAddress: TDbgPtr;
   ASize: Cardinal; ADest: Pointer): Boolean;
+var
+  i: Integer;
 begin
+  i := -1;
   if not HasMemory(AnAddress, ASize) then
-    FList.Add(AddCache(AnAddress, ASize));
+    i := FList.Add(AddCache(AnAddress, ASize));
   Result := inherited ReadMemory(AnAddress, ASize, ADest);
+
+  // Only auto add caches, if success. May get a request for a subset later (pchar)
+  if (not Result) and (i >= 0) then begin
+    RemoveCache(TFpDbgMemCacheBase(FList[i]));
+    FList.Delete(i);
+  end;
 end;
 
 procedure TFpLldbDbgMemCacheManagerSimple.Clear;
