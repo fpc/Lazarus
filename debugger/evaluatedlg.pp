@@ -309,7 +309,7 @@ end;
 procedure TEvaluateDlg.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key = VK_ESCAPE then
+  if (Key = VK_ESCAPE) and not Docked then
     Close
   else
     inherited;;

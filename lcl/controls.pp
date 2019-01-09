@@ -1539,6 +1539,7 @@ type
                          KeepDockSiteSize: Boolean = true): Boolean; virtual;
     function ReplaceDockedControl(Control: TControl; NewDockSite: TWinControl;
                            DropControl: TControl; ControlSide: TAlign): Boolean;
+    function Docked: Boolean;
     function Dragging: Boolean;
     // accessibility
     function GetAccessibleObject: TLazAccessibleObject;

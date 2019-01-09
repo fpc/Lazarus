@@ -4876,6 +4876,11 @@ begin
   EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.ReplaceDockedControl'){$ENDIF};
 end;
 
+function TControl.Docked: Boolean;
+begin
+  Result := Assigned(Parent) and (Parent = HostDockSite) and (GetParentForm(Parent) <> Parent);
+end;
+
 procedure TControl.AddHandlerOnResize(const OnResizeEvent: TNotifyEvent;
   AsFirst: boolean);
 begin
