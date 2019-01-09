@@ -135,6 +135,8 @@ inherited EvaluateDlg: TEvaluateDlg
     ItemHeight = 13
     OnChange = cmbExpressionChange
     OnKeyDown = cmbExpressionKeyDown
+    OnKeyUp = cmbExpressionKeyUp
+    OnSelect = cmbExpressionSelect
     TabOrder = 2
   end
   object txtResult: TMemo[5]

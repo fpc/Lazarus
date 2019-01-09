@@ -74,6 +74,9 @@ type
     tbWatch: TToolButton;
     tbModify: TToolButton;
     tbEvaluate: TToolButton;
+    procedure cmbExpressionKeyUp(Sender: TObject; var {%H-}Key: Word;
+      {%H-}Shift: TShiftState);
+    procedure cmbExpressionSelect(Sender: TObject);
     procedure cmbNewValueKeyDown(Sender: TObject; var Key: Word;
       {%H-}Shift: TShiftState);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
@@ -92,6 +95,7 @@ type
     procedure tbWatchClick(Sender: TObject);
     
   private
+    fSkipKeySelect: Boolean;
     fHistDirection:TEvalHistDirection;
     procedure EvaluateCallback(Sender: TObject; ASuccess: Boolean;
       ResultText: String; ResultDBGType: TDBGType);
@@ -123,6 +127,7 @@ constructor TEvaluateDlg.Create(TheOwner:TComponent);
 begin
   inherited Create(TheOwner);
 
+  fSkipKeySelect := False;
   Caption := lisKMEvaluateModify;
   cmbExpression.Items.Assign(InputHistories.HistoryLists.
     GetList(ClassName,True,rltCaseSensitive));
@@ -229,6 +234,7 @@ end;
 procedure TEvaluateDlg.cmbExpressionKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
+  fSkipKeySelect := True;
   if (Key = VK_RETURN) and tbEvaluate.Enabled
   then begin
     Evaluate;
@@ -311,6 +317,18 @@ begin
     Modify;
     Key := 0;
   end;
+end;
+
+procedure TEvaluateDlg.cmbExpressionKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  fSkipKeySelect := False;
+end;
+
+procedure TEvaluateDlg.cmbExpressionSelect(Sender: TObject);
+begin
+  if not fSkipKeySelect then
+    Evaluate;
 end;
 
 procedure TEvaluateDlg.FormShow(Sender: TObject);
