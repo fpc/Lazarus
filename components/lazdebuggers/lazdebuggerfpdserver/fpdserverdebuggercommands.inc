@@ -108,7 +108,7 @@ begin
   ABreakpoint := TFPBreakpoints(FServerDebugger.BreakPoints).FindByUID(CommandUID);
   if assigned(ABreakpoint) then
     begin
-    ABreakpoint.Address:=0;
+    ABreakpoint.ServerId:=0;
     ABreakpoint.SetInvalid;
     ABreakpoint.DoChanged;
     end;
@@ -121,7 +121,7 @@ begin
   ABreakpoint := TFPBreakpoints(FServerDebugger.BreakPoints).FindByUID(CommandUID);
   if assigned(ABreakpoint) then
     begin
-    ABreakpoint.Address:=Hex2Dec(ACommandResponse.get('breakpointLocation','0'));
+    ABreakpoint.ServerId :=StrToInt(ACommandResponse.get('BreakpointServerIdr','0'));
     ABreakpoint.SetValid;
     ABreakpoint.DoChanged;
     end;

@@ -7,7 +7,7 @@ interface
 
 uses
   Classes,
-  SysUtils,
+  SysUtils, fgl,
   FPDbgController,
   FpDbgDwarfDataClasses,
   FpdMemoryTools,
@@ -69,7 +69,7 @@ type
     LogLevel: TFPDLogLevel;
     InstructionPointerRegValue: TDBGPtr;
     AnUID: variant;
-    BreakpointAddr: TDBGPtr;
+    BreakpointServerIdr: Integer;
     LocationRec: TDBGLocationRec;
     Validity: TDebuggerDataState;
     Addr1: TDBGPtr;
@@ -91,6 +91,26 @@ type
   end;
 
   TFpDebugThread = class;
+
+  { TFpServerDbgController }
+
+  TFpServerDbgController = class(TDbgController)
+  private type
+    TBreakPointIdMap = specialize TFPGMap<Integer, TFpInternalBreakpoint>;
+  function DoBreakPointCompare(Key1, Key2: Pointer): Integer;
+  private
+    FBreakPointIdCnt: Integer;
+    FBreakPointIdMap: TBreakPointIdMap;
+  public
+    constructor Create; override;
+    destructor Destroy; override;
+    function AddInternalBreakPointToId(ABrkPoint: TFpInternalBreakpoint): Integer;
+    function GetInternalBreakPointFromId(AnId: Integer): TFpInternalBreakpoint;
+    function GetIdFromInternalBreakPoint(ABrkPoint: TFpInternalBreakpoint): Integer;
+    procedure RemoveInternalBreakPoint(AnId: Integer);
+    //procedure RemoveInternalBreakPoint(ABrkPoint: TFpInternalBreakpoint);
+    procedure ClearInternalBreakPoint;
+  end;
 
   { TFpDebugThreadCommand }
 
@@ -116,11 +136,11 @@ type
     // the controller's debug loop. (This means it is only executed when the debuggee is paused or stopped)
     // Should return true on success, false on a failure. Set DoProcessLoop to true when the debuggee should continue,
     // make it false if the debuggee should stay in a paused state.
-    function Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean; virtual; abstract;
+    function Execute(AController: TFpServerDbgController; out DoProcessLoop: boolean): boolean; virtual; abstract;
     // This method is called before the command is queued for execution in the controller's debug loop. This
     // can happen in any thread. If DoQueueCommand is true, the result is ignored or else a success-event is
     // send if the result is true, a failure if the result is false.
-    function PreExecute(AController: TDbgController; out DoQueueCommand: boolean): boolean; virtual;
+    function PreExecute(AController: TFpServerDbgController; out DoQueueCommand: boolean): boolean; virtual;
     // The name that is used to identify the command
     class function TextName: string; virtual; abstract;
     // The identifier of the Listener that has send this command
@@ -134,7 +154,7 @@ type
   TFpDebugThread = class(TThread)
   private
     FCommandQueue: TFpDebugThreadCommandQueue;
-    FController: TDbgController;
+    FController: TFpServerDbgController;
     FListenerList: TThreadList;
     FMemConverter: TFpDbgMemConvertorLittleEndian;
     FMemReader: TDbgMemReader;
@@ -143,7 +163,7 @@ type
     procedure FreeConsoleOutputThread;
   protected
     // Handlers for the FController-events
-    procedure FControllerHitBreakpointEvent(var continue: boolean; const Breakpoint: TDbgBreakpoint);
+    procedure FControllerHitBreakpointEvent(var continue: boolean; const Breakpoint: TFpInternalBreakpoint);
     procedure FControllerProcessExitEvent(ExitCode: DWord);
     procedure FControllerCreateProcessEvent(var continue: boolean);
     procedure FControllerDebugInfoLoaded(Sender: TObject);
@@ -210,6 +230,58 @@ type
     constructor Create(ADebugThread: TFpDebugThread);
     procedure Execute; override;
   end;
+
+{ TFpServerDbgController }
+
+function TFpServerDbgController.DoBreakPointCompare(Key1, Key2: Pointer
+  ): Integer;
+begin
+  Result := PPointer(Key1)^ - PPointer(Key1)^;
+end;
+
+constructor TFpServerDbgController.Create;
+begin
+  FBreakPointIdMap := TBreakPointIdMap.Create;
+  FBreakPointIdMap.OnDataPtrCompare := @DoBreakPointCompare;
+  inherited Create;
+end;
+
+destructor TFpServerDbgController.Destroy;
+begin
+  inherited Destroy;
+  FBreakPointIdMap.Free;
+end;
+
+function TFpServerDbgController.AddInternalBreakPointToId(
+  ABrkPoint: TFpInternalBreakpoint): Integer;
+begin
+  inc(FBreakPointIdCnt);
+  Result := FBreakPointIdCnt;
+  FBreakPointIdMap.Add(Result, ABrkPoint);
+end;
+
+function TFpServerDbgController.GetInternalBreakPointFromId(AnId: Integer
+  ): TFpInternalBreakpoint;
+begin
+  if not FBreakPointIdMap.TryGetData(AnId, Result) then
+    Result := nil;
+end;
+
+function TFpServerDbgController.GetIdFromInternalBreakPoint(
+  ABrkPoint: TFpInternalBreakpoint): Integer;
+begin
+  Result := FBreakPointIdMap.IndexOfData(ABrkPoint);
+end;
+
+procedure TFpServerDbgController.RemoveInternalBreakPoint(AnId: Integer);
+begin
+  FBreakPointIdMap.Remove(AnId);
+end;
+
+procedure TFpServerDbgController.ClearInternalBreakPoint;
+begin
+  FBreakPointIdMap.Clear;
+end;
 
 constructor TFpWaitForConsoleOutputThread.Create(ADebugThread: TFpDebugThread);
 begin
@@ -302,7 +374,7 @@ begin
   AnEvent.Message:=Format('%s-command failed.',[TextName]);
 end;
 
-function TFpDebugThreadCommand.PreExecute(AController: TDbgController; out DoQueueCommand: boolean): boolean;
+function TFpDebugThreadCommand.PreExecute(AController: TFpServerDbgController; out DoQueueCommand: boolean): boolean;
 begin
   DoQueueCommand:=true;
   result:=true;
@@ -327,7 +399,7 @@ begin
   AnEvent.AnUID:=null;
   AnEvent.SendByConnectionIdentifier:=-1;
   AnEvent.InstructionPointerRegValue:=0;
-  AnEvent.BreakpointAddr:=0;
+  AnEvent.BreakpointServerIdr:=0;
   AnEvent.LocationRec.Address:=0;
   AnEvent.Validity:=ddsUnknown;
   SetLength(AnEvent.StackEntryArray,0);
@@ -358,16 +430,24 @@ begin
     end;
 end;
 
-procedure TFpDebugThread.FControllerHitBreakpointEvent(var continue: boolean; const Breakpoint: TDbgBreakpoint);
+procedure TFpDebugThread.FControllerHitBreakpointEvent(var continue: boolean;
+  const Breakpoint: TFpInternalBreakpoint);
 var
   ADebugEvent: TFpDebugEvent;
+  AnId: Integer;
 begin
   ClearEvent(ADebugEvent);
   ADebugEvent.EventType:=etEvent;
   ADebugEvent.EventName:='BreakPoint';
-  ADebugEvent.InstructionPointerRegValue:=FController.CurrentProcess.GetInstructionPointerRegisterValue;
-  if assigned(Breakpoint) then
-    ADebugEvent.BreakpointAddr:=Breakpoint.Location;
+  ADebugEvent.InstructionPointerRegValue:=FController.CurrentThread.GetInstructionPointerRegisterValue;
+  if assigned(Breakpoint) then begin
+    (* There may be several breakpoints at this address.
+       For now sending the IP address allows the IDE to find the same breakpoint(s) as the fpdserver app.
+    *)
+    AnId := FController.GetIdFromInternalBreakPoint(Breakpoint);
+    ADebugEvent.BreakpointServerIdr := AnId;
+  end;
+
 
   SendEvent(ADebugEvent);
   continue:=false;
@@ -382,7 +462,7 @@ begin
   ClearEvent(ADebugEvent);
   ADebugEvent.EventType:=etEvent;
   ADebugEvent.EventName:='ExitProcess';
-  ADebugEvent.InstructionPointerRegValue:=FController.CurrentProcess.GetInstructionPointerRegisterValue;
+  ADebugEvent.InstructionPointerRegValue:=FController.CurrentThread.GetInstructionPointerRegisterValue;
 
   SendEvent(ADebugEvent);
 end;
@@ -394,7 +474,7 @@ begin
   ClearEvent(ADebugEvent);
   ADebugEvent.EventType:=etEvent;
   ADebugEvent.EventName:='CreateProcess';
-  ADebugEvent.InstructionPointerRegValue:=FController.CurrentProcess.GetInstructionPointerRegisterValue;
+  ADebugEvent.InstructionPointerRegValue:=FController.CurrentThread.GetInstructionPointerRegisterValue;
 
   SendEvent(ADebugEvent);
 
@@ -409,7 +489,7 @@ var
   ARunLoop: boolean;
   AnEvent: TFpDebugEvent;
 begin
-  FController := TDbgController.Create;
+  FController := TFpServerDbgController.Create;
   FController.RedirectConsoleOutput:=true;
   FController.OnCreateProcessEvent:=@FControllerCreateProcessEvent;
   FController.OnProcessExitEvent:=@FControllerProcessExitEvent;

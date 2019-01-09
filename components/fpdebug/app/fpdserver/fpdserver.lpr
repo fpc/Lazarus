@@ -214,7 +214,7 @@ var
 begin
   Application:=TFPDServerApplication.Create(nil);
   CustomApplication:=Application;
-  Application.Title:='FPDebug Server';
+  Application.Title := 'FPD Server';
   Application.Run;
   Application.Free;
 end.

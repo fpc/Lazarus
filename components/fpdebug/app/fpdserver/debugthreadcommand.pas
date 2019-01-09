@@ -43,8 +43,8 @@ type
 
   TFpDebugThreadQuitDebugServerCommand = class(TFpDebugThreadCommand)
   public
-    function PreExecute(AController: TDbgController; out DoQueueCommand: boolean): boolean; override;
-    function Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean; override;
+    function PreExecute(AController: TFpServerDbgController; out DoQueueCommand: boolean): boolean; override;
+    function Execute(AController: TFpServerDbgController; out DoProcessLoop: boolean): boolean; override;
     class function TextName: string; override;
   end;
 
@@ -54,7 +54,7 @@ type
   private
     FFileName: string;
   public
-    function Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean; override;
+    function Execute(AController: TFpServerDbgController; out DoProcessLoop: boolean): boolean; override;
     class function TextName: string; override;
   published
     property Filename: string read FFileName write FFileName;
@@ -66,7 +66,7 @@ type
   private
     FConsoleTty: String;
   public
-    function Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean; override;
+    function Execute(AController: TFpServerDbgController; out DoProcessLoop: boolean): boolean; override;
     class function TextName: string; override;
   published
     property ConsoleTty: String read FConsoleTty write FConsoleTty;
@@ -76,7 +76,7 @@ type
 
   TFpDebugThreadRunCommand = class(TFpDebugThreadCommand)
   public
-    function Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean; override;
+    function Execute(AController: TFpServerDbgController; out DoProcessLoop: boolean): boolean; override;
     class function TextName: string; override;
   end;
 
@@ -84,7 +84,7 @@ type
 
   TFpDebugThreadContinueCommand = class(TFpDebugThreadCommand)
   public
-    function Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean; override;
+    function Execute(AController: TFpServerDbgController; out DoProcessLoop: boolean): boolean; override;
     class function TextName: string; override;
   end;
 
@@ -92,7 +92,7 @@ type
 
   TFpDebugThreadNextCommand = class(TFpDebugThreadCommand)
   public
-    function Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean; override;
+    function Execute(AController: TFpServerDbgController; out DoProcessLoop: boolean): boolean; override;
     class function TextName: string; override;
   end;
 
@@ -100,7 +100,7 @@ type
 
   TFpDebugThreadStepCommand = class(TFpDebugThreadCommand)
   public
-    function Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean; override;
+    function Execute(AController: TFpServerDbgController; out DoProcessLoop: boolean): boolean; override;
     class function TextName: string; override;
   end;
 
@@ -108,7 +108,7 @@ type
 
   TFpDebugThreadStepOutCommand = class(TFpDebugThreadCommand)
   public
-    function Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean; override;
+    function Execute(AController: TFpServerDbgController; out DoProcessLoop: boolean): boolean; override;
     class function TextName: string; override;
   end;
 
@@ -116,7 +116,7 @@ type
 
   TFpDebugThreadStepIntoInstrCommand = class(TFpDebugThreadCommand)
   public
-    function Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean; override;
+    function Execute(AController: TFpServerDbgController; out DoProcessLoop: boolean): boolean; override;
     class function TextName: string; override;
   end;
 
@@ -124,7 +124,7 @@ type
 
   TFpDebugThreadStepOverInstrCommand = class(TFpDebugThreadCommand)
   public
-    function Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean; override;
+    function Execute(AController: TFpServerDbgController; out DoProcessLoop: boolean): boolean; override;
     class function TextName: string; override;
   end;
 
@@ -132,7 +132,7 @@ type
 
   TFpDebugThreadStopCommand = class(TFpDebugThreadCommand)
   public
-    function Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean; override;
+    function Execute(AController: TFpServerDbgController; out DoProcessLoop: boolean): boolean; override;
     class function TextName: string; override;
   end;
 
@@ -142,10 +142,11 @@ type
   private
     FFileName: string;
     FLine: integer;
-    FBreakPoint: FpDbgClasses.TDbgBreakpoint;
+    FBreakPoint: TFpInternalBreakpoint;
+    FBreakServerId: Integer;
   public
     procedure ComposeSuccessEvent(var AnEvent: TFpDebugEvent); override;
-    function Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean; override;
+    function Execute(AController: TFpServerDbgController; out DoProcessLoop: boolean): boolean; override;
     class function TextName: string; override;
   published
     property Filename: string read FFileName write FFileName;
@@ -156,14 +157,12 @@ type
 
   TFpDebugThreadRemoveBreakpointCommand = class(TFpDebugThreadCommand)
   private
-    FLocationValue: TDBGPtr;
-    function GetLocation: string;
-    procedure SetLocation(AValue: string);
+    FBreakpointServerIdr: Integer;
   public
-    function Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean; override;
+    function Execute(AController: TFpServerDbgController; out DoProcessLoop: boolean): boolean; override;
     class function TextName: string; override;
   published
-    property Location: string read GetLocation write SetLocation;
+    property BreakpointServerIdr: Integer read FBreakpointServerIdr write FBreakpointServerIdr;
   end;
 
   { TFpDebugThreadGetLocationInfoCommand }
@@ -177,7 +176,7 @@ type
   protected
     procedure ComposeSuccessEvent(var AnEvent: TFpDebugEvent); override;
   public
-    function Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean; override;
+    function Execute(AController: TFpServerDbgController; out DoProcessLoop: boolean): boolean; override;
     class function TextName: string; override;
   published
     property Address: string read GetAddress write SetAddress;
@@ -191,7 +190,7 @@ type
     FResText: string;
     FValidity: TDebuggerDataState;
   public
-    function Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean; override;
+    function Execute(AController: TFpServerDbgController; out DoProcessLoop: boolean): boolean; override;
     class function TextName: string; override;
     procedure ComposeSuccessEvent(var AnEvent: TFpDebugEvent); override;
   published
@@ -204,7 +203,7 @@ type
   private
     FStackEntryArray: TFpDebugEventCallStackEntryArray;
   public
-    function Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean; override;
+    function Execute(AController: TFpServerDbgController; out DoProcessLoop: boolean): boolean; override;
     class function TextName: string; override;
     procedure ComposeSuccessEvent(var AnEvent: TFpDebugEvent); override;
   end;
@@ -224,13 +223,13 @@ type
     procedure SetAddress(AValue: string);
     {$ifndef disassemblernestedproc}
   private
-    FController: TDbgController;
+    FController: TFpServerDbgController;
     function OnAdjustToKnowFunctionStart(var AStartAddr: TDisassemblerAddress): Boolean;
     function OnDoDisassembleRange(AnEntryRanges: TDBGDisassemblerEntryMap; AFirstAddr, ALastAddr: TDisassemblerAddress; AStopAfterAddress: TDBGPtr; AStopAfterNumLines: Integer): Boolean;
     {$endif}
   public
     constructor Create(AListenerIdentifier: integer; AnUID: variant; AOnLog: TOnLog); override;
-    function Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean; override;
+    function Execute(AController: TFpServerDbgController; out DoProcessLoop: boolean): boolean; override;
     class function TextName: string; override;
     procedure ComposeSuccessEvent(var AnEvent: TFpDebugEvent); override;
   published
@@ -245,7 +244,7 @@ type
   private
     FWatchEntryArray: TFpDebugEventWatchEntryArray;
   public
-    function Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean; override;
+    function Execute(AController: TFpServerDbgController; out DoProcessLoop: boolean): boolean; override;
     class function TextName: string; override;
     procedure ComposeSuccessEvent(var AnEvent: TFpDebugEvent); override;
   end;
@@ -256,7 +255,7 @@ type
   private
     FWatchEntryArray: TFpDebugEventWatchEntryArray;
   public
-    function Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean; override;
+    function Execute(AController: TFpServerDbgController; out DoProcessLoop: boolean): boolean; override;
     class function TextName: string; override;
     procedure ComposeSuccessEvent(var AnEvent: TFpDebugEvent); override;
   end;
@@ -268,7 +267,7 @@ uses
 
 { TFpDebugRegistersCommand }
 
-function TFpDebugRegistersCommand.Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean;
+function TFpDebugRegistersCommand.Execute(AController: TFpServerDbgController; out DoProcessLoop: boolean): boolean;
 var
   ARegisterList: TDbgRegisterValueList;
   i: Integer;
@@ -304,7 +303,7 @@ end;
 
 { TFpDebugLocalsCommand }
 
-function TFpDebugLocalsCommand.Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean;
+function TFpDebugLocalsCommand.Execute(AController: TFpServerDbgController; out DoProcessLoop: boolean): boolean;
 var
   AContext: TFpDbgInfoContext;
   ProcVal: TFpDbgValue;
@@ -319,7 +318,7 @@ begin
      (AController.CurrentProcess.DbgInfo = nil) then
     exit;
 
-  Reg := AController.CurrentProcess.GetInstructionPointerRegisterValue;
+  Reg := AController.CurrentThread.GetInstructionPointerRegisterValue;
   AContext := AController.CurrentProcess.DbgInfo.FindContext(AController.CurrentThread.ID, 0, Reg);
 
   if (AContext = nil) or (AContext.SymbolAtAddress = nil) then
@@ -389,7 +388,7 @@ begin
 end;
 
 {$ifdef disassemblernestedproc}
-function TFpDebugThreadDisassembleCommand.Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean;
+function TFpDebugThreadDisassembleCommand.Execute(AController: TFpServerDbgController; out DoProcessLoop: boolean): boolean;
 {$endif}
 
   function {$ifndef disassemblernestedproc}TFpDebugThreadDisassembleCommand.{$endif}OnAdjustToKnowFunctionStart(var AStartAddr: TDisassemblerAddress): Boolean;
@@ -501,7 +500,7 @@ function TFpDebugThreadDisassembleCommand.Execute(AController: TDbgController; o
   end;
 
 {$ifndef disassemblernestedproc}
-function TFpDebugThreadDisassembleCommand.Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean;
+function TFpDebugThreadDisassembleCommand.Execute(AController: TFpServerDbgController; out DoProcessLoop: boolean): boolean;
 {$endif disassemblernestedproc}
 
 var
@@ -526,7 +525,7 @@ begin
     end;
 
   if FAddressValue=0 then
-    FStartAddr:=AController.CurrentProcess.GetInstructionPointerRegisterValue
+    FStartAddr:=AController.CurrentThread.GetInstructionPointerRegisterValue
   else
     FStartAddr:=FAddressValue;
 
@@ -591,7 +590,7 @@ end;
 
 { TFpDebugThreadSetConsoleTtyCommand }
 
-function TFpDebugThreadSetConsoleTtyCommand.Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean;
+function TFpDebugThreadSetConsoleTtyCommand.Execute(AController: TFpServerDbgController; out DoProcessLoop: boolean): boolean;
 begin
   AController.ConsoleTty:=FConsoleTty;
   AController.RedirectConsoleOutput:=(AController.ConsoleTty='');
@@ -606,7 +605,7 @@ end;
 
 { TFpDebugThreadStackTraceCommand }
 
-function TFpDebugThreadStackTraceCommand.Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean;
+function TFpDebugThreadStackTraceCommand.Execute(AController: TFpServerDbgController; out DoProcessLoop: boolean): boolean;
 var
   ThreadCallStack: TDbgCallstackEntryList;
   i: integer;
@@ -658,7 +657,7 @@ begin
   AnEvent.Validity:=FValidity;
 end;
 
-function TFpDebugThreadEvaluateCommand.Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean;
+function TFpDebugThreadEvaluateCommand.Execute(AController: TFpServerDbgController; out DoProcessLoop: boolean): boolean;
 var
   AContext: TFpDbgInfoContext;
   APasExpr: TFpPascalExpression;
@@ -677,7 +676,7 @@ begin
     end;
 
   ADbgInfo := AController.CurrentProcess.DbgInfo;
-  AContext := ADbgInfo.FindContext(AController.CurrentThread.ID, 0, AController.CurrentProcess.GetInstructionPointerRegisterValue);
+  AContext := ADbgInfo.FindContext(AController.CurrentThread.ID, 0, AController.CurrentThread.GetInstructionPointerRegisterValue);
   if AContext = nil then
     begin
     FValidity:=ddsInvalid;
@@ -727,14 +726,14 @@ end;
 
 { TFpDebugThreadQuitDebugServerCommand }
 
-function TFpDebugThreadQuitDebugServerCommand.PreExecute(AController: TDbgController; out DoQueueCommand: boolean): boolean;
+function TFpDebugThreadQuitDebugServerCommand.PreExecute(AController: TFpServerDbgController; out DoQueueCommand: boolean): boolean;
 begin
   DoQueueCommand:=false;
   CustomApplication.Terminate;
   result := true;
 end;
 
-function TFpDebugThreadQuitDebugServerCommand.Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean;
+function TFpDebugThreadQuitDebugServerCommand.Execute(AController: TFpServerDbgController; out DoProcessLoop: boolean): boolean;
 begin
   result := true;
   DoProcessLoop := false;
@@ -747,17 +746,9 @@ end;
 
 { TFpDebugThreadRemoveBreakpointCommand }
 
-function TFpDebugThreadRemoveBreakpointCommand.GetLocation: string;
-begin
-  result := FormatAddress(FLocationValue);
-end;
-
-procedure TFpDebugThreadRemoveBreakpointCommand.SetLocation(AValue: string);
-begin
-  FLocationValue := Hex2Dec(AValue);
-end;
-
-function TFpDebugThreadRemoveBreakpointCommand.Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean;
+function TFpDebugThreadRemoveBreakpointCommand.Execute(AController: TFpServerDbgController; out DoProcessLoop: boolean): boolean;
+var
+  Brk: TFpInternalBreakpoint;
 begin
   result := false;
   DoProcessLoop:=false;
@@ -766,8 +757,12 @@ begin
     log('Failed to remove breakpoint: No process', dllInfo);
     exit;
     end;
-  if (FLocationValue<>0) then
-    result := AController.CurrentProcess.RemoveBreak(FLocationValue)
+  if (FBreakpointServerIdr<>0) then begin
+    Brk := AController.GetInternalBreakPointFromId(FBreakpointServerIdr);
+    result := AController.CurrentProcess.RemoveBreak(Brk);
+    Brk.Free; // actually removes it from target process
+    AController.RemoveInternalBreakPoint(FBreakpointServerIdr);
+  end
   else
     log('Failed to remove breakpoint: No location given', dllInfo);
 end;
@@ -779,7 +774,7 @@ end;
 
 { TFpDebugThreadStopCommand }
 
-function TFpDebugThreadStopCommand.Execute(AController: TDbgController; out
+function TFpDebugThreadStopCommand.Execute(AController: TFpServerDbgController; out
   DoProcessLoop: boolean): boolean;
 begin
   AController.Stop;
@@ -794,7 +789,7 @@ end;
 
 { TFpDebugThreadStepOutCommand }
 
-function TFpDebugThreadStepOutCommand.Execute(AController: TDbgController; out
+function TFpDebugThreadStepOutCommand.Execute(AController: TFpServerDbgController; out
   DoProcessLoop: boolean): boolean;
 begin
   AController.StepOut;
@@ -810,7 +805,7 @@ end;
 { TFpDebugThreadStepOverInstrCommand }
 
 function TFpDebugThreadStepOverInstrCommand.Execute(
-  AController: TDbgController; out DoProcessLoop: boolean): boolean;
+  AController: TFpServerDbgController; out DoProcessLoop: boolean): boolean;
 begin
   AController.StepOverInstr;
   DoProcessLoop:=true;
@@ -825,7 +820,7 @@ end;
 { TFpDebugThreadStepIntoInstrCommand }
 
 function TFpDebugThreadStepIntoInstrCommand.Execute(
-  AController: TDbgController; out DoProcessLoop: boolean): boolean;
+  AController: TFpServerDbgController; out DoProcessLoop: boolean): boolean;
 begin
   AController.StepIntoInstr;
   DoProcessLoop:=true;
@@ -839,7 +834,7 @@ end;
 
 { TFpDebugThreadStepCommand }
 
-function TFpDebugThreadStepCommand.Execute(AController: TDbgController; out
+function TFpDebugThreadStepCommand.Execute(AController: TFpServerDbgController; out
   DoProcessLoop: boolean): boolean;
 begin
   AController.Step;
@@ -854,7 +849,7 @@ end;
 
 { TFpDebugThreadNextCommand }
 
-function TFpDebugThreadNextCommand.Execute(AController: TDbgController; out
+function TFpDebugThreadNextCommand.Execute(AController: TFpServerDbgController; out
   DoProcessLoop: boolean): boolean;
 begin
   AController.Next;
@@ -885,7 +880,7 @@ begin
   AnEvent.LocationRec:=FLocationRec;
 end;
 
-function TFpDebugThreadGetLocationInfoCommand.Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean;
+function TFpDebugThreadGetLocationInfoCommand.Execute(AController: TFpServerDbgController; out DoProcessLoop: boolean): boolean;
 var
   sym, symproc: TFpDbgSymbol;
 begin
@@ -905,7 +900,7 @@ begin
     FLocationRec.SrcLine:=0;
 
     if FAddressValue=0 then
-      FLocationRec.Address := AController.CurrentProcess.GetInstructionPointerRegisterValue
+      FLocationRec.Address := AController.CurrentThread.GetInstructionPointerRegisterValue
     else
       FLocationRec.Address := FAddressValue;
 
@@ -938,12 +933,13 @@ end;
 procedure TFpDebugThreadAddBreakpointCommand.ComposeSuccessEvent(var AnEvent: TFpDebugEvent);
 begin
   inherited ComposeSuccessEvent(AnEvent);
-  AnEvent.BreakpointAddr:=FBreakPoint.Location;
+  AnEvent.BreakpointServerIdr:=FBreakServerId;
 end;
 
-function TFpDebugThreadAddBreakpointCommand.Execute(AController: TDbgController; out DoProcessLoop: boolean): boolean;
+function TFpDebugThreadAddBreakpointCommand.Execute(AController: TFpServerDbgController; out DoProcessLoop: boolean): boolean;
 begin
   result := false;
+  FBreakServerId := 0;
   DoProcessLoop:=false;
   if not assigned(AController.CurrentProcess) then
     begin
@@ -954,6 +950,8 @@ begin
     begin
     FBreakPoint := AController.CurrentProcess.AddBreak(FileName, Line);
     result := assigned(FBreakPoint);
+    if Result then
+      FBreakServerId := AController.AddInternalBreakPointToId(FBreakPoint);
     end
   else
     log('Failed to add breakpoint: No filename and line-number given', dllInfo);
@@ -990,7 +988,7 @@ end;
 
 { TFpDebugThreadContinueCommand }
 
-function TFpDebugThreadContinueCommand.Execute(AController: TDbgController; out
+function TFpDebugThreadContinueCommand.Execute(AController: TFpServerDbgController; out
   DoProcessLoop: boolean): boolean;
 begin
   DoProcessLoop:=true;
@@ -1004,7 +1002,7 @@ end;
 
 { TFpDebugThreadRunCommand }
 
-function TFpDebugThreadRunCommand.Execute(AController: TDbgController; out
+function TFpDebugThreadRunCommand.Execute(AController: TFpServerDbgController; out
   DoProcessLoop: boolean): boolean;
 begin
   DoProcessLoop := AController.Run;
@@ -1018,7 +1016,7 @@ end;
 
 { TFpDebugThreadSetFilenameCommand }
 
-function TFpDebugThreadSetFilenameCommand.Execute(AController: TDbgController;
+function TFpDebugThreadSetFilenameCommand.Execute(AController: TFpServerDbgController;
   out DoProcessLoop: boolean): boolean;
 begin
   AController.ExecutableFilename:=FFileName;
