@@ -551,7 +551,7 @@ end;
 
 function TDbgWinProcess.AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent;
 
-  procedure HandleException(const AEvent: TDebugEvent);
+  procedure HandleException(const AEvent: TDebugEvent; out InterceptAtFirstChance: Boolean);
   const
     PARAMCOLS = 12 - SizeOf(Pointer);
   var
@@ -561,6 +561,7 @@ function TDbgWinProcess.AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent;
     ExInfo32: TExceptionDebugInfo32 absolute AEvent.Exception;
     ExInfo64: TExceptionDebugInfo64 absolute AEvent.Exception;
   begin
+    InterceptAtFirstChance := True;
     // Kept the debug-output as comments, since they provide deeper information
     // on how to interprete the exception-information.
     {
@@ -572,7 +573,7 @@ function TDbgWinProcess.AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent;
     case AEvent.Exception.ExceptionRecord.ExceptionCode of
       EXCEPTION_ACCESS_VIOLATION         : ExceptionClass:='ACCESS VIOLATION';
       EXCEPTION_ARRAY_BOUNDS_EXCEEDED    : ExceptionClass:='ARRAY BOUNDS EXCEEDED';
-      EXCEPTION_BREAKPOINT               : ExceptionClass:='BREAKPOINT';
+      EXCEPTION_BREAKPOINT               : ExceptionClass:='BREAKPOINT';  // should never be here
       EXCEPTION_DATATYPE_MISALIGNMENT    : ExceptionClass:='DATATYPE MISALIGNMENT';
       EXCEPTION_FLT_DENORMAL_OPERAND     : ExceptionClass:='FLT DENORMAL OPERAND';
       EXCEPTION_FLT_DIVIDE_BY_ZERO       : ExceptionClass:='FLT DIVIDE BY ZERO';
@@ -590,7 +591,7 @@ function TDbgWinProcess.AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent;
       EXCEPTION_NONCONTINUABLE_EXCEPTION : ExceptionClass:='NONCONTINUABLE EXCEPTION';
       EXCEPTION_POSSIBLE_DEADLOCK        : ExceptionClass:='POSSIBLE DEADLOCK';
       EXCEPTION_PRIV_INSTRUCTION         : ExceptionClass:='PRIV INSTRUCTION';
-      EXCEPTION_SINGLE_STEP              : ExceptionClass:='SINGLE STEP';
+      EXCEPTION_SINGLE_STEP              : ExceptionClass:='SINGLE STEP';    // should never be here
       EXCEPTION_STACK_OVERFLOW           : ExceptionClass:='STACK OVERFLOW';
 
       // add some status - don't know if we can get them here
@@ -606,6 +607,7 @@ function TDbgWinProcess.AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent;
       STATUS_SXS_INVALID_DEACTIVATION    : DebugLn('STATUS_SXS_INVALID_DEACTIVATION');
       }
     else
+      InterceptAtFirstChance := False;
       ExceptionClass := 'Unknown exception code $' + IntToHex(ExInfo32.ExceptionRecord.ExceptionCode, 8);
       {
       DebugLn(' [');
@@ -797,6 +799,8 @@ function TDbgWinProcess.AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent;
     log('[%d:%d]: %s', [AEvent.dwProcessId, AEvent.dwThreadId, S]);
   end;
 
+var
+  InterceptAtFirst: Boolean;
 begin
   if HandleDebugEvent(MDebugEvent)
   then result := deBreakpoint
@@ -826,9 +830,9 @@ begin
             result := deBreakpoint;
           end
         else begin
-          HandleException(MDebugEvent);
-          if MDebugEvent.Exception.dwFirstChance = 1 then
-            result := deInternalContinue
+          HandleException(MDebugEvent, InterceptAtFirst);
+          if (MDebugEvent.Exception.dwFirstChance = 1) and (not InterceptAtFirst) then
+            result := deInternalContinue // might be an SEH exception
           else
             result := deException;
         end;
