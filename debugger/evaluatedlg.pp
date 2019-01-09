@@ -103,6 +103,7 @@ type
     constructor Create(TheOwner: TComponent); override;
     procedure Execute(const AExpression: String);
     property FindText: string read GetFindText write SetFindText;
+    procedure UpdateData;
   end;
 
 implementation
@@ -153,6 +154,11 @@ end;
 procedure TEvaluateDlg.Execute(const AExpression: String);
 begin
   SetFindText(AExpression);
+end;
+
+procedure TEvaluateDlg.UpdateData;
+begin
+  Evaluate;
 end;
 
 procedure TEvaluateDlg.EvaluateCallback(Sender: TObject; ASuccess: Boolean;

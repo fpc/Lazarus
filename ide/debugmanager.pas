@@ -1406,9 +1406,10 @@ begin
   // TODO: Move here from DebuggerCurrentLine / Only currently State change locks execution of gdb
   //if ( ((FDebugger.State in [dsPause]) and (OldState = dsRun)) or
   //     (OldState in [dsPause]) ) and
-  if (OldState in [dsPause]) and
-     (FDialogs[ddtInspect] <> nil)
+  if (OldState in [dsPause]) and (FDialogs[ddtInspect] <> nil)
   then TIDEInspectDlg(FDialogs[ddtInspect]).UpdateData;
+  if (OldState in [dsPause]) and (FDialogs[ddtEvaluate] <> nil)
+  then TEvaluateDlg(FDialogs[ddtEvaluate]).UpdateData;
 
   case FDebugger.State of
     dsError: begin
@@ -1523,6 +1524,8 @@ begin
   then TAssemblerDlg(FDialogs[ddtAssembler]).SetLocation(FDebugger, Alocation.Address);
   if (FDialogs[ddtInspect] <> nil)
   then TIDEInspectDlg(FDialogs[ddtInspect]).UpdateData;
+  if (FDialogs[ddtEvaluate] <> nil)
+  then TEvaluateDlg(FDialogs[ddtEvaluate]).UpdateData;
 
   if (SrcLine > 0) and (CurrentSourceUnitInfo <> nil) and
      GetFullFilename(CurrentSourceUnitInfo, SrcFullName, True)
