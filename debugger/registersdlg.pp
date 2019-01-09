@@ -396,8 +396,14 @@ begin
   FNeedUpdateAgain := False;
 
   Reg := GetCurrentRegisters;
-  if Reg = nil then begin
-    lvRegisters.Items.Clear;
+  if (Reg = nil) or (reg.DataValidity<> ddsValid) then begin
+    if (DebugBoss.Debugger = nil) or not (DebugBoss.Debugger.State in [dsPause, dsInternalPause, dsRun]) then
+      lvRegisters.Items.Clear;
+
+    if (reg <> nil) then
+      reg.Count;
+    for n := 0 to lvRegisters.Items.Count - 1 do
+      lvRegisters.Items[n].SubItems[0] := '<Unavailable>';
     exit;
   end;
 
