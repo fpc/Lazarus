@@ -1680,6 +1680,13 @@ begin
       else
         TIDEInspectDlg(CurDialog).Execute(SourceEditorManager.GetActiveSE.GetOperandAtCurrentCaret);
     end;
+    if (CurDialog is TEvaluateDlg) and (SourceEditorManager.GetActiveSE <> nil)
+    then begin
+      if SourceEditorManager.GetActiveSE.SelectionAvailable then
+        TEvaluateDlg(CurDialog).Execute(SourceEditorManager.GetActiveSE.Selection)
+      else
+        TEvaluateDlg(CurDialog).Execute(SourceEditorManager.GetActiveSE.GetOperandAtCurrentCaret);
+    end;
   end;
   if not DoDisableAutoSizing then
     CurDialog.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TDebugManager.ViewDebugDialog'){$ENDIF};

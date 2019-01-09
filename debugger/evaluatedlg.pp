@@ -101,6 +101,7 @@ type
     procedure Modify;
   public
     constructor Create(TheOwner: TComponent); override;
+    procedure Execute(const AExpression: String);
     property FindText: string read GetFindText write SetFindText;
   end;
 
@@ -147,6 +148,11 @@ begin
   mnuHistory.Items[0].Caption:=drsEvalHistoryNone;
   mnuHistory.Items[1].Caption:=dsrEvalHistoryUp;
   mnuHistory.Items[2].Caption:=dsrEvalHistoryDown;
+end;
+
+procedure TEvaluateDlg.Execute(const AExpression: String);
+begin
+  SetFindText(AExpression);
 end;
 
 procedure TEvaluateDlg.EvaluateCallback(Sender: TObject; ASuccess: Boolean;
