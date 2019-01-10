@@ -397,7 +397,7 @@ begin
 
   Reg := GetCurrentRegisters;
   if (Reg = nil) or (reg.DataValidity<> ddsValid) then begin
-    if (DebugBoss.Debugger = nil) or not (DebugBoss.State in [dsPause, dsInternalPause, dsRun]) then
+    if (DebugBoss = nil) or not (DebugBoss.State in [dsPause, dsInternalPause, dsRun]) then
       lvRegisters.Items.Clear;
 
     if (reg <> nil) then
