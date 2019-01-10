@@ -9477,6 +9477,10 @@ msgstr "Tiedosto ei ole pienillä kirjoitettu"
 msgid "File not text"
 msgstr "Tiedosto ei ole tekstiä"
 
+#: lazarusidestrconsts.lisfilescountconvertedtotextformat
+msgid "%d files were converted to text format."
+msgstr ""
+
 #: lazarusidestrconsts.lisfilesettings
 msgid "File Settings"
 msgstr "Tiedoston asetukset"
@@ -9498,7 +9502,9 @@ msgid "Files in ASCII or UTF-8 encoding"
 msgstr "ASCII- tai UTF-8-koodatut tiedostot"
 
 #: lazarusidestrconsts.lisfilesisconvertedtotextformat
-msgid "File %s is converted to text format."
+#, fuzzy
+#| msgid "File %s is converted to text format."
+msgid "File %s was converted to text format."
 msgstr "Tiedosto %s on muunnettu tekstiksi."
 
 #: lazarusidestrconsts.lisfilesnotinasciinorutf8encoding

@@ -9633,6 +9633,10 @@ msgstr "ファイルは小文字ではありません"
 msgid "File not text"
 msgstr "ファイルはテキストでない"
 
+#: lazarusidestrconsts.lisfilescountconvertedtotextformat
+msgid "%d files were converted to text format."
+msgstr ""
+
 #: lazarusidestrconsts.lisfilesettings
 msgid "File Settings"
 msgstr "ファイル設定"
@@ -9654,7 +9658,9 @@ msgid "Files in ASCII or UTF-8 encoding"
 msgstr "ASCIIもしくはUTF-8エンコーディングのファイル"
 
 #: lazarusidestrconsts.lisfilesisconvertedtotextformat
-msgid "File %s is converted to text format."
+#, fuzzy
+#| msgid "File %s is converted to text format."
+msgid "File %s was converted to text format."
 msgstr "ファイル%sはテキスト形式に変換されます。"
 
 #: lazarusidestrconsts.lisfilesnotinasciinorutf8encoding

@@ -9896,6 +9896,10 @@ msgstr "File tidak dengan huruf kecil"
 msgid "File not text"
 msgstr "File bukan teks"
 
+#: lazarusidestrconsts.lisfilescountconvertedtotextformat
+msgid "%d files were converted to text format."
+msgstr ""
+
 #: lazarusidestrconsts.lisfilesettings
 msgid "File Settings"
 msgstr ""
@@ -9917,7 +9921,7 @@ msgid "Files in ASCII or UTF-8 encoding"
 msgstr ""
 
 #: lazarusidestrconsts.lisfilesisconvertedtotextformat
-msgid "File %s is converted to text format."
+msgid "File %s was converted to text format."
 msgstr ""
 
 #: lazarusidestrconsts.lisfilesnotinasciinorutf8encoding

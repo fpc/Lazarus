@@ -9855,6 +9855,10 @@ msgstr "文件名不是小写"
 msgid "File not text"
 msgstr "文件不是文本文件"
 
+#: lazarusidestrconsts.lisfilescountconvertedtotextformat
+msgid "%d files were converted to text format."
+msgstr ""
+
 #: lazarusidestrconsts.lisfilesettings
 msgid "File Settings"
 msgstr "文件设置"
@@ -9876,7 +9880,9 @@ msgid "Files in ASCII or UTF-8 encoding"
 msgstr "文件为ASCII或UTF-8编码"
 
 #: lazarusidestrconsts.lisfilesisconvertedtotextformat
-msgid "File %s is converted to text format."
+#, fuzzy
+#| msgid "File %s is converted to text format."
+msgid "File %s was converted to text format."
 msgstr "文件%s被转换到文本格式"
 
 #: lazarusidestrconsts.lisfilesnotinasciinorutf8encoding

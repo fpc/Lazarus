@@ -9889,6 +9889,10 @@ msgstr "Nazwa pliku nie jest napisana małymi literami"
 msgid "File not text"
 msgstr "To nie jest plik tekstowy"
 
+#: lazarusidestrconsts.lisfilescountconvertedtotextformat
+msgid "%d files were converted to text format."
+msgstr ""
+
 #: lazarusidestrconsts.lisfilesettings
 msgid "File Settings"
 msgstr "Ustawienia pliku"
@@ -9911,7 +9915,7 @@ msgid "Files in ASCII or UTF-8 encoding"
 msgstr "Pliki z kodowaniem ASCII lub UTF-8"
 
 #: lazarusidestrconsts.lisfilesisconvertedtotextformat
-msgid "File %s is converted to text format."
+msgid "File %s was converted to text format."
 msgstr ""
 
 #: lazarusidestrconsts.lisfilesnotinasciinorutf8encoding

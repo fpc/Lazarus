@@ -9542,6 +9542,10 @@ msgstr "Файл не в нижньому регістрі"
 msgid "File not text"
 msgstr "Не текстовий файл"
 
+#: lazarusidestrconsts.lisfilescountconvertedtotextformat
+msgid "%d files were converted to text format."
+msgstr ""
+
 #: lazarusidestrconsts.lisfilesettings
 msgid "File Settings"
 msgstr "Параметри файлу"
@@ -9563,7 +9567,9 @@ msgid "Files in ASCII or UTF-8 encoding"
 msgstr "Файли в кодуванні ASCII або UTF-8"
 
 #: lazarusidestrconsts.lisfilesisconvertedtotextformat
-msgid "File %s is converted to text format."
+#, fuzzy
+#| msgid "File %s is converted to text format."
+msgid "File %s was converted to text format."
 msgstr "Файл %s перетворено на текстовий."
 
 #: lazarusidestrconsts.lisfilesnotinasciinorutf8encoding

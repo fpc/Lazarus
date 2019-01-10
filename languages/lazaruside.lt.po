@@ -9635,6 +9635,10 @@ msgstr "Failo pavadinimas ne mažosiomis raidėmis"
 msgid "File not text"
 msgstr "Ne teksto failas"
 
+#: lazarusidestrconsts.lisfilescountconvertedtotextformat
+msgid "%d files were converted to text format."
+msgstr ""
+
 #: lazarusidestrconsts.lisfilesettings
 msgid "File Settings"
 msgstr "Failo nuostatos"
@@ -9656,7 +9660,9 @@ msgid "Files in ASCII or UTF-8 encoding"
 msgstr "ASCII arba UTF-8 koduotės failai"
 
 #: lazarusidestrconsts.lisfilesisconvertedtotextformat
-msgid "File %s is converted to text format."
+#, fuzzy
+#| msgid "File %s is converted to text format."
+msgid "File %s was converted to text format."
 msgstr "Failas „%s“ konvertuotas į tekstinį formatą."
 
 #: lazarusidestrconsts.lisfilesnotinasciinorutf8encoding

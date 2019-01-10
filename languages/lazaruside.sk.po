@@ -9954,6 +9954,10 @@ msgstr "Súbor nie je malými znakmi"
 msgid "File not text"
 msgstr "Súbor nie je textový"
 
+#: lazarusidestrconsts.lisfilescountconvertedtotextformat
+msgid "%d files were converted to text format."
+msgstr ""
+
 #: lazarusidestrconsts.lisfilesettings
 #, fuzzy
 #| msgid "File Settings ..."
@@ -9977,7 +9981,7 @@ msgid "Files in ASCII or UTF-8 encoding"
 msgstr "Súbory v kódovaní ASCII alebo UTF-8"
 
 #: lazarusidestrconsts.lisfilesisconvertedtotextformat
-msgid "File %s is converted to text format."
+msgid "File %s was converted to text format."
 msgstr ""
 
 #: lazarusidestrconsts.lisfilesnotinasciinorutf8encoding

@@ -9739,6 +9739,10 @@ msgstr "Dosya küçük harf\" deği"
 msgid "File not text"
 msgstr "Dosya değil metin"
 
+#: lazarusidestrconsts.lisfilescountconvertedtotextformat
+msgid "%d files were converted to text format."
+msgstr ""
+
 #: lazarusidestrconsts.lisfilesettings
 msgid "File Settings"
 msgstr "Dosya Ayarları"
@@ -9760,7 +9764,9 @@ msgid "Files in ASCII or UTF-8 encoding"
 msgstr "ASCII veya UTF-8 kodlamalı dosyalar"
 
 #: lazarusidestrconsts.lisfilesisconvertedtotextformat
-msgid "File %s is converted to text format."
+#, fuzzy
+#| msgid "File %s is converted to text format."
+msgid "File %s was converted to text format."
 msgstr "Dosya %s metin formatına dönüştürülür."
 
 #: lazarusidestrconsts.lisfilesnotinasciinorutf8encoding

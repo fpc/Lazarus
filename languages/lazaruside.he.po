@@ -10136,6 +10136,10 @@ msgstr "הקובץ אינו באותיות קטנות"
 msgid "File not text"
 msgstr "הקובץ אינו קובץ טקסט"
 
+#: lazarusidestrconsts.lisfilescountconvertedtotextformat
+msgid "%d files were converted to text format."
+msgstr ""
+
 #: lazarusidestrconsts.lisfilesettings
 #, fuzzy
 #| msgid "File Settings ..."
@@ -10159,7 +10163,7 @@ msgid "Files in ASCII or UTF-8 encoding"
 msgstr "קבצים בקידוד ASCII  או UTF-8"
 
 #: lazarusidestrconsts.lisfilesisconvertedtotextformat
-msgid "File %s is converted to text format."
+msgid "File %s was converted to text format."
 msgstr ""
 
 #: lazarusidestrconsts.lisfilesnotinasciinorutf8encoding

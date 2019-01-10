@@ -9571,6 +9571,10 @@ msgstr "Arquivo não está em minúsculo"
 msgid "File not text"
 msgstr "Arquivo não é texto"
 
+#: lazarusidestrconsts.lisfilescountconvertedtotextformat
+msgid "%d files were converted to text format."
+msgstr ""
+
 #: lazarusidestrconsts.lisfilesettings
 msgid "File Settings"
 msgstr "Configurações do arquivo"
@@ -9592,7 +9596,9 @@ msgid "Files in ASCII or UTF-8 encoding"
 msgstr "Arquivos em ASCII ou codificação UTF-8"
 
 #: lazarusidestrconsts.lisfilesisconvertedtotextformat
-msgid "File %s is converted to text format."
+#, fuzzy
+#| msgid "File %s is converted to text format."
+msgid "File %s was converted to text format."
 msgstr "Arquivo %s foi convertido para formato texto."
 
 #: lazarusidestrconsts.lisfilesnotinasciinorutf8encoding

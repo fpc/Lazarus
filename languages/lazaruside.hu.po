@@ -9539,6 +9539,10 @@ msgstr "A fájl nem kisbetűs"
 msgid "File not text"
 msgstr "A fájl nem szöveges típusú"
 
+#: lazarusidestrconsts.lisfilescountconvertedtotextformat
+msgid "%d files were converted to text format."
+msgstr ""
+
 #: lazarusidestrconsts.lisfilesettings
 msgid "File Settings"
 msgstr "Fájl beállítások"
@@ -9560,7 +9564,9 @@ msgid "Files in ASCII or UTF-8 encoding"
 msgstr "ASCII vagy UTF-8 kódolású fájlok"
 
 #: lazarusidestrconsts.lisfilesisconvertedtotextformat
-msgid "File %s is converted to text format."
+#, fuzzy
+#| msgid "File %s is converted to text format."
+msgid "File %s was converted to text format."
 msgstr "A(z) %s fájl szöveg formátumúvá lett alakítva"
 
 #: lazarusidestrconsts.lisfilesnotinasciinorutf8encoding

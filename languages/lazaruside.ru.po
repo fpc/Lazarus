@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2019-01-07 17:41+0300\n"
+"PO-Revision-Date: 2019-01-11 01:27+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -9537,6 +9537,10 @@ msgstr "Файл не в нижнем регистре"
 msgid "File not text"
 msgstr "Файл не текстовый"
 
+#: lazarusidestrconsts.lisfilescountconvertedtotextformat
+msgid "%d files were converted to text format."
+msgstr "Файлы (%d шт.) преобразованы в текстовые."
+
 #: lazarusidestrconsts.lisfilesettings
 msgid "File Settings"
 msgstr "Параметры файла"
@@ -9558,7 +9562,7 @@ msgid "Files in ASCII or UTF-8 encoding"
 msgstr "Файлы в кодировке ASCII либо UTF-8"
 
 #: lazarusidestrconsts.lisfilesisconvertedtotextformat
-msgid "File %s is converted to text format."
+msgid "File %s was converted to text format."
 msgstr "Файл %s преобразован в текстовый."
 
 #: lazarusidestrconsts.lisfilesnotinasciinorutf8encoding
