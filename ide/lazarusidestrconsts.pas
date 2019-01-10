@@ -5065,6 +5065,7 @@ resourcestring
     +' properties/classes which do not exist in the LCL. They can be replaced or removed.';
 
   lisFileSIsConvertedToTextFormat = 'File %s was converted to text format.';
+  lisFileSCountConvertedToTextFormat = '%d files were converted to text format.';
   lisFileSHasIncorrectSyntax = 'File %s has incorrect syntax.';
   lisAddedMissingObjectSToPascalSource = 'Added missing object "%s" to pascal source.';
   lisReplacedTypeSWithS = 'Replaced type "%s" with "%s".';

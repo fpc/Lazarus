@@ -8029,7 +8029,7 @@ function TMainIDE.DoConvertDFMtoLFM: TModalResult;
 var
   OpenDialog: TOpenDialog;
   DFMConverter: TDFMConverter;
-  i: integer;
+  i, n: integer;
   AFilename: string;
 begin
   Result:=mrOk;
@@ -8040,15 +8040,19 @@ begin
     OpenDialog.Options:=OpenDialog.Options+[ofAllowMultiSelect];
     OpenDialog.Filter:=dlgFilterDelphiForm+' (*.dfm)|*.dfm|'+dlgFilterAll+'|'+GetAllFilesMask;
     if OpenDialog.Execute and (OpenDialog.Files.Count>0) then begin
+      n := 0;
       For I := 0 to OpenDialog.Files.Count-1 do begin
         AFilename:=ExpandFileNameUTF8(OpenDialog.Files.Strings[i]);
         DFMConverter:=TDFMConverter.Create;
         try
-          Result:=DFMConverter.Convert(AFilename);
+          Result:=DFMConverter.Convert(AFilename, OpenDialog.Files.Count = 1);
+          if Result = mrOK then inc(n);
         finally
           DFMConverter.Free;
         end;
       end;
+      if OpenDialog.Files.Count > 1 then
+        ShowMessageFmt(lisFileSCountConvertedToTextFormat, [n]);
       SaveEnvironment;
     end;
     InputHistories.StoreFileDialogSettings(OpenDialog);

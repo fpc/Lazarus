@@ -62,7 +62,8 @@ type
     constructor Create;
     destructor Destroy; override;
     function ConvertDfmToLfm(const aFilename: string): TModalResult;
-    function Convert(const DfmFilename: string): TModalResult;
+    function Convert(const DfmFilename: string;
+      DisplaySuccessMessage: Boolean): TModalResult;
   public
     property Settings: TConvertSettings read fSettings write fSettings;
   end;
@@ -248,7 +249,8 @@ begin
   inherited Destroy;
 end;
 
-function TDFMConverter.Convert(const DfmFilename: string): TModalResult;
+function TDFMConverter.Convert(const DfmFilename: string;
+  DisplaySuccessMessage: Boolean): TModalResult;
 var
   s: String;
   Urgency: TMessageLineUrgency;
@@ -256,17 +258,22 @@ begin
   Result:=ConvertDfmToLfm(DfmFilename);
   if Result=mrOK then begin
     if fOrigFormat=sofBinary then begin
-      s:=Format(lisFileSIsConvertedToTextFormat, [DfmFilename]);
+      if DisplaySuccessMessage then
+        s:=Format(lisFileSIsConvertedToTextFormat, [DfmFilename])
+      else
+        s:='';
       Urgency:=mluHint;
     end
     else begin
       s:=Format(lisFileSHasIncorrectSyntax, [DfmFilename]);
       Urgency:=mluError;
     end;
-    if Assigned(fSettings) then
-      fSettings.AddLogLine(Urgency, s, DfmFilename)
-    else
-      ShowMessage(s);
+    if s <> '' then begin
+      if Assigned(fSettings) then
+        fSettings.AddLogLine(Urgency, s, DfmFilename)
+      else
+        ShowMessage(s);
+    end;
   end;
 end;
 
