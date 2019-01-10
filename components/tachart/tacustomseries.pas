@@ -1393,13 +1393,16 @@ const
     ((ldTop, ldBottom), (ldRight, ldLeft));
 var
   isNeg: Boolean;
+  ref: Double;
 begin
+  with Extent do
+    ref := (a.Y + b.Y) * 0.5;
   case MarkPositions of
-    lmpOutside: isNeg := Source[AIndex]^.Y < GetZeroLevel;
+    lmpOutside: isNeg := Source[AIndex]^.Y < ref;
     lmpPositive: isNeg := false;
     lmpNegative: isNeg := true;
-    lmpInside: isNeg := Source[AIndex]^.Y >= GetZeroLevel;
-    lmpInsideCenter: isNeg := Source[AIndex]^.Y < GetZeroLevel;
+    lmpInside: isNeg := Source[AIndex]^.Y >= ref;
+    lmpInsideCenter: isNeg := false;
   end;
   Result := DIR[IsRotated, isNeg];
 end;
@@ -1729,50 +1732,65 @@ end;
 procedure TBasicPointSeries.UpdateMargins(
   ADrawer: IChartDrawer; var AMargins: TRect);
 var
-  i, dist: Integer;
+  i, distX, distY: Integer;
   labelText: String;
   dir: TLabelDirection;
-  m: array [TLabelDirection] of Integer absolute AMargins;
-  zero: Double;
   gp: TDoublePoint;
-  valueIsPositive: Boolean;
+  p: TPoint;
+  zero: Double;
+  r, rExtent: TRect;
 begin
   if not Marks.IsMarkLabelsVisible or not Marks.AutoMargins then exit;
-  if MarkPositions = lmpInsideCenter then exit;
 
+  r := Rect(MaxInt, MaxInt, -MaxInt, -MaxInt);
+  with FChart.LogicalExtent do begin
+    rExtent.TopLeft := FChart.GraphToImage(DoublePoint(a.x, b.y));
+    rExtent.BottomRight := FChart.GraphToImage(DoublePoint(b.x, a.y));
+  end;
   zero := GetZeroLevel;
+
   for i := 0 to Count - 1 do begin
-    gp := GetGraphPoint(i);
-    if not ParentChart.IsPointInViewPort(gp) then continue;
     labelText := FormattedMark(i);
-    if labelText = '' then continue;
+    if labelText = '' then Continue;
 
-    valueIsPositive := TDoublePointBoolArr(gp)[not IsRotated] > zero;
     dir := GetLabelDirection(i);
-
-    with Marks.MeasureLabel(ADrawer, labelText) do
-      dist := IfThen(dir in [ldLeft, ldRight], cx, cy);
+    with Marks.MeasureLabel(ADrawer, labelText) do begin
+      distY := IfThen(IsRotated, cx, cy);
+      distX := IfThen(IsRotated, cy, cx) div 2;
+    end;
     if Marks.DistanceToCenter then
-      dist := dist div 2;
+      distY := distY div 2;
+    distY := distY + Marks.Distance;
+    if IsRotated then
+      Exchange(distX, distY);
 
-    if valueIsPositive then begin
-      if Marks.DistanceToCenter then
-        case dir of
-          ldBottom: dir := ldTop;
-          ldLeft: dir := ldRight;
-        end;
-      if dir in [ldTop, ldRight] then
-        m[dir] := Max(m[dir], dist + Marks.Distance);
+    gp := GetGraphPoint(i);
+    p := FChart.GraphToImage(gp);
+    UpdateMinMax(p.X, rExtent.Left, rExtent.Right);
+    UpdateMinMax(p.Y, rExtent.Top, rExtent.Bottom);
+
+    if MarkPositions = lmpInsideCenter then
+      p.y := (p.y + FChart.YGraphToImage(zero)) div 2;
+
+    case dir of
+      ldLeft   : UpdateMinMax(p.X - distX, r.Left, r.Right);
+      ldRight  : UpdateMinMax(p.X + distX, r.Left, r.Right);
+      ldTop    : UpdateMinMax(p.Y - distY, r.Top, r.Bottom);
+      ldBottom : UpdateMinMax(p.Y + distY, r.Top, r.Bottom);
+    end;
+    if IsRotated then begin
+      UpdateMinMax(p.Y - distY, r.Top, r.Bottom);
+      UpdateMinMax(p.Y + distY, r.Top, r.Bottom);
     end else begin
-      if Marks.DistanceToCenter then
-        case dir of
-          ldTop: dir := ldBottom;
-          ldRight: dir := ldLeft;
-        end;
-      if dir in [ldBottom, ldLeft] then
-        m[dir] := Max(m[dir], dist + Marks.Distance);
+      UpdateMinMax(p.X - distX, r.Left, r.Right);
+      UpdateMinMax(p.X + distX, r.Left, r.Right);
     end;
   end;
+
+  AMargins.Top := Max(AMargins.Top, -(r.Top - rExtent.Top));
+  AMargins.Bottom := Max(AMargins.Bottom, (r.Bottom - rExtent.Bottom));
+  AMargins.Left := Max(AMargins.Left, -(r.Left - rExtent.Left));
+  AMargins.Right := Max(AMargins.Right, (r.Right - rExtent.Right));
 end;
 
 procedure TBasicPointSeries.UpdateMinXRange;
