@@ -28,6 +28,8 @@ type
     function GetMargin(AIndex: Integer): Integer; inline;
     procedure SetMargin(AIndex: Integer; AValue: TChartDistance); inline;
   public
+    procedure UndoZoom;
+    procedure ZoomPercent(const PercentZoom: Double);
     property RightAxis: TChartAxis index calRight read GetAxisByAlign1;
     property TopAxis: TChartAxis index calTop read GetAxisByAlign1;
   public
@@ -80,7 +82,7 @@ type
 implementation
 
 uses
-  Math;
+  Math, TAGeometry;
 
 type
   TLogTransformEnumerator = class(TAxisTransformEnumerator)
@@ -196,6 +198,25 @@ end;
 procedure TChartTeeChart.SetMargin(AIndex: Integer; AValue: TChartDistance);
 begin
   Margins.SetValue(AIndex, AValue);
+end;
+
+procedure TChartTeeChart.UndoZoom;
+begin
+  ZoomFull;
+end;
+
+procedure TChartTeeChart.ZoomPercent(const PercentZoom: Double);
+var
+  ext: TDoubleRect;
+  factor: Double;
+  dx, dy: Double;
+begin
+  if PercentZoom <= 0 then exit;
+  factor := (1.0 - PercentZoom * 0.01) * 0.5;
+  ext := LogicalExtent;
+  dx := (ext.b.x - ext.a.x) * factor;
+  dy := (ext.b.y - ext.a.y) * factor;
+  LogicalExtent := DoubleRect(ext.a.x - dx, ext.a.y - dy, ext.b.x + dx, ext.b.y + dy);
 end;
 
 procedure Dummy;
