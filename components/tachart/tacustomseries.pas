@@ -1256,7 +1256,7 @@ begin
     lfont.Assign(Marks.LabelFont);
     ParentChart.DisableRedrawing;
 
-    for i := 0 to Count - 1 do begin
+    for i := FLoBound to FUpBound do begin
       if IsNan(Source[i]^.Point) then continue;
       g := GetLabelDataPoint(i);
       for si := 0 to Source.YCount - 1 do begin
@@ -1756,7 +1756,7 @@ begin
   with FChart do
     zero := IfThen(IsRotated, XGraphToImage(GetZeroLevel), YGraphToImage(GetZeroLevel));
 
-  for i := 0 to Count - 1 do begin
+  for i := FLoBound to FUpBound do begin
     labelText := FormattedMark(i);
     if labelText = '' then Continue;
 
