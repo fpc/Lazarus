@@ -333,7 +333,7 @@ end;
 
 procedure TCustomImageListResolution.CheckIndex(AIndex: Integer;
   AForInsert: Boolean);
-  // aviod exceptionframe generation
+  // avoid exceptionframe generation
   procedure Error;
   begin
     raise EInvalidOperation.Create(SInvalidIndex);
@@ -364,10 +364,9 @@ begin
     Clear;
     Exit;
   end;
-
   CheckIndex(AIndex);
-
-  InternalMove(AIndex, FCount - 1, True);
+  if AIndex < FCount-1 then
+    InternalMove(AIndex, FCount-1, True);
   Dec(FCount);
   if HandleAllocated
   then TWSCustomImageListResolutionClass(WidgetSetClass).Delete(Self, AIndex);
@@ -641,8 +640,8 @@ end;
   Moves an image from the CurIndex'th location to NewIndex'th location
   without notifying the widgetset
  ------------------------------------------------------------------------------}
-procedure TCustomImageListResolution.InternalMove(ACurIndex,
-  ANewIndex: Cardinal; AIgnoreCurrent: Boolean);
+procedure TCustomImageListResolution.InternalMove(ACurIndex, ANewIndex: Cardinal;
+  AIgnoreCurrent: Boolean);
 var
   ImgSize, DataSize: Cardinal;
   p: Pointer;
