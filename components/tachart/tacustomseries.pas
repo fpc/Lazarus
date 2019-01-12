@@ -262,7 +262,7 @@ type
     FOnCustomDrawPointer: TSeriesPointerCustomDrawEvent;
     FOnGetPointerStyle: TSeriesPointerStyleEvent;
     function GetErrorBars(AIndex: Integer): TChartErrorBar;
-    function GetLabelDirection(AIndex: Integer): TLabelDirection;
+    function GetLabelDirection(AValue: Double): TLabelDirection;
     function IsErrorBarsStored(AIndex: Integer): Boolean;
     procedure SetErrorBars(AIndex: Integer; AValue: TChartErrorBar);
     procedure SetMarkPositions(AValue: TLinearMarkPositions);
@@ -1259,7 +1259,6 @@ begin
     for i := 0 to Count - 1 do begin
       if IsNan(Source[i]^.Point) then continue;
       g := GetLabelDataPoint(i);
-      ld := GetLabelDirection(i);
       for si := 0 to Source.YCount - 1 do begin
         if Styles <> nil then begin
           style := Styles.StyleByIndex(si);
@@ -1287,6 +1286,7 @@ begin
           else
             gl.Y -= AxisToGraphY(y)/2;
         end;
+        ld := GetLabelDirection(TDoublePointBoolArr(gl)[not IsRotated]);
         with ParentChart do
           if
             (Marks.YIndex = MARKS_YINDEX_ALL) or (Marks.YIndex = si) and
@@ -1387,7 +1387,7 @@ begin
   Result := GetGraphPoint(AIndex);
 end;
 
-function TBasicPointSeries.GetLabelDirection(AIndex: Integer): TLabelDirection;
+function TBasicPointSeries.GetLabelDirection(AValue: Double): TLabelDirection;
 const
   DIR: array [Boolean, Boolean] of TLabelDirection =
     ((ldTop, ldBottom), (ldRight, ldLeft));
@@ -1395,13 +1395,16 @@ var
   isNeg: Boolean;
   ref: Double;
 begin
-  with Extent do
-    ref := (a.Y + b.Y) * 0.5;
+  if Stacked then
+    ref := GetZeroLevel
+  else
+    with FChart.LogicalExtent do
+      ref := IfThen(IsRotated, a.x + b.x, a.y + b.y) * 0.5;
   case MarkPositions of
-    lmpOutside: isNeg := Source[AIndex]^.Y < ref;
+    lmpOutside: isNeg := AValue < ref;
     lmpPositive: isNeg := false;
     lmpNegative: isNeg := true;
-    lmpInside: isNeg := Source[AIndex]^.Y >= ref;
+    lmpInside: isNeg := AValue >= ref;
     lmpInsideCenter: isNeg := false;
   end;
   Result := DIR[IsRotated, isNeg];
@@ -1732,38 +1735,65 @@ end;
 procedure TBasicPointSeries.UpdateMargins(
   ADrawer: IChartDrawer; var AMargins: TRect);
 var
-  i, distX, distY: Integer;
+  i, j: Integer; //, distX, distY: Integer;
   labelText: String;
   dir: TLabelDirection;
   gp: TDoublePoint;
   p: TPoint;
-  zero: Double;
+  dist: TPoint;
+  prev, curr, zero: Integer;
   r, rExtent: TRect;
+  y: Double;
 begin
   if not Marks.IsMarkLabelsVisible or not Marks.AutoMargins then exit;
 
-  r := Rect(MaxInt, MaxInt, -MaxInt, -MaxInt);
   with FChart.LogicalExtent do begin
     rExtent.TopLeft := FChart.GraphToImage(DoublePoint(a.x, b.y));
     rExtent.BottomRight := FChart.GraphToImage(DoublePoint(b.x, a.y));
   end;
-  zero := GetZeroLevel;
+  r := rExtent;
+  with FChart do
+    zero := IfThen(IsRotated, XGraphToImage(GetZeroLevel), YGraphToImage(GetZeroLevel));
 
   for i := 0 to Count - 1 do begin
     labelText := FormattedMark(i);
     if labelText = '' then Continue;
 
-    dir := GetLabelDirection(i);
-    with Marks.MeasureLabel(ADrawer, labelText) do begin
-      distY := IfThen(IsRotated, cx, cy);
-      distX := IfThen(IsRotated, cy, cx) div 2;
-    end;
-    if Marks.DistanceToCenter then
-      distY := distY div 2;
-    distY := distY + Marks.Distance;
-    if IsRotated then
-      Exchange(distX, distY);
+    with Marks.MeasureLabel(ADrawer, labelText) do
+      if IsRotated then
+        dist := Point(cx + Marks.Distance - IfThen(Marks.DistanceToCenter, cx div 2), cy div 2)
+      else
+        dist := Point(cx div 2, cy + Marks.Distance - IfThen(Marks.DistanceToCenter, cy div 2));
 
+    prev := zero;
+    gp := GetLabelDataPoint(i);
+    for j := 0 to Source.YCount - 1 do begin
+      if Stacked and (j > 0) then begin
+        y := Source[i]^.YList[j-1];
+        if IsRotated then
+          gp.x += AxisToGraphX(y)
+        else
+          gp.Y += AxisToGraphY(y);
+      end;
+      p := FChart.GraphToImage(gp);
+      curr := TPointBoolArr(p)[not IsRotated];
+      if MarkPositions = lmpInsideCenter then begin
+        if IsRotated then
+          p.x := (curr + prev) div 2
+        else
+          p.y := (curr + prev) div 2;
+      end;
+      gp := FChart.ImageToGraph(p);
+      dir := GetlabelDirection(TDoublePointBoolArr(gp)[not IsRotated]);
+      case dir of
+        ldLeft   : UpdateMinMax(p.X - dist.X, r.Left, r.Right);
+        ldRight  : UpdateMinMax(p.X + dist.X, r.Left, r.Right);
+        ldTop    : UpdateMinMax(p.Y - dist.Y, r.Top, r.Bottom);
+        ldBottom : UpdateMinMax(p.Y + dist.Y, r.Top, r.Bottom);
+      end;
+      prev := curr;
+    end;
+    {
     gp := GetGraphPoint(i);
     p := FChart.GraphToImage(gp);
     UpdateMinMax(p.X, rExtent.Left, rExtent.Right);
@@ -1772,18 +1802,21 @@ begin
     if MarkPositions = lmpInsideCenter then
       p.y := (p.y + FChart.YGraphToImage(zero)) div 2;
 
+    gp := FChart.ImageToGraph(p);
+    dir := GetLabelDirection(TDoublePointBoolArr(gp)[not IsRotated]);
     case dir of
       ldLeft   : UpdateMinMax(p.X - distX, r.Left, r.Right);
       ldRight  : UpdateMinMax(p.X + distX, r.Left, r.Right);
       ldTop    : UpdateMinMax(p.Y - distY, r.Top, r.Bottom);
       ldBottom : UpdateMinMax(p.Y + distY, r.Top, r.Bottom);
     end;
+    }
     if IsRotated then begin
-      UpdateMinMax(p.Y - distY, r.Top, r.Bottom);
-      UpdateMinMax(p.Y + distY, r.Top, r.Bottom);
+      UpdateMinMax(p.Y - dist.Y, r.Top, r.Bottom);
+      UpdateMinMax(p.Y + dist.Y, r.Top, r.Bottom);
     end else begin
-      UpdateMinMax(p.X - distX, r.Left, r.Right);
-      UpdateMinMax(p.X + distX, r.Left, r.Right);
+      UpdateMinMax(p.X - dist.X, r.Left, r.Right);
+      UpdateMinMax(p.X + dist.X, r.Left, r.Right);
     end;
   end;
 
