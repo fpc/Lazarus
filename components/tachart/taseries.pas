@@ -1246,11 +1246,17 @@ end;
 
 function TBarSeries.GetLabelDataPoint(AIndex, AYIndex: Integer): TDoublePoint;
 var
-  ofs, w: Double;
+  ofs, w, wbar: Double;
 begin
   Result := inherited GetLabelDataPoint(AIndex, AYIndex);
   BarOffsetWidth(TDoublePointBoolArr(Result)[IsRotated], AIndex, ofs, w);
   TDoublePointBoolArr(Result)[IsRotated] += ofs;
+
+  // Find x centers of bars in multi-y non-stacked bar series.
+  if (not FStacked) and (Source.YCount > 1) then begin
+    wbar := 2 * w / Source.YCount;
+    TDoublePointboolArr(Result)[IsRotated] += (wbar * (AYIndex + 0.5) - w);
+  end;
 end;
 
 procedure TBarSeries.GetLegendItems(AItems: TChartLegendItems);
