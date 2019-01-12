@@ -431,8 +431,10 @@ begin
     {$EndIf}
     Result:=true;
   finally
-    if SupportedFormats<>nil then FreeMem(SupportedFormats);
-    if SelData.Data<>nil then FreeMem(SelData.Data);
+    if SupportedFormats<>nil then
+      FreeMem(SupportedFormats);
+    if (SelData.Data<>nil) and (PGdkAtom(SelData.Data)<>SupportedFormats) then
+      FreeMem(SelData.Data);
   end;
 end;
 
