@@ -1272,7 +1272,7 @@ begin
           y := Source[i]^.y;
         end else
         if si = 0 then
-          y := Source[i]^.y - GetZeroLevel    // wp: does this survive transformations?
+          y := Source[i]^.y - GetZeroLevel    // wp: does this survive nonlinear transformations?
         else begin
           y := Source[i]^.YList[si-1];
           if IsRotated then
@@ -1290,7 +1290,7 @@ begin
         ld := GetLabelDirection(TDoublePointBoolArr(gl)[not IsRotated]);
         with ParentChart do
           if
-            (Marks.YIndex = MARKS_YINDEX_ALL) or (Marks.YIndex = si) and
+            ((Marks.YIndex = MARKS_YINDEX_ALL) or (Marks.YIndex = si)) and
             IsPointInViewPort(gl)
           then
             DrawLabel(FormattedMark(i, '', si), GraphToImage(gl), ld);
