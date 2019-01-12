@@ -1267,11 +1267,12 @@ begin
           else
             Marks.LabelFont.Assign(lfont);
         end;
-        if not Stacked then
-          g := GetGraphPoint(i, 0, si)
-        else
+        if not Stacked then begin
+          g := GetGraphPoint(i, 0, si);
+          y := Source[i]^.y;
+        end else
         if si = 0 then
-          y := Source[i]^.y - GetZeroLevel
+          y := Source[i]^.y - GetZeroLevel    // wp: does this survive transformations?
         else begin
           y := Source[i]^.YList[si-1];
           if IsRotated then
