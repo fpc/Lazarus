@@ -962,7 +962,7 @@ var
     if aLineBrkCnt > 0 then begin
       (* Lines Inserted *)
       if aPoint.y >= aLinePos then begin
-        if (aPoint.y = aLinePos) and (aPoint.x > Pos.x) then
+        if (aPoint.y = aLinePos) and (aPoint.x >= Pos.x) then
           Result.x := Result.x - Pos.x + 1;
         Result.y := Result.y + aLineBrkCnt;
       end;
@@ -1003,7 +1003,7 @@ begin
     if (a > 0) then
       CurCell.LogStart := AdjustPoint(CurCell.LogStart, chg);
     a := CompareCarets(Pos, CurCell.LogEnd);
-    if (a > 0) or ((a = 0) and ((i = FCurrentCell) or edit)) then
+    if (a > 0) or ((a = 0) and ((i = FCurrentCell) or (CurCell.Group = -1) or edit)) then
       CurCell.LogEnd := AdjustPoint(CurCell.LogEnd, chg);
     if chg then
       Cells[i] := CurCell;
