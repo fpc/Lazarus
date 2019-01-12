@@ -63,7 +63,7 @@ type
     procedure SetSeriesColor(AValue: TColor);
     procedure SetZeroLevel(AValue: Double);
   strict protected
-    function GetLabelDataPoint(AIndex: Integer): TDoublePoint; override;
+    function GetLabelDataPoint(AIndex, AYIndex: Integer): TDoublePoint; override;
     function ToolTargetDistance(const AParams: TNearestPointParams;
       AGraphPt: TDoublePoint; APointIdx, AXIdx, AYIdx: Integer): Integer; override;
   protected
@@ -1136,7 +1136,6 @@ var
         Exchange(a.X, a.Y);
         Exchange(b.X, b.Y);
       end;
-
     if not RectIntersectsRect(graphBar, ext2) then exit;
 
     with imageBar do begin
@@ -1177,20 +1176,20 @@ begin
       heights[1] := NumberOr(p.Y, ZeroLevel);
       for stackIndex := 1 to Source.YCount - 1 do begin
         y := Source[pointIndex]^.YList[stackIndex - 1];
-        if not IsNan(y) then
+        if not IsNaN(y) then
           heights[stackIndex + 1] := heights[stackIndex] + y;
       end;
       for stackIndex := 0 to High(heights) do
-        heights[stackindex] := AxisToGraphY(heights[stackindex]);
+        heights[stackindex] := AxisToGraphY(heights[stackindex]);               // wp: what if rotated?
       for stackIndex := 0 to Source.YCount - 1 do
         BuildBar(p.X, heights[stackindex], heights[stackIndex+1]);
     end else begin
       for stackIndex := 0 to Source.YCount - 1 do begin
         y := Source[pointIndex]^.GetY(stackIndex);
         if not IsNaN(y) then
-          heights[stackIndex + 1] := y
+          heights[stackIndex + 1] := AxisToGraphY(y)
         else
-          heights[stackIndex + 1] := 0;
+          continue;
       end;
       p.X -= w;
       w := w / High(heights);
@@ -1214,7 +1213,7 @@ begin
   if IsEmpty then exit;
   if BarWidthStyle = bwPercentMin then
     UpdateMinXRange;
-  UpdateMinMax(ZeroLevel, Result.a.Y, Result.b.Y);
+//  UpdateMinMax(ZeroLevel, Result.a.Y, Result.b.Y);
   // Show first and last bars fully.
   i := 0;
   x := NearestXNumber(i, +1);       // --> x is in graph units
@@ -1245,11 +1244,11 @@ begin
   Result := Abs(f(2 * w) - f(0));
 end;
 
-function TBarSeries.GetLabelDataPoint(AIndex: Integer): TDoublePoint;
+function TBarSeries.GetLabelDataPoint(AIndex, AYIndex: Integer): TDoublePoint;
 var
   ofs, w: Double;
 begin
-  Result := inherited GetLabelDataPoint(AIndex);
+  Result := inherited GetLabelDataPoint(AIndex, AYIndex);
   BarOffsetWidth(TDoublePointBoolArr(Result)[IsRotated], AIndex, ofs, w);
   TDoublePointBoolArr(Result)[IsRotated] += ofs;
 end;
