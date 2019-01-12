@@ -176,7 +176,7 @@ begin
     OpenPictureDialog1.InitialDir:=FProject.Directory;
   if not OpenPictureDialog1.Execute then exit;
   try
-    IconImage.Picture.Icon.LoadFromFile(OpenPictureDialog1.FileName);
+    IconImage.Picture.LoadFromFile(OpenPictureDialog1.FileName);
     fIconChanged:=true;
   except
     on E: Exception do
@@ -187,7 +187,7 @@ end;
 procedure TProjectApplicationOptionsFrame.SaveIconButtonClick(Sender: TObject);
 begin
   if SavePictureDialog1.Execute then
-    IconImage.Picture.Icon.SaveToFile(SavePictureDialog1.FileName);
+    IconImage.Picture.SaveToFile(SavePictureDialog1.FileName);
 end;
 
 procedure TProjectApplicationOptionsFrame.EnableManifest(aEnable: Boolean);
@@ -292,8 +292,6 @@ begin
   IconImage.KeepOriginXWhenClipped := True;
   IconImage.KeepOriginYWhenClipped := True;
   IconImagePictureChanged(nil);
-  OpenPictureDialog1.Filter := GraphicFilter(TIcon)+'|'+
-                         Format(rsAllFiles,[GetAllFilesMask,GetAllFilesMask,'']);
 end;
 
 procedure TProjectApplicationOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
