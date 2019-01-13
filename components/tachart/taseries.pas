@@ -1188,9 +1188,9 @@ begin
       for stackIndex := 0 to Source.YCount - 1 do begin
         y := Source[pointIndex]^.GetY(stackIndex);
         if not IsNaN(y) then
-          heights[stackIndex + 1] := y
+          heights[stackIndex + 1] := AxisToGraphY(y)
         else
-          heights[stackIndex + 1] := 0;
+          heights[stackIndex + 1] := ZeroLevel;
       end;
       p.X -= w;
       w := w / High(heights);
