@@ -291,7 +291,7 @@ type
     function GetErrorBars(APointIndex: Integer; IsXError: Boolean;
       out AGraphPointPos, AGraphPointNeg: Double): Boolean;
       }
-    function GetLabelDataPoint(AIndex: Integer): TDoublePoint; virtual;
+    function GetLabelDataPoint(AIndex, AYIndex: Integer): TDoublePoint; virtual;
     procedure GetLegendItemsRect(AItems: TChartLegendItems; ABrush: TBrush);
     function GetXRange(AX: Double; AIndex: Integer): Double;
     function GetZeroLevel: Double; virtual;
@@ -1263,7 +1263,6 @@ begin
       y := Source[i]^.Y;
       ysum := y;
       prev := GetZeroLevel;
-      g := GetLabelDataPoint(i);
       ld := GetLabelDirection(i);
       for si := 0 to Source.YCount - 1 do begin
         if Styles <> nil then begin
@@ -1273,6 +1272,7 @@ begin
           else
             Marks.LabelFont.Assign(lfont);
         end;
+        g := GetLabelDataPoint(i, si);
         if si > 0 then begin
           y := NumberOr(Source[i]^.YList[si-1], 0);
           if IsNaN(y) then Continue;
@@ -1390,7 +1390,7 @@ begin
   Result := FErrorBars[AIndex];
 end;
 
-function TBasicPointSeries.GetLabelDataPoint(AIndex: Integer): TDoublePoint;
+function TBasicPointSeries.GetLabelDataPoint(AIndex, AYIndex: Integer): TDoublePoint;
 begin
   Result := GetGraphPoint(AIndex);
 end;
