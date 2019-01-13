@@ -4762,12 +4762,14 @@ end;
 
 constructor TQtStringList.Create;
 begin
+  inherited Create;
   FHandle := QStringList_create();
   FOwnHandle := True;
 end;
 
 constructor TQtStringList.Create(Source: QStringListH);
 begin
+  inherited Create;
   FHandle := Source;
   FOwnHandle := False;
 end;
