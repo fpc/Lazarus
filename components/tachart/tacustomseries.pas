@@ -1242,12 +1242,13 @@ var
   end;
 
 var
-  y: Double;
-  g, gl: TDoublePoint;
+  y, ysum: Double;
+  g: TDoublePoint;
   i, si: Integer;
   ld: TLabelDirection;
   style: TChartStyle;
   lfont: TFont;
+  curr, prev: Double;
 begin
   if not Marks.IsMarkLabelsVisible then exit;
 
@@ -1257,7 +1258,11 @@ begin
     ParentChart.DisableRedrawing;
 
     for i := FLoBound to FUpBound do begin
-      if IsNan(Source[i]^.Point) then continue;
+      if IsNan(Source[i]^.Point) then
+        continue;
+      y := Source[i]^.Y;
+      ysum := y;
+      prev := GetZeroLevel;
       g := GetLabelDataPoint(i);
       ld := GetLabelDirection(i);
       for si := 0 to Source.YCount - 1 do begin
@@ -1268,31 +1273,34 @@ begin
           else
             Marks.LabelFont.Assign(lfont);
         end;
-        if not Stacked then
-          g := GetGraphPoint(i, 0, si)
+        if si > 0 then begin
+          y := NumberOr(Source[i]^.YList[si-1], 0);
+          if IsNaN(y) then Continue;
+          if Stacked then begin
+            if IsNaN(ysum) then ysum := y else ysum += y;
+            y := ysum;
+          end;
+        end;
+        if IsRotated then
+          g.X := AxisToGraphY(y)         // GraphY is correct!
         else
-        if si = 0 then
-          y := Source[i]^.y - GetZeroLevel
-        else begin
-          y := Source[i]^.YList[si-1];
+          g.Y := AxisToGraphY(y);
+
+        curr := TDoublePointBoolArr(g)[not IsRotated];
+        if MarkPositions = lmpInsideCenter then begin
           if IsRotated then
-            g.X += AxisToGraphY(y)
+            g := DoublePoint((curr + prev) * 0.5, g.y)
           else
-            g.Y += AxisToGraphY(y);
+            g := DoublePoint(g.x, (curr + prev) * 0.5);
         end;
-        gl := g;
-        if FMarkPositions = lmpInsideCenter then begin
-          if IsRotated then
-            gl.X -= AxisToGraphX(y)/2
-          else
-            gl.Y -= AxisToGraphY(y)/2;
-        end;
+        prev := curr;
+
         with ParentChart do
           if
             ((Marks.YIndex = MARKS_YINDEX_ALL) or (Marks.YIndex = si)) and
-            IsPointInViewPort(gl)
+            IsPointInViewPort(g)
           then
-            DrawLabel(FormattedMark(i, '', si), GraphToImage(gl), ld);
+            DrawLabel(FormattedMark(i, '', si), GraphToImage(g), ld);
       end;
     end;
 
