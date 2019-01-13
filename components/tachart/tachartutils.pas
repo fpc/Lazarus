@@ -35,6 +35,10 @@ const
   DEFAULT_FONT_SIZE = 10;
   DEFAULT_EPSILON = 1e-6;
 
+  // Replacement for +INF, Canvas does not work correctly when MaxInt is used.
+  // Any screen coordinates are clipped to range -MAX_COORD ... MAX_COORD.
+  MAX_COORD = 100*1000*1000;
+
 type
   EChartError = class(Exception);
   EChartIntervalError = class(EChartError);
@@ -331,6 +335,7 @@ procedure Exchange(var A, B: String); overload; inline;
 function FormatIfNotEmpty(AFormat, AStr: String): String; inline;
 
 function IfThen(ACond: Boolean; ATrue, AFalse: TObject): TObject; overload;
+function ImgRoundChecked(A: Double): Integer; inline;
 function InterpolateRGB(AColor1, AColor2: Integer; ACoeff: Double): Integer;
 function IntToColorHex(AColor: Integer): String; inline;
 function IsEquivalent(const A1, A2: Double): Boolean; inline;
@@ -442,6 +447,11 @@ begin
     Result := ATrue
   else
     Result := AFalse;
+end;
+
+function ImgRoundChecked(A: Double): Integer;
+begin
+  Result := Round(EnsureRange(A, -MAX_COORD, MAX_COORD));
 end;
 
 function InterpolateRGB(AColor1, AColor2: Integer; ACoeff: Double): Integer;
