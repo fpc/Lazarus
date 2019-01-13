@@ -1256,7 +1256,7 @@ begin
     lfont.Assign(Marks.LabelFont);
     ParentChart.DisableRedrawing;
 
-    for i := 0 to Count - 1 do begin
+    for i := FLoBound to FUpBound do begin
       if IsNan(Source[i]^.Point) then continue;
       g := GetLabelDataPoint(i);
       ld := GetLabelDirection(i);
@@ -1741,7 +1741,7 @@ begin
   if MarkPositions = lmpInsideCenter then exit;
 
   zero := GetZeroLevel;
-  for i := 0 to Count - 1 do begin
+  for i := FLoBound to FUpBound do begin
     gp := GetGraphPoint(i);
     if not ParentChart.IsPointInViewPort(gp) then continue;
     labelText := FormattedMark(i);
