@@ -63,7 +63,7 @@ type
     procedure SetSeriesColor(AValue: TColor);
     procedure SetZeroLevel(AValue: Double);
   strict protected
-    function GetLabelDataPoint(AIndex, AYIndex: Integer): TDoublePoint; override;
+    function GetLabelDataPoint(AIndex: Integer): TDoublePoint; override;
     function ToolTargetDistance(const AParams: TNearestPointParams;
       AGraphPt: TDoublePoint; APointIdx, AXIdx, AYIdx: Integer): Integer; override;
   protected
@@ -1136,6 +1136,7 @@ var
         Exchange(a.X, a.Y);
         Exchange(b.X, b.Y);
       end;
+
     if not RectIntersectsRect(graphBar, ext2) then exit;
 
     with imageBar do begin
@@ -1176,20 +1177,20 @@ begin
       heights[1] := NumberOr(p.Y, ZeroLevel);
       for stackIndex := 1 to Source.YCount - 1 do begin
         y := Source[pointIndex]^.YList[stackIndex - 1];
-        if not IsNaN(y) then
+        if not IsNan(y) then
           heights[stackIndex + 1] := heights[stackIndex] + y;
       end;
       for stackIndex := 0 to High(heights) do
-        heights[stackindex] := AxisToGraphY(heights[stackindex]);               // wp: what if rotated?
+        heights[stackindex] := AxisToGraphY(heights[stackindex]);
       for stackIndex := 0 to Source.YCount - 1 do
         BuildBar(p.X, heights[stackindex], heights[stackIndex+1]);
     end else begin
       for stackIndex := 0 to Source.YCount - 1 do begin
         y := Source[pointIndex]^.GetY(stackIndex);
         if not IsNaN(y) then
-          heights[stackIndex + 1] := AxisToGraphY(y)
+          heights[stackIndex + 1] := y
         else
-          continue;
+          heights[stackIndex + 1] := 0;
       end;
       p.X -= w;
       w := w / High(heights);
@@ -1213,7 +1214,7 @@ begin
   if IsEmpty then exit;
   if BarWidthStyle = bwPercentMin then
     UpdateMinXRange;
-//  UpdateMinMax(ZeroLevel, Result.a.Y, Result.b.Y);
+  UpdateMinMax(ZeroLevel, Result.a.Y, Result.b.Y);
   // Show first and last bars fully.
   i := 0;
   x := NearestXNumber(i, +1);       // --> x is in graph units
@@ -1244,19 +1245,13 @@ begin
   Result := Abs(f(2 * w) - f(0));
 end;
 
-function TBarSeries.GetLabelDataPoint(AIndex, AYIndex: Integer): TDoublePoint;
+function TBarSeries.GetLabelDataPoint(AIndex: Integer): TDoublePoint;
 var
-  ofs, w, wbar: Double;
+  ofs, w: Double;
 begin
-  Result := inherited GetLabelDataPoint(AIndex, AYIndex);
+  Result := inherited GetLabelDataPoint(AIndex);
   BarOffsetWidth(TDoublePointBoolArr(Result)[IsRotated], AIndex, ofs, w);
   TDoublePointBoolArr(Result)[IsRotated] += ofs;
-
-  // Find x centers of bars in multi-y non-stacked bar series.
-  if (not FStacked) and (Source.YCount > 1) then begin
-    wbar := 2 * w / Source.YCount;
-    TDoublePointboolArr(Result)[IsRotated] += (wbar * (AYIndex + 0.5) - w);
-  end;
 end;
 
 procedure TBarSeries.GetLegendItems(AItems: TChartLegendItems);
