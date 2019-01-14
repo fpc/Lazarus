@@ -1189,7 +1189,7 @@ type
 //      {$ifndef __LP64__}
 //      0 : ( n_name : Pchar );   { for use when in-core }
 //      {$endif}
-      1 : ( n_strx : int32_t ); { index into the string table  }
+      1 : ( n_strx : uint32_t ); { index into the string table  }
     end;
     n_type  : uint8_t;  { type flag, see below  }
     n_sect  : uint8_t;  { section number or NO_SECT  }
