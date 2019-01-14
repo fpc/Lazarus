@@ -1742,13 +1742,12 @@ var
   labelText: String;
   dir: TLabelDirection;
   m: array [TLabelDirection] of Integer absolute AMargins;
-  zero: Double;
   gp: TDoublePoint;
 begin
   if not Marks.IsMarkLabelsVisible or not Marks.AutoMargins then exit;
   if MarkPositions = lmpInsideCenter then exit;
+  if Count = 0 then exit;
 
-  zero := GetZeroLevel;
   for i := FLoBound to FUpBound do begin
     gp := GetGraphPoint(i);
     if not ParentChart.IsPointInViewPort(gp) then continue;
