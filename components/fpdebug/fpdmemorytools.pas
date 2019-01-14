@@ -682,12 +682,12 @@ begin
   else Result := 0;
 end;
 
-function CompareKey(Item1, Item2: Pointer): Integer;
+function CompareKey(Key, Item2: Pointer): Integer;
 begin
-  If {%H-}TDBGPtr(Item1) > TFpDbgMemCacheSimple(Item2).CacheAddress
+  If PDBGPtr(Key)^ > TFpDbgMemCacheSimple(Item2).CacheAddress
   then Result := 1
   else
-  If {%H-}TDBGPtr(Item1) < TFpDbgMemCacheSimple(Item2).CacheAddress
+  If PDBGPtr(Key)^ < TFpDbgMemCacheSimple(Item2).CacheAddress
   then Result := -1
   else Result := 0;
 end;
@@ -710,7 +710,7 @@ var
   Node: TAVLTreeNode;
 begin
   Result := False;
-  Node := FCaches.FindNearestKey({%H-}Pointer(AnAddress), @CompareKey);
+  Node := FCaches.FindNearestKey(@AnAddress, @CompareKey);
   if Node = nil then
     exit;
 
@@ -729,7 +729,7 @@ function TFpDbgMemCacheManagerSimple.ReadMemory(AnAddress: TDbgPtr;
 var
   Node: TAVLTreeNode;
 begin
-  Node := FCaches.FindNearestKey({%H-}Pointer(AnAddress), @CompareKey);
+  Node := FCaches.FindNearestKey(@AnAddress, @CompareKey);
   if Node = nil then
     exit(inherited ReadMemory(AnAddress, ASize, ADest));
 
