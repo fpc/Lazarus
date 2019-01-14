@@ -1096,7 +1096,10 @@ begin
     FDwarfInfo := Loader.DwarfInfo;
     Loader.Free;
 
-    FPrettyPrinter := TFpPascalPrettyPrinter.Create(SizeOf(Pointer));
+    if FDwarfInfo.Image64Bit then
+      FPrettyPrinter := TFpPascalPrettyPrinter.Create(8)
+    else
+      FPrettyPrinter := TFpPascalPrettyPrinter.Create(4);
     exit;
   end;
 
@@ -1120,7 +1123,11 @@ begin
   FDwarfInfo.MemManager := FMemManager;
   FDwarfInfo.LoadCompilationUnits;
 
-  FPrettyPrinter := TFpPascalPrettyPrinter.Create(SizeOf(Pointer));
+  if FDwarfInfo.Image64Bit then
+    FPrettyPrinter := TFpPascalPrettyPrinter.Create(8)
+  else
+    FPrettyPrinter := TFpPascalPrettyPrinter.Create(4);
+  //FPrettyPrinter := TFpPascalPrettyPrinter.Create(SizeOf(Pointer));
 end;
 
 procedure TFpLldbDebugger.UnLoadDwarf;
