@@ -5,8 +5,33 @@ unit TestSyncroEdit;
 interface
 
 uses
-  Classes, SysUtils, testregistry, LCLProc, LCLType, Forms, TestBase,
-  SynEdit, SynPluginSyncroEdit, SynEditKeyCmds;
+  Classes, SysUtils, math, testregistry, LCLProc, LCLType, Forms, TestBase,
+  SynEdit, SynPluginSyncroEdit, SynEditKeyCmds, SynPluginTemplateEdit,
+  SynPluginSyncronizedEditBase;
+
+type
+
+  PSynPluginCustomSyncroEdit = ^TSynPluginCustomSyncroEdit;
+
+  TTestSynPluginSyncroEdit = class(TSynPluginSyncroEdit)
+  public
+    property Cells;
+    property CurrentCell;
+  end;
+  TTestSynPluginTemplateEdit = class(TSynPluginTemplateEdit)
+  public
+    property Cells;
+    property CurrentCell;
+  end;
+
+  TCellData = record
+    PStart, PEnd: TPoint;
+    Group: Integer;
+  end;
+  TCellsData = array of TCellData;
+
+  function c(x1,y1, x2,y2: Integer; g: integer = -99): TCellData;
+  function cs(const AData: array of TCellData): TCellsData;
 
 type
 
@@ -14,16 +39,73 @@ type
 
   TTestSyncroEdit = class(TTestBase)
   protected
-    FSyncroModule: TSynPluginSyncroEdit;
+    FCurModule: PSynPluginCustomSyncroEdit;
+    FSyncroModule: TTestSynPluginSyncroEdit;
+    FTemplateModule: TTestSynPluginTemplateEdit;
+
+    FDoUndo: Integer; // repeated undo/redo cycles
+    FMaxUndoSteps: Integer; // steps of undo/redo in each cycle
+
+    FExpectUndoneList: array of record
+      FullText: String;
+      Caret: TPoint;
+      CellData: TCellsData;
+      CurrentCell: Integer;
+      ExpCellData: TCellsData;
+      ExpCurrentCell: Integer;
+    end;
+
+    FName: String;
     procedure Dump(hsh: TSynPluginSyncroEditWordsHash);
     procedure ReCreateEdit; reintroduce;
     procedure StartSyncroMode;
+
+    function CurrentCell: Integer;
+    function CopyCells: TCellsData;
+    procedure CheckCells(AName: String; AExp: array of TCellData);
+    procedure SetCarretAndCell(X, Y, C: Integer);
+
+
+    procedure TestCmdAt(AName: String; X, Y: Integer; Cmd: TSynEditorCommand;
+                         Exp: Array of String; SyncRunning: Boolean = True;
+                         ExpCurCell: Integer = -99; ExpCells: TCellsData = nil);
+    procedure TestKeyAt(AName: String; X, Y: Integer; Key: Word; Shift: TShiftState;
+                         Exp: Array of String; SyncRunning: Boolean = True;
+                         ExpCurCell: Integer = -99; ExpCells: TCellsData = nil);
+    procedure TestKeyAtSel(AName: String; X, Y, X2, Y2: Integer; Key: Word; Shift: TShiftState;
+                         Exp: Array of String; SyncRunning: Boolean = True;
+                         ExpCurCell: Integer = -99; ExpCells: TCellsData = nil);
+
+    procedure TestUndoRedo(const AName: String; const Exp: Array of String; SyncRunning: Boolean);
+
   published
     procedure WordsHash;
+    (* SyncroEdit
+       must NOT add any undo entries (class TSynPluginSyncronizedEditUndoCurrentCell)
+       TODO: add checks...
+       Until then, run test with breakpoint in TSynPluginSyncronizedEditUndoCurrentCell.create
+    *)
     procedure SyncroEdit;
+    procedure SyncroTemplateEdit;
   end;
 
 implementation
+
+function c(x1, y1, x2, y2: Integer; g: integer): TCellData;
+begin
+  Result.PStart := Point(X1, Y1);
+  Result.PEnd := Point(X2, Y2);
+  Result.Group := g;
+end;
+
+function cs(const AData: array of TCellData): TCellsData;
+var
+  i: Integer;
+begin
+  SetLength(Result, Length(AData));
+  for i := 0 to Length(AData) - 1 do
+    Result[i] := AData[i];
+end;
 
 procedure TTestSyncroEdit.Dump(hsh: TSynPluginSyncroEditWordsHash);
 var
@@ -49,7 +131,11 @@ end;
 procedure TTestSyncroEdit.ReCreateEdit;
 begin
   inherited;
-  FSyncroModule := TSynPluginSyncroEdit.Create(SynEdit);
+if FCurModule = @FSyncroModule then
+  FSyncroModule := TTestSynPluginSyncroEdit.Create(SynEdit) //;
+else
+  FTemplateModule := TTestSynPluginTemplateEdit.Create(SynEdit);
+  FExpectUndoneList := nil;
 end;
 
 procedure TTestSyncroEdit.StartSyncroMode;
@@ -65,6 +151,209 @@ begin
   end;
   AssertTrue('SyncroMode started', FSyncroModule.Active );
   Application.ProcessMessages;
+end;
+
+function TTestSyncroEdit.CurrentCell: Integer;
+begin
+  if FCurModule^ = FSyncroModule then
+    Result := FSyncroModule.CurrentCell
+  else
+    Result := FTemplateModule.CurrentCell;
+end;
+
+function TTestSyncroEdit.CopyCells: TCellsData;
+var
+  cells: TSynPluginSyncronizedEditList;
+  i, l: Integer;
+begin
+  if FCurModule^ = FSyncroModule then
+    cells := FSyncroModule.Cells
+  else
+    cells := FTemplateModule.Cells;
+
+  l := cells.Count;
+  if cells[l-1].Group = -2 then // ignore final caret
+    dec(l);
+
+  SetLength(Result, l);
+  for i := 0 to l-1 do begin
+    Result[i].PStart := cells[i].LogStart;
+    Result[i].PEnd := cells[i].LogEnd;
+    Result[i].Group := cells[i].Group;
+  end;
+end;
+
+procedure TTestSyncroEdit.CheckCells(AName: String; AExp: array of TCellData);
+var
+  cells: TSynPluginSyncronizedEditList;
+  i, l: Integer;
+begin
+  if FCurModule^ = FSyncroModule then
+    cells := FSyncroModule.Cells
+  else
+    cells := FTemplateModule.Cells;
+
+  l := cells.Count;
+  if cells[l-1].Group = -2 then // ignore final caret
+    dec(l);
+
+  AssertEquals(AName+' Len', Length(AExp), l);
+  for i := 0 to l-1 do begin
+    AssertEquals(AName+' Cell:'+inttostr(i)+' S.x', AExp[i].PStart.x, cells[i].LogStart.x);
+    AssertEquals(AName+' Cell:'+inttostr(i)+' S.y', AExp[i].PStart.y, cells[i].LogStart.y);
+    AssertEquals(AName+' Cell:'+inttostr(i)+' E.x', AExp[i].PEnd.x, cells[i].LogEnd.x);
+    AssertEquals(AName+' Cell:'+inttostr(i)+' E.y', AExp[i].PEnd.y, cells[i].LogEnd.y);
+    if AExp[i].Group <> -99 then
+      AssertEquals(AName+' Cell:'+inttostr(i)+' Grp', AExp[i].Group, cells[i].Group);
+  end;
+end;
+
+procedure TTestSyncroEdit.SetCarretAndCell(X, Y, C: Integer);
+begin
+  SetCaret(x, y);
+  if FCurModule^ = FSyncroModule then
+    FSyncroModule.CurrentCell := c
+  else
+    FTemplateModule.CurrentCell := c;
+end;
+
+procedure TTestSyncroEdit.TestCmdAt(AName: String; X, Y: Integer;
+  Cmd: TSynEditorCommand; Exp: array of String; SyncRunning: Boolean;
+  ExpCurCell: Integer; ExpCells: TCellsData);
+var
+  t: String;
+  l: Integer;
+begin
+  t := SynEdit.Text;
+  SetCaret(x, y);
+
+  l := Length(FExpectUndoneList);
+  SetLength(FExpectUndoneList, l+1);
+  FExpectUndoneList[l].FullText := t;
+  FExpectUndoneList[l].Caret := SynEdit.CaretObj.LineBytePos;
+  FExpectUndoneList[l].CellData := CopyCells;
+  FExpectUndoneList[l].CurrentCell := CurrentCell;
+  FExpectUndoneList[l].ExpCellData := ExpCells;
+  FExpectUndoneList[l].ExpCurrentCell := ExpCurCell;
+
+  SynEdit.CommandProcessor(Cmd, '', nil);
+  TestIsFullText(Format('Cmd at (%d,%d) %s / %s', [X, Y, FName, AName]), Exp);
+  AssertEquals(Format('Cmd at (%d,%d) %s / %s - Sync Running', [X, Y, FName, AName]), SyncRunning, FCurModule^.Active );
+
+  if ExpCurCell <> -99 then
+    AssertEquals(Format('Cmd at (%d,%d) %s / %s CurrentCell', [X, Y, FName, AName]), ExpCurCell, CurrentCell);
+  if ExpCells <> nil then
+    CheckCells(Format('Cmd at (%d,%d) %s / %s', [X, Y, FName, AName]), ExpCells);
+
+  TestUndoRedo(Format('Cmd at (%d,%d) %s / %s ', [X, Y, FName, AName]), Exp, SyncRunning);
+end;
+
+procedure TTestSyncroEdit.TestKeyAt(AName: String; X, Y: Integer; Key: Word;
+  Shift: TShiftState; Exp: array of String; SyncRunning: Boolean;
+  ExpCurCell: Integer; ExpCells: TCellsData);
+var
+  t: String;
+  i, UCnt, j, l: Integer;
+begin
+  t := SynEdit.TestFullText;
+  SetCaret(x, y);
+
+  l := Length(FExpectUndoneList);
+  SetLength(FExpectUndoneList, l+1);
+  FExpectUndoneList[l].FullText := t;
+  FExpectUndoneList[l].Caret := SynEdit.CaretObj.LineBytePos;
+  FExpectUndoneList[l].CellData := CopyCells;
+  FExpectUndoneList[l].CurrentCell := CurrentCell;
+  FExpectUndoneList[l].ExpCellData := ExpCells;
+  FExpectUndoneList[l].ExpCurrentCell := ExpCurCell;
+
+debugln(['!!!! key']);
+  DoKeyPress(Key, Shift);
+  TestIsFullText(Format('KeyPress at (%d,%d) %s / %s', [X, Y, FName, AName]), Exp);
+  AssertEquals(Format('KeyPress at (%d,%d) %s / %s - Sync Running', [X, Y, FName, AName]), SyncRunning, FCurModule^.Active );
+
+  if ExpCurCell <> -99 then
+    AssertEquals(Format('KeyPress at (%d,%d) %s / %s CurrentCell', [X, Y, FName, AName]), ExpCurCell, CurrentCell);
+  if ExpCells <> nil then
+    CheckCells(Format('KeyPress at (%d,%d) %s / %s', [X, Y, FName, AName]), ExpCells);
+
+  TestUndoRedo(Format('KeyPress at (%d,%d) %s / %s ', [X, Y, FName, AName]), Exp, SyncRunning);
+debugln(['!!!! end']);
+end;
+
+procedure TTestSyncroEdit.TestKeyAtSel(AName: String; X, Y, X2, Y2: Integer;
+  Key: Word; Shift: TShiftState; Exp: array of String; SyncRunning: Boolean;
+  ExpCurCell: Integer; ExpCells: TCellsData);
+var
+  t: String;
+  l: Integer;
+begin
+  t := SynEdit.Text;
+  SetCaretAndSel(x, y, X2, Y2);
+
+  l := Length(FExpectUndoneList);
+  SetLength(FExpectUndoneList, l+1);
+  FExpectUndoneList[l].FullText := t;
+  FExpectUndoneList[l].Caret := SynEdit.CaretObj.LineBytePos;
+  FExpectUndoneList[l].CellData := CopyCells;
+  FExpectUndoneList[l].CurrentCell := CurrentCell;
+  FExpectUndoneList[l].ExpCellData := ExpCells;
+  FExpectUndoneList[l].ExpCurrentCell := ExpCurCell;
+
+  DoKeyPress(Key, Shift);
+  TestIsFullText(Format('KeyPress+Sel at (%d,%d) %s / %s', [X, Y, FName, AName]), Exp);
+  AssertEquals(Format('KeyPress+Sel at (%d,%d) %s / %s - Sync Running', [X, Y, FName, AName]), SyncRunning, FCurModule^.Active );
+
+  if ExpCurCell <> -99 then
+    AssertEquals(Format('KeyPress+Sel at (%d,%d) %s / %s CurrentCell', [X, Y, FName, AName]), ExpCurCell, CurrentCell);
+  if ExpCells <> nil then
+    CheckCells(Format('KeyPress+Sel at (%d,%d) %s / %s', [X, Y, FName, AName]), ExpCells);
+
+  TestUndoRedo(Format('KeyPress+Sel at (%d,%d) %s / %s ', [X, Y, FName, AName]), Exp, SyncRunning);
+end;
+
+procedure TTestSyncroEdit.TestUndoRedo(const AName: String; const Exp: array of String; SyncRunning: Boolean);
+var
+  i, j: Integer;
+  UCnt, l: Integer;
+begin
+  l := Length(FExpectUndoneList);
+  UCnt := min(l, Max(1, FMaxUndoSteps));
+
+  for i := 1 to FDoUndo do begin
+    for j := 1 to UCnt do begin
+debugln(['!!!! undo',j]);
+      SynEdit.Undo;
+      TestIsFullText(Format('%s UNDONE %d', [AName, j]), FExpectUndoneList[l-j].FullText);
+      TestIsCaret(Format('%s UNDONE %d', [AName, j]), FExpectUndoneList[l-j].Caret.x, FExpectUndoneList[l-j].Caret.y);
+      if SyncRunning then begin // no cells, if expected to have gone inactive
+        CheckCells(Format('%s UNDONE %d Cells', [AName, j]), FExpectUndoneList[l-j].CellData);
+        AssertEquals(Format('%s UNDONE %d CurCell', [AName, j]), FExpectUndoneList[l-j].CurrentCell, CurrentCell);
+      end;
+    end;
+
+    for j := UCnt downto 1 do begin
+debugln(['!!!! redo',j]);
+      SynEdit.Redo;
+      if j > 1 then begin
+        TestIsFullText(Format('%s UNDONE %d', [AName, j]), FExpectUndoneList[l+1-j].FullText);
+        // caret may on other location / stored loc is set by next test
+        if SyncRunning then
+          CheckCells(Format('%s UNDONE %d Cells', [AName, j]), FExpectUndoneList[l+1-j].CellData);
+      end;
+
+      if SyncRunning then begin
+        if FExpectUndoneList[l-j].ExpCurrentCell <> -99 then
+          AssertEquals(Format('%s UNDONE %d CurrentCell', [AName, j]), FExpectUndoneList[l-j].ExpCurrentCell, CurrentCell);
+        if FExpectUndoneList[l-j].ExpCellData <> nil then
+          CheckCells(Format('%s UNDONE %d Cells', [AName, j]), FExpectUndoneList[l-j].ExpCellData);
+      end;
+
+    end;
+    TestIsFullText(Format('%s REDONE', [AName]), Exp);
+
+    AssertEquals(Format('%s - REDONE Sync Running', [AName]), SyncRunning, FCurModule^.Active );
+  end;
 end;
 
 procedure TTestSyncroEdit.WordsHash;
@@ -167,18 +456,15 @@ begin
 end;
 
 procedure TTestSyncroEdit.SyncroEdit;
-var
-  Name: String;
-  DoUndo: Boolean;
 
   procedure SetTestText(TextIdx: Integer = 0);
   begin
     case TextIdx of
       0: SetLines(['abc foo',     // 1
                    'foo abc xy',  // 2
-                   '  abc foo',   // 4
-                   '',            // 5
-                   'foo'          // 6
+                   '  abc foo',   // 3
+                   '',            // 4
+                   'foo'          // 5
                   ]);
       1: SetLines(['abc foo',     // 1
                    'foo abc xy',  // 2
@@ -195,60 +481,6 @@ var
     SetTestText(TextIdx);
     SetCaretAndSel(X1, Y1, X2, Y2);
     StartSyncroMode;
-  end;
-
-  procedure TestCmdAt(AName: String; X, Y: Integer; Cmd: TSynEditorCommand;
-    Exp: Array of String; SyncRunning: Boolean = True);
-  var
-    t: String;
-  begin
-    t := SynEdit.Text;
-    SetCaret(x, y);
-    SynEdit.CommandProcessor(Cmd, '', nil);
-    TestIsFullText(Format('Cmd at (%d,%d) %s / %s', [X, Y, Name, AName]), Exp);
-    AssertEquals(Format('Cmd at (%d,%d) %s / %s - Sync Running', [X, Y, Name, AName]), SyncRunning, FSyncroModule.Active );
-    if not DoUndo then exit;
-    SynEdit.Undo;
-    TestIsFullText(Format('Cmd at (%d,%d) %s / %s UNDONE', [X, Y, Name, AName]), t);
-    SynEdit.Redo;
-    TestIsFullText(Format('Cmd at (%d,%d) %s / %s REDONE', [X, Y, Name, AName]), Exp);
-    AssertEquals(Format('Cmd at (%d,%d) %s / %s - REDONE Sync Running', [X, Y, Name, AName]), SyncRunning, FSyncroModule.Active );
-  end;
-
-  procedure TestKeyAt(AName: String; X, Y: Integer; Key: Word; Shift: TShiftState;
-    Exp: Array of String; SyncRunning: Boolean = True);
-  var
-    t: String;
-  begin
-    t := SynEdit.Text;
-    SetCaret(x, y);
-    DoKeyPress(Key, Shift);
-    TestIsFullText(Format('KeyPress at (%d,%d) %s / %s', [X, Y, Name, AName]), Exp);
-    AssertEquals(Format('KeyPress at (%d,%d) %s / %s - Sync Running', [X, Y, Name, AName]), SyncRunning, FSyncroModule.Active );
-    if not DoUndo then exit;
-    SynEdit.Undo;
-    TestIsFullText(Format('KeyPress at (%d,%d) %s / %s UNDONE', [X, Y, Name, AName]), t);
-    SynEdit.Redo;
-    TestIsFullText(Format('KeyPress at (%d,%d) %s / %s REDONE', [X, Y, Name, AName]), Exp);
-    AssertEquals(Format('KeyPress at (%d,%d) %s / %s - REDONE Sync Running', [X, Y, Name, AName]), SyncRunning, FSyncroModule.Active );
-  end;
-
-  procedure TestKeyAtSel(AName: String; X, Y, X2, Y2: Integer; Key: Word; Shift: TShiftState;
-    Exp: Array of String; SyncRunning: Boolean = True);
-  var
-    t: String;
-  begin
-    t := SynEdit.Text;
-    SetCaretAndSel(x, y, X2, Y2);
-    DoKeyPress(Key, Shift);
-    TestIsFullText(Format('KeyPress+Sel at (%d,%d) %s / %s', [X, Y, Name, AName]), Exp);
-    AssertEquals(Format('KeyPress+Sel at (%d,%d) %s / %s - Sync Running', [X, Y, Name, AName]), SyncRunning, FSyncroModule.Active );
-    if not DoUndo then exit;
-    SynEdit.Undo;
-    TestIsFullText(Format('KeyPress+Sel at (%d,%d) %s / %s UNDONE', [X, Y, Name, AName]), t);
-    SynEdit.Redo;
-    TestIsFullText(Format('KeyPress+Sel at (%d,%d) %s / %s REDONE', [X, Y, Name, AName]), Exp);
-    AssertEquals(Format('KeyPress+Sel at (%d,%d) %s / %s - REDONE Sync Running', [X, Y, Name, AName]), SyncRunning, FSyncroModule.Active );
   end;
 
   procedure TestSyncro;
@@ -278,9 +510,13 @@ TODO   Lines[x] := ''; Lines.Add(); should deactivate the syncroMode
              see note in tests
     *)
 
+
     {%region Edit at start/end of cell (insert/delete [backspace/del] ) }
       {%region 'Insert/KeyPress inside cell' }
-        name := 'Insert/KeyPress inside cell';
+        Fname := 'Insert/KeyPress inside cell';
+
+    // Tests that add only one undo-able step / no need to run again
+    if FMaxUndoSteps<=1 then begin
         InitTestText(1,2, 1,4);
         TestKeyAt('Insert at Cell FOO (1 of 2), pos=1', 1, 2, VK_M, [],
           ['abc foo',
@@ -325,6 +561,9 @@ TODO   Lines[x] := ''; Lines.Add(); should deactivate the syncroMode
            '',
            'foo',
            '']);
+    end; // Tests that add only one undo-able step / no need to run again
+
+
 
         InitTestText(1,1, 1,4);
         TestKeyAt('insert at cell FOO (2 of 3), pos=end', 4, 2, VK_M, [],
@@ -371,7 +610,10 @@ TODO   Lines[x] := ''; Lines.Add(); should deactivate the syncroMode
            '']);
       {%endregion}
       {%region 'Delete/KeyPress inside cell' }
-        name := 'Delete/KeyPress inside cell';
+        Fname := 'Delete/KeyPress inside cell';
+
+    // Tests that add only one undo-able step / no need to run again
+    if FMaxUndoSteps<=1 then begin
         InitTestText(1,2, 1,4);
         TestKeyAt('Delete at Cell FOO (1 of 2), pos=1', 1, 2, VK_DELETE, [],
           ['abc foo',
@@ -417,6 +659,7 @@ TODO   Lines[x] := ''; Lines.Add(); should deactivate the syncroMode
            '',
            'foo',
            '']);
+    end; // Tests that add only one undo-able step / no need to run again
 
         InitTestText(1,1, 1,4);
         TestKeyAt('Backspace at cell FOO (3 of 3), pos=end', 10, 3, VK_BACK, [],
@@ -451,7 +694,8 @@ TODO   Lines[x] := ''; Lines.Add(); should deactivate the syncroMode
     {%endregion}
 
     {%region Edit cell, delete all, type again }
-      name := 'DeleteAll-Retype/KeyPress inside cell';
+      Fname := 'DeleteAll-Retype/KeyPress inside cell';
+
       InitTestText(1,2, 1,4);
       TestKeyAt('Delete at Cell FOO (1 of 2), pos=1', 1, 2, VK_DELETE, [],
         ['abc foo',
@@ -481,11 +725,6 @@ TODO   Lines[x] := ''; Lines.Add(); should deactivate the syncroMode
          '',
          'foo',
          '']);
-if not DoUndo then begin // todo: fails with undo
-(* loosing trailing space on undo
-   This is due to "FTrimmedLinesView.ForceTrim;" in SynEdit.Undo
-   Which in turn is there, because the trimming in undo, must be done while the UndoList is still locked....
-*)
       TestKeyAt('Delete at Cell X (1 of 2), pos=1', 1, 2, VK_DELETE, [],
         ['abc foo',
          ' abc xy',
@@ -493,6 +732,11 @@ if not DoUndo then begin // todo: fails with undo
          '',
          'foo',
          '']);
+if (FDoUndo = 0) then begin // todo: fails with undo
+(* loosing trailing space on undo
+   This is due to "FTrimmedLinesView.ForceTrim;" in SynEdit.Undo
+   Which in turn is there, because the trimming in undo, must be done while the UndoList is still locked....
+*)
       TestKeyAt('Retype / Insert new line', 1, 2, VK_RETURN, [],
         ['abc foo',
          '',' abc xy',
@@ -552,7 +796,10 @@ end;
     {%endregion}
 
     {%region Edit selection at start/end/complete of cell (delete/replace) }
-      name := 'Delete/Selection';
+      Fname := 'Delete/Selection';
+
+    // Tests that add only one undo-able step / no need to run again
+    if FMaxUndoSteps<=1 then begin
       InitTestText(1,2, 1,4);
       TestKeyAtSel('at start of cell', 3,2, 1,2, VK_DELETE, [],
         ['abc foo',
@@ -570,6 +817,7 @@ end;
          '',
          'foo',
          '']);
+    end; // Tests that add only one undo-able step / no need to run again
 
       InitTestText(1,2, 1,4);
       TestKeyAtSel('full cell', 4,2, 1,2, VK_DELETE, [],
@@ -587,7 +835,9 @@ end;
          'foo',
          '']);
 
-      name := 'Replace/Selection';
+      Fname := 'Replace/Selection';
+    // Tests that add only one undo-able step / no need to run again
+    if FMaxUndoSteps<=1 then begin
       InitTestText(1,2, 1,4);
       TestKeyAtSel('at start of cell', 3,2, 1,2, VK_L, [],
         ['abc foo',
@@ -614,10 +864,14 @@ end;
          '',
          'foo',
          '']);
+    end; // Tests that add only one undo-able step / no need to run again
     {%endregion}
 
     {%region Edit Edit Cells, with 2 synced cells on same line }
-      name := 'Two cells on one line';
+      Fname := 'Two cells on one line';
+
+    // Tests that add only one undo-able step / no need to run again
+    if FMaxUndoSteps<=1 then begin
       InitTestText(1,2, 1,4, 1);
       TestKeyAt('insert in 1st cell', 3, 3, VK_X, [],
         ['abc foo',
@@ -680,10 +934,11 @@ end;
          '',
          'foo',
          '']);
+    end; // Tests that add only one undo-able step / no need to run again
     {%endregion}
 
     {%region Insert, delete linebreak in cell (with/without auto-indent) }
-      Name := 'LineBreaks';
+      FName := 'LineBreaks';
       InitTestText(1,2, 1,4);
       TestKeyAt('Return middle of FOO, no indent', 2, 2, VK_RETURN, [],
         ['abc foo',
@@ -722,7 +977,7 @@ end;
          '',
          'foo',
          '']);
-if not DoUndo then begin
+//if FDoUndo = 0 then begin
 // TODO: fails due to trim space
       TestKeyAt('Return begin of FOO, no indent - cotinue 2', 1, 2, VK_D, [],
         ['abc foo',
@@ -731,7 +986,7 @@ if not DoUndo then begin
          '',
          'foo',
          '']);
-end;
+//end;
 
       InitTestText(1,2, 1,4);
       TestKeyAt('Return end of FOO, no indent', 4, 2, VK_RETURN, [],
@@ -845,7 +1100,9 @@ end;
     {%endregion}
 
     {%region Edit just before/after cell, while caret in cell (backspace at start / del at end) }
-      name := 'Delete/KeyPress caret in cell, text out of cell';
+      Fname := 'Delete/KeyPress caret in cell, text out of cell';
+    // Tests that add only one undo-able step / no need to run again
+    if FMaxUndoSteps<=1 then begin
       InitTestText(1,2, 1,4);
       TestKeyAt('Delete after  Cell ABC', 8, 2, VK_DELETE, [],
         ['abc foo',
@@ -879,6 +1136,7 @@ end;
          '',
          'foo',
          ''], FALSE);
+    end; // Tests that add only one undo-able step / no need to run again
 
       InitTestText(1,2, 1,4);
       TestKeyAtSel('prepare empty cell', 5,2, 8,2, VK_BACK, [],
@@ -898,7 +1156,9 @@ end;
     {%endregion}
 
     {%region Edit just before/after cell, while caret in cell (selection outside cell / replace, delete) }
-      name := 'Delete/Selection: caret in cell, text out of cell';
+      Fname := 'Delete/Selection: caret in cell, text out of cell';
+    // Tests that add only one undo-able step / no need to run again
+    if FMaxUndoSteps<=1 then begin
       InitTestText(1,2, 1,4);
       TestKeyAtSel('Delete-Sel, after cell', 9,2, 8,2, VK_DELETE, [],
         ['abc foo',
@@ -970,6 +1230,7 @@ end;
          '',
          'foo',
          ''], FALSE);
+    end; // Tests that add only one undo-able step / no need to run again
     {%endregion}
 
 
@@ -978,7 +1239,7 @@ end;
     //  - part in/ part out of cell
 
     {%region External Edit outside cell }
-      name := 'External Edit outside cell';
+      Fname := 'External Edit outside cell';
       InitTestText(1,2, 1,4);
       SetCaret(4,3); // into cell def
       FSyncroModule.IncExternalEditLock;
@@ -1030,13 +1291,252 @@ end;
 
   end;
 
+var
+  m: Integer;
 begin
-  DoUndo := False;
+  FCurModule := @FSyncroModule;
+  FMaxUndoSteps := 1;
+
+  FDoUndo := 0;
   PushBaseName('simple');
   TestSyncro;
-  DoUndo := True;
-  PopPushBaseName('undo/redo');
-  TestSyncro;
+
+  for m := 1 to 5 do begin
+    FMaxUndoSteps := m;
+
+    FDoUndo := 1;
+    PopPushBaseName('undo/redo');
+    TestSyncro;
+
+    FDoUndo := 2;
+    PopPushBaseName('undo/redo');
+    TestSyncro;
+
+    FDoUndo := 5;
+    PopPushBaseName('undo/redo');
+    TestSyncro;
+  end;
+end;
+
+procedure TTestSyncroEdit.SyncroTemplateEdit;
+
+  procedure SetTestText(TextIdx: Integer = 0);
+  begin
+    case TextIdx of
+      0: SetLines(['abc foo',     // 1
+                   'foo property Name: TType read GetName write SetName; xy',  // 2
+                   'foo'          // 3
+                  ]);
+    end;
+  end;
+  procedure InitTestText(ACells: array of TCellData; TextIdx: Integer = 0);
+  var
+    Cells: TSynPluginSyncronizedEditList;
+    i: Integer;
+  begin
+    ReCreateEdit;
+    SynEdit.Options := SynEdit.Options - [eoGroupUndo, eoSmartTabDelete, eoSmartTabs] + [eoAutoIndent];
+    SetTestText(TextIdx);
+
+    Cells := TSynPluginSyncronizedEditList.Create;
+    for i := 0 to Length(ACells) - 1 do begin
+      with Cells.AddNew do begin
+        Group    := ACells[i].Group;
+        LogStart := ACells[i].PStart;
+        LogEnd   := ACells[i].PEnd;
+      end;
+    end;
+
+    FTemplateModule.CellParserEnabled := False;
+    SynEdit.BlockBegin := Point(1, 1);
+    FTemplateModule.SetTemplate('', Point(1,1));
+    FTemplateModule.AddEditCells(Cells);
+    Cells.Free;
+  end;
+
+  procedure TestTemplate;
+  begin
+// TODO: replace selection with new text (2 undo items at once)
+    FName := 'Template';
+    InitTestText([c(14,2, 18,2, 1),  c(20,2, 25,2, 2),  c(31,2, 34,2, 3),  c(34,2, 38,2, 1),  c(45,2, 48,2, 4),  c(48,2, 52,2, 1)]);
+    TestKeyAt('Start of Cell 0  "Name"', 14,2, VK_1, [],
+     ['abc foo',
+      'foo property 1Name: TType read Get1Name write Set1Name; xy',
+      'foo',
+      ''], True,
+      0,
+      cs([c(14,2, 19,2, 1),  c(21,2, 26,2, 2),  c(32,2, 35,2, 3),  c(35,2, 40,2, 1),  c(47,2, 50,2, 4),  c(50,2, 55,2, 1)])
+      );
+    SetCarretAndCell(19,2, 0);
+    TestKeyAt('End of Cell 0 "Name"', 19,2, VK_2, [],
+     ['abc foo',
+      'foo property 1Name2: TType read Get1Name2 write Set1Name2; xy',
+      'foo',
+      ''], True,
+      0,
+      cs([c(14,2, 20,2, 1),  c(22,2, 27,2, 2),  c(33,2, 36,2, 3),  c(36,2, 42,2, 1),  c(49,2, 52,2, 4),  c(52,2, 58,2, 1)])
+      );
+    SetCarretAndCell(36,2, 2);
+    TestKeyAt('End of Cell 2 "Get"', 36,2, VK_3, [],
+     ['abc foo',
+      'foo property 1Name2: TType read Get31Name2 write Set1Name2; xy',
+      'foo',
+      ''], True,
+      2,
+      cs([c(14,2, 20,2, 1),  c(22,2, 27,2, 2),  c(33,2, 37,2, 3),  c(37,2, 43,2, 1),  c(50,2, 53,2, 4),  c(53,2, 59,2, 1)])
+      );
+    SetCarretAndCell(37,2, 3);
+    TestKeyAt('Start of Cell 3 "Name" after "Get"', 37,2, VK_4, [],
+     ['abc foo',
+      'foo property 41Name2: TType read Get341Name2 write Set41Name2; xy',
+      'foo',
+      ''], True,
+      3,
+      cs([c(14,2, 21,2, 1),  c(23,2, 28,2, 2),  c(34,2, 38,2, 3),  c(38,2, 45,2, 1),  c(52,2, 55,2, 4),  c(55,2, 62,2, 1)])
+      );
+    SetCarretAndCell(55,2, 4);
+    TestKeyAt('End of Cell 4 "Set"', 55,2, VK_5, [],
+     ['abc foo',
+      'foo property 41Name2: TType read Get341Name2 write Set541Name2; xy',
+      'foo',
+      ''], True,
+      4
+      );
+    // replace selectino / add multiple undo steps (del + ins)
+    SetCarretAndCell(56,2, 5);
+    TestKeyAtSel('Cell 5 "Name"', 56,2, 63, 2, VK_X, [],
+     ['abc foo',
+      'foo property x: TType read Get3x write Set5x; xy',
+      'foo',
+      ''], True,
+      5
+      );
+    SetCarretAndCell(44,2, 4);
+    TestKeyAtSel('Cell 4 "Set"', 40,2, 44, 2, VK_Y, [],
+     ['abc foo',
+      'foo property x: TType read Get3x write yx; xy',
+      'foo',
+      ''], True,
+      4
+      );
+    SetCarretAndCell(41,2, 5);
+    TestKeyAtSel('Cell 5 "Name"', 41,2, 42, 2, VK_Z, [],
+     ['abc foo',
+      'foo property z: TType read Get3z write yz; xy',
+      'foo',
+      ''], True,
+      5
+      );
+    // deal with empty cells
+    SetCarretAndCell(40,2, 4);
+    TestCmdAt('empty Cell 4 "Set" ', 40,2, ecDeleteChar,
+     ['abc foo',
+      'foo property z: TType read Get3z write z; xy',
+      'foo',
+      ''], True,
+      4
+      );
+    SetCarretAndCell(40,2, 4);
+    TestKeyAt('re-add Cell 4 "Set" ', 40,2, VK_A, [],
+     ['abc foo',
+      'foo property z: TType read Get3z write az; xy',
+      'foo',
+      ''], True,
+      4
+      );
+    SetCarretAndCell(41,2, 5);
+    TestCmdAt('empty Cell 5 "Name" ', 41,2, ecDeleteChar,
+     ['abc foo',
+      'foo property : TType read Get3 write a; xy',
+      'foo',
+      ''], True,
+      5
+      );
+    SetCarretAndCell(38,2, 4);
+    TestCmdAt('empty Cell 4 "Set" ', 38,2, ecDeleteChar,
+     ['abc foo',
+      'foo property : TType read Get3 write ; xy',
+      'foo',
+      ''], True,
+      4
+      );
+    SetCarretAndCell(38,2, 5);
+    TestKeyAt('re-add Cell 5 "Name"', 38,2, VK_C, [],
+     ['abc foo',
+      'foo property c: TType read Get3c write c; xy',
+      'foo',
+      ''], True,
+      5
+      );
+    SetCarretAndCell(40,2, 4);
+    TestKeyAt('re-add Cell 4 "Set"', 40,2, VK_D, [],
+     ['abc foo',
+      'foo property c: TType read Get3c write dc; xy',
+      'foo',
+      ''], True,
+      4
+      );
+
+
+    InitTestText([c(14,2, 18,2, 1),  c(20,2, 25,2, 2),  c(31,2, 34,2, 3),  c(34,2, 38,2, 1),  c(45,2, 48,2, 4),  c(48,2, 52,2, 1)]);
+    TestKeyAt('', 18,2, VK_1, [],
+     ['abc foo',
+      'foo property Name1: TType read GetName1 write SetName1; xy',
+      'foo',
+      '']);
+    SetCarretAndCell(35,2, 2);
+    TestCmdAt('del Cell 2 "Get" ', 35,2, ecDeleteLastChar,
+     ['abc foo',
+      'foo property Name1: TType read GeName1 write SetName1; xy',
+      'foo',
+      ''], True,
+      2
+      );
+    SetCarretAndCell(34,2, 3);
+    TestCmdAt('del Cell 3 "Name" ', 34,2, ecDeleteChar,
+     ['abc foo',
+      'foo property ame1: TType read Geame1 write Setame1; xy',
+      'foo',
+      ''], True,
+      3
+      );
+
+
+    InitTestText([c(14,2, 18,2, 1),  c(20,2, 25,2, 2),  c(31,2, 34,2, 3),  c(34,2, 38,2, 1),  c(45,2, 48,2, 4),  c(48,2, 52,2, 1)]);
+    TestKeyAt('', 34,2, VK_1, [],
+     ['abc foo',
+      'foo property Name: TType read Get1Name write SetName; xy',
+      'foo',
+      '']);
+
+
+  end;
+
+var
+  m: Integer;
+begin
+  FCurModule := @FTemplateModule;
+  FMaxUndoSteps := 1;
+
+  FDoUndo := 0;
+  PushBaseName('simple');
+  TestTemplate;
+
+  for m := 1 to 5 do begin
+    FMaxUndoSteps := m;
+
+    FDoUndo := 1;
+    PopPushBaseName('undo/redo');
+    TestTemplate;
+
+    FDoUndo := 2;
+    PopPushBaseName('undo/redo');
+    TestTemplate;
+
+    FDoUndo := 5;
+    PopPushBaseName('undo/redo');
+    TestTemplate;
+  end;
 end;
 
 initialization
