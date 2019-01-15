@@ -144,7 +144,9 @@ type
     function GetData(const FormatEtcIn: TFormatEtc; out Medium: TStgMedium): HResult; virtual; stdcall;
     function GetDataHere(const FormatEtc: TFormatEtc; out Medium: TStgMedium): HResult; virtual; stdcall;
     function QueryGetData(const FormatEtc: TFormatEtc): HResult; virtual; stdcall;
-    function SetData(const FormatEtc: TFormatEtc; {$ifdef VER2_0}var{$else}const{$endif} Medium: TStgMedium; DoRelease: BOOL): HResult; virtual; stdcall;
+    function SetData(const FormatEtc: TFormatEtc;
+      {$IF FPC_FullVersion >= 30200}var{$ELSE}const{$IFEND} Medium: TStgMedium;
+      DoRelease: BOOL): HResult; virtual; stdcall;
   end;
 
   // TVTDragManager is a class to manage drag and drop in a Virtual Treeview.
@@ -894,7 +896,9 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TVTDataObject.SetData(const FormatEtc: TFormatEtc;{$ifdef VER2_0}var{$else}const{$endif} Medium: TStgMedium; DoRelease: BOOL): HResult;
+function TVTDataObject.SetData(const FormatEtc: TFormatEtc;
+  {$IF FPC_FullVersion >= 30200}var{$ELSE}const{$IFEND} Medium: TStgMedium;
+  DoRelease: BOOL): HResult;
 
 // Allows dynamic adding to the IDataObject during its existance. Most noteably it is used to implement
 // IDropSourceHelper and allows to set a special format for optimized moves during a shell transfer.

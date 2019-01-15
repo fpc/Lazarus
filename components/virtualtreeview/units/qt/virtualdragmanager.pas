@@ -272,7 +272,9 @@ type
    Function GetDataHere(CONST pformatetc : FormatETC; Out medium : STGMEDIUM):HRESULT; STDCALL;
    Function QueryGetData(const pformatetc : FORMATETC):HRESULT; STDCALL;
    Function GetCanonicalFormatTEtc(const pformatetcIn : FORMATETC;Out pformatetcOut : FORMATETC):HResult; STDCALl;
-   Function SetData (Const pformatetc : FORMATETC;const medium:STGMEDIUM;FRelease : BOOL):HRESULT; StdCall;
+   Function SetData (Const pformatetc : FORMATETC;
+     {$IF FPC_FullVersion >= 30200}var{$ELSE}const{$IFEND} medium:STGMEDIUM;
+     FRelease : BOOL):HRESULT; StdCall;
    Function EnumFormatEtc(dwDirection : DWord; OUT enumformatetcpara : IENUMFORMATETC):HRESULT; StdCall;
    Function DAdvise(const formatetc : FORMATETC;advf :DWORD; CONST AdvSink : IAdviseSink;OUT dwConnection:DWORD):HRESULT;StdCall;
    Function DUnadvise(dwconnection :DWord) :HRESULT;StdCall;
@@ -405,7 +407,9 @@ type
     function GetData(const FormatEtcIn: TFormatEtc; out Medium: TStgMedium): HResult; virtual; stdcall;
     function GetDataHere(const FormatEtc: TFormatEtc; out Medium: TStgMedium): HResult; virtual; stdcall;
     function QueryGetData(const FormatEtc: TFormatEtc): HResult; virtual; stdcall;
-    function SetData(const FormatEtc: TFormatEtc;{$ifdef VER2_0}var{$else}const{$endif} Medium: TStgMedium; DoRelease: BOOL): HResult; virtual; stdcall;
+    function SetData(const FormatEtc: TFormatEtc;
+      {$IF FPC_FullVersion >= 30200}var{$ELSE}const{$IFEND} Medium: TStgMedium;
+      DoRelease: BOOL): HResult; virtual; stdcall;
   end;
 
   // TVTDragManager is a class to manage drag and drop in a Virtual Treeview.
@@ -1335,7 +1339,9 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TVTDataObject.SetData(const FormatEtc: TFormatEtc;{$ifdef VER2_0}var{$else}const{$endif} Medium: TStgMedium; DoRelease: BOOL): HResult;
+function TVTDataObject.SetData(const FormatEtc: TFormatEtc;
+  {$IF FPC_FullVersion >= 30200}var{$ELSE}const{$IFEND} Medium: TStgMedium;
+  DoRelease: BOOL): HResult;
 
 // Allows dynamic adding to the IDataObject during its existance. Most noteably it is used to implement
 // IDropSourceHelper and allows to set a special format for optimized moves during a shell transfer.
