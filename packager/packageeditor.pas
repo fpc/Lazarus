@@ -374,6 +374,7 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    function CanCloseEditor: TModalResult; override;
     procedure DoCompile(CompileClean, CompileRequired: boolean);
     procedure DoFindInFiles;
     procedure DoFixFilesCase;
@@ -1235,33 +1236,8 @@ end;
 
 procedure TPackageEditorForm.PackageEditorFormCloseQuery(Sender: TObject;
   var CanClose: boolean);
-var
-  MsgResult: Integer;
 begin
-  //debugln(['TPackageEditorForm.PackageEditorFormCloseQuery ',Caption]);
-  if (LazPackage<>nil) and (not (lpfDestroying in LazPackage.Flags)) then
-  begin
-    if (not LazPackage.ReadOnly) and LazPackage.Modified then
-    begin
-      MsgResult:=MessageDlg(lisPkgMangSavePackage,
-        Format(lisPckEditPackageHasChangedSavePackage, [LazPackage.IDAsString, LineEnding]),
-        mtConfirmation,[mbYes,mbNo,mbAbort],0);
-      case MsgResult of
-        mrYes:
-          MsgResult:=PackageEditors.SavePackage(LazPackage,false);
-        mrNo:
-          LazPackage.UserIgnoreChangeStamp:=LazPackage.ChangeStamp;
-      end;
-      if MsgResult=mrAbort then CanClose:=false;
-      LazPackage.Modified:=false; // clear modified flag, so that it will be closed
-    end;
-    if CanClose and not MainIDE.IDEIsClosing then
-    begin
-      EnvironmentOptions.LastOpenPackages.Remove(LazPackage.Filename);
-      MainIDE.SaveEnvironment;
-    end;
-  end;
-  //debugln(['TPackageEditorForm.PackageEditorFormCloseQuery CanClose=',CanClose,' ',Caption]);
+  CanClose:=CanCloseEditor=mrOK;
   if CanClose then
     Application.ReleaseComponent(Self);
 end;
@@ -3326,6 +3302,39 @@ end;
 destructor TPackageEditorForm.Destroy;
 begin
   inherited Destroy;
+end;
+
+function TPackageEditorForm.CanCloseEditor: TModalResult;
+var
+  MsgResult: Integer;
+begin
+  Result:=mrOK;
+  //debugln(['TPackageEditorForm.CanCloseEditor ',Caption]);
+  if (LazPackage<>nil) and (not (lpfDestroying in LazPackage.Flags)) then
+  begin
+    if (not LazPackage.ReadOnly) and LazPackage.Modified then
+    begin
+      MsgResult:=MessageDlg(lisPkgMangSavePackage,
+        Format(lisPckEditPackageHasChangedSavePackage, [LazPackage.IDAsString, LineEnding]),
+        mtConfirmation,[mbYes,mbNo,mbAbort],0);
+      case MsgResult of
+        mrYes:
+          MsgResult:=PackageEditors.SavePackage(LazPackage,false);
+        mrNo:
+          LazPackage.UserIgnoreChangeStamp:=LazPackage.ChangeStamp;
+      end;
+      if MsgResult=mrAbort then
+        Result:=mrAbort
+      else
+        LazPackage.Modified:=false; // clear modified flag, so that it will be closed
+    end;
+    if (Result=mrOK) and not MainIDE.IDEIsClosing then
+    begin
+      EnvironmentOptions.LastOpenPackages.Remove(LazPackage.Filename);
+      MainIDE.SaveEnvironment;
+    end;
+  end;
+  //debugln(['TPackageEditorForm.CanCloseEditor Result=',dbgs(Result),' ',Caption]);
 end;
 
 procedure TPackageEditorForm.TraverseSettings(AOptions: TAbstractPackageFileIDEOptions;

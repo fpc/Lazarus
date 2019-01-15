@@ -2055,6 +2055,7 @@ begin
     CloseAllForms;
   SaveIncludeLinks;
   InputHistories.Save;
+  PkgBoss.DoCloseAllPackageEditors;
   PkgBoss.SaveSettings;
   if TheControlSelection<>nil then
     TheControlSelection.Clear;
@@ -2079,7 +2080,7 @@ begin
     if not CloseQueryIDEWindows then exit;
 
     // save packages
-    if PkgBoss.DoCloseAllPackageEditors<>mrOk then exit;
+    if PkgBoss.CanCloseAllPackageEditors<>mrOk then exit;
 
     // save project
     if AskSaveProject(lisDoYouStillWantToQuit,lisDiscardChangesAndQuit)<>mrOk then
@@ -2493,6 +2494,7 @@ begin
     if AForm=MainIDEBar then continue;
     if IsFormDesign(AForm) then continue;
     if AForm.Parent<>nil then continue;
+    if PkgBoss.IsPackageEditorForm(AForm) then continue;
     if not AForm.CloseQuery then exit(false);
   end;
   Result:=true;

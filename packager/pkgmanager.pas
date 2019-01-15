@@ -299,6 +299,8 @@ type
     procedure OnProjectInspectorCopyMoveFiles(Sender: TObject); override;
 
     // package editors
+    function CanClosePackageEditor(APackage: TLazPackage): TModalResult; override;
+    function CanCloseAllPackageEditors: TModalResult; override;
     function DoOpenPkgFile(PkgFile: TPkgFile): TModalResult;
     function DoNewPackage: TModalResult; override;
     function DoShowLoadedPkgDlg: TModalResult; override;
@@ -309,6 +311,7 @@ type
     function DoOpenPackageFile(AFilename: string;
                          Flags: TPkgOpenFlags;
                          ShowAbort: boolean): TModalResult; override;
+    function IsPackageEditorForm(AForm: TCustomForm): boolean; override;
     procedure OpenHiddenModifiedPackages; override;
     function DoSavePackage(APackage: TLazPackage;
                            Flags: TPkgSaveFlags): TModalResult; override;
@@ -3717,6 +3720,11 @@ begin
   MainIDEInterface.UpdateHighlighters;
 end;
 
+function TPkgManager.IsPackageEditorForm(AForm: TCustomForm): boolean;
+begin
+  Result:=AForm is TPackageEditorForm;
+end;
+
 procedure TPkgManager.OpenHiddenModifiedPackages;
 var
   i: Integer;
@@ -6425,6 +6433,24 @@ end;
 procedure TPkgManager.OnProjectInspectorCopyMoveFiles(Sender: TObject);
 begin
   CopyMoveFiles(Sender);
+end;
+
+function TPkgManager.CanClosePackageEditor(APackage: TLazPackage): TModalResult;
+begin
+  Result:=APackage.Editor.CanCloseEditor;
+end;
+
+function TPkgManager.CanCloseAllPackageEditors: TModalResult;
+var
+  APackage: TLazPackage;
+  i: Integer;
+begin
+  for i:=0 to PackageEditors.Count-1 do begin
+    APackage:=PackageEditors.Editors[i].LazPackage;
+    Result:=CanClosePackageEditor(APackage);
+    if Result<>mrOk then exit;
+  end;
+  Result:=mrOk;
 end;
 
 function TPkgManager.CanOpenDesignerForm(AnUnitInfo: TUnitInfo;

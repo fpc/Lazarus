@@ -785,6 +785,7 @@ type
     function GetLazPackage: TLazPackage; virtual;
     procedure SetLazPackage(const AValue: TLazPackage); virtual; abstract;
   public
+    function CanCloseEditor: TModalResult; virtual; abstract;
     procedure UpdateAll(Immediately: boolean = false); virtual; abstract;
     property LazPackage: TLazPackage read GetLazPackage write SetLazPackage;
   end;
