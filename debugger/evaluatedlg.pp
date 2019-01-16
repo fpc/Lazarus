@@ -211,6 +211,7 @@ var
   Opts: TDBGEvaluateFlags;
 begin
   S := cmbExpression.Text;
+  if S = '' then Exit;
   InputHistories.HistoryLists.Add(ClassName, S,rltCaseSensitive);
   Opts := [];
   if chkTypeCast.Checked then
