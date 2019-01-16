@@ -179,6 +179,24 @@ type
   end;
   TDbgThreadClass = class of TDbgThread;
 
+  { TThreadMapEnumerator }
+
+  TThreadMapEnumerator = class(TMapIterator)
+  private
+    FDoneFirst: Boolean;
+    function GetCurrent: TDbgThread;
+  public
+    function MoveNext: Boolean;
+    property Current: TDbgThread read GetCurrent;
+  end;
+
+  { TThreadMap }
+
+  TThreadMap = class(TMap)
+  public
+    function GetEnumerator: TThreadMapEnumerator;
+  end;
+
   { TFpInternalBreakpointBase }
 
   TFpInternalBreakpointBase = class(TObject)
@@ -293,7 +311,7 @@ type
 
     FSymInstances: TList;  // list of dbgInstances with debug info
 
-    FThreadMap: TMap; // map ThreadID -> ThreadObject
+    FThreadMap: TThreadMap; // map ThreadID -> ThreadObject
     FLibMap: TMap;    // map LibAddr -> LibObject
     FBreakMap: TMap;  // map BreakAddr -> BreakObject
 
@@ -424,6 +442,30 @@ begin
     {$endif linux}
     end;
   result := GOSDbgClasses;
+end;
+
+{ TThreadMapEnumerator }
+
+function TThreadMapEnumerator.GetCurrent: TDbgThread;
+begin
+  GetData(Result);
+end;
+
+function TThreadMapEnumerator.MoveNext: Boolean;
+begin
+  if FDoneFirst then
+    Next
+  else
+    First;
+  FDoneFirst := True;
+  Result := not EOM;
+end;
+
+{ TThreadMap }
+
+function TThreadMap.GetEnumerator: TThreadMapEnumerator;
+begin
+  Result := TThreadMapEnumerator.Create(Self);
 end;
 
 { TDbgCallstackEntry }
@@ -793,7 +835,7 @@ begin
   FProcessID := AProcessID;
   FThreadID := AThreadID;
 
-  FThreadMap := TMap.Create(itu4, SizeOf(TDbgThread));
+  FThreadMap := TThreadMap.Create(itu4, SizeOf(TDbgThread));
   FLibMap := TMap.Create(MAP_ID_SIZE, SizeOf(TDbgLibrary));
   FBreakMap := TMap.Create(MAP_ID_SIZE, SizeOf(TFpInternalBreakpoint));
   FCurrentBreakpoint := nil;
