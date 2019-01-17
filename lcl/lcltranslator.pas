@@ -80,7 +80,7 @@ type
       PropInfo: PPropInfo; var Content: string); override;
   end;
 
-procedure SetDefaultLang(Lang: string; Dir: string = ''; ForceUpdate: boolean = true);
+procedure SetDefaultLang(Lang: string; Dir: string = ''; LocaleFileName: string = ''; ForceUpdate: boolean = true);
 function GetDefaultLang: String;
 
 implementation
@@ -92,25 +92,34 @@ type
 var
   DefaultLang: String = '';
 
-function FindLocaleFileName(LCExt: string; Lang: string; Dir: string): string;
+function FindLocaleFileName(LCExt: string; Lang: string; Dir: string; LocaleFileName: string): string;
 var
   T: string;
   i: integer;
 
-  function GetLocaleFileName(const LangID, LCExt: string; Dir: string): string;
+  function GetLocaleFileName(const LangID, LCExt: string; Dir: string; LocaleFileName: string): string;
   var
     LangShortID: string;
     AppDir,LCFileName,FullLCFileName: String;
     absoluteDir: Boolean;
+
+    function GetLCFileName: string;
+    begin
+      if LocaleFileName = '' then
+        Result := ExtractFileName(ParamStrUTF8(0))
+      else
+        Result := LocaleFileName;
+    end;
+
   begin
     DefaultLang := LangID;
 
     AppDir := ExtractFilePath(ParamStrUTF8(0));
-    LCFileName := ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), LCExt);
+    LCFileName := ChangeFileExt(GetLCFileName, LCExt);
 
     if LangID <> '' then
     begin
-      FullLCFileName := ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), '.' + LangID) + LCExt;
+      FullLCFileName := ChangeFileExt(GetLCFileName, '.' + LangID) + LCExt;
 
       if Dir<>'' then
       begin
@@ -219,7 +228,7 @@ var
         exit;
       {$ENDIF}
 
-      FullLCFileName := ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), '.' + LangShortID) + LCExt;
+      FullLCFileName := ChangeFileExt(GetLCFileName, '.' + LangShortID) + LCExt;
 
       if Dir<>'' then
       begin
@@ -276,7 +285,7 @@ begin
   if Lang = '' then
     LazGetLanguageIDs(Lang, T);
 
-  Result := GetLocaleFileName(Lang, LCExt, Dir);
+  Result := GetLocaleFileName(Lang, LCExt, Dir, LocaleFileName);
 end;
 
 function GetIdentifierPath(Sender: TObject;
@@ -502,10 +511,11 @@ begin
   end;
 end;
 
-procedure SetDefaultLang(Lang: string; Dir: string = ''; ForceUpdate: boolean = true);
+procedure SetDefaultLang(Lang: string; Dir: string = ''; LocaleFileName: string = ''; ForceUpdate: boolean = true);
 { Arguments:
   Lang - language (e.g. 'ru', 'de'); empty argument is default language.
   Dir - custom translation files subdirectory (e.g. 'mylng'); empty argument means searching only in predefined subdirectories.
+  LocaleFileName - custom translation file name; empty argument means that the name is the same as the one of executable.
   ForceUpdate - true means forcing immediate interface update. Only should be set to false when the procedure is
     called from unit Initialization section. User code normally should not specify it.
 }
@@ -519,7 +529,7 @@ begin
   LocalTranslator := nil;
   // search first po translation resources
   try
-     lcfn := FindLocaleFileName('.po', Lang, Dir);
+     lcfn := FindLocaleFileName('.po', Lang, Dir, LocaleFileName);
      if lcfn <> '' then
      begin
        Translations.TranslateResourceStrings(lcfn);
@@ -541,7 +551,7 @@ begin
   begin
     // try now with MO translation resources
     try
-      lcfn := FindLocaleFileName('.mo', Lang, Dir);
+      lcfn := FindLocaleFileName('.mo', Lang, Dir, LocaleFileName);
       if lcfn <> '' then
       begin
         GetText.TranslateResourceStrings(UTF8ToSys(lcfn));

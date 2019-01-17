@@ -35,6 +35,6 @@ implementation
 initialization
   //It is safe to place code here as no form is initialized before unit
   //initialization is made
-  SetDefaultLang('', '', false);
+  SetDefaultLang('', '', '', false);
 
 end.
