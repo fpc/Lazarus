@@ -148,8 +148,11 @@ end;
 
 procedure TAnchorDockOptionsFrame.HeaderStyleComboBoxDrawItem(
   Control: TWinControl; Index: Integer; ARect: TRect; State: TOwnerDrawState);
+var
+ st:TADHeaderStyle;
 begin
-  DrawADHeader(TComboBox(Control).Canvas,TADHeaderStyle(Index),ARect,true,False);
+  st:=DockMaster.HeaderStyleName2ADHeaderStyle.Data[Index];
+  st.DrawProc(Canvas,st.StyleDesc,ARect,true,true);
 end;
 
 procedure TAnchorDockOptionsFrame.DragThresholdTrackBarChange(Sender: TObject);
@@ -350,7 +353,7 @@ begin
   TheSettings.HideHeaderCaptionFloatingControl:=HideHeaderCaptionForFloatingCheckBox.Checked;
   TheSettings.HeaderFlatten:=FlattenHeadersCheckBox.Checked;
   TheSettings.HeaderFilled:=FilledHeadersCheckBox.Checked;
-  TheSettings.HeaderStyle:=TADHeaderStyle(HeaderStyleComboBox.ItemIndex);
+  TheSettings.HeaderStyle:=DockMaster.HeaderStyleName2ADHeaderStyle.Data[HeaderStyleComboBox.ItemIndex].StyleDesc.Name;
   TheSettings.HeaderHighlightFocused:=HighlightFocusedCheckBox.Checked;
   TheSettings.DockSitesCanBeMinimized:=DockSitesCanBeMinimized.Checked;
 end;
@@ -358,7 +361,7 @@ end;
 procedure TAnchorDockOptionsFrame.LoadFromSettings(
   TheSettings: TAnchorDockSettings);
 var
-  hs: TADHeaderStyle;
+  StyleIndex,CurrentStyleIndex: Integer;
   sl: TStringList;
 begin
   DragThresholdTrackBar.Hint:=
@@ -414,14 +417,17 @@ begin
 
   sl:=TStringList.Create;
   try
-    for hs:=Low(TADHeaderStyle) to High(TADHeaderStyle) do
-      sl.Add(ADHeaderStyleNames[hs]);
+    for StyleIndex:=0 to DockMaster.HeaderStyleName2ADHeaderStyle.Count-1 do begin
+      sl.Add(DockMaster.HeaderStyleName2ADHeaderStyle.Data[StyleIndex].StyleDesc.Name);
+      if DockMaster.HeaderStyleName2ADHeaderStyle.Data[StyleIndex].StyleDesc.Name=TheSettings.HeaderStyle then
+        CurrentStyleIndex:=StyleIndex;
+    end;
     HeaderStyleComboBox.Items.Assign(sl);
   finally
     sl.Free;
   end;
   HeaderStyleLabel.Caption:=adrsHeaderStyle;
-  HeaderStyleComboBox.ItemIndex:=ord(TheSettings.HeaderStyle);
+  HeaderStyleComboBox.ItemIndex:=CurrentStyleIndex;
 
   HighlightFocusedCheckBox.Checked:=TheSettings.HeaderHighlightFocused;
   HighlightFocusedCheckBox.Caption:=adrsHighlightFocused;

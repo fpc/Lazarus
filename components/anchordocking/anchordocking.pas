@@ -104,7 +104,7 @@ uses
   LCLType, LCLIntf, LCLProc,
   Controls, Forms, ExtCtrls, ComCtrls, Graphics, Themes, Menus, Buttons,
   LazConfigStorage, Laz2_XMLCfg, LazFileCache,
-  AnchorDockStr, AnchorDockStorage, AnchorDockPanel;
+  AnchorDockStr, AnchorDockStorage, AnchorDockPanel, fgl;
 
 {$IFDEF DebugDisableAutoSizing}
 const ADAutoSizingReason = 'TAnchorDockMaster Delayed';
@@ -170,6 +170,25 @@ type
     menu of the dockmaster.
     Hiding and aligning is done by its Parent, which is a TAnchorDockHostSite }
 
+    THeaderStyleName=string;
+
+    TADHeaderStyleDesc=record
+      NeedDrawHeaderAfterText,NeedHighlightText:boolean;
+      Name:THeaderStyleName;
+    end;
+
+    TDrawADHeaderProc= procedure (Canvas: TCanvas; Style: TADHeaderStyleDesc; r: TRect;
+    Horizontal: boolean; Focused: boolean);
+
+    TADHeaderStyle=record
+      StyleDesc:TADHeaderStyleDesc;
+      DrawProc:TDrawADHeaderProc;
+    end;
+
+    THeaderStyleName2ADHeaderStylesMap=specialize TFPGMap<THeaderStyleName, TADHeaderStyle>;
+
+  type
+
   TAnchorDockHeader = class(TCustomPanel)
   private
     FCloseButton: TCustomSpeedButton;
@@ -187,6 +206,7 @@ type
     procedure SetHeaderPosition(const AValue: TADLHeaderPosition);
   protected
     procedure Paint; override;
+    procedure Draw(HeaderStyle:TADHeaderStyle);
     procedure CalculatePreferredSize(var PreferredWidth,
           PreferredHeight: integer; WithThemeSpace: Boolean); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X,
@@ -470,16 +490,6 @@ type
 
   { TAnchorDockSettings }
 
-  TADHeaderStyle = (
-    adhsFrame3D,
-    adhsLine,
-    adhsLines,
-    adhsPoints,
-    adhsThemedCaption,
-    adhsThemedButton
-    );
-const
-  adhsDefault = adhsFrame3D;
 type
   TAnchorDockSettings = class
   private
@@ -491,7 +501,7 @@ type
     FHeaderAlignLeft: integer;
     FHeaderAlignTop: integer;
     FHeaderHint: string;
-    FHeaderStyle: TADHeaderStyle;
+    FHeaderStyle: THeaderStyleName;
     FHeaderFlatten: boolean;
     FHeaderFilled: boolean;
     FHeaderHighlightFocused: boolean;
@@ -509,7 +519,7 @@ type
     procedure SetHeaderAlignLeft(AValue: integer);
     procedure SetHeaderAlignTop(AValue: integer);
     procedure SetHeaderHint(AValue: string);
-    procedure SetHeaderStyle(AValue: TADHeaderStyle);
+    procedure SetHeaderStyle(AValue: THeaderStyleName);
     procedure SetHideHeaderCaptionFloatingControl(AValue: boolean);
     procedure SetPageAreaInPercent(AValue: integer);
     procedure SetScaleOnResize(AValue: boolean);
@@ -534,7 +544,7 @@ type
     property ShowHeaderCaption: boolean read FShowHeaderCaption write SetShowHeaderCaption;
     property HideHeaderCaptionFloatingControl: boolean read FHideHeaderCaptionFloatingControl write SetHideHeaderCaptionFloatingControl;
     property AllowDragging: boolean read FAllowDragging write SetAllowDragging;
-    property HeaderStyle: TADHeaderStyle read FHeaderStyle write SetHeaderStyle;
+    property HeaderStyle: THeaderStyleName read FHeaderStyle write SetHeaderStyle;
     property HeaderFlatten: boolean read FHeaderFlatten write SetHeaderFlatten;
     property HeaderFilled: boolean read FHeaderFilled write SetHeaderFilled;
     property HeaderHighlightFocused: boolean read FHeaderHighlightFocused write SetHeaderHighlightFocused;
@@ -571,7 +581,7 @@ type
     FHeaderAlignTop: integer;
     FHeaderClass: TAnchorDockHeaderClass;
     FHeaderHint: string;
-    FHeaderStyle: TADHeaderStyle;
+    FHeaderStyle: THeaderStyleName;
     FHeaderFlatten: boolean;
     FHeaderFilled: boolean;
     FHeaderHighlightFocused: boolean;
@@ -606,6 +616,8 @@ type
     // Used by RestoreLayout:
     WorkArea, SrcWorkArea: TRect;
     FOverlappingForm:TAnchorDockOverlappingForm;
+    CurrentADHeaderStyle:TADHeaderStyle;
+    FHeaderStyleName2ADHeaderStyle:THeaderStyleName2ADHeaderStylesMap;
 
     function GetControls(Index: integer): TControl;
     function GetLocalizedHeaderHint: string;
@@ -632,7 +644,7 @@ type
     procedure SetDockParentMargin(AValue: integer);
     procedure SetDragTreshold(AValue: integer);
     procedure SetHeaderHint(AValue: string);
-    procedure SetHeaderStyle(AValue: TADHeaderStyle);
+    procedure SetHeaderStyle(AValue: THeaderStyleName);
     procedure SetPageAreaInPercent(AValue: integer);
     procedure SetScaleOnResize(AValue: boolean);
 
@@ -667,6 +679,7 @@ type
     procedure StopHideOverlappingTimer;
     procedure AsyncSimplify({%H-}Data: PtrInt);
   public
+    procedure RegisterHeaderStyle(StyleName: THeaderStyleName; DrawProc:TDrawADHeaderProc; NeedDrawHeaderAfterText,NeedHighlightText: boolean);
     procedure ShowOverlappingForm;
     procedure HideOverlappingForm(Sender: TObject);
     constructor Create(AOwner: TComponent); override;
@@ -760,7 +773,7 @@ type
     property HeaderAlignTop: integer read FHeaderAlignTop write SetHeaderAlignTop default 80; // move header to top, when (width/height)*100<=HeaderAlignTop
     property HeaderAlignLeft: integer read FHeaderAlignLeft write SetHeaderAlignLeft default 120; // move header to left, when (width/height)*100>=HeaderAlignLeft
     property HeaderHint: string read FHeaderHint write SetHeaderHint; // if empty it uses resourcestring adrsDragAndDockC
-    property HeaderStyle: TADHeaderStyle read FHeaderStyle write SetHeaderStyle default adhsDefault;
+    property HeaderStyle: THeaderStyleName read FHeaderStyle write SetHeaderStyle;
     property HeaderFlatten: boolean read FHeaderFlatten write SetHeaderFlatten default true;
     property HeaderFilled: boolean read FHeaderFilled write SetHeaderFilled default true;
     property HeaderHighlightFocused: boolean read FHeaderHighlightFocused write SetHeaderHighlightFocused default false;
@@ -779,6 +792,7 @@ type
     property HeaderClass: TAnchorDockHeaderClass read FHeaderClass write FHeaderClass;
     property PageControlClass: TAnchorDockPageControlClass read FPageControlClass write FPageControlClass;
     property PageClass: TAnchorDockPageClass read FPageClass write FPageClass;
+    property HeaderStyleName2ADHeaderStyle:THeaderStyleName2ADHeaderStylesMap read FHeaderStyleName2ADHeaderStyle;
   end;
 
 var
@@ -791,19 +805,9 @@ var
 
 const
   HardcodedButtonSize:integer=13;
-  ADHeaderStyleNames: array[TADHeaderStyle] of string = (
-    'Frame3D',
-    'Line',
-    'Lines',
-    'Points',
-    'Themed caption',
-    'Themed button'
-    );
 
-function StrToADHeaderStyle(const s: string): TADHeaderStyle;
 function dbgs(SiteType: TAnchorDockHostSiteType): string; overload;
 
-procedure DrawADHeader(Canvas: TCanvas; Style: TADHeaderStyle; r: TRect; Horizontal: boolean; Focused: boolean);
 
 procedure CopyAnchorBounds(Source, Target: TControl);
 procedure AnchorAndChangeBounds(AControl: TControl; Side: TAnchorKind;
@@ -829,119 +833,6 @@ function GetEnclosingControlRect(ControlList: TFPlist;
 function GetEnclosedControls(const ARect: TAnchorControlsRect): TFPList;
 
 implementation
-
-function StrToADHeaderStyle(const s: string): TADHeaderStyle;
-begin
-  for Result:=Low(TADHeaderStyle) to High(TADHeaderStyle) do
-    if CompareText(ADHeaderStyleNames[Result],s)=0 then exit;
-  Result:=adhsDefault;
-end;
-
-procedure DrawADHeader(Canvas: TCanvas; Style: TADHeaderStyle; r: TRect;
-  Horizontal: boolean; Focused: boolean);
-var
-  Center: Integer;
-  lx, ly, d, lt, lb, lm: Integer;
-  ted:TThemedElementDetails;
-begin
-  case Style of
-  adhsFrame3D:
-    begin
-      Canvas.Frame3d(r,2,bvLowered);
-      Canvas.Frame3d(r,4,bvRaised);
-    end;
-  adhsLine:
-    if Horizontal then
-    begin
-      Center:=r.Top+(r.Bottom-r.Top) div 2;
-      Canvas.Pen.Color:=clltgray;
-      Canvas.Line(r.Left+5,Center-1,r.Right-3,Center-1);
-      Canvas.Pen.Color:=clgray;
-      Canvas.Line(r.Left+5,Center,r.Right-3,Center);
-    end else
-    begin
-      Center:=r.Right+(r.Left-r.Right) div 2;
-      Canvas.Pen.Color:=clltgray;
-      Canvas.Line(Center-1,r.Top+3,Center-1,r.Bottom-5);
-      Canvas.Pen.Color:=clgray;
-      Canvas.Line(Center,r.Top+3,Center,r.Bottom-5);
-    end;
-  adhsLines:
-    begin
-      InflateRect(r,-2,-2);
-      if Horizontal then
-      begin
-        lx:=0;
-        ly:=3;
-        r.Bottom:=r.top+(r.bottom-r.Top) div 3;
-        r.top:=r.bottom-ly;
-      end else
-      begin
-        lx:=3;
-        ly:=0;
-        r.Right:=r.Left+(r.Right-r.Left) div 3 ;
-        r.Left:=r.Right-lx;
-      end;
-      DrawEdge(Canvas.Handle,r, BDR_RAISEDINNER, BF_RECT );
-      OffsetRect(r,lx,ly);
-      DrawEdge(Canvas.Handle,r, BDR_RAISEDINNER, BF_RECT );
-      OffsetRect(r,lx,ly);
-      DrawEdge(Canvas.Handle,r, BDR_RAISEDINNER, BF_RECT );
-    end;
-  adhsPoints:
-    if Horizontal then begin
-      lx := r.left+2;
-      d := (r.Bottom - r.Top - 5) div 2;
-      lt := r.Top + d;
-      lb := lt + 4;
-      lm := lt + 2;
-      while lx < r.Right do
-      begin
-        Canvas.Pixels[lx, lt] := clBtnShadow;
-        Canvas.Pixels[lx, lb] := clBtnShadow;
-        Canvas.Pixels[lx+2, lm] := clBtnShadow;
-        lx := lx + 4;
-      end;
-    end else begin
-      ly := r.Bottom - 2;
-      d := (r.Right - r.Left - 5) div 2;
-      lt := r.Left + d;
-      lb := lt + 4;
-      lm := lt + 2;
-      while ly > r.Top do
-      begin
-        Canvas.Pixels[lt, ly] := clBtnShadow;
-        Canvas.Pixels[lb, ly] := clBtnShadow;
-        Canvas.Pixels[lm, ly-2] := clBtnShadow;
-        ly := ly - 4;
-      end;
-    end;
-  adhsThemedCaption:
-    begin
-      if Focused then
-        ted:=ThemeServices.GetElementDetails(twSmallCaptionActive)
-      else
-        ted:=ThemeServices.GetElementDetails(twSmallCaptionInactive);
-      r.Bottom:=r.Bottom-3;
-      ThemeServices.DrawElement(Canvas.Handle,ted, r);
-      if Focused then
-        ted:=ThemeServices.GetElementDetails(twSmallFrameBottomActive)
-      else
-        ted:=ThemeServices.GetElementDetails(twSmallFrameBottomInactive);
-      r.Top:=r.Bottom;
-      r.Bottom:=r.Bottom+3;
-      ThemeServices.DrawElement(Canvas.Handle,ted, r);
-    end;
-  adhsThemedButton:
-    begin
-      if Focused then
-        ted:=ThemeServices.GetElementDetails(tbPushButtonHot)
-      else
-        ted:=ThemeServices.GetElementDetails(tbPushButtonNormal);
-      ThemeServices.DrawElement(Canvas.Handle,ted, r);
-    end;
-  end;
-end;
 
 function dbgs(SiteType: TAnchorDockHostSiteType): string; overload;
 begin
@@ -1424,7 +1315,7 @@ begin
   IncreaseChangeStamp;
 end;
 
-procedure TAnchorDockSettings.SetHeaderStyle(AValue: TADHeaderStyle);
+procedure TAnchorDockSettings.SetHeaderStyle(AValue: THeaderStyleName);
 begin
   if FHeaderStyle=AValue then Exit;
   FHeaderStyle:=AValue;
@@ -1545,7 +1436,7 @@ begin
   ShowHeaderCaption:=Config.GetValue('ShowHeaderCaption',true);
   HideHeaderCaptionFloatingControl:=Config.GetValue('HideHeaderCaptionFloatingControl',true);
   AllowDragging:=Config.GetValue('AllowDragging',true);
-  HeaderStyle:=StrToADHeaderStyle(Config.GetValue('HeaderStyle',ADHeaderStyleNames[adhsDefault]));
+  HeaderStyle:=Config.GetValue('HeaderStyle','Frame3D');
   HeaderFlatten:=Config.GetValue('HeaderFlatten',true);
   HeaderFilled:=Config.GetValue('HeaderFilled',true);
   HeaderHighlightFocused:=Config.GetValue('HeaderHighlightFocused',False);
@@ -1568,7 +1459,7 @@ begin
   Config.SetDeleteValue(Path+'ShowHeaderCaption',ShowHeaderCaption,true);
   Config.SetDeleteValue(Path+'HideHeaderCaptionFloatingControl',HideHeaderCaptionFloatingControl,true);
   Config.SetDeleteValue(Path+'AllowDragging',AllowDragging,true);
-  Config.SetDeleteValue(Path+'HeaderStyle',ADHeaderStyleNames[HeaderStyle],ADHeaderStyleNames[adhsDefault]);
+  Config.SetDeleteValue(Path+'HeaderStyle',HeaderStyle,'Frame3D');
   Config.SetDeleteValue(Path+'HeaderFlatten',HeaderFlatten,true);
   Config.SetDeleteValue(Path+'HeaderFilled',HeaderFilled,true);
   Config.SetDeleteValue(Path+'HeaderHighlightFocused',HeaderHighlightFocused,False);
@@ -1590,7 +1481,7 @@ begin
   Config.SetDeleteValue('ShowHeaderCaption',ShowHeaderCaption,true);
   Config.SetDeleteValue('HideHeaderCaptionFloatingControl',HideHeaderCaptionFloatingControl,true);
   Config.SetDeleteValue('AllowDragging',AllowDragging,true);
-  Config.SetDeleteValue('HeaderStyle',ADHeaderStyleNames[HeaderStyle],ADHeaderStyleNames[adhsDefault]);
+  Config.SetDeleteValue('HeaderStyle',HeaderStyle,'Frame3D');
   Config.SetDeleteValue('HeaderFlatten',HeaderFlatten,true);
   Config.SetDeleteValue('HeaderFilled',HeaderFilled,true);
   Config.SetDeleteValue('HeaderHighlightFocused',HeaderHighlightFocused,False);
@@ -1636,7 +1527,7 @@ begin
   ShowHeaderCaption:=Config.GetValue(Path+'ShowHeaderCaption',true);
   HideHeaderCaptionFloatingControl:=Config.GetValue(Path+'HideHeaderCaptionFloatingControl',true);
   AllowDragging:=Config.GetValue(Path+'AllowDragging',true);
-  HeaderStyle:=StrToADHeaderStyle(Config.GetValue(Path+'HeaderStyle',ADHeaderStyleNames[adhsDefault]));
+  HeaderStyle:=Config.GetValue(Path+'HeaderStyle','Frame3D');
   HeaderFlatten:=Config.GetValue(Path+'HeaderFlatten',true);
   HeaderFilled:=Config.GetValue(Path+'HeaderFilled',true);
   HeaderHighlightFocused:=Config.GetValue(Path+'HeaderHighlightFocused',False);
@@ -2694,10 +2585,11 @@ begin
   OptionsChanged;
 end;
 
-procedure TAnchorDockMaster.SetHeaderStyle(AValue: TADHeaderStyle);
+procedure TAnchorDockMaster.SetHeaderStyle(AValue: THeaderStyleName);
 begin
   if FHeaderStyle=AValue then Exit;
   FHeaderStyle:=AValue;
+  FHeaderStyleName2ADHeaderStyle.TryGetData(uppercase(AValue),CurrentADHeaderStyle);
   OptionsChanged;
   InvalidateHeaders;
 end;
@@ -2899,6 +2791,22 @@ begin
     EnableAllAutoSizing;
 end;
 
+procedure TAnchorDockMaster.RegisterHeaderStyle(StyleName: THeaderStyleName; DrawProc:TDrawADHeaderProc; NeedDrawHeaderAfterText,NeedHighlightText: boolean);
+var
+  TempStyle:TADHeaderStyle;
+begin
+  TempStyle.DrawProc:=DrawProc;
+  TempStyle.StyleDesc.NeedDrawHeaderAfterText:=NeedDrawHeaderAfterText;
+  TempStyle.StyleDesc.NeedHighlightText:=NeedHighlightText;
+  TempStyle.StyleDesc.Name:=StyleName;
+  FHeaderStyleName2ADHeaderStyle.AddOrSetData(uppercase(StyleName), TempStyle);
+  if FHeaderStyleName2ADHeaderStyle.Count=1 then
+  begin
+    CurrentADHeaderStyle:=TempStyle;
+    HeaderStyle:=StyleName;
+  end;
+end;
+
 procedure TAnchorDockMaster.ShowOverlappingForm;
 begin
   FOverlappingForm.Show;
@@ -2945,6 +2853,7 @@ begin
   FHeaderHighlightFocused:=false;
   FDockSitesCanBeMinimized:=false;
   FOverlappingForm:=nil;
+  FHeaderStyleName2ADHeaderStyle:=THeaderStyleName2ADHeaderStylesMap.create;
 end;
 
 destructor TAnchorDockMaster.Destroy;
@@ -2978,6 +2887,7 @@ begin
         TControl(Components[i]).RemoveAllHandlersOfObject(TControl(Components[j]));
   end;
   end;
+  FreeAndNil(FHeaderStyleName2ADHeaderStyle);
   inherited Destroy;
 end;
 
@@ -6196,21 +6106,17 @@ begin
     TAnchorDockHostSite(Parent).UpdateHeaderAlign;
 end;
 
-procedure TAnchorDockHeader.Paint;
+procedure TAnchorDockHeader.Draw(HeaderStyle:TADHeaderStyle);
 var
   r: TRect;
   TxtH: longint;
   TxtW: longint;
   dx,dy: Integer;
-  NeedDrawHeaderAfterText,NeedHighlightText:boolean;
+  //NeedDrawHeaderAfterText,NeedHighlightText:boolean;
 begin
   r:=ClientRect;
-  NeedDrawHeaderAfterText:=true;
-  NeedHighlightText:=true;
-  if DockMaster.HeaderStyle in [adhsThemedCaption,adhsThemedButton] then begin
-      DrawADHeader(Canvas,DockMaster.HeaderStyle,r,not(Align in [alLeft,alRight]),FFocused);
-      NeedDrawHeaderAfterText:=false;
-      NeedHighlightText:=false;
+  if not HeaderStyle.StyleDesc.NeedDrawHeaderAfterText then begin
+      HeaderStyle.DrawProc(Canvas,HeaderStyle.StyleDesc,r,not(Align in [alLeft,alRight]),FFocused);
   end else begin
     Canvas.Brush.Color := clForm;
     if DockMaster.HeaderFilled then
@@ -6240,7 +6146,7 @@ begin
 
   // caption
   if Caption<>'' then begin
-    if FFocused and DockMaster.HeaderHighlightFocused and NeedHighlightText then
+    if FFocused and DockMaster.HeaderHighlightFocused and HeaderStyle.StyleDesc.NeedHighlightText then
       Canvas.Font.Bold:=true
     else
       Canvas.Font.Bold:=False;
@@ -6260,14 +6166,14 @@ begin
       begin
         // text fits
         Canvas.TextOut(r.Left+dx-1,r.Bottom-dy,Caption);
-        if NeedDrawHeaderAfterText then begin
-          DrawADHeader(Canvas,DockMaster.HeaderStyle,Rect(r.Left,r.Top,r.Right,r.Bottom-dy-TxtW-1),false,FFocused);
-          DrawADHeader(Canvas,DockMaster.HeaderStyle,Rect(r.Left,r.Bottom-dy+1,r.Right,r.Bottom),false,FFocused);
+        if HeaderStyle.StyleDesc.NeedDrawHeaderAfterText then begin
+          HeaderStyle.DrawProc(Canvas,HeaderStyle.StyleDesc,Rect(r.Left,r.Top,r.Right,r.Bottom-dy-TxtW-1),false,FFocused);
+          HeaderStyle.DrawProc(Canvas,HeaderStyle.StyleDesc,Rect(r.Left,r.Bottom-dy+1,r.Right,r.Bottom),false,FFocused);
         end;
       end else begin
         // text does not fit
-        if NeedDrawHeaderAfterText then
-          DrawADHeader(Canvas,DockMaster.HeaderStyle,r,false,FFocused);
+        if HeaderStyle.StyleDesc.NeedDrawHeaderAfterText then
+          HeaderStyle.DrawProc(Canvas,HeaderStyle.StyleDesc,r,false,FFocused);
       end;
     end else begin
       // horizontal
@@ -6278,22 +6184,27 @@ begin
       begin
         // text fits
         Canvas.TextRect(r,dx+2,dy,Caption);
-        if NeedDrawHeaderAfterText then begin
-          DrawADHeader(Canvas,DockMaster.HeaderStyle,Rect(r.Left,r.Top,r.Left+dx-1,r.Bottom),true,FFocused);
-          DrawADHeader(Canvas,DockMaster.HeaderStyle,Rect(r.Left+dx+TxtW+2,r.Top,r.Right,r.Bottom),true,FFocused);
+        if HeaderStyle.StyleDesc.NeedDrawHeaderAfterText then begin
+          HeaderStyle.DrawProc(Canvas,HeaderStyle.StyleDesc,Rect(r.Left,r.Top,r.Left+dx-1,r.Bottom),true,FFocused);
+          HeaderStyle.DrawProc(Canvas,HeaderStyle.StyleDesc,Rect(r.Left+dx+TxtW+2,r.Top,r.Right,r.Bottom),true,FFocused);
         end;
       end else begin
         // text does not fit
-        if NeedDrawHeaderAfterText then
-          DrawADHeader(Canvas,DockMaster.HeaderStyle,r,true,FFocused);
+        if HeaderStyle.StyleDesc.NeedDrawHeaderAfterText then
+          HeaderStyle.DrawProc(Canvas,HeaderStyle.StyleDesc,r,true,FFocused);
       end;
     end;
   end
-  else if NeedDrawHeaderAfterText then
+  else if HeaderStyle.StyleDesc.NeedDrawHeaderAfterText then
     if Align in [alLeft,alRight] then
-      DrawADHeader(Canvas,DockMaster.HeaderStyle,r,false,FFocused)
+      HeaderStyle.DrawProc(Canvas,HeaderStyle.StyleDesc,r,false,FFocused)
     else
-      DrawADHeader(Canvas,DockMaster.HeaderStyle,r,true,FFocused);
+      HeaderStyle.DrawProc(Canvas,HeaderStyle.StyleDesc,r,true,FFocused);
+end;
+
+procedure TAnchorDockHeader.Paint;
+begin
+  draw(DockMaster.CurrentADHeaderStyle);
 end;
 
 procedure TAnchorDockHeader.CalculatePreferredSize(var PreferredWidth,
@@ -7704,8 +7615,135 @@ begin
   Result:=TAnchorDockHostSite(Controls[0]);
 end;
 
+procedure DrawFrame3DHeader(Canvas: TCanvas; Style: TADHeaderStyleDesc; r: TRect;
+  Horizontal: boolean; Focused: boolean);
+begin
+  Canvas.Frame3d(r,2,bvLowered);
+  Canvas.Frame3d(r,4,bvRaised);
+end;
+
+procedure DrawFrameLine(Canvas: TCanvas; Style: TADHeaderStyleDesc; r: TRect;
+  Horizontal: boolean; Focused: boolean);
+var
+  Center:integer;
+begin
+  if Horizontal then
+  begin
+    Center:=r.Top+(r.Bottom-r.Top) div 2;
+    Canvas.Pen.Color:=clltgray;
+    Canvas.Line(r.Left+5,Center-1,r.Right-3,Center-1);
+    Canvas.Pen.Color:=clgray;
+    Canvas.Line(r.Left+5,Center,r.Right-3,Center);
+  end else
+  begin
+    Center:=r.Right+(r.Left-r.Right) div 2;
+    Canvas.Pen.Color:=clltgray;
+    Canvas.Line(Center-1,r.Top+3,Center-1,r.Bottom-5);
+    Canvas.Pen.Color:=clgray;
+    Canvas.Line(Center,r.Top+3,Center,r.Bottom-5);
+  end;
+end;
+
+procedure DrawFrameLines(Canvas: TCanvas; Style: TADHeaderStyleDesc; r: TRect;
+  Horizontal: boolean; Focused: boolean);
+var
+  lx,ly:integer;
+begin
+  InflateRect(r,-2,-2);
+  if Horizontal then
+  begin
+    lx:=0;
+    ly:=3;
+    r.Bottom:=r.top+(r.bottom-r.Top) div 3;
+    r.top:=r.bottom-ly;
+  end else
+  begin
+    lx:=3;
+    ly:=0;
+    r.Right:=r.Left+(r.Right-r.Left) div 3 ;
+    r.Left:=r.Right-lx;
+  end;
+  DrawEdge(Canvas.Handle,r, BDR_RAISEDINNER, BF_RECT );
+  OffsetRect(r,lx,ly);
+  DrawEdge(Canvas.Handle,r, BDR_RAISEDINNER, BF_RECT );
+  OffsetRect(r,lx,ly);
+  DrawEdge(Canvas.Handle,r, BDR_RAISEDINNER, BF_RECT );
+end;
+
+procedure DrawFramePoints(Canvas: TCanvas; Style: TADHeaderStyleDesc; r: TRect;
+  Horizontal: boolean; Focused: boolean);
+var
+  lx,ly,d,lt,lb,lm:integer;
+begin
+  if Horizontal then begin
+    lx := r.left+2;
+    d := (r.Bottom - r.Top - 5) div 2;
+    lt := r.Top + d;
+    lb := lt + 4;
+    lm := lt + 2;
+    while lx < r.Right do
+    begin
+      Canvas.Pixels[lx, lt] := clBtnShadow;
+      Canvas.Pixels[lx, lb] := clBtnShadow;
+      Canvas.Pixels[lx+2, lm] := clBtnShadow;
+      lx := lx + 4;
+    end;
+  end else begin
+    ly := r.Bottom - 2;
+    d := (r.Right - r.Left - 5) div 2;
+    lt := r.Left + d;
+    lb := lt + 4;
+    lm := lt + 2;
+    while ly > r.Top do
+    begin
+      Canvas.Pixels[lt, ly] := clBtnShadow;
+      Canvas.Pixels[lb, ly] := clBtnShadow;
+      Canvas.Pixels[lm, ly-2] := clBtnShadow;
+      ly := ly - 4;
+    end;
+  end;
+end;
+
+procedure DrawFrameThemedCaption(Canvas: TCanvas; Style: TADHeaderStyleDesc; r: TRect;
+  Horizontal: boolean; Focused: boolean);
+var
+  ted:TThemedElementDetails;
+begin
+  if Focused then
+    ted:=ThemeServices.GetElementDetails(twSmallCaptionActive)
+  else
+    ted:=ThemeServices.GetElementDetails(twSmallCaptionInactive);
+  r.Bottom:=r.Bottom-3;
+  ThemeServices.DrawElement(Canvas.Handle,ted, r);
+  if Focused then
+    ted:=ThemeServices.GetElementDetails(twSmallFrameBottomActive)
+  else
+    ted:=ThemeServices.GetElementDetails(twSmallFrameBottomInactive);
+  r.Top:=r.Bottom;
+  r.Bottom:=r.Bottom+3;
+  ThemeServices.DrawElement(Canvas.Handle,ted, r);
+end;
+
+procedure DrawFrameThemedButton(Canvas: TCanvas; Style: TADHeaderStyleDesc; r: TRect;
+  Horizontal: boolean; Focused: boolean);
+var
+  ted:TThemedElementDetails;
+begin
+  if Focused then
+    ted:=ThemeServices.GetElementDetails(tbPushButtonHot)
+  else
+    ted:=ThemeServices.GetElementDetails(tbPushButtonNormal);
+  ThemeServices.DrawElement(Canvas.Handle,ted, r);
+end;
+
 initialization
   DockMaster:=TAnchorDockMaster.Create(nil);
+  DockMaster.RegisterHeaderStyle('Frame3D', @DrawFrame3DHeader, true, true);
+  DockMaster.RegisterHeaderStyle('Line', @DrawFrameLine, true, true);
+  DockMaster.RegisterHeaderStyle('Lines', @DrawFrameLines, true, true);
+  DockMaster.RegisterHeaderStyle('Points', @DrawFramePoints, true, true);
+  DockMaster.RegisterHeaderStyle('ThemedCaption', @DrawFrameThemedCaption, false, false);
+  DockMaster.RegisterHeaderStyle('ThemedButton', @DrawFrameThemedButton, false, false);
   DockTimer:=TTimer.Create(nil);
 
 finalization
