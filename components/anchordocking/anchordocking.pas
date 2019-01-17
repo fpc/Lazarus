@@ -100,11 +100,11 @@ unit AnchorDocking;
 interface
 
 uses
-  Math, Classes, SysUtils, types,
+  Math, Classes, SysUtils, types, fgl,
   LCLType, LCLIntf, LCLProc,
   Controls, Forms, ExtCtrls, ComCtrls, Graphics, Themes, Menus, Buttons,
   LazConfigStorage, Laz2_XMLCfg, LazFileCache,
-  AnchorDockStr, AnchorDockStorage, AnchorDockPanel, fgl;
+  AnchorDockStr, AnchorDockStorage, AnchorDockPanel;
 
 {$IFDEF DebugDisableAutoSizing}
 const ADAutoSizingReason = 'TAnchorDockMaster Delayed';
@@ -559,6 +559,8 @@ type
     procedure Assign(Source: TAnchorDockSettings);
   end;
 
+  TMapMinimizedControls = specialize TFPGMap <Pointer, Pointer>;
+
   TAnchorDockMaster = class;
 
   { TAnchorDockMaster
@@ -606,6 +608,7 @@ type
     FSiteClass: TAnchorDockHostSiteClass;
     FSplitterClass: TAnchorDockSplitterClass;
     FSplitterWidth: integer;
+    FMapMinimizedControls: TMapMinimizedControls; // minimized controls and previous parent
     fNeedSimplify: TFPList; // list of TControl
     fNeedFree: TFPList; // list of TControl
     fSimplifying: boolean;
@@ -2839,6 +2842,7 @@ begin
   FHideHeaderCaptionFloatingControl:=true;
   FSplitterWidth:=4;
   FScaleOnResize:=true;
+  FMapMinimizedControls:=TMapMinimizedControls.Create;
   fNeedSimplify:=TFPList.Create;
   fNeedFree:=TFPList.Create;
   fDisabledAutosizing:=TFPList.Create;
@@ -2876,6 +2880,7 @@ begin
   FreeAndNil(fNeedSimplify);
   FreeAndNil(FControls);
   FreeAndNil(fNeedFree);
+  FreeAndNil(FMapMinimizedControls);
   FreeAndNil(fDisabledAutosizing);
   {$IFDEF VerboseAnchorDocking}
   for i:=0 to ComponentCount-1 do begin
@@ -2917,17 +2922,16 @@ end;
 function TAnchorDockMaster.IsMinimizedControl(AControl: TControl; out
   Site: TAnchorDockHostSite): Boolean;
 var
-  i: Integer;
+  AIndex: Integer;
 begin
-  Result:=False;
-  Site:=nil;
-  if not Assigned(AControl) or (FControls.IndexOf(AControl)<0) then Exit;
-  for i:=0 to ComponentCount-1 do
-    if (Components[i] is TAnchorDockHostSite)
-    and (TAnchorDockHostSite(Components[i]).MinimizedControl = AControl) then begin
-      Site:=TAnchorDockHostSite(Components[i]);
-      Exit(True);
-    end;
+  AIndex:=FMapMinimizedControls.IndexOf(AControl);
+  if AIndex<0 then begin
+    Result:=False;
+    Site:=nil;
+  end else begin
+    Result:=True;
+    Site:=TAnchorDockHostSite(FMapMinimizedControls[AControl]);
+  end;
 end;
 
 function TAnchorDockMaster.IsSite(AControl: TControl): boolean;
@@ -3174,6 +3178,10 @@ end;
 procedure TAnchorDockMaster.MakeVisible(AControl: TControl; SwitchPages: boolean);
 begin
   while AControl<>nil do begin
+    if FMapMinimizedControls.IndexOf(AControl)>=0 then begin
+      AControl:=TAnchorDockHostSite(FMapMinimizedControls[AControl]);
+      TAnchorDockHostSite(AControl).MinimizeSite;
+    end;
     AControl.Visible:=true;
     if SwitchPages and (AControl is TAnchorDockPage) then
       TAnchorDockPageControl(AControl.Parent).PageIndex:=
@@ -4473,6 +4481,7 @@ procedure TAnchorDockHostSite.RemoveControlFromLayout(AControl: TControl);
         end;
         if (sibling is TAnchorDockHostSite) then
         if (sibling as TAnchorDockHostSite).Minimized then begin
+          DockMaster.FMapMinimizedControls.Remove((sibling as TAnchorDockHostSite).FMinimizedControl);
           (sibling as TAnchorDockHostSite).FMinimizedControl.Parent:=(sibling as TAnchorDockHostSite);
           (sibling as TAnchorDockHostSite).FMinimizedControl.Visible:=True;
           (sibling as TAnchorDockHostSite).FMinimizedControl:=nil;
@@ -4552,6 +4561,7 @@ procedure TAnchorDockHostSite.RemoveControlFromLayout(AControl: TControl);
       OnlySiteLeft.Align:=alClient;
       Header.Parent:=Self;
       if OnlySiteLeft.Minimized then begin
+        DockMaster.FMapMinimizedControls.Remove(OnlySiteLeft.FMinimizedControl);
         OnlySiteLeft.FMinimizedControl.Parent:=OnlySiteLeft;
         OnlySiteLeft.FMinimizedControl.Visible:=True;
         OnlySiteLeft.FMinimizedControl:=nil;
@@ -4612,7 +4622,8 @@ end;
 
 procedure TAnchorDockHostSite.RemoveMinimizedControl;
 begin
-  FMinimizedControl := nil;
+  FMinimizedControl:=nil;
+  DockMaster.FMapMinimizedControls.Remove(FMinimizedControl);
 end;
 
 procedure TAnchorDockHostSite.RemoveSpiralSplitter(AControl: TControl);
@@ -5498,6 +5509,7 @@ begin
       FMinimizedControl:=AControl;
       AControl.Visible:=False;
       AControl.Parent:=nil;
+      DockMaster.FMapMinimizedControls.Add(AControl,Self);
     end else begin
       MaxSize:=ReturnAnchoredControlsSize(Splitter,SplitterAnchorKind);
       case SplitterAnchorKind of
@@ -5517,6 +5529,7 @@ begin
       AControl.Parent:=self;
       AControl.Visible:=True;
       FMinimizedControl:=nil;
+      DockMaster.FMapMinimizedControls.Remove(AControl);
     end;
     Splitter.Enabled:=AControl.Visible;
     UpdateHeaderAlign;
