@@ -898,7 +898,8 @@ function DockedControlIsVisible(Control: TControl): boolean;
 begin
   while Control<>nil do begin
     if (not Control.IsControlVisible)
-    and (not (Control is TAnchorDockPage)) then
+    and (not (Control is TAnchorDockPage))
+    and (Control.parent<>nil) then
       exit(false);
     Control:=Control.Parent;
   end;
