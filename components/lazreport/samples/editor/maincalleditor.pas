@@ -620,7 +620,7 @@ begin
   TranslateUnitResourceStrings('Lr_const','../../source/languages/lr_const.%s.po', Lang,FallbackLang);
   TranslateUnitResourceStrings('lr_add_function_const','../../source/addons/addfunction/languages/lr_add_function_const.%s.po'
      ,Lang,FallbackLang);
-  SetDefaultLang(Lang, '', false); // needed to translate strings extracted from forms
+  SetDefaultLang(Lang, '', '', false); // needed to translate strings extracted from forms
 end;
 
 initialization
