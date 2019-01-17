@@ -44,7 +44,7 @@ type
     SplitterWidthLabel: TLabel;
     SplitterWidthSpinEdit: TSpinEdit;
     SplitterWidthTrackBar: TTrackBar;
-    procedure HeaderStyleComboBoxDrawItem(Control: TWinControl; Index: Integer;
+    procedure HeaderStyleComboBoxDrawItem({%H-}Control: TWinControl; Index: Integer;
       ARect: TRect; {%H-}State: TOwnerDrawState);
     procedure OkClick(Sender: TObject);
     procedure DragThresholdTrackBarChange(Sender: TObject);

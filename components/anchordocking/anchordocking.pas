@@ -633,7 +633,7 @@ type
     function RestoreLayout(Tree: TAnchorDockLayoutTree; Scale: boolean): boolean;
     procedure SetMinimizedState(Tree: TAnchorDockLayoutTree);
     procedure UpdateHeaders;
-    procedure SetnodeMinimizedState(ANode: TAnchorDockLayoutTreeNode);
+    procedure SetNodeMinimizedState(ANode: TAnchorDockLayoutTreeNode);
     procedure EnableAllAutoSizing;
     procedure ClearLayoutProperties(AControl: TControl; NewAlign: TAlign = alClient);
     procedure PopupMenuPopup(Sender: TObject);
@@ -2099,12 +2099,12 @@ begin
       Application.QueueAsyncCall(@HostSite.AsyncMinimizeSite,0);
       //HostSite.MinimizeSite;
   for i:=0 to ANode.Count-1 do
-    SetnodeMinimizedState(ANode.Nodes[i]);
+    SetNodeMinimizedState(ANode.Nodes[i]);
 end;
 
 procedure TAnchorDockMaster.SetMinimizedState(Tree: TAnchorDockLayoutTree);
 begin
-  SetnodeMinimizedState(Tree.Root);
+  SetNodeMinimizedState(Tree.Root);
 end;
 
 function TAnchorDockMaster.RestoreLayout(Tree: TAnchorDockLayoutTree;
@@ -5739,11 +5739,7 @@ begin
   OldCaption:=Caption;
   Caption:=NewCaption;
   //debugln(['TAnchorDockHostSite.UpdateDockCaption Caption="',Caption,'" NewCaption="',NewCaption,'" HasParent=',Parent<>nil,' ',DbgSName(Header)]);
-  if {((Parent=nil) and DockMaster.HideHeaderCaptionFloatingControl)
-  or (not DockMaster.ShowHeaderCaption)}false then
-    Header.Caption:=''
-  else
-    Header.Caption:=Caption;
+  Header.Caption:=Caption;
   if OldCaption<>Caption then begin
     //debugln(['TAnchorDockHostSite.UpdateDockCaption Caption="',Caption,'" NewCaption="',NewCaption,'" HasParent=',Parent<>nil]);
     if Parent is TAnchorDockHostSite then
@@ -7629,15 +7625,15 @@ begin
   Result:=TAnchorDockHostSite(Controls[0]);
 end;
 
-procedure DrawFrame3DHeader(Canvas: TCanvas; Style: TADHeaderStyleDesc; r: TRect;
-  Horizontal: boolean; Focused: boolean);
+procedure DrawFrame3DHeader(Canvas: TCanvas; {%H-}Style: TADHeaderStyleDesc; r: TRect;
+  {%H-}Horizontal: boolean; {%H-}Focused: boolean);
 begin
   Canvas.Frame3d(r,2,bvLowered);
   Canvas.Frame3d(r,4,bvRaised);
 end;
 
-procedure DrawFrameLine(Canvas: TCanvas; Style: TADHeaderStyleDesc; r: TRect;
-  Horizontal: boolean; Focused: boolean);
+procedure DrawFrameLine(Canvas: TCanvas; {%H-}Style: TADHeaderStyleDesc; r: TRect;
+  Horizontal: boolean; {%H-}Focused: boolean);
 var
   Center:integer;
 begin
@@ -7658,8 +7654,8 @@ begin
   end;
 end;
 
-procedure DrawFrameLines(Canvas: TCanvas; Style: TADHeaderStyleDesc; r: TRect;
-  Horizontal: boolean; Focused: boolean);
+procedure DrawFrameLines(Canvas: TCanvas; {%H-}Style: TADHeaderStyleDesc; r: TRect;
+  Horizontal: boolean; {%H-}Focused: boolean);
 var
   lx,ly:integer;
 begin
@@ -7684,8 +7680,8 @@ begin
   DrawEdge(Canvas.Handle,r, BDR_RAISEDINNER, BF_RECT );
 end;
 
-procedure DrawFramePoints(Canvas: TCanvas; Style: TADHeaderStyleDesc; r: TRect;
-  Horizontal: boolean; Focused: boolean);
+procedure DrawFramePoints(Canvas: TCanvas; {%H-}Style: TADHeaderStyleDesc; r: TRect;
+  Horizontal: boolean; {%H-}Focused: boolean);
 var
   lx,ly,d,lt,lb,lm:integer;
 begin
@@ -7718,8 +7714,8 @@ begin
   end;
 end;
 
-procedure DrawFrameThemedCaption(Canvas: TCanvas; Style: TADHeaderStyleDesc; r: TRect;
-  Horizontal: boolean; Focused: boolean);
+procedure DrawFrameThemedCaption(Canvas: TCanvas; {%H-}Style: TADHeaderStyleDesc; r: TRect;
+  {%H-}Horizontal: boolean; Focused: boolean);
 var
   ted:TThemedElementDetails;
 begin
@@ -7738,8 +7734,8 @@ begin
   ThemeServices.DrawElement(Canvas.Handle,ted, r);
 end;
 
-procedure DrawFrameThemedButton(Canvas: TCanvas; Style: TADHeaderStyleDesc; r: TRect;
-  Horizontal: boolean; Focused: boolean);
+procedure DrawFrameThemedButton(Canvas: TCanvas; {%H-}Style: TADHeaderStyleDesc; r: TRect;
+  {%H-}Horizontal: boolean; Focused: boolean);
 var
   ted:TThemedElementDetails;
 begin
