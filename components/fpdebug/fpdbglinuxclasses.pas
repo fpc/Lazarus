@@ -909,7 +909,7 @@ begin
   end;
 
   // check for pending events in other threads
-  for ThreadToContinue1 in FThreadMap do begin
+  for TDbgThread(ThreadToContinue) in FThreadMap do begin
     if (ThreadToContinue <> AThread) and (not ThreadToContinue.FIsInInternalPause) and
        (ThreadToContinue.FExceptionSignal <> 0)
     then
