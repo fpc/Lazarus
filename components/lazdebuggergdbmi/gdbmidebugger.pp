@@ -11862,6 +11862,7 @@ class operator TGDBMIInternalAddrBreakPointList.TGDBMIInternalAddrBreakPointList
 begin
   raise Exception.Create(''); // should not get here
   c := false;
+  if a=b then ;
 //  c := (a.FId = b.FId) and (a.FAddr = b.FAddr);
 end;
 
