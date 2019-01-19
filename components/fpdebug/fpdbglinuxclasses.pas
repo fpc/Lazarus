@@ -883,8 +883,6 @@ function TDbgLinuxProcess.Continue(AProcess: TDbgProcess; AThread: TDbgThread; S
   end;
 
 var
-  e: integer;
-  Iterator: TMapIterator;
   ThreadToContinue: TDbgLinuxThread;
 begin
   // If the thread is at a breakpoint, then it must be singlestepped now, so the breakpoint can be restored
@@ -993,7 +991,6 @@ function TDbgLinuxProcess.AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent;
 //var
 //  NewThreadID: culong;
 var
-  Iterator: TMapIterator;
   ThreadToPause: TDbgLinuxThread;
   PauseWaitCount: Integer;
   PID: THandle;
