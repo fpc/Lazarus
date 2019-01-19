@@ -1,38 +1,48 @@
 object Form1: TForm1
   Left = 336
-  Height = 630
+  Height = 554
   Top = 148
-  Width = 620
+  Width = 566
   Caption = 'Form1'
-  ClientHeight = 630
-  ClientWidth = 620
-  LCLVersion = '0.9.31'
+  ClientHeight = 554
+  ClientWidth = 566
+  LCLVersion = '2.1.0.0'
   object PageControl1: TPageControl
     Left = 0
-    Height = 630
+    Height = 554
     Top = 0
-    Width = 620
-    ActivePage = tsLink
+    Width = 566
+    ActivePage = tsTransform
     Align = alClient
-    TabIndex = 0
+    TabIndex = 1
     TabOrder = 0
     object tsLink: TTabSheet
       Caption = 'Link'
-      ClientHeight = 604
-      ClientWidth = 612
+      ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+      ChildSizing.EnlargeVertical = crsHomogenousChildResize
+      ChildSizing.ShrinkHorizontal = crsHomogenousChildResize
+      ChildSizing.ShrinkVertical = crsHomogenousChildResize
+      ChildSizing.Layout = cclLeftToRightThenTopToBottom
+      ChildSizing.ControlsPerLine = 1
+      ClientHeight = 526
+      ClientWidth = 558
       object chLink1: TChart
         Left = 0
-        Height = 200
+        Height = 176
         Top = 0
-        Width = 612
+        Width = 558
         AxisList = <        
           item
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
             Title.LabelFont.Orientation = 900
+            Title.LabelBrush.Style = bsClear
           end        
           item
             Alignment = calBottom
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
+            Title.LabelBrush.Style = bsClear
           end>
         Foot.Brush.Color = clBtnFace
         Foot.Font.Color = clBlue
@@ -41,8 +51,7 @@ object Form1: TForm1
         Title.Text.Strings = (
           'TAChart'
         )
-        Align = alTop
-        ParentColor = False
+        Color = clDefault
         object chLink1LineSeries1: TLineSeries
           LinePen.Color = clNavy
           LinePen.Width = 2
@@ -51,17 +60,21 @@ object Form1: TForm1
       end
       object chLink2: TChart
         Left = 0
-        Height = 200
-        Top = 200
-        Width = 612
+        Height = 176
+        Top = 176
+        Width = 558
         AxisList = <        
           item
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
             Title.LabelFont.Orientation = 900
+            Title.LabelBrush.Style = bsClear
           end        
           item
             Alignment = calBottom
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
+            Title.LabelBrush.Style = bsClear
           end>
         Foot.Brush.Color = clBtnFace
         Foot.Font.Color = clBlue
@@ -70,8 +83,7 @@ object Form1: TForm1
         Title.Text.Strings = (
           'TAChart'
         )
-        Align = alTop
-        ParentColor = False
+        Color = clDefault
         object chLink2LineSeries1: TLineSeries
           LinePen.Color = clNavy
           LinePen.Width = 2
@@ -80,17 +92,21 @@ object Form1: TForm1
       end
       object chLink3: TChart
         Left = 0
-        Height = 204
-        Top = 400
-        Width = 612
+        Height = 174
+        Top = 352
+        Width = 558
         AxisList = <        
           item
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
             Title.LabelFont.Orientation = 900
+            Title.LabelBrush.Style = bsClear
           end        
           item
             Alignment = calBottom
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
+            Title.LabelBrush.Style = bsClear
           end>
         Foot.Brush.Color = clBtnFace
         Foot.Font.Color = clBlue
@@ -99,8 +115,7 @@ object Form1: TForm1
         Title.Text.Strings = (
           'TAChart'
         )
-        Align = alClient
-        ParentColor = False
+        Color = clDefault
         object chLink3LineSeries1: TLineSeries
           LinePen.Color = clNavy
           LinePen.Width = 2
@@ -110,42 +125,50 @@ object Form1: TForm1
     end
     object tsTransform: TTabSheet
       Caption = 'Transform'
-      ClientHeight = 604
-      ClientWidth = 612
+      ClientHeight = 526
+      ClientWidth = 558
       object chTransform: TChart
         Left = 0
-        Height = 604
+        Height = 526
         Top = 0
-        Width = 612
+        Width = 558
         AxisList = <        
           item
             Group = 1
+            Marks.LabelBrush.Style = bsClear
             Marks.Range.Max = 50
             Marks.Range.UseMax = True
             Marks.Range.UseMin = True
             Minors = <>
             Title.LabelFont.Orientation = 900
+            Title.LabelBrush.Style = bsClear
             Transformations = catAuto1
           end        
           item
             Group = 1
+            Marks.LabelBrush.Style = bsClear
             Marks.Range.Max = 50
             Marks.Range.UseMax = True
             Marks.Range.UseMin = True
             Minors = <>
+            Title.LabelBrush.Style = bsClear
             Transformations = catAuto2
           end        
           item
             Group = 1
+            Marks.LabelBrush.Style = bsClear
             Marks.Range.Max = 50
             Marks.Range.UseMax = True
             Marks.Range.UseMin = True
             Minors = <>
+            Title.LabelBrush.Style = bsClear
             Transformations = catAuto3
           end        
           item
             Alignment = calBottom
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
+            Title.LabelBrush.Style = bsClear
           end>
         Foot.Brush.Color = clBtnFace
         Foot.Font.Color = clBlue
@@ -155,7 +178,7 @@ object Form1: TForm1
           'TAChart'
         )
         Align = alClient
-        ParentColor = False
+        Color = clDefault
         object chTransformLineSeries1: TLineSeries
           AxisIndexY = 0
           LinePen.Color = clNavy
