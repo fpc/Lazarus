@@ -462,7 +462,7 @@ end;
 function TCustomChartSeries.GetGraphBounds: TDoubleRect;
 begin
   Result := EmptyExtent;
-  GetBounds(Result);
+  if Active then GetBounds(Result);
   with Result do begin
     UpdateBoundsByAxisRange(FChart.AxisList, AxisIndexX, a.X, b.X);
     UpdateBoundsByAxisRange(FChart.AxisList, AxisIndexY, a.Y, b.Y);

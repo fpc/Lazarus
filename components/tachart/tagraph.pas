@@ -1178,7 +1178,6 @@ begin
 
   Result := EmptyExtent;
   for s in Series do begin
-    if not s.Active then continue;
     try
       JoinBounds(s.GetGraphBounds);
     except
