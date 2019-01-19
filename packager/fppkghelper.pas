@@ -11,9 +11,7 @@ uses
   pkgFppkg,
   {$ENDIF VER3_0}
   fprepos,
-  Dialogs,
-  IDEDialogs,
-  LazarusIDEStrConsts;
+  Dialogs;
 
 type
 
@@ -135,7 +133,9 @@ var
   Repository: TFPRepository;
 {$ENDIF VER3_0}
 begin
-{$IFNDEF VER3_0}
+{$IFDEF VER3_0}
+  if AList=nil then ;
+{$ELSE}
   if not Assigned(FFPpkg) then
     Exit;
   for I := 0 to FFPpkg.RepositoryList.Count -1 do
@@ -159,7 +159,10 @@ var
   i: Integer;
 {$ENDIF VER3_0}
 begin
-{$IFNDEF VER3_0}
+{$IFDEF VER3_0}
+  if PackageName='' then ;
+  Result := '';
+{$ELSE}
   if not Assigned(FFPpkg) then
     begin
     Result := '';
@@ -190,8 +193,6 @@ begin
     // be installed into, and use the corresponding packagestructure.
     Result := '';
     end;
-{$ELSE }
-  Result := '';
 {$ENDIF VER3_0}
 end;
 
@@ -209,6 +210,7 @@ begin
   Result := [];
   {$ELSE}
   SetLength(Result, 0);
+  if PackageName='' then ;
   {$ENDIF FPC_FULLVERSION>30100}
 
   {$IF FPC_FULLVERSION>30100}
