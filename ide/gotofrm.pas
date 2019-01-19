@@ -36,6 +36,8 @@ type
     ButtonPanel1: TButtonPanel;
     Label1: TLabel;
     Edit1: TEdit;
+    procedure Edit1Change(Sender: TObject);
+    procedure Edit1KeyPress(Sender: TObject; var Key: char);
   public
     constructor Create(AOwner: TComponent); override;
     procedure DoShow; override;
@@ -47,6 +49,19 @@ implementation
 
 { TfrmGoto }
 
+procedure TfrmGoto.Edit1KeyPress(Sender: TObject; var Key: char);
+begin
+  if not (UpCase(Key) in [#8,'0'..'9']) then
+    Key:=#0;
+end;
+
+procedure TfrmGoto.Edit1Change(Sender: TObject);
+var
+  L: Integer;
+begin
+  ButtonPanel1.OKButton.Enabled := TryStrToInt(Edit1.Text,L);
+end;
+
 constructor TfrmGoto.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -56,12 +71,14 @@ begin
   ButtonPanel1.OKButton.Caption:=lisMenuOk;
   ButtonPanel1.CancelButton.Caption:=lisCancel;
   Edit1.Caption := '';
+  Edit1.MaxLength := 10;  //enough for MaxLongInt
 end;
 
 procedure TfrmGoto.DoShow;
 begin
   Edit1.SelectAll;
   Edit1.SetFocus;
+  Edit1Change(nil);
   inherited DoShow;
 end;
 
