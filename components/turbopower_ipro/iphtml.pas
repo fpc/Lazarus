@@ -916,7 +916,7 @@ type
     FSrc: string;
     FWidth: TIpHtmlLength;
     FFrame : TIpHtmlFrame;
-    procedure SetAlign(const Value: TIpHtmlAlign); overload;
+    procedure SetAlign(const Value: TIpHtmlAlign); override;
     procedure SetFrameBorder(const Value: Integer);
     procedure SetMarginHeight(const Value: Integer);
     procedure SetMarginWidth(const Value: Integer);
