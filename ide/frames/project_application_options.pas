@@ -10,7 +10,7 @@ uses
   FileUtil,
   // LCL
   LCLProc, LCLType, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls, Buttons,
-  ComCtrls, ExtDlgs, LCLStrConsts,
+  ComCtrls, ExtDlgs,
   // LazControls
   DividerBevel,
   // IdeIntf
