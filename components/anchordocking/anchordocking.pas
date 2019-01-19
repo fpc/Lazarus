@@ -3483,7 +3483,11 @@ begin
     EnableAllAutoSizing;
   end;
   {$IFDEF VerboseAnchorDockRestore}
-  DebugWriteChildAnchors(Application.MainForm,true,false);
+  if Assigned(Application.MainForm) then
+    DebugWriteChildAnchors(Application.MainForm,true,false)
+  else
+  if (ControlCount>0) and (Controls[0] is TWinControl) then
+    DebugWriteChildAnchors(TWinControl(Controls[0]),true,false);
   {$ENDIF}
   Result:=true;
 end;
