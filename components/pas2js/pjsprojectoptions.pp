@@ -277,6 +277,7 @@ Var
   URL : String;
 
 begin
+  if AOptions=nil then ;
   PRJ:=LazarusIDE.ActiveProject;
   HTMLIdx:=FillFilesCombo(PRJ);
   CBWebProject.Checked:=PRJ.CustomData[PJSProjectWebBrowser]='1';
@@ -309,6 +310,7 @@ Var
   end;
 
 begin
+  if AOptions=nil then ;
   PRJ:=LazarusIDE.ActiveProject;
   // Clear everything
   With PRJ.CustomData do
