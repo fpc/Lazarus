@@ -599,7 +599,11 @@ end;
 procedure TCocoaCustomControl.mouseDragged(event: NSEvent);
 begin
   if not Assigned(callback) or not callback.MouseMove(event) then
-    inherited mouseDragged(event);
+    // calling inherited causes the drag event to be passed to the
+    // parent controls
+
+    //inherited mouseDragged(event);
+    ;
 end;
 
 procedure TCocoaCustomControl.mouseEntered(event: NSEvent);
