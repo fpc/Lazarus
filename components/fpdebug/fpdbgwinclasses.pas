@@ -78,16 +78,6 @@ type
     property Process;
   end;
 
-
-  { TDbgWinBreakpoint }
-
-  TDbgWinBreakpointEvent = procedure(const ASender: TFpInternalBreakpoint; const AContext: TContext) of object;
-  TDbgWinBreakpoint = class(TFpInternalBreakpoint)
-  public
-    procedure SetBreak; override;
-    procedure ResetBreak; override;
-  end;
-
   { TDbgWinProcess }
 
   TDbgWinProcess = class(TDbgProcess)
@@ -101,6 +91,7 @@ type
     function GetProcFilename(AProcess: TDbgProcess; lpImageName: LPVOID; fUnicode: word; hFile: handle): string;
     procedure LogLastError;
   protected
+    procedure AfterChangingInstructionCode(const ALocation: TDBGPtr); override;
     function GetHandle: THandle; override;
     function GetLastEventProcessIdentifier: THandle; override;
     procedure InitializeLoaders; override;
@@ -157,13 +148,19 @@ const
 procedure RegisterDbgClasses;
 begin
   OSDbgClasses.DbgThreadClass:=TDbgWinThread;
-  OSDbgClasses.DbgBreakpointClass:=TDbgWinBreakpoint;
+  OSDbgClasses.DbgBreakpointClass:=TFpInternalBreakpoint;
   OSDbgClasses.DbgProcessClass:=TDbgWinProcess;
 end;
 
 procedure TDbgWinProcess.LogLastError;
 begin
   log('FpDbg-ERROR: %s', [GetLastErrorText], dllDebug);
+end;
+
+procedure TDbgWinProcess.AfterChangingInstructionCode(const ALocation: TDBGPtr);
+begin
+  inherited AfterChangingInstructionCode(ALocation);
+  FlushInstructionCache(Handle, Pointer(PtrUInt(ALocation)), 1);
 end;
 
 function QueryFullProcessImageName(hProcess:HANDLE; dwFlags: DWord; lpExeName:LPWSTR; var lpdwSize:DWORD):BOOL; stdcall; external 'kernel32' name 'QueryFullProcessImageNameW';
@@ -1003,26 +1000,6 @@ begin
   then FSymInstances.Remove(Lib);
   FLibMap.Delete(ID);
   Lib.Free;
-end;
-
-{ TDbgWinBreakpoint }
-
-procedure TDbgWinBreakpoint.SetBreak;
-var
-  a: TDBGPtr;
-begin
-  inherited;
-  for a in Location do
-    FlushInstructionCache(Process.Handle, Pointer(PtrUInt(a)), 1);
-end;
-
-procedure TDbgWinBreakpoint.ResetBreak;
-var
-  a: TDBGPtr;
-begin
-  inherited;
-  for a in Location do
-    FlushInstructionCache(Process.Handle, Pointer(PtrUInt(a)), 1);
 end;
 
 { TDbgWinThread }

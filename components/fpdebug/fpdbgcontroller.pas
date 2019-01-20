@@ -807,6 +807,8 @@ begin
     end;
     if not FCurrentProcess.WaitForDebugEvent(AProcessIdentifier, AThreadIdentifier) then Continue;
 
+    FCurrentProcess.RestoreTempBreakInstructionCodes;
+
     (* Do not change CurrentProcess/Thread,
        unless the debugger can actually controll/debug those processes
        - If FCurrentProcess is not set to FMainProcess then Pause will fail
