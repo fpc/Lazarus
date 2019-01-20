@@ -386,7 +386,7 @@ type
     procedure ClearSelection; //override;
     property CharCase: TEditCharCase read FCharCase write SetCharCase default ecNormal;
     property DroppedDown: Boolean read GetDroppedDown write SetDroppedDown;
-    property DroppingDown: Boolean read FDroppingDown write FDroppingDown;
+    property DroppingDown: Boolean read FDroppingDown write FDroppingDown; deprecated 'Will be removed in 2.2';
     procedure SelectAll;
     property AutoComplete: boolean
       read GetAutoComplete write SetAutoComplete default False;
