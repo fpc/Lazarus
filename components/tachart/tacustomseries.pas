@@ -1427,7 +1427,8 @@ begin
     lmpNegative: isNeg := true;
     lmpInside: isNeg := Source[AIndex]^.Y >= ref;
   end;
-  if ParentChart.IsRightToLeft and IsRotated then isNeg := not IsNeg;
+  if isRotated and (ParentChart.IsRightToLeft xor GetAxisY.Inverted) then
+    isNeg := not isNeg;
   Result := DIR[IsRotated, isNeg];
 end;
 
