@@ -583,10 +583,10 @@ var
 begin
   rX.Init(
     BottomAxis, FClipRect.Left, FClipRect.Right, AMargin.Left, -AMargin.Right,
-    @FCurrentExtent.a.X, @FCurrentExtent.b.X);
+    FMargins.Left, FMargins.Right, @FCurrentExtent.a.X, @FCurrentExtent.b.X);
   rY.Init(
     LeftAxis, FClipRect.Bottom, FClipRect.Top, -AMargin.Bottom, AMargin.Top,
-    @FCurrentExtent.a.Y, @FCurrentExtent.b.Y);
+    FMargins.Bottom, FMargins.Top, @FCurrentExtent.a.Y, @FCurrentExtent.b.Y);
   FScale.X := rX.CalcScale(1);
   FScale.Y := rY.CalcScale(-1);
   if Proportional then begin
