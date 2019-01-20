@@ -296,7 +296,6 @@ type
     function GetDockPages(Index: integer): TAnchorDockPage;
   protected
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X,Y: Integer); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure PopupMenuPopup(Sender: TObject); virtual;
     procedure CloseButtonClick(Sender: TObject); virtual;
     procedure MoveLeftButtonClick(Sender: TObject); virtual;
@@ -7437,14 +7436,12 @@ begin
       DragManager.DragStart(Site,false,DockMaster.DragTreshold);
     end;
   end;
-end;
-
-procedure TAnchorDockPageControl.MouseUp(Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
-begin
-  inherited MouseUp(Button, Shift, X, Y);
-  if (Button=mbRight) then
-    TabIndex:=IndexOfPageAt(X,Y);
+  if (Button = mbRight) then
+  begin
+    //select on right click
+    if ATabIndex>=0 then
+      PageIndex:=ATabIndex;
+  end;
 end;
 
 procedure TAnchorDockPageControl.PopupMenuPopup(Sender: TObject);
