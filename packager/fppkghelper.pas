@@ -8,8 +8,10 @@ uses
   Classes,
   SysUtils,
   {$IFNDEF VER3_0}
+  IDEDialogs,
   pkgFppkg,
-  {$ENDIF VER3_0}
+  LazarusIDEStrConsts,
+  {$ENDIF}
   fprepos,
   Dialogs;
 
@@ -49,7 +51,10 @@ var
 { TFppkgHelper }
 
 constructor TFppkgHelper.Create;
-{$IFNDEF VER3_0}
+{$IFDEF VER3_0}
+begin
+end;
+{$ELSE}
 var
   FPpkg: TpkgFPpkg;
 begin
@@ -76,10 +81,6 @@ begin
     FPpkg.Free;
   end;
 end;
-{$ELSE}
-begin
-
-end;
 {$ENDIF VER3_0}
 
 destructor TFppkgHelper.Destroy;
@@ -99,7 +100,9 @@ end;
 
 function TFppkgHelper.HasPackage(const PackageName: string): Boolean;
 begin
-{$IFNDEF VER3_0}
+{$IFDEF VER3_0}
+  Result := HasFPCPackagesOnly(PackageName);
+{$ELSE }
   if IsProperlyConfigured() then
     begin
     Result :=
@@ -121,8 +124,6 @@ begin
     end
   else
     Result := HasFPCPackagesOnly(PackageName);
-{$ELSE }
-  Result := HasFPCPackagesOnly(PackageName);
 {$ENDIF VER3_0}
 end;
 
