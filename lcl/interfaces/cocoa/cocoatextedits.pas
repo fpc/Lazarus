@@ -155,7 +155,7 @@ type
     // see TCocoaWSCustomEdit.SetReadOnly
     goingReadOnly: Boolean;
     function lclGetCallback: ICommonCallback; override;
-    function becomeFirstResponder: Boolean; override;
+    function becomeFirstResponder: LCLObjCBoolean; override;
     // mouse
     procedure keyDown(event: NSEvent); override;
     procedure mouseDown(event: NSEvent); override;
@@ -619,7 +619,7 @@ begin
   else Result := nil;
 end;
 
-function TCocoaFieldEditor.becomeFirstResponder: Boolean;
+function TCocoaFieldEditor.becomeFirstResponder: LCLObjCBoolean;
 begin
   if goingReadOnly then Result := false
   else Result:=inherited becomeFirstResponder;
