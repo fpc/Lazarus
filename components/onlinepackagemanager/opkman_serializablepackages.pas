@@ -1150,6 +1150,7 @@ begin
       if MetaPkg <> nil then
       begin
         HasUpdate := False;
+        MetaPkg.DownloadZipURL := FXML.GetValue(Path + 'DownloadZipURL', '');
         MetaPkg.DisableInOPM := FXML.GetValue(Path + 'DisableInOPM', False);
         MetaPkg.Rating := FXML.GetValue(Path + 'Rating', 0);
         LazarusPkgCount := FXML.GetValue(Path + 'Count', 0);
