@@ -96,7 +96,7 @@ const
     {$define Gtk}
   {$endif}
 
-  {$if defined(Gtk)}
+  {$if defined(Gtk) or defined(LCLCocoa)}
     {$define ManualClipNeeded}
   {$endif}
 
@@ -4744,6 +4744,29 @@ begin
   FormatEtc.tymed := tymed;
   InternalClipboardFormats.Add(Description, TreeClass, Priority, FormatEtc);
 end;
+
+//----------------- compatibility functions ----------------------------------------------------------------------------
+
+// ExcludeClipRect is buggy in Cocoa
+// https://github.com/blikblum/VirtualTreeView-Lazarus/issues/8
+// https://bugs.freepascal.org/view.php?id=34196
+
+{$ifdef LCLCocoa}
+function ExcludeClipRect(dc: hdc; Left, Top, Right, Bottom : Integer) : Integer;
+begin
+  Result := 0;
+end;
+{$endif}
+
+// LCLIntf.BitBlt is not compatible with windows.BitBlt
+// The former takes into account the alpha channel while the later not
+
+{$if not defined(USE_DELPHICOMPAT) and defined(LCLWin)}
+function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean;
+begin
+  Result := windows.BitBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Rop);
+end;
+{$endif}
 
 //----------------- utility functions ----------------------------------------------------------------------------------
 
