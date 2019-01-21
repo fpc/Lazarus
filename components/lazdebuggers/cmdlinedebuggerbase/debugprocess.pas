@@ -25,8 +25,8 @@ unit DebugProcess;
 
 {$mode objfpc}{$H+}
 
-{$DEFINE DBG_VERBOSE}
-{$DEFINE DBG_VERBOSE_FULL_DATA}
+{ $DEFINE DBG_VERBOSE}
+{ $DEFINE DBG_VERBOSE_FULL_DATA}
 
 {$IFDEF MSWindows} // optional gtk
   {$DEFINE NATIVE_ASYNC_PROCESS}
