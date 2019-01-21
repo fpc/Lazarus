@@ -7507,12 +7507,11 @@ end;
  ------------------------------------------------------------------------------}
 function RequestSelectionData(ClipboardWidget: PGtkWidget;
   ClipboardType: TClipboardType; FormatID: PtrUInt): TGtkSelectionData;
-  
 var
-  TimeID: cardinal;
-  c: PClipboardEventData;
-  Atom: TGdkAtom;
   StartTime: TDateTime;
+  TimeID: cardinal;
+  EventData: PClipboardEventData;
+  TypeAtom: TGdkAtom;
 begin
   {$IFDEF DEBUG_CLIPBOARD}
   DebugLn('[RequestSelectionData] FormatID=',dbgs(FormatID));
@@ -7531,24 +7530,25 @@ begin
         Exit; { Previous request timed out, so don't wait for another timeout period }
     end;
   end;
-  New(c);
-  FillChar(c^,SizeOf(TClipboardEventData),0);
+  New(EventData);
+  FillChar(EventData^,SizeOf(TClipboardEventData),0);
   TimeID:= gdk_event_get_time(gtk_get_current_event);
-             // IMPORTANT: To retrieve data from xterm or kde applications
-             //            the time id must be 0 or event^.time
-  c^.TimeID:=TimeID;
-  ClipboardSelectionData.Add(c);
+  // IMPORTANT: To retrieve data from xterm or kde applications the time id must be 0 or event^.time
+  EventData^.TimeID:=TimeID;
+  ClipboardSelectionData.Add(EventData);
   try
-    Atom := ClipboardTypeAtoms[ClipboardType];
+    TypeAtom := ClipboardTypeAtoms[ClipboardType];
     {$IFDEF DEBUG_CLIPBOARD}
     DebugLn('[RequestSelectionData] TimeID=',dbgs(TimeID),' Type=',GdkAtomToStr(Atom),' FormatID=',GdkAtomToStr(FormatID));
     {$ENDIF}
-    if gtk_selection_convert(ClipboardWidget,Atom,FormatID,TimeID) <> GdkFalse then
-      if gtk_clipboard_wait_is_text_available(gtk_clipboard_get(Atom)) then
-        Result:=c^.Data;
+    if gtk_selection_convert(ClipboardWidget,TypeAtom,FormatID,TimeID) <> GdkFalse then
+    begin
+      gtk_clipboard_wait_for_contents(gtk_clipboard_get(TypeAtom), FormatID);
+      Result:=EventData^.Data;
+    end;
   finally
-    ClipboardSelectionData.Remove(c);
-    Dispose(c);
+    ClipboardSelectionData.Remove(EventData);
+    Dispose(EventData);
   end;
 end;
 
