@@ -178,18 +178,27 @@ function IsMasterPoName(const Fn: String): Boolean;
 //Returns True if Fn is like '[Path/To/]somename.po'
 var
   Ext: String;
-  FnOnly: String;
+  FnOnly, Lng: String;
   IsInValidFn: Boolean;
 begin
   FnOnly := ExtractFileNameOnly(Fn);
-  //check if filename is like 'af_ZA.po', which is an invalid name for a master po-file
-  //a bit crude, but will do now (at least for Lazarus)
-  IsInValidFn := MatchesMaskList(FnOnly, '??;??_??',';',False);
+  //If the filename contains extension separator, extract the language part and
+  //check if it seems correct, otherwise just check if the filename is like 'af_ZA.po',
+  //in both cases it is an invalid name for a master po-file.
+  //This method of checking allows to properly detect master files with names like laz.test.po.
+  //The check is a bit crude, but will do now (at least for Lazarus).
+  if Pos(ExtensionSeparator, FnOnly) <> 0 then
+  begin
+    Lng := ExtractFileExt(FnOnly);
+    Lng := Copy(Lng, 2, Length(Lng)-1);
+  end
+  else
+    Lng := FnOnly;
+  IsInValidFn := MatchesMaskList(Lng, '??;??_??',';',False);
   Ext := ExtractFileExt(Fn);
   Result := not IsInValidFn and
             (Length(FnOnly) > 0) and
-            (CompareText(Ext, ExtensionSeparator + 'po') = 0) and
-            (Pos(ExtensionSeparator, FnOnly) = 0);
+            (CompareText(Ext, ExtensionSeparator + 'po') = 0);
 end;
 
 function ExtractMasterNameFromChildName(const AChildName: String): String;
