@@ -29,6 +29,7 @@ object DbgTestControlForm: TDbgTestControlForm
       Top = 1
       Width = 76
       Caption = 'Write Logs'
+      OnChange = CheckWriteLogsChange
       TabOrder = 0
     end
     object Label1: TLabel
@@ -53,6 +54,7 @@ object DbgTestControlForm: TDbgTestControlForm
       BorderSpacing.Left = 10
       Caption = 'Write Logs On Error'
       Checked = True
+      OnChange = CheckWriteLogsChange
       State = cbChecked
       TabOrder = 1
     end

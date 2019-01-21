@@ -48,10 +48,12 @@ type
     procedure btnGdbNoneClick(Sender: TObject);
     procedure btnTestAllClick(Sender: TObject);
     procedure btnTestNoneClick(Sender: TObject);
+    procedure CheckWriteLogsChange(Sender: TObject);
     procedure chkTestsMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
   private
-
+    FWriteLogValCache: TWriteLogConfig;
+    FWriteLogIsCached: Boolean;
   public
     procedure DbgShow(Data: PtrInt);
   end;
@@ -145,11 +147,18 @@ end;
 
 function GetWriteLog: TWriteLogConfig;
 begin
+  if DbgTestControlForm.FWriteLogIsCached then begin
+    Result := DbgTestControlForm.FWriteLogValCache;
+    exit;
+  end;
   Result := wlNever;
   if DbgTestControlForm.WriteLogsOnErr.Checked then
     Result := wlOnError;
   if DbgTestControlForm.CheckWriteLogs.Checked then
     Result := wlAlways;
+
+  DbgTestControlForm.FWriteLogValCache := Result;
+  DbgTestControlForm.FWriteLogIsCached := True;
 end;
 
 procedure RegisterCompiler(name: string);
@@ -241,6 +250,11 @@ var
 begin
   for i := 0 to DbgTestControlForm.chkTests.Items.Count - 1 do
     DbgTestControlForm.chkTests.Items[i].StateIndex := ord(tsUnChecked);
+end;
+
+procedure TDbgTestControlForm.CheckWriteLogsChange(Sender: TObject);
+begin
+  FWriteLogIsCached := False;
 end;
 
 procedure TDbgTestControlForm.DbgShow(Data: PtrInt);
