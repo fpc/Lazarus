@@ -2165,6 +2165,7 @@ components/idescout/idescout.pas svneol=native#text/plain
 components/idescout/idescoutoptions.lfm svneol=native#text/plain
 components/idescout/idescoutoptions.pas svneol=native#text/plain
 components/idescout/idescoutstrconsts.pas svneol=native#text/pascal
+components/idescout/languages/idescoutstrconsts.hu.po svneol=native#text/plain
 components/idescout/languages/idescoutstrconsts.po svneol=native#text/plain
 components/idescout/languages/idescoutstrconsts.ru.po svneol=native#text/plain
 components/idescout/regidescout.pas svneol=native#text/plain

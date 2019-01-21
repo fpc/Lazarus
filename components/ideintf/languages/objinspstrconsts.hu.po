@@ -1327,11 +1327,11 @@ msgstr "Új felbontás ..."
 
 #: objinspstrconsts.sccsiledtaddsliced
 msgid "Add sliced ..."
-msgstr ""
+msgstr "Szeletelt kép hozzáadása ..."
 
 #: objinspstrconsts.sccsiledtaddslicediconerror
 msgid "Adding sliced icons is not supported."
-msgstr ""
+msgstr "Szeletelt képek hozzáadása nincs támogatva."
 
 #: objinspstrconsts.sccsiledtadjustment
 msgid "Adjustment"
@@ -1348,7 +1348,7 @@ msgstr "Az alapértelmezett felbontás nem törölhető."
 
 #: objinspstrconsts.sccsiledtcannotslice
 msgid "Source image size must be an integer multiple of the ImageList's Width and Height."
-msgstr ""
+msgstr "A forráskép mérete az ImageList Width és Height tulajdonságának egész számú többszöröse kell legyen."
 
 #: objinspstrconsts.sccsiledtcaption
 msgid "ImageList Editor"

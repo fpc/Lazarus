@@ -574,7 +574,7 @@ msgstr "Hálózati Csomagkezelő"
 
 #: opkman_const.rsmainfrm_breturn_caption
 msgid "Return"
-msgstr ""
+msgstr "Visszatérés"
 
 #: opkman_const.rsmainfrm_cball_caption
 msgid "All/None"
@@ -631,16 +631,12 @@ msgid "Descendent"
 msgstr "Csökkenő"
 
 #: opkman_const.rsmainfrm_mifromexternalsource
-#, fuzzy
-#| msgid "From external source"
 msgid "From third party repository"
-msgstr "Külső forrásból"
+msgstr "Harmadik fél tárolójából"
 
 #: opkman_const.rsmainfrm_mifromrepository
-#, fuzzy
-#| msgid "From repository"
 msgid "From official repository"
-msgstr "Tárolóból"
+msgstr "Hivatalos tárolóból"
 
 #: opkman_const.rsmainfrm_mijsonhide
 msgid "Hide JSON"

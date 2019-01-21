@@ -2484,7 +2484,7 @@ msgstr "Körvonal (globális)"
 
 #: lazarusidestrconsts.dlgmarkupoutlinewarnnocolor
 msgid "Warning: There are no colors configured for the selected language"
-msgstr ""
+msgstr "Figyelmeztetés: Nincsenek színek beállítva a kiválasztott nyelvhez"
 
 #: lazarusidestrconsts.dlgmarkupuserdefined
 msgctxt "lazarusidestrconsts.dlgmarkupuserdefined"
@@ -2631,11 +2631,11 @@ msgstr "Legutóbbi projektek maximális száma"
 
 #: lazarusidestrconsts.dlgmiddletabcloseotherpagesmod
 msgid "Middle-click-modifier to close all other tabs"
-msgstr ""
+msgstr "Középső gomb módosítója minden más lap bezárásához"
 
 #: lazarusidestrconsts.dlgmiddletabcloserightpagesmod
 msgid "Middle-click-modifier to close tabs on the right"
-msgstr ""
+msgstr "Középső gomb módosítója a jobbra lévő lapok bezárásához"
 
 #: lazarusidestrconsts.dlgmixmethodsandproperties
 msgid "Mix methods and properties"
@@ -3273,7 +3273,7 @@ msgstr "Ikon betö&ltése"
 
 #: lazarusidestrconsts.dlgpolongpathaware
 msgid "Long path awareness"
-msgstr ""
+msgstr "Hosszú útvonal tudatosság"
 
 #: lazarusidestrconsts.dlgpomisc
 msgctxt "lazarusidestrconsts.dlgpomisc"
@@ -9541,7 +9541,7 @@ msgstr "A fájl nem szöveges típusú"
 
 #: lazarusidestrconsts.lisfilescountconvertedtotextformat
 msgid "%d files were converted to text format."
-msgstr ""
+msgstr "%d fájl szöveg formátumúvá lett alakítva."
 
 #: lazarusidestrconsts.lisfilesettings
 msgid "File Settings"
@@ -9564,10 +9564,8 @@ msgid "Files in ASCII or UTF-8 encoding"
 msgstr "ASCII vagy UTF-8 kódolású fájlok"
 
 #: lazarusidestrconsts.lisfilesisconvertedtotextformat
-#, fuzzy
-#| msgid "File %s is converted to text format."
 msgid "File %s was converted to text format."
-msgstr "A(z) %s fájl szöveg formátumúvá lett alakítva"
+msgstr "A(z) %s fájl szöveg formátumúvá lett alakítva."
 
 #: lazarusidestrconsts.lisfilesnotinasciinorutf8encoding
 msgid "Files not in ASCII nor UTF-8 encoding"
@@ -9803,10 +9801,12 @@ msgid ""
 "An error occurred during the initialization of Fppkg: %s.\n"
 "Check your Fppkg configuration and restart Lazarus to be able to use Fppkg's functionality.\n"
 msgstr ""
+"Hiba történt az Fppkg inicializálása közben: %s.\n"
+"Ellenőrizni kell az Fppkg beállításait és újraindítani a Lazarus-t az Fppkg használatához.\n"
 
 #: lazarusidestrconsts.lisfppkginitializefailedcaption
 msgid "Failed to initialize Fppkg"
-msgstr ""
+msgstr "Az Fppkg inicializálása nem sikerült"
 
 #: lazarusidestrconsts.lisframe
 msgid "Frame"
@@ -11756,7 +11756,7 @@ msgstr "Helyi változók"
 
 #: lazarusidestrconsts.lislocalsdlgcopyall
 msgid "Copy &all"
-msgstr ""
+msgstr "Összes másolása"
 
 #: lazarusidestrconsts.lislocalsdlgcopyname
 msgid "&Copy Name"
@@ -11764,7 +11764,7 @@ msgstr "Név másolása"
 
 #: lazarusidestrconsts.lislocalsdlgcopynamevalue
 msgid "Co&py Name and Value"
-msgstr ""
+msgstr "Név és érték másolása"
 
 #: lazarusidestrconsts.lislocalsdlgcopyrawvalue
 msgid "Copy &RAW Value"
@@ -13938,7 +13938,7 @@ msgstr "Nem"
 
 #: lazarusidestrconsts.lisnoautosaveactivedesktop
 msgid "'Auto save active desktop' option is turned off, you will need to save current desktop manually."
-msgstr ""
+msgstr "'Az aktív felület automatikus mentése' lehetőség ki van kapcsolva, az aktuális felületet kézzel kell menteni."
 
 #: lazarusidestrconsts.lisnobackupfiles
 msgid "No backup files"
@@ -14414,7 +14414,7 @@ msgstr "a(z) %s kimeneti könyvtára Pascal unit forráskódját tartalmazza: \"
 
 #: lazarusidestrconsts.lisoutputfilenameofproject
 msgid "Output filename of project"
-msgstr ""
+msgstr "A projekt kimeneti fájljának neve"
 
 #: lazarusidestrconsts.lisoverridelanguage
 msgid "Override language. For example --language=de. For possible values see files in the languages directory."
@@ -14676,7 +14676,7 @@ msgstr "Törölje a függőség alapértelmezett / előnyben részesített fájl
 
 #: lazarusidestrconsts.lispckeditcommonoptions
 msgid "Common"
-msgstr ""
+msgstr "Általános"
 
 #: lazarusidestrconsts.lispckeditcompileeverything
 msgid "Compile everything?"
@@ -14973,7 +14973,7 @@ msgstr "Objektum"
 
 #: lazarusidestrconsts.lispckoptspackagefileoptions
 msgid "Additional Package File Options"
-msgstr ""
+msgstr "További csomagfájl beállítások"
 
 #: lazarusidestrconsts.lispckoptspackageoptions
 msgid "Package Options"
@@ -18348,7 +18348,7 @@ msgstr "az eszköz kilépési kóddal állt le: %s. A helyi menüből további i
 
 #: lazarusidestrconsts.listoolstoppedwithexitstatususecontextmenutogetmoreinfo
 msgid "tool stopped with ExitCode 0 and ExitStatus %s. Use context menu to get more information."
-msgstr ""
+msgstr "az eszköz a következő adatokkal állt le: ExitCode 0 és ExitStatus %s. A helyi menüt használva további információk érhetők el."
 
 #: lazarusidestrconsts.listop
 msgctxt "lazarusidestrconsts.listop"
@@ -21307,15 +21307,15 @@ msgstr "Minden más lap bezárása"
 
 #: lazarusidestrconsts.uemcloseotherpagesplain
 msgid "Close All Other Pages"
-msgstr ""
+msgstr "Minden más lap bezárása"
 
 #: lazarusidestrconsts.uemcloseotherpagesright
 msgid "Close Pages on the &Right"
-msgstr ""
+msgstr "Jobbra lévő lapok bezárása"
 
 #: lazarusidestrconsts.uemcloseotherpagesrightplain
 msgid "Close Pages on the Right"
-msgstr ""
+msgstr "Jobbra lévő lapok bezárása"
 
 #: lazarusidestrconsts.uemclosepage
 msgid "&Close Page"

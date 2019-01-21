@@ -105,7 +105,7 @@ msgstr "Beállítások"
 
 #: fppkg_const.rspackagefileoptionstitle
 msgid "FPMake"
-msgstr ""
+msgstr "FPMake"
 
 #: fppkg_const.rsremotemirrorsurl
 msgid "Remote mirrors URL"

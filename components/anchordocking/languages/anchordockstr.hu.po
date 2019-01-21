@@ -17,7 +17,7 @@ msgstr "Egy elválasztó szabad oldala nem rögzíthető: Csomópont=\"%s\" Típ
 
 #: anchordockstr.adrsallowdocksitestobeminimized
 msgid "Allow dock sites to be minimized"
-msgstr ""
+msgstr "A dokkterületek legyenek minimalizálhatók"
 
 #: anchordockstr.adrsamountofpixelthemousehastodragbeforedragstarts
 msgid "Amount of pixel the mouse has to drag before drag starts"
@@ -157,7 +157,7 @@ msgstr "Egyesítés"
 
 #: anchordockstr.adrsminimize
 msgid "Minimize"
-msgstr ""
+msgstr "Minimalizálás"
 
 #: anchordockstr.adrsmissingcontrolname
 msgid "missing control name"
