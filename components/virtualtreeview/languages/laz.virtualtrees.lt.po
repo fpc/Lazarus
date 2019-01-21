@@ -12,51 +12,43 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Lokalize 2.0\n"
 
-#: virtualtrees.scannotsetuserdata
+#: laz.virtualtrees.scannotsetuserdata
 #, fuzzy
-msgctxt "virtualtrees.scannotsetuserdata"
 msgid "Cannot set initial user data because there is not enough user data space allocated."
 msgstr "Nepavyko nustatyti pradinių naudotojo duomenų, nes naudotojo duomenims priskirta nepakankamai atminties."
 
-#: virtualtrees.sclipboardfailed
+#: laz.virtualtrees.sclipboardfailed
 #, fuzzy
-msgctxt "virtualtrees.sclipboardfailed"
 msgid "Clipboard operation failed."
 msgstr "Operacija su iškarpine žlugo."
 
-#: virtualtrees.scorruptstream1
+#: laz.virtualtrees.scorruptstream1
 #, fuzzy
-msgctxt "virtualtrees.scorruptstream1"
 msgid "Stream data corrupt. A node's anchor chunk is missing."
 msgstr "Srauto duomenys sugedę. Trūksta mazgo prieraišos dalies."
 
-#: virtualtrees.scorruptstream2
+#: laz.virtualtrees.scorruptstream2
 #, fuzzy
-msgctxt "virtualtrees.scorruptstream2"
 msgid "Stream data corrupt. Unexpected data after node's end position."
 msgstr "Srauto duomenys sugedę. Mazgo gale yra duomenų, kurių nesitikėta."
 
-#: virtualtrees.sstreamtoosmall
+#: laz.virtualtrees.sstreamtoosmall
 #, fuzzy
-msgctxt "virtualtrees.sstreamtoosmall"
 msgid "Unable to load tree structure, not enough data available."
 msgstr "Nepavyko įkelti medžio struktūrą, nes nepakanka duomenų."
 
-#: virtualtrees.swrongmoveerror
+#: laz.virtualtrees.swrongmoveerror
 #, fuzzy
-msgctxt "virtualtrees.swrongmoveerror"
 msgid "Target node cannot be a child node of the node to be moved."
 msgstr "Paskirties mazgas negali būti perkeliamojo mazgo pomazgiu."
 
-#: virtualtrees.swrongstreamformat
+#: laz.virtualtrees.swrongstreamformat
 #, fuzzy
-msgctxt "virtualtrees.swrongstreamformat"
 msgid "Unable to load tree structure, the format is wrong."
 msgstr "Nepavyko įkelti medžio struktūrą, nes netinkamas formatas."
 
-#: virtualtrees.swrongstreamversion
+#: laz.virtualtrees.swrongstreamversion
 #, fuzzy
-msgctxt "virtualtrees.swrongstreamversion"
 msgid "Unable to load tree structure, the version is unknown."
 msgstr "Nepavyko įkelti medžio struktūrą, nes nežinoma laida."
 
