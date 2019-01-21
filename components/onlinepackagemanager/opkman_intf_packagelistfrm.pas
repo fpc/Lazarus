@@ -5,7 +5,7 @@ unit opkman_intf_packagelistfrm;
 interface
 
 uses
-   SysUtils, Classes, VirtualTrees,
+   SysUtils, Classes, laz.VirtualTrees,
   // LCL
   Forms, Controls, Buttons, Graphics, ExtCtrls, StdCtrls, LCLType, ButtonPanel,
   Menus,
@@ -30,9 +30,9 @@ type
     procedure spCollapseClick(Sender: TObject);
     procedure spExpandClick(Sender: TObject);
   private
-    FVST: TVirtualStringTree;
+    FVST: TLazVirtualStringTree;
     FSortCol: Integer;
-    FSortDir: VirtualTrees.TSortDirection;
+    FSortDir: laz.VirtualTrees.TSortDirection;
     procedure VSTGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
       Column: TColumnIndex; {%H-}TextType: TVSTTextType; var CellText: String);
     procedure VSTGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode;
@@ -94,7 +94,7 @@ begin
   spCollapse.Caption := '';
   spCollapse.Images := MainDM.Images;
   spCollapse.ImageIndex := IMG_COLLAPSE;
-  FVST := TVirtualStringTree.Create(nil);
+  FVST := TLazVirtualStringTree.Create(nil);
   with FVST do
   begin
     Parent := Self;
@@ -222,14 +222,14 @@ begin
       if (SortColumn = NoColumn) or (SortColumn <> HitInfo.Column) then
       begin
         SortColumn    := HitInfo.Column;
-        SortDirection := VirtualTrees.sdAscending;
+        SortDirection := laz.VirtualTrees.sdAscending;
       end
       else
       begin
-        if SortDirection = VirtualTrees.sdAscending then
-          SortDirection := VirtualTrees.sdDescending
+        if SortDirection = laz.VirtualTrees.sdAscending then
+          SortDirection := laz.VirtualTrees.sdDescending
         else
-          SortDirection := VirtualTrees.sdAscending;
+          SortDirection := laz.VirtualTrees.sdAscending;
         FSortDir := SortDirection;
       end;
       SortTree(SortColumn, SortDirection, False);

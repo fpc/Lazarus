@@ -35,7 +35,7 @@ uses
   //Interface
   LCLIntf, StdCtrls,
   //OpkMan
-  virtualtrees;
+  laz.virtualtrees;
 
 type
 

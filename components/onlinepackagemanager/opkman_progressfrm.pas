@@ -27,7 +27,7 @@ unit opkman_progressfrm;
 interface
 
 uses
-  SysUtils, Classes, VirtualTrees,
+  SysUtils, Classes, laz.VirtualTrees,
   // LCL
   Forms, Controls, Graphics, Dialogs, ComCtrls, StdCtrls, ExtCtrls, ButtonPanel,
   // OpkMan
@@ -70,7 +70,7 @@ type
     FMdlRes: TModalResult;
     FType: Integer;
     FCnt, FTotCnt: Integer;
-    FVST: TVirtualStringTree;
+    FVST: TLazVirtualStringTree;
     procedure VSTGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
       Column: TColumnIndex; {%H-}TextType: TVSTTextType; var CellText: String);
     procedure VSTGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode;
@@ -146,7 +146,7 @@ procedure TProgressFrm.FormCreate(Sender: TObject);
 begin
   if not Options.UseDefaultTheme then
     Self.Color := clBtnFace;
-  FVST := TVirtualStringTree.Create(nil);
+  FVST := TLazVirtualStringTree.Create(nil);
   with FVST do
   begin
     Parent := Self;

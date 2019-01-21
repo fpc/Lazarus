@@ -28,7 +28,7 @@ unit opkman_createrepositorypackagefrm;
 interface
 
 uses
-  Classes, SysUtils, md5, fpjson, VirtualTrees,
+  Classes, SysUtils, md5, fpjson, laz.VirtualTrees,
   // LCL
   Forms, Controls, ExtCtrls, StdCtrls, Dialogs, Graphics, Buttons, EditBtn,
   // IDEIntf
@@ -98,8 +98,8 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure spCategoriesClick(Sender: TObject);
   private
-    FVSTPackages: TVirtualStringTree;
-    FVSTPackageData: TVirtualStringTree;
+    FVSTPackages: TLazVirtualStringTree;
+    FVSTPackageData: TLazVirtualStringTree;
     FPackageZipper: TPackageZipper;
     FPackageDir: String;
     FPackageName: String;
@@ -219,7 +219,7 @@ begin
   if not Options.UseDefaultTheme then
     Self.Color := clBtnFace;
 
-  FVSTPackages := TVirtualStringTree.Create(nil);
+  FVSTPackages := TLazVirtualStringTree.Create(nil);
   with FVSTPackages do
   begin
     Parent := pnPackages;
@@ -256,7 +256,7 @@ begin
   end;
   FVSTPackages.NodeDataSize := SizeOf(TData);
 
-  FVSTPackageData := TVirtualStringTree.Create(nil);
+  FVSTPackageData := TLazVirtualStringTree.Create(nil);
   with FVSTPackageData do
   begin
     Parent := pnData;
@@ -497,7 +497,7 @@ begin
           FVSTPackages.Selected[RootNode] := True;
           CanGo := True;
         end;
-        FVSTPackages.SortTree(0, VirtualTrees.sdAscending);
+        FVSTPackages.SortTree(0, laz.VirtualTrees.sdAscending);
       end
       else
         MessageDlgEx(rsCreateRepositoryPackageFrm_NoPackage, mtInformation, [mbOk], Self);

@@ -29,7 +29,7 @@ unit opkman_mainfrm;
 interface
 
 uses
-  Classes, SysUtils, fpjson, Graphics, VirtualTrees,
+  Classes, SysUtils, fpjson, Graphics, laz.VirtualTrees,
   // LCL
   Forms, Controls, Dialogs, StdCtrls, ExtCtrls, Buttons, Menus, ComCtrls, Clipbrd,
   LCLIntf, LCLVersion, LCLProc,

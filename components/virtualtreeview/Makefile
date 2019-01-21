@@ -330,7 +330,7 @@ FPMAKE_SKIP_CONFIG=-n
 FPCFPMAKE=$(FPC)
 endif
 endif
-override PACKAGE_NAME=virtualtreeview_package
+override PACKAGE_NAME=laz.virtualtreeview_package
 override PACKAGE_VERSION=5.5.3.1
 ifndef LCL_PLATFORM
 ifeq ($(OS_TARGET),win32)
@@ -353,259 +353,259 @@ ifeq ($(OS_TARGET),darwin)
 DBG_OPTIONS=-gw
 endif
 ifeq ($(FULL_TARGET),i386-linux)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),i386-go32v2)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),i386-win32)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),i386-os2)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),i386-freebsd)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),i386-beos)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),i386-haiku)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),i386-netbsd)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),i386-solaris)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),i386-netware)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),i386-openbsd)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),i386-wdosx)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),i386-darwin)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),i386-emx)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),i386-watcom)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),i386-netwlibc)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),i386-wince)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),i386-embedded)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),i386-symbian)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),i386-nativent)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),i386-iphonesim)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),i386-android)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),i386-aros)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),m68k-linux)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),m68k-netbsd)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),m68k-amiga)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),m68k-atari)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),m68k-palmos)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),m68k-macos)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),m68k-embedded)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),powerpc-linux)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),powerpc-netbsd)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),powerpc-amiga)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),powerpc-macos)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),powerpc-darwin)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),powerpc-morphos)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),powerpc-embedded)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),powerpc-wii)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),powerpc-aix)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),sparc-linux)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),sparc-netbsd)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),sparc-solaris)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),sparc-embedded)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),x86_64-linux)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),x86_64-freebsd)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),x86_64-netbsd)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),x86_64-solaris)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),x86_64-openbsd)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),x86_64-darwin)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),x86_64-win64)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),x86_64-embedded)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),x86_64-iphonesim)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),x86_64-aros)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),x86_64-dragonfly)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),arm-linux)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),arm-netbsd)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),arm-palmos)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),arm-darwin)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),arm-wince)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),arm-gba)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),arm-nds)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),arm-embedded)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),arm-symbian)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),arm-android)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),arm-aros)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),powerpc64-linux)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),powerpc64-darwin)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),powerpc64-embedded)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),powerpc64-aix)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),avr-embedded)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),armeb-linux)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),armeb-embedded)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),mips-linux)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),mipsel-linux)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),mipsel-embedded)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),mipsel-android)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),jvm-java)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),jvm-android)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),i8086-embedded)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),i8086-msdos)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),i8086-win16)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),aarch64-linux)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),aarch64-darwin)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),wasm-wasm)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),sparc64-linux)
-override TARGET_UNITS+=virtualtreeview_package.pas
+override TARGET_UNITS+=laz.virtualtreeview_package.pas
 endif
 ifeq ($(FULL_TARGET),i386-linux)
 override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
@@ -3461,9 +3461,9 @@ include fpcmake.loc
 endif
 .PHONY: cleartarget compiled all
 cleartarget:
-	-$(DEL) $(COMPILER_UNITTARGETDIR)/virtualtreeview_package$(PPUEXT)
+	-$(DEL) $(COMPILER_UNITTARGETDIR)/laz.virtualtreeview_package$(PPUEXT)
 compiled:
-	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/virtualtreeview_package.compiled
-all: cleartarget $(COMPILER_UNITTARGETDIR) virtualtreeview_package$(PPUEXT) compiled
+	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/laz.virtualtreeview_package.compiled
+all: cleartarget $(COMPILER_UNITTARGETDIR) laz.virtualtreeview_package$(PPUEXT) compiled
 distclean: clean
 	${DELTREE} lib/*

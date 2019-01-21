@@ -155,7 +155,7 @@ For more info please visit: http://wiki.freepascal.org/Online_Package_Manager"/>
     </i18n>
     <RequiredPkgs Count="3">
       <Item1>
-        <PackageName Value="virtualtreeview_package"/>
+        <PackageName Value="laz.virtualtreeview_package"/>
       </Item1>
       <Item2>
         <PackageName Value="IDEIntf"/>

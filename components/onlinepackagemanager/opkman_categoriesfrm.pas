@@ -30,7 +30,7 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  Forms, Controls, Graphics, ExtCtrls, StdCtrls, ButtonPanel, VirtualTrees,
+  Forms, Controls, Graphics, ExtCtrls, StdCtrls, ButtonPanel, laz.VirtualTrees,
   // OpkMan
   opkman_const, opkman_common, opkman_options, opkman_maindm;
 
@@ -49,7 +49,7 @@ type
     procedure FormKeyPress(Sender: TObject; var Key: char);
     procedure lbMessageResize(Sender: TObject);
   private
-    FVST: TVirtualStringTree;
+    FVST: TLazVirtualStringTree;
     FModRes: TModalResult;
     FCategoriesCSV: String;
     FLineAdded: Boolean;
@@ -117,7 +117,7 @@ procedure TCategoriesFrm.FormCreate(Sender: TObject);
 begin
   if not Options.UseDefaultTheme then
     Self.Color := clBtnFace;
-  FVST := TVirtualStringTree.Create(nil);
+  FVST := TLazVirtualStringTree.Create(nil);
   with FVST do
   begin
     Parent := Self;
@@ -283,7 +283,7 @@ begin
     else
       Data^.FType := 0;
   end;
-  FVST.SortTree(0, VirtualTrees.sdAscending);
+  FVST.SortTree(0, laz.VirtualTrees.sdAscending);
 
   SL := TStringList.Create;
   try

@@ -30,7 +30,7 @@ unit opkman_visualtree;
 interface
 
 uses
-  Classes, SysUtils, contnrs, Math, dateutils, VirtualTrees,
+  Classes, SysUtils, contnrs, Math, dateutils, laz.VirtualTrees,
   // LCL
   Controls, Graphics, Menus, Dialogs, Forms, LCLType, Buttons,
   // IDEIntf
@@ -90,7 +90,7 @@ type
   TOnChecking = procedure(Sender: TObject; const AIsAllChecked: Boolean) of object;
   TVisualTree = class
   private
-    FVST: TVirtualStringTree;
+    FVST: TLazVirtualStringTree;
     FHoverNode: PVirtualNode;
     FHoverNodeOld: PVirtualNode;
     FHoverP: TPoint;
@@ -98,7 +98,7 @@ type
     FLink: String;
     FLinkClicked: Boolean;
     FSortCol: Integer;
-    FSortDir: VirtualTrees.TSortDirection;
+    FSortDir: laz.VirtualTrees.TSortDirection;
     FCheckingNodes: Boolean;
     FLeaving: Boolean;
     FOnChecking: TOnChecking;
@@ -169,7 +169,7 @@ type
   published
     property OnChecking: TOnChecking read FOnChecking write FOnChecking;
     property OnChecked: TNotifyEvent read FOnChecked write FOnChecked;
-    property VST: TVirtualStringTree read FVST;
+    property VST: TLazVirtualStringTree read FVST;
     property ShowHintFrm: TShowHintFrm read FShowHintFrm;
   end;
 
@@ -186,7 +186,7 @@ uses
 constructor TVisualTree.Create(const AParent: TWinControl; const AImgList: TImageList;
   APopupMenu: TPopupMenu);
 begin
-  FVST := TVirtualStringTree.Create(nil);
+  FVST := TLazVirtualStringTree.Create(nil);
   with FVST do
    begin
      Parent := AParent;
@@ -478,7 +478,7 @@ begin
      GrandChildData^.ButtonID := UniqueID;
      Data^.CommunityDescription := SerializablePackages.Items[I].CommunityDescription;;
   end;
-  FVST.SortTree(0, VirtualTrees.sdAscending);
+  FVST.SortTree(0, laz.VirtualTrees.sdAscending);
   ExpandEx;
   CollapseEx;
   RootNode := VST.GetFirst;
@@ -1595,14 +1595,14 @@ begin
       if (SortColumn = NoColumn) or (SortColumn <> HitInfo.Column) then
       begin
         SortColumn    := HitInfo.Column;
-        SortDirection := VirtualTrees.sdAscending;
+        SortDirection := laz.VirtualTrees.sdAscending;
       end
       else
       begin
-        if SortDirection = VirtualTrees.sdAscending then
-          SortDirection := VirtualTrees.sdDescending
+        if SortDirection = laz.VirtualTrees.sdAscending then
+          SortDirection := laz.VirtualTrees.sdDescending
         else
-          SortDirection := VirtualTrees.sdAscending;
+          SortDirection := laz.VirtualTrees.sdAscending;
         FSortDir := SortDirection;
       end;
       SortTree(SortColumn, SortDirection, False);

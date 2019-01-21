@@ -266,7 +266,7 @@ begin
                     if LazarusPkg.InternalVersion > LazarusPkg.InternalVersionOld then
                       LazarusPkg.InternalVersionOld := LazarusPkg.InternalVersion;
               end;
-              if IDEPackage.PackageType in [lptRunAndDesignTime, lptDesigntime] then
+              if LazarusPkg.PackageType in [lptRunAndDesignTime, lptDesigntime] then
               begin
                 DoOnPackageInstallProgress(imInstallPackage, LazarusPkg);
                 if InstallPackage then

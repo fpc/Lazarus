@@ -28,7 +28,7 @@ unit opkman_createrepositoryfrm;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, fpjson, VirtualTrees,
+  Classes, SysUtils, FileUtil, fpjson, laz.VirtualTrees,
   // LCL
   Forms, Controls, Graphics, Dialogs, ExtCtrls,
   StdCtrls, Buttons, Menus,
@@ -78,8 +78,8 @@ type
     procedure pnButtonsResize(Sender: TObject);
     procedure tmWaitTimer(Sender: TObject);
   private
-    FVSTPackages: TVirtualStringTree;
-    FVSTDetails: TVirtualStringTree;
+    FVSTPackages: TLazVirtualStringTree;
+    FVSTDetails: TLazVirtualStringTree;
     FRepository: TRepository;
     FSortDirection: TSortDirection;
     FSerializablePackages: TSerializablePackages;
@@ -181,7 +181,7 @@ begin
   ShowHideControls(0);
 
   FSerializablePackages := TSerializablePackages.Create;
-  FVSTPackages := TVirtualStringTree.Create(nil);
+  FVSTPackages := TLazVirtualStringTree.Create(nil);
   with FVSTPackages do
   begin
     NodeDataSize := SizeOf(TData);
@@ -222,7 +222,7 @@ begin
     OnFreeNode := @VSTPackagesFreeNode;
   end;
 
-  FVSTDetails := TVirtualStringTree.Create(nil);
+  FVSTDetails := TLazVirtualStringTree.Create(nil);
   with FVSTDetails do
   begin
     NodeDataSize := SizeOf(TData);
@@ -825,14 +825,14 @@ begin
       if (SortColumn = NoColumn) or (SortColumn <> HitInfo.Column) then
       begin
         SortColumn    := HitInfo.Column;
-        SortDirection := VirtualTrees.sdAscending;
+        SortDirection := laz.VirtualTrees.sdAscending;
       end
       else
       begin
-        if SortDirection = VirtualTrees.sdAscending then
-          SortDirection := VirtualTrees.sdDescending
+        if SortDirection = laz.VirtualTrees.sdAscending then
+          SortDirection := laz.VirtualTrees.sdDescending
         else
-          SortDirection := VirtualTrees.sdAscending;
+          SortDirection := laz.VirtualTrees.sdAscending;
       end;
       SortTree(SortColumn, SortDirection, False);
       FSortDirection := SortDirection;
