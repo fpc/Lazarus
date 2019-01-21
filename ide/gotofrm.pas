@@ -51,7 +51,7 @@ implementation
 
 procedure TfrmGoto.Edit1KeyPress(Sender: TObject; var Key: char);
 begin
-  if not (UpCase(Key) in [#8,'0'..'9']) then
+  if not (UpCase(Key) in [^C,^V,^X,#8,'0'..'9']) then
     Key:=#0;
 end;
 
