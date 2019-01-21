@@ -2488,7 +2488,7 @@ msgstr "Körvonal (globális)"
 
 #: lazarusidestrconsts.dlgmarkupoutlinewarnnocolor
 msgid "Warning: There are no colors configured for the selected language"
-msgstr ""
+msgstr "Figyelmeztetés: Nincsenek színek beállítva a kiválasztott nyelvhez"
 
 #: lazarusidestrconsts.dlgmarkupuserdefined
 msgctxt "lazarusidestrconsts.dlgmarkupuserdefined"
@@ -18300,7 +18300,7 @@ msgstr "az eszköz kilépési kóddal állt le: %s. A helyi menüből további i
 
 #: lazarusidestrconsts.listoolstoppedwithexitstatususecontextmenutogetmoreinfo
 msgid "tool stopped with ExitCode 0 and ExitStatus %s. Use context menu to get more information."
-msgstr ""
+msgstr "az eszköz a következő adatokkal állt le: ExitCode 0 és ExitStatus %s. A helyi menüt használva további információk érhetők el."
 
 #: lazarusidestrconsts.listop
 msgctxt "lazarusidestrconsts.listop"
