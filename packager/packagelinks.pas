@@ -399,7 +399,7 @@ procedure TLazPackageLinks.UpdateGlobalLinks;
     or (not (Filename[StartPos] in ['a'..'z','A'..'Z'])) then exit;
     inc(StartPos);
     while (StartPos<=length(Filename))
-    and (Filename[StartPos] in ['a'..'z','A'..'Z','_','0'..'9']) do
+    and (Filename[StartPos] in ['.','a'..'z','A'..'Z','_','0'..'9']) do
       inc(StartPos);
     PkgName:=lowercase(copy(Filename,1,StartPos-1));
     // parse -
