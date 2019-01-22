@@ -204,6 +204,7 @@ type
     FLogicalExtent: TDoubleRect;
     FMargins: TChartMargins;
     FMarginsExternal: TChartMargins;
+    FMinDataSpace: Integer;
     FOnAfterCustomDrawBackground: TChartAfterCustomDrawEvent;
     FOnAfterCustomDrawBackWall: TChartAfterCustomDrawEvent;
     FOnAfterDraw: TChartDrawEvent;
@@ -244,7 +245,8 @@ type
     FSavedClipRect: TRect;
     FClipRectLock: Integer;
 
-    procedure CalculateTransformationCoeffs(const AMargin: TRect);
+    procedure CalculateTransformationCoeffs(const AMargin, AChartMargins: TRect;
+      const AMinDataSpace: Integer);
     procedure DrawReticule(ADrawer: IChartDrawer);  deprecated 'Use DatapointCrosshairTool instead';
     procedure FindComponentClass(
       AReader: TReader; const AClassName: String; var AClass: TComponentClass);
@@ -271,6 +273,7 @@ type
     procedure SetLogicalExtent(const AValue: TDoubleRect);
     procedure SetMargins(AValue: TChartMargins);
     procedure SetMarginsExternal(AValue: TChartMargins);
+    procedure SetMinDataSpace(const AValue: Integer);
     procedure SetOnAfterCustomDrawBackground(AValue: TChartAfterCustomDrawEvent);
     procedure SetOnAfterCustomDrawBackWall(AValue: TChartAfterCustomDrawEvent);
     procedure SetOnAfterDraw(AValue: TChartDrawEvent);
@@ -384,6 +387,8 @@ type
     property ExtentBroadcaster: TBroadcaster read FExtentBroadcaster;
     property IsZoomed: Boolean read FIsZoomed;
     property LogicalExtent: TDoubleRect read FLogicalExtent write SetLogicalExtent;
+    property MinDataSpace: Integer
+      read FMinDataSpace write SetMinDataSpace; // default DEF_MIN_DATA_SPACE;
     property OnChartPaint: TChartPaintEvent
       read FOnChartPaint write SetOnChartPaint; experimental;
     property PrevLogicalExtent: TDoubleRect read FPrevLogicalExtent;
@@ -577,16 +582,22 @@ begin
   StyleChanged(ASeries);
 end;
 
-procedure TChart.CalculateTransformationCoeffs(const AMargin: TRect);
+procedure TChart.CalculateTransformationCoeffs(const AMargin, AChartMargins: TRect;
+  const AMinDataSpace: Integer);
 var
   rX, rY: TAxisCoeffHelper;
 begin
   rX.Init(
     BottomAxis, FClipRect.Left, FClipRect.Right, AMargin.Left, -AMargin.Right,
-    FMargins.Left, FMargins.Right, @FCurrentExtent.a.X, @FCurrentExtent.b.X);
+    AChartMargins.Left, AChartMargins.Right, AMinDataSpace,
+    (AMargin.Left <> AChartMargins.Left) or (AMargin.Right <> AChartMargins.Right),
+    @FCurrentExtent.a.X, @FCurrentExtent.b.X);
   rY.Init(
     LeftAxis, FClipRect.Bottom, FClipRect.Top, -AMargin.Bottom, AMargin.Top,
-    FMargins.Bottom, FMargins.Top, @FCurrentExtent.a.Y, @FCurrentExtent.b.Y);
+    AChartMargins.Bottom, AChartMargins.Top, AMinDataSpace,
+    (AMargin.Top <> AChartMargins.Top) or (AMargin.Bottom <> AChartMargins.Bottom),
+    @FCurrentExtent.a.Y, @FCurrentExtent.b.Y);
+
   FScale.X := rX.CalcScale(1);
   FScale.Y := rY.CalcScale(-1);
   if Proportional then begin
@@ -730,6 +741,7 @@ begin
   FExtentSizeLimit := TChartExtent.Create(Self);
   FMargins := TChartMargins.Create(Self);
   FMarginsExternal := TChartMargins.Create(Self);
+  FMinDataSpace := DEF_MIN_DATA_SPACE;
 
   if OnInitBuiltinTools <> nil then
     FBuiltinToolset := OnInitBuiltinTools(Self);
@@ -1435,34 +1447,42 @@ var
   tries: Integer;
   prevExt: TDoubleRect;
   axis: TChartAxis;
-  scaled_depth: Integer;
+  scDepth: Integer;
+  scChartMargins: TRect;
+  scMinDataSpace: Integer;
 begin
-  scaled_depth := ADrawer.Scale(Depth);
+  scDepth := ADrawer.Scale(Depth);
+  scChartMargins.Left := ADrawer.Scale(Margins.Left);
+  scChartMargins.Right := ADrawer.Scale(Margins.Right);
+  scChartMargins.Top := ADrawer.Scale(Margins.Top);
+  scChartMargins.Bottom := ADrawer.Scale(Margins.Bottom);
+  scMinDataSpace := ADrawer.Scale(FMinDataSpace);
+
   if not AxisVisible then begin
-    FClipRect.Left += scaled_depth;
-    FClipRect.Bottom -= scaled_depth;
-    CalculateTransformationCoeffs(GetMargins(ADrawer));
+    FClipRect.Left += scDepth;
+    FClipRect.Bottom -= scDepth;
+    CalculateTransformationCoeffs(GetMargins(ADrawer), scChartMargins, scMinDataSpace);
     exit;
   end;
 
   AxisList.PrepareGroups;
   for axis in AxisList do
-    axis.PrepareHelper(ADrawer, Self, @FClipRect, scaled_depth);
+    axis.PrepareHelper(ADrawer, Self, @FClipRect, scDepth);
 
   // There is a cyclic dependency: extent -> visible marks -> margins.
   // We recalculate them iteratively hoping that the process converges.
-  CalculateTransformationCoeffs(ZeroRect);
+  CalculateTransformationCoeffs(ZeroRect, scChartMargins, scMinDataSpace);
   cr := FClipRect;
   for tries := 1 to 10 do begin
-    axisMargin := AxisList.Measure(CurrentExtent, scaled_depth);
-    axisMargin[calLeft] := Max(axisMargin[calLeft], scaled_depth);
-    axisMargin[calBottom] := Max(axisMargin[calBottom], scaled_depth);
+    axisMargin := AxisList.Measure(CurrentExtent, scDepth);
+    axisMargin[calLeft] := Max(axisMargin[calLeft], scDepth);
+    axisMargin[calBottom] := Max(axisMargin[calBottom], scDepth);
     FClipRect := cr;
     for aa := Low(aa) to High(aa) do
       SideByAlignment(FClipRect, aa, -axisMargin[aa]);
     prevExt := FCurrentExtent;
     FCurrentExtent := FLogicalExtent;
-    CalculateTransformationCoeffs(GetMargins(ADrawer));
+    CalculateTransformationCoeffs(GetMargins(ADrawer), scChartMargins, scMinDataSpace);
     if prevExt = FCurrentExtent then break;
     prevExt := FCurrentExtent;
   end;
@@ -1678,6 +1698,13 @@ procedure TChart.SetMarginsExternal(AValue: TChartMargins);
 begin
   if FMarginsExternal = AValue then exit;
   FMarginsExternal.Assign(AValue);
+  StyleChanged(Self);
+end;
+
+procedure TChart.SetMinDataSpace(const AValue: Integer);
+begin
+  if FMinDataSpace = abs(AValue) then exit;
+  FMinDataSpace := abs(AValue);
   StyleChanged(Self);
 end;
 

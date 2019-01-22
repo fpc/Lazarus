@@ -251,8 +251,8 @@ type
     function CalcOffset(AScale: Double): Double;
     function CalcScale(ASign: Integer): Double;
     constructor Init(AAxis: TChartAxis; AImageLo, AImageHi: Integer;
-      AMarginLo, AMarginHi, ARequiredMarginLo, ARequiredMarginHi: Integer;
-      AMin, AMax: PDouble);
+      AMarginLo, AMarginHi, ARequiredMarginLo, ARequiredMarginHi, AMinDataSpace: Integer;
+      HasMarksInMargin: Boolean; AMin, AMax: PDouble);
     procedure UpdateMinMax(AConv: TAxisConvFunc);
   end;
 
@@ -1245,11 +1245,11 @@ begin
 end;
 
 constructor TAxisCoeffHelper.Init(AAxis: TChartAxis; AImageLo, AImageHi: Integer;
-  AMarginLo, AMarginHi, ARequiredMarginLo, ARequiredMarginHi: Integer;
-  AMin, AMax: PDouble);
-const
-  GUARANTEED_SPACE = 10;
+  AMarginLo, AMarginHi, ARequiredMarginLo, ARequiredMarginHi, AMinDataSpace: Integer;
+  HasMarksInMargin: Boolean; AMin, AMax: PDouble);
 begin
+  Assert(AAxis <> nil);
+
   FAxis := AAxis;
   FImageLo := AImageLo;
   FImageHi := AImageHi;
@@ -1258,14 +1258,16 @@ begin
   FLo := FImageLo + AMarginLo;
   FHi := FImageHi + AMarginHi;
 
-  if Assigned(AAxis) and AAxis.IsVertical then begin
-    if (FHi + GUARANTEED_SPACE >= FLo) then
-      EnsureGuaranteedSpace(FHi, FLo, FImageHi, FImageLo,
-        ARequiredMarginHi, ARequiredMarginLo, GUARANTEED_SPACE);
-  end else begin
-    if (FLo + GUARANTEED_SPACE >= FHi) then
-      EnsureGuaranteedSpace(FLo, FHi, FImageLo, FImageHi,
-        ARequiredMarginLo, ARequiredMarginHi, GUARANTEED_SPACE);
+  if HasMarksInMargin then begin
+    if FAxis.IsVertical then begin
+      if (FHi + AMinDataSpace >= FLo) then
+        EnsureGuaranteedSpace(FHi, FLo, FImageHi, FImageLo,
+          ARequiredMarginHi, ARequiredMarginLo, AMinDataSpace);
+    end else begin
+      if (FLo + AMinDataSpace >= FHi) then
+        EnsureGuaranteedSpace(FLo, FHi, FImageLo, FImageHi,
+          ARequiredMarginLo, ARequiredMarginHi, AMinDataSpace);
+    end;
   end;
 end;
 
@@ -1275,20 +1277,20 @@ begin
     Result := ASign
   else
     Result := (FHi - FLo) / (FMax^ - FMin^);
-  if (FAxis <> nil) and FAxis.IsFlipped then
+  if FAxis.IsFlipped then
     Result := -Result;
 end;
 
 function TAxisCoeffHelper.CalcOffset(AScale: Double): Double;
 begin
-  Result := (FLo + FHi) / 2 - AScale * (FMin^ + FMax^) / 2;
+  Result := ((FLo + FHi) - AScale * (FMin^ + FMax^)) * 0.5;
 end;
 
 procedure TAxisCoeffHelper.UpdateMinMax(AConv: TAxisConvFunc);
 begin
   FMin^ := AConv(FImageLo);
   FMax^ := AConv(FImageHi);
-  if (FAxis <> nil) and FAxis.IsFlipped then
+  if FAxis.IsFlipped then
     Exchange(FMin^, FMax^);
 end;
 
