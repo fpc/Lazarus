@@ -7539,7 +7539,7 @@ begin
   try
     TypeAtom := ClipboardTypeAtoms[ClipboardType];
     {$IFDEF DEBUG_CLIPBOARD}
-    DebugLn('[RequestSelectionData] TimeID=',dbgs(TimeID),' Type=',GdkAtomToStr(Atom),' FormatID=',GdkAtomToStr(FormatID));
+    DebugLn('[RequestSelectionData] TimeID=',dbgs(TimeID),' Type=',GdkAtomToStr(TypeAtom),' FormatID=',GdkAtomToStr(FormatID));
     {$ENDIF}
     if gtk_selection_convert(ClipboardWidget,TypeAtom,FormatID,TimeID) <> GdkFalse then
     begin
