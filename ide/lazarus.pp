@@ -74,7 +74,7 @@ uses
     jcfidelazarus, chmhelppkg,
     FPCUnitTestRunner, FPCUnitIDE, ProjTemplates, TAChartLazarusPkg,
     TodoListLaz, DateTimeCtrls, SQLDBLaz, DBFLaz, pascalscript,
-    EditorMacroScript, RegisterVirtualTreeView, OnlinePackageManager,
+    EditorMacroScript, laz.registervirtualtreeview, OnlinePackageManager,
     LazDebuggerFpLldb,
   {$ENDIF}
   MainBase;
