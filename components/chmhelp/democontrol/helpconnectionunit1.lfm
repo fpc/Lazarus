@@ -9,12 +9,12 @@ object Form1: TForm1
   ClientWidth = 400
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '1.3'
+  LCLVersion = '2.1.0.0'
   object Label1: TLabel
     Left = 93
-    Height = 20
+    Height = 15
     Top = 73
-    Width = 110
+    Width = 87
     Caption = 'Response is here'
     ParentColor = False
   end
