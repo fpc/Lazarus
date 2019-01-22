@@ -107,6 +107,7 @@ type
     FDebugState64: x86_debug_state64_t;
     FDebugStateRead: boolean;
     FDebugStateChanged: boolean;
+    FIsSteppingBreakPoint: boolean;
   protected
     function ReadThreadState: boolean;
     function ReadDebugState: boolean;
@@ -867,8 +868,10 @@ begin
 {$ifdef darwin}
   AThread.NextIsSingleStep:=SingleStep;
   AThread.BeforeContinue;
-  if SingleStep or assigned(FCurrentBreakpoint) then
+  if SingleStep or assigned(FCurrentBreakpoint) then begin
     fpPTrace(PTRACE_SINGLESTEP, ProcessID, pointer(1), pointer(FExceptionSignal))
+    TDbgDarwinThread(AThread).FIsSteppingBreakPoint := True;
+  end
   else if FIsTerminating then
     fpPTrace(PTRACE_KILL, ProcessID, pointer(1), nil)
   else
@@ -940,7 +943,11 @@ begin
           FProcessStarted:=true;
           end
         else
+          begin
           result := deBreakpoint;
+          if not TDbgDarwinThread(AThread).FIsSteppingBreakPoint then
+            AThread.CheckAndResetInstructionPointerAfterBreakpoint;
+          end
         end;
       SIGBUS:
         begin
@@ -988,6 +995,8 @@ begin
     end
   else
     raise exception.CreateFmt('Received unknown status %d from process with pid=%d',[FStatus, ProcessID]);
+
+  TDbgDarwinThread(AThread).FIsSteppingBreakPoint := False;
 end;
 
 end.

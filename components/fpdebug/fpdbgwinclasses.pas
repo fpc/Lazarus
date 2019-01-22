@@ -401,50 +401,50 @@ end;
   ------------------------------------------------------------------ }
 function TDbgWinProcess.HandleDebugEvent(const ADebugEvent: TDebugEvent): Boolean;
 
-  function DoSingleStep: Boolean;
-  var
-    _UC: record
-      C: TContext;
-      D: array[1..16] of Byte;
-    end;
-    Context: PContext;
-  begin
-    Result := False;
-    // check if we are interupting
-    Context := AlignPtr(@_UC, $10);
-    Context^.ContextFlags := CONTEXT_DEBUG_REGISTERS;
-    if GetThreadContext(FInfo.hThread, Context^)
-    then begin
-      if Context^.Dr6 and 1 <> 0
-      then begin
-        // interrupt !
-        // disable break.
-        Context^.Dr7 := Context^.Dr7 and not $1;
-        Context^.Dr0 := 0;
-        if not SetThreadContext(FInfo.hThread, Context^)
-        then begin
-          // Heeellppp!!
-          Log('Thread %u: Unable to reset BR0', [ADebugEvent.dwThreadId]);
-        end;
-        // check if we are also singlestepping
-        // if not, then exit, else proceed to next check
-        if Context^.Dr6 and $40 = 0
-        then Exit;
-      end;
-    end
-    else begin
-      // if we can not get the context, we probable weren't able to set it either
-      Log('Thread %u: Unable to get context', [ADebugEvent.dwThreadId]);
-    end;
-
-    // check if we are single stepping ourself
-    if FCurrentBreakpoint = nil then Exit;
-
-    FCurrentBreakpoint.SetBreak;
-    FCurrentBreakpoint := nil;
-    Result := FReEnableBreakStep;
-    FReEnableBreakStep := False;
-  end;
+  //function DoSingleStep: Boolean;
+  //var
+  //  _UC: record
+  //    C: TContext;
+  //    D: array[1..16] of Byte;
+  //  end;
+  //  Context: PContext;
+  //begin
+  //  Result := False;
+  //  // check if we are interupting
+  //  Context := AlignPtr(@_UC, $10);
+  //  Context^.ContextFlags := CONTEXT_DEBUG_REGISTERS;
+  //  if GetThreadContext(FInfo.hThread, Context^)
+  //  then begin
+  //    if Context^.Dr6 and 1 <> 0
+  //    then begin
+  //      // interrupt !
+  //      // disable break.
+  //      Context^.Dr7 := Context^.Dr7 and not $1;
+  //      Context^.Dr0 := 0;
+  //      if not SetThreadContext(FInfo.hThread, Context^)
+  //      then begin
+  //        // Heeellppp!!
+  //        Log('Thread %u: Unable to reset BR0', [ADebugEvent.dwThreadId]);
+  //      end;
+  //      // check if we are also singlestepping
+  //      // if not, then exit, else proceed to next check
+  //      if Context^.Dr6 and $40 = 0
+  //      then Exit;
+  //    end;
+  //  end
+  //  else begin
+  //    // if we can not get the context, we probable weren't able to set it either
+  //    Log('Thread %u: Unable to get context', [ADebugEvent.dwThreadId]);
+  //  end;
+  //
+  //  // check if we are single stepping ourself
+  //  if FCurrentBreakpoint = nil then Exit;
+  //
+  //  FCurrentBreakpoint.SetBreak;
+  //  FCurrentBreakpoint := nil;
+  //  Result := FReEnableBreakStep;
+  //  FReEnableBreakStep := False;
+  //end;
 
 begin
   Result := False;
@@ -800,7 +800,7 @@ var
   InterceptAtFirst: Boolean;
 begin
   if HandleDebugEvent(MDebugEvent)
-  then result := deBreakpoint
+  then result := deBreakpoint // unreachable
   else begin
     if AThread <> nil
     then begin
@@ -820,8 +820,10 @@ begin
               FJustStarted:=false;
               result := deInternalContinue;
             end
-            else
+            else begin
               result := deBreakpoint;
+              AThread.CheckAndResetInstructionPointerAfterBreakpoint;
+            end;
           end;
           EXCEPTION_SINGLE_STEP: begin
             result := deBreakpoint;
@@ -1164,17 +1166,9 @@ var
   Context: PContext;
 begin
   Result := False;
-
-  // If the location of the breakpoint is reached by single-stepping, there is
-  // no need to decrement the instruction pointer.
-  if MDebugEvent.Exception.ExceptionRecord.ExceptionCode = EXCEPTION_SINGLE_STEP
-  then begin
-    result := true;
-    Exit;
-  end;
+  assert(MDebugEvent.Exception.ExceptionRecord.ExceptionCode <> EXCEPTION_SINGLE_STEP, 'dec(IP) EXCEPTION_SINGLE_STEP');
 
   Context := AlignPtr(@_UC, $10);
-
   Context^.ContextFlags := CONTEXT_CONTROL;
   if not GetThreadContext(Handle, Context^)
   then begin
@@ -1199,6 +1193,7 @@ begin
     Log('Unable to set context');
     Exit;
   end;
+  // TODO: only changed FCurrentContext, and write back in BeforeContinue;
   FThreadContextChanged:=false;
   Result := True;
 end;

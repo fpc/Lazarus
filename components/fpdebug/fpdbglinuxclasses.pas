@@ -232,6 +232,7 @@ type
     // For other threads this is the full status (stored to execute event later.)
     FExceptionSignal: cint;
     FIsPaused, FInternalPauseRequested, FIsInInternalPause: boolean;
+    FIsSteppingBreakPoint: boolean;
     function GetDebugRegOffset(ind: byte): pointer;
     function ReadDebugReg(ind: byte; out AVal: PtrUInt): boolean;
     function WriteDebugReg(ind: byte; AVal: PtrUInt): boolean;
@@ -891,6 +892,7 @@ begin
   if assigned(FCurrentBreakpoint) then begin
     fpseterrno(0);
     AThread.NextIsSingleStep:=SingleStep;
+    TDbgLinuxThread(AThread).FIsSteppingBreakPoint := True;
     AThread.BeforeContinue;
     fpPTrace(PTRACE_SINGLESTEP, AThread.ID, pointer(1), pointer(wstopsig(TDbgLinuxThread(AThread).FExceptionSignal)));
     TDbgLinuxThread(AThread).FIsPaused := False;
@@ -1047,7 +1049,11 @@ begin
             result := deInternalContinue; // left over signal
           end
           else
+            begin
             result := deBreakpoint; // or pause requested
+            if not TDbgLinuxThread(AThread).FIsSteppingBreakPoint then
+              AThread.CheckAndResetInstructionPointerAfterBreakpoint;
+            end;
         end;
       SIGBUS:
         begin
@@ -1101,6 +1107,8 @@ begin
   else
     raise exception.CreateFmt('Received unknown status %d from process with pid=%d',[FStatus, ProcessID]);
 
+  TDbgLinuxThread(AThread).FIsSteppingBreakPoint := False;
+
   if Result in [deException, deBreakpoint, deFinishedStep] then begin // deFinishedStep will not be set here
     // Signal all other threads to pause
     PauseWaitCount := 0;
@@ -1139,7 +1147,9 @@ begin
         if ThreadToPause.FInternalPauseRequested then begin
           dec(PauseWaitCount);
           if (wstopsig(WaitStatus) = SIGTRAP) then begin
-            // TODO: check if the SigTrap was caused by a breakpoint
+            // TODO: if breakpoint, mark that the internalpause request may still be received
+            ThreadToPause.CheckAndResetInstructionPointerAfterBreakpoint;
+
             ThreadToPause.FInternalPauseRequested := False;
             ThreadToPause.FIsInInternalPause := True;
             ThreadToPause.FExceptionSignal := 0;

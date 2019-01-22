@@ -141,7 +141,7 @@ type
     FProcess: TDbgProcess;
     FID: Integer;
     FHandle: THandle;
-    FNeedIPDecrement: boolean;
+    FIsAtBreakInstruction: Boolean;
     function GetRegisterValueList: TDbgRegisterValueList;
   protected
     FCallStackEntryList: TDbgCallstackEntryList;
@@ -153,9 +153,10 @@ type
     FStoreStepFuncAddr: TDBGPtr;
     procedure LoadRegisterValues; virtual;
     property Process: TDbgProcess read FProcess;
+    function ResetInstructionPointerAfterBreakpoint: boolean; virtual; abstract;
   public
     constructor Create(const AProcess: TDbgProcess; const AID: Integer; const AHandle: THandle); virtual;
-    function ResetInstructionPointerAfterBreakpoint: boolean; virtual; abstract;
+    function CheckAndResetInstructionPointerAfterBreakpoint: boolean;
     procedure BeforeContinue; virtual;
     function AddWatchpoint(AnAddr: TDBGPtr): integer; virtual;
     function RemoveWatchpoint(AnId: integer): boolean; virtual;
@@ -176,6 +177,7 @@ type
     property NextIsSingleStep: boolean read FNextIsSingleStep write FNextIsSingleStep;
     property RegisterValueList: TDbgRegisterValueList read GetRegisterValueList;
     property CallStackEntryList: TDbgCallstackEntryList read FCallStackEntryList;
+    property IsAtBreakInstruction: boolean read FIsAtBreakInstruction; // Is stopped at Int3 code. Needs to exec orig instruction instead
   end;
   TDbgThreadClass = class of TDbgThread;
 
@@ -240,7 +242,7 @@ type
     procedure AddLocotion(const ALocation: TDBGPtr; const AInternalBreak: TFpInternalBreakpoint; AnIgnoreIfExists: Boolean = True);
     procedure RemoveLocotion(const ALocation: TDBGPtr; const AInternalBreak: TFpInternalBreakpoint);
     function GetInternalBreaksAtLocation(const ALocation: TDBGPtr): TFpInternalBreakpointArray;
-    function GetOrigValueAtLocation(const ALocation: TDBGPtr): Byte;
+    function GetOrigValueAtLocation(const ALocation: TDBGPtr): Byte; // returns Int3, if there is no break at this location
     function GetEnumerator: TBreakLocationMapEnumerator;
   end;
 
@@ -259,8 +261,6 @@ type
   private
     FProcess: TDbgProcess;
     FLocation: TDBGPtrArray;
-  const
-    Int3: Byte = $CC;
   protected
     property Process: TDbgProcess read FProcess;
     property Location: TDBGPtrArray read FLocation;
@@ -325,7 +325,7 @@ type
   { TDbgProcess }
 
   TDbgProcess = class(TDbgInstance)
-  private const
+  protected const
     Int3: Byte = $CC;
   private
     FExceptionClass: string;
@@ -1247,16 +1247,6 @@ begin
     // Determine the address where the execution has stopped
     CurrentAddr:=AThread.GetInstructionPointerRegisterValue;
     FCurrentWatchpoint:=AThread.DetectHardwareWatchpoint;
-    if not (AThread.NextIsSingleStep or assigned(FCurrentBreakpoint) or (FCurrentWatchpoint>-1)) then
-    begin
-      // The debugger did not stop due to single-stepping or a watchpoint,
-      // so a breakpoint has been hit. But breakpoints stop *after* they
-      // have been hit. So decrement the CurrentAddr.
-      AThread.FNeedIPDecrement:=true;
-      dec(CurrentAddr);
-    end
-    else
-      AThread.FNeedIPDecrement:=false;
     FCurrentBreakpoint:=nil;
     AThread.NextIsSingleStep:=false;
 
@@ -1676,6 +1666,15 @@ begin
   inherited Create;
 end;
 
+function TDbgThread.CheckAndResetInstructionPointerAfterBreakpoint: boolean;
+begin
+  // todo: check that the breakpoint is NOT in the temp removed list
+  if FProcess.FBreakMap.GetOrigValueAtLocation(GetInstructionPointerRegisterValue - 1) = TDbgProcess.Int3 then
+    exit;
+  FIsAtBreakInstruction := True;
+  ResetInstructionPointerAfterBreakpoint;
+end;
+
 procedure TDbgThread.BeforeContinue;
 begin
   // Do nothing
@@ -1791,14 +1790,11 @@ begin
     exit; // breakpoint on a hardcoded breakpoint
           // no need to jump back and restore instruction
 
+  // This is either the breakpoint that WAS just stepped over (ResetInstructionPointerAfterBreakpoint
+  // Or a breakpoint that is at the next command (step ended, before breakpoint)
   FProcess.TempRemoveBreakInstructionCode(ABreakpointAddress);
 
-  if not Process.GetThread(AThreadId, Thread) then Exit;
-
-  if Thread.FNeedIPDecrement then
-    Result := Thread.ResetInstructionPointerAfterBreakpoint
-  else
-    Result := true;
+  Result := true;
 end;
 
 //function TFpInternalBreakpoint.HasLocation(const ALocation: TDBGPtr): Boolean;
