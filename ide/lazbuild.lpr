@@ -487,7 +487,7 @@ begin
     XMLConfig.Free;
   end;
   // check Package Name
-  if (Result.Name='') or (not LazIsValidIdent(Result.Name)) then begin
+  if (Result.Name='') or (not LazIsValidIdent(Result.Name,true,false)) then begin
     Error(ErrorPackageNameInvalid,
           Format(lisPkgMangThePackageNameOfTheFileIsInvalid,
                  [Result.Name, LineEnding, Result.Filename]));
