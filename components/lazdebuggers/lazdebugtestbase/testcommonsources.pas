@@ -64,7 +64,10 @@ end;
 
 function TCommonSource.GetFullFileName: String;
 begin
-  Result := AppendPathDelim(FFolder)+FFileName;
+  if pos(PathDelim, FFileName) > 0 then
+    Result := FFileName
+  else
+    Result := AppendPathDelim(FFolder)+FFileName;
 end;
 
 function TCommonSource.GetOtherBreakPoints(AUnitName, AName: String): Integer;
@@ -100,12 +103,14 @@ end;
 
 procedure TCommonSource.SaveToFolder(AFolder: String);
 begin
+  if pos(PathDelim, FFileName) > 0 then exit;
 TestLogger.DebugLn(['SAVE: ',AFolder, '  ',FFileName]);
   FData.SaveToFile(AppendPathDelim(AFolder)+FFileName);
 end;
 
 procedure TCommonSource.DeleteFromFolder(AFolder: String);
 begin
+  if pos(PathDelim, FFileName) > 0 then exit;
 TestLogger.DebugLn(['DELETE: ',AFolder, '  ',FFileName]);
   DeleteFile(AppendPathDelim(AFolder)+FFileName);
 end;
@@ -123,7 +128,7 @@ TestLogger.DebugLn(['OTHER: ',n]);
   end;
 
 var
-  r: TResourceStream;
+  r: TStream;
   Other, s, s2: String;
   i, Line, j: Integer;
   OwnBlockRecurseName: Boolean;
@@ -134,7 +139,11 @@ begin
     BlockRecurseName := AName;
 
   FFileName := AName;
-  r := TResourceStream.Create(HINSTANCE, AName, RT_RCDATA);
+  if pos(PathDelim, AName) > 0 then
+    r := TFileStream.Create(AName, fmOpenRead)
+  else
+    r := TResourceStream.Create(HINSTANCE, AName, RT_RCDATA);
+
   FData := TStringList.Create;
   FData.LoadFromStream(r);
   r.Free;

@@ -39,7 +39,7 @@
         <PackageName Value="FCL"/>
       </Item5>
     </RequiredPackages>
-    <Units Count="3">
+    <Units Count="5">
       <Unit0>
         <Filename Value="LazDebFpTest.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -54,6 +54,16 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestBase"/>
       </Unit2>
+      <Unit3>
+        <Filename Value="testvarious.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestVarious"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="testbreakpoint.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestBreakPoint"/>
+      </Unit4>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
