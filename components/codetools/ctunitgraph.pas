@@ -342,7 +342,7 @@ var
   NewUnit: TUGUnit;
 begin
   if ExpFilename='' then exit;
-  if FQueuedFiles.FindKey(PChar(ExpFilename),@CompareFilenameAndUGUnit)<>nil then
+  if FTargetFiles.FindKey(PChar(ExpFilename),@CompareFilenameAndUGUnit)<>nil then
     exit; // already a start file
   // add to FFiles and FTargetFiles
   //debugln(['TUsesGraph.AddTargetUnit ',ExpFilename]);
