@@ -620,7 +620,7 @@ begin
   end;
 
   new(LocData);
-  LocData^.ErrorSetting := FProcess.InsertBreakInstructionCode(ALocation, LocData^.OrigValue);
+  LocData^.ErrorSetting := not FProcess.InsertBreakInstructionCode(ALocation, LocData^.OrigValue);
   LocData^.IsBreakList := False;
   LocData^.InternalBreakPoint := AInternalBreak;
   Add(ALocation, LocData^);
@@ -636,11 +636,6 @@ begin
   LocData := GetDataPtr(ALocation);
   if LocData = nil then begin
     DebugLn(['Missing breakpoint for loc ', FormatAddress(ALocation)]);
-    exit;
-  end;
-
-  if LocData^.ErrorSetting then begin
-    // TODO: retry setting?
     exit;
   end;
 
@@ -669,7 +664,8 @@ begin
     exit;
   end;
 
-  FProcess.RemoveBreakInstructionCode(ALocation, LocData^.OrigValue);
+  if not LocData^.ErrorSetting then
+    FProcess.RemoveBreakInstructionCode(ALocation, LocData^.OrigValue);
   Delete(ALocation);
 end;
 
