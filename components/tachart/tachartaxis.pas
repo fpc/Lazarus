@@ -244,7 +244,7 @@ type
   { TAxisCoeffHelper }
 
   TAxisCoeffHelper = object
-    FAxis: TChartAxis;
+    FAxisIsFlipped: Boolean;
     FImageLo, FImageHi: Integer;
     FLo, FHi: Integer;
     FMin, FMax: PDouble;
@@ -252,7 +252,7 @@ type
     function CalcScale(ASign: Integer): Double;
     constructor Init(AAxis: TChartAxis; AImageLo, AImageHi: Integer;
       AMarginLo, AMarginHi, ARequiredMarginLo, ARequiredMarginHi, AMinDataSpace: Integer;
-      HasMarksInMargin: Boolean; AMin, AMax: PDouble);
+      AHasMarksInMargin, AAxisIsVertical: Boolean; AMin, AMax: PDouble);
     procedure UpdateMinMax(AConv: TAxisConvFunc);
   end;
 
@@ -1246,11 +1246,9 @@ end;
 
 constructor TAxisCoeffHelper.Init(AAxis: TChartAxis; AImageLo, AImageHi: Integer;
   AMarginLo, AMarginHi, ARequiredMarginLo, ARequiredMarginHi, AMinDataSpace: Integer;
-  HasMarksInMargin: Boolean; AMin, AMax: PDouble);
+  AHasMarksInMargin, AAxisIsVertical: Boolean; AMin, AMax: PDouble);
 begin
-  Assert(AAxis <> nil);
-
-  FAxis := AAxis;
+  FAxisIsFlipped := (AAxis <> nil) and AAxis.IsFlipped;
   FImageLo := AImageLo;
   FImageHi := AImageHi;
   FMin := AMin;
@@ -1258,8 +1256,8 @@ begin
   FLo := FImageLo + AMarginLo;
   FHi := FImageHi + AMarginHi;
 
-  if HasMarksInMargin then begin
-    if FAxis.IsVertical then begin
+  if AHasMarksInMargin then begin
+    if AAxisIsVertical then begin
       if (FHi + AMinDataSpace >= FLo) then
         EnsureGuaranteedSpace(FHi, FLo, FImageHi, FImageLo,
           ARequiredMarginHi, ARequiredMarginLo, AMinDataSpace);
@@ -1277,7 +1275,7 @@ begin
     Result := ASign
   else
     Result := (FHi - FLo) / (FMax^ - FMin^);
-  if FAxis.IsFlipped then
+  if FAxisIsFlipped then
     Result := -Result;
 end;
 
@@ -1290,7 +1288,7 @@ procedure TAxisCoeffHelper.UpdateMinMax(AConv: TAxisConvFunc);
 begin
   FMin^ := AConv(FImageLo);
   FMax^ := AConv(FImageHi);
-  if FAxis.IsFlipped then
+  if FAxisIsFlipped then
     Exchange(FMin^, FMax^);
 end;
 

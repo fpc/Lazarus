@@ -556,10 +556,18 @@ begin
 end;
 
 function TCustomChartSeries.IsRotated: Boolean;
+var
+  x_normal, y_normal: Boolean;
+  x_axis: TChartAxis = nil;
+  y_axis: TChartAxis = nil;
 begin
-  Result :=
-    (AxisIndexX >= 0) and FChart.AxisList[AxisIndexX].IsVertical and
-    (AxisIndexY >= 0) and not FChart.AxisList[AxisIndexY].IsVertical;
+  if InRange(AxisIndexX, 0, FChart.AxisList.Count-1) then
+    x_axis := FChart.AxisList[AxisIndexX];
+  if InRange(AxisIndexY, 0, FChart.AxisList.Count-1) then
+    y_axis := FChart.AxisList[AxisIndexY];
+  x_normal := (x_axis = nil) or (not x_axis.IsVertical);
+  y_normal := (y_axis = nil) or y_axis.IsVertical;
+  Result := (not x_normal) and (not y_normal);
 end;
 
 function TCustomChartSeries.LegendTextSingle: String;
@@ -1427,8 +1435,9 @@ begin
     lmpNegative: isNeg := true;
     lmpInside: isNeg := Source[AIndex]^.Y >= ref;
   end;
-  if (IsRotated and ParentChart.IsRightToLeft) xor GetAxisY.Inverted then
-    isNeg := not isNeg;
+  if Assigned(GetAxisY) then
+    if (IsRotated and ParentChart.IsRightToLeft) xor GetAxisY.Inverted then
+      isNeg := not isNeg;
   Result := DIR[IsRotated, isNeg];
 end;
 

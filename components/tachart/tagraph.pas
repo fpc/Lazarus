@@ -252,10 +252,12 @@ type
       AReader: TReader; const AClassName: String; var AClass: TComponentClass);
     function GetChartHeight: Integer;
     function GetChartWidth: Integer;
+    function GetHorAxis: TChartAxis;
     function GetMargins(ADrawer: IChartDrawer): TRect;
     function GetRenderingParams: TChartRenderingParams;
     function GetSeriesCount: Integer;
     function GetToolset: TBasicChartToolset;
+    function GetVertAxis: TChartAxis;
     procedure HideReticule; deprecated 'Use DatapointCrosshairTool instead';
 
     procedure SetAntialiasingMode(AValue: TChartAntialiasingMode);
@@ -385,6 +387,7 @@ type
     property ClipRect: TRect read FClipRect;
     property CurrentExtent: TDoubleRect read FCurrentExtent;
     property ExtentBroadcaster: TBroadcaster read FExtentBroadcaster;
+    property HorAxis: TChartAxis read GetHorAxis;
     property IsZoomed: Boolean read FIsZoomed;
     property LogicalExtent: TDoubleRect read FLogicalExtent write SetLogicalExtent;
     property MinDataSpace: Integer
@@ -396,6 +399,7 @@ type
       read GetRenderingParams write SetRenderingParams;
     property ReticulePos: TPoint read FReticulePos write SetReticulePos; deprecated 'Use DatapointCrosshairTool instead';
     property SeriesCount: Integer read GetSeriesCount;
+    property VertAxis: TChartAxis read GetVertAxis;
     property XGraphMax: Double read FCurrentExtent.b.X;
     property XGraphMin: Double read FCurrentExtent.a.X;
     property YGraphMax: Double read FCurrentExtent.b.Y;
@@ -588,15 +592,16 @@ var
   rX, rY: TAxisCoeffHelper;
 begin
   rX.Init(
-    BottomAxis, FClipRect.Left, FClipRect.Right, AMargin.Left, -AMargin.Right,
+    HorAxis, FClipRect.Left, FClipRect.Right, AMargin.Left, -AMargin.Right,
     AChartMargins.Left, AChartMargins.Right, AMinDataSpace,
     (AMargin.Left <> AChartMargins.Left) or (AMargin.Right <> AChartMargins.Right),
-    @FCurrentExtent.a.X, @FCurrentExtent.b.X);
+    false, @FCurrentExtent.a.X, @FCurrentExtent.b.X);
   rY.Init(
-    LeftAxis, FClipRect.Bottom, FClipRect.Top, -AMargin.Bottom, AMargin.Top,
+    VertAxis, FClipRect.Bottom, FClipRect.Top, -AMargin.Bottom, AMargin.Top,
     AChartMargins.Bottom, AChartMargins.Top, AMinDataSpace,
     (AMargin.Top <> AChartMargins.Top) or (AMargin.Bottom <> AChartMargins.Bottom),
-    @FCurrentExtent.a.Y, @FCurrentExtent.b.Y);
+    true, @FCurrentExtent.a.Y, @FCurrentExtent.b.Y);
+
 
   FScale.X := rX.CalcScale(1);
   FScale.Y := rY.CalcScale(-1);
@@ -1213,6 +1218,12 @@ begin
   end;
 end;
 
+function TChart.GetHorAxis: TChartAxis;
+begin
+  Result := BottomAxis;
+  if Result = nil then Result := GetAxisByAlign(calTop);
+end;
+
 function TChart.GetLegendItems(AIncludeHidden: Boolean): TChartLegendItems;
 var
   s: TBasicChartSeries;
@@ -1267,6 +1278,12 @@ begin
   Result := FToolset;
   if Result = nil then
     Result := FBuiltinToolset;
+end;
+
+function TChart.GetVertAxis: TChartAxis;
+begin
+  Result := LeftAxis;
+  if Result = nil then Result := GetAxisByAlign(calRight);
 end;
 
 function TChart.GraphToImage(const AGraphPoint: TDoublePoint): TPoint;
