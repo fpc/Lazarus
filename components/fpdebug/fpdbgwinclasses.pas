@@ -510,7 +510,7 @@ begin
       AThread.Free;
     end else begin
       AThread.NextIsSingleStep:=SingleStep;
-      if SingleStep or assigned(FCurrentBreakpoint) then
+      if SingleStep then
         TDbgWinThread(AThread).SetSingleStep;
     end;
   end;
@@ -535,6 +535,7 @@ begin
   result := Windows.WaitForDebugEvent(MDebugEvent, INFINITE);
   ProcessIdentifier:=MDebugEvent.dwProcessId;
   ThreadIdentifier:=MDebugEvent.dwThreadId;
+  RestoreTempBreakInstructionCodes;
 
   // Should be done in AnalyseDebugEvent, but that is not called for forked processes
   if (MDebugEvent.dwDebugEventCode = CREATE_PROCESS_DEBUG_EVENT) and
@@ -1138,6 +1139,11 @@ end;
 
 procedure TDbgWinThread.BeforeContinue;
 begin
+  if Process.HasInsertedBreakInstructionAtLocation(GetInstructionPointerRegisterValue) then begin
+    SetSingleStep;
+    Process.TempRemoveBreakInstructionCode(GetInstructionPointerRegisterValue);
+  end;
+
   if (FCurrentContext <> nil) and
      (FCurrentContext^.Dr6 <> $ffff0ff0) then
   begin

@@ -868,7 +868,13 @@ begin
 {$ifdef darwin}
   AThread.NextIsSingleStep:=SingleStep;
   AThread.BeforeContinue;
-  if SingleStep or assigned(FCurrentBreakpoint) then begin
+  if HasInsertedBreakInstructionAtLocation(AThread.GetInstructionPointerRegisterValue) then begin
+    TempRemoveBreakInstructionCode(AThread.GetInstructionPointerRegisterValue)
+    fpPTrace(PTRACE_SINGLESTEP, ProcessID, pointer(1), pointer(FExceptionSignal))
+    TDbgDarwinThread(AThread).FIsSteppingBreakPoint := True;
+  end
+  else
+  if SingleStep then begin
     fpPTrace(PTRACE_SINGLESTEP, ProcessID, pointer(1), pointer(FExceptionSignal))
     TDbgDarwinThread(AThread).FIsSteppingBreakPoint := True;
   end
@@ -896,6 +902,7 @@ begin
   ThreadIdentifier:=-1;
 
   ProcessIdentifier:=FpWaitPid(-1, FStatus, 0);
+  RestoreTempBreakInstructionCodes;
 
   result := ProcessIdentifier<>-1;
   if not result then

@@ -243,6 +243,7 @@ type
     procedure RemoveLocotion(const ALocation: TDBGPtr; const AInternalBreak: TFpInternalBreakpoint);
     function GetInternalBreaksAtLocation(const ALocation: TDBGPtr): TFpInternalBreakpointArray;
     function GetOrigValueAtLocation(const ALocation: TDBGPtr): Byte; // returns Int3, if there is no break at this location
+    function HasInsertedBreakInstructionAtLocation(const ALocation: TDBGPtr): Boolean; // returns Int3, if there is no break at this location
     function GetEnumerator: TBreakLocationMapEnumerator;
   end;
 
@@ -390,9 +391,10 @@ type
     function ReadString(const AAdress: TDbgPtr; const AMaxSize: Cardinal; out AData: String): Boolean; virtual;
     function ReadWString(const AAdress: TDbgPtr; const AMaxSize: Cardinal; out AData: WideString): Boolean; virtual;
 
-    function LocationIsBreakInstructionCode(const ALocation: TDBGPtr): Boolean; // excludes TempRemoved
+    //function LocationIsBreakInstructionCode(const ALocation: TDBGPtr): Boolean; // excludes TempRemoved
     procedure TempRemoveBreakInstructionCode(const ALocation: TDBGPtr);
     procedure RestoreTempBreakInstructionCodes;
+    function HasInsertedBreakInstructionAtLocation(const ALocation: TDBGPtr): Boolean; // returns Int3, if there is no break at this location
 
     function Continue(AProcess: TDbgProcess; AThread: TDbgThread; SingleStep: boolean): boolean; virtual;
     function WaitForDebugEvent(out ProcessIdentifier, ThreadIdentifier: THandle): boolean; virtual; abstract;
@@ -702,6 +704,12 @@ begin
     exit;
   end;
   Result := LocData^.OrigValue;
+end;
+
+function TBreakLocationMap.HasInsertedBreakInstructionAtLocation(
+  const ALocation: TDBGPtr): Boolean;
+begin
+  Result := GetOrigValueAtLocation(ALocation) <> TDbgProcess.Int3;
 end;
 
 function TBreakLocationMap.GetEnumerator: TBreakLocationMapEnumerator;
@@ -1507,21 +1515,21 @@ begin
   //
 end;
 
-function TDbgProcess.LocationIsBreakInstructionCode(const ALocation: TDBGPtr
-  ): Boolean;
-var
-  OVal: Byte;
-begin
-  Result := FBreakMap.HasId(ALocation);
-  if not Result then
-    exit;
-
-  Result := FProcess.ReadData(ALocation, 1, OVal);
-  if Result then
-    Result := OVal = Int3
-  else
-    DebugLn('Unable to read pre-breakpoint at '+FormatAddress(ALocation));
-end;
+//function TDbgProcess.LocationIsBreakInstructionCode(const ALocation: TDBGPtr
+//  ): Boolean;
+//var
+//  OVal: Byte;
+//begin
+//  Result := FBreakMap.HasId(ALocation);
+//  if not Result then
+//    exit;
+//
+//  Result := FProcess.ReadData(ALocation, 1, OVal);
+//  if Result then
+//    Result := OVal = Int3
+//  else
+//    DebugLn('Unable to read pre-breakpoint at '+FormatAddress(ALocation));
+//end;
 
 procedure TDbgProcess.TempRemoveBreakInstructionCode(const ALocation: TDBGPtr);
 var
@@ -1557,6 +1565,12 @@ begin
     if FBreakMap.HasId(t[i]) then // may have been removed
       InsertBreakInstructionCode(t[i], OVal);
   DebugLnExit(FPDBG_BREAKPOINTS, ['<<< RestoreTempBreakInstructionCodes']);
+end;
+
+function TDbgProcess.HasInsertedBreakInstructionAtLocation(
+  const ALocation: TDBGPtr): Boolean;
+begin
+  Result := FBreakMap.HasInsertedBreakInstructionAtLocation(ALocation);
 end;
 
 procedure TDbgProcess.MaskBreakpointsInReadData(const AAdress: TDbgPtr; const ASize: Cardinal; var AData);
@@ -1665,7 +1679,7 @@ end;
 function TDbgThread.CheckAndResetInstructionPointerAfterBreakpoint: boolean;
 begin
   // todo: check that the breakpoint is NOT in the temp removed list
-  if FProcess.FBreakMap.GetOrigValueAtLocation(GetInstructionPointerRegisterValue - 1) = TDbgProcess.Int3 then
+  if not Process.HasInsertedBreakInstructionAtLocation(GetInstructionPointerRegisterValue - 1) then
     exit;
   FIsAtBreakInstruction := True;
   ResetInstructionPointerAfterBreakpoint;
@@ -1785,10 +1799,6 @@ begin
   then
     exit; // breakpoint on a hardcoded breakpoint
           // no need to jump back and restore instruction
-
-  // This is either the breakpoint that WAS just stepped over (ResetInstructionPointerAfterBreakpoint
-  // Or a breakpoint that is at the next command (step ended, before breakpoint)
-  FProcess.TempRemoveBreakInstructionCode(ABreakpointAddress);
 
   Result := true;
 end;
