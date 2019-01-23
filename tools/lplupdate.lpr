@@ -1,6 +1,6 @@
 { Search all lpk files, tell what lpl files are missing, too much or need change
 
-  Copyright (C) 2010 Mattias Gaertner mattias@freepascal.org
+  Copyright (C) 2019 Mattias Gaertner mattias@freepascal.org
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Library General Public License as published by
@@ -294,7 +294,7 @@ begin
     Error('missing - in  lpl file name: '+Filename);
   // package name
   Link.PkgName:=copy(s,1,p-1);
-  if (Link.PkgName='') or (not IsValidIdent(Link.PkgName)) then
+  if (Link.PkgName='') or (not IsValidIdent(Link.PkgName,true)) then
     Error('invalid name in lpl file name: '+Filename);
   // package version
   Version:=copy(s,p+1,length(s));
