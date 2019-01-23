@@ -1011,7 +1011,7 @@ begin
     else
       begin
       // Thread stopped, just continue
-      // ToDo: Remove thread from administration
+      RemoveThread(AThread.Id);
       result := deInternalContinue;
       end;
     end
@@ -1117,6 +1117,7 @@ begin
         ThreadToPause.FIsInInternalPause := False;
         // Check if thread is already interrupted
         PID:=FpWaitPid(ThreadToPause.ID, ThreadToPause.FExceptionSignal, __WALL or WNOHANG); // Minimize chances of overlap
+
         if PID <> 0 then begin
           if PID <> ThreadToPause.ID then begin
             debugln(['Unexpected response from FpWaitPid']);
@@ -1141,22 +1142,22 @@ begin
 
       if (ThreadToPause = nil) then begin
         debugln(['Error: Event for unknown thread ',PID]);
-      end
-      else begin
-        ThreadToPause.FIsPaused := True;
+            end
+            else begin
+              ThreadToPause.FIsPaused := True;
         if ThreadToPause.FInternalPauseRequested then begin
           dec(PauseWaitCount);
           if (wstopsig(WaitStatus) = SIGTRAP) then begin
-            // TODO: if breakpoint, mark that the internalpause request may still be received
-            ThreadToPause.CheckAndResetInstructionPointerAfterBreakpoint;
+                // TODO: if breakpoint, mark that the internalpause request may still be received
+                ThreadToPause.CheckAndResetInstructionPointerAfterBreakpoint;
 
-            ThreadToPause.FInternalPauseRequested := False;
-            ThreadToPause.FIsInInternalPause := True;
-            ThreadToPause.FExceptionSignal := 0;
-          end
-          else begin
+                ThreadToPause.FInternalPauseRequested := False;
+                ThreadToPause.FIsInInternalPause := True;
+                ThreadToPause.FExceptionSignal := 0;
+              end
+              else begin
             ThreadToPause.FExceptionSignal := WaitStatus;
-            // leave FInternalPauseRequested, so we will continue if it is reached
+                // leave FInternalPauseRequested, so we will continue if it is reached
             DebugLn(['Unexpected event ', WaitStatus, ' for ', PID]);
           end;
         end
