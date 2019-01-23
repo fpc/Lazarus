@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, fpcunit, testutils, testregistry, TestBase, TestDbgControl,
   TestDbgTestSuites, TTestDebuggerClasses, TestOutputLogger,
   TTestWatchUtilities, TestCommonSources, TestDbgConfig, DbgIntfDebuggerBase,
-  DbgIntfBaseTypes, Forms;
+  DbgIntfBaseTypes, LazLoggerBase, Forms;
 
 type
 
@@ -35,6 +35,9 @@ var
   Src: TCommonSource;
   dbg: TDebuggerIntf;
   ExeName: String;
+  loc: TDBGLocationRec;
+  b1, b2: TDBGBreakPoint;
+  i: Integer;
 
   procedure TestLocation(ATestName, ABrkName: String; ABreakHitCount: Integer = 1);
   var
@@ -43,12 +46,11 @@ var
     AssertDebuggerState(dsPause);
     lc := dbg.GetLocation;
     TestEquals(ATestName+' '+ABrkName+' Loc', Src.BreakPoints[ABrkName], lc.SrcLine);
-    TestEquals(ATestName+' '+ABrkName+' HitCnt', Debugger.BreakPointByName(ABrkName).HitCount, ABreakHitCount);
+    if ABreakHitCount >= 0 then
+      TestEquals(ATestName+' '+ABrkName+' HitCnt', Debugger.BreakPointByName(ABrkName).HitCount, ABreakHitCount);
   end;
 
   procedure TestHitCnt(ATestName, ABrkName: String; ABreakHitCount: Integer);
-  var
-    lc: TDBGLocationRec;
   begin
     TestEquals(ATestName+' '+ABrkName+' HitCnt', Debugger.BreakPointByName(ABrkName).HitCount, ABreakHitCount);
   end;
@@ -84,7 +86,8 @@ begin
     Debugger.SetBreakPoint(Src, 'Foo2');
 
     Debugger.SetBreakPoint(Src, 'PrgAfterFoo2');
-    Debugger.SetBreakPoint(Src, 'PrgAfterFoo2B');
+
+    Debugger.SetBreakPoint(Src, 'Thread1');
     AssertDebuggerNotInErrorState;
 
     // Step to break next line
@@ -157,9 +160,69 @@ begin
     TestLocation('Run Foo2 ended in prg', 'PrgAfterFoo2');
     TestHitCnt('Run Foo2', 'Foo2', 2);
 
-    // Disable breakpoint
-    Debugger.BreakPointByName('Foo2').Enabled := False;
+    // new breakpoint
+    Debugger.RunToNextPause(dcStepOver);
+    TestLocation('Before insernt', 'New1', -1);
 
+    Debugger.SetBreakPoint(Src, 'New1');
+    Debugger.RunToNextPause(dcStepOver);
+    TestLocation('After insernt', 'New2', -1);
+    TestHitCnt('After insernt', 'New1', 0);
+
+    Debugger.SetBreakPoint(Src, 'New2');
+    Debugger.RunToNextPause(dcRun);
+    TestHitCnt('After insernt', 'New1', 0);
+
+    // in threads
+    (* In each thread set a breakpoint at the next instruction.
+       So when all threads are started, both should run/step OVER the breakpoint
+       without hitting it
+    *)
+    TestLocation('After insernt', 'Thread1');
+    Debugger.RunToNextPause(dcStepOver);
+    TestLocation('After insernt', 'Thread2', -1); // not set
+
+    loc := dbg.GetLocation;
+    TestEquals('loc in thread', loc.SrcLine, Src.BreakPoints['Thread2']);
+    b1 := dbg.BreakPoints.Add(loc.Address);
+    b1.InitialEnabled := True;
+    b1.Enabled := True;
+    for i := 0 to dbg.Threads.CurrentThreads.Count do
+      if dbg.Threads.CurrentThreads[i].ThreadId <> dbg.Threads.CurrentThreads.CurrentThreadId then begin
+        dbg.Threads.ChangeCurrentThread(dbg.Threads.CurrentThreads[i].ThreadId);
+        break;
+      end;
+
+    loc := dbg.GetLocation;
+    TestTrue('loc thread main', loc.SrcLine > Src.BreakPoints['New2']);
+    b2 := dbg.BreakPoints.Add(loc.Address);
+    b2.InitialEnabled := True;
+    b2.Enabled := True;
+
+
+    If loc.SrcLine >= Src.BreakPoints['Main2']-2 then
+      Debugger.SetBreakPoint(Src, 'Main1')
+    else
+      Debugger.SetBreakPoint(Src, 'Main2');
+
+    Debugger.RunToNextPause(dcRun);
+
+    If loc.SrcLine >= Src.BreakPoints['Main2']-2 then begin
+      TestLocation('main1', 'Main1');
+      Debugger.BreakPointByName('Main1').Enabled := False;
+    end else begin
+      TestLocation('main2', 'Main2');
+      Debugger.BreakPointByName('Main2').Enabled := False;
+    end;
+
+    TestEquals('b1 hits', 0, b1.HitCount);
+    TestEquals('b2 hits', 0, b2.HitCount);
+
+    Debugger.RunToNextPause(dcRun);
+    TestEquals('b1 hits after', 0, b1.HitCount);
+    TestEquals('b2 hits after', 0, b2.HitCount);
+
+    dbg.Stop;
   finally
     Debugger.ClearDebuggerMonitors;
     Debugger.FreeDebugger;

@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, fgl, TestDbgConfig, TestDbgCompilerProcess,
   TestOutputLogger, TTestDebuggerClasses, TestCommonSources, LazFileUtils,
-  FileUtil, DbgIntfDebuggerBase, fpcunit;
+  FileUtil, LazLoggerBase, DbgIntfDebuggerBase, fpcunit;
 
 type
 
@@ -403,6 +403,7 @@ function TTestDbgDebugger.RunToNextPause(ACmd: TDBGCommand; ATimeOut: Integer;
   AWaitForInternal: Boolean): Boolean;
 begin
   Result := False;
+  with LazDebugger.GetLocation do DebugLnEnter('>>> RunToNextPause Starting at %s %d @ %x', [SrcFile, SrcLine, Address]);
   case ACmd of
     dcRun:      LazDebugger.Run;
     dcStepOver: LazDebugger.StepOver;
@@ -414,6 +415,7 @@ begin
       exit;
   end;
   Result := WaitForFinishRun(ATimeOut, AWaitForInternal);
+  with LazDebugger.GetLocation do DebugLnExit('<<< RunToNextPause Ending at %s %d @ %x %s', [SrcFile, SrcLine, Address, dbgs(LazDebugger.State)]);
 end;
 
 function TTestDbgDebugger.WaitForFinishRun(ATimeOut: Integer;
@@ -445,6 +447,7 @@ begin
     InitialEnabled := True;
     Enabled := True;
   end;
+  DebugLn('Inserted breakpoint %s %d  id: %d', [AFileName, ALine, Result.ID]);
 end;
 
 function TTestDbgDebugger.SetBreakPoint(ACommonSource: TCommonSource;

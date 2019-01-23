@@ -1,6 +1,19 @@
 program BreakPointPrg;
 
-uses sysutils, Classes;
+uses
+  {$IFDEF UNIX}
+  cthreads,
+  {$ENDIF}
+  sysutils, Classes;
+
+type
+
+  { TTestThread }
+
+  TTestThread = class(TThread)
+    procedure Execute; override;
+  end;
+
 
 var
   x, BreakDummy: Integer;
@@ -21,6 +34,23 @@ end;
 
 label
 testasmlbl1, testasmlbl2;
+
+{ TTestThread }
+
+procedure TTestThread.Execute;
+var
+  tt: Integer;
+begin
+  tt := 1; // TEST_BREAKPOINT=Thread1
+  tt := 1; // TEST_BREAKPOINT=Thread2
+  tt := 1;
+  while true do begin
+    tt := 1;
+    tt := 1;
+    tt := 1;
+    tt := 1;
+  end;
+end;
 
 begin
   x := 1;
@@ -59,11 +89,32 @@ testasmlbl2:
   Foo2;
   BreakDummy:= 1; // TEST_BREAKPOINT=PrgAfterFoo2
 
-  Foo2;
-  BreakDummy:= 1; // TEST_BREAKPOINT=PrgAfterFoo2B
+  BreakDummy:= 1; // TEST_BREAKPOINT=New1
+  BreakDummy:= 1; // TEST_BREAKPOINT=New2
+  BreakDummy:= 1;
 
   // TODO; stepping over ignored breakpoint / actually that is stepping test
   // edit line / move breakpoint
+
+  TTestThread.Create(False);
+  while true do begin
+    asm
+    nop
+    nop // TEST_BREAKPOINT=Main1
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop // TEST_BREAKPOINT=Main2
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    end;
+  end;
 
 end.
 
