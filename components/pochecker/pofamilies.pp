@@ -9,7 +9,7 @@ interface
 uses
   Classes, SysUtils, ContNrs, Math,
   // LCL
-  LCLProc, Masks,
+  LCLProc,
   // LazUtils
   FileUtil, LazFileUtils, Translations, StringHashList,
   // PoChecker
