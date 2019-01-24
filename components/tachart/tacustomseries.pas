@@ -1744,7 +1744,6 @@ var
   m: array [TLabelDirection] of Integer absolute AMargins;
   zero: Double;
   gp: TDoublePoint;
-  valueIsPositive: Boolean;
 begin
   if not Marks.IsMarkLabelsVisible or not Marks.AutoMargins then exit;
   if MarkPositions = lmpInsideCenter then exit;
@@ -1756,31 +1755,13 @@ begin
     labelText := FormattedMark(i);
     if labelText = '' then continue;
 
-    valueIsPositive := TDoublePointBoolArr(gp)[not IsRotated] > zero;
     dir := GetLabelDirection(i);
-
     with Marks.MeasureLabel(ADrawer, labelText) do
       dist := IfThen(dir in [ldLeft, ldRight], cx, cy);
     if Marks.DistanceToCenter then
       dist := dist div 2;
 
-    if valueIsPositive then begin
-      if Marks.DistanceToCenter then
-        case dir of
-          ldBottom: dir := ldTop;
-          ldLeft: dir := ldRight;
-        end;
-      if dir in [ldTop, ldRight] then
-        m[dir] := Max(m[dir], dist + Marks.Distance);
-    end else begin
-      if Marks.DistanceToCenter then
-        case dir of
-          ldTop: dir := ldBottom;
-          ldRight: dir := ldLeft;
-        end;
-      if dir in [ldBottom, ldLeft] then
-        m[dir] := Max(m[dir], dist + Marks.Distance);
-    end;
+    m[dir] := Max(m[dir], dist + Marks.Distance);
   end;
 end;
 
