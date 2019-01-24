@@ -308,6 +308,7 @@ type
 
   protected
     procedure AfterAdd; override;
+    procedure SourceChanged(ASender: TObject); override;
     procedure UpdateMargins(ADrawer: IChartDrawer; var AMargins: TRect); override;
 
     property MarkPositionCentered: Boolean
@@ -1143,6 +1144,8 @@ begin
   FErrorBars[0] := TChartErrorBar.Create(FChart);
   FErrorBars[1] := TChartErrorBar.Create(FChart);
   FOptimizeX := true;
+  FLoBound := 0;
+  FUpBound := Count - 1;
   ToolTargets := [nptPoint, nptYList];
 end;
 
@@ -1768,6 +1771,13 @@ procedure TBasicPointSeries.UpdateGraphPoints(AIndex: Integer;
   ACumulative: Boolean);
 begin
   UpdateGraphPoints(AIndex, FLoBound, FUpBound, ACumulative);
+end;
+
+procedure TBasicPointSeries.SourceChanged(ASender: TObject);
+begin
+  FLoBound := 0;
+  FUpBound := Count - 1;
+  inherited;
 end;
 
 procedure TBasicPointSeries.UpdateMargins(
