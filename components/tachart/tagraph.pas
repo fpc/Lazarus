@@ -1847,13 +1847,6 @@ begin
       s.VisitSources(AVisitor, AAxis, AData);
 end;
 
-function SgnInt(X: Double): Integer;
-begin
-  if X > 0 then Result := +1
-  else if X < 0 then Result := -1
-  else Result := 0;
-end;
-
 function TChart.XGraphToImage(AX: Double): Integer;
 begin
   Result := ImgRoundChecked(FScale.X * AX + FOffset.X);
@@ -1861,12 +1854,7 @@ end;
 
 function TChart.XImageToGraph(AX: Integer): Double;
 begin
-  if AX >= MAX_COORD then
-    Result := Infinity * SgnInt(FScale.X)
-  else if AX <= -MAX_COORD then
-    Result := -Infinity * SgnInt(FScale.X)
-  else
-    Result := (AX - FOffset.X) / FScale.X;
+  Result := (AX - FOffset.X) / FScale.X;
 end;
 
 function TChart.YGraphToImage(AY: Double): Integer;
@@ -1876,12 +1864,7 @@ end;
 
 function TChart.YImageToGraph(AY: Integer): Double;
 begin
-  if AY >= MAX_COORD then
-    Result := Infinity * SgnInt(FScale.Y)
-  else if AY <= -MAX_COORD then
-    Result := -Infinity * SgnInt(FScale.Y)
-  else
-    Result := (AY - FOffset.Y) / FScale.Y;
+  Result := (AY - FOffset.Y) / FScale.Y;
 end;
 
 procedure TChart.ZoomFull(AImmediateRecalc: Boolean);
