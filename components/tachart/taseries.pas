@@ -63,7 +63,7 @@ type
     procedure SetSeriesColor(AValue: TColor);
     procedure SetZeroLevel(AValue: Double);
   strict protected
-    function GetLabelDataPoint(AIndex: Integer): TDoublePoint; override;
+    function GetLabelDataPoint(AIndex, AYIndex: Integer): TDoublePoint; override;
     function ToolTargetDistance(const AParams: TNearestPointParams;
       AGraphPt: TDoublePoint; APointIdx, AXIdx, AYIdx: Integer): Integer; override;
   protected
@@ -1245,13 +1245,19 @@ begin
   Result := Abs(f(2 * w) - f(0));
 end;
 
-function TBarSeries.GetLabelDataPoint(AIndex: Integer): TDoublePoint;
+function TBarSeries.GetLabelDataPoint(AIndex, AYIndex: Integer): TDoublePoint;
 var
-  ofs, w: Double;
+  ofs, w, wbar: Double;
 begin
-  Result := inherited GetLabelDataPoint(AIndex);
+  Result := inherited GetLabelDataPoint(AIndex, AYIndex);
   BarOffsetWidth(TDoublePointBoolArr(Result)[IsRotated], AIndex, ofs, w);
   TDoublePointBoolArr(Result)[IsRotated] += ofs;
+
+  // Find x centers of bars in non-stacked bar series with multiple y values.
+  if (not FStacked) and (Source.YCount > 1) then begin
+    wbar := 2 * w / Source.YCount;
+    TDoublePointboolArr(Result)[IsRotated] += (wbar * (AYIndex + 0.5) - w);
+  end;
 end;
 
 procedure TBarSeries.GetLegendItems(AItems: TChartLegendItems);
