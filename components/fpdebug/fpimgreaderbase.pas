@@ -13,7 +13,7 @@ uses
   {$endif}
   fgl, lazfglhash,
   fpDbgSymTable,
-  Classes, SysUtils, LazUTF8Classes;
+  Classes, SysUtils, LazUTF8Classes, contnrs;
 
 type
   TDbgImageSection = record
@@ -37,8 +37,23 @@ type
     NewAddr: QWord;
     class operator =(r1,r2: TDbgAddressMap) : boolean;
   end;
+  PDbgAddressMap = ^TDbgAddressMap;
   TDbgAddressMapList = specialize TFPGList<TDbgAddressMap>;
-  TDbgAddressMapHashList = specialize TLazFPGHashTable<TDbgAddressMap>;
+
+  { TDbgAddressMapHashList }
+
+  TDbgAddressMapHashList = class(specialize TLazFPGHashTable<TDbgAddressMap>)
+  public
+    function ItemFromNode(ANode: THTCustomNode): TDbgAddressMap;
+    function ItemPointerFromNode(ANode: THTCustomNode): PDbgAddressMap;
+  end;
+
+  { TDbgAddressMapPointerHashList }
+
+  TDbgAddressMapPointerHashList = class(specialize TLazFPGHashTable<PDbgAddressMap>)
+  public
+    function ItemPointerFromNode(ANode: THTCustomNode): PDbgAddressMap;
+  end;
 
   { TDbgFileLoader }
   {$ifdef windows}
@@ -105,6 +120,28 @@ implementation
 
 var
   RegisteredImageReaderClasses  : TFPList;
+
+{ TDbgAddressMapPointerHashList }
+
+function TDbgAddressMapPointerHashList.ItemPointerFromNode(ANode: THTCustomNode
+  ): PDbgAddressMap;
+begin
+  Result := THTGNode(ANode).Data;
+end;
+
+{ TDbgAddressMapHashList }
+
+function TDbgAddressMapHashList.ItemFromNode(ANode: THTCustomNode
+ ): TDbgAddressMap;
+begin
+  Result := THTGNode(ANode).Data;
+end;
+
+function TDbgAddressMapHashList.ItemPointerFromNode(ANode: THTCustomNode
+  ): PDbgAddressMap;
+begin
+  Result := @THTGNode(ANode).Data;
+end;
 
  class operator TDbgAddressMap.=(r1,r2: TDbgAddressMap) : boolean;
  begin
