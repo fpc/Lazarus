@@ -244,7 +244,7 @@ type
 
   TLabelDirection = (ldLeft, ldTop, ldRight, ldBottom);
 
-  TLinearMarkPositions = (lmpOutside, lmpPositive, lmpNegative, lmpInside, lmpInsideCenter);
+  TLinearMarkPositions = (lmpOutside, lmpPositive, lmpNegative, lmpInside);
 
   TSeriesPointerCustomDrawEvent = procedure (
     ASender: TChartSeries; ADrawer: IChartDrawer; AIndex: Integer;
@@ -265,6 +265,7 @@ type
     function GetLabelDirection(AIndex: Integer): TLabelDirection;
     function IsErrorBarsStored(AIndex: Integer): Boolean;
     procedure SetErrorBars(AIndex: Integer; AValue: TChartErrorBar);
+    procedure SetMarkPositionCentered(AValue: Boolean);
     procedure SetMarkPositions(AValue: TLinearMarkPositions);
     procedure SetPointer(AValue: TSeriesPointer);
     procedure SetStacked(AValue: Boolean);
@@ -279,6 +280,7 @@ type
     FUseReticule: Boolean;
     FOptimizeX: Boolean;
     FSupportsZeroLevel: Boolean;
+    FMarkPositionCentered: Boolean;
 
     procedure AfterDrawPointer(
       ADrawer: IChartDrawer; AIndex: Integer; const APos: TPoint); virtual;
@@ -288,10 +290,6 @@ type
       UseDataColors: Boolean = false);
     procedure FindExtentInterval(
       const AExtent: TDoubleRect; AFilterByExtent: Boolean);
-    {
-    function GetErrorBars(APointIndex: Integer; IsXError: Boolean;
-      out AGraphPointPos, AGraphPointNeg: Double): Boolean;
-      }
     function GetLabelDataPoint(AIndex, AYIndex: Integer): TDoublePoint; virtual;
     procedure GetLegendItemsRect(AItems: TChartLegendItems; ABrush: TBrush);
     function GetXRange(AX: Double; AIndex: Integer): Double;
@@ -311,6 +309,9 @@ type
   protected
     procedure AfterAdd; override;
     procedure UpdateMargins(ADrawer: IChartDrawer; var AMargins: TRect); override;
+
+    property MarkPositionCentered: Boolean
+      read FMarkPositionCentered write SetMarkPositionCentered default false;
 
     property XErrorBars: TChartErrorBar index 0 read GetErrorBars
       write SetErrorBars stored IsErrorBarsStored;
@@ -1123,6 +1124,7 @@ begin
       Self.Stacked := Stacked;
       Self.FUseReticule := UseReticule;
       Self.FSupportsZeroLevel := FSupportsZeroLevel;
+      Self.FMarkPositionCentered := FMarkPositionCentered;
     end;
   inherited Assign(ASource);
 end;
@@ -1294,7 +1296,7 @@ begin
           g.Y := AxisToGraphY(y);
 
         curr := TDoublePointBoolArr(g)[not IsRotated];
-        if MarkPositions = lmpInsideCenter then begin
+        if FMarkPositionCentered then begin
           if IsRotated then
             g := DoublePoint((curr + prev) * 0.5, g.y)
           else
@@ -1409,13 +1411,21 @@ const
     ((ldTop, ldBottom), (ldRight, ldLeft));
 var
   isNeg: Boolean;
+  ref: Double;
 begin
+  if FSupportsZeroLevel then
+    ref := GetZeroLevel
+  else
+    with Extent do
+      if IsRotated then
+        ref := (b.x + a.x) / 2
+      else
+        ref := (b.y + a.y) / 2;
   case MarkPositions of
-    lmpOutside: isNeg := Source[AIndex]^.Y < GetZeroLevel;
+    lmpOutside: isNeg := Source[AIndex]^.Y < ref;
     lmpPositive: isNeg := false;
     lmpNegative: isNeg := true;
-    lmpInside: isNeg := Source[AIndex]^.Y >= GetZeroLevel;
-    lmpInsideCenter: isNeg := Source[AIndex]^.Y < GetZeroLevel;
+    lmpInside: isNeg := Source[AIndex]^.Y >= ref;
   end;
   Result := DIR[IsRotated, isNeg];
 end;
@@ -1660,6 +1670,13 @@ begin
   UpdateParentChart;
 end;
 
+procedure TBasicPointSeries.SetMarkPositionCentered(AValue: Boolean);
+begin
+  if FMarkPositionCentered = AValue then exit;
+  FMarkPositionCentered := AValue;
+  UpdateParentChart;
+end;
+
 procedure TBasicPointSeries.SetMarkPositions(AValue: TLinearMarkPositions);
 begin
   if FMarkPositions = AValue then exit;
@@ -1752,7 +1769,6 @@ var
   gp: TDoublePoint;
 begin
   if not Marks.IsMarkLabelsVisible or not Marks.AutoMargins then exit;
-  if MarkPositions = lmpInsideCenter then exit;
   if Count = 0 then exit;
 
   for i := FLoBound to FUpBound do begin

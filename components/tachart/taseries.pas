@@ -94,6 +94,7 @@ type
     property BarWidthStyle: TBarWidthStyle
       read FBarWidthStyle write SetBarWidthStyle default bwPercent;
     property Depth;
+    property MarkPositionCentered;
     property MarkPositions;
     property SeriesColor: TColor
       read GetSeriesColor write SetSeriesColor stored false default clRed;
@@ -170,6 +171,7 @@ type
     property ConnectType: TConnectType
       read FConnectType write SetConnectType default ctLine;
     property Depth;
+    property MarkPositionCentered;
     property MarkPositions;
     property SeriesColor: TColor
       read GetSeriesColor write SetSeriesColor stored false default clWhite;
