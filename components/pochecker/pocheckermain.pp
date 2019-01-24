@@ -633,7 +633,7 @@ begin
     begin
       Str := S[i];
       //skip files that do not exist (anymore)
-      if FileExistsUtf8(Str) then
+      if (FileExistsUtf8(Str)) and (not FileExistsUTF8(ExtractFilePath(Str) + '.pocheckerignore')) then
       begin
         Idx := MasterPoListBox.Items.IndexOf(Str);
         if (Idx = -1) then
