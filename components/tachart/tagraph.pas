@@ -1879,7 +1879,7 @@ begin
   if AY >= MAX_COORD then
     Result := Infinity * SgnInt(FScale.Y)
   else if AY <= -MAX_COORD then
-    Result := +Infinity * SgnInt(FScale.Y)
+    Result := -Infinity * SgnInt(FScale.Y)
   else
     Result := (AY - FOffset.Y) / FScale.Y;
 end;
