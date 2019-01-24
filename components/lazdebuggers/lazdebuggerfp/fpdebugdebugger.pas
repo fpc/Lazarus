@@ -1751,7 +1751,7 @@ begin
     end
   else if FQuickPause then
     begin
-      SetState(dsPause);//dsInternalPause;
+      SetState(dsInternalPause);
       &continue:=true;
       exit;
     end
