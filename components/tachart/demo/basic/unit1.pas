@@ -6,7 +6,7 @@ interface
 
 uses
   SysUtils, Forms, Graphics, ExtCtrls,
-  TAGraph, TASeries, Buttons, StdCtrls, Spin;
+  TAGraph, TASeries, TATools, Buttons, StdCtrls, Spin, Classes;
 
 type
   { TForm1 }
@@ -21,7 +21,6 @@ type
     btnAddPie: TButton;
     btnAddLine: TButton;
     btnAddArea: TButton;
-    cbReticule: TComboBox;
     cbShowAxisTitles: TCheckBox;
     Chart1: TChart;
     cbBottomAxis: TCheckBox;
@@ -34,11 +33,14 @@ type
     Chart1LineHor: TConstantLine;
     Chart1LineVert: TConstantLine;
     cbMarkStyle: TComboBox;
+    ChartToolset1: TChartToolset;
+    DataPointCrosshairTool: TDataPointCrosshairTool;
+    cbCrosshairTool: TComboBox;
+    lblCrossHairTool: TLabel;
     lblAddCount: TLabel;
     lblAdd: TLabel;
     lblMarkStyle: TLabel;
     lblClear: TLabel;
-    lblReticule: TLabel;
     Panel1: TPanel;
     edAddCount: TSpinEdit;
     procedure btnClearAllClick(Sender: TObject);
@@ -46,6 +48,7 @@ type
     procedure btnClearBarClick(Sender: TObject);
     procedure btnClearLineClick(Sender: TObject);
     procedure btnClearPieClick(Sender: TObject);
+    procedure cbCrosshairToolChange(Sender: TObject);
     procedure cbInvertedChange(Sender: TObject);
     procedure btnAddAreaClick(Sender: TObject);
     procedure btnAddBarClick(Sender: TObject);
@@ -53,7 +56,6 @@ type
     procedure btnAddPieClick(Sender: TObject);
     procedure cbBottomAxisChange(Sender: TObject);
     procedure cbLeftAxisChange(Sender: TObject);
-    procedure cbReticuleChange(Sender: TObject);
     procedure cbShowAxisTitlesChange(Sender: TObject);
     procedure cbTitleChange(Sender: TObject);
     procedure cbFooterChange(Sender: TObject);
@@ -184,6 +186,25 @@ begin
   FreeAndNil(FPie);
 end;
 
+procedure TForm1.cbCrosshairToolChange(Sender: TObject);
+begin
+  DataPointCrosshairTool.Enabled := CbCrosshairTool.ItemIndex > 0;
+  case cbCrosshairTool.ItemIndex of
+    1: begin
+         DatapointCrosshairTool.Shape := ccsVertical;
+         DatapointCrosshairTool.DistanceMode := cdmOnlyX;
+       end;
+    2: begin
+         DatapointCrosshairTool.Shape := ccsHorizontal;
+         DatapointCrosshairTool.DistanceMode := cdmOnlyY;
+       end;
+    3: begin
+         DatapointCrosshairTool.Shape := ccsCross;
+         DatapointCrosshairTool.DistanceMode := cdmXY;
+       end;
+  end;
+end;
+
 procedure TForm1.cbBottomAxisChange(Sender: TObject);
 begin
   Chart1.BottomAxis.Visible := cbBottomAxis.Checked;
@@ -203,11 +224,6 @@ end;
 procedure TForm1.cbLegendChange(Sender: TObject);
 begin
   Chart1.Legend.Visible := cbLegend.Checked;
-end;
-
-procedure TForm1.cbReticuleChange(Sender: TObject);
-begin
-  Chart1.ReticuleMode := TReticuleMode(cbReticule.ItemIndex);
 end;
 
 procedure TForm1.cbShowAxisTitlesChange(Sender: TObject);
