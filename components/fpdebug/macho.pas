@@ -1185,9 +1185,10 @@ type
   nlist = record
     n_un : record
     case longint of
-      {$ifndef __LP64__}
-      0 : ( n_name : Pchar );   { for use when in-core }
-      {$endif}
+    // n_name is not used / but if IDE is compiled 64bit, debugging 32 bit targed, then pchar = 8 bytes => wrong
+//      {$ifndef __LP64__}
+//      0 : ( n_name : Pchar );   { for use when in-core }
+//      {$endif}
       1 : ( n_strx : int32_t ); { index into the string table  }
     end;
     n_type  : uint8_t;  { type flag, see below  }
