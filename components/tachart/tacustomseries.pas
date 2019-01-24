@@ -1293,7 +1293,8 @@ begin
           else
             g := DoublePoint(g.x, (curr + prev) * 0.5);
         end;
-        prev := curr;
+        if Stacked then
+          prev := curr;
 
         with ParentChart do
           if
