@@ -489,7 +489,6 @@ procedure TCustomComboBox.KeyDown(var Key: Word; Shift: TShiftState);
 var
   Skip, UserDropDown, PreventDropDown: Boolean;
 begin
-  FDroppingDown := False;
   Skip := False;
   UserDropDown := ((Shift *[ssAlt] = [ssAlt]) and (Key = VK_DOWN));
   PreventDropDown := Key in [VK_TAB, VK_RETURN, VK_ESCAPE];
@@ -526,7 +525,7 @@ begin
         FReturnArrowState := True;
         Skip := True;
       end;
-      FDroppingDown := True;
+      DroppedDown := True;
       if UserDropDown then
         Skip := True;
     end;
@@ -543,11 +542,6 @@ var
   sCompleteText, sPrefixText, sResultText: string;
   Utf8TextLen: Integer;
 begin
-  if DroppingDown then
-  begin
-    FDroppingDown := False;
-    DroppedDown := True;
-  end;
   inherited KeyUp(Key, Shift);
   //SelectAll when hitting return key for AutoSelect feature
   if (Key = VK_RETURN) then
@@ -816,7 +810,6 @@ begin
   FItemWidth := 0;
   FMaxLength := 0;
   FDropDownCount := 8;
-  FDroppingDown := False;
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
   ArrowKeysTraverseList := True;
