@@ -1289,7 +1289,7 @@ begin
         end;
         with ParentChart do
           if
-            (Marks.YIndex = MARKS_YINDEX_ALL) or (Marks.YIndex = si) and
+            ((Marks.YIndex = MARKS_YINDEX_ALL) or (Marks.YIndex = si)) and
             IsPointInViewPort(gl)
           then
             DrawLabel(FormattedMark(i, '', si), GraphToImage(gl), ld);
