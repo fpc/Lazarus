@@ -33,6 +33,7 @@ type
     CbShowDataLabels: TCheckBox;
     CbLabelsAt: TComboBox;
     CbShowLegend: TCheckBox;
+    CbCentered: TCheckBox;
     EdYCount: TSpinEdit;
     EdZeroLevel: TFloatSpinEdit;
     Label1: TLabel;
@@ -49,6 +50,7 @@ type
     ChartSourceLine2: TUserDefinedChartSource;
     procedure BtnNewDataClick(Sender: TObject);
     procedure CbBandedChange(Sender: TObject);
+    procedure CbCenteredChange(Sender: TObject);
     procedure CbLabelsAtChange(Sender: TObject);
     procedure CbShowDataLabelsChange(Sender: TObject);
     procedure CbShowLegendChange(Sender: TObject);
@@ -87,7 +89,7 @@ implementation
 {$R *.lfm}
 
 uses
-  Math, TAChartUtils;
+  Math, TAChartUtils, TATextElements;
 
 type
   TData = record
@@ -118,6 +120,18 @@ begin
   {$IFEND}
 end;
 
+procedure TForm1.CbCenteredChange(Sender: TObject);
+begin
+  Chart1AreaSeries1.MarkPositionCentered := CbCentered.Checked;
+  if CbCentered.Checked then begin
+    Chart1AreaSeries1.Marks.Distance := 0;
+    Chart1AreaSeries1.Marks.Attachment := maCenter;
+  end else begin
+    Chart1AreaSeries1.Marks.Distance := 20;
+    Chart1AreaSeries1.Marks.Attachment := maDefault;
+  end;
+end;
+
 procedure TForm1.CbLabelsAtChange(Sender: TObject);
 begin
   if CbLabelsAt.ItemIndex = 0 then
@@ -133,6 +147,8 @@ begin
     Chart1AreaSeries1.Marks.Format := '%.2f';
   end else
     Chart1AreaSeries1.Marks.Style := smsNone;
+  CbCentered.Enabled := CbShowDataLabels.Checked;
+  CbLabelsAt.Enabled := CbShowDataLabels.Checked;
 end;
 
 procedure TForm1.CbShowLegendChange(Sender: TObject);
