@@ -278,6 +278,7 @@ type
     FUpBound: Integer;
     FUseReticule: Boolean;
     FOptimizeX: Boolean;
+    FSupportsZeroLevel: Boolean;
 
     procedure AfterDrawPointer(
       ADrawer: IChartDrawer; AIndex: Integer; const APos: TPoint); virtual;
@@ -1121,6 +1122,7 @@ begin
         Self.FPointer.Assign(Pointer);
       Self.Stacked := Stacked;
       Self.FUseReticule := UseReticule;
+      Self.FSupportsZeroLevel := FSupportsZeroLevel;
     end;
   inherited Assign(ASource);
 end;
@@ -1249,6 +1251,7 @@ var
   style: TChartStyle;
   lfont: TFont;
   curr, prev: Double;
+  ext: TDoubleRect;
 begin
   if not Marks.IsMarkLabelsVisible then exit;
 
@@ -1256,13 +1259,17 @@ begin
   try
     lfont.Assign(Marks.LabelFont);
     ParentChart.DisableRedrawing;
+    ext := Extent;
 
     for i := FLoBound to FUpBound do begin
       if IsNan(Source[i]^.Point) then
         continue;
       y := Source[i]^.Y;
       ysum := y;
-      prev := GetZeroLevel;
+      if FSupportsZeroLevel then
+        prev := GetZeroLevel
+      else
+        prev := TDoublePointBoolArr(ext.a)[not IsRotated];
       ld := GetLabelDirection(i);
       for si := 0 to Source.YCount - 1 do begin
         if Styles <> nil then begin

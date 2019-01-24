@@ -1072,6 +1072,7 @@ begin
 
   FStacked := true;
   FOptimizeX := false;
+  FSupportsZeroLevel := true;
 end;
 
 destructor TBarSeries.Destroy;
@@ -1469,6 +1470,7 @@ begin
   FAreaLinesPen := TPen.Create;
   FAreaLinesPen.OnChange := @StyleChanged;
   FStacked := true;
+  FSupportsZeroLevel := FUseZeroLevel;
 end;
 
 destructor TAreaSeries.Destroy;
@@ -1757,6 +1759,7 @@ procedure TAreaSeries.SetUseZeroLevel(AValue: Boolean);
 begin
   if FUseZeroLevel = AValue then exit;
   FUseZeroLevel := AValue;
+  FSupportsZeroLevel := FUseZeroLevel;
   UpdateParentChart;
 end;
 
