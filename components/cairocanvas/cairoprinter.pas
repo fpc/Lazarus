@@ -94,10 +94,6 @@ type
 
 implementation
 
-type
-  TDocAccess=class(TCairoPrinterCanvas)
-  end;
-
 function TCairoFilePrinter.GetCanvas: TCanvas;
 begin
   result := fCairoCanvas;
@@ -117,9 +113,7 @@ procedure TCairoFilePrinter.SetCairoBackend(AValue: TCairoBackend);
 begin
   if fCairoBackend=AValue then
     Exit;
-
   CheckDoc('CairoBackend');
-
   fCairoBackend := AValue;
 end;
 
@@ -127,9 +121,7 @@ procedure TCairoFilePrinter.SetFilename(AValue: string);
 begin
   if fFileName=AValue then
     Exit;
-
   CheckDoc('Filename');
-
   fFileName:=AValue;
 end;
 
@@ -137,9 +129,7 @@ procedure TCairoFilePrinter.SetOptions(AValue: TCairoPrinterOptions);
 begin
   if fOptions=AValue then
     Exit;
-
   CheckDoc('Options');
-
   fOptions:=AValue;
 end;
 
@@ -163,9 +153,7 @@ procedure TCairoFilePrinter.SetStream(AValue: TStream);
 begin
   if fStream=AValue then
     Exit;
-
   CheckDoc('Stream');
-
   fStream:=AValue;
 end;
 
@@ -173,9 +161,7 @@ procedure TCairoFilePrinter.SetXDPI(AValue: Integer);
 begin
   if fXDPI=AValue then
     exit;
-
   CheckDoc('XDPI');
-
   fXDPI := AValue;
 end;
 
@@ -183,9 +169,7 @@ procedure TCairoFilePrinter.SetYDPI(AValue: Integer);
 begin
   if YDPI=AValue then
     exit;
-
   CheckDoc('YDPI');
-
   fYDPI := AValue;
 end;
 
@@ -235,14 +219,14 @@ begin
 
   Include(fStatus, csDoc);
 
-  {%H-}TDocAccess(fCairoCanvas).XDPI:=fXDPI;
-  {%H-}TDocAccess(fCairoCanvas).YDPI:=fYDPI;
-  {%H-}TDocAccess(fCairoCanvas).BeginDoc;
+  fCairoCanvas.XDPI:=fXDPI;
+  fCairoCanvas.YDPI:=fYDPI;
+  fCairoCanvas.BeginDoc;
 end;
 
 procedure TCairoFilePrinter.EndDoc;
 begin
-  {%H-}TDocAccess(fCairoCanvas).EndDoc;
+  fCairoCanvas.EndDoc;
   Exclude(fStatus, csDoc);
   fCairoCanvas.Free;
   fCairoCanvas:=nil;
@@ -250,7 +234,7 @@ end;
 
 procedure TCairoFilePrinter.NewPage;
 begin
-  {%H-}TDocAccess(fCairoCanvas).NewPage;
+  fCairoCanvas.NewPage;
 end;
 
 
