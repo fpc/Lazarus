@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, LHelpControl,
-  Buttons, StdCtrls, FileUtil;
+  Buttons, StdCtrls, LazFileUtils;
 
 const
   IPCFile = 'letstestagain';
