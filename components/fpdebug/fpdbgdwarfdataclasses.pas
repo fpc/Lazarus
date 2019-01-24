@@ -4275,7 +4275,10 @@ begin
       AValue := PChar(AAttribute);
     end;
     DW_FORM_strp:   begin
-      AValue := pchar(PtrUInt(FDebugFile^.Sections[dsStr].RawData)+PDWord(AAttribute)^);
+      if IsDwarf64 then
+        AValue := pchar(PtrUInt(FDebugFile^.Sections[dsStr].RawData)+PQWord(AAttribute)^)
+      else
+        AValue := pchar(PtrUInt(FDebugFile^.Sections[dsStr].RawData)+PDWord(AAttribute)^);
     end;
   else
     Result := False;
@@ -4328,7 +4331,10 @@ begin
       AValue := PChar(AAttribute);
     end;
     DW_FORM_strp:   begin
-      AValue := PChar(PtrUInt(FDebugFile^.Sections[dsStr].RawData)+PDWord(AAttribute)^);
+      if IsDwarf64 then
+        AValue := pchar(PtrUInt(FDebugFile^.Sections[dsStr].RawData)+PQWord(AAttribute)^)
+      else
+        AValue := pchar(PtrUInt(FDebugFile^.Sections[dsStr].RawData)+PDWord(AAttribute)^);
     end;
   else
     Result := False;
