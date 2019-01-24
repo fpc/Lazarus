@@ -359,7 +359,7 @@ begin
   Screen.Cursor := crHourGlass;
   StatusBar.SimpleText := sScanningInProgress;
   try
-    ML := TStringList.Create;
+    ML := FindAllFiles(ADir, '*.pot', True);
     OL := TStringList.Create;
     SL := FindAllFiles(ADir, '*.po', True);
     // first we check if all already present master .po files exist and remove them if not
@@ -376,23 +376,14 @@ begin
       end;
       Inc(i);
     end;
-    for i := 0 to SL.Count - 1 do // we must check master .po files in a separate round first
-    begin
-      S := SL[i];
-      if IsMasterPoName(S) then
-        ML.Add(S);
-    end;
     if ML.Count > 0 then
       AddToMasterPoList(ML);
     for i := 0 to SL.Count - 1 do
     begin
       S := SL[i];
-      if not IsMasterPoName(S) then
-      begin
-        Mn := ExtractMasterNameFromChildName(S);
-        if (Mn <> '') and (MasterPoListBox.Items.IndexOf(Mn) = -1) then
-          OL.Add(S);
-      end;
+      Mn := ExtractMasterNameFromChildName(S);
+      if (Mn <> '') and (MasterPoListBox.Items.IndexOf(Mn) = -1) then
+        OL.Add(S);
     end;
     if (OL.Count > 0) or (MissingFiles.Count > 0) then
     begin
@@ -642,7 +633,7 @@ begin
     begin
       Str := S[i];
       //skip files that do not exist (anymore)
-      if FileExistsUtf8(Str) and IsMasterPoName(Str) then
+      if FileExistsUtf8(Str) then
       begin
         Idx := MasterPoListBox.Items.IndexOf(Str);
         if (Idx = -1) then

@@ -24,13 +24,13 @@ You can scan Lazarus directory with PoChecker tool in order to find all translat
 missing ones) for a given language.
 
 Each translation family consists of template and actual translations to various languages (in UTF-8 encoding).
-Translations (contrary to template) include ISO language code in their file names.
+Template has .pot extension, translations have .po extensions and include ISO language code in their file names.
 
 Template is used as a base for updating actual translation files and starting translation into new languages.
 
 Example for the IDE translation family:
 
-Template:    lazaruside.po
+Template:    lazaruside.pot
 German:      lazaruside.de.po
 Russian:     lazaruside.ru.po
 Spanish:     lazaruside.es.po

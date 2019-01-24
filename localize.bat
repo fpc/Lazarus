@@ -8,7 +8,7 @@ REM This script should be executed after adding new resource strings and after
 REM udating the translated .po files.
 REM
 REM This script
-REM - converts all compiled .rsj (.rst if .rsj is not found) files to .po files,
+REM - converts all compiled .rsj (.rst if .rsj is not found) files to .pot files,
 REM - updates all translated xx.po files
 REM
 
@@ -42,7 +42,7 @@ echo on
 @set IDE_RSJ=units\%ArchOsWS%\LazarusIDEStrConsts.rst
 @if not exist %IDE_RSJ% goto SkipIDE
 :IDE_update
-@tools\updatepofiles %IDE_RSJ% languages\lazaruside.po
+@tools\updatepofiles %IDE_RSJ% languages\lazaruside.pot
 @echo Translation file %IDE_RSJ% found.
 :SkipIDE
 @echo.
@@ -54,7 +54,7 @@ echo on
 @set DBGD_RSJ=units\%ArchOsWS%\DebuggerStrConst.rst
 @if not exist %DBGD_RSJ% goto SkipDBGD
 :DBGD_update
-@tools\updatepofiles %DBGD_RSJ% languages\debuggerstrconst.po
+@tools\updatepofiles %DBGD_RSJ% languages\debuggerstrconst.pot
 @echo Translation file %DBGD_RSJ% found.
 :SkipDBGD
 @echo.

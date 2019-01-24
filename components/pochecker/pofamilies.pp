@@ -137,7 +137,6 @@ Type
     property Count: Integer read GetCount;
   end;
 
-function IsMasterPoName(const Fn: String): Boolean;
 function ExtractMasterNameFromChildName(const AChildName: String): String;
 function ExtractLanguageFromChildName(const AChildName: string): TLangID;
 procedure LocalizePoTestTypeNames;
@@ -173,34 +172,6 @@ const
 
 //Helper functions
 
-
-function IsMasterPoName(const Fn: String): Boolean;
-//Returns True if Fn is like '[Path/To/]somename.po'
-var
-  Ext: String;
-  FnOnly, Lng: String;
-  IsInValidFn: Boolean;
-begin
-  FnOnly := ExtractFileNameOnly(Fn);
-  //If the filename contains extension separator, extract the language part and
-  //check if it seems correct, otherwise just check if the filename is like 'af_ZA.po',
-  //in both cases it is an invalid name for a master po-file.
-  //This method of checking allows to properly detect master files with names like laz.test.po.
-  //The check is a bit crude, but will do now (at least for Lazarus).
-  if Pos(ExtensionSeparator, FnOnly) <> 0 then
-  begin
-    Lng := ExtractFileExt(FnOnly);
-    Lng := Copy(Lng, 2, Length(Lng)-1);
-  end
-  else
-    Lng := FnOnly;
-  IsInValidFn := MatchesMaskList(Lng, '??;??_??',';',False);
-  Ext := ExtractFileExt(Fn);
-  Result := not IsInValidFn and
-            (Length(FnOnly) > 0) and
-            (CompareText(Ext, ExtensionSeparator + 'po') = 0);
-end;
-
 function ExtractMasterNameFromChildName(const AChildName: String): String;
 {
   Pre condition: AChildName is like: somename.some_language_specifier.po
@@ -222,7 +193,7 @@ begin
   //if Len > 0 then debugln('Result[Len] = ',Result[len]);
 
   if (Len > 1) and (Len < Length(Result)) and (Result[Len] = ExtensionSeparator) then
-    Result := Copy(Result, 1, Len - 1) + Ext
+    Result := Copy(Result, 1, Len - 1) + ExtensionSeparator + 'pot'
   else
     Result := '';
 end;

@@ -25,10 +25,10 @@
        updatepofiles - updates po files.
 
   Synopsis:
-       updatepofiles filename1.po [filename2.po ... filenameN.po]
+       updatepofiles filename1.pot [filename2.pot ... filenameN.pot]
 
   Description:
-       updatepofiles deletes doubles in the po file and merges new strings into
+       updatepofiles updates the .pot file and merges new strings into
        all translated po files (filename1.*.po)
 
 }
@@ -69,7 +69,6 @@ var
   i: Integer;
   Filename: String;
   Ext: String;
-  Name: string;
   PoIndex: Integer;
 begin
   Result:=false;
@@ -93,19 +92,12 @@ begin
       exit;
     end;
 
-    if (Ext<>'.po') and  (Ext<>'.rst') and (Ext<>'.lrt')  and (Ext<>'.rsj') then begin
+    if (Ext<>'.pot') and  (Ext<>'.rst') and (Ext<>'.lrt')  and (Ext<>'.rsj') then begin
       writeln('ERROR: invalid extension: ',Filename);
       exit;
     end;
 
-    Name:=ExtractFileName(Filename);
-    Name:=LeftStr(Name,length(Name)-length(Ext));
-    if Pos('.',Name)>0 then begin
-      writeln('ERROR: invalid unitname: ',Name);
-      exit;
-    end;
-
-    if Ext='.po' then begin
+    if Ext='.pot' then begin
       if Files=nil then
         Files:=TStringList.Create;
       Files.Add(Filename);
@@ -131,7 +123,7 @@ begin
 
   if not ParamsValid then
     writeln('Usage: ',ExtractFileName(ParamStrUTF8(0))
-       ,' filename1.po [filename2.po ... filenameN.po]')
+       ,' filename1.pot [filename2.pot ... filenameN.pot]')
   else
     UpdateAllPoFiles;
 

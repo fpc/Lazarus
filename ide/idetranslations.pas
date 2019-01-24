@@ -240,7 +240,7 @@ begin
       if (Ext<>'.rst') and (Ext<>'.rsj') and (Ext<>'.lrj') then
         continue;
       if POFilename='' then
-        OutputFilename:=PODirectory+ChangeFileExt(Files[i],'.po')
+        OutputFilename:=PODirectory+ChangeFileExt(Files[i],'.pot')
       else
         OutputFilename:=PODirectory+POFilename;
       //DebugLn(['ConvertRSTFiles RSTFilename=',RSTFilename,' OutputFilename=',OutputFilename]);

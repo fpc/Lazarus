@@ -6,7 +6,7 @@
 # udating the translated .po files.
 #
 # This script
-# - converts all compiled .rst files to .po files,
+# - converts all compiled .rst files to .pot files,
 # - updates all translated xx.po files
 #
 
@@ -51,7 +51,7 @@ for idx in ${!RSTFILES[@]}; do
     RST=`find $RSTDIR -name $RSTFILE.$RSEXT | xargs ls -1t | head -1`;
   
     if [ -n "$RST" ]; then
-      POFileFull=$RSTDIR/languages/$POFILE.po
+      POFileFull=$RSTDIR/languages/$POFILE.pot
       
       ./tools/updatepofiles $RST $POFileFull
       

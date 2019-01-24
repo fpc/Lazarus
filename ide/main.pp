@@ -4196,7 +4196,7 @@ begin
     DebugLn(['Warning: (lazarus) [TMainIDE.UpdateProjectPOFile] unable to get project target filename']);
     exit;
   end;
-  POFilename:=ChangeFileExt(POFilename, '.po');
+  POFilename:=ChangeFileExt(POFilename, '.pot');
 
   if AProject.POOutputDirectory <> '' then begin
     POOutDir:=AProject.GetPOOutDirectory;
