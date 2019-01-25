@@ -1068,7 +1068,6 @@ begin
     for a in ALocation do
       if ip=a then begin
         FCurrentBreakpoint := Result;
-        Result.ResetBreak;
         break;
       end;
 end;
