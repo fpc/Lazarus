@@ -322,7 +322,7 @@ type
     {$ENDIF}
     procedure Notification(
       AComponent: TComponent; AOperation: TOperation); override;
-    procedure PrepareAxis(ADrawer: IChartDrawer);
+      procedure PrepareAxis(ADrawer: IChartDrawer);
     function PrepareLegend(
       ADrawer: IChartDrawer; var AClipRect: TRect): TChartLegendDrawingData;
     procedure SetBiDiMode(AValue: TBiDiMode); override;
@@ -1465,10 +1465,12 @@ var
   prevExt: TDoubleRect;
   axis: TChartAxis;
   scDepth: Integer;
+  scSeriesMargins: TRect;
   scChartMargins: TRect;
   scMinDataSpace: Integer;
 begin
   scDepth := ADrawer.Scale(Depth);
+  scSeriesMargins := GetMargins(ADrawer);
   scChartMargins.Left := ADrawer.Scale(Margins.Left);
   scChartMargins.Right := ADrawer.Scale(Margins.Right);
   scChartMargins.Top := ADrawer.Scale(Margins.Top);
@@ -1478,7 +1480,7 @@ begin
   if not AxisVisible then begin
     FClipRect.Left += scDepth;
     FClipRect.Bottom -= scDepth;
-    CalculateTransformationCoeffs(GetMargins(ADrawer), scChartMargins, scMinDataSpace);
+    CalculateTransformationCoeffs(scSeriesMargins, scChartMargins, scMinDataSpace);
     exit;
   end;
 
@@ -1499,7 +1501,7 @@ begin
       SideByAlignment(FClipRect, aa, -axisMargin[aa]);
     prevExt := FCurrentExtent;
     FCurrentExtent := FLogicalExtent;
-    CalculateTransformationCoeffs(GetMargins(ADrawer), scChartMargins, scMinDataSpace);
+    CalculateTransformationCoeffs(scSeriesMargins, scChartMargins, scMinDataSpace);
     if prevExt = FCurrentExtent then break;
     prevExt := FCurrentExtent;
   end;
