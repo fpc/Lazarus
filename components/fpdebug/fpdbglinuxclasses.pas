@@ -234,6 +234,7 @@ type
     FHasExceptionSignal: Boolean;
     FIsPaused, FInternalPauseRequested, FIsInInternalPause: boolean;
     FIsSteppingBreakPoint: boolean;
+    FHasThreadState: boolean;
     function GetDebugRegOffset(ind: byte): pointer;
     function ReadDebugReg(ind: byte; out AVal: PtrUInt): boolean;
     function WriteDebugReg(ind: byte; AVal: PtrUInt): boolean;
@@ -403,7 +404,10 @@ function TDbgLinuxThread.ReadThreadState: boolean;
 var
   io: iovec;
 begin
+  assert(FIsPaused, 'TDbgLinuxThread.ReadThreadState: FIsPaused');
   result := true;
+  if FHasThreadState then
+    exit;
   io.iov_base:=@(FUserRegs.regs32[0]);
   io.iov_len:= sizeof(FUserRegs);
   if fpPTrace(PTRACE_GETREGSET, ID, pointer(PtrUInt(NT_PRSTATUS)), @io) <> 0 then
@@ -413,6 +417,7 @@ begin
     end;
   FUserRegsChanged:=false;
   FRegisterValueListValid:=false;
+  FHasThreadState := Result;
 end;
 
 function TDbgLinuxThread.RequestInternalPause: Boolean;
@@ -476,6 +481,7 @@ begin
 
   else
   if wstopsig(AWaitedStatus) = SIGTRAP then begin
+    ReadThreadState;
     CheckAndResetInstructionPointerAfterBreakpoint;
     FHasExceptionSignal := False; // TODO: main loop should search all threads for breakpoints
   end
@@ -498,10 +504,12 @@ begin
   FIsInInternalPause := False;
   FIsPaused := False;
   FExceptionSignal := 0;
+  FHasThreadState := False;
 end;
 
 function TDbgLinuxThread.ResetInstructionPointerAfterBreakpoint: boolean;
 begin
+  ReadThreadState;
   result := true;
 
   if Process.Mode=dm32 then
@@ -609,6 +617,7 @@ end;
 
 procedure TDbgLinuxThread.LoadRegisterValues;
 begin
+  ReadThreadState;
   if Process.Mode=dm32 then
   begin
     FRegisterValueList.DbgRegisterAutoCreate['eax'].SetValue(FUserRegs.regs32[eax], IntToStr(FUserRegs.regs32[eax]),4,0);
@@ -661,6 +670,7 @@ end;
 
 function TDbgLinuxThread.GetInstructionPointerRegisterValue: TDbgPtr;
 begin
+  ReadThreadState;
   if Process.Mode=dm32 then
     result := FUserRegs.regs32[eip]
   else
@@ -669,6 +679,7 @@ end;
 
 function TDbgLinuxThread.GetStackBasePointerRegisterValue: TDbgPtr;
 begin
+  ReadThreadState;
   if Process.Mode=dm32 then
     result := FUserRegs.regs32[ebp]
   else
@@ -677,6 +688,7 @@ end;
 
 function TDbgLinuxThread.GetStackPointerRegisterValue: TDbgPtr;
 begin
+  ReadThreadState;
   if Process.Mode=dm32 then
     result := FUserRegs.regs32[UESP]
   else
@@ -985,17 +997,18 @@ begin
 
   // check other threads if they need a singlestep
   for TDbgThread(ThreadToContinue) in FThreadMap do
-    if (ThreadToContinue <> AThread) then begin
+    if (ThreadToContinue <> AThread) and ThreadToContinue.FIsPaused then begin
       IP := ThreadToContinue.GetInstructionPointerRegisterValue;
       if HasInsertedBreakInstructionAtLocation(IP) then begin
         TempRemoveBreakInstructionCode(IP);
         ThreadToContinue.BeforeContinue;
 
-        while ThreadToContinue.GetInstructionPointerRegisterValue = IP do begin
+        while (ThreadToContinue.GetInstructionPointerRegisterValue = IP) do begin
           fpseterrno(0);
           fpPTrace(PTRACE_SINGLESTEP, ThreadToContinue.ID, pointer(1), pointer(wstopsig(TDbgLinuxThread(ThreadToContinue).FExceptionSignal)));
           TDbgLinuxThread(ThreadToContinue).ResetPauseStates; // So BeforeContinue will not run again
 
+          ThreadToContinue.FIsPaused := True;
           if CheckNoError then begin
             PID := fpWaitPid(ThreadToContinue.ID, WaitStatus, __WALL);
             if PID <> ThreadToContinue.ID then begin
@@ -1268,7 +1281,6 @@ begin
       end;
     end;
   end;
-
 
 end;
 
