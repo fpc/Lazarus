@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2019-01-07 18:14+0200\n"
+"PO-Revision-Date: 2019-01-25 17:57+0200\n"
 "Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -9544,7 +9544,7 @@ msgstr "Не текстовий файл"
 
 #: lazarusidestrconsts.lisfilescountconvertedtotextformat
 msgid "%d files were converted to text format."
-msgstr ""
+msgstr "%d файлів перетворено у текстовий формат."
 
 #: lazarusidestrconsts.lisfilesettings
 msgid "File Settings"
@@ -9567,10 +9567,8 @@ msgid "Files in ASCII or UTF-8 encoding"
 msgstr "Файли в кодуванні ASCII або UTF-8"
 
 #: lazarusidestrconsts.lisfilesisconvertedtotextformat
-#, fuzzy
-#| msgid "File %s is converted to text format."
 msgid "File %s was converted to text format."
-msgstr "Файл %s перетворено на текстовий."
+msgstr "Файл %s перетворено у текстовий формат."
 
 #: lazarusidestrconsts.lisfilesnotinasciinorutf8encoding
 msgid "Files not in ASCII nor UTF-8 encoding"
