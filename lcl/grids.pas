@@ -2313,6 +2313,8 @@ begin
   if ACount<1 then
     Clear
   else begin
+    if EditorMode and (ACount<=Col) then
+      EditorMode:=False;
     NewRowCount := RowCount;
     if (OldC=0) and FGridPropBackup.ValidData then begin
       NewRowCount := FGridPropBackup.RowCount;
@@ -3038,6 +3040,8 @@ begin
   OldR := FRows.Count;
   if AValue<>OldR then begin
     if AValue>=0 then begin
+      if EditorMode and (AValue<=Row) then
+        EditorMode:=False;
       NewColCount := ColCount;
       if (OldR=0) and FGridPropBackup.ValidData then begin
         NewColCount := FGridPropBackup.ColCount;
@@ -8260,8 +8264,7 @@ procedure TCustomGrid.EditorHide;
 var
   WasFocused: boolean;
 begin
-  if not EditorLocked and (Editor<>nil) and Editor.HandleAllocated
-    and Editor.Visible then
+  if not EditorLocked and (Editor<>nil) and Editor.Visible then
   begin
     WasFocused := Editor.Focused;
     FEditorMode:=False;
@@ -9837,6 +9840,8 @@ begin
   Result:=False;
   if FCols.Count=0 then
     exit; // already cleared
+  if EditorMode then
+    EditorMode:=False;
   // save some properties
   FGridPropBackup.FixedColCount := FFixedCols;
   FGridPropBackup.ColCount      := ColCount;
@@ -9852,6 +9857,8 @@ begin
   Result:=False;
   if FRows.Count=0 then
     exit; // already cleared
+  if EditorMode then
+    EditorMode:=False;
   // save some properties
   FGridPropBackup.FixedRowCount := FFixedRows;
   FGridPropBackup.RowCount      := RowCount;
