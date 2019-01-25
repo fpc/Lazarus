@@ -1212,23 +1212,91 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  EnableWindow
-  Params: HWnd    - handle to window
-          BEnable -  whether to enable the window
-  Returns: If the window was previously disabled
+  Method:  EnableWindow                       Response to bug #0033923
+  Params:  HWnd    - handle to window
+           BEnable -  whether to enable the window
+  Returns: If the window was previously disabled.
 
   Enables or disables mouse and keyboard input to the specified window or
-  control.
+  control and updates the graphical appearance of the control
+
+ ------------------------------------------------------------------------------
+  Note June 2018: ~bk
+  In normal lazarus behavior, Enable is called by
+    1° - TWinControl.InitializeWnd (wcfInitializing in TWinControl.FWinControlFlags)
+    2° - When property TWinControl.Enabled changes : TWinControl.CMENABLEDCHANGED
+
+  To satisfy W10 new behaviour, if the aHWND parameter effectively changes the
+  Enabled state of its window, except if it is a TCusomForm descendant,
+  all its direct children will be asked to update their UI state if needed and
+  recusively propagate down the Controls children tree.
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.EnableWindow(HWnd: HWND; BEnable: Boolean): Boolean;
+
+  procedure EnableChildren(AWinControl: TWinControl; Enable: Boolean);
+  var
+    i: Integer;
+    ChildControl: TControl;
+    ChildWinControl: TWinControl absolute ChildControl;
+    RequestedEnable: Boolean;
+    EnabledOld: Boolean;
+    EnabledNew: Boolean;
+  begin
+    for i := 0 to AWinControl.ControlCount - 1 do begin
+      ChildControl := AWinControl.Controls[i];
+      if ChildControl is TWinControl then begin
+        if not ChildWinControl.HandleAllocated then Continue;
+        RequestedEnable := ChildWinControl.Enabled and Enable;
+        EnabledOld := IsWindowEnabled(ChildWinControl.Handle);
+        Windows.EnableWindow(ChildWinControl.Handle, RequestedEnable);
+        EnabledNew := IsWindowEnabled(ChildWinControl.Handle);
+        if (EnabledOld = EnabledNew) or (ChildWinControl.ControlCount < 1)
+        or (EnabledNew <> RequestedEnable)
+        then
+          Continue;
+        EnableChildren(ChildWinControl, RequestedEnable);
+      end
+      else
+        ChildControl.Invalidate;
+    end;
+  end;
+
+  function GetParentEnabled(AWinControl: TWinControl): Boolean;
+  var
+    ParentHandle: HWND;
+    ParentControl: TWinControl;
+  begin
+    ParentControl := AWinControl.Parent;
+    Result := not Assigned(ParentControl) or ParentControl.InheritsFrom(TCustomForm);
+    if not Result then begin
+      ParentHandle := GetParent(HWND);
+      Result := ParentHandle = 0;
+      if not Result then
+        Result := IsWindowEnabled(ParentHandle);
+    end;
+  end;
+
 var
-  OldEnable: Boolean;
+  lWinControl: TWinControl;
+  IsForm: Boolean;
+  RequestedEnable: Boolean;
 begin
-  OldEnable := IsWindowEnabled(HWnd);
-  if OldEnable <> BEnable then
-    Result := Boolean(Windows.EnableWindow(HWnd, BEnable))
+  lWinControl := GetWin32WindowInfo(HWnd)^.WinControl;
+  if not Assigned(lWinControl) then
+    Exit;
+  IsForm := lWinControl.InheritsFrom(TCustomForm);
+  if IsForm then
+    RequestedEnable := BEnable
   else
-    Result := not OldEnable;
+    RequestedEnable := BEnable and GetParentEnabled(lWinControl);
+
+  Result := Boolean(Windows.EnableWindow(HWnd, RequestedEnable));
+  if (wcfInitializing in TWinControlAccess(lWinControl).FWinControlFlags) or IsForm then
+    Exit;
+  // Result contains WS_DISABLED style. True means disabled
+  if (Result <> RequestedEnable) or (lWinControl.ControlCount < 1) then
+    Exit;
+  EnableChildren(lWinControl, RequestedEnable);
 end;
 
 {------------------------------------------------------------------------------
