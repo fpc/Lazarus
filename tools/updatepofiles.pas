@@ -85,14 +85,14 @@ begin
 
     if not FileExistsUTF8(Filename) then begin
 
-      if (Ext='.rst') or (Ext='.lrt') or (Ext='.rsj') then
+      if (Ext='.rst') or (Ext='.lrj') or (Ext='.rsj') then
         continue; // ignore resource files
 
       writeln('ERROR: file not found: ',FileName);
       exit;
     end;
 
-    if (Ext<>'.pot') and  (Ext<>'.rst') and (Ext<>'.lrt')  and (Ext<>'.rsj') then begin
+    if (Ext<>'.pot') and  (Ext<>'.rst') and (Ext<>'.lrj')  and (Ext<>'.rsj') then begin
       writeln('ERROR: invalid extension: ',Filename);
       exit;
     end;
