@@ -144,8 +144,8 @@ begin
   JSonEvent := TJSONObject.Create;
   try
     JSonEvent.Add('type',FpEventTypeNames[AnEvent.EventType]);
-    if AnEvent.BreakpointAddr<>0 then
-      JSonEvent.Add('breakpointLocation', FormatAddress(AnEvent.BreakpointAddr));
+    if AnEvent.BreakpointServerIdr<>0 then
+      JSonEvent.Add('BreakpointServerIdr', AnEvent.BreakpointServerIdr);
     if AnEvent.SendByConnectionIdentifier>0 then
       JSonEvent.Add('connIdentifier', AnEvent.SendByConnectionIdentifier);
     if AnEvent.Validity<>ddsUnknown then

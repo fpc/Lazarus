@@ -8,7 +8,9 @@ uses
   Classes,
   SysUtils,
   ssockets,
+  {$IFDEF UNIX}
   BaseUnix,
+  {$ENDIF}
   debugthread,
   sockets,
   syncobjs,
@@ -189,7 +191,9 @@ begin
   FData := data;
 
   // Set non-blocking
+  {$IFDEF UNIX}
   fpfcntl(FData.Handle,F_SETFL,O_NONBLOCK);
+  {$ENDIF}
 
   FDebugThread := ADebugThread;
   FDebugTcpServer := ADebugTcpServer;

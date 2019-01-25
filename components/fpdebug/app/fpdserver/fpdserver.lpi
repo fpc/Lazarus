@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="9"/>
+    <Version Value="11"/>
     <General>
       <Flags>
         <MainUnitHasCreateFormStatements Value="False"/>
@@ -15,9 +15,6 @@
     <i18n>
       <EnableI18N LFM="False"/>
     </i18n>
-    <VersionInfo>
-      <StringTable ProductVersion=""/>
-    </VersionInfo>
     <BuildModes Count="1">
       <Item1 Name="Default" Default="True"/>
     </BuildModes>
@@ -25,9 +22,10 @@
       <Version Value="2"/>
     </PublishOptions>
     <RunParams>
-      <local>
-        <FormatVersion Value="1"/>
-      </local>
+      <FormatVersion Value="2"/>
+      <Modes Count="1">
+        <Mode0 Name="default"/>
+      </Modes>
     </RunParams>
     <RequiredPackages Count="2">
       <Item1>
@@ -45,7 +43,6 @@
       <Unit1>
         <Filename Value="debugthread.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="debugthread"/>
       </Unit1>
       <Unit2>
         <Filename Value="debugthreadcommand.pas"/>
@@ -70,7 +67,6 @@
       <Unit6>
         <Filename Value="debugscriptserver.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="debugscriptserver"/>
       </Unit6>
     </Units>
   </ProjectOptions>
@@ -95,7 +91,7 @@
     <Other>
       <ExecuteAfter>
         <Command Value="codesign -s fpdebug fpdserver"/>
-        <CompileReasons Run="False"/>
+        <CompileReasons Compile="False" Build="False" Run="False"/>
       </ExecuteAfter>
     </Other>
   </CompilerOptions>
