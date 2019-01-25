@@ -4516,7 +4516,7 @@ procedure TAnchorDockHostSite.SimplifyOneControl;
 var
   Site: TAnchorDockHostSite;
   i: Integer;
-  Child: TControl;
+  Child, PlaceHolder: TControl;
   a: TAnchorKind;
 begin
   if SiteType<>adhstOneControl then exit;
@@ -4538,11 +4538,22 @@ begin
 
     Site.BeginUpdateLayout;
     // move controls from Site to Self
+    // when a site is moved to a other parent, we have to insert a place holder
+    // on old site or the splitters will be removed, see issue #34937
     i:=Site.ControlCount-1;
     while i>=0 do begin
       Child:=Site.Controls[i];
-      if Child.Owner<>Site then begin
-        //debugln(['TAnchorDockHostSite.SimplifyOneControl Self="',Caption,'" Child=',DbgSName(Child),'="',Child.Caption,'"']);
+      if (Child.Owner<>Site) then begin
+        if not (Child is TAnchorDockSplitter) then begin
+          PlaceHolder:=TAnchorDockHostSite.CreateNew(Site);
+          PlaceHolder.Parent:=Site;
+          PlaceHolder.Anchors:=Child.Anchors;
+          for a:=Low(TAnchorKind) to High(TAnchorKind) do
+            PlaceHolder.AnchorSide[a].Control:=Child.AnchorSide[a].Control;
+          PlaceHolder.SetBounds(Child.Left, Child.Top, Child.Width, Child.Height);
+          PlaceHolder.Name:='_'+Child.Name;
+          PlaceHolder.Visible:=Child.Visible;
+        end;
         Child.Parent:=Self;
         if Child=Site.Pages then begin
           FPages:=Site.Pages;
@@ -4556,6 +4567,15 @@ begin
         end;
       end;
       i:=Min(i,Site.ControlCount)-1;
+    end;
+
+    for i:=0 to ControlCount-1 do begin
+      Child:=Controls[i];
+      PlaceHolder:=TControl(Site.FindComponent('_'+Child.Name));
+      if not Assigned(PlaceHolder) then continue;
+      for a:=Low(TAnchorKind) to High(TAnchorKind) do
+        if PlaceHolder.AnchorSide[a].Control<>Site then
+          Child.AnchorSide[a].Control:=PlaceHolder.AnchorSide[a].Control;
     end;
     Site.EndUpdateLayout;
 
