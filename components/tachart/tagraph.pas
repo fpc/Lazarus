@@ -602,7 +602,6 @@ begin
     (AMargin.Top <> AChartMargins.Top) or (AMargin.Bottom <> AChartMargins.Bottom),
     true, @FCurrentExtent.a.Y, @FCurrentExtent.b.Y);
 
-
   FScale.X := rX.CalcScale(1);
   FScale.Y := rY.CalcScale(-1);
   if Proportional then begin
@@ -1255,7 +1254,7 @@ begin
     if s.Active then
       s.UpdateMargins(ADrawer, Result);
   for i := Low(a) to High(a) do
-    a[i] := ADrawer.Scale(a[i] + TRectArray(Margins.Data)[i]);
+    a[i] := a[i] + ADrawer.Scale(TRectArray(Margins.Data)[i]);
 end;
 
 function TChart.GetRenderingParams: TChartRenderingParams;

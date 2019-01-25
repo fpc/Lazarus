@@ -1788,6 +1788,7 @@ var
   dir: TLabelDirection;
   m: array [TLabelDirection] of Integer absolute AMargins;
   gp: TDoublePoint;
+  scMarksDistance: Integer;
 begin
   if not Marks.IsMarkLabelsVisible or not Marks.AutoMargins then exit;
   if Count = 0 then exit;
@@ -1805,6 +1806,7 @@ begin
    Count-1}
   FindExtentInterval(ParentChart.CurrentExtent, Source.IsSorted);
 
+  scMarksDistance := ADrawer.Scale(Marks.Distance);
   for i := FLoBound to FUpBound do begin
     gp := GetGraphPoint(i);
     if not ParentChart.IsPointInViewPort(gp) then continue;
@@ -1817,7 +1819,7 @@ begin
     if Marks.DistanceToCenter then
       dist := dist div 2;
 
-    m[dir] := Max(m[dir], dist + Marks.Distance);
+    m[dir] := Max(m[dir], dist + scMarksDistance);
   end;
 end;
 
