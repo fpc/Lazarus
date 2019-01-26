@@ -450,6 +450,7 @@ begin
         if not gtk_tree_selection_path_is_selected(Selection, Path) then
           Result := -1;
       end;
+      gtk_tree_path_free(Path);
     end else
       Result := -1;
   end;
@@ -2526,6 +2527,7 @@ begin
        width := width + inner_border^.left + inner_border^.right;
        y := y - inner_border^.top;
        height := height + inner_border^.top + inner_border^.bottom;
+       gtk_border_free(inner_border);
     end
     else
     begin
