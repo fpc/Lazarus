@@ -3343,13 +3343,15 @@ var
     AFamilies: PPPangoFontFamily;
     AFaces: PPPangoFontFace;
     ANumFaces: Integer;
+    PContext: PPangoContext;
   begin
     AList.Clear;
     SetLength(Faces, 0);
     Result := -1;
     AFamilies := nil;
 
-    pango_context_list_families(gdk_pango_context_get, @AFamilies, @Result);
+    PContext := gdk_pango_context_get;
+    pango_context_list_families(PContext, @AFamilies, @Result);
     SetLength(Faces, Result);
     for i := 0 to Result - 1 do
     begin
@@ -3364,6 +3366,7 @@ var
       g_free(AFaces);
     end;
     g_free(AFamilies);
+    g_object_unref(PContext);
   end;
 
   function Gtk2GetFontFamilies(var List: TStringList;
@@ -7753,6 +7756,7 @@ begin
   if (Rect1.height > 0) and (Rect1.width > 0) then begin
     Region := gdk_region_rectangle(@Rect1);
     gdk_window_move_region(Window, Region, dx, dy);
+    gdk_region_destroy(Region);
 
     if (flags and SW_INVALIDATE) <> 0 then begin
       //invalidate
