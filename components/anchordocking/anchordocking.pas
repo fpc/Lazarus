@@ -3890,16 +3890,15 @@ var
   i: Integer;
   AControl: TControl;
 begin
-    for i:=0 to ControlCount-1 do begin
-      AControl:=Controls[i];
-      if not DockedControlIsVisible(AControl) then continue;
-      while Assigned(AControl) do
-      begin
-        if AControl is TAnchorDockHostSite then
-          TAnchorDockHostSite(AControl).UpdateHeaderShowing;
-        AControl:=AControl.parent;
-      end;
+  for i:=0 to ControlCount-1 do begin
+    AControl:=Controls[i];
+    while Assigned(AControl) do
+    begin
+      if AControl is TAnchorDockHostSite then
+        TAnchorDockHostSite(AControl).UpdateHeaderShowing;
+      AControl:=AControl.Parent;
     end;
+  end;
 end;
 
 { TAnchorDockHostSite }
