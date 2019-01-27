@@ -869,13 +869,13 @@ begin
   AThread.NextIsSingleStep:=SingleStep;
   AThread.BeforeContinue;
   if HasInsertedBreakInstructionAtLocation(AThread.GetInstructionPointerRegisterValue) then begin
-    TempRemoveBreakInstructionCode(AThread.GetInstructionPointerRegisterValue)
-    fpPTrace(PTRACE_SINGLESTEP, ProcessID, pointer(1), pointer(FExceptionSignal))
+    TempRemoveBreakInstructionCode(AThread.GetInstructionPointerRegisterValue);
+    fpPTrace(PTRACE_SINGLESTEP, ProcessID, pointer(1), pointer(FExceptionSignal));
     TDbgDarwinThread(AThread).FIsSteppingBreakPoint := True;
   end
   else
   if SingleStep then begin
-    fpPTrace(PTRACE_SINGLESTEP, ProcessID, pointer(1), pointer(FExceptionSignal))
+    fpPTrace(PTRACE_SINGLESTEP, ProcessID, pointer(1), pointer(FExceptionSignal));
     TDbgDarwinThread(AThread).FIsSteppingBreakPoint := True;
   end
   else if FIsTerminating then
