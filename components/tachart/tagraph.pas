@@ -1306,7 +1306,8 @@ function TChart.IsPointInViewPort(const AP: TDoublePoint): Boolean;
 begin
   Result :=
     not IsNan(AP) and
-    InRange(AP.X, XGraphMin, XGraphMax) and InRange(AP.Y, YGraphMin, YGraphMax);
+    SafeInRangeWithBounds(AP.X, XGraphMin, XGraphMax) and
+    SafeInRangeWithBounds(AP.Y, YGraphMin, YGraphMax);
 end;
 
 procedure TChart.KeyDownAfterInterface(var AKey: Word; AShift: TShiftState);
