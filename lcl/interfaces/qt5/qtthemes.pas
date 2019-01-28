@@ -1019,7 +1019,9 @@ begin
           Result.ComplexControl := QStyleCC_ComboBox;
           Result.SubControls := QStyleSC_ComboBoxArrow;
           if Details.Part = CP_DROPDOWNBUTTONLEFT then
-            Result.Features := Ord(QtRightToLeft);
+            Result.Features := Ord(QtRightToLeft)
+          else
+            Result.Features := 0;
         end else
         if not (Details.Part = CP_READONLY) then
         begin
