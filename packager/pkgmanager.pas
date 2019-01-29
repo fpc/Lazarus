@@ -3166,29 +3166,6 @@ var
     TranslateUnitResourceStrings(AnUnitName,AFilename);
   end;
 
-  function GetPOFilenameParts(const Filename: string;
-    out AUnitName, Language: string): boolean;
-  var
-    UnitNameEnd: Integer;
-    LangEnd: Integer;
-  begin
-    Result:=false;
-    AUnitName:='';
-    Language:='';
-    UnitNameEnd:=1;
-    while (UnitNameEnd<=length(Filename)) and (Filename[UnitNameEnd]<>'.') do
-      inc(UnitNameEnd);
-    if (UnitNameEnd=1) then exit;
-    LangEnd:=UnitNameEnd+1;
-    while (LangEnd<=length(Filename)) and (Filename[LangEnd]<>'.') do
-      inc(LangEnd);
-    if LangEnd<>length(Filename)-2 then exit;
-    AUnitName:=copy(Filename,1,UnitNameEnd-1);
-    Language:=copy(Filename,UnitNameEnd+1,LangEnd-UnitNameEnd-1);
-    Result:=IsValidUnitName(AUnitName) and (Language<>'');
-    //DebugLn(['GetPOFilenameParts AUnitName=',AUnitName,' Language=',Language,' Result=',Result]);
-  end;
-  
   procedure TranslateWithFileMask(APackage: TLazPackage;
     const Directory, Language: string);
   var
@@ -3202,8 +3179,8 @@ var
     try
       CodeToolBoss.DirectoryCachePool.GetListing(Directory,Files,false);
       for Filename in Files do begin
-        if CompareFileExt(Filename,'.po',false)<>0 then continue;
         if GetPOFilenameParts(Filename,CurUnitName,CurLang)
+        and IsValidUnitName(CurUnitName)
         and (CurLang=Language)
         and (not UnitTranslated(CurUnitName))
         and (APackage.FindUnit(CurUnitName)<>nil)

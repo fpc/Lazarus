@@ -428,28 +428,23 @@ end;
 function FindTranslatedPoFiles(const BasePOFilename: string): TStringList;
 var
   Path: String;
-  Name: String;
   NameOnly: String;
   Dir: TCTDirectoryCache;
   Files: TStrings;
   Filename: String;
+  CurUnitName: String;
+  CurLang: String;
 begin
   Result:=TStringList.Create;
   Path:=ExtractFilePath(BasePOFilename);
-  Name:=ExtractFileName(BasePOFilename);
-  NameOnly:=ExtractFileNameOnly(Name);
+  NameOnly:=ExtractFileNameOnly(BasePOFilename);
   Dir:=CodeToolBoss.DirectoryCachePool.GetCache(Path);
   Files:=TStringList.Create;
   try
     Dir.GetFiles(Files,false);
     for Filename in Files do begin
-      if CompareFilenames(Filename,Name)=0 then continue;
-      if CompareFileExt(Filename,'.po',false)<>0 then continue;
-      //skip files which names don't have form 'nameonly.foo.po', e.g. 'nameonlyfoo.po'
-      if (CompareFilenames(LeftStr(Filename,length(NameOnly)+1),NameOnly+'.')<>0)
-      then
-        continue;
-      Result.Add(Path+Filename);
+      if GetPOFilenameParts(Filename, CurUnitName, CurLang) and (NameOnly=CurUnitName) then
+        Result.Add(Path+Filename);
     end;
   finally
     Files.Free;

@@ -183,6 +183,7 @@ var
     // if you don't use UTF-8, install a proper widestring manager and set this
     // to false.
 
+function GetPOFilenameParts(const Filename: string; out AUnitName, Language: string): boolean;
 function FindAllTranslatedPoFiles(const Filename: string): TStringList;
 
 // translate resource strings for one unit
@@ -408,33 +409,44 @@ begin
   end;
 end;
 
+function GetPOFilenameParts(const Filename: string; out AUnitName, Language: string): boolean;
+var
+  NameWithoutExt, Ext: string;
+  ExtLength: Integer;
+begin
+  Result:=false;
+  AUnitName:='';
+  Language:='';
+  if CompareFileExt(Filename, '.po', false)=0 then
+  begin
+    NameWithoutExt:=ExtractFileNameWithoutExt(Filename);
+    Ext:=ExtractFileExt(NameWithoutExt);
+    ExtLength:=Length(Ext);
+    if ExtLength>1 then
+    begin
+      AUnitName:=copy(NameWithoutExt, 1, Length(NameWithoutExt)-ExtLength);
+      Language:=copy(Ext, 2, ExtLength-1);
+      Result:=true;
+    end;
+  end;
+end;
+
 function FindAllTranslatedPoFiles(const Filename: string): TStringList;
 var
   Path: String;
-  Name: String;
   NameOnly: String;
-  Ext: String;
   FileInfo: TSearchRec;
-  CurExt: String;
+  CurUnitName: String;
+  CurLang: String;
 begin
   Result:=TStringList.Create;
   Path:=ExtractFilePath(Filename);
-  Name:=ExtractFilename(Filename);
-  Ext:=ExtractFileExt(Filename);
-  NameOnly:=LeftStr(Name,length(Name)-length(Ext));
-  if FindFirstUTF8(Path+GetAllFilesMask,faAnyFile,FileInfo)=0 then begin
+  NameOnly:=ExtractFileNameOnly(Filename);
+  if FindFirstUTF8(Path+GetAllFilesMask,faAnyFile,FileInfo)=0 then
     repeat
-      if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
-      or (CompareFilenames(FileInfo.Name,Name)=0) then continue;
-      CurExt:=ExtractFileExt(FileInfo.Name);
-      if (CompareFilenames(CurExt,'.po')<>0)
-      //skip files which names don't have form 'nameonly.foo.po', e.g. 'nameonlyfoo.po'
-      or (CompareFilenames(LeftStr(FileInfo.Name,length(NameOnly)+1),NameOnly+'.')<>0)
-      then
-        continue;
-      Result.Add(Path+FileInfo.Name);
+      if GetPOFilenameParts(FileInfo.Name, CurUnitName, CurLang) and (NameOnly=CurUnitName) then
+        Result.Add(Path+FileInfo.Name);
     until FindNextUTF8(FileInfo)<>0;
-  end;
   FindCloseUTF8(FileInfo);
 end;
 
