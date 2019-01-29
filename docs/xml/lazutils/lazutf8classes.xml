@@ -1,154 +1,350 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-<package name="lazutils">
+  <package name="lazutils">
 
-<!--
-  ====================================================================
-    lazutf8classes
-  ====================================================================
--->
+    <!-- lazutf8classes -->
+    <module name="lazutf8classes">
+      <short>
+        Implements UTF-8-enabled classes and routines
+      </short>
+      <descr>
+        <p>
+          lazutf8classes implements UTF-8-enabled classes and routines, including: TFileStreamUTF8, TMemoryStreamUTF8, and TStringListUTF8.
+        </p>
+        <remarks>
+          lazutf8classes has an implementation dependency on the lazfileutils unit.
+        </remarks>
+      </descr>
 
-<module name="lazutf8classes">
-<short></short>
-<descr>
-</descr>
+      <!-- class Visibility: default -->
+      <element name="TFileStreamUTF8" link="#rtl.Classes.TFileStream">
+        <short>
+          Implements a file stream with support for UTF-8-encoded file names
+        </short>
+        <descr>
+          <p>
+            TFileStreamUTF8 is a TFileStream descendant which implements a file stream with support for UTF-8-encoded content file names. TFileStreamUTF8 provides constructors which create or open the file for the stream using UTF-8 encoding.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
 
-<!-- class Visibility: default -->
-<element name="TFileStreamUTF8">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- variable Visibility: private -->
+      <element name="TFileStreamUTF8.FFileName"/>
 
-<!-- variable Visibility: private -->
-<element name="TFileStreamUTF8.FFileName">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- constructor Visibility: public -->
+      <element name="TFileStreamUTF8.Create" link="#rtl.Classes.TFileStream.Create">
+        <short>
+          Constructor for the class instance
+        </short>
+        <descr>
+          <p>
+            Create is the overloaded constructor for the class instance.
+          </p>
+          <p>
+            AFilename contains the name for the file (created using FileCreateUTF8 or opened using FileOpenUTF8).
+          </p>
+          <p>
+            Mode is the File Mode for the specified file and contains one of the follwing values:
+          </p>
+          <dl>
+            <dt>fmCreate</dt>
+            <dd>Creates a new file if needed.</dd>
+            <dt>fmOpenRead</dt>
+            <dd>Opens a file with read-only access.</dd>
+            <dt>fmOpenWrite</dt>
+            <dd>Opens a file with write-only access.</dd>
+            <dt>fmOpenReadWrite</dt>
+            <dd>Opens a file with read-write access.</dd>
+          </dl>
+          <p>
+            All file mode constants (except fmCreate) can be OR-ed with the following to specify how sharing and file locking is handled:
+          </p>
+          <dl>
+            <dt>fmShareCompat</dt>
+            <dd>Open file in DOS share-compatibility mode.</dd>
+            <dt>fmShareExclusive</dt>
+            <dd>Lock file for exclusive use.</dd>
+            <dt>fmShareDenyWrite</dt>
+            <dd>Lock file so other processes can only read.</dd>
+            <dt>fmShareDenyRead</dt>
+            <dd>Lock file so other processes cannot read.</dd>
+            <dt>fmShareDenyNone</dt>
+            <dd>Do not lock file.</dd>
+          </dl>
+          <p>
+            Please note that sharing is advisory on Unix-like platforms.
+          </p>
+          <p>
+            Rights is the file rights for the specified file. The default value is 438 (Decimal) or &666 (Octal) and indicates that the owner,  group, and others  can read and/or write to the file. The value in Rights is ignored on the Windows platform.
+          </p>
+          <p>
+            Create  instantiates a THandleStream (owned by the current class instance) which uses the valid file handle.
+          </p>
+          <remarks>
+            Please note that Create can raise an exception if the file handle from FileCreateUTF8 or FileOpenUTF8 is invalid (contains feInvalidHandle).
+          </remarks>
+        </descr>
+        <errors>
+          <dl>
+            <dt>EFCreateError</dt>
+            <dd>
+              Raised when Mode contains fmCreate and the file handle is invalid; raised with the message "Unable to create file "%s".
+            </dd>
+            <dt>EFOpenError</dt>
+            <dd>
+              Raised when the file handle is invalid when opening the file; raised with the message "Unable to open file "%s".
+            </dd>
+          </dl>
+        </errors>
+        <seealso></seealso>
+      </element>
 
-<!-- constructor Visibility: public -->
-<element name="TFileStreamUTF8.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- argument Visibility: default -->
+      <element name="TFileStreamUTF8.Create.AFileName">
+        <short>File name where stream content is read or written</short>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="TFileStreamUTF8.Create.AFileName">
-<short></short>
-</element>
+      <!-- argument Visibility: default -->
+      <element name="TFileStreamUTF8.Create.Mode">
+        <short>File mode for the file</short>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="TFileStreamUTF8.Create.Mode">
-<short></short>
-</element>
+      <!-- argument Visibility: default -->
+      <element name="TFileStreamUTF8.Create.Rights">
+        <short>File rights for the file (ignored on Windows)</short>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="TFileStreamUTF8.Create.Rights">
-<short></short>
-</element>
+      <!-- property Visibility: public -->
+      <element name="TFileStreamUTF8.FileName" link="#rtl.Classes.TFileStream.FileName">
+        <short>
+          Name of the file where stream content is read or written
+        </short>
+        <descr>
+          FIleName is a read-only String property that contains the name of the file where stream content is read or written. FileName can contain UTF-8-encoded characters.
+        </descr>
+        <seealso></seealso>
+      </element>
 
-<!-- destructor Visibility: public -->
-<element name="TFileStreamUTF8.Destroy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- class Visibility: default -->
+      <element name="TStringListUTF8" link="#rtl.Classes.TStringList">
+        <short>
+          Implements a UTF-8-enabled string list
+        </short>
+        <descr>
+          <p>
+            TStringListUTF8 is a TStringList descendant that implements a string list that can store data which uses UTF-8 encoding. TStringListUTF8 provides an overridden method used to sort items in the list using UTF-8 string comparisons. TStringListUTF8 can also load and save files which have UTF-8-encoded file names.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
 
-<!-- property Visibility: public -->
-<element name="TFileStreamUTF8.FileName">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- function Visibility: protected -->
+      <element name="TStringListUTF8.DoCompareText">
+        <short>
+          Compares UTF-8-encoded lines in the string list
+        </short>
+        <descr>
+          <p>
+            DoCompareText is PtrInt function used to compare the specified values using UTF-8 string comparison routines. DoCompareText uses the value in CaseSensitive to determine the routine used for the comparison. When CaseSensitive contains True, the UTF8CompareStr is used. Otherwise, UTF8CompareText is called. The return value contains the result from the routine.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
 
-<!-- class Visibility: default -->
-<element name="TStringListUTF8">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- function result Visibility: default -->
+      <element name="TStringListUTF8.DoCompareText.Result">
+        <short>Value from the string comparison</short>
+      </element>
 
-<!-- function Visibility: protected -->
-<element name="TStringListUTF8.DoCompareText">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- argument Visibility: default -->
+      <element name="TStringListUTF8.DoCompareText.s1">
+        <short>First string value for the comparison</short>
+      </element>
 
-<!-- function result Visibility: default -->
-<element name="TStringListUTF8.DoCompareText.Result">
-<short></short>
-</element>
+      <!-- argument Visibility: default -->
+      <element name="TStringListUTF8.DoCompareText.s2">
+        <short>Second string value for the comparison</short>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="TStringListUTF8.DoCompareText.s1">
-<short></short>
-</element>
+      <!-- procedure Visibility: public -->
+      <element name="TStringListUTF8.LoadFromFile" link="#rtl.Classes.TStringList.LoadFromFile">
+        <short>
+          Loads the content in the string list from the specified file
+        </short>
+        <descr>
+          <p>
+            LoadFromFile is a procedure used to load the content in the string list from the specified file name. FileName can contain UTF-8-encoded characters. LoadFromFile uses a TFileStreamUTF8 instance to open and read the contents of FileName, and calls LoadFromStream to store the values in the string list.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="TStringListUTF8.DoCompareText.s2">
-<short></short>
-</element>
+      <!-- argument Visibility: default -->
+      <element name="TStringListUTF8.LoadFromFile.FileName">
+        <short>File name with content for the string list</short>
+      </element>
 
-<!-- procedure Visibility: public -->
-<element name="TStringListUTF8.LoadFromFile">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- procedure Visibility: public -->
+      <element name="TStringListUTF8.SaveToFile" link="#rtl.Classes.TStringList.SaveToFile">
+        <short>
+          Saves the content in the string to the specified file name
+        </short>
+        <descr>
+          <p>
+            SaveToFile is a procedure used to save the content in the string list to the specified file name. FileName can contain UTF-8-encoded characters. SaveToFile uses a TFileStreamUTF8 instance to create the file specified in FIleName, and calls the SaveToStream method to store values from the string list.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="TStringListUTF8.LoadFromFile.FileName">
-<short></short>
-</element>
+      <!-- argument Visibility: default -->
+      <element name="TStringListUTF8.SaveToFile.FileName">
+        <short>File name where content in the string list is stored</short>
+      </element>
 
-<!-- procedure Visibility: public -->
-<element name="TStringListUTF8.SaveToFile">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- class Visibility: default -->
+      <element name="TMemoryStreamUTF8" link="#rtl.Classes.TMemoryStream">
+        <short>
+          Implements a memory stream which supports file names with UTF-8 encoding
+        </short>
+        <descr>
+          <p>
+            TMemoryStreamUTF8 is a TMemoryStream descendant that stores its data in memory. TMemoryStreamUTF8 extends the ancestor to include methods used to load and save its memory content using files names that may contain UTF-8-encoded characters.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="TStringListUTF8.SaveToFile.FileName">
-<short></short>
-</element>
+      <!-- procedure Visibility: public -->
+      <element name="TMemoryStreamUTF8.LoadFromFile" link="#rtl.Classes.TMemoryStream.LoadFromFile">
+        <short>
+          Loads the content in the stream from the specified file
+        </short>
+        <descr>
+          <p>
+            LoadFromFile is a procedure used to load the content for the stream from the specified file name. LoadFromFile uses a TFileStreamUTF8 instance to open the file specified in FileName, and calls LoadFromStream to store the contents in the memory stream.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
 
-</module> <!-- lazutf8classes -->
+      <!-- argument Visibility: default -->
+      <element name="TMemoryStreamUTF8.LoadFromFile.FileName">
+        <short>File name where where content for the stream is stored</short>
+      </element>
 
-</package>
+      <!-- procedure Visibility: public -->
+      <element name="TMemoryStreamUTF8.SaveToFile" link="#rtl.Classes.TMemoryStream.SaveToFile">
+        <short>
+          Stores the content in the stream to the specified file
+        </short>
+        <descr>
+          <p>
+            SaveToFile is a procedure used to store the content in the memory stream to the specified file name. SaveToFile uses a TFileStreamUTF8 instance to create the file in FileName, and calls SaveToStream to write the content in the memory stream.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+
+      <!-- argument Visibility: default -->
+      <element name="TMemoryStreamUTF8.SaveToFile.FileName">
+        <short>File name where content in the stream is stored</short>
+      </element>
+
+      <!-- procedure Visibility:default -->
+      <element name="LoadStringsFromFileUTF8">
+        <short>
+          Loads the content for a TStringList from the specified file name
+        </short>
+        <descr>
+          <p>
+            LoadStringsFromFileUTF8 is a procedure used to load the content for a string list from the specified file name. List is the TStrings decendant where the content from FileName is stored. FIleName can contain UTF-8-encoded characters. LoadStringsFromFileUTF8 creates an internal TStringListUTF8 instance (when needed) that is used to load the content in FileName, and calls the Assign method in List to store the values.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+
+      <!-- argument Visibility: default -->
+      <element name="LoadStringsFromFileUTF8.List">
+        <short>TStrings descendant where the content is stored</short>
+      </element>
+
+      <!-- argument Visibility: default -->
+      <element name="LoadStringsFromFileUTF8.FileName">
+        <short>File name with the content to load in the string list</short>
+      </element>
+
+      <!-- procedure Visibility: default -->
+      <element name="SaveStringsToFileUTF8">
+        <short>
+          Saves the content in the TStringList to the specified file name
+        </short>
+        <descr>
+          <p>
+            SaveStringsToFileUTF8 is a procedure used to save the content in the List to the specified file name. List is a TStrings desccendant with the content to store in the specified file name. FileName can contaIn UTF-8-encoded character values. SaveStringsToFileUTF8 uses a TStringListUTF8 (when needed) to store the content in the string list to the specified FileName.
+          </p>
+        </descr>
+        <seealsao></seealsao>
+      </element>
+
+      <!-- argument Visibility: default -->
+      <element name="SaveStringsToFileUTF8.List">
+        <short>String list to store in the specified file</short>
+      </element>
+
+      <!-- argument Visibility: default -->
+      <element name="SaveStringsToFileUTF8.FileName">
+        <short>Name of the file where the content is stored</short>
+      </element>
+
+      <!-- function Visibility: default -->
+      <element name="CompareStringListItemsUTF8LowerCase">
+        <short>
+          Performs lowercase comparison of values in a string list
+        </short>
+        <descr>
+          <p>
+            CompareStringListItemsUTF8LowerCase is an Integer function used to perform  lowercase comparison of string values in a string list. List is the TStrings descendant with values for the comparison. Index1 and Index2 specify the ordinal positions in List for strings used in the comparison.
+          </p>
+          <p>
+            CompareStringListItemsUTF8LowerCase converts the string values to lowercase using UTF8LowerCase, and calls the CompareStr function to perform the comparison. The return vaue is in the following ranges:
+          </p>
+          <dl>
+            <dt><code> <0 </code></dt>
+            <dd>String at Index1 comes before String at Index2</dd>
+            <dt><code> 0 </code></dt>
+            <dd>Strings have the same value</dd>
+            <dt><code> >0 </code> </dt>
+            <dd>String at Index1 comes after String at Index2</dd>
+          </dl>
+        </descr>
+        <seealso></seealso>
+      </element>
+
+      <!-- function result  Visibility: default -->
+      <element name="CompareStringListItemsUTF8LowerCase.Result">
+        <short>Relative order for the compared values</short>
+      </element>
+
+      <!-- argument Visibility: default -->
+      <element name="CompareStringListItemsUTF8LowerCase.List">
+        <short>String list with values for the comparison</short>
+      </element>
+
+
+      <!-- argument Visibility: default -->
+      <element name="CompareStringListItemsUTF8LowerCase.Index1">
+        <short>Ordinal position for the first string value</short>
+      </element>
+
+      <!-- argument Visibility: default -->
+      <element name="CompareStringListItemsUTF8LowerCase.Index2">
+        <short>Ordinal position for the second string value</short>
+      </element>
+
+    </module>
+    <!-- lazutf8classes -->
+
+  </package>
 </fpdoc-descriptions>
