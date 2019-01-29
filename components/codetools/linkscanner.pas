@@ -223,7 +223,8 @@ type
     cmsPrefixedAttributes, { allow Delphi attributes, disable FPC [] proc modifier }
     cmsExternalClass,      { pas2js: allow  class external [pkgname] name [symbol] }
     cmsIgnoreAttributes,   { pas2js: ignore attributes }
-    cmsOmitRTTI            { pas2js: treat class section 'published' as 'public' and typeinfo does not work on symbols declared with this switch }
+    cmsOmitRTTI,           { pas2js: treat class section 'published' as 'public' and typeinfo does not work on symbols declared with this switch }
+    msMultipleScopeHelpers { off=only one helper per type, on=all }
     );
   TCompilerModeSwitches = set of TCompilerModeSwitch;
 const
@@ -310,7 +311,8 @@ const
     'PREFIXEDATTRIBUTES',
     'EXTERNALCLASS',
     'IGNOREATTRIBUTES',
-    'OMITRTTI'
+    'OMITRTTI',
+    'MULTIPLESCOPEHELPERS'
     );
 
 
