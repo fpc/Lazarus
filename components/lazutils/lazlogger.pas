@@ -70,6 +70,8 @@ type
 
   { TLazLoggerFileHandleThreadSave
     file operations in critical section
+
+    Requires that DoOpenFile is called by main thread. Otherwise the filehandle may get closed...
   }
 
   TLazLoggerFileHandleThreadSave = class (TLazLoggerFileHandle)
@@ -480,6 +482,7 @@ begin
   if FActiveLogText = nil then exit;
 
   Write(FActiveLogText^, s);
+  {$IFDEF LAZLOGGER_FLUSH} Flush(FActiveLogText^); {$ENDIF}
 
   if FCloseLogFileBetweenWrites then
     DoCloseFile;
