@@ -692,15 +692,41 @@ procedure TLldbDebuggerCommandRun.ExceptionReadClassSuccess(Sender: TObject);
 var
   s: String;
   i: SizeInt;
+  l: Integer;
 begin
   // (char * ) $2 = 0x005c18d0 "\tException"
   // (char *) $10 = 0x00652d44 "\x04TXXX"
   s := TLldbInstructionReadExpression(Sender).Res;
   i := pos('"', s);
+  l := 255;
   if i > 0 then begin
-    if s[i+1] = '\' then inc(i, 2);
-    if s[i] = 'x' then inc(i, 2);
-    s := copy(s, i+1, Length(s)-i-1);
+    if s[i+1] = '\' then begin
+      inc(i, 2);
+      if s[i] = 'x' then begin
+        l := StrToIntDef('$'+copy(s, i+1, 2), 255);
+        inc(i, 2);
+      end
+      else begin
+        case s[i] of
+          'a': l := 7;
+          'b': l := 8;
+          't': l := 9;
+          'n': l := 10;
+          'v': l := 11;
+          'f': l := 12;
+          'r': l := 13;
+          'e': l := 27;
+          's': l := 32;
+          '\': l := 92;
+          'd': l := 127;
+        end;
+      end;
+    end
+    else begin
+      inc(i, 1);
+      l := ord(s[i]);
+    end;
+    s := copy(s, i+1, Min(l, Length(s)-i-1));
   end;
   FCurrentExceptionInfo.FExceptClass := s;
   Include(FCurrentExceptionInfo.FHasCommandData, exiClass);
