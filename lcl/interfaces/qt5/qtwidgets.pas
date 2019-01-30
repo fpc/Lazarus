@@ -9705,6 +9705,9 @@ begin
     CachedSelectionLen := -1;
   end;
 
+  if (ChildOfComplexWidget = ccwComboBox) and (QEvent_type(Event) = QEventMove) then
+    exit;
+
   if (ChildOfComplexWidget = ccwComboBox) and
     ((QEvent_type(Event) = QEventPaint) or (QEvent_type(Event) = QEventResize))
     and (LCLObject.HandleAllocated) then
