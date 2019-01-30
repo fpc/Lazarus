@@ -6263,6 +6263,7 @@ var
   NewShadowType: TGtkShadowType;
   NewJustification: TGtkJustification;
   xalign, yalign: gfloat;
+  MessageId: guint;
 begin
   //DebugLn('UpdateStatusBarPanel ',DbgS(StatusBar),' Index=',dbgs(Index));
   AStatusBar := StatusBar as TStatusBar;
@@ -6293,10 +6294,11 @@ begin
                                             'state');
   //DebugLn('  PanelText="',PanelText,'"');
   if PanelText <> '' then
-    gtk_statusbar_push(PGTKStatusBar(StatusPanelWidget), ContextID, PGChar(PanelText))
+    MessageId := gtk_statusbar_push(PGTKStatusBar(StatusPanelWidget), ContextID, PGChar(PanelText))
   else
-    gtk_statusbar_push(PGTKStatusBar(StatusPanelWidget), ContextID, '');
-
+    MessageId := gtk_statusbar_push(PGTKStatusBar(StatusPanelWidget), ContextID, '');
+  if MessageId > 1 then
+    gtk_statusbar_remove(PGTKStatusBar(StatusPanelWidget), ContextID, MessageId - 1);
 
   if CurPanel <> nil then
   begin
@@ -6339,8 +6341,9 @@ begin
 
     g_object_set_data(PGObject(StatusPanelWidget),'lcl_statusbar_id',
       @AStatusBar.Panels[Index].ID);
-    g_signal_connect_after(StatusPanelWidget, 'expose-event',
-      TGtkSignalFunc(@gtk2PaintStatusBarWidget), AStatusBar);
+    if AStatusBar.Panels[Index].Style = psOwnerDraw then
+      g_signal_connect_after(StatusPanelWidget, 'expose-event',
+        TGtkSignalFunc(@gtk2PaintStatusBarWidget), AStatusBar);
 
   end;
 end;
