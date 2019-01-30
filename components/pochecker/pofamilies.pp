@@ -138,7 +138,6 @@ Type
   end;
 
 function ExtractMasterNameFromChildName(const AChildName: String): String;
-function ExtractLanguageFromChildName(const AChildName: string): TLangID;
 procedure LocalizePoTestTypeNames;
 
 const
@@ -174,42 +173,16 @@ const
 
 function ExtractMasterNameFromChildName(const AChildName: String): String;
 {
-  Pre condition: AChildName is like: somename.some_language_specifier.po
-  Post condition: Result  = somename.po
+  Input: AChildName is like: somename.some_language_specifier.po
+  Output: Result  = somename.pot
 }
 var
-  Ext: String;
-  EndSep: Set of Char;
-  Len: Integer;
+  CurUnitName: String;
+  CurLang: String;
 begin
-  EndSep := AllowDirectorySeparators + AllowDriveSeparators + [ExtensionSeparator];
-  Ext := ExtractFileExt(AChildName);
-  Result := Copy(AChildName, 1, Length(AChildName) - Length(Ext));
-  Len := Length(Result);
-  While (Len > 0) and (not (Result[Len] in EndSep)) do Dec(Len);
-
-  //debugln('Len = ',DbgS(Len));
-  //debugln('Length(Result) = ',DbgS(Length(result)));
-  //if Len > 0 then debugln('Result[Len] = ',Result[len]);
-
-  if (Len > 1) and (Len < Length(Result)) and (Result[Len] = ExtensionSeparator) then
-    Result := Copy(Result, 1, Len - 1) + ExtensionSeparator + 'pot'
-  else
-    Result := '';
-end;
-
-function ExtractLanguageFromChildName(const AChildName: string): TLangID;
-Var
-  Mn, Abbr: string;
-  P1,P2: Integer;
-begin
-  Mn := ExtractMasterNameFromChildName(AChildName);
-  Mn := ExtractFileNameWithoutExt(Mn);
-  P1 := Length(Mn);
-  P2 := Length(AChildName);
-  Abbr := Copy(AChildName,P1+2,P2-(P1+1));
-  Abbr := ExtractFileNameWithoutExt(Abbr);
-  Result := LangAbbrToLangId(Abbr);
+  Result := '';
+  if GetPOFilenameParts(AChildName, CurUnitName, CurLang) then
+    Result := CurUnitName + ExtensionSeparator + 'pot';
 end;
 
 procedure LocalizePoTestTypeNames;
