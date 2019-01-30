@@ -810,7 +810,7 @@ begin
   inherited;
 
   PP := LCLIntf.GetParent(Handle);
-  if (PP<>0) then
+  if (PP <> 0) then
     SendMessage(PP, LM_NCACTIVATE, Ord(Message.Active <> WA_INACTIVE), 0);
 end;
 
@@ -946,7 +946,7 @@ end;
 
 procedure TCustomDateTimePicker.SetChecked(const AValue: Boolean);
 begin
-  if (FChecked=AValue) or not FShowCheckBox then
+  if (FChecked = AValue) or not FShowCheckBox then
     Exit;
   FChecked := AValue;
 
@@ -1077,7 +1077,7 @@ begin
   if FOptions = aOptions then Exit;
   FOptions := aOptions;
 
-  if FArrowButton<>nil then
+  if FArrowButton <> nil then
     FArrowButton.Flat := dtpoFlatButton in Options;
 
   if FUpDown <> nil then
@@ -1212,7 +1212,7 @@ end;
 procedure TCustomDateTimePicker.SetTimeDisplay(const AValue: TTimeDisplay);
 begin
   if FTimeDisplay <> AValue then begin
-    FTimeDisplay:=AValue;
+    FTimeDisplay:= AValue;
     AdjustEffectiveHideDateTimeParts;
   end;
 end;
@@ -1971,15 +1971,15 @@ begin
   CSize.cy := ScaleScreenToFont(CSize.cy);
   if IsRightToLeft and not IgnoreRightToLeft then
   begin
-    Result.Right := ClientWidth-(BorderSpacing.InnerBorder+BorderWidth);
-    Result.Left := Result.Right-CSize.cx;
+    Result.Right := ClientWidth - (BorderSpacing.InnerBorder + BorderWidth);
+    Result.Left := Result.Right - CSize.cx;
   end else
   begin
-    Result.Left := BorderSpacing.InnerBorder+BorderWidth;
-    Result.Right := Result.Left+CSize.cx;
+    Result.Left := BorderSpacing.InnerBorder + BorderWidth;
+    Result.Right := Result.Left + CSize.cx;
   end;
-  Result.Top := (ClientHeight-CSize.cy) div 2;
-  Result.Bottom := Result.Top+CSize.cy;
+  Result.Top := (ClientHeight - CSize.cy) div 2;
+  Result.Bottom := Result.Top + CSize.cy;
 end;
 
 { GetTextOrigin
@@ -2200,7 +2200,7 @@ begin
   if ShowCheckBox then
   begin
     NewMouseInCheckBox := PtInRect(GetCheckBoxRect, Point(X, Y));
-    if FMouseInCheckBox<>NewMouseInCheckBox then
+    if FMouseInCheckBox <> NewMouseInCheckBox then
     begin
       FMouseInCheckBox := NewMouseInCheckBox;
       Invalidate;
@@ -2928,7 +2928,7 @@ procedure TCustomDateTimePicker.Change;
 begin
   if Assigned(FOnChange) then
     FOnChange(Self);
-  if FOnChangeHandlers<>nil then
+  if FOnChangeHandlers <> nil then
     FOnChangeHandlers.CallNotifyEvents(Self);
 end;
 
@@ -3264,7 +3264,7 @@ begin
   if FArrowShape = AValue then Exit;
 
   FArrowShape := AValue;
-  if FArrowButton<>nil then
+  if FArrowButton <> nil then
     FArrowButton.Invalidate;
 end;
 
@@ -3315,7 +3315,7 @@ begin
   if Assigned(FOnCheckBoxChange) then
     FOnCheckBoxChange(Self);
 
-  if FOnCheckBoxChangeHandlers<>nil then
+  if FOnCheckBoxChangeHandlers <> nil then
     FOnCheckBoxChangeHandlers.CallNotifyEvents(Self);
 end;
 
@@ -3706,7 +3706,7 @@ procedure TDTSpeedButton.Paint;
     Details := ThemeServices.GetElementDetails(ArrowState);
     ASize := ThemeServices.GetDetailSize(Details);
     ARect := DropDownButtonRect;
-    InflateRect(ARect, -(ARect.Right-ARect.Left-ASize.cx) div 2, 0);
+    InflateRect(ARect, -(ARect.Right - ARect.Left - ASize.cx) div 2, 0);
     ThemeServices.DrawElement(Canvas.Handle, Details, ARect);
   end;
 const
@@ -3723,8 +3723,8 @@ begin
   Canvas.Pen.Color := ArrowColor;
   Canvas.Brush.Color := Canvas.Pen.Color;
 
-  X := (Width-9) div 2;
-  Y := (Height-6) div 2;
+  X := (Width - 9) div 2;
+  Y := (Height - 6) div 2;
 
 { Let's draw shape of the arrow on the button: }
   case DTPicker.FArrowShape of
@@ -3733,24 +3733,24 @@ begin
 
     asClassicLarger:
       { triangle: }
-      Canvas.Polygon([Point(X+0, Y+1), Point(X+8, Y+1),
-                                                      Point(X+4, Y+5)]);
+      Canvas.Polygon([Point(X + 0, Y + 1), Point(X + 8, Y + 1),
+                                                      Point(X + 4, Y + 5)]);
     asClassicSmaller:
       { triangle -- smaller variant:  }
-      Canvas.Polygon([Point(X+1, Y+2), Point(X+7, Y+2),
-                                                      Point(X+4, Y+5)]);
+      Canvas.Polygon([Point(X + 1, Y + 2), Point(X + 7, Y + 2),
+                                                      Point(X + 4, Y + 5)]);
     asModernLarger:
       { modern: }
-      Canvas.Polygon([Point(X+0, Y+1), Point(X+1, Y+0),
-                        Point(X+4, Y+3), Point(X+7, Y+0), Point(X+8, Y+1), Point(X+4, Y+5)]);
+      Canvas.Polygon([Point(X + 0, Y + 1), Point(X + 1, Y + 0),
+                        Point(X + 4, Y + 3), Point(X + 7, Y + 0), Point(X + 8, Y + 1), Point(X + 4, Y + 5)]);
     asModernSmaller:
       { modern -- smaller variant:    }
-      Canvas.Polygon([Point(X+1, Y+2), Point(X+2, Y+1),
-                        Point(X+4, Y+3), Point(X+6, Y+1), Point(X+7, Y+2), Point(X+4, Y+5)]);
+      Canvas.Polygon([Point(X + 1, Y + 2), Point(X + 2, Y + 1),
+                        Point(X + 4, Y + 3), Point(X + 6, Y + 1), Point(X + 7, Y + 2), Point(X + 4, Y + 5)]);
     asYetAnotherShape:
       { something in between, not very pretty:  }
-      Canvas.Polygon([Point(X+0, Y+1), Point(X+1, Y+0),
-            Point(X+2, Y+1), Point(X+6, Y+1),Point(X+7, Y+0), Point(X+8, Y+1), Point(X+4, Y+5)]);
+      Canvas.Polygon([Point(X + 0, Y + 1), Point(X + 1, Y + 0),
+            Point(X + 2, Y + 1), Point(X + 6, Y + 1),Point(X + 7, Y + 0), Point(X + 8, Y + 1), Point(X + 4, Y + 5)]);
   end;
 end;
 
@@ -3960,7 +3960,7 @@ end;
 procedure TCustomDateTimePicker.AddHandlerOnChange(
   const AOnChange: TNotifyEvent; AsFirst: Boolean);
 begin
-  if FOnChangeHandlers=nil then
+  if FOnChangeHandlers = nil then
     FOnChangeHandlers := TMethodList.Create;
   FOnChangeHandlers.Add(TMethod(AOnChange), not AsFirst);
 end;
@@ -3968,7 +3968,7 @@ end;
 procedure TCustomDateTimePicker.AddHandlerOnCheckBoxChange(
   const AOnCheckBoxChange: TNotifyEvent; AsFirst: Boolean);
 begin
-  if FOnCheckBoxChangeHandlers=nil then
+  if FOnCheckBoxChangeHandlers = nil then
     FOnCheckBoxChangeHandlers := TMethodList.Create;
   FOnCheckBoxChangeHandlers.Add(TMethod(AOnCheckBoxChange), not AsFirst);
 end;
