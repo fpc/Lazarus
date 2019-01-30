@@ -17114,6 +17114,7 @@ begin
       end;
       Result := inherited EventFilter(Sender, Event);
     end;
+    QEventMove: ; // do not flood LCL with viewport position
     QEventResize:
     begin
       // immediate update clientRect !

@@ -17083,10 +17083,7 @@ begin
       end;
       Result := inherited EventFilter(Sender, Event);
     end;
-    {$IFDEF DARWIN}
-    // issue #34880, do not send move events from viewport.
-    QEventMove: ;
-    {$ENDIF}
+    QEventMove: ; // do not flood LCL with viewport position
     QEventResize:
     begin
       // immediate update clientRect !
