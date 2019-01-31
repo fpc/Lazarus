@@ -627,23 +627,29 @@ end;
 procedure TLazLoggerFile.IncreaseIndent;
 var
   i: Integer;
+  l: LongInt;
 begin
-  inc(FDebugNestLvl);
+  l := InterLockedIncrement(FDebugNestLvl);
   CreateIndent;
   for i := 0 to BlockHandlerCount - 1 do
-    BlockHandler[i].EnterBlock(Self, FDebugNestLvl);
+    BlockHandler[i].EnterBlock(Self, l);
 end;
 
 procedure TLazLoggerFile.DecreaseIndent;
 var
   i: Integer;
+  l: LongInt;
 begin
   if not FDebugNestAtBOL then DebugLn;
 
-  if FDebugNestLvl > 0 then begin
+  l := InterLockedDecrement(FDebugNestLvl);
+  if l < 0 then
+    l := InterLockedIncrement(FDebugNestLvl);
+
+  if l >= 0 then begin
+    inc(l);
     for i := 0 to BlockHandlerCount - 1 do
-      BlockHandler[i].ExitBlock(Self, FDebugNestLvl);
-    dec(FDebugNestLvl);
+      BlockHandler[i].ExitBlock(Self, l);
   end;
   CreateIndent;
 end;
@@ -681,11 +687,13 @@ procedure TLazLoggerFile.CreateIndent;
 var
   s: String;
   NewLen: Integer;
+  l: Integer;
 begin
-  NewLen := FDebugNestLvl * NestLvlIndent;
+  l := InterlockedCompareExchange(FDebugNestLvl, -1, -1);
+  NewLen := l * NestLvlIndent;
   if NewLen < 0 then NewLen := 0;
   if (NewLen >= MaxNestPrefixLen) then begin
-    s := IntToStr(FDebugNestLvl);
+    s := IntToStr(l);
     NewLen := MaxNestPrefixLen - Length(s);
     if NewLen < 1 then
       NewLen := 1;
@@ -722,7 +730,7 @@ begin
   *)
 
   if s <> '' then begin
-    if FDebugNestAtBOL and (FDebugNestLvl <> 0) then begin
+    if FDebugNestAtBOL then begin
       EnterCriticalsection(FIndentCriticalSection);
       s := FDebugIndent + s;
       LeaveCriticalsection(FIndentCriticalSection);
@@ -749,7 +757,7 @@ var
 begin
   if not IsInitialized then Init;
 
-  if FDebugNestAtBOL and (s <> '') and (FDebugNestLvl <> 0) then begin
+  if FDebugNestAtBOL and (s <> '') then begin
     EnterCriticalsection(FIndentCriticalSection);
     s := FDebugIndent + s;
     LeaveCriticalsection(FIndentCriticalSection);
@@ -824,7 +832,7 @@ end;
 
 function TLazLoggerFile.CurrentIndentLevel: Integer;
 begin
-  Result := FDebugNestLvl;
+  Result := InterlockedCompareExchange(FDebugNestLvl, -1, -1);
 end;
 
 procedure TLazLoggerFile.AddBlockHandler(AHandler: TLazLoggerBlockHandler);
