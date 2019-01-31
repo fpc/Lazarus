@@ -448,20 +448,59 @@ end;
 procedure TDefaultTranslator.TranslateStringProperty(Sender: TObject;
   const Instance: TPersistent; PropInfo: PPropInfo; var Content: string);
 var
-  s: string;
+  s, ContentStr: string;
+  L: integer;
+  MultiLinedValue: boolean;
 begin
   if Assigned(FMOFile) then
   begin
     s := GetIdentifierPath(Sender, Instance, PropInfo);
     if s <> '' then
     begin
-      s := FMoFile.Translate(s + #4 + Content);
+      //Detect if the string is multilined (has lineendings).
+      MultiLinedValue := false;
+      L := 1;
+      while (L <= Length(Content)) and (MultiLinedValue = false) do
+      begin
+        if Content[L] in [#13,#10] then
+          MultiLinedValue := True;
+        inc(L);
+      end;
+      if MultiLinedValue then
+      begin
+        //If the string has lineendings, convert them to Unix style
+        //and add one at the end if it is not present already.
+        //This is needed, because incoming string may have lineendings in any style,
+        //and MO format seems to always store them in Unix style.
+        //Lineending at the end should be present as per PO format examples,
+        //most PO editors add it anyway.
+        //More elaborate processing of linendings is not needed (they are consistent),
+        //because input string to this procedure is maintained by IDE.
+        ContentStr := AdjustLineBreaks(Content, tlbsLF);
+        if ContentStr[Length(ContentStr)] <> #10 then
+          ContentStr := ContentStr + #10;
+      end
+      else
+        ContentStr := Content;
+      s := FMoFile.Translate(s + #4 + ContentStr);
 
       if s = '' then
-        s := FMOFile.Translate(Content);
+        s := FMOFile.Translate(ContentStr);
 
       if s <> '' then
-        Content := s;
+      begin
+        if MultiLinedValue then
+        begin
+          //Remove lineending at the end of multilined string.
+          //Its presence is not desired when assigning e.g. to Caption property (can negatively affect form layout).
+          //In other cases it should not matter.
+          L := Length(s);
+          if s[L] = #10 then
+            SetLength(s, L-1);
+        end;
+        if s <> '' then
+          Content := s;
+      end;
     end;
   end;
 end;
