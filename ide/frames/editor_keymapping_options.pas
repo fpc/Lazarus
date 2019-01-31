@@ -519,7 +519,7 @@ function TEditorKeymappingOptionsFrame.KeyShortCutToCaption(
   const aKey: TKeyCommandRelation; const aShortCut: TIDEShortCut): string;
 begin
   Result:=aKey.Category.Description+'/'
-        +EditorCommandToDescriptionString(aKey.Command)
+        +KeyMappingRelationToCaption(aKey)
         +'->'+KeyAndShiftStateToEditorKeyString(aShortCut);
 end;
 
@@ -616,7 +616,7 @@ var
     if (ShortCut1.Key1=VK_UNKNOWN)
     or (ShortCut1.Key1<>ShortCut2.Key1)
     or (ShortCut1.Shift1<>ShortCut2.Shift1) then
-      exit;    // first keys differ
+      exit;    // first key differ
 
     if (ShortCut1.Key2=VK_UNKNOWN) or (ShortCut2.Key2=VK_UNKNOWN)
     or ((ShortCut1.Key2=ShortCut2.Key2) and (ShortCut1.Shift2=ShortCut2.Shift2))

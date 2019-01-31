@@ -59,6 +59,7 @@ var
 begin
   IDEShortCutX := IDEShortCut(VK_O, [ssCtrl, ssAlt], VK_UNKNOWN, []);
   IDECommandCategory := IDECommandList.FindCategoryByName('Components');
+  IDECommand := nil;
   if IDECommandCategory <> nil then
   begin
     IDECommand := RegisterIDECommand(IDECommandCategory, 'Online Package Manager', rsLazarusPackageManager, IDEShortCutX, nil, @IDEMenuSectionClicked);
