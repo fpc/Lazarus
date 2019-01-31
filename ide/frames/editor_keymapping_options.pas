@@ -519,7 +519,7 @@ function TEditorKeymappingOptionsFrame.KeyShortCutToCaption(
   const aKey: TKeyCommandRelation; const aShortCut: TIDEShortCut): string;
 begin
   Result:=aKey.Category.Description+'/'
-        +EditorCommandToDescriptionString(aKey.Command)
+        +KeyMappingRelationToCaption(aKey)
         +'->'+KeyAndShiftStateToEditorKeyString(aShortCut);
 end;
 
