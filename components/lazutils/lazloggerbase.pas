@@ -96,6 +96,7 @@ type
 
   TLazLogger = class(TRefCountedObject)
   private
+    FLoggerCriticalSection: TRTLCriticalSection;
     FIsInitialized: Boolean;
 
     FMaxNestPrefixLen: Integer;
@@ -775,6 +776,7 @@ end;
 
 constructor TLazLogger.Create;
 begin
+  InitCriticalSection(FLoggerCriticalSection);
   FIsInitialized := False;
   FUseGlobalLogGroupList := False;
 
@@ -790,6 +792,7 @@ begin
   if TheLazLogger = Self then TheLazLogger := nil;
   ReleaseRefAndNil(FLogGroupList);
   inherited Destroy;
+  DoneCriticalsection(FLoggerCriticalSection);
 end;
 
 procedure TLazLogger.Assign(Src: TLazLogger);
@@ -806,9 +809,14 @@ end;
 
 procedure TLazLogger.Init;
 begin
-  if FIsInitialized then exit;
-  DoInit;
-  FIsInitialized := True;
+  EnterCriticalsection(FLoggerCriticalSection);
+  try
+    if FIsInitialized then exit;
+    DoInit;
+    FIsInitialized := True;
+  finally
+    LeaveCriticalsection(FLoggerCriticalSection);
+  end;
 end;
 
 procedure TLazLogger.Finish;
