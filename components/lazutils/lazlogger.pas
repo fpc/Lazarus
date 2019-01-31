@@ -711,6 +711,7 @@ end;
 procedure TLazLoggerFile.DoDbgOut(s: string);
 var
   Handled: Boolean;
+  CB: TLazLoggerWriteEvent;
 begin
   if not IsInitialized then Init;
 
@@ -729,10 +730,11 @@ begin
     FDebugNestAtBOL := (s[length(s)] in [#10,#13]);
   end;
 
-  if OnDbgOut <> nil then
+  CB := OnDbgOut;
+  if CB <> nil then
   begin
     Handled := False;
-    OnDbgOut(Self, s, Handled);
+    CB(Self, s, Handled);
     if Handled then
       Exit;
   end;
@@ -743,6 +745,7 @@ end;
 procedure TLazLoggerFile.DoDebugLn(s: string);
 var
   Handled: Boolean;
+  CB: TLazLoggerWriteEvent;
 begin
   if not IsInitialized then Init;
 
@@ -753,10 +756,11 @@ begin
   end;
   FDebugNestAtBOL := True;
 
-  if OnDebugLn <> nil then
+  CB := OnDebugLn;
+  if CB <> nil then
   begin
     Handled := False;
-    OnDebugLn(Self, s, Handled);
+    CB(Self, s, Handled);
     if Handled then
       Exit;
   end;
