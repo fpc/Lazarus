@@ -720,14 +720,14 @@ begin
      dirty reads should therefore yield the correct value: "true"
   *)
 
-  if FDebugNestAtBOL and (s <> '') and (FDebugNestLvl <> 0) then begin
-    EnterCriticalsection(FIndentCriticalSection);
-    //if FDebugNestAtBOL then
-    s := FDebugIndent + s;
-    //FDebugNestAtBOL := (s[length(s)] in [#10,#13]);
-    LeaveCriticalsection(FIndentCriticalSection);
+  if s <> '' then begin
+    if FDebugNestAtBOL and (FDebugNestLvl <> 0) then begin
+      EnterCriticalsection(FIndentCriticalSection);
+      s := FDebugIndent + s;
+      LeaveCriticalsection(FIndentCriticalSection);
+    end;
+    FDebugNestAtBOL := (s[length(s)] in [#10,#13]);
   end;
-  FDebugNestAtBOL := (s = '') or (s[length(s)] in [#10,#13]);
 
   if OnDbgOut <> nil then
   begin
