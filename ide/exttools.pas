@@ -175,6 +175,62 @@ var
 
 implementation
 
+{$IF defined(VerboseExtToolErrors) or defined(VerboseExtToolThread) or defined(VerboseExtToolAddOutputLines)}
+function ArgsToString(Args: array of const): string;
+var
+  i: Integer;
+begin
+  Result := '';
+  for i:=Low(Args) to High(Args) do begin
+    case Args[i].VType of
+      vtInteger:    Result := Result + dbgs(Args[i].vinteger);
+      vtInt64:      Result := Result + dbgs(Args[i].VInt64^);
+      vtQWord:      Result := Result + dbgs(Args[i].VQWord^);
+      vtBoolean:    Result := Result + dbgs(Args[i].vboolean);
+      vtExtended:   Result := Result + dbgs(Args[i].VExtended^);
+      vtString:     Result := Result + Args[i].VString^;
+      vtAnsiString: Result := Result + AnsiString(Args[i].VAnsiString);
+      vtChar:       Result := Result + Args[i].VChar;
+      vtPChar:      Result := Result + Args[i].VPChar;
+      vtPWideChar:  Result := {%H-}Result {%H-}+ Args[i].VPWideChar;
+      vtWideChar:   Result := Result + AnsiString(Args[i].VWideChar);
+      vtWidestring: Result := Result + AnsiString(WideString(Args[i].VWideString));
+      vtObject:     Result := Result + DbgSName(Args[i].VObject);
+      vtClass:      Result := Result + DbgSName(Args[i].VClass);
+      vtPointer:    Result := Result + Dbgs(Args[i].VPointer);
+      else          Result := Result + '?unknown variant?';
+    end;
+  end;
+end;
+
+procedure DebuglnThreadLog(const args: array of const);
+var
+  s, Filename: string;
+  fs: TFileStream;
+begin
+  if GetCurrentThreadId=MainThreadID then
+    debugln(args)
+  else
+  begin
+    s:=ArgsToString(args)+sLineBreak;
+    Filename:='lazdbg'+IntToStr(GetCurrentThreadId)+'.log';
+    if FileExistsUTF8(Filename) then
+      fs:=TFileStream.Create(Filename,fmOpenWrite or fmShareDenyNone)
+    else
+      fs:=TFileStream.Create(Filename,fmCreate);
+    try
+      try
+        fs.Seek(0,soEnd);
+        fs.Write(s[1],length(s));
+      except
+      end;
+    finally
+      fs.Free;
+    end;
+  end;
+end;
+{$ENDIF}
+
 { TLazExtToolView }
 
 procedure TLazExtToolView.SetToolState(AValue: TLMVToolState);
@@ -1513,7 +1569,7 @@ begin
         if (not HasOutput) then begin
           // no more pending output and process is still running
           // => tool needs some time
-          Sleep(10);
+          Sleep(50);
         end;
       end;
       {$IFDEF VerboseExtToolThread}
