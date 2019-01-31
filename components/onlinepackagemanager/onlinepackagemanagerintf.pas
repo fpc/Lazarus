@@ -57,7 +57,7 @@ var
   IDECommandCategory: TIDECommandCategory;
   IDECommand: TIDECommand;
 begin
-  IDEShortCutX := IDEShortCut(VK_O, [ssCtrl, ssAlt], VK_UNKNOWN, []);
+  IDEShortCutX := IDEShortCut(VK_O, [ssCtrl, ssAlt, ssShift], VK_UNKNOWN, []);
   IDECommandCategory := IDECommandList.FindCategoryByName('Components');
   IDECommand := nil;
   if IDECommandCategory <> nil then
