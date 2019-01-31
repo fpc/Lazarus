@@ -3382,7 +3382,7 @@ begin
   for i := 0 to IDEEditorGroups.Count - 1 do
   begin
     Rec := IDEEditorGroups[i];
-    DebugLn(['TPackageEditorForm.CreatePackageFileEditors ',Rec^.GroupClass.ClassName]);
+    //DebugLn(['TPackageEditorForm.CreatePackageFileEditors ',Rec^.GroupClass.ClassName]);
     if PassesFilter(Rec) then
     begin
       if Rec^.GroupClass<>nil then
