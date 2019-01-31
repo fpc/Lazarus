@@ -1,403 +1,563 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-<package name="lcl">
+  <package name="lcl">
 
-<!--
-  ====================================================================
-    DBExtCtrls
-  ====================================================================
--->
+    <!-- DBExtCtrls -->
+    <module name="DBExtCtrls">
+      <short>
+        <var>dbextctrls.pp</var> contains extended database controls
+      </short>
 
-<module name="DBExtCtrls">
-<short></short>
-<descr>
-</descr>
+      <!-- unresolved type reference visibility: default -->
+    <element name="Classes"/>
+    <element name="SysUtils"/>
+    <element name="LCLType"/>
+    <element name="LMessages"/>
+    <element name="Ctrls"/>
+    <element name="EditBtn"/>
+    <element name="DB"/>
+    <element name="DBCtrls"/>
 
-<!-- class Visibility: default -->
-<element name="TDBDateEdit">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- class Visibility: default -->
+      <element name="TDBDateEdit" link="#lcl.EditBtn.TDateEdit">
+        <short>
+          TDBDateEdit implements a data-aware editing control for a date field in a dataset
+        </short>
+        <descr>
+          <p>
+            <var>TDBDateEdit</var> is a <var>TDateEdit</var> descendant that implements a data-aware edit control for a Date field in a dataset. Like its ancestor class, TDBDateEdit includes a Button which opens a Date selection dialog (calendar).
+          </p>
+          <p>
+            TDBDateEdit extends the ancestor class to provide support for <var>TFieldDataLink</var>, <var>TDataSource</var>, and <var>TField</var> which provide access to the dataset with the data for the editing control. Overridden methods are provided which handle keystokes and synchronize changes in the control with the field in a dataset. Support for <var>TBasicAction</var> is also included in TDBDateEdit.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.EditBtn.TDateEdit"/>
+          <link id="#lcl.DBCtrls.TFieldDataLink"/>
+          <link id="#fcl.DB.TField"/>
+          <link id="#fcl.DB.TDatasource"/>
+          <link id="#fcl.Classes.TBasicAction"/>
+        </seealso>
+      </element>
 
-<!-- variable Visibility: private -->
-<element name="TDBDateEdit.FDataLink">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- variable Visibility: private -->
+      <element name="TDBDateEdit.FDataLink" link="#lcl.DBCtrls.TFieldDataLink"/>
 
-<!-- procedure Visibility: private -->
-<element name="TDBDateEdit.DataChange">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- procedure Visibility: private -->
+      <element name="TDBDateEdit.DataChange">
+        <short>
+          Gets the value for the control when its Field has changed
+        </short>
+        <descr>
+          <p>
+            <var>DataChange</var> is a procedure used to get the value for the control when the value in its Field has changed. <var>DataLink</var> must contain a value (not Nil) to access the Field. When DataLink is unassigned, the value in Text is set to an empty string <var>('')</var>.
+          </p>
+          <p>
+            DataChange stores the value from the <var>TField</var> instance in DataLink in the <var>Date</var> property. If the control is Focused and AutoSelect is enabled,  the SelectAll method is called to select the content in the control.
+          </p>
+          <p>
+            DataChange is assigned as the OnDataChange event handler for DataLink in Create.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.DBExtCtrls.TDBDateEdit.DataLink"/>
+          <link id="#lcl.DBExtCtrls.TDBDateEdit.Field"/>
+          <link id="#lcl.DBCtrls.TFieldDataLink.Field"/>
+          <link id="#lcl.DBCtrls.TFieldDataLink.OnDataChange"/>
+        </seealso>
+      </element>
+      <!-- argument Visibility: private -->
+      <element name="TDBDateEdit.DataChange.Sender">
+        <short>Class signalling the data change</short>
+      </element>
 
-<!-- argument Visibility: private -->
-<element name="TDBDateEdit.DataChange.Sender">
-<short></short>
-</element>
+      <!-- procedure Visibility: private -->
+      <element name="TDBDateEdit.UpdateData">
+        <short>
+          Updates the field in a dataset when the value for the control has changed
+        </short>
+        <descr>
+          <p>
+            <var>UpdateData</var> is a procedure which updates the field in a dataset when the value for the control has been changed. UpdateData uses the value in Text to determine if the control has no value. When Text contains an empty string <var>('')</var>, the Field in DataLink calls its Clear method. Otherwise, the value in Date is stored in the Field for the DataLink.
+          </p>
+          <p>
+            UpdateData is assigned as the OnUpdateData event handler for DataLink in Create.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.DBExtCtrls.TDBDateEdit.DataLink"/>
+          <link id="#lcl.DBExtCtrls.TDBDateEdit.Field"/>
+          <link id="#lcl.DBCtrls.TFieldDataLink.Field"/>
+          <link id="#lcl.DBCtrls.TFieldDataLink.OnUpdateData"/>
+        </seealso>
+      </element>
+      <!-- argument Visibility: private -->
+      <element name="TDBDateEdit.UpdateData.Sender">
+        <short>Class signalling the update</short>
+      </element>
 
-<!-- procedure Visibility: private -->
-<element name="TDBDateEdit.UpdateData">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- function Visibility: private -->
+      <element name="TDBDateEdit.GetDataField">
+        <short>
+          Gets the value for the DataField property
+        </short>
+        <descr>
+          <p>
+            <var>GetDataField</var> is a String function used to get the value for the <var>DataField</var> property. GetDataField is the read access specifier for the property value. The return value is retrieved from the FieldName property in <var>DataLink</var>.
+          </p>
+          <p>
+            Use <var>DataField</var> to read or write the name of the field used to store the Date value in the dataset.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.DBExtCtrls.TDBDateEdit.DataLink"/>
+          <link id="#lcl.DBExtCtrls.TDBDateEdit.Field"/>
+          <link id="#lcl.DBExtCtrls.TDBDateEdit.DataSource"/>
+        </seealso>
+      </element>
+      <!-- function result Visibility: private -->
+      <element name="TDBDateEdit.GetDataField.Result">
+        <short>Value for the DataField property</short>
+      </element>
 
-<!-- argument Visibility: private -->
-<element name="TDBDateEdit.UpdateData.Sender">
-<short></short>
-</element>
+      <!-- function Visibility: private -->
+      <element name="TDBDateEdit.GetDataSource">
+        <short>
+          Gets the value for the DataSource property
+        </short>
+        <descr>
+          <p>
+            <var>GetDataSource</var> is a <var>TDataSource</var> function used to get the value for the <var>DataSource</var> property. GetDataSource is the read access specifier for the property value. The return value contains the <var>DataSource</var> assigned in the DataLink property.
+          </p>
+          <p>
+            Use DataSource to read or write the value in the property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.DBExtCtrls.TDBDateEdit.DataLink"/>
+          <link id="#lcl.DBCtrls.TFieldDataLink"/>
+          <link id="#fcl.DB.TDataSource"/>
+        </seealso>
+      </element>
+      <!-- function result Visibility: private -->
+      <element name="TDBDateEdit.GetDataSource.Result">
+        <short>Value for the DataSource property</short>
+      </element>
 
-<!-- function Visibility: private -->
-<element name="TDBDateEdit.GetDataField">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- procedure Visibility: private -->
+      <element name="TDBDateEdit.SetDataField">
+        <short>
+          Sets the value for the DataField property
+        </short>
+        <descr>
+          <p>
+            <var>SetDataField</var> is a procedure used to set the value in the <var>DataField</var> property.  SetDataField is the write access specifier for the property value. SetDataField stores the specified new Value in the <var>FieldName</var> property for <var>DataLink</var>.
+          </p>
+          <p>
+            Use <var>DataField</var> to read or write the value for the property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.DBExtCtrls.TDBDateEdit.DataField"/>
+          <link id="#lcl.DBExtCtrls.TDBDateEdit.Field"/>
+          <link id="#lcl.DBExtCtrls.TDBDateEdit.DataLink"/>
+          <link id="#lcl.DBExtCtrls.TDBDateEdit.DataSource"/>
+        </seealso>
+      </element>
+      <!-- argument Visibility: private -->
+      <element name="TDBDateEdit.SetDataField.Value">
+        <short>Value for the DataField property</short>
+      </element>
 
-<!-- function result Visibility: private -->
-<element name="TDBDateEdit.GetDataField.Result">
-<short></short>
-</element>
+      <!-- procedure Visibility: private -->
+      <element name="TDBDateEdit.SetDataSource">
+        <short>
+          Sets the value for the DataSource property
+        </short>
+        <descr>
+          <p>
+            <var>SetDataSource</var> is a procedure used to set the value for the DataSource property. SetDataSource is the write access specifier for the property value. SetDataSource calls ChangeDataSource to store the specified new Value in DataLink.
+          </p>
+          <p>
+            Use DataSource to read or write the value in the property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.DBExtCtrls.TDBDateEdit.DataLink"/>
+          <link id="#lcl.DBCtrls.TFieldDataLink"/>
+          <link id="#fcl.DB.TDataSource"/>
+        </seealso>
+      </element>
+      <!-- argument Visibility: private -->
+      <element name="TDBDateEdit.SetDataSource.Value">
+        <short>Value for the DataSource property</short>
+      </element>
 
-<!-- function Visibility: private -->
-<element name="TDBDateEdit.GetDataSource">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- procedure Visibility: private -->
+      <element name="TDBDateEdit.CMGetDataLink">
+        <short>
+          Responds to the CM_GETDATALINK control message
+        </short>
+        <descr>
+          <p>
+            <var>CMGetDataLink</var> is a procedure which responds to the CM_GETDATALINK control message. CMGetDataLink ensures that Message is updated to contain a pointer to the DataLink instance in its result.
+          </p>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- argument Visibility: private -->
+      <element name="TDBDateEdit.CMGetDataLink.Message">
+        <short>Message for the control notification</short>
+      </element>
 
-<!-- function result Visibility: private -->
-<element name="TDBDateEdit.GetDataSource.Result">
-<short></short>
-</element>
+      <!-- function Visibility: private -->
+      <element name="TDBDateEdit.GetField">
+        <short>
+          Gets the value for the Field property
+        </short>
+        <descr>
+          <p>
+            <var>GetField</var> is a TField function used to get the value for the Field property. GetField is the read access specifier for the property value. GetField uses the value in the Field property in DataLink as the return value for the method.
+          </p>
+          <p>
+            Use Field to read the value in the property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.DBExtCtrls.TDBDateEdit.Field"/>
+          <link id="#lcl.DBExtCtrls.TDBDateEdit.DataLink"/>
+        </seealso>
+      </element>
+      <!-- function result Visibility: private -->
+      <element name="TDBDateEdit.GetField.Result">
+        <short>Value for the Field property</short>
+      </element>
 
-<!-- procedure Visibility: private -->
-<element name="TDBDateEdit.SetDataField">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- procedure Visibility: protected -->
+      <element name="TDBDateEdit.Notification">
+        <short>
+          Handles notifications when a component is added or removed
+        </short>
+        <descr>
+          <p>
+            <var>Notification</var> is an overridden procedure used to handle notications performed when acomponent is added or removed. Notification calls the inherited method. When Operation contains opRemove, and AComponent is the DataSource for the control, the value in DataSource is set to Nil.
+          </p>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- argument Visibility: protected -->
+      <element name="TDBDateEdit.Notification.AComponent">
+        <short>Component for the notification event</short>
+      </element>
+      <!-- argument Visibility: protected -->
+      <element name="TDBDateEdit.Notification.Operation">
+      <short>Operation for the notification event</short>
+      </element>
 
-<!-- argument Visibility: private -->
-<element name="TDBDateEdit.SetDataField.Value">
-<short></short>
-</element>
+      <!-- function Visibility: protected -->
+      <element name="TDBDateEdit.EditCanModify">
+        <short>
+          Indicates if the control can modify its contents
+        </short>
+        <descr>
+          <p>
+            <var>EditCanModify</var> is an overridden Boolean function which indicates if the control can modify the content for the control. EditCanModify is set to the value from CanModify in DataLink. The return value is True when the control accept new values.
+          </p>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- function result Visibility: protected -->
+      <element name="TDBDateEdit.EditCanModify.Result">
+        <short>True when the control value can be changed</short>
+      </element>
 
-<!-- procedure Visibility: private -->
-<element name="TDBDateEdit.SetDataSource">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- procedure Visibility: protected -->
+      <element name="TDBDateEdit.EditEnter">
+        <short>
+          Performs actions required when the Enter key is pressed on the control
+        </short>
+        <descr>
+          <p>
+            <var>EditEnter</var> is an overridden procedure used to perform actions required when the Enter key is pressed on the control. EditEnter calls the inherited method.
+          </p>
+          <p>
+            EditEnter uses the value from Editing in DataLink to determine if there are any pending changes in the control value. When Editing contains False, the Reset method in DataLink is called to cancel changes to the field. Reset also calls the OnDataChange event handler.
+          </p>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
 
-<!-- argument Visibility: private -->
-<element name="TDBDateEdit.SetDataSource.Value">
-<short></short>
-</element>
+      <!-- procedure Visibility: protected -->
+      <element name="TDBDateEdit.EditKeyDown">
+        <short>
+          Handles special keys in the keydown state
+        </short>
+        <descr>
+          <p>
+            <var>EditKeyDown</var> is an overridden procedure used to perform actions required when special keys are in the down state in the control. EditKeyDown handles the following virtual key values:
+          </p>
+          <dl>
+            <dt>VK_ESCAPE</dt>
+            <dd>
+              Cancels editing (when active) and calls Reset in DataLink. Key is changed to the value VK_UNKNOWN
+            </dd>
 
-<!-- procedure Visibility: private -->
-<element name="TDBDateEdit.CMGetDataLink">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+            <dt>VK_DELETE or VK_BACK</dt>
+            <dd>
+              Removes Delete and Backspace keys if editing is not active.Changes Key to  the value VK_UNKNOWN when editing is not active.
+            </dd>
+          </dl>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- argument Visibility: protected -->
+      <element name="TDBDateEdit.EditKeyDown.Key">
+        <short>Numeric value for the key</short>
+      </element>
+      <!-- argument Visibility: protected -->
+      <element name="TDBDateEdit.EditKeyDown.Shift">
+        <short>Shift state for the key</short>
+      </element>
 
-<!-- argument Visibility: private -->
-<element name="TDBDateEdit.CMGetDataLink.Message">
-<short></short>
-</element>
+      <!-- procedure Visibility: protected -->
+      <element name="TDBDateEdit.EditKeyPress">
+        <short>
+          Ensures character values are valid for the control
+        </short>
+        <descr>
+          <p>
+            <var>EditKeyPress</var> is an overridden procedure which processes the character value in Key. EditKeyPress calls the inherited method.  EditKeyPress checks the value in Key to see if it contains data (as opposed to control characters) in the range Decimal 32 to Decimal 255. The Field property in DataLink also calls its IsValidChar method to see if Key is valid for the data type in the Field.
+          </p>
+          <p>
+            EditKeyPress requires DataLink to have both a valid TField instance in its Field property and its Edit property set to True. The value in Key is set to <var>#0 (Decimal 0)</var> if either condition is not met.
+          </p>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
+      <!-- argument Visibility: protected -->
+      <element name="TDBDateEdit.EditKeyPress.Key">
+        <short>Character value for the key</short>
+      </element>
 
-<!-- function Visibility: private -->
-<element name="TDBDateEdit.GetField">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- procedure Visibility: protected -->
+      <element name="TDBDateEdit.ButtonClick">
+        <short>
+          Actions perfomed when the button for the control is clicked
+        </short>
+        <descr>
+          <p>
+            <var>ButtonClick</var> is an overridden procedure which performs
+            actions when the button for the control is clicked. ButtonClick ensures that the control is Focused, and calls SetFocus when necessary. The CanModify property in DataLink is checked to see if the Edit method in DataLink is needed. ButtonClick calls the inherited method.
+          </p>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
 
-<!-- function result Visibility: private -->
-<element name="TDBDateEdit.GetField.Result">
-<short></short>
-</element>
+      <!-- procedure Visibility: protected -->
+      <element name="TDBDateEdit.EditChange">
+        <short>
+          Signals the control changed state
+        </short>
+        <descr>
+          <p>
+            <var>EditChange</var> is an overridden procedure which which signals the control is changed. EditChange ensures that the control updates its DataLink to indicate the change status. EditChange uses the Editing property in DataLink to see if the Modified method in DataLink is needed. EditChange calls the inherited method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.DBExtCtrls.TDBDateEdit.DataLink"/>
+          <link id="#lcl.DBCtrls.TFieldDataLink"/>
+          <link id="#lcl.DBCtrls.TFieldDataLink.Editing"/>
+          <link id="#lcl.DBCtrls.TFieldDataLink.Modified"/>
+        </seealso>
+      </element>
 
-<!-- procedure Visibility: protected -->
-<element name="TDBDateEdit.Notification">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- procedure Visibility: protected -->
+      <element name="TDBDateEdit.EditExit">
+        <short>
+          Performs actions needed when the exiting the control
+        </short>
+        <descr>
+          <p>
+            <var>EditExit</var> is an overridden procedure performs actions needed when the exiting the control. EditExit calls the inherited method. EditExit ensures that the value in the control is applied to DataLink. When Editing is set in DataLink, its UpdateRecord method is called to apply the new value. If Editing is not set, its Reset method is called restore its value and state.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.DBExtCtrls.TDBDateEdit.DataLink"/>
+          <link id="#lcl.DBCtrls.TFieldDataLink"/>
+          <link id="#lcl.DBCtrls.TFieldDataLink.Editing"/>
+          <link id="#lcl.DBCtrls.TFieldDataLink.Reset"/>
+        </seealso>
+      </element>
 
-<!-- argument Visibility: protected -->
-<element name="TDBDateEdit.Notification.AComponent">
-<short></short>
-</element>
+      <!-- procedure Visibility: protected -->
+      <element name="TDBDateEdit.Reset">
+        <short>
+          Restores the control to its value in the dataset
+        </short>
+        <descr>
+          <p>
+            <var>Reset</var> is a procedure used to restore the control to its value in the dataset. Reset calls the Reset method in DataLink to get the value stored in its Field and to clear the Editing flag. Reset calls the inherited method prior to exit.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.DBExtCtrls.TDBDateEdit.DataLink"/>
+          <link id="#lcl.DBCtrls.TFieldDataLink"/>
+          <link id="#lcl.DBCtrls.TFieldDataLink.Editing"/>
+          <link id="#lcl.DBCtrls.TFieldDataLink.Reset"/>
+        </seealso>
+      </element>
 
-<!-- argument Visibility: protected -->
-<element name="TDBDateEdit.Notification.Operation">
-<short></short>
-</element>
+      <!-- constructor Visibility: public -->
+      <element name="TDBDateEdit.Create">
+        <short>Constructor for the object instance</short>
+        <descr>
+          <p>
+            <var>Create</var> is the overridden constructor for the object instance. Create call the inherited constructor using AOwner as the owner for the object instance. Create allocates resources needed for the DataLink property, and sets the event handlers for its OnDataChange and OnUpdateData properties to the DataChange and UpdateData methods in the class instance.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.DBExtCtrls.TDBDateEdit.DataLink"/>
+          <link id="#lcl.DBCtrls.TFieldDataLink"/>
+          <link id="#lcl.DBCtrls.TFieldDataLink.OnDataChange"/>
+          <link id="#lcl.DBCtrls.TFieldDataLink.OnUpdateData"/>
+        </seealso>
+      </element>
+      <!-- argument Visibility: public -->
+      <element name="TDBDateEdit.Create.AOwner">
+        <short>Owner of the object instance</short>
+      </element>
 
-<!-- function Visibility: protected -->
-<element name="TDBDateEdit.EditCanModify">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- destructor Visibility: public -->
+      <element name="TDBDateEdit.Destroy">
+        <short>
+          Frees the object instance
+        </short>
+        <descr>
+          <p>
+            <var>Destroy</var> is the overridden destructor for the object instance. Destroy frees resources allocated for the DataLink property, and calls the inherited Destroy method.
+          </p>
+        </descr>
+        <seealso>
+        </seealso>
+      </element>
 
-<!-- function result Visibility: protected -->
-<element name="TDBDateEdit.EditCanModify.Result">
-<short></short>
-</element>
+      <!-- function Visibility: public -->
+      <element name="TDBDateEdit.ExecuteAction">
+        <short>
+          Perform the default action for the control
+        </short>
+        <descr>
+          <p>
+            <var>ExecuteAction</var> is an overridden Boolean function which implements support for using TBasicAction to perform the default action for the control. ExecuteAction calls the inherited method using the value in AAction. If the action is not handled in the ancestor, DataLink is used (when assigned) to performs its ExecuteAction method with the specified action value. The return value is True if the action is handled by the ancestor or DataLink.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#fcl.Classes.TBasicAction"/>
+          <link id="#lcl.Forms.TApplication.OnActionExecute"/>
+        </seealso>
+      </element>
+      <!-- function result Visibility: public -->
+      <element name="TDBDateEdit.ExecuteAction.Result">
+        <short>True if the action is successfully handled</short>
+      </element>
+      <!-- argument Visibility: public -->
+      <element name="TDBDateEdit.ExecuteAction.AAction">
+        <short>Action to perform</short>
+      </element>
 
-<!-- procedure Visibility: protected -->
-<element name="TDBDateEdit.EditEnter">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- function Visibility: public -->
+      <element name="TDBDateEdit.UpdateAction">
+        <short>
+        </short>
+        <descr>
+          <p>
+            <var>UpdateAction</var> is an overridden Boolean function which implements support for using TBasicAction to update the value in the control from its dataset. UpdateAction calls the inherited method using the value in AAction. If the action is not handled in the ancestor, DataLink is used (when assigned) to performs its UpdateAction method with the specified action value. The return value is True if the action is handled by the ancestor or DataLink.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#fcl.Classes.TBasicAction"/>
+        </seealso>
+      </element>
+      <!-- function result Visibility: public -->
+      <element name="TDBDateEdit.UpdateAction.Result">
+        <short>True if the action is successfully handled</short>
+      </element>
+      <!-- argument Visibility: public -->
+      <element name="TDBDateEdit.UpdateAction.AAction">
+        <short>Action to perform</short>
+      </element>
 
-<!-- procedure Visibility: protected -->
-<element name="TDBDateEdit.EditKeyDown">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- property Visibility: public -->
+      <element name="TDBDateEdit.Field">
+        <short>
+          TField class which reads and writes data for the control
+        </short>
+        <descr>
+          <p>
+            <var>Field</var> is a read-only TField property which reads and writes data for the control in its dataset. Field is a convenience method which returns the TField instance from the DataLink for the control. GetField is the read access specifier for the property.
+          </p>
+          <p>
+            The value in Field cannot be assigned directly; use DataField to specify the field name for the editing control. Use DataSource to set the dataset used for data in the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#fcl.DB.TField"/>
+          <link id="#lcl.DBExtCtrls.TDBDateEdit.DataLink"/>
+          <link id="#lcl.DBExtCtrls.TDBDateEdit.DataField"/>
+          <link id="#lcl.DBExtCtrls.TDBDateEdit.DataSource"/>
+          <link id="#lcl.DBCtrls.TFieldDataLink"/>
+        </seealso>
+      </element>
 
-<!-- argument Visibility: protected -->
-<element name="TDBDateEdit.EditKeyDown.Key">
-<short></short>
-</element>
+      <!-- property Visibility: published -->
+      <element name="TDBDateEdit.DataField">
+        <short>
+          Name of the field in the dataset
+        </short>
+        <descr>
+          <p>
+            <var>DataField</var> is a String property that provides the name of the field used to store the Date value in its Dataset. GetDataField is the read access specifier for the property value. SetDataField is the write access specifier for the property value. These methods read and write the value in FieldName for the DataLink.
+          </p>
+          <p>
+            Use DataSource and DataField to provide the dataset and field name for the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.DBExtCtrls.TDBDateEdit.DataLink"/>
+          <link id="#lcl.DBExtCtrls.TDBDateEdit.DataField"/>
+          <link id="#lcl.DBExtCtrls.TDBDateEdit.DataSource"/>
+          <link id="#lcl.DBCtrls.TFieldDataLink"/>
+        </seealso>
+      </element>
 
-<!-- argument Visibility: protected -->
-<element name="TDBDateEdit.EditKeyDown.Shift">
-<short></short>
-</element>
+      <!-- property Visibility: published -->
+      <element name="TDBDateEdit.DataSource">
+        <short>
+          Provides access to the dataset used for the editing control
+        </short>
+        <descr>
+          <p>
+            <var>DataSource</var> is a TDataSource property which provides access to the dataset used for the editing control. GetDataSource is the read access specifier for the property, and uses the DataSource in DataLink as the property value. SetDataSource is the write access specifier for the property, and sets the DataSource in DataLink to the specified value.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.DBExtCtrls.TDBDateEdit.DataLink"/>
+          <link id="#lcl.DBCtrls.TFieldDataLink"/>
+          <link id="#fcl.DB.TDataSource"/>
+        </seealso>
+      </element>
 
-<!-- procedure Visibility: protected -->
-<element name="TDBDateEdit.EditKeyPress">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- procedure Visibility: default -->
+      <element name="Register"/>
+    </module>
+     <!-- DBExtCtrls -->
 
-<!-- argument Visibility: protected -->
-<element name="TDBDateEdit.EditKeyPress.Key">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TDBDateEdit.ButtonClick">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TDBDateEdit.EditChange">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TDBDateEdit.EditExit">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TDBDateEdit.Reset">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TDBDateEdit.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: public -->
-<element name="TDBDateEdit.Create.AOwner">
-<short></short>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="TDBDateEdit.Destroy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TDBDateEdit.ExecuteAction">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: public -->
-<element name="TDBDateEdit.ExecuteAction.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: public -->
-<element name="TDBDateEdit.ExecuteAction.AAction">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TDBDateEdit.UpdateAction">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: public -->
-<element name="TDBDateEdit.UpdateAction.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: public -->
-<element name="TDBDateEdit.UpdateAction.AAction">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TDBDateEdit.Field">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TDBDateEdit.DataField">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TDBDateEdit.DataSource">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: default -->
-<element name="Register">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-</module> <!-- DBExtCtrls -->
-
-</package>
+  </package>
 </fpdoc-descriptions>
