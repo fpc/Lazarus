@@ -1,4 +1,4 @@
-﻿#The following people contributed to Lazarus:
+#The following people contributed to Lazarus:
 
 A. J. Venter
 Алексей Лагунов
