@@ -159,8 +159,8 @@ type
     procedure ClearAllBlockHandler;
 
 
-    procedure DoDbgOut(const s: string); override;
-    procedure DoDebugLn(const s: string); override;
+    procedure DoDbgOut(s: string); override;
+    procedure DoDebugLn(s: string); override;
     procedure DoDebuglnStack(const s: string); override;
 
     property FileHandle: TLazLoggerFileHandle read GetFileHandle write SetFileHandle;
@@ -708,62 +708,60 @@ begin
   while BlockHandlerCount > 0 do RemoveBlockHandler(BlockHandler[0]);
 end;
 
-procedure TLazLoggerFile.DoDbgOut(const s: string);
+procedure TLazLoggerFile.DoDbgOut(s: string);
 var
   Handled: Boolean;
-  s2: String;
 begin
   if not IsInitialized then Init;
 
-  EnterCriticalsection(FIndentCriticalSection);
-  s2 := FDebugIndent + s;
-  LeaveCriticalsection(FIndentCriticalSection);
+  (* DoDbgOut in not useful in threaded environment.
+     Therefore FDebugNestAtBOL is not handled in a thread safe way.
+     If DoDbgOut is *not* used at all, the FDebugNestAtBOL is always true, and
+     dirty reads should therefore yield the correct value: "true"
+  *)
+
+  if FDebugNestAtBOL and (s <> '') and (FDebugNestLvl <> 0) then begin
+    EnterCriticalsection(FIndentCriticalSection);
+    //if FDebugNestAtBOL then
+    s := FDebugIndent + s;
+    //FDebugNestAtBOL := (s[length(s)] in [#10,#13]);
+    LeaveCriticalsection(FIndentCriticalSection);
+  end;
+  FDebugNestAtBOL := (s = '') or (s[length(s)] in [#10,#13]);
 
   if OnDbgOut <> nil then
   begin
     Handled := False;
-    if FDebugNestAtBOL and (s <> '') then
-      OnDbgOut(Self, s2, Handled)
-    else
-      OnDbgOut(Self, s, Handled);
+    OnDbgOut(Self, s, Handled);
     if Handled then
       Exit;
   end;
 
-  if FDebugNestAtBOL and (s <> '') then
-    FileHandle.WriteToFile(s2, Self)
-  else
-    FileHandle.WriteToFile(s, Self);
-  FDebugNestAtBOL := (s = '') or (s[length(s)] in [#10,#13]);
+  FileHandle.WriteToFile(s, Self);
 end;
 
-procedure TLazLoggerFile.DoDebugLn(const s: string);
+procedure TLazLoggerFile.DoDebugLn(s: string);
 var
   Handled: Boolean;
-  s2: String;
 begin
   if not IsInitialized then Init;
 
-  EnterCriticalsection(FIndentCriticalSection);
-  s2 := FDebugIndent + s;
-  LeaveCriticalsection(FIndentCriticalSection);
+  if FDebugNestAtBOL and (s <> '') and (FDebugNestLvl <> 0) then begin
+    EnterCriticalsection(FIndentCriticalSection);
+    s := FDebugIndent + s;
+    LeaveCriticalsection(FIndentCriticalSection);
+  end;
+  FDebugNestAtBOL := True;
 
   if OnDebugLn <> nil then
   begin
     Handled := False;
-    if FDebugNestAtBOL and (s <> '') then
-      OnDebugLn(Self, s2, Handled)
-    else
-      OnDebugLn(Self, s, Handled);
+    OnDebugLn(Self, s, Handled);
     if Handled then
       Exit;
   end;
 
-  if FDebugNestAtBOL and (s <> '') then
-    FileHandle.WriteLnToFile(LineBreaksToSystemLineBreaks(s2), Self)
-  else
-    FileHandle.WriteLnToFile(LineBreaksToSystemLineBreaks(s), Self);
-  FDebugNestAtBOL := True;
+  FileHandle.WriteLnToFile(LineBreaksToSystemLineBreaks(s), Self);
 end;
 
 procedure TLazLoggerFile.DoDebuglnStack(const s: string);

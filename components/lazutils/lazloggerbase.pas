@@ -120,8 +120,8 @@ type
     procedure IndentChanged; virtual;
     function  GetBlockHandler({%H-}AIndex: Integer): TLazLoggerBlockHandler; virtual;
 
-    procedure DoDbgOut(const {%H-}s: string); virtual;
-    procedure DoDebugLn(const {%H-}s: string); virtual;
+    procedure DoDbgOut({%H-}s: string); virtual;
+    procedure DoDebugLn({%H-}s: string); virtual;
     procedure DoDebuglnStack(const {%H-}s: string); virtual;
 
     function  ArgsToString(Args: array of const): string;
@@ -728,12 +728,12 @@ begin
   //
 end;
 
-procedure TLazLogger.DoDbgOut(const s: string);
+procedure TLazLogger.DoDbgOut(s: string);
 begin
   //
 end;
 
-procedure TLazLogger.DoDebugLn(const s: string);
+procedure TLazLogger.DoDebugLn(s: string);
 begin
   //
 end;
