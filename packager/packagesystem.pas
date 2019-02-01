@@ -53,7 +53,7 @@ uses
   Laz2_XMLCfg, laz2_XMLRead, LazStringUtils, AvgLvlTree,
   // codetools
   FileProcs, DefineTemplates, CodeToolManager, CodeCache, DirectoryCacher,
-  BasicCodeTools, NonPascalCodeTools, SourceChanger,
+  BasicCodeTools, NonPascalCodeTools, SourceChanger, PascalReaderTool,
   // IDEIntf,
   IDEExternToolIntf, IDEDialogs, IDEMsgIntf, CompOptsIntf, LazIDEIntf,
   MacroDefIntf, ProjectIntf, FppkgIntf,
@@ -4171,8 +4171,9 @@ begin
       end;
 
       // create fpmake.pp
-      if ((pcfCreateFpmakeFile in Flags) or (APackage.GetActiveBuildMethod = bmFPMake)
-      or (APackage.CompilerOptions.CreateMakefileOnBuild)) then begin
+      if ((pcfCreateFpmakeFile in Flags)
+      or (APackage.GetActiveBuildMethod = bmFPMake)
+      or ((APackage.CompilerOptions.CreateMakefileOnBuild) and (APackage.BuildMethod in [bmBoth, bmFPMake]) and Assigned(FppkgInterface))) then begin
         Result:=WriteFpmake(APackage);
         if Result<>mrOk then begin
           DebugLn('Error: (lazarus) [TLazPackageGraph.CompilePackage] DoWriteFpmakeFile failed: ',APackage.IDAsString);
@@ -4822,6 +4823,7 @@ var
   SrcFilename: String;
   FpmakeFPCFilename: String;
   UnitPath: String;
+  OriginalCode: String;
   CodeBuffer: TCodeBuffer;
   MainSrcFile: String;
   CustomOptions: String;
@@ -4885,6 +4887,8 @@ begin
   s:='';
   s:=s+'{'+e;
   s:=s+'   File generated automatically by Lazarus Package Manager'+e;
+  if Assigned(FppkgInterface) then
+    s := s + '   Created with the Fppkgpackagemanager package installed'+e;
   s:=s+''+e;
   s:=s+'   fpmake.pp for '+APackage.IDAsString+e;
   s:=s+''+e;
@@ -4987,7 +4991,9 @@ begin
     end;
   end;
 
-  if ExtractCodeFromMakefile(CodeBuffer.Source)=ExtractCodeFromMakefile(s)
+  OriginalCode:=CodeToolBoss.ExtractCodeWithoutComments(CodeBuffer);
+  CodeBuffer.Source:=s;
+  if OriginalCode=CodeToolBoss.ExtractCodeWithoutComments(CodeBuffer)
   then begin
     // nothing important has changed in fpmake.pp => do not write to disk
     Result:=mrOk;
