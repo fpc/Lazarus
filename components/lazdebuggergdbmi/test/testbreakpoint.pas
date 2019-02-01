@@ -7,7 +7,7 @@ interface
 uses
   SysUtils, fpcunit, testutils, testregistry, DbgIntfBaseTypes,
   DbgIntfDebuggerBase, DbgIntfMiscClasses, TestBase, GDBMIDebugger,
-  TestDbgControl, TestDbgTestSuites, LCLProc, TestWatches;
+  TestDbgControl, TestDbgTestSuites, TestDbgConfig, LCLProc, TestWatches;
 
 type
 
