@@ -474,6 +474,12 @@ begin
   ACustomForm := TCustomForm(AWinControl);
   Widget := TQtMainWindow(AWinControl.Handle);
 
+  {$IFNDEF QtUseNativeEventLoop}
+  {issue #34982}
+  if AWinControl.HandleObjectShouldBeVisible and Application.Terminated then
+    exit;
+  {$ENDIF}
+
   if AWinControl.HandleObjectShouldBeVisible then
   begin
     if fsModal in ACustomForm.FormState then
