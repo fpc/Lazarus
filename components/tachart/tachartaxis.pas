@@ -1220,18 +1220,15 @@ procedure EnsureGuaranteedSpace(var AValue1, AValue2: Integer;
 var
   delta1, delta2: Integer;
 begin
-  delta1 := AImage1 - AValue1;
-  delta2 := AImage2 - AValue2;
-  if (AValue2 = AImage2 - AMargin2) then begin
-    AValue2 := AImage2 - AMargin2;
-    AValue1 := AValue2 - AGuaranteed;
-  end else
-  if (AValue1 = AImage1 + AMargin1) then begin
-    AValue1 := AImage1 + AMargin1;
-    AValue2 := AValue1 + AGuaranteed;
-  end else
-  begin
-    AValue1 := (AImage1 + AImage2 + AGuaranteed) div 2;
+  if (AValue2 = AImage2 - AMargin2) then
+    AValue1 := AValue2 - AGuaranteed
+  else
+  if (AValue1 = AImage1 + AMargin1) then
+    AValue2 := AValue1 + AGuaranteed
+  else begin
+    delta1 := AImage1 - AValue1;
+    delta2 := AImage2 - AValue2;
+    AValue1 := (AImage1 + AImage2 - AGuaranteed) div 2;
     AValue2 := AValue1 + AGuaranteed;
     if AValue1 + delta1 >= AImage1 then begin
       AValue1 := AImage1 - delta1;
