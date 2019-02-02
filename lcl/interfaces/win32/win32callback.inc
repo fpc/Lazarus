@@ -287,26 +287,6 @@ begin
     TWin32WSWinControl.SetText(ComboBox, ComboBox.Items[Index]);
 end;
 
-procedure EnableChildWindows(WinControl: TWinControl; Enable: boolean);
-var
-  i: integer;
-  ChildControl: TWinControl;
-begin
-  for i := 0 to WinControl.ControlCount-1 do
-  begin
-    if WinControl.Controls[i] is TWinControl then
-    begin
-      ChildControl := TWinControl(WinControl.Controls[i]);
-
-      if not Enable or ChildControl.Enabled then
-      begin
-        EnableWindow(ChildControl.Handle, Enable and ChildControl.Enabled);
-        EnableChildWindows(ChildControl, Enable and ChildControl.Enabled);  // Recursive call
-      end;
-    end;
-  end;
-end;
-
 // A helper class for WindowProc to make it easier to split code into smaller pieces.
 // The original function was about 2400 lines.
 
@@ -1471,8 +1451,7 @@ end;
 
 procedure TWindowProcHelper.DoMsgEnable;
 begin
-  if WParam <> 0 Then
-    LMessage.Msg := LM_SETEDITABLE;
+  LMessage.Msg := LM_ENABLE;
   if Window = Win32WidgetSet.AppHandle then
     if WParam = 0 then
     begin
@@ -1484,13 +1463,8 @@ begin
       Screen.EnableForms(DisabledForms);
     end;
 
-  // disable child windows of for example groupboxes, but not of forms
-  if Assigned(lWinControl) and not (lWinControl is TCustomForm) then
-    EnableChildWindows(lWinControl, WParam<>0);
-
-  // ugly hack to give bitbtns a nice look
-  // When no theming active, the internal image needs to be
-  // recreated when the enabled state is changed
+  // When themes are not enabled, it is necessary to redraw the BitMap associated
+  // with the TCustomBitBtn so Windows will reflect the new UI appearence.
   if not ThemeServices.ThemesEnabled and (lWinControl is TCustomBitBtn) then
     DrawBitBtnImage(TCustomBitBtn(lWinControl), TCustomBitBtn(lWinControl).Caption);
 end;
