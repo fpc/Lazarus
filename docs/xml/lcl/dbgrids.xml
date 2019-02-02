@@ -107,11 +107,11 @@
           <dl>
             <dt><b>Value</b></dt>
             <dd><b>Meaning</b></dd>
-            <dt><var><0</var></dt>
+            <dt><var>&lt;0</var></dt>
             <dd>Scroll toward the beginning of the DataSet</dd>
             <dt><var>0</var></dt>
             <dd>Current row in the DataSet has been refreshed</dd>
-            <dt><var>>0</var></dt>
+            <dt><var>&gt;0</var></dt>
             <dd>Scroll toward the end of the DataSet </dd>
           </dl>
           <p>
@@ -2756,8 +2756,7 @@
           Implementation for the event handler in TComponentDataLink
         </short>
         <descr>
-          <p>
-            <var>OnDatasetClose</var> provides a default implementation for the event handler in TComponentDataLink.
+          <var>OnDatasetClose</var> provides a default implementation for the event handler in TComponentDataLink.
         </descr>
         <seealso></seealso>
       </element>
@@ -2772,7 +2771,6 @@
           Implementation for the event handler in TComponentDataLink
         </short>
         <descr>
-          <p>
             <var>OnEditingChanged</var> provides a default implementation for the event handler in TComponentDataLink.
         </descr>
         <seealso></seealso>
@@ -2788,8 +2786,7 @@
           Implementation for the event handler in TComponentDataLink
         </short>
         <descr>
-          <p>
-            <var>OnInvalidDataSet</var> provides a default implementation for the event handler in TComponentDataLink.
+          <var>OnInvalidDataSet</var> provides a default implementation for the event handler in TComponentDataLink.
         </descr>
         <seealso></seealso>
       </element>
@@ -2804,8 +2801,7 @@
           Implementation for the event handler in TComponentDataLink
         </short>
         <descr>
-          <p>
-            <var>OnInvalidDataSourcet</var> provides a default implementation for the event handler in TComponentDataLink.
+          <var>OnInvalidDataSourcet</var> provides a default implementation for the event handler in TComponentDataLink.
         </descr>
         <seealso></seealso>
       </element>
@@ -2820,8 +2816,7 @@
           Implementation for the event handler in TComponentDataLink
         </short>
         <descr>
-          <p>
-            <var>OnLayoutChanged</var> provides a default implementation for the event handler in TComponentDataLink.
+          <var>OnLayoutChanged</var> provides a default implementation for the event handler in TComponentDataLink.
         </descr>
         <seealso></seealso>
       </element>
@@ -2836,8 +2831,7 @@
           Implementation for the event handler in TComponentDataLink
         </short>
         <descr>
-          <p>
-            <var>OnNewDataset</var> provides a default implementation for the event handler in TComponentDataLink.
+          <var>OnNewDataset</var> provides a default implementation for the event handler in TComponentDataLink.
         </descr>
         <seealso></seealso>
       </element>
@@ -2852,8 +2846,7 @@
           Implementation for the event handler in TComponentDataLink
         </short>
         <descr>
-          <p>
-            <var>OnDatasetScrolled</var> provides a default implementation for the event handler in TComponentDataLink.
+          <var>OnDatasetScrolled</var> provides a default implementation for the event handler in TComponentDataLink.
         </descr>
         <seealso></seealso>
       </element>
@@ -2873,8 +2866,7 @@
           Implementation for the event handler in TComponentDataLink
         </short>
         <descr>
-          <p>
-            <var>OnUpdateData</var> provides a default implementation for the event handler in TComponentDataLink.
+          <var>OnUpdateData</var> provides a default implementation for the event handler in TComponentDataLink.
         </descr>
         <seealso></seealso>
       </element>
