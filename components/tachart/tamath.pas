@@ -28,7 +28,8 @@ function InRangeUlps(AX, ALo, AHi: Double; AMaxUlps: Word): Boolean;
 
 function SafeInfinity: Double; inline;
 function SafeInRange(AValue, ABound1, ABound2: Double): Boolean;
-function SafeInRangeWithBounds(AValue, ABound1, ABound2: Double): Boolean;
+function SafeInRangeWithBounds(AValue, ABound1, ABound2: Double;
+  AEpsilon: Double = 0.0): Boolean;
 function SafeMin(A, B: Double): Double;
 function SafeNan: Double; inline;
 function SafeEqual(A, B: Double): Boolean;
@@ -160,11 +161,14 @@ begin
   Result := InRange(AValue, ABound1, ABound2);
 end;
 
-function SafeInRangeWithBounds(AValue, ABound1, ABound2: Double): Boolean;
+function SafeInRangeWithBounds(AValue, ABound1, ABound2: Double;
+  AEpsilon: Double = 0.0): Boolean;
 begin
   EnsureOrder(ABound1, ABound2);
+  if AEpsilon = 0.0 then
+    AEpsilon := RANGE_EPSILON * (ABound2 - ABound1);
   Result := InRange(AValue, ABound1, ABound2) or
-    SameValue(AValue, ABound1) or SameValue(AValue, ABound2);
+    SameValue(AValue, ABound1, AEpsilon) or SameValue(AValue, ABound2, AEpsilon);
 end;
 
 function SafeMin(A, B: Double): Double;
