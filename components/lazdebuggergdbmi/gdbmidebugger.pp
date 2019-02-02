@@ -166,6 +166,7 @@ type
     FDisableStartupShell: Boolean;
     FEncodeCurrentDirPath: TGDBMIDebuggerFilenameEncoding;
     FEncodeExeFileName: TGDBMIDebuggerFilenameEncoding;
+    FFixIncorrectStepOver: Boolean;
     FFixStackFrameForFpcAssert: Boolean;
     FGdbLocalsValueMemLimit: Integer;
     {$IFDEF UNIX}
@@ -228,6 +229,7 @@ type
              write FDisableStartupShell default False;
     property FixStackFrameForFpcAssert: Boolean read FFixStackFrameForFpcAssert
              write FFixStackFrameForFpcAssert default True;
+    property FixIncorrectStepOver: Boolean read FFixIncorrectStepOver write FFixIncorrectStepOver default False;
   end;
 
   TGDBMIDebuggerProperties = class(TGDBMIDebuggerPropertiesBase)
@@ -256,6 +258,7 @@ type
     property AssemblerStyle;
     property DisableStartupShell;
     property FixStackFrameForFpcAssert;
+    property FixIncorrectStepOver;
   end;
 
   TGDBMIDebugger = class;
@@ -619,6 +622,8 @@ type
     FRunToSrc: String;
     FRunToLine: Integer;
     FStepBreakPoint: Integer;
+    FInitialFP: TDBGPtr;
+    FStepOverFixNeeded: (sofNotNeeded, sofStepAgain, sofStepOut);
   protected
     procedure DoLockQueueExecute; override;
     procedure DoUnLockQueueExecute; override;
@@ -5881,6 +5886,41 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
     end;
   end;
 
+  procedure CheckIncorrectStepOver;
+    function GetCurrentFp: TDBGPtr; // TODO: this is a copy and paste from Run command
+    var
+      OldCtx: TGDBMICommandContext;
+    begin
+      OldCtx := FContext;
+      FContext.ThreadContext := ccUseLocal;
+      FContext.StackContext := ccUseLocal;
+      FContext.StackFrame := 0;
+      FContext.ThreadId := FTheDebugger.FCurrentThreadId;
+      Result := GetPtrValue('$fp', []);
+      FContext := OldCtx;
+    end;
+
+  begin
+    if not TGDBMIDebuggerPropertiesBase(FTheDebugger.GetProperties).FixIncorrectStepOver then
+      exit;
+    if not (FExecType = ectStepOver) then
+      exit;
+
+    if FStepOverFixNeeded = sofStepAgain then begin
+      FStepOverFixNeeded := sofStepOut;
+      Result := True;
+      exit;
+    end;
+
+    if (FInitialFP = 0) or (GetCurrentFp >= FInitialFP) then
+      exit;
+
+    DebugLn(DBG_VERBOSE, '*** FIXING gdb step over did step in');
+    Result := True; // outer funciton result
+
+    FStepOverFixNeeded := sofStepAgain;
+  end;
+
   procedure ProcessBreakPoint(ABreakId: Integer; const List: TGDBMINameValueList;
     AReason: TGDBMIBreakpointReason; AOldVal: String = ''; ANewVal: String = '');
   var
@@ -6176,8 +6216,11 @@ begin
 
     if Reason = 'end-stepping-range'
     then begin
+      CheckIncorrectStepOver;
+      if not Result then begin
         SetDebuggerState(dsPause);
         ProcessFrame(List.Values['frame'], False);
+      end;
       Exit;
     end;
 
@@ -6586,6 +6629,19 @@ var
           Result := FStepBreakPoint > 0;
           if Result then
             exit;
+          case FStepOverFixNeeded of
+            sofStepAgain: begin
+              FCurrentExecCmd := ectStepOver;
+              Result := True;
+              exit;
+            end;
+            sofStepOut: begin
+              FCurrentExecCmd := ectStepOut;
+              FStepOverFixNeeded := sofNotNeeded;
+              Result := True;
+              exit;
+            end;
+          end;
 
           i := -1;
           if FP <> 0 then begin
@@ -6721,8 +6777,10 @@ begin
   Result := True;
   FCanKillNow := False;
   FDidKillNow := False;
+  FStepOverFixNeeded := sofNotNeeded;
   FNextExecQueued := False;
   FP := 0;
+  FInitialFP := FP;
   CurThreadId := FTheDebugger.FCurrentThreadId;
   if not FTheDebugger.FCurrentThreadIdValid then CurThreadId := 1; // TODO, but we need something
   ContinueStep := False; // A step command was interupted, and is continued on breakpoint
@@ -6752,6 +6810,7 @@ begin
            (FExecType in [ectStepOver, ectStepInto, ectStepOut, ectStepOverInstruction, ectStepIntoInstruction])
         then
           FP := GetCurrentFp;
+          FInitialFP := FP;
 
         FTheDebugger.FCurrentStackFrameValid := False;
         FTheDebugger.FCurrentThreadIdValid   := False;
@@ -7525,6 +7584,7 @@ begin
   FAssemblerStyle := gdasDefault;
   FDisableStartupShell := False;
   FFixStackFrameForFpcAssert := True;
+  FFixIncorrectStepOver := False;
   inherited;
 end;
 
@@ -7555,6 +7615,7 @@ begin
   FAssemblerStyle := TGDBMIDebuggerPropertiesBase(Source).FAssemblerStyle;
   FDisableStartupShell := TGDBMIDebuggerPropertiesBase(Source).FDisableStartupShell;
   FFixStackFrameForFpcAssert := TGDBMIDebuggerPropertiesBase(Source).FFixStackFrameForFpcAssert;
+  FFixIncorrectStepOver := TGDBMIDebuggerPropertiesBase(Source).FFixIncorrectStepOver;
 end;
 
 
