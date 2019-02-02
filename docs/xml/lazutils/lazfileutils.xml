@@ -34,11 +34,11 @@
             The return value indicates the relative order in a sort operation, and can contain the following values:
           </p>
           <dl>
-            <dt><code> <0 </code></dt>
+            <dt><code> &lt;0 </code></dt>
             <dd>Filename1 comes before Filename2</dd>
             <dt><code> 0 </code></dt>
             <dd>Filename1 and Filename2 to have the same value</dd>
-            <dt><code> >0 </code></dt>
+            <dt><code> &gt;0 </code></dt>
             <dd>Filename1 comes after Filename2</dd>
           </dl>
         </descr>
