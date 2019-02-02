@@ -7,13 +7,14 @@ interface
 uses
   Classes,
   SysUtils,
-  {$IFNDEF VER3_0}
-  IDEDialogs,
+  {$IF FPC_FULLVERSION>30100}
   pkgFppkg,
-  LazarusIDEStrConsts,
   {$ENDIF}
   fprepos,
-  Dialogs;
+  LazLogger,
+  LazFileCache,
+  FileUtil,
+  LazFileUtils;
 
 type
 
@@ -25,11 +26,12 @@ type
 
   TFppkgHelper = class
   private
-    {$IFNDEF VER3_0}
+    {$IF FPC_FULLVERSION>30100}
     FFPpkg: TpkgFPpkg;
     {$ENDIF}
     FIsProperlyConfigured: TFppkgPropConfigured;
     function HasFPCPackagesOnly(const PackageName: string): Boolean;
+    procedure InitializeFppkg;
   public
     constructor Create;
     destructor Destroy; override;
@@ -38,9 +40,12 @@ type
     procedure ListPackages(AList: TStringList);
     function GetPackageUnitPath(const PackageName: string): string;
     function IsProperlyConfigured: Boolean;
+    function GetCompilerFilename: string;
+    function GetCompilerConfigurationFileName: string;
     // Temporary solution, because fpc 3.2.0 does not has support for package-variants
     // in TFPPackage
     function GetPackageVariantArray(const PackageName: string): TFppkgPackageVariantArray;
+    procedure ReInitialize;
   end;
 
 implementation
@@ -50,8 +55,8 @@ var
 
 { TFppkgHelper }
 
-constructor TFppkgHelper.Create;
-{$IFDEF VER3_0}
+procedure TFppkgHelper.InitializeFppkg;
+{$IF NOT (FPC_FULLVERSION>30100)}
 begin
 end;
 {$ELSE}
@@ -75,19 +80,24 @@ begin
       FPpkg := nil;
     except
       on E: Exception do
-        IDEMessageDialog(lisFppkgInitializeFailed, Format(lisFppkgInitializeFailed, [E.Message]), mtWarning, [mbOK]);
+        debugln(['InitializeFppkg failed: '+E.Message]);
     end;
   finally
     FPpkg.Free;
   end;
 end;
-{$ENDIF VER3_0}
+{$ENDIF FPC_FULLVERSION>30100}
+
+constructor TFppkgHelper.Create;
+begin
+  InitializeFppkg;
+end;
 
 destructor TFppkgHelper.Destroy;
 begin
-{$IFNDEF VER3_0}
+{$IF FPC_FULLVERSION>30100}
   FFPpkg.Free;
-{$ENDIF VER3_0}
+{$ENDIF FPC_FULLVERSION>30100}
   inherited Destroy;
 end;
 
@@ -100,7 +110,7 @@ end;
 
 function TFppkgHelper.HasPackage(const PackageName: string): Boolean;
 begin
-{$IFDEF VER3_0}
+{$IF NOT (FPC_FULLVERSION>30100)}
   Result := HasFPCPackagesOnly(PackageName);
 {$ELSE }
   if IsProperlyConfigured() then
@@ -124,19 +134,18 @@ begin
     end
   else
     Result := HasFPCPackagesOnly(PackageName);
-{$ENDIF VER3_0}
+{$ENDIF FPC_FULLVERSION>30100}
 end;
 
 procedure TFppkgHelper.ListPackages(AList: TStringList);
-{$IFNDEF VER3_0}
+{$IF FPC_FULLVERSION>30100}
 var
   I, J: Integer;
   Repository: TFPRepository;
-{$ENDIF VER3_0}
+{$ENDIF FPC_FULLVERSION>30100}
 begin
-{$IFDEF VER3_0}
-  if AList=nil then ;
-{$ELSE}
+  AList.Clear;
+{$IF FPC_FULLVERSION>30100}
   if not Assigned(FFPpkg) then
     Exit;
   for I := 0 to FFPpkg.RepositoryList.Count -1 do
@@ -147,20 +156,20 @@ begin
       AList.AddObject(Repository.Packages[J].Name, Repository.Packages[J]);
       end;
     end;
-{$ENDIF VER3_0}
+{$ENDIF FPC_FULLVERSION>30100}
 end;
 
 function TFppkgHelper.GetPackageUnitPath(const PackageName: string): string;
-{$IFNDEF VER3_0}
+{$IF FPC_FULLVERSION>30100}
 var
   FppkgPackage: TFPPackage;
 {$IF not (FPC_FULLVERSION>30300)}
   PackageVariantsArray: TFppkgPackageVariantArray;
 {$ENDIF}
   i: Integer;
-{$ENDIF VER3_0}
+{$ENDIF FPC_FULLVERSION>30100}
 begin
-{$IFDEF VER3_0}
+{$IF NOT (FPC_FULLVERSION>30100)}
   if PackageName='' then ;
   Result := '';
 {$ELSE}
@@ -194,7 +203,7 @@ begin
     // be installed into, and use the corresponding packagestructure.
     Result := '';
     end;
-{$ENDIF VER3_0}
+{$ENDIF FPC_FULLVERSION>30100}
 end;
 
 function TFppkgHelper.GetPackageVariantArray(const PackageName: string): TFppkgPackageVariantArray;
@@ -253,16 +262,42 @@ begin
 end;
 
 function TFppkgHelper.IsProperlyConfigured: Boolean;
+{$IF FPC_FULLVERSION>30100}
+var
+  CompilerFilename: string;
+{$ENDIF FPC_FULLVERSION>30100}
 begin
   {$IF FPC_FULLVERSION>30100}
   if Assigned(FFPpkg) and (FIsProperlyConfigured=fpcUnknown) then
     begin
     FIsProperlyConfigured := fpcYes;
+
     if not HasPackage('rtl') then
-      FIsProperlyConfigured := fpcNo;
+      FIsProperlyConfigured := fpcNo
+    else
+      begin
+      CompilerFilename := FFPpkg.CompilerOptions.Compiler;
+      if Pos(PathDelim, CompilerFilename) > 0 then
+        begin
+        if not FileExistsCached(CompilerFilename) then
+          FIsProperlyConfigured := fpcNo
+        else if not FileIsExecutableCached(CompilerFilename) then
+          FIsProperlyConfigured := fpcNo
+        end
+      else
+        begin
+        CompilerFilename := ExeSearch(CompilerFilename);
+        if CompilerFilename = '' then
+          FIsProperlyConfigured := fpcNo
+        else if not FileIsExecutableCached(CompilerFilename) then
+          FIsProperlyConfigured := fpcNo
+        end
+      end;
     end;
-  {$ENDIF FPC_FULLVERSION>30100}
   result := FIsProperlyConfigured=fpcYes;
+  {$ELSE}
+  result := True
+  {$ENDIF FPC_FULLVERSION>30100}
 end;
 
 function TFppkgHelper.HasFPCPackagesOnly(const PackageName: string): Boolean;
@@ -403,6 +438,54 @@ begin
       end;
     end;
   Result := False;
+end;
+
+function TFppkgHelper.GetCompilerFilename: string;
+begin
+  Result := '';
+  {$IF FPC_FULLVERSION>30100}
+  if Assigned(FFPpkg) then
+    begin
+    Result := FFPpkg.CompilerOptions.Compiler;
+    end;
+  {$ENDIF}
+end;
+
+procedure TFppkgHelper.ReInitialize;
+begin
+  FIsProperlyConfigured := fpcUnknown;
+  {$IF FPC_FULLVERSION>30100}
+  FFPpkg.Free;
+  {$ENDIF}
+  InitializeFppkg;
+end;
+
+function TFppkgHelper.GetCompilerConfigurationFileName: string;
+{$IF FPC_FULLVERSION>30100}
+var
+  FPpkg: TpkgFPpkg;
+{$ENDIF}
+begin
+  Result := '';
+  {$IF FPC_FULLVERSION>30100}
+  if Assigned(FFPpkg) then
+    Result:=ConcatPaths([FFPpkg.Options.GlobalSection.CompilerConfigDir, FFPpkg.Options.CommandLineSection.CompilerConfig])
+  else
+    begin
+    FPpkg := TpkgFPpkg.Create(nil);
+    try
+      try
+        FPpkg.InitializeGlobalOptions('');
+        Result:=ConcatPaths([FPpkg.Options.GlobalSection.CompilerConfigDir, FPpkg.Options.CommandLineSection.CompilerConfig])
+      except
+        on E: Exception do
+          debugln(['Fppkg initialize global options failed: '+E.Message]);
+      end;
+    finally
+      FPpkg.Free;
+    end;
+    end
+  {$ENDIF}
 end;
 
 finalization

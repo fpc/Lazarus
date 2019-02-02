@@ -1038,6 +1038,20 @@ resourcestring
   lisCreateIt = 'Create it';
   lisInvalidFileName = 'Invalid file name';
   lisTheTargetFileNameIsADirectory = 'The target file name is a directory.';
+  lisNotAValidFppkgPrefix ='Free Pascal compiler not found at the given prefix.';
+  lisIncorrectFppkgConfiguration = 'the Fppkg configuration is corrupt.';
+  lisFppkgCompilerProblem = 'there is a problem with the Free Pascal compiler executable, ';
+  lisFppkgInstallationPath = 'The prefix of the Free Pascal Compiler installation ' +
+    'is required to create new configuration files for Fppkg. For example it has ' +
+    'the file "lib/fpc" or "lib64/fpc"';
+  lisSelectFPCPath = 'Select the path where FPC is installed';
+  lisCreateFppkgConfig = 'Create new Fppkg configuration';
+  lisFppkgProblem = 'Problem with Fppkg configuration';
+  lisFreePascalPrefix = 'Free Pascal compiler prefix';
+  lisFppkgWriteConfException = 'A problem occured while trying to create a new ' +
+    'Fppkg configuration: %s';
+  lisFppkgWriteConfFailed = 'Failed to create a new Fppkg configuration. You ' +
+    'will have to fix the configuration manually or reinstall Free Pascal.';
 
   // file dialogs
   lisOpenFile = 'Open File';
@@ -1147,10 +1161,6 @@ resourcestring
   lisSaveAllChecked = 'Save All Checked';
   lisActivate = 'Activate';
   lisActivateSelected = 'Activate Selected';
-  lisFppkgInitializeFailedCaption = 'Failed to initialize Fppkg';
-  lisFppkgInitializeFailed =
-    'An error occurred during the initialization of Fppkg: %s.' + sLineBreak +
-    'Check your Fppkg configuration and restart Lazarus to be able to use Fppkg''s functionality.';
 
   // hints
   lisHintSaveAll = 'Save all';
@@ -6220,6 +6230,7 @@ resourcestring
   dbgBreakPropertyGroupNotFound = 'Some groups in the Enable/Disable list do not exist.%0:s'
     +'Create them?%0:s%0:s%1:s';
   lisFileIsDirectory = 'File is directory';
+  lisPathIsNoDirectory = 'is not a directory';
   lisUnableToCreateNewFileBecauseThereIsAlreadyADirecto = 'Unable to create '
     +'new file because there is already a directory with this name.';
 

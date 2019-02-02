@@ -40,7 +40,7 @@ uses
   LazFileCache, LazUTF8, LazUTF8Classes, LazFileUtils, FileUtil,
   LazLoggerBase, Laz2_XMLCfg,
   // IDE
-  LazarusIDEStrConsts, LazConf, EnvironmentOpts;
+  LazarusIDEStrConsts, LazConf, EnvironmentOpts, FppkgHelper;
 
 type
   TSDFilenameQuality = (
@@ -71,14 +71,16 @@ type
     sddtCompilerFilename,
     sddtFPCSrcDir,
     sddtMakeExeFilename,
-    sddtDebuggerFilename
+    sddtDebuggerFilename,
+    sddtFppkgFpcPrefix
     );
 
   TSDFlag = (
     sdfCompilerFilenameNeedsUpdate,
     sdfFPCSrcDirNeedsUpdate,
     sdfMakeExeFilenameNeedsUpdate,
-    sdfDebuggerFilenameNeedsUpdate
+    sdfDebuggerFilenameNeedsUpdate,
+    sdfFppkgFpcPrefixNeedsUpdate
     );
   TSDFlags = set of TSDFlag;
 
@@ -103,6 +105,9 @@ function CheckFPCSrcDirQuality(ADirectory: string; out Note: string;
   const FPCVer: String; aUseFileCache: Boolean = True): TSDFilenameQuality;
 function SearchFPCSrcDirCandidates(StopIfFits: boolean;
   const FPCVer: string): TSDFileInfoList;
+
+// Fppkg
+function CheckFppkgConfiguration(): TSDFilenameQuality;
 
 // Make
 // Checks a given file to see if it is a valid make executable
@@ -825,6 +830,17 @@ begin
   finally
     EnvironmentOptions.FPCSourceDirectory:=OldFPCSrcDir;
   end;
+end;
+
+function CheckFppkgConfiguration(): TSDFilenameQuality;
+var
+  Fppkg: TFppkgHelper;
+begin
+  Fppkg := TFppkgHelper.Instance;
+  if Fppkg.IsProperlyConfigured then
+    Result := sddqCompatible
+  else
+    Result := sddqInvalid;
 end;
 
 function CheckMakeExeQuality(AFilename: string; out Note: string

@@ -43,14 +43,16 @@ uses
   // RTL + FCL + LCL
   Classes, SysUtils,
   Forms, Controls, Buttons, Dialogs, Graphics, ComCtrls, ExtCtrls, StdCtrls, LCLProc,
+  pkgglobals, UTF8Process,
   // CodeTools
   FileProcs, CodeToolManager, DefineTemplates,
   // LazUtils
   FileUtil, LazUTF8, LazUTF8Classes, LazFileUtils, LazFileCache, LazLoggerBase,
   // Other
-  MacroDefIntf, GDBMIDebugger, DbgIntfDebuggerBase,
+  MacroDefIntf, GDBMIDebugger, DbgIntfDebuggerBase, IDEDialogs,
   TransferMacros, LazarusIDEStrConsts, LazConf, EnvironmentOpts, IDEImagesIntf,
-  AboutFrm, IDETranslations, BaseBuildManager, InitialSetupProc;
+  AboutFrm, IDETranslations, BaseBuildManager, InitialSetupProc, FppkgHelper,
+  IDEProcs;
   
 type
   TInitialSetupDialog = class;
@@ -116,6 +118,12 @@ type
     StartIDEBitBtn: TBitBtn;
     StopScanButton: TBitBtn;
     WelcomePaintBox: TPaintBox;
+    FppkgTabSheet: TTabSheet;
+    FppkgComboBox: TComboBox;
+    FppkgLabel: TLabel;
+    FppkgBrowseButton: TButton;
+    FppkgMemo: TMemo;
+    FppkgWriteConfigButton: TButton;
     procedure CompilerBrowseButtonClick(Sender: TObject);
     procedure CompilerComboBoxChange(Sender: TObject);
     procedure DebuggerBrowseButtonClick(Sender: TObject);
@@ -135,6 +143,9 @@ type
     procedure StopScanButtonClick(Sender: TObject);
     procedure WelcomePaintBoxPaint(Sender: TObject);
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
+    procedure FppkgComboBoxChange(Sender: TObject);
+    procedure FppkgBrowseButtonClick(Sender: TObject);
+    procedure FppkgWriteConfigButtonClick(Sender: TObject);
   private
     FFlags: TSDFlags;
     FLastParsedLazDir: string;
@@ -142,6 +153,8 @@ type
     fLastParsedFPCSrcDir: string;
     fLastParsedMakeExe: string;
     fLastParsedDebugger: string;
+    fLastParsedFppkgPrefix: string;
+    fLastParsedFppkgLibPath: string;
     FIdleConnected: boolean;
     ImgIDError: LongInt;
     ImgIDWarning: LongInt;
@@ -160,6 +173,7 @@ type
     procedure UpdateFPCSrcDirCandidate(aFPCSrcDirInfo: TSDFileInfo);
     procedure UpdateMakeExeCandidates;
     procedure UpdateDebuggerCandidates;
+    procedure UpdateFppkgCandidates;
     procedure FillComboboxWithFileInfoList(ABox: TComboBox; List: TSDFileInfoList;
        ItemIndex: integer = 0);
     procedure SetIdleConnected(const AValue: boolean);
@@ -168,6 +182,7 @@ type
     procedure UpdateFPCSrcDirNote;
     procedure UpdateMakeExeNote;
     procedure UpdateDebuggerNote;
+    procedure UpdateFppkgNote;
     function FirstErrorNode: TTreeNode;
     function GetFPCVer: string;
     function GetFirstCandidate(Candidates: TSDFileInfoList;
@@ -176,12 +191,14 @@ type
     procedure ShowHideScanControls(aShow: Boolean);
     procedure ThreadTerminated(Sender: TObject); // called in main thread by fSearchFpcSourceThread.OnTerminate
     procedure TranslateResourceStrings;
+    function CheckFppkgQuality(APrefix: string; out LibPath, Note: string): TSDFilenameQuality;
   public
     TVNodeLazarus: TTreeNode;
     TVNodeCompiler: TTreeNode;
     TVNodeFPCSources: TTreeNode;
     TVNodeMakeExe: TTreeNode;
     TVNodeDebugger: TTreeNode;
+    TVNodeFppkg: TTreeNode;
     procedure Init; //Check for config errors, find and show alternatives
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
   end;
@@ -477,6 +494,7 @@ begin
   FPCSourcesTabSheet.Caption:=lisFPCSources;
   MakeExeTabSheet.Caption:='Make';
   DebuggerTabSheet.Caption:=lisDebugger;
+  FppkgTabSheet.Caption := 'Fppkg';
 
   FHeadGraphic:=TPortableNetworkGraphic.Create;
   FHeadGraphic.LoadFromResourceName(HInstance, 'ide_icon48x48');
@@ -486,6 +504,12 @@ begin
   TVNodeFPCSources:=PropertiesTreeView.Items.Add(nil,FPCSourcesTabSheet.Caption);
   TVNodeMakeExe:=PropertiesTreeView.Items.Add(nil,MakeExeTabSheet.Caption);
   TVNodeDebugger:=PropertiesTreeView.Items.Add(nil,DebuggerTabSheet.Caption);
+  {$IF FPC_FULLVERSION>30100}
+  TVNodeFppkg:=PropertiesTreeView.Items.Add(nil,FppkgTabSheet.Caption);
+  FppkgTabSheet.TabVisible := True;
+  {$ELSE}
+  FppkgTabSheet.TabVisible := False;
+  {$ENDIF FPC_FULLVERSION>30100}
   ImgIDError := Imagelist1.AddResourceName(HInstance, 'state_error');
   ImgIDWarning := Imagelist1.AddResourceName(HInstance, 'state_warning');
 
@@ -732,6 +756,10 @@ begin
   end else if sdfDebuggerFilenameNeedsUpdate in FFlags then begin
     UpdateDebuggerCandidates;
     UpdateDebuggerNote;
+  end else if sdfFppkgFpcPrefixNeedsUpdate in FFlags then begin
+    fLastParsedFppkgPrefix := '';
+    UpdateFppkgCandidates;
+    UpdateFppkgNote;
   end else
     IdleConnected:=false;
 end;
@@ -749,16 +777,24 @@ begin
   FPCSourcesTabSheet.Caption:=lisFPCSources;
   MakeExeTabSheet.Caption:='Make';
   DebuggerTabSheet.Caption:=lisDebugger;
+  FppkgTabSheet.Caption:='Fppkg';
 
   TVNodeLazarus.Text:=LazarusTabSheet.Caption;
   TVNodeCompiler.Text:=CompilerTabSheet.Caption;
   TVNodeFPCSources.Text:=FPCSourcesTabSheet.Caption;
   TVNodeMakeExe.Text:=MakeExeTabSheet.Caption;
   TVNodeDebugger.Text:=DebuggerTabSheet.Caption;
+  {$IF FPC_FULLVERSION>30100}
+  TVNodeFppkg.Text:=FppkgTabSheet.Caption;
+  {$ENDIF FPC_FULLVERSION>30100}
 
   LazDirBrowseButton.Caption:=lisPathEditBrowse;
   LazDirLabel.Caption:=SimpleFormat(
     lisTheLazarusDirectoryContainsTheSourcesOfTheIDEAndTh, [PathDelim]);
+
+  FppkgLabel.Caption:=lisFppkgInstallationPath;
+  FppkgBrowseButton.Caption:=lisPathEditBrowse;
+  FppkgWriteConfigButton.Caption:=lisCreateFppkgConfig;
 
   CompilerBrowseButton.Caption:=lisPathEditBrowse;
   CompilerLabel.Caption:=SimpleFormat(lisTheFreePascalCompilerExecutableTypicallyHasTheName,
@@ -1006,7 +1042,7 @@ begin
   TVNodeCompiler.ImageIndex:=ImageIndex;
   TVNodeCompiler.SelectedIndex:=ImageIndex;
 
-  FFlags:=FFlags+[sdfFPCSrcDirNeedsUpdate,
+  FFlags:=FFlags+[sdfFPCSrcDirNeedsUpdate,sdfFppkgFpcPrefixNeedsUpdate,
                   sdfMakeExeFilenameNeedsUpdate,sdfDebuggerFilenameNeedsUpdate];
   IdleConnected:=true;
 end;
@@ -1322,11 +1358,247 @@ begin
   fLastParsedDebugger:='. .';
   UpdateDebuggerNote;
 
+  // Fppkg
+  UpdateFppkgCandidates;
+  UpdateFppkgNote;
+
   // select first error
   Node:=FirstErrorNode;
   if Node=nil then
     Node:=TVNodeLazarus;
   PropertiesTreeView.Selected:=Node;
+end;
+
+procedure TInitialSetupDialog.UpdateFppkgNote;
+var
+  CurCaption: String;
+  Msg, Note: string;
+  Quality: TSDFilenameQuality;
+  ImageIndex: Integer;
+begin
+  if csDestroying in ComponentState then exit;
+  CurCaption:=FppkgComboBox.Text;
+  if fLastParsedFppkgPrefix=CurCaption then exit;
+  fLastParsedFppkgPrefix:=CurCaption;
+
+  Quality := CheckFppkgConfiguration();
+
+  Msg := '';
+  if CheckFppkgQuality(CurCaption,fLastParsedFppkgLibPath,Note)<>sddqCompatible then
+    Msg := Note;
+  if (CheckFPCExeQuality(fLastParsedCompiler,Note, CodeToolBoss.CompilerDefinesCache.TestFilename)<>sddqCompatible) then
+    Msg := Msg + lisWarning + lisFppkgCompilerProblem +Note;
+
+  if Quality=sddqCompatible then
+    Note := lisOk
+  else
+    Note := lisError + lisIncorrectFppkgConfiguration + LineEnding;
+
+  if Msg<>'' then
+  begin
+      Note := Note + LineEnding + Msg;
+    FppkgWriteConfigButton.Enabled := False;
+  end
+  else
+  begin
+    FppkgWriteConfigButton.Enabled := True;
+  end;
+
+  FppkgMemo.Text := Note;
+
+  ImageIndex:=QualityToImgIndex(Quality);
+
+  {$IF FPC_FULLVERSION>30100}
+  TVNodeFppkg.ImageIndex:=ImageIndex;
+  TVNodeFppkg.SelectedIndex:=ImageIndex;
+  {$ENDIF FPC_FULLVERSION>30100}
+
+  IdleConnected:=true;
+end;
+
+function TInitialSetupDialog.CheckFppkgQuality(APrefix: string; out LibPath, Note: string): TSDFilenameQuality;
+var
+  SR: TRawByteSearchRec;
+  LibPathValid: Boolean;
+begin
+  Result := sddqInvalid;
+  LibPath := '';
+  APrefix:=TrimFilename(APrefix);
+  if not FileExistsCached(APrefix) then
+  begin
+    Note:= lisWarning + lisFreePascalPrefix + ' ' + lisISDDirectoryNotFound + LineEnding;
+  end
+  else if not DirPathExistsCached(APrefix) then
+  begin
+    Note:= lisWarning + lisFreePascalPrefix + ' ' + lisPathIsNoDirectory + LineEnding;
+  end
+  else
+  begin
+    LibPathValid := True;
+    LibPath := IncludeTrailingPathDelimiter(ConcatPaths([APrefix, 'lib', 'fpc']));
+    if not DirPathExistsCached(LibPath) then
+    begin
+      LibPath := IncludeTrailingPathDelimiter(ConcatPaths([APrefix, 'lib64', 'fpc']));
+      if not DirPathExistsCached(LibPath) then
+      begin
+        LibPathValid := False;
+      end;
+    end;
+
+    if LibPathValid and (FindFirstUTF8(LibPath+AllFilesMask, faDirectory, SR) = 0) then
+    begin
+      LibPathValid := False;
+      repeat
+        if (SR.Name<>'.') and (SR.Name<>'..') then
+        begin
+          if DirPathExistsCached(LibPath+SR.Name+PathDelim+'fpmkinst') and
+            DirPathExistsCached(LibPath+SR.Name+PathDelim+'units') then
+              begin
+                LibPathValid := True;
+                Result := sddqCompatible;
+                Break;
+              end;
+        end;
+      until FindNext(SR) <> 0;
+      FindCloseUTF8(SR);
+    end;
+
+    if not LibPathValid then
+      Note:= Note + lisWarning + lisNotAValidFppkgPrefix + LineEnding
+    else
+      Note:='';
+  end;
+end;
+
+procedure TInitialSetupDialog.FppkgComboBoxChange(Sender: TObject);
+begin
+  UpdateFppkgNote;
+end;
+
+procedure TInitialSetupDialog.UpdateFppkgCandidates;
+
+
+  function SearchFppkgFpcPrefixCandidates: TSDFileInfoList;
+
+    function CheckPath(APath: string; var List: TSDFileInfoList): boolean;
+    var
+      Item: TSDFileInfo;
+      LibPath, Note: String;
+    begin
+      Result:=false;
+      if APath='' then exit;
+      ForcePathDelims(APath);
+      // check if already checked
+      if Assigned(List) and List.CaptionExists(APath) then exit;
+
+      if CheckFppkgQuality(APath, LibPath, Note) = sddqCompatible then
+      begin
+        if List=nil then
+          List:=TSDFileInfoList.create(true);
+        Item:=List.AddNewItem(APath, APath);
+        Item.Quality:=sddqCompatible;
+        Result := True;
+      end;
+    end;
+
+  begin
+    Result:=nil;
+
+    CheckPath(ExtractFileDir(ExtractFileDir(EnvironmentOptions.GetParsedCompilerFilename)), Result);
+
+    {$ifdef windows}
+    CheckPath('c:\pp', Result);
+    CheckPath('d:\pp', Result);
+    {$else}
+    CheckPath('/usr', Result);
+    CheckPath('/usr/local', Result);
+    {$endif unix}
+  end;
+
+var
+  Files: TSDFileInfoList;
+begin
+  Exclude(FFlags,sdfFppkgFpcPrefixNeedsUpdate);
+  Files:=SearchFppkgFpcPrefixCandidates;
+  FreeAndNil(FCandidates[sddtFppkgFpcPrefix]);
+  FCandidates[sddtFppkgFpcPrefix]:=Files;
+  FillComboboxWithFileInfoList(FppkgComboBox,Files);
+end;
+
+procedure TInitialSetupDialog.FppkgBrowseButtonClick(Sender: TObject);
+var
+  Dlg: TSelectDirectoryDialog;
+begin
+  Dlg:=TSelectDirectoryDialog.Create(nil);
+  try
+    Dlg.Title:=lisSelectFPCPath;
+    Dlg.Options:=Dlg.Options+[ofPathMustExist];
+    if not Dlg.Execute then exit;
+    FppkgComboBox.Text:=Dlg.FileName;
+  finally
+    Dlg.Free;
+  end;
+  UpdateFppkgNote;
+end;
+
+procedure TInitialSetupDialog.FppkgWriteConfigButtonClick(Sender: TObject);
+{$IF FPC_FULLVERSION>30100}
+var
+  FpcmkcfgExecutable, CompConfigFilename: string;
+  Proc: TProcessUTF8;
+  Fppkg: TFppkgHelper;
+{$ENDIF}
+begin
+  {$IF FPC_FULLVERSION>30100}
+  try
+    FpcmkcfgExecutable := FindFPCTool('fpcmkcfg'+GetExecutableExt, EnvironmentOptions.GetParsedCompilerFilename);
+    if FpcmkcfgExecutable<>'' then
+    begin
+      Proc := TProcessUTF8.Create(nil);
+      try
+        // Write fppkg.cfg
+        Proc.Executable := FpcmkcfgExecutable;
+        proc.Parameters.Add('-3');
+        proc.Parameters.Add('-o');
+        proc.Parameters.Add(GetFppkgConfigFile(False, False));
+        proc.Parameters.Add('-d');
+        proc.Parameters.Add('globalpath='+fLastParsedFppkgLibPath);
+        proc.Parameters.Add('-d');
+        proc.Parameters.Add('globalprefix='+fLastParsedFppkgPrefix);
+        proc.Execute;
+
+        Fppkg:=TFppkgHelper.Instance;
+        Fppkg.ReInitialize;
+
+        // Write default compiler configuration file
+        CompConfigFilename := Fppkg.GetCompilerConfigurationFileName;
+        if CompConfigFilename <> '' then
+          begin
+          proc.Parameters.Clear;
+          proc.Parameters.Add('-4');
+          proc.Parameters.Add('-o');
+          proc.Parameters.Add(CompConfigFilename);
+          proc.Parameters.Add('-d');
+          proc.Parameters.Add('fpcbin='+EnvironmentOptions.GetParsedCompilerFilename);
+          proc.Execute;
+          end;
+
+        Fppkg.ReInitialize;
+      finally
+        Proc.Free;
+      end;
+    end;
+  except
+    on E: Exception do
+      IDEMessageDialog(lisFppkgProblem, Format(lisFppkgWriteConfException, [E.Message]), mtWarning, [mbOK]);
+  end;
+
+  fLastParsedFppkgPrefix := '';
+  UpdateFppkgNote;
+  {$ENDIF}
+
+  if CheckFppkgConfiguration<>sddqCompatible then
+    IDEMessageDialog(lisFppkgProblem, lisFppkgWriteConfFailed, mtWarning, [mbOK]);
 end;
 
 end.

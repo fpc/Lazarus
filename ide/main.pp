@@ -1444,6 +1444,14 @@ begin
     ShowSetupDialog:=true;
   end;
 
+  // check fppkg configuration
+  if (not ShowSetupDialog)
+  and (CheckFppkgConfiguration()<>sddqCompatible)
+  then begin
+    debugln('Warning: (lazarus) fppkg not properly configured.');
+    ShowSetupDialog:=true;
+  end;
+
   // show setup dialog
   if ShowSetupDialog then begin
     OldLazDir:=EnvironmentOptions.LazarusDirectory;
