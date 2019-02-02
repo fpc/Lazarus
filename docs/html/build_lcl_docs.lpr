@@ -10,7 +10,7 @@ program update_lcl_docs;
 
 uses
   Classes, Sysutils, GetOpts, LazFileUtils, FileUtil, UTF8Process, LazUtilities,
-  Process;
+  LazStringUtils, Process;
 
 var
   DefaultFPDocExe: string = 'fpdoc';
