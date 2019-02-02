@@ -6,7 +6,8 @@ interface
 
 uses
   SysUtils, fpcunit, testutils, testregistry, TestBase, GDBMIDebugger, LCLProc,
-  DbgIntfDebuggerBase, TestDbgControl, TestDbgTestSuites, TestWatches;
+  DbgIntfDebuggerBase, TestDbgControl, TestDbgTestSuites, TestDbgConfig,
+  TestWatches;
 
 const
   BREAK_LINE_ENV1 = 10;
