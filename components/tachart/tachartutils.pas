@@ -34,6 +34,7 @@ const
   clTAColor = $20000000; // = clDefault, but avoiding dependency on Graphics
   DEFAULT_FONT_SIZE = 10;
   DEFAULT_EPSILON = 1e-6;
+  RANGE_EPSILON = 1e-12;
 
   // Replacement for +INF, Canvas does not work correctly when MaxInt is used.
   // Any screen coordinates are clipped to range -MAX_COORD ... MAX_COORD.

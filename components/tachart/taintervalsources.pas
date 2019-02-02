@@ -381,7 +381,7 @@ const
   // Arbitrary limit to prevent hangup/OOM in case of bug in CalculateIntervals.
   MAX_COUNT = 10000;
 var
-  start, step, m: Double;
+  start, step, m, eps: Double;
   i: Integer;
 begin
   if AParams.FMin >= AParams.FMax then exit;
@@ -394,10 +394,11 @@ begin
   EnsureOrder(AParams.FMin, AParams.FMax);
   CalculateIntervals(AParams, start, step);
   if step <= 0 then exit;
+  eps := (AParams.FMax - AParams.FMin) * RANGE_EPSILON;
   m := start;
   SetLength(AValues, Trunc(Min((AParams.FMax - m) / step + 2, MAX_COUNT)));
   for i := 0 to High(AValues) do begin
-    if IsZero(m) then
+    if IsZero(m, eps) then
       m := 0;
     AValues[i].FValue := m;
     if m > AParams.FMax then begin
