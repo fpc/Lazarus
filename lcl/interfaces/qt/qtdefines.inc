@@ -9,7 +9,8 @@
   {$DEFINE QTCOCOA}
   {$ENDIF}
   {$DEFINE QTSCROLLABLEFORMS}
-  {$DEFINE QtUseNativeEventLoop}
+  {removed usage of nativeeventloop because of issue #34982}
+  {.$DEFINE QtUseNativeEventLoop}
   {$IFDEF DARWIN}
   {enable this define if you have problems when dialogs are shown behind application}
   {.$DEFINE TQTMESSAGEBOXUSEPARENT}
