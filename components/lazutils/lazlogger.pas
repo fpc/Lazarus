@@ -124,6 +124,7 @@ type
     FParamForLogFileName: String;
     FGetLogFileNameDone: Boolean;
 
+    FIndentCriticalSection: TRTLCriticalSection;
     FDebugNestLvl: Integer;
     FDebugIndent: String;
     FDebugNestAtBOL: Boolean;
@@ -647,8 +648,10 @@ begin
   end else
     s := '';
 
+  EnterCriticalsection(FIndentCriticalSection);
   if NewLen <> Length(FDebugIndent) then
     FDebugIndent := s + StringOfChar(' ', NewLen);
+  LeaveCriticalsection(FIndentCriticalSection);
 end;
 
 function TLazLoggerFile.GetBlockHandler(AIndex: Integer): TLazLoggerBlockHandler;
@@ -664,14 +667,19 @@ end;
 procedure TLazLoggerFile.DoDbgOut(const s: string);
 var
   Handled: Boolean;
+  s2: String;
 begin
   if not IsInitialized then Init;
+
+  EnterCriticalsection(FIndentCriticalSection);
+  s2 := FDebugIndent + s;
+  LeaveCriticalsection(FIndentCriticalSection);
 
   if OnDbgOut <> nil then
   begin
     Handled := False;
     if FDebugNestAtBOL and (s <> '') then
-      OnDbgOut(Self, FDebugIndent + s, Handled)
+      OnDbgOut(Self, s2, Handled)
     else
       OnDbgOut(Self, s, Handled);
     if Handled then
@@ -682,7 +690,7 @@ begin
   begin
     Handled := False;
     if FDebugNestAtBOL and (s <> '') then
-      OnWidgetSetDbgOut(Self, FDebugIndent + s, Handled,
+      OnWidgetSetDbgOut(Self, s2, Handled,
                         FileHandle.WriteTarget, FileHandle.ActiveLogText)
     else
       OnWidgetSetDbgOut(Self, s, Handled, FileHandle.WriteTarget, FileHandle.ActiveLogText);
@@ -691,7 +699,7 @@ begin
   end;
 
   if FDebugNestAtBOL and (s <> '') then
-    FileHandle.WriteToFile(FDebugIndent + s)
+    FileHandle.WriteToFile(s2)
   else
     FileHandle.WriteToFile(s);
   FDebugNestAtBOL := (s = '') or (s[length(s)] in [#10,#13]);
@@ -700,14 +708,19 @@ end;
 procedure TLazLoggerFile.DoDebugLn(const s: string);
 var
   Handled: Boolean;
+  s2: String;
 begin
   if not IsInitialized then Init;
+
+  EnterCriticalsection(FIndentCriticalSection);
+  s2 := FDebugIndent + s;
+  LeaveCriticalsection(FIndentCriticalSection);
 
   if OnDebugLn <> nil then
   begin
     Handled := False;
     if FDebugNestAtBOL and (s <> '') then
-      OnDebugLn(Self, FDebugIndent + s, Handled)
+      OnDebugLn(Self, s2, Handled)
     else
       OnDebugLn(Self, s, Handled);
     if Handled then
@@ -718,7 +731,7 @@ begin
   begin
     Handled := False;
     if FDebugNestAtBOL and (s <> '') then
-      OnWidgetSetDebugLn(Self, FDebugIndent + s, Handled,
+      OnWidgetSetDebugLn(Self, s2, Handled,
                          FileHandle.WriteTarget, FileHandle.ActiveLogText)
     else
       OnWidgetSetDebugLn(Self, s, Handled, FileHandle.WriteTarget, FileHandle.ActiveLogText);
@@ -727,7 +740,7 @@ begin
   end;
 
   if FDebugNestAtBOL and (s <> '') then
-    FileHandle.WriteLnToFile(FDebugIndent + ConvertLineEndings(s))
+    FileHandle.WriteLnToFile(LineBreaksToSystemLineBreaks(s2))
   else
     FileHandle.WriteLnToFile(ConvertLineEndings(s));
   FDebugNestAtBOL := True;
@@ -747,6 +760,7 @@ end;
 
 constructor TLazLoggerFile.Create;
 begin
+  InitCriticalSection(FIndentCriticalSection);
   inherited;
   FDebugNestLvl := 0;
   FBlockHandler := TList.Create;
@@ -766,6 +780,7 @@ begin
   inherited Destroy;
   FreeAndNil(FFileHandle);
   FreeAndNil(FBlockHandler);
+  DoneCriticalsection(FIndentCriticalSection);
 end;
 
 procedure TLazLoggerFile.Assign(Src: TLazLogger);
