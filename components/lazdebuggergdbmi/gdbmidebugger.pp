@@ -6176,8 +6176,8 @@ begin
 
     if Reason = 'end-stepping-range'
     then begin
-      SetDebuggerState(dsPause);
-      ProcessFrame(List.Values['frame'], False);
+        SetDebuggerState(dsPause);
+        ProcessFrame(List.Values['frame'], False);
       Exit;
     end;
 
@@ -11028,6 +11028,7 @@ begin
   List := TGDBMINameValueList.Create('');
   try
     CurContext := FContext;
+    FContext.ThreadContext := ccUseGlobal;
     FContext.StackContext := ccUseLocal;
     repeat
       FContext.StackFrame := Result;
