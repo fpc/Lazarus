@@ -297,14 +297,22 @@ var
 {$ENDIF}
 begin
   {$IFDEF QtUseNativeEventLoop}
-  ATimer := QTimer_create(QCoreApplication_instance());
-  if (StyleName = 'gtk') or (StyleName = 'gtk+') then
-    QTimer_setInterval(ATimer, 1) {issue #31191}
-  else
-    QTimer_setInterval(ATimer, 0);
-  QTimer_start(ATimer);
-  FMainTimerID := QTimer_timerId(ATimer);
-  QApplication_exec();
+  if Application.Terminated then
+  begin
+    // application can be terminated in show event of mainform (before AppRun is called - see TApplication.Run. related to #34982)
+    if Assigned(ALoop) then
+      ALoop;
+  end else
+  begin
+    ATimer := QTimer_create(QCoreApplication_instance());
+    if (StyleName = 'gtk') or (StyleName = 'gtk+') then
+      QTimer_setInterval(ATimer, 1) {issue #31191}
+    else
+      QTimer_setInterval(ATimer, 0);
+    QTimer_start(ATimer);
+    FMainTimerID := QTimer_timerId(ATimer);
+    QApplication_exec();
+  end;
   {$ELSE}
   // use LCL loop
   if Assigned(ALoop) then
