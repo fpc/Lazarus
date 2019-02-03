@@ -1043,7 +1043,7 @@ resourcestring
   lisFppkgCompilerProblem = 'there is a problem with the Free Pascal compiler executable, ';
   lisFppkgInstallationPath = 'The prefix of the Free Pascal Compiler installation ' +
     'is required to create new configuration files for Fppkg. For example it has ' +
-    'the file "lib/fpc" or "lib64/fpc"';
+    'the units "%s" and/or "%s"';
   lisSelectFPCPath = 'Select the path where FPC is installed';
   lisCreateFppkgConfig = 'Create new Fppkg configuration';
   lisFppkgProblem = 'Problem with Fppkg configuration';

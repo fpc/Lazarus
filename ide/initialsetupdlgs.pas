@@ -792,7 +792,11 @@ begin
   LazDirLabel.Caption:=SimpleFormat(
     lisTheLazarusDirectoryContainsTheSourcesOfTheIDEAndTh, [PathDelim]);
 
-  FppkgLabel.Caption:=lisFppkgInstallationPath;
+  {$IFDEF WINDOWS}
+  FppkgLabel.Caption:=Format(lisFppkgInstallationPath, [GetFPCVer+PathDelim+'units', GetFPCVer+PathDelim+'fpmkinst']);
+  {$ELSE}
+  FppkgLabel.Caption:=Format(lisFppkgInstallationPath, ['lib/fpc', 'lib64/fpc']);
+  {$ENDIF WINDOWS}
   FppkgBrowseButton.Caption:=lisPathEditBrowse;
   FppkgWriteConfigButton.Caption:=lisCreateFppkgConfig;
 
