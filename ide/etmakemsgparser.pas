@@ -252,21 +252,33 @@ procedure TIDEMakeParser.ReadLine(Line: string; OutputIndex: integer;
      make[1]: Leaving directory `<filename>'
      make[1]: *** [<filename>] Killed
      make <command>
+     make[2]: *** [lazarus] Error 1
+     make[1]: *** [idepkg] Error 2
+     make: *** [idepkg] Error 2
      /bin/cp <options>
 }
 const
-  EnterDirPattern = ']: Entering directory `';
-  LeavingDirPattern = ']: Leaving directory `';
-  MakeMsgPattern = ']: *** [';
+  EnterDirPattern = ': Entering directory `';
+  LeavingDirPattern = ': Leaving directory `';
+  MakeMsgPattern = ': *** [';
 var
   MsgLine: TMessageLine;
   p: PChar;
   Filename, Dir: string;
-  Run: PChar;
+  Run, OldP: PChar;
 begin
   if Line='' then exit;
   p:=PChar(Line);
-  if ReadString(p,'make[') or ReadString(p,'make.exe[') then begin
+  OldP:=p;
+  if ReadString(p,'make.exe') then
+    inc(p,8)
+  else if ReadString(p,'make') then
+    inc(p,4)
+  else if ReadString(p,'gmake') then
+    inc(p,5);
+
+  if (p>OldP) and (p^ in ['[',':']) then begin
+    // e.g. make[2]: *** [lazarus] Error 1
     Handled:=true;
 
     MsgLine:=CreateMsgLine(OutputIndex);
@@ -274,7 +286,11 @@ begin
     MsgLine.Urgency:=mluVerbose;
     MsgLine.Msg:=Line;
 
-    while not (p^ in [']',#0]) do inc(p);
+    if p^='[' then
+    begin
+      while not (p^ in [']',#0]) do inc(p);
+      if p^=']' then inc(p);
+    end;
     if ReadString(p,EnterDirPattern) then begin
       // entering directory
       MsgLine.MsgID:=MakeMsgIDEnteringDirectory;
@@ -302,8 +318,8 @@ begin
     end;
     AddMsgLine(MsgLine);
     exit;
-  end else if ReadString(p,'make ') then begin
-    // e.g.  make --assume-new=lazbuild.lpr lazbuild
+  end else if (p>OldP) and (p^=' ') then begin
+    // e.g. make --assume-new=lazbuild.lpr lazbuild
     Handled:=true;
 
     MsgLine:=CreateMsgLine(OutputIndex);
@@ -314,6 +330,7 @@ begin
     exit;
   end;
 
+  p:=OldP;
   if not (p^ in [#0,' ',#9]) then begin
     // check for command <option>
     Run:=p;
