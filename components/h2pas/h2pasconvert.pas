@@ -626,7 +626,7 @@ type
   TH2PasParser = class(TExtToolParser)
   public
     class function DefaultSubTool: string; override;
-    procedure ReadLine(Line: string; OutputIndex: integer; var {%H-}Handled: boolean
+    procedure ReadLine(Line: string; OutputIndex: integer; IsStdErr: boolean; var {%H-}Handled: boolean
       ); override; // (worker thread)
   end;
 
@@ -716,7 +716,7 @@ begin
   Result:=SubToolH2Pas;
 end;
 
-procedure TH2PasParser.ReadLine(Line: string; OutputIndex: integer;
+procedure TH2PasParser.ReadLine(Line: string; OutputIndex: integer; IsStdErr: boolean;
   var Handled: boolean);
 
   function ReadString(var p: PChar; Expected: PChar): boolean;
