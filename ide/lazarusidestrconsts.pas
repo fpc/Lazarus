@@ -1048,7 +1048,7 @@ resourcestring
   lisCreateFppkgConfig = 'Create new Fppkg configuration';
   lisFppkgProblem = 'Problem with Fppkg configuration';
   lisFreePascalPrefix = 'Free Pascal compiler prefix';
-  lisFppkgWriteConfException = 'A problem occured while trying to create a new ' +
+  lisFppkgWriteConfException = 'A problem occurred while trying to create a new ' +
     'Fppkg configuration: %s';
   lisFppkgWriteConfFailed = 'Failed to create a new Fppkg configuration. You ' +
     'will have to fix the configuration manually or reinstall Free Pascal.';
