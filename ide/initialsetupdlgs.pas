@@ -43,7 +43,7 @@ uses
   // RTL + FCL + LCL
   Classes, SysUtils,
   Forms, Controls, Buttons, Dialogs, Graphics, ComCtrls, ExtCtrls, StdCtrls, LCLProc,
-  pkgglobals, UTF8Process,
+  pkgglobals, UTF8Process, fpmkunit,
   // CodeTools
   FileProcs, CodeToolManager, DefineTemplates,
   // LazUtils
@@ -1420,6 +1420,7 @@ function TInitialSetupDialog.CheckFppkgQuality(APrefix: string; out LibPath, Not
 var
   SR: TRawByteSearchRec;
   LibPathValid: Boolean;
+  Ver: TFPVersion;
 begin
   Result := sddqInvalid;
 
@@ -1442,17 +1443,29 @@ begin
   else
   begin
     LibPathValid := True;
-    LibPath := IncludeTrailingPathDelimiter(ConcatPaths([APrefix, 'lib', 'fpc']));
+
+    {$IFNDEF WINDOWS}
+    LibPath := ConcatPaths([APrefix, 'lib', 'fpc']);
     if not DirPathExistsCached(LibPath) then
     begin
-      LibPath := IncludeTrailingPathDelimiter(ConcatPaths([APrefix, 'lib64', 'fpc']));
+      LibPath := ConcatPaths([APrefix, 'lib64', 'fpc']);
       if not DirPathExistsCached(LibPath) then
       begin
         LibPathValid := False;
       end;
     end;
+    {$ELSE}
+    LibPath := APrefix;
+    {$ENDIF}
+    LibPath := IncludeTrailingPathDelimiter(LibPath);
 
-    if LibPathValid and (FindFirstUTF8(LibPath+AllFilesMask, faDirectory, SR) = 0) then
+    if DirPathExistsCached(LibPath+PathDelim+'fpmkinst') and
+      DirPathExistsCached(LibPath+PathDelim+'units') then
+    begin
+      LibPathValid := True;
+      Result := sddqCompatible;
+    end
+    else if LibPathValid and (FindFirstUTF8(LibPath+AllFilesMask, faDirectory, SR) = 0) then
     begin
       LibPathValid := False;
       repeat
@@ -1461,6 +1474,16 @@ begin
           if DirPathExistsCached(LibPath+SR.Name+PathDelim+'fpmkinst') and
             DirPathExistsCached(LibPath+SR.Name+PathDelim+'units') then
               begin
+                Ver := TFPVersion.Create;
+                try
+                  Ver.AsString:=SR.Name;
+                  if (Ver.Major > -1) and (Ver.Minor > -1) and (Ver.Micro > -1) then
+                    LibPath:=LibPath + '{CompilerVersion}' + PathDelim
+                  else
+                    LibPath:=LibPath + SR.Name + PathDelim
+                finally
+                  Ver.Free;
+                end;
                 LibPathValid := True;
                 Result := sddqCompatible;
                 Break;
@@ -1507,19 +1530,26 @@ procedure TInitialSetupDialog.UpdateFppkgCandidates;
         Result := True;
       end;
     end;
-
+  var
+    ChkPath: string;
   begin
     Result:=nil;
 
-    CheckPath(ExtractFileDir(ExtractFileDir(EnvironmentOptions.GetParsedCompilerFilename)), Result);
+    ChkPath := ExtractFileDir(ExtractFileDir(EnvironmentOptions.GetParsedCompilerFilename));
+    {$IFDEF WINDOWS}
+    ChkPath := ExtractFileDir(ExtractFileDir(ChkPath));
+    {$ENDIF WINDOWS}
+    CheckPath(ChkPath, Result);
 
-    {$ifdef windows}
-    CheckPath('c:\pp', Result);
-    CheckPath('d:\pp', Result);
-    {$else}
+    {$IFDEF WINDOWS}
+    CheckPath('C:\PP', Result);
+    CheckPath('D:\PP', Result);
+    CheckPath('C:\FPC', Result);
+    CheckPath('D:\FPC', Result);
+    {$ELSE}
     CheckPath('/usr', Result);
     CheckPath('/usr/local', Result);
-    {$endif unix}
+    {$ENDIF WINDOWS}
   end;
 
 var
@@ -1565,13 +1595,18 @@ begin
       try
         // Write fppkg.cfg
         Proc.Executable := FpcmkcfgExecutable;
+        proc.Parameters.Add('-p');
         proc.Parameters.Add('-3');
         proc.Parameters.Add('-o');
         proc.Parameters.Add(GetFppkgConfigFile(False, False));
         proc.Parameters.Add('-d');
         proc.Parameters.Add('globalpath='+fLastParsedFppkgLibPath);
         proc.Parameters.Add('-d');
+        {$IFDEF WINDOWS}
+        proc.Parameters.Add('globalprefix='+fLastParsedFppkgLibPath);
+        {$ELSE}
         proc.Parameters.Add('globalprefix='+fLastParsedFppkgPrefix);
+        {$ENDIF}
         proc.Execute;
 
         Fppkg:=TFppkgHelper.Instance;
@@ -1582,6 +1617,7 @@ begin
         if CompConfigFilename <> '' then
           begin
           proc.Parameters.Clear;
+          proc.Parameters.Add('-p');
           proc.Parameters.Add('-4');
           proc.Parameters.Add('-o');
           proc.Parameters.Add(CompConfigFilename);
