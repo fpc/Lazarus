@@ -103,6 +103,7 @@ type
   TAbstractExternalTool = class;
 
   TMessageLineFlag = (
+    mlfStdErr,
     mlfLeftToken, // position is about left token, otherwise right token
     mlfFixed, // reason for the messages was resolved, e.g. quick fixed
     mlfHiddenByIDEDirective,
@@ -297,7 +298,7 @@ type
     procedure Init; virtual; // called after macros resolved, before starting thread (main thread)
     procedure InitReading; virtual; // called if process started, before first line (worker thread)
     procedure Done; virtual; // called after process stopped (worker thread)
-    procedure ReadLine(Line: string; OutputIndex: integer; var Handled: boolean); virtual; abstract; // (worker thread)
+    procedure ReadLine(Line: string; OutputIndex: integer; IsStdErr: boolean; var Handled: boolean); virtual; abstract; // (worker thread)
     function CreateMsgLine(OutputIndex: integer): TMessageLine; // (worker thread)
     procedure AddMsgLine(MsgLine: TMessageLine); virtual; // (worker thread)
     property Tool: TAbstractExternalTool read FTool;// set when added to a tool
@@ -360,8 +361,8 @@ type
 
   TDefaultParser = class(TExtToolParser)
   public
-    procedure ReadLine(Line: string; OutputIndex: integer; var Handled: boolean
-      ); override;
+    procedure ReadLine(Line: string; OutputIndex: integer; IsStdErr: boolean;
+      var Handled: boolean); override;
     class function DefaultSubTool: string; override;
     class function GetLocalizedParserName: string; override;
     class function Priority: integer; override;
@@ -997,7 +998,7 @@ end;
 { TDefaultParser }
 
 procedure TDefaultParser.ReadLine(Line: string; OutputIndex: integer;
-  var Handled: boolean);
+  IsStdErr: boolean; var Handled: boolean);
 var
   MsgLine: TMessageLine;
 begin
@@ -1006,6 +1007,8 @@ begin
   MsgLine:=CreateMsgLine(OutputIndex);
   MsgLine.Msg:=Line;
   MsgLine.Urgency:=mluImportant;
+  if IsStdErr then
+    MsgLine.Flags:=MsgLine.Flags+[mlfStdErr];
   AddMsgLine(MsgLine);
 end;
 

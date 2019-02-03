@@ -306,7 +306,7 @@ var
   OldOutputCount: LongInt;
   OldMsgCount: LongInt;
   Parser: TExtToolParser;
-  NeedSynchronize: Boolean;
+  NeedSynchronize, IsStdErr: Boolean;
   MsgLine: TMessageLine;
   LineStr: String;
 begin
@@ -327,17 +327,20 @@ begin
     for Line:=OldOutputCount to WorkerOutput.Count-1 do begin
       Handled:=false;
       LineStr:=WorkerOutput[Line];
+      IsStdErr:=WorkerOutput.Objects[Line]<>nil;
       for i:=0 to ParserCount-1 do begin
         {$IFDEF VerboseExtToolAddOutputLines}
         DebuglnThreadLog(['TExternalTool.AddOutputLines ',DbgSName(Parsers[i]),' Line="',WorkerOutput[Line],'" READLINE ...']);
         {$ENDIF}
-        Parsers[i].ReadLine(LineStr,Line,Handled);
+        Parsers[i].ReadLine(LineStr,Line,IsStdErr,Handled);
         if Handled then break;
       end;
       if (not Handled) then begin
         MsgLine:=WorkerMessages.CreateLine(Line);
         MsgLine.Msg:=LineStr; // use raw output as default msg
         MsgLine.Urgency:=mluDebug;
+        if IsStdErr then
+          MsgLine.Flags:=MsgLine.Flags+[mlfStdErr];
         WorkerMessages.Add(MsgLine);
       end;
     end;
@@ -1420,7 +1423,8 @@ var
 var
   Buf: string;
 
-  function ReadInputPipe(aStream: TInputPipeStream; var LineBuf: string): boolean;
+  function ReadInputPipe(aStream: TInputPipeStream; var LineBuf: string;
+    IsStdErr: boolean): boolean;
   // true if some bytes have been read
   var
     Count: DWord;
@@ -1439,7 +1443,10 @@ var
     while i<=Count do begin
       if Buf[i] in [#10,#13] then begin
         LineBuf:=LineBuf+copy(Buf,StartPos,i-StartPos);
-        fLines.Add(LineBuf);
+        if IsStdErr then
+          fLines.AddObject(LineBuf,fLines)
+        else
+          fLines.Add(LineBuf);
         LineBuf:='';
         if (i<Count) and (Buf[i+1] in [#10,#13]) and (Buf[i]<>Buf[i+1])
         then
@@ -1544,11 +1551,11 @@ begin
       LastUpdate:=GetTickCount64;
       while (Tool<>nil) and (Tool.Stage=etsRunning) do begin
         if Tool.ReadStdOutBeforeErr then begin
-          HasOutput:=ReadInputPipe(Tool.Process.Output,OutputLine)
-                  or ReadInputPipe(Tool.Process.Stderr,StdErrLine);
+          HasOutput:=ReadInputPipe(Tool.Process.Output,OutputLine,false)
+                  or ReadInputPipe(Tool.Process.Stderr,StdErrLine,true);
         end else begin
-          HasOutput:=ReadInputPipe(Tool.Process.Stderr,StdErrLine)
-                  or ReadInputPipe(Tool.Process.Output,OutputLine);
+          HasOutput:=ReadInputPipe(Tool.Process.Stderr,StdErrLine,true)
+                  or ReadInputPipe(Tool.Process.Output,OutputLine,false);
         end;
         if (not HasOutput) then begin
           // no more pending output

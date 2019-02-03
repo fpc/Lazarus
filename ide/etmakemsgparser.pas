@@ -58,7 +58,8 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure InitReading; override;
-    procedure ReadLine(Line: string; OutputIndex: integer; var Handled: boolean); override;
+    procedure ReadLine(Line: string; OutputIndex: integer; IsStdErr: boolean;
+      var Handled: boolean); override;
     class function DefaultSubTool: string; override;
     class function Priority: integer; override;
   end;
@@ -245,7 +246,7 @@ begin
 end;
 
 procedure TIDEMakeParser.ReadLine(Line: string; OutputIndex: integer;
-  var Handled: boolean);
+  IsStdErr: boolean; var Handled: boolean);
 { returns true, if it is a make/gmake message
    Examples for make messages:
      make[1]: Entering directory `<filename>'
@@ -283,7 +284,13 @@ begin
 
     MsgLine:=CreateMsgLine(OutputIndex);
     MsgLine.SubTool:=SubToolMake;
-    MsgLine.Urgency:=mluVerbose;
+    if IsStdErr then
+    begin
+      MsgLine.Urgency:=mluImportant;
+      MsgLine.Flags:=MsgLine.Flags+[mlfStdErr];
+    end else begin
+      MsgLine.Urgency:=mluVerbose;
+    end;
     MsgLine.Msg:=Line;
 
     if p^='[' then
@@ -324,7 +331,12 @@ begin
 
     MsgLine:=CreateMsgLine(OutputIndex);
     MsgLine.SubTool:=SubToolMake;
-    MsgLine.Urgency:=mluVerbose;
+    if IsStdErr then begin
+      MsgLine.Urgency:=mluImportant;
+      MsgLine.Flags:=MsgLine.Flags+[mlfStdErr];
+    end else begin
+      MsgLine.Urgency:=mluVerbose;
+    end;
     MsgLine.Msg:=Line;
     AddMsgLine(MsgLine);
     exit;
@@ -345,7 +357,12 @@ begin
         Handled:=true;
         MsgLine:=CreateMsgLine(OutputIndex);
         MsgLine.SubTool:=SubToolMake;
-        MsgLine.Urgency:=mluVerbose;
+        if IsStdErr then begin
+          MsgLine.Urgency:=mluImportant;
+          MsgLine.Flags:=MsgLine.Flags+[mlfStdErr];
+        end else begin
+          MsgLine.Urgency:=mluVerbose;
+        end;
         MsgLine.Msg:=Line;
         AddMsgLine(MsgLine);
       end;

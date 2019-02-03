@@ -166,6 +166,7 @@ type
     fLineToMsgID: TPatternToMsgIDs;
     fMissingFPCMsgItem: TFPCMsgItem;
     fMsgID: Integer; // current message id given by ReadLine (-vq)
+    fMsgIsStdErr: boolean;
     fMsgItemCantFindUnitUsedBy: TFPCMsgItem;
     fMsgItemCompilationAborted: TFPCMsgItem;
     fMsgItemErrorWhileCompilingResources: TFPCMsgItem;
@@ -193,6 +194,7 @@ type
     function CheckForWindresErrors(p: PChar): boolean;
     function CheckForLinkerErrors(p: PChar): boolean;
     function CheckForAssemblerErrors(p: PChar): boolean;
+    function CheckForUnspecificStdErr(p: PChar): boolean;
     function CreateMsgLine: TMessageLine;
     procedure AddLinkingMessages;
     procedure AddResourceMessages;
@@ -232,7 +234,8 @@ type
     procedure Init; override; // called after macros resolved, before starting thread (main thread)
     procedure InitReading; override; // called when process started, before first line (worker thread)
     procedure Done; override; // called after process stopped (worker thread)
-    procedure ReadLine(Line: string; OutputIndex: integer; var Handled: boolean); override;
+    procedure ReadLine(Line: string; OutputIndex: integer; IsStdErr: boolean;
+      var Handled: boolean); override;
     procedure AddMsgLine(MsgLine: TMessageLine); override;
     procedure ImproveMessages(aPhase: TExtToolParserSyncPhase); override;
     function GetFPCMsgIDPattern(MsgID: integer): string; override;
@@ -1549,6 +1552,19 @@ begin
   AddMsgLine(MsgLine);
 end;
 
+function TIDEFPCParser.CheckForUnspecificStdErr(p: PChar): boolean;
+var
+  MsgLine: TMessageLine;
+begin
+  if not fMsgIsStdErr then exit(false);
+  Result:=true;
+  MsgLine:=CreateMsgLine;
+  MsgLine.SubTool:=SubToolFPC;
+  MsgLine.Urgency:=mluError;
+  MsgLine.Msg:=p;
+  AddMsgLine(MsgLine);
+end;
+
 function TIDEFPCParser.CheckForInfos(p: PChar): boolean;
 
   function ReadFPCLogo(PatternItem: PPatternToMsgID;
@@ -1625,6 +1641,8 @@ function TIDEFPCParser.CreateMsgLine: TMessageLine;
 begin
   Result:=inherited CreateMsgLine(fOutputIndex);
   Result.MsgID:=fMsgID;
+  if fMsgIsStdErr then
+    Result.Flags:=Result.Flags+[mlfStdErr];
 end;
 
 procedure TIDEFPCParser.AddLinkingMessages;
@@ -2905,7 +2923,7 @@ begin
 end;
 
 procedure TIDEFPCParser.ReadLine(Line: string; OutputIndex: integer;
-  var Handled: boolean);
+  IsStdErr: boolean; var Handled: boolean);
 { returns true, if it is a compiler message
    Examples for freepascal compiler messages:
      Compiling <filename>
@@ -2927,6 +2945,7 @@ begin
   p:=PChar(Line);
   fOutputIndex:=OutputIndex;
   fMsgID:=0;
+  fMsgIsStdErr:=IsStdErr;
 
   // skip time [0.000]
   if (p^='[') and (p[1] in ['0'..'9']) then begin
@@ -2983,6 +3002,9 @@ begin
   if CheckForLinkerErrors(p) then exit;
   // check for assembler errors
   if CheckForAssemblerErrors(p) then exit;
+
+  // last: check for unknown std error
+  if CheckForUnspecificStdErr(p) then exit;
 
   {$IFDEF VerboseFPCParser}
   debugln('TFPCParser.ReadLine UNKNOWN: ',Line);
