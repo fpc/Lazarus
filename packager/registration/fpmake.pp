@@ -1,9 +1,10 @@
 {
    File generated automatically by Lazarus Package Manager
+   Created with the Fppkgpackagemanager package installed
 
    fpmake.pp for FCL 1.0.1
 
-   This file was generated on 03.01.2019
+   This file was generated on 03-02-19
 }
 
 {$ifndef ALLPACKAGES} 
@@ -40,9 +41,8 @@ begin
     P.Options.Add('-vewnhibq');
     P.UnitPath.Add('.');
     T:=P.Targets.AddUnit('fcllaz.pas');
-    t.Dependencies.AddUnit('lazaruspackageintf');
-
-    P.Targets.AddImplicitUnit('lazaruspackageintf.pas');
+    t.Dependencies.AddUnit('LazarusPackageIntf');
+    T := P.Targets.AddImplicitUnit('lazaruspackageintf.pas');
 
     // copy the compiled file, so the IDE knows how the package was compiled
     P.InstallFiles.Add('FCL.compiled',AllOSes,'$(unitinstalldir)');
