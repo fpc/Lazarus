@@ -1849,6 +1849,48 @@ begin
 end;
 
 procedure TMessagesCtrl.DoAllViewsStopped;
+{off $DEFINE VerboseMsgFrame}
+
+  {$IFDEF VerboseMsgFrame}
+  procedure DbgViews;
+  var
+    i, j: Integer;
+    View: TLMsgWndView;
+    Tool: TAbstractExternalTool;
+    SrcMsg: TMessageLine;
+  begin
+    debugln(['TMessagesCtrl.DoAllViewsStopped ']);
+    debugln(['DbgViews===START========================================']);
+    for i:=0 to ViewCount-1 do
+    begin
+      View:=Views[i];
+      View.RebuildLines;
+      Tool:=View.Tool;
+      if Tool=nil then continue;
+      debugln(['DbgViews ',i,'/',ViewCount,' Tool.Title=',Tool.Title]);
+      Tool.EnterCriticalSection; // lock Tool before View
+      try
+        View.EnterCriticalSection;
+        try
+          for j:=0 to Tool.WorkerMessages.Count-1 do begin
+            SrcMsg:=Tool.WorkerMessages[j];
+            debugln(['WorkerMsg ',SrcMsg.Filename,'(',SrcMsg.Line,',',SrcMsg.Column,') ',UrgencyToStr(SrcMsg.Urgency),'/',SrcMsg.SubTool,': ',SrcMsg.Msg]);
+          end;
+          for j:=0 to View.Lines.Count-1 do begin
+            SrcMsg:=View.Lines[j];
+            debugln(['ViewMsg ',SrcMsg.Filename,'(',SrcMsg.Line,',',SrcMsg.Column,') ',UrgencyToStr(SrcMsg.Urgency),'/',SrcMsg.SubTool,': ',SrcMsg.Msg]);
+          end;
+        finally
+          View.LeaveCriticalSection;
+        end;
+      finally
+        Tool.LeaveCriticalSection;
+      end;
+    end;
+    debugln(['DbgViews===END==========================================']);
+  end;
+  {$ENDIF}
+
 var
   CurLine: TMessageLine;
 begin
@@ -1862,6 +1904,9 @@ begin
     if SelectFirstUrgentMessage(mluError,true) then
       OpenSelection;
   end;
+  {$IFDEF VerboseMsgFrame}
+  DbgViews;
+  {$ENDIF}
 end;
 
 function TMessagesCtrl.SearchNext(StartView: TLMsgWndView; StartLine: integer;
