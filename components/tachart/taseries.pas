@@ -1217,7 +1217,8 @@ begin
   if IsEmpty then exit;
   if BarWidthStyle = bwPercentMin then
     UpdateMinXRange;
-  UpdateMinMax(ZeroLevel, Result.a.Y, Result.b.Y);
+  UpdateMinMax(GraphToAxisY(ZeroLevel), Result.a.Y, Result.b.Y);
+
   // Show first and last bars fully.
   i := 0;
   x := NearestXNumber(i, +1);       // --> x is in graph units
