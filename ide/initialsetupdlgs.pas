@@ -1378,7 +1378,7 @@ var
 begin
   if csDestroying in ComponentState then exit;
   CurCaption:=FppkgComboBox.Text;
-  if fLastParsedFppkgPrefix=CurCaption then exit;
+  if (fLastParsedFppkgPrefix=CurCaption) and (CurCaption<>'') then exit;
   fLastParsedFppkgPrefix:=CurCaption;
 
   Quality := CheckFppkgConfiguration();
@@ -1422,6 +1422,13 @@ var
   LibPathValid: Boolean;
 begin
   Result := sddqInvalid;
+
+  if APrefix='' then
+  begin
+    Note := lisWarning + lisNoFppkgPrefix + LineEnding;
+    Exit;
+  end;
+
   LibPath := '';
   APrefix:=TrimFilename(APrefix);
   if not FileExistsCached(APrefix) then
