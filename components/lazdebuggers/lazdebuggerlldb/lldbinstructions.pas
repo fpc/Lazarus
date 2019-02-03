@@ -133,7 +133,7 @@ type
   protected
     function ProcessInputFromDbg(const AData: String): Boolean; override;
   public
-    constructor Create(AStepAction: TLldbInstructionProcessStepAction);
+    constructor Create(AStepAction: TLldbInstructionProcessStepAction; AThread: Integer = -1);
   end;
 
   { TLldbInstructionProcessKill }
@@ -713,15 +713,24 @@ begin
 end;
 
 constructor TLldbInstructionProcessStep.Create(
-  AStepAction: TLldbInstructionProcessStepAction);
+  AStepAction: TLldbInstructionProcessStepAction; AThread: Integer);
 begin
   case AStepAction of
   	saContinue: inherited Create('process continue');
-    saOver: inherited Create('thread step-over');
-  	saInto: inherited Create('thread step-in');
-    saOut: inherited Create('thread step-out');
-    saInsIn: inherited Create ('thread step-inst');
-    saInsOver: inherited Create('thread step-inst-over');
+  (*
+    saOver: inherited Create('thread step-over', AThread);
+  	saInto: inherited Create('thread step-in', AThread);
+    saOut: inherited Create('thread step-out', AThread);
+    saInsIn: inherited Create ('thread step-inst', AThread);
+    saInsOver: inherited Create('thread step-inst-over', AThread);
+  // *)
+  //(*
+    saOver: inherited Create(Format('thread step-over %d', [AThread]));
+  	saInto: inherited Create(Format('thread step-in %d', [AThread]));
+    saOut: inherited Create(Format('thread step-out %d', [AThread]));
+    saInsIn: inherited Create (Format('thread step-inst %d', [AThread]));
+    saInsOver: inherited Create(Format('thread step-inst-over %d', [AThread]));
+  // *)
   end;
 end;
 
