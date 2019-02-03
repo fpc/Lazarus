@@ -7597,6 +7597,10 @@ msgstr "Luo hakemisto?"
 msgid "Create Filter"
 msgstr "Luo suodatin"
 
+#: lazarusidestrconsts.liscreatefppkgconfig
+msgid "Create new Fppkg configuration"
+msgstr ""
+
 #: lazarusidestrconsts.liscreatefunction
 msgid "Create function"
 msgstr "Luo funktio"
@@ -9736,14 +9740,24 @@ msgstr "FPDoc paketin nimi. Oletus on projektin tiedostonimi."
 msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
 msgstr "FPDoc-elementissä \"%s\":%s%s on kielioppivirhe"
 
-#: lazarusidestrconsts.lisfppkginitializefailed
-msgid ""
-"An error occurred during the initialization of Fppkg: %s.\n"
-"Check your Fppkg configuration and restart Lazarus to be able to use Fppkg's functionality.\n"
+#: lazarusidestrconsts.lisfppkgcompilerproblem
+msgid "there is a problem with the Free Pascal compiler executable, "
 msgstr ""
 
-#: lazarusidestrconsts.lisfppkginitializefailedcaption
-msgid "Failed to initialize Fppkg"
+#: lazarusidestrconsts.lisfppkginstallationpath
+msgid "The prefix of the Free Pascal Compiler installation is required to create new configuration files for Fppkg. For example it has the units \"%s\" and/or \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.lisfppkgproblem
+msgid "Problem with Fppkg configuration"
+msgstr ""
+
+#: lazarusidestrconsts.lisfppkgwriteconfexception
+msgid "A problem occurred while trying to create a new Fppkg configuration: %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisfppkgwriteconffailed
+msgid "Failed to create a new Fppkg configuration. You will have to fix the configuration manually or reinstall Free Pascal."
 msgstr ""
 
 #: lazarusidestrconsts.lisframe
@@ -9761,6 +9775,10 @@ msgstr "vapauttaa puskurin rivit: %s"
 #: lazarusidestrconsts.lisfreepascalcompilermessages
 msgid "Free Pascal Compiler messages"
 msgstr "Free Pascal -kääntäjän viestit"
+
+#: lazarusidestrconsts.lisfreepascalprefix
+msgid "Free Pascal compiler prefix"
+msgstr ""
 
 #: lazarusidestrconsts.lisfreepascalsourcedirectory
 msgid "Free Pascal source directory"
@@ -10319,6 +10337,10 @@ msgstr ", ei-yhteensopiva ppu=%s"
 #: lazarusidestrconsts.lisincorrectconfigurationdirectoryfound
 msgid "Incorrect configuration directory found"
 msgstr "Löytyi väärä asetushakemisto"
+
+#: lazarusidestrconsts.lisincorrectfppkgconfiguration
+msgid "the Fppkg configuration is corrupt."
+msgstr ""
 
 #: lazarusidestrconsts.lisindentationforpascalsources
 msgid "Indentation for Pascal sources"
@@ -13819,6 +13841,10 @@ msgstr "Ei valittua koodia"
 msgid "No compiler options inherited."
 msgstr "Kääntäjän asetuksia ei ole periytetty"
 
+#: lazarusidestrconsts.lisnofppkgprefix
+msgid "empty Free Pascal compiler prefix."
+msgstr ""
+
 #: lazarusidestrconsts.lisnohints
 msgid "no hints"
 msgstr "ei vihjeitä"
@@ -13886,6 +13912,10 @@ msgstr "Ei ole suunnitteluaikainen paketti"
 #: lazarusidestrconsts.lisnotaninstallpackage
 msgid "Not an install package"
 msgstr "Ei ole asennettava paketti"
+
+#: lazarusidestrconsts.lisnotavalidfppkgprefix
+msgid "Free Pascal compiler not found at the given prefix."
+msgstr ""
 
 #: lazarusidestrconsts.lisnotavalidpascalidentifier
 msgid "Not a valid Pascal identifier"
@@ -14470,6 +14500,10 @@ msgstr "Polkujen mallit"
 #: lazarusidestrconsts.lispatheditsearchpaths
 msgid "Search paths:"
 msgstr "Hakupolut:"
+
+#: lazarusidestrconsts.lispathisnodirectory
+msgid "is not a directory"
+msgstr ""
 
 #: lazarusidestrconsts.lispathoftheinstantfpccache
 msgid "path of the instantfpc cache"
@@ -16901,6 +16935,10 @@ msgstr "(valittu yläpuolen naapuri)"
 #: lazarusidestrconsts.lisselectfile
 msgid "Select the file"
 msgstr "Valitse tiedosto"
+
+#: lazarusidestrconsts.lisselectfpcpath
+msgid "Select the path where FPC is installed"
+msgstr ""
 
 #: lazarusidestrconsts.lisselectfpcsourcedirectory
 msgid "Select FPC source directory"

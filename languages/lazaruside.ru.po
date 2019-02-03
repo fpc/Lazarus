@@ -5,12 +5,12 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2019-01-11 01:27+0300\n"
+"PO-Revision-Date: 2019-02-04 01:45+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
 "Language: ru\n"
-"X-Generator: Poedit 1.7.7\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: lazarusidestrconsts.dbgbreakgroupdlgcaption
 msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaption"
@@ -7644,6 +7644,10 @@ msgstr "Создать каталог?"
 msgid "Create Filter"
 msgstr "Создание фильтра"
 
+#: lazarusidestrconsts.liscreatefppkgconfig
+msgid "Create new Fppkg configuration"
+msgstr "Создать новые файлы настройки Fppkg"
+
 #: lazarusidestrconsts.liscreatefunction
 msgid "Create function"
 msgstr "Создать функцию"
@@ -9794,17 +9798,25 @@ msgstr "Имя пакета FPDoc. По умолчанию использует�
 msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
 msgstr "В элементе FPDoc \"%s\" имеется синтаксическая ошибка:%s%s"
 
-#: lazarusidestrconsts.lisfppkginitializefailed
-msgid ""
-"An error occurred during the initialization of Fppkg: %s.\n"
-"Check your Fppkg configuration and restart Lazarus to be able to use Fppkg's functionality.\n"
-msgstr ""
-"Произошла ошибка при инициализации Fppkg: %s.\n"
-"Чтобы иметь возможность использовать Fppkg, проверьте корректность его параметров и перезапустите Lazarus.\n"
+#: lazarusidestrconsts.lisfppkgcompilerproblem
+msgid "there is a problem with the Free Pascal compiler executable, "
+msgstr "проблема с исполнимым файлом компилятора Free Pascal, "
 
-#: lazarusidestrconsts.lisfppkginitializefailedcaption
-msgid "Failed to initialize Fppkg"
-msgstr "Не удалось инициализировать Fppkg"
+#: lazarusidestrconsts.lisfppkginstallationpath
+msgid "The prefix of the Free Pascal Compiler installation is required to create new configuration files for Fppkg. For example it has the units \"%s\" and/or \"%s\""
+msgstr "Префикс установки компилятора Free Pascal требуется для создания новых файлов настройки Fppkg. Например, он содержит \"%s\" и/или \"%s\""
+
+#: lazarusidestrconsts.lisfppkgproblem
+msgid "Problem with Fppkg configuration"
+msgstr "Проблема с настройкой Fppkg"
+
+#: lazarusidestrconsts.lisfppkgwriteconfexception
+msgid "A problem occurred while trying to create a new Fppkg configuration: %s"
+msgstr "При создании новых файлов настройки Fppkg произошла проблема: %s"
+
+#: lazarusidestrconsts.lisfppkgwriteconffailed
+msgid "Failed to create a new Fppkg configuration. You will have to fix the configuration manually or reinstall Free Pascal."
+msgstr "Не удалось создать новые файлы настройки Fppkg. Следует исправить эту проблему вручную либо переустановить Free Pascal."
 
 #: lazarusidestrconsts.lisframe
 msgid "Frame"
@@ -9821,6 +9833,10 @@ msgstr "освобождение строк буфера: %s"
 #: lazarusidestrconsts.lisfreepascalcompilermessages
 msgid "Free Pascal Compiler messages"
 msgstr "Сообщения компилятора Free Pascal"
+
+#: lazarusidestrconsts.lisfreepascalprefix
+msgid "Free Pascal compiler prefix"
+msgstr "Префикс установки компилятора Free Pascal"
 
 #: lazarusidestrconsts.lisfreepascalsourcedirectory
 msgid "Free Pascal source directory"
@@ -10389,6 +10405,10 @@ msgstr ", несовместимый PPU=%s"
 #: lazarusidestrconsts.lisincorrectconfigurationdirectoryfound
 msgid "Incorrect configuration directory found"
 msgstr "Найден неверный каталог настройки"
+
+#: lazarusidestrconsts.lisincorrectfppkgconfiguration
+msgid "the Fppkg configuration is corrupt."
+msgstr "файлы настройки Fppkg повреждены."
 
 #: lazarusidestrconsts.lisindentationforpascalsources
 msgid "Indentation for Pascal sources"
@@ -13960,6 +13980,10 @@ msgstr "Не выбрано кода"
 msgid "No compiler options inherited."
 msgstr "Не унаследовано параметров компилятора."
 
+#: lazarusidestrconsts.lisnofppkgprefix
+msgid "empty Free Pascal compiler prefix."
+msgstr "префикс установки компилятора Free Pascal пуст."
+
 #: lazarusidestrconsts.lisnohints
 msgid "no hints"
 msgstr "подсказок нет"
@@ -14027,6 +14051,10 @@ msgstr "Не пакет времени разработки"
 #: lazarusidestrconsts.lisnotaninstallpackage
 msgid "Not an install package"
 msgstr "Пакет не является устанавливаемым"
+
+#: lazarusidestrconsts.lisnotavalidfppkgprefix
+msgid "Free Pascal compiler not found at the given prefix."
+msgstr "компилятор Free Pascal не найден по данному префиксу."
 
 #: lazarusidestrconsts.lisnotavalidpascalidentifier
 msgid "Not a valid Pascal identifier"
@@ -14615,6 +14643,10 @@ msgstr "Шаблоны пути"
 #: lazarusidestrconsts.lispatheditsearchpaths
 msgid "Search paths:"
 msgstr "Пути поиска:"
+
+#: lazarusidestrconsts.lispathisnodirectory
+msgid "is not a directory"
+msgstr "не является каталогом"
 
 #: lazarusidestrconsts.lispathoftheinstantfpccache
 msgid "path of the instantfpc cache"
@@ -17071,6 +17103,10 @@ msgstr "(выбран сосед сверху)"
 #: lazarusidestrconsts.lisselectfile
 msgid "Select the file"
 msgstr "Выберите файл"
+
+#: lazarusidestrconsts.lisselectfpcpath
+msgid "Select the path where FPC is installed"
+msgstr "Выберите путь к установленному FPC"
 
 #: lazarusidestrconsts.lisselectfpcsourcedirectory
 msgid "Select FPC source directory"

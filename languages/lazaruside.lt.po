@@ -7736,6 +7736,10 @@ msgstr "Kurti aplanką?"
 msgid "Create Filter"
 msgstr "Kurti filtrą"
 
+#: lazarusidestrconsts.liscreatefppkgconfig
+msgid "Create new Fppkg configuration"
+msgstr ""
+
 #: lazarusidestrconsts.liscreatefunction
 msgid "Create function"
 msgstr "Kurti funkciją"
@@ -9896,14 +9900,24 @@ msgstr "FPDoc paketo pavadinimas. Numatyta naudoti projekto failo pavadinimą."
 msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
 msgstr "FPDoc elemente „%s“ yra sintaksės klaida:%s%s"
 
-#: lazarusidestrconsts.lisfppkginitializefailed
-msgid ""
-"An error occurred during the initialization of Fppkg: %s.\n"
-"Check your Fppkg configuration and restart Lazarus to be able to use Fppkg's functionality.\n"
+#: lazarusidestrconsts.lisfppkgcompilerproblem
+msgid "there is a problem with the Free Pascal compiler executable, "
 msgstr ""
 
-#: lazarusidestrconsts.lisfppkginitializefailedcaption
-msgid "Failed to initialize Fppkg"
+#: lazarusidestrconsts.lisfppkginstallationpath
+msgid "The prefix of the Free Pascal Compiler installation is required to create new configuration files for Fppkg. For example it has the units \"%s\" and/or \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.lisfppkgproblem
+msgid "Problem with Fppkg configuration"
+msgstr ""
+
+#: lazarusidestrconsts.lisfppkgwriteconfexception
+msgid "A problem occurred while trying to create a new Fppkg configuration: %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisfppkgwriteconffailed
+msgid "Failed to create a new Fppkg configuration. You will have to fix the configuration manually or reinstall Free Pascal."
 msgstr ""
 
 #: lazarusidestrconsts.lisframe
@@ -9921,6 +9935,10 @@ msgstr "valomos buferio eilutės: %s"
 #: lazarusidestrconsts.lisfreepascalcompilermessages
 msgid "Free Pascal Compiler messages"
 msgstr "„Free Pascal“ kompiliatoriaus pranešimai"
+
+#: lazarusidestrconsts.lisfreepascalprefix
+msgid "Free Pascal compiler prefix"
+msgstr ""
 
 #: lazarusidestrconsts.lisfreepascalsourcedirectory
 msgid "Free Pascal source directory"
@@ -10491,6 +10509,10 @@ msgstr ", nesuderinamas ppu=%s"
 #: lazarusidestrconsts.lisincorrectconfigurationdirectoryfound
 msgid "Incorrect configuration directory found"
 msgstr "Rastas klaidingos konfigūracijos aplankas"
+
+#: lazarusidestrconsts.lisincorrectfppkgconfiguration
+msgid "the Fppkg configuration is corrupt."
+msgstr ""
 
 #: lazarusidestrconsts.lisindentationforpascalsources
 msgid "Indentation for Pascal sources"
@@ -14086,6 +14108,10 @@ msgstr "Kodas nepažymėtas"
 msgid "No compiler options inherited."
 msgstr "Nėra paveldėtų kompiliatoriaus parinkčių."
 
+#: lazarusidestrconsts.lisnofppkgprefix
+msgid "empty Free Pascal compiler prefix."
+msgstr ""
+
 #: lazarusidestrconsts.lisnohints
 msgid "no hints"
 msgstr "be užuominų"
@@ -14153,6 +14179,10 @@ msgstr "Ne konstravimui skirtas paketas"
 #: lazarusidestrconsts.lisnotaninstallpackage
 msgid "Not an install package"
 msgstr "Paketas nėra diegiamas"
+
+#: lazarusidestrconsts.lisnotavalidfppkgprefix
+msgid "Free Pascal compiler not found at the given prefix."
+msgstr ""
 
 #: lazarusidestrconsts.lisnotavalidpascalidentifier
 msgid "Not a valid Pascal identifier"
@@ -14745,6 +14775,10 @@ msgstr "Kelio šablonai"
 #: lazarusidestrconsts.lispatheditsearchpaths
 msgid "Search paths:"
 msgstr "Ieškos keliai:"
+
+#: lazarusidestrconsts.lispathisnodirectory
+msgid "is not a directory"
+msgstr ""
 
 #: lazarusidestrconsts.lispathoftheinstantfpccache
 msgid "path of the instantfpc cache"
@@ -17227,6 +17261,10 @@ msgstr "(pažymėtas viršutinysis kaimynas)"
 #: lazarusidestrconsts.lisselectfile
 msgid "Select the file"
 msgstr "Pažymėti failą"
+
+#: lazarusidestrconsts.lisselectfpcpath
+msgid "Select the path where FPC is installed"
+msgstr ""
 
 #: lazarusidestrconsts.lisselectfpcsourcedirectory
 msgid "Select FPC source directory"

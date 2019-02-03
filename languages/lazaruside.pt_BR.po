@@ -7676,6 +7676,10 @@ msgstr "Criar diretório?"
 msgid "Create Filter"
 msgstr "Criar filtro"
 
+#: lazarusidestrconsts.liscreatefppkgconfig
+msgid "Create new Fppkg configuration"
+msgstr ""
+
 #: lazarusidestrconsts.liscreatefunction
 msgid "Create function"
 msgstr "Criar função"
@@ -9830,17 +9834,25 @@ msgstr "Nome do pacote FPDoc. Padrão é o nome do arquivo de projeto."
 msgid "There is a syntax error in the fpdoc element \"%s\":%s%s"
 msgstr "Há um erro de sintaxe no elemento fpdoc \"%s\":%s%s"
 
-#: lazarusidestrconsts.lisfppkginitializefailed
-msgid ""
-"An error occurred during the initialization of Fppkg: %s.\n"
-"Check your Fppkg configuration and restart Lazarus to be able to use Fppkg's functionality.\n"
+#: lazarusidestrconsts.lisfppkgcompilerproblem
+msgid "there is a problem with the Free Pascal compiler executable, "
 msgstr ""
-"Um erro ocorreu durante a inicialização do Fppkg: %s.\n"
-"Verifique as configurações do Fppkg e reinicie o Lazarus para poder utilizar as suas funcionalidades.\n"
 
-#: lazarusidestrconsts.lisfppkginitializefailedcaption
-msgid "Failed to initialize Fppkg"
-msgstr "Falha ao inicializar o Fppkg"
+#: lazarusidestrconsts.lisfppkginstallationpath
+msgid "The prefix of the Free Pascal Compiler installation is required to create new configuration files for Fppkg. For example it has the units \"%s\" and/or \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.lisfppkgproblem
+msgid "Problem with Fppkg configuration"
+msgstr ""
+
+#: lazarusidestrconsts.lisfppkgwriteconfexception
+msgid "A problem occurred while trying to create a new Fppkg configuration: %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisfppkgwriteconffailed
+msgid "Failed to create a new Fppkg configuration. You will have to fix the configuration manually or reinstall Free Pascal."
+msgstr ""
 
 #: lazarusidestrconsts.lisframe
 msgid "Frame"
@@ -9857,6 +9869,10 @@ msgstr "liberando linhas \"buffer\": %s"
 #: lazarusidestrconsts.lisfreepascalcompilermessages
 msgid "Free Pascal Compiler messages"
 msgstr "Mensagens do compilador Free Pascal"
+
+#: lazarusidestrconsts.lisfreepascalprefix
+msgid "Free Pascal compiler prefix"
+msgstr ""
 
 #: lazarusidestrconsts.lisfreepascalsourcedirectory
 msgid "Free Pascal source directory"
@@ -10424,6 +10440,10 @@ msgstr ", ppu incompatível=%s"
 #: lazarusidestrconsts.lisincorrectconfigurationdirectoryfound
 msgid "Incorrect configuration directory found"
 msgstr "Encontrada configuração de diretórios incorreta"
+
+#: lazarusidestrconsts.lisincorrectfppkgconfiguration
+msgid "the Fppkg configuration is corrupt."
+msgstr ""
 
 #: lazarusidestrconsts.lisindentationforpascalsources
 msgid "Indentation for Pascal sources"
@@ -13999,6 +14019,10 @@ msgstr "Nenhum código selecionado"
 msgid "No compiler options inherited."
 msgstr "Nenhuma opção de compilador herdada."
 
+#: lazarusidestrconsts.lisnofppkgprefix
+msgid "empty Free Pascal compiler prefix."
+msgstr ""
+
 #: lazarusidestrconsts.lisnohints
 msgid "no hints"
 msgstr "nenhuma dica"
@@ -14066,6 +14090,10 @@ msgstr "Não é um pacote de tempo de projeto"
 #: lazarusidestrconsts.lisnotaninstallpackage
 msgid "Not an install package"
 msgstr "Não é um pacote de instalação"
+
+#: lazarusidestrconsts.lisnotavalidfppkgprefix
+msgid "Free Pascal compiler not found at the given prefix."
+msgstr ""
 
 #: lazarusidestrconsts.lisnotavalidpascalidentifier
 msgid "Not a valid Pascal identifier"
@@ -14654,6 +14682,10 @@ msgstr "Modelos de caminho"
 #: lazarusidestrconsts.lispatheditsearchpaths
 msgid "Search paths:"
 msgstr "Caminhos de busca:"
+
+#: lazarusidestrconsts.lispathisnodirectory
+msgid "is not a directory"
+msgstr ""
 
 #: lazarusidestrconsts.lispathoftheinstantfpccache
 msgid "path of the instantfpc cache"
@@ -17115,6 +17147,10 @@ msgstr "(vizinho do topo selecionado)"
 #: lazarusidestrconsts.lisselectfile
 msgid "Select the file"
 msgstr "Selecionar o arquivo"
+
+#: lazarusidestrconsts.lisselectfpcpath
+msgid "Select the path where FPC is installed"
+msgstr ""
 
 #: lazarusidestrconsts.lisselectfpcsourcedirectory
 msgid "Select FPC source directory"
