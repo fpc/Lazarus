@@ -594,12 +594,10 @@ begin
   rX.Init(
     HorAxis, FClipRect.Left, FClipRect.Right, AMargin.Left, -AMargin.Right,
     AChartMargins.Left, AChartMargins.Right, AMinDataSpace,
-    (AMargin.Left <> AChartMargins.Left) or (AMargin.Right <> AChartMargins.Right),
     false, @FCurrentExtent.a.X, @FCurrentExtent.b.X);
   rY.Init(
     VertAxis, FClipRect.Bottom, FClipRect.Top, -AMargin.Bottom, AMargin.Top,
     AChartMargins.Bottom, AChartMargins.Top, AMinDataSpace,
-    (AMargin.Top <> AChartMargins.Top) or (AMargin.Bottom <> AChartMargins.Bottom),
     true, @FCurrentExtent.a.Y, @FCurrentExtent.b.Y);
 
   FScale.X := rX.CalcScale(1);
