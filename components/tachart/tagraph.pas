@@ -706,7 +706,7 @@ begin
   FDefaultGUIConnector.CreateDrawer(FConnectorData);
   FGUIConnectorListener := TListener.Create(@FGUIConnector, @StyleChanged);
 
-  FScale := DoublePoint(1, 1);
+  FScale := DoublePoint(1, -1);
 
   Width := DEFAULT_CHART_WIDTH;
   Height := DEFAULT_CHART_HEIGHT;
@@ -1489,7 +1489,7 @@ begin
 
   // There is a cyclic dependency: extent -> visible marks -> margins.
   // We recalculate them iteratively hoping that the process converges.
-  CalculateTransformationCoeffs(ZeroRect, scChartMargins, scMinDataSpace);
+  CalculateTransformationCoeffs(scSeriesMargins, scChartMargins, scMinDataSpace);
   cr := FClipRect;
   for tries := 1 to 10 do begin
     axisMargin := AxisList.Measure(CurrentExtent, scDepth);
