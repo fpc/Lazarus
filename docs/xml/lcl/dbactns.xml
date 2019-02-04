@@ -2,477 +2,515 @@
 <fpdoc-descriptions>
   <package name="lcl">
     <!--
-  ====================================================================
-    DBActns
-  ====================================================================
--->
+    ====================================================================
+      DBActns
+    ====================================================================
+    -->
     <module name="DBActns">
-      <short>Standard actions to be used for navigating and manipulating datasets derived from external databases</short>
-      <descr/>
+      <short>
+        Standard actions to be used for navigating and manipulating datasets derived from external databases
+      </short>
+      <descr></descr>
+
       <!-- unresolved type reference Visibility: default -->
       <element name="Classes">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short></short>
       </element>
+
       <!-- unresolved type reference Visibility: default -->
       <element name="DB">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short></short>
       </element>
+
       <!-- unresolved type reference Visibility: default -->
       <element name="ActnList">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short></short>
       </element>
+
       <!-- object Visibility: default -->
-      <element name="TDataSetAction">
+      <element name="TDataSetAction" link="#lcl.ActnList.TAction">
         <short>
-          <i>TDataSetAction</i> - base class for all other standard <i>TDataSet</i> actions</short>
-        <descr/>
-        <errors/>
-        <seealso/>
+          <var>TDataSetAction</var> is the base class for all other standard <var>TDataSet</var> actions
+        </short>
+        <descr>
+          <p>
+            <var>TDataSetAction</var> is a TAction descendant that is the base class for all other standard <var>TDataSet</var> actions. TDataSetAction provides properties and methods which enable the action to be used with a DataSource and its associated dataset. TDataSetAction provides an overridden Notification method to perform component notifications for DataSource and its DataSet.
+          </p>
+          <p>
+            Applications do not use instances of TDataSetAction; use one of the descendant classes that perform a specific action for a dataset.
+          </p>
+        </descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
+
       <!-- variable Visibility: private -->
       <element name="TDataSetAction.FDataSource">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short></short>
       </element>
+
       <!-- procedure Visibility: private -->
       <element name="TDataSetAction.SetDataSource">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Sets the value in the DataSource property</short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDataSetAction.SetDataSource.Value">
-        <short/>
+        <short>New value for the property</short>
       </element>
+
       <!-- procedure Visibility: protected -->
       <element name="TDataSetAction.Notification">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Performs notications when a component is added or removed</short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDataSetAction.Notification.AComponent">
-        <short/>
+        <short></short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDataSetAction.Notification.Operation">
-        <short/>
+        <short></short>
       </element>
+
       <!-- function Visibility: protected -->
       <element name="TDataSetAction.GetDataSet">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Gets the value in the Dataset property for the specified target</short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="TDataSetAction.GetDataSet.Result">
-        <short/>
+        <short></short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDataSetAction.GetDataSet.Target">
-        <short/>
+        <short></short>
       </element>
+
       <!-- function Visibility: public -->
       <element name="TDataSetAction.HandlesTarget">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Indicates if the action is handled for the specified target</short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
+
       <!-- function result Visibility: default -->
       <element name="TDataSetAction.HandlesTarget.Result">
-        <short/>
+        <short></short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDataSetAction.HandlesTarget.Target">
-        <short/>
+        <short></short>
       </element>
+
       <!-- property Visibility: public -->
       <element name="TDataSetAction.DataSource">
         <short>
-          <i>DataSource</i> - the locally-stored series of records forming the <i>DataSet</i>, derived (by a query) from the external database</short>
-        <descr/>
-        <seealso/>
+          DataSource with the dataset for the action
+        </short>
+        <descr>
+          <p>
+            <var>DataSource</var> is the locally-stored series of records forming the <var>DataSet</var>, derived (by a query) from the external database.
+          </p>
+        </descr>
+        <seealso></seealso>
       </element>
+
       <!-- object Visibility: default -->
       <element name="TDataSetFirst">
         <short>
-          <i>TDataSetFirst </i>- move to first record in the <i>DataSet</i>
+          <var>TDataSetFirst</var> moves to first record in the <var>DataSet</var>
         </short>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
+
       <!-- procedure Visibility: public -->
       <element name="TDataSetFirst.ExecuteTarget">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDataSetFirst.ExecuteTarget.Target">
-        <short/>
+        <short></short>
       </element>
+
       <!-- procedure Visibility: public -->
       <element name="TDataSetFirst.UpdateTarget">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDataSetFirst.UpdateTarget.Target">
-        <short/>
+        <short></short>
       </element>
+
       <!-- property Visibility: published -->
       <element name="TDataSetFirst.DataSource">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
       </element>
+
       <!-- object Visibility: default -->
       <element name="TDataSetLast">
         <short>
-          <i>TDataSetLast </i>- move to last record in the <i>DataSet</i>
+          <var>TDataSetLast</var> moves to last record in the <var>DataSet</var>
         </short>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TDataSetLast.ExecuteTarget">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDataSetLast.ExecuteTarget.Target">
-        <short/>
+        <short></short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TDataSetLast.UpdateTarget">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDataSetLast.UpdateTarget.Target">
-        <short/>
+        <short></short>
       </element>
       <!-- property Visibility: published -->
       <element name="TDataSetLast.DataSource">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
       </element>
+
       <!-- object Visibility: default -->
       <element name="TDataSetNext">
         <short>
-          <i>TDataSetNext </i>- move to next record in the <i>DataSet</i>
+          <var>TDataSetNext</var> moves to next record in the <var>DataSet</var>
         </short>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TDataSetNext.ExecuteTarget">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDataSetNext.ExecuteTarget.Target">
-        <short/>
+        <short></short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TDataSetNext.UpdateTarget">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDataSetNext.UpdateTarget.Target">
-        <short/>
+        <short></short>
       </element>
       <!-- property Visibility: published -->
       <element name="TDataSetNext.DataSource">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
       </element>
+
       <!-- object Visibility: default -->
       <element name="TDataSetPrior">
         <short>
-          <i>TDataSetPrior </i>- move to previous (prior) record in the <i>DataSet</i>
+          <var>TDataSetPrior</var> moves to previous (prior) record in the <var>DataSet</var>
         </short>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TDataSetPrior.ExecuteTarget">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDataSetPrior.ExecuteTarget.Target">
-        <short/>
+        <short></short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TDataSetPrior.UpdateTarget">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDataSetPrior.UpdateTarget.Target">
-        <short/>
+        <short></short>
       </element>
       <!-- property Visibility: published -->
       <element name="TDataSetPrior.DataSource">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
       </element>
+
       <!-- object Visibility: default -->
       <element name="TDataSetRefresh">
         <short>
-          <i>TDataSetRefresh </i>- refresh the <i>DataSet</i> by reference to the external database</short>
-        <descr/>
-        <errors/>
-        <seealso/>
+          <var>TDataSetRefresh</var> refreshes the <var>DataSet</var>
+        </short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TDataSetRefresh.ExecuteTarget">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDataSetRefresh.ExecuteTarget.Target">
-        <short/>
+        <short></short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TDataSetRefresh.UpdateTarget">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDataSetRefresh.UpdateTarget.Target">
-        <short/>
+        <short></short>
       </element>
       <!-- property Visibility: published -->
       <element name="TDataSetRefresh.DataSource">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
       </element>
+
       <!-- object Visibility: default -->
       <element name="TDataSetCancel">
         <short>
-          <i>TDataSetCancel</i> - cancel the previous operation on the <i>DataSet</i>
+          <var>TDataSetCancel</var> cancels the previous operation on the <var>DataSet</var>
         </short>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TDataSetCancel.ExecuteTarget">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDataSetCancel.ExecuteTarget.Target">
-        <short/>
+        <short></short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TDataSetCancel.UpdateTarget">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDataSetCancel.UpdateTarget.Target">
-        <short/>
+        <short></short>
       </element>
       <!-- property Visibility: published -->
       <element name="TDataSetCancel.DataSource">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
       </element>
+
       <!-- object Visibility: default -->
       <element name="TDataSetDelete">
         <short>
-          <i>TDataSetDelete</i> - delete the current record in the <i>DataSet</i>
+          <var>TDataSetDelete</var> deletes the current record in the <var>DataSet</var>
         </short>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TDataSetDelete.ExecuteTarget">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDataSetDelete.ExecuteTarget.Target">
-        <short/>
+        <short></short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TDataSetDelete.UpdateTarget">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDataSetDelete.UpdateTarget.Target">
-        <short/>
+        <short></short>
       </element>
       <!-- property Visibility: published -->
       <element name="TDataSetDelete.DataSource">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
       </element>
+
       <!-- object Visibility: default -->
       <element name="TDataSetEdit">
         <short>
-          <i>TDataSetEdit </i>- edit the current record in the <i>DataSet</i>
+          <var>TDataSetEdit</var> edits the current record in the <var>DataSet</var>
         </short>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TDataSetEdit.ExecuteTarget">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDataSetEdit.ExecuteTarget.Target">
-        <short/>
+        <short></short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TDataSetEdit.UpdateTarget">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDataSetEdit.UpdateTarget.Target">
-        <short/>
+        <short></short>
       </element>
       <!-- property Visibility: published -->
       <element name="TDataSetEdit.DataSource">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
       </element>
+
       <!-- object Visibility: default -->
       <element name="TDataSetInsert">
         <short>
-          <i>TDataSetInsert</i> - insert (append) a new record into the <i>DataSet</i>
+          <var>TDataSetInsert</var> inserts (appends) a new record into the <var>DataSet</var>
         </short>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TDataSetInsert.ExecuteTarget">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDataSetInsert.ExecuteTarget.Target">
-        <short/>
+        <short></short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TDataSetInsert.UpdateTarget">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDataSetInsert.UpdateTarget.Target">
-        <short/>
+        <short></short>
       </element>
       <!-- property Visibility: published -->
       <element name="TDataSetInsert.DataSource">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
       </element>
+
       <!-- object Visibility: default -->
       <element name="TDataSetPost">
         <short>
-          <i>TDataSetPost</i> - post the editing changes on the current record permanently into the <i>DataSet</i> (may need a separate action to make changes permanently in external database)</short>
-        <descr/>
-        <errors/>
-        <seealso/>
+          <var>TDataSetPost</var> posts changes on the current record to the <var>DataSet</var>
+        </short>
+        <descr>
+          <p>
+            <var>TDataSetPost</var> posts the editing changes on the current record permanently into the <var>DataSet</var> (may need a separate action to make changes permanently in external database).
+          </p>
+        </descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TDataSetPost.ExecuteTarget">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDataSetPost.ExecuteTarget.Target">
-        <short/>
+        <short></short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TDataSetPost.UpdateTarget">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TDataSetPost.UpdateTarget.Target">
-        <short/>
+        <short></short>
       </element>
       <!-- property Visibility: published -->
       <element name="TDataSetPost.DataSource">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
       </element>
     </module>
     <!-- DBActns -->
+
   </package>
 </fpdoc-descriptions>
