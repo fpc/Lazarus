@@ -223,6 +223,8 @@ type
     constructor Create(const ADebugger: TDebuggerIntf);
     destructor Destroy; override;
     procedure RequestCount(ACallstack: TCallStackBase); override;
+    procedure RequestAtLeastCount(ACallstack: TCallStackBase;
+      ARequiredMinCount: Integer); override;
     procedure RequestEntries(ACallstack: TCallStackBase); override;
     procedure RequestCurrent(ACallstack: TCallStackBase); override;
     procedure UpdateCurrentIndex; override;
@@ -589,6 +591,12 @@ begin
 end;
 
 procedure TFPCallStackSupplier.RequestCount(ACallstack: TCallStackBase);
+begin
+  RequestAtLeastCount(ACallstack, -1);
+end;
+
+procedure TFPCallStackSupplier.RequestAtLeastCount(ACallstack: TCallStackBase;
+  ARequiredMinCount: Integer);
 var
   ThreadCallStack: TDbgCallstackEntryList;
 begin
@@ -597,7 +605,7 @@ begin
     ACallstack.SetCountValidity(ddsInvalid);
     exit;
   end;
-  TFpDebugDebugger(Debugger).PrepareCallStackEntryList;
+  TFpDebugDebugger(Debugger).PrepareCallStackEntryList(ARequiredMinCount);
   ThreadCallStack := TFpDebugDebugger(Debugger).FDbgController.CurrentThread.CallStackEntryList;
   if ThreadCallStack = nil then
     exit;
@@ -608,9 +616,14 @@ begin
     ACallstack.SetHasAtLeastCountInfo(ddsInvalid);
   end
   else
+  if (ARequiredMinCount < 0) or (ThreadCallStack.Count < ARequiredMinCount) then
   begin
     ACallstack.Count := ThreadCallStack.Count;
     ACallstack.SetCountValidity(ddsValid);
+  end
+  else
+  begin
+    ACallstack.SetHasAtLeastCountInfo(ddsValid, ThreadCallStack.Count);
   end;
 end;
 
@@ -644,7 +657,7 @@ begin
   AController := FpDebugger.FDbgController;
   OldContext := FpDebugger.FMemManager.DefaultContext;
 
-  while (not IT.EOM) and (TCallStackEntry(It.DataPtr^).Index < ACallstack.HighestUnknown)
+  while (not IT.EOM) and (TCallStackEntry(It.DataPtr^).Index <= ACallstack.HighestUnknown)
   do begin
     e := TCallStackEntry(It.DataPtr^);
     if e.Validity = ddsRequested then

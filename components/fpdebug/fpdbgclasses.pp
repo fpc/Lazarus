@@ -1708,47 +1708,76 @@ end;
 
 procedure TDbgThread.PrepareCallStackEntryList(AFrameRequired: Integer);
 const
-  MaxFrames = 25;
+  MAX_FRAMES = 50000; // safety net
 var
   Address, Frame, LastFrame: QWord;
-  Size, Count: integer;
+  Size, CountNeeded, IP, BP: integer;
   AnEntry: TDbgCallstackEntry;
+  R: TDbgRegisterValue;
+  nIP, nBP: String;
+  NextIdx: LongInt;
 begin
   // TODO: use AFrameRequired // check if already partly done
   if FCallStackEntryList = nil then
     FCallStackEntryList := TDbgCallstackEntryList.Create;
   if (AFrameRequired >= 0) and (AFrameRequired < FCallStackEntryList.Count) then
     exit;
-  // TODO: remove, using AFrameRequired
-  if FCallStackEntryList.Count > 0 then exit; // already done
 
-  Address := GetInstructionPointerRegisterValue;
-  Frame := GetStackBasePointerRegisterValue;
-  Size := sizeof(pointer); // TODO: Context.AddressSize
+  case FProcess.Mode of
+    dm32: begin
+      Size := 4;
+      IP := 8; // Dwarf Reg Num EIP
+      BP := 5; // EBP
+      nIP := 'eip';
+      nBP := 'ebp';
+    end;
+    dm64: begin
+      Size := 8;
+      IP := 16; // Dwarf Reg Num RIP
+      BP := 6; // RBP
+      nIP := 'rip';
+      nBP := 'rbp';
+    end;
+    else assert(False, 'unknown address size for stack')
+  end;
 
   FCallStackEntryList.FreeObjects:=true;
-  AnEntry := TDbgCallstackEntry.create(Self, 0, Frame, Address);
-  // Top level entry needs no registerlist / same as GetRegisterValueList
-  FCallStackEntryList.Add(AnEntry);
 
+  if FCallStackEntryList.Count > 0 then begin
+    AnEntry := FCallStackEntryList[FCallStackEntryList.Count - 1];
+    R := AnEntry.RegisterValueList.FindRegisterByDwarfIndex(IP);
+    if R = nil then exit;
+    Address := R.NumValue;
+    R := AnEntry.RegisterValueList.FindRegisterByDwarfIndex(BP);
+    if R = nil then exit;
+    Frame := R.NumValue;
+  end
+  else begin
+    Address := GetInstructionPointerRegisterValue;
+    Frame := GetStackBasePointerRegisterValue;
+    AnEntry := TDbgCallstackEntry.create(Self, 0, Frame, Address);
+    // Top level entry needs no registerlist / same as GetRegisterValueList
+    FCallStackEntryList.Add(AnEntry);
+  end;
+
+  NextIdx := FCallStackEntryList.Count;
+  if AFrameRequired < 0 then
+    AFrameRequired := MaxInt;
+  CountNeeded := AFrameRequired - FCallStackEntryList.Count;
   LastFrame := 0;
-  Count := MaxFrames;
-  while (Frame <> 0) and (Frame > LastFrame) do
+  while (CountNeeded > 0) and (Frame <> 0) and (Frame > LastFrame) do
   begin
+    LastFrame := Frame;
     if not Process.ReadData(Frame + Size, Size, Address) or (Address = 0) then Break;
     if not Process.ReadData(Frame, Size, Frame) then Break;
-    AnEntry := TDbgCallstackEntry.create(Self, MaxFrames+1-Count, Frame, Address);
-    if Process.Mode=dm32 then begin
-      AnEntry.RegisterValueList.DbgRegisterAutoCreate['eip'].SetValue(Address, IntToStr(Address),Size,8);
-      AnEntry.RegisterValueList.DbgRegisterAutoCreate['ebp'].SetValue(Frame, IntToStr(Frame),Size,5);
-    end
-    else begin
-      AnEntry.RegisterValueList.DbgRegisterAutoCreate['rip'].SetValue(Address, IntToStr(Address),Size,16);
-      AnEntry.RegisterValueList.DbgRegisterAutoCreate['rbp'].SetValue(Frame, IntToStr(Frame),Size,6);
-    end;
+    AnEntry := TDbgCallstackEntry.create(Self, NextIdx, Frame, Address);
+    AnEntry.RegisterValueList.DbgRegisterAutoCreate[nIP].SetValue(Address, IntToStr(Address),Size, IP);
+    AnEntry.RegisterValueList.DbgRegisterAutoCreate[nBP].SetValue(Frame, IntToStr(Frame),Size, BP);
     FCallStackEntryList.Add(AnEntry);
-    Dec(count);
-    if Count <= 0 then Break;
+    Dec(CountNeeded);
+    inc(NextIdx);
+    If (NextIdx > MAX_FRAMES) then
+      break;
   end;
 end;
 
