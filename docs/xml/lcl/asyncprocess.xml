@@ -1,183 +1,247 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-<package name="lcl">
+  <package name="lcl">
 
-<!--
-  ====================================================================
-    AsyncProcess
-  ====================================================================
--->
+    <!--
+    ====================================================================
+      AsyncProcess
+    ====================================================================
+    -->
 
-<module name="AsyncProcess">
-<short/>
-<descr>
-</descr>
+    <module name="AsyncProcess">
+      <short>
+        Defines a process with asynchronous event notifications for data
+      </short>
+      <descr></descr>
 
-<!-- unresolved type reference Visibility: default -->
-<element name="Classes">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Classes">
+        <short></short>
+      </element>
 
-<!-- unresolved type reference Visibility: default -->
-<element name="Process">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Process">
+        <short></short>
+      </element>
 
-<!-- unresolved type reference Visibility: default -->
-<element name="InterfaceBase">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="InterfaceBase">
+        <short></short>
+      </element>
 
-<!-- unresolved type reference Visibility: default -->
-<element name="LCLIntf">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="LCLIntf">
+        <short></short>
+      </element>
 
-<!-- object Visibility: default -->
-<element name="TAsyncProcess">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- object Visibility: default -->
+      <element name="TAsyncProcess" link="#lazutils.TProcessUTF8">
+        <short>
+          Implements a process with asynchronous notifications for data and termination
+        </short>
+        <descr>
+          <p>
+            <var>TAsyncProcess</var> is a <var>TProcessUTF8</var> descendant which implements support for asynchrous notifications when data is available for the process. Internally, TAsyncProcess uses pipe and process handlers to detect when data is written to the Output handle, and when the process is terminated. TAsyncProcess provides OnReadData and OnTerminate event handlers signalled for the corresponding asynchrous notifications.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
 
-<!-- variable Visibility: private -->
-<element name="TAsyncProcess.FOnReadData">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- variable Visibility: private -->
+      <element name="TAsyncProcess.FPipeHandler">
+        <short></short>
+      </element>
 
-<!-- variable Visibility: private -->
-<element name="TAsyncProcess.FOnTerminate">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- variable Visibility: private -->
+      <element name="TAsyncProcess.FProcessHandler">
+        <short></short>
+      </element>
 
-<!-- function Visibility: protected -->
-<element name="TAsyncProcess.GetNumBytesAvailable">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- variable Visibility: private -->
+      <element name="TAsyncProcess.FOnReadData">
+        <short></short>
+      </element>
 
-<!-- function result Visibility: default -->
-<element name="TAsyncProcess.GetNumBytesAvailable.Result">
-<short/>
-</element>
+      <!-- variable Visibility: private -->
+      <element name="TAsyncProcess.FOnTerminate">
+        <short></short>
+      </element>
 
-<!-- procedure Visibility: protected -->
-<element name="TAsyncProcess.HandlePipeInput">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- function Visibility: protected -->
+      <element name="TAsyncProcess.GetNumBytesAvailable">
+        <short>
+          Gets the value for the NumBytesAvailable property
+        </short>
+        <descr>
+          <p>
+            <var>GetNumBytesAvailable</var> is a dword functions used to get the value for the <var>NumBytesAvailable</var> property. The return value contains the value in <var>Output.NumBytesAvailable</var>, or 0 (zero) when <var>Options</var> does not include the value <var>poUsePipes</var>.
+          </p>
+          <p>
+            Use NumBytesAvailable to read the value for the property.
+          </p>
+          <p>
+            Use Options to enable the Options for the process.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="TAsyncProcess.HandlePipeInput.AData">
-<short/>
-</element>
+      <!-- function result Visibility: default -->
+      <element name="TAsyncProcess.GetNumBytesAvailable.Result">
+        <short>Value for the property</short>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="TAsyncProcess.HandlePipeInput.AReasons">
-<short/>
-</element>
+      <!-- procedure Visibility: protected -->
+      <element name="TAsyncProcess.HandlePipeInput">
+        <short>
+          Implements support for asynchronous notifications during execution of the process
+        </short>
+        <descr>
+          <p>
+            <var>HandlePipeInput</var> is a procedure which implements support for asynchronous  notifications which occur during execution of the process. HandlePipeInput is assigned using AddPipeEventHandler when Execute is called.
+          </p>
+          <p>
+            HandlePipeInput examines values in AReasons to determine the action for the notification. When AReasons includes the value prBroken, the pipe has been closed and UnhookPipeHandle is called. When prDataAvailable is included in AReasons, the OnReadData event handler is signalled (when assigned).
+          </p>
+          <p>
+            Use OnReadData to respond to arrival of data on the handle for the process. Use NumBytesAvailable is determine the number of bytes available.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
 
-<!-- procedure Visibility: protected -->
-<element name="TAsyncProcess.HandleProcessTermination">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- argument Visibility: default -->
+      <element name="TAsyncProcess.HandlePipeInput.AData">
+        <short>Data available on the input handle</short>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="TAsyncProcess.HandleProcessTermination.AData">
-<short/>
-</element>
+      <!-- argument Visibility: default -->
+      <element name="TAsyncProcess.HandlePipeInput.AReasons">
+        <short>Reason the data was written for the handler</short>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="TAsyncProcess.HandleProcessTermination.AReason">
-<short/>
-</element>
+      <!-- procedure Visibility: protected -->
+      <element name="TAsyncProcess.HandleProcessTermination">
+        <short>
+          Performs actions needed when the process is terminated
+        </short>
+        <descr>
+          <p>
+            <var>HandleProcessTermination</var> is a procedure which performs actions needed when the process is terminated. HandleProcessTermination is assigned using AddProcessEventHandler when Execute is called.
+          </p>
+          <p>
+            HandleProcessTermination calls UnhookProcessHandle and UnhookPipeHandle to release the handlers in the class instance. HandleProcessTermination signals the OnTerminate event handler when it has been assigned.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="TAsyncProcess.HandleProcessTermination.AInfo">
-<short/>
-</element>
+      <!-- argument Visibility: default -->
+      <element name="TAsyncProcess.HandleProcessTermination.AData">
+        <short>Data for the process notification</short>
+      </element>
 
-<!-- procedure Visibility: public -->
-<element name="TAsyncProcess.Execute">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- argument Visibility: default -->
+      <element name="TAsyncProcess.HandleProcessTermination.AReason">
+        <short>Reason(s) for the process notification</short>
+      </element>
 
-<!-- property Visibility: published -->
-<element name="TAsyncProcess.NumBytesAvailable">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- argument Visibility: default -->
+      <element name="TAsyncProcess.HandleProcessTermination.AInfo">
+        <short>Process exit code</short>
+      </element>
 
-<!-- property Visibility: published -->
-<element name="TAsyncProcess.OnReadData">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+      <!-- procedure Visibility: protected -->
+      <element name="TAsyncProcess.UnhookPipeHandle">
+        <short>
+          Removes the pipe handler assigned for the process
+        </short>
+        <descr>
+          <p>
+            <var>UnhookPipeHandle</var> is a procedure used to remove the pipe handler assigned for the process in the Execute method. UnhookPipeHandle calls RemovePipeEventHandler when it has been assigned. UnhookPipeHandle is called in the Destroy method.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
 
-<!-- property Visibility: published -->
-<element name="TAsyncProcess.OnTerminate">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-</module> <!-- AsyncProcess -->
-</package>
+      <!-- procedure Visibility: protected -->
+      <element name="TAsyncProcess.UnhookProcessHandle">
+        <short>
+          Removes the process handler assigned for the process
+        </short>
+        <descr>
+          <p>
+            <var>UnhookProcessHandle</var> is a procedure used to remove the process handler assigned for the process in the Execute method. UnhookProcessHandle calls RemoveProcessEventHandler when it has been assigned. UnhookProcessHandle
+            is called in the Destroy method.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+
+      <!-- procedure Visibility: public -->
+      <element name="TAsyncProcess.Execute">
+        <short>
+          Executes the process
+        </short>
+        <descr>
+          <p>
+            <var>Execute</var> is an overridden procedure used to execute the process. Execute calls the inherited Execute method. Execute uses values in Options to determine if a process or a pipe handler is needed for the class instance. Set the values in Options prior to calling the Execute method.
+          </p>
+          <p>
+              When Options includes the value poUsePipes, AddPipeEventHandler is called using HandlePipeInput as the pipe handler.
+          </p>
+          <p>
+            Execute calls AddProcessEventHandler using HandleProcessTermination as the process handle.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+
+      <!-- property Visibility: published -->
+      <element name="TAsyncProcess.NumBytesAvailable">
+        <short>
+        </short>
+        <descr>
+          <p>
+            <var>NumBytesAvailable</var> is a read-only dword property that indicates the number of bytes available on the Output handle for the process. GetNumBytesAvailable is the read access specifier for the property value. NumBytesAvailable contains the value in Output.NumBytesAvailable, or 0 (zero) when Options does not contain the value poUsePipes.
+          </p>
+          <p>
+            Set the values for the Options property prior to calling Execute.
+          </p>
+          <p>
+            Use OnReadData to repond to the process notification signalled when data is available.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+
+      <!-- property Visibility: published -->
+      <element name="TAsyncProcess.OnReadData">
+        <short>
+          Event handler signalled when data is available
+        </short>
+        <descr>
+          <p>
+            <var>OnReadData</var> is a TNotifyEvent property that implements the event handler signalled when data is available for the process. Applications should assign a procedure to the event handler that responds to the pipe notification. The procedure must handle all data available on the Output.Handle up to the number of bytes in NumBytesAvailable. All data must be handled, or the procedure will be called repeatedly until no more data is available.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+
+      <!-- property Visibility: published -->
+      <element name="TAsyncProcess.OnTerminate">
+        <short>
+          Event handler signalled when the process is terminated
+        </short>
+        <descr>
+          <p>
+            <var>OnTerminate</var> is a TNotifyEvent property that implements the event handler signalled when the process is terminated. Applictions can assign a procedure to the event handler to perform actions needed when the process is terminated.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+    </module>
+    <!-- AsyncProcess -->
+
+  </package>
 </fpdoc-descriptions>
