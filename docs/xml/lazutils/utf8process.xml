@@ -81,6 +81,7 @@
         <descr>
           <p>
             SetCommandLineUTF8 is the write access specifier for the CommandLine property.
+	  </p>
         </descr>
         <errors></errors>
         <seealso></seealso>
