@@ -801,7 +801,7 @@ begin
   end else begin
     if l > 0 then
       Result := CompareByte(s1[1], s2[1], l);
-    if Result = 0 then
+    if (Result = 0) and (Length(s2) > l) then
       Result := -1;
   end;
 end;
