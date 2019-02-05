@@ -3,13 +3,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2015-04-16 07:54+0100\n"
-"PO-Revision-Date: 2018-10-16 20:40+0200\n"
+"PO-Revision-Date: 2019-02-04 13:12+0100\n"
 "Last-Translator: h.mira@free.fr\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
-"X-Generator: Poedit 2.1.1\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: fppkg_const.rsaboutform
 msgid "About form"
@@ -105,7 +105,7 @@ msgstr "Options"
 
 #: fppkg_const.rspackagefileoptionstitle
 msgid "FPMake"
-msgstr ""
+msgstr "FPMake"
 
 #: fppkg_const.rsremotemirrorsurl
 msgid "Remote mirrors URL"

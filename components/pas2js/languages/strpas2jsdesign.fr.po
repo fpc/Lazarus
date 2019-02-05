@@ -3,13 +3,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-05-01 23:53+0200\n"
+"PO-Revision-Date: 2019-02-04 13:13+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: strpas2jsdesign.pjsdnodejsappdescription
 msgid "A pas2js program running in node.js"
@@ -52,10 +52,8 @@ msgid "Web server processes"
 msgstr "Processus serveur Web"
 
 #: strpas2jsdesign.swebserverscount
-#, fuzzy,badformat
-#| msgid "Number of webserver processes:"
 msgid "Number of webserver processes: %s"
-msgstr "Nombre de processus serveur Web :"
+msgstr "Nombre de processus serveur Web : %s"
 
 #: strpas2jsdesign.swebserversextra
 msgid "Additional info"

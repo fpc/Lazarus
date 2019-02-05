@@ -3,14 +3,14 @@ msgstr ""
 "Project-Id-Version: lazaruside\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-11-28 17:31+0100\n"
+"PO-Revision-Date: 2019-02-04 12:46+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.1.1\n"
+"X-Generator: Poedit 2.2.1\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: lazarusidestrconsts.dbgbreakgroupdlgcaption
@@ -2633,11 +2633,11 @@ msgstr "Maximum de fichiers de projets récents"
 
 #: lazarusidestrconsts.dlgmiddletabcloseotherpagesmod
 msgid "Middle-click-modifier to close all other tabs"
-msgstr ""
+msgstr "Clic moyen-modificateur pour fermer tous les autres onglets"
 
 #: lazarusidestrconsts.dlgmiddletabcloserightpagesmod
 msgid "Middle-click-modifier to close tabs on the right"
-msgstr ""
+msgstr "Clic moyen-modificateur pour fermer les onglets à droite"
 
 #: lazarusidestrconsts.dlgmixmethodsandproperties
 msgid "Mix methods and properties"
@@ -7650,7 +7650,7 @@ msgstr "Créer un filtre"
 
 #: lazarusidestrconsts.liscreatefppkgconfig
 msgid "Create new Fppkg configuration"
-msgstr ""
+msgstr "Créer une nouvelle configuration Fppkg"
 
 #: lazarusidestrconsts.liscreatefunction
 msgid "Create function"
@@ -9547,7 +9547,7 @@ msgstr "Pas un fichier texte"
 
 #: lazarusidestrconsts.lisfilescountconvertedtotextformat
 msgid "%d files were converted to text format."
-msgstr ""
+msgstr "%d fichiers ont été convertis au format texte."
 
 #: lazarusidestrconsts.lisfilesettings
 msgid "File Settings"
@@ -9570,10 +9570,8 @@ msgid "Files in ASCII or UTF-8 encoding"
 msgstr "Fichiers encodés ASCII ou UTF-8"
 
 #: lazarusidestrconsts.lisfilesisconvertedtotextformat
-#, fuzzy
-#| msgid "File %s is converted to text format."
 msgid "File %s was converted to text format."
-msgstr "Le fichier %s est converti au format texte."
+msgstr "Le fichier %s a été converti au format texte."
 
 #: lazarusidestrconsts.lisfilesnotinasciinorutf8encoding
 msgid "Files not in ASCII nor UTF-8 encoding"
@@ -9806,23 +9804,23 @@ msgstr "Il y a une erreur de syntaxe dans l'élément FPDoc \"%s\":%s%s"
 
 #: lazarusidestrconsts.lisfppkgcompilerproblem
 msgid "there is a problem with the Free Pascal compiler executable, "
-msgstr ""
+msgstr "Il y a un problème avec l'exécutable du compilateur Free Pascal, "
 
 #: lazarusidestrconsts.lisfppkginstallationpath
 msgid "The prefix of the Free Pascal Compiler installation is required to create new configuration files for Fppkg. For example it has the units \"%s\" and/or \"%s\""
-msgstr ""
+msgstr "Le préfixe de l'installation du compilateur Free Pascal est requis pour créer de nouveaux fichiers de configuration pour Fppkg. Par exemple, il a les unités \"%s\" et/ou \" %s\""
 
 #: lazarusidestrconsts.lisfppkgproblem
 msgid "Problem with Fppkg configuration"
-msgstr ""
+msgstr "Problème avec la configuration de Fppkg"
 
 #: lazarusidestrconsts.lisfppkgwriteconfexception
 msgid "A problem occurred while trying to create a new Fppkg configuration: %s"
-msgstr ""
+msgstr "Un problème s'est produit lors de la tentative de création d'une nouvelle configuration Fppkg : %s"
 
 #: lazarusidestrconsts.lisfppkgwriteconffailed
 msgid "Failed to create a new Fppkg configuration. You will have to fix the configuration manually or reinstall Free Pascal."
-msgstr ""
+msgstr "Impossible de créer une nouvelle configuration Fppkg. Vous devrez corriger la configuration manuellement ou réinstaller Free Pascal."
 
 #: lazarusidestrconsts.lisframe
 msgid "Frame"
@@ -9842,7 +9840,7 @@ msgstr "Message du compilateur Free Pascal"
 
 #: lazarusidestrconsts.lisfreepascalprefix
 msgid "Free Pascal compiler prefix"
-msgstr ""
+msgstr "Préfixe du compilateur Free Pascal"
 
 #: lazarusidestrconsts.lisfreepascalsourcedirectory
 msgid "Free Pascal source directory"
@@ -10415,7 +10413,7 @@ msgstr "Le répertoire de configuration trouvé est incorrect"
 
 #: lazarusidestrconsts.lisincorrectfppkgconfiguration
 msgid "the Fppkg configuration is corrupt."
-msgstr ""
+msgstr "la configuration de Fppkg est corrompue."
 
 #: lazarusidestrconsts.lisindentationforpascalsources
 msgid "Indentation for Pascal sources"
@@ -13968,7 +13966,7 @@ msgstr "Non"
 
 #: lazarusidestrconsts.lisnoautosaveactivedesktop
 msgid "'Auto save active desktop' option is turned off, you will need to save current desktop manually."
-msgstr ""
+msgstr "L'option 'Sauvegarde automatique du bureau actif' est désactivée, vous devrez enregistrer le bureau actuel manuellement."
 
 #: lazarusidestrconsts.lisnobackupfiles
 msgid "No backup files"
@@ -13992,7 +13990,7 @@ msgstr "Aucune option de compilateur héritée."
 
 #: lazarusidestrconsts.lisnofppkgprefix
 msgid "empty Free Pascal compiler prefix."
-msgstr ""
+msgstr "Préfixe du compilateur Free Pascal vide."
 
 #: lazarusidestrconsts.lisnohints
 msgid "no hints"
@@ -14064,7 +14062,7 @@ msgstr "N'est pas un paquet d'installation"
 
 #: lazarusidestrconsts.lisnotavalidfppkgprefix
 msgid "Free Pascal compiler not found at the given prefix."
-msgstr ""
+msgstr "Compilateur Free Pascal introuvable au préfixe donné."
 
 #: lazarusidestrconsts.lisnotavalidpascalidentifier
 msgid "Not a valid Pascal identifier"
@@ -14656,7 +14654,7 @@ msgstr "Chemins de recherche :"
 
 #: lazarusidestrconsts.lispathisnodirectory
 msgid "is not a directory"
-msgstr ""
+msgstr "n'est pas un répertoire"
 
 #: lazarusidestrconsts.lispathoftheinstantfpccache
 msgid "path of the instantfpc cache"
@@ -14718,7 +14716,7 @@ msgstr "Effacer le nom de fichier de dépendance par défaut/préféré"
 
 #: lazarusidestrconsts.lispckeditcommonoptions
 msgid "Common"
-msgstr ""
+msgstr "Commun"
 
 #: lazarusidestrconsts.lispckeditcompileeverything
 msgid "Compile everything?"
@@ -15015,7 +15013,7 @@ msgstr "Objet"
 
 #: lazarusidestrconsts.lispckoptspackagefileoptions
 msgid "Additional Package File Options"
-msgstr ""
+msgstr "Options de fichier de paquet supplémentaires"
 
 #: lazarusidestrconsts.lispckoptspackageoptions
 msgid "Package Options"
@@ -17116,7 +17114,7 @@ msgstr "Choisir le fichier"
 
 #: lazarusidestrconsts.lisselectfpcpath
 msgid "Select the path where FPC is installed"
-msgstr ""
+msgstr "Sélectionnez le chemin d'accès où FPC est installé"
 
 #: lazarusidestrconsts.lisselectfpcsourcedirectory
 msgid "Select FPC source directory"
@@ -18394,7 +18392,7 @@ msgstr "outil arrêté avec le code de sortie %s. Utilisez le menu contextuel po
 
 #: lazarusidestrconsts.listoolstoppedwithexitstatususecontextmenutogetmoreinfo
 msgid "tool stopped with ExitCode 0 and ExitStatus %s. Use context menu to get more information."
-msgstr ""
+msgstr "outil arrêté avec ExitCode 0 et ExitStatus %s. Utilisez le menu contextuel pour obtenir plus d'informations."
 
 #: lazarusidestrconsts.listop
 msgctxt "lazarusidestrconsts.listop"
@@ -21353,15 +21351,15 @@ msgstr "Fermer t&outes les autres pages"
 
 #: lazarusidestrconsts.uemcloseotherpagesplain
 msgid "Close All Other Pages"
-msgstr ""
+msgstr "Fermer toutes les autres pages"
 
 #: lazarusidestrconsts.uemcloseotherpagesright
 msgid "Close Pages on the &Right"
-msgstr ""
+msgstr "Fermer les pages à &droite"
 
 #: lazarusidestrconsts.uemcloseotherpagesrightplain
 msgid "Close Pages on the Right"
-msgstr ""
+msgstr "Fermer les pages à &gauche"
 
 #: lazarusidestrconsts.uemclosepage
 msgid "&Close Page"
