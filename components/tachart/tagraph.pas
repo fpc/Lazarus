@@ -477,6 +477,7 @@ type
     property BiDiMode;
     property BorderSpacing;
     property Color default clBtnFace;
+    property Constraints;
     property DoubleBuffered;
     property DragCursor;
     property DragMode;
