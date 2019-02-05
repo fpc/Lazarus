@@ -328,7 +328,7 @@ end;
 function RegisterCustomMemo: Boolean; alias : 'WSRegisterCustomMemo';
 begin
 //  RegisterWSComponent(TMemo, TGtk2WSMemo);
-  RegisterWSComponent(TCustomMemo, TGtk2WSCustomMemo, TGtkPrivateScrolling); { GTK1 }
+  RegisterWSComponent(TCustomMemo, TGtk2WSCustomMemo, TGtk2PrivateMemo);
   RegisterWSComponent(TCustomMemo, TGtk2WSCustomMemo);
   Result := True;
 end;
