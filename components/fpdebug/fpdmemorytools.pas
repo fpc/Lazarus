@@ -645,14 +645,16 @@ end;
 function TFpDbgMemCacheSimple.ContainsMemory(AnAddress: TDbgPtr; ASize: Cardinal
   ): Boolean;
 begin
-  Result := (AnAddress >= FCacheAddress) or (AnAddress + ASize <= FCacheAddress + FCacheSize);
+  Result := (ASize <= High(TDbgPtr) - AnAddress) and // not impossible memory range
+            (AnAddress >= FCacheAddress) and (AnAddress + ASize <= FCacheAddress + FCacheSize);
 end;
 
 function TFpDbgMemCacheSimple.ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal;
   ADest: Pointer): Boolean;
 begin
   Result := False;
-  if (AnAddress < FCacheAddress) or (AnAddress + ASize > FCacheAddress + FCacheSize) or
+  if (ASize > High(TDbgPtr) - AnAddress) or // impossible memory range
+     (AnAddress < FCacheAddress) or (AnAddress + ASize > FCacheAddress + FCacheSize) or
      FFailed
   then
     exit;
@@ -710,6 +712,9 @@ var
   Node: TAVLTreeNode;
 begin
   Result := False;
+  if ASize > High(TDbgPtr) - AnAddress then // impossible memory range
+    exit;
+
   Node := FCaches.FindNearestKey(@AnAddress, @CompareKey);
   if Node = nil then
     exit;
@@ -899,6 +904,11 @@ var
   TmpVal: TDbgPtr;
   ConvData: TFpDbgMemConvData;
 begin
+  if ASize > High(TDbgPtr) - ALocation.Address then begin
+    FLastError := CreateError(fpErrCanNotReadMemAtAddr, [ALocation.Address]);
+    exit;
+  end;
+
   FLastError := NoError;
   Result := False;
   if AContext = nil then
