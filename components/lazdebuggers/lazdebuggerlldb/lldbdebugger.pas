@@ -1175,7 +1175,7 @@ begin
   else begin
     Debugger.FCatchesBreak.Disable;
     Debugger.FPopExceptStack.Disable;
-    Instr := TLldbInstructionProcessStep.Create(FNextStepAction);
+    Instr := TLldbInstructionProcessStep.Create(FNextStepAction, Debugger.FCurrentThreadId);
   end;
   Instr.OnFinish := @RunInstructionSucceeded;
   QueueInstruction(Instr);
