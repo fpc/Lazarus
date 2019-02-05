@@ -395,21 +395,21 @@ begin
   end;
   FNeedUpdateAgain := False;
 
-  Reg := GetCurrentRegisters;
-  if (Reg = nil) or (reg.DataValidity<> ddsValid) then begin
-    if (DebugBoss = nil) or not (DebugBoss.State in [dsPause, dsInternalPause, dsRun]) then
-      lvRegisters.Items.Clear;
-
-    if (reg <> nil) then
-      reg.Count;
-    for n := 0 to lvRegisters.Items.Count - 1 do
-      lvRegisters.Items[n].SubItems[0] := '<Unavailable>';
-    exit;
-  end;
-
-  List := TStringList.Create;
+  BeginUpdate;
   try
-    BeginUpdate;
+    Reg := GetCurrentRegisters;
+    if (Reg = nil) or (reg.DataValidity<> ddsValid) then begin
+      if (DebugBoss = nil) or not (DebugBoss.State in [dsPause, dsInternalPause, dsRun]) then
+        lvRegisters.Items.Clear;
+
+      if (reg <> nil) then
+        reg.Count;
+      for n := 0 to lvRegisters.Items.Count - 1 do
+        lvRegisters.Items[n].SubItems[0] := '<Unavailable>';
+      exit;
+    end;
+
+    List := TStringList.Create;
     try
       //Get existing items
       for n := 0 to lvRegisters.Items.Count - 1 do
@@ -450,10 +450,10 @@ begin
         lvRegisters.Items.Delete(TListItem(List.Objects[n]).Index);
 
     finally
-      EndUpdate;
+      List.Free;
     end;
   finally
-    List.Free;
+    EndUpdate;
   end;
 
   lvRegistersSelectItem(nil, nil, True);
