@@ -1522,7 +1522,7 @@ begin
     MsgLine:=CreateMsgLine;
     MsgLine.MsgID:=0;
     MsgLine.SubTool:=SubToolFPCLinker;
-    MsgLine.Urgency:=mluVerbose;
+    MsgLine.Urgency:=mluHint;
     MsgLine.Msg:='linker: '+p;
     inherited AddMsgLine(MsgLine);
     exit(true);
