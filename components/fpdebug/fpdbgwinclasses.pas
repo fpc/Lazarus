@@ -1139,6 +1139,9 @@ end;
 
 procedure TDbgWinThread.BeforeContinue;
 begin
+  if Process.ProcessID <> MDebugEvent.dwProcessId then
+    exit;
+
   if Process.HasInsertedBreakInstructionAtLocation(GetInstructionPointerRegisterValue) then begin
     SetSingleStep;
     Process.TempRemoveBreakInstructionCode(GetInstructionPointerRegisterValue);
@@ -1206,6 +1209,11 @@ end;
 
 function TDbgWinThread.ReadThreadState: boolean;
 begin
+  if Process.ProcessID <> MDebugEvent.dwProcessId then begin
+    DebugLn('ERROR: attempt to read threadstate, for wrong process. Thread: %u Thread-Process: %u Event-Process %u', [Id, Process.ProcessID, MDebugEvent.dwProcessId]);
+    exit(False);
+  end;
+
   FCurrentContext := Pointer((PtrUInt(@_UnAligendContext) + 15) and not PtrUInt($F));
   FCurrentContext^.ContextFlags := CONTEXT_SEGMENTS or CONTEXT_INTEGER or CONTEXT_CONTROL or CONTEXT_DEBUG_REGISTERS;
   SetLastError(0);
