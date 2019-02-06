@@ -71,7 +71,7 @@ msgstr ""
 #: lazdatadeskstr.sconnectionnameexists
 msgid ""
 "There is already a connection named \"%s\"\n"
-"Would you like to override the connection data ?\n"
+"Would you like to override the connection data ?"
 msgstr ""
 
 #: lazdatadeskstr.screatecode
@@ -85,7 +85,7 @@ msgstr ""
 #: lazdatadeskstr.sddmodified
 msgid ""
 "Data dictionary \"%s\" has changed.\n"
-"What do you want to do with the changes?\n"
+"What do you want to do with the changes?"
 msgstr ""
 
 #: lazdatadeskstr.sdeleteobject
@@ -124,7 +124,7 @@ msgstr ""
 #: lazdatadeskstr.serrinscriptchoice
 msgid ""
 "An error occurred in the SQL script.\n"
-"How would you like to continue ?\n"
+"How would you like to continue ?"
 msgstr ""
 
 #: lazdatadeskstr.serrnoengine
@@ -787,7 +787,7 @@ msgstr ""
 #: lazdatadeskstr.sql_noconnectionsfound
 msgid ""
 "No connections or data dictionaries were found.\n"
-" Start by creating a new connection or data dictionary.\n"
+" Start by creating a new connection or data dictionary."
 msgstr ""
 
 #: lazdatadeskstr.squery

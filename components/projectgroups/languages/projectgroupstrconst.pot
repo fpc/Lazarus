@@ -53,7 +53,7 @@ msgstr ""
 msgid ""
 "Could not find target file\n"
 "\"%s\"\n"
-"What do you want to do?\n"
+"What do you want to do?"
 msgstr ""
 
 #: projectgroupstrconst.liserronlyprojectgroupallowed
@@ -212,7 +212,7 @@ msgstr ""
 #: projectgroupstrconst.lisprojectgroupmodifiedconfirm
 msgid ""
 "Project group \"%s\" is modified.\n"
-"What do you want to do?\n"
+"What do you want to do?"
 msgstr ""
 
 #: projectgroupstrconst.lisprojectgroupreload

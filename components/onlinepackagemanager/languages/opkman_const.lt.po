@@ -207,13 +207,13 @@ msgstr ""
 #: opkman_const.rscreaterepositoryfrm_error1
 msgid ""
 "Cannot open private repository: \"%s\". Error message: \n"
-"\"%s\"\n"
+"\"%s\""
 msgstr ""
 
 #: opkman_const.rscreaterepositoryfrm_error3
 msgid ""
 "Cannot save private repository: \"%s\". Error message: \n"
-"\"%s\"\n"
+"\"%s\""
 msgstr ""
 
 #: opkman_const.rscreaterepositoryfrm_error4
@@ -227,19 +227,19 @@ msgstr ""
 #: opkman_const.rscreaterepositoryfrm_info1
 msgid ""
 "The following directory: \"%s\" is not empty.\n"
-"It's recommended to save the repository to an empty directory. Continue?\n"
+"It's recommended to save the repository to an empty directory. Continue?"
 msgstr ""
 
 #: opkman_const.rscreaterepositoryfrm_info3
 msgid ""
 "The following package: \"%s\" is already in the current repository.\n"
-"Each repository and Lazarus package must be unique!\n"
+"Each repository and Lazarus package must be unique!"
 msgstr ""
 
 #: opkman_const.rscreaterepositoryfrm_info5
 msgid ""
 "The following Lazarus package: \"%s\" is already in the current repository.\n"
-"Each repository and Lazarus package must be unique!\n"
+"Each repository and Lazarus package must be unique!"
 msgstr ""
 
 #: opkman_const.rscreaterepositoryfrm_info7
@@ -553,9 +553,13 @@ msgid "Sending files (\"%s\"). Please wait..."
 msgstr "Siunčiami failai („%s“). Luktelėkite…"
 
 #: opkman_const.rscreaterepositorypackagefrm_message9
+#, fuzzy
+#| msgid ""
+#| "Files successfully sent. Thank you for submitting packages!\n"
+#| "Your request will be processed in 24 hours.\n"
 msgid ""
 "Files successfully sent. Thank you for submitting packages!\n"
-"Your request will be processed in 24 hours.\n"
+"Your request will be processed in 24 hours."
 msgstr ""
 "Failai nusiųsti sėkmingai. Dėkojame už pateiktus paketus!\n"
 "Jūsų užklausa bus apdorota 24-ių valandų bėgyje.\n"
@@ -729,7 +733,7 @@ msgstr "Nė vienas iš pažymėtų saugyklos paketų nėra įdiegti arba jie net
 #| "Only update if you trust the package maintainer. Continue?\n"
 msgid ""
 "Installing packages from external link is not without a risk!\n"
-"Only install if you trust the package maintainer. Continue?\n"
+"Only install if you trust the package maintainer. Continue?"
 msgstr ""
 "Paketo naujinimas pagal išorinį saitą yra rizikingas!\n"
 "Naujinkite tik jei pasitikite paketo plėtotoju. Tęsti?\n"
@@ -771,9 +775,13 @@ msgid "No packages to show."
 msgstr "Nėra rodytinų paketų."
 
 #: opkman_const.rsmainfrm_rsmessagenorepository0
+#, fuzzy
+#| msgid ""
+#| "Remote package repository not configured.\n"
+#| "Do you wish to configure it now?\n"
 msgid ""
 "Remote package repository not configured.\n"
-"Do you wish to configure it now?\n"
+"Do you wish to configure it now?"
 msgstr ""
 "Nuotolinė paketų saugykla nėra suderinta.\n"
 "Derinti dabar?\n"
@@ -821,9 +829,13 @@ msgid "%s packages deleted!"
 msgstr "%s paketų pašalinta!"
 
 #: opkman_const.rsmainfrm_rsuninstall
+#, fuzzy
+#| msgid ""
+#| "%sAre you sure you wish to uninstall the checked packages?\n"
+#| "Please note: in order for the changes to take effect you must rebuid the IDE.\n"
 msgid ""
 "%sAre you sure you wish to uninstall the checked packages?\n"
-"Please note: in order for the changes to take effect you must rebuid the IDE.\n"
+"Please note: in order for the changes to take effect you must rebuid the IDE."
 msgstr ""
 "%sAr tikrai išdiegti pažymėtus paketus?\n"
 "Pastaba: kad pokyčiai įsigaliotų būtina iš naujo daryti IKA.\n"

@@ -45,7 +45,7 @@ msgstr ""
 msgid ""
 "Failed to %s: \n"
 "\n"
-"%s\n"
+"%s"
 msgstr ""
 
 #: fppkg_mainfrm.smsgactionsucceeded

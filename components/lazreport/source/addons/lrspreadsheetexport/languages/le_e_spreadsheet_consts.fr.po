@@ -40,9 +40,13 @@ msgid "Delete empty rows"
 msgstr "Supprimer les lignes vides"
 
 #: le_e_spreadsheet_consts.senterpagenumbers
+#, fuzzy
+#| msgid ""
+#| "Enter page numbers and/or page ranges,\n"
+#| "separated by commas. For example, 1,3,5-12\n"
 msgid ""
 "Enter page numbers and/or page ranges,\n"
-"separated by commas. For example, 1,3,5-12\n"
+"separated by commas. For example, 1,3,5-12"
 msgstr ""
 "Saisir les numéros de pages et/ou les intervalles de pages,\n"
 "séparés par des virgules. Par exemple : 1,3,5-12\n"

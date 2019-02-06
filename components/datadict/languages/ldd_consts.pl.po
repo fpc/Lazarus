@@ -131,13 +131,13 @@ msgstr ""
 #: ldd_consts.serrnodatadesktopdoselect
 msgid ""
 "Could not locate the database desktop application.\n"
-"Would you like to select it ?\n"
+"Would you like to select it ?"
 msgstr ""
 
 #: ldd_consts.serrnodatadictactive
 msgid ""
 "No datadictionary active.\n"
-"Please set a data dictionary for the project\n"
+"Please set a data dictionary for the project"
 msgstr ""
 
 #: ldd_consts.serrselectdd

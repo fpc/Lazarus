@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ru\n"
-"X-Generator: Poedit 1.7.7\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: fppkg_mainfrm.sactarchivepackages
 msgid "create archive(s) for package(s)"
@@ -55,11 +55,11 @@ msgstr "обновление репозитория"
 msgid ""
 "Failed to %s: \n"
 "\n"
-"%s\n"
+"%s"
 msgstr ""
 "Ошибка при выполнении действия \"%s\": \n"
 "\n"
-"%s\n"
+"%s"
 
 #: fppkg_mainfrm.smsgactionsucceeded
 msgid "%s succeeded."

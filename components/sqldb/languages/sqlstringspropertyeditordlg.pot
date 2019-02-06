@@ -60,7 +60,7 @@ msgstr ""
 #: sqlstringspropertyeditordlg.ssqlsyntaxerror
 msgid ""
 "Probable syntax error in SQL statement:\n"
-"%s\n"
+"%s"
 msgstr ""
 
 #: sqlstringspropertyeditordlg.ssqltabcaption

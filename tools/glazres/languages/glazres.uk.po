@@ -64,9 +64,13 @@ msgid " Resource name = \"%s\", Type = \"%s\""
 msgstr " Назва ресурсу = \"%s\", Тип = \"%s\""
 
 #: glazresmain.msgsuccess
+#, fuzzy
+#| msgid ""
+#| "Done.\n"
+#| "Number of resources added: %d.\n"
 msgid ""
 "Done.\n"
-"Number of resources added: %d.\n"
+"Number of resources added: %d."
 msgstr ""
 "Готово.\n"
 "Додано ресурсів: %d.\n"

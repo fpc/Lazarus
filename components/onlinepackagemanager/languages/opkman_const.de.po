@@ -197,17 +197,25 @@ msgid "The following file: \"%s\" already exists in the current repository. Over
 msgstr "Die Datei: \"%s\" existiert bereits im aktuellen Repository. Überschreiben?"
 
 #: opkman_const.rscreaterepositoryfrm_error1
+#, fuzzy
+#| msgid ""
+#| "Cannot open private repository: \"%s\". Error message: \n"
+#| "\"%s\"\n"
 msgid ""
 "Cannot open private repository: \"%s\". Error message: \n"
-"\"%s\"\n"
+"\"%s\""
 msgstr ""
 "Kann privates Repository \"%s\" nicht öffnen. Fehlermeldung: \n"
 "\"%s\"\n"
 
 #: opkman_const.rscreaterepositoryfrm_error3
+#, fuzzy
+#| msgid ""
+#| "Cannot save private repository: \"%s\". Error message: \n"
+#| "\"%s\"\n"
 msgid ""
 "Cannot save private repository: \"%s\". Error message: \n"
-"\"%s\"\n"
+"\"%s\""
 msgstr ""
 "Kann privates Repository \"%s\" nicht speichern. Fehlermeldung: \n"
 "\"%s\"\n"
@@ -221,25 +229,37 @@ msgid "Cannot delete package: \"%s\"!"
 msgstr "Kann Package: \"%s\" nicht löschen!"
 
 #: opkman_const.rscreaterepositoryfrm_info1
+#, fuzzy
+#| msgid ""
+#| "The following directory: \"%s\" is not empty.\n"
+#| "It's recommended to save the repository to an empty directory. Continue?\n"
 msgid ""
 "The following directory: \"%s\" is not empty.\n"
-"It's recommended to save the repository to an empty directory. Continue?\n"
+"It's recommended to save the repository to an empty directory. Continue?"
 msgstr ""
 "Das Verzeichnis \"%s\" ist nicht leer.\n"
 "Es wird empfohlen, das Repository in ein leeres Verzeichnis zu speichern. Fortfahren?\n"
 
 #: opkman_const.rscreaterepositoryfrm_info3
+#, fuzzy
+#| msgid ""
+#| "The following package: \"%s\" is already in the current repository.\n"
+#| "Each repository and Lazarus package must be unique!\n"
 msgid ""
 "The following package: \"%s\" is already in the current repository.\n"
-"Each repository and Lazarus package must be unique!\n"
+"Each repository and Lazarus package must be unique!"
 msgstr ""
 "Das Package: \"%s\" befindet sich bereits im aktuellen Repository.\n"
 "Jedes Repository und Lazarus-Package müssen eindeutig sein!\n"
 
 #: opkman_const.rscreaterepositoryfrm_info5
+#, fuzzy
+#| msgid ""
+#| "The following Lazarus package: \"%s\" is already in the current repository.\n"
+#| "Each repository and Lazarus package must be unique!\n"
 msgid ""
 "The following Lazarus package: \"%s\" is already in the current repository.\n"
-"Each repository and Lazarus package must be unique!\n"
+"Each repository and Lazarus package must be unique!"
 msgstr ""
 "Das Lazarus-Package: \"%s\" befindet sich bereits im aktuellen Repository.\n"
 "Jedes Repository und Lazarus-Package müssen eindeutig sein!\n"
@@ -533,7 +553,7 @@ msgstr "Sende Dateien (\"%s\"). Bitte warten..."
 #: opkman_const.rscreaterepositorypackagefrm_message9
 msgid ""
 "Files successfully sent. Thank you for submitting packages!\n"
-"Your request will be processed in 24 hours.\n"
+"Your request will be processed in 24 hours."
 msgstr ""
 
 #: opkman_const.rscreaterepositorypackagefrm_nopackage
@@ -705,7 +725,7 @@ msgstr "Keines der ausgewählten Repository-Packages ist installiert oder hat ei
 #| "Only update if you trust the package maintainer. Continue?\n"
 msgid ""
 "Installing packages from external link is not without a risk!\n"
-"Only install if you trust the package maintainer. Continue?\n"
+"Only install if you trust the package maintainer. Continue?"
 msgstr ""
 "Das Aktualisieren eines Packages über einen externen Link ist nicht ohne Risiko!\n"
 "Machen Sie das nur, wenn Sie dem Package-Betreuer vertrauen. Fortfahren?\n"
@@ -749,7 +769,7 @@ msgstr "Keine Packages zum Anzeigen."
 #: opkman_const.rsmainfrm_rsmessagenorepository0
 msgid ""
 "Remote package repository not configured.\n"
-"Do you wish to configure it now?\n"
+"Do you wish to configure it now?"
 msgstr ""
 
 #: opkman_const.rsmainfrm_rsmessagenothingchacked
@@ -795,7 +815,7 @@ msgstr "%s Packages gelöscht!"
 #: opkman_const.rsmainfrm_rsuninstall
 msgid ""
 "%sAre you sure you wish to uninstall the checked packages?\n"
-"Please note: in order for the changes to take effect you must rebuid the IDE.\n"
+"Please note: in order for the changes to take effect you must rebuid the IDE."
 msgstr ""
 
 #: opkman_const.rsmainfrm_rsuninstall_error

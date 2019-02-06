@@ -62,9 +62,13 @@ msgid " Resource name = \"%s\", Type = \"%s\""
 msgstr " Erőforrás neve = \"%s\", típusa = \"%s\""
 
 #: glazresmain.msgsuccess
+#, fuzzy
+#| msgid ""
+#| "Done.\n"
+#| "Number of resources added: %d.\n"
 msgid ""
 "Done.\n"
-"Number of resources added: %d.\n"
+"Number of resources added: %d."
 msgstr ""
 "Kész.\n"
 "Hozzáadott erőforrások száma: %d\n"

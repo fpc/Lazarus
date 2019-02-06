@@ -8,6 +8,8 @@ msgstr ""
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: sqlstringspropertyeditordlg.sloadsqlcodehint
 msgid "Load SQL code ..."
@@ -68,10 +70,10 @@ msgstr "Быстрая проверка кода SQL прошла успешно
 #: sqlstringspropertyeditordlg.ssqlsyntaxerror
 msgid ""
 "Probable syntax error in SQL statement:\n"
-"%s\n"
+"%s"
 msgstr ""
 "Возможно, имеется синтаксическая ошибка в выражении SQL:\n"
-"%s\n"
+"%s"
 
 #: sqlstringspropertyeditordlg.ssqltabcaption
 msgid "SQL Code"

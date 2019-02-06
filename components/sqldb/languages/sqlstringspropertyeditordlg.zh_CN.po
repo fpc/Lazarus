@@ -69,9 +69,13 @@ msgid "Quick SQL check OK"
 msgstr "快速SQL检查OK"
 
 #: sqlstringspropertyeditordlg.ssqlsyntaxerror
+#, fuzzy
+#| msgid ""
+#| "Probable syntax error in SQL statement:\n"
+#| "%s\n"
 msgid ""
 "Probable syntax error in SQL statement:\n"
-"%s\n"
+"%s"
 msgstr ""
 "可能的语法错误在SQL声明:\n"
 "%s\n"

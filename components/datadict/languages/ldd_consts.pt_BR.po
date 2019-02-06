@@ -127,17 +127,25 @@ msgid "Applying data dictionary to field %s"
 msgstr "Aplicando dicionário dados ao campo %s"
 
 #: ldd_consts.serrnodatadesktopdoselect
+#, fuzzy
+#| msgid ""
+#| "Could not locate the database desktop application.\n"
+#| "Would you like to select it ?\n"
 msgid ""
 "Could not locate the database desktop application.\n"
-"Would you like to select it ?\n"
+"Would you like to select it ?"
 msgstr ""
 "Não pode localizar a aplicação banco de dados desktop.\n"
 "Deseja selecioná-la ?\n"
 
 #: ldd_consts.serrnodatadictactive
+#, fuzzy
+#| msgid ""
+#| "No datadictionary active.\n"
+#| "Please set a data dictionary for the project\n"
 msgid ""
 "No datadictionary active.\n"
-"Please set a data dictionary for the project\n"
+"Please set a data dictionary for the project"
 msgstr ""
 "Nenhum dicionário dados ativo.\n"
 "Favor configurar um para o projeto\n"

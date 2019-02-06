@@ -20,7 +20,7 @@ msgstr ""
 #: reglazdaemon.sdaemonmapperdescr
 msgid ""
 "Daemon mapper for inclusion in a daemon application.\n"
-"Only one daemon mapper may exist in a daemon application.\n"
+"Only one daemon mapper may exist in a daemon application."
 msgstr ""
 
 #: reglazdaemon.sdaemonmappername

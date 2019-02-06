@@ -174,19 +174,28 @@ msgid "Duplicate Originals"
 msgstr ""
 
 #: pocheckerconsts.serroroncleanup
+#, fuzzy
+#| msgid ""
+#| "An unrecoverable error occurred\n"
+#| "%s\n"
+#| "Please close the program\n"
 msgid ""
 "An unrecoverable error occurred\n"
 "%s\n"
-"Please close the program\n"
+"Please close the program"
 msgstr ""
 "修復不可能なエラーが発生しました\n"
 "%s\n"
 "プログラムを終了してください\n"
 
 #: pocheckerconsts.serroroncreate
+#, fuzzy
+#| msgid ""
+#| "Error creating an instance of TPoFamily:\n"
+#| "%s\n"
 msgid ""
 "Error creating an instance of TPoFamily:\n"
-"%s\n"
+"%s"
 msgstr ""
 "TPoFamily インスタンス生成中のエラー：\n"
 "%s\n"
@@ -202,7 +211,7 @@ msgstr ""
 #: pocheckerconsts.sfilesnotfoundandremoved
 msgid ""
 "The following non-existent files were removed from the list:\n"
-"%s\n"
+"%s"
 msgstr ""
 
 #: pocheckerconsts.sfuzzystrings
@@ -284,7 +293,7 @@ msgstr "%d 個の警告が見つかりました。"
 #: pocheckerconsts.sopenfail
 msgid ""
 "Unable to open file:\n"
-"\"%s\"\n"
+"\"%s\""
 msgstr ""
 
 #: pocheckerconsts.sopenfailexternal
@@ -292,7 +301,7 @@ msgid ""
 "Unable to open file\n"
 "\"%s\"\n"
 "in external editor\n"
-"\"%s\"\n"
+"\"%s\""
 msgstr ""
 
 #: pocheckerconsts.sopenfileinexternaleditor
@@ -358,9 +367,13 @@ msgid "Save &As ..."
 msgstr ""
 
 #: pocheckerconsts.ssaveerror
+#, fuzzy
+#| msgid ""
+#| "Error saving file:\n"
+#| "%s\n"
 msgid ""
 "Error saving file:\n"
-"%s\n"
+"%s"
 msgstr ""
 "ファイル保存中のエラー：\n"
 "%s\n"
@@ -394,7 +407,7 @@ msgid ""
 "Translated: %d (%.1f%%)\n"
 "Untranslated: %d (%.1f%%)\n"
 "Fuzzy: %d (%.1f%%)\n"
-"Errors in selected tests: %d\n"
+"Errors in selected tests: %d"
 msgstr ""
 
 #: pocheckerconsts.sthefollowingmissingmasterpofileswereremoved

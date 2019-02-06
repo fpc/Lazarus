@@ -81,9 +81,13 @@ msgid "Enter a descriptive name for the connection"
 msgstr "Введіть описове ім'я з'єднання"
 
 #: lazdatadeskstr.sconnectionnameexists
+#, fuzzy
+#| msgid ""
+#| "There is already a connection named \"%s\"\n"
+#| "Would you like to override the connection data ?\n"
 msgid ""
 "There is already a connection named \"%s\"\n"
-"Would you like to override the connection data ?\n"
+"Would you like to override the connection data ?"
 msgstr ""
 "З'єднання з іменем \"%s\" вже існує.\n"
 "Хочете перезаписати його дані?\n"
@@ -97,9 +101,13 @@ msgid "Would you like to create a new connection for this database ?"
 msgstr "Хочете створити нове з'єднання для цієї бази даних ?"
 
 #: lazdatadeskstr.sddmodified
+#, fuzzy
+#| msgid ""
+#| "Data dictionary \"%s\" has changed.\n"
+#| "What do you want to do with the changes?\n"
 msgid ""
 "Data dictionary \"%s\" has changed.\n"
-"What do you want to do with the changes?\n"
+"What do you want to do with the changes?"
 msgstr ""
 "Словник даних \"%s\" був змінений.\n"
 "Що ви хочете зробити зі змінами?\n"
@@ -138,9 +146,13 @@ msgid "Error in SQL script"
 msgstr "Помилка у сценарії SQL"
 
 #: lazdatadeskstr.serrinscriptchoice
+#, fuzzy
+#| msgid ""
+#| "An error occurred in the SQL script.\n"
+#| "How would you like to continue ?\n"
 msgid ""
 "An error occurred in the SQL script.\n"
-"How would you like to continue ?\n"
+"How would you like to continue ?"
 msgstr ""
 "У сценарії SQL трапилась помилка.\n"
 "Як бажаєте продовжити ?\n"
@@ -803,9 +815,13 @@ msgid "Previous"
 msgstr "Попередній"
 
 #: lazdatadeskstr.sql_noconnectionsfound
+#, fuzzy
+#| msgid ""
+#| "No connections or data dictionaries were found.\n"
+#| " Start by creating a new connection or data dictionary.\n"
 msgid ""
 "No connections or data dictionaries were found.\n"
-" Start by creating a new connection or data dictionary.\n"
+" Start by creating a new connection or data dictionary."
 msgstr ""
 "З'єднань або словників даних не знайдено.\n"
 " Почніть зі створення з'єднання або словника даних.\n"

@@ -29,7 +29,7 @@ msgstr ""
 #: msgjsonviewer.sdocumentmodifiedaction
 msgid ""
 "The JSON data in \"%s\" was changed but not saved.\n"
-"What do want to do ?\n"
+"What do want to do ?"
 msgstr ""
 
 #: msgjsonviewer.sduplicatemembername

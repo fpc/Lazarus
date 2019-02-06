@@ -79,9 +79,13 @@ msgid "Enter a descriptive name for the connection"
 msgstr "Entrez un nom descriptif pour la connexion"
 
 #: lazdatadeskstr.sconnectionnameexists
+#, fuzzy
+#| msgid ""
+#| "There is already a connection named \"%s\"\n"
+#| "Would you like to override the connection data ?\n"
 msgid ""
 "There is already a connection named \"%s\"\n"
-"Would you like to override the connection data ?\n"
+"Would you like to override the connection data ?"
 msgstr ""
 "Il existe déjà une connexion nommée \"%s\"\n"
 "Souhaitez-vous remplacer les données de connexion?\n"
@@ -95,9 +99,13 @@ msgid "Would you like to create a new connection for this database ?"
 msgstr "Voulez-vous créer une nouvelle connexion pour cette base de données ?"
 
 #: lazdatadeskstr.sddmodified
+#, fuzzy
+#| msgid ""
+#| "Data dictionary \"%s\" has changed.\n"
+#| "What do you want to do with the changes?\n"
 msgid ""
 "Data dictionary \"%s\" has changed.\n"
-"What do you want to do with the changes?\n"
+"What do you want to do with the changes?"
 msgstr ""
 "Le dictionnaire de données \"%s\" a changé.\n"
 "Que voulez-vous faire avec les changements?\n"
@@ -136,9 +144,13 @@ msgid "Error in SQL script"
 msgstr "Erreur dans le script SQL"
 
 #: lazdatadeskstr.serrinscriptchoice
+#, fuzzy
+#| msgid ""
+#| "An error occurred in the SQL script.\n"
+#| "How would you like to continue ?\n"
 msgid ""
 "An error occurred in the SQL script.\n"
-"How would you like to continue ?\n"
+"How would you like to continue ?"
 msgstr ""
 "Une erreur est survenue dans le script SQL.\n"
 "Comment souhaitez-vous poursuivre ?\n"
@@ -801,9 +813,13 @@ msgid "Previous"
 msgstr "Précédent"
 
 #: lazdatadeskstr.sql_noconnectionsfound
+#, fuzzy
+#| msgid ""
+#| "No connections or data dictionaries were found.\n"
+#| " Start by creating a new connection or data dictionary.\n"
 msgid ""
 "No connections or data dictionaries were found.\n"
-" Start by creating a new connection or data dictionary.\n"
+" Start by creating a new connection or data dictionary."
 msgstr ""
 "Connexions ou dictionnaires de données introuvables.\n"
 " Commencez par créer une connexion ou un dictionnaire de données.\n"

@@ -50,10 +50,15 @@ msgid "Discard changes"
 msgstr "Annulla le modifiche"
 
 #: projectgroupstrconst.liserrnosuchfile
+#, fuzzy
+#| msgid ""
+#| "Could not find target file\n"
+#| "\"%s\"\n"
+#| "What do you want to do?\n"
 msgid ""
 "Could not find target file\n"
 "\"%s\"\n"
-"What do you want to do?\n"
+"What do you want to do?"
 msgstr ""
 "Non posso trovare il file destinazione\n"
 "\"%s\"\n"
@@ -219,9 +224,13 @@ msgid "Project group modified"
 msgstr "Gruppo di progetti modificato"
 
 #: projectgroupstrconst.lisprojectgroupmodifiedconfirm
+#, fuzzy
+#| msgid ""
+#| "Project group \"%s\" is modified.\n"
+#| "What do you want to do?\n"
 msgid ""
 "Project group \"%s\" is modified.\n"
-"What do you want to do?\n"
+"What do you want to do?"
 msgstr ""
 "Il gruppo di progetti \"%s\" è stato modificato.\n"
 "Cosa vuoi fare?\n"

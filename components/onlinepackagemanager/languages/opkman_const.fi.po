@@ -188,17 +188,25 @@ msgid "The following file: \"%s\" already exists in the current repository. Over
 msgstr "Tiedosto: \"%s\" on jo nykyisessä säilössä. Korvataanko?"
 
 #: opkman_const.rscreaterepositoryfrm_error1
+#, fuzzy
+#| msgid ""
+#| "Cannot open private repository: \"%s\". Error message: \n"
+#| "\"%s\"\n"
 msgid ""
 "Cannot open private repository: \"%s\". Error message: \n"
-"\"%s\"\n"
+"\"%s\""
 msgstr ""
 "Ei voi avata paikallista säilöä: \"%s\". Virhe: \n"
 "\"%s\"\n"
 
 #: opkman_const.rscreaterepositoryfrm_error3
+#, fuzzy
+#| msgid ""
+#| "Cannot save private repository: \"%s\". Error message: \n"
+#| "\"%s\"\n"
 msgid ""
 "Cannot save private repository: \"%s\". Error message: \n"
-"\"%s\"\n"
+"\"%s\""
 msgstr ""
 "Ei voi tallettaa paikallista säilöä: \"%s\". Virhe: \n"
 "\"%s\"\n"
@@ -212,25 +220,37 @@ msgid "Cannot delete package: \"%s\"!"
 msgstr "Ei voi poistaa pakettia: \"%s\"!"
 
 #: opkman_const.rscreaterepositoryfrm_info1
+#, fuzzy
+#| msgid ""
+#| "The following directory: \"%s\" is not empty.\n"
+#| "It's recommended to save the repository to an empty directory. Continue?\n"
 msgid ""
 "The following directory: \"%s\" is not empty.\n"
-"It's recommended to save the repository to an empty directory. Continue?\n"
+"It's recommended to save the repository to an empty directory. Continue?"
 msgstr ""
 "Hakemisto: \"%s\" ei ole tyhjä.\n"
 "On suositeltavaa tallettaa säilö tyhjään hakemistoon. Jatka?\n"
 
 #: opkman_const.rscreaterepositoryfrm_info3
+#, fuzzy
+#| msgid ""
+#| "The following package: \"%s\" is already in the current repository.\n"
+#| "Each repository and Lazarus package must be unique!\n"
 msgid ""
 "The following package: \"%s\" is already in the current repository.\n"
-"Each repository and Lazarus package must be unique!\n"
+"Each repository and Lazarus package must be unique!"
 msgstr ""
 "Paketti: \"%s\" on jo nykyisessä säilössä.\n"
 "Jokaisen säilön ja Lazarus paketin pitää olla yksilöllinen!\n"
 
 #: opkman_const.rscreaterepositoryfrm_info5
+#, fuzzy
+#| msgid ""
+#| "The following Lazarus package: \"%s\" is already in the current repository.\n"
+#| "Each repository and Lazarus package must be unique!\n"
 msgid ""
 "The following Lazarus package: \"%s\" is already in the current repository.\n"
-"Each repository and Lazarus package must be unique!\n"
+"Each repository and Lazarus package must be unique!"
 msgstr ""
 "Lazarus paketti: \"%s\" on jo nykyisessä säilössä.\n"
 "Jokaisen säilön ja Lazarus paketin pitää olla yksilöllinen!\n"
@@ -522,9 +542,13 @@ msgid "Sending files (\"%s\"). Please wait..."
 msgstr "Lähettää tiedostoja (\"%s\"). Odota..."
 
 #: opkman_const.rscreaterepositorypackagefrm_message9
+#, fuzzy
+#| msgid ""
+#| "Files successfully sent. Thank you for submitting packages!\n"
+#| "Your request will be processed in 24 hours.\n"
 msgid ""
 "Files successfully sent. Thank you for submitting packages!\n"
-"Your request will be processed in 24 hours.\n"
+"Your request will be processed in 24 hours."
 msgstr ""
 "Tiedostot lähetettiin onnistuneesti. Kiitos pakettien toimittamisesta!\n"
 "Pyyntö käsitellään 24 tunnin kuluessa.\n"
@@ -691,9 +715,13 @@ msgid "None of the checked repository packages are available externally."
 msgstr "Mitään valituista säilöpaketeista ei ole saatavilla."
 
 #: opkman_const.rsmainfrm_packageupdatewarning
+#, fuzzy
+#| msgid ""
+#| "Installing packages from external link is not without a risk!\n"
+#| "Only install if you trust the package maintainer. Continue?\n"
 msgid ""
 "Installing packages from external link is not without a risk!\n"
-"Only install if you trust the package maintainer. Continue?\n"
+"Only install if you trust the package maintainer. Continue?"
 msgstr ""
 "Pakettien asennus ulkoisesta lähteestä sisältää riskin!\n"
 "Asenna vain jos luotat paketin ylläpitäjään. Jatketaanko?\n"
@@ -735,9 +763,13 @@ msgid "No packages to show."
 msgstr "Ei paketteja näytettäväksi."
 
 #: opkman_const.rsmainfrm_rsmessagenorepository0
+#, fuzzy
+#| msgid ""
+#| "Remote package repository not configured.\n"
+#| "Do you wish to configure it now?\n"
 msgid ""
 "Remote package repository not configured.\n"
-"Do you wish to configure it now?\n"
+"Do you wish to configure it now?"
 msgstr ""
 "Ulkoista pakettisäilöä ei ole konfiguroitu.\n"
 "Tahdotko tehdä sen nyt?\n"
@@ -783,9 +815,13 @@ msgid "%s packages deleted!"
 msgstr "%s pakettia poistettu!"
 
 #: opkman_const.rsmainfrm_rsuninstall
+#, fuzzy
+#| msgid ""
+#| "%sAre you sure you wish to uninstall the checked packages?\n"
+#| "Please note: in order for the changes to take effect you must rebuid the IDE.\n"
 msgid ""
 "%sAre you sure you wish to uninstall the checked packages?\n"
-"Please note: in order for the changes to take effect you must rebuid the IDE.\n"
+"Please note: in order for the changes to take effect you must rebuid the IDE."
 msgstr ""
 "%sHaluatko varmasti poistaa valittujen pakettien asennuksen?\n"
 "Huomio: muutokset tulevat voimaan vasta kun IDE kootaan uudelleen.\n"

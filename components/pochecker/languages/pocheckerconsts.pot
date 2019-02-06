@@ -161,13 +161,13 @@ msgstr ""
 msgid ""
 "An unrecoverable error occurred\n"
 "%s\n"
-"Please close the program\n"
+"Please close the program"
 msgstr ""
 
 #: pocheckerconsts.serroroncreate
 msgid ""
 "Error creating an instance of TPoFamily:\n"
-"%s\n"
+"%s"
 msgstr ""
 
 #: pocheckerconsts.serrorsbytest
@@ -181,7 +181,7 @@ msgstr ""
 #: pocheckerconsts.sfilesnotfoundandremoved
 msgid ""
 "The following non-existent files were removed from the list:\n"
-"%s\n"
+"%s"
 msgstr ""
 
 #: pocheckerconsts.sfuzzystrings
@@ -263,7 +263,7 @@ msgstr ""
 #: pocheckerconsts.sopenfail
 msgid ""
 "Unable to open file:\n"
-"\"%s\"\n"
+"\"%s\""
 msgstr ""
 
 #: pocheckerconsts.sopenfailexternal
@@ -271,7 +271,7 @@ msgid ""
 "Unable to open file\n"
 "\"%s\"\n"
 "in external editor\n"
-"\"%s\"\n"
+"\"%s\""
 msgstr ""
 
 #: pocheckerconsts.sopenfileinexternaleditor
@@ -333,7 +333,7 @@ msgstr ""
 #: pocheckerconsts.ssaveerror
 msgid ""
 "Error saving file:\n"
-"%s\n"
+"%s"
 msgstr ""
 
 #: pocheckerconsts.sscandir
@@ -365,7 +365,7 @@ msgid ""
 "Translated: %d (%.1f%%)\n"
 "Untranslated: %d (%.1f%%)\n"
 "Fuzzy: %d (%.1f%%)\n"
-"Errors in selected tests: %d\n"
+"Errors in selected tests: %d"
 msgstr ""
 
 #: pocheckerconsts.sthefollowingmissingmasterpofileswereremoved

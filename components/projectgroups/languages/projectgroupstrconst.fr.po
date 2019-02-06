@@ -60,10 +60,15 @@ msgid "Discard changes"
 msgstr "Ignorer les modifications"
 
 #: projectgroupstrconst.liserrnosuchfile
+#, fuzzy
+#| msgid ""
+#| "Could not find target file\n"
+#| "\"%s\"\n"
+#| "What do you want to do?\n"
 msgid ""
 "Could not find target file\n"
 "\"%s\"\n"
-"What do you want to do?\n"
+"What do you want to do?"
 msgstr ""
 "Impossible de trouver le fichier cible\n"
 "\"%s\"\n"
@@ -223,9 +228,13 @@ msgid "Project group modified"
 msgstr "Groupe de projets modifié"
 
 #: projectgroupstrconst.lisprojectgroupmodifiedconfirm
+#, fuzzy
+#| msgid ""
+#| "Project group \"%s\" is modified.\n"
+#| "What do you want to do?\n"
 msgid ""
 "Project group \"%s\" is modified.\n"
-"What do you want to do?\n"
+"What do you want to do?"
 msgstr ""
 "Le groupe de projets \"%s\" a été modifié.\n"
 "Que voulez-vous faire ?\n"

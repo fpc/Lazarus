@@ -63,9 +63,13 @@ msgid " Resource name = \"%s\", Type = \"%s\""
 msgstr "Ištekliaus pavadinimas = „%s“, tipas = „%s“"
 
 #: glazresmain.msgsuccess
+#, fuzzy
+#| msgid ""
+#| "Done.\n"
+#| "Number of resources added: %d.\n"
 msgid ""
 "Done.\n"
-"Number of resources added: %d.\n"
+"Number of resources added: %d."
 msgstr ""
 "Baigta.\n"
 "Įdėta išteklių: %d\n"

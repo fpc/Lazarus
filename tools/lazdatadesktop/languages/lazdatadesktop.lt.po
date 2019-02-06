@@ -80,9 +80,13 @@ msgid "Enter a descriptive name for the connection"
 msgstr "Įveskite pavadinimą, kuris apibūdintų ryšį"
 
 #: lazdatadeskstr.sconnectionnameexists
+#, fuzzy
+#| msgid ""
+#| "There is already a connection named \"%s\"\n"
+#| "Would you like to override the connection data ?\n"
 msgid ""
 "There is already a connection named \"%s\"\n"
-"Would you like to override the connection data ?\n"
+"Would you like to override the connection data ?"
 msgstr ""
 "Ryšys pavadinimu „%s“ jau egzistuoja.\n"
 "Ar nepaisyti ryšio duomenų?\n"
@@ -96,9 +100,13 @@ msgid "Would you like to create a new connection for this database ?"
 msgstr "Ar sukurti šiai duomenų bazei skirtą ryšį?"
 
 #: lazdatadeskstr.sddmodified
+#, fuzzy
+#| msgid ""
+#| "Data dictionary \"%s\" has changed.\n"
+#| "What do you want to do with the changes?\n"
 msgid ""
 "Data dictionary \"%s\" has changed.\n"
-"What do you want to do with the changes?\n"
+"What do you want to do with the changes?"
 msgstr ""
 "Duomenų žodynas „%s“ yra pakeistas.\n"
 "Kaip elgsitės su pokyčiais?\n"
@@ -137,9 +145,13 @@ msgid "Error in SQL script"
 msgstr "Klaida „SQL“ scenarijuje"
 
 #: lazdatadeskstr.serrinscriptchoice
+#, fuzzy
+#| msgid ""
+#| "An error occurred in the SQL script.\n"
+#| "How would you like to continue ?\n"
 msgid ""
 "An error occurred in the SQL script.\n"
-"How would you like to continue ?\n"
+"How would you like to continue ?"
 msgstr ""
 "„SQL“ scenarijuje įvyko klaida.\n"
 "Ką daryti toliau?\n"
@@ -802,9 +814,13 @@ msgid "Previous"
 msgstr "Ankstesnis"
 
 #: lazdatadeskstr.sql_noconnectionsfound
+#, fuzzy
+#| msgid ""
+#| "No connections or data dictionaries were found.\n"
+#| " Start by creating a new connection or data dictionary.\n"
 msgid ""
 "No connections or data dictionaries were found.\n"
-" Start by creating a new connection or data dictionary.\n"
+" Start by creating a new connection or data dictionary."
 msgstr ""
 "Nerasta ryšių ar duomenų žodynų.\n"
 "Pradžioje sukurkite naują ryšį ara duomenų žodyną.\n"

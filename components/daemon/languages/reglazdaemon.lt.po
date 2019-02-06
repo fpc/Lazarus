@@ -29,9 +29,13 @@ msgid "Daemon Module for inclusion in a daemon application"
 msgstr "Tarnybos modulis, įtraukiamas į tarnybos programą"
 
 #: reglazdaemon.sdaemonmapperdescr
+#, fuzzy
+#| msgid ""
+#| "Daemon mapper for inclusion in a daemon application.\n"
+#| "Only one daemon mapper may exist in a daemon application.\n"
 msgid ""
 "Daemon mapper for inclusion in a daemon application.\n"
-"Only one daemon mapper may exist in a daemon application.\n"
+"Only one daemon mapper may exist in a daemon application."
 msgstr ""
 "Į tarnybos programą įtraukiamas tarnybos atvaizdis.\n"
 "Tarnybos programoje gali būti tik vienas tarnybos atvaizdis.\n"

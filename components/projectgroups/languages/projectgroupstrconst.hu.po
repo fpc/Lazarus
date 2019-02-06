@@ -60,10 +60,15 @@ msgid "Discard changes"
 msgstr "Változások eldobása"
 
 #: projectgroupstrconst.liserrnosuchfile
+#, fuzzy
+#| msgid ""
+#| "Could not find target file\n"
+#| "\"%s\"\n"
+#| "What do you want to do?\n"
 msgid ""
 "Could not find target file\n"
 "\"%s\"\n"
-"What do you want to do?\n"
+"What do you want to do?"
 msgstr ""
 "A célfájl nem található:\n"
 "\"%s\"\n"
@@ -223,9 +228,13 @@ msgid "Project group modified"
 msgstr "Projektcsoport módosítva"
 
 #: projectgroupstrconst.lisprojectgroupmodifiedconfirm
+#, fuzzy
+#| msgid ""
+#| "Project group \"%s\" is modified.\n"
+#| "What do you want to do?\n"
 msgid ""
 "Project group \"%s\" is modified.\n"
-"What do you want to do?\n"
+"What do you want to do?"
 msgstr ""
 "A(z) \"%s\" projektcsoport módosult.\n"
 "Mi történjen most?\n"

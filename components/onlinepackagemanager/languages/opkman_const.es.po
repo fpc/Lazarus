@@ -207,17 +207,25 @@ msgid "The following file: \"%s\" already exists in the current repository. Over
 msgstr "El siguiente archivo: \"%s\" ya existe en el repositorio actual. Sobrescribe?"
 
 #: opkman_const.rscreaterepositoryfrm_error1
+#, fuzzy
+#| msgid ""
+#| "Cannot open private repository: \"%s\". Error message: \n"
+#| "\"%s\"\n"
 msgid ""
 "Cannot open private repository: \"%s\". Error message: \n"
-"\"%s\"\n"
+"\"%s\""
 msgstr ""
 "No se puede abrir el repositorio privado: \"%s\". Mensaje error: \n"
 "\"%s\"\n"
 
 #: opkman_const.rscreaterepositoryfrm_error3
+#, fuzzy
+#| msgid ""
+#| "Cannot save private repository: \"%s\". Error message: \n"
+#| "\"%s\"\n"
 msgid ""
 "Cannot save private repository: \"%s\". Error message: \n"
-"\"%s\"\n"
+"\"%s\""
 msgstr ""
 "No se puede guardar el repositorio privado: \"%s\". Mensaje error: \n"
 "\"%s\"\n"
@@ -231,25 +239,37 @@ msgid "Cannot delete package: \"%s\"!"
 msgstr "¡No se puede eliminar paquete: \"%s\"!"
 
 #: opkman_const.rscreaterepositoryfrm_info1
+#, fuzzy
+#| msgid ""
+#| "The following directory: \"%s\" is not empty.\n"
+#| "It's recommended to save the repository to an empty directory. Continue?\n"
 msgid ""
 "The following directory: \"%s\" is not empty.\n"
-"It's recommended to save the repository to an empty directory. Continue?\n"
+"It's recommended to save the repository to an empty directory. Continue?"
 msgstr ""
 "El siguiente directorio: \"%s\" no está vacío.\n"
 "Se recomienda guardar el repositorio en un directorio vacío. Continua?\n"
 
 #: opkman_const.rscreaterepositoryfrm_info3
+#, fuzzy
+#| msgid ""
+#| "The following package: \"%s\" is already in the current repository.\n"
+#| "Each repository and Lazarus package must be unique!\n"
 msgid ""
 "The following package: \"%s\" is already in the current repository.\n"
-"Each repository and Lazarus package must be unique!\n"
+"Each repository and Lazarus package must be unique!"
 msgstr ""
 "El siguiente paquete: \"%s\" ya está en el repositorio actual.\n"
 "¡Cada repositorio y paquete de Lazarus debe ser único!\n"
 
 #: opkman_const.rscreaterepositoryfrm_info5
+#, fuzzy
+#| msgid ""
+#| "The following Lazarus package: \"%s\" is already in the current repository.\n"
+#| "Each repository and Lazarus package must be unique!\n"
 msgid ""
 "The following Lazarus package: \"%s\" is already in the current repository.\n"
-"Each repository and Lazarus package must be unique!\n"
+"Each repository and Lazarus package must be unique!"
 msgstr ""
 "El siguiente paquete de Lazarus: \"%s\" ya está en el repositorio actual.\n"
 "¡Cada repositorio y paquete de Lazarus debe ser único!\n"
@@ -572,9 +592,13 @@ msgid "Sending files (\"%s\"). Please wait..."
 msgstr "Enviando archivos (\"%s\"). Por favor espere..."
 
 #: opkman_const.rscreaterepositorypackagefrm_message9
+#, fuzzy
+#| msgid ""
+#| "Files successfully sent. Thank you for submitting packages!\n"
+#| "Your request will be processed in 24 hours.\n"
 msgid ""
 "Files successfully sent. Thank you for submitting packages!\n"
-"Your request will be processed in 24 hours.\n"
+"Your request will be processed in 24 hours."
 msgstr ""
 "Archivos enviados correctamente. ¡Gracias por enviar paquetes!\n"
 "Su solicitud será procesada en 24 horas.\n"
@@ -750,7 +774,7 @@ msgstr "Ninguno de los repositorios marcados tiene un enlace externo de descarga
 #| "Only update if you trust the package maintainer. Continue?\n"
 msgid ""
 "Installing packages from external link is not without a risk!\n"
-"Only install if you trust the package maintainer. Continue?\n"
+"Only install if you trust the package maintainer. Continue?"
 msgstr ""
 "¡Actualizar paquetes desde los enlaces externos no esta fuera de tener riesgos!\n"
 "Solo actualiza si confías en el administrador del paquete. ¿Continuar?\n"
@@ -792,9 +816,13 @@ msgid "No packages to show."
 msgstr "No hay paquetes para mostrar."
 
 #: opkman_const.rsmainfrm_rsmessagenorepository0
+#, fuzzy
+#| msgid ""
+#| "Remote package repository not configured.\n"
+#| "Do you wish to configure it now?\n"
 msgid ""
 "Remote package repository not configured.\n"
-"Do you wish to configure it now?\n"
+"Do you wish to configure it now?"
 msgstr ""
 "Repositorio de paquetes remoto no configurado.\n"
 "¿Desea configurarlo ahora?\n"
@@ -842,9 +870,13 @@ msgid "%s packages deleted!"
 msgstr "%s paquetes eliminados!"
 
 #: opkman_const.rsmainfrm_rsuninstall
+#, fuzzy
+#| msgid ""
+#| "%sAre you sure you wish to uninstall the checked packages?\n"
+#| "Please note: in order for the changes to take effect you must rebuid the IDE.\n"
 msgid ""
 "%sAre you sure you wish to uninstall the checked packages?\n"
-"Please note: in order for the changes to take effect you must rebuid the IDE.\n"
+"Please note: in order for the changes to take effect you must rebuid the IDE."
 msgstr ""
 "%s¿Seguro desea desinstalar los paquete marcados?\n"
 "Tenga en cuenta: para que los cambios tengan efecto, debe reconstruir el IDE.\n"

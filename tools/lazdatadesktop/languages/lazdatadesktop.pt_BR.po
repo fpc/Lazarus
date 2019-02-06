@@ -79,9 +79,13 @@ msgid "Enter a descriptive name for the connection"
 msgstr "Digite um nome descritivo para a conexão"
 
 #: lazdatadeskstr.sconnectionnameexists
+#, fuzzy
+#| msgid ""
+#| "There is already a connection named \"%s\"\n"
+#| "Would you like to override the connection data ?\n"
 msgid ""
 "There is already a connection named \"%s\"\n"
-"Would you like to override the connection data ?\n"
+"Would you like to override the connection data ?"
 msgstr ""
 "Já existe uma conexão com o nome \"%s\"\n"
 "Deseja sobrepor os dados da conexão ?\n"
@@ -95,9 +99,13 @@ msgid "Would you like to create a new connection for this database ?"
 msgstr "Deseja criar uma nova conexão para este banco de dados ?"
 
 #: lazdatadeskstr.sddmodified
+#, fuzzy
+#| msgid ""
+#| "Data dictionary \"%s\" has changed.\n"
+#| "What do you want to do with the changes?\n"
 msgid ""
 "Data dictionary \"%s\" has changed.\n"
-"What do you want to do with the changes?\n"
+"What do you want to do with the changes?"
 msgstr ""
 "Dicionário Dados \"%s\" foi alterado.\n"
 "O que deseja fazer com as alterações?\n"
@@ -136,9 +144,13 @@ msgid "Error in SQL script"
 msgstr "Erro no script SQL"
 
 #: lazdatadeskstr.serrinscriptchoice
+#, fuzzy
+#| msgid ""
+#| "An error occurred in the SQL script.\n"
+#| "How would you like to continue ?\n"
 msgid ""
 "An error occurred in the SQL script.\n"
-"How would you like to continue ?\n"
+"How would you like to continue ?"
 msgstr ""
 "Ocorreu um erro no script SQL.\n"
 "Como deseja continuar ?\n"
@@ -836,9 +848,13 @@ msgid "Previous"
 msgstr "Anterior"
 
 #: lazdatadeskstr.sql_noconnectionsfound
+#, fuzzy
+#| msgid ""
+#| "No connections or data dictionaries were found.\n"
+#| " Start by creating a new connection or data dictionary.\n"
 msgid ""
 "No connections or data dictionaries were found.\n"
-" Start by creating a new connection or data dictionary.\n"
+" Start by creating a new connection or data dictionary."
 msgstr ""
 "Nenhuma conexão ou dicionários de dados foram encontrados.\n"
 " Iniciar criando uma nova conexão ou dicionário de dados.\n"

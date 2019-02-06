@@ -77,9 +77,13 @@ msgid "Enter a descriptive name for the connection"
 msgstr "Escriba un nombre descriptivo para la conexión"
 
 #: lazdatadeskstr.sconnectionnameexists
+#, fuzzy
+#| msgid ""
+#| "There is already a connection named \"%s\"\n"
+#| "Would you like to override the connection data ?\n"
 msgid ""
 "There is already a connection named \"%s\"\n"
-"Would you like to override the connection data ?\n"
+"Would you like to override the connection data ?"
 msgstr ""
 "Ya existe una conexión denominada \"%s\"\n"
 "¿Desea reemplazar esta conexión de datos? ?\n"
@@ -93,9 +97,13 @@ msgid "Would you like to create a new connection for this database ?"
 msgstr "¿Desea crear una nueva conexión para esta base de datos?"
 
 #: lazdatadeskstr.sddmodified
+#, fuzzy
+#| msgid ""
+#| "Data dictionary \"%s\" has changed.\n"
+#| "What do you want to do with the changes?\n"
 msgid ""
 "Data dictionary \"%s\" has changed.\n"
-"What do you want to do with the changes?\n"
+"What do you want to do with the changes?"
 msgstr ""
 "Diccionario de datos \"%s\" ha cambiado.\n"
 "¿Qué quieres hacer con los cambios?\n"
@@ -136,7 +144,7 @@ msgstr ""
 #: lazdatadeskstr.serrinscriptchoice
 msgid ""
 "An error occurred in the SQL script.\n"
-"How would you like to continue ?\n"
+"How would you like to continue ?"
 msgstr ""
 
 #: lazdatadeskstr.serrnoengine
@@ -817,7 +825,7 @@ msgstr "Anterior"
 #: lazdatadeskstr.sql_noconnectionsfound
 msgid ""
 "No connections or data dictionaries were found.\n"
-" Start by creating a new connection or data dictionary.\n"
+" Start by creating a new connection or data dictionary."
 msgstr ""
 
 #: lazdatadeskstr.squery

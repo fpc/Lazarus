@@ -79,9 +79,13 @@ msgid "Enter a descriptive name for the connection"
 msgstr "Geben Sie einen anschaulichen Namen für die Verbindung ein"
 
 #: lazdatadeskstr.sconnectionnameexists
+#, fuzzy
+#| msgid ""
+#| "There is already a connection named \"%s\"\n"
+#| "Would you like to override the connection data ?\n"
 msgid ""
 "There is already a connection named \"%s\"\n"
-"Would you like to override the connection data ?\n"
+"Would you like to override the connection data ?"
 msgstr ""
 "Es gibt bereits eine Verbindung namens »%s«\n"
 "Wollen Sie die Verbindungsdaten außer Kraft setzen?\n"
@@ -95,9 +99,13 @@ msgid "Would you like to create a new connection for this database ?"
 msgstr "Wollen Sie eine neue Verbindung für diese Datenbank erstellen?"
 
 #: lazdatadeskstr.sddmodified
+#, fuzzy
+#| msgid ""
+#| "Data dictionary \"%s\" has changed.\n"
+#| "What do you want to do with the changes?\n"
 msgid ""
 "Data dictionary \"%s\" has changed.\n"
-"What do you want to do with the changes?\n"
+"What do you want to do with the changes?"
 msgstr ""
 "Daten-Verzeichnis »%s« wurde geändert.\n"
 "Was wollen Sie mit den Änderungen machen?\n"
@@ -136,9 +144,13 @@ msgid "Error in SQL script"
 msgstr "Fehler im SQL-Skript"
 
 #: lazdatadeskstr.serrinscriptchoice
+#, fuzzy
+#| msgid ""
+#| "An error occurred in the SQL script.\n"
+#| "How would you like to continue ?\n"
 msgid ""
 "An error occurred in the SQL script.\n"
-"How would you like to continue ?\n"
+"How would you like to continue ?"
 msgstr ""
 "Ein Fehler ist im SQL-Skript aufgetreten.\n"
 "Wie wollen Sie fortfahren?\n"
@@ -801,9 +813,13 @@ msgid "Previous"
 msgstr "Zurück"
 
 #: lazdatadeskstr.sql_noconnectionsfound
+#, fuzzy
+#| msgid ""
+#| "No connections or data dictionaries were found.\n"
+#| " Start by creating a new connection or data dictionary.\n"
 msgid ""
 "No connections or data dictionaries were found.\n"
-" Start by creating a new connection or data dictionary.\n"
+" Start by creating a new connection or data dictionary."
 msgstr ""
 "Keine Verbindungen oder Daten-Verzeichnisse wurden gefunden.\n"
 " Beginnen Sie mit der Erzeugung einer neuen Verbindung oder eines Daten-Verzeichnisses.\n"

@@ -79,9 +79,13 @@ msgid "Enter a descriptive name for the connection"
 msgstr "Zadejte výstižný název spojení"
 
 #: lazdatadeskstr.sconnectionnameexists
+#, fuzzy
+#| msgid ""
+#| "There is already a connection named \"%s\"\n"
+#| "Would you like to override the connection data ?\n"
 msgid ""
 "There is already a connection named \"%s\"\n"
-"Would you like to override the connection data ?\n"
+"Would you like to override the connection data ?"
 msgstr ""
 "Už existuje připojení nazvané \"%s\"\n"
 "Přejete si přepsat je?\n"
@@ -95,9 +99,13 @@ msgid "Would you like to create a new connection for this database ?"
 msgstr "Přejete si vytvořit nové připojení pro tuto DB?"
 
 #: lazdatadeskstr.sddmodified
+#, fuzzy
+#| msgid ""
+#| "Data dictionary \"%s\" has changed.\n"
+#| "What do you want to do with the changes?\n"
 msgid ""
 "Data dictionary \"%s\" has changed.\n"
-"What do you want to do with the changes?\n"
+"What do you want to do with the changes?"
 msgstr ""
 "Datový slovník \"%s se změnil.\n"
 "Co chcete udělat se změnami?\n"
@@ -138,7 +146,7 @@ msgstr ""
 #: lazdatadeskstr.serrinscriptchoice
 msgid ""
 "An error occurred in the SQL script.\n"
-"How would you like to continue ?\n"
+"How would you like to continue ?"
 msgstr ""
 
 #: lazdatadeskstr.serrnoengine
@@ -801,7 +809,7 @@ msgstr "Předchozí"
 #: lazdatadeskstr.sql_noconnectionsfound
 msgid ""
 "No connections or data dictionaries were found.\n"
-" Start by creating a new connection or data dictionary.\n"
+" Start by creating a new connection or data dictionary."
 msgstr ""
 
 #: lazdatadeskstr.squery

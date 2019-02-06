@@ -39,9 +39,13 @@ msgid "JSON document modified"
 msgstr "Документ JSON змінено"
 
 #: msgjsonviewer.sdocumentmodifiedaction
+#, fuzzy
+#| msgid ""
+#| "The JSON data in \"%s\" was changed but not saved.\n"
+#| "What do want to do ?\n"
 msgid ""
 "The JSON data in \"%s\" was changed but not saved.\n"
-"What do want to do ?\n"
+"What do want to do ?"
 msgstr ""
 "Дані JSON в \"%s\" були змінені, але не збережені.\n"
 "Що треба зробити ?\n"

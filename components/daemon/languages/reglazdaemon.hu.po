@@ -28,9 +28,13 @@ msgid "Daemon Module for inclusion in a daemon application"
 msgstr "Démon modul egy alkalmazásba történő beépítéshez"
 
 #: reglazdaemon.sdaemonmapperdescr
+#, fuzzy
+#| msgid ""
+#| "Daemon mapper for inclusion in a daemon application.\n"
+#| "Only one daemon mapper may exist in a daemon application.\n"
 msgid ""
 "Daemon mapper for inclusion in a daemon application.\n"
-"Only one daemon mapper may exist in a daemon application.\n"
+"Only one daemon mapper may exist in a daemon application."
 msgstr ""
 "Démon gyűjtő egy alkalmazásba történő beépítéshez.\n"
 "Csak egy démon gyűjtő lehet egy démon alkalmazásban.\n"

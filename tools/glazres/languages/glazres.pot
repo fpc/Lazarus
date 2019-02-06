@@ -54,7 +54,7 @@ msgstr ""
 #: glazresmain.msgsuccess
 msgid ""
 "Done.\n"
-"Number of resources added: %d.\n"
+"Number of resources added: %d."
 msgstr ""
 
 #: glazresmain.msgwrongext

@@ -61,10 +61,15 @@ msgid "Discard changes"
 msgstr "放弃(Discard)更改"
 
 #: projectgroupstrconst.liserrnosuchfile
+#, fuzzy
+#| msgid ""
+#| "Could not find target file\n"
+#| "\"%s\"\n"
+#| "What do you want to do?\n"
 msgid ""
 "Could not find target file\n"
 "\"%s\"\n"
-"What do you want to do?\n"
+"What do you want to do?"
 msgstr ""
 "不能找到目标(target)文件\n"
 "\"%s\"\n"
@@ -224,9 +229,13 @@ msgid "Project group modified"
 msgstr "工程组已修改"
 
 #: projectgroupstrconst.lisprojectgroupmodifiedconfirm
+#, fuzzy
+#| msgid ""
+#| "Project group \"%s\" is modified.\n"
+#| "What do you want to do?\n"
 msgid ""
 "Project group \"%s\" is modified.\n"
-"What do you want to do?\n"
+"What do you want to do?"
 msgstr ""
 "工程组\"%s\"被修改.\n"
 "你想做什么?\n"

@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ru\n"
-"X-Generator: Poedit 1.7.7\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: opkman_const.rsaddrepositorypackagefrm_bcancel_caption
 msgctxt "opkman_const.rsaddrepositorypackagefrm_bcancel_caption"
@@ -199,18 +199,18 @@ msgstr "Файл \"%s\" уже имеется в текущем репозито
 #: opkman_const.rscreaterepositoryfrm_error1
 msgid ""
 "Cannot open private repository: \"%s\". Error message: \n"
-"\"%s\"\n"
+"\"%s\""
 msgstr ""
 "Невозможно открыть личный репозиторий: \"%s\". Сообщение об ошибке: \n"
-"\"%s\"\n"
+"\"%s\""
 
 #: opkman_const.rscreaterepositoryfrm_error3
 msgid ""
 "Cannot save private repository: \"%s\". Error message: \n"
-"\"%s\"\n"
+"\"%s\""
 msgstr ""
 "Невозможно сохранить личный репозиторий: \"%s\". Сообщение об ошибке: \n"
-"\"%s\"\n"
+"\"%s\""
 
 #: opkman_const.rscreaterepositoryfrm_error4
 msgid "Cannot add package to repository!"
@@ -223,26 +223,26 @@ msgstr "Невозможно удалить пакет \"%s\"!"
 #: opkman_const.rscreaterepositoryfrm_info1
 msgid ""
 "The following directory: \"%s\" is not empty.\n"
-"It's recommended to save the repository to an empty directory. Continue?\n"
+"It's recommended to save the repository to an empty directory. Continue?"
 msgstr ""
 "Каталог \"%s\" не пуст.\n"
-"Рекомендуется сохранять репозиторий в пустой каталог. Продолжить?\n"
+"Рекомендуется сохранять репозиторий в пустой каталог. Продолжить?"
 
 #: opkman_const.rscreaterepositoryfrm_info3
 msgid ""
 "The following package: \"%s\" is already in the current repository.\n"
-"Each repository and Lazarus package must be unique!\n"
+"Each repository and Lazarus package must be unique!"
 msgstr ""
 "Пакет \"%s\" уже имеется в текущем репозитории.\n"
-"Все пакеты репозитория и Lazarus должны быть уникальны!\n"
+"Все пакеты репозитория и Lazarus должны быть уникальны!"
 
 #: opkman_const.rscreaterepositoryfrm_info5
 msgid ""
 "The following Lazarus package: \"%s\" is already in the current repository.\n"
-"Each repository and Lazarus package must be unique!\n"
+"Each repository and Lazarus package must be unique!"
 msgstr ""
 "Пакет Lazarus \"%s\" уже имеется в текущем репозитории.\n"
-"Все пакеты репозитория и Lazarus должны быть уникальны!\n"
+"Все пакеты репозитория и Lazarus должны быть уникальны!"
 
 #: opkman_const.rscreaterepositoryfrm_info7
 msgid "Package successfully added to repository."
@@ -533,10 +533,10 @@ msgstr "Идёт отправка файлов (\"%s\"). Подождите..."
 #: opkman_const.rscreaterepositorypackagefrm_message9
 msgid ""
 "Files successfully sent. Thank you for submitting packages!\n"
-"Your request will be processed in 24 hours.\n"
+"Your request will be processed in 24 hours."
 msgstr ""
 "Файлы успешно отправлены. Спасибо за помощь!\n"
-"Ваш запрос будет обработан в течение 24 часов.\n"
+"Ваш запрос будет обработан в течение 24 часов."
 
 #: opkman_const.rscreaterepositorypackagefrm_nopackage
 msgid "No packages found!"
@@ -698,10 +698,10 @@ msgstr "Ни один из отмеченных пакетов из репози
 #: opkman_const.rsmainfrm_packageupdatewarning
 msgid ""
 "Installing packages from external link is not without a risk!\n"
-"Only install if you trust the package maintainer. Continue?\n"
+"Only install if you trust the package maintainer. Continue?"
 msgstr ""
 "Установка пакетов из внешнего источника рискованна!\n"
-"Проводите установку только при доверии сопровождающему пакета. Продолжить?\n"
+"Проводите установку только при доверии сопровождающему пакета. Продолжить?"
 
 #: opkman_const.rsmainfrm_resmessagechecksloaded
 msgid "%s packages successfully loaded from file!"
@@ -742,10 +742,10 @@ msgstr "Пакеты для отображения отсутствуют."
 #: opkman_const.rsmainfrm_rsmessagenorepository0
 msgid ""
 "Remote package repository not configured.\n"
-"Do you wish to configure it now?\n"
+"Do you wish to configure it now?"
 msgstr ""
 "Удалённый репозиторий не настроен.\n"
-"Хотите сделать это сейчас?\n"
+"Хотите сделать это сейчас?"
 
 #: opkman_const.rsmainfrm_rsmessagenothingchacked
 msgid "Please check at least one package!"
@@ -790,10 +790,10 @@ msgstr "Удалено %s пакетов!"
 #: opkman_const.rsmainfrm_rsuninstall
 msgid ""
 "%sAre you sure you wish to uninstall the checked packages?\n"
-"Please note: in order for the changes to take effect you must rebuid the IDE.\n"
+"Please note: in order for the changes to take effect you must rebuid the IDE."
 msgstr ""
 "%sВы уверены, что хотите удалить отмеченные пакеты?\n"
-"Обратите внимание: для вступления изменений в силу следует пересобрать IDE.\n"
+"Обратите внимание: для вступления изменений в силу следует пересобрать IDE."
 
 #: opkman_const.rsmainfrm_rsuninstall_error
 msgid "Cannot uninstall package \"%s\"!"

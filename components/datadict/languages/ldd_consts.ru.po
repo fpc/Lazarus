@@ -8,6 +8,8 @@ msgstr ""
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: ldd_consts.ldd_availablecodegenerators
 msgid "Available code generators"
@@ -128,18 +130,18 @@ msgstr "Словарь данных применяется для модифик
 #: ldd_consts.serrnodatadesktopdoselect
 msgid ""
 "Could not locate the database desktop application.\n"
-"Would you like to select it ?\n"
+"Would you like to select it ?"
 msgstr ""
 "Невозможно найти приложение рабочего стола базы данных.\n"
-"Хотите выбрать его?\n"
+"Хотите выбрать его?"
 
 #: ldd_consts.serrnodatadictactive
 msgid ""
 "No datadictionary active.\n"
-"Please set a data dictionary for the project\n"
+"Please set a data dictionary for the project"
 msgstr ""
 "Отсутствует активный словарь данных.\n"
-"Назначьте словарь данных для проекта.\n"
+"Назначьте словарь данных для проекта."
 
 #: ldd_consts.serrselectdd
 msgid "Please select a known data dictionary"

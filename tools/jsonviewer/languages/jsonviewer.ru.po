@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ru\n"
-"X-Generator: Poedit 1.7.7\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: msgjsonviewer.sarray
 msgid "Array (%d elements)"
@@ -39,10 +39,10 @@ msgstr "Документ JSON был изменён"
 #: msgjsonviewer.sdocumentmodifiedaction
 msgid ""
 "The JSON data in \"%s\" was changed but not saved.\n"
-"What do want to do ?\n"
+"What do want to do ?"
 msgstr ""
 "Данные JSON в \"%s\" были изменены, но не сохранены.\n"
-"Что следует сделать?\n"
+"Что следует сделать?"
 
 #: msgjsonviewer.sduplicatemembername
 msgid "Duplicate member name \"%s\"."

@@ -787,7 +787,7 @@ msgstr ""
 #: lazarusidestrconsts.dlgautosaveactivedesktophint
 msgid ""
 "Save active desktop on IDE close\n"
-"Save debug desktop on IDE close and debug end\n"
+"Save debug desktop on IDE close and debug end"
 msgstr ""
 
 #: lazarusidestrconsts.dlgavailableforms
@@ -2399,7 +2399,7 @@ msgstr ""
 #: lazarusidestrconsts.dlgimportdesktopexists
 msgid ""
 "A desktop with the same name already exists.\n"
-"Please confirm the desktop name:\n"
+"Please confirm the desktop name:"
 msgstr ""
 
 #: lazarusidestrconsts.dlgincludeidentifierscontainingprefix
@@ -3308,7 +3308,7 @@ msgstr "כתוב על הבלוק הקיים"
 #: lazarusidestrconsts.dlgoverwritedesktop
 msgid ""
 "Desktop with the name \"%s\" was found.\n"
-"Should the old desktop be overwritten?\n"
+"Should the old desktop be overwritten?"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpalhints
@@ -3645,7 +3645,7 @@ msgid ""
 "The running Lazarus instance cannot accept any files.\n"
 "Do you want to open them in a new IDE instance?\n"
 "\n"
-"%s\n"
+"%s"
 msgstr ""
 
 #: lazarusidestrconsts.dlgrunninginstancenotrespondingerror
@@ -9137,7 +9137,7 @@ msgstr ""
 #: lazarusidestrconsts.lisdonwloadonlinepackages
 msgid ""
 "The following package(s) are not available locally: %s.\n"
-"In order to install it, you must download them first. Download now?\n"
+"In order to install it, you must download them first. Download now?"
 msgstr ""
 
 #: lazarusidestrconsts.lisdown
@@ -10567,7 +10567,7 @@ msgid ""
 "\n"
 "This code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. \n"
 "\n"
-"A copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.\n"
+"A copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA."
 msgstr "<תאור> s% זכויות יוצרים (C) <שנה> <שם המחבר> <התקשרות> s% קוד זה הוא תכנה חפשית; אתה רשאי להפיץ ו/או לשנות אותה בהתאם לתנאים של GNU GPL כמו שפורסמו ע\"י הקרן למען תכנה חפשית; לפי גרסה 2 או לפי גרסה מאוחרת יותר (לפי בחירתך)  של הרשיון. קוד זה מופץ בתקווה שיהיה שימושי, אבל ללא אחריות כלשהי; אפילו לא אחריות שיווקית או התאמה לתכלית מסוימת. ראה GNU GPL לפרטים נוספים. ניתן למצוא ברשת את הרשיון בכתובת <http://www.gnu.org/copyleft/gpl.html>.או לקבל אותו ע\"י כתיבה ל the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 
 #: lazarusidestrconsts.lisgroup
@@ -11266,7 +11266,7 @@ msgstr "התקן זאת,אני אוהב אותו שמן"
 #: lazarusidestrconsts.lisinstallpackagesmsg
 msgid ""
 "The following packages are not installed, but available in the main repository: %s.\n"
-"Do you wish to install missing packages?\n"
+"Do you wish to install missing packages?"
 msgstr ""
 
 #: lazarusidestrconsts.lisinstallselection
@@ -12478,7 +12478,7 @@ msgid ""
 "\n"
 "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. \n"
 "\n"
-"You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.\n"
+"You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA."
 msgstr "<תאור> s% זכויות יוצרים (C) <שנה> <שם המחבר> <התקשרות> s% קוד זה הוא תכנה חפשית; אתה רשאי להפיץ ו/או לשנות אותה בהתאם לתנאים של GNU GPL כמו שפורסמו ע\"י הקרן למען תכנה חפשית; לפי גרסה 2 או לפי גרסה מאוחרת יותר (לפי בחירתך)  של הרשיון. קוד זה מופץ בתקווה שיהיה שימושי, אבל ללא אחריות כלשהי; אפילו לא אחריות שיווקית או התאמה לתכלית מסוימת. ראה GNU GPL לפרטים נוספים. ניתן למצוא ברשת את הרשיון בכתובת <http://www.gnu.org/copyleft/gpl.html>.או לקבל אותו ע\"י כתיבה ל the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 
 #: lazarusidestrconsts.lislibrarypath
@@ -13444,7 +13444,7 @@ msgstr ""
 #: lazarusidestrconsts.lismenueditorsisalreadyinuse
 msgid ""
 "\"%s\" is already in use in %s as a shortcut.\n"
-"Try a different shortcut.\n"
+"Try a different shortcut."
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorsisnotasufficientdescriptionpleaseexpand
@@ -13491,7 +13491,7 @@ msgstr ""
 msgid ""
 "There are no user-saved menu templates.\n"
 "\n"
-"Only standard default templates are available.\n"
+"Only standard default templates are available."
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditortsclistgetscanlistcompnameinvalidindexdforfscanlis
@@ -13501,7 +13501,7 @@ msgstr ""
 #: lazarusidestrconsts.lismenueditoryouhavetochangetheshortcutfromsstoavoidaconflict
 msgid ""
 "You have to change the shortcut from %s\n"
-"to avoid a conflict\n"
+"to avoid a conflict"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditoryoumustentertextforthecaption
@@ -14496,7 +14496,7 @@ msgid ""
 "\n"
 "The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n"
 "\n"
-"THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n"
+"THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
 msgstr ""
 
 #: lazarusidestrconsts.lismmadditionsandoverrides
@@ -14694,7 +14694,7 @@ msgid ""
 "\n"
 "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. \n"
 "\n"
-"You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.\n"
+"You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA."
 msgstr "<תאור> s% זכויות יוצרים (C) <שנה> <שם המחבר> <התקשרות> s% קוד זה הוא תכנה חפשית; אתה רשאי להפיץ ו/או לשנות אותה בהתאם לתנאים של GNU GPL כמו שפורסמו ע\"י הקרן למען תכנה חפשית; לפי גרסה 2 או לפי גרסה מאוחרת יותר (לפי בחירתך)  של הרשיון. קוד זה מופץ בתקווה שיהיה שימושי, אבל ללא אחריות כלשהי; אפילו לא אחריות שיווקית או התאמה לתכלית מסוימת. ראה GNU GPL לפרטים נוספים. ניתן למצוא ברשת את הרשיון בכתובת <http://www.gnu.org/copyleft/gpl.html>.או לקבל אותו ע\"י כתיבה ל the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 
 #: lazarusidestrconsts.lismodify
@@ -16573,7 +16573,7 @@ msgstr ""
 #: lazarusidestrconsts.lispkgmangsaveasalreadyopenedpackage
 msgid ""
 "The package %s is already open in the IDE.\n"
-"You cannot save a package with the same name.\n"
+"You cannot save a package with the same name."
 msgstr ""
 
 #: lazarusidestrconsts.lispkgmangsavepackage
@@ -17946,7 +17946,7 @@ msgid ""
 "i 0 count-1 forb|\n"
 "Here $PrevWord(0)=forb, $PrevWord(1)=i, $PrevWord(2)=0, $PrevWord(3)=count-1\n"
 "\n"
-"In the end of your template use $PrevWord(-1) which expands to an empty string, but performs an important operation of wiping off all of the $PrevWords found. In addition here is a regexp that is used to detect words for this macro: [\\w\\-+*\\(\\)\\[\\].^@]+\n"
+"In the end of your template use $PrevWord(-1) which expands to an empty string, but performs an important operation of wiping off all of the $PrevWords found. In addition here is a regexp that is used to detect words for this macro: [\\w\\-+*\\(\\)\\[\\].^@]+"
 msgstr ""
 
 #: lazarusidestrconsts.lisreturnslistofallvaluesofcasevariableinfrontofvaria
@@ -17960,7 +17960,7 @@ msgid ""
 "Return the list of all values of case variable in front of variable.\n"
 "\n"
 "Optional Parameters (comma separated):\n"
-"WithoutExtraIndent    // the case list will be generated without extra indentation\n"
+"WithoutExtraIndent    // the case list will be generated without extra indentation"
 msgstr "מחזיר רשימה של כל הערכים של משתנה case לפני המשתנה"
 
 #: lazarusidestrconsts.lisrevertfailed

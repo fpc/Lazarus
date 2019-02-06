@@ -63,9 +63,13 @@ msgid " Resource name = \"%s\", Type = \"%s\""
 msgstr "资源名称= \"%s\",类型= \"%s\""
 
 #: glazresmain.msgsuccess
+#, fuzzy
+#| msgid ""
+#| "Done.\n"
+#| "Number of resources added: %d.\n"
 msgid ""
 "Done.\n"
-"Number of resources added: %d.\n"
+"Number of resources added: %d."
 msgstr ""
 "完成.\n"
 "添加的资源数量(Number of resources added):%d.\n"

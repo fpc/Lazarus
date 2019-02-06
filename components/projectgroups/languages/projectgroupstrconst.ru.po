@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ru\n"
-"X-Generator: Poedit 1.7.7\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: projectgroupstrconst.lisabort
 msgid "Abort"
@@ -63,11 +63,11 @@ msgstr "Отбросить изменения"
 msgid ""
 "Could not find target file\n"
 "\"%s\"\n"
-"What do you want to do?\n"
+"What do you want to do?"
 msgstr ""
 "Не найден целевой файл\n"
 "\"%s\"\n"
-"Что вы хотите сделать?\n"
+"Что вы хотите сделать?"
 
 #: projectgroupstrconst.liserronlyprojectgroupallowed
 msgid "Only target type \"projectgroup\" is allowed for root project group."
@@ -225,10 +225,10 @@ msgstr "Группа проектов изменена"
 #: projectgroupstrconst.lisprojectgroupmodifiedconfirm
 msgid ""
 "Project group \"%s\" is modified.\n"
-"What do you want to do?\n"
+"What do you want to do?"
 msgstr ""
 "Группа проектов \"%s\" была изменена.\n"
-"Что вы хотите сделать?\n"
+"Что вы хотите сделать?"
 
 #: projectgroupstrconst.lisprojectgroupreload
 msgid "Reload"

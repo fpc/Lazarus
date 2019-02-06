@@ -198,17 +198,25 @@ msgid "The following file: \"%s\" already exists in the current repository. Over
 msgstr "下面文件:\"%s\"已经存在在该当前存储库.覆盖?"
 
 #: opkman_const.rscreaterepositoryfrm_error1
+#, fuzzy
+#| msgid ""
+#| "Cannot open private repository: \"%s\". Error message: \n"
+#| "\"%s\"\n"
 msgid ""
 "Cannot open private repository: \"%s\". Error message: \n"
-"\"%s\"\n"
+"\"%s\""
 msgstr ""
 "不能打开私有存储库:\"%s\".错误信息:\n"
 "\"%s\"\n"
 
 #: opkman_const.rscreaterepositoryfrm_error3
+#, fuzzy
+#| msgid ""
+#| "Cannot save private repository: \"%s\". Error message: \n"
+#| "\"%s\"\n"
 msgid ""
 "Cannot save private repository: \"%s\". Error message: \n"
-"\"%s\"\n"
+"\"%s\""
 msgstr ""
 "不能保持私有存储库:\"%s\".错误信息:\n"
 "\"%s\"\n"
@@ -222,25 +230,37 @@ msgid "Cannot delete package: \"%s\"!"
 msgstr "不能删除包:\"%s\"!"
 
 #: opkman_const.rscreaterepositoryfrm_info1
+#, fuzzy
+#| msgid ""
+#| "The following directory: \"%s\" is not empty.\n"
+#| "It's recommended to save the repository to an empty directory. Continue?\n"
 msgid ""
 "The following directory: \"%s\" is not empty.\n"
-"It's recommended to save the repository to an empty directory. Continue?\n"
+"It's recommended to save the repository to an empty directory. Continue?"
 msgstr ""
 "下面的目录:\"%s\"不是空的.\n"
 "建议保存该存储库到一个空目录.继续?\n"
 
 #: opkman_const.rscreaterepositoryfrm_info3
+#, fuzzy
+#| msgid ""
+#| "The following package: \"%s\" is already in the current repository.\n"
+#| "Each repository and Lazarus package must be unique!\n"
 msgid ""
 "The following package: \"%s\" is already in the current repository.\n"
-"Each repository and Lazarus package must be unique!\n"
+"Each repository and Lazarus package must be unique!"
 msgstr ""
 "下面的软件包:\"%s\"已经在该当前存储库.\n"
 "每个存储库和Lazarus软件包必需是独一无二的!\n"
 
 #: opkman_const.rscreaterepositoryfrm_info5
+#, fuzzy
+#| msgid ""
+#| "The following Lazarus package: \"%s\" is already in the current repository.\n"
+#| "Each repository and Lazarus package must be unique!\n"
 msgid ""
 "The following Lazarus package: \"%s\" is already in the current repository.\n"
-"Each repository and Lazarus package must be unique!\n"
+"Each repository and Lazarus package must be unique!"
 msgstr ""
 "下面的Lazarus软件包:\"%s\"已经在该当前存储库.\n"
 "每个存储库和Lazarus软件包必需是独一无二的!\n"
@@ -532,9 +552,13 @@ msgid "Sending files (\"%s\"). Please wait..."
 msgstr "发送文件(\"%s\").请等候..."
 
 #: opkman_const.rscreaterepositorypackagefrm_message9
+#, fuzzy
+#| msgid ""
+#| "Files successfully sent. Thank you for submitting packages!\n"
+#| "Your request will be processed in 24 hours.\n"
 msgid ""
 "Files successfully sent. Thank you for submitting packages!\n"
-"Your request will be processed in 24 hours.\n"
+"Your request will be processed in 24 hours."
 msgstr ""
 "文件成功地发生.谢谢你提交软件包!\n"
 "你的请求将被处理 在24小时内.\n"
@@ -705,7 +729,7 @@ msgstr ""
 #: opkman_const.rsmainfrm_packageupdatewarning
 msgid ""
 "Installing packages from external link is not without a risk!\n"
-"Only install if you trust the package maintainer. Continue?\n"
+"Only install if you trust the package maintainer. Continue?"
 msgstr ""
 
 #: opkman_const.rsmainfrm_resmessagechecksloaded
@@ -745,9 +769,13 @@ msgid "No packages to show."
 msgstr "没有包显示"
 
 #: opkman_const.rsmainfrm_rsmessagenorepository0
+#, fuzzy
+#| msgid ""
+#| "Remote package repository not configured.\n"
+#| "Do you wish to configure it now?\n"
 msgid ""
 "Remote package repository not configured.\n"
-"Do you wish to configure it now?\n"
+"Do you wish to configure it now?"
 msgstr ""
 "远程软件包存储库未配置.\n"
 "你想要现在配置它吗?\n"
@@ -795,7 +823,7 @@ msgstr "%s包删除!"
 #: opkman_const.rsmainfrm_rsuninstall
 msgid ""
 "%sAre you sure you wish to uninstall the checked packages?\n"
-"Please note: in order for the changes to take effect you must rebuid the IDE.\n"
+"Please note: in order for the changes to take effect you must rebuid the IDE."
 msgstr ""
 
 #: opkman_const.rsmainfrm_rsuninstall_error

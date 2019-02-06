@@ -29,9 +29,13 @@ msgid "Daemon Module for inclusion in a daemon application"
 msgstr "守护进程模块用于包含在守护进程应用"
 
 #: reglazdaemon.sdaemonmapperdescr
+#, fuzzy
+#| msgid ""
+#| "Daemon mapper for inclusion in a daemon application.\n"
+#| "Only one daemon mapper may exist in a daemon application.\n"
 msgid ""
 "Daemon mapper for inclusion in a daemon application.\n"
-"Only one daemon mapper may exist in a daemon application.\n"
+"Only one daemon mapper may exist in a daemon application."
 msgstr ""
 "守护进程映射器用于包含在守护进程应用.\n"
 "仅一个守护进程映射器可以存在在守护进程应用.\n"

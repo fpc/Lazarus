@@ -28,9 +28,13 @@ msgid "Daemon Module for inclusion in a daemon application"
 msgstr "Module Daemon à inclure dans une application Daemon (service)"
 
 #: reglazdaemon.sdaemonmapperdescr
+#, fuzzy
+#| msgid ""
+#| "Daemon mapper for inclusion in a daemon application.\n"
+#| "Only one daemon mapper may exist in a daemon application.\n"
 msgid ""
 "Daemon mapper for inclusion in a daemon application.\n"
-"Only one daemon mapper may exist in a daemon application.\n"
+"Only one daemon mapper may exist in a daemon application."
 msgstr ""
 "Mappeur Daemon à inclure dans une application Daemon (service).\n"
 "Un seul mappeur Daemon peut exister dans une application Daemon.\n"

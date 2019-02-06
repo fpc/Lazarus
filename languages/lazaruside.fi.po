@@ -761,9 +761,13 @@ msgid "Auto save active desktop"
 msgstr "Tallenna aktiivinen työpöytä automaattisesti"
 
 #: lazarusidestrconsts.dlgautosaveactivedesktophint
+#, fuzzy
+#| msgid ""
+#| "Save active desktop on IDE close\n"
+#| "Save debug desktop on IDE close and debug end\n"
 msgid ""
 "Save active desktop on IDE close\n"
-"Save debug desktop on IDE close and debug end\n"
+"Save debug desktop on IDE close and debug end"
 msgstr ""
 "Tallenna aktiivinen työpöytä kun IDE suljetaan\n"
 "Tallenna debug-työpöytä kun IDE suljetaan ja virheenjäljitys loppuu\n"
@@ -2240,9 +2244,13 @@ msgid "Included mixed state $IFDEF node"
 msgstr "Luettu sekoitettua $IFDEF koodia"
 
 #: lazarusidestrconsts.dlgimportdesktopexists
+#, fuzzy
+#| msgid ""
+#| "A desktop with the same name already exists.\n"
+#| "Please confirm the desktop name:\n"
 msgid ""
 "A desktop with the same name already exists.\n"
-"Please confirm the desktop name:\n"
+"Please confirm the desktop name:"
 msgstr ""
 "Samanniminen työpöytä on jo olemassa.\n"
 "Vahvista työpöydän nimi:\n"
@@ -3095,9 +3103,13 @@ msgid "Overwrite block"
 msgstr "Ylikirjoita lohko"
 
 #: lazarusidestrconsts.dlgoverwritedesktop
+#, fuzzy
+#| msgid ""
+#| "Desktop with the name \"%s\" was found.\n"
+#| "Should the old desktop be overwritten?\n"
 msgid ""
 "Desktop with the name \"%s\" was found.\n"
-"Should the old desktop be overwritten?\n"
+"Should the old desktop be overwritten?"
 msgstr ""
 "Löytyi työpöytä nimellä \"%s\".\n"
 "Korvataanko vanha työpöytä?\n"
@@ -3396,11 +3408,17 @@ msgid "Rubberband Selection"
 msgstr "Kuminauhojen valinta"
 
 #: lazarusidestrconsts.dlgrunninginstancemodalerror
+#, fuzzy
+#| msgid ""
+#| "The running Lazarus instance cannot accept any files.\n"
+#| "Do you want to open them in a new IDE instance?\n"
+#| "\n"
+#| "%s\n"
 msgid ""
 "The running Lazarus instance cannot accept any files.\n"
 "Do you want to open them in a new IDE instance?\n"
 "\n"
-"%s\n"
+"%s"
 msgstr ""
 "Käynnissä oleva Lazarus ei huoli tiedostoja.\n"
 "Haluatko avata ne uudessa instanssissa?\n"
@@ -8528,7 +8546,7 @@ msgstr "Älä kirjoita päivitettyjä projektin tietoja koonnan jälkeen. Jos ei
 #: lazarusidestrconsts.lisdonwloadonlinepackages
 msgid ""
 "The following package(s) are not available locally: %s.\n"
-"In order to install it, you must download them first. Download now?\n"
+"In order to install it, you must download them first. Download now?"
 msgstr ""
 
 #: lazarusidestrconsts.lisdown
@@ -9884,7 +9902,7 @@ msgid ""
 "\n"
 "This code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. \n"
 "\n"
-"A copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.\n"
+"A copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA."
 msgstr ""
 
 #: lazarusidestrconsts.lisgroup
@@ -10558,9 +10576,13 @@ msgid "Install it, I like the fat"
 msgstr "Asenna, pidän siitä turvonneena"
 
 #: lazarusidestrconsts.lisinstallpackagesmsg
+#, fuzzy
+#| msgid ""
+#| "The following packages are not installed, but available in the main repository: %s.\n"
+#| "Do you wish to install missing packages?\n"
 msgid ""
 "The following packages are not installed, but available in the main repository: %s.\n"
-"Do you wish to install missing packages?\n"
+"Do you wish to install missing packages?"
 msgstr ""
 "Seuraavia paketteja ei ole asennettu, mutta ovat saatavilla pääsäilössä: %s.\n"
 "Tahdotko asentaa puuttuvat paketit?\n"
@@ -11612,7 +11634,7 @@ msgid ""
 "\n"
 "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. \n"
 "\n"
-"You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.\n"
+"You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA."
 msgstr ""
 
 #: lazarusidestrconsts.lislibrarypath
@@ -12514,7 +12536,7 @@ msgstr "\"%s\" %s:ssa"
 #: lazarusidestrconsts.lismenueditorsisalreadyinuse
 msgid ""
 "\"%s\" is already in use in %s as a shortcut.\n"
-"Try a different shortcut.\n"
+"Try a different shortcut."
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditorsisnotasufficientdescriptionpleaseexpand
@@ -12561,7 +12583,7 @@ msgstr "Malline on tallennettu"
 msgid ""
 "There are no user-saved menu templates.\n"
 "\n"
-"Only standard default templates are available.\n"
+"Only standard default templates are available."
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditortsclistgetscanlistcompnameinvalidindexdforfscanlis
@@ -12569,9 +12591,13 @@ msgid "TSCList.GetScanListCompName: invalid index %d for FScanList"
 msgstr ""
 
 #: lazarusidestrconsts.lismenueditoryouhavetochangetheshortcutfromsstoavoidaconflict
+#, fuzzy
+#| msgid ""
+#| "You have to change the shortcut from %s\n"
+#| "to avoid a conflict\n"
 msgid ""
 "You have to change the shortcut from %s\n"
-"to avoid a conflict\n"
+"to avoid a conflict"
 msgstr ""
 "Pikanäppäin pitää muuttaa %s:sta\n"
 "ristiriidan välttämiseksi\n"
@@ -13391,7 +13417,7 @@ msgid ""
 "\n"
 "The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n"
 "\n"
-"THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n"
+"THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
 msgstr ""
 
 #: lazarusidestrconsts.lismmadditionsandoverrides
@@ -13576,7 +13602,7 @@ msgid ""
 "\n"
 "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. \n"
 "\n"
-"You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.\n"
+"You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA."
 msgstr ""
 
 #: lazarusidestrconsts.lismodify
@@ -15333,9 +15359,13 @@ msgid "One or more required packages were not found. See package graph for detai
 msgstr "Joitain vaadittuja paketteja ei löytynyt. Katso tarkemmin pakettikuvaajasta."
 
 #: lazarusidestrconsts.lispkgmangsaveasalreadyopenedpackage
+#, fuzzy
+#| msgid ""
+#| "The package %s is already open in the IDE.\n"
+#| "You cannot save a package with the same name.\n"
 msgid ""
 "The package %s is already open in the IDE.\n"
-"You cannot save a package with the same name.\n"
+"You cannot save a package with the same name."
 msgstr ""
 "Paketti %s on jo avoinna IDE:ssä.\n"
 "Pakettia ei voi tallentaa samalla nimellä.\n"
@@ -16550,15 +16580,21 @@ msgid ""
 "i 0 count-1 forb|\n"
 "Here $PrevWord(0)=forb, $PrevWord(1)=i, $PrevWord(2)=0, $PrevWord(3)=count-1\n"
 "\n"
-"In the end of your template use $PrevWord(-1) which expands to an empty string, but performs an important operation of wiping off all of the $PrevWords found. In addition here is a regexp that is used to detect words for this macro: [\\w\\-+*\\(\\)\\[\\].^@]+\n"
+"In the end of your template use $PrevWord(-1) which expands to an empty string, but performs an important operation of wiping off all of the $PrevWords found. In addition here is a regexp that is used to detect words for this macro: [\\w\\-+*\\(\\)\\[\\].^@]+"
 msgstr ""
 
 #: lazarusidestrconsts.lisreturnslistofallvaluesofcasevariableinfrontofvaria
+#, fuzzy
+#| msgid ""
+#| "Return the list of all values of case variable in front of variable.\n"
+#| "\n"
+#| "Optional Parameters (comma separated):\n"
+#| "WithoutExtraIndent    // the case list will be generated without extra indentation\n"
 msgid ""
 "Return the list of all values of case variable in front of variable.\n"
 "\n"
 "Optional Parameters (comma separated):\n"
-"WithoutExtraIndent    // the case list will be generated without extra indentation\n"
+"WithoutExtraIndent    // the case list will be generated without extra indentation"
 msgstr ""
 "Palauta kaikki case-muuttujan arvot muuttujan edessä.\n"
 "\n"

@@ -79,9 +79,13 @@ msgid "Enter a descriptive name for the connection"
 msgstr "Leíró jellegű név megadása a kapcsolathoz"
 
 #: lazdatadeskstr.sconnectionnameexists
+#, fuzzy
+#| msgid ""
+#| "There is already a connection named \"%s\"\n"
+#| "Would you like to override the connection data ?\n"
 msgid ""
 "There is already a connection named \"%s\"\n"
-"Would you like to override the connection data ?\n"
+"Would you like to override the connection data ?"
 msgstr ""
 "Már létezik \"%s\" nevű kapcsolat\n"
 "Felülírja a kapcsolat adatait?\n"
@@ -95,9 +99,13 @@ msgid "Would you like to create a new connection for this database ?"
 msgstr "Szeretne új kapcsolatot létrehozni ezen adatbázishoz?"
 
 #: lazdatadeskstr.sddmodified
+#, fuzzy
+#| msgid ""
+#| "Data dictionary \"%s\" has changed.\n"
+#| "What do you want to do with the changes?\n"
 msgid ""
 "Data dictionary \"%s\" has changed.\n"
-"What do you want to do with the changes?\n"
+"What do you want to do with the changes?"
 msgstr ""
 "A(z) \"%s\" adatszótár megváltozott.\n"
 "Mit szeretne tenni a változásokkal?\n"
@@ -136,9 +144,13 @@ msgid "Error in SQL script"
 msgstr "Hiba az SQL szkriptben"
 
 #: lazdatadeskstr.serrinscriptchoice
+#, fuzzy
+#| msgid ""
+#| "An error occurred in the SQL script.\n"
+#| "How would you like to continue ?\n"
 msgid ""
 "An error occurred in the SQL script.\n"
-"How would you like to continue ?\n"
+"How would you like to continue ?"
 msgstr ""
 "Hiba történt az SQL szkript közben.\n"
 "Hogyan szeretné folytatni?\n"
@@ -801,9 +813,13 @@ msgid "Previous"
 msgstr "Előző"
 
 #: lazdatadeskstr.sql_noconnectionsfound
+#, fuzzy
+#| msgid ""
+#| "No connections or data dictionaries were found.\n"
+#| " Start by creating a new connection or data dictionary.\n"
 msgid ""
 "No connections or data dictionaries were found.\n"
-" Start by creating a new connection or data dictionary.\n"
+" Start by creating a new connection or data dictionary."
 msgstr ""
 "Nem található kapcsolat vagy adatszótár.\n"
 " Egy új kapcsolat vagy adatszótár létrehozásával kell kezdeni.\n"

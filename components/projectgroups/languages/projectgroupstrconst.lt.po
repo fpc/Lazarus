@@ -61,10 +61,15 @@ msgid "Discard changes"
 msgstr "Atsisakyti pakeitimų"
 
 #: projectgroupstrconst.liserrnosuchfile
+#, fuzzy
+#| msgid ""
+#| "Could not find target file\n"
+#| "\"%s\"\n"
+#| "What do you want to do?\n"
 msgid ""
 "Could not find target file\n"
 "\"%s\"\n"
-"What do you want to do?\n"
+"What do you want to do?"
 msgstr ""
 "Tikslo failas nerastas\n"
 "„%s“\n"
@@ -224,9 +229,13 @@ msgid "Project group modified"
 msgstr "Projekto grupė pakeista"
 
 #: projectgroupstrconst.lisprojectgroupmodifiedconfirm
+#, fuzzy
+#| msgid ""
+#| "Project group \"%s\" is modified.\n"
+#| "What do you want to do?\n"
 msgid ""
 "Project group \"%s\" is modified.\n"
-"What do you want to do?\n"
+"What do you want to do?"
 msgstr ""
 "Projekto grupė „%s“ yra pakeista.\n"
 "Ką daryti?\n"

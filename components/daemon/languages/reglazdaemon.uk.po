@@ -28,9 +28,13 @@ msgid "Daemon Module for inclusion in a daemon application"
 msgstr "Модуль демона для включення у програму-демон"
 
 #: reglazdaemon.sdaemonmapperdescr
+#, fuzzy
+#| msgid ""
+#| "Daemon mapper for inclusion in a daemon application.\n"
+#| "Only one daemon mapper may exist in a daemon application.\n"
 msgid ""
 "Daemon mapper for inclusion in a daemon application.\n"
-"Only one daemon mapper may exist in a daemon application.\n"
+"Only one daemon mapper may exist in a daemon application."
 msgstr ""
 "Засіб прив'язки демонів для включення у програму-демон.\n"
 "У програмі-демоні може бути лише один примірник засобу прив'язки демонів.\n"

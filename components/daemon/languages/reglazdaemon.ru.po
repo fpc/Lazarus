@@ -8,6 +8,8 @@ msgstr ""
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: reglazdaemon.sdaemonappdescr
 msgid "Daemon (service) application is a non-gui application that runs in the background."
@@ -28,10 +30,10 @@ msgstr "Модуль демона для включения в приложен�
 #: reglazdaemon.sdaemonmapperdescr
 msgid ""
 "Daemon mapper for inclusion in a daemon application.\n"
-"Only one daemon mapper may exist in a daemon application.\n"
+"Only one daemon mapper may exist in a daemon application."
 msgstr ""
 "Средство привязки демонов для включения в приложение-демон.\n"
-"В приложении-демоне может иметься только один экземпляр средства привязки демонов.\n"
+"В приложении-демоне может иметься только один экземпляр средства привязки демонов."
 
 #: reglazdaemon.sdaemonmappername
 msgid "Daemon mapper"

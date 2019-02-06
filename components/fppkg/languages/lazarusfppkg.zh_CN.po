@@ -53,10 +53,15 @@ msgid "update repository"
 msgstr "更新存储库"
 
 #: fppkg_mainfrm.serractionfailed
+#, fuzzy
+#| msgid ""
+#| "Failed to %s: \n"
+#| "\n"
+#| "%s\n"
 msgid ""
 "Failed to %s: \n"
 "\n"
-"%s\n"
+"%s"
 msgstr ""
 "失败to(对于) %s: \n"
 "\n"
