@@ -1417,6 +1417,16 @@ begin
 end;
 
 function TBasicPointSeries.GetLabelDirection(AIndex: Integer): TLabelDirection;
+
+  function CenterLevel: Double;
+  begin
+    with Extent do
+      if IsRotated then
+        Result := (b.x + a.x) * 0.5
+      else
+        Result := (b.y + a.y) * 0.5;
+  end;
+
 const
   DIR: array [Boolean, Boolean] of TLabelDirection =
     ((ldTop, ldBottom), (ldRight, ldLeft));
@@ -1424,19 +1434,26 @@ var
   isNeg: Boolean;
   ref: Double;
 begin
-  if FSupportsZeroLevel then
-    ref := GetZeroLevel
-  else
-    with Extent do
-      if IsRotated then
-        ref := (b.x + a.x) / 2
-      else
-        ref := (b.y + a.y) / 2;
   case MarkPositions of
-    lmpOutside: isNeg := Source[AIndex]^.Y < ref;
     lmpPositive: isNeg := false;
     lmpNegative: isNeg := true;
-    lmpInside: isNeg := Source[AIndex]^.Y >= ref;
+    lmpOutside,
+    lmpInside :
+      begin
+        ref := IfThen(FSupportsZeroLevel, GetZeroLevel, CenterLevel);
+        if Source[AIndex]^.Y < ref then
+          isNeg := true
+        else
+        if Source[AIndex]^.Y > ref then
+          isNeg := false
+        else
+        if not FSupportsZeroLevel then
+          isNeg := false
+        else
+          isNeg := Source[AIndex]^.Y < CenterLevel;
+        if MarkPositions = lmpInside then
+          isNeg := not isNeg;
+      end;
   end;
   if Assigned(GetAxisY) then
     if (IsRotated and ParentChart.IsRightToLeft) xor GetAxisY.Inverted then
