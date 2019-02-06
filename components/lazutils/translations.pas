@@ -1049,7 +1049,6 @@ end;
 function TPOFile.Translate(const Identifier, OriginalValue: String): String;
 var
   Item: TPOFileItem;
-  l: Integer;
 begin
   Item:=TPOFileItem(FIdentifierLowToItem[lowercase(Identifier)]);
   if Item=nil then
@@ -1071,23 +1070,6 @@ begin
       Raise Exception.Create('TPOFile.Translate Inconsistency');
   end else
     Result:=OriginalValue;
-  //Remove lineending at the end of the string if present.
-  //This is the case e.g. for multiline strings and not desired when assigning e.g. to
-  //Caption property (can negatively affect form layout). In other cases it should not matter.
-  l:=Length(Result);
-  if l>1 then
-  begin
-    //Every string with #13 and/or #10 character at the end was treated as multiline, this means that
-    //extra lineending could have been added to it.
-    if RightStr(Result,2)=#13#10 then
-    begin
-      if l>2 then //do not leave the string empty
-        SetLength(Result,l-2);
-    end
-    else
-      if (Result[l]=#13) or (Result[l]=#10) then
-        SetLength(Result,l-1);
-  end;
 end;
 
 procedure TPOFile.Report;
@@ -1241,12 +1223,6 @@ var
   procedure NormalizeValue;
   begin
     if MultiLinedValue then begin
-      // check that we end on lineending, multilined
-      // resource strings from rst usually do not end
-      // in lineending, fix here.
-      if not (Value[Length(Value)] in [#13,#10]) then
-        Value := Value + LineEnding;
-
       //treat #10#13 sequences as #13#10 for consistency,
       //e.g. #10#13#13#13#10#13#10 should become #13#10#13#13#10#13#10
       p:=2;
@@ -1418,9 +1394,15 @@ var
   var
     i: Integer;
     s: string;
+    ValueHasTrailingLineEnding: boolean;
   begin
     if (AValue='') and (AProp='') then
       exit;
+
+    if AValue<>'' then
+      ValueHasTrailingLineEnding:=AValue[Length(AValue)] in [#13,#10]
+    else
+      ValueHasTrailingLineEnding:=false;
 
     FHelperList.Text:=AValue;
     if FHelperList.Count=1 then begin
@@ -1431,7 +1413,10 @@ var
           //comments are not quoted
           OutLst.Add(AProp+FHelperList[0])
         else
-          OutLst.Add(AProp+' "'+FHelperList[0]+'"');
+          if ValueHasTrailingLineEnding then
+            OutLst.Add(AProp+' "'+FHelperList[0]+'\n"')
+          else
+            OutLst.Add(AProp+' "'+FHelperList[0]+'"');
       end;
     end else begin
       //comments are not quoted, instead prepend each line with '#'
@@ -1440,7 +1425,10 @@ var
       for i:=0 to FHelperList.Count-1 do begin
         s := FHelperList[i];
         if (AProp<>'') and (AProp<>'#') then begin
-          s := '"' + s + '\n"';
+          if (i<FHelperList.Count-1) or ValueHasTrailingLineEnding then
+            s := '"' + s + '\n"'
+          else
+            s := '"' + s + '"';
           if AProp='#| msgid' then
             s := '#| ' + s;
         end else
