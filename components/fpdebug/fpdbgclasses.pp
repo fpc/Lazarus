@@ -1800,8 +1800,6 @@ end;
 
 constructor TFpInternalBreakpoint.Create(const AProcess: TDbgProcess;
   const ALocation: TDBGPtrArray);
-var
-  i: Integer;
 begin
   FProcess := AProcess;
   FLocation := ALocation;
@@ -1817,9 +1815,6 @@ end;
 
 function TFpInternalBreakpoint.Hit(const AThreadID: Integer;
   ABreakpointAddress: TDBGPtr): Boolean;
-var
-  Thread: TDbgThread;
-  i: Integer;
 begin
   Result := False;
   if //FProcess.FBreakMap.HasId(ABreakpointAddress) and
