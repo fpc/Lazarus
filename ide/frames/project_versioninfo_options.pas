@@ -69,15 +69,17 @@ begin
 end;
 
 function CharsetCompare(List: TStringList; Index1, Index2: Integer): Integer;
+// 'Unicode' has lowest value
 var
   S1, S2: String;
 begin
   S1 := List[Index1];
   S2 := List[Index2];
-  if S1 = 'Unicode' then
+  if S1 = S2 then
+    Result := 0
+  else if S1 = 'Unicode' then
     Result := -1
-  else
-  if S2 = 'Unicode' then
+  else if S2 = 'Unicode' then
     Result := 1
   else
     Result := CompareStr(S1, S2);
