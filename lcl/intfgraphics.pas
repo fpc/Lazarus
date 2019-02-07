@@ -3424,6 +3424,7 @@ begin
   then begin
     QueryDescription(FRawImage.Description, AFlags, AWidth, AHeight);
     ChooseGetSetColorFunctions;
+    CreateData;
   end;
 end;
 
