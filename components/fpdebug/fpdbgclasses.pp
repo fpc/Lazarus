@@ -847,20 +847,28 @@ var
   ARegister: TDbgRegisterValue;
   StackFrame: Integer;
   AFrame: TDbgCallstackEntry;
+  CtxThread: TDbgThread;
 begin
   // TODO: Thread with ID
-  if AContext <> nil then
+  result := false;
+  CtxThread := GetDbgThread(AContext);
+  if CtxThread = nil then
+    exit;
+
+  if AContext <> nil then // TODO: Always true?
     StackFrame := AContext.StackFrame
   else
     StackFrame := 0;
   if StackFrame = 0 then
     begin
-    ARegister:=GetDbgThread(AContext).RegisterValueList.FindRegisterByDwarfIndex(ARegNum);
+    ARegister:=CtxThread.RegisterValueList.FindRegisterByDwarfIndex(ARegNum);
     end
   else
     begin
-    GetDbgThread(AContext).PrepareCallStackEntryList(StackFrame);
-    AFrame := GetDbgThread(AContext).CallStackEntryList[StackFrame];
+    CtxThread.PrepareCallStackEntryList(StackFrame+1);
+    if CtxThread.CallStackEntryList.Count <= StackFrame then
+      exit;
+    AFrame := CtxThread.CallStackEntryList[StackFrame];
     if AFrame <> nil then
       ARegister:=AFrame.RegisterValueList.FindRegisterByDwarfIndex(ARegNum)
     else
@@ -870,9 +878,7 @@ begin
     begin
     AValue := ARegister.NumValue;
     result := true;
-    end
-  else
-    result := false;
+    end;
 end;
 
 function TDbgMemReader.RegisterSize(ARegNum: Cardinal): Integer;
