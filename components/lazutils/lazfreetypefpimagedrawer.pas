@@ -53,6 +53,7 @@ type
     procedure DrawHorizLine(x1,y,x2: integer; const c: TFPColor);
     procedure FillPixels(const c: TFPColor);
     procedure DrawText(AText: string; AFont: TFreeTypeRenderableFont; x,y: single; AColor: TFPColor); override;
+    procedure DrawGlyph(AGlyph: integer; AFont: TFreeTypeRenderableFont; x,y: single; AColor: TFPColor); override;
     destructor Destroy; override;
     property Image: TFPCustomImage read FImage;
   end;
@@ -453,6 +454,21 @@ end;
 destructor TFPImageFreeTypeDrawer.Destroy;
 begin
   inherited Destroy;
+end;
+
+procedure TFPImageFreeTypeDrawer.DrawGlyph(AGlyph: integer;
+  AFont: TFreeTypeRenderableFont; x, y: single; AColor: TFPColor);
+var f: TFreeTypeFont;
+begin
+  if AFont is TFreeTypeFont then
+  begin
+    f := TFreeTypeFont(AFont);
+    FColor := AColor;
+    if AFont.ClearType then
+      f.RenderGlyph(AGlyph, x, y, GetClipRect, @RenderDirectlyClearType)
+    else
+      f.RenderGlyph(AGlyph, x, y, GetClipRect, @RenderDirectly);
+  end;
 end;
 
 { TFPImageWithScanlineFreeTypeDrawer }
