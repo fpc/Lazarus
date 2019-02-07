@@ -247,12 +247,12 @@ begin
     if CanGo then
     begin
       Inc(FCnt);
-      if not FNeedToRebuild then
-        FNeedToRebuild := LazarusPkg.PackageType in [lptRunAndDesignTime, lptDesigntime];
       DoOnPackageInstallProgress(imOpenPackage, LazarusPkg);
       IDEPackage := OpenPackage(LazarusPkg.PackageAbsolutePath);
       if IDEPackage <> nil then
       begin
+        if not FNeedToRebuild then
+          FNeedToRebuild := IDEPackage.PackageType in [lptRunAndDesignTime, lptDesigntime];
         DoOnPackageInstallProgress(imOpenPackageSuccess, LazarusPkg);
         CompRes := CompilePackage(IDEPAckage, LazarusPkg);
         case CompRes of
