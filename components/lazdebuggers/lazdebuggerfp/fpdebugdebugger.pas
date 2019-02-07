@@ -1598,7 +1598,7 @@ begin
   ADbgInfo := AController.CurrentProcess.DbgInfo;
 
   if StackFrame > 0 then begin
-    PrepareCallStackEntryList(StackFrame);
+    PrepareCallStackEntryList(StackFrame+1);
     AFrame := FDbgController.CurrentThread.CallStackEntryList[StackFrame];
     if AFrame = nil then
       exit;
