@@ -1,5 +1,5 @@
 program BreakPointPrg;
-
+{$ASMMODE   att}
 uses
   {$IFDEF UNIX}
   cthreads,
