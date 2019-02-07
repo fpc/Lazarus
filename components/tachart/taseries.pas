@@ -1190,9 +1190,8 @@ begin
     if FStacked then begin
       heights[1] := NumberOr(p.Y, zero);
       for stackIndex := 1 to Source.YCount - 1 do begin
-        y := Source[pointIndex]^.YList[stackIndex - 1];
-        if not IsNan(y) then
-          heights[stackIndex + 1] := heights[stackIndex] + y;
+        y := NumberOr(Source[pointIndex]^.YList[stackIndex - 1], 0);
+        heights[stackIndex + 1] := heights[stackIndex] + y;
       end;
       for stackIndex := 0 to High(heights) do
         heights[stackindex] := AxisToGraphY(heights[stackindex]);

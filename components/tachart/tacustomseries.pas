@@ -1265,6 +1265,7 @@ var
   lfont: TFont;
   curr, prev: Double;
   ext: TDoubleRect;
+  yIsNaN: Boolean;
 begin
   if not Marks.IsMarkLabelsVisible then exit;
 
@@ -1275,29 +1276,24 @@ begin
     ext := Extent;
 
     for i := FLoBound to FUpBound do begin
-      if IsNan(Source[i]^.Point) then
+      if IsNan(Source[i]^.X) then
         continue;
-      y := Source[i]^.Y;
-      ysum := y;
       if FSupportsZeroLevel then
         prev := GetZeroLevel
       else
         prev := TDoublePointBoolArr(ext.a)[not IsRotated];
+      y := Source[i]^.Y;
+      yIsNaN := IsNaN(y);
+      ysum := IfThen(yIsNaN, prev, y);
       ld := GetLabelDirection(i);
       for si := 0 to Source.YCount - 1 do begin
-        if Styles <> nil then begin
-          style := Styles.StyleByIndex(si);
-          if style.UseFont then
-            Marks.LabelFont.Assign(style.Font)
-          else
-            Marks.LabelFont.Assign(lfont);
-        end;
         g := GetLabelDataPoint(i, si);
         if si > 0 then begin
-          y := NumberOr(Source[i]^.YList[si-1], 0);
-          if IsNaN(y) then Continue;
+          y := Source[i]^.YList[si-1];
+          yIsNaN := IsNaN(y);
+          if yIsNaN then y := 0.0;
           if Stacked then begin
-            if IsNaN(ysum) then ysum := y else ysum += y;
+            ysum += y;
             y := ysum;
           end;
         end;
@@ -1319,9 +1315,17 @@ begin
         with ParentChart do
           if
             ((Marks.YIndex = MARKS_YINDEX_ALL) or (Marks.YIndex = si)) and
-            IsPointInViewPort(g)
-          then
+            IsPointInViewPort(g) and (not yIsNaN)
+          then begin
+            if Styles <> nil then begin
+              style := Styles.StyleByIndex(si);
+              if style.UseFont then
+                Marks.LabelFont.Assign(style.Font)
+              else
+                Marks.LabelFont.Assign(lfont);
+            end;
             DrawLabel(FormattedMark(i, '', si), GraphToImage(g), ld);
+          end;
       end;
     end;
 
@@ -1413,7 +1417,7 @@ end;
 
 function TBasicPointSeries.GetLabelDataPoint(AIndex, AYIndex: Integer): TDoublePoint;
 begin
-  Result := GetGraphPoint(AIndex);
+  Result := GetGraphPoint(AIndex, 0, AYIndex);
 end;
 
 function TBasicPointSeries.GetLabelDirection(AIndex: Integer): TLabelDirection;

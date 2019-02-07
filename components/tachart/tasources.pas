@@ -688,6 +688,18 @@ begin
   Notify;
 end;
 
+function CompareFloat(x1, x2: Double): Integer;
+begin
+  if IsNaN(x1) and IsNaN(x2) then
+    Result := 0
+  else if IsNaN(x1) then
+    Result := +1
+  else if IsNaN(x2) then
+    Result := -1
+  else
+    Result := CompareValue(x1, x2);
+end;
+
 function CompareDataItemX(AItem1, AItem2: Pointer): Integer;
 var
   i: Integer;
@@ -695,13 +707,11 @@ var
 begin
   item1 := PChartDataItem(AItem1);
   item2 := PChartDataItem(AItem2);
-  Result := Sign(item1^.X - item2^.X);          // wp: why "sign" ???
 
-//  Result := Sign(PChartDataItem(AItem1)^.X - PChartDataItem(AItem2)^.X);
-
+  Result := CompareFloat(item1^.X, item2^.X);
   if Result = 0 then
     for i := 0 to Min(High(item1^.XList), High(item2^.XList)) do begin
-      Result := Sign(item1^.XList[i] - item2^.XList[i]);
+      Result := CompareFloat(item1^.XList[i], item2^.XList[i]);
       if Result <> 0 then
         exit;
     end;
