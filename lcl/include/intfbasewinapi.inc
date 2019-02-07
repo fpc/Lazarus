@@ -1285,7 +1285,6 @@ function TWidgetSet.GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices: Lon
   function CreateIntfImage(W, H: Integer; Clear: Boolean): TLazIntfImage;
   begin
     Result := TLazIntfImage.Create(W, H, [riqfRGB, riqfAlpha, riqfUpdate]);
-    Result.CreateData;
     if Clear then
       Result.FillPixels(FPColor(0, 0, 0, $0000));
   end;
