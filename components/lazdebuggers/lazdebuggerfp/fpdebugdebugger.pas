@@ -1599,6 +1599,8 @@ begin
 
   if StackFrame > 0 then begin
     PrepareCallStackEntryList(StackFrame+1);
+    if FDbgController.CurrentThread.CallStackEntryList.Count <= StackFrame then
+      exit;
     AFrame := FDbgController.CurrentThread.CallStackEntryList[StackFrame];
     if AFrame = nil then
       exit;
