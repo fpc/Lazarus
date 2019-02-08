@@ -304,7 +304,7 @@ var
 begin
   NewLength:=length(s);
   for SrcPos:=1 to length(s) do
-    if s[SrcPos] in ['"','\'] then inc(NewLength);
+    if s[SrcPos] in ['"','\',#9] then inc(NewLength);
   if NewLength=length(s) then begin
     Result:=s;
   end else begin
@@ -317,6 +317,13 @@ begin
           Result[DestPos]:='\';
           inc(DestPos);
           Result[DestPos]:=s[SrcPos];
+          inc(DestPos);
+        end;
+      #9:
+        begin
+          Result[DestPos]:='\';
+          inc(DestPos);
+          Result[DestPos]:='t';
           inc(DestPos);
         end;
       else
