@@ -262,7 +262,7 @@ type
     FOnCustomDrawPointer: TSeriesPointerCustomDrawEvent;
     FOnGetPointerStyle: TSeriesPointerStyleEvent;
     function GetErrorBars(AIndex: Integer): TChartErrorBar;
-    function GetLabelDirection(AIndex: Integer): TLabelDirection;
+    function GetLabelDirection(AIndex: Integer; ACenterLevel: Double): TLabelDirection;
     function IsErrorBarsStored(AIndex: Integer): Boolean;
     procedure SetErrorBars(AIndex: Integer; AValue: TChartErrorBar);
     procedure SetMarkPositionCentered(AValue: Boolean);
@@ -1266,6 +1266,7 @@ var
   curr, prev: Double;
   ext: TDoubleRect;
   yIsNaN: Boolean;
+  centerLvl: Double;
 begin
   if not Marks.IsMarkLabelsVisible then exit;
 
@@ -1274,6 +1275,7 @@ begin
     lfont.Assign(Marks.LabelFont);
     ParentChart.DisableRedrawing;
     ext := Extent;
+    centerLvl := (ext.a.y + ext.b.y) * 0.5;
 
     for i := FLoBound to FUpBound do begin
       if IsNan(Source[i]^.X) then
@@ -1285,7 +1287,7 @@ begin
       y := Source[i]^.Y;
       yIsNaN := IsNaN(y);
       ysum := IfThen(yIsNaN, prev, y);
-      ld := GetLabelDirection(i);
+      ld := GetLabelDirection(i, centerLvl);
       for si := 0 to Source.YCount - 1 do begin
         g := GetLabelDataPoint(i, si);
         if si > 0 then begin
@@ -1420,17 +1422,8 @@ begin
   Result := GetGraphPoint(AIndex, 0, AYIndex);
 end;
 
-function TBasicPointSeries.GetLabelDirection(AIndex: Integer): TLabelDirection;
-
-  function CenterLevel: Double;
-  begin
-    with Extent do
-      if IsRotated then
-        Result := (b.x + a.x) * 0.5
-      else
-        Result := (b.y + a.y) * 0.5;
-  end;
-
+function TBasicPointSeries.GetLabelDirection(AIndex: Integer;
+  ACenterLevel: Double): TLabelDirection;
 const
   DIR: array [Boolean, Boolean] of TLabelDirection =
     ((ldTop, ldBottom), (ldRight, ldLeft));
@@ -1444,7 +1437,7 @@ begin
     lmpOutside,
     lmpInside :
       begin
-        ref := IfThen(FSupportsZeroLevel, GetZeroLevel, CenterLevel);
+        ref := IfThen(FSupportsZeroLevel, GetZeroLevel, ACenterLevel);
         if Source[AIndex]^.Y < ref then
           isNeg := true
         else
@@ -1454,7 +1447,7 @@ begin
         if not FSupportsZeroLevel then
           isNeg := false
         else
-          isNeg := Source[AIndex]^.Y < CenterLevel;
+          isNeg := Source[AIndex]^.Y < ACenterLevel;
         if MarkPositions = lmpInside then
           isNeg := not isNeg;
       end;
@@ -1810,6 +1803,7 @@ var
   m: array [TLabelDirection] of Integer absolute AMargins;
   gp: TDoublePoint;
   scMarksDistance: Integer;
+  center: Double;
 begin
   if not Marks.IsMarkLabelsVisible or not Marks.AutoMargins then exit;
   if Count = 0 then exit;
@@ -1827,6 +1821,8 @@ begin
    Count-1}
   FindExtentInterval(ParentChart.CurrentExtent, Source.IsSorted);
 
+  with Extent do
+    center := (a.y + b.y) * 0.5;
   scMarksDistance := ADrawer.Scale(Marks.Distance);
   for i := FLoBound to FUpBound do begin
     gp := GetGraphPoint(i);
@@ -1834,7 +1830,7 @@ begin
     labelText := FormattedMark(i);
     if labelText = '' then continue;
 
-    dir := GetLabelDirection(i);
+    dir := GetLabelDirection(i, center);
     with Marks.MeasureLabel(ADrawer, labelText) do
       dist := IfThen(dir in [ldLeft, ldRight], cx, cy);
     if Marks.DistanceToCenter then
