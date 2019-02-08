@@ -26,8 +26,13 @@ interface
 
 uses
   // RTL + FCL
-  Classes, SysUtils, Math, fpImage, FPReadBMP, FPWriteBMP, BMPComn,
-  FPReadPNG, FPWritePNG, FPReadTiff, FPWriteTiff, FPTiffCmn, Laz_AVL_Tree,
+  Classes, SysUtils, Math, fpImage, 
+  FPReadBMP, FPWriteBMP, BMPComn,
+  FPReadPNG, FPWritePNG, 
+  {$IFNDEF DisableLCLTIFF}
+  FPReadTiff, FPWriteTiff, FPTiffCmn, 
+  {$ENDIF}
+  Laz_AVL_Tree,
   // LazUtils
   FPCAdds, LazLoggerBase, LazTracer,
   // LCL
@@ -581,6 +586,8 @@ type
     procedure Finalize;
   end;
 
+{$IFNDEF DisableLCLTIFF}
+
   { TLazReaderTiff }
 
 const
@@ -633,7 +640,8 @@ type
     procedure Initialize(AImage: TLazIntfImage);
     procedure Finalize;
   end;
-
+  
+{$ENDIF} //DisableLCLTIFF
 
   { TLazReaderIcnsPart }
 
@@ -6148,6 +6156,8 @@ begin
   Result := -1;
 end;
 
+{$IFNDEF DisableLCLTIFF}
+
 { TLazReaderTiff }
 
 {$IFDEF OldTiffCreateImageHook}
@@ -6320,6 +6330,8 @@ function TLazWriterTiff._Release: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$
 begin
   Result := -1;
 end;
+
+{$ENDIF} //DisableLCLTIFF
 
 { TLazReaderIcnsPart }
 
