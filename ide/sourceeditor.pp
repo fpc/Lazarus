@@ -1623,7 +1623,8 @@ begin
         (AParent, 'Find Declaration', uemFindDeclaration, nil, @ExecuteIdeMenuClick);
 
     {%region *** Submenu: Find Section *** }
-      SrcEditSubMenuFind := RegisterIDESubMenu(AParent, 'Find section', lisMenuFind);
+      SrcEditSubMenuFind := RegisterIDESubMenu(AParent,
+          'Find section', lisMenuFind, nil, nil, 'menu_search_find');
       AParent:=SrcEditSubMenuFind;
 
       SrcEditMenuProcedureJump := RegisterIDEMenuCommand(AParent,
@@ -1663,7 +1664,8 @@ begin
     SrcEditMenuSectionFiles:=RegisterIDEMenuSection(SourceEditorMenuRoot, 'Files');
 
     {%region * sub menu Open File *}
-      SrcEditSubMenuOpenFile:=RegisterIDESubMenu(SrcEditMenuSectionFiles,'Open File',lisOpenFile);
+      SrcEditSubMenuOpenFile:=RegisterIDESubMenu(SrcEditMenuSectionFiles,
+          'Open File',lisOpenFile, nil, nil, 'laz_open');
       AParent:=SrcEditSubMenuOpenFile;
 
       SrcEditMenuOpenFileAtCursor:=RegisterIDEMenuCommand(AParent, 'Open File At Cursor',
@@ -1771,8 +1773,8 @@ begin
   {%endregion}
 
   {%region *** Source Section ***}
-    SrcEditSubMenuSource:=RegisterIDESubMenu(SourceEditorMenuRoot,
-                                             'Source',uemSource);
+    SrcEditSubMenuSource := RegisterIDESubMenu(SourceEditorMenuRoot,
+        'Source', uemSource, nil, nil, 'item_unit');
     AParent:=SrcEditSubMenuSource;
     SrcEditMenuEncloseSelection := RegisterIDEMenuCommand(AParent,
         'EncloseSelection', lisMenuEncloseSelection);
@@ -1785,7 +1787,7 @@ begin
     SrcEditMenuUseUnit := RegisterIDEMenuCommand(AParent,
         'UseUnit', lisMenuUseUnit, nil, @ExecuteIdeMenuClick);
     SrcEditMenuShowUnitInfo := RegisterIDEMenuCommand(AParent,
-        'ShowUnitInfo', lisMenuViewUnitInfo);
+        'ShowUnitInfo', lisMenuViewUnitInfo , nil, nil, nil, 'menu_view_unit_info');
   {%endregion}
 
   {%region *** Refactoring Section ***}
