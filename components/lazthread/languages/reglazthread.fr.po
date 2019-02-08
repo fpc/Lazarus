@@ -9,11 +9,11 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
-"X-Generator: Poedit 1.7.5\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: reglazthread.sthreaddescription
 msgid "A Pascal unit with a subclass of TThread class."
-msgstr "Une unité Pascal avec un descendant de la classe \"TThread\"."
+msgstr "Une unité Pascal avec un descendant de la classe TThread."
 
 #: reglazthread.sthreadname
 msgid "Thread Object"

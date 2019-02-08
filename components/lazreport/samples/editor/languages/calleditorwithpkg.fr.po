@@ -5,11 +5,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-03-12 11:53+0100\n"
+"PO-Revision-Date: 2019-02-07 09:14+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
-"Language-Team: \n"
+"Language-Team: http://lazarus.developpez.com/\n"
 "Language: fr\n"
-"X-Generator: Poedit 1.7.5\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: maincalleditor.ceractivereport
 msgid "Active report: %s"
@@ -18,7 +18,7 @@ msgstr "Rapport actif : %s"
 #: maincalleditor.cerappcaption
 msgctxt "maincalleditor.cerappcaption"
 msgid "LazReport Test Suite"
-msgstr "Suite de tests LazReport "
+msgstr "Suite de tests LazReport"
 
 #: maincalleditor.cercomposite
 msgctxt "maincalleditor.cercomposite"
@@ -52,7 +52,7 @@ msgstr "Ouvrir un rapport existant"
 
 #: maincalleditor.cerhintprevgrid
 msgid "Print preview current DbGrid content"
-msgstr "Afficher l'aperçu du contenu de la \"DbGrid\" en cours"
+msgstr "Afficher l'aperçu du contenu de la DbGrid en cours"
 
 #: maincalleditor.cerhintprevreport
 msgid "Preview active report"
@@ -93,7 +93,7 @@ msgstr "Ouvrir un rapport en premier"
 
 #: maincalleditor.cerpreparefailed
 msgid "PrepareReport Failed!"
-msgstr "Échec de \"PrepareReport\" !"
+msgstr "Échec de PrepareReport !"
 
 #: maincalleditor.cerpreviewreport
 msgid "Preview report"
@@ -129,7 +129,7 @@ msgstr "Aperçu personnalisé"
 #: tfrmmain.acceditreport.caption
 msgctxt "TFRMMAIN.ACCEDITREPORT.CAPTION"
 msgid "Edit Report"
-msgstr "Édite le rapport"
+msgstr "Éditer le rapport"
 
 #: tfrmmain.accexporttocsv.caption
 msgctxt "TFRMMAIN.ACCEXPORTTOCSV.CAPTION"
@@ -164,7 +164,7 @@ msgstr "Aperçu du rapport"
 
 #: tfrmmain.accprintgrid.caption
 msgid "Print Grid"
-msgstr "Imprimer la \"DBGrid\""
+msgstr "Imprimer la grille"
 
 #: tfrmmain.accprintreport.caption
 msgid "Print Report"
@@ -186,7 +186,7 @@ msgstr "Test maître-détails"
 #: tfrmmain.caption
 msgctxt "tfrmmain.caption"
 msgid "LazReport Test Suite"
-msgstr "Suite de tests LazReport "
+msgstr "Suite de tests LazReport"
 
 #: tfrmmain.lblexpr.caption
 msgid "Expression"

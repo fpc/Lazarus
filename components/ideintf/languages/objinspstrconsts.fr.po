@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-11-28 17:27+0100\n"
+"PO-Revision-Date: 2019-02-07 12:06+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "Language: fr_FR\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Generator: Poedit 2.1.1\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
 msgid "(All)"
@@ -212,7 +212,7 @@ msgstr "Champs de &clé :"
 
 #: objinspstrconsts.feslookup
 msgid "&Lookup"
-msgstr "&Chercher (\"Lookup\")"
+msgstr "&Chercher"
 
 #: objinspstrconsts.feslookupdef
 msgid "Lookup definition"
@@ -606,7 +606,7 @@ msgstr "Interface"
 
 #: objinspstrconsts.oisinvalid
 msgid "(Invalid)"
-msgstr "(Invalide)"
+msgstr "(Incorrect)"
 
 #: objinspstrconsts.oisinvalidpropertyvalue
 msgid "Invalid property value"
@@ -638,7 +638,7 @@ msgstr "Charger une image"
 
 #: objinspstrconsts.oismasks
 msgid "Masks ..."
-msgstr "Masques."
+msgstr "Masques..."
 
 #: objinspstrconsts.oismethod
 msgid "Method"
@@ -699,11 +699,11 @@ msgstr "Options"
 
 #: objinspstrconsts.oisorderbackone
 msgid "Back One"
-msgstr "En arrière (un)"
+msgstr "En arrière (un pas)"
 
 #: objinspstrconsts.oisorderforwardone
 msgid "Forward One"
-msgstr "En avant (un)"
+msgstr "En avant (un pas)"
 
 #: objinspstrconsts.oisordermovetoback
 msgid "Move to Back"
@@ -744,7 +744,7 @@ msgstr "Appuyez sur une touche..."
 
 #: objinspstrconsts.oispressakeyegctrlp
 msgid "You can press e.g. Ctrl+P ..."
-msgstr "Vous pouvez appuyer par exemple sur Ctrl + P..."
+msgstr "Vous pouvez par exemple appuyer sur Ctrl + P..."
 
 #: objinspstrconsts.oisproperties
 msgid "Properties"
@@ -1328,11 +1328,11 @@ msgstr "Nouvelle résolution..."
 
 #: objinspstrconsts.sccsiledtaddsliced
 msgid "Add sliced ..."
-msgstr "Ajouter des icônes en tranches..."
+msgstr "Ajouter des icônes en morceaux..."
 
 #: objinspstrconsts.sccsiledtaddslicediconerror
 msgid "Adding sliced icons is not supported."
-msgstr "L'ajout d'icônes en tranches n'est pas pris en charge."
+msgstr "L'ajout d'icônes en morceaux n'est pas pris en charge."
 
 #: objinspstrconsts.sccsiledtadjustment
 msgid "Adjustment"

@@ -1,14 +1,14 @@
 msgid ""
 msgstr ""
 "Last-Translator: Philippe BOUCAULT <philbouc@users.sourceforge.net>\n"
-"PO-Revision-Date: 2015-04-20 18:55+0100\n"
-"Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
+"PO-Revision-Date: 2019-02-07 12:22+0100\n"
+"Language-Team: http://lazarus.developpez.com/\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: sqldb\n"
 "POT-Creation-Date: \n"
 "MIME-Version: 1.0\n"
-"X-Generator: Poedit 1.7.5\n"
+"X-Generator: Poedit 2.2.1\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "Language: fr\n"
 
@@ -69,16 +69,12 @@ msgid "Quick SQL check OK"
 msgstr "Vérification SQL rapide OK"
 
 #: sqlstringspropertyeditordlg.ssqlsyntaxerror
-#, fuzzy
-#| msgid ""
-#| "Probable syntax error in SQL statement:\n"
-#| "%s\n"
 msgid ""
 "Probable syntax error in SQL statement:\n"
 "%s"
 msgstr ""
 "Probable erreur de syntaxe dans l'instruction SQL :\n"
-"%s\n"
+"%s"
 
 #: sqlstringspropertyeditordlg.ssqltabcaption
 msgid "SQL Code"

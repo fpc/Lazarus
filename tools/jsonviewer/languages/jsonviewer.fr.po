@@ -4,13 +4,13 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2015-04-29 15:02+0100\n"
-"PO-Revision-Date: 2018-10-08 11:59+0200\n"
+"PO-Revision-Date: 2019-02-07 09:00+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr_FR\n"
-"X-Generator: Poedit 2.1.1\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: msgjsonviewer.sarray
 msgid "Array (%d elements)"
@@ -38,16 +38,12 @@ msgid "JSON document modified"
 msgstr "Document JSON modifié"
 
 #: msgjsonviewer.sdocumentmodifiedaction
-#, fuzzy
-#| msgid ""
-#| "The JSON data in \"%s\" was changed but not saved.\n"
-#| "What do want to do ?\n"
 msgid ""
 "The JSON data in \"%s\" was changed but not saved.\n"
 "What do want to do ?"
 msgstr ""
-"Les données JSON  dans \"%s\"ont été modifiées mais pas enregistrées.\n"
-"Que voulez-vous faire ?\n"
+"Les données JSON dans \"%s\"ont été modifiées mais pas enregistrées.\n"
+"Que voulez-vous faire ?"
 
 #: msgjsonviewer.sduplicatemembername
 msgid "Duplicate member name \"%s\"."

@@ -7,9 +7,9 @@ msgstr ""
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: Yann Mérignac <yann.merignac@laposte.net>\n"
-"Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
+"Language-Team: http://lazarus.developpez.com/\n"
 "Language: fr\n"
-"X-Generator: Poedit 1.7.5\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: messagecomposer.rscancel
 msgid "Cancel"
@@ -29,11 +29,11 @@ msgstr "Ajouter"
 
 #: messagecomposer.sbuttonsarrayofconst
 msgid "Buttons (array of const)"
-msgstr "Boutons (\"array of const\")"
+msgstr "Boutons (array of const)"
 
 #: messagecomposer.sbuttonstmsgdlgbuttons
 msgid "Buttons (TMsgDlgButtons)"
-msgstr "Boutons (\"TMsgDlgButtons\")"
+msgstr "Boutons (TMsgDlgButtons)"
 
 #: messagecomposer.scaseresult
 msgid "\"Case\" result"
@@ -107,9 +107,9 @@ msgstr "Texte d'invite"
 
 #: messagecomposer.ssourcewrapper
 msgid "Source wrapper"
-msgstr "Code source englobant"
+msgstr "Code source englobé"
 
 #: messagecomposer.svaluevar
 msgid "Value (var)"
-msgstr "Valeur (\"var\")"
+msgstr "Valeur (var)"
 

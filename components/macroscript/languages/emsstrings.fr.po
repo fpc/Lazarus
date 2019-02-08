@@ -6,11 +6,11 @@ msgstr ""
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
-"Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
+"Language-Team: http://lazarus.developpez.com/\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr_FR\n"
-"X-Generator: Poedit 1.7.5\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: emsstrings.emsactive
 msgid "Scripting active."
@@ -38,15 +38,15 @@ msgstr "Script inactif. L'autotest s'exécutera au prochain démarrage de l'EDI.
 
 #: emsstrings.emsselftesterrcaption
 msgid "Error in EditorMacroScript"
-msgstr "Erreur dans \"EditorMacroScript\""
+msgstr "Erreur dans EditorMacroScript"
 
 #: emsstrings.emsselftestfailed
 msgid "The package EditorMacroScript (pascalscript macros) has detected a problem and was deactivated.%0:sThe package failed its selftest with the message:%0:s\"%1:s\""
-msgstr "Le paquet \"EditorMacroScript\" (macros \"pascalscript\") a détecté un problème et a été désactivé.%0:sLe paquet a échoué lors de son autotest avec le message : %0:s\"%1:s\""
+msgstr "Le paquet EditorMacroScript (macros pascalscript) a détecté un problème et a été désactivé.%0:sLe paquet a échoué lors de son autotest avec le message : %0:s\"%1:s\""
 
 #: emsstrings.emsselftestfailedlasttime
 msgid "The package EditorMacroScript (pascalscript macros) has detected a problem and was deactivated.%0:sThe package selftest was not completed during the last start of the IDE."
-msgstr "Le paquet \"EditorMacroScript\" (macros \"pascalscript\") a détecté un problème et a été désactivé.%0:sL'autotest du paquet n'était pas terminé lors du dernier démarrage de l'EDI."
+msgstr "Le paquet EditorMacroScript (macros pascalscript) a détecté un problème et a été désactivé.%0:sL'autotest du paquet n'était pas terminé lors du dernier démarrage de l'EDI."
 
 #: emsstrings.emsstatustitle
 msgid "Status"

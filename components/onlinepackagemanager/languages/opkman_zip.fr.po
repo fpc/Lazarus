@@ -3,13 +3,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-05-24 09:20+0200\n"
+"PO-Revision-Date: 2019-02-07 12:12+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
-"X-Generator: Poedit 2.0.1\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: opkman_zip.serrbufsizechange
 msgid "Changing buffer size is not allowed while (un)zipping."
@@ -65,7 +65,7 @@ msgstr "La position ou le décalage %d est plus grand que le maximum supporté %
 
 #: opkman_zip.serrunsupportedcompressionformat
 msgid "Unsupported compression format %d."
-msgstr "Le format de compression n'est pas pris en charge : %d."
+msgstr "Le format de compression %d n'est pas pris en charge."
 
 #: opkman_zip.serrunsupportedmultiplediskscd
 msgid "A central directory split over multiple disks is unsupported."

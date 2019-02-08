@@ -5,11 +5,11 @@ msgstr ""
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
-"Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
+"Language-Team: http://lazarus.developpez.com/\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
-"X-Generator: Poedit 1.7.5\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: jcfideregister.format_about_menu
 msgid "&About"
@@ -18,7 +18,7 @@ msgstr "&À propos"
 #: jcfideregister.format_category_idecmd
 msgctxt "jcfideregister.format_category_idecmd"
 msgid "JEDI Code Format"
-msgstr "Formatage de code \"JEDI\""
+msgstr "Formatage de code JEDI"
 
 #: jcfideregister.format_current_idecmd
 msgid "Format code in current editor window"
@@ -31,7 +31,7 @@ msgstr "Fenêtre de l'éditeur en &cours"
 
 #: jcfideregister.format_menu
 msgid "JEDI Code &Format"
-msgstr "&Formatage de code \"JEDI\""
+msgstr "&Formatage de code JEDI"
 
 #: jcfideregister.format_open_menu
 msgctxt "jcfideregister.format_open_menu"

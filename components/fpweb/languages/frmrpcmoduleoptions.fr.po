@@ -5,11 +5,11 @@ msgstr ""
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: Yann Mérignac <yann.merignac@laposte.net>\n"
-"Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
+"Language-Team: http://lazarus.developpez.com/\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
-"X-Generator: Poedit 1.7.5\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: frmrpcmoduleoptions.scaption
 msgid "Create a new JSON-RPC module"
@@ -29,5 +29,5 @@ msgstr "Enregistrer les gestionnaires JSON-RPC dans la fabrique"
 
 #: frmrpcmoduleoptions.sregisterwebm
 msgid "Register web module"
-msgstr "Enregistrer le module WEB"
+msgstr "Enregistrer le module Web"
 

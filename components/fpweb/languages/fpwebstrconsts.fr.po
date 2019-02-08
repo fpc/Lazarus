@@ -5,11 +5,11 @@ msgstr ""
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: Yann Mérignac <yann.merignac@laposte.net>\n"
-"Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
+"Language-Team: http://lazarus.developpez.com/\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
-"X-Generator: Poedit 1.7.5\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: fpwebstrconsts.scssfile
 msgid "CSS file"
@@ -77,7 +77,7 @@ msgstr "Alt"
 
 #: fpwebstrconsts.shtmlinputformcaption
 msgid "Tag property: INPUT"
-msgstr "Propriétés de balise : INPUT"
+msgstr "Propriété de balise : INPUT"
 
 #: fpwebstrconsts.shtmlinputformimagesrc
 msgid "Image src"
@@ -97,7 +97,7 @@ msgstr "Taille"
 
 #: fpwebstrconsts.shtmlinputformtabindex
 msgid "Tab Index"
-msgstr "N° ordre (\"tabindex\")"
+msgstr "N° ordre"
 
 #: fpwebstrconsts.shtmlinputformtype
 msgid "Type"
@@ -129,7 +129,7 @@ msgstr "Cell spacing"
 
 #: fpwebstrconsts.shtmltableformcolumncount
 msgid "Column count"
-msgstr "Nb colonnes"
+msgstr "Nombre de colonnes"
 
 #: fpwebstrconsts.shtmltableformheaderbgcolor
 msgid "Header bg color"
@@ -137,7 +137,7 @@ msgstr "Couleur de fond de l'en-tête"
 
 #: fpwebstrconsts.shtmltableformrowcount
 msgid "Row count"
-msgstr "Nb lignes"
+msgstr "Nombre de lignes"
 
 #: fpwebstrconsts.shtmltableformuseheader
 msgid "Use header row"
@@ -157,7 +157,7 @@ msgstr "Soumettre"
 
 #: fpwebstrconsts.shtmltagproperty
 msgid "Tag property: %s"
-msgstr "Propriété(s) de balise : %s"
+msgstr "Propriété de balise : %s"
 
 #: fpwebstrconsts.shtmltitle
 msgid "Html &title - <title>"
@@ -193,11 +193,11 @@ msgstr "Insérer une case à cocher"
 
 #: fpwebstrconsts.smihtmlformfieldset
 msgid "Insert HTML FIELDSET tag"
-msgstr "Insérer une balise FIELDSET..."
+msgstr "Insérer une balise FIELDSET"
 
 #: fpwebstrconsts.smihtmlformlegend
 msgid "Insert HTML LEGEND tag"
-msgstr "Insérer une balise LEGEND..."
+msgstr "Insérer une balise LEGEND"
 
 #: fpwebstrconsts.smihtmlformradiobtn
 msgid "Insert RadioBtn control"
@@ -213,11 +213,11 @@ msgstr "Insérer une liste déroulante"
 
 #: fpwebstrconsts.smihtmlformselectopt
 msgid "Insert Select options"
-msgstr "Insérer une option de liste déroulante"
+msgstr "Insérer des options de liste déroulante"
 
 #: fpwebstrconsts.smihtmlformselectoptwd
 msgid "Insert Select options with dialog"
-msgstr "Insérer une option de liste déroulante (avec dialogue)"
+msgstr "Insérer des options de liste déroulante (avec dialogue)"
 
 #: fpwebstrconsts.smihtmlinsertbr
 msgid "Insert new line"
@@ -225,7 +225,7 @@ msgstr "Insérer un saut de ligne"
 
 #: fpwebstrconsts.smihtmlinsertcolor
 msgid "Insert HTML color value"
-msgstr "Insérer une couleur HTML..."
+msgstr "Insérer une couleur HTML"
 
 #: fpwebstrconsts.smihtmlinsertcomment
 msgid "Insert HTML comment"
@@ -237,7 +237,7 @@ msgstr "Insérer une balise DIV"
 
 #: fpwebstrconsts.smihtmlinsertform
 msgid "Insert HTML Form"
-msgstr "Insérer un formulaire HTML..."
+msgstr "Insérer un formulaire HTML"
 
 #: fpwebstrconsts.smihtmlinsertheader1level
 msgid "Insert HTML level 1 header"
@@ -265,11 +265,11 @@ msgstr "Insérer une ligne horizontale"
 
 #: fpwebstrconsts.smihtmlinsertimg
 msgid "Insert image"
-msgstr "Insérer une image..."
+msgstr "Insérer une image"
 
 #: fpwebstrconsts.smihtmlinsertinput
 msgid "Insert HTML INPUT tag"
-msgstr "Insérer une balise INPUT..."
+msgstr "Insérer une balise INPUT"
 
 #: fpwebstrconsts.smihtmlinsertinputreset
 msgid "Insert \"Reset\" button"
@@ -281,11 +281,11 @@ msgstr "Insérer un bouton \"Soumettre\"..."
 
 #: fpwebstrconsts.smihtmlinsertlink
 msgid "Insert link (HREF)"
-msgstr "Insérer un lien (HREF)..."
+msgstr "Insérer un lien (HREF)"
 
 #: fpwebstrconsts.smihtmlinsertlist
 msgid "Insert HTML list"
-msgstr "Insérer une liste HTML..."
+msgstr "Insérer une liste HTML"
 
 #: fpwebstrconsts.smihtmlinsertnbsp
 msgid "Insert Non Breaking Space"
@@ -309,7 +309,7 @@ msgstr "Insérer une balise SUP"
 
 #: fpwebstrconsts.smihtmlinserttable
 msgid "Insert HTML table"
-msgstr "Insérer un tableau HTML..."
+msgstr "Insérer un tableau HTML"
 
 #: fpwebstrconsts.smihtmlinserttabledata
 msgid "Insert HTML table data"
@@ -317,7 +317,7 @@ msgstr "Insérer une balise TD"
 
 #: fpwebstrconsts.smihtmlinserttabledatawd
 msgid "Insert HTML table data with dialog"
-msgstr "Insérer une balise TD (avec dialogue)..."
+msgstr "Insérer une balise TD (avec dialogue)"
 
 #: fpwebstrconsts.smihtmlinserttablerow
 msgid "Insert HTML table row"
@@ -325,7 +325,7 @@ msgstr "Insérer une balise TR"
 
 #: fpwebstrconsts.smihtmlinserttablerowwd
 msgid "Insert HTML table row with dialog"
-msgstr "Insérer une balise TR (avec dialogue)..."
+msgstr "Insérer une balise TR (avec dialogue)"
 
 #: fpwebstrconsts.smihtmllists
 msgid "Lists"
@@ -377,7 +377,7 @@ msgstr "Souligné"
 
 #: fpwebstrconsts.smiotherinsertfn
 msgid "Insert file name"
-msgstr "Insérer un nom de fichier..."
+msgstr "Insérer un nom de fichier"
 
 #: fpwebstrconsts.snewhtmlfileprops
 msgid "New Html file properties"

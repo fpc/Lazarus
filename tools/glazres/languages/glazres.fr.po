@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
-"X-Generator: Poedit 1.8.7\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: glazresmain.cbtncancel
 msgid "Cancel"
@@ -27,7 +27,7 @@ msgstr "Enregistrer le fichier de ressources sous"
 
 #: glazresmain.errconverttotext
 msgid "ERROR: unable to convert Delphi form to text: \"%s\""
-msgstr "ERREUR : impossible de convertir la fiche Delphi en texte : \"%s\""
+msgstr "ERREUR : Impossible de convertir la fiche Delphi en texte : \"%s\""
 
 #: glazresmain.errcreate
 msgid "ERROR: Cannot create \"%s\""
@@ -43,11 +43,11 @@ msgstr "ERREUR : Fichier introuvable : \"%s\""
 
 #: glazresmain.errnoresourcename
 msgid "ERROR: No resourcename found for \"%s\""
-msgstr "ERREUR: Aucun nom de ressource trouvé pour \"%s\""
+msgstr "ERREUR : Aucun nom de ressource trouvé pour \"%s\""
 
 #: glazresmain.errread
 msgid "ERROR: Cannot read from \"%s\""
-msgstr "ERREUR : impossible de lire à partir de \"%s\""
+msgstr "ERREUR : Impossible de lire à partir de \"%s\""
 
 #: glazresmain.msgcreatinglrs
 msgid "Creating \"%s\""
@@ -62,16 +62,12 @@ msgid " Resource name = \"%s\", Type = \"%s\""
 msgstr " Nom de la ressource = \"%s\" - Type = \"%s\""
 
 #: glazresmain.msgsuccess
-#, fuzzy
-#| msgid ""
-#| "Done.\n"
-#| "Number of resources added: %d.\n"
 msgid ""
 "Done.\n"
 "Number of resources added: %d."
 msgstr ""
 "Terminé.\n"
-"Nombre de ressources ajoutées : %d.\n"
+"Nombre de ressources ajoutées : %d."
 
 #: glazresmain.msgwrongext
 msgid "Filename does not have the required extension: fix it?"

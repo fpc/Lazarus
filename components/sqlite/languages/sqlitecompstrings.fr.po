@@ -8,7 +8,7 @@ msgstr ""
 "Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.7.5\n"
+"X-Generator: Poedit 2.2.1\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "Language: fr\n"
 
@@ -18,7 +18,7 @@ msgstr "Ajouter"
 
 #: sqlitecompstrings.satablenamedalreadyexistsareyousureyouwanttoreplace
 msgid "A Table named \"%s\" already exists. Are you sure you want to replace this table?%sAll data stored will be lost."
-msgstr "Une table nommée \"%s\" existe déjà. Êtes-vous sur de vouloir remplacer cette table ? %s Toutes les données enregistrées seront perdues."
+msgstr "Une table nommée \"%s\" existe déjà. Êtes-vous sûr de vouloir remplacer cette table ? %s Toutes les données enregistrées seront perdues."
 
 #: sqlitecompstrings.sclose
 msgid "Close"

@@ -3,13 +3,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2015-04-13 21:43+0100\n"
-"PO-Revision-Date: 2018-05-02 08:09+0200\n"
+"PO-Revision-Date: 2019-02-07 12:16+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: pocheckerconsts.rspochecker
 msgid "Check PO Files ..."
@@ -121,7 +121,7 @@ msgstr "Toutes les langues"
 
 #: pocheckerconsts.scannotwritefileyoucanpressretrytorefreshthistransl
 msgid "Cannot write file%s%s%s%sYou can press \"Retry\" to refresh this translation family again and continue."
-msgstr "Impossible d’écrire le fichier%s%s%s%sVous pouvez appuyer sur « Recommencer » pour réactualiser cette famille de traduction et continuer."
+msgstr "Impossible d’écrire le fichier%s%s%s%sVous pouvez appuyer sur \"Recommencer\" pour réactualiser cette famille de traduction et continuer."
 
 #: pocheckerconsts.scheckforincompatibleformatarguments
 msgid "Check for incompatible format arguments"
@@ -168,11 +168,6 @@ msgid "Duplicate Originals"
 msgstr "Chaînes d'origine en doublons"
 
 #: pocheckerconsts.serroroncleanup
-#, fuzzy
-#| msgid ""
-#| "An unrecoverable error occurred\n"
-#| "%s\n"
-#| "Please close the program\n"
 msgid ""
 "An unrecoverable error occurred\n"
 "%s\n"
@@ -180,19 +175,15 @@ msgid ""
 msgstr ""
 "Une erreur irrécupérable est survenue\n"
 "%s\n"
-"Veuillez fermer le programme\n"
+"Veuillez fermer le programme"
 
 #: pocheckerconsts.serroroncreate
-#, fuzzy
-#| msgid ""
-#| "Error creating an instance of TPoFamily:\n"
-#| "%s\n"
 msgid ""
 "Error creating an instance of TPoFamily:\n"
 "%s"
 msgstr ""
 "Erreur lors de la création d'une instance de TPoFamily :\n"
-"%s\n"
+"%s"
 
 #: pocheckerconsts.serrorsbytest
 msgid "Errors / warnings reported by %s for:"
@@ -203,16 +194,12 @@ msgid "File %s"
 msgstr "Fichier %s"
 
 #: pocheckerconsts.sfilesnotfoundandremoved
-#, fuzzy
-#| msgid ""
-#| "The following non-existent files were removed from the list:\n"
-#| "%s\n"
 msgid ""
 "The following non-existent files were removed from the list:\n"
 "%s"
 msgstr ""
 "Les fichiers suivants inexistants ont été retirés de la liste :\n"
-"%s\n"
+"%s"
 
 #: pocheckerconsts.sfuzzystrings
 msgid "Fuzzy strings"
@@ -276,7 +263,7 @@ msgstr "Remarque : la traduction est floue"
 
 #: pocheckerconsts.snrerrorsfound
 msgid "Found %d errors."
-msgstr "%d erreurs trouvées."
+msgstr "%d erreur(s) trouvée(s)."
 
 #: pocheckerconsts.snrofitemsmismatch
 msgid "Mismatch in number of items for master and child"
@@ -284,31 +271,21 @@ msgstr "Discordance entre le nombre d'éléments d'origine et celui de la traduc
 
 #: pocheckerconsts.snrofitemsmismatchd
 msgid "%s: %d items"
-msgstr "%s : %d éléments"
+msgstr "%s : %d élément(s)"
 
 #: pocheckerconsts.snrwarningsfound
 msgid "Found %d warnings."
-msgstr "%d avertissements trouvés."
+msgstr "%d avertissement(s) trouvé(s)."
 
 #: pocheckerconsts.sopenfail
-#, fuzzy
-#| msgid ""
-#| "Unable to open file:\n"
-#| "\"%s\"\n"
 msgid ""
 "Unable to open file:\n"
 "\"%s\""
 msgstr ""
 "Impossible d'ouvrir le fichier :\n"
-"\"%s\"\n"
+"\"%s\""
 
 #: pocheckerconsts.sopenfailexternal
-#, fuzzy
-#| msgid ""
-#| "Unable to open file\n"
-#| "\"%s\"\n"
-#| "in external editor\n"
-#| "\"%s\"\n"
 msgid ""
 "Unable to open file\n"
 "\"%s\"\n"
@@ -318,7 +295,7 @@ msgstr ""
 "Impossible d'ouvrir le fichier\n"
 "\"%s\"\n"
 "dans l'éditeur externe\n"
-"\"%s\"\n"
+"\"%s\""
 
 #: pocheckerconsts.sopenfileinexternaleditor
 msgid "Open file in external editor"
@@ -338,15 +315,15 @@ msgstr "Original"
 
 #: pocheckerconsts.spercfuzzy
 msgid "%s: %5.1f%% fuzzy strings."
-msgstr "%s : %5.1f%% chaînes floues."
+msgstr "%s : %5.1f%% chaîne(s) floue(s)."
 
 #: pocheckerconsts.sperctranslated
 msgid "%s: %5.1f%% translated strings."
-msgstr "%s : %5.1f%% chaînes traduites."
+msgstr "%s : %5.1f%% chaîne(s) traduite(s)."
 
 #: pocheckerconsts.spercuntranslated
 msgid "%s: %5.1f%% untranslated strings."
-msgstr "%s : %5.1f%% chaînes non traduites."
+msgstr "%s : %5.1f%% chaîne(s) non traduite(s)."
 
 #: pocheckerconsts.sprocessingtranslationfamily
 msgid "Processing translation family..."
@@ -377,16 +354,12 @@ msgid "Save &As ..."
 msgstr "&Enregistrer sous..."
 
 #: pocheckerconsts.ssaveerror
-#, fuzzy
-#| msgid ""
-#| "Error saving file:\n"
-#| "%s\n"
 msgid ""
 "Error saving file:\n"
 "%s"
 msgstr ""
 "Erreur d'enregistrement du fichier :\n"
-"%s\n"
+"%s"
 
 #: pocheckerconsts.sscandir
 msgid "Scan a folder"
@@ -413,12 +386,6 @@ msgid "Show statistics graph"
 msgstr "Afficher les statistiques"
 
 #: pocheckerconsts.sstathint
-#, fuzzy
-#| msgid ""
-#| "Translated: %d (%.1f%%)\n"
-#| "Untranslated: %d (%.1f%%)\n"
-#| "Fuzzy: %d (%.1f%%)\n"
-#| "Errors in selected tests: %d\n"
 msgid ""
 "Translated: %d (%.1f%%)\n"
 "Untranslated: %d (%.1f%%)\n"
@@ -428,7 +395,7 @@ msgstr ""
 "%d traduites (%.1f%%)\n"
 "%d non traduites (%.1f%%)\n"
 "%d floues (%.1f%%)\n"
-"%d erreur(s) dans les tests sélectionnés\n"
+"%d erreur(s) dans les tests sélectionnés"
 
 #: pocheckerconsts.sthefollowingmissingmasterpofileswereremoved
 msgid "The following %s missing master .po file(s) were removed from the list:"

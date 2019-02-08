@@ -1,5 +1,15 @@
 msgid ""
-msgstr "Content-Type: text/plain; charset=UTF-8"
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: http://lazarus.developpez.com/\n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: threadoptionsdialog.screateunitbuttoncaption
 msgid "Create Unit"
@@ -15,5 +25,5 @@ msgstr "Options de tâche"
 
 #: threadoptionsdialog.sthreadnamelabelcaption
 msgid "Thread Class Name"
-msgstr "Nom de la classe"
+msgstr "Nom de la classe de la tâche"
 

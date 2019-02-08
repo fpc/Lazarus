@@ -9,11 +9,11 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
-"X-Generator: Poedit 2.0.2\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: jcfuiconsts.lisaboutaboutjedicodeformat
 msgid "About JEDI Code Format"
-msgstr "À propos de \"JEDI Code Format\""
+msgstr "À propos de JEDI Code Format"
 
 #: jcfuiconsts.lisaboutfindmoreinformationonthewebat
 msgid "Find more information on the web at: %s"
@@ -233,7 +233,7 @@ msgstr "Définir la mise en majuscules de ces identificateurs:"
 
 #: jcfuiconsts.liscapsnotidentifiersnotidentifiers
 msgid "Non-identifiers"
-msgstr "non identificateurs"
+msgstr "Non identificateurs"
 
 #: jcfuiconsts.liscapsnotidentifierssetcapitalisationonthesenonidentifiers
 msgid "Set capitalisation on these non-identifiers:"
@@ -304,7 +304,7 @@ msgstr "Jamais"
 
 #: jcfuiconsts.liscaseblocksuseanewlineincaseblocksat
 msgid "Use a new line in Case blocks at:"
-msgstr "Insérer une nouvelle ligne dans les blocs \"Case\" :"
+msgstr "Insérer une nouvelle ligne dans les blocs \"Case\" en :"
 
 #: jcfuiconsts.liscdcompilerdirectives
 msgid "Compiler Directives"
@@ -516,11 +516,11 @@ msgstr "Paramètres de formatage de JCF"
 
 #: jcfuiconsts.lisjedicodeformatallopenwindow
 msgid "JEDI Code Format of all open windows?"
-msgstr "Formatage JEDI de toutes les fenêtres ouvertes?"
+msgstr "Formatage JEDI de toutes les fenêtres ouvertes ?"
 
 #: jcfuiconsts.lisjedicodeformatofareyousurethatyouwanttoformatallfi
 msgid "JEDI Code Format of %sAre you sure that you want to format all %s files in the project?"
-msgstr "JEDI Code Format of %sVoulez-vous vraiment formater les %s fichiers du projet ?"
+msgstr "JEDI Code Format de %sVoulez-vous vraiment formater les %s fichiers du projet ?"
 
 #: jcfuiconsts.lisjedicodeformatofstartformatting
 msgid "JEDI Code Format of %sStart formatting?"
@@ -560,7 +560,7 @@ msgstr "TOUT EN MAJUSCULES"
 
 #: jcfuiconsts.lisobfsalllowercase
 msgid "all lowercase"
-msgstr "toutes en minuscules"
+msgstr "tout en minuscules"
 
 #: jcfuiconsts.lisobfsleavealone
 msgid "Leave alone"
@@ -699,11 +699,11 @@ msgstr "Étiquette de la casse"
 
 #: jcfuiconsts.lisspacesclassvariables
 msgid "&Class variables"
-msgstr "Variables  de&Classe"
+msgstr "Variables de &classe"
 
 #: jcfuiconsts.lisspacesconstdeclarations
 msgid "C&onst declarations"
-msgstr "Déclarations \"C&onst\""
+msgstr "Déclarations de c&onstantes"
 
 #: jcfuiconsts.lisspacesfixspacing
 msgid "Fix &spacing"
@@ -711,7 +711,7 @@ msgstr "Espacement &fixe"
 
 #: jcfuiconsts.lisspacesfunctionreturntypes
 msgid "&Function return types"
-msgstr "Types retournés par \"&function\""
+msgstr "Types retournés par &fonction"
 
 #: jcfuiconsts.lisspacesinfunctioncall
 msgid "In function &call"
@@ -857,15 +857,15 @@ msgstr "Du plus court au plus long"
 
 #: jcfuiconsts.listransformsortimplementationuses
 msgid "Sort i&mplementation uses"
-msgstr "Trier les \"uses\" de l'implémentation"
+msgstr "Trier les \"uses\" de l'i&mplémentation"
 
 #: jcfuiconsts.listransformsortinterfaceuses
 msgid "Sort i&nterface uses"
-msgstr "Tri les \"uses\" de l'interface"
+msgstr "Trier les \"uses\" de l'i&nterface"
 
 #: jcfuiconsts.listransformsortprogramuses
 msgid "Sort &program uses"
-msgstr "Tri les \"uses\" du programme"
+msgstr "Trier les \"uses\" du &programme"
 
 #: jcfuiconsts.listransformsortusesclauses
 msgid "Sort &uses clauses"
@@ -897,7 +897,7 @@ msgstr "Remplacer"
 
 #: jcfuiconsts.lisusesuses
 msgid "Uses"
-msgstr "\"Uses\""
+msgstr "Uses"
 
 #: jcfuiconsts.liswarningsignoreunusedparametersnamed
 msgid "&Ignore unused parameters named:"

@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lazaruside\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2019-02-04 12:46+0100\n"
+"PO-Revision-Date: 2019-02-07 12:54+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "Language: fr_FR\n"
@@ -765,16 +765,12 @@ msgid "Auto save active desktop"
 msgstr "Sauvegarde automatique du bureau actif"
 
 #: lazarusidestrconsts.dlgautosaveactivedesktophint
-#, fuzzy
-#| msgid ""
-#| "Save active desktop on IDE close\n"
-#| "Save debug desktop on IDE close and debug end\n"
 msgid ""
 "Save active desktop on IDE close\n"
 "Save debug desktop on IDE close and debug end"
 msgstr ""
 "Sauvegarder le bureau actif à la fermeture de l'EDI\n"
-"Sauvegarder le bureau de débogage à la fermeture de l'EDI et en fin de débogage\n"
+"Sauvegarder le bureau de débogage à la fermeture de l'EDI et en fin de débogage"
 
 #: lazarusidestrconsts.dlgavailableforms
 msgid "Available forms:"
@@ -2275,16 +2271,12 @@ msgid "Included mixed state $IFDEF node"
 msgstr "État $IFDEF mixte (nœud)"
 
 #: lazarusidestrconsts.dlgimportdesktopexists
-#, fuzzy
-#| msgid ""
-#| "A desktop with the same name already exists.\n"
-#| "Please confirm the desktop name:\n"
 msgid ""
 "A desktop with the same name already exists.\n"
 "Please confirm the desktop name:"
 msgstr ""
 "Un bureau portant le même nom existe déjà.\n"
-"Veuillez confirmer le nom du bureau :\n"
+"Veuillez confirmer le nom du bureau :"
 
 #: lazarusidestrconsts.dlgincludeidentifierscontainingprefix
 msgid "Include identifiers containing prefix"
@@ -3135,16 +3127,12 @@ msgid "Overwrite block"
 msgstr "Écraser le bloc"
 
 #: lazarusidestrconsts.dlgoverwritedesktop
-#, fuzzy
-#| msgid ""
-#| "Desktop with the name \"%s\" was found.\n"
-#| "Should the old desktop be overwritten?\n"
 msgid ""
 "Desktop with the name \"%s\" was found.\n"
 "Should the old desktop be overwritten?"
 msgstr ""
 "Un bureau portant le nom \"%s\" a été trouvé.\n"
-"L'ancien bureau doit-il être remplacé ?\n"
+"L'ancien bureau doit-il être remplacé ?"
 
 #: lazarusidestrconsts.dlgpalhints
 msgid "Hints for component palette"
@@ -3401,7 +3389,7 @@ msgstr "Renommer le bureau"
 
 #: lazarusidestrconsts.dlgreplaceall
 msgid "Replace &All"
-msgstr "&Remplacer tout"
+msgstr "&Tout remplacer"
 
 #: lazarusidestrconsts.dlgreplacewith
 msgid "Replace wit&h"
@@ -3441,12 +3429,6 @@ msgid "Rubberband Selection"
 msgstr "Sélection de code"
 
 #: lazarusidestrconsts.dlgrunninginstancemodalerror
-#, fuzzy
-#| msgid ""
-#| "The running Lazarus instance cannot accept any files.\n"
-#| "Do you want to open them in a new IDE instance?\n"
-#| "\n"
-#| "%s\n"
 msgid ""
 "The running Lazarus instance cannot accept any files.\n"
 "Do you want to open them in a new IDE instance?\n"
@@ -3456,7 +3438,7 @@ msgstr ""
 "L'instance en cours de Lazarus ne peut pas accepter de fichiers.\n"
 "Voulez-vous en ouvrir grâce à une nouvelle instance de l'EDI ?\n"
 "\n"
-"%s\n"
+"%s"
 
 #: lazarusidestrconsts.dlgrunninginstancenotrespondingerror
 msgid "Lazarus instance is running but not responding."
@@ -5365,7 +5347,7 @@ msgstr "multiples configurations du compilateur trouvées : "
 
 #: lazarusidestrconsts.liscconocfgfound
 msgid "no fpc.cfg found"
-msgstr "aucun \"fpc.cfg\" trouvé"
+msgstr "aucun fpc.cfg trouvé"
 
 #: lazarusidestrconsts.lisccononascii
 msgid "non ASCII"
@@ -5373,7 +5355,7 @@ msgstr "non ASCII"
 
 #: lazarusidestrconsts.lisccoppuexiststwice
 msgid "ppu exists twice: %s, %s"
-msgstr "\"ppu\" existe deux fois : %s, %s"
+msgstr "ppu existe deux fois : %s, %s"
 
 #: lazarusidestrconsts.lisccoppuolderthancompiler
 msgid "There is a .ppu file older than the compiler itself:%s%s"
@@ -5697,7 +5679,7 @@ msgstr "Dans le fichier %s"
 
 #: lazarusidestrconsts.liscfeinvalidcomponentowner
 msgid "Invalid component owner"
-msgstr "Composant propriétaire (\"owner\") incorrect"
+msgstr "Composant propriétaire incorrect"
 
 #: lazarusidestrconsts.liscferoot
 msgid "%sRoot=%s:%s"
@@ -5758,7 +5740,7 @@ msgstr "Modifier la classe"
 
 #: lazarusidestrconsts.lischangedscoordofsfromdtodinsides
 msgid "Changed %s coord of %s from \"%d\" to \"%d\" inside %s."
-msgstr "%s coordonnées %s de \"%d\" changées en  \"%d\" dans %s."
+msgstr "%s coordonnées %s de \"%d\" changées en \"%d\" dans %s."
 
 #: lazarusidestrconsts.lischangeencoding
 msgid "Change Encoding"
@@ -6656,7 +6638,7 @@ msgstr "Valeur en texte"
 
 #: lazarusidestrconsts.liscodetoolsdefsvalueisinvalid
 msgid "%s:%svalue \"%s\" is invalid."
-msgstr "%s:%svaleur\"%s\" est incorrecte."
+msgstr "%s:%svaleur \"%s\" est incorrecte."
 
 #: lazarusidestrconsts.liscodetoolsdefsvariable
 msgid "Variable:"
@@ -6834,7 +6816,7 @@ msgstr "Compiler"
 
 #: lazarusidestrconsts.liscompilewithvdformoredetailscheckforduplicates
 msgid "Compile with -vd for more details. Check for duplicates."
-msgstr "Compiler avec \"-vd\"pour plus de détails. Attention aux duplications."
+msgstr "Compiler avec -vd pour plus de détails. Attention aux duplications."
 
 #: lazarusidestrconsts.liscompiling
 msgid "%s (compiling ...)"
@@ -6921,7 +6903,7 @@ msgstr "Configurer la création %s"
 
 #: lazarusidestrconsts.lisconfigurebuildlazarus
 msgid "Configure \"Build Lazarus\""
-msgstr "Configurer la \"création de Lazarus\""
+msgstr "Configurer la \"construction de Lazarus\""
 
 #: lazarusidestrconsts.lisconfigureeditortoolbar
 msgid "Configure Toolbar"
@@ -7704,7 +7686,7 @@ msgstr "Créer un projet"
 
 #: lazarusidestrconsts.liscreateupdatepofilewhensavingalfmfile
 msgid "Create/update .po file when saving a lfm file"
-msgstr "Créer/mettre à jour le fichier \".po\" en enregistrant le fichier LFM"
+msgstr "Créer/mettre à jour le fichier .po en enregistrant le fichier lfm"
 
 #: lazarusidestrconsts.liscreatingfileindexoffpcsources
 msgid "Creating file index of FPC sources %s ..."
@@ -8601,16 +8583,12 @@ msgid "Do not write updated project info file after build. If not specified, bui
 msgstr "Ne pas écrire le fichier d'information du projet mis à jour après la construction. Sans spécification, le numéro de construction sera incrémenté s'il est configuré."
 
 #: lazarusidestrconsts.lisdonwloadonlinepackages
-#, fuzzy
-#| msgid ""
-#| "The following package(s) are not available locally: %s.\n"
-#| "In order to install it, you must download them first. Download now?\n"
 msgid ""
 "The following package(s) are not available locally: %s.\n"
 "In order to install it, you must download them first. Download now?"
 msgstr ""
-"Les paquets suivants ne sont pas disponibles localement : %s.\n"
-"Pour les installer, vous devez d'abord les télécharger. Voulez-vous les télécharger maintenant ?\n"
+"Le ou les paquets suivants ne sont pas disponibles localement : %s.\n"
+"Pour les installer, vous devez d'abord les télécharger. Voulez-vous le faire maintenant ?"
 
 #: lazarusidestrconsts.lisdown
 msgctxt "lazarusidestrconsts.lisdown"
@@ -9090,7 +9068,7 @@ msgstr "Erreur dans les options personnalisées de l'éditeur de liens (Compilat
 
 #: lazarusidestrconsts.liserrorinthedebuggerpathaddition
 msgid "Error in the \"Debugger path addition\":"
-msgstr "Erreur dans \"Ajout du chemin du débogueur\":"
+msgstr "Erreur dans \"Ajout du chemin du débogueur\" :"
 
 #: lazarusidestrconsts.liserrorinthesearchpathforincludefiles
 msgid "Error in the search path for \"Include files\":"
@@ -9098,7 +9076,7 @@ msgstr "Erreur dans le chemin de recherche des \"Fichiers d'inclusion\" :"
 
 #: lazarusidestrconsts.liserrorinthesearchpathforlibraries
 msgid "Error in the search path for \"Libraries\":"
-msgstr "Erreur dans le chemin de recherche des \"Bibliothèques\":"
+msgstr "Erreur dans le chemin de recherche des \"Bibliothèques\" :"
 
 #: lazarusidestrconsts.liserrorinthesearchpathforobjectfiles
 msgid "Error in the search path for \"Object files\":"
@@ -9114,11 +9092,11 @@ msgstr "Erreur dans le chemin de recherche des \"Autres fichiers unités\" :"
 
 #: lazarusidestrconsts.liserrorintheunitoutputdirectory
 msgid "Error in the \"unit output directory\":"
-msgstr "Erreur dans le  \"répertoire de sortie de l'unité\" :"
+msgstr "Erreur dans le \"répertoire de sortie de l'unité\" :"
 
 #: lazarusidestrconsts.liserrorinvalidbuildmode
 msgid "Error: (lazarus) invalid build mode \"%s\""
-msgstr "Erreur : mode de construction \"%s\" incorrect"
+msgstr "Erreur : (Lazarus) mode de construction \"%s\" incorrect"
 
 #: lazarusidestrconsts.liserrorloadingfile
 msgid "Error loading file"
@@ -9154,7 +9132,7 @@ msgstr "Erreur à l'ouverture de la fiche"
 
 #: lazarusidestrconsts.liserrorparsinglfmcomponentstream
 msgid "Error parsing lfm component stream."
-msgstr "Erreur d'analyse du flux de composants \"lfm\"."
+msgstr "Erreur d'analyse du flux de composants lfm."
 
 #: lazarusidestrconsts.liserrorreadingpackagelistfromfile
 msgid "Error reading package list from file%s%s%s%s"
@@ -9224,7 +9202,7 @@ msgstr "Options du journal d'événements..."
 
 #: lazarusidestrconsts.liseventlogsavetofile
 msgid "Save Events to File"
-msgstr "Sauver les événements dans un fichier"
+msgstr "Sauvegarder les événements dans un fichier"
 
 #: lazarusidestrconsts.liseventslogaddcomment
 msgid "Add Comment ..."
@@ -9826,7 +9804,7 @@ msgstr "Il y a une erreur de syntaxe dans l'élément FPDoc \"%s\":%s%s"
 
 #: lazarusidestrconsts.lisfppkgcompilerproblem
 msgid "there is a problem with the Free Pascal compiler executable, "
-msgstr "Il y a un problème avec l'exécutable du compilateur Free Pascal, "
+msgstr "il y a un problème avec l'exécutable du compilateur Free Pascal, "
 
 #: lazarusidestrconsts.lisfppkginstallationpath
 msgid "The prefix of the Free Pascal Compiler installation is required to create new configuration files for Fppkg. For example it has the units \"%s\" and/or \"%s\""
@@ -9959,17 +9937,6 @@ msgid "Goto selected"
 msgstr "Aller au sélectionné"
 
 #: lazarusidestrconsts.lisgplnotice
-#, fuzzy
-#| msgid ""
-#| "<description>\n"
-#| "\n"
-#| "Copyright (C) <year> <name of author> <contact>\n"
-#| "\n"
-#| "This source is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. \n"
-#| "\n"
-#| "This code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. \n"
-#| "\n"
-#| "A copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.\n"
 msgid ""
 "<description>\n"
 "\n"
@@ -9990,7 +9957,7 @@ msgstr ""
 "\n"
 "This code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. \n"
 "\n"
-"A copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.\n"
+"A copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA."
 
 #: lazarusidestrconsts.lisgroup
 msgid "Group"
@@ -9998,7 +9965,7 @@ msgstr "Groupe"
 
 #: lazarusidestrconsts.lisgroupassignexisting
 msgid "Assign to existing \"%s\" group?"
-msgstr "Attribuer au groupe \"%s\" existant?"
+msgstr "Attribuer au groupe \"%s\" existant ?"
 
 #: lazarusidestrconsts.lisgroupemptydelete
 msgid "No more breakpoints are assigned to group \"%s\", delete it?"
@@ -10230,7 +10197,7 @@ msgstr "Création du Makefile pour le paquet %s"
 
 #: lazarusidestrconsts.lisideinfoerrorrunningcompileaftertoolfailedforpackage
 msgid "Error: running 'compile after' tool failed for package %s"
-msgstr "Erreur : L'exécution de l'outil  \"compile after\"  a échoué pour le paquet %s"
+msgstr "Erreur : L'exécution de l'outil \"compile after\" a échoué pour le paquet %s"
 
 #: lazarusidestrconsts.lisideinfoinformationabouttheide
 msgid "Information about the IDE"
@@ -10298,7 +10265,7 @@ msgstr "Erreur à l'ouverture du fichier XML"
 
 #: lazarusidestrconsts.lisiecoerroropeningxmlfile
 msgid "Error opening XML file \"%s\":%s%s"
-msgstr "Erreur à l'ouverture du fichier XML \"%s\":%s%s"
+msgstr "Erreur à l'ouverture du fichier XML \"%s\" :%s%s"
 
 #: lazarusidestrconsts.lisiecoexportcompileroptions
 msgid "Export Compiler Options"
@@ -10410,7 +10377,7 @@ msgstr "Impossible"
 
 #: lazarusidestrconsts.lisinasourcedirectoryofthepackage
 msgid "In a source directory of the package \"%s\"."
-msgstr "Dans un répertoire de codes sources du paquet \"%s\"."
+msgstr "Dans un répertoire de sources du paquet \"%s\"."
 
 #: lazarusidestrconsts.lisinasourcedirectoryoftheprojectcheckforduplicates
 msgid "In a source directory of the project. Check for duplicates."
@@ -10690,16 +10657,12 @@ msgid "Install it, I like the fat"
 msgstr "Installer malgré tout"
 
 #: lazarusidestrconsts.lisinstallpackagesmsg
-#, fuzzy
-#| msgid ""
-#| "The following packages are not installed, but available in the main repository: %s.\n"
-#| "Do you wish to install missing packages?\n"
 msgid ""
 "The following packages are not installed, but available in the main repository: %s.\n"
 "Do you wish to install missing packages?"
 msgstr ""
 "Les paquets suivants ne sont pas installés, mais présents dans le répertoire principal : %s.\n"
-"Voulez-vous installer les paquets manquants ?\n"
+"Voulez-vous installer les paquets manquants ?"
 
 #: lazarusidestrconsts.lisinstallselection
 msgid "Install selection"
@@ -11744,17 +11707,6 @@ msgid "LFM is ok"
 msgstr "Fichier LFM correct"
 
 #: lazarusidestrconsts.lislgplnotice
-#, fuzzy
-#| msgid ""
-#| "<description>\n"
-#| "\n"
-#| "Copyright (C) <year> <name of author> <contact>\n"
-#| "\n"
-#| "This library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. \n"
-#| "\n"
-#| "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. \n"
-#| "\n"
-#| "You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.\n"
 msgid ""
 "<description>\n"
 "\n"
@@ -11775,7 +11727,7 @@ msgstr ""
 "\n"
 "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. \n"
 "\n"
-"You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.\n"
+"You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA."
 
 #: lazarusidestrconsts.lislibrarypath
 msgid "library path"
@@ -11877,11 +11829,11 @@ msgstr "Chaîne de caractères en minuscules donnée en paramètre."
 
 #: lazarusidestrconsts.lislpkhasvanishedondiskusingasalternative
 msgid "lpk has vanished on disk. Using as alternative%s"
-msgstr "\"lpk\" a disparu du disque. Utilisation de %s comme alternative"
+msgstr "lpk a disparu du disque. Utilisation de %s comme alternative"
 
 #: lazarusidestrconsts.lislpkismissing
 msgid "lpk is missing"
-msgstr "\"lpk\" est absent"
+msgstr "lpk est absent"
 
 #: lazarusidestrconsts.lislrsincludefiles
 msgid "Lazarus resources (.lrs) include files"
@@ -12153,7 +12105,7 @@ msgstr "Configurer les outils externes..."
 
 #: lazarusidestrconsts.lismenuconfigurebuildlazarus
 msgid "Configure \"Build Lazarus\" ..."
-msgstr "Configurer la création de Lazarus..."
+msgstr "Configurer la construction de Lazarus..."
 
 #: lazarusidestrconsts.lismenucontexthelp
 msgid "Context sensitive Help"
@@ -12667,23 +12619,19 @@ msgstr "Raccourcis utilisés dans %s (%d)"
 
 #: lazarusidestrconsts.lismenueditorshowmenueditortmenuparameterisnil
 msgid "ShowMenuEditor: TMenu parameter is nil"
-msgstr "\"ShowMenuEditor\" : Le paramètre de \"TMenu\" est nul"
+msgstr "ShowMenuEditor : le paramètre de TMenu est nul"
 
 #: lazarusidestrconsts.lismenueditorsins
 msgid "\"%s\" in %s"
 msgstr "\"%s\" dans %s"
 
 #: lazarusidestrconsts.lismenueditorsisalreadyinuse
-#, fuzzy
-#| msgid ""
-#| "\"%s\" is already in use in %s as a shortcut.\n"
-#| "Try a different shortcut.\n"
 msgid ""
 "\"%s\" is already in use in %s as a shortcut.\n"
 "Try a different shortcut."
 msgstr ""
 "\"%s\" est déjà utilisé dans %s comme raccourci.\n"
-"Veuillez essayer un raccourci différent.\n"
+"Veuillez essayer un raccourci différent."
 
 #: lazarusidestrconsts.lismenueditorsisnotasufficientdescriptionpleaseexpand
 msgid "Please expand: \"%s\" is not a sufficient Description"
@@ -12726,11 +12674,6 @@ msgid "Template saved"
 msgstr "Modèle enregistré"
 
 #: lazarusidestrconsts.lismenueditortherearenousersavedmenutemplates
-#, fuzzy
-#| msgid ""
-#| "There are no user-saved menu templates.\n"
-#| "\n"
-#| "Only standard default templates are available.\n"
 msgid ""
 "There are no user-saved menu templates.\n"
 "\n"
@@ -12738,23 +12681,19 @@ msgid ""
 msgstr ""
 "Il n'y a pas de modèles de menu sauvegardés par l'utilisateur.\n"
 "\n"
-"Seuls les modèles standard sont disponibles.\n"
+"Seuls les modèles standard sont disponibles."
 
 #: lazarusidestrconsts.lismenueditortsclistgetscanlistcompnameinvalidindexdforfscanlis
 msgid "TSCList.GetScanListCompName: invalid index %d for FScanList"
 msgstr "TSCList.GetScanListCompName : index %d incorrect pour FScanList"
 
 #: lazarusidestrconsts.lismenueditoryouhavetochangetheshortcutfromsstoavoidaconflict
-#, fuzzy
-#| msgid ""
-#| "You have to change the shortcut from %s\n"
-#| "to avoid a conflict\n"
 msgid ""
 "You have to change the shortcut from %s\n"
 "to avoid a conflict"
 msgstr ""
 "Vous devez modifier le raccourci depuis %s\n"
-"afin d'éviter un conflit\n"
+"afin d'éviter un conflit"
 
 #: lazarusidestrconsts.lismenueditoryoumustentertextforthecaption
 msgid "You must enter text for the Caption"
@@ -13567,17 +13506,6 @@ msgid "Skip this Unit"
 msgstr "Ignorer cette unité"
 
 #: lazarusidestrconsts.lismitnotice
-#, fuzzy
-#| msgid ""
-#| "<description>\n"
-#| "\n"
-#| "Copyright (c) <year> <copyright holders>\n"
-#| "\n"
-#| "Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n"
-#| "\n"
-#| "The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n"
-#| "\n"
-#| "THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n"
 msgid ""
 "<description>\n"
 "\n"
@@ -13599,7 +13527,7 @@ msgstr ""
 "\n"
 "The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n"
 "\n"
-"THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n"
+"THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
 
 #: lazarusidestrconsts.lismmadditionsandoverrides
 msgid "Additions and Overrides"
@@ -13772,19 +13700,6 @@ msgid ", Mode: %s"
 msgstr " - Mode : %s"
 
 #: lazarusidestrconsts.lismodifiedlgplnotice
-#, fuzzy
-#| msgid ""
-#| "<description>\n"
-#| "\n"
-#| "Copyright (C) <year> <name of author> <contact>\n"
-#| "\n"
-#| "This library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:\n"
-#| "\n"
-#| "As a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.\n"
-#| "\n"
-#| "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. \n"
-#| "\n"
-#| "You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.\n"
 msgid ""
 "<description>\n"
 "\n"
@@ -13809,7 +13724,7 @@ msgstr ""
 "\n"
 "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. \n"
 "\n"
-"You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.\n"
+"You should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA."
 
 #: lazarusidestrconsts.lismodify
 msgid "&Modify"
@@ -14075,7 +13990,7 @@ msgstr "Aucune option de compilateur héritée."
 
 #: lazarusidestrconsts.lisnofppkgprefix
 msgid "empty Free Pascal compiler prefix."
-msgstr "Préfixe du compilateur Free Pascal vide."
+msgstr "préfixe du compilateur Free Pascal vide."
 
 #: lazarusidestrconsts.lisnohints
 msgid "no hints"
@@ -15001,7 +14916,7 @@ msgstr "Fondamental : ne peut être désinstallé"
 #: lazarusidestrconsts.lispckexplinstalled
 msgctxt "lazarusidestrconsts.lispckexplinstalled"
 msgid "Installed"
-msgstr "Installés"
+msgstr "Installé(s)"
 
 #: lazarusidestrconsts.lispckexplinstallonnextstart
 msgid "Install on next start"
@@ -15378,7 +15293,7 @@ msgstr "%sAjout d'une nouvelle dépendance pour le projet %s : paquet %s"
 
 #: lazarusidestrconsts.lispkgmangaddunittousesclause
 msgid "Add unit to uses clause of package main file. Disable this only for units that should not be compiled in all cases."
-msgstr "Ajouter l'unité à la clause \"uses\" du fichier principal du paquet. Ne désactiver ce comportement que pour les unités qui ne doivent pas être recompilées dans tous les cas."
+msgstr "Ajouter l'unité à la clause uses du fichier principal du paquet. Ne désactiver ce comportement que pour les unités qui ne doivent pas être recompilées dans tous les cas."
 
 #: lazarusidestrconsts.lispkgmangambiguousunitsfound
 msgid "Ambiguous units found"
@@ -15430,7 +15345,7 @@ msgstr "Erreur de lecture du paquet"
 
 #: lazarusidestrconsts.lispkgmangerrorupdatingpofilesfailedforpackage
 msgid "Error: updating po files failed for package %s"
-msgstr "Erreur : la mise à jour des fichiers \".po\" a échoué pour le paquet %s"
+msgstr "Erreur : la mise à jour des fichiers .po a échoué pour le paquet %s"
 
 #: lazarusidestrconsts.lispkgmangerrorwritingfile
 msgctxt "lazarusidestrconsts.lispkgmangerrorwritingfile"
@@ -15571,16 +15486,12 @@ msgid "One or more required packages were not found. See package graph for detai
 msgstr "Un ou plusieurs paquets sont introuvables. Voir le graphe des paquets pour les détails."
 
 #: lazarusidestrconsts.lispkgmangsaveasalreadyopenedpackage
-#, fuzzy
-#| msgid ""
-#| "The package %s is already open in the IDE.\n"
-#| "You cannot save a package with the same name.\n"
 msgid ""
 "The package %s is already open in the IDE.\n"
 "You cannot save a package with the same name."
 msgstr ""
-"Le paquet \"%s\" est déjà ouvert dans l'EDI.\n"
-"Vous ne pouvez pas sauvegarder un paquet portant le même nom.\n"
+"Le paquet %s est déjà ouvert dans l'EDI.\n"
+"Vous ne pouvez pas sauvegarder un paquet portant le même nom."
 
 #: lazarusidestrconsts.lispkgmangsavepackage
 msgid "Save package?"
@@ -15641,7 +15552,7 @@ msgstr "Les paquets suivants n'ont pas pu être chargés :"
 
 #: lazarusidestrconsts.lispkgmangthefollowingunitswillbeaddedtotheusessectionof
 msgid "%sThe following units will be added to the uses section of%s%s:%s%s"
-msgstr "%sLes unités suivantes seront ajoutées à la clause  \"uses\" de%s%s:%s%s"
+msgstr "%sLes unités suivantes seront ajoutées à la clause uses de%s%s:%s%s"
 
 #: lazarusidestrconsts.lispkgmangthepackagefailedtocompileremoveitfromtheinstallati
 msgid "The package \"%s\" failed to compile.%sRemove it from the installation list?"
@@ -15789,7 +15700,7 @@ msgstr "Utiliser l'unité"
 
 #: lazarusidestrconsts.lispkgmangwarningthefilebelongstothecurrentproject
 msgid "Warning: The file \"%s\"%sbelongs to the current project."
-msgstr "Avertissement : le fichier \"%s\"%sappartient projet actuel."
+msgstr "Avertissement : le fichier \"%s\"%sappartient au projet actuel."
 
 #: lazarusidestrconsts.lispkgmgrkeep
 msgctxt "lazarusidestrconsts.lispkgmgrkeep"
@@ -15837,7 +15748,7 @@ msgstr "Nom d'unité incorrecte : %s"
 
 #: lazarusidestrconsts.lispkgsyslpkfilename
 msgid "%s%slpk file: \"%s\""
-msgstr "%s%sfichier du paquet : \"%s\""
+msgstr "%s%sfichier lpk : \"%s\""
 
 #: lazarusidestrconsts.lispkgsyspackagefilenotfound
 msgid "Package file not found"
@@ -15853,7 +15764,7 @@ msgstr "La procédure Register est à nil"
 
 #: lazarusidestrconsts.lispkgsysregisterunitwascalledbutnopackageisregistering
 msgid "RegisterUnit was called but no package is registering."
-msgstr "\"RegisterUnit\" a été appelé, mais aucun paquet n'est en cours de référencement."
+msgstr "RegisterUnit a été appelé, mais aucun paquet n'est en cours de référencement."
 
 #: lazarusidestrconsts.lispkgsysthelpkfilewasnotfound
 msgid "%s%sThe lpk file was not found."
@@ -15906,7 +15817,7 @@ msgstr "Impossible de lire le fichier du paquet \"%s\".%sErreur : %s"
 
 #: lazarusidestrconsts.lisplay
 msgid "Play"
-msgstr "Jouer"
+msgstr "Exécuter"
 
 #: lazarusidestrconsts.lispldglobal
 msgctxt "lazarusidestrconsts.lispldglobal"
@@ -16021,11 +15932,11 @@ msgstr "Enregistrer dans le fichier .lps du dossier de configuration de l'EDI"
 
 #: lazarusidestrconsts.lisposaveinlpifil
 msgid "Save in .lpi file"
-msgstr "Sauver dans un fichier .lpi"
+msgstr "Sauvegarder dans un fichier .lpi"
 
 #: lazarusidestrconsts.lisposaveinlpsfileinprojectdirectory
 msgid "Save in .lps file in project directory"
-msgstr "Sauver dans un fichier .lps du dossier projet"
+msgstr "Sauvegarder dans un fichier .lps du dossier projet"
 
 #: lazarusidestrconsts.lisposavesessioninformationin
 msgid "Save session information in"
@@ -16045,7 +15956,7 @@ msgstr "%s (position hors du code source)"
 
 #: lazarusidestrconsts.lisppuinwrongdirectory
 msgid "ppu in wrong directory=%s."
-msgstr "\"ppu\" dans un répertoire incorrect = %s."
+msgstr "ppu dans un répertoire incorrect = %s."
 
 #: lazarusidestrconsts.lisppunotfoundcheckyourfpccfg
 msgid "%s.ppu not found. Check your fpc.cfg."
@@ -16790,19 +16701,6 @@ msgid "Result:"
 msgstr "Résultat :"
 
 #: lazarusidestrconsts.lisreturnparameterindexedword
-#, fuzzy
-#| msgid ""
-#| "Return parameter-indexed word from the current line preceding cursor position.\n"
-#| "\n"
-#| "Words in a line are numbered 1,2,3,... from left to right, but the last word\n"
-#| "which is always a macro command to be expanded has number 0, thus $PrevWord(0)\n"
-#| "is always the current macro.\n"
-#| "\n"
-#| "Example line:\n"
-#| "i 0 count-1 forb|\n"
-#| "Here $PrevWord(0)=forb, $PrevWord(1)=i, $PrevWord(2)=0, $PrevWord(3)=count-1\n"
-#| "\n"
-#| "In the end of your template use $PrevWord(-1) which expands to an empty string, but performs an important operation of wiping off all of the $PrevWords found. In addition here is a regexp that is used to detect words for this macro: [\\w\\-+*\\(\\)\\[\\].^@]+\n"
 msgid ""
 "Return parameter-indexed word from the current line preceding cursor position.\n"
 "\n"
@@ -16826,15 +16724,9 @@ msgstr ""
 "i 0 count-1 forb|\n"
 "Ici, $PrevWord(0)=forb, $PrevWord(1)=i, $PrevWord(2)=0, $PrevWord(3)=count-1\n"
 "\n"
-"À la fin de votre modèle, utilisez $PrevWord(-1) qui ne donnera qu'une chaîne vide, mais qui opèrera un nettoyage important de tous les $PrevWords trouvés. En bonus, voici une expression régulière utilisée afin de détecter les mots pour cette macro : [\\w\\-+*\\(\\)\\[\\].^@]+\n"
+"À la fin de votre modèle, utilisez $PrevWord(-1) qui ne donnera qu'une chaîne vide, mais qui opèrera un nettoyage important de tous les $PrevWords trouvés. En bonus, voici une expression régulière utilisée afin de détecter les mots pour cette macro : [\\w\\-+*\\(\\)\\[\\].^@]+"
 
 #: lazarusidestrconsts.lisreturnslistofallvaluesofcasevariableinfrontofvaria
-#, fuzzy
-#| msgid ""
-#| "Return the list of all values of case variable in front of variable.\n"
-#| "\n"
-#| "Optional Parameters (comma separated):\n"
-#| "WithoutExtraIndent    // the case list will be generated without extra indentation\n"
 msgid ""
 "Return the list of all values of case variable in front of variable.\n"
 "\n"
@@ -16844,7 +16736,7 @@ msgstr ""
 "Retourne la liste de toutes les valeurs de la variable \"case\" en face de la variable.\n"
 "\n"
 "Paramètres facultatifs (séparés par des virgules) :\n"
-"WithoutExtraIndent   // la liste de cas sera générée sans indentation supplémentaire.\n"
+"WithoutExtraIndent   // la liste de cas sera générée sans indentation supplémentaire"
 
 #: lazarusidestrconsts.lisrevertfailed
 msgid "Revert failed"
@@ -17725,7 +17617,7 @@ msgstr "Basculer les paramètres de filtre"
 
 #: lazarusidestrconsts.lisswitchtofavoritestabafterasking
 msgid "Switch to Favorites tab after asking for component name."
-msgstr "Basculer vers l'onglet \"Favoris\" après avoir demandé le nom du composant."
+msgstr "Basculer vers l'onglet Favoris après avoir demandé le nom du composant."
 
 #: lazarusidestrconsts.lissyntaxmode
 msgid "Syntax mode"
@@ -18354,7 +18246,7 @@ msgstr "Seul le mode de construction par défaut existe pour ce projet."
 
 #: lazarusidestrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
 msgid "This set of options to build Lazarus is not supported by this installation.%sThe directory \"%s\" is not writable.%sSee the Lazarus website for other ways to install Lazarus."
-msgstr "Ce jeu d'options pour construire Lazarus n'est pas supporté par cette installation.%sLe répertoire \"%s\" est en lecture seule.%sVoir le site Lazarus pour d'autres façons d'installer Lazarus."
+msgstr "Ce jeu d'options pour construire Lazarus n'est pas pris en charge par cette installation.%sLe répertoire \"%s\" est en lecture seule.%sVoir le site Lazarus pour d'autres façons d'installer Lazarus."
 
 #: lazarusidestrconsts.listhisstatementcannotbeextractedpleaseselectsomecode
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
@@ -19032,7 +18924,7 @@ msgstr "Impossible de placer le contrôle d'ancrage latéral"
 
 #: lazarusidestrconsts.lisunabletoshowmethod
 msgid "Unable to show method."
-msgstr "Incapable de montrer la méthode."
+msgstr "Impossible de montrer la méthode."
 
 #: lazarusidestrconsts.lisunabletostreamselectedcomponents
 msgid "Unable to stream selected components"
@@ -19403,7 +19295,7 @@ msgstr "Avertissement : "
 
 #: lazarusidestrconsts.liswarningambiguousfilefoundsourcefileis
 msgid "Warning: ambiguous file found: \"%s\". Source file is: \"%s\""
-msgstr "Avertissement : le fichier équivoque \"%s\" est équivoque. Le fichier de code source est : \"%s\""
+msgstr "Avertissement : le fichier \"%s\" est équivoque. Le fichier du source est : \"%s\""
 
 #: lazarusidestrconsts.liswarnings
 msgid ", Warnings: %s"
@@ -19725,7 +19617,7 @@ msgstr "Incrémenter automatiquement le numéro de construction"
 
 #: lazarusidestrconsts.rsautomaticallyincreasebuildnumberhint
 msgid "Increased every time the project is compiled."
-msgstr "Incrémenté à chaque compilation du programme."
+msgstr "Incrémenté à chaque compilation du projet."
 
 #: lazarusidestrconsts.rsbuild
 msgid "&Build:"
@@ -20971,7 +20863,7 @@ msgstr "arrêter le programme"
 
 #: lazarusidestrconsts.srkmecsynmacroplay
 msgid "Play Macro"
-msgstr "Jouer la macro"
+msgstr "Exécuter la macro"
 
 #: lazarusidestrconsts.srkmecsynmacrorecord
 msgid "Record Macro"
@@ -21467,7 +21359,7 @@ msgstr "Fermer les pages à &droite"
 
 #: lazarusidestrconsts.uemcloseotherpagesrightplain
 msgid "Close Pages on the Right"
-msgstr "Fermer les pages à &gauche"
+msgstr "Fermer les pages à droite"
 
 #: lazarusidestrconsts.uemclosepage
 msgid "&Close Page"
@@ -21543,27 +21435,27 @@ msgstr "&Verrouiller la page"
 
 #: lazarusidestrconsts.uemmovepageleft
 msgid "Move Page Left"
-msgstr "Déplacer la page vers la gauche"
+msgstr "Vers la gauche"
 
 #: lazarusidestrconsts.uemmovepageleftmost
 msgid "Move Page Leftmost"
-msgstr "Déplacer la page le plus à gauche possible"
+msgstr "Le plus à gauche possible"
 
 #: lazarusidestrconsts.uemmovepageright
 msgid "Move Page Right"
-msgstr "Déplacer la page vers la droite"
+msgstr "Vers la droite"
 
 #: lazarusidestrconsts.uemmovepagerightmost
 msgid "Move Page Rightmost"
-msgstr "Déplacer la page le plus à droite possible"
+msgstr "Le plus à droite possible"
 
 #: lazarusidestrconsts.uemmovetonewwindow
 msgid "Move to New Window"
-msgstr "Se déplacer vers une nouvelle fenêtre"
+msgstr "Déplacer vers une nouvelle fenêtre"
 
 #: lazarusidestrconsts.uemmovetootherwindow
 msgid "Move to Other Window"
-msgstr "Se déplacer vers une autre fenêtre"
+msgstr "Déplacer vers une autre fenêtre"
 
 #: lazarusidestrconsts.uemmovetootherwindownew
 msgctxt "lazarusidestrconsts.uemmovetootherwindownew"

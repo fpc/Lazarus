@@ -3,12 +3,12 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-10-08 11:08+0200\n"
+"PO-Revision-Date: 2019-02-07 09:53+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.1.1\n"
+"X-Generator: Poedit 2.2.1\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "Language: fr\n"
 
@@ -18,7 +18,7 @@ msgstr "Débogueur"
 
 #: gdbmistringconstants.gdbmibreakpointerroronruncommand
 msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to remove the breakpoints and continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
-msgstr "Le débogueur a rencontré une erreur en essayant d'exécuter l'application : %0:s%0:s%1:s%0:s%0:sAppuyez sur \"OK\" pour retirer les points d'arrêt et continuer le débogage (en pause), et corrigez le problème, ou choisissez une commande alternative. %0:sAppuyez sur \"Stop\" pour mettre fin à la session de débogage."
+msgstr "Le débogueur a rencontré une erreur en essayant d'exécuter l'application : %0:s%0:s%1:s%0:s%0:sAppuyez sur \"Ok\" pour retirer les points d'arrêt et continuer le débogage (en pause), et corrigez le problème, ou choisissez une commande alternative. %0:sAppuyez sur \"Stop\" pour mettre fin à la session de débogage."
 
 #: gdbmistringconstants.gdbmicommandstartmainbreakerror
 msgid "The debugger could not set a breakpoint on the application's entry point.%0:sThis may be caused by missing debug info."
@@ -34,11 +34,11 @@ msgstr "Le débogueur n'a pas pu obtenir le PID de l'application.%0:sCeci peut �
 
 #: gdbmistringconstants.gdbmicommandstartmainruntostoperror
 msgid "The debugger was unable to initialize itself.%0:sThe application did run (and terminated) before the debugger could set any breakpoints. %0:sThis may be caused by missing debug info."
-msgstr "Le débogueur n'a pas pu de s'initialiser. %0:sL'application a été lancée (et arrêtée) avant que le débogueur n'ait pu mettre un point d'arrêt. %0:sCela peut être dû à l'absence d'informations de débogage."
+msgstr "Le débogueur n'a pas pu s'initialiser. %0:sL'application a été lancée (et arrêtée) avant que le débogueur n'ait pu mettre un point d'arrêt. %0:sCela peut être dû à l'absence d'informations de débogage."
 
 #: gdbmistringconstants.gdbmierroronruncommand
 msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
-msgstr "Le débogueur a rencontré une erreur en essayant d'exécuter l'application : %0:s%0:s%1:s%0:s%0:sAppuyez sur \"OK\" pour continuer le débogage (en pause), et corrigez le problème, ou choisissez une commande alternative. %0:sAppuyez sur \"Stop\" pour mettre fin à la session de débogage."
+msgstr "Le débogueur a rencontré une erreur en essayant d'exécuter l'application : %0:s%0:s%1:s%0:s%0:sAppuyez sur \"Ok\" pour continuer le débogage (en pause), et corrigez le problème, ou choisissez une commande alternative. %0:sAppuyez sur \"Stop\" pour mettre fin à la session de débogage."
 
 #: gdbmistringconstants.gdbmierroronruncommandwithwarning
 msgid "%0:s%0:sIn addition to the error the following warning was encountered:%0:s%0:s%1:s"
@@ -118,7 +118,7 @@ msgstr "Pendant l'exécution de la commande : %0:s\"%2:s\"%0:sGDB a signalé : %
 
 #: gdbmistringconstants.gdbmipressignoretocontinuedebuggingthismaynotbesafepres
 msgid "Press \"Ignore\" to continue debugging. This may NOT be safe. Press \"Abort\" to stop the debugger.%0:sException: %1:s with message \"%2:s\"%0:sContext: %4:s. State: %5:s %0:s%0:s%3:s"
-msgstr "Appuyez sur \"Ignorer\" pour continuer le débogage. Ceci peut ne PAS être sûr. Appuyez sur \"Abandonner\" pour arrêter le débogage. %0:sException: %1:s avec le message \"%2:s\"%0:sContexte : %4:s. État : %5:s %0:s%0:s%3:s"
+msgstr "Appuyez sur \"Ignorer\" pour continuer le débogage. Ceci peut ne PAS être sûr. Appuyez sur \"Abandonner\" pour arrêter le débogage. %0:sException : %1:s avec le message \"%2:s\"%0:sContexte : %4:s. État : %5:s %0:s%0:s%3:s"
 
 #: gdbmistringconstants.gdbmithedebuggerexperiencedanunknowncondition
 msgid "The debugger experienced an unknown condition"
@@ -134,7 +134,7 @@ msgstr "Le débogueur a rencontré une situation inattendue %1:s%0:s%0:sAppuyez 
 
 #: gdbmistringconstants.lisnewthegnudebuggerthroughsshallowstoremotedebugviaassh
 msgid "The GNU debugger through SSH allows to remote debug via a SSH connection. See docs/RemoteDebugging.txt for details. The path must contain the SSH client. Use SSH_Startup_Options for the hostname and optional username. Use Remote_GDB_Exe for the filename of GDB on the remote computer."
-msgstr "Le débogueur GNU avec SSH permet le débogage à distance via une connexion SSH. Voir \"docs/RemoteDebugging.txt\" pour plus de détails. Le chemin doit contenir le client SSH. Utilisez \"SSH_Startup_Options\" pour le nom de l'hôte et pour le nom d'utilisateur optionnel. Utilisez \"Remote_GDB_Exe\" comme nom de fichier de GDB sur l'ordinateur distant."
+msgstr "Le débogueur GNU avec SSH permet le débogage à distance via une connexion SSH. Voir \"docs/RemoteDebugging.txt\" pour plus de détails. Le chemin doit contenir le client SSH. Utilisez SSH_Startup_Options pour le nom de l'hôte et pour le nom d'utilisateur optionnel. Utilisez Remote_GDB_Exe comme nom de fichier de GDB sur l'ordinateur distant."
 
 #: gdbmistringconstants.lisresponsecontinue
 msgid "Response: %sContinue?"
@@ -166,5 +166,5 @@ msgstr "Impossible de charger l'exécutable de l'application"
 
 #: gdbmistringconstants.synfthedebuggerwasunabletosetallbreakpointsduringiniti
 msgid "The debugger was unable to set all breakpoints during initialization.%0:sYou may wish to check if all sources were compiled with debug-info.%0:sPress OK to ignore this and continue."
-msgstr "Le débogueur a été incapable de mettre les points d'arrêt pendant l'initialisation. %0:sVeuillez vérifier que tous les fichiers sources ont été compilés avec les informations de débogage. %0:sAppuyez sur \"OK\" pour ignorer cet avertissement et continuer."
+msgstr "Le débogueur a été incapable de mettre les points d'arrêt pendant l'initialisation. %0:sVeuillez vérifier que tous les fichiers sources ont été compilés avec les informations de débogage. %0:sAppuyez sur \"Ok\" pour ignorer cet avertissement et continuer."
 

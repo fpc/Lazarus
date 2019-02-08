@@ -3,13 +3,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-05-24 10:11+0200\n"
+"PO-Revision-Date: 2019-02-07 12:18+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
-"X-Generator: Poedit 2.0.1\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: projectgroupstrconst.lisabort
 msgid "Abort"
@@ -60,11 +60,6 @@ msgid "Discard changes"
 msgstr "Ignorer les modifications"
 
 #: projectgroupstrconst.liserrnosuchfile
-#, fuzzy
-#| msgid ""
-#| "Could not find target file\n"
-#| "\"%s\"\n"
-#| "What do you want to do?\n"
 msgid ""
 "Could not find target file\n"
 "\"%s\"\n"
@@ -72,7 +67,7 @@ msgid ""
 msgstr ""
 "Impossible de trouver le fichier cible\n"
 "\"%s\"\n"
-"Que voulez-vous faire ?\n"
+"Que voulez-vous faire ?"
 
 #: projectgroupstrconst.liserronlyprojectgroupallowed
 msgid "Only target type \"projectgroup\" is allowed for root project group."
@@ -228,16 +223,12 @@ msgid "Project group modified"
 msgstr "Groupe de projets modifié"
 
 #: projectgroupstrconst.lisprojectgroupmodifiedconfirm
-#, fuzzy
-#| msgid ""
-#| "Project group \"%s\" is modified.\n"
-#| "What do you want to do?\n"
 msgid ""
 "Project group \"%s\" is modified.\n"
 "What do you want to do?"
 msgstr ""
 "Le groupe de projets \"%s\" a été modifié.\n"
-"Que voulez-vous faire ?\n"
+"Que voulez-vous faire ?"
 
 #: projectgroupstrconst.lisprojectgroupreload
 msgid "Reload"

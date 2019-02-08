@@ -3,13 +3,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2015-04-14 07:54+0100\n"
-"PO-Revision-Date: 2017-05-24 09:26+0200\n"
+"PO-Revision-Date: 2019-02-07 09:32+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
-"X-Generator: Poedit 2.0.1\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: codystrconsts.crsaddassignmethod
 msgid "Add Assign Method"
@@ -62,11 +62,11 @@ msgstr "&OK"
 
 #: codystrconsts.crsbyfpccfg
 msgid "by fpc.cfg"
-msgstr "par \"fpc.cfg\""
+msgstr "par fpc.cfg"
 
 #: codystrconsts.crscamaddassignmethodtoclass
 msgid "Add Assign method to class %s"
-msgstr "Ajoutez la méthode \"Assign\" à la classe %s"
+msgstr "Ajoutez la méthode Assign à la classe %s"
 
 #: codystrconsts.crscamcallinherited
 msgid "Call inherited"
@@ -268,11 +268,11 @@ msgstr "Erreur"
 
 #: codystrconsts.crscwpleaseplacethecursorofthesourceeditoronawithvariab
 msgid "Please place the cursor of the source editor on a With variable."
-msgstr "Veuillez placer le curseur de l'éditeur de source sur une variable \"Width\"."
+msgstr "Veuillez placer le curseur de l'éditeur de source sur une variable With."
 
 #: codystrconsts.crsdeclarevariable
 msgid "Declare Variable"
-msgstr "Déclarer la variable :"
+msgstr "Déclarer la variable"
 
 #: codystrconsts.crsdeclarevariable2
 msgid "Declare Variable ..."
@@ -280,7 +280,7 @@ msgstr "Déclarer la variable..."
 
 #: codystrconsts.crsdeclarevariable3
 msgid "Declare variable \"%s\""
-msgstr "Déclarer la variable  \"%s\""
+msgstr "Déclarer la variable \"%s\""
 
 #: codystrconsts.crsdeletepackage
 msgid "Delete package?"
@@ -304,7 +304,7 @@ msgstr "Erreur : %s"
 
 #: codystrconsts.crserrorcursorisnotinaprojectunit
 msgid "Error: cursor is not in a project unit"
-msgstr "Erreur : le curseur n'est pas une unité de projet"
+msgstr "Erreur : le curseur n'est pas dans une unité de projet"
 
 #: codystrconsts.crserrorneedsourceeditoratprocedurecallordeclaration
 msgid "Error: Need source editor at procedure call or declaration"
@@ -368,7 +368,7 @@ msgstr "Drapeaux"
 
 #: codystrconsts.crsfpcunitwithoutppu
 msgid "FPC unit without ppu"
-msgstr "Unité FPC sans \"PPU\""
+msgstr "Unité FPC sans ppu"
 
 #: codystrconsts.crsframeworks
 msgid "Frameworks"
@@ -461,7 +461,7 @@ msgstr "Aller à"
 
 #: codystrconsts.crskbytes
 msgid "kbytes"
-msgstr "Kilo-octets"
+msgstr "kilo-octets"
 
 #: codystrconsts.crslinkedfiles
 msgid "Linked files"
@@ -593,7 +593,7 @@ msgstr "Erreur de lecture"
 
 #: codystrconsts.crspastelinesofagdbbacktrace
 msgid "Paste lines of a gdb backtrace:"
-msgstr "Coller les lignes de trace de \"gdb\" :"
+msgstr "Coller les lignes de trace de gdb :"
 
 #: codystrconsts.crspleaseopenaprojectfirst
 msgid "Please open a project first."
@@ -613,7 +613,7 @@ msgstr "Veuillez sélectionner du code dans l'éditeur de source."
 
 #: codystrconsts.crspleaseselectsomecodeinthesourceeditorforanewwithbl
 msgid "Please select some code in the Source Editor for a new \"With\" block. No candidate for a with expression was found."
-msgstr "Veuillez sélectionner du code dans l'éditeur de source pour un nouveau bloc \"With\". Aucun candidat pour une expression \"With\" n'a été trouvé."
+msgstr "Veuillez sélectionner du code dans l'éditeur de source pour un nouveau bloc With. Aucun candidat pour une expression With n'a été trouvé."
 
 #: codystrconsts.crspleasespecifyalocation
 msgid "Please specify a location"
@@ -629,7 +629,7 @@ msgstr "\"PPU\" : %s"
 
 #: codystrconsts.crsppufilesofproject
 msgid "PPU files of project \"%s\""
-msgstr "Fichiers \"PPU\" du projet \"%s\""
+msgstr "Fichiers PPU du projet \"%s\""
 
 #: codystrconsts.crsprivate
 msgid "Private"
@@ -713,7 +713,7 @@ msgstr "Afficher les informations du nœud des outils de code..."
 
 #: codystrconsts.crsshowcodydict
 msgid "Show Cody Dictionary for \"%s\""
-msgstr "Afficher le dictionnaire \"Cody\" pour \"%s\""
+msgstr "Afficher le dictionnaire Cody pour \"%s\""
 
 #: codystrconsts.crsshowonlyidentifierscontainingfiltertext
 msgid "Show only identifiers containing filter text"
@@ -729,15 +729,15 @@ msgstr "Afficher le dictionnaire des unités/identificateurs"
 
 #: codystrconsts.crsshowusedppufiles
 msgid "Show Used .ppu Files ..."
-msgstr "Afficher les fichiers \".PPU\" utilisés"
+msgstr "Afficher les fichiers .ppu utilisés"
 
 #: codystrconsts.crssizeofofile
 msgid "Size of .o file"
-msgstr "Taille du fichier \".o\""
+msgstr "Taille du fichier .o"
 
 #: codystrconsts.crssizeofppufile
 msgid "Size of .ppu file"
-msgstr "Taille du fichier \".ppu\""
+msgstr "Taille du fichier .ppu"
 
 #: codystrconsts.crssource
 msgid "Source: %s"
@@ -761,7 +761,7 @@ msgstr "L'identificateur \"%s\" déjà défini."
 
 #: codystrconsts.crsthereisalreadyanotherpackageloadedwiththesamenameo
 msgid "There is already another package loaded with the same name.%sOpen package: %s%sNew package: %s%sOnly one package can be loaded at a time."
-msgstr "Il y a déjà un paquet chargé portant le même nom.%sPaquet ouvert : %s%sNouveau paquet : %s%sSeul un paquet peut être chargé à un moment donné."
+msgstr "Il y a déjà un paquet chargé portant le même nom.%sPaquet ouvert : %s%sNouveau paquet : %s%sUn seul paquet peut être chargé à un moment donné."
 
 #: codystrconsts.crsthetargetunithasthesamenameasthecurrentunitfreepas
 msgid "The target unit has the same name as the current unit.%s Free Pascal does not support that."

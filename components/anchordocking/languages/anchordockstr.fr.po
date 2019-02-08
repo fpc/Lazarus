@@ -3,13 +3,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2015-04-14 07:54+0100\n"
-"PO-Revision-Date: 2018-11-28 17:23+0100\n"
+"PO-Revision-Date: 2019-02-07 09:11+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
-"X-Generator: Poedit 2.1.1\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: anchordockstr.adrsafreesideofasplittermustnotbeanchorednodetypeancho
 msgid "A free side of a splitter must not be anchored: Node=\"%s\" Type=%s Anchors[%s]=\"%s\""
@@ -37,7 +37,7 @@ msgstr "Ancre du mauvais côté du séparateur : Nœud = \"%s\" Ancres[%s] = \"%
 
 #: anchordockstr.adrsapagemustnotbeanchorednodeparentparenttypeanchors
 msgid "A page must not be anchored: Node=\"%s\" Parent=%s ParentType=%s Anchors[%s]=\"%s\""
-msgstr "Une page doit être ancrée : Nœud = \"%s\" Parent = %s Type du parent = %s  Ancres[%s] = \"%s\""
+msgstr "Une page ne doit pas être ancrée : Nœud = \"%s\" Parent = %s Type du parent = %s Ancres[%s] = \"%s\""
 
 #: anchordockstr.adrsautomatically
 msgid "Automatically"

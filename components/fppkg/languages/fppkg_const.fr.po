@@ -3,7 +3,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2015-04-16 07:54+0100\n"
-"PO-Revision-Date: 2019-02-04 13:12+0100\n"
+"PO-Revision-Date: 2019-02-07 09:39+0100\n"
 "Last-Translator: h.mira@free.fr\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "MIME-Version: 1.0\n"
@@ -41,7 +41,7 @@ msgstr "Version du compilateur"
 
 #: fppkg_const.rscustomfpmakeoptions
 msgid "Custom fpmake options"
-msgstr "Options personnalisées de \"fpmake\""
+msgstr "Options personnalisées de fpmake"
 
 #: fppkg_const.rsdefaultcompilerconfig
 msgid "Default compiler config"
@@ -53,7 +53,7 @@ msgstr "Téléchargement"
 
 #: fppkg_const.rsfpmakecompilerconfig
 msgid "fpmake compiler config"
-msgstr "configuration de \"fpmake\" du compilateur"
+msgstr "configuration de fpmake du compilateur"
 
 #: fppkg_const.rsfppkgenvironmentoptions
 msgid "Fppkg"
@@ -65,7 +65,7 @@ msgstr "Compilation"
 
 #: fppkg_const.rsfppkgoptions
 msgid "fppkg options"
-msgstr "Options de \"fppkg\""
+msgstr "Options de fppkg"
 
 #: fppkg_const.rsfppkgsfailedresultds
 msgid "Fppkg %s failed: Result %d%s%s"
@@ -97,7 +97,7 @@ msgstr "Dépôt local"
 
 #: fppkg_const.rsnofppkgexecutablefound
 msgid "No fppkg executable found"
-msgstr "Aucun exécutable de \"fppkg\" trouvé"
+msgstr "Aucun exécutable de fppkg trouvé"
 
 #: fppkg_const.rsoptions
 msgid "Options"

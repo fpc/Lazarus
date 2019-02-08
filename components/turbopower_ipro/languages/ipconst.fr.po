@@ -3,14 +3,14 @@ msgstr ""
 "Project-Id-Version: lazaruside\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2016-01-03 20:32+0100\n"
+"PO-Revision-Date: 2019-02-07 10:22+0100\n"
 "Last-Translator: Alcatiz <alcatiz@redaction-developpez.com>\n"
-"Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
+"Language-Team: http://lazarus.developpez.com/\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.6\n"
+"X-Generator: Poedit 2.2.1\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: ipconst.cacheadding
@@ -123,7 +123,7 @@ msgstr "Format de fichier inconnu"
 
 #: ipconst.sbadimagelibstream
 msgid "ImageLib must use TMemoryStreams"
-msgstr "\"ImageLib\" doit utiliser des \"TMemoryStreams\""
+msgstr "ImageLib doit utiliser des TMemoryStreams"
 
 #: ipconst.sbadlinelength
 msgid "Invalid line length"
@@ -151,7 +151,7 @@ msgstr "Buffer non assigné"
 
 #: ipconst.sbinhexbadchar
 msgid "Invalid BinHex character"
-msgstr "Caractère \"BinHex\" incorrect"
+msgstr "Caractère BinHex incorrect"
 
 #: ipconst.sbinhexbaddatacrc
 msgctxt "ipconst.sbinhexbaddatacrc"
@@ -160,7 +160,7 @@ msgstr "Mauvais CRC d'en-tête"
 
 #: ipconst.sbinhexbadformat
 msgid "Invalid BinHex format"
-msgstr "Format \"BinHex\" incorrect"
+msgstr "Format BinHex incorrect"
 
 #: ipconst.sbinhexbadheadercrc
 msgctxt "ipconst.sbinhexbadheadercrc"
@@ -382,7 +382,7 @@ msgstr "Aucun fournisseur de données assigné"
 
 #: ipconst.shtmlnogetimage
 msgid "No OnGetImage event handler assigned"
-msgstr "Aucun gestionnaire d'événement \"OnGetImage\" assigné"
+msgstr "Aucun gestionnaire d'événement OnGetImage assigné"
 
 #: ipconst.shtmlnographic
 msgid "Picture object contains no graphic object"
@@ -398,7 +398,7 @@ msgstr "Ressource indisponible :"
 
 #: ipconst.shtmltokenstackoverfl
 msgid "Token stack overflow"
-msgstr "Débordement de pile de jetons (\"tokens\")"
+msgstr "Débordement de pile de jetons (tokens)"
 
 #: ipconst.shtmlunknowntok
 msgid "Unknown token"
@@ -409,14 +409,6 @@ msgid "Unsupported protocol in URL:%s"
 msgstr "Protocole non supporté dans l'URL :%s"
 
 #: ipconst.sicmpecho
-#, fuzzy
-#| msgid ""
-#| "Echo reply (Hop number: %d)\n"
-#| "             Status = %d\n"
-#| "             RTTime = %d\n"
-#| "             Ttl = %d\n"
-#| "             Tos = %d\n"
-#| "             IpFlags = %d\n"
 msgid ""
 "Echo reply (Hop number: %d)\n"
 "             Status = %d\n"
@@ -430,7 +422,7 @@ msgstr ""
 "             RTTime = %d\n"
 "             Ttl = %d\n"
 "             Tos = %d\n"
-"             IpFlags = %d\n"
+"             IpFlags = %d"
 
 #: ipconst.sicmpechostring
 msgid "Echo string: %s"
@@ -466,11 +458,11 @@ msgstr "Code de réponse incorrect"
 
 #: ipconst.sinvitemsize
 msgid "TIpTerminalArray.GetItemPtr: invalid item size"
-msgstr "\"TIpTerminalArray.GetItemPtr\" : taille d'élément incorrect"
+msgstr "TIpTerminalArray.GetItemPtr : taille d'élément incorrect"
 
 #: ipconst.sinvscrollrow
 msgid "TIpTerminalBuffer.SetScrollRegion: invalid row number(s)"
-msgstr "\"TIpTerminalBuffer.SetScrollRegion\" : numéro(s) de rangée(s) incorrect(s)"
+msgstr "TIpTerminalBuffer.SetScrollRegion : numéro(s) de rangée(s) incorrect(s)"
 
 #: ipconst.sipicmp_bad_destination
 msgid "Bad destination"
@@ -566,7 +558,7 @@ msgstr "Liste non assignée"
 
 #: ipconst.slogarticle
 msgid "Generating OnArticle event"
-msgstr "Génération d'un événement \"OnArticle\""
+msgstr "Génération d'un événement OnArticle"
 
 #: ipconst.slogauthlogin
 msgid " (ssAuthLogin)"
@@ -590,11 +582,11 @@ msgstr " (ssEhlo)"
 
 #: ipconst.slogencodeactionstart
 msgid "Generating OnEncodeAction(Start)"
-msgstr "Génération de \"OnEncodeAction(Start)\""
+msgstr "Génération de OnEncodeAction(Start)"
 
 #: ipconst.slogencodeactionstop
 msgid "Generating OnEncodeAction(Stop)"
-msgstr "Génération de \"OnEncodeAction(Stop)\""
+msgstr "Génération de OnEncodeAction(Stop)"
 
 #: ipconst.slogexpand
 msgid " (ssExpand)"
@@ -618,7 +610,7 @@ msgstr " (ssMailFrom)"
 
 #: ipconst.slogmultiline
 msgid "Generating OnMultiLineResponse event"
-msgstr "Génération d'un événement \"OnMultiLineResponse\""
+msgstr "Génération d'un événement OnMultiLineResponse"
 
 #: ipconst.slognextmessagenotready
 msgid "Next message not ready"
@@ -778,11 +770,11 @@ msgstr "[POP3] "
 
 #: ipconst.slogpop3message
 msgid "Generating OnMessage event"
-msgstr "Génération d'un événement \"OnMessage\""
+msgstr "Génération d'un événement OnMessage"
 
 #: ipconst.slogpop3top
 msgid "Generating OnTop event"
-msgstr "Génération d'un événement \"OnTop\""
+msgstr "Génération d'un événement OnTop"
 
 #: ipconst.slogpsapop
 msgid " (psApop)"
@@ -870,7 +862,7 @@ msgstr " (ssRcptTo)"
 
 #: ipconst.slogresponse
 msgid "Generating OnResponse event, Code = "
-msgstr "Génération d'un événement \"OnResponse\" - Code = "
+msgstr "Génération d'un événement OnResponse - Code = "
 
 #: ipconst.slogrset
 msgid " (ssRSet)"
@@ -898,7 +890,7 @@ msgstr "[SMTP] "
 
 #: ipconst.slogsmtpnextmessage
 msgid "Generating OnNextMessage event"
-msgstr "Génération d'un événement \"OnNextMessage\""
+msgstr "Génération d'un événement OnNextMessage"
 
 #: ipconst.slogsoml
 msgid " (ssSoml)"
@@ -934,7 +926,7 @@ msgstr " (stSendMail)"
 
 #: ipconst.slogtaskcomplete
 msgid "Generating OnTaskComplete event "
-msgstr "Génération d'un événement \"OnTaskComplete\""
+msgstr "Génération d'un événement OnTaskComplete"
 
 #: ipconst.slogtaskstart
 msgid "Starting task: "
@@ -950,15 +942,15 @@ msgstr " (ssVerify)"
 
 #: ipconst.smemmapfilenamerequired
 msgid "You must specify a file name for TIpMemMapStream"
-msgstr "Vous devez spécifier un nom de fichier pour \"TIpMemMapStream\""
+msgstr "Vous devez spécifier un nom de fichier pour TIpMemMapStream"
 
 #: ipconst.smemmapmustbeclosed
 msgid "The %s method requires the TIpMemMapStream instance to be closed"
-msgstr "La méthode %s requiert que l'instance de \"TIpMemMapStream\" soit fermée"
+msgstr "La méthode %s requiert que l'instance de TIpMemMapStream soit fermée"
 
 #: ipconst.smemmapmustbeopen
 msgid "The %s method requires the TIpMemMapStream instance to be opened"
-msgstr "La méthode %s requiert que l'instance de \"TIpMemMapStream\" soit ouverte"
+msgstr "La méthode %s requiert que l'instance de TIpMemMapStream soit ouverte"
 
 #: ipconst.snntpcmdarticle
 msgid "ARTICLE"
@@ -1248,15 +1240,15 @@ msgstr "Sélection en cours du groupe"
 
 #: ipconst.soriginfrombegin
 msgid "When origin is soFromBeginning, Offset must be >= 0"
-msgstr "Quand l'origine est \"soFromBeginning\", l'offset doit être >= 0"
+msgstr "Quand l'origine est soFromBeginning, l'offset doit être >= 0"
 
 #: ipconst.soriginfromend
 msgid "When origin is soFromEnd, Offset must be <= 0"
-msgstr "Quand l'origine est \"soFromEnd\", l'offset doit être <= 0"
+msgstr "Quand l'origine est soFromEnd, l'offset doit être <= 0"
 
 #: ipconst.spngbadbitdepth
 msgid "Unsupported Bit Depth of %d"
-msgstr "Bit Depth de %d non supporté"
+msgstr "Bit Depth de %d non pris en charge"
 
 #: ipconst.spngbadchunktype
 msgid "Unrecognized Chunk Type: %s"
@@ -1296,7 +1288,7 @@ msgstr "Buffer PNG trop petit."
 
 #: ipconst.spngcannotsave
 msgid "PNG Saving is not supported"
-msgstr "La sauvegarde de PNG n'est pas supportée"
+msgstr "La sauvegarde de PNG n'est pas prise en charge"
 
 #: ipconst.spngchunkidandlength
 msgid "PNG Chunk: %s  Length: %d"
@@ -1376,7 +1368,7 @@ msgstr "Date de modification : %s"
 
 #: ipconst.spngnoclipboard
 msgid "PNG Clipboard support is not supported."
-msgstr "Le format PNG n'est pas supporté par le presse-papier."
+msgstr "Le format PNG n'est pas pris en charge par le presse-papiers"
 
 #: ipconst.spngpaletteentry
 msgid "Palette Entry %d - Red: %d   Green: %d   Blue: %d"
@@ -1712,7 +1704,7 @@ msgstr "Attendre la réinitialisation du modem"
 
 #: ipconst.sreadlineerr
 msgid "Received line too long, exceeds MaxLineBuf"
-msgstr "Ligne reçue trop longue : elle dépasse \"MaxLineBuf\""
+msgstr "Ligne reçue trop longue : elle dépasse MaxLineBuf"
 
 #: ipconst.srenameddiskfileto
 msgid "Renamed disk file to "
@@ -1728,7 +1720,7 @@ msgstr "%s : le numéro de rangée est hors limites"
 
 #: ipconst.srowrowoor
 msgid "TIpTerminalArray.ScrollRows: either start row %d or end row %d is out of range"
-msgstr "\"TIpTerminalArray.ScrollRows\" : débordement de valeur de rangée de début %d ou de fin %d"
+msgstr "TIpTerminalArray.ScrollRows : débordement de valeur de rangée de début %d ou de fin %d"
 
 #: ipconst.sseekingdiskfileto
 msgid "Seeking disk file to "
@@ -2153,7 +2145,7 @@ msgstr "Certificat non supporté."
 
 #: ipconst.ssslunsupportedchiper
 msgid "Unsupported cipher chosen."
-msgstr "Le chiffrement choisi n'est pas supporté."
+msgstr "Le chiffrement choisi n'est pas pris en charge"
 
 #: ipconst.ssslunsupportedencoding
 msgid "Unsupported public encoding."
@@ -2252,7 +2244,7 @@ msgstr "Méthode d'encodage non supportée"
 
 #: ipconst.suuencodecounterr
 msgid "Count <> Len or Count > 63"
-msgstr "\"Compte <> Longueur\" ou \"Compte > 63\""
+msgstr "Compte <> Longueur ou Compte > 63"
 
 #: ipconst.swebimagecannotload
 msgid "Cannot load %s"
@@ -2485,7 +2477,7 @@ msgstr "Hôte introuvable"
 
 #: ipconst.swsanotinitialised
 msgid "Successful WSAStartup not yet performed"
-msgstr "\"WSAStartup\" pas encore exécuté avec succès"
+msgstr "WSAStartup pas encore exécuté avec succès"
 
 #: ipconst.swsano_data
 msgid "Valid name, no data record of requested type"
