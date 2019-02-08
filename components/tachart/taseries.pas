@@ -1227,7 +1227,7 @@ begin
   if IsEmpty then exit;
   if BarWidthStyle = bwPercentMin then
     UpdateMinXRange;
-  if not IsEmpty and UseZeroLevel then
+  if UseZeroLevel then
     UpdateMinMax(GraphToAxisY(ZeroLevel), Result.a.Y, Result.b.Y);
 
   // Show first and last bars fully.
@@ -1555,13 +1555,8 @@ var
           else
             a.Y := b.Y;
       end;
-      if not IsRotated then begin
-        PushPoint(a);
-        PushPoint(b);
-      end else begin
-        PushPoint(a);
-        PushPoint(b);
-      end
+      PushPoint(a);
+      PushPoint(b);
     end;
   end;
 
