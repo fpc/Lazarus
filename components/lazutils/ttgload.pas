@@ -1003,13 +1003,13 @@ const
 
            if new_flags and ARGS_ARE_WORDS <> 0 then
              begin
-               k := ftstream.Get_Short;
-               l := ftstream.Get_Short;
+               k := SmallInt(ftstream.Get_Short);
+               l := SmallInt(ftstream.Get_Short);
              end
            else
              begin
-               k := ftstream.Get_Byte;
-               l := ftstream.Get_Byte;
+               k := ShortInt(ftstream.Get_Byte);
+               l := ShortInt(ftstream.Get_Byte);
              end;
 
            subglyph^.arg1 := k;
