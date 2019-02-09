@@ -377,7 +377,9 @@ begin
     if FMonochromeColor <> clTAColor then
       Color := FMonochromeColor;
     if scaleFont in FScaleItems then
-      Size := Scale(IfThen(Size = 0, DEFAULT_FONT_SIZE, Size));
+      Size := Scale(GetFontSize)
+    else
+      Size := GetFontSize;
   end;
 end;
 
