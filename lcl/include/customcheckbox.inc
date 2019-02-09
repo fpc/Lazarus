@@ -37,7 +37,7 @@ begin
     //some widgetsets (gtk*) does not allow to uncheck a radio button
     //only call OnChange if effectivelly changed
     FState := RetrieveState;
-    if FState <> OldState then
+    if (FState <> OldState) and not (csLoading in ComponentState) then
       DoClickOnChange;
   end;
 end;
