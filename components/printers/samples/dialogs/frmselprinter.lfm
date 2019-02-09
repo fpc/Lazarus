@@ -1,7 +1,7 @@
 object Form1: TForm1
   Left = 106
   Height = 787
-  Top = 121
+  Top = 142
   Width = 489
   ActiveControl = Button7
   Caption = 'Form1'
@@ -59,7 +59,7 @@ object Form1: TForm1
         MaxSize = 350
         ReadOnly = True
         Title.Caption = 'Value'
-        Width = 345
+        Width = 347
       end>
     DefaultColWidth = 120
     FixedCols = 0
@@ -71,7 +71,7 @@ object Form1: TForm1
     OnSelectCell = SGridSelectCell
     ColWidths = (
       120
-      345
+      347
     )
   end
   object Button3: TButton

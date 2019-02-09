@@ -296,8 +296,8 @@ calculate the width and the linetype of a sigle bar
 ------------------------------------------------------------------
         '0'   white           100%                full
         '1'   white           100%*Ratio          full
-        '2'   white           150%*Ratio          full
-        '3'   white           200%*Ratio          full
+        '2'   white           150%                full
+        '3'   white           200%Ratio              full
         '5'   black           100%                full
         '6'   black           100%*Ratio          full
         '7'   black           150%*Ratio          full
@@ -1463,6 +1463,7 @@ begin
     for i := 1 to Length(Data) do  // examine the pattern string
     begin
       OneBarProps(Data[i], w, lt);
+      Writeln('BC : ',w,' : ',lt,'  (',Data[i],')');
 
       {
       case data[i] of

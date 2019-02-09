@@ -97,6 +97,7 @@ begin
   Inherited Create;
   FFormDescr:=ADescr;
   ResourceClass:=FFormDescr.FFormClass;
+  FormEditingHook.RegisterDesignerBaseClass(FFormDescr.FFormClass);
   Name:=FFormDescr.Caption;
   RequiredPackages:=ADescr.LazPackage;
   //Writeln('TCustomFormFileDescriptor.Create RequiredPackages=',RequiredPackages);
