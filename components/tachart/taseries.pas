@@ -51,6 +51,7 @@ type
     FBarWidthPercent: Integer;
     FBarWidthStyle: TBarWidthStyle;
     FOnBeforeDrawBar: TBeforeDrawBarEvent;
+    FUseZeroLevel: Boolean;
     FZeroLevel: Double;
 
     function IsZeroLevelStored: boolean;
@@ -61,6 +62,7 @@ type
     procedure SetBarWidthStyle(AValue: TBarWidthStyle);
     procedure SetOnBeforeDrawBar(AValue: TBeforeDrawBarEvent);
     procedure SetSeriesColor(AValue: TColor);
+    procedure SetUseZeroLevel(AValue: Boolean);
     procedure SetZeroLevel(AValue: Double);
   strict protected
     function GetLabelDataPoint(AIndex, AYIndex: Integer): TDoublePoint; override;
@@ -103,6 +105,8 @@ type
     property Styles;
     property ToolTargets default [nptPoint, nptYList, nptCustom];
     property UseReticule; deprecated 'Use DatapointCrosshairTool instead';
+    property UseZeroLevel: Boolean
+      read FUseZeroLevel write SetUseZeroLevel default true;
     property ZeroLevel: Double
       read FZeroLevel write SetZeroLevel stored IsZeroLevelStored;
   published
@@ -1037,6 +1041,7 @@ begin
       Self.FBarWidthPercent := FBarWidthPercent;
       Self.FBarWidthStyle := FBarWidthStyle;
       Self.FOnBeforeDrawBar := FOnBeforeDrawBar;
+      Self.FUseZeroLevel := FUseZeroLevel;
       Self.FZeroLevel := FZeroLevel;
     end;
   inherited Assign(ASource);
@@ -1075,6 +1080,7 @@ begin
   FStacked := true;
   FOptimizeX := false;
   FSupportsZeroLevel := true;
+  FUseZeroLevel := true;
 end;
 
 destructor TBarSeries.Destroy;
@@ -1156,6 +1162,7 @@ var
 
 var
   ofs, y: Double;
+  zero: Double;
 begin
   if IsEmpty then exit;
 
@@ -1166,6 +1173,10 @@ begin
   ExpandRange(ext2.a.Y, ext2.b.Y, 1.0);
 
   scaled_depth := ADrawer.Scale(Depth);
+  if UseZeroLevel then
+    zero := ZeroLevel
+  else
+    zero := IfThen(IsRotated, ext2.a.X, ext2.a.Y);
 
   PrepareGraphPoints(ext2, true);
   SetLength(heights, Source.YCount + 1);
@@ -1175,9 +1186,9 @@ begin
     p.X := AxisToGraphX(p.X);
     BarOffsetWidth(p.X, pointIndex, ofs, w);
     p.X += ofs;
-    heights[0] := ZeroLevel;
+    heights[0] := zero;
     if FStacked then begin
-      heights[1] := NumberOr(p.Y, ZeroLevel);
+      heights[1] := NumberOr(p.Y, zero);
       for stackIndex := 1 to Source.YCount - 1 do begin
         y := Source[pointIndex]^.YList[stackIndex - 1];
         if not IsNan(y) then
@@ -1193,7 +1204,7 @@ begin
         if not IsNaN(y) then
           heights[stackIndex + 1] := AxisToGraphY(y)
         else
-          heights[stackIndex + 1] := ZeroLevel;
+          heights[stackIndex + 1] := zero;
       end;
       p.X -= w;
       w := w / High(heights);
@@ -1217,7 +1228,8 @@ begin
   if IsEmpty then exit;
   if BarWidthStyle = bwPercentMin then
     UpdateMinXRange;
-  UpdateMinMax(GraphToAxisY(ZeroLevel), Result.a.Y, Result.b.Y);
+  if not IsEmpty and UseZeroLevel then
+    UpdateMinMax(GraphToAxisY(ZeroLevel), Result.a.Y, Result.b.Y);
 
   // Show first and last bars fully.
   i := 0;
@@ -1346,7 +1358,7 @@ end;
 
 function TBarSeries.GetZeroLevel: Double;
 begin
-  Result := ZeroLevel;
+  Result := IfThen(UseZeroLevel, ZeroLevel, 0.0);
 end;
 
 function TBarSeries.IsZeroLevelStored: boolean;
@@ -1396,6 +1408,14 @@ end;
 procedure TBarSeries.SetSeriesColor(AValue: TColor);
 begin
   FBarBrush.Color := AValue;
+end;
+
+procedure TBarSeries.SetUseZeroLevel(AValue: Boolean);
+begin
+  if FUseZeroLevel = AValue then exit;
+  FUseZeroLevel := AValue;
+//  FSupportsZeroLevel := FUseZeroLevel;
+  UpdateParentChart;
 end;
 
 procedure TBarSeries.SetZeroLevel(AValue: Double);
@@ -1473,7 +1493,7 @@ begin
   FAreaLinesPen := TPen.Create;
   FAreaLinesPen.OnChange := @StyleChanged;
   FStacked := true;
-  FSupportsZeroLevel := FUseZeroLevel;
+  FSupportsZeroLevel := true; //FUseZeroLevel;
 end;
 
 destructor TAreaSeries.Destroy;
@@ -1698,7 +1718,7 @@ function TAreaSeries.Extent: TDoubleRect;
 begin
   Result := inherited Extent;
   if not IsEmpty and UseZeroLevel then
-    UpdateMinMax(ZeroLevel, Result.a.Y, Result.b.Y);
+    UpdateMinMax(GraphToAxisY(ZeroLevel), Result.a.Y, Result.b.Y);
 end;
 
 procedure TAreaSeries.GetLegendItems(AItems: TChartLegendItems);
@@ -1762,7 +1782,7 @@ procedure TAreaSeries.SetUseZeroLevel(AValue: Boolean);
 begin
   if FUseZeroLevel = AValue then exit;
   FUseZeroLevel := AValue;
-  FSupportsZeroLevel := FUseZeroLevel;
+//  FSupportsZeroLevel := FUseZeroLevel;
   UpdateParentChart;
 end;
 
