@@ -1418,10 +1418,11 @@ var
   defaultDrawing: Boolean = true;
 begin
   FConnectorData.FBounds := GetClientRect;
+  {$PUSH}
   {$WARNINGS OFF}
   if Assigned(OnChartPaint) then
     OnChartPaint(Self, FConnectorData.FBounds, defaultDrawing);
-  {$WARNINGS ON}
+  {$POP}
   if defaultDrawing then
     with EffectiveGUIConnector do begin
       SetBounds(FConnectorData);

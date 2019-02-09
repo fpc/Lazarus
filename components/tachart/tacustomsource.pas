@@ -1206,9 +1206,10 @@ begin
       while true do begin
         p := PChartValueText(lst[j - AStart]);
         lst[j - AStart] := nil;
+        {$PUSH}
         {$HINTS OFF} // Work around the fpc bug #19582.
         next := (PtrUInt(p) - PtrUInt(@AValues[0])) div SizeOf(p^);
-        {$HINTS ON}
+        {$POP}
         if next = i then break;
         AValues[j] := p^;
         j := next;
