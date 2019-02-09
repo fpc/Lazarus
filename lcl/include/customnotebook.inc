@@ -1143,7 +1143,7 @@ procedure TCustomTabControl.ShowCurrentPage;
   begin
     Result := False;
     lForm := GetParentForm(APage);
-    if not Assigned(lForm) then Exit;
+    if not Assigned(lForm) or not lForm.Visible then Exit;
     for i := 0 to APage.ControlCount - 1 do
       if APage.Controls[i] = lForm.ActiveControl then
         Exit(True);
