@@ -18,10 +18,7 @@ var
 begin
   Widget := AInfo^.CoreWidget;
   FixWidget := GetFixedWidget(Widget);
-  if GTK_IS_TEXT_VIEW(FixWidget) then
-    Window := gtk_text_view_get_window(PGtkTextView(FixWidget), GTK_TEXT_WINDOW_TEXT)
-  else
-    Window := GetControlWindow(FixWidget);
+  Window := GetControlWindow(FixWidget);
   if Window = nil then Exit;
   // always recurse windows which do not accept controls.
   // this way we will catch all widgets with double windows
@@ -78,6 +75,24 @@ begin
   Window := PGtkButton(Widget)^.event_window;
   if Window = nil then Exit;
   SetWindowCursor(Window, AInfo^.ControlCursor, False, True);
+end;
+
+{ TGtk2PrivateMemo }
+
+class procedure TGtk2PrivateMemo.UpdateCursor(AInfo: PWidgetInfo);
+var
+  Widget, FixWidget: PGtkWidget;
+  Window: PGdkWindow;
+begin
+  Widget := AInfo^.CoreWidget;
+  if (Widget = nil) or not GTK_IS_TEXT_VIEW(Widget) then Exit;
+  FixWidget := GetFixedWidget(Widget);
+  Window := GetControlWindow(FixWidget);
+  if Window = nil then Exit;
+  if TControl(AInfo^.LCLObject).Cursor = crDefault then
+    SetWindowCursor(Window, 0, True, False)
+  else
+    SetWindowCursor(Window, AInfo^.ControlCursor, True, False);
 end;
 
 class procedure TGtk2PrivateNotebook.UpdateCursor(AInfo: PWidgetInfo);

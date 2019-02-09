@@ -232,6 +232,16 @@ type
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); override;
   end;
 
+  { TGtk2PrivateMemo }
+  { Private class for gtkmemos }
+
+  TGtk2PrivateMemo = class(TGtkPrivateScrolling)
+  private
+  protected
+  public
+    class procedure UpdateCursor(AInfo: PWidgetInfo); override;
+  end;
+
   { TGtk2PrivateNotebook }
   { Private class for gtknotebooks }
 
