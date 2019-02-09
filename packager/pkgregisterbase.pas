@@ -41,7 +41,7 @@ uses
 {$ifdef mswindows}
   ServiceManager,
 {$endif}
-  Classes, SysUtils, Process, DB, BufDataset, csvdataset, fpjsondataset, SimpleIPC, XMLConf, EventLog,
+  Classes, SysUtils, Process, DB, BufDataset, csvdataset, SimpleIPC, XMLConf, EventLog,
   UTF8Process;
 
 procedure RegisterFCLBaseComponents;
@@ -51,7 +51,7 @@ implementation
 
 procedure RegisterDB;
 begin
-  RegisterComponents('Data Access',[TDatasource,TBufDataset, TCSVDataset, TExtJSJSONDataSet]); // this bites dbflaz
+  RegisterComponents('Data Access',[TDatasource,TBufDataset, TCSVDataset]); // this bites dbflaz
 end;
 
 procedure RegisterSimpleIPC;

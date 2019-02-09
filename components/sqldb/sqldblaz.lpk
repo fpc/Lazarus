@@ -24,7 +24,7 @@
 
 With the exception of the unit registersqldb, which is GPL-2. This unit contains code for the IDE and is usually not used by programs."/>
     <Version Major="1" Release="2"/>
-    <Files Count="4">
+    <Files Count="3">
       <Item1>
         <Filename Value="registersqldb.pas"/>
         <HasRegisterProc Value="True"/>
@@ -39,10 +39,6 @@ With the exception of the unit registersqldb, which is GPL-2. This unit contains
         <Filename Value="sqlstringspropertyeditordlg.pas"/>
         <UnitName Value="SQLStringsPropertyEditorDlg"/>
       </Item3>
-      <Item4>
-        <Filename Value="frmtypesafeaccess.pp"/>
-        <UnitName Value="frmtypesafeaccess"/>
-      </Item4>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

@@ -113,7 +113,6 @@
         <Filename Value="frmaddtofavourite.pp"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="SaveRequestDataForm"/>
-        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
       </Unit10>
     </Units>
