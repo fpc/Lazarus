@@ -252,7 +252,7 @@ type
     function CalcScale(ASign: Integer): Double;
     constructor Init(AAxis: TChartAxis; AImageLo, AImageHi: Integer;
       AMarginLo, AMarginHi, ARequiredMarginLo, ARequiredMarginHi, AMinDataSpace: Integer;
-      AHasMarksInMargin, AAxisIsVertical: Boolean; AMin, AMax: PDouble);
+      AAxisIsVertical: Boolean; AMin, AMax: PDouble);
     procedure UpdateMinMax(AConv: TAxisConvFunc);
   end;
 
@@ -1218,14 +1218,19 @@ end;
 procedure EnsureGuaranteedSpace(var AValue1, AValue2: Integer;
   AImage1, AImage2, AMargin1, AMargin2, AGuaranteed: Integer);
 var
+  HasMarksInMargin1, HasMarksInMargin2: Boolean;
   delta1, delta2: Integer;
 begin
-  if (AValue2 = AImage2 - AMargin2) then
+  HasMarksInMargin1 := (AValue1 = AImage1 + AMargin1);
+  HasMarksInMargin2 := (AValue2 = AImage2 - AMargin2);
+
+  if HasMarksInMargin2 and not HasMarksInMargin1 then
     AValue1 := AValue2 - AGuaranteed
   else
-  if (AValue1 = AImage1 + AMargin1) then
+  if HasMarksInMargin1 and not HasMarksInMargin2 then
     AValue2 := AValue1 + AGuaranteed
-  else begin
+  else
+  begin
     delta1 := AImage1 - AValue1;
     delta2 := AImage2 - AValue2;
     AValue1 := (AImage1 + AImage2 - AGuaranteed) div 2;
@@ -1243,7 +1248,7 @@ end;
 
 constructor TAxisCoeffHelper.Init(AAxis: TChartAxis; AImageLo, AImageHi: Integer;
   AMarginLo, AMarginHi, ARequiredMarginLo, ARequiredMarginHi, AMinDataSpace: Integer;
-  AHasMarksInMargin, AAxisIsVertical: Boolean; AMin, AMax: PDouble);
+  AAxisIsVertical: Boolean; AMin, AMax: PDouble);
 begin
   FAxisIsFlipped := (AAxis <> nil) and AAxis.IsFlipped;
   FImageLo := AImageLo;
@@ -1253,16 +1258,14 @@ begin
   FLo := FImageLo + AMarginLo;
   FHi := FImageHi + AMarginHi;
 
-  if AHasMarksInMargin then begin
-    if AAxisIsVertical then begin
-      if (FHi + AMinDataSpace >= FLo) then
-        EnsureGuaranteedSpace(FHi, FLo, FImageHi, FImageLo,
-          ARequiredMarginHi, ARequiredMarginLo, AMinDataSpace);
-    end else begin
-      if (FLo + AMinDataSpace >= FHi) then
-        EnsureGuaranteedSpace(FLo, FHi, FImageLo, FImageHi,
-          ARequiredMarginLo, ARequiredMarginHi, AMinDataSpace);
-    end;
+  if AAxisIsVertical then begin
+    if (FHi + AMinDataSpace >= FLo) then
+      EnsureGuaranteedSpace(FHi, FLo, FImageHi, FImageLo,
+        ARequiredMarginHi, ARequiredMarginLo, AMinDataSpace);
+  end else begin
+    if (FLo + AMinDataSpace >= FHi) then
+      EnsureGuaranteedSpace(FLo, FHi, FImageLo, FImageHi,
+        ARequiredMarginLo, ARequiredMarginHi, AMinDataSpace);
   end;
 end;
 
