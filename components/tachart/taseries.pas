@@ -1505,9 +1505,39 @@ end;
 
 procedure TAreaSeries.Draw(ADrawer: IChartDrawer);
 var
-  pts: TPointArray;
-  numPts: Integer;
+  pts, basePts: TPointArray;
+  numPts, numBasePts: Integer;
   scaled_depth: Integer;
+  missing: array of Integer;
+  numMissing: Integer;
+  zero: Double;
+  ext, ext2: TDoubleRect;
+
+  { Collects the indexes of data points having NaN as x or one of the y values }
+  procedure CollectMissing;
+  var
+    i, j: Integer;
+  begin
+    SetLength(missing, Length(FGraphPoints));
+    numMissing := 0;
+    for i := 0 to High(FGraphPoints) do begin
+      if IsNaN(Source.Item[i+FLoBound]^.X) then begin
+        missing[numMissing] := i;
+        inc(numMissing);
+      end else
+      if FStacked then
+        if IsNaN(Source.Item[i+FLoBound]^.Y) then begin
+          missing[numMissing] := i;
+          inc(numMissing);
+        end else
+          for j := 0 to Source.YCount-2 do
+            if IsNaN(Source.Item[i+FLoBound]^.YList[j]) then begin
+              missing[numMissing] := i;
+              inc(numMissing);
+            end;
+    end;
+    SetLength(missing, numMissing);
+  end;
 
   procedure PushPoint(const AP: TPoint); overload;
   begin
@@ -1530,18 +1560,23 @@ var
       Result.Y := ACoord;
   end;
 
-var
-  ext, ext2: TDoubleRect;
-  prevPts: TPointArray;
+  function ReplaceByBasePoint(AIndex: Integer): TPoint;
+  begin
+    Result := pts[numPts-1];
+    if IsRotated then
+      Result.X := basePts[IfThen(FBanded, AIndex, 0)].X
+    else
+      Result.Y := basePts[IfThen(FBanded, AIndex, 0)].Y;
+  end;
 
   procedure CollectPoints(AStart, AEnd: Integer);
   var
     i: Integer;
     a, b: TDoublePoint;
   begin
-    for i := AStart to AEnd - 1 do begin
+    for i := AStart to AEnd do begin
       a := FGraphPoints[i];
-      b := FGraphPoints[i + 1];
+      if i = AEnd then b := a else b := FGraphPoints[i + 1];
       case ConnectType of
         ctLine: ;
         ctStepXY:
@@ -1555,8 +1590,17 @@ var
           else
             a.Y := b.Y;
       end;
+
       PushPoint(a);
-      PushPoint(b);
+      if IsNaN(a) then
+        pts[numPts-1]:= ReplaceByBasePoint(i)
+      else if (i > AStart) and IsNaN(FGraphPoints[i-1]) then
+        pts[numPts-2] := ReplaceByBasePoint(i-1);
+
+      if IsNaN(b) then
+        PushPoint(ReplaceByBasePoint(i))
+      else
+        PushPoint(b);
     end;
   end;
 
@@ -1569,64 +1613,63 @@ var
       ADest[i] := ASource[i];
   end;
 
+  procedure FixPoints;
+  var
+    p: TPoint;
+  begin
+    if numPts = 1 then begin
+      p := pts[0];
+      if IsRotated then begin
+        dec(pts[0].Y);
+        inc(p.Y);
+      end else begin
+        dec(pts[0].X);
+        inc(p.X);
+      end;
+      PushPoint(p);
+    end;
+  end;
+
   procedure DrawSegment(AStart, AEnd: Integer);
   var
-    i, j, j0, n2, numPrevPts, numSavedPts: Integer;
-    a, b: TDoublePoint;
-    a0, b0: TDoublePoint;
-    z, z1, z2: Double;
+    numDataPts: Integer;
+    p: TDoublePoint;
+    i, j, j0: Integer;
+    zeroPt: TPoint;
   begin
-    numPts := 0;
+    // Get baseline of area series: this is the curve of the 1st y value in case
+    // of banded, or the zero level in case for normal area series.
+    if FBanded then begin
+      UpdateGraphPoints(-1, FLoBound, FUpBound, FStacked);
+      numPts := 0;
+      CollectPoints(AStart, AEnd);
+      FixPoints;
+      numBasePts := numPts;
+    end else begin
+      numPts := 0;
+      p := ProjToRect(FGraphPoints[AStart], ext2);
+      PushPoint(ProjToLine(p, zero));
+      p := ProjToRect(FGraphPoints[AEnd], ext2);
+      PushPoint(ProjToLine(p, zero));
+      FixPoints;
+      numBasePts := numPts;
+    end;
+    SetLength(basePts, numBasePts);
+    CopyPoints(basePts, pts, numBasePts);
 
-    if UseZeroLevel then
-      z := AxisToGraphY(ZeroLevel)
-    else
-      z := IfThen(IsRotated, ext2.a.X, ext2.a.Y);
-    z1 := z;
-    z2 := z;
-
-    a0 := FGraphPoints[AStart];
-    b0 := FGraphPoints[AEnd];
-
-    // Collect points of top-most curve
-    UpdateGraphPoints(Source.YCount-2, FLoBound, FUpBound, FStacked);
-      // Index (1st parameter) refers to YList --> one less than usual!)
-    numPts := 0;
-    CollectPoints(AStart, AEnd);
-    CopyPoints(prevPts, pts, numPts);
-    numPrevPts := numPts;
-    numSavedPts := numPts;
-
-    // Collect points of lower end of each level
+    // Iterate through y values
     j0 := IfThen(FBanded and (Source.YCount > 1), 0, -1);
     for j := Source.YCount - 2 downto j0 do begin
+      // Stack level points
       numPts := 0;
+      UpdateGraphPoints(j, FLoBound, FUpBound, FStacked);
+      CollectPoints(AStart, AEnd);
+      FixPoints;
+      numDataPts := numPts;
 
-      if (j > -1) then begin
-        // Stack level points
-        UpdateGraphPoints(j - 1, FLoBound, FUpBound, FStacked);
-        CollectPoints(AStart, AEnd);
-        numSavedPts := numPts;
-        for i := 0 to numPrevPts-1 do
-          PushPoint(prevPts[numPrevPts - 1 - i]);
-        CopyPoints(prevPts, pts, numSavedPts);
-        numPrevPts := numSavedPts;
-      end else
-      begin
-        // Zerolevel points
-        a := ProjToRect(a0, ext2);
-        PushPoint(ProjToLine(a, z1));
-        z1 := IfThen(IsRotated, a.X, a.Y);
-
-        for i:=0 to numPrevPts - 1 do
-          PushPoint(prevPts[i]);
-
-        b := ProjToRect(b0, ext2);
-        PushPoint(ProjToLine(b, z2));
-        a := ProjToRect(FGraphPoints[AEnd], ext2);
-        z2 := IfThen(IsRotated, a.X, a.Y);
-      end;
-      n2 := numPts;
+      // Base points
+      for i:=numBasePts-1 downto 0 do
+        PushPoint(basepts[i]);
 
       // Prepare painting
       ADrawer.Brush := AreaBrush;
@@ -1635,49 +1678,41 @@ var
         Styles.Apply(ADrawer, j - j0);
 
       // Draw 3D sides
-      // Note: Rendering is often incorrect, e.g. when values cross zero level!
+      // Note: Rendering is often incorrect, e.g. when values cross zero level
+      // or when values are not stacked!
       if (Depth > 0) then begin
-        if (Source.YCount = 1) or ((not FStacked) and (j = -1)) then
-          for i := 1 to numSavedPts do
-            ADrawer.DrawlineDepth(pts[i], pts[i+1], scaled_depth)
-        else
-        if ((not FStacked) or (j = Source.YCount-2)) then
-          for i:= n2-2 downto n2 - numSavedPts - 1 do
-            ADrawer.DrawLineDepth(pts[i], pts[i + 1], scaled_depth)
-        else
-        if FStacked then begin
-          if (j > -1) then
-            ADrawer.DrawLineDepth(pts[numSavedPts - 1], pts[numSavedPts], scaled_depth)
-          else
-          if (j = -1) and (FStacked or FBanded) then
-            ADrawer.DrawLineDepth(pts[numSavedPts], pts[numSavedPts+1], scaled_depth);
-        end;
+        // Top sides
+        if (Source.YCount = 1) or (not FStacked) or (j = Source.YCount-2) then
+          for i := 0 to numDataPts-2 do
+            ADrawer.DrawLineDepth(pts[i], pts[i+1], scaled_depth);
+        // Sides at the right
+        ADrawer.DrawLineDepth(pts[numdataPts-1], pts[numDataPts], scaled_depth);
       end;
 
-      // Fill area
+      // Fill polygon of current level
       ADrawer.Polygon(pts, 0, numPts);
 
-      // Draw droplines
-      if (AreaLinesPen.Style <> psClear) and (j > -1) then begin
-        ADrawer.Pen := AreaLinesPen;
-        for i := 1 to numPrevPts-2 do
-          ADrawer.Line(pts[i], pts[numpts - 1 - i]);
-      end;
-    end;
-
-    // Drop lines of lowest layer
-    if (AreaLinesPen.Style <> psClear) and (not FBanded) then begin
-      ADrawer.Pen := AreaLinesPen;
-      for i := AStart + 1 to AEnd - 1 do begin
-        a := ProjToRect(FGraphPoints[i], ext2);
-        b := ProjToLine(a, z);
-        ADrawer.Line(ParentChart.GraphToImage(a), ParentChart.GraphToImage(b));
+      // Draw drop-lines
+      if AreaLinesPen.Style <> psClear then begin
+        if FBanded and (j > -1) then begin
+          ADrawer.Pen := AreaLinesPen;
+          for i := 1 to numDataPts-2 do
+            ADrawer.Line(pts[i], pts[numpts - 1 - i]);
+        end else
+        if not FBanded then begin
+          ADrawer.Pen := AreaLinesPen;
+          zeroPt := pts[numDataPts];
+          for i := 1 to numDataPts-2 do begin
+            if IsRotated then zeroPt.Y := pts[i].Y else zeroPt.X := pts[i].X;
+            ADrawer.Line(pts[i], zeroPt);
+          end;
+        end;
       end;
     end;
   end;
 
 var
-  i, j: Integer;
+  j, k: Integer;
 begin
   if IsEmpty then exit;
 
@@ -1687,24 +1722,40 @@ begin
   ExpandRange(ext2.a.Y, ext2.b.Y, 0.1);
 
   PrepareGraphPoints(ext, true);
-  if Length(FGraphPoints) = 0 then exit;
+  if Length(FGraphPoints) = 0 then
+    exit;
 
+  if UseZeroLevel then
+    zero := AxisToGraphY(ZeroLevel)
+  else
+    zero := IfThen(IsRotated, ext2.a.X, ext2.a.Y);
   scaled_depth := ADrawer.Scale(Depth);
-
   SetLength(pts, Length(FGraphPoints) * 4 + 4);
-  SetLength(prevPts, Length(pts));
 
-  j := -1;
-  for i := 0 to High(FGraphPoints) do
-    if IsNan(FGraphPoints[i]) = (j >= 0) then
-      if j >= 0 then begin
-        DrawSegment(j, i - 1);
-        j := -1;
-      end
-      else
-        j := i;
-  if j >= 0 then
-    DrawSegment(j, High(FGraphPoints));
+  CollectMissing;
+  if Length(missing) = 0 then
+    DrawSegment(0, High(FGraphPoints))
+  else begin
+    j := 0;
+    k := 0;
+    while j < Length(missing) do begin
+      while (missing[j] = k) do begin
+        inc(k);
+        inc(j);
+        if j = Length(missing) then
+          break;
+      end;
+      if j <= High(missing) then begin
+        DrawSegment(k, missing[j]-1);
+        k := missing[j]+1;
+      end else
+        DrawSegment(k, High(FGraphPoints));
+      inc(j);
+    end;
+    if k <= High(FGraphPoints) then
+      DrawSegment(k, High(FGraphPoints));
+  end;
+
   DrawLabels(ADrawer);
 end;
 
