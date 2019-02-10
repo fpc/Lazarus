@@ -81,7 +81,7 @@
         <descr>
           <p>
             SetCommandLineUTF8 is the write access specifier for the CommandLine property.
-	  </p>
+	         </p>
         </descr>
         <errors></errors>
         <seealso></seealso>
@@ -187,7 +187,7 @@
       <element name="TProcessUTF8.Create" link="#fcl.Process.TProcess.Create">
         <short>
           Constructor for the class instance
-      </short>
+        </short>
         <descr>
           <p>
             Create is the constructor for the class instance,  Create calls the inherited constructor using AOwner as the owner of the class instance.  Create ensures that resources are allocated for the Environment and Parameters properties.
@@ -221,7 +221,7 @@
         </short>
         <descr>
           <p>
-            Execute causes the Executable for the process to be started with the Parameters and Environment specified in the respective properties. Execute calls the UpdateEnvironment method to pass the values in Parameters and Environment to the ancestor class. Execute calls gthe inherited Execute method.
+            Execute causes the Executable for the process to be started with the Parameters and Environment specified in the respective properties. Execute calls the UpdateEnvironment method to pass the values in Parameters and Environment to the ancestor class. Execute calls the inherited Execute method.
           </p>
         </descr>
         <errors></errors>
@@ -234,9 +234,9 @@
         </short>
         <descr>
           <!-- Note: deprecated in TProcess 2.5.1-->
-          <remarks>
-            Please note that ApplicationName has been deprecated in TProcess (the ancestor class) since FPC version 2.5.1.  ApplicationName has been superseded by the Executable and Parameters properties.
-          </remarks>
+          <remark>
+            Please note that ApplicationName has been deprecated in TProcess (the ancestor class) since FPC version 2.5.1. ApplicationName has been superseded by the Executable and Parameters properties.
+          </remark>
         </descr>
         <seealso></seealso>
       </element>
@@ -251,9 +251,9 @@
           <p>
              Setting the value in CommandLine causes the value in Executable to be updated, and the value in Parameters is cleared and reloaded as necessary.
           </p>
-          <remarks>
-            Please note that CommandLine has been deprecated in TProcess (the ancestor class) since FPC version 2.5.1. To avoid problems with command line options with spaces in them, and the quoting problems that this entails, it has been superseded by the Executable and Parameters properties. Use these properties instead of CommandLine.
-          </remarks>
+          <remark>
+            Please note that CommandLine has been deprecated in TProcess (the ancestor class) since FPC version 2.5.1. To avoid problems with command line options with spaces in them, and the quoting problems that this presents, it has been superseded by the Executable and Parameters properties. Use these properties instead of CommandLine.
+          </remark>
         </descr>
         <seealso></seealso>
       </element>
@@ -369,7 +369,7 @@
         </short>
         <descr>
           <p>
-            RunCmdFromPath is used to execute a command which can be found in the current PATH environment. For example, the following locates and executes the /bin/ls command with the specified arguments:
+            RunCmdFromPath is used to execute a command which can be found in the current <var>PATH</var> environment. For example, the following locates and executes the /bin/ls command with the specified arguments:
           </p>
           <code>
             RunCmdFromPath('ls', '-l /home');

@@ -16,9 +16,9 @@
         <p>
           LazFileUtils contains procedures and functions used for file and directory operations. This file is part of the LazUtils package.
         </p>
-        <remarks>
+        <remark>
           All functions are thread safe unless explicitly stated.
-        </remarks>
+        </remark>
       </descr>
 
     <!-- function Visibility: default -->
@@ -207,7 +207,7 @@
         </short>
         <descr>
           <p>
-            DirPathExists is a Boolean function which indicates if the specified directory name exists in the file system. DirectoryName can contain a trailing path delimiter, but it removed in the function. DirPathExists calls DirectoryExistsUTF8 to get the return value.
+            DirPathExists is a Boolean function which indicates if the specified directory name exists in the file system. DirectoryName can contain a trailing path delimiter, but it is removed in the function. DirPathExists calls DirectoryExistsUTF8 to get the return value.
           </p>
         </descr>
         <seealso>
@@ -237,9 +237,9 @@
           <p>
             The return value is True when a file can be added, deleted, or modified in the specified path.  To get the return value, DirectoryIsWritable creates a temporary file in DirectoryName, adds content to it, and deletes the temporary file. DirectoryIsWritable calls the FileCreateUTF8, FileWrite, FileClose, and DeleteFileUTF8 routines to perform the file operations. The return value is True when FileWrite completes successfully.
           </p>
-          <remarks>
+          <remark>
             Please note: DirectoryIsWritable calls InvalidateFileStateCache with the temporary file name if DeleteFileUTF8 cannot remove the file.
-          </remarks>
+          </remark>
         </descr>
         <errors>
         </errors>
@@ -269,7 +269,7 @@
         </short>
         <descr>
           <p>
-            ExtractFileNameOnly is a String function used to extra the base file name (without the file extension) from the value in AFilename. Path information, up to the last directory separator ('/' or '\') or device separator (':') character, in AFileName is ignored. The file extension, starting at the '.' character, is also omitted.
+            ExtractFileNameOnly is a String function used to extract the base file name (without the file extension) from the value in AFilename. Path information, up to the last directory separator ('/' or '\') or device separator (':') character, in AFileName is ignored. The file extension, starting at the '.' character, is also omitted.
           </p>
         </descr>
         <seealso></seealso>
@@ -475,11 +475,11 @@
       <!-- function Visibility: default -->
       <element name="FileIsExecutable">
         <short>
-          Determine if the specified file name is executable
+          Determines if the specified file name is executable
         </short>
         <descr>
           <p>
-            FileIsExecutable is a Boolean function used to determine if the specified file name is executable. For UNIX-like environments,  a combination of FpStat, FPS_ISREG, and FpAccess are used to get the return value. For the Windows enviroment, the value fromFileExistsUTF8 is used as the return value. In short, the function is not really useful in a Windows environment.
+            FileIsExecutable is a Boolean function used to determine if the specified file name is executable. For UNIX-like environments,  a combination of FpStat, FPS_ISREG, and FpAccess are used to get the return value. For the Windows enviroment, the value from FileExistsUTF8 is used as the return value. In short, the function is not really useful in a Windows environment.
           </p>
         </descr>
         <seealso></seealso>
@@ -545,7 +545,7 @@
       <!-- function Visibility: default -->
       <element name="FileIsText">
         <short>
-          Determine if the specified file contains plain text content
+          Determines if the specified file contains plain text content
       </short>
         <descr>
           <p>
@@ -589,7 +589,7 @@
         <short></short>
         <descr>
           <p>
-            FilenameIsTrimmed is an overloaded Boolean function used to determine if the specified file name contains characters ro remove or resolve before use. The variant which uses PChar values performs the comparison. The  return value is False when the file name is a candidate for use of TrimFilename to remove whitespace or special characters.
+            FilenameIsTrimmed is an overloaded Boolean function used to determine if the specified file name contains characters to remove or resolve before use. The variant which uses PChar values performs the comparison. The  return value is False when the file name is a candidate for use of TrimFilename to remove whitespace or special characters.
           </p>
           <p>
             Use TrimFilename to remove leading or trailing whitespace, duplicate directory separators, or relative path symbols.
@@ -650,7 +650,7 @@
       <!-- function Visibility: default -->
       <element name="CleanAndExpandFilename">
         <short>
-          Removes whitespace and resolve special characters in the specified file name
+          Removes whitespace and resolves special characters in the specified file name
         </short>
         <descr>
           <p>
@@ -775,9 +775,9 @@
           <code>
             TrimFilename(Filename) = TrimFilename(BaseDirectory+PathDelim+Result).
           </code>
-          <remarks>
+          <remark>
             CreateRelativePath is thread safe and therefore does not guarantee that the current directory is correct for file names like 'D:test.txt'.
-          </remarks>
+          </remark>
         </descr>
         <seealso></seealso>
       </element>
@@ -822,9 +822,9 @@
           <p>
             FileIsInPath calls ResolveDots to resolve relative path information in both Filename and Path, and ensures that a trailing path delimiter is included in Path when needed. FileIsInPath calls CompareFileNames.
           </p>
-          <remarks>
+          <remark>
             This is a logical test;  FileIsInPath does not expand or follow symbolic links.
-          </remarks>
+          </remark>
         </descr>
         <seealso></seealso>
       </element>
@@ -923,7 +923,7 @@
             FileAgeUTF8 is a Longint function which returns the last modification time for the file in FileName. FileAgeUTF8 cannot be used on directories, and returns -1 if FileName indicates a directory.
           </p>
           <p>
-            For UNIX-like environments, the return value is provided by the FileAge function in SysUtils. For the Windows environment,  FindFirstFileW is used to get TWin32TWin32FindDataW data for the specified file. Its ftLastWriteTime value is converted using WinToDosTime to get the return value for the function.
+            For UNIX-like environments, the return value is provided by the FileAge function in SysUtils. For the Windows environment,  FindFirstFileW is used to get TWin32FindDataW data for the specified file. Its ftLastWriteTime value is converted using WinToDosTime to get the return value for the function.
           </p>
           <p>
             The return value is in FIleDate format, and can be transformed to TDateTime format with the FileDateToDateTime function.
@@ -975,7 +975,7 @@
             ExpandFileNameUTF8 is a String function which expands the UTF-8-encoded values in FileName and BaseDir to an absolute file name. It changes all directory separator characters to the one appropriate for the system.
           </p>
           <p>
-            If an empty string ('') is passed in Filename, it is expanded to the current directory using GetCurrentDirUTF8. When FileName contains the tilde character ('~'), it is converted to the path to the home directory for the user using the HOME environment variable.  Relative paths in FileName are resolved by calling ResolveDots.
+            If an empty string ('') is passed in Filename, it is expanded to the current directory using GetCurrentDirUTF8. When FileName contains the tilde character ('~'), it is converted to the path to the home directory for the user using the <var>HOME</var> environment variable.  Relative paths in FileName are resolved by calling ResolveDots.
           </p>
         </descr>
         <errors></errors>
@@ -1007,10 +1007,10 @@
             FindFirstUTF8 searches the file specified in Path. Normal files, as well as all special files which have the attributes specified in Attr will be returned.
           </p>
           <p>
-            It returns a SearchRec record for further searching in Rslt. Path can contain the wildcard characters;  ? (matches any single character) and * (matches 0 or more arbitrary characters). In this case FindFirstUTF8 will return the first file which matches the specified criteria.
+            It returns a SearchRec record for further searching in Rslt. Path can contain wildcard characters;  ? (matches any single character) and * (matches 0 or more arbitrary characters). In this case FindFirstUTF8 will return the first file which matches the specified criteria.
           </p>
           <p>
-            If GetLastError is different from zero, no files matching the criteria were found. The return value is the value from GetLastError.
+            The return value contains the result from GetLastError; a non-zero value indicates that no files matching the criteria were found.
           </p>
         </descr>
         <errors></errors>
@@ -1075,7 +1075,7 @@
         </short>
         <descr>
           <p>
-            FindCloseUTF8 is a procedure used to free resources allocated to the search record in F. FindCloseUTF8 is needed to free the internal resources allocated to the search record in FindFirstUTF8. FindCloseUTF8 calls the FindClose function in SysUtils.
+            FindCloseUTF8 is a procedure used to free resources allocated to the search record in F in FindFirstUTF8. FindCloseUTF8 calls the FindClose function in SysUtils.
           </p>
         </descr>
         <seealso></seealso>
@@ -1340,7 +1340,7 @@
         </short>
         <descr>
           <p>
-            FileIsReadOnlyUTF8 is a Boolean function used to determine if the specified file is marked as read-only in the local file system. FileIsReadOnlyUTF8 calls FileGetAttrUTF8 for the specified file name and checks to see if  faReadOnly has been included in the file attributes value. The return value is True when faReadOnly has been included.
+            FileIsReadOnlyUTF8 is a Boolean function used to determine if the specified file is marked as read-only in the local file system. FileIsReadOnlyUTF8 calls FileGetAttrUTF8 for the specified file name and checks to see if  faReadOnly has been included in the file attributes value. The return value is True when faReadOnly has been included in the file attributes.
           </p>
         </descr>
         <seealso></seealso>
@@ -1499,7 +1499,7 @@
             ForceDirectories raises an EInOutError exception with the message in SCannotCreateEmptyDir when Dir contains an empty string ('').
           </p>
           <p>
-            Each directory in the specified path is checked using DirectoryExistsUTF8.  ForceDirectories calls CreateDirUTF8 if a directory does not exist, and may exit with a return value of False if directory creation is not successful. The return value is True if all directories in the path information already exist, or are successfully created in the function.
+            Each directory in the specified path is checked using DirectoryExistsUTF8.  ForceDirectories calls CreateDirUTF8 if a directory does not already exist, and may exit with a return value of False if directory creation is not successful. The return value is True if all directories in the path information already exist, or are successfully created in the function.
           </p>
         </descr>
         <errors>
@@ -1646,7 +1646,7 @@
 
       <element name="SHGetFolderPathUTF8">
         <short>
-          Works like the  WinAPI function SHGetFolderPathW, but returns an UTF-8-encoded string
+          Works like the WinAPI function SHGetFolderPathW, but returns a UTF-8-encoded string
         </short>
       </element>
     </module>

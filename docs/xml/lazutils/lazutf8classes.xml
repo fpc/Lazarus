@@ -11,9 +11,9 @@
         <p>
           lazutf8classes implements UTF-8-enabled classes and routines, including: TFileStreamUTF8, TMemoryStreamUTF8, and TStringListUTF8.
         </p>
-        <remarks>
+        <remark>
           lazutf8classes has an implementation dependency on the lazfileutils unit.
-        </remarks>
+        </remark>
       </descr>
 
       <!-- class Visibility: default -->
@@ -76,14 +76,14 @@
             Please note that sharing is advisory on Unix-like platforms.
           </p>
           <p>
-            Rights is the file rights for the specified file. The default value is 438 (Decimal) or &666 (Octal) and indicates that the owner,  group, and others  can read and/or write to the file. The value in Rights is ignored on the Windows platform.
+            Rights is the file rights for the specified file. The default value is 438 (Decimal) or &amp;666 (Octal) and indicates that the owner,  group, and others  can read and/or write to the file. The value in Rights is ignored on the Windows platform.
           </p>
           <p>
             Create  instantiates a THandleStream (owned by the current class instance) which uses the valid file handle.
           </p>
-          <remarks>
+          <remark>
             Please note that Create can raise an exception if the file handle from FileCreateUTF8 or FileOpenUTF8 is invalid (contains feInvalidHandle).
-          </remarks>
+          </remark>
         </descr>
         <errors>
           <dl>
@@ -311,11 +311,11 @@
             CompareStringListItemsUTF8LowerCase converts the string values to lowercase using UTF8LowerCase, and calls the CompareStr function to perform the comparison. The return vaue is in the following ranges:
           </p>
           <dl>
-            <dt><code> <0 </code></dt>
+            <dt><code> &lt;0 </code></dt>
             <dd>String at Index1 comes before String at Index2</dd>
             <dt><code> 0 </code></dt>
             <dd>Strings have the same value</dd>
-            <dt><code> >0 </code> </dt>
+            <dt><code> &gt;0 </code> </dt>
             <dd>String at Index1 comes after String at Index2</dd>
           </dl>
         </descr>
