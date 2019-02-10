@@ -95,7 +95,7 @@
         </short>
         <descr>
           <p>
-            DefaultDisplaySettings os a constant with the default display settings used in TCalendar. DefaultDisplaySettings contains the following values:
+            DefaultDisplaySettings is a constant with the default display settings used in TCalendar. DefaultDisplaySettings contains the following values:
           </p>
           <dl>
             <dt>dsShowHeadings</dt>
@@ -479,14 +479,14 @@
         </short>
         <descr>
           <p>
-            DateTime is a TDateTime property that contains the native data type used for a date in the calendar control. Reading the value in DateTime calls the GetProps method to get the current values for Date and DateTime. Setting the value in DateTime calls SetProps tpo update the values in Date and DateTime.
+            DateTime is a TDateTime property that contains the native data type used for a date in the calendar control. Reading the value in DateTime calls the GetProps method to get the current values for Date and DateTime. Setting the value in DateTime calls SetProps to update the values in Date and DateTime.
           </p>
           <p>
             For the Windows environment, the CalendarMinDate and CalendarMaxDate member variables are updated to ensure that date values are in an acceptable date/time value range. An EInvalidDate exception is raised if the value is not a valid date/time for the platform.
           </p>
-          <remarks>
+          <remark>
             The calendar control does not use the time portion of the TDateTime data type. The time value is not significant unless a specified value is not valid for the date/time data type.
-          </remarks>
+          </remark>
         </descr>
         <errors>
           <p>
@@ -617,10 +617,10 @@
         <short></short>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCalendar.DoubleBuffered">
+      <element name="TCalendar.DoubleBuffered" link="#lcl.Controls.TWinControl.DoubleBuffered">
         <short></short>
       </element>
-      <element name="TCalendar.Hint">
+      <element name="TCalendar.Hint" link="#lcl.Controls.TControl.Hint">
         <short></short>
       </element>
       <!-- property Visibility: published -->
