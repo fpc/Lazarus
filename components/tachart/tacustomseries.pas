@@ -253,6 +253,8 @@ type
   TSeriesPointerStyleEvent = procedure (ASender: TChartSeries;
     AValueIndex: Integer; var AStyle: TSeriesPointerStyle) of object;
 
+  TStackedNaN = (snReplaceByZero, snDoNotDraw);
+
   { TBasicPointSeries }
 
   TBasicPointSeries = class(TChartSeries)
@@ -262,13 +264,15 @@ type
     FOnCustomDrawPointer: TSeriesPointerCustomDrawEvent;
     FOnGetPointerStyle: TSeriesPointerStyleEvent;
     function GetErrorBars(AIndex: Integer): TChartErrorBar;
-    function GetLabelDirection(AIndex: Integer; ACenterLevel: Double): TLabelDirection;
+    function GetLabelDirection(AIndex: Integer;
+      const ACenterLevel: Double): TLabelDirection;
     function IsErrorBarsStored(AIndex: Integer): Boolean;
     procedure SetErrorBars(AIndex: Integer; AValue: TChartErrorBar);
     procedure SetMarkPositionCentered(AValue: Boolean);
     procedure SetMarkPositions(AValue: TLinearMarkPositions);
     procedure SetPointer(AValue: TSeriesPointer);
     procedure SetStacked(AValue: Boolean);
+    procedure SetStackedNaN(AValue: TStackedNaN);
     procedure SetUseReticule(AValue: Boolean); deprecated 'Use DatapointCrosshairTool instead';
   strict protected
     FGraphPoints: array of TDoublePoint;
@@ -276,6 +280,7 @@ type
     FMinXRange: Double;
     FPointer: TSeriesPointer;
     FStacked: Boolean;
+    FStackedNaN: TStackedNaN;
     FUpBound: Integer;
     FUseReticule: Boolean;
     FOptimizeX: Boolean;
@@ -294,9 +299,11 @@ type
     procedure GetLegendItemsRect(AItems: TChartLegendItems; ABrush: TBrush);
     function GetXRange(AX: Double; AIndex: Integer): Double;
     function GetZeroLevel: Double; virtual;
+    function HasMissingYValue(AIndex: Integer): Boolean;
     function NearestXNumber(var AIndex: Integer; ADir: Integer): Double;
     procedure PrepareGraphPoints(
       const AExtent: TDoubleRect; AFilterByExtent: Boolean);
+    function SkipMissingValues(AIndex: Integer): Boolean; virtual;
     function ToolTargetDistance(const AParams: TNearestPointParams;
       AGraphPt: TDoublePoint; APointIdx, AXIdx, AYIdx: Integer): Integer; virtual;
     procedure UpdateGraphPoints(AIndex: Integer; ACumulative: Boolean); overload; inline;
@@ -305,6 +312,7 @@ type
 
     property Pointer: TSeriesPointer read FPointer write SetPointer;
     property Stacked: Boolean read FStacked write SetStacked;
+    property StackedNaN: TStackedNaN read FStackedNaN write SetStackedNaN default snReplaceByZero;
 
   protected
     procedure AfterAdd; override;
@@ -1260,7 +1268,6 @@ var
   y, ysum: Double;
   g: TDoublePoint;
   i, si: Integer;
-  ld: TLabelDirection;
   style: TChartStyle;
   lfont: TFont;
   curr, prev: Double;
@@ -1278,19 +1285,16 @@ begin
     centerLvl := (ext.a.y + ext.b.y) * 0.5;
 
     for i := FLoBound to FUpBound do begin
-      if IsNan(Source[i]^.X) then
+      if SkipMissingValues(i) then
         continue;
-      if FSupportsZeroLevel then
-        prev := GetZeroLevel
-      else
-        prev := TDoublePointBoolArr(ext.a)[not IsRotated];
-      y := Source[i]^.Y;
-      yIsNaN := IsNaN(y);
-      ysum := IfThen(yIsNaN, prev, y);
-      ld := GetLabelDirection(i, centerLvl);
+      prev := IfThen(FSupportsZeroLevel, GetZeroLevel, TDoublePointBoolArr(ext.a)[not IsRotated]);
       for si := 0 to Source.YCount - 1 do begin
         g := GetLabelDataPoint(i, si);
-        if si > 0 then begin
+        if si = 0 then begin
+          y := Source[i]^.Y;
+          yIsNaN := IsNaN(y);
+          ysum := IfThen(yIsNaN, prev, y);
+        end else begin
           y := Source[i]^.YList[si-1];
           yIsNaN := IsNaN(y);
           if yIsNaN then y := 0.0;
@@ -1300,7 +1304,9 @@ begin
           end;
         end;
         if IsRotated then
-          g.X := AxisToGraphY(y)         // GraphY is correct!
+          g.X := AxisToGraphY(y)
+          // Axis-to-graph transformation is independent of axis rotation ->
+          // Using AxisToGraph_Y_ is correct!
         else
           g.Y := AxisToGraphY(y);
 
@@ -1326,7 +1332,11 @@ begin
               else
                 Marks.LabelFont.Assign(lfont);
             end;
-            DrawLabel(FormattedMark(i, '', si), GraphToImage(g), ld);
+            DrawLabel(
+              FormattedMark(i, '', si),
+              GraphToImage(g),
+              GetLabelDirection(i, centerLvl)
+            );
           end;
       end;
     end;
@@ -1423,7 +1433,7 @@ begin
 end;
 
 function TBasicPointSeries.GetLabelDirection(AIndex: Integer;
-  ACenterLevel: Double): TLabelDirection;
+  const ACenterLevel: Double): TLabelDirection;
 const
   DIR: array [Boolean, Boolean] of TLabelDirection =
     ((ldTop, ldBottom), (ldRight, ldLeft));
@@ -1605,6 +1615,19 @@ begin
   Result := 0.0;
 end;
 
+{ Returns true if the data point at the given index has at least one missing
+  y value (NaN) }
+function TBasicPointSeries.HasMissingYValue(AIndex: Integer): Boolean;
+var
+  j: Integer;
+begin
+  Result := IsNaN(Source[AIndex]^.Y);
+  if not Result then
+    for j := 0 to Source.YCount-1 do
+      if IsNaN(Source[AIndex]^.YList[j]) then
+        exit(true);
+end;
+
 function TBasicPointSeries.IsErrorBarsStored(AIndex: Integer): Boolean;
 begin
   with FErrorBars[AIndex] do
@@ -1725,11 +1748,27 @@ begin
   UpdateParentChart;
 end;
 
+procedure TBasicPointSeries.SetStackedNaN(AValue: TStackedNaN);
+begin
+  if FStackedNaN = AValue then exit;
+  FStackedNaN := AValue;
+  UpdateParentChart;
+end;
+
 procedure TBasicPointSeries.SetUseReticule(AValue: Boolean);
 begin
   if FUseReticule = AValue then exit;
   FUseReticule := AValue;
   UpdateParentChart;
+end;
+
+{ Returns true when the data point at the specified index contains missing
+  values in a way such that the point cannot be drawn. }
+function TBasicPointSeries.SkipMissingValues(AIndex: Integer): Boolean;
+begin
+  Result := IsNan(Source[AIndex]^.X);
+  if not Result then
+    Result := FStacked and (FStackedNaN = snDoNotDraw) and HasMissingYValue(AIndex);
 end;
 
 function TBasicPointSeries.ToolTargetDistance(const AParams: TNearestPointParams;
@@ -1751,34 +1790,57 @@ var
   i, j: Integer;
   y: Double;
 begin
-  if IsRotated then
-    for i := ALo to AUp do
-    begin
-      if ACumulative then begin
-        y := Source[i]^.Y;
-        for j := 0 to AIndex do
-          y += Source[i]^.YList[j];
-        FGraphPoints[i - ALo].X := AxisToGraphY(y);
-      end else
-      if AIndex = -1 then
+  if IsRotated then begin
+    if ACumulative then begin
+      if FStacked and (FStackedNaN = snReplaceByZero) then
+        for i := ALo to AUp do
+        begin
+          y := NumberOr(Source[i]^.Y, IfThen(FSupportsZeroLevel, GetZeroLevel, 0.0));
+          for j := 0 to AIndex do
+            y += NumberOr(Source[i]^.YList[j], 0.0);
+          FGraphPoints[i - ALo].X := AxisToGraphY(y)
+        end
+      else
+        for i := ALo to AUp do
+        begin
+          y := Source[i]^.Y;
+          for j := 0 to AIndex do
+            y += Source[i]^.YList[j];
+          FGraphPoints[i - ALo].X := AxisToGraphY(y);
+        end;
+    end else
+    if AIndex = -1 then
+      for i := ALo to AUp do
         FGraphPoints[i - ALo].X := AxisToGraphY(Source[i]^.Y)
-      else
+    else
+      for i := ALo to AUp do
         FGraphPoints[i - ALo].X := AxisToGraphY(Source[i]^.YList[AIndex]);
-    end
-  else
-    for i := ALo to AUp do
-    begin
-      if ACumulative then begin
-        y := Source[i]^.Y;
-        for j := 0 to AIndex do
-          y += Source[i]^.YList[j];
-        FGraphPoints[i - ALo].Y := AxisToGraphY(y);
-      end else
-      if AIndex = -1 then
-        FGraphPoints[i - ALo].Y := AxisToGraphY(Source[i]^.Y)
+  end
+  else begin
+    if ACumulative then begin
+      if FStacked and (FStackedNaN = snReplaceByZero) then
+        for i := ALo to AUp do
+        begin
+          y := NumberOr(Source[i]^.Y, IfThen(FSupportsZeroLevel, GetZeroLevel, 0.0));
+          for j := 0 to AIndex do
+            y += NumberOr(Source[i]^.YList[j], 0.0);
+          FGraphPoints[i - ALo].Y := AxisToGraphY(y);
+        end
       else
-        FGraphPoints[i - Alo].Y := AxisToGraphY(Source[i]^.YList[AIndex]);
-    end;
+        for i := ALo to AUp do begin
+          y := Source[i]^.Y;
+          for j := 0 to AIndex do
+            y += Source[i]^.YList[j];
+          FGraphPoints[i - ALo].Y := AxisToGraphY(y);
+        end;
+    end else
+    if AIndex = -1 then
+      for i := ALo to AUp do
+        FGraphPoints[i - ALo].Y := AxisToGraphY(Source[i]^.Y)
+    else
+      for i := ALo to AUp do
+        FGraphPoints[i - ALo].Y := AxisToGraphY(Source[i]^.YList[AIndex]);
+  end;
 end;
 
 procedure TBasicPointSeries.UpdateGraphPoints(AIndex: Integer;

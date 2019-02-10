@@ -102,6 +102,7 @@ type
       read GetSeriesColor write SetSeriesColor stored false default clRed;
     property Source;
     property Stacked default true;
+    property StackedNaN;
     property Styles;
     property ToolTargets default [nptPoint, nptYList, nptCustom];
     property UseReticule; deprecated 'Use DatapointCrosshairTool instead';
@@ -158,6 +159,7 @@ type
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
     function GetZeroLevel: Double; override;
+    function SkipMissingValues(AIndex: Integer): Boolean; override;
   public
     procedure Assign(ASource: TPersistent); override;
     constructor Create(AOwner: TComponent); override;
@@ -181,6 +183,7 @@ type
       read GetSeriesColor write SetSeriesColor stored false default clWhite;
     property Source;
     property Stacked default true;
+    property StackedNaN;
     property Styles;
     property ToolTargets;
     property UseReticule; deprecated 'Use DatapointCrosshairTool instead';
@@ -245,6 +248,7 @@ type
     property ShowPoints: Boolean
       read GetShowPoints write SetShowPoints default false;
     property Stacked default false;
+    property StackedNaN;
     property Source;
     property Styles;
     property ToolTargets;
@@ -365,7 +369,8 @@ implementation
 
 uses
   GraphMath, GraphType, IntfGraphics, LResources, Math, PropEdits, SysUtils,
-  TAChartStrConsts, TADrawerCanvas, TAGeometry, TAGraph, TAMath, TAStyles;
+  TAChartStrConsts, TADrawerCanvas, TAGeometry, TACustomSource, TAGraph,
+  TAMath, TAStyles;
 
 { TLineSeries }
 
@@ -1182,7 +1187,8 @@ begin
   SetLength(heights, Source.YCount + 1);
   for pointIndex := FLoBound to FUpBound do begin
     p := Source[pointIndex]^.Point;
-    if IsNan(p.X) then continue;
+    if SkipMissingValues(pointIndex) then
+      continue;
     p.X := AxisToGraphX(p.X);
     BarOffsetWidth(p.X, pointIndex, ofs, w);
     p.X += ofs;
@@ -1513,28 +1519,34 @@ var
   zero: Double;
   ext, ext2: TDoubleRect;
 
-  { Collects the indexes of data points having NaN as x or one of the y values }
+  procedure CollectMissingItem(AIndex: Integer);
+  begin
+    missing[numMissing] := AIndex;
+    inc(numMissing);
+  end;
+
+  { Collects the indexes of data points having NaN as x or any of the y values }
   procedure CollectMissing;
   var
     i, j: Integer;
+    item: PChartDataItem;
   begin
     SetLength(missing, Length(FGraphPoints));
     numMissing := 0;
     for i := 0 to High(FGraphPoints) do begin
-      if IsNaN(Source.Item[i+FLoBound]^.X) then begin
-        missing[numMissing] := i;
-        inc(numMissing);
-      end else
-      if FStacked then
-        if IsNaN(Source.Item[i+FLoBound]^.Y) then begin
-          missing[numMissing] := i;
-          inc(numMissing);
-        end else
+      item := Source.Item[i + FLoBound];
+      if IsNaN(item^.X) then
+        CollectMissingItem(i)
+      else
+      if FBanded and IsNaN(item^.Y) then
+        CollectMissingItem(i)
+      else
+      if FStacked and (FStackedNaN = snDoNotDraw) then
+        if IsNaN(item^.Y) then
+          CollectMissingItem(i)
+        else
           for j := 0 to Source.YCount-2 do
-            if IsNaN(Source.Item[i+FLoBound]^.YList[j]) then begin
-              missing[numMissing] := i;
-              inc(numMissing);
-            end;
+            if IsNaN(item^.YList[j]) then CollectMissingItem(i);
     end;
     SetLength(missing, numMissing);
   end;
@@ -1551,6 +1563,18 @@ var
     PushPoint(ParentChart.GraphToImage(AP));
   end;
 
+  procedure PushBasePoint(AP: TDoublePoint; AIndex: Integer);
+  var
+    p: TPoint;
+  begin
+    p := ParentChart.GraphToImage(AP);
+    if IsRotated then
+      p.X := basePts[IfThen(FBanded, AIndex, 1)].X
+    else
+      p.Y := basePts[IfThen(FBanded, AIndex, 1)].Y;
+    PushPoint(p);
+  end;
+
   function ProjToLine(const APt: TDoublePoint; ACoord: Double): TDoublePoint;
   begin
     Result := APt;
@@ -1560,23 +1584,79 @@ var
       Result.Y := ACoord;
   end;
 
-  function ReplaceByBasePoint(AIndex: Integer): TPoint;
+  // Widens zero-width area to see at least a narrow stripe.
+  procedure FixZeroWidth;
+  var
+    p1, p2, p3: TPoint;
+    delta: Integer;
   begin
-    Result := pts[numPts-1];
-    if IsRotated then
-      Result.X := basePts[IfThen(FBanded, AIndex, 0)].X
-    else
-      Result.Y := basePts[IfThen(FBanded, AIndex, 0)].Y;
+    delta := ADrawer.Scale(1);
+    if numPts = 1 then begin
+      p1 := pts[0];
+      if IsRotated then begin
+        dec(pts[0].Y, delta);
+        inc(p1.Y, delta);
+      end else begin
+        dec(pts[0].X, delta);
+        inc(p1.X, delta);
+      end;
+      PushPoint(p1);
+    end else
+    if numPts = 2 then begin
+      p1 := pts[numpts-1];
+      p2 := pts[numpts-2];
+      if IsRotated and (p1.Y = p2.Y) then begin
+        pts[0] := p1;
+        pts[1] := p2;
+        inc(p1.Y, 2*delta);
+        inc(p2.Y, 2*delta);
+        PushPoint(p2);
+        PushPoint(p1);
+      end else
+      if not IsRotated and (p1.X = p2.X) then begin
+        pts[0] := p1;
+        pts[1] := p2;
+        inc(p1.X, 2*delta);
+        inc(p2.X, 2*delta);
+        PushPoint(p2);
+        PushPoint(p1);
+      end;
+    end else
+    if numPts > 2 then begin
+      p1 := pts[numpts-1];
+      p2 := pts[numpts-2];
+      p3 := pts[numpts-3];
+      if IsRotated and (p1.Y = p2.Y) and (p2.Y = p3.Y) then begin
+        dec(pts[numpts-3].Y, delta);
+        dec(pts[numpts-2].Y, delta);
+        inc(pts[numpts-1].Y, delta);
+        pts[numpts-1].X := p2.X;
+        inc(p3.Y, delta);
+        PushPoint(p3);
+      end else
+      if not IsRotated and (p1.X = p2.X) and (p2.X = p3.X) then begin
+        dec(pts[numpts-3].X, delta);
+        dec(pts[numpts-2].X, delta);
+        inc(pts[numpts-1].X, delta);
+        pts[numpts-1].Y := p2.Y;
+        inc(p3.X, delta);
+        PushPoint(p3);
+      end;
+    end;
   end;
 
   procedure CollectPoints(AStart, AEnd: Integer);
   var
-    i: Integer;
+    i, j: Integer;
     a, b: TDoublePoint;
+    singlePoint: Boolean;
   begin
-    for i := AStart to AEnd do begin
+    singlepoint := AStart = AEnd;
+    if singlepoint then inc(AEnd);
+    for i := AStart to AEnd - 1 do begin
       a := FGraphPoints[i];
-      if i = AEnd then b := a else b := FGraphPoints[i + 1];
+      if singlePoint then b := a else b := FGraphPoints[i + 1];
+
       case ConnectType of
         ctLine: ;
         ctStepXY:
@@ -1591,17 +1671,27 @@ var
             a.Y := b.Y;
       end;
 
-      PushPoint(a);
-      if IsNaN(a) then
-        pts[numPts-1]:= ReplaceByBasePoint(i)
-      else if (i > AStart) and IsNaN(FGraphPoints[i-1]) then
-        pts[numPts-2] := ReplaceByBasePoint(i-1);
-
-      if IsNaN(b) then
-        PushPoint(ReplaceByBasePoint(i))
-      else
+      if IsNaN(a) and IsNaN(b) then begin
+        PushBasePoint(a, i);
+        if i < AEnd then PushBasePoint(b, i+1) else PushBasePoint(b, i);
+      end else
+      if IsNaN(b) then begin
+        PushPoint(a);
+        PushBasePoint(a, i);
+        FixZeroWidth;
+        if i < AEnd then PushBasePoint(b, i+1) else PushBasePoint(b, i);
+      end else
+      if IsNaN(a) then begin
+        PushBasepoint(a, i);
+        FixZeroWidth;
+        if i < AEnd then PushBasePoint(b, i+1) else PushBasePoint(b, i);
         PushPoint(b);
+      end else begin
+        PushPoint(a);
+        PushPoint(b);
+      end;
     end;
+    FixZeroWidth;
   end;
 
   procedure CopyPoints(var ADest: TPointArray; ASource: TPointArray;
@@ -1611,23 +1701,6 @@ var
   begin
     for i:=0 to ANumPts - 1 do
       ADest[i] := ASource[i];
-  end;
-
-  procedure FixPoints;
-  var
-    p: TPoint;
-  begin
-    if numPts = 1 then begin
-      p := pts[0];
-      if IsRotated then begin
-        dec(pts[0].Y);
-        inc(p.Y);
-      end else begin
-        dec(pts[0].X);
-        inc(p.X);
-      end;
-      PushPoint(p);
-    end;
   end;
 
   procedure DrawSegment(AStart, AEnd: Integer);
@@ -1643,7 +1716,6 @@ var
       UpdateGraphPoints(-1, FLoBound, FUpBound, FStacked);
       numPts := 0;
       CollectPoints(AStart, AEnd);
-      FixPoints;
       numBasePts := numPts;
     end else begin
       numPts := 0;
@@ -1651,7 +1723,7 @@ var
       PushPoint(ProjToLine(p, zero));
       p := ProjToRect(FGraphPoints[AEnd], ext2);
       PushPoint(ProjToLine(p, zero));
-      FixPoints;
+      FixZeroWidth;
       numBasePts := numPts;
     end;
     SetLength(basePts, numBasePts);
@@ -1664,7 +1736,6 @@ var
       numPts := 0;
       UpdateGraphPoints(j, FLoBound, FUpBound, FStacked);
       CollectPoints(AStart, AEnd);
-      FixPoints;
       numDataPts := numPts;
 
       // Base points
@@ -1837,6 +1908,14 @@ begin
   FZeroLevel := AValue;
   UpdateParentChart;
 end;
+
+function TAreaSeries.SkipMissingValues(AIndex: Integer): Boolean;
+begin
+  Result := inherited;
+  if not Result then
+    Result := FBanded and IsNaN(Source.Item[AIndex]^.Y);
+end;
+
 
 { TUserDrawnSeries }
 
