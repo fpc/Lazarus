@@ -5,8 +5,9 @@ Using FPReport requires FPC trunk (or 3.2).
 
 However, it can be compiled with FPC 3.0.4 by doing the following first:
 
-- Make a directory "src" (the packages will assume this directory) here.
-- To this directory, copy from FPC trunk the following files:
+1. Make a directory "src" here if it does not yet exist.
+  (the options of the packages assume this directory exists) 
+2. To this directory, copy from FPC trunk the following files:
   - all files from packages/fcl-report/src
   - all files from packages/fcl-pdf/src
   - packages/fcl-image/src/fpbarcode.pp
