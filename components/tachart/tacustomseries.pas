@@ -264,7 +264,7 @@ type
     FOnCustomDrawPointer: TSeriesPointerCustomDrawEvent;
     FOnGetPointerStyle: TSeriesPointerStyleEvent;
     function GetErrorBars(AIndex: Integer): TChartErrorBar;
-    function GetLabelDirection(AIndex: Integer;
+    function GetLabelDirection(AValue: Double;
       const ACenterLevel: Double): TLabelDirection;
     function IsErrorBarsStored(AIndex: Integer): Boolean;
     procedure SetErrorBars(AIndex: Integer; AValue: TChartErrorBar);
@@ -1282,12 +1282,12 @@ begin
     lfont.Assign(Marks.LabelFont);
     ParentChart.DisableRedrawing;
     ext := Extent;
-    centerLvl := (ext.a.y + ext.b.y) * 0.5;
+    centerLvl := AxisToGraphY((ext.a.y + ext.b.y) * 0.5);
 
     for i := FLoBound to FUpBound do begin
       if SkipMissingValues(i) then
         continue;
-      prev := IfThen(FSupportsZeroLevel, GetZeroLevel, TDoublePointBoolArr(ext.a)[not IsRotated]);
+      prev := IfThen(FSupportsZeroLevel, GetZeroLevel, 0.0);
       for si := 0 to Source.YCount - 1 do begin
         g := GetLabelDataPoint(i, si);
         if si = 0 then begin
@@ -1335,7 +1335,7 @@ begin
             DrawLabel(
               FormattedMark(i, '', si),
               GraphToImage(g),
-              GetLabelDirection(i, centerLvl)
+              GetLabelDirection(IfThen(IsRotated, g.X, g.Y), centerLvl)
             );
           end;
       end;
@@ -1432,7 +1432,7 @@ begin
   Result := GetGraphPoint(AIndex, 0, AYIndex);
 end;
 
-function TBasicPointSeries.GetLabelDirection(AIndex: Integer;
+function TBasicPointSeries.GetLabelDirection(AValue: Double;
   const ACenterLevel: Double): TLabelDirection;
 const
   DIR: array [Boolean, Boolean] of TLabelDirection =
@@ -1447,17 +1447,17 @@ begin
     lmpOutside,
     lmpInside :
       begin
-        ref := IfThen(FSupportsZeroLevel, GetZeroLevel, ACenterLevel);
-        if Source[AIndex]^.Y < ref then
+        ref := IfThen(FSupportsZeroLevel, AxisToGraphY(GetZeroLevel), ACenterLevel);
+        if AValue < ref then
           isNeg := true
         else
-        if Source[AIndex]^.Y > ref then
+        if AValue > ref then
           isNeg := false
         else
         if not FSupportsZeroLevel then
           isNeg := false
         else
-          isNeg := Source[AIndex]^.Y < ACenterLevel;
+          isNeg := AValue < ACenterLevel;
         if MarkPositions = lmpInside then
           isNeg := not isNeg;
       end;
@@ -1859,13 +1859,14 @@ end;
 procedure TBasicPointSeries.UpdateMargins(
   ADrawer: IChartDrawer; var AMargins: TRect);
 var
-  i, dist: Integer;
+  i, dist, j: Integer;
   labelText: String;
   dir: TLabelDirection;
   m: array [TLabelDirection] of Integer absolute AMargins;
   gp: TDoublePoint;
   scMarksDistance: Integer;
   center: Double;
+  ysum: Double;
 begin
   if not Marks.IsMarkLabelsVisible or not Marks.AutoMargins then exit;
   if Count = 0 then exit;
@@ -1884,21 +1885,37 @@ begin
   FindExtentInterval(ParentChart.CurrentExtent, Source.IsSorted);
 
   with Extent do
-    center := (a.y + b.y) * 0.5;
+    center := AxisToGraphY((a.y + b.y) * 0.5);
   scMarksDistance := ADrawer.Scale(Marks.Distance);
   for i := FLoBound to FUpBound do begin
+    j := 0;
     gp := GetGraphPoint(i);
-    if not ParentChart.IsPointInViewPort(gp) then continue;
-    labelText := FormattedMark(i);
-    if labelText = '' then continue;
+    while true do begin
+      if not ParentChart.IsPointInViewPort(gp) then break;
+      labelText := FormattedMark(i, '', j);
+      if labelText = '' then break;
 
-    dir := GetLabelDirection(i, center);
-    with Marks.MeasureLabel(ADrawer, labelText) do
-      dist := IfThen(dir in [ldLeft, ldRight], cx, cy);
-    if Marks.DistanceToCenter then
-      dist := dist div 2;
+      dir := GetLabelDirection(TDoublePointBoolArr(gp)[not IsRotated], center);
+//      dir := GetLabelDirection(IfThen(IsRotated, gp.X, gp.Y), center);
+      with Marks.MeasureLabel(ADrawer, labelText) do
+        dist := IfThen(dir in [ldLeft, ldRight], cx, cy);
+      if Marks.DistanceToCenter then
+        dist := dist div 2;
 
-    m[dir] := Max(m[dir], dist + scMarksDistance);
+      m[dir] := Max(m[dir], dist + scMarksDistance);
+
+      if (Source.YCount > 0) and (j = 0) then begin
+        if FStacked then begin
+          ysum := 0;
+          for j := 0 to Source.YCount-1 do
+            ysum += NumberOr(Source.Item[i]^.GetY(j), 0.0);
+          TDoublePointBoolArr(gp)[not IsRotated] := AxisToGraphY(ysum);
+        end else
+          gp := GetGraphPoint(i, 0, Source.YCount-1);
+        j := Source.YCount-1;
+      end else
+        break;
+    end;
   end;
 end;
 
