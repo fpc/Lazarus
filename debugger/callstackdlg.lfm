@@ -12,8 +12,8 @@ object CallStackDlg: TCallStackDlg
   Visible = True
   object lvCallStack: TListView
     Left = 0
-    Height = 166
-    Top = 80
+    Height = 220
+    Top = 26
     Width = 562
     Align = alClient
     Columns = <    
@@ -47,101 +47,105 @@ object CallStackDlg: TCallStackDlg
   end
   object ToolBar1: TToolBar
     Left = 0
-    Height = 80
+    Height = 26
     Top = 0
     Width = 562
-    AutoSize = True
-    ButtonHeight = 40
-    ButtonWidth = 50
     Caption = 'tbButtons'
-    EdgeBorders = []
+    List = True
     ParentShowHint = False
     ShowCaptions = True
     ShowHint = True
     TabOrder = 1
     object ToolButtonShow: TToolButton
-      Left = 117
-      Top = 0
+      Left = 32
+      Top = 2
       Action = actShow
       ImageIndex = 0
+      ShowCaption = False
     end
     object ToolButtonCurrent: TToolButton
-      Left = 167
-      Top = 0
+      Left = 55
+      Top = 2
       Action = actSetCurrent
+      ShowCaption = False
     end
     object ToolButton4: TToolButton
-      Left = 220
-      Height = 40
-      Top = 0
+      Left = 78
+      Height = 22
+      Top = 2
       Caption = 'ToolButton4'
       Style = tbsSeparator
     end
     object ToolButtonMore: TToolButton
-      Left = 300
-      Top = 0
+      Left = 121
+      Top = 2
       Action = actViewMore
       ImageIndex = 1
+      ShowCaption = False
     end
     object ToolButtonMax: TToolButton
-      Left = 228
-      Top = 0
+      Left = 86
+      Top = 2
       Action = actViewLimit
-      Caption = 'Max 10'
+      AutoSize = True
       DropdownMenu = mnuLimit
       Style = tbsDropDown
     end
     object ToolButtonGoto: TToolButton
-      Left = 510
-      Top = 0
+      Left = 248
+      Top = 2
       Action = actViewGoto
       ImageIndex = 4
+      ShowCaption = False
     end
     object ToolButtonCopyAll: TToolButton
-      Left = 9
-      Top = 40
+      Left = 279
+      Top = 2
       Action = actCopyAll
       ImageIndex = 5
+      ShowCaption = False
     end
     object ToolButton8: TToolButton
-      Left = 109
-      Height = 40
-      Top = 0
+      Left = 24
+      Height = 22
+      Top = 2
       Caption = 'ToolButton8'
       Style = tbsSeparator
     end
     object ToolButton9: TToolButton
-      Left = 350
-      Height = 40
-      Top = 0
+      Left = 144
+      Height = 22
+      Top = 2
       Caption = 'ToolButton9'
       Style = tbsSeparator
     end
     object ToolButtonTop: TToolButton
-      Left = 358
-      Top = 0
+      Left = 152
+      Top = 2
       Action = actViewTop
       ImageIndex = 2
+      ShowCaption = False
     end
     object ToolButtonBottom: TToolButton
-      Left = 408
-      Top = 0
+      Left = 175
+      Top = 2
       Action = actViewBottom
       ImageIndex = 3
+      ShowCaption = False
     end
     object Panel1: TPanel
-      Left = 460
-      Height = 40
-      Top = 0
+      Left = 198
+      Height = 22
+      Top = 2
       Width = 50
       BevelOuter = bvNone
-      ClientHeight = 40
+      ClientHeight = 22
       ClientWidth = 50
       TabOrder = 0
       object txtGoto: TEdit
         Left = 2
-        Height = 29
-        Top = 8
+        Height = 23
+        Top = 0
         Width = 46
         OnKeyPress = txtGotoKeyPress
         TabOrder = 0
@@ -150,18 +154,19 @@ object CallStackDlg: TCallStackDlg
     end
     object ToolButtonPower: TToolButton
       Left = 1
-      Top = 0
+      Top = 2
       AllowAllUp = True
       AutoSize = True
       Caption = 'ToolButtonPower'
       Down = True
       OnClick = ToolButtonPowerClick
+      ShowCaption = False
       Style = tbsCheck
     end
     object ToolButton2: TToolButton
-      Left = 1
-      Height = 40
-      Top = 40
+      Left = 271
+      Height = 22
+      Top = 2
       Caption = 'ToolButton2'
       Style = tbsSeparator
     end

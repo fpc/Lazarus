@@ -738,6 +738,16 @@ begin
   actSetCurrent.Caption := lisCurrent;
   actCopyAll.Caption := lisCopyAll;
 
+  actViewMore.Hint := lisMore;
+  actViewTop.Hint := lisCSTop;
+  actViewBottom.Hint := lisCSBottom;
+  actViewGoto.Hint := lisGotoSelected;
+  actShow.Hint := lisViewSource;
+  actShowDisass.Hint := lisViewSourceDisass;
+  actToggleBreakPoint.Hint := uemToggleBreakpoint;
+  actSetCurrent.Hint := lisCurrent;
+  actCopyAll.Hint := lisCopyAll;
+
   FViewCount := EnvironmentOptions.DebuggerConfig.DlgCallStackConfig.ViewCount;
   curPopLimit := nil;
   for i := 0 to mnuLimit.Items.Count-1 do
@@ -767,6 +777,7 @@ begin
   ToolButtonBottom.ImageIndex := IDEImages.LoadImage('callstack_bottom');
   ToolButtonGoto.ImageIndex := IDEImages.LoadImage('callstack_goto');
   ToolButtonCopyAll.ImageIndex := IDEImages.LoadImage('laz_copy');
+  ToolButtonCurrent.ImageIndex := IDEImages.LoadImage('debugger_current_line');
   FPowerImgIdx := IDEImages.LoadImage('debugger_power');
   FPowerImgIdxGrey := IDEImages.LoadImage('debugger_power_grey');
   ToolButtonPower.ImageIndex := FPowerImgIdx;
