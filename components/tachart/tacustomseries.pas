@@ -1904,7 +1904,7 @@ begin
 
       m[dir] := Max(m[dir], dist + scMarksDistance);
 
-      if (Source.YCount > 0) and (j = 0) then begin
+      if (Source.YCount > 1) and (j = 0) then begin
         if FStacked then begin
           ysum := 0;
           for j := 0 to Source.YCount-1 do
