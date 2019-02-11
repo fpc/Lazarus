@@ -1558,6 +1558,7 @@ resourcestring
   lisShowInfoBoxInObjectInspector = 'Show information box';
   lisShowsDescriptionForSelectedProperty = 'A box at the bottom shows '
     +'description for the selected property.';
+  lisShowPropertyFilterInObjectInspector = 'Show property filter';
   dlgEnvBackupHelpNote = 'Notes: Project files are all files in the project directory';
   lisEnvOptDlgInvalidDebuggerFilename = 'Invalid debugger filename';
   lisEnvOptDlgInvalidDebuggerFilenameMsg = 'The debugger file "%s" is not an executable.';

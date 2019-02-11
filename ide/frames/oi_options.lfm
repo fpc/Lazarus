@@ -216,6 +216,21 @@ object OIOptionsFrame: TOIOptionsFrame
       ShowHint = True
       TabOrder = 8
     end
+    object OIShowPropertyFilterCheckBox: TCheckBox
+      AnchorSideLeft.Control = OIOptsCenterLabel
+      AnchorSideTop.Control = OIDrawGridLinesCheckBox
+      AnchorSideTop.Side = asrBottom
+      Left = 335
+      Height = 22
+      Top = 118
+      Width = 207
+      BorderSpacing.Top = 6
+      BorderSpacing.Bottom = 6
+      Caption = 'OIShowPropertyFilterCheckBox'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 9
+    end
   end
   object ObjectInspectorSpeedSettingsGroupBox: TGroupBox
     AnchorSideLeft.Control = ObjectInspectorColorsGroupBox

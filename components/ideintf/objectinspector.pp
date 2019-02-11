@@ -95,6 +95,7 @@ type
 
     FSaveBounds: boolean;
     FLeft: integer;
+    FShowPropertyFilter: boolean;
     FShowGutter: boolean;
     FShowInfoBox: boolean;
     FInfoBoxHeight: integer;
@@ -165,6 +166,7 @@ type
     property CheckboxForBoolean: boolean read FCheckboxForBoolean write FCheckboxForBoolean;
     property BoldNonDefaultValues: boolean read FBoldNonDefaultValues write FBoldNonDefaultValues;
     property DrawGridLines: boolean read FDrawGridLines write FDrawGridLines;
+    property ShowPropertyFilter: boolean read FShowPropertyFilter write FShowPropertyFilter;
     property ShowGutter: boolean read FShowGutter write FShowGutter;
     property ShowStatusBar: boolean read FShowStatusBar write FShowStatusBar;
     property ShowInfoBox: boolean read FShowInfoBox write FShowInfoBox;
@@ -630,6 +632,7 @@ type
   private
     // These are created at run-time, no need for default published section.
     PropertyPanel: TPanel;
+    PropFilterPanel: TPanel;
     PropFilterLabel: TLabel;
     PropFilterEdit: TListFilterEdit;
     RestrictedPanel: TPanel;
@@ -656,6 +659,7 @@ type
     OptionsSeparatorMenuItem3: TMenuItem;
     RemoveFromFavoritesPopupMenuItem: TMenuItem;
     ShowComponentTreePopupMenuItem: TMenuItem;
+    ShowPropertyFilterPopupMenuItem: TMenuItem;
     ShowHintsPopupMenuItem: TMenuItem;
     ShowInfoBoxPopupMenuItem: TMenuItem;
     ShowStatusBarPopupMenuItem: TMenuItem;
@@ -679,6 +683,7 @@ type
     FSelection: TPersistentSelectionList;
     FSettingSelectionCount: integer;
     FShowComponentTree: Boolean;
+    FShowPropertyFilter: boolean;
     FShowFavorites: Boolean;
     FShowInfoBox: Boolean;
     FShowRestricted: Boolean;
@@ -730,6 +735,7 @@ type
     procedure ChangeClassPopupmenuItemClick(Sender: TObject);
     procedure ComponentTreeModified(Sender: TObject);
     procedure ShowComponentTreePopupMenuItemClick(Sender: TObject);
+    procedure ShowPropertyFilterPopupMenuItemClick(Sender: TObject);
     procedure ShowHintPopupMenuItemClick(Sender: TObject);
     procedure ShowInfoBoxPopupMenuItemClick(Sender: TObject);
     procedure ShowStatusBarPopupMenuItemClick(Sender: TObject);
@@ -738,7 +744,6 @@ type
     procedure WidgetSetRestrictedPaint(Sender: TObject);
     procedure ComponentRestrictedPaint(Sender: TObject);
     procedure PropFilterEditAfterFilter(Sender: TObject);
-    procedure PropFilterEditResize(Sender: TObject);
     procedure NoteBookPageChange(Sender: TObject);
     procedure ChangeParentItemClick(Sender: TObject);
     procedure CollectionAddItem(Sender: TObject);
@@ -783,6 +788,7 @@ type
     procedure SetRestricted(const AValue: TOIRestrictedProperties);
     procedure SetSelection(const ASelection: TPersistentSelectionList);
     procedure SetShowComponentTree(const AValue: boolean);
+    procedure SetShowPropertyFilter(const AValue: Boolean);
     procedure SetShowFavorites(const AValue: Boolean);
     procedure SetShowInfoBox(const AValue: Boolean);
     procedure SetShowRestricted(const AValue: Boolean);
@@ -839,6 +845,7 @@ type
     property Selection: TPersistentSelectionList read FSelection write SetSelection;
     property AutoShow: Boolean read FAutoShow write FAutoShow;
     property ShowComponentTree: Boolean read FShowComponentTree write SetShowComponentTree;
+    property ShowPropertyFilter: boolean read FShowPropertyFilter write SetShowPropertyFilter;
     property ShowFavorites: Boolean read FShowFavorites write SetShowFavorites;
     property ShowInfoBox: Boolean read FShowInfoBox write SetShowInfoBox;
     property ShowRestricted: Boolean read FShowRestricted write SetShowRestricted;
@@ -3995,6 +4002,7 @@ begin
   FCheckboxForBoolean := True;
   FBoldNonDefaultValues := True;
   FDrawGridLines := True;
+  FShowPropertyFilter := True;
   FShowGutter := True;
   FShowStatusBar := True;
   FShowInfoBox := True;
@@ -4052,6 +4060,7 @@ begin
     FCheckboxForBoolean := ConfigStore.GetValue(Path+'CheckboxForBoolean',True);
     FBoldNonDefaultValues := ConfigStore.GetValue(Path+'BoldNonDefaultValues',True);
     FDrawGridLines := ConfigStore.GetValue(Path+'DrawGridLines',True);
+    FShowPropertyFilter := ConfigStore.GetValue(Path+'ShowPropertyFilter',True);
     FShowGutter := ConfigStore.GetValue(Path+'ShowGutter',True);
     FShowStatusBar := ConfigStore.GetValue(Path+'ShowStatusBar',True);
     FShowInfoBox := ConfigStore.GetValue(Path+'ShowInfoBox',True);
@@ -4107,6 +4116,7 @@ begin
     ConfigStore.SetDeleteValue(Path+'CheckboxForBoolean',FCheckboxForBoolean, True);
     ConfigStore.SetDeleteValue(Path+'BoldNonDefaultValues',FBoldNonDefaultValues, True);
     ConfigStore.SetDeleteValue(Path+'DrawGridLines',FDrawGridLines, True);
+    ConfigStore.SetDeleteValue(Path+'ShowPropertyFilter',FShowPropertyFilter, True);
     ConfigStore.SetDeleteValue(Path+'ShowGutter',FShowGutter, True);
     ConfigStore.SetDeleteValue(Path+'ShowStatusBar',FShowStatusBar, True);
     ConfigStore.SetDeleteValue(Path+'ShowInfoBox',FShowInfoBox, True);
@@ -4153,6 +4163,7 @@ begin
   FCheckboxForBoolean := AnObjInspector.FCheckboxForBoolean;
   FBoldNonDefaultValues := fsBold in AnObjInspector.PropertyGrid.ValueFont.Style;
   FDrawGridLines := AnObjInspector.PropertyGrid.DrawHorzGridLines;
+  FShowPropertyFilter := AnObjInspector.ShowPropertyFilter;
   FShowGutter := AnObjInspector.PropertyGrid.ShowGutter;
   FShowStatusBar := AnObjInspector.ShowStatusBar;
   FShowInfoBox := AnObjInspector.ShowInfoBox;
@@ -4182,6 +4193,7 @@ begin
   AnObjInspector.AutoShow := AutoShow;
   AnObjInspector.FCheckboxForBoolean := FCheckboxForBoolean;
   AnObjInspector.ShowComponentTree := ShowComponentTree;
+  AnObjInspector.ShowPropertyFilter := ShowPropertyFilter;
   AnObjInspector.ShowInfoBox := ShowInfoBox;
   AnObjInspector.ComponentPanelHeight := ComponentTreeHeight;
   AnObjInspector.InfoBoxHeight := InfoBoxHeight;
@@ -4266,6 +4278,7 @@ begin
   FDefaultItemHeight := 0;
   ComponentPanelHeight := 160;
   FShowComponentTree := True;
+  FShowPropertyFilter := True;
   FShowFavorites := False;
   FShowRestricted := False;
   FShowStatusBar := True;
@@ -4325,6 +4338,11 @@ begin
      ,'ShowComponentTreePopupMenuItem',oisShowComponentTree, '', ''
      ,@ShowComponentTreePopupMenuItemClick,FShowComponentTree,true,true);
   ShowComponentTreePopupMenuItem.ShowAlwaysCheckable:=true;
+
+  AddPopupMenuItem(ShowPropertyFilterPopupMenuItem,nil
+     ,'ShowPropertyFilterPopupMenuItem',oisShowPropertyFilter, '', ''
+     ,@ShowPropertyFilterPopupMenuItemClick,FShowPropertyFilter,true,true);
+  ShowPropertyFilterPopupMenuItem.ShowAlwaysCheckable:=true;
 
   AddPopupMenuItem(ShowHintsPopupMenuItem,nil
      ,'ShowHintPopupMenuItem',oisShowHints,'Grid hints', ''
@@ -4419,13 +4437,26 @@ begin
     Visible := True;
   end;
 
+  PropFilterPanel := TPanel.Create(Self);
+  with PropFilterPanel do
+  begin
+    Name := 'PropFilterPanel';
+    Caption := '';
+    Parent := PropertyPanel;
+    BevelOuter := bvNone;
+    BevelInner := bvNone;
+    AutoSize := true;
+    Align := alTop;
+    Visible := True;
+  end;
+
   PropFilterLabel := TLabel.Create(Self);
   PropFilterEdit:= TListFilterEdit.Create(Self);
   with PropFilterLabel do
   begin
-    Parent := PropertyPanel;
-    Left := Scale96ToForm(5);
-    Top := Scale96ToForm(7);
+    Parent := PropFilterPanel;
+    BorderSpacing.Left := Scale96ToForm(5);
+    BorderSpacing.Top := Scale96ToForm(7);
     Width := Scale96ToForm(53);
     Caption := oisBtnProperties;
     FocusControl := PropFilterEdit;
@@ -4433,7 +4464,7 @@ begin
 
   with PropFilterEdit do
   begin
-    Parent := PropertyPanel;
+    Parent := PropFilterPanel;
     AnchorSideLeft.Control := PropFilterLabel;
     AnchorSideLeft.Side := asrBottom;
     AnchorSideTop.Control := PropFilterLabel;
@@ -4444,7 +4475,6 @@ begin
     Anchors := [akTop, akLeft, akRight];
     BorderSpacing.Left := 5;
     OnAfterFilter := @PropFilterEditAfterFilter;
-    OnResize := @PropFilterEditResize;
   end;
 
   CreateNoteBook;
@@ -4460,6 +4490,7 @@ begin
   FreeAndNil(FComponentEditor);
   FreeAndNil(PropFilterLabel);
   FreeAndNil(PropFilterEdit);
+  FreeAndNil(PropFilterPanel);
   FreeAndNil(PropertyPanel);  
   inherited Destroy;
   FreeAndNil(FFavorites);
@@ -4471,11 +4502,6 @@ begin
   GetActivePropertyGrid.PropNameFilter := PropFilterEdit.Filter;
   RebuildPropertyLists;
   FPropFilterUpdating := False;
-end;
-
-procedure TObjectInspectorDlg.PropFilterEditResize(Sender: TObject);
-begin
-  NoteBook.BorderSpacing.Top := PropFilterEdit.BoundsRect.Bottom + 2;
 end;
 
 procedure TObjectInspectorDlg.NoteBookPageChange(Sender: TObject);
@@ -5258,6 +5284,14 @@ begin
   end;
 end;
 
+procedure TObjectInspectorDlg.SetShowPropertyFilter(const AValue: Boolean);
+begin
+  if FShowPropertyFilter = AValue then exit;
+  FShowPropertyFilter := AValue;
+  PropFilterPanel.Visible := AValue;
+  ShowPropertyFilterPopupMenuItem.Checked := AValue;
+end;
+
 procedure TObjectInspectorDlg.SetShowInfoBox(const AValue: Boolean);
 begin
   if FShowInfoBox = AValue then exit;
@@ -5513,10 +5547,10 @@ begin
   begin
     Name := 'NoteBook';
     Parent := PropertyPanel;
-    PropFilterEditResize(nil);
     Align := alClient;
     PopupMenu := MainPopupMenu;
     OnChange := @NoteBookPageChange;
+    BorderSpacing.Top := 2;
   end;
 
   AddPage(DefaultOIPageNames[oipgpProperties],oisProperties);
@@ -5651,6 +5685,11 @@ end;
 procedure TObjectInspectorDlg.ShowComponentTreePopupMenuItemClick(Sender: TObject);
 begin
   ShowComponentTree:=not ShowComponentTree;
+end;
+
+procedure TObjectInspectorDlg.ShowPropertyFilterPopupMenuItemClick(Sender: TObject);
+begin
+  ShowPropertyFilter := not ShowPropertyFilter;
 end;
 
 procedure TObjectInspectorDlg.ShowHintPopupMenuItemClick(Sender : TObject);

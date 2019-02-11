@@ -58,6 +58,7 @@ resourcestring
   oisShowHints = 'Show Hints';
   oisShowInfoBox = 'Show Information Box';
   oisShowStatusBar = 'Show Status Bar';
+  oisShowPropertyFilter = 'Show Property Filter';
   oisOptions = 'Options';
 
   // typeinfo, PropEdits
