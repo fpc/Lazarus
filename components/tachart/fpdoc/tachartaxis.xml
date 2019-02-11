@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
   <package name="TAChartLazarusPkg">
     <module name="TAChartAxis">
@@ -22,7 +22,8 @@ for vertical axises.</descr>
       </element>
       <element name="TChartAxis.Alignment">
         <short>Determines the side of the chart whcih the axis is aligned to</short>
-        <descr>Left- and right-aligned axises are vertical, top- and bottom-aligned axises are horizontal.</descr>
+        <descr>Left- and right-aligned axises are vertical, top- and bottom-aligned axises are horizontal.
+</descr>
       </element>
       <element name="TChartAxis.Grid">
         <short>Pen used for grid drawing</short>
@@ -39,7 +40,8 @@ for vertical axises.</descr>
           <p>If the source is set, marks are determined by <var>X</var> or <var>Y</var> coordinates
 of <var>Source</var> items for horizontal and vertical axises correspondingly.
 </p>
-<p>Otherwise, marks are created automatically.</p></descr>
+<p>Otherwise, marks are created automatically.</p>
+        </descr>
       </element>
     </module>
   </package>

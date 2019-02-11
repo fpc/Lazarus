@@ -206,6 +206,7 @@ end;
 
 // Convert double value to integer 2's complement representation.
 // Difference between resulting integers can be interpreted as distance in ulps.
+
 function Ulps(AX: Double): Int64; inline;
 begin
   Result := Int64(AX);

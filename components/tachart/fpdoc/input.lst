@@ -1,8 +1,10 @@
 ..\tachartutils.pas
 ..\tacustomseries.pas
 ..\tadbsource.pas
+..\tageometry.pas
 ..\tagraph.pas
 ..\talegend.pas
+..\tamath.pas
 ..\taseries.pas
 ..\tasources.pas
 -dfpdoc ..\tatypes.pas

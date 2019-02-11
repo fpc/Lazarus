@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions>
+  <package name="TAChartLazarusPkg">
+    <module name="TAGeometry">
+      <element name="IsPointInRect">
+        <short>Returns <var>true</var> when the point <var>AP</var> is inside a rectangle or on its borders.</short>
+        <descr>The rectangle can be specified as a <var>TRect</var> structure or by its top/left and bottom/right corner points (<var>TPoint</var>).
+</descr>
+      </element>
+      <element name="IsRectInRect">
+        <short>Returns <var>true</var> when a rectangle is contained within another rectangle</short>
+        <descr>Note: The rectangle is still considered to be contained within the outer
+rectangle even when their corners collide.
+</descr>
+      </element>
+      <element name="CopyPoints">
+        <short>Copies the points from a TPoint array to the result array</short>
+      </element>
+      <element name="DotProduct">
+        <short>Calculates the dot product of the two 2D vectors A and B</short>
+        <descr>The dot product of two vectors A and B is calculated as
+<var>Result := A.X * B.X + A.Y * B.Y</var>
+        </descr>
+      </element>
+      <element name="DoublePoint">
+        <short>Creates a <var>TDoublePoint</var> record from two floating point values AX and AY, or from a <var>TPoint</var> having integer coordinates</short>
+        <seealso>
+          <link id="TAChartUtils.TDoublePoint">TDoublePoint</link>
+        </seealso>
+      </element>
+      <element name="DoubleRect">
+        <short>Creates a <var>TDoubleRect</var> data structure from four floating point values</short>
+        <seealso>
+          <link id="TAChartUtils.TDoubleRect">TDoubleRect</link>
+        </seealso>
+      </element>
+      <element name="ExpandRect">
+        <short>Expands the given rectangle by the X and Y values of the specified point</short>
+      </element>
+      <element name="IsPointOnLine">
+        <short>Returns <var>true</var> when the point <var>AP</var> is on the line between the points <var>A1</var> and <var>A2</var>
+        </short>
+      </element>
+      <element name="IsPointInPolygon">
+        <short>Returns <var>true</var> when the point <var>AP</var> is inside or on the border of the polygon define by the points in the array <var>APolygon</var>
+        </short>
+      </element>
+      <element name="IsLineIntersectsLine">
+        <short>Returns <var>true</var> when the line defined by the points <var>AA</var> and <var>AB</var> intersects the line given by the points <var>AC</var> and <var>AD</var>
+        </short>
+      </element>
+      <element name="IsPolygonIntersectsPolygon">
+        <short>Returns <var>true</var> when the two polygons given by the point arrays <var>AP1</var> and <var>AP2</var>, respectively, intersect</short>
+      </element>
+      <element name="LineIntersectsRect">
+        <short>Returns <var>true</var> when the line given by the points <var>AA</var> and <var>AB</var> intersects the given rectangle <var>ARect</var>
+        </short>
+      </element>
+      <element name="MakeSquare">
+        <short>Creates a square rectangle from the input rectangle <var>ARect</var>
+        </short>
+        <descr>The length of the longer side is shortened to become equal to the shorter side.
+</descr>
+      </element>
+      <element name="MaxPoint">
+        <short>Creates a <var>TPoint</var> from the maximum x and y coordinates of two other points, <var>A</var> and <var>B</var>
+        </short>
+      </element>
+      <element name="MeasureRotatedRect"/>
+      <element name="NormalizeRect">
+        <short>Ensures that the corner coordinates of the given rectangle are in the correct order</short>
+        <descr>
+          <ul>
+            <li>for <b>integer </b>coordinates: <var>Left &lt;= Right</var> and <var>Top &lt;= Bottom</var>
+            </li>
+            <li>for <b>floating point</b> coordinates:<var>a.X &lt;= b.X</var> and <var>a.Y &lt;= b.Y</var>
+            </li>
+          </ul>
+        </descr>
+      </element>
+    <element name="PointDist"><short>Returns a parameter characterizing the distance between the points <var>A</var> and <var>B</var>
+        </short><descr>The "distance" is calculated as the square of the sum of the coordinate differences:
+<p><var>Result := sqr(A.X - B.X) + sqr(A.Y - B.Y)</var>
+          </p><p>The standard Euclidian distance would be obtained by calculating the square root of the result.</p>
+        </descr>
+      </element><element name="PointDistX"><short>Returns the difference of the X coordinates of the two points <var>A</var> and <var>B</var>
+        </short>
+      </element><element name="PointDistY"><short>Returns the difference of the Y coordinates of the two points <var>A</var> and <var>B</var>
+        </short>
+      </element><element name="PointLineDist"><short>Returns a parameter for the distance between point <var>P</var> and the line given by the points <var>A</var> and <var>B</var>
+        </short><descr>Note that this parameter corresponds to the squared Euclidian distance.
+</descr>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>

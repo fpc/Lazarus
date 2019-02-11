@@ -1,6 +1,15 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
   <package name="TAChartLazarusPkg">
-    <module name="TAChartUtils"/>
+    <module name="TAChartUtils">
+      <element name="TDoublePoint">
+        <short>Data type for a point with floating point coordinates X and Y</short>
+      </element>
+      <element name="TDoubleRect">
+        <short>Data structure for a rectangle with floating point coordinates defined by opposite corner points a and b</short>
+        <seealso><link id=""/>
+        </seealso>
+      </element>
+    </module>
   </package>
 </fpdoc-descriptions>
