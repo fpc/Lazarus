@@ -907,6 +907,10 @@ msgstr "Tampilkan Petunjuk"
 msgid "Show Information Box"
 msgstr ""
 
+#: objinspstrconsts.oisshowpropertyfilter
+msgid "Show Property Filter"
+msgstr ""
+
 #: objinspstrconsts.oisshowstatusbar
 msgid "Show Status Bar"
 msgstr ""

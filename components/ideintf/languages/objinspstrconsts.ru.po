@@ -5,11 +5,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-11-05 01:40+0300\n"
+"PO-Revision-Date: 2019-02-12 19:27+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
-"X-Generator: Poedit 1.7.7\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
 msgid "(All)"
@@ -868,6 +868,10 @@ msgstr "Показывать подсказки"
 #: objinspstrconsts.oisshowinfobox
 msgid "Show Information Box"
 msgstr "Показывать информационную панель"
+
+#: objinspstrconsts.oisshowpropertyfilter
+msgid "Show Property Filter"
+msgstr "Показывать фильтр свойств"
 
 #: objinspstrconsts.oisshowstatusbar
 msgid "Show Status Bar"

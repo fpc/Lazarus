@@ -877,6 +877,10 @@ msgstr "ヒントを表示"
 msgid "Show Information Box"
 msgstr "情報箱を表示"
 
+#: objinspstrconsts.oisshowpropertyfilter
+msgid "Show Property Filter"
+msgstr ""
+
 #: objinspstrconsts.oisshowstatusbar
 msgid "Show Status Bar"
 msgstr "ステータスバーを表示"

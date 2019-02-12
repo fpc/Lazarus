@@ -862,6 +862,10 @@ msgstr "Näytä vihjeet"
 msgid "Show Information Box"
 msgstr "Näytä tietolaatikko"
 
+#: objinspstrconsts.oisshowpropertyfilter
+msgid "Show Property Filter"
+msgstr ""
+
 #: objinspstrconsts.oisshowstatusbar
 msgid "Show Status Bar"
 msgstr "Näytä tilapalkki"

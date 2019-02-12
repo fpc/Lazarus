@@ -871,6 +871,10 @@ msgstr "Ukázat pokyny"
 msgid "Show Information Box"
 msgstr "Ukázat informační rámeček"
 
+#: objinspstrconsts.oisshowpropertyfilter
+msgid "Show Property Filter"
+msgstr ""
+
 #: objinspstrconsts.oisshowstatusbar
 msgid "Show Status Bar"
 msgstr "Ukázat stavovou lištu"

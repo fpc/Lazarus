@@ -872,6 +872,10 @@ msgstr "Mostra suggerimenti"
 msgid "Show Information Box"
 msgstr "Mostra il riquadro di informazioni"
 
+#: objinspstrconsts.oisshowpropertyfilter
+msgid "Show Property Filter"
+msgstr ""
+
 #: objinspstrconsts.oisshowstatusbar
 msgid "Show Status Bar"
 msgstr "Mostra la barra di stato"

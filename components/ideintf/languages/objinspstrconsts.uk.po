@@ -872,6 +872,10 @@ msgstr "Показати поради"
 msgid "Show Information Box"
 msgstr "Показати панель інформації"
 
+#: objinspstrconsts.oisshowpropertyfilter
+msgid "Show Property Filter"
+msgstr ""
+
 #: objinspstrconsts.oisshowstatusbar
 msgid "Show Status Bar"
 msgstr "Показати рядок стану"

@@ -870,6 +870,10 @@ msgstr "Rodyti suflerius"
 msgid "Show Information Box"
 msgstr "Rodyti informacinį lauką"
 
+#: objinspstrconsts.oisshowpropertyfilter
+msgid "Show Property Filter"
+msgstr ""
+
 #: objinspstrconsts.oisshowstatusbar
 msgid "Show Status Bar"
 msgstr "Rodyti būsenos juostą"

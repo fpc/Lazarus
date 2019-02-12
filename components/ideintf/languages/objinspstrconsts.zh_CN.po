@@ -870,6 +870,10 @@ msgstr "显示提示"
 msgid "Show Information Box"
 msgstr "显示信息框"
 
+#: objinspstrconsts.oisshowpropertyfilter
+msgid "Show Property Filter"
+msgstr ""
+
 #: objinspstrconsts.oisshowstatusbar
 msgid "Show Status Bar"
 msgstr "显示状态栏"

@@ -870,6 +870,10 @@ msgstr "Hinweise anzeigen"
 msgid "Show Information Box"
 msgstr "Infobox anzeigen"
 
+#: objinspstrconsts.oisshowpropertyfilter
+msgid "Show Property Filter"
+msgstr ""
+
 #: objinspstrconsts.oisshowstatusbar
 msgid "Show Status Bar"
 msgstr "Statusleiste anzeigen"

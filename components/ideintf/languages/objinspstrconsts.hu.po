@@ -869,6 +869,10 @@ msgstr "Buboréktippek megjelenítése"
 msgid "Show Information Box"
 msgstr "Információs ablak megjelenítése"
 
+#: objinspstrconsts.oisshowpropertyfilter
+msgid "Show Property Filter"
+msgstr ""
+
 #: objinspstrconsts.oisshowstatusbar
 msgid "Show Status Bar"
 msgstr "Állapotsáv megjelenítése"
