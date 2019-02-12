@@ -2395,7 +2395,7 @@ end;
 procedure TLldbDebuggerCommandEvaluate.DoExecute;
 begin
   if FWatchValue <> nil then
-    FInstr := TLldbInstructionExpression.Create(FWatchValue.Expression, Debugger.FCurrentThreadId, Debugger.FCurrentStackFrame)
+    FInstr := TLldbInstructionExpression.Create(FWatchValue.Expression, FWatchValue.ThreadId, FWatchValue.StackFrame)
   else
     // todo: only if FCallback ?
     FInstr := TLldbInstructionExpression.Create(FExpr, Debugger.FCurrentThreadId, Debugger.FCurrentStackFrame);
