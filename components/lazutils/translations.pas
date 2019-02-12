@@ -1245,11 +1245,11 @@ var
       end;
       Value := AdjustLineBreaks(Value);
     end;
-    // po requires special characters as #number
+    // escape special characters as #number, do not confuse translators
     p:=1;
     while p<=length(Value) do begin
       j := UTF8CodepointSize(pchar(@Value[p]));
-      if (j=1) and (Value[p] in [#0..#9,#11,#12,#14..#31,#127..#255]) then
+      if (j=1) and (Value[p] in [#0..#8,#11,#12,#14..#31,#127..#255]) then
         Value := copy(Value,1,p-1)+'#'+IntToStr(ord(Value[p]))+copy(Value,p+1,length(Value))
       else
         inc(p,j);
