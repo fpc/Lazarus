@@ -17480,6 +17480,10 @@ msgstr "パッケージを表示"
 msgid "Show position of source editor"
 msgstr "ソースエディタの位置を表示"
 
+#: lazarusidestrconsts.lisshowpropertyfilterinobjectinspector
+msgid "Show property filter"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowrecentlyusedidentifiersattop
 msgid "Show recently used identifiers at top"
 msgstr "最近用いられた識別子を冒頭に表示"

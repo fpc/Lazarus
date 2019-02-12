@@ -17515,6 +17515,10 @@ msgstr "Rodyti paketus"
 msgid "Show position of source editor"
 msgstr "Rodyti pozicija pirminio kodo rengyklėje"
 
+#: lazarusidestrconsts.lisshowpropertyfilterinobjectinspector
+msgid "Show property filter"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowrecentlyusedidentifiersattop
 msgid "Show recently used identifiers at top"
 msgstr "Paskiausiai naudotus identifikatorius rodyti viršuje"

@@ -17121,6 +17121,10 @@ msgstr "Näytä paketit"
 msgid "Show position of source editor"
 msgstr "Näytä koodieditorin sijainti"
 
+#: lazarusidestrconsts.lisshowpropertyfilterinobjectinspector
+msgid "Show property filter"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowrecentlyusedidentifiersattop
 msgid "Show recently used identifiers at top"
 msgstr "Näytä äskettäin käytetyt tunnisteet ylhäällä"

@@ -18073,6 +18073,10 @@ msgstr "Tampilkan paket"
 msgid "Show position of source editor"
 msgstr ""
 
+#: lazarusidestrconsts.lisshowpropertyfilterinobjectinspector
+msgid "Show property filter"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowrecentlyusedidentifiersattop
 msgid "Show recently used identifiers at top"
 msgstr ""

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2019-02-06 01:58+0300\n"
+"PO-Revision-Date: 2019-02-12 19:26+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -17252,6 +17252,10 @@ msgstr "Показывать пакеты"
 #: lazarusidestrconsts.lisshowpositionofsourceeditor
 msgid "Show position of source editor"
 msgstr "Показать положение редактора исходного кода"
+
+#: lazarusidestrconsts.lisshowpropertyfilterinobjectinspector
+msgid "Show property filter"
+msgstr "Показывать фильтр свойств"
 
 #: lazarusidestrconsts.lisshowrecentlyusedidentifiersattop
 msgid "Show recently used identifiers at top"

@@ -17891,6 +17891,10 @@ msgstr "Pokaż pakiety"
 msgid "Show position of source editor"
 msgstr "Pozycja poza źródłem"
 
+#: lazarusidestrconsts.lisshowpropertyfilterinobjectinspector
+msgid "Show property filter"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowrecentlyusedidentifiersattop
 msgid "Show recently used identifiers at top"
 msgstr "Ostatnio użyte identyfikatory pokaż na górze"

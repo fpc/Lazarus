@@ -17628,6 +17628,10 @@ msgstr "Paketleri göster"
 msgid "Show position of source editor"
 msgstr "Kaynak düzenleyicinin konumunu göster"
 
+#: lazarusidestrconsts.lisshowpropertyfilterinobjectinspector
+msgid "Show property filter"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowrecentlyusedidentifiersattop
 msgid "Show recently used identifiers at top"
 msgstr "En son kullanılan tanımlayıcıları en üstte göster"

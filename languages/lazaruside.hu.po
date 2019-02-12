@@ -17361,6 +17361,10 @@ msgstr "Csomagok megjelenítése"
 msgid "Show position of source editor"
 msgstr "Váltás a forráskódbeli helyzetére"
 
+#: lazarusidestrconsts.lisshowpropertyfilterinobjectinspector
+msgid "Show property filter"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowrecentlyusedidentifiersattop
 msgid "Show recently used identifiers at top"
 msgstr "A legutóbb használt azonosítók megjelenítése felül"

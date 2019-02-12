@@ -17716,6 +17716,10 @@ msgstr "显示包"
 msgid "Show position of source editor"
 msgstr "显示源代码编辑器位置"
 
+#: lazarusidestrconsts.lisshowpropertyfilterinobjectinspector
+msgid "Show property filter"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowrecentlyusedidentifiersattop
 msgid "Show recently used identifiers at top"
 msgstr ""
