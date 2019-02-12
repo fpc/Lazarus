@@ -21,7 +21,7 @@ for vertical axises.</descr>
         <short>Title is shown if <var>Visible</var> is true and <var>Caption</var> is not empty</short>
       </element>
       <element name="TChartAxis.Alignment">
-        <short>Determines the side of the chart whcih the axis is aligned to</short>
+        <short>Determines the side of the chart to which the axis is aligned</short>
         <descr>Left- and right-aligned axises are vertical, top- and bottom-aligned axises are horizontal.
 </descr>
       </element>
@@ -29,7 +29,8 @@ for vertical axises.</descr>
         <short>Pen used for grid drawing</short>
         <descr>Grid lines are drawn across the chart from each axis mark</descr>
       </element>
-      <element name="TChartAxis.Inverted"/>
+      <element name="TChartAxis.Inverted"><short>Inverts the axis scale from increasing to decreasing.</short>
+      </element>
       <element name="TChartAxis.Visible">
         <short>If true, the axis is drawn on the chart</short>
         <descr>Invisible axis might still be used for series transformation</descr>
@@ -40,7 +41,13 @@ for vertical axises.</descr>
           <p>If the source is set, marks are determined by <var>X</var> or <var>Y</var> coordinates
 of <var>Source</var> items for horizontal and vertical axises correspondingly.
 </p>
-<p>Otherwise, marks are created automatically.</p>
+          <p>Otherwise, marks are created automatically.</p>
+        </descr>
+      </element>
+      <element name="TChartAxis">
+        <short>Axis of a chart</short>
+        <descr><p>TAChart uses four coordinate systems:</p><ul><li><b>Axis coordinates</b> (known in some other applications as object coordinates) -- this is the "raw" coordinate values obtained from the data. As the name implies, axis coordinates are interpreted in terms of specific axis -- the same coordinate value may have different meaning depending on the axis it is applied to.</li><li><b>Graph coordinates</b> are converted from the axis coordinates using axis transformations, such as logarithmic scale. Graph coordinates are common for all objects in the chart.</li><li><b>Image coordinates</b> (aka screen coordinates) are converted from graph coordinates based on the chart viewport. This transformation is always linear and can be influenced by chart tools such as zooming and panning.</li><li><b>Device coordinates</b> are usually equal to screen coordinates, but may be adjusted to the drawing back-end to accommodate different physical resolutions (DPI values). See, for example, printer drawer.</li>
+          </ul><p>You can add or remove an arbitrary number of axes by editing the <link id="TAGraph.TChart.AxisList">AxisList</link> property of the chart. By default, a chart has two axes: one horizontal and one vertical. They are accessible via the <link id="TAGraph.TChart.BottomAxis">BottomAxis</link> and <link id="TAGraph.TChart.LeftAxis">LeftAxis</link> properties. Note that those properties are aliases to <var>AxisList[0]</var> and <var>AxisList[1]</var>, so if you remove those default axes, accessing <var>BottomAxis</var> and <var>LeftAxis</var> will return nil.</p><p>Visually, an axis consists of the axis line (drawn by <link id="TAxisPen">AxisPen</link>), grid lines (drawn by <link id="TGridPen">GridPen</link>), ticks, marks and an arrow.</p><p>Each axis is drawn inside its own rectangle, determined by the size of mark labels and ticks. By assigning several axes the same positive <var>Group</var> number, you can have them share the same rectangular area. Grouped axes can be used to achieve a "panes" look, when several series are drawn on different portions of the same graph.</p><p>Axes with the same alignment, but different groups, are stacked alongside each other. You can use the <var>Margin</var> property to control the spacing between such axes. </p>
         </descr>
       </element>
     </module>

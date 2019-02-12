@@ -89,9 +89,7 @@ type
     constructor Create(AOwner: TCustomChart);
   public
     procedure Assign(ASource: TPersistent); override;
-
     procedure SetOwner(AOwner: TCustomChart);
-
     property Visible: Boolean read FVisible write SetVisible;
   end;
 

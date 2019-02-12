@@ -1,6 +1,75 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
   <package name="TAChartLazarusPkg">
-    <module name="TATypes"/>
+    <module name="TATypes"><element name="TChartArrow"><short>Some elements of the chart, like an axis, can be decorated by an arrow</short>
+      </element>
+    <element name="TChartArrow.Visible"><short>Can be used to hide the arrow (if set to <var>false</var>).</short>
+      </element><element name="TChartArrow.Inverted"><short>Inverts the direction of the arrow</short><descr>The arrow at horizontal lines is normally drawn to point to the right, and the
+arrow at vertical lines drawn to point upward. With <var>Inverted = true</var>
+the arrow points to the left or downward, respectively.
+</descr>
+      </element><element name="TChartArrow.Draw"><short>Draws the arrow at the specified position (in image coordinates) and using the specified pen.</short><descr>The direction of the line at which the arrow sits is given by the <var>AAngle</var> parameter (in radians).
+</descr>
+      </element><element name="TChartArrow.BaseLength"><short>This is the length of the inner part of the arrow along the arrow direction</short><descr><ul><li>When the <var>BaseLength</var> is 0 the arrow shape is like a thin wedge.</li><li>When the <var>BaseLength</var> is equal to <var><link id="TChartArrow.Length">Length</link>
+              </var> the arrow shape is a triangle.</li><li>When <var>Length &gt; Baselength</var> the end of the arrow head is concave, otherwise convex (like a rhombus).</li>
+          </ul>
+        </descr>
+      </element><element name="TChartArrow.Width"><short>The width of the arrow is measured perpendicular to the arrow direction</short>
+      </element><element name="TChartArrow.Length"><short>Defines the length of the outer part of the arrow</short><descr><ul><li>When the <var><link id="TChartArrow.BaseLength">BaseLength</link>
+              </var> is 0 the arrow shape is like a thin wedge.</li><li>When the <var>BaseLength</var> is equal to <var>Length</var> the arrow shape is a triangle.</li><li>When <var>Length &gt; Baselength</var> the end of the arrow head is concave, otherwise convex (like a rhombus).</li>
+          </ul>
+        </descr>
+      </element><element name="TChartArrow.Create"><short>Creates the arrow as an element of the specified chart</short>
+      </element><element name="TChartArrow.Assign"><short>Copies all properties from the arrow specified as <var>ASource</var>
+        </short>
+      </element><element name="TChartElement"><short>Ancestor of the charrt elements (title, footer, axes, legend, etc.)</short>
+      </element><element name="TChartElement.Create"><short>Creates an instance of <var>TChartElement</var> as an element of the specified chart</short>
+      </element><element name="TChartElement.SetOwner"><short>Sets the owner of the element to the specified chart.</short><descr>The owner of the element receives the notification messages
+(<var><link id="TChartElement.StyleChanged">StyleChanged</link>
+          </var>) when properties of
+the element are changed.
+</descr>
+      </element><element name="TChartElement.Visible"><short>Can be set to <var>false</var> if the element is to be hidden.</short>
+      </element><element name="TChartElement.Assign"><short>Copies all property values from the given source.</short><descr><var>ASource</var> must inherit from <var>TChartElement</var>, otherwise an
+exception will be raised.
+</descr>
+      </element><element name="TChartElement.GetOwner"><short>Returns the Owner of the element</short><descr>The owner of the element receives the notification messages
+(<var><link id="TChartElement.StyleChanged">StyleChanged</link>
+          </var>) when properties of
+the element are changed.
+</descr>
+      </element><element name="TChartElement.StyleChanged"><short>Notifies the owner of the element whenever some property has been changed.</short>
+      </element><element name="TChartElement.SetVisible"><short>Setter procedure for the property <var><link id="TChartElement.Visible">Visible</link>
+          </var>.</short>
+      </element><element name="TChartElement.InitHelper"><short>Initializes a TFPCanvasHelper used by the ChartElement.</short><descr><var>Font</var>, <var>Pen</var> and <var>Brush</var> are the most prominent canvas
+helpers. The <var>InitHelper</var> procedure assigns the <var>OnChanged</var> event to
+the <var><link id="TChartElement.StyleChanged">StyleChanged</link>
+          </var> method which notifies the owner
+of the ChartElement when helper properties are modified.
+</descr>
+      </element><element name="TSeriesPointerStyle"><short>Enumeration of symbols allowed as <var><link id="TATypes.TSeriesPointer">series pointers</link>
+          </var>
+        </short>
+      </element><element name="TSeriesPointer.Visible"/><element name="TSeriesPointer.VertSize"><short>Defines the vertical size of the pointer symbol (in image units)</short><seealso><link id="TSeriesPointer.HorizSize"><var>HorizSize</var>
+          </link>
+        </seealso>
+      </element><element name="TSeriesPointer.HorizSize"><short>Defines the horizontal size of the pointer symbol (in image units)</short><seealso><link id="TSeriesPointer.VertSize"><var>VertSize</var>
+          </link>
+        </seealso>
+      </element><element name="TSeriesPointer.Brush"><short>Defines the <var>Brush</var> used to fill the inner area of the series pointer</short>
+      </element><element name="TSeriesPointer.Pen"><short>Defines the <var>Pen</var> used to draw the border of the series pointer symbol</short>
+      </element><element name="TSeriesPointer.Style"><short>Determines the symbol used to draw the series pointer</short><seealso><link id="TATypes.TSeriesPointer"/>
+        </seealso>
+      </element><element name="TSeriesPointer.OverrideColor"><short>Determines which colors will be used for drawing the SeriesPointer symbols</short><descr><ul><li>When the element <var>ocBrush</var> is not included in the set then the
+symbol will be filled with the color of the series pointer's <var><link id="TSeriesPointer.Brush">Brush</link>
+              </var>,
+not with the color assigned to the individual data points.</li><li>When the element <var>ocPen</var> is not included in the set then the
+symbol border will be drawn with the color of the series pointer's
+<var><link id="TSeriesPointer.Pen">Pen</link>
+              </var>, not with the color assigned to the individual data points.</li>
+          </ul>
+        </descr>
+      </element>
+    </module>
   </package>
 </fpdoc-descriptions>

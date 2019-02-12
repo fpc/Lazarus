@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions><package name="TAChartLazarusPkg"><module name="TAChartAxisUtils"><element name="TChartBasicAxis"><short><var>TChartBasicAxis</var> is the ancestor of the chart's axis class</short><descr><p>The basic axis consists of</p>
+<ul><li>ticks (short line strokes perpendicular to the axis direction)</li><li><link id="TChartBasicAxis.Marks">marks</link>, i.e. labels placed at the tick positions</li><li><link id="TChartBasicAxis.Grid">grid lines</link> starting at the tick positions and running across the entire chart</li><li>an optional <link id="TChartBasicAxis.Arrow">arrow</link> at the end of the axis line</li>
+          </ul>
+        </descr><seealso><link id="TAChartAxis.TChartAxis"/>
+        </seealso>
+      </element><element name="TChartBasicAxis.Visible"><short>If switched to <var>false</var> the axis is hidden along with ticks and labels.</short>
+      </element><element name="TChartBasicAxis.TickLength"><short>Length of the (outer) axis ticks (in pixels)</short><seealso><link id="TChartBasicAxis.TickInnerLength">Inner length of the ticks</link>
+        </seealso>
+      </element><element name="TChartBasicAxis.TickInnerLength"><short>Length of the inner axis ticks (in pixels)</short><seealso><link id="TChartBasicAxis.TickLength">Length of the outer ticks</link>
+        </seealso>
+      </element><element name="TChartBasicAxis.TickColor"><short>Color of the axis ticks</short>
+      </element><element name="TChartBasicAxis.Grid"><short>Determines wether the axis has grid lines and how they are displayed</short><seealso><link id="TChartAxisGridPen"/><link id="TATypes.TChartPen"/>
+        </seealso>
+      </element><element name="TChartBasicAxis.Intervals"><short>Determines how the tick intervals of the axis are calculated.</short><seealso><link id="TACustomSource.TChartAxisIntervalParams"/>
+        </seealso>
+      </element><element name="TChartBasicAxis.Alignment"><short>Defines the side of the chart at which the axis is shown</short><seealso><link id="TChartAxisAlignment"/>
+        </seealso>
+      </element><element name="TChartBasicAxis.Arrow"><short>Determines whether and how an arrow is drawn at the end of the axis</short><seealso><link id="TATypes.TChartArrow"/>
+        </seealso>
+      </element><element name="TChartBasicAxis.Marks"><short>Provides parameters how labels ("marks") are to be drawn at the axis</short><seealso><link id="TCustomChartAxisMarks"/>
+        </seealso>
+      </element><element name="TChartBasicAxis.IsFlipped"><short>Returns <var>true</var> when the axis is drawn in the opposite direction (right-to-left, or top-to-bottom)</short><descr>In <var>TChartBasicAxis</var>, the function always returns <var>false</var>. It is
+overridden by its descendant <var><link id="TAChartAxis.TChartAxis">TChartAxis</link>
+          </var> which
+conisiders the state of the axis' 
+<link id="TAChartAxis.TChartAxis.Inverted">Inverted</link> and chart's
+<link id="TAGraph.TChart.BiDiMode">BiDiMode</link> properties.
+</descr>
+      </element><element name="TChartBasicAxis.Create"><short>Creates the axis as an element of the specified chart and as a member of the axislist given as <var>ACollection</var>
+        </short>
+      </element><element name="TChartBasicAxis.Destroy"><short>Destroys the axis and removes it from the collection to which it belongs.</short>
+      </element><element name="TChartAxisGridPen"><short>Defines the parameters used to draw the grid of the axis.</short><seealso><link id="TChartBasicAxis"/>
+        </seealso>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>

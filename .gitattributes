@@ -5178,6 +5178,7 @@ components/tachart/editors/tatooleditors.pas svneol=native#text/pascal
 components/tachart/fpdoc/descr.lst svneol=native#text/plain
 components/tachart/fpdoc/input.lst svneol=native#text/plain
 components/tachart/fpdoc/tachartaxis.xml svneol=native#text/plain
+components/tachart/fpdoc/tachartaxisutils.xml svneol=native#text/xml
 components/tachart/fpdoc/tachartutils.xml svneol=native#text/plain
 components/tachart/fpdoc/tacustomseries.xml svneol=native#text/plain
 components/tachart/fpdoc/tadbsource.xml svneol=native#text/plain

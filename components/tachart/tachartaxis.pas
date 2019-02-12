@@ -169,7 +169,6 @@ type
     property AtDataOnly: Boolean read FAtDataOnly write SetAtDataOnly default false;
     property AxisPen: TChartAxisPen read FAxisPen write SetAxisPen;
     property Group: Integer read FGroup write SetGroup default 0;
-    // Inverts the axis scale from increasing to decreasing.
     property Inverted: boolean read FInverted write SetInverted default false;
     property LabelSize: Integer read FLabelSize write SetLabelSize default 0;
     property Margin: TChartDistance read FMargin write SetMargin default 0;

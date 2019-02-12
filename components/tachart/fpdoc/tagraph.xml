@@ -11,7 +11,18 @@
       </element>
       <element name="TChart">
         <short>Main charting component.</short>
-        <descr><p>The chart is composed of list of <link id="TBasicChartSeries">series</link> and fixed <link id="TATypes.TChartElement">elements</link> like legend, axes and footers.</p><p>Chart methods work with four coordinate systems:</p><ul><li><b>Axis coordinates</b> (known in some other applications as object coordinates) -- they are "raw" coordinate values obtained from the data. As the name implies, axis coordinates are interpreted in terms of specific axis -- the same coordinate value may have different meaning depending on the axis it is applied to.</li><li><b>Graph coordinates</b> are converted from the axis coordinates by means of axis transformations, such as logarithmic scale. Graph coordinates are common to all objects in the chart. Consider the graph coordinates as an invisible graphing paper behind the chart; its x axis is horizontal running from left to right, and its y axis is vertical running from bottom to top even if a series is rotated.</li><li><b>Image coordinates</b> (aka screen coordinates) are converted from graph coordinates based on the chart viewport. This transformation is always linear and can be influenced by chart tools such as zooming and panning.</li><li><b>Device coordinates</b> are usually equal to screen coordinates, but may be adjusted to the drawing back-end to accommodate different physical resolutions (DPI values). See, for example, printer drawer.</li>
+        <descr>
+          <p>The chart is composed of a list of <link id="TBasicChartSeries">series</link>, a list of <link id="TAChartAxis.TChartAxis">axes</link> and fixed <link id="TATypes.TChartElement">elements</link> like legend, title and footer.</p>
+          <p>Chart methods work with four coordinate systems:</p>
+          <ul>
+            <li>
+              <b>Axis coordinates</b> (known in some other applications as object coordinates) -- they are "raw" coordinate values obtained from the data. As the name implies, axis coordinates are interpreted in terms of specific axis -- the same coordinate value may have different meaning depending on the axis it is applied to.</li>
+            <li>
+              <b>Graph coordinates</b> are converted from the axis coordinates by means of axis transformations, such as logarithmic scale. Graph coordinates are common to all objects in the chart. Consider the graph coordinates as an invisible graphing paper behind the chart; its x axis is horizontal running from left to right, and its y axis is vertical running from bottom to top even if a series is rotated.</li>
+            <li>
+              <b>Image coordinates</b> (aka screen coordinates) are converted from graph coordinates based on the chart viewport. This transformation is always linear and can be influenced by chart tools such as zooming and panning.</li>
+            <li>
+              <b>Device coordinates</b> are usually equal to screen coordinates, but may be adjusted to the drawing back-end to accommodate different physical resolutions (DPI values). See, for example, printer drawer.</li>
           </ul>
         </descr>
       </element>
@@ -68,7 +79,7 @@ use
         </descr>
       </element>
       <element name="TChart.AxisList">
-        <short>List of graph <link id="TATypes.TChartAxis">axises</link>.</short>
+        <short>List of graph <link id="TATypes.TChartAxis">axes</link>.</short>
       </element>
       <element name="TChart.BottomAxis">
         <short>Bottom axis of the chart.</short>
@@ -87,7 +98,8 @@ use
         <short>Left axis of the chart.</short>
         <descr>Retrieves first axis from the <link id="TChart.AxisList">AxisList</link> with
 <link id="TATypes.TChartAxis.Alignment">Alignment</link> set to
-<link id="TATypes.TChartAxisAlignment">calLeft</link>.</descr>
+<link id="TATypes.TChartAxisAlignment">calLeft</link>.
+</descr>
         <seealso>
           <link id="TChart.AxisList">AxisList</link>
           <link id="TATypes.TChartAxis.Alignment">TChartAxis.Alignment</link>
@@ -197,7 +209,8 @@ For example, <link id="TASeries.TPieSeries">pie series</link> displays a separat
         <short>Deletes the specified series from the chart.</short>
         <descr>Note that the series is <b>not</b> destroyed.
 </descr>
-        <seealso><link id=""/>
+        <seealso>
+          <link id="TChart.RemoveSeries"/>
         </seealso>
       </element>
       <element name="TChart.PaintOnCanvas">
@@ -212,7 +225,8 @@ For example, <link id="TASeries.TPieSeries">pie series</link> displays a separat
       </element>
       <element name="TChart.ZoomFull">
         <short>Restore the default zoom level.</short>
-      <seealso><link id="#TAChartLazarusPkg.tagraph">GetFullExtent</link>
+        <seealso>
+          <link id="TChart.GetFullExtent"/>
         </seealso>
       </element>
       <element name="TChart.SaveToImage">
@@ -242,30 +256,50 @@ For example, <link id="TASeries.TPieSeries">pie series</link> displays a separat
       </element>
       <element name="TChart.GraphToImage">
         <short>Converts a point from graph coordinates to image coordinates.</short>
+        <seealso>          
+          <link id="TChart.ImageToGraph"/>
+          <link id="TChart.XGraphToImage"/>
+          <link id="TChart.YGraphToImage"/>
+        </seealso>
       </element>
       <element name="TChart.ImageToGraph">
         <short>Converts a point from image coordinates to graph coordinates.</short>
-        <seealso><link id=""/>
+        <seealso>
+          <link id="TChart.GraphToImage"/>
+          <link id="TChart.XImageToGraph"/>
+          <link id="TChart.YImageToGraph"/>
         </seealso>
       </element>
       <element name="TChart.XGraphToImage">
         <short>Converts the X coordinate of a point from graph coordinates to image coordinates.</short>
-        <seealso><link id=""/>
+        <seealso>
+          <link id="TChart.XImageToGraph"/>
+          <link id="TChart.YGraphToImage"/>
+          <link id="TChart.GraphToImage"/>
         </seealso>
       </element>
       <element name="TChart.YGraphToImage">
         <short>Converts the Y coordinate of a point from graph units to image units.</short>
-        <seealso><link id=""/>
+        <seealso>
+          <link id="TChart.YImageToGraph"/>
+          <link id="TChart.XGraphToImage"/>
+          <link id="TChart.GraphToImage"/>
         </seealso>
       </element>
       <element name="TChart.XImageToGraph">
         <short>Converts the X coordinate of a point from image coordinates to graph coordinates.</short>
-        <seealso><link id=""/>
+        <seealso>
+          <link id="TChart.XGraphToImage"/>
+          <link id="TChart.YImageToGraph"/>
+          <link id="TChart.ImageToGraph"/>
         </seealso>
       </element>
       <element name="TChart.YImageToGraph">
         <short>Converts the Y coordinate of a point from image units to graph units.</short>
-        <seealso><link id=""/>
+        <seealso>
+          <link id="TChart.YGraphToImage"/>
+          <link id="TChart.XImageToGraph"/>
+          <link id="TChart.ImageToGraph"/>
         </seealso>
       </element>
       <element name="TChart.CurrentExtent">
@@ -274,7 +308,8 @@ For example, <link id="TASeries.TPieSeries">pie series</link> displays a separat
 In addition to the viewport requested for zooming it also contains the inner
 chart margin and the space reserved for series marks.
 </descr>
-        <seealso><link id="TChart.LogicalExtent">LogicalExtent</link>
+        <seealso>
+          <link id="TChart.LogicalExtent">LogicalExtent</link>
         </seealso>
       </element>
       <element name="TChart.XGraphMax">
@@ -305,7 +340,7 @@ chart margin and the space reserved for series marks.
       </element>
       <element name="TChart.CopyToClipboardBitmap">
         <short>Copies a bitmap screenshot of the chart to the clipboard.</short>
-        <seealso><link id=""/>
+        <seealso><link id="TChart.SaveToFile"/>
         </seealso>
       </element>
       <element name="Register" skip="1"/>
@@ -325,49 +360,98 @@ chart margin and the space reserved for series marks.
 <var>Drawer</var>. Unlike 
 <var>PaintOnCanvas</var> the chart can be drawn on non-canvas devices, such as a svg file.
 </descr>
-        <seealso><link id=""/>
+        <seealso>
+          <link id=""/>
         </seealso>
       </element>
-    <element name="TChart.Create"><short>Creates the chart</short>
-      </element><element name="TChart.Destroy"><short>Destroys the chart</short>
-      </element><element name="TChart.IsPointInViewPort"><short>Returns <var>true</var> when the given point (in graph coordinates) is inside or at the boundaries of the chart's viewport (area spanned by the axes)</short>
-      </element><element name="TChart.Clone"><short>Creates a new chart and copies all properties of the current chart to it.</short>
-      </element><element name="TChart.DisableRedrawing"><short>Disables redrawing of the chart</short><descr><p>Useful when many data points are added.</p><p>Must be accompanied by <var>EnableRedrawing</var>, otherwise the chart will
+      <element name="TChart.Create">
+        <short>Creates the chart</short>
+      </element>
+      <element name="TChart.Destroy">
+        <short>Destroys the chart</short>
+      </element>
+      <element name="TChart.IsPointInViewPort">
+        <short>Returns <var>true</var> when the given point (in graph coordinates) is inside or at the boundaries of the chart's viewport (area spanned by the axes)</short>
+      </element>
+      <element name="TChart.Clone">
+        <short>Creates a new chart and copies all properties of the current chart to it.</short>
+      </element>
+      <element name="TChart.DisableRedrawing">
+        <short>Disables redrawing of the chart</short>
+        <descr>
+          <p>Useful when many data points are added.</p>
+          <p>Must be accompanied by <var>EnableRedrawing</var>, otherwise the chart will
 not be updated any more.</p>
         </descr>
-      </element><element name="TChart.DrawLegendOn"><short>Draws the legend on the specified canvas in the given rectangle</short><descr>Useful to paint the legend outside the chart control.
+      </element>
+      <element name="TChart.DrawLegendOn">
+        <short>Draws the legend on the specified canvas in the given rectangle</short>
+        <descr>Useful to paint the legend outside the chart control.
 </descr>
-      </element><element name="TChart.EnableRedrawing"><short>Enables redrawing of the chart</short><descr>Must be called after redrawing of the chart has been deactivated by calling
+      </element>
+      <element name="TChart.EnableRedrawing">
+        <short>Enables redrawing of the chart</short>
+        <descr>Must be called after redrawing of the chart has been deactivated by calling
 DisableRedrawing. Otherwise the chart will not be updated any more.
 </descr>
-      </element><element name="TChart.GetFullExtent"><short>Returns the full extent of the chart</short><descr>The full extent is the unzoomed viewport of the chart. This is usually determined
+      </element>
+      <element name="TChart.GetFullExtent">
+        <short>Returns the full extent of the chart</short>
+        <descr>The full extent is the unzoomed viewport of the chart. This is usually determined
 automatically as the area encompassing all the data from series and axis ranges.
 </descr>
-      </element><element name="TChart.Prepare"><short>Initializes extents and transformations before the chart is drawn.</short><descr>This method normally is executed automatically. It must be called explicitly, however,
+      </element>
+      <element name="TChart.Prepare">
+        <short>Initializes extents and transformations before the chart is drawn.</short>
+        <descr>This method normally is executed automatically. It must be called explicitly, however,
 when the chart's extent is needed before the chart has been painted, e.g. in the
 form's OnCreate event.
 </descr>
-      </element><element name="TChart.RemoveSeries"><short>Removes the specified series from the chart</short><descr>Note that the series is <b>not</b> destroyed.
+      </element>
+      <element name="TChart.RemoveSeries">
+        <short>Removes the specified series from the chart</short>
+        <descr>Note that the series is <b>not</b> destroyed.
 </descr>
-      </element><element name="TChart.UsesBuiltinToolset"><short>Returns <var>true</var> when the built-in toolset is active.</short><descr>The built-in toolset is responsible for the default zooming and panning capabilities of the chart.
+      </element>
+      <element name="TChart.UsesBuiltinToolset">
+        <short>Returns <var>true</var> when the built-in toolset is active.</short>
+        <descr>The built-in toolset is responsible for the default zooming and panning capabilities of the chart.
 When a separate <var>TChartToolset</var> is added in order to get more control over these
 processed or to use other tools the built-in toolset is de-activated and this function returns <var>false</var>.
 </descr>
-      </element><element name="TChart.StyleChanged"><short>Part of the notification chain</short><descr>When any property of any chart element is changed the method <var>StyleChanged</var>
+      </element>
+      <element name="TChart.StyleChanged">
+        <short>Part of the notification chain</short>
+        <descr>When any property of any chart element is changed the method <var>StyleChanged</var>
 is called. It typically requests a repaint of the chart and notifies other elements
 of the changes.
 </descr>
-      </element><element name="TChart.IsZoomed"><short>Returns <var>true</var> when the chart is zoomed.</short>
-      </element><element name="TChart.LogicalExtent"><short>Returns the extent of the viewport requested by the user</short><descr>The <var>LogicalExtent</var> does not contain the the inner margins and the
+      </element>
+      <element name="TChart.IsZoomed">
+        <short>Returns <var>true</var> when the chart is zoomed.</short>
+      </element>
+      <element name="TChart.LogicalExtent">
+        <short>Returns the extent of the viewport requested by the user</short>
+        <descr>The <var>LogicalExtent</var> does not contain the the inner margins and the
 space reserved for the series labels. It is given in graph coordinates.
-</descr><seealso><link id="TChart.CurrentExtent">CurrentExtent</link>
+</descr>
+        <seealso>
+          <link id="TChart.CurrentExtent">CurrentExtent</link>
         </seealso>
-      </element><element name="TChart.MinDataSpace"><short>Defines the minimum height of the <var>LogicalExtent</var>
-        </short><descr>When series labels are displayed and <var>AutoMarks</var> is <var>true</var> then space is reserved
+      </element>
+      <element name="TChart.MinDataSpace">
+        <short>Defines the minimum height of the <var>LogicalExtent</var>
+        </short>
+        <descr>When series labels are displayed and <var>AutoMarks</var> is <var>true</var> then space is reserved
 for the labels and is no longer available for plotting. The <var>MinDataSpace</var> avoids
 that the series can completely disappear when very long or very high labels are
 displayed.
 </descr>
+      </element>
+      <element name="TChart.AxisVisible">
+        <short>Can be used to hide all axes</short>
+        <seealso><link id="TAChartAxisUtils.TBasicChartAxis.Visible"/>TBasicChartAxis.Visible<link/>
+        </seealso>
       </element>
     </module>
   </package>

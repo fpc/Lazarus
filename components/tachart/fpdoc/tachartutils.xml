@@ -6,9 +6,50 @@
         <short>Data type for a point with floating point coordinates X and Y</short>
       </element>
       <element name="TDoubleRect">
-        <short>Data structure for a rectangle with floating point coordinates defined by opposite corner points a and b</short>
-        <seealso><link id=""/>
+        <short>Data structure for a rectangle with floating point coordinates defined by opposite corner points a and b or by a 4-element array</short>
+        
+      </element>
+    <element name="TOverrideColor"><short>Enumeration of elements deciding whether a color will override a brush or pen color.</short><seealso><link id="TSeriesPoint.OverrideColor"/>
         </seealso>
+      </element><element name="TOverrideColors"><short>Set of elements deciding whether a color will override a brush or pen color.</short><seealso><link id="TSeriesPoint.OverrideColor"/>
+        </seealso>
+      </element><element name="TPointArray"><short>Dynamic array of <var><link id="TPoint"/>
+          </var> records (having integer coordinates)</short>
+      </element><element name="TDoublePointArray"><short>Dynamic array of <var><link id="TDoublePoint"/>
+          </var> records (having floating point coordinates)</short>
+      </element><element name="TPointBoolArr"><short>Helper type which allows to interpret a <var>TPoint</var> record as an integer array.</short><descr>For a <var>TPoint</var> variable <var>P</var>, the type-cast <var>TPointBoolArr(P)[b]</var> returns
+<var>P.X</var> when the boolean variable <var>b</var> is <var>false</var>, and
+<var>P.Y</var> when it is
+<var>true</var>.
+</descr>
+      </element><element name="TDoublePointBoolArr"><short>Helper type which allows to interpret a <var>TDoublePoint</var> record as a floating point array.</short><descr>For a
+<var><link id="TDoublePoint"/>
+          </var> variable
+<var>P</var>, the type-cast
+<var>TDoublePointBoolArr(P)[b]</var> returns
+<var>P.X</var> when the boolean variable
+<var>b</var> is
+<var>false</var>, and
+<var>P.Y</var> when it is
+<var>true</var>.
+</descr>
+      </element><element name="TDoubleInterval"><short>Data type for an interval of floating point numbers.</short><descr><ul><li><var>FStart</var>: begin of the interval</li><li><var>FEnd</var>: end of the interval</li>
+          </ul>
+        </descr>
+      </element><element name="TSeriesMarksStyle"><short>Defines which information is displayed in the text of a series label</short><descr><ul><li><var>smsCustom</var>: user-defined</li><li><var>smsNone</var>: no labels</li><li><var>smsValue</var>: y value of the series, e.g. <var>'1234' </var>
+            </li><li><var>smsPercent</var>: percentage of the y value, e.g. <var>'12 %'</var>
+            </li><li><var>smsLabel</var>: text assigned to the data point, e.g. <var>'Cars'</var>
+            </li><li><var>smsLabelPercent</var>: text assigned to the data point, and percentage of the y value, e.g. <var>'Cars 12 %'</var>
+            </li><li><var>smsLabelValue</var>: text assigned to the data point, and y value, e.g. <var>'Cars 1234'</var>
+            </li><li><var>smsLegend</var>: ?</li><li><var>smsPercentTotal</var>: percentage and the total of the y values, e.g. <var>'12 % of 1234'</var>
+            </li><li><var>smsLabelPercentTotal</var>: text assigned to the data point, percentage and total of all y values, e.g.
+<var>'Cars 12 % of 1234'</var>
+            </li><li><var>smsXValue</var>: x value of the data point</li>
+          </ul>
+        </descr>
+      </element><element name="TChartTextFormat"><short>Enumeration of two ways how text can be interpreted by TAChart: either directly or as being encoded in HTML.</short><descr><ul><li><var>tfNormal</var>: Text is taken literally.</li><li><var>tfHTML</var>: Text is assumed to contain simple HTML markup which is respected by the drawing routines.</li>
+          </ul>
+        </descr>
       </element>
     </module>
   </package>
