@@ -415,7 +415,7 @@ type
   TLldbCallStack = class(TCallStackSupplier)
   protected
     //procedure Clear;
-    //procedure DoThreadChanged;
+    procedure DoThreadChanged;
     procedure ParentRequestEntries(ACallstack: TCallStackBase);
   public
     procedure RequestAtLeastCount(ACallstack: TCallStackBase;
@@ -1409,6 +1409,8 @@ begin
 
   if CurrentThreads <> nil
   then CurrentThreads.CurrentThreadId := ANewId;
+
+  TLldbCallStack(Debugger.CallStack).DoThreadChanged;
 end;
 
 function TLldbThreads.GetFramePointerForThread(AnId: Integer): TDBGPtr;
@@ -1509,6 +1511,25 @@ end;
 
 { TLldbCallStack }
 
+procedure TLldbCallStack.DoThreadChanged;
+var
+  tid, idx: Integer;
+  cs: TCallStackBase;
+begin
+  if (Debugger = nil) or not(Debugger.State in [dsPause, dsInternalPause]) then begin
+    exit;
+  end;
+
+  TLldbDebugger(Debugger).FCurrentStackFrame := 0;
+  tid := Debugger.Threads.CurrentThreads.CurrentThreadId;
+  cs := TCallStackBase(CurrentCallStackList.EntriesForThreads[tid]);
+  idx := cs.CurrentIndex;  // CURRENT
+  if idx < 0 then idx := 0;
+
+  TLldbDebugger(Debugger).FCurrentStackFrame := idx;
+  cs.CurrentIndex := idx;
+end;
+
 procedure TLldbCallStack.ParentRequestEntries(ACallstack: TCallStackBase);
 begin
   inherited RequestEntries(ACallstack);
@@ -1556,7 +1577,9 @@ begin
     Exit;
   end;
 
-  ACallstack.CurrentIndex := 0; // will be used, if thread is changed
+  if ACallstack.ThreadId = TLldbDebugger(Debugger).FCurrentThreadId
+  then ACallstack.CurrentIndex := TLldbDebugger(Debugger).FCurrentStackFrame
+  else ACallstack.CurrentIndex := 0; // will be used, if thread is changed
   ACallstack.SetCurrentValidity(ddsValid);
 end;
 
