@@ -3,6 +3,7 @@
 ..\tachartutils.pas
 ..\tacustomseries.pas
 ..\tadbsource.pas
+..\tadrawutils.pas
 ..\tageometry.pas
 ..\tagraph.pas
 ..\talegend.pas

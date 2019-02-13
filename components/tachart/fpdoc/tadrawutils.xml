@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions><package name="TAChartLazarusPkg"><module name="TADrawUtils"><element name="TChartTransparency"><short>Data type for the transparency of a chart element ranging between 0 (fully opaque) and 255 (fully transparent, i.e. invisible)</short><descr><b>Compatibility note</b>: The FPVectorial and TFPCanvas drawers currently do
+not support transparency because of limitations of the underlying libraries.
+Printer and WMF drawers can not support transparency in principle.&lt;/p&gt;
+  <p/><p><b>Optimization note:</b> Transparency support in the LCL is rudimentary.
+The current TCanvas drawer implementation, therefore, may be slow with many transparent
+series and large charts. To improve efficiency, it is recommended to use as
+few different transparency levels as possible and to not interleave series
+with different transparencies. Alternatively, use BGRABitmap as back-end,
+since it has a faster transparency implementation.</p>
+        </descr>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>

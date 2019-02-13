@@ -22,7 +22,7 @@ the arrow points to the left or downward, respectively.
       </element><element name="TChartArrow.Create"><short>Creates the arrow as an element of the specified chart</short>
       </element><element name="TChartArrow.Assign"><short>Copies all properties from the arrow specified as <var>ASource</var>
         </short>
-      </element><element name="TChartElement"><short>Ancestor of the charrt elements (title, footer, axes, legend, etc.)</short>
+      </element><element name="TChartElement"><short>Ancestor of the chart elements (title, footer, axes, legend, etc.)</short>
       </element><element name="TChartElement.Create"><short>Creates an instance of <var>TChartElement</var> as an element of the specified chart</short>
       </element><element name="TChartElement.SetOwner"><short>Sets the owner of the element to the specified chart.</short><descr>The owner of the element receives the notification messages
 (<var><link id="TChartElement.StyleChanged">StyleChanged</link>
@@ -89,8 +89,9 @@ original location in some specified color and with some degree of transparency.
 </descr>
       </element><element name="TCustomChart"><short>Ancestor of <var>TChart</var>
         </short><descr>The <var>TCustomChart</var> prepares the most basic notification mechanism in
-order to be able to communicate with <var><link id="TChartElement"/>
-          </var> instances.
+order to be able to communicate with
+<link id="TChartElement"><var>TChartElement</var>
+          </link> instances.
 </descr><seealso><var><link id="TAGraph.TChart"/>
           </var>
         </seealso>
