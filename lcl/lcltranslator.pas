@@ -253,6 +253,9 @@ var
         exit;
     end;
 
+    //master files have .pot extension
+    LCFileName := ChangeFileExt(GetLCFileName, '.pot');
+
     Result := AppDir + LCFileName;
     if FileExistsUTF8(Result) then
       exit;
