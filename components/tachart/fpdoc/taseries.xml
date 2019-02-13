@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
   <package name="TAChartLazarusPkg">
     <module name="TASeries">
@@ -7,6 +7,57 @@
         <seealso>
           <link id="TAGraph.TChart.ReticuleMode">TChart.ReticuleMode</link>
         </seealso>
+      </element>
+    <element name="TColorEachMode"><short>Enumeration of possibilities how individual data point colors should be applied to a <var>TLineSeries</var>
+        </short><descr><p>The <link id="TACustomSource.TChartDataItem"><var>TChartDataItem</var>
+            </link> records from which a series receives its data values has a field
+<link id="TACustomSource.TChartDataItem.Color"><var>Color</var>
+            </link> as
+individual data point color.</p><p>Depending on the values of <link id="TColorEachMode"><var>TColorEachMode</var>
+            </link> these colors can be applied to a <var>TLineSeries</var> in these ways:</p><ul><li><b>ceNone</b>: no individual colors</li><li><b>cePoint</b>: color is applied to the
+<link id="TASeries.TLineSeries.Pointer">pointer symbol</link>.
+    </li><li><b>ceLineBefore</b>: color is applied to the segment before the data point</li><li><b>ceLineAfter</b>: color is applied to the segment after the data point </li><li><b>cePointAndLineBefore</b>: color is applied to the
+<link id="TASeries.TLineSeries.Pointer">pointer symbol</link> and the segment before it</li><li><b>cePointAndLineAfter</b>: color is applied to the
+<link id="TASeries.TLineSeries.Pointer">pointer symbol</link> and the segment after it.</li>
+          </ul>
+        </descr>
+      </element><element name="TLineSeries.ColorEach"><short>Determines how an individual data point color is applied to the line series.</short><descr><p>The <link id="TACustomSource.TChartDataItem"><var>TChartDataItem</var>
+            </link> records from which a series receives its data values has a field
+<link id="TACustomSource.TChartDataItem.Color"><var>Color</var>
+            </link> as
+individual data point color.</p><p>Depending on the values of <link id="TColorEachMode"><var>TColorEachMode</var>
+            </link> these colors can be applied to a <var>TLineSeries</var> in these ways:</p><ul><li><b>ceNone</b>: no individual colors</li><li><b>cePoint</b>: color is applied to the
+<link id="TASeries.TLineSeries.Pointer">pointer symbol</link>.
+    </li><li><b>ceLineBefore</b>: color is applied to the segment before the data point</li><li><b>ceLineAfter</b>: color is applied to the segment after the data point </li><li><b>cePointAndLineBefore</b>: color is applied to the
+<link id="TASeries.TLineSeries.Pointer">pointer symbol</link> and the segment before it</li><li><b>cePointAndLineAfter</b>: color is applied to the
+<link id="TASeries.TLineSeries.Pointer">pointer symbol</link> and the segment after it.</li>
+          </ul>
+        </descr>
+      </element><element name="TLineSeries.LinePen"><short>Defines the pen used to draw the line segments between the data points</short>
+      </element><element name="TLineSeries.SeriesColor"><short>Color of the series lines</short><descr>This is the same as the color of the
+<link id="TLineSeries.LinePen"><var>TLineSeries.LinePen</var>
+          </link>.
+</descr>
+      </element><element name="TLineSeries.ShowLines"><short>Allows to quickly turn on/off the connecting lines between the data points</short><descr>The same effect can be achieved by changing
+<link id="TLineSeries.LineType"><var>TLineSeries.LineType</var>
+          </link> to <var>ltNone</var>.
+</descr>
+      </element><element name="TLineSeries.ShowPoints"><short>Allows to quickly turn on/off the data point symbols</short><descr><p>The appearance of the data point symbols is determined by property
+<link id="TACustomSeries.TCustomSeries.Pointer"><var>Pointer</var>
+            </link>.
+  </p><p>Changing <var>Pointer.Visible</var> has the same effect as changing
+<var>ShowLines</var>.</p>
+        </descr>
+      </element><element name="TLineType"><short>Enumeration of possibilities how the data points are connected in a <var>TLineSeries</var>
+        </short><descr><ul><li><b>ltNone</b>: no connecting line (like
+<link id="TLineSeries.ShowLines"><var>TLineSeries.ShowLines</var>
+              </link><var>=false</var>)</li><li><b>ltFromPrevious</b>: draws a connection to the previous data point; the standard behavior</li><li><b>ltFromOrigin</b>: draws a line from the data point to the origin </li><li><b>ltStepXY</b>: draws first a line in x and then in y direction to achieve a "stepped" look</li><li><b>ltStepYX</b>: draws first a line in y and then in x direction to achieve a "stepped look</li>
+          </ul>
+        </descr>
+      </element><element name="TLineSeries.LineType"><short>Determines how data points are connected by lines</short><descr><ul><li><b>ltNone</b>: no connecting lines (like <link id="TLineSeries.ShowLines"><var>ShowLines</var>
+              </link><var>=false</var>)</li><li><b>ltFromPrevious</b>: draws a connection to the previous data point; the standard behavior</li><li><b>ltFromOrigin</b>: draws a line from the data point to the origin </li><li><b>ltStepXY</b>: draws first a line in x and then in y direction to achieve a "stepped" look</li><li><b>ltStepYX</b>: draws first a line in y and then in x direction to achieve a "stepped" look</li>
+          </ul>
+        </descr>
       </element>
     </module>
   </package>

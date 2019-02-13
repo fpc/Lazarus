@@ -177,6 +177,11 @@ vertical axis of the series is subject to an axis transformation.</p>
         </seealso>
       </element>
     <element name="TCustomChartSeries.Shadow"/>
+    <element name="TBasicPointSeries.Pointer"><short>Defines the data point symbols</short><descr>The series pointer is a symbol of adjustable size and shape which is drawn by some
+series at the position of the data points. This symbol is also displayed in the
+<link id="TALegend.TChartLegend">legend</link> to identify the series.
+</descr>
+      </element>
     </module>
   </package>
 </fpdoc-descriptions>
