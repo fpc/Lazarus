@@ -70,6 +70,39 @@ symbol border will be drawn with the color of the series pointer's
           </ul>
         </descr>
       </element>
+    <element name="TChartShadow"><short>Some elements of the chart can be decorated by means of a drop shadow</short><descr>When a series "throws" a shows it is redrawn at some offset from its
+original location in some specified color and with some degree of transparency.
+</descr>
+      </element><element name="TChartShadow.Color"><short>Defines the color with which the series is redrawn for the shadow</short>
+      </element><element name="TChartShadow.OffsetX"><short>Defines the horizontal distance at which the original series is redrawn for the shadow</short>
+      </element><element name="TChartShadow.OffsetY"><short>Defines the vertical distance at which the original series is redrawn for the shadow</short>
+      </element><element name="TChartShadow.Transparency"><short>Transparency of the shadow series, ranging between 0 (opaque) and 255 (fully transparent = invisible)</short>
+      </element><element name="TChartShadow.Visible"><short>Using the property <var>Visible</var> the shadow can be turned on and off.</short>
+      </element><element name="TChartPen"><short>Pen used to draw many of the chart elements</short><descr>In addition to the standard TCanvas pen a <var>TChartPen</var> has a property
+<link id="TChartPen.Visible"/><var>Visible</var> by which the pen can be turned off.
+</descr>
+      </element><element name="TChartPen.EffVisible"><short>Returns <var>true</var> when the pen is "effectively" visible.</short><descr>The pen is visible when the property
+<link id="TChartPen.Visible"><var>Visible</var>
+          </link> is <var>true</var> and when its
+<link id="TPen.Style"><var>Style</var>
+          </link> is not <var>psClear</var>.
+</descr>
+      </element><element name="TCustomChart"><short>Ancestor of <var>TChart</var>
+        </short><descr>The <var>TCustomChart</var> prepares the most basic notification mechanism in
+order to be able to communicate with <var><link id="TChartElement"/>
+          </var> instances.
+</descr><seealso><var><link id="TAGraph.TChart"/>
+          </var>
+        </seealso>
+      </element><element name="TCustomChart.ZoomFull"><short>Restores the default (unzoomed) viewport.</short>
+      </element><element name="TCustomChart.StyleChanged"/><element name="CMD_QUERY_SERIESEXTENT"><short>Identifier of a command with which an axis queries from the chart the extent of all series attached to this axis.</short><seealso><var><link id="TAGraph.TChart.Notify"/>
+          </var>
+        </seealso>
+      </element><element name="TSeriesPointer"><short>Defines the data point symbols</short><descr>The series pointer is a symbol of adjustable size and shape which is drawn by some
+series at the position of the data points. This symbol is also displayed in the
+<link id="TALegend.TChartLegend">legend</link> to identify the series.
+</descr>
+      </element>
     </module>
   </package>
 </fpdoc-descriptions>

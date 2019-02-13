@@ -1406,6 +1406,7 @@ end;
   parameters. Needed for example by the axis to query the extent covered by
   all series using this axis (cannot be called directly because TAChartAxis
   does not "use" TACustomSeries. }
+
 procedure TChart.Notify(ACommand: Integer; AParam1, AParam2: Pointer; var AData);
 begin
   UnUsed(AParam2);

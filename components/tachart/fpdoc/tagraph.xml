@@ -7,31 +7,21 @@
       </element>
       <element name="TChart.AllowZoom">
         <short>If <var>true</var>, the user can zoom chart with the mouse.</short>
-        <descr>Allow the user to zoom the chart by drawing a new zoom rectangle with the mouse while holding left mouse button.</descr>
+        <descr>Allows the user to zoom the chart by drawing a new zoom rectangle with the mouse while holding down the left mouse button.
+</descr>
       </element>
       <element name="TChart">
         <short>Main charting component.</short>
-        <descr>
-          <p>The chart is composed of a list of <link id="TBasicChartSeries">series</link>, a list of <link id="TAChartAxis.TChartAxis">axes</link> and fixed <link id="TATypes.TChartElement">elements</link> like legend, title and footer.</p>
-          <p>Chart methods work with four coordinate systems:</p>
-          <ul>
-            <li>
-              <b>Axis coordinates</b> (known in some other applications as object coordinates) -- they are "raw" coordinate values obtained from the data. As the name implies, axis coordinates are interpreted in terms of specific axis -- the same coordinate value may have different meaning depending on the axis it is applied to.</li>
-            <li>
-              <b>Graph coordinates</b> are converted from the axis coordinates by means of axis transformations, such as logarithmic scale. Graph coordinates are common to all objects in the chart. Consider the graph coordinates as an invisible graphing paper behind the chart; its x axis is horizontal running from left to right, and its y axis is vertical running from bottom to top even if a series is rotated.</li>
-            <li>
-              <b>Image coordinates</b> (aka screen coordinates) are converted from graph coordinates based on the chart viewport. This transformation is always linear and can be influenced by chart tools such as zooming and panning.</li>
-            <li>
-              <b>Device coordinates</b> are usually equal to screen coordinates, but may be adjusted to the drawing back-end to accommodate different physical resolutions (DPI values). See, for example, printer drawer.</li>
+        <descr><p>The chart is composed of a list of <link id="TBasicChartSeries">series</link>, a list of <link id="TAChartAxis.TChartAxis">axes</link> and fixed <link id="TATypes.TChartElement">elements</link> like legend, title and footer.</p><p>Chart methods work with four coordinate systems:</p><ul><li><b>Axis coordinates</b> (known in some other applications as object coordinates) -- they are "raw" coordinate values obtained from the data. As the name implies, axis coordinates are interpreted in terms of specific axis -- the same coordinate value may have different meaning depending on the axis it is applied to.</li><li><b>Graph coordinates</b> are converted from the axis coordinates by means of axis transformations, such as logarithmic scale. Graph coordinates are common to all objects in the chart. Consider the graph coordinates as an invisible graphing paper behind the chart; its x axis is horizontal running from left to right, and its y axis is vertical running from bottom to top even if a series is rotated.</li><li><b>Image coordinates</b> (aka screen coordinates) are converted from graph coordinates based on the chart viewport. This transformation is always linear and can be influenced by chart tools such as zooming and panning.</li><li><b>Device coordinates</b> are usually equal to screen coordinates, but may be adjusted to the drawing back-end to accommodate different physical resolutions (DPI values). See, for example, printer drawer.</li>
           </ul>
         </descr>
       </element>
       <element name="TChart.BackColor">
         <short>Color of back plane of the chart.</short>
         <descr>Note that <var>BackColor</var> is different form the <link id="TChart.Color">Color</link> property
-which is used to paint the background of all <var>TChart</var>, including legend, axises and title.</descr>
-        <seealso>
-          <link id="TChart.Color">Color</link>
+which is used to paint the background of the entire <var>TChart</var>, including legend, axes and title/footer.
+</descr>
+        <seealso><link id="TChart.Color">Color</link>
         </seealso>
       </element>
       <element name="TChart.Depth">
@@ -72,9 +62,7 @@ use
       </element>
       <element name="TChart.Frame">
         <short>The pen to draw a frame around the chart's viewport.</short>
-        <descr>
-          <p>The position of the frame is coincient with the default axis position. </p>
-          <p>Set <var>Frame.Visible</var> to <var>false</var> to turn off frame drawing.
+        <descr><p>The position of the frame is coincient with the default axis position. </p><p>Set <var>Frame.Visible</var> to <var>false</var> to turn off frame drawing.
 </p>
         </descr>
       </element>
@@ -84,25 +72,28 @@ use
       <element name="TChart.BottomAxis">
         <short>Bottom axis of the chart.</short>
         <descr>Retrieves the first axis from the 
-<link id="TChart.AxisList">AxisList</link> with
+<link id="TChart.AxisList"><var>AxisList</var>
+          </link> of the chart with
 
-<link id="TATypes.TChartAxis.Alignment">Alignment</link> set to
+<link id="TATypes.TChartAxis.Alignment"><var>Alignment</var>
+          </link> set to
 
-<link id="TATypes.TChartAxisAlignment">calBottom</link>.</descr>
-        <seealso>
-          <link id=""/>
-          <link id=""/>
+<link id="TATypes.TChartAxisAlignment"><var>calBottom</var>
+          </link>.
+</descr>
+        <seealso><link id="TAChartAxis.TChartAxis"/>
         </seealso>
       </element>
       <element name="TChart.LeftAxis">
         <short>Left axis of the chart.</short>
-        <descr>Retrieves first axis from the <link id="TChart.AxisList">AxisList</link> with
-<link id="TATypes.TChartAxis.Alignment">Alignment</link> set to
-<link id="TATypes.TChartAxisAlignment">calLeft</link>.
+        <descr>Retrieves the first axis from the <link id="TChart.AxisList"><var>AxisList</var>
+          </link> of the chart with
+<link id="TATypes.TChartAxis.Alignment"><var>Alignment</var>
+          </link> set to
+<link id="TATypes.TChartAxisAlignment"><var>calLeft</var>
+          </link>.
 </descr>
-        <seealso>
-          <link id="TChart.AxisList">AxisList</link>
-          <link id="TATypes.TChartAxis.Alignment">TChartAxis.Alignment</link>
+        <seealso><link id="TAChartAxis.TChartAxis"/>
         </seealso>
       </element>
       <element name="TChart.Legend">
@@ -128,21 +119,22 @@ independently of zoom level.</descr>
       </element>
       <element name="TBasicChartSeries">
         <short>The basic chart series class. Do not inherit or instantiate directly.</short>
+      <descr><var>TBasicChartSeries</var> is an abstract class which provides only the minimum
+set of properties and methods in order to be able to be usable by TAChart.
+</descr>
       </element>
       <element name="TBasicChartSeries.Draw">
-        <short>Draw the series using the specified drawer</short>
+        <short>Draws the series using the specified drawer</short>
       </element>
       <element name="TBasicChartSeries.IsEmpty">
-        <short>Return <var>true</var> if the series contains no data.</short>
+        <short>Returns <var>true</var> if the series contains no data.</short>
       </element>
       <element name="TBasicChartSeries.Active">
         <short>If <var>true</var>, this series is visible and taken into account in extent calculation.</short>
       </element>
       <element name="TBasicChartSeries.Depth">
         <short>The extent of the series along Z axis, in pixels. Zero for 2D series.</short>
-        <seealso>
-          <link id="TBasicChartSeries.ZPosition">ZPosition</link>
-          <link id="TChart.Depth">TChart.Depth</link>
+        <seealso><link id="TBasicChartSeries.ZPosition">ZPosition</link><link id="TChart.Depth">TChart.Depth</link>
         </seealso>
       </element>
       <element name="TBasicChartSeries.ParentChart">
@@ -155,14 +147,10 @@ independently of zoom level.</descr>
         <short>Series title to show in legend.</short>
       </element>
       <element name="TBasicChartSeries.ZPosition">
-        <short>Offset of the series along Z-axis, in pixels. Also determines series drawing order.</short>
-        <descr>
-          <p>The series are drawn in order of decreasing <var>ZPosition</var> value.</p>
-          <p>So to bring series on 2D chart to front, set it's <var>ZPosition</var> to 0.</p>
+        <short>Offset of the series along the Z axis, in pixels. Also determines the series drawing order.</short>
+        <descr><p>The series are drawn in order of decreasing <var>ZPosition</var> value.</p><p>So to bring series on 2D chart to front, set it's <var>ZPosition</var> to 0.</p>
         </descr>
-        <seealso>
-          <link id="TBasicChartSeries.Depth">Depth</link>
-          <link id="TChart.Depth">TChart.Depth</link>
+        <seealso><link id="TBasicChartSeries.Depth">Depth</link><link id="TChart.Depth">TChart.Depth</link>
         </seealso>
       </element>
       <element name="TChartSeriesList">
@@ -173,8 +161,7 @@ independently of zoom level.</descr>
       </element>
       <element name="TBasicChartSeries.AfterAdd">
         <short>Called after the series was added to a chart.</short>
-        <seealso>
-          <link id="TChart.AddSeries">TChart.AddSeries</link>
+        <seealso><link id="TChart.AddSeries">TChart.AddSeries</link>
         </seealso>
       </element>
       <element name="TBasicChartSeries.AfterDraw">
@@ -215,18 +202,15 @@ For example, <link id="TASeries.TPieSeries">pie series</link> displays a separat
       </element>
       <element name="TChart.PaintOnCanvas">
         <short>Draw the chart on a given canvas.</short>
-        <descr>
-          <p>The canvas passed to this method not necessarily is that of the screen. It can be the canvas provided by some other drawing device, such as a bitmap or the printer.</p>
-          <p>Note, however, that this method is out-dated; the recommended method of drawing is by calling the method <var>Draw</var> which allows painting also on devices which do not have a canvas.</p>
+        <descr><p>The canvas passed to this method not necessarily is that of the screen. It can be the canvas provided by some other drawing device, such as a bitmap or the printer.</p><p>Note, however, that this method is out-dated; the recommended method of drawing is by calling the method <var>Draw</var> which allows painting also on devices which do not have a canvas.</p>
         </descr>
-        <seealso>
-          <link id=""/>
+        <seealso><link id=""/>
         </seealso>
       </element>
       <element name="TChart.ZoomFull">
-        <short>Restore the default zoom level.</short>
-        <seealso>
-          <link id="TChart.GetFullExtent"/>
+        
+        <seealso><var><link id="TChart.GetFullExtent"/>
+          </var>
         </seealso>
       </element>
       <element name="TChart.SaveToImage">
@@ -421,11 +405,12 @@ processed or to use other tools the built-in toolset is de-activated and this fu
 </descr>
       </element>
       <element name="TChart.StyleChanged">
-        <short>Part of the notification chain</short>
+        
         <descr>When any property of any chart element is changed the method <var>StyleChanged</var>
 is called. It typically requests a repaint of the chart and notifies other elements
 of the changes.
 </descr>
+      <short>Part of the notification chain</short>
       </element>
       <element name="TChart.IsZoomed">
         <short>Returns <var>true</var> when the chart is zoomed.</short>
@@ -450,8 +435,84 @@ displayed.
       </element>
       <element name="TChart.AxisVisible">
         <short>Can be used to hide all axes</short>
-        <seealso><link id="TAChartAxisUtils.TBasicChartAxis.Visible"/>TBasicChartAxis.Visible<link/>
+        <seealso><var><link id="TAChartAxisUtils.TBasicChartAxis.Visible"/>
+          </var>
         </seealso>
+      </element>
+    <element name="TChart.AutoFocus"><short>Automatically focuses the chart when the mouse is moved over it</short><descr>This is needed by <link id="TATools.TChartToolset">chart tools</link> when they
+are supposed to be activated by a key press.
+</descr>
+      </element><element name="TBasicChartSeries.SetActive"><short>Setter procedure for the property <link id="TBasicChartSeries.Active"><var>Active</var>
+          </link>
+        </short>
+      </element><element name="TBasicChartSeries.Transparency"><short>Transparency of the series</short><descr><ul><li><var>Transparency=0</var> means "completely opaque".</li><li><var>Transparency=255</var> means "completely transparent", i.e. the object is not visible at all.</li>
+          </ul><p><b>Compatibility note</b>: The FPVectorial and TFPCanvas drawers currently do
+not support transparency because of limitations of the underlying libraries.
+Printer and WMF drawers can not support transparency in principle.</p><p/><p><b>Optimization note:</b> Transparency support in the LCL is rudimentary.
+The current TCanvas drawer implementation, therefore, may be slow with many transparent
+series and large charts. To improve efficiency, it is recommended to use as
+few different transparency levels as possible and to not interleave series
+with different transparencies. Alternatively, use BGRABitmap as back-end,
+since it has a faster transparency implementation.</p>
+        </descr><seealso><var><link id="TADrawUtils.TTransparency"/>
+          </var>
+        </seealso>
+      </element><element name="TBasicChartSeries.AxisToGraphX"><short>Converts the x coordinate of a point from axis to graph units</short><descr><p><b>Axis coordinates</b> (known in some other applications as object coordinates)
+refer to the "raw" coordinate values obtained from the data.
+As the name implies, axis coordinates are interpreted in terms of the specific axis
+-- the same coordinate value may have different meanings depending on the axis it is applied to.</p><p><b>Graph coordinates</b> are converted from the axis coordinates using axis transformations, such as logarithmic scale.
+Graph coordinates are common to all objects in the chart.
+Consider the graph coordinates as an invisible graphing paper behind the chart;
+its x axis is horizontal running from left to right, and its y axis is vertical
+running from bottom to top even if a series is rotated.</p><p><b>Image coordinates</b> roughly correspond to the screen pixels and are
+  converted from graph coordinates based on the chart viewport. This transformation is always linear and can be influenced by chart tools such as zooming and panning.</p>
+        </descr>
+      </element><element name="TBasicChartSeries.AxisToGraphY"><short>Converts the y coordinate of a point from axis to graph units</short><descr><p><b>Axis coordinates</b> (known in some other applications as object coordinates)
+refer to the "raw" coordinate values obtained from the data.
+As the name implies, axis coordinates are interpreted in terms of the specific axis
+-- the same coordinate value may have different meanings depending on the axis it is applied to.</p><p><p><b>Image coordinates</b> roughly correspond to the screen pixels and are
+  converted from graph coordinates based on the chart viewport. This transformation is always linear and can be influenced by chart tools such as zooming and panning.</p><b>Graph coordinates</b> are converted from the axis coordinates using axis transformations, such as logarithmic scale.
+Graph coordinates are common to all objects in the chart.
+Consider the graph coordinates as an invisible graphing paper behind the chart;
+its x axis is horizontal running from left to right, and its y axis is vertical
+running from bottom to top even if a series is rotated.</p>
+        </descr>
+      </element><element name="TBasicChartSeries.GraphToAxisX"><short>Converts the x coordinate of a point from graph to axis units</short><descr><p><b>Axis coordinates</b> (known in some other applications as object coordinates)
+refer to the "raw" coordinate values obtained from the data.
+As the name implies, axis coordinates are interpreted in terms of the specific axis
+-- the same coordinate value may have different meanings depending on the axis it is applied to.</p><p><b>Graph coordinates</b> are converted from the axis coordinates using axis transformations, such as logarithmic scale.
+Graph coordinates are common to all objects in the chart.
+Consider the graph coordinates as an invisible graphing paper behind the chart;
+its x axis is horizontal running from left to right, and its y axis is vertical
+running from bottom to top even if a series is rotated.</p><p><b>Image coordinates</b> roughly correspond to the screen pixels and are
+  converted from graph coordinates based on the chart viewport. This transformation is always linear and can be influenced by chart tools such as zooming and panning.</p>
+        </descr>
+      </element><element name="TBasicChartSeries.GraphToAxisY"><short>Converts the y coordinate of a point from graph to axis units</short><descr><p><b>Axis coordinates</b> (known in some other applications as object coordinates)
+refer to the "raw" coordinate values obtained from the data.
+As the name implies, axis coordinates are interpreted in terms of the specific axis
+-- the same coordinate value may have different meanings depending on the axis it is applied to.</p><p><b>Graph coordinates</b> are converted from the axis coordinates using axis transformations, such as logarithmic scale.
+Graph coordinates are common to all objects in the chart.
+Consider the graph coordinates as an invisible graphing paper behind the chart;
+its x axis is horizontal running from left to right, and its y axis is vertical
+running from bottom to top even if a series is rotated.</p><p><b>Image coordinates</b> roughly correspond to the screen pixels and are
+  converted from graph coordinates based on the chart viewport. This transformation is always linear and can be influenced by chart tools such as zooming and panning.</p>
+        </descr>
+      </element><element name="TBasicChartSeries.GetGraphBounds"><short>Returns the rectangle (in graph units) which tightly encloses all points of the series</short>
+      </element><element name="TBasicChartSeries.GetAxisBounds"><short>Determines the minimum and maximum value on the given axis covered by all data points of the series</short><descr>The function returns <var>false</var> when the specified axis is not assigned to the
+series, otherwise <var>true</var>.
+</descr>
+      </element>
+    <element name="TBasicChartSeries.Shadow"><short>Defines parameters of a drop shadow for the series</short><seealso><var><link id="TATypes.TChartShadow"/>
+          </var>
+        </seealso>
+      </element><element name="TChart.Notify"><short>Notification of the chart</short><descr><p>Is called by a
+<link id="TChartElement">chart element</link> to notify the chart of something which is specified by
+<var>ACommand</var> and both parameters <var>AParam1</var> and <var>AParam2</var>.
+The chart responds by sending the result in the parameter
+<var>AData</var>.</p><p>Needed for example by the axis to query the extent covered by
+  all series using this axis (cannot be called directly because TAChartAxis
+  does not "use" TACustomSeries. </p><p/>
+        </descr>
       </element>
     </module>
   </package>

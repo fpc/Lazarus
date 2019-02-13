@@ -1,3 +1,5 @@
+..\tachartaxis.pas
+..\tachartaxisutils.pas
 ..\tachartutils.pas
 ..\tacustomseries.pas
 ..\tadbsource.pas
@@ -7,5 +9,4 @@
 ..\tamath.pas
 ..\taseries.pas
 ..\tasources.pas
--dfpdoc ..\tatypes.pas
--dfpdoc ..\tachartaxis.pas
+..\tatypes.pas

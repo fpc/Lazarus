@@ -1,25 +1,39 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
   <package name="TAChartLazarusPkg">
     <module name="TALegend">
       <element name="TLegendAlignment">
-        <short>The legend may be aligned to one of the four corners of the chart.</short>
+        <short>Enumeration type for the positions at which the legend can be placed</short>
+      <descr><ul><li><b>laTopLeft</b>: Legend at the top left corner of the chart</li><li><b>laCenterLeft</b>: Legend at the left side of the chart, centered vertically</li><li><b>laBottomLeft</b>: Legend at the bottom left corner of the chart</li><li><b>laTopCenter</b>: Legend above the chart and centered horizontally</li><li><b>laBottomCenter</b>: Legend below the chart and centered vertically</li><li><b>laTopRight</b>: Legend at the top right corner of the chart</li><li><b>laCenterRight</b>: Legend at the right side of the chart, centered vertically</li><li><b>laBottomRight</b>: Legend at the bottom right corner of the chart.</li>
+          </ul>
+        </descr>
       </element>
       <element name="TChartLegend">
         <short>Chart legend.</short>
-        <descr>
-          <p>The legend is a list of lines, called <i>legend items</i>.
-Each item contains a symbol and a text. Symbol is a graphical representation of series or series part.
-For example, <link id="TASeries.TLineSeries">line series</link> use line segment as a symbol,
-while <link id="TASeries.TAreaSeries">area series</link> use filled rectangle.</p>
+        <descr><p>The legend is a list of so-called
+<b>legend items</b> which contain a symbol and a text.</p><ul><li>The <b>symbol</b> is a graphical representation of a series or a series part.
+For example, a
+<link id="TASeries.TLineSeries">line series</link> uses a short line segment as a symbol,
+while an
+<link id="TASeries.TAreaSeries">area series</link>
+uses a filled rectangle.</li><li>The <b>text</b> can be selected to be the
+    <link id="TAChartSeries.TCustomSeries.Title">series title</link> or
+a selection of data point values.</li>
+          </ul>
         </descr>
+      <seealso><link id="TALegend,TChartSeriesLegend.Multiplicity"/>
+        </seealso>
       </element>
       <element name="TChartLegend.Alignment">
-        <short>Controls location of the legend on the chart.</short>
+        <short>Controls the location of the legend on the chart.</short>
+      <descr><ul><li><b>laTopLeft</b>: Legend at the top left corner of the chart</li><li><b>laCenterLeft</b>: Legend at the left side of the chart, centered vertically</li><li><b>laBottomLeft</b>: Legend at the bottom left corner of the chart</li><li><b>laTopCenter</b>: Legend above the chart and centered horizontally</li><li><b>laBottomCenter</b>: Legend below the chart and centered vertically</li><li><b>laTopRight</b>: Legend at the top right corner of the chart</li><li><b>laCenterRight</b>: Legend at the right side of the chart, centered vertically</li><li><b>laBottomRight</b>: Legend at the bottom right corner of the chart.</li>
+          </ul>
+        </descr>
       </element>
       <element name="TChartLegend.BackgroundBrush">
-        <short>Used to draw background rectangle of the legend.</short>
-        <descr>Set <var>Style</var> to <var>bsClear</var> to get transparent legend.</descr>
+        <short>Used to fill the background rectangle of the legend.</short>
+        <descr>Set <var>Style</var> to <var>bsClear</var> to get a transparent legend.
+</descr>
       </element>
       <element name="TChartLegend.Font">
         <short>The font for the legend items text.</short>
@@ -39,10 +53,10 @@ while <link id="TASeries.TAreaSeries">area series</link> use filled rectangle.</
         <short>Width of the legend's symbols, in pixels.</short>
       </element>
       <element name="TChartLegend.UseSidebar">
-        <short>If <var>true</var>, the legend is drawn on a separate panel. Otherwise it is drawn over the chart.</short>
+        <short>If <var>true</var>, the legend is drawn outside the chart's viewport. Otherwise it is drawn over the chart.</short>
       </element>
       <element name="TChartLegend.Visible">
-        <short>If <var>true</var>, the legend is drawn.</short>
+        <short>Allows to show or hide the legend.</short>
       </element>
       <element name="TLegendItem">
         <short>Basic class for legend items.</short>
@@ -59,6 +73,110 @@ while <link id="TASeries.TAreaSeries">area series</link> use filled rectangle.</
       <element name="DEF_LEGEND_MARGIN" skip="1"/>
       <element name="DEF_LEGEND_SYMBOL_WIDTH" skip="1"/>
       <element name="TChartLegendBrush" skip="1"/>
+    <element name="TChartSeriesLegend"><short>Combines a few properties how a series is represented in the legend of the chart.</short><seealso><var><link id="TAGraph.TChart.Legend"/>
+          </var>;
+</seealso>
+      </element><element name="TChartSeriesLegend.Visible"><short>Determines whether the series is listed in the legend</short><seealso><link id="TALegend.TChartSeriesLegend"/>
+        </seealso>
+      </element><element name="TChartSeriesLegend.TextFormat"><short>Determines whether the legend items are assumed to be bare text or to contain HTML codes.</short><seealso><var><link id="TAChartUtils.TChartTextFormat"/>
+          </var>
+        </seealso>
+      </element><element name="TChartSeriesLegend.Order"><short>Defines the order of the series in the legend</short><descr>By default a series is listed in the chart's
+<link id="TAGraph.TChart.Legend"><var>Legend</var>
+          </link> in the same order as
+in the chart. Using the property <var>Order</var> the legend items can be
+rearranged.
+</descr>
+      </element><element name="TLegendMultiplicity"><short>Enumerated type for options about which information of a series is to be displayed in the chart's <var>Legend</var>
+        </short><descr><ul><li><b>lmSingle</b>: The series will be repesented by a single legend entry which displays the
+<link id="TACustomSeries.TCustomChartSeries.Title"><var>Title</var>
+              </link> of the series.</li><li><b>lmPoint</b>: Every data point of the series will be listed; the items are formatted
+as specified by the property
+<link id="TChartSeriesLegend.Format"><var>Format</var>
+              </link> of the legend item. </li><li><b>lmStyle</b>: If the series contains several y values, for example as in stacked series,
+a text will be displayed for each stack level taken from the
+<link id="TAStyles.TChartStyle.Text"><var>Text</var>
+              </link> property of the
+chart style</li>
+          </ul>
+        </descr>
+      </element><element name="TChartSeriesLegend.Format"><short>Determines how the legend items of a series are formatted</short><descr><p>The text of a legend item is generated by the corresponding series based
+on the
+<var>Legend.Format</var> property.
+This property is used as a first argument for the
+<var>SysUtils.Format()</var> function, with the second argument containing
+the following data items at the specified indexes:
+</p><ul><li>For per-series <link id="TALegend.TChartSeriesLegend.Multiplicity"><var>Multiplicity</var>
+              </link> (<var>lmSingle</var>):
+  <ul><li>0: Series Title</li><li>1: Series Index</li>
+              </ul>
+            </li><li>For per-point <link id="TALegend.TChartSeriesLegend.Multiplicity"><var>Multiplicity</var>
+              </link> (<var>lmPoint</var>):
+  <ul><li>0: Y</li><li>1: Y as a percentage of the Y total</li><li>2: Text</li><li>3: Y total</li><li>4: X</li>
+              </ul><p>where "Y total" is the sum of all Y values for this source. Note that not all sources supply all the items above.</p>
+            </li>
+          </ul>
+        </descr>
+      </element>
+    <element name="TChartSeriesLegend.Multiplicity"><short>Determines which information of a series is to be displayed in the chart's <var>Legend</var>
+        </short><descr><ul><li><b>lmSingle</b>: The series will be repesented by a single legend entry which displays the
+<link id="TACustomSeries.TCustomChartSeries.Title"><var>Title</var>
+              </link> of the series.</li><li><b>lmPoint</b>: Every data point of the series will be listed; the items are formatted
+as specified by the property
+<link id="TChartSeriesLegend.Format"><var>Format</var>
+              </link> of the legend item. </li><li><b>lmStyle</b>: If the series contains several y values, for example as in stacked series,
+a text will be displayed for each stack level taken from the
+<link id="TAStyles.TChartStyle.Text"><var>Text</var>
+              </link> property of the
+chart style</li>
+          </ul>
+        </descr>
+      </element><element name="TChartSeriesLegend.GroupIndex"><short>Index of the legend group to which the legend item belongs</short><descr><p>Legend items can be grouped under sub-headers which are taken from the legend's
+<link id="TALegend.TLegend.GroupTitles"><var>GroupTitles</var>
+            </link> property.
+  </p><p>Each series can use the
+<link id="TALegend.TChartSeriesLegend.GroupIndex"><var>GroupIndex</var>
+            </link> property
+to indicate the group to which it should belong. </p>
+        </descr>
+      </element><element name="TChartLegend.Transparency"><short>Controls the degree of transparency with which the legend is drawn (0 = opaque, 255 = fully transparent = invisible)</short><descr>A semi-transparent legend is useful when the legend is drawn inside the
+chart's viewport
+(<link id="TChartLegend.UsePanel"><var>UsePanel = false</var>
+          </link>) and
+covers parts of the series.
+</descr>
+      </element><element name="TChartLegend.TextFormat"><short>Specifies whether the legend items contain plain text or HTML markup</short><descr>Using HTML, more advanced text features like sub- or superscripts or various text
+decorations (bold, italic) can be accomplished.
+</descr><seealso><var><link id="TAChartUtils.TChartTextFormat"/>
+          </var>
+        </seealso>
+      </element><element name="TChartLegend.Inverted"><short>Can be used to draw the legend upside down</short><descr><p>Normally the legend is drawn such that the first series of the chart is at
+the top, and the last series is at the bottom.</p><p/>
+ Setting <var>Inverted</var> to <var>true</var> paints the legend in the
+opposite sequence, i.e. first series at the bottom and last series at the top.
+</descr><seealso>Series property <link id="TACustomSeries.TCustomSeries.Legend.Order"><var>Legend.Order</var>
+          </link>.
+</seealso>
+      </element><element name="TChartLegend.GridHorizontal"><short>If <var>true</var> horizontal lines are drawn between the legend items to separate them visually</short>
+      </element><element name="TChartLegend.ColumnCount"><short>Determines the number of columns used to display the legend items</short><descr>By setting the <var>ColumnCount</var> equal to the number of legend items
+a horizontal arrangement of legend items can be achieved.
+</descr>
+      </element><element name="TChartLegend.ItemFillOrder"><short>Decides whether a legend with several columns is filled by rows or by columns</short><descr><p>When the legend has several columns, i.e.
+<link id="TALegend.TChartLegend.ColumnCount"><var>ColumnCount</var>
+            </link><var>&gt; 0</var>, this property can be used to decide wether the legend items are arranged by
+rows or by columns:</p><ul><li><b>lfoColRow</b>: Fill the legend by columns</li><li><b>lfoRowCol</b>: Fill the legend by rows.</li>
+          </ul>
+        </descr>
+      </element><element name="TLegendItemFillOrder"><short>Eumeration type deciding whether a legend with several columns is filled by rows or by columns</short><descr><p>When the legend has several columns, i.e.
+<link id="TALegend.TChartLegend.ColumnCount"><var>ColumnCount</var>
+            </link><var>&gt; 0</var>, the property
+<link id="TALegend.TChartLegend.ItemFillOrder"><var>ItemFillOrder</var>
+            </link> can be used to decide
+wether the legend items are arranged by rows or by columns:
+</p><ul><li><b>lfoColRow</b>: First fill the columns</li><li><b>lfoRowCol</b>: First fill the rows.</li>
+          </ul>
+        </descr>
+      </element>
     </module>
   </package>
 </fpdoc-descriptions>

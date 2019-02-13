@@ -35,8 +35,6 @@ const
   DEF_ARROW_WIDTH = 5;
   DEF_SHADOW_OFFSET = 8;
   DEF_SHADOW_TRANSPARENCY = 128;
-
-  // Constants for Chart.Notify commands
   CMD_QUERY_SERIESEXTENT = 0;
 
 

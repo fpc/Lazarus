@@ -33,6 +33,14 @@ conisiders the state of the axis'
       </element><element name="TChartAxisGridPen"><short>Defines the parameters used to draw the grid of the axis.</short><seealso><link id="TChartBasicAxis"/>
         </seealso>
       </element>
+    <element name="TChartAxisAlignment"><short>Enumeration of axis alignments</short><descr>The <var>TChartAxisAlignment</var> determines whether the associated axis is at
+the left, top, right or bottom side of the chart.
+</descr><seealso><var><link id="TAGraph.TChart.LeftAxis"/>
+          </var>
+, <var><link id="TAGraph.TChart.BottomAxis"/>
+          </var>
+        </seealso>
+      </element>
     </module>
   </package>
 </fpdoc-descriptions>

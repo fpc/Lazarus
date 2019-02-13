@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
   <package name="TAChartLazarusPkg">
     <module name="TACustomSeries">
@@ -68,6 +68,10 @@
       </element>
       <element name="TChartSeries">
         <short>Series with the data source.</short>
+      <descr><var>TChartSeries</var> is the ancestor of all series types which get the data
+from a <link id="TACustomSource.TCustomChartSource"><var>chart source</var>
+          </link>.
+</descr>
       </element>
       <element name="TChartSeries.Title" link="#TAChartLazarusPkg.TAGraph.TBasicChartSeries.Title"/>
       <element name="TChartSeries.GetColor">
@@ -90,6 +94,89 @@
       <element name="TChartSeries.FormattedMark">
         <short>Return the label for the point number <var>AIndex</var> obtained by <var>OnGetMark</var> event, or <var>DefaultFormattedMark</var>.</short>
       </element>
+    <element name="TCustomChartSeries.AxisToGraph"><short>Converts point coordinates from axis to graph units</short><descr><p><b>Axis coordinates</b> (known in some other applications as object coordinates)
+refer to the "raw" coordinate values obtained from the data.
+As the name implies, axis coordinates are interpreted in terms of the specific axis
+-- the same coordinate value may have different meanings depending on the axis it is applied to.</p><p><b>Graph coordinates</b> are converted from the axis coordinates using axis transformations, such as logarithmic scale.
+Graph coordinates are common to all objects in the chart.
+Consider the graph coordinates as an invisible graphing paper behind the chart;
+its x axis is horizontal running from left to right, and its y axis is vertical
+running from bottom to top even if a series is rotated.</p><p><b>Image coordinates</b> roughly correspond to the screen pixels and are
+  converted from graph coordinates based on the chart viewport. This transformation is always linear and can be influenced by chart tools such as zooming and panning.</p>
+        </descr><seealso>For conversion from graph to image coordinates, see
+<link id="TAGraph.TChart.GraphToImage"/>
+        </seealso>
+      </element><element name="TCustomChartSeries.AxisToGraphX"/><element name="TCustomChartSeries.AxisToGraphY"><seealso>For conversion from graph to image coordinates, see
+<link id="TAGraph.TChart.YGraphToImage"/>
+        </seealso>
+      </element><element name="TCustomChartSeries.GetAxisX"><short>Returns the x axis to which this series is assigned</short><seealso><var><link id="TAChartAxis.TChartAxis"/>
+          </var>
+        </seealso>
+      </element><element name="TCustomChartSeries.GetAxisY"><short>Converts the y axis to which this axis is assigned.</short><seealso><var><link id="TAChartAxis.TChartAxis"/>
+          </var>
+        </seealso>
+      </element><element name="TCustomChartSeries.GraphToAxis"><short>Converts point coordinates from graph to axis units</short><descr><p><b>Axis coordinates</b> (known in some other applications as object coordinates)
+refer to the "raw" coordinate values obtained from the data.
+As the name implies, axis coordinates are interpreted in terms of the specific axis
+-- the same coordinate value may have different meanings depending on the axis it is applied to.</p><p><b>Graph coordinates</b> are converted from the axis coordinates using axis transformations, such as logarithmic scale.
+Graph coordinates are common to all objects in the chart.
+Consider the graph coordinates as an invisible graphing paper behind the chart;
+its x axis is horizontal running from left to right, and its y axis is vertical
+running from bottom to top even if a series is rotated.</p><p><b>Image coordinates</b> roughly correspond to the screen pixels and are
+  converted from graph coordinates based on the chart viewport. This transformation is always linear and can be influenced by chart tools such as zooming and panning.</p>
+        </descr><seealso>For conversion from image to graph coordinates, see
+<link id="TAGraph.TChart.ImageToGraph"/>
+        </seealso>
+      </element><element name="TCustomChartSeries.GraphToAxisX"><short>Converts the x coordinate of a point from graph to axis units</short><seealso>For conversion from image to graph coordinates, see
+<link id="TAGraph.TChart.XImageToGraph"/>
+        </seealso>
+      </element><element name="TCustomChartSeries.GraphToAxisY"><seealso>For conversion from image to graph coordinates, see
+<link id="TAGraph.TChart.YImageToGraph"/>
+        </seealso>
+      </element><element name="TCustomChartSeries.IsRotated"><short>Returns <var>true</var> when the axes of a series are exchanged</short><descr>In a rotated series, the <link id="TCustomSeries.AxisIndexX"><var>AxisIndexX</var>
+          </link> of the series is assigned to
+the index of a vertical axis, e.g. the chart's
+<link id="TAGraph.TChart.LeftAxis"><var>LeftAxis</var>
+          </link>,
+and the <link id="TCustomSeries.AxisIndexY"><var>AxisIndexY</var>
+          </link> is
+assigned to the index of a horizontal axis, e.g. the chart's
+<link id="TAGraph.TChart.Bottomaxis"><var>BottomAxis</var>
+          </link>;.
+</descr>
+      </element><element name="TCustomChartSeries.GetGraphBounds"><seealso><var><link id="TAChartUtils.TDoubleRect"/>
+          </var>
+        </seealso>
+      </element><element name="TCustomChartSeries.GetAxisBounds"><seealso><link id="TAChartAxis.TChartAxis"/>
+        </seealso>
+      </element><element name="TCustomChartSeries.AxisIndexX"><short>Defines the index of the axis along which the x coordinates of the data points are plotted</short><descr><p>By default (when <var>AxisIndexX</var> is -1), the x axis is the
+<link id="TAGraph.TChart.BottomAxis"><var>BottomAxis</var>
+            </link> of the chart.</p><p>Note that the <var>AxisIndexX</var> absolutely must be assigned if the
+horizontal axis of the series is subject to an axis transformation.</p>
+        </descr>
+      </element><element name="TCustomChartSeries.AxisIndexY"><short>Defines the index of the axis along which the y coordinates of the data points are plotted</short><descr><p>By default (when <var>AxisIndexY</var> is -1), the y axis is the
+<link id="TAGraph.TChart.LeftAxis"><var>LeftAxis</var>
+            </link>
+          </p><p>Note that the <var>AxisIndexY</var> absolutely must be assigned if the
+vertical axis of the series is subject to an axis transformation.</p>
+        </descr>
+      </element><element name="TCustomChartSeries.Title"><short>Text by which the series is represented in the legend of the chart</short><seealso><var><link id="TALegend.TLegend"/>
+          </var>
+        </seealso><descr>The <link id="TAGraph.TChart.Legend">legend</link> usually lists all the series of a chart.
+</descr>
+      </element><element name="TCustomChartSeries.ShowInLegend"><short>Determines whether the series should be displayed in the legend of the chart</short><descr>This property is deprecated. New code should use the subproperty
+<link id="TALegend.TChartSeriesLegend.Visible"><var>Visible</var>
+          </link> of the series property
+<link id="TALegend.TChartSeriesLegend"><var>Legend</var>
+          </link>.
+</descr><seealso><p><var><link id="TAGraph.TChart.Legend"/>
+            </var>
+          </p><p><var><link id="TALegend.TSeriesLiegend"/>
+            </var>
+          </p>
+        </seealso>
+      </element>
+    <element name="TCustomChartSeries.Shadow"/>
     </module>
   </package>
 </fpdoc-descriptions>
