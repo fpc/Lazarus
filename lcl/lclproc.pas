@@ -80,19 +80,20 @@ function CompareItemWithDebugLCLItemInfo(Item, DebugItemInfo: Pointer): integer;
 type
   TStringsSortCompare = function(const Item1, Item2: string): Integer;
 
-procedure MergeSort(List: TFPList; const OnCompare: TListSortCompare); overload;// sort so that for each i is OnCompare(List[i],List[i+1])<=0
-procedure MergeSort(List: TFPList; StartIndex, EndIndex: integer; const OnCompare: TListSortCompare); overload;// sort so that for each i is OnCompare(List[i],List[i+1])<=0
-procedure MergeSort(List: TStrings; const OnCompare: TStringsSortCompare); overload;// sort so that for each i is OnCompare(List[i],List[i+1])<=0
+// sort so that for each i is OnCompare(List[i],List[i+1])<=0
+procedure MergeSort(List: TFPList; const OnCompare: TListSortCompare); overload; inline;
+procedure MergeSort(List: TFPList; StartIndex, EndIndex: integer; const OnCompare: TListSortCompare); overload;
+procedure MergeSort(List: TStrings; const OnCompare: TStringsSortCompare); overload;
 
 function GetEnumValueDef(TypeInfo: PTypeInfo; const Name: string;
                          const DefaultValue: Integer): Integer;
 
 function KeyAndShiftStateToKeyString(Key: word; ShiftState: TShiftState): String;
 function KeyStringIsIrregular(const s: string): boolean;
-function ShortCutToText(ShortCut: TShortCut): string;// localized output
-function ShortCutToTextRaw(ShortCut: TShortCut): string;// NOT localized output
-function TextToShortCut(const ShortCutText: string): TShortCut;// localized input
-function TextToShortCutRaw(const ShortCutText: string): TShortCut;// NOT localized input
+function ShortCutToText(ShortCut: TShortCut): string; inline;    // localized output
+function ShortCutToTextRaw(ShortCut: TShortCut): string; inline; // NOT localized output
+function TextToShortCut(const ShortCutText: string): TShortCut; inline;   // localized input
+function TextToShortCutRaw(const ShortCutText: string): TShortCut; inline;// NOT localized input
 
 function GetCompleteText(const sText: string; iSelStart: Integer;
   bCaseSensitive, bSearchAscending: Boolean; slTextList: TStrings): string;
@@ -112,7 +113,7 @@ var
 
 function SendApplicationMessage(Msg: Cardinal; WParam: WParam; LParam: LParam):Longint;
 procedure OwnerFormDesignerModified(AComponent: TComponent);
-procedure FreeThenNil(var obj);
+procedure FreeThenNil(var obj); inline;
 
 { the LCL interfaces finalization sections are called before the finalization
   sections of the LCL. Those parts, that should be finalized after the LCL, can
@@ -138,11 +139,11 @@ function ComparePoints(const p1, p2: TPoint): integer;
 function CompareCaret(const FirstCaret, SecondCaret: TPoint): integer;
 function CompareMethods(const m1, m2: TMethod): boolean; inline;
 
-function RoundToInt(const e: Extended): integer;
-function RoundToCardinal(const e: Extended): cardinal;
-function TruncToInt(const e: Extended): integer;
-function TruncToCardinal(const e: Extended): cardinal;
-function StrToDouble(const s: string): double;
+function RoundToInt(const e: Extended): integer; inline;
+function RoundToCardinal(const e: Extended): cardinal; inline;
+function TruncToInt(const e: Extended): integer; inline;
+function TruncToCardinal(const e: Extended): cardinal; inline;
+function StrToDouble(const s: string): double; inline;
 
 // Call debugging procedure in LazLoggerBase.
 procedure RaiseGDBException(const Msg: string); inline;
@@ -188,7 +189,7 @@ procedure DebugLnExit (const s1, s2: string; const s3: string = '';
                        const s13: string = ''; const s14: string = ''; const s15: string = '';
                        const s16: string = ''; const s17: string = ''; const s18: string = ''); inline; overload;
 
-procedure CloseDebugOutput;
+procedure CloseDebugOutput; inline;
 {$ELSE}
 procedure DebugLn(Args: array of const); overload;
 procedure DebugLn(const S: String; Args: array of const); overload;// similar to Format(s,Args)
@@ -309,7 +310,7 @@ type
 // Felipe: Don't substitute with calls to lazutf16 because lazutf16 includes
 // some initialization code and tables, which are not necessary for the LCL
 function UTF16CharacterLength(p: PWideChar): integer;
-function UTF16Length(const s: UTF16String): PtrInt;
+function UTF16Length(const s: UTF16String): PtrInt; inline;
 function UTF16Length(p: PWideChar; WordCount: PtrInt): PtrInt;
 function UTF16CharacterToUnicode(p: PWideChar; out CharLen: integer): Cardinal;
 function UnicodeToUTF16(u: cardinal): UTF16String;
