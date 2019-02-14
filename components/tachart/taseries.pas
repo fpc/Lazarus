@@ -667,8 +667,9 @@ begin
     else
       DrawColoredLines;
   end;
-  DrawErrorBars(ADrawer);
-  DrawLabels(ADrawer);
+  if AIndex = 0 then
+    DrawErrorBars(ADrawer);
+  DrawLabels(ADrawer, AIndex);
   if ShowPoints then
     DrawPointers(ADrawer, AIndex, FColorEach in [cePoint, cePointAndLineBefore, cePointAndLineAfter]);
 end;

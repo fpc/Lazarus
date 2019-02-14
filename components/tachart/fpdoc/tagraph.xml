@@ -240,10 +240,7 @@ For example, <link id="TASeries.TPieSeries">pie series</link> displays a separat
       </element>
       <element name="TChart.GraphToImage">
         <short>Converts a point from graph coordinates to image coordinates.</short>
-        <seealso>          
-          <link id="TChart.ImageToGraph"/>
-          <link id="TChart.XGraphToImage"/>
-          <link id="TChart.YGraphToImage"/>
+        <seealso><link id="TChart.ImageToGraph"/><link id="TChart.XGraphToImage"/><link id="TChart.YGraphToImage"/>
         </seealso>
       </element>
       <element name="TChart.ImageToGraph">

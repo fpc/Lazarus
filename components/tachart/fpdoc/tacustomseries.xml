@@ -62,8 +62,7 @@
       </element>
       <element name="TChartSeries.OnGetMark">
         <short>Called before the drawing of each mark.</short>
-        <seealso>
-          <link id="TChartSeries.Marks">Marks</link>
+        <seealso><link id="TChartSeries.Marks">Marks</link>
         </seealso>
       </element>
       <element name="TChartSeries">
@@ -87,8 +86,7 @@ from a <link id="TACustomSource.TCustomChartSource"><var>chart source</var>
       </element>
       <element name="TChartSeries.Extent">
         <short>Return the bounding rectangle for all points in the serie.</short>
-        <seealso>
-          <link id="TASources.TCustomChartSource.Extent">TCustomChartSource.Extent</link>
+        <seealso><link id="TASources.TCustomChartSource.Extent">TCustomChartSource.Extent</link>
         </seealso>
       </element>
       <element name="TChartSeries.FormattedMark">

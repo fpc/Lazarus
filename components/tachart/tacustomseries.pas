@@ -290,7 +290,7 @@ type
     procedure AfterDrawPointer(
       ADrawer: IChartDrawer; AIndex: Integer; const APos: TPoint); virtual;
     procedure DrawErrorBars(ADrawer: IChartDrawer);
-    procedure DrawLabels(ADrawer: IChartDrawer);
+    procedure DrawLabels(ADrawer: IChartDrawer; AYIndex: Integer = -1);
     procedure DrawPointers(ADrawer: IChartDrawer; AStyleIndex: Integer = 0;
       UseDataColors: Boolean = false);
     procedure FindExtentInterval(
@@ -1243,7 +1243,8 @@ begin
   end;
 end;
 
-procedure TBasicPointSeries.DrawLabels(ADrawer: IChartDrawer);
+procedure TBasicPointSeries.DrawLabels(ADrawer: IChartDrawer; AYIndex: Integer = -1);
+// Using AYIndex is workaround for issue #35077
 var
   prevLabelPoly: TPointArray;
 
@@ -1319,6 +1320,14 @@ begin
         end;
         if Stacked then
           prev := curr;
+
+        // Draw only the requested y index
+        if (AYIndex >= 0) then begin
+          if si < AYIndex then
+            Continue
+          else if si > AYIndex then
+            exit;
+        end;
 
         with ParentChart do
           if
