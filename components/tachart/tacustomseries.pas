@@ -1326,7 +1326,7 @@ begin
           if si < AYIndex then
             Continue
           else if si > AYIndex then
-            exit;
+            break;
         end;
 
         with ParentChart do
