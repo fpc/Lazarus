@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions>
+  <package name="lazutils">
+    <!--
+    ====================================================================
+      UITypes
+    ====================================================================
+    -->
+    <module name="UITypes">
+      <short>
+        Contains types and constants used in modal dialogs
+      </short>
+      <descr/>
+
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+
+      <element name="TMsgDlgType">
+        <short>
+          Defines the type of dialog implemented in a message box
+        </short>
+        <descr>
+          <p>
+            TMsgDlgType is an enumeration type that defines the type of dialog implemented in a message box. Values in the enumeration determine the caption, icon, string literals, and buttons displayed in various dialog types.
+          </p>
+          <p>
+            TMsgDlgType is used in several routines, such as: MessageDlg, MessageDlgPos, MessageDlgPosHelp, CreateMessageDialog, QuestionDlg, and LazMessageDlg.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="TMsgDlgType.mtWarning">
+        <short>
+          Warning message box with an Exclamation mark icon
+        </short>
+      </element>
+      <element name="TMsgDlgType.mtError">
+        <short>
+          Error message box with Stop sign icon
+        </short>
+      </element>
+      <element name="TMsgDlgType.mtInformation">
+        <short>
+          Information message box with an Info icon
+        </short>
+      </element>
+
+      <element name="TMsgDlgType.mtConfirmation">
+        <short>
+          Confirmation message box with a Question mark icon
+        </short>
+      </element>
+      <element name="TMsgDlgType.mtCustom">
+        <short>
+          Custom message box; No icon is displayed, and the caption contains the value in ApplicationName
+        </short>
+      </element>
+
+      <element name="TMsgDlgBtn">
+        <short>
+          Defines the buttons that can be displayed in a message box
+        </short>
+        <descr>
+          <p>
+            TMsgDlgBtn is an enumeration type with values that define the buttons that can be displayed in a message dialog. TMsgDlgBtn values also determine the modal result returned from the dialog when the corresponding button is clicked.
+          </p>
+          <p>
+            Values in the enumeration are used in various routines, such as: MessageDlg, MessageDlgPos, MessageDlgPosHelp, CreateMessageDialog, QuestionDlg, and LazMessageDlg.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="TMsgDlgBtn.mbYes">
+        <short>
+          Displays a 'Yes' button
+        </short>
+      </element>
+      <element name="TMsgDlgBtn.mbNo">
+        <short>
+          Displays a 'No' button
+        </short>
+      </element>
+      <element name="TMsgDlgBtn.mbOK">
+        <short>
+          Displays an 'OK' button
+        </short>
+      </element>
+      <element name="TMsgDlgBtn.mbCancel">
+        <short>
+          Displays a 'Cancel' button
+        </short>
+      </element>
+      <element name="TMsgDlgBtn.mbAbort">
+        <short>
+          Displays an 'Abort' button
+        </short>
+      </element>
+      <element name="TMsgDlgBtn.mbRetry">
+        <short>
+          Displays a 'Retry' button
+        </short>
+      </element>
+      <element name="TMsgDlgBtn.mbIgnore">
+        <short>
+          Displays an 'Ignore' button
+        </short>
+      </element>
+      <element name="TMsgDlgBtn.mbAll">
+        <short>
+          Displays an 'All' button
+        </short>
+      </element>
+      <element name="TMsgDlgBtn.mbNoToAll">
+        <short>
+          Displays a 'No to All' button
+        </short>
+      </element>
+      <element name="TMsgDlgBtn.mbYesToAll">
+        <short>
+          Displays a 'Yes to All' button
+        </short>
+      </element>
+      <element name="TMsgDlgBtn.mbHelp">
+        <short>
+          Displays a 'Help' button
+        </short>
+      </element>
+      <element name="TMsgDlgBtn.mbClose">
+        <short>
+          Displays a 'Close' button
+        </short>
+      </element>
+
+      <element name="TMsgDlgButtons">
+        <short>
+          Stores values from the TMsgDlgBtn enumeration
+        </short>
+        <descr>
+          <p>
+            TMsgDlgButtons is a set type used to store zero or more values from the TMsgDlgBtn enumeration. TMsgDlgButtons is passed as an argument to routines like: MessageDlg, MessageDlgPos, MessageDlgPosHelp, CreateMessageDialog, QuestionDlg, and LazMessageDlg.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="TModalResult">
+        <short>
+          Value returned from a modal dialog box
+        </short>
+        <descr>
+          <p>
+            TModalResult is an Integer type with a value in the range low(Integer)..high(Integer). TModalResult is the type returned by routines that display modal dialog boxes, such as: MessageDlg, MessageDlgPos, MessageDlgPosHelp, QuestionDlg, and LazMessageDlg.
+          </p>
+          <p>
+            The value in TModalResult indicates the button clicked to close the modal dialog, and contains one of the constant values:
+          </p>
+          <ul>
+            <li>mrNone</li>
+            <li>mrOK</li>
+            <li>mrCancel</li>
+            <li>mrAbort</li>
+            <li>mrRetry</li>
+            <li>mrIgnore</li>
+            <li>mrYes</li>
+            <li>mrNo</li>
+            <li>mrAll</li>
+            <li>mrNoToAll</li>
+            <li>mrYesToAll</li>
+            <li>mrClose</li>
+            <li>mrLast</li>
+          </ul>
+        </descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="PModalResult">
+        <short>
+          Pointer to a modal result value
+        </short>
+        <descr>
+          <p>
+            PModalResult is a pointer type to a TModalResult value.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="mrNone">
+        <short>Dialog was closed without pressing a button</short>
+      </element>
+      <element name="mrOK">
+        <short>OK button was clicked</short>
+      </element>
+      <element name="mrCancel">
+        <short>Cancel button was clicked</short>
+      </element>
+      <element name="mrAbort">
+        <short>Abort button was clicked</short>
+      </element>
+      <element name="mrRetry">
+        <short>Retry button was clicked</short>
+      </element>
+      <element name="mrIgnore">
+        <short>Ignore button was clicked</short>
+      </element>
+      <element name="mrYes">
+        <short>Yes button was clicked</short>
+      </element>
+      <element name="mrNo">
+        <short>No button was clicked</short>
+      </element>
+      <element name="mrAll">
+        <short>All button was clicked</short>
+      </element>
+      <element name="mrNoToAll">
+        <short>No to All button was clicked</short>
+      </element>
+      <element name="mrYesToAll">
+        <short>Yes to All button was clicked</short>
+      </element>
+      <element name="mrClose">
+        <short>Close button was clicked</short>
+      </element>
+      <element name="mrLast">
+        <short>Last modal result value (same as mrClose)</short>
+      </element>
+
+      <element name="ModalResultStr">
+        <short>
+          String representations for modal result values
+        </short>
+        <descr>
+          <p>
+            ModalResultStr is array of ShortString values that contains the string representations for values in TModalResult. ModalResultStr values can be accessed using the corresponding numeric modal result value. For example:
+          </p>
+          <code>
+            sResult := ModalResultStr[mrNone]; // returns 'mrNone'
+          </code>
+          <p>
+            ModalResultStr contains the following values:
+          </p>
+          <ul>
+            <li>'mrNone'</li>
+            <li>'mrOk'</li>
+            <li>'mrCancel'</li>
+            <li>'mrAbort'</li>
+            <li>'mrRetry'</li>
+            <li>'mrIgnore'</li>
+            <li>'mrYes'</li>
+            <li>'mrNo'</li>
+            <li>'mrAll'</li>
+            <li>'mrNoToAll'</li>
+            <li>'mrYesToAll'</li>
+            <li>'mrClose'</li>
+          </ul>
+        </descr>
+        <seealso></seealso>
+      </element>
+    </module>
+    <!-- UITypes -->
+  </package>
+</fpdoc-descriptions>

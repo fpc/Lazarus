@@ -6004,6 +6004,7 @@ docs/xml/lazutils/extendedstrings.xml svneol=native#text/plain
 docs/xml/lazutils/fileutil.xml svneol=native#text/plain
 docs/xml/lazutils/fpcadds.xml svneol=LF#text/xml eol=lf
 docs/xml/lazutils/fpmake.xml svneol=native#text/plain
+docs/xml/lazutils/html2textrender.xml svneol=native#text/plain
 docs/xml/lazutils/laz2_dom.xml svneol=native#text/plain
 docs/xml/lazutils/laz2_xmlcfg.xml svneol=native#text/plain
 docs/xml/lazutils/laz2_xmlread.xml svneol=native#text/plain
@@ -6064,6 +6065,7 @@ docs/xml/lazutils/ttprofile.xml svneol=native#text/plain
 docs/xml/lazutils/ttraster.xml svneol=native#text/plain
 docs/xml/lazutils/tttables.xml svneol=native#text/plain
 docs/xml/lazutils/tttypes.xml svneol=native#text/plain
+docs/xml/lazutils/uitypes.xml svneol=native#text/plain
 docs/xml/lazutils/utf8process.xml svneol=native#text/plain
 docs/xml/lcl/actnlist.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/alllclunits.xml svneol=LF#text/xml eol=lf

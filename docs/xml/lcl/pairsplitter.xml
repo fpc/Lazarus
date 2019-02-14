@@ -2,574 +2,493 @@
 <fpdoc-descriptions>
   <package name="lcl">
     <!--
-  ====================================================================
-    PairSplitter
-  ====================================================================
--->
+    ====================================================================
+      PairSplitter
+    ====================================================================
+    -->
     <module name="PairSplitter">
-      <short/>
-      <descr/>
+      <short>
+        Defines the TPairSplitter component
+      </short>
+      <descr>
+        Defines the <var>TPairSplitter</var> component. TPairSplitter is a component with two TPairSplitterSide children. Both child components can contain other components. The children are separated by a splitter which can be dragged by the user to resize the adjacent children.
+      </descr>
+
       <!-- unresolved type reference Visibility: default -->
-      <element name="Classes">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="Classes"/>
       <!-- unresolved type reference Visibility: default -->
-      <element name="SysUtils">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="SysUtils"/>
       <!-- unresolved type reference Visibility: default -->
-      <element name="LCLType">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="LazTracer"/>
       <!-- unresolved type reference Visibility: default -->
-      <element name="LCLProc">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="LCLType"/>
       <!-- unresolved type reference Visibility: default -->
-      <element name="LMessages">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="LCLIntf"/>
       <!-- unresolved type reference Visibility: default -->
-      <element name="Graphics">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="LMessages"/>
       <!-- unresolved type reference Visibility: default -->
-      <element name="GraphType">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="Graphics"/>
       <!-- unresolved type reference Visibility: default -->
-      <element name="LCLIntf">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="Controls"/>
       <!-- unresolved type reference Visibility: default -->
-      <element name="Controls">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="ExtCtrls"/>
+
       <!-- object Visibility: default -->
-      <element name="TCustomPairSplitter">
-        <short/>
-        <descr/>
-        <errors/>
+      <element name="TPairSplitterSide" link="#lcl.Controls.TWinControl">
+        <short>
+          Implements the child controls used in the TPairSplitter component.
+        </short>
+        <descr>
+          <p>
+            <var>TPairSplitterSide</var> is a TWinControl descendant that implements the child controls used in the TPairSplitter component. TPairSplitterSide behaves like  a TPanel component with a reference to the TPairSplitter that owns the control. TPairSplitterSide provides a custom Paint method and WMPaint message handling. TPairSplitterSide alters the visibility of inherited properties to match their intended usage.
+          </p>
+        </descr>
         <seealso/>
       </element>
-      <!-- object Visibility: default -->
-      <element name="TPairSplitterSide">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TPairSplitterSide.fCreatedBySplitter">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+
+      <element name="TPairSplitterSide.fCreatedBySplitter"/>
+
       <!-- function Visibility: private -->
       <element name="TPairSplitterSide.GetSplitter">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Gets the value for the Splitter property</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="TPairSplitterSide.GetSplitter.Result">
-        <short/>
+        <short>Value for the property</short>
       </element>
+
+      <element name="TPairSplitterSide.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+
       <!-- procedure Visibility: protected -->
       <element name="TPairSplitterSide.SetParent">
-        <short/>
-        <descr/>
-        <errors/>
+        <short>
+          Sets the value for the Parent property
+        </short>
+        <descr>
+          <p>
+            <var>SetParent</var> is an overridden procedure used to set the value in the Parent property. SetParent ensures that the control is removed from its existing parent prior to setting the new property value. The control is added to the new parent when AParent is not <var>Nil</var>.
+          </p>
+          <p>
+            SetParent is the reimplemented write access specifier for the Parent property.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
       <element name="TPairSplitterSide.SetParent.AParent">
-        <short/>
+        <short>New value for the Parent property</short>
       </element>
+
       <!-- procedure Visibility: protected -->
       <element name="TPairSplitterSide.WMPaint">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          Provides custom handling for WMPaint messages
+        </short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TPairSplitterSide.WMPaint.PaintMessage">
-        <short/>
+        <short>WM_PAINT message for the control</short>
+        <descr></descr>
+        <seealso/>
       </element>
+
       <!-- procedure Visibility: protected -->
       <element name="TPairSplitterSide.Paint">
-        <short/>
-        <descr/>
-        <errors/>
+        <short>Renders the control on its Canvas</short>
+        <descr></descr>
         <seealso/>
       </element>
-      <!-- property Visibility: protected -->
-      <element name="TPairSplitterSide.Align">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: protected -->
-      <element name="TPairSplitterSide.Anchors">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+
+      <element name="TPairSplitterSide.Align" link="#lcl.Controls.TControl.Align"/>
+      <element name="TPairSplitterSide.Anchors" link="#lcl.Controls.TControl.Anchors"/>
+
       <!-- constructor Visibility: public -->
       <element name="TPairSplitterSide.Create">
-        <short/>
-        <descr/>
-        <errors/>
+        <short>
+          Constructor for the class instance
+        </short>
+        <descr>
+          <p>
+            <var>Create</var> is the constructor for the class instance, and calls the inherited constructor using TheOwner as the owner of the control. Create updates the ControlStyle property to include the value csAcceptsControls.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
       <element name="TPairSplitterSide.Create.TheOwner">
-        <short/>
+        <short>Owner of the control</short>
       </element>
+
       <!-- destructor Visibility: public -->
       <element name="TPairSplitterSide.Destroy">
-        <short/>
-        <descr/>
-        <errors/>
+        <short>
+          Destructor for the class instance
+        </short>
+        <descr>
+          <p>
+            Destroy if the destructor for the class instance, and calls the inherited destructor.
+          </p>
+        </descr>
         <seealso/>
       </element>
+
       <!-- property Visibility: public -->
       <element name="TPairSplitterSide.Splitter">
-        <short/>
-        <descr/>
+        <short>
+          TPairSplitter for the control
+        </short>
+        <descr>
+          <p>
+            <var>Splitter</var> is a read-only TCustomPairSplitter property which represents the component for the control. The value in Splitter is the same as the Parent for the control, or <var>Nil</var> when Parent has not been assigned.
+          </p>
+        </descr>
         <seealso/>
       </element>
-      <!-- property Visibility: public -->
-      <element name="TPairSplitterSide.Visible">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TPairSplitterSide.Left">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TPairSplitterSide.Top">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TPairSplitterSide.Width">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TPairSplitterSide.Height">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TPairSplitterSide.ChildSizing">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TPairSplitterSide.ClientWidth">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TPairSplitterSide.ClientHeight">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TPairSplitterSide.Enabled">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TPairSplitterSide.OnMouseDown">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TPairSplitterSide.OnMouseMove">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TPairSplitterSide.OnMouseUp">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TPairSplitterSide.OnResize">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TPairSplitterSide.ShowHint">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TPairSplitterSide.ParentShowHint">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TPairSplitterSide.PopupMenu">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+
+      <element name="TPairSplitterSide.Visible" link="#lcl.Controls.TControl"/>
+      <element name="TPairSplitterSide.Left" link="#lcl.Controls.TControl"/>
+      <element name="TPairSplitterSide.Top" link="#lcl.Controls.TControl"/>
+      <element name="TPairSplitterSide.Width" link="#lcl.Controls.TControl"/>
+      <element name="TPairSplitterSide.Height" link="#lcl.Controls.TControl"/>
+      <element name="TPairSplitterSide.ChildSizing" link="#lcl.Controls.TWinControl"/>
+      <element name="TPairSplitterSide.ClientWidth" link="#lcl.Controls.TControl"/>
+      <element name="TPairSplitterSide.ClientHeight" link="#lcl.Controls.TControl"/>
+      <element name="TPairSplitterSide.Cursor" link="#lcl.Controls.TControl"/>
+      <element name="TPairSplitterSide.Enabled" link="#lcl.Controls.TControl"/>
+      <element name="TPairSplitterSide.OnMouseDown" link="#lcl.Controls.TControl"/>
+      <element name="TPairSplitterSide.OnMouseEnter" link="#lcl.Controls.TControl"/>
+      <element name="TPairSplitterSide.OnMouseLeave" link="#lcl.Controls.TControl"/>
+      <element name="TPairSplitterSide.OnMouseMove" link="#lcl.Controls.TControl"/>
+      <element name="TPairSplitterSide.OnMouseUp" link="#lcl.Controls.TControl"/>
+      <element name="TPairSplitterSide.OnMouseWheel" link="#lcl.Controls.TControl"/>
+      <element name="TPairSplitterSide.OnMouseWheelDown" link="#lcl.Controls.TControl"/>
+      <element name="TPairSplitterSide.OnMouseWheelUp" link="#lcl.Controls.TControl"/>
+      <element name="TPairSplitterSide.OnResize" link="#lcl.Controls.TControl"/>
+      <element name="TPairSplitterSide.ShowHint" link="#lcl.Controls.TControl"/>
+      <element name="TPairSplitterSide.ParentShowHint" link="#lcl.Controls.TControl"/>
+      <element name="TPairSplitterSide.PopupMenu" link="#lcl.Controls.TControl"/>
+
       <!-- enumeration type Visibility: default -->
       <element name="TPairSplitterType">
-        <short/>
-        <descr/>
+        <short>
+          Sets the orientation for the Splitter in TPairSplitter
+        </short>
+        <descr>
+          <p>
+            <var>TPairSplitterType</var> is an enumeration type with values that set the orientation for the splitter in the TPairSplitter component. The values refer to the splitter orientation relative to the adjacent children.
+          </p>
+          <p>
+            TPairSplitterType is the type used for the <var>TCustomPairSplitter.SplitterType</var> property.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TPairSplitterType.pstHorizontal">
-        <short/>
+        <short>Splitter is oriented to size adjacent children horizontally</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TPairSplitterType.pstVertical">
-        <short/>
+        <short>Splitter is oriented to size adjacent children vertically</short>
       </element>
+
       <!-- object Visibility: default -->
-      <element name="TCustomPairSplitter">
-        <short/>
-        <descr/>
-        <errors/>
+      <element name="TCustomPairSplitter" link="#lcl.Controls.TWinControl">
+        <short>
+          Defines the base class for the TPairSplitter component
+        </short>
+        <descr>
+          Defines the base class for the <var>TPairSplitter</var> component. TPairSplitter is a component with two TPairSplitterSide children. Both child components can contain other components. The children are separated by a splitter which can be dragged by the user to resize the adjacent children.
+        </descr>
         <seealso/>
       </element>
+
       <!-- variable Visibility: private -->
-      <element name="TCustomPairSplitter.FPosition">
-        <short/>
-        <descr/>
+      <element name="TCustomPairSplitter.FPosition"/>
+      <element name="TCustomPairSplitter.FSides"/>
+      <element name="TCustomPairSplitter.FSplitterType"/>
+      <element name="TCustomPairSplitter.fDoNotCreateSides"/>
+      <element name="TCustomPairSplitter.GetPosition"/>
+      <element name="TCustomPairSplitter.GetPosition.Result"/>
+      <element name="TCustomPairSplitter.GetSides"/>
+      <element name="TCustomPairSplitter.GetSides.Result"/>
+      <element name="TCustomPairSplitter.GetSides.Index"/>
+      <element name="TCustomPairSplitter.SetPosition"/>
+      <element name="TCustomPairSplitter.SetPosition.AValue"/>
+      <element name="TCustomPairSplitter.SetSplitterType"/>
+      <element name="TCustomPairSplitter.SetSplitterType.AValue"/>
+      <element name="TCustomPairSplitter.AddSide"/>
+      <element name="TCustomPairSplitter.AddSide.ASide"/>
+      <element name="TCustomPairSplitter.RemoveSide"/>
+      <element name="TCustomPairSplitter.RemoveSide.ASide"/>
+      <element name="TCustomPairSplitter.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+
+        <!-- Visibility: protected -->
+      <element name="TCustomPairSplitter.GetCursor">
+        <short>Gets the value for the Cursor property</short>
+      </element>
+      <element name="TCustomPairSplitter.GetCursor.Result">
+        <short>Value for the Cursor property</short>
+      </element>
+
+      <element name="TCustomPairSplitter.SetCursor">
+        <short>Sets the value for the Cursor property</short>
+      </element>
+      <element name="TCustomPairSplitter.SetCursor.Value">
+        <short>New value for the Cursor property</short>
+      </element>
+
+      <element name="TCustomPairSplitter.GetControlClassDefaultSize">
+        <short>
+          Gets the default size for the control class
+        </short>
+        <descr>
+          <p>
+            <var>GetControlClassDefaultSize</var> is a TSize class function used to get the default size for instances of the class. GetControlClassDefaultSize sets the Height and Width in the TSize value. The default value in both CX and CY is 90 pixels.
+          </p>
+          <p>
+            GetControlClassDefaultSize is used the Create constructor.
+          </p>
+        </descr>
         <seealso/>
       </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomPairSplitter.FSides">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TCustomPairSplitter.GetControlClassDefaultSize.Result">
+        <short>
+          TSize type with the default Height and Width for instances of the class
+        </short>
       </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomPairSplitter.FSplitterType">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomPairSplitter.fDoNotCreateSides">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- function Visibility: private -->
-      <element name="TCustomPairSplitter.GetPosition">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomPairSplitter.GetPosition.Result">
-        <short/>
-      </element>
-      <!-- function Visibility: private -->
-      <element name="TCustomPairSplitter.GetSides">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomPairSplitter.GetSides.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomPairSplitter.GetSides.Index">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCustomPairSplitter.SetPosition">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomPairSplitter.SetPosition.AValue">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCustomPairSplitter.SetSplitterType">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomPairSplitter.SetSplitterType.AValue">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCustomPairSplitter.AddSide">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomPairSplitter.AddSide.ASide">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TCustomPairSplitter.RemoveSide">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomPairSplitter.RemoveSide.ASide">
-        <short/>
-      </element>
+
       <!-- constructor Visibility: public -->
       <element name="TCustomPairSplitter.Create">
-        <short/>
-        <descr/>
-        <errors/>
+        <short>
+          Constructor for the class instance
+        </short>
+        <descr>
+          <p>
+            <var>Create</var> is the constructor for the class instance. Create calls the inherited constructor using TheOwner as the owner of the component.
+          </p>
+          <p>
+            Create calls the GetControlClassDefaultSize class method to get the default height and width values used in instances of the class type, and calls SetBounds to apply the values. Create sets the default values for the following properties:
+          </p>
+          <dl>
+            <dt>ControlStyle</dt>
+            <dd>Removes the value csAcceptsControls in the property</dd>
+            <dt>SplitterType</dt>
+            <dd>pstHorizontal</dd>
+            <dt>Cursor</dt>
+            <dd>crHSplit</dd>
+            <dt>Position</dt>
+            <dd>45</dd>
+          </dl>
+          <p>
+            Create calls the CreateSides method when csDesigning is not in the ComponentState property. CreateSides ensures both TPairSplitterSide instances are created (and parented) in the Sides property.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomPairSplitter.Create.TheOwner">
-        <short/>
+        <short>Owner of the component</short>
       </element>
+
       <!-- destructor Visibility: public -->
       <element name="TCustomPairSplitter.Destroy">
-        <short/>
-        <descr/>
-        <errors/>
+        <short>
+          Destructor for the class instance
+        </short>
+        <descr>
+          <p>
+            <var>Destroy</var> is the destructor for the class instance. Destroy frees resources allocated in the Sides property, and calls the inherited destructor.
+          </p>
+        </descr>
         <seealso/>
       </element>
+
       <!-- procedure Visibility: public -->
       <element name="TCustomPairSplitter.CreateWnd">
-        <short/>
-        <descr/>
-        <errors/>
+        <short>
+          Creates the window handle for the control
+        </short>
+        <descr>
+          <p>
+            <var>CreateWnd</var> is an overridden procedure used to create the window handle for the control. CreateWnd calls CreateSides to ensure both TPairSplitterSide instances are created (and parented) in the Sides property. CreateWnd calls the inherited CreateWnd method.
+          </p>
+        </descr>
         <seealso/>
       </element>
+
       <!-- procedure Visibility: public -->
       <element name="TCustomPairSplitter.UpdatePosition">
-        <short/>
-        <descr/>
-        <errors/>
+        <short>
+          Updates the value in the Position property
+        </short>
+        <descr>
+          <var>UpdatePosition</var> is a procedure used to update the value in the Position property. UpdatePosition calls the SetPosition method in the WidgetSetClass to recalculate the current relative position for the Splitter in the component. UpdatePosition stores the value in the Position property.
+        </descr>
         <seealso/>
       </element>
+
       <!-- procedure Visibility: public -->
       <element name="TCustomPairSplitter.CreateSides">
-        <short/>
-        <descr/>
-        <errors/>
+        <short>
+          Creates missing controls in the Sides property
+        </short>
+        <descr>
+          <p>
+            <var>CreateSides</var> is a procedure used to create missing controls in the Sides property. CreateSides ensures that both TPairSplitterSide values used in the component have been created (and parented).
+          </p>
+          <p>
+            No actions are performed in the method when component streaming has not been completed, or when the component is freed.
+          </p>
+          <p>
+            CreateSides is called from the Create, CreateWnd, and Loaded methods.
+          </p>
+        </descr>
         <seealso/>
       </element>
+
       <!-- procedure Visibility: public -->
       <element name="TCustomPairSplitter.Loaded">
-        <short/>
-        <descr/>
-        <errors/>
+        <short>
+          Performs actions on completion of component streaming
+        </short>
+        <descr>
+          <p>
+            <var>Loaded</var> is an overridden procedure which performs actions needed when the component has been loaded using the LCL component streaming mechanism. Loaded calls the inherited Loaded method. Loaded calls the CreateSides method to ensure that both values in the Sides property have been created. Loaded  updates the value in Position if the handle for the control has been allocated.
+           </p>
+        </descr>
         <seealso/>
       </element>
-      <!-- function Visibility: public -->
-      <element name="TCustomPairSplitter.IsSupportedByInterface">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomPairSplitter.IsSupportedByInterface.Result">
-        <short/>
-      </element>
-      <!-- function Visibility: public -->
+
       <element name="TCustomPairSplitter.ChildClassAllowed">
-        <short/>
-        <descr/>
-        <errors/>
+        <short>
+          Determines if the class is inherited from a specific ancestor
+        </short>
+        <descr>
+          <p>
+            <var>ChildClassAllowed</var> is an overridden Boolean function used to determine if the specified class is inherited from a specific ancestor class. ChildClassAllowed calls the ChildClass.InheritsFrom method. The return value is True when it is derived from the TPairSplitterSide or TSplitter classes.
+          </p>
+        </descr>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomPairSplitter.ChildClassAllowed.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
       <element name="TCustomPairSplitter.ChildClassAllowed.ChildClass">
-        <short/>
+        <short>Class to compare in the method`</short>
       </element>
+      <element name="TCustomPairSplitter.ChildClassAllowed.Result">
+        <short>True if the class has a specific ancestor</short>
+      </element>
+
+      <element name="TCustomPairSplitter.Cursor" link="#lcl.Controls.TControl">
+        <short>Cursor displayed when the control is resized</short>
+      </element>
+
       <!-- property Visibility: public -->
       <element name="TCustomPairSplitter.Sides">
-        <short/>
-        <descr/>
+        <short>
+          Provides access to the adjacent children resized using the Splitter
+        </short>
+        <descr>
+          <p>
+            <var>Sides</var> is a read-only indexed TPairSplitterSide property which provides access to the adjacent children resized using the Splitter in the component. Sides always has 2 elements in the array (in the range 0..1). If Index contains an invalid value, an exception is raised.
+          </p>
+          <p>
+            Each controls in Sides behaves like a TPanel component with a reference to the TPairSplitter that owns the control. They provide a custom Paint method and WMPaint message handling. Some of their properties have altered visibilities; for example, Align and Anchors are private, Top and Left are public.
+          </p>
+        </descr>
+        <errors>
+          <p>
+            Calls RaiseGDBException to raise an exception when Index &lt; 0 or Index &gt; 1. Raised with the message 'TCustomPairSplitter.GetSides: Index out of bounds'.
+          </p>
+        </errors>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomPairSplitter.Sides.Index">
-        <short/>
+        <short>Ordinal position the adjacent child control</short>
       </element>
+
       <!-- property Visibility: public -->
       <element name="TCustomPairSplitter.SplitterType">
-        <short/>
-        <descr/>
+        <short>
+          Specifies the orientation for the splitter in the component
+        </short>
+        <descr>
+          <p>
+            <var>SplitterType</var> is a TPairSplitterType property which specifies the orientation for the splitter in the component. The values in TPairSplitterType dictate the splitter orientation relative to the adjacent children in Sides. Writing a new value in the SplitterType property causes the value in the Cursor property to be changed to match the selected orientation. For example:
+          </p>
+          <dt>
+            <dt>pstHorizontal</dt>
+            <dd>
+              Splitter is oriented to size adjacent children horizontally. Cursor is set to <var>crHSplit</var>. (<b>Default value</b>)
+            </dd>
+            <dt>pstVertical</dt>
+            <dd>
+              Splitter is oriented to size adjacent children vertically. Cursor is set to <var>crVSplit</var>.
+            </dd>
+          </dt>
+        </descr>
         <seealso/>
       </element>
+
       <!-- property Visibility: public -->
       <element name="TCustomPairSplitter.Position">
-        <short/>
-        <descr/>
+        <short>
+          Indicates the position for the Splitter relative to its orientation
+        </short>
+        <descr>
+          <p>
+            <var>Position</var> is an Integer property that indicates the position for the splitter relative to its orientation. Reading the value in splitter causes the UpdatePosition to be called to recalculate the current position for the Splitter. Position can be set at design-time, or changed at run-time by dragging the grab bar for the splitter. The value in Position affects the sizing of the adjacent child controls in Sides.
+          </p>
+          <p>
+            When SplitterType contains <var>pstHorizontal</var>, the value in Position is used as the Width for the child control in Sides[0]. The remaining Width in the component (less the 5 pixels used for the Splitter) is set as the Width for the child control in Sides[1].
+          </p>
+          <p>
+            When SplitterType contains <var>pstVertical</var>, the value in Position is used as the Height for the child control in Sides[0]. The remaining Height in the component (less the 5 pixels used for the Splitter) is set as the Height for the child control in Sides[1].
+          </p>
+        </descr>
         <seealso/>
       </element>
+
       <!-- object Visibility: default -->
-      <element name="TPairSplitter">
-        <short/>
-        <descr/>
-        <errors/>
+      <element name="TPairSplitter" link="TCustomPairSplitter">
+        <short>
+          Implements the TPairSplitter component
+        </short>
+        <descr>
+          Implements the TPairSplitter component. TPairSplitter is a component with two TPairSplitterSide children. Both child components can contain other components. The children are separated by a splitter which can be dragged by the user to resize the adjacent children.
+        </descr>
         <seealso/>
       </element>
+
       <!-- property Visibility: published -->
-      <element name="TPairSplitter.Align">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TPairSplitter.Anchors">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TPairSplitter.BorderSpacing">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TPairSplitter.Enabled">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TPairSplitter.OnMouseDown">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TPairSplitter.OnMouseMove">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TPairSplitter.OnMouseUp">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TPairSplitter.OnResize">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TPairSplitter.OnChangeBounds">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TPairSplitter.ShowHint">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TPairSplitter.SplitterType">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TPairSplitter.ParentShowHint">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TPairSplitter.PopupMenu">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TPairSplitter.Position">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TPairSplitter.Visible">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="TPairSplitter.Align" link="#lcl.Controls.TControl.Align"/>
+      <element name="TPairSplitter.Anchors" link="#lcl.Controls.TControl.Anchors"/>
+      <element name="TPairSplitter.BorderSpacing" link="#lcl.Controls.TControl.BorderSpacing"/>
+      <element name="TPairSplitter.Constraints" link="#lcl.Controls.TControl.Contraints"/>
+      <element name="TPairSplitter.Color" link="#lcl.Controls.TControl.Color"/>
+      <element name="TPairSplitter.Cursor" link="#lcl.Controls.TControl.Cursor"/>
+      <element name="TPairSplitter.Enabled" link="#lcl.Controls.TControl.Enabled"/>
+      <element name="TPairSplitter.OnMouseDown" link="#lcl.Controls.TControl.OnMouseDown"/>
+      <element name="TPairSplitter.OnMouseEnter" link="#lcl.Controls.TControl.OnMouseEnter"/>
+      <element name="TPairSplitter.OnMouseLeave" link="#lcl.Controls.TControl.OnMouseLeave"/>
+      <element name="TPairSplitter.OnMouseMove" link="#lcl.Controls.TControl.OnMouseMove"/>
+      <element name="TPairSplitter.OnMouseUp" link="#lcl.Controls.TControl.OnMouseUp"/>
+      <element name="TPairSplitter.OnMouseWheel" link="#lcl.Controls.TControl.OnMouseWheel"/>
+      <element name="TPairSplitter.OnMouseWheelDown" link="#lcl.Controls.TControl.OnMouseWheelDown"/>
+      <element name="TPairSplitter.OnMouseWheelUp" link="#lcl.Controls.TControl.OnMouseWheelUp"/>
+      <element name="TPairSplitter.OnResize" link="#lcl.Controls.TControl.OnResize"/>
+      <element name="TPairSplitter.OnChangeBounds" link="#lcl.Controls.TControl.OnChangeBounds"/>
+      <element name="TPairSplitter.ParentShowHint" link="#lcl.Controls.TControl.ParentShowHint"/>
+      <element name="TPairSplitter.PopupMenu" link="#lcl.Controls.TControl.PopupMenu"/>
+      <element name="TPairSplitter.Position" link="TCustomPairSplitter.Position"/>
+      <element name="TPairSplitter.ShowHint" link="#lcl.Controls.TControl.ShowHint"/>
+      <element name="TPairSplitter.SplitterType" link="TCustomPairSplitter.SplitterType"/>
+      <element name="TPairSplitter.Visible" link="#lcl.Controls.TControl.Visible"/>
+
       <!-- procedure Visibility: default -->
       <element name="Register">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short></short>
       </element>
-      <element name="TPairSplitterSide.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
-      <element name="TCustomPairSplitter.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
     </module>
     <!-- PairSplitter -->
   </package>

@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions>
+  <package name="lazutils">
+    <!--
+    ====================================================================
+      html2textrender
+    ====================================================================
+    -->
+    <module name="html2textrender">
+      <short>
+        Contains an HTML-to-Text renderer
+      </short>
+      <descr>
+        <p>
+          html2textrender.pas contains an HTML-to-Text renderer. It converts HTML into plain text by stripping tags and their attributes.
+        </p>
+      </descr>
+
+      <!-- unresolved externals -->
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="LConvEncoding"/>
+
+      <element name="THTML2TextRenderer">
+        <short></short>
+        <descr>
+          <p>
+            THTML2TextRenderer is an HTML-to-Text renderer. It converts HTML into plain text by stripping tags and their attributes. Converted text includes configurable indentation for HTML tags that affect the indentation level. The following HTML tags include special processing in the renderer:
+          </p>
+          <ul>
+            <li>HTML</li>
+            <li>BODY</li>
+            <li>P</li>
+            <li>BR</li>
+            <li>HR</li>
+            <li>OL</li>
+            <li>UL</li>
+            <li>LI</li>
+            <li>DIV CLASS="TITLE" (forces title mark output)</li>
+          </ul>
+          <p>
+            The following Named character entities are converted to their plain text equivalent:
+          </p>
+          <dl>
+            <dt>&amp;nbsp;</dt>
+            <dd>' '</dd>
+            <dt>&amp;lt;</dt>
+            <dd>'&lt;'</dd>
+            <dt>&amp;gt;</dt>
+            <dd>'&gt;;'</dd>
+            <dt>&amp;amp;</dt>
+            <dd>'&amp;'</dd>
+          </dl>
+          <p>
+            Other named character entities or numeric character entities are included verbatim in the plain text output.
+          </p>
+          <p>
+            A UTF-8 Byte Order Mark in the HTML is ignored.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+
+      <!-- Visibility: private -->
+      <element name="THTML2TextRenderer.fHTML">
+        <short></short>
+      </element>
+      <element name="THTML2TextRenderer.fOutput">
+        <short></short>
+      </element>
+      <element name="THTML2TextRenderer.fMaxLines">
+        <short></short>
+      </element>
+      <element name="THTML2TextRenderer.fLineEndMark">
+        <short>End of line marker, by default standard LineEnding</short>
+      </element>
+      <element name="THTML2TextRenderer.fTitleMartk">
+        <short>Markup used at the start/end of title text</short>
+      </element>
+      <element name="THTML2TextRenderer.fHorzLine">
+        <short>Markup used for an HR Tag</short>
+      </element>
+      <element name="THTML2TextRenderer.fLinkBegin">
+        <short>Markup used at the start of an Anchor Tag</short>
+      </element>
+      <element name="THTML2TextRenderer.fLineEnd`">
+        <short>Markup used at the end of an Anchor Tag</short>
+      </element>
+      <element name="THTML2TextRenderer.fListItemMark">
+        <short>Markup used for a list item tag</short>
+      </element>
+      <element name="THTML2TextRenderer.fMoreMark">
+        <short>Text added when there are too many lines</short>
+      </element>
+      <element name="THTML2TextRenderer.fInHeader">
+        <short></short>
+      </element>
+      <element name="THTML2TextRenderer.fInDivTitle">
+        <short></short>
+      </element>
+      <element name="THTML2TextRenderer.fPendingSpace">
+        <short></short>
+      </element>
+      <element name="THTML2TextRenderer.fPendingNewLineCnt">
+        <short></short>
+      </element>
+      <element name="THTML2TextRenderer.fIndentStep">
+        <short>Increment (in spaces) for each nested HTML level</short>
+      </element>
+      <element name="THTML2TextRenderer.fIndent">
+        <short></short>
+      </element>
+      <element name="THTML2TextRenderer.fLineCnt">
+        <short></short>
+      </element>
+      <element name="THTML2TextRenderer.fHtmlLen">
+        <short></short>
+      </element>
+      <element name="THTML2TextRenderer.p">
+        <short></short>
+      </element>
+
+      <element name="THTML2TextRenderer.AddNewLine">
+        <short>Sets a pending line break to be added later</short>
+      </element>
+      <element name="THTML2TextRenderer.AddOneNewLine">
+        <short>Sets a maximum of one pending line break to be added later</short>
+      </element>
+      <element name="THTML2TextRenderer.AddOutput">
+        <short>Appends text to the plaint-text output for the renderer</short>
+      </element>
+      <element name="THTML2TextRenderer.AddOutput.aText">
+        <short></short>
+      </element>
+      <element name="THTML2TextRenderer.AddOutput.Result">
+        <short></short>
+      </element>
+      <element name="THTML2TextRenderer.HtmlTag">
+        <short>Handles an HTML tag and its attributes values</short>
+      </element>
+      <element name="THTML2TextRenderer.HtmlTag.Result">
+        <short></short>
+      </element>
+      <element name="THTML2TextRenderer.HtmlEntity">
+        <short>Handles an HTML character entity</short>
+      </element>
+      <element name="THTML2TextRenderer.HtmlEntity.Result">
+        <short></short>
+      </element>
+      <element name="THTML2TextRenderer.Reset">
+        <short>Rest the state and output for the renderer</short>
+      </element>
+
+      <!-- Visibility: public -->
+      <element name="THTML2TextRenderer.Create">
+        <short>Creates the class instance</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="THTML2TextRenderer.Create.aHTML">
+        <short></short>
+      </element>
+      <element name="THTML2TextRenderer.Create.Stream">
+        <short></short>
+      </element>
+
+      <element name="THTML2TextRenderer.Destroy">
+        <short>Frees the class instance</short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THTML2TextRenderer.Render">
+        <short>
+          Parses the HTML and renders to plain text
+        </short>
+        <descr>
+          <p>
+            Parses the HTML and renders to plain text. Output is limited to aMaxLines lines. Note: AddOutput, HtmlTag and HtmlEntity return False if MaxLines was exceeded.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="THTML2TextRenderer.Render.aMaxLines">
+        <short></short>
+      </element>
+      <element name="THTML2TextRenderer.Render.Result">
+        <short></short>
+      </element>
+
+      <element name="THTML2TextRenderer.LineEndMark">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THTML2TextRenderer.TitleMark">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THTML2TextRenderer.HorzLineMark">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THTML2TextRenderer.LinkBeginMark">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THTML2TextRenderer.LinkEndMark">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THTML2TextRenderer.ListItemMark">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THTML2TextRenderer.MoreMark">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="THTML2TextRenderer.IndentStep">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+    </module>
+    <!-- html2textrender -->
+  </package>
+</fpdoc-descriptions>

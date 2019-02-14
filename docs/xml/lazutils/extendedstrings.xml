@@ -2,70 +2,78 @@
 <fpdoc-descriptions>
   <package name="lcl">
     <!--
-  ====================================================================
-    ExtendedStrings
-  ====================================================================
--->
+    ====================================================================
+      ExtendedStrings
+    ====================================================================
+    -->
     <module name="ExtendedStrings">
-      <short>Defines <var>TExtendedStrings</var> which is a normal <var>TStringList</var>, except that the Objects can hold any type of records</short>
-      <descr/>
+      <short>
+        Defines <var>TExtendedStrings</var> which is a normal <var>TStringList</var>, except that the Objects property can hold any type of records
+      </short>
+      <descr></descr>
+
       <!-- unresolved type reference Visibility: default -->
-      <element name="Classes">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="Classes"/>
       <!-- unresolved type reference Visibility: default -->
-      <element name="SysUtils">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="SysUtils"/>
+
       <!-- enumeration type Visibility: default -->
       <element name="TExtStringsOption">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>
+          Defines actions needed when creating or freeing records in TExtendedStringList
+        </short>
+        <descr>
+          <p>
+            <var>TExtStringsOption</var> is an enumeration type with values that define actions needed when creating or freeing records in TExtendedStringList. Values from TExtStringsOption are stored in the <var>TExtStringsOptions</var> type.
+          </p>
+        </descr>
+        <seealso></seealso>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TExtStringsOption.esoClearRecordsOnCreate">
-        <short/>
+        <short>Memory allocated to a new record is cleared (filled with #0)</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TExtStringsOption.esoFreeObjectsOnDelete">
-        <short/>
+        <short>Objects call their free method before they are deleted</short>
       </element>
+
       <!-- set type Visibility: default -->
       <element name="TExtStringsOptions">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>
+          Stores TExtStringsOption values
+        </short>
+        <descr>
+          <var>TExtStringsOptions</var> is a set type used to store <var>TExtStringsOption</var> values. TExtStringsOptions is the type used for the <var>TExtendedStringList.Options</var> property.
+        </descr>
+        <seealso></seealso>
       </element>
+
       <!-- object Visibility: default -->
-      <element name="TExtendedStringList">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+      <element name="TExtendedStringList" link="#rtl.Classes.TStringList">
+        <short>
+          Implements a string list that allows Records in its Objects property
+        </short>
+        <descr>
+          <p>
+            <var>TExtendedStringList</var> is a TStringList descendant that provides support for using Records in the class. The Records property allows access to records stored in the class. TExtendedStringList provides overridden methods to maintain values in the Objects property. New properties and methods are included to control actions needed when adding or freeing Records stored in the Objects property.
+          </p>
+        </descr>
+        <seealso></seealso>
       </element>
+
       <!-- variable Visibility: private -->
       <element name="TExtendedStringList.FOptions">
         <short/>
-        <descr/>
-        <seealso/>
       </element>
       <!-- variable Visibility: private -->
       <element name="TExtendedStringList.FRecordSize">
         <short/>
-        <descr/>
-        <seealso/>
       </element>
+
       <!-- function Visibility: private -->
       <element name="TExtendedStringList.GetRecords">
         <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
       </element>
       <!-- function result Visibility: default -->
       <element name="TExtendedStringList.GetRecords.Result">
@@ -75,23 +83,19 @@
       <element name="TExtendedStringList.GetRecords.Index">
         <short/>
       </element>
+
       <!-- procedure Visibility: private -->
       <element name="TExtendedStringList.SetOptions">
         <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
       </element>
       <!-- argument Visibility: default -->
       <element name="TExtendedStringList.SetOptions.AValue">
         <short/>
       </element>
+
       <!-- procedure Visibility: private -->
       <element name="TExtendedStringList.SetRecords">
         <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
       </element>
       <!-- argument Visibility: default -->
       <element name="TExtendedStringList.SetRecords.Index">
@@ -101,23 +105,19 @@
       <element name="TExtendedStringList.SetRecords.AValue">
         <short/>
       </element>
+
       <!-- procedure Visibility: private -->
       <element name="TExtendedStringList.SetRecordSize">
         <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
       </element>
       <!-- argument Visibility: default -->
       <element name="TExtendedStringList.SetRecordSize.AValue">
         <short/>
       </element>
+
       <!-- procedure Visibility: private -->
       <element name="TExtendedStringList.DoResizeRecord">
         <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
       </element>
       <!-- argument Visibility: default -->
       <element name="TExtendedStringList.DoResizeRecord.Index">
@@ -131,162 +131,297 @@
       <element name="TExtendedStringList.DoResizeRecord.NewSize">
         <short/>
       </element>
+
       <!-- procedure Visibility: protected -->
       <element name="TExtendedStringList.ResizeRecord">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          Changes the memory allocation size for the specified record
+        </short>
+        <descr>
+          <p>
+            <var>ResizeRecord</var> is a procedure used to change the memory allocation size for the specified record. ResizeRecord calls ReAllocMem to change the allocated memory size to the value in NewSize. ResizeRecord is called when the value in the RecordSize property is changed.
+          </p>
+        </descr>
+        <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TExtendedStringList.ResizeRecord.ARecord">
-        <short/>
+        <short>Pointer to the record</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TExtendedStringList.ResizeRecord.Index">
-        <short/>
+        <short>Ordinal position for the specified record</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TExtendedStringList.ResizeRecord.OldSize">
-        <short/>
+        <short>Previous memory allocation size</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TExtendedStringList.ResizeRecord.NewSize">
-        <short/>
+        <short>New memory allocation size</short>
       </element>
+
       <!-- function Visibility: protected -->
       <element name="TExtendedStringList.GetObject">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          Reimplements the read access specifier for Objects
+        </short>
+        <descr>
+          <p>
+            <var>GetObject</var> is an overridden TObject function which reimplements the read access specifier for the Objects property. GetObject calls the inherited method to retrieve the value at the position in Index. GetObject ensures that the return value is cast to a TObject instance when assigned, or <var>Nil</var> when unassigned.
+          </p>
+          <p>
+            GetObject and PutObject are called directly (as opposed to using the Objects property) in methods which maintain values in Records.
+          </p>
+        </descr>
+        <seealso></seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="TExtendedStringList.GetObject.Result">
-        <short/>
+        <short>TObject stored at the specified position</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TExtendedStringList.GetObject.Index">
-        <short/>
+        <short>Ordinal position for the requested value</short>
       </element>
+
       <!-- procedure Visibility: protected -->
       <element name="TExtendedStringList.PutObject">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          Reimplements the write access specifier for Objects
+        </short>
+        <descr>
+          <p>
+            <var>PutObject</var> is an overridden procedure which reimplements the write access specifier for the Objects property. PutObject uses a pointer to the value in Records stored at the position in Index. If a record has not been stored at the position, CreateRecord is called to allocate and initialize the memory for the record. The value in AnObject is stored in Records at the position in Index.
+          </p>
+          <p>
+            GetObject and PutObject are called directly (as opposed to using the Objects property) in methods which maintain values in Records.
+          </p>
+        </descr>
+        <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TExtendedStringList.PutObject.Index">
-        <short/>
+        <short>Ordinal position for value</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TExtendedStringList.PutObject.AnObject">
-        <short/>
+        <short>Object to store at the specified position</short>
       </element>
+
       <!-- constructor Visibility: public -->
       <element name="TExtendedStringList.Create">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          Constructor for the class instance
+        </short>
+        <descr>
+          <p>
+            <var>Create</var> is the constructor for the class instance. Create calls the inherited constructor, and sets the default values in the following properties:
+          </p>
+          <dl>
+            <dt>Options</dt>
+            <dd>Set to <var>[ esoClearRecordsOnCreate ]</var></dd>
+            <dt>RecordSize</dt>
+            <dd>Set to the value in the <var>InitialRecordSize</var> argument</dd>
+          </dl>
+          <p>
+            Use RecordSize to change the memory allocation size for Records in the class.
+          </p>
+        </descr>
+        <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TExtendedStringList.Create.InitialRecordSize">
-        <short/>
+        <short>Memory size allocated for records</short>
       </element>
+
       <!-- destructor Visibility: public -->
       <element name="TExtendedStringList.Destroy">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          Destructor for the class instance
+        </short>
+        <descr>
+          <p>
+            <var>Destroy</var> is the destructor for the class instance. Destroy calls FreeAllRecords to release memory allocated for entries in the Records property. Destroy calls the inherited destructor.
+          </p>
+        </descr>
+        <seealso></seealso>
       </element>
+
       <!-- procedure Visibility: public -->
       <element name="TExtendedStringList.Clear">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          Removes items stored in the string list
+        </short>
+        <descr>
+          <p>
+            <var>Clear</var> is an overridden procedure used to remove items stored in the string list. Clear calls FreeAllRecords to release memory allocated for items in the Records property. Clear calls the inherited Clear method.
+          </p>
+        </descr>
+        <seealso></seealso>
       </element>
+
       <!-- procedure Visibility: public -->
       <element name="TExtendedStringList.Delete">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+           Deletes the item at the specified position
+        </short>
+        <descr>
+          <p>
+            <var>Delete</var> is an overridden procedure used to delete the item at the specified position in the string list. Delete ensures that memory allocated in Records is freed by calling FreeRecord using the position in Index. Delete calls the inherited Delete method.
+          </p>
+        </descr>
+        <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TExtendedStringList.Delete.Index">
-        <short/>
+        <short>Ordinal position for the item</short>
       </element>
+
       <!-- procedure Visibility: public -->
       <element name="TExtendedStringList.CreateRecord">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          Allocates memory for a new record
+        </short>
+        <descr>
+          <p>
+            <var>CreateRecord</var> is a procedure used to allocate (and optionally initialize) memory for a new value in the Records property. CreateRecord calls GetMem to allocate the memory size specified in the RecordSize property. When Options includes the value <var>esoClearRecordsOnCreate</var>, the allocated memory is filled with the character value <var>#0</var>. CreateRecord calls the inherited PutObject method to store the new record.
+          </p>
+          <p>
+            CreateRecord is called when reading a value in the Records property, and when writing a value to the Objects property.
+          </p>
+        </descr>
+        <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TExtendedStringList.CreateRecord.Index">
-        <short/>
+        <short>Ordinal position for the record</short>
       </element>
+
       <!-- procedure Visibility: public -->
       <element name="TExtendedStringList.FreeRecord">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          Frees memory allocated for the specified record
+        </short>
+        <descr>
+          <p>
+            <var>FreeRecord</var> is a procedure used to free memory allocated for the record at the specified position. FreeRecord calls the inherited GetObject method to get the value stored in the Objects property. If a record has been allocated, and Options contains the value esoFreeObjectsOnDelete, the object instance in Objects is freed. FreeRecord calls FreeMem to release memory allocated for the record, and calls the inherited PutObject method to store the <var>Nil</var>'d object reference.
+          </p>
+          <p>
+            FreeRecord is called when writing a new value in the Records property, and in methods like FreeAllRecords and Delete.
+          </p>
+        </descr>
+        <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TExtendedStringList.FreeRecord.Index">
-        <short/>
+        <short>Ordinal position for the record</short>
       </element>
+
       <!-- procedure Visibility: public -->
       <element name="TExtendedStringList.FreeAllRecords">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          Frees memory allocated for Records in the class
+        </short>
+        <descr>
+          <p>
+            <var>FreeAllRecords</var> is a procedure used to free memory allocated for the Records in the class. FreeAllRecords iterates over the items in the string list, and calls the FreeRecord method to free memory allocated for each item.
+          </p>
+          <p>
+            FreeAllRecords is called in the Clear method, and in the destructor for the class.
+          </p>
+        </descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
+
       <!-- function Visibility: public -->
       <element name="TExtendedStringList.RecordAllocated">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          Determines if memory has been allocated for the specified record
+        </short>
+        <descr>
+          <p>
+            <var>RecordAllocated</var> is a Boolean function which determines if memory has been allocated for the record at the specified position. The return value is True if the item at the Index position in Objects contains a value other than <var>Nil</var>.
+          </p>
+          <p>
+            RecordAllocated is called when reading a value for the Records property.
+          </p>
+        </descr>
+        <seealso></seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="TExtendedStringList.RecordAllocated.Result">
-        <short/>
+        <short>True if memory has been allocated for the record</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TExtendedStringList.RecordAllocated.Index">
-        <short/>
+        <short>Ordinal position for the record</short>
       </element>
+
       <!-- property Visibility: public -->
       <element name="TExtendedStringList.Records">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>
+          Provides indexed access to records in the string list
+        </short>
+        <descr>
+          <p>
+            <var>Records</var> an indexed Pointer property that provides access to records stored in the string list. Index is the ordinal position in the list for the desired record.
+          </p>
+          <p>
+            Reading a value in Records causes a record to be created using CreateRecord if one has not already been allocated. The record pointer is retrieved by calling the inherited GetObject method.
+          </p>
+          <p>
+            Writing a new value in Records causes a previous record value to be freed by calling FreeRecord. The inherited PutObject method is called to store the value in AValue as a TObject reference in the Objects property.
+          </p>
+        </descr>
+        <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TExtendedStringList.Records.Index">
-        <short/>
+        <short>Ordinal position for the record</short>
       </element>
+
       <!-- property Visibility: public -->
       <element name="TExtendedStringList.RecordSize">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>
+          Memory allocation size for Records in the class
+        </short>
+        <descr>
+          <p>
+            <var>RecordSize</var> is an Integer property that specifies the memory allocation size for Records in the class. The initial value for the property is set to the argument passed in the constructor. Setting a new value for the property causes the allocated memory size for any existing Records to be changed to the new value.
+          </p>
+        </descr>
+        <seealso></seealso>
       </element>
+
       <!-- property Visibility: public -->
       <element name="TExtendedStringList.Options">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>
+          Contains record options enabled in the class
+        </short>
+        <descr>
+          <p>
+            <var>Options</var> is a TExtStringsOptions property that contains the record options enabled for the class. Options can contains values from the TExtStringsOption enumeration, including:
+          </p>
+          <dl>
+            <dt><var>esoClearRecordsOnCreate</var></dt>
+            <dd>
+              Memory allocated to a new record is cleared (filled with <var>#0</var>)
+            </dd>
+            <dt><var>esoFreeObjectsOnDelete</var></dt>
+            <dd>
+              Objects call their free method before they are deleted
+            </dd>
+          </dl>
+          <p>
+            The default value for the property is <var>[ esoClearRecordsOnCreate ]</var> as set in the constructor for the class.
+          </p>
+        </descr>
+        <seealso></seealso>
       </element>
     </module>
     <!-- ExtendedStrings -->
+
   </package>
 </fpdoc-descriptions>
