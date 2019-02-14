@@ -412,6 +412,27 @@ begin
 end;
 
 procedure TLineSeries.Draw(ADrawer: IChartDrawer);
+
+  procedure RemoveStackedNaN;
+  var
+    i, j: Integer;
+    item: PChartDataItem;
+  begin
+    if FStacked and (FStackedNaN = snDoNotDraw) then
+      for i := 0 to High(FGraphPoints) do begin
+        item := Source.Item[i + FLoBound];
+        if not IsNaN(item^.X) then
+          if IsNaN(item^.Y) then
+            FGraphPoints[i].X := NaN
+          else
+            for j := 0 to Source.YCount-2 do
+              if IsNaN(item^.YList[j]) then begin
+                FGraphPoints[i].X := NaN;
+                break;
+              end;
+      end;
+  end;
+
 var
   ext: TDoubleRect;
   i: Integer;
@@ -427,10 +448,12 @@ begin
   if not RectIntersectsRect(ext, ParentChart.CurrentExtent) then exit;
 
   PrepareGraphPoints(ext, LineType <> ltFromOrigin);
+  RemoveStackedNaN;
   DrawSingleLineInStack(ADrawer, 0);
   for i := 0 to Source.YCount - 2 do begin
     if Source.IsYErrorIndex(i+1) then Continue;
     UpdateGraphPoints(i, FStacked);
+    RemoveStackedNaN;
     DrawSingleLineInStack(ADrawer, i + 1);
   end;
 end;
