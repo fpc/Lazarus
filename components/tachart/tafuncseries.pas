@@ -178,10 +178,13 @@ type
   published
     property Degree: TSplineDegree
       read FDegree write SetDegree default DEF_SPLINE_DEGREE;
+    property MarkPositions;
+    property Marks;
     property Pen: TChartPen read FPen write SetPen;
     property Pointer;
     property Step: TFuncSeriesStep
       read FStep write SetStep default DEF_SPLINE_STEP;
+    property Styles;
     property ToolTargets default [nptPoint, nptCustom];
     property XErrorBars;
     property YErrorBars;
@@ -1035,8 +1038,8 @@ procedure TBSplineSeries.Draw(ADrawer: IChartDrawer);
 var
   p: array of TDoublePoint;
   startIndex: Integer;
-  splineStart: Integer = 0;
-  splineEnd: Integer = -2;
+  splineStart: Integer;
+  splineEnd: Integer;
 
   function SplinePoint(APos: Double): TPoint;
   var
@@ -1085,22 +1088,45 @@ var
     end;
   end;
 
+  procedure DrawSpline(AStyleIndex: Integer);
+  var
+    j: Integer;
+  begin
+    ADrawer.SetBrushParams(bsClear, clTAColor);
+    ADrawer.Pen := Pen;
+    if Styles <> nil then
+      Styles.Apply(ADrawer, AStyleIndex);
+    splineStart := 0;
+    splineEnd := -2;
+    while NextNumberSeq(FGraphPoints, splineStart, splineend) do begin
+      ADrawer.MoveTo(ParentChart.GraphToImage(FGraphPoints[splineStart]));
+      for j := splineStart to splineEnd + Degree - 1 do begin
+        startIndex := j;
+        SplineSegment(0.0, 1.0, SplinePoint(0.0), SplinePoint(1.0));
+      end;
+    end;
+  end;
+
+var
+  i: Integer;
 begin
   if IsEmpty then exit;
 
-  InternalPrepareGraphPoints;
-
   SetLength(p, Degree + 1);
-  ADrawer.SetBrushParams(bsClear, clTAColor);
-  ADrawer.Pen := Pen;
-  while NextNumberSeq(FGraphPoints, splineStart, splineEnd) do begin
-    ADrawer.MoveTo(ParentChart.GraphToImage(FGraphPoints[splineStart]));
-    for startIndex := splineStart to splineEnd + Degree - 1 do
-      SplineSegment(0.0, 1.0, SplinePoint(0.0), SplinePoint(1.0));
-  end;
+
+  InternalPrepareGraphPoints;
+  DrawSpline(0);
   DrawErrorBars(ADrawer);
-  DrawLabels(ADrawer);
-  DrawPointers(ADrawer);
+  DrawLabels(ADrawer, 0);
+  DrawPointers(ADrawer, 0);
+
+  for i := 1 to Source.YCount-1 do begin
+    UpdateGraphPoints(i-1, false);
+    DrawSpline(i);
+    DrawErrorBars(ADrawer);
+    DrawLabels(ADrawer, i);
+    DrawPointers(ADrawer, i);
+  end;
 end;
 
 procedure TBSplineSeries.GetLegendItems(AItems: TChartLegendItems);
