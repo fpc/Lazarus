@@ -221,6 +221,8 @@ type
       AIndex: Integer; AFormat: String = ''; AYIndex: Integer = 0): String;
     function IsEmpty: Boolean; override;
     function ListSource: TListChartSource;
+    property Marks: TChartMarks
+      read FMarks write SetMarks;
     property Source: TCustomChartSource
       read GetSource write SetSource stored IsSourceStored;
   public
@@ -236,7 +238,6 @@ type
     property YValues[AIndex, AYIndex: Integer]: Double read GetYValues write SetYValues;
   published
     property Active default true;
-    property Marks: TChartMarks read FMarks write SetMarks;
     property ShowInLegend;
     property Title;
     property ZPosition;
@@ -323,7 +324,8 @@ type
 
     property MarkPositionCentered: Boolean
       read FMarkPositionCentered write SetMarkPositionCentered default false;
-
+    property MarkPositions: TLinearMarkPositions
+      read FMarkPositions write SetMarkPositions default lmpOutside;
     property XErrorBars: TChartErrorBar index 0 read GetErrorBars
       write SetErrorBars stored IsErrorBarsStored;
     property YErrorBars: TChartErrorBar index 1 read GetErrorBars
@@ -345,8 +347,6 @@ type
     procedure MovePoint(var AIndex: Integer; const ANewPos: TDoublePoint); override;
     procedure MovePointEx(var AIndex: Integer; AXIndex, AYIndex: Integer;
       const ANewPos: TDoublePoint); override;
-    property MarkPositions: TLinearMarkPositions
-      read FMarkPositions write SetMarkPositions default lmpOutside;
     property ToolTargets default [nptPoint, nptYList];
     property UseReticule: Boolean
       read FUseReticule write SetUseReticule default false;

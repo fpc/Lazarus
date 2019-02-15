@@ -257,6 +257,8 @@ type
     property Active default true;
     property AxisIndexX;
     property AxisIndexY;
+    property MarkPositions;
+    property Marks;
     property Pointer;
     property ShowInLegend;
     property Source;
@@ -378,6 +380,8 @@ type
     property FitRange: TChartRange read FFitRange write SetFitRange;
     property FixedParams: String read FFixedParams write SetFixedParams
       stored IsFixedParamsStored;
+    property MarkPositions;
+    property Marks;
     property ParamCount: Integer
       read GetParamCount write SetParamCount default DEF_FIT_PARAM_COUNT;
     property Pen: TChartPen read FPen write SetPen;

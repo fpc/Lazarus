@@ -98,6 +98,7 @@ type
     property Depth;
     property MarkPositionCentered;
     property MarkPositions;
+    property Marks;
     property SeriesColor: TColor
       read GetSeriesColor write SetSeriesColor stored false default clRed;
     property Source;
@@ -128,6 +129,7 @@ type
     property FixedRadius;
     property MarkDistancePercent;
     property MarkPositions;
+    property Marks;
     property RotateLabels;
     property Source;
   end;
@@ -179,6 +181,7 @@ type
     property Depth;
     property MarkPositionCentered;
     property MarkPositions;
+    property Marks;
     property SeriesColor: TColor
       read GetSeriesColor write SetSeriesColor stored false default clWhite;
     property Source;
@@ -240,6 +243,7 @@ type
     property LineType: TLineType
       read FLineType write SetLineType default ltFromPrevious;
     property MarkPositions;
+    property Marks;
     property Pointer;
     property SeriesColor: TColor
       read GetSeriesColor write SetSeriesColor stored false default clBlack;

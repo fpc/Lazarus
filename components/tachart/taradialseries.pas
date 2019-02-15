@@ -159,6 +159,7 @@ type
     property CloseCircle: Boolean read FCloseCircle write SetCloseCircle default false;
     property Filled: Boolean read FFilled write SetFilled default false;
     property LinePen: TPen read FLinePen write SetLinePen;
+    property Marks;
     property OriginX: Double read FOriginX write SetOriginX stored IsOriginXStored;
     property OriginY: Double read FOriginY write SetOriginY stored IsOriginYStored;
     property Pointer;
