@@ -344,6 +344,7 @@ type
     function Calculate(AX: Double): Double; virtual;
     procedure Draw(ADrawer: IChartDrawer); override;
     procedure ExecFit; virtual;
+    function Extent: TDoubleRect; override;
     function EquationText: IFitEquationText;
     function FitParams: TDoubleDynArray;
     {$IF FPC_FullVersion >= 30004}
@@ -1391,7 +1392,7 @@ var
   extChg: Boolean = false;
   s: TSpline;
 begin
-  Result := inherited Extent;
+  Result := Source.BasicExtent;  // was: inherited Extent;
   if SplineType = cstHermiteMonotone then
     exit;
   if FSplines = nil then
@@ -1749,6 +1750,11 @@ begin
       FOnFitComplete(Self);
     UpdateParentChart;
   end;
+end;
+
+function TFitSeries.Extent: TDoubleRect;
+begin
+  Result := Source.BasicExtent;
 end;
 
 function TFitSeries.FitParams: TDoubleDynArray;

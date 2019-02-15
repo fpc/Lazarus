@@ -214,6 +214,7 @@ type
     procedure EndUpdate; override;
   public
     class procedure CheckFormat(const AFormat: String);
+    function BasicExtent: TDoubleRect;
     function Extent: TDoubleRect; virtual;
     function ExtentCumulative: TDoubleRect; virtual;
     function ExtentList: TDoubleRect; virtual;
@@ -775,6 +776,38 @@ begin
   // empty
 end;
 
+function TCustomChartSource.BasicExtent: TDoubleRect;
+var
+  i: Integer;
+  vhi, vlo: Double;
+begin
+  if FExtentIsValid then exit(FExtent);
+  FExtent := EmptyExtent;
+
+  if HasXErrorBars then
+    for i := 0 to Count - 1 do begin
+      GetXErrorBarLimits(i, vhi, vlo);
+      UpdateMinMax(vhi, FExtent.a.X, FExtent.b.X);
+      UpdateMinMax(vlo, FExtent.a.X, FExtent.b.X);
+    end
+  else
+    for i:=0 to Count - 1 do
+      UpdateMinMax(Item[i]^.X, FExtent.a.X, FExtent.b.X);
+
+  if HasYErrorBars then
+    for i := 0 to Count - 1 do begin
+      GetYErrorBarLimits(i, vhi, vlo);
+      UpdateMinMax(vhi, FExtent.a.Y, FExtent.b.Y);
+      UpdateMinMax(vlo, FExtent.a.Y, FExtent.b.Y);
+    end
+  else
+    for i:=0 to Count - 1 do
+      UpdateMinMax(Item[i]^.Y, FExtent.a.Y, FExtent.b.Y);
+
+  FExtentIsValid := true;
+  Result := FExtent;
+end;
+
 procedure TCustomChartSource.BeforeDraw;
 begin
   // empty
@@ -822,35 +855,8 @@ begin
 end;
 
 function TCustomChartSource.Extent: TDoubleRect;
-var
-  i: Integer;
-  vhi, vlo: Double;
 begin
-  if FExtentIsValid then exit(FExtent);
-  FExtent := EmptyExtent;
-
-  if HasXErrorBars then
-    for i := 0 to Count - 1 do begin
-      GetXErrorBarLimits(i, vhi, vlo);
-      UpdateMinMax(vhi, FExtent.a.X, FExtent.b.X);
-      UpdateMinMax(vlo, FExtent.a.X, FExtent.b.X);
-    end
-  else
-    for i:=0 to Count - 1 do
-      UpdateMinMax(Item[i]^.X, FExtent.a.X, FExtent.b.X);
-
-  if HasYErrorBars then
-    for i := 0 to Count - 1 do begin
-      GetYErrorBarLimits(i, vhi, vlo);
-      UpdateMinMax(vhi, FExtent.a.Y, FExtent.b.Y);
-      UpdateMinMax(vlo, FExtent.a.Y, FExtent.b.Y);
-    end
-  else
-    for i:=0 to Count - 1 do
-      UpdateMinMax(Item[i]^.Y, FExtent.a.Y, FExtent.b.Y);
-
-  FExtentIsValid := true;
-  Result := FExtent;
+  Result := BasicExtent;
 end;
 
 { Calculates the extent of multiple y values stacked onto each other. }
