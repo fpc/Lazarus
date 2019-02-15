@@ -393,6 +393,10 @@ msgstr "Скобка справа"
 msgid "Right triangle"
 msgstr "Треугольник с вершиной справа"
 
+#: tachartstrconsts.rssourcecounterror
+msgid "%0:s requires a chart source with at least %1:d %2:s value(s)"
+msgstr ""
+
 #: tachartstrconsts.rsstarsymbol
 msgid "Star (lines)"
 msgstr "Звезда (из линий)"

@@ -2,6 +2,7 @@
 ..\tachartaxisutils.pas
 ..\tachartutils.pas
 ..\tacustomseries.pas
+..\tacustomsource.pas
 ..\tadbsource.pas
 ..\tadrawutils.pas
 ..\tageometry.pas

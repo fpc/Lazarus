@@ -68,6 +68,9 @@ resourcestring
   rsUserDefinedTool = 'User-defined';
   rsDistanceMeasurement = 'Distance measurement';
 
+  // Chart sources
+  rsSourceCountError = '%0:s requires a chart source with at least %1:d %2:s value(s)';
+
   // Transformations
   tasAxisTransformsEditorTitle = 'Edit axis transformations';
   rsAutoScale = 'Auto scale';
@@ -139,6 +142,7 @@ resourcestring
   rsFitResidualStandardError = 'Residual standard error';
   rsFitVarianceRatio = 'Variance ratio F';
   rsFitPValue = 'p value';
+
 
 implementation
 

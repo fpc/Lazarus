@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions><package name="TAChartLazarusPkg"><module name="TACustomSource"><element name="EXCountError"><short>Exception raised when a chart source provides less x values than required by a series.</short>
+      </element><element name="EYCountError"><short>Exception raised when a chart source provides less y values than required by a series.</short>
+      </element><element name="EEditableSourceRequired"><short>Exception raised when the chart source assigned to a series is required to be editable, but the current chart source is not.</short>
+      </element>
+    </module>
+  </package>
+</fpdoc-descriptions>

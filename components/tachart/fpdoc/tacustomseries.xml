@@ -32,8 +32,7 @@
         </errors>
       </element>
       <element name="TChartSeries.ListSource">
-        <errors>
-          <link id="TASources.EEditableSourceRequired">EEditableSourceRequired</link>
+        <errors><link id="TASources.EEditableSourceRequired">EEditableSourceRequired</link>
         </errors>
         <short>Verify that the data source is editable and return it.</short>
       </element>
@@ -179,6 +178,17 @@ vertical axis of the series is subject to an axis transformation.</p>
 series at the position of the data points. This symbol is also displayed in the
 <link id="TALegend.TChartLegend">legend</link> to identify the series.
 </descr>
+      </element>
+    <element name="TChartSeries.GetXYCountNeeded"><short>Returns the minimum count of x and y values which a ChartSource must provide for this series class.</short>
+      </element><element name="TChartSeries.CheckSource"><short>Checks whether the specified chart source fulfills the minimum requirements of this series class</short><errors><ul><li><link id="EXCountError"><var>EXCountError</var>
+              </link> when the ChartSource provides less x values
+per data points than specified by <link id="TChartSeriesGetXYCountNeeded"><var>GetXYCountNeeded</var>
+              </link>.</li><li><link id="EYCountError"><var>EYCountError</var>
+              </link> when the ChartSource provides less y values
+per data points than specified by <link id="TChartSeriesGetXYCountNeeded"><var>GetXYCountNeeded</var>
+              </link>.</li>
+          </ul>
+        </errors>
       </element>
     </module>
   </package>

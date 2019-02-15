@@ -5181,6 +5181,7 @@ components/tachart/fpdoc/tachartaxis.xml svneol=native#text/plain
 components/tachart/fpdoc/tachartaxisutils.xml svneol=native#text/xml
 components/tachart/fpdoc/tachartutils.xml svneol=native#text/plain
 components/tachart/fpdoc/tacustomseries.xml svneol=native#text/plain
+components/tachart/fpdoc/tacustomsource.xml svneol=native#text/xml
 components/tachart/fpdoc/tadbsource.xml svneol=native#text/plain
 components/tachart/fpdoc/tadrawutils.xml svneol=native#text/xml
 components/tachart/fpdoc/tageometry.xml svneol=native#text/xml

@@ -54,6 +54,7 @@ type
     function GetBubbleRect(AItem: PChartDataItem; out ARect: TRect): Boolean;
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
+    class procedure GetXYCountNeeded(out AXCount, AYCount: Integer); override;
     function ToolTargetDistance(const AParams: TNearestPointParams;
       AGraphPt: TDoublePoint; APointIdx, AXIdx, AYIdx: Integer): Integer; override;
   public
@@ -104,6 +105,7 @@ type
   protected
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
+    class procedure GetXYCountNeeded(out AXCount, AYCount: Integer); override;
     function ToolTargetDistance(const AParams: TNearestPointParams;
       AGraphPt: TDoublePoint; APointIdx, AXIdx, AYIdx: Integer): Integer; override;
   public
@@ -171,6 +173,7 @@ type
   protected
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
+    class procedure GetXYCountNeeded(out AXCount, AYCount: Integer); override;
     function ToolTargetDistance(const AParams: TNearestPointParams;
       AGraphPt: TDoublePoint; APointIdx, AXIdx, AYIdx: Integer): Integer; override;
   public
@@ -224,6 +227,7 @@ type
     function GetColor(AIndex: Integer): TColor; inline;
     function GetVectorPoints(AIndex: Integer;
       out AStartPt, AEndPt: TDoublePoint): Boolean; inline;
+    class procedure GetXYCountNeeded(out AXCount, AYCount: Integer); override;
   public
     procedure Assign(ASource: TPersistent); override;
     constructor Create(AOwner: TComponent); override;
@@ -667,6 +671,12 @@ begin
   Result := FBubbleBrush.Color;
 end;
 
+class procedure TBubbleSeries.GetXYCountNeeded(out AXCount, AYCount: Integer);
+begin
+  AXCount := 1;
+  AYCount := 2;
+end;
+
 procedure TBubbleSeries.MovePointEx(var AIndex: Integer;
   AXIndex, AYIndex: Integer; const ANewPos: TDoublePoint);
 var
@@ -1025,6 +1035,12 @@ end;
 function TBoxAndWhiskerSeries.GetSeriesColor: TColor;
 begin
   Result := BoxBrush.Color;
+end;
+
+class procedure TBoxAndWhiskerSeries.GetXYCountNeeded(out AXCount, AYCount: Integer);
+begin
+  AXCount := 1;
+  AYCount := 5;
 end;
 
 procedure TBoxAndWhiskerSeries.SetBoxBrush(AValue: TBrush);
@@ -1420,6 +1436,12 @@ begin
   Result := LinePen.Color;
 end;
 
+class procedure TOpenHighLowCloseSeries.GetXYCountNeeded(out AXCount, AYCount: Integer);
+begin
+  AXCount := 1;
+  AYCount := 4;
+end;
+
 procedure TOpenHighLowCloseSeries.SetCandlestickLinePen(AValue: TPen);
 begin
   if FCandleStickLinePen = AValue then exit;
@@ -1791,6 +1813,12 @@ begin
       Result := true;
     end;
   end;
+end;
+
+class procedure TFieldSeries.GetXYCountNeeded(out AXCount, AYCount: Integer);
+begin
+  AXCount := 2;
+  AYCount := 2;
 end;
 
 procedure TFieldSeries.MovePointEx(var AIndex: Integer;

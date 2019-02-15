@@ -396,6 +396,10 @@ msgstr ""
 msgid "Right triangle"
 msgstr ""
 
+#: tachartstrconsts.rssourcecounterror
+msgid "%0:s requires a chart source with at least %1:d %2:s value(s)"
+msgstr ""
+
 #: tachartstrconsts.rsstarsymbol
 msgid "Star (lines)"
 msgstr ""

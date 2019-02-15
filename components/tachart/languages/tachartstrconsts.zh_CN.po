@@ -394,6 +394,10 @@ msgstr "右括号"
 msgid "Right triangle"
 msgstr "直角三角形"
 
+#: tachartstrconsts.rssourcecounterror
+msgid "%0:s requires a chart source with at least %1:d %2:s value(s)"
+msgstr ""
+
 #: tachartstrconsts.rsstarsymbol
 msgid "Star (lines)"
 msgstr "星(线)"

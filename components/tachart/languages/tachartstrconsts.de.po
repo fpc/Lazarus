@@ -10,7 +10,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: de\n"
-"X-Generator: Poedit 2.1.1\n"
+"X-Generator: Poedit 2.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: tachartstrconsts.descolor
@@ -184,55 +184,55 @@ msgstr "Vektorfeld-Diagramm"
 
 #: tachartstrconsts.rsfitadjcoefficientofdetermination
 msgid "Adj. coefficient of determination"
-msgstr ""
+msgstr "Angepasstes Bestimmtheitsmaß"
 
 #: tachartstrconsts.rsfitchisquared
 msgid "Chi-squared"
-msgstr ""
+msgstr "Chi-Quadrat"
 
 #: tachartstrconsts.rsfitcoefficientofdetermination
 msgid "Coefficient of determination (R2)"
-msgstr ""
+msgstr "Bestimmtheitsmaß (R2)"
 
 #: tachartstrconsts.rsfitdegreesoffreedom
 msgid "Degrees of freedom"
-msgstr ""
+msgstr "Freiheitsgrade"
 
 #: tachartstrconsts.rsfiterrorsumofsquares
 msgid "Error sum of squares (SSE)"
-msgstr ""
+msgstr "Quadratsumme der Fehler (SSE)"
 
 #: tachartstrconsts.rsfitnumfitparams
 msgid "Number of fit parameters"
-msgstr ""
+msgstr "Zahl der Fitparameter"
 
 #: tachartstrconsts.rsfitnumobservations
 msgid "Number of observations"
-msgstr ""
+msgstr "Zahl der Beobachtungen"
 
 #: tachartstrconsts.rsfitpvalue
 msgid "p value"
-msgstr ""
+msgstr "p-Wert"
 
 #: tachartstrconsts.rsfitreducedchisquared
 msgid "Reduced Chi-squared"
-msgstr ""
+msgstr "Reduziertes Chi-Quadrat"
 
 #: tachartstrconsts.rsfitregressionsumofsquares
 msgid "Regression sum of squares (SSR)"
-msgstr ""
+msgstr "Quadratsumme der Regression (SSR)"
 
 #: tachartstrconsts.rsfitresidualstandarderror
 msgid "Residual standard error"
-msgstr ""
+msgstr "Quadratsumme der Residuen"
 
 #: tachartstrconsts.rsfittotalsumofsquares
 msgid "Total sum of squares (SST)"
-msgstr ""
+msgstr "Gesamte Quadratsumme (SST)"
 
 #: tachartstrconsts.rsfitvarianceratio
 msgid "Variance ratio F"
-msgstr ""
+msgstr "Varianzverhältnis"
 
 #: tachartstrconsts.rsfullstarsymbol
 msgid "Star (full)"
@@ -395,6 +395,10 @@ msgstr "Klammer rechts"
 msgid "Right triangle"
 msgstr "Dreieck nach rechs"
 
+#: tachartstrconsts.rssourcecounterror
+msgid "%0:s requires a chart source with at least %1:d %2:s value(s)"
+msgstr "%0:s benötigt eine Datenquelle mit mindestens %1:d %2:s Wert(en)"
+
 #: tachartstrconsts.rsstarsymbol
 msgid "Star (lines)"
 msgstr "Stern (Linien)"
@@ -452,4 +456,3 @@ msgstr "Fehler beim Umbenennen von Komponenten: %s"
 #: tachartstrconsts.tastoolseditortitle
 msgid "Edit tools"
 msgstr "Werkzeuge bearbeiten"
-

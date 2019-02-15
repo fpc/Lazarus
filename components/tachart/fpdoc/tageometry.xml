@@ -69,21 +69,18 @@ rectangle even when their corners collide.
       <element name="MeasureRotatedRect"/>
       <element name="NormalizeRect">
         <short>Ensures that the corner coordinates of the given rectangle are in the correct order</short>
-        <descr>
-          <ul>
-            <li>for <b>integer </b>coordinates: <var>Left &lt;= Right</var> and <var>Top &lt;= Bottom</var>
-            </li>
-            <li>for <b>floating point</b> coordinates:<var>a.X &lt;= b.X</var> and <var>a.Y &lt;= b.Y</var>
+        <descr><ul><li>for <b>integer </b>coordinates: <var>Left &lt;= Right</var> and <var>Top &lt;= Bottom</var>
+            </li><li>for <b>floating point</b> coordinates:<var>a.X &lt;= b.X</var> and <var>a.Y &lt;= b.Y</var>
             </li>
           </ul>
         </descr>
       </element>
     <element name="PointDist">
-	  <short>Returns a parameter characterizing the distance between the points <var>A</var> and <var>B</var></short>
-	  <descr><p>The "distance" is calculated as the square of the sum of the coordinate differences:</p>
-<p><var>Result := sqr(A.X - B.X) + sqr(A.Y - B.Y)</var></p>
-<p>The standard Euclidian distance would be obtained by calculating the square root of the result.</p>
-      </descr>
+&#x9;  <short>Returns a parameter characterizing the distance between the points <var>A</var> and <var>B</var>
+        </short>
+&#x9;  <descr><p>The "distance" is calculated as the square of the sum of the coordinate differences:</p><p><var>Result := sqr(A.X - B.X) + sqr(A.Y - B.Y)</var>
+          </p><p>The standard Euclidian distance would be obtained by calculating the square root of the result.</p>
+        </descr>
       </element><element name="PointDistX"><short>Returns the difference of the X coordinates of the two points <var>A</var> and <var>B</var>
         </short>
       </element><element name="PointDistY"><short>Returns the difference of the Y coordinates of the two points <var>A</var> and <var>B</var>

@@ -152,6 +152,7 @@ type
     procedure AfterAdd; override;
     procedure AfterDraw; override;
     procedure BeforeDraw; override;
+    procedure CheckSource(ASource: TCustomChartSource);
     procedure GetBounds(var ABounds: TDoubleRect); override;
     function GetGraphPoint(AIndex: Integer): TDoublePoint; overload;
     function GetGraphPoint(AIndex, AXIndex, AYIndex: Integer): TDoublePoint; overload;
@@ -164,6 +165,7 @@ type
     procedure SourceChanged(ASender: TObject); virtual;
     procedure VisitSources(
       AVisitor: TChartOnSourceVisitor; AAxis: TChartAxis; var AData); override;
+    class procedure GetXYCountNeeded(out AXCount, AYCount: Integer); virtual;
   strict protected
     function LegendTextPoint(AIndex: Integer): String; inline;
   protected
@@ -360,7 +362,7 @@ implementation
 
 uses
   Math, PropEdits, StrUtils, LResources, Types,
-  TAGeometry, TAMath;
+  TAChartStrConsts, TAGeometry, TAMath;
 
 function CreateLazIntfImage(
   out ARawImage: TRawImage; const ASize: TPoint): TLazIntfImage;
@@ -781,6 +783,19 @@ begin
   ListSource.BeginUpdate;
 end;
 
+procedure TChartSeries.CheckSource(ASource: TCustomChartSource);
+var
+  nx, ny: Integer;
+begin
+  if ASource = nil then
+    exit;
+  GetXYCountNeeded(nx, ny);
+  if ASource.XCount < nx then
+    raise EXCountError.CreateFmt(rsSourceCountError, [ClassName, nx, 'x'])
+  else if ASource.YCount < ny then
+    raise EYCountError.CreateFmt(rsSourceCountError, [ClassName, ny, 'y']);
+end;
+
 procedure TChartSeries.Clear;
 begin
   ListSource.Clear;
@@ -945,6 +960,12 @@ begin
     Result := 0;
 end;
 
+class procedure TChartSeries.GetXYCountNeeded(out AXCount, AYCount: Integer);
+begin
+  AXCount := 1;
+  AYCount := 1;
+end;
+
 function TChartSeries.GetXMin: Double;
 begin
   Result := Extent.a.X;
@@ -1051,6 +1072,7 @@ begin
   if FSource = AValue then exit;
   if FListener.IsListening then
     Source.Broadcaster.Unsubscribe(FListener);
+  CheckSource(AValue);
   FSource := AValue;
   Source.Broadcaster.Subscribe(FListener);
   SourceChanged(Self);
