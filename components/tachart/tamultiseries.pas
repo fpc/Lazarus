@@ -251,6 +251,8 @@ type
     property Arrow: TChartArrow read FArrow write SetArrow;
     property AxisIndexX;
     property AxisIndexY;
+    property MarkPositions;
+    property Marks;
     property Pen: TPen read FPen write SetPen;
     property Source;
     property ToolTargets default [nptPoint, nptXList, nptYList, nptCustom];
