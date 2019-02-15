@@ -333,7 +333,7 @@ type
   public
 //    class function CreateProperties: TDebuggerProperties; override; // Creates debuggerproperties
     class function Caption: String; override;
-//    class function ExePaths: String; override;
+    class function ExePaths: String; override;
 
     constructor Create(const AExternalDebugger: String); override;
     destructor Destroy; override;
@@ -2822,6 +2822,15 @@ end;
 class function TLldbDebugger.Caption: String;
 begin
   Result := 'LLDB Debugger (Alpha)';
+end;
+
+class function TLldbDebugger.ExePaths: String;
+begin
+  {$IFdef MSWindows}
+  Result := '';
+  {$ELSE}
+  Result := '/usr/bin/lldb';
+  {$ENDIF}
 end;
 
 constructor TLldbDebugger.Create(const AExternalDebugger: String);
