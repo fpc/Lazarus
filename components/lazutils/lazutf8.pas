@@ -122,6 +122,8 @@ procedure UTF8Insert(const source: Utf8String; var s: Utf8String; StartCharIndex
 {$ENDIF}
 procedure UTF8Insert(const source: String; var s: String; StartCharIndex: PtrInt);
 function UTF8StringReplace(const S, OldPattern, NewPattern: String;
+  Flags: TReplaceFlags; ALanguage: string=''): String; inline;
+function UTF8StringReplace(const S, OldPattern, NewPattern: String; out Count: Integer;
   Flags: TReplaceFlags; ALanguage: string=''): String;
 
 function UTF8LowerCase(const AInStr: string; ALanguage: string=''): string;
@@ -1153,6 +1155,14 @@ begin
 end;
 
 function UTF8StringReplace(const S, OldPattern, NewPattern: String;
+  Flags: TReplaceFlags; ALanguage: string): String; inline;
+var
+  DummyCount: Integer;
+begin
+  Result := Utf8StringReplace(S, OldPattern, NewPattern, DummyCount, Flags, ALanguage);
+end;
+
+function UTF8StringReplace(const S, OldPattern, NewPattern: String; out Count: Integer;
   Flags: TReplaceFlags; ALanguage: string): String;
 // same algorithm as StringReplace, but using UTF8LowerCase
 // for case insensitive search
@@ -1162,6 +1172,7 @@ var
 begin
   Srch := S;
   OldP := OldPattern;
+  Count := 0;
   if rfIgnoreCase in Flags then
   begin
     Srch := UTF8LowerCase(Srch,ALanguage);
@@ -1179,6 +1190,7 @@ begin
     end
     else
     begin
+      Inc(Count);
       Result := Result + Copy(RemS,1,P-1) + NewPattern;
       P := P + Length(OldP);
       RemS := Copy(RemS, P, Length(RemS)-P+1);
