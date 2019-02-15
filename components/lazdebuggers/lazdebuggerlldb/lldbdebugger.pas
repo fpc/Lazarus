@@ -380,7 +380,7 @@ type
     function GetDebugger: TLldbDebugger;
   protected
     procedure DoStateEnterPause; override;
-    procedure ReadFromThreadInstruction(Instr: TLldbInstructionThreadList);
+    procedure ReadFromThreadInstruction(Instr: TLldbInstructionThreadList; ACurrentId: Integer = -1);
   public
     procedure RequestMasterData; override;
     procedure ChangeCurrentThread(ANewId: Integer); override;
@@ -415,7 +415,7 @@ type
   TLldbCallStack = class(TCallStackSupplier)
   protected
     //procedure Clear;
-    //procedure DoThreadChanged;
+    procedure DoThreadChanged;
     procedure ParentRequestEntries(ACallstack: TCallStackBase);
   public
     procedure RequestAtLeastCount(ACallstack: TCallStackBase;
@@ -950,9 +950,11 @@ begin
 
     // Hit breakpoint
       Process 10992 stopped
+    // thread list => but thread ID may be wrong (maybe look for "reason", instead of leading *
      * thread #1: tid=0x1644: 0x00409e91, 0x0158FF38, 0x0158FF50 &&//FULL: \FPC\SVN\fixes_3_0\rtl\win32\..\inc\except.inc &&//SHORT: except.inc &&//LINE: 185 &&//MOD: project1.exe &&//FUNC: fpc_raiseexception(OBJ=0x038f5a90, ANADDR=0x00401601, AFRAME=0x0158ff58) <<&&//FRAME"
        thread #2: tid=0x27bc: 0x77abf8dc, 0x0557FE64, 0x0557FEC8 &&//FULL:  &&//SHORT:  &&//LINE:  &&//MOD: ntdll.dll &&//FUNC: NtDelayExecution <<&&//FRAME"
       Process 10992 stopped
+    // thread (correct) and frame
       * thread #1, stop reason = breakpoint 6.1
           frame #0: 0x0042b855 &&//FULL: \tmp\New Folder (2)\unit1.pas &&//SHORT: unit1.pas &&//LINE: 54 &&//MOD: project1.exe &&//FUNC: FORMCREATE(this=0x04c81248, SENDER=0x04c81248) <<&&//FRAME
       ... stop reason = Exception 0xc0000005 encountered at address 0x42e067
@@ -1338,7 +1340,7 @@ begin
 end;
 
 procedure TLldbThreads.ReadFromThreadInstruction(
-  Instr: TLldbInstructionThreadList);
+  Instr: TLldbInstructionThreadList; ACurrentId: Integer);
 var
   i, j, line: Integer;
   s, func, filename, name, d, fullfile: String;
@@ -1372,6 +1374,8 @@ begin
     Arguments.Free;
   end;
 
+  if ACurrentId >= 0 then
+    CurThrId := ACurrentId;
   CurrentThreads.CurrentThreadId := CurThrId;
   CurrentThreads.SetValidity(ddsValid);
 end;
@@ -1389,7 +1393,8 @@ begin
   if (RunCmd <> nil) and (RunCmd is TLldbDebuggerCommandRun) then begin
     Instr := TLldbDebuggerCommandRun(RunCmd).FThreadInstr;
     if (Instr <> nil) and Instr.IsSuccess then begin
-      ReadFromThreadInstruction(TLldbInstructionThreadList(Instr));
+      // FThreadInstr, may have the wrong thread marked. Use Debugger.FCurrentThreadId (which should not have changed since the RunCommand set it)
+      ReadFromThreadInstruction(TLldbInstructionThreadList(Instr), Debugger.FCurrentThreadId);
       exit;
     end;
   end;
@@ -1409,6 +1414,8 @@ begin
 
   if CurrentThreads <> nil
   then CurrentThreads.CurrentThreadId := ANewId;
+
+  TLldbCallStack(Debugger.CallStack).DoThreadChanged;
 end;
 
 function TLldbThreads.GetFramePointerForThread(AnId: Integer): TDBGPtr;
@@ -1509,6 +1516,25 @@ end;
 
 { TLldbCallStack }
 
+procedure TLldbCallStack.DoThreadChanged;
+var
+  tid, idx: Integer;
+  cs: TCallStackBase;
+begin
+  if (Debugger = nil) or not(Debugger.State in [dsPause, dsInternalPause]) then begin
+    exit;
+  end;
+
+  TLldbDebugger(Debugger).FCurrentStackFrame := 0;
+  tid := Debugger.Threads.CurrentThreads.CurrentThreadId;
+  cs := TCallStackBase(CurrentCallStackList.EntriesForThreads[tid]);
+  idx := cs.CurrentIndex;  // CURRENT
+  if idx < 0 then idx := 0;
+
+  TLldbDebugger(Debugger).FCurrentStackFrame := idx;
+  cs.CurrentIndex := idx;
+end;
+
 procedure TLldbCallStack.ParentRequestEntries(ACallstack: TCallStackBase);
 begin
   inherited RequestEntries(ACallstack);
@@ -1556,7 +1582,9 @@ begin
     Exit;
   end;
 
-  ACallstack.CurrentIndex := 0; // will be used, if thread is changed
+  if ACallstack.ThreadId = TLldbDebugger(Debugger).FCurrentThreadId
+  then ACallstack.CurrentIndex := TLldbDebugger(Debugger).FCurrentStackFrame
+  else ACallstack.CurrentIndex := 0; // will be used, if thread is changed
   ACallstack.SetCurrentValidity(ddsValid);
 end;
 
@@ -2395,7 +2423,7 @@ end;
 procedure TLldbDebuggerCommandEvaluate.DoExecute;
 begin
   if FWatchValue <> nil then
-    FInstr := TLldbInstructionExpression.Create(FWatchValue.Expression, Debugger.FCurrentThreadId, Debugger.FCurrentStackFrame)
+    FInstr := TLldbInstructionExpression.Create(FWatchValue.Expression, FWatchValue.ThreadId, FWatchValue.StackFrame)
   else
     // todo: only if FCallback ?
     FInstr := TLldbInstructionExpression.Create(FExpr, Debugger.FCurrentThreadId, Debugger.FCurrentStackFrame);

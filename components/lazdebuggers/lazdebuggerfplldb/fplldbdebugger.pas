@@ -653,7 +653,6 @@ begin
         else
           v := '';
         if pos(' ', v) > 1 then v := copy(v, 1, pos(' ', v)-1);
-debugln(DBG_VERBOSE, ['TFpGDBMIDbgMemReader.ReadRegister ',rname, '  ', v]);
         Result := true;
         try
           AValue := StrToQWord(v);
@@ -1248,13 +1247,6 @@ begin
 //    DebugLn(DBG_ERRORS, ['NO Threads']);
 //    exit;
 //  end;
-  if AStackFrame = 0 then begin
-    Result := CurrentLocation.Address;
-//    Result := t.TopFrame.Address;
-//    //DebugLn(['Returning addr from Threads', dbgs(Result)]);
-    exit;
-  end;
-
 
   r := Registers.CurrentRegistersList[AThreadId, AStackFrame];
   if (r <> nil) and (r.DataValidity = ddsValid) then begin
