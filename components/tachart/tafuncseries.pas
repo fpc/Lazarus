@@ -1644,8 +1644,8 @@ begin
       finally
         Free;
       end;
-    DrawLabels(ADrawer);
     DrawErrorBars(ADrawer);
+    DrawLabels(ADrawer);
     DrawPointers(ADrawer);
   finally
     de.Free;
