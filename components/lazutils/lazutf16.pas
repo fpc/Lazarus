@@ -46,7 +46,7 @@ function UnicodeToUTF16(u: cardinal): widestring;
 function IsUTF16CharValid(AChar, ANextChar: WideChar): Boolean;
 function IsUTF16StringValid(AWideStr: widestring): Boolean;
 function Utf16StringReplace(const S, OldPattern, NewPattern: WideString; Flags: TReplaceFlags): WideString; Inline;
-function Utf16StringReplace(const S, OldPattern, NewPattern: WideString; out Count: Integer; Flags: TReplaceFlags): WideString;
+function Utf16StringReplace(const S, OldPattern, NewPattern: WideString; Flags: TReplaceFlags; out Count: Integer): WideString;
 
 function UnicodeLowercase(u: cardinal): cardinal;
 {$IFDEF FPC}
@@ -261,12 +261,12 @@ function Utf16StringReplace(const S, OldPattern, NewPattern: WideString;
 var
   DummyCount: Integer;
 begin
-  Result := Utf16StringReplace(S, OldPattern, NewPattern, DummyCount, Flags);
+  Result := Utf16StringReplace(S, OldPattern, NewPattern, Flags, DummyCount);
 end;
 
 //Same as SysUtil.StringReplace but for WideStrings/UnicodeStrings, since it's not available in fpc yet
-function Utf16StringReplace(const S, OldPattern, NewPattern: WideString;  out Count: Integer;
-                            Flags: TReplaceFlags): WideString;
+function Utf16StringReplace(const S, OldPattern, NewPattern: WideString;
+                            Flags: TReplaceFlags; out Count: Integer): WideString;
 var
   Srch, OldP, RemS: WideString; // Srch and OldP can contain WideUpperCase versions of S,OldPattern
   P: Integer;

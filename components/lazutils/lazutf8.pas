@@ -123,8 +123,8 @@ procedure UTF8Insert(const source: Utf8String; var s: Utf8String; StartCharIndex
 procedure UTF8Insert(const source: String; var s: String; StartCharIndex: PtrInt);
 function UTF8StringReplace(const S, OldPattern, NewPattern: String;
   Flags: TReplaceFlags; ALanguage: string=''): String; inline;
-function UTF8StringReplace(const S, OldPattern, NewPattern: String; out Count: Integer;
-  Flags: TReplaceFlags; ALanguage: string=''): String;
+function UTF8StringReplace(const S, OldPattern, NewPattern: String;
+  Flags: TReplaceFlags; out Count: Integer; ALanguage: string=''): String;
 
 function UTF8LowerCase(const AInStr: string; ALanguage: string=''): string;
 function UTF8LowerString(const s: string): string; inline;
@@ -1159,11 +1159,11 @@ function UTF8StringReplace(const S, OldPattern, NewPattern: String;
 var
   DummyCount: Integer;
 begin
-  Result := Utf8StringReplace(S, OldPattern, NewPattern, DummyCount, Flags, ALanguage);
+  Result := Utf8StringReplace(S, OldPattern, NewPattern, Flags, DummyCount, ALanguage);
 end;
 
-function UTF8StringReplace(const S, OldPattern, NewPattern: String; out Count: Integer;
-  Flags: TReplaceFlags; ALanguage: string): String;
+function UTF8StringReplace(const S, OldPattern, NewPattern: String;
+  Flags: TReplaceFlags; out Count: Integer; ALanguage: string=''): String;
 // same algorithm as StringReplace, but using UTF8LowerCase
 // for case insensitive search
 var
