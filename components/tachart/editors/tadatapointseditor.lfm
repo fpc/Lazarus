@@ -2,48 +2,50 @@ object DataPointsEditorForm: TDataPointsEditorForm
   Left = 418
   Height = 303
   Top = 235
-  Width = 357
+  Width = 288
   ClientHeight = 303
-  ClientWidth = 357
+  ClientWidth = 288
   OnCreate = FormCreate
-  LCLVersion = '1.7'
+  Position = poScreenCenter
+  ShowHint = True
+  LCLVersion = '2.1.0.0'
   object sgData: TStringGrid
-    Left = 0
-    Height = 257
-    Top = 0
-    Width = 357
+    Left = 6
+    Height = 251
+    Top = 6
+    Width = 276
     Align = alClient
-    AutoFillColumns = True
+    BorderSpacing.Around = 6
     Columns = <    
       item
         Alignment = taRightJustify
         Title.Alignment = taCenter
         Title.Font.Style = [fsBold]
         Title.Caption = 'X'
-        Width = 80
+        Width = 63
       end    
       item
         Alignment = taRightJustify
         Title.Alignment = taCenter
         Title.Font.Style = [fsBold]
         Title.Caption = 'Y'
-        Width = 80
+        Width = 63
       end    
       item
         ButtonStyle = cbsEllipsis
         Title.Alignment = taCenter
         Title.Font.Style = [fsBold]
         Title.Caption = 'Color'
-        Width = 80
+        Width = 63
       end    
       item
         Title.Alignment = taCenter
         Title.Font.Style = [fsBold]
         Title.Caption = 'Text'
-        Width = 81
+        Width = 63
       end>
     DefaultColWidth = 32
-    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goRowMoving, goEditing, goAutoAddRows, goAlwaysShowEditor, goSmoothScroll, goFixedRowNumbering]
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goRowMoving, goEditing, goAutoAddRows, goAlwaysShowEditor, goSmoothScroll, goFixedRowNumbering, goTruncCellHints, goCellEllipsis]
     PopupMenu = pmRows
     TabOrder = 0
     OnDrawCell = sgDataDrawCell
@@ -51,17 +53,17 @@ object DataPointsEditorForm: TDataPointsEditorForm
     OnPrepareCanvas = sgDataPrepareCanvas
     ColWidths = (
       32
-      80
-      80
-      80
-      81
+      63
+      63
+      63
+      63
     )
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
     Height = 34
     Top = 263
-    Width = 345
+    Width = 276
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'

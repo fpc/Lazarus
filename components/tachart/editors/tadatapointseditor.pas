@@ -41,9 +41,10 @@ type
   strict private
     FCurrentRow: Integer;
     FDataPoints: TStrings;
+    FXCount: Integer;
     FYCount: Integer;
   public
-    procedure InitData(AYCount: Integer; ADataPoints: TStrings);
+    procedure InitData(AXCount, AYCount: Integer; ADataPoints: TStrings);
     procedure ExtractData(out AModified: Boolean);
   end;
 
@@ -52,7 +53,7 @@ procedure Register;
 implementation
 
 uses
-  LCLIntf, Math, PropEdits,
+  LCLIntf, LCLType, Math, PropEdits,
   TAChartStrConsts, TAChartUtils, TASources;
 
 {$R *.lfm}
@@ -100,26 +101,47 @@ begin
 end;
 
 procedure TDataPointsEditorForm.InitData(
-  AYCount: Integer; ADataPoints: TStrings);
+  AXCount, AYCount: Integer; ADataPoints: TStrings);
 var
   i: Integer;
+  w: Integer;
 begin
+  FXCount := AXCount;
   FYCount := AYCount;
   FDataPoints := ADataPoints;
   sgData.RowCount := Max(ADataPoints.Count + 1, 2);
+  {     wp: What is this good for?
   for i := sgData.Columns.Count - 1 downto 0 do
     with sgData.Columns[i].Title do
       if (Caption[1] = 'Y') and (Caption <> 'Y') then
         sgData.Columns.Delete(i);
-  for i := 2 to AYCount do begin
+    }
+  if AXCount > 1 then
+    sgData.Columns[0].Title.Caption := 'X1';
+  if AYCount > 1 then
+    sgData.Columns[1].Title.Caption := 'Y1';
+  for i := 2 to AYCount do
     with sgData.Columns.Add do begin
       Assign(sgData.Columns[1]);
       Title.Caption := 'Y' + IntToStr(i);
       Index := i;
     end;
-  end;
+  for i := 2 to AXCount do
+    with sgData.Columns.Add do begin
+      Assign(sgData.Columns[0]);
+      Title.Caption := 'X' + IntToStr(i);
+      Index := i - 1;
+    end;
   for i := 0 to ADataPoints.Count - 1 do
-    Split('|' + ADataPoints[i], sgData.Rows[i + 1])
+    Split('|' + ADataPoints[i], sgData.Rows[i + 1]);
+
+  // Adjust column widths
+  w := sgData.Canvas.TextWidth('$000000') + 3*varCellPadding + sgData.DefaultRowHeight;
+  for i := 0 to sgData.Columns.Count-1 do
+    sgData.Columns[i].Width := w;
+
+  Width := sgData.ColWidths[0] + sgData.Columns.Count * w + 2*sgData.Left +
+    sgData.GridLineWidth * (sgData.Columns.Count-1);
 end;
 
 procedure TDataPointsEditorForm.miDeleteRowClick(Sender: TObject);
@@ -158,7 +180,7 @@ procedure TDataPointsEditorForm.sgDataButtonClick(
   ASender: TObject; ACol, ARow: Integer);
 begin
   Unused(ASender);
-  if (ARow < 1) or (ACol <> FYCount + 2) then exit;
+  if (ARow < 1) or (ACol <> FXCount + FYCount + 1) then exit;
   cdItemColor.Color := StrToIntDef(sgData.Cells[ACol, ARow], clRed);
   if not cdItemColor.Execute then exit;
   sgData.Cells[ACol, ARow] := IntToColorHex(cdItemColor.Color);
@@ -170,12 +192,12 @@ var
   c: Integer;
 begin
   Unused(ASender, AState);
-  if (ARow < 1) or (ACol <> FYCount + 2) then exit;
+  if (ARow < 1) or (ACol <> FXCount + FYCount + 1) then exit;
   if not TryStrToInt(sgData.Cells[ACol, ARow], c) then exit;
   sgData.Canvas.Pen.Color := clBlack;
   sgData.Canvas.Brush.Color := c;
-  InflateRect(ARect, -2, -2);
-  ARect.Left := ARect.Right - 12;
+  InflateRect(ARect, -varCellPadding, -varCellPadding);
+  ARect.Left := ARect.Right - (ARect.Bottom - ARect.Top);;
   sgData.Canvas.Rectangle(ARect);
 end;
 
@@ -201,8 +223,10 @@ begin
   with TDataPointsEditorForm.Create(nil) do
     try
       InitData(
+        (GetComponent(0) as TListChartsource).XCount,
         (GetComponent(0) as TListChartSource).YCount,
-        GetObjectValue as TStrings);
+        GetObjectValue as TStrings
+      );
       if ShowModal = mrOK then begin
         ExtractData(dataModified);
         if dataModified then Modified;

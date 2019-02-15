@@ -1671,7 +1671,7 @@ var
 
   procedure CollectPoints(AStart, AEnd: Integer);
   var
-    i, j: Integer;
+    i: Integer;
     a, b: TDoublePoint;
     singlePoint: Boolean;
   begin

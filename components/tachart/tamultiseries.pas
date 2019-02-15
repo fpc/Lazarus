@@ -1620,28 +1620,28 @@ begin
   if not RectIntersectsRect(ext, ParentChart.CurrentExtent) then exit;
 
   lPen := TPen.Create;
-  lPen.Assign(FPen);
-
-  if (AxisIndexX < 0) and (AxisIndexY < 0) then begin
-    // Optimization: bypass transformations in the default case
-    for i := 0 to Count - 1 do
-      if GetVectorPoints(i, p1, p2) then begin
-        lPen.Color := GetColor(i);
-        DrawVector(ADrawer, p1, p2, lPen);
-      end;
-  end else begin
-    for i := 0 to Count - 1 do
-      if GetVectorPoints(i, p1, p2) then begin
-        p1 := AxisToGraph(p1);
-        p2 := AxisToGraph(p2);
-        //p1 := DoublePoint(AxisToGraphX(p1.X), AxisToGraphY(p1.Y));
-        //p2 := DoublePoint(AxisToGraphX(p2.X), AxisToGraphY(p2.Y));
-        lPen.Color := GetColor(i);
-        DrawVector(ADrawer, p1, p2, lPen);
-      end;
+  try
+    lPen.Assign(FPen);
+    if (AxisIndexX < 0) and (AxisIndexY < 0) then begin
+      // Optimization: bypass transformations in the default case
+      for i := 0 to Count - 1 do
+        if GetVectorPoints(i, p1, p2) then begin
+          lPen.Color := GetColor(i);
+          DrawVector(ADrawer, p1, p2, lPen);
+        end;
+    end else begin
+      for i := 0 to Count - 1 do
+        if GetVectorPoints(i, p1, p2) then begin
+          p1 := AxisToGraph(p1);
+          p2 := AxisToGraph(p2);
+          lPen.Color := GetColor(i);
+          DrawVector(ADrawer, p1, p2, lPen);
+        end;
+    end;
+    DrawLabels(ADrawer);
+  finally
+    lPen.Free;
   end;
-
-  lPen.Free;
 end;
 
 procedure TFieldSeries.DrawVector(ADrawer: IChartDrawer;

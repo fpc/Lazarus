@@ -93,7 +93,7 @@ type
 implementation
 
 uses
-  GraphType, Math, LCLIntf, LCLType, IntfGraphics,
+  GraphType, LCLIntf, LCLType, IntfGraphics,
   TAGeometry;
 
 function CanvasGetFontOrientationFunc(AFont: TFPCustomFont): Integer;

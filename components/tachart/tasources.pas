@@ -41,6 +41,7 @@ type
     procedure SetYCount(AValue: Cardinal); override;
   public
     type
+      EXListEmptyError = class(EChartError);
       EYListEmptyError = class(EChartError);
   public
     constructor Create(AOwner: TComponent); override;
@@ -48,6 +49,8 @@ type
   public
     function Add(
       AX, AY: Double; const ALabel: String = '';
+      AColor: TChartColor = clTAColor): Integer;
+    function AddXListYList(const AX, AY: array of Double; ALabel: String = '';
       AColor: TChartColor = clTAColor): Integer;
     function AddXYList(
       AX: Double; const AY: array of Double; const ALabel: String = '';
@@ -68,6 +71,7 @@ type
   published
     property DataPoints: TStrings read FDataPoints write SetDataPoints;
     property Sorted: Boolean read FSorted write SetSorted default false;
+    property XCount;
     property XErrorBarData;
     property YErrorBarData;
     property YCount;
@@ -301,6 +305,8 @@ begin
   fs.DecimalSeparator := '.';
   with FSource[Index]^ do begin
     Result := Format('%g', [X], fs);
+    for i := 0 to High(XList) do
+      Result += Format('|%g', [XList[i]], fs);
     if FSource.YCount > 0 then
       Result += Format('|%g', [Y], fs);
     for i := 0 to High(YList) do
@@ -344,10 +350,13 @@ var
 begin
   parts := Split(AString);
   try
-    if FSource.YCount + 3 < Cardinal(parts.Count) then
+    if (FSource.XCount = 1) and (FSource.YCount + 3 < Cardinal(parts.Count)) then
       FSource.YCount := parts.Count - 3;
     with ADataItem^ do begin
       X := StrToFloatOrDateTimeDef(NextPart);
+      if FSource.XCount > 1 then
+        for i := 0 to High(XList) do
+          XList[i] := StrToFloatOrDateTimeDef(NextPart);
       if FSource.YCount > 0 then begin
         Y := StrToFloatOrDateTimeDef(NextPart);
         for i := 0 to High(YList) do
@@ -365,7 +374,7 @@ procedure TListChartSourceStrings.Put(Index: Integer; const S: String);
 begin
   FSource.BeginUpdate;
   try
-  Parse(S, FSource[Index]);
+    Parse(S, FSource[Index]);
   finally
     FSource.EndUpdate;
   end;
@@ -408,6 +417,20 @@ begin
   pcd^.Text := ALabel;
   FData.Insert(APos, pcd);
   UpdateCachesAfterAdd(AX, AY);
+end;
+
+function TListChartSource.AddXListYList(const AX, AY: array of Double;
+  ALabel: String = ''; AColor: TChartColor = clTAColor): Integer;
+begin
+  if Length(AX) = 0 then
+    raise EXListEmptyError.Create('AddXListYList: XList is empty');
+  if Length(AY) = 0 then
+    raise EYListEmptyError.Create('AddXListYList: YList is empty');
+  Result := Add(AX[0], AY[0], ALabel, AColor);
+  if Length(AX) > 1 then
+    SetXList(Result, AX[1..High(AX)]);
+  if Length(AY) > 1 then
+    SetYList(Result, AY[1..High(AY)]);
 end;
 
 function TListChartSource.AddXYList(
