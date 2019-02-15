@@ -52,6 +52,7 @@ type
     procedure SetOverrideColor(AValue: TBubbleOverrideColors);
   protected
     function GetBubbleRect(AItem: PChartDataItem; out ARect: TRect): Boolean;
+    function GetLabelDataPoint(AIndex, AYIndex: Integer): TDoublePoint; override;
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
     class procedure GetXYCountNeeded(out AXCount, AYCount: Integer); override;
@@ -76,6 +77,8 @@ type
     property BubblePen: TPen read FBubblePen write SetBubblePen;
     property BubbleRadiusUnits: TBubbleRadiusUnits read FBubbleRadiusUnits
       write SetBubbleRadiusUnits default bruXY;
+    property MarkPositions;
+    property Marks;
     property OverrideColor: TBubbleOverrideColors
       read FOverrideColor write SetOverrideColor default [];
     property Source;
@@ -599,6 +602,20 @@ begin
   end;
   NormalizeRect(ARect);
   Result := true;
+end;
+
+function TBubbleSeries.GetLabelDataPoint(AIndex, AYIndex: Integer): TDoublePoint;
+var
+  item: PChartDataItem;
+  R: TRect;
+begin
+  if (AYIndex = 1) and GetBubbleRect(Source.Item[AIndex], R) then begin
+    if IsRotated then
+      Result := ParentChart.ImageToGraph(Point(R.Right, (R.Top + R.Bottom) div 2))
+    else
+      Result := parentChart.ImageToGraph(Point((R.Left + R.Right) div 2, R.Top));
+  end else
+    Result := GetGraphPoint(AIndex, 0, 0);
 end;
 
 procedure TBubbleSeries.GetLegendItems(AItems: TChartLegendItems);

@@ -1313,25 +1313,28 @@ begin
       prev := IfThen(FSupportsZeroLevel, GetZeroLevel, 0.0);
       for si := 0 to Source.YCount - 1 do begin
         g := GetLabelDataPoint(i, si);
-        if si = 0 then begin
-          y := Source[i]^.Y;
-          yIsNaN := IsNaN(y);
-          ysum := IfThen(yIsNaN, prev, y);
-        end else begin
-          y := Source[i]^.YList[si-1];
-          yIsNaN := IsNaN(y);
-          if yIsNaN then y := 0.0;
-          if Stacked then begin
-            ysum += y;
-            y := ysum;
+        if FStacked then begin
+          if si = 0 then begin
+            y := Source[i]^.Y;
+            yIsNaN := IsNaN(y);
+            ysum := IfThen(yIsNaN, prev, y);
+          end else begin
+            y := Source[i]^.YList[si-1];
+            yIsNaN := IsNaN(y);
+            if yIsNaN then y := 0.0;
+            if Stacked then begin
+              ysum += y;
+              y := ysum;
+            end;
           end;
-        end;
-        if IsRotated then
-          g.X := AxisToGraphY(y)
-          // Axis-to-graph transformation is independent of axis rotation ->
-          // Using AxisToGraph_Y_ is correct!
-        else
-          g.Y := AxisToGraphY(y);
+          if IsRotated then
+            g.X := AxisToGraphY(y)
+            // Axis-to-graph transformation is independent of axis rotation ->
+            // Using AxisToGraph_Y_ is correct!
+          else
+            g.Y := AxisToGraphY(y);
+        end else
+          yIsNaN := IsNaN(g.y);
 
         curr := TDoublePointBoolArr(g)[not IsRotated];
         if FMarkPositionCentered then begin
