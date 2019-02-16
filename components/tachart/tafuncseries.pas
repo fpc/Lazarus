@@ -19,7 +19,7 @@ interface
 uses
   Classes, Graphics, typ, Types,
   TAChartUtils, TACustomFuncSeries, TACustomSeries, TACustomSource,
-  TADrawUtils, TAFitUtils, TALegend, TATypes, TAFitLib;
+  TADrawUtils, TAFitUtils, TALegend, TATypes, TAFitLib, TAStyles;
 
 const
   DEF_FUNC_STEP = 2;
@@ -1136,20 +1136,44 @@ end;
 
 procedure TBSplineSeries.GetLegendItems(AItems: TChartLegendItems);
 var
-  cp: TChartPen;
   p: TSeriesPointer;
+  li: TLegendItemLinePointer;
+  s: TChartStyle;
+  i: Integer;
+  lBrush: TBrush;
+  lPen: TPen;
 begin
   if FPen.Visible and (FPen.Style <> psClear) then
-    cp := FPen
+    lPen := FPen
   else
-    cp := nil;
+    lPen := nil;
 
   if FPointer.Visible then
     p := FPointer
   else
     p := nil;
 
-  AItems.Add(TLegendItemLinePointer.Create(cp, p, LegendTextSingle));
+  case Legend.Multiplicity of
+    lmSingle:
+      AItems.Add(TLegendItemLinePointer.Create(lPen, p, LegendTextSingle));
+    lmPoint:
+      for i := 0 to Count - 1 do begin
+        li := TLegendItemLinePointer.Create(lPen, p, LegendTextPoint(i));
+        li.Color := GetColor(i);
+        AItems.Add(li);
+      end;
+    lmStyle:
+      if Styles <> nil then begin
+        if Assigned(p) then lBrush := p.Brush else lBrush := nil;
+        for s in Styles.Styles do
+          AItems.Add(TLegendItemLinePointer.CreateWithBrush(
+            IfThen((lPen <> nil) and s.UsePen, s.Pen, lPen) as TPen,
+            IfThen(s.UseBrush, s.Brush, lBrush) as TBrush,
+            p,
+            LegendTextStyle(s)
+          ));
+        end;
+  end;
 end;
 
 function TBSplineSeries.GetNearestPoint(
