@@ -1123,14 +1123,14 @@ begin
   DrawSpline(0);
   DrawErrorBars(ADrawer);
   DrawLabels(ADrawer, 0);
-  DrawPointers(ADrawer, 0);
+  DrawPointers(ADrawer, 0, true);
 
   for i := 1 to Source.YCount-1 do begin
     UpdateGraphPoints(i-1, false);
     DrawSpline(i);
     DrawErrorBars(ADrawer);
     DrawLabels(ADrawer, i);
-    DrawPointers(ADrawer, i);
+    DrawPointers(ADrawer, i, true);
   end;
 end;
 
@@ -1405,7 +1405,7 @@ begin
 
   DrawErrorBars(ADrawer);
   DrawLabels(ADrawer, 0);
-  DrawPointers(ADrawer, 0);
+  DrawPointers(ADrawer, 0, true);
 end;
 
 function TCubicSplineSeries.Extent: TDoubleRect;
@@ -1670,7 +1670,7 @@ begin
       end;
     DrawErrorBars(ADrawer);
     DrawLabels(ADrawer, 0);
-    DrawPointers(ADrawer, 0);
+    DrawPointers(ADrawer, 0, true);
   finally
     de.Free;
   end;

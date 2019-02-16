@@ -731,7 +731,7 @@ begin
   for j := 0 to Source.YCount-1 do begin
     PrepareGraphPoints(j);
     DrawLabels(ADrawer, j);
-    DrawPointers(ADrawer, j);
+    DrawPointers(ADrawer, j, true);
   end;
 end;
 
