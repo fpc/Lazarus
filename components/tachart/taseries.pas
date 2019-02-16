@@ -79,9 +79,9 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   public
-    function GetBarWidth(AIndex: Integer): Integer;
     procedure Draw(ADrawer: IChartDrawer); override;
     function Extent: TDoubleRect; override;
+    function GetBarWidth(AIndex: Integer): Integer;
     function GetNearestPoint(const AParams: TNearestPointParams;
       out AResults: TNearestPointResults): Boolean; override;
   published
@@ -1135,13 +1135,13 @@ var
     c: TColor;
     ic: IChartTCanvasDrawer;
   begin
-    ADrawer.Brush := BarBrush;
     ADrawer.Pen := BarPen;
-    if Styles <> nil then
-      Styles.Apply(ADrawer, stackIndex);
+    ADrawer.Brush := BarBrush;
     c := Source[pointIndex]^.Color;
     if c <> clTAColor then
       ADrawer.BrushColor := c;
+    if Styles <> nil then
+      Styles.Apply(ADrawer, stackIndex);
     sz := Size(AR);
     if (sz.cx <= 2) or (sz.cy <= 2) then begin
       // Bars are too small to distinguish the border from the interior.
