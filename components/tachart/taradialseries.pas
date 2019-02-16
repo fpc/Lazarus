@@ -17,7 +17,7 @@ interface
 
 uses
   Classes, Graphics, SysUtils, Types,
-  TAChartUtils, TACustomSeries, TADrawUtils, TALegend;
+  TAChartUtils, TACustomSeries, TADrawUtils, TALegend, TAStyles;
 
 type
 
@@ -135,12 +135,14 @@ type
     procedure SetShowPoints(AValue: Boolean);
   strict private
     FAngleCache: array of TSinCos;
-    function GraphPoint(AIndex: Integer): TDoublePoint;
+    function GraphPoint(AIndex, AYIndex: Integer): TDoublePoint;
     procedure PrepareAngleCache;
-    procedure PrepareGraphPoints;
+    procedure PrepareGraphPoints(AYIndex: Integer);
   protected
+    function GetLabelDataPoint(AIndex, AYIndex: Integer): TDoublePoint; override;
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     procedure SourceChanged(ASender: TObject); override;
+    procedure UpdateMargins(ADrawer: IChartDrawer; var AMargins: TRect); override;
   public
     procedure Assign(ASource: TPersistent); override;
     constructor Create(AOwner: TComponent); override;
@@ -159,12 +161,14 @@ type
     property CloseCircle: Boolean read FCloseCircle write SetCloseCircle default false;
     property Filled: Boolean read FFilled write SetFilled default false;
     property LinePen: TPen read FLinePen write SetLinePen;
+    property MarkPositions;
     property Marks;
     property OriginX: Double read FOriginX write SetOriginX stored IsOriginXStored;
     property OriginY: Double read FOriginY write SetOriginY stored IsOriginYStored;
     property Pointer;
     property ShowPoints: Boolean read FShowPoints write SetShowPoints;
     property Source;
+    property Styles;
     property OnCustomDrawPointer;
     property OnGetPointerStyle;
   end;
@@ -655,81 +659,134 @@ end;
 
 procedure TPolarSeries.Draw(ADrawer: IChartDrawer);
 var
-  i: Integer;
-  cnt: Integer = 0;
-  pts: TPointArray;
-  gp: TDoublePoint;
-  firstPoint, lastPoint: TPoint;
-  firstPointSet: Boolean = false;
   originPt: TPoint;
   fill: Boolean;
+  pts: Array of TPoint;
 
-  procedure DoDraw;
-  begin
-    if cnt = 0 then
-      exit;
-    if fill then begin
-      pts[cnt] := originPt;
+  procedure DrawYLevel(AYIndex: Integer);
+  var
+    i: Integer;
+    gp: TDoublepoint;
+    cnt: Integer;
+    firstPoint, lastPoint: TPoint;
+    firstPointSet: Boolean;
+
+    procedure DrawPart;
+    begin
+      if cnt = 0 then
+        exit;
+
       ADrawer.Brush := FBrush;
-      ADrawer.SetPenParams(psClear, clBlack);
-      ADrawer.Polygon(pts, 0, cnt + 1);
+      if Styles <> nil then
+        Styles.Apply(ADrawer, AYIndex);
+
+      if fill then begin
+        pts[cnt] := originPt;
+        ADrawer.SetPenParams(psClear, clBlack);
+        ADrawer.Polygon(pts, 0, cnt + 1);
+      end;
+      ADrawer.Pen := LinePen;
+      if Styles <> nil then
+        Styles.Apply(ADrawer, AYIndex);
+      ADrawer.PolyLine(pts, 0, cnt);
     end;
-    ADrawer.Pen := LinePen;
-    ADrawer.PolyLine(pts, 0, cnt);
+
+  begin
+    firstPointSet := false;
+    cnt := 0;
+    for i := 0 to Count - 1 do begin
+      gp := GraphPoint(i, AYIndex);
+      if IsNaN(gp) then begin
+        DrawPart;
+        cnt := 0;
+      end else begin
+        if IsRotated then Exchange(gp.X, gp.Y);
+        lastPoint := FChart.GraphToImage(gp);
+        pts[cnt] := lastPoint;
+        cnt += 1;
+        if not firstPointSet then begin
+          firstPoint := lastPoint;
+          firstPointSet := true;
+        end;
+      end;
+    end;
+    DrawPart;
+    if firstPointSet and CloseCircle then begin
+      SetLength(pts, 3);
+      pts[0] := lastPoint;
+      pts[1] := firstPoint;
+      cnt := 2;
+      DrawPart;
+    end;
   end;
 
+var
+  j: Integer;
 begin
-  PrepareGraphPoints;
   originPt := ParentChart.GraphToImage(DoublePoint(OriginX, OriginY));
   fill := FFilled and (FBrush.Style <> bsClear);
   SetLength(pts, Count + 1);  // +1 for origin
-  for i := 0 to Count - 1 do begin
-    gp := GraphPoint(i);
-    if IsNaN(gp) then begin
-      DoDraw;
-      cnt := 0;
-    end else begin
-      lastPoint := FChart.GraphToImage(gp);
-      pts[cnt] := lastPoint;
-      cnt += 1;
-      if not firstPointSet then begin
-        firstPoint := lastPoint;
-        firstPointSet := true;
-      end;
-    end;
+  for j := 0 to Source.YCount-1 do
+    DrawYLevel(j);
+  for j := 0 to Source.YCount-1 do begin
+    PrepareGraphPoints(j);
+    DrawLabels(ADrawer, j);
+    DrawPointers(ADrawer, j);
   end;
-  DoDraw;
-  if firstPointSet and CloseCircle then begin
-    SetLength(pts, 3);
-    pts[0] := lastPoint;
-    pts[1] := firstPoint;
-    cnt := 2;
-    DoDraw;
-  end;
-
-  DrawPointers(ADrawer);
 end;
 
 function TPolarSeries.Extent: TDoubleRect;
 var
-  i: Integer;
+  i, j: Integer;
 begin
-  FindExtentInterval(DoubleRect(0, 0, 0, 0), false);
+  //FindExtentInterval(DoubleRect(0, 0, 0, 0), false);
   PrepareAngleCache;
   Result := EmptyExtent;
   for i := 0 to Count - 1 do
-    ExpandRect(Result, GraphPoint(i));
+    for j := 0 to Source.YCount-1 do
+      ExpandRect(Result, GraphPoint(i, j));
+end;
+
+function TPolarSeries.GetLabelDataPoint(AIndex, AYIndex: Integer): TDoublePoint;
+begin
+  Result := GraphPoint(AIndex, AYIndex);
+  if IsRotated then Exchange(Result.X, Result.Y);
 end;
 
 procedure TPolarSeries.GetLegendItems(AItems: TChartLegendItems);
 var
   p: TSeriesPointer;
+  li: TLegendItemLinePointer;
+  s: TChartStyle;
+  i: Integer;
+  lBrush: TBrush;
 begin
   if ShowPoints then
     p := Pointer
   else
     p := nil;
-  AItems.Add(TLegendItemLinePointer.Create(LinePen, p, LegendTextSingle));
+
+  case Legend.Multiplicity of
+    lmSingle:
+      AItems.Add(TLegendItemLinePointer.Create(LinePen, p, LegendTextSingle));
+    lmPoint:
+      for i := 0 to Count - 1 do begin
+        li := TLegendItemLinePointer.Create(LinePen, p, LegendTextPoint(i));
+        li.Color := GetColor(i);
+        AItems.Add(li);
+      end;
+    lmStyle:
+      if Styles <> nil then begin
+        if Assigned(p) then lBrush := p.Brush else lBrush := nil;
+        for s in Styles.Styles do
+          AItems.Add(TLegendItemLinePointer.CreateWithBrush(
+            IfThen((LinePen <> nil) and s.UsePen, s.Pen, LinePen) as TPen,
+            IfThen(s.UseBrush, s.Brush, lBrush) as TBrush,
+            p,
+            LegendTextStyle(s)
+          ));
+        end;
+  end;
 end;
 
 function TPolarSeries.GetNearestPoint(const AParams: TNearestPointParams;
@@ -749,7 +806,7 @@ begin
 
   dist := AResults.FDist;
   for i := 0 to Count - 1 do begin
-    gp := GraphPoint(i);
+    gp := GraphPoint(i, 0);
     if IsNan(gp) then
       continue;
     // Find nearest point of datapoint at (x, y)
@@ -769,10 +826,13 @@ begin
   Result := AResults.FIndex >= 0;
 end;
 
-function TPolarSeries.GraphPoint(AIndex: Integer): TDoublePoint;
+function TPolarSeries.GraphPoint(AIndex, AYIndex: Integer): TDoublePoint;
+var
+  r: Double;
 begin
-  with Source[AIndex]^, FAngleCache[AIndex] do
-    Result := DoublePoint(Y * FCos + OriginX, Y * FSin + OriginY);
+  r := Source.Item[AIndex]^.GetY(AYIndex);
+  with FAngleCache[AIndex] do
+    Result := DoublePoint(r * FCos + OriginX, r * FSin + OriginY);
 end;
 
 function TPolarSeries.IsOriginXStored: Boolean;
@@ -824,13 +884,15 @@ begin
   end;
 end;
 
-procedure TPolarSeries.PrepareGraphPoints;
+procedure TPolarSeries.PrepareGraphPoints(AYIndex: Integer);
 var
   i: Integer;
 begin
   SetLength(FGraphPoints, Count);
-  for i := 0 to Count - 1 do
-    FGraphPoints[i] := GraphPoint(i);
+  for i := 0 to Count - 1 do begin
+    FGraphPoints[i] := GraphPoint(i, AYIndex);
+    if IsRotated then Exchange(FGraphPoints[i].X, FGraphPoints[i].Y);
+  end;
 end;
 
 procedure TPolarSeries.SetBrush(AValue: TBrush);
@@ -887,6 +949,39 @@ procedure TPolarSeries.SourceChanged(ASender: TObject);
 begin
   FAngleCache := nil;
   inherited;
+end;
+
+procedure TPolarSeries.UpdateMargins(ADrawer: IChartDrawer; var AMargins: TRect);
+var
+  i, dist, j: Integer;
+  labelText: String;
+  dir: TLabelDirection;
+  m: array [TLabelDirection] of Integer absolute AMargins;
+  gp: TDoublePoint;
+  scMarksDistance: Integer;
+  center: Double;
+  ysum: Double;
+begin
+  if not Marks.IsMarkLabelsVisible or not Marks.AutoMargins or (Count = 0) then
+    exit;
+
+  center := AxisToGraphY(OriginY);
+  scMarksDistance := ADrawer.Scale(Marks.Distance);
+  for i := 0 to Source.Count-1 do begin
+    for j := 0 to Source.YCount-1 do begin
+      gp := GraphPoint(i, j);
+      if IsRotated then Exchange(gp.X, gp.Y);
+      if not ParentChart.IsPointinViewPort(gp) then break;
+      labelText := FormattedMark(i, '', j);
+      if labelText = '' then break;
+      dir := GetLabelDirection(TDoublePointBoolArr(gp)[not IsRotated], center);
+      with Marks.MeasureLabel(ADrawer, labelText) do
+        dist := IfThen(dir in [ldLeft, ldRight], cx, cy);
+      if Marks.DistanceToCenter then
+        dist := dist div 2;
+      m[dir] := Max(m[dir], dist + scMarksDistance);
+    end;
+  end;
 end;
 
 

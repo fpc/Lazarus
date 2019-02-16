@@ -267,8 +267,6 @@ type
     FOnCustomDrawPointer: TSeriesPointerCustomDrawEvent;
     FOnGetPointerStyle: TSeriesPointerStyleEvent;
     function GetErrorBars(AIndex: Integer): TChartErrorBar;
-    function GetLabelDirection(AValue: Double;
-      const ACenterLevel: Double): TLabelDirection;
     function IsErrorBarsStored(AIndex: Integer): Boolean;
     procedure SetErrorBars(AIndex: Integer; AValue: TChartErrorBar);
     procedure SetMarkPositionCentered(AValue: Boolean);
@@ -299,6 +297,8 @@ type
     procedure FindExtentInterval(
       const AExtent: TDoubleRect; AFilterByExtent: Boolean);
     function GetLabelDataPoint(AIndex, AYIndex: Integer): TDoublePoint; virtual;
+    function GetLabelDirection(AValue: Double;
+      const ACenterLevel: Double): TLabelDirection;
     procedure GetLegendItemsRect(AItems: TChartLegendItems; ABrush: TBrush);
     function GetXRange(AX: Double; AIndex: Integer): Double;
     function GetZeroLevel: Double; virtual;
