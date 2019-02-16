@@ -1380,8 +1380,8 @@ begin
       DrawSpline(s);
 
   DrawErrorBars(ADrawer);
-  DrawLabels(ADrawer);
-  DrawPointers(ADrawer);
+  DrawLabels(ADrawer, 0);
+  DrawPointers(ADrawer, 0);
 end;
 
 function TCubicSplineSeries.Extent: TDoubleRect;
@@ -1645,8 +1645,8 @@ begin
         Free;
       end;
     DrawErrorBars(ADrawer);
-    DrawLabels(ADrawer);
-    DrawPointers(ADrawer);
+    DrawLabels(ADrawer, 0);
+    DrawPointers(ADrawer, 0);
   finally
     de.Free;
   end;
