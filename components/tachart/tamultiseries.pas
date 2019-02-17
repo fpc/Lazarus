@@ -58,6 +58,9 @@ type
     class procedure GetXYCountNeeded(out AXCount, AYCount: Integer); override;
     function ToolTargetDistance(const AParams: TNearestPointParams;
       AGraphPt: TDoublePoint; APointIdx, AXIdx, AYIdx: Integer): Integer; override;
+    procedure UpdateLabelDirectionReferenceLevel(AIndex, AYIndex: Integer;
+      var ALevel: Double); override;
+    procedure UpdateMargins(ADrawer: IChartDrawer; var AMargins: TRect); override;
   public
     function AddXY(AX, AY, ARadius: Double; AXLabel: String = '';
       AColor: TColor = clTAColor): Integer; overload;
@@ -526,7 +529,8 @@ begin
       ADrawer.SetBrushColor(ColorDef(item^.Color, BubbleBrush.Color));
     ADrawer.Ellipse(irect.Left, irect.Top, irect.Right, irect.Bottom);
   end;
-  DrawLabels(ADrawer);
+  for i := 0 to Min(1, Source.YCount) do
+    DrawLabels(ADrawer, i);
   ADrawer.ClippingStop;
 end;
 
@@ -605,15 +609,29 @@ begin
 end;
 
 function TBubbleSeries.GetLabelDataPoint(AIndex, AYIndex: Integer): TDoublePoint;
+const
+  DIRECTION: array [Boolean, Boolean] of TLabelDirection =
+    ((ldTop, ldBottom), (ldRight, ldLeft));
+  IS_NEGATIVE: array[TLinearMarkPositions] of boolean =
+    (true,        false,       true,        false);
+    //lmpOutside, lmpPositive, lmpNegative, lmpInside
 var
-  item: PChartDataItem;
   R: TRect;
+  RArray: array[0..3] of Integer absolute R;
+  isneg: Boolean;
+  p: Integer;
+  dir: TLabelDirection;
 begin
-  if (AYIndex = 1) and GetBubbleRect(Source.Item[AIndex], R) then begin
+  if (AYIndex = 1) and GetBubbleRect(Source.Item[AIndex + FLoBound], R) then begin
+    isNeg := IS_NEGATIVE[MarkPositions];
+    if Assigned(GetAxisY) then
+      if (IsRotated and ParentChart.IsRightToLeft) xor GetAxisY.Inverted then
+        isNeg := not isNeg;
+    dir := DIRECTION[IsRotated, isNeg];
     if IsRotated then
-      Result := ParentChart.ImageToGraph(Point(R.Right, (R.Top + R.Bottom) div 2))
+      Result := ParentChart.ImageToGraph(Point(RArray[ord(dir)], (R.Top + R.Bottom) div 2))
     else
-      Result := parentChart.ImageToGraph(Point((R.Left + R.Right) div 2, R.Top));
+      Result := ParentChart.ImageToGraph(Point((R.Left + R.Right) div 2, RArray[ord(dir)]));
   end else
     Result := GetGraphPoint(AIndex, 0, 0);
 end;
@@ -822,6 +840,54 @@ begin
       Result := MaxInt;
   end;
 end;
+
+procedure TBubbleSeries.UpdateLabelDirectionReferenceLevel(AIndex, AYIndex: Integer;
+  var ALevel: Double);
+begin
+  Unused(AIndex);
+  case AYIndex of
+    0: ALevel := -Infinity;
+    1: ALevel := +Infinity;
+  end;
+end;
+
+procedure TBubbleSeries.UpdateMargins(ADrawer: IChartDrawer;
+  var AMargins: TRect);
+var
+  i, dist, j: Integer;
+  labelText: String;
+  dir: TLabelDirection;
+  m: array [TLabelDirection] of Integer absolute AMargins;
+  gp: TDoublePoint;
+  scMarksDistance: Integer;
+  center: Double;
+  ysum: Double;
+begin
+  if not Marks.IsMarkLabelsVisible or not Marks.AutoMargins then exit;
+  if Count = 0 then exit;
+
+  FindExtentInterval(ParentChart.CurrentExtent, Source.IsSorted);
+  with Extent do
+    center := AxisToGraphY((a.y + b.y) * 0.5);
+  UpdateLabelDirectionReferenceLevel(0, 0, center);
+  scMarksDistance := ADrawer.Scale(Marks.Distance);
+  for i := FLoBound to FUpBound do begin
+    for j := 0 to Min(1, Source.YCount-1) do begin
+      gp := GetLabelDataPoint(i, j);
+      if not ParentChart.IsPointInViewPort(gp) then break;
+      labelText := FormattedMark(i, '', j);
+      if labelText = '' then break;
+      UpdateLabelDirectionReferenceLevel(i, j, center);
+      dir := GetLabelDirection(TDoublePointBoolArr(gp)[not IsRotated], center);
+      with Marks.MeasureLabel(ADrawer, labelText) do
+        dist := IfThen(dir in [ldLeft, ldRight], cx, cy);
+      if Marks.DistanceToCenter then
+        dist := dist div 2;
+      m[dir] := Max(m[dir], dist + scMarksDistance);
+    end;
+  end;
+end;
+
 
 
 { TBoxAndWhiskerSeries }

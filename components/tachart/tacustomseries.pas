@@ -311,6 +311,8 @@ type
       AGraphPt: TDoublePoint; APointIdx, AXIdx, AYIdx: Integer): Integer; virtual;
     procedure UpdateGraphPoints(AIndex: Integer; ACumulative: Boolean); overload; inline;
     procedure UpdateGraphPoints(AIndex, ALo, AUp: Integer; ACumulative: Boolean); overload;
+    procedure UpdateLabelDirectionReferenceLevel(AIndex, AYIndex: Integer;
+      var ALevel: Double); virtual;
     procedure UpdateMinXRange;
 
     property Pointer: TSeriesPointer read FPointer write SetPointer;
@@ -1306,6 +1308,7 @@ begin
     ParentChart.DisableRedrawing;
     ext := Extent;
     centerLvl := AxisToGraphY((ext.a.y + ext.b.y) * 0.5);
+    UpdateLabelDirectionReferenceLevel(0, 0, centerLvl);
 
     for i := FLoBound to FUpBound do begin
       if SkipMissingValues(i) then
@@ -1366,6 +1369,7 @@ begin
               else
                 Marks.LabelFont.Assign(lfont);
             end;
+            UpdateLabelDirectionReferenceLevel(i, si, centerLvl);
             DrawLabel(
               FormattedMark(i, '', si),
               GraphToImage(g),
@@ -1920,6 +1924,7 @@ begin
 
   with Extent do
     center := AxisToGraphY((a.y + b.y) * 0.5);
+  UpdateLabelDirectionReferenceLevel(0, 0, center);
   scMarksDistance := ADrawer.Scale(Marks.Distance);
   for i := FLoBound to FUpBound do begin
     j := 0;
@@ -1929,8 +1934,8 @@ begin
       labelText := FormattedMark(i, '', j);
       if labelText = '' then break;
 
+      UpdateLabelDirectionReferenceLevel(i, j, center);
       dir := GetLabelDirection(TDoublePointBoolArr(gp)[not IsRotated], center);
-//      dir := GetLabelDirection(IfThen(IsRotated, gp.X, gp.Y), center);
       with Marks.MeasureLabel(ADrawer, labelText) do
         dist := IfThen(dir in [ldLeft, ldRight], cx, cy);
       if Marks.DistanceToCenter then
@@ -1951,6 +1956,14 @@ begin
         break;
     end;
   end;
+end;
+
+{ Can be overridden for a data-point dependent reference level, such as in
+  TBubbleSeries. AIndex is relative to FLoBound }
+procedure TBasicPointSeries.UpdateLabelDirectionReferenceLevel(AIndex, AYIndex: Integer;
+  var ALevel: Double);
+begin
+  Unused(AIndex, AYIndex, ALevel);
 end;
 
 procedure TBasicPointSeries.UpdateMinXRange;

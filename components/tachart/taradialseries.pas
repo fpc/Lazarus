@@ -142,7 +142,8 @@ type
     function GetLabelDataPoint(AIndex, AYIndex: Integer): TDoublePoint; override;
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     procedure SourceChanged(ASender: TObject); override;
-    procedure UpdateMargins(ADrawer: IChartDrawer; var AMargins: TRect); override;
+    procedure UpdateLabelDirectionReferenceLevel(AIndex, AYIndex: Integer;
+      var ALevel: Double); override;
   public
     procedure Assign(ASource: TPersistent); override;
     constructor Create(AOwner: TComponent); override;
@@ -951,37 +952,13 @@ begin
   inherited;
 end;
 
-procedure TPolarSeries.UpdateMargins(ADrawer: IChartDrawer; var AMargins: TRect);
-var
-  i, dist, j: Integer;
-  labelText: String;
-  dir: TLabelDirection;
-  m: array [TLabelDirection] of Integer absolute AMargins;
-  gp: TDoublePoint;
-  scMarksDistance: Integer;
-  center: Double;
-  ysum: Double;
+procedure TPolarSeries.UpdateLabelDirectionReferenceLevel(AIndex, AYIndex: Integer;
+  var ALevel: Double);
 begin
-  if not Marks.IsMarkLabelsVisible or not Marks.AutoMargins or (Count = 0) then
-    exit;
-
-  center := AxisToGraphY(OriginY);
-  scMarksDistance := ADrawer.Scale(Marks.Distance);
-  for i := 0 to Source.Count-1 do begin
-    for j := 0 to Source.YCount-1 do begin
-      gp := GraphPoint(i, j);
-      if IsRotated then Exchange(gp.X, gp.Y);
-      if not ParentChart.IsPointinViewPort(gp) then break;
-      labelText := FormattedMark(i, '', j);
-      if labelText = '' then break;
-      dir := GetLabelDirection(TDoublePointBoolArr(gp)[not IsRotated], center);
-      with Marks.MeasureLabel(ADrawer, labelText) do
-        dist := IfThen(dir in [ldLeft, ldRight], cx, cy);
-      if Marks.DistanceToCenter then
-        dist := dist div 2;
-      m[dir] := Max(m[dir], dist + scMarksDistance);
-    end;
-  end;
+  Unused(AYIndex);
+  // Level is constant, we only need to calculate it once.
+  if AIndex = 0 then
+    ALevel := AxisToGraphY(OriginY);
 end;
 
 
