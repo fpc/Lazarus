@@ -43,7 +43,9 @@ uses
   // RTL + FCL + LCL
   Classes, SysUtils,
   Forms, Controls, Buttons, Dialogs, Graphics, ComCtrls, ExtCtrls, StdCtrls, LCLProc,
-  pkgglobals, UTF8Process, fpmkunit,
+  pkgglobals,
+  {$IF FPC_FULLVERSION>30100}UTF8Process,{$ENDIF}
+  fpmkunit,
   // CodeTools
   FileProcs, CodeToolManager, DefineTemplates,
   // LazUtils
@@ -1378,7 +1380,9 @@ var
   CurCaption: String;
   Msg, Note: string;
   Quality: TSDFilenameQuality;
+  {$IF FPC_FULLVERSION>30100}
   ImageIndex: Integer;
+  {$ENDIF}
 begin
   if csDestroying in ComponentState then exit;
   CurCaption:=FppkgComboBox.Text;
@@ -1410,9 +1414,8 @@ begin
 
   FppkgMemo.Text := Note;
 
-  ImageIndex:=QualityToImgIndex(Quality);
-
   {$IF FPC_FULLVERSION>30100}
+  ImageIndex:=QualityToImgIndex(Quality);
   TVNodeFppkg.ImageIndex:=ImageIndex;
   TVNodeFppkg.SelectedIndex:=ImageIndex;
   {$ENDIF FPC_FULLVERSION>30100}
