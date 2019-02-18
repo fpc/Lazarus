@@ -302,7 +302,7 @@ type
     procedure GetLegendItemsRect(AItems: TChartLegendItems; ABrush: TBrush);
     function GetXRange(AX: Double; AIndex: Integer): Double;
     function GetZeroLevel: Double; virtual;
-    function HasMissingYValue(AIndex: Integer): Boolean;
+    function HasMissingYValue(AIndex: Integer; AMaxYIndex: Integer = MaxInt): Boolean;
     function NearestXNumber(var AIndex: Integer; ADir: Integer): Double;
     procedure PrepareGraphPoints(
       const AExtent: TDoubleRect; AFilterByExtent: Boolean);
@@ -1655,13 +1655,14 @@ end;
 
 { Returns true if the data point at the given index has at least one missing
   y value (NaN) }
-function TBasicPointSeries.HasMissingYValue(AIndex: Integer): Boolean;
+function TBasicPointSeries.HasMissingYValue(AIndex: Integer;
+  AMaxYIndex: Integer = MaxInt): Boolean;
 var
   j: Integer;
 begin
   Result := IsNaN(Source[AIndex]^.Y);
   if not Result then
-    for j := 0 to Source.YCount-1 do
+    for j := 0 to Min(AMaxYIndex, Source.YCount)-2 do
       if IsNaN(Source[AIndex]^.YList[j]) then
         exit(true);
 end;
@@ -1959,7 +1960,7 @@ begin
 end;
 
 { Can be overridden for a data-point dependent reference level, such as in
-  TBubbleSeries. AIndex is relative to FLoBound }
+  TBubbleSeries. AIndex refers to chart source. }
 procedure TBasicPointSeries.UpdateLabelDirectionReferenceLevel(AIndex, AYIndex: Integer;
   var ALevel: Double);
 begin

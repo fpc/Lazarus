@@ -112,8 +112,11 @@ type
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
     class procedure GetXYCountNeeded(out AXCount, AYCount: Integer); override;
+    function SkipMissingValues(AIndex: Integer): Boolean; override;
     function ToolTargetDistance(const AParams: TNearestPointParams;
       AGraphPt: TDoublePoint; APointIdx, AXIdx, AYIdx: Integer): Integer; override;
+    procedure UpdateLabelDirectionReferenceLevel(AIndex, AYIndex: Integer;
+      var ALevel: Double); override;
   public
     function AddXY(
       AX, AYLoWhisker, AYLoBox, AY, AYHiBox, AYHiWhisker: Double;
@@ -142,6 +145,8 @@ type
   published
     property AxisIndexX;
     property AxisIndexY;
+    property MarkPositions;
+    property Marks;
     property Source;
   end;
 
@@ -180,8 +185,11 @@ type
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
     class procedure GetXYCountNeeded(out AXCount, AYCount: Integer); override;
+    function SkipMissingValues(AIndex: Integer): Boolean; override;
     function ToolTargetDistance(const AParams: TNearestPointParams;
       AGraphPt: TDoublePoint; APointIdx, AXIdx, AYIdx: Integer): Integer; override;
+    procedure UpdateLabelDirectionReferenceLevel(AIndex, AYIndex: Integer;
+      var ALevel: Double); override;
   public
     procedure Assign(ASource: TPersistent); override;
     constructor Create(AOwner: TComponent); override;
@@ -217,6 +225,8 @@ type
   published
     property AxisIndexX;
     property AxisIndexY;
+    property MarkPositions;
+    property Marks;
     property Source;
   end;
 
@@ -505,8 +515,10 @@ var
   irect: TRect;
   dummyR: TRect = (Left:0; Top:0; Right:0; Bottom:0);
   ext: TDoubleRect;
+  nx, ny: Integer;
 begin
-  if Source.YCount < 2 then exit;
+  GetXYCountNeeded(nx, ny);
+  if Source.YCount < ny then exit;
 
   ADrawer.Pen := BubblePen;
   ADrawer.Brush := BubbleBrush;
@@ -529,8 +541,10 @@ begin
       ADrawer.SetBrushColor(ColorDef(item^.Color, BubbleBrush.Color));
     ADrawer.Ellipse(irect.Left, irect.Top, irect.Right, irect.Bottom);
   end;
-  for i := 0 to Min(1, Source.YCount) do
-    DrawLabels(ADrawer, i);
+  if Source.YCount > ny then
+    for i := 0 to ny - 1 do DrawLabels(ADrawer, i)
+  else
+    DrawLabels(ADrawer);
   ADrawer.ClippingStop;
 end;
 
@@ -970,8 +984,10 @@ var
   ext2: TDoubleRect;
   x, ymin, yqmin, ymed, yqmax, ymax, wb, ww, w: Double;
   i: Integer;
+  nx, ny: Integer;
 begin
-  if IsEmpty or (Source.YCount < 5) then
+  GetXYCountNeeded(nx, ny);
+  if IsEmpty or (Source.YCount < ny) then
     exit;
   if FWidthStyle = bwsPercentMin then
     UpdateMinXRange;
@@ -1016,11 +1032,17 @@ begin
     ADrawer.SetBrushParams(bsClear, clTAColor);
     DoLine(x - wb, ymed, x + wb, ymed);
   end;
+
+  if Source.YCount > ny then
+    for i := 0 to ny-1 do DrawLabels(ADrawer, ny)
+  else
+    DrawLabels(ADrawer);
 end;
 
 function TBoxAndWhiskerSeries.Extent: TDoubleRect;
 var
   x: Double;
+  j: Integer;
 
   function ExtraWidth(AIndex: Integer): Double;
   begin
@@ -1031,10 +1053,20 @@ begin
   if Source.YCount < 5 then exit(EmptyExtent);
   Result := Source.ExtentList;
   // Show first and last boxes fully.
-  x := GetGraphPointX(0);
-  Result.a.X := Min(Result.a.X, GraphToAxisX(x - ExtraWidth(0)));
-  x := GetGraphPointX(Count - 1);
-  Result.b.X := Max(Result.b.X, GraphToAxisX(x + ExtraWidth(Count - 1)));
+  j := -1;
+  x := NaN;
+  while IsNaN(x) and (j < Source.Count-1) do begin
+    inc(j);
+    x := GetGraphPointX(j);
+  end;
+  Result.a.X := Min(Result.a.X, GraphToAxisX(x - ExtraWidth(j)));
+  j := Count;
+  x := NaN;
+  while IsNaN(x) and (j > 0) do begin
+    dec(j);
+    x := GetGraphPointX(j);
+  end;
+  Result.b.X := Max(Result.b.X, GraphToAxisX(x + ExtraWidth(j)));
 end;
 
 procedure TBoxAndWhiskerSeries.GetLegendItems(AItems: TChartLegendItems);
@@ -1178,6 +1210,13 @@ begin
   UpdateParentChart;
 end;
 
+function TBoxAndWhiskerSeries.SkipMissingValues(AIndex: Integer): Boolean;
+begin
+  Result := IsNaN(Source[AIndex]^.Point);
+  if not Result then
+    Result := HasMissingYValue(AIndex, 5);
+end;
+
 function TBoxAndWhiskerSeries.ToolTargetDistance(
   const AParams: TNearestPointParams; AGraphPt: TDoublePoint;
   APointIdx, AXIdx, AYIdx: Integer): Integer;
@@ -1228,6 +1267,20 @@ begin
       Result := DistanceToLine(clickPt, xw1, xw2, y);
     1, 2, 3:  // Box lines
       Result := DistancetoLine(clickPt, xb1, xb2, y);
+  end;
+end;
+
+procedure TBoxAndWhiskerSeries.UpdateLabelDirectionReferenceLevel(
+  AIndex, AYIndex: Integer; var ALevel: Double);
+var
+  item: PChartDataItem;
+begin
+  case AYIndex of
+    0: ALevel := +Infinity;
+    3: ALevel := -Infinity;
+    else
+       item := Source.Item[AIndex];
+       ALevel := (AxisToGraphY(item^.GetY(0)) + AxisToGraphY(item^.GetY(3)))*0.5;
   end;
 end;
 
@@ -1382,6 +1435,7 @@ var
   i: Integer;
   x, tw, yopen, yhigh, ylow, yclose: Double;
   p: TPen;
+  nx, ny: Integer;
 begin
   my := MaxIntValue([YIndexOpen, YIndexHigh, YIndexLow, YIndexClose]);
   if IsEmpty or (my >= Source.YCount) then exit;
@@ -1394,12 +1448,16 @@ begin
 
   for i := FLoBound to FUpBound do begin
     x := GetGraphPointX(i);
+    if IsNaN(x) then Continue;
     yopen := GetGraphPointY(i, YIndexOpen);
+    if IsNaN(yopen) then Continue;
     yhigh := GetGraphPointY(i, YIndexHigh);
+    if IsNaN(yhigh) then Continue;
     ylow := GetGraphPointY(i, YIndexLow);
+    if IsNaN(ylow) then Continue;
     yclose := GetGraphPointY(i, YIndexClose);
+    if IsNaN(yclose) then Continue;
     tw := GetXRange(x, i) * PERCENT * TickWidth;
-
     if (yopen <= yclose) then begin
       p := LinePen;
       ADrawer.Brush := FCandleStickUpBrush;
@@ -1418,22 +1476,39 @@ begin
       mCandleStick: DrawCandleStick(x, yopen, yhigh, ylow, yclose, tw);
     end;
   end;
+
+  GetXYCountNeeded(nx, ny);
+  if Source.YCount > ny then
+    for i := 0 to ny-1 do DrawLabels(ADrawer, i)
+  else
+    DrawLabels(ADrawer);
 end;
 
 function TOpenHighLowCloseSeries.Extent: TDoubleRect;
 var
   x: Double;
   tw: Double;
+  j: Integer;
 begin
   if Source.YCount < 4 then exit(EmptyExtent);
   Result := Source.ExtentList;                            // axis units
   // Show first and last open/close ticks and candle boxes fully.
-  x := GetGraphPointX(0);                                 // graph units
-  tw := GetXRange(x, 0) * PERCENT * TickWidth;
+  j := -1;
+  x := NaN;
+  while IsNaN(x) and (j < Source.Count-1) do begin
+    inc(j);
+    x := GetGraphPointX(j);                                 // graph units
+  end;
+  tw := GetXRange(x, j) * PERCENT * TickWidth;
   Result.a.X := Min(Result.a.X, GraphToAxisX(x - tw));    // axis units
 //  Result.a.X := Min(Result.a.X, x - tw);
-  x := GetGraphPointX(Count - 1);
-  tw := GetXRange(x, Count - 1) * PERCENT * TickWidth;
+  j := Count;
+  x := NaN;
+  While IsNaN(x) and (j > 0) do begin
+    dec(j);
+    x := GetGraphPointX(j);
+  end;
+  tw := GetXRange(x, j) * PERCENT * TickWidth;
   Result.b.X := Max(Result.b.X, AxisToGraphX(x + tw));
 //  Result.b.X := Max(Result.b.X, x + tw);
 end;
@@ -1604,6 +1679,13 @@ begin
   UpdateParentChart;
 end;
 
+function TOpenHighLowCloseSeries.SkipMissingValues(AIndex: Integer): Boolean;
+begin
+  Result := IsNaN(Source[AIndex]^.Point);
+  if not Result then
+    Result := HasMissingYValue(AIndex, 4);
+end;
+
 function TOpenHighLowCloseSeries.ToolTargetDistance(
   const AParams: TNearestPointParams; AGraphPt: TDoublePoint;
   APointIdx, AXIdx, AYIdx: Integer): Integer;
@@ -1661,6 +1743,21 @@ begin
           Result := AParams.FDistFunc(clickPt, p)
         else
           raise Exception.Create('TOpenHighLowCloseSeries.ToolTargetDistance: Illegal YIndex.');
+  end;
+end;
+
+procedure TOpenHighLowCloseSeries.UpdateLabelDirectionReferenceLevel(
+  AIndex, AYIndex: Integer; var ALevel: Double);
+var
+  item: PChartDataItem;
+begin
+  if AYIndex = FYIndexLow then
+    ALevel := +Infinity
+  else if AYIndex = FYIndexHigh then
+    ALevel := -Infinity
+  else begin
+    item := Source.Item[AIndex];
+    ALevel := (AxisToGraphY(item^.GetY(FYIndexLow)) + AxisToGraphY(item^.GetY(FYIndexHigh)))*0.5;
   end;
 end;
 
