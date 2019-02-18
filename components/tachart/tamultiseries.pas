@@ -475,7 +475,6 @@ end;
 function TBubbleSeries.AddXY(AX, AY, ARadius: Double; AXLabel: String;
   AColor: TColor): Integer;
 begin
-  if ListSource.YCount < 2 then ListSource.YCount := 2;
   Result := AddXY(AX, AY, [ARadius], AXLabel, AColor);
 end;
 
@@ -908,7 +907,6 @@ function TBoxAndWhiskerSeries.AddXY(
   AX, AYLoWhisker, AYLoBox, AY, AYHiBox, AYHiWhisker: Double; AXLabel: String;
   AColor: TColor): Integer;
 begin
-  if ListSource.YCount < 5 then ListSource.YCount := 5;
   Result := AddXY(
     AX, AYLoWhisker, [AYLoBox, AY, AYHiBox, AYHiWhisker], AXLabel, AColor);
 end;
@@ -1291,8 +1289,6 @@ function TOpenHighLowCloseSeries.AddXOHLC(
 var
   y: Double;
 begin
-  if ListSource.YCount < 4 then ListSource.YCount := 4;
-
   if YIndexOpen = 0 then
     y := AOpen
   else if YIndexHigh = 0 then
