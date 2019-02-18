@@ -1435,6 +1435,9 @@ var
   p: TPen;
   nx, ny: Integer;
 begin
+  GetXYCountNeeded(nx, ny);
+  if (Source.XCount < nx) or (Source.YCount < ny) then exit;
+
   my := MaxIntValue([YIndexOpen, YIndexHigh, YIndexLow, YIndexClose]);
   if IsEmpty or (my >= Source.YCount) then exit;
 
@@ -1475,7 +1478,6 @@ begin
     end;
   end;
 
-  GetXYCountNeeded(nx, ny);
   if Source.YCount > ny then
     for i := 0 to ny-1 do DrawLabels(ADrawer, i)
   else
@@ -1812,7 +1814,11 @@ var
   i: Integer;
   p1, p2: TDoublePoint;
   lPen: TPen;
+  nx, ny: Integer;
 begin
+  GetXYCountNeeded(nx, ny);
+  if (Source.XCount < nx) or (Source.YCount < ny) then exit;
+
   with Extent do begin
     ext.a := AxisToGraph(a);
     ext.b := AxisToGraph(b);

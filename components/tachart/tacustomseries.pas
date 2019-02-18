@@ -1124,6 +1124,8 @@ end;
 
 procedure TChartSeries.SourceChanged(ASender: TObject);
 begin
+  if ASender is TCustomChartSource then
+    CheckSource(TCustomChartSource(ASender));
   StyleChanged(ASender);
 end;
 
