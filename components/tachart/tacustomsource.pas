@@ -825,16 +825,18 @@ begin
   inherited Create(AOwner);
   FXCount := 1;
   FYCount := 1;
-  for i:=0 to 1 do begin
+  for i:=Low(FErrorBardata) to High(FErrorBarData) do begin
     FErrorBarData[i] := TChartErrorBarData.Create;
     FErrorBarData[i].OnChange := @ChangeErrorBars;
   end;
 end;
 
 destructor TCustomChartSource.Destroy;
+var
+  i: Integer;
 begin
-  FErrorBarData[0].Free;
-  FErrorBarData[1].Free;
+  for i:= Low(FErrorBarData) to High(FErrorBarData) do
+    FErrorBarData[i].Free;
   inherited;
 end;
 
