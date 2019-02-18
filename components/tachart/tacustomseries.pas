@@ -1923,7 +1923,7 @@ begin
   scMarksDistance := ADrawer.Scale(Marks.Distance);
   for i := FLoBound to FUpBound do begin
     j := 0;
-    gp := GetGraphPoint(i);
+    gp := GetLabelDataPoint(i, 0);
     while true do begin
       if not ParentChart.IsPointInViewPort(gp) then break;
       labelText := FormattedMark(i, '', j);
@@ -1945,7 +1945,7 @@ begin
             ysum += NumberOr(Source.Item[i]^.GetY(j), 0.0);
           TDoublePointBoolArr(gp)[not IsRotated] := AxisToGraphY(ysum);
         end else
-          gp := GetGraphPoint(i, 0, Source.YCount-1);
+          gp := GetLabelDataPoint(i, Source.YCount-1);
         j := Source.YCount-1;
       end else
         break;
