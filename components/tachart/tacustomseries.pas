@@ -816,12 +816,17 @@ end;
 constructor TChartSeries.Create(AOwner: TComponent);
 const
   BUILTIN_SOURCE_NAME = 'Builtin';
+var
+  nx, ny: Integer;
 begin
   inherited Create(AOwner);
 
   FListener := TListener.Create(@FSource,  @SourceChanged);
   FBuiltinSource := TListChartSource.Create(Self);
   FBuiltinSource.Name := BUILTIN_SOURCE_NAME;
+  GetXYCountNeeded(nx, ny);
+  FBuiltinSource.XCount := nx;
+  FBuiltinSource.YCount := ny;
   FBuiltinSource.Broadcaster.Subscribe(FListener);
   FMarks := TChartMarks.Create(FChart);
   FStylesListener := TListener.Create(@FStyles,  @StyleChanged);
