@@ -48,8 +48,8 @@ type
   protected
     function GetCount: Integer; override;
     function GetItem(AIndex: Integer): PChartDataItem; override;
-    procedure SetXCount(AValue: Cardinal); override;
-    procedure SetYCount(AValue: Cardinal); override;
+    procedure SetXCount(AValue: Integer); override;
+    procedure SetYCount(AValue: Integer); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -189,13 +189,13 @@ begin
     FOrigin.Broadcaster.Subscribe(FListener);
 end;
 
-procedure TCustomAnimatedChartSource.SetXCount(AValue: Cardinal);
+procedure TCustomAnimatedChartSource.SetXCount(AValue: Integer);
 begin
   Unused(AValue);
   raise EXCountError.Create('Cannot set XCount');
 end;
 
-procedure TCustomAnimatedChartSource.SetYCount(AValue: Cardinal);
+procedure TCustomAnimatedChartSource.SetYCount(AValue: Integer);
 begin
   Unused(AValue);
   raise EYCountError.Create('Cannot set YCount');

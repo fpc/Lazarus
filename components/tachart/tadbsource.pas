@@ -52,7 +52,7 @@ type
   protected
     function GetCount: Integer; override;
     function GetItem(AIndex: Integer): PChartDataItem; override;
-    procedure SetYCount(AValue: Cardinal); override;
+    procedure SetYCount(AValue: Integer); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -322,7 +322,7 @@ begin
   Reset;
 end;
 
-procedure TDbChartSource.SetYCount(AValue: Cardinal);
+procedure TDbChartSource.SetYCount(AValue: Integer);
 begin
   Unused(AValue);
   raise EYCountError.Create('Set FieldY instead');

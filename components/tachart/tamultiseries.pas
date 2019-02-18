@@ -633,7 +633,6 @@ var
   R: TRect;
   RArray: array[0..3] of Integer absolute R;
   isneg: Boolean;
-  p: Integer;
   dir: TLabelDirection;
 begin
   if (AYIndex = 1) and GetBubbleRect(Source.Item[AIndex + FLoBound], R) then begin
@@ -875,7 +874,6 @@ var
   gp: TDoublePoint;
   scMarksDistance: Integer;
   center: Double;
-  ysum: Double;
 begin
   if not Marks.IsMarkLabelsVisible or not Marks.AutoMargins then exit;
   if Count = 0 then exit;
@@ -1430,7 +1428,7 @@ procedure TOpenHighLowCloseSeries.Draw(ADrawer: IChartDrawer);
   end;
 
 var
-  my: Cardinal;
+  my: Integer;
   ext2: TDoubleRect;
   i: Integer;
   x, tw, yopen, yhigh, ylow, yclose: Double;
