@@ -69,7 +69,7 @@ resourcestring
   rsDistanceMeasurement = 'Distance measurement';
 
   // Chart sources
-  rsSourceCountError = '%0:s requires a chart source with at least %1:d %2:s value(s)';
+  rsSourceCountError = '%0:s requires a chart source with at least %1:d %2:s value(s) per data point.';
 
   // Transformations
   tasAxisTransformsEditorTitle = 'Edit axis transformations';
