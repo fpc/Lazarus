@@ -470,10 +470,12 @@ begin
   BeginUpdate;
   try
     Clear;
+    XCount := ASource.XCount;
     YCount := ASource.YCount;
     for i := 0 to ASource.Count - 1 do
       with ASource[i]^ do begin
         AddAt(FData.Count, X, Y, Text, Color);
+        SetXList(FData.Count - 1, XList);
         SetYList(FData.Count - 1, YList);
       end;
     if Sorted and not ASource.IsSorted then Sort;
@@ -487,7 +489,6 @@ begin
   inherited Create(AOwner);
   FData := TFPList.Create;
   FDataPoints := TListChartSourceStrings.Create(Self);
-  FYCount := 1;
   ClearCaches;
 end;
 
