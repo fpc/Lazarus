@@ -1103,7 +1103,7 @@ var
       Styles.Apply(ADrawer, AStyleIndex);
     splineStart := 0;
     splineEnd := -2;
-    while NextNumberSeq(FGraphPoints, splineStart, splineend) do begin
+    while NextNumberSeq(FGraphPoints, splineStart, splineEnd) do begin
       ADrawer.MoveTo(ParentChart.GraphToImage(FGraphPoints[splineStart]));
       for j := splineStart to splineEnd + Degree - 1 do begin
         startIndex := j;
@@ -1128,7 +1128,7 @@ begin
   for i := 1 to Source.YCount-1 do begin
     UpdateGraphPoints(i-1, false);
     DrawSpline(i);
-    DrawErrorBars(ADrawer);
+    // error bars supported only for YLevel = 0 -- no DrawErrorBars here.
     DrawLabels(ADrawer, i);
     DrawPointers(ADrawer, i, true);
   end;
