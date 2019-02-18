@@ -274,7 +274,6 @@ type
     procedure SetPointer(AValue: TSeriesPointer);
     procedure SetStacked(AValue: Boolean);
     procedure SetStackedNaN(AValue: TStackedNaN);
-    procedure SetUseReticule(AValue: Boolean); deprecated 'Use DatapointCrosshairTool instead';
   strict protected
     FGraphPoints: array of TDoublePoint;
     FLoBound: Integer;
@@ -283,7 +282,6 @@ type
     FStacked: Boolean;
     FStackedNaN: TStackedNaN;
     FUpBound: Integer;
-    FUseReticule: Boolean;
     FOptimizeX: Boolean;
     FSupportsZeroLevel: Boolean;
     FMarkPositionCentered: Boolean;
@@ -350,9 +348,6 @@ type
     procedure MovePointEx(var AIndex: Integer; AXIndex, AYIndex: Integer;
       const ANewPos: TDoublePoint); override;
     property ToolTargets default [nptPoint, nptYList];
-    property UseReticule: Boolean
-      read FUseReticule write SetUseReticule default false;
-      deprecated 'Use DatapointCrosshairTool instead';
     property ExtentPointIndexFirst: Integer read FLoBound;
     property ExtentPointIndexLast: Integer read FUpBound;
   end;
@@ -1170,7 +1165,6 @@ begin
       if Self.FPointer <> nil then
         Self.FPointer.Assign(Pointer);
       Self.Stacked := Stacked;
-      Self.FUseReticule := UseReticule;
       Self.FSupportsZeroLevel := FSupportsZeroLevel;
       Self.FMarkPositionCentered := FMarkPositionCentered;
     end;
@@ -1798,13 +1792,6 @@ procedure TBasicPointSeries.SetStackedNaN(AValue: TStackedNaN);
 begin
   if FStackedNaN = AValue then exit;
   FStackedNaN := AValue;
-  UpdateParentChart;
-end;
-
-procedure TBasicPointSeries.SetUseReticule(AValue: Boolean);
-begin
-  if FUseReticule = AValue then exit;
-  FUseReticule := AValue;
   UpdateParentChart;
 end;
 

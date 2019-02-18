@@ -1359,7 +1359,6 @@ begin
   FPen.OnChange := @StyleChanged;
   FPointer := TSeriesPointer.Create(ParentChart);
   FStep := DEF_SPLINE_STEP;
-  FUseReticule := true;
 end;
 
 destructor TCubicSplineSeries.Destroy;

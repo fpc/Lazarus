@@ -106,7 +106,6 @@ type
     property StackedNaN;
     property Styles;
     property ToolTargets default [nptPoint, nptYList, nptCustom];
-    property UseReticule; deprecated 'Use DatapointCrosshairTool instead';
     property UseZeroLevel: Boolean
       read FUseZeroLevel write SetUseZeroLevel default true;
     property ZeroLevel: Double
@@ -189,7 +188,6 @@ type
     property StackedNaN;
     property Styles;
     property ToolTargets;
-    property UseReticule; deprecated 'Use DatapointCrosshairTool instead';
     property UseZeroLevel: Boolean
       read FUseZeroLevel write SetUseZeroLevel default false;
     property ZeroLevel: Double
@@ -256,7 +254,6 @@ type
     property Source;
     property Styles;
     property ToolTargets;
-    property UseReticule default true; deprecated 'Use DatapointCrosshairTool instead';
     property XErrorBars;
     property YErrorBars;
     // Events
@@ -283,7 +280,6 @@ type
     property SeriesColor: TColor
       read FSeriesColor write SetSeriesColor default clBlack;
     property Source;
-    property UseReticule; deprecated 'Use DatapointCrosshairTool instead';
   end;
 
   TLineStyle = (lsVertical, lsHorizontal);
@@ -406,7 +402,7 @@ begin
   FLinePen := TPen.Create;
   FLinePen.OnChange := @StyleChanged;
   FPointer := TSeriesPointer.Create(FChart);
-  SetPropDefaults(Self, ['LineType', 'UseReticule']);
+  SetPropDefaults(Self, ['LineType']);
 end;
 
 destructor TLineSeries.Destroy;

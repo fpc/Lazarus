@@ -29,12 +29,6 @@ uses
 type
   TChart = class;
 
-  TReticuleMode = (rmNone, rmVertical, rmHorizontal, rmCross);
-
-  TDrawReticuleEvent = procedure(
-    ASender: TChart; ASeriesIndex, AIndex: Integer;
-    const AData: TDoublePoint) of object;
-
   TChartDrawLegendEvent = procedure(
     ASender: TChart; ADrawer: IChartDrawer; ALegendItems: TChartLegendItems;
     ALegendItemSize: TPoint; const ALegendRect: TRect;
@@ -215,7 +209,6 @@ type
     FOnBeforeDrawBackground: TChartBeforeDrawEvent;
     FOnBeforeDrawBackWall: TChartBeforeDrawEvent;
     FOnChartPaint: TChartPaintEvent;
-    FOnDrawReticule: TDrawReticuleEvent;
     FOnDrawLegend: TChartDrawLegendEvent;
     FProportional: Boolean;
     FSeries: TChartSeriesList;
@@ -239,15 +232,12 @@ type
     FOnExtentChanged: TChartEvent;
     FOnExtentChanging: TChartEvent;
     FPrevLogicalExtent: TDoubleRect;
-    FReticuleMode: TReticuleMode;
-    FReticulePos: TPoint;
     FScale: TDoublePoint;    // Coordinates transformation
     FSavedClipRect: TRect;
     FClipRectLock: Integer;
 
     procedure CalculateTransformationCoeffs(const AMargin, AChartMargins: TRect;
       const AMinDataSpace: Integer);
-    procedure DrawReticule(ADrawer: IChartDrawer);  deprecated 'Use DatapointCrosshairTool instead';
     procedure FindComponentClass(
       AReader: TReader; const AClassName: String; var AClass: TComponentClass);
     function GetChartHeight: Integer;
@@ -258,8 +248,6 @@ type
     function GetSeriesCount: Integer;
     function GetToolset: TBasicChartToolset;
     function GetVertAxis: TChartAxis;
-    procedure HideReticule; deprecated 'Use DatapointCrosshairTool instead';
-
     procedure SetAntialiasingMode(AValue: TChartAntialiasingMode);
     procedure SetAxisList(AValue: TChartAxisList);
     procedure SetAxisVisible(Value: Boolean);
@@ -287,11 +275,8 @@ type
     procedure SetOnBeforeDrawBackWall(AValue: TChartBeforeDrawEvent);
     procedure SetOnChartPaint(AValue: TChartPaintEvent);
     procedure SetOnDrawLegend(AValue: TChartDrawLegendEvent);
-    procedure SetOnDrawReticule(AValue: TDrawReticuleEvent); deprecated 'Use DatapointCrosshairTool instead';
     procedure SetProportional(AValue: Boolean);
     procedure SetRenderingParams(AValue: TChartRenderingParams);
-    procedure SetReticuleMode(AValue: TReticuleMode); deprecated 'Use DatapointCrosshairTool instead';
-    procedure SetReticulePos(const AValue: TPoint); deprecated 'Use DatapointCrosshairTool instead';
     procedure SetTitle(Value: TChartTitle);
     procedure SetToolset(AValue: TBasicChartToolset);
     procedure VisitSources(
@@ -397,7 +382,6 @@ type
     property PrevLogicalExtent: TDoubleRect read FPrevLogicalExtent;
     property RenderingParams: TChartRenderingParams
       read GetRenderingParams write SetRenderingParams;
-    property ReticulePos: TPoint read FReticulePos write SetReticulePos; deprecated 'Use DatapointCrosshairTool instead';
     property SeriesCount: Integer read GetSeriesCount;
     property VertAxis: TChartAxis read GetVertAxis;
     property XGraphMax: Double read FCurrentExtent.b.X;
@@ -431,8 +415,6 @@ type
       read FMarginsExternal write SetMarginsExternal;
     property Proportional: Boolean
       read FProportional write SetProportional default false;
-    property ReticuleMode: TReticuleMode
-      read FReticuleMode write SetReticuleMode default rmNone; deprecated 'Use DatapointCrosshairTool instead';
     property Series: TChartSeriesList read FSeries;
     property Title: TChartTitle read FTitle write SetTitle;
     property Toolset: TBasicChartToolset read FToolset write SetToolset;
@@ -463,9 +445,6 @@ type
       deprecated 'Use OnBeforeCustomDrawBackWall instead';
     property OnDrawLegend: TChartDrawLegendEvent
       read FOnDrawLegend write SetOnDrawLegend;
-    property OnDrawReticule: TDrawReticuleEvent
-      read FOnDrawReticule write SetOnDrawReticule;
-      deprecated 'Use DatapointCrosshairTool instead';
     property OnExtentChanged: TChartEvent
       read FOnExtentChanged write FOnExtentChanged;
     property OnExtentChanging: TChartEvent
@@ -580,7 +559,6 @@ begin
   if ASeries.FChart = Self then exit;
   if ASeries.FChart <> nil then
     ASeries.FChart.DeleteSeries(ASeries);
-  HideReticule;
   Series.FList.Add(ASeries);
   ASeries.FChart := Self;
   ASeries.AfterAdd;
@@ -712,17 +690,12 @@ begin
   Width := DEFAULT_CHART_WIDTH;
   Height := DEFAULT_CHART_HEIGHT;
 
-  FReticulePos := Point(-1, -1);
-  FReticuleMode := rmNone;
-
   FSeries := TChartSeriesList.Create;
-
   Color := clBtnFace;
   FBackColor := clBtnFace;
-
   FIsZoomed := false;
-
   FLegend := TChartLegend.Create(Self);
+
   FTitle := TChartTitle.Create(Self);
   FTitle.Alignment := taCenter;
   FTitle.Text.Add(DEFAULT_CHART_TITLE);
@@ -958,7 +931,6 @@ begin
   finally
     ldd.FItems.Free;
   end;
-  DrawReticule(ADrawer);
   ts := GetToolset;
   if ts <> nil then ts.Draw(Self, ADrawer);
 
@@ -1046,17 +1018,6 @@ procedure TChart.DrawLineVert(ADrawer: IChartDrawer; AX: Integer);
 begin
   if (FClipRect.Left < AX) and (AX < FClipRect.Right) then
     ADrawer.Line(AX, FClipRect.Top, AX, FClipRect.Bottom);
-end;
-
-procedure TChart.DrawReticule(ADrawer: IChartDrawer);
-begin
-  ADrawer.SetXor(true);
-  ADrawer.PrepareSimplePen(clTAColor);
-  if ReticuleMode in [rmVertical, rmCross] then
-    DrawLineVert(ADrawer, FReticulePos.X);
-  if ReticuleMode in [rmHorizontal, rmCross] then
-    DrawLineHoriz(ADrawer, FReticulePos.Y);
-  ADrawer.SetXor(false);
 end;
 
 function TChart.EffectiveGUIConnector: TChartGUIConnector;
@@ -1287,12 +1248,6 @@ end;
 function TChart.GraphToImage(const AGraphPoint: TDoublePoint): TPoint;
 begin
   Result := Point(XGraphToImage(AGraphPoint.X), YGraphToImage(AGraphPoint.Y));
-end;
-
-procedure TChart.HideReticule;
-begin
-  // Hide reticule - - it will be drawn again in the next MouseMove.
-  FReticulePos := Point( - 1, - 1);
 end;
 
 function TChart.ImageToGraph(const APoint: TPoint): TDoublePoint;
@@ -1702,7 +1657,6 @@ begin
       UseYMin and (h < YMin) or UseYMax and (h > YMax)
     then
       exit;
-  HideReticule;
   FLogicalExtent := AValue;
   FIsZoomed := true;
   StyleChanged(Self);
@@ -1816,13 +1770,6 @@ begin
   StyleChanged(self);
 end;
 
-procedure TChart.SetOnDrawReticule(AValue: TDrawReticuleEvent);
-begin
-  if TMethod(FOnDrawReticule) = TMethod(AValue) then exit;
-  FOnDrawReticule := AValue;
-  StyleChanged(Self);
-end;
-
 procedure TChart.SetProportional(AValue: Boolean);
 begin
   if FProportional = AValue then exit;
@@ -1838,21 +1785,6 @@ begin
   FLogicalExtent := AValue.FLogicalExtent;
   FPrevLogicalExtent := AValue.FPrevLogicalExtent;
   FIsZoomed := AValue.FIsZoomed;
-end;
-
-procedure TChart.SetReticuleMode(AValue: TReticuleMode);
-begin
-  if FReticuleMode = AValue then exit;
-  FReticuleMode := AValue;
-  StyleChanged(Self);
-end;
-
-procedure TChart.SetReticulePos(const AValue: TPoint);
-begin
-  if FReticulePos = AValue then exit;
-  DrawReticule(Drawer);
-  FReticulePos := AValue;
-  DrawReticule(Drawer);
 end;
 
 procedure TChart.SetTitle(Value: TChartTitle);
@@ -1927,7 +1859,6 @@ begin
   if AImmediateRecalc then
     FLogicalExtent := GetFullExtent;
   if not FIsZoomed then exit;
-  HideReticule;
   FIsZoomed := false;
   Invalidate;
 end;

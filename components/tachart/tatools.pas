@@ -583,11 +583,6 @@ type
     property Targets;
   end;
 
-  TReticuleTool = class(TChartTool)
-  public
-    procedure MouseMove(APoint: TPoint); override;
-  end;
-
   procedure Register;
 
   procedure RegisterChartToolClass(AToolClass: TChartToolClass;
@@ -618,7 +613,6 @@ begin
     Shift := [ssRight];
     Toolset := ts;
   end;
-  TReticuleTool.Create(AChart).Toolset := ts;
 end;
 
 procedure Register;
@@ -1306,37 +1300,6 @@ begin
   end;
 end;
 
-{ TReticuleTool }
-
-procedure TReticuleTool.MouseMove(APoint: TPoint);
-const
-  DIST_FUNCS: array [TReticuleMode] of TPointDistFunc = (
-    nil, @PointDistX, @PointDistY, @PointDist);
-var
-  cur, best: TNearestPointResults;
-  p: TNearestPointParams;
-  s, bestS: TCustomChartSeries;
-begin
-  if FChart.ReticuleMode = rmNone then exit;
-  best.FDist := MaxInt;
-  p.FDistFunc := DIST_FUNCS[FChart.ReticuleMode];
-  p.FPoint := APoint;
-  p.FRadius := Trunc(Sqrt(MaxInt));
-  p.FOptimizeX := false;
-  for s in CustomSeries(FChart) do
-    if
-      (not (s is TBasicPointSeries) or TBasicPointSeries(s).UseReticule) and
-      s.GetNearestPoint(p, cur) and PtInRect(FChart.ClipRect, cur.FImg) and
-      (cur.FDist < best.FDist)
-    then begin
-      bestS := s;
-      best := cur;
-    end;
-  if (best.FDist = MaxInt) or (best.FImg = FChart.ReticulePos) then exit;
-  FChart.ReticulePos := best.FImg;
-  if Assigned(FChart.OnDrawReticule) then
-    FChart.OnDrawReticule(FChart, bestS.Index, best.FIndex, best.FValue);
-end;
 
 { TBasicZoomStepTool }
 
@@ -2050,7 +2013,6 @@ initialization
   RegisterChartToolClass(TPanDragTool, @rsPanningByDrag);
   RegisterChartToolClass(TPanClickTool, @rsPanningbyClick);
   RegisterChartToolClass(TPanMouseWheelTool, @rsPanningByMouseWheel);
-//  RegisterChartToolClass(TReticuleTool, @rsReticule);
   RegisterChartToolClass(TDataPointClickTool, @rsDataPointClick);
   RegisterChartToolClass(TDataPointDragTool, @rsDataPointDrag);
   RegisterChartToolClass(TDataPointHintTool, @rsDataPointHint);
