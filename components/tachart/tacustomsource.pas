@@ -190,8 +190,8 @@ type
     FExtentIsValid: Boolean;
     FValuesTotal: Double;
     FValuesTotalIsValid: Boolean;
-    FXCount: Integer;
-    FYCount: Integer;
+    FXCount: Cardinal;
+    FYCount: Cardinal;
     procedure ChangeErrorBars(Sender: TObject); virtual;
     function GetCount: Integer; virtual; abstract;
     function GetErrorBarValues(APointIndex: Integer; Which: Integer;
@@ -199,8 +199,8 @@ type
     function GetHasErrorBars(Which: Integer): Boolean;
     function GetItem(AIndex: Integer): PChartDataItem; virtual; abstract;
     procedure InvalidateCaches;
-    procedure SetXCount(AValue: Integer); virtual; abstract;
-    procedure SetYCount(AValue: Integer); virtual; abstract;
+    procedure SetXCount(AValue: Cardinal); virtual; abstract;
+    procedure SetYCount(AValue: Cardinal); virtual; abstract;
     property XErrorBarData: TChartErrorBarData index 0 read GetErrorBarData
       write SetErrorBarData stored IsErrorBarDataStored;
     property YErrorBarData: TChartErrorBarData index 1 read GetErrorBarData
@@ -245,8 +245,8 @@ type
 
     property Count: Integer read GetCount;
     property Item[AIndex: Integer]: PChartDataItem read GetItem; default;
-    property XCount: Integer read FXCount write SetXCount default 1;
-    property YCount: Integer read FYCount write SetYCount default 1;
+    property XCount: Cardinal read FXCount write SetXCount default 1;
+    property YCount: Cardinal read FYCount write SetYCount default 1;
   end;
 
   { TChartSourceBuffer }

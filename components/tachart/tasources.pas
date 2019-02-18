@@ -37,8 +37,8 @@ type
   protected
     function GetCount: Integer; override;
     function GetItem(AIndex: Integer): PChartDataItem; override;
-    procedure SetXCount(AValue: Integer); override;
-    procedure SetYCount(AValue: Integer); override;
+    procedure SetXCount(AValue: Cardinal); override;
+    procedure SetYCount(AValue: Cardinal); override;
   public
     type
       EXListEmptyError = class(EChartError);
@@ -123,8 +123,8 @@ type
     procedure ChangeErrorBars(Sender: TObject); override;
     function GetCount: Integer; override;
     function GetItem(AIndex: Integer): PChartDataItem; override;
-    procedure SetXCount(AValue: Integer); override;
-    procedure SetYCount(AValue: Integer); override;
+    procedure SetXCount(AValue: Cardinal); override;
+    procedure SetYCount(AValue: Cardinal); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -165,8 +165,8 @@ type
   protected
     function GetCount: Integer; override;
     function GetItem(AIndex: Integer): PChartDataItem; override;
-    procedure SetXCount(AValue: Integer); override;
-    procedure SetYCount(AValue: Integer); override;
+    procedure SetXCount(AValue: Cardinal); override;
+    procedure SetYCount(AValue: Cardinal); override;
   public
     procedure EndUpdate; override;
     function IsSorted: Boolean; override;
@@ -197,7 +197,7 @@ type
     FItem: TChartDataItem;
     FListener: TListener;
     FOrigin: TCustomChartSource;
-    FOriginYCount: Integer;
+    FOriginYCount: Cardinal;
     FPercentage: Boolean;
     FReorderYList: String;
     FYOrder: array of Integer;
@@ -220,8 +220,8 @@ type
   protected
     function GetCount: Integer; override;
     function GetItem(AIndex: Integer): PChartDataItem; override;
-    procedure SetXCount(AValue: Integer); override;
-    procedure SetYCount(AValue: Integer); override;
+    procedure SetXCount(AValue: Cardinal); override;
+    procedure SetYCount(AValue: Cardinal); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -350,7 +350,7 @@ var
 begin
   parts := Split(AString);
   try
-    if (FSource.XCount = 1) and (FSource.YCount + 3 < parts.Count) then
+    if (FSource.XCount = 1) and (FSource.YCount + 3 < Cardinal(parts.Count)) then
       FSource.YCount := parts.Count - 3;
     with ADataItem^ do begin
       X := StrToFloatOrDateTimeDef(NextPart);
@@ -575,7 +575,7 @@ begin
   Notify;
 end;
 
-procedure TListChartSource.SetXCount(AValue: Integer);
+procedure TListChartSource.SetXCount(AValue: Cardinal);
 var
   i: Integer;
 begin
@@ -649,7 +649,7 @@ begin
   Notify;
 end;
 
-procedure TListChartSource.SetYCount(AValue: Integer);
+procedure TListChartSource.SetYCount(AValue: Cardinal);
 var
   i: Integer;
 begin
@@ -935,7 +935,7 @@ begin
   Reset;
 end;
 
-procedure TRandomChartSource.SetXCount(AValue: Integer);
+procedure TRandomChartSource.SetXCount(AValue: Cardinal);
 begin
   if XCount = AValue then exit;
   FXCount := AValue;
@@ -956,7 +956,7 @@ begin
   Reset;
 end;
 
-procedure TRandomChartSource.SetYCount(AValue: Integer);
+procedure TRandomChartSource.SetYCount(AValue: Cardinal);
 begin
   if YCount = AValue then exit;
   FYCount := AValue;
@@ -1034,7 +1034,7 @@ begin
   Reset;
 end;
 
-procedure TUserDefinedChartSource.SetXCount(AValue: Integer);
+procedure TUserDefinedChartSource.SetXCount(AValue: Cardinal);
 begin
   if FXCount = AValue then exit;
   FXCount := AValue;
@@ -1042,7 +1042,7 @@ begin
   Reset;
 end;
 
-procedure TUserDefinedChartSource.SetYCount(AValue: Integer);
+procedure TUserDefinedChartSource.SetYCount(AValue: Cardinal);
 begin
   if FYCount = AValue then exit;
   FYCount := AValue;
@@ -1372,13 +1372,13 @@ begin
   UpdateYOrder;
 end;
 
-procedure TCalculatedChartSource.SetXCount(AValue: Integer);
+procedure TCalculatedChartSource.SetXCount(AValue: Cardinal);
 begin
   Unused(AValue);
   raise EXCountError.Create('Cannot set XCount');
 end;
 
-procedure TCalculatedChartSource.SetYCount(AValue: Integer);
+procedure TCalculatedChartSource.SetYCount(AValue: Cardinal);
 begin
   Unused(AValue);
   raise EYCountError.Create('Cannot set YCount');

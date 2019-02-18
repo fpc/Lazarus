@@ -165,7 +165,7 @@ type
     procedure SourceChanged(ASender: TObject); virtual;
     procedure VisitSources(
       AVisitor: TChartOnSourceVisitor; AAxis: TChartAxis; var AData); override;
-    class procedure GetXYCountNeeded(out AXCount, AYCount: Integer); virtual;
+    class procedure GetXYCountNeeded(out AXCount, AYCount: Cardinal); virtual;
   strict protected
     function LegendTextPoint(AIndex: Integer): String; inline;
   protected
@@ -787,7 +787,7 @@ end;
 
 procedure TChartSeries.CheckSource(ASource: TCustomChartSource);
 var
-  nx, ny: Integer;
+  nx, ny: Cardinal;
 begin
   if ASource = nil then
     exit;
@@ -817,7 +817,7 @@ constructor TChartSeries.Create(AOwner: TComponent);
 const
   BUILTIN_SOURCE_NAME = 'Builtin';
 var
-  nx, ny: Integer;
+  nx, ny: Cardinal;
 begin
   inherited Create(AOwner);
 
@@ -967,7 +967,7 @@ begin
     Result := 0;
 end;
 
-class procedure TChartSeries.GetXYCountNeeded(out AXCount, AYCount: Integer);
+class procedure TChartSeries.GetXYCountNeeded(out AXCount, AYCount: Cardinal);
 begin
   AXCount := 1;
   AYCount := 1;

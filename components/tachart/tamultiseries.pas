@@ -55,7 +55,7 @@ type
     function GetLabelDataPoint(AIndex, AYIndex: Integer): TDoublePoint; override;
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
-    class procedure GetXYCountNeeded(out AXCount, AYCount: Integer); override;
+    class procedure GetXYCountNeeded(out AXCount, AYCount: Cardinal); override;
     function ToolTargetDistance(const AParams: TNearestPointParams;
       AGraphPt: TDoublePoint; APointIdx, AXIdx, AYIdx: Integer): Integer; override;
     procedure UpdateLabelDirectionReferenceLevel(AIndex, AYIndex: Integer;
@@ -111,7 +111,7 @@ type
   protected
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
-    class procedure GetXYCountNeeded(out AXCount, AYCount: Integer); override;
+    class procedure GetXYCountNeeded(out AXCount, AYCount: Cardinal); override;
     function SkipMissingValues(AIndex: Integer): Boolean; override;
     function ToolTargetDistance(const AParams: TNearestPointParams;
       AGraphPt: TDoublePoint; APointIdx, AXIdx, AYIdx: Integer): Integer; override;
@@ -184,7 +184,7 @@ type
   protected
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
-    class procedure GetXYCountNeeded(out AXCount, AYCount: Integer); override;
+    class procedure GetXYCountNeeded(out AXCount, AYCount: Cardinal); override;
     function SkipMissingValues(AIndex: Integer): Boolean; override;
     function ToolTargetDistance(const AParams: TNearestPointParams;
       AGraphPt: TDoublePoint; APointIdx, AXIdx, AYIdx: Integer): Integer; override;
@@ -243,7 +243,7 @@ type
     function GetColor(AIndex: Integer): TColor; inline;
     function GetVectorPoints(AIndex: Integer;
       out AStartPt, AEndPt: TDoublePoint): Boolean; inline;
-    class procedure GetXYCountNeeded(out AXCount, AYCount: Integer); override;
+    class procedure GetXYCountNeeded(out AXCount, AYCount: Cardinal); override;
   public
     procedure Assign(ASource: TPersistent); override;
     constructor Create(AOwner: TComponent); override;
@@ -515,7 +515,7 @@ var
   irect: TRect;
   dummyR: TRect = (Left:0; Top:0; Right:0; Bottom:0);
   ext: TDoubleRect;
-  nx, ny: Integer;
+  nx, ny: Cardinal;
 begin
   GetXYCountNeeded(nx, ny);
   if Source.YCount < ny then exit;
@@ -721,7 +721,7 @@ begin
   Result := FBubbleBrush.Color;
 end;
 
-class procedure TBubbleSeries.GetXYCountNeeded(out AXCount, AYCount: Integer);
+class procedure TBubbleSeries.GetXYCountNeeded(out AXCount, AYCount: Cardinal);
 begin
   AXCount := 1;
   AYCount := 2;
@@ -982,7 +982,7 @@ var
   ext2: TDoubleRect;
   x, ymin, yqmin, ymed, yqmax, ymax, wb, ww, w: Double;
   i: Integer;
-  nx, ny: Integer;
+  nx, ny: Cardinal;
 begin
   GetXYCountNeeded(nx, ny);
   if IsEmpty or (Source.YCount < ny) then
@@ -1152,7 +1152,7 @@ begin
   Result := BoxBrush.Color;
 end;
 
-class procedure TBoxAndWhiskerSeries.GetXYCountNeeded(out AXCount, AYCount: Integer);
+class procedure TBoxAndWhiskerSeries.GetXYCountNeeded(out AXCount, AYCount: Cardinal);
 begin
   AXCount := 1;
   AYCount := 5;
@@ -1428,12 +1428,12 @@ procedure TOpenHighLowCloseSeries.Draw(ADrawer: IChartDrawer);
   end;
 
 var
-  my: Integer;
+  my: Cardinal;
   ext2: TDoubleRect;
   i: Integer;
   x, tw, yopen, yhigh, ylow, yclose: Double;
   p: TPen;
-  nx, ny: Integer;
+  nx, ny: Cardinal;
 begin
   GetXYCountNeeded(nx, ny);
   if (Source.XCount < nx) or (Source.YCount < ny) then exit;
@@ -1596,7 +1596,7 @@ begin
   Result := LinePen.Color;
 end;
 
-class procedure TOpenHighLowCloseSeries.GetXYCountNeeded(out AXCount, AYCount: Integer);
+class procedure TOpenHighLowCloseSeries.GetXYCountNeeded(out AXCount, AYCount: Cardinal);
 begin
   AXCount := 1;
   AYCount := 4;
@@ -1814,7 +1814,7 @@ var
   i: Integer;
   p1, p2: TDoublePoint;
   lPen: TPen;
-  nx, ny: Integer;
+  nx, ny: Cardinal;
 begin
   GetXYCountNeeded(nx, ny);
   if (Source.XCount < nx) or (Source.YCount < ny) then exit;
@@ -2001,7 +2001,7 @@ begin
   end;
 end;
 
-class procedure TFieldSeries.GetXYCountNeeded(out AXCount, AYCount: Integer);
+class procedure TFieldSeries.GetXYCountNeeded(out AXCount, AYCount: Cardinal);
 begin
   AXCount := 2;
   AYCount := 2;
