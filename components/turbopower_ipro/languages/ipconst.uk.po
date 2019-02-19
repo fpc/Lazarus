@@ -1,11 +1,11 @@
 # Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2016, 2017.
-# Олександр Пилипчук <lxlalexlxl@ukr.net>, 2017.
+# Олександр Пилипчук <lxlalexlxl@ukr.net>, 2017, 2019.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-11-16 19:19+0200\n"
-"Last-Translator: Олександр Пилипчук <lxlalexlxl@ukr.net>\n"
+"PO-Revision-Date: 2019-02-19 16:42+0200\n"
+"Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
@@ -410,14 +410,6 @@ msgid "Unsupported protocol in URL:%s"
 msgstr "Непідтримуваний протокол в URL:%s"
 
 #: ipconst.sicmpecho
-#, fuzzy
-#| msgid ""
-#| "Echo reply (Hop number: %d)\n"
-#| "             Status = %d\n"
-#| "             RTTime = %d\n"
-#| "             Ttl = %d\n"
-#| "             Tos = %d\n"
-#| "             IpFlags = %d\n"
 msgid ""
 "Echo reply (Hop number: %d)\n"
 "             Status = %d\n"
@@ -426,12 +418,12 @@ msgid ""
 "             Tos = %d\n"
 "             IpFlags = %d"
 msgstr ""
-"Ехо-відповіль (к-сть стрибків: %d)\n"
-"             Статус = %d\n"
+"Ехо-відповідь (к-сть стрибків: %d)\n"
+"             Стан = %d\n"
 "             RTTime = %d\n"
 "             Ttl = %d\n"
 "             Tos = %d\n"
-"             Прапорці IP = %d\n"
+"             Прапорці IP = %d"
 
 #: ipconst.sicmpechostring
 msgid "Echo string: %s"

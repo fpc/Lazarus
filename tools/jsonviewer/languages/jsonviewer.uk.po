@@ -1,10 +1,10 @@
-# Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2016, 2017, 2018.
+# Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2016, 2017, 2018, 2019.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-05-22 10:49+0200\n"
+"PO-Revision-Date: 2019-02-19 17:08+0200\n"
 "Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "MIME-Version: 1.0\n"
@@ -39,16 +39,12 @@ msgid "JSON document modified"
 msgstr "Документ JSON змінено"
 
 #: msgjsonviewer.sdocumentmodifiedaction
-#, fuzzy
-#| msgid ""
-#| "The JSON data in \"%s\" was changed but not saved.\n"
-#| "What do want to do ?\n"
 msgid ""
 "The JSON data in \"%s\" was changed but not saved.\n"
 "What do want to do ?"
 msgstr ""
 "Дані JSON в \"%s\" були змінені, але не збережені.\n"
-"Що треба зробити ?\n"
+"Що треба зробити ?"
 
 #: msgjsonviewer.sduplicatemembername
 msgid "Duplicate member name \"%s\"."

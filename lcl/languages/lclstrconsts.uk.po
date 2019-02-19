@@ -1,10 +1,10 @@
 # Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2016, 2017.
-# admin <lxlalexlxl@ukr.net>, 2017, 2018.
+# admin <lxlalexlxl@ukr.net>, 2017, 2018, 2019.
 msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-09-09 21:55+0200\n"
+"PO-Revision-Date: 2019-02-19 17:07+0200\n"
 "Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -1329,25 +1329,15 @@ msgid "%s bytes"
 msgstr "%s байтів"
 
 #: lclstrconsts.sshellctrlsinvalidpath
-#, fuzzy
-#| msgid ""
-#| "Invalid pathname:\n"
-#| "\"%s\"\n"
 msgctxt "lclstrconsts.sshellctrlsinvalidpath"
 msgid ""
 "Invalid pathname:\n"
 "\"%s\""
 msgstr ""
 "Хибний шлях:\n"
-"\"%s\"\n"
+"\"%s\""
 
 #: lclstrconsts.sshellctrlsinvalidpathrelative
-#, fuzzy
-#| msgid ""
-#| "Invalid relative pathname:\n"
-#| "\"%s\"\n"
-#| "in relation to rootpath:\n"
-#| "\"%s\"\n"
 msgid ""
 "Invalid relative pathname:\n"
 "\"%s\"\n"
@@ -1357,20 +1347,16 @@ msgstr ""
 "Хибний відносний шлях:\n"
 "\"%s\"\n"
 "відносно кореневого шляху:\n"
-"\"%s\"\n"
+"\"%s\""
 
 #: lclstrconsts.sshellctrlsinvalidroot
-#, fuzzy
-#| msgid ""
-#| "Invalid pathname:\n"
-#| "\"%s\"\n"
 msgctxt "lclstrconsts.sshellctrlsinvalidroot"
 msgid ""
 "Invalid pathname:\n"
 "\"%s\""
 msgstr ""
 "Хибний шлях:\n"
-"\"%s\"\n"
+"\"%s\""
 
 #: lclstrconsts.sshellctrlskb
 msgid "%s kB"
@@ -1385,16 +1371,12 @@ msgid "Name"
 msgstr "Назва"
 
 #: lclstrconsts.sshellctrlsselecteditemdoesnotexists
-#, fuzzy
-#| msgid ""
-#| "The selected item does not exist on disk:\n"
-#| "\"%s\"\n"
 msgid ""
 "The selected item does not exist on disk:\n"
 "\"%s\""
 msgstr ""
 "Вибраний елемент відсутній на диску:\n"
-"\"%s\"\n"
+"\"%s\""
 
 #: lclstrconsts.sshellctrlssize
 msgid "Size"

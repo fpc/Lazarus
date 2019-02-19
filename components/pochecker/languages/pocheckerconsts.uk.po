@@ -1,7 +1,7 @@
-# Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2017, 2018.
+# Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2017, 2018, 2019.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2018-04-25 18:39+0200\n"
+"PO-Revision-Date: 2019-02-19 16:39+0200\n"
 "Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
 "Language: uk\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -169,11 +169,6 @@ msgid "Duplicate Originals"
 msgstr "Повтори оригіналів"
 
 #: pocheckerconsts.serroroncleanup
-#, fuzzy
-#| msgid ""
-#| "An unrecoverable error occurred\n"
-#| "%s\n"
-#| "Please close the program\n"
 msgid ""
 "An unrecoverable error occurred\n"
 "%s\n"
@@ -181,19 +176,15 @@ msgid ""
 msgstr ""
 "Виникла критична помилка\n"
 "%s\n"
-"Закрийте програму\n"
+"Закрийте програму"
 
 #: pocheckerconsts.serroroncreate
-#, fuzzy
-#| msgid ""
-#| "Error creating an instance of TPoFamily:\n"
-#| "%s\n"
 msgid ""
 "Error creating an instance of TPoFamily:\n"
 "%s"
 msgstr ""
-"Помилка створення екземпляру TPoFamily:\n"
-"%s\n"
+"Помилка створення примірника TPoFamily:\n"
+"%s"
 
 #: pocheckerconsts.serrorsbytest
 msgid "Errors / warnings reported by %s for:"
@@ -204,16 +195,12 @@ msgid "File %s"
 msgstr "Файл %s"
 
 #: pocheckerconsts.sfilesnotfoundandremoved
-#, fuzzy
-#| msgid ""
-#| "The following non-existent files were removed from the list:\n"
-#| "%s\n"
 msgid ""
 "The following non-existent files were removed from the list:\n"
 "%s"
 msgstr ""
 "Такі відсутні файли були вилучені зі списку:\n"
-"%s\n"
+"%s"
 
 #: pocheckerconsts.sfuzzystrings
 msgid "Fuzzy strings"
@@ -292,24 +279,14 @@ msgid "Found %d warnings."
 msgstr "Виявлено %d попереджень."
 
 #: pocheckerconsts.sopenfail
-#, fuzzy
-#| msgid ""
-#| "Unable to open file:\n"
-#| "\"%s\"\n"
 msgid ""
 "Unable to open file:\n"
 "\"%s\""
 msgstr ""
 "Не вдалось відкрити файл:\n"
-"\"%s\"\n"
+"\"%s\""
 
 #: pocheckerconsts.sopenfailexternal
-#, fuzzy
-#| msgid ""
-#| "Unable to open file\n"
-#| "\"%s\"\n"
-#| "in external editor\n"
-#| "\"%s\"\n"
 msgid ""
 "Unable to open file\n"
 "\"%s\"\n"
@@ -319,7 +296,7 @@ msgstr ""
 "Не вдалось відкрити файл\n"
 "\"%s\"\n"
 "у зовнішньому редакторі\n"
-"\"%s\"\n"
+"\"%s\""
 
 #: pocheckerconsts.sopenfileinexternaleditor
 msgid "Open file in external editor"
@@ -378,16 +355,12 @@ msgid "Save &As ..."
 msgstr "Записати &як ..."
 
 #: pocheckerconsts.ssaveerror
-#, fuzzy
-#| msgid ""
-#| "Error saving file:\n"
-#| "%s\n"
 msgid ""
 "Error saving file:\n"
 "%s"
 msgstr ""
 "Помилка збереження файлу:\n"
-"%s\n"
+"%s"
 
 #: pocheckerconsts.sscandir
 msgid "Scan a folder"
@@ -414,12 +387,6 @@ msgid "Show statistics graph"
 msgstr "Показати статистичний графік"
 
 #: pocheckerconsts.sstathint
-#, fuzzy
-#| msgid ""
-#| "Translated: %d (%.1f%%)\n"
-#| "Untranslated: %d (%.1f%%)\n"
-#| "Fuzzy: %d (%.1f%%)\n"
-#| "Errors in selected tests: %d\n"
 msgid ""
 "Translated: %d (%.1f%%)\n"
 "Untranslated: %d (%.1f%%)\n"
@@ -429,7 +396,7 @@ msgstr ""
 "Перекладено: %d (%.1f%%)\n"
 "Не перекладено: %d (%.1f%%)\n"
 "Неточних: %d (%.1f%%)\n"
-"Помилок у вибраних тестах: %d\n"
+"Помилок у вибраних тестах: %d"
 
 #: pocheckerconsts.sthefollowingmissingmasterpofileswereremoved
 msgid "The following %s missing master .po file(s) were removed from the list:"

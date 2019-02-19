@@ -1,11 +1,11 @@
 # Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2017.
-# admin <lxlalexlxl@ukr.net>, 2017, 2018.
+# admin <lxlalexlxl@ukr.net>, 2017, 2018, 2019.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-08-21 22:15+0200\n"
+"PO-Revision-Date: 2019-02-19 16:42+0200\n"
 "Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "MIME-Version: 1.0\n"
@@ -398,7 +398,7 @@ msgstr "Трикутник з вершиною праворуч"
 
 #: tachartstrconsts.rssourcecounterror
 msgid "%0:s requires a chart source with at least %1:d %2:s value(s) per data point."
-msgstr ""
+msgstr "%0:s потребує джерела діаграми з принаймні %1:d %2:s значенням(и) на точку даних."
 
 #: tachartstrconsts.rsstarsymbol
 msgid "Star (lines)"

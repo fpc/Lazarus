@@ -1,16 +1,16 @@
-# Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2017.
+# Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2017, 2019.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Last-Translator: Olexandr Pylypchuk <pilipchukap@rambler.ru>\n"
-"PO-Revision-Date: 2017-05-16 11:08+0300\n"
+"Last-Translator: Olexandr Pylypchuk <lxlalexlxl@ukr.net>\n"
+"PO-Revision-Date: 2019-02-19 16:40+0200\n"
 "Project-Id-Version: \n"
-"Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
+"Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
 "Content-Transfer-Encoding: 8bit\n"
 "MIME-Version: 1.0\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Lokalize 1.5\n"
+"X-Generator: Lokalize 2.0\n"
 
 #: projectgroupstrconst.lisabort
 msgid "Abort"
@@ -61,11 +61,6 @@ msgid "Discard changes"
 msgstr "Відкинути зміни"
 
 #: projectgroupstrconst.liserrnosuchfile
-#, fuzzy
-#| msgid ""
-#| "Could not find target file\n"
-#| "\"%s\"\n"
-#| "What do you want to do?\n"
 msgid ""
 "Could not find target file\n"
 "\"%s\"\n"
@@ -73,7 +68,7 @@ msgid ""
 msgstr ""
 "Не знайдено цільового файлу\n"
 "\"%s\"\n"
-"Що ви бажаєте зробити?\n"
+"Що ви бажаєте зробити?"
 
 #: projectgroupstrconst.liserronlyprojectgroupallowed
 msgid "Only target type \"projectgroup\" is allowed for root project group."
@@ -229,16 +224,12 @@ msgid "Project group modified"
 msgstr "Групу проектів змінено"
 
 #: projectgroupstrconst.lisprojectgroupmodifiedconfirm
-#, fuzzy
-#| msgid ""
-#| "Project group \"%s\" is modified.\n"
-#| "What do you want to do?\n"
 msgid ""
 "Project group \"%s\" is modified.\n"
 "What do you want to do?"
 msgstr ""
 "Групу проектів \"%s\" було змінено.\n"
-"Що ви бажаєте зробити?\n"
+"Що ви бажаєте зробити?"
 
 #: projectgroupstrconst.lisprojectgroupreload
 msgid "Reload"
