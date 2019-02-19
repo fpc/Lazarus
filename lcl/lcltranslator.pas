@@ -539,15 +539,15 @@ begin
   LocalTranslator := nil;
   // search first po translation resources
   try
-     lcfn := FindLocaleFileName('.po', Lang, Dir, LocaleFileName);
-     if lcfn <> '' then
-     begin
-       Translations.TranslateResourceStrings(lcfn);
-       LocalTranslator := TPOTranslator.Create(lcfn);
-     end;
-   except
-     lcfn := '';
-   end;
+    lcfn := FindLocaleFileName('.po', Lang, Dir, LocaleFileName);
+    if lcfn <> '' then
+    begin
+      Translations.TranslateResourceStrings(lcfn);
+      LocalTranslator := TPOTranslator.Create(lcfn);
+    end;
+  except
+    lcfn := '';
+  end;
 
   if lcfn='' then
   begin
