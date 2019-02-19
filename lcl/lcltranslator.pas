@@ -254,7 +254,8 @@ var
     end;
 
     //master files have .pot extension
-    LCFileName := ChangeFileExt(GetLCFileName, '.pot');
+    if LCExt = '.po' then
+      LCFileName := ChangeFileExt(GetLCFileName, '.pot');
 
     Result := AppDir + LCFileName;
     if FileExistsUTF8(Result) then
@@ -530,7 +531,6 @@ procedure SetDefaultLang(Lang: string; Dir: string = ''; LocaleFileName: string 
     called from unit Initialization section. User code normally should not specify it.
 }
 var
-  Dot1: integer;
   LCLPath, lcfn: string;
   LocalTranslator: TUpdateTranslator;
   i: integer;
@@ -543,14 +543,6 @@ begin
      if lcfn <> '' then
      begin
        Translations.TranslateResourceStrings(lcfn);
-       LCLPath := ExtractFileName(lcfn);
-       Dot1 := pos('.', LCLPath);
-       if Dot1 > 1 then
-       begin
-         Delete(LCLPath, 1, Dot1 - 1);
-         LCLPath := ExtractFilePath(lcfn) + 'lclstrconsts' + LCLPath;
-         Translations.TranslateUnitResourceStrings('LCLStrConsts', LCLPath);
-       end;
        LocalTranslator := TPOTranslator.Create(lcfn);
      end;
    except
@@ -565,19 +557,23 @@ begin
       if lcfn <> '' then
       begin
         GetText.TranslateResourceStrings(UTF8ToSys(lcfn));
-        LCLPath := ExtractFileName(lcfn);
-        Dot1 := pos('.', LCLPath);
-        if Dot1 > 1 then
-        begin
-          Delete(LCLPath, 1, Dot1 - 1);
-          LCLPath := ExtractFilePath(lcfn) + 'lclstrconsts' + LCLPath;
-          if FileExistsUTF8(LCLPath) then
-            GetText.TranslateResourceStrings(UTF8ToSys(LCLPath));
-        end;
         LocalTranslator := TDefaultTranslator.Create(lcfn);
       end;
     except
       lcfn := '';
+    end;
+  end;
+
+  if lcfn<>'' then
+  begin
+    LCLPath:=FindLocaleFileName('.po', Lang, ExtractFilePath(lcfn), 'lclstrconsts');
+    if LCLPath<>'' then
+      Translations.TranslateUnitResourceStrings('LCLStrConsts', LCLPath)
+    else
+    begin
+      LCLPath:=FindLocaleFileName('.mo', Lang, ExtractFilePath(lcfn), 'lclstrconsts');
+      if LCLPath<>'' then
+        GetText.TranslateResourceStrings(UTF8ToSys(LCLPath));
     end;
   end;
 
