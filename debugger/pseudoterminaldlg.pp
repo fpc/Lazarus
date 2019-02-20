@@ -199,8 +199,8 @@ procedure TPseudoConsoleDlg.DoClose(var CloseAction: TCloseAction);
 begin
 {$IFDEF DBG_ENABLE_TERMINAL}
   if integer(ttyHandle) >= 0 then begin
-    FileClose(ttyHandle);
-    ttyHandle := handleUnopened
+    //(ttyHandle);
+    // := handleUnopened
   end;
 {$ENDIF DBG_ENABLE_TERMINAL}
   inherited DoClose(CloseAction);
@@ -320,10 +320,11 @@ begin
 (* handle it immediately. MarkMLl (so you know who to kick).                    *)
 
     if fpioctl(ttyHandle, TIOCSWINSZ, @winSize) < 0 then begin
-      fileclose(ttyHandle);
+      //fileclose(ttyHandle);
       DebugLn(DBG_WARNINGS, ['TPseudoConsoleDlg.AddOutput Write failed, closed handle']);
-      ttyHandle := THandle(-1)      (* Attempted ioctl() failed                 *)
-    end;
+      //ttyHandle := THandle(-1)      (* Attempted ioctl() failed                 *)
+    end
+    else
     if integer(ttyHandle) >= 0 then begin (* Handle not closed by error         *)
 {$IFDEF SEND_EXPLICIT_SIGNAL }
 {$WARNING TPseudoConsoleDlg.consoleSizeChanged: Explicit signal untested }
