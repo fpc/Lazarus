@@ -788,9 +788,9 @@ begin
     exit;
   GetXYCountNeeded(nx, ny);
   if ASource.XCount < nx then
-    raise EXCountError.CreateFmt(rsSourceCountError, [ClassName, nx, 'x'])
-  else if ASource.YCount < ny then
-    raise EYCountError.CreateFmt(rsSourceCountError, [ClassName, ny, 'y']);
+    raise EXCountError.CreateFmt(rsSourceCountError, [ClassName, nx, 'X']);
+  if ASource.YCount < ny then
+    raise EYCountError.CreateFmt(rsSourceCountError, [ClassName, ny, 'Y']);
 end;
 
 procedure TChartSeries.Clear;
@@ -817,11 +817,9 @@ begin
   inherited Create(AOwner);
 
   FListener := TListener.Create(@FSource,  @SourceChanged);
-  FBuiltinSource := TListChartSource.Create(Self);
-  FBuiltinSource.Name := BUILTIN_SOURCE_NAME;
   GetXYCountNeeded(nx, ny);
-  FBuiltinSource.XCount := nx;
-  FBuiltinSource.YCount := ny;
+  FBuiltinSource := TListChartSource.Create(Self, nx, ny);
+  FBuiltinSource.Name := BUILTIN_SOURCE_NAME;
   FBuiltinSource.Broadcaster.Subscribe(FListener);
   FMarks := TChartMarks.Create(FChart);
   FStylesListener := TListener.Create(@FStyles,  @StyleChanged);
@@ -1125,7 +1123,12 @@ end;
 procedure TChartSeries.SourceChanged(ASender: TObject);
 begin
   if ASender is TCustomChartSource then
-    CheckSource(TCustomChartSource(ASender));
+    try
+      CheckSource(TCustomChartSource(ASender));
+    except
+      Source := nil; // revert to built-in source
+      raise;
+    end;
   StyleChanged(ASender);
 end;
 

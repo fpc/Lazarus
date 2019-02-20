@@ -23,6 +23,8 @@ type
 
   TListChartSource = class(TCustomChartSource)
   private
+    FXCountMin: Cardinal;
+    FYCountMin: Cardinal;
     FData: TFPList;
     FDataPoints: TStrings;
     FSorted: Boolean;
@@ -44,7 +46,8 @@ type
       EXListEmptyError = class(EChartError);
       EYListEmptyError = class(EChartError);
   public
-    constructor Create(AOwner: TComponent); override;
+    constructor Create(AOwner: TComponent); override; overload;
+    constructor Create(AOwner: TComponent; AXCountMin, AYCountMin: Cardinal); overload;
     destructor Destroy; override;
   public
     function Add(
@@ -247,7 +250,7 @@ procedure Register;
 implementation
 
 uses
-  Math, StrUtils, SysUtils, TAMath;
+  Math, StrUtils, SysUtils, TAMath, TAChartStrConsts;
 
 type
 
@@ -467,6 +470,11 @@ procedure TListChartSource.CopyFrom(ASource: TCustomChartSource);
 var
   i: Integer;
 begin
+  if ASource.XCount < FXCountMin then
+    raise EXCountError.CreateFmt(rsSourceCountError2, [ClassName, FXCountMin, 'X']);
+  if ASource.YCount < FYCountMin then
+    raise EYCountError.CreateFmt(rsSourceCountError2, [ClassName, FYCountMin, 'Y']);
+
   BeginUpdate;
   try
     Clear;
@@ -490,6 +498,17 @@ begin
   FData := TFPList.Create;
   FDataPoints := TListChartSourceStrings.Create(Self);
   ClearCaches;
+end;
+
+constructor TListChartSource.Create(AOwner: TComponent; AXCountMin, AYCountMin: Cardinal);
+begin
+  Create(AOwner);
+  FXCountMin := AXCountMin;
+  FYCountMin := AYCountMin;
+  if FXCount < FXCountMin then
+    FXCount := FXCountMin;
+  if FYCount < FYCountMin then
+    FYCount := FYCountMin;
 end;
 
 procedure TListChartSource.Delete(AIndex: Integer);
@@ -580,10 +599,13 @@ procedure TListChartSource.SetXCount(AValue: Cardinal);
 var
   i: Integer;
 begin
+  if AValue < FXCountMin then
+    raise EXCountError.CreateFmt(rsSourceCountError2, [ClassName, FXCountMin, 'X']);
   if AValue = FXCount then exit;
   FXCount := AValue;
   for i := 0 to Count - 1 do
     SetLength(Item[i]^.XList, Max(FXCount - 1, 0));
+  Notify;
 end;
 
 procedure TListChartSource.SetXList(
@@ -654,10 +676,13 @@ procedure TListChartSource.SetYCount(AValue: Cardinal);
 var
   i: Integer;
 begin
+  if AValue < FYCountMin then
+    raise EYCountError.CreateFmt(rsSourceCountError2, [ClassName, FYCountMin, 'Y']);
   if AValue = FYCount then exit;
   FYCount := AValue;
   for i := 0 to Count - 1 do
     SetLength(Item[i]^.YList, Max(FYCount - 1, 0));
+  Notify;
 end;
 
 procedure TListChartSource.SetYList(

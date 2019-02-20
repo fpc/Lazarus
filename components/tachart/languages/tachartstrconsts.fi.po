@@ -384,7 +384,11 @@ msgid "Right triangle"
 msgstr ""
 
 #: tachartstrconsts.rssourcecounterror
-msgid "%0:s requires a chart source with at least %1:d %2:s value(s) per data point."
+msgid "%0:s requires a chart source with at least %1:d \"%2:s\" value(s) per data point."
+msgstr ""
+
+#: tachartstrconsts.rssourcecounterror2
+msgid "This %0:s instance must have at least %1:d \"%2:s\" value(s) per data point."
 msgstr ""
 
 #: tachartstrconsts.rsstarsymbol
