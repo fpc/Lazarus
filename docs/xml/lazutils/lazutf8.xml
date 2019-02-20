@@ -2,760 +2,2179 @@
 <fpdoc-descriptions>
   <package name="lazutils">
     <!--
-  ====================================================================
-    LazUTF8
-  ====================================================================
--->
+    ====================================================================
+      LazUTF8
+    ====================================================================
+    -->
     <module name="LazUTF8">
-      <short/>
-      <descr/>
+      <short>
+        Routines for managing UTF-8-encoded strings
+      </short>
+      <descr>
+        lazutf.pas contains useful routines for managing UTF-8-encoded strings. All routines are thread-safe unless explicitly stated.
+      </descr>
+
+      <!-- unresolved externals -->
+      <element name="cwstring"/>
+      <element name="FPCAdds"/>
+      <element name="Windows"/>
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="strutils"/>
+
       <!-- function Visibility: default -->
       <element name="NeedRTLAnsi">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          Indicates if the OS requires use of AnsiToUTF8 and UTF8ToAnsi for the RTL
+        </short>
+        <descr>
+          <p>
+            NeedRTLAnsi is a Boolean function that indicates if the OS requires use of AnsiToUTF8 and UTF8ToAnsi for the RTL. AnsiToUTF8 and UTF8ToAnsi need a widestring manager under Linux, BSD, and MacOSX. Normally these OS's use UTF-8 as the system encoding so the WideStringManager is not needed.
+          </p>
+          <p>
+            For the Windows environment, NeedRTLAnsi is True if the system code page is not CP_UTF8. For UNIX-like environments, NeedRTLAnsi is True when any of the  LC_ALL, LC_MESSAGES, or LANG environment variables contain a language code other than UTF-8.
+          </p>
+        </descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="NeedRTLAnsi.Result">
-        <short/>
+        <short>True when a WideStringManager is needed for the OS</short>
       </element>
+
       <!-- procedure Visibility: default -->
       <element name="SetNeedRTLAnsi">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Sets the value for the unit global variable</short>
+        <descr></descr>
+        <seealso>
+          <link id="NeedRTLAnsi">NeedRTLAnsi</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="SetNeedRTLAnsi.NewValue">
-        <short/>
+        <short>New value for the variable</short>
       </element>
+
       <!-- function Visibility: default -->
       <element name="UTF8ToSys">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          Ensures UTF-8 characters (or format settings) are converted to the system code page
+        </short>
+        <descr>
+          <p>
+            UTF8ToSys is an overloaded function used to convert the specified string value (or format settings) to the system codepage for the platform. UTF8ToSys works like UTF8ToAnsi, but is more independent of WideStringManager. For platforms where UTF8_RTL is not defined, and NeedRTLAnsi returns True, UTF8ToAnsi is called to convert non-ASCII values in s. For platforms where UTF8_RTL is defined, the value in s is used without modification.
+          </p>
+          <p>
+            An overloaded variant of the function handles TFormatSettings for the platform. The return value for the function is the specified values in AFormatSettings after being updated to reflect the system codepage for the platform. For platforms where UTF8_RTL is not defined, the values in the following format settings are updated: CurrencyString, LongMonthNames, ShortMonthNames, LongDayNames, and ShortDayNames. No action are needed for platforms where UTF8_RTL is defined.
+          </p>
+        </descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="UTF8ToSys.Result">
-        <short/>
+        <short>Value for the string after conversion</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="UTF8ToSys.s">
-        <short/>
+        <short>Value to examine in the function</short>
       </element>
+      <!-- argument Visibility: default -->
+      <element name="UTF8ToSys.AFormatSettings">
+        <short>Format settings to examine in the function</short>
+      </element>
+
       <!-- function Visibility: default -->
       <element name="SysToUTF8">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          Converts strings (and format settings) from the system codepage to UTF-8
+        </short>
+        <descr>
+          <p>
+            SysToUTF8 is an overloaded function used to convert strings (and format settings) from the system codepage to UTF-8. SysToUTF8 works like AnsiToUTF8, but has no reliance on the widestring manager on platforms where UTF8_RTL is defined. For platforms where UTF8_RTL is not defined, and NeedRTLAnsi contains True, non-ASCII values are converted to UTF-8 by calling  AnsiToUTF8.
+          </p>
+          <p>
+            An overloaded variant of the function handles TFormatSettings for the platform. The return value for the function is the specified values in AFormatSettings after conversion from the system codepage to UTF-8. The values in the following format settings are updated: CurrencyString, LongMonthNames, ShortMonthNames, LongDayNames, and ShortDayNames.
+          </p>
+        </descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="SysToUTF8.Result">
-        <short/>
+        <short>Values after conversion to UTF-8</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="SysToUTF8.s">
-        <short/>
+        <short>Values to examine in the function</short>
       </element>
+      <!-- argument Visibility: default -->
+      <element name="SysToUTF8.AFormatSettings">
+        <short>Format settings to examine in the function</short>
+      </element>
+
+      <element name="ConsoleToUTF8">
+        <short>
+          Converts an OEM-encoded string to UTF8
+        </short>
+        <descr>
+          <p>
+            ConsoleToUTF8 is a String function used to converts an OEM-encoded string to UTF8. The implementation of ConsoleToUTF8 is OS-specific, and essentially handles differences between various Windows platforms where use of OemToChar and WinCPToUTF8 are required. For UNIX-like environments, the value in s is converted by calling SysToUTF8.
+          </p>
+          <p>
+            ConsoleToUTF8 is used in the implementation of the GetEnvironmentStringUTF8 and
+            GetEnvironmentVariableUTF8 functions.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="ConsoleToUTF8.Result">
+        <short>UTF-8-encode value for the string</short>
+      </element>
+      <element name="ConsoleToUTF8.s">
+        <short>Value to convert in the function</short>
+      </element>
+
+      <element name="UTF8ToConsole">
+        <short>
+          Converts a UTF-8-encoded  string to console (OEM) encoding
+        </short>
+        <descr>
+          <p>
+            UTF8ToConsole converts a UTF-8-encoded string to console (OEM) encoding as used in Write and  WriteLn. The implementation is platform specific. In the Windows environment, either UTF8ToSys or UTF8ToWinCP is used to convert the value to the Codepage or character set needed in RTL. The Windows CharToOem API is used to prepare the return value. In UNIX-like environments, UTF8ToSys is used to get the return value .
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="UTF8ToConsole.Result">
+        <short>OEM-encoded value for the string</short>
+      </element>
+      <element name="UTF8ToConsole.s">
+        <short>UTF-8-encode input values</short>
+      </element>
+
+      <element name="WinCPToUTF8">
+        <short>
+          Converts the string from Windows code page to UTF-8
+        </short>
+        <descr>
+          <p>
+            Converts the string from Windows code page to UTF-8. Used with some Windows-specific functions. For all Windows versions supporting 8-bit codepages (e.g. not WinCE).
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="WinCPToUTF8.Result">
+        <short>UTF-8-encoded values for the string</short>
+      </element>
+      <element name="WinCPToUTF8.s">
+        <short>Input values in Windows codepage encoding</short>
+      </element>
+
+      <element name="UTF8ToWinCP">
+        <short>
+          Converts the UTF-8-encoded string to the Windows code page encoding
+        </short>
+        <descr>
+          <p>
+            Converts the UTF-8-encoded string to the Windows code page encoding Used by Write, WriteLn.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="UTF8ToWinCP.Result">
+        <short>UTF-8-encoded input values</short>
+      </element>
+      <element name="UTF8ToWinCP.s">
+        <short>Values in the Windows codepage encoding</short>
+      </element>
+
+      <element name="ParamStrUTF8">
+        <short>
+          Converts the specified command line parameter to a UTF-8-encoded string
+        </short>
+        <descr>
+          <p>
+            ParamStrUTF8 is a String function used to convert the specified command line parameter to a UTF-8-encoded string. The implementation for ParamStrUTF8 is OS- or platform-specific. For UNIX-like environments, SysToUTF8 is called to convert the value for the command line parameter at the position in Param. For Windows platforms like WinCE,  the stub for the Ansi or WideString version of ParamStr is called.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#rtl.ObjPas.ParamStr">ObjPas.ParamStr</link>
+        </seealso>
+      </element>
+      <element name="ParamStrUTF8.Result">
+        <short>UTF-8-encoded value for the command line parameter</short>
+      </element>
+      <element name="ParamStrUTF8.Param">
+        <short>Ordinal position of the command line parameter</short>
+      </element>
+
+      <element name="GetFormatSettingsUTF8">
+        <short>
+          Gets the TFormatSettings for the platform
+        </short>
+        <descr>
+          GetFormatSettingsUTF8 is a procedure used to get the TFormatSettings for the Local or Language Code for the platform. GetFormatSettingsUTF8 is defined for Windows environments only, and calls GetLocaleFormatSettingsUTF8 using the ThreadLocal or Language Code ID needed for the platform.
+        </descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="GetLocaleFormatSettingsUTF8">
+        <short>
+        </short>
+        <descr>
+          <p>
+            GetLocaleFormatSettingsUTF8 is a procedure used to get the TFormatSettings for the Local or Language Code for the platform. GetFormatSettingsUTF8 is defined for Windows environments only. GetLocaleFormatSettingsUTF8 ensures that values in the format settings use the Language Code ID for the platform. The following format settings are converted to their Locale-specific values:
+          </p>
+          <ul>
+            <li>ShortMonthNames</li>
+            <li>LongMonthNames</li>
+            <li>ShortDayName</li>
+            <li>LongDayName</li>
+            <li>DateSeparator</li>
+            <li>ShortDateFormat</li>
+            <li>LongDateFormat</li>
+            <li>TimeSeparator</li>
+            <li>TimeAMString</li>
+            <li>TimePMString</li>
+            <li>ShortTimeFormat</li>
+            <li>LongTimeFormat</li>
+            <li>CurrencyString</li>
+            <li>CurrencyFormat</li>
+            <li>NegCurrFormat</li>
+            <li>ThousandSeparator</li>
+            <li>DecimalSeparator</li>
+            <li>CurrencyDecimals</li>
+            <li>ListSeparator</li>
+          </ul>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="GetLocaleFormatSettingsUTF8.LCID">
+        <short>Language Code ID</short>
+      </element>
+      <element name="GetLocaleFormatSettingsUTF8.AFormatSettings">
+        <short>The locale-specific format settings for the platform</short>
+      </element>
+
+      <element name="GetEnvironmentVariableCountUTF8">
+        <short>
+          Returns the number of system environment variables.
+        </short>
+        <descr>
+          Returns the number of system environment variables. Use together with GetEnvironmentStringUTF8.
+        </descr>
+      </element>
+      <element name="GetEnvironmentVariableCountUTF8.Result">
+        <short></short>
+      </element>
+
+      <element name="GetEnvironmentStringUTF8">
+        <short>
+          Returns a system environment string.
+        </short>
+        <descr>
+          Returns a system environment string stored at the specified position. The value in Index is in the range 1..GetEnvironmentVariableCountUTF8. On Unix and Windows the string often has the form 'name=value'. Beware that Windows knows some special formats, e.g. '=C:=SomePath'. Use GetEnvironmentVariableUTF8 to lookup environment values by name.
+        </descr>
+      </element>
+      <element name="GetEnvironmentStringUTF8.Result">
+        <short>Value for the environment variable at the specified position</short>
+      </element>
+      <element name="GetEnvironmentStringUTF8.Index">
+        <short>Position for the environment variable</short>
+      </element>
+
+      <element name="GetEnvironmentVariableUTF8">
+        <short>
+          Returns the value of a system environment variable
+        </short>
+        <descr>
+          Returns the value of a environment variable stored in the form 'EnvVar=value'. See GetEnvironmentStringUTF8 to retrieve the whole list of environment strings.
+        </descr>
+      </element>
+      <element name="GetEnvironmentVariableUTF8.Result">
+        <short></short>
+      </element>
+      <element name="GetEnvironmentVariableUTF8.EnvVar">
+        <short></short>
+      </element>
+
+      <element name="SysErrorMessageUTF8">
+        <short>
+          Gets the UTF-8-encoded system error message for the specified error code
+        </short>
+        <descr>
+          <p>
+            SysErrorMessageUTF8 used to get the UTF-8-encoded system error message for the specified error code. SysErrorMessageUTF8 calls the SysUtils.SysErrorMessage function and converts the error message using SysToUTF8.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="SysErrorMessageUTF8.Result">
+        <short>UTF-8-encoded value for the system error message</short>
+      </element>
+      <element name="SysErrorMessageUTF8.ErrorCode">
+        <short>Numeric system error code for the message</short>
+      </element>
+
+      <element name="UTF8CodepointSize">
+        <short>
+          Returns the size of the UTF-8 codepoint in bytes
+        </short>
+        <descr>
+          <p>
+            Returns the size of the UTF-8 codepoint in bytes. The return value is for a single codepoint.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="UTF8CodepointSize.Result">
+        <short>Number of bytes for the codepoint</short>
+      </element>
+      <element name="UTF8CodepointSize.p">
+        <short>UTF-8-encoded value to examine in the function</short>
+      </element>
+
+      <element name="UTF8CodepointSizeFast">
+        <short>
+          Fast version of UTF8CodepointSize
+        </short>
+        <descr>
+          <p>
+            Fast version of UTF8CodepointSize. Assumes the UTF-8 codepoint is valid. The return value is for a single codepoint.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="UTF8CodepointSizeFast.Result">
+        <short>Number of bytes for the codepoint</short>
+      </element>
+      <element name="UTF8CodepointSizeFast.p">
+        <short>Encoded values to examine in the function</short>
+      </element>
+
       <!-- function Visibility: default -->
       <element name="UTF8CharacterLength">
-        <short>Returns the number of bytes of the codepoint starting at p</short>
-        <descr>It returns 0 if p is nil.
-It returns 1 if p is a 1-byte UTF-8 codepoint or p is an invalid UTF-8 sequence.
-Otherwise it returns a number 2..4. 
-
-It does not check for malicious codepoints like #$c0#$80, nor for non defined codepoints like #$f3#$a0#$87#$b9.
-
-Use UTF8CharacterLength to step through a string with a simple loop:
-<br/>                                                                            
-while p^&lt;&gt;#0 do begin<br/>                                                                                                            
-  inc(p,UTF8CharacterLength(p));<br/>
-end;<br/>
-
-Even if p contains invalid UTF-8 it will run through the string without overflow.</descr>
-        <errors/>
-        <seealso>UTF8CharacterStrictLength</seealso>
+        <short>
+          Returns the number of bytes for the codepoint starting at p
+        </short>
+        <descr>
+          <remark>
+            Deprecated. Use UTF8CodepointSize instead.
+          </remark>
+            <p>
+              It returns 0 if p is nil. It returns 1 if p is a 1-byte UTF-8 codepoint or p is an invalid UTF-8 sequence. Otherwise it returns a number 2..4. It does not check for malicious codepoints like #$c0#$80, nor for undefined codepoints like #$f3#$a0#$87#$b9. Use UTF8CharacterLength to step through a string with a simple loop:
+            </p>
+            <code>
+              while p^ &lt;&gt; #0 do
+              begin
+                inc(p, UTF8CharacterLength(p));
+              end;
+            </code>
+            <p>
+              Even if p contains invalid UTF-8 it will run through the string without overflow.
+            </p>
+        </descr>
+        <errors></errors>
+        <seealso>
+          <link id="UTF8CharacterStrictLength">UTF8CharacterStrictLength</link>
+        </seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="UTF8CharacterLength.Result">
-        <short/>
+        <short></short>
       </element>
       <!-- argument Visibility: default -->
       <element name="UTF8CharacterLength.p">
-        <short/>
+        <short></short>
       </element>
+
       <!-- function Visibility: default -->
       <element name="UTF8Length">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          Gets the length of a UTF-8-encoded string in codepoints
+        </short>
+        <descr>
+          <p>
+            UTF8Length is a function used to get the character length for the specified UTF-8-encoded string. The return value contains the number of UTF-8-encoded characters (or codepoints) found in the byte values for the string.
+          </p>
+          <p>
+            An overloaded variant of the function is provided which uses the PChar type to access the byte values in the string.
+          </p>
+        </descr>
+        <seealso></seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="UTF8Length.Result">
-        <short/>
+        <short>Number of codepoints in the byte values for the string</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="UTF8Length.s">
-        <short/>
+        <short>UTF-8-encoded string to examine in the function</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="UTF8Length.p">
-        <short/>
+        <short>Pointer to the UTF-8-encoded string to examine in the function</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="UTF8Length.ByteCount">
-        <short/>
+        <short>Number of byte values in the UTF-8-encoded string</short>
       </element>
+
+      <element name="UTF8LengthFast">
+        <short>
+          Fast version of UTF8Length
+        </short>
+        <descr>
+          <p>
+            UTF8LengthFast gets the length of a UTF-8-encoded string in codepoints (or characters). UTF8LengthFast is the fast version of UTF8Length. It does not call the UTF8CodepointSize function. The UTF-8-encoded data is assumed to be valid. The native data size for the CPU is used to process blocks of UTF-8-encoded data. For a 64-bit CPU, this means that 8 bytes are read an processed at once.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="UTF8LengthFast.Result">
+        <short>Number of codepoints in the string</short>
+      </element>
+      <element name="UTF8LengthFast.s">
+        <short>String with UTF-8-encoded values</short>
+      </element>
+      <element name="UTF8LengthFast.p">
+        <short>Pointer to the String with UTF-8-encoded values</short>
+      </element>
+      <element name="UTF8LengthFast.ByteCount">
+        <short>Number of byte values in the UTF-8-encoded string</short>
+      </element>
+
+      <element name="UTF8CodepointToUnicode">
+          Converts a UTF-8-encoded character to its unique Unicode U+XXXX character value
+          <short>
+        </short>
+        <descr>
+          <p>
+            UTF8CodepointToUnicode is a Cardinal function used to convert a UTF-8-encoded character to its representation as a unique Unicode U+XXXX hexadecimal character value. For example:  The letter 'A' (Decimal 65) is expressed in Unicode as U+0041.
+          </p>
+          <p>
+            CodepointLen is an output variable used to store the number of UTF-8-encoded bytes needed for the codepoint. It will normally contain a value in the range 1..4 (the number of possible bytes used in UTF-8 encoding). It can contain 0 (zero) when p is an empty PChar value.
+          </p>
+          <p>
+            The return value for the function contains the hexadecimal Unicode character value as a Cardinal data type. It can contain 0 (zero) when the value in p is not a valid UTF-8-encoded character. Use UTF8FixBroken to fix invalid UTF-8 encoding in the string.
+          </p>
+          <p>
+            Use UnicodeToUTF8 to convert a Unicode character value to its UTF-8-encoded value.
+          </p>
+          <remark>
+            UTF8CodepointToUnicode does not check whether the codepoint is actually defined in the Unicode tables.
+          </remark>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="UTF8CodepointToUnicode.Result">
+        <short>Unicode character value for the UTF-8 character</short>
+      </element>
+      <element name="UTF8CodepointToUnicode.p">
+        <short>The UTF-8-encode string value</short>
+      </element>
+      <element name="UTF8CodepointToUnicode.CodepointLen">
+        <short>Number of bytes needed for the codepoint</short>
+      </element>
+
       <!-- function Visibility: default -->
       <element name="UTF8CharacterToUnicode">
-        <short>Returns the codepoint at p and the number of bytes to skip.</short>
-        <descr>If p=nil then CharLen and result are 0 otherwise CharLen&gt;0.
-If there is an encoding error the Result is 0 and CharLen=1 to skip forward. It is safe to do:
-
-var s: string;
-
-p:=1;
-while p&lt;=length(s) do begin
-  UTF8CharacterToUnicode(@s[p],CharLen);
-  inc(p,CharLen);
-end;
-
-For speed reasons this function only checks for 1,2,3,4 byte encoding errors. Especially it does not check if the codepoint is defined in the unicode table.</descr>
-        <errors/>
-        <seealso/>
+        <short>
+          Returns the codepoint at p and the number of bytes to skip
+        </short>
+        <descr>
+          <remark>
+            Deprecated. Use Use UTF8CodepointToUnicode instead.
+          </remark>
+          <p>
+            If p=nil then CharLen and result are 0 otherwise CharLen&gt;0. If there is an encoding error the Result is 0 and CharLen=1 to skip forward. It is safe to do:
+          </p>
+          <code>
+            var
+              s: string;
+              p:=1;
+            while p &lt;= length(s) do
+            begin
+              UTF8CharacterToUnicode(@s[p], CharLen);
+              inc(p, CharLen);
+            end;
+          </code>
+          <p>
+            For speed reasons, this function only checks for 1, 2, 3, or 4 byte encoding errors. It does not check whether the codepoint is defined in the Unicode table.
+          </p>
+        </descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="UTF8CharacterToUnicode.Result">
-        <short/>
+        <short></short>
       </element>
       <!-- argument Visibility: default -->
       <element name="UTF8CharacterToUnicode.p">
-        <short/>
+        <short></short>
       </element>
       <!-- argument Visibility: default -->
       <element name="UTF8CharacterToUnicode.CharLen">
-        <short/>
+        <short></short>
       </element>
+
       <!-- function Visibility: default -->
       <element name="UnicodeToUTF8">
-        <short>Encodes the given code point as an UTF-8 sequence of 1 to 4 bytes.</short>
-        <descr>It does not add a #0.
-The code point is not encoded, aka in UTF32.</descr>
-        <errors/>
-        <seealso/>
+        <short>
+          Encodes the given code point as an UTF-8 sequence of 1 to 4 bytes
+        </short>
+        <descr>
+          <p>
+            UnicodeToUTF8 is an Integer function used to convert the Unicode character value in CodePoint to the sequence of bytes needed for the UTF-8 encoding. UnicodeToUTF8 stores the UTF-8-encode byte values for the Unicode character in Buf.
+          </p>
+          <p>
+            The return value contains the number of bytes required for the UTF-8-encoded value (in the range 1..4). If it contains 0 (zero), the Unicode codepoint was invalid and an Exception is raised.
+          </p>
+          <remark>
+            UnicodeToUTF8 does not process #0 byte values for the codepoint, as done for UTF-32.
+          </remark>
+        </descr>
+        <errors>
+          <p>
+            Raises an Exception when CodePoint is an invalid Unicode character value. Raised with the message 'UnicodeToUTF8: invalid Unicode: XXXXXXXX'.
+          </p>
+        </errors>
+        <seealso></seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="UnicodeToUTF8.Result">
-        <short/>
+        <short>Number of bytes needed for the UTF-8-encode value</short>
       </element>
       <!-- argument Visibility: default -->
-      <element name="UnicodeToUTF8.u">
-        <short/>
+      <element name="UnicodeToUTF8.Codepoint">
+        <short>Unicode character value to convert in the function</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="UnicodeToUTF8.Buf">
-        <short/>
+        <short>Stores the UTF-8-encoded byte values for the codepoint</short>
       </element>
+
       <!-- function Visibility: default -->
       <element name="UnicodeToUTF8SkipErrors">
-        <short>Simple and fast function to write a single unicode codepoint as UTF-8 to Buf and returns the number of bytes written</short>
-        <descr>It does not append a #0.
-It does not check if it is the codepoint actually exists in unicode tables.
-It returns 0 if the codepoint can not be represented as a 1 to 4 byte UTF-8 sequence.</descr>
-        <errors/>
-        <seealso/>
+        <short>
+          Stores a single Unicode codepoint as a UTF-8-encoded value in the buffer
+        </short>
+        <descr>
+          UnicodeToUTF8SkipErrors is a simple and fast function used to write a single Unicode codepoint as UTF-8 to Buf, and returns the number of bytes written. It does not append a #0. It does not check if it is the codepoint actually exists in Unicode tables. It returns 0 if the codepoint can not be represented as a 1 to 4 byte UTF-8 sequence.
+         </descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="UnicodeToUTF8SkipErrors.Result">
-        <short/>
+        <short>UTF-8-encoded value for the codepoint</short>
       </element>
       <!-- argument Visibility: default -->
-      <element name="UnicodeToUTF8SkipErrors.u">
-        <short/>
+      <element name="UnicodeToUTF8SkipErrors.Codepoint">
+        <short>Codepoint (Unicode character) to convert in the function</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="UnicodeToUTF8SkipErrors.Buf">
-        <short/>
+        <short>Buffer where the converted value is stored</short>
       </element>
+
+      <element name="UnicodeToUTF8Inline">
+        <short>
+          Encodes the given code point as an UTF-8 sequence of 1 to 4 bytes
+        </short>
+        <descr>
+          <p>
+            UnicodeToUTF8Inline is an Integer function used to convert the Unicode character value in CodePoint to the sequence of bytes needed for the UTF-8 encoding. UnicodeToUTF8Inline stores the UTF-8-encode byte values for the Unicode character in Buf.
+          </p>
+          <p>
+            The return value contains the number of bytes required for the UTF-8-encoded value (in the range 1..4).
+          </p>
+          <p>
+            Used in the implementation of UnicodeToUTF8 and UnicodeToUTF8SkipErrors.
+          </p>
+          <remark>
+            UnicodeToUTF8Inline does not process #0 byte values for the codepoint, as done for UTF-32.
+          </remark>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="UnicodeToUTF8Inline.Result">
+        <short>Number of bytes required for the UTF-8-encoded value</short>
+      </element>
+      <element name="UnicodeToUTF8Inline.CodePoint">
+        <short>Unicode character value to convert</short>
+      </element>
+      <element name="UnicodeToUTF8Inline.Buf">
+        <short>Destination where encoded byte values are stored</short>
+      </element>
+
       <!-- function Visibility: default -->
       <element name="UTF8ToDoubleByteString">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          Converts UTF-8 values to their DBCS equivalent
+        </short>
+        <descr>
+          <p>
+            UTF8ToDoubleByteString is a String function used to convert UTF-8-encoded values to the representation used in Double Byte Character Sets (DBCS). UTF8ToDoubleByteString calls UTF8Length to get the number of codepoints (or characters) in s, and calls UTF8ToDoubleByte to perform the conversion. Each codepoint is converted to Unicode by calling UTF8CodepointToUnicode. The return value is a String type with the byte values from the conversion, or an empty string ('') when s does not contain a valid UTF-8-encoded string.
+          </p>
+        </descr>
+        <seealso></seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="UTF8ToDoubleByteString.Result">
-        <short/>
+        <short>DBCS values for the specified codepoints</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="UTF8ToDoubleByteString.s">
-        <short/>
+        <short>UTF-8-encoded values to convert in the function</short>
       </element>
+
       <!-- function Visibility: default -->
       <element name="UTF8ToDoubleByte">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          Converts a UTF-8-encode string to its DBCS representation
+        </short>
+        <descr>
+          UTF8ToDoubleByte is used to convert UTF-8-encoded values to the representation used in Double Byte Character Sets (DBCS). UTF8ToDoubleByte calls UTF8CodepointToUnicode to process each of the codepoints in UTF8Str. The return value contains the byte values from the conversion.
+        </descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="UTF8ToDoubleByte.Result">
-        <short/>
+        <short>Number of double bytes converted in the function</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="UTF8ToDoubleByte.UTF8Str">
-        <short/>
+        <short>UTF-8-encoded values to convert in the function</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="UTF8ToDoubleByte.Len">
-        <short/>
+        <short>Length of the UTF-8-encoded input values</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="UTF8ToDoubleByte.DBStr">
-        <short/>
+        <short>Storage for the Double Byte values</short>
       </element>
+
       <!-- function Visibility: default -->
       <element name="UTF8FindNearestCharStart">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          Finds the start of the UTF-8 character at the specified position
+        </short>
+        <descr>
+          <p>
+            Find the start of the UTF-8 character which contains BytePos. If BytePos is not part of a valid UTF-8 Codepoint the function returns BytePos. BytePos values starts at position 0. Len is the length in bytes.
+          </p>
+        </descr>
+        <seealso></seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="UTF8FindNearestCharStart.Result">
-        <short/>
+        <short>Position where the next codepoint begins</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="UTF8FindNearestCharStart.UTF8Str">
-        <short/>
+        <short>Values to examine in the function</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="UTF8FindNearestCharStart.Len">
-        <short/>
+        <short>Length of the input values</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="UTF8FindNearestCharStart.BytePos">
-        <short/>
+        <short>Offset into UTF8Str for the initial byte value</short>
       </element>
+
+      <element name="Utf8TryFindCodepointStart">
+        <short>
+          Tries to find the start of a valid UTF-8 codepoint in a string
+        </short>
+        <descr>
+          <p>
+            Utf8TryFindCodepointStart is a Boolean function which tries to find the start of a valid UTF-8 codepoint at the specified position in AString. The return value contains True if the bytes at the specified position are a valid UTF-8 codepoint (1 - 4 bytes).
+          </p>
+          <p>
+            When the return value is True, the value in CurPos is updated to contain the position in AString where the UTF-8 codepoint begins. Otherwise, the value in CurPos is unchanged. Please note, when CurPos points beyond the end of AString you will get a crash!
+          </p>
+          <remark>
+            UTF8CodepointStrictSize will NOT "look" beyond the terminating #0 in a PChar, so this is safe with AnsiStrings.
+          </remark>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="Utf8TryFindCodepointStart.Result">
+        <short>True when the bytes at the specified position are a valid UTF-8 codepoint</short>
+      </element>
+      <element name="Utf8TryFindCodepointStart.AString">
+        <short>Pointer to the string to examine in the function</short>
+      </element>
+      <element name="Utf8TryFindCodepointStart.CurPos">
+        <short>Pointer to the first position in the string examined in the function</short>
+      </element>
+      <element name="Utf8TryFindCodepointStart.CodepointLen">
+        <short>Number of bytes in the codepoint, or 0 when invalid</short>
+      </element>
+      <element name="Utf8TryFindCodepointStart.Index">
+        <short>Initial position in the string examined in the function</short>
+      </element>
+      <element name="Utf8TryFindCodepointStart.CharLen">
+        <short>Number of bytes required for the UTF-8 codepoint</short>
+      </element>
+
+      <element name="UTF8CodepointStart">
+        <short>
+          Finds the n-th UTF-8 codepoint
+        </short>
+        <descr>
+          <p>
+            Finds the n-th UTF-8 codepoint, ignoring BIDI. Len is the length in bytes for the values in UTF8Str. CodepointIndex is the position of the desired codepoint (starting at 0), in characters. The return value contains the byte values for the codepoint, or Nil when a valid codepoint was not found.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="UTF8CodepointStart.Result">
+        <short>Byte values for the codepoint, or Nil</short>
+      </element>
+      <element name="UTF8CodepointStart.UTF8Str">
+        <short>Values to examine in the function</short>
+      </element>
+      <element name="UTF8CodepointStart.Len">
+        <short>Length in bytes for the input values</short>
+      </element>
+      <element name="UTF8CodepointStart.CodepointIndex">
+        <short>Character position for the desired codepoint (zero-based)</short>
+      </element>
+
       <!-- function Visibility: default -->
       <element name="UTF8CharStart">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short></short>
+        <descr>
+          <remark>
+            Deprecated. Use UTF8CodepointStart instead.
+          </remark>
+        </descr>
+        <seealso></seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="UTF8CharStart.Result">
-        <short/>
+        <short></short>
       </element>
       <!-- argument Visibility: default -->
       <element name="UTF8CharStart.UTF8Str">
-        <short/>
+        <short></short>
       </element>
       <!-- argument Visibility: default -->
       <element name="UTF8CharStart.Len">
-        <short/>
+        <short></short>
       </element>
       <!-- argument Visibility: default -->
       <element name="UTF8CharStart.CharIndex">
-        <short/>
+        <short></short>
       </element>
+
+      <element name="UTF8CodepointToByteIndex">
+        <short>
+          Finds the byte index of the n-th UTF-8 codepoint
+        </short>
+        <descr>
+          <p>
+            Finds the byte index of the n-th UTF-8 codepoint, ignoring BIDI (byte len of substr).
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="UTF8CodepointToByteIndex.Result">
+        <short></short>
+      </element>
+      <element name="UTF8CodepointToByteIndex.UTF8Str">
+        <short></short>
+      </element>
+      <element name="UTF8CodepointToByteIndex.Len">
+        <short></short>
+      </element>
+      <element name="UTF8CodepointToByteIndex.CodepointIndex">
+        <short></short>
+      </element>
+
       <!-- function Visibility: default -->
       <element name="UTF8CharToByteIndex">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short></short>
+        <descr>
+          <remark>
+            Deprecated. Use UTF8CodepointToByteIndex instead.
+          </remark>
+        </descr>
+        <seealso></seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="UTF8CharToByteIndex.Result">
-        <short/>
+        <short></short>
       </element>
       <!-- argument Visibility: default -->
       <element name="UTF8CharToByteIndex.UTF8Str">
-        <short/>
+        <short></short>
       </element>
       <!-- argument Visibility: default -->
       <element name="UTF8CharToByteIndex.Len">
-        <short/>
+        <short></short>
       </element>
       <!-- argument Visibility: default -->
       <element name="UTF8CharToByteIndex.CharIndex">
-        <short/>
+        <short></short>
       </element>
+
       <!-- procedure Visibility: default -->
       <element name="UTF8FixBroken">
-        <short>Replaces all invalid UTF8 characters with spaces. Stops at #0.</short>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          Replaces all invalid UTF-8 characters with spaces
+        </short>
+        <descr>
+          Replaces all invalid UTF-8 characters with spaces. Stops at the first occurrence of the byte value #0 (Decimal 0).
+        </descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="UTF8FixBroken.P">
-        <short/>
+        <short></short>
       </element>
+      <!-- argument Visibility: default -->
+      <element name="UTF8FixBroken.S">
+        <short></short>
+      </element>
+
+      <element name="UTF8CodepointStrictSize">
+        <short>Gets the number of bytes needed for the UTF-8 codepoint</short>
+        <descr>
+          Gets the number of bytes needed for the UTF-8 codepoint in P. The return value contains the number of bytes need for the codepoint (in the range 1..4), or 0 (zero) when P is not assigned or the codepoint is invalid.
+        </descr>
+        <remark>
+          UTF8CodepointStrictSize stops examining the byte values in P when #0 is encountered.
+        </remark>
+        <seealso></seealso>
+      </element>
+      <element name="UTF8CodepointStrictSize.Result">
+        <short>Number of bytes needed for the codepoint</short>
+      </element>
+      <element name="UTF8CodepointStrictSize.P">
+        <short>UTF-8-encoded values to examine</short>
+      </element>
+
       <!-- function Visibility: default -->
       <element name="UTF8CharacterStrictLength">
-        <short>For a valid UTF-8 character it returns the length in bytes (1..4). Otherwise 0.</short>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          Returns the length in bytes (1..4) for a valid UTF-8 character. Otherwise 0.
+        </short>
+        <descr>
+          <remark>
+            Deprecated. Use UTF8CodepointStrictSize instead.
+          </remark>
+        </descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="UTF8CharacterStrictLength.Result">
-        <short/>
+        <short></short>
       </element>
       <!-- argument Visibility: default -->
       <element name="UTF8CharacterStrictLength.P">
-        <short/>
+        <short></short>
       </element>
+
       <!-- function Visibility: default -->
       <element name="UTF8CStringToUTF8String">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          Copies from a C-style string with UTF-8 encoding to UTF-8 string
+        </short>
+        <descr>
+          <p>
+            UTF8CStringToUTF8String is a String function used to copy the specified number of  characters (codepoints) from a C-style string with UTF-8 encoding. The return value is a UTF-encoded string with C-style specials characters converted to their common equivalents. The following C-style quoted characters are handled in the function:
+          </p>
+          <dl>
+            <dt>\t</dt>
+            <dd>Converted to a Tab character (Decimal 9)</dd>
+            <dt>\"</dt>
+            <dd>Converted to a Double Quote character (Decimal 34)</dd>
+            <dt>\\</dt>
+            <dd>Converted to a Reverse Solidus character (Decimal 92)</dd>
+            <dt>\n</dt>
+            <dd>Converted to the LineEnding ending for the OS or platform</dd>
+          </dl>
+          <p>
+            The return value is a string which contains the number of codepoints from SourceStart specified in SourceLen, or an empty string ('') when SourceLen is 0 (zero).
+          </p>
+        </descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="UTF8CStringToUTF8String.Result">
-        <short/>
+        <short>UTF-8-encode string with C-style quoting removed</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="UTF8CStringToUTF8String.SourceStart">
-        <short/>
+        <short>PChar with the UTF-8-encoded C-style string</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="UTF8CStringToUTF8String.SourceLen">
-        <short/>
+        <short>Number of codepoints to copy in the method</short>
       </element>
+
       <!-- function Visibility: default -->
       <element name="UTF8Pos">
-        <short>Returns the character index, where the SearchForText starts in SearchInText</short>
-        <descr>Returns the character index, where the SearchForText starts in SearchInText.
-An optional StartPos can be given (as character index, not in byte).
-Returns 0 if not found.
-</descr>
-        <errors/>
-        <seealso/>
+        <short>
+          Returns the character index where the search text starts in the string
+        </short>
+        <descr>
+          Returns the character index where SearchForText starts in SearchInText. An optional StartPos can be given to start searching at a given character index. StartPos starts at 1. Returns 0 if the search text is not found in the string.
+        </descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="UTF8Pos.Result">
-        <short/>
+        <short>Character position where the search text was located</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="UTF8Pos.SearchForText">
-        <short/>
+        <short>Value to locate in the string</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="UTF8Pos.SearchInText">
-        <short/>
+        <short>String to search for the specified value</short>
       </element>
+
       <!-- function Visibility: default -->
       <element name="UTF8Copy">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          Copies the specified number of codepoints from the UTF-8-encoded string
+        </short>
+        <descr>
+          <p>
+            UTF8Copy is a String function used copy to UTF-8-encoded values from s starting at the position in StartCharIndex. CharCount specifies the number of multi-byte characters (or codepoints) to include in the return value. The return value is an empty string ('') when s is not a  valid UTF-8-encoded string. UTF8Copy behaves like a substring function.
+          </p>
+        </descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="UTF8Copy.Result">
-        <short/>
+        <short>String with codepoints copied from the specified source</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="UTF8Copy.s">
-        <short/>
+        <short>String with values to copy in the function</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="UTF8Copy.StartCharIndex">
-        <short/>
+        <short>Initial character position for the copy operation</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="UTF8Copy.CharCount">
-        <short/>
+        <short>Number of characters (codepoints) to copy in the function</short>
       </element>
+
       <!-- procedure Visibility: default -->
       <element name="UTF8Delete">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          Deletes characters (or codepoints) in a UTF-8-encoded string
+        </short>
+        <descr>
+          <p>
+            UTF8Delete is an overloaded procedure used to delete characters (or codepoints) in a UTF-8-encoded string starting at a given position. StartCharIndex contains the character position in s where values will be removed. StartCharIndex refers to codepoints and not individual byte or character values. A single character can be expressed as 1-4 byte values in UTF-8 encoding. CharCount indicates the number of codepoints to remove in the function. The value in s is updated directly in the function.
+          </p>
+          <p>
+            An overloaded variant of the procedure is provided for platforms where the Win1252 code page is used. On these platforms, raw byte values values in s  are converted to the UTF-8 code page prior to performing the delete operation.
+          </p>
+        </descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="UTF8Delete.s">
-        <short/>
+        <short>String with values to delete in the procedure</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="UTF8Delete.StartCharIndex">
-        <short/>
+        <short>Initial character position where values will be deleted</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="UTF8Delete.CharCount">
-        <short/>
+        <short>Number of characters (or codepoints) to remove in the procedure</short>
       </element>
+
       <!-- procedure Visibility: default -->
       <element name="UTF8Insert">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          Inserts the specified values into a string at the given position
+        </short>
+        <descr>
+          Inserts the specified values into a string at the given position. The value in StartCharIndex starts at 1, and represents the n-th codepoint in the string where values are inserted.
+        </descr>
+        <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="UTF8Insert.source">
-        <short/>
+        <short>UTF-8 String where values are inserted</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="UTF8Insert.s">
-        <short/>
+        <short>Values to insert into the original string</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="UTF8Insert.StartCharIndex">
-        <short/>
+        <short>Starting character position (1-based) for the new values</short>
       </element>
+
+      <element name="UTF8StringReplace">
+        <short>
+          Replaces values in a String matching a pattern starting at a given position
+        </short>
+        <descr>
+          <p>
+            UTF8StringReplace is an overloaded String function which replaces values in a String matching a pattern starting at a given position.  S is the UTF-8 encode string to update in the function. OldPattern is a pattern with the values to be replaced. NewPattern is the values used to replace OldPattern. Flags contains TReplaceFlags values to use for the operation. ALanguage is the Language Code to use values in function. Count is an output variable used to return the number of replacements performed in the function.
+          </p>
+          <p>
+            The return value is a UTF-8-encoded string with the updated values following  replacement.
+          </p>
+          <p>
+            UTF8StringReplace uses the same algorithm as the StringReplace function, but uses UTF8LowerCase for case insensitive search (when enabled in Flags).
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="UTF8StringReplace.Result">
+        <short>UTF-8-encoded values after the replace operation</short>
+      </element>
+      <element name="UTF8StringReplace.S">
+        <short>Original UTF-8-encoded values to examine</short>
+      </element>
+      <element name="UTF8StringReplace.OldPattern">
+        <short>Pattern to replace in the function</short>
+      </element>
+      <element name="UTF8StringReplace.NewPattern">
+        <short>Replacement values for the operation</short>
+      </element>
+      <element name="UTF8StringReplace.Flags">
+        <short>Replace options enabled in the function</short>
+      </element>
+      <element name="UTF8StringReplace.ALanguage">
+        <short>Language Code used for locale-specific lowercase conversions</short>
+      </element>
+      <element name="UTF8StringReplace.Count">
+        <short>Number of times the search pattern was replaced in the string</short>
+      </element>
+
       <!-- function Visibility: default -->
       <element name="UTF8LowerCase">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          Converts the specified string to lowercase using Unicode case mapping rules
+        </short>
+        <descr>
+          <p>
+            UTF8LowerCase is a String function used to convert the UTF-8-encoded value in AInStr to its lowercase equivalent. UTF8LowerCase uses Unicode Data available at the <url href="ftp://ftp.unicode.org/Public/UNIDATA/UnicodeData.txt">Unicode.org website</url>. The conversion is performed using the Case Mapping Rules defined <url href="http://www.ksu.ru/eng/departments/ktk/test/perl/lib/unicode/UCDFF301.html#Case Mappings">here</url>.
+          </p>
+          <p>
+            ALanguage indicates the language code to use for the conversion. ALanguage should be specified using ISO 639-1 format, which uses 2 characters to represent each language. If the language has no code in ISO 639-1, then the 3-chars code from ISO 639-2 should be used. For example: "tr"for the Turkish language locale. Special handling is provided in the function for Turkish ('tr') and Azeri ('az') language codes. ALanguage can be set to an empty string ('') for maximum speed in the conversion.
+          </p>
+        </descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="UTF8LowerCase.Result">
-        <short/>
+        <short>Lowercase values for the specified string</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="UTF8LowerCase.AInStr">
-        <short/>
+        <short>Values to convert in the function</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="UTF8LowerCase.ALanguage">
-        <short/>
+        <short>Language code for the operation</short>
       </element>
+
       <!-- function Visibility: default -->
       <element name="UTF8UpperCase">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          Converts the specified string to uppercase using Unicode case mapping rules
+        </short>
+        <descr>
+          <p>
+            UTF8UpperCase is a String function used to convert the UTF-8-encoded value in AInStr to its uppercase equivalent. UTF8UpperCase uses Unicode Data available at the <url href="ftp://ftp.unicode.org/Public/UNIDATA/UnicodeData.txt">Unicode.org website</url>. The conversion is performed using the Case Mapping Rules defined <url href="http://www.ksu.ru/eng/departments/ktk/test/perl/lib/unicode/UCDFF301.html#Case Mappings">here</url>.
+          </p>
+          <p>
+            ALanguage indicates the language code to use for the conversion. ALanguage should be specified using ISO 639-1 format, which uses 2 characters to represent each language. If the language has no code in ISO 639-1, then the 3-chars code from ISO 639-2 should be used. For example: "tr"for the Turkish language locale. Special handling is provided in the function for Turkish ('tr') and Azeri ('az') language codes.ALanguage can be set to an empty string ('') for maximum speed in the conversion.
+          </p>
+        </descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="UTF8UpperCase.Result">
-        <short/>
+        <short>Uppercase values for the specified string</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="UTF8UpperCase.AInStr">
-        <short/>
+        <short>Values to convert in the function</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="UTF8UpperCase.ALanguage">
-        <short/>
+        <short>Language code for the operation</short>
       </element>
+
+      <element name="UTF8UpperString">
+        <short>
+          Inline variant of UTF8UpperCase.
+        </short>
+        <descr>
+          Inline variant of UTF8UpperCase.
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="UTF8UpperString.Result">
+        <short>Uppercase values for the string</short>
+      </element>
+      <element name="UTF8UpperString.s">
+        <short>Values to convert in the function</short>
+      </element>
+
+      <element name="UTF8SwapCase">
+        <short>
+          Provides a simplistic implementation of UTF8UpperCase and UTF8LowerCase
+        </short>
+        <descr>
+          <p>
+            UTF8SwapCase provides a "naive" implementation that uses UTF8UpperCase and UTF8LowerCase. Performance is acceptable for short and reasonably long strings, but it could benefit from better performance and lower memory consumption.
+          </p>
+          <p>
+            AInStr contains a UTF-8-encoded string with values to convert it the method. Each character in AInStr will have its case "toggled" in the function. In other words, an uppercase character is converted to lowercase, and vice versa.
+          </p>
+          <p>
+            ALanguage indicates the language code to use for the conversion. ALanguage should be specified using ISO 639-1 format, which uses 2 characters to represent each language. If the language has no code in ISO 639-1, then the 3-character code from ISO 639-2 should be used. For example: "tr"for the Turkish language locale. Special handling is provided in the function for Turkish ('tr') and Azeri ('az') language codes. ALanguage can be set to an empty string ('') for maximum speed in the conversion.
+          </p>
+          <p>
+            No actions are performed in the method when the number of bytes for the converted value differs from the number of bytes in the original value. In this case, the return value contains the unmodified string in AInStr. The return value is an empty string ('') when AInStr is an empty string ('').
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="UTF8SwapCase.Result">
+        <short>String with the converted case values</short>
+      </element>
+      <element name="UTF8SwapCase.AInStr">
+        <short>Original values for the conversion</short>
+      </element>
+      <element name="UTF8SwapCase.ALanguage">
+        <short>Language code for the locale used in the conversion</short>
+      </element>
+
+      <element name="UTF8ProperCase">
+        <short>
+          Capitalizes the first letter of each word in the string
+        </short>
+        <descr>
+          <p>
+            UTF8ProperCase is a String function used to capitalize the first letter of each word in the specified string. WordDelims is set which contains the system characters used as word boundaries in the string.
+          </p>
+          <p>
+            UTF8ProperCase converts all of the values in AInStr to their lowercase equivalents, before converting letters following a word delimiter to uppercase.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="UTF8ProperCase.Result">
+        <short>Converting values for the string</short>
+      </element>
+      <element name="UTF8ProperCase.AInStr">
+        <short>Values to convert in the function</short>
+      </element>
+      <element name="UTF8ProperCase.WordDelims">
+        <short>Characters used as word delimiters</short>
+      </element>
+
+      <element name="FindInvalidUTF8Codepoint">
+        <short>
+          Finds the position where an invalid UTF-8 codepoint is found in the string
+        </short>
+        <descr>
+          <p>
+            FindInvalidUTF8Codepoint is a PtrInt function used to find the position where an invalid UTF-8 codepoint is located in the specified value. The return value contains -1 when none of the values in p are invalid, or the zero-based offset into p where the invalid encoding was located.
+          </p>
+          <p>
+            StopOnNonUTF8 indicates if the function should be exited when an encoded value is found that is not defined in the UTF-8 encoding, or for single byte characters inserted in the middle of a UTF-8 encoding (used in XSS attacks).
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="FindInvalidUTF8Codepoint.Result">
+        <short>Offset into the string for the error</short>
+      </element>
+      <element name="FindInvalidUTF8Codepoint.p">
+        <short>Values to examine in the function</short>
+      </element>
+      <element name="FindInvalidUTF8Codepoint.Count">
+        <short>Length of the input values</short>
+      </element>
+      <element name="FindInvalidUTF8Codepoint.StopOnNonUTF8">
+        <short>True to exit on an malformed codepoint</short>
+      </element>
+
       <!-- function Visibility: default -->
       <element name="FindInvalidUTF8Character">
-        <short>Returns -1 if ok, otherwise byte index of invalid UTF8 codepoint</short>
-        <descr>It always stops on irregular codepoints. For example Codepoint 0 is normally encoded as #0, but it can also be encoded as #192#0. Because most software does not check this, it can be exploited and is a security risk.
-
-If StopOnNonUTF8 is false it will ignore undefined codes. For example #128. By default it stops on such codes.</descr>
-        <errors/>
-        <seealso/>
+        <short>
+          Returns -1 if OK, otherwise byte index of invalid UTF-8 codepoint
+        </short>
+        <descr>
+          <remark>
+            Deprecated. Use FindInvalidUTF8Codepoint instead.
+          </remark>
+          <p>
+            It always stops on irregular codepoints. For example Codepoint 0 is normally encoded as #0, but it can also be encoded as #192#0. Because most software does not check this, it can be exploited and is a security risk. If StopOnNonUTF8 is false it will ignore undefined codes. For example #128. By default it stops on such codes.
+          </p>
+        </descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="FindInvalidUTF8Character.Result">
-        <short/>
+        <short></short>
       </element>
       <!-- argument Visibility: default -->
       <element name="FindInvalidUTF8Character.p">
-        <short/>
+        <short></short>
       </element>
       <!-- argument Visibility: default -->
       <element name="FindInvalidUTF8Character.Count">
-        <short/>
+        <short></short>
       </element>
       <!-- argument Visibility: default -->
       <element name="FindInvalidUTF8Character.StopOnNonASCII">
-        <short/>
+        <short></short>
       </element>
-      <!-- function Visibility: default -->
-      <element name="ValidUTF8String">
-        <short>Replace invalid UTF8 and replace #0..#31 characters with '#0'..'#31'</short>
-        <descr/>
-        <errors/>
-        <seealso/>
+
+      <element name="UTF8StringOfChar">
+        <short>
+          Creates a string filled with the specified number of given codepoints
+        </short>
+        <descr>
+          <p>
+            UTF8StringOfChar is a function used to creates a UTF-8-encoded string filled with the specified number of occurrences of the given codepoint. AUtf8Char is the UTF-8 codepoint to reproduce in the function. No actions are performed if AUtf8Char is an empty string (''), or contains a malformed UTF-8 codepoint.
+          </p>
+          <p>
+            The return value is filled with byte values for the codepoint (1 to 4 bytes as per the UTF-8 encoding). The process is repeated until the number of codepoints in N have been stored in the return value.
+          </p>
+        </descr>
+        <seealso></seealso>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="ValidUTF8String.Result">
-        <short/>
+      <element name="UTF8StringOfChar.Result`">
+        <short>String with the specified number of occurrence of the codepoint</short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="ValidUTF8String.s">
-        <short/>
+      <element name="UTF8StringOfChar.AUtf8Char">
+        <short>Codepoint to reproduce in the function</short>
       </element>
-      <!-- procedure Visibility: default -->
-      <element name="AssignUTF8ListToAnsi">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+      <element name="UTF8StringOfChar.N">
+        <short>Number of occurrences to include in the return value</short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="AssignUTF8ListToAnsi.UTF8List">
-        <short/>
+
+      <element name="UTF8AddChar">
+        <short>
+          Adds the specified number of UTF-8 codepoints to a string
+        </short>
+        <descr>
+          <p>
+            UTF8AddChar is a String function used to add the specified number of UTF-8 codepoints to a string. AUtf8Char is the UTF-8-encoded codepoint to add to string value in S. N indicates the number of times the codepoint should be added to the string.
+          </p>
+          <p>
+            No actions are performed in the function when AUtf8Char is an empty string (''), or contains a malformed UTF-8 codepoint.
+          </p>
+          <remark>
+            Values added to the string in S are inserted at the beginning of the string (prepended).
+          </remark>
+        </descr>
+        <seealso></seealso>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="AssignUTF8ListToAnsi.AnsiList">
-        <short/>
+      <element name="UTF8AddChar.Result">
+        <short>Updated value for the string</short>
       </element>
+      <element name="UTF8AddChar.AUtf8Char">
+        <short>Codepoint to prepend to the string value</short>
+      </element>
+      <element name="UTF8AddChar.S">
+        <short>Original values for the string</short>
+      </element>
+      <element name="UTF8AddChar.N">
+        <short>Number of codepoints to prepend to the string</short>
+      </element>
+
+      <element name="UTF8AddCharR">
+        <short>
+          Appends the specified number of UTF-8 codepoints to a string
+        </short>
+        <descr>
+          <p>
+            UTF8AddChar is a String function used to append the specified number of UTF-8 codepoints to a string. AUtf8Char is the UTF-8-encoded codepoint to add to string value in S. N indicates the number of times the codepoint should be appended to the string.
+          </p>
+          <p>
+            No actions are performed in the function when AUtf8Char is an empty string (''), or contains a malformed UTF-8 codepoint.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="UTF8AddCharR.Result">
+        <short>Updated value for the string</short>
+      </element>
+      <element name="UTF8AddCharR.AUtf8Char">
+        <short>Codepoint to append to the string value</short>
+      </element>
+      <element name="UTF8AddCharR.S">
+        <short>Original values for the string</short>
+      </element>
+      <element name="UTF8AddCharR.N">
+        <short>Number of codepoints to append to the string</short>
+      </element>
+
+      <element name="UTF8PadLeft">
+        <short>
+          Adds the specified number of values in AUtf8Char to the beginning of a string
+        </short>
+        <descr>
+          UTF8PadLeft is used to add the specified number of values in AUtf8Char to the beginning of a string. The default value for AUtf8Char is #32 ([SPACE]), but can contain any valid UTF-8 codepoint (1 to 4 bytes). UTF8PadLeft calls Utf8AddChar to create the return value for the function.
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="UTF8PadLeft.Result">
+        <short>Updated value for the string with characters inserted at the beginning</short>
+      </element>
+      <element name="UTF8PadLeft.S">
+        <short>Original string value to modify in the function</short>
+      </element>
+      <element name="UTF8PadLeft.N">
+        <short>Number of codepoints desired in the modified string</short>
+      </element>
+      <element name="UTF8PadLeft.AUtf8Char">
+        <short>UTF-8 codepoint to insert into the string</short>
+      </element>
+
+      <element name="UTF8PadRight">
+        <short>
+          Appends the specified number of UTF-8 codepoints to the end of a string
+        </short>
+        <descr>
+          UTF8PadRight is used to append the specified number of UTF-8 codepoints to the end of a string. The default value for AUtf8Char is #32 ([SPACE]), but can contain any valid UTF-8 codepoint (1 to 4 bytes). UTF8PadRight calls Utf8AddCharR to create the return value for the function.
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="UTF8PadRight.Result">
+        <short>Updated value for the string</short>
+      </element>
+      <element name="UTF8PadRight.S">
+        <short>Original string to modify in the function</short>
+      </element>
+      <element name="UTF8PadRight.N">
+        <short>Number of codepoints desired in the modified string</short>
+      </element>
+      <element name="UTF8PadRight.AUtf8Char">
+        <short>Codepoint to append to the string value</short>
+      </element>
+
+      <element name="UTF8PadCenter">
+        <short>
+          Center aligns a string to the specified length
+        </short>
+        <descr>
+          UTF8PadCenter is used to center align a string to the specified length (number of codepoints). N indicates the length of the modified string after padding on the left and right with the UTF-8 codepoint in AUtf8Char. The default value for AUtf8Char is #32 ([SPACE]), but can contains any valid UTF-8 codepoint (1 to 4 bytes).
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="UTF8PadCenter.Result">
+        <short>Modified value for the string after center alignment</short>
+      </element>
+      <element name="UTF8PadCenter.S">
+        <short>Original string value</short>
+      </element>
+      <element name="UTF8PadCenter.N">
+        <short>Desired length for the string (in codepoints)</short>
+      </element>
+      <element name="UTF8PadCenter.AUtf8Char">
+        <short>UTF-8 codepoint used as a padding character</short>
+      </element>
+
+      <element namer="UTF8LeftStr">
+        <short>
+          Gets the specified number of characters (codepoints) at the start of the string
+        </short>
+        <descr>
+          UTF8LeftStr is used to get the specified number of characters (codepoints) at the beginning of the UTF-8-encoded string. UTF8LeftStr calls Utf8Copy to get the return value for the function.
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element namer="UTF8LeftStr.Result">
+        <short>Values from the specified string</short>
+      </element>
+      <element namer="UTF8LeftStr.AText">
+        <short>Original string to examine in the function</short>
+      </element>
+      <element namer="UTF8LeftStr.ACount">
+        <short>Number of characters (codepoints) to get from the string</short>
+      </element>
+
+      <element name="UTF8RightStr">
+        <short>
+          Gets the specified number of characters (codepoints) at the end of the string
+        </short>
+        <descr>
+          UTF8RightStr is used to get the specified number of characters (codepoints) at the end of the UTF-8-encoded string. UTF8RightStr calls Utf8Copy to get the return value for the function.
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="UTF8RightStr.Result">
+        <short>Values from the string</short>
+      </element>
+      <element name="UTF8RightStr.AText">
+        <short>Original string to examine in the function</short>
+      </element>
+      <element name="UTF8RightStr.ACount">
+        <short>Number of characters (codepoints) to get from the string</short>
+      </element>
+
+      <element name="UTF8QuotedStr">
+        <short>
+          Performs safe quoting for the string value
+        </short>
+        <descr>
+          UTF8QuotedStr is used to replace all Quote characters in S with double Quote characters, and enclose the replaced values in Quote characters.
+        </descr>
+        <notes>
+          <note>This needs work.</note>
+        </notes>
+        <seealso></seealso>
+      </element>
+      <element name="UTF8QuotedStr.Result">
+        <short></short>
+      </element>
+      <element name="UTF8QuotedStr.S">
+        <short></short>
+      </element>
+      <element name="UTF8QuotedStr.Quote">
+        <short></short>
+      </element>
+
+      <element name="UTF8StartsText">
+        <short>
+          Determines if a string starts with the specified value
+        </short>
+        <descr>
+          UTF8StartsText determines if the value in AText begins with the value in ASubText. Both values can contain a valid UTF-8-encoded string. The return value is False when ASubText is an empty string (''), or ASubText contains more characters (codepoints) than the value in AText. UTF8StartsText calls Utf8Copy and Utf8CompareText to perform a case-insensitive comparison between the values.
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="UTF8StartsText.Result">
+        <short>True when the strings starts with the specified text</short>
+      </element>
+      <element name="UTF8StartsText.ASubText">
+        <short>Value to locate at the start of the string</short>
+      </element>
+      <element name="UTF8StartsText.AText">
+        <short>String to examine in the function</short>
+      </element>
+
+      <element name="UTF8EndsText">
+        <short>
+          Determines if a string ends with the specified value
+        </short>
+        <descr>
+          UTF8EndsText determines if the value in AText ends with the value in ASubText. Both values can contain a valid UTF-8-encoded string. The return value is False when ASubText is an empty string (''), or ASubText contains more characters (codepoints) than the value in AText. UTF8StartsText calls Utf8Copy and Utf8CompareText to perform a case-insensitive comparison between the values.
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="UTF8EndsText.Result">
+        <short>True when the strings ends with the specified text</short>
+      </element>
+      <element name="UTF8EndsText.ASubText">
+        <short>Value to locate at the end of the string</short>
+      </element>
+      <element name="UTF8EndsText.AText">
+        <short>String to examine in the function</short>
+      </element>
+
+      <element name="UTF8ReverseString">
+        <short>
+        </short>
+        <descr>
+          UTF8ReverseString is used to create a string with the specified content in reverse order. p contains the UTF-8-encoded values for the original string. ByteCount indicates the total number of bytes needed to represent the codepoints in p. UTF8ReverseString calls UTF8CodepointSize and moves the byte values in p to the return value for the function.
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="UTF8ReverseString.Result">
+        <short></short>
+      </element>
+      <element name="UTF8ReverseString.p">
+        <short></short>
+      </element>
+      <element name="UTF8ReverseString.ByteCount">
+        <short></short>
+      </element>
+      <element name="UTF8ReverseString.AText">
+        <short></short>
+      </element>
+
+      <element name="UTF8RPos">
+        <short>
+        </short>
+        <descr>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="UTF8RPos.Result">
+        <short></short>
+      </element>
+      <element name="UTF8RPos.Substr">
+        <short></short>
+      </element>
+      <element name="UTF8RPos.Source">
+        <short></short>
+      </element>
+
+      <element name="UTF8WrapText">
+        <short></short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="UTF8WrapText.Result">
+        <short></short>
+      </element>
+      <element name="UTF8WrapText.S">
+        <short></short>
+      </element>
+      <element name="UTF8WrapText.BreakStr">
+        <short></short>
+      </element>
+      <element name="UTF8WrapText.BreakChars">
+        <short></short>
+      </element>
+      <element name="UTF8WrapText.MaxCol">
+        <short></short>
+      </element>
+
+      <element name="TEscapeMode">
+        <short>
+        </short>
+        <descr>
+          TEscapeMode is an enumeration type with values that determine the output style for escaped characters in Utf8EscapeControlChars.
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="TEscapeMode.emPascal">
+        <short>Pascal-style escape characters '#27'</short>
+      </element>
+      <element name="TEscapeMode.emHexPascal">
+        <short>Pascal-style hexadecimal strings '#$1B'</short>
+      </element>
+      <element name="TEscapeMode.emHexC">
+        <short>C-style hexadecimal strings '\0x1B'</short>
+      </element>
+      <element name="TEscapeMode.emC">
+        <short>C-style strings '\t'</short>
+      </element>
+      <element name="TEscapeMode.emAsciiControlNames">
+        <short>ASCII-style control names '[ESC]'</short>
+      </element>
+
+      <element name="Utf8EscapeControlChars">
+        <short>
+          Translates control characters in a UTF-8-encoded string into human readable format
+        </short>
+        <descr>
+          <p>
+            Utf8EscapeControlChars translates control characters inside a UTF-8-encoded string into human readable format. Characters in the range 0..31 are converted into the human-readable values for the control characters in the format specified by EscapeMode, including:
+          </p>
+          <dl>
+            <dt>emPascal</dt>
+            <dd>Pascal-style escape characters '#27'</dd>
+            <dt>emHexPascal</dt>
+            <dd>Pascal-style hexadecimal strings '#$1B'</dd>
+            <dt>emHexC</dt>
+            <dd>C-style hexadecimal strings '\0x1B'</dd>
+            <dt>emC</dt>
+            <dd>C-style strings '\t'</dd>
+            <dt>emAsciiControlNames</dt>
+            <dd>ASCII-style control names '[ESC]'</dd>
+          </dl>
+          <p>
+            All other byte values are included in the return value in their unmodified form.
+          </p>
+          <p>
+            Utf8EscapeControlChars calls FindInvalidUTF8Codepoint to see if S contains any invalid codepoints for the UTF-8 encoding. UTF8UTF8FixBroken is called to repair the input value. Mainly used as a diagnostic or logging tool.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="Utf8EscapeControlChars.Result">
+        <short></short>
+      </element>
+      <element name="Utf8EscapeControlChars.S">
+        <short>Must be UTF-8 encoded input string</short>
+      </element>
+      <element name="Utf8EscapeControlChars.EscapeMode">
+        <short>Controls the human readable format for escape characters</short>
+      </element>
+
+      <element name="TUTF8TrimFlag">
+        <short>
+          Controls trimming actions performed in UTF8Trim
+        </short>
+        <descr>
+          <p>
+            TUTF8TrimFlag is an enumeration type with values that control trimming actions performed in the UTF8Trim function.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="TUTF8TrimFlag.u8tKeepStart">
+        <short>Keeps leading whitespace</short>
+      </element>
+      <element name="TUTF8TrimFlag.u8tKeepEnd">
+        <short>Keeps trailing whitespace</short>
+      </element>
+      <element name="TUTF8TrimFlag.u8u8tKeepTabs">
+        <short>Keeps tab characters</short>
+      </element>
+      <element name="TUTF8TrimFlag.u8u8tKeepLineBreaks">
+        <short>Keeps line breaks</short>
+      </element>
+      <element name="TUTF8TrimFlag.u8tKeepNoBreakSpaces">
+        <short>Keeps no-break space characters</short>
+      </element>
+      <element name="TUTF8TrimFlag.u8tKeepControlCodes">
+        <short>Keeps control codes other than tabs and line breaks</short>
+      </element>
+
+      <element name="TUTF8TrimFlags">
+        <short>
+          Stores values from the TUTF8TrimFlag enumeration
+        </short>
+        <descr>
+          <p>
+            TUTF8TrimFlags is a set type used to store values from the TUTF8TrimFlag enumeration. TUTF8TrimFlags is the type passed in arguments to the UTF8Trim function.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+
+      <element name="UTF8Trim">
+        <short>
+          Removes leading and trailing whitespace or control characters
+        </short>
+        <descr>
+          It removes spaces, tabs, line breaks and control characters at start and end. Use Flags to delete at start only or at end only, or to to not delete line breaks. Control characters are the Unicode sets C0 and C1, and the left-to-right and right-to-left marks.
+        </descr>
+      </element>
+      <element name="UTF8Trim.Result">
+        <short>Trimmed values for the string</short>
+      </element>
+      <element name="UTF8Trim.s">
+        <short>String with values to trim</short>
+      </element>
+      <element name="UTF8Trim.Flags">
+        <short>Actions to perform in the function</short>
+      </element>
+
       <!-- function Visibility: default -->
       <element name="UTF8CompareStr">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          Compares the UTF-8-encoded string values
+        </short>
+        <descr>
+          <p>
+            UTF8CompareStr is a function used to compare the specified UTF-8-encoded string values. The return value indicates the relative sort order for the compared values, and includes:
+          </p>
+          <dl>
+            <dt>0</dt>
+            <dd>Values are the same</dd>
+            <dt>-1</dt>
+            <dd>Value S1 comes before S2 in an alphabetic sort order</dd>
+            <dt>+1</dt>
+            <dd>Value S1 comes after S2 in an alphabetic sort order</dd>
+            <dt>-2</dt>
+            <dd>Value S1 comes before S2 but the comparison ended at a different byte in an invalid UTF-8 codepoint</dd>
+            <dt>+2</dt>
+            <dd>Value S1 comes after S2 but the comparison ended at a different byte in an invalid UTF-8 codepoint</dd>
+          </dl>
+          <p>
+            Internally, UTF8CompareStr uses WideCompareStr on the first UTF-8 codepoint that differs between S1 and S2. As a result, it has proper collation on platforms where the WidestringManager supports this (Windows, *nix with cwstring unit).
+          </p>
+        </descr>
+        <seealso></seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="UTF8CompareStr.Result">
-        <short/>
+        <short>Relative order for the compared values</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="UTF8CompareStr.S1">
-        <short/>
+        <short>First value for the comparison</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="UTF8CompareStr.S2">
-        <short/>
+        <short>Second value for the comparison</short>
       </element>
+      <element name="UTF8CompareStr.Count1">
+        <short>Length of the first value</short>
+      </element>
+      <element name="UTF8CompareStr.Count2">
+        <short>Length of the second value</short>
+      </element>
+
       <!-- function Visibility: default -->
       <element name="UTF8CompareText">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          Case-insensitive comparison of two UTF-8-encoded values
+        </short>
+        <descr>
+          <p>
+            UTF8CompareText is a function used to perform a case-insensitive comparison between the specified UTF-8-encoded values. The return value indicates the relative sort order for the compared values, and includes:
+          </p>
+          <dl>
+            <dt>0</dt>
+            <dd>Values are the same</dd>
+            <dt>-1</dt>
+            <dd>Value S1 comes before S2 in an alphabetic sort order</dd>
+            <dt>+1</dt>
+            <dd>Value S1 comes after S2 in an alphabetic sort order</dd>
+            <dt>-2</dt>
+            <dd>Value S1 comes before S2 but the comparison ended at a different byte in an invalid UTF-8 codepoint</dd>
+            <dt>+2</dt>
+            <dd>Value S1 comes after S2 but the comparison ended at a different byte in an invalid UTF-8 codepoint</dd>
+          </dl>
+          <p>
+            Internally, UTF8CompareText uses WideCompareText. This function guarantees proper collation on all supported platforms. Use this function instead of AnsiCompareText to compare UTF-8-encode values.
+          </p>
+        </descr>
+        <seealso></seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="UTF8CompareText.Result">
-        <short/>
+        <short>Relative order for the compared values</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="UTF8CompareText.S1">
-        <short/>
+        <short>First value for the comparison</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="UTF8CompareText.S2">
-        <short/>
+        <short>Second value for the comparison</short>
       </element>
+
+      <element name="UTF8CompareStrCollated">
+        <short>
+          Compare two strings using language-specific sorting
+        </short>
+        <descr>
+          UTF8CompareStrCollated is used to compare two strings using language-specific sorting. The return value contains the relative order for the compared values, as defined for UTF8CompareStr.
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="UTF8CompareStrCollated.Result">
+        <short>Relative order for the compared values</short>
+      </element>
+      <element name="UTF8CompareStrCollated.S1">
+        <short>First string for the comparison</short>
+      </element>
+      <element name="UTF8CompareStrCollated.S2">
+        <short>Second string for the comparison</short>
+      </element>
+
+      <element name="CompareStrListUTF8LowerCase">
+        <short>
+          Compares the specified lines of text in a TStringList
+        </short>
+        <descr>
+          <p>
+            CompareStrListUTF8LowerCase is an Integer function used to compare the specified lines of text in the TStringList argument. Index1 and Index2 contain the ordinal positions for the lines of text. CompareStrListUTF8LowerCase calls UTF8CompareText to perform a case-insensitive comparison between the values.
+          </p>
+          <p>
+            The return value contains the relative order for the compared values, as defined for UTF8CompareText.
+          </p>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="CompareStrListUTF8LowerCase.Result">
+        <short>Relative order for the compared values</short>
+      </element>
+      <element name="CompareStrListUTF8LowerCase.List">
+        <short>TStringList with values for the comparison</short>
+      </element>
+      <element name="CompareStrListUTF8LowerCase.Index1">
+        <short>Position of the first text line</short>
+      </element>
+      <element name="CompareStrListUTF8LowerCase.Index2">
+        <short>Position of the second text line</short>
+      </element>
+
       <!-- enumeration type Visibility: default -->
       <element name="TConvertResult">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>
+          Indicates the result from UTF-8 &lt;-&gt; UTF-16  conversions
+        </short>
+        <descr>
+          TConvertResult is an enumeration type with values that indicate the result from ConvertUTF8ToUTF16 and ConvertUTF16ToUTF8 function calls.
+        </descr>
+        <seealso></seealso>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TConvertResult.trNoError">
-        <short/>
+        <short>No error in the conversion</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TConvertResult.trNullSrc">
-        <short/>
+        <short>Source value is null</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TConvertResult.trNullDest">
-        <short/>
+        <short>Destination value is null</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TConvertResult.trDestExhausted">
-        <short/>
+        <short>Destination value is too small for the converted value</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TConvertResult.trInvalidChar">
-        <short/>
+        <short>An invalid encoding was found in the source value</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TConvertResult.trUnfinishedChar">
-        <short/>
+        <short>An unfinished encoding was found in the source value</short>
       </element>
+
       <!-- enumeration type Visibility: default -->
       <element name="TConvertOption">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>
+          Indicates options enabled during UTF-8 &lt;-&gt; UTF-16 conversions
+        </short>
+        <descr>
+          <p>
+            TConvertOption is an enumeration type with values that indicate options enabled during UTF-8 &lt;-&gt; UTF-16 conversions.
+          </p>
+        </descr>
+        <seealso></seealso>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TConvertOption.toInvalidCharError">
-        <short/>
+        <short></short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TConvertOption.toInvalidCharToSymbol">
-        <short/>
+        <short></short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TConvertOption.toUnfinishedCharError">
-        <short/>
+        <short></short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TConvertOption.toUnfinishedCharToSymbol">
-        <short/>
+        <short></short>
       </element>
+
       <!-- set type Visibility: default -->
       <element name="TConvertOptions">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>
+          Stores values from the TConvertOption enumeration
+        </short>
+        <descr>
+          Stores values from the TConvertOption enumeration. Passed as an argument to ConvertUTF8ToUTF16 and ConvertUTF16ToUTF8.
+        </descr>
+        <seealso></seealso>
       </element>
+
       <!-- function Visibility: default -->
       <element name="ConvertUTF8ToUTF16">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          Converts values from UTF-8 encoding to UTF-16 encoding
+        </short>
+        <descr>
+          <p>
+            ConvertUTF8ToUTF16 is used to convert the specified UTF-8 encoded string to UTF-16 encoded (system endian).
+          </p>
+          <p>
+            Options indicates the conversion options enabled in the function, and can include the following values:
+          </p>
+          <dl>
+            <dt>toInvalidCharError</dt>
+            <dd>
+              Stop on invalid source char and report error
+            </dd>
+            <dt>toInvalidCharToSymbol</dt>
+            <dd>
+              Replace invalid source chars with '?'
+            </dd>
+            <dt>toUnfinishedCharError</dt>
+            <dd>
+              Stop on unfinished source char and report error
+            </dd>
+            <dt>toUnfinishedCharToSymbol</dt>
+            <dd>
+              Replace unfinished source char with '?'
+            </dd>
+          </dl>
+          <p>
+            The return value is a value from the TConvertResult enumeration, including:
+          </p>
+          <dl>
+            <dt>
+              trNoError
+            </dt>
+            <dd>
+              The string was successfully converted without any error
+            </dd>
+            <dt>
+              trNullSrc
+            </dt>
+            <dd>
+              Pointer to source string is nil
+            </dd>
+            <dt>
+              trNullDest
+            </dt>
+            <dd>
+              Pointer to destination string is nil
+            </dd>
+            <dt>
+              trDestExhausted
+            </dt>
+            <dd>
+              Destination buffer size is not big enough to hold converted string
+            </dd>
+            <dt>
+              trInvalidChar
+            </dt>
+            <dd>
+              Invalid source char has occurred
+            </dd>
+            <dt>
+              trUnfinishedChar
+            </dt>
+            <dd>
+              Unfinished source char has occurred
+            </dd>
+          </dl>
+        </descr>
+        <seealso></seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="ConvertUTF8ToUTF16.Result">
-        <short/>
+        <short>Converted values from the function</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="ConvertUTF8ToUTF16.Dest">
-        <short/>
+        <short>Pointer to destination string</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="ConvertUTF8ToUTF16.DestWideCharCount">
-        <short/>
+        <short>Wide char count allocated in destination string</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="ConvertUTF8ToUTF16.Src">
-        <short/>
+        <short>Pointer to source string</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="ConvertUTF8ToUTF16.SrcCharCount">
-        <short/>
+        <short>Char count allocated in source string</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="ConvertUTF8ToUTF16.Options">
-        <short/>
+        <short>Conversion options, if none is set, both invalid and unfinished source chars are skipped</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="ConvertUTF8ToUTF16.ActualWideCharCount">
-        <short/>
+        <short>Actual WideChar count used int he conversion</short>
       </element>
+
       <!-- function Visibility: default -->
       <element name="ConvertUTF16ToUTF8">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Converts values from UTF-16 encoding to UTF-8 encoding</short>
+        <descr>
+          <p>
+            Converts the specified UTF-16 encoded string (system endian) to its UTF-8 encoding.
+          </p>
+          <p>
+            Options indicates the conversion options enabled in the function, and can include the following values:
+          </p>
+          <dl>
+            <dt>toInvalidCharError</dt>
+            <dd>
+              Stop on invalid source char and report error
+            </dd>
+            <dt>toInvalidCharToSymbol</dt>
+            <dd>
+              Replace invalid source chars with '?'
+            </dd>
+            <dt>toUnfinishedCharError</dt>
+            <dd>
+              Stop on unfinished source char and report error
+            </dd>
+            <dt>toUnfinishedCharToSymbol</dt>
+            <dd>
+              Replace unfinished source char with '?'
+            </dd>
+          </dl>
+          <p>
+            The return value is a value from the TConvertResult enumeration, including:
+          </p>
+          <dl>
+            <dt>
+              trNoError
+            </dt>
+            <dd>
+              The string was successfully converted without any error
+            </dd>
+            <dt>
+              trNullSrc
+            </dt>
+            <dd>
+              Pointer to source string is nil
+            </dd>
+            <dt>
+              trNullDest
+            </dt>
+            <dd>
+              Pointer to destination string is nil
+            </dd>
+            <dt>
+              trDestExhausted
+            </dt>
+            <dd>
+              Destination buffer size is not big enough to hold converted string
+            </dd>
+            <dt>
+              trInvalidChar
+            </dt>
+            <dd>
+              Invalid source char has occurred
+            </dd>
+            <dt>
+              trUnfinishedChar
+            </dt>
+            <dd>
+              Unfinished source char has occurred
+            </dd>
+          </dl>
+        </descr>
+        <seealso></seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="ConvertUTF16ToUTF8.Result">
-        <short/>
+        <short>Converted values from the function</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="ConvertUTF16ToUTF8.Dest">
-        <short/>
+        <short>Pointer to destination string</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="ConvertUTF16ToUTF8.DestCharCount">
-        <short/>
+        <short>Char count allocated in destination string</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="ConvertUTF16ToUTF8.Src">
-        <short/>
+        <short>Pointer to source string</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="ConvertUTF16ToUTF8.SrcWideCharCount">
-        <short/>
+        <short>Wide char count allocated in source string</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="ConvertUTF16ToUTF8.Options">
-        <short/>
+        <short>Conversion options, if none is set, both
+          invalid and unfinished source chars are skipped</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="ConvertUTF16ToUTF8.ActualCharCount">
-        <short/>
+        <short>Actual char count converted from source string to destination string</short>
       </element>
+
       <!-- function Visibility: default -->
       <element name="UTF8ToUTF16">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          Converts the UTF-8 encoded string to UTF-16 encoding (system endian)
+        </short>
+        <descr>
+          Converts the UTF-8 encoded string to UTF-16 encoding (system endian).
+        </descr>
+        <seealso></seealso>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="UTF8ToUTF16.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="UTF8ToUTF16.S">
-        <short/>
-      </element>
+
       <!-- function Visibility: default -->
       <element name="UTF16ToUTF8">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          Converts a UTF-16-encoded string (system endian) to UTF-8 encoding
+        </short>
+        <descr>
+          Converts the specified UTF-16 encoded string (system endian) to UTF-8 encoding.
+        </descr>
+        <seealso></seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="UTF16ToUTF8.Result">
-        <short/>
+        <short>UTF-8-encoded string</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="UTF16ToUTF8.S">
-        <short/>
+        <short>Source UTF-16 string (system endian)</short>
       </element>
+      <element name="UTF16ToUTF8.P">
+        <short>Pointer to the Source UTF-16 string (system endian)</short>
+      </element>
+      <element name="UTF16ToUTF8.WideCnt">
+        <short>Number of WideChar values in the source string</short>
+      </element>
+
       <!-- procedure Visibility: default -->
       <element name="LazGetLanguageIDs">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short></short>
+        <descr></descr>
+        <errors></errors>
+        <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="LazGetLanguageIDs.Lang">
-        <short/>
+        <short></short>
       </element>
       <!-- argument Visibility: default -->
       <element name="LazGetLanguageIDs.FallbackLang">
-        <short/>
+        <short></short>
       </element>
+
       <!-- procedure Visibility: default -->
       <element name="LazGetShortLanguageID">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short></short>
+        <descr>
+          LazGetShortLanguageID strips country information from the language ID, making it simpler to use. Ideally the resulting ID from here should conform to ISO 639-1 or ISO 639-2, if the language has no code in ISO 639-1.
+        </descr>
+        <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="LazGetShortLanguageID.Lang">
-        <short/>
+        <short></short>
       </element>
+
       <!-- variable Visibility: default -->
       <element name="FPUpChars">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>
+          Uppercase characters for all values in the char type
+        </short>
+        <descr>
+          <p>
+            FPUpChars is an array of char type with the Lower and Upper bounds permitted for the char type. Values in FPUpChars are assigned in the initialization section for the lazutf8.pas unit, and contains the upper case equivalent for all characters in the char type.
+          </p>
+        </descr>
+        <seealso></seealso>
       </element>
-    <element name="UTF8Trim"><short>Removes space at start and end</short><descr>It removes spaces, tabs, line breaks and control characters at start and end.
-Use Flags to only delete at start or only at end or to to not delete line breaks.
-Control characters are the unicode sets C0 and C1 and the left-to-right and right-to-left marks.</descr>
-      </element>
-    <element name="UTF8PosP"><short>Returns the position where SearchInText starts in SearchForText</short><descr>If not found it returns nil.
-Null characters #0 are treated as normal characters.</descr>
-      </element>
-    <element name="UTF8CompareStrCollated"><short>Compare two strings using language specific sorting</short>
-      </element>
-    <element name="GetEnvironmentVariableCountUTF8"><short>Returns the number of system environment variables.</short><descr>Use together with GetEnvironmentStringUTF8.</descr>
-      </element><element name="GetEnvironmentStringUTF8"><short>Returns a system environment string.</short><descr>The index is 1 to GetEnvironmentVariableCountUTF8.
-On Unix and Windows the string often has the form 'name=value'.
-Beware that Windows knows some special formats, e.g. '=C:=SomePath'.
 
-Use GetEnvironmentVariableUTF8 to lookup environment values by name.</descr>
-      </element><element name="GetEnvironmentVariableUTF8"><short>Returns the value of a system environment variable.</short><descr>Returns the value of a environment string of the form 'EnvVar=value'.
-See GetEnvironmentStringUTF8 to retrieve the whole list of environment strings.</descr>
-      </element>
     </module>
     <!-- LazUTF8 -->
   </package>

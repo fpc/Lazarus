@@ -1,360 +1,382 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-<package name="lazutils">
+  <package name="lazutils">
+    <!--
+    ====================================================================
+      LazUnicode
+    ====================================================================
+    -->
+    <module name="LazUnicode">
+      <short>
+        Provides encoding-agnostic Unicode string manipulation functions and an enumerator
+      </short>
+      <descr>
+        <p>
+          <var>lazunicode.pas</var> provides encoding-agnostic Unicode string manipulation functions and an enumerator. It works transparently with UTF-8 and UTF-16 encodings, and allows one codebase to work for:
+        </p>
+        <ol>
+          <li>Lazarus using its default UTF-8 encoding</li>
+          <li>Future FPC and Lazarus versions with Delphi compatible UTF-16 encoding</li>
+          <li>Delphi compatibility where String is defined as UnicodeString</li>
+        </ol>
+        <remark>
+          Behavior of helper functions are altered using the <var>{$ModeSwitch UnicodeStrings}</var> directive; the correct routines for handling UTF-8 or UTF-16 are called based on the mode switch value.
+        </remark>
+      </descr>
 
-<!--
-  ====================================================================
-    LazUnicode
-  ====================================================================
--->
+      <!-- unresolved externals -->
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="character"/>
+      <element name="LazUTF16"/>
+      <element name="LazUTF8"/>
 
-<module name="LazUnicode">
-<short></short>
-<descr>
-</descr>
+      <!-- function Visibility: default -->
+      <element name="CodePointCopy">
+        <short>
+          Copies the specified number of codepoints starting at a character position
+        </short>
+        <descr>
+          Copies the number of codepoints in CharCount from s, starting at the character position in StartCharIndex. For platforms that require UTF-16, UTF16Copy is called. For other platforms, UTF8Copy is called.
+        </descr>
+        <seealso>
+          <link id="#lcl.LazUtils.LazUTF16.UTF16Copy">UTF16Copy</link>
+          <link id="#lcl.LazUtils.LazUTF8.UTF8Copy">UTF8Copy</link>
+        </seealso>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="CodePointCopy.Result">
+        <short>Values copied from the string</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CodePointCopy.s">
+        <short>UTF-encoded string values</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CodePointCopy.StartCharIndex">
+        <short>Initial character position</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CodePointCopy.CharCount">
+        <short>Number of characters needed in the copy operation</short>
+      </element>
 
-<!-- function Visibility: default -->
-<element name="CodePointCopy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- function Visibility: default -->
+      <element name="CodePointLength">
+        <short>
+          Gets the number of codepoints in the specified string.
+        </short>
+        <descr>
+          Gets the number of codepoints in the specified string. For platforms that require UTF-16, UTF16Length is called to get the return value for the function. For other platforms, UTF8LengthFast is called to get the number of codepoints.
+        </descr>
+        <seealso></seealso>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="CodePointLength.Result">
+        <short>Number of codepoints in the string</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CodePointLength.s">
+        <short>UTF-encoded values examined in the function</short>
+      </element>
 
-<!-- function result Visibility: default -->
-<element name="CodePointCopy.Result">
-<short></short>
-</element>
+      <!-- function Visibility: default -->
+      <element name="CodePointPos">
+        <short>
+          Gets the position where the search value is found in a string
+        </short>
+        <descr>
+          <p>
+            Gets the position in SearchInText where SearchForText is found. StartPos indicates the initial character position (codepoint) in SearchInText used for the comparison. The default value is 1.
+          </p>
+          <p>
+            The return value contains the character position (codepoint) where the search value was found. The return value is 0 (zero) if SearchForText is not found in the string. For platforms that require UTF-16, UTF16Pos is called to get the return value. For other platforms, UTF8Pos is called to get the character position (codepoint).
+          </p>
+        </descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="CodePointPos.Result">
+        <short>Character position (codepoint) where the search value was found in the string</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CodePointPos.SearchForText">
+        <short>Values to locate in the string</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CodePointPos.SearchInText">
+        <short>String to search for the specified values</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CodePointPos.StartPos">
+        <short>Initial character position (codepoint) used in the comparison</short>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="CodePointCopy.s">
-<short></short>
-</element>
+      <!-- function Visibility: default -->
+      <element name="CodePointSize">
+        <short>
+          Gets the number of bytes needed for a CodePoint in the specified value
+        </short>
+        <descr>
+          Gets the number of bytes needed for the CodePoint specified in p. For platforms that require UTF-16, TCharacter.IsHighSurrogate is called to get the return value. For other platforms, UTF8CodepointSizeFast is called to get the number of bytes for the codepoint. The return value is 1 or 2 for UTF-16-enabled platforms, or in the range 1..4 for UTF-8-enabled platforms. The return value can be 0 (zero) if p contains an empty string ('') or a malformed codepoint.
+        </descr>
+        <seealso></seealso>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="CodePointSize.Result">
+        <short>Number of bytes required for a codepoint</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CodePointSize.p">
+        <short>String with the codepoint to examine in the function</short>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="CodePointCopy.StartCharIndex">
-<short></short>
-</element>
+      <!-- function Visibility: default -->
+      <element name="IsCombining">
+        <short>
+          Determines if the specified value is a combining codepoint
+        </short>
+        <descr>
+          Determines if the specified value is a combining codepoint. Please note, there are many more rules for combining codepoints.The diacritical marks handled in the function are only a subset of the possible Unicode values. For platforms that require UTF-16, UTF16IsCombining is called to get the return value for the specified codepoint. For other platforms, UTF8IsCombining is called to examine the codepoint.
+        </descr>
+        <seealso></seealso>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="IsCombining.Result">
+        <short>True when the codepoint represents a Unicode combining character</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="IsCombining.AChar">
+        <short>Codepoint to examine in the function</short>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="CodePointCopy.CharCount">
-<short></short>
-</element>
+      <!-- function Visibility: default -->
+      <element name="UnicodeToWinCP">
+        <short>
+          Converts the specified value to the Windows system codepage
+        </short>
+        <descr>
+          Converts the specified value to the Windows system codepage. The Unicode encoding used in s depends on the modeswitch value. For platforms that require UTF-16, UTF16ToUTF8 and UTF8ToWinCP are called to get the return value for the function, except when String is defined as UnicodeString. No conversion is required in that situation. For other platforms, UTF8ToWinCP is called to get the return value.
+        </descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="UnicodeToWinCP.Result">
+        <short>Values after conversion to the Windows code page</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="UnicodeToWinCP.s">
+        <short>Unicode values to convert in the function</short>
+      </element>
 
-<!-- function Visibility: default -->
-<element name="CodePointLength">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- function Visibility: default -->
+      <element name="WinCPToUnicode">
+        <short>
+          Converts the specified string to Unicode
+        </short>
+        <descr>
+          Converts the specified value from the Windows system codepage to Unicode. The Unicode encoding used depends on the modeswitch value. For platforms that require UTF-16, WinCPToUTF8 and UTF8ToUTF16 are called to get the return value for the function. Except when String is defined as UnicodeString. No conversion is required in that situation. For other platforms, WinCPToUTF8 is called to get the return value.
+        </descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="WinCPToUnicode.Result">
+        <short>Unicode values for the specified string</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="WinCPToUnicode.s">
+        <short>String with Windows code page values</short>
+      </element>
 
-<!-- function result Visibility: default -->
-<element name="CodePointLength.Result">
-<short></short>
-</element>
+      <element name="StringOfCodePoint">
+        <short>
+          Creates a string with the specified number of codepoints.
+        </short>
+        <descr>
+          Creates a string with the specified number of codepoints. Like StringOfChar. For platforms that require UTF-16, the values in ACodePoint are concatenated together until the number of codepoints in N have been created. For other platforms, Utf8StringOfChar is called to get the return value for the function.
+        </descr>
+        <seealso></seealso>
+      </element>
+      <element name="StringOfCodePoint.Result">
+        <short>String with the specified number of codepoints</short>
+      </element>
+      <element name="StringOfCodePoint.ACodePoint">
+        <short>Codepoint to use when creating the string</short>
+      </element>
+      <element name="StringOfCodePoint.N">
+        <short>Number of codepoints required in the string</short>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="CodePointLength.s">
-<short></short>
-</element>
+      <!-- class Visibility: default -->
+      <element name="TUnicodeEnumeratorBase">
+        <short></short>
+        <descr>
+          Base class for a Unicode character enumerator.
+        </descr>
+        <errors></errors>
+        <seealso></seealso>
+      </element>
 
-<!-- function Visibility: default -->
-<element name="CodePointPos">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- variable Visibility: private -->
+      <element name="TUnicodeEnumeratorBase.fSrcPos"/>
+      <element name="TUnicodeEnumeratorBase.fEndPos"/>
+      <element name="TUnicodeEnumeratorBase.fCurOne"/>
+      <element name="TUnicodeEnumeratorBase.fCurTwo"/>
+      <element name="TUnicodeEnumeratorBase.fCurThree"/>
+      <element name="TUnicodeEnumeratorBase.fCurFour"/>
+      <element name="TUnicodeEnumeratorBase.fCurrent"/>
+      <element name="TUnicodeEnumeratorBase.fCurrentCodeUnitCount"/>
 
-<!-- function result Visibility: default -->
-<element name="CodePointPos.Result">
-<short></short>
-</element>
+      <element name="TUnicodeEnumeratorBase.UpdateCurrent">
+        <short>
+          Copies byte values for the Current character (codepoint)
+        </short>
+        <descr>
+          Copies byte values used in Current for the character (codepoint) when MoveNext  is called to go to the next character. aCount contains the number of byte values needed for the Unicode codepoint. UpdateCurrent increments the internal pointer used to access values in the enumerator by the number of bytes in aCount.
+        </descr>
+        <errors>
+          <p>
+            Raises an assertion error if the number of bytes in aCount is 0 (zero). Raised with the message 'TUnicodeEnumeratorBase.UpdateCurrent: aCount=0'.
+          </p>
+          <p>
+            Raises an assertion error if the length of bytes copied to Current is different that the valuer in aCount. Raised with the message 'TUnicodeEnumeratorBase.UpdateCurrent: Length(fCurrent)<>aCount.')'.
+          </p>
+        </errors>
+      </element>
+      <element name="TUnicodeEnumeratorBase.UpdateCurrent.aCount">
+        <short>Number of bytes needed for the codepoint</short>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="CodePointPos.SearchForText">
-<short></short>
-</element>
+      <!-- constructor Visibility: public -->
+      <element name="TUnicodeEnumeratorBase.Create">
+        <short>
+          Constructor for the class instance
+        </short>
+        <descr>
+          Create initializes internal member variable used to access byte values for Unicode codepoints. A is the string with codepoints traversed using the enumerator.
+        </descr>
+        <seealso></seealso>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TUnicodeEnumeratorBase.Create.A">
+        <short>Unicode string for the enumerator</short>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="CodePointPos.SearchInText">
-<short></short>
-</element>
+      <!-- property Visibility: public -->
+      <element name="TUnicodeEnumeratorBase.Current">
+        <short>
+          Byte values for the current codepoint in the enumerator
+        </short>
+        <descr>
+          Current is a read-only String property which provides access to the byte values for the current codepoint in the enumerator. Current is updated in UpdateCurrent when the MoveNext method is called.
+        </descr>
+        <seealso></seealso>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="CodePointPos.StartPos">
-<short></short>
-</element>
+      <!-- property Visibility: public -->
+      <element name="TUnicodeEnumeratorBase.CurrentCodeUnitCount">
+        <short>
+          Number of bytes in the Current codepoint
+        </short>
+        <descr>
+          CurrentCodeUnitCount is a read-only Integer property which contains the number of bytes needed for the codepoint in Current. CurrentCodeUnitCount is updated in UpdateCurrent when MoveNext is called.
+        </descr>
+        <seealso></seealso>
+      </element>
 
-<!-- function Visibility: default -->
-<element name="CodePointSize">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- class Visibility: default -->
+      <element name="TCodePointEnumerator">
+        <short>
+          Base class for a Unicode codepoint enumerator
+        </short>
+        <descr>
+          Base class for a Unicode codepoint enumerator. TCodePointEnumerator allows traversal of Unicode codepoints. Uses UTF-8 or UTF-16 encodings depending on value in <var>$ModeSwitch</var>. Extends the ancestor class to provide  navigation in the enumerator using the MoveNext method.
+        </descr>
+        <seealso></seealso>
+      </element>
 
-<!-- function result Visibility: default -->
-<element name="CodePointSize.Result">
-<short></short>
-</element>
+      <!-- function Visibility: public -->
+      <element name="TCodePointEnumerator.MoveNext">
+        <short>
+          Provides navigation to the next codepoint in the enumerator
+        </short>
+        <descr>
+          Provides navigation to the next Unicode codepoint in the enumerator. The return value contains True when more characters (codepoints) are available to the enumerator. UpdateCurrent is called using the value from CodePointSize to store the value for the Current property.
+        </descr>
+        <seealso></seealso>
+      </element>
+      <!-- function result Visibility: public -->
+      <element name="TCodePointEnumerator.MoveNext.Result">
+        <short>True when more characters (codepoints) are available</short>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="CodePointSize.p">
-<short></short>
-</element>
+      <!-- class Visibility: default -->
+      <element name="TUnicodeCharacterEnumerator">
+        <short>
+          Implements an enumerator for Unicode codepoints
+        </short>
+        <descr>
+          Implements an enumerator for Unicode codepoints. TUnicodeCharacterEnumerator allows traversal of characters (codepoints) in a Unicode-encoded string. Values use either UTF-16 or UTF-8 encoding depending on the value for <var>$ModeSwitch</var>. An overridden MoveNext method is provided to handle combining diacritical marks in the Unicode codepoints.
+        </descr>
+        <seealso></seealso>
+      </element>
 
-<!-- function Visibility: default -->
-<element name="IsCombining">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- variable Visibility: private -->
+      <element name="TUnicodeCharacterEnumerator.fCurrentCodePointCount"/>
 
-<!-- function result Visibility: default -->
-<element name="IsCombining.Result">
-<short></short>
-</element>
+      <!-- property Visibility: public -->
+      <element name="TUnicodeCharacterEnumerator.CurrentCodePointCount">
+        <short>
+          Number of bytes used for the Current codepoint
+        </short>
+        <descr>
+          CurrentCodePointCount is a read-only Integer property that indicates the number of bytes used for the Current codepoint. CurrentCodePointCount is updated in the MoveNext method, and includes any combining diacritical marks found in the codepoints.
+        </descr>
+        <seealso></seealso>
+      </element>
 
-<!-- argument Visibility: default -->
-<element name="IsCombining.AChar">
-<short></short>
-</element>
+      <!-- function Visibility: public -->
+      <element name="TUnicodeCharacterEnumerator.MoveNext">
+        <short>
+          Adds support for combining diacritical marks when moving to the next codepoint
+        </short>
+        <descr>
+          <p>
+            MoveNext is an overridden method which adds support for combining diacritical marks when moving to the next codepoint for the enumerator. The return value is True when more characters (codepoints) are available to the enumerator. MoveNext updates the value in CurrentCodeUnitCount, and includes combining diacritical marks in the byte count. MoveNext calls UpdateCurrent to store the value for the Current property.
+          </p>
+          <remark>
+            MoveNext does not call the inherited method.
+          </remark>
+        </descr>
+        <seealso></seealso>
+      </element>
+      <!-- function result Visibility: public -->
+      <element name="TUnicodeCharacterEnumerator.MoveNext.Result">
+        <short>True when more characters (codepoints) are available to the enumerator</short>
+      </element>
 
-<!-- function Visibility: default -->
-<element name="UnicodeToWinCP">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
+      <!-- operator Visibility: default -->
+      <element name="Enumerator">
+        <short>
+          Enumerator which combines diacritical marks
+        </short>
+        <descr>
+          Operator that allows in For ... In loops. This enumerator combines diacritical marks. It is used by default although there are more rules for combining codepoints. Diacritical marks cover rules for most western languages.
+        </descr>
+      </element>
+      <element name="Enumerator.Result">
+        <short>Enumerator for the operator</short>
+      </element>
+      <element name="Enumerator.A">
+        <short>Values to traverse in the enumerator</short>
+      </element>
 
-<!-- function result Visibility: default -->
-<element name="UnicodeToWinCP.Result">
-<short></short>
-</element>
 
-<!-- argument Visibility: default -->
-<element name="UnicodeToWinCP.s">
-<short></short>
-</element>
+    </module>
+    <!-- LazUnicode -->
 
-<!-- function Visibility: default -->
-<element name="WinCPToUnicode">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="WinCPToUnicode.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="WinCPToUnicode.s">
-<short></short>
-</element>
-
-<!-- class Visibility: default -->
-<element name="TUnicodeEnumeratorBase">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TUnicodeEnumeratorBase.fCurrent">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TUnicodeEnumeratorBase.fCurrentPos">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TUnicodeEnumeratorBase.fEndPos">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TUnicodeEnumeratorBase.fCurrentCodeUnitCount">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TUnicodeEnumeratorBase.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TUnicodeEnumeratorBase.Create.A">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TUnicodeEnumeratorBase.Current">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TUnicodeEnumeratorBase.CurrentCodeUnitCount">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- class Visibility: default -->
-<element name="TCodePointEnumerator">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TCodePointEnumerator.MoveNext">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: public -->
-<element name="TCodePointEnumerator.MoveNext.Result">
-<short></short>
-</element>
-
-<!-- class Visibility: default -->
-<element name="TUnicodeCharacterEnumerator">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TUnicodeCharacterEnumerator.fCurrentCodePointCount">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TUnicodeCharacterEnumerator.CurrentCodePointCount">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TUnicodeCharacterEnumerator.MoveNext">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: public -->
-<element name="TUnicodeCharacterEnumerator.MoveNext.Result">
-<short></short>
-</element>
-
-<!-- operator Visibility: default -->
-<element name="enumerator(string):TCodePointEnumerator">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="enumerator(string):TCodePointEnumerator.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="enumerator(string):TCodePointEnumerator.A">
-<short></short>
-</element>
-
-</module> <!-- LazUnicode -->
-
-</package>
+  </package>
 </fpdoc-descriptions>
