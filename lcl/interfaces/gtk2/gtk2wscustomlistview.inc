@@ -991,9 +991,7 @@ begin
 
   GtkColumn := gtk_tree_view_get_column(PGtkTreeView(Widgets^.MainView), AIndex);
   if GtkColumn <> nil then
-    gtk_tree_view_column_set_title(GtkColumn, PChar(
-      StringReplace(ACaption, '_', '__', [rfReplaceAll]) // Must replace single '_' to double
-      ));
+    gtk_tree_view_column_set_title(GtkColumn, PChar(EscapeUnderscores(ACaption)));
 end;
 
 class procedure TGtk2WSCustomListView.ColumnSetImage(const ALV: TCustomListView;

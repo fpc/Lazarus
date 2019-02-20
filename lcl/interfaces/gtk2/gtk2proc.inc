@@ -9162,6 +9162,11 @@ begin
   end;
 end;
 
+function EscapeUnderscores(const Str: String): String;
+begin
+  Result := StringReplace(Str, '_', '__', [rfReplaceAll]);
+end;
+
 {-------------------------------------------------------------------------------
   function RemoveAmpersands(Src: PChar; LineLength : Longint) : PChar;
 
