@@ -23,12 +23,11 @@ type
 
   TListChartSource = class(TCustomChartSource)
   private
-    FXCountMin: Cardinal;
-    FYCountMin: Cardinal;
     FData: TFPList;
     FDataPoints: TStrings;
     FSorted: Boolean;
-
+    FXCountMin: Cardinal;
+    FYCountMin: Cardinal;
     procedure AddAt(
       APos: Integer; AX, AY: Double; const ALabel: String; AColor: TChartColor);
     procedure ClearCaches;
@@ -471,9 +470,9 @@ var
   i: Integer;
 begin
   if ASource.XCount < FXCountMin then
-    raise EXCountError.CreateFmt(rsSourceCountError2, [ClassName, FXCountMin, 'X']);
+    raise EXCountError.CreateFmt(rsSourceCountError2, [ClassName, FXCountMin, 'x']);
   if ASource.YCount < FYCountMin then
-    raise EYCountError.CreateFmt(rsSourceCountError2, [ClassName, FYCountMin, 'Y']);
+    raise EYCountError.CreateFmt(rsSourceCountError2, [ClassName, FYCountMin, 'y']);
 
   BeginUpdate;
   try

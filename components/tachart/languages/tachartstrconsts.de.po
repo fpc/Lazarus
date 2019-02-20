@@ -396,14 +396,12 @@ msgid "Right triangle"
 msgstr "Dreieck nach rechs"
 
 #: tachartstrconsts.rssourcecounterror
-#, fuzzy
-#| msgid "%0:s requires a chart source with at least %1:d %2:s value(s) per data point."
-msgid "%0:s requires a chart source with at least %1:d \"%2:s\" value(s) per data point."
-msgstr "%0:s benötigt eine Datenquelle mit mindestens %1:d %2:s Wert(en) pro Datenpunkt."
+msgid "%0:s requires a chart source with at least %1:d %2:s value(s) per data point."
+msgstr "%0:s benötigt eine Datenquelle mit mindestens %1:d %2:s-Wert(en) pro Datenpunkt."
 
 #: tachartstrconsts.rssourcecounterror2
-msgid "This %0:s instance must have at least %1:d \"%2:s\" value(s) per data point."
-msgstr ""
+msgid "This %0:s instance must have at least %1:d %2:s value(s) per data point."
+msgstr "Diese %0:s-Instanz muss mindestens %1:d %2:s-Wert(e) pro Datenpunkt zur Verfügung stellen."
 
 #: tachartstrconsts.rsstarsymbol
 msgid "Star (lines)"
@@ -462,4 +460,3 @@ msgstr "Fehler beim Umbenennen von Komponenten: %s"
 #: tachartstrconsts.tastoolseditortitle
 msgid "Edit tools"
 msgstr "Werkzeuge bearbeiten"
-

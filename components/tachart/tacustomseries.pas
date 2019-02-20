@@ -788,9 +788,9 @@ begin
     exit;
   GetXYCountNeeded(nx, ny);
   if ASource.XCount < nx then
-    raise EXCountError.CreateFmt(rsSourceCountError, [ClassName, nx, 'X']);
+    raise EXCountError.CreateFmt(rsSourceCountError, [ClassName, nx, 'x']);
   if ASource.YCount < ny then
-    raise EYCountError.CreateFmt(rsSourceCountError, [ClassName, ny, 'Y']);
+    raise EYCountError.CreateFmt(rsSourceCountError, [ClassName, ny, 'y']);
 end;
 
 procedure TChartSeries.Clear;
