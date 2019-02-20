@@ -37,6 +37,7 @@ type
     FFieldText: String;
     FFieldX: String;
     FFieldY: String;
+    FFieldXList: TStringList;
     FFieldYList: TStringList;
     FOnGetItem: TDbChartSourceGetItemEvent;
     FOptions: TDbChartSourceOptions;
@@ -52,6 +53,7 @@ type
   protected
     function GetCount: Integer; override;
     function GetItem(AIndex: Integer): PChartDataItem; override;
+    procedure SetXCount(AValue: Cardinal); override;
     procedure SetYCount(AValue: Cardinal); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -88,6 +90,7 @@ type
   strict private
     FChartSrc: TDbChartSource;
   protected
+    procedure ActiveChanged; override;
     procedure DataSetChanged; override;
     procedure DataSetScrolled(ADistance: Integer); override;
     procedure UpdateData; override;
@@ -101,6 +104,14 @@ var
   VLockedDatasets: TFPList;
 
 { TDbChartSourceDataLink }
+
+procedure TDbChartSourceDataLink.ActiveChanged;
+begin
+  inherited ActiveChanged;
+  // Make associated series check XCount and YCount.
+  if (FChartSrc.ComponentState = []) and Assigned(Dataset) and (Dataset.State <> dsInactive) then
+    FChartSrc.Reset;
+end;
 
 constructor TDbChartSourceDataLink.Create(ASrc: TDbChartSource);
 begin
@@ -126,10 +137,6 @@ begin
   FChartSrc.Reset;
 end;
 
-procedure Register;
-begin
-  RegisterComponents(CHART_COMPONENT_IDE_PAGE, [TDbChartSource]);
-end;
 
 { TDbChartSource }
 
@@ -158,9 +165,12 @@ constructor TDbChartSource.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FDataLink := TDbChartSourceDataLink.Create(Self);
+  FFieldXList := TStringList.Create;
+  FFieldXList.StrictDelimiter := true;
   FFieldYList := TStringList.Create;
   FFieldYList.StrictDelimiter := true;
-  FYCount := 0; // Set to 1 by inherited.
+  FXCount := 0;    // Have been set to 1 by inherited constructor
+  FYCount := 0;
 end;
 
 function TDbChartSource.DataSet: TDataSet;
@@ -187,18 +197,25 @@ var
   i: Integer;
 begin
   ds := DataSet;
-  if FieldX <> '' then
-    AItem.X := FieldValueOrNaN(ds, FieldX, dcsoDateTimeX in Options)
-  else
+
+  if FXCount > 0 then begin
+    AItem.X := FieldValueOrNaN(ds, FFieldXList[0], dcsoDateTimeX in Options);
+    for i := 0 to High(AItem.XList) do
+      AItem.XList[i] :=
+        FieldValueOrNaN(ds, FFieldXList[i + 1], false);  // no date/time in extra x values
+  end else
     AItem.X := ds.RecNo;
+
   if FYCount > 0 then begin
     AItem.Y := FieldValueOrNaN(ds, FFieldYList[0], dcsoDateTimeY in Options);
     for i := 0 to High(AItem.YList) do
       AItem.YList[i] :=
-        FieldValueOrNaN(ds, FFieldYList[i + 1], dcsoDateTimeY in Options);
+        FieldValueOrNaN(ds, FFieldYList[i + 1], false);  // not date/time in extra y values!
   end;
+
   if FieldColor <> '' then
     AItem.Color := ds.FieldByName(FieldColor).AsInteger;
+
   if FieldText <> '' then
     AItem.Text := ds.FieldByName(FieldText).AsString;
 end;
@@ -206,6 +223,7 @@ end;
 destructor TDbChartSource.Destroy;
 begin
   FreeAndNil(FDataLink);
+  FreeAndNil(FFieldXList);
   FreeAndNil(FFieldYList);
   inherited;
 end;
@@ -292,6 +310,12 @@ procedure TDbChartSource.SetFieldX(const AValue: String);
 begin
   if FFieldX = AValue then exit;
   FFieldX := AValue;
+  if FFieldX = '' then
+    FFieldXList.Clear
+  else
+    FFieldXList.CommaText := FFieldX;
+  FXCount := FFieldXList.Count;
+  SetLength(FCurItem.XList, Max(FXCount - 1, 0));
   Reset;
 end;
 
@@ -322,11 +346,24 @@ begin
   Reset;
 end;
 
+procedure TDbChartSource.SetXCount(AValue: Cardinal);
+begin
+  Unused(AValue);
+  raise EXCountError.Create('Set FieldX instead');
+end;
+
 procedure TDbChartSource.SetYCount(AValue: Cardinal);
 begin
   Unused(AValue);
   raise EYCountError.Create('Set FieldY instead');
 end;
+
+
+procedure Register;
+begin
+  RegisterComponents(CHART_COMPONENT_IDE_PAGE, [TDbChartSource]);
+end;
+
 
 initialization
   VLockedDatasets := TFPList.Create;
