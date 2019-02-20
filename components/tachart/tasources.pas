@@ -75,8 +75,8 @@ type
     property Sorted: Boolean read FSorted write SetSorted default false;
     property XCount;
     property XErrorBarData;
-    property YErrorBarData;
     property YCount;
+    property YErrorBarData;
   end;
 
   { TMWCRandomGenerator }
@@ -599,7 +599,7 @@ var
   i: Integer;
 begin
   if AValue < FXCountMin then
-    raise EXCountError.CreateFmt(rsSourceCountError2, [ClassName, FXCountMin, 'X']);
+    raise EXCountError.CreateFmt(rsSourceCountError2, [ClassName, FXCountMin, 'x']);
   if AValue = FXCount then exit;
   FXCount := AValue;
   for i := 0 to Count - 1 do
@@ -676,7 +676,7 @@ var
   i: Integer;
 begin
   if AValue < FYCountMin then
-    raise EYCountError.CreateFmt(rsSourceCountError2, [ClassName, FYCountMin, 'Y']);
+    raise EYCountError.CreateFmt(rsSourceCountError2, [ClassName, FYCountMin, 'y']);
   if AValue = FYCount then exit;
   FYCount := AValue;
   for i := 0 to Count - 1 do
@@ -832,7 +832,6 @@ begin
   inherited Create(AOwner);
   FCurItem.Color := clTAColor;
   FRNG := TMWCRandomGenerator.Create;
-  FYCount := 1;
   RandSeed := Trunc(Frac(Now) * MaxInt);
 end;
 

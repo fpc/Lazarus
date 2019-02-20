@@ -516,9 +516,6 @@ var
   ext: TDoubleRect;
   nx, ny: Cardinal;
 begin
-  GetXYCountNeeded(nx, ny);
-  if Source.YCount < ny then exit;
-
   ADrawer.Pen := BubblePen;
   ADrawer.Brush := BubbleBrush;
 
@@ -540,6 +537,7 @@ begin
       ADrawer.SetBrushColor(ColorDef(item^.Color, BubbleBrush.Color));
     ADrawer.Ellipse(irect.Left, irect.Top, irect.Right, irect.Bottom);
   end;
+  GetXYCountNeeded(nx, ny);
   if Source.YCount > ny then
     for i := 0 to ny - 1 do DrawLabels(ADrawer, i)
   else
@@ -557,9 +555,6 @@ var
   item: PChartDataItem;
 begin
   Result := EmptyExtent;
-  if Source.YCount < 2 then
-    exit;
-
   for i := 0 to Count - 1 do begin
     item := Source[i];
     sp := item^.Point;
@@ -982,8 +977,7 @@ var
   i: Integer;
   nx, ny: Cardinal;
 begin
-  GetXYCountNeeded(nx, ny);
-  if IsEmpty or (Source.YCount < ny) then
+  if IsEmpty then
     exit;
   if FWidthStyle = bwsPercentMin then
     UpdateMinXRange;
@@ -1029,8 +1023,9 @@ begin
     DoLine(x - wb, ymed, x + wb, ymed);
   end;
 
+  GetXYCountNeeded(nx, ny);
   if Source.YCount > ny then
-    for i := 0 to ny-1 do DrawLabels(ADrawer, ny)
+    for i := 0 to ny-1 do DrawLabels(ADrawer, i)
   else
     DrawLabels(ADrawer);
 end;
@@ -1046,7 +1041,6 @@ var
   end;
 
 begin
-  if Source.YCount < 5 then exit(EmptyExtent);
   Result := Source.ExtentList;
   // Show first and last boxes fully.
   j := -1;
@@ -1431,9 +1425,6 @@ var
   p: TPen;
   nx, ny: Cardinal;
 begin
-  GetXYCountNeeded(nx, ny);
-  if (Source.XCount < nx) or (Source.YCount < ny) then exit;
-
   my := MaxIntValue([YIndexOpen, YIndexHigh, YIndexLow, YIndexClose]);
   if IsEmpty or (my >= Source.YCount) then exit;
 
@@ -1474,6 +1465,7 @@ begin
     end;
   end;
 
+  GetXYCountNeeded(nx, ny);
   if Source.YCount > ny then
     for i := 0 to ny-1 do DrawLabels(ADrawer, i)
   else
@@ -1486,7 +1478,6 @@ var
   tw: Double;
   j: Integer;
 begin
-  if Source.YCount < 4 then exit(EmptyExtent);
   Result := Source.ExtentList;                            // axis units
   // Show first and last open/close ticks and candle boxes fully.
   j := -1;
@@ -1764,8 +1755,6 @@ constructor TFieldSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ToolTargets := [nptPoint, nptXList, nptYList, nptCustom];
-  ListSource.XCount := 2;
-  ListSource.YCount := 2;
   FArrow := TChartArrow.Create(ParentChart);
   FArrow.Length := 20;
   FArrow.Width := 10;
@@ -1810,11 +1799,7 @@ var
   i: Integer;
   p1, p2: TDoublePoint;
   lPen: TPen;
-  nx, ny: Cardinal;
 begin
-  GetXYCountNeeded(nx, ny);
-  if (Source.XCount < nx) or (Source.YCount < ny) then exit;
-
   with Extent do begin
     ext.a := AxisToGraph(a);
     ext.b := AxisToGraph(b);
