@@ -260,6 +260,18 @@ type
    *)
   { TLldbDebugger }
 
+  { TLldbDebuggerProperties }
+
+  TLldbDebuggerProperties = class(TDebuggerProperties)
+  private
+    FLaunchNewTerminal: Boolean;
+  public
+    constructor Create; override;
+    procedure Assign(Source: TPersistent); override;
+  published
+    property LaunchNewTerminal: Boolean read FLaunchNewTerminal write FLaunchNewTerminal default False;
+  end;
+
   TLldbDebugger = class(TDebuggerIntf)
   private
     FDebugProcess: TDebugProcess;
@@ -331,7 +343,7 @@ type
               const AParams: array of const;
               const ACallback: TMethod): Boolean; override;
   public
-//    class function CreateProperties: TDebuggerProperties; override; // Creates debuggerproperties
+    class function CreateProperties: TDebuggerProperties; override; // Creates debuggerproperties
     class function Caption: String; override;
     class function ExePaths: String; override;
 
@@ -506,6 +518,20 @@ type
     procedure Changed;
     procedure RequestData(ARegisters: TRegisters); override;
   end;
+
+{ TLldbDebuggerProperties }
+
+constructor TLldbDebuggerProperties.Create;
+begin
+  inherited Create;
+  FLaunchNewTerminal := False;
+end;
+
+procedure TLldbDebuggerProperties.Assign(Source: TPersistent);
+begin
+  inherited Assign(Source);
+  FLaunchNewTerminal := TLldbDebuggerProperties(Source).FLaunchNewTerminal;
+end;
 
 { TLldbDebuggerCommandRun }
 
@@ -2332,7 +2358,7 @@ begin
   SetDebuggerState(dsRun);
   // the state change allows breakpoints to be set, before the run command is issued.
 
-  FRunInstr := TLldbInstructionProcessLaunch.Create();
+  FRunInstr := TLldbInstructionProcessLaunch.Create(TLldbDebuggerProperties(Debugger.GetProperties).LaunchNewTerminal);
   FRunInstr.OnSuccess := @RunInstructionSucceeded;
   FRunInstr.OnFailure := @InstructionFailed;
   QueueInstruction(FRunInstr);
@@ -2845,6 +2871,11 @@ begin
   finally
     UnlockRelease;
   end;
+end;
+
+class function TLldbDebugger.CreateProperties: TDebuggerProperties;
+begin
+  Result := TLldbDebuggerProperties.Create;
 end;
 
 class function TLldbDebugger.Caption: String;
