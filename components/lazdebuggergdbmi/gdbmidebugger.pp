@@ -940,6 +940,7 @@ type
     property  DebuggerFlags: TGDBMIDebuggerFlags read FDebuggerFlags;
     procedure DoUnknownException(Sender: TObject; AnException: Exception);
 
+    function  CheckForInternalError(ALine, ACurCommandText: String): Boolean;
     procedure DoNotifyAsync(Line: String);
     procedure DoDbgBreakpointEvent(ABreakpoint: TDBGBreakPoint; ALocation: TDBGLocationRec;
                                    AReason: TGDBMIBreakpointReason;
@@ -2000,33 +2001,7 @@ procedure TGDBMIDbgInstructionQueue.HandleGdbDataBeforeInstruction(var AData: St
     end;
 
     // check internal error
-    if (Pos('internal-error:', LowerCase(Line)) > 0) or
-       (Pos('internal to gdb has been detected', LowerCase(Line)) > 0) or
-       (Pos('further debugging may prove unreliable', LowerCase(Line)) > 0) or
-       (Pos('command aborted.', LowerCase(Line)) > 0)
-    then begin
-      Debugger.FNeedReset := True;
-      Debugger.DoDbgEvent(ecDebugger, etDefault,
-        Format(gdbmiEventLogGDBInternalError, [AData]));
-      if (TGDBMIDebuggerProperties(Debugger.GetProperties).WarnOnInternalError = TGDBMIDebuggerShowWarning.True) or
-         ( (TGDBMIDebuggerProperties(Debugger.GetProperties).WarnOnInternalError = TGDBMIDebuggerShowWarning.OncePerRun)
-           and not (Debugger.FWarnedOnInternal))
-      then begin
-        Debugger.FWarnedOnInternal := True;
-        if Debugger.OnFeedback(Debugger,
-            Format(gdbmiGDBInternalError, [LineEnding]),
-            Format(gdbmiGDBInternalErrorInfo, [LineEnding, Line, TheInstruction.DebugText]),
-            ftWarning, [frOk, frStop]
-          ) = frStop
-        then begin
-          try
-            Debugger.CancelAllQueued;
-          finally
-            Debugger.Stop;
-          end;
-        end;
-      end;
-    end;
+    Debugger.CheckForInternalError(Line, TheInstruction.DebugText);
 
   end;
 
@@ -7946,6 +7921,37 @@ begin
       CancelAllQueued;
     finally
       Stop;
+    end;
+  end;
+end;
+
+function TGDBMIDebugger.CheckForInternalError(ALine, ACurCommandText: String
+  ): Boolean;
+begin
+  Result := (Pos('internal-error:', LowerCase(ALine)) > 0) or
+            (Pos('internal to gdb has been detected', LowerCase(ALine)) > 0) or
+            (Pos('further debugging may prove unreliable', LowerCase(ALine)) > 0) or
+            (Pos('command aborted.', LowerCase(ALine)) > 0);
+  if Result then begin
+    FNeedReset := True;
+    DoDbgEvent(ecDebugger, etDefault, Format(gdbmiEventLogGDBInternalError, [ALine]));
+    if (TGDBMIDebuggerProperties(GetProperties).WarnOnInternalError = TGDBMIDebuggerShowWarning.True) or
+       ( (TGDBMIDebuggerProperties(GetProperties).WarnOnInternalError = TGDBMIDebuggerShowWarning.OncePerRun)
+         and not (FWarnedOnInternal))
+    then begin
+      FWarnedOnInternal := True;
+      if OnFeedback(Self,
+          Format(gdbmiGDBInternalError, [LineEnding]),
+          Format(gdbmiGDBInternalErrorInfo, [LineEnding, ALine, ACurCommandText]),
+          ftWarning, [frOk, frStop]
+        ) = frStop
+      then begin
+        try
+          CancelAllQueued;
+        finally
+          Stop;
+        end;
+      end;
     end;
   end;
 end;
