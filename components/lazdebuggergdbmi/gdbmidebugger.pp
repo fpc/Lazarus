@@ -2628,7 +2628,7 @@ end;
 function TGDBMIDebuggerCommandExecuteBase.ProcessRunning(out AStoppedParams: String; out
   AResult: TGDBMIExecResult; ATimeOut: Integer): Boolean;
 var
-  InLogWarning: Boolean;
+  InLogWarning, ForceStop: Boolean;
 
   function DoExecAsync(var Line: String): Boolean;
   var
@@ -2767,6 +2767,11 @@ var
       FLogWarnings := FLogWarnings + Warning + LineEnding;
     if Line = '&"\n"' then
       InLogWarning := False;
+
+    if FTheDebugger.CheckForInternalError(Line, '') then begin
+      AResult.State := dsStop;
+      ForceStop := True;
+    end;
 (*
 << TCmdLineDebugger.ReadLn "&"Warning:\n""
   << TCmdLineDebugger.ReadLn "&"Cannot insert breakpoint 11.\n""
@@ -2791,6 +2796,7 @@ begin
   GotPrompt := 0;
   {$ENDIF}
   Result := True;
+  ForceStop := False;
   AResult.State := dsNone;
   InLogWarning := False;
   FGotStopped := False;
@@ -2867,7 +2873,7 @@ begin
       Break;
     end;
 
-    if FTheDebugger.FAsyncModeEnabled and FGotStopped then begin
+    if ForceStop or (FTheDebugger.FAsyncModeEnabled and FGotStopped) then begin
       // There should not be a "(gdb) ",
       // but some versions print it, as they run none async, after accepting "run &"
       S := FTheDebugger.ReadLine(True, 50);
@@ -6809,16 +6815,16 @@ begin
     FTheDebugger.FRtlUnwindExBreak.Disable(Self);
     FTheDebugger.FSehRaiseBreaks.ClearAll(Self);
     FTheDebugger.FMainAddrBreak.Clear(Self);
-  end;
 
-  if (not ContinueExecution) and (DebuggerState = dsRun) and
-     (FTheDebugger.PauseWaitState <> pwsInternal)
-  then begin
-    // Handle the unforeseen
-    if (StoppedParams <> '')
-    then debugln(['ERROR: Got stop params, but did not change FTheDebugger.state: ', StoppedParams])
-    else debugln(['ERROR: Got NO stop params at all, but was running']);
-    SetDebuggerState(dsPause);
+    if (not ContinueExecution) and (DebuggerState = dsRun) and
+       (FTheDebugger.PauseWaitState <> pwsInternal)
+    then begin
+      // Handle the unforeseen
+      if (StoppedParams <> '')
+      then debugln(['ERROR: Got stop params, but did not change FTheDebugger.state: ', StoppedParams])
+      else debugln(['ERROR: Got NO stop params at all, but was running']);
+      SetDebuggerState(dsPause);
+    end;
   end;
 end;
 
