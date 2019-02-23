@@ -7933,13 +7933,42 @@ end;
 
 function TGDBMIDebugger.CheckForInternalError(ALine, ACurCommandText: String
   ): Boolean;
+
+  function IsErrorLine(const L: String): Boolean;
+  begin
+    Result := (Pos('internal-error:', LowerCase(L)) > 0) or
+              (Pos('internal to gdb has been detected', LowerCase(L)) > 0) or
+              (Pos('further debugging may prove unreliable', LowerCase(L)) > 0) or
+              (Pos('command aborted.', LowerCase(L)) > 0);
+  end;
+  function IsErrorContinued(const L: String): Boolean;
+  begin
+    Result := (L <> '') and (L[1] = '&') and
+              (
+                IsErrorLine(L) or
+                (Pos('this is a bug, please report it', LowerCase(L)) > 0) or
+                ( (Pos('for instructions', LowerCase(L)) > 0) and (Pos('bugs', LowerCase(L)) > 0) ) or
+                (L = '&"\n\n"')
+              );
+  end;
+
+var
+  S: String;
+  i: Integer;
 begin
-  Result := (Pos('internal-error:', LowerCase(ALine)) > 0) or
-            (Pos('internal to gdb has been detected', LowerCase(ALine)) > 0) or
-            (Pos('further debugging may prove unreliable', LowerCase(ALine)) > 0) or
-            (Pos('command aborted.', LowerCase(ALine)) > 0);
+  Result := IsErrorLine(ALine);
   if Result then begin
     FNeedReset := True;
+
+    S := ReadLine(True, 50);
+    i := 5;
+    while IsErrorContinued(S) and (i > 0) do begin
+      ReadLine(1);
+      ALine := ALine + LineEnding + S;
+      dec(i);
+      S := ReadLine(True, 50);
+    end;
+
     DoDbgEvent(ecDebugger, etDefault, Format(gdbmiEventLogGDBInternalError, [ALine]));
     if (TGDBMIDebuggerProperties(GetProperties).WarnOnInternalError = TGDBMIDebuggerShowWarning.True) or
        ( (TGDBMIDebuggerProperties(GetProperties).WarnOnInternalError = TGDBMIDebuggerShowWarning.OncePerRun)
