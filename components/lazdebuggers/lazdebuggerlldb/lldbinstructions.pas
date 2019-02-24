@@ -122,7 +122,7 @@ type
   protected
     function ProcessInputFromDbg(const AData: String): Boolean; override;
   public
-    constructor Create();
+    constructor Create(AOpenTerminal: Boolean);
   end;
 
   { TLldbInstructionProcessStep }
@@ -698,9 +698,12 @@ begin
   Result := True; // Ignore any "process stopped", before "launched"
 end;
 
-constructor TLldbInstructionProcessLaunch.Create();
+constructor TLldbInstructionProcessLaunch.Create(AOpenTerminal: Boolean);
 begin
-  inherited Create('process launch -n');
+  if AOpenTerminal then
+    inherited Create('process launch --tty')
+  else
+    inherited Create('process launch -n');
 end;
 
 { TLldbInstructionProcessStep }
