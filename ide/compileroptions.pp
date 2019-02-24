@@ -4241,7 +4241,7 @@ end;
 procedure TCompilationToolOptions.SetCommand(AValue: string);
 begin
   inherited SetCommand(AValue);
-  Inc(FParsedCommandStamp);
+  FParsedCommandStamp:=CTInvalidChangeStamp;
 end;
 
 procedure TCompilationToolOptions.SubstituteMacros(var s: string);
