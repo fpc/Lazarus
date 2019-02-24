@@ -1,0 +1,282 @@
+object RestDataModule: TRestDataModule
+  OldCreateOrder = False
+  Height = 294
+  HorizontalOffset = 477
+  VerticalOffset = 321
+  Width = 407
+  PPI = 96
+  object Dispatcher: TSQLDBRestDispatcher
+    Active = True
+    Connections = <    
+      item
+        ConnectionType = 'PostgreSQL'
+        Name = 'Expenses'
+        Password = 'Secret'
+        UserName = 'Me'
+        CharSet = 'UTF8'
+        HostName = 'localhost'
+        DatabaseName = 'expensetracker'
+        Port = 0
+      end>
+    Schemas = <    
+      item
+        Schema = ExpensesSchema
+      end>
+    Strings.RESTDateFormat = 'YYYY"-"mm"-"dd"T"hh":"nn":"ss"'
+    Strings.RESTDateTimeFormat = 'YYYY"-"mm"-"dd"T"hh":"nn":"ss"'
+    Strings.RESTTimeFormat = '"0000-00-00T"hh":"nn":"ss"'
+    Strings.DataProperty = 'data'
+    Strings.MetaDataRoot = 'metaData'
+    Strings.ErrorProperty = 'error'
+    Strings.FieldNameProperty = 'name'
+    Strings.FieldTypeProperty = 'type'
+    Strings.DateFormatProperty = 'format'
+    Strings.MaxLenProperty = 'maxLen'
+    Strings.HumanReadableParam = 'humanreadable'
+    Strings.FieldListParam = 'fl'
+    Strings.ExcludeFieldListParam = 'xl'
+    Strings.ConnectionParam = 'Connection'
+    Strings.ResourceParam = 'Resource'
+    Strings.IncludeMetadataParam = 'metadata'
+    Strings.SparseParam = 'sparse'
+    Strings.RowName = 'row'
+    Strings.MetadataFields = 'fields'
+    Strings.MetadataField = 'field'
+    Strings.ErrorCode = 'code'
+    Strings.ErrorMessage = 'message'
+    Strings.FilterParamLessThan = '_lt'
+    Strings.FilterParamGreaterThan = '_gt'
+    Strings.FilterParamLessThanEqual = '_lte'
+    Strings.FilterParamGreaterThanEqual = '_gte'
+    Strings.FilterParamIsNull = '_null'
+    Strings.LimitParam = 'limit'
+    Strings.OffsetParam = 'offset'
+    Strings.SortParam = 'sort'
+    Strings.MetadataResourceName = 'metadata'
+    Strings.InputFormatParam = 'fmtin'
+    Strings.OutputFormatParam = 'fmt'
+    Strings.CustomViewResourceName = 'customview'
+    Strings.CustomViewSQLParam = 'sql'
+    Strings.XMLDocumentRoot = 'datapacket'
+    Authenticator = AuthBasic
+    EnforceLimit = 0
+    left = 72
+    top = 32
+  end
+  object ExpensesSchema: TSQLDBRestSchema
+    Resources = <    
+      item
+        Fields = <        
+          item
+            FieldName = 'eid'
+            PublicName = 'eid'
+            GeneratorName = 'seqExpenseID'
+            FieldType = rftLargeInt
+            NativeFieldType = ftUnknown
+            Options = [foInKey, foInInsert, foInUpdate, foOrderByDesc]
+            MaxLen = 0
+          end        
+          item
+            FieldName = 'euserfk'
+            PublicName = 'euserfk'
+            FieldType = rftLargeInt
+            NativeFieldType = ftUnknown
+            Options = [foInInsert, foInUpdate, foFilter, foOrderByDesc]
+            MaxLen = 0
+          end        
+          item
+            FieldName = 'eprojectfk'
+            PublicName = 'eprojectfk'
+            FieldType = rftLargeInt
+            NativeFieldType = ftUnknown
+            Options = [foInInsert, foInUpdate, foFilter, foOrderByDesc]
+            MaxLen = 0
+          end        
+          item
+            FieldName = 'etypefk'
+            PublicName = 'etypefk'
+            FieldType = rftLargeInt
+            NativeFieldType = ftUnknown
+            Options = [foInInsert, foInUpdate, foFilter, foOrderByDesc]
+            MaxLen = 0
+          end        
+          item
+            FieldName = 'eamount'
+            PublicName = 'eamount'
+            FieldType = rftFloat
+            NativeFieldType = ftUnknown
+            Options = [foInInsert, foInUpdate, foFilter, foOrderByDesc]
+            MaxLen = 0
+          end        
+          item
+            FieldName = 'edate'
+            PublicName = 'edate'
+            FieldType = rftDate
+            NativeFieldType = ftUnknown
+            Options = [foInInsert, foInUpdate, foFilter, foOrderByDesc]
+            MaxLen = 0
+          end        
+          item
+            FieldName = 'ecomment'
+            PublicName = 'ecomment'
+            FieldType = rftString
+            NativeFieldType = ftUnknown
+            Options = [foInInsert, foInUpdate, foFilter, foOrderByDesc]
+            MaxLen = 1024
+          end>
+        TableName = 'expenses'
+        ResourceName = 'expenses'
+        AllowedOperations = [roGet, roPost, roPut, roDelete, roOptions, roHead]
+      end    
+      item
+        Fields = <        
+          item
+            FieldName = 'etid'
+            PublicName = 'etid'
+            GeneratorName = 'seqExpenseTypesID'
+            FieldType = rftLargeInt
+            NativeFieldType = ftUnknown
+            Options = [foInKey, foInInsert, foInUpdate, foOrderByDesc]
+            MaxLen = 0
+          end        
+          item
+            FieldName = 'etname'
+            PublicName = 'etname'
+            FieldType = rftString
+            NativeFieldType = ftUnknown
+            Options = [foInInsert, foInUpdate, foFilter, foOrderByDesc]
+            MaxLen = 50
+          end        
+          item
+            FieldName = 'etdescription'
+            PublicName = 'etdescription'
+            FieldType = rftString
+            NativeFieldType = ftUnknown
+            Options = [foInInsert, foInUpdate, foFilter, foOrderByDesc]
+            MaxLen = 100
+          end        
+          item
+            FieldName = 'etmaxamount'
+            PublicName = 'etmaxamount'
+            FieldType = rftFloat
+            NativeFieldType = ftUnknown
+            Options = [foInInsert, foInUpdate, foFilter, foOrderByDesc]
+            MaxLen = 0
+          end        
+          item
+            FieldName = 'etcost'
+            PublicName = 'etcost'
+            FieldType = rftFloat
+            NativeFieldType = ftUnknown
+            Options = [foInInsert, foInUpdate, foFilter, foOrderByDesc]
+            MaxLen = 0
+          end        
+          item
+            FieldName = 'etactive'
+            PublicName = 'etactive'
+            FieldType = rftBoolean
+            NativeFieldType = ftUnknown
+            Options = [foInInsert, foInUpdate, foFilter, foOrderByDesc]
+            MaxLen = 0
+          end>
+        TableName = 'expensetypes'
+        ResourceName = 'expensetypes'
+        AllowedOperations = [roGet, roPost, roPut, roDelete, roOptions, roHead]
+      end    
+      item
+        Fields = <        
+          item
+            FieldName = 'pid'
+            PublicName = 'pid'
+            GeneratorName = 'seqProjectsID'
+            FieldType = rftLargeInt
+            NativeFieldType = ftUnknown
+            Options = [foInKey, foInInsert, foInUpdate, foOrderByDesc]
+            MaxLen = 0
+          end        
+          item
+            FieldName = 'pname'
+            PublicName = 'pname'
+            FieldType = rftString
+            NativeFieldType = ftUnknown
+            Options = [foInInsert, foInUpdate, foFilter, foOrderByDesc]
+            MaxLen = 50
+          end        
+          item
+            FieldName = 'pdescription'
+            PublicName = 'pdescription'
+            FieldType = rftString
+            NativeFieldType = ftUnknown
+            Options = [foInInsert, foInUpdate, foFilter, foOrderByDesc]
+            MaxLen = 100
+          end        
+          item
+            FieldName = 'pactive'
+            PublicName = 'pactive'
+            FieldType = rftBoolean
+            NativeFieldType = ftUnknown
+            Options = [foInInsert, foInUpdate, foFilter, foOrderByDesc]
+            MaxLen = 0
+          end>
+        TableName = 'projects'
+        ResourceName = 'projects'
+        AllowedOperations = [roGet, roPost, roPut, roDelete, roOptions, roHead]
+      end    
+      item
+        Fields = <        
+          item
+            FieldName = 'uid'
+            PublicName = 'uid'
+            GeneratorName = 'seqUsersID'
+            FieldType = rftLargeInt
+            NativeFieldType = ftUnknown
+            Options = [foInKey, foInInsert, foInUpdate, foOrderByDesc]
+            MaxLen = 0
+          end        
+          item
+            FieldName = 'ulogin'
+            PublicName = 'ulogin'
+            FieldType = rftString
+            NativeFieldType = ftUnknown
+            Options = [foInInsert, foInUpdate, foFilter, foOrderByDesc]
+            MaxLen = 50
+          end        
+          item
+            FieldName = 'ufullname'
+            PublicName = 'ufullname'
+            FieldType = rftString
+            NativeFieldType = ftUnknown
+            Options = [foInInsert, foInUpdate, foFilter, foOrderByDesc]
+            MaxLen = 100
+          end        
+          item
+            FieldName = 'upassword'
+            PublicName = 'upassword'
+            FieldType = rftString
+            NativeFieldType = ftUnknown
+            Options = [foInInsert, foInUpdate, foFilter, foOrderByDesc]
+            MaxLen = 100
+          end        
+          item
+            FieldName = 'uactive'
+            PublicName = 'uactive'
+            FieldType = rftBoolean
+            NativeFieldType = ftUnknown
+            Options = [foInInsert, foInUpdate, foFilter, foOrderByDesc]
+            MaxLen = 0
+          end>
+        TableName = 'users'
+        ResourceName = 'users'
+        AllowedOperations = [roGet, roPost, roPut, roDelete, roOptions, roHead]
+      end>
+    left = 240
+    top = 40
+  end
+  object AuthBasic: TRestBasicAuthenticator
+    AuthenticateUserSQL.Strings = (
+      'select uID from users where (uLogin=:UserName) and (uPassword=:Password)'
+    )
+    left = 136
+    top = 104
+  end
+end

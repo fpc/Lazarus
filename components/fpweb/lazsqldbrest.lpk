@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="4">
+    <Name Value="lazsqldbrest"/>
+    <Type Value="RunAndDesignTime"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <SearchPaths>
+        <OtherUnitFiles Value="src"/>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+    </CompilerOptions>
+    <Files Count="3">
+      <Item1>
+        <Filename Value="reglazsqldbrest.pp"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="reglazsqldbrest"/>
+      </Item1>
+      <Item2>
+        <Filename Value="frmsqldbrestdispatchini.pp"/>
+        <UnitName Value="frmsqldbrestdispatchini"/>
+      </Item2>
+      <Item3>
+        <Filename Value="frmsqldbrestselectconn.pp"/>
+        <UnitName Value="frmsqldbrestselectconn"/>
+      </Item3>
+    </Files>
+    <RequiredPkgs Count="5">
+      <Item1>
+        <PackageName Value="CodeTools"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="IDEIntf"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="LCLBase"/>
+      </Item3>
+      <Item4>
+        <PackageName Value="LazUtils"/>
+      </Item4>
+      <Item5>
+        <PackageName Value="FCL"/>
+      </Item5>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <UseFileFilters Value="True"/>
+    </PublishOptions>
+    <CustomOptions Items="ExternHelp" Version="2">
+      <_ExternHelp Items="Count"/>
+    </CustomOptions>
+  </Package>
+</CONFIG>

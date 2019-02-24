@@ -1,0 +1,74 @@
+object SelectRestConnectionForm: TSelectRestConnectionForm
+  Left = 528
+  Height = 262
+  Top = 379
+  Width = 615
+  Caption = 'Select connection'
+  ClientHeight = 262
+  ClientWidth = 615
+  LCLVersion = '2.1.0.0'
+  object BPSelect: TButtonPanel
+    Left = 6
+    Height = 42
+    Top = 214
+    Width = 603
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object RGConnnection: TRadioGroup
+    Left = 16
+    Height = 191
+    Top = 8
+    Width = 289
+    Anchors = [akTop, akLeft, akBottom]
+    AutoFill = True
+    Caption = 'Existing Connection'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    TabOrder = 1
+  end
+  object CGFieldOPtions: TCheckGroup
+    Left = 336
+    Height = 191
+    Top = 8
+    Width = 257
+    Anchors = [akTop, akLeft, akBottom]
+    AutoFill = True
+    Caption = 'Minimal field options'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 173
+    ClientWidth = 255
+    Items.Strings = (
+      'Allow Filter'
+      'Allow Order By'
+      'Allow Order By Desc'
+      'In Insert'
+      'In Update'
+      'Required'
+    )
+    TabOrder = 2
+    Data = {
+      06000000020202020202
+    }
+  end
+end

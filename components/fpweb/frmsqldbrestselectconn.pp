@@ -1,0 +1,120 @@
+unit frmsqldbrestselectconn;
+
+{$mode objfpc}{$H+}
+
+interface
+
+uses
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ButtonPanel, ExtCtrls, sqldbrestschema, sqldbrestbridge;
+
+type
+
+  { TSelectRestConnectionForm }
+
+  TSelectRestConnectionForm = class(TForm)
+    BPSelect: TButtonPanel;
+    CGFieldOPtions: TCheckGroup;
+    RGConnnection: TRadioGroup;
+  private
+    FShowOptions: Boolean;
+    procedure SetShowOptions(AValue: Boolean);
+  public
+    Procedure Init(aList : TSQLDBRestConnectionList);
+    Property ShowOptions : Boolean Read FShowOptions Write SetShowOptions;
+    Function SelectedConnection : TSQLDBRestConnection;
+    Function SelectedOptions : TRestFieldOptions;
+  end;
+
+Function SelectRestConnection(aList : TSQLDBRestConnectionList) : TSQLDBRestConnection;
+Function SelectRestConnection(aList : TSQLDBRestConnectionList; out aOptions: TRestFieldOptions) : TSQLDBRestConnection;
+
+var
+  SelectRestConnectionForm: TSelectRestConnectionForm;
+
+implementation
+
+{$R *.lfm}
+
+Function DoSelectRestConnection(aList : TSQLDBRestConnectionList; withOpts : Boolean; out aOptions: TRestFieldOptions) : TSQLDBRestConnection;
+
+begin
+  Result:=Nil;
+  if Alist.Count<>0 then
+    With TSelectRestConnectionForm.Create(Application) do
+      try
+        Init(aList);
+        ShowOptions:=WithOpts;
+        if ShowModal=mrOK then
+          begin
+          Result:=SelectedConnection;
+          if WithOpts then
+            aOptions:=SelectedOptions;
+          end;
+      finally
+        Free;
+      end;
+end;
+
+Function SelectRestConnection(aList : TSQLDBRestConnectionList; out aOptions: TRestFieldOptions) : TSQLDBRestConnection;
+
+begin
+  Result:=DoSelectRestConnection(alIst,True,aOptions);
+end;
+
+Function SelectRestConnection(aList : TSQLDBRestConnectionList) : TSQLDBRestConnection;
+
+Var
+  aOptions: TRestFieldOptions;
+
+begin
+  Result:=DoSelectRestConnection(alIst,False,aOptions);
+end;
+
+
+{ TSelectRestConnectionForm }
+
+procedure TSelectRestConnectionForm.SetShowOptions(AValue: Boolean);
+begin
+  if FShowOptions=AValue then Exit;
+  FShowOptions:=AValue;
+end;
+
+procedure TSelectRestConnectionForm.Init(aList: TSQLDBRestConnectionList);
+
+Var
+  I : integer;
+
+begin
+  For I:=0 to aList.Count-1 do
+    RGConnnection.Items.AddObject(aList[I].Name,aList[i]);
+end;
+
+function TSelectRestConnectionForm.SelectedConnection: TSQLDBRestConnection;
+begin
+  With RGConnnection do
+    if ItemIndex=-1 then
+      Result:=Nil
+    else
+      Result:=TSQLDBRestConnection(Items.Objects[ItemIndex]);
+end;
+
+function TSelectRestConnectionForm.SelectedOptions: TRestFieldOptions;
+
+  Procedure Add(I : integer; V : TRestFieldOption);
+  begin
+    if CGFieldOPtions.Checked[I] then
+      Include(Result,V);
+  end;
+
+begin
+  Result:=[];
+  Add(0,foFilter);
+  Add(1,foOrderBy);
+  Add(2,foOrderByDesc);
+  Add(3,foInInsert);
+  Add(4,foInUpdate);
+  Add(5,foRequired);
+end;
+
+end.
+
