@@ -507,6 +507,15 @@ begin
     on E: Exception do
       AssertTrue('Empty YList', E is TListChartSource.EYListEmptyError);
   end;
+  AssertEquals(2, FSource.Count);
+
+  FSource.DataPoints.Add('1.23|2.34|3|?|t');
+  AssertEquals(1.23, FSource[2]^.X);
+  AssertEquals(2.34, FSource[2]^.Y);
+
+  FSource.DataPoints.Add('1,23|2,34|3|?|t');
+  AssertEquals(1.23, FSource[3]^.X);
+  AssertEquals(2.34, FSource[3]^.Y);
 
   FSource.Clear;
   FSource.XCount := 2;

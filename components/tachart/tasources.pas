@@ -315,20 +315,17 @@ end;
 function TListChartSourceStrings.Get(Index: Integer): String;
 var
   i: Integer;
-  fs: TFormatSettings;
 begin
-  fs := DefaultFormatSettings;
-  fs.DecimalSeparator := '.';
   with FSource[Index]^ do begin
     Result := '';
     if FSource.XCount > 0 then
-      Result += Format('%g|', [X], fs);
+      Result += Format('%g|', [X], DefSeparatorSettings);
     for i := 0 to High(XList) do
-      Result += Format('%g|', [XList[i]], fs);
+      Result += Format('%g|', [XList[i]], DefSeparatorSettings);
     if FSource.YCount > 0 then
-      Result += Format('%g|', [Y], fs);
+      Result += Format('%g|', [Y], DefSeparatorSettings);
     for i := 0 to High(YList) do
-      Result += Format('%g|', [YList[i]], fs);
+      Result += Format('%g|', [YList[i]], DefSeparatorSettings);
     Result += Format('%s|%s', [IntToColorHex(Color), Text]);
   end;
 end;
@@ -609,8 +606,8 @@ end;
 function TListChartSource.NewItem: PChartDataItem;
 begin
   New(Result);
-  SetLength(Result^.XList, Max(XCount - 1, 0));
-  SetLength(Result^.YList, Max(YCount - 1, 0));
+  if XCount > 1 then SetLength(Result^.XList, XCount - 1);
+  if YCount > 1 then SetLength(Result^.YList, YCount - 1);
 end;
 
 procedure TListChartSource.SetColor(AIndex: Integer; AColor: TChartColor);
@@ -810,11 +807,9 @@ end;
 function CompareDataItemX(AItem1, AItem2: Pointer): Integer;
 var
   i: Integer;
-  item1, item2: PChartDataItem;
+  item1: PChartDataItem absolute AItem1;
+  item2: PChartDataItem absolute AItem2;
 begin
-  item1 := PChartDataItem(AItem1);
-  item2 := PChartDataItem(AItem2);
-
   Result := CompareFloat(item1^.X, item2^.X);
   if Result = 0 then
     for i := 0 to Min(High(item1^.XList), High(item2^.XList)) do begin
@@ -1489,7 +1484,7 @@ begin
 
   FOriginYCount := FOrigin.YCount;
   if ReorderYList = '' then begin
-    SetLength(FYOrder,  FOriginYCount);
+    SetLength(FYOrder, FOriginYCount);
     for i := 0 to High(FYOrder) do
       FYOrder[i] := i;
   end

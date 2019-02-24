@@ -323,6 +323,9 @@ const
     ((cotNone, cotSecond), (cotFirst, cotBoth));
   ORIENTATION_UNITS_PER_DEG = 10;
 
+var
+  DefSeparatorSettings: TFormatSettings;
+
 function BoundsSize(ALeft, ATop: Integer; ASize: TSize): TRect; inline;
 
 function Deg16ToRad(ADeg16: Integer): Double; inline;
@@ -522,9 +525,6 @@ begin
     SetOrdProp(AObject, p, p^.Default);
   end;
 end;
-
-var
-  DefSeparatorSettings: TFormatSettings;
 
 function Split(AString: String; ADest: TStrings; ADelimiter: Char): TStrings;
 begin

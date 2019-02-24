@@ -1069,10 +1069,13 @@ end;
 
 procedure TChartSeries.SetSource(AValue: TCustomChartSource);
 begin
-  if FSource = AValue then exit;
+  if AValue = FBuiltinSource then
+    AValue := nil;
+  if FSource = AValue then
+    exit;
+  CheckSource(AValue);
   if FListener.IsListening then
     Source.Broadcaster.Unsubscribe(FListener);
-  CheckSource(AValue);
   FSource := AValue;
   Source.Broadcaster.Subscribe(FListener);
   SourceChanged(Self);
@@ -1122,7 +1125,7 @@ end;
 
 procedure TChartSeries.SourceChanged(ASender: TObject);
 begin
-  if ASender is TCustomChartSource then
+  if (ASender <> FBuiltinSource) and (ASender is TCustomChartSource) then
     try
       CheckSource(TCustomChartSource(ASender));
     except
