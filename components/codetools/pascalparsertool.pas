@@ -1351,7 +1351,7 @@ begin
   CurNode.Desc:=ctnProcedureHead;
   CheckOperatorProc(ParseAttr);
   ReadNextAtom;
-  if Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE] then
+  if IsGeneric or (Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE]) then
     ReadGenericParamList(IsGeneric,true);
   if (CurPos.Flag<>cafPoint) then begin
     // read rest
@@ -3705,7 +3705,18 @@ begin
   // read all type definitions  Name = Type; or generic Name<List> = Type;
   repeat
     ReadNextAtom;  // name
-    if UpAtomIs('GENERIC') or AtomIsIdentifier then begin
+    if UpAtomIs('GENERIC') then begin
+      ReadNextAtom;
+      if UpAtomIs('CLASS') or UpAtomIs('PROCEDURE') or UpAtomIs('FUNCTION') then
+        begin
+        // generic function...  -> not a type declaration
+        UndoReadNextAtom;
+        UndoReadNextAtom;
+        break;
+        end;
+      UndoReadNextAtom;
+      ReadTypeNameAndDefinition;
+    end else if AtomIsIdentifier then begin
       ReadTypeNameAndDefinition;
     end else if (CurPos.Flag=cafEdgedBracketOpen) and AllowAttributes then begin
       ReadAttribute;
