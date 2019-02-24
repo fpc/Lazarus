@@ -38,6 +38,7 @@ type
     procedure TestMethodJump_MultiMethodWrongName;
     procedure TestMethodJump_DelphiGenericClass;
     procedure TestMethodJump_DelphiGenericMethod;
+    procedure TestMethodJump_ObjFPCGenericMethod;
   end;
 
 implementation
@@ -285,6 +286,28 @@ begin
   '  end;',
   'implementation',
   'generic class procedure TBird.{b}Do2It<T>(s: T);',
+  'begin',
+  'end;',
+  'procedure TBird.DoIt;',
+  'begin',
+  'end;',
+  'end.']);
+  TestJumpToMethod('a',false,'b',false,2);
+end;
+
+procedure TTestMethodJumpTool.TestMethodJump_ObjFPCGenericMethod;
+begin
+  Add([
+  'unit Test1;',
+  '{$mode delphi}{$H+}',
+  'interface',
+  'type',
+  '  TBird = class',
+  '    generic class function {a}DoIt<T>(s: T): T;',
+  '    procedure DoIt;',
+  '  end;',
+  'implementation',
+  'generic class function TBird.{b}Do2It<T>(s: T): T;',
   'begin',
   'end;',
   'procedure TBird.DoIt;',
