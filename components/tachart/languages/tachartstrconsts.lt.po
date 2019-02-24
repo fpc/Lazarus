@@ -289,6 +289,10 @@ msgstr "Tiesinė"
 msgid "Line series"
 msgstr "Linijų sekos"
 
+#: tachartstrconsts.rslistsourcestringformaterror
+msgid "The data value count in the %0:s.DataPoints string \"%1:s\" differs from what is expected from XCount and YCount."
+msgstr ""
+
 #: tachartstrconsts.rslogarithmic
 msgid "Logarithmic"
 msgstr "Logaritminė"

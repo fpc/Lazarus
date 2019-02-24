@@ -71,6 +71,9 @@ resourcestring
   // Chart sources
   rsSourceCountError = '%0:s requires a chart source with at least %1:d %2:s value(s) per data point.';
   rsSourceCountError2 = 'This %0:s instance must have at least %1:d %2:s value(s) per data point.';
+  rsListSourceStringFormatError = 'The data value count in the %0:s.DataPoints '+
+    'string "%1:s" differs from what is expected from XCount and YCount.';
+
 
   // Transformations
   tasAxisTransformsEditorTitle = 'Edit axis transformations';

@@ -290,6 +290,10 @@ msgstr "Linear"
 msgid "Line series"
 msgstr "Linien-Diagramm"
 
+#: tachartstrconsts.rslistsourcestringformaterror
+msgid "The data value count in the %0:s.DataPoints string \"%1:s\" differs from what is expected from XCount and YCount."
+msgstr "Die Anzahl der Datenwerte im %s.DataPoints-String \"%s\" entspricht nicht der, die aufgrund von XCount und YCount erwartet wird."
+
 #: tachartstrconsts.rslogarithmic
 msgid "Logarithmic"
 msgstr "Logarithmisch"

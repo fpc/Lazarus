@@ -24,9 +24,6 @@
     </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
-      <IgnoreBinaries Value="False"/>
-      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
-      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
     </PublishOptions>
     <RunParams>
       <FormatVersion Value="2"/>
@@ -85,7 +82,7 @@
     </CodeGeneration>
   </CompilerOptions>
   <Debugging>
-    <Exceptions Count="4">
+    <Exceptions Count="5">
       <Item1>
         <Name Value="EAbort"/>
       </Item1>
@@ -98,6 +95,9 @@
       <Item4>
         <Name Value="TListChartSource.EYListEmptyError"/>
       </Item4>
+      <Item5>
+        <Name Value="EListSourceStringFormatError"/>
+      </Item5>
     </Exceptions>
   </Debugging>
 </CONFIG>

@@ -369,9 +369,9 @@ begin
   oldSeparator := DefaultFormatSettings.DecimalSeparator;
   try
     DefaultFormatSettings.DecimalSeparator := ':';
-    FSource.DataPoints.Add('3:5');
+    FSource.DataPoints.Add('3:5|?|?|');
     AssertEquals(3.5, FSource[0]^.X);
-    FSource.DataPoints[0] := '4.5';
+    FSource.DataPoints[0] := '4.5|?|?|';
     AssertEquals(4.5, FSource[0]^.X);
   finally
     DefaultFormatSettings.DecimalSeparator := oldSeparator;
@@ -453,9 +453,81 @@ procedure TListSourceTest.Multi;
 begin
   FSource.Clear;
   AssertEquals(1, FSource.YCount);
+  AssertEquals(1, FSource.YCount);
+
   FSource.Add(1, 2);
   FSource.YCount := 2;
   AssertEquals([0], FSource[0]^.YList);
+
+  FSource.SetYList(0, [3]);
+  AssertEquals(3, FSource[0]^.YList[0]);
+
+  FSource.DataPoints.Add('1|2|3|?|t');
+  AssertEquals(1, FSource.XCount);
+  AssertEquals(2, FSource.YCount);
+  AssertEquals(1, FSource[1]^.X);
+  AssertEquals(2, FSource[1]^.Y);
+  AssertEquals(3, FSource[1]^.YList[0]);
+
+  try
+    FSource.DataPoints.Add('10|20|30|40|?|');
+  except
+    on E: Exception do
+      AssertTrue('Too many values', E is EListSourceStringFormatError);
+  end;
+  AssertEquals(2, FSource.Count);
+
+  try
+    FSource.DataPoints.Add('10|20|?|');
+  except
+    on E: Exception do
+      AssertTrue('Too few values', E is EListSourceStringFormatError);
+  end;
+  AssertEquals(2, FSource.Count);
+
+  try
+    FSource.DataPoints.Add('10|20|30|?');
+  except
+    on E: Exception do
+      AssertTrue('Text field missing', E is EListSourceStringFormatError);
+  end;
+  AssertEquals(2, FSource.Count);
+
+  try
+    FSource.DataPoints.Add('10|20|30|t');
+  except
+    on E: Exception do
+      AssertTrue('Color field missing', E is EListSourceStringFormatError);
+  end;
+  AssertEquals(2, FSource.Count);
+
+  try
+    FSource.AddXYList(4, []);
+  except
+    on E: Exception do
+      AssertTrue('Empty YList', E is TListChartSource.EYListEmptyError);
+  end;
+
+  FSource.Clear;
+  FSource.XCount := 2;
+  FSource.YCount := 3;
+  FSource.AddXListYList([1, 2], [3, 4, 5]);
+  AssertEquals(2, FSource.XCount);
+  AssertEquals(3, FSource.YCount);
+  AssertEquals(1, FSource[0]^.X);
+  AssertEquals(2, FSource[0]^.XList[0]);
+  AssertEquals(3, FSource[0]^.Y);
+  AssertEquals(4, FSource[0]^.YList[0]);
+  AssertEquals(5, FSource[0]^.YList[1]);
+
+  FSource.DataPoints.Add('10|20|30|40|50|?|t');
+  AssertEquals(10, FSource[1]^.X);
+  AssertEquals(20, FSource[1]^.XList[0]);
+  AssertEquals(30, FSource[1]^.Y);
+  AssertEquals(40, FSource[1]^.YList[0]);
+  AssertEquals(50, FSource[1]^.YList[1]);
+
+  (*
   FSource.SetYList(0, [3, 4]);
   AssertEquals('Extra items are chopped', [3], FSource[0]^.YList);
   FSource.DataPoints.Add('1|2|3|4|?|t');
@@ -478,6 +550,7 @@ begin
   except on E: Exception do
     AssertTrue('Empty YList', E is TListChartSource.EYListEmptyError);
   end;
+  *)
 end;
 
 procedure TListSourceTest.SetUp;

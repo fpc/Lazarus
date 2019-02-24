@@ -38,6 +38,7 @@ type
   protected
     function GetCount: Integer; override;
     function GetItem(AIndex: Integer): PChartDataItem; override;
+    procedure Loaded; override;
     procedure SetXCount(AValue: Cardinal); override;
     procedure SetYCount(AValue: Cardinal); override;
   public
@@ -258,7 +259,10 @@ type
   TListChartSourceStrings = class(TStrings)
   strict private
     FSource: TListChartSource;
+    FLoadingCache: TStringList;
     procedure Parse(AString: String; ADataItem: PChartDataItem);
+  private
+    procedure LoadingFinished;
   protected
     function Get(Index: Integer): String; override;
     function GetCount: Integer; override;
@@ -266,6 +270,7 @@ type
     procedure SetUpdateState(AUpdating: Boolean); override;
   public
     constructor Create(ASource: TListChartSource);
+    destructor Destroy; override;
     procedure Clear; override;
     procedure Delete(Index: Integer); override;
     procedure Insert(Index: Integer; const S: String); override;
@@ -284,13 +289,22 @@ end;
 
 procedure TListChartSourceStrings.Clear;
 begin
-  FSource.Clear;
+  if not (csLoading in FSource.ComponentState) then
+    FSource.Clear
+  else
+    FreeAndNil(FLoadingCache);
 end;
 
 constructor TListChartSourceStrings.Create(ASource: TListChartSource);
 begin
   inherited Create;
   FSource := ASource;
+end;
+
+destructor TListChartSourceStrings.Destroy;
+begin
+  inherited;
+  FLoadingCache.Free;
 end;
 
 procedure TListChartSourceStrings.Delete(Index: Integer);
@@ -306,29 +320,49 @@ begin
   fs := DefaultFormatSettings;
   fs.DecimalSeparator := '.';
   with FSource[Index]^ do begin
-    Result := Format('%g', [X], fs);
+    Result := '';
+    if FSource.XCount > 0 then
+      Result += Format('%g|', [X], fs);
     for i := 0 to High(XList) do
-      Result += Format('|%g', [XList[i]], fs);
+      Result += Format('%g|', [XList[i]], fs);
     if FSource.YCount > 0 then
-      Result += Format('|%g', [Y], fs);
+      Result += Format('%g|', [Y], fs);
     for i := 0 to High(YList) do
-      Result += Format('|%g', [YList[i]], fs);
-    Result += Format('|%s|%s', [IntToColorHex(Color), Text]);
+      Result += Format('%g|', [YList[i]], fs);
+    Result += Format('%s|%s', [IntToColorHex(Color), Text]);
   end;
 end;
 
 function TListChartSourceStrings.GetCount: Integer;
 begin
-  Result := FSource.Count;
+  if not (csLoading in FSource.ComponentState) then
+    Result := FSource.Count
+  else
+  if Assigned(FLoadingCache) then
+    Result := FLoadingCache.Count
+  else
+    Result := 0;
 end;
 
 procedure TListChartSourceStrings.Insert(Index: Integer; const S: String);
 var
   item: PChartDataItem;
 begin
+  if csLoading in FSource.ComponentState then begin
+    if not Assigned(FLoadingCache) then
+      FLoadingCache := TStringList.Create;
+    FLoadingCache.Insert(Index, S);
+    exit;
+  end;
+
   item := FSource.NewItem;
-  FSource.FData.Insert(Index, item);
-  Parse(S, item);
+  try
+    Parse(S, item);
+    FSource.FData.Insert(Index, item);
+  except
+    Dispose(item);
+    raise;
+  end;
   FSource.UpdateCachesAfterAdd(item^.X, item^.Y);
 end;
 
@@ -350,20 +384,33 @@ var
 var
   i: Integer;
 begin
+  // Note: this method is called only when component loading is fully finished -
+  // so FSource.XCount and FSource.YCount are already properly estabilished
+
   parts := Split(AString);
   try
-    if (FSource.XCount = 1) and (FSource.YCount + 3 < Cardinal(parts.Count)) then
-      FSource.YCount := parts.Count - 3;
+    // There should be XCount + YCount .. XCount + YCount + 2 (for Color and Text)
+    // parts of the string
+    if (Cardinal(parts.Count) <> FSource.XCount + FSource.YCount + 2) then begin
+      if Length(AString) > 20 then AString := Copy(AString, 1, 20) + '...';
+      raise EListSourceStringFormatError.CreateFmt(
+        rsListSourceStringFormatError,
+        [IfThen(FSource.Name <> '', FSource.Name, FSource.ClassName), AString]);
+    end;
+
     with ADataItem^ do begin
-      X := StrToFloatOrDateTimeDef(NextPart);
-      if FSource.XCount > 1 then
+      if FSource.XCount > 0 then begin
+        X := StrToFloatOrDateTimeDef(NextPart);
         for i := 0 to High(XList) do
           XList[i] := StrToFloatOrDateTimeDef(NextPart);
+      end else
+        X := NaN;
       if FSource.YCount > 0 then begin
         Y := StrToFloatOrDateTimeDef(NextPart);
         for i := 0 to High(YList) do
           YList[i] := StrToFloatOrDateTimeDef(NextPart);
-      end;
+      end else
+        Y := NaN;
       Color := StrToIntDef(NextPart, clTAColor);
       Text := NextPart;
     end;
@@ -384,10 +431,22 @@ end;
 
 procedure TListChartSourceStrings.SetUpdateState(AUpdating: Boolean);
 begin
-  if AUpdating then
-    FSource.BeginUpdate
-  else
-    FSource.EndUpdate;
+  if not (csLoading in FSource.ComponentState) then
+    if AUpdating then
+      FSource.BeginUpdate
+    else
+      FSource.EndUpdate;
+end;
+
+procedure TListChartSourceStrings.LoadingFinished;
+begin
+  // csLoading in FSource.ComponentState is already cleared
+  if Assigned(FLoadingCache) then
+    try
+      Assign(FLoadingCache);
+    finally  
+      FreeAndNil(FLoadingCache);
+    end;
 end;
 
 { TListChartSource }
@@ -779,6 +838,12 @@ begin
   if FValuesTotalIsValid then
     FValuesTotal += NumberOr(AY);
   Notify;
+end;
+
+procedure TListChartSource.Loaded;
+begin
+  inherited; // clears csLoading in ComponentState
+  (FDataPoints as TListChartSourceStrings).LoadingFinished;
 end;
 
 { TMWCRandomGenerator }

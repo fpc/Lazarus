@@ -73,6 +73,7 @@ type
   EEditableSourceRequired = class(EChartError);
   EXCountError = class(EChartError);
   EYCountError = class(EChartError);
+  EListSourceStringFormatError = class(EChartError);
 
   TChartValueText = record
     FText: String;
