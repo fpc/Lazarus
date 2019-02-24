@@ -312,7 +312,7 @@ type
   
 function ProcHeadAttributesToStr(Attr: TProcHeadAttributes): string;
 function dbgs(Attr: TProcHeadAttributes): string; overload;
-
+function dbgs(Attr: TParseProcHeadAttributes): string; overload;
 
 implementation
 
@@ -329,19 +329,31 @@ var
   s: string;
 begin
   Result:='';
-  for a:=Low(TProcHeadAttribute) to High(TProcHeadAttribute) do begin
-    if a in Attr then begin
-      WriteStr(s, a);
-      if Result<>'' then
-        Result:=Result+',';
-      Result:=Result+s;
-    end;
+  for a in Attr do begin
+    WriteStr(s, a);
+    if Result<>'' then
+      Result:=Result+',';
+    Result:=Result+s;
   end;
 end;
 
 function dbgs(Attr: TProcHeadAttributes): string;
 begin
   Result:=ProcHeadAttributesToStr(Attr);
+end;
+
+function dbgs(Attr: TParseProcHeadAttributes): string;
+var
+  a: TParseProcHeadAttribute;
+  s: string;
+begin
+  Result:='';
+  for a in Attr do begin
+    WriteStr(s, a);
+    if Result<>'' then
+      Result:=Result+',';
+    Result:=Result+s;
+  end;
 end;
 
 { TPascalParserTool }
