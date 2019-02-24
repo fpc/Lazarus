@@ -607,7 +607,15 @@ begin
   StartProgram;
   Add([
   '{$mode objfpc}',
+  'type',
+  '  TBird = class',
+  '    generic class function Fly<T>(const AValues:array of T):T;',
+  '  end;',
   'generic function RandomFrom<T>(const AValues:array of T):T;',
+  'begin',
+  '  Result:=Avalue[1];',
+  'end;',
+  'generic class function TBird.Fly<T>(const AValues:array of T):T;',
   'begin',
   '  Result:=Avalue[1];',
   'end;',
