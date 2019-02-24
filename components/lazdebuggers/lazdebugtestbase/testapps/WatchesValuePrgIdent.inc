@@ -311,5 +311,7 @@
 
 // pointer / deref for all above
 
+  pre__IntfUnknown{e} _OP_ IUnknown ( nil );
+
 {$UNDEF _BLOCK_}
 
