@@ -21,14 +21,7 @@ object DataPointsEditorForm: TDataPointsEditorForm
         Alignment = taRightJustify
         Title.Alignment = taCenter
         Title.Font.Style = [fsBold]
-        Title.Caption = 'X'
-        Width = 63
-      end    
-      item
-        Alignment = taRightJustify
-        Title.Alignment = taCenter
-        Title.Font.Style = [fsBold]
-        Title.Caption = 'Y'
+        Title.Caption = 'X/Y'
         Width = 63
       end    
       item
@@ -53,7 +46,6 @@ object DataPointsEditorForm: TDataPointsEditorForm
     OnPrepareCanvas = sgDataPrepareCanvas
     ColWidths = (
       32
-      63
       63
       63
       63

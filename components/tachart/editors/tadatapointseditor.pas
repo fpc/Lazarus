@@ -110,28 +110,25 @@ begin
   FYCount := AYCount;
   FDataPoints := ADataPoints;
   sgData.RowCount := Max(ADataPoints.Count + 1, 2);
-  {     wp: What is this good for?
-  for i := sgData.Columns.Count - 1 downto 0 do
-    with sgData.Columns[i].Title do
-      if (Caption[1] = 'Y') and (Caption <> 'Y') then
-        sgData.Columns.Delete(i);
-    }
-  if AXCount > 1 then
-    sgData.Columns[0].Title.Caption := 'X1';
-  if AYCount > 1 then
-    sgData.Columns[1].Title.Caption := 'Y1';
-  for i := 2 to AYCount do
+  for i := 1 to AYCount do
     with sgData.Columns.Add do begin
-      Assign(sgData.Columns[1]);
-      Title.Caption := 'Y' + IntToStr(i);
+      Assign(sgData.Columns[0]); // Columns[0] is a template column
+      if AYCount = 1 then
+        Title.Caption := 'Y'
+      else
+        Title.Caption := 'Y' + IntToStr(i);
       Index := i;
     end;
-  for i := 2 to AXCount do
+  for i := 1 to AXCount do
     with sgData.Columns.Add do begin
-      Assign(sgData.Columns[0]);
-      Title.Caption := 'X' + IntToStr(i);
-      Index := i - 1;
+      Assign(sgData.Columns[0]); // Columns[0] is a template column
+      if AXCount = 1 then
+        Title.Caption := 'X'
+      else
+        Title.Caption := 'X' + IntToStr(i);
+      Index := i;
     end;
+  sgData.Columns.Delete(0); // remove the template column
   for i := 0 to ADataPoints.Count - 1 do
     Split('|' + ADataPoints[i], sgData.Rows[i + 1]);
 
@@ -140,8 +137,13 @@ begin
   for i := 0 to sgData.Columns.Count-1 do
     sgData.Columns[i].Width := w;
 
-  Width := sgData.ColWidths[0] + sgData.Columns.Count * w + 2*sgData.Left +
+{$IFDEF WINDOWS}
+  Width := sgData.ColWidths[0] + 1 + sgData.Columns.Count * w + sgData.Left * 2 +
+    IfThen(sgData.BorderStyle = bsNone, 0, 3);
+{$ELSE}
+  Width := sgData.ColWidths[0] + sgData.Columns.Count * w + sgData.Left * 2 +
     sgData.GridLineWidth * (sgData.Columns.Count-1);
+{$ENDIF}
 end;
 
 procedure TDataPointsEditorForm.miDeleteRowClick(Sender: TObject);
@@ -157,8 +159,8 @@ end;
 procedure TDataPointsEditorForm.FormCreate(Sender: TObject);
 begin
   Caption := desDatapointEditor;
-  sgData.Columns[2].Title.Caption := desColor;
-  sgData.Columns[3].Title.Caption := desText;
+  sgData.Columns[1].Title.Caption := desColor;
+  sgData.Columns[2].Title.Caption := desText;
   miInsertRow.Caption := desInsertRow;
   miDeleteRow.Caption := desDeleteRow;
 end;
