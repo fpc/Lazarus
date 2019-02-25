@@ -1837,6 +1837,7 @@ components/fpweb/lazsqldbrest_images.inc svneol=native#text/plain
 components/fpweb/lazweb.pp svneol=native#text/plain
 components/fpweb/lazwebextra.lpk svneol=native#text/plain
 components/fpweb/reglazsqldbrest.pp svneol=native#text/plain
+components/fpweb/reslazsqldbrest.pp svneol=native#text/plain
 components/fpweb/restimages/filelist.txt svneol=native#text/plain
 components/fpweb/restimages/genimages.bat svneol=native#text/plain
 components/fpweb/restimages/genimages.sh svneol=native#text/plain
