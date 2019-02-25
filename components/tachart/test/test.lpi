@@ -96,7 +96,7 @@
         <Name Value="TListChartSource.EYListEmptyError"/>
       </Item4>
       <Item5>
-        <Name Value="EListSourceStringFormatError"/>
+        <Name Value="EListSourceStringError"/>
       </Item5>
     </Exceptions>
   </Debugging>

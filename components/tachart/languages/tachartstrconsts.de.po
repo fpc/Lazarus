@@ -298,6 +298,14 @@ msgstr "Linear"
 msgid "Line series"
 msgstr "Linien-Diagramm"
 
+#: tachartstrconsts.rslistsourcecolorerror
+msgid "The %0:s.DataPoints string \"%1:s\" is not an integer."
+msgstr "Der %0:s.DataPoints-String \"%1:s\" ist keine ganze Zahl."
+
+#: tachartstrconsts.rslistsourcenumericerror
+msgid "The %0:s.DataPoints string \"%1:s\" is not a valid number."
+msgstr "Der %0:s.DataPoints-String \"%1:s\" ist keine gültige Zahl."
+
 #: tachartstrconsts.rslistsourcestringformaterror
 msgid "The data value count in the %0:s.DataPoints string \"%1:s\" differs from what is expected from XCount and YCount."
 msgstr "Die Anzahl der Datenwerte im %s.DataPoints-String \"%s\" entspricht nicht der, die aufgrund von XCount und YCount erwartet wird."
@@ -414,6 +422,10 @@ msgstr "%0:s benötigt eine Datenquelle mit mindestens %1:d %2:s-Wert(en) pro Da
 #: tachartstrconsts.rssourcecounterror2
 msgid "This %0:s instance must have at least %1:d %2:s value(s) per data point."
 msgstr "Diese %0:s-Instanz muss mindestens %1:d %2:s-Wert(e) pro Datenpunkt zur Verfügung stellen."
+
+#: tachartstrconsts.rssourcenoteditable
+msgid "Editable chart source required"
+msgstr "Editierbare Chart-Datenquelle erforderlich"
 
 #: tachartstrconsts.rsstarsymbol
 msgid "Star (lines)"

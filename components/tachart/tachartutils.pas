@@ -328,6 +328,8 @@ var
 
 function BoundsSize(ALeft, ATop: Integer; ASize: TSize): TRect; inline;
 
+function ChopString(const AString: String; const AMaxLen: Integer): String;
+
 function Deg16ToRad(ADeg16: Integer): Double; inline;
 function DoubleInterval(AStart, AEnd: Double): TDoubleInterval; inline;
 
@@ -388,6 +390,14 @@ uses
 function BoundsSize(ALeft, ATop: Integer; ASize: TSize): TRect; inline;
 begin
   Result := Bounds(ALeft, ATop, ASize.cx, ASize.cy);
+end;
+
+function ChopString(const AString: String; const AMaxLen: Integer): String;
+begin
+  if (Length(AString) > AMaxlen) and (AMaxLen > 3) then
+    Result := copy(AString, 1, AMaxLen - 3) + '...'
+  else
+    Result := AString;
 end;
 
 function Deg16ToRad(ADeg16: Integer): Double;

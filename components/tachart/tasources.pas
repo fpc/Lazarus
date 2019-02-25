@@ -313,19 +313,28 @@ begin
 end;
 
 function TListChartSourceStrings.Get(Index: Integer): String;
+
+  function NumberStr(AValue: Double): String;
+  begin
+    if IsNaN(AValue) then
+      Result := '|'
+    else
+      Result := Format('%g|', [AValue], DefSeparatorSettings);
+  end;
+
 var
   i: Integer;
 begin
   with FSource[Index]^ do begin
     Result := '';
     if FSource.XCount > 0 then
-      Result += Format('%g|', [X], DefSeparatorSettings);
+      Result += NumberStr(X);
     for i := 0 to High(XList) do
-      Result += Format('%g|', [XList[i]], DefSeparatorSettings);
+      Result += NumberStr(XList[i]);
     if FSource.YCount > 0 then
-      Result += Format('%g|', [Y], DefSeparatorSettings);
+      Result += NumberStr(Y);
     for i := 0 to High(YList) do
-      Result += Format('%g|', [YList[i]], DefSeparatorSettings);
+      Result += NumberStr(YList[i]);
     Result += Format('%s|%s', [IntToColorHex(Color), Text]);
   end;
 end;
@@ -378,6 +387,33 @@ var
     p += 1;
   end;
 
+  function SourceClassString: String;
+  begin
+    Result := IfThen(FSource.Name <> '', FSource.Name, FSource.ClassName);
+  end;
+
+  function StrToFloatOrDateTime(const AStr: String): Double;
+  begin
+    if AStr = '' then
+      Result := NaN
+    else begin
+      if not TryStrToFloat(AStr, Result, DefSeparatorSettings) and
+         not TryStrToFloat(AStr, Result) and
+         not TryStrToDateTime(AStr, Result)
+      then
+        raise EListSourceStringError.CreateFmt(rsListSourceNumericError, [SourceClassString, AStr]);
+    end;
+  end;
+
+  function StrToInt(const AStr: String): Integer;
+  begin
+    if (AStr = '') or (AStr = '?') then
+      Result := clTAColor
+    else
+    if not TryStrToInt(AStr, Result) then
+      raise EListSourceStringError.CreateFmt(rsListSourceColorError, [SourceClassString, AStr]);
+  end;
+
 var
   i: Integer;
 begin
@@ -386,29 +422,25 @@ begin
 
   parts := Split(AString);
   try
-    // There should be XCount + YCount .. XCount + YCount + 2 (for Color and Text)
-    // parts of the string
-    if (Cardinal(parts.Count) <> FSource.XCount + FSource.YCount + 2) then begin
-      if Length(AString) > 20 then AString := Copy(AString, 1, 20) + '...';
-      raise EListSourceStringFormatError.CreateFmt(
-        rsListSourceStringFormatError,
-        [IfThen(FSource.Name <> '', FSource.Name, FSource.ClassName), AString]);
-    end;
+    // There must be XCount + YCount + 2 parts of the string (+2 for Color and Text)
+    if (Cardinal(parts.Count) <> FSource.XCount + FSource.YCount + 2) then
+      raise EListSourceStringError.CreateFmt(
+        rsListSourceStringFormatError, [SourceClassString, ChopString(AString, 20)]);
 
     with ADataItem^ do begin
       if FSource.XCount > 0 then begin
-        X := StrToFloatOrDateTimeDef(NextPart);
+        X := StrToFloatOrDateTime(NextPart);
         for i := 0 to High(XList) do
-          XList[i] := StrToFloatOrDateTimeDef(NextPart);
+          XList[i] := StrToFloatOrDateTime(NextPart);
       end else
         X := NaN;
       if FSource.YCount > 0 then begin
-        Y := StrToFloatOrDateTimeDef(NextPart);
+        Y := StrToFloatOrDateTime(NextPart);
         for i := 0 to High(YList) do
-          YList[i] := StrToFloatOrDateTimeDef(NextPart);
+          YList[i] := StrToFloatOrDateTime(NextPart);
       end else
         Y := NaN;
-      Color := StrToIntDef(NextPart, clTAColor);
+      Color := StrToInt(NextPart);
       Text := NextPart;
     end;
   finally

@@ -469,38 +469,69 @@ begin
   AssertEquals(2, FSource[1]^.Y);
   AssertEquals(3, FSource[1]^.YList[0]);
 
+  // Check too many parts
   try
     FSource.DataPoints.Add('10|20|30|40|?|');
   except
     on E: Exception do
-      AssertTrue('Too many values', E is EListSourceStringFormatError);
+      AssertTrue('Too many values', E is EListSourceStringError);
   end;
   AssertEquals(2, FSource.Count);
 
+  // Check too few parts
   try
     FSource.DataPoints.Add('10|20|?|');
   except
     on E: Exception do
-      AssertTrue('Too few values', E is EListSourceStringFormatError);
+      AssertTrue('Too few values', E is EListSourceStringError);
   end;
   AssertEquals(2, FSource.Count);
 
+  // Check text part missing
   try
     FSource.DataPoints.Add('10|20|30|?');
   except
     on E: Exception do
-      AssertTrue('Text field missing', E is EListSourceStringFormatError);
+      AssertTrue('Text field missing', E is EListSourceStringError);
   end;
   AssertEquals(2, FSource.Count);
 
+  // Check color part missing
   try
     FSource.DataPoints.Add('10|20|30|t');
   except
     on E: Exception do
-      AssertTrue('Color field missing', E is EListSourceStringFormatError);
+      AssertTrue('Color field missing', E is EListSourceStringError);
   end;
   AssertEquals(2, FSource.Count);
 
+  // Check non-numeric parts
+  try
+    FSource.DataPoints.Add('abc|20|30|?|t');
+  except
+    on E: Exception do
+      AssertTrue('Non-numeric X', E is EListSourceStringError);
+  end;
+  try
+    FSource.DataPoints.Add('10|abc|30|?|t');
+  except
+    on E: Exception do
+      AssertTrue('Non-numeric Y', E is EListSourceStringError);
+  end;
+  try
+    FSource.DataPoints.Add('10|20|abc|?|t');
+  except
+    on E: Exception do
+      AssertTrue('Non-numeric YList', E is EListSourceStringError);
+  end;
+  try
+    FSource.DataPoints.Add('10|20|30|abc|t');
+  except
+    on E: Exception do
+      AssertTrue('Non-numeric Color', E is EListSourceStringError);
+  end;
+
+  // check empty list
   try
     FSource.AddXYList(4, []);
   except
@@ -509,6 +540,7 @@ begin
   end;
   AssertEquals(2, FSource.Count);
 
+  // Check decimal separators
   FSource.DataPoints.Add('1.23|2.34|3|?|t');
   AssertEquals(1.23, FSource[2]^.X);
   AssertEquals(2.34, FSource[2]^.Y);
@@ -517,6 +549,21 @@ begin
   AssertEquals(1.23, FSource[3]^.X);
   AssertEquals(2.34, FSource[3]^.Y);
 
+  // Check missing values
+  FSource.DataPoints.Add('|2|3|?|t');
+  AssertTrue('IsNaN', IsNaN(FSource[4]^.X));
+  AssertEquals(2, FSource[4]^.Y);
+  AssertEquals(3, FSource[4]^.YList[0]);
+
+  FSource.DataPoints.Add('1||3|?|t');
+  AssertEquals(1, FSource[5]^.X);
+  AssertTrue('IsNaN', IsNaN(FSource[5]^.Y));
+  AssertEquals(3, FSource[5]^.YList[0]);
+
+  FSource.DataPoints.Add('1|2|3||t');
+  AssertEquals(clTAColor, FSource[6]^.Color);
+
+  // check multiple x and y values
   FSource.Clear;
   FSource.XCount := 2;
   FSource.YCount := 3;
