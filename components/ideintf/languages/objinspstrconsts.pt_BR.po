@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Marcelo B Paula <marcelo.bp@netsite.com.br>\n"
+"Last-Translator: Marcelo B Paula\n"
 "Language-Team: \n"
 "X-Generator: Poedit 1.8.13\n"
 "Language: pt_BR\n"
@@ -871,7 +871,7 @@ msgstr "Exibir caixa de informação"
 
 #: objinspstrconsts.oisshowpropertyfilter
 msgid "Show Property Filter"
-msgstr ""
+msgstr "Exibir filtro de propriedade"
 
 #: objinspstrconsts.oisshowstatusbar
 msgid "Show Status Bar"

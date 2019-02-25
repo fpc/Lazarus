@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Marcelo B Paula <marcelo.bp@netsite.com.br>\n"
+"Last-Translator: Marcelo B Paula\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -168,11 +168,6 @@ msgid "Duplicate Originals"
 msgstr "Originais duplicados"
 
 #: pocheckerconsts.serroroncleanup
-#, fuzzy
-#| msgid ""
-#| "An unrecoverable error occurred\n"
-#| "%s\n"
-#| "Please close the program\n"
 msgid ""
 "An unrecoverable error occurred\n"
 "%s\n"
@@ -180,19 +175,15 @@ msgid ""
 msgstr ""
 "Ocorreu um erro irrecuperável\n"
 "%s\n"
-"Favor fechar o programa\n"
+"Favor fechar o programa"
 
 #: pocheckerconsts.serroroncreate
-#, fuzzy
-#| msgid ""
-#| "Error creating an instance of TPoFamily:\n"
-#| "%s\n"
 msgid ""
 "Error creating an instance of TPoFamily:\n"
 "%s"
 msgstr ""
 "Erro ao criar uma instância de TPoFamily:\n"
-"%s\n"
+"%s"
 
 #: pocheckerconsts.serrorsbytest
 msgid "Errors / warnings reported by %s for:"
@@ -203,16 +194,12 @@ msgid "File %s"
 msgstr "Arquivo %s"
 
 #: pocheckerconsts.sfilesnotfoundandremoved
-#, fuzzy
-#| msgid ""
-#| "The following non-existent files were removed from the list:\n"
-#| "%s\n"
 msgid ""
 "The following non-existent files were removed from the list:\n"
 "%s"
 msgstr ""
 "Os seguintes arquivos inexistentes foram removidos da lista:\n"
-"%s\n"
+"%s"
 
 #: pocheckerconsts.sfuzzystrings
 msgid "Fuzzy strings"
@@ -291,24 +278,14 @@ msgid "Found %d warnings."
 msgstr "Encontrados %d avisos."
 
 #: pocheckerconsts.sopenfail
-#, fuzzy
-#| msgid ""
-#| "Unable to open file:\n"
-#| "\"%s\"\n"
 msgid ""
 "Unable to open file:\n"
 "\"%s\""
 msgstr ""
 "Incapaz de abrir arquivo:\n"
-"\"%s\"\n"
+"\"%s\""
 
 #: pocheckerconsts.sopenfailexternal
-#, fuzzy
-#| msgid ""
-#| "Unable to open file\n"
-#| "\"%s\"\n"
-#| "in external editor\n"
-#| "\"%s\"\n"
 msgid ""
 "Unable to open file\n"
 "\"%s\"\n"
@@ -318,7 +295,7 @@ msgstr ""
 "Incapaz de abrir arquivo\n"
 "\"%s\"\n"
 "no editor externo\n"
-"\"%s\"\n"
+"\"%s\""
 
 #: pocheckerconsts.sopenfileinexternaleditor
 msgid "Open file in external editor"
@@ -377,16 +354,12 @@ msgid "Save &As ..."
 msgstr "Salvar &como ..."
 
 #: pocheckerconsts.ssaveerror
-#, fuzzy
-#| msgid ""
-#| "Error saving file:\n"
-#| "%s\n"
 msgid ""
 "Error saving file:\n"
 "%s"
 msgstr ""
 "Erro ao salvar arquivo:\n"
-"%s\n"
+"%s"
 
 #: pocheckerconsts.sscandir
 msgid "Scan a folder"
@@ -413,12 +386,6 @@ msgid "Show statistics graph"
 msgstr "Exibir gráfico estatístico"
 
 #: pocheckerconsts.sstathint
-#, fuzzy
-#| msgid ""
-#| "Translated: %d (%.1f%%)\n"
-#| "Untranslated: %d (%.1f%%)\n"
-#| "Fuzzy: %d (%.1f%%)\n"
-#| "Errors in selected tests: %d\n"
 msgid ""
 "Translated: %d (%.1f%%)\n"
 "Untranslated: %d (%.1f%%)\n"
@@ -428,7 +395,7 @@ msgstr ""
 "Traduzido: %d (%.1f%%)\n"
 "Não traduzido: %d (%.1f%%)\n"
 "Incerto: %d (%.1f%%)\n"
-"Erros nos testes selecionados: %d\n"
+"Erros nos testes selecionados: %d"
 
 #: pocheckerconsts.sthefollowingmissingmasterpofileswereremoved
 msgid "The following %s missing master .po file(s) were removed from the list:"

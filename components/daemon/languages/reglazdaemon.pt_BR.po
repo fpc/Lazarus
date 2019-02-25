@@ -4,10 +4,12 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Marcelo Borges de Paula\n"
+"Last-Translator: Marcelo B Paula\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: pt_BR\n"
+"X-Generator: Poedit 1.8.13\n"
 
 #: reglazdaemon.sdaemonappdescr
 msgid "Daemon (service) application is a non-gui application that runs in the background."
@@ -26,16 +28,12 @@ msgid "Daemon Module for inclusion in a daemon application"
 msgstr "Módulo \"Daemon\" para inclusão em uma aplicação \"daemon\""
 
 #: reglazdaemon.sdaemonmapperdescr
-#, fuzzy
-#| msgid ""
-#| "Daemon mapper for inclusion in a daemon application.\n"
-#| "Only one daemon mapper may exist in a daemon application.\n"
 msgid ""
 "Daemon mapper for inclusion in a daemon application.\n"
 "Only one daemon mapper may exist in a daemon application."
 msgstr ""
 "Mapeador \"Daemon\" para inclusão em uma aplicação \"daemon\".\n"
-"Apenas um mapeador \"daemon\" deve existir por aplicação.\n"
+"Apenas um mapeador \"daemon\" deve existir por aplicação."
 
 #: reglazdaemon.sdaemonmappername
 msgid "Daemon mapper"

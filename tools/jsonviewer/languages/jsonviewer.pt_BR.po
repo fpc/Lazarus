@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Marcelo B Paula <marcelo.bp@netsite.com.br>\n"
+"Last-Translator: Marcelo B Paula\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -37,16 +37,12 @@ msgid "JSON document modified"
 msgstr "Documento JSON modificado"
 
 #: msgjsonviewer.sdocumentmodifiedaction
-#, fuzzy
-#| msgid ""
-#| "The JSON data in \"%s\" was changed but not saved.\n"
-#| "What do want to do ?\n"
 msgid ""
 "The JSON data in \"%s\" was changed but not saved.\n"
 "What do want to do ?"
 msgstr ""
 "Os dados JSON em \"%s\" foram alterados mas não salvos.\n"
-"O que deseja fazer ?\n"
+"O que deseja fazer ?"
 
 #: msgjsonviewer.sduplicatemembername
 msgid "Duplicate member name \"%s\"."

@@ -2193,6 +2193,7 @@ components/idescout/idescoutstrconsts.pas svneol=native#text/pascal
 components/idescout/languages/idescoutstrconsts.fr.po svneol=native#text/plain
 components/idescout/languages/idescoutstrconsts.hu.po svneol=native#text/plain
 components/idescout/languages/idescoutstrconsts.pot svneol=native#text/plain
+components/idescout/languages/idescoutstrconsts.pt_BR.po svneol=native#text/plain
 components/idescout/languages/idescoutstrconsts.ru.po svneol=native#text/plain
 components/idescout/languages/idescoutstrconsts.uk.po svneol=native#text/plain
 components/idescout/regidescout.pas svneol=native#text/plain

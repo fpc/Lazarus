@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Marcelo B Paula <marcelo.bp@netsite.com.br>\n"
+"Last-Translator: Marcelo B Paula\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -37,11 +37,11 @@ msgstr ""
 
 #: tachartstrconsts.desnointeger
 msgid "Value must be an integer."
-msgstr ""
+msgstr "Valor deve ser um inteiro."
 
 #: tachartstrconsts.desnonumber
 msgid "Non-numeric value."
-msgstr ""
+msgstr "Valor não numérico."
 
 #: tachartstrconsts.destext
 msgid "Text"
@@ -314,7 +314,7 @@ msgstr ""
 
 #: tachartstrconsts.rslistsourcestringformaterror
 msgid "The data value count in the %0:s.DataPoints string \"%1:s\" differs from what is expected from XCount and YCount."
-msgstr ""
+msgstr "O contador de valor de dados em %0:s. String DataPoints \"%1:s\" difere do que é esperado para XCount e YCount."
 
 #: tachartstrconsts.rslogarithmic
 msgid "Logarithmic"
@@ -423,11 +423,11 @@ msgstr "Triângulo direito"
 
 #: tachartstrconsts.rssourcecounterror
 msgid "%0:s requires a chart source with at least %1:d %2:s value(s) per data point."
-msgstr ""
+msgstr "%0:s requer uma fonte de gráfico com ao menos %1:d %2:s valor(es) por ponto de dados."
 
 #: tachartstrconsts.rssourcecounterror2
 msgid "This %0:s instance must have at least %1:d %2:s value(s) per data point."
-msgstr ""
+msgstr "Esta instância %0:s deve ter ao menos %1:d %2:s valor(es) por ponto de dados."
 
 #: tachartstrconsts.rssourcenoteditable
 msgid "Editable chart source required"
