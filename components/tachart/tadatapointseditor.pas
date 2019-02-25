@@ -236,7 +236,7 @@ begin
       end;
     end;
     s := sgData.Cells[sgData.ColCount - 2, r];
-    if (s <> '') and not TryStrToInt(s, i) then begin
+    if (s <> '') and (s <> '?') and not TryStrToInt(s, i) then begin
       ACol := sgData.ColCount - 2;
       ARow := r;
       AMsg := desNoInteger;
