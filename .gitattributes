@@ -1700,6 +1700,12 @@ components/fpweb/demo/restbridge/dmrestbridge.lfm svneol=native#text/plain
 components/fpweb/demo/restbridge/dmrestbridge.pp svneol=native#text/plain
 components/fpweb/demo/restbridge/restserver.lpi svneol=native#text/plain
 components/fpweb/demo/restbridge/restserver.lpr svneol=native#text/plain
+components/fpweb/demo/restmodule/demorestmodule.ico -text
+components/fpweb/demo/restmodule/demorestmodule.lpi svneol=native#text/plain
+components/fpweb/demo/restmodule/demorestmodule.lpr svneol=native#text/plain
+components/fpweb/demo/restmodule/demorestmodule.res -text
+components/fpweb/demo/restmodule/dmmyrest.lfm svneol=native#text/plain
+components/fpweb/demo/restmodule/dmmyrest.pp svneol=native#text/plain
 components/fpweb/fpideexteditorinsertfilenameunit.lfm svneol=native#text/plain
 components/fpweb/fpideexteditorinsertfilenameunit.pas svneol=native#text/plain
 components/fpweb/fpweb_images.inc svneol=native#text/plain

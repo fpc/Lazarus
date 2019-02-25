@@ -1,0 +1,248 @@
+object MyRest: TMyRest
+  OldCreateOrder = False
+  Dispatcher = MyDispatcher
+  Kind = wkOneShot
+  Height = 237
+  HorizontalOffset = 410
+  VerticalOffset = 280
+  Width = 595
+  PPI = 96
+  object MyDispatcher: TSQLDBRestDispatcher
+    Active = True
+    Connections = <    
+      item
+        ConnectionType = 'PostgreSQL'
+        Name = 'Expenses'
+        Password = 'Secret'
+        UserName = 'Me'
+        CharSet = 'UTF8'
+        HostName = 'localhost'
+        DatabaseName = 'expensetracker'
+        Port = 0
+      end>
+    Schemas = <    
+      item
+        Schema = ExpensesSchema
+      end>
+    Authenticator = AuthBasic
+    EnforceLimit = 0
+    left = 88
+    top = 56
+  end
+  object AuthBasic: TRestBasicAuthenticator
+    AuthenticateUserSQL.Strings = (
+      'select uID from users where (uLogin=:UserName) and (uPassword=:Password)'
+    )
+    left = 164
+    top = 132
+  end
+  object ExpensesSchema: TSQLDBRestSchema
+    Resources = <    
+      item
+        Fields = <        
+          item
+            FieldName = 'eid'
+            PublicName = 'eid'
+            GeneratorName = 'seqExpenseID'
+            FieldType = rftLargeInt
+            NativeFieldType = ftUnknown
+            Options = [foInKey, foInInsert, foInUpdate, foOrderByDesc]
+            MaxLen = 0
+          end        
+          item
+            FieldName = 'euserfk'
+            PublicName = 'euserfk'
+            FieldType = rftLargeInt
+            NativeFieldType = ftUnknown
+            Options = [foInInsert, foInUpdate, foFilter, foOrderByDesc]
+            MaxLen = 0
+          end        
+          item
+            FieldName = 'eprojectfk'
+            PublicName = 'eprojectfk'
+            FieldType = rftLargeInt
+            NativeFieldType = ftUnknown
+            Options = [foInInsert, foInUpdate, foFilter, foOrderByDesc]
+            MaxLen = 0
+          end        
+          item
+            FieldName = 'etypefk'
+            PublicName = 'etypefk'
+            FieldType = rftLargeInt
+            NativeFieldType = ftUnknown
+            Options = [foInInsert, foInUpdate, foFilter, foOrderByDesc]
+            MaxLen = 0
+          end        
+          item
+            FieldName = 'eamount'
+            PublicName = 'eamount'
+            FieldType = rftFloat
+            NativeFieldType = ftUnknown
+            Options = [foInInsert, foInUpdate, foFilter, foOrderByDesc]
+            MaxLen = 0
+          end        
+          item
+            FieldName = 'edate'
+            PublicName = 'edate'
+            FieldType = rftDate
+            NativeFieldType = ftUnknown
+            Options = [foInInsert, foInUpdate, foFilter, foOrderByDesc]
+            MaxLen = 0
+          end        
+          item
+            FieldName = 'ecomment'
+            PublicName = 'ecomment'
+            FieldType = rftString
+            NativeFieldType = ftUnknown
+            Options = [foInInsert, foInUpdate, foFilter, foOrderByDesc]
+            MaxLen = 1024
+          end>
+        TableName = 'expenses'
+        ResourceName = 'expenses'
+        AllowedOperations = [roGet, roPost, roPut, roDelete, roOptions, roHead]
+      end    
+      item
+        Fields = <        
+          item
+            FieldName = 'etid'
+            PublicName = 'etid'
+            GeneratorName = 'seqExpenseTypesID'
+            FieldType = rftLargeInt
+            NativeFieldType = ftUnknown
+            Options = [foInKey, foInInsert, foInUpdate, foOrderByDesc]
+            MaxLen = 0
+          end        
+          item
+            FieldName = 'etname'
+            PublicName = 'etname'
+            FieldType = rftString
+            NativeFieldType = ftUnknown
+            Options = [foInInsert, foInUpdate, foFilter, foOrderByDesc]
+            MaxLen = 50
+          end        
+          item
+            FieldName = 'etdescription'
+            PublicName = 'etdescription'
+            FieldType = rftString
+            NativeFieldType = ftUnknown
+            Options = [foInInsert, foInUpdate, foFilter, foOrderByDesc]
+            MaxLen = 100
+          end        
+          item
+            FieldName = 'etmaxamount'
+            PublicName = 'etmaxamount'
+            FieldType = rftFloat
+            NativeFieldType = ftUnknown
+            Options = [foInInsert, foInUpdate, foFilter, foOrderByDesc]
+            MaxLen = 0
+          end        
+          item
+            FieldName = 'etcost'
+            PublicName = 'etcost'
+            FieldType = rftFloat
+            NativeFieldType = ftUnknown
+            Options = [foInInsert, foInUpdate, foFilter, foOrderByDesc]
+            MaxLen = 0
+          end        
+          item
+            FieldName = 'etactive'
+            PublicName = 'etactive'
+            FieldType = rftBoolean
+            NativeFieldType = ftUnknown
+            Options = [foInInsert, foInUpdate, foFilter, foOrderByDesc]
+            MaxLen = 0
+          end>
+        TableName = 'expensetypes'
+        ResourceName = 'expensetypes'
+        AllowedOperations = [roGet, roPost, roPut, roDelete, roOptions, roHead]
+      end    
+      item
+        Fields = <        
+          item
+            FieldName = 'pid'
+            PublicName = 'pid'
+            GeneratorName = 'seqProjectsID'
+            FieldType = rftLargeInt
+            NativeFieldType = ftUnknown
+            Options = [foInKey, foInInsert, foInUpdate, foOrderByDesc]
+            MaxLen = 0
+          end        
+          item
+            FieldName = 'pname'
+            PublicName = 'pname'
+            FieldType = rftString
+            NativeFieldType = ftUnknown
+            Options = [foInInsert, foInUpdate, foFilter, foOrderByDesc]
+            MaxLen = 50
+          end        
+          item
+            FieldName = 'pdescription'
+            PublicName = 'pdescription'
+            FieldType = rftString
+            NativeFieldType = ftUnknown
+            Options = [foInInsert, foInUpdate, foFilter, foOrderByDesc]
+            MaxLen = 100
+          end        
+          item
+            FieldName = 'pactive'
+            PublicName = 'pactive'
+            FieldType = rftBoolean
+            NativeFieldType = ftUnknown
+            Options = [foInInsert, foInUpdate, foFilter, foOrderByDesc]
+            MaxLen = 0
+          end>
+        TableName = 'projects'
+        ResourceName = 'projects'
+        AllowedOperations = [roGet, roPost, roPut, roDelete, roOptions, roHead]
+      end    
+      item
+        Fields = <        
+          item
+            FieldName = 'uid'
+            PublicName = 'uid'
+            GeneratorName = 'seqUsersID'
+            FieldType = rftLargeInt
+            NativeFieldType = ftUnknown
+            Options = [foInKey, foInInsert, foInUpdate, foOrderByDesc]
+            MaxLen = 0
+          end        
+          item
+            FieldName = 'ulogin'
+            PublicName = 'ulogin'
+            FieldType = rftString
+            NativeFieldType = ftUnknown
+            Options = [foInInsert, foInUpdate, foFilter, foOrderByDesc]
+            MaxLen = 50
+          end        
+          item
+            FieldName = 'ufullname'
+            PublicName = 'ufullname'
+            FieldType = rftString
+            NativeFieldType = ftUnknown
+            Options = [foInInsert, foInUpdate, foFilter, foOrderByDesc]
+            MaxLen = 100
+          end        
+          item
+            FieldName = 'upassword'
+            PublicName = 'upassword'
+            FieldType = rftString
+            NativeFieldType = ftUnknown
+            Options = [foInInsert, foInUpdate, foFilter, foOrderByDesc]
+            MaxLen = 100
+          end        
+          item
+            FieldName = 'uactive'
+            PublicName = 'uactive'
+            FieldType = rftBoolean
+            NativeFieldType = ftUnknown
+            Options = [foInInsert, foInUpdate, foFilter, foOrderByDesc]
+            MaxLen = 0
+          end>
+        TableName = 'users'
+        ResourceName = 'users'
+        AllowedOperations = [roGet, roPost, roPut, roDelete, roOptions, roHead]
+      end>
+    left = 268
+    top = 68
+  end
+end
