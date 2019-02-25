@@ -1422,9 +1422,7 @@ begin
         Pointer.SetOwner(nil);   // avoid recursion
         Pointer.Style := ps;
       end;
-      brushAlreadySet := (Styles <> nil) and
-        (AStyleIndex < Styles.Styles.Count) and
-        Styles.Styles[AStyleIndex].UseBrush;
+      brushAlreadySet := (Styles <> nil) and Styles.StyleByIndex(AStyleIndex).UseBrush;
       if brushAlreadySet then
         Styles.Apply(ADrawer, AStyleIndex);
       if UseDataColors then c := Source[i]^.Color else c := clTAColor;
