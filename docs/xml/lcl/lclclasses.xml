@@ -196,7 +196,7 @@
       <element name="TLCLReferenceComponent.WSCreateReference">
         <short>Tells the widgetset to create a Reference.
         </short>
-        <descr>This implementation returns Nil, should be overriden in every derived class.
+        <descr>This implementation returns Nil, should be overridden in every derived class.
         </descr>
       </element>
       <element name="TLCLReferenceComponent.WSCreateReference.Result">

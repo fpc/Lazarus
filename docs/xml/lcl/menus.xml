@@ -1009,7 +1009,7 @@ Descendent classes can override this method to provide a different result.
       <!-- procedure Visibility: protected -->
       <element name="TMenuItem.DoClicked">
         <short>
-          <var>DoClicked </var>- process the system message signifying that a click has ocurred over this menu item</short>
+          <var>DoClicked </var>- process the system message signifying that a click has occurred over this menu item</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1215,7 +1215,7 @@ Descendent classes can override this method to provide a different result.
       <!-- constructor Visibility: public -->
       <element name="TMenuItem.Create">
         <short>
-          <var>Create</var> - constructor for <var>TMenuItem</var>: calls inherited <var>Create</var> then intialises a large number of local variables</short>
+          <var>Create</var> - constructor for <var>TMenuItem</var>: calls inherited <var>Create</var> then initializes a large number of local variables</short>
         <descr/>
         <errors/>
         <seealso>
@@ -1309,7 +1309,7 @@ Descendent classes can override this method to provide a different result.
       <!-- procedure Visibility: public -->
       <element name="TMenuItem.InitiateAction">
         <short>
-          <var>InitiateAction</var> - start th einitiation phase of an action associated with the menu item</short>
+          <var>InitiateAction</var> - start the initiation phase of an action associated with the menu item</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1997,7 +1997,7 @@ Descendent classes can override this method to provide a different result.
       <!-- function Visibility: public -->
       <element name="TMenu.IsRightToLeft">
         <short>
-          <var>IsRightToLeft</var> - returns True if Right to Left mode is being used (eg for Hebrew or Arabic languages)</short>
+          <var>IsRightToLeft</var> - returns True if Right to Left mode is being used (e.g. for Hebrew or Arabic languages)</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2076,8 +2076,8 @@ Descendent classes can override this method to provide a different result.
 
 
  - the Main Menu that appears at the top of most windows; form designers can
-customise by choosing various menu items.</p>
-          <p>Main Menu is a non-visible component : that is, if the icon is selected from the Component Pallete and placed on the Form, it will not appear at Run-time. Instead, a Menu bar with a structure defined by the Menu Editor will appear.</p>
+customize by choosing various menu items.</p>
+          <p>Main Menu is a non-visible component : that is, if the icon is selected from the Component Palette and placed on the Form, it will not appear at Run-time. Instead, a Menu bar with a structure defined by the Menu Editor will appear.</p>
           <p>To see the Menu Editor, right-click on the Main Menu icon on your Form. </p>
         </descr>
         <seealso>
@@ -2138,7 +2138,7 @@ customise by choosing various menu items.</p>
 
 
 : a menu panel that pops up on the desktop when the right mouse button is clicked.</p>
-          <p>Inherits all the properties of <var>TMenu</var> (including the properties of <var>TMenuItem</var>), but has some new properties (procedure <var>PopUp</var> and procedure <var>Close</var>) that define its behaviour when actually invoked.</p>
+          <p>Inherits all the properties of <var>TMenu</var> (including the properties of <var>TMenuItem</var>), but has some new properties (procedure <var>PopUp</var> and procedure <var>Close</var>) that define its behavior when actually invoked.</p>
           <p>PopupPoint defines the position of the Popup menu, usually at the current cursor position.</p>
           <p>To use a Popup menu, first create it with the MenuEditor. Then with the Object Inspector for the control that needs to use the Popup, select the property named PopupMenu, and a listbox will appear with the names of the available Menus - choose the Popup name you want</p>
         </descr>
@@ -2220,7 +2220,7 @@ customise by choosing various menu items.</p>
       <!-- procedure Visibility: public -->
       <element name="TPopupMenu.PopUp">
         <short>
-          <var>PopUp</var> - sofware emulation of the <var>OnPopup</var> event </short>
+          <var>PopUp</var> - software emulation of the <var>OnPopup</var> event </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2367,14 +2367,14 @@ customise by choosing various menu items.</p>
 
 
  is the Main Menu that appears at the top of most forms; form designers can
-customise by choosing various menu items. <var>TPopupMenu</var> is a menu window that pops up with pertinent, usually context-sensitive, details and choices when the right mouse button is clicked near a control</p>
+customize by choosing various menu items. <var>TPopupMenu</var> is a menu window that pops up with pertinent, usually context-sensitive, details and choices when the right mouse button is clicked near a control</p>
           <p>Main Menu is a non-visible component : that is, if the icon is selected from the Component Palette and placed on the Form, it will not appear at Run-time. Instead, a Menu bar with a structure defined by the Menu Editor will appear. Popup menus, placed on the form by selecting the icon from the Component Palette, do not appear at all unless the right mouse button is clicked on a control that owns such a menu.</p>
           <p>To see the Menu Editor, right-click on the Main Menu  or Popup Menu icon on your Form. A pop-up box appears, that invites you to enter items into the Menu bar.</p>
-          <p>An Edit box is displayed, containing a Button labelled New Item1. If you right-click on that box, a pop-up menu is displayed that allows you to add a new item before or after (along the same level) or create a sub-menu with the opportunity to add further items below (or above) the new item in a downward column.</p>
+          <p>An Edit box is displayed, containing a Button labeled New Item1. If you right-click on that box, a pop-up menu is displayed that allows you to add a new item before or after (along the same level) or create a sub-menu with the opportunity to add further items below (or above) the new item in a downward column.</p>
           <p>Any or all of the <link id="TMenuItem">MenuItems</link> that you add can be configured using the Object Inspector.</p>
           <p>At the least you should give each item a <var>Caption</var> which will appear on the Menu Bar (you may also wish to give it a more meaningful <var>Name</var>). The caption should indicate the activity to be selected, such as "File Open" or "Close", "Run" or "Quit"</p>
           <p>If you want a particular letter in the Caption to be associated with a shortcut key, that letter should be preceded by an ampersand. The Menu item at run-time will appear with the shortcut letter underlined, and hitting that letter key will have the same effect as selecting the menu item. Alternatively you can choose a shortcut key sequence (such as Ctrl-C for Copy or Ctrl-V for Paste - the standard Keyboard shortcuts) with the <var>ShortCut</var> property of the MenuItem.</p>
-          <p>It is often helpful to use the Menu controls in conjuction with an <link id="#lcl.ActnList.TActionList">ActionList</link> which contains a series of standard or customised <link id="#lcl.ActnList.TAction">Actions</link>. Menu Items can be linked in the Object Inspector to Actions on the list, and the same actions can be linked to <link id="#lcl.StdCtrls.TButton">Buttons</link>, <link id="#lcl.ComCtrls.TToolButton">ToolBar Buttons</link>, <link id="#lcl.Buttons.TSpeedButton">SpeedButtons</link> etc. It is obviously economic of effort to re-use the same code to respond to the various events, rather than writing separate <var>OnClick</var> event handlers for each individual control.</p>
+          <p>It is often helpful to use the Menu controls in conjunction with an <link id="#lcl.ActnList.TActionList">ActionList</link> which contains a series of standard or customized <link id="#lcl.ActnList.TAction">Actions</link>. Menu Items can be linked in the Object Inspector to Actions on the list, and the same actions can be linked to <link id="#lcl.StdCtrls.TButton">Buttons</link>, <link id="#lcl.ComCtrls.TToolButton">ToolBar Buttons</link>, <link id="#lcl.Buttons.TSpeedButton">SpeedButtons</link> etc. It is obviously economic of effort to re-use the same code to respond to the various events, rather than writing separate <var>OnClick</var> event handlers for each individual control.</p>
           <p>By default a number of standard actions is pre-loaded from <link id="#lcl.StdActns">StdActns</link> or, if DataAware controls are being used, from <link id="#lcl.DBActns">DBActns</link>, and these can be chosen using the ActionList editor which appears when you right-click on the ActionList icon on the Form Designer.</p>
         </descr>
       </topic>
@@ -2491,8 +2491,8 @@ customise by choosing various menu items. <var>TPopupMenu</var> is a menu window
           <var>TPopupAlignment</var> -  enumerated type to describe the position of popup menu relative to the popup coordinate</short>
         <descr>
           <pre>paLeft - position popup menu so it left corner is at the popup coordinate
-    paRight - position popup menu menu so it right corner is at the popup corrdinate
-    paCenter - center popup menu around popup corrdinate
+    paRight - position popup menu menu so it right corner is at the popup coordinate
+    paCenter - center popup menu around popup coordinate
 </pre>
         </descr>
       </element>

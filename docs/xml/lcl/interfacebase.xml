@@ -1363,7 +1363,7 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.CreateFontIndirect">
-        <short>Creates an logical font, selectable into any DC.</short>
+        <short>Creates a logical font, selectable into any DC.</short>
         <descr/>
         <errors/>
         <seealso>
@@ -1379,7 +1379,7 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.CreateFontIndirectEx">
-        <short>Creates an logical font, selectable into any DC. Allows for an long fontname.</short>
+        <short>Creates a logical font, selectable into any DC. Allows for a long font name.</short>
         <descr/>
         <errors/>
         <seealso>
@@ -1444,7 +1444,7 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.CreatePenIndirect">
-        <short>Creates an logical Pen, selectable into any DC.</short>
+        <short>Creates a logical Pen, selectable into any DC.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1457,7 +1457,7 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.CreatePolygonRgn">
-        <short>Creates a polygonial region.</short>
+        <short>Creates a polygonal region.</short>
         <descr>
           <p>
             The Points parameter is an array of points that give the vertices of the polygon.
@@ -1700,7 +1700,7 @@
           </p><p>
             A second call of the function, with the same parameters,
             removes the rectangle again (XOR painting).
-            Due to this behaviour the frame should be removed
+            Due to this behavior the frame should be removed
             before it might be overwritten by any other painting operation.
           </p>
           <remark>
@@ -1988,7 +1988,7 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.ExtCreatePen">
-        <short>Creates an logical pen, selectable into any DC.</short>
+        <short>Creates a logical pen, selectable into any DC.</short>
         <descr>
         </descr>
         <seealso>
@@ -2058,7 +2058,7 @@
         <short>The number of (Wide)Chars in the string.</short>
       </element>
       <element name="TWidgetSet.ExtTextOut.Dx">
-        <short>Pointer to an array of intercharacter spacing values, can be Nil.</short>
+        <short>Pointer to an array of inter-character spacing values, can be Nil.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.ExtSelectClipRGN">
@@ -2390,9 +2390,9 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.GetDeviceCaps">
-        <short>Returns various device specific informations.</short>
+        <short>Returns various device specific information.</short>
         <descr>
-          <p>The following informations can be retrieved:</p>
+          <p>The following information can be retrieved:</p>
           <ul>
             <li>
               HORZSIZE - Horizontal size in millimeters
@@ -2515,7 +2515,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.GetFontLanguageInfo.Result">
-        <short>Font flags, zero for Latin font alikes.</short>
+        <short>Font flags, zero for Latin font families.</short>
       </element>
       <element name="TWidgetSet.GetFontLanguageInfo.DC">
         <short/>
@@ -2624,7 +2624,7 @@
         <short>The Handle of the object.</short>
       </element>
       <element name="TWidgetSet.GetObject.BufSize">
-        <short>The bytecount of the buffer.</short>
+        <short>The byte count of the buffer.</short>
       </element>
       <element name="TWidgetSet.GetObject.Buf">
         <short>Receives the information. Nil means to return the required buffer size.</short>
@@ -3260,7 +3260,7 @@
         <seealso/>
       </element>
       <element name="TWidgetSet.GetWindowLong.Result">
-        <short>The sttribute.</short>
+        <short>The attribute.</short>
       </element>
       <element name="TWidgetSet.GetWindowLong.Handle">
         <short>The window handle.</short>
@@ -3762,7 +3762,7 @@
         <short>The caption of the MessageBox.</short>
       </element>
       <element name="TWidgetSet.MessageBox.uType">
-        <short>Style flags specifiying the shown buttons etc.</short>
+        <short>Style flags specifying the shown buttons etc.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.MonitorFromPoint">
@@ -3958,7 +3958,7 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.PolyBezier">
-        <short>Draws Bézier curves.</short>
+        <short>Draws Bezier curves.</short>
         <descr>
           <p>
             Use Polybezier to draw cubic Bézier curves.
@@ -3970,11 +3970,11 @@
             requires three more points, using the end-point of the previous Curve
             as its starting point.
           </p><p>
-            If the Continous flag is set to FALSE, then each subsequent Curve
+            If the Continuous flag is set to FALSE, then each subsequent Curve
             requires 4 additional points, which are used exactly as in the first curve.
           </p><p>
-            Any additonal points which do not add up to a full
-            bezier (4 for Continuous, 3 otherwise) are ignored.
+            Any additional points which do not add up to a full
+            Bezier (4 for Continuous, 3 otherwise) are ignored.
             There must be at least 4 points for an drawing to occur.
           </p><p>
             If the Filled Flag is TRUE then the resulting Poly-Bézier
@@ -4590,7 +4590,7 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SetBkColor">
-        <short>Sets the current background color of an decice context.</short>
+        <short>Sets the current background color of an device context.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4940,13 +4940,13 @@
           </p>
           <ul>
             <li>
-              BLACKONWHITE - preserves black pixels in a monchrome bitmap.
+              BLACKONWHITE - preserves black pixels in a monochrome bitmap.
             </li><li>
               COLORONCOLOR
             </li><li>
               HALFTONE, STRETCH_HALFTONE
             </li><li>
-              WHITEONBLACK - preserves white pixels in a monchrome bitmap.
+              WHITEONBLACK - preserves white pixels in a monochrome bitmap.
             </li>
           </ul>
         </descr>
@@ -4983,7 +4983,7 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.SetTextCharacterExtra">
-        <short>Sets extra intercharacter spacing in text output.</short>
+        <short>Sets extra inter-character spacing in text output.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6130,7 +6130,7 @@
       <!-- function Visibility: public -->
       <element name="TWidgetSet.ExtUTF8Out" link="TWidgetSet.ExtTextOut">
         <short>Draws an UTF-8 string without formatting (single line).</short>
-        <descr>The intercharacter spacing array (Dx) must have one element for
+        <descr>The inter-character spacing array (Dx) must have one element for
           every Char (byte) in the UTF-8 text.
           For multi-byte character codes the values of all Dx elements are summed up.
         </descr>
@@ -6163,7 +6163,7 @@
         <short>The number of Chars in the string.</short>
       </element>
       <element name="TWidgetSet.ExtUTF8Out.Dx">
-        <short>Pointer to an array of intercharacter spacing values, can be Nil.</short>
+        <short>Pointer to an array of inter-character spacing values, can be Nil.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TWidgetSet.FontCanUTF8">

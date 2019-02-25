@@ -280,7 +280,7 @@
       <!-- procedure Visibility: public -->
       <element name="TPrinterCanvas.Changing">
         <short>
-          <var>Changing</var> - method for dealing with changes in printing staus</short>
+          <var>Changing</var> - method for dealing with changes in printing status</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -498,7 +498,7 @@
       <!-- property Visibility: public -->
       <element name="TPaperSize.SupportedPapers">
         <short>
-          <var>SupportedPapers</var> - the list of supported papers for this pape size</short>
+          <var>SupportedPapers</var> - the list of supported papers for this paper size</short>
         <descr/>
         <seealso/>
       </element>
@@ -757,7 +757,7 @@
       <!-- procedure Visibility: protected -->
       <element name="TPrinter.DoEndDoc">
         <short>
-          <var>DoEndDoc</var> - method for finishing printing document. aAborded is True if printing has been aborted (eg by operator)</short>
+          <var>DoEndDoc</var> - method for finishing printing document. aAborded is True if printing has been aborted (e.g. by operator)</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -857,7 +857,7 @@
       <!-- procedure Visibility: protected -->
       <element name="TPrinter.DoSetCopies">
         <short>
-          <var>DoSetCopies</var> - specifieds the number of copies required</short>
+          <var>DoSetCopies</var> - specifies the number of copies required</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -949,7 +949,7 @@
       <!-- function Visibility: protected -->
       <element name="TPrinter.DoGetPrinterState">
         <short>
-          <var>DoGetPrinterState</var> - retruns the printer state</short>
+          <var>DoGetPrinterState</var> - returns the printer state</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1031,7 +1031,7 @@
       <!-- procedure Visibility: public -->
       <element name="TPrinter.Refresh">
         <short>
-          <var>Refresh</var> the data for printing, eg after a change </short>
+          <var>Refresh</var> the data for printing, e.g. after a change </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1189,7 +1189,7 @@
         <short>
           <var>CanRenderCopies</var> - True if the printer device can render copies</short>
         <descr>
-          <var>CanRenderCopies</var> - True if the printer device can render copies, ie if <var>TPrinterCapability</var> includes pcCopies
+          <var>CanRenderCopies</var> - True if the printer device can render copies, i.e. if <var>TPrinterCapability</var> includes pcCopies
 </descr>
       </element>
       <element name="TPrinter.XDPI">
@@ -1211,7 +1211,7 @@
       </element>
       <element name="TPrinterCanvas.GetLeftMargin">
         <short>
-          <var>GetLeftMargin</var> - returns the size of teh left margin</short>
+          <var>GetLeftMargin</var> - returns the size of the left margin</short>
       </element>
       <element name="TPrinterCanvas.GetTopMargin">
         <short>
@@ -1243,7 +1243,7 @@
       </element>
       <element name="TPrinter.DoInitialization">
         <short>
-          <var>DoInitialization</var> - method for performing initialisation</short>
+          <var>DoInitialization</var> - method for performing initialization</short>
       </element>
       <element name="TPrinter.GetCanRenderCopies">
         <short>
@@ -1263,7 +1263,7 @@
       </element>
       <element name="TPrinter.RawModeChanging">
         <short>
-          <var>RawModeChanging</var> - the raw mode is changing (eg PostScript is being invoked)</short>
+          <var>RawModeChanging</var> - the raw mode is changing (e.g. PostScript is being invoked)</short>
       </element>
       <element name="TPrinter.PrinterSelected">
         <short>

@@ -220,7 +220,7 @@
         <short>The scroll action.</short>
       </element>
       <element name="TScrollEvent.ScrollPos">
-        <short>The suggested new scroll position. Change this value to implement custom scroll behaviour.</short>
+        <short>The suggested new scroll position. Change this value to implement custom scroll behavior.</short>
       </element>
       <!-- object Visibility: default -->
       <element name="TCustomScrollBar">
@@ -339,7 +339,8 @@
       <!-- procedure Visibility: protected -->
       <element name="TCustomScrollBar.CreateWnd">
         <short>
-          <var>CreateWnd</var> - calls inherited <var>CreateWnd</var> then initialises various Scroll Info properties</short>
+          <var>CreateWnd</var> - calls inherited <var>CreateWnd</var> then initializes various Scroll Info
+properties</short>
         <descr>
           <p>
             <printshort id="TCustomScrollBar.CreateWnd"/>
@@ -392,7 +393,7 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomScrollBar.SetParams">
-        <short>Defines the Max and Min values, the size of the page and the position of the scroller</short>
+        <short>Defines the Max and Min values, the size of the page and the position of the scrollbar</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1312,7 +1313,7 @@
             <li>EndOfLineComplete: Perform Auto-Complete only when cursor is at the end of the string.</li>
             <li>RetainPrefixCase: Retains the case of characters user has typed. (This option has no effect if cbactEndOfLineComplete is False)</li>
             <li>SearchCaseSensitive: Search completion string with case sensitivity.</li>
-            <li>SearchAscending: Search completion string in accending order. (False will search in descending order)</li>
+            <li>SearchAscending: Search completion string in ascending order. (False will search in descending order)</li>
           </ul>
           <p>This property exists as a <var>Set</var> of <var>Options</var>, so zero or more options may be operational</p>
         </descr>
@@ -1450,7 +1451,7 @@
       <element name="TCustomComboBox.OnGetItems">
         <short>Handler invoked when widgetset items list can be populated</short>
         <descr>
-          <p>Some widgetsets like gtk call this just before the list drops down, while others do it on handle creation.
+          <p>Some widgetsets like Gtk call this just before the list drops down, while others do it on handle creation.
             This event allows one to handle both cases with one event.
           </p>
         </descr>
@@ -1526,7 +1527,7 @@ Assign an new string to replace the selected text.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomComboBox.Style">
-        <short>Appearance and behaviour of the ComboBox (static/drop-down, owner-draw...).
+        <short>Appearance and behavior of the ComboBox (static/drop-down, owner-draw...).
         </short>
         <descr>
           <p>
@@ -1543,7 +1544,7 @@ Assign an new string to replace the selected text.</descr>
             <li>csOwnerDrawFixed: all items in the drop-down list have the same height.</li>
             <li>csOwnerDrawVariable: every item can have a different height.</li>
           </ul>
-          <p>The ReadOnly property affects the edit box behaviour even in the owner-draw styles.
+          <p>The ReadOnly property affects the edit box behavior even in the owner-draw styles.
           </p>
         </descr>
       </element>
@@ -2356,7 +2357,7 @@ Assign an new string to replace the selected text.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListBox.SelCount">
-        <short>The number of selected iems in the list.</short>
+        <short>The number of selected items in the list.</short>
         <descr/>
         <seealso>
           <link id="TCustomListBox.Selected"/>
@@ -2808,7 +2809,7 @@ Qt and Carbon have not implemented it.</descr>
       <!-- property Visibility: public -->
       <element name="TCustomEdit.OnChange">
         <short>Event handler for any change in text.</short>
-        <descr>Text changes which trigger OnChange include changing the text programatically and also changing it by the user, for example using the keyboard or a virtual keyboard. Note that some OnChange events in other classes might not be trigerred on programatical changes, for example TComboBox.OnChange. This event should not happen when only starting up a form, without any extra code.</descr>
+        <descr>Text changes which trigger OnChange include changing the text programmatically and also changing it by the user, for example using the keyboard or a virtual keyboard. Note that some OnChange events in other classes might not be triggered on programmatically changes, for example TComboBox.OnChange. This event should not happen when only starting up a form, without any extra code.</descr>
         <seealso><link id="TCustomComboBox.OnChange"/>
         </seealso>
       </element>
@@ -4122,9 +4123,9 @@ Qt and Carbon have not implemented it.</descr>
       <element name="TCheckBox.Visible" link="#LCL.Controls.TControl.Visible"/>
 <!-- object Visibility: default -->
       <element name="TToggleBox">
-        <short>A labelled box capable of being checked or unchecked</short>
+        <short>A labeled box capable of being checked or unchecked</short>
         <descr>
-          <p>The Application Programmer is responsible for ensuring that the <var>OnClick</var> event handler recognises the <var>State</var> of the box,
+          <p>The Application Programmer is responsible for ensuring that the <var>OnClick</var> event handler recognizes the <var>State</var> of the box,
             takes the appropriate <var>Action</var> and places the <var>State</var> into the next appropriate value</p>
         </descr>
         <seealso>
@@ -4711,7 +4712,7 @@ Qt and Carbon have not implemented it.</descr>
             Most controls are split into a final class, such as <var>TButton</var>, <var>TMemo</var>, <var>TScrollBar</var> etc.,
             and a corresponding ancestor class such as <var>TCustomButton</var>, <var>TCustomMemo</var> or <var>TCustomScrollBar</var>.
             The final class is designed for immediate use, it almost only publishes the properties of the control.
-            The corresponding custom ancestor class (<var>TCustomXXX</var>) can be used to derive controls with special (customized) appearance or behaviour.
+            The corresponding custom ancestor class (<var>TCustomXXX</var>) can be used to derive controls with special (customized) appearance or behavior.
           </p><p>
             If you drop a component from the component palette on the form editor you don't need to add code explicitly to create it.
             The component is automatically created by the IDE together with the form, and destroyed when the form is destroyed.
@@ -4838,7 +4839,7 @@ Qt and Carbon have not implemented it.</descr>
             <tr>
               <td>Lines</td>
               <td>An array of strings, containing the paragraph texts in Memo controls.
-                The array index is zero-based, ie the lines are numbered [0..numLines-1]</td>
+                The array index is zero-based, i.e. the lines are numbered [0..numLines-1]</td>
             </tr>
             <tr>
               <td>Name</td>
@@ -4904,7 +4905,7 @@ Qt and Carbon have not implemented it.</descr>
             </tr>
           </table>
           <p>The 'Events' tab in the Object Inspector contains a list with events, which can occur for this control.
-            If you select an entry in the list, a ComboBox appears with a DropDown list showing any event handlers that have aleady been defined,
+            If you select an entry in the list, a ComboBox appears with a DropDown list showing any event handlers that have already been defined,
             and allowing you to choose one for this event.
             Alternatively you can select the ellipsis (three dots ...) and you will be taken to the Source Editor,
             where the Object Inspector created an new event handler method for you.
@@ -4921,7 +4922,7 @@ Qt and Carbon have not implemented it.</descr>
             Or right click on the control, and select the first entry: 'Create default event'.
           </p>
           <p>A common strategy in Object-Oriented programming is to provide an <link id="#lcl.ActnList.TActionList">ActionList</link>
-            with the facility for entering, removing or editing a number of pre-defined actions,
+            with the facility for entering, removing or editing a number of predefined actions,
             from which the most appropriate can be selected to use in any particular instance.
           </p>
           <table>
@@ -4938,7 +4939,7 @@ Qt and Carbon have not implemented it.</descr>
               <td>OnClick</td>
               <td>Action to be taken when the (left) mouse button is clicked.
                 This is usually the main or default action of the control; for example clicking on a button or checkbox initiates the action associated with the checkbox.
-                It may alternatively initate a process of selection, for instance in a TextBox or Memo.</td>
+                It may alternatively initiate a process of selection, for instance in a TextBox or Memo.</td>
             </tr>
             <tr>
               <td>Click</td>

@@ -59,7 +59,7 @@
       <!-- enumeration type Visibility: default -->
       <element name="THitTest">
         <short>
-          <var>THitTest</var> - enumerated type giving permissable results of a hit test (position of a mouse click etc relative to objects on a form)</short>
+          <var>THitTest</var> - enumerated type giving permissible results of a hit test (position of a mouse click etc relative to objects on a form)</short>
         <descr/>
         <seealso/>
       </element>
@@ -175,7 +175,7 @@
       <!-- set type Visibility: default -->
       <element name="TPanelParts">
         <short>
-          <var>TPanelParts</var> - set ot <var>TPanelPart</var>
+          <var>TPanelParts</var> - set to <var>TPanelPart</var>
         </short>
         <descr/>
         <seealso/>
@@ -522,7 +522,7 @@
             <var>TStatusBar</var> - a strip along the bottom of a form for displaying information on current status</p>
           <p>The bar may consist of a single <var>SimplePanel</var> in which case the displayed text is contained in <var>SimpleText</var>.</p>
           <p>However if <var>SimplePanel</var> is false, then there can be multiple panels or sub-sections of the status bar whose properties are described in <var>Panels</var>.</p>
-          <p>The property <var>SimpleText</var> can be assigned programatically to display the value of some variable, such as the position of the Splitter in the example</p>
+          <p>The property <var>SimpleText</var> can be assigned programmatically to display the value of some variable, such as the position of the Splitter in the example</p>
         </descr>
         <example file="extctrls/statusbar.pas"/>
       </element>
@@ -658,12 +658,12 @@
       <!-- constructor Visibility: public -->
       <element name="TStatusBar.Create">
         <short>
-          <var>Create</var> - constructor for <var>TStatusBar</var>: calls inherited <var>Create</var> and initialises a number of local variables</short>
+          <var>Create</var> - constructor for <var>TStatusBar</var>: calls inherited <var>Create</var> and initializes a number of local variables</short>
         <descr>
           <p>
-            <var>Create</var> - constructor for TStatusBar: calls inherited <var>Create</var> and initialises a number of local variables</p>
-          <p>Among the variables initialised are:</p>
-          <p>AutoHint (False), Canvas, ControlStyle, Colour, Align, AutoSize, and SimplePanel (True)</p>
+            <var>Create</var> - constructor for TStatusBar: calls inherited <var>Create</var> and initializes a number of local variables</p>
+          <p>Among the variables initialized are:</p>
+          <p>AutoHint (False), Canvas, ControlStyle, Color, Align, AutoSize, and SimplePanel (True)</p>
         </descr>
         <errors/>
         <seealso>
@@ -991,7 +991,7 @@
       <!-- constructor Visibility: public -->
       <element name="TCustomPage.Create">
         <short>
-          <var>Create</var> - constructor for <var>TCustomPage</var>: calls inherited <var>Create</var> then initialises style, visibility, alignment and caption</short>
+          <var>Create</var> - constructor for <var>TCustomPage</var>: calls inherited <var>Create</var> then initializes style, visibility, alignment and caption</short>
         <descr/>
         <errors/>
         <seealso>
@@ -3017,7 +3017,7 @@
       <!-- procedure Visibility: protected -->
       <element name="TTabControlStrings.SetTabIndex">
         <short>
-          <var>SetTabIndex</var> - specfies an index value for a tab</short>
+          <var>SetTabIndex</var> - specifies an index value for a tab</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3226,7 +3226,7 @@
       <!-- property Visibility: public -->
       <element name="TTabControlStrings.HotTrack">
         <short>
-          <var>HotTrack</var> - the property whereby the item under the mouse pointer becomes emphasised</short>
+          <var>HotTrack</var> - the property whereby the item under the mouse pointer becomes emphasized</short>
         <descr/>
         <seealso>
           <link id="#lcl.ComCtrls.TCustomListView.HotTrack">TCustomListView.HotTrack</link>
@@ -4177,7 +4177,7 @@
       <!-- property Visibility: protected -->
       <element name="TCustomTabControl.HotTrack">
         <short>
-          <var>HotTrack</var> - the property whereby the item under the mouse pointer becomes emphasised</short>
+          <var>HotTrack</var> - the property whereby the item under the mouse pointer becomes emphasized</short>
         <descr/>
         <seealso>
           <link id="#lcl.ComCtrls.TCustomListView.HotTrack">TCustomListView.HotTrack</link>
@@ -4394,7 +4394,7 @@
       <!-- procedure Visibility: public -->
       <element name="TCustomTabControl.ScrollTabs">
         <short>
-          <var>ScrollTabs</var> - scroll through the list of tabs by an amount specifid by <var>Delta</var>
+          <var>ScrollTabs</var> - scroll through the list of tabs by an amount specified by <var>Delta</var>
         </short>
         <descr/>
         <errors/>
@@ -4447,7 +4447,7 @@
           <p>
             <var>TTabControl</var> - a series of <var>Tabs</var> along the edge of a display area; selection of a <var>Tab</var> governs the contents of the <var>DisplayRect</var>
           </p>
-          <p>Use <var>TTabControl </var>by selecting its icon from the Common Controls tab of the IDE Component Palette and placing it at the desired location on the <var>Form</var>. Use the Form Designer and Object Inspector to adjust its shape, size, alignment, anchoring and other properties. Tabs can be aded or removed from the component by selecting it, then right-clicking with the mouse to get a pop-up menu whose first item is 'Add Tab'. Once created, the Tabs can be edited by selecting the <var>Tabs</var> entry in the Object Inspector and selecting the ellipsis (...) which will cause a pop-up String editor to appear. The tabs can be given new captions, moved up and down the list or removed altogether as required.</p>
+          <p>Use <var>TTabControl </var>by selecting its icon from the Common Controls tab of the IDE Component Palette and placing it at the desired location on the <var>Form</var>. Use the Form Designer and Object Inspector to adjust its shape, size, alignment, anchoring and other properties. Tabs can be added or removed from the component by selecting it, then right-clicking with the mouse to get a pop-up menu whose first item is 'Add Tab'. Once created, the Tabs can be edited by selecting the <var>Tabs</var> entry in the Object Inspector and selecting the ellipsis (...) which will cause a pop-up String editor to appear. The tabs can be given new captions, moved up and down the list or removed altogether as required.</p>
           <p>Each Tab has an Index (starting from 0) and this index can be used to specify an entry from <var>Images</var> for display in the <var>DisplayRect</var>.</p>
         </descr>
         <errors/>
@@ -5195,7 +5195,7 @@
           <link id="#rtl.System.TObject.Create">TObject.Create</link>
         </seealso>
         <short>
-          <var>Create</var> - constructor for <var>TListItem</var>: calls inherited <var>Create</var> then initialises flags, states, ImageIndex and SubItems </short>
+          <var>Create</var> - constructor for <var>TListItem</var>: calls inherited <var>Create</var> then initializes flags, states, ImageIndex and SubItems </short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TListItem.Create.AOwner">
@@ -5243,7 +5243,7 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TListItem.Data">
-        <short>Pointer to the Data asociated with this item</short>
+        <short>Pointer to the Data associated with this item</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TListItem.DropTarget">
@@ -5530,7 +5530,7 @@
       <!-- function Visibility: public -->
       <element name="TListItems.FindData">
         <short>
-          <var>FindData</var> - returns the ListItem associated with the specified datapointer</short>
+          <var>FindData</var> - returns the ListItem associated with the specified data pointer</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5902,7 +5902,7 @@
       </element>
       <!-- property Visibility: published -->
       <element name="TListColumn.Width">
-        <short>Current width of column. May be calculcated auto, if AutoSize used.</short>
+        <short>Current width of column. May be calculated auto, if AutoSize used.</short>
         <descr/>
         <seealso/>
       </element>
@@ -7073,7 +7073,7 @@
       <!-- procedure Visibility: protected -->
       <element name="TCustomListView.ImageChanged">
         <short>
-          <var>ImageChanged</var> - procedure to signal that an image has chnaged</short>
+          <var>ImageChanged</var> - procedure to signal that an image has changed</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -7263,7 +7263,7 @@
       <!-- constructor Visibility: public -->
       <element name="TCustomListView.Create">
         <short>
-          <var>Create</var> - constructor for TCustomListView: calls inherited <var>Create</var> then initialises columns, the list of items, the canvas and properties and some formats and styles</short>
+          <var>Create</var> - constructor for TCustomListView: calls inherited <var>Create</var> then initializes columns, the list of items, the canvas and properties and some formats and styles</short>
         <seealso>
           <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
           <link id="#LCL.Controls.TWinControl.Create">TWinControl.Create</link>
@@ -7317,7 +7317,7 @@
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomListView.Column.AIndex">
-        <short>Integer to determine the column of the ListView to retreive information on.</short>
+        <short>Integer to determine the column of the ListView to retrieve information on.</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.DropTarget">
@@ -7398,7 +7398,7 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.VisibleRowCount">
-        <short>Number of rows, which is currenly shown with current Listview position/size/layout.</short>
+        <short>Number of rows, which is currently shown with current Listview position/size/layout.</short>
       </element>
       <!-- object Visibility: default -->
       <element name="TListView">
@@ -7871,7 +7871,7 @@
       <!-- constructor Visibility: public -->
       <element name="TCustomProgressBar.Create">
         <short>
-          <var>Create</var> - constructor for <var>TCustomProgressBar</var>: calls inherited <var>Create</var>, initialises position, orientation and size</short>
+          <var>Create</var> - constructor for <var>TCustomProgressBar</var>: calls inherited <var>Create</var>, initializes position, orientation and size</short>
         <descr/>
         <errors/>
         <seealso>
@@ -7956,7 +7956,7 @@
         <short>
           <var>TProgress Bar</var> - a bar that depicts what proportion of a process has been completed</short>
         <descr>
-          <var>TProgress Bar</var>: a control that appears at or near the bottom of form or window. It depicts the progress of a process or what proportion of the process is complete. A series of coloured rectangles appears in the control filling it from left to right or from top to bottom as the process progresses</descr>
+          <var>TProgress Bar</var>: a control that appears at or near the bottom of form or window. It depicts the progress of a process or what proportion of the process is complete. A series of colored rectangles appears in the control filling it from left to right or from top to bottom as the process progresses</descr>
         <seealso>
           <link id="#lcl.stdctrls.HowToUseStdCtrls">HowToUseStdCtrls</link>
         </seealso>
@@ -8657,7 +8657,7 @@
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomUpDown.Wrap">
-        <short>If True, displayed control or value starts again from minimum or maximum value if  clicking a button would cause incrementing or decrmenting beyond the extreme value</short>
+        <short>If True, displayed control or value starts again from minimum or maximum value if  clicking a button would cause incrementing or decrementing beyond the extreme value</short>
         <descr/>
         <seealso/>
       </element>
@@ -8682,7 +8682,7 @@
       <!-- constructor Visibility: public -->
       <element name="TCustomUpDown.Create">
         <short>
-          <var>Create</var> - constructor for <var>TCustomUpDown</var>: calls inherited <var>Create</var>, initialises orientation, max and min, bounds, size and alignment</short>
+          <var>Create</var> - constructor for <var>TCustomUpDown</var>: calls inherited <var>Create</var>, initializes orientation, max and min, bounds, size and alignment</short>
         <descr/>
         <errors/>
         <seealso>
@@ -9341,7 +9341,7 @@
       <!-- procedure Visibility: protected -->
       <element name="TToolButton.CopyPropertiesFromMenuItem">
         <short>
-          <var>CopyPropertiesFromMenuItem</var> - method for copying the properties of the corresponding Menu Item, to ensure that ToolButton and MenuItem produce the same behaviour</short>
+          <var>CopyPropertiesFromMenuItem</var> - method for copying the properties of the corresponding Menu Item, to ensure that ToolButton and MenuItem produce the same behavior</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9583,7 +9583,7 @@
       <!-- function Visibility: protected -->
       <element name="TToolButton.GroupAllUpAllowed">
         <short>
-          <var>GroupAllUpAllowed</var> - returns True if all buttons in a group are allowed to ne 'Up'</short>
+          <var>GroupAllUpAllowed</var> - returns True if all buttons in a group are allowed to be 'Up'</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9729,7 +9729,7 @@
         <short>Is this button a member of a group? Default false</short>
         <descr>
           <p>Is this button a member of a group?</p>
-          <p>This would mean behaviour similar to the radio buttons in a <link id="#lcl.ExtCtrls.TRadioGroup">TRadioGroup</link> where only one button in the group can be selected, or the check boxes in a <link id="#lcl.ExtCtrls.TCheckGroup">TCheckGroup</link> where more than one item can be selected but the members of the group interact in some way.</p>
+          <p>This would mean behavior similar to the radio buttons in a <link id="#lcl.ExtCtrls.TRadioGroup">TRadioGroup</link> where only one button in the group can be selected, or the check boxes in a <link id="#lcl.ExtCtrls.TCheckGroup">TCheckGroup</link> where more than one item can be selected but the members of the group interact in some way.</p>
         </descr>
       </element>
       <!-- property Visibility: published -->
@@ -10447,7 +10447,7 @@
         <descr>
           <p>
             <var>Create</var> - constructor for <var>TToolBar</var>: calls inherited <var>Create</var> and sets many formatting and size defaults</p>
-          <p>Among the variables initialised and defaults set are the list of buttons, button width and height, style, indentation, alignment, links for image change, the bounds and the edge borders</p>
+          <p>Among the variables initialized and defaults set are the list of buttons, button width and height, style, indentation, alignment, links for image change, the bounds and the edge borders</p>
         </descr>
         <errors/>
         <seealso>
@@ -10533,7 +10533,7 @@
         <descr>
           <p>
             <var>Buttons</var> maintains a list of <var>TToolButton</var> instances. All tool buttons that share a <var>TToolBar</var> parent have the same height and (except for separators and dividers) the same width. Other controls on a toolbar are held in place by invisible separators, which are automatically created and destroyed.</p>
-          <p>To add tool buttons to the toolbar at design time, select the toolbar, right-click, and choose New Button. To create a space (separator) between one button and the next, select New Separator. To create a divider between buttons, add a button and set its <var>Style</var> propery to <var>tbsDivider</var>. Other controls may be added to the toolbar directly from the Component palette. </p>
+          <p>To add tool buttons to the toolbar at design time, select the toolbar, right-click, and choose New Button. To create a space (separator) between one button and the next, select New Separator. To create a divider between buttons, add a button and set its <var>Style</var> property to <var>tbsDivider</var>. Other controls may be added to the toolbar directly from the Component palette. </p>
         </descr>
         <seealso>
           <link id="#LCL.ComCtrls.TToolButton.Style"/>
@@ -10586,7 +10586,7 @@
       <element name="TToolBar.ButtonHeight">
         <short>
           <var>ButtonHeight</var> - the height of the buttons</short>
-        <descr><p>Use 0 for autosized value</p><p>Use <link id="TToolBar.GetRealButtonHeight">GetRealButtonHeight</link> for real value.</p>
+        <descr><p>Use 0 for auto-sized value</p><p>Use <link id="TToolBar.GetRealButtonHeight">GetRealButtonHeight</link> for real value.</p>
         </descr>
         <seealso/>
       </element>
@@ -10594,7 +10594,7 @@
       <element name="TToolBar.ButtonWidth">
         <short>
           <var>ButtonWidth</var> - the width of the buttons</short>
-        <descr><p>Use 0 for autosized value</p><p>Use <link id="TToolBar.GetRealButtonWidth">GetRealButtonWidth</link> for real value.</p>
+        <descr><p>Use 0 for auto-sized value</p><p>Use <link id="TToolBar.GetRealButtonWidth">GetRealButtonWidth</link> for real value.</p>
         </descr>
         <seealso/>
       </element>
@@ -11220,7 +11220,7 @@
       <!-- constructor Visibility: public -->
       <element name="TCustomTrackBar.Create">
         <short>
-          <var>Create</var> - constructor for <var>TCustomTrackBar</var>: calls inherited <var>Create</var> then initialises style, position, size and bounds</short>
+          <var>Create</var> - constructor for <var>TCustomTrackBar</var>: calls inherited <var>Create</var> then initializes style, position, size and bounds</short>
         <descr/>
         <errors/>
         <seealso>
@@ -11732,7 +11732,7 @@
       </element>
       <!-- constant Visibility: default -->
       <element name="NodeAttachModeNames">
-        <short>A array of strings containings names for NodeAttachModes</short>
+        <short>A array of strings containing names for NodeAttachModes</short>
         <descr>This is a constant array of string containing names for the modes to attach a node.</descr>
       </element>
       <!-- constant Visibility: default -->
@@ -12100,7 +12100,7 @@ Const
       <!-- record type Visibility: default -->
       <element name="TDelphiNodeInfo">
         <short>
-          <var>TDelphiNodeInfo</var> - record structure for Tree Node information (for Delphi compatability)</short>
+          <var>TDelphiNodeInfo</var> - record structure for Tree Node information (for Delphi compatibility)</short>
         <descr/>
         <seealso/>
       </element>
@@ -12849,7 +12849,7 @@ Const
         <short>
           <var>
             <var>
-              <var>Create</var> - constructor for TTreeNode:</var> calls inherited <var>Create</var> then itntialises indexes and sets subtree count to 1</var>
+              <var>Create</var> - constructor for TTreeNode:</var> calls inherited <var>Create</var> then initializes indexes and sets subtree count to 1</var>
         </short>
         <descr/>
         <errors/>
@@ -12923,9 +12923,9 @@ The default implementation always returns true.
           <var>DefaultTreeViewSort</var> - returns result of string comparison between names of Node1 and Node2</short>
         <descr><p><var>DefaultTreeViewSort</var> - returns result of string comparison between names of Node1 and Node2</p><p><var>DefaultTreeViewSort</var> compares the text of two TreeNodes and returns the following result:
 </p><dl><dt>&lt; 0</dt><dd>if <var>Node1.Text&lt;Node2.Text</var>.</dd><dt>0</dt><dd>if <var>Node1.Text=Node2.Text</var>.</dd><dt>&gt; 0</dt><dd>if <var>Node1.Text&gt;Node2.Text</var>.</dd>
-          </dl><p>The comparision takes into account Ansi characters, i.e. it takes
+          </dl><p>The comparison takes into account ANSI characters, i.e. it takes
 care of strange accented characters. Contrary to AnsiCompareText,
-the comparision is case sensitive.
+the comparison is case sensitive.
 </p>
         </descr>
         <errors/>
@@ -12946,7 +12946,7 @@ the comparision is case sensitive.
       <!-- procedure Visibility: public -->
       <element name="TTreeNode.Delete">
         <short>
-          <var>Delete</var> the curent TreeNode</short>
+          <var>Delete</var> the current TreeNode</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -13480,7 +13480,7 @@ the comparision is case sensitive.
       <!-- procedure Visibility: public -->
       <element name="TTreeNode.Update">
         <short>
-          <var>Update</var> the contents and appearance of the curent node</short>
+          <var>Update</var> the contents and appearance of the current node</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -16604,7 +16604,7 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.Indent">
         
-        <descr><p>Use 0 for autosized value. </p><p>Use <link id="TCustomTreeView.GetRealIndent">GetRealIndent</link> for real value.</p>
+        <descr><p>Use 0 for auto-sized value. </p><p>Use <link id="TCustomTreeView.GetRealIndent">GetRealIndent</link> for real value.</p>
         </descr>
         <seealso/>
       <short>Size in pixels by which each nested branching level is to be indented.</short>
@@ -16625,42 +16625,42 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.OnAdvancedCustomDrawItem">
         <short>
-          <var>OnAdvancedCustomDrawItem</var> - event handleer for advanced custom drawing item</short>
+          <var>OnAdvancedCustomDrawItem</var> - event handler for advanced custom drawing item</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.OnChange">
         <short>
-          <var>OnChange</var> - specialised event handler for a change in the TreeView</short>
+          <var>OnChange</var> - specialized event handler for a change in the TreeView</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.OnChanging">
         <short>
-          <var>OnChanging</var> - specialised event handler while TreeView is being changed</short>
+          <var>OnChanging</var> - specialized event handler while TreeView is being changed</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.OnCollapsed">
         <short>
-          <var>OnCollapsed</var> - specialised event handler when part of the tree is collapsed</short>
+          <var>OnCollapsed</var> - specialized event handler when part of the tree is collapsed</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.OnCollapsing">
         <short>
-          <var>OnCollapsing</var> - specialised event handler while part of the tree is being collapsed</short>
+          <var>OnCollapsing</var> - specialized event handler while part of the tree is being collapsed</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.OnCompare">
         <short>
-          <var>OnCompare</var> - specialised event handler for comparisons within the TreeView</short>
+          <var>OnCompare</var> - specialized event handler for comparisons within the TreeView</short>
         <descr/>
         <seealso/>
       </element>
@@ -16688,35 +16688,35 @@ If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Ove
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.OnDeletion">
         <short>
-          <var>OnDeletion</var> - specialised event handler for deletion of node(s) from the tree</short>
+          <var>OnDeletion</var> - specialized event handler for deletion of node(s) from the tree</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.OnEdited">
         <short>
-          <var>OnEdited</var> - specialised event handler when the TreeView has been edited</short>
+          <var>OnEdited</var> - specialized event handler when the TreeView has been edited</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.OnEditing">
         <short>
-          <var>OnEditing</var> - specialised event handler while a TreeView is being edited</short>
+          <var>OnEditing</var> - specialized event handler while a TreeView is being edited</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.OnExpanded">
         <short>
-          <var>OnExpanded</var> - specialised event handler when a TreeView has been expanded</short>
+          <var>OnExpanded</var> - specialized event handler when a TreeView has been expanded</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomTreeView.OnExpanding">
         <short>
-          <var>OnExpanding</var> - specialised event handler while a TreeView is being expanded</short>
+          <var>OnExpanding</var> - specialized event handler while a TreeView is being expanded</short>
         <descr/>
         <seealso/>
       </element>
@@ -16834,8 +16834,8 @@ Call ParentNode.CustomSort(nil) to sort only the child nodes of a single node.
         <descr>
           <p>
             <var>Create</var> - constructor for <var>TCustomTreeView</var>: calls inherited <var>Create</var> then sets defaults for style, size, etc</p>
-          <p>Among the variables initialised and defaults set are:</p>
-          <p>size, colour, the symbols for expansion etc, the border style and width, scroll bars, options, indentation, timers, action links</p>
+          <p>Among the variables initialized and defaults set are:</p>
+          <p>size, color, the symbols for expansion etc, the border style and width, scroll bars, options, indentation, timers, action links</p>
         </descr>
         <errors/>
         <seealso>
@@ -17244,7 +17244,7 @@ Call ParentNode.CustomSort(nil) to sort only the child nodes of a single node.
         <short>
           <var>TopItem</var> - the first visible node of the tree</short>
         <descr>
-          <p>Use <var>TopItem</var> to get the topmost visible node. It is usually needed when tree view contains many nodes and scroll bar is requred to display them all. If you need the first node of the tree regardless of visibility use <var>Items</var>[0]</p>
+          <p>Use <var>TopItem</var> to get the topmost visible node. It is usually needed when tree view contains many nodes and scroll bar is required to display them all. If you need the first node of the tree regardless of visibility use <var>Items</var>[0]</p>
         </descr>
         <seealso>
           <link id="TCustomTreeView.Items">Items</link>
@@ -17870,7 +17870,7 @@ Call ParentNode.CustomSort(nil) to sort only the child nodes of a single node.
       </element>
       <!-- function Visibility: default -->
       <element name="CompareTextWithExpandedNode">
-        <short>Function to compare the given text with the nodetextof the specified node.</short>
+        <short>Function to compare the given text with the nodetext of the specified node.</short>
         <descr>
           <p>This function does an ANSICompare on the NodeText of two nodes. The parameters Data1 and Data2 are pointers to the nodes to be compared. The result is the same is the result from ANSICompareText.</p>
           <p>-1: The given text is lower then the nodetext from the given node.</p>
@@ -17923,7 +17923,7 @@ Call ParentNode.CustomSort(nil) to sort only the child nodes of a single node.
           <p>
             <var>TCustomHeaderControl</var> - base class for <var>THeaderControl</var>, a header strip of user-designed sections which allow selection of pages or actions</p>
           <p>
-            <var>THeaderControl</var> offers a widget that could be placed along the edge of a <var>Panel</var> or <var>Form</var> allowing a highly customised mechanism for selection. However there are no intrinsically associated display areas and it is the developer's responsibility to supply an index associated with the selection from the <var>THeaderControl</var> and determining what action is to occur or what is to be displayed in any attached Panel or Form.</p>
+            <var>THeaderControl</var> offers a widget that could be placed along the edge of a <var>Panel</var> or <var>Form</var> allowing a highly customized mechanism for selection. However there are no intrinsically associated display areas and it is the developer's responsibility to supply an index associated with the selection from the <var>THeaderControl</var> and determining what action is to occur or what is to be displayed in any attached Panel or Form.</p>
         </descr>
         <seealso>
           <link id="#lcl.ExtCtrls.Multi-PageControls">Multi-PageControls</link>
@@ -17936,7 +17936,7 @@ Call ParentNode.CustomSort(nil) to sort only the child nodes of a single node.
           <p>
             <var>THeaderControl</var>, a header strip of user-designed sections which allow selection of pages or actions</p>
           <p>
-            <var>THeaderControl</var> offers a widget that could be placed along the edge of a <var>Panel</var> or <var>Form</var> allowing a highly customised mechanism for selection. However there are no intrinsically associated display areas and it is the developer's responsibility to supply an index associated with the selection from the <var>THeaderControl</var> and determine what action is to occur or what is to be displayed in any attached Panel or Form.</p>
+            <var>THeaderControl</var> offers a widget that could be placed along the edge of a <var>Panel</var> or <var>Form</var> allowing a highly customized mechanism for selection. However there are no intrinsically associated display areas and it is the developer's responsibility to supply an index associated with the selection from the <var>THeaderControl</var> and determine what action is to occur or what is to be displayed in any attached Panel or Form.</p>
           <p>THeaderControl is used by selecting its icon from the Common Controls tab of the IDE Component Palette and placing it on the Form in the desired position. It may be convenient to dock it with a <var>Form</var> or <var>Panel</var> whose properties it is to be used for controlling. </p>
           <p>After size, position, docking, alignment, anchoring etc have been performed using the Object Inspector or Form Designer, the Sections of the Header can be created by selecting the control, right-clicking with the mouse and choosing 'Section Editor'. A Stringlist editor will pop up with options to add, delete or move entries up or down the list. Each entry is given an Index which can be used in OnClick event handlers to determine the action to be taken when that section is selected at run-time.</p>
         </descr>
@@ -17966,7 +17966,7 @@ Call ParentNode.CustomSort(nil) to sort only the child nodes of a single node.
       </element>
       <element name="TCustomHeaderControl.Create">
         <short>
-          <var>Create</var> - constructor for <var>TCustomHeaderControl:</var> calls inherited <var>Create</var>, creates the sections and initialises style and bounds</short>
+          <var>Create</var> - constructor for <var>TCustomHeaderControl:</var> calls inherited <var>Create</var>, creates the sections and initializes style and bounds</short>
         <seealso>
           <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
           <link id="#LCL.Controls.TCustomControl.Create">TCustomControl.Create</link>
@@ -18049,7 +18049,7 @@ Call ParentNode.CustomSort(nil) to sort only the child nodes of a single node.
       </element>
       <element name="THeaderSections">
         <short>
-          <var>THeaderSections</var> - a collection of <var>Items </var>ot type <var>THeaderSection</var>, the individual parts of a <var>THeaderControl</var>
+          <var>THeaderSections</var> - a collection of <var>Items </var> to type <var>THeaderSection</var>, the individual parts of a <var>THeaderControl</var>
         </short>
       </element>
       <element name="THeaderSections.AddItem">
@@ -18072,7 +18072,7 @@ Call ParentNode.CustomSort(nil) to sort only the child nodes of a single node.
       <element name="THeaderSection.Create">
         <short>
           <var>
-            <var>Create</var> - constructor for THeaderSection:</var> calls inherited <var>Create</var> then initialises state, visibility, alignment, size and Index</short>
+            <var>Create</var> - constructor for THeaderSection:</var> calls inherited <var>Create</var> then initializes state, visibility, alignment, size and Index</short>
         <seealso>
           <link id="#rtl.Classes.TCollectionItem.Create">TCollectionItem.Create</link>
         </seealso>
@@ -18102,10 +18102,10 @@ Call ParentNode.CustomSort(nil) to sort only the child nodes of a single node.
         <short>Index of the image in the imagelist</short>
       </element>
       <element name="THeaderSection.MaxWidth">
-        <short>Maximum permissable width of a section</short>
+        <short>Maximum permissible width of a section</short>
       </element>
       <element name="THeaderSection.MinWidth">
-        <short>Minimum permissable width of a section (default = 0)</short>
+        <short>Minimum permissible width of a section (default = 0)</short>
       </element>
       <element name="THeaderSection.Text">
         <short>The text string that is to appear in the section</short>
@@ -18218,7 +18218,7 @@ Call ParentNode.CustomSort(nil) to sort only the child nodes of a single node.
         <short>The position of the Left side of the list item</short>
       </element>
       <element name="TListItem.ListView">
-        <short>The <var>ListView</var> in which this Item is fould</short>
+        <short>The <var>ListView</var> in which this Item is found</short>
       </element>
       <element name="TListItem.Position">
         <short>The coordinates of the position where the ListItem is located</short>
@@ -18397,7 +18397,7 @@ Call ParentNode.CustomSort(nil) to sort only the child nodes of a single node.
       </element>
       <element name="TToolButton.GetButtonDrawDetail">
         <short>
-          <var>GetButtonDrawDetail</var> - find theme information for Windows XP inplementations</short>
+          <var>GetButtonDrawDetail</var> - find theme information for Windows XP implementations</short>
       </element>
       <element name="TToolButton.DialogChar" link="#LCL.Controls.TControl.DialogChar"/>
       <element name="TToolButton.Click" link="#LCL.Controls.TControl.Click"/>
@@ -18427,7 +18427,7 @@ Call ParentNode.CustomSort(nil) to sort only the child nodes of a single node.
           <var>DefaultTreeViewSort</var> - returns result of string comparison between names of Node1 and Node2</short>
         <descr><p><var>DefaultTreeViewSort</var> - returns result of string comparison between names of Node1 and Node2</p><p><var>DefaultTreeViewSort</var> compares the text of two TreeNodes and returns the following result:
 </p><dl><dt>&lt; 0</dt><dd>if <var>Node1.Text&lt;Node2.Text</var>.</dd><dt>0</dt><dd>if <var>Node1.Text=Node2.Text</var>.</dd><dt>&gt; 0</dt><dd>if <var>Node1.Text&gt;Node2.Text</var>.</dd>
-          </dl><p>The comparision takes into account Ansi characters, i.e. it takes care of strange accented characters. Contrary to AnsiCompareText the comparision is case sensitive.
+          </dl><p>The comparison takes into account ANSI characters, i.e. it takes care of strange accented characters. Contrary to AnsiCompareText the comparison is case sensitive.
           </p>
         </descr>
       </element>
@@ -18687,9 +18687,9 @@ Call ParentNode.CustomSort(nil) to sort only the child nodes of a single node.
       <element name="TCustomTabControl.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
       <element name="TToolButton.ShowCaption">
         <short>Show/Hide caption</short>
-        <descr>The ToolBar.ShowCaptions has precendence. Hiding will only work if ToolBar.List is true.</descr>
+        <descr>The ToolBar.ShowCaptions has precedence. Hiding will only work if ToolBar.List is true.</descr>
       </element>
-    <element name="TToolBar.DropDownWidth"><short>Width of the drop down arrow button.</short><descr><p>Use 0 for autosized value</p><p>Use <link id="TToolBar.GetRealDropDownWidth">GetRealDropDownWidth</link> for real value.</p>
+    <element name="TToolBar.DropDownWidth"><short>Width of the drop down arrow button.</short><descr><p>Use 0 for auto-sized value</p><p>Use <link id="TToolBar.GetRealDropDownWidth">GetRealDropDownWidth</link> for real value.</p>
         </descr>
       </element>
     <element name="TToolButton.OnArrowClick"><short>Executed when user clicked the arrow part for Style=tbsDropDown.</short><descr>It is not executed if DropDownMenu is assigned.</descr>
@@ -18698,7 +18698,7 @@ Call ParentNode.CustomSort(nil) to sort only the child nodes of a single node.
     <element name="TTreeView.ExpandSignSize">
       </element><element name="TTreeView.MultiSelect">
       </element><element name="TTreeView.MultiSelectStyle">
-      </element><element name="TMultiSelectStyles.msControlSelect"><short>Allow to select one additonal item by Ctrl+click.</short>
+      </element><element name="TMultiSelectStyles.msControlSelect"><short>Allow to select one additional item by Ctrl+click.</short>
       </element><element name="TMultiSelectStyles.msShiftSelect"><short>Allow to select a range of items (from previous current item to clicked one) by Shift+click.</short>
       </element><element name="TMultiSelectStyles.msVisibleOnly"><short>When selecting a range with Shift+click, select only visible (unfolded) items.</short>
       </element><element name="TMultiSelectStyles.msSiblingOnly"><short>When selecting a range with Shift+click, touch only siblings of previous current item.</short>
@@ -18709,7 +18709,7 @@ Call ParentNode.CustomSort(nil) to sort only the child nodes of a single node.
       </element><element name="TTreeView.SeparatorColor">
       </element>
     <element name="TCustomTreeView.ExpandSignSize"><short>Size of expand/collapse (fold/unfold) symbol.</short>
-      <descr><p>Use 0 for autosized value. </p><p>Use <link id="TCustomTreeView.GetRealExpandSignSize">GetRealExpandSignSize</link> for real value.</p>
+      <descr><p>Use 0 for auto-sized value. </p><p>Use <link id="TCustomTreeView.GetRealExpandSignSize">GetRealExpandSignSize</link> for real value.</p>
         </descr>
       </element><element name="TCustomTreeView.MultiSelect"><short>Allow to select several tree-items at a time, e.g. using Ctrl+click (select one item more) or Shift+click (select range of items).</short>
       </element><element name="TCustomTreeView.MultiSelectStyle"><short>Additional options for MultiSelect property.</short>

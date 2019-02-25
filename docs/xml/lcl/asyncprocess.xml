@@ -41,7 +41,7 @@
         </short>
         <descr>
           <p>
-            <var>TAsyncProcess</var> is a <var>TProcessUTF8</var> descendant which implements support for asynchrous notifications when data is available for the process. Internally, TAsyncProcess uses pipe and process handlers to detect when data is written to the Output handle, and when the process is terminated. TAsyncProcess provides OnReadData and OnTerminate event handlers signalled for the corresponding asynchrous notifications.
+            <var>TAsyncProcess</var> is a <var>TProcessUTF8</var> descendant which implements support for asynchronous notifications when data is available for the process. Internally, TAsyncProcess uses pipe and process handlers to detect when data is written to the Output handle, and when the process is terminated. TAsyncProcess provides OnReadData and OnTerminate event handlers signalled for the corresponding asynchronous notifications.
           </p>
         </descr>
         <seealso></seealso>
@@ -74,7 +74,7 @@
         </short>
         <descr>
           <p>
-            <var>GetNumBytesAvailable</var> is a dword functions used to get the value for the <var>NumBytesAvailable</var> property. The return value contains the value in <var>Output.NumBytesAvailable</var>, or 0 (zero) when <var>Options</var> does not include the value <var>poUsePipes</var>.
+            <var>GetNumBytesAvailable</var> is a dword function used to get the value for the <var>NumBytesAvailable</var> property. The return value contains the value in <var>Output.NumBytesAvailable</var>, or 0 (zero) when <var>Options</var> does not include the value <var>poUsePipes</var>.
           </p>
           <p>
             Use NumBytesAvailable to read the value for the property.
@@ -209,7 +209,7 @@
             Set the values for the Options property prior to calling Execute.
           </p>
           <p>
-            Use OnReadData to repond to the process notification signalled when data is available.
+            Use OnReadData to respond to the process notification signalled when data is available.
           </p>
         </descr>
         <seealso></seealso>
@@ -235,7 +235,7 @@
         </short>
         <descr>
           <p>
-            <var>OnTerminate</var> is a TNotifyEvent property that implements the event handler signalled when the process is terminated. Applictions can assign a procedure to the event handler to perform actions needed when the process is terminated.
+            <var>OnTerminate</var> is a TNotifyEvent property that implements the event handler signalled when the process is terminated. Applications can assign a procedure to the event handler to perform actions needed when the process is terminated.
           </p>
         </descr>
         <seealso></seealso>

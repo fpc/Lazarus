@@ -268,7 +268,7 @@
 
     <!-- enumeration value Visibility: default -->
     <element name="TLazMessagingStatus.mssReceivedSuccessfully">
-    <short>The message was succesfully received by the destionation</short>
+    <short>The message was successfully received by the destination</short>
     </element>
 
     <!-- enumeration value Visibility: default -->
@@ -278,7 +278,7 @@
 
     <!-- procedure type Visibility: default -->
     <element name="TOnMessagingStatus">
-    <short>A produral type to receive the events of the status of sending a message</short>
+    <short>A procedural type to receive the events of the status of sending a message</short>
     <descr>
     </descr>
     <seealso>
@@ -472,7 +472,7 @@
     <!-- procedure Visibility: public -->
     <element name="TLazPositionInfo.RequestPositionInfo">
     <short>Requests the latest position using the given method</short>
-    <descr>This call is assynchronous and the data will only be available when the OnPositionRetrieved callback is called.
+    <descr>This call is asynchronous and the data will only be available when the OnPositionRetrieved callback is called.
     </descr>
     <errors>
     </errors>
@@ -508,7 +508,7 @@
     <!-- function Visibility: public -->
     <element name="TLazDevice.Vibrate">
     <short>Vibrates the device, if it has hardware support for this.</short>
-    <descr>Vibrates the device, if it has hardware support for this. The duration of the vibration is given in miliseconds.
+    <descr>Vibrates the device, if it has hardware support for this. The duration of the vibration is given in milliseconds.
     </descr>
     <seealso>
     </seealso>

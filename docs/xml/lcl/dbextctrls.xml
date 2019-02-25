@@ -28,7 +28,7 @@
             <var>TDBDateEdit</var> is a <var>TDateEdit</var> descendant that implements a data-aware edit control for a Date field in a dataset. Like its ancestor class, TDBDateEdit includes a Button which opens a Date selection dialog (calendar).
           </p>
           <p>
-            TDBDateEdit extends the ancestor class to provide support for <var>TFieldDataLink</var>, <var>TDataSource</var>, and <var>TField</var> which provide access to the dataset with the data for the editing control. Overridden methods are provided which handle keystokes and synchronize changes in the control with the field in a dataset. Support for <var>TBasicAction</var> is also included in TDBDateEdit.
+            TDBDateEdit extends the ancestor class to provide support for <var>TFieldDataLink</var>, <var>TDataSource</var>, and <var>TField</var> which provide access to the dataset with the data for the editing control. Overridden methods are provided which handle keystrokes and synchronize changes in the control with the field in a dataset. Support for <var>TBasicAction</var> is also included in TDBDateEdit.
           </p>
         </descr>
         <seealso>
@@ -241,7 +241,7 @@
         </short>
         <descr>
           <p>
-            <var>Notification</var> is an overridden procedure used to handle notications performed when acomponent is added or removed. Notification calls the inherited method. When Operation contains opRemove, and AComponent is the DataSource for the control, the value in DataSource is set to Nil.
+            <var>Notification</var> is an overridden procedure used to handle notifications performed when aComponent is added or removed. Notification calls the inherited method. When Operation contains opRemove, and AComponent is the DataSource for the control, the value in DataSource is set to Nil.
           </p>
         </descr>
         <seealso>
@@ -348,7 +348,7 @@
       <!-- procedure Visibility: protected -->
       <element name="TDBDateEdit.ButtonClick">
         <short>
-          Actions perfomed when the button for the control is clicked
+          Actions performed when the button for the control is clicked
         </short>
         <descr>
           <p>

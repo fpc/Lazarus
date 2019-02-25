@@ -219,7 +219,7 @@
 
       <!-- variable Visibility: protected -->
       <element name="TToolWindow.FUpdateCount">
-        <short>Interal counter used in BeginUpdate and EndUpdate</short>
+        <short>Internal counter used in BeginUpdate and EndUpdate</short>
       </element>
 
       <!-- procedure Visibility: public -->
@@ -237,7 +237,7 @@
 
       <!-- argument Visibility: default -->
       <element name="TToolWindow.AdjustClientRect.ARect">
-        <short>Client rectanglr for the control</short>
+        <short>Client rectangle for the control</short>
       </element>
 
       <!-- procedure Visibility: protected -->

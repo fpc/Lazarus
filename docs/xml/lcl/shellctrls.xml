@@ -98,12 +98,12 @@
 
       <!-- enumeration value Visibility: default -->
       <element name="TFileSortType.fstAlphabet">
-      <short>Items are sorted alfabetically with folders and files mixed</short>
+      <short>Items are sorted alphabetically with folders and files mixed</short>
       </element>
 
       <!-- enumeration value Visibility: default -->
       <element name="TFileSortType.fstFoldersFirst">
-      <short>Items are sorted alfabetically and folders are placed in the beginning of the list</short>
+      <short>Items are sorted alphabetically and folders are placed in the beginning of the list</short>
       </element>
 
       <!-- object Visibility: default -->
@@ -271,7 +271,7 @@
 
       <!-- function Visibility: public -->
       <element name="TCustomShellTreeView.GetPathFromNode">
-        <short>Returns the path (including the file name) from the file system that a particular node prepresents</short>
+        <short>Returns the path (including the file name) from the file system that a particular node represents</short>
         <descr>
         </descr>
         <errors>

@@ -12,7 +12,7 @@
         and provides methods and types for component streaming.</short>
       <descr>
         <p>A <link id="TLResource">Lazarus resource</link> is streamed as an UTF-8 string,
-          with a name, value and valuetype.
+          with a name, value and value type.
         </p>
         <p>Lazarus resources are normally included via an include directive
           in the initialization part of a unit.
@@ -210,7 +210,7 @@
         <short>A sinlge value string.</short>
       </element>
       <element name="TLResourceList.Add.Values">
-        <short>The value splitted into an string array.</short>
+        <short>The value split into an string array.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TLResourceList.Find">
@@ -536,7 +536,7 @@
       <!-- procedure Visibility: private -->
       <element name="TLRSObjectReader.Pop">
         <short>Pop an item, or decrement its PushCount.</short>
-        <descr>Called on EndList (vaNull) encounterd
+        <descr>Called on EndList (vaNull) encountered
         </descr>
         <errors/>
         <seealso/>
@@ -545,7 +545,7 @@
       </element>
       <!-- procedure Visibility: private -->
       <element name="TLRSObjectReader.ClearStack">
-        <short>Destroys the stack, during reader destrucion.
+        <short>Destroys the stack, during reader destruction.
         </short>
         <descr/>
         <errors/>

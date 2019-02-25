@@ -149,7 +149,7 @@
           <p>
             <var>TClipboard</var> - area for holding information that has been cut or copied, ready for pasting</p>
           <p>The clipboard object encapsulates the Windows clipboard and the three standard Gtk selections. For each of the three clipboards/selections there is an object: <link id="PrimarySelection"/>, <link id="SecondarySelection"/> and <link id="Clipboard"/>. There is no difference between the three objects except their type.</p>
-          <p>A lot of information about Clipboard Formats, including pre-defined formats for Delphi/Kylix compatibility, is found in the LCLType unit, at
+          <p>A lot of information about Clipboard Formats, including predefined formats for Delphi/Kylix compatibility, is found in the LCLType unit, at
 &#x9;&#x9;  <link id="#lcl.lcltype.TClipboardFormat">TClipboardFormat</link>, 
 &#x9;&#x9;  <link id="#lcl.lcltype.TClipboardType">TClipboardType</link>, 
 &#x9;&#x9;  <link id="#lcl.lcltype.ClipboardTypeName">ClipboardTypeName</link>,
@@ -415,12 +415,12 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TClipboard.AddFormat">
-        <descr>If not already done this functions aquires ownership of the clipboard. Aquiring ownership clears the clipbaord.
+        <descr>If not already done this functions acquires ownership of the clipboard. Acquiring ownership clears the clipboard.
 If the format already exists it replaces the old content otherwise it is added.
 The format CF_TEXT is handled by AsText and SetTextBuf. Use those functions instead.</descr>
         <errors/>
         <seealso/>
-      <short>Aquires ownership of the Clipboard and adds a format</short>
+      <short>Acquires ownership of the Clipboard and adds a format</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="TClipboard.AddFormat.Result">
@@ -768,12 +768,12 @@ The format CF_TEXT is handled by AsText and SetTextBuf. Use those functions inst
       </element>
       <!-- argument Visibility: default -->
       <element name="TClipboard.SetAsHtml.HTML">
-        <short>The Html string that shall be put on the ClipBoard</short>
+        <short>The HTML string that shall be put on the ClipBoard</short>
       </element>
       <element name="TClipboard.SetAsHtml.PlainText">
         <short>Optional plain text (string) representation of the HTML</short>
-        <descr>The optioal string paramater PlainText is meant to be a plain text representation
-               of the HTM string. The user is responsible for the contents of this variable.
+        <descr>The optional string parameter PlainText is meant to be a plain text representation
+               of the HTML string. The user is responsible for the contents of this variable.
                The value of PlainText can later be retrieved via the
                <link id="#TClipBoard.AsText">AsText</link> property.
                If PlainText is an empty string, no plain text is added to the ClipBoard, nor is the
@@ -917,7 +917,7 @@ The format CF_TEXT is handled by AsText and SetTextBuf. Use those functions inst
       </element>
       <!-- function result Visibility: default -->
       <element name="RegisterClipboardFormat.Result">
-        <short>Returns the registered clipoard format</short>
+        <short>Returns the registered clipboard format</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="RegisterClipboardFormat.Format">

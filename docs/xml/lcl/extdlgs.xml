@@ -184,7 +184,7 @@
       <!-- procedure Visibility: protected -->
       <element name="TPreviewFileDialog.InitPreviewControl">
         <short>
-          <var>InitPreviewControl</var> - initialises the windowed control that uses this dialog</short>
+          <var>InitPreviewControl</var> - initializes the windowed control that uses this dialog</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -634,7 +634,7 @@
       <!-- property Visibility: published -->
       <element name="TCalculatorDialog.Ctl3D">
         <short>
-          <var>Ctl3D</var> - deprecated property (for Delphi compatability)</short>
+          <var>Ctl3D</var> - deprecated property (for Delphi compatibility)</short>
         <descr/>
         <seealso/>
       </element>
@@ -791,7 +791,7 @@
       <!-- procedure Visibility: protected -->
       <element name="TCalculatorForm.OkClick">
         <short>
-          <var>OkClick</var> - method to handle a click on th eOK button</short>
+          <var>OkClick</var> - method to handle a click on the OK button</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -843,7 +843,7 @@
       <!-- procedure Visibility: protected -->
       <element name="TCalculatorForm.InitForm">
         <short>
-          <var>InitForm</var> - initialise the form, using the specified calculator layout</short>
+          <var>InitForm</var> - initialize the form, using the specified calculator layout</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1200,7 +1200,7 @@
         <short>The selected <var>Date</var>, for return to the main program</short>
         <descr>
           <p>The selected <var>Date</var>, for return to the main program</p>
-          <p>This is NOT the standad RTL Date function</p>
+          <p>This is NOT the standard RTL Date function</p>
         </descr>
         <seealso/>
       </element>
@@ -1271,7 +1271,7 @@
       </element>
       <element name="TCalendarDialog.DialogPosition">
         <short>
-          <var>DialogPosition</var> - position to display the dialog - by default in the centre of the main form</short>
+          <var>DialogPosition</var> - position to display the dialog - by default in the center of the main form</short>
       </element>
       <element name="TCalendarDialog.OKCaption">
         <short>
@@ -1283,12 +1283,12 @@
       </element>
       <element name="TCalendarDialog.GetNewDate">
         <short>
-          <var>GetNewDate</var> - programmatic simulation of <var>OnClick</var> event, which transfers the selected dae to the calling program</short>
+          <var>GetNewDate</var> - programmatic simulation of <var>OnClick</var> event, which transfers the selected date to the calling program</short>
       </element>
       <element name="TPreviewFileControl.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
       <element name="TOpenPictureDialog.GetFilterExt">
         <short>
-          <var>GetFilterExt</var> - returns the extention for filtering filenames</short>
+          <var>GetFilterExt</var> - returns the extension for filtering filenames</short>
       </element>
       <element name="TCalendarDialog.CalendarDblClick">
         <short>

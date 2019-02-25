@@ -148,7 +148,7 @@
 
       <!-- procedure Visibility: public -->
       <element name="TCustomIniPropStorage.StorageNeeded">
-        <short>Aks the underlying storage object for an entry</short>
+        <short>Ask the underlying storage object for an entry</short>
         <descr />
         <errors />
         <seealso />
@@ -315,7 +315,7 @@
 
       <!-- procedure Visibility: default -->
       <element name="Register">
-        <short>Registers <link id="#LCL.IniPropStorage.TIniPropStorage">TIniPropStorage</link> on the 'Misc' tab of the component pallete.</short>
+        <short>Registers <link id="#LCL.IniPropStorage.TIniPropStorage">TIniPropStorage</link> on the 'Misc' tab of the component palette.</short>
         <descr />
         <errors />
         <seealso />

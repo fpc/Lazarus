@@ -413,11 +413,13 @@
       <!-- constructor Visibility: public -->
       <element name="TCustomEditButton.Create">
         <short>
-          <var>Create</var> - constructor for <var>TCustomEditButton</var>: calls inherited <var>Create</var> then sets some defaults and initialises some variables</short>
+          <var>Create</var> - constructor for <var>TCustomEditButton</var>: calls inherited <var>Create</var> then sets some
+defaults and initializes some variables</short>
         <descr>
           <p>
-            <var>Create</var> - constructor for <var>TCustomEditutton</var>: calls inherited <var>Create</var> then sets some defaults and initialises some variables</p>
-          <p>Initialises height and width, cursor, glyph, style, checks visibility, event handler for click</p>
+            <var>Create</var> - constructor for <var>TCustomEditutton</var>: calls inherited <var>Create</var> then sets
+some defaults and initializes some variables</p>
+          <p>Initializes height and width, cursor, glyph, style, checks visibility, event handler for click</p>
         </descr>
         <errors/>
         <seealso>
@@ -1401,7 +1403,7 @@
         <descr>
           <p>
             <var>ShowHidden</var> - if True, display names of hidden directories</p>
-          <p>In Windows etc, show directories under 'Windows' and branches; in Linux etc show directories with preceding dot eg '.Lazarus'</p>
+          <p>In Windows etc, show directories under 'Windows' and branches; in Linux etc show directories with preceding dot e.g. '.Lazarus'</p>
         </descr>
         <seealso/>
       </element>
@@ -1765,7 +1767,7 @@
         <descr>
           <p>
             <var>Create</var> - constructor for <var>TDateEdit</var>: calls inherited <var>Create</var> and sets defaults</p>
-          <p>Initialises dialog title, captions, display settings and default date</p>
+          <p>Initializes dialog title, captions, display settings and default date</p>
         </descr>
         <errors/>
         <seealso>

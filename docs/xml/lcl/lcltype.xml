@@ -7,7 +7,7 @@
   ====================================================================
 -->
     <module name="LCLType">
-      <short>This unit is being created specifically for compatibility with Delphi. It should only be used for constants and type definitions that are included in the Delphi Windows unit. This is only done for compatibiltiy.</short>
+      <short>This unit is being created specifically for compatibility with Delphi. It should only be used for constants and type definitions that are included in the Delphi Windows unit. This is only done for compatibility.</short>
       <descr/>
       <!-- unresolved type reference Visibility: default -->
       <element name="Classes">
@@ -52,7 +52,7 @@
       <element link="TCriticalSection" name="PCriticalSection"/>
       <!-- enumeration type Visibility: default -->
       <element name="TDockImageOperation">
-        <short>Actions occuring while dragging an image.</short>
+        <short>Actions occurring while dragging an image.</short>
         <descr/>
         <seealso/>
       </element>
@@ -836,7 +836,7 @@
       <element name="DT_EDITCONTROL">
         <short>
           <var>DrawText</var> formatting:
-           emulate behaviour of a multiline EDIT control.
+           emulate behavior of a multiline EDIT control.
         </short>
         <descr/>
         <seealso/>

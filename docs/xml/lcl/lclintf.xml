@@ -7,7 +7,7 @@
   ====================================================================
 -->
     <module name="LCLIntf">
-      <short>Contains winapi like functions for Delphi compatibility.</short>
+      <short>Contains WinAPI like functions for Delphi compatibility.</short>
       <descr>
         <p>This unit was created for Delphi compatibility. It
           contains selected functions from the Delphi Windows unit,
@@ -15,7 +15,7 @@
         </p><p>
           For LCL users:<br/>
           The functions can be used to make porting of Delphi applications easier,
-          and are not 100% emulating winapi functions, not even under windows.
+          and are not 100% emulating WinAPI functions, not even under windows.
           They were implemented and tested with some common Delphi libraries.
           The LCL contains many extra functions that the Delphi VCL does not have.
         </p>
@@ -365,7 +365,7 @@
 The following parameters are present in this function:
 Dest - The Handle of a region which will receive the result of the operation
 Src1 - One of the two regions to combine
-Src2 - The other region to combinee
+Src2 - The other region to combine
 fnCombineMode - The method to use to combine the regions.
 As for the parameter fnCombineMode, the following constants from the unit LCLType can be used:
 RGN_AND&#x9;- The result is the intersection of the two combined regions.
@@ -573,7 +573,7 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="CreateFontIndirect">
-        <short>Creates an logical font, selectable into any DC.</short>
+        <short>Creates a logical font, selectable into any DC.</short>
         <descr/>
         <errors/>
         <seealso>
@@ -588,7 +588,7 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="CreateFontIndirectEx">
-        <short>Creates an logical font, selectable into any DC. Allows for an long fontname.</short>
+        <short>Creates a logical font, selectable into any DC. Allows for a long font name.</short>
         <descr/>
         <errors/>
         <seealso>
@@ -655,7 +655,7 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="CreatePenIndirect">
-        <short>Creates an logical Pen, selectable into any DC.</short>
+        <short>Creates a logical Pen, selectable into any DC.</short>
         <descr>
         </descr>
         <errors/>
@@ -669,7 +669,7 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="CreatePolygonRgn">
-        <short>Creates a polygonial region.</short>
+        <short>Creates a polygonal region.</short>
         <descr>The last point is connected to the first point, to close the region.
         </descr>
         <errors/>
@@ -744,7 +744,7 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- procedure Visibility: default -->
       <element name="DeleteCriticalSection">
-        <short>Deletes an unowned crititcal section.</short>
+        <short>Deletes an unowned critical section.</short>
         <descr/>
         <errors>Results are unpredictable when the section is owned,
           i.e. has been entered but not yet left.
@@ -1148,7 +1148,7 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="ExtCreatePen">
-        <short>Creates an logical pen, selectable into any DC.</short>
+        <short>Creates a logical pen, selectable into any DC.</short>
         <descr>
         </descr>
         <errors>
@@ -1503,9 +1503,9 @@ RGN_XOR - The result is the union of two combined regions except for any overlap
       </element>
       <!-- function Visibility: default -->
       <element name="GetDeviceCaps">
-        <short>Returns various device specific informations.</short>
+        <short>Returns various device specific information.</short>
         <descr>
-          <p>Returns informations about any DC, which might be the screen DC representing the monitor, a control canvas or a offscreen bitmap canvas.
+          <p>Returns information about any DC, which might be the screen DC representing the monitor, a control canvas or a offscreen bitmap canvas.
             The following constants can be utilized in the index argument:</p>
           <ul>
             <li>HORZSIZE</li>
@@ -2416,7 +2416,7 @@ end;
         <descr>
           <p>
             MaskBlt behaves like BitBlt when no mask bitmap is specified.
-            It does a SRCOPY operation when also no Rop is specified.
+            It does a SRCOPY operation when also no ROP is specified.
             See BitBlt for general information about raster operations.
           </p><p>
             Rop contains both a foreground and a background raster operation
@@ -2659,10 +2659,10 @@ end;
   control points. If the Continuous flag is TRUE then each subsequent curve
   requires three more points, using the end-point of the previous Curve as its
   starting point, the first and second points being used as its control points,
-  and the third point its end-point. If the continous flag is set to FALSE,
+  and the third point its end-point. If the continuous flag is set to FALSE,
   then each subsequent Curve requires 4 additional points, which are used
-  exactly as in the first curve. Any additonal points which do not add up to
-  a full bezier(4 for Continuous, 3 otherwise) are ignored. There must be at
+  exactly as in the first curve. Any additional points which do not add up to
+  a full Bézier(4 for Continuous, 3 otherwise) are ignored. There must be at
   least 4 points for an drawing to occur. If the Filled Flag is set to TRUE
   then the resulting Poly-Bézier will be drawn as a Polygon.</descr>
         <errors/>
@@ -3120,7 +3120,7 @@ end;
       </element>
       <!-- function Visibility: default -->
       <element name="SetBkColor">
-        <short>Sets the current background color of an decice context.</short>
+        <short>Sets the current background color of an device context.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3459,7 +3459,7 @@ end;
       </element>
       <!-- function Visibility: default -->
       <element name="SetTextCharacterExtra">
-        <short>Sets extra intercharacter spacing in text output.</short>
+        <short>Sets extra inter-character spacing in text output.</short>
         <descr/>
         <seealso/>
       </element>

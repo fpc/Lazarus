@@ -7,7 +7,7 @@
   ====================================================================
 -->
     <module name="MaskEdit">
-      <short>Defines classes for Mask Editing, ie editing with a masking string in place to obscure the text being entered</short>
+      <short>Defines classes for Mask Editing, i.e. editing with a masking string in place to obscure the text being entered</short>
       <descr/>
       <!-- unresolved type reference Visibility: default -->
       <element name="Classes">
@@ -266,7 +266,7 @@
       <!-- object Visibility: default -->
       <element name="TCustomMaskEdit">
         <short>
-          <i>TCustomMaskEdit</i> - base class for <i>TMaskEdit</i>, an Edit box with characters masked out to avoid unauthorised reading</short>
+          <i>TCustomMaskEdit</i> - base class for <i>TMaskEdit</i>, an Edit box with characters masked out to avoid unauthorized reading</short>
         <descr>Custom Mask Edit: the base type for Mask Edit
 </descr>
       </element>
@@ -969,7 +969,7 @@
       <!-- object Visibility: default -->
       <element name="TMaskEdit">
         <short>
-          <i>TMaskEdit</i> - an Edit box with characters masked out to avoid unauthorised reading</short>
+          <i>TMaskEdit</i> - an Edit box with characters masked out to avoid unauthorized reading</short>
         <descr>Mask Edit: Displays an Edit Box with the input text masked by a selected character specified by PasswordChar, usually an asterisk, or by EditMask (a complete string), specified in TCustomMaskEdit. <br/>
 Useful for inputting passwords etc.
 </descr>
@@ -988,7 +988,7 @@ Useful for inputting passwords etc.
       <element name="TMaskEdit.Anchors" link="#LCL.Controls.TControl.Anchors">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>Determines how the control is to be anchored to its client or parent conrol</p>
+          <p>Determines how the control is to be anchored to its client or parent control</p>
           <p>Either reads a flag containing the set of anchors to be used, or writes a set of anchors. If they have been written, this is indicated in <i>IsAnchorsStored</i>
           </p>
         </descr>
@@ -999,7 +999,7 @@ Useful for inputting passwords etc.
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>AutoSize permits the size of a control to be adjusted automatically, for example a button can become bigger or smaller to accommodate a longer or shorter caption.</p>
-          <p>Reads logical (boolean) flag to see whether auto-sizing is to be operated, or writes the flag to say it should be done. Default is false, ie no auto-sizing</p>
+          <p>Reads logical (boolean) flag to see whether auto-sizing is to be operated, or writes the flag to say it should be done. Default is false, i.e. no auto-sizing</p>
         </descr>
         <seealso/>
       </element>
@@ -1032,8 +1032,8 @@ Useful for inputting passwords etc.
       <element name="TMaskEdit.Color" link="#LCL.Controls.TControl.Color">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>Reads the value for colour, or stores the value, and sets a flag if the colour is stored.</p>
-          <p>The default colour is the same as the window in which the control is located.</p>
+          <p>Reads the value for color, or stores the value, and sets a flag if the color is stored.</p>
+          <p>The default color is the same as the window in which the control is located.</p>
         </descr>
         <seealso/>
       </element>
@@ -1201,7 +1201,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <element name="TMaskEdit.OnClick" link="#LCL.Controls.TControl.OnClick">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be spcified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <i>ActionList</i>
+          <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be specified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <i>ActionList</i>
           </p>
           <p>Reads or writes a flag if  a mouse click is detected, and sets a flag if a value is stored.</p>
         </descr>
@@ -1363,7 +1363,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <element name="TMaskEdit.AutoSelect" link="#LCL.StdCtrls.TCustomEdit.AutoSelect"/>
       <element name="TMaskEdit.EchoMode">
         <short>
-          <i>EchoMode </i>- how to echo keypresses on screen: normal (returning the actual character for that key), all upper or lower case, or a masking character as used in entering passwords</short>
+          <i>EchoMode </i>- how to echo key presses on screen: normal (returning the actual character for that key), all upper or lower case, or a masking character as used in entering passwords</short>
       </element>
       <element name="TMaskEdit.OnChangeBounds">
         <short>Event handler for a change in bounds of the control</short>

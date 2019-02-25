@@ -151,7 +151,8 @@
       </element>
       <!-- destructor Visibility: public -->
       <element name="TContainedAction.Destroy" link="#rtl.Classes.TBasicAction.Destroy">
-        <descr>If you call Destroy for an object witch hasn´t being initialized yet it will generate an error. Always use the Free method to deallocate objects, because it verifies if object variable doesn´t contain the value nil.
+        <descr>If you call Destroy for an object which hasn't being initialized yet it will generate an error. Always use
+the Free method to deallocate objects, because it verifies if object variable doesn´t contain the value nil.
 
 Take the following precautions when creating your own Destroy method:
 
@@ -159,7 +160,7 @@ Take the following precautions when creating your own Destroy method:
 
 * Always call 'inherited Destroy;' as the last thing on the destructor code.
 
-* An exception may be raised on the constructor in case there is not enought memory to create an object, or something else goes wrong. If the exception is not handled inside the constructor, the object will be only partially built. In this case Destroy will be called, so your destructor must check if the resources were really allocated before disposing of them.
+* An exception may be raised on the constructor in case there is not enough memory to create an object, or something else goes wrong. If the exception is not handled inside the constructor, the object will be only partially built. In this case Destroy will be called, so your destructor must check if the resources were really allocated before disposing of them.
 
 * Remember to call Free for all objects created on the constructor.
 </descr>
@@ -501,7 +502,7 @@ Take the following precautions when creating your own Destroy method:
       <!-- constructor Visibility: public -->
       <element name="TCustomActionList.Create">
         <short>
-          <var>Create</var> - constructor for <var>TCustomActionList</var>: calls inherited <var>Create</var> then initialises some local variables</short>
+          <var>Create</var> - constructor for <var>TCustomActionList</var>: calls inherited <var>Create</var> then initializes some local variables</short>
         <seealso>
           <link id="#rtl.Classes.TComponent.Create"/>
         </seealso>
@@ -613,7 +614,7 @@ action handles the current component.
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomActionList.Images">
-        <short>The <var>Images</var> from an <var>ImageList</var> to be associated with the actions, eg in a Menu display</short>
+        <short>The <var>Images</var> from an <var>ImageList</var> to be associated with the actions, e.g. in a Menu display</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomActionList.State">
@@ -629,7 +630,7 @@ action handles the current component.
           <p>
             <var>TActionList</var> - The basic actions list class</p>
           <p>
-            <var>TActionList</var> is the last component on the "Standard" component pallete on the Lazarus IDE.</p>
+            <var>TActionList</var> is the last component on the "Standard" component palette on the Lazarus IDE.</p>
           <p>To use an ActionList, click on the icon on the IDE Standard Components toolbar, then click anywhere on the main form and an ActionList icon will appear. It doesn't matter where you position it, because it is not visible at run-time. </p>
           <p>You can add, remove or modify actions on the list by right-clicking on the ActionList icon on the form editor and then choosing "Edit action list...", or by double-clicking on the icon with the left mouse button. This will open the "Action List Editor". </p>
           <p>You can now use the "+" and "-" buttons to add and remove actions. The ActionList editor menu allows you to select standard actions from a selection (option 'New Standard Action')  or create a new action (option 'New Action'). To edit an action, click it and then open the object inspector. To add code to be executed when an action is triggered, double-click the action's name on the "Action List Editor".</p>
@@ -1097,7 +1098,7 @@ execution will end up at the <var>TPersistent</var> implementation of
       <!-- constructor Visibility: public -->
       <element name="TCustomAction.Create">
         <short>
-          <var>Create</var> - constructor for <var>TCustomAction</var>: calls inherited <var>Create</var> then initialises some local variables</short>
+          <var>Create</var> - constructor for <var>TCustomAction</var>: calls inherited <var>Create</var> then initializes some local variables</short>
         <seealso>
           <link id="#rtl.Classes.TBasicAction.Create"/>
         </seealso>
@@ -1138,7 +1139,7 @@ execution will end up at the <var>TPersistent</var> implementation of
       <!-- property Visibility: public -->
       <element name="TCustomAction.AutoCheck">
         <short>
-          <var>AutoCheck</var> - whether the control (eg a CheckBox) is to be automatically checked</short>
+          <var>AutoCheck</var> - whether the control (e.g. a CheckBox) is to be automatically checked</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomAction.Caption">
@@ -1422,7 +1423,7 @@ executed at this point in time.
       <!-- procedure Visibility: protected -->
       <element name="TActionLink.SetHelpType">
         <short>
-          <var>SetHelpType</var> - specifies the trpe of Help to be used</short>
+          <var>SetHelpType</var> - specifies the type of Help to be used</short>
         <descr/>
         <errors/>
         <seealso/>

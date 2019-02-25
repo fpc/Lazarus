@@ -356,7 +356,7 @@
       <!-- variable Visibility: protected -->
       <element name="TResourceCache.FLastUnusedItem">
         <short>
-          <var>FLastUnusedItem</var> - ocal variable storing location of last free item</short>
+          <var>FLastUnusedItem</var> - local variable storing location of last free item</short>
         <descr/>
         <seealso/>
       </element>

@@ -7,7 +7,7 @@
   ====================================================================
 -->
     <module name="ColorBox">
-      <short>Defines Classes for selecting colour from a list or ComboBox</short>
+      <short>Defines Classes for selecting color from a list or ComboBox</short>
       <descr/>
       <!-- unresolved type reference Visibility: default -->
       <element name="LResources">
@@ -73,7 +73,7 @@
       <!-- object Visibility: default -->
       <element name="TColorBox">
         <short>
-          <var>TColorBox</var> - presents the user with a ComboBox with a drop-down list from which to select a colour</short>
+          <var>TColorBox</var> - presents the user with a ComboBox with a drop-down list from which to select a color</short>
       </element>
       <!-- variable Visibility: private -->
       <element name="TColorBox.FPalette">
@@ -143,7 +143,7 @@
       <!-- procedure Visibility: private -->
       <element name="TColorBox.SetPalette">
         <short>Write specifier for the Palette property</short>
-        <descr>Use SetPalette to determine wether to reset the colorlist in the ColorBox based on the type of palette.</descr>
+        <descr>Use SetPalette to determine whether to reset the colorlist in the ColorBox based on the type of palette.</descr>
         <errors/>
         <seealso/>
       </element>
@@ -207,12 +207,12 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TColorBox.Palette">
-        <short>The <var>Palette</var> of colours to be used for the drop-down list</short>
+        <short>The <var>Palette</var> of colors to be used for the drop-down list</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TColorBox.Colors">
         <short>
-          <var>Colors</var> - the indexed colour values available for the list</short>
+          <var>Colors</var> - the indexed color values available for the list</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TColorBox.Colors.Index">
@@ -269,7 +269,7 @@
       <!-- property Visibility: published -->
       <element name="TColorBox.Color" link="#LCL.Controls.TControl.Color">
         <short>
-          <var>Color</var> - this is the colour for the display of the actual control, not the colour selected from the list</short>
+          <var>Color</var> - this is the color for the display of the actual control, not the color selected from the list</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TColorBox.Ctl3D" link="#LCL.Controls.TControl.Ctl3D">
@@ -552,7 +552,7 @@
       <!-- class Visibility: default -->
       <element name="TColorListBox">
         <short>
-          <var>TColorListBox</var> - a box containing a simple list of colours from which to select</short>
+          <var>TColorListBox</var> - a box containing a simple list of colors from which to select</short>
       </element>
       <!-- variable Visibility: private -->
       <element name="TColorListBox.FPalette">
@@ -652,7 +652,7 @@
       <!-- procedure Visibility: public -->
       <element name="TColorListBox.SetColorList">
         <short>
-          <var>SetColorList</var> - stores the list of colours</short>
+          <var>SetColorList</var> - stores the list of colors</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -660,7 +660,7 @@
       <!-- property Visibility: public -->
       <element name="TColorListBox.Colors">
         <short>
-          <var>Colors</var> - the indexed colour values available for the list</short>
+          <var>Colors</var> - the indexed color values available for the list</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TColorListBox.Colors.Index">
@@ -668,7 +668,7 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TColorListBox.Selected">
-        <short>The colour that has been <var>Selected</var> from the list</short>
+        <short>The color that has been <var>Selected</var> from the list</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TColorListBox.Align" link="#LCL.Controls.TControl.Align">
@@ -703,7 +703,7 @@
       <!-- property Visibility: published -->
       <element name="TColorListBox.Color" link="#LCL.Controls.TControl.Color">
         <short>
-          <var>Color</var> - Determine the colour for the display of the actual control, not the colour selected from the list</short>
+          <var>Color</var> - Determine the color for the display of the actual control, not the color selected from the list</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TColorListBox.Constraints" link="#LCL.Controls.TControl.Constraints">
@@ -767,7 +767,7 @@
       </element>
       <!-- property Visibility: published -->
       <element name="TColorListBox.Palette">
-        <short>The <var>Palette</var> of colours from which selection is to be made</short>
+        <short>The <var>Palette</var> of colors from which selection is to be made</short>
         <descr/>
         <seealso/>
       </element>
@@ -978,7 +978,7 @@
       <!-- procedure Visibility: default -->
       <element name="Register">
         <short>Register procedure for colorbox</short>
-        <descr>This procedure registers the component to the Addtional menu</descr>
+        <descr>This procedure registers the component to the Additional menu</descr>
         <errors/>
         <seealso/>
       </element>
@@ -993,24 +993,24 @@
       <element name="TCustomColorBox.DrawItem" link="#LCL.StdCtrls.TCustomComboBox.DrawItem"/>
       <element name="TCustomColorBox.Create">
         <short>
-          <var>Create</var> - constructor for TCustomColorBox: calls inherited <var>Create</var>, sets style, default colours and colour list, ReadOnly and Selected properties</short>
+          <var>Create</var> - constructor for TCustomColorBox: calls inherited <var>Create</var>, sets style, default colors and color list, ReadOnly and Selected properties</short>
         <seealso>
           <link id="#LCL.StdCtrls.TCustomCombobox.Create">TCustomCombobox.Create</link>
         </seealso>
       </element>
       <element name="TCustomColorBox.SetColorList">
         <short>
-          <var>SetColorList</var> - specifies the list of colours to be presented in the drop-down</short>
+          <var>SetColorList</var> - specifies the list of colors to be presented in the drop-down</short>
       </element>
       <element name="TCustomColorBox.Colors">
         <short>
-          <var>Colors</var> the colour specified by the Index</short>
+          <var>Colors</var> the color specified by the Index</short>
       </element>
       <element name="TCustomColorBox.Palette">
-        <short>The <var>Palette</var> of colours to be included</short>
+        <short>The <var>Palette</var> of colors to be included</short>
       </element>
       <element name="TCustomColorBox.Selected">
-        <short>The colour that has been <var>Selected</var> from the ComboBox</short>
+        <short>The color that has been <var>Selected</var> from the ComboBox</short>
       </element>
       <element name="TCustomColorListBox">
         <short>
@@ -1024,14 +1024,14 @@
       <element name="TCustomColorListBox.DrawItem" link="#LCL.StdCtrls.TCustomListBox.DrawItem"/>
       <element name="TCustomColorListBox.Create">
         <short>
-          <var>Create</var> - constructor for <var>TCustomColorListBox</var>: calls inherited <var>Create</var>, initialises style, default colours and sets colour list</short>
+          <var>Create</var> - constructor for <var>TCustomColorListBox</var>: calls inherited <var>Create</var>, initializes style, default colors and sets color list</short>
         <seealso>
           <link id="#LCL.StdCtrls.TCustomListBox.Create">TCustomListBox.Create</link>
         </seealso>
       </element>
       <element name="TCustomColorListBox.SetColorList">
         <short>
-          <var>SetColorList</var> - specifies the list of colours</short>
+          <var>SetColorList</var> - specifies the list of colors</short>
       </element>
       <element name="TCustomColorListBox.Colors">
         <short>The <var>Colors</var> specified by <var>Index</var>
@@ -1039,7 +1039,7 @@
       </element>
       <element name="TCustomColorListBox.Selected" link="#LCL.StdCtrls.TCustomListBox.Selected"/>
       <element name="TCustomColorListBox.Palette">
-        <short>The <var>Palette</var> to be used to supply the colours</short>
+        <short>The <var>Palette</var> to be used to supply the colors</short>
       </element>
       <element name="TColorBoxStyle">
         <short>
@@ -1050,35 +1050,35 @@
       <element name="TCustomColorBox.InitializeWnd" link="#LCL.Controls.TWinControl.InitializeWnd"/>
       <element name="TCustomColorBox.DoGetColors">
         <short>
-          <var>DoGetColors</var> - perform the code for getting colours</short>
+          <var>DoGetColors</var> - perform the code for getting colors</short>
       </element>
       <element name="TCustomColorBox.Change" link="#LCL.StdCtrls.TCustomComboBox.Change"/>
       <element name="TCustomColorBox.PickCustomColor">
         <short>
-          <var>PickCustomColor</var> - if True, a custom colour is picked rather than one of the standard list</short>
+          <var>PickCustomColor</var> - if True, a custom color is picked rather than one of the standard list</short>
       </element>
       <element name="TCustomColorBox.Style" link="#LCL.StdCtrls.TCustomComboBox.Style"/>
       <element name="TCustomColorBox.ColorNames">
         <short>
-          <var>ColorNames</var> - the name of the specified (indexed) colour, stored as a string</short>
+          <var>ColorNames</var> - the name of the specified (indexed) color, stored as a string</short>
       </element>
       <element name="TCustomColorBox.DefaultColorColor">
         <short>
-          <var>DefaultColorColor</var> - the default colour, expressed as a Color value</short>
+          <var>DefaultColorColor</var> - the default color, expressed as a Color value</short>
         <descr>
           <p>
-            <var>DefaultColorColor</var> - the default colour, expressed as a Color value</p>
-          <p>The use of the construct <var>..ColorColor</var> denotes the value of a colour as a TColor, as opposed to an index value</p>
+            <var>DefaultColorColor</var> - the default color, expressed as a Color value</p>
+          <p>The use of the construct <var>..ColorColor</var> denotes the value of a color as a TColor, as opposed to an index value</p>
         </descr>
       </element>
       <element name="TCustomColorBox.NoneColorColor">
         <short>
-          <var>NoneColorColor</var> - the colour to be used when no selection has been made, or when <var>None</var> is selected, stored as a <var>TColor</var>
+          <var>NoneColorColor</var> - the color to be used when no selection has been made, or when <var>None</var> is selected, stored as a <var>TColor</var>
         </short>
       </element>
       <element name="TCustomColorBox.OnGetColors">
         <short>
-          <var>OnGetColors</var> - event handler for the instruction to Get Colours</short>
+          <var>OnGetColors</var> - event handler for the instruction to get colors</short>
       </element>
       <element name="TColorBox.DefaultColorColor" link="#LCL.ColorBox.TCustomColorBox.DefaultColorColor"/>
       <element name="TColorBox.NoneColorColor" link="#LCL.ColorBox.TCustomColorBox.NoneColorColor"/>
@@ -1088,35 +1088,35 @@
       <element name="TCustomColorListBox.InitializeWnd" link="#LCL.Controls.TWinControl.InitializeWnd"/>
       <element name="TCustomColorListBox.DoGetColors">
         <short>
-          <var>DoGetColors</var> - perform the code for getting the colours</short>
+          <var>DoGetColors</var> - perform the code for getting the colors</short>
       </element>
       <element name="TCustomColorListBox.DoSelectionChange" link="#LCL.StdCtrls.TCustomListBox.DoSelectionChange"/>
       <element name="TCustomColorListBox.PickCustomColor">
         <short>
-          <var>PickCustomColor</var> - if True, a custom colour is picked rather than one from the standard list</short>
+          <var>PickCustomColor</var> - if True, a custom color is picked rather than one from the standard list</short>
       </element>
       <element name="TCustomColorListBox.Style" link="#LCL.StdCtrls.TCustomListBox.Style"/>
       <element name="TCustomColorListBox.ColorNames">
         <short>
-          <var>ColorNames</var> - the name of the indexed colour, stored as a string</short>
+          <var>ColorNames</var> - the name of the indexed color, stored as a string</short>
       </element>
       <element name="TCustomColorListBox.DefaultColorColor">
         <short>
-          <var>DefaultColorColor</var> - the default colour, expressed as a Color value</short>
+          <var>DefaultColorColor</var> - the default color, expressed as a Color value</short>
         <descr>
           <p>
-            <var>DefaultColorColor</var> - the default colour, expressed as a Color value</p>
-          <p>The use of the construct <var>..ColorColor</var> denotes the value of a colour as a TColor, as opposed to an index value</p>
+            <var>DefaultColorColor</var> - the default color, expressed as a Color value</p>
+          <p>The use of the construct <var>..ColorColor</var> denotes the value of a color as a TColor, as opposed to an index value</p>
         </descr>
       </element>
       <element name="TCustomColorListBox.NoneColorColor">
         <short>
-          <var>NoneColorColor</var> - the colour to be used when no selection has been made, or when <var>None</var> is selected, stored as a <var>TColor</var>
+          <var>NoneColorColor</var> - the color to be used when no selection has been made, or when <var>None</var> is selected, stored as a <var>TColor</var>
         </short>
       </element>
       <element name="TCustomColorListBox.OnGetColors">
         <short>
-          <var>OnGetColors</var> - event handler for the instruction to Get Colours</short>
+          <var>OnGetColors</var> - event handler for the instruction to get colors</short>
       </element>
       <element name="TColorListBox.DefaultColorColor" link="#LCL.ColorBox.TCustomColorListBox.DefaultColorColor"/>
       <element name="TColorListBox.NoneColorColor" link="#LCL.ColorBox.TCustomColorListBox.NoneColorColor"/>

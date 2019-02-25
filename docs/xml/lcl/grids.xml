@@ -315,7 +315,7 @@ If not set, the tab key changes the active control.</descr>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TGridOption.goDblClickAutoSize">
-        <short>Double clicking column's borders (on headers) resize colmn</short>
+        <short>Double clicking column's borders (on headers) resize column</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TGridOption.goSmoothScroll">
@@ -1238,7 +1238,7 @@ If not set, the tab key changes the active control.</descr>
       <!-- destructor Visibility: public -->
       <element name="TVirtualGrid.Destroy">
         <short>
-          <var>Destroy</var> - destructor for <var>TVirtualGrid</var>: frees rows, columns and cells, then cals inherited <var>Destroy</var>
+          <var>Destroy</var> - destructor for <var>TVirtualGrid</var>: frees rows, columns and cells, then calls inherited <var>Destroy</var>
         </short>
         <descr/>
         <errors/>
@@ -2160,7 +2160,7 @@ Grids are suitable for showing data that have tabular nature, for example tables
       <!-- function Visibility: private -->
       <element name="TCustomGrid.GetRowHeights">
         <short>Read specifier for RowHeights</short>
-        <descr>Returns the current rowheight</descr>
+        <descr>Returns the current row height</descr>
         <errors/>
         <seealso/>
       </element>
@@ -3116,7 +3116,7 @@ The purpose of this method is to call event handler <i>OnBeforeSelection</i>.
       <!-- procedure Visibility: protected -->
       <element name="TCustomGrid.EditordoGetValue">
         <short>
-          <var>EditordoGetValue</var> - method for geting a value in the Editor</short>
+          <var>EditordoGetValue</var> - method for getting a value in the Editor</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3184,7 +3184,7 @@ The purpose of this method is to call event handler <i>OnBeforeSelection</i>.
       <!-- function Visibility: protected -->
       <element name="TCustomGrid.GetFixedcolor">
         <short>
-          <var>GetFixedcolor</var> - returns a value for the fixed colour</short>
+          <var>GetFixedcolor</var> - returns a value for the fixed color</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3196,7 +3196,7 @@ The purpose of this method is to call event handler <i>OnBeforeSelection</i>.
       <!-- function Visibility: protected -->
       <element name="TCustomGrid.GetSelectedColor">
         <short>
-          <var>GetSelectedColor</var> - returns the value for the colour of tems that have been selected</short>
+          <var>GetSelectedColor</var> - returns the value for the color of items that have been selected</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3525,7 +3525,7 @@ The purpose of this method is to call event handler <i>OnBeforeSelection</i>.
       <!-- function Visibility: protected -->
       <element name="TCustomGrid.MoveNextSelectable">
         <short>
-          <var>MoveNextSelectable</var> - move to next selectable cel; use delta col and row if 
+          <var>MoveNextSelectable</var> - move to next selectable cell; use delta col and row if
           <var>Relative</var> is True; returns True if successful</short>
         <descr/>
         <errors/>
@@ -3807,7 +3807,7 @@ Application developers should use the <link id="TCustomGrid.SelectCell.OnSelectC
       <!-- procedure Visibility: protected -->
       <element name="TCustomGrid.SetFixedcolor">
         <short>
-          <var>SetFixedcolor</var> - specifies colour for fixed cells</short>
+          <var>SetFixedcolor</var> - specifies color for fixed cells</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3819,7 +3819,7 @@ Application developers should use the <link id="TCustomGrid.SelectCell.OnSelectC
       <!-- procedure Visibility: protected -->
       <element name="TCustomGrid.SetSelectedColor">
         <short>
-          <var>SetSelectedColor</var> - specifies colour for cells that have been selected</short>
+          <var>SetSelectedColor</var> - specifies color for cells that have been selected</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3883,7 +3883,7 @@ Application developers should use the <link id="TCustomGrid.SelectCell.OnSelectC
       <!-- function Visibility: protected -->
       <element name="TCustomGrid.TryMoveSelection">
         <short>
-          <var>TryMoveSelection</var> - attempts to move the selection by the specified offset; returns True if sucessful</short>
+          <var>TryMoveSelection</var> - attempts to move the selection by the specified offset; returns True if successful</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4010,7 +4010,7 @@ Application developers should use the <link id="TCustomGrid.SelectCell.OnSelectC
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.Col">
         <short>Current column index.</short>
-        <descr>Col property holds the column index of the current grid cell cursor. The current grid column can be changed programatically by setting a new value to this property.</descr>
+        <descr>Col property holds the column index of the current grid cell cursor. The current grid column can be changed programmatically by setting a new value to this property.</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.ColCount">
@@ -4042,7 +4042,7 @@ Application developers should use the <link id="TCustomGrid.SelectCell.OnSelectC
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.DefaultColWidth">
         <short>Default value for the width of newly created grid columns.</short>
-        <descr><p>If new columns of the grid are created by changing the <link id="TCustomGrid.ColCount">ColCount</link> property, the width of these new columns will be set to the value of the <i>DefaultColWidth</i> property. </p><p>Use 0 for autosized width. </p><p>Use <link id="TCustomGrid.GetRealDefaultColWidth">GetRealDefaultColWidth</link> for real value.</p>
+        <descr><p>If new columns of the grid are created by changing the <link id="TCustomGrid.ColCount">ColCount</link> property, the width of these new columns will be set to the value of the <i>DefaultColWidth</i> property. </p><p>Use 0 for auto-sized width. </p><p>Use <link id="TCustomGrid.GetRealDefaultColWidth">GetRealDefaultColWidth</link> for real value.</p>
         </descr>
         <seealso>
           <link id="TCustomGrid.DefaultRowHeight"/>
@@ -4051,7 +4051,7 @@ Application developers should use the <link id="TCustomGrid.SelectCell.OnSelectC
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.DefaultRowHeight">
         <short>Default value for the height of newly created grid rows.</short>
-        <descr><p>If new rows of the grid are created by changing the <link id="TCustomGrid.RowCount">RowCount</link> property, the height of these new rows will be set to the value of the <i>DefaultRowHeight</i>  property. </p><p>Use 0 for autosized height. </p><p>Use <link id="TCustomGrid.GetRealDefaultRowHeight">GetRealDefaultRowHeight</link> for real value.</p>
+        <descr><p>If new rows of the grid are created by changing the <link id="TCustomGrid.RowCount">RowCount</link> property, the height of these new rows will be set to the value of the <i>DefaultRowHeight</i>  property. </p><p>Use 0 for auto-sized height. </p><p>Use <link id="TCustomGrid.GetRealDefaultRowHeight">GetRealDefaultRowHeight</link> for real value.</p>
         </descr>
         <seealso>
           <link id="TCustomGrid.DefaultColWidth"/>
@@ -4099,7 +4099,7 @@ Application developers should use the <link id="TCustomGrid.SelectCell.OnSelectC
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.FixedCols">
-        <short>Number of the fixed columns of the grid (ie the columns containing title or identifier material, that don't get scrolled when the rest of the grid moves).</short>
+        <short>Number of the fixed columns of the grid (i.e. the columns containing title or identifier material, that don't get scrolled when the rest of the grid moves).</short>
         <descr>
           <p>Contains the fixed column count of a grid. </p>
           <p>Fixed columns are normally used for headings.</p>
@@ -4111,7 +4111,7 @@ Application developers should use the <link id="TCustomGrid.SelectCell.OnSelectC
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.FixedRows">
-        <short>Number of the fixed rows of the grid (ie the rows containing title or identifier material, that don't get scrolled when the rest of the grid moves).</short>
+        <short>Number of the fixed rows of the grid (i.e. the rows containing title or identifier material, that don't get scrolled when the rest of the grid moves).</short>
         <descr>
           <p>Contains the fixed row count of a grid. </p>
           <p>Fixed rows are normally used for headings.</p>
@@ -4132,13 +4132,13 @@ Application developers should use the <link id="TCustomGrid.SelectCell.OnSelectC
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.Flat">
-        <short>Is the cell to be displayed <var>Flat</var>, ie with no texturing or raised/lowered effect</short>
+        <short>Is the cell to be displayed <var>Flat</var>, i.e. with no texturing or raised/lowered effect</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.FocusColor">
-        <short>The colour to be used for the cell receiving focus</short>
+        <short>The color to be used for the cell receiving focus</short>
         <descr/>
         <seealso/>
       </element>
@@ -4165,7 +4165,7 @@ Application developers should use the <link id="TCustomGrid.SelectCell.OnSelectC
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.GridLineColor">
-        <short>Colour to be used for GridLines</short>
+        <short>Color to be used for GridLines</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.GridLineStyle">
@@ -4243,7 +4243,7 @@ Application developers should use the <link id="TCustomGrid.SelectCell.OnSelectC
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.SelectedColor">
-        <short>Colour to be used for selected cells</short>
+        <short>Color to be used for selected cells</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.Selection">
@@ -4314,14 +4314,14 @@ Application developers may use the OnSelection and OnBeforeSelection events to r
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.OnTopLeftChanged">
-        <short>Event handler when the top left cell is changed (ie the grid has been scrolled so that a different cell occupies top left)</short>
+        <short>Event handler when the top left cell is changed (i.e. the grid has been scrolled so that a different cell occupies top left)</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TCustomGrid.Create">
         <short>
-          <var>Create</var> - constructor for           <var>TCustomGrid</var>: calls inherited           <var>Create</var>, then creates lists of columns and rows, initialises many visual properties and options, creates the various editors and loads any bitmaps required for the display</short>
+          <var>Create</var> - constructor for <var>TCustomGrid</var>: calls inherited <var>Create</var>, then creates lists of columns and rows, initializes many visual properties and options, creates the various editors and loads any bitmaps required for the display</short>
         <descr>
           <p>// Inherited create Calls SetBounds-&gt;WM_SIZE-&gt;VisualChange so</p>
           <p>// fGrid needs to be created before that  </p>
@@ -5589,7 +5589,8 @@ Application developers may use the OnSelection and OnBeforeSelection events to r
       <!-- object Visibility: default -->
       <element name="TStringGrid">
         <short>
-          <var>TStringGrid</var> - a specialised grid for displaying strings (text material) in a matrix of columns and rows</short>
+          <var>TStringGrid</var> - a specialized grid for displaying strings (text material) in a matrix of columns and
+rows</short>
         <descr/>
         <errors/>
         <seealso>
@@ -6002,7 +6003,7 @@ Application developers may use the OnSelection and OnBeforeSelection events to r
       <element name="DrawRubberRect">
         <short>Draw rubberband rect</short>
         <descr>Draw a rubberband around the provided cellrect
-Segunda linea de texto</descr>
+Second line of text</descr>
         <errors/>
         <seealso/>
       </element>
@@ -6712,7 +6713,7 @@ The row number is only displayed if no text has been assigned to the cell direct
       <!-- function Visibility: protected -->
       <element name="TGridColumnTitle.GetDefaultCaption">
         <short>
-          <var>GetDefaultCaption</var> - returns th e default caption for this column</short>
+          <var>GetDefaultCaption</var> - returns the e default caption for this column</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6736,7 +6737,7 @@ The row number is only displayed if no text has been assigned to the cell direct
       <!-- function Visibility: protected -->
       <element name="TGridColumnTitle.GetDefaultColor">
         <short>
-          <var>GetDefaultColor</var> - returns the default colour</short>
+          <var>GetDefaultColor</var> - returns the default color</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6786,7 +6787,7 @@ The row number is only displayed if no text has been assigned to the cell direct
       <!-- destructor Visibility: public -->
       <element name="TGridColumnTitle.Destroy">
         <short>
-          <var>Destroy</var> - destructor for           <var>TGridColumnTitle</var>: frees forn, disconnects alignments, disposes of captions and colours then calls inherited           <var>Destroy</var>
+          <var>Destroy</var> - destructor for           <var>TGridColumnTitle</var>: frees form, disconnects alignments, disposes of captions and colors then calls inherited           <var>Destroy</var>
         </short>
         <descr/>
         <errors/>
@@ -6822,7 +6823,7 @@ The row number is only displayed if no text has been assigned to the cell direct
       </element>
       <!-- property Visibility: published -->
       <element name="TGridColumnTitle.Alignment">
-        <short>The <var>Alignment</var> (whether justified or centred) for this title</short>
+        <short>The <var>Alignment</var> (whether justified or centered) for this title</short>
         <descr/>
         <seealso/>
       </element>
@@ -7402,7 +7403,7 @@ The row number is only displayed if no text has been assigned to the cell direct
       <!-- function Visibility: protected -->
       <element name="TGridColumn.GetDefaultColor">
         <short>
-          <var>GetDefaultColor</var> - returns the default colour</short>
+          <var>GetDefaultColor</var> - returns the default color</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -7535,7 +7536,8 @@ The row number is only displayed if no text has been assigned to the cell direct
       <!-- constructor Visibility: public -->
       <element name="TGridColumn.Create">
         <short>
-          <var>Create</var> - constructor for           <var>TGridColumn</var>: calls inherited           <var>Create</var>, then creates a title and font, initialises a picklist and sets styles</short>
+          <var>Create</var> - constructor for <var>TGridColumn</var>: calls inherited <var>Create</var>,
+then creates a title and font, initializes a picklist and sets styles</short>
         <descr/>
         <errors/>
         <seealso>
@@ -7593,7 +7595,7 @@ The row number is only displayed if no text has been assigned to the cell direct
       <!-- property Visibility: published -->
       <element name="TGridColumn.Alignment">
         <short>
-          <var>Alignment</var> - whether justified, centred etc</short>
+          <var>Alignment</var> - whether justified, centered etc</short>
         <descr/>
         <seealso/>
       </element>
@@ -7686,7 +7688,7 @@ The row number is only displayed if no text has been assigned to the cell direct
       <!-- property Visibility: published -->
       <element name="TGridColumn.Visible">
         <short>
-          <var>Visible</var> - if True, the column can be seen (ie not hidden)</short>
+          <var>Visible</var> - if True, the column can be seen (i.e. not hidden)</short>
         <descr/>
         <seealso/>
       </element>
@@ -8718,7 +8720,7 @@ The row number is only displayed if no text has been assigned to the cell direct
       <!-- procedure Visibility: protected -->
       <element name="TCustomGrid.CheckLimitsWithError">
         <short>
-          <var>CheckLimitsWithError</var> - method for checking limits of specified cel, with error trapping</short>
+          <var>CheckLimitsWithError</var> - method for checking limits of specified cell, with error trapping</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8988,8 +8990,8 @@ The row number is only displayed if no text has been assigned to the cell direct
       <!-- procedure Visibility: protected -->
       <element name="TCustomGrid.DoOPInsertColRow">
         <short>
-          <var>DoOPInsertColRow</var> - perform th eoperation for inserting either a column or a row (depending on the value of 
-          <var>IsCol</var>) at th indexed position</short>
+          <var>DoOPInsertColRow</var> - perform the operation for inserting either a column or a row (depending on the value of
+          <var>IsCol</var>) at the indexed position</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9131,7 +9133,7 @@ The row number is only displayed if no text has been assigned to the cell direct
       <!-- function Visibility: protected -->
       <element name="TCustomGrid.EditorLocked">
         <short>
-          <var>EditorLocked</var> - returns True if the Editor is locked, ie unable to accept input or make changes</short>
+          <var>EditorLocked</var> - returns True if the Editor is locked, i.e. unable to accept input or make changes</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9220,7 +9222,7 @@ The row number is only displayed if no text has been assigned to the cell direct
       <!-- function Visibility: protected -->
       <element name="TCustomGrid.GetColumnColor">
         <short>
-          <var>GetColumnColor</var> - returns the Colour for the specified column</short>
+          <var>GetColumnColor</var> - returns the Color for the specified column</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9786,14 +9788,14 @@ The row number is only displayed if no text has been assigned to the cell direct
           <var>AllowOutboundEvents</var> - permits mouse click on an imaginary (out-of-bounds) cell; moves cursor to nearest valid cell</short>
         <descr>
           <p>Normally when a user clicks on a point over the empty space after cells (for example if grid has three rows but user clicks on imaginary fourth row) the current focused cell will move to the nearest cell to clicked point; we call this an outbound event. </p>
-          <p>Default value is true, as this has been the grid's behaviour since the  beginning. </p>
-          <p>This property was added to simulate Delphi behaviour where outbound events are not available; to enable Delphi compatibility set this property to false.</p>
+          <p>Default value is true, as this has been the grid's behavior since the  beginning. </p>
+          <p>This property was added to simulate Delphi behavior where outbound events are not available; to enable Delphi compatibility set this property to false.</p>
         </descr>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.AlternateColor">
-        <short>The colour to be used for the background on alternate rows of the grid. Having alternate rows in different colours can make the grid easier to read.</short>
+        <short>The color to be used for the background on alternate rows of the grid. Having alternate rows in different colors can make the grid easier to read.</short>
         <descr/>
         <seealso/>
       </element>
@@ -9805,7 +9807,7 @@ The row number is only displayed if no text has been assigned to the cell direct
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.BorderColor">
-        <short>The colour of the border for this control</short>
+        <short>The color of the border for this control</short>
         <descr/>
         <seealso/>
       </element>
@@ -9813,7 +9815,7 @@ The row number is only displayed if no text has been assigned to the cell direct
       <element name="TCustomGrid.Columns">
         <short>The properties of the columns in this grid</short>
         <descr>
-          <p>The <i>Columns</i> property of a grid refers to the physical column in the table, and determines its size, shape, colour etc. It should not be confused with the COLUMNS construct frequently used in SQL programming, which refers to <i>Fields</i> of data. The contents of Fields can be displayed as Columns in a Grid, but they must be seen as separate and distinct. It is irrelevant to refer to the colour, font or width of a data field from a database, but these are all very relevant in specifying the appearance of a column in a grid.</p>
+          <p>The <i>Columns</i> property of a grid refers to the physical column in the table, and determines its size, shape, color etc. It should not be confused with the COLUMNS construct frequently used in SQL programming, which refers to <i>Fields</i> of data. The contents of Fields can be displayed as Columns in a Grid, but they must be seen as separate and distinct. It is irrelevant to refer to the color, font or width of a data field from a database, but these are all very relevant in specifying the appearance of a column in a grid.</p>
         </descr>
         <seealso/>
       </element>
@@ -9859,18 +9861,18 @@ The row number is only displayed if no text has been assigned to the cell direct
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.AltColorStartNormal">
         <short>
-          <var>AltColorStartNormal</var> - using a second colour to display alternate rows, but starting the first row with the normal colour</short>
+          <var>AltColorStartNormal</var> - using a second color to display alternate rows, but starting the first row with the normal color</short>
         <descr>
           <p>
-            <var>AltColorStartNormal</var> - using a second colour to display alternate rows, but starting the first row with the normal colour</p>
-          <p>Using a different colour for the background of alternate rows often makes the data in a grid much easier to read</p>
+            <var>AltColorStartNormal</var> - using a second color to display alternate rows, but starting the first row with the normal color</p>
+          <p>Using a different color for the background of alternate rows often makes the data in a grid much easier to read</p>
         </descr>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.FixedHotColor">
         <short>
-          <var>FixedHotColor</var> - the 'Hot' colour for the active (selected, etc) fixed cells of the grid</short>
+          <var>FixedHotColor</var> - the 'Hot' color for the active (selected, etc) fixed cells of the grid</short>
         <descr/>
         <seealso/>
       </element>
@@ -9898,7 +9900,7 @@ The row number is only displayed if no text has been assigned to the cell direct
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.InplaceEditor">
         <short>
-          <var>InplaceEditor</var> - the editor to be used in-place, ie in the cell itself instead of outside the grid</short>
+          <var>InplaceEditor</var> - the editor to be used in-place, i.e. in the cell itself instead of outside the grid</short>
         <descr/>
         <seealso/>
       </element>
@@ -9945,7 +9947,7 @@ The row number is only displayed if no text has been assigned to the cell direct
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.OnPickListSelect">
-        <short>Event handler for selecting an item from a picklist (eg drop-down list in <var>TComboBox</var>)</short>
+        <short>Event handler for selecting an item from a picklist (e.g. drop-down list in <var>TComboBox</var>)</short>
         <descr/>
         <seealso/>
       </element>
@@ -11418,7 +11420,8 @@ The row number is only displayed if no text has been assigned to the cell direct
       <!-- constructor Visibility: public -->
       <element name="TStringGridStrings.Create">
         <short>
-          <var>Create</var> - constructor for           <var>TStringGridStrings</var>: calls inherited           <var>Create</var> and initialises some local variables</short>
+          <var>Create</var> - constructor for <var>TStringGridStrings</var>: calls inherited <var>Create</var> and
+initializes some local variables</short>
         <descr/>
         <errors/>
         <seealso>
@@ -12658,8 +12661,8 @@ The range is defined based on optional <var>AUseSelection</var> parameter which 
           <p>Like other custom controls, the grid is drawn using the paint method. In general terms the grid is drawn by painting all rows, and each row by painting its individual cells.</p>
           <p>The process is as follow:</p>
           <ul>
-            <li>First the visible cells area is determined: each row is tested to see if it intersects the canvas clipping region; if it's ok, then the visible area is painted by drawing columns of each row.</li>
-            <li>The column and row values are used to identify the cell that is about to be painted and again each column is tested for intersection with the clippling region; if everything is ok, some additional properties like the cell's rectangular extent and visual state are passed as arguments to the DrawCell method.</li>
+            <li>First the visible cells area is determined: each row is tested to see if it intersects the canvas clipping region; if it's OK, then the visible area is painted by drawing columns of each row.</li>
+            <li>The column and row values are used to identify the cell that is about to be painted and again each column is tested for intersection with the clipping region; if everything is OK, some additional properties like the cell's rectangular extent and visual state are passed as arguments to the DrawCell method.</li>
             <li>
               <p>As the drawing process is running, the visual state of each cell is adjusted according to grid options and position within grid. The visual state is retained in a variable of type <var>TGridDrawState</var> which is a set with following elements:
               </p>
@@ -12688,7 +12691,7 @@ The range is defined based on optional <var>AUseSelection</var> parameter which 
             </li>
             <li>
               <p>
-              <var>DrawCell</var>. The DrawCell method is virtual and may be overriden in descendent grids to do custom drawing. The information passed to 
+              <var>DrawCell</var>. The DrawCell method is virtual and may be overridden in descendent grids to do custom drawing. The information passed to
               <var>DrawCell</var> helps to identify which particular cell is being painted, the physical area occupied on the screen and its visible status. See 
               <link id="TCustomGrid.DrawCell">DrawCell</link> reference for details. For each cell the following occurs:
               </p>
@@ -12697,7 +12700,7 @@ The range is defined based on optional <var>AUseSelection</var> parameter which 
                   <b>PrepareCanvas.</b> If the DefaultDrawing property is set, the grid canvas is setup with default properties for brush and font based on current visual state. For several design and runtime properties, the text alignment is set to match programmer selection in custom columns if they exists.  If DefaultDrawing is false, brush color is set to clWindow and Font color to clWindowText, the text alignment is set with grids defaultTextStyle property value.</li>
                 <li>
                   <b>OnPrepareCanvas.</b> If the programmer wrote an event handler for the 
-                  <var>OnPrepareCanvas</var> event, it is called at this point. This event can be used for doing simple customization like changing a cell's background color, font's properties like color, fontface and style, Text layout like different combinations of left, center, top, bottom, right alignment, etc. Any change made to the canvas for a particular cell in this event would be lost, because the next cell drawing will reset canvas again to a default state. So it's safe doing changes only for a particular cell or cells and forget about it for the rest. Using this event sometimes helps to avoid using the 
+                  <var>OnPrepareCanvas</var> event, it is called at this point. This event can be used for doing simple customization like changing a cell's background color, font's properties like color, font face and style, Text layout like different combinations of left, center, top, bottom, right alignment, etc. Any change made to the canvas for a particular cell in this event would be lost, because the next cell drawing will reset canvas again to a default state. So it's safe doing changes only for a particular cell or cells and forget about it for the rest. Using this event sometimes helps to avoid using the
                   <var>OnDrawCell</var> grid event, where users would be forced to duplicate the grid's drawing code.</li>
                 <li>
                   <b>OnDrawCell.</b> Next, if no handler for the <var>OnDrawCell</var> event was specified, the grid calls the
@@ -12721,7 +12724,7 @@ The range is defined based on optional <var>AUseSelection</var> parameter which 
             <b>Grid's cell selection</b>
           </p>
           <p>The location of a grid's current (focused) cell (or row) can be changed using keyboard, mouse or through code. In order to change cell focus successfully to another position, we must test  the target position to see if it is allowed to receive cell focus. When using the keyboard, <var>AutoAdvance</var> performs part of the process by finding what should be the next focused cell. When using mouse clicks or moving by code, focus will not move from the current cell unless the target cell is permitted to receive focus.</p>
-          <p>The grid calls <var>SelectCell</var> to see if a cell is focusable: if this function returns true, then the target cell identified with arguments <var>aCol</var> and <var>aRow</var> is focusable (the current implementation of <var>TCustomGrid</var> simply returns true). <var>TCustomDrawGrid</var> and hence <var>TDrawGrid</var> and <var>TStringGrid</var> override this method and check first if  a cell is any wider than 0; normally you don't want a 0 width cell selected so a cell with this characteristics is skipped automatically in the process of finding a suitable cell. The overriden method <var>SelectCell</var> also calls the user configurable event <var>OnSelectCell</var>: this event receives the cell coordinates as arguments and always returns a default result of True.</p>
+          <p>The grid calls <var>SelectCell</var> to see if a cell is focusable: if this function returns true, then the target cell identified with arguments <var>aCol</var> and <var>aRow</var> is focusable (the current implementation of <var>TCustomGrid</var> simply returns true). <var>TCustomDrawGrid</var> and hence <var>TDrawGrid</var> and <var>TStringGrid</var> override this method and check first if  a cell is any wider than 0; normally you don't want a 0 width cell selected so a cell with this characteristics is skipped automatically in the process of finding a suitable cell. The overridden method <var>SelectCell</var> also calls the user configurable event <var>OnSelectCell</var>: this event receives the cell coordinates as arguments and always returns a default result of True.</p>
           <p>Once a cell is known to be focusable and we are sure a movement will take place, the method <var>BeforeMoveSelection</var> is called; this in turns triggers the <var>OnBeforeSelection</var> event. This method's arguments are the coordinates for the new focused cell; at this point any visible editor is hidden too. The "before" word means that selection is not yet changed and current focused coordinates can be accessed with <var>grid.Col</var> and <var>grid.Row</var> properties. </p>
           <p>After that, the internal focused cell coordinates are changed and <var>MoveSelection</var> is called; this method's purpose (if set) is to trigger the <var>OnSelection</var> event (this is a notification that the focused cell has changed and the new cell coordinates are available through grid.row and grid.col properties).</p>
           <p>Note that is not good to use the <var>OnSelectCell</var> event to detect cell focus changes, as this event will be triggered several times even for the same cell in the process of finding a suitable cell. Is better to use <var>OnBeforeSelection</var> or <var>OnSelection</var> events for this purpose.</p>
@@ -12766,7 +12769,7 @@ The range is defined based on optional <var>AUseSelection</var> parameter which 
 &#x9;&#x9;&#x9;&#x9;      When using custom columns, programmers can enter a list of values using the column's PickList property. [FOR BEGINNERS: TODO: exact procedure to edit the list]</li>
             <li>
               <p>
-              <b>cbsCheckboxColumn</b> This editor style is at the moment only available in TDBGrid. If a field's contents associated with the column are restricted to a pair of values, for example, yes-no, true-false, on-off, 1-0, etc then cbsCheckboxColumn is used to modify the apearance of a column by using a checkbox representation that the user can toggle by using a mouse click or pressing the SPACE key.
+              <b>cbsCheckboxColumn</b> This editor style is at the moment only available in TDBGrid. If a field's contents associated with the column are restricted to a pair of values, for example, yes-no, true-false, on-off, 1-0, etc then cbsCheckboxColumn is used to modify the appearance of a column by using a checkbox representation that the user can toggle by using a mouse click or pressing the SPACE key.
               </p>
               <ul>
                 <li>If a columns' ButtonStyle property is set to cbsAuto and DBGrid detects that the field associated with the column is a boolean field, then the grid uses this editor style automatically. This automatic selection can be disabled or enabled using DBGrid's OptionsExtra property; setting dgeCheckboxColumn element to false disables this feature.</li>
@@ -12857,12 +12860,12 @@ The range is defined based on optional <var>AUseSelection</var> parameter which 
       <element link="#rtl.Classes.TComponent.Destroy" name="TCompositeCellEditor.Destroy"/>
       <element name="TCompositeCellEditor.AddEditor">
         <short>
-          <var>AddEditor</var> - adds the specified Editor with the given alignment and specified ActiveControl propery</short>
+          <var>AddEditor</var> - adds the specified Editor with the given alignment and specified ActiveControl property</short>
       </element>
       <element link="#LCL.Controls.TWinControl.SetFocus" name="TCompositeCellEditor.SetFocus"/>
       <element name="TGridColumnTitle.ImageIndex">
         <short>
-          <var>ImageIndex</var> - the index for any image to be used in the title (default=0, ie no image)</short>
+          <var>ImageIndex</var> - the index for any image to be used in the title (default=0, i.e. no image)</short>
       </element>
       <element name="TGridColumnTitle.ImageLayout">
         <short>
@@ -12986,7 +12989,7 @@ The range is defined based on optional <var>AUseSelection</var> parameter which 
       </element><element name="TGridOption.goCellHints"><short>Show individual cell hints</short><seealso><link id="TControl.Hint"/><link id="TControl.ShowHint"/><link id="TCustomGrid.OnGetCellHint"/>
         </seealso><descr>Requires the <link id="TControl.ShowHint">ShowHint</link> property to be set to <var>TRUE</var>.
 
-If set, the  <link id="TControl.Hint">Hint</link> propperty will be ignored. Instead the  <link id="TCustomGrid.OnGetCellHint">OnGetCellHint</link> event will be called for each cell.</descr>
+If set, the  <link id="TControl.Hint">Hint</link> property will be ignored. Instead the  <link id="TCustomGrid.OnGetCellHint">OnGetCellHint</link> event will be called for each cell.</descr>
       </element><element name="TGridOption.goTruncCellHints"><short>Show cell hints if cell text is too long</short>
       </element><element name="TGridOption.goCellEllipsis"><short>Show "..." if cell text is too long</short>
       </element><element name="TGridOption.goAutoAddRowsSkipContentCheck"><short>Also add a row if last row is empty</short><seealso><link id="TGridOption.goAutoAddRows"/>

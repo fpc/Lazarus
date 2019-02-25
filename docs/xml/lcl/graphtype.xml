@@ -105,7 +105,7 @@
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TRawImageBitOrder">
-        <short>The first pixel in a raw image line can be the left or right pixel of the displaye image.</short>
+        <short>The first pixel in a raw image line can be the left or right pixel of the displayed image.</short>
         <descr/>
         <seealso/>
       </element>
@@ -164,7 +164,7 @@
       <!-- record type Visibility: default -->
       <element name="TRawImageDescription">
         <short>Descriptor object for the image format of devices and raw (uncompressed) image data</short>
-        <descr>This effectivley is a record with some attached methods. More related procedures exist outside the object.
+        <descr>This effectively is a record with some attached methods. More related procedures exist outside the object.
 
 The object describes the presence and exact storage of the RGBA image and mask pixels, of a device or image. The color information is stored in aligned scanlines.
 
@@ -385,7 +385,7 @@ This object currently is subject to refactoring, don't use it in application cod
       <!-- variable Visibility: default -->
       <element name="TRawImage.Palette">
         <short>
-          <var>Palette</var> - pointer to the palette of colours for this image</short>
+          <var>Palette</var> - pointer to the palette of colors for this image</short>
         <descr/>
         <seealso/>
       </element>
@@ -840,7 +840,7 @@ A Mask value of 1 means that the pixel is masked (transparent); a value of 0 mea
       <element name="TRawImageDescription.Init_BPP24_B8G8R8_M1_BIO_TTB">
         <short>Init for a masked 24 bit RGB image (LSB Blue)</short>
         <descr>
-          <p>Init_BPP24_B8G8R8_M1_BIO_TTB - initiator for specfied format</p>
+          <p>Init_BPP24_B8G8R8_M1_BIO_TTB - initiator for specified format</p>
           <pre>{ pf24bit:
 
  Format=ricfRGBA HasPalette=false Depth=24 PaletteColorCount=0
@@ -949,7 +949,7 @@ A Mask value of 1 means that the pixel is masked (transparent); a value of 0 mea
       </element>
       <element name="TRawImage.Init">
         <short>
-          <var>Init</var> - initiator for the object. Don't use a contructor here, it will break compatibility with a record</short>
+          <var>Init</var> - initiator for the object. Don't use a constructor here, it will break compatibility with a record</short>
       </element>
       <element name="TRawImage.CreateData">
         <short>
@@ -960,7 +960,7 @@ A Mask value of 1 means that the pixel is masked (transparent); a value of 0 mea
       </element>
       <element name="TRawImage.ReleaseData">
         <short>
-          <var>ReleaseData</var> - frees the resources when finished with th edata</short>
+          <var>ReleaseData</var> - frees the resources when finished with the data</short>
       </element>
       <element name="TRawImage.ExtractRect">
         <short>

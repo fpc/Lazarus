@@ -193,7 +193,7 @@
         <descr>
           <pre>Details held include:
           the Message associated with the wheel;
-          the shift state (ie whether Shift, Alt, Control etc keys have been pressed);
+          the shift state (i.e. whether Shift, Alt, Control etc keys have been pressed);
           mouse position and the message Result.</pre>
         </descr>
         <seealso/>
@@ -421,7 +421,7 @@
         <short>Top side (or center vertically).</short>
       </element>
       <element name="TAnchorKind.akLeft">
-        <short>Left side (or center horizonally).</short>
+        <short>Left side (or center horizontally).</short>
       </element>
       <element name="TAnchorKind.akRight">
         <short>Right side (or center horizontally).</short>
@@ -525,7 +525,7 @@
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TFormStyle">
-        <short>Defines special form behaviour.</short>
+        <short>Defines special form behavior.</short>
         <descr/>
         <seealso/>
       </element>
@@ -589,7 +589,7 @@
         </notes>
       </element>
       <element name="TFormBorderStyle.bsToolWindow">
-        <short>Single line border, small caption, not resizeable.</short>
+        <short>Single line border, small caption, not resizable.</short>
       </element>
       <element name="TFormBorderStyle.bsSizeToolWin">
         <short>Small caption, form can be resized.</short>
@@ -913,7 +913,7 @@ More cursors
         <short>child controls owned by this control are NOT selectable in the designer</short>
       </element>
       <element name="TControlStyleType.csAutoSize0x0">
-        <short>if the preferred size is 0x0 then control is shrinked to 0x0</short>
+        <short>if the preferred size is 0x0 then control is shrunk to 0x0</short>
       </element>
       <element name="TControlStyleType.csAutoSizeKeepChildLeft">
         <short>when AutoSize=true do not move children horizontally</short>
@@ -1519,9 +1519,9 @@ dmFindTarget: find child control under the mouse
         <descr>
           <p>An OnEndDrag event is sent by a dragged control, when dragging is finished.
             This happens regardless of whether the operation was drag-drop or drag-dock,
-            and whether the operation ended with a drop or was cancel'd.
+            and whether the operation ended with a drop or was cancelled.
           </p>
-          <p>Check Target=Nil to distinguish between a drop and a cancel'd operation (Nil).</p>
+          <p>Check Target=Nil to distinguish between a drop and a cancelled operation (Nil).</p>
         </descr>
         <seealso>
           <link id="TDragDropEvent"/>
@@ -1534,7 +1534,7 @@ dmFindTarget: find child control under the mouse
         </notes>
       </element>
       <element name="TEndDragEvent.Target">
-        <short>The drop target (control), or Nil if cancel'd.</short>
+        <short>The drop target (control), or Nil if cancelled.</short>
       </element>
       <element link="TDragOverEvent.X" name="TEndDragEvent.X">
         <short>The mouse coordinate, in client coordinates if dropped, else in screen coordinates.</short>
@@ -1549,7 +1549,7 @@ dmFindTarget: find child control under the mouse
           <p>Every dragging operation has an associated DragObject, holding references to the source and target controls, and other parameters for the customization of the visual user feedback.</p>
           <p>A default DragObject is created automatically when a dragging operation starts, and is destroyed when the operation has ended, so that you must not take special care on it.
             But an application can provide a customized DragObject in the <link id="TControl.OnStartDrag"/> or <link id="TControl.OnStartDock"/> handlers of the source control (being dragged).</p>
-          <remark>AutoCreated DragObjects imply different behaviour in the DragOver and DragDrop events, where the Source becomes the dragged control, while else the DragObject itself is passed as Source.
+          <remark>AutoCreated DragObjects imply different behavior in the DragOver and DragDrop events, where the Source becomes the dragged control, while else the DragObject itself is passed as Source.
           </remark>
           <p>TDragObject is the ancestor of an whole tree of dragging objects, with the main branches supporting either drag-drop or drag-dock operations.
             The type of the operation is determined from the <link id="TControl.DragKind"/> property of the source control.</p>
@@ -1957,7 +1957,7 @@ dmFindTarget: find child control under the mouse
       <element name="TDockOrientation">
         <short>Orientation of DockZones and docked controls, similar to <link id="TAlign"/>.</short>
         <descr>
-          <p>This is a Delphi relict, bound to TDockTree and not very useful in application code.<br/>
+          <p>This is a Delphi relic, bound to TDockTree and not very useful in application code.<br/>
           All DockZones in an DockTree have a unique orientation, horizontal or vertical, indicating how controls are arranged in this zone.
           When a control is docked into a zone, it obtains the orientation of that zone.
           </p>
@@ -2092,7 +2092,7 @@ dmFindTarget: find child control under the mouse
       <element name="TDragDockObject">
         <short>A drag object for drag-dock.</short>
         <descr>
-          <p>This object type serves two main purposes: it allows one to distinguish between drag-drop and drag-dock operations, and it implements docking specific information and behaviour.</p>
+          <p>This object type serves two main purposes: it allows one to distinguish between drag-drop and drag-dock operations, and it implements docking specific information and behavior.</p>
           <p>The primary use is for tree docking, as assumed in the TControl and TWinControl methods.</p>
           <p>[entire review DoDi 2011-09-10]</p>
         </descr>
@@ -2864,7 +2864,7 @@ dmFindTarget: find child control under the mouse
             <link id="TWinControl.ChildSizing"/>.
           </p>
           <code>Left, Top, Right, Bottom: integer;
-        minimum space left to the autosized control.
+        minimum space left to the auto-sized control.
         For example: Control A lies left of control B.
         A has borderspacing Right=10 and B has borderspacing Left=5.
         Then A and B will have a minimum space of 10 between.
@@ -3240,7 +3240,7 @@ dmFindTarget: find child control under the mouse
         <short>The control we are anchored to.</short>
       </element>
       <element name="TAnchorSide.GetSidePosition.ReferenceSide">
-        <short>The side we are anchord to.</short>
+        <short>The side we are anchored to.</short>
       </element>
       <element name="TAnchorSide.GetSidePosition.Position">
         <short>Position of the side to anchor to.</short>
@@ -3272,7 +3272,7 @@ dmFindTarget: find child control under the mouse
         <short>The control we are anchored to.</short>
       </element>
       <element name="TAnchorSide.CheckSidePosition.ReferenceSide">
-        <short>The side we are anchord to.</short>
+        <short>The side we are anchored to.</short>
       </element>
       <element name="TAnchorSide.CheckSidePosition.Position">
         <short>Position of the side to anchor to.</short>
@@ -3865,7 +3865,8 @@ dmFindTarget: find child control under the mouse
       <element name="TLazAccessibleObject">
         <short>Represents an accessible object with which the user of a accessibility tool can interact.</short>
         <descr>
-          <p>Every TControl has a TLazAccessibleObject instace associated with it, which means that every TControl is potentially accessible, but to actually be usable the accessible object needs to have its properties set, the most important of which are the role, description and value. Native windowed classes should already receive accessibility properties from the underlying widgetset utilized, while TCustomControl descendents will have their accessibility taken care by the LCL itself. User applications should add accessibility for their own TCustomControl descendent classes and also possibly customize the descriptions of some elements. It is also possible to make an accessible object invisible for user, which is done by setting its AccessibleRole property to larIgnored.</p>
+          <p>Every TControl has a TLazAccessibleObject instance associated with it, which means that every TControl is
+potentially accessible, but to actually be usable the accessible object needs to have its properties set, the most important of which are the role, description and value. Native windowed classes should already receive accessibility properties from the underlying widgetset utilized, while TCustomControl descendents will have their accessibility taken care by the LCL itself. User applications should add accessibility for their own TCustomControl descendent classes and also possibly customize the descriptions of some elements. It is also possible to make an accessible object invisible for user, which is done by setting its AccessibleRole property to larIgnored.</p>
           <p>Accessibility support in Lazarus is also documented in the wiki in http://wiki.lazarus.freepascal.org/LCL_Accessibility</p>
         </descr>
         <seealso>
@@ -4533,7 +4534,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.EndAutoSizing">
-        <short>End of the autosizing process, resets AutoSizing to False.</short>
+        <short>End of the auto-sizing process, resets AutoSizing to False.</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.AnchorSideChanged">
@@ -4614,7 +4615,7 @@ dmFindTarget: find child control under the mouse
         <descr>
           <p>Overridden in TWinControl, in TControl it's a NOP.
           </p>
-          <p>This method simulates the VCL behaviour and has no real effect.
+          <p>This method simulates the VCL behavior and has no real effect.
           </p>
         </descr>
       <notes><note>?</note>
@@ -4648,7 +4649,7 @@ dmFindTarget: find child control under the mouse
         </short>
         <descr>
           <p>Calculates the preferred width and height for a control,
-            which is used by the LCL autosizing algorithms as the default size.
+            which is used by the LCL auto-sizing algorithms as the default size.
             Negative or 0 are treated as undefined and the LCL uses other sizes instead.
           </p>
           <p>
@@ -4794,7 +4795,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- function Visibility: protected -->
       <element name="TControl.CanAutoSize">
-        <short>Function to determine if autosizing is possible, and if so,
+        <short>Function to determine if auto-sizing is possible, and if so,
           gets the new width and height</short>
         <descr>Override this to return different values.
         </descr>
@@ -5636,7 +5637,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DragCanceled">
-        <short>Notifies the control of a canceld drag.</short>
+        <short>Notifies the control of a cancelled drag.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5837,7 +5838,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.Changed">
-        <short>Call this method whenever a change has occured, to trigger further processing.</short>
+        <short>Call this method whenever a change has occurred, to trigger further processing.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6258,7 +6259,7 @@ dmFindTarget: find child control under the mouse
         <seealso/>
       </element>
       <element name="TControl.DoCallNotifyHandler.HandlerType">
-        <short>The event that has occured.</short>
+        <short>The event that has occurred.</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DoContextPopup">
@@ -6397,7 +6398,7 @@ dmFindTarget: find child control under the mouse
         </descr>
       </element>
       <element name="TControl.ManualFloat.Result">
-        <short>True if succesfully floated.</short>
+        <short>True if successfully floated.</short>
       </element>
       <element name="TControl.ManualFloat.TheScreenRect">
         <short>The screen area where the floating control is moved; the client area of a float host site.</short>
@@ -6483,7 +6484,7 @@ dmFindTarget: find child control under the mouse
         </short>
         <descr>
           <p>This method does the same as Delphi <var>TWinControl.DoAutoSize</var>.
-            But since <var>DoAutoSize</var> is commonly overriden by descendant components, it is not useful to perform all tests, which can result in too much overhead.
+            But since <var>DoAutoSize</var> is commonly overridden by descendant components, it is not useful to perform all tests, which can result in too much overhead.
             To reduce this the LCL calls <var>AdjustSize</var> instead.
           </p>
           <p>During loading and handle creation the calls are delayed.</p>
@@ -6530,7 +6531,7 @@ dmFindTarget: find child control under the mouse
         <short>Anchor to Sibling at Side.
         </short>
         <descr>
-          <p>Setup AnchorSide to anchor a side to the side of a neighbour sibling.
+          <p>Setup AnchorSide to anchor a side to the side of a neighbor sibling.
             For example Right side to Left side, or Top side to Bottom.</p>
         </descr>
       </element>
@@ -6580,7 +6581,7 @@ dmFindTarget: find child control under the mouse
       <element name="TControl.AnchorToCompanion">
         <short>Anchor to Sibling at Side, with the same extent.
         </short>
-        <descr>Table or tree style anchoring, into a neighbour cell of Sibling.
+        <descr>Table or tree style anchoring, into a neighbor cell of Sibling.
           Obtain the row height (or column width) from Sibling.
         </descr>
       <notes><note>?</note>
@@ -6714,7 +6715,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.GetPreferredSize">
-        <short>Returns default/preferred height and width, for use in autosizing.</short>
+        <short>Returns default/preferred height and width, for use in auto-sizing.</short>
         <descr>
           <p>Called during AutoSize calculations. Only positive values are valid. Negative or 0 are treated as undefined and the LCL uses other sizes instead.</p>
           <p>WithThemeSpace: If true, adds space for stacking.</p>
@@ -7171,7 +7172,7 @@ dmFindTarget: find child control under the mouse
       <!-- function Visibility: public -->
       <element name="TControl.Perform">
         <short>Direct call of an message handler, bypassing the message queue.</short>
-        <descr>The parameters and result depend on the concret message.
+        <descr>The parameters and result depend on the concrete message.
         </descr>
         <errors/>
         <seealso/>
@@ -7286,7 +7287,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.ParentDestroyingHandle">
-        <short>Returns True if any parent is destroying its Handle (and its childrens').</short>
+        <short>Returns True if any parent is destroying its Handle (and its children').</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -7620,7 +7621,7 @@ dmFindTarget: find child control under the mouse
           <p>The effect depends on the concrete control type.
             For example a label or button can become bigger or smaller to accommodate a longer or shorter caption.
           </p>
-          <p>Default is false, ie no auto-sizing
+          <p>Default is false, i.e. no auto-sizing
           </p>
         </descr>
         <seealso>
@@ -7629,7 +7630,7 @@ dmFindTarget: find child control under the mouse
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.AutoSizing">
-        <short>True while autosizing is in progress.</short>
+        <short>True while auto-sizing is in progress.</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.AutoSizingAll">
@@ -7647,7 +7648,7 @@ dmFindTarget: find child control under the mouse
       <!-- property Visibility: public -->
       <element name="TControl.BaseBounds">
         <short>The rectangle of the designed bounds.</short>
-        <descr>The current Bounds can change, due to scaling, anchoring or autosizing.
+        <descr>The current Bounds can change, due to scaling, anchoring or auto-sizing.
         </descr>
         <seealso>
           <link id="TControl.Anchors"/>
@@ -7718,7 +7719,7 @@ dmFindTarget: find child control under the mouse
           <p>The values are based on the Top, Left, Width and Height properties of the control.
           </p>
           <p>Set BoundsRect to move and/or resize the control.
-            This can reduce flicker, occuring otherwise when Top, Width etc. are set individually.
+            This can reduce flicker, occurring otherwise when Top, Width etc. are set individually.
           </p>
         </descr>
       </element>
@@ -8149,10 +8150,10 @@ dmFindTarget: find child control under the mouse
         <short>Notification handler for a resize of the control.</short>
         <descr><p>This event is triggered after the Width, Height, ClientWidth or ClientHeight of the control has changed, and before the LCL sends the new size to the widgetset.
 The size of the underlying widget (e.g. unit LCLIntf function GetWindowSize and GetClientRect) may differ from the control's Width/Height/ClientRect during OnResize.
-            During autosize the size can change multiple times, but only the last change triggers the OnResize.
+            During auto-size the size can change multiple times, but only the last change triggers the OnResize.
           </p><p>Use OnResize to react on size changes.
             To also react on moves, use the OnChangeBounds event.
-          </p><p>If you want to customize the resize behaviour, use OnConstrainedResize instead.
+          </p><p>If you want to customize the resize behavior, use OnConstrainedResize instead.
           </p><p>Common mistake:
             Keep in mind that ClientWidth and ClientHeight can change even when Width, Height stays the same.
             For example when the theme changes, the Width and Height remain the same, but the changed frame reduces the ClientWidth and ClientHeight.
@@ -8236,10 +8237,10 @@ Button1.Parent:=Form1; // set parent as last, the LCL now applies all properties
       <element name="TControl.ParentColor">
         <short>If true, the Color of the control will be the same as the one from the Parent. Default is true.</short>
         <descr>While this property is True, all changes to the Color of the parent will be 
-          also done to the Color of the control, syncronizing them and keeping them with the same value. 
+          also done to the Color of the control, synchronizing them and keeping them with the same value.
           If the Color of the control is changed by the application, then ParentColor will be automatically set to False.
           The combination of ParentColor with clDefault can cause problems in resolving clDefault. To obtain the Color
-          property of a control while taking into account clDefault and ParentColor one whould use TControl.GetColorResolvingParent.
+          property of a control while taking into account clDefault and ParentColor one would use TControl.GetColorResolvingParent.
           This method might return a non-RGB color, but will never return clDefault. To obtain a purely RGB result use
           TColor.GetRGBColorResolvingParent
         </descr>
@@ -8253,7 +8254,7 @@ Button1.Parent:=Form1; // set parent as last, the LCL now applies all properties
       <element name="TControl.ParentFont">
         <short>If true, the Font of the control will be the same as the one from the Parent. Default is true.</short>
         <descr>While this property is True, all changes to the font of the parent will be 
-          also done to the font of the control, syncronizing them and keeping them with the same value. 
+          also done to the font of the control, synchronizing them and keeping them with the same value.
           If the Font of the control is changed by the application, then ParentFont will be automatically set to False.
         </descr>
         <seealso>
@@ -8264,7 +8265,7 @@ Button1.Parent:=Form1; // set parent as last, the LCL now applies all properties
       <element name="TControl.ParentShowHint">
         <short>If true, the value of ShowHint for the control will be the same as the one from the Parent. Default is true.</short>
         <descr>While this property is True, all changes to the ShowHint property of the parent will be 
-          also done to the ShowHint property of the control, syncronizing them and keeping them with the same value. 
+          also done to the ShowHint property of the control, synchronizing them and keeping them with the same value.
           If the ShowHint property of the control is changed by the application, then ParentShowHint will be automatically set to False.
         </descr>
         <seealso>
@@ -8340,7 +8341,7 @@ Button1.Parent:=Form1; // set parent as last, the LCL now applies all properties
             resulting in a string-to-PCHAR and another PCHAR-to-string conversion.
             But as long as <var>Get/SetTextBuf</var> is not overridden,
             <var>Get/SetText</var> can (and does) safely call <var>RealGet/SetText</var> immediately,
-            to avoid beforementioned conversions.
+            to avoid the mentioned conversions.
           </p>
           <p>To keep things optimal, LCL components should always override RealGet/SetText;
             Get/SetTextBuf is only kept for compatibility.
@@ -8444,7 +8445,7 @@ Button1.Parent:=Form1; // set parent as last, the LCL now applies all properties
         maximize Height. The width is kept, if akRight is not set. If akRight
         is set in the Anchors property, then the right distance is kept and
         the control's width is resized.
-        If there several controls with Align=alLeft, they will not overlapp and
+        If there several controls with Align=alLeft, they will not overlap and
         be put side by side.
         Same for alRight, alTop, alBottom. (Always expand 3 sides).
 
@@ -8603,7 +8604,7 @@ Button1.Parent:=Form1; // set parent as last, the LCL now applies all properties
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControlChildSizing.SetGridSpacing">
-        <short>Set all spaceing to the same value.</short>
+        <short>Set all spacing to the same value.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9366,7 +9367,7 @@ Button1.Parent:=Form1; // set parent as last, the LCL now applies all properties
         <short>Updates the size and extent of the control and ClientRect.
         </short>
         <descr>
-          <p>Changing the ClientRect here, to the most probable size, reduces unneccessary resizes.
+          <p>Changing the ClientRect here, to the most probable size, reduces unnecessary resizes.
           </p>
           <p>Normally the clientwidth/clientheight is adjusted automatically by the widget,
             but it is up to widget when this will be done.
@@ -9435,10 +9436,10 @@ Button1.Parent:=Form1; // set parent as last, the LCL now applies all properties
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.CalculatePreferredSize">
-        <short>Override this method to return a different preferred height and width for autosizing.
+        <short>Override this method to return a different preferred height and width for auto-sizing.
         </short>
         <descr>
-          <p>Calls the inherited method to calculate the default/preferred width and height for a <var>TWinControl</var>, which is used by the LCL autosizing algorithms as default size.
+          <p>Calls the inherited method to calculate the default/preferred width and height for a <var>TWinControl</var>, which is used by the LCL auto-sizing algorithms as default size.
             Only positive values are valid. Negative or 0 are treated as undefined and the LCL uses other sizes instead.</p>
           <p>
             <var>TWinControl</var> overrides this:</p>
@@ -9794,7 +9795,7 @@ Button1.Parent:=Form1; // set parent as last, the LCL now applies all properties
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.WMSysKeyDown">
-        <short>Event handler for sys key pressed, not handled by the widget.
+        <short>Event handler for system key pressed, not handled by the widget.
           Tries <link id="TWinControl.DoRemainingKeyDown"/>.
         </short>
         <descr/>
@@ -9835,7 +9836,7 @@ Button1.Parent:=Form1; // set parent as last, the LCL now applies all properties
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.WMChar">
         <short>Handler for
-          message sent by the widget, after it has handled the keypress itself.
+          message sent by the widget, after it has handled the key press itself.
         </short>
         <descr/>
         <errors/>
@@ -9847,7 +9848,7 @@ Button1.Parent:=Form1; // set parent as last, the LCL now applies all properties
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.WMSysChar">
         <short>Handler for
-          message sent by the widget, after it has handled the keypress itself.
+          message sent by the widget, after it has handled the key press itself.
         </short>
         <descr/>
         <errors/>
@@ -9981,7 +9982,7 @@ Button1.Parent:=Form1; // set parent as last, the LCL now applies all properties
       <element name="TWinControl.CNChar">
         <short>Handler for
           a key pressed notification.
-          CNChar is sent by the widget before it has handled the keypress itself.
+          CNChar is sent by the widget before it has handled the key press itself.
         </short>
         <descr/>
         <errors/>
@@ -10814,7 +10815,7 @@ End;
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.SetChildZPosition">
-        <short>Updates the position of the child control in the Z plane (ie front-to-back).
+        <short>Updates the position of the child control in the Z plane (i.e. front-to-back).
         </short>
         <descr/>
         <errors/>
@@ -10828,7 +10829,7 @@ End;
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.ShowControl">
-        <short>Asks the parent to show ourself.
+        <short>Asks the parent to show itself.
         </short>
         <descr/>
         <errors/>
@@ -10859,7 +10860,7 @@ End;
         </short>
         <descr>
           <p>LM_SETFOCUS: gets parent form and show this control as focused</p>
-          <p>LM_KILLFOCUS: removes focus fromthis control</p>
+          <p>LM_KILLFOCUS: removes focus from this control</p>
           <p>LM_NCHITTEST: check transparency etc</p>
           <p>Mouse messages: send to DockManager.</p>
         </descr>
@@ -11160,7 +11161,7 @@ End;
           <pre>if MyControl.CanSetFocus then
   MyControl.SetFocus;
           </pre>
-          <p><var>CanSetFocus</var> should be prefered over <var>CanFocus</var> if used in CanSetFocus/SetFocus combination
+          <p><var>CanSetFocus</var> should be preferred over <var>CanFocus</var> if used in CanSetFocus/SetFocus combination
           because it checks also if the parent form can receive focus and thus prevents the "cannot focus an invisible window" LCL exception.
           </p>
         </descr>
@@ -11789,14 +11790,14 @@ End;
         <short>Handler for a character entered by the user.
         </short>
         <descr>
-          <p>This handler only receives characters, not control or other special keycodes.
+          <p>This handler only receives characters, not control or other special key codes.
             Control keys should be handled by an OnKeyDown handler instead.
           </p>
           <p>The handler can convert the character into a different one.
           </p>
           <remark>We recommend you to use OnUTF8KeyPress to prevent data loss.
             Characters are converted from UTF8 to the system encoding in OnKeyPressEvent,
-            with possible loss of characters outside the Ansi codepage.
+            with possible loss of characters outside the ANSI codepage.
           </remark>
         </descr>
         <seealso>
@@ -11833,14 +11834,14 @@ End;
         <short>Handler for a character entered by the user.
         </short>
         <descr>
-          <p>This handler only receives characters, not control or other special keycodes.
+          <p>This handler only receives characters, not control or other special key codes.
             Control keys should be handled by an OnKeyDown handler instead.
           </p>
           <p>The handler can convert the character into a different one.
           </p>
           <p>While <link id="TWinControl.OnKeyPress">OnKeyPress</link>
-            only receives Ansi characters,
-            with possible loss of characters outside the Ansi codepage,
+            only receives ANSI characters,
+            with possible loss of characters outside the ANSI codepage,
             the OnUTF8KeyPress handler receives the UTF-8 character code.
           </p>
         </descr>
@@ -12720,7 +12721,7 @@ End;
         <descr>
           <p>InsertControl determines the layout and appearance of the just docked control, forcing a repaint of the container control if necessary.</p>
           <p>When SetReplacingControl has been called with a non-Nil Control before, the dropped control only should replace that control.</p>
-          <p>A tree docking manager organizes the docksite into layers of horizontol or vertical orientation.
+          <p>A tree docking manager organizes the docksite into layers of horizontal or vertical orientation.
             As long as no more than one control is docked into a docksite, the tree has no orientation at all.
             The second docked control determines the orientation of the docksite and the dock tree.
             All further drops are either isogonal (in direction of the zone orientation) or orthogonal (opposite to the zone orientation).
@@ -13090,7 +13091,7 @@ End;
             since the VCL knows when a win32 widget has to be recreated when properties have changed.
           </p>
           <p>The LCL however doesn't know, the widgetset does.
-            To avoid old VCL behaviour and to provide a central function to the widgetset, it is moved here.
+            To avoid old VCL behavior and to provide a central function to the widgetset, it is moved here.
           </p>
         </descr>
         <errors/>
@@ -13495,7 +13496,7 @@ End;
       <element name="TDragManager">
         <short>The abstract base class for managing the dragging of controls (to be dropped or docked).</short>
         <descr>
-          <p>This is the OO version of the Delphi drag manager, implemented in TDragManagerDefault.</p>
+          <p>This is the object oriented version of the Delphi drag manager, implemented in TDragManagerDefault.</p>
           <remark>The registered dock sites should be stored in a persistent list, not in a DragManager instance.</remark>
           <p>[entire review DoDi 2010-02-16]</p>
         </descr>
@@ -13960,16 +13961,16 @@ End;
             
             <var>DoAutoSize</var> in a smart fashion.</p>
           <p>During loading and handle creation the calls are delayed.</p>
-          <p>This method initially does the same as <link id="#lcl.Controls.TWinControl.DoAutoSize">TWinControl.DoAutoSize</link>.  But since <var>DoAutoSize</var> is commonly overriden by descendant components,  it is not useful to perform all tests, which can result in too much overhead. To reduce this the LCL calls <var>AdjustSize</var> instead.</p>
-          <p>When setting <var>AutoSize</var> = true the LCL autosizes the control in width and height. This is one of the most complex parts of the LCL, because the result depends on nearly a hundred properties. Let's start simple:</p>
-          <p>The LCL will only autosize the Width or Height if it is free to resize. In other words - the width is not autosized if:</p>
+          <p>This method initially does the same as <link id="#lcl.Controls.TWinControl.DoAutoSize">TWinControl.DoAutoSize</link>.  But since <var>DoAutoSize</var> is commonly overridden by descendant components,  it is not useful to perform all tests, which can result in too much overhead. To reduce this the LCL calls <var>AdjustSize</var> instead.</p>
+          <p>When setting <var>AutoSize</var> = true the LCL auto-sizes the control in width and height. This is one of the most complex parts of the LCL, because the result depends on nearly a hundred properties. Let's start simple:</p>
+          <p>The LCL will only auto-size the Width or Height if it is free to resize. In other words - the width is not auto-sized if:</p>
           <ul>
             <li>the left and right side is anchored. You can anchor the sides with the <var>Anchors</var> property or by setting the <var>Align</var> property to <var>alTop</var>, <var>alBottom</var> or <var>alClient</var>
             </li>
-            <li>the Width and Height are bound by the <var>Constraints</var> properties. The Contraints can also be overriden by the widgetset. For example the winapi does not allow resizing the height of a combobox. And the gtk widgetset does not allow resizing the width of a vertical scrollbar</li>
+            <li>the Width and Height are bound by the <var>Constraints</var> properties. The Constraints can also be overridden by the widgetset. For example the WinAPI does not allow resizing the height of a combobox. And the gtk widgetset does not allow resizing the width of a vertical scrollbar</li>
           </ul>
           <p>The new size is calculated by the protected method <link id="#lcl.Controls.TControl.CalculatePreferredSize">TControl.CalculatePreferredSize</link>.
-            This method asks the widgetset for an appropriate Width and Height. For example a <var>TButton</var> has preferred Width and Height. A <var>TComboBox</var> has only a preferred Height. The preferred Width is returned as 0 and so the LCL does not autosize the Width - it keeps the width unaltered. Finally a <var>TMemo</var> has no preferred Width or Height. Therefore AutoSize has no effect on a TMemo.</p>
+            This method asks the widgetset for an appropriate Width and Height. For example a <var>TButton</var> has preferred Width and Height. A <var>TComboBox</var> has only a preferred Height. The preferred Width is returned as 0 and so the LCL does not auto-size the Width - it keeps the width unaltered. Finally a <var>TMemo</var> has no preferred Width or Height. Therefore AutoSize has no effect on a TMemo.</p>
           <p>Some controls override this method. For example the <var>TGraphicControl</var> descendants like <var>TLabel</var> have no window handle and so cannot query the widgetset. They must calculate their preferred Width and Height themselves.</p>
           <p>The widgetsets must override the <var>GetPreferredSize</var> method for each widget class that has a preferred size (Width or Height or both).</p>
           <p>
@@ -14044,7 +14045,7 @@ End;
             <li>FLastDoChangeBounds: TRect</li>
           </ul>
           <p>Used to avoid calling OnChangeBounds with the same coordinates. This reduces
-            user defined autosizing.</p>
+            user defined auto-sizing.</p>
           <ul>
             <li>FLastResizeClientHeight: integer</li>
             <li>FLastResizeClientWidth: integer</li>
@@ -14052,7 +14053,7 @@ End;
             <li>FLastResizeWidth: integer</li>
           </ul>
           <p>Used to avoid calling OnResize with the same coordinates. This reduces user
-            defined autosizing.</p>
+            defined auto-sizing.</p>
           <ul>
             <li>FLoadedClientSize: TPoint</li>
           </ul>
@@ -14096,7 +14097,7 @@ End;
           <ul>
             <li>procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;</li>
           </ul>
-          <p>This is the standard procedure overriden by many Delphi controls. TWinControl overrides it too. </p>
+          <p>This is the standard procedure overridden by many Delphi controls. TWinControl overrides it too. </p>
           <p>Ignores calls when bounds are locked; lock the FBoundsRealized to avoid overhead to the interface during auto sizing.</p>
           <p>ChangeBounds is not locked this way.</p>
           <ul>
@@ -14146,7 +14147,7 @@ End;
           <p>BaseBounds holds the designed Bounds, to be used e.g. when a scale factor is set later.</p>
           <p>GetControlOrigin returns the origin in screen coordinates. These values are not always in sync with the true screen position, managed by the widgetset.</p>
           <p>ScreenToClient returns the client coordinates of an point given in the screen coordinates, i.e. the coordinates relative to the control's client origin.</p>
-          <p>ClientToScreen returns the screen coordinats for an point in client coordinates.</p>
+          <p>ClientToScreen returns the screen coordinates for an point in client coordinates.</p>
         </descr>
       <notes><note>?</note><note>right?</note>
         </notes>
@@ -14163,7 +14164,7 @@ End;
             when its Parent is resized.
           </p>
           <p>The default anchors [akLeft,akTop] keep every control anchored to the origin (TopLeft) of their Parent control (of form).
-            This will cause controls to disappear when the form is shrinked,
+            This will cause controls to disappear when the form is shrunken,
             or the user has to scroll through the form's client area.
           </p>
           <p>When a control shall e.g. use the available space, left over to its right,

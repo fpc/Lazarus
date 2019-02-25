@@ -392,7 +392,7 @@
             <var>Sides</var> is a read-only indexed TPairSplitterSide property which provides access to the adjacent children resized using the Splitter in the component. Sides always has 2 elements in the array (in the range 0..1). If Index contains an invalid value, an exception is raised.
           </p>
           <p>
-            Each controls in Sides behaves like a TPanel component with a reference to the TPairSplitter that owns the control. They provide a custom Paint method and WMPaint message handling. Some of their properties have altered visibilities; for example, Align and Anchors are private, Top and Left are public.
+            Each controls in Sides behaves like a TPanel component with a reference to the TPairSplitter that owns the control. They provide a custom Paint method and WMPaint message handling. Some of their properties have altered visibility; for example, Align and Anchors are private, Top and Left are public.
           </p>
         </descr>
         <errors>

@@ -607,14 +607,14 @@
       </element>
       <element name="TLazDockForm.MouseDown">
         <short>
-          <var>MouseDown</var> - performs inherited MouseDpwn, then finds position and appropriate header</short>
+          <var>MouseDown</var> - performs inherited MouseDown, then finds position and appropriate header</short>
         <seealso>
           <link id="#LCL.Controls.TControl.MouseDown">TControl.MouseDown</link>
         </seealso>
       </element>
       <element name="TLazDockForm.MouseMove">
         <short>
-          <var>MouseMove</var> - performs inherited Mousemove, then finds position and appropriate header</short>
+          <var>MouseMove</var> - performs inherited MouseMove, then finds position and appropriate header</short>
         <seealso>
           <link id="#LCL.Controls.TControl.MouseMove">TControl.MouseMove</link>
         </seealso>
@@ -664,11 +664,11 @@
       </element>
       <element name="TLazDockForm.UpdateMainControlInParents">
         <short>
-          <var>UpdateMainControlInParents</var> - make sure all parents recognise the presence of MainControl</short>
+          <var>UpdateMainControlInParents</var> - make sure all parents recognize the presence of MainControl</short>
       </element>
       <element name="TLazDockForm.FindMainControlCandidate">
         <short>
-          <var>FindMainControlCandidate</var> - finds forms and controls in the docktree heirarchy that could act as the MainControl</short>
+          <var>FindMainControlCandidate</var> - finds forms and controls in the docktree hierarchy that could act as the MainControl</short>
       </element>
       <element name="TLazDockForm.FindHeader">
         <short>
@@ -687,22 +687,22 @@
       </element>
       <element name="TLazDockForm.ControlHasTitle">
         <short>
-          <var>ControlHasTitle</var> - returns True if nominated control is visible, is a docked control and has a border spacing greter than zero</short>
+          <var>ControlHasTitle</var> - returns True if nominated control is visible, is a docked control and has a border spacing greater than zero</short>
       </element>
       <element name="TLazDockForm.GetTitleRect">
         <short>
-          <var>GetTitleRect</var> - returns the coordinates of the title retangle for the nominated control</short>
+          <var>GetTitleRect</var> - returns the coordinates of the title rectangle for the nominated control</short>
       </element>
       <element name="TLazDockForm.GetTitleOrientation">
         <short>
-          <var>GetTitleOrientation</var> - retrns the orientation (horizozntal or vertical) of the title in the nominated control</short>
+          <var>GetTitleOrientation</var> - returns the orientation (horizontal or vertical) of the title in the nominated control</short>
       </element>
       <element name="TLazDockForm.MainControl">
         <short>The identity of the <var>MainControl</var> in the docked form (used for the default caption)</short>
       </element>
       <element name="TLazDockPage.InsertControl">
         <short>
-          <var>InsertControl</var> - calls inherited method, then ensures that all parents recognise the <var>MainControl</var>
+          <var>InsertControl</var> - calls inherited method, then ensures that all parents recognize the <var>MainControl</var>
         </short>
         <seealso>
           <link id="#LCL.Controls.TWinControl.InsertControl">TWinControl.InsertControl</link>
@@ -717,14 +717,15 @@
       </element>
       <element name="TLazDockPages.Change">
         <short>
-          <var>Change</var> - calls inherited method, then ensures that all parents recognise MainControl</short>
+          <var>Change</var> - calls inherited method, then ensures that all parents recognize MainControl</short>
         <seealso>
           <link id="#LCL.ComCtrls.TCustomTabControl.Change">TCustomTabControl.Change</link>
         </seealso>
       </element>
       <element name="TLazDockSplitter.Create">
         <short>
-          <var>Create</var> - constructor for <var>TLazDockSplitter</var>: calls inherited <var>Create</var> and initialises minimum size</short>
+          <var>Create</var> - constructor for <var>TLazDockSplitter</var>: calls inherited <var>Create</var> and initializes
+minimum size</short>
         <seealso>
           <link id="#LCL.ExtCtrls.TCustomSplitter.Create">TCustomSplitter.Create</link>
         </seealso>
@@ -814,14 +815,15 @@
       </element>
       <element name="TCustomAnchoredDockManager.GetPreferredTitlePosition">
         <short>
-          <var>GetPreferredTitlePosition</var> - returns the most favourable place (top or left side) to put the title of a dock component, given the width and height</short>
+          <var>GetPreferredTitlePosition</var> - returns the most favorable place (top or left side) to put the title of a dock component, given the width and height</short>
       </element>
       <element name="TCustomAnchoredDockManager.Create">
         <seealso>
           <link id="#rtl.System.TObject.Create">TObject.Create</link>
         </seealso>
         <short>
-          <var>Create</var> - constructor for <var>TCustomAnchoredDockManager</var>: creates the owner component and initialises splitter size, title height and width</short>
+          <var>Create</var> - constructor for <var>TCustomAnchoredDockManager</var>: creates the owner component and
+initializes splitter size, title height and width</short>
       </element>
       <element name="TCustomAnchoredDockManager.Destroy">
         <short>
@@ -840,7 +842,7 @@
       </element>
       <element name="TCustomAnchoredDockManager.EndUpdate">
         <short>
-          <var>EndUpdate</var> - ends update process by decreenting the update count</short>
+          <var>EndUpdate</var> - ends update process by decrementing the update count</short>
         <errors>If Update count is zero or less, raises and exception</errors>
       </element>
       <element name="TCustomAnchoredDockManager.GetControlBounds">
@@ -947,11 +949,11 @@
       </element>
       <element name="TCustomAnchoredDockManager.EnlargeControl">
         <short>
-          <var>EnlargeControl</var> - attempts to increase the size of the given control along the specified border, if necessary at the expense of neighbouring controls. If Simulate=true then it will only test if control can be enlarged.</short>
+          <var>EnlargeControl</var> - attempts to increase the size of the given control along the specified border, if necessary at the expense of neighboring controls. If Simulate=true then it will only test if control can be enlarged.</short>
       </element>
       <element name="TCustomAnchoredDockManager.RemoveControl">
         <short>
-          <var>RemoveControl</var> - calls <var>UndockControl</var> to remove the specified control from the docking heirarchy</short>
+          <var>RemoveControl</var> - calls <var>UndockControl</var> to remove the specified control from the docking hierarchy</short>
         <seealso>
           <link id="#lcl.LDockTree.TCustomAnchoredDockManager.UndockControl">TCustomAnchoredDockManager.UndockControl</link>
           <link id="#LCL.Controls.TDockManager.RemoveControl">TDockManager.RemoveControl</link>
@@ -979,7 +981,7 @@
       </element>
       <element name="TCustomAnchoredDockManager.TitleHeight">
         <short>
-          <var>TitleHeight</var> - the height of the title for this docking cotrol</short>
+          <var>TitleHeight</var> - the height of the title for this docking control</short>
       </element>
       <element name="TCustomAnchoredDockManager.UpdateTitlePosition">
         <short>

@@ -384,7 +384,7 @@
       <!-- function Visibility: public -->
       <element name="TCustomImageList.Add">
         <short>
-          Adds an Image and Mask bitmap to the list. Returns the index of the added image or -1 if unsucessful.</short>
+          Adds an Image and Mask bitmap to the list. Returns the index of the added image or -1 if unsuccessful.</short>
         <descr>
 <pre>
   Adds one or more (bitmap width / imagelist width) bitmaps to the list.
@@ -395,7 +395,7 @@
         <seealso/>
       </element>
       <element name="TCustomImageList.Add.Result">
-        <short>The index of the added image, -1 if unsuccesful.</short>
+        <short>The index of the added image, -1 if unsuccessful.</short>
       </element>
       <element name="TCustomImageList.Add.Image">
         <short>a bitmap image</short>
@@ -413,7 +413,7 @@
         </seealso>
       </element>
       <element name="TCustomImageList.AddIcon.Result">
-        <short>The index of the added icon, -1 if unsuccesful.</short>
+        <short>The index of the added icon, -1 if unsuccessful.</short>
       </element>
       <element name="TCustomImageList.AddIcon.Image">
         <short>The Icon to be added.</short>
@@ -447,18 +447,18 @@
         <seealso/>
       </element>
       <element name="TCustomImageList.AddMasked.Result">
-        <short>The index of the first added image, -1 if unsuccesful.</short>
+        <short>The index of the first added image, -1 if unsuccessful.</short>
       </element>
       <element name="TCustomImageList.AddMasked.Image">
         <short>The bitmap to be added.</short>
       </element>
       <element name="TCustomImageList.AddMasked.MaskColor">
-        <short>The color acting as transparant color.</short>
+        <short>The color acting as transparent color.</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomImageList.AddLazarusResource">
         <short>
-          Loads a bitmap from a lazarus resources and adds it.</short>
+          Loads a bitmap from a Lazarus resources and adds it.</short>
       </element>
       <element name="TCustomImageList.AddLazarusResource.Result">
         <short>Index of the first added image.</short>
@@ -631,7 +631,7 @@
       <element name="TCustomImageList.InsertMasked">
         <short>
           Adds one or more transparent bitmaps to the list.</short>
-        <descr>MaskColor is the RGB color of the transparent pixels. Every occurence of a MaskColor pixel will be converted into a transparent pixel.</descr>
+        <descr>MaskColor is the RGB color of the transparent pixels. Every occurrence of a MaskColor pixel will be converted into a transparent pixel.</descr>
         <errors/>
         <seealso>
           <link id="TCustomImageList.Insert"/>
@@ -644,7 +644,7 @@
         <short>The bitmap to be inserted.</short>
       </element>
       <element name="TCustomImageList.InsertMasked.MaskColor">
-        <short>The color acting as transparant color.</short>
+        <short>The color acting as transparent color.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomImageList.Move">
@@ -672,7 +672,7 @@
         <seealso/>
       </element>
       <element name="TCustomImageList.Replace.AIndex">
-        <short>the index of the replaceded image</short>
+        <short>the index of the replaced image</short>
       </element>
       <element name="TCustomImageList.Replace.AImage">
         <short>a bitmap image</short>
@@ -698,7 +698,7 @@
         <short>A bitmap image.</short>
       </element>
       <element name="TCustomImageList.ReplaceMasked.MaskColor">
-        <short>The color acting as transparant color.</short>
+        <short>The color acting as transparent color.</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomImageList.RegisterChanges">
@@ -760,7 +760,7 @@
       <!-- property Visibility: public -->
       <element name="TCustomImageList.DrawingStyle">
         <short>
-          The default drawing style - focussed, selected, normal or transparent.</short>
+          The default drawing style - focused, selected, normal or transparent.</short>
         <descr/>
         <seealso/>
       </element>
@@ -888,7 +888,7 @@
       <!-- procedure Visibility: protected -->
       <element name="TCustomImageList.WSCreateReference">
         <short>
-          Instructs the widgtset to create an imagelist.</short>
+          Instructs the widgetset to create an imagelist.</short>
       </element>
       <element name="TCustomImageList.WSCreateReference.Result">
         <short>Reference object for the created widget.</short>

@@ -218,7 +218,7 @@
 
       <!-- function Visibility: protected -->
       <element name="TCustomXMLPropStorage.FixPath">
-        <short>Turns '.' notation into '/' notation for the xpath-ish <url href="http://wiki.freepascal.org/xmlconf">XMLConf</url> underlayer.</short>
+        <short>Turns '.' notation into '/' notation for the xpath-like implementation in <url href="http://wiki.freepascal.org/xmlconf">XMLConf</url>.</short>
         <descr />
         <errors />
         <seealso />
@@ -243,7 +243,7 @@
 
       <!-- procedure Visibility: public -->
       <element name="TCustomXMLPropStorage.StorageNeeded">
-        <short>Aks the underlying storage object for an entry</short>
+        <short>Ask the underlying storage object for an entry</short>
         <descr />
         <errors />
         <seealso />
@@ -422,7 +422,7 @@
 
       <!-- procedure Visibility: default -->
       <element name="Register">
-        <short>Registers <link id="#LCL.XmlPropStorage.TXMLPropStorage">TXMLPropStorage</link> on the 'Misc' tab of the component pallete.</short>
+        <short>Registers <link id="#LCL.XmlPropStorage.TXMLPropStorage">TXMLPropStorage</link> on the 'Misc' tab of the component palette.</short>
         <descr />
         <errors />
         <seealso />

@@ -131,7 +131,7 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomTimer.UpdateTimer">
-        <short>Updates the Timer to refleect the current properties</short>
+        <short>Updates the Timer to reflect the current properties</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomTimer.KillTimer">
@@ -143,7 +143,7 @@
       <!-- constructor Visibility: public -->
       <element name="TCustomTimer.Create">
         <short>
-          <var>Create</var> - constructor for <var>TCustomTimer</var>: calls inherited <var>Create</var>, sets up handle and initialises timer interval</short>
+          <var>Create</var> - constructor for <var>TCustomTimer</var>: calls inherited <var>Create</var>, sets up handle and initializes timer interval</short>
         <descr/>
         <errors/>
         <seealso>

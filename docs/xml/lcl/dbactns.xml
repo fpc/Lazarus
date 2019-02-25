@@ -63,7 +63,7 @@
 
       <!-- procedure Visibility: protected -->
       <element name="TDataSetAction.Notification">
-        <short>Performs notications when a component is added or removed</short>
+        <short>Performs notifications when a component is added or removed</short>
         <descr></descr>
         <errors></errors>
         <seealso></seealso>

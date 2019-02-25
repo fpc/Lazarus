@@ -22,7 +22,7 @@ expressions are supported in <i>{$mode delphi}</i> and <i>{$mode objfpc}</i>.</p
 <!-- constant Visibility: default -->
 <element name="lcl_fullversion">
 <short>LCL full version</short>
-<descr><p>The lcl_fullversion constant contains all version numbers, formatted with 2 digits and conatenated (leading zeros are omitted).</p>
+<descr><p>The lcl_fullversion constant contains all version numbers, formatted with 2 digits and concatenated (leading zeros are omitted).</p>
 <p>For example, if the LCL version is 1.2.4.6, lcl_fullversion will be 1020406</p>
 </descr>
 <seealso>lcl_version</seealso>

@@ -528,7 +528,7 @@
         </short>
         <descr>
           <p>
-            OnChange is a TNotifyEvent property that represents the event handler signalled when the date/time value for the control has changed. OnChange is signalled from the LMChanged, LMDayChanged, LMMonthChanged, and LMYearChanged methods. Applications shoud assign a procedure to the event handle to respond to the message notification.
+            OnChange is a TNotifyEvent property that represents the event handler signalled when the date/time value for the control has changed. OnChange is signalled from the LMChanged, LMDayChanged, LMMonthChanged, and LMYearChanged methods. Applications should assign a procedure to the event handle to respond to the message notification.
           </p>
         </descr>
         <seealso></seealso>
@@ -541,7 +541,7 @@
         </short>
         <descr>
           <p>
-            OnDayChanged is a TNotifyEvent property that represents the event handler signalled when the day number in the date/time value for the control has changed. OnDayChanged is signalled from the LMDayChanged method. Applications shoud assign a procedure to the event handler to respond to the message notification.
+            OnDayChanged is a TNotifyEvent property that represents the event handler signalled when the day number in the date/time value for the control has changed. OnDayChanged is signalled from the LMDayChanged method. Applications should assign a procedure to the event handler to respond to the message notification.
           </p>
         </descr>
         <seealso></seealso>
@@ -554,7 +554,7 @@
         </short>
         <descr>
           <p>
-            OnMonthChanged is a TNotifyEvent property that represents the event handler signalled when the month in the date/time value for the control has changed. OnMonthChanged is signalled from the LMMonthChanged method. Applications shoud assign a procedure to the event handler to respond to the message notification.
+            OnMonthChanged is a TNotifyEvent property that represents the event handler signalled when the month in the date/time value for the control has changed. OnMonthChanged is signalled from the LMMonthChanged method. Applications should assign a procedure to the event handler to respond to the message notification.
           </p>
         </descr>
         <seealso></seealso>
@@ -567,7 +567,7 @@
         </short>
         <descr>
           <p>
-            OnYearChanged is a TNotifyEvent property that represents the event handler signalled when the year in the date/time value for the control has changed. OnMonthChanged is signalled from the LMYearChanged method. Applications shoud assign a procedure to the event handler to respond to the message notification.
+            OnYearChanged is a TNotifyEvent property that represents the event handler signalled when the year in the date/time value for the control has changed. OnMonthChanged is signalled from the LMYearChanged method. Applications should assign a procedure to the event handler to respond to the message notification.
           </p>
         </descr>
         <seealso></seealso>

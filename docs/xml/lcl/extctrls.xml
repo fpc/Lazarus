@@ -868,7 +868,7 @@
       </element>
       <!-- property Visibility: published -->
       <element name="TShape.Brush">
-        <short>The Brush to be used for colouring this shape</short>
+        <short>The Brush to be used for coloring this shape</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TShape.Constraints" link="#LCL.Controls.TControl.Constraints">
@@ -1359,7 +1359,7 @@
       <!-- function Visibility: protected -->
       <element name="TCustomSplitter.CheckNewSize">
         <short>
-          <var>CheckNewSize</var> - ensure new size is appropriate: returns True if sucessful</short>
+          <var>CheckNewSize</var> - ensure new size is appropriate: returns True if successful</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1410,7 +1410,7 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomSplitter.Beveled">
-        <short>Whether the edges of the splitter bar are bevelled</short>
+        <short>Whether the edges of the splitter bar are beveled</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomSplitter.MinSize">
@@ -1606,7 +1606,7 @@
           <var>TPaintBox</var>: a painted rectangular box with defined size and color</short>
         <descr>
           <p>
-            <var>TPaintBox</var>: a painted rectangular box with defined size and colour</p>
+            <var>TPaintBox</var>: a painted rectangular box with defined size and color</p>
         </descr>
         <seealso>
           <link id="#lcl.StdCtrls.HowToUseStdCtrls">HowToUseStdCtrls</link>
@@ -1904,7 +1904,7 @@
       <!-- procedure Visibility: private -->
       <element name="TCustomImage.PictureChanged">
         <short>
-          <var>PictureChanged</var> - software emulaton of the <var>OnPictureChanged</var> event</short>
+          <var>PictureChanged</var> - software emulation of the <var>OnPictureChanged</var> event</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2689,7 +2689,7 @@ being raised.
       <element name="TCustomRadioGroup.OnClick">
         <short>Event called when the selected item changes</short>
         <descr><p>TCustomRadioGroup.OnClick is different from the usual event TControl.OnClick.
-          Instead of occuring on a mouse click on the control, this event is occurs when
+          Instead of occurring on a mouse click on the control, this event is occurs when
           the currently selected item changes. It will not occur if a click does not make the
           selection change, will not occur upon clicking a already selected item and will occur
           if one changes the selection via the keyboard. It also occurs when the item
@@ -2706,7 +2706,7 @@ being raised.
         <short>Event called when the selected item changes</short>
         <descr><p>This event was introduced in Lazarus 0.9.31 and it is called when the selected item is changed.
         It is triggered when this is done by the user via, for example the mouse or keyboard,
-        and is also triggered when the selected item is changed programatically.</p>
+        and is also triggered when the selected item is changed programmatically.</p>
         </descr>
         <seealso>
           <link id="TCustomRadioGroup.OnClick"/>
@@ -2715,7 +2715,7 @@ being raised.
       <!-- constructor Visibility: public -->
       <element name="TCustomRadioGroup.Create">
         <short>
-          <var>Create</var> - constructor for <var>TCustomRadioGroup</var>: calls inherited <var>Create</var>, then sets list of buttons, and initialises layout and sizing properties</short>
+          <var>Create</var> - constructor for <var>TCustomRadioGroup</var>: calls inherited <var>Create</var>, then sets list of buttons, and initializes layout and sizing properties</short>
         <descr/>
         <errors/>
         <seealso>
@@ -2768,10 +2768,10 @@ being raised.
       <!-- object Visibility: default -->
       <element name="TRadioGroup">
         <short>
-          <var>TRadioGroup</var>   : A group of related but mutually exclusive radio buttons, requiring the user to select one af a set of alternatives</short>
+          <var>TRadioGroup</var>   : A group of related but mutually exclusive radio buttons, requiring the user to select one of a set of alternatives</short>
         <descr>
           <p>
-            <var>TRadioGroup</var>: A group of related but mutually exclusive radio buttons, requiring the user to select one af a set of alternatives. As one button becomes selected, the remaining buttons in the group become automatically deselected.</p>
+            <var>TRadioGroup</var>: A group of related but mutually exclusive radio buttons, requiring the user to select one of a set of alternatives. As one button becomes selected, the remaining buttons in the group become automatically deselected.</p>
           <p>To Use this control, place it in the required position on the form, then in the Object Inspector select <var>Items</var> and click on the ellipsis (...) to open the string editor. Type in the captions to accompany each check box, then close the string editor and you will see a series of Radio Boxes with their captions displayed beside them. (Note - unlike <link id="#lcl.ExtCtrls.TCheckGroup">TCheckGroup</link>, there is no special RadioGroup editor)</p>
           <p>Inherits properties from <link id="#lcl.ExtCtrls.TCustomRadioGroup">TCustomRadioGroup</link> and <link id="#lcl.StdCtrls.TCustomGroupBox">TCustomGroupBox</link>
           </p>
@@ -3190,7 +3190,7 @@ being raised.
       <!-- procedure Visibility: protected -->
       <element name="TCustomCheckGroup.SetColumns">
         <short>
-          <var>SetColumns</var> - specifies the nuber of coulmns in which the Items are arranged</short>
+          <var>SetColumns</var> - specifies the number of columns in which the Items are arranged</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3252,7 +3252,7 @@ being raised.
       <!-- constructor Visibility: public -->
       <element name="TCustomCheckGroup.Create">
         <short>
-          <var>Create</var> - constructor for <var>TCustomCheckGroup</var>: calls inherited <var>Create</var>, then sets styles, creates lists, initialises sizing and layout properties</short>
+          <var>Create</var> - constructor for <var>TCustomCheckGroup</var>: calls inherited <var>Create</var>, then sets styles, creates lists, initializes sizing and layout properties</short>
         <descr/>
         <errors/>
         <seealso>
@@ -4282,7 +4282,7 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
           </p>
           <p>A Panel is a defined rectangular area of the form into which other components can be placed to group them functionally and geographically.</p>
           <p>
-            <var>TCustomPanel </var>defines the positioning and bevelling properties of any descendent classes, and provides methods for painting and writing text to the panel.</p>
+            <var>TCustomPanel </var>defines the positioning and beveling properties of any descendent classes, and provides methods for painting and writing text to the panel.</p>
         </descr>
       </element>
       <!-- variable Visibility: private -->
@@ -4478,7 +4478,7 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
       <!-- procedure Visibility: protected -->
       <element name="TCustomPanel.UpdateParentColorChange">
         <short>
-          <var>UpdateParentColorChange</var> - update any pending changes in parent colour</short>
+          <var>UpdateParentColorChange</var> - update any pending changes in parent color</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4486,7 +4486,7 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
       <!-- constructor Visibility: public -->
       <element name="TCustomPanel.Create">
         <short>
-          <var>Create</var> - constructor for <var>TCustomPanel</var>: calls inherited <var>Create</var> then sets initial style, bevel, colour, alignment and bounds</short>
+          <var>Create</var> - constructor for <var>TCustomPanel</var>: calls inherited <var>Create</var> then sets initial style, bevel, color, alignment and bounds</short>
         <descr/>
         <errors/>
         <seealso>
@@ -4882,7 +4882,7 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
           If <var>AOwner</var> is not <var>Nil</var>, the new component attempts to insert itself in the list of owned components of the owner.
 </descr>
         <short>
-          <var>Create</var> - constructor for <var>TCustomTrayIcon</var>: performs inherited <var>Create</var> then creates icon, timer and initialises balloon timeout</short>
+          <var>Create</var> - constructor for <var>TCustomTrayIcon</var>: performs inherited <var>Create</var> then creates icon, timer and initializes balloon timeout</short>
         <seealso>
           <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
         </seealso>
@@ -4907,7 +4907,7 @@ After that, the parent's destroy method is called.
       </element>
       <element name="TCustomTrayIcon.ShowBalloonHint">
         <short>
-          <var>ShowBalloonHint</var> displays a smal balloon-like window near the tray icon. It can be used to send notifications about the status of an action, or notify of a received message or any other event which doesn't require an imediate response. The Ballon window disappears after <var>BallonHintTimeout</var> milliseconds or when the user clicks it or it's close button.</short>
+          <var>ShowBalloonHint</var> displays a small balloon-like window near the tray icon. It can be used to send notifications about the status of an action, or notify of a received message or any other event which doesn't require an immediate response. The Balloon window disappears after <var>BallonHintTimeout</var> milliseconds or when the user clicks it or it's close button.</short>
       </element>
       <element name="TCustomTrayIcon.GetPosition">
         <short>Find the position of the Tray Icon and thus a position suitable to display the hinting BalloonHint. Under Windows an approximate location is detected.</short>
@@ -4990,7 +4990,7 @@ but calling the <link id="#rtl.Classes.TPersistent.AssignTo">AssignTo</link> met
 source. This means that if the destination class does not know how to assign
 the contents of the source class, the source class instance is asked to assign
 itself to the destination class. This means that it is necessary to
-implement only one of the two methods so that two classes can be assiged to
+implement only one of the two methods so that two classes can be assigned to
 one another.
 </p>
           <remark>
@@ -5004,7 +5004,7 @@ achieve the same as a statement of the form
             <code>Destination.Assign(Source);
 </code>
             <p>After the former statement, both <var>Source</var> and
-<var>Destination</var> will point to the same object. The latter statemtent
+<var>Destination</var> will point to the same object. The latter statement
 will copy the <var>contents</var> of the <var>Source</var> class to the
 <var>Destination</var> class.
 </p>
@@ -5025,7 +5025,7 @@ will copy the <var>contents</var> of the <var>Source</var> class to the
             <var>Multi-PageControls</var> - controls that offer a selection of alternative pages for display</p>
           <p>A number of controls, found in Units <var>ExtCtrls</var> and <var>ComCtrls</var>, offer the ability to create multi-page forms with a series of <var>Tabs</var> along one edge that allow the user to select one of the <var>Pages</var> for display and interaction.</p>
           <p>These include: <var>TPageControl</var>, <var>TNoteBook</var>, <var>TTabControl</var> and <var>THeaderControl</var> (the Header Control components have a very different structure and function). Icons for all of these exist on the <var>Additional</var> or <var>Common Controls</var> tabs of the Component Palette in the Lazarus IDE.</p>
-          <p>While the various components may look superficially similar, they differ in properties, inheritance, method of adding additional pages, behaviour at run-time, methods for referencing pages and so on.</p>
+          <p>While the various components may look superficially similar, they differ in properties, inheritance, method of adding additional pages, behavior at run-time, methods for referencing pages and so on.</p>
           <p>We have to be very clear when using the various properties, to distinguish between the word 'Tab' as referring to a Tab indicating an identifier for a page, and 'Tab' as referring to the <b>TAB</b> key on the standard keyboard. In common with most Lazarus components, it is possible to enable each control to be included in the <var>TabOrder</var> of <var>TabStops</var> for a <var>Form</var>, so that the component can be reached by repeated pressing of the <b>TAB</b> key, and we must not confuse this use of 'Tab' with the use to denote a <var>Page</var>.</p>
           <p>The properties <var>CanTab</var>, <var>TabStop</var> and <var>TabOrder</var> refer to the use of the <b>TAB</b> key to navigate to the relevant control.</p>
           <p>Properties such as <var>Tabs</var>, <var>TabIndex</var>, <var>IndexOfTabAt()</var>, <var>TabIndexAtClientPos()</var>,  <var>TabPosition</var>, <var>TabHeight</var>, <var>TabWidth</var>, <var>TabVisible</var>, <var>OnCloseTabClicked</var> refer to the use for <var>Page</var> selection.</p>
@@ -5056,7 +5056,7 @@ will copy the <var>contents</var> of the <var>Source</var> class to the
   
   
             <var>TNoteBook</var>.</p>
-          <p>The following table summarises the main differences between the two components.</p>
+          <p>The following table summarizes the main differences between the two components.</p>
           <table>
             <th>
               <td>Property or method</td>
@@ -5152,7 +5152,7 @@ will copy the <var>contents</var> of the <var>Source</var> class to the
           <p>The Tabs in <var>TTabControl</var> can be edited by selecting 'Tabs' in the Object Inspector, clicking on the ellipsis (...) and using the string editor that pops up.</p>
           <p>The pages in<var>TNoteBook</var> or <var>TPageControl</var> can be edited by selecting the <var>ActivePage</var> in the Object Inspector and then editing the properties of the individual page.</p>
           <p>
-            <var>THeaderControl</var> offers a widget that could be placed along the edge of a Panel or Form, allowing a highly customised mechanism for selection. However, there are no intrinsically associated display areas, and it is the developer's responsibility to supply an index associated with the selection from the 
+            <var>THeaderControl</var> offers a widget that could be placed along the edge of a Panel or Form, allowing a highly customized mechanism for selection. However, there are no intrinsically associated display areas, and it is the developer's responsibility to supply an index associated with the selection from the
             
   
   
@@ -5939,7 +5939,7 @@ will copy the <var>contents</var> of the <var>Source</var> class to the
         <short>
           <var>InternalUpdate</var> - updates any pending changes</short>
         <descr>
-          The behavior of this method depends on the widgetset and it was added to provide an way to update items which either cannot be updated automatically upon change or would be too inneficient to be updated on each change. One example of this is the tray icon menu under LCL-Carbon. It is not automatically updated when changes are done to it's associated LCL TPopUpMenu, but changes are updated when InternalUpdate is called. This happens because the tray icon menus are Cocoa menus which don't match the Carbon menus from LCL-Carbon. Similar things happen in various other widgetsets, so InternalUpdate can be expected to update the menu and/or icon of the tray icon, if this is necessary. If such an update is not required, for example because it is automatically updated on each change, then InternalUpdate will simply do nothing, so it is always a safe function to call, regardless of the widgetset.
+          The behavior of this method depends on the widgetset and it was added to provide an way to update items which either cannot be updated automatically upon change or would be too inefficient to be updated on each change. One example of this is the tray icon menu under LCL-Carbon. It is not automatically updated when changes are done to it's associated LCL TPopUpMenu, but changes are updated when InternalUpdate is called. This happens because the tray icon menus are Cocoa menus which don't match the Carbon menus from LCL-Carbon. Similar things happen in various other widgetsets, so InternalUpdate can be expected to update the menu and/or icon of the tray icon, if this is necessary. If such an update is not required, for example because it is automatically updated on each change, then InternalUpdate will simply do nothing, so it is always a safe function to call, regardless of the widgetset.
         </descr>
         <errors/>
         <seealso/>
@@ -6011,7 +6011,7 @@ will copy the <var>contents</var> of the <var>Source</var> class to the
       </element>
       <element name="TCustomIdleTimer.Create">
         <short>
-          <var>Create</var> - constructor for TCustomIdleTimer: calls inherited Create and initialises some local event variables</short>
+          <var>Create</var> - constructor for TCustomIdleTimer: calls inherited Create and initializes some local event variables</short>
       </element>
       <element name="TCustomIdleTimer.Destroy">
         <short>
@@ -6059,7 +6059,7 @@ is one of the following events:
       <element name="TCustomFlowPanel.AutoWrap"><short>Determine if controls in TCustomFlowPanel are wrapped.</short>
       </element><element name="TCustomFlowPanel.ControlList"><short>Use ControlList to set extra options of flow panel controls.</short>
       </element><element name="TCustomFlowPanel.FlowStyle"><short>Use FlowStyle to determine the flow direction of the flow panel layout.</short>
-      </element><element name="TFlowPanelControl.Control"><short>The associated control to the flow panel control item.</short><descr>Don't set the Control property manually. It is used iternally by the designer.</descr>
+      </element><element name="TFlowPanelControl.Control"><short>The associated control to the flow panel control item.</short><descr>Don't set the Control property manually. It is used internally by the designer.</descr>
       </element><element name="TFlowPanelControl.WrapAfter"><short>Determines the wrap policy after this control.</short><descr>Valid only if <link id="#LCLBase.TCustomFlowPanel.AutoWrap">TFlowPanel.AutoWrap</link> = True.</descr>
       </element><element name="TCustomFlowPanel"><short>The base class for <link id="#LCLBase.extctrls.TFlowPanel">TFlowPanel</link>
         </short>

@@ -491,7 +491,7 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomPropertyStorage.GetPropertyList">
-        <short>Builds a list of all linked propery collections</short>
+        <short>Builds a list of all linked property collections</short>
         <descr/>
         <errors/>
         <seealso/>

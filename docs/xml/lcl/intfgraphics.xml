@@ -1045,7 +1045,7 @@
       <element name="TLazIntfImage.GetXYDataPostion">
         <short>
           <var>GetXYDataPostion</var> - finds the position of the raw image</short>
-        <descr>Yes, it really is spelt 'Postion'</descr>
+        <descr>Yes, it really is spelled 'Postion'</descr>
         <errors/>
         <seealso/>
       </element>
@@ -1111,7 +1111,7 @@
       <!-- property Visibility: public -->
       <element name="TLazIntfImage.TColors">
         <short>
-          <var>TColors</var> - the colours available  for the present position</short>
+          <var>TColors</var> - the colors available  for the present position</short>
         <descr/>
         <seealso/>
       </element>

@@ -204,9 +204,10 @@
       </element>
       <!-- constructor Visibility: public -->
       <element name="TButtonGlyph.Create">
-        <descr>If you drop a component on the form editor you don´t need to add code to explicitly create it. The component is automatically created together with the the form, and destroyed when the form is destroyed.
+        <descr>If you drop a component on the form editor you don't need to add code to explicitly create it. The component
+is automatically created together with the the form, and destroyed when the form is destroyed.
 
-However, if you create the component by code don´t forget to free it when it is no longer needed.
+However, if you create the component by code don't forget to free it when it is no longer needed.
 
 Constructors allocate memory and system resources needed by the object. They also call the constructor of any sub-objects present in the class.
 </descr>
@@ -217,7 +218,8 @@ Constructors allocate memory and system resources needed by the object. They als
       </element>
       <!-- destructor Visibility: public -->
       <element name="TButtonGlyph.Destroy">
-        <descr>If you call Destroy for an object which hasn´t being initialized yet it will generate an error. Always use the Free method to deallocate objects, because it verifies if object variable doesn´t contain the value nil.
+        <descr>If you call Destroy for an object which hasn't been initialized yet it will generate an error. Always use
+the Free method to deallocate objects, because it verifies if the object doesn't contain the value nil.
 
 Take the following precautions when creating your own Destroy method:
 
@@ -225,7 +227,7 @@ Take the following precautions when creating your own Destroy method:
 
 * Always call 'inherited Destroy;' as the last thing on the destructor code.
 
-* An exception may be raised on the constructor in case there is not enought memory to create an object, or something else goes wrong. If the exception is not handled inside the constructor, the object will be only partially built. In this case Destroy will be called, so your destructor must check if the resources were really allocated before disposing of them.
+* An exception may be raised on the constructor in case there is not enough memory to create an object, or something else goes wrong. If the exception is not handled inside the constructor, the object will be only partially built. In this case Destroy will be called, so your destructor must check if the resources were really allocated before disposing of them.
 
 * Remember to call Free for all objects created on the constructor.
 </descr>
@@ -579,7 +581,7 @@ bkYesToAll
       </element>
       <!-- constructor Visibility: public -->
       <element name="TCustomBitBtn.Create">
-        <short>Calls inherited <var>Create</var> then initialises layout, style and spacing, creates the Button Glyph</short>
+        <short>Calls inherited <var>Create</var> then initializes layout, style and spacing, creates the Button Glyph</short>
         <errors/>
         <seealso>
           <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
@@ -672,7 +674,7 @@ bkYesToAll
       <element name="TBitBtn.Anchors" link="#LCL.Controls.TControl.Anchors">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>Determines how the control is to be anchored to its client or parent conrol</p>
+          <p>Determines how the control is to be anchored to its client or parent control</p>
           <p>Either reads a flag containing the set of anchors to be used, or writes a set of anchors. If they have been written, this is indicated in <var>IsAnchorsStored</var>
           </p>
         </descr>
@@ -700,7 +702,7 @@ bkYesToAll
           <p>Gets caption as a text-string (<var>GetText</var>), or stores the new caption (<var>SetText</var>). Shows flag if caption is stored (<var>IsCaptionStored</var>).</p>
           <p>By default, the <var>Caption</var> appears the same as the control <var>Name</var> in the Object Inspector, 
 and the developer needs to set it explicitly to some new text.</p>
-          <p>The VCL implementation relies on the virtual <var>Get/SetTextBuf</var> to exchange text between widgets and VCL. This means a lot of (unnecesary) text copies. </p>
+          <p>The VCL implementation relies on the virtual <var>Get/SetTextBuf</var> to exchange text between widgets and VCL. This means a lot of (unnecessary) text copies. </p>
           <p>The LCL uses strings for exchanging text (more efficient). To maintain VCL compatibility, the virtual <var>RealGet/SetText</var> is
 introduced. These functions interface with the LCLInterface. </p>
           <p>The default <var>Get/SetTextBuf</var> implementation calls the <var>RealGet/SetText</var>. As long as the <var>Get/SetTextBuf</var> isn't overridden <var>Get/SetText</var> calls <var>RealGet/SetText</var> to avoid PChar copying.</p>
@@ -773,7 +775,7 @@ introduced. These functions interface with the LCLInterface. </p>
       <element name="TBitBtn.OnClick" link="#LCL.Controls.TControl.OnClick">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be spcified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <var>ActionList</var>
+          <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be specified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <var>ActionList</var>
           </p>
           <p>Reads or writes a flag if  a mouse click is detected, and sets a flag if a value is stored.</p>
         </descr>
@@ -1248,7 +1250,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       <!-- procedure Visibility: protected -->
       <element name="TCustomSpeedButton.SetDown">
         <short>
-          <var>SetDown</var> - specifies the boolean value of <var>Down</var> (ie whether or not button was pressed)</short>
+          <var>SetDown</var> - specifies the boolean value of <var>Down</var> (i.e. whether or not button was pressed)</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1332,7 +1334,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       <!-- procedure Visibility: protected -->
       <element name="TCustomSpeedButton.UpdateState">
         <short>
-          <var>UpdateState</var> - brings the state up oto date, implementing any pending changes, and rendering non-valid if <var>InvalidateOnChange</var> is True</short>
+          <var>UpdateState</var> - brings the state up to date, implementing any pending changes, and rendering non-valid if <var>InvalidateOnChange</var> is True</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1407,15 +1409,15 @@ is done automatically by the streaming system.
       <element name="TCustomSpeedButton.Create">
         <descr>
           <p>
-            <var>Create</var> - constructor for <var>TCustomSpeedButton</var>: calls inherited <var>Create</var> and initialises many defaults and properties</p>
-          <p>Among the properties set are Glyph, initial bounds, control style, layout, colour, caption and mouse responses</p>
+            <var>Create</var> - constructor for <var>TCustomSpeedButton</var>: calls inherited <var>Create</var> and initializes many defaults and properties</p>
+          <p>Among the properties set are Glyph, initial bounds, control style, layout, color, caption and mouse responses</p>
         </descr>
         <errors/>
         <seealso>
           <link id="#LCL.Controls.TGraphicControl.Create">TGraphicControl.Create</link>
         </seealso>
         <short>
-          <var>Create</var> - constructor for <var>TCustomSpeedButton</var>: calls inherited <var>Create</var> and initialises many defaults and properties</short>
+          <var>Create</var> - constructor for <var>TCustomSpeedButton</var>: calls inherited <var>Create</var> and initializes many defaults and properties</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomSpeedButton.Create.AOwner">
@@ -1529,7 +1531,7 @@ When a user clicks on a SpeedButton focus is not shifted; a Speed Button never g
       <element name="TSpeedButton.Anchors" link="#LCL.Controls.TControl.Anchors">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>Determines how the control is to be anchored to its client or parent conrol</p>
+          <p>Determines how the control is to be anchored to its client or parent control</p>
           <p>Either reads a flag containing the set of anchors to be used, or writes a set of anchors. If they have been written, this is indicated in <var>IsAnchorsStored</var>
           </p>
         </descr>
@@ -1564,7 +1566,7 @@ When a user clicks on a SpeedButton focus is not shifted; a Speed Button never g
           <p>Gets caption as a text-string (<var>GetText</var>), or stores the new caption (<var>SetText</var>). Shows flag if caption is stored (<var>IsCaptionStored</var>).</p>
           <p>By default, the <var>Caption</var> appears the same as the control <var>Name</var> in the Object Inspector, 
 and the developer needs to set it explicitly to some new text.</p>
-          <p>The VCL implementation relies on the virtual <var>Get/SetTextBuf</var> to exchange text between widgets and VCL. This means a lot of (unnecesary) text copies. </p>
+          <p>The VCL implementation relies on the virtual <var>Get/SetTextBuf</var> to exchange text between widgets and VCL. This means a lot of (unnecessary) text copies. </p>
           <p>The LCL uses strings for exchanging text (more efficient). To maintain VCL compatibility, the virtual <var>RealGet/SetText</var> is
 introduced. These functions interface with the LCLInterface. </p>
           <p>The default <var>Get/SetTextBuf</var> implementation calls the <var>RealGet/SetText</var>. As long as the <var>Get/SetTextBuf</var> isn't overridden <var>Get/SetText</var> calls <var>RealGet/SetText</var> to avoid PChar copying.</p>
@@ -1634,7 +1636,7 @@ introduced. These functions interface with the LCLInterface. </p>
       <element name="TSpeedButton.OnClick" link="#LCL.Controls.TControl.OnClick">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be spcified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <var>ActionList</var>
+          <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be specified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <var>ActionList</var>
           </p>
           <p>Reads or writes a flag if  a mouse click is detected, and sets a flag if a value is stored.</p>
         </descr>
@@ -1743,7 +1745,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
           <var>FindDownButton</var> - returns the button that is down</short>
       </element>
       <element name="TCustomSpeedButton.ShowAccelChar">
-        <short>Should accelerator character be shown (ie underlined character denoting key to be pressed for quick action)?</short>
+        <short>Should accelerator character be shown (i.e. underlined character denoting key to be pressed for quick action)?</short>
       </element>
       <element name="TCustomSpeedButton.ShowCaption">
         <short>Should caption be displayed?</short>
@@ -1751,8 +1753,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       <element name="TSpeedButton.Color" link="#LCL.Controls.TControl.Color">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>Reads the value for colour, or stores the value, and sets a flag if the colour is stored.</p>
-          <p>The default colour is the same as the window in which the control is located.</p>
+          <p>Reads the value for color, or stores the value, and sets a flag if the color is stored.</p>
+          <p>The default color is the same as the window in which the control is located.</p>
         </descr>
       </element>
       <element name="TSpeedButton.Font" link="#LCL.Controls.TControl.Font">
@@ -1786,7 +1788,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <element name="TCustomSpeedButton.GetGlyphSize">
         <short>
-          <var>GetGlyphSize</var> - returns the size of the glyoh within the specified <var>PaintRect</var>
+          <var>GetGlyphSize</var> - returns the size of the glyph within the specified <var>PaintRect</var>
         </short>
       </element>
       <element name="TCustomSpeedButton.GetTextSize">

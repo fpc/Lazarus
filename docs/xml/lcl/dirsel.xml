@@ -294,7 +294,7 @@
         <descr>
           <p>
             <var>ShowHidden</var> - if True, display the names of hidden directories</p>
-For example, in Windows and derivatives, display directories in and below the 'Windows' directory (mostly system files); in Unix/Linux etc, display directories prefixed with a dot (mostly configuration files, eg ' .lazarus ')
+For example, in Windows and derivatives, display directories in and below the 'Windows' directory (mostly system files); in Unix/Linux etc, display directories prefixed with a dot (mostly configuration files, e.g. ' .lazarus ')
 </descr>
         <seealso/>
       </element>

@@ -7,7 +7,7 @@
   ====================================================================
 -->
     <module name="GraphMath">
-      <short>A Set of Mathematical Helper routines to simply Cross-Platfrom Canvas drawing etc</short>
+      <short>A Set of Mathematical Helper routines to simply Cross-Platform Canvas drawing etc</short>
       <descr/>
       <!-- unresolved type reference Visibility: default -->
       <element name="Classes">
@@ -128,21 +128,21 @@
       <!-- procedure Visibility: default -->
       <element name="Arc2Bezier">
         <short>
-          <var>Arc2Bezier</var> - convert an Arc and ArcLength into a Bezier Aproximation of the Arc.</short>
+          <var>Arc2Bezier</var> - convert an Arc and ArcLength into a Bezier Approximation of the Arc.</short>
         <descr>
           <p>Method:   <var>Arc2Bezier</var>
           </p>
           <pre>Params:   X, Y, Width, Height, Angle1, Angle2, Rotation, Points, Count
   Returns:  Nothing
 
-  Use Arc2Bezier to convert an Arc and ArcLength into a Bezier Aproximation
+  Use Arc2Bezier to convert an Arc and ArcLength into a Bezier Approximation
   of the Arc. The Rotation parameter accepts a Rotation-Angle for a rotated
   Ellipse'- for a non-rotated ellipse this value would be 0, or 360. If the
   AngleLength is greater than 90 degrees, or is equal to 0, it automatically
-  exits, as Bezier cannot accurately aproximate any angle greater then 90
+  exits, as Bezier cannot accurately approximate any angle greater then 90
   degrees, and in fact for best result no angle greater than 45 should be
   converted, instead an array of Bezier's should be created, each Bezier
-  descibing a portion of the total arc no greater than 45 degrees. The angles
+  describing a portion of the total arc no greater than 45 degrees. The angles
   are 1/16th of a degree. For example, a full circle equals 5760 (16*360).
   Positive values of Angle and AngleLength mean counter-clockwise while
   negative values mean clockwise direction. Zero degrees is at the 3 o'clock
@@ -186,7 +186,7 @@
       <!-- function Visibility: default -->
       <element name="Bezier">
         <short>
-          <var>Bezier</var> - function to get a Bezierfigure from the given points</short>
+          <var>Bezier</var> - function to get a Bezier figure from the given points</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -285,7 +285,7 @@
   Use BezierArcPoints to convert an Arc and ArcLength into a Pointer Array
   of TPoints for use with Polyline or Polygon. The Rotation parameter accepts
   a Rotation-Angle for a rotated Ellipse'- for a non-rotated ellipse this
-  value would be 0, or 360. The result is an Aproximation based on 1 or more
+  value would be 0, or 360. The result is an Approximation based on 1 or more
   Beziers. If the AngleLength is greater than 90 degrees, it calls
   PolyBezierArcPoints, otherwise it Converts the angles into a Bezier by
   calling to Arc2Bezier, and then converts the Bezier into an array of Points
@@ -536,7 +536,7 @@
       <!-- function Visibility: default -->
       <element name="FloatPoint">
         <short>
-          <var>FloatPoint</var> - it is essentialy like Classes.Point in use, except that it accepts Extended Parameters. It is Primarily for use with and in Bezier routines.</short>
+          <var>FloatPoint</var> - it is essentially like Classes.Point in use, except that it accepts Extended Parameters. It is Primarily for use with and in Bezier routines.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -684,7 +684,7 @@
   Use PolyBezierArcPoints to convert an Arc and ArcLength into a Pointer Array
   of TPoints for use with Polyline or Polygon. The Rotation parameter accepts
   a Rotation-Angle for a rotated Ellipse'- for a non-rotated ellipse this
-  value would be 0, or 360. The result is an Aproximation based on 1 or more
+  value would be 0, or 360. The result is an Approximation based on 1 or more
   Beziers. If the AngleLength is greater than 45 degrees, it recursively breaks
   the Arc into Arcs of 45 degrees or less, and converts them into Beziers with
   BezierArcPoints. The angles are 1/16th of a degree. For example, a full circle
@@ -745,7 +745,7 @@
 
   Use Quadrant to determine the Quadrant of any point, given the Center.
   It is primarily for use in other routines such as EccentricAngle. A result
-  of 1-4 represents the primary 4 quardants. A result of 5-8 means the point
+  of 1-4 represents the primary 4 quadrants. A result of 5-8 means the point
   lies on one of the Axis', 5 = -Y Axis, 6 = +X Axis, 7 = +Y Axis, and
   8 = -X Axis. A result of -1 means that it does not fall in any quadrant,
   that is, it is the Center.
@@ -831,7 +831,7 @@
         </short>
         <descr>
           <p>This Unit contains a number of routines for calculating and converting series of graphic points from one coordinate system to another.</p>
-          <p>A fundamental type is introduced, called TFloatPoint. It is an extended precision record containg an X and a Y coordinate for a graphic point. Its structure is as follows:</p>
+          <p>A fundamental type is introduced, called TFloatPoint. It is an extended precision record containing an X and a Y coordinate for a graphic point. Its structure is as follows:</p>
           <pre>Type
   TFloatPoint = Record
     X, Y : Extended;

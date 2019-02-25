@@ -57,7 +57,7 @@
       </element>
       <element name="GuessEncoding">
         <short>Guess character encoding of a string.</short>
-        <descr>The returned encoding can be used with other functions of this unit. GuessEncoding uses some heuristics to find out a good encoding. For example it checks for magic numbers like utf BOM. Next it checks if it could be UTF-8. Finally it returns the system encoding.
+        <descr>The returned encoding can be used with other functions of this unit. GuessEncoding uses some heuristics to find out a good encoding. For example it checks for magic numbers like UTF BOM. Next it checks if it could be UTF-8. Finally it returns the system encoding.
 This function can be used to find the encoding of text files.</descr>
       </element>
       <element name="ConvertEncoding">

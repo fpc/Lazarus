@@ -1493,7 +1493,7 @@
       </element>
       <element name="TPopupMode.pmNone">
         <short>modal: popup to active form or if not available, to main form; non-modal: no window parent</short>
-      <descr>For modal windows, the handle has to be recreated in ShowModal. If this is not wanted, please use explicitely pmAuto before calling ShowModal.</descr>
+      <descr>For modal windows, the handle has to be recreated in ShowModal. If this is not wanted, please use explicitly pmAuto before calling ShowModal.</descr>
       </element>
       <element name="TPopupMode.pmAuto">
         <short>modal &amp; non-modal: popup to active form or if not available, to main form</short>
@@ -1618,7 +1618,7 @@
       <!-- variable Visibility: private -->
       <element name="TCustomForm.FActionLists">
         <short>
-          <var>FActionLists</var> - local variable holding lists of actions asociated with the Form</short>
+          <var>FActionLists</var> - local variable holding lists of actions associated with the Form</short>
         <descr/>
         <seealso/>
       </element>
@@ -2172,7 +2172,7 @@
       <element name="TCustomForm.UpdateMenu">
         <short>Called when the main menu changed.</short>
         <descr>Don't show a main menu for dialog forms,
-          i.e. when BorderStyle=bsDialog (delphi compatible).
+          i.e. when BorderStyle=bsDialog (Delphi compatible).
         </descr>
         <errors>
         </errors>
@@ -2445,7 +2445,7 @@
       <!-- procedure Visibility: protected -->
       <element name="TCustomForm.RequestAlign" link="#LCL.Controls.TControl.RequestAlign">
         <short>Calls the user Alignment handler (AlignControls).
-          Here: Nop for a top-level form.
+          Here: NOP for a top-level form.
         </short>
         <descr/>
         <seealso/>
@@ -3166,7 +3166,7 @@ ShowModal creates its own event loop calling ProcessMessages.
       <!-- function Visibility: public -->
       <element name="TCustomForm.GetMDIChildren" link="TCustomForm.MDIChildren"/>
       <element name="TCustomForm.GetMDIChildren.Result">
-        <short>Nil if caller isn't an mdi type or handle isn't allocated.</short>
+        <short>Nil if caller isn't an MDI type or handle isn't allocated.</short>
       </element>
       <element name="TCustomForm.GetMDIChildren.AIndex">
         <short/>
@@ -3259,7 +3259,7 @@ ShowModal creates its own event loop calling ProcessMessages.
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.BorderStyle">
-        <short>The border style affects the title bar, border and resize behaviour of the form.
+        <short>The border style affects the title bar, border and resize behavior of the form.
         </short>
         <descr>
           <p>Use borderstyle to get or set the appearance of the form's border. </p>
@@ -3299,7 +3299,7 @@ ShowModal creates its own event loop calling ProcessMessages.
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomForm.ClientHandle">
-        <short>The Handle of the MDIForm client (container for mdi children).
+        <short>The Handle of the MDIForm client (container for MDI children).
         </short>
         <descr>
         </descr>
@@ -3591,25 +3591,25 @@ ShowModal creates its own event loop calling ProcessMessages.
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.RestoredHeight">
-        <short>The height of the form when it is restored (ie changes from minimised or maximised).</short>
+        <short>The height of the form when it is restored (i.e. changes from minimized or maximized).</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.RestoredLeft">
-        <short>The position of the left edge of the form when it is restored (ie changes from minimised or maximised).</short>
+        <short>The position of the left edge of the form when it is restored (i.e. changes from minimized or maximized).</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.RestoredTop">
-        <short>The position of the top edge of the form when it is restored (ie changes from minimised or maximised).</short>
+        <short>The position of the top edge of the form when it is restored (i.e. changes from minimized or maximized).</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.RestoredWidth">
-        <short>The width of the form when it is restored (ie changes from minimised or maximised).</short>
+        <short>The width of the form when it is restored (i.e. changes from minimized or maximized).</short>
         <descr/>
         <seealso/>
       </element>
@@ -3626,7 +3626,7 @@ ShowModal creates its own event loop calling ProcessMessages.
         <short>Whether the form is currently minimized, maximized or normal (restored).
         </short>
         <descr>
-      &#x9;&#x9;Default is 'normal' (ie not minimized nor maximized)
+      &#x9;&#x9;Default is 'normal' (i.e. not minimized nor maximized)
         </descr>
         <seealso>
           <link id="TWindowState"/>
@@ -4032,7 +4032,7 @@ ShowModal creates its own event loop calling ProcessMessages.
       <!-- property Visibility: public -->
       <element name="THintWindow.AutoHide">
         <short>Does the hint disappear (get hidden) after a while?</short>
-        <descr>If <var>AutoHide</var> is TRUE, the hint disappears afer an
+        <descr>If <var>AutoHide</var> is TRUE, the hint disappears after an
           interval specified by <link id="THintWindow.HideInterval">HideInterval</link>.
         </descr>
         <seealso/>
@@ -4056,8 +4056,8 @@ ShowModal creates its own event loop calling ProcessMessages.
       </element>
 <!-- object Visibility: default -->
       <element name="TMonitor">
-        <short>Information about an phyiscal monitor.</short>
-        <descr>All informations are retrieved dynamically from the OS,
+        <short>Information about an physical monitor.</short>
+        <descr>All information is retrieved dynamically from the OS,
           so that all changes are taken into account.
         </descr>
       </element>
@@ -4832,7 +4832,7 @@ ShowModal creates its own event loop calling ProcessMessages.
       </element>
       <!-- function Visibility: public -->
       <element name="TScreen.GetCurrentModalForm">
-        <short>Returns the topmost Modal form (ie a form that is awaiting a user response).</short>
+        <short>Returns the topmost Modal form (i.e. a form that is awaiting a user response).</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4842,7 +4842,7 @@ ShowModal creates its own event loop calling ProcessMessages.
       </element>
       <!-- function Visibility: public -->
       <element name="TScreen.GetCurrentModalFormZIndex">
-        <short>Returns the index of the tompost modal form in CustomFormsZOrdered[].
+        <short>Returns the index of the topmost modal form in CustomFormsZOrdered[].
         </short>
         <descr/>
         <errors/>
@@ -5236,7 +5236,7 @@ ShowModal creates its own event loop calling ProcessMessages.
       <!-- property Visibility: public -->
       <element name="TScreen.CustomFormZOrderCount">
         <short>
-          <var>CustomFormZOrderCount</var> - the number of forms arranged in Z-plane order (ie Front to Back)</short>
+          <var>CustomFormZOrderCount</var> - the number of forms arranged in Z-plane order (i.e. Front to Back)</short>
         <descr/>
         <seealso>
           <link id="TScreen.CustomFormsZOrdered"/>
@@ -5475,7 +5475,7 @@ ShowModal creates its own event loop calling ProcessMessages.
         <seealso/>
       </element>
       <element name="TQueryEndSessionEvent.Cancel">
-        <short>Set Cancel to True to prevent an logoff.</short>
+        <short>Set Cancel to True to prevent a logoff.</short>
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TExceptionEvent">
@@ -5974,8 +5974,8 @@ ShowModal creates its own event loop calling ProcessMessages.
       <element name="TApplicationShowGlyphs">
         <short>Describes the policy for the application of how to show menu and button glyphs</short>
         <descr>
-          <p>sbgAlways - show glyphs always (inspite of system preferences)</p>
-          <p>sbgNever - show glyphs never (inspite of system preferences)</p>
+          <p>sbgAlways - show glyphs always (despite system preferences)</p>
+          <p>sbgNever - show glyphs never (despite system preferences)</p>
           <p>sbgSystem - use system preferences for glyphs showing</p>
         </descr>
         <seealso>
@@ -6570,7 +6570,7 @@ ShowModal creates its own event loop calling ProcessMessages.
       </element>
       <!-- function Visibility: protected -->
       <element name="TApplication.IsHintMsg">
-        <short>Nop, exists for Delphi compatibility only.
+        <short>NOP, exists for Delphi compatibility only.
         </short>
         <descr/>
         <seealso/>
@@ -7253,13 +7253,13 @@ ShowModal creates its own event loop calling ProcessMessages.
       </element>
       <!-- procedure Visibility: public -->
       <element name="TApplication.DisableIdleHandler">
-        <short>Blocks Idle handling. Can be called moreoften, every call must be followed by EnableIdleHandler.
+        <short>Blocks Idle handling. Can be called more often, every call must be followed by EnableIdleHandler.
         </short>
         <descr/>
         <seealso>
           <link id="TApplication.EnableIdleHandler"/>
         </seealso>
-      <notes><note>what does this mean to application behaviour?</note>
+      <notes><note>what does this mean to application behavior?</note>
         </notes>
       </element>
       <!-- procedure Visibility: public -->
@@ -8107,7 +8107,7 @@ ShowModal creates its own event loop calling ProcessMessages.
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.ApplicationType">
-        <short>The type of the application (ie the sort of device for which it is intended).</short>
+        <short>The type of the application (i.e. the sort of device for which it is intended).</short>
         <descr>
           <p>The type of the application:</p>
           <p>Default, Desktop, Handheld, PDA, Smartphone</p>
@@ -8145,7 +8145,7 @@ ShowModal creates its own event loop calling ProcessMessages.
         <short>The current Hint text.</short>
         <descr>
           <p>
-            A hint is a small pop-up mesage that appears briefly
+            A hint is a small pop-up message that appears briefly
             while the mouse hovers over a control.
           </p><p>
             It usually displays useful information about how to use an object or what data should be entered, etc
@@ -8865,7 +8865,7 @@ ShowModal creates its own event loop calling ProcessMessages.
       <!-- procedure Visibility: public -->
       <element name="TIDesigner.SelectOnlyThisComponent">
         <short>
-          <var>SelectOnlyThisComponent</var> - method to select only the currrent component in the designer</short>
+          <var>SelectOnlyThisComponent</var> - method to select only the current component in the designer</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9270,7 +9270,7 @@ ShowModal creates its own event loop calling ProcessMessages.
           <p>The form resource is the lfm file compiled into the executable of
           your application. For this flag it does not matter if it was compiled
           via an lrs file or via fpcres. The resource is automatically loaded by
-          TForm and therfore any descendant when it is created via Create(Owner).
+          TForm and therefore any descendant when it is created via Create(Owner).
           If the resource is missing there is something wrong with either a
           resource or the unit which contains the faulty form.
           If the flag is false you will see a blank form and probably search
@@ -9287,7 +9287,7 @@ ShowModal creates its own event loop calling ProcessMessages.
           </ul>
           <p>
           History:
-          Before 0.9.31 there was no exception. Therefore some resourceless forms
+          Before 0.9.31 there was no exception. Therefore some resource-less forms
           might use the standard constructor Create(Owner) and will now get
           exceptions. This change is Delphi compatible and compatible with
           TFrame and TDataModule components.

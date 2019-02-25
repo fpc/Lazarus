@@ -82,7 +82,7 @@
         </short>
         <descr>
           <p>
-            <var>HandleMouseDown</var> is a procedure which responds to mouse down messages in the   button. HandleMouseDown sets  the internal state and redraws the button when the left mouse button is clicked. No actions are performedUpthe method if Button conUp  a value up than mbLeft.
+            <var>HandleMouseDown</var> is a procedure which responds to mouse down messages in the   button. HandleMouseDown sets  the internal state and redraws the button when the left mouse button is clicked. No actions are performed if the method if Button contains a value other than than mbLeft.
           </p>
         </descr>
         <seealso>
@@ -145,7 +145,7 @@
         </short>
         <descr>
           <p>
-            <var>Create</var> is the constructor for the class instance. Create calls the inherited constructor using AOwner as the owner for the class instance. Create sets the inital value for the internal state tracking member to nbsUp. Create sets the event handlers in the class instance to the following methods:
+            <var>Create</var> is the constructor for the class instance. Create calls the inherited constructor using AOwner as the owner for the class instance. Create sets the initial value for the internal state tracking member to nbsUp. Create sets the event handlers in the class instance to the following methods:
           </p>
           <dl>
             <dt>OnMouseUp</dt>
@@ -181,7 +181,7 @@
         <short>Draws the button in its current state</short>
         <descr>
           <p>
-             <var>Paint</var> is an overridden procedure which draws the button using the Canvas for the control. Paint ensures that the pen and brush cointain the correct values needed to draw the button in its current state. Paint calls the inherited method prior to exit.
+             <var>Paint</var> is an overridden procedure which draws the button using the Canvas for the control. Paint ensures that the pen and brush contain the correct values needed to draw the button in its current state. Paint calls the inherited method prior to exit.
           </p>
         </descr>
         <seealso></seealso>
@@ -228,7 +228,7 @@
         </short>
         <descr>
           <p>
-            <var>HideForm</var> is a procedure which signals an event when the form is hidden. HideForm signals the OnClose event (when assigned) with a TCloseAction standard action. HideForm calls Hide prior to exiting fvrom the method.
+            <var>HideForm</var> is a procedure which signals an event when the form is hidden. HideForm signals the OnClose event (when assigned) with a TCloseAction standard action. HideForm calls Hide prior to exiting from the method.
           </p>
           <p>
             HideForm is assigned as the OnClick event handler in TLabel and TNotifierXButton members created for the form.
@@ -279,7 +279,7 @@
         <short></short>
         <descr>
           <p>
-            <var>Create</var> is the constructor for the class instance. Create calls the inherited constructor using AOwner as the owner for the class instance. Create sets the BorderStyle to bsNone, and calculates the Width and Height for the form. Create allocates resources and intializes the Icon, Title, Text, and Button for the form. The Color for the form is set to clInfoBk.
+            <var>Create</var> is the constructor for the class instance. Create calls the inherited constructor using AOwner as the owner for the class instance. Create sets the BorderStyle to bsNone, and calculates the Width and Height for the form. Create allocates resources and initializes the Icon, Title, Text, and Button for the form. The Color for the form is set to clInfoBk.
           </p>
           <p>
             Create sets the event handlers in the class instance to the following methods:

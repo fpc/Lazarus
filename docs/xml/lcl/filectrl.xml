@@ -173,7 +173,7 @@
         <short>Specifies which files will be shown</short>
         <descr>
           <p>This property should be filled with a list of masks separated by semi-colons. For example: "*.pdf;*.svg" will show all files with the extensions pdf and svg. The default value for this property is "*" which for this control will be consider the generic mask meaning any file. Do not use the Windows specific mask "*.*" to attempt to show all files, which is the behavior from Delphi. In the LCL version of the control this will require the file name to have a point.</p>
-          <p>Allowed wildcarss are "*" which means zero or more characters and "?" which means exactly 1 character of any kind. Other characters represent themselves with one important detail: The file matching algorithm is case insensitive. So if you set "*.PDF" in the mask, then "PostScript.pdf" will also be shown, even in Linux in a case-sensitive file system.</p>
+          <p>Allowed wildcards are "*" which means zero or more characters and "?" which means exactly 1 character of any kind. Other characters represent themselves with one important detail: The file matching algorithm is case insensitive. So if you set "*.PDF" in the mask, then "PostScript.pdf" will also be shown, even in Linux in a case-sensitive file system.</p>
           <p>This property has exactly the same rules and behavior as TFilterComboBox.Mask.</p>
         </descr>
         <seealso>
@@ -345,7 +345,7 @@
 
       <!-- property Visibility: public -->
       <element name="TCustomFilterComboBox.ShellListView">
-        <short>Allows to concect this control to a TShellListView</short>
+        <short>Allows to connect this control to a TShellListView</short>
         <descr>The files shown in the TShellListView will be filtered by the filter selected in this control
         </descr>
         <seealso>

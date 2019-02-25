@@ -649,7 +649,7 @@ and then check the result to see if the user made a valid choice and pressed the
       <!-- constructor Visibility: public -->
       <element name="TFileDialog.Create">
         <short>
-          <var>Create</var> - constructor for <var>TFileDialog</var>: calls inherited <var>Create</var>, makes stringlists for files and history, initialises filter index</short>
+          <var>Create</var> - constructor for <var>TFileDialog</var>: calls inherited <var>Create</var>, makes stringlists for files and history, initializes filter index</short>
         <seealso>
           <link id="#LCL.Dialogs.TCommonDialog.Create">TCommonDialog.Create</link>
         </seealso>
@@ -724,7 +724,7 @@ and then check the result to see if the user made a valid choice and pressed the
       </element>
       <!-- property Visibility: published -->
       <element name="TFileDialog.Filter">
-        <short>A string which contains possible filename filters (eg .doc, .xmp, .pas etc).</short>
+        <short>A string which contains possible filename filters (e.g. .doc, .xmp, .pas etc).</short>
         <descr>This is a string which contains the filters a user can choose from. <br/>
 
 The available filters and their description are separated by pipe symbols. <br/>
@@ -1104,8 +1104,8 @@ if no file is specified, the Save File As dialog is invoked and the buffer is sa
       <!-- object Visibility: default -->
       <element name="TColorDialog">
         <short>
-          <var>TColorDialog</var> - dialog for selecting a colour to use in graphics and text</short>
-        <descr>Colour Dialog:  presents a palette of colours to allow the user to select the required colour for text or graphics. 
+          <var>TColorDialog</var> - dialog for selecting a color to use in graphics and text</short>
+        <descr>Color Dialog:  presents a palette of colors to allow the user to select the required color for text or graphics.
 <br/>
 
 Call the Execute function to show the color dialog.
@@ -1127,7 +1127,7 @@ Call the Execute function to show the color dialog.
           <link id="#LCL.Dialogs.TCommonDialog.Create">TCommonDialog.Create</link>
         </seealso>
         <short>
-          <var>Create</var> - constructor for <var>TColorDialog</var>: calls inherited <var>Create</var>, makes stringlist for colours and gets colour values</short>
+          <var>Create</var> - constructor for <var>TColorDialog</var>: calls inherited <var>Create</var>, makes stringlist for colors and gets color values</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TColorDialog.Create.TheOwner">
@@ -1142,7 +1142,7 @@ Call the Execute function to show the color dialog.
       <!-- property Visibility: published -->
       <element name="TColorDialog.Color">
         <short>
-          <var>Color</var> the colour that is selected by the dialog (a value may have been pre-set and may be accepted, but a new value can be chosen)</short>
+          <var>Color</var> the color that is selected by the dialog (a value may have been pre-set and may be accepted, but a new value can be chosen)</short>
         <descr>When the Color dialog has been shown and the user pressed OK, the FColor property contains the chosen color.
 </descr>
         <seealso/>
@@ -1150,14 +1150,14 @@ Call the Execute function to show the color dialog.
       <!-- object Visibility: default -->
       <element name="TColorButton">
         <short>
-          <var>TColorButton</var> - a SpeedButton designed to be used with the Color dialog, allowing a colour to be selected for text or graphics</short>
+          <var>TColorButton</var> - a SpeedButton designed to be used with the Color dialog, allowing a color to be selected for text or graphics</short>
         <descr>
           <p>
-            <var>TColorButton</var> - a SpeedButton designed to be used with the Color dialog, allowing a colour to be selected for text or graphics</p>
+            <var>TColorButton</var> - a SpeedButton designed to be used with the Color dialog, allowing a color to be selected for text or graphics</p>
           <p>To use the ColorButton, first select the ColorButton icon from the Component Palette and place it on the Form Designer in the location you want it to occupy, then place a TColorDialog on the Form Designer, give it a name (or accept the default name) and select this named dialog as the ColorDialog property in the Object Inspector for the ColorButton.</p>
-          <p>The default appearance of the ColorButton is a rectangle containing a colour; if you wish to include a caption beside the block of colour, you may need to adjust the size of the control to accommodate the text, and you can then enter some text in the Caption property of the ColorButton; this text will appear next to the colour block.</p>
-          <p>After compilation, at runtime the ColorButton is visible with a default or preselected ButtonColor in the block, and any optional caption beside it; the ColorDialog is not visible until the ColorButton is clicked, when the ColorDialog pops up and offers a choice of colours, either from a list or a palette, and if the user makes a selection and closes the dialog by pressing OK, the ColorButton will display the colour that was chosen in the ColorDialog</p>
-          <p>Note that in the context of ColorButton, properties with the name ButtonColor refer to the colour that has been selected and is displayed in the colour block; properties entitled Color without 'Button' attached refer to the colour of the control itself, usually the same as the background or the default button face colour</p>
+          <p>The default appearance of the ColorButton is a rectangle containing a color; if you wish to include a caption beside the block of color, you may need to adjust the size of the control to accommodate the text, and you can then enter some text in the Caption property of the ColorButton; this text will appear next to the color block.</p>
+          <p>After compilation, at runtime the ColorButton is visible with a default or preselected ButtonColor in the block, and any optional caption beside it; the ColorDialog is not visible until the ColorButton is clicked, when the ColorDialog pops up and offers a choice of colors, either from a list or a palette, and if the user makes a selection and closes the dialog by pressing OK, the ColorButton will display the color that was chosen in the ColorDialog</p>
+          <p>Note that in the context of ColorButton, properties with the name ButtonColor refer to the color that has been selected and is displayed in the color block; properties entitled Color without 'Button' attached refer to the color of the control itself, usually the same as the background or the default button face color</p>
         </descr>
         <errors/>
         <seealso/>
@@ -1263,7 +1263,7 @@ Call the Execute function to show the color dialog.
       <!-- procedure Visibility: protected -->
       <element name="TColorButton.ShowColorDialog">
         <short>
-          <var>ShowColorDialog</var> - method for displaying the Colour dialog</short>
+          <var>ShowColorDialog</var> - method for displaying the Color dialog</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1392,21 +1392,21 @@ Call the Execute function to show the color dialog.
       <!-- property Visibility: published -->
       <element name="TColorButton.ButtonColorAutoSize">
         <short>
-          <var>ButtonColorAutoSize</var> - returns True if the block displaying button colour is to be autosized</short>
+          <var>ButtonColorAutoSize</var> - returns True if the block displaying button color is to be auto-sized</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TColorButton.ButtonColorSize">
         <short>
-          <var>ButtonColorSize</var> - the size of the button colour block</short>
+          <var>ButtonColorSize</var> - the size of the button color block</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TColorButton.ButtonColor">
         <short>
-          <var>ButtonColor</var> - the colour that has been selected by the ColorDialog and is displayed in the button</short>
+          <var>ButtonColor</var> - the color that has been selected by the ColorDialog and is displayed in the button</short>
         <descr/>
         <seealso/>
       </element>
@@ -1425,13 +1425,13 @@ Call the Execute function to show the color dialog.
       <!-- property Visibility: published -->
       <element name="TColorButton.Caption">
         <short>
-          <var>Caption</var> - a string that can be placed beside the block of colour</short>
+          <var>Caption</var> - a string that can be placed beside the block of color</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TColorButton.Color">
-        <short>The <var>Color</var> of the control itself, ie the parts that are not the colour display block; edges, background etc</short>
+        <short>The <var>Color</var> of the control itself, i.e. the parts that are not the color display block; edges, background etc</short>
         <descr/>
         <seealso/>
       </element>
@@ -1504,7 +1504,7 @@ Call the Execute function to show the color dialog.
       <!-- property Visibility: published -->
       <element name="TColorButton.OnColorChanged">
         <short>
-          <var>OnColorChanged</var> - event handler for a change in button colour</short>
+          <var>OnColorChanged</var> - event handler for a change in button color</short>
         <descr/>
         <seealso/>
       </element>
@@ -1759,7 +1759,7 @@ Call the Execute function to show the color dialog.
       <!-- property Visibility: published -->
       <element name="TFontDialog.OnApplyClicked">
         <short>
-          <var>OnApplyClicked</var> - event handler for a click on the Apply button (ie the user wishes to apply the selected font)</short>
+          <var>OnApplyClicked</var> - event handler for a click on the Apply button (i.e. the user wishes to apply the selected font)</short>
         <descr/>
         <seealso/>
       </element>
@@ -1815,11 +1815,11 @@ shows all letters both in uppercase and lowercase.
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TFindOption.frReplace">
-        <short>This flag is set if only the first occurence of the search string is to be replaced with the replace string.</short>
+        <short>This flag is set if only the first occurrence of the search string is to be replaced with the replace string.</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TFindOption.frReplaceAll">
-        <short>This flag is set if all occurences of the search string are to be replaced with the replace string.</short>
+        <short>This flag is set if all occurrences of the search string are to be replaced with the replace string.</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TFindOption.frWholeWord">
@@ -2494,7 +2494,7 @@ A number of buttons appear, offering the choice to replace this instance, find n
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomPrintDialog.Options">
-        <short>The seet of <var>Options</var> for printing</short>
+        <short>The set of <var>Options</var> for printing</short>
         <descr/>
         <seealso/>
       </element>
@@ -2568,7 +2568,7 @@ and allows the programmer considerable control over the appearance of the dialog
 
 and the buttons can be specified as a set in square brackets <br/>
 
-eg [mbRetry, mbIgnore, mbAbort, mbCancel].<br/>
+e.g. [mbRetry, mbIgnore, mbAbort, mbCancel].<br/>
           <br/>
 
 
@@ -2596,7 +2596,7 @@ If the user presses the escape key, the result depends on the widgetset: <br/>
       <element name="MessageDlg.Result">
         <short>The result of this function is either the button the user pressed to close the dialog, or mrCancel.</short>
         <descr>The result of this function is the button the user pressed to close the dialog.<br/>
-This is expresed as an integer.<br/>
+This is expressed as an integer.<br/>
 If the user clicks the [X]-bordericon, the return value will be mrCancel. <br/>
 If the user presses the escape key, the result depends on the widgetset: <br/>
 - if the widgetset has implemented a native dialog, the result will be mrCancel. <br/>
@@ -2651,7 +2651,7 @@ or you can make your own set.</descr>
 
 
 function. <br/>
-It has been extended with parameters to place the dialog on a certain postion on the screen instead of in the centre of the screen.
+It has been extended with parameters to place the dialog on a certain position on the screen instead of in the center of the screen.
 <br/>
 The MessageDlgPos function does not enable you to choose the caption of the dialog.</descr>
         <errors/>
@@ -2661,7 +2661,7 @@ The MessageDlgPos function does not enable you to choose the caption of the dial
       <element name="MessageDlgPos.Result">
         <short>The result of this function is either the button the user pressed to close the dialog, or mrCancel.</short>
         <descr>The result of this function is the button the user pressed to close the dialog.<br/>
-This is expresed as an integer.<br/>
+This is expressed as an integer.<br/>
 If the user clicks the [X]-bordericon, the return value will be mrCancel. <br/>
 If the user presses the escape key, the result depends on the widgetset: <br/>
 - if the widgetset has implemented a native dialog, the result will be mrCancel. <br/>
@@ -2718,7 +2718,7 @@ or you can make your own set.</descr>
       <element name="MessageDlgPosHelp.Result">
         <short>The result of this function is either the button the user pressed to close the dialog, or mrCancel.</short>
         <descr>The result of this function is the button the user pressed to close the dialog.<br/>
-This is expresed as an integer.<br/>
+This is expressed as an integer.<br/>
 If the user clicks the [X]-bordericon, the return value will be mrCancel. <br/>
 If the user presses the escape key, the result depends on the widgetset: <br/>
 - if the widgetset has implemented a native dialog, the result will be mrCancel. <br/>
@@ -2919,7 +2919,7 @@ and does not relinquish focus until the OK box is clicked or otherwise selected.
       </element>
       <!-- argument Visibility: default -->
       <element name="ShowMessagePos.aMsg">
-        <short>A string constant which is the message to ne shown.</short>
+        <short>A string constant which is the message to be shown.</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="ShowMessagePos.X">
@@ -3021,7 +3021,7 @@ When ENTER is pressed or OK clicked, Value will be the (possibly amended) text f
       <!-- function Visibility: default -->
       <element name="PasswordBox">
         <short>Password Box</short>
-        <descr>PasswordBox:  a specialised form of the InputQuery. <br/>
+        <descr>PasswordBox: a specialized form of the InputQuery. <br/>
 
 The editbox on the dialog box will mask the input. <br/>
 The only parameters are aCaption and aPrompt.<br/>
@@ -3113,7 +3113,7 @@ If a valid directory is given, the selected directory in the tree will be set to
       </element>
       <!-- procedure Visibility: default -->
       <element name="Register">
-        <short>Register the components used in the current application, so that they can be recognised</short>
+        <short>Register the components used in the current application, so that they can be recognized</short>
         <descr/>
         <errors/>
         <seealso>
@@ -3130,14 +3130,14 @@ If a valid directory is given, the selected directory in the tree will be set to
       <element name="TColorDialog.DefaultTitle" link="#LCL.Dialogs.TCommonDialog.DefaultTitle"/>
       <element name="TColorDialog.Destroy">
         <short>
-          <var>Destroy</var> - destructor for <var>TColorDialog</var>: frees custom colours then calls inherited <var>Destroy</var>
+          <var>Destroy</var> - destructor for <var>TColorDialog</var>: frees custom colors then calls inherited <var>Destroy</var>
         </short>
         <seealso>
         </seealso>
       </element>
       <element name="TColorDialog.CustomColors">
         <short>
-          <var>CustomColors</var> - a customised list of colours that can be used instead of the system-supplied list</short>
+          <var>CustomColors</var> - a customized list of colors that can be used instead of the system-supplied list</short>
       </element>
       <element name="TColorButton.GroupIndex" link="#LCL.Buttons.TCustomSpeedButton.GroupIndex"/>
       <element name="TFontDialog.DefaultTitle" link="#LCL.Dialogs.TCommonDialog.DefaultTitle"/>
@@ -3162,7 +3162,7 @@ If a valid directory is given, the selected directory in the tree will be set to
     <element name="TTaskDialog"><short>Creates full-features modal dialogs at runtime.</short><descr>Non-visual component, creates modal dialogs in runtime, with rich UI elements, like Windows TaskDialog API.</descr>
       </element>
     <element name="TTaskDialog.Buttons"><short>Collection of items that describe buttons in dialog. Additional to CommonButtons.</short>
-      </element><element name="TTaskDialog.Caption"><short>Caption of dialog's form.</short>
+      </element><element name="TTaskDialog.Caption"><short>Caption of the dialog form.</short>
       </element><element name="TTaskDialog.Title"><short>Header text that is shown on the top, with big font and bold style. Use "\n" for new lines.</short>
       </element><element name="TTaskDialog.VerificationText"><short>If not empty, dialog shows check-box with this caption, at the bottom.</short>
       </element>
@@ -3179,7 +3179,7 @@ If a valid directory is given, the selected directory in the tree will be set to
       </element>
     <element name="TTaskDialogFlag.tfEnableHyperlinks"><short>Allow HTML-like hyperlinks in the dialog (in Text, Footer, and ExpandedText) using HTML tag "a href=...".</short>
       </element><element name="TTaskDialogFlag.tfUseHiconMain"><short>Use custom main icon with CustomMainIcon property.</short>
-      </element><element name="TTaskDialogFlag.tfAllowDialogCancellation"><short>Allow canceling the dialog by Esc key, or Alt+F4 (ie OS default hotkey).</short>
+      </element><element name="TTaskDialogFlag.tfAllowDialogCancellation"><short>Allow canceling the dialog by Esc key, or Alt+F4 (i.e. OS default hotkey).</short>
       </element><element name="TTaskDialogFlag.tfVerificationFlagChecked"><short>Bottom check-box (verification) shows in the checked state.</short>
       </element><element name="TTaskDialogFlag.tfCanBeMinimized"><short>Allow minimizing the dialog.</short>
       </element><element name="TTaskDialogFlag.tfRtlLayout"><short>Use Right-to-Left layout for texts.</short>

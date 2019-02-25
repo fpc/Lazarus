@@ -119,7 +119,7 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TMethodList.Remove">
-        <short>Removes the first occurence of AMethod from the list.</short>
+        <short>Removes the first occurrence of AMethod from the list.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -168,7 +168,7 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TMethodList.RemoveAllMethodsOfObject">
-        <short>Deletes all occurences of methods of AnObject from the list.</short>
+        <short>Deletes all occurrences of methods of AnObject from the list.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1157,7 +1157,7 @@
         <short>Raises an exception.</short>
         <descr>Normally, GDB does not catch fpc Exception objects,
           therefore this procedure raises a standard divide by zero exception
-          which is catched by GDB.
+          which is caught by GDB.
         </descr>
         <errors/>
         <seealso/>
@@ -1448,7 +1448,7 @@
         <descr>
           <ul>
             <li>boolean: "True" or "False".
-            </li><li>pointer: hexidecimal address.
+            </li><li>pointer: hexadecimal address.
             </li><li>TRect, TPoint: shows the x/y coordinates.
             </li><li>TComponentState: set.
             </li><li>TObject: Name:ClassName.
@@ -1876,7 +1876,7 @@
         </short>
         <descr>
           <pre>
-  Ensures the covenient look of multiline string
+  Ensures the convenient look of multiline string
   when displaying it in the single line
   * Replaces CR and LF with spaces
   * Removes duplicate spaces

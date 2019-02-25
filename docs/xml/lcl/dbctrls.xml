@@ -297,7 +297,7 @@
       <!-- constructor Visibility: public -->
       <element name="TFieldDataLink.Create">
         <short>
-          <var>Create</var> - calls inherited <var>Create</var> then initialises field information</short>
+          <var>Create</var> - calls inherited <var>Create</var> then initializes field information</short>
         <descr/>
         <errors/>
         <seealso>
@@ -671,7 +671,7 @@
       </element>
       <!-- property Visibility: published -->
       <element name="TDBEdit.DataSource">
-        <short>The DataSource to be used for supplying the data in the required Field. Ususally the result of a data query</short>
+        <short>The DataSource to be used for supplying the data in the required Field. Usually the result of a data query</short>
         <descr/>
         <seealso/>
       </element>
@@ -695,7 +695,7 @@
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>AutoSize permits the size of a control to be adjusted automatically, for example a button can become bigger or smaller to accommodate a longer or shorter caption.</p>
-          <p>Reads logical (boolean) flag to see whether auto-sizing is to be operated, or writes the flag to say it should be done. Default is false, ie no auto-sizing</p>
+          <p>Reads logical (boolean) flag to see whether auto-sizing is to be operated, or writes the flag to say it should be done. Default is false, i.e. no auto-sizing</p>
         </descr>
         <seealso/>
       </element>
@@ -716,8 +716,8 @@
       <element name="TDBEdit.Color" link="#LCL.Controls.TControl.Color">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>Reads the value for colour, or stores the value, and sets a flag if the colour is stored.</p>
-          <p>The default colour is the same as the window in which the control is located.</p>
+          <p>Reads the value for color, or stores the value, and sets a flag if the color is stored.</p>
+          <p>The default color is the same as the window in which the control is located.</p>
         </descr>
         <seealso/>
       </element>
@@ -870,7 +870,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <element name="TDBEdit.OnClick" link="#LCL.Controls.TControl.OnClick">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be spcified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <var>ActionList</var>
+          <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be specified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <var>ActionList</var>
           </p>
           <p>Reads or writes a flag if  a mouse click is detected, and sets a flag if a value is stored.</p>
         </descr>
@@ -1151,7 +1151,7 @@ consideration when overriding this method.
       <element name="TDBText.Anchors" link="#LCL.Controls.TControl.Anchors">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>Determines how the control is to be anchored to its client or parent conrol</p>
+          <p>Determines how the control is to be anchored to its client or parent control</p>
           <p>Either reads a flag containing the set of anchors to be used, or writes a set of anchors. If they have been written, this is indicated in <var>IsAnchorsStored</var>
           </p>
         </descr>
@@ -1162,7 +1162,7 @@ consideration when overriding this method.
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>AutoSize permits the size of a control to be adjusted automatically, for example a button can become bigger or smaller to accommodate a longer or shorter caption.</p>
-          <p>Reads logical (boolean) flag to see whether auto-sizing is to be operated, or writes the flag to say it should be done. Default is false, ie no auto-sizing</p>
+          <p>Reads logical (boolean) flag to see whether auto-sizing is to be operated, or writes the flag to say it should be done. Default is false, i.e. no auto-sizing</p>
         </descr>
         <seealso/>
       </element>
@@ -1172,7 +1172,7 @@ consideration when overriding this method.
           <p>Gets caption as a text-string (<var>GetText</var>), or stores the new caption (<var>SetText</var>). Shows flag if caption is stored (<var>IsCaptionStored</var>).</p>
           <p>By default, the <var>Caption</var> appears the same as the control <var>Name</var> in the Object Inspector, 
 and the developer needs to set it explicitly to some new text.</p>
-          <p>The VCL implementation relies on the virtual <var>Get/SetTextBuf</var> to exchange text between widgets and VCL. This means a lot of (unnecesary) text copies. </p>
+          <p>The VCL implementation relies on the virtual <var>Get/SetTextBuf</var> to exchange text between widgets and VCL. This means a lot of (unnecessary) text copies. </p>
           <p>The LCL uses strings for exchanging text (more efficient). To maintain VCL compatibility, the virtual <var>RealGet/SetText</var> is
 introduced. These functions interface with the LCLInterface. </p>
           <p>The default <var>Get/SetTextBuf</var> implementation calls the <var>RealGet/SetText</var>. As long as the <var>Get/SetTextBuf</var> isn't overridden <var>Get/SetText</var> calls <var>RealGet/SetText</var> to avoid PChar copying.</p>
@@ -1184,14 +1184,14 @@ introduced. These functions interface with the LCLInterface. </p>
       <element name="TDBText.Color" link="#LCL.Controls.TControl.Color">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>Reads the value for colour, or stores the value, and sets a flag if the colour is stored.</p>
-          <p>The default colour is the same as the window in which the control is located.</p>
+          <p>Reads the value for color, or stores the value, and sets a flag if the color is stored.</p>
+          <p>The default color is the same as the window in which the control is located.</p>
         </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBText.DataField">
-        <short>The name of the field, as a string (ie cannot be referred to as an Index)</short>
+        <short>The name of the field, as a string (i.e. cannot be referred to as an Index)</short>
         <descr/>
         <seealso/>
       </element>
@@ -1526,7 +1526,7 @@ consideration when overriding this method.
       <!-- property Visibility: public -->
       <element name="TDBListBox.Field">
         <short>The Field of the DataSet for which data are to be displayed</short>
-        <descr>Regers to the whole Field entity, not just its name</descr>
+        <descr>Refers to the whole Field entity, not just its name</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
@@ -1562,7 +1562,7 @@ consideration when overriding this method.
       <element name="TDBListBox.Anchors" link="#LCL.Controls.TControl.Anchors">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>Determines how the control is to be anchored to its client or parent conrol</p>
+          <p>Determines how the control is to be anchored to its client or parent control</p>
           <p>Either reads a flag containing the set of anchors to be used, or writes a set of anchors. If they have been written, this is indicated in <var>IsAnchorsStored</var>
           </p>
         </descr>
@@ -1592,7 +1592,7 @@ consideration when overriding this method.
       <element name="TDBListBox.OnClick" link="#LCL.Controls.TControl.OnClick">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be spcified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <var>ActionList</var>
+          <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be specified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <var>ActionList</var>
           </p>
           <p>Reads or writes a flag if  a mouse click is detected, and sets a flag if a value is stored.</p>
         </descr>
@@ -1911,7 +1911,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <!-- procedure Visibility: protected -->
       <element name="TDBRadioGroup.DataChange">
         <short>
-          <var>DataChange</var> - updates the current <var>Value</var> to reflect a change inthe data</short>
+          <var>DataChange</var> - updates the current <var>Value</var> to reflect a change in the data</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1958,7 +1958,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <!-- procedure Visibility: protected -->
       <element name="TDBRadioGroup.UpdateRadioButtonStates">
         <short>
-          <var>UpdateRadioButtonStates</var> - performs the inheited method and ensures that any updates are also reflected via the data link, if it is active and in an <var>Editing</var> state</short>
+          <var>UpdateRadioButtonStates</var> - performs the inherited method and ensures that any updates are also reflected via the data link, if it is active and in an <var>Editing</var> state</short>
         <descr/>
         <errors/>
         <seealso>
@@ -2038,7 +2038,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <element name="TDBRadioGroup.Anchors" link="#LCL.Controls.TControl.Anchors">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>Determines how the control is to be anchored to its client or parent conrol</p>
+          <p>Determines how the control is to be anchored to its client or parent control</p>
           <p>Either reads a flag containing the set of anchors to be used, or writes a set of anchors. If they have been written, this is indicated in <var>IsAnchorsStored</var>
           </p>
         </descr>
@@ -2050,7 +2050,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
           <p>Gets caption as a text-string (<var>GetText</var>), or stores the new caption (<var>SetText</var>). Shows flag if caption is stored (<var>IsCaptionStored</var>).</p>
           <p>By default, the <var>Caption</var> appears the same as the control <var>Name</var> in the Object Inspector, 
 and the developer needs to set it explicitly to some new text.</p>
-          <p>The VCL implementation relies on the virtual <var>Get/SetTextBuf</var> to exchange text between widgets and VCL. This means a lot of (unnecesary) text copies. </p>
+          <p>The VCL implementation relies on the virtual <var>Get/SetTextBuf</var> to exchange text between widgets and VCL. This means a lot of (unnecessary) text copies. </p>
           <p>The LCL uses strings for exchanging text (more efficient). To maintain VCL compatibility, the virtual <var>RealGet/SetText</var> is
 introduced. These functions interface with the LCLInterface. </p>
           <p>The default <var>Get/SetTextBuf</var> implementation calls the <var>RealGet/SetText</var>. As long as the <var>Get/SetTextBuf</var> isn't overridden <var>Get/SetText</var> calls <var>RealGet/SetText</var> to avoid PChar copying.</p>
@@ -2109,7 +2109,7 @@ introduced. These functions interface with the LCLInterface. </p>
       <element name="TDBRadioGroup.OnClick" link="#LCL.Controls.TControl.OnClick">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be spcified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <var>ActionList</var>
+          <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be specified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <var>ActionList</var>
           </p>
           <p>Reads or writes a flag if  a mouse click is detected, and sets a flag if a value is stored.</p>
         </descr>
@@ -2443,7 +2443,7 @@ Reads or Writes flag if control is re-sized.
       <element name="TDBCheckBox.Anchors" link="#LCL.Controls.TControl.Anchors">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>Determines how the control is to be anchored to its client or parent conrol</p>
+          <p>Determines how the control is to be anchored to its client or parent control</p>
           <p>Either reads a flag containing the set of anchors to be used, or writes a set of anchors. If they have been written, this is indicated in <var>IsAnchorsStored</var>
           </p>
         </descr>
@@ -2454,7 +2454,7 @@ Reads or Writes flag if control is re-sized.
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>AutoSize permits the size of a control to be adjusted automatically, for example a button can become bigger or smaller to accommodate a longer or shorter caption.</p>
-          <p>Reads logical (boolean) flag to see whether auto-sizing is to be operated, or writes the flag to say it should be done. Default is false, ie no auto-sizing</p>
+          <p>Reads logical (boolean) flag to see whether auto-sizing is to be operated, or writes the flag to say it should be done. Default is false, i.e. no auto-sizing</p>
         </descr>
         <seealso/>
       </element>
@@ -2464,7 +2464,7 @@ Reads or Writes flag if control is re-sized.
           <p>Gets caption as a text-string (<var>GetText</var>), or stores the new caption (<var>SetText</var>). Shows flag if caption is stored (<var>IsCaptionStored</var>).</p>
           <p>By default, the <var>Caption</var> appears the same as the control <var>Name</var> in the Object Inspector, 
 and the developer needs to set it explicitly to some new text.</p>
-          <p>The VCL implementation relies on the virtual <var>Get/SetTextBuf</var> to exchange text between widgets and VCL. This means a lot of (unnecesary) text copies. </p>
+          <p>The VCL implementation relies on the virtual <var>Get/SetTextBuf</var> to exchange text between widgets and VCL. This means a lot of (unnecessary) text copies. </p>
           <p>The LCL uses strings for exchanging text (more efficient). To maintain VCL compatibility, the virtual <var>RealGet/SetText</var> is
 introduced. These functions interface with the LCLInterface. </p>
           <p>The default <var>Get/SetTextBuf</var> implementation calls the <var>RealGet/SetText</var>. As long as the <var>Get/SetTextBuf</var> isn't overridden <var>Get/SetText</var> calls <var>RealGet/SetText</var> to avoid PChar copying.</p>
@@ -2527,7 +2527,7 @@ introduced. These functions interface with the LCLInterface. </p>
       <element name="TDBCheckBox.OnClick" link="#LCL.Controls.TControl.OnClick">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be spcified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <var>ActionList</var>
+          <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be specified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <var>ActionList</var>
           </p>
           <p>Reads or writes a flag if  a mouse click is detected, and sets a flag if a value is stored.</p>
         </descr>
@@ -2659,7 +2659,7 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         </seealso>
         <descr>
           <p>
-            <var>TDBComboBox </var>has properties similar to <var>TComboBox</var> and <var>TCustomComboBox</var>. It consists of an Edit Box which is th eData-aware part of the component, and a drop-down list box.</p>
+            <var>TDBComboBox </var>has properties similar to <var>TComboBox</var> and <var>TCustomComboBox</var>. It consists of an Edit Box which is the Data-aware part of the component, and a drop-down list box.</p>
           <p>In a typical application a user would be presented with the drop-down list, would make a selection and then this would appear in the edit box and become the data value for that cell in the database. </p>
           <p>So for example a list of countries might be presented, and the selected value from the list would be used to populate the appropriate field ('Country') in that record of the database.</p>
         </descr>
@@ -2908,7 +2908,7 @@ has value -1.</p>
       <element name="TDBComboBox.Anchors" link="#LCL.Controls.TControl.Anchors">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>Determines how the control is to be anchored to its client or parent conrol</p>
+          <p>Determines how the control is to be anchored to its client or parent control</p>
           <p>Either reads a flag containing the set of anchors to be used, or writes a set of anchors. If they have been written, this is indicated in <var>IsAnchorsStored</var>
           </p>
         </descr>
@@ -3002,7 +3002,7 @@ has value -1.</p>
       <element name="TDBComboBox.OnClick" link="#LCL.Controls.TControl.OnClick">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be spcified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <var>ActionList</var>
+          <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be specified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <var>ActionList</var>
           </p>
           <p>Reads or writes a flag if  a mouse click is detected, and sets a flag if a value is stored.</p>
         </descr>
@@ -3403,7 +3403,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- property Visibility: published -->
       <element name="TDBMemo.DataField">
-        <short>The name of the field, as a string (ie cannot be referred to as an Index)</short>
+        <short>The name of the field, as a string (i.e. cannot be referred to as an Index)</short>
         <descr/>
         <seealso/>
       </element>
@@ -3545,7 +3545,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <!-- function Visibility: default -->
       <element name="TDBGroupBox.GetField">
         <short>
-          <var>GetField</var> - returns the identity of the field to which the group box is atttached</short>
+          <var>GetField</var> - returns the identity of the field to which the group box is attached</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3687,7 +3687,7 @@ consideration when overriding this method.
       <element name="TDBGroupBox.Anchors" link="#LCL.Controls.TControl.Anchors">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>Determines how the control is to be anchored to its client or parent conrol</p>
+          <p>Determines how the control is to be anchored to its client or parent control</p>
           <p>Either reads a flag containing the set of anchors to be used, or writes a set of anchors. If they have been written, this is indicated in <var>IsAnchorsStored</var>
           </p>
         </descr>
@@ -3699,7 +3699,7 @@ consideration when overriding this method.
           <p>Gets caption as a text-string (<var>GetText</var>), or stores the new caption (<var>SetText</var>). Shows flag if caption is stored (<var>IsCaptionStored</var>).</p>
           <p>By default, the <var>Caption</var> appears the same as the control <var>Name</var> in the Object Inspector, 
 and the developer needs to set it explicitly to some new text.</p>
-          <p>The VCL implementation relies on the virtual <var>Get/SetTextBuf</var> to exchange text between widgets and VCL. This means a lot of (unnecesary) text copies. </p>
+          <p>The VCL implementation relies on the virtual <var>Get/SetTextBuf</var> to exchange text between widgets and VCL. This means a lot of (unnecessary) text copies. </p>
           <p>The LCL uses strings for exchanging text (more efficient). To maintain VCL compatibility, the virtual <var>RealGet/SetText</var> is
 introduced. These functions interface with the LCLInterface. </p>
           <p>The default <var>Get/SetTextBuf</var> implementation calls the <var>RealGet/SetText</var>. As long as the <var>Get/SetTextBuf</var> isn't overridden <var>Get/SetText</var> calls <var>RealGet/SetText</var> to avoid PChar copying.</p>
@@ -3731,8 +3731,8 @@ introduced. These functions interface with the LCLInterface. </p>
       <element name="TDBGroupBox.Color" link="#LCL.Controls.TControl.Color">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>Reads the value for colour, or stores the value, and sets a flag if the colour is stored.</p>
-          <p>The default colour is the same as the window in which the control is located.</p>
+          <p>Reads the value for color, or stores the value, and sets a flag if the color is stored.</p>
+          <p>The default color is the same as the window in which the control is located.</p>
         </descr>
         <seealso/>
       </element>
@@ -3752,7 +3752,7 @@ introduced. These functions interface with the LCLInterface. </p>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBGroupBox.DataField">
-        <short>The name of the field, as a string (ie cannot be referred to as an Index)</short>
+        <short>The name of the field, as a string (i.e. cannot be referred to as an Index)</short>
         <descr/>
         <seealso/>
       </element>
@@ -3785,7 +3785,7 @@ introduced. These functions interface with the LCLInterface. </p>
       <element name="TDBGroupBox.OnClick" link="#LCL.Controls.TControl.OnClick">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be spcified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <var>ActionList</var>
+          <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be specified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <var>ActionList</var>
           </p>
           <p>Reads or writes a flag if  a mouse click is detected, and sets a flag if a value is stored.</p>
         </descr>
@@ -4100,7 +4100,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <!-- constructor Visibility: public -->
       <element name="TDBImage.Create">
         <short>
-          <var>Create</var> - constructor for <var>TDBImage</var>: cals inherited <var>Create</var> then sets style and display methods, forms datalinks and actions</short>
+          <var>Create</var> - constructor for <var>TDBImage</var>: calls inherited <var>Create</var> then sets style and display methods, forms datalinks and actions</short>
         <descr/>
         <errors/>
         <seealso>
@@ -4217,7 +4217,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <!-- property Visibility: published -->
       <element name="TDBImage.ReadOnly">
         <short>
-          <var>ReadOnly</var> if True, image can be inspected byt not modified or written </short>
+          <var>ReadOnly</var> if True, image can be inspected but not modified or written </short>
         <descr/>
         <seealso/>
       </element>
@@ -4281,7 +4281,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <!-- procedure Visibility: default -->
       <element name="TDBCalendar.UpdateData">
         <short>
-          <var>UpdateData</var> copy changed data into the text fileld</short>
+          <var>UpdateData</var> copy changed data into the text field</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4671,7 +4671,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
           <p>
             <var>TDBCustomNavigator</var> is the parent class for 
 <var>TDBNavigator</var>, an advanced tool for navigating through datasets held locally in response to a query sent to the database. Most of the important properties are defined here.</p>
-          <p>It consists of a series of toolbuttons to move to the <b>First</b>, <b>Prior</b>, <b>Next</b> or <b>Last</b> record; to <b>Insert</b> or <b>Delete</b> a record; to <b>Edit</b> a record (enter Edit mode), to <b>Post</b> the changes. to <b>Cance</b>l the changes, and to <var>Refresh</var> the display from the database. The set of buttons for display can be customised in <var>VisibleButtons</var>, which allows display of individual buttons to be suppressed</p>
+          <p>It consists of a series of toolbuttons to move to the <b>First</b>, <b>Prior</b>, <b>Next</b> or <b>Last</b> record; to <b>Insert</b> or <b>Delete</b> a record; to <b>Edit</b> a record (enter Edit mode), to <b>Post</b> the changes. to <b>Cancel</b>l the changes, and to <var>Refresh</var> the display from the database. The set of buttons for display can be customized in <var>VisibleButtons</var>, which allows display of individual buttons to be suppressed</p>
           <p>If used in conjunction with a DataAware control such as <var>TDBGrid</var> or <var>TDBMemo</var> it controls which records are displayed , the position of the record selection cursor, and the initiation of changes to the dataset and ultimately the database.</p>
           <p>Most of the functionality of the toolbar is already built-in to the control, but if the programmer needs to specify actions to be associated with individual buttons, there is a procedure  <var>BtnClick</var> to which an argument can be sent with the index value of the button clicked, and the procedure chooses which action to call dependent on the button index.</p>
           <p>The <var>DataSource</var> property must be set to link to the appropriate set of data.</p>
@@ -4970,7 +4970,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <!-- constructor Visibility: public -->
       <element name="TDBCustomNavigator.Create">
         <short>
-          <var>Create</var> - constructor for <var>TDBCustomNavigator</var>: locks the buttons, calls inherited <var>Create</var>, sets default size, style, forms datalinks, initialises hints, updates the buttons</short>
+          <var>Create</var> - constructor for <var>TDBCustomNavigator</var>: locks the buttons, calls inherited <var>Create</var>, sets default size, style, forms datalinks, initializes hints, updates the buttons</short>
         <descr/>
         <errors/>
         <seealso>
@@ -5519,15 +5519,15 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <descr>
           <p>
             <var>HowToUseDataAwareControls</var> - Hints for accessing databases. A set of Data-Aware components is provided, to make it easier to access information held in databases.</p>
-          <p>Before using Data-Aware components, it is necessary to make a connection with a database, and this should be done either using a TSQLConnection or a TDBf component, depending on the type of database that is being used. In any case, the components for connection with the database need to be found in $Lazdir/components/sqldb/, $Lazdir/components/tdbf/ or whatever other source is appropriate. They need to be added using the <var>Components</var> Menu Item of the IDE, and compiled ready for adding. The IDE needs to be re-built to include the new components.</p>
+          <p>Before using Data-Aware components, it is necessary to make a connection with a database, and this should be done either using a TSQLConnection or a TDbf component, depending on the type of database that is being used. In any case, the components for connection with the database need to be found in $Lazdir/components/sqldb/, $Lazdir/components/tdbf/ or whatever other source is appropriate. They need to be added using the <var>Components</var> Menu Item of the IDE, and compiled ready for adding. The IDE needs to be re-built to include the new components.</p>
           <p>To make the connection with the database: first place a <var>DataBase Connection</var> on the Form (invisible at run-time, so put it anywhere convenient); set its properties to connect the user (with name and password) to the appropriate server, database and table (the connection component should deal with all the user-authentication issues, opening and closing the database etc). Then put on a <var>TDataSource</var> from the Data Access tab of the Component Palette, and perhaps items such as <var>TSQLTransaction</var> and <var>TSQLQuery</var>, depending on the particular database you are using. The various database components need to be linked to each other, for example by setting the <var>Transaction</var> property of a database connector to the appropriate transaction component, and linking the <var>DataBase</var> property of the Transaction component back to the database connector; link the DataSource's <var>DataSet</var> property to the appropriate SQLQuery or other set of data, and its <var>Transaction</var> property to the transaction component</p>
-          <p>Each Data-Aware control (on the Data Controls tab of the Component Palette) has the usual set of properties to determine its shape and size, position, colour and font etc. But there are also special properties to define the data to be displayed or modified. These include the <var>DataSource</var> property which must be set to link to the defined set of data, and often a <var>Field</var> component to determine which of the columns in the database is to be displayed. </p>
+          <p>Each Data-Aware control (on the Data Controls tab of the Component Palette) has the usual set of properties to determine its shape and size, position, color and font etc. But there are also special properties to define the data to be displayed or modified. These include the <var>DataSource</var> property which must be set to link to the defined set of data, and often a <var>Field</var> component to determine which of the columns in the database is to be displayed. </p>
           <p>Most of the components operate on a single Row or record of the database, but the <var>TDBGrid</var> is capable of displaying and operating on multiple rows and columns, in a <var>StringGrid</var> format, allowing the user to get an overview of what is in the database. The DBGrid will display the contents of the DataSet even at design time, provided the various components are enabled or rendered active; this allows the designer to ensure that all the connections to the database have been correctly made.</p>
           <p>The <var>TDBNavigator</var> component is used in conjunction with the Data-Aware components. It consists of a series of buttons to allow browsing through the DataSet, displaying the first, previous, next or last record (or Row), inserting or deleting records, committing the changes back to the database or refreshing the DataSet from the database.</p>
           <p>The way database programming works is typically as follows:</p>
           <ul>
             <li>a database is opened for access by the user (Database Connection)</li>
-            <li>a command is issued (eg by <var>TSQLQuery</var>) to select or extract some or all of the records which are then stored locally in the <var>DataSet</var>
+            <li>a command is issued (e.g. by <var>TSQLQuery</var>) to select or extract some or all of the records which are then stored locally in the <var>DataSet</var>
             </li>
             <li>the contents of the <var>DataSet</var> are acted on by the Data-Aware components, displaying one Row or record at a time from selected Columns, or perhaps the whole DataSet in a <var>DBGrid</var>, editing records, inserting or deleting records, or using the data to perform statistical tests or calculations</li>
             <li>at intervals usually prescribed by the user (sometimes after every change, sometimes after a whole series of changes), the contents of the local DataSet are sent back to the database, causing an update of the database's contents. This process is referred to as 'Commit' or 'Post' or sometimes as 'Update'</li>
@@ -5659,8 +5659,8 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <element name="TDBCheckBox.Color" link="#LCL.Controls.TControl.Color">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>Reads the value for colour, or stores the value, and sets a flag if the colour is stored.</p>
-          <p>The default colour is the same as the window in which the control is located.</p>
+          <p>Reads the value for color, or stores the value, and sets a flag if the color is stored.</p>
+          <p>The default color is the same as the window in which the control is located.</p>
         </descr>
       </element>
       <element name="TDBCheckBox.ParentColor" link="#LCL.Controls.TControl.ParentColor"/>
@@ -5676,8 +5676,8 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <element name="TDBComboBox.Color" link="#LCL.Controls.TControl.Color">
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>Reads the value for colour, or stores the value, and sets a flag if the colour is stored.</p>
-          <p>The default colour is the same as the window in which the control is located.</p>
+          <p>Reads the value for color, or stores the value, and sets a flag if the color is stored.</p>
+          <p>The default color is the same as the window in which the control is located.</p>
         </descr>
       </element>
       <element name="TDBComboBox.DragCursor" link="#LCL.Controls.TControl.DragCursor"/>
@@ -5773,7 +5773,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <element name="TDBLookup.Create">
         <short>
-          <var>Create</var> - constructor for <var>TDBLookup</var>: calls inherited <var>Create</var>, creates links with fields and data source, initialises ActiveChange and Editing properties</short>
+          <var>Create</var> - constructor for <var>TDBLookup</var>: calls inherited <var>Create</var>, creates links with fields and data source, initializes ActiveChange and Editing properties</short>
         <seealso>
           <link id="#rtl.Classes.TComponent.Create">TComponent.Create</link>
         </seealso>
@@ -5915,7 +5915,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <descr>
           <p>
             <var>Items</var> - the data that form the list in the box</p>
-          <p>We need to overrride the write method for db aware.</p>
+          <p>We need to override the write method for db aware.</p>
           <p>The Read isn't an issue since the list will be updated on data change anyway</p>
         </descr>
         <seealso>
@@ -5933,7 +5933,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <element name="TDBLookupListBox.DataChange">
         <short>
-          <var>DataChange</var> - triggered by a change in the data: finds the index of the field containing th changed value</short>
+          <var>DataChange</var> - triggered by a change in the data: finds the index of the field containing the changed value</short>
         <seealso>
           <link id="#LCL.DbCtrls.TCustomDBListBox.DataChange">TCustomDBListBox.DataChange</link>
         </seealso>
@@ -5942,7 +5942,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <element name="TDBLookupListBox.UpdateData" link="#LCL.DbCtrls.TCustomDBListBox.UpdateData"/>
       <element name="TDBLookupListBox.Create">
         <short>
-          <var>Create</var> - constructor for <var>TDBLookupListBox</var>: calls inherited <var>Create</var> then creates lookup and forms linkd</short>
+          <var>Create</var> - constructor for <var>TDBLookupListBox</var>: calls inherited <var>Create</var> then creates lookup and forms linked</short>
         <seealso>
           <link id="#LCL.DbCtrls.TCustomDBListBox.Create">TCustomDBListBox.Create</link>
         </seealso>
@@ -6045,7 +6045,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <element name="TCustomDBComboBox.Text" link="#LCL.StdCtrls.TCustomComboBox.Text"/>
       <element name="TCustomDBComboBox.ItemIndex" link="#LCL.StdCtrls.TCustomComboBox.ItemIndex"/>
       <element name="TCustomDBComboBox.DataField" link="#LCL.DbCtrls.TCustomDBComboBox.DataField">
-        <short>The name (as a string) of the Feild whose data are to be linked to the ComboBox</short>
+        <short>The name (as a string) of the Field whose data are to be linked to the ComboBox</short>
       </element>
       <element name="TCustomDBComboBox.DataSource">
         <short>The identity of the <var>DataSource</var> to which the ComboBox is attached</short>
@@ -6193,7 +6193,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         </descr>
       </element><element name="TDBImage.OnDBImageRead"><short>Event to read a custom header from image stream.</short><descr><p>By default, the <var>TDbImage</var> component expects a header at the start of the image stream. This helps to efficiently identify the image format contained in the data stream. On writing, the header is controlled by the <var>WriteHeader</var> property or the <var>OnDbImageWrite</var> event handler.</p><p>When loading image data which was created by external applications, the data stream may not have a header or the header is not a format identifier that the <var>TDbImage</var> component would recognize.</p><p>In this case, the <var>OnDbImageRead</var> event can be used to identify the image format in the data stream. In the <var>GraphExt</var> parameter it must return a format identifier corresponding to the registered image format. This format identifier could e.g. be read from the data stream provided in the <var>s</var> parameter. On return, the data stream should start with the raw image data.</p><p>If the <var>OnDbImageRead</var> handler was not implemented or if it returns an invalid format identifier, the <var>TDbImage</var> component will try to load the image by checking the data stream content. This means that it is not necessary to write an <var>OnDbImageRead</var> event handler for the most common image formats, For example: jpg, png, gif or bmp.</p><p>The <var>TDbImage</var> component will be able to identify the image format even if the data stream doesn't have a header for those TGraphic registered classes that implement the IsStreamFormatSupported method.</p>
         </descr>
-      </element><element name="TDBImage.OnDBImageWrite"><short>Event to write a custom header into image stream.</short><descr><p>Use <var>OnDBImageWrite</var> to write a custom header in the image stream. This header could be "decoded" in the handler for the <var>OnDbImageRead</var> event when loading. The header will be followed by the image raw data.</p><p>By default, <var>TDbImage</var> will write an image header in order to efficiently identify the image format when loading. This behaviour is controlled by the <var>WriteHeader</var> property. If your database will be shared with external applications that do not support this, it is important to not write an image header. This could be achieved by writing an empty handler for <var>OnDbImageWrite</var>. Note that an empty handler has the same effect as setting <var>WriteHeader</var> to false.</p><p><var>OnDbImageWrite</var> has precedence over the <var>WriteHeader</var> property.</p>
+      </element><element name="TDBImage.OnDBImageWrite"><short>Event to write a custom header into image stream.</short><descr><p>Use <var>OnDBImageWrite</var> to write a custom header in the image stream. This header could be "decoded" in the handler for the <var>OnDbImageRead</var> event when loading. The header will be followed by the image raw data.</p><p>By default, <var>TDbImage</var> will write an image header in order to efficiently identify the image format when loading. This behavior is controlled by the <var>WriteHeader</var> property. If your database will be shared with external applications that do not support this, it is important to not write an image header. This could be achieved by writing an empty handler for <var>OnDbImageWrite</var>. Note that an empty handler has the same effect as setting <var>WriteHeader</var> to false.</p><p><var>OnDbImageWrite</var> has precedence over the <var>WriteHeader</var> property.</p>
         </descr>
       </element>
     </module>

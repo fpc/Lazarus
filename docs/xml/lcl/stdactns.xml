@@ -411,7 +411,7 @@
       <!-- object Visibility: default -->
       <element name="THelpOnHelp">
         <short>
-          <var>THelpOnHelp</var> - standard action associated with the <var>Help On Help</var> menu item (ie how to get help)</short>
+          <var>THelpOnHelp</var> - standard action associated with the <var>Help On Help</var> menu item (i.e. how to get help)</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1352,7 +1352,7 @@
       <!-- object Visibility: default -->
       <element name="TColorSelect">
         <short>
-          <var>TColorSelect</var> - standard action for opening a <var>Colour Selection</var> dialog</short>
+          <var>TColorSelect</var> - standard action for opening a <var>Color Selection</var> dialog</short>
         <descr/>
         <errors/>
         <seealso/>

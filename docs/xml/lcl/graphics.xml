@@ -275,7 +275,7 @@ Additionally there are "system colors", like clWindowText, which have a color or
       </element>
       <!-- variable Visibility: default -->
       <element name="TFontData.CharSet">
-        <short>The <var>Character Set</var> of the current <var>Font</var> (expresed as an integer)</short>
+        <short>The <var>Character Set</var> of the current <var>Font</var> (expressed as an integer)</short>
       </element>
       <!-- variable Visibility: default -->
       <element name="TFontData.Quality">
@@ -307,7 +307,7 @@ Additionally there are "system colors", like clWindowText, which have a color or
       <!-- enumeration type Visibility: default -->
       <element name="TTextLayout">
         <short>How the <var>Text</var>  is to be laid out in the Text Rectangle</short>
-        <descr>At the Bottom, Centre or Top of the available window or box</descr>
+        <descr>At the Bottom, Center or Top of the available window or box</descr>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TTextLayout.tlTop">
@@ -1768,7 +1768,7 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.
         </short>
         <descr>
           <p>Most of the data about the font are dealt with by the protected procedures GetData and SetData which operate on TFontData</p>
-          <p>Individual properties such as Character Set, colour and size can be accessed in the public area</p>
+          <p>Individual properties such as Character Set, color and size can be accessed in the public area</p>
         </descr>
       </element>
       <!-- variable Visibility: private -->
@@ -2037,7 +2037,7 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.
       <!-- procedure Visibility: protected -->
       <element name="TFont.SetColor">
         <short>
-          <var>SetColor</var> - specify the colour for the font</short>
+          <var>SetColor</var> - specify the color for the font</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2111,7 +2111,7 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.
           <p>
             <var>Create</var> - constructor for 
             <var>TFont</var>: Opens a new instance of the class , calling inherited 
-            <var>Create</var> and sets defaults for character set, colour, size etc</p>
+            <var>Create</var> and sets defaults for character set, color, size etc</p>
         </descr>
         <short>
           <var>Create</var> - constructor for 
@@ -2202,8 +2202,8 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.
       </element>
       <!-- property Visibility: public -->
       <element name="TFont.Handle">
-        <short>Operataing system <var>Handle</var> for this Font</short>
-        <descr>Operataing system <var>Handle</var> for this Font - deprecated</descr>
+        <short>Operating system <var>Handle</var> for this Font</short>
+        <descr>Operating system <var>Handle</var> for this Font - deprecated</descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
@@ -2228,11 +2228,7 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.
       <!-- property Visibility: published -->
       <element name="TFont.Color">
         <short>
-          <var>Colour</var> of the current 
-          
-          
-          
-          <var>Font</var>
+          <var>Color</var> of the current <var>Font</var>
         </short>
         <descr>Default is the same as the text used for the rest of the Window
 </descr>
@@ -2300,7 +2296,7 @@ Property is a set, so may contain zero or more of the above (if set is empty, No
       </element>
       <!-- variable Visibility: default -->
       <element name="TPenData.Color">
-        <short>The <var>Colour</var> of the curent <var>Pen</var>
+        <short>The <var>Color</var> of the current <var>Pen</var>
         </short>
       </element>
       <!-- variable Visibility: default -->
@@ -2310,9 +2306,9 @@ Property is a set, so may contain zero or more of the above (if set is empty, No
       </element>
       <!-- variable Visibility: default -->
       <element name="TPenData.Style">
-        <short>The <var>Style</var> asociated with the current <var>Pen</var>
+        <short>The <var>Style</var> associated with the current <var>Pen</var>
         </short>
-        <descr>The <var>Style</var> asociated with the current <var>Pen</var><br/>
+        <descr>The <var>Style</var> associated with the current <var>Pen</var><br/>
 Can take any of the values:
 psSolid, psDash, psDot, psDashDot, psDashDotDot, psinsideFrame, psPattern,psClear</descr>
       </element>
@@ -2415,7 +2411,7 @@ psSolid, psDash, psDot, psDashDot, psDashDotDot, psinsideFrame, psPattern,psClea
       <!-- procedure Visibility: protected -->
       <element name="TPen.SetColor">
         <short>
-          <var>SetColor</var> - specifies Colour for the Pen</short>
+          <var>SetColor</var> - specifies color for the Pen</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2464,7 +2460,7 @@ psSolid, psDash, psDot, psDashDot, psDashDotDot, psinsideFrame, psPattern,psClea
 </descr>
         <short>
           <var>Create</var> - constructor for TPen: performs inherited 
-          <var>Create</var> then sets some local defaults, style, mode, width and colour</short>
+          <var>Create</var> then sets some local defaults, style, mode, width and color</short>
         <seealso>
           <link id="#rtl.System.TObject.Create">TObject.Create</link>
         </seealso>
@@ -2506,9 +2502,9 @@ psSolid, psDash, psDot, psDashDot, psDashDotDot, psinsideFrame, psPattern,psClea
       </element>
       <!-- property Visibility: published -->
       <element name="TPen.Color">
-        <short>The <var>Colour </var>of the current <var>Pen</var>
+        <short>The <var>Color </var>of the current <var>Pen</var>
         </short>
-        <descr>Reads or Writes a flag to determine the colour. Default is black</descr>
+        <descr>Reads or Writes a flag to determine the color. Default is black</descr>
       </element>
       <!-- property Visibility: published -->
       <element link="#fcl.FPCanvas.TFPCustomPen.Mode" name="TPen.Mode">
@@ -2540,7 +2536,7 @@ Default is psSolid
       </element>
       <!-- variable Visibility: default -->
       <element name="TBrushData.Color">
-        <short>The <var>Colour</var> to be used by the current <var>Brush</var>
+        <short>The <var>Color</var> to be used by the current <var>Brush</var>
         </short>
       </element>
       <!-- variable Visibility: default -->
@@ -2587,7 +2583,7 @@ Default is psSolid
       <element name="TBrush">
         <short>The <var>Brush</var> to be used to <var>Paint</var> on the current <var>Canvas</var>
         </short>
-        <descr>A <var>Brush</var> is typically used to fill an enclosed area on the<var>Canvas</var> with one particular colour or coloured pattern</descr>
+        <descr>A <var>Brush</var> is typically used to fill an enclosed area on the<var>Canvas</var> with one particular color or colored pattern</descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TBrush.FHandle">
@@ -2655,7 +2651,7 @@ Default is psSolid
         <errors/>
         <seealso/>
         <short>
-          <var>SetColor</var> - specify Colour for the Brush</short>
+          <var>SetColor</var> - specify color for the Brush</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TBrush.SetColor.Value">
@@ -2723,7 +2719,7 @@ Default is psSolid
         <short>
           <var>Create</var> - constructor for 
           <var>TBrush</var>: perform inherited 
-          <var>Create</var> then initialise some local variables and 
+          <var>Create</var> then initialize some local variables and
           <var>SetStyle</var>
         </short>
         <seealso>
@@ -2776,9 +2772,9 @@ Default is psSolid
       </element>
       <!-- property Visibility: published -->
       <element name="TBrush.Color">
-        <short>The <var>Colour</var> of the current <var>Brush</var>
+        <short>The <var>Color</var> of the current <var>Brush</var>
         </short>
-        <descr>Reads or writes a flag to determine the <var>Colour</var>. Default is White</descr>
+        <descr>Reads or writes a flag to determine the <var>Color</var>. Default is White</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TBrush.Style">
@@ -2948,9 +2944,9 @@ Default is psSolid
         <short>
           <var>TGraphic</var> - Base class for dealing with 
           <var>Graphic</var>   images</short>
-        <descr>The <var>TGraphic</var> class is an <b>abstract</b> base class for dealing with graphic images such as bitmaps, pixmaps, icons, and other image formats. It does not contain an actual area for displaying the image; this is provided by the descendant classes eg <var>BitMap</var>, <var>Icon</var> etc which have a <var>Canvas</var> element defined <br/><var>LoadFromFile</var> - Read the graphic from the file system.  The old contents of the graphic are lost.  If the file is not of the right format, an exception will be generated.<br/><var>SaveToFile</var> - Writes the graphic to disk in the file provided.<br/><var>LoadFromStream</var> - Like <var>LoadFromFile</var>  except source is a stream (e.g.  <var>TBlobStream</var>
+        <descr>The <var>TGraphic</var> class is an <b>abstract</b> base class for dealing with graphic images such as bitmaps, pixmaps, icons, and other image formats. It does not contain an actual area for displaying the image; this is provided by the descendant classes e.g. <var>BitMap</var>, <var>Icon</var> etc which have a <var>Canvas</var> element defined <br/><var>LoadFromFile</var> - Read the graphic from the file system.  The old contents of the graphic are lost.  If the file is not of the right format, an exception will be generated.<br/><var>SaveToFile</var> - Writes the graphic to disk in the file provided.<br/><var>LoadFromStream</var> - Like <var>LoadFromFile</var>  except source is a stream (e.g.  <var>TBlobStream</var>
 ).<br/><var>SaveToStream</var> - stream analogue of <var>SaveToFile</var> .<br/><var>LoadFromClipboardFormat</var> - Replaces the current image with the data provided.  If the <var>TGraphic</var>
- does not support that format it will generate an exception.<br/><var>SaveToClipboardFormats</var> - Converts the image to a clipboard format.  If the image does not support being translated into a clipboard format it will generate an exception.<br/><var>Height</var> - The native, unstretched, height of the graphic.<br/><var>Palette</var> - Color palette of image.  Zero if graphic doesn't need/use palettes.<br/><var>Transparent</var> - Some parts of the image are not opaque, ie the background can be seen through.<br/><var>Width</var> - The native, unstretched, width of the graphic.<br/><var>OnChange</var> - Called whenever the graphic changes<br/><var>PaletteModified</var> - Indicates in <var>OnChange</var>  whether color palette has changed. Stays true until whoever is responsible for realizing this new palette    (ex: TImage) sets it to False.<br/><var>OnProgress</var> - Generic progress indicator event. Propagates out to <var>TPicture</var>
+ does not support that format it will generate an exception.<br/><var>SaveToClipboardFormats</var> - Converts the image to a clipboard format.  If the image does not support being translated into a clipboard format it will generate an exception.<br/><var>Height</var> - The native, unstretched, height of the graphic.<br/><var>Palette</var> - Color palette of image.  Zero if graphic doesn't need/use palettes.<br/><var>Transparent</var> - Some parts of the image are not opaque, i.e. the background can be seen through.<br/><var>Width</var> - The native, unstretched, width of the graphic.<br/><var>OnChange</var> - Called whenever the graphic changes<br/><var>PaletteModified</var> - Indicates in <var>OnChange</var>  whether color palette has changed. Stays true until whoever is responsible for realizing this new palette    (ex: TImage) sets it to False.<br/><var>OnProgress</var> - Generic progress indicator event. Propagates out to <var>TPicture</var>
   and <var>TImage OnProgress</var> events.<br/><br/>
  
   As many of the methods and properties are <b>virtual</b> and/or <b>abstract</b>, it is the responsibility of the application programmer to supply suitable methods when implementing any descendant classes
@@ -3178,7 +3174,7 @@ Default is psSolid
       <!-- procedure Visibility: protected -->
       <element name="TGraphic.SetPalette">
         <short>
-          <var>SetPalette</var> - deefines the Palette Handle to be used</short>
+          <var>SetPalette</var> - defines the Palette Handle to be used</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3382,7 +3378,7 @@ If the file is not of the right format, an exception will be generated.</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TGraphic.LoadFromLazarusResource">
-        <short>Load the graphic data from a Lazarus Resource (eg a *.lrs file)</short>
+        <short>Load the graphic data from a Lazarus Resource (e.g. a *.lrs file)</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3572,14 +3568,14 @@ If the file is not of the right format, an exception will be generated.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TGraphic.PaletteModified">
-        <short>Has the palette of colours been modified?</short>
+        <short>Has the palette of colors been modified?</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TGraphic.Transparent">
         <short>
-          <var>Transparent</var> - Some parts of the image are not opaque. ie the background
+          <var>Transparent</var> - Some parts of the image are not opaque. i.e. the background
  can be seen through</short>
       </element>
       <!-- property Visibility: public -->
@@ -4303,7 +4299,7 @@ If the file is not of the right format, an exception will be generated.</descr>
         <short>
           <var>TCanvas</var> represents a drawing surface which might be attached to a visual control which might be displayed on the screen or to an offscreen bitmap. It contains a number of drawing functions.</short>
         <descr>
-          <var>TCanvas</var> represents a drawing surface which might be attached to a visual control which might be displayed on the screen or to an offscreen bitmap. It contains drawing tools (brush, pen and font) to draw on this surface. This class defines a very large number of drawing methods including methods for pen and colour selection, producing shapes and filling them, setting or clearing individual pixels, and producing graphic text.
+          <var>TCanvas</var> represents a drawing surface which might be attached to a visual control which might be displayed on the screen or to an offscreen bitmap. It contains drawing tools (brush, pen and font) to draw on this surface. This class defines a very large number of drawing methods including methods for pen and color selection, producing shapes and filling them, setting or clearing individual pixels, and producing graphic text.
         </descr>
       </element>
       <!-- variable Visibility: private -->
@@ -4591,7 +4587,7 @@ If the file is not of the right format, an exception will be generated.</descr>
       <!-- function Visibility: protected -->
       <element name="TCanvas.GetPixel">
         <short>
-          <var>GetPixel</var> - retuns the colour of the pixel at the specified location</short>
+          <var>GetPixel</var> - returns the color of the pixel at the specified location</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4611,7 +4607,7 @@ If the file is not of the right format, an exception will be generated.</descr>
       <!-- procedure Visibility: protected -->
       <element name="TCanvas.CreateBrush">
         <short>
-          <var>CreateBrush</var> creates necessary handles, sets up local defaults for style, hatching, background colour</short>
+          <var>CreateBrush</var> creates necessary handles, sets up local defaults for style, hatching, background color</short>
         <descr/>
         <errors/>
         <seealso>
@@ -4628,7 +4624,7 @@ If the file is not of the right format, an exception will be generated.</descr>
       <!-- procedure Visibility: protected -->
       <element name="TCanvas.CreateHandle">
         <short>
-          <var>CreateHandle</var> - greates a new Handle for the Canvas</short>
+          <var>CreateHandle</var> - creates a new Handle for the Canvas</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4720,7 +4716,7 @@ If the file is not of the right format, an exception will be generated.</descr>
       <!-- procedure Visibility: protected -->
       <element name="TCanvas.SetPixel">
         <short>
-          <var>SetPixel</var> - specify a colour for the stated pixel</short>
+          <var>SetPixel</var> - specify a color for the stated pixel</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4744,7 +4740,7 @@ If the file is not of the right format, an exception will be generated.</descr>
             <var>Create</var> - constructor for 
             <var>TCanvas</var>: calls inherited 
             <var>Create</var> and sets defaults for many properties and actions</p>
-          <p>Initialises Font, Pen and Brush, makes event handlers for these, sets up defaults for Alignment, Layout, Clipping and opacity</p>
+          <p>initializes Font, Pen and Brush, makes event handlers for these, sets up defaults for Alignment, Layout, Clipping and opacity</p>
         </descr>
         <short>
           <var>Create</var> - constructor for 
@@ -4770,7 +4766,7 @@ If the file is not of the right format, an exception will be generated.</descr>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.Lock">
         <short>
-          <var>Lock</var>  the canvas, making it unavailble for drawing</short>
+          <var>Lock</var>  the canvas, making it unavailable for drawing</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5185,7 +5181,7 @@ Use <var>Ellipse</var>
           <link id="#LCL.LCLIntf.FloodFill">LCLIntf.FloodFill</link>
         </seealso>
         <short>
-          <var>FloodFill</var> flood-fills an area with the given colour, starting from the specified point; uses the 
+          <var>FloodFill</var> flood-fills an area with the given color, starting from the specified point; uses the
           <var>FloodFill</var> method for the current interface or widget set</short>
       </element>
       <!-- argument Visibility: default -->
@@ -5207,7 +5203,7 @@ Use <var>Ellipse</var>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.Frame3d">
         <short>
-          <var>Frame3d</var> - produce a frame with 3-D effect (with bevelled edges etc) in the specified rectangle</short>
+          <var>Frame3d</var> - produce a frame with 3-D effect (with beveled edges etc) in the specified rectangle</short>
         <descr/>
         <errors/>
         <seealso>
@@ -5547,7 +5543,7 @@ Use <var>Pie</var>
 
 
 
-Params:  Points, Filled, Continous<br/>
+Params:  Points, Filled, Continuous<br/>
 
 
 
@@ -5570,11 +5566,11 @@ If the Continuous flag is TRUE then each subsequent curve requires three more po
 
 
 
-If the continous flag is set to FALSE, then each subsequent Curve requires 4 additional points, which are used exactly as in the first curve. <br/><br/>
+If the continuous flag is set to FALSE, then each subsequent Curve requires 4 additional points, which are used exactly as in the first curve. <br/><br/>
 
 
 
-Any additonal points which do not add up to a full bezier(4 for Continuous, 3 otherwise) are ingored. There must be at least 4 points for an drawing to occur. <br/><br/>
+Any additional points which do not add up to a full Bezier(4 for Continuous, 3 otherwise) are ignored. There must be at least 4 points for an drawing to occur. <br/><br/>
 
 
 
@@ -5989,7 +5985,7 @@ Calling the <var>MoveTo</var>
       <element name="TCanvas.RoundRect">
         <short>
           <var>RoundRect</var> - draws a rectangle at the specified position, with corners rounded by the factors RX, RY; uses the 
-          <var>RoundRect</var> mathod of the current interface or widget set</short>
+          <var>RoundRect</var> method of the current interface or widget set</short>
         <descr/>
         <errors/>
         <seealso>
@@ -6199,7 +6195,7 @@ Calling the <var>MoveTo</var>
       </element>
       <!-- property Visibility: public -->
       <element name="TCanvas.Pixels">
-        <short>The colour of the <var>Pixels</var> located at the specified position</short>
+        <short>The color of the <var>Pixels</var> located at the specified position</short>
         <descr/>
         <seealso/>
       </element>
@@ -6468,7 +6464,7 @@ Calling the <var>MoveTo</var>
       </element>
       <!-- function Visibility: protected -->
       <element name="TBitmapImage.GetPixelFormat">
-        <short>Find the format for the pixels (ie the number of bits per pixel)</short>
+        <short>Find the format for the pixels (i.e. the number of bits per pixel)</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -7096,14 +7092,14 @@ Calling the <var>MoveTo</var>
       </element>
       <!-- function Visibility: public -->
       <element name="TBitmap.PaletteAllocated">
-        <short>Has a colour palette been allocated for this bitmap?</short>
+        <short>Has a color palette been allocated for this bitmap?</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
       <element name="TBitmap.PaletteAllocated.Result">
-        <short>Returns TRUE if a colour palette has been allocated</short>
+        <short>Returns TRUE if a color palette has been allocated</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TBitmap.CreateFromBitmapHandles">
@@ -7302,7 +7298,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- procedure Visibility: public -->
       <element name="TBitmap.Mask">
-        <short>Masks the bitmap using a transparent colour</short>
+        <short>Masks the bitmap using a transparent color</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -7494,7 +7490,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- property Visibility: public -->
       <element name="TBitmap.Handle">
-        <short>The operating system Handle ssociated with this bitmap</short>
+        <short>The operating system Handle associated with this bitmap</short>
         <descr/>
         <seealso/>
       </element>
@@ -7524,7 +7520,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- property Visibility: public -->
       <element name="TBitmap.TransparentColor">
-        <short>The transparent colour used for masks etc</short>
+        <short>The transparent color used for masks etc</short>
         <descr/>
         <seealso/>
       </element>
@@ -7541,10 +7537,10 @@ Checks for the presence of a valid Lazarus Resource, then uses
           
           
           
-          <var>TBitMap</var> , with wrapper to deal specifically with PixMaps (ie using 'XPM' format)</short>
+          <var>TBitMap</var> , with wrapper to deal specifically with PixMaps (i.e. using 'XPM' format)</short>
         <descr>
           <var>PixMap</var>
-  - Checks that specified resources (PixMap image, File for storage, Stream for writing) are of correct type and format, organises saving and writing
+  - Checks that specified resources (PixMap image, File for storage, Stream for writing) are of correct type and format, organizes saving and writing
 </descr>
       </element>
       <!-- function Visibility: public -->
@@ -7591,7 +7587,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- object Visibility: default -->
       <element name="TFPImageBitmap">
-        <short>A class of Bitmap using the FPImage reader and writer (ie customised for FreePascal)</short>
+        <short>A class of Bitmap using the FPImage reader and writer (i.e. customized for FreePascal)</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -7786,7 +7782,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <descr>
           <p>Icons can be loaded from .ICO files, or from Lazarus resources.</p>
           <p>An icon resource typically contains several versions of the same image, in multiple resolutions and color depths. </p>
-          <p>When loading, the largest/most colourful image is loaded as the <var>Bitmap</var> property, and so can be handled as any other bitmap.</p>
+          <p>When loading, the largest/most colorful image is loaded as the <var>Bitmap</var> property, and so can be handled as any other bitmap.</p>
         </descr>
         <errors>Writing to icon files is not (yet) implemented.</errors>
       </element>
@@ -7987,7 +7983,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- function Visibility: default -->
       <element name="IdentToColor">
         <short>
-          <var>IdentToColor</var> - given a colour identifier (name) returns the colour value</short>
+          <var>IdentToColor</var> - given a color identifier (name) returns the color value</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="IdentToColor.Result">
@@ -7997,7 +7993,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- argument Visibility: default -->
       <element name="IdentToColor.Ident">
         <short>
-          <var>Ident</var> - the suppied name for the required 
+          <var>Ident</var> - the supplied name for the required
           
           
           <var>Color</var>
@@ -8013,14 +8009,14 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short>
           <var>SysColorToSysColorIndex</var> - if 
           
-          <var>Color</var> is one of the system colours, returns the 
+          <var>Color</var> is one of the system colors, returns the
           
-          <var>Index</var> of the system colour</short>
+          <var>Index</var> of the system color</short>
         <errors>If <var>Color</var> is not a system color, returns -1</errors>
       </element>
       <!-- function result Visibility: default -->
       <element name="SysColorToSysColorIndex.Result">
-        <short>Returns the Index value of the Color if it is a system colour, otherwise returns -1</short>
+        <short>Returns the Index value of the Color if it is a system color, otherwise returns -1</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="SysColorToSysColorIndex.Color">
@@ -8050,14 +8046,14 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- function Visibility: default -->
       <element name="ColorToString">
         <short>
-          <var>ColorToString</var> - given a colour value, returns a corresponding colour name like 'Green'</short>
+          <var>ColorToString</var> - given a color value, returns a corresponding color name like 'Green'</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
       <element name="ColorToString.Result">
-        <short>Returns the name of the colour, expressed as a string (like 'Green')</short>
+        <short>Returns the name of the color, expressed as a string (like 'Green')</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="ColorToString.Color">
@@ -8066,20 +8062,20 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- function Visibility: default -->
       <element name="StringToColor">
         <short>
-          <var>StringToColor</var> - given a colour name like 'clBlue', returns the corresponding colour value</short>
+          <var>StringToColor</var> - given a color name like 'clBlue', returns the corresponding color value</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
       <element name="StringToColor.Result">
-        <short>Returns the colour corresponding to the name in String <var>S</var>
+        <short>Returns the color corresponding to the name in String <var>S</var>
         </short>
       </element>
       <!-- argument Visibility: default -->
       <element name="StringToColor.S">
         <short>
-          <var>S </var>- the name of the required colour, expressed as a string</short>
+          <var>S </var>- the name of the required color, expressed as a string</short>
       </element>
       <!-- procedure Visibility: default -->
       <element name="GetColorValues">
@@ -8094,85 +8090,85 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- function Visibility: default -->
       <element name="Blue">
-        <short>Finds the <var>Blue</var> component of the supplied colour</short>
+        <short>Finds the <var>Blue</var> component of the supplied color</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
       <element name="Blue.Result">
-        <short>Returns the Blue component of the colour specified in RGB</short>
+        <short>Returns the Blue component of the color specified in RGB</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="Blue.rgb">
-        <short>The colour for processing, expressed as a RGB value</short>
+        <short>The color for processing, expressed as a RGB value</short>
       </element>
       <!-- function Visibility: default -->
       <element name="Green">
-        <short>Finds the <var>Green</var> component of the supplied colour</short>
+        <short>Finds the <var>Green</var> component of the supplied color</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
       <element name="Green.Result">
-        <short>Returns the Green component of the colour specified in RGB</short>
+        <short>Returns the Green component of the color specified in RGB</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="Green.rgb">
-        <short>The colour for processing, expressed as RGB</short>
+        <short>The color for processing, expressed as RGB</short>
       </element>
       <!-- function Visibility: default -->
       <element name="Red">
-        <short>Finds the <var>Red</var> component of the supplied colour</short>
+        <short>Finds the <var>Red</var> component of the supplied color</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
       <element name="Red.Result">
-        <short>Returns the Red component of the colour specified in <var>RGB</var>
+        <short>Returns the Red component of the color specified in <var>RGB</var>
         </short>
       </element>
       <!-- argument Visibility: default -->
       <element name="Red.rgb">
-        <short>The colour for processing, expressed as RGB</short>
+        <short>The color for processing, expressed as RGB</short>
       </element>
       <!-- procedure Visibility: default -->
       <element name="RedGreenBlue">
         <short>
-          <var>RedGreenBlue</var> - decomposes a composite colour into its component Red, Green and Blue values</short>
+          <var>RedGreenBlue</var> - decomposes a composite color into its component Red, Green and Blue values</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
       <element name="RedGreenBlue.rgb">
-        <short>The colour for processing, expressed as RGB</short>
+        <short>The color for processing, expressed as RGB</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="RedGreenBlue.Red">
-        <short>The  <var>Red </var>component of the colour defined in <var>RGB</var>
+        <short>The  <var>Red </var>component of the color defined in <var>RGB</var>
         </short>
       </element>
       <!-- argument Visibility: default -->
       <element name="RedGreenBlue.Green">
-        <short>The  <var>Green</var>component of the colour defined in <var>RGB</var>
+        <short>The  <var>Green</var>component of the color defined in <var>RGB</var>
         </short>
       </element>
       <!-- argument Visibility: default -->
       <element name="RedGreenBlue.Blue">
-        <short>The  <var>Blue </var>component of the colour defined in <var>RGB</var>
+        <short>The  <var>Blue </var>component of the color defined in <var>RGB</var>
         </short>
       </element>
       <!-- function Visibility: default -->
       <element name="FPColorToTColor">
         <short>
-          <var>FPColorToTColor</var> - converts a colour specified as a 
+          <var>FPColorToTColor</var> - converts a color specified as a
           
           
           
-          <var>FPColor </var>to a colour of type
+          <var>FPColor </var>to a color of type
           
           
           
@@ -8184,18 +8180,18 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- function result Visibility: default -->
       <element name="FPColorToTColor.Result">
-        <short>Returns the colour specified in <var>FPColor</var> as a colour of type <var>TColor</var>
+        <short>Returns the color specified in <var>FPColor</var> as a color of type <var>TColor</var>
         </short>
       </element>
       <!-- argument Visibility: default -->
       <element name="FPColorToTColor.FPColor">
-        <short>The colour for processing, expressed as a <var>FPColor</var>
+        <short>The color for processing, expressed as a <var>FPColor</var>
         </short>
       </element>
       <!-- function Visibility: default -->
       <element name="TColorToFPColor">
         <short>
-          <var>TColorToFPColor</var> - converts a colour of type 
+          <var>TColorToFPColor</var> - converts a color of type
           
           
           
@@ -8211,12 +8207,12 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- function result Visibility: default -->
       <element name="TColorToFPColor.Result">
-        <short>Returns the colour specified as a FPColor</short>
+        <short>Returns the color specified as a FPColor</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TColorToFPColor.c">
         <short>
-          <var>c</var> - the supplied colour specified as type 
+          <var>c</var> - the supplied color specified as type
           
           
           <var>TColor</var>
@@ -8696,18 +8692,18 @@ Checks for the presence of a valid Lazarus Resource, then uses
           <var>TJPEGImage</var> - a class for handling images stored in JPEG (compressed) format</short>
         <descr>
           <p>
-            <b>JPEG</b> images are very commonly used for storing digital photographs. They can represent detailed colour photos using a high degree of compression, resulting in very efficient storage, though with some loss of quality. </p>
-          <p>The properties <var>CompressionQuality</var> (an integer between 1 and 100, with 100 representing the best quality) and <var>Performance</var> (an enumerated variable with two states: <var>BestQuality</var> or <var>BestSpeed</var> ie compression) can be used to determine the balance between efficiency of storage and quality of picture.</p>
+            <b>JPEG</b> images are very commonly used for storing digital photographs. They can represent detailed color photos using a high degree of compression, resulting in very efficient storage, though with some loss of quality. </p>
+          <p>The properties <var>CompressionQuality</var> (an integer between 1 and 100, with 100 representing the best quality) and <var>Performance</var> (an enumerated variable with two states: <var>BestQuality</var> or <var>BestSpeed</var> i.e. compression) can be used to determine the balance between efficiency of storage and quality of picture.</p>
         </descr>
       </element>
       <element name="TJPEGImage.InitFPImageReader">
-        <short>Initialise the FreePascal Image reader for this image type</short>
+        <short>initialize the FreePascal Image reader for this image type</short>
       </element>
       <element name="TJPEGImage.FinalizeFPImageReader">
-        <short>Finalise the FreePascal Image reader</short>
+        <short>Finalize the FreePascal Image reader</short>
       </element>
       <element name="TJPEGImage.InitFPImageWriter">
-        <short>Initialise the FreePascal Image Writer for this image class</short>
+        <short>initialize the FreePascal Image Writer for this image class</short>
       </element>
       <element name="TJPEGImage.CompressionQuality">
         <short>Determine the compression quality for this image</short>
@@ -8751,16 +8747,16 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short>Determine whether this instance of the class can read graphic streams</short>
       </element>
       <element name="TBitmapImage.FreePalette">
-        <short>Free the colour palette used for this bitmap</short>
+        <short>Free the color palette used for this bitmap</short>
       </element>
       <element name="TBitmapImage.ReleaseMaskHandle">
         <short>Release the handle for the bitmap mask</short>
       </element>
       <element name="TBitmapImage.ReleasePalette">
-        <short>Reklease the handle for the colour palette</short>
+        <short>Release the handle for the color palette</short>
       </element>
       <element name="TBitmapImage.BitmapCanvas">
-        <short>The canvas for the bitmap (ie the actual contents of the picture)</short>
+        <short>The canvas for the bitmap (i.e. the actual contents of the picture)</short>
       </element>
       <element name="TBitmapImage.SaveStreamClass">
         <short>The class of stream for saving data</short>
@@ -8768,7 +8764,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <element name="TJPEGImage.Create">
         <short>
           <var>Create</var> - constructor for TJPEGImage: performs inherited 
-          <var>Create</var> then initialises local variables for performance, quality and encoding</short>
+          <var>Create</var> then initializes local variables for performance, quality and encoding</short>
         <seealso>
           <link id="#rtl.System.TObject.Create">TObject.Create</link>
           <link id="#LCL.Graphics.TCustomBitmap.Create">TCustomBitmap.Create</link>
@@ -8823,7 +8819,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </topic>
       <element name="RGBToColor">
         <short>
-          <var>RGBToColor</var> - assembles the supplied values for Red, Green and Blue into a composite colour</short>
+          <var>RGBToColor</var> - assembles the supplied values for Red, Green and Blue into a composite color</short>
       </element>
       <element name="LoadCursorFromLazarusResource">
         <short>
@@ -8835,11 +8831,11 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <element name="InvertColor">
         <short>
-          <var>InvertColor</var> - returns the complementary colour to the supplied value - helps to produce a 'negative' image</short>
+          <var>InvertColor</var> - returns the complementary color to the supplied value - helps to produce a 'negative' image</short>
       </element>
       <element name="DecColor">
         <short>
-          <var>DecColor</var> - decrease the component RGBs of a colour by the quantity specified (usually results in a darker colour overall)</short>
+          <var>DecColor</var> - decrease the component RGBs of a color by the quantity specified (usually results in a darker color overall)</short>
       </element>
       <!-- variable Visibility: default -->
       <element name="TTextStyle.RightToLeft">
@@ -9650,7 +9646,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <element name="TCanvas.DoCreateDefaultFont">
         <short>
           <var>DoCreateDefaultFont</var> - calls 
-          <var>TFont.Create</var> to create a default fomt</short>
+          <var>TFont.Create</var> to create a default font</short>
         <descr/>
         <errors/>
         <seealso>
@@ -10002,7 +9998,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <element name="TCanvas.DoPolygonFill">
         <short>
           <var>DoPolygonFill</var> calls 
-          <var>Polygon</var> for the suppied points</short>
+          <var>Polygon</var> for the supplied points</short>
         <descr/>
         <errors/>
         <seealso>
@@ -10328,7 +10324,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- procedure Visibility: public -->
       <element name="TCanvas.GradientFill">
         <short>
-          <var>GradientFill</var> - fill the specified rectangle with the specified colours in a gradient with the specified direction</short>
+          <var>GradientFill</var> - fill the specified rectangle with the specified colors in a gradient with the specified direction</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -10475,7 +10471,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomBitmapImage.FreePalette">
-        <short>Free the colour palette used for this bitmap</short>
+        <short>Free the color palette used for this bitmap</short>
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomBitmapImage.ReleaseHandle">
@@ -10495,7 +10491,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomBitmapImage.ReleasePalette">
-        <short>Release the handle for the colour palette</short>
+        <short>Release the handle for the color palette</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="TCustomBitmapImage.ReleasePalette.Result">
@@ -10511,7 +10507,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomBitmapImage.GetPixelFormat">
-        <short>Find the format for the pixels (ie the number of bits per pixel)</short>
+        <short>Find the format for the pixels (i.e. the number of bits per pixel)</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="TCustomBitmapImage.GetPixelFormat.Result">
@@ -10548,7 +10544,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomBitmapImage.BitmapCanvas">
-        <short>The canvas for the bitmap (ie the actual contents of the picture)</short>
+        <short>The canvas for the bitmap (i.e. the actual contents of the picture)</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomBitmapImage.SaveStream">
@@ -11079,7 +11075,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short>
           <var>Create</var> - constructor for 
           <var>TCustomBitmap</var>: performs inherited 
-          <var>Create</var> and initialises pixel format</short>
+          <var>Create</var> and initializes pixel format</short>
         <seealso>
           <link id="#rtl.System.TObject.Create">TObject.Create</link>
         </seealso>
@@ -11257,7 +11253,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomBitmap.Mask">
-        <short>Masks the bitmap using a transparent colour</short>
+        <short>Masks the bitmap using a transparent color</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomBitmap.Mask.ATransparentColor">
@@ -11323,7 +11319,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- function result Visibility: default -->
       <element name="TCustomBitmap.ReleasePalette.Result">
-        <short>Returns True if the palette has been correclty released</short>
+        <short>Returns True if the palette has been correctly released</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomBitmap.GetFPReaderForFileExt">
@@ -11437,7 +11433,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomBitmap.Handle">
-        <short>The operating system Handle ssociated with this bitmap</short>
+        <short>The operating system Handle associated with this bitmap</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomBitmap.HandleType">
@@ -11458,7 +11454,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomBitmap.TransparentColor">
-        <short>The transparent colour used for masks etc</short>
+        <short>The transparent color used for masks etc</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomBitmap.TransparentMode">
@@ -11754,10 +11750,10 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- function Visibility: default -->
       <element name="IdentEntry">
         <short>
-          <var>IdentEntry</var> - checks that a given Entry exists in a Map of  colour names</short>
+          <var>IdentEntry</var> - checks that a given Entry exists in a Map of  color names</short>
         <descr>
           <p>
-            <var>IdentEntry</var> - checks that a given Entry exists in a Map of  colour names
+            <var>IdentEntry</var> - checks that a given Entry exists in a Map of  color names
 </p>
           <p>A list of system <var>Colors</var> is specified as a look-up table of indices (Entry) and names (MapEntry)</p>
           <p>This function checks that the value in 
@@ -11766,23 +11762,23 @@ Checks for the presence of a valid Lazarus Resource, then uses
           
           <var>Value</var>, 
           
-          <var>Name</var> of the corresponding colour in 
+          <var>Name</var> of the corresponding color in
           
           <var>MapEntry</var>.
 </p>
           <p>If <var>Entry</var> is out of range the Result is False</p>
         </descr>
-        <errors>If <var>Entry</var> is out of the range [0..High(Colours)] the Result is returned as False
+        <errors>If <var>Entry</var> is out of the range [0..High(colors)] the Result is returned as False
 </errors>
       </element>
       <!-- function result Visibility: default -->
       <element name="IdentEntry.Result">
-        <short>True if <var>Entry</var> was a valid index into the Colour look-up table</short>
+        <short>True if <var>Entry</var> was a valid index into the color look-up table</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="IdentEntry.Entry">
         <short>
-          <var>Entry</var> - a numeric index into the table of colours</short>
+          <var>Entry</var> - a numeric index into the table of colors</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="IdentEntry.MapEntry">
@@ -11801,26 +11797,26 @@ Checks for the presence of a valid Lazarus Resource, then uses
       </element>
       <!-- function result Visibility: default -->
       <element name="InvertColor.Result">
-        <short>Returns the inverse of the original colour (ie a 'negative' effect)</short>
+        <short>Returns the inverse of the original color (i.e. a 'negative' effect)</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="InvertColor.AColor">
         <short>
-          <var>AColor</var> - the original colour for processing</short>
+          <var>AColor</var> - the original color for processing</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="DecColor.Result">
-        <short>Returns a copy of the original colour, decremented by a specified amount</short>
+        <short>Returns a copy of the original color, decremented by a specified amount</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="DecColor.AColor">
         <short>
-          <var>AColor</var> - the original colour for processing</short>
+          <var>AColor</var> - the original color for processing</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="DecColor.AQuantity">
         <short>
-          <var>AQuantity</var> - the amount by which the colour is to be changed</short>
+          <var>AQuantity</var> - the amount by which the color is to be changed</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="RGBToColor.Result">
@@ -12286,7 +12282,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- function Visibility: protected -->
       <element name="TRasterImage.GetBitmapHandle">
         <short>
-          <var>GetBitmapHandle</var> - returns a Birmap Handle for the Image</short>
+          <var>GetBitmapHandle</var> - returns a Bitmap Handle for the Image</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12906,7 +12902,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- function Visibility: public -->
       <element name="TRasterImage.ReleasePalette">
         <short>
-          <var>ReleasePalette</var> - release the Handle used for the Palettte</short>
+          <var>ReleasePalette</var> - release the Handle used for the Palette</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -12969,7 +12965,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- property Visibility: public -->
       <element name="TRasterImage.TransparentColor">
         <short>
-          <var>TransparentColor</var> - the colour used in transparent mode</short>
+          <var>TransparentColor</var> - the color used in transparent mode</short>
         <descr/>
         <seealso/>
       </element>
@@ -13090,7 +13086,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
         <short>
           <var>Create</var> - constructor for 
           <var>TSharedCustomBitmap</var>: calls inherited 
-          <var>Create</var> and initialises the image</short>
+          <var>Create</var> and initializes the image</short>
         <descr/>
         <errors/>
         <seealso>
@@ -13383,7 +13379,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- procedure Visibility: protected -->
       <element name="TFPImageBitmap.InitializeReader">
         <short>
-          <var>InitializeReader</var> - starts up the specified reader to read th especified Image</short>
+          <var>InitializeReader</var> - starts up the specified reader to read th specified Image</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14505,7 +14501,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- function Visibility: public -->
       <element name="TIcon.ReleaseHandle">
         <short>
-          <var>ReleaseHandle</var> - frees the handle that was iused for the Icon</short>
+          <var>ReleaseHandle</var> - frees the handle that was used for the Icon</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14719,7 +14715,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
           <var>BeginUpdate</var> - start the update process</short>
         <descr>
           <var>BeginUpdate</var> - start the update process; by default the boolean argument 
-          <var>ACanvasOnly</var> is False, ie more than just the Canvas is to be updated
+          <var>ACanvasOnly</var> is False, i.e. more than just the Canvas is to be updated
 </descr>
       </element>
       <element name="TRasterImage.EndUpdate">
@@ -14727,8 +14723,8 @@ Checks for the presence of a valid Lazarus Resource, then uses
           <var>EndUpdate</var> - finishes the update process</short>
         <descr>
           <var>EndUpdate</var> - finishes the update process. By default the boolean argument 
-          <var>AStreamIsValid</var> is False, ie no stream is valid at the end of the process.
-be carefull with this, modify only within a begin/endupdate</descr>
+          <var>AStreamIsValid</var> is False, i.e. no stream is valid at the end of the process.
+be careful with this, modify only within a begin/endupdate</descr>
       </element>
       <element name="TRasterImage.GetSize">
         <short>
@@ -14856,8 +14852,8 @@ be carefull with this, modify only within a begin/endupdate</descr>
           <var>SetPattern</var> - specifies the pattern for the pen</short>
       </element>
       <element name="TPen.Cosmetic">
-        <short>Whether the Pen is <var>Cosmetic</var>, ie non-geometric</short>
-        <descr>Pens can be Cosmetic and Geomeric. Cosmetic pens are always 1 pixel wide, while geometric pens can have any width. But width of geometric pens are defined in world units and thus depends on transforms (scaling, rotation, shear, reflection) applied to canvas. Operations with cosmetic pens are faster.</descr>
+        <short>Whether the Pen is <var>Cosmetic</var>, i.e. non-geometric</short>
+        <descr>Pens can be Cosmetic and Geometric. Cosmetic pens are always 1 pixel wide, while geometric pens can have any width. But width of geometric pens are defined in world units and thus depends on transforms (scaling, rotation, shear, reflection) applied to canvas. Operations with cosmetic pens are faster.</descr>
       </element>
       <element name="TPen.EndCap">
         <short>The sort of <var>EndCap</var> used on the Pen</short>
