@@ -10,8 +10,8 @@ uses
 
 Const
   EnabledOptions : Array[Boolean,TDispatcherIniOption] of Boolean = (
-    { Read }  ( true, true, true, true, false, false, true ),
-    { Write } ( false, false, false, false, True, True, True  )
+    { Read }  ( true, true, true, true, false, false, true, true ),
+    { Write } ( false, false, false, false, True, True, True, true  )
  );
 
 type
