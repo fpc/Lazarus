@@ -563,7 +563,15 @@ begin
   FSource.DataPoints.Add('1|2|3||t');
   AssertEquals(clTAColor, FSource[6]^.Color);
 
-  // check multiple x and y values
+  // Check Text part containing '|' character(s)
+  FSource.DataPoints.Add('1|2|3|?|"a|b|c"');
+  AssertEquals('a|b|c', FSource[7]^.Text);
+
+  // Check Text part containing line ending
+  FSource.DataPoints.Add('1|2|3|?|"a'+LineEnding+'b"');
+  AssertEquals('a'+LineEnding+'b', FSource[8]^.Text);
+
+  // Check multiple x and y values
   FSource.Clear;
   FSource.XCount := 2;
   FSource.YCount := 3;

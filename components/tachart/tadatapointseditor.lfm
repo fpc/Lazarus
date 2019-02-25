@@ -33,6 +33,7 @@ object DataPointsEditorForm: TDataPointsEditorForm
         Width = 63
       end    
       item
+        ButtonStyle = cbsEllipsis
         Title.Alignment = taCenter
         Title.Font.Style = [fsBold]
         Title.Caption = 'Text'

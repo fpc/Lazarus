@@ -59,10 +59,40 @@ type
 implementation
 
 uses
-  LCLIntf, LCLType, Math,
+  LCLIntf, LCLType, Math, StdCtrls,
   TAChartStrConsts, TAChartUtils, TASources;
 
 {$R *.lfm}
+
+function EditText(var AText: String): Boolean;
+var
+  F: TForm;
+  memo: TMemo;
+begin
+  F := TForm.CreateNew(Application);
+  try
+    F.Caption := 'Data point text';
+    F.Position := poScreenCenter;
+    memo := TMemo.Create(F);
+    with memo do begin
+      Parent := F;
+      Align := alClient;
+      BorderSpacing.Around := 6;
+      Lines.Text := AText;
+    end;
+    with TButtonPanel.Create(F) do begin
+      Parent := F;
+      Align := alBottom;
+      BorderSpacing.Around := 6;
+      ShowButtons := [pbOK, pbCancel];
+    end;
+    Result := F.ShowModal = mrOK;
+    if Result then AText := memo.Lines.Text;
+  finally
+    F.Free;
+  end;
+end;
+
 
 { TDataPointsEditorForm }
 
@@ -200,12 +230,21 @@ end;
 
 procedure TDataPointsEditorForm.sgDataButtonClick(
   ASender: TObject; ACol, ARow: Integer);
+var
+  s: String;
 begin
   Unused(ASender);
-  if (ARow < 1) or (ACol <> FXCount + FYCount + 1) then exit;
-  cdItemColor.Color := StrToIntDef(sgData.Cells[ACol, ARow], clRed);
-  if not cdItemColor.Execute then exit;
-  sgData.Cells[ACol, ARow] := IntToColorHex(cdItemColor.Color);
+  if (ARow < 1) then exit;
+
+  if (ACol = FXCount + FYCount + 1) then begin
+    cdItemColor.Color := StrToIntDef(sgData.Cells[ACol, ARow], clRed);
+    if cdItemColor.Execute then
+      sgData.Cells[ACol, ARow] := IntToColorHex(cdItemColor.Color);
+  end else
+  if (ACol = FXCount + FYCount + 2) then begin
+    s := sgData.Cells[ACol, ARow];
+    if EditText(s) then sgData.Cells[ACol, ARow] := s;
+  end;
 end;
 
 procedure TDataPointsEditorForm.sgDataDrawCell(

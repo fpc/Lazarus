@@ -313,6 +313,8 @@ begin
 end;
 
 function TListChartSourceStrings.Get(Index: Integer): String;
+const
+  COLOR_TEXT_MASK: array[boolean] of string = ('%s|%s', '%s|"%s"');
 
   function NumberStr(AValue: Double): String;
   begin
@@ -335,7 +337,7 @@ begin
       Result += NumberStr(Y);
     for i := 0 to High(YList) do
       Result += NumberStr(YList[i]);
-    Result += Format('%s|%s', [IntToColorHex(Color), Text]);
+    Result += Format(COLOR_TEXT_MASK[pos('|', Text) > 0], [IntToColorHex(Color), Text]);
   end;
 end;
 
@@ -423,6 +425,7 @@ begin
   parts := Split(AString);
   try
     // There must be XCount + YCount + 2 parts of the string (+2 for Color and Text)
+    // Text must be quoted if it contains '|'.
     if (Cardinal(parts.Count) <> FSource.XCount + FSource.YCount + 2) then
       raise EListSourceStringError.CreateFmt(
         rsListSourceStringFormatError, [SourceClassString, ChopString(AString, 20)]);
