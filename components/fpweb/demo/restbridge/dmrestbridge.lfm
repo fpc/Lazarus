@@ -1,8 +1,8 @@
 object RestDataModule: TRestDataModule
   OldCreateOrder = False
   Height = 294
-  HorizontalOffset = 477
-  VerticalOffset = 321
+  HorizontalOffset = 465
+  VerticalOffset = 319
   Width = 407
   PPI = 96
   object Dispatcher: TSQLDBRestDispatcher
@@ -22,42 +22,6 @@ object RestDataModule: TRestDataModule
       item
         Schema = ExpensesSchema
       end>
-    Strings.RESTDateFormat = 'YYYY"-"mm"-"dd"T"hh":"nn":"ss"'
-    Strings.RESTDateTimeFormat = 'YYYY"-"mm"-"dd"T"hh":"nn":"ss"'
-    Strings.RESTTimeFormat = '"0000-00-00T"hh":"nn":"ss"'
-    Strings.DataProperty = 'data'
-    Strings.MetaDataRoot = 'metaData'
-    Strings.ErrorProperty = 'error'
-    Strings.FieldNameProperty = 'name'
-    Strings.FieldTypeProperty = 'type'
-    Strings.DateFormatProperty = 'format'
-    Strings.MaxLenProperty = 'maxLen'
-    Strings.HumanReadableParam = 'humanreadable'
-    Strings.FieldListParam = 'fl'
-    Strings.ExcludeFieldListParam = 'xl'
-    Strings.ConnectionParam = 'Connection'
-    Strings.ResourceParam = 'Resource'
-    Strings.IncludeMetadataParam = 'metadata'
-    Strings.SparseParam = 'sparse'
-    Strings.RowName = 'row'
-    Strings.MetadataFields = 'fields'
-    Strings.MetadataField = 'field'
-    Strings.ErrorCode = 'code'
-    Strings.ErrorMessage = 'message'
-    Strings.FilterParamLessThan = '_lt'
-    Strings.FilterParamGreaterThan = '_gt'
-    Strings.FilterParamLessThanEqual = '_lte'
-    Strings.FilterParamGreaterThanEqual = '_gte'
-    Strings.FilterParamIsNull = '_null'
-    Strings.LimitParam = 'limit'
-    Strings.OffsetParam = 'offset'
-    Strings.SortParam = 'sort'
-    Strings.MetadataResourceName = 'metadata'
-    Strings.InputFormatParam = 'fmtin'
-    Strings.OutputFormatParam = 'fmt'
-    Strings.CustomViewResourceName = 'customview'
-    Strings.CustomViewSQLParam = 'sql'
-    Strings.XMLDocumentRoot = 'datapacket'
     Authenticator = AuthBasic
     EnforceLimit = 0
     left = 72
