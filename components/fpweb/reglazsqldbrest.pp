@@ -5,10 +5,10 @@ unit reglazsqldbrest;
 interface
 
 uses
-  Classes, SysUtils, PropEdits, ComponentEditors,
+  Classes, SysUtils, PropEdits, ComponentEditors, ProjectIntf,
   sqldbrestschema,
   sqldbrestcsv ,sqldbrestxml, sqldbrestcds,
-  sqldbrestio, sqldbrestauth, sqldbrestbridge;
+  sqldbrestio, sqldbrestauth, sqldbrestbridge, sqldbrestmodule;
 
 Type
 
@@ -80,6 +80,19 @@ Type
     function GetVerbCount: Integer; override;
   end;
 
+  { ---------------------------------------------------------------------
+    Rest Module
+    ---------------------------------------------------------------------}
+
+
+  TFileRestModule = class(TFileDescPascalUnitWithResource)
+  public
+    constructor Create; override;
+    function GetInterfaceUsesSection: string; override;
+    function GetLocalizedName: string; override;
+    function GetLocalizedDescription: string; override;
+    function GetImplementationSource(const Filename, SourceName, ResourceName: string): string;override;
+  end;
 
 Procedure Register;
 
@@ -87,12 +100,16 @@ implementation
 
 uses
   // Lazarus
-  LResources, codecache, Forms, Dialogs, SrcEditorIntf,  lazideintf, codetoolmanager,
+  LResources, codecache, Forms, Dialogs, SrcEditorIntf,  lazideintf, FormEditingIntf, codetoolmanager,
   // FPC
   sqldb, sqldbrestini,
   // This package
   frmsqldbrestselectconn,
-  frmsqldbrestdispatchini;
+  frmsqldbrestdispatchini,
+  reslazsqldbrest;
+
+Var
+  FileDescriptorRestModule: TFileRestModule;
 
 Procedure Register;
 
@@ -113,6 +130,11 @@ begin
 
   RegisterComponentEditor(TSQLDBRESTSchema,TSQLDBRESTSchemaComponentEditor);
   RegisterComponentEditor(TSQLDBRestDispatcher,TSQLDBRestDispatcherComponentEditor);
+
+  FileDescriptorRestModule:=TFileRestModule.Create;
+  RegisterProjectFileDescriptor(FileDescriptorRestModule);
+  FormEditingHook.RegisterDesignerBaseClass(TSQLDBRestModule);
+
 end;
 
 { TSQLDBRestSchemaComponentEditor }
@@ -259,9 +281,9 @@ end;
 function TSQLDBRestDispatcherComponentEditor.GetVerb(Index: Integer): string;
 begin
   Case Index of
-    0 : Result:='Expose a connection';
-    1 : Result:='Save settings to INI file';
-    2 : Result:='Load settings from INI file';
+    0 : Result:=SExposeAConnection;
+    1 : Result:=SSaveSettingsToIni;
+    2 : Result:=SLoadSettingsFromIni;
   end;
 end;
 
@@ -282,7 +304,7 @@ begin
     0,1 :
       begin
       FN:=Component.Name+'.json';
-      if GetFileName(FN,'JSON Files|*.json|All files|'+allFilesMask,Index=0) then
+      if GetFileName(FN, Format(SJSONFilesFilter, [allFilesMask]), Index=0) then
         if Index=0 then
           S.SaveToFile(FN)
         else
@@ -294,8 +316,8 @@ end;
 function TSQLDBRestSchemaComponentEditor.GetVerb(Index: Integer): string;
 begin
   Case Index of
-    0 : Result:='Save schema to JSON file';
-    1 : Result:='Load schema from JSON file';
+    0 : Result:=SSaveSchemaToJSONFile;
+    1 : Result:=SLoadSchemaFromJSONFile;
   end;
 end;
 
@@ -347,6 +369,43 @@ begin
       CodeToolBoss.AddUnitToMainUsesSection(Code, ConnDef.UnitName, '');
   end;
   inherited;
+end;
+
+{ TFileDescHTMLModule }
+
+constructor TFileRestModule.Create;
+begin
+  inherited Create;
+  Name:='SQLDB REST Bridge Module';
+  ResourceClass:=TSQLDBRestModule;
+  UseCreateFormStatements:=true;
+end;
+
+function TFileRestModule.GetInterfaceUsesSection: string;
+begin
+  Result:='SysUtils, Classes ';
+  if (GetResourceType = rtLRS) then
+    Result :=  Result+ ', LResources, ';
+  Result:=Result+',HTTPDefs, fpHTTP, sqldbrestmodule, sqldbrestbridge';
+end;
+
+function TFileRestModule.GetLocalizedName: string;
+begin
+  Result:=SSQLDBRESTModule;
+end;
+
+function TFileRestModule.GetLocalizedDescription: string;
+begin
+  Result:=SSQLDBRESTModuleDesc;
+end;
+
+function TFileRestModule.GetImplementationSource(const Filename, SourceName, ResourceName: string): string;
+
+begin
+  Result:=Inherited GetImplementationSource(FileName,SourceName,ResourceName);
+  if GetResourceType = rtRes then
+    Result:=Result+'initialization'+LineEnding;
+  Result:=Result+'  T'+ResourceName+'.RegisterModule(''REST'');'+LineEnding;
 end;
 
 
