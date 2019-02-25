@@ -38,7 +38,7 @@ uses
   // IdeIntf
   IDECommands, PackageIntf,
   // OpkMan
-  opkman_downloader, opkman_installer,
+  opkman_downloader, opkman_installer, opkman_updates,
   opkman_serializablepackages, opkman_visualtree, opkman_const, opkman_common,
   opkman_progressfrm, opkman_zipper, opkman_packagelistfrm, opkman_options,
   opkman_optionsfrm, opkman_createrepositorypackagefrm, opkman_maindm,
@@ -114,6 +114,7 @@ type
     tbUpdate: TToolButton;
     tbOpenRepo: TToolButton;
     procedure bReturnClick(Sender: TObject);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure miCopyToClpBrdClick(Sender: TObject);
     procedure miCreateJSONForUpdatesClick(Sender: TObject);
@@ -234,6 +235,8 @@ begin
     SetupControls;
     SetupColors;
     GetPackageList;
+    Updates := TUpdates.Create;
+    Updates.StartUpdate;
   end
 end;
 
@@ -1254,6 +1257,18 @@ end;
 procedure TMainFrm.bReturnClick(Sender: TObject);
 begin
   miJSONShowClick(miJSONShow);
+end;
+
+procedure TMainFrm.FormCloseQuery(Sender: TObject; var CanClose: boolean);
+begin
+  if Assigned(Updates) then
+  begin
+    Updates.StopUpdate;
+    Updates.Terminate;
+    while Assigned(Updates) do
+      CheckSynchronize(100); // wait for update thread to terminate
+    // Remains the slightest chance of a mem leak, since the update thread needs still enough cpu time to finish running the destructor
+  end;
 end;
 
 

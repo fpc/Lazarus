@@ -34,7 +34,7 @@ uses
   // IdeIntf
   LazIDEIntf, PackageIntf, PackageLinkIntf, PackageDependencyIntf, IDECommands,
   // OPM
-  opkman_downloader, opkman_serializablepackages, opkman_installer, opkman_updates;
+  opkman_downloader, opkman_serializablepackages, opkman_installer, opkman_mainfrm;
 
 type
 
@@ -117,14 +117,6 @@ begin
   if Assigned(PackageDownloader) then
     if PackageDownloader.DownloadingJSON then
       PackageDownloader.Cancel;
-  if Assigned(Updates) then
-  begin
-    Updates.StopUpdate;
-    Updates.Terminate;
-    while Assigned(Updates) do
-      CheckSynchronize(100); // wait for update thread to terminate
-    // Remains the slightest chance of a mem leak, since the update thread needs still enough cpu time to finish running the destructor
-  end;
 end;
 
 
@@ -145,12 +137,10 @@ begin
       FTimer.Enabled := False;
       if (not LazarusIDE.IDEIsClosing) then
       begin
-        if Options.CheckForUpdates <> 5 then
+        if (Options.CheckForUpdates <> 5) and (not Assigned(MainFrm)) then
         begin
           PackageDownloader.DownloadJSON(Options.ConTimeOut*1000, True);
           LazarusIDE.AddHandlerOnIDEClose(@DoOnIDEClose);
-          Updates := TUpdates.Create;
-          Updates.StartUpdate;
         end;
       end;
     end;
