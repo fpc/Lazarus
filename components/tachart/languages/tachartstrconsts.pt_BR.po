@@ -27,6 +27,14 @@ msgstr "Excluir linha"
 msgid "Insert row"
 msgstr "Inserir linha"
 
+#: tachartstrconsts.desmovedown
+msgid "Move down"
+msgstr ""
+
+#: tachartstrconsts.desmoveup
+msgid "Move up"
+msgstr ""
+
 #: tachartstrconsts.desnointeger
 msgid "Value must be an integer."
 msgstr ""

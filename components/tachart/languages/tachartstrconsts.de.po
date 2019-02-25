@@ -29,6 +29,14 @@ msgstr "Zeile löschen"
 msgid "Insert row"
 msgstr "Zeile einfügen"
 
+#: tachartstrconsts.desmovedown
+msgid "Move down"
+msgstr "Nach oben"
+
+#: tachartstrconsts.desmoveup
+msgid "Move up"
+msgstr "Nach unten"
+
 #: tachartstrconsts.desnointeger
 msgid "Value must be an integer."
 msgstr "Wert muss eine ganze Zahl sein."

@@ -27,6 +27,14 @@ msgstr "Sor törlése"
 msgid "Insert row"
 msgstr "Sor beszúrása"
 
+#: tachartstrconsts.desmovedown
+msgid "Move down"
+msgstr ""
+
+#: tachartstrconsts.desmoveup
+msgid "Move up"
+msgstr ""
+
 #: tachartstrconsts.desnointeger
 msgid "Value must be an integer."
 msgstr ""

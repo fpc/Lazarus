@@ -24,6 +24,9 @@ type
   TDataPointsEditorForm = class(TForm)
     ButtonPanel1: TButtonPanel;
     cdItemColor: TColorDialog;
+    miMoveDown: TMenuItem;
+    miMoveUp: TMenuItem;
+    miSeparator: TMenuItem;
     miInsertRow: TMenuItem;
     miDeleteRow: TMenuItem;
     pmRows: TPopupMenu;
@@ -31,6 +34,8 @@ type
     procedure FormCreate(Sender: TObject);
     procedure miDeleteRowClick(Sender: TObject);
     procedure miInsertRowClick(Sender: TObject);
+    procedure miMoveDownClick(Sender: TObject);
+    procedure miMoveUpClick(Sender: TObject);
     procedure OKButtonClick(Sender: TObject);
     procedure pmRowsPopup(Sender: TObject);
     procedure sgDataButtonClick(ASender: TObject; ACol, ARow: Integer);
@@ -44,6 +49,7 @@ type
     FDataPoints: TStrings;
     FXCount: Integer;
     FYCount: Integer;
+    procedure UpdateCmds;
     function ValidData(out ACol, ARow: Integer; out AMsg: String): Boolean;
   public
     procedure InitData(AXCount, AYCount: Integer; ADataPoints: TStrings);
@@ -148,11 +154,25 @@ begin
   sgData.Columns[2].Title.Caption := desText;
   miInsertRow.Caption := desInsertRow;
   miDeleteRow.Caption := desDeleteRow;
+  miMoveUp.Caption := desMoveUp;
+  miMoveDown.Caption := desMoveDown;
 end;
 
 procedure TDataPointsEditorForm.miInsertRowClick(Sender: TObject);
 begin
   sgData.InsertColRow(false, FCurrentRow);
+end;
+
+procedure TDataPointsEditorForm.miMoveDownClick(Sender: TObject);
+begin
+  if sgData.Row < sgData.RowCount-1 then
+    sgData.ExchangeColRow(false, sgData.Row, sgData.Row+1);
+end;
+
+procedure TDataPointsEditorForm.miMoveUpClick(Sender: TObject);
+begin
+  if sgData.Row > 1 then
+    sgData.ExchangeColRow(false, sgData.Row, sgData.Row-1);
 end;
 
 procedure TDataPointsEditorForm.OKButtonClick(Sender: TObject);
@@ -175,6 +195,7 @@ begin
   if not InRange(FCurrentRow, 1, sgData.RowCount - 1) then
     Abort;
   sgData.Row := FCurrentRow;
+  UpdateCmds;
 end;
 
 procedure TDataPointsEditorForm.sgDataButtonClick(
@@ -213,6 +234,13 @@ begin
     ts.Alignment := taRightJustify;
     TStringGrid(Sender).Canvas.TextStyle := ts;
   end;
+end;
+
+procedure TDataPointsEditorForm.UpdateCmds;
+begin
+  miDeleteRow.Enabled := sgData.Row > 0;
+  miMoveUp.Enabled := sgData.Row > 1;
+  miMovedown.Enabled := sgData.Row < sgData.RowCount-1;
 end;
 
 function TDataPointsEditorForm.ValidData(out ACol, ARow: Integer;

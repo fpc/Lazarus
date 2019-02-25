@@ -36,6 +36,8 @@ resourcestring
   desText = 'Text';
   desInsertRow = 'Insert row';
   desDeleteRow = 'Delete row';
+  desMoveUp = 'Move up';
+  desMoveDown = 'Move down';
   desNoNumber = 'Non-numeric value.';
   desNoInteger = 'Value must be an integer.';
 

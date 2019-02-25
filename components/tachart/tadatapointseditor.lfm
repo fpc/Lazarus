@@ -81,6 +81,17 @@ object DataPointsEditorForm: TDataPointsEditorForm
       Caption = 'Delete row'
       OnClick = miDeleteRowClick
     end
+    object miSeparator: TMenuItem
+      Caption = '-'
+    end
+    object miMoveUp: TMenuItem
+      Caption = 'Move up'
+      OnClick = miMoveUpClick
+    end
+    object miMoveDown: TMenuItem
+      Caption = 'Move down'
+      OnClick = miMoveDownClick
+    end
   end
   object cdItemColor: TColorDialog
     Color = clBlack

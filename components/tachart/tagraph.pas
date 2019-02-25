@@ -307,7 +307,7 @@ type
     {$ENDIF}
     procedure Notification(
       AComponent: TComponent; AOperation: TOperation); override;
-      procedure PrepareAxis(ADrawer: IChartDrawer);
+    procedure PrepareAxis(ADrawer: IChartDrawer);
     function PrepareLegend(
       ADrawer: IChartDrawer; var AClipRect: TRect): TChartLegendDrawingData;
     procedure SetBiDiMode(AValue: TBiDiMode); override;
