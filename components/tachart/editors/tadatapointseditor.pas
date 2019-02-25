@@ -31,6 +31,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure miDeleteRowClick(Sender: TObject);
     procedure miInsertRowClick(Sender: TObject);
+    procedure OKButtonClick(Sender: TObject);
     procedure pmRowsPopup(Sender: TObject);
     procedure sgDataButtonClick(ASender: TObject; ACol, ARow: Integer);
     procedure sgDataDrawCell(
@@ -43,6 +44,7 @@ type
     FDataPoints: TStrings;
     FXCount: Integer;
     FYCount: Integer;
+    function ValidData(out ACol, ARow: Integer; out AMsg: String): Boolean;
   public
     procedure InitData(AXCount, AYCount: Integer; ADataPoints: TStrings);
     procedure ExtractData(out AModified: Boolean);
@@ -170,6 +172,20 @@ begin
   sgData.InsertColRow(false, FCurrentRow);
 end;
 
+procedure TDataPointsEditorForm.OKButtonClick(Sender: TObject);
+var
+  c, r: Integer;
+  msg: String;
+begin
+  if not ValidData(c, r, msg) then begin
+    sgData.Row := r;
+    sgData.Col := c;
+    sgData.SetFocus;
+    MessageDlg(msg, mtError, [mbOK], 0);
+    ModalResult := mrNone;
+  end;
+end;
+
 procedure TDataPointsEditorForm.pmRowsPopup(Sender: TObject);
 begin
   FCurrentRow := sgData.MouseToCell(sgData.ScreenToClient(Mouse.CursorPos)).Y;
@@ -215,6 +231,38 @@ begin
     TStringGrid(Sender).Canvas.TextStyle := ts;
   end;
 end;
+
+function TDataPointsEditorForm.ValidData(out ACol, ARow: Integer;
+  out AMsg: String): Boolean;
+var
+  x: Double;
+  i: Integer;
+  r, c: Integer;
+  s: String;
+begin
+  Result := false;
+  for r := 1 to sgData.RowCount-1 do begin
+    for c := 1 to sgData.ColCount-3 do begin
+      s := sgData.Cells[c, r];
+      if (s <> '') and not TryStrToFloat(s, x) and not TryStrToFloat(s, x, DefSeparatorSettings) then
+      begin
+        ACol := c;
+        ARow := r;
+        AMsg := desNoNumber;
+        exit;
+      end;
+    end;
+    s := sgData.Cells[sgData.ColCount - 2, r];
+    if (s <> '') and not TryStrToInt(s, i) then begin
+      ACol := sgData.ColCount - 2;
+      ARow := r;
+      AMsg := desNoInteger;
+      exit;
+    end;
+  end;
+  Result := true;
+end;
+
 
 { TDataPointsPropertyEditor }
 

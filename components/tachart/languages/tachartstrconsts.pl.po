@@ -28,6 +28,14 @@ msgstr "Usuń wiersz"
 msgid "Insert row"
 msgstr "Wstaw wiersz"
 
+#: tachartstrconsts.desnointeger
+msgid "Value must be an integer."
+msgstr ""
+
+#: tachartstrconsts.desnonumber
+msgid "Non-numeric value."
+msgstr ""
+
 #: tachartstrconsts.destext
 msgid "Text"
 msgstr "Tekst"

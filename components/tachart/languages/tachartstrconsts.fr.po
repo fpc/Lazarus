@@ -27,6 +27,14 @@ msgstr "Supprimer la ligne"
 msgid "Insert row"
 msgstr "Insérer une ligne"
 
+#: tachartstrconsts.desnointeger
+msgid "Value must be an integer."
+msgstr ""
+
+#: tachartstrconsts.desnonumber
+msgid "Non-numeric value."
+msgstr ""
+
 #: tachartstrconsts.destext
 msgid "Text"
 msgstr "Texte"

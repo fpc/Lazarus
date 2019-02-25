@@ -28,6 +28,14 @@ msgstr ""
 msgid "Insert row"
 msgstr ""
 
+#: tachartstrconsts.desnointeger
+msgid "Value must be an integer."
+msgstr ""
+
+#: tachartstrconsts.desnonumber
+msgid "Non-numeric value."
+msgstr ""
+
 #: tachartstrconsts.destext
 msgid "Text"
 msgstr "Text"

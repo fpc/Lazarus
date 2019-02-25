@@ -16,6 +16,7 @@ object DataPointsEditorForm: TDataPointsEditorForm
     Width = 276
     Align = alClient
     BorderSpacing.Around = 6
+    ColCount = 4
     Columns = <    
       item
         Alignment = taRightJustify
@@ -58,6 +59,7 @@ object DataPointsEditorForm: TDataPointsEditorForm
     Width = 276
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
+    OKButton.OnClick = OKButtonClick
     HelpButton.Name = 'HelpButton'
     HelpButton.DefaultCaption = True
     CloseButton.Name = 'CloseButton'
