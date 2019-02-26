@@ -155,16 +155,18 @@ begin
 
   // Adjust column widths
   w := sgData.Canvas.TextWidth('$000000') + 3*varCellPadding + sgData.DefaultRowHeight;
-  for i := 0 to sgData.Columns.Count-1 do
+  for i := 0 to sgData.Columns.Count-2 do
     sgData.Columns[i].Width := w;
+  sgData.Columns[sgData.Columns.Count-1].Width := 3*w;
 
-{$IFDEF WINDOWS}
-  Width := sgData.ColWidths[0] + 1 + sgData.Columns.Count * w + sgData.Left * 2 +
-    IfThen(sgData.BorderStyle = bsNone, 0, 3);
-{$ELSE}
-  Width := sgData.ColWidths[0] + sgData.Columns.Count * w + sgData.Left * 2 +
-    sgData.GridLineWidth * (sgData.Columns.Count-1);
-{$ENDIF}
+  w := sgData.ColWidths[0] + sgData.Left * 2;
+  for i := 0 to sgData.Columns.Count-1 do
+    inc(w, sgData.Columns[i].Width);
+ {$IFDEF WINDOWS}
+  Width := Min(Screen.Width, w + 1 + IfThen(sgData.BorderStyle = bsNone, 0, 3));
+ {$ELSE}
+  Width := Min(Screen.Width, w + sgData.GridLinedWidth * (sgData.Columns.Count-1));
+ {$ENDIF}
 end;
 
 procedure TDataPointsEditorForm.miDeleteRowClick(Sender: TObject);

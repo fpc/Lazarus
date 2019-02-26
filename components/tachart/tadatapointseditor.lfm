@@ -68,6 +68,7 @@ object DataPointsEditorForm: TDataPointsEditorForm
     CancelButton.Name = 'CancelButton'
     CancelButton.DefaultCaption = True
     TabOrder = 1
+    DefaultButton = pbHelp
     ShowButtons = [pbOK, pbCancel]
   end
   object pmRows: TPopupMenu
