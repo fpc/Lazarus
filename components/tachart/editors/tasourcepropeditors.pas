@@ -34,23 +34,9 @@ end;
 { TDataPointsPropertyEditor }
 
 procedure TDataPointsPropertyEditor.Edit;
-var
-  dataModified: Boolean;
 begin
-  with TDataPointsEditorForm.Create(nil) do
-    try
-      InitData(
-        (GetComponent(0) as TListChartsource).XCount,
-        (GetComponent(0) as TListChartSource).YCount,
-        GetObjectValue as TStrings
-      );
-      if ShowModal = mrOK then begin
-        ExtractData(dataModified);
-        if dataModified then Modified;
-      end;
-    finally
-      Free;
-    end;
+  if DataPointsEditor(GetComponent(0) as TListChartSource) then
+    Modified;
 end;
 
 function TDataPointsPropertyEditor.GetAttributes: TPropertyAttributes;

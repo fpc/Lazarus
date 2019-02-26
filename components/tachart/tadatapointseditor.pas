@@ -15,9 +15,12 @@ interface
 
 uses
   ButtonPanel, Classes, ExtCtrls, Grids, Menus, SysUtils, Forms, Controls,
-  Graphics, Dialogs;
+  Graphics, Dialogs, TASources;
 
 type
+
+  TDataPointsEditorOption = (dpeHideColorColumn);
+  TDataPointsEditorOptions = set of TDataPointsEditorOption;
 
   { TDataPointsEditorForm }
 
@@ -49,20 +52,48 @@ type
     FDataPoints: TStrings;
     FXCount: Integer;
     FYCount: Integer;
+    FOptions: TDataPointsEditorOptions;
     procedure UpdateCmds;
     function ValidData(out ACol, ARow: Integer; out AMsg: String): Boolean;
   public
-    procedure InitData(AXCount, AYCount: Integer; ADataPoints: TStrings);
+    procedure InitData(AXCount, AYCount: Integer; ADataPoints: TStrings;
+      AOptions: TDataPointsEditorOptions = []);
     procedure ExtractData(out AModified: Boolean);
+    property Options: TDatapointsEditorOptions read FOptions;
   end;
+
+function DataPointsEditor(AListChartSource: TListChartsource;
+  AOptions: TDataPointsEditorOptions = []): Boolean;
+
 
 implementation
 
 uses
   LCLIntf, LCLType, Math, StdCtrls,
-  TAChartStrConsts, TAChartUtils, TASources;
+  TAChartStrConsts, TAChartUtils;
 
 {$R *.lfm}
+
+function DataPointsEditor(AListChartSource: TListChartsource;
+  AOptions: TDataPointsEditorOptions = []): Boolean;
+var
+  F: TDataPointsEditorForm;
+begin
+  Result := false;
+  F := TDataPointsEditorForm.Create(Application);
+  try
+    F.InitData(
+      AListChartSource.XCount,
+      AListChartSource.YCount,
+      AListChartSource.DataPoints,
+      AOptions
+    );
+    if F.ShowModal = mrOK then
+      F.ExtractData(Result);
+  finally
+    F.Free;
+  end;
+end;
 
 function EditText(var AText: String): Boolean;
 var
@@ -121,8 +152,8 @@ begin
   end;
 end;
 
-procedure TDataPointsEditorForm.InitData(
-  AXCount, AYCount: Integer; ADataPoints: TStrings);
+procedure TDataPointsEditorForm.InitData(AXCount, AYCount: Integer;
+  ADataPoints: TStrings; AOptions: TDataPointsEditorOptions = []);
 var
   i: Integer;
   w: Integer;
@@ -130,6 +161,7 @@ begin
   FXCount := AXCount;
   FYCount := AYCount;
   FDataPoints := ADataPoints;
+  FOptions := AOptions;
   sgData.RowCount := Max(ADataPoints.Count + 1, 2);
   for i := 1 to AYCount do
     with sgData.Columns.Add do begin
@@ -150,6 +182,7 @@ begin
       Index := i;
     end;
   sgData.Columns.Delete(0); // remove the template column
+  sgData.Columns[sgData.Columns.Count-2].Visible := not (dpeHideColorColumn in FOptions);
   for i := 0 to ADataPoints.Count - 1 do
     Split('|' + ADataPoints[i], sgData.Rows[i + 1]);
 
