@@ -772,6 +772,7 @@ end;
 
   t.Add(AName, p+'Set'+e, weSet(['EnVal2', 'EnVal4'], 'TSet'));
 
+  t.Add(AName, p+'IntfUnknown'+e, weMatch('.?', skInterface)).Skip(); // only run eval / do not crash
 
   end;
 
