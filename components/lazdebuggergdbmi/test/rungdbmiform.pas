@@ -17,6 +17,7 @@ type
   TForm1 = class(TForm)
     BitBtn1: TBitBtn;
     BtnRun: TButton;
+    CheckListBox3: TCheckListBox;
     chkCSF: TCheckBox;
     chkStripEcho: TCheckBox;
     CheckListBox1: TCheckListBox;
@@ -43,6 +44,7 @@ type
     Splitter1: TSplitter;
     Splitter2: TSplitter;
     Splitter3: TSplitter;
+    Splitter4: TSplitter;
     procedure BitBtn1Click(Sender: TObject);
     procedure BtnRunClick(Sender: TObject);
     procedure edPasFileChange(Sender: TObject);
@@ -201,70 +203,79 @@ procedure TRunner.DoRun;
 var
   AUsesDir: TUsesDir;
   i: Integer;
+  ii: TSymbolType;
 begin
   i := Form1.CheckListBox1.Items.IndexOf(CompilerInfo.Name);
   if not Form1.CheckListBox1.Checked[i] then exit;
   i := Form1.CheckListBox2.Items.IndexOf(DebuggerInfo.Name);
   if not Form1.CheckListBox2.Checked[i] then exit;
+  i := Form1.CheckListBox3.Items.IndexOf(SymbolTypeNames[SymbolType]);
+  if not Form1.CheckListBox3.Checked[i] then exit;
+
 
   if Form1.edUses.Text <> '' then begin
 
-    with AUsesDir do begin
-      DirName := Form1.edUses.Text;
-      ExeId:= '';
-      SymbolType:= stNone;
-      ExtraOpts:= '';
-      NamePostFix:= ''
-    end;
-    DoOneRun('none', [AUsesDir]);
+    //with AUsesDir do begin
+    //  DirName := Form1.edUses.Text;
+    //  ExeId:= '';
+    //  SymbolType:= stNone;
+    //  ExtraOpts:= '';
+    //  NamePostFix:= ''
+    //end;
+    //DoOneRun('none', [AUsesDir]);
 
-    if (stStabs in CompilerInfo.SymbolTypes) and (stStabs in DebuggerInfo.SymbolTypes)
-    then begin
-      with AUsesDir do begin
-        DirName := Form1.edUses.Text;
-        ExeId:= '';
-        SymbolType:= stStabs;
-        ExtraOpts:= '';
-        NamePostFix:= ''
-      end;
-      DoOneRun('stabs', [AUsesDir]);
-    end;
+    for ii := low(TSymbolType) to high(TSymbolType) do begin
+      i := Form1.CheckListBox3.Items.IndexOf(SymbolTypeNames[ii]);
+      if not Form1.CheckListBox3.Checked[i] then continue;
 
-    if (stDwarf in CompilerInfo.SymbolTypes) and (stDwarf in DebuggerInfo.SymbolTypes)
-    then begin
-      with AUsesDir do begin
-        DirName := Form1.edUses.Text;
-        ExeId:= '';
-        SymbolType:= stDwarf;
-        ExtraOpts:= '';
-        NamePostFix:= ''
+      if (ii in CompilerInfo.SymbolTypes) and (ii in DebuggerInfo.SymbolTypes)
+      then begin
+        with AUsesDir do begin
+          DirName := Form1.edUses.Text;
+          ExeId:= '';
+          SymbolType:= ii;
+          ExtraOpts:= '';
+          NamePostFix:= ''
+        end;
+        DoOneRun(SymbolTypeNames[ii], [AUsesDir]);
       end;
-      DoOneRun('stDwarf', [AUsesDir]);
     end;
-
-    if (stDwarfSet in CompilerInfo.SymbolTypes) and (stDwarfSet in DebuggerInfo.SymbolTypes)
-    then begin
-      with AUsesDir do begin
-        DirName := Form1.edUses.Text;
-        ExeId:= '';
-        SymbolType:= stDwarfSet;
-        ExtraOpts:= '';
-        NamePostFix:= ''
-      end;
-      DoOneRun('stabsSet', [AUsesDir]);
-    end;
-
-    if (stDwarf3 in CompilerInfo.SymbolTypes) and (stDwarf3 in DebuggerInfo.SymbolTypes)
-    then begin
-      with AUsesDir do begin
-        DirName := Form1.edUses.Text;
-        ExeId:= '';
-        SymbolType:= stDwarf3;
-        ExtraOpts:= '';
-        NamePostFix:= ''
-      end;
-      DoOneRun('stDwarf3', [AUsesDir]);
-    end;
+//
+//    if (stDwarf in CompilerInfo.SymbolTypes) and (stDwarf in DebuggerInfo.SymbolTypes)
+//    then begin
+//      with AUsesDir do begin
+//        DirName := Form1.edUses.Text;
+//        ExeId:= '';
+//        SymbolType:= stDwarf;
+//        ExtraOpts:= '';
+//        NamePostFix:= ''
+//      end;
+//      DoOneRun('stDwarf', [AUsesDir]);
+//    end;
+//
+//    if (stDwarfSet in CompilerInfo.SymbolTypes) and (stDwarfSet in DebuggerInfo.SymbolTypes)
+//    then begin
+//      with AUsesDir do begin
+//        DirName := Form1.edUses.Text;
+//        ExeId:= '';
+//        SymbolType:= stDwarfSet;
+//        ExtraOpts:= '';
+//        NamePostFix:= ''
+//      end;
+//      DoOneRun('stabsSet', [AUsesDir]);
+//    end;
+//
+//    if (stDwarf3 in CompilerInfo.SymbolTypes) and (stDwarf3 in DebuggerInfo.SymbolTypes)
+//    then begin
+//      with AUsesDir do begin
+//        DirName := Form1.edUses.Text;
+//        ExeId:= '';
+//        SymbolType:= stDwarf3;
+//        ExtraOpts:= '';
+//        NamePostFix:= ''
+//      end;
+//      DoOneRun('stDwarf3', [AUsesDir]);
+//    end;
 
 
   end
@@ -347,6 +358,7 @@ var
   l: TCompilerList;
   i, j: Integer;
   l2: TDebuggerList;
+  ii: TSymbolType;
 begin
   RegisterDbgTest(TRunner);
   if FileExistsUTF8(AppendPathDelim(ExtractFilePath(Paramstr(0))) + 'run_gdbmi_cmds.txt') then
@@ -367,6 +379,11 @@ begin
   for i := 0 to l2.Count-1 do begin
     j := CheckListBox2.Items.Add(l2.Name[i]);
     CheckListBox2.Checked[j] := True;
+  end;
+
+  for ii := low(TSymbolType) to high(TSymbolType) do begin
+    j := CheckListBox3.Items.Add(SymbolTypeNames[ii]);
+    CheckListBox3.Checked[j] := ii <> stNone;
   end;
 end;
 

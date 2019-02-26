@@ -1,13 +1,13 @@
 object Form1: TForm1
-  Left = 25
-  Height = 519
-  Top = 199
+  Left = 386
+  Height = 595
+  Top = 197
   Width = 717
   Caption = 'Form1'
-  ClientHeight = 519
+  ClientHeight = 595
   ClientWidth = 717
   OnCreate = FormCreate
-  LCLVersion = '0.9.31'
+  LCLVersion = '2.1.0.0'
   object Panel1: TPanel
     Left = 6
     Height = 110
@@ -25,7 +25,7 @@ object Form1: TForm1
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = edPasFile
       AnchorSideTop.Side = asrBottom
-      Left = 36
+      Left = 35
       Height = 23
       Top = 58
       Width = 222
@@ -38,7 +38,7 @@ object Form1: TForm1
       AnchorSideLeft.Control = Label2
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = edBreakFile
-      Left = 293
+      Left = 291
       Height = 23
       Top = 58
       Width = 115
@@ -66,9 +66,9 @@ object Form1: TForm1
       AnchorSideTop.Control = edBreakFile
       AnchorSideTop.Side = asrCenter
       Left = 0
-      Height = 16
-      Top = 61
-      Width = 30
+      Height = 15
+      Top = 62
+      Width = 29
       Caption = 'Break'
       ParentColor = False
     end
@@ -77,10 +77,10 @@ object Form1: TForm1
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = edBreakFile
       AnchorSideTop.Side = asrCenter
-      Left = 264
-      Height = 16
-      Top = 61
-      Width = 23
+      Left = 263
+      Height = 15
+      Top = 62
+      Width = 22
       BorderSpacing.Left = 6
       Caption = 'Line'
       ParentColor = False
@@ -122,10 +122,10 @@ object Form1: TForm1
       AnchorSideTop.Control = edPasHistory
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = BitBtn1
-      Left = 36
+      Left = 35
       Height = 23
       Top = 29
-      Width = 429
+      Width = 430
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
@@ -138,9 +138,9 @@ object Form1: TForm1
       AnchorSideTop.Control = edPasFile
       AnchorSideTop.Side = asrCenter
       Left = 0
-      Height = 16
-      Top = 32
-      Width = 19
+      Height = 15
+      Top = 33
+      Width = 18
       Caption = 'File'
       ParentColor = False
     end
@@ -176,7 +176,7 @@ object Form1: TForm1
       AnchorSideLeft.Control = edBreakFile
       AnchorSideTop.Control = edBreakFile
       AnchorSideTop.Side = asrBottom
-      Left = 36
+      Left = 35
       Height = 23
       Top = 87
       Width = 216
@@ -188,9 +188,9 @@ object Form1: TForm1
       AnchorSideTop.Control = edUses
       AnchorSideTop.Side = asrCenter
       Left = 0
-      Height = 16
-      Top = 90
-      Width = 25
+      Height = 15
+      Top = 91
+      Width = 24
       Caption = 'Uses'
       ParentColor = False
     end
@@ -199,10 +199,10 @@ object Form1: TForm1
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = edUses
       AnchorSideTop.Side = asrCenter
-      Left = 262
-      Height = 16
-      Top = 90
-      Width = 35
+      Left = 261
+      Height = 15
+      Top = 91
+      Width = 34
       BorderSpacing.Left = 10
       Caption = 'Define'
       ParentColor = False
@@ -211,7 +211,7 @@ object Form1: TForm1
       AnchorSideLeft.Control = Label5
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = edUses
-      Left = 301
+      Left = 299
       Height = 23
       Top = 87
       Width = 80
@@ -222,7 +222,7 @@ object Form1: TForm1
       AnchorSideLeft.Control = Label6
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = edBreakLine
-      Left = 470
+      Left = 467
       Height = 23
       Top = 58
       Width = 50
@@ -234,10 +234,10 @@ object Form1: TForm1
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = edBreakLine
       AnchorSideTop.Side = asrCenter
-      Left = 414
-      Height = 16
-      Top = 61
-      Width = 50
+      Left = 412
+      Height = 15
+      Top = 62
+      Width = 49
       BorderSpacing.Around = 6
       Caption = 'HitCount'
       ParentColor = False
@@ -245,11 +245,11 @@ object Form1: TForm1
   end
   object Panel2: TPanel
     Left = 175
-    Height = 397
+    Height = 473
     Top = 122
     Width = 542
     Align = alClient
-    ClientHeight = 397
+    ClientHeight = 473
     ClientWidth = 542
     TabOrder = 1
     object Memo1: TMemo
@@ -263,7 +263,7 @@ object Form1: TForm1
     end
     object Memo2: TMemo
       Left = 1
-      Height = 267
+      Height = 343
       Top = 129
       Width = 540
       Align = alClient
@@ -283,17 +283,17 @@ object Form1: TForm1
   end
   object Panel3: TPanel
     Left = 5
-    Height = 397
+    Height = 473
     Top = 122
     Width = 170
     Align = alLeft
-    ClientHeight = 397
+    ClientHeight = 473
     ClientWidth = 170
     TabOrder = 2
     object CheckListBox1: TCheckListBox
       Left = 1
       Height = 176
-      Top = 6
+      Top = 1
       Width = 168
       Align = alTop
       ItemHeight = 0
@@ -303,24 +303,42 @@ object Form1: TForm1
       Cursor = crVSplit
       Left = 1
       Height = 5
-      Top = 1
+      Top = 177
       Width = 168
       Align = alTop
       ResizeAnchor = akTop
     end
     object CheckListBox2: TCheckListBox
       Left = 1
-      Height = 214
+      Height = 185
       Top = 182
       Width = 168
       Align = alClient
       ItemHeight = 0
       TabOrder = 2
     end
+    object Splitter4: TSplitter
+      Cursor = crVSplit
+      Left = 1
+      Height = 5
+      Top = 367
+      Width = 168
+      Align = alBottom
+      ResizeAnchor = akBottom
+    end
+    object CheckListBox3: TCheckListBox
+      Left = 1
+      Height = 100
+      Top = 372
+      Width = 168
+      Align = alBottom
+      ItemHeight = 0
+      TabOrder = 4
+    end
   end
   object Splitter3: TSplitter
     Left = 0
-    Height = 397
+    Height = 473
     Top = 122
     Width = 5
   end
