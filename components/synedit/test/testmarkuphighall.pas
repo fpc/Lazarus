@@ -149,12 +149,12 @@ begin
 
 
   Dict := TSynSearchDictionary.Create;
-  Dict.Add('foo'       , 0);
+  Dict.Add('foo'       , 0); // IDX 0
   Dict.Add('Hello'     , 1);
   Dict.Add('yello12345', 2);
   Dict.Add(   'lo123'  , 3);
   Dict.Add(   'lo789'  , 4);
-  Dict.Add('hell'      , 5);
+  Dict.Add('hell'      , 5);  // IDX 5
   Dict.Add('hatter'    , 6);
   Dict.Add('log'       , 7);
   Dict.Add('lantern'   , 8);
@@ -449,6 +449,9 @@ Dict.Add('uložit', 0);
   //Dict.BuildDictionary;
   //Dict.DebugPrint(true);
 
+  AssertEquals('GetMatchAtChar longer', 12,Dict.GetMatchAtChar('YESTERDAY ', 10, nil));
+  AssertEquals('GetMatchAtChar exact len', 12,Dict.GetMatchAtChar('YESTERDAY ', 9, nil));
+  AssertEquals('GetMatchAtChar too short', -1,Dict.GetMatchAtChar('YESTERDAY ', 8, nil));
 
   Dict.Free;
 end;
