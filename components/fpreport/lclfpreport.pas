@@ -10,7 +10,7 @@ interface
 uses
   cfgfpreportimageexport, cfgfpreportpdfexport, fpreportformexport, 
   fpreportlclexport, fpreportprinterexport, fpreportpreview, dlginputcombo, 
-  cfgfpreporthtmlexport, LazarusPackageIntf;
+  cfgfpreporthtmlexport, lclfpreportbuild, LazarusPackageIntf;
 
 implementation
 

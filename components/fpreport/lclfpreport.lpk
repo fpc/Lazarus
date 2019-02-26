@@ -10,7 +10,7 @@
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
     </CompilerOptions>
-    <Files Count="12">
+    <Files Count="13">
       <Item1>
         <Filename Value="cfgfpreportimageexport.lfm"/>
         <Type Value="LFM"/>
@@ -59,6 +59,10 @@
         <Filename Value="cfgfpreporthtmlexport.pp"/>
         <UnitName Value="cfgfpreporthtmlexport"/>
       </Item12>
+      <Item13>
+        <Filename Value="lclfpreportbuild.pp"/>
+        <UnitName Value="lclfpreportbuild"/>
+      </Item13>
     </Files>
     <RequiredPkgs Count="3">
       <Item1>

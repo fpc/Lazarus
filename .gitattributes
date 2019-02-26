@@ -1619,6 +1619,7 @@ components/fpreport/fpreportpreview.pas svneol=native#text/plain
 components/fpreport/fpreportprinterexport.pas svneol=native#text/plain
 components/fpreport/lclfpreport.lpk svneol=native#text/plain
 components/fpreport/lclfpreport.pas svneol=native#text/plain
+components/fpreport/lclfpreportbuild.pp svneol=native#text/plain
 components/fpvectorial/avisocncgcodereader.pas svneol=native#text/plain
 components/fpvectorial/avisocncgcodewriter.pas svneol=native#text/plain
 components/fpvectorial/avisozlib.pas svneol=native#text/plain
