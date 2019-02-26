@@ -1584,6 +1584,7 @@ end;
 function TSynMarkupHighIfDefLinesNodeInfo.Precessor: TSynMarkupHighIfDefLinesNodeInfo;
 begin
   ClearNestCache;
+  Result.ClearNestCache;
   Result.FTree := FTree;
   If HasNode then begin
     Result.FStartLine := FStartLine;
@@ -1606,6 +1607,7 @@ end;
 function TSynMarkupHighIfDefLinesNodeInfo.Successor: TSynMarkupHighIfDefLinesNodeInfo;
 begin
   ClearNestCache;
+  Result.ClearNestCache;
   Result.FTree := FTree;
   If HasNode then begin
     Result.FStartLine := FStartLine;
