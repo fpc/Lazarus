@@ -2399,8 +2399,12 @@ begin
       Result := nil;
   end else
   begin
-    if HandleAllocated then
-      Result := Screen.MonitorFromWindow(Handle, mdNearest)
+    if HandleAllocated then begin
+      // ensure widgetset has latest coordinates // invisible forms are not updated by DoSendBoundsToInterface
+      if (not HandleObjectShouldBeVisible) then
+        TWSWinControlClass(WidgetSetClass).SetBounds(Self, Left, Top, Width, Height);
+      Result := Screen.MonitorFromWindow(Handle, mdNearest);
+    end
     else
       Result := Screen.MonitorFromPoint(point(Left,Top));
   end;
