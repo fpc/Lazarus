@@ -151,8 +151,8 @@ type
 
     procedure IncreaseIndent; overload; override;
     procedure DecreaseIndent; overload; override;
-    procedure IncreaseIndent(LogGroup: PLazLoggerLogGroup); overload; override;
-    procedure DecreaseIndent(LogGroup: PLazLoggerLogGroup); overload; override;
+    procedure IncreaseIndent(LogEnabled: TLazLoggerLogEnabled); overload; virtual;
+    procedure DecreaseIndent(LogEnabled: TLazLoggerLogEnabled); overload; virtual;
     procedure IndentChanged; override;
     procedure CreateIndent; virtual;
     function GetBlockHandler(AIndex: Integer): TLazLoggerBlockHandler; override;
@@ -654,28 +654,27 @@ begin
   CreateIndent;
 end;
 
-procedure TLazLoggerFile.IncreaseIndent(LogGroup: PLazLoggerLogGroup);
+procedure TLazLoggerFile.IncreaseIndent(LogEnabled: TLazLoggerLogEnabled);
 begin
-  if (LogGroup <> nil) then begin
-    if (not LogGroup^.Enabled) then exit;
-    inc(LogGroup^.FOpenedIndents);
-    IncreaseIndent;
-  end
-  else
-    IncreaseIndent;
+  if not (LogEnabled.Enabled) then exit;
+
+  if (LogEnabled.Group <> nil) and (LogEnabled.Group^.Enabled) then
+    inc(LogEnabled.Group^.FOpenedIndents);
+  IncreaseIndent;
 end;
 
-procedure TLazLoggerFile.DecreaseIndent(LogGroup: PLazLoggerLogGroup);
+procedure TLazLoggerFile.DecreaseIndent(LogEnabled: TLazLoggerLogEnabled);
 begin
-  if (LogGroup <> nil) then begin
-    // close what was opened, even if now disabled
-    // only close, if opened by this group
-    if (LogGroup^.FOpenedIndents <= 0) then exit;
-    dec(LogGroup^.FOpenedIndents);
+  if (LogEnabled.Enabled) then begin
+    if LogEnabled.Group <> nil then
+      dec(LogEnabled.Group^.FOpenedIndents);
     DecreaseIndent;
   end
   else
+  if (LogEnabled.Group <> nil) and (LogEnabled.Group^.FOpenedIndents > 0) then begin
+    dec(LogEnabled.Group^.FOpenedIndents);
     DecreaseIndent;
+  end;
 end;
 
 procedure TLazLoggerFile.IndentChanged;

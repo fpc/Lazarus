@@ -41,6 +41,18 @@ type
   end;
   PLazLoggerLogGroup = ^TLazLoggerLogGroup;
 
+  TLazLoggerLogEnabled = record
+    Enabled: Boolean;
+    Group: PLazLoggerLogGroup; // if only one group / remember nestlevel count
+  end;
+
+operator := (g: PLazLoggerLogGroup): TLazLoggerLogEnabled;
+operator := (g: Boolean): TLazLoggerLogEnabled;
+operator and (g1, g2: TLazLoggerLogEnabled): TLazLoggerLogEnabled;
+operator or  (g1, g2: TLazLoggerLogEnabled): TLazLoggerLogEnabled;
+
+type
+
   TLazLoggerWriteTarget = (
     lwtNone,
     lwtStdOut, lwtStdErr,
@@ -116,8 +128,8 @@ type
 
     procedure IncreaseIndent; overload; virtual;
     procedure DecreaseIndent; overload; virtual;
-    procedure IncreaseIndent({%H-}LogGroup: PLazLoggerLogGroup); overload; virtual;
-    procedure DecreaseIndent({%H-}LogGroup: PLazLoggerLogGroup); overload; virtual;
+    procedure IncreaseIndent({%H-}LogEnabled: TLazLoggerLogEnabled); overload; virtual;
+    procedure DecreaseIndent({%H-}LogEnabled: TLazLoggerLogEnabled); overload; virtual;
     procedure IndentChanged; virtual;
     function  GetBlockHandler({%H-}AIndex: Integer): TLazLoggerBlockHandler; virtual;
 
@@ -194,42 +206,42 @@ type
                           const s16: string = ''; const s17: string = ''; const s18: string = ''); overload;
 
 
-    procedure DebuglnStack(LogGroup: PLazLoggerLogGroup; const s: string = '');
+    procedure DebuglnStack(LogEnabled: TLazLoggerLogEnabled; const s: string = '');
 
-    procedure DbgOut(LogGroup: PLazLoggerLogGroup; const s: string = ''); overload;
-    procedure DbgOut(LogGroup: PLazLoggerLogGroup; Args: array of const); overload;
-    procedure DbgOut(LogGroup: PLazLoggerLogGroup; const S: String; Args: array of const); overload;// similar to Format(s,Args)
-    procedure DbgOut(LogGroup: PLazLoggerLogGroup; const s1, s2: string; const s3: string = '';
+    procedure DbgOut(LogEnabled: TLazLoggerLogEnabled; const s: string = ''); overload;
+    procedure DbgOut(LogEnabled: TLazLoggerLogEnabled; Args: array of const); overload;
+    procedure DbgOut(LogEnabled: TLazLoggerLogEnabled; const S: String; Args: array of const); overload;// similar to Format(s,Args)
+    procedure DbgOut(LogEnabled: TLazLoggerLogEnabled; const s1, s2: string; const s3: string = '';
                      const s4: string = ''; const s5: string = ''; const s6: string = '';
                      const s7: string = ''; const s8: string = ''; const s9: string = '';
                      const s10: string = ''; const s11: string = ''; const s12: string = '';
                      const s13: string = ''; const s14: string = ''; const s15: string = '';
                      const s16: string = ''; const s17: string = ''; const s18: string = ''); overload;
 
-    procedure DebugLn(LogGroup: PLazLoggerLogGroup; const s: string = ''); overload;
-    procedure DebugLn(LogGroup: PLazLoggerLogGroup; Args: array of const); overload;
-    procedure DebugLn(LogGroup: PLazLoggerLogGroup; const S: String; Args: array of const); overload;// similar to Format(s,Args)
-    procedure DebugLn(LogGroup: PLazLoggerLogGroup; const s1, s2: string; const s3: string = '';
+    procedure DebugLn(LogEnabled: TLazLoggerLogEnabled; const s: string = ''); overload;
+    procedure DebugLn(LogEnabled: TLazLoggerLogEnabled; Args: array of const); overload;
+    procedure DebugLn(LogEnabled: TLazLoggerLogEnabled; const S: String; Args: array of const); overload;// similar to Format(s,Args)
+    procedure DebugLn(LogEnabled: TLazLoggerLogEnabled; const s1, s2: string; const s3: string = '';
                       const s4: string = ''; const s5: string = ''; const s6: string = '';
                       const s7: string = ''; const s8: string = ''; const s9: string = '';
                       const s10: string = ''; const s11: string = ''; const s12: string = '';
                       const s13: string = ''; const s14: string = ''; const s15: string = '';
                       const s16: string = ''; const s17: string = ''; const s18: string = ''); overload;
 
-    procedure DebugLnEnter(LogGroup: PLazLoggerLogGroup; const s: string = ''); overload;
-    procedure DebugLnEnter(LogGroup: PLazLoggerLogGroup; Args: array of const); overload;
-    procedure DebugLnEnter(LogGroup: PLazLoggerLogGroup; s: string; Args: array of const); overload;
-    procedure DebugLnEnter(LogGroup: PLazLoggerLogGroup; const s1, s2: string; const s3: string = '';
+    procedure DebugLnEnter(LogEnabled: TLazLoggerLogEnabled; const s: string = ''); overload;
+    procedure DebugLnEnter(LogEnabled: TLazLoggerLogEnabled; Args: array of const); overload;
+    procedure DebugLnEnter(LogEnabled: TLazLoggerLogEnabled; s: string; Args: array of const); overload;
+    procedure DebugLnEnter(LogEnabled: TLazLoggerLogEnabled; const s1, s2: string; const s3: string = '';
                            const s4: string = ''; const s5: string = ''; const s6: string = '';
                            const s7: string = ''; const s8: string = ''; const s9: string = '';
                            const s10: string = ''; const s11: string = ''; const s12: string = '';
                            const s13: string = ''; const s14: string = ''; const s15: string = '';
                            const s16: string = ''; const s17: string = ''; const s18: string = ''); overload;
 
-    procedure DebugLnExit(LogGroup: PLazLoggerLogGroup; const s: string = ''); overload;
-    procedure DebugLnExit(LogGroup: PLazLoggerLogGroup; Args: array of const); overload;
-    procedure DebugLnExit(LogGroup: PLazLoggerLogGroup; s: string; Args: array of const); overload;
-    procedure DebugLnExit(LogGroup: PLazLoggerLogGroup; const s1, s2: string; const s3: string = '';
+    procedure DebugLnExit(LogEnabled: TLazLoggerLogEnabled; const s: string = ''); overload;
+    procedure DebugLnExit(LogEnabled: TLazLoggerLogEnabled; Args: array of const); overload;
+    procedure DebugLnExit(LogEnabled: TLazLoggerLogEnabled; s: string; Args: array of const); overload;
+    procedure DebugLnExit(LogEnabled: TLazLoggerLogEnabled; const s1, s2: string; const s3: string = '';
                           const s4: string = ''; const s5: string = ''; const s6: string = '';
                           const s7: string = ''; const s8: string = ''; const s9: string = '';
                           const s10: string = ''; const s11: string = ''; const s12: string = '';
@@ -311,6 +323,42 @@ var // Using base TRefCountedObject, so if none of the functions is used in the 
   TheLazLogger: TRefCountedObject = nil;
   PrevLazLogger: TRefCountedObject = nil;
   TheLazLoggerGroups: TRefCountedObject = nil;
+
+operator := (g: PLazLoggerLogGroup): TLazLoggerLogEnabled;
+begin
+  Result.Enabled := (g = nil) or (g^.Enabled);
+  Result.Group := g;
+end;
+
+operator := (g: Boolean): TLazLoggerLogEnabled;
+begin
+  Result.Enabled := g;
+  Result.Group := nil;
+end;
+
+operator and(g1, g2: TLazLoggerLogEnabled): TLazLoggerLogEnabled;
+begin
+  Result.Enabled := g1.Enabled and g2.Enabled;
+  if (g1.Group = nil) and g1.Enabled then
+    Result.Group := g2.Group
+  else
+  if (g2.Group = nil) and g2.Enabled then
+    Result.Group := g1.Group
+  else
+    Result.Group := nil;
+end;
+
+operator or(g1, g2: TLazLoggerLogEnabled): TLazLoggerLogEnabled;
+begin
+  Result.Enabled := g1.Enabled or g2.Enabled;
+  if (g1.Group = nil) then
+    Result.Group := g2.Group
+  else
+  if (g2.Group = nil) then
+    Result.Group := g1.Group
+  else
+    Result.Group := nil;
+end;
 
 procedure CreateDebugLogger;
 begin
@@ -714,12 +762,12 @@ begin
   //
 end;
 
-procedure TLazLogger.IncreaseIndent(LogGroup: PLazLoggerLogGroup);
+procedure TLazLogger.IncreaseIndent(LogEnabled: TLazLoggerLogEnabled);
 begin
   //
 end;
 
-procedure TLazLogger.DecreaseIndent(LogGroup: PLazLoggerLogGroup);
+procedure TLazLogger.DecreaseIndent(LogEnabled: TLazLoggerLogEnabled);
 begin
   //
 end;
@@ -982,133 +1030,133 @@ begin
   DoDebugLn(s1+s2+s3+s4+s5+s6+s7+s8+s9+s10+s11+s12+s13+s14+s15+s16+s17+s18);
 end;
 
-procedure TLazLogger.DebuglnStack(LogGroup: PLazLoggerLogGroup; const s: string);
+procedure TLazLogger.DebuglnStack(LogEnabled: TLazLoggerLogEnabled; const s: string);
 begin
-  if (LogGroup <> nil) and (not LogGroup^.Enabled) then exit;
+  if not LogEnabled.Enabled then exit;
   DebuglnStack(s);
 end;
 
-procedure TLazLogger.DbgOut(LogGroup: PLazLoggerLogGroup; const s: string);
+procedure TLazLogger.DbgOut(LogEnabled: TLazLoggerLogEnabled; const s: string);
 begin
-  if (LogGroup <> nil) and (not LogGroup^.Enabled) then exit;
+  if not LogEnabled.Enabled then exit;
   DoDbgOut(s);
 end;
 
-procedure TLazLogger.DbgOut(LogGroup: PLazLoggerLogGroup; Args: array of const);
+procedure TLazLogger.DbgOut(LogEnabled: TLazLoggerLogEnabled; Args: array of const);
 begin
-  if (LogGroup <> nil) and (not LogGroup^.Enabled) then exit;
+  if not LogEnabled.Enabled then exit;
   DoDbgOut(ArgsToString(Args));
 end;
 
-procedure TLazLogger.DbgOut(LogGroup: PLazLoggerLogGroup; const S: String;
+procedure TLazLogger.DbgOut(LogEnabled: TLazLoggerLogEnabled; const S: String;
   Args: array of const);
 begin
-  if (LogGroup <> nil) and (not LogGroup^.Enabled) then exit;
+  if not LogEnabled.Enabled then exit;
   DoDbgOut(Format(S, Args));
 end;
 
-procedure TLazLogger.DbgOut(LogGroup: PLazLoggerLogGroup; const s1, s2: string;
+procedure TLazLogger.DbgOut(LogEnabled: TLazLoggerLogEnabled; const s1, s2: string;
   const s3: string; const s4: string; const s5: string; const s6: string; const s7: string;
   const s8: string; const s9: string; const s10: string; const s11: string; const s12: string;
   const s13: string; const s14: string; const s15: string; const s16: string;
   const s17: string; const s18: string);
 begin
-  if (LogGroup <> nil) and (not LogGroup^.Enabled) then exit;
+  if not LogEnabled.Enabled then exit;
   DoDbgOut(s1+s2+s3+s4+s5+s6+s7+s8+s9+s10+s11+s12+s13+s14+s15+s16+s17+s18);
 end;
 
-procedure TLazLogger.DebugLn(LogGroup: PLazLoggerLogGroup; const s: string);
+procedure TLazLogger.DebugLn(LogEnabled: TLazLoggerLogEnabled; const s: string);
 begin
-  if (LogGroup <> nil) and (not LogGroup^.Enabled) then exit;
+  if not LogEnabled.Enabled then exit;
   DoDebugLn(s);
 end;
 
-procedure TLazLogger.DebugLn(LogGroup: PLazLoggerLogGroup; Args: array of const);
+procedure TLazLogger.DebugLn(LogEnabled: TLazLoggerLogEnabled; Args: array of const);
 begin
-  if (LogGroup <> nil) and (not LogGroup^.Enabled) then exit;
+  if not LogEnabled.Enabled then exit;
   DoDebugLn(ArgsToString(Args));
 end;
 
-procedure TLazLogger.DebugLn(LogGroup: PLazLoggerLogGroup; const S: String;
+procedure TLazLogger.DebugLn(LogEnabled: TLazLoggerLogEnabled; const S: String;
   Args: array of const);
 begin
-  if (LogGroup <> nil) and (not LogGroup^.Enabled) then exit;
+  if not LogEnabled.Enabled then exit;
   DoDebugLn(Format(S, Args));
 end;
 
-procedure TLazLogger.DebugLn(LogGroup: PLazLoggerLogGroup; const s1, s2: string;
+procedure TLazLogger.DebugLn(LogEnabled: TLazLoggerLogEnabled; const s1, s2: string;
   const s3: string; const s4: string; const s5: string; const s6: string; const s7: string;
   const s8: string; const s9: string; const s10: string; const s11: string; const s12: string;
   const s13: string; const s14: string; const s15: string; const s16: string;
   const s17: string; const s18: string);
 begin
-  if (LogGroup <> nil) and (not LogGroup^.Enabled) then exit;
+  if not LogEnabled.Enabled then exit;
   DoDebugLn(s1+s2+s3+s4+s5+s6+s7+s8+s9+s10+s11+s12+s13+s14+s15+s16+s17+s18);
 end;
 
-procedure TLazLogger.DebugLnEnter(LogGroup: PLazLoggerLogGroup; const s: string);
+procedure TLazLogger.DebugLnEnter(LogEnabled: TLazLoggerLogEnabled; const s: string);
 begin
-  if not( (LogGroup <> nil) and (not LogGroup^.Enabled) ) then
+  if LogEnabled.Enabled then
     DoDebugLn(s);
-  IncreaseIndent(LogGroup);
+  IncreaseIndent(LogEnabled);
 end;
 
-procedure TLazLogger.DebugLnEnter(LogGroup: PLazLoggerLogGroup; Args: array of const);
+procedure TLazLogger.DebugLnEnter(LogEnabled: TLazLoggerLogEnabled; Args: array of const);
 begin
-  if not( (LogGroup <> nil) and (not LogGroup^.Enabled) ) then
+  if LogEnabled.Enabled then
     DoDebugLn(ArgsToString(Args));
-  IncreaseIndent(LogGroup);
+  IncreaseIndent(LogEnabled);
 end;
 
-procedure TLazLogger.DebugLnEnter(LogGroup: PLazLoggerLogGroup; s: string;
+procedure TLazLogger.DebugLnEnter(LogEnabled: TLazLoggerLogEnabled; s: string;
   Args: array of const);
 begin
-  if not( (LogGroup <> nil) and (not LogGroup^.Enabled) ) then
+  if LogEnabled.Enabled then
     DoDebugLn(Format(S, Args));
-  IncreaseIndent(LogGroup);
+  IncreaseIndent(LogEnabled);
 end;
 
-procedure TLazLogger.DebugLnEnter(LogGroup: PLazLoggerLogGroup; const s1, s2: string;
+procedure TLazLogger.DebugLnEnter(LogEnabled: TLazLoggerLogEnabled; const s1, s2: string;
   const s3: string; const s4: string; const s5: string; const s6: string; const s7: string;
   const s8: string; const s9: string; const s10: string; const s11: string; const s12: string;
   const s13: string; const s14: string; const s15: string; const s16: string;
   const s17: string; const s18: string);
 begin
-  if not( (LogGroup <> nil) and (not LogGroup^.Enabled) ) then
+  if LogEnabled.Enabled then
     DoDebugLn(s1+s2+s3+s4+s5+s6+s7+s8+s9+s10+s11+s12+s13+s14+s15+s16+s17+s18);
-  IncreaseIndent(LogGroup);
+  IncreaseIndent(LogEnabled);
 end;
 
-procedure TLazLogger.DebugLnExit(LogGroup: PLazLoggerLogGroup; const s: string);
+procedure TLazLogger.DebugLnExit(LogEnabled: TLazLoggerLogEnabled; const s: string);
 begin
-  DecreaseIndent(LogGroup);
-  if (LogGroup <> nil) and (not LogGroup^.Enabled) then exit;
+  DecreaseIndent(LogEnabled);
+  if not LogEnabled.Enabled then exit;
   DoDebugLn(s);
 end;
 
-procedure TLazLogger.DebugLnExit(LogGroup: PLazLoggerLogGroup; Args: array of const);
+procedure TLazLogger.DebugLnExit(LogEnabled: TLazLoggerLogEnabled; Args: array of const);
 begin
-  DecreaseIndent(LogGroup);
-  if (LogGroup <> nil) and (not LogGroup^.Enabled) then exit;
+  DecreaseIndent(LogEnabled);
+  if not LogEnabled.Enabled then exit;
   DoDebugLn(ArgsToString(Args));
 end;
 
-procedure TLazLogger.DebugLnExit(LogGroup: PLazLoggerLogGroup; s: string;
+procedure TLazLogger.DebugLnExit(LogEnabled: TLazLoggerLogEnabled; s: string;
   Args: array of const);
 begin
-  DecreaseIndent(LogGroup);
-  if (LogGroup <> nil) and (not LogGroup^.Enabled) then exit;
+  DecreaseIndent(LogEnabled);
+  if not LogEnabled.Enabled then exit;
   DoDebugLn(Format(S, Args));
 end;
 
-procedure TLazLogger.DebugLnExit(LogGroup: PLazLoggerLogGroup; const s1, s2: string;
+procedure TLazLogger.DebugLnExit(LogEnabled: TLazLoggerLogEnabled; const s1, s2: string;
   const s3: string; const s4: string; const s5: string; const s6: string; const s7: string;
   const s8: string; const s9: string; const s10: string; const s11: string; const s12: string;
   const s13: string; const s14: string; const s15: string; const s16: string;
   const s17: string; const s18: string);
 begin
-  DecreaseIndent(LogGroup);
-  if (LogGroup <> nil) and (not LogGroup^.Enabled) then exit;
+  DecreaseIndent(LogEnabled);
+  if not LogEnabled.Enabled then exit;
   DoDebugLn(s1+s2+s3+s4+s5+s6+s7+s8+s9+s10+s11+s12+s13+s14+s15+s16+s17+s18);
 end;
 

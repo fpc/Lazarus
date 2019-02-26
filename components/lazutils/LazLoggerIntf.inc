@@ -41,42 +41,42 @@ procedure DebugLnExit (const s1, s2: string; const s3: string = '';
                        const s16: string = ''; const s17: string = ''; const s18: string = ''); inline; overload;
 
 
-procedure DebuglnStack(LogGroup: PLazLoggerLogGroup; const s: string = '');
+procedure DebuglnStack(LogEnabled: TLazLoggerLogEnabled; const s: string = '');
 
-procedure DbgOut(LogGroup: PLazLoggerLogGroup; const s: string = ''); overload;
-procedure DbgOut(LogGroup: PLazLoggerLogGroup; Args: array of const); overload;
-procedure DbgOut(LogGroup: PLazLoggerLogGroup; const S: String; Args: array of const); overload;// similar to Format(s,Args)
-procedure DbgOut(LogGroup: PLazLoggerLogGroup; const s1, s2: string; const s3: string = '';
+procedure DbgOut(LogEnabled: TLazLoggerLogEnabled; const s: string = ''); overload;
+procedure DbgOut(LogEnabled: TLazLoggerLogEnabled; Args: array of const); overload;
+procedure DbgOut(LogEnabled: TLazLoggerLogEnabled; const S: String; Args: array of const); overload;// similar to Format(s,Args)
+procedure DbgOut(LogEnabled: TLazLoggerLogEnabled; const s1, s2: string; const s3: string = '';
                  const s4: string = ''; const s5: string = ''; const s6: string = '';
                  const s7: string = ''; const s8: string = ''; const s9: string = '';
                  const s10: string = ''; const s11: string = ''; const s12: string = '';
                  const s13: string = ''; const s14: string = ''; const s15: string = '';
                  const s16: string = ''; const s17: string = ''; const s18: string = ''); overload;
 
-procedure DebugLn(LogGroup: PLazLoggerLogGroup; const s: string = ''); overload;
-procedure DebugLn(LogGroup: PLazLoggerLogGroup; Args: array of const); overload;
-procedure DebugLn(LogGroup: PLazLoggerLogGroup; const S: String; Args: array of const); overload;// similar to Format(s,Args)
-procedure DebugLn(LogGroup: PLazLoggerLogGroup; const s1, s2: string; const s3: string = '';
+procedure DebugLn(LogEnabled: TLazLoggerLogEnabled; const s: string = ''); overload;
+procedure DebugLn(LogEnabled: TLazLoggerLogEnabled; Args: array of const); overload;
+procedure DebugLn(LogEnabled: TLazLoggerLogEnabled; const S: String; Args: array of const); overload;// similar to Format(s,Args)
+procedure DebugLn(LogEnabled: TLazLoggerLogEnabled; const s1, s2: string; const s3: string = '';
                   const s4: string = ''; const s5: string = ''; const s6: string = '';
                   const s7: string = ''; const s8: string = ''; const s9: string = '';
                   const s10: string = ''; const s11: string = ''; const s12: string = '';
                   const s13: string = ''; const s14: string = ''; const s15: string = '';
                   const s16: string = ''; const s17: string = ''; const s18: string = ''); overload;
 
-procedure DebugLnEnter(LogGroup: PLazLoggerLogGroup; const s: string = ''); overload;
-procedure DebugLnEnter(LogGroup: PLazLoggerLogGroup; Args: array of const); overload;
-procedure DebugLnEnter(LogGroup: PLazLoggerLogGroup; s: string; Args: array of const); overload;
-procedure DebugLnEnter(LogGroup: PLazLoggerLogGroup; const s1, s2: string; const s3: string = '';
+procedure DebugLnEnter(LogEnabled: TLazLoggerLogEnabled; const s: string = ''); overload;
+procedure DebugLnEnter(LogEnabled: TLazLoggerLogEnabled; Args: array of const); overload;
+procedure DebugLnEnter(LogEnabled: TLazLoggerLogEnabled; s: string; Args: array of const); overload;
+procedure DebugLnEnter(LogEnabled: TLazLoggerLogEnabled; const s1, s2: string; const s3: string = '';
                        const s4: string = ''; const s5: string = ''; const s6: string = '';
                        const s7: string = ''; const s8: string = ''; const s9: string = '';
                        const s10: string = ''; const s11: string = ''; const s12: string = '';
                        const s13: string = ''; const s14: string = ''; const s15: string = '';
                        const s16: string = ''; const s17: string = ''; const s18: string = ''); overload;
 
-procedure DebugLnExit(LogGroup: PLazLoggerLogGroup; const s: string = ''); overload;
-procedure DebugLnExit(LogGroup: PLazLoggerLogGroup; Args: array of const); overload;
-procedure DebugLnExit(LogGroup: PLazLoggerLogGroup; s: string; Args: array of const); overload;
-procedure DebugLnExit(LogGroup: PLazLoggerLogGroup; const s1, s2: string; const s3: string = '';
+procedure DebugLnExit(LogEnabled: TLazLoggerLogEnabled; const s: string = ''); overload;
+procedure DebugLnExit(LogEnabled: TLazLoggerLogEnabled; Args: array of const); overload;
+procedure DebugLnExit(LogEnabled: TLazLoggerLogEnabled; s: string; Args: array of const); overload;
+procedure DebugLnExit(LogEnabled: TLazLoggerLogEnabled; const s1, s2: string; const s3: string = '';
                       const s4: string = ''; const s5: string = ''; const s6: string = '';
                       const s7: string = ''; const s8: string = ''; const s9: string = '';
                       const s10: string = ''; const s11: string = ''; const s12: string = '';
