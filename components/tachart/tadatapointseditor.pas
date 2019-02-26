@@ -188,6 +188,10 @@ begin
   miDeleteRow.Caption := desDeleteRow;
   miMoveUp.Caption := desMoveUp;
   miMoveDown.Caption := desMoveDown;
+  if IsRightToLeft then
+    sgData.AutoAdvance := aaLeftDown
+  else
+    sgData.AutoAdvance := aaRightDown;
 end;
 
 procedure TDataPointsEditorForm.miInsertRowClick(Sender: TObject);
