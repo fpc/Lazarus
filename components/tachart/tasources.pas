@@ -870,8 +870,8 @@ end;
 procedure TListChartSource.UpdateCachesAfterAdd(AX, AY: Double);
 begin
   if FExtentIsValid then begin
-    UpdateMinMax(AX, FExtent.a.X, FExtent.b.X);
-    UpdateMinMax(AY, FExtent.a.Y, FExtent.b.Y);
+    if FXCount > 0 then UpdateMinMax(AX, FExtent.a.X, FExtent.b.X);
+    if FYCount > 0 then UpdateMinMax(AY, FExtent.a.Y, FExtent.b.Y);
   end;
   if FValuesTotalIsValid then
     FValuesTotal += NumberOr(AY);
