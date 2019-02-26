@@ -313,8 +313,6 @@ begin
 end;
 
 function TListChartSourceStrings.Get(Index: Integer): String;
-const
-  COLOR_TEXT_MASK: array[boolean] of string = ('%s|%s', '%s|"%s"');
 
   function NumberStr(AValue: Double): String;
   begin
@@ -326,6 +324,8 @@ const
 
 var
   i: Integer;
+  s: String;
+  color_text_mask: String;
 begin
   with FSource[Index]^ do begin
     Result := '';
@@ -337,7 +337,15 @@ begin
       Result += NumberStr(Y);
     for i := 0 to High(YList) do
       Result += NumberStr(YList[i]);
-    Result += Format(COLOR_TEXT_MASK[pos('|', Text) > 0], [IntToColorHex(Color), Text]);
+    color_text_mask := '%s|%s';
+    s := Text;
+    if pos('"', s) > 0 then begin
+      s := StringReplace(s, '"', '""', [rfReplaceAll]);
+      color_text_mask := '%s|"%s"'
+    end;
+    if pos('|', s) > 0 then
+      color_text_mask := '%s|"%s"';
+    Result += Format(color_text_mask, [IntToColorHex(Color), s]);
   end;
 end;
 
@@ -396,7 +404,7 @@ var
 
   function StrToFloatOrDateTime(const AStr: String): Double;
   begin
-    if AStr = '' then
+    if (AStr = '') or (AStr = '?') then
       Result := NaN
     else begin
       if not TryStrToFloat(AStr, Result, DefSeparatorSettings) and
@@ -444,7 +452,7 @@ begin
       end else
         Y := NaN;
       Color := StrToInt(NextPart);
-      Text := NextPart;
+      Text := StringReplace(NextPart, '""', '"', [rfReplaceall]);
     end;
   finally
     parts.Free;

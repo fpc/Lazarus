@@ -450,6 +450,8 @@ begin
 end;
 
 procedure TListSourceTest.Multi;
+var
+  L: TStrings;
 begin
   FSource.Clear;
   AssertEquals(1, FSource.YCount);
@@ -571,6 +573,20 @@ begin
   FSource.DataPoints.Add('1|2|3|?|"a'+LineEnding+'b"');
   AssertEquals('a'+LineEnding+'b', FSource[8]^.Text);
 
+  // Check Text part containing quotes
+  FSource.DataPoints.Add('1|2|3|?|This is "quoted".');
+  AssertEquals('This is "quoted".', FSource[9]^.Text);
+
+  FSource.DataPoints.Add('1|2|3|?|"This is ""quoted""."');
+  AssertEquals('This is "quoted".', FSource[10]^.Text);
+
+  FSource.DataPoints.Add('1|2|3|?|"This is ""quoted"""');
+  AssertEquals('This is "quoted"', FSource[11]^.Text);
+
+  // Check Text part containing separator and quotes
+  FSource.DataPoints.Add('1|2|3|?|"Number of ""|"" items"');
+  AssertEquals('Number of "|" items', FSource[12]^.Text);
+
   // Check multiple x and y values
   FSource.Clear;
   FSource.XCount := 2;
@@ -590,6 +606,38 @@ begin
   AssertEquals(30, FSource[1]^.Y);
   AssertEquals(40, FSource[1]^.YList[0]);
   AssertEquals(50, FSource[1]^.YList[1]);
+
+  // Add multiple strings in a single AddText command
+  FSource.Clear;
+  FSource.XCount := 2;
+  FSource.YCount := 3;
+  FSource.DataPoints.AddText('100|200|300|400|500|?|Data1' + LineEnding +
+                             '101|201|301|401|501|?|Data2');
+  AssertEquals(2, FSource.Count);
+  AssertEquals(2, FSource.XCount);
+  AssertEquals(3, FSource.YCount);
+  AssertEquals(100, FSource[0]^.X);
+  AssertEquals(200, FSource[0]^.XList[0]);
+  AssertEquals(300, FSource[0]^.Y);
+  AssertEquals(500, FSource[0]^.YList[1]);
+  AssertEquals('Data1', FSource[0]^.Text);
+  AssertEquals(101, FSource[1]^.X);
+  AssertEquals(501, FSource[1]^.YList[1]);
+  AssertEquals('Data2', FSource[1]^.Text);
+
+  // Add multiple strings in a single AddStrings command
+  FSource.Datapoints.AddStrings(['110|210|310|410|510|?|ABC', '111|211|311|411|511|?|abc']);
+  AssertEquals(4, FSource.Count);
+  AssertEquals(2, FSource.XCount);
+  AssertEquals(3, FSource.YCount);
+  AssertEquals(110, FSource[2]^.X);
+  AssertEquals(210, FSource[2]^.XList[0]);
+  AssertEquals(310, FSource[2]^.Y);
+  AssertEquals(510, FSource[2]^.YList[1]);
+  AssertEquals('ABC', FSource[2]^.Text);
+  AssertEquals(111, FSource[3]^.X);
+  AssertEquals(511, FSource[3]^.YList[1]);
+  AssertEquals('abc', FSource[3]^.Text);
 
   (*
   FSource.SetYList(0, [3, 4]);
