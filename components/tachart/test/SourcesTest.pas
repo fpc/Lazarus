@@ -583,9 +583,15 @@ begin
   FSource.DataPoints.Add('1|2|3|?|"This is ""quoted"""');
   AssertEquals('This is "quoted"', FSource[11]^.Text);
 
+  FSource.DataPoints.Add('1|2|3|?|Single ".');
+  AssertEquals('Single ".', FSource[12]^.Text);
+
+  FSource.DataPoints.Add('1|2|3|?|Two quotes "".');
+  AssertEquals('Two quotes "".', FSource[13]^.Text);
+
   // Check Text part containing separator and quotes
   FSource.DataPoints.Add('1|2|3|?|"Number of ""|"" items"');
-  AssertEquals('Number of "|" items', FSource[12]^.Text);
+  AssertEquals('Number of "|" items', FSource[14]^.Text);
 
   // Check multiple x and y values
   FSource.Clear;

@@ -452,7 +452,8 @@ begin
       end else
         Y := NaN;
       Color := StrToInt(NextPart);
-      Text := StringReplace(NextPart, '""', '"', [rfReplaceall]);
+      Text := NextPart;
+//      Text := StringReplace(NextPart, '""', '"', [rfReplaceall]);
     end;
   finally
     parts.Free;
