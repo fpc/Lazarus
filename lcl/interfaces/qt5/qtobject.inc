@@ -257,7 +257,7 @@ begin
     if (StyleName = 'gtk') or (StyleName = 'gtk+') then
       QTimer_setInterval(ATimer, 1) {issue #31191}
     else
-      QTimer_setInterval(ATimer, {$IFDEF QtCocoa}1{$ELSE} 0 {$ENDIF});
+      QTimer_setInterval(ATimer, {$IFDEF QtCocoa}5{$ELSE} 0 {$ENDIF});
     QTimer_start(ATimer);
     FMainTimerID := QTimer_timerId(ATimer);
     QApplication_exec();
