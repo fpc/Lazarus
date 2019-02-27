@@ -193,6 +193,7 @@ type
     FValuesTotalIsValid: Boolean;
     FXCount: Cardinal;
     FYCount: Cardinal;
+    function CalcExtentXYList(UseXList: Boolean): TDoubleRect;
     procedure ChangeErrorBars(Sender: TObject); virtual;
     function GetCount: Integer; virtual; abstract;
     function GetErrorBarValues(APointIndex: Integer; Which: Integer;
@@ -219,6 +220,7 @@ type
     function Extent: TDoubleRect; virtual;
     function ExtentCumulative: TDoubleRect; virtual;
     function ExtentList: TDoubleRect; virtual;
+    function ExtentXYList: TDoubleRect; virtual;
     procedure FindBounds(AXMin, AXMax: Double; out ALB, AUB: Integer);
     function FormatItem(
       const AFormat: String; AIndex, AYIndex: Integer): String; inline;
@@ -818,6 +820,50 @@ begin
   // empty
 end;
 
+{ Calculates the extent including multiple x and/or y values (non-stacked)
+  UseXList = true: consider both XList and YList, otherwise only YList. }
+function TCustomChartSource.CalcExtentXYList(UseXList: Boolean): TDoubleRect;
+var
+  i, j: Integer;
+  jxp, jxn: Integer;
+  jyp, jyn: Integer;
+begin
+  Result := Extent;
+  if (YCount < 2) and (XCount < 2) then exit;
+
+  // Skip the x and y values used for error bars when calculating the list extent.
+  if UseXList and (XErrorBarData.Kind = ebkChartSource) then begin
+    jxp := XErrorBarData.IndexPlus - 1;  // -1 because XList is offset by 1
+    jxn := XErrorBarData.IndexMinus - 1;
+  end else begin
+    jxp := -1;
+    jxn := -1;
+  end;
+  if YErrorBarData.Kind = ebkChartSource then begin
+    jyp := YErrorbarData.IndexPlus - 1;  // -1 because YList is offset by 1
+    jyn := YErrorBarData.IndexMinus - 1;
+  end else begin
+    jyp := -1;
+    jyn := -1;
+  end;
+
+  if UseXList and (XCount > 1) then
+    for i := 0 to Count - 1 do
+      with Item[i]^ do begin
+        for j := 0 to High(XList) do
+          if (j <> jxp) and (j <> jxn) then
+            UpdateMinMax(XList[j], Result.a.X, Result.b.X);
+      end;
+  for i := 0 to Count - 1 do
+    with Item[i]^ do begin
+      for j := 0 to High(YList) do
+        if (j <> jyp) and (j <> jyn) then
+          UpdateMinMax(YList[j], Result.a.Y, Result.b.Y);
+    end
+
+end;
+
+
 class procedure TCustomChartSource.CheckFormat(const AFormat: String);
 begin
   Format(AFormat, [0.0, 0.0, '', 0.0, 0.0]);
@@ -894,41 +940,16 @@ begin
   end;
 end;
 
-{ Calculates the extent including multiple x and y values (non-stacked) }
+{ Calculates the extent including multiple y values (non-stacked) }
 function TCustomChartSource.ExtentList: TDoubleRect;
-var
-  i, j: Integer;
-  jxp, jxn: Integer;
-  jyp, jyn: Integer;
 begin
-  Result := Extent;
-  if (YCount < 2) and (XCount < 2) then exit;
+  Result := CalcExtentXYList(false);
+end;
 
-  // Skip then x and y values used for error bars when calculating the list extent.
-  if XErrorBarData.Kind = ebkChartSource then begin
-    jxp := XErrorBarData.IndexPlus - 1;  // -1 because XList is offset by 1
-    jxn := XErrorBarData.IndexMinus - 1;
-  end else begin
-    jxp := -1;
-    jxn := -1;
-  end;
-  if YErrorBarData.Kind = ebkChartSource then begin
-    jyp := YErrorbarData.IndexPlus - 1;  // -1 because YList is offset by 1
-    jyn := YErrorBarData.IndexMinus - 1;
-  end else begin
-    jyp := -1;
-    jyn := -1;
-  end;
-
-  for i := 0 to Count - 1 do
-    with Item[i]^ do begin
-      for j := 0 to High(XList) do
-        if (j <> jxp) and (j <> jxn) then
-          UpdateMinMax(XList[j], Result.a.X, Result.b.X);
-      for j := 0 to High(YList) do
-        if (j <> jyp) and (j <> jyn) then
-          UpdateMinMax(YList[j], Result.a.Y, Result.b.Y);
-    end;
+{ Calculates the extent including multiple x and y values (non-stacked) }
+function TCustomChartSource.ExtentXYList: TDoubleRect;
+begin
+  Result := CalcExtentXYList(true);
 end;
 
 // ALB -> leftmost item where X >= AXMin, or Count if no such item
