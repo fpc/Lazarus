@@ -1764,7 +1764,7 @@ var
   end;
 
 begin
-  if State <> fpsUnknown then exit;
+  if (State <> fpsUnknown) or not Active then exit;
   FState := fpsInvalid;
   try
     TryFit;
