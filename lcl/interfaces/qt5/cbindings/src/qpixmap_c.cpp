@@ -150,7 +150,7 @@ void QPixmap_createMaskFromColor(QPixmapH handle, QBitmapH retval, const QColorH
 	*(QBitmap *)retval = ((QPixmap *)handle)->createMaskFromColor(*(const QColor*)maskColor, mode);
 }
 
-void QPixmap_grabWindow(QPixmapH retval, unsigned int AnonParam1, int x, int y, int w, int h)
+void QPixmap_grabWindow(QPixmapH retval, WId AnonParam1, int x, int y, int w, int h)
 {
 	*(QPixmap *)retval = QPixmap::grabWindow((WId)AnonParam1, x, y, w, h);
 }

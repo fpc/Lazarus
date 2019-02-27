@@ -43,7 +43,7 @@ C_EXPORT void QScreen_transformBetween(QScreenH handle, QTransformH retval, Qt::
 C_EXPORT void QScreen_mapBetween(QScreenH handle, PRect retval, Qt::ScreenOrientation a, Qt::ScreenOrientation b, PRect AnonParam1);
 C_EXPORT bool QScreen_isPortrait(QScreenH handle, Qt::ScreenOrientation orientation);
 C_EXPORT bool QScreen_isLandscape(QScreenH handle, Qt::ScreenOrientation orientation);
-C_EXPORT void QScreen_grabWindow(QScreenH handle, QPixmapH retval,unsigned int window, int x = 0,int y = 0,int w = -1, int h = -1);
+C_EXPORT void QScreen_grabWindow(QScreenH handle, QPixmapH retval,WId window, int x = 0,int y = 0,int w = -1, int h = -1);
 C_EXPORT qreal QScreen_refreshRate(QScreenH handle);
 
 #endif

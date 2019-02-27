@@ -25,7 +25,7 @@ C_EXPORT QWindow::Visibility QWindow_visibility(QWindowH handle);
 C_EXPORT void QWindow_setVisibility(QWindowH handle, QWindow::Visibility v);
 C_EXPORT void QWindow_createPlatformResources(QWindowH handle); /* void create(); */
 C_EXPORT void QWindow_destroyPlatformResources(QWindowH handle); /* void destroy(); */
-C_EXPORT unsigned int QWindow_winId(QWindowH handle);
+C_EXPORT WId QWindow_winId(QWindowH handle);
 C_EXPORT QWindowH QWindow_parent(QWindowH handle);
 C_EXPORT void QWindow_setParent(QWindowH handle, QWindowH parent);
 C_EXPORT bool QWindow_isTopLevel(QWindowH handle);
@@ -96,7 +96,7 @@ C_EXPORT void QWindow_cursor(QWindowH handle, QCursorH retval);
 C_EXPORT void QWindow_setCursor(QWindowH handle, const QCursorH AnonParam1);
 C_EXPORT void QWindow_unsetCursor(QWindowH handle);
 C_EXPORT QObjectH QWindow_focusObject(QWindowH handle);
-C_EXPORT QWindowH QWindow_fromWinID(unsigned int id);
+C_EXPORT QWindowH QWindow_fromWinID(WId id);
 C_EXPORT void QWindow_requestActivate(QWindowH handle);
 C_EXPORT void QWindow_setVisible(QWindowH handle, bool visible);
 C_EXPORT void QWindow_show(QWindowH handle);

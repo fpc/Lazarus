@@ -61,9 +61,9 @@ void QWindow_destroyPlatformResources(QWindowH handle) /* void destroy(); */
   ((QWindow *)handle)->destroy();
 }
 
-unsigned int QWindow_winId(QWindowH handle)
+WId QWindow_winId(QWindowH handle)
 {
-  return (unsigned int) ((QWindow *)handle)->winId();
+  return (WId) ((QWindow *)handle)->winId();
 }
 
 QWindowH QWindow_parent(QWindowH handle)
@@ -429,7 +429,7 @@ QObjectH QWindow_focusObject(QWindowH handle)
   return (QObjectH) ((QWindow *)handle)->focusObject();
 }
 
-QWindowH QWindow_fromWinID(unsigned int id)
+QWindowH QWindow_fromWinID(WId id)
 {
   return (QWindowH) QWindow::fromWinId((WId) id);
 }

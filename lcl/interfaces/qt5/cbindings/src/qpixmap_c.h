@@ -42,7 +42,7 @@ C_EXPORT bool QPixmap_hasAlpha(QPixmapH handle);
 C_EXPORT bool QPixmap_hasAlphaChannel(QPixmapH handle);
 C_EXPORT void QPixmap_createHeuristicMask(QPixmapH handle, QBitmapH retval, bool clipTight);
 C_EXPORT void QPixmap_createMaskFromColor(QPixmapH handle, QBitmapH retval, const QColorH maskColor, Qt::MaskMode mode);
-C_EXPORT void QPixmap_grabWindow(QPixmapH retval, unsigned int AnonParam1, int x, int y, int w, int h);
+C_EXPORT void QPixmap_grabWindow(QPixmapH retval, WId AnonParam1, int x, int y, int w, int h);
 C_EXPORT void QPixmap_grabWidget(QPixmapH retval, QObjectH widget, PRect rect);
 C_EXPORT void QPixmap_grabWidget2(QPixmapH retval, QObjectH widget, int x, int y, int w, int h);
 C_EXPORT void QPixmap_scaled(QPixmapH handle, QPixmapH retval, int w, int h, Qt::AspectRatioMode aspectMode, Qt::TransformationMode mode);

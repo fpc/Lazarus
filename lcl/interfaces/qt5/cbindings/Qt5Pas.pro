@@ -13,7 +13,7 @@
 # Binding Release Version 2.6 against Qt5 5.6 LTS release.
 # WebKit widgets are disabled until webenginewidgets are implemented.
 
-VERSION = 1.2.6
+VERSION = 1.2.7
 
 QT += gui network printsupport
 TARGET = Qt5Pas

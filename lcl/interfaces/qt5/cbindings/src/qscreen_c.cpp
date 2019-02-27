@@ -167,7 +167,7 @@ bool QScreen_isLandscape(QScreenH handle, Qt::ScreenOrientation orientation)
   return (bool) ((QScreen *)handle)->isLandscape((Qt::ScreenOrientation) orientation);
 }
 
-void QScreen_grabWindow(QScreenH handle, QPixmapH retval,unsigned int window, int x,int y,int w, int h)
+void QScreen_grabWindow(QScreenH handle, QPixmapH retval,WId window, int x,int y,int w, int h)
 {
   *(QPixmap *)retval = ((QScreen *)handle)->grabWindow((WId) window, x, y, w, h);
 }
