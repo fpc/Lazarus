@@ -495,7 +495,7 @@ type
     function getHeight: Integer;
     function getWidth: Integer;
     procedure grabWidget(AWidget: QWidgetH; x: Integer = 0; y: Integer = 0; w: Integer = -1; h: Integer = -1);
-    procedure grabWindow(p1: Cardinal; x: Integer = 0; y: Integer = 0; w: Integer = -1; h: Integer = -1);
+    procedure grabWindow(p1: PtrUInt; x: Integer = 0; y: Integer = 0; w: Integer = -1; h: Integer = -1);
     procedure toImage(retval: QImageH);
     class procedure fromImage(retval: QPixmapH; image: QImageH; flags: QtImageConversionFlags = QtAutoColor);
   end;
@@ -3705,7 +3705,7 @@ begin
   QPixmap_grabWidget(FHandle, AWidget, x, y, w, h);
 end;
 
-procedure TQtPixmap.grabWindow(p1: Cardinal; x: Integer; y: Integer; w: Integer; h: Integer);
+procedure TQtPixmap.grabWindow(p1: PtrUInt; x: Integer; y: Integer; w: Integer; h: Integer);
 begin
   QPixmap_grabWindow(FHandle, p1, x, y, w, h);
 end;

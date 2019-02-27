@@ -742,7 +742,7 @@ var
   Desc: TRawImageDescription absolute ARawImage.Description;
 
   //SrcWidth, SrcHeight: Integer;
-  WinID: Cardinal;
+  WinID: PtrUInt;
   DCSize: TSize;
   Pixmap: TQtPixmap;
   Image: QImageH;

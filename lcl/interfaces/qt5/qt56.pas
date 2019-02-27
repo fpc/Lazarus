@@ -5785,7 +5785,7 @@ function QWindow_visibility(handle: QWindowH): QWindowVisibility; cdecl; externa
 procedure QWindow_setVisibility(handle: QWindowH; v: QWindowVisibility); cdecl; external Qt5PasLib name 'QWindow_setVisibility';
 procedure QWindow_createPlatformResources(handle: QWindowH); cdecl; external Qt5PasLib name 'QWindow_createPlatformResources';
 procedure QWindow_destroyPlatformResources(handle: QWindowH); cdecl; external Qt5PasLib name 'QWindow_destroyPlatformResources';
-function QWindow_winId(handle: QWindowH): LongWord; cdecl; external Qt5PasLib name 'QWindow_winId';
+function QWindow_winId(handle: QWindowH): PtrUInt; cdecl; external Qt5PasLib name 'QWindow_winId';
 function QWindow_parent(handle: QWindowH): QWindowH; cdecl; external Qt5PasLib name 'QWindow_parent';
 procedure QWindow_setParent(handle: QWindowH; parent: QWindowH); cdecl; external Qt5PasLib name 'QWindow_setParent';
 function QWindow_isTopLevel(handle: QWindowH): boolean; cdecl; external Qt5PasLib name 'QWindow_isTopLevel';
@@ -5856,7 +5856,7 @@ procedure QWindow_cursor(handle: QWindowH; retval: QCursorH); cdecl; external Qt
 procedure QWindow_setCursor(handle: QWindowH; AnonParam1: QCursorH); cdecl; external Qt5PasLib name 'QWindow_setCursor';
 procedure QWindow_unsetCursor(handle: QWindowH); cdecl; external Qt5PasLib name 'QWindow_unsetCursor';
 function QWindow_focusObject(handle: QWindowH): QObjectH; cdecl; external Qt5PasLib name 'QWindow_focusObject';
-function QWindow_fromWinID(id: LongWord): QWindowH; cdecl; external Qt5PasLib name 'QWindow_fromWinId';
+function QWindow_fromWinID(id: PtrUInt): QWindowH; cdecl; external Qt5PasLib name 'QWindow_fromWinId';
 procedure QWindow_requestActivate(handle: QWindowH); cdecl; external Qt5PasLib name 'QWindow_requestActivate';
 procedure QWindow_setVisible(handle: QWindowH; visible: boolean); cdecl; external Qt5PasLib name 'QWindow_setVisible';
 procedure QWindow_show(handle: QWindowH); cdecl; external Qt5PasLib name 'QWindow_show';
@@ -5913,10 +5913,10 @@ const
 function QWidget_Create(parent: QWidgetH = nil; f: QtWindowFlags = 0): QWidgetH; cdecl; external Qt5PasLib name 'QWidget_Create';
 procedure QWidget_Destroy(handle: QWidgetH); cdecl; external Qt5PasLib name 'QWidget_Destroy'; 
 function QWidget_devType(handle: QWidgetH): Integer; cdecl; external Qt5PasLib name 'QWidget_devType';
-function QWidget_winId(handle: QWidgetH): LongWord; cdecl; external Qt5PasLib name 'QWidget_winId';
+function QWidget_winId(handle: QWidgetH): PtrUInt; cdecl; external Qt5PasLib name 'QWidget_winId';
 procedure QWidget_createWinId(handle: QWidgetH); cdecl; external Qt5PasLib name 'QWidget_createWinId';
-function QWidget_internalWinId(handle: QWidgetH): LongWord; cdecl; external Qt5PasLib name 'QWidget_internalWinId';
-function QWidget_effectiveWinId(handle: QWidgetH): LongWord; cdecl; external Qt5PasLib name 'QWidget_effectiveWinId';
+function QWidget_internalWinId(handle: QWidgetH): PtrUInt; cdecl; external Qt5PasLib name 'QWidget_internalWinId';
+function QWidget_effectiveWinId(handle: QWidgetH): PtrUInt; cdecl; external Qt5PasLib name 'QWidget_effectiveWinId';
 function QWidget_style(handle: QWidgetH): QStyleH; cdecl; external Qt5PasLib name 'QWidget_style';
 procedure QWidget_setStyle(handle: QWidgetH; AnonParam1: QStyleH); cdecl; external Qt5PasLib name 'QWidget_setStyle';
 function QWidget_isTopLevel(handle: QWidgetH): Boolean; cdecl; external Qt5PasLib name 'QWidget_isTopLevel';
@@ -6137,7 +6137,7 @@ procedure QWidget_setWindowFlags(handle: QWidgetH; _type: QtWindowFlags); cdecl;
 function QWidget_windowFlags(handle: QWidgetH): QtWindowFlags; cdecl; external Qt5PasLib name 'QWidget_windowFlags';
 procedure QWidget_overrideWindowFlags(handle: QWidgetH; _type: QtWindowFlags); cdecl; external Qt5PasLib name 'QWidget_overrideWindowFlags';
 function QWidget_windowType(handle: QWidgetH): QtWindowType; cdecl; external Qt5PasLib name 'QWidget_windowType';
-function QWidget_find(AnonParam1: LongWord): QWidgetH; cdecl; external Qt5PasLib name 'QWidget_find';
+function QWidget_find(AnonParam1: PtrUInt): QWidgetH; cdecl; external Qt5PasLib name 'QWidget_find';
 function QWidget_childAt(handle: QWidgetH; x: Integer; y: Integer): QWidgetH; cdecl; external Qt5PasLib name 'QWidget_childAt';
 function QWidget_childAt(handle: QWidgetH; p: PQtPoint): QWidgetH; cdecl; external Qt5PasLib name 'QWidget_childAt2';
 procedure QWidget_setAttribute(handle: QWidgetH; AnonParam1: QtWidgetAttribute; _on: Boolean = True); cdecl; external Qt5PasLib name 'QWidget_setAttribute';
@@ -6520,7 +6520,7 @@ procedure QScreen_transformBetween(handle: QScreenH; retval: QTransformH; a: QtS
 procedure QScreen_mapBetween(handle: QScreenH; retval: PRect; a: QtScreenOrientation; b: QtScreenOrientation; AnonParam1: PRect); cdecl; external Qt5PasLib name 'QScreen_mapBetween';
 function QScreen_isPortrait(handle: QScreenH; orientation: QtScreenOrientation): boolean; cdecl; external Qt5PasLib name 'QScreen_isPortrait';
 function QScreen_isLandscape(handle: QScreenH; orientation: QtScreenOrientation): boolean; cdecl; external Qt5PasLib name 'QScreen_isLandscape';
-procedure QScreen_grabWindow(handle: QScreenH; retval: QPixmapH; window: LongWord; x: integer = 0; y: integer = 0; w: integer = -1; h: integer = -1); cdecl; external Qt5PasLib name 'QScreen_grabWindow';
+procedure QScreen_grabWindow(handle: QScreenH; retval: QPixmapH; window: PtrUInt; x: integer = 0; y: integer = 0; w: integer = -1; h: integer = -1); cdecl; external Qt5PasLib name 'QScreen_grabWindow';
 function QScreen_refreshRate(handle: QScreenH): qreal; cdecl; external Qt5PasLib name 'QScreen_refreshRate';
 
 type
@@ -8954,7 +8954,7 @@ function QPixmap_hasAlpha(handle: QPixmapH): Boolean; cdecl; external Qt5PasLib 
 function QPixmap_hasAlphaChannel(handle: QPixmapH): Boolean; cdecl; external Qt5PasLib name 'QPixmap_hasAlphaChannel';
 procedure QPixmap_createHeuristicMask(handle: QPixmapH; retval: QBitmapH; clipTight: Boolean = True); cdecl; external Qt5PasLib name 'QPixmap_createHeuristicMask';
 procedure QPixmap_createMaskFromColor(handle: QPixmapH; retval: QBitmapH; maskColor: PQColor; mode: QtMaskMode = QtMaskInColor); cdecl; external Qt5PasLib name 'QPixmap_createMaskFromColor';
-procedure QPixmap_grabWindow(retval: QPixmapH; AnonParam1: LongWord; x: Integer = 0; y: Integer = 0; w: Integer = -1; h: Integer = -1); cdecl; external Qt5PasLib name 'QPixmap_grabWindow';
+procedure QPixmap_grabWindow(retval: QPixmapH; AnonParam1: PtrUInt; x: Integer = 0; y: Integer = 0; w: Integer = -1; h: Integer = -1); cdecl; external Qt5PasLib name 'QPixmap_grabWindow';
 procedure QPixmap_grabWidget(retval: QPixmapH; widget: QObjectH; rect: PRect); cdecl; external Qt5PasLib name 'QPixmap_grabWidget';
 procedure QPixmap_grabWidget(retval: QPixmapH; widget: QObjectH; x: Integer = 0; y: Integer = 0; w: Integer = -1; h: Integer = -1); cdecl; external Qt5PasLib name 'QPixmap_grabWidget2';
 procedure QPixmap_scaled(handle: QPixmapH; retval: QPixmapH; w: Integer; h: Integer; aspectMode: QtAspectRatioMode = QtIgnoreAspectRatio; mode: QtTransformationMode = QtFastTransformation); cdecl; external Qt5PasLib name 'QPixmap_scaled';

@@ -1869,7 +1869,7 @@ var
   ATempWidget: QWidgetH;
   R: TRect;
   ASize, AFrameSize: TSize;
-  AID: LongWord;
+  AID: PtrUInt;
   I: integer;
   B: Boolean;
   ATicks: DWORD;

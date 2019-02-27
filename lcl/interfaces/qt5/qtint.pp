@@ -258,7 +258,7 @@ type
   {$IFDEF HASX11}
   function IsWayland: Boolean; {this is not X11 but wayland !}
   function IsCurrentDesktop(AWidget: QWidgetH): Boolean;
-  function X11Raise(AHandle: HWND): boolean;
+  function X11Raise(AHandle: PtrUInt): boolean;
   function X11GetActiveWindow: QWidgetH;
   function GetWindowManager: String;
   function SetTransientForHint(Widget: QWidgetH; ATransientWin: QWidgetH): boolean;
@@ -270,18 +270,18 @@ type
   {check KDE session version. Possible results are > 2, -1 means not running under KDE}
   function GetKdeSessionVersion: integer;
   {force mapping}
-  procedure MapX11Window(AWinID: LongWord);
+  procedure MapX11Window(AWinID: PtrUInt);
   {$IFDEF QtUseAccurateFrame}
-  function GetX11WindowRealized(AWinID: LongWord): boolean;
-  function GetX11WindowAttributes(AWinID: LongWord; out ALeft, ATop, AWidth, AHeight, ABorder: integer): boolean;
-  function GetX11SupportedAtoms(AWinID: LongWord; AList: TStrings): boolean;
+  function GetX11WindowRealized(AWinID: PtrUInt): boolean;
+  function GetX11WindowAttributes(AWinID: PtrUInt; out ALeft, ATop, AWidth, AHeight, ABorder: integer): boolean;
+  function GetX11SupportedAtoms(AWinID: PtrUInt; AList: TStrings): boolean;
   {Ask for _NET_FRAME_EXTENTS,_KDE_NET_WM_SHADOW,_GTK_NET_FRAME_EXTENTS}
-  function GetX11RectForAtom(AWinID: LongWord; const AAtomName: string; out ARect: TRect): boolean;
-  function GetX11WindowPos(AWinID: LongWord; out ALeft, ATop: integer): boolean;
-  function SetX11WindowPos(AWinID: LongWord; const ALeft, ATop: integer): boolean;
-  function GetX11WindowGeometry(AWinID: LongWord; out ARect: TRect): boolean;
+  function GetX11RectForAtom(AWinID: PtrUInt; const AAtomName: string; out ARect: TRect): boolean;
+  function GetX11WindowPos(AWinID: PtrUInt; out ALeft, ATop: integer): boolean;
+  function SetX11WindowPos(AWinID: PtrUInt; const ALeft, ATop: integer): boolean;
+  function GetX11WindowGeometry(AWinID: PtrUInt; out ARect: TRect): boolean;
   {check if wm supports request for frame extents}
-  function AskX11_NET_REQUEST_FRAME_EXTENTS(AWinID: LongWord; out AMargins: TRect): boolean;
+  function AskX11_NET_REQUEST_FRAME_EXTENTS(AWinID: PtrUInt; out AMargins: TRect): boolean;
   {$ENDIF}
   {$ENDIF}
 
