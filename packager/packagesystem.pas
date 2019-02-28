@@ -53,7 +53,7 @@ uses
   Laz2_XMLCfg, laz2_XMLRead, LazStringUtils, AvgLvlTree,
   // codetools
   FileProcs, DefineTemplates, CodeToolManager, CodeCache, DirectoryCacher,
-  BasicCodeTools, NonPascalCodeTools, SourceChanger, PascalReaderTool,
+  BasicCodeTools, NonPascalCodeTools, SourceChanger,
   // IDEIntf,
   IDEExternToolIntf, IDEDialogs, IDEMsgIntf, CompOptsIntf, LazIDEIntf,
   MacroDefIntf, ProjectIntf, FppkgIntf,
@@ -1054,7 +1054,7 @@ function TLazPackageGraph.GetPackageCompilerParams(APackage: TLazPackage
 begin
   Result:=APackage.CompilerOptions.MakeOptionsString(
           APackage.CompilerOptions.DefaultMakeOptionsFlags+[ccloAbsolutePaths])
-          +' '+CreateRelativePath(APackage.GetSrcFilename,APackage.Directory);
+          +' '+PrepareCmdLineOption(CreateRelativePath(APackage.GetSrcFilename,APackage.Directory));
 end;
 
 constructor TLazPackageGraph.Create;
