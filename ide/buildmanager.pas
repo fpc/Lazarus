@@ -868,8 +868,9 @@ var
   UnitSetChanged: Boolean;
   HasTemplate: Boolean;
   CompilerErrorMsg: string;
-  Msg, DefCompilerFilename: String;
-  CompilerKind: TPascalCompiler;
+  Msg, DefCompilerFilename, ProjCompilerFilename, ProjCompilerErrorMsg,
+    DefCompilerErrorMsg: String;
+  CompilerKind, ProjCompilerKind, DefCompilerKind: TPascalCompiler;
 begin
   if ClearCaches then begin
     {$IFDEF VerboseFPCSrcScan}
@@ -929,18 +930,21 @@ begin
     and ([crCompile,crBuild]*FBuildTarget.CompilerOptions.CompileReasons<>[])
     and (FBuildTarget.CompilerOptions.CompilerPath<>'')
     then begin
-      CompilerFilename:=FBuildTarget.GetCompilerFilename;
-      if not IsCompilerExecutable(CompilerFilename,CompilerErrorMsg,CompilerKind,true)
+      ProjCompilerFilename:=FBuildTarget.GetCompilerFilename;
+      if not IsCompilerExecutable(ProjCompilerFilename,ProjCompilerErrorMsg,ProjCompilerKind,true)
       then begin
-        Msg+='Project''s compiler: "'+CompilerFilename+'": '+CompilerErrorMsg+#13;
+        Msg+='Project''s compiler: "'+ProjCompilerFilename+'": '+ProjCompilerErrorMsg+#13;
       end;
     end;
 
     DefCompilerFilename:=EnvironmentOptions.GetParsedCompilerFilename;
-    if not IsCompilerExecutable(DefCompilerFilename,CompilerErrorMsg,CompilerKind,true)
+    if not IsCompilerExecutable(DefCompilerFilename,DefCompilerErrorMsg,DefCompilerKind,true)
     then begin
-      Msg+='Environment compiler: "'+DefCompilerFilename+'": '+CompilerErrorMsg+#13;
+      Msg+='Environment compiler: "'+DefCompilerFilename+'": '+DefCompilerErrorMsg+#13;
     end;
+    if Msg='' then
+      Msg+='Compiler: "'+CompilerFilename+'": '+CompilerErrorMsg+#13;
+
     debugln('Warning: (lazarus) [TBuildManager.RescanCompilerDefines]: invalid compiler:');
     debugln(Msg);
     if not Quiet then begin

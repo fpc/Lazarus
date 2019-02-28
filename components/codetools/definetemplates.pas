@@ -3934,6 +3934,7 @@ begin
 
   if Run then begin
     // run it and check for magics
+    debugln(['Note: (lazarus) [IsCompilerExecutable] run "',AFilename,'"']);
     Params:=TStringListUTF8.Create;
     Lines:=nil;
     try
