@@ -284,9 +284,6 @@ type
 
   TFitParamsState = (fpsUnknown, fpsInvalid, fpsValid);
 
-  TCalcGoodnessOfFitEvent = procedure (Sender: TObject; var x,y: ArbFloat;
-    n: Integer; out AResult: Double) of object;
-
   TFitFuncIndex = 1..MaxInt;
 
   TFitFuncEvent = procedure(AIndex: TFitFuncIndex; AFitFunc: TFitFunc) of object;
@@ -306,8 +303,6 @@ type
     FErrCode: TFitErrCode;
     FFitStatistics: TFitStatistics;
     FConfidenceLevel: Double;
-    FGoodnessOfFit: Double;
-    FOnCalcGoodnessOfFit: TCalcGoodnessOfFitEvent;
     function GetParam(AIndex: Integer): Double;
     function GetParamCount: Integer;
     function GetParamError(AIndex: Integer): Double;
@@ -332,7 +327,6 @@ type
     function TransformY(AY: Double): Extended; inline;
   protected
     procedure AfterAdd; override;
-    function CalcGoodnessOfFit(var x,y: ArbFloat; n: Integer): Double; virtual; deprecated;
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     procedure InvalidateFitResults; virtual;
     procedure Loaded; override;
@@ -372,7 +366,6 @@ type
     property ConfidenceLevel: Double read FConfidenceLevel write FConfidenceLevel;
     property ErrCode: TFitErrCode read FErrCode;
     property State: TFitParamsState read FState;
-    property GoodnessOfFit: Double read FGoodnessOfFit; deprecated 'Use FitStatistics instead';
   published
     property AutoFit: Boolean read FAutoFit write FAutoFit default true;
     property AxisIndexX;
@@ -395,8 +388,6 @@ type
     property ToolTargets default [nptPoint, nptCustom];
     property XErrorBars;
     property YErrorBars;
-    property OnCalcGoodnessOfFit: TCalcGoodnessOfFitEvent
-      read FOnCalcGoodnessOfFit write FOnCalcGoodnessOfFit; deprecated 'Use Statistics instead';
     property OnCustomDrawPointer;
     property OnFitComplete: TNotifyEvent
       read FOnFitComplete write FOnFitComplete;
@@ -1568,15 +1559,6 @@ begin
   FFitRange.SetOwner(ParentChart);
 end;
 
-{ Returns the R-squared parameter as a simple measure for the goodness-of-fit.
-  This function is obsolete since Laz v1.9 and has been replaced by the more
-  comprehensive property "FitStatistics".}
-function TFitSeries.CalcGoodnessOfFit(var x,y: ArbFloat; n: Integer): Double;
-begin
-  Unused(x, y, n);
-  Result := FFitStatistics.R2;
-end;
-
 function TFitSeries.Calculate(AX: Double): Double;
 var
   i: Integer;
@@ -2001,7 +1983,6 @@ var
 begin
   FState := fpsUnknown;
   FreeAndNil(FFitStatistics);
-  FGoodnessOfFit := NaN;
   for i:=0 to High(FFitParams) do FFitParams[i].Value := NaN;
 end;
 
