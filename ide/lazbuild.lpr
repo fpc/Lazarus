@@ -486,7 +486,7 @@ begin
     XMLConfig.Free;
   end;
   // check Package Name
-  if (Result.Name='') or not IsValidPkgName(Result.Name) then
+  if not IsValidPkgName(Result.Name) then
     Error(ErrorPackageNameInvalid,
           Format(lisPkgMangThePackageNameOfTheFileIsInvalid,
                  [Result.Name, LineEnding, Result.Filename]));
