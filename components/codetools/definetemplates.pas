@@ -1460,7 +1460,7 @@ begin
   try
     buf:='';
     if (MainThreadID=GetCurrentThreadId) and not Quiet then begin
-      DbgOut(['Hint: (lazarus) [RunTool] ',Filename]);
+      DbgOut(['Hint: (lazarus) [RunTool] "',Filename,'"']);
       for i:=0 to Params.Count-1 do
         dbgout(' "',Params[i],'"');
       Debugln;
