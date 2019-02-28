@@ -100,7 +100,7 @@
       </element>
       <!-- function result Visibility: default -->
       <element name="FilenameIsWinAbsolute.Result">
-        <short>Returns True if this is a true absolite Windows filename</short>
+        <short>Returns True if this is a true absolute Windows filename</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="FilenameIsWinAbsolute.TheFilename">
@@ -149,7 +149,7 @@
             <var>CheckIfFileIsSymlink</var> - raises an exception if file is not a Symbolic Link</p>
           <p>Otherwise no action</p>
         </descr>
-        <errors>An exception is raised with appropriate message if file does not exist or is not a correct symbolic link (eg dangling link, circular link, read access denied, or not a symbolic link)</errors>
+        <errors>An exception is raised with appropriate message if file does not exist or is not a correct symbolic link (e.g. dangling link, circular link, read access denied, or not a symbolic link)</errors>
       </element>
       <!-- argument Visibility: default -->
       <element name="CheckIfFileIsSymlink.AFilename">
@@ -230,7 +230,7 @@
             
             <var>AFileName</var> refers to an executable file</p>
           <p>On Windows systems, if the file exists it is regarded as executable.</p>
-          <p>On other systems (eg Unix etc), looks at file permissions to see whether execute flag is set</p>
+          <p>On other systems (e.g. Unix etc), looks at file permissions to see whether execute flag is set</p>
         </descr>
       </element>
       <!-- function result Visibility: default -->
@@ -503,8 +503,8 @@
       </element>
       <!-- function Visibility: default -->
       <element name="AppendPathDelim">
-        <short>Appends the path delimeter to the path.</short>
-        <descr>AppendPathDelim checks if the last character in the path is the path delimeter. If it isn't the path delimeter, it is added, otherwise the unmodified path is returned.
+        <short>Appends the path delimiter to the path.</short>
+        <descr>AppendPathDelim checks if the last character in the path is the path delimiter. If it isn't the path delimiter, it is added, otherwise the unmodified path is returned.
 </descr>
         <errors/>
         <seealso/>
@@ -519,8 +519,8 @@
       </element>
       <!-- function Visibility: default -->
       <element name="ChompPathDelim">
-        <short>Removes trailing path delimeter</short>
-        <descr>ChompPathDelim checks if the last character in the path is the path delimeter. If it is the path delimeter, it is removed, otherwise the unmodified path is returned.</descr>
+        <short>Removes trailing path delimiter</short>
+        <descr>ChompPathDelim checks if the last character in the path is the path delimiter. If it is the path delimiter, it is removed, otherwise the unmodified path is returned.</descr>
         <errors/>
         <seealso/>
       </element>
@@ -633,7 +633,7 @@
         <descr>
           <p>
             <var>CreateRelativePath</var> - given an absolute path and a <var>BaseDirectory,</var> create a file path relative to the given base directory</p>
-          <p>The returned string includes the correct number of dots and double dots to signify relativity to the current directory (eg ../../or ..\..\ etc). The inverse operation is to create an absolute file path:
+          <p>The returned string includes the correct number of dots and double dots to signify relativity to the current directory (e.g. ../../or ..\..\ etc). The inverse operation is to create an absolute file path:
 </p>
           <code>RelPath:=CreateRelativePath(AbsPath,BaseDir);
 if FilenameIsAbsolute(RelPath) then
@@ -1106,7 +1106,7 @@ else
       <element name="FindAllFiles.Result">
         <short>List of found files.</short>
         <descr>List (TStringList) of found files.
-        The StringList is instantiated by the FindAllFiles function, so you should not instatiate it before calling
+        The StringList is instantiated by the FindAllFiles function, so you should not instantiate it before calling
         the function.</descr>
       </element>
       <!-- argument Visibility: default -->
@@ -1118,7 +1118,7 @@ else
         <short>A list of masks, separated by a semicolon (;) to which found files should match.</short>
         <descr>A list of masks, separated by a semicolon (;) to which found files should match.
         The mask can contain wildcards like * and ? and it also supports sets like [a-d,x].
-        See the Masks unit fo more details.</descr>
+        See the Masks unit for more details.</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="FindAllFiles.SearchSubDirs">
@@ -1185,7 +1185,7 @@ else
       </element>
       <!-- argument Visibility: default -->
       <element name="GetTempFilename.Directory">
-        <short>The <var>Directory</var> in which the temprary file is to be placed</short>
+        <short>The <var>Directory</var> in which the temporary file is to be placed</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="GetTempFilename.Prefix">

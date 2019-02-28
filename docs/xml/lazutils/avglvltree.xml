@@ -757,7 +757,7 @@
       <!-- function Visibility: public -->
       <element name="TAvgLvlTreeNodeMemManager.NewNode">
         <short>
-          <var>NewNode</var> - returns a new node fo the structure</short>
+          <var>NewNode</var> - returns a new node for the structure</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -798,7 +798,7 @@
       <!-- constructor Visibility: public -->
       <element name="TAvgLvlTreeNodeMemManager.Create">
         <short>
-          <var>Create</var> - constructor for <var>TAvgLvlTreeNodeMemManager</var>: calls inherited <var>Create</var> then initialises the counters</short>
+          <var>Create</var> - constructor for <var>TAvgLvlTreeNodeMemManager</var>: calls inherited <var>Create</var> then initializes the counters</short>
         <descr/>
         <errors/>
         <seealso>

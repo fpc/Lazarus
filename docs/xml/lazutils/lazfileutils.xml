@@ -108,11 +108,11 @@
       <!-- function Visibility: default -->
       <element name="CompareFileExt">
         <short>
-          Performs a sort order comparision for the specified file name and extension
+          Performs a sort order comparison for the specified file name and extension
         </short>
         <descr>
           <p>
-            CompareFileExt is an Integer function used to compare the file extension in FIlename to the value in Ext. Ext may contain the '.' character, but it is not required and will be removed for the comparison. CaseSensitive indicates whether case is ignored in the comparision. When CaseSensitive contains True, CompareStr is called to perform the comparison. Otherwise,  UTF8CompareText is called to compare the values. The return value will contain one of the following:
+            CompareFileExt is an Integer function used to compare the file extension in Filename to the value in Ext. Ext may contain the '.' character, but it is not required and will be removed for the comparison. CaseSensitive indicates whether case is ignored in the comparison. When CaseSensitive contains True, CompareStr is called to perform the comparison. Otherwise,  UTF8CompareText is called to compare the values. The return value will contain one of the following:
           </p>
           <dl>
             <dt>-1</dt>
@@ -143,7 +143,7 @@
 
       <!-- argument Visibility: default -->
       <element name="CompareFileExt.Filename">
-        <short>File name for the comparision</short>
+        <short>File name for the comparison</short>
       </element>
 
       <!-- argument Visibility: default -->
@@ -170,8 +170,8 @@
           </p>
         </descr>
         <seealso>
-          <link id ="CompareFileNames">CompareFIlenames</link>
-          <link id ="CompareFileName">CompareFIlename</link>
+          <link id ="CompareFileNames">CompareFilenames</link>
+          <link id ="CompareFileName">CompareFilename</link>
         </seealso>
       </element>
 
@@ -222,7 +222,7 @@
 
       <!-- argument Visibility: default -->
       <element name="DirPathExists.DirectoryName">
-        <short>DIrectory Name to locate</short>
+        <short>Directory Name to locate</short>
       </element>
 
       <!-- function Visibility: default -->
@@ -416,7 +416,7 @@
             CheckIfFileIsExecutable is a procedure used to examine the specified file name to see if it is executable. CheckIfFileIsExecutable is implemented for UNIX-like environments, and allows TProcess to better determine if the file can be executed on the platform or OS, and to get better error messages when it cannot.
           </p>
           <p>
-            CheckIfFileIsExecutable raises an exception with a specific mesage when the platform or OS facilities indicate it is necessary.
+            CheckIfFileIsExecutable raises an exception with a specific message when the platform or OS facilities indicate it is necessary.
           </p>
           <p>
             Use FileIsExecutable to determine of a file is executable without raising an exception.
@@ -479,7 +479,7 @@
         </short>
         <descr>
           <p>
-            FileIsExecutable is a Boolean function used to determine if the specified file name is executable. For UNIX-like environments,  a combination of FpStat, FPS_ISREG, and FpAccess are used to get the return value. For the Windows enviroment, the value from FileExistsUTF8 is used as the return value. In short, the function is not really useful in a Windows environment.
+            FileIsExecutable is a Boolean function used to determine if the specified file name is executable. For UNIX-like environments,  a combination of FpStat, FPS_ISREG, and FpAccess are used to get the return value. For the Windows environment, the value from FileExistsUTF8 is used as the return value. In short, the function is not really useful in a Windows environment.
           </p>
         </descr>
         <seealso></seealso>
@@ -662,7 +662,7 @@
 
       <!-- function result Visibility: default -->
       <element name="CleanAndExpandFilename.Result">
-        <short>File name with whitespace removed and special charcters resolved</short>
+        <short>File name with whitespace removed and special characters resolved</short>
       </element>
 
       <!-- argument Visibility: default -->
@@ -702,7 +702,7 @@
         </short>
         <descr>
           <p>
-            TrimAndExpandFilename is a String function used to remove whitespace and special characters in Filename, and to resolve the relative file path to the directory in BaseDir. TrimAndExpandFilename removes a trailing path delimiter in FIlename, and calls ExpandFileNameUTF8 and TrimFilename to get the return value for the function.
+            TrimAndExpandFilename is a String function used to remove whitespace and special characters in Filename, and to resolve the relative file path to the directory in BaseDir. TrimAndExpandFilename removes a trailing path delimiter in Filename, and calls ExpandFileNameUTF8 and TrimFilename to get the return value for the function.
           </p>
           <p>
             The return value is an empty string ('') if Filename contains an empty string ('').
@@ -926,7 +926,8 @@
             For UNIX-like environments, the return value is provided by the FileAge function in SysUtils. For the Windows environment,  FindFirstFileW is used to get TWin32FindDataW data for the specified file. Its ftLastWriteTime value is converted using WinToDosTime to get the return value for the function.
           </p>
           <p>
-            The return value is in FIleDate format, and can be transformed to TDateTime format with the FileDateToDateTime function.
+            The return value is in FileDate format, and can be transformed to TDateTime format with the FileDateToDateTime 
+function.
           </p>
         </descr>
         <seealso></seealso>
@@ -1096,7 +1097,7 @@
             FileSetDateUTF8 is a Longint function used to set the last modification time for the file to the specified Age in FileDate format. Use DateTimeToFileDate to convert a TDateTime value to FileDate format.
           </p>
           <p>
-            For the Windows enviroment, a handle is created for the specified file name, and SetFileTime is called to store the updated file age. For UNIX-like enviroments, FileSetDate in SysUtils is called to set the file age. InvalidateFileStateCache is also called for the specified file name.
+            For the Windows environment, a handle is created for the specified file name, and SetFileTime is called to store the updated file age. For UNIX-like environments, FileSetDate in SysUtils is called to set the file age. InvalidateFileStateCache is also called for the specified file name.
           </p>
           <p>
             The return value is the value from GetLastError; a non-zero value indicates that an error has occurred.
@@ -1127,7 +1128,7 @@
         </short>
         <descr>
           <p>
-            FileGetAttrUTF8 is a Longint function used to get files attributes for the specified file name. For the Windows enviroment, GetFileAttributesW in Windows is called to the file attribute value for Filename. For UNIX-like enviroments, FileGetAttr in SysUtils is called to the the return value.
+            FileGetAttrUTF8 is a Longint function used to get files attributes for the specified file name. For the Windows environment, GetFileAttributesW in Windows is called to the file attribute value for Filename. For UNIX-like environments, FileGetAttr in SysUtils is called to the the return value.
           </p>
           <p>
             The return value contains a numeric value that can be OR-ed with the following constants to get a specific file attribute:
@@ -1179,7 +1180,7 @@
         </short>
         <descr>
           <p>
-            FileSetAttrUTF8 is a Longint function used to set the file attributes for the specified file name to the value in Attr. The value in Attr can be set by AND-ing pre-defined file attribute constants, such as:
+            FileSetAttrUTF8 is a Longint function used to set the file attributes for the specified file name to the value in Attr. The value in Attr can be set by AND-ing predefined file attribute constants, such as:
           </p>
           <dl>
             <dt>faReadOnly</dt>
@@ -1242,10 +1243,10 @@
             DeleteFileUTF8 is a Boolean function used to delete the specified file name.
           </p>
           <p>
-            For the Windows environment, DeleteFileW in Windows is called to remove the specified file name. For UNIX-like enviroments, DeleteFile in SysUtils is called to delete the specified file name. InvalidateFileStateCache is also called.
+            For the Windows environment, DeleteFileW in Windows is called to remove the specified file name. For UNIX-like environments, DeleteFile in SysUtils is called to delete the specified file name. InvalidateFileStateCache is also called.
           </p>
           <p>
-            The return value contaIns True when Filename is successfully deleted from the local file system.
+            The return value contains True when Filename is successfully deleted from the local file system.
           </p>
         </descr>
         <seealso></seealso>
@@ -1271,7 +1272,8 @@
             RenameFileUTF8 is a Boolean function used to rename a file to the specified new value.
           </p>
           <p>
-            For the Windows enviroment, MoveFileW is called to rename the file using the values specified in OldName and NewName. For UNIX-like enviroments, RenameFIle in SysUtils is called to rename the file to the specified new value. InvalidateFileStateCache is also called.
+            For the Windows environment, MoveFileW is called to rename the file using the values specified in OldName and 
+NewName. For UNIX-like environments, RenameFile in SysUtils is called to rename the file to the specified new value. InvalidateFileStateCache is also called.
           </p>
           <p>
             The return value is True if the file is renamed successfully.
@@ -1369,7 +1371,7 @@
           <p>
           </p>
           <p>
-            For UNIX-like enviroments, GetCurrentDir in SysUtils is called to get the current directory name.
+            For UNIX-like environments, GetCurrentDir in SysUtils is called to get the current directory name.
           </p>
         </descr>
         <seealso></seealso>
@@ -1393,7 +1395,7 @@
             For the Windows environment, UTFDecode is called to convert NewDir and passed to SetCurrentDirectoryW to set the current directory name. Windows CE raises an exception in SetCurrentDirUtf8; the concept of a current directory does not exist in Windows CE.
           </p>
           <p>
-            For UNIX-like enviroments, SetCurrentDir in SysUtils is used to set the current directory to the specified value.
+            For UNIX-like environments, SetCurrentDir in SysUtils is used to set the current directory to the specified value.
           </p>
           <p>
             The return value is True if the current directory is successfully changed to the new value.
@@ -1403,7 +1405,7 @@
           <dl>
             <dt>TException</dt>
             <dd>
-              Raised for the Windows CE environment; exception message is: '[SetCurrentDirWide] The concept of the current directory doesn''t exist in Windows CE'
+              Raised for the Windows CE environment; exception message is: '[SetCurrentDirWide] The concept of the current directory doesn't exist in Windows CE'
             </dd>
           </dl>
         </errors>
@@ -1427,7 +1429,7 @@
         </short>
         <descr>
           <p>
-            CreateDirUTF8 is a Boolean function used to create a new directory in the local file system with the specified name. For the Windows enviroment, the value in NewDir is converted to wide string format and passed to the CreateDirectoryW function in the Windows unit. For UNIX-like enviroments, CreateDir in SysUtils is used to create the new directory with the specified name.
+            CreateDirUTF8 is a Boolean function used to create a new directory in the local file system with the specified name. For the Windows environments, the value in NewDir is converted to wide string format and passed to the CreateDirectoryW function in the Windows unit. For UNIX-like environments, CreateDir in SysUtils is used to create the new directory with the specified name.
           </p>
           <p>
             The return value is True if the new directory is successfully created.
@@ -1493,7 +1495,7 @@
         </short>
         <descr>
           <p>
-            <var>ForceDirectories</var>  is a Boolean function which creates the specified directories if they do not already exist. ForceDirectories examines the value in Dir to determine if it contains a Windows device identifier or a UNC name. If a device identifer or UNC name is found, but not supported on the platform, no actions are perfomed in the function.
+            <var>ForceDirectories</var>  is a Boolean function which creates the specified directories if they do not already exist. ForceDirectories examines the value in Dir to determine if it contains a Windows device identifier or a UNC name. If a device identifier or UNC name is found, but not supported on the platform, no actions are performed in the function.
           </p>
           <p>
             ForceDirectories raises an EInOutError exception with the message in SCannotCreateEmptyDir when Dir contains an empty string ('').
@@ -1543,7 +1545,7 @@
 
       <!-- argument Visibility: default -->
       <element name="TInvalidateFileStateCacheEvent.Filename">
-        <short>File name for the eventg notification</short>
+        <short>File name for the event notification</short>
       </element>
 
       <!-- variable Visibility: default -->

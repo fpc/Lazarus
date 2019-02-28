@@ -85,7 +85,7 @@ Alternatively it can be determined according to ParamForLogFileName and Environm
       </element>
       <element name="TLazLogger.ParamForLogFileName">
         <short>Name of the command line option, that has the logfile's name</short>
-        <descr>If LogName is empty and this is set, then the commandline will be checked for a param of the name specified. LogName  will be set, if found.
+        <descr>If LogName is empty and this is set, then the commandline will be checked for a parameter of the name specified. LogName  will be set, if found.
 
 The default is --debug-log=
 Note that the dashes and equal sign must be present.</descr>
@@ -182,7 +182,7 @@ It also has a handled var param, that can be set to True to prevent default acti
         <descr>Default is 2</descr>
       </element>
       <element name="TLazLogger.MaxNestPrefixLen">
-        <short>Maxmum indent for DebuglnEnter</short>
+        <short>Maximum indent for DebuglnEnter</short>
         <descr>If the indent reaches this value, it will not increase anymore. Instead each line is prefixed with the nest-level of DebuglnEnter
 
 Default is 15</descr>
@@ -216,7 +216,8 @@ It can reads the command line and environment to find the desired filename. By d
 
 If no log name is found StdOut is used.
 
-The simples usage, is to use the unit and put "DebugLn"/ "DbgOut" / "DebugLnEnter"/ "DebugLnExit" in your code. This works without any further setup.</descr>
+The easiest method is to use the unit and put "DebugLn"/ "DbgOut" / "DebugLnEnter"/ "DebugLnExit" in your code. This works 
+without any further setup.</descr>
     </module>
   </package>
 </fpdoc-descriptions>

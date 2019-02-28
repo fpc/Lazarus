@@ -45,7 +45,7 @@
             AFilename contains the name for the file (created using FileCreateUTF8 or opened using FileOpenUTF8).
           </p>
           <p>
-            Mode is the File Mode for the specified file and contains one of the follwing values:
+            Mode is the File Mode for the specified file and contains one of the following values:
           </p>
           <dl>
             <dt>fmCreate</dt>
@@ -121,7 +121,8 @@
           Name of the file where stream content is read or written
         </short>
         <descr>
-          FIleName is a read-only String property that contains the name of the file where stream content is read or written. FileName can contain UTF-8-encoded characters.
+          FileName is a read-only String property that contains the name of the file where stream content is read or 
+written. FileName can contain UTF-8-encoded characters.
         </descr>
         <seealso></seealso>
       </element>
@@ -192,7 +193,8 @@
         </short>
         <descr>
           <p>
-            SaveToFile is a procedure used to save the content in the string list to the specified file name. FileName can contain UTF-8-encoded characters. SaveToFile uses a TFileStreamUTF8 instance to create the file specified in FIleName, and calls the SaveToStream method to store values from the string list.
+            SaveToFile is a procedure used to save the content in the string list to the specified file name. FileName can 
+contain UTF-8-encoded characters. SaveToFile uses a TFileStreamUTF8 instance to create the file specified in FileName, and calls the SaveToStream method to store values from the string list.
           </p>
         </descr>
         <seealso></seealso>
@@ -259,7 +261,8 @@
         </short>
         <descr>
           <p>
-            LoadStringsFromFileUTF8 is a procedure used to load the content for a string list from the specified file name. List is the TStrings decendant where the content from FileName is stored. FIleName can contain UTF-8-encoded characters. LoadStringsFromFileUTF8 creates an internal TStringListUTF8 instance (when needed) that is used to load the content in FileName, and calls the Assign method in List to store the values.
+            LoadStringsFromFileUTF8 is a procedure used to load the content for a string list from the specified file name. 
+List is the TStrings decendant where the content from FileName is stored. FileName can contain UTF-8-encoded characters. LoadStringsFromFileUTF8 creates an internal TStringListUTF8 instance (when needed) that is used to load the content in FileName, and calls the Assign method in List to store the values.
           </p>
         </descr>
         <seealso></seealso>
@@ -282,7 +285,7 @@
         </short>
         <descr>
           <p>
-            SaveStringsToFileUTF8 is a procedure used to save the content in the List to the specified file name. List is a TStrings desccendant with the content to store in the specified file name. FileName can contaIn UTF-8-encoded character values. SaveStringsToFileUTF8 uses a TStringListUTF8 (when needed) to store the content in the string list to the specified FileName.
+            SaveStringsToFileUTF8 is a procedure used to save the content in the List to the specified file name. List is a TStrings desccendant with the content to store in the specified file name. FileName can contain UTF-8-encoded character values. SaveStringsToFileUTF8 uses a TStringListUTF8 (when needed) to store the content in the string list to the specified FileName.
           </p>
         </descr>
         <seealsao></seealsao>
@@ -308,7 +311,7 @@
             CompareStringListItemsUTF8LowerCase is an Integer function used to perform  lowercase comparison of string values in a string list. List is the TStrings descendant with values for the comparison. Index1 and Index2 specify the ordinal positions in List for strings used in the comparison.
           </p>
           <p>
-            CompareStringListItemsUTF8LowerCase converts the string values to lowercase using UTF8LowerCase, and calls the CompareStr function to perform the comparison. The return vaue is in the following ranges:
+            CompareStringListItemsUTF8LowerCase converts the string values to lowercase using UTF8LowerCase, and calls the CompareStr function to perform the comparison. The return value is in the following ranges:
           </p>
           <dl>
             <dt><code> &lt;0 </code></dt>

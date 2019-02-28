@@ -196,7 +196,7 @@
       <element name="TMaskList.GetItem.Index"><short/></element>
       <!-- constructor Visibility: public -->
       <element name="TMaskList.Create">
-        <short>Creates new list of masks from passed value, each item is seperated by separator.</short>
+        <short>Creates new list of masks from passed value, each item is separated by separator.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -252,7 +252,7 @@
       <element name="MatchesMask.Mask"><short/></element>
       <!-- function Visibility: default -->
       <element name="MatchesMaskList">
-        <short>If the file name matches at least one of passed masks sepearated by separator.</short>
+        <short>If the file name matches at least one of passed masks separated by separator.</short>
         <descr/>
         <errors/>
         <seealso/>

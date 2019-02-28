@@ -346,7 +346,7 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TDynHashArray.RebuildItems">
-        <short>Rebuilds the internal datastructures.</short>
+        <short>Rebuilds the internal data structures.</short>
         <descr>It is called anytime when there is a change that makes it necessary. E.g. hash function changes or because of dynamic reallocation.</descr>
         <errors/>
         <seealso/>
@@ -726,7 +726,7 @@ StrDispose(s);   </code>
       </element>
       <!-- function Visibility: public -->
       <element name="TDynHashArray.ConsistencyCheck">
-        <short>Check if data in TDynHashArray are ok</short>
+        <short>Check if data in TDynHashArray are OK</short>
         <descr>Returns a number indicating the nature of inconsistency. 0
          means OK.
 </descr>
@@ -776,7 +776,7 @@ StrDispose(s);   </code>
       </element>
       <!-- property Visibility: public -->
       <element name="TDynHashArray.OwnerHashFunction">
-        <short>THe pointer to the user-defined hash function.</short>
+        <short>The pointer to the user-defined hash function.</short>
         <descr/>
         <seealso/>
       </element>
