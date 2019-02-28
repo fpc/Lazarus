@@ -2860,8 +2860,10 @@ begin
   Quiet:=ConsoleVerbosity<=-3; // lazbuild -q -q, lazarus -q -q -q
 
   CompilerFilename:=ParsedOpts.GetParsedValue(pcosCompilerPath);
-  if CompilerFilename<>'' then
-    RealCompilerFilename:=CompilerFilename
+  if CompilerFilename<>'' then begin
+    RealCompilerFilename:=CompilerFilename;
+    Kind:=CodeToolBoss.GetPascalCompilerForDirectory(BaseDirectory);
+  end
   else begin
     // use default compiler
     RealCompilerFilename:=EnvironmentOptions.GetParsedCompilerFilename;
