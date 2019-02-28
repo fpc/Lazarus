@@ -652,8 +652,8 @@ begin
   begin
     Opts:=FBuildTarget.CompilerOptions;
     //debugln(['TBuildManager.GetCompilerFilename FBuildTarget=',DbgSName(FBuildTarget),' Path=',Opts.CompilerPath,' Build=',[crCompile,crBuild]*Opts.CompileReasons<>[],' Parsing=',Opts.ParsedOpts.Values[pcosCompilerPath].Parsing]);
-    if ([crCompile,crBuild]*Opts.CompileReasons<>[])
-    and (Opts.CompilerPath<>'')
+    // Note: even if Opts.CompileReasons are disabled, the project compiler path is used by codetools
+    if (Opts.CompilerPath<>'')
     and (not Opts.ParsedOpts.Values[pcosCompilerPath].Parsing) then
     begin
       Result:=Opts.CompilerPath;
