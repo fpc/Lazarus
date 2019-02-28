@@ -327,8 +327,7 @@ begin
   if TheProject.IsVirtual then
     CodeToolBoss.SetGlobalValue(ExternalMacroStart+'ProjPath',VirtualDirectory)
   else
-    CodeToolBoss.SetGlobalValue(ExternalMacroStart+'ProjPath',
-                                Project1.Directory)
+    CodeToolBoss.SetGlobalValue(ExternalMacroStart+'ProjPath',Project1.Directory)
 end;
 
 function TLazBuildApplication.OnIDEMessageDialog(const aCaption, aMsg: string;
@@ -372,7 +371,7 @@ begin
   if not FileExistsUTF8(Filename) then
   begin
     // Check for packages if the specified name is a valid identifier
-    if LazIsValidIdent(OriginalFileName) then begin
+    if PackageFileNameIsValid(OriginalFileName) then begin
       if PackageAction=lpaAddPkgLinks then begin
         Error(ErrorFileNotFound,'lpk file expected, but '+OriginalFilename+' found');
         Exit;
@@ -487,11 +486,10 @@ begin
     XMLConfig.Free;
   end;
   // check Package Name
-  if (Result.Name='') or (not LazIsValidIdent(Result.Name,true,false)) then begin
+  if (Result.Name='') or not IsValidPkgName(Result.Name) then
     Error(ErrorPackageNameInvalid,
           Format(lisPkgMangThePackageNameOfTheFileIsInvalid,
                  [Result.Name, LineEnding, Result.Filename]));
-  end;
   // check if Package with same name is already loaded
   ConflictPkg:=PackageGraph.FindPackageWithName(Result.Name,nil);
   if ConflictPkg<>nil then begin
@@ -1051,7 +1049,7 @@ begin
     PkgFilename:='';
     if CompareFileExt(PackageNamesOrFiles[i],'.lpk')=0 then
       PkgFilename:=ExpandFileNameUTF8(PackageNamesOrFiles[i])
-    else if LazIsValidIdent(PackageNamesOrFiles[i]) then begin
+    else if IsValidPkgName(PackageNamesOrFiles[i]) then begin
       PackageLink:=TLazPackageLink(LazPackageLinks.FindLinkWithPkgName(PackageNamesOrFiles[i]));
       if PackageLink=nil then
       begin
