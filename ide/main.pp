@@ -7180,7 +7180,8 @@ end;
 function TMainIDE.DoRunProjectWithoutDebug: TModalResult;
 var
   Process: TProcessUTF8;
-  ExeCmdLine, ExeWorkingDirectory, ExeFile, Params: string;
+  RunCmdLine, RunWorkingDirectory, ExeFile: string;
+  Params: TStringListUTF8;
   RunAppBundle, Handled: Boolean;
   ARunMode: TRunParamsOptionsMode;
 begin
@@ -7199,29 +7200,39 @@ begin
   Result:=DoCallRunWithoutDebugInit(Handled);
   if Handled then exit;
 
-  ExeCmdLine := MainBuildBoss.GetRunCommandLine;
-  debugln(['Hint: (lazarus) [TMainIDE.DoRunProjectWithoutDebug] ExeCmdLine="',ExeCmdLine,'"']);
-  if ExeCmdLine='' then
+  RunCmdLine := MainBuildBoss.GetRunCommandLine;
+  debugln(['Hint: (lazarus) [TMainIDE.DoRunProjectWithoutDebug] ExeCmdLine="',RunCmdLine,'"']);
+  if RunCmdLine='' then
   begin
     IDEMessageDialog(lisUnableToRun, lisLaunchingApplicationInvalid,
       mtError,[mbCancel]);
     Exit(mrNone);
   end;
 
+  Params:=TStringListUTF8.Create;
   Process := TProcessUTF8.Create(nil);
   try
     RunAppBundle:={$IFDEF Darwin}true{$ELSE}false{$ENDIF};
     RunAppBundle:=RunAppBundle and Project1.UseAppBundle;
 
-    SplitCmdLine(ExeCmdLine,ExeFile,Params);
+    SplitCmdLineParams(RunCmdLine,Params);
+    if Params.Count=0 then begin
+      IDEMessageDialog(lisUnableToRun,
+        Format(lisUnableToRun2, ['<project has no target file>']),
+        mtError, [mbOK]);
+      exit(mrCancel);
+    end else begin
+      ExeFile:=Params[0];
+      Params.Delete(0);
+    end;
     Process.Executable := ExeFile;
-    if Params<>'' then
-      CommandToList(Params, Process.Parameters);
     ARunMode := Project1.RunParameterOptions.GetActiveMode;
 
-    if RunAppBundle and FileExistsUTF8(Process.Executable)
-    and FileExistsUTF8('/usr/bin/open') then
+    if RunAppBundle
+        and FileExistsUTF8(Process.Executable)
+        and FileExistsUTF8('/usr/bin/open') then
     begin
+      // run bundle via open
       Process.Parameters.Insert(0,Process.Executable);
       Process.Executable := '/usr/bin/open';
     end else if not FileIsExecutable(Process.Executable) then
@@ -7235,19 +7246,19 @@ begin
         IDEMessageDialog(lisUnableToRun,
           Format(lisUnableToRun2, [Process.Executable]),
           mtError, [mbOK]);
-      Exit(mrNone);
+      Exit(mrCancel);
     end;
 
     if ARunMode<>nil then
-      ExeWorkingDirectory := ARunMode.WorkingDirectory
+      RunWorkingDirectory := ARunMode.WorkingDirectory
     else
-      ExeWorkingDirectory := '';
-    if not GlobalMacroList.SubstituteStr(ExeWorkingDirectory) then
-      ExeWorkingDirectory := '';
+      RunWorkingDirectory := '';
+    if not GlobalMacroList.SubstituteStr(RunWorkingDirectory) then
+      RunWorkingDirectory := '';
 
-    if ExeWorkingDirectory = '' then
-      ExeWorkingDirectory := ExtractFilePath(Process.Executable);
-    Process.CurrentDirectory := ExeWorkingDirectory;
+    if RunWorkingDirectory = '' then
+      RunWorkingDirectory := ExtractFilePath(Process.Executable);
+    Process.CurrentDirectory := RunWorkingDirectory;
 
     if not DirectoryExists(Process.CurrentDirectory) then
     begin
@@ -7259,9 +7270,15 @@ begin
     end;
 
     Project1.RunParameterOptions.AssignEnvironmentTo(Process.Environment);
-    TNotifyProcessEnd.Create(Process, @DoCallRunFinishedHandler);
-  except
+    try
+      TNotifyProcessEnd.Create(Process, @DoCallRunFinishedHandler);
+    except
+      on E: Exception do
+        debugln(['Error: (lazarus) [TMainIDE.DoRunProjectWithoutDebug] ',E.Message]);
+    end;
+  finally
     Process.Free;
+    Params.Free;
   end;
 end;
 

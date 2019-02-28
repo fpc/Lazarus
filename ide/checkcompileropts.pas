@@ -301,8 +301,9 @@ function TCheckCompilerOptsDlg.CheckCompileBogusFile(
 var
   TestDir: String;
   BogusFilename: String;
-  CmdLineParams: String;
+  CmdLineParams, ErrMsg: String;
   CompileTool: TAbstractExternalTool;
+  Kind: TPascalCompiler;
 begin
   // compile bogus file
   FTest:=cotCompileBogusFiles;
@@ -334,7 +335,7 @@ begin
     CompileTool:=ExternalToolList.Add(dlgCCOTestToolCompilingEmptyFile);
     CompileTool.Reference(Self,ClassName);
     try
-      if GuessCompilerType(CompilerFilename)=pcPas2js then
+      if IsCompilerExecutable(CompilerFilename,ErrMsg,Kind,true) and (Kind=pcPas2js) then
         CompileTool.AddParsers(SubToolPas2js)
       else
         CompileTool.AddParsers(SubToolFPC);

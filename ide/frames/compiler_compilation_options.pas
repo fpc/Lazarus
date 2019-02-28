@@ -12,7 +12,7 @@ uses
   // CodeTools
   FileProcs, DefineTemplates, CodeToolManager, LinkScanner,
   // LazUtils
-  FileUtil, LazFileUtils,
+  FileUtil, LazFileUtils, LazUTF8,
   // IDEIntf
   IDEOptionsIntf, IDEOptEditorIntf, CompOptsIntf, IDEExternToolIntf,
   IDEDialogs, IDEUtils,
@@ -126,42 +126,43 @@ begin
 
     if not OpenDialog.Execute then exit;
     NewFilename:=TrimAndExpandFilename(OpenDialog.Filename);
-    // check, even if new file is old filename, so the user see the warnings again
+    // check, even if new file is old filename, so the user sees the warnings again
     ok:=false;
     if Sender=BrowseCompilerButton then begin
       // check compiler filename
-      case GetPascalCompilerFromExeName(NewFilename) of
-      pcPas2js:
-        if IsPas2JSExecutable(NewFilename,s) then begin
-          // check pas2js
-          Quality:=CheckPas2jsQuality(NewFilename,Note,
-                                     CodeToolBoss.CompilerDefinesCache.TestFilename);
-          if not ShowQuality(Quality,NewFilename,Note) then exit;
-          ok:=true;
-        end;
-      else
-        if IsCompilerExecutable(NewFilename,s,Kind) then begin
-          // check compiler
-          if Kind=pcPas2js then
-            Quality:=CheckPas2jsQuality(NewFilename,Note,
-                                 CodeToolBoss.CompilerDefinesCache.TestFilename)
-          else
-            Quality:=CheckFPCExeQuality(NewFilename,Note,
-                                CodeToolBoss.CompilerDefinesCache.TestFilename);
-          if not ShowQuality(Quality,NewFilename,Note) then exit;
-          ok:=true;
-        end;
+      if Pos('pas2js',UTF8LowerCase(ExtractFileNameOnly(NewFilename)))>0 then begin
+        // check pas2js
+        Quality:=CheckPas2jsQuality(NewFilename,Note,
+                                   CodeToolBoss.CompilerDefinesCache.TestFilename);
+        if not ShowQuality(Quality,NewFilename,Note) then exit;
+        ok:=true;
       end;
-      // maybe a script
       if (not ok)
-      and not CheckExecutable(OldFilename,NewFilename,lisInvalidExecutable,lisInvalidExecutableMessageText)
-      then
-        exit;
-      ok:=true;
+          and (SameText('ppc',LeftStr(ExtractFileNameOnly(NewFilename),3))
+            or (Pos('fpc',UTF8LowerCase(ExtractFileNameOnly(NewFilename)))>0)) then begin
+        // check fpc
+        Quality:=CheckFPCExeQuality(NewFilename,Note,
+                              CodeToolBoss.CompilerDefinesCache.TestFilename);
+        if not ShowQuality(Quality,NewFilename,Note) then exit;
+        ok:=true;
+      end;
+      if not ok then begin
+        // maybe a wrapper script
+        if IsCompilerExecutable(NewFilename,s,Kind,true) then begin
+          if (s<>'') and not ShowQuality(sddqInvalid,NewFilename,s) then exit;
+          ok:=true;
+        end;
+        // maybe a script
+        if (not ok)
+        and not CheckExecutable('',NewFilename,lisInvalidExecutable,lisInvalidExecutableMessageText)
+        then
+          exit;
+        ok:=true;
+      end;
     end else if (Sender=ExecBeforeBrowseButton)
     or (Sender=ExecAfterBrowseButton) then begin
       // check executable
-      if not CheckExecutable(OldFilename,NewFilename,lisInvalidExecutable,lisInvalidExecutableMessageText)
+      if not CheckExecutable('',NewFilename,lisInvalidExecutable,lisInvalidExecutableMessageText)
       then
         exit;
       ok:=true;

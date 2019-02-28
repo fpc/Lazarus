@@ -191,7 +191,7 @@ type
     // Methods used by CreateIDEMakeOptions :
     procedure BackupExe(Flags: TBuildLazarusFlags);
     function CreateAppleBundle: TModalResult;
-    procedure AppendExtraOption(const aOption: string; EncloseIfSpace: boolean = True);
+    procedure AppendExtraOption(const aOption: string; AutoQuote: boolean = True);
     // This is used by MakeLazarus and SaveIDEMakeOptions
     function PrepareTargetDir(Flags: TBuildLazarusFlags): TModalResult;
   public
@@ -376,20 +376,22 @@ function TLazarusBuilder.MakeLazarus(Profile: TBuildLazarusProfile;
   Flags: TBuildLazarusFlags): TModalResult;
 var
   Tool: TAbstractExternalTool;
-  Executable, CmdLineParams, Cmd: String;
+  Executable, Cmd: String;
+  CmdLineParams: TStrings;
   EnvironmentOverrides: TStringList;
 
-  function Run(CurTitle: string): TModalResult;
-  var
-    Params: String;
+  procedure AddCmdLineParam(Param: string; ExecMacros: boolean);
   begin
-    Params:=UTF8Trim(CmdLineParams,[]);
-    if fMacros<>nil then
-      fMacros.SubstituteStr(Params);
-    if Params<>'' then
-      Params:=Cmd+' '+Params
-    else
-      Params:=Cmd;
+    if Param='' then exit;
+    if ExecMacros and (fMacros<>nil) then
+      fMacros.SubstituteStr(Param);
+    if Param<>'' then
+      CmdLineParams.Add(Param);
+  end;
+
+  function Run(CurTitle: string): TModalResult;
+  begin
+    AddCmdLineParam(Cmd,false);
     Tool:=ExternalToolList.Add(CurTitle);
     Tool.Reference(Self,ClassName);
     try
@@ -401,7 +403,7 @@ var
       Tool.AddParsers(SubToolMake);
       Tool.Process.CurrentDirectory:=fWorkingDir;
       Tool.EnvironmentOverrides:=EnvironmentOverrides;
-      Tool.CmdLineParams:=Params;
+      Tool.CmdLineParams:=MergeCmdLineParams(CmdLineParams);
       Tool.Execute;
       Tool.WaitForExit;
       if Tool.ErrorMessage='' then
@@ -428,6 +430,7 @@ begin
   IdeBuildMode:=Profile.IdeBuildMode;
 
   EnvironmentOverrides:=TStringList.Create;
+  CmdLineParams:=TStringListUTF8.Create;
   Tool:=nil;
   try
     // setup external tool
@@ -451,13 +454,17 @@ begin
     end;
 
     // add -w option to print leaving/entering messages of "make"
-    CmdLineParams:=' -w';
+    AddCmdLineParam('-w',false);
     // append target OS
-    if fTargetOS<>fCompilerTargetOS then
-      CmdLineParams+=' OS_TARGET='+fTargetOS+' OS_SOURCE='+fTargetOS;
+    if fTargetOS<>fCompilerTargetOS then begin
+      AddCmdLineParam('OS_TARGET='+fTargetOS,true);
+      AddCmdLineParam('OS_SOURCE='+fTargetOS,true);
+    end;
     // append target CPU
-    if fTargetCPU<>fCompilerTargetCPU then
-      CmdLineParams+=' CPU_TARGET='+fTargetCPU+' CPU_SOURCE='+fTargetCPU;
+    if fTargetCPU<>fCompilerTargetCPU then begin
+      AddCmdLineParam('CPU_TARGET='+fTargetCPU,true);
+      AddCmdLineParam('CPU_SOURCE='+fTargetCPU,true);
+    end;
 
     // create target directory and bundle
     Result:=PrepareTargetDir(Flags);
@@ -535,6 +542,7 @@ begin
     end;
     Result:=mrOk;
   finally
+    CmdLineParams.Free;
     EnvironmentOverrides.Free;
     if LazarusIDE<>nil then
       LazarusIDE.MainBarSubTitle:='';
@@ -841,13 +849,13 @@ begin
   end;
 end;
 
-procedure TLazarusBuilder.AppendExtraOption(const aOption: string; EncloseIfSpace: boolean);
+procedure TLazarusBuilder.AppendExtraOption(const aOption: string; AutoQuote: boolean);
 begin
   if aOption='' then exit;
   if fExtraOptions<>'' then
     fExtraOptions:=fExtraOptions+' ';
-  if EncloseIfSpace and (Pos(' ',aOption)>0) then
-    fExtraOptions:=fExtraOptions+'"'+aOption+'"'
+  if AutoQuote then
+    fExtraOptions:=fExtraOptions+AnsiQuotedStr(aOption,'"')
   else
     fExtraOptions:=fExtraOptions+aOption;
   //DebugLn(['AppendExtraOption ',fExtraOptions]);
@@ -870,7 +878,7 @@ begin
 
   // create apple bundle if needed
   //debugln(['CreateIDEMakeOptions NewTargetDirectory=',fTargetDir]);
-  if (compareText(fTargetOS,'darwin')=0)
+  if (CompareText(fTargetOS,'darwin')=0)
   and fOutputDirRedirected and DirectoryIsWritableCached(fTargetDir) then
   begin
     Result:=CreateAppleBundle;

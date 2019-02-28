@@ -315,7 +315,7 @@ begin
       sl.Add('RealCompilerDate='+DateTimeToStr(FileDateToDateTimeDef(CfgCache.RealCompilerDate)));
       sl.Add('RealTargetOS='+CfgCache.RealTargetOS);
       sl.Add('RealTargetCPU='+CfgCache.RealTargetCPU);
-      sl.Add('RealCompilerInPath='+CfgCache.RealCompilerInPath);
+      sl.Add('RealCompilerInPath='+CfgCache.RealTargetCPUCompiler);
       sl.Add('Version='+CfgCache.FullVersion);
       HasCfgs:=false;
       if CfgCache.ConfigFiles<>nil then begin
