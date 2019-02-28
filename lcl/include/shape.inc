@@ -33,6 +33,8 @@ begin
 end;
 
 procedure TShape.Paint;
+const
+  cStarError = 2; // Detect N pixels error for 5-star horizontal lines
 var
   PaintRect: TRect;
   MinSize: Longint;
@@ -179,6 +181,14 @@ begin
               PStar[i*2+1].x := PCenter.X + Round(RadiusSm*cos(Alfa));
               PStar[i*2+1].y := PCenter.Y - Round(RadiusSm*sin(Alfa));
             end;
+
+            // Fix 1 pixel error of horizontal lines, adjust point on small radius to the point on big one
+            for i := 0 to 4 do
+              if Abs(PStar[i*2].y - PStar[i*2+1].y) <= cStarError then
+                PStar[i*2+1].y := PStar[i*2].y;
+            for i := 1 to 4 do
+              if Abs(PStar[i*2].y - PStar[i*2-1].y) <= cStarError then
+                PStar[i*2-1].y := PStar[i*2].y;
 
             PStar[10] := PStar[0];
             Polygon(PStar);
