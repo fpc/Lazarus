@@ -3955,6 +3955,8 @@ begin
             exit(true);
           end;
         end;
+        ErrorMsg:='Compiler -va does neither search for fpc.cfg nor pas2js.cfg. This is neither fpc nor pas2js.';
+        exit;
       end;
     finally
       Params.Free;
