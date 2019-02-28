@@ -270,7 +270,6 @@ type
     FPen: TPen;
     FBrush: TBrush;
     FShape: TShapeType;
-    function GetStarAngle(N: Integer; ADown: boolean): Double;
     procedure SetBrush(Value: TBrush);
     procedure SetPen(Value: TPen);
     procedure SetShape(Value: TShapeType);

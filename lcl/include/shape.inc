@@ -27,10 +27,36 @@ begin
   inherited Destroy;
 end;
 
-function TShape.GetStarAngle(N: Integer; ADown: boolean): Double;
-begin
-  Result := pi/5 * N + pi/2 * IfThen(ADown, -1, 1);
-end;
+// Angle of 5-angled star is function(N=0..9, Down) = pi/5 * N + pi/2 * IfThen(Down, -1, 1);
+const
+  CosStarBig: array[0..4, Boolean] of Double = (
+    (Cos(       + pi/2), Cos(       - pi/2)),
+    (Cos(2*pi/5 + pi/2), Cos(2*pi/5 - pi/2)),
+    (Cos(4*pi/5 + pi/2), Cos(4*pi/5 - pi/2)),
+    (Cos(6*pi/5 + pi/2), Cos(6*pi/5 - pi/2)),
+    (Cos(8*pi/5 + pi/2), Cos(8*pi/5 - pi/2))
+    );
+  SinStarBig: array[0..4, Boolean] of Double = (
+    (Sin(       + pi/2), Sin(       - pi/2)),
+    (Sin(2*pi/5 + pi/2), Sin(2*pi/5 - pi/2)),
+    (Sin(4*pi/5 + pi/2), Sin(4*pi/5 - pi/2)),
+    (Sin(6*pi/5 + pi/2), Sin(6*pi/5 - pi/2)),
+    (Sin(8*pi/5 + pi/2), Sin(8*pi/5 - pi/2))
+    );
+  CosStarSmall: array[0..4, Boolean] of Double = (
+    (Cos(  pi/5 + pi/2), Cos(  pi/5 - pi/2)),
+    (Cos(3*pi/5 + pi/2), Cos(3*pi/5 - pi/2)),
+    (Cos(5*pi/5 + pi/2), Cos(5*pi/5 - pi/2)),
+    (Cos(7*pi/5 + pi/2), Cos(7*pi/5 - pi/2)),
+    (Cos(9*pi/5 + pi/2), Cos(9*pi/5 - pi/2))
+    );
+  SinStarSmall: array[0..4, Boolean] of Double = (
+    (Sin(  pi/5 + pi/2), Sin(  pi/5 - pi/2)),
+    (Sin(3*pi/5 + pi/2), Sin(3*pi/5 - pi/2)),
+    (Sin(5*pi/5 + pi/2), Sin(5*pi/5 - pi/2)),
+    (Sin(7*pi/5 + pi/2), Sin(7*pi/5 - pi/2)),
+    (Sin(9*pi/5 + pi/2), Sin(9*pi/5 - pi/2))
+    );
 
 procedure TShape.Paint;
 const
@@ -174,12 +200,10 @@ begin
 
             for i := 0 to 4 do
             begin
-              Alfa := GetStarAngle(i*2, FShape=stStarDown);
-              PStar[i*2].x := PCenter.X + Round(RadiusBig*cos(Alfa));
-              PStar[i*2].y := PCenter.Y - Round(RadiusBig*sin(Alfa));
-              Alfa:= GetStarAngle(i*2+1, FShape=stStarDown);
-              PStar[i*2+1].x := PCenter.X + Round(RadiusSm*cos(Alfa));
-              PStar[i*2+1].y := PCenter.Y - Round(RadiusSm*sin(Alfa));
+              PStar[i*2].x := PCenter.X + Round(RadiusBig*CosStarBig[i, FShape=stStarDown]);
+              PStar[i*2].y := PCenter.Y - Round(RadiusBig*SinStarBig[i, FShape=stStarDown]);
+              PStar[i*2+1].x := PCenter.X + Round(RadiusSm*CosStarSmall[i, FShape=stStarDown]);
+              PStar[i*2+1].y := PCenter.Y - Round(RadiusSm*SinStarSmall[i, FShape=stStarDown]);
             end;
 
             // Fix 1 pixel error of horizontal lines, adjust point on small radius to the point on big one
