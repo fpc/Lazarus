@@ -174,12 +174,10 @@ procedure SplitCmdLineParams(const Params: string; ParamList: TStrings;
                              ReadBackslash: boolean = false);
 function StrToCmdLineParam(const Param: string): string;
 function MergeCmdLineParams(ParamList: TStrings): string;
-// Command line functions moved from IDEProcs.
 // ToDo: Study if they are needed or if the above functions could be used instead.
 procedure SplitCmdLine(const CmdLine: string;
                        out ProgramFilename, Params: string);
 function PrepareCmdLineOption(const Option: string): string;
-//function AddCmdLineParameter(const CmdLine, AddParameter: string): string;
 
 
 type
@@ -1429,11 +1427,19 @@ var
   i: integer;
 begin
   Result:=Option;
-  if (Result='') or (Result[1]='"') then exit;
+  if (Result='') or (Result[1] in ['"','''']) then exit;
   for i:=1 to length(Result) do begin
-    if Result[i]=' ' then begin
-      Result:='"'+Result+'"';
-      exit;
+    case Result[i] of
+    ' ','''':
+      begin
+        Result:=AnsiQuotedStr(Result,'"');
+        exit;
+      end;
+    '"':
+      begin
+        Result:=AnsiQuotedStr(Result,'''');
+        exit;
+      end;
     end;
   end;
 end;
