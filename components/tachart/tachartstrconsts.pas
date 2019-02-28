@@ -140,6 +140,7 @@ resourcestring
 //  rsTDistParamError = 'Function tdist() requires parameter "tails" to be 1 or 2. Get %d.';
 
   // Fit series
+  rsErrIllegalFitParamCount = 'The number of fit parameters cannot be less than 1.';
   rsFitNumObservations = 'Number of observations';
   rsFitNumFitParams = 'Number of fit parameters';
   rsFitDegreesOfFreedom = 'Degrees of freedom';

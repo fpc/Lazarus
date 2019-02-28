@@ -180,6 +180,10 @@ msgstr "Távolságmérés"
 msgid "Down triangle"
 msgstr "Háromszög (le)"
 
+#: tachartstrconsts.rserrillegalfitparamcount
+msgid "Number of fit parameters cannot be less than 1."
+msgstr ""
+
 #: tachartstrconsts.rserrinvalidresulttype
 msgid "Expression result type must be integer or float. Got \"%s\"."
 msgstr "A kifejezés típusának egész vagy lebegőpontos számnak kell lennie. Most \"%s\"."

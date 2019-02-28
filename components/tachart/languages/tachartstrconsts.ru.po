@@ -180,6 +180,10 @@ msgstr "Измерение расстояния"
 msgid "Down triangle"
 msgstr "Треугольник с вершиной снизу"
 
+#: tachartstrconsts.rserrillegalfitparamcount
+msgid "Number of fit parameters cannot be less than 1."
+msgstr ""
+
 #: tachartstrconsts.rserrinvalidresulttype
 msgid "Expression result type must be integer or float. Got \"%s\"."
 msgstr "Тип результата выражения должен быть целым либо вещественным, но сейчас является \"%s\"."

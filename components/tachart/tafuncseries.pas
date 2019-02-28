@@ -2115,6 +2115,8 @@ procedure TFitSeries.SetParamCount(AValue: Integer);
 begin
   if (AValue = ParamCount) or not (FFitEquation in [fePolynomial, feCustom]) then
     exit;
+  if AValue <= 0 then
+    raise EChartError.Create(rsErrIllegalFitParamCount);
   SetLength(FFitParams, AValue);
   InvalidateFitResults;
   UpdateParentChart;

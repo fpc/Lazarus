@@ -183,6 +183,10 @@ msgstr "Avståndsmätning"
 msgid "Down triangle"
 msgstr ""
 
+#: tachartstrconsts.rserrillegalfitparamcount
+msgid "Number of fit parameters cannot be less than 1."
+msgstr ""
+
 #: tachartstrconsts.rserrinvalidresulttype
 msgid "Expression result type must be integer or float. Got \"%s\"."
 msgstr ""

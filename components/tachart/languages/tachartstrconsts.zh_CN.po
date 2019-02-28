@@ -181,6 +181,10 @@ msgstr "距离测量"
 msgid "Down triangle"
 msgstr "下三角形"
 
+#: tachartstrconsts.rserrillegalfitparamcount
+msgid "Number of fit parameters cannot be less than 1."
+msgstr ""
+
 #: tachartstrconsts.rserrinvalidresulttype
 msgid "Expression result type must be integer or float. Got \"%s\"."
 msgstr "表达式结果类型必须是整型(integer)或浮点型(float).得到\"%s\"."
