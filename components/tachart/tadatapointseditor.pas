@@ -199,7 +199,7 @@ begin
  {$IFDEF WINDOWS}
   Width := Min(Screen.Width, w + 1 + IfThen(sgData.BorderStyle = bsNone, 0, 3));
  {$ELSE}
-  Width := Min(Screen.Width, w + sgData.GridLinedWidth * (sgData.Columns.Count-1));
+  Width := Min(Screen.Width, w + sgData.GridLineWidth * (sgData.Columns.Count-1));
  {$ENDIF}
 end;
 
