@@ -182,7 +182,7 @@ msgid "Down triangle"
 msgstr "下三角形"
 
 #: tachartstrconsts.rserrillegalfitparamcount
-msgid "Number of fit parameters cannot be less than 1."
+msgid "The number of fit parameters cannot be less than 1."
 msgstr ""
 
 #: tachartstrconsts.rserrinvalidresulttype

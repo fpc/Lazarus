@@ -181,8 +181,8 @@ msgid "Down triangle"
 msgstr "Треугольник с вершиной снизу"
 
 #: tachartstrconsts.rserrillegalfitparamcount
-msgid "Number of fit parameters cannot be less than 1."
-msgstr ""
+msgid "The number of fit parameters cannot be less than 1."
+msgstr "Независимых переменных не может быть меньше одной."
 
 #: tachartstrconsts.rserrinvalidresulttype
 msgid "Expression result type must be integer or float. Got \"%s\"."
@@ -222,7 +222,7 @@ msgstr "Сумма квадратов ошибки (SSE)"
 
 #: tachartstrconsts.rsfitnumfitparams
 msgid "Number of fit parameters"
-msgstr "Количество неварьирующихся параметров"
+msgstr "Количество независимых переменных"
 
 #: tachartstrconsts.rsfitnumobservations
 msgid "Number of observations"

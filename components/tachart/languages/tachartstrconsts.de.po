@@ -183,7 +183,9 @@ msgid "Down triangle"
 msgstr "Dreieck abwärts"
 
 #: tachartstrconsts.rserrillegalfitparamcount
-msgid "Number of fit parameters cannot be less than 1."
+#, fuzzy
+#| msgid "Number of fit parameters cannot be less than 1."
+msgid "The number of fit parameters cannot be less than 1."
 msgstr "Die Anzahl der Fitparameter kann nicht kleiner als 1 sein."
 
 #: tachartstrconsts.rserrinvalidresulttype
@@ -496,3 +498,4 @@ msgstr "Fehler beim Umbenennen von Komponenten: %s"
 #: tachartstrconsts.tastoolseditortitle
 msgid "Edit tools"
 msgstr "Werkzeuge bearbeiten"
+
