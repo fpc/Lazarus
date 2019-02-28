@@ -1384,7 +1384,21 @@ end;
 
 procedure SplitCmdLine(const CmdLine: string;
                        out ProgramFilename, Params: string);
-var p, s, l: integer;
+var
+  p: integer;
+
+  procedure SkipChar; inline;
+  begin
+    {$IFDEF Unix}
+    if (CmdLine[p]='\') and (p<length(CmdLine)) then
+      // skip escaped char
+      inc(p,2)
+    else
+    {$ENDIF}
+      inc(p);
+  end;
+
+var s, l: integer;
   quote: char;
 begin
   ProgramFilename:='';
@@ -1397,28 +1411,20 @@ begin
     // skip quoted string
     quote:=CmdLine[p];
     inc(s);
-    repeat
-      inc(p);
-      if p>Length(CmdLine) then Break;
-      // check if we have an escape char
-      if (CmdLine[p] = '\') and (CmdLine[p]<>PathDelim) then inc(p);
-    until (p>Length(CmdLine)) or (CmdLine[p]=quote);
+    inc(p);
+    while (p<=length(CmdLine)) and (CmdLine[p]<>quote) do
+      SkipChar;
     // go past last character or quoted string
     l:=p-s;
     inc(p);
   end else begin
-    while (p<=length(CmdLine)) and (CmdLine[p]>' ') do begin
-      if (CmdLine[p] in ['/','\']) and (CmdLine[p]<>PathDelim) then begin
-        // skip special char
-        inc(p);
-      end;
-      inc(p);
-    end;
+    while (p<=length(CmdLine)) and (CmdLine[p]>' ') do
+      SkipChar;
     l:=p-s;
   end;
   ProgramFilename:=Copy(CmdLine,s,l);
   while (p<=length(CmdLine)) and (CmdLine[p]<=' ') do inc(p);
-  Params:=RightStr(CmdLine,length(CmdLine)-p+1);
+  Params:=copy(CmdLine,p,length(CmdLine));
 end;
 
 function PrepareCmdLineOption(const Option: string): string;
