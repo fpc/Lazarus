@@ -293,6 +293,7 @@ type
 
   TFitSeries = class(TBasicPointSeries)
   strict private
+    FAutoFit: Boolean;
     FDrawFitRangeOnly: Boolean;
     FFitEquation: TFitEquation;
     FFitParams: TFitParamArray; // raw values, not transformed!
@@ -332,8 +333,9 @@ type
   protected
     procedure AfterAdd; override;
     function CalcGoodnessOfFit(var x,y: ArbFloat; n: Integer): Double; virtual; deprecated;
-//    procedure GetFixedParams(out AList: TFitParamArray);
     procedure GetLegendItems(AItems: TChartLegendItems); override;
+    procedure InvalidateFitResults; virtual;
+    procedure Loaded; override;
     function PrepareFitParams: boolean;
     function PrepareIntervals: TIntervalList;
     procedure SourceChanged(ASender: TObject); override;
@@ -370,8 +372,9 @@ type
     property ConfidenceLevel: Double read FConfidenceLevel write FConfidenceLevel;
     property ErrCode: TFitErrCode read FErrCode;
     property State: TFitParamsState read FState;
-    property GoodnessOfFit: Double read FGoodnessOfFit; deprecated 'Use Statistics instead';
+    property GoodnessOfFit: Double read FGoodnessOfFit; deprecated 'Use FitStatistics instead';
   published
+    property AutoFit: Boolean read FAutoFit write FAutoFit default true;
     property AxisIndexX;
     property AxisIndexY;
     property DrawFitRangeOnly: Boolean
@@ -587,8 +590,8 @@ end;
 
 procedure TFitSeriesRange.StyleChanged(ASender: TObject);
 begin
-  FSeries.SourceChanged(nil); // reset FState to fpsUnknown
-  FSeries.ExecFit;
+  FSeries.InvalidateFitResults;
+//  if FSeries.AutoFit then FSeries.ExecFit;
   inherited;
 end;
 
@@ -1629,6 +1632,7 @@ constructor TFitSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ToolTargets := [nptPoint, nptCustom];
+  FAutoFit := true;
   FFitEquation := fePolynomial;
   FFitRange := TFitSeriesRange.Create(Self);
   FDrawFitRangeOnly := true;
@@ -1638,7 +1642,7 @@ begin
   FStep := DEF_FIT_STEP;
   FConfidenceLevel := 0.95;
   ParamCount := DEF_FIT_PARAM_COUNT; // Parabolic fit as default.
-//  FGoodnessOfFit := NaN;
+  InvalidateFitResults;
 end;
 
 destructor TFitSeries.Destroy;
@@ -1653,20 +1657,20 @@ procedure TFitSeries.Draw(ADrawer: IChartDrawer);
 var
   de : TIntervalList;
 begin
-  if IsEmpty then exit;
-  ExecFit;
-  if State <> fpsValid then exit;
+  if IsEmpty or (not Active) then exit;
+  if FAutoFit then ExecFit;
   ADrawer.SetBrushParams(bsClear, clTAColor);
   ADrawer.Pen := Pen;
   de := PrepareIntervals;
   try
     PrepareGraphPoints(FChart.CurrentExtent, true);
-    with TDrawFuncHelper.Create(Self, de, @Calculate, Step) do
-      try
-        DrawFunction(ADrawer);
-      finally
-        Free;
-      end;
+    if FState = fpsValid then
+      with TDrawFuncHelper.Create(Self, de, @Calculate, Step) do
+        try
+          DrawFunction(ADrawer);
+        finally
+          Free;
+        end;
     DrawErrorBars(ADrawer);
     DrawLabels(ADrawer, 0);
     DrawPointers(ADrawer, 0, true);
@@ -1794,6 +1798,12 @@ procedure TFitSeries.GetConfidenceLimits(AIndex: Integer; out ALower, AUpper: Do
 var
   val, sig, t: Double;
 begin
+  if FState <> fpsValid then begin
+    ALower := NaN;
+    AUpper := NaN;
+    exit;
+  end;
+
   val := GetParam_RawValue(AIndex);
   sig := GetParam_RawError(AIndex);
   t := FitStatistics.tValue;
@@ -1812,6 +1822,11 @@ var
   dy: Double;
   Offs: Double;
 begin
+  if FState <> fpsValid then begin
+    aY := NaN;
+    exit;
+  end;
+
   offs := IfThen(IsPrediction, 1, 0);
   with FitStatistics do begin
     x := TransformX(AX);
@@ -1905,6 +1920,11 @@ end;
 
 function TFitSeries.GetParam(AIndex: Integer): Double;
 begin
+  if FState <> fpsValid then begin
+    Result := NaN;
+    exit;
+  end;
+
   if not InRange(AIndex, 0, ParamCount - 1) then
     raise EChartError.Create('TFitSeries.GetParam index out of range');
   if (FFitEquation in [feExp, fePower]) and (AIndex = 0) then
@@ -1922,14 +1942,16 @@ function TFitSeries.GetParamError(AIndex: Integer): Double;
 var
   val, sig: Double;
 begin
-  val := GetParam_RawValue(AIndex);
+  Result := NaN;
+  if FState <> fpsValid then
+    exit;
   sig := GetParam_RawError(AIndex);
-  if IsNaN(sig) then
-    Result := NaN
-  else if (FFitEquation in [feExp, fePower]) and (AIndex = 0) then
-    Result := (exp(val + sig) - exp(val - sig)) / 2
-  else
-    Result := sig;
+  Result := sig;
+  if not IsNaN(sig) and (FFitEquation in [feExp, fePower]) and (AIndex = 0) then
+  begin
+    val := GetParam_RawValue(AIndex);
+    Result := (exp(val + sig) - exp(val - sig)) / 2;
+  end;
 end;
 
 {$IF FPC_FullVersion >= 30004}
@@ -1949,11 +1971,12 @@ function TFitSeries.GetParam_RawError(AIndex: Integer): Double;
 var
   sig2: Double;
 begin
-  sig2 := FFitStatistics.VarCovar[AIndex, AIndex];
-  if IsNaN(sig2) then
-    Result := NaN
-  else
-    Result := sqrt(sig2);
+  Result := NaN;
+  if (FState = fpsValid) and Assigned(FFitStatistics) then begin
+    sig2 := FFitStatistics.VarCovar[AIndex, AIndex];
+    if not IsNaN(sig2) then
+      Result := sqrt(sig2);
+  end;
 end;
 
 function TFitSeries.GetParam_RawValue(AIndex: Integer): Double;
@@ -1972,9 +1995,25 @@ begin
     Result := GetParam_RawValue(AIndex) / sig;
 end;
 
+procedure TFitSeries.InvalidateFitResults;
+var
+  i: Integer;
+begin
+  FState := fpsUnknown;
+  FreeAndNil(FFitStatistics);
+  FGoodnessOfFit := NaN;
+  for i:=0 to High(FFitParams) do FFitParams[i].Value := NaN;
+end;
+
 function TFitSeries.IsFixedParamsStored: Boolean;
 begin
   Result := FFixedParams <> '';
+end;
+
+procedure TFitSeries.Loaded;
+begin
+  inherited;
+  if FAutoFit then ExecFit;
 end;
 
 { FFixedParams contains several items separated by semicolon or bar ('|'). Any
@@ -2064,7 +2103,7 @@ begin
   FFitEquation := AValue;
   SetLength(
     FFitParams, IfThen(FFitEquation in [fePolynomial, feCustom], DEF_FIT_PARAM_COUNT, 2));
-  FState := fpsUnknown;
+  InvalidateFitResults;
   UpdateParentChart;
 end;
 
@@ -2079,7 +2118,7 @@ procedure TFitSeries.SetFitRange(AValue: TChartRange);
 begin
   if FFitRange = AValue then exit;
   FFitRange := AValue;
-  FState := fpsUnknown;
+  InvalidateFitResults;
   UpdateParentChart;
 end;
 
@@ -2087,7 +2126,7 @@ procedure TFitSeries.SetFixedParams(AValue: String);
 begin
   if FFixedParams = AValue then exit;
   FFixedParams := AValue;
-  FState := fpsUnknown;
+  InvalidateFitResults;
   UpdateParentChart;
 end;
 
@@ -2096,7 +2135,7 @@ begin
   if (AValue = ParamCount) or not (FFitEquation in [fePolynomial, feCustom]) then
     exit;
   SetLength(FFitParams, AValue);
-  FState := fpsUnknown;
+  InvalidateFitResults;
   UpdateParentChart;
 end;
 
@@ -2117,7 +2156,8 @@ end;
 procedure TFitSeries.SourceChanged(ASender: TObject);
 begin
   inherited;
-  FState := fpsUnknown;
+  InvalidateFitResults;
+  if FAutoFit then ExecFit;
 end;
 
 { The exponential and power fitting equations can be transformed to a
