@@ -19,7 +19,7 @@ uses
 
 type
 
-  TDataPointsEditorOption = (dpeHideColorColumn);
+  TDataPointsEditorOption = (dpeHideColorColumn, dpeHideTextColumn);
   TDataPointsEditorOptions = set of TDataPointsEditorOption;
 
   { TDataPointsEditorForm }
@@ -183,6 +183,7 @@ begin
     end;
   sgData.Columns.Delete(0); // remove the template column
   sgData.Columns[sgData.Columns.Count-2].Visible := not (dpeHideColorColumn in FOptions);
+  sgData.Columns[sgData.Columns.Count-1].Visible := not (dpeHideTextColumn in FOptions);
   for i := 0 to ADataPoints.Count - 1 do
     Split('|' + ADataPoints[i], sgData.Rows[i + 1]);
 
