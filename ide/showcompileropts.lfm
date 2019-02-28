@@ -13,7 +13,7 @@ object ShowCompilerOptionsDlg: TShowCompilerOptionsDlg
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poOwnerFormCenter
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '2.1.0.0'
   object CloseButton: TBitBtn
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
@@ -27,9 +27,11 @@ object ShowCompilerOptionsDlg: TShowCompilerOptionsDlg
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
+    Cancel = True
     Caption = '&Close'
     Constraints.MinHeight = 22
     Constraints.MinWidth = 75
+    Default = True
     Kind = bkClose
     TabOrder = 0
   end
@@ -46,12 +48,12 @@ object ShowCompilerOptionsDlg: TShowCompilerOptionsDlg
     TabOrder = 1
     object CmdLineParamsTabSheet: TTabSheet
       Caption = 'CmdLineParams'
-      ClientHeight = 353
+      ClientHeight = 351
       ClientWidth = 477
       object CmdLineMemo: TMemo
         AnchorSideBottom.Control = RelativePathsCheckBox
         Left = 6
-        Height = 317
+        Height = 315
         Top = 6
         Width = 465
         Align = alTop
@@ -69,7 +71,7 @@ object ShowCompilerOptionsDlg: TShowCompilerOptionsDlg
         AnchorSideBottom.Side = asrBottom
         Left = 6
         Height = 24
-        Top = 329
+        Top = 327
         Width = 155
         Anchors = [akLeft, akBottom]
         Caption = 'RelativePathsCheckBox'
@@ -85,7 +87,7 @@ object ShowCompilerOptionsDlg: TShowCompilerOptionsDlg
         AnchorSideBottom.Side = asrBottom
         Left = 176
         Height = 24
-        Top = 329
+        Top = 327
         Width = 128
         BorderSpacing.Left = 15
         Caption = 'MultilineCheckBox'
@@ -97,7 +99,7 @@ object ShowCompilerOptionsDlg: TShowCompilerOptionsDlg
     end
     object InheritedParamsTabSheet: TTabSheet
       Caption = 'InheritedParams'
-      ClientHeight = 353
+      ClientHeight = 351
       ClientWidth = 477
       object InhTreeView: TTreeView
         Left = 0

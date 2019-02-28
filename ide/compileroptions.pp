@@ -504,6 +504,7 @@ type
     function GetEffectiveTargetOS: string; override;
     function GetEffectiveTargetCPU: string; override;
     function GetEffectiveLCLWidgetType: string; override;
+    // parsed CompilerFilename: use ParsedOpts.GetParsedValue(pcosCompilerPath)
     function GetUnitPath(RelativeToBaseDir: boolean;
                          Parsed: TCompilerOptionsParseType = coptParsed;
                          WithBaseDir: boolean = true): string; override;

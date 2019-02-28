@@ -220,27 +220,30 @@ end;
 procedure TShowCompilerOptionsDlg.UpdateMemo;
 var
   Flags: TCompilerCmdLineOptions;
-  CurOptions: String;
+  CurOptions, CompPath: String;
   ParamList: TStrings;
 begin
   if CompilerOpts=nil then exit;
 
-  Flags:=CompilerOpts.DefaultMakeOptionsFlags+[ccloAddCompilerPath];
+  Flags:=CompilerOpts.DefaultMakeOptionsFlags;
   if not RelativePathsCheckBox.Checked then
     Include(Flags,ccloAbsolutePaths);
   CurOptions := CompilerOpts.MakeOptionsString(Flags);
+  CompPath:=CompilerOpts.ParsedOpts.GetParsedValue(pcosCompilerPath);
   if MultilineCheckBox.Checked then begin
     ParamList:=TStringList.Create;
     try
+      ParamList.Add(CompPath);
       SplitCmdLineParams(CurOptions,ParamList);
-      CurOptions:=ParamList.Text;
+      CmdLineMemo.Lines.Assign(ParamList);
     finally
       ParamList.Free;
     end;
     CmdLineMemo.ScrollBars:=ssAutoBoth;
-  end else
+  end else begin
     CmdLineMemo.ScrollBars:=ssAutoVertical;
-  CmdLineMemo.Lines.Text:=CurOptions;
+    CmdLineMemo.Lines.Text:=QuotedStr(CompPath)+' '+CurOptions;
+  end;
 end;
 
 procedure TShowCompilerOptionsDlg.UpdateInheritedTree;
