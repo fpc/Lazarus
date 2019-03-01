@@ -92,8 +92,7 @@ type
     procedure ClearCommandRelation(ARelation: TKeyCommandRelation);
     function KeyMappingRelationToCaption(Index: Integer): String;
     function KeyMappingRelationToCaption(KeyRelation: TKeyCommandRelation): String;
-    function KeyShortCutToCaption(const aKey: TKeyCommandRelation;
-      const aShortCut: TIDEShortCut): string;
+    function KeyShortCutToCaption(const aKey: TKeyCommandRelation): string;
     function CaptionToKeyMappingRelation(aCaption: string): TKeyCommandRelation;
     procedure SetIdleConnected(AValue: boolean);
     procedure UpdateKeyFilterButton;
@@ -516,7 +515,7 @@ begin
 end;
 
 function TEditorKeymappingOptionsFrame.KeyShortCutToCaption(
-  const aKey: TKeyCommandRelation; const aShortCut: TIDEShortCut): string;
+  const aKey: TKeyCommandRelation): string;
 begin
   Result:=aKey.Category.Description+'/'
         +KeyMappingRelationToCaption(aKey);
@@ -626,11 +625,11 @@ var
       ConflictNode.ImageIndex:=imgKeyItem;
       ConflictNode.StateIndex:=imgKeyItem;
       KeyNode:=ConflictsTreeView.Items.AddChild(ConflictNode,
-                                          KeyShortCutToCaption(Key1,ShortCut1));
+                                          KeyShortCutToCaption(Key1));
       KeyNode.ImageIndex := imgKeyItem;
       KeyNode.SelectedIndex := imgKeyItem;
       KeyNode:=ConflictsTreeView.Items.AddChild(ConflictNode,
-                                          KeyShortCutToCaption(Key2,ShortCut2));
+                                          KeyShortCutToCaption(Key2));
       KeyNode.ImageIndex := imgKeyItem;
       KeyNode.SelectedIndex := imgKeyItem;
       ConflictNode.Expanded:=true;
