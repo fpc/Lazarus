@@ -20,15 +20,10 @@ type
 
   TFitFunc = function(x: ArbFloat; Param: Integer): ArbFloat; // is nested;
 
-  TFitBaseFunc = record
-    Func: TFitFunc;
-    FuncName: String;
-  end;
-  TFitBaseFuncArray = array of TFitBaseFunc;
-
   TFitParam = record
     Func: TFitFunc;
-    FuncName: String;
+    CustomFunc: TFitFunc;
+    CustomFuncName: String;
     Value: ArbFloat;
     Fixed: Boolean;
   end;
