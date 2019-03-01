@@ -1760,7 +1760,7 @@ function ParseFPCVerbose(List: TStrings; const WorkDir: string; out
         CurPos := i + 1; // skip space
 
         if IsUpLine(CurPos,'SET TO ') then begin
-          // MACRO name SET TO
+          // MACRO name SET TO "value"
           Inc(CurPos, 7);
           SymbolValue:=DeQuote(copy(Line, CurPos, len));
           DefineSymbol(SymbolName, SymbolValue);
