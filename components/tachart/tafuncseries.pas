@@ -284,7 +284,7 @@ type
 
   TFitParamsState = (fpsUnknown, fpsInvalid, fpsValid);
 
-  TFitFuncIndex = 1..MaxInt;
+  TFitFuncIndex = 0..MaxInt;
 
   TFitFuncEvent = procedure(AIndex: TFitFuncIndex; AFitFunc: TFitFunc) of object;
 
@@ -294,6 +294,7 @@ type
     FDrawFitRangeOnly: Boolean;
     FFitEquation: TFitEquation;
     FFitParams: TFitParamArray; // raw values, not transformed!
+    FCustomFuncs: TFitBaseFuncArray;
     FFitRange: TChartRange;
     FFixedParams: String;
     FOnFitComplete: TNotifyEvent;
@@ -339,6 +340,7 @@ type
   public
     function Calculate(AX: Double): Double; virtual;
     procedure Draw(ADrawer: IChartDrawer); override;
+    function ErrorMsg: String;
     procedure ExecFit; virtual;
     function Extent: TDoubleRect; override;
     function EquationText: IFitEquationText;
@@ -1646,7 +1648,7 @@ begin
   de := PrepareIntervals;
   try
     PrepareGraphPoints(FChart.CurrentExtent, true);
-    if FState = fpsValid then
+    if (FState = fpsValid) and (FErrCode = fitOK) then
       with TDrawFuncHelper.Create(Self, de, @Calculate, Step) do
         try
           DrawFunction(ADrawer);
@@ -1676,6 +1678,20 @@ begin
       basis[i-1] := FFitParams[i].FuncName;
   end;
   Result.TextFormat(Marks.TextFormat).Equation(FitEquation).Params(FitParams).BasisFuncs(basis);
+end;
+
+function TFitSeries.ErrorMsg: String;
+begin
+  case ErrCode of
+    fitOK                   : Result := '';
+    fitDimError             : Result := rsErrFitDimError;
+    fitMoreParamsThanValues : Result := rsErrFitMoreParamsThanValues;
+    fitNoFitParams          : Result := rsErrFitNoFitParams;
+    fitSingular             : Result := rsErrFitSingular;
+    fitNoBaseFunctions      : Result := rsErrFitNoBaseFunctions;
+  else
+    raise EChartError.CreateFmt('[TFitSeries.ErrorMsg] No message text assigned to error code #%d.', [ord(ErrCode)]);
+  end;
 end;
 
 procedure TFitSeries.ExecFit;
@@ -1723,7 +1739,7 @@ var
 
     // Prepare fit parameters
     if not PrepareFitParams then begin
-      fitRes.ErrCode := fitNoBaseFunctions;
+      FErrCode := fitNoBaseFunctions;
       exit;
     end;
 
@@ -1750,7 +1766,10 @@ var
   end;
 
 begin
-  if (State <> fpsUnknown) or not Active then exit;
+  if (State <> fpsUnknown) or not Active or IsEmpty or
+     ([csLoading, csDestroying] * ComponentState <> [])
+  then
+    exit;
   FState := fpsInvalid;
   try
     TryFit;
@@ -1994,7 +2013,7 @@ end;
 procedure TFitSeries.Loaded;
 begin
   inherited;
-  if FAutoFit then ExecFit;
+  if FAutoFit and (FFitEquation <> feCustom) then ExecFit;
 end;
 
 { FFixedParams contains several items separated by semicolon or bar ('|'). Any
@@ -2009,10 +2028,11 @@ end;
   .Fixed = true. Variable parameters are stored in the outpust list as
   .Value = NaN, and .Fixed = false.
 
-  By default, the fit base functions (.Func) are set to a polygon because
+  By default, the fit base functions (.Func) are set to a polynomial because
   all implemented fitting types are of this kind.
-  However, if handlers are assigned to the event OnGetFitBaseFunc then these
-  functions are used instead.
+
+  In case of custom fitting, the fit base functions become equal to the
+  functions FCustomFuncs defined separately by the method SetFitBasisFunc().
 }
 function TFitSeries.PrepareFitParams: Boolean;
 var
@@ -2027,8 +2047,12 @@ begin
     FFitParams[i].Value := NaN;
     if FFitEquation <> feCustom then
       FFitParams[i].Func := @FitBaseFunc_Poly
-    else if FFitParams[i].Func = nil then
-      exit;
+    else begin
+      FFitParams[i].Func := FCustomFuncs[i].Func;
+      FFitParams[i].FuncName := FCustomFuncs[i].FuncName;
+      if FFitParams[i].Func = nil then
+        exit;
+    end;
   end;
 
   if FFixedParams <> '' then begin
@@ -2091,8 +2115,10 @@ end;
 procedure TFitSeries.SetFitBasisFunc(AIndex: TFitFuncIndex; AFitFunc: TFitFunc;
   AFitFuncName: String);
 begin
-  FFitParams[AIndex].Func := AFitFunc;
-  FFitParams[AIndex].FuncName := AFitFuncName;  // e.g. 'sin(x)';
+  if AIndex > High(FCustomFuncs) then
+    SetLength(FCustomFuncs, AIndex+1);
+  FCustomFuncs[AIndex].Func := AFitFunc;
+  FCustomFuncs[AIndex].FuncName := AFitFuncName;  // e.g. 'sin(x)';
 end;
 
 procedure TFitSeries.SetFitRange(AValue: TChartRange);
@@ -2118,6 +2144,7 @@ begin
   if AValue <= 0 then
     raise EChartError.Create(rsErrIllegalFitParamCount);
   SetLength(FFitParams, AValue);
+  SetLength(FCustomFuncs, AValue);
   InvalidateFitResults;
   UpdateParentChart;
 end;

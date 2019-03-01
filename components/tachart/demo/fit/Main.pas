@@ -227,6 +227,7 @@ begin
     feCustom:
       begin
         FitSeries.ParamCount := 4;
+        FitSeries.SetFitBasisFunc(0, @FitBaseFunc_Const, '');
         FitSeries.SetFitBasisFunc(1, @HarmonicBaseFunc, 'sin(x)');
         FitSeries.SetFitBasisFunc(2, @HarmonicBaseFunc, 'sin(3 x)');
         FitSeries.SetFitBasisFunc(3, @HarmonicBaseFunc, 'sin(5 x)');

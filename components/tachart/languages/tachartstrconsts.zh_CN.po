@@ -181,6 +181,26 @@ msgstr "距离测量"
 msgid "Down triangle"
 msgstr "下三角形"
 
+#: tachartstrconsts.rserrfitdimerror
+msgid "Non-matching count of x and y values."
+msgstr ""
+
+#: tachartstrconsts.rserrfitmoreparamsthanvalues
+msgid "There are more fitting parameters than data values."
+msgstr ""
+
+#: tachartstrconsts.rserrfitnobasefunctions
+msgid "Not enough user-provided base functions."
+msgstr ""
+
+#: tachartstrconsts.rserrfitnofitparams
+msgid "No fit parameters specified."
+msgstr ""
+
+#: tachartstrconsts.rserrfitsingular
+msgid "Fitting matrix is (nearly) singular."
+msgstr ""
+
 #: tachartstrconsts.rserrillegalfitparamcount
 msgid "The number of fit parameters cannot be less than 1."
 msgstr ""

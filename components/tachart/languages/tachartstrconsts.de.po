@@ -182,9 +182,27 @@ msgstr "Distanzmessung"
 msgid "Down triangle"
 msgstr "Dreieck abwärts"
 
+#: tachartstrconsts.rserrfitdimerror
+msgid "Non-matching count of x and y values."
+msgstr "Nicht übereinstimmende Anzahl von x- und y-Werten."
+
+#: tachartstrconsts.rserrfitmoreparamsthanvalues
+msgid "There are more fitting parameters than data values."
+msgstr "Es gibt mehr Fit-Parameter als Daten-Werte."
+
+#: tachartstrconsts.rserrfitnobasefunctions
+msgid "Not enough user-provided base functions."
+msgstr "Zu wenig benutzerdefinierte Basis-Funktionen."
+
+#: tachartstrconsts.rserrfitnofitparams
+msgid "No fit parameters specified."
+msgstr "Keine Fit-Parameter angegeben."
+
+#: tachartstrconsts.rserrfitsingular
+msgid "Fitting matrix is (nearly) singular."
+msgstr "Die Fit-Matrix ist (fast) singulär."
+
 #: tachartstrconsts.rserrillegalfitparamcount
-#, fuzzy
-#| msgid "Number of fit parameters cannot be less than 1."
 msgid "The number of fit parameters cannot be less than 1."
 msgstr "Die Anzahl der Fitparameter kann nicht kleiner als 1 sein."
 
@@ -498,4 +516,3 @@ msgstr "Fehler beim Umbenennen von Komponenten: %s"
 #: tachartstrconsts.tastoolseditortitle
 msgid "Edit tools"
 msgstr "Werkzeuge bearbeiten"
-

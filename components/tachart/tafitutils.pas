@@ -24,7 +24,7 @@ type
     feExp,         // y = a * exp(b * x)
     fePower,       // y = a * x^b
     feCustom       // y = b0 + b1*F1(x) + b2*F2(x) + ... bn*Fn(x),
-                   //    Fi(x) = custom "fit base function" provided by event
+                   //    Fi(x) = custom "fit base function" provided by calling SetFitBasisFunc() method
   );
 
   IFitEquationText = interface

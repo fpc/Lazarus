@@ -8,7 +8,7 @@ object frmMain: TfrmMain
   ClientWidth = 997
   OnCreate = FormCreate
   ShowHint = True
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '2.1.0.0'
   object pnlParams: TPanel
     Left = 8
     Height = 487

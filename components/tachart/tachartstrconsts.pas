@@ -141,6 +141,11 @@ resourcestring
 
   // Fit series
   rsErrIllegalFitParamCount = 'The number of fit parameters cannot be less than 1.';
+  rsErrFitDimError = 'Non-matching count of x and y values.';
+  rsErrFitMoreParamsThanValues = 'There are more fitting parameters than data values.';
+  rsErrFitNoFitParams = 'No fit parameters specified.';
+  rsErrFitSingular = 'Fitting matrix is (nearly) singular.';
+  rsErrFitNoBaseFunctions = 'Not enough user-provided base functions.';
   rsFitNumObservations = 'Number of observations';
   rsFitNumFitParams = 'Number of fit parameters';
   rsFitDegreesOfFreedom = 'Degrees of freedom';
