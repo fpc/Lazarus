@@ -1723,7 +1723,8 @@ begin
   Result:=0;
   Kind:=pcFPC;
   Evaluator:=DefineTree.GetDefinesForDirectory(Directory,true);
-  if Evaluator=nil then exit;
+  if Evaluator=nil then
+    exit;
   s:=Evaluator['FPC_FULLVERSION'];
   if s<>'' then
     exit(StrToIntDef(s,0));

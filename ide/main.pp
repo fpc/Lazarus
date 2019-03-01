@@ -6658,7 +6658,7 @@ var
   UnitOutputDirectory: String;
   TargetExeName: String;
   TargetExeDirectory: String;
-  FPCVersion, FPCRelease, FPCPatch, CompilerVersion: integer;
+  CompilerVersion: integer;
   aCompileHint, ShortFilename: String;
   OldToolStatus: TIDEToolStatus;
   IsComplete: Boolean;
@@ -6709,7 +6709,12 @@ begin
       // FPC resources are only supported with FPC 2.4+
       CompilerVersion:=CodeToolBoss.GetPCVersionForDirectory(
         ExtractFilePath(Project1.MainFilename),CompilerKind);
-      if (CompilerKind=pcFPC) and (CompilerVersion<20400) then begin
+      {debugln(['TMainIDE.DoBuildProject ',PascalCompilerNames[CompilerKind],' Version=',CompilerVersion]);
+      if CompilerVersion=0 then begin
+        CodeToolBoss.DefineTree.GetDefinesForDirectory(ExtractFilePath(Project1.MainFilename),true).WriteDebugReport;
+      end;}
+      if (CompilerKind=pcFPC) and (CompilerVersion>0) and (CompilerVersion<20400)
+      then begin
         IDEMessageDialog(lisFPCTooOld,
           lisTheProjectUsesFPCResourcesWhichRequireAtLeast,
           mtError,[mbCancel]);
@@ -7499,7 +7504,6 @@ end;
 function TMainIDE.DoSaveBuildIDEConfigs(Flags: TBuildLazarusFlags): TModalResult;
 var
   InheritedOptionStrings: TInheritedCompOptsStrings;
-  FPCVersion, FPCRelease, FPCPatch: integer;
   Builder: TLazarusBuilder;
   CompilerKind: TPascalCompiler;
 begin
@@ -7537,7 +7541,7 @@ var
   IDEBuildFlags: TBuildLazarusFlags;
   InheritedOptionStrings: TInheritedCompOptsStrings;
   CompiledUnitExt: String;
-  FPCVersion, FPCRelease, FPCPatch, CompilerVersion: integer;
+  CompilerVersion: integer;
   PkgCompileFlags: TPkgCompileFlags;
   OldToolStatus: TIDEToolStatus;
   CompilerKind: TPascalCompiler;
