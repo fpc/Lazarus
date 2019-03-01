@@ -893,7 +893,7 @@ begin
   debugln(['TBuildManager.RescanCompilerDefines GetParsedFPCSourceDirectory needs FPCVer...']);
   {$ENDIF}
   CompilerFilename:=GetCompilerFilename;
-  IsCompilerExecutable(CompilerFilename,CompilerErrorMsg,CompilerKind,true);
+  IsCompilerExecutable(CompilerFilename,CompilerErrorMsg,CompilerKind,{$IFDEF VerboseFPCSrcScan}true{$ELSE}false{$ENDIF});
   FPCSrcDir:=EnvironmentOptions.GetParsedFPCSourceDirectory; // needs FPCVer macro
   FPCOptions:=GetFPCFrontEndOptions;
 
@@ -913,15 +913,19 @@ begin
   {$ENDIF}
 
   // first check the default targetos, targetcpu of the default compiler
-  if FileExistsCached(EnvironmentOptions.GetParsedCompilerFilename) then
+  DefCompilerFilename:=EnvironmentOptions.GetParsedCompilerFilename;
+  if FileExistsCached(DefCompilerFilename) then
   begin
     {$IFDEF VerboseFPCSrcScan}
     debugln(['TBuildManager.RescanCompilerDefines reading default compiler settings']);
     {$ENDIF}
     UnitSetCache:=CodeToolBoss.CompilerDefinesCache.FindUnitSet(
-      EnvironmentOptions.GetParsedCompilerFilename,'','','',FPCSrcDir,true);
+      DefCompilerFilename,'','','',FPCSrcDir,true);
     UnitSetCache.GetConfigCache(true);
   end;
+
+  if CompilerFilename<>DefCompilerFilename then
+    IsCompilerExecutable(CompilerFilename,CompilerErrorMsg,CompilerKind,true);
 
   // then check the project's compiler
   if (CompilerErrorMsg<>'') then begin
@@ -937,7 +941,6 @@ begin
       end;
     end;
 
-    DefCompilerFilename:=EnvironmentOptions.GetParsedCompilerFilename;
     if not IsCompilerExecutable(DefCompilerFilename,DefCompilerErrorMsg,DefCompilerKind,true)
     then begin
       Msg+='Environment compiler: "'+DefCompilerFilename+'": '+DefCompilerErrorMsg+#13;

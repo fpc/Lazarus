@@ -35,8 +35,8 @@ uses
   // RTL
   Classes, SysUtils, strutils, math,
   // CodeTools
-  KeywordFuncLists, CodeToolsFPCMsgs, CodeCache, FileProcs,
-  CodeToolManager, DirectoryCacher, BasicCodeTools, DefineTemplates, SourceLog,
+  KeywordFuncLists, CodeToolsFPCMsgs, CodeCache, FileProcs, CodeToolManager,
+  DirectoryCacher, BasicCodeTools, DefineTemplates, SourceLog, LinkScanner,
   // LazUtils
   LConvEncoding, LazUTF8, FileUtil, LazFileUtils, LazFileCache, LazUtilities,
   AvgLvlTree,
@@ -1009,6 +1009,7 @@ var
   FPCVer: String;
   FPCSrcDir: String;
   aFilename: String;
+  CompilerKind: TPascalCompiler;
 begin
   if fMsgFileStamp<>CompilerParseStamp then begin
     fCurrentEnglishFile:=DefaultEnglishFile;
@@ -1016,7 +1017,10 @@ begin
     // English msg file
     // => use fpcsrcdir/compiler/msg/errore.msg
     // the fpcsrcdir might depend on the FPC version
-    FPCVer:=CodeToolBoss.CompilerDefinesCache.GetFPCVersion(CompilerFilename,TargetOS,TargetCPU,false);
+    FPCVer:=CodeToolBoss.CompilerDefinesCache.GetPCVersion(
+              CompilerFilename,TargetOS,TargetCPU,false,CompilerKind);
+    if CompilerKind<>pcFPC then
+      ;// ToDo
     FPCSrcDir:=EnvironmentOptions.GetParsedFPCSourceDirectory(FPCVer);
     if FilenameIsAbsolute(FPCSrcDir) then begin
       // FPCSrcDir exists => use the errore.msg
@@ -3100,9 +3104,12 @@ begin
 end;
 
 function TIDEFPCParser.GetDefaultPCFullVersion: LongWord;
+var
+  Kind: TPascalCompiler;
 begin
-  // get FPC version
-  Result:=LongWord(CodeToolBoss.GetPCVersionForDirectory(Tool.WorkerDirectory));
+  // get compiler version
+  Result:=LongWord(CodeToolBoss.GetPCVersionForDirectory(Tool.WorkerDirectory,Kind));
+  if Kind=pcFPC then ;
 end;
 
 function TIDEFPCParser.ToUTF8(const Line: string): string;

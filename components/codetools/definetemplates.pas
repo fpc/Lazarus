@@ -1037,7 +1037,10 @@ type
     property TestFilename: string read GetTestFilename write SetTestFilename; // an empty file to test the compiler, will be auto created
     property ExtraOptions: string read GetExtraOptions write SetExtraOptions; // additional compiler options not used as key, e.g. -Fr<language file>
     function GetFPCVersion(const CompilerFilename, TargetOS, TargetCPU: string;
-                           UseCompiledVersionAsDefault: boolean): string;
+                           UseCompiledVersionAsDefault: boolean): string; deprecated 'use GetPCVersion'; // 2.0.1
+    function GetPCVersion(const CompilerFilename, TargetOS, TargetCPU: string;
+                          UseCompiledVersionAsDefault: boolean;
+                          out Kind: TPascalCompiler): string;
     function FindUnitSet(const CompilerFilename, TargetOS, TargetCPU,
                          Options, FPCSrcDir: string;
                          CreateIfNotExists: boolean): TFPCUnitSetCache;
@@ -1069,11 +1072,11 @@ function GetFPCTargetCPU(TargetCPU: string): string; // normalize
 
 function IsCTExecutable(AFilename: string; out ErrorMsg: string): boolean; // not thread-safe
 
-function GuessPascalCompilerFromExeName(Filename: string): TPascalCompiler;
+function GuessPascalCompilerFromExeName(Filename: string): TPascalCompiler; // thread-safe
 function IsCompilerExecutable(AFilename: string; out ErrorMsg: string;
   out Kind: TPascalCompiler; Run: boolean): boolean; // not thread-safe
-function IsFPCExecutable(AFilename: string; out ErrorMsg: string; Run: boolean): boolean; // not thread-safe
-function IsPas2JSExecutable(AFilename: string; out ErrorMsg: string; Run: boolean): boolean; // not thread-safe
+function IsFPCExecutable(AFilename: string; out ErrorMsg: string; Run: boolean): boolean; deprecated; // 2.1, not thread-safe
+function IsPas2JSExecutable(AFilename: string; out ErrorMsg: string; Run: boolean): boolean; deprecated; // 2.1, not thread-safe
 
 // functions to quickly setup some defines
 function CreateDefinesInDirectories(const SourcePaths, FlagName: string
@@ -3882,14 +3885,14 @@ function GuessPascalCompilerFromExeName(Filename: string): TPascalCompiler;
 var
   ShortFilename: String;
 begin
-  ShortFilename:=ExtractFileNameOnly(Filename);
+  ShortFilename:=LowerCase(ExtractFileNameOnly(Filename));
 
-  // pas2js*
-  if CompareText(LeftStr(ShortFilename,6),'pas2js')=0 then
+  // *pas2js*
+  if Pos('pas2js',ShortFilename)>0 then
     exit(pcPas2js);
 
   // dcc*.exe
-  if (CompareFilenames(LeftStr(ShortFilename,3),'dcc')=0)
+  if (LeftStr(ShortFilename,3)='dcc')
   and ((ExeExt='') or (CompareFileExt(Filename,ExeExt)=0))
   then
     exit(pcDelphi);
@@ -3914,8 +3917,7 @@ begin
   //debugln(['IsFPCompiler Short=',ShortFilename]);
 
   // check ppc*.exe
-  if (CompareFilenames(LeftStr(ShortFilename,3),'ppc')=0)
-  then
+  if CompareText(LeftStr(ShortFilename,3),'ppc')=0 then
     exit(true);
 
   // check pas2js*
@@ -3970,6 +3972,7 @@ begin
     exit(true);
 
   ErrorMsg:='fpc executable should start with fpc or ppc';
+  Result:=false;
 end;
 
 function IsFPCExecutable(AFilename: string; out ErrorMsg: string; Run: boolean
@@ -3986,14 +3989,14 @@ begin
   Result:=IsCTExecutable(AFilename,ErrorMsg);
   if not Result then exit;
 
-  // allow scripts like fpc.sh and fpc.bat
-  ShortFilename:=ExtractFileNameOnly(AFilename);
+  // allow scripts like fpc*.sh and fpc*.bat
+  ShortFilename:=LowerCase(ExtractFileNameOnly(AFilename));
   //debugln(['IsFPCompiler Short=',ShortFilename]);
-  if CompareFilenames(ShortFilename,'fpc')=0 then
+  if (LeftStr(ShortFilename,3)='fpc') then
     exit(true);
 
   // allow ppcxxx.exe
-  if (CompareFilenames(LeftStr(ShortFilename,3),'ppc')=0)
+  if (LeftStr(ShortFilename,3)='ppc')
   and ((ExeExt='') or (CompareFileExt(AFilename,ExeExt)=0))
   then
     exit(true);
@@ -4015,9 +4018,9 @@ begin
   Result:=IsCTExecutable(AFilename,ErrorMsg);
   if not Result then exit;
 
-  // allow scripts like pas2js*
-  ShortFilename:=ExtractFileNameOnly(AFilename);
-  if CompareText(LeftStr(ShortFilename,6),'pas2js')=0 then
+  // allow scripts like *pas2js*
+  ShortFilename:=LowerCase(ExtractFileNameOnly(AFilename));
+  if Pos('pas2js',ShortFilename)>0 then
     exit(true);
 
   ErrorMsg:='pas2js executable should start with pas2js';
@@ -9805,9 +9808,20 @@ end;
 function TCompilerDefinesCache.GetFPCVersion(const CompilerFilename, TargetOS,
   TargetCPU: string; UseCompiledVersionAsDefault: boolean): string;
 var
+  Kind: TPascalCompiler;
+begin
+  Result:=GetPCVersion(CompilerFilename,TargetOS,TargetCPU,UseCompiledVersionAsDefault,Kind);
+  if Kind=pcFPC then ;
+end;
+
+function TCompilerDefinesCache.GetPCVersion(const CompilerFilename, TargetOS,
+  TargetCPU: string; UseCompiledVersionAsDefault: boolean; out
+  Kind: TPascalCompiler): string;
+var
   CfgCache: TPCTargetConfigCache;
   ErrorMsg: string;
 begin
+  Kind:=pcFPC;
   if UseCompiledVersionAsDefault then
     Result:={$I %FPCVersion%}
   else
@@ -9818,6 +9832,7 @@ begin
   if CfgCache.NeedsUpdate
   and not CfgCache.Update(TestFilename,ExtraOptions) then
     exit;
+  Kind:=CfgCache.Kind;
   if CfgCache.FullVersion='' then exit;
   Result:=CfgCache.FullVersion;
 end;
