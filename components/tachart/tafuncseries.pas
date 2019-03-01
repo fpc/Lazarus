@@ -1673,9 +1673,9 @@ begin
   else
     Result := TFitEmptyEquationText.Create;
   if FitEquation = feCustom then begin
-    SetLength(basis, ParamCount-1);
-    for i:=1 to High(FFitParams) do
-      basis[i-1] := FFitParams[i].FuncName;
+    SetLength(basis, ParamCount);
+    for i:=0 to High(FFitParams) do
+      basis[i] := FFitParams[i].FuncName;
   end;
   Result.TextFormat(Marks.TextFormat).Equation(FitEquation).Params(FitParams).BasisFuncs(basis);
 end;
