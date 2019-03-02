@@ -57,6 +57,7 @@ type
     procedure TestContextForDeprecated;
     procedure TestContextForClassModifier; // Sealed abstract
     procedure TestContextForClassHelper;
+    procedure TestContextForTypeHelper;
     procedure TestContextForClassFunction; // in class,object,record
     procedure TestContextForRecordHelper;
     procedure TestContextForStatic;
@@ -1015,6 +1016,62 @@ begin
     ]);
   CheckTokensForLine('procedure in class "',  4,
     [ tkKey, tkSpace, tkIdentifier,  tkSymbol, tkSpace, tkKey,  tkSymbol ]);
+
+end;
+
+procedure TTestHighlighterPas.TestContextForTypeHelper;
+  procedure DoChecks;
+  begin
+    CheckTokensForLine('not a helper',  2,
+      [ tkIdentifier, tkSpace, tkSymbol, tkSpace,
+        tkKey {type}, tkSpace, tkIdentifier {helper}, tkSpace, tkKey {for}, tkSpace, tkIdentifier, tkSymbol
+      ]);
+    AssertEquals('not a helper / no fold', 0, PasHighLighter.FoldOpenCount(2));
+
+    CheckTokensForLine('helper',  5,
+      [ tkIdentifier, tkSpace, tkSymbol, tkSpace,
+        tkKey {type}, tkSpace, tkKey {helper}, tkSpace, tkKey {for}, tkSpace, tkIdentifier
+      ]);
+    CheckTokensForLine('procedure in helper',  6,
+      [ tkKey, tkSpace, tkIdentifier,  tkSymbol, tkSpace, tkKey,  tkSymbol ]);
+    CheckTokensForLine('uniq type',  8,
+      [ tkIdentifier, tkSpace, tkSymbol, tkSpace,
+        tkKey {type}, tkSpace, tkIdentifier, tkSymbol
+      ]);
+    AssertEquals('uniq type / no fold', 0, PasHighLighter.FoldOpenCount(8));
+
+    CheckTokensForLine('not a helper, switched off',  11,
+      [ tkIdentifier, tkSpace, tkSymbol, tkSpace,
+        tkKey {type}, tkSpace, tkIdentifier {helper}, tkSpace, tkKey {for}, tkSpace, tkIdentifier, tkSymbol
+      ]);
+    AssertEquals('not a helper, switched off / no fold', 0, PasHighLighter.FoldOpenCount(11));
+  end;
+
+begin
+  ReCreateEdit;
+  SetLines
+    ([ 'Unit A; {$mode objfpc} interface',
+       'type',
+       'helper = type helper for helper;',
+       'type',
+       '{$modeswitch typehelpers}',
+       'helper = type helper for helper',
+         'procedure Foo; static;',
+        'end;',
+       'helper = type integer;',
+       'type',
+       '{$modeswitch typehelpers-}',
+       'helper = type helper for helper;',
+       '{$modeswitch typehelpers}',
+       ''
+    ]);
+
+  DoChecks;
+  SynEdit.TestTypeText(1, 2, ' ');
+  DoChecks; // modeswitch on rescan
+
+  PasHighLighter.FoldConfig[ord(cfbtClass)].Enabled := False;
+  DoChecks;
 
 end;
 
