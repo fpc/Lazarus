@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
   StdCtrls, Spin, Buttons, ComCtrls,
-  TAGraph, TASources, TAFuncSeries, TATransformations, Types;
+  TAGraph, TASources, TAFuncSeries, TATransformations, Types, TAFitUtils;
 
 type
 
@@ -24,6 +24,7 @@ type
     cbShowErrorbars: TCheckBox;
     cbShowConfidenceIntervals: TCheckBox;
     cbShowPredictionIntervals: TCheckBox;
+    CbHTML: TCheckBox;
     UpperConfIntervalSeries: TFuncSeries;
     LowerConfIntervalSeries: TFuncSeries;
     UpperPredIntervalSeries: TFuncSeries;
@@ -70,10 +71,13 @@ type
     procedure btnSaveClick(Sender: TObject);
     procedure cbDrawFitRangeOnlyClick(Sender: TObject);
     procedure cbFitEquationSelect(Sender: TObject);
+    procedure CbHTMLChange(Sender: TObject);
     procedure cbShowConfidenceIntervalsChange(Sender: TObject);
     procedure cbShowErrorbarsChange(Sender: TObject);
     procedure cbShowPredictionIntervalsChange(Sender: TObject);
     procedure EdPointsCountChange(Sender: TObject);
+    procedure FitSeriesFitEquationText(ASeries: TFitSeries;
+      AEquationText: IFitEquationText);
     procedure FixedParamsChanged(Sender: TObject);
     procedure cbFitRangeUseMaxClick(Sender:TObject);
     procedure cbFitRangeUseMinClick(Sender:TObject);
@@ -104,7 +108,7 @@ implementation
 
 uses
   Math, typ, spe, StrUtils,
-  TAChartAxis, TATypes, TAChartUtils, TACustomSource, TAFitLib, TAFitUtils;
+  TAChartAxis, TATypes, TAChartUtils, TACustomSource, TAFitLib;
 
 const
   // Parameters used for data generation; should be reproduced by the fit.
@@ -239,6 +243,12 @@ begin
   end;
 end;
 
+procedure TfrmMain.CbHTMLChange(Sender: TObject);
+begin
+  if CbHtml.Checked then Chart.Legend.TextFormat := tfHTML else Chart.Legend.TextFormat := tfNormal;
+  FitSeries.Title := 'fitted data';  // the fit equation is appended automatically
+end;
+
 procedure TfrmMain.cbShowConfidenceIntervalsChange(Sender: TObject);
 begin
   UpperConfIntervalSeries.Active := cbShowConfidenceIntervals.Checked;
@@ -273,6 +283,16 @@ end;
 procedure TfrmMain.EdPointsCountChange(Sender: TObject);
 begin
   CreateData;
+end;
+
+procedure TfrmMain.FitSeriesFitEquationText(ASeries: TFitSeries;
+  AEquationText: IFitEquationText);
+begin
+  AEquationText.NumFormat('%.5f');
+  if CbHTML.Checked then
+    AEquationText.TextFormat(tfHtml)
+  else
+    AEquationText.TextFormat(tfNormal);
 end;
 
 procedure TfrmMain.FixedParamsChanged(Sender: TObject);

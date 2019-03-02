@@ -615,6 +615,7 @@ object frmMain: TfrmMain
         Pointer.Visible = True
         Source = ListChartSource
         OnFitComplete = FitCompleteHandler
+        OnFitEquationText = FitSeriesFitEquationText
       end
       object UpperConfIntervalSeries: TFuncSeries
         Active = False
@@ -726,6 +727,20 @@ object frmMain: TfrmMain
         Caption = 'Show prediction intervals'
         OnChange = cbShowPredictionIntervalsChange
         TabOrder = 4
+      end
+      object CbHTML: TCheckBox
+        AnchorSideLeft.Control = cbShowConfidenceIntervals
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = pnlLog
+        AnchorSideTop.Side = asrCenter
+        Left = 413
+        Height = 19
+        Top = 12
+        Width = 53
+        BorderSpacing.Left = 20
+        Caption = 'HTML'
+        OnChange = CbHTMLChange
+        TabOrder = 5
       end
     end
   end
