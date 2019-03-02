@@ -282,11 +282,12 @@ type
     property YErrorBars;
   end;
 
+  TFitSeries = class;
+
   TFitParamsState = (fpsUnknown, fpsInvalid, fpsValid);
-
   TFitFuncIndex = 0..MaxInt;
-
   TFitFuncEvent = procedure(AIndex: TFitFuncIndex; AFitFunc: TFitFunc) of object;
+  TFitEquationTextEvent = procedure (ASeries: TFitSeries; AEquationText: IFitEquationText) of object;
 
   TFitSeries = class(TBasicPointSeries)
   strict private
@@ -297,6 +298,7 @@ type
     FFitRange: TChartRange;
     FFixedParams: String;
     FOnFitComplete: TNotifyEvent;
+    FOnFitEquationText: TFitEquationTextEvent;
     FPen: TChartPen;
     FState: TFitParamsState;
     FStep: TFuncSeriesStep;
@@ -392,6 +394,8 @@ type
     property OnCustomDrawPointer;
     property OnFitComplete: TNotifyEvent
       read FOnFitComplete write FOnFitComplete;
+    property OnFitEquationText: TFitEquationTextEvent
+      read FOnFitEquationText write FOnFitEquationText;
     property OnGetPointerStyle;
   end;
 
@@ -1669,16 +1673,18 @@ var
 begin
   if State = fpsValid then begin
     Result := TFitEquationText.Create;
-    Result.TextFormat(Marks.TextFormat).
-                      Equation(FitEquation).
-                      Params(FitParams).
-                      TextFormat(Legend.TextFormat);
+    Result.TextFormat(Legend.TextFormat).
+           NumFormat('%.2f').
+           Equation(FitEquation).
+           Params(FitParams);
     if FitEquation = feCustom then begin
       SetLength(basis, ParamCount);
       for i:=0 to High(FFitParams) do
         basis[i] := FFitParams[i].CustomFuncName;
-      Result.BasisFuncs(basis)
+      Result.BasisFuncs(basis);
     end;
+    if Assigned(FOnFitEquationText) then
+      FOnFitEquationText(Self, Result);
   end else
     Result := TFitEmptyEquationText.Create;
 end;
@@ -1893,7 +1899,7 @@ begin
   if Legend.Format = '' then
     t := Title
   else
-    t := Format(Legend.Format, [Title, Index, EquationText.NumFormat('%f').Get]);
+    t := Format(Legend.Format, [Title, Index, EquationText.Get]);
   AItems.Add(TLegendItemLinePointer.Create(cp, p, t));
 end;
 
