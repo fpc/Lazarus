@@ -81,6 +81,8 @@ const
   mbXExtra2    =  LazSynEditMouseCmdsTypes.mbExtra2;
   mbXWheelUp   =  LazSynEditMouseCmdsTypes.mbWheelUp;
   mbXWheelDown =  LazSynEditMouseCmdsTypes.mbWheelDown;
+  mbXWheelLeft =  LazSynEditMouseCmdsTypes.mbWheelLeft;
+  mbXWheelRight=  LazSynEditMouseCmdsTypes.mbWheelRight;
 
   SynMouseButtonMap: Array [TMouseButton] of TSynMouseButton =
     (mbXLeft, mbXRight, mbXMiddle, mbXExtra1, mbXExtra2);
@@ -88,7 +90,7 @@ const
   SynMouseButtonBackMap: Array [TSynMouseButton] of TMouseButton =
     (Controls.mbLeft, Controls.mbRight, Controls.mbMiddle,
      Controls.mbExtra1, Controls.mbExtra2,
-     Controls.mbLeft, Controls.mbLeft);
+     Controls.mbLeft, Controls.mbLeft, Controls.mbLeft, Controls.mbLeft);
 
 type
 
@@ -502,7 +504,7 @@ begin
     emcCodeFoldCollaps:       Result := SYNS_emcCodeFoldCollaps_opt;
     emcCodeFoldExpand:        Result := SYNS_emcCodeFoldExpand_opt;
     emcContextMenu:           Result := SYNS_emcContextMenuCaretMove_opt;
-    emcWheelScrollDown..emcWheelVertScrollUp:
+    emcWheelScrollDown..emcWheelHorizScrollUp:
                               Result := SYNS_emcWheelScroll_opt;
     else begin
       Result := '';
@@ -666,7 +668,7 @@ begin
   if Collection <> nil then
     TSynEditMouseActions(Collection).AssertNoConflict(self);
 
-  if FButton in [mbXWheelUp, mbXWheelDown] then
+  if FButton in [mbXWheelUp, mbXWheelDown, mbXWheelLeft, mbXWheelRight] then
     ClickDir := cdDown;
 end;
 
@@ -688,7 +690,7 @@ end;
 
 procedure TSynEditMouseAction.SetClickDir(AValue: TSynMAClickDir);
 begin
-  if FButton in [mbXWheelUp, mbXWheelDown] then
+  if FButton in [mbXWheelUp, mbXWheelDown, mbXWheelLeft, mbXWheelRight] then
     AValue := cdDown;
   if FClickDir = AValue then exit;
   FClickDir := AValue;

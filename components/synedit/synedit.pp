@@ -488,6 +488,7 @@ type
     procedure WMKillFocus(var Msg: TWMKillFocus); message WM_KILLFOCUS;
     procedure WMExit(var Message: TLMExit); message LM_EXIT;
     procedure WMMouseWheel(var Message: TLMMouseEvent); message LM_MOUSEWHEEL;
+    procedure WMMouseHorizWheel(var Message: TLMMouseEvent); message LM_MOUSEHWHEEL;
     //procedure WMMouseWheel(var Msg: TMessage); message WM_MOUSEWHEEL;
     procedure WMSetFocus(var Msg: TLMSetFocus); message WM_SETFOCUS;
     procedure WMVScroll(var Msg: TLMScroll); message WM_VSCROLL;
@@ -566,7 +567,7 @@ type
     FConfirmMouseDownMatchAct: TSynEditMouseAction;
     FConfirmMouseDownMatchFound: Boolean;
     fBookMarkOpt: TSynBookMarkOpt;
-    FMouseWheelAccumulator, FMouseWheelLinesAccumulator: integer;
+    FMouseWheelAccumulator, FMouseWheelLinesAccumulator: Array [Boolean] of integer;
     fHideSelection: boolean;
     fOverwriteCaret: TSynEditCaretType;
     fInsertCaret: TSynEditCaretType;
@@ -1631,8 +1632,12 @@ end;
 
 procedure TSynEditMouseGlobalActions.InitForOptions(AnOptions: TSynEditorMouseOptions);
 begin
+  // Normal wheel: scroll dependent on visible scroll-bars
   AddCommand(emcWheelScrollDown,       False,  mbXWheelDown, ccAny, cdDown, [], []);
   AddCommand(emcWheelScrollUp,         False,  mbXWheelUp, ccAny, cdDown, [], []);
+
+  AddCommand(emcWheelHorizScrollDown,       False,  mbXWheelLeft, ccAny, cdDown, [], []);
+  AddCommand(emcWheelHorizScrollUp,         False,  mbXWheelRight, ccAny, cdDown, [], []);
 
   if emCtrlWheelZoom in AnOptions then begin
     AddCommand(emcWheelZoomOut,        False,  mbXWheelDown, ccAny, cdDown, [ssCtrl], [ssCtrl]);
@@ -3124,13 +3129,15 @@ var
     //WHEEL_PAGESCROLL = MAXDWORD;
   var
     WClicks, WLines: Integer;
+    IsHoriz: Boolean;
   begin
-    Inc(FMouseWheelAccumulator, AnInfo.WheelDelta);
-    Inc(FMouseWheelLinesAccumulator, MinMax(Mouse.WheelScrollLines, 1, APageSize) * AnInfo.WheelDelta);
-    WClicks := FMouseWheelAccumulator div WHEEL_DELTA;
-    WLines  := FMouseWheelLinesAccumulator div WHEEL_DELTA;
-    dec(FMouseWheelAccumulator, WClicks * WHEEL_DELTA);
-    dec(FMouseWheelLinesAccumulator, WLines * WHEEL_DELTA);
+    IsHoriz := AnInfo.Button in [mbXWheelLeft, mbXWheelRight];
+    Inc(FMouseWheelAccumulator[IsHoriz], AnInfo.WheelDelta);
+    Inc(FMouseWheelLinesAccumulator[IsHoriz], MinMax(Mouse.WheelScrollLines, 1, APageSize) * AnInfo.WheelDelta);
+    WClicks := FMouseWheelAccumulator[IsHoriz] div WHEEL_DELTA;
+    WLines  := FMouseWheelLinesAccumulator[IsHoriz] div WHEEL_DELTA;
+    dec(FMouseWheelAccumulator[IsHoriz], WClicks * WHEEL_DELTA);
+    dec(FMouseWheelLinesAccumulator[IsHoriz], WLines * WHEEL_DELTA);
 
     case AnAction.Option of
       emcoWheelScrollSystem:
@@ -7659,6 +7666,47 @@ begin
     else begin
       // send megative delta
       FindAndHandleMouseAction(mbXWheelDown, lState, Message.X, Message.Y, ccSingle, cdDown, AnActionResult, Message.WheelDelta);
+    end;
+  finally
+    DecPaintLock;
+  end;
+
+  DoHandleMouseActionResult(AnActionResult);
+
+  Message.Result := 1 // handled, skip further handling by interface
+end;
+
+procedure TCustomSynEdit.WMMouseHorizWheel(var Message: TLMMouseEvent);
+var
+  lState: TShiftState;
+  MousePos: TPoint;
+  AnActionResult: TSynEditMouseActionResult;
+begin
+  if ((sfHorizScrollbarVisible in fStateFlags) and (Message.Y > ClientHeight)) or
+     ((sfVertScrollbarVisible in fStateFlags) and (Message.X > ClientWidth))
+   then begin
+     // mouse is over scrollbar
+     inherited; // include OnMouseWheel...;
+     exit;
+   end;
+
+  MousePos.X := Message.X;
+  MousePos.Y := Message.Y;
+  if DoMouseWheelHorz(Message.State, Message.WheelDelta, MousePos) then begin
+    Message.Result := 1; // handled
+    exit;
+  end;
+
+  lState := Message.State - [ssCaps, ssNum, ssScroll]; // Remove unreliable states, see http://bugs.freepascal.org/view.php?id=20065
+
+  IncPaintLock;
+  try
+    if Message.WheelDelta > 0 then begin
+      FindAndHandleMouseAction(mbXWheelLeft, lState, Message.X, Message.Y, ccSingle, cdDown, AnActionResult, Message.WheelDelta);
+    end
+    else begin
+      // send megative delta
+      FindAndHandleMouseAction(mbXWheelRight, lState, Message.X, Message.Y, ccSingle, cdDown, AnActionResult, Message.WheelDelta);
     end;
   finally
     DecPaintLock;

@@ -11,7 +11,7 @@ interface
 *)
 
 type
-  TSynMouseButton = (mbLeft, mbRight, mbMiddle, mbExtra1, mbExtra2, mbWheelUp, mbWheelDown);
+  TSynMouseButton = (mbLeft, mbRight, mbMiddle, mbExtra1, mbExtra2, mbWheelUp, mbWheelDown, mbWheelLeft, mbWheelRight);
 
 implementation
 
