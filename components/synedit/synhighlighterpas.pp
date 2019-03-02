@@ -97,6 +97,7 @@ type
     rsVarTypeInSpecification, // between ":"/"=" and ";" in a var or type section (or class members)
                               // var a: Integer; type b = Int64;
     rsInTypeBlock,
+    rsAfterEqualThenType,  // TFoo = type ...
     rsSkipAllPasBlocks        // used for: class of ... ;
   );
   TRangeStates = set of TRangeState;
@@ -288,6 +289,7 @@ type
     FBracketNestLevel : Integer;
     FLastLineCodeFoldLevelFix: integer;
     FPasFoldFixLevel: Smallint;
+    FTypeHelpers: Boolean;
   public
     procedure Clear; override;
     function Compare(Range: TSynCustomHighlighterRange): integer; override;
@@ -299,6 +301,7 @@ type
     procedure DecLastLinePasFoldFix;
     property Mode: TPascalCompilerMode read FMode write FMode;
     property NestedComments: Boolean read FNestedComments write FNestedComments;
+    property TypeHelpers: Boolean read FTypeHelpers write FTypeHelpers;
     property BracketNestLevel: integer read FBracketNestLevel write FBracketNestLevel;
     property LastLineCodeFoldLevelFix: integer
       read FLastLineCodeFoldLevelFix write FLastLineCodeFoldLevelFix;
@@ -331,6 +334,7 @@ type
     fLineLen: integer;
     fLineNumber: Integer;
     fProcTable: array[#0..#255] of TProcTableProc;
+    FTypeHelpers: boolean;
     Run: LongInt;// current parser postion in fLine
     fStringLen: Integer;// current length of hash
     fToIdent: integer;// start of current identifier in fLine
@@ -616,6 +620,7 @@ type
       write fDirectiveAttri;
     property CompilerMode: TPascalCompilerMode read FCompilerMode write SetCompilerMode;
     property NestedComments: boolean read FNestedComments write SetNestedComments;
+    property TypeHelpers: boolean read FTypeHelpers write FTypeHelpers;
     property D4syntax: boolean read FD4syntax write SetD4syntax default true;
     property ExtendedKeywordsMode: Boolean
              read FExtendedKeywordsMode write SetExtendedKeywordsMode default False;
@@ -897,6 +902,7 @@ end;
 procedure TSynPasSyn.SetCompilerMode(const AValue: TPascalCompilerMode);
 begin
   NestedComments:=AValue in [pcmFPC,pcmObjFPC]; // NestedComments has to be reset even if CompilerMode doesn't change
+  TypeHelpers := AValue in [pcmDelphi];
   if FCompilerMode=AValue then exit;
   FCompilerMode:=AValue;
   PasCodeFoldRange.Mode:=FCompilerMode;
@@ -1427,10 +1433,16 @@ begin
     end;
     Result := tkKey;
   end
+  // TODO: "class helper" fold at "class", but "type helper" fold at "helper"
   else if KeyComp('helper') then begin
     if (rsAtClass in fRange) and (PasCodeFoldRange.BracketNestLevel = 0)
     then
       Result := tkKey
+    else
+    if (rsAfterEqualThenType in fRange) and TypeHelpers then begin
+      Result := tkKey;
+      StartPascalCodeFoldBlock(cfbtClass); // type helper
+    end
     else
       Result := tkIdentifier;
   end
@@ -1452,14 +1464,20 @@ begin
     if (PasCodeFoldRange.BracketNestLevel = 0)
        and (TopPascalCodeFoldBlockType in
         [cfbtVarType, cfbtLocalVarType, cfbtNone, cfbtProcedure, cfbtProgram,
-         cfbtUnit, cfbtUnitSection]) and not(rsAfterEqualOrColon in fRange)
+         cfbtUnit, cfbtUnitSection])
     then begin
-      if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
-        EndPascalCodeFoldBlockLastLine;
-      if TopPascalCodeFoldBlockType in [cfbtProcedure]
-      then StartPascalCodeFoldBlock(cfbtLocalVarType)
-      else StartPascalCodeFoldBlock(cfbtVarType);
-      fRange := fRange + [rsInTypeBlock];
+      if (rsAfterEqualOrColon in fRange) then begin
+        if TypeHelpers then
+          fRange := fRange + [rsAfterEqualThenType];
+      end
+      else begin
+        if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
+          EndPascalCodeFoldBlockLastLine;
+        if TopPascalCodeFoldBlockType in [cfbtProcedure]
+        then StartPascalCodeFoldBlock(cfbtLocalVarType)
+        else StartPascalCodeFoldBlock(cfbtVarType);
+        fRange := fRange + [rsInTypeBlock];
+      end;
     end;
     Result := tkKey;
   end
@@ -2590,6 +2608,17 @@ begin
       if fLine[Run] = '-' then
         NestedComments:=False;
     end;
+    if TextComp('typehelpers') then
+    begin
+      inc(Run,11);
+      // skip space
+      while (fLine[Run] in [' ',#9,#10,#13]) do inc(Run);
+      if fLine[Run] in ['+', '}'] then
+        TypeHelpers := True
+      else
+      if fLine[Run] = '-' then
+        TypeHelpers := False;
+    end;
   end;
   if TextComp('mode') then begin
     // $mode directive
@@ -3199,7 +3228,7 @@ begin
             fRange := fRange - [rsAfterClass];
 
           fRange := fRange -
-            (FOldRange * [rsAfterEqualOrColon, rsAtPropertyOrReadWrite, rsAfterClassField, rsAfterIdentifierOrValue]) -
+            (FOldRange * [rsAfterEqualOrColon, rsAtPropertyOrReadWrite, rsAfterClassField, rsAfterIdentifierOrValue, rsAfterEqualThenType]) -
             [rsAtClosingBracket];
 
           if rsAtClass in fRange then begin
@@ -3331,6 +3360,7 @@ begin
   // For speed reasons, we work with fRange instead of CodeFoldRange.RangeType
   // -> update now
   CodeFoldRange.RangeType:=Pointer(PtrUInt(Integer(fRange)));
+  PasCodeFoldRange.TypeHelpers := TypeHelpers;
   // return a fixed copy of the current CodeFoldRange instance
   Result := inherited GetRange;
 end;
@@ -3341,6 +3371,7 @@ begin
   inherited SetRange(Value);
   CompilerMode := PasCodeFoldRange.Mode;
   NestedComments := PasCodeFoldRange.NestedComments;
+  TypeHelpers := PasCodeFoldRange.TypeHelpers;
   fRange := TRangeStates(Integer(PtrUInt(CodeFoldRange.RangeType)));
   FSynPasRangeInfo := TSynHighlighterPasRangeList(CurrentRanges).PasRangeInfo[LineIndex-1];
 end;
@@ -4513,6 +4544,8 @@ begin
   if Result<>0 then exit;
   Result:=ord(FNestedComments)-ord(TSynPasSynRange(Range).FNestedComments);
   if Result<>0 then exit;
+  Result:=ord(FTypeHelpers)-ord(TSynPasSynRange(Range).FTypeHelpers);
+  if Result<>0 then exit;
   Result := FBracketNestLevel - TSynPasSynRange(Range).FBracketNestLevel;
   if Result<>0 then exit;
   Result := FLastLineCodeFoldLevelFix - TSynPasSynRange(Range).FLastLineCodeFoldLevelFix;
@@ -4526,6 +4559,7 @@ begin
     inherited Assign(Src);
     FMode:=TSynPasSynRange(Src).FMode;
     FNestedComments:=TSynPasSynRange(Src).FNestedComments;
+    FTypeHelpers := TSynPasSynRange(Src).FTypeHelpers;
     FBracketNestLevel:=TSynPasSynRange(Src).FBracketNestLevel;
     FLastLineCodeFoldLevelFix := TSynPasSynRange(Src).FLastLineCodeFoldLevelFix;
     FPasFoldFixLevel := TSynPasSynRange(Src).FPasFoldFixLevel;
