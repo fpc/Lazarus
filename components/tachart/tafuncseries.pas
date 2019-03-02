@@ -2032,10 +2032,10 @@ end;
   .Value = NaN, and .Fixed = false.
 
   By default, the fit base functions (.Func) are set to a polynomial because
-  all implemented fitting types are of this kind.
+  all built-in fitting types are of this kind.
 
   In case of custom fitting, the fit base functions become equal to the
-  functions FCustomFuncs defined separately by the method SetFitBasisFunc().
+  function .CustomFunc defined separately by the method SetFitBasisFunc().
 }
 function TFitSeries.PrepareFitParams: Boolean;
 var
@@ -2051,9 +2051,9 @@ begin
     if FFitEquation <> feCustom then
       FFitParams[i].Func := @FitBaseFunc_Poly
     else begin
-      FFitParams[i].Func := FFitParams[i].CustomFunc;
-      if FFitParams[i].Func = nil then
+      if FFitParams[i].CustomFunc = nil then
         exit;
+      FFitParams[i].Func := FFitParams[i].CustomFunc;
     end;
   end;
 
