@@ -504,6 +504,8 @@ const
   DEF_PARAM_MIN = 0.0;
   DEF_PARAM_MAX = 1.0;
 
+  SIndexOutOfRange = '[%s.%s] Index out of range.';
+
 type
   TFitSeriesRange = class(TChartRange)
   strict private
@@ -1699,7 +1701,8 @@ begin
     fitSingular             : Result := rsErrFitSingular;
     fitNoBaseFunctions      : Result := rsErrFitNoBaseFunctions;
   else
-    raise EChartError.CreateFmt('[TFitSeries.ErrorMsg] No message text assigned to error code #%d.', [ord(ErrCode)]);
+    raise EChartError.CreateFmt('[%s.ErrorMsg] No message text assigned to error code #%d.',
+      [NameOrClassName(self), ord(ErrCode)]);
   end;
 end;
 
@@ -1808,6 +1811,9 @@ procedure TFitSeries.GetConfidenceLimits(AIndex: Integer; out ALower, AUpper: Do
 var
   val, sig, t: Double;
 begin
+  if not InRange(AIndex, 0, ParamCount - 1) then
+    raise EChartError.CreateFmt(SIndexOutOfRange, [NameOrClassName(self), 'GetConfidenceLimits']);
+
   if FState <> fpsValid then begin
     ALower := NaN;
     AUpper := NaN;
@@ -1930,13 +1936,14 @@ end;
 
 function TFitSeries.GetParam(AIndex: Integer): Double;
 begin
+  if not InRange(AIndex, 0, ParamCount - 1) then
+    raise EChartError.CreateFmt(SIndexOutOfRange, [NameOrClassName(Self), 'GetParam']);
+
   if FState <> fpsValid then begin
     Result := NaN;
     exit;
   end;
 
-  if not InRange(AIndex, 0, ParamCount - 1) then
-    raise EChartError.Create('TFitSeries.GetParam index out of range');
   if (FFitEquation in [feExp, fePower]) and (AIndex = 0) then
     Result := exp(FFitParams[AIndex].Value)
   else
@@ -1952,6 +1959,9 @@ function TFitSeries.GetParamError(AIndex: Integer): Double;
 var
   val, sig: Double;
 begin
+  if not InRange(AIndex, 0, ParamCount - 1) then
+    raise EChartError.CreateFmt(SIndexOutOfRange, [NameOrClassName(self), 'GetParamError']);
+
   Result := NaN;
   if FState <> fpsValid then
     exit;
@@ -1969,6 +1979,9 @@ function TFitSeries.GetParam_pValue(AIndex: Integer): Double;
 var
   t: Double;
 begin
+  if not InRange(AIndex, 0, ParamCount - 1) then
+    raise EChartError.CreateFmt(SIndexOutOfRange, [NameOrClassName(self), 'GetParam_pValue']);
+
   t := GetParam_tValue(AIndex);
   if IsNaN(t) then
     Result := NaN
@@ -1998,6 +2011,9 @@ function TFitSeries.GetParam_tValue(AIndex: Integer): Double;
 var
   sig: Double;
 begin
+  if not InRange(AIndex, 0, ParamCount - 1) then
+    raise EChartError.CreateFmt(SIndexOutOfRange, [NameOrClassName(self), 'GetParam_tValue']);
+
   sig := GetParam_RawError(AIndex);
   if IsNaN(sig) then
     Result := NaN
@@ -2123,6 +2139,9 @@ end;
 procedure TFitSeries.SetFitBasisFunc(AIndex: TFitFuncIndex; AFitFunc: TFitFunc;
   AFitFuncName: String);
 begin
+  if not InRange(AIndex, 0, ParamCount - 1) then
+    raise EChartError.CreateFmt(SIndexOutOfRange, [NameOrClassName(self), 'SetFitBasisFunc']);
+
   FFitParams[AIndex].CustomFunc := AFitFunc;
   FFitParams[AIndex].CustomFuncName := AFitFuncName;  // e.g. 'sin(x)';
 end;
@@ -2263,7 +2282,7 @@ begin
             Add(255, 0, '', clWhite);
           end;
       else
-        raise Exception.Create('Palette not supported');
+        raise EChartError.CreateFmt('[%s.BuildPalette] Palette not supported', [NameOrClassName(Self)]);
       end;
 
       if FPaletteMin < FPaletteMax then begin

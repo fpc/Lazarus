@@ -346,6 +346,7 @@ function InterpolateRGB(AColor1, AColor2: Integer; ACoeff: Double): Integer;
 function IntToColorHex(AColor: Integer): String; inline;
 function IsEquivalent(const A1, A2: Double): Boolean; inline;
 function IsNan(const APoint: TDoublePoint): Boolean; overload; inline;
+function NameOrClassName(AComponent: TComponent): String; inline;
 function NumberOr(ANum: Double; ADefault: Double = 0.0): Double; inline;
 
 function OrientToRad(AOrient: Integer): Double; inline;
@@ -498,6 +499,17 @@ end;
 function IsNan(const APoint: TDoublePoint): Boolean;
 begin
   Result := IsNan(APoint.X) or IsNan(APoint.Y);
+end;
+
+function NameOrClassName(AComponent: TComponent): String;
+begin
+  if AComponent = nil then
+    Result := '<nil>'
+  else
+  if AComponent.Name = '' then
+    Result := AComponent.ClassName
+  else
+    Result := AComponent.Name;
 end;
 
 function NumberOr(ANum: Double; ADefault: Double): Double;
