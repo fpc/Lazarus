@@ -43,13 +43,28 @@ type
 
   TEditorMouseOptionsFrame = class(TAbstractIDEOptionsEditor)
     chkGutterTextLines: TCheckBox;
+    dropWheelHoriz: TComboBox;
+    dropWheelAltHoriz: TComboBox;
+    dropWheelAltCtrlHoriz: TComboBox;
+    dropWheelCtrlHoriz: TComboBox;
+    dropWheelShiftHoriz: TComboBox;
+    dropWheelShiftAltHoriz: TComboBox;
+    dropWheelShiftAltCtrlHoriz: TComboBox;
+    dropWheelShiftCtrlHoriz: TComboBox;
     GutterLeftRadio3: TRadioButton;
     lblWheel: TLabel;
+    lblWheelHoriz: TLabel;
     lblWheelAlt: TLabel;
+    lblWheelAltHoriz: TLabel;
+    lblWheelAltCtrlHoriz: TLabel;
     lblWheelCtrl: TLabel;
+    lblWheelCtrlHoriz: TLabel;
     lblWheelShift: TLabel;
     lblWheelAltCtrl: TLabel;
+    lblWheelShiftHoriz: TLabel;
     lblWheelShiftAlt: TLabel;
+    lblWheelShiftAltHoriz: TLabel;
+    lblWheelShiftAltCtrlHoriz: TLabel;
     lblWheelShiftCtrl: TLabel;
     lblWheelShiftAltCtrl: TLabel;
     dropWheel: TComboBox;
@@ -136,12 +151,15 @@ type
     dropLeftShiftDouble: TComboBox;
     dropLeftAltDouble: TComboBox;
     dropLeftCtrlDouble: TComboBox;
+    lblWheelShiftCtrlHoriz: TLabel;
+    PageHorizWheel: TPage;
     PageExtra2: TPage;
     PageExtra1: TPage;
     PageRight: TPage;
     ScrollBoxExtra2: TScrollBox;
     ScrollBoxExtra1: TScrollBox;
     ScrollBoxRight: TScrollBox;
+    ScrollBoxWheelHoriz: TScrollBox;
     ShiftLeftLabel: TLabel;
     AltCtrlLeftLabel: TLabel;
     CtrLLeftLabel: TLabel;
@@ -198,6 +216,7 @@ type
     TextLeft: TCheckGroup;
     TextMiddle: TRadioGroup;
     GutterLeft: TRadioGroup;
+    ToolBtnHorizWheel: TToolButton;
     WarnLabel: TLabel;
     procedure CheckOrRadioChange(Sender: TObject);
     procedure chkPredefinedSchemeChange(Sender: TObject);
@@ -405,7 +424,16 @@ begin
     (FTempMouseSettings.AltCtrlWheel        = TMouseOptWheelAction(dropWheelAltCtrl.ItemIndex)) and
     (FTempMouseSettings.ShiftAltWheel       = TMouseOptWheelAction(dropWheelShiftAlt.ItemIndex)) and
     (FTempMouseSettings.ShiftCtrlWheel      = TMouseOptWheelAction(dropWheelShiftCtrl.ItemIndex)) and
-    (FTempMouseSettings.ShiftAltCtrlWheel   = TMouseOptWheelAction(dropWheelShiftAltCtrl.ItemIndex))
+    (FTempMouseSettings.ShiftAltCtrlWheel   = TMouseOptWheelAction(dropWheelShiftAltCtrl.ItemIndex)) and
+
+    (FTempMouseSettings.HorizWheel      = TMouseOptWheelAction(dropWheelHoriz.ItemIndex)) and
+    (FTempMouseSettings.CtrlHorizWheel  = TMouseOptWheelAction(dropWheelCtrlHoriz.ItemIndex)) and
+    (FTempMouseSettings.AltHorizWheel   = TMouseOptWheelAction(dropWheelAltHoriz.ItemIndex)) and
+    (FTempMouseSettings.ShiftHorizWheel = TMouseOptWheelAction(dropWheelShiftHoriz.ItemIndex)) and
+    (FTempMouseSettings.AltCtrlHorizWheel        = TMouseOptWheelAction(dropWheelAltCtrlHoriz.ItemIndex)) and
+    (FTempMouseSettings.ShiftAltHorizWheel       = TMouseOptWheelAction(dropWheelShiftAltHoriz.ItemIndex)) and
+    (FTempMouseSettings.ShiftCtrlHorizWheel      = TMouseOptWheelAction(dropWheelShiftCtrlHoriz.ItemIndex)) and
+    (FTempMouseSettings.ShiftAltCtrlHorizWheel   = TMouseOptWheelAction(dropWheelShiftAltCtrlHoriz.ItemIndex))
   );
 end;
 
@@ -498,6 +526,15 @@ begin
   FTempMouseSettings.ShiftAltWheel       := TMouseOptWheelAction(dropWheelShiftAlt.ItemIndex);
   FTempMouseSettings.ShiftCtrlWheel      := TMouseOptWheelAction(dropWheelShiftCtrl.ItemIndex);
   FTempMouseSettings.ShiftAltCtrlWheel   := TMouseOptWheelAction(dropWheelShiftAltCtrl.ItemIndex);
+
+  FTempMouseSettings.HorizWheel               := TMouseOptWheelAction(dropWheelHoriz.ItemIndex);
+  FTempMouseSettings.CtrlHorizWheel           := TMouseOptWheelAction(dropWheelCtrlHoriz.ItemIndex);
+  FTempMouseSettings.AltHorizWheel            := TMouseOptWheelAction(dropWheelAltHoriz.ItemIndex);
+  FTempMouseSettings.ShiftHorizWheel          := TMouseOptWheelAction(dropWheelShiftHoriz.ItemIndex);
+  FTempMouseSettings.AltCtrlHorizWheel        := TMouseOptWheelAction(dropWheelAltCtrlHoriz.ItemIndex);
+  FTempMouseSettings.ShiftAltHorizWheel       := TMouseOptWheelAction(dropWheelShiftAltHoriz.ItemIndex);
+  FTempMouseSettings.ShiftCtrlHorizWheel      := TMouseOptWheelAction(dropWheelShiftCtrlHoriz.ItemIndex);
+  FTempMouseSettings.ShiftAltCtrlHorizWheel   := TMouseOptWheelAction(dropWheelShiftAltCtrlHoriz.ItemIndex);
 
   FTempMouseSettings.ResetTextToDefault;
   if FDialog.FindEditor(TEditorMouseOptionsAdvFrame) <> nil then
@@ -631,6 +668,7 @@ begin
   ToolBtnLeftMulti.Caption := dlfMouseSimpleTextSectPageLMulti;
   ToolBtnMiddle.Caption := dlfMouseSimpleTextSectPageBtn;
   ToolBtnWheel.Caption := dlfMouseSimpleTextSectPageWheel;
+  ToolBtnHorizWheel.Caption := dlfMouseSimpleTextSectPageHorizWheel;
   ToolBtnRight.Caption := dlfMouseSimpleTextSectPageRight;
   ToolBtnExtra1.Caption := dlfMouseSimpleTextSectPageExtra1;
   ToolBtnExtra2.Caption := dlfMouseSimpleTextSectPageExtra2;
@@ -695,6 +733,15 @@ begin
   lblWheelShiftAlt.Caption     := dlfMouseSimpleTextSectShiftAltWheelLabel;
   lblWheelShiftCtrl.Caption    := dlfMouseSimpleTextSectShiftCtrlWheelLabel;
   lblWheelShiftAltCtrl.Caption := dlfMouseSimpleTextSectShiftAltCtrlWheelLabel;
+    // Horiz wheel
+  lblWheelHoriz.Caption      := dlfMouseSimpleTextSectWheelLabel;
+  lblWheelCtrlHoriz.Caption  := dlfMouseSimpleTextSectCtrlWheelLabel;
+  lblWheelAltHoriz.Caption   := dlfMouseSimpleTextSectAltWheelLabel;
+  lblWheelShiftHoriz.Caption := dlfMouseSimpleTextShiftSectWheelLabel;
+  lblWheelAltCtrlHoriz.Caption      := dlfMouseSimpleTextSectAltCtrlWheelLabel;
+  lblWheelShiftAltHoriz.Caption     := dlfMouseSimpleTextSectShiftAltWheelLabel;
+  lblWheelShiftCtrlHoriz.Caption    := dlfMouseSimpleTextSectShiftCtrlWheelLabel;
+  lblWheelShiftAltCtrlHoriz.Caption := dlfMouseSimpleTextSectShiftAltCtrlWheelLabel;
 
     // left multi click
   SetupButtonCombo(dropLeftDouble, True);
@@ -756,6 +803,15 @@ begin
   SetupWheelCombo(dropWheelShiftAlt);
   SetupWheelCombo(dropWheelShiftCtrl);
   SetupWheelCombo(dropWheelShiftAltCtrl);
+    // Horiz wheel
+  SetupWheelCombo(dropWheelHoriz);
+  SetupWheelCombo(dropWheelCtrlHoriz);
+  SetupWheelCombo(dropWheelAltHoriz);
+  SetupWheelCombo(dropWheelShiftHoriz);
+  SetupWheelCombo(dropWheelAltCtrlHoriz);
+  SetupWheelCombo(dropWheelShiftAltHoriz);
+  SetupWheelCombo(dropWheelShiftCtrlHoriz);
+  SetupWheelCombo(dropWheelShiftAltCtrlHoriz);
 
   WarnLabel.Caption := dlfMouseSimpleWarning;
   DiffLabel.Caption := dlfMouseSimpleDiff;
@@ -856,6 +912,15 @@ begin
   dropWheelShiftAlt.ItemIndex     := ord(FTempMouseSettings.ShiftAltWheel);
   dropWheelShiftCtrl.ItemIndex    := ord(FTempMouseSettings.ShiftCtrlWheel);
   dropWheelShiftAltCtrl.ItemIndex := ord(FTempMouseSettings.ShiftAltCtrlWheel);
+
+  dropWheelHoriz.ItemIndex      := ord(FTempMouseSettings.HorizWheel);
+  dropWheelCtrlHoriz.ItemIndex  := ord(FTempMouseSettings.CtrlHorizWheel);
+  dropWheelAltHoriz.ItemIndex   := ord(FTempMouseSettings.AltHorizWheel);
+  dropWheelShiftHoriz.ItemIndex := ord(FTempMouseSettings.ShiftHorizWheel);
+  dropWheelAltCtrlHoriz.ItemIndex      := ord(FTempMouseSettings.AltHorizWheel);
+  dropWheelShiftAltHoriz.ItemIndex     := ord(FTempMouseSettings.ShiftAltHorizWheel);
+  dropWheelShiftCtrlHoriz.ItemIndex    := ord(FTempMouseSettings.ShiftCtrlHorizWheel);
+  dropWheelShiftAltCtrlHoriz.ItemIndex := ord(FTempMouseSettings.ShiftAltCtrlHorizWheel);
 
   Dec(FInClickHandler);
   UpdateButtons;

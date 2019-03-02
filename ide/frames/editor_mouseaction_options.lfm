@@ -2,17 +2,17 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
   Left = 0
   Height = 588
   Top = 0
-  Width = 636
+  Width = 671
   HorzScrollBar.Page = 636
   VertScrollBar.Page = 523
   Align = alClient
   Anchors = [akTop]
   ClientHeight = 588
-  ClientWidth = 636
+  ClientWidth = 671
   TabOrder = 0
   Visible = False
-  DesignLeft = 366
-  DesignTop = 153
+  DesignLeft = 393
+  DesignTop = 151
   object pnlUserSchemes: TPanel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -21,12 +21,12 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     Left = 0
     Height = 23
     Top = 0
-    Width = 636
+    Width = 671
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BevelOuter = bvNone
     ClientHeight = 23
-    ClientWidth = 636
+    ClientWidth = 671
     TabOrder = 0
     Visible = False
     object chkPredefinedScheme: TCheckBox
@@ -84,12 +84,12 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     Left = 0
     Height = 107
     Top = 96
-    Width = 636
+    Width = 671
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BevelOuter = bvNone
     ClientHeight = 107
-    ClientWidth = 636
+    ClientWidth = 671
     TabOrder = 2
     object PanelGutter: TPanel
       AnchorSideLeft.Control = pnlAllGutter
@@ -99,14 +99,14 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       Left = 6
       Height = 57
       Top = 0
-      Width = 624
+      Width = 659
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
       BorderSpacing.Left = 6
       BorderSpacing.Right = 6
       BevelOuter = bvNone
       ClientHeight = 57
-      ClientWidth = 624
+      ClientWidth = 659
       TabOrder = 0
       object GutterLeftRadio1: TRadioButton
         AnchorSideLeft.Control = PanelGutter
@@ -116,7 +116,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
         Left = 0
         Height = 19
         Top = 0
-        Width = 624
+        Width = 659
         Anchors = [akTop, akLeft, akRight]
         Caption = 'GutterLeftRadio1'
         Checked = True
@@ -133,7 +133,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
         Left = 0
         Height = 19
         Top = 19
-        Width = 624
+        Width = 659
         Anchors = [akTop, akLeft, akRight]
         Caption = 'GutterLeftRadio2'
         OnChange = CheckOrRadioChange
@@ -148,7 +148,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
         Left = 0
         Height = 19
         Top = 38
-        Width = 624
+        Width = 659
         Anchors = [akTop, akLeft, akRight]
         Caption = 'GutterLeftRadio3'
         OnChange = CheckOrRadioChange
@@ -160,7 +160,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = pnlAllGutter
       AnchorSideRight.Side = asrBottom
-      Left = 507
+      Left = 542
       Height = 25
       Top = 82
       Width = 123
@@ -195,12 +195,12 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     Left = 0
     Height = 318
     Top = 230
-    Width = 636
+    Width = 671
     Anchors = [akTop, akLeft, akRight, akBottom]
     AutoSize = True
     BevelOuter = bvNone
     ClientHeight = 318
-    ClientWidth = 636
+    ClientWidth = 671
     TabOrder = 3
     object PanelTextCheckBox: TPanel
       AnchorSideLeft.Control = pnlAllText
@@ -210,7 +210,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       Left = 6
       Height = 38
       Top = 0
-      Width = 624
+      Width = 659
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
       BorderSpacing.Left = 6
@@ -219,7 +219,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       BevelOuter = bvNone
       ChildSizing.ControlsPerLine = 2
       ClientHeight = 38
-      ClientWidth = 624
+      ClientWidth = 659
       TabOrder = 0
       object TextDrag: TCheckBox
         AnchorSideLeft.Control = PanelTextCheckBox
@@ -251,9 +251,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       AnchorSideRight.Control = pnlAllText
       AnchorSideRight.Side = asrBottom
       Left = 0
-      Height = 26
+      Height = 24
       Top = 44
-      Width = 636
+      Width = 671
       Align = alNone
       Anchors = [akTop, akLeft, akRight]
       Caption = 'ToolBar1'
@@ -296,8 +296,8 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
         Style = tbsCheck
       end
       object ToolBtnRight: TToolButton
-        Tag = 4
-        Left = 364
+        Tag = 5
+        Left = 475
         Top = 2
         Caption = 'ToolBtnRight'
         Grouped = True
@@ -305,8 +305,8 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
         Style = tbsCheck
       end
       object ToolBtnExtra1: TToolButton
-        Tag = 5
-        Left = 442
+        Tag = 6
+        Left = 553
         Top = 2
         Caption = 'ToolBtnExtra1'
         Grouped = True
@@ -314,10 +314,19 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
         Style = tbsCheck
       end
       object ToolBtnExtra2: TToolButton
-        Tag = 6
-        Left = 523
-        Top = 2
+        Tag = 7
+        Left = 1
+        Top = 24
         Caption = 'ToolBtnExtra2'
+        Grouped = True
+        OnClick = ToolBtnMiddleClick
+        Style = tbsCheck
+      end
+      object ToolBtnHorizWheel: TToolButton
+        Tag = 4
+        Left = 364
+        Top = 2
+        Caption = 'ToolBtnHorizWheel'
         Grouped = True
         OnClick = ToolBtnMiddleClick
         Style = tbsCheck
@@ -330,7 +339,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = pnlAllText
       AnchorSideBottom.Side = asrBottom
-      Left = 518
+      Left = 553
       Height = 25
       Top = 293
       Width = 112
@@ -350,9 +359,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = ResetTextButton
       Left = 0
-      Height = 217
-      Top = 70
-      Width = 636
+      Height = 219
+      Top = 68
+      Width = 671
       PageIndex = 0
       Anchors = [akTop, akLeft, akRight, akBottom]
       TabOrder = 3
@@ -360,17 +369,17 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       object PageLeftMod: TPage
         object ScrollBoxLeftMod: TScrollBox
           Left = 0
-          Height = 217
+          Height = 219
           Top = 0
-          Width = 636
+          Width = 671
           HorzScrollBar.Page = 246
           HorzScrollBar.Tracking = True
           VertScrollBar.Page = 203
           VertScrollBar.Tracking = True
           Align = alClient
           BorderStyle = bsNone
-          ClientHeight = 217
-          ClientWidth = 636
+          ClientHeight = 219
+          ClientWidth = 671
           TabOrder = 0
           object dropCtrlLeft: TComboBox
             AnchorSideLeft.Control = dropAltLeft
@@ -381,7 +390,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 35
-            Width = 490
+            Width = 525
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
@@ -411,7 +420,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 6
-            Width = 490
+            Width = 525
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
@@ -442,7 +451,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 93
-            Width = 490
+            Width = 525
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Left = 140
             BorderSpacing.Top = 6
@@ -462,7 +471,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 64
-            Width = 490
+            Width = 525
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
@@ -481,7 +490,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 122
-            Width = 490
+            Width = 525
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
@@ -500,7 +509,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 151
-            Width = 490
+            Width = 525
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
@@ -519,7 +528,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 180
-            Width = 490
+            Width = 525
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
@@ -594,17 +603,17 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       object PageLeftDbl: TPage
         object ScrollBoxLeftDbl: TScrollBox
           Left = 0
-          Height = 207
+          Height = 219
           Top = 0
-          Width = 636
-          HorzScrollBar.Page = 636
+          Width = 671
+          HorzScrollBar.Page = 246
           HorzScrollBar.Tracking = True
-          VertScrollBar.Page = 207
+          VertScrollBar.Page = 174
           VertScrollBar.Tracking = True
           Align = alClient
           BorderStyle = bsNone
-          ClientHeight = 207
-          ClientWidth = 636
+          ClientHeight = 219
+          ClientWidth = 671
           TabOrder = 0
           object dropLeftTriple: TComboBox
             AnchorSideLeft.Control = dropLeftDouble
@@ -615,7 +624,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 35
-            Width = 490
+            Width = 525
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
@@ -630,9 +639,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideTop.Control = dropLeftTriple
             AnchorSideTop.Side = asrCenter
             Left = 6
-            Height = 16
-            Top = 38
-            Width = 71
+            Height = 15
+            Top = 39
+            Width = 62
             BorderSpacing.Left = 6
             Caption = 'lblLeftTriple'
             ParentColor = False
@@ -645,7 +654,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 6
-            Width = 490
+            Width = 525
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Left = 140
             BorderSpacing.Top = 6
@@ -661,9 +670,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideTop.Control = dropLeftDouble
             AnchorSideTop.Side = asrCenter
             Left = 6
-            Height = 16
-            Top = 9
-            Width = 72
+            Height = 15
+            Top = 10
+            Width = 71
             BorderSpacing.Left = 6
             Caption = 'lblLeftDouble'
             ParentColor = False
@@ -677,7 +686,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 64
-            Width = 490
+            Width = 525
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
@@ -696,7 +705,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 93
-            Width = 490
+            Width = 525
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
@@ -715,7 +724,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 122
-            Width = 490
+            Width = 525
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
@@ -734,7 +743,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 151
-            Width = 490
+            Width = 525
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
@@ -749,9 +758,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideTop.Control = dropLeftQuad
             AnchorSideTop.Side = asrCenter
             Left = 6
-            Height = 16
-            Top = 67
-            Width = 63
+            Height = 15
+            Top = 68
+            Width = 62
             BorderSpacing.Left = 6
             Caption = 'lblLeftQuad'
             ParentColor = False
@@ -761,9 +770,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideTop.Control = dropLeftShiftDouble
             AnchorSideTop.Side = asrCenter
             Left = 6
-            Height = 16
-            Top = 96
-            Width = 96
+            Height = 15
+            Top = 97
+            Width = 95
             BorderSpacing.Left = 6
             Caption = 'lblLeftDoubleShift'
             ParentColor = False
@@ -773,9 +782,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideTop.Control = dropLeftAltDouble
             AnchorSideTop.Side = asrCenter
             Left = 6
-            Height = 16
-            Top = 125
-            Width = 87
+            Height = 15
+            Top = 126
+            Width = 86
             BorderSpacing.Left = 6
             Caption = 'lblLeftDoubleAlt'
             ParentColor = False
@@ -785,9 +794,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideTop.Control = dropLeftCtrlDouble
             AnchorSideTop.Side = asrCenter
             Left = 6
-            Height = 16
-            Top = 154
-            Width = 91
+            Height = 15
+            Top = 155
+            Width = 90
             BorderSpacing.Left = 6
             Caption = 'lblLeftDoubleCtrl'
             ParentColor = False
@@ -797,17 +806,17 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       object PageMiddle: TPage
         object ScrollBoxMiddle: TScrollBox
           Left = 0
-          Height = 243
+          Height = 219
           Top = 0
-          Width = 636
-          HorzScrollBar.Page = 636
+          Width = 671
+          HorzScrollBar.Page = 246
           HorzScrollBar.Tracking = True
-          VertScrollBar.Page = 243
+          VertScrollBar.Page = 219
           VertScrollBar.Tracking = True
           Align = alClient
           BorderStyle = bsNone
-          ClientHeight = 243
-          ClientWidth = 636
+          ClientHeight = 219
+          ClientWidth = 654
           TabOrder = 0
           object lblMiddle: TLabel
             AnchorSideLeft.Control = ScrollBoxMiddle
@@ -816,9 +825,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideRight.Control = ScrollBoxMiddle
             AnchorSideRight.Side = asrBottom
             Left = 6
-            Height = 16
-            Top = 9
-            Width = 84
+            Height = 15
+            Top = 10
+            Width = 50
             BorderSpacing.Left = 6
             Caption = 'lblMiddle'
             ParentColor = False
@@ -831,7 +840,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 6
-            Width = 490
+            Width = 508
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Left = 140
             BorderSpacing.Top = 6
@@ -849,9 +858,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideRight.Control = ScrollBoxMiddle
             AnchorSideRight.Side = asrBottom
             Left = 6
-            Height = 16
-            Top = 96
-            Width = 103
+            Height = 15
+            Top = 97
+            Width = 69
             BorderSpacing.Left = 6
             Caption = 'lblMiddleCtrl'
             ParentColor = False
@@ -865,7 +874,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 93
-            Width = 490
+            Width = 508
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
@@ -884,7 +893,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 64
-            Width = 490
+            Width = 508
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
@@ -901,9 +910,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideRight.Control = ScrollBoxMiddle
             AnchorSideRight.Side = asrBottom
             Left = 6
-            Height = 16
-            Top = 67
-            Width = 99
+            Height = 15
+            Top = 68
+            Width = 65
             BorderSpacing.Left = 6
             Caption = 'lblMiddleAlt'
             ParentColor = False
@@ -917,7 +926,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 35
-            Width = 490
+            Width = 508
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
@@ -934,9 +943,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideRight.Control = ScrollBoxMiddle
             AnchorSideRight.Side = asrBottom
             Left = 6
-            Height = 16
-            Top = 38
-            Width = 90
+            Height = 15
+            Top = 39
+            Width = 74
             BorderSpacing.Left = 6
             Caption = 'lblMiddleShift'
             ParentColor = False
@@ -950,7 +959,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 122
-            Width = 490
+            Width = 508
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
@@ -969,7 +978,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 151
-            Width = 490
+            Width = 508
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
@@ -988,7 +997,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 180
-            Width = 490
+            Width = 508
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
@@ -1007,7 +1016,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 209
-            Width = 490
+            Width = 508
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
@@ -1024,9 +1033,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideRight.Control = ScrollBoxMiddle
             AnchorSideRight.Side = asrBottom
             Left = 6
-            Height = 16
-            Top = 125
-            Width = 118
+            Height = 15
+            Top = 126
+            Width = 84
             BorderSpacing.Left = 6
             Caption = 'lblMiddleAltCtrl'
             ParentColor = False
@@ -1038,9 +1047,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideRight.Control = ScrollBoxMiddle
             AnchorSideRight.Side = asrBottom
             Left = 6
-            Height = 16
-            Top = 154
-            Width = 123
+            Height = 15
+            Top = 155
+            Width = 89
             BorderSpacing.Left = 6
             Caption = 'lblMiddleShiftAlt'
             ParentColor = False
@@ -1052,9 +1061,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideRight.Control = ScrollBoxMiddle
             AnchorSideRight.Side = asrBottom
             Left = 6
-            Height = 16
-            Top = 183
-            Width = 127
+            Height = 15
+            Top = 184
+            Width = 93
             BorderSpacing.Left = 6
             Caption = 'lblMiddleShiftCtrl'
             ParentColor = False
@@ -1066,9 +1075,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideRight.Control = ScrollBoxMiddle
             AnchorSideRight.Side = asrBottom
             Left = 6
-            Height = 16
-            Top = 212
-            Width = 142
+            Height = 15
+            Top = 213
+            Width = 108
             BorderSpacing.Left = 6
             Caption = 'lblMiddleShiftAltCtrl'
             ParentColor = False
@@ -1078,17 +1087,17 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       object PageWheel: TPage
         object ScrollBoxWheel: TScrollBox
           Left = 0
-          Height = 249
+          Height = 219
           Top = 0
-          Width = 636
-          HorzScrollBar.Page = 636
+          Width = 671
+          HorzScrollBar.Page = 246
           HorzScrollBar.Tracking = True
-          VertScrollBar.Page = 249
+          VertScrollBar.Page = 219
           VertScrollBar.Tracking = True
           Align = alClient
           BorderStyle = bsNone
-          ClientHeight = 249
-          ClientWidth = 636
+          ClientHeight = 219
+          ClientWidth = 654
           TabOrder = 0
           object dropWheel: TComboBox
             AnchorSideLeft.Control = ScrollBoxWheel
@@ -1098,7 +1107,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 6
-            Width = 490
+            Width = 508
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Left = 140
             BorderSpacing.Top = 6
@@ -1118,7 +1127,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 93
-            Width = 490
+            Width = 508
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
@@ -1137,7 +1146,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 64
-            Width = 490
+            Width = 508
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
@@ -1156,7 +1165,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 35
-            Width = 490
+            Width = 508
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
@@ -1173,9 +1182,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideRight.Control = ScrollBoxWheel
             AnchorSideRight.Side = asrBottom
             Left = 6
-            Height = 16
-            Top = 9
-            Width = 80
+            Height = 15
+            Top = 10
+            Width = 46
             BorderSpacing.Left = 6
             Caption = 'lblWheel'
             ParentColor = False
@@ -1187,9 +1196,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideRight.Control = ScrollBoxWheel
             AnchorSideRight.Side = asrBottom
             Left = 6
-            Height = 16
-            Top = 96
-            Width = 99
+            Height = 15
+            Top = 97
+            Width = 65
             BorderSpacing.Left = 6
             Caption = 'lblWheelCtrl'
             ParentColor = False
@@ -1201,9 +1210,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideRight.Control = ScrollBoxWheel
             AnchorSideRight.Side = asrBottom
             Left = 6
-            Height = 16
-            Top = 67
-            Width = 95
+            Height = 15
+            Top = 68
+            Width = 61
             BorderSpacing.Left = 6
             Caption = 'lblWheelAlt'
             ParentColor = False
@@ -1215,9 +1224,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideRight.Control = ScrollBoxWheel
             AnchorSideRight.Side = asrBottom
             Left = 6
-            Height = 16
-            Top = 38
-            Width = 104
+            Height = 15
+            Top = 39
+            Width = 70
             BorderSpacing.Left = 6
             Caption = 'lblWheelShift'
             ParentColor = False
@@ -1231,7 +1240,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 122
-            Width = 490
+            Width = 508
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
@@ -1250,7 +1259,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 151
-            Width = 490
+            Width = 508
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
@@ -1269,7 +1278,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 180
-            Width = 490
+            Width = 508
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
@@ -1288,7 +1297,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 209
-            Width = 490
+            Width = 508
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
@@ -1305,9 +1314,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideRight.Control = ScrollBoxWheel
             AnchorSideRight.Side = asrBottom
             Left = 6
-            Height = 16
-            Top = 125
-            Width = 114
+            Height = 15
+            Top = 126
+            Width = 80
             BorderSpacing.Left = 6
             Caption = 'lblWheelAltCtrl'
             ParentColor = False
@@ -1319,9 +1328,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideRight.Control = ScrollBoxWheel
             AnchorSideRight.Side = asrBottom
             Left = 6
-            Height = 16
-            Top = 154
-            Width = 119
+            Height = 15
+            Top = 155
+            Width = 85
             BorderSpacing.Left = 6
             Caption = 'lblWheelShiftAlt'
             ParentColor = False
@@ -1333,9 +1342,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideRight.Control = ScrollBoxWheel
             AnchorSideRight.Side = asrBottom
             Left = 6
-            Height = 16
-            Top = 183
-            Width = 123
+            Height = 15
+            Top = 184
+            Width = 89
             BorderSpacing.Left = 6
             Caption = 'lblWheelShiftCtrl'
             ParentColor = False
@@ -1347,9 +1356,290 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideRight.Control = ScrollBoxWheel
             AnchorSideRight.Side = asrBottom
             Left = 6
-            Height = 16
-            Top = 212
-            Width = 138
+            Height = 15
+            Top = 213
+            Width = 104
+            BorderSpacing.Left = 6
+            Caption = 'lblWheelShiftAltCtrl'
+            ParentColor = False
+          end
+        end
+      end
+      object PageHorizWheel: TPage
+        object ScrollBoxWheelHoriz: TScrollBox
+          Left = 0
+          Height = 219
+          Top = 0
+          Width = 671
+          HorzScrollBar.Page = 246
+          HorzScrollBar.Tracking = True
+          VertScrollBar.Page = 219
+          VertScrollBar.Tracking = True
+          Align = alClient
+          BorderStyle = bsNone
+          ClientHeight = 219
+          ClientWidth = 654
+          TabOrder = 0
+          object dropWheelHoriz: TComboBox
+            AnchorSideLeft.Control = ScrollBoxWheelHoriz
+            AnchorSideTop.Control = ScrollBoxWheelHoriz
+            AnchorSideRight.Control = ScrollBoxWheelHoriz
+            AnchorSideRight.Side = asrBottom
+            Left = 140
+            Height = 23
+            Top = 6
+            Width = 508
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Left = 140
+            BorderSpacing.Top = 6
+            BorderSpacing.Right = 6
+            DropDownCount = 12
+            ItemHeight = 15
+            OnChange = CheckOrRadioChange
+            Style = csDropDownList
+            TabOrder = 0
+          end
+          object dropWheelCtrlHoriz: TComboBox
+            AnchorSideLeft.Control = dropWheelHoriz
+            AnchorSideTop.Control = dropWheelAltHoriz
+            AnchorSideTop.Side = asrBottom
+            AnchorSideRight.Control = ScrollBoxWheelHoriz
+            AnchorSideRight.Side = asrBottom
+            Left = 140
+            Height = 23
+            Top = 93
+            Width = 508
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Top = 6
+            BorderSpacing.Right = 6
+            DropDownCount = 12
+            ItemHeight = 15
+            OnChange = CheckOrRadioChange
+            Style = csDropDownList
+            TabOrder = 1
+          end
+          object dropWheelAltHoriz: TComboBox
+            AnchorSideLeft.Control = dropWheelHoriz
+            AnchorSideTop.Control = dropWheelShiftHoriz
+            AnchorSideTop.Side = asrBottom
+            AnchorSideRight.Control = ScrollBoxWheelHoriz
+            AnchorSideRight.Side = asrBottom
+            Left = 140
+            Height = 23
+            Top = 64
+            Width = 508
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Top = 6
+            BorderSpacing.Right = 6
+            DropDownCount = 12
+            ItemHeight = 15
+            OnChange = CheckOrRadioChange
+            Style = csDropDownList
+            TabOrder = 2
+          end
+          object dropWheelShiftHoriz: TComboBox
+            AnchorSideLeft.Control = dropWheelHoriz
+            AnchorSideTop.Control = dropWheelHoriz
+            AnchorSideTop.Side = asrBottom
+            AnchorSideRight.Control = ScrollBoxWheelHoriz
+            AnchorSideRight.Side = asrBottom
+            Left = 140
+            Height = 23
+            Top = 35
+            Width = 508
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Top = 6
+            BorderSpacing.Right = 6
+            DropDownCount = 12
+            ItemHeight = 15
+            OnChange = CheckOrRadioChange
+            Style = csDropDownList
+            TabOrder = 3
+          end
+          object lblWheelHoriz: TLabel
+            AnchorSideLeft.Control = ScrollBoxWheelHoriz
+            AnchorSideTop.Control = dropWheelHoriz
+            AnchorSideTop.Side = asrCenter
+            AnchorSideRight.Control = ScrollBoxWheelHoriz
+            AnchorSideRight.Side = asrBottom
+            Left = 6
+            Height = 15
+            Top = 10
+            Width = 46
+            BorderSpacing.Left = 6
+            Caption = 'lblWheel'
+            ParentColor = False
+          end
+          object lblWheelCtrlHoriz: TLabel
+            AnchorSideLeft.Control = ScrollBoxWheelHoriz
+            AnchorSideTop.Control = dropWheelCtrlHoriz
+            AnchorSideTop.Side = asrCenter
+            AnchorSideRight.Control = ScrollBoxWheelHoriz
+            AnchorSideRight.Side = asrBottom
+            Left = 6
+            Height = 15
+            Top = 97
+            Width = 65
+            BorderSpacing.Left = 6
+            Caption = 'lblWheelCtrl'
+            ParentColor = False
+          end
+          object lblWheelAltHoriz: TLabel
+            AnchorSideLeft.Control = ScrollBoxWheelHoriz
+            AnchorSideTop.Control = dropWheelAltHoriz
+            AnchorSideTop.Side = asrCenter
+            AnchorSideRight.Control = ScrollBoxWheelHoriz
+            AnchorSideRight.Side = asrBottom
+            Left = 6
+            Height = 15
+            Top = 68
+            Width = 61
+            BorderSpacing.Left = 6
+            Caption = 'lblWheelAlt'
+            ParentColor = False
+          end
+          object lblWheelShiftHoriz: TLabel
+            AnchorSideLeft.Control = ScrollBoxWheelHoriz
+            AnchorSideTop.Control = dropWheelShiftHoriz
+            AnchorSideTop.Side = asrCenter
+            AnchorSideRight.Control = ScrollBoxWheelHoriz
+            AnchorSideRight.Side = asrBottom
+            Left = 6
+            Height = 15
+            Top = 39
+            Width = 70
+            BorderSpacing.Left = 6
+            Caption = 'lblWheelShift'
+            ParentColor = False
+          end
+          object dropWheelAltCtrlHoriz: TComboBox
+            AnchorSideLeft.Control = dropWheelHoriz
+            AnchorSideTop.Control = dropWheelCtrlHoriz
+            AnchorSideTop.Side = asrBottom
+            AnchorSideRight.Control = ScrollBoxWheelHoriz
+            AnchorSideRight.Side = asrBottom
+            Left = 140
+            Height = 23
+            Top = 122
+            Width = 508
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Top = 6
+            BorderSpacing.Right = 6
+            DropDownCount = 12
+            ItemHeight = 15
+            OnChange = CheckOrRadioChange
+            Style = csDropDownList
+            TabOrder = 4
+          end
+          object dropWheelShiftAltHoriz: TComboBox
+            AnchorSideLeft.Control = dropWheelHoriz
+            AnchorSideTop.Control = dropWheelAltCtrlHoriz
+            AnchorSideTop.Side = asrBottom
+            AnchorSideRight.Control = ScrollBoxWheelHoriz
+            AnchorSideRight.Side = asrBottom
+            Left = 140
+            Height = 23
+            Top = 151
+            Width = 508
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Top = 6
+            BorderSpacing.Right = 6
+            DropDownCount = 12
+            ItemHeight = 15
+            OnChange = CheckOrRadioChange
+            Style = csDropDownList
+            TabOrder = 5
+          end
+          object dropWheelShiftCtrlHoriz: TComboBox
+            AnchorSideLeft.Control = dropWheelHoriz
+            AnchorSideTop.Control = dropWheelShiftAltHoriz
+            AnchorSideTop.Side = asrBottom
+            AnchorSideRight.Control = ScrollBoxWheelHoriz
+            AnchorSideRight.Side = asrBottom
+            Left = 140
+            Height = 23
+            Top = 180
+            Width = 508
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Top = 6
+            BorderSpacing.Right = 6
+            DropDownCount = 12
+            ItemHeight = 15
+            OnChange = CheckOrRadioChange
+            Style = csDropDownList
+            TabOrder = 6
+          end
+          object dropWheelShiftAltCtrlHoriz: TComboBox
+            AnchorSideLeft.Control = dropWheelHoriz
+            AnchorSideTop.Control = dropWheelShiftCtrlHoriz
+            AnchorSideTop.Side = asrBottom
+            AnchorSideRight.Control = ScrollBoxWheelHoriz
+            AnchorSideRight.Side = asrBottom
+            Left = 140
+            Height = 23
+            Top = 209
+            Width = 508
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Top = 6
+            BorderSpacing.Right = 6
+            DropDownCount = 12
+            ItemHeight = 15
+            OnChange = CheckOrRadioChange
+            Style = csDropDownList
+            TabOrder = 7
+          end
+          object lblWheelAltCtrlHoriz: TLabel
+            AnchorSideLeft.Control = ScrollBoxWheelHoriz
+            AnchorSideTop.Control = dropWheelAltCtrlHoriz
+            AnchorSideTop.Side = asrCenter
+            AnchorSideRight.Control = ScrollBoxWheelHoriz
+            AnchorSideRight.Side = asrBottom
+            Left = 6
+            Height = 15
+            Top = 126
+            Width = 80
+            BorderSpacing.Left = 6
+            Caption = 'lblWheelAltCtrl'
+            ParentColor = False
+          end
+          object lblWheelShiftAltHoriz: TLabel
+            AnchorSideLeft.Control = ScrollBoxWheelHoriz
+            AnchorSideTop.Control = dropWheelShiftAltHoriz
+            AnchorSideTop.Side = asrCenter
+            AnchorSideRight.Control = ScrollBoxWheelHoriz
+            AnchorSideRight.Side = asrBottom
+            Left = 6
+            Height = 15
+            Top = 155
+            Width = 85
+            BorderSpacing.Left = 6
+            Caption = 'lblWheelShiftAlt'
+            ParentColor = False
+          end
+          object lblWheelShiftCtrlHoriz: TLabel
+            AnchorSideLeft.Control = ScrollBoxWheelHoriz
+            AnchorSideTop.Control = dropWheelShiftCtrlHoriz
+            AnchorSideTop.Side = asrCenter
+            AnchorSideRight.Control = ScrollBoxWheelHoriz
+            AnchorSideRight.Side = asrBottom
+            Left = 6
+            Height = 15
+            Top = 184
+            Width = 89
+            BorderSpacing.Left = 6
+            Caption = 'lblWheelShiftCtrl'
+            ParentColor = False
+          end
+          object lblWheelShiftAltCtrlHoriz: TLabel
+            AnchorSideLeft.Control = ScrollBoxWheelHoriz
+            AnchorSideTop.Control = dropWheelShiftAltCtrlHoriz
+            AnchorSideTop.Side = asrCenter
+            AnchorSideRight.Control = ScrollBoxWheelHoriz
+            AnchorSideRight.Side = asrBottom
+            Left = 6
+            Height = 15
+            Top = 213
+            Width = 104
             BorderSpacing.Left = 6
             Caption = 'lblWheelShiftAltCtrl'
             ParentColor = False
@@ -1359,17 +1649,17 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       object PageRight: TPage
         object ScrollBoxRight: TScrollBox
           Left = 0
-          Height = 249
+          Height = 219
           Top = 0
-          Width = 636
-          HorzScrollBar.Page = 636
+          Width = 671
+          HorzScrollBar.Page = 246
           HorzScrollBar.Tracking = True
-          VertScrollBar.Page = 249
+          VertScrollBar.Page = 219
           VertScrollBar.Tracking = True
           Align = alClient
           BorderStyle = bsNone
-          ClientHeight = 249
-          ClientWidth = 636
+          ClientHeight = 219
+          ClientWidth = 654
           TabOrder = 0
           object lblRight: TLabel
             AnchorSideLeft.Control = ScrollBoxRight
@@ -1378,9 +1668,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideRight.Control = ScrollBoxRight
             AnchorSideRight.Side = asrBottom
             Left = 6
-            Height = 16
-            Top = 9
-            Width = 84
+            Height = 15
+            Top = 10
+            Width = 41
             BorderSpacing.Left = 6
             Caption = 'lblRight'
             ParentColor = False
@@ -1393,7 +1683,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 6
-            Width = 490
+            Width = 508
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Left = 140
             BorderSpacing.Top = 6
@@ -1411,9 +1701,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideRight.Control = ScrollBoxRight
             AnchorSideRight.Side = asrBottom
             Left = 6
-            Height = 16
-            Top = 96
-            Width = 103
+            Height = 15
+            Top = 97
+            Width = 60
             BorderSpacing.Left = 6
             Caption = 'lblRightCtrl'
             ParentColor = False
@@ -1427,7 +1717,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 93
-            Width = 490
+            Width = 508
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
@@ -1446,7 +1736,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 64
-            Width = 490
+            Width = 508
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
@@ -1463,9 +1753,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideRight.Control = ScrollBoxRight
             AnchorSideRight.Side = asrBottom
             Left = 6
-            Height = 16
-            Top = 67
-            Width = 99
+            Height = 15
+            Top = 68
+            Width = 56
             BorderSpacing.Left = 6
             Caption = 'lblRightAlt'
             ParentColor = False
@@ -1479,7 +1769,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 35
-            Width = 490
+            Width = 508
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
@@ -1496,9 +1786,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideRight.Control = ScrollBoxRight
             AnchorSideRight.Side = asrBottom
             Left = 6
-            Height = 16
-            Top = 38
-            Width = 90
+            Height = 15
+            Top = 39
+            Width = 65
             BorderSpacing.Left = 6
             Caption = 'lblRightShift'
             ParentColor = False
@@ -1512,7 +1802,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 122
-            Width = 490
+            Width = 508
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
@@ -1531,7 +1821,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 151
-            Width = 490
+            Width = 508
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
@@ -1550,7 +1840,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 180
-            Width = 490
+            Width = 508
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
@@ -1569,7 +1859,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 209
-            Width = 490
+            Width = 508
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
@@ -1586,9 +1876,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideRight.Control = ScrollBoxRight
             AnchorSideRight.Side = asrBottom
             Left = 6
-            Height = 16
-            Top = 125
-            Width = 118
+            Height = 15
+            Top = 126
+            Width = 75
             BorderSpacing.Left = 6
             Caption = 'lblRightAltCtrl'
             ParentColor = False
@@ -1600,9 +1890,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideRight.Control = ScrollBoxRight
             AnchorSideRight.Side = asrBottom
             Left = 6
-            Height = 16
-            Top = 154
-            Width = 123
+            Height = 15
+            Top = 155
+            Width = 80
             BorderSpacing.Left = 6
             Caption = 'lblRightShiftAlt'
             ParentColor = False
@@ -1614,9 +1904,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideRight.Control = ScrollBoxRight
             AnchorSideRight.Side = asrBottom
             Left = 6
-            Height = 16
-            Top = 183
-            Width = 127
+            Height = 15
+            Top = 184
+            Width = 84
             BorderSpacing.Left = 6
             Caption = 'lblRightShiftCtrl'
             ParentColor = False
@@ -1628,9 +1918,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideRight.Control = ScrollBoxRight
             AnchorSideRight.Side = asrBottom
             Left = 6
-            Height = 16
-            Top = 212
-            Width = 142
+            Height = 15
+            Top = 213
+            Width = 99
             BorderSpacing.Left = 6
             Caption = 'lblRightShiftAltCtrl'
             ParentColor = False
@@ -1640,17 +1930,17 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       object PageExtra1: TPage
         object ScrollBoxExtra1: TScrollBox
           Left = 0
-          Height = 249
+          Height = 219
           Top = 0
-          Width = 636
-          HorzScrollBar.Page = 636
+          Width = 671
+          HorzScrollBar.Page = 246
           HorzScrollBar.Tracking = True
-          VertScrollBar.Page = 249
+          VertScrollBar.Page = 219
           VertScrollBar.Tracking = True
           Align = alClient
           BorderStyle = bsNone
-          ClientHeight = 249
-          ClientWidth = 636
+          ClientHeight = 219
+          ClientWidth = 654
           TabOrder = 0
           object lblExtra1: TLabel
             AnchorSideLeft.Control = ScrollBoxExtra1
@@ -1659,9 +1949,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideRight.Control = ScrollBoxExtra1
             AnchorSideRight.Side = asrBottom
             Left = 6
-            Height = 16
-            Top = 9
-            Width = 84
+            Height = 15
+            Top = 10
+            Width = 44
             BorderSpacing.Left = 6
             Caption = 'lblExtra1'
             ParentColor = False
@@ -1674,7 +1964,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 6
-            Width = 490
+            Width = 508
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Left = 140
             BorderSpacing.Top = 6
@@ -1692,9 +1982,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideRight.Control = ScrollBoxExtra1
             AnchorSideRight.Side = asrBottom
             Left = 6
-            Height = 16
-            Top = 96
-            Width = 103
+            Height = 15
+            Top = 97
+            Width = 63
             BorderSpacing.Left = 6
             Caption = 'lblExtra1Ctrl'
             ParentColor = False
@@ -1708,7 +1998,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 93
-            Width = 490
+            Width = 508
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
@@ -1727,7 +2017,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 64
-            Width = 490
+            Width = 508
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
@@ -1744,9 +2034,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideRight.Control = ScrollBoxExtra1
             AnchorSideRight.Side = asrBottom
             Left = 6
-            Height = 16
-            Top = 67
-            Width = 99
+            Height = 15
+            Top = 68
+            Width = 59
             BorderSpacing.Left = 6
             Caption = 'lblExtra1Alt'
             ParentColor = False
@@ -1760,7 +2050,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 35
-            Width = 490
+            Width = 508
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
@@ -1777,9 +2067,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideRight.Control = ScrollBoxExtra1
             AnchorSideRight.Side = asrBottom
             Left = 6
-            Height = 16
-            Top = 38
-            Width = 90
+            Height = 15
+            Top = 39
+            Width = 68
             BorderSpacing.Left = 6
             Caption = 'lblExtra1Shift'
             ParentColor = False
@@ -1793,7 +2083,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 122
-            Width = 490
+            Width = 508
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
@@ -1812,7 +2102,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 151
-            Width = 490
+            Width = 508
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
@@ -1831,7 +2121,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 180
-            Width = 490
+            Width = 508
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
@@ -1850,7 +2140,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 209
-            Width = 490
+            Width = 508
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
@@ -1867,9 +2157,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideRight.Control = ScrollBoxExtra1
             AnchorSideRight.Side = asrBottom
             Left = 6
-            Height = 16
-            Top = 125
-            Width = 118
+            Height = 15
+            Top = 126
+            Width = 78
             BorderSpacing.Left = 6
             Caption = 'lblExtra1AltCtrl'
             ParentColor = False
@@ -1881,9 +2171,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideRight.Control = ScrollBoxExtra1
             AnchorSideRight.Side = asrBottom
             Left = 6
-            Height = 16
-            Top = 154
-            Width = 123
+            Height = 15
+            Top = 155
+            Width = 83
             BorderSpacing.Left = 6
             Caption = 'lblExtra1ShiftAlt'
             ParentColor = False
@@ -1895,9 +2185,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideRight.Control = ScrollBoxExtra1
             AnchorSideRight.Side = asrBottom
             Left = 6
-            Height = 16
-            Top = 183
-            Width = 127
+            Height = 15
+            Top = 184
+            Width = 87
             BorderSpacing.Left = 6
             Caption = 'lblExtra1ShiftCtrl'
             ParentColor = False
@@ -1909,9 +2199,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideRight.Control = ScrollBoxExtra1
             AnchorSideRight.Side = asrBottom
             Left = 6
-            Height = 16
-            Top = 212
-            Width = 142
+            Height = 15
+            Top = 213
+            Width = 102
             BorderSpacing.Left = 6
             Caption = 'lblExtra1ShiftAltCtrl'
             ParentColor = False
@@ -1921,17 +2211,17 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       object PageExtra2: TPage
         object ScrollBoxExtra2: TScrollBox
           Left = 0
-          Height = 249
+          Height = 219
           Top = 0
-          Width = 636
-          HorzScrollBar.Page = 636
+          Width = 671
+          HorzScrollBar.Page = 246
           HorzScrollBar.Tracking = True
-          VertScrollBar.Page = 249
+          VertScrollBar.Page = 219
           VertScrollBar.Tracking = True
           Align = alClient
           BorderStyle = bsNone
-          ClientHeight = 249
-          ClientWidth = 636
+          ClientHeight = 219
+          ClientWidth = 654
           TabOrder = 0
           object lblExtra2: TLabel
             AnchorSideLeft.Control = ScrollBoxExtra2
@@ -1940,9 +2230,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideRight.Control = ScrollBoxExtra2
             AnchorSideRight.Side = asrBottom
             Left = 6
-            Height = 16
-            Top = 9
-            Width = 84
+            Height = 15
+            Top = 10
+            Width = 44
             BorderSpacing.Left = 6
             Caption = 'lblExtra2'
             ParentColor = False
@@ -1955,7 +2245,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 6
-            Width = 490
+            Width = 508
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Left = 140
             BorderSpacing.Top = 6
@@ -1973,9 +2263,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideRight.Control = ScrollBoxExtra2
             AnchorSideRight.Side = asrBottom
             Left = 6
-            Height = 16
-            Top = 96
-            Width = 103
+            Height = 15
+            Top = 97
+            Width = 63
             BorderSpacing.Left = 6
             Caption = 'lblExtra2Ctrl'
             ParentColor = False
@@ -1989,7 +2279,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 93
-            Width = 490
+            Width = 508
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
@@ -2008,7 +2298,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 64
-            Width = 490
+            Width = 508
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
@@ -2025,9 +2315,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideRight.Control = ScrollBoxExtra2
             AnchorSideRight.Side = asrBottom
             Left = 6
-            Height = 16
-            Top = 67
-            Width = 99
+            Height = 15
+            Top = 68
+            Width = 59
             BorderSpacing.Left = 6
             Caption = 'lblExtra2Alt'
             ParentColor = False
@@ -2041,7 +2331,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 35
-            Width = 490
+            Width = 508
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
@@ -2058,9 +2348,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideRight.Control = ScrollBoxExtra2
             AnchorSideRight.Side = asrBottom
             Left = 6
-            Height = 16
-            Top = 38
-            Width = 90
+            Height = 15
+            Top = 39
+            Width = 68
             BorderSpacing.Left = 6
             Caption = 'lblExtra2Shift'
             ParentColor = False
@@ -2074,7 +2364,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 122
-            Width = 490
+            Width = 508
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
@@ -2093,7 +2383,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 151
-            Width = 490
+            Width = 508
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
@@ -2112,7 +2402,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 180
-            Width = 490
+            Width = 508
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
@@ -2131,7 +2421,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             Left = 140
             Height = 23
             Top = 209
-            Width = 490
+            Width = 508
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Top = 6
             BorderSpacing.Right = 6
@@ -2148,9 +2438,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideRight.Control = ScrollBoxExtra2
             AnchorSideRight.Side = asrBottom
             Left = 6
-            Height = 16
-            Top = 125
-            Width = 118
+            Height = 15
+            Top = 126
+            Width = 78
             BorderSpacing.Left = 6
             Caption = 'lblExtra2AltCtrl'
             ParentColor = False
@@ -2162,9 +2452,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideRight.Control = ScrollBoxExtra2
             AnchorSideRight.Side = asrBottom
             Left = 6
-            Height = 16
-            Top = 154
-            Width = 123
+            Height = 15
+            Top = 155
+            Width = 83
             BorderSpacing.Left = 6
             Caption = 'lblExtra2ShiftAlt'
             ParentColor = False
@@ -2176,9 +2466,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideRight.Control = ScrollBoxExtra2
             AnchorSideRight.Side = asrBottom
             Left = 6
-            Height = 16
-            Top = 183
-            Width = 127
+            Height = 15
+            Top = 184
+            Width = 87
             BorderSpacing.Left = 6
             Caption = 'lblExtra2ShiftCtrl'
             ParentColor = False
@@ -2190,9 +2480,9 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
             AnchorSideRight.Control = ScrollBoxExtra2
             AnchorSideRight.Side = asrBottom
             Left = 6
-            Height = 16
-            Top = 212
-            Width = 142
+            Height = 15
+            Top = 213
+            Width = 102
             BorderSpacing.Left = 6
             Caption = 'lblExtra2ShiftAltCtrl'
             ParentColor = False
@@ -2210,12 +2500,12 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     Left = 0
     Height = 40
     Top = 548
-    Width = 636
+    Width = 671
     Anchors = [akLeft, akRight, akBottom]
     AutoSize = True
     BevelOuter = bvNone
     ClientHeight = 40
-    ClientWidth = 636
+    ClientWidth = 671
     TabOrder = 4
     object BottomDivider: TBevel
       AnchorSideLeft.Control = pnlBottom
@@ -2225,7 +2515,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       Left = 0
       Height = 3
       Top = 6
-      Width = 636
+      Width = 671
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 6
       BorderSpacing.Bottom = 6
@@ -2239,7 +2529,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       Left = 6
       Height = 15
       Top = 15
-      Width = 514
+      Width = 549
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       BorderSpacing.Right = 6
@@ -2258,7 +2548,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       Left = 6
       Height = 15
       Top = 15
-      Width = 514
+      Width = 549
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       BorderSpacing.Right = 6
@@ -2274,7 +2564,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
       AnchorSideRight.Control = pnlBottom
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
-      Left = 526
+      Left = 561
       Height = 25
       Top = 15
       Width = 104
@@ -2296,7 +2586,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     Left = 6
     Height = 15
     Top = 29
-    Width = 624
+    Width = 659
     Caption = 'GenericDividerLabel'
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Around = 6
@@ -2312,7 +2602,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     Left = 6
     Height = 15
     Top = 75
-    Width = 624
+    Width = 659
     Caption = 'GutterDividerLabel'
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Around = 6
@@ -2328,7 +2618,7 @@ object EditorMouseOptionsFrame: TEditorMouseOptionsFrame
     Left = 6
     Height = 15
     Top = 209
-    Width = 624
+    Width = 659
     Caption = 'TextDividerLabel'
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Around = 6

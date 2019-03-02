@@ -1726,6 +1726,7 @@ resourcestring
   dlfMouseSimpleTextSectPageLMulti = 'Left 2';
   dlfMouseSimpleTextSectPageBtn = 'Middle';
   dlfMouseSimpleTextSectPageWheel = 'Wheel';
+  dlfMouseSimpleTextSectPageHorizWheel = 'Horizontal-Wheel';
   dlfMouseSimpleTextSectPageRight = 'Right';
   dlfMouseSimpleTextSectPageExtra1 = 'Extra 1';
   dlfMouseSimpleTextSectPageExtra2 = 'Extra 2';
@@ -1821,6 +1822,8 @@ resourcestring
   dlgMouseOptBtnExtra2 = 'Extra 2';
   dlgMouseOptBtnWheelUp = 'Wheel up';
   dlgMouseOptBtnWheelDown = 'Wheel down';
+  dlgMouseOptBtnWheelLeft = 'Wheel left';
+  dlgMouseOptBtnWheelRight = 'Wheel right';
   dlgMouseOptBtn1   = 'Single';
   dlgMouseOptBtn2   = 'Double';
   dlgMouseOptBtn3   = 'Triple';

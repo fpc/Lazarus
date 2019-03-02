@@ -48,6 +48,8 @@ type
     procedure FormCreate(Sender: TObject);
     procedure PaintBox1MouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer;
       {%H-}MousePos: TPoint; var {%H-}Handled: Boolean);
+    procedure PaintBox1MouseWheelHorz(Sender: TObject; Shift: TShiftState;
+      WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
   private
     FKeyMap: TKeyCommandRelationList;
     procedure AddMouseCmd(const S: string);
@@ -69,9 +71,9 @@ uses Math;
 {$R *.lfm}
 
 const
-  BtnToIndex: array [TSynMouseButton] of Integer = (0, 1, 2, 3, 4, 5, 6);
+  BtnToIndex: array [TSynMouseButton] of Integer = (0, 1, 2, 3, 4, 5, 6, 7 ,8);
   ClickToIndex: array [ccSingle..ccAny] of Integer = (0, 1, 2, 3, 4);
-  IndexToBtn: array [0..6] of TSynMouseButton = (mbXLeft, mbXRight, mbXMiddle, mbXExtra1, mbXExtra2, mbXWheelUp, mbXWheelDown);
+  IndexToBtn: array [0..8] of TSynMouseButton = (mbXLeft, mbXRight, mbXMiddle, mbXExtra1, mbXExtra2, mbXWheelUp, mbXWheelDown, mbXWheelLeft, mbXWheelRight);
   IndexToClick: array [0..4] of TSynMAClickCount = (ccSingle, ccDouble, ccTriple, ccQuad, ccAny);
 
 function KeyMapIndexOfCommand(AKeyMap: TKeyCommandRelationList; ACmd: Word): Integer;
@@ -143,6 +145,8 @@ begin
   ButtonName[mbXExtra2]:=dlgMouseOptBtnExtra2;
   ButtonName[mbXWheelUp]:=dlgMouseOptBtnWheelUp;
   ButtonName[mbXWheelDown]:=dlgMouseOptBtnWheelDown;
+  ButtonName[mbXWheelLeft]:=dlgMouseOptBtnWheelLeft;
+  ButtonName[mbXWheelRight]:=dlgMouseOptBtnWheelRight;
 
   ClickName[ccSingle]:=dlgMouseOptBtn1;
   ClickName[ccDouble]:=dlgMouseOptBtn2;
@@ -205,7 +209,7 @@ end;
 
 procedure TMouseaActionDialog.ButtonBoxChange(Sender: TObject);
 begin
-  DirCheck.Enabled := not(IndexToBtn[ButtonBox.ItemIndex] in [mbXWheelUp, mbXWheelDown]);
+  DirCheck.Enabled := not(IndexToBtn[ButtonBox.ItemIndex] in [mbXWheelUp, mbXWheelDown, mbXWheelLeft, mbXWheelRight]);
   chkUpRestrict.Enabled := DirCheck.Enabled and DirCheck.Checked;
 end;
 
@@ -267,6 +271,19 @@ begin
   if WheelDelta > 0
   then ButtonBox.ItemIndex := BtnToIndex[mbXWheelUp]
   else ButtonBox.ItemIndex := BtnToIndex[mbXWheelDown];
+  ClickBox.ItemIndex := 4;
+  ShiftCheck.Checked := ssShift in Shift;
+  AltCheck.Checked   := ssAlt in Shift;
+  CtrlCheck.Checked  := ssCtrl in Shift;
+end;
+
+procedure TMouseaActionDialog.PaintBox1MouseWheelHorz(Sender: TObject;
+  Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint;
+  var Handled: Boolean);
+begin
+  if WheelDelta < 0
+  then ButtonBox.ItemIndex := BtnToIndex[mbXWheelLeft]
+  else ButtonBox.ItemIndex := BtnToIndex[mbXWheelRight];
   ClickBox.ItemIndex := 4;
   ShiftCheck.Checked := ssShift in Shift;
   AltCheck.Checked   := ssAlt in Shift;

@@ -925,11 +925,20 @@ type
     FWheel: TMouseOptWheelAction;
     FAltWheel: TMouseOptWheelAction;
     FCtrlWheel: TMouseOptWheelAction;
+    FAltCtrlWheel: TMouseOptWheelAction;
     FShiftWheel: TMouseOptWheelAction;
     FShiftAltWheel: TMouseOptWheelAction;
     FShiftCtrlWheel: TMouseOptWheelAction;
-    FAltCtrlWheel: TMouseOptWheelAction;
     FShiftAltCtrlWheel: TMouseOptWheelAction;
+
+    FHorizWheel: TMouseOptWheelAction;
+    FAltHorizWheel: TMouseOptWheelAction;
+    FCtrlHorizWheel: TMouseOptWheelAction;
+    FAltCtrlHorizWheel: TMouseOptWheelAction;
+    FShiftHorizWheel: TMouseOptWheelAction;
+    FShiftAltHorizWheel: TMouseOptWheelAction;
+    FShiftCtrlHorizWheel: TMouseOptWheelAction;
+    FShiftAltCtrlHorizWheel: TMouseOptWheelAction;
 
     procedure ClearUserSchemes;
     function GetUserSchemeNames(Index: Integer): String;
@@ -1099,6 +1108,23 @@ type
     property AltCtrlWheel: TMouseOptWheelAction read FAltCtrlWheel write FAltCtrlWheel
              default mwaNone;
     property ShiftAltCtrlWheel: TMouseOptWheelAction read FShiftAltCtrlWheel write FShiftAltCtrlWheel
+             default mwaNone;
+    //
+    property HorizWheel: TMouseOptWheelAction read FHorizWheel write FHorizWheel
+             default mwaScrollHoriz;
+    property CtrlHorizWheel: TMouseOptWheelAction read FCtrlHorizWheel write FCtrlHorizWheel
+             default mwaNone;
+    property AltHorizWheel: TMouseOptWheelAction read FAltHorizWheel write FAltHorizWheel
+             default mwaScrollHorizPageLessOne;
+    property ShiftHorizWheel: TMouseOptWheelAction read FShiftHorizWheel write FShiftHorizWheel
+             default mwaScrollHorizSingleLine;
+    property ShiftAltHorizWheel: TMouseOptWheelAction read FShiftAltHorizWheel write FShiftAltHorizWheel
+             default mwaNone;
+    property ShiftCtrlHorizWheel: TMouseOptWheelAction read FShiftCtrlHorizWheel write FShiftCtrlHorizWheel
+             default mwaNone;
+    property AltCtrlHorizWheel: TMouseOptWheelAction read FAltCtrlHorizWheel write FAltCtrlHorizWheel
+             default mwaNone;
+    property ShiftAltCtrlHorizWheel: TMouseOptWheelAction read FShiftAltCtrlHorizWheel write FShiftAltCtrlHorizWheel
              default mwaNone;
 
     // the flag below is set by CalcCustomSavedActions
@@ -3437,6 +3463,15 @@ begin
   FShiftCtrlWheel       := mwaNone;
   FShiftAltWheel    := mwaNone;
   FShiftAltCtrlWheel    := mwaNone;
+  // wheel
+  FHorizWheel               := mwaScrollHoriz;
+  FCtrlHorizWheel           := mwaNone;
+  FAltHorizWheel            := mwaScrollHorizPageLessOne;
+  FShiftHorizWheel          := mwaScrollHorizSingleLine;
+  FAltCtrlHorizWheel     := mwaNone;
+  FShiftCtrlHorizWheel       := mwaNone;
+  FShiftAltHorizWheel    := mwaNone;
+  FShiftAltCtrlHorizWheel    := mwaNone;
   // right
   FTextRightClick := mbaContextMenu;
   FTextAltCtrlRightClick := mbaNone;
@@ -3654,11 +3689,20 @@ procedure TEditorMouseOptions.ResetTextToDefault;
     end;
   end;
 
-  procedure AddWheelAct(AnAction: TMouseOptWheelAction; const AShift, AShiftMask: TShiftState);
+  procedure AddWheelAct(AnAction: TMouseOptWheelAction; const AShift, AShiftMask: TShiftState; AnHorizontal: Boolean = False);
   var
     opt: TSynEditorMouseCommandOpt;
     opt2: integer;
+    mbU, mbD: TSynMouseButton;
   begin
+    if AnHorizontal then begin
+      mbD := mbXWheelLeft;
+      mbU := mbXWheelRight;
+    end
+    else begin
+      mbD := mbXWheelDown;
+      mbU := mbXWheelUp;
+    end;
     opt2 := 0;
     with FMainActions do begin
       case AnAction of
@@ -3680,18 +3724,18 @@ procedure TEditorMouseOptions.ResetTextToDefault;
                                    opt2 := 50;
           end;
         mwaZoom: begin
-            AddCommand(emcWheelZoomOut, False,  mbXWheelDown, ccAny, cdDown, AShift, AShiftMask);
-            AddCommand(emcWheelZoomIn,  False,  mbXWheelUp,   ccAny, cdDown, AShift, AShiftMask);
+            AddCommand(emcWheelZoomOut, False,  mbD, ccAny, cdDown, AShift, AShiftMask);
+            AddCommand(emcWheelZoomIn,  False,  mbU,   ccAny, cdDown, AShift, AShiftMask);
           end;
       end;
 
       if AnAction in [mwaScroll, mwaScrollSingleLine, mwaScrollPage, mwaScrollPageLessOne, mwaScrollHalfPage] then begin
-        AddCommand(emcWheelVertScrollDown,       False,  mbXWheelDown, ccAny, cdDown, AShift, AShiftMask, opt, 0, opt2);
-        AddCommand(emcWheelVertScrollUp,         False,  mbXWheelUp,   ccAny, cdDown, AShift, AShiftMask, opt, 0, opt2);
+        AddCommand(emcWheelVertScrollDown,       False,  mbD, ccAny, cdDown, AShift, AShiftMask, opt, 0, opt2);
+        AddCommand(emcWheelVertScrollUp,         False,  mbU,   ccAny, cdDown, AShift, AShiftMask, opt, 0, opt2);
       end;
       if AnAction in [mwaScrollHoriz, mwaScrollHorizSingleLine, mwaScrollHorizPage, mwaScrollHorizPageLessOne, mwaScrollHorizHalfPage] then begin
-        AddCommand(emcWheelHorizScrollDown,       False,  mbXWheelDown, ccAny, cdDown, AShift, AShiftMask, opt, 0, opt2);
-        AddCommand(emcWheelHorizScrollUp,         False,  mbXWheelUp,   ccAny, cdDown, AShift, AShiftMask, opt, 0, opt2);
+        AddCommand(emcWheelHorizScrollDown,       False,  mbD, ccAny, cdDown, AShift, AShiftMask, opt, 0, opt2);
+        AddCommand(emcWheelHorizScrollUp,         False,  mbU,   ccAny, cdDown, AShift, AShiftMask, opt, 0, opt2);
       end;
 
     end;
@@ -3838,6 +3882,23 @@ begin
   AddWheelAct(FShiftAltWheel,     [ssShift, ssAlt], ModKeys);
   AddWheelAct(FShiftAltCtrlWheel, [ssShift, ssAlt, ssCtrl], ModKeys);
 
+  ModKeys := [];
+  if FShiftHorizWheel         <> mwaNone then ModKeys := ModKeys + [ssShift];
+  if FCtrlHorizWheel          <> mwaNone then ModKeys := ModKeys + [SYNEDIT_LINK_MODIFIER];
+  if FAltHorizWheel           <> mwaNone then ModKeys := ModKeys + [ssAlt];
+  if FAltCtrlHorizWheel       <> mwaNone then ModKeys := ModKeys + [ssAlt] + [SYNEDIT_LINK_MODIFIER];
+  if FShiftCtrlHorizWheel     <> mwaNone then ModKeys := ModKeys + [ssShift] + [SYNEDIT_LINK_MODIFIER];
+  if FShiftAltHorizWheel      <> mwaNone then ModKeys := ModKeys + [ssShift, ssAlt];
+  if FShiftAltCtrlHorizWheel  <> mwaNone then ModKeys := ModKeys + [ssShift, ssAlt] + [SYNEDIT_LINK_MODIFIER];
+  AddWheelAct(FHorizWheel, [], [], True);
+  AddWheelAct(FCtrlHorizWheel,  [ssCtrl],  ModKeys, True);
+  AddWheelAct(FAltHorizWheel,   [ssAlt],   ModKeys, True);
+  AddWheelAct(FShiftHorizWheel, [ssShift], ModKeys, True);
+  AddWheelAct(FAltCtrlHorizWheel,      [ssAlt, ssCtrl], ModKeys, True);
+  AddWheelAct(FShiftCtrlHorizWheel,    [ssShift, ssCtrl], ModKeys, True);
+  AddWheelAct(FShiftAltHorizWheel,     [ssShift, ssAlt], ModKeys, True);
+  AddWheelAct(FShiftAltCtrlHorizWheel, [ssShift, ssAlt, ssCtrl], ModKeys, True);
+
   if FTextDrag then
     with FSelActions do begin
       AddCommand(emcStartDragMove, False, mbXLeft, ccSingle, cdDown, [], [], emcoNotDragedNoCaretOnUp);
@@ -3932,6 +3993,15 @@ begin
   FShiftCtrlWheel       := Src.ShiftCtrlWheel;
   FShiftAltWheel        := Src.ShiftAltWheel;
   FShiftAltCtrlWheel    := Src.ShiftAltCtrlWheel;
+  // wheel
+  FHorizWheel                := Src.HorizWheel;
+  FCtrlHorizWheel            := Src.CtrlHorizWheel;
+  FAltHorizWheel             := Src.AltHorizWheel;
+  FShiftHorizWheel           := Src.ShiftHorizWheel;
+  FAltCtrlHorizWheel         := Src.AltCtrlHorizWheel;
+  FShiftCtrlHorizWheel       := Src.ShiftCtrlHorizWheel;
+  FShiftAltHorizWheel        := Src.ShiftAltHorizWheel;
+  FShiftAltCtrlHorizWheel    := Src.ShiftAltCtrlHorizWheel;
   // right
   FTextAltCtrlRightClick := Src.TextAltCtrlRightClick;
   FTextAltRightClick := Src.TextAltRightClick;
@@ -4117,6 +4187,8 @@ begin
       try
         FMainActions.AddCommand(emcWheelVertScrollDown,       False,  mbXWheelDown, ccAny, cdDown, [], []);
         FMainActions.AddCommand(emcWheelVertScrollUp,         False,  mbXWheelUp,   ccAny, cdDown, [], []);
+        FMainActions.AddCommand(emcWheelHorizScrollDown,      False,  mbXWheelLeft, ccAny, cdDown, [], []);
+        FMainActions.AddCommand(emcWheelHorizScrollUp,        False,  mbXWheelRight,ccAny, cdDown, [], []);
       except
       end;
     end;

@@ -1298,6 +1298,8 @@ begin
         PreviewEdits[a].MouseActions.Clear;
         PreviewEdits[a].MouseActions.AddCommand(emcWheelVertScrollDown, False, mbXWheelDown, ccAny, cdDown, [], []);
         PreviewEdits[a].MouseActions.AddCommand(emcWheelVertScrollUp,   False, mbXWheelUp,   ccAny, cdDown, [], []);
+        PreviewEdits[a].MouseActions.AddCommand(emcWheelHorizScrollUp,  False, mbXWheelLeft, ccAny, cdDown, [], []);
+        PreviewEdits[a].MouseActions.AddCommand(emcWheelHorizScrollDown,False, mbXWheelRight,ccAny, cdDown, [], []);
         PreviewEdits[a].SetBookMark(1, 1, 2);
         PreviewEdits[a].SetBookMark(2, 1, 5);
       end;
@@ -1342,7 +1344,7 @@ end;
 function TEditorColorOptionsFrame.DoSynEditMouse(var AnInfo: TSynEditMouseActionInfo;
   HandleActionProc: TSynEditMouseActionHandler): Boolean;
 begin
-  Result := not(AnInfo.Button in [mbXWheelDown, mbXWheelUp]);
+  Result := not(AnInfo.Button in [mbXWheelDown, mbXWheelUp, mbXWheelLeft, mbXWheelRight]);
 end;
 
 procedure TEditorColorOptionsFrame.LanguageMenuItemClick(Sender: TObject);
