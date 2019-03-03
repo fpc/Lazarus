@@ -236,53 +236,83 @@ end;
 
 function TFitEquationText.Get: String;
 const
-  SIGN: array[boolean] of string = ('-', '+');
-  TIMES: array[boolean] of string = ('&middot;', '*');
+  TIMES: array[boolean] of string = ('*', '&middot;');
 var
   fs: TFormatSettings;
+  res: String;
 
-  // Creates a polynomial term, e.g. ' + 1.2*x^3', or ' + 1.2&middot;x<sup>3</sup>'
-  function PolyTermAsString(i: Integer): String;
+  // Returns the function term, e.g. "x^3"
+  function FuncTerm(i: Integer): String;
   const
-    TIMES_POWER: Array[boolean] of String = ('&middot;%s<sup>%d</sup>', '*%s^%d');
-  var
-    s: String;
+    POWER: array[boolean] of string = ('%s^%d', '%s<sup>%d</sup>');
   begin
-    Result := Format(GetNumFormat(i), [Abs(FParams[i])], fs);
-    if i = 0 then begin
-      if FParams[0] < 0 then Result := '-' + Result;
-      exit;
-    end;
-    if i = 1 then
-      s := TIMES[FTextFormat = tfNormal] + FX
+    if FEquation in [feCustom] then
+      Result := FBasisFunc[i]
     else
-      s := Format(TIMES_POWER[FTextFormat = tfNormal], [FX, i]);
-    Result := Format(' %s %s%s', [SIGN[FParams[i] > 0], Result, s]);
+    if i = 0 then
+      Result := ''
+    else
+    if i = 1 then
+      Result := FX
+    else
+      Result := Format(POWER[FTextFormat = tfHTML], [FX, i]);
+  end;
+
+  // Creates a product term "value*f(x)".
+  // "value*" is omitted if 1. "*f(x)" is omitted if constant.
+  function ProductTerm(i: Integer): String;
+  var
+    fx: String;
+  begin
+    if FParams[i] = 0.0 then
+      exit('');
+    fx := FuncTerm(i);
+    if abs(FParams[i]) <> 1.0 then begin
+      Result := Format(GetNumFormat(i), [FParams[i]], fs);
+      if fx <> '' then
+        Result := Result + TIMES[FTextFormat = tfHTML] + fx;
+    end else
+    if FParams[i] = -1.0 then
+      Result := '-' + FX
+    else
+      Result := FX;
+  end;
+
+  // First term in expression: no plus sign
+  // Other terms: both plus and minus signs, enclosed by spaces.
+  function FixSign(s: String): String;
+  begin
+    if (s <> '') and (res <> '') then begin
+      if s[1] = '-' then begin
+        Insert(' ', s, 2);
+        s := ' ' + s;
+      end else
+        s := ' + ' + s;
+    end;
+    Result := s;
   end;
 
   // Creates the constant term for feExp or fePower; includes the multiplication sign.
-  function ConstTermAsString: String;
+  function ConstTerm: String;
   begin
     if FParams[0] = 1.0 then
       Result := ''
+    else if FParams[0] = -1.0 then
+      Result := '-'
     else
-      Result := Format(GetNumFormat(0), [FParams[0]], fs) + TIMES[FTextFormat = tfNormal];
+      Result := Format(GetNumFormat(0), [FParams[0]], fs) + TIMES[FTextFormat = tfHTML];
   end;
 
   // Creates the exponential term, e.g. 'exp(-1.2*x)' or 'e<sup>-1.2&middot;x</sup>'
-  function ExpTermAsString: string;
-  var
-    mask: String;
+  function ExpTerm: string;
+  const
+    EXP: array[boolean] of String = ('exp(%s)', 'e<sup>%s</sup>');
   begin
-    if FTextFormat = tfNormal then
-      mask := 'exp(' + GetNumFormat(1) + '*%s)'
-    else
-      mask := 'e<sup>' + GetNumFormat(1) + '&middot;%s</sup>';
-    Result := Format(mask, [FParams[1], FX], fs);
+    Result := Format(EXP[FTextFormat = tfHTML], [ProductTerm(1)]);
   end;
 
   // Creates the power term, e.g. 'x^1.2' or 'x<sup>1.2</sup>'
-  function PowerTermAsString: String;
+  function PowerTerm: String;
   var
     mask: String;
   begin
@@ -291,20 +321,6 @@ var
     else
       mask := '%s<sup>' + GetNumFormat(1) + '</sup>';
     Result := Format(mask, [FX, FParams[1]], fs);
-  end;
-
-  // Creates the i-th term with the custom function, e.g. '1.2*sin(x)'
-  function CustomTermAsString(i: Integer): String;
-  begin
-    if FBasisFunc[i] = '' then
-      Result := Format(GetNumFormat(i), [Abs(FParams[i])], fs)
-    else
-      Result := Format(GetNumFormat(i) + TIMES[FTextFormat = tfNormal] + '%s',
-        [Abs(FParams[i]), FBasisFunc[i]], fs);
-    if (i = 0) then begin
-      if (FParams[i] < 0) then Result := '-' + Result
-    end else
-      Result := Format(' %s %s', [SIGN[FParams[i] > 0], Result]);
   end;
 
 var
@@ -318,16 +334,17 @@ begin
 
   Result := Format('%s = ', [FY]);
   case FEquation of
-    feCustom:
-      for i := 0 to High(FParams) do
-        if FParams[i] <> 0 then Result += CustomTermAsString(i);
-    feLinear, fePolynomial:
-      for i := 0 to High(FParams) do
-        if FParams[i] <> 0 then Result += PolyTermAsString(i);
+    feLinear, fePolynomial, feCustom:
+      begin
+        res := '';
+        for i := 0 to High(FParams) do
+          res += FixSign(ProductTerm(i));
+        Result += res;
+      end;
     feExp:
-      Result += ConstTermAsString + ExpTermAsString;
+      Result += ConstTerm + ExpTerm;
     fePower:
-      Result += ConstTermAsString + PowerTermAsString;
+      Result += ConstTerm + PowerTerm;
   end;
 end;
 

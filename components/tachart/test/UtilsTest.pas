@@ -529,33 +529,59 @@ begin
   AssertEquals('y = 1.2 + 10.5*x + 2.5*x^2', t.Params([1.2, 10.5, +2.5]));
   AssertEquals('y = 1.2 + 10.5*x - 2.5*x^2', t.Params([1.2, 10.5, -2.5]));
   AssertEquals('y = -1.2 + 10.5*x + 2.5*x^2', t.Params([-1.2, 10.5, +2.5]));
+  AssertEquals('y = -1.2 + x + 2.5*x^2', t.Params([-1.2, 1.0, +2.5]));
+  AssertEquals('y = -1.2 - x + 2.5*x^2', t.Params([-1.2, -1.0, +2.5]));
+  AssertEquals('y = -1.2 + 10.5*x + x^2', t.Params([-1.2, 10.5, +1.0]));
+  AssertEquals('y = -1.2 + 10.5*x - x^2', t.Params([-1.2, 10.5, -1.0]));
+  AssertEquals('y = 10.5*x - x^2', t.Params([0.0, 10.5, -1.0]));
+  AssertEquals('y = -10.5*x - x^2', t.Params([0.0, -10.5, -1.0]));
+  AssertEquals('y = x - x^2', t.Params([0.0, 1.0, -1.0]));
+  AssertEquals('y = -x - x^2', t.Params([0.0, -1.0, -1.0]));
+
   t.TextFormat(tfHtml);
   AssertEquals('y = 1.2 + 10.5&middot;x + 2.5&middot;x<sup>2</sup>', t.Params([1.2, 10.5, +2.5]));
   AssertEquals('y = 1.2 + 10.5&middot;x - 2.5&middot;x<sup>2</sup>', t.Params([1.2, 10.5, -2.5]));
   AssertEquals('y = -1.2 + 10.5&middot;x + 2.5&middot;x<sup>2</sup>', t.Params([-1.2, 10.5, +2.5]));
+  AssertEquals('y = 10.5&middot;x - x<sup>2</sup>', t.Params([0.0, 10.5, -1.0]));
 
   t.Equation(feExp).TextFormat(tfNormal);
   AssertEquals('y = 1.2*exp(-3.4*x)', t.Params([1.2, -3.4]));
   AssertEquals('y = -1.2*exp(3.4*x)', t.Params([-1.2, 3.4]));
+  AssertEquals('y = 1.2*exp(x)', t.Params([1.2, 1.0]));
+  AssertEquals('y = 1.2*exp(-x)', t.Params([1.2, -1.0]));
+  AssertEquals('y = exp(x)', t.Params([1.0, 1.0]));
+  AssertEquals('y = -exp(x)', t.Params([-1.0, 1.0]));
   t.TextFormat(tfHtml);
   AssertEquals('y = 1.2&middot;e<sup>-3.4&middot;x</sup>', t.Params([1.2, -3.4]));
   AssertEquals('y = -1.2&middot;e<sup>3.4&middot;x</sup>', t.Params([-1.2, 3.4]));
+  AssertEquals('y = e<sup>x</sup>', t.Params([1.0, 1.0]));
 
   t.Equation(fePower).Textformat(tfNormal);
   AssertEquals('y = 1.2*x^3.4', t.Params([1.2, 3.4]));
   AssertEquals('y = 1.2*x^-3.4', t.Params([1.2, -3.4]));
   AssertEquals('y = -1.2*x^3.4', t.Params([-1.2, 3.4]));
   AssertEquals('y = -1.2*x^-3.4', t.Params([-1.2, -3.4]));
+  AssertEquals('y = x^3.4', t.Params([1.0, 3.4]));
+  AssertEquals('y = -x^3.4', t.Params([-1.0, 3.4]));
   t.TextFormat(tfHtml);
   AssertEquals('y = 1.2&middot;x<sup>3.4</sup>', t.Params([1.2, 3.4]));
   AssertEquals('y = 1.2&middot;x<sup>-3.4</sup>', t.Params([1.2, -3.4]));
   AssertEquals('y = -1.2&middot;x<sup>3.4</sup>', t.Params([-1.2, 3.4]));
   AssertEquals('y = -1.2&middot;x<sup>-3.4</sup>', t.Params([-1.2, -3.4]));
+  AssertEquals('y = -x<sup>3.4</sup>', t.Params([-1.0, 3.4]));
 
   t.Equation(feCustom).BasisFuncs(['sin(x)', 'sin(2x)', '']).TextFormat(tfNormal);
   AssertEquals('y = 1.2*sin(x) + 3.4*sin(2x) + 10.0', t.Params([1.2, 3.4, 10]));
   AssertEquals('y = -1.2*sin(x) + 3.4*sin(2x) + 10.0', t.Params([-1.2, 3.4, 10]));
   AssertEquals('y = 1.2*sin(x) + 3.4*sin(2x) - 10.0', t.Params([1.2, 3.4, -10]));
+  AssertEquals('y = 1.2*sin(x) + 3.4*sin(2x)', t.Params([1.2, 3.4, 0.0]));
+  t.Equation(feCustom).BasisFuncs(['', 'sin(x)', 'sin(2x)']).TextFormat(tfNormal);
+  AssertEquals('y = 10.0 + 1.2*sin(x) + 3.4*sin(2x)', t.Params([10, 1.2, 3.4]));
+  AssertEquals('y = -10.0 + 1.2*sin(x) + 3.4*sin(2x)', t.Params([-10, 1.2, 3.4]));
+  AssertEquals('y = 1.2*sin(x) + 3.4*sin(2x)', t.Params([0.0, 1.2, 3.4]));
+  AssertEquals('y = -1.2*sin(x) + 3.4*sin(2x)', t.Params([0.0, -1.2, 3.4]));
+  AssertEquals('y = 10.0 + sin(x) + 3.4*sin(2x)', t.Params([10, 1.0, 3.4]));
+  AssertEquals('y = 10.0 - sin(x) + 3.4*sin(2x)', t.Params([10, -1.0, 3.4]));
 end;
 
 
