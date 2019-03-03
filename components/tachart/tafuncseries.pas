@@ -2142,8 +2142,15 @@ begin
   if not InRange(AIndex, 0, ParamCount - 1) then
     raise EChartError.CreateFmt(SIndexOutOfRange, [NameOrClassName(self), 'SetFitBasisFunc']);
 
-  FFitParams[AIndex].CustomFunc := AFitFunc;
   FFitParams[AIndex].CustomFuncName := AFitFuncName;  // e.g. 'sin(x)';
+  if FFitParams[AIndex].CustomFunc = AFitFunc then
+    exit;
+
+  FFitParams[AIndex].CustomFunc := AFitFunc;
+  if FFitEquation = feCustom then begin
+    InvalidateFitResults;
+    UpdateParentChart;
+  end;
 end;
 
 procedure TFitSeries.SetFitRange(AValue: TChartRange);
