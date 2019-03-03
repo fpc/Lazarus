@@ -994,7 +994,6 @@ begin
     end
   else
     begin
-      StopDesigning;
       LoadDesignFromFile(AFileName);
       SetFileCaption(AFileName);
     end;
@@ -1856,8 +1855,10 @@ procedure TFPReportDesignerForm.CreateReportDataSets(Errors: TStrings);
 
 
 begin
-  FReportDesignData.ApplyToReport(FReport,Errors);
+  if (rdoManageData in DesignOptions) then
+    FReportDesignData.ApplyToReport(FReport,Errors);
   FReport.RestoreDataFromNames;
+  FReportData.Report:=FReport;
   FReportData.RefreshData;
 end;
 
@@ -2034,7 +2035,7 @@ begin
     FReport.WriteElement(WS);
     if rdoManageData in DesignOptions then
       begin
-    // Add design data
+      // Add design data
       DD:=TJSONObject.Create;
       WS.JSon.Add('DesignData',DD);
       FReportDesignData.SaveToJSON(DD);
@@ -2106,7 +2107,6 @@ end;
 Procedure TFPReportDesignerForm.LoadReportFromFile(Const AFileName : String);
 
 begin
-  StopDesigning;
   LoadDesignFromFile(AFileName);
   SetFileCaption(AFileName);
   if Assigned(MRUMenuManager1) then
@@ -2122,6 +2122,7 @@ Var
   I : integer;
 
 begin
+  I:=FReportDesignData.DataDefinitions.Count;
   FStopDesigning:=True;
   try
     if Assigned(FReport) then
@@ -2135,9 +2136,12 @@ begin
     // Give LCL time to clean up.
     Application.ProcessMessages;
     FReportData.Report:=Nil;
-    if Assigned(FReport) then
-      FReportDesignData.RemoveFromReport(FReport);
-    FReportDesignData.DataDefinitions.Clear;
+    if (rdoManageData in DesignOptions) then
+      begin
+      if Assigned(FReport) then
+        FReportDesignData.RemoveFromReport(FReport);
+      FReportDesignData.DataDefinitions.Clear;
+      end;
     FOI.Report:=Nil;
     FOI.SelectControls(Nil);
   Finally
@@ -2169,7 +2173,7 @@ begin
       FReport := TFPReport.Create(Self);
       end
     else
-      FReport.Clear;
+      FReport.Clear(rdoManageData in DesignOptions);
     end
   else
     FReport := TFPReport.Create(Self);
@@ -2208,10 +2212,10 @@ begin
       DD:=lJSON.Get('DesignData',TJSONObject(Nil));
       if Assigned(DD) then
         FReportDesignData.DataDefinitions.LoadFromJSON(DD);
-      // We must do this before the report is loaded, so the pages/bands can find their data
-      Errs:=TStringList.Create;
-      CreateReportDataSets(Errs);
       end;
+    // We must do this before the report is loaded, so the pages/bands can find their data
+    Errs:=TStringList.Create;
+    CreateReportDataSets(Errs);
     FReport.ReadElement(rs);
     if (FReport.Owner<>Self) and (OldName<>'') then
       FReport.Name:=OldName;
