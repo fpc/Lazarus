@@ -1843,6 +1843,7 @@ components/fpweb/restimages/filelist.txt svneol=native#text/plain
 components/fpweb/restimages/genimages.bat svneol=native#text/plain
 components/fpweb/restimages/genimages.sh svneol=native#text/plain
 components/fpweb/restimages/trestbasicauthenticator.png -text svneol=unset#image/png
+components/fpweb/restimages/tsqldbrestbusinessprocessor.png -text svneol=unset#image/png
 components/fpweb/restimages/tsqldbrestdispatcher.png -text svneol=unset#image/png
 components/fpweb/restimages/tsqldbrestschema.png -text svneol=unset#image/png
 components/fpweb/weblaz.lpk svneol=native#text/plain

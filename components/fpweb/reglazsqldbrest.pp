@@ -56,6 +56,17 @@ Type
     Class Function StreamType : TRestStreamerType; override;
   end;
 
+  { TSQLDBRestResourceNamePropertyEditor }
+
+  TSQLDBRestResourceNamePropertyEditor = class(TStringPropertyEditor)
+  protected
+    function GetResourceList: TSQLDBRestResourceList;virtual;
+  public
+    function GetAttributes: TPropertyAttributes; override;
+    procedure GetValues(Proc: TGetStrProc); override;
+  end;
+
+
   { ---------------------------------------------------------------------
     Component editors
     ---------------------------------------------------------------------}
@@ -117,7 +128,8 @@ begin
   RegisterComponents('fpWeb',[
     TSQLDBRESTDispatcher,
     TSQLDBRESTSchema,
-    TRESTBasicAuthenticator
+    TRESTBasicAuthenticator,
+    TSQLDBRestBusinessProcessor
   ]);
   RegisterPropertyEditor(TypeInfo(AnsiString),
     TSQLDBRestConnection, 'ConnectionType', TSQLDBConnectionTypePropertyEditor);
@@ -127,7 +139,8 @@ begin
     TSQLDBRestDispatcher, 'InputFormat', TSQLDBRestInPutFormatPropertyEditor);
   RegisterPropertyEditor(TypeInfo(UTF8String),
     TSQLDBRestDispatcher, 'DefaultConnection', TSQLDBRestDefaultConnectionPropertyEditor);
-
+  RegisterPropertyEditor(TypeInfo(UTF8String),
+    TSQLDBRestBusinessProcessor,'ResourceName',TSQLDBRestResourceNamePropertyEditor);
   RegisterComponentEditor(TSQLDBRESTSchema,TSQLDBRESTSchemaComponentEditor);
   RegisterComponentEditor(TSQLDBRestDispatcher,TSQLDBRestDispatcherComponentEditor);
 
@@ -168,6 +181,44 @@ begin
     Dlg.Free;
   end;
 end;
+
+{ TSQLDBRestResourceNamePropertyEditor }
+
+function TSQLDBRestResourceNamePropertyEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result := [paSortList, paValueList, paRevertable];
+end;
+
+function TSQLDBRestResourceNamePropertyEditor.GetResourceList : TSQLDBRestResourceList;
+
+Var
+  S : TSQLDBRestSchema;
+  C : TPersistent;
+
+begin
+  Result:=Nil;
+  C:=TPersistent(GetComponent(0));
+  if not (Assigned(C) and (C is TSQLDBRestBusinessProcessor)) then
+    exit;
+  S:=TSQLDBRestBusinessProcessor(C).Schema;
+  if Assigned(S) then
+    Result:=S.Resources;
+end;
+
+procedure TSQLDBRestResourceNamePropertyEditor.GetValues(Proc: TGetStrProc);
+
+Var
+  L : TSQLDBRestResourceList;
+  i : Integer;
+
+begin
+  L:=GetResourceList;
+  if Not Assigned(L) then
+   exit;
+  For I:=0 to L.Count-1 do
+    Proc(L[i].ResourceName);
+end;
+
 
 { TSQLDBRestDefaultConnectionPropertyEditor }
 

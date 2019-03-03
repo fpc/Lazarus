@@ -1,4 +1,5 @@
 object RestDataModule: TRestDataModule
+  OnCreate = DataModuleCreate
   OldCreateOrder = False
   Height = 294
   HorizontalOffset = 465
@@ -22,6 +23,7 @@ object RestDataModule: TRestDataModule
       item
         Schema = ExpensesSchema
       end>
+    DispatchOptions = [rdoExposeMetadata, rdoAccessCheckNeedsDB]
     Authenticator = AuthBasic
     EnforceLimit = 0
     left = 72
@@ -242,5 +244,16 @@ object RestDataModule: TRestDataModule
     )
     left = 136
     top = 104
+  end
+  object BPProjects: TSQLDBRestBusinessProcessor
+    Schema = ExpensesSchema
+    ResourceName = 'projects'
+    OnGetDataset = DoGetDataset
+    OnCheckParams = DoCheckParams
+    OnAllowResource = DoAllowResource
+    OnAllowedOperations = DoAllowedOperations
+    OnAllowRecord = DoAllowedRecord
+    left = 254
+    top = 121
   end
 end
