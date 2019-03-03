@@ -1213,7 +1213,6 @@ var
   p: LongInt;
   Identifier, Value, Line: string;
   Ch: Char;
-  MultiLinedValue: boolean;
 
   procedure NextLine;
   begin
@@ -1229,22 +1228,21 @@ var
 
   procedure NormalizeValue;
   begin
-    if MultiLinedValue then begin
-      //treat #10#13 sequences as #13#10 for consistency,
-      //e.g. #10#13#13#13#10#13#10 should become #13#10#13#13#10#13#10
-      p:=2;
-      while p<=Length(Value) do begin
-        if (Value[p]=#13) and (Value[p-1]=#10) then begin
-          Value[p]:=#10;
-          Value[p-1]:=#13;
-        end;
-        // further analysis shouldn't affect found #13#10 pair
-        if (Value[p]=#10) and (Value[p-1]=#13) then
-          inc(p);
-        inc(p);
+    //treat #10#13 sequences as #13#10 for consistency,
+    //e.g. #10#13#13#13#10#13#10 should become #13#10#13#13#10#13#10
+    p:=2;
+    while p<=Length(Value) do begin
+      if (Value[p]=#13) and (Value[p-1]=#10) then begin
+        Value[p]:=#10;
+        Value[p-1]:=#13;
       end;
-      Value := AdjustLineBreaks(Value);
+      // further analysis shouldn't affect found #13#10 pair
+      if (Value[p]=#10) and (Value[p-1]=#13) then
+        inc(p);
+      inc(p);
     end;
+    Value := AdjustLineBreaks(Value);
+
     // escape special characters as #number, do not confuse translators
     p:=1;
     while p<=length(Value) do begin
@@ -1271,7 +1269,6 @@ var
         JsonItems := JsonData.Arrays['strings'];
         for K := 0 to JsonItems.Count - 1 do
         begin
-          MultiLinedValue := false;
           JsonItem := JsonItems.Items[K] as TJSONObject;
           Data:=JsonItem.Find('sourcebytes');
           if Data is TJSONArray then begin
@@ -1279,21 +1276,10 @@ var
             // while 'value' contains the string encoded as UTF16 with \u hexcodes.
             SourceBytes := TJSONArray(Data);
             SetLength(Value,SourceBytes.Count);
-            for L := 1 to length(Value) do begin
+            for L := 1 to length(Value) do
               Value[L] := chr(SourceBytes.Integers[L-1]);
-              if Value[L] in [#13,#10] then
-                MultilinedValue := True;
-            end;
-          end else begin
+          end else
             Value:=JsonItem.Get('value');
-            // check if the value we got is multilined
-            L := 1;
-            while (L<=Length(Value)) and (MultiLinedValue = false) do begin
-              if Value[L] in [#13,#10] then
-                MultilinedValue := True;
-              inc(L);
-            end;
-          end;
           if Value<>'' then begin
             NormalizeValue;
             UpdateItem(JsonItem.Get('name'), Value);
@@ -1315,7 +1301,6 @@ begin
   begin
     // for each string in lrt/rst/rsj list check if it's already in PO
     // if not add it
-    MultilinedValue := false;
     Value := '';
     Identifier := '';
     i := 0;
@@ -1333,7 +1318,6 @@ begin
 
           Value := '';
           Identifier := '';
-          MultilinedValue := false;
 
         end else begin
 
@@ -1365,8 +1349,6 @@ begin
 
                   Ch := Chr(StrToInt(copy(Line, j, p-j)));
                   Value := Value + Ch;
-                  if Ch in [#13,#10] then
-                    MultilinedValue := True;
 
                   if (p=n) and (Line[p]='+') then
                     NextLine;
