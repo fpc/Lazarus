@@ -368,6 +368,12 @@ type
               const CheckedState: TCheckboxState;
               var ABitmap: TBitmap) of object;
 
+  TUserCheckBoxImageEvent =
+    procedure(Sender: TObject; const aCol, aRow: Integer;
+              const CheckedState: TCheckBoxState;
+              var ImageList: TCustomImageList;
+              var ImageIndex: TImageIndex) of object;
+
   TValidateEntryEvent =
     procedure(sender: TObject; aCol, aRow: Integer;
               const OldValue: string; var NewValue: String) of object;
@@ -728,6 +734,7 @@ type
     FRangeSelectMode: TRangeSelectMode;
     FSelections: TGridRectArray;
     FOnUserCheckboxBitmap: TUserCheckboxBitmapEvent;
+    FOnUserCheckboxImage: TUserCheckBoxImageEvent;
     FSortOrder: TSortOrder;
     FSortColumn: Integer;
     FSortLCLImages: TLCLGlyphs;
@@ -1247,6 +1254,7 @@ type
     property OnSelectEditor: TSelectEditorEvent read FOnSelectEditor write FOnSelectEditor;
     property OnTopLeftChanged: TNotifyEvent read FOnTopLeftChanged write FOnTopLeftChanged;
     property OnUserCheckboxBitmap: TUserCheckboxBitmapEvent read FOnUserCheckboxBitmap write FOnUserCheckboxBitmap;
+    property OnUserCheckboxImage: TUserCheckBoxImageEvent read FOnUserCheckboxImage write FOnUserCheckboxImage;
     property OnValidateEntry: TValidateEntryEvent read FOnValidateEntry write FOnValidateEntry;
     // Bidi functions
     function FlipRect(ARect: TRect): TRect;
@@ -1629,6 +1637,7 @@ type
     property OnStartDrag;
     property OnTopleftChanged;
     property OnUserCheckboxBitmap;
+    property OnUserCheckboxImage;
     property OnUTF8KeyPress;
     property OnValidateEntry;
   end;
@@ -1869,6 +1878,7 @@ type
     property OnStartDrag;
     property OnTopLeftChanged;
     property OnUserCheckboxBitmap;
+    property OnUserCheckboxImage;
     property OnUTF8KeyPress;
     property OnValidateEntry;
   end;
@@ -4598,23 +4608,19 @@ begin
   ChkII := -1;
   ChkBitmap := nil;
 
-  if not Assigned(OnUserCheckboxBitmap) then
+  GetImageForCheckBox(aCol, aRow, AState, ChkIL, ChkII, ChkBitmap);
+  if Assigned(ChkBitmap) then
+    CSize := Size(ChkBitmap.Width, ChkBitmap.Height)
+  else if (Assigned(ChkIL) and (ChkII>=0)) then
+  begin
+    ChkILRes := ChkIL.ResolutionForPPI[ChkIL.Width, Font.PixelsPerInch, GetCanvasScaleFactor];
+    CSize := ChkILRes.Size;
+  end else
   begin
     Details := ThemeServices.GetElementDetails(arrtb[AState]);
     CSize := ThemeServices.GetDetailSize(Details);
     CSize.cx := MulDiv(CSize.cx, Font.PixelsPerInch, Screen.PixelsPerInch);
     CSize.cy := MulDiv(CSize.cy, Font.PixelsPerInch, Screen.PixelsPerInch);
-  end else
-  begin
-    GetImageForCheckBox(aCol, aRow, AState, ChkIL, ChkII, ChkBitmap);
-    if Assigned(ChkBitmap) then
-      CSize := Size(ChkBitmap.Width, ChkBitmap.Height)
-    else if (Assigned(ChkIL) and (ChkII>=0)) then
-    begin
-      ChkILRes := ChkIL.ResolutionForPPI[ChkIL.Width, Font.PixelsPerInch, GetCanvasScaleFactor];
-      CSize := ChkILRes.Size;
-    end else
-      Exit;
   end;
 
   case bmpAlign of
@@ -5525,6 +5531,8 @@ procedure TCustomGrid.GetImageForCheckBox(const aCol, aRow: Integer;
 begin
   if Assigned(OnUserCheckboxBitmap) then
     OnUserCheckboxBitmap(Self, aCol, aRow, CheckBoxView, Bitmap);
+  if (Bitmap = nil) and Assigned(OnUserCheckBoxImage) then
+    OnUserCheckboxImage(Self, aCol, aRow, CheckBoxView, ImageList, ImageIndex);
 end;
 
 procedure TCustomGrid.AdjustInnerCellRect(var ARect: TRect);
