@@ -1630,7 +1630,7 @@ begin
   FPen.OnChange := @StyleChanged;
   FStep := DEF_FIT_STEP;
   FConfidenceLevel := 0.95;
-  ParamCount := DEF_FIT_PARAM_COUNT; // Parabolic fit as default.
+  SetParamCount(DEF_FIT_PARAM_COUNT); // Parabolic fit as default.
   InvalidateFitResults;
 end;
 
@@ -2130,8 +2130,8 @@ procedure TFitSeries.SetFitEquation(AValue: TFitEquation);
 begin
   if FFitEquation = AValue then exit;
   FFitEquation := AValue;
-  SetLength(
-    FFitParams, IfThen(FFitEquation in [fePolynomial, feCustom], DEF_FIT_PARAM_COUNT, 2));
+  if not (FFitEquation in [fePolynomial, feCustom]) then
+    SetLength(FFitParams, 2);
   InvalidateFitResults;
   UpdateParentChart;
 end;
