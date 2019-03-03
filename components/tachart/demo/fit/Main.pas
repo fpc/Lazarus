@@ -522,14 +522,8 @@ begin
             LowerPredIntervalSeries.OnCalculate := @FitSeries.GetLowerPredictionInterval;
             {$IFEND}
           end;
-        fitDimError:
-          Add('The lengths of the data vectors do not match.');
-        fitMoreParamsThanValues:
-          Add('There are more fitting parameters than data values.');
-        fitNoFitParams:
-          Add('No fit parameters specified');
-        fitSingular:
-          Add('Matrix is (nearly) singular');
+        else
+          Add(FitSeries.ErrorMsg);
       end;
     finally
       EndUpdate;
