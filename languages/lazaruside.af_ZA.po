@@ -311,6 +311,10 @@ msgctxt "lazarusidestrconsts.dlfmousesimpletextsectpageextra2"
 msgid "Extra 2"
 msgstr ""
 
+#: lazarusidestrconsts.dlfmousesimpletextsectpagehorizwheel
+msgid "Horizontal-Wheel"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimpletextsectpagelmod
 msgid "Left 1"
 msgstr ""
@@ -2705,6 +2709,14 @@ msgstr "Regs"
 
 #: lazarusidestrconsts.dlgmouseoptbtnwheeldown
 msgid "Wheel down"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtnwheelleft
+msgid "Wheel left"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtnwheelright
+msgid "Wheel right"
 msgstr ""
 
 #: lazarusidestrconsts.dlgmouseoptbtnwheelup

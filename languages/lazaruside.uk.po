@@ -314,6 +314,10 @@ msgctxt "lazarusidestrconsts.dlfmousesimpletextsectpageextra2"
 msgid "Extra 2"
 msgstr "Екстра 2"
 
+#: lazarusidestrconsts.dlfmousesimpletextsectpagehorizwheel
+msgid "Horizontal-Wheel"
+msgstr ""
+
 #: lazarusidestrconsts.dlfmousesimpletextsectpagelmod
 msgid "Left 1"
 msgstr "Ліва 1"
@@ -2708,6 +2712,14 @@ msgstr "Справа"
 #: lazarusidestrconsts.dlgmouseoptbtnwheeldown
 msgid "Wheel down"
 msgstr "Колесо вниз"
+
+#: lazarusidestrconsts.dlgmouseoptbtnwheelleft
+msgid "Wheel left"
+msgstr ""
+
+#: lazarusidestrconsts.dlgmouseoptbtnwheelright
+msgid "Wheel right"
+msgstr ""
 
 #: lazarusidestrconsts.dlgmouseoptbtnwheelup
 msgid "Wheel up"
