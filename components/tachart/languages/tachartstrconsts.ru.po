@@ -180,6 +180,26 @@ msgstr "Измерение расстояния"
 msgid "Down triangle"
 msgstr "Треугольник с вершиной снизу"
 
+#: tachartstrconsts.rserrfitdimerror
+msgid "Non-matching count of x and y values."
+msgstr "Нет соответствия между количествами значений по x и y."
+
+#: tachartstrconsts.rserrfitmoreparamsthanvalues
+msgid "There are more fitting parameters than data values."
+msgstr "Независимых переменных больше количества имеющихся величин."
+
+#: tachartstrconsts.rserrfitnobasefunctions
+msgid "Not enough user-provided base functions."
+msgstr "Недостаточно пользовательских базовых функций."
+
+#: tachartstrconsts.rserrfitnofitparams
+msgid "No fit parameters specified."
+msgstr "Независимых переменных не задано."
+
+#: tachartstrconsts.rserrfitsingular
+msgid "Fitting matrix is (nearly) singular."
+msgstr "Матрица аппроксимации (практически) вырождена."
+
 #: tachartstrconsts.rserrillegalfitparamcount
 msgid "The number of fit parameters cannot be less than 1."
 msgstr "Независимых переменных не может быть меньше одной."
