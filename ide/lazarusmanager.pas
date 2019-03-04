@@ -429,8 +429,8 @@ begin
   FProcess.Options := [];
   FProcess.ShowWindow := swoShow;
   Params:=TStringListUTF8.Create;
+  Params.Add(LazarusPath);
   SplitCmdLineParams(CommandLine,Params);
-  FProcess.Executable:=LazarusPath;
   FProcess.Parameters:=Params;
   Params.Free;
   if (EnvOverrides<>nil) and (EnvOverrides.Count>0) then
