@@ -7245,7 +7245,13 @@ begin
     end;
 
     Project1.RunParameterOptions.AssignEnvironmentTo(Process.Environment);
-    TNotifyProcessEnd.Create(Process, @DoCallRunFinishedHandler);
+    try
+      TNotifyProcessEnd.Create(Process, @DoCallRunFinishedHandler);
+      Process:=nil; // Process is freed by TNotifyProcessEnd
+    except
+      on E: Exception do
+        debugln(['Error: (lazarus) [TMainIDE.DoRunProjectWithoutDebug] ',E.Message]);
+    end;
   except
     Process.Free;
   end;
