@@ -8830,6 +8830,8 @@ begin
         RealTargetOS:=Infos[fpciTargetOS];
         RealTargetCPU:=Infos[fpciTargetProcessor];
         FullVersion:=Infos[fpciFullVersion];
+        if FullVersion='' then
+          debugln(['Warning: [TPCTargetConfigCache.Update] cannot determine compiler version: Compiler="'+Compiler+'" Options="'+ExtraOptions+'"']);
       end else begin
         RealTargetOS:=TargetOS;
         if RealTargetOS='' then
@@ -8837,7 +8839,6 @@ begin
         RealTargetCPU:=TargetCPU;
         if RealTargetCPU='' then
           RealTargetCPU:=GetCompiledTargetCPU;
-
       end;
 
       if FullVersion<>'' then begin
@@ -8896,7 +8897,7 @@ begin
       //  for e in Units do
       //    debugln(['  ',E^.Name,' ',E^.Value]);
       //end;
-      if (UnitPaths.Count=0) then begin
+      if (UnitPaths<>nil) and (UnitPaths.Count=0) then begin
         if CTConsoleVerbosity>=-1 then
           debugln(['Warning: [TPCTargetConfigCache.Update] no unit paths: ',Compiler,' ',ExtraOptions]);
       end;

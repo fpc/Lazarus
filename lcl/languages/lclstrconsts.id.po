@@ -1371,7 +1371,7 @@ msgstr ""
 msgctxt "lclstrconsts.sshellctrlsinvalidpath"
 msgid ""
 "Invalid pathname:\n"
-"\"%s\""
+"\"%s\"\n"
 msgstr ""
 
 #: lclstrconsts.sshellctrlsinvalidpathrelative
@@ -1379,14 +1379,14 @@ msgid ""
 "Invalid relative pathname:\n"
 "\"%s\"\n"
 "in relation to rootpath:\n"
-"\"%s\""
+"\"%s\"\n"
 msgstr ""
 
 #: lclstrconsts.sshellctrlsinvalidroot
 msgctxt "lclstrconsts.sshellctrlsinvalidroot"
 msgid ""
 "Invalid pathname:\n"
-"\"%s\""
+"\"%s\"\n"
 msgstr ""
 
 #: lclstrconsts.sshellctrlskb
@@ -1404,7 +1404,7 @@ msgstr ""
 #: lclstrconsts.sshellctrlsselecteditemdoesnotexists
 msgid ""
 "The selected item does not exist on disk:\n"
-"\"%s\""
+"\"%s\"\n"
 msgstr ""
 
 #: lclstrconsts.sshellctrlssize
