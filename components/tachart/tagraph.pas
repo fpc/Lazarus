@@ -1,4 +1,4 @@
-{
+﻿{
  /***************************************************************************
                                TAGraph.pas
                                -----------
@@ -233,6 +233,8 @@ type
     FOnExtentChanging: TChartEvent;
     FPrevLogicalExtent: TDoubleRect;
     FScale: TDoublePoint;    // Coordinates transformation
+    FScaleValid: Boolean;
+    FScaleNeedsSecondPass: Boolean;
     FSavedClipRect: TRect;
     FClipRectLock: Integer;
 
@@ -359,6 +361,8 @@ type
     function XImageToGraph(AX: Integer): Double; inline;
     function YGraphToImage(AY: Double): Integer; inline;
     function YImageToGraph(AY: Integer): Double; inline;
+    property ScaleValid: Boolean read FScaleValid;
+    property ScaleNeedsSecondPass: Boolean read FScaleNeedsSecondPass write FScaleNeedsSecondPass;
 
   public
     procedure LockClipRect;
@@ -591,6 +595,7 @@ begin
   FOffset.Y := rY.CalcOffset(FScale.Y);
   rX.UpdateMinMax(@XImageToGraph);
   rY.UpdateMinMax(@YImageToGraph);
+  FScaleValid := True;
 end;
 
 procedure TChart.Clear(ADrawer: IChartDrawer; const ARect: TRect);
@@ -686,6 +691,8 @@ begin
   FGUIConnectorListener := TListener.Create(@FGUIConnector, @StyleChanged);
 
   FScale := DoublePoint(1, -1);
+  FScaleValid := False;
+  FScaleNeedsSecondPass := False;
 
   Width := DEFAULT_CHART_WIDTH;
   Height := DEFAULT_CHART_HEIGHT;
@@ -878,32 +885,49 @@ end;
 procedure TChart.Draw(ADrawer: IChartDrawer; const ARect: TRect);
 var
   ldd: TChartLegendDrawingData;
+  tmpExtent: TDoubleRect;
+  tries: Integer;
   s: TBasicChartSeries;
   ts: TBasicChartToolset;
 begin
-  Prepare;
-
-  ADrawer.SetRightToLeft(BiDiMode <> bdLeftToRight);
-
-  FClipRect := ARect;
-  with MarginsExternal do begin
-    FClipRect.Left += Left;
-    FClipRect.Top += Top;
-    FClipRect.Right -= Right;
-    FClipRect.Bottom -= Bottom;
-  end;
-
-  with ClipRect do begin
-    FTitle.Measure(ADrawer, 1, Left, Right, Top);
-    FFoot.Measure(ADrawer, -1, Left, Right, Bottom);
-  end;
-
   ldd.FItems := nil;
-  if Legend.Visible then
-    ldd := PrepareLegend(ADrawer, FClipRect);
-
   try
-    PrepareAxis(ADrawer);
+    Prepare;
+
+    ADrawer.SetRightToLeft(BiDiMode <> bdLeftToRight);
+
+    for tries := 1 to 2 do
+    begin
+      FClipRect := ARect;
+      with MarginsExternal do begin
+        FClipRect.Left += Left;
+        FClipRect.Top += Top;
+        FClipRect.Right -= Right;
+        FClipRect.Bottom -= Bottom;
+      end;
+
+      with ClipRect do begin
+        FTitle.Measure(ADrawer, 1, Left, Right, Top);
+        FFoot.Measure(ADrawer, -1, Left, Right, Bottom);
+      end;
+
+      if Legend.Visible then
+        ldd := PrepareLegend(ADrawer, FClipRect);
+
+      PrepareAxis(ADrawer);
+
+      if not FScaleNeedsSecondPass then break;
+
+      if FIsZoomed then break; // GetFullExtent() has not been called in this case,
+                               // in the Prepare() call above
+      tmpExtent := GetFullExtent; // perform second pass
+      if tmpExtent = FLogicalExtent then break; // second pass hasn't changed the extent
+
+      // as in the Prepare() call
+      FLogicalExtent := tmpExtent;
+      FCurrentExtent := FLogicalExtent;
+    end;
+
     if Legend.Visible and not Legend.UseSidebar then
       Legend.Prepare(ldd, FClipRect);
 
@@ -1470,6 +1494,9 @@ var
   a: TChartAxis;
   s: TBasicChartSeries;
 begin
+  FScaleValid := False;
+  FScaleNeedsSecondPass := False;
+
   for a in AxisList do
     if a.Transformations <> nil then
       a.Transformations.SetChart(Self);

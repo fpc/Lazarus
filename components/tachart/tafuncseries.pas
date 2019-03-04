@@ -1601,7 +1601,7 @@ procedure TFitSeries.CalcXRange(out AXMin, AXMax: Double);
 var
   ext: TDoubleRect;
 begin
-  with Extent do begin
+  with Source.BasicExtent do begin
     ext.a := AxisToGraph(a);
     ext.b := AxisToGraph(b);
   end;
@@ -1793,8 +1793,31 @@ begin
 end;
 
 function TFitSeries.Extent: TDoubleRect;
+var
+  de : TIntervalList;
 begin
   Result := Source.BasicExtent;
+  if IsEmpty or (not Active) then exit;
+
+  if ParentChart = nil then exit;
+  ParentChart.ScaleNeedsSecondPass := True;
+  if not ParentChart.ScaleValid then exit;
+
+  if FAutoFit then ExecFit;
+
+  if (FState = fpsValid) and (FErrCode = fitOK) then begin
+    de := PrepareIntervals;
+    try
+      with TDrawFuncHelper.Create(Self, de, @Calculate, Step) do
+        try
+          CalcAxisExtentY(Result.a.X, Result.b.X, Result.a.Y, Result.b.Y);
+        finally
+          Free;
+        end;
+    finally
+      de.Free;
+    end;
+  end;
 end;
 
 function TFitSeries.FitParams: TDoubleDynArray;
