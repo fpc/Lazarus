@@ -2008,10 +2008,11 @@ var
   FPM: TPCFPMFileState;
 begin
   // try to resolve .ppu files via fpmkinst .fpm files
-  FileCount:=0;
   UnitToFPM:=TStringToPointerTree.Create(false);
   FPMNameToFPM:=TStringToPointerTree.Create(false);
   FPMNameToFPM.FreeValues:=true;
+  if Units=nil then exit;
+  FileCount:=0;
   Abort:=false;
   AVLNode:=Units.Tree.FindLowest;
   while AVLNode<>nil do begin
@@ -8836,24 +8837,28 @@ begin
         RealTargetCPU:=TargetCPU;
         if RealTargetCPU='' then
           RealTargetCPU:=GetCompiledTargetCPU;
+
       end;
-      // run fpc/pas2js and parse output
-      HasPPUs:=false;
-      RunFPCVerbose(Compiler,TestFilename,CfgFiles,RealCompiler,UnitPaths,
-                    IncludePaths,UnitScopes,Defines,Undefines,ExtraOptions);
 
-      //debugln(['TPCTargetConfigCache.Update UnitPaths="',UnitPaths.Text,'"']);
-      //debugln(['TPCTargetConfigCache.Update UnitScopes="',UnitScopes.Text,'"']);
-      //debugln(['TPCTargetConfigCache.Update IncludePaths="',IncludePaths.Text,'"']);
+      if FullVersion<>'' then begin
+        // run fpc/pas2js and parse output
+        RunFPCVerbose(Compiler,TestFilename,CfgFiles,RealCompiler,UnitPaths,
+                      IncludePaths,UnitScopes,Defines,Undefines,ExtraOptions);
+        //debugln(['TPCTargetConfigCache.Update UnitPaths="',UnitPaths.Text,'"']);
+        //debugln(['TPCTargetConfigCache.Update UnitScopes="',UnitScopes.Text,'"']);
+        //debugln(['TPCTargetConfigCache.Update IncludePaths="',IncludePaths.Text,'"']);
+      end;
 
-      if Defines.Contains('PAS2JS') and Defines.Contains('PAS2JS_FULLVERSION') then
-        Kind:=pcPas2js
-      else if Defines.Contains('FPC') and Defines.Contains('FPC_FULLVERSION') then
-        Kind:=pcFPC
-      else begin
-        IsCompilerExecutable(Compiler,KindErrorMsg,Kind,false);
-        if KindErrorMsg<>'' then
-          debugln(['Warning: [TPCTargetConfigCache.Update] cannot determine type of compiler: Compiler="'+Compiler+'" Options="'+ExtraOptions+'"']);
+      if Defines<>nil then begin
+        if Defines.Contains('PAS2JS') and Defines.Contains('PAS2JS_FULLVERSION') then
+          Kind:=pcPas2js
+        else if Defines.Contains('FPC') and Defines.Contains('FPC_FULLVERSION') then
+          Kind:=pcFPC
+        else begin
+          IsCompilerExecutable(Compiler,KindErrorMsg,Kind,false);
+          if KindErrorMsg<>'' then
+            debugln(['Warning: [TPCTargetConfigCache.Update] cannot determine type of compiler: Compiler="'+Compiler+'" Options="'+ExtraOptions+'"']);
+        end;
       end;
       if Kind=pcFPC then
         RealTargetCPUCompiler:=FindDefaultTargetCPUCompiler(TargetCPU,true);
@@ -8896,8 +8901,10 @@ begin
           debugln(['Warning: [TPCTargetConfigCache.Update] no unit paths: ',Compiler,' ',ExtraOptions]);
       end;
       // check if the system ppu exists
-      HasPPUs:=(Kind=pcFPC) and (CompareFileExt(Units['system'],'ppu',false)=0);
-      if CTConsoleVerbosity>=-1 then begin
+      HasPPUs:=(Kind=pcFPC) and (Units<>nil)
+          and (CompareFileExt(Units['system'],'ppu',false)=0);
+      // check compiler version define
+      if (CTConsoleVerbosity>=-1) and (Defines<>nil) then begin
         case Kind of
           pcFPC:
             if not Defines.Contains('FPC_FULLVERSION') then
