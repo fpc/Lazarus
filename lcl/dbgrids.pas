@@ -670,6 +670,7 @@ type
     property OnStartDrag;
     property OnTitleClick;
     property OnUserCheckboxBitmap;
+    property OnUserCheckboxImage;
     property OnUserCheckboxState;
     property OnUTF8KeyPress;
   end;
