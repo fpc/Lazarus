@@ -368,12 +368,6 @@ type
               const CheckedState: TCheckboxState;
               var ABitmap: TBitmap) of object;
 
-  TUserCheckBoxImageEvent =
-    procedure(Sender: TObject; const aCol, aRow: Integer;
-              const CheckedState: TCheckBoxState;
-              var ImageList: TCustomImageList;
-              var ImageIndex: TImageIndex) of object;
-
   TValidateEntryEvent =
     procedure(sender: TObject; aCol, aRow: Integer;
               const OldValue: string; var NewValue: String) of object;
@@ -734,7 +728,6 @@ type
     FRangeSelectMode: TRangeSelectMode;
     FSelections: TGridRectArray;
     FOnUserCheckboxBitmap: TUserCheckboxBitmapEvent;
-    FOnUserCheckboxImage: TUserCheckBoxImageEvent;
     FSortOrder: TSortOrder;
     FSortColumn: Integer;
     FSortLCLImages: TLCLGlyphs;
@@ -1254,7 +1247,6 @@ type
     property OnSelectEditor: TSelectEditorEvent read FOnSelectEditor write FOnSelectEditor;
     property OnTopLeftChanged: TNotifyEvent read FOnTopLeftChanged write FOnTopLeftChanged;
     property OnUserCheckboxBitmap: TUserCheckboxBitmapEvent read FOnUserCheckboxBitmap write FOnUserCheckboxBitmap;
-    property OnUserCheckboxImage: TUserCheckBoxImageEvent read FOnUserCheckboxImage write FOnUserCheckboxImage;
     property OnValidateEntry: TValidateEntryEvent read FOnValidateEntry write FOnValidateEntry;
     // Bidi functions
     function FlipRect(ARect: TRect): TRect;
@@ -1637,7 +1629,6 @@ type
     property OnStartDrag;
     property OnTopleftChanged;
     property OnUserCheckboxBitmap;
-    property OnUserCheckboxImage;
     property OnUTF8KeyPress;
     property OnValidateEntry;
   end;
@@ -1878,7 +1869,6 @@ type
     property OnStartDrag;
     property OnTopLeftChanged;
     property OnUserCheckboxBitmap;
-    property OnUserCheckboxImage;
     property OnUTF8KeyPress;
     property OnValidateEntry;
   end;
@@ -5531,8 +5521,6 @@ procedure TCustomGrid.GetImageForCheckBox(const aCol, aRow: Integer;
 begin
   if Assigned(OnUserCheckboxBitmap) then
     OnUserCheckboxBitmap(Self, aCol, aRow, CheckBoxView, Bitmap);
-  if (Bitmap = nil) and Assigned(OnUserCheckBoxImage) then
-    OnUserCheckboxImage(Self, aCol, aRow, CheckBoxView, ImageList, ImageIndex);
 end;
 
 procedure TCustomGrid.AdjustInnerCellRect(var ARect: TRect);
