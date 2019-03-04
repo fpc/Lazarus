@@ -1778,7 +1778,7 @@ var
   end;
 
 begin
-  if (State <> fpsUnknown) or not Active or IsEmpty or
+  if (State <> fpsUnknown) or not Active or IsEmpty or (FChart = nil) or
      ([csLoading, csDestroying] * ComponentState <> [])
   then
     exit;
