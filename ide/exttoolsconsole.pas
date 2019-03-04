@@ -63,7 +63,7 @@ type
   public
     constructor Create(aOwner: TComponent); override;
     destructor Destroy; override;
-    function GetIDEObject(ToolData: TIDEExternalToolData): TObject; override;
+    function GetIDEObject({%H-}ToolData: TIDEExternalToolData): TObject; override;
     procedure HandleMesages; override;
   end;
 
@@ -229,6 +229,7 @@ end;
 function TExternalToolsConsole.GetIDEObject(ToolData: TIDEExternalToolData): TObject;
 begin
   raise Exception.Create('TExternalToolsConsole.GetIDEObject: Should not happen!');
+  Result:=nil;
 end;
 
 procedure TExternalToolsConsole.HandleMesages;
