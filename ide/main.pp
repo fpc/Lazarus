@@ -7231,6 +7231,7 @@ begin
       ExeFile:=Params[0];
       Params.Delete(0);
     end;
+    //writeln('TMainIDE.DoRunProjectWithoutDebug ExeFile=',ExeFile);
     Process.Executable := ExeFile;
     ARunMode := Project1.RunParameterOptions.GetActiveMode;
 
@@ -7278,6 +7279,7 @@ begin
     Project1.RunParameterOptions.AssignEnvironmentTo(Process.Environment);
     try
       TNotifyProcessEnd.Create(Process, @DoCallRunFinishedHandler);
+      Process:=nil; // Process is freed by TNotifyProcessEnd
     except
       on E: Exception do
         debugln(['Error: (lazarus) [TMainIDE.DoRunProjectWithoutDebug] ',E.Message]);
