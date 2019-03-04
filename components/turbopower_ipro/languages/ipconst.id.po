@@ -417,7 +417,7 @@ msgid ""
 "             RTTime = %d\n"
 "             Ttl = %d\n"
 "             Tos = %d\n"
-"             IpFlags = %d\n"
+"             IpFlags = %d"
 msgstr ""
 
 #: ipconst.sicmpechostring
