@@ -76,7 +76,7 @@ type
 
   TSrcEditReplaceAction = (seraCancel, seraSkip, seraReplace, seraReplaceAll);
 
-  TSrcEditProjectUpdateNeeded = (sepuNewShared);
+  TSrcEditProjectUpdateNeeded = (sepuNewShared, sepuChangedHighlighter);
   TSrcEditProjectUpdatesNeeded = set of TSrcEditProjectUpdateNeeded;
 
   { TSourceEditorInterface }

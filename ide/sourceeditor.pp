@@ -6705,6 +6705,7 @@ begin
     and (i<=ord(High(TLazSyntaxHighlighter))) then begin
       h:=TLazSyntaxHighlighter(i);
       SrcEdit.SyntaxHighlighterType:=h;
+      SrcEdit.UpdateProjectFile([sepuChangedHighlighter]);
     end;
   end;
 end;

@@ -189,6 +189,7 @@ type
     procedure SetFoldState(AValue: String);
     procedure SetPageIndex(const AValue: Integer);
     procedure SetIsVisibleTab(const AValue: Boolean);
+    procedure SetSyntaxHighlighter(AValue: TLazSyntaxHighlighter);
     procedure SetWindowIndex(const AValue: Integer);
   protected
     procedure Clear;
@@ -209,7 +210,7 @@ type
     property FoldState: String read FFoldState write SetFoldState;
     property IsLocked: Boolean read FIsLocked  write FIsLocked;
     property CustomHighlighter: Boolean read FCustomHighlighter write FCustomHighlighter; // SetCustomHighlighter
-    property SyntaxHighlighter: TLazSyntaxHighlighter read FSyntaxHighlighter write FSyntaxHighlighter; // SetSyntaxHighlighter
+    property SyntaxHighlighter: TLazSyntaxHighlighter read FSyntaxHighlighter write SetSyntaxHighlighter; // SetSyntaxHighlighter
   end;
 
   { TUnitEditorInfoList }
@@ -1247,6 +1248,14 @@ procedure TUnitEditorInfo.SetIsVisibleTab(const AValue: Boolean);
 begin
   if FIsVisibleTab = AValue then exit;
   FIsVisibleTab := AValue;
+  FUnitInfo.SessionModified := True;
+end;
+
+procedure TUnitEditorInfo.SetSyntaxHighlighter(AValue: TLazSyntaxHighlighter);
+begin
+  if FSyntaxHighlighter = AValue then Exit;
+  FSyntaxHighlighter := AValue;
+  FCustomHighlighter := FSyntaxHighlighter <> FUnitInfo.DefaultSyntaxHighlighter;
   FUnitInfo.SessionModified := True;
 end;
 

@@ -11069,23 +11069,29 @@ var
 begin
   SrcEdit := TSourceEditor(Sender);
   p :=Project1.EditorInfoWithEditorComponent(SrcEdit);
-  if p <> nil then begin
-    p.PageIndex := SrcEdit.PageIndex;
-    p.WindowID := SrcEdit.SourceNotebook.WindowID;
-    //SourceEditorManager.IndexOfSourceWindow(SrcEdit.SourceNotebook);
-    p.IsLocked := SrcEdit.IsLocked;
-  end
-  else if sepuNewShared in AnUpdates then begin
-    // attach to UnitInfo
-    i := 0;
-    while (i < SrcEdit.SharedEditorCount) and (SrcEdit.SharedEditors[i] = SrcEdit) do
-      inc(i);
-    p := Project1.EditorInfoWithEditorComponent(SrcEdit.SharedEditors[i]);
-    p := p.UnitInfo.GetClosedOrNewEditorInfo;
-    p.EditorComponent := SrcEdit;
-    p.SyntaxHighlighter := SrcEdit.SyntaxHighlighterType;
-    p.CustomHighlighter := p.SyntaxHighlighter <> p.UnitInfo.DefaultSyntaxHighlighter;
+  if (p = nil) then begin
+    if (sepuNewShared in AnUpdates) then begin
+      // attach to UnitInfo
+      i := 0;
+      while (i < SrcEdit.SharedEditorCount) and (SrcEdit.SharedEditors[i] = SrcEdit) do
+        inc(i);
+      p := Project1.EditorInfoWithEditorComponent(SrcEdit.SharedEditors[i]);
+      p := p.UnitInfo.GetClosedOrNewEditorInfo;
+      p.EditorComponent := SrcEdit;
+    end
+    else
+      exit;
   end;
+
+  if AnUpdates * [sepuNewShared, sepuChangedHighlighter] <> [] then begin
+    p.SyntaxHighlighter := SrcEdit.SyntaxHighlighterType;
+  end;
+
+  p.PageIndex := SrcEdit.PageIndex;
+  p.WindowID := SrcEdit.SourceNotebook.WindowID;
+  //SourceEditorManager.IndexOfSourceWindow(SrcEdit.SourceNotebook);
+  p.IsLocked := SrcEdit.IsLocked;
+
 end;
 
 procedure TMainIDE.SrcNotebookEditorCreated(Sender: TObject);
