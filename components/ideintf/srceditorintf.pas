@@ -76,6 +76,9 @@ type
 
   TSrcEditReplaceAction = (seraCancel, seraSkip, seraReplace, seraReplaceAll);
 
+  TSrcEditProjectUpdateNeeded = (sepuNewShared);
+  TSrcEditProjectUpdatesNeeded = set of TSrcEditProjectUpdateNeeded;
+
   { TSourceEditorInterface }
 
   TSourceEditorInterface = class
@@ -160,7 +163,7 @@ type
 
     // context
     function GetProjectFile: TLazProjectFile; virtual; abstract;
-    procedure UpdateProjectFile; virtual; abstract;
+    procedure UpdateProjectFile(AnUpdates: TSrcEditProjectUpdatesNeeded = []); virtual; abstract;
     function GetDesigner(LoadForm: boolean): TIDesigner; virtual; abstract;
 
     // editor commands

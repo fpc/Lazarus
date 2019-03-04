@@ -100,6 +100,8 @@ type
   TPlaceBookMarkIdEvent = procedure(Sender: TObject; ID: Integer) of object;
   TBookMarkActionEvent = procedure(Sender: TObject; ID: Integer; Toggle: Boolean) of object;
 
+  TUpdateProjectFileEvent = procedure(Sender: TObject; AnUpdates: TSrcEditProjectUpdatesNeeded) of object;
+
   TCharSet = set of Char;
 
   // for TSourcEditor.CenterCursorHoriz
@@ -237,7 +239,7 @@ type
     //FAOwner is normally a TSourceNotebook.  This is set in the Create constructor.
     FAOwner: TComponent;
     FIsLocked: Boolean;
-    FIsNewSharedEditor: Boolean;
+    FProjectFileUpdatesNeeded: TSrcEditProjectUpdatesNeeded;
     FSharedValues: TSourceEditorSharedValues;
     FEditor: TIDESynEditor;
     FTempCaret: TPoint;
@@ -502,7 +504,7 @@ type
 
     // context
     function GetProjectFile: TLazProjectFile; override;
-    procedure UpdateProjectFile; override;
+    procedure UpdateProjectFile(AnUpdates: TSrcEditProjectUpdatesNeeded = []); override;
     function GetDesigner(LoadForm: boolean): TIDesigner; override;
 
     // notebook
@@ -553,7 +555,6 @@ type
     function SharedEditorCount: Integer;
     property SharedEditors[Index: Integer]: TSourceEditor read GetSharedEditors;
     property SharedValues: TSourceEditorSharedValues read FSharedValues;
-    property IsNewSharedEditor: Boolean read FIsNewSharedEditor write FIsNewSharedEditor;
     property IsLocked: Boolean read FIsLocked write SetIsLocked;
   end;
 
@@ -1231,7 +1232,7 @@ type
     FOnClickLink: TMouseEvent;
     FOnCloseClicked: TOnCloseSrcEditor;
     FOnDeleteLastJumpPoint: TNotifyEvent;
-    FOnEditorMoved: TNotifyEvent;
+    FOnUpdateProjectFile: TUpdateProjectFileEvent;
     FOnFindDeclarationClicked: TNotifyEvent;
     FOnGetIndent: TOnGetIndentEvent;
     FOnGotoBookmark: TBookMarkActionEvent;
@@ -1264,8 +1265,8 @@ type
              read FOnGetIndent write FOnGetIndent;
     property OnDeleteLastJumpPoint: TNotifyEvent
              read FOnDeleteLastJumpPoint write FOnDeleteLastJumpPoint;
-    property OnEditorMoved: TNotifyEvent
-             read FOnEditorMoved write FOnEditorMoved;
+    property OnUpdateProjectFile: TUpdateProjectFileEvent
+             read FOnUpdateProjectFile write FOnUpdateProjectFile;
     property OnFindDeclarationClicked: TNotifyEvent
              read FOnFindDeclarationClicked write FOnFindDeclarationClicked;
     property OnInitIdentCompletion: TOnInitIdentCompletion
@@ -3479,7 +3480,7 @@ Begin
   FLineInfoNotification.OnChange := @LineInfoNotificationChange;
 
   CreateEditor(AOwner,AParent);
-  FIsNewSharedEditor := False;
+  FProjectFileUpdatesNeeded := [];
   if ASharedEditor <> nil then begin
     PageName := ASharedEditor.PageName;
     FEditor.ShareTextBufferFrom(ASharedEditor.EditorComponent);
@@ -5891,10 +5892,12 @@ begin
   Result:=LazarusIDE.GetProjectFileForProjectEditor(Self);
 end;
 
-procedure TSourceEditor.UpdateProjectFile;
+procedure TSourceEditor.UpdateProjectFile(AnUpdates: TSrcEditProjectUpdatesNeeded);
 begin
-  if Assigned(Manager) and Assigned(Manager.OnEditorMoved)
-    then Manager.OnEditorMoved(self);
+  AnUpdates := AnUpdates + FProjectFileUpdatesNeeded;
+  FProjectFileUpdatesNeeded := [];
+  if Assigned(Manager) and Assigned(Manager.OnUpdateProjectFile)
+    then Manager.OnUpdateProjectFile(self, AnUpdates);
 end;
 
 function TSourceEditor.GetDesigner(LoadForm: boolean): TIDesigner;
@@ -7960,7 +7963,7 @@ begin
 
   SrcEdit := FindSourceEditorWithPageIndex(OldPageIndex);
   NewEdit := DestWin.NewSE(-1, NewPageIndex, SrcEdit, SrcEdit.PageName);
-  NewEdit.IsNewSharedEditor := True;
+  Include(NewEdit.FProjectFileUpdatesNeeded, sepuNewShared);
 
   NewEdit.PageName := SrcEdit.PageName;
   NewEdit.SyntaxHighlighterType := SrcEdit.SyntaxHighlighterType;

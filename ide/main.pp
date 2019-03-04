@@ -466,7 +466,7 @@ type
     procedure SrcNotebookEditorDoSetBookmark(Sender: TObject; ID: Integer; Toggle: Boolean);
     procedure SrcNotebookEditorDoGotoBookmark(Sender: TObject; ID: Integer; Backward: Boolean);
     procedure SrcNotebookEditorChanged(Sender: TObject);
-    procedure SrcNotebookEditorMoved(Sender: TObject);
+    procedure SrcNotebookUpdateProjectFile(Sender: TObject; AnUpdates: TSrcEditProjectUpdatesNeeded);
     procedure SrcNotebookEditorCreated(Sender: TObject);
     procedure SrcNotebookEditorClosed(Sender: TObject);
     procedure SrcNotebookCurCodeBufferChanged(Sender: TObject);
@@ -2168,7 +2168,7 @@ begin
   SourceEditorManager.OnDeleteLastJumpPoint := @SrcNotebookDeleteLastJumPoint;
   SourceEditorManager.RegisterChangeEvent(semEditorActivate, @SrcNotebookEditorActived);
   SourceEditorManager.RegisterChangeEvent(semEditorStatus, @SrcNotebookEditorChanged);
-  SourceEditorManager.OnEditorMoved := @SrcNotebookEditorMoved;
+  SourceEditorManager.OnUpdateProjectFile := @SrcNotebookUpdateProjectFile;
   SourceEditorManager.RegisterChangeEvent(semEditorCreate, @SrcNotebookEditorCreated);
   SourceEditorManager.RegisterChangeEvent(semEditorDestroy, @SrcNotebookEditorClosed);
   SourceEditorManager.OnPlaceBookmark := @SrcNotebookEditorPlaceBookmark;
@@ -11060,7 +11060,8 @@ begin
   UpdateSaveMenuItemsAndButtons(false);
 end;
 
-procedure TMainIDE.SrcNotebookEditorMoved(Sender: TObject);
+procedure TMainIDE.SrcNotebookUpdateProjectFile(Sender: TObject;
+  AnUpdates: TSrcEditProjectUpdatesNeeded);
 var
   p: TUnitEditorInfo;
   i: Integer;
@@ -11074,9 +11075,8 @@ begin
     //SourceEditorManager.IndexOfSourceWindow(SrcEdit.SourceNotebook);
     p.IsLocked := SrcEdit.IsLocked;
   end
-  else if SrcEdit.IsNewSharedEditor then begin
+  else if sepuNewShared in AnUpdates then begin
     // attach to UnitInfo
-    SrcEdit.IsNewSharedEditor := False;
     i := 0;
     while (i < SrcEdit.SharedEditorCount) and (SrcEdit.SharedEditors[i] = SrcEdit) do
       inc(i);
