@@ -853,8 +853,6 @@ type
     property ChangeStamp: integer read FChangeStamp;
   end;
 
-  TFPCTargetConfigCache = TPCTargetConfigCache deprecated 'use TPCTargetConfigCache'; // Laz 1.9
-
   { TPCTargetConfigCaches
     List of TPCTargetConfigCache }
 
@@ -884,8 +882,6 @@ type
     property TestFilename: string read FTestFilename write FTestFilename; // an empty file to test the compiler, will be auto created
     property ExtraOptions: string read FExtraOptions write FExtraOptions; // additional compiler options not used as key, e.g. -Fr<language file>
   end;
-
-  TFPCTargetConfigCaches = TPCTargetConfigCaches deprecated 'use TPCTargetConfigCaches'; // Laz 1.9
 
   TFPCSourceCaches = class;
 
@@ -1069,6 +1065,8 @@ function GetDefaultCompilerFilename(const TargetCPU: string = ''; Cross: boolean
 procedure GetTargetProcessors(const TargetCPU: string; aList: TStrings);
 function GetFPCTargetOS(TargetOS: string): string; // normalize
 function GetFPCTargetCPU(TargetCPU: string): string; // normalize
+function IsPas2jsTargetOS(TargetOS: string): boolean;
+function IsPas2jsTargetCPU(TargetCPU: string): boolean;
 
 function IsCTExecutable(AFilename: string; out ErrorMsg: string): boolean; // not thread-safe
 
@@ -3850,6 +3848,18 @@ end;
 function GetFPCTargetCPU(TargetCPU: string): string;
 begin
   Result:=LowerCase(TargetCPU);
+end;
+
+function IsPas2jsTargetOS(TargetOS: string): boolean;
+begin
+  TargetOS:=LowerCase(TargetOS);
+  Result:=(TargetOS='browser') or (TargetOS='nodejs');
+end;
+
+function IsPas2jsTargetCPU(TargetCPU: string): boolean;
+begin
+  TargetCPU:=LowerCase(TargetCPU);
+  Result:=Pos('ecmascript',TargetCPU)>0;
 end;
 
 function IsCTExecutable(AFilename: string; out ErrorMsg: string): boolean;
@@ -8819,10 +8829,11 @@ begin
     CompilerDate:=-1;
     if FileExistsCached(Compiler) then begin
       CompilerDate:=FileAgeCached(Compiler);
-      ExtraOptions:=GetFPCInfoCmdLineOptions(ExtraOptions);// contains TargetOS and TargetCPU
+      ExtraOptions:=GetFPCInfoCmdLineOptions(ExtraOptions);// add -TTargetOS and -PTargetCPU
       BaseDir:='';
 
-      // get version, OS and CPU
+      // check if this is a FPC compatible compiler and get version, OS and CPU
+      // Note: fpc.exe calls the real compiler depending on -T and -P
       InfoTypes:=[fpciTargetOS,fpciTargetProcessor,fpciFullVersion];
       Info:=RunFPCInfo(Compiler,InfoTypes,ExtraOptions);
       if ParseFPCInfo(Info,InfoTypes,Infos) then begin
