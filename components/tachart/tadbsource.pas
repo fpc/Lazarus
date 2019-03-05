@@ -169,8 +169,8 @@ begin
   FFieldXList.StrictDelimiter := true;
   FFieldYList := TStringList.Create;
   FFieldYList.StrictDelimiter := true;
-  FXCount := 0;    // Have been set to 1 by inherited constructor
-  FYCount := 0;
+  FXCount := 1;    // Even when no FieldX is specified there is an x value (sequential counter).
+  FYCount := 0;    // Has been set to 1 by inherited constructor
 end;
 
 function TDbChartSource.DataSet: TDataSet;
@@ -198,7 +198,7 @@ var
 begin
   ds := DataSet;
 
-  if FXCount > 0 then begin
+  if FFieldXList.Count > 0 then begin
     AItem.X := FieldValueOrNaN(ds, FFieldXList[0], dcsoDateTimeX in Options);
     for i := 0 to High(AItem.XList) do
       AItem.XList[i] :=
@@ -314,7 +314,8 @@ begin
     FFieldXList.Clear
   else
     FFieldXList.CommaText := FFieldX;
-  FXCount := FFieldXList.Count;
+  FXCount := Min(1, FFieldXList.Count);
+  // There is always one x value even if FieldX is not specified (sequential counter).
   SetLength(FCurItem.XList, Max(FXCount - 1, 0));
   Reset;
 end;
