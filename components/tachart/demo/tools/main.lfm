@@ -39,7 +39,6 @@ object Form1: TForm1
     Extent.YMin = -2
     Foot.Brush.Color = clBtnFace
     Foot.Font.Color = clBlue
-    ReticuleMode = rmCross
     Title.Brush.Color = clBtnFace
     Title.Font.Color = clBlue
     Title.Text.Strings = (
@@ -55,7 +54,6 @@ object Form1: TForm1
     object Chart1BarSeries1: TBarSeries
       BarBrush.Color = clRed
       Source = RandomChartSource1
-      UseReticule = True
     end
     object ChartLine1: TConstantLine
       LineStyle = lsVertical
