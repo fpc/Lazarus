@@ -357,7 +357,7 @@ begin
           tkAString:
             if APropInfo^.PropType=TypeInfo(TTranslateString) then
             begin
-              TmpStr := '';
+              TmpStr := GetStrProp(AnInstance, APropInfo);
               {$IFDEF VerbosePOTranslator}
               debugln(['TUpdateTranslator.IntUpdateTranslation ',GetStrProp(AnInstance,APropInfo)]);
               {$ENDIF}
