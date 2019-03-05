@@ -789,6 +789,7 @@ type
     function IgnoreErrorAfterValid: boolean;
     function CleanPosIsAfterIgnorePos(CleanPos: integer): boolean;
     function LoadSourceCaseLoUp(const AFilename: string; AllowVirtual: boolean = false): pointer;
+    class function GetPascalCompiler(Evals: TExpressionEvaluator): TPascalCompiler;
 
     function SearchIncludeFile(AFilename: string; out NewCode: Pointer;
                          var MissingIncludeFile: TMissingIncludeFile): boolean;
@@ -2039,8 +2040,6 @@ procedure TLinkScanner.Scan(Range: TLinkScannerRange; CheckFilesOnDisk: boolean)
 var
   LastTokenType: TLSTokenType;
   cm: TCompilerMode;
-  pc: TPascalCompiler;
-  s: string;
   LastProgressPos: integer;
   CheckForAbort: boolean;
   NewSrcLen: Integer;
@@ -2101,15 +2100,7 @@ begin
   Values.Assign(FInitValues);
 
   // compiler
-  s:=FInitValues.Variables[PascalCompilerDefine];
-  if s<>'' then begin
-    for pc:=Low(TPascalCompiler) to High(TPascalCompiler) do
-      if (s=PascalCompilerNames[pc]) then
-        PascalCompiler:=pc;
-  end else if InitialValues.IsDefined('pas2js') then
-    PascalCompiler:=pcPas2js
-  else if InitialValues.IsDefined('delphi') and not InitialValues.IsDefined('fpc') then
-    PascalCompiler:=pcDelphi;
+  PascalCompiler:=GetPascalCompiler(FInitValues);
 
   // compiler mode
   for cm:=Low(TCompilerMode) to High(TCompilerMode) do
@@ -4020,6 +4011,26 @@ begin
     Result:=FOnLoadSource(Self,Path+SecondaryFileNameOnly,true);
     if (Result<>nil) then exit;
   end;
+end;
+
+class function TLinkScanner.GetPascalCompiler(Evals: TExpressionEvaluator
+  ): TPascalCompiler;
+var
+  s: String;
+  pc: TPascalCompiler;
+begin
+  s:=Evals.Variables[PascalCompilerDefine];
+  if s<>'' then begin
+    for pc:=Low(TPascalCompiler) to High(TPascalCompiler) do
+      if (s=PascalCompilerNames[pc]) then
+        exit(pc);
+  end;
+  if Evals.IsDefined('pas2js') then
+    exit(pcPas2js)
+  else if Evals.IsDefined('delphi') and not Evals.IsDefined('fpc') then
+    exit(pcDelphi)
+  else
+    Result:=pcFPC;
 end;
 
 function TLinkScanner.SearchIncludeFile(AFilename: string;
