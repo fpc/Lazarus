@@ -94,8 +94,11 @@ type
   { TLldbDebuggerCommandInit }
 
   TLldbDebuggerCommandInit = class(TLldbDebuggerCommand)
+  private
+    FGotLLDB: Boolean;
   protected
     procedure DoExecute; override;
+    procedure DoLineDataReceived(var ALine: String); override;
   end;
 
   { TLldbDebuggerCommandRun }
@@ -265,11 +268,13 @@ type
   TLldbDebuggerProperties = class(TDebuggerProperties)
   private
     FLaunchNewTerminal: Boolean;
+    FSkipGDBDetection: Boolean;
   public
     constructor Create; override;
     procedure Assign(Source: TPersistent); override;
   published
     property LaunchNewTerminal: Boolean read FLaunchNewTerminal write FLaunchNewTerminal default False;
+    property SkipGDBDetection: Boolean read FSkipGDBDetection write FSkipGDBDetection default False;
   end;
 
   TLldbDebugger = class(TDebuggerIntf)
@@ -317,6 +322,7 @@ type
     procedure QueueCommand(const ACommand: TLldbDebuggerCommand);
     //procedure DoState(const OldState: TDBGState); override;
     //procedure DoBeforeState(const OldState: TDBGState); override;
+    procedure SetErrorState(const AMsg: String; const AInfo: String = '');
     function DoExceptionHit(AExcClass, AExcMsg: String): Boolean;
     function DoBreakpointHit(BrkId: Integer): Boolean;
 
@@ -525,12 +531,14 @@ constructor TLldbDebuggerProperties.Create;
 begin
   inherited Create;
   FLaunchNewTerminal := False;
+  FSkipGDBDetection := False;
 end;
 
 procedure TLldbDebuggerProperties.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
   FLaunchNewTerminal := TLldbDebuggerProperties(Source).FLaunchNewTerminal;
+  FSkipGDBDetection := TLldbDebuggerProperties(Source).FSkipGDBDetection;
 end;
 
 { TLldbDebuggerCommandRun }
@@ -2216,6 +2224,21 @@ begin
   Instr.ReleaseReference;
 end;
 
+procedure TLldbDebuggerCommandInit.DoLineDataReceived(var ALine: String);
+begin
+  inherited DoLineDataReceived(ALine);
+  if FGotLLDB then
+    exit;
+  if TLldbDebuggerProperties(Debugger.GetProperties).SkipGDBDetection then
+    FGotLLDB := True
+  else
+  if StrContains(UpperCase(ALine), 'LLDB') then
+    FGotLLDB := True
+  else
+  if StrContains(UpperCase(ALine), '(GDB)') then
+    Debugger.SetErrorState('GDB detected', 'The external debugger identified itself as GDB. The IDE expected LLDB.');
+end;
+
 { TLldbDebuggerCommandRunStep }
 
 procedure TLldbDebuggerCommandRunStep.DoInitialExecute;
@@ -2733,6 +2756,11 @@ end;
 procedure TLldbDebugger.QueueCommand(const ACommand: TLldbDebuggerCommand);
 begin
   FCommandQueue.QueueCommand(ACommand);
+end;
+
+procedure TLldbDebugger.SetErrorState(const AMsg: String; const AInfo: String);
+begin
+  inherited SetErrorState(AMsg, AInfo);
 end;
 
 function TLldbDebugger.DoExceptionHit(AExcClass, AExcMsg: String): Boolean;
