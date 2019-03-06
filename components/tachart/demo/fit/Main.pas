@@ -182,7 +182,7 @@ end;
 
 procedure TfrmMain.CbCombinedExtentChange(Sender: TObject);
 begin
-  FitSeries.CombinedExtentY := CbCombinedExtent.Checked;
+  FitSeries.UseCombinedExtentY := CbCombinedExtent.Checked;
 end;
 
 procedure TfrmMain.BtnLoadClick(Sender: TObject);

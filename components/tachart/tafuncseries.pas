@@ -293,7 +293,7 @@ type
   strict private
     FAutoFit: Boolean;
     FDrawFitRangeOnly: Boolean;
-    FCombinedExtentY: Boolean;
+    FUseCombinedExtentY: Boolean;
     FFitEquation: TFitEquation;
     FFitParams: TFitParamArray; // raw values, not transformed!
     FFitRange: TChartRange;
@@ -313,7 +313,6 @@ type
     function GetParam_RawValue(AIndex: Integer): Double;
     function GetParam_tValue(AIndex: Integer): Double;
     function IsFixedParamsStored: Boolean;
-    procedure SetCombinedExtentY(AValue: Boolean);
     procedure SetDrawFitRangeOnly(AValue: Boolean);
     procedure SetFitEquation(AValue: TFitEquation);
     procedure SetFitRange(AValue: TChartRange);
@@ -321,6 +320,7 @@ type
     procedure SetParamCount(AValue: Integer);
     procedure SetPen(AValue: TChartPen);
     procedure SetStep(AValue: TFuncSeriesStep);
+    procedure SetUseCombinedExtentY(AValue: Boolean);
     {$IF FPC_FullVersion >= 30004}
     procedure GetInterval(const Ax: Double; out AY: Double; IsUpper, IsPrediction: Boolean);
     function GetParam_pValue(AIndex: Integer): Double;
@@ -376,8 +376,6 @@ type
     property AutoFit: Boolean read FAutoFit write FAutoFit default true;
     property AxisIndexX;
     property AxisIndexY;
-    property CombinedExtentY: Boolean
-      read FCombinedExtentY write SetCombinedExtentY default false;
     property DrawFitRangeOnly: Boolean
       read FDrawFitRangeOnly write SetDrawFitRangeOnly default true;
     property FitEquation: TFitEquation
@@ -394,6 +392,8 @@ type
     property Source;
     property Step: TFuncSeriesStep read FStep write SetStep default DEF_FIT_STEP;
     property ToolTargets default [nptPoint, nptCustom];
+    property UseCombinedExtentY: Boolean
+      read FUseCombinedExtentY write SetUseCombinedExtentY default false;
     property XErrorBars;
     property YErrorBars;
     property OnCustomDrawPointer;
@@ -1629,7 +1629,7 @@ begin
       Self.FAutoFit := FAutoFit;
       Self.FConfidenceLevel := FConfidenceLevel;
       Self.FDrawFitRangeOnly := FDrawFitRangeOnly;
-      Self.FCombinedExtentY := FCombinedExtentY;
+      Self.FUseCombinedExtentY := FUseCombinedExtentY;
       Self.FFitEquation := FFitEquation;
       Self.FFitRange.Assign(FFitRange);
       Self.FFixedParams := FFixedParams;
@@ -1645,7 +1645,7 @@ begin
   inherited Create(AOwner);
   ToolTargets := [nptPoint, nptCustom];
   FAutoFit := true;
-  FCombinedExtentY := false;
+  FUseCombinedExtentY := false;
   FFitEquation := fePolynomial;
   FFitRange := TFitSeriesRange.Create(Self);
   FDrawFitRangeOnly := true;
@@ -1822,7 +1822,7 @@ var
 begin
   Result := Source.BasicExtent;
   if IsEmpty or (not Active) then exit;
-  if not FCombinedExtentY then exit;
+  if not FUseCombinedExtentY then exit;
 
   // TDrawFuncHelper needs a valid image-to-graph conversion
   if ParentChart = nil then exit;
@@ -2168,13 +2168,6 @@ begin
   end;
 end;
 
-procedure TFitSeries.SetCombinedExtentY(AValue: Boolean);
-begin
-  if FCombinedExtentY = AValue then exit;
-  FCombinedExtentY := AValue;
-  UpdateParentChart;
-end;
-
 procedure TFitSeries.SetDrawFitRangeOnly(AValue: Boolean);
 begin
   if FDrawFitRangeOnly = AValue then exit;
@@ -2247,6 +2240,13 @@ procedure TFitSeries.SetStep(AValue: TFuncSeriesStep);
 begin
   if FStep = AValue then exit;
   FStep := AValue;
+  UpdateParentChart;
+end;
+
+procedure TFitSeries.SetUseCombinedExtentY(AValue: Boolean);
+begin
+  if FUseCombinedExtentY = AValue then exit;
+  FUseCombinedExtentY := AValue;
   UpdateParentChart;
 end;
 

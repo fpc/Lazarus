@@ -918,13 +918,13 @@ begin
 
       if (tries = 0) or (not FMultiPassScalingNeeded) then break;
 
-      // FIsZoom=true: GetFullExtent has not been called in Prepare() above
+      // FIsZoomed=true: GetFullExtent() has not been called in Prepare() above
       if FIsZoomed then break;
 
       // Perform a next pass of extent calculation
       tmpExtent := GetFullExtent;
-      // Converged successfully - next pass has not changed the extent --> break
-      if tmpExtent = FLogicalExtent then break;
+      // Converged successfully if next pass has not changed the extent --> break
+      if tmpExtent = FLogicalExtent then break;                                               
 
       // As in the Prepare() call above
       FLogicalExtent := tmpExtent;
