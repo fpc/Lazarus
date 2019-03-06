@@ -1053,7 +1053,7 @@ function TLazPackageGraph.GetPackageCompilerParams(APackage: TLazPackage
 begin
   Result:=APackage.CompilerOptions.MakeOptionsString(
           APackage.CompilerOptions.DefaultMakeOptionsFlags+[ccloAbsolutePaths])
-          +' '+CreateRelativePath(APackage.GetSrcFilename,APackage.Directory);
+          +' '+PrepareCmdLineOption(CreateRelativePath(APackage.GetSrcFilename,APackage.Directory));
 end;
 
 constructor TLazPackageGraph.Create;

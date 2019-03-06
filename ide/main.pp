@@ -6644,11 +6644,12 @@ var
   UnitOutputDirectory: String;
   TargetExeName: String;
   TargetExeDirectory: String;
-  FPCVersion, FPCRelease, FPCPatch: integer;
+  CompilerVersion: integer;
   aCompileHint, ShortFilename: String;
   OldToolStatus: TIDEToolStatus;
   IsComplete: Boolean;
   StartTime: TDateTime;
+  CompilerKind: TPascalCompiler;
 begin
   if DoAbortBuild(true)<>mrOK then begin
     debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] DoAbortBuild failed']);
@@ -6692,9 +6693,14 @@ begin
 
     if (Project1.ProjResources.ResourceType=rtRes) then begin
       // FPC resources are only supported with FPC 2.4+
-      CodeToolBoss.GetFPCVersionForDirectory(
-        ExtractFilePath(Project1.MainFilename),FPCVersion,FPCRelease,FPCPatch);
-      if (FPCVersion=2) and (FPCRelease<4) then begin
+      CompilerVersion:=CodeToolBoss.GetPCVersionForDirectory(
+        ExtractFilePath(Project1.MainFilename),CompilerKind);
+      {debugln(['TMainIDE.DoBuildProject ',PascalCompilerNames[CompilerKind],' Version=',CompilerVersion]);
+      if CompilerVersion=0 then begin
+        CodeToolBoss.DefineTree.GetDefinesForDirectory(ExtractFilePath(Project1.MainFilename),true).WriteDebugReport;
+      end;}
+      if (CompilerKind=pcFPC) and (CompilerVersion>0) and (CompilerVersion<20400)
+      then begin
         IDEMessageDialog(lisFPCTooOld,
           lisTheProjectUsesFPCResourcesWhichRequireAtLeast,
           mtError,[mbCancel]);
@@ -7485,18 +7491,18 @@ end;
 function TMainIDE.DoSaveBuildIDEConfigs(Flags: TBuildLazarusFlags): TModalResult;
 var
   InheritedOptionStrings: TInheritedCompOptsStrings;
-  FPCVersion, FPCRelease, FPCPatch: integer;
   Builder: TLazarusBuilder;
+  CompilerKind: TPascalCompiler;
 begin
   // create uses section addition for lazarus.pp
   Result:=PkgBoss.DoSaveAutoInstallConfig;
   if Result<>mrOk then exit;
 
   // check ambiguous units
-  CodeToolBoss.GetFPCVersionForDirectory(
+  CodeToolBoss.GetPCVersionForDirectory(
                              EnvironmentOptions.GetParsedLazarusDirectory,
-                             FPCVersion,FPCRelease,FPCPatch);
-  if (FPCVersion=0) or (FPCRelease=0) or (FPCPatch=0) then ;
+                             CompilerKind);
+  if CompilerKind=pcFPC then ;
 
   // save extra options
   Builder:=TLazarusBuilder.Create;
@@ -7522,9 +7528,10 @@ var
   IDEBuildFlags: TBuildLazarusFlags;
   InheritedOptionStrings: TInheritedCompOptsStrings;
   CompiledUnitExt: String;
-  FPCVersion, FPCRelease, FPCPatch: integer;
+  CompilerVersion: integer;
   PkgCompileFlags: TPkgCompileFlags;
   OldToolStatus: TIDEToolStatus;
+  CompilerKind: TPascalCompiler;
 begin
   if ToolStatus<>itNone then begin
     IDEMessageDialog(lisNotNow,lisYouCanNotBuildLazarusWhileDebuggingOrCompiling,
@@ -7604,10 +7611,10 @@ begin
     fBuilder.PackageOptions:=PackageGraph.GetIDEInstallPackageOptions(InheritedOptionStrings{%H-});
 
     // check ambiguous units
-    CodeToolBoss.GetFPCVersionForDirectory(EnvironmentOptions.GetParsedLazarusDirectory,
-                                           FPCVersion,FPCRelease,FPCPatch);
-    if FPCPatch=0 then ;
-    CompiledUnitExt:=GetDefaultCompiledUnitExt(FPCVersion,FPCRelease);
+    CompilerVersion:=CodeToolBoss.GetPCVersionForDirectory(
+                     EnvironmentOptions.GetParsedLazarusDirectory,CompilerKind);
+    if CompilerKind=pcFPC then ;
+    CompiledUnitExt:=GetDefaultCompiledUnitExt(CompilerVersion div 10000,CompilerVersion div 100);
     Result:=MainBuildBoss.CheckUnitPathForAmbiguousPascalFiles(
                      EnvironmentOptions.GetParsedLazarusDirectory+PathDelim+'ide',
                      InheritedOptionStrings[icoUnitPath],
