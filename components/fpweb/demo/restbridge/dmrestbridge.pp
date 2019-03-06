@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, sqldbrestbridge, sqldbrestschema, pqconnection, sqldbrestauth,db,
   // Register formats
-  sqldbrestcsv ,sqldbrestxml, sqldbrestcds;
+  sqldbrestcsv ,sqldbrestxml, sqldbrestcds, sqldbrestado;
 
 type
 

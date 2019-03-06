@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, PropEdits, ComponentEditors, ProjectIntf,
   sqldbrestschema,
-  sqldbrestcsv ,sqldbrestxml, sqldbrestcds,
+  sqldbrestcsv ,sqldbrestxml, sqldbrestcds, sqldbrestado,
   sqldbrestio, sqldbrestauth, sqldbrestbridge, sqldbrestmodule;
 
 Type
