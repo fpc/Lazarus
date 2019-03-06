@@ -29,11 +29,11 @@ msgstr "Inserir linha"
 
 #: tachartstrconsts.desmovedown
 msgid "Move down"
-msgstr ""
+msgstr "Mover abaixo"
 
 #: tachartstrconsts.desmoveup
 msgid "Move up"
-msgstr ""
+msgstr "Mover acima"
 
 #: tachartstrconsts.desnointeger
 msgid "Value must be an integer."
@@ -182,27 +182,27 @@ msgstr "Triângulo descendente"
 
 #: tachartstrconsts.rserrfitdimerror
 msgid "Non-matching count of x and y values."
-msgstr ""
+msgstr "Contagem não coincidente de valores de x e y."
 
 #: tachartstrconsts.rserrfitmoreparamsthanvalues
 msgid "There are more fitting parameters than data values."
-msgstr ""
+msgstr "Existem mais parâmetros à preencher que valores de dados."
 
 #: tachartstrconsts.rserrfitnobasefunctions
 msgid "Not enough user-provided base functions."
-msgstr ""
+msgstr "Não há funções básicas suficientes fornecidas pelo usuário."
 
 #: tachartstrconsts.rserrfitnofitparams
 msgid "No fit parameters specified."
-msgstr ""
+msgstr "Parâmetro à preencher não especificado."
 
 #: tachartstrconsts.rserrfitsingular
 msgid "Fitting matrix is (nearly) singular."
-msgstr ""
+msgstr "Matriz à preencher é (quase) singular."
 
 #: tachartstrconsts.rserrillegalfitparamcount
 msgid "The number of fit parameters cannot be less than 1."
-msgstr ""
+msgstr "O número de parâmetros à preencher não pode ser menor que 1."
 
 #: tachartstrconsts.rserrinvalidresulttype
 msgid "Expression result type must be integer or float. Got \"%s\"."
@@ -330,11 +330,11 @@ msgstr "Série Linha"
 
 #: tachartstrconsts.rslistsourcecolorerror
 msgid "The %0:s.DataPoints string \"%1:s\" is not an integer."
-msgstr ""
+msgstr "A string \"%1:s\" %0:s DataPoints não é um inteiro."
 
 #: tachartstrconsts.rslistsourcenumericerror
 msgid "The %0:s.DataPoints string \"%1:s\" is not a valid number."
-msgstr ""
+msgstr "A string \"%1:s\" %0:s DataPoints não é um número válido."
 
 #: tachartstrconsts.rslistsourcestringformaterror
 msgid "The data value count in the %0:s.DataPoints string \"%1:s\" differs from what is expected from XCount and YCount."
@@ -455,7 +455,7 @@ msgstr "Esta instância %0:s deve ter ao menos %1:d %2:s valor(es) por ponto de 
 
 #: tachartstrconsts.rssourcenoteditable
 msgid "Editable chart source required"
-msgstr ""
+msgstr "Fonte editável de gráfico requerida"
 
 #: tachartstrconsts.rsstarsymbol
 msgid "Star (lines)"
