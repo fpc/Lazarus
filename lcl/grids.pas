@@ -4592,23 +4592,19 @@ begin
   ChkII := -1;
   ChkBitmap := nil;
 
-  if not Assigned(OnUserCheckboxBitmap) then
+  GetImageForCheckBox(aCol, aRow, AState, ChkIL, ChkII, ChkBitmap);
+  if Assigned(ChkBitmap) then
+    CSize := Size(ChkBitmap.Width, ChkBitmap.Height)
+  else if (Assigned(ChkIL) and (ChkII>=0)) then
+  begin
+    ChkILRes := ChkIL.ResolutionForPPI[ChkIL.Width, Font.PixelsPerInch, GetCanvasScaleFactor];
+    CSize := ChkILRes.Size;
+  end else
   begin
     Details := ThemeServices.GetElementDetails(arrtb[AState]);
     CSize := ThemeServices.GetDetailSize(Details);
     CSize.cx := MulDiv(CSize.cx, Font.PixelsPerInch, Screen.PixelsPerInch);
     CSize.cy := MulDiv(CSize.cy, Font.PixelsPerInch, Screen.PixelsPerInch);
-  end else
-  begin
-    GetImageForCheckBox(aCol, aRow, AState, ChkIL, ChkII, ChkBitmap);
-    if Assigned(ChkBitmap) then
-      CSize := Size(ChkBitmap.Width, ChkBitmap.Height)
-    else if (Assigned(ChkIL) and (ChkII>=0)) then
-    begin
-      ChkILRes := ChkIL.ResolutionForPPI[ChkIL.Width, Font.PixelsPerInch, GetCanvasScaleFactor];
-      CSize := ChkILRes.Size;
-    end else
-      Exit;
   end;
 
   case bmpAlign of
