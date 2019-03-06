@@ -571,7 +571,7 @@ procedure THeapTrcInfo.ParseTraceLine(s: string; var line: TStackLine);
   var
     AnId, SrcX, SrcY, SrcTopLine: Integer;
     AnIsCurrent, Complete: Boolean;
-    AFuncName, AFile, AReminder, TheErrorMsg: String;
+    AFuncName, AReminder, TheErrorMsg: String;
     AnArgs: TStringList;
     SrcCode: TCodeBuffer;
   begin

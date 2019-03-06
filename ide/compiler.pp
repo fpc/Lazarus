@@ -44,7 +44,7 @@ uses
   // LCL
   Forms, Controls,
   // Codetools
-  DefineTemplates, LinkScanner, TransferMacros,
+  DefineTemplates, LinkScanner, CodeToolManager, TransferMacros,
   // IdeIntf
   IDEExternToolIntf, IDEMsgIntf, LazIDEIntf,
   // IDE
@@ -282,6 +282,7 @@ var
   TargetOS: String;
   TargetCPU: String;
   TargetFilename, SubTool: String;
+  CompilerKind: TPascalCompiler;
 begin
   Result:=mrCancel;
   if ConsoleVerbosity>=1 then
@@ -344,7 +345,8 @@ begin
     Tool.Process.CurrentDirectory:=WorkingDir;
     Tool.CurrentDirectoryIsTestDir:=CurrentDirectoryIsTestDir;
     SubTool:=SubToolFPC;
-    if GuessCompilerType(CompilerFilename)=pcPas2js then
+    CompilerKind:=CodeToolBoss.GetPascalCompilerForDirectory(WorkingDir);
+    if CompilerKind=pcPas2js then
       SubTool:=SubToolPas2js;
     FPCParser:=TFPCParser(Tool.AddParsers(SubTool));
     FPCParser.ShowLinesCompiled:=EnvironmentOptions.MsgViewShowFPCMsgLinesCompiled;

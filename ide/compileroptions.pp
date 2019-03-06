@@ -504,6 +504,7 @@ type
     function GetEffectiveTargetOS: string; override;
     function GetEffectiveTargetCPU: string; override;
     function GetEffectiveLCLWidgetType: string; override;
+    // parsed CompilerFilename: use ParsedOpts.GetParsedValue(pcosCompilerPath)
     function GetUnitPath(RelativeToBaseDir: boolean;
                          Parsed: TCompilerOptionsParseType = coptParsed;
                          WithBaseDir: boolean = true): string; override;
@@ -2588,7 +2589,7 @@ var
   DefaultTargetOS: string;
   DefaultTargetCPU: string;
   RealCompilerFilename: String;
-  s, CurNamespaces: string;
+  CurNamespaces: string;
   CurFPCMsgFile: TFPCMsgFilePoolItem;
   Quiet: Boolean;
   Kind: TPascalCompiler;
@@ -2865,9 +2866,10 @@ begin
   Quiet:=ConsoleVerbosity<=-3; // lazbuild -q -q, lazarus -q -q -q
 
   CompilerFilename:=ParsedOpts.GetParsedValue(pcosCompilerPath);
-  if IsCompilerExecutable(CompilerFilename,s,Kind) then
+  if CompilerFilename<>'' then
     RealCompilerFilename:=CompilerFilename
   else begin
+    // use default compiler
     RealCompilerFilename:=EnvironmentOptions.GetParsedCompilerFilename;
     Kind:=pcFPC;
   end;
@@ -4099,6 +4101,7 @@ begin
   else if Option in ParsedCompilerFilenames then
   begin
     // make filename absolute
+    //debugln(['TParsedCompilerOptions.DoParseOption ',ParsedCompilerOptsVars[Option],' s="',s,'"']);
     if ExtractFilePath(s)='' then begin
       h:=FileUtil.FindDefaultExecutablePath(s,GetBaseDir);
       if h<>'' then s:=h;

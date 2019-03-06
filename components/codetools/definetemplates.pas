@@ -790,11 +790,11 @@ type
     // values
     Kind: TPascalCompiler;
     CompilerDate: longint;
-    RealCompiler: string; // when Compiler is fpc, this is the real compiler (e.g. ppc386)
+    RealCompiler: string; // when Compiler is fpc.exe, this is the real compiler (e.g. ppc386.exe)
     RealCompilerDate: longint;
     RealTargetOS: string;
     RealTargetCPU: string;
-    RealCompilerInPath: string; // the ppc<target> in PATH
+    RealTargetCPUCompiler: string; // the ppc<target>.exe in PATH for TargetCPU
     FullVersion: string; // Version.Release.Patch
     ConfigFiles: TPCConfigFileStateList;
     UnitPaths: TStrings;
@@ -822,7 +822,7 @@ type
     function GetFPCInfoCmdLineOptions(ExtraOptions: string): string;
     function Update(TestFilename: string; ExtraOptions: string = '';
                     const OnProgress: TDefinePoolProgress = nil): boolean;
-    function FindRealCompilerInPath(aTargetCPU: string; ResolveLinks: boolean): string;
+    function FindDefaultTargetCPUCompiler(aTargetCPU: string; ResolveLinks: boolean): string;
     function GetUnitPaths: string;
     function GetFPCVerNumbers(out FPCVersion, FPCRelease, FPCPatch: integer): boolean;
     function GetFPCVer: string; // e.g. 2.7.1
@@ -1045,11 +1045,14 @@ function GetDefaultCompilerFilename(const TargetCPU: string = ''; Cross: boolean
 procedure GetTargetProcessors(const TargetCPU: string; aList: TStrings);
 function GetFPCTargetOS(TargetOS: string): string; // normalize
 function GetFPCTargetCPU(TargetCPU: string): string; // normalize
-function GetPascalCompilerFromExeName(Filename: string): TPascalCompiler;
+
 function IsCTExecutable(AFilename: string; out ErrorMsg: string): boolean; // not thread-safe
-function IsCompilerExecutable(AFilename: string; out ErrorMsg: string; out Kind: TPascalCompiler): boolean; // not thread-safe
-function IsFPCExecutable(AFilename: string; out ErrorMsg: string): boolean; // not thread-safe
-function IsPas2JSExecutable(AFilename: string; out ErrorMsg: string): boolean; // not thread-safe
+
+function GuessPascalCompilerFromExeName(Filename: string): TPascalCompiler;
+function IsCompilerExecutable(AFilename: string; out ErrorMsg: string;
+  out Kind: TPascalCompiler; Run: boolean): boolean; // not thread-safe
+function IsFPCExecutable(AFilename: string; out ErrorMsg: string; Run: boolean): boolean; // not thread-safe
+function IsPas2JSExecutable(AFilename: string; out ErrorMsg: string; Run: boolean): boolean; // not thread-safe
 
 // functions to quickly setup some defines
 function CreateDefinesInDirectories(const SourcePaths, FlagName: string
@@ -1079,14 +1082,13 @@ type
 const
   AllFPCFrontEndParams = [low(TFPCFrontEndParam)..high(TFPCFrontEndParam)];
 
-function GuessCompilerType(Filename: string): TPascalCompiler;
 function ParseFPCInfo(FPCInfo: string; InfoTypes: TFPCInfoTypes;
                       out Infos: TFPCInfoStrings): boolean;
 function RunFPCInfo(const CompilerFilename: string;
                    InfoTypes: TFPCInfoTypes; const Options: string =''): string;
-function FPCVersionToNumber(const FPCVersionString: string): integer;
+function FPCVersionToNumber(const FPCVersionString: string): integer; // 2.7.1 -> 20701
 function SplitFPCVersion(const FPCVersionString: string;
-                        out FPCVersion, FPCRelease, FPCPatch: integer): boolean;
+                        out FPCVersion, FPCRelease, FPCPatch: integer): boolean; // 2.7.1 -> 2,7,1
 function ParseFPCVerbose(List: TStrings; // fpc -va output
                          const WorkDir: string;
                          out ConfigFiles: TStrings; // prefix '-' for file not found, '+' for found and read
@@ -1111,24 +1113,24 @@ procedure GatherUnitsInSearchPaths(SearchUnitPaths, SearchIncludePaths: TStrings
 function GatherUnitSourcesInDirectory(Directory: string;
                     MaxLevel: integer = 1): TStringToStringTree; // unit names to full file name
 procedure AdjustFPCSrcRulesForPPUPaths(Units: TStringToStringTree;
-                                       Rules: TFPCSourceRules);
+                                       Rules: TFPCSourceRules); // not for pas2js
 function GatherUnitsInFPCSources(Files: TStringList;
                    TargetOS: string = ''; TargetCPU: string = '';
                    Duplicates: TStringToStringTree = nil; // unit to semicolon separated list of files
                    Rules: TFPCSourceRules = nil;
-                   const DebugUnitName: string = ''): TStringToStringTree;
+                   const DebugUnitName: string = ''): TStringToStringTree; // not for pas2js
 function CreateFPCTemplate(Config: TPCTargetConfigCache;
                            Owner: TObject): TDefineTemplate; overload;
 function CreateFPCTemplate(Config: TFPCUnitSetCache;
                            Owner: TObject): TDefineTemplate; overload;
 function CreateFPCSourceTemplate(Config: TFPCUnitSetCache;
-                                 Owner: TObject): TDefineTemplate; overload;
+                                 Owner: TObject): TDefineTemplate; overload; // not for pas2js
 function CreateFPCSourceTemplate(FPCSrcDir: string;
-                                 Owner: TObject): TDefineTemplate; overload;
+                                 Owner: TObject): TDefineTemplate; overload; // not for pas2js
 procedure CheckPPUSources(PPUFiles,  // unitname to filename
                           UnitToSource, // unitname to file name
                           UnitToDuplicates: TStringToStringTree; // unitname to semicolon separated list of files
-                          var Duplicates, Missing: TStringToStringTree);
+                          var Duplicates, Missing: TStringToStringTree); // not for pas2js
 procedure LoadFPCCacheFromFile(Filename: string;
             var Configs: TPCTargetConfigCaches; var Sources: TFPCSourceCaches);
 procedure SaveFPCCacheToFile(Filename: string;
@@ -1496,14 +1498,6 @@ begin
   end;
 end;
 
-function GuessCompilerType(Filename: string): TPascalCompiler;
-begin
-  Filename:=ExtractFileNameOnly(Filename);
-  if Pos('pas2js',lowercase(Filename))>0 then
-    exit(pcPas2js);
-  Result:=pcFPC;
-end;
-
 function ParseFPCInfo(FPCInfo: string; InfoTypes: TFPCInfoTypes;
   out Infos: TFPCInfoStrings): boolean;
 var
@@ -1532,29 +1526,32 @@ end;
 function RunFPCInfo(const CompilerFilename: string;
   InfoTypes: TFPCInfoTypes; const Options: string): string;
 var
-  Params: String;
+  Param: String;
   List: TStringList;
+  Params: TStringListUTF8;
 begin
   Result:='';
-  Params:='';
-  if fpciCompilerDate in InfoTypes then Params:=Params+'D';
-  if fpciShortVersion in InfoTypes then Params:=Params+'V';
-  if fpciFullVersion in InfoTypes then Params:=Params+'W';
-  if fpciCompilerOS in InfoTypes then Params:=Params+'SO';
-  if fpciCompilerProcessor in InfoTypes then Params:=Params+'SP';
-  if fpciTargetOS in InfoTypes then Params:=Params+'TO';
-  if fpciTargetProcessor in InfoTypes then Params:=Params+'TP';
-  if Params='' then exit;
-  Params:='-i'+Params;
-  if Options<>'' then
-    Params:=Params+' '+Options;
+  Param:='';
+  if fpciCompilerDate in InfoTypes then Param:=Param+'D';
+  if fpciShortVersion in InfoTypes then Param:=Param+'V';
+  if fpciFullVersion in InfoTypes then Param:=Param+'W';
+  if fpciCompilerOS in InfoTypes then Param:=Param+'SO';
+  if fpciCompilerProcessor in InfoTypes then Param:=Param+'SP';
+  if fpciTargetOS in InfoTypes then Param:=Param+'TO';
+  if fpciTargetProcessor in InfoTypes then Param:=Param+'TP';
+  if Param='' then exit;
+  Param:='-i'+Param;
   List:=nil;
+  Params:=TStringListUTF8.Create;
   try
+    Params.Add(Param);
+    SplitCmdLineParams(Options,Params);
     List:=RunTool(CompilerFilename,Params);
     if (List=nil) or (List.Count<1) then exit;
     Result:=List[0];
     if copy(Result,1,6)='Error:' then Result:='';
   finally
+    Params.Free;
     List.free;
   end;
 end;
@@ -1815,7 +1812,7 @@ function RunFPCVerbose(const CompilerFilename, TestFilename: string; out
   UnitPaths: TStrings; out IncludePaths: TStrings; out UnitScopes: TStrings;
   out Defines, Undefines: TStringToStringTree; const Options: string): boolean;
 var
-  Params: String;
+  Params: TStringListUTF8;
   Filename: String;
   WorkDir: String;
   List: TStringList;
@@ -1830,23 +1827,28 @@ begin
   Defines:=nil;
   Undefines:=nil;
 
-  // create empty file
-  try
-    fs:=TFileStreamUTF8.Create(TestFilename,fmCreate);
-    fs.Free;
-  except
-    debugln(['Warning: [RunFPCVerbose] unable to create test file "'+TestFilename+'"']);
-    exit;
-  end;
-
-  Params:='-va';
-  if Options<>'' then
-    Params:=Params+' '+Options;
-  Filename:=ExtractFileName(TestFilename);
-  WorkDir:=ExtractFilePath(TestFilename);
-  Params:=Params+' '+Filename;
+  Params:=TStringListUTF8.Create;
   List:=nil;
   try
+    Params.Add('-va');
+
+    if TestFilename<>'' then begin
+      // create empty file
+      try
+        fs:=TFileStreamUTF8.Create(TestFilename,fmCreate);
+        fs.Free;
+      except
+        debugln(['Warning: [RunFPCVerbose] unable to create test file "'+TestFilename+'"']);
+        exit;
+      end;
+      Filename:=ExtractFileName(TestFilename);
+      WorkDir:=ExtractFilePath(TestFilename);
+      Params.Add(Filename);
+    end else
+      WorkDir:='';
+
+    SplitCmdLineParams(Options,Params);
+
     //DebugLn(['RunFPCVerbose ',CompilerFilename,' ',Params,' ',WorkDir]);
     List:=RunTool(CompilerFilename,Params,WorkDir);
     if (List=nil) or (List.Count=0) then begin
@@ -1856,8 +1858,10 @@ begin
     Result:=ParseFPCVerbose(List,WorkDir,ConfigFiles,RealCompilerFilename,
                             UnitPaths,IncludePaths,UnitScopes,Defines,Undefines);
   finally
+    Params.Free;
     List.Free;
-    DeleteFileUTF8(TestFilename);
+    if TestFilename<>'' then
+      DeleteFileUTF8(TestFilename);
   end;
 end;
 
@@ -3718,25 +3722,6 @@ begin
   Result:=LowerCase(TargetCPU);
 end;
 
-function GetPascalCompilerFromExeName(Filename: string): TPascalCompiler;
-var
-  ShortFilename: String;
-begin
-  ShortFilename:=ExtractFileNameOnly(Filename);
-
-  // pas2js*
-  if CompareText(LeftStr(ShortFilename,6),'pas2js')=0 then
-    exit(pcPas2js);
-
-  // dcc*.exe
-  if (CompareFilenames(LeftStr(ShortFilename,3),'dcc')=0)
-  and ((ExeExt='') or (CompareFileExt(Filename,ExeExt)=0))
-  then
-    exit(pcDelphi);
-
-  Result:=pcFPC;
-end;
-
 function IsCTExecutable(AFilename: string; out ErrorMsg: string): boolean;
 begin
   Result:=false;
@@ -3767,10 +3752,32 @@ begin
   Result:=true;
 end;
 
-function IsCompilerExecutable(AFilename: string; out ErrorMsg: string; out
-  Kind: TPascalCompiler): boolean;
+function GuessPascalCompilerFromExeName(Filename: string): TPascalCompiler;
 var
   ShortFilename: String;
+begin
+  ShortFilename:=ExtractFileNameOnly(Filename);
+
+  // pas2js*
+  if CompareText(LeftStr(ShortFilename,6),'pas2js')=0 then
+    exit(pcPas2js);
+
+  // dcc*.exe
+  if (CompareFilenames(LeftStr(ShortFilename,3),'dcc')=0)
+  and ((ExeExt='') or (CompareFileExt(Filename,ExeExt)=0))
+  then
+    exit(pcDelphi);
+
+  Result:=pcFPC;
+end;
+
+function IsCompilerExecutable(AFilename: string; out ErrorMsg: string; out
+  Kind: TPascalCompiler; Run: boolean): boolean;
+var
+  ShortFilename, Line: String;
+  Params: TStringListUTF8;
+  Lines: TStringList;
+  i: Integer;
 begin
   Result:=IsCTExecutable(AFilename,ErrorMsg);
   if not Result then exit;
@@ -3779,27 +3786,75 @@ begin
   // allow scripts like fpc.sh and fpc.bat
   ShortFilename:=ExtractFileNameOnly(AFilename);
   //debugln(['IsFPCompiler Short=',ShortFilename]);
-  if CompareFilenames(ShortFilename,'fpc')=0 then
-    exit(true);
 
-  // allow ppcxxx.exe
+  // check ppc*.exe
   if (CompareFilenames(LeftStr(ShortFilename,3),'ppc')=0)
-  and ((ExeExt='') or (CompareFileExt(AFilename,ExeExt)=0))
   then
     exit(true);
 
+  // check pas2js*
   if CompareText(LeftStr(ShortFilename,6),'pas2js')=0 then begin
     Kind:=pcPas2js;
     exit(true);
   end;
 
+  // dcc*.exe
+  if (CompareFilenames(LeftStr(ShortFilename,3),'dcc')=0)
+      and ((ExeExt='') or (CompareFileExt(ShortFilename,ExeExt)=0))
+  then begin
+    Kind:=pcDelphi;
+    exit(true);
+  end;
+
+  if Run then begin
+    // run it and check for magics
+    debugln(['Note: (lazarus) [IsCompilerExecutable] run "',AFilename,'"']);
+    Params:=TStringListUTF8.Create;
+    Lines:=nil;
+    try
+      Params.Add('-va');
+      Lines:=RunTool(AFilename,Params);
+      if Lines<>nil then begin
+        for i:=0 to Lines.Count-1 do
+        begin
+          Line:=Lines[i];
+          if Pos('fpc.cfg',Line)>0 then
+          begin
+            Kind:=pcFPC;
+            exit(true);
+          end;
+          if Pos('pas2js.cfg',Line)>0 then
+          begin
+            Kind:=pcPas2js;
+            exit(true);
+          end;
+        end;
+      end;
+    finally
+      Params.Free;
+      Lines.Free;
+    end;
+  end;
+
+  // check fpc<something>
+  // Note: fpc.exe is just a wrapper, it can call pas2js
+  if CompareFilenames(ShortFilename,'fpc')=0 then
+    exit(true);
+
   ErrorMsg:='fpc executable should start with fpc or ppc';
 end;
 
-function IsFPCExecutable(AFilename: string; out ErrorMsg: string): boolean;
+function IsFPCExecutable(AFilename: string; out ErrorMsg: string; Run: boolean
+  ): boolean;
 var
   ShortFilename: String;
+  Kind: TPascalCompiler;
 begin
+  if Run then begin
+    Result:=IsCompilerExecutable(AFilename,ErrorMsg,Kind,true) and (Kind=pcFPC);
+    exit;
+  end;
+
   Result:=IsCTExecutable(AFilename,ErrorMsg);
   if not Result then exit;
 
@@ -3818,10 +3873,17 @@ begin
   ErrorMsg:='fpc executable should start with fpc or ppc';
 end;
 
-function IsPas2JSExecutable(AFilename: string; out ErrorMsg: string): boolean;
+function IsPas2JSExecutable(AFilename: string; out ErrorMsg: string;
+  Run: boolean): boolean;
 var
   ShortFilename: String;
+  Kind: TPascalCompiler;
 begin
+  if Run then begin
+    Result:=IsCompilerExecutable(AFilename,ErrorMsg,Kind,true) and (Kind=pcPas2js);
+    exit;
+  end;
+
   Result:=IsCTExecutable(AFilename,ErrorMsg);
   if not Result then exit;
 
@@ -6074,7 +6136,7 @@ var
     end;
   end;
   
-var CmdLine: string;
+var
   i, OutLen, LineStart: integer;
   TheProcess: TProcessUTF8;
   OutputLine, Buf: String;
@@ -6082,6 +6144,7 @@ var CmdLine: string;
   SrcOS: string;
   SrcOS2: String;
   Step: String;
+  Params: TStringListUTF8;
 begin
   Result:=nil;
   //DebugLn('TDefinePool.CreateFPCTemplate PPC386Path="',CompilerPath,'" FPCOptions="',CompilerOptions,'"');
@@ -6099,21 +6162,22 @@ begin
   SetLength(Buf,1024);
   Step:='Init';
   try
-    CmdLine:=CompilerPath+' -va ';
-    if (Pos('pas2js',lowercase(ExtractFileName(CompilerPath)))<1)
-        and FileExistsCached(EnglishErrorMsgFilename) then
-      CmdLine:=CmdLine+'-Fr'+EnglishErrorMsgFilename+' ';
-    if CompilerOptions<>'' then
-      CmdLine:=CmdLine+CompilerOptions+' ';
-    CmdLine:=CmdLine+TestPascalFile;
-    //DebugLn('TDefinePool.CreateFPCTemplate CmdLine="',CmdLine,'"');
-
+    Params:=TStringListUTF8.Create;
     TheProcess := TProcessUTF8.Create(nil);
-    TheProcess.ParseCmdLine(CmdLine);
-    TheProcess.Options:= [poUsePipes, poStdErrToOutPut];
-    TheProcess.ShowWindow := swoHide;
-    Step:='Running '+CmdLine;
     try
+      TheProcess.Executable:=CompilerPath;
+      Params.Add('-va');
+      if (Pos('pas2js',lowercase(ExtractFileName(CompilerPath)))<1)
+          and FileExistsCached(EnglishErrorMsgFilename) then
+          Params.Add('-Fr'+EnglishErrorMsgFilename);
+      if CompilerOptions<>'' then
+        SplitCmdLineParams(CompilerOptions,Params,true);
+      Params.Add(TestPascalFile);
+      //DebugLn('TDefinePool.CreateFPCTemplate Params="',MergeCmdLineParams(Params),'"');
+      TheProcess.Parameters:=Params;
+      TheProcess.Options:= [poUsePipes, poStdErrToOutPut];
+      TheProcess.ShowWindow := swoHide;
+      Step:='Running '+MergeCmdLineParams(Params);
       TheProcess.Execute;
       OutputLine:='';
       repeat
@@ -6141,23 +6205,24 @@ begin
     finally
       //DebugLn('TDefinePool.CreateFPCTemplate Run with -va: OutputLine="',OutputLine,'"');
       TheProcess.Free;
+      Params.Free;
     end;
     DefineSymbol(FPCUnitPathMacroName,UnitSearchPath,'FPC default unit search path');
 
     //DebugLn('TDefinePool.CreateFPCTemplate First done UnitSearchPath="',UnitSearchPath,'"');
 
     // ask for target operating system -> ask compiler with switch -iTO
-    CmdLine:=CompilerPath;
-    if CompilerOptions<>'' then
-      CmdLine:=CmdLine+' '+CompilerOptions;
-    CmdLine:=CmdLine+' -iTO';
-
+    Params:=TStringListUTF8.Create;
     TheProcess := TProcessUTF8.Create(nil);
-    TheProcess.ParseCmdLine(CmdLine);
-    TheProcess.Options:= [poUsePipes, poStdErrToOutPut];
-    TheProcess.ShowWindow := swoHide;
-    Step:='Running '+CmdLine;
     try
+      TheProcess.Executable:=CompilerPath;
+      if CompilerOptions<>'' then
+        SplitCmdLineParams(CompilerOptions,Params,true);
+      Params.Add('-iTO');
+      TheProcess.Parameters:=Params;
+      TheProcess.Options:= [poUsePipes, poStdErrToOutPut];
+      TheProcess.ShowWindow := swoHide;
+      Step:='Running '+MergeCmdLineParams(Params);
       TheProcess.Execute;
       if (TheProcess.Output<>nil) then
         OutLen:=TheProcess.Output.Read(Buf[1],length(Buf))
@@ -6195,19 +6260,21 @@ begin
     finally
       //DebugLn('TDefinePool.CreateFPCTemplate Run with -iTO: OutputLine="',OutputLine,'"');
       TheProcess.Free;
+      Params.Free;
     end;
     
     // ask for target processor -> ask compiler with switch -iTP
+    Params:=TStringListUTF8.Create;
     TheProcess := TProcessUTF8.Create(nil);
-    CmdLine:=CompilerPath;
-    if CompilerOptions<>'' then
-      CmdLine:=CmdLine+' '+CompilerOptions;
-    CmdLine:=CmdLine+' -iTP';
-    TheProcess.ParseCmdLine(CmdLine);
-    TheProcess.Options:= [poUsePipes, poStdErrToOutPut];
-    TheProcess.ShowWindow := swoHide;
-    Step:='Running '+CmdLine;
     try
+      TheProcess.Executable:=CompilerPath;
+      if CompilerOptions<>'' then
+        SplitCmdLineParams(CompilerOptions,Params,true);
+      Params.Add('-iTP');
+      TheProcess.Parameters:=Params;
+      TheProcess.Options:= [poUsePipes, poStdErrToOutPut];
+      TheProcess.ShowWindow := swoHide;
+      Step:='Running '+MergeCmdLineParams(Params);
       TheProcess.Execute;
       if TheProcess.Output<>nil then
         OutLen:=TheProcess.Output.Read(Buf[1],length(Buf))
@@ -7505,7 +7572,7 @@ begin
   UnitPath:='';
   IncPath:='';
   Namespaces:='';
-  Params:=TStringList.Create;
+  Params:=TStringListUTF8.Create;
   try
     SplitCmdLineParams(CmdLine,Params);
     for i:=0 to Params.Count-1 do begin
@@ -7913,7 +7980,7 @@ begin
   RealCompilerDate:=0;
   RealTargetCPU:='';
   RealTargetOS:='';
-  RealCompilerInPath:='';
+  RealTargetCPUCompiler:='';
   FullVersion:='';
   HasPPUs:=false;
   ConfigFiles.Clear;
@@ -7973,7 +8040,7 @@ begin
     or (RealCompilerDate<>Item.RealCompilerDate)
     or (RealTargetOS<>Item.RealTargetOS)
     or (RealTargetCPU<>Item.RealTargetCPU)
-    or (RealCompilerInPath<>Item.RealCompilerInPath)
+    or (RealTargetCPUCompiler<>Item.RealTargetCPUCompiler)
     or (FullVersion<>Item.FullVersion)
     or (HasPPUs<>Item.HasPPUs)
     or (not ConfigFiles.Equals(Item.ConfigFiles,true))
@@ -8028,7 +8095,7 @@ begin
     RealCompilerDate:=Item.RealCompilerDate;
     RealTargetOS:=Item.RealTargetOS;
     RealTargetCPU:=Item.RealTargetCPU;
-    RealCompilerInPath:=Item.RealCompilerInPath;
+    RealTargetCPUCompiler:=Item.RealTargetCPUCompiler;
     FullVersion:=Item.FullVersion;
     HasPPUs:=Item.HasPPUs;
     ConfigFiles.Assign(Item.ConfigFiles);
@@ -8150,7 +8217,7 @@ begin
   RealCompilerDate:=XMLConfig.GetValue(Path+'RealCompiler/Date',0);
   RealTargetOS:=XMLConfig.GetValue(Path+'RealCompiler/OS','');
   RealTargetCPU:=XMLConfig.GetValue(Path+'RealCompiler/CPU','');
-  RealCompilerInPath:=XMLConfig.GetValue(Path+'RealCompiler/InPath','');
+  RealTargetCPUCompiler:=XMLConfig.GetValue(Path+'RealCompiler/InPath','');
   FullVersion:=XMLConfig.GetValue(Path+'RealCompiler/FullVersion','');
   HasPPUs:=XMLConfig.GetValue(Path+'HasPPUs',true);
   ConfigFiles.LoadFromXMLConfig(XMLConfig,Path+'Configs/');
@@ -8300,7 +8367,7 @@ begin
   XMLConfig.SetDeleteValue(Path+'RealCompiler/Date',RealCompilerDate,0);
   XMLConfig.SetDeleteValue(Path+'RealCompiler/OS',RealTargetOS,'');
   XMLConfig.SetDeleteValue(Path+'RealCompiler/CPU',RealTargetCPU,'');
-  XMLConfig.SetDeleteValue(Path+'RealCompiler/InPath',RealCompilerInPath,'');
+  XMLConfig.SetDeleteValue(Path+'RealCompiler/InPath',RealTargetCPUCompiler,'');
   XMLConfig.SetDeleteValue(Path+'RealCompiler/FullVersion',FullVersion,'');
   XMLConfig.SetDeleteValue(Path+'HasPPUs',HasPPUs,true);
   ConfigFiles.SaveToXMLConfig(XMLConfig,Path+'Configs/');
@@ -8402,10 +8469,10 @@ begin
   end;
   // fpc searches via PATH for the real compiler, resolves any symlink
   // and that is the RealCompiler
-  AFilename:=FindRealCompilerInPath(TargetCPU,true);
-  if RealCompilerInPath<>AFilename then begin
+  AFilename:=FindDefaultTargetCPUCompiler(TargetCPU,true);
+  if RealTargetCPUCompiler<>AFilename then begin
     if CTConsoleVerbosity>0 then
-      debugln(['Hint: [TPCTargetConfigCache.NeedsUpdate] TargetOS="',TargetOS,'" TargetCPU="',TargetCPU,'" Options="',CompilerOptions,'" real compiler in PATH changed from "',RealCompilerInPath,'" to "',AFilename,'"']);
+      debugln(['Hint: [TPCTargetConfigCache.NeedsUpdate] TargetOS="',TargetOS,'" TargetCPU="',TargetCPU,'" Options="',CompilerOptions,'" real compiler in PATH changed from "',RealTargetCPUCompiler,'" to "',AFilename,'"']);
     exit;
   end;
   for i:=0 to ConfigFiles.Count-1 do begin
@@ -8468,7 +8535,7 @@ var
   Infos: TFPCInfoStrings;
   InfoTypes: TFPCInfoTypes;
   BaseDir: String;
-  FullFilename: String;
+  FullFilename, KindErrorMsg: String;
 begin
   OldOptions:=TPCTargetConfigCache.Create(nil);
   CfgFiles:=nil;
@@ -8479,18 +8546,17 @@ begin
 
     if CTConsoleVerbosity>0 then
       debugln(['Hint: [TPCTargetConfigCache.NeedsUpdate] ',Compiler,' TargetOS=',TargetOS,' TargetCPU=',TargetCPU,' CompilerOptions=',CompilerOptions,' ExtraOptions=',ExtraOptions,' PATH=',GetEnvironmentVariableUTF8('PATH')]);
-    CompilerDate:=FileAgeCached(Compiler);
+    CompilerDate:=-1;
     if FileExistsCached(Compiler) then begin
-      ExtraOptions:=GetFPCInfoCmdLineOptions(ExtraOptions);
+      CompilerDate:=FileAgeCached(Compiler);
+      ExtraOptions:=GetFPCInfoCmdLineOptions(ExtraOptions);// contains TargetOS and TargetCPU
       BaseDir:='';
 
-      // kind
-      Kind:=GuessCompilerType(Compiler);
-
-      // get version and real OS and CPU
+      // get version, OS and CPU
       InfoTypes:=[fpciTargetOS,fpciTargetProcessor,fpciFullVersion];
       Info:=RunFPCInfo(Compiler,InfoTypes,ExtraOptions);
       if ParseFPCInfo(Info,InfoTypes,Infos) then begin
+        // fpc or pas2js
         RealTargetOS:=Infos[fpciTargetOS];
         RealTargetCPU:=Infos[fpciTargetProcessor];
         FullVersion:=Infos[fpciFullVersion];
@@ -8502,9 +8568,6 @@ begin
         if RealTargetCPU='' then
           RealTargetCPU:=GetCompiledTargetCPU;
       end;
-      if Kind=pcFPC then
-        RealCompilerInPath:=FindRealCompilerInPath(TargetCPU,true);
-
       // run fpc/pas2js and parse output
       HasPPUs:=false;
       RunFPCVerbose(Compiler,TestFilename,CfgFiles,RealCompiler,UnitPaths,
@@ -8516,8 +8579,15 @@ begin
 
       if Defines.Contains('PAS2JS') and Defines.Contains('PAS2JS_FULLVERSION') then
         Kind:=pcPas2js
-      else
-        Kind:=pcFPC;
+      else if Defines.Contains('FPC') and Defines.Contains('FPC_FULLVERSION') then
+        Kind:=pcFPC
+      else begin
+        IsCompilerExecutable(Compiler,KindErrorMsg,Kind,false);
+        if KindErrorMsg<>'' then
+          debugln(['Warning: [TPCTargetConfigCache.Update] cannot determine type of compiler: Compiler="'+Compiler+'" Options="'+ExtraOptions+'"']);
+      end;
+      if Kind=pcFPC then
+        RealTargetCPUCompiler:=FindDefaultTargetCPUCompiler(TargetCPU,true);
       PreparePaths(UnitPaths);
       PreparePaths(IncludePaths);
       // store the real compiler file and date
@@ -8582,7 +8652,7 @@ begin
   end;
 end;
 
-function TPCTargetConfigCache.FindRealCompilerInPath(aTargetCPU: string;
+function TPCTargetConfigCache.FindDefaultTargetCPUCompiler(aTargetCPU: string;
   ResolveLinks: boolean): string;
 
   function Search(const ShortFileName: string): string;
@@ -9475,7 +9545,7 @@ begin
     Result:={$I %FPCVersion%}
   else
     Result:='';
-  if not IsFPCExecutable(CompilerFilename,ErrorMsg) then
+  if not IsCTExecutable(CompilerFilename,ErrorMsg) then
     exit;
   CfgCache:=ConfigCaches.Find(CompilerFilename,ExtraOptions,TargetOS,TargetCPU,true);
   if CfgCache.NeedsUpdate

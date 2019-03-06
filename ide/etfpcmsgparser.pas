@@ -1006,7 +1006,6 @@ var
   FPCVer: String;
   FPCSrcDir: String;
   aFilename: String;
-  ErrMsg: string;
 begin
   if fMsgFileStamp<>CompilerParseStamp then begin
     fCurrentEnglishFile:=DefaultEnglishFile;
@@ -1014,10 +1013,7 @@ begin
     // English msg file
     // => use fpcsrcdir/compiler/msg/errore.msg
     // the fpcsrcdir might depend on the FPC version
-    if IsFPCExecutable(CompilerFilename,ErrMsg) then
-      FPCVer:=CodeToolBoss.CompilerDefinesCache.GetFPCVersion(CompilerFilename,TargetOS,TargetCPU,false)
-    else
-      FPCVer:='';
+    FPCVer:=CodeToolBoss.CompilerDefinesCache.GetFPCVersion(CompilerFilename,TargetOS,TargetCPU,false);
     FPCSrcDir:=EnvironmentOptions.GetParsedFPCSourceDirectory(FPCVer);
     if FilenameIsAbsolute(FPCSrcDir) then begin
       // FPCSrcDir exists => use the errore.msg

@@ -280,6 +280,7 @@ procedure TIDEInfoDialog.GatherGlobalOptions(sl: TStrings);
 var
   CfgCache: TPCTargetConfigCache;
   Note, aFilename: string;
+  CompilerKind: TPascalCompiler;
 begin
   sl.add('Global IDE options:');
   sl.Add('Primary config directory='+GetPrimaryConfigPath);
@@ -302,12 +303,13 @@ begin
     sl.Add('Project CompilerFilename='+Project1.CompilerOptions.CompilerPath);
     aFilename:=LazarusIDE.GetCompilerFilename;
     sl.Add('Real Project CompilerFilename='+aFilename);
-    if GuessCompilerType(aFilename)=pcPas2js then begin
+    IsCompilerExecutable(aFilename,Note,CompilerKind,true);
+    if CompilerKind=pcPas2js then begin
       if CheckPas2jsQuality(aFilename,Note,
                            CodeToolBoss.CompilerDefinesCache.TestFilename)<>sddqCompatible
       then
         sl.Add('WARNING: '+Note);
-    end else begin;
+    end else begin
       if CheckFPCExeQuality(aFilename,Note,
                            CodeToolBoss.CompilerDefinesCache.TestFilename)<>sddqCompatible
       then

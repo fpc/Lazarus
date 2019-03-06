@@ -95,7 +95,7 @@ uses
   // LCL
   Forms, Controls, Dialogs,
   // LazUtils
-  UTF8Process, FileUtil, LazFileUtils, LazUtilities, LazUTF8,
+  UTF8Process, FileUtil, LazFileUtils, LazUtilities, LazUTF8, LazUTF8Classes,
   // CodeTools
   FileProcs,
   // IdeIntf
@@ -421,12 +421,18 @@ end;
 
 constructor TLazarusProcess.Create(const LazarusPath: string;
   const CommandLine: string; EnvOverrides: TStringList);
+var
+  Params: TStringListUTF8;
 begin
   FProcess := TProcessUTF8.Create(nil);
   FProcess.InheritHandles := false;
   FProcess.Options := [];
   FProcess.ShowWindow := swoShow;
-  FProcess.CommandLine := LazarusPath + CommandLine;
+  Params:=TStringListUTF8.Create;
+  Params.Add(LazarusPath);
+  SplitCmdLineParams(CommandLine,Params);
+  FProcess.Parameters:=Params;
+  Params.Free;
   if (EnvOverrides<>nil) and (EnvOverrides.Count>0) then
     AssignEnvironmentTo(FProcess.Environment,EnvOverrides);
 end;
