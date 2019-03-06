@@ -25,6 +25,7 @@ type
     cbShowConfidenceIntervals: TCheckBox;
     cbShowPredictionIntervals: TCheckBox;
     CbHTML: TCheckBox;
+    CbCombinedExtent: TCheckBox;
     UpperConfIntervalSeries: TFuncSeries;
     LowerConfIntervalSeries: TFuncSeries;
     UpperPredIntervalSeries: TFuncSeries;
@@ -69,6 +70,7 @@ type
     TabSheet2: TTabSheet;
     procedure BtnLoadClick(Sender: TObject);
     procedure btnSaveClick(Sender: TObject);
+    procedure CbCombinedExtentChange(Sender: TObject);
     procedure cbDrawFitRangeOnlyClick(Sender: TObject);
     procedure cbFitEquationSelect(Sender: TObject);
     procedure CbHTMLChange(Sender: TObject);
@@ -178,6 +180,11 @@ begin
   end;
 end;
 
+procedure TfrmMain.CbCombinedExtentChange(Sender: TObject);
+begin
+  FitSeries.CombinedExtentY := CbCombinedExtent.Checked;
+end;
+
 procedure TfrmMain.BtnLoadClick(Sender: TObject);
 begin
   if OpenDialog1.Execute then
@@ -246,7 +253,8 @@ end;
 procedure TfrmMain.CbHTMLChange(Sender: TObject);
 begin
   if CbHtml.Checked then Chart.Legend.TextFormat := tfHTML else Chart.Legend.TextFormat := tfNormal;
-  FitSeries.Title := 'fitted data';  // the fit equation is appended automatically
+  FitSeries.Title := 'fitted data';
+    // the fit equation is appended automatically due to FitSeries.Legend.Format
 end;
 
 procedure TfrmMain.cbShowConfidenceIntervalsChange(Sender: TObject);

@@ -293,6 +293,7 @@ type
   strict private
     FAutoFit: Boolean;
     FDrawFitRangeOnly: Boolean;
+    FCombinedExtentY: Boolean;
     FFitEquation: TFitEquation;
     FFitParams: TFitParamArray; // raw values, not transformed!
     FFitRange: TChartRange;
@@ -312,6 +313,7 @@ type
     function GetParam_RawValue(AIndex: Integer): Double;
     function GetParam_tValue(AIndex: Integer): Double;
     function IsFixedParamsStored: Boolean;
+    procedure SetCombinedExtentY(AValue: Boolean);
     procedure SetDrawFitRangeOnly(AValue: Boolean);
     procedure SetFitEquation(AValue: TFitEquation);
     procedure SetFitRange(AValue: TChartRange);
@@ -336,6 +338,7 @@ type
     function PrepareIntervals: TIntervalList;
     procedure SourceChanged(ASender: TObject); override;
   public
+    procedure Assign(ASource: TPersistent); override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   public
@@ -373,6 +376,8 @@ type
     property AutoFit: Boolean read FAutoFit write FAutoFit default true;
     property AxisIndexX;
     property AxisIndexY;
+    property CombinedExtentY: Boolean
+      read FCombinedExtentY write SetCombinedExtentY default false;
     property DrawFitRangeOnly: Boolean
       read FDrawFitRangeOnly write SetDrawFitRangeOnly default true;
     property FitEquation: TFitEquation
@@ -599,7 +604,7 @@ end;
 procedure TCustomFuncSeries.Assign(ASource: TPersistent);
 begin
   if ASource is TCustomFuncSeries then
-    with TFuncSeries(ASource) do begin
+    with TCustomFuncSeries(ASource) do begin
       Self.FDomainExclusions.Assign(FDomainExclusions);
       Self.FExtentAutoY := FExtentAutoY;
       Self.Pen := FPen;
@@ -1617,11 +1622,30 @@ begin
   FFitRange.Intersect(AXMin, AXMax);
 end;
 
+procedure TFitSeries.Assign(ASource: TPersistent);
+begin
+  if ASource is TFitSeries then
+    with TFitSeries(ASource) do begin
+      Self.FAutoFit := FAutoFit;
+      Self.FConfidenceLevel := FConfidenceLevel;
+      Self.FDrawFitRangeOnly := FDrawFitRangeOnly;
+      Self.FCombinedExtentY := FCombinedExtentY;
+      Self.FFitEquation := FFitEquation;
+      Self.FFitRange.Assign(FFitRange);
+      Self.FFixedParams := FFixedParams;
+      Self.ParamCount := GetParamCount;
+      Self.Pen := FPen;
+      Self.FStep := FStep;
+    end;
+  inherited Assign(ASource);
+end;
+
 constructor TFitSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ToolTargets := [nptPoint, nptCustom];
   FAutoFit := true;
+  FCombinedExtentY := false;
   FFitEquation := fePolynomial;
   FFitRange := TFitSeriesRange.Create(Self);
   FDrawFitRangeOnly := true;
@@ -1798,10 +1822,12 @@ var
 begin
   Result := Source.BasicExtent;
   if IsEmpty or (not Active) then exit;
+  if not FCombinedExtentY then exit;
 
+  // TDrawFuncHelper needs a valid image-to-graph conversion
   if ParentChart = nil then exit;
-  ParentChart.ScaleNeedsSecondPass := True;
-  if not ParentChart.ScaleValid then exit;
+  ParentChart.MultiPassScalingNeeded;
+  if not ParentChart.ScalingValid then exit;
 
   if FAutoFit then ExecFit;
 
@@ -2140,6 +2166,13 @@ begin
     Result.Free;
     raise;
   end;
+end;
+
+procedure TFitSeries.SetCombinedExtentY(AValue: Boolean);
+begin
+  if FCombinedExtentY = AValue then exit;
+  FCombinedExtentY := AValue;
+  UpdateParentChart;
 end;
 
 procedure TFitSeries.SetDrawFitRangeOnly(AValue: Boolean);

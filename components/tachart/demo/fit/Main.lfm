@@ -2,10 +2,10 @@ object frmMain: TfrmMain
   Left = 319
   Height = 503
   Top = 133
-  Width = 997
+  Width = 1026
   Caption = 'frmMain'
   ClientHeight = 503
-  ClientWidth = 997
+  ClientWidth = 1026
   OnCreate = FormCreate
   ShowHint = True
   LCLVersion = '2.1.0.0'
@@ -544,22 +544,23 @@ object frmMain: TfrmMain
     Left = 429
     Height = 487
     Top = 8
-    Width = 560
+    Width = 589
     Align = alClient
     BorderSpacing.Around = 8
     BevelOuter = bvNone
     ClientHeight = 487
-    ClientWidth = 560
+    ClientWidth = 589
     TabOrder = 1
     object Chart: TChart
       Left = 0
       Height = 445
       Top = 0
-      Width = 560
+      Width = 589
       AxisList = <      
         item
           Grid.Visible = False
           Intervals.Tolerance = 2
+          Marks.LabelFont.Height = -13
           Marks.LabelBrush.Style = bsClear
           Minors = <          
             item
@@ -568,6 +569,7 @@ object frmMain: TfrmMain
               Intervals.Options = [aipUseCount, aipUseMinLength]
               Marks.LabelBrush.Style = bsClear
             end>
+          Title.LabelFont.Height = -15
           Title.LabelFont.Orientation = 900
           Title.LabelFont.Style = [fsBold]
           Title.Visible = True
@@ -578,6 +580,7 @@ object frmMain: TfrmMain
           Grid.Visible = False
           Intervals.Tolerance = 2
           Alignment = calBottom
+          Marks.LabelFont.Height = -13
           Marks.LabelBrush.Style = bsClear
           Minors = <          
             item
@@ -586,6 +589,7 @@ object frmMain: TfrmMain
               Intervals.Options = [aipUseCount, aipUseMinLength]
               Marks.LabelBrush.Style = bsClear
             end>
+          Title.LabelFont.Height = -15
           Title.LabelFont.Style = [fsBold]
           Title.Visible = True
           Title.Caption = 'x'
@@ -595,6 +599,7 @@ object frmMain: TfrmMain
       Foot.Brush.Color = clBtnFace
       Foot.Font.Color = clBlue
       Legend.Alignment = laTopCenter
+      Legend.Font.Height = -13
       Legend.Visible = True
       Title.Brush.Color = clBtnFace
       Title.Font.Color = clRed
@@ -658,12 +663,12 @@ object frmMain: TfrmMain
       Left = 0
       Height = 42
       Top = 445
-      Width = 560
+      Width = 589
       Align = alBottom
       AutoSize = True
       BevelOuter = bvNone
       ClientHeight = 42
-      ClientWidth = 560
+      ClientWidth = 589
       TabOrder = 1
       object cbLogX: TCheckBox
         AnchorSideLeft.Control = pnlLog
@@ -694,11 +699,11 @@ object frmMain: TfrmMain
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = pnlLog
         AnchorSideTop.Side = asrCenter
-        Left = 113
+        Left = 109
         Height = 19
         Top = 12
         Width = 102
-        BorderSpacing.Left = 20
+        BorderSpacing.Left = 16
         Caption = 'Show error bars'
         OnChange = cbShowErrorbarsChange
         TabOrder = 2
@@ -707,11 +712,11 @@ object frmMain: TfrmMain
         AnchorSideLeft.Control = cbShowErrorbars
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = pnlLog
-        Left = 235
+        Left = 227
         Height = 19
         Top = 0
         Width = 158
-        BorderSpacing.Left = 20
+        BorderSpacing.Left = 16
         Caption = 'Show confidence intervals'
         OnChange = cbShowConfidenceIntervalsChange
         TabOrder = 3
@@ -720,7 +725,7 @@ object frmMain: TfrmMain
         AnchorSideLeft.Control = cbShowConfidenceIntervals
         AnchorSideTop.Control = cbShowConfidenceIntervals
         AnchorSideTop.Side = asrBottom
-        Left = 235
+        Left = 227
         Height = 19
         Top = 19
         Width = 153
@@ -733,14 +738,28 @@ object frmMain: TfrmMain
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = pnlLog
         AnchorSideTop.Side = asrCenter
-        Left = 413
+        Left = 401
         Height = 19
         Top = 12
         Width = 53
-        BorderSpacing.Left = 20
+        BorderSpacing.Left = 16
         Caption = 'HTML'
         OnChange = CbHTMLChange
         TabOrder = 5
+      end
+      object CbCombinedExtent: TCheckBox
+        AnchorSideLeft.Control = CbHTML
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = pnlLog
+        AnchorSideTop.Side = asrCenter
+        Left = 470
+        Height = 19
+        Top = 12
+        Width = 111
+        BorderSpacing.Left = 16
+        Caption = 'Combined extent'
+        OnChange = CbCombinedExtentChange
+        TabOrder = 6
       end
     end
   end

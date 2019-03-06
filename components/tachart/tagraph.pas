@@ -233,8 +233,8 @@ type
     FOnExtentChanging: TChartEvent;
     FPrevLogicalExtent: TDoubleRect;
     FScale: TDoublePoint;    // Coordinates transformation
-    FScaleValid: Boolean;
-    FScaleNeedsSecondPass: Boolean;
+    FScalingValid: Boolean;
+    FMultiPassScalingNeeded: Boolean;
     FSavedClipRect: TRect;
     FClipRectLock: Integer;
 
@@ -361,8 +361,8 @@ type
     function XImageToGraph(AX: Integer): Double; inline;
     function YGraphToImage(AY: Double): Integer; inline;
     function YImageToGraph(AY: Integer): Double; inline;
-    property ScaleValid: Boolean read FScaleValid;
-    property ScaleNeedsSecondPass: Boolean read FScaleNeedsSecondPass write FScaleNeedsSecondPass;
+    procedure MultiPassScalingNeeded; inline;
+    property ScalingValid: Boolean read FScalingValid;
 
   public
     procedure LockClipRect;
@@ -595,7 +595,7 @@ begin
   FOffset.Y := rY.CalcOffset(FScale.Y);
   rX.UpdateMinMax(@XImageToGraph);
   rY.UpdateMinMax(@YImageToGraph);
-  FScaleValid := True;
+  FScalingValid := True;
 end;
 
 procedure TChart.Clear(ADrawer: IChartDrawer; const ARect: TRect);
@@ -691,8 +691,8 @@ begin
   FGUIConnectorListener := TListener.Create(@FGUIConnector, @StyleChanged);
 
   FScale := DoublePoint(1, -1);
-  FScaleValid := False;
-  FScaleNeedsSecondPass := False;
+  FScalingValid := False;
+  FMultiPassScalingNeeded := False;
 
   Width := DEFAULT_CHART_WIDTH;
   Height := DEFAULT_CHART_HEIGHT;
@@ -884,46 +884,49 @@ end;
 
 procedure TChart.Draw(ADrawer: IChartDrawer; const ARect: TRect);
 var
+  NewClipRect: TRect;
   ldd: TChartLegendDrawingData;
   tmpExtent: TDoubleRect;
   tries: Integer;
   s: TBasicChartSeries;
   ts: TBasicChartToolset;
 begin
+  ADrawer.SetRightToLeft(BiDiMode <> bdLeftToRight);
+
+  NewClipRect := ARect;
+  with NewClipRect do begin
+    Left += MarginsExternal.Left;
+    Top += MarginsExternal.Top;
+    Right -= MarginsExternal.Right;
+    Bottom -= MarginsExternal.Bottom;
+    FTitle.Measure(ADrawer, 1, Left, Right, Top);
+    FFoot.Measure(ADrawer, -1, Left, Right, Bottom);
+  end;
+
   ldd.FItems := nil;
   try
     Prepare;
 
-    ADrawer.SetRightToLeft(BiDiMode <> bdLeftToRight);
+    if Legend.Visible then
+      ldd := PrepareLegend(ADrawer, NewClipRect);
 
-    for tries := 1 to 2 do
+    for tries := 3 downto 0 do
     begin
-      FClipRect := ARect;
-      with MarginsExternal do begin
-        FClipRect.Left += Left;
-        FClipRect.Top += Top;
-        FClipRect.Right -= Right;
-        FClipRect.Bottom -= Bottom;
-      end;
-
-      with ClipRect do begin
-        FTitle.Measure(ADrawer, 1, Left, Right, Top);
-        FFoot.Measure(ADrawer, -1, Left, Right, Bottom);
-      end;
-
-      if Legend.Visible then
-        ldd := PrepareLegend(ADrawer, FClipRect);
+      FClipRect := NewClipRect;
 
       PrepareAxis(ADrawer);
 
-      if not FScaleNeedsSecondPass then break;
+      if (tries = 0) or (not FMultiPassScalingNeeded) then break;
 
-      if FIsZoomed then break; // GetFullExtent() has not been called in this case,
-                               // in the Prepare() call above
-      tmpExtent := GetFullExtent; // perform second pass
-      if tmpExtent = FLogicalExtent then break; // second pass hasn't changed the extent
+      // FIsZoom=true: GetFullExtent has not been called in Prepare() above
+      if FIsZoomed then break;
 
-      // as in the Prepare() call
+      // Perform a next pass of extent calculation
+      tmpExtent := GetFullExtent;
+      // Converged successfully - next pass has not changed the extent --> break
+      if tmpExtent = FLogicalExtent then break;
+
+      // As in the Prepare() call above
       FLogicalExtent := tmpExtent;
       FCurrentExtent := FLogicalExtent;
     end;
@@ -1494,8 +1497,8 @@ var
   a: TChartAxis;
   s: TBasicChartSeries;
 begin
-  FScaleValid := False;
-  FScaleNeedsSecondPass := False;
+  FScalingValid := False;
+  FMultiPassScalingNeeded := False;
 
   for a in AxisList do
     if a.Transformations <> nil then
@@ -1879,6 +1882,11 @@ end;
 function TChart.YImageToGraph(AY: Integer): Double;
 begin
   Result := (AY - FOffset.Y) / FScale.Y;
+end;
+
+procedure TChart.MultiPassScalingNeeded;
+begin
+  FMultiPassScalingNeeded := True;
 end;
 
 procedure TChart.ZoomFull(AImmediateRecalc: Boolean);
