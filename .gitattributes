@@ -11885,6 +11885,7 @@ tools/install/win/lazarus.fr.isl svneol=native#text/plain
 tools/install/win/lazarus.hu.isl svneol=native#text/plain
 tools/install/win/lazarus.pt_BR.isl svneol=native#text/plain
 tools/install/win/lazarus.ru.isl svneol=native#text/plain
+tools/install/win/lazarus.zh_CN.isl svneol=native#text/plain
 tools/install/win/lazarus_install_cheetah.bmp -text svneol=unset#image/bmp
 tools/install/win/lazgear.bmp -text
 tools/install/win/readme.txt svneol=native#text/plain
