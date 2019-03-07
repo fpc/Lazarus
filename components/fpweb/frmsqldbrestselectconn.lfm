@@ -1,17 +1,17 @@
 object SelectRestConnectionForm: TSelectRestConnectionForm
   Left = 528
-  Height = 262
+  Height = 285
   Top = 379
-  Width = 615
+  Width = 612
   Caption = 'Select connection'
-  ClientHeight = 262
-  ClientWidth = 615
+  ClientHeight = 285
+  ClientWidth = 612
   LCLVersion = '2.1.0.0'
   object BPSelect: TButtonPanel
     Left = 6
     Height = 42
-    Top = 214
-    Width = 603
+    Top = 237
+    Width = 600
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
@@ -23,7 +23,7 @@ object SelectRestConnectionForm: TSelectRestConnectionForm
     TabOrder = 0
     ShowButtons = [pbOK, pbCancel]
   end
-  object RGConnnection: TRadioGroup
+  object RGConnection: TRadioGroup
     Left = 16
     Height = 191
     Top = 8
@@ -42,7 +42,7 @@ object SelectRestConnectionForm: TSelectRestConnectionForm
   end
   object CGFieldOPtions: TCheckGroup
     Left = 336
-    Height = 191
+    Height = 214
     Top = 8
     Width = 257
     Anchors = [akTop, akLeft, akBottom]
@@ -56,7 +56,7 @@ object SelectRestConnectionForm: TSelectRestConnectionForm
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 173
+    ClientHeight = 196
     ClientWidth = 255
     Items.Strings = (
       'Allow Filter'
@@ -70,5 +70,16 @@ object SelectRestConnectionForm: TSelectRestConnectionForm
     Data = {
       06000000020202020202
     }
+  end
+  object CBAllTables: TCheckBox
+    Left = 16
+    Height = 22
+    Top = 207
+    Width = 117
+    Anchors = [akLeft, akBottom]
+    Caption = 'Expose all tables'
+    Checked = True
+    State = cbChecked
+    TabOrder = 3
   end
 end

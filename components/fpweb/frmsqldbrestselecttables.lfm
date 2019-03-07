@@ -1,0 +1,45 @@
+object SQLDBRestSelectTablesForm: TSQLDBRestSelectTablesForm
+  Left = 507
+  Height = 240
+  Top = 314
+  Width = 320
+  Caption = 'Select tables to expose'
+  ClientHeight = 240
+  ClientWidth = 320
+  LCLVersion = '2.1.0.0'
+  object CBSelectAllNone: TCheckBox
+    Left = 8
+    Height = 22
+    Top = 8
+    Width = 108
+    Caption = 'Select all/None'
+    OnChange = CBSelectAllNoneChange
+    TabOrder = 0
+  end
+  object BPSelectTables: TButtonPanel
+    Left = 6
+    Height = 42
+    Top = 192
+    Width = 308
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 1
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object CLBTables: TCheckListBox
+    Left = 8
+    Height = 152
+    Top = 32
+    Width = 304
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    ItemHeight = 0
+    TabOrder = 2
+    TopIndex = -1
+  end
+end

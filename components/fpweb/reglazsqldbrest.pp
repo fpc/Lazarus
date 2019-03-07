@@ -5,8 +5,7 @@ unit reglazsqldbrest;
 interface
 
 uses
-  Classes, SysUtils, PropEdits, ComponentEditors, ProjectIntf,
-  sqldbrestschema,
+  Classes, SysUtils, PropEdits, ComponentEditors, ProjectIntf, sqldb, sqldbrestschema,
   sqldbrestcsv ,sqldbrestxml, sqldbrestcds, sqldbrestado,
   sqldbrestio, sqldbrestauth, sqldbrestbridge, sqldbrestmodule;
 
@@ -74,6 +73,10 @@ Type
   { TSQLDBRestSchemaComponentEditor }
 
   TSQLDBRestSchemaComponentEditor = class(TComponentEditor)
+  private
+    procedure DoLoadSchemaFromConnection(S: TSQLDBRestSchema);
+    procedure FillSchema(S: TSQLDBRestSchema; Conn: TSQLDBRestConnection; Opts: TRestFieldOptions; AllTables: Boolean);
+    function GetTableList(aConn: TSQLConnection; aList: TStrings): Boolean;
   public
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;
@@ -111,12 +114,13 @@ implementation
 
 uses
   // Lazarus
-  LResources, codecache, Forms, Dialogs, SrcEditorIntf,  lazideintf, FormEditingIntf, codetoolmanager,
+  LResources, codecache, Controls, Forms, Dialogs, SrcEditorIntf,  lazideintf, FormEditingIntf, codetoolmanager,
   // FPC
-  sqldb, sqldbrestini,
+  sqldbrestini,
   // This package
   frmsqldbrestselectconn,
   frmsqldbrestdispatchini,
+  frmsqldbrestselecttables,
   reslazsqldbrest;
 
 Var
@@ -295,9 +299,10 @@ Var
   C : TSQLDBRestConnection;
   aSchema : TSQLDBRestSchema;
   aOptions : TRestFieldOptions;
+  allTables : Boolean;
 
 begin
-  C:=SelectRestConnection(D.Connections,aOptions);
+  C:=SelectRestConnection(D.Connections,aOptions,allTables);
   if C=Nil then
     exit;
   aSchema:=D.ExposeConnection(Designer.LookupRoot,C,Nil,aOptions);
@@ -315,7 +320,11 @@ begin
   D:=Component as TSQLDBRestDispatcher;
   Case Index of
     0 :
+      begin
       ExposeConnection(D);
+      Designer.Modified;
+      end;
+
     1,2 :
       begin
       FN:=Component.Name+'.ini';
@@ -324,7 +333,10 @@ begin
           if Index=0 then
             D.SaveToFile(FN,OI)
           else
+            begin
             D.LoadFromFile(FN,OI);
+            Designer.Modified;
+            end;
       end;
   end;
 end;
@@ -343,6 +355,111 @@ begin
   Result:=3;
 end;
 
+Function TSQLDBRestSchemaComponentEditor.GetTableList(aConn : TSQLConnection; aList : TStrings) : Boolean;
+
+Var
+  L : TStringList;
+  F : TSQLDBRestSelectTablesForm;
+begin
+  Result:=False;
+  F:=Nil;
+  L:=TStringList.Create;
+  try
+    L.Sorted:=true;
+    aConn.GetTableNames(L,False);
+    if L.Count>0 then
+      begin
+      F:=TSQLDBRestSelectTablesForm.Create(Application);
+      F.Tables:=L;
+      Result:=F.ShowModal=mrOK;
+      if Result then
+         F.GetSelectedTables(aList);
+      end;
+  finally
+    L.Free;
+    F.Free;
+  end;
+end;
+
+
+procedure TSQLDBRestSchemaComponentEditor.FillSchema(S : TSQLDBRestSchema;  Conn : TSQLDBRestConnection; Opts : TRestFieldOptions; AllTables : Boolean);
+
+Var
+  SQLC : TSQLConnection;
+  T : TSQLTransaction;
+  sTables : TStrings;
+  aCount : Integer;
+
+begin
+  T:=Nil;
+  sTables:=nil;
+  SQLC:=Conn.SingleConnection;
+  if SQLC=Nil then
+    SQLC:=TSQLConnector.Create(Nil);
+  try
+    if (SQLC.Transaction=Nil) then
+      begin
+      T:=TSQLTransaction.Create(SQLC);
+      SQLC.Transaction:=T;
+      Conn.ConfigConnection(SQLC);
+      end;
+    SQLC.Connected:=true;
+    if not AllTables then
+      begin
+      sTables:=TStringList.Create;
+      if not GetTableList(SQLC,sTables) then
+        exit;
+      end;
+    aCount:=S.Resources.Count;
+    S.PopulateResources(SQLC,sTables,Opts);
+    ShowMessage(Format(SAddedNTables,[S.Resources.Count-aCount]));
+  finally
+    T.Free;
+    if SQLC<>Conn.SingleConnection then
+      SQLC.Free;
+  end;
+end;
+
+
+procedure TSQLDBRestSchemaComponentEditor.DoLoadSchemaFromConnection(S : TSQLDBRestSchema);
+
+Var
+  L : TStringList;
+  O : TComponent;
+  D : TSQLDBRestDispatcher;
+  I,J : Integer;
+  Opts : TRestFieldOptions;
+  Conn : TSQLDBRestConnection;
+  AllTables : Boolean;
+
+begin
+  L:=TStringList.Create;
+  try
+    O:=S.Owner;
+    While O<>Nil do
+      begin
+      for I:=0 to O.ComponentCount-1 do
+         if O.Components[i] is TSQLDBRestDispatcher then
+           begin
+           D:=O.Components[i] as TSQLDBRestDispatcher;
+           For J:=0 To D.Connections.Count-1 do
+             L.AddObject(D.Name+'.'+D.Connections[J].Name,D.Connections[J]);
+           end;
+      O:=O.Owner;
+      end;
+    if L.Count=0 then
+      ShowMessage(SErrNoConnectionsFound)
+    else
+      begin
+      Conn:=SelectRestConnection(L,Opts,allTables);
+      if Conn<>Nil then
+        FillSchema(S,Conn,Opts,AllTables);
+      end;
+  finally
+    L.Free;
+  end;
+end;
+
 procedure TSQLDBRestSchemaComponentEditor.ExecuteVerb(Index: Integer);
 
 Var
@@ -359,7 +476,20 @@ begin
         if Index=0 then
           S.SaveToFile(FN)
         else
+          begin
           S.LoadFromFile(FN);
+          Designer.Modified;
+          end;
+      end;
+    2 :
+      begin
+      DoLoadSchemaFromConnection(S);
+      Designer.Modified;
+      end;
+    3 :
+      begin
+      S.Resources.Clear;
+      Designer.Modified;
       end;
   end;
 end;
@@ -369,12 +499,14 @@ begin
   Case Index of
     0 : Result:=SSaveSchemaToJSONFile;
     1 : Result:=SLoadSchemaFromJSONFile;
+    2 : Result:=SLoadSchemaFromConnection;
+    3 : Result:=SClearSchema;
   end;
 end;
 
 function TSQLDBRestSchemaComponentEditor.GetVerbCount: Integer;
 begin
-  Result:=2;
+  Result:=4;
 end;
 
 function TSQLDBConnectionTypePropertyEditor.GetAttributes: TPropertyAttributes;

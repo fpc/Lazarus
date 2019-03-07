@@ -10,7 +10,7 @@
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
     </CompilerOptions>
-    <Files Count="4">
+    <Files Count="5">
       <Item1>
         <Filename Value="reglazsqldbrest.pp"/>
         <HasRegisterProc Value="True"/>
@@ -28,6 +28,10 @@
         <Filename Value="reslazsqldbrest.pp"/>
         <UnitName Value="reslazsqldbrest"/>
       </Item4>
+      <Item5>
+        <Filename Value="frmsqldbrestselecttables.pp"/>
+        <UnitName Value="frmsqldbrestselecttables"/>
+      </Item5>
     </Files>
     <RequiredPkgs Count="5">
       <Item1>

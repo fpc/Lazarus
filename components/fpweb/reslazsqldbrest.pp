@@ -16,7 +16,10 @@ Resourcestring
   SJSONFilesFilter = 'JSON Files|*.json|All files|%s';
   SSaveSchemaToJSONFile = 'Save schema to JSON file';
   SLoadSchemaFromJSONFile = 'Load schema from JSON file';
-
+  SLoadSchemaFromConnection = 'Load schema from connection';
+  SErrNoConnectionsFound = 'No connections found on form/frame or datamodule';
+  SAddedNTables = 'Added %d tables as resources';
+  SClearSchema = 'Clear schema';
 
 implementation
 

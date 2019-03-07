@@ -9,7 +9,7 @@ interface
 
 uses
   reglazsqldbrest, frmsqldbrestdispatchini, frmsqldbrestselectconn, 
-  reslazsqldbrest, LazarusPackageIntf;
+  reslazsqldbrest, frmsqldbrestselecttables, LazarusPackageIntf;
 
 implementation
 
