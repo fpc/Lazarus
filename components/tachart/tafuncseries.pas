@@ -83,9 +83,6 @@ type
   public
     procedure Assign(ASource: TPersistent); override;
     procedure Draw(ADrawer: IChartDrawer); override;
-    function GetNearestPoint(
-      const AParams: TNearestPointParams;
-      out AResults: TNearestPointResults): Boolean; override;
     function IsEmpty: Boolean; override;
   published
     property OnCalculate: TFuncCalculateEvent
@@ -647,7 +644,7 @@ var
   ymin, ymax: Double;
 begin
   inherited GetBounds(ABounds);
-  if not Extent.UseXMin or not Extent.UseXMax or not ExtentAutoY then
+  if not Extent.UseXMin or not Extent.UseXMax or not ExtentAutoY or IsEmpty then
     exit;
   ymin := SafeInfinity;
   ymax := NegInfinity;
@@ -672,6 +669,10 @@ function TCustomFuncSeries.GetNearestPoint(
   const AParams: TNearestPointParams;
   out AResults: TNearestPointResults): Boolean;
 begin
+  if IsEmpty then begin
+    AResults.FIndex := -1;
+    exit(false);
+  end;
   with TDrawFuncHelper.Create(Self, DomainExclusions, @DoCalculate, Step) do
     try
       Result := GetNearestPoint(AParams, AResults);
@@ -748,16 +749,6 @@ begin
   if (csDesigning in ComponentState) then
     exit;
   inherited GetBounds(ABounds);
-end;
-
-function TFuncSeries.GetNearestPoint(
-  const AParams: TNearestPointParams;
-  out AResults: TNearestPointResults): Boolean;
-begin
-  AResults.FIndex := -1;
-  if not Assigned(OnCalculate) then
-    exit(false);
-  Result := inherited;
 end;
 
 function TFuncSeries.IsEmpty: Boolean;
