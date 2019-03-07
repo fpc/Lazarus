@@ -325,6 +325,8 @@ begin
   if (CompareText(copy(TargetOS,1,3), 'win') = 0)
   or (CompareText(copy(TargetOS,1,3), 'dos') = 0) then
     Result:='.exe'
+  else if SameText(TargetOS, 'browser') or SameText(TargetOS,'nodejs') then
+    Result:='.js'
   else
     Result:='';
 end;
@@ -367,6 +369,8 @@ begin
   if TargetOS='' then
     TargetOS:=GetCompiledTargetOS;
   Result:='';
+  if SameText(TargetOS, 'browser') or SameText(TargetOS,'nodejs') then
+    exit('.js');
   SrcOS:=GetDefaultSrcOSForTargetOS(TargetOS);
   if CompareText(SrcOS, 'unix') = 0 then
     Result:='lib';
