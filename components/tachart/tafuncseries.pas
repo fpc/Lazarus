@@ -77,9 +77,7 @@ type
     FOnCalculate: TFuncCalculateEvent;
     procedure SetOnCalculate(AValue: TFuncCalculateEvent);
   protected
-    function DoCalcIdentity(AX: Double): Double;
     function DoCalculate(AX: Double): Double; override;
-    procedure GetBounds(var ABounds: TDoubleRect); override;
   public
     procedure Assign(ASource: TPersistent); override;
     procedure Draw(ADrawer: IChartDrawer); override;
@@ -714,11 +712,6 @@ begin
   inherited Assign(ASource);
 end;
 
-function TFuncSeries.DoCalcIdentity(AX: Double): Double;
-begin
-  Result := AX;
-end;
-
 function TFuncSeries.DoCalculate(AX: Double): Double;
 begin
   OnCalculate(AX, Result)
@@ -727,28 +720,30 @@ end;
 procedure TFuncSeries.Draw(ADrawer: IChartDrawer);
 var
   calc: TTransformFunc;
+  R: TRect;
 begin
-  if Assigned(OnCalculate) then
-    calc := @DoCalculate
-  else if csDesigning in ComponentState then
-    calc := @DoCalcIdentity
-  else
-    exit;
   ADrawer.SetBrushParams(bsClear, clTAColor);
   ADrawer.Pen := Pen;
-  with TDrawFuncHelper.Create(Self, DomainExclusions, calc, Step) do
+
+  if csDesigning in ComponentState then begin
+    with ParentChart do begin
+      R.TopLeft := GraphToImage(CurrentExtent.a);
+      R.BottomRight := GraphToImage(CurrentExtent.b);
+      NormalizeRect(R);
+    end;
+    ADrawer.Line(R.Left, R.Bottom, R.Right, R.Top);
+    exit;
+  end;
+
+  if IsEmpty then
+    exit;
+
+  with TDrawFuncHelper.Create(Self, DomainExclusions, @DoCalculate, Step) do
     try
       DrawFunction(ADrawer);
     finally
       Free;
     end;
-end;
-
-procedure TFuncSeries.GetBounds(var ABounds: TDoubleRect);
-begin
-  if (csDesigning in ComponentState) then
-    exit;
-  inherited GetBounds(ABounds);
 end;
 
 function TFuncSeries.IsEmpty: Boolean;
