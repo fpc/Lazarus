@@ -774,7 +774,7 @@ begin
   Result := false;
   if Length(FIntervals) = 0 then exit;
 
-  AHint := Min(High(FIntervals), AHint);
+  AHint := EnsureRange(AHint, 0, High(FIntervals));
   while (AHint > 0) and (FIntervals[AHint].FStart > ARight) do
     Dec(AHint);
 
