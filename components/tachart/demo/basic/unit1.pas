@@ -108,7 +108,6 @@ begin
     else Y3 := Y3 - random(5);
     FArea.AddXY(x3, y3, '', clTAColor);
   end;
-  FArea.UseReticule := true;
 end;
 
 procedure TForm1.btnAddBarClick(Sender: TObject);

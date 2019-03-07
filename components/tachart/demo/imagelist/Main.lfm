@@ -9,8 +9,8 @@ object frmMain: TfrmMain
   LCLVersion = '2.1.0.0'
   object Chart1: TChart
     Left = 0
-    Height = 217
-    Top = 38
+    Height = 213
+    Top = 42
     Width = 484
     AxisList = <    
       item
@@ -75,12 +75,12 @@ object frmMain: TfrmMain
   end
   object ToolBar1: TToolBar
     Left = 0
-    Height = 38
+    Height = 42
     Top = 0
     Width = 484
     AutoSize = True
-    ButtonHeight = 36
-    ButtonWidth = 23
+    ButtonHeight = 40
+    ButtonWidth = 40
     Caption = 'ToolBar1'
     EdgeBorders = [ebBottom]
     Images = ChartImageList
@@ -94,15 +94,15 @@ object frmMain: TfrmMain
       OnClick = tbAddClick
     end
     object tbQuit: TToolButton
-      Left = 39
+      Left = 49
       Top = 0
       Caption = 'Quit'
       ImageIndex = 0
       OnClick = tbQuitClick
     end
     object tbSep1: TToolButton
-      Left = 31
-      Height = 36
+      Left = 41
+      Height = 40
       Top = 0
       Caption = 'tbSep1'
       Style = tbsSeparator

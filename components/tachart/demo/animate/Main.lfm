@@ -7,7 +7,7 @@ object Form1: TForm1
   ClientHeight = 369
   ClientWidth = 629
   OnCreate = FormCreate
-  LCLVersion = '1.1'
+  LCLVersion = '2.1.0.0'
   object Chart1: TChart
     Left = 0
     Height = 369
@@ -15,12 +15,16 @@ object Form1: TForm1
     Width = 507
     AxisList = <    
       item
+        Marks.LabelBrush.Style = bsClear
         Minors = <>
         Title.LabelFont.Orientation = 900
+        Title.LabelBrush.Style = bsClear
       end    
       item
         Alignment = calBottom
+        Marks.LabelBrush.Style = bsClear
         Minors = <>
+        Title.LabelBrush.Style = bsClear
       end>
     Foot.Brush.Color = clBtnFace
     Foot.Font.Color = clBlue
@@ -32,7 +36,6 @@ object Form1: TForm1
     )
     Align = alClient
     DoubleBuffered = True
-    ParentColor = False
     object Chart1BarSeries1: TBarSeries
       BarBrush.Color = 2183646
       Source = ListChartSource1
@@ -44,16 +47,19 @@ object Form1: TForm1
     Top = 0
     Width = 122
     Align = alRight
+    BevelOuter = bvNone
     ClientHeight = 369
     ClientWidth = 122
     TabOrder = 1
     object rgMethod: TRadioGroup
-      Left = 1
-      Height = 97
-      Top = 1
-      Width = 120
+      Left = 6
+      Height = 89
+      Top = 6
+      Width = 110
       Align = alTop
       AutoFill = True
+      AutoSize = True
+      BorderSpacing.Around = 6
       Caption = ' Method '
       ChildSizing.LeftRightSpacing = 6
       ChildSizing.TopBottomSpacing = 6
@@ -63,8 +69,8 @@ object Form1: TForm1
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 1
-      ClientHeight = 79
-      ClientWidth = 116
+      ClientHeight = 69
+      ClientWidth = 106
       ItemIndex = 0
       Items.Strings = (
         'Grow'
@@ -75,10 +81,15 @@ object Form1: TForm1
       TabOrder = 0
     end
     object btnStartStop: TButton
-      Left = 9
+      AnchorSideLeft.Control = seTime
+      AnchorSideTop.Control = seTime
+      AnchorSideTop.Side = asrBottom
+      Left = 12
       Height = 25
-      Top = 144
-      Width = 75
+      Top = 134
+      Width = 84
+      AutoSize = True
+      BorderSpacing.Top = 8
       Caption = 'Start / stop'
       OnClick = btnStartStopClick
       TabOrder = 1
@@ -91,10 +102,16 @@ object Form1: TForm1
       ParentColor = False
     end
     object seTime: TSpinEdit
-      Left = 9
-      Height = 21
-      Top = 108
-      Width = 74
+      AnchorSideLeft.Control = rgMethod
+      AnchorSideTop.Control = rgMethod
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Side = asrBottom
+      Left = 12
+      Height = 23
+      Top = 103
+      Width = 82
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 8
       Increment = 100
       MaxValue = 10000
       MinValue = 100
@@ -113,7 +130,7 @@ object Form1: TForm1
       '6|7|?|'
       '7|8|?|'
     )
-    left = 560
-    top = 292
+    left = 552
+    top = 288
   end
 end
