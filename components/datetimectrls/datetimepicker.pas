@@ -119,8 +119,8 @@ type
     dtaDefault means it is determined by BiDiMode }
   TDTCalAlignment = (dtaLeft, dtaRight, dtaDefault);
 
-  TDateTimePickerOption = (
-    dtpoDoChangeOnSetDateTime, dtpoEnabledIfUnchecked, dtpoAutoCheck, dtpoFlatButton);
+  TDateTimePickerOption = (dtpoDoChangeOnSetDateTime, dtpoEnabledIfUnchecked,
+                           dtpoAutoCheck, dtpoFlatButton, dtpoResetSelection);
   TDateTimePickerOptions = set of TDateTimePickerOption;
 
   { TCustomDateTimePicker }
@@ -2717,6 +2717,11 @@ end;
 
 procedure TCustomDateTimePicker.DoEnter;
 begin
+  if dtpoResetSelection in Options then begin
+    FSelectedTextPart := High(TTextPart);
+    MoveSelectionLR(False);
+  end;
+
   inherited DoEnter;
   Invalidate;
 end;
