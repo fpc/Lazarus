@@ -98,8 +98,6 @@ type
     FParamMin: Double;
     FPen: TChartPen;
     FStep: TFuncSeriesStep;
-
-    function DoCalcIdentity(AT: Double): TDoublePoint;
     function DoCalculate(AT: Double): TDoublePoint;
     function ParamMaxIsStored: Boolean;
     function ParamMaxStepIsStored: Boolean;
@@ -117,7 +115,6 @@ type
     procedure Assign(ASource: TPersistent); override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
     procedure Draw(ADrawer: IChartDrawer); override;
     function IsEmpty: Boolean; override;
   published
@@ -719,7 +716,6 @@ end;
 
 procedure TFuncSeries.Draw(ADrawer: IChartDrawer);
 var
-  calc: TTransformFunc;
   R: TRect;
 begin
   ADrawer.SetBrushParams(bsClear, clTAColor);
@@ -790,37 +786,38 @@ begin
   inherited;
 end;
 
-function TParametricCurveSeries.DoCalcIdentity(AT: Double): TDoublePoint;
-begin
-  Result := DoublePoint(AT, AT);
-end;
-
 function TParametricCurveSeries.DoCalculate(AT: Double): TDoublePoint;
 begin
   OnCalculate(AT, Result.X, Result.Y);
 end;
 
 procedure TParametricCurveSeries.Draw(ADrawer: IChartDrawer);
-var
-  calc: TParametricFunc;
 
   function PointAt(AT: Double): TPoint;
   begin
-    Result := ParentChart.GraphToImage(AxisToGraph(calc(AT)))
+    Result := ParentChart.GraphToImage(AxisToGraph(DoCalculate(AT)))
   end;
 
 var
+  R: TRect;
   t, ts, ms: Double;
   p, pp: TPoint;
 begin
-  if Assigned(OnCalculate) then
-    calc := @DoCalculate
-  else if csDesigning in ComponentState then
-    calc := @DoCalcIdentity
-  else
-    exit;
   ADrawer.SetBrushParams(bsClear, clTAColor);
   ADrawer.Pen := Pen;
+
+  if csDesigning in ComponentState then begin
+    with ParentChart do begin
+      R.TopLeft := GraphToImage(LogicalExtent.a);
+      R.BottomRight := GraphToImage(LogicalExtent.b);
+      NormalizeRect(R);
+    end;
+    ADrawer.Ellipse(R.Left, R.Bottom, R.Right, R.Top);
+    exit;
+  end;
+
+  if IsEmpty then
+    exit;
 
   t := ParamMin;
   pp := PointAt(ParamMin);
