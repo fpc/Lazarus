@@ -78,6 +78,7 @@ type
     procedure SetOnCalculate(AValue: TFuncCalculateEvent);
   protected
     function DoCalculate(AX: Double): Double; override;
+    procedure GetBounds(var ABounds: TDoubleRect); override;
   public
     procedure Assign(ASource: TPersistent); override;
     procedure Draw(ADrawer: IChartDrawer); override;
@@ -523,8 +524,6 @@ type
     procedure Draw(ADrawer: IChartDrawer; const ARect: TRect); override;
   end;
 
-  TParametricFunc = function (A: Double): TDoublePoint of object;
-
 function ParamsToEquation(
   AEquation: TFitEquation; const AParams: array of Double;
   ANumFormat, AXText, AYText: String): String;
@@ -624,6 +623,7 @@ end;
 
 procedure TCustomFuncSeries.Draw(ADrawer: IChartDrawer);
 begin
+  if IsEmpty or (not Active) then exit;
   ADrawer.SetBrushParams(bsClear, clTAColor);
   ADrawer.Pen := Pen;
   with TDrawFuncHelper.Create(Self, DomainExclusions, @DoCalculate, Step) do
@@ -711,15 +711,14 @@ end;
 
 function TFuncSeries.DoCalculate(AX: Double): Double;
 begin
-  OnCalculate(AX, Result)
+  OnCalculate(AX, Result);
 end;
 
 procedure TFuncSeries.Draw(ADrawer: IChartDrawer);
 var
   R: TRect;
 begin
-  ADrawer.SetBrushParams(bsClear, clTAColor);
-  ADrawer.Pen := Pen;
+  if not Active then exit;
 
   if csDesigning in ComponentState then begin
     with ParentChart do begin
@@ -727,19 +726,25 @@ begin
       R.BottomRight := GraphToImage(CurrentExtent.b);
       NormalizeRect(R);
     end;
+    ADrawer.SetBrushParams(bsClear, clTAColor);
+    ADrawer.Pen := Pen;
     ADrawer.Line(R.Left, R.Bottom, R.Right, R.Top);
     exit;
   end;
 
-  if IsEmpty then
-    exit;
+  inherited;
+end;
 
-  with TDrawFuncHelper.Create(Self, DomainExclusions, @DoCalculate, Step) do
-    try
-      DrawFunction(ADrawer);
-    finally
-      Free;
-    end;
+procedure TFuncSeries.GetBounds(var ABounds: TDoubleRect);
+begin
+  inherited GetBounds(ABounds);
+  if not (csDesigning in ComponentState) or
+     not Extent.UseXMin or not Extent.UseXMax or not ExtentAutoY then exit;
+
+  // When designing, an oblique line is drawn (see TFuncSeries.Draw),
+  // so bounds should be adjusted when ExtentAutoY is True
+  ABounds.a.Y := ABounds.a.X;
+  ABounds.b.Y := ABounds.b.X;
 end;
 
 function TFuncSeries.IsEmpty: Boolean;
@@ -803,6 +808,8 @@ var
   t, ts, ms: Double;
   p, pp: TPoint;
 begin
+  if not Active then exit;
+
   ADrawer.SetBrushParams(bsClear, clTAColor);
   ADrawer.Pen := Pen;
 
@@ -816,8 +823,7 @@ begin
     exit;
   end;
 
-  if IsEmpty then
-    exit;
+  if IsEmpty then exit;
 
   t := ParamMin;
   pp := PointAt(ParamMin);
@@ -2742,10 +2748,10 @@ end;
 
 function TColorMapSeries.FunctionValue(AX, AY: Double): Double;
 begin
-  if (csDesigning in ComponentState) or not Assigned(FOnCalculate) then
-    Result := 0
+  if Assigned(OnCalculate) then
+    OnCalculate(AX, AY, Result)
   else
-    OnCalculate(AX, AY, Result);
+    Result := 0;
 end;
 
 function TColorMapSeries.IsEmpty: Boolean;
