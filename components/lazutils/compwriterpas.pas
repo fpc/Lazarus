@@ -75,7 +75,8 @@ type
     cwpoNoSelf,          // enclose in "with LookupRootname do begin"
     cwpoSetParentFirst,  // add "SetParentComponent" before setting properties, default: after
     cwpoSrcCodepageUTF8, // target unit uses $codepage utf-8, aka do not convert UTF-8 string literals
-    cwpoNoWithBlocks     // do not use with-do
+    cwpoNoWithBlocks,    // do not use with-do
+    cwpoNoFinalLineBreak
     );
   TCWPOptions = set of TCWPOption;
 
@@ -1527,8 +1528,15 @@ begin
   WriteComponent(ARoot);
   if cwpoNoSelf in Options then
     WriteWithEnd;
-  if not (cwpoNoSignature in Options) then
-    WriteStatement(SignatureEnd);
+  if not (cwpoNoSignature in Options) then begin
+    if cwpoNoFinalLineBreak in Options then
+      begin
+      WriteIndent;
+      Write(SignatureEnd);
+      end
+    else
+      WriteStatement(SignatureEnd);
+  end;
 end;
 
 procedure TCompWriterPas.WriteIndent;
