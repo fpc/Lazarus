@@ -73,6 +73,7 @@ type
         var DiffTxtPos: integer): TAVLTreeNode;
     function JumpToMethod(const ProcHead: string; Attr: TProcHeadAttributes;
         var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+    function FindProc(const ProcHead: string; Attr: TProcHeadAttributes): TCodeTreeNode;
     function JumpToMethod(const ProcHead: string; Attr: TProcHeadAttributes;
         out NewPos: TCodeXYPosition;
         out NewTopLine, BlockTopLine, BlockBottomLine: integer): boolean;
@@ -1224,29 +1225,13 @@ end;
 function TMethodJumpingCodeTool.JumpToMethod(const ProcHead: string;
   Attr: TProcHeadAttributes; out NewPos: TCodeXYPosition; out NewTopLine,
   BlockTopLine, BlockBottomLine: integer): boolean;
-var SectionNode, CurProcNode: TCodeTreeNode;
-  CurProcHead: string;
+var
+  ProcNode: TCodeTreeNode;
 begin
-  Result:=false;
-  BuildTree(lsrInitializationStart);
-  SectionNode:=Tree.Root;
-  while (SectionNode<>nil) do begin
-    if SectionNode.Desc in [ctnProgram,ctnImplementation] then begin
-      CurProcNode:=SectionNode.FirstChild;
-      while CurProcNode<>nil do begin
-        if CurProcNode.Desc=ctnProcedure then begin
-          CurProcHead:=ExtractProcHead(CurProcNode,Attr);
-          if CompareTextIgnoringSpace(ProcHead,CurProcHead,false)=0 then begin
-            Result:=FindJumpPointInProcNode(CurProcNode,
-                       NewPos,NewTopLine,BlockTopLine,BlockBottomLine);
-            exit;
-          end;
-        end;
-        CurProcNode:=CurProcNode.NextBrother;
-      end;
-    end;
-    SectionNode:=SectionNode.NextBrother;
-  end;
+  ProcNode:=FindProc(ProcHead,Attr);
+  if ProcNode=nil then exit(false);
+  Result:=FindJumpPointInProcNode(ProcNode,
+                                NewPos,NewTopLine,BlockTopLine,BlockBottomLine);
 end;
 
 function TMethodJumpingCodeTool.JumpToMethod(const ProcHead: string;
@@ -1258,5 +1243,29 @@ begin
   Result := JumpToMethod(ProcHead, Attr, NewPos, NewTopLine, BlockTopLine, BlockBottomLine);
 end;
 
+function TMethodJumpingCodeTool.FindProc(const ProcHead: string;
+  Attr: TProcHeadAttributes): TCodeTreeNode;
+var SectionNode, CurProcNode: TCodeTreeNode;
+  CurProcHead: string;
+begin
+  Result:=nil;
+  BuildTree(lsrInitializationStart);
+  SectionNode:=Tree.Root;
+  while (SectionNode<>nil) do begin
+    if SectionNode.Desc in [ctnProgram,ctnImplementation] then begin
+      CurProcNode:=SectionNode.FirstChild;
+      while CurProcNode<>nil do begin
+        if CurProcNode.Desc=ctnProcedure then begin
+          CurProcHead:=ExtractProcHead(CurProcNode,Attr);
+          debugln(['TMethodJumpingCodeTool.FindProc "',CurProcHead,'"']);
+          if CompareTextIgnoringSpace(ProcHead,CurProcHead,false)=0 then
+            exit(CurProcNode);
+        end;
+        CurProcNode:=CurProcNode.NextBrother;
+      end;
+    end;
+    SectionNode:=SectionNode.NextBrother;
+  end;
+end;
 
 end.
