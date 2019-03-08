@@ -1875,7 +1875,7 @@ begin
     Result:=ExtractFileNameOnly(AnUnitInfo.Filename)+ResourceFileExt;
     Result:=FileUtil.SearchFileInPath(Result,'',
         CodeToolBoss.GetIncludePathForDirectory(ExtractFilePath(AnUnitInfo.Filename)),
-        ';',[sffDontSearchInBasePath,sffSearchLoUpCase]);
+        ';',[sffDontSearchInBasePath,sffSearchLoUpCase,sffFile]);
   end;
   if (Result='') and UseDefaultIfNotFound then
     Result:=GetDefaultLRSFilename(AnUnitInfo);

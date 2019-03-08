@@ -181,7 +181,7 @@ begin
   else
     Result:=SearchFileInPath(Executable,'',
                              GetEnvironmentVariableUTF8('PATH'),PathSeparator,
-                             [sffDontSearchInBasePath]);
+                             sffFindProgramInPath);
   Result:=TrimFilename(Result);
 end;
 

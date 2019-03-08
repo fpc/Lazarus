@@ -1024,13 +1024,12 @@ begin
       else
         Path:=GetEnvironmentVariableUTF8('PATH');
       s:=SearchFileInPath(s,Proc.CurrentDirectory,
-                               Path, PathSeparator,
-                               []);
+                               Path, PathSeparator, sffFindProgramInPath);
       {$IFDEF Windows}
       if (s='') and (ExtractFileExt(s)='') then begin
         s:=SearchFileInPath(s+'.exe',Proc.CurrentDirectory,
                                  Path, PathSeparator,
-                                 []);
+                                 sffFindProgramInPath);
       end;
       {$ENDIF}
       if s='' then begin

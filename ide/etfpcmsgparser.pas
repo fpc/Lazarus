@@ -3188,7 +3188,7 @@ begin
           // include path is valid and in worker thread
           // -> search file
           aFilename:=FileUtil.SearchFileInPath(aFilename,MsgWorkerDir,fIncludePath,';',
-                                 [FileUtil.sffSearchLoUpCase]);
+                                 [FileUtil.sffSearchLoUpCase,sffFile]);
           if aFilename<>'' then
             MsgLine.Filename:=aFilename;
         end;

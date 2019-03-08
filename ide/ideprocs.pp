@@ -1310,7 +1310,7 @@ begin
       Result:='';
     exit;
   end;
-  Flags:=[];
+  Flags:=[sffFile,sffExecutable];
   if not WithBaseDirectory then
     Include(Flags,sffDontSearchInBasePath);
   Result:=FileUtil.SearchFileInPath(ProgramName,BaseDirectory,
