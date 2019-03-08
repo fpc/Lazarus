@@ -83,7 +83,7 @@ type
     );
   TSearchFileInPathFlags = set of TSearchFileInPathFlag;
 const
-  sffFindProgramInPath = [{$IFDEF Unix}sffDontSearchInBasePath{$ENDIF},sffFile,sffExecutable];
+  sffFindProgramInPath = [{$IFDEF Unix}sffDontSearchInBasePath,{$ENDIF}sffFile,sffExecutable];
 
 function SearchFileInPath(const Filename, BasePath, SearchPath,
   Delimiter: string; Flags: TSearchFileInPathFlags): string; overload;
