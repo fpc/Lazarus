@@ -25,6 +25,7 @@ type
     cbCloseCircle: TCheckBox;
     cbShowPoints: TCheckBox;
     cbFilled: TCheckBox;
+    Cb3D: TCheckBox;
     lblTransparency: TLabel;
     lblWords: TLabel;
     lblLabelAngle: TLabel;
@@ -45,6 +46,7 @@ type
     procedure ChartPieMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure cbShowPointsChange(Sender: TObject);
+    procedure Cb3DChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure sbTransparencyChange(Sender: TObject);
     procedure seWordsChange(Sender: TObject);
@@ -57,6 +59,9 @@ var
 implementation
 
 {$R *.lfm}
+
+uses
+  TAChartUtils;
 
 { TForm1 }
 
@@ -87,6 +92,13 @@ procedure TForm1.cbShowPointsChange(Sender: TObject);
 begin
   ChartPolarSeries1.ShowPoints := cbShowPoints.Checked;
   ChartPolarSeries2.ShowPoints := cbShowPoints.Checked;
+end;
+
+procedure TForm1.Cb3DChange(Sender: TObject);
+var
+  DEPTH: array[boolean] of Integer = (0, 10);
+begin
+  ChartPiePieSeries1.Depth := DEPTH[Cb3D.Checked];
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);

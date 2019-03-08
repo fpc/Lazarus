@@ -15,7 +15,7 @@ unit TARadialSeries;
 
 interface
 
-uses
+uses                 lazlogger,
   Classes, Graphics, SysUtils, Types,
   TAChartUtils, TACustomSeries, TADrawUtils, TALegend, TAStyles;
 
@@ -266,13 +266,129 @@ end;
 procedure TCustomPieSeries.Draw(ADrawer: IChartDrawer);
 const
   STEP = 4;
+  TWO_PI = 2 * pi;
+  PI_1_4 = pi / 4;
+  PI_3_4 = (3 / 4) * pi;
+  PI_5_4 = (5 / 4) * pi;
+  PI_7_4 = (7 / 4) * pi;
+var
+  ps: TPieSlice;
+  scaled_depth: Integer;
+
+  function PrevSlice(ASlice: TPieSlice): TPieSlice;
+  begin
+    if ASlice.FOrigIndex = 0 then
+      Result := FSlices[High(FSlices)]
+    else
+      Result := FSlices[ASlice.FOrigIndex - 1];
+  end;
+
+  function NextSlice(ASlice: TPieSlice): TPieSlice;
+  begin
+    if ASlice.FOrigIndex = High(FSlices) then
+      Result := FSlices[0]
+    else
+      Result := FSlices[ASlice.FOrigIndex + 1]
+  end;
+
+  function SliceExploded(ASlice: TPieSlice): Boolean;
+  begin
+    Result := ASlice.FBase <> FCenter;
+  end;
+
+  function StartEdgeVisible(ASlice: TPieSlice): Boolean;
+  begin
+    Result := InRange(ASlice.FPrevAngle, PI_1_4, PI_5_4) and
+      (SliceExploded(ASlice) or (SliceExploded(PrevSlice(ASlice))));
+  end;
+
+  function EndEdgeVisible(ASlice: TPieSlice): Boolean;
+  begin
+    Result := not InRange(ASlice.FNextAngle, PI_1_4, PI_5_4) and
+      (SliceExploded(ASlice) or SliceExploded(NextSlice(ASlice)));
+  end;
+
+  procedure DrawArc3D(ASlice: TPieSlice);
+  var
+    i, numSteps: Integer;
+    a: Double;
+    p: Array of TPoint;
+    angle1, angle2: Double;
+    clr: TColor;
+  begin
+    if InRange(ASlice.FPrevAngle, PI_3_4, PI_7_4) and InRange(ASlice.FNextAngle, PI_3_4, PI_7_4) then
+      exit;
+    angle1 := IfThen(InRange(ASlice.FPrevAngle, PI_3_4, PI_7_4), PI_7_4, ASlice.FPrevAngle);
+    angle2 := IfThen(InRange(ASlice.FNextAngle, PI_3_4, PI_7_4), PI_3_4, ASlice.FNextAngle);
+    numSteps := Max(Round(TWO_PI * (angle2 - angle1) * FRadius / STEP), 2);
+    SetLength(p, 2 * numSteps + 1);
+    for i := 0 to numSteps - 1 do begin
+      a := WeightedAverage(angle1, angle2, i / (numSteps - 1));
+      p[i] := ASlice.FBase + RotatePointX(FRadius, -a);
+      p[High(p) - i - 1] := p[i] + Point(scaled_depth, -scaled_depth);
+    end;
+    p[High(p)] := p[0];
+    clr := SliceColor(ASlice.FOrigIndex);
+    ADrawer.SetBrushParams(bsSolid, clr);
+    ADrawer.SetPenParams(psSolid, clr);
+    ADrawer.Polygon(p, 0, Length(p));
+    ADrawer.SetPen(EdgePen);
+    ADrawer.PolyLine(p, numSteps-1, numSteps+2);
+  end;
+
+  procedure DrawStartEdge3D(ASlice: TPieSlice);
+  begin
+    ADrawer.SetBrushParams(bsSolid, SliceColor(ASlice.FOrigIndex));
+    ADrawer.DrawLineDepth(
+      ASlice.FBase, ASlice.FBase + RotatePointX(FRadius, -ASlice.FPrevAngle), scaled_depth);
+  end;
+
+  procedure DrawEndEdge3D(ASlice: TPieSlice);
+  begin
+    ADrawer.SetBrushParams(bsSolid, SliceColor(ASlice.FOrigIndex));
+    ADrawer.DrawLineDepth(
+      ASlice.FBase, ASlice.FBase + RotatePointX(FRadius, -ASlice.FNextAngle), scaled_depth);
+  end;
+
+  procedure FindStartIndexLimits(out AIndex14, AIndex54: Integer);
+  var
+    j: Integer;
+  begin
+    AIndex14 := 0;
+    AIndex54 := 0;
+    for j := 0 to High(FSlices) do
+      if FSlices[j].FPrevAngle > PI_1_4 then begin
+        AIndex14 := j;
+        break;
+      end;
+    for j := High(FSlices) downto 0 do
+      if FSlices[j].FPrevAngle < PI_5_4 then begin
+        AIndex54 := j;
+        break;
+      end;
+  end;
+
+  procedure FindEndIndexLimits(out AIndex14, AIndex54: Integer);
+  var
+    j: Integer;
+  begin
+    AIndex14 := 0;
+    AIndex54 := 0;
+    for j := 0 to High(FSlices) do
+      if FSlices[j].FNextAngle > PI_1_4 then begin
+        AIndex14 := j;
+        break;
+      end;
+    for j := High(FSlices) downto 0 do
+      if FSlices[j].FNextAngle < PI_5_4 then begin
+        AIndex54 := j;
+        break;
+      end;
+  end;
+
 var
   prevLabelPoly: TPointArray = nil;
-  ps: TPieSlice;
-  i, numSteps: Integer;
-  p: array of TPoint;
-  a: Double;
-  scaled_depth: Integer;
+  i, i14, i54: Integer;
 begin
   if IsEmpty then exit;
 
@@ -282,29 +398,27 @@ begin
   ADrawer.SetPen(EdgePen);
   if Depth > 0 then begin
     scaled_depth := ADrawer.Scale(Depth);
-    for ps in FSlices do begin
-      if not ps.FVisible then continue;
-      ADrawer.SetBrushParams(bsSolid, SliceColor(ps.FOrigIndex));
-      if not InRange(ps.FNextAngle, Pi / 4, 5 * Pi / 4) then
-        ADrawer.DrawLineDepth(
-          ps.FBase, ps.FBase + RotatePointX(FRadius, -ps.FNextAngle), scaled_depth);
-      if InRange(ps.FPrevAngle, Pi / 4, 5 * Pi / 4) then
-        ADrawer.DrawLineDepth(
-          ps.FBase, ps.FBase + RotatePointX(FRadius, -ps.FPrevAngle), scaled_depth);
-    end;
-    for ps in FSlices do begin
-      if not ps.FVisible then continue;
-      ADrawer.SetBrushParams(bsSolid, SliceColor(ps.FOrigIndex));
-      numSteps := Max(Round(2 * Pi * ps.Angle * FRadius / STEP), 2);
-      SetLength(p, 2 * numSteps);
-      for i := 0 to numSteps - 1 do begin
-        a := WeightedAverage(ps.FPrevAngle, ps.FNextAngle, i / (numSteps - 1));
-        p[i] := ps.FBase + RotatePointX(FRadius, -a);
-        p[High(p) - i] := p[i] + Point(scaled_depth, -scaled_depth);
-      end;
-      ADrawer.Polygon(p, 0, Length(p));
-    end;
+    // Draw "start" edges
+    FindStartIndexLimits(i14, i54);
+    for i:=i54 downto i14 do
+      if FSlices[i].FVisible and StartEdgeVisible(FSlices[i]) then
+        DrawStartEdge3D(FSlices[i]);
+
+    // Draw "end" edges
+    FindEndIndexLimits(i14, i54);
+    for i:=i54 to High(FSlices) do
+      if FSlices[i].FVisible and EndEdgeVisible(FSlices[i]) then
+        DrawEndEdge3D(FSlices[i]);
+    for i:=0 to i14 do
+      if FSlices[i].FVisible and EndEdgeVisible(FSlices[i]) then
+        DrawEndEdge3D(FSlices[i]);
+
+    // Draw arcs
+    for i:=High(FSlices) downto 0 do
+      if FSlices[i].FVisible then DrawArc3D(FSlices[i]);
   end;
+
+  ADrawer.SetPen(EdgePen);
   for ps in FSlices do begin
     if not ps.FVisible then continue;
     ADrawer.SetBrushParams(bsSolid, SliceColor(ps.FOrigIndex));
@@ -313,6 +427,7 @@ begin
       ps.FBase.X + FRadius, ps.FBase.Y + FRadius,
       RadToDeg16(ps.FPrevAngle), RadToDeg16(ps.Angle));
   end;
+
   if not Marks.IsMarkLabelsVisible then exit;
   for ps in FSlices do begin
     if not ps.FVisible then continue;
