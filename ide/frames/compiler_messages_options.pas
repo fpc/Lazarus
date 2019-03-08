@@ -85,7 +85,7 @@ procedure TCompilerMessagesOptionsFrame.MsgFileBrowseButtonClick(Sender: TObject
 var
   OpenDialog: TOpenDialog;
 begin
-  OpenDialog:=TOpenDialog.Create(nil);
+  OpenDialog:=IDEOpenDialogClass.Create(nil);
   try
     InitIDEFileDialog(OpenDialog);
     OpenDialog.Title:=lisChooseAnFPCMessageFile;

@@ -531,10 +531,10 @@ end;
 procedure TInitialSetupDialog.DebuggerBrowseButtonClick(Sender: TObject);
 var
   Filename: String;
-  Dlg: TOpenDialog;
+  Dlg: TIDEOpenDialog;
   Filter: String;
 begin
-  Dlg:=TOpenDialog.Create(nil);
+  Dlg:=IDEOpenDialogClass.Create(nil);
   try
     Filename:='gdb'+GetExecutableExt;
     Dlg.Title:=SimpleFormat(lisSelectPathTo, [Filename]);
@@ -560,10 +560,10 @@ end;
 procedure TInitialSetupDialog.CompilerBrowseButtonClick(Sender: TObject);
 var
   Filename: String;
-  Dlg: TOpenDialog;
+  Dlg: TIDEOpenDialog;
   Filter: String;
 begin
-  Dlg:=TOpenDialog.Create(nil);
+  Dlg:=IDEOpenDialogClass.Create(nil);
   try
     Filename:='fpc'+GetExecutableExt;
     Dlg.Title:=SimpleFormat(lisSelectPathTo, [Filename]);
@@ -628,10 +628,10 @@ end;
 procedure TInitialSetupDialog.MakeExeBrowseButtonClick(Sender: TObject);
 var
   Filename: String;
-  Dlg: TOpenDialog;
+  Dlg: TIDEOpenDialog;
   Filter: String;
 begin
-  Dlg:=TOpenDialog.Create(nil);
+  Dlg:=IDEOpenDialogClass.Create(nil);
   try
     Filename:='make'+GetExecutableExt;
     Dlg.Title:=SimpleFormat(lisSelectPathTo, [Filename]);

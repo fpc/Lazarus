@@ -3836,7 +3836,7 @@ var
   PreReadBuf: TCodeBuffer;
   Filter: String;
 Begin
-  OpenDialog:=TOpenDialog.Create(nil);
+  OpenDialog:=IDEOpenDialogClass.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisChooseProgramSourcePpPasLpr;
@@ -4121,7 +4121,7 @@ begin
     end;
   end
   else begin
-    OpenDialog:=TOpenDialog.Create(nil);
+    OpenDialog:=IDEOpenDialogClass.Create(nil);
     try
       InputHistories.ApplyFileDialogSettings(OpenDialog);
       OpenDialog.Title:=lisOpenProjectFile+' (*.lpi)';

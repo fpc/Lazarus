@@ -163,7 +163,7 @@ var
 begin
   FileIndex:=FileIndexOfFileDlgBtn(TButton(Sender));
   if FileIndex<0 then exit;
-  if OpenDialog=nil then OpenDialog:=TOpenDialog.Create(Self);
+  if OpenDialog=nil then OpenDialog:=IDEOpenDialogClass.Create(Self);
   with OpenDialog do begin
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     Title:=GetGroupBox(FileIndex).Caption;

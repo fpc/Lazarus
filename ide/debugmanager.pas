@@ -852,7 +852,7 @@ function TDebugManager.GetFullFilename(var Filename: string; AskUserIfNotFound: 
 var
   SrcFile, SrcFN, UserFilename: String;
   n: Integer;
-  OpenDialog: TOpenDialog;
+  OpenDialog: TIDEOpenDialog;
   AnUnitInfo: TLazProjectFile;
 begin
   Result := False;
@@ -919,7 +919,7 @@ begin
     then Exit;
 
     repeat
-      OpenDialog:=TOpenDialog.Create(nil);
+      OpenDialog:=IDEOpenDialogClass.Create(nil);
       try
         InputHistories.ApplyFileDialogSettings(OpenDialog);
         OpenDialog.Title:=lisOpenFile+' '+SrcFile;

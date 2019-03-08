@@ -4674,10 +4674,10 @@ end;
 
 procedure TSourceEditor.InsertFilename;
 var
-  Dlg: TOpenDialog;
+  Dlg: TIDEOpenDialog;
 begin
   if ReadOnly then Exit;
-  Dlg:=TOpenDialog.Create(nil);
+  Dlg:=IDEOpenDialogClass.Create(nil);
   try
     InitIDEFileDialog(Dlg);
     Dlg.Title:=lisSelectFile;

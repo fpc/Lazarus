@@ -2961,7 +2961,7 @@ end;
 
 procedure TMainIDE.mnuOpenClicked(Sender: TObject);
 var
-  OpenDialog: TOpenDialog;
+  OpenDialog: TIDEOpenDialog;
   AFilename: string;
   I: Integer;
   OpenFlags: TOpenFlags;
@@ -2971,7 +2971,7 @@ var
   ASrcEdit: TSourceEditor;
   AnUnitInfo: TUnitInfo;
 begin
-  OpenDialog:=TOpenDialog.Create(nil);
+  OpenDialog:=IDEOpenDialogClass.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisOpenFile;
@@ -4476,11 +4476,11 @@ end;
 
 procedure TMainIDE.mnuToolConvertDelphiUnitClicked(Sender: TObject);
 var
-  OpenDialog: TOpenDialog;
+  OpenDialog: TIDEOpenDialog;
   OldChange: Boolean;
   Converter: TConvertDelphiUnit;
 begin
-  OpenDialog:=TOpenDialog.Create(nil);
+  OpenDialog:=IDEOpenDialogClass.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisChooseDelphiUnit;
@@ -4512,10 +4512,10 @@ end;
 
 procedure TMainIDE.mnuToolConvertDelphiProjectClicked(Sender: TObject);
 var
-  OpenDialog: TOpenDialog;
+  OpenDialog: TIDEOpenDialog;
   AFilename: string;
 begin
-  OpenDialog:=TOpenDialog.Create(nil);
+  OpenDialog:=IDEOpenDialogClass.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisChooseDelphiProject;
@@ -4541,10 +4541,10 @@ end;
 
 procedure TMainIDE.mnuToolConvertDelphiPackageClicked(Sender: TObject);
 var
-  OpenDialog: TOpenDialog;
+  OpenDialog: TIDEOpenDialog;
   AFilename: string;
 begin
-  OpenDialog:=TOpenDialog.Create(nil);
+  OpenDialog:=IDEOpenDialogClass.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisChooseDelphiPackage;
@@ -8063,13 +8063,13 @@ end;
 
 function TMainIDE.DoConvertDFMtoLFM: TModalResult;
 var
-  OpenDialog: TOpenDialog;
+  OpenDialog: TIDEOpenDialog;
   DFMConverter: TDFMConverter;
   i, n: integer;
   AFilename: string;
 begin
   Result:=mrOk;
-  OpenDialog:=TOpenDialog.Create(nil);
+  OpenDialog:=IDEOpenDialogClass.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisSelectDFMFiles;

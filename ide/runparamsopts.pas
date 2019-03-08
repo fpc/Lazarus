@@ -817,9 +817,9 @@ end;
 
 procedure TRunParamsOptsDlg.HostApplicationBrowseBtnClick(Sender: TObject);
 var
-  OpenDialog: TOpenDialog;
+  OpenDialog: TIDEOpenDialog;
 begin
-  OpenDialog := TOpenDialog.Create(Self);
+  OpenDialog := IDEOpenDialogClass.Create(Self);
   with OpenDialog do
   begin
     InputHistories.ApplyFileDialogSettings(OpenDialog);

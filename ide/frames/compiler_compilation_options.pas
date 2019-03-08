@@ -102,7 +102,7 @@ var
   ok: Boolean;
   Kind: TPascalCompiler;
 begin
-  OpenDialog:=TOpenDialog.Create(nil);
+  OpenDialog:=IDEOpenDialogClass.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Options:=OpenDialog.Options+[ofFileMustExist];

@@ -33,7 +33,7 @@ uses
   // LazControls
   DividerBevel,
   // IdeIntf
-  IDEOptionsIntf, IDEOptEditorIntf, IDEWindowIntf, IDEUtils,
+  IDEOptionsIntf, IDEOptEditorIntf, IDEWindowIntf, IDEUtils, IDEDialogs,
   // IDE
   EnvironmentOpts, LazarusIDEStrConsts, IDETranslations, InputHistory;
 
@@ -286,7 +286,7 @@ var
   OpenDialog: TOpenDialog;
 begin
   //debugln('TDesktopOptionsFrame.ImportDesktopButtonClick A');
-  OpenDialog := TOpenDialog.Create(nil);
+  OpenDialog := IDEOpenDialogClass.Create(nil);
   try
     try
       InputHistories.ApplyFileDialogSettings(OpenDialog);

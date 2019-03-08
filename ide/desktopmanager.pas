@@ -11,7 +11,7 @@ uses
   // LazUtils
   Laz2_XMLCfg,
   // IdeIntf
-  IDEImagesIntf, ToolBarIntf, IDEWindowIntf,
+  IDEImagesIntf, ToolBarIntf, IDEWindowIntf, IDEDialogs,
   // IDE
   LazarusIDEStrConsts, EnvironmentOpts, IDEOptionDefs, InputHistory, MainIntf;
 
@@ -589,14 +589,14 @@ procedure TDesktopForm.ImportActionClick(Sender: TObject);
 var
   xXMLCfg: TRttiXMLConfig;
   xConfigStore: TXMLOptionsStorage;
-  xOpenDialog: TOpenDialog;
+  xOpenDialog: TIDEOpenDialog;
   xDesktopName, xOldDesktopName, xFileName, xDesktopDockMaster: string;
   xCurPath, xDesktopPath: string;
   I: Integer;
   xCount, xImportedCount: Integer;
   xDsk: TCustomDesktopOpt;
 begin
-  xOpenDialog := TOpenDialog.Create(nil);
+  xOpenDialog := IDEOpenDialogClass.Create(nil);
   try
     try
       InputHistories.ApplyFileDialogSettings(xOpenDialog);

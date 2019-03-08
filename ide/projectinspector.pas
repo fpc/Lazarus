@@ -347,7 +347,7 @@ var
   i: Integer;
   ADirectory: String;
 begin
-  OpenDialog:=TOpenDialog.Create(nil);
+  OpenDialog:=IDEOpenDialogClass.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     ADirectory:=LazProject.Directory;
