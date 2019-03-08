@@ -77,9 +77,13 @@ function ReadFileToString(const Filename: string): string;
 type
   TSearchFileInPathFlag = (
     sffDontSearchInBasePath, // do not search in BasePath, search only in SearchPath.
-    sffSearchLoUpCase
+    sffSearchLoUpCase,
+    sffFile, // must be file, not directory
+    sffExecutable // file must be executable
     );
   TSearchFileInPathFlags = set of TSearchFileInPathFlag;
+const
+  sffFindProgramInPath = [{$IFDEF Unix}sffDontSearchInBasePath{$ENDIF},sffFile,sffExecutable];
 
 function SearchFileInPath(const Filename, BasePath, SearchPath,
   Delimiter: string; Flags: TSearchFileInPathFlags): string; overload;

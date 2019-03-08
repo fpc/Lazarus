@@ -413,13 +413,18 @@ begin
     p:=StartPos;
     while (p<=l) and (pos(SearchPath[p],Delimiter)<1) do inc(p);
     CurPath:=TrimFilename(copy(SearchPath,StartPos,p-StartPos));
-    if CurPath<>'' then begin
-      if not FilenameIsAbsolute(CurPath) then
-        CurPath:=Base+CurPath;
-      Result:=CleanAndExpandFilename(AppendPathDelim(CurPath)+Filename);
-      if FileExistsUTF8(Result) then exit;
-    end;
     StartPos:=p+1;
+    if CurPath='' then continue;
+    if not FilenameIsAbsolute(CurPath) then
+      CurPath:=Base+CurPath;
+    Result:=CleanAndExpandFilename(AppendPathDelim(CurPath)+Filename);
+    if not FileExistsUTF8(Result) then
+      continue;
+    if (sffFile in Flags) and DirectoryExistsUTF8(Result) then
+      continue;
+    if (sffExecutable in Flags) and not FileIsExecutable(Result) then
+      continue;
+    exit;
   end;
   Result:='';
 end;
@@ -432,13 +437,17 @@ function SearchAllFilesInPath(const Filename, BasePath, SearchPath,
     i: Integer;
   begin
     NewFilename:=TrimFilename(NewFilename);
-    if not FileExistsUTF8(NewFilename) then exit;
-    if Result=nil then begin
-      Result:=TStringList.Create;
-    end else begin
+    if Result<>nil then
       for i:=0 to Result.Count-1 do
         if CompareFilenames(Result[i],NewFilename)=0 then exit;
-    end;
+    if not FileExistsUTF8(NewFilename) then
+      exit;
+    if (sffFile in Flags) and DirectoryExistsUTF8(NewFilename) then
+      exit;
+    if (sffExecutable in Flags) and not FileIsExecutable(NewFilename) then
+      exit;
+    if Result=nil then
+      Result:=TStringList.Create;
     Result.Add(NewFilename);
   end;
   
@@ -585,7 +594,9 @@ end;
 function FindDefaultExecutablePath(const Executable: string;
   const BaseDir: string): string;
 const
-  Flags : TSearchFileInPathFlags = [{$IFDEF Unix}sffDontSearchInBasePath{$ENDIF}];
+  Flags : TSearchFileInPathFlags = [
+    {$IFDEF Unix}sffDontSearchInBasePath,{$ENDIF}
+    sffFile,sffExecutable];
 var
   Env: string;
 begin
