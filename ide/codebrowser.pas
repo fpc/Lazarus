@@ -2840,7 +2840,7 @@ function TCodeBrowserView.ExportTree: TModalResult;
 var
   SaveDialog: TSaveDialog;
 begin
-  SaveDialog:=TSaveDialog.Create(nil);
+  SaveDialog:=IDESaveDialogClass.Create(nil);
   try
     InitIDEFileDialog(SaveDialog);
     SaveDialog.Title:='Save tree as text (*.txt) ...';

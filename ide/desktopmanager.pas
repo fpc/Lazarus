@@ -541,7 +541,7 @@ begin
   if Length(aDesktops) = 0 then
     Exit;
 
-  xSaveDialog := TSaveDialog.Create(nil);
+  xSaveDialog := IDESaveDialogClass.Create(nil);
   try
     try
       InputHistories.ApplyFileDialogSettings(xSaveDialog);

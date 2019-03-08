@@ -3102,7 +3102,7 @@ begin
   GetCurrentUnit(SrcEdit,AnUnitInfo);
   if SrcEdit = nil then exit;
 
-  SaveDialog:=TSaveDialog.Create(nil);
+  SaveDialog:=IDESaveDialogClass.Create(nil);
   try
     SaveDialog.Title:=lisSaveSpace;
     SaveDialog.FileName:=SrcEdit.PageName+'.html';
@@ -11726,7 +11726,7 @@ begin
 
   SaveAsFileExt:='.xml';
   SaveAsFilename:=ChangeFileExt(AnUnitInfo.Filename,SaveAsFileExt);
-  SaveDialog:=TSaveDialog.Create(nil);
+  SaveDialog:=IDESaveDialogClass.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(SaveDialog);
     SaveDialog.Title:=lisSaveSpace+SaveAsFilename+' (*'+SaveAsFileExt+')';

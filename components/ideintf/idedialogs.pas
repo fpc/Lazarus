@@ -35,6 +35,14 @@ type
   end;
   TIDEOpenDialogClass = class of TIDEOpenDialog;
 
+  { TIDESaveDialog }
+
+  TIDESaveDialog = class(TSaveDialog)
+  protected
+    function DoExecute: boolean; override;
+  end;
+  TIDESaveDialogClass = class of TIDESaveDialog;
+
   TIDESelectDirectory = function(const Title, InitialDir: string): string of object;
   TInitIDEFileDialog = procedure(AFileDialog: TFileDialog) of object;
   TStoreIDEFileDialog = procedure(AFileDialog: TFileDialog) of object;
@@ -44,6 +52,7 @@ var  // set by the IDE
   InitIDEFileDialog: TInitIDEFileDialog = nil;
   StoreIDEFileDialog: TStoreIDEFileDialog = nil;
   IDEOpenDialogClass: TIDEOpenDialogClass = TIDEOpenDialog;
+  IDESaveDialogClass: TIDESaveDialogClass = TIDESaveDialog;
 
 // Wrapper function for LazIDESelectDirectory with a default parameter.
 function LazSelectDirectory(const Title: string; const InitialDir: string = ''): string;
@@ -160,6 +169,14 @@ begin
   end;
   SetLength(NewButtons,j);
   Result:=IDEQuestionDialog(aCaption,aMsg,DlgType,NewButtons,HelpKeyword);
+end;
+
+{ TIDESaveDialog }
+
+function TIDESaveDialog.DoExecute: boolean;
+begin
+  Result:=inherited DoExecute;
+  LazFileCache.InvalidateFileStateCache;
 end;
 
 { TIDEOpenDialog }

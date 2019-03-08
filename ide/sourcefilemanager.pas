@@ -4563,7 +4563,7 @@ begin
     SaveAsFilename:=LowerCase(SaveAsFilename);
 
   // let user choose a filename
-  SaveDialog:=TSaveDialog.Create(nil);
+  SaveDialog:=IDESaveDialogClass.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(SaveDialog);
     SaveDialog.Title:=lisSaveSpace+SaveAsFilename+' (*'+SaveAsFileExt+')';
@@ -7515,7 +7515,7 @@ begin
     if Project1.MainUnitInfo = nil then
       UseMainSourceFile := False;
 
-    SaveDialog:=TSaveDialog.Create(nil);
+    SaveDialog:=IDESaveDialogClass.Create(nil);
     try
       InputHistories.ApplyFileDialogSettings(SaveDialog);
       AFilename:='';

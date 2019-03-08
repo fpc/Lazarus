@@ -246,7 +246,7 @@ var
   AFilename: String;
 begin
   //debugln('TDesktopOptionsFrame.ExportDesktopButtonClick A');
-  SaveDialog := TSaveDialog.Create(nil);
+  SaveDialog := IDESaveDialogClass.Create(nil);
   try
     try
       InputHistories.ApplyFileDialogSettings(SaveDialog);

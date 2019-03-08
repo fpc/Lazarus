@@ -3418,7 +3418,7 @@ var
   Filename: String;
   fs: TFileStreamUTF8;
 begin
-  Dlg:=TSaveDialog.Create(nil);
+  Dlg:=IDESaveDialogClass.Create(nil);
   try
     Dlg.Title:=lisSaveMessages;
     Dlg.FileName:='messages.txt';
