@@ -362,7 +362,7 @@ type
 
 
 var
-  SourceEditorManagerIntf: TSourceEditorManagerInterface= nil;                      // set by the IDE
+  SourceEditorManagerIntf: TSourceEditorManagerInterface=nil; // set by the IDE
 
 type
   TEditorMacroState = (emStopped, emRecording, emPlaying, emRecPaused); // msPaused = paused recording
