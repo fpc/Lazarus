@@ -2752,12 +2752,15 @@ function TLazPackageGraph.FindNotInstalledRegisterUnits(
     APkgFile: TPkgFile;
   begin
     while Dependency<>nil do begin
-      if (Dependency.DependencyType=pdtLazarus) and (Dependency.LoadPackageResult=lprSuccess) then begin
+      if (Dependency.DependencyType=pdtLazarus)
+          and (Dependency.LoadPackageResult=lprSuccess) then begin
         // dependency ok
         RequiredPackage:=Dependency.RequiredPackage;
         if not (lpfVisited in RequiredPackage.Flags) then begin
-          if RequiredPackage.Installed=pitNope then begin
-            // package not installed
+          if (RequiredPackage.Installed=pitNope)
+              and (RequiredPackage.PackageType in [lptDesignTime,lptRunAndDesignTime])
+          then begin
+            // package not installed and can be installed
             for i:=0 to RequiredPackage.FileCount-1 do begin
               APkgFile:=RequiredPackage.Files[i];
               if APkgFile.HasRegisterProc then begin
