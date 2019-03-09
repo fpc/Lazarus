@@ -1633,6 +1633,9 @@ var
   p: TNearestPointParams;
   cur, best: TNearestPointResults;
 begin
+  if not FChart.ScalingValid then
+    exit;
+
   p.FDistFunc := DIST_FUNCS[DistanceMode];
   p.FPoint := APoint;
   p.FRadius := GrabRadius;
