@@ -2144,10 +2144,6 @@ begin
                      and NewUnitInfo.IsPartOfProject
                      and (pfMainUnitHasUsesSectionForAllUnits in AProject.Flags));
   end;
-
-  // syntax highlighter type
-  NewUnitInfo.DefaultSyntaxHighlighter := FilenameToLazSyntaxHighlighter(NewFilename);
-
   NewSrcEdit := Nil;
   if nfOpenInEditor in NewFlags then begin
     // open a new sourceeditor
