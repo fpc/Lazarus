@@ -9538,7 +9538,7 @@ var
         end else begin
           // predefined identifier
           if (Context.Node.Desc=ctnObjCClass)
-            and CompareSrcIdentifiers('alloc',@Src[CurAtom.StartPos])
+            and CompareSrcIdentifiers('alloc',Params.Identifier)
           then begin
             // 'alloc' returns the class itself
             ExprType.Context:=Context;
