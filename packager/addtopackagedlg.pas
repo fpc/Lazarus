@@ -50,7 +50,6 @@ type
   TAddToPkgResult = class
   public
     Pkg: TLazPackage;
-    Dependency: TPkgDependency;
     UnitFilename: string;
     Unit_Name: string;
     AncestorType: string;
@@ -520,7 +519,7 @@ begin
     if (LazPackage<>ARequiredPackage)
     and not LazPackage.Requires(PkgComponent.PkgFile.LazPackage)
     then
-      fParams.Dependency:=ARequiredPackage.CreateDependencyWithOwner(nil);
+      PackageGraph.AddDependencyToPackage(LazPackage, ARequiredPackage);
   end;
   ModalResult:=mrOk;
 end;
@@ -657,7 +656,6 @@ end;
 
 procedure TAddToPkgResult.Clear;
 begin
-  FreeAndNil(Dependency);
   UnitFilename:='';
   Unit_Name:='';
   AncestorType:='';
@@ -674,7 +672,6 @@ end;
 destructor TAddToPkgResult.Destroy;
 begin
   FreeThenNil(Next);
-  FreeAndNil(Dependency);
   inherited Destroy;
 end;
 

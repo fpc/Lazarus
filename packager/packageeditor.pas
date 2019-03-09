@@ -2146,11 +2146,6 @@ var
         LazPackage.Modified:=True;
       FreeAndNil(FNextSelectedPart);
       FNextSelectedPart:=TPENodeData.Create(penFile, UnitFilename, false);
-      // add dependency
-      if (Dependency<>nil) and not PkgDependsOn(Dependency.PackageName) then
-        PackageGraph.AddDependencyToPackage(LazPackage, Dependency);
-      if (IconNormFile<>'') and not PkgDependsOn('LCL') then
-        PackageGraph.AddDependencyToPackage(LazPackage, PackageGraph.LCLPackage);
       PackageEditors.DeleteAmbiguousFiles(LazPackage, UnitFilename);
     end;
     // open file in editor
