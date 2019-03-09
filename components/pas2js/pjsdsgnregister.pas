@@ -38,11 +38,11 @@ type
     FOptions: TBrowserApplicationOptions;
     FProjectPort: integer;
     FProjectURL: String;
-    function CreateHTMLFile(AProject: TLazProject; AFileName: String
-      ): TLazProjectFile;
-    function CreateProjectSource: String;
-    function GetNextPort: Word;
   protected
+    function CreateHTMLFile(AProject: TLazProject; AFileName: String
+      ): TLazProjectFile; virtual;
+    function CreateProjectSource: String; virtual;
+    function GetNextPort: Word; virtual;
     function ShowOptionsDialog: TModalResult; virtual;
   public
     constructor Create; override;
@@ -380,12 +380,12 @@ end;
 
 function TProjectPas2JSWebApp.GetLocalizedName: string;
 begin
-  Result:=pjsdWebApplication;
+  Result:='WebCore WebApp';
 end;
 
 function TProjectPas2JSWebApp.GetLocalizedDescription: string;
 begin
-  Result:=pjsdWebAppDescription;
+  Result:='A pas2js webcore program running in the browser';
 end;
 
 function TProjectPas2JSWebApp.CreateHTMLFile(AProject: TLazProject;
@@ -397,7 +397,8 @@ Const
      '<!doctype html>'+LineEnding
     +'<html lang="en">'+LineEnding
     +'<head>'+LineEnding
-    +'  <meta charset="utf-8">'+LineEnding
+    +'  <meta http-equiv="Content-type" content="text/html; charset=utf-8">'+LineEnding
+    +'  <meta name="viewport" content="width=device-width, initial-scale=1">'+LineEnding
     +'  <title>Project1</title>'+LineEnding
     +'  <script src="%s"></script>'+LineEnding
     +'</head>'+LineEnding
@@ -536,15 +537,16 @@ begin
     end;
   With AProject.CustomData do
     begin
-    DebugLn([PJSProjectWebBrowser,': ',Values[PJSProjectWebBrowser]]);
-    DebugLn([PJSProjectPort,': ',Values[PJSProjectPort]]);
-    DebugLn([PJSProjectURL,': ',Values[PJSProjectURL]]);
+    DebugLn(['Info: (pas2jsdsgn) ',PJSProjectWebBrowser,': ',Values[PJSProjectWebBrowser]]);
+    DebugLn(['Info: (pas2jsdsgn) ',PJSProjectPort,': ',Values[PJSProjectPort]]);
+    DebugLn(['Info: (pas2jsdsgn) ',PJSProjectURL,': ',Values[PJSProjectURL]]);
     end;
   // create html source
   if baoCreateHtml in Options then
     begin
+    debugln(['AAA2 TProjectPas2JSWebApp.InitProject ']);
     HTMLFile:=CreateHTMLFile(aProject,'project1.js');
-    HTMLFIle.CustomData[PJSIsProjectHTMLFile]:='1';
+    HTMLFile.CustomData[PJSIsProjectHTMLFile]:='1';
     if baoMaintainHTML in Options then
       AProject.CustomData.Values[PJSProjectMaintainHTML]:='1';
     if baoUseBrowserConsole in Options then
