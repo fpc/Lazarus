@@ -380,12 +380,12 @@ end;
 
 function TProjectPas2JSWebApp.GetLocalizedName: string;
 begin
-  Result:='WebCore WebApp';
+  Result:=pjsdWebApplication;
 end;
 
 function TProjectPas2JSWebApp.GetLocalizedDescription: string;
 begin
-  Result:='A pas2js webcore program running in the browser';
+  Result:=pjsdWebAppDescription;
 end;
 
 function TProjectPas2JSWebApp.CreateHTMLFile(AProject: TLazProject;
