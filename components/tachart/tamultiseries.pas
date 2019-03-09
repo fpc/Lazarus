@@ -1904,6 +1904,8 @@ begin
   AResults.FIndex := -1;
   AResults.FXIndex := 0;
   AResults.FYIndex := 0;
+  if IsEmpty then exit(false);
+
   for i := 0 to Count - 1 do begin
     if not GetVectorPoints(i, sp1, sp2) then
       Continue;
