@@ -516,6 +516,9 @@ var
   ext: TDoubleRect;
   nx, ny: Cardinal;
 begin
+  if IsEmpty then exit;
+  if not RequestValidChartScaling then exit;
+
   ADrawer.Pen := BubblePen;
   ADrawer.Brush := BubbleBrush;
 
@@ -555,6 +558,9 @@ var
   item: PChartDataItem;
 begin
   Result := EmptyExtent;
+  if IsEmpty then exit;
+  if not RequestValidChartScaling then exit;
+
   for i := 0 to Count - 1 do begin
     item := Source[i];
     sp := item^.Point;
@@ -662,7 +668,7 @@ var
   cosphi, sinphi: Math.float;
 begin
   Result := inherited;
-
+  if IsEmpty or not RequestValidChartScaling then exit;
   if Result and (nptPoint in AParams.FTargets) and (nptPoint in ToolTargets) then
     if (AResults.FYIndex = 0) then
       exit;

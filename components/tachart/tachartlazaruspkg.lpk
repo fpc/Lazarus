@@ -18,6 +18,12 @@
           <UseExternalDbgSyms Value="True"/>
         </Debugging>
       </Linking>
+      <Other>
+        <CustomOptions Value="-dCHECK_VALID_SCALING"/>
+        <OtherDefines Count="1">
+          <Define0 Value="CHECK_VALID_SCALING"/>
+        </OtherDefines>
+      </Other>
     </CompilerOptions>
     <Description Value="TeeChart compatible graph component"/>
     <License Value=" See the file COPYING.modifiedLGPL, included in this distribution,

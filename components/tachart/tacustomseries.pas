@@ -1563,6 +1563,9 @@ begin
   AResults.FIndex := -1;
   AResults.FXIndex := 0;
   AResults.FYIndex := 0;
+  if IsEmpty then exit(false);
+  if not RequestValidChartScaling then exit(false);
+
   if FOptimizeX and AParams.FOptimizeX then
     Source.FindBounds(
       GetGrabBound(-AParams.FRadius),

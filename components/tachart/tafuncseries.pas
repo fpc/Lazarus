@@ -240,7 +240,6 @@ type
     function Calculate(AX: Double): Double;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
     procedure Draw(ADrawer: IChartDrawer); override;
     function Extent: TDoubleRect; override;
     function GetNearestPoint(
@@ -624,6 +623,8 @@ end;
 procedure TCustomFuncSeries.Draw(ADrawer: IChartDrawer);
 begin
   if IsEmpty or (not Active) then exit;
+  if not RequestValidChartScaling then exit;
+
   ADrawer.SetBrushParams(bsClear, clTAColor);
   ADrawer.Pen := Pen;
   with TDrawFuncHelper.Create(Self, DomainExclusions, @DoCalculate, Step) do
@@ -639,12 +640,15 @@ var
   ymin, ymax: Double;
 begin
   inherited GetBounds(ABounds);
-  if not Extent.UseXMin or not Extent.UseXMax or not ExtentAutoY or IsEmpty then
+  if not Extent.UseXMin or not Extent.UseXMax or not ExtentAutoY then
     exit;
-  ymin := SafeInfinity;
-  ymax := NegInfinity;
+  if IsEmpty or (not Active) then exit;
+  if not RequestValidChartScaling then exit;
+
   with TDrawFuncHelper.Create(Self, DomainExclusions, @DoCalculate, Step) do
     try
+      ymin := SafeInfinity;
+      ymax := NegInfinity;
       CalcAxisExtentY(ABounds.a.X, ABounds.b.X, ymin, ymax);
       if not Extent.UseYMin or (ymin > Extent.YMin) then
         ABounds.a.Y := ymin;
@@ -664,10 +668,14 @@ function TCustomFuncSeries.GetNearestPoint(
   const AParams: TNearestPointParams;
   out AResults: TNearestPointResults): Boolean;
 begin
-  if IsEmpty then begin
-    AResults.FIndex := -1;
-    exit(false);
-  end;
+  // As in TBasicPointSeries.GetNearestPoint()
+  AResults.FDist := Sqr(AParams.FRadius) + 1;
+  AResults.FIndex := -1;
+  AResults.FXIndex := 0;
+  AResults.FYIndex := 0;
+  if IsEmpty then exit(false);
+  if not RequestValidChartScaling then exit(false);
+
   with TDrawFuncHelper.Create(Self, DomainExclusions, @DoCalculate, Step) do
     try
       Result := GetNearestPoint(AParams, AResults);
@@ -1388,7 +1396,9 @@ procedure TCubicSplineSeries.Draw(ADrawer: IChartDrawer);
 var
   s: TSpline;
 begin
-  if IsEmpty then exit;
+  if IsEmpty or (not Active) then exit;
+  if not RequestValidChartScaling then exit;
+
   if FSplines = nil then
     PrepareCoeffs;
 
@@ -1467,7 +1477,10 @@ var
 begin
   Result := inherited GetNearestPoint(AParams, AResults);
   if (not Result) and (nptCustom in ToolTargets) and (nptCustom in AParams.FTargets)
-  then
+  then begin
+    if IsEmpty then exit;
+    if not RequestValidChartScaling then exit;
+
     for s in FSplines do begin
       if s.IsFewPoints or (s.FIsUnorderedX and not IsUnorderedVisible) then
         continue;
@@ -1484,6 +1497,7 @@ begin
           Free;
         end;
     end;
+  end;
 end;
 
 function TCubicSplineSeries.IsUnorderedVisible: Boolean;
@@ -1660,6 +1674,8 @@ var
   de : TIntervalList;
 begin
   if IsEmpty or (not Active) then exit;
+  if not RequestValidChartScaling then exit;
+
   if FAutoFit then ExecFit;
   ADrawer.SetBrushParams(bsClear, clTAColor);
   ADrawer.Pen := Pen;
@@ -1810,16 +1826,11 @@ var
   de : TIntervalList;
 begin
   Result := Source.BasicExtent;
-  if IsEmpty or (not Active) then exit;
   if not FUseCombinedExtentY then exit;
-
-  // TDrawFuncHelper needs a valid image-to-graph conversion
-  if ParentChart = nil then exit;
-  ParentChart.MultiPassScalingNeeded;
-  if not ParentChart.ScalingValid then exit;
+  if IsEmpty or (not Active) then exit;
+  if not RequestValidChartScaling then exit;
 
   if FAutoFit then ExecFit;
-
   if (FState = fpsValid) and (FErrCode = fitOK) then begin
     de := PrepareIntervals;
     try
@@ -1955,6 +1966,9 @@ begin
   Result := inherited GetNearestPoint(AParams, AResults);
   if (not Result) and (nptCustom in ToolTargets) and (nptCustom in AParams.FTargets)
   then begin
+    if IsEmpty then exit;
+    if not RequestValidChartScaling then exit;
+
     ExecFit;
     if State <> fpsValid then exit(false);
     de := PrepareIntervals;

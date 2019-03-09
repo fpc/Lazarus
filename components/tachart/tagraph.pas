@@ -52,6 +52,7 @@ type
     procedure BeforeDraw; virtual;
     procedure GetLegendItemsBasic(AItems: TChartLegendItems); virtual; abstract;
     function GetShowInLegend: Boolean; virtual; abstract;
+    function RequestValidChartScaling: Boolean; virtual;
     procedure SetActive(AValue: Boolean); virtual; abstract;
     procedure SetDepth(AValue: TChartDistance); virtual; abstract;
     procedure SetShadow(AValue: TChartShadow); virtual; abstract;
@@ -312,6 +313,7 @@ type
     procedure PrepareAxis(ADrawer: IChartDrawer);
     function PrepareLegend(
       ADrawer: IChartDrawer; var AClipRect: TRect): TChartLegendDrawingData;
+    procedure RequestMultiPassScaling; inline;
     procedure SetBiDiMode(AValue: TBiDiMode); override;
     procedure SetName(const AValue: TComponentName); override;
 
@@ -361,7 +363,6 @@ type
     function XImageToGraph(AX: Integer): Double; inline;
     function YGraphToImage(AY: Double): Integer; inline;
     function YImageToGraph(AY: Integer): Double; inline;
-    procedure MultiPassScalingNeeded; inline;
     property ScalingValid: Boolean read FScalingValid;
 
   public
@@ -502,6 +503,9 @@ uses
   Clipbrd, Dialogs, GraphMath, LCLProc, LResources, Math, Types,
   TADrawerCanvas, TAGeometry, TAMath, TAStyles;
 
+const
+  SScalingNotInitialized = '[%s.%s]: Image-graph scaling not yet initialized.';
+
 function CompareZPosition(AItem1, AItem2: Pointer): Integer;
 begin
   Result :=
@@ -593,9 +597,9 @@ begin
   end;
   FOffset.X := rX.CalcOffset(FScale.X);
   FOffset.Y := rY.CalcOffset(FScale.Y);
+  FScalingValid := True;
   rX.UpdateMinMax(@XImageToGraph);
   rY.UpdateMinMax(@YImageToGraph);
-  FScalingValid := True;
 end;
 
 procedure TChart.Clear(ADrawer: IChartDrawer; const ARect: TRect);
@@ -1866,25 +1870,41 @@ end;
 
 function TChart.XGraphToImage(AX: Double): Integer;
 begin
+  {$IFDEF CHECK_VALID_SCALING}
+  if not FScalingValid then
+    raise EChartError.CreateFmt(SScalingNotInitialized, [NameOrClassName(self), 'XGraphToImage']);
+  {$ENDIF}
   Result := ImgRoundChecked(FScale.X * AX + FOffset.X);
 end;
 
 function TChart.XImageToGraph(AX: Integer): Double;
 begin
+  {$IFDEF CHECK_VALID_SCALING}
+  if not FScalingValid then
+    raise EChartError.CreateFmt(SScalingNotInitialized, [NameOrClassName(self), 'XImageToGraph']);
+  {$ENDIF}
   Result := (AX - FOffset.X) / FScale.X;
 end;
 
 function TChart.YGraphToImage(AY: Double): Integer;
 begin
-   Result := ImgRoundChecked(FScale.Y * AY + FOffset.Y);
+  {$IFDEF CHECK_VALID_SCALING}
+  if not FScalingValid then
+    raise EChartError.CreateFmt(SScalingNotInitialized, [NameOrClassName(self), 'YGraphToImage']);
+  {$ENDIF}
+  Result := ImgRoundChecked(FScale.Y * AY + FOffset.Y);
 end;
 
 function TChart.YImageToGraph(AY: Integer): Double;
 begin
+  {$IFDEF CHECK_VALID_SCALING}
+  if not FScalingValid then
+    raise EChartError.CreateFmt(SScalingNotInitialized, [NameOrClassName(self), 'YImageToGraph']);
+  {$ENDIF}
   Result := (AY - FOffset.Y) / FScale.Y;
 end;
 
-procedure TChart.MultiPassScalingNeeded;
+procedure TChart.RequestMultiPassScaling;
 begin
   FMultiPassScalingNeeded := True;
 end;
@@ -1928,6 +1948,20 @@ end;
 procedure TBasicChartSeries.BeforeDraw;
 begin
   // empty
+end;
+
+function TBasicChartSeries.RequestValidChartScaling: Boolean;
+begin
+  Result := false;
+  if not Assigned(FChart) then exit;
+
+  // We request a valid scaling from FChart. Scaling is not initialized during
+  // the first phase of scaling calculation, so we request more phases. If we
+  // are already beyond the scaling calculation loop, our request will be just
+  // ignored.
+  FChart.RequestMultiPassScaling;
+
+  Result := FChart.ScalingValid;
 end;
 
 destructor TBasicChartSeries.Destroy;

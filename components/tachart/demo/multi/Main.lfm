@@ -39,6 +39,7 @@ object Form1: TForm1
             Alignment = calBottom
             Marks.Attachment = maCenter
             Marks.Distance = 0
+            Marks.LabelBrush.Style = bsClear
             Minors = <>
             Title.LabelBrush.Style = bsClear
           end>
@@ -52,12 +53,12 @@ object Form1: TForm1
         )
         Align = alClient
         object Chart1BubbleSeries1: TBubbleSeries
+          BubbleBrush.Color = clRed
+          BubbleBrush.Style = bsDiagCross
           Marks.Attachment = maCenter
           Marks.Distance = 0
           Marks.Format = '%0:.9g'
           Marks.Style = smsValue
-          BubbleBrush.Color = clRed
-          BubbleBrush.Style = bsDiagCross
           OverrideColor = [bocBrush, bocPen]
           Source = lcsBubble
         end
@@ -103,14 +104,14 @@ object Form1: TForm1
           Legend.GroupIndex = 0
           Legend.Multiplicity = lmStyle
           Active = False
-          Marks.Format = '%0:.2g'
-          Marks.LinkPen.Visible = False
-          Marks.Style = smsCustom
-          Marks.YIndex = -1
           ZPosition = 5
           BarBrush.Color = clRed
           Depth = 10
           MarkPositions = lmpInside
+          Marks.Format = '%0:.2g'
+          Marks.LinkPen.Visible = False
+          Marks.Style = smsCustom
+          Marks.YIndex = -1
           Source = ccsStacked
           Styles = ChartStyles1
         end
@@ -118,12 +119,12 @@ object Form1: TForm1
           Legend.GroupIndex = 0
           Legend.Multiplicity = lmStyle
           Active = False
+          Depth = 10
+          MarkPositions = lmpInside
           Marks.Format = '%0:.2g'
           Marks.LinkPen.Visible = False
           Marks.Style = smsCustom
           Marks.YIndex = -1
-          Depth = 10
-          MarkPositions = lmpInside
           Stacked = True
           Source = ccsStacked
           Styles = ChartStyles1
@@ -131,16 +132,16 @@ object Form1: TForm1
         object chStackedAreaSeries1: TAreaSeries
           Legend.GroupIndex = 0
           Legend.Multiplicity = lmStyle
-          Marks.Format = '%0:.2g'
-          Marks.LinkPen.Visible = False
-          Marks.Style = smsCustom
-          Marks.YIndex = -1
           ZPosition = 5
           AreaContourPen.Color = clGreen
           AreaContourPen.EndCap = pecSquare
           AreaContourPen.Width = 2
           Depth = 10
           MarkPositions = lmpInside
+          Marks.Format = '%0:.2g'
+          Marks.LinkPen.Visible = False
+          Marks.Style = smsCustom
+          Marks.YIndex = -1
           Source = ccsStacked
           Styles = ChartStyles1
           UseZeroLevel = True
