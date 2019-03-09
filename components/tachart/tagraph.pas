@@ -821,7 +821,7 @@ begin
 
       for s in seriesInZOrder do begin
         if not s.Active then continue;
-        // Interleave axises with series according to ZPosition.
+        // Interleave axes with series according to ZPosition.
         if AxisVisible then
           AxisList.Draw(s.ZPosition, axisIndex);
         OffsetWithDepth(Min(s.ZPosition, Depth), Min(s.Depth, Depth));
