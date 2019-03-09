@@ -2383,12 +2383,10 @@ end;
 
 procedure TLazPackageGraph.MarkNeededPackages;
 var
-  i: Integer;
-  Pkg: TLazPackage;
-  PkgStack: PLazPackage;
-  StackPtr: Integer;
-  RequiredPackage: TLazPackage;
+  StackPtr, i: Integer;
+  Pkg, RequiredPackage: TLazPackage;
   Dependency: TPkgDependency;
+  PkgStack: PLazPackage;
 begin
   if Count=0 then exit;
   // create stack
