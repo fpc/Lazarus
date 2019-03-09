@@ -1833,7 +1833,7 @@ begin
           DrawVector(ADrawer, p1, p2, lPen);
         end;
     end;
-    DrawLabels(ADrawer);
+    DrawLabels(ADrawer, 0);
   finally
     lPen.Free;
   end;
