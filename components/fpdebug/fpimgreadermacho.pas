@@ -423,7 +423,6 @@ begin
       P^.Offs := fs.sec64.offset;
       p^.Sect.Size := fs.sec64.size;
     end;
-DebugLn(Name);
 
     p^.Sect.VirtualAddress := 0; // Todo?
     p^.Loaded := False;
