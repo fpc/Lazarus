@@ -6111,6 +6111,7 @@ docs/xml/lcl/clipbrd.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/colorbox.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/comboex.xml svneol=native#text/plain
 docs/xml/lcl/comctrls.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/comctrls/TrackBarEx.pas svneol=native#text/pascal
 docs/xml/lcl/comctrls/ttoolbutton.pas svneol=native#text/plain
 docs/xml/lcl/comctrls/ttreenode_data.pas svneol=native#text/plain
 docs/xml/lcl/commctrl.xml svneol=LF#text/xml eol=lf
@@ -6137,6 +6138,7 @@ docs/xml/lcl/dirsel.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/dynamicarray/tarrayexample.pas svneol=native#text/plain
 docs/xml/lcl/editbtn.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/extctrls.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/extctrls/radiobutton.pas svneol=native#text/pascal
 docs/xml/lcl/extctrls/statusbar.pas svneol=native#text/plain
 docs/xml/lcl/extdlgs.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/extgraphics.xml svneol=LF#text/xml eol=lf
@@ -6994,6 +6996,7 @@ examples/translation/unit2.pas svneol=native#text/pascal
 examples/trayicon/createbundle.sh svneol=native#text/plain
 examples/trayicon/frmtest.dfm -text
 examples/trayicon/frmtest.lfm -text
+examples/trayicon/frmtest.pas svneol=native#text/pascal
 examples/trayicon/icon.ico -text
 examples/trayicon/wndtray.dpr -text
 examples/trayicon/wndtray.lpi -text
@@ -8968,6 +8971,7 @@ images/splash_logo.png -text svneol=unset#image/png
 images/splash_logo.res -text
 images/splash_logo.xpm -text svneol=native#image/x-xpixmap
 images/splash_source/cheetah.jpg -text svneol=unset#image/jpeg
+images/splash_source/cheetah.txt svneol=native#text/pascal
 images/splash_source/paw.png -text svneol=unset#image/png
 images/states/quickfix.png -text svneol=unset#image/png
 images/states/quickfix_150.png -text svneol=unset#image/png

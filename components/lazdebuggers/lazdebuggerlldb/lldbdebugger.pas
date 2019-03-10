@@ -313,6 +313,7 @@ type
     function  LldbPause: Boolean;
     function  LldbEvaluate(const AExpression: String; EvalFlags: TDBGEvaluateFlags; ACallback: TDBGEvaluateResultCallback): Boolean;
     function  LldbEnvironment(const AVariable: String; const ASet: Boolean): Boolean;
+    procedure TerminateLldb;          // Kills external debugger
   protected
     procedure DoBeforeLaunch; virtual;
     procedure DoBeginReceivingLines(Sender: TObject);
@@ -320,7 +321,7 @@ type
     procedure LockRelease; override;
     procedure UnlockRelease; override;
     procedure QueueCommand(const ACommand: TLldbDebuggerCommand);
-    //procedure DoState(const OldState: TDBGState); override;
+    procedure DoState(const OldState: TDBGState); override;
     //procedure DoBeforeState(const OldState: TDBGState); override;
     procedure SetErrorState(const AMsg: String; const AInfo: String = '');
     function DoExceptionHit(AExcClass, AExcMsg: String): Boolean;
@@ -2738,6 +2739,18 @@ begin
   Result := True;
 end;
 
+procedure TLldbDebugger.TerminateLldb;
+begin
+  if FDebugProcess.DebugProcessRunning then begin
+    FDebugProcess.SendCmdLn('process kill');
+    FDebugProcess.SendCmdLn('quit');
+    Sleep(100);
+  end;
+  FDebugInstructionQueue.OnDebuggerTerminated := nil;  // TODO: use a flag to prevent this
+  FDebugProcess.StopDebugProcess;
+  FDebugInstructionQueue.OnDebuggerTerminated := @DoCmdLineDebuggerTerminated;
+end;
+
 procedure TLldbDebugger.DoBeforeLaunch;
 begin
   //
@@ -2761,6 +2774,13 @@ end;
 procedure TLldbDebugger.SetErrorState(const AMsg: String; const AInfo: String);
 begin
   inherited SetErrorState(AMsg, AInfo);
+end;
+
+procedure TLldbDebugger.DoState(const OldState: TDBGState);
+begin
+  inherited DoState(OldState);
+  if (State = dsError) then
+    TerminateLldb;
 end;
 
 function TLldbDebugger.DoExceptionHit(AExcClass, AExcMsg: String): Boolean;
@@ -2981,14 +3001,8 @@ procedure TLldbDebugger.Done;
 begin
   DebugLnEnter('!!! TLldbDebugger.Done;');
   // TODO: cancel all commands
-  if FDebugProcess.DebugProcessRunning then begin
-    FDebugProcess.SendCmdLn('process kill');
-    FDebugProcess.SendCmdLn('quit');
-  end;
 
-  FDebugInstructionQueue.OnDebuggerTerminated := nil;  // TODO: use a flag to prevent this
-  FDebugProcess.StopDebugProcess;
-  FDebugInstructionQueue.OnDebuggerTerminated := @DoCmdLineDebuggerTerminated;
+  TerminateLldb;
   inherited Done;
   DebugLnExit('!!! TLldbDebugger.Done;');
 end;
