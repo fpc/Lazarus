@@ -114,4 +114,7 @@ can be found in the fcl-web/examples directory of FPC.
 Additional READMEs with information on the components are in the fcl-web/src/*
 directories.
 
+The SQLDBRESTBRidge support and examples are explained in the WIKI:
+http://wiki.freepascal.org/SQLDBRestBridge#Lazarus
+
 Author: Michael Van Canneyt & Joost van der Sluis
