@@ -96,6 +96,7 @@ type
     FDwarfInfo: TFpDwarfInfo;
     FMemReader: TFpLldbDbgMemReader;
     FMemManager: TFpDbgMemManager;
+    FReaderErrors: String;
   public
     procedure Execute; override;
     constructor Create(AFileName: String; ADebugger: TFpLldbDebugger);
@@ -106,6 +107,7 @@ type
     property DwarfInfo: TFpDwarfInfo read FDwarfInfo;
     property MemReader: TFpLldbDbgMemReader read FMemReader;
     property MemManager: TFpDbgMemManager read FMemManager;
+    property ReaderErrors: String read FReaderErrors;
   end;
 
 const
@@ -129,13 +131,14 @@ type
     procedure DoEndReceivingLines(Sender: TObject);
   protected
     procedure DoBeforeLaunch; override;
+    procedure DoAfterLaunch(var LaunchWarnings: string); override;
     function CreateLineInfo: TDBGLineInfo; override;
     function  CreateWatches: TWatchesSupplier; override;
     function  CreateLocals: TLocalsSupplier; override;
     function CreateDisassembler: TDBGDisassembler; override;
     procedure DoState(const OldState: TDBGState); override;
     function  HasDwarf: Boolean;
-    procedure LoadDwarf;
+    function LoadDwarf: String;
     procedure UnLoadDwarf;
     function  RequestCommand(const ACommand: TDBGCommand;
               const AParams: array of const;
@@ -299,6 +302,7 @@ begin
 
   FImageLoaderList := TDbgImageLoaderList.Create(True);
   AnImageLoader.AddToLoaderList(FImageLoaderList);
+  FReaderErrors := AnImageLoader.ReaderErrors;
   if Terminated then
     exit;
 
@@ -1047,14 +1051,7 @@ var
 begin
   inherited DoState(OldState);
   if State in [dsStop, dsError, dsNone] then
-    UnLoadDwarf
-  else
-  if (State = dsRun) and (OldState = dsInit) then begin
-    LoadDwarf;
-    {$IFdef WithWinMemReader}
-    TFpLldbAndWin32DbgMemReader(FMemReader).OpenProcess(TargetPid);
-    {$ENDIF}
-  end;
+    UnLoadDwarf;
 
   if OldState in [dsPause, dsInternalPause] then begin
     for i := 0 to MAX_CTX_CACHE-1 do
@@ -1067,7 +1064,7 @@ begin
       FWatchEvalList.Clear;
     end;
   end;
-  if (State = dsRun) then
+  if (State = dsRun) and (FMemManager <> nil) then
     TFpLldbDbgMemCacheManagerSimple(FMemManager.CacheManager).Clear;
 end;
 
@@ -1076,11 +1073,12 @@ begin
   Result := FDwarfInfo <> nil;
 end;
 
-procedure TFpLldbDebugger.LoadDwarf;
+function TFpLldbDebugger.LoadDwarf: String;
 var
   AnImageLoader: TDbgImageLoader;
   Loader: TDwarfLoaderThread;
 begin
+  Result := ''; // no errors/warnings
   Loader := FDwarfLoaderThread;
   FDwarfLoaderThread := nil;
 
@@ -1093,6 +1091,7 @@ begin
     FMemReader := Loader.MemReader;
     FMemManager := Loader.MemManager;
     FDwarfInfo := Loader.DwarfInfo;
+    Result := Loader.ReaderErrors;
     Loader.Free;
 
     if FDwarfInfo.Image64Bit then
@@ -1110,6 +1109,7 @@ begin
   end;
   FImageLoaderList := TDbgImageLoaderList.Create(True);
   AnImageLoader.AddToLoaderList(FImageLoaderList);
+  Result := AnImageLoader.ReaderErrors;
 {$IFdef WithWinMemReader}
   FMemReader := TFpLldbAndWin32DbgMemReader.Create(Self);
 {$Else}
@@ -1527,6 +1527,15 @@ begin
   if FDwarfInfo = nil then begin
     FDwarfLoaderThread := TDwarfLoaderThread.Create(FileName, Self);
   end;
+end;
+
+procedure TFpLldbDebugger.DoAfterLaunch(var LaunchWarnings: string);
+begin
+  inherited DoAfterLaunch(LaunchWarnings);
+  LaunchWarnings := LaunchWarnings + LoadDwarf;
+  {$IFdef WithWinMemReader}
+  TFpLldbAndWin32DbgMemReader(FMemReader).OpenProcess(TargetPid);
+  {$ENDIF}
 end;
 
 function TFpLldbDebugger.CreateLineInfo: TDBGLineInfo;

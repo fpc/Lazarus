@@ -166,6 +166,7 @@ type
   private
     FRunInstr: TLldbInstruction;
     procedure ExceptBreakInstructionFinished(Sender: TObject);
+    procedure LaunchInstructionSucceeded(Sender: TObject);
     procedure TargetCreated(Sender: TObject);
   protected
     procedure DoInitialExecute; override;
@@ -269,12 +270,14 @@ type
   private
     FLaunchNewTerminal: Boolean;
     FSkipGDBDetection: Boolean;
+    FIgnoreLaunchWarnings: Boolean;
   public
     constructor Create; override;
     procedure Assign(Source: TPersistent); override;
   published
     property LaunchNewTerminal: Boolean read FLaunchNewTerminal write FLaunchNewTerminal default False;
     property SkipGDBDetection: Boolean read FSkipGDBDetection write FSkipGDBDetection default False;
+    property IgnoreLaunchWarnings: Boolean read FIgnoreLaunchWarnings write FIgnoreLaunchWarnings default False;
   end;
 
   TLldbDebugger = class(TDebuggerIntf)
@@ -316,6 +319,7 @@ type
     procedure TerminateLldb;          // Kills external debugger
   protected
     procedure DoBeforeLaunch; virtual;
+    procedure DoAfterLaunch(var LaunchWarnings: string); virtual;
     procedure DoBeginReceivingLines(Sender: TObject);
     procedure DoEndReceivingLines(Sender: TObject);
     procedure LockRelease; override;
@@ -533,6 +537,7 @@ begin
   inherited Create;
   FLaunchNewTerminal := False;
   FSkipGDBDetection := False;
+  FIgnoreLaunchWarnings := False;
 end;
 
 procedure TLldbDebuggerProperties.Assign(Source: TPersistent);
@@ -540,6 +545,7 @@ begin
   inherited Assign(Source);
   FLaunchNewTerminal := TLldbDebuggerProperties(Source).FLaunchNewTerminal;
   FSkipGDBDetection := TLldbDebuggerProperties(Source).FSkipGDBDetection;
+  FIgnoreLaunchWarnings := TLldbDebuggerProperties(Source).FIgnoreLaunchWarnings;
 end;
 
 { TLldbDebuggerCommandRun }
@@ -2383,10 +2389,37 @@ begin
   // the state change allows breakpoints to be set, before the run command is issued.
 
   FRunInstr := TLldbInstructionProcessLaunch.Create(TLldbDebuggerProperties(Debugger.GetProperties).LaunchNewTerminal);
-  FRunInstr.OnSuccess := @RunInstructionSucceeded;
+  FRunInstr.OnSuccess := @LaunchInstructionSucceeded;
   FRunInstr.OnFailure := @InstructionFailed;
   QueueInstruction(FRunInstr);
   FRunInstr.ReleaseReference;
+end;
+
+procedure TLldbDebuggerCommandRunLaunch.LaunchInstructionSucceeded(Sender: TObject);
+var
+  LaunchWarnings: String;
+begin
+  LaunchWarnings := TLldbInstructionProcessLaunch(Sender).Errors;
+  Debugger.DoAfterLaunch(LaunchWarnings);
+  if (not TLldbDebuggerProperties(Debugger.GetProperties).IgnoreLaunchWarnings) and
+     (LaunchWarnings <> '') and
+     assigned(Debugger.OnFeedback)
+  then begin
+    case Debugger.OnFeedback(self,
+             Format('The debugger encountered some errors/warnings while launching the target application.%0:s'
+               + 'Press "Ok" to continue debugging.%0:s'
+               + 'Press "Stop" to end the debug session.',
+               [LineEnding]),
+             LaunchWarnings, ftWarning, [frOk, frStop]
+         ) of
+      frOk: begin
+        end;
+      frStop: begin
+          Debugger.Stop;
+        end;
+    end;
+  end;
+  RunInstructionSucceeded(Sender);
 end;
 
 procedure TLldbDebuggerCommandRunLaunch.DoInitialExecute;
@@ -2752,6 +2785,11 @@ begin
 end;
 
 procedure TLldbDebugger.DoBeforeLaunch;
+begin
+  //
+end;
+
+procedure TLldbDebugger.DoAfterLaunch(var LaunchWarnings: string);
 begin
   //
 end;
