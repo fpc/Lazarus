@@ -1703,6 +1703,12 @@ components/fpweb/demo/bufclient/bufclient.lpr svneol=native#text/plain
 components/fpweb/demo/bufclient/bufclient.res -text
 components/fpweb/demo/bufclient/frmmain.lfm svneol=native#text/plain
 components/fpweb/demo/bufclient/frmmain.pp svneol=native#text/plain
+components/fpweb/demo/csvclient/csvclient.ico -text
+components/fpweb/demo/csvclient/csvclient.lpi svneol=native#text/plain
+components/fpweb/demo/csvclient/csvclient.lpr svneol=native#text/plain
+components/fpweb/demo/csvclient/csvclient.res -text
+components/fpweb/demo/csvclient/frmmain.lfm svneol=native#text/plain
+components/fpweb/demo/csvclient/frmmain.pp svneol=native#text/plain
 components/fpweb/demo/jsonclient/frmmain.lfm svneol=native#text/plain
 components/fpweb/demo/jsonclient/frmmain.pp svneol=native#text/plain
 components/fpweb/demo/jsonclient/jsonclient.ico -text
