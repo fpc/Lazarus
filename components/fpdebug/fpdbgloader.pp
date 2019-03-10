@@ -61,6 +61,7 @@ type
     FFileName: String;
     FImgReader: TDbgImageReader;
     function GetAddressMapList: TDbgAddressMapList;
+    function GetReaderErrors: String;
     function GetSubFiles: TStrings;
     function GetImage64Bit: Boolean;
     function GetUUID: TGuid;
@@ -91,6 +92,7 @@ type
     // This is to map the addresses inside the object file
     // to their corresponding addresses in the executable. (Darwin)
     property AddressMapList: TDbgAddressMapList read GetAddressMapList;
+    property ReaderErrors: String read GetReaderErrors;
   end;
 
   { TDbgImageLoaderList }
@@ -161,6 +163,12 @@ begin
     result := FImgReader.AddressMapList
   else
     result := nil
+end;
+
+function TDbgImageLoader.GetReaderErrors: String;
+begin
+  if FImgReader <> nil then
+    Result := FImgReader.ReaderErrors;
 end;
 
 function TDbgImageLoader.GetSubFiles: TStrings;

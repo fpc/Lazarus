@@ -370,6 +370,7 @@ begin
     ALoader := TDbgImageLoader.Create(dSYMFilename);
     if GUIDToString(ALoader.UUID)<>GUIDToString(PLoader.UUID) then
       begin
+      AddReaderError('The unique UUID''s of the executable and the dSYM bundle with debug-info ('+dSYMFilename+') do not match.');
       Log('The unique UUID''s of the executable and the dSYM bundle with debug-info ('+dSYMFilename+') do not match.');
       FreeAndNil(ALoader);
       end
