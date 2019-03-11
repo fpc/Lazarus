@@ -15,7 +15,7 @@ unit TARadialSeries;
 
 interface
 
-uses                 lazlogger,
+uses
   Classes, Graphics, SysUtils, Types,
   TAChartUtils, TACustomSeries, TADrawUtils, TALegend, TAStyles;
 
@@ -350,45 +350,21 @@ var
       ASlice.FBase, ASlice.FBase + RotatePointX(FRadius, -ASlice.FNextAngle), scaled_depth);
   end;
 
-  procedure FindStartIndexLimits(out AIndex14, AIndex54: Integer);
+  procedure FindLeftMostIndex(out AIndex: Integer);
   var
     j: Integer;
   begin
-    AIndex14 := 0;
-    AIndex54 := 0;
     for j := 0 to High(FSlices) do
-      if FSlices[j].FPrevAngle > PI_1_4 then begin
-        AIndex14 := j;
-        break;
+      if InRange(pi, FSlices[j].FPrevAngle, FSlices[j].FNextAngle) then begin
+        AIndex := j;
+        exit;
       end;
-    for j := High(FSlices) downto 0 do
-      if FSlices[j].FPrevAngle < PI_5_4 then begin
-        AIndex54 := j;
-        break;
-      end;
-  end;
-
-  procedure FindEndIndexLimits(out AIndex14, AIndex54: Integer);
-  var
-    j: Integer;
-  begin
-    AIndex14 := 0;
-    AIndex54 := 0;
-    for j := 0 to High(FSlices) do
-      if FSlices[j].FNextAngle > PI_1_4 then begin
-        AIndex14 := j;
-        break;
-      end;
-    for j := High(FSlices) downto 0 do
-      if FSlices[j].FNextAngle < PI_5_4 then begin
-        AIndex54 := j;
-        break;
-      end;
+    AIndex := 0;
   end;
 
 var
   prevLabelPoly: TPointArray = nil;
-  i, i14, i54: Integer;
+  i, iL: Integer;
 begin
   if IsEmpty then exit;
 
@@ -398,23 +374,36 @@ begin
   ADrawer.SetPen(EdgePen);
   if Depth > 0 then begin
     scaled_depth := ADrawer.Scale(Depth);
-    // Draw "start" edges
-    FindStartIndexLimits(i14, i54);
-    for i:=i54 downto i14 do
-      if FSlices[i].FVisible and StartEdgeVisible(FSlices[i]) then
-        DrawStartEdge3D(FSlices[i]);
+    FindLeftMostIndex(iL);
 
-    // Draw "end" edges
-    FindEndIndexLimits(i14, i54);
-    for i:=i54 to High(FSlices) do
-      if FSlices[i].FVisible and EndEdgeVisible(FSlices[i]) then
-        DrawEndEdge3D(FSlices[i]);
-    for i:=0 to i14 do
-      if FSlices[i].FVisible and EndEdgeVisible(FSlices[i]) then
-        DrawEndEdge3D(FSlices[i]);
+    if FSlices[iL].FVisible then begin
+      if StartEdgeVisible(FSlices[iL]) then
+        DrawStartEdge3D(FSlices[iL]);
+      if EndEdgeVisible(FSlices[iL]) then
+        DrawEndEdge3D(FSlices[iL]);
+      DrawArc3D(FSlices[iL]);
+    end;
+
+    for i:=iL+1 to High(FSlices) do
+      if FSlices[i].FVisible then begin
+        if StartEdgeVisible(FSlices[i]) then
+          DrawStartEdge3D(FSlices[i]);
+        if EndEdgeVisible(FSlices[i]) then
+          DrawEndEdge3D(FSlices[i]);
+        DrawArc3D(FSlices[i]);
+      end;
+
+    if iL <> 0 then
+      for i:= iL downto 0 do
+        if FSlices[i].FVisible then begin
+          if StartEdgeVisible(FSlices[i]) then
+            DrawStartEdge3D(FSlices[i]);
+          if (i <> iL) and EndEdgeVisible(FSlices[i]) then
+            DrawEndEdge3D(FSlices[i]);
+        end;
 
     // Draw arcs
-    for i:=High(FSlices) downto 0 do
+    for i:= iL-1 downto 0 do
       if FSlices[i].FVisible then DrawArc3D(FSlices[i]);
   end;
 
