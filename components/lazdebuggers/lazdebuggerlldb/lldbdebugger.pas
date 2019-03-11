@@ -2187,10 +2187,12 @@ begin
   FIsRunning := True;
   d := Debugger;
   try
+    AddReference;
     d.LockRelease;
     DoExecute;  // may call Finished and Destroy Self
   finally
     d.UnlockRelease;
+    ReleaseReference;
   end;
 end;
 

@@ -45,10 +45,12 @@ type
     //FThreadId: Integer;
     //FStackFrame: Integer;
     FDebugger: TFpLldbDebugger;
+    FEnabled: Boolean;
     //FCmd: TLldbDebuggerCommandMemReader;
   protected
     // TODO: needs to be handled by memory manager
     //FThreadId, FStackFrame: Integer;
+    property Enabled: Boolean read FEnabled write FEnabled;
   public
     constructor Create(ADebugger: TFpLldbDebugger);
     destructor Destroy; override;
@@ -152,6 +154,7 @@ type
     property TargetPID;
     {$EndIf}
     property DebugInstructionQueue;
+    property MemReader: TFpLldbDbgMemReader read FMemReader;
   protected
     procedure DoWatchFreed(Sender: TObject);
     function EvaluateExpression(AWatchValue: TWatchValue;
@@ -368,6 +371,8 @@ begin
     FOwner.ProcessLocals(FLocals);
     FLocals.RemoveFreeNotification(@DoLocalsFreed);
   end;
+  if TFpLldbDebugger(Debugger).MemReader <> nil then
+    TFpLldbDebugger(Debugger).MemReader.Enabled := True;
   Finished;
 end;
 
@@ -375,6 +380,8 @@ procedure TFpLldbDebuggerCommandLocals.DoCancel;
 begin
   inherited DoCancel;
   FOwner.FLocalsEvalCancel := True;
+  if TFpLldbDebugger(Debugger).MemReader <> nil then
+    TFpLldbDebugger(Debugger).MemReader.Enabled := False;
 end;
 
 constructor TFpLldbDebuggerCommandLocals.Create(AOwner: TFPLldbLocals; ALocals: TLocals);
@@ -478,6 +485,8 @@ begin
   FOwner.FEvaluationCmdObj := nil;
   FOwner.ProcessEvalList;
   Finished;
+  if TFpLldbDebugger(Debugger).FMemReader <> nil then
+    TFpLldbDebugger(Debugger).FMemReader.Enabled := True;
 end;
 
 procedure TFpLldbDebuggerCommandEvaluate.DoFree;
@@ -490,6 +499,8 @@ procedure TFpLldbDebuggerCommandEvaluate.DoCancel;
 begin
   inherited DoCancel;
   FOwner.FWatchEvalCancel := True;
+  if TFpLldbDebugger(Debugger).FMemReader <> nil then
+    TFpLldbDebugger(Debugger).FMemReader.Enabled := False;
 end;
 
 //procedure TFpLldbDebuggerCommandEvaluate.DoCancel;
@@ -557,6 +568,7 @@ end;
 constructor TFpLldbDbgMemReader.Create(ADebugger: TFpLldbDebugger);
 begin
   FDebugger := ADebugger;
+  FEnabled := True;
   //FCmd := TLldbDebuggerCommandMemReader.Create(ADebugger);
 end;
 
@@ -573,6 +585,8 @@ var
   InStr: TLldbInstructionMemory;
 begin
   Result := False;
+  if not Enabled then
+    Exit;
   InStr := TLldbInstructionMemory.Create(AnAddress, ASize);
   try
     FDebugger.DebugInstructionQueue.QueueInstruction(InStr);
@@ -614,6 +628,8 @@ var
   QItem: TLldbDebuggerCommand;
 begin
   Result := False;
+  if not Enabled then
+    Exit;
 
 
   // WINDOWS gdb dwarf names
@@ -1090,6 +1106,8 @@ procedure TFpLldbDebugger.DoState(const OldState: TDBGState);
 var
   i: Integer;
 begin
+  if FMemReader <> nil then
+    FMemReader.Enabled := True;
   inherited DoState(OldState);
   if State in [dsStop, dsError, dsNone] then
     UnLoadDwarf;
