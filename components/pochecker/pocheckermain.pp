@@ -79,7 +79,6 @@ type
     procedure ClearStatusBar;
     procedure UpdateGUI(HasSelection: Boolean);
     function GetSelectedMasterFiles: TStringList;
-    procedure AddToMasterPoList(Fn: String);
     procedure AddToMasterPoList(S: TStrings);
     procedure SetSelectedMasterFiles(S: TStrings);
     procedure ApplyConfig;
@@ -600,18 +599,6 @@ begin
     Fn := MasterpoListBox.Items[i];
     if MasterPoListBox.Selected[i] then
       Result.Add(Fn);
-  end;
-end;
-
-procedure TPoCheckerForm.AddToMasterPoList(Fn: String);
-var
-  Idx: Integer;
-begin
-  if not FileExistsUtf8(Fn) then Exit;
-  Idx := MasterPoListBox.Items.IndexOf(Fn);
-  if (Idx = -1) then
-  begin
-    MasterPoListBox.Items.Add(Fn);
   end;
 end;
 
