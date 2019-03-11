@@ -188,7 +188,7 @@ type
   protected
     procedure DoExecute; override;
     procedure DoFree; override;
-//    procedure DoCancel; override;
+    procedure DoCancel; override;
   public
     constructor Create(AOwner: TFPLldbWatches);
   end;
@@ -199,9 +199,10 @@ type
   private
     FWatchEvalLock: Integer;
     FEvaluationCmdObj: TFpLldbDebuggerCommandEvaluate;
+    FWatchEvalCancel: Boolean;
   protected
     function  FpDebugger: TFpLldbDebugger;
-    //procedure DoStateChange(const AOldState: TDBGState); override;
+    procedure DoStateChange(const AOldState: TDBGState); override;
     procedure ProcessEvalList;
     procedure QueueCommand;
     procedure InternalRequestData(AWatchValue: TWatchValue); override;
@@ -219,6 +220,7 @@ type
     procedure DoLocalsFreed(Sender: TObject);
   protected
     procedure DoExecute; override;
+    procedure DoCancel; override;
   public
     constructor Create(AOwner: TFPLldbLocals; ALocals: TLocals);
   end;
@@ -227,9 +229,11 @@ type
 
   TFPLldbLocals = class(TLocalsSupplier)
   private
+    FLocalsEvalCancel: Boolean;
     procedure ProcessLocals(ALocals: TLocals);
   protected
     function  FpDebugger: TFpLldbDebugger;
+    procedure DoStateChange(const AOldState: TDBGState); override;
   public
     procedure RequestData(ALocals: TLocals); override;
   end;
@@ -367,12 +371,19 @@ begin
   Finished;
 end;
 
+procedure TFpLldbDebuggerCommandLocals.DoCancel;
+begin
+  inherited DoCancel;
+  FOwner.FLocalsEvalCancel := True;
+end;
+
 constructor TFpLldbDebuggerCommandLocals.Create(AOwner: TFPLldbLocals; ALocals: TLocals);
 begin
   inherited Create(AOwner.FpDebugger);
   FOwner := AOwner;
   FLocals := ALocals;
   FLocals.AddFreeNotification(@DoLocalsFreed);
+  CancelableForRun := True;
 //////  Priority := 1; // before watches
 end;
 
@@ -386,6 +397,11 @@ var
   m: TFpDbgValue;
   n, v: String;
 begin
+  if FLocalsEvalCancel then begin
+    ALocals.SetDataValidity(ddsInvalid);
+    exit;
+  end;
+
   Ctx := FpDebugger.GetInfoContextForContext(ALocals.ThreadId, ALocals.StackFrame);
   try
     if (Ctx = nil) or (Ctx.SymbolAtAddress = nil) then begin
@@ -404,6 +420,10 @@ begin
 
     ALocals.Clear;
     for i := 0 to ProcVal.MemberCount - 1 do begin
+      if FLocalsEvalCancel then begin
+        ALocals.SetDataValidity(ddsInvalid);
+        exit;
+      end;
       m := ProcVal.Member[i];
       if m <> nil then begin
         if m.DbgSymbol <> nil then
@@ -423,6 +443,12 @@ end;
 function TFPLldbLocals.FpDebugger: TFpLldbDebugger;
 begin
   Result := TFpLldbDebugger(Debugger);
+end;
+
+procedure TFPLldbLocals.DoStateChange(const AOldState: TDBGState);
+begin
+  inherited DoStateChange(AOldState);
+  FLocalsEvalCancel := False;
 end;
 
 procedure TFPLldbLocals.RequestData(ALocals: TLocals);
@@ -460,6 +486,12 @@ begin
   inherited DoFree;
 end;
 
+procedure TFpLldbDebuggerCommandEvaluate.DoCancel;
+begin
+  inherited DoCancel;
+  FOwner.FWatchEvalCancel := True;
+end;
+
 //procedure TFpLldbDebuggerCommandEvaluate.DoCancel;
 //begin
 //  FOwner.FpDebugger.FWatchEvalList.Clear;
@@ -471,6 +503,7 @@ constructor TFpLldbDebuggerCommandEvaluate.Create(AOwner: TFPLldbWatches);
 begin
   inherited Create(AOwner.FpDebugger);
   FOwner := AOwner;
+  CancelableForRun := True;
   //Priority := 0;
 end;
 
@@ -723,6 +756,12 @@ begin
   Result := TFpLldbDebugger(Debugger);
 end;
 
+procedure TFPLldbWatches.DoStateChange(const AOldState: TDBGState);
+begin
+  inherited DoStateChange(AOldState);
+  FWatchEvalCancel := False;
+end;
+
 procedure TFPLldbWatches.ProcessEvalList;
 var
   WatchValue: TWatchValue;
@@ -734,13 +773,14 @@ var
     Result := (FpDebugger.FWatchEvalList.Count > 0) and (FpDebugger.FWatchEvalList[0] = Pointer(WatchValue));
   end;
 begin
-  if (FpDebugger.FWatchEvalList.Count = 0) or (FWatchEvalLock > 0) then
+  if (FpDebugger.FWatchEvalList.Count = 0) or (FWatchEvalLock > 0) or FWatchEvalCancel then
     exit;
 
 debugln(['ProcessEvalList ']);
   inc(FWatchEvalLock);
   try // TODO: if the stack/thread is changed, registers will be wrong
-    while (FpDebugger.FWatchEvalList.Count > 0) and (FEvaluationCmdObj = nil) do begin
+    while (FpDebugger.FWatchEvalList.Count > 0) and (FEvaluationCmdObj = nil) and (not FWatchEvalCancel)
+    do begin
       WatchValue := TWatchValue(FpDebugger.FWatchEvalList[0]);
     if FpDebugger.Registers.CurrentRegistersList[WatchValue.ThreadId, WatchValue.StackFrame].Count = 0 then begin
       // trigger register
@@ -889,6 +929,7 @@ begin
   FAddr := AnAddr;
   FBeforeAddr := FAddr - Min(ALinesBefore * DAssBytesPerCommandAvg, DAssMaxRangeSize);
   FLinesAfter := ALinesAfter;
+  CancelableForRun := True;
 end;
 
 procedure TFpLldbDebuggerCommandDisassemble.CmdFinished(Sender: TObject);

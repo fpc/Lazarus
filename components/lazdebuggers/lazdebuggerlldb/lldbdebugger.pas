@@ -52,6 +52,7 @@ type
     constructor Create(ADebugger: TLldbDebugger);
     destructor Destroy; override;
     procedure CancelAll;
+    procedure CancelForRun;
     procedure LockQueueRun;
     procedure UnLockQueueRun;
     property Items[Index: Integer]: TLldbDebuggerCommand read Get write Put; default;
@@ -64,6 +65,7 @@ type
 
   TLldbDebuggerCommand = class(TRefCountedObject)
   private
+    FCancelableForRun: Boolean;
     FOwner: TLldbDebugger;
     FIsRunning: Boolean;
     function GetDebuggerState: TDBGState;
@@ -89,6 +91,7 @@ type
     destructor Destroy; override;
     procedure Execute;
     procedure Cancel;
+    property CancelableForRun: Boolean read FCancelableForRun write FCancelableForRun;
   end;
 
   { TLldbDebuggerCommandInit }
@@ -253,6 +256,7 @@ type
     procedure RegisterInstructionFinished(Sender: TObject);
   protected
     procedure DoExecute; override;
+    procedure DoCancel; override;
   public
     constructor Create(AOwner: TLldbDebugger; ARegisters: TRegisters);
     destructor Destroy; override;
@@ -392,6 +396,7 @@ type
   private
     procedure ThreadInstructionSucceeded(Sender: TObject);
   protected
+    constructor Create(AOwner: TLldbDebugger);
     procedure DoExecute; override;
   end;
 
@@ -1328,6 +1333,7 @@ constructor TLldbDebuggerCommandLocals.Create(AOwner: TLldbDebugger;
 begin
   FLocals := ALocals;
   FLocals.AddFreeNotification(@DoLocalsFreed);
+  CancelableForRun := True;
   inherited Create(AOwner);
 end;
 
@@ -1355,6 +1361,12 @@ procedure TLldbDebuggerCommandThreads.ThreadInstructionSucceeded(Sender: TObject
 begin
   TLldbThreads(Debugger.Threads).ReadFromThreadInstruction(TLldbInstructionThreadList(Sender));
   Finished;
+end;
+
+constructor TLldbDebuggerCommandThreads.Create(AOwner: TLldbDebugger);
+begin
+  CancelableForRun := True;
+  inherited Create(AOwner);
 end;
 
 procedure TLldbDebuggerCommandThreads.DoExecute;
@@ -1546,6 +1558,7 @@ begin
   inherited Create(AOwner);
   FCurrentCallStack := ACurrentCallStack;
   FCurrentCallStack.AddFreeNotification(@DoCallstackFreed);
+  CancelableForRun := True;
 end;
 
 destructor TLldbDebuggerCommandCallStack.Destroy;
@@ -1940,11 +1953,19 @@ begin
   Instr.ReleaseReference;
 end;
 
+procedure TLldbDebuggerCommandRegister.DoCancel;
+begin
+  if FRegisters <> nil then
+    FRegisters.DataValidity := ddsInvalid;
+  inherited DoCancel;
+end;
+
 constructor TLldbDebuggerCommandRegister.Create(AOwner: TLldbDebugger;
   ARegisters: TRegisters);
 begin
   FRegisters := ARegisters;
   FRegisters.AddReference;
+  CancelableForRun := True;
   inherited Create(AOwner);
 end;
 
@@ -2071,6 +2092,22 @@ begin
     FRunningCommand.Cancel;
 end;
 
+procedure TLldbDebuggerCommandQueue.CancelForRun;
+var
+  i: Integer;
+begin
+  i := Count - 1;
+  while i >= 0 do begin
+    if Items[i].CancelableForRun then
+      Items[i].Cancel;
+    dec(i);
+    if i > Count then
+      i := Count - 1;
+  end;
+  if (FRunningCommand <> nil) and (FRunningCommand.CancelableForRun) then
+    FRunningCommand.Cancel;
+end;
+
 procedure TLldbDebuggerCommandQueue.LockQueueRun;
 begin
   inc(FLockQueueRun);
@@ -2159,9 +2196,11 @@ end;
 
 procedure TLldbDebuggerCommand.Cancel;
 begin
+  AddReference;
   Debugger.CommandQueue.Remove(Self); // current running command is not on queue // dec refcount, may call destroy
   if FIsRunning then
     DoCancel;  // should call CommandQueue.CommandFinished
+  ReleaseReference;
 end;
 
 procedure TLldbDebuggerCommand.DoLineDataReceived(var ALine: String);
@@ -2520,6 +2559,7 @@ constructor TLldbDebuggerCommandEvaluate.Create(AOwner: TLldbDebugger;
 begin
   FWatchValue := AWatchValue;
   FWatchValue.AddFreeNotification(@DoWatchFreed);
+  CancelableForRun := True;
   inherited Create(AOwner);
 end;
 
@@ -2530,6 +2570,7 @@ begin
   FExpr := AnExpr;
   FFlags := AFlags;
   FCallback := ACallback;
+  CancelableForRun := True;
   inherited Create(AOwner);
 end;
 
@@ -2640,6 +2681,7 @@ begin
   Result := True;
 
   if State in [dsPause, dsInternalPause, dsRun] then begin // dsRun in case of exception
+    CommandQueue.CancelForRun;
     LldbStep(saContinue);
     exit;
   end;
@@ -2714,6 +2756,7 @@ var
   Cmd: TLldbDebuggerCommandRunStep;
 begin
   Result := True;
+  CommandQueue.CancelForRun;
   Cmd := TLldbDebuggerCommandRunStep.Create(Self, AStepAction);
   QueueCommand(Cmd);
   Cmd.ReleaseReference;
