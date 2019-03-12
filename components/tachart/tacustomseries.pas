@@ -50,11 +50,13 @@ type
   strict private
     FAxisIndexX: TChartAxisIndex;
     FAxisIndexY: TChartAxisIndex;
+    FDepthBrightnessDelta: Integer;
     FLegend: TChartSeriesLegend;
     FToolTargets: TNearestPointTargets;
     FTitle: String;
     procedure SetAxisIndexX(AValue: TChartAxisIndex);
     procedure SetAxisIndexY(AValue: TChartAxisIndex);
+    procedure SetDepthBrightnessDelta(AValue: Integer);
     procedure SetLegend(AValue: TChartSeriesLegend);
 
   protected
@@ -85,6 +87,8 @@ type
     function LegendTextStyle(AStyle: TChartStyle): String;
     procedure SetIndex(AValue: Integer); override;
     function TitleIsStored: Boolean; virtual;
+    property DepthBrightnessDelta: Integer
+      read FDepthBrightnessDelta write SetDepthBrightnessDelta default 0;
     property ToolTargets: TNearestPointTargets
       read FToolTargets write FToolTargets default [nptPoint];
 
@@ -95,6 +99,7 @@ type
     function GetAxisX: TChartAxis;
     function GetAxisY: TChartAxis;
     function GetAxisBounds(AAxis: TChartAxis; out AMin, AMax: Double): Boolean; override;
+    function GetDepthColor(AColor: Integer): Integer; virtual;
     function GetGraphBounds: TDoubleRect; override;
     function GraphToAxis(APoint: TDoublePoint): TDoublePoint;
     function GraphToAxisX(AX: Double): Double; override;
@@ -385,6 +390,7 @@ begin
     with TCustomChartSeries(ASource) do begin
       Self.FAxisIndexX := FAxisIndexX;
       Self.FAxisIndexY := FAxisIndexY;
+      Self.FDepthBrightnessDelta := FDepthBrightnessDelta;
       Self.Legend := FLegend;
       Self.FTitle := FTitle;
       Self.FToolTargets := FToolTargets;
@@ -465,6 +471,18 @@ begin
     Result := FChart.AxisList[AxisIndexY]
   else
     Result := FChart.LeftAxis;
+end;
+
+function TCustomChartSeries.GetDepthColor(AColor: Integer): Integer;
+type
+  TBytes = packed array [1..4] of Byte;
+var
+  c: TBytes absolute AColor;
+  r: TBytes absolute Result;
+  i: Integer;
+begin
+  for i := 1 to 4 do
+    r[i] := EnsureRange(c[i] + FDepthBrightnessDelta, 0, 255);
 end;
 
 function TCustomChartSeries.GetGraphBounds: TDoubleRect;
@@ -626,6 +644,13 @@ procedure TCustomChartSeries.SetDepth(AValue: TChartDistance);
 begin
   if FDepth = AValue then exit;
   FDepth := AValue;
+  UpdateParentChart;
+end;
+
+procedure TCustomChartSeries.SetDepthBrightnessDelta(AValue: Integer);
+begin
+  if FDepthBrightnessDelta = AValue then exit;
+  FDepthBrightnessDelta := AValue;
   UpdateParentChart;
 end;
 

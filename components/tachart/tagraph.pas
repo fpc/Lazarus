@@ -1950,20 +1950,6 @@ begin
   // empty
 end;
 
-function TBasicChartSeries.RequestValidChartScaling: Boolean;
-begin
-  Result := false;
-  if not Assigned(FChart) then exit;
-
-  // We request a valid scaling from FChart. Scaling is not initialized during
-  // the first phase of scaling calculation, so we request more phases. If we
-  // are already beyond the scaling calculation loop, our request will be just
-  // ignored.
-  FChart.RequestMultiPassScaling;
-
-  Result := FChart.ScalingValid;
-end;
-
 destructor TBasicChartSeries.Destroy;
 begin
   if FChart <> nil then
@@ -1998,6 +1984,20 @@ procedure TBasicChartSeries.MovePointEx(
 begin
   Unused(AXIndex, AYIndex);
   MovePoint(AIndex, ANewPos);
+end;
+
+function TBasicChartSeries.RequestValidChartScaling: Boolean;
+begin
+  Result := false;
+  if not Assigned(FChart) then exit;
+
+  // We request a valid scaling from FChart. Scaling is not initialized during
+  // the first phase of scaling calculation, so we request more phases. If we
+  // are already beyond the scaling calculation loop, our request will be just
+  // ignored.
+  FChart.RequestMultiPassScaling;
+
+  Result := FChart.ScalingValid;
 end;
 
 procedure TBasicChartSeries.UpdateBiDiMode;

@@ -1,31 +1,35 @@
 object Form1: TForm1
-  Left = 318
+  Left = 319
   Height = 347
-  Top = 150
+  Top = 177
   Width = 560
   Caption = 'Form1'
   ClientHeight = 347
   ClientWidth = 560
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '2.1.0.0'
   object Chart1: TChart
     Left = 0
-    Height = 297
+    Height = 306
     Top = 0
     Width = 560
     AxisList = <    
       item
         Grid.Color = clGray
         AxisPen.Visible = True
+        Marks.LabelBrush.Style = bsClear
         Minors = <>
         Title.LabelFont.Orientation = 900
+        Title.LabelBrush.Style = bsClear
       end    
       item
         Grid.Color = clGray
         Alignment = calBottom
         AxisPen.Visible = True
+        Marks.LabelBrush.Style = bsClear
         Minors = <>
+        Title.LabelBrush.Style = bsClear
       end>
     BackColor = clSkyBlue
     Depth = 50
@@ -39,12 +43,12 @@ object Form1: TForm1
     )
     Align = alClient
     Color = clWhite
-    ParentColor = False
     object Chart1BarSeries1: TBarSeries
       ZPosition = 10
       BarBrush.Color = clTeal
       BarWidthPercent = 50
       Depth = 10
+      DepthBrightnessDelta = -32
       Source = RandomChartSource1
     end
     object Chart1BarSeries2: TBarSeries
@@ -52,6 +56,7 @@ object Form1: TForm1
       BarBrush.Color = clMaroon
       BarWidthPercent = 50
       Depth = 10
+      DepthBrightnessDelta = -32
       Source = RandomChartSource2
     end
     object Chart1LineSeries1: TLineSeries
@@ -63,44 +68,90 @@ object Form1: TForm1
   end
   object pnControls: TPanel
     Left = 0
-    Height = 50
-    Top = 297
+    Height = 41
+    Top = 306
     Width = 560
     Align = alBottom
-    ClientHeight = 50
+    AutoSize = True
+    ClientHeight = 41
     ClientWidth = 560
     TabOrder = 1
     object seDepth: TSpinEdit
+      AnchorSideLeft.Control = lblDepth
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = pnControls
       Left = 52
-      Height = 21
-      Top = 7
+      Height = 23
+      Top = 9
       Width = 74
+      BorderSpacing.Around = 8
       OnChange = seDepthChange
       TabOrder = 0
     end
     object lblDepth: TLabel
-      Left = 8
-      Height = 14
-      Top = 11
-      Width = 34
+      AnchorSideLeft.Control = pnControls
+      AnchorSideTop.Control = seDepth
+      AnchorSideTop.Side = asrCenter
+      Left = 9
+      Height = 15
+      Top = 13
+      Width = 35
+      BorderSpacing.Left = 8
       Caption = 'Depth:'
       ParentColor = False
     end
     object seAxisZ: TSpinEdit
-      Left = 196
-      Height = 21
-      Top = 7
+      AnchorSideLeft.Control = lblAxisZ
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = seDepth
+      Left = 192
+      Height = 23
+      Top = 9
       Width = 74
+      BorderSpacing.Left = 8
       OnChange = seAxisZChange
       TabOrder = 1
     end
     object lblAxisZ: TLabel
-      Left = 152
-      Height = 14
-      Top = 11
+      AnchorSideLeft.Control = seDepth
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = seAxisZ
+      AnchorSideTop.Side = asrCenter
+      Left = 150
+      Height = 15
+      Top = 13
       Width = 34
+      BorderSpacing.Left = 24
       Caption = 'Axis Z:'
       ParentColor = False
+    end
+    object lblDepthBrightnessDelta: TLabel
+      AnchorSideLeft.Control = seAxisZ
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = seDepthBrighnessDelta
+      AnchorSideTop.Side = asrCenter
+      Left = 290
+      Height = 15
+      Top = 13
+      Width = 149
+      BorderSpacing.Left = 24
+      Caption = 'Depth brightness difference:'
+      ParentColor = False
+    end
+    object seDepthBrighnessDelta: TSpinEdit
+      AnchorSideLeft.Control = lblDepthBrightnessDelta
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = seDepth
+      Left = 447
+      Height = 23
+      Top = 9
+      Width = 76
+      BorderSpacing.Left = 8
+      MaxValue = 255
+      MinValue = -255
+      OnChange = seDepthBrighnessDeltaChange
+      TabOrder = 2
+      Value = -32
     end
   end
   object RandomChartSource1: TRandomChartSource

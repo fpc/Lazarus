@@ -96,6 +96,7 @@ type
     property BarWidthStyle: TBarWidthStyle
       read FBarWidthStyle write SetBarWidthStyle default bwPercent;
     property Depth;
+    property DepthBrightnessDelta;
     property MarkPositionCentered;
     property MarkPositions;
     property Marks;
@@ -124,6 +125,7 @@ type
   published
     property EdgePen;
     property Depth;
+    property DepthBrightnessDelta;
     property Exploded;
     property FixedRadius;
     property MarkDistancePercent;
@@ -178,6 +180,7 @@ type
     property ConnectType: TConnectType
       read FConnectType write SetConnectType default ctLine;
     property Depth;
+    property DepthBrightnessDelta;
     property MarkPositionCentered;
     property MarkPositions;
     property Marks;
@@ -237,6 +240,7 @@ type
     property ColorEach: TColorEachMode
       read FColorEach write SetColorEach default cePoint;
     property Depth;
+    property DepthBrightnessDelta;
     property LinePen: TPen read FLinePen write SetLinePen;
     property LineType: TLineType
       read FLineType write SetLineType default ltFromPrevious;
@@ -587,7 +591,7 @@ var
         ADrawer.Polyline(points, breaks[i], breaks[i + 1] - breaks[i])
     else begin
       if Styles = nil then begin
-        ADrawer.SetBrushParams(bsSolid, LinePen.Color);
+        ADrawer.SetBrushParams(bsSolid, GetDepthColor(LinePen.Color));
         ADrawer.SetPenParams(LinePen.Style, clBlack);
       end;
       scaled_depth := ADrawer.Scale(Depth);
@@ -1152,6 +1156,7 @@ var
 
     if Depth = 0 then exit;
 
+    ADrawer.BrushColor := GetDepthColor(ADrawer.BrushColor);
     ADrawer.DrawLineDepth(AR.Left, AR.Top, AR.Right - 1, AR.Top, scaled_depth);
     ADrawer.DrawLineDepth(
       AR.Right - 1, AR.Top, AR.Right - 1, AR.Bottom - 1, scaled_depth);
@@ -1733,6 +1738,7 @@ var
     p: TDoublePoint;
     i, j, j0: Integer;
     zeroPt: TPoint;
+    c: TColor;
   begin
     // Get baseline of area series: this is the curve of the 1st y value in case
     // of banded, or the zero level in case for normal area series.
@@ -1776,12 +1782,15 @@ var
       // Note: Rendering is often incorrect, e.g. when values cross zero level
       // or when values are not stacked!
       if (Depth > 0) then begin
+        c := ADrawer.BrushColor;
+        ADrawer.BrushColor := GetDepthColor(c);
         // Top sides
         if (Source.YCount = 1) or (not FStacked) or (j = Source.YCount-2) then
           for i := 0 to numDataPts-2 do
             ADrawer.DrawLineDepth(pts[i], pts[i+1], scaled_depth);
         // Sides at the right
         ADrawer.DrawLineDepth(pts[numdataPts-1], pts[numDataPts], scaled_depth);
+        ADrawer.BrushColor := c;
       end;
 
       // Fill polygon of current level

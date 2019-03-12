@@ -107,6 +107,7 @@ type
       read FMarkPositions write SetMarkPositions default pmpAround;
     property RotateLabels: Boolean
       read FRotateLabels write SetRotateLabels default false;
+
   end;
 
   TSinCos = record
@@ -328,7 +329,7 @@ var
       p[High(p) - i - 1] := p[i] + Point(scaled_depth, -scaled_depth);
     end;
     p[High(p)] := p[0];
-    clr := SliceColor(ASlice.FOrigIndex);
+    clr := GetDepthColor(SliceColor(ASlice.FOrigIndex));
     ADrawer.SetBrushParams(bsSolid, clr);
     ADrawer.SetPenParams(psSolid, clr);
     ADrawer.Polygon(p, 0, Length(p));
@@ -338,14 +339,16 @@ var
 
   procedure DrawStartEdge3D(ASlice: TPieSlice);
   begin
-    ADrawer.SetBrushParams(bsSolid, SliceColor(ASlice.FOrigIndex));
+    ADrawer.SetBrushParams(
+      bsSolid, GetDepthColor(SliceColor(ASlice.FOrigIndex)));
     ADrawer.DrawLineDepth(
       ASlice.FBase, ASlice.FBase + RotatePointX(FRadius, -ASlice.FPrevAngle), scaled_depth);
   end;
 
   procedure DrawEndEdge3D(ASlice: TPieSlice);
   begin
-    ADrawer.SetBrushParams(bsSolid, SliceColor(ASlice.FOrigIndex));
+    ADrawer.SetBrushParams(
+      bsSolid, GetDepthColor(SliceColor(ASlice.FOrigIndex)));
     ADrawer.DrawLineDepth(
       ASlice.FBase, ASlice.FBase + RotatePointX(FRadius, -ASlice.FNextAngle), scaled_depth);
   end;

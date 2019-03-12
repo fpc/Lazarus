@@ -24,13 +24,13 @@ object Form1: TForm1
       ClientWidth = 678
       object Panel1: TPanel
         Left = 0
-        Height = 81
-        Top = 323
+        Height = 87
+        Top = 317
         Width = 678
         Align = alBottom
         AutoSize = True
         BevelOuter = bvNone
-        ClientHeight = 81
+        ClientHeight = 87
         ClientWidth = 678
         TabOrder = 0
         object CbRotated: TCheckBox
@@ -106,14 +106,15 @@ object Form1: TForm1
           TabOrder = 4
         end
         object LblCount: TLabel
-          AnchorSideLeft.Control = BtnNewData
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = CbStacked
           AnchorSideTop.Side = asrCenter
-          Left = 525
+          AnchorSideRight.Control = EdYCount
+          Left = 533
           Height = 15
           Top = 10
           Width = 33
+          Anchors = [akTop, akRight]
           BorderSpacing.Left = 16
           Caption = 'Count'
           FocusControl = EdCount
@@ -260,10 +261,41 @@ object Form1: TForm1
           OnChange = CbCenteredChange
           TabOrder = 13
         end
+        object EdDepthBrightnessDelta: TSpinEdit
+          AnchorSideLeft.Control = LblYCount
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = EdYCount
+          AnchorSideTop.Side = asrBottom
+          Left = 574
+          Height = 23
+          Top = 60
+          Width = 50
+          BorderSpacing.Left = 8
+          BorderSpacing.Top = 4
+          BorderSpacing.Bottom = 4
+          Enabled = False
+          MaxValue = 255
+          MinValue = -255
+          OnChange = EdDepthBrightnessDeltaChange
+          TabOrder = 14
+        end
+        object LblDepthBrightnessDelta: TLabel
+          AnchorSideTop.Control = EdDepthBrightnessDelta
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = EdYCount
+          Left = 447
+          Height = 15
+          Top = 64
+          Width = 119
+          Anchors = [akTop, akRight]
+          Caption = 'Depth brightness delta'
+          Enabled = False
+          ParentColor = False
+        end
       end
       object Chart1: TChart
         Left = 0
-        Height = 323
+        Height = 317
         Top = 0
         Width = 678
         AxisList = <        
@@ -290,10 +322,10 @@ object Form1: TForm1
         Color = clWindow
         object Chart1AreaSeries1: TAreaSeries
           Legend.Multiplicity = lmStyle
-          Marks.YIndex = -1
           AxisIndexX = 1
           AxisIndexY = 0
           AreaContourPen.Width = 3
+          Marks.YIndex = -1
           Styles = ChartStyles1
           UseZeroLevel = True
         end
