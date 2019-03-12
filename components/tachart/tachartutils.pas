@@ -43,6 +43,7 @@ const
 type
   EChartError = class(Exception);
   EChartIntervalError = class(EChartError);
+  EBroadcasterError = class(EChartError);
   EListenerError = class(EChartError);
   EDrawDataError = class(EChartError);
 
@@ -847,11 +848,40 @@ end;
 
 procedure TBroadcaster.Broadcast(ASender: TObject);
 var
-  p: Pointer;
+  ListCopy: array of Pointer;
+  Exceptions: TStringList;
+  i: Integer;
 begin
   if Locked then exit;
-  for p in Self do
-    TListener(p).Notify(ASender);
+  if Count = 0 then exit;
+
+  // Listeners can remove themselves when being notified, which
+  // changes the list - so we must use a copy of the list when
+  // notifying, to avoid omissions in notifying
+  SetLength(ListCopy, Count);
+  for i := 0 to High(ListCopy) do
+    ListCopy[i] := List^[i];
+
+  Exceptions := nil;
+  try
+    for i := 0 to High(ListCopy) do
+    try
+      TListener(ListCopy[i]).Notify(ASender);
+    except
+      on E: Exception do begin
+        if not Assigned(Exceptions) then begin
+          Exceptions := TStringList.Create;
+          Exceptions.Duplicates := dupIgnore;
+          Exceptions.Sorted := true; // required by dupIgnore
+        end;
+        Exceptions.Add(E.Message);
+      end;
+    end;
+    if Assigned(Exceptions) then
+      raise EBroadcasterError.Create(Trim(Exceptions.Text));
+  finally
+    Exceptions.Free;
+  end;
 end;
 
 destructor TBroadcaster.Destroy;
