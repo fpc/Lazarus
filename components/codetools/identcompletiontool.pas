@@ -2469,6 +2469,10 @@ begin
         if (Compiler=pcDelphi) and (SrcType=ctnPackage) then
           AddKeyWord('DesignOnly');
         AddKeyWord('Description');
+        if (Compiler=pcPas2js) then begin
+          AddKeyWord('DispatchField');
+          AddKeyWord('DispatchStrField');
+        end;
         AddKeyWord('ElIfC');
         AddKeyWord('Else');
         AddKeyWord('ElseC');
