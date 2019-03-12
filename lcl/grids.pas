@@ -4081,6 +4081,10 @@ var
 begin
   if InternalNeedBorder then begin
     R := Rect(0,0,ClientWidth-1, Clientheight-1);
+    // The following line is a simple workaround for a more complex problem
+    // caused by Canvas.SaveHandleState and Canvas.RestoreHandleState in DoDrawCell
+    // see the notes in the related bug report #34890
+    Canvas.Pen.Color := fBorderColor + 1;
     Canvas.Pen.Color := fBorderColor;
     Canvas.Pen.Width := 1;
     Canvas.MoveTo(0,0);
