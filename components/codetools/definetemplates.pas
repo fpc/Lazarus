@@ -1740,6 +1740,14 @@ function ParseFPCVerbose(List: TStrings; const WorkDir: string; out
         if IsUpLine(CurPos,'DEFINED: ') then begin
           Inc(CurPos, 9);
           SymbolName:=copy(Line, CurPos, len);
+          if (SameText(SymbolName,'PAS2JS_FULLVERSION')
+                or SameText(SymbolName,'FPC_FULLVERSION'))
+              and Defines.Contains(SymbolName) then
+            begin
+            // keep the FULLVERSION value
+            // Note: pas2js <1.4 had a bug, it gave out DEFINED
+            exit;
+            end;
           DefineSymbol(SymbolName,'');
           Exit;
         end;
