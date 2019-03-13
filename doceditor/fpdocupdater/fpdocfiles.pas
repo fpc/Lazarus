@@ -27,7 +27,8 @@ unit FPDocFiles;
 interface
 
 uses
-  Classes, SysUtils, Contnrs, FileUtil, DOM, XMLWrite, XMLRead;
+  Classes, SysUtils, Contnrs, FileUtil, DOM, XMLWrite, XMLRead,
+  LazUtf8;
   
 type
   TFPDocInfo = record

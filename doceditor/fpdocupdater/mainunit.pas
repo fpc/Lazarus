@@ -29,7 +29,8 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs,
   FPDocFiles, StdCtrls, ComCtrls, FileUtil, ExtCtrls,
-  LCLIntf, LCLType, LCLProc, Process, UTF8Process, EditBtn, Laz_XMLCfg;
+  LCLIntf, LCLType, LCLProc, Process, UTF8Process, EditBtn, Laz_XMLCfg,
+  LazUtf8, LazFileUtils;
 
 type
 
