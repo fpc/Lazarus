@@ -225,7 +225,10 @@ begin
     FColumnWidth := GetImgListRes(Canvas, FBookMarkOpt.BookmarkImages).Width
   else
     FColumnWidth := Width;
-  FColumnCount := Max((Width+1) div FColumnWidth, 1); // full columns
+  if FColumnWidth = 0 then
+    FColumnCount := 0
+  else
+    FColumnCount := Max((Width+1) div FColumnWidth, 1); // full columns
 
   rcLine := AClip;
   rcLine.Bottom := rcLine.Top;
