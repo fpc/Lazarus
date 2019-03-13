@@ -84,11 +84,11 @@ begin
         begin
           FCanChangeDir := updDown;
 
-          if Position - Increment >= Min then
-            FCanChangePos := Position - Increment
+          if FCanChangePos - Increment >= Min then
+            FCanChangePos := FCanChangePos - Increment
           else
             if Wrap then
-              FCanChangePos := Max + (Position - Increment - Min) + 1
+              FCanChangePos := Max + (FCanChangePos - Increment - Min) + 1
           else
             FCanChangePos := Min;
         end;
@@ -96,11 +96,11 @@ begin
         begin
           FCanChangeDir := updUp;
 
-          if Position + Increment <= Max then
-            FCanChangePos := Position + Increment
+          if FCanChangePos + Increment <= Max then
+            FCanChangePos := FCanChangePos + Increment
           else
             If Wrap then
-              FCanChangePos := Min + (Position + Increment - Max) - 1
+              FCanChangePos := Min + (FCanChangePos + Increment - Max) - 1
           else
             FCanChangePos := Max;
         end;
@@ -246,7 +246,7 @@ end;
 
 procedure TCustomUpDown.UpdateUpDownPositionText;
 begin
-  if (not (csDesigning in ComponentState)) and (FAssociate <> nil) 
+  if (not (csDesigning in ComponentState)) and (FAssociate <> nil)
   then begin
     if Thousands 
     then FAssociate.Caption := FloatToStrF(FPosition, ffNumber, 0, 0)
@@ -502,27 +502,19 @@ end;
 
 function TCustomUpDown.GetPosition: SmallInt;
 var
-  av,I : Smallint;
+  av,I : Integer;
   str : string;
   InvalidNumber : Boolean;
 begin
   If Associate <> nil then begin
     str := Trim(Associate.Caption);
-    InvalidNumber := str = '';
-    For I := Length(str) downto 1 do
-      if str[I] = DefaultFormatSettings.ThousandSeparator then
-        Delete(Str,I,1)
-      else if str[I] in ['0'..'9'] then
-      else begin
-        InvalidNumber := True;
-        Break;
-      end;
-    If not InvalidNumber then
-      AV := SmallInt(TruncToInt(StrToFloat(str)))
-    else begin
+    str := StringReplace(str, DefaultFormatSettings.ThousandSeparator, '', [rfReplaceAll]);
+    if not TryStrToInt(str, AV) then
+    begin
       Result := FPosition;
       Exit;
     end;
+    //this will also correct for AV > High(SmallInt) or AV < Low(SMallInt)
     If AV > FMax then
       AV := FMax;
     If AV < FMin then
