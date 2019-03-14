@@ -135,7 +135,7 @@ type
     Encoding: String;
   end;
 const
-  FPCMsgFileToEncoding: array[1..20] of TFPCMsgFileToEncoding = (
+  FPCMsgFileToEncoding: array[1..21] of TFPCMsgFileToEncoding = (
     (Filename: 'errorct.msg';  Encoding: 'CP1252'), // Catalan
     (Filename: 'errord.msg';   Encoding: 'CP437'), // German
     (Filename: 'errorda.msg';  Encoding: 'UTF-8'), // Danish
@@ -155,7 +155,8 @@ const
     (Filename: 'errorptu.msg'; Encoding: 'UTF-8'), // Portuguese
     (Filename: 'errorr.msg';   Encoding: 'CP866'), // Russian
     (Filename: 'errorru.msg';  Encoding: 'UTF-8'), // Russian
-    (Filename: 'errorues.msg'; Encoding: 'UTF-8') // Spanish
+    (Filename: 'errorues.msg'; Encoding: 'UTF-8'), // Spanish
+    (Filename: 'errorcn.msg';  Encoding: 'CP936') // Chinese
   );
 
 function CompareFPCMsgId(item1, item2: Pointer): integer;
