@@ -1022,16 +1022,14 @@ begin
   //debugln(['TInitialSetupDialog.UpdateCompilerNote ',fLastParsedCompiler]);
 
   Quality:=CheckFPCExeQuality(fLastParsedCompiler,Note,
-                                CodeToolBoss.CompilerDefinesCache.TestFilename);
-  if Quality<>sddqInvalid then begin
-    CodeToolBoss.CompilerDefinesCache.ConfigCaches.Find(
-      fLastParsedCompiler,'','','',true);
-    // check compiler again
-    CfgCache:=CodeToolBoss.CompilerDefinesCache.ConfigCaches.Find(
-                                               fLastParsedCompiler,'','','',true);
+                              CodeToolBoss.CompilerDefinesCache.TestFilename);
+  // check compiler again
+  CfgCache:=CodeToolBoss.CompilerDefinesCache.ConfigCaches.Find(
+                                             fLastParsedCompiler,'','','',true);
+  CfgCache.CompilerDate:=0; // force update
+  if CfgCache.NeedsUpdate then
     CfgCache.Update(CodeToolBoss.CompilerDefinesCache.TestFilename);
-    BuildBoss.SetBuildTargetIDE;
-  end;
+  BuildBoss.SetBuildTargetIDE;
 
   case Quality of
   sddqInvalid: s:=lisError;
