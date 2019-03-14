@@ -61,8 +61,6 @@ Type
     procedure DoTestStart(const ATestName, APoFileName: String);
     procedure DoTestEnd(const ATestName: String; const ErrorCount: Integer);
   public
-    constructor Create;
-    constructor Create(const MasterName: String);
     constructor Create(const AMasterName, AChildName: String);
     destructor Destroy; override;
 
@@ -358,16 +356,6 @@ begin
   FChildName := '';
   if (AValue <> '') then FChild := TPOFile.Create(AValue, True, False);
   FChildName := AValue;
-end;
-
-constructor TPoFamily.Create;
-begin
-  Create('','');
-end;
-
-constructor TPoFamily.Create(const MasterName: String);
-begin
-  Create(MasterName, '');
 end;
 
 constructor TPoFamily.Create(const AMasterName, AChildName: String);
