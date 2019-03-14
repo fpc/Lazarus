@@ -128,6 +128,7 @@ type
     property DepthBrightnessDelta;
     property Exploded;
     property FixedRadius;
+    property InnerRadiusPercent;
     property MarkDistancePercent;
     property MarkPositions;
     property Marks;

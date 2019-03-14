@@ -65,6 +65,7 @@ type
     FMarkDistancePercent: Boolean;
     FMarkPositions: TPieMarkPositions;
     FRadius: Integer;
+    FInnerRadiusPercent: Integer;
     FSlices: array of TPieSlice;
   private
     FEdgePen: TPen;
@@ -75,14 +76,18 @@ type
     procedure SetEdgePen(AValue: TPen);
     procedure SetExploded(AValue: Boolean);
     procedure SetFixedRadius(AValue: TChartDistance);
+    procedure SetInnerRadiusPercent(AValue: Integer);
     procedure SetMarkDistancePercent(AValue: Boolean);
     procedure SetMarkPositions(AValue: TPieMarkPositions);
     procedure SetRotateLabels(AValue: Boolean);
     function SliceColor(AIndex: Integer): TColor;
     function TryRadius(ADrawer: IChartDrawer): TRect;
   protected
+    function CalcInnerRadius: Integer; inline;
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     property Radius: Integer read FRadius;
+    property InnerRadiusPercent: Integer
+      read FInnerRadiusPercent write SetInnerRadiusPercent default 0;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -243,9 +248,15 @@ begin
     with TCustomPieSeries(ASource) do begin
       Self.FExploded := FExploded;
       Self.FFixedRadius := FFixedRadius;
+      Self.FInnerRadiusPercent := FInnerRadiusPercent;
       Self.FRotateLabels := FRotateLabels;
     end;
   inherited Assign(ASource);
+end;
+
+function TCustomPieSeries.CalcInnerRadius: Integer;
+begin
+  Result := Round(0.01 * FRadius * FInnerRadiusPercent);
 end;
 
 constructor TCustomPieSeries.Create(AOwner: TComponent);
@@ -275,6 +286,7 @@ const
 var
   ps: TPieSlice;
   scaled_depth: Integer;
+  innerRadius: Integer;
 
   function PrevSlice(ASlice: TPieSlice): TPieSlice;
   begin
@@ -309,23 +321,42 @@ var
       (SliceExploded(ASlice) or SliceExploded(NextSlice(ASlice)));
   end;
 
-  procedure DrawArc3D(ASlice: TPieSlice);
+  procedure DrawArc3D(ASlice: TPieSlice; AInside: Boolean);
   var
     i, numSteps: Integer;
     a: Double;
     p: Array of TPoint;
     angle1, angle2: Double;
     clr: TColor;
+    r: Integer;
+    isVisible: Boolean;
+    outsideVisible: Boolean;
+    insideVisible: Boolean;
   begin
-    if InRange(ASlice.FPrevAngle, PI_3_4, PI_7_4) and InRange(ASlice.FNextAngle, PI_3_4, PI_7_4) then
+    if AInside and (FInnerRadiusPercent = 0) then
       exit;
-    angle1 := IfThen(InRange(ASlice.FPrevAngle, PI_3_4, PI_7_4), PI_7_4, ASlice.FPrevAngle);
-    angle2 := IfThen(InRange(ASlice.FNextAngle, PI_3_4, PI_7_4), PI_3_4, ASlice.FNextAngle);
-    numSteps := Max(Round(TWO_PI * (angle2 - angle1) * FRadius / STEP), 2);
+    if AInside then
+      isVisible := (ASlice.FPrevAngle < PI_7_4) and (ASlice.FNextAngle > PI_3_4)
+    else
+      isVisible := not (InRange(ASlice.FPrevAngle, PI_3_4, PI_7_4) and
+                        InRange(ASlice.FNextAngle, PI_3_4, PI_7_4) );
+    if not isVisible then
+      exit;
+
+    if AInside then begin
+      r := innerRadius;
+      angle1 := IfThen(InRange(ASlice.FPrevAngle, PI_3_4, PI_7_4), ASlice.FPrevAngle, PI_3_4);
+      angle2 := IfThen(InRange(ASlice.FNextAngle, PI_3_4, PI_7_4), ASlice.FNextAngle, PI_7_4);
+    end else begin
+      r := FRadius;
+      angle1 := IfThen(InRange(ASlice.FPrevAngle, PI_3_4, PI_7_4), PI_7_4, ASlice.FPrevAngle);
+      angle2 := IfThen(InRange(ASlice.FNextAngle, PI_3_4, PI_7_4), PI_3_4, ASlice.FNextAngle);
+    end;
+    numSteps := Max(Round(TWO_PI * (angle2 - angle1) * r / STEP), 2);
     SetLength(p, 2 * numSteps + 1);
     for i := 0 to numSteps - 1 do begin
       a := WeightedAverage(angle1, angle2, i / (numSteps - 1));
-      p[i] := ASlice.FBase + RotatePointX(FRadius, -a);
+      p[i] := ASlice.FBase + RotatePointX(r, -a);
       p[High(p) - i - 1] := p[i] + Point(scaled_depth, -scaled_depth);
     end;
     p[High(p)] := p[0];
@@ -337,12 +368,46 @@ var
     ADrawer.PolyLine(p, numSteps-1, numSteps+2);
   end;
 
+  procedure DrawVisibleArc3D(ASlice: TPieSlice);
+  begin
+    if ASlice.FVisible then begin
+      DrawArc3D(ASlice, false);
+      DrawArc3D(ASlice, true);
+    end;
+  end;
+
+  procedure DrawPieRing(ASlice: TPieSlice);
+  var
+    i: Integer;
+    a, angle1, angle2: Double;
+    ni, no: Integer;
+    p: Array of TPoint;
+  begin
+    angle1 := ASlice.FPrevAngle;
+    angle2 := ASlice.FNextAngle;
+    ni := Max(Round(TWO_PI * (angle2 - angle1) * innerRadius / STEP), 2);
+    no := Max(Round(TWO_PI * (angle2 - angle1) * FRadius / STEP), 2);
+    SetLength(p, ni + no);
+    for i := 0 to no - 1 do begin
+      a := WeightedAverage(angle1, angle2, i / (no - 1));
+      p[i] := ASlice.FBase + RotatePointX(FRadius, -a);
+    end;
+    for i := 0 to ni - 1 do begin
+      a := WeightedAverage(angle1, angle2, i / (ni - 1));
+      p[no + ni - 1 - i] := ASlice.FBase + RotatePointX(innerRadius, -a);
+    end;
+    ADrawer.Polygon(p, 0, Length(p));
+  end;
+
   procedure DrawStartEdge3D(ASlice: TPieSlice);
   begin
     ADrawer.SetBrushParams(
       bsSolid, GetDepthColor(SliceColor(ASlice.FOrigIndex)));
     ADrawer.DrawLineDepth(
-      ASlice.FBase, ASlice.FBase + RotatePointX(FRadius, -ASlice.FPrevAngle), scaled_depth);
+      ASlice.FBase + RotatePointX(innerRadius, -ASlice.FPrevAngle),
+      ASlice.FBase + RotatePointX(FRadius, -ASlice.FPrevAngle),
+      scaled_depth
+    );
   end;
 
   procedure DrawEndEdge3D(ASlice: TPieSlice);
@@ -350,7 +415,10 @@ var
     ADrawer.SetBrushParams(
       bsSolid, GetDepthColor(SliceColor(ASlice.FOrigIndex)));
     ADrawer.DrawLineDepth(
-      ASlice.FBase, ASlice.FBase + RotatePointX(FRadius, -ASlice.FNextAngle), scaled_depth);
+      ASlice.FBase + RotatePointX(innerRadius, -ASlice.FNextAngle),
+      ASlice.FBase + RotatePointX(FRadius, -ASlice.FNextAngle),
+      scaled_depth
+    );
   end;
 
   procedure FindLeftMostIndex(out AIndex: Integer);
@@ -373,6 +441,7 @@ begin
 
   Marks.SetAdditionalAngle(0);
   Measure(ADrawer);
+  innerRadius := CalcInnerRadius;
 
   ADrawer.SetPen(EdgePen);
   if Depth > 0 then begin
@@ -384,7 +453,8 @@ begin
         DrawStartEdge3D(FSlices[iL]);
       if EndEdgeVisible(FSlices[iL]) then
         DrawEndEdge3D(FSlices[iL]);
-      DrawArc3D(FSlices[iL]);
+      DrawArc3D(FSlices[iL], false);
+      DrawArc3D(FSlices[iL], true);
     end;
 
     for i:=iL+1 to High(FSlices) do
@@ -393,7 +463,8 @@ begin
           DrawStartEdge3D(FSlices[i]);
         if EndEdgeVisible(FSlices[i]) then
           DrawEndEdge3D(FSlices[i]);
-        DrawArc3D(FSlices[i]);
+        DrawArc3D(FSlices[i], false);
+        DrawArc3d(FSlices[i], true);
       end;
 
     if iL <> 0 then
@@ -407,17 +478,20 @@ begin
 
     // Draw arcs
     for i:= iL-1 downto 0 do
-      if FSlices[i].FVisible then DrawArc3D(FSlices[i]);
+      DrawVisibleArc3D(FSlices[i]);
   end;
 
   ADrawer.SetPen(EdgePen);
   for ps in FSlices do begin
     if not ps.FVisible then continue;
     ADrawer.SetBrushParams(bsSolid, SliceColor(ps.FOrigIndex));
-    ADrawer.RadialPie(
-      ps.FBase.X - FRadius, ps.FBase.Y - FRadius,
-      ps.FBase.X + FRadius, ps.FBase.Y + FRadius,
-      RadToDeg16(ps.FPrevAngle), RadToDeg16(ps.Angle));
+    if FInnerRadiusPercent = 0 then
+      ADrawer.RadialPie(
+        ps.FBase.X - FRadius, ps.FBase.Y - FRadius,
+        ps.FBase.X + FRadius, ps.FBase.Y + FRadius,
+        RadToDeg16(ps.FPrevAngle), RadToDeg16(ps.Angle))
+    else
+      DrawPieRing(ps);
   end;
 
   if not Marks.IsMarkLabelsVisible then exit;
@@ -437,16 +511,18 @@ var
   c: TPoint;
   pointAngle: Double;
   ps: TPieSlice;
+  innerRadius: Integer;
 begin
   for ps in FSlices do begin
     if not ps.FVisible then continue;
     c := APoint - ps.FBase;
     pointAngle := ArcTan2(-c.Y, c.X);
+    innerRadius := CalcInnerRadius;
     if pointAngle < 0 then
       pointAngle += 2 * Pi;
     if
       InRange(pointAngle, ps.FPrevAngle, ps.FNextAngle) and
-      (Sqr(c.X) + Sqr(c.Y) <= Sqr(FRadius))
+      InRange(Sqr(c.X) + Sqr(c.Y), Sqr(innerRadius), Sqr(FRadius))
     then
       exit(ps.FOrigIndex);
   end;
@@ -566,6 +642,14 @@ procedure TCustomPieSeries.SetFixedRadius(AValue: TChartDistance);
 begin
   if FFixedRadius = AValue then exit;
   FFixedRadius := AValue;
+  UpdateParentChart;
+end;
+
+procedure TCustomPieSeries.SetInnerRadiusPercent(AValue: Integer);
+begin
+  AValue := EnsureRange(AValue, 0, 100);
+  if FInnerRadiusPercent = AValue then exit;
+  FInnerRadiusPercent := AValue;
   UpdateParentChart;
 end;
 

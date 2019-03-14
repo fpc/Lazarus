@@ -1,32 +1,32 @@
 object Form1: TForm1
   Left = 459
-  Height = 433
+  Height = 482
   Top = 346
-  Width = 566
+  Width = 580
   Caption = 'Form1'
-  ClientHeight = 433
-  ClientWidth = 566
+  ClientHeight = 482
+  ClientWidth = 580
   OnCreate = FormCreate
   Position = poScreenCenter
   LCLVersion = '2.1.0.0'
   object PageControl1: TPageControl
     Left = 0
-    Height = 433
+    Height = 482
     Top = 0
-    Width = 566
+    Width = 580
     ActivePage = tsPie
     Align = alClient
     TabIndex = 0
     TabOrder = 0
     object tsPie: TTabSheet
       Caption = 'Pie'
-      ClientHeight = 405
-      ClientWidth = 558
+      ClientHeight = 454
+      ClientWidth = 572
       object ChartPie: TChart
         Left = 0
-        Height = 337
-        Top = 68
-        Width = 558
+        Height = 336
+        Top = 118
+        Width = 572
         AxisList = <        
           item
             Visible = False
@@ -54,6 +54,7 @@ object Form1: TForm1
         Color = clDefault
         OnMouseDown = ChartPieMouseDown
         object ChartPiePieSeries1: TPieSeries
+          DepthBrightnessDelta = -32
           Exploded = True
           Marks.Distance = 40
           Marks.Format = '%2:s'
@@ -64,27 +65,26 @@ object Form1: TForm1
       object Panel1: TPanel
         AnchorSideTop.Side = asrCenter
         Left = 0
-        Height = 68
+        Height = 118
         Top = 0
-        Width = 558
+        Width = 572
         Align = alTop
         Alignment = taLeftJustify
         AutoSize = True
         Caption = '  Click on a slice to explode/unexplode it'
-        ClientHeight = 68
-        ClientWidth = 558
+        ClientHeight = 118
+        ClientWidth = 572
         TabOrder = 1
         object seWords: TSpinEdit
           AnchorSideTop.Control = Panel1
-          AnchorSideRight.Control = Panel1
-          AnchorSideRight.Side = asrBottom
-          Left = 491
+          AnchorSideRight.Control = lblInnerRadius
+          Left = 326
           Height = 23
-          Top = 9
-          Width = 58
+          Top = 7
+          Width = 72
           Anchors = [akTop, akRight]
-          BorderSpacing.Top = 8
-          BorderSpacing.Right = 8
+          BorderSpacing.Top = 6
+          BorderSpacing.Right = 16
           MaxValue = 10
           OnChange = seWordsChange
           TabOrder = 0
@@ -94,9 +94,9 @@ object Form1: TForm1
           AnchorSideTop.Control = seWords
           AnchorSideTop.Side = asrCenter
           AnchorSideRight.Control = seWords
-          Left = 420
+          Left = 255
           Height = 15
-          Top = 13
+          Top = 11
           Width = 63
           Anchors = [akTop, akRight]
           BorderSpacing.Right = 8
@@ -104,14 +104,17 @@ object Form1: TForm1
           ParentColor = False
         end
         object seLabelAngle: TSpinEdit
+          AnchorSideLeft.Control = seWords
           AnchorSideTop.Control = seWords
-          AnchorSideRight.Control = lblWords
-          Left = 354
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = seWords
+          AnchorSideRight.Side = asrBottom
+          Left = 326
           Height = 23
-          Top = 9
-          Width = 50
-          Anchors = [akTop, akRight]
-          BorderSpacing.Right = 16
+          Top = 34
+          Width = 72
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Top = 4
           Increment = 5
           MaxValue = 360
           MinValue = -360
@@ -121,43 +124,43 @@ object Form1: TForm1
         object lblLabelAngle: TLabel
           AnchorSideTop.Control = seLabelAngle
           AnchorSideTop.Side = asrCenter
-          Left = 291
+          AnchorSideRight.Control = seLabelAngle
+          Left = 258
           Height = 15
-          Top = 13
+          Top = 38
           Width = 60
           Anchors = [akTop, akRight]
+          BorderSpacing.Right = 8
           Caption = 'Label angle'
           ParentColor = False
         end
         object cbRotate: TCheckBox
-          AnchorSideLeft.Control = Cb3D
-          AnchorSideLeft.Side = asrBottom
+          AnchorSideLeft.Control = cbMarkPositions
           AnchorSideTop.Control = cbMarkPositions
-          AnchorSideTop.Side = asrCenter
+          AnchorSideTop.Side = asrBottom
           AnchorSideRight.Side = asrBottom
-          Left = 462
+          Left = 255
           Height = 19
-          Top = 38
+          Top = 90
           Width = 87
-          BorderSpacing.Left = 8
-          BorderSpacing.Top = 4
           BorderSpacing.Bottom = 8
           Caption = 'Rotate labels'
           OnChange = cbRotateChange
           TabOrder = 2
         end
         object cbMarkPositions: TComboBox
+          AnchorSideLeft.Control = lblWords
           AnchorSideTop.Control = lblLabelAngle
           AnchorSideTop.Side = asrBottom
           AnchorSideRight.Control = seLabelAngle
           AnchorSideRight.Side = asrBottom
-          Left = 291
+          Left = 255
           Height = 23
-          Top = 36
-          Width = 113
-          Anchors = [akTop, akRight]
+          Top = 61
+          Width = 143
+          Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Top = 8
-          BorderSpacing.Bottom = 8
+          BorderSpacing.Bottom = 6
           ItemHeight = 15
           ItemIndex = 0
           Items.Strings = (
@@ -171,30 +174,126 @@ object Form1: TForm1
           Text = 'Around'
         end
         object Cb3D: TCheckBox
-          AnchorSideLeft.Control = cbMarkPositions
-          AnchorSideLeft.Side = asrBottom
-          AnchorSideTop.Control = cbMarkPositions
+          AnchorSideLeft.Control = lblInnerRadius
+          AnchorSideTop.Control = seLabelAngle
           AnchorSideTop.Side = asrCenter
-          Left = 420
+          Left = 414
           Height = 19
-          Top = 38
+          Top = 36
           Width = 34
-          BorderSpacing.Left = 16
           Caption = '3D'
           OnChange = Cb3DChange
           TabOrder = 4
+        end
+        object seInnerRadius: TSpinEdit
+          AnchorSideTop.Control = seWords
+          AnchorSideRight.Control = Panel1
+          AnchorSideRight.Side = asrBottom
+          Left = 497
+          Height = 23
+          Top = 7
+          Width = 62
+          Anchors = [akTop, akRight]
+          BorderSpacing.Right = 12
+          OnChange = seInnerRadiusChange
+          TabOrder = 5
+        end
+        object lblInnerRadius: TLabel
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = lblWords
+          AnchorSideRight.Control = seInnerRadius
+          Left = 414
+          Height = 15
+          Top = 11
+          Width = 75
+          Anchors = [akTop, akRight]
+          BorderSpacing.Right = 8
+          Caption = 'Inner radius %'
+          ParentColor = False
+        end
+        object lblDepth: TLabel
+          AnchorSideLeft.Control = Cb3D
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = Cb3D
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = seDepth
+          Left = 457
+          Height = 15
+          Top = 38
+          Width = 32
+          Anchors = [akTop, akRight]
+          BorderSpacing.Left = 12
+          BorderSpacing.Right = 8
+          Caption = 'Depth'
+          Enabled = False
+          ParentColor = False
+        end
+        object seDepth: TSpinEdit
+          AnchorSideLeft.Control = seInnerRadius
+          AnchorSideTop.Control = seLabelAngle
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = Panel1
+          AnchorSideRight.Side = asrBottom
+          Left = 497
+          Height = 23
+          Top = 34
+          Width = 62
+          Anchors = [akTop, akRight]
+          BorderSpacing.Right = 12
+          Enabled = False
+          OnChange = seDepthChange
+          TabOrder = 6
+          Value = 20
+        end
+        object seDepthBrightnessDelta: TSpinEdit
+          AnchorSideLeft.Control = seInnerRadius
+          AnchorSideTop.Control = seDepth
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = Panel1
+          AnchorSideRight.Side = asrBottom
+          Left = 497
+          Height = 23
+          Top = 61
+          Width = 62
+          Anchors = [akTop, akRight]
+          BorderSpacing.Top = 4
+          BorderSpacing.Right = 12
+          Enabled = False
+          MaxValue = 255
+          MinValue = -255
+          OnChange = seDepthBrightnessDeltaChange
+          TabOrder = 7
+          Value = -32
+        end
+        object lblDepthBrightnessDelta: TLabel
+          AnchorSideLeft.Control = cbMarkPositions
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = seDepthBrightnessDelta
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = seDepthBrightnessDelta
+          Left = 398
+          Height = 15
+          Top = 65
+          Width = 91
+          Alignment = taRightJustify
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Right = 8
+          Caption = 'Brightness delta'
+          Enabled = False
+          ParentColor = False
+          WordWrap = True
         end
       end
     end
     object tsPolar: TTabSheet
       Caption = 'Polar'
-      ClientHeight = 405
-      ClientWidth = 558
+      ClientHeight = 454
+      ClientWidth = 572
       object ChartPolar: TChart
         Left = 0
-        Height = 405
+        Height = 454
         Top = 0
-        Width = 420
+        Width = 457
         AxisList = <        
           item
             Marks.LabelBrush.Style = bsClear
@@ -237,14 +336,14 @@ object Form1: TForm1
         end
       end
       object pnlPolar: TPanel
-        Left = 420
-        Height = 405
+        Left = 457
+        Height = 454
         Top = 0
-        Width = 138
+        Width = 115
         Align = alRight
         AutoSize = True
-        ClientHeight = 405
-        ClientWidth = 138
+        ClientHeight = 454
+        ClientWidth = 115
         TabOrder = 1
         object cbCloseCircle: TCheckBox
           AnchorSideLeft.Control = pnlPolar
@@ -296,7 +395,7 @@ object Form1: TForm1
           Left = 9
           Height = 17
           Top = 117
-          Width = 120
+          Width = 97
           BorderSpacing.Left = 8
           BorderSpacing.Top = 4
           BorderSpacing.Right = 8
@@ -324,23 +423,18 @@ object Form1: TForm1
   end
   object ListChartSource1: TListChartSource
     DataPoints.Strings = (
-      '0|1|?|'
-      '0|2|?|'
-      '0|3|?|'
-      '0|1|?|'
-      '0|2|?|'
-      '0|3|?|'
-      '0|1|?|'
-      '0|2|?|'
-      '0|3|?|'
       '0|5|?|'
+      '0|3|?|'
+      '0|1|?|'
+      '0.20000000000000001|0.20000000000000001|?|'
+      '0|1|?|'
     )
-    left = 488
-    top = 296
+    left = 64
+    top = 256
   end
   object ChartToolset1: TChartToolset
-    left = 488
-    top = 240
+    left = 64
+    top = 200
   end
   object RandomChartSource1: TRandomChartSource
     PointsNumber = 15
@@ -350,7 +444,7 @@ object Form1: TForm1
     YCount = 2
     YMax = 10
     YMin = 2
-    left = 488
-    top = 356
+    left = 64
+    top = 316
   end
 end

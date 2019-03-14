@@ -26,6 +26,11 @@ type
     cbShowPoints: TCheckBox;
     cbFilled: TCheckBox;
     Cb3D: TCheckBox;
+    seDepth: TSpinEdit;
+    seDepthBrightnessDelta: TSpinEdit;
+    lblInnerRadius: TLabel;
+    lblDepth: TLabel;
+    lblDepthBrightnessDelta: TLabel;
     lblTransparency: TLabel;
     lblWords: TLabel;
     lblLabelAngle: TLabel;
@@ -37,6 +42,7 @@ type
     sbTransparency: TScrollBar;
     seWords: TSpinEdit;
     seLabelAngle: TSpinEdit;
+    seInnerRadius: TSpinEdit;
     tsPolar: TTabSheet;
     tsPie: TTabSheet;
     procedure cbCloseCircleChange(Sender: TObject);
@@ -47,6 +53,9 @@ type
       Shift: TShiftState; X, Y: Integer);
     procedure cbShowPointsChange(Sender: TObject);
     procedure Cb3DChange(Sender: TObject);
+    procedure seDepthBrightnessDeltaChange(Sender: TObject);
+    procedure seDepthChange(Sender: TObject);
+    procedure seInnerRadiusChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure sbTransparencyChange(Sender: TObject);
     procedure seWordsChange(Sender: TObject);
@@ -95,10 +104,30 @@ begin
 end;
 
 procedure TForm1.Cb3DChange(Sender: TObject);
-var
-  DEPTH: array[boolean] of Integer = (0, 10);
 begin
-  ChartPiePieSeries1.Depth := DEPTH[Cb3D.Checked];
+  if cb3D.Checked then
+    ChartPiePieSeries1.Depth := seDepth.Value
+  else
+    ChartPiePieSeries1.Depth := 0;
+  seDepth.Enabled := cb3D.Checked;
+  lblDepth.Enabled := cb3D.Checked;
+  seDepthBrightnessDelta.Enabled := cb3D.Checked;
+  lblDepthBrightnessDelta.Enabled := cb3D.Checked;
+end;
+
+procedure TForm1.seDepthBrightnessDeltaChange(Sender: TObject);
+begin
+  ChartPiePieSeries1.DepthBrightnessDelta := seDepthBrightnessDelta.Value;
+end;
+
+procedure TForm1.seDepthChange(Sender: TObject);
+begin
+  ChartPiePieSeries1.Depth := seDepth.Value;
+end;
+
+procedure TForm1.seInnerRadiusChange(Sender: TObject);
+begin
+  ChartPiePieSeries1.InnerRadiusPercent := seInnerRadius.Value;
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
