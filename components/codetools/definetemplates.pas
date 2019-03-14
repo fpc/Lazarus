@@ -8862,6 +8862,9 @@ begin
 
       if FullVersion<>'' then begin
         // run fpc/pas2js and parse output
+
+        if (Pos('-Fr',ExtraOptions)<1) and (Pos('-Fr',Caches.ExtraOptions)>0) then
+          ExtraOptions:=Trim(ExtraOptions+' '+Caches.ExtraOptions);
         RunFPCVerbose(Compiler,TestFilename,CfgFiles,RealCompiler,UnitPaths,
                       IncludePaths,UnitScopes,Defines,Undefines,ExtraOptions);
         //debugln(['TPCTargetConfigCache.Update UnitPaths="',UnitPaths.Text,'"']);
