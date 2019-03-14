@@ -350,7 +350,7 @@ begin
       APropInfo:=APropList^[i];
       if Assigned(PPropInfo(APropInfo)^.GetProc) and
          Assigned(APropInfo^.PropType) and
-         IsStoredProp(AnInstance, APropInfo) then
+         Assigned(PPropInfo(APropInfo)^.SetProc) then
         case APropInfo^.PropType^.Kind of
           tkSString,
           tkLString,
