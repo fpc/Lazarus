@@ -26,7 +26,7 @@ uses
   LCLType, LCLProc, Forms, Controls, Buttons, StdCtrls, Dialogs, Menus, Graphics,
   ButtonPanel, Clipbrd,
   // LazUtils
-  FileUtil, LazFileUtils, LazStringUtils,
+  FileUtil, LazFileUtils, LazStringUtils, LazFileCache,
   // LazControls
   ShortPathEdit,
   // IdeIntf
@@ -226,7 +226,7 @@ begin
   Result:=TObject(0);
   if (FEffectiveBaseDirectory<>'') and FilenameIsAbsolute(FEffectiveBaseDirectory) then
     APath:=CreateAbsolutePath(APath, FEffectiveBaseDirectory);
-  if DirectoryExists(APath) then
+  if DirPathExistsCached(APath) then
     Result:=TObject(1);
 end;
 

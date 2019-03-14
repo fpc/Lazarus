@@ -21,11 +21,11 @@ type
 
   TPackageIntegrationOptionsFrame = class(TAbstractIDEOptionsEditor)
     DesignTimeRadioButton: TRadioButton;
+    DocGroupBox: TGroupBox;
     FPDocPackageNameEdit: TEdit;
     FPDocPackageNameLabel: TLabel;
-    FPDocSearchPathsLabel: TLabel;
-    DocGroupBox: TGroupBox;
     FPDocSearchPathsEdit: TEdit;
+    FPDocSearchPathsLabel: TLabel;
     PkgTypeGroupBox: TGroupBox;
     RunAndDesignTimeRadioButton: TRadioButton;
     RunTimeOnlyRadioButton: TRadioButton;
@@ -36,6 +36,7 @@ type
     FLazPackage: TLazPackage;
     FPDocPathButton: TPathEditorButton;
     FStoredPkgType: TLazPackageType;
+    procedure FPDocPathButtonClick(Sender: TObject);
     function GetSelectedPkgType: TLazPackageType;
     function PathEditBtnExecuted(Context: String; var NewPath: String): Boolean;
     procedure SetSelectedPkgType(PkgType: TLazPackageType);
@@ -82,6 +83,11 @@ begin
     Result:=lptRunTime
   else
     Result:=lptRunAndDesignTime;
+end;
+
+procedure TPackageIntegrationOptionsFrame.FPDocPathButtonClick(Sender: TObject);
+begin
+  FPDocPathButton.CurrentPathEditor.BaseDirectory:=FLazPackage.Directory;
 end;
 
 function TPackageIntegrationOptionsFrame.PathEditBtnExecuted(Context: String;
@@ -177,6 +183,7 @@ begin
     AnchorParallel(akTop, 0, FPDocSearchPathsEdit);
     AnchorParallel(akBottom, 0, FPDocSearchPathsEdit);
     AssociatedEdit := FPDocSearchPathsEdit;
+    OnClick:=@FPDocPathButtonClick;
     OnExecuted := @PathEditBtnExecuted;
     Parent := DocGroupBox;
   end;
