@@ -785,6 +785,7 @@ end;
 
 procedure TRunParamsOptsDlg.SetupPreviewPage;
 begin
+  PreviewPage.Caption:=dlgWRDPreview;
   PreviewMultilineCheckBox.Caption:=lisShowMultipleLines;
   PreviewMultilineCheckBox.Checked:=MiscellaneousOptions.ShowCompOptMultiLine;
 end;
