@@ -812,9 +812,29 @@ end;
 
 procedure TRunParamsOptsDlg.UpdatePreview;
 var
-  sl, ParamList: TStringList;
+  sl: TStringList;
   MultiLine: Boolean;
-  s: TCaption;
+
+  procedure AddLines(aCaption, Params: string);
+  var
+    ParamList: TStringList;
+  begin
+    sl.Add(aCaption);
+    if MultiLine then begin
+      ParamList:=TStringList.Create;
+      try
+        SplitCmdLineParams(Params,ParamList);
+        sl.AddStrings(ParamList);
+      finally
+        ParamList.Free;
+      end;
+    end else begin
+      sl.Add(Params);
+    end;
+  end;
+
+var
+  s: string;
 begin
   MultiLine:=PreviewMultilineCheckBox.Checked;
   if MultiLine then
@@ -840,25 +860,14 @@ begin
       s:=UseLaunchingApplicationComboBox.Text;
       if s<>'' then begin
         IDEMacros.SubstituteMacros(s);
-        sl.Add('Launching Application: '+s);
+        AddLines('Launching Application:',s);
       end;
     end;
 
     s:=CmdLineParametersComboBox.Text;
     if s<>'' then begin
       IDEMacros.SubstituteMacros(s);
-      sl.Add('Parameters:');
-      if MultiLine then begin
-        ParamList:=TStringList.Create;
-        try
-          SplitCmdLineParams(s,ParamList);
-          sl.AddStrings(ParamList);
-        finally
-          ParamList.Free;
-        end;
-      end else begin
-        sl.Add(s);
-      end;
+      AddLines('Parameters:',s);
     end;
 
     if UseDisplayCheckBox.Checked then begin

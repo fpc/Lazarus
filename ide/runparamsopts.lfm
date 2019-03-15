@@ -16,10 +16,10 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
     Height = 396
     Top = 80
     Width = 500
-    ActivePage = PreviewPage
+    ActivePage = GeneralPage
     Align = alClient
     BorderSpacing.Bottom = 6
-    TabIndex = 2
+    TabIndex = 0
     TabOrder = 1
     object GeneralPage: TTabSheet
       Caption = 'GeneralPage'
