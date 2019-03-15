@@ -468,11 +468,13 @@ begin
 end;
 
 procedure TActionListEditor.OnComponentRenamed(AComponent: TComponent);
+var
+  i: Integer;
 begin
-  if Assigned(FActionList)
-  and (AComponent is TAction) and (TAction(AComponent).ActionList = FActionList)
-  and Assigned(FActionList.ActionByName(AComponent.Name)) then
-    lstActionName.Items[lstActionName.ItemIndex] := AComponent.Name;
+  if not (AComponent is TContainedAction) then Exit;
+  i := lstActionName.Items.IndexOfObject(AComponent);
+  if i >= 0 then
+    lstActionName.Items[i] := AComponent.Name;
 end;
 
 procedure TActionListEditor.OnComponentSelection(
