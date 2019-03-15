@@ -6769,7 +6769,8 @@ var
     end;
     AFilename:=SearchIncludeFilename(StartPos,AFilename);
     if OldFilename<>AFilename then begin
-      DebugLn('TStandardCodeTool.FixIncludeFilenames.FixFilename replacing in '+Code.Filename+' include directive "',OldFilename,'" with "',AFilename,'"');
+      DebugLn('TStandardCodeTool.FixIncludeFilenames.FixFilename replacing in '
+             +Code.Filename+' include directive "',OldFilename,'" with "',AFilename,'"');
       SourceChangeCache.ReplaceEx(gtNone,gtNone,0,0,Code,StartPos,EndPos,AFilename);
     end;
   end;
