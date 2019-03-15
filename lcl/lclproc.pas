@@ -889,8 +889,7 @@ begin
  Result := (((Key >= VK_A) and (Key <= VK_Z)) or
             ((Key >= VK_NUMPAD0) and (Key <= VK_DIVIDE)) or
             ((Key >= VK_0) and (Key <= VK_9)) or
-            ((Key >= 186) and (Key <= 188)) or
-            ((Key >= 190) and (Key <= 192)) or
+            ((Key >= 186) and (Key <= 192)) or
             ((Key >= 219) and (Key <= 222)));
 end;
 
