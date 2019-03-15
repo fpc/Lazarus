@@ -293,7 +293,7 @@ end;
 type
   TAccessCustomEdit = class(TCustomEdit);
 
-  TWindowProcHelper = class
+  TWindowProcHelper = object
   private
     // WindowProc parameters
     Window: HWnd;            // DWord / QWord
@@ -2663,17 +2663,13 @@ function
 var
   Helper: TWindowProcHelper;
 begin
-  Helper := TWindowProcHelper.Create;
-  try
-    Helper.Window := Window;
-    Helper.Msg := Msg;
-    Helper.WParam := WParam;
-    Helper.LParam := LParam;
-    Helper.NMHdr := PNMHdr(LParam);
-    Result := Helper.DoWindowProc;
-  finally
-    Helper.Free;
-  end;
+  helper := default(TWindowProcHelper);
+  Helper.Window := Window;
+  Helper.Msg := Msg;
+  Helper.WParam := WParam;
+  Helper.LParam := LParam;
+  Helper.NMHdr := PNMHdr(LParam);
+  Result := Helper.DoWindowProc;
 end;
 
 {$ifdef MSG_DEBUG}
