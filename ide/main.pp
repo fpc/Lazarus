@@ -7235,6 +7235,16 @@ begin
     Process.Executable := ExeFile;
     ARunMode := Project1.RunParameterOptions.GetActiveMode;
 
+    if ARunMode<>nil then
+      RunWorkingDirectory := ARunMode.WorkingDirectory
+    else
+      RunWorkingDirectory := '';
+    if not GlobalMacroList.SubstituteStr(RunWorkingDirectory) then
+      RunWorkingDirectory := '';
+    if RunWorkingDirectory = '' then
+      RunWorkingDirectory := ExtractFilePath(Process.Executable);
+    Process.CurrentDirectory := RunWorkingDirectory;
+
     if RunAppBundle
         and FileExistsUTF8(Process.Executable)
         and FileExistsUTF8('/usr/bin/open') then
@@ -7255,17 +7265,6 @@ begin
           mtError, [mbOK]);
       Exit(mrCancel);
     end;
-
-    if ARunMode<>nil then
-      RunWorkingDirectory := ARunMode.WorkingDirectory
-    else
-      RunWorkingDirectory := '';
-    if not GlobalMacroList.SubstituteStr(RunWorkingDirectory) then
-      RunWorkingDirectory := '';
-
-    if RunWorkingDirectory = '' then
-      RunWorkingDirectory := ExtractFilePath(Process.Executable);
-    Process.CurrentDirectory := RunWorkingDirectory;
 
     if not DirectoryExists(Process.CurrentDirectory) then
     begin

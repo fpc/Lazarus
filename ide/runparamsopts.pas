@@ -49,13 +49,13 @@ uses
   {$ENDIF}
   Classes, SysUtils,
   // LCL
-  Controls, Forms, Buttons, StdCtrls, ComCtrls, Dialogs, ButtonPanel,
+  Controls, Forms, Buttons, StdCtrls, ComCtrls, Dialogs, ButtonPanel, ExtCtrls,
   // IdeIntf
-  BaseIDEIntf, IDEHelpIntf, ProjectIntf, IDEDialogs, IDEImagesIntf,
+  BaseIDEIntf, IDEHelpIntf, ProjectIntf, IDEDialogs, IDEImagesIntf, MacroIntf,
   // LazUtils
   LazFileUtils, LazFileCache, LazUTF8, Laz2_XMLCfg,
   // IDE
-  IDEProcs, SysVarUserOverrideDlg, InputHistory, LazarusIDEStrConsts, ExtCtrls;
+  IDEProcs, MiscOptions, SysVarUserOverrideDlg, InputHistory, LazarusIDEStrConsts;
 
 { The xml format version:
     When the format changes (new values, changed formats) we can distinguish old
@@ -120,46 +120,52 @@ type
 
   TRunParamsOptsDlg = class(TForm)
     ButtonPanel: TButtonPanel;
-    SaveInComboBox: TComboBox;
     CmdLineParametersComboBox: TComboBox;
-    ModesComboBox: TComboBox;
-    ModesLabel: TLabel;
-    SaveInLabel: TLabel;
-    Panel1: TPanel;
-    ToolBar1: TToolBar;
-    NewModeButton: TToolButton;
+    CmdLineParametersGroupBox: TGroupBox;
     DeleteModeButton: TToolButton;
-    UseDisplayCheckBox: TCheckBox;
     DisplayEdit: TEdit;
     DisplayGroupBox: TGroupBox;
+    EnvVarsPage: TTabSheet;
+    GeneralPage: TTabSheet;
     HostApplicationBrowseBtn: TButton;
+    HostApplicationEdit: TEdit;
+    HostApplicationGroupBox: TGroupBox;
+    IncludeSystemVariablesCheckBox: TCheckBox;
+    ModesComboBox: TComboBox;
+    ModesLabel: TLabel;
+    NewModeButton: TToolButton;
+    Notebook: TPageControl;
+    Panel1: TPanel;
+    PreviewMemo: TMemo;
+    PreviewMultilineCheckBox: TCheckBox;
+    PreviewPage: TTabSheet;
+    SaveInComboBox: TComboBox;
+    SaveInLabel: TLabel;
+    SystemVariablesGroupBox: TGroupBox;
+    SystemVariablesListView: TListView;
+    ToolBar1: TToolBar;
+    UseDisplayCheckBox: TCheckBox;
+    UseLaunchingApplicationCheckBox: TCheckBox;
+    UseLaunchingApplicationComboBox: TComboBox;
+    UseLaunchingApplicationGroupBox: TGroupBox;
     UserOverridesAddButton: TBitBtn;
     UserOverridesDeleteButton: TBitBtn;
     UserOverridesEditButton: TBitBtn;
+    UserOverridesGroupBox: TGroupBox;
+    UserOverridesListView: TListView;
     WorkingDirectoryBtn: TButton;
     WorkingDirectoryComboBox: TComboBox;
     WorkingDirectoryGroupBox: TGroupBox;
-    UseLaunchingApplicationCheckBox: TCheckBox;
-    IncludeSystemVariablesCheckBox: TCheckBox;
-    UseLaunchingApplicationComboBox: TComboBox;
-    HostApplicationEdit: TEdit;
-    UseLaunchingApplicationGroupBox: TGroupBox;
-    CmdLineParametersGroupBox: TGroupBox;
-    HostApplicationGroupBox: TGroupBox;
-    UserOverridesGroupBox: TGroupBox;
-    SystemVariablesGroupBox: TGroupBox;
-    SystemVariablesListView: TListView;
-    UserOverridesListView: TListView;
-    Notebook: TPageControl;
-    GeneralPage: TTabSheet;
-    EnvVarsPage: TTabSheet;
     procedure DeleteModeButtonClick(Sender: TObject);
     procedure EnvVarsPageResize(Sender: TObject);
+    procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
+    procedure FormCreate(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
     procedure ModesComboBoxChange(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure HostApplicationBrowseBtnClick(Sender: TObject);
     procedure NewModeButtonClick(Sender: TObject);
+    procedure PreviewMultilineCheckBoxChange(Sender: TObject);
     procedure UseLaunchingApplicationCheckBoxChange(Sender: TObject);
     procedure UserOverridesListViewSelectItem(Sender: TObject; {%H-}Item: TListItem;
       {%H-}Selected: Boolean);
@@ -174,11 +180,13 @@ type
     procedure SetupNotebook;
     procedure SetupLocalPage;
     procedure SetupEnvironmentPage;
+    procedure SetupPreviewPage;
     procedure SetOptions(NewOptions: TRunParamsOptions);
     procedure FillListView(ListView: TListView; sl: TStringList);
     procedure FillSystemVariablesListView;
     procedure FillUserOverridesListView(const AMode: TRunParamsOptionsMode);
     procedure ReloadModesComboBox;
+    procedure UpdatePreview;
     procedure SaveToOptions;
     procedure SaveToOptionsMode(const AMode: TRunParamsOptionsMode);
     procedure LoadFromOptionsMode(const AMode: TRunParamsOptionsMode);
@@ -699,6 +707,7 @@ begin
 
   SetupLocalPage;
   SetupEnvironmentPage;
+  SetupPreviewPage;
   IDEImages.AssignImage(UserOverridesAddButton, 'laz_add');
   IDEImages.AssignImage(UserOverridesEditButton, 'laz_edit');
   IDEImages.AssignImage(UserOverridesDeleteButton, 'laz_delete');
@@ -724,6 +733,11 @@ begin
   ReloadModesComboBox;
   SelectMode(NewName);
   fLastSelectedMode := NewMode;
+end;
+
+procedure TRunParamsOptsDlg.PreviewMultilineCheckBoxChange(Sender: TObject);
+begin
+  UpdatePreview;
 end;
 
 procedure TRunParamsOptsDlg.SetupLocalPage;
@@ -769,6 +783,12 @@ begin
   IncludeSystemVariablesCheckBox.Caption := dlgIncludeSystemVariables;
 end;
 
+procedure TRunParamsOptsDlg.SetupPreviewPage;
+begin
+  PreviewMultilineCheckBox.Caption:=lisShowMultipleLines;
+  PreviewMultilineCheckBox.Checked:=MiscellaneousOptions.ShowCompOptMultiLine;
+end;
+
 procedure TRunParamsOptsDlg.OkButtonClick(Sender: TObject);
 begin
   if SelectedMode<>nil then
@@ -790,6 +810,71 @@ begin
   end;
 end;
 
+procedure TRunParamsOptsDlg.UpdatePreview;
+var
+  sl, ParamList: TStringList;
+  MultiLine: Boolean;
+  s: TCaption;
+begin
+  MultiLine:=PreviewMultilineCheckBox.Checked;
+  if MultiLine then
+    PreviewMemo.ScrollBars:=ssAutoBoth
+  else
+    PreviewMemo.ScrollBars:=ssAutoVertical;
+
+  sl:=TStringList.Create;
+  try
+    s:=HostApplicationEdit.Text;
+    if s<>'' then begin
+      IDEMacros.SubstituteMacros(s);
+      sl.Add('Host Application: '+s);
+    end;
+
+    s:=WorkingDirectoryComboBox.Text;
+    if s<>'' then begin
+      IDEMacros.SubstituteMacros(s);
+      sl.Add('Working Directory: '+s);
+    end;
+
+    if UseLaunchingApplicationCheckBox.Checked then begin
+      s:=UseLaunchingApplicationComboBox.Text;
+      if s<>'' then begin
+        IDEMacros.SubstituteMacros(s);
+        sl.Add('Launching Application: '+s);
+      end;
+    end;
+
+    s:=CmdLineParametersComboBox.Text;
+    if s<>'' then begin
+      IDEMacros.SubstituteMacros(s);
+      sl.Add('Parameters:');
+      if MultiLine then begin
+        ParamList:=TStringList.Create;
+        try
+          SplitCmdLineParams(s,ParamList);
+          sl.AddStrings(ParamList);
+        finally
+          ParamList.Free;
+        end;
+      end else begin
+        sl.Add(s);
+      end;
+    end;
+
+    if UseDisplayCheckBox.Checked then begin
+      s:=DisplayEdit.Text;
+      if s<>'' then begin
+        IDEMacros.SubstituteMacros(s);
+        sl.Add('Display: '+s);
+      end;
+    end;
+
+    PreviewMemo.Lines.Assign(sl);
+  finally
+    sl.Free;
+  end;
+end;
+
 procedure TRunParamsOptsDlg.SaveToOptions;
 begin
   fSaveToOptions.Assign(fOptions);
@@ -808,6 +893,16 @@ begin
 
   UserOverridesListView.Column[0].Width := UserOverridesListView.Width div 2;
   UserOverridesListView.Column[1].Width := UserOverridesListView.Column[0].Width;
+end;
+
+procedure TRunParamsOptsDlg.FormClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+begin
+  MiscellaneousOptions.ShowCompOptMultiLine:=PreviewMultilineCheckBox.Checked;
+end;
+
+procedure TRunParamsOptsDlg.FormCreate(Sender: TObject);
+begin
 end;
 
 procedure TRunParamsOptsDlg.HelpButtonClick(Sender: TObject);
@@ -854,7 +949,7 @@ var
   S: String;
 begin
   // local
-  HostApplicationEdit.Text   := AMode.HostApplicationFilename;
+  HostApplicationEdit.Text := AMode.HostApplicationFilename;
 
   // WorkingDirectoryComboBox
   List:=InputHistories.HistoryLists.GetList(hlWorkingDirectory,true,rltFile);
@@ -902,6 +997,8 @@ begin
 
   fOptions.ActiveModeName := AMode.Name;
   fLastSelectedMode := AMode;
+
+  UpdatePreview;
 end;
 
 procedure TRunParamsOptsDlg.UseLaunchingApplicationCheckBoxChange(Sender: TObject);
