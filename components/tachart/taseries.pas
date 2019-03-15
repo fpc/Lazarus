@@ -130,6 +130,7 @@ type
     property FixedRadius;
     property InnerRadiusPercent;
     property MarkDistancePercent;
+    property MarkPositionCentered;
     property MarkPositions;
     property Marks;
     property RotateLabels;

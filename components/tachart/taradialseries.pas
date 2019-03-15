@@ -63,6 +63,7 @@ type
   private
     FCenter: TPoint;
     FMarkDistancePercent: Boolean;
+    FMarkPositionCentered: Boolean;
     FMarkPositions: TPieMarkPositions;
     FRadius: Integer;
     FInnerRadiusPercent: Integer;
@@ -78,6 +79,7 @@ type
     procedure SetFixedRadius(AValue: TChartDistance);
     procedure SetInnerRadiusPercent(AValue: Integer);
     procedure SetMarkDistancePercent(AValue: Boolean);
+    procedure SetMarkPositionCentered(AValue: Boolean);
     procedure SetMarkPositions(AValue: TPieMarkPositions);
     procedure SetRotateLabels(AValue: Boolean);
     function SliceColor(AIndex: Integer): TColor;
@@ -85,9 +87,11 @@ type
   protected
     function CalcInnerRadius: Integer; inline;
     procedure GetLegendItems(AItems: TChartLegendItems); override;
-    property Radius: Integer read FRadius;
     property InnerRadiusPercent: Integer
       read FInnerRadiusPercent write SetInnerRadiusPercent default 0;
+    property MarkPositionCentered: Boolean
+      read FMarkPositionCentered write SetMarkPositionCentered default false;
+    property Radius: Integer read FRadius;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -249,6 +253,8 @@ begin
       Self.FExploded := FExploded;
       Self.FFixedRadius := FFixedRadius;
       Self.FInnerRadiusPercent := FInnerRadiusPercent;
+      Self.FMarkDistancePercent := FMarkDistancePercent;
+      Self.FMarkPositionCentered := FMarkPositionCentered;
       Self.FRotateLabels := FRotateLabels;
     end;
   inherited Assign(ASource);
@@ -376,7 +382,7 @@ var
     end;
   end;
 
-  procedure DrawPieRing(ASlice: TPieSlice);
+  procedure DrawRing(ASlice: TPieSlice);
   var
     i: Integer;
     a, angle1, angle2: Double;
@@ -433,9 +439,21 @@ var
     AIndex := 0;
   end;
 
+  procedure FindRegionIndexes(out AIndex14: Integer);
+  var
+    j: Integer;
+  begin
+    AIndex14 := 0;
+    for j := 0 to High(FSlices) do
+      if FSlices[j].FPrevAngle > PI_1_4 then begin
+        AIndex14 := j;
+        break;
+      end;
+  end;
+
 var
   prevLabelPoly: TPointArray = nil;
-  i, iL: Integer;
+  i, iL, i14: Integer;
 begin
   if IsEmpty then exit;
 
@@ -447,6 +465,7 @@ begin
   if Depth > 0 then begin
     scaled_depth := ADrawer.Scale(Depth);
     FindLeftMostIndex(iL);
+    FindRegionIndexes(i14);
 
     if FSlices[iL].FVisible then begin
       if StartEdgeVisible(FSlices[iL]) then
@@ -477,8 +496,19 @@ begin
         end;
 
     // Draw arcs
-    for i:= iL-1 downto 0 do
+    if FSlices[iL].FNextAngle > PI_7_4 then dec(iL);
+    if FSlices[i14].FNextAngle > PI_7_4 then dec(i14);
+    for i := iL downto i14 do
       DrawVisibleArc3D(FSlices[i]);
+
+    for i := 0 to i14 do begin
+      if EndEdgeVisible(FSlices[i]) then DrawEndEdge3D(FSlices[i]);
+      DrawVisibleArc3D(FSlices[i]);
+    end;
+      {
+    for i:= iL downto 0 do
+      DrawVisibleArc3D(FSlices[i]);
+      }
   end;
 
   ADrawer.SetPen(EdgePen);
@@ -491,7 +521,7 @@ begin
         ps.FBase.X + FRadius, ps.FBase.Y + FRadius,
         RadToDeg16(ps.FPrevAngle), RadToDeg16(ps.Angle))
     else
-      DrawPieRing(ps);
+      DrawRing(ps);
   end;
 
   if not Marks.IsMarkLabelsVisible then exit;
@@ -653,6 +683,13 @@ begin
   UpdateParentChart;
 end;
 
+procedure TCustomPieSeries.SetMarkPositionCentered(AValue: Boolean);
+begin
+  if FMarkPositionCentered = AValue then exit;
+  FMarkPositionCentered := AValue;
+  UpdateParentChart;
+end;
+
 procedure TCustomPieSeries.SetMarkPositions(AValue: TPieMarkPositions);
 begin
   if FMarkPositions = AValue then exit;
@@ -746,7 +783,7 @@ function TCustomPieSeries.TryRadius(ADrawer: IChartDrawer): TRect;
     with ALabel do begin
       FCenter := FAttachment;
       if not Marks.IsMarkLabelsVisible then exit;
-        FText := FormattedMark(AIndex);
+      FText := FormattedMark(AIndex);
       if FText = '' then exit;
       if RotateLabels then
         Marks.SetAdditionalAngle(AAngle);
@@ -801,16 +838,20 @@ begin
           ExpandRect(
             Result, FBase + Point(scaled_depth, -scaled_depth),
             FRadius, -FPrevAngle, -FNextAngle);
-        FLabel.FAttachment := EndPoint(a, FRadius) + FBase;
+        if FMarkPositionCentered  then
+          FLabel.FAttachment := EndPoint(a, (CalcInnerRadius + FRadius) div 2) + FBase
+        else
+          FLabel.FAttachment := EndPoint(a, FRadius) + FBase;
         PrepareLabel(FLabel, i, a);
       end;
       prevAngle := FNextAngle;
     end;
-    j += 1;
+    inc(j);
   end;
   SetLength(FSlices, j);
   InflateRect(Result, MARGIN, MARGIN);
 end;
+
 
 { TPolarSeries }
 
