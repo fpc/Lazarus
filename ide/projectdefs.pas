@@ -902,9 +902,23 @@ end;
 destructor TLazProjectFileDescriptors.Destroy;
 var
   i: Integer;
+  Name: String;
+  Desc: TProjectFileDescriptor;
 begin
   fDestroying:=true;
-  for i:=Count-1 downto 0 do Items[i].Release;
+  //for i:=Count-1 downto 0 do
+  //  debugln(['TLazProjectFileDescriptors.Destroy ',Items[i].ClassName]);
+  for i:=Count-1 downto 0 do begin
+    Name:='Index '+IntToStr(i);
+    try
+      Desc:=Items[i];
+      Name:=Desc.Name+':'+Desc.ClassName;
+      Desc.Release;
+    except
+      on E: Exception do
+        debugln(['Error: (lazarus) [TLazProjectFileDescriptors.Destroy] ',Name]);
+    end;
+  end;
   FItems.Free;
   FItems:=nil;
   ProjectFileDescriptors:=nil;

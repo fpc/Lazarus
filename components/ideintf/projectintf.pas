@@ -1019,7 +1019,7 @@ end;
 procedure TProjectFileDescriptor.Release;
 begin
   //debugln('TProjectFileDescriptor.Release A ',Name,' ',dbgs(FReferenceCount));
-  if FReferenceCount=0 then
+  if FReferenceCount<=0 then
     raise Exception.Create('');
   dec(FReferenceCount);
   if FReferenceCount=0 then Free;
