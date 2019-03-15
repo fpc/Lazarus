@@ -2175,7 +2175,7 @@ begin
   // HintTimer
   FAutoHintTimer := TIdleTimer.Create(nil);
   with FAutoHintTimer do begin
-    Interval := EditorOpts.AutoDelayInMSec;
+    Interval := EditorOpts.AutoHintDelayInMSec;
     Enabled := False;
     AutoEnabled := False;
     OnTimer := @HintTimer;
@@ -10311,7 +10311,7 @@ begin
     IndentToTokenStart:=EditorOpts.CodeTemplateIndentToTokenStart;
   end;
 
-  FHints.AutoHintTimer.Interval:=EditorOpts.AutoDelayInMSec;
+  FHints.AutoHintTimer.Interval:=EditorOpts.AutoHintDelayInMSec;
 
   if FDefaultCompletionForm <> nil then begin
     FDefaultCompletionForm.LongLineHintTime := EditorOpts.CompletionLongLineHintInMSec;

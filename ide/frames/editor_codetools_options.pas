@@ -41,20 +41,23 @@ type
   TEditorCodetoolsOptionsFrame = class(TAbstractIDEOptionsEditor)
     AutoCompleteBlockCheckBox: TCheckBox;
     AutoDelayLabel: TLabel;
+    AutoHDelayLabel: TLabel;
+    AutoHintDelayTrackBar: TTrackBar;
     AutoDisplayFuncProtoCheckBox: TCheckBox;
+    AutoHintDelayLabel: TLabel;
     DbgToolTipAutoCastClass: TCheckBox;
     CompletionDropDownHintLabel: TLabel;
     CompletionDropDownHint: TComboBox;
     CompletionDropDownDelayLabel: TLabel;
-    AutoDelayTrackBar: TTrackBar;
+    AutoCompletionDelayTrackBar: TTrackBar;
     CompletionDropDownLabel: TLabel;
     CompletionDropDownHintTrackBar: TTrackBar;
     AutoToolTipExprEvalCheckBox: TCheckBox;
-    AutoHintAndCompletionDelayLabel: TLabel;
+    AutoCompletionDelayLabel: TLabel;
     ToolTipBevel: TBevel;
     AutoToolTipSymbToolsCheckBox: TCheckBox;
     AutoRemoveEmptyMethodsOnSave: TCheckBox;
-    procedure AutoDelayTrackBarChange(Sender: TObject);
+    procedure AutoCompletionDelayTrackBarChange(Sender: TObject);
   public
     function GetTitle: String; override;
     procedure Setup({%H-}ADialog: TAbstractOptionsEditorDialog); override;
@@ -69,10 +72,12 @@ implementation
 
 { TEditorCodetoolsOptionsFrame }
 
-procedure TEditorCodetoolsOptionsFrame.AutoDelayTrackBarChange(Sender: TObject);
+procedure TEditorCodetoolsOptionsFrame.AutoCompletionDelayTrackBarChange(Sender: TObject);
 begin
   AutoDelayLabel.Caption :=
-    Format(dlgEdDelayInSec, [FormatFloat('0.00', AutoDelayTrackBar.Position/1000)]);
+    Format(dlgEdDelayInSec, [FormatFloat('0.00', AutoCompletionDelayTrackBar.Position/1000)]);
+  AutoHDelayLabel.Caption :=
+    Format(dlgEdDelayInSec, [FormatFloat('0.00', AutoHintDelayTrackBar.Position/1000)]);
   CompletionDropDownDelayLabel.Caption :=
     Format(dlgEdDelayInSec, [FormatFloat('0.00', CompletionDropDownHintTrackBar.Position/1000)]);
 end;
@@ -91,7 +96,8 @@ begin
   AutoCompleteBlockCheckBox.Caption := dlgEdCompleteBlocks;
   AutoDisplayFuncProtoCheckBox.Caption := dlgAutoDisplayFuncProto;
 
-  AutoHintAndCompletionDelayLabel.Caption:=lisDelayForHintsAndCompletionBox;
+  AutoCompletionDelayLabel.Caption:=lisDelayForCompletionBox;
+  AutoHintDelayLabel.Caption:=lisDelayForHints;
   CompletionDropDownLabel.Caption := lisDelayForCompletionLongLineHint;
   CompletionDropDownHintLabel.Caption := lisCompletionLongLineHintType;
   CompletionDropDownHint.Clear;
@@ -109,7 +115,8 @@ begin
     AutoToolTipExprEvalCheckBox.Checked := AutoToolTipExprEval;
     AutoToolTipSymbToolsCheckBox.Checked := AutoToolTipSymbTools;
     DbgToolTipAutoCastClass.Checked := DbgHintAutoTypeCastClass;
-    AutoDelayTrackBar.Position := AutoDelayInMSec;
+    AutoCompletionDelayTrackBar.Position := AutoDelayInMSec;
+    AutoHintDelayTrackBar.Position := AutoHintDelayInMSec;
     AutoRemoveEmptyMethodsOnSave.Checked := AutoRemoveEmptyMethods;
     AutoDisplayFuncProtoCheckBox.Checked := AutoDisplayFunctionPrototypes;
 
@@ -117,7 +124,7 @@ begin
     CompletionDropDownHint.ItemIndex := ord(CompletionLongLineHintType);
 
   end;
-  AutoDelayTrackBarChange(nil);
+  AutoCompletionDelayTrackBarChange(nil);
 end;
 
 procedure TEditorCodetoolsOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
@@ -128,7 +135,8 @@ begin
     AutoToolTipExprEval := AutoToolTipExprEvalCheckBox.Checked;
     AutoToolTipSymbTools := AutoToolTipSymbToolsCheckBox.Checked;
     DbgHintAutoTypeCastClass := DbgToolTipAutoCastClass.Checked;
-    AutoDelayInMSec := AutoDelayTrackBar.Position;
+    AutoDelayInMSec := AutoCompletionDelayTrackBar.Position;
+    AutoHintDelayInMSec := AutoHintDelayTrackBar.Position;
     AutoRemoveEmptyMethods := AutoRemoveEmptyMethodsOnSave.Checked;
     AutoDisplayFunctionPrototypes := AutoDisplayFuncProtoCheckBox.Checked;
 

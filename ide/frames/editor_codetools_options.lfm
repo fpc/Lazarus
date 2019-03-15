@@ -13,10 +13,10 @@ object EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
   DesignLeft = 263
   DesignTop = 222
   object AutoDelayLabel: TLabel
-    AnchorSideLeft.Control = AutoHintAndCompletionDelayLabel
+    AnchorSideLeft.Control = AutoCompletionDelayLabel
     AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = AutoHintAndCompletionDelayLabel
-    Left = 217
+    AnchorSideTop.Control = AutoCompletionDelayLabel
+    Left = 172
     Height = 15
     Top = 156
     Width = 83
@@ -89,9 +89,9 @@ object EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     Caption = 'AutoToolTipExprEvalCheckBox'
     TabOrder = 3
   end
-  object AutoDelayTrackBar: TTrackBar
+  object AutoCompletionDelayTrackBar: TTrackBar
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = AutoHintAndCompletionDelayLabel
+    AnchorSideTop.Control = AutoCompletionDelayLabel
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
@@ -102,7 +102,7 @@ object EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     Frequency = 250
     Max = 4000
     Min = 10
-    OnChange = AutoDelayTrackBarChange
+    OnChange = AutoCompletionDelayTrackBarChange
     Position = 500
     ShowSelRange = False
     Anchors = [akTop, akLeft, akRight]
@@ -111,17 +111,17 @@ object EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     BorderSpacing.Right = 6
     TabOrder = 4
   end
-  object AutoHintAndCompletionDelayLabel: TLabel
+  object AutoCompletionDelayLabel: TLabel
     AnchorSideLeft.Control = ToolTipBevel
     AnchorSideTop.Control = DbgToolTipAutoCastClass
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 15
     Top = 156
-    Width = 191
+    Width = 146
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
-    Caption = 'AutoHintAndCompletionDelayLabel'
+    Caption = 'AutoCompletionDelayLabel'
     ParentColor = False
   end
   object CompletionDropDownHintTrackBar: TTrackBar
@@ -132,26 +132,26 @@ object EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 30
-    Top = 224
+    Top = 276
     Width = 622
     Frequency = 250
     Max = 4000
-    OnChange = AutoDelayTrackBarChange
+    OnChange = AutoCompletionDelayTrackBarChange
     Position = 0
     ShowSelRange = False
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
     BorderSpacing.Top = 1
     BorderSpacing.Right = 6
-    TabOrder = 5
+    TabOrder = 6
   end
   object CompletionDropDownLabel: TLabel
     AnchorSideLeft.Control = ToolTipBevel
-    AnchorSideTop.Control = AutoDelayTrackBar
+    AnchorSideTop.Control = AutoHintDelayTrackBar
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 15
-    Top = 208
+    Top = 260
     Width = 148
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
@@ -164,7 +164,7 @@ object EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     AnchorSideTop.Control = CompletionDropDownLabel
     Left = 174
     Height = 15
-    Top = 208
+    Top = 260
     Width = 177
     BorderSpacing.Left = 20
     Caption = 'CompletionDropDownDelayLabel'
@@ -178,13 +178,13 @@ object EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     AnchorSideBottom.Side = asrBottom
     Left = 6
     Height = 23
-    Top = 256
+    Top = 308
     Width = 220
     BorderSpacing.Left = 6
     BorderSpacing.Top = 2
     ItemHeight = 15
     Style = csDropDownList
-    TabOrder = 6
+    TabOrder = 7
   end
   object CompletionDropDownHintLabel: TLabel
     AnchorSideLeft.Control = CompletionDropDownHint
@@ -193,7 +193,7 @@ object EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     AnchorSideTop.Side = asrCenter
     Left = 232
     Height = 15
-    Top = 260
+    Top = 312
     Width = 171
     BorderSpacing.Around = 6
     Caption = 'CompletionDropDownHintLabel'
@@ -209,7 +209,7 @@ object EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     Width = 159
     BorderSpacing.Left = 20
     Caption = 'DbgToolTipAutoCastClass'
-    TabOrder = 7
+    TabOrder = 8
   end
   object AutoDisplayFuncProtoCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
@@ -221,6 +221,53 @@ object EditorCodetoolsOptionsFrame: TEditorCodetoolsOptionsFrame
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'AutoDisplayFuncProtoCheckBox'
-    TabOrder = 8
+    TabOrder = 9
+  end
+  object AutoHintDelayLabel: TLabel
+    AnchorSideLeft.Control = ToolTipBevel
+    AnchorSideTop.Control = AutoCompletionDelayTrackBar
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 15
+    Top = 208
+    Width = 106
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    Caption = 'AutoHintDelayLabel'
+    ParentColor = False
+  end
+  object AutoHintDelayTrackBar: TTrackBar
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = AutoHintDelayLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 30
+    Top = 224
+    Width = 622
+    Frequency = 250
+    Max = 4000
+    Min = 10
+    OnChange = AutoCompletionDelayTrackBarChange
+    Position = 500
+    ShowSelRange = False
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 1
+    BorderSpacing.Right = 6
+    TabOrder = 5
+  end
+  object AutoHDelayLabel: TLabel
+    AnchorSideLeft.Control = AutoHintDelayLabel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = AutoHintDelayLabel
+    Left = 132
+    Height = 15
+    Top = 208
+    Width = 92
+    BorderSpacing.Left = 20
+    Caption = 'AutoHDelayLabel'
+    ParentColor = False
   end
 end

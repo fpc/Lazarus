@@ -1481,6 +1481,7 @@ type
     fAutoBlockCompletion: Boolean;
     fAutoCodeParameters: Boolean;
     fAutoDelayInMSec: Integer;
+    fAutoHintDelayInMSec: Integer;
     FAutoRemoveEmptyMethods: Boolean;
     fAutoToolTipExprEval: Boolean;
     fAutoToolTipSymbTools: Boolean;
@@ -1687,6 +1688,8 @@ type
   public
     property AutoDelayInMSec: Integer read fAutoDelayInMSec
       write fAutoDelayInMSec default 1000;
+    property AutoHintDelayInMSec: Integer read fAutoHintDelayInMSec
+      write fAutoHintDelayInMSec default 1000;
     property CodeTemplateFileNameRaw: String
       read fCodeTemplateFileNameRaw write fCodeTemplateFileNameRaw;
     property CodeTemplateFileNameExpand:String
@@ -4988,6 +4991,8 @@ begin
       XMLConfig.GetValue('EditorOptions/CodeTools/AutoToolTipSymbTools', True);
     fAutoDelayInMSec    :=
       XMLConfig.GetValue('EditorOptions/CodeTools/AutoDelayInMSec', 1000);
+    fAutoHintDelayInMSec    :=
+      XMLConfig.GetValue('EditorOptions/CodeTools/AutoDelayHintInMSec', 1000);
     fCodeTemplateFileNameRaw :=
       XMLConfig.GetValue('EditorOptions/CodeTools/CodeTemplateFileName'
       , TrimFilename(AppendPathDelim(GetPrimaryConfigPath) + DefaultCodeTemplatesFilename));
@@ -5186,6 +5191,8 @@ begin
       , fAutoToolTipSymbTools, True);
     XMLConfig.SetDeleteValue('EditorOptions/CodeTools/AutoDelayInMSec'
       , fAutoDelayInMSec, 1000);
+    XMLConfig.SetDeleteValue('EditorOptions/CodeTools/AutoDelayHintInMSec'
+      , fAutoHintDelayInMSec, 1000);
     XMLConfig.SetDeleteValue('EditorOptions/CodeTools/CodeTemplateFileName'
       , fCodeTemplateFileNameRaw, '');
     XMLConfig.SetDeleteValue(

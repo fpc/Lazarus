@@ -1981,7 +1981,8 @@ resourcestring
   dlgAutoDisplayFuncProto = 'Auto Display Function Prototypes';
   lisShowDeclarationHints = 'Show declaration hints';
   dlgEdDelayInSec = '(%s sec delay)';
-  lisDelayForHintsAndCompletionBox = 'Delay for hints and completion box';
+  lisDelayForCompletionBox = 'Delay for completion box';
+  lisDelayForHints = 'Delay for hints';
   lisDelayForCompletionLongLineHint = 'Delay for long line hints in completion box';
   lisCompletionLongLineHintType = 'Show long line hints';
   lisCompletionLongLineHintTypeNone = 'Never';
