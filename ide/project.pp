@@ -590,7 +590,7 @@ type
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveMacroValuesAtOldPlace(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
-                              IsDefault: Boolean; var Cnt: integer);
+                              IsDefault, ALegacyList: Boolean; var Cnt: integer);
     function GetCaption: string; override;
     function GetIndex: integer; override;
   public
@@ -656,9 +656,9 @@ type
     procedure LoadSessionFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                                        LoadAllOptions: boolean);
     procedure SaveProjOptsToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
-                                      SaveSession: boolean);
+                                      SaveSession, ALegacyList: boolean);
     procedure SaveSessionOptsToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
-                                         SaveSession: boolean);
+                                         SaveSession, ALegacyList: boolean);
   public
     property Items[Index: integer]: TProjectBuildMode read GetItems; default;
     property ChangeStamp: integer read FChangeStamp;
@@ -786,6 +786,7 @@ type
     function GetSourceDirectories: TFileReferenceList;
     function GetTargetFilename: string;
     function GetUnits(Index: integer): TUnitInfo;
+    function GetUseLegacyLists: Boolean;
     function JumpHistoryCheckPosition(
                                 APosition:TProjectJumpHistoryPosition): boolean;
     function OnUnitFileBackup(const Filename: string): TModalResult;
@@ -1059,6 +1060,7 @@ type
     property EnableI18NForLFM: boolean read FEnableI18NForLFM write SetEnableI18NForLFM;
     property I18NExcludedIdentifiers: TStrings read FI18NExcludedIdentifiers;
     property I18NExcludedOriginals: TStrings read FI18NExcludedOriginals;
+    property UseLegacyLists: Boolean read GetUseLegacyLists;
     property ForceUpdatePoFiles: Boolean read FForceUpdatePoFiles write FForceUpdatePoFiles;
     property FirstAutoRevertLockedUnit: TUnitInfo read GetFirstAutoRevertLockedUnit;
     property FirstLoadedUnit: TUnitInfo read GetFirstLoadedUnit;
@@ -1135,7 +1137,7 @@ function dbgs(Flags: TUnitInfoFlags): string; overload;
 implementation
 
 const
-  ProjectInfoFileVersion = 11;
+  ProjectInfoFileVersion = 12;
   ProjOptionsPath = 'ProjectOptions/';
 
 
@@ -2822,12 +2824,13 @@ var
   SubPath: String;
   NewUnitFilename: String;
   OldUnitInfo: TUnitInfo;
-  MergeUnitInfo: Boolean;
+  MergeUnitInfo, LegacyList: Boolean;
 begin
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject D reading units');{$ENDIF}
-  NewUnitCount:=FXMLConfig.GetValue(Path+'Units/Count',0);
+  LegacyList:=(FFileVersion<=11) or FXMLConfig.IsLegacyList(Path+'Units/');
+  NewUnitCount:=FXMLConfig.GetListItemCount(Path+'Units/', 'Unit', LegacyList);
   for i := 0 to NewUnitCount - 1 do begin
-    SubPath:=Path+'Units/Unit'+IntToStr(i)+'/';
+    SubPath:=Path+'Units/'+FXMLConfig.GetListItemXPath('Unit', i, LegacyList)+'/';
     NewUnitFilename:=FXMLConfig.GetValue(SubPath+'Filename/Value','');
     OnLoadSaveFilename(NewUnitFilename,true);
     // load unit and add it
@@ -2876,7 +2879,7 @@ procedure TProject.LoadFromLPI;
 const
   Path = ProjOptionsPath;
 begin
-  if (FFileVersion=0) and (FXMLConfig.GetValue(Path+'Units/Count',0)=0) then
+  if (FFileVersion=0) and (FXMLConfig.GetListItemCount(Path+'Units/', 'Unit', UseLegacyLists)=0) then
     if IDEMessageDialog(lisStrangeLpiFile,
         Format(lisTheFileDoesNotLookLikeALpiFile, [ProjectInfoFile]),
         mtConfirmation,[mbIgnore,mbAbort])<>mrIgnore
@@ -3158,10 +3161,10 @@ begin
   for i:=0 to UnitCount-1 do
     if UnitMustBeSaved(Units[i],FProjectWriteFlags,SaveSession) then begin
       Units[i].SaveToXMLConfig(FXMLConfig,
-        Path+'Units/Unit'+IntToStr(SaveUnitCount)+'/',True,SaveSession,fCurStorePathDelim);
+        Path+'Units/'+FXMLConfig.GetListItemXPath('Unit', i, UseLegacyLists)+'/',True,SaveSession,fCurStorePathDelim);
       inc(SaveUnitCount);
     end;
-  FXMLConfig.SetDeleteValue(Path+'Units/Count',SaveUnitCount,0);
+  FXMLConfig.SetListItemCount(Path+'Units/',SaveUnitCount,UseLegacyLists);
 end;
 
 procedure TProject.SaveOtherDefines(const Path: string);
@@ -3206,6 +3209,7 @@ const
 var
   CurFlags: TProjectWriteFlags;
 begin
+  FFileVersion:=ProjectInfoFileVersion;
   // format
   FXMLConfig.SetValue(Path+'Version/Value',ProjectInfoFileVersion);
   FXMLConfig.SetDeleteValue(Path+'PathDelim/Value',PathDelimSwitchToDelim[fCurStorePathDelim],'/');
@@ -3241,7 +3245,7 @@ begin
   // save custom data
   SaveStringToStringTree(FXMLConfig,CustomData,Path+'CustomData/');
   // Save the macro values and compiler options
-  BuildModes.SaveProjOptsToXMLConfig(FXMLConfig, Path, FSaveSessionInLPI);
+  BuildModes.SaveProjOptsToXMLConfig(FXMLConfig, Path, FSaveSessionInLPI, UseLegacyLists);
   BuildModes.SaveSharedMatrixOptions(Path);
   if FSaveSessionInLPI then
     BuildModes.SaveSessionData(Path);
@@ -3296,13 +3300,14 @@ procedure TProject.SaveToSession;
 const
   Path = 'ProjectSession/';
 begin
+  FFileVersion:=ProjectInfoFileVersion;
   fCurStorePathDelim:=SessionStorePathDelim;
   FXMLConfig.SetDeleteValue(Path+'PathDelim/Value',
                           PathDelimSwitchToDelim[fCurStorePathDelim],'/');
   FXMLConfig.SetValue(Path+'Version/Value',ProjectInfoFileVersion);
 
   // Save the session build modes
-  BuildModes.SaveSessionOptsToXMLConfig(FXMLConfig, Path, True);
+  BuildModes.SaveSessionOptsToXMLConfig(FXMLConfig, Path, True, UseLegacyLists);
   BuildModes.SaveSessionData(Path);
   // save all units
   SaveUnits(Path,true);
@@ -4460,6 +4465,11 @@ begin
     end;
     AnUnitInfo:=AnUnitInfo.fNext[uilAutoRevertLocked];
   end;
+end;
+
+function TProject.GetUseLegacyLists: Boolean;
+begin
+  Result := (FFileVersion<=11) or (pfCompatibilityMode in Flags);
 end;
 
 function TProject.HasProjectInfoFileChangedOnDisk: boolean;
@@ -6823,13 +6833,13 @@ begin
   XMLConfig.SetDeleteValue(Path+'Count',Cnt,0);
 end;
 
-procedure TProjectBuildMode.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
-  IsDefault: Boolean; var Cnt: integer);
+procedure TProjectBuildMode.SaveToXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string; IsDefault, ALegacyList: Boolean; var Cnt: integer);
 var
   SubPath: String;
 begin
+  SubPath:=Path+'BuildModes/'+XMLConfig.GetListItemXPath('Item', Cnt, ALegacyList, True)+'/';
   inc(Cnt);
-  SubPath:=Path+'BuildModes/Item'+IntToStr(Cnt)+'/';
   XMLConfig.SetDeleteValue(SubPath+'Name',Identifier,'');
   if IsDefault then
     XMLConfig.SetDeleteValue(SubPath+'Default',True,false)
@@ -7207,10 +7217,12 @@ var
   i: Integer;
   Ident, SubPath: String;
   CurMode: TProjectBuildMode;
+  LegacyList: Boolean;
 begin
+  LegacyList := FXMLConfig.IsLegacyList(Path);
   for i:=FromIndex to ToIndex do
   begin
-    SubPath:=Path+'Item'+IntToStr(i)+'/';
+    SubPath:=Path+FXMLConfig.GetListItemXPath('Item', i-1, LegacyList, True)+'/';
     Ident:=FXMLConfig.GetValue(SubPath+'Name','');
     CurMode:=Add(Ident);                     // add another mode
     CurMode.InSession:=InSession;
@@ -7240,13 +7252,15 @@ procedure TProjectBuildModes.LoadAllMacroValues(const Path: string; Cnt: Integer
 var
   i: Integer;
   SubPath: String;
+  IsLegacyList: Boolean;
 begin
   // First default mode.
   LoadMacroValues(Path+'MacroValues/', Items[0]);
+  IsLegacyList := FXMLConfig.IsLegacyList(Path+'BuildModes/');
   // Iterate rest of the modes.
   for i:=2 to Cnt do
   begin
-    SubPath:=Path+'BuildModes/Item'+IntToStr(i)+'/';
+    SubPath:=Path+'BuildModes/'+FXMLConfig.GetListItemXPath('Item', i-1, IsLegacyList, True);
     LoadMacroValues(SubPath+'MacroValues/', Items[i-1]);
   end;
 end;
@@ -7288,15 +7302,17 @@ procedure TProjectBuildModes.LoadProjOptsFromXMLConfig(XMLConfig: TXMLConfig; co
 // Load for project
 var
   Cnt: Integer;
+  IsLegacyList: Boolean;
 begin
   FXMLConfig := XMLConfig;
 
-  Cnt:=FXMLConfig.GetValue(Path+'BuildModes/Count',0);
+  IsLegacyList := FXMLConfig.IsLegacyList(Path+'BuildModes/');
+  Cnt:=FXMLConfig.GetListItemCount(Path+'BuildModes/', 'Item', IsLegacyList);
   if Cnt>0 then begin
     // Project default mode is stored at the old XML path for backward compatibility.
     // Testing the 'Default' XML attribute is not needed because the first mode
     // is always default.
-    Items[0].Identifier:=FXMLConfig.GetValue(Path+'BuildModes/Item1/Name', '');
+    Items[0].Identifier:=FXMLConfig.GetValue(Path+'BuildModes/'+XMLConfig.GetListItemXPath('Item', 0, IsLegacyList, True)+'/Name', '');
     Items[0].CompilerOptions.LoadFromXMLConfig(FXMLConfig, 'CompilerOptions/');
     LoadOtherCompilerOpts(Path+'BuildModes/', 2, Cnt, False);
     LoadAllMacroValues(Path+'MacroValues/', Cnt);
@@ -7312,6 +7328,7 @@ procedure TProjectBuildModes.LoadSessionFromXMLConfig(XMLConfig: TXMLConfig;
 // Load for session
 var
   Cnt: Integer;
+  IsLegacyList: Boolean;
 begin
   FXMLConfig := XMLConfig;
 
@@ -7319,7 +7336,8 @@ begin
     // load matrix options
     SessionMatrixOptions.LoadFromXMLConfig(FXMLConfig, Path+'BuildModes/SessionMatrixOptions/');
 
-  Cnt:=FXMLConfig.GetValue(Path+'BuildModes/Count',0);
+  IsLegacyList := FXMLConfig.IsLegacyList(Path+'BuildModes/');
+  Cnt:=FXMLConfig.GetListItemCount(Path+'BuildModes/', 'Item', IsLegacyList);
   if Cnt>0 then begin
     // Add a new mode for session compiler options.
     LoadOtherCompilerOpts(Path+'BuildModes/', 1, Cnt, True);
@@ -7371,7 +7389,7 @@ end;
 
 // SaveToXMLConfig itself
 procedure TProjectBuildModes.SaveProjOptsToXMLConfig(XMLConfig: TXMLConfig;
-  const Path: string; SaveSession: boolean);
+  const Path: string; SaveSession, ALegacyList: boolean);
 var
   i, Cnt: Integer;
 begin
@@ -7386,12 +7404,12 @@ begin
   Cnt:=0;
   for i:=0 to Count-1 do
     if SaveSession or not Items[i].InSession then
-      Items[i].SaveToXMLConfig(FXMLConfig, Path, i=0, Cnt);
-  FXMLConfig.SetDeleteValue(Path+'BuildModes/Count',Cnt,0);
+      Items[i].SaveToXMLConfig(FXMLConfig, Path, i=0, ALegacyList, Cnt);
+  FXMLConfig.SetListItemCount(Path+'BuildModes',Cnt,ALegacyList);
 end;
 
 procedure TProjectBuildModes.SaveSessionOptsToXMLConfig(XMLConfig: TXMLConfig;
-  const Path: string; SaveSession: boolean);
+  const Path: string; SaveSession, ALegacyList: boolean);
 var
   i, Cnt: Integer;
 begin
@@ -7400,8 +7418,8 @@ begin
   Cnt:=0;
   for i:=0 to Count-1 do
     if Items[i].InSession and SaveSession then
-      Items[i].SaveToXMLConfig(FXMLConfig, Path, false, Cnt);
-  FXMLConfig.SetDeleteValue(Path+'BuildModes/Count',Cnt,0);
+      Items[i].SaveToXMLConfig(FXMLConfig, Path, false, ALegacyList, Cnt);
+  FXMLConfig.SetListItemCount(Path+'BuildModes',Cnt,ALegacyList);
 end;
 
 

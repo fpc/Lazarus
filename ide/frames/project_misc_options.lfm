@@ -118,13 +118,13 @@ object ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
   end
   object ResourceGroupBox: TGroupBox
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = LRSInOutputDirCheckBox
+    AnchorSideTop.Control = CompatibilityModeCheckBox
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 81
-    Top = 231
+    Top = 256
     Width = 536
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
@@ -139,7 +139,7 @@ object ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
     ChildSizing.ControlsPerLine = 1
     ClientHeight = 61
     ClientWidth = 532
-    TabOrder = 9
+    TabOrder = 10
     object UseFPCResourcesRadioButton: TRadioButton
       Left = 6
       Height = 25
@@ -183,7 +183,7 @@ object ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
     AnchorSideTop.Side = asrCenter
     Left = 0
     Height = 15
-    Top = 331
+    Top = 356
     Width = 83
     Caption = 'PathDelimLabel'
     ParentColor = False
@@ -196,7 +196,7 @@ object ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 3
-    Top = 318
+    Top = 343
     Width = 536
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
@@ -209,12 +209,12 @@ object ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 89
     Height = 23
-    Top = 327
+    Top = 352
     Width = 259
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     ItemHeight = 15
-    TabOrder = 10
+    TabOrder = 11
     Text = 'PathDelimComboBox'
   end
   object MainUnitHasScaledStatementCheckBox: TCheckBox
@@ -230,5 +230,19 @@ object ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
     ParentShowHint = False
     ShowHint = True
     TabOrder = 4
+  end
+  object CompatibilityModeCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = LRSInOutputDirCheckBox
+    AnchorSideTop.Side = asrBottom
+    Left = 0
+    Height = 19
+    Top = 231
+    Width = 175
+    BorderSpacing.Top = 6
+    Caption = 'CompatibilityModeCheckBox'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 9
   end
 end

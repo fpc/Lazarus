@@ -2695,6 +2695,8 @@ resourcestring
   lisIdeMaintainsTheTitleInMainUnit = 'The IDE maintains the title in main unit.';
   lisMainUnitHasApplicationScaledStatement = 'Main unit has Application.Scaled statement';
   lisIdeMaintainsScaledInMainUnit = 'The IDE maintains Application.Scaled (Hi-DPI) in main unit.';
+  lisLPICompatibilityModeCheckBox = 'Maximize compatibility of project files (LPI and LPS)';
+  lisLPICompatibilityModeCheckBoxHint = 'Check this if you want to open your project in legacy (2.0 and older) Lazarus versions.';
   lisProjectIsRunnable = 'Project is runnable';
   lisProjectIsRunnableHint = 'Generates a binary executable which can be run.';
   lisUseDesignTimePackages = 'Use design time packages';

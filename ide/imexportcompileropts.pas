@@ -262,7 +262,7 @@ function TOptsImExport.DoExportBuildModes(const Filename: string): TModalResult;
 begin
   Result := OpenXML(Filename);
   if Result <> mrOK then Exit;
-  Project1.BuildModes.SaveProjOptsToXMLConfig(fXMLConfig, '', False);
+  Project1.BuildModes.SaveProjOptsToXMLConfig(fXMLConfig, '', False, True);
   fXMLConfig.Flush;
   ShowMessageFmt(lisSuccessfullyExportedBuildModes, [Project1.BuildModes.Count, Filename]);
 end;

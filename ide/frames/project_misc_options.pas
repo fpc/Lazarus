@@ -25,6 +25,7 @@ type
     Bevel2: TBevel;
     LRSInOutputDirCheckBox: TCheckBox;
     MainUnitHasCreateFormStatementsCheckBox: TCheckBox;
+    CompatibilityModeCheckBox: TCheckBox;
     MainUnitHasTitleStatementCheckBox: TCheckBox;
     MainUnitHasScaledStatementCheckBox: TCheckBox;
     MainUnitHasUsesSectionForAllUnitsCheckBox: TCheckBox;
@@ -68,6 +69,8 @@ begin
   MainUnitHasTitleStatementCheckBox.Hint := lisIdeMaintainsTheTitleInMainUnit;
   MainUnitHasScaledStatementCheckBox.Caption := lisMainUnitHasApplicationScaledStatement;
   MainUnitHasScaledStatementCheckBox.Hint := lisIdeMaintainsScaledInMainUnit;
+  CompatibilityModeCheckBox.Caption := lisLPICompatibilityModeCheckBox;
+  CompatibilityModeCheckBox.Hint := lisLPICompatibilityModeCheckBoxHint;
   RunnableCheckBox.Caption := lisProjectIsRunnable;
   RunnableCheckBox.Hint := lisProjectIsRunnableHint;
   UseDesignTimePkgsCheckBox.Caption := lisUseDesignTimePackages;
@@ -96,6 +99,7 @@ begin
     MainUnitHasCreateFormStatementsCheckBox.Checked := (pfMainUnitHasCreateFormStatements in Flags);
     MainUnitHasTitleStatementCheckBox.Checked := (pfMainUnitHasTitleStatement in Flags);
     MainUnitHasScaledStatementCheckBox.Checked := (pfMainUnitHasScaledStatement in Flags);
+    CompatibilityModeCheckBox.Checked := (pfCompatibilityMode in Flags);
     RunnableCheckBox.Checked := (pfRunnable in Flags);
     UseDesignTimePkgsCheckBox.Checked := (pfUseDesignTimePackages in Flags);
     AlwaysBuildCheckBox.Checked := (pfAlwaysBuild in Flags);
@@ -140,6 +144,8 @@ begin
                  MainUnitHasTitleStatementCheckBox.Checked);
   SetProjectFlag(pfMainUnitHasScaledStatement,
                  MainUnitHasScaledStatementCheckBox.Checked);
+  SetProjectFlag(pfCompatibilityMode,
+                 CompatibilityModeCheckBox.Checked);
   SetProjectFlag(pfRunnable, RunnableCheckBox.Checked);
   SetProjectFlag(pfUseDesignTimePackages, UseDesignTimePkgsCheckBox.Checked);
   SetProjectFlag(pfAlwaysBuild, AlwaysBuildCheckBox.Checked);

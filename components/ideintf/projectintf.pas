@@ -247,7 +247,8 @@ type
     pfLRSFilesInOutputDirectory, // put .lrs files in output directory
     pfUseDefaultCompilerOptions, // load users default compiler options
     pfSaveJumpHistory,
-    pfSaveFoldState
+    pfSaveFoldState,
+    pfCompatibilityMode // use legacy file format to maximize compatibility with old Lazarus versions
     );
   TProjectFlags = set of TProjectFlag;
 
@@ -274,7 +275,8 @@ const
       'LRSInOutputDirectory',
       'UseDefaultCompilerOptions',
       'SaveJumpHistory',
-      'SaveFoldState'
+      'SaveFoldState',
+      'CompatibilityMode'
     );
   ProjectSessionStorageNames: array[TProjectSessionStorage] of string = (
     'InProjectInfo',
