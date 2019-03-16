@@ -19,6 +19,7 @@
 unit Win32Int;
 
 {$mode objfpc}{$H+}{$T-}{$message warning Fix implicit pointer conversions}
+{$ModeSwitch advancedrecords}
 {$I win32defines.inc}
 
 interface

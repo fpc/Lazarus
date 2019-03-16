@@ -293,7 +293,9 @@ end;
 type
   TAccessCustomEdit = class(TCustomEdit);
 
-  TWindowProcHelper = object
+  { TWindowProcHelper }
+
+  TWindowProcHelper = record
   private
     // WindowProc parameters
     Window: HWnd;            // DWord / QWord
@@ -2667,7 +2669,7 @@ function
 var
   Helper: TWindowProcHelper;
 begin
-  helper := default(TWindowProcHelper);
+  FillChar(Helper, SizeOf(TWindowProcHelper), 0);
   Helper.Window := Window;
   Helper.Msg := Msg;
   Helper.WParam := WParam;
