@@ -113,16 +113,16 @@ begin
   FItems := NewStrings;
   FCacheValid := False;
 
+  // don't reset item index without a need - on windows this may cause an undesired selection of
+  // item for multiselect listbox
+  if FItemIndex <> TWSCustomListBoxClass(WidgetSetClass).GetItemIndex(Self) then
+    SendItemIndex;
+
   // copy items attributes
   for i := 0 to OldItems.Count - 1 do
     AssignCacheToItemData(i, OldItems.Records[i]);
   // free old items
   OldItems.Free;
-
-  // don't reset item index without a need - on windows this may cause an undesired selection of
-  // item for multiselect listbox
-  if FItemIndex <> TWSCustomListBoxClass(WidgetSetClass).GetItemIndex(Self) then
-    SendItemIndex;
   TWSCustomListBoxClass(WidgetSetClass).SetSorted(Self, FItems, FSorted);
   TWSCustomListBoxClass(WidgetSetClass).SetScrollWidth(Self, FScrollWidth);
   UnlockSelectionChange;
