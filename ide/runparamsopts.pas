@@ -162,6 +162,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
     procedure ModesComboBoxChange(Sender: TObject);
+    procedure NotebookChange(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure HostApplicationBrowseBtnClick(Sender: TObject);
     procedure NewModeButtonClick(Sender: TObject);
@@ -951,6 +952,11 @@ begin
     SaveToOptionsMode(fLastSelectedMode);
   if SelectedMode<>nil then
     LoadFromOptionsMode(SelectedMode);
+end;
+
+procedure TRunParamsOptsDlg.NotebookChange(Sender: TObject);
+begin
+  UpdatePreview;
 end;
 
 procedure TRunParamsOptsDlg.LoadFromOptionsMode(const AMode: TRunParamsOptionsMode);

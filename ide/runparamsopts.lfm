@@ -21,6 +21,7 @@ object RunParamsOptsDlg: TRunParamsOptsDlg
     BorderSpacing.Bottom = 6
     TabIndex = 0
     TabOrder = 1
+    OnChange = NotebookChange
     object GeneralPage: TTabSheet
       Caption = 'GeneralPage'
       ClientHeight = 367
