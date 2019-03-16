@@ -117,6 +117,7 @@ type
     procedure DoWatchFreed(Sender: TObject);
     procedure ProcessASyncWatches({%H-}Data: PtrInt);
     procedure DoLog();
+    procedure ClearWatchEvalList;
   protected
     function GetContextForEvaluate(const ThreadId, StackFrame: Integer): TFpDbgInfoContext;
     procedure ScheduleWatchValueEval(AWatchValue: TWatchValue);
@@ -1584,6 +1585,15 @@ begin
   end;
 end;
 
+procedure TFpDebugDebugger.ClearWatchEvalList;
+begin
+  if Assigned(FWatchEvalList) then
+    while FWatchEvalList.Count > 0 do begin
+      TWatchValue(FWatchEvalList[0]).RemoveFreeNotification(@DoWatchFreed);
+      FWatchEvalList.Delete(0);
+    end;
+end;
+
 function TFpDebugDebugger.GetContextForEvaluate(const ThreadId,
   StackFrame: Integer): TFpDbgInfoContext;
 var
@@ -2047,8 +2057,7 @@ begin
     inherited DoState(OldState);
     if not (State in [dsPause, dsInternalPause]) then
       begin
-      if Assigned(FWatchEvalList) then
-        FWatchEvalList.Clear;
+      ClearWatchEvalList;
       FWatchAsyncQueued := False;
       end
     else
@@ -2214,6 +2223,8 @@ begin
   if assigned(FFpDebugThread) then
     FreeDebugThread;
   DoLog();
+  ClearWatchEvalList;
+  Application.RemoveAsyncCalls(Self);
   FreeAndNil(FDbgController);
   FreeAndNil(FPrettyPrinter);
   FreeAndNil(FWatchEvalList);
