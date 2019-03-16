@@ -2818,6 +2818,8 @@ begin
 end;
 
 procedure TProject.LoadSessionInfo(const Path: string; Merge: boolean);
+// Note: the session can be stored in the lpi as well
+// So this method is used for loading the lpi units as well
 var
   NewUnitInfo: TUnitInfo;
   NewUnitCount, i: integer;
@@ -2879,7 +2881,7 @@ procedure TProject.LoadFromLPI;
 const
   Path = ProjOptionsPath;
 begin
-  if (FFileVersion=0) and (FXMLConfig.GetListItemCount(Path+'Units/', 'Unit', UseLegacyLists)=0) then
+  if (FFileVersion=0) and (FXMLConfig.GetListItemCount(Path+'Units/', 'Unit', true)=0) then
     if IDEMessageDialog(lisStrangeLpiFile,
         Format(lisTheFileDoesNotLookLikeALpiFile, [ProjectInfoFile]),
         mtConfirmation,[mbIgnore,mbAbort])<>mrIgnore
@@ -3218,7 +3220,7 @@ begin
                            ProjectSessionStorageNames[SessionStorage],
                            ProjectSessionStorageNames[DefaultProjectSessionStorage]);
   // general properties
-  FXMLConfig.SetValue(Path+'General/MainUnit/Value', MainUnitID); // always write a value to support opening by older IDEs (<=0.9.28). This can be changed in a few releases.
+  FXMLConfig.SetDeleteValue(Path+'General/MainUnit/Value', MainUnitID ,0);
   FXMLConfig.SetDeleteValue(Path+'General/AutoCreateForms/Value',
                            AutoCreateForms,true);
   FXMLConfig.SetDeleteValue(Path+'General/Title/Value', Title,'');
@@ -3572,7 +3574,7 @@ begin
   AnUnit.OnLoadSaveFilename:=@OnLoadSaveFilename;
   AnUnit.OnUnitNameChange:=@OnUnitNameChange;
 
-  // lock the main unit (when it is changed on disk it should *not* auto revert)
+  // lock the main unit (when it is changed on disk it must *not* auto revert)
   if MainUnitID=NewIndex then
     MainUnitInfo.IncreaseAutoRevertLock;
 
@@ -4469,7 +4471,7 @@ end;
 
 function TProject.GetUseLegacyLists: Boolean;
 begin
-  Result := (FFileVersion<=11) or (pfCompatibilityMode in Flags);
+  Result:=pfCompatibilityMode in Flags;
 end;
 
 function TProject.HasProjectInfoFileChangedOnDisk: boolean;
