@@ -3308,8 +3308,11 @@ begin
 end;
 
 function TSynPasSyn.GetTokenAttribute: TSynHighlighterAttributes;
+var
+  tid: TtkTokenKind;
 begin
-  case GetTokenID of
+  tid := GetTokenID;
+  case tid of
     tkAsm: Result := fAsmAttri;
     tkComment: Result := fCommentAttri;
     tkIDEDirective: begin
@@ -3329,14 +3332,14 @@ begin
     Result := nil;
   end;
 
-  if FTokenIsCaseLabel and (GetTokenID in [tkIdentifier, tkKey, tkNumber, tkString])
+  if FTokenIsCaseLabel and (tid in [tkIdentifier, tkKey, tkNumber, tkString])
   then begin
     FCurCaseLabelAttri.Assign(Result);
     FCurCaseLabelAttri.Merge(FCaseLabelAttri);
     Result := FCurCaseLabelAttri;
   end;
 
-  if (GetTokenID in [tkIdentifier, tkSymbol]) and
+  if (tid in [tkIdentifier, tkSymbol]) and
      (fRange * [rsInProcHeader, rsAfterEqualOrColon, rsAfterEqual] = [rsInProcHeader]) and
      (FOldRange * [rsAfterEqualOrColon, rsAfterEqual] = []) and
      (PasCodeFoldRange.BracketNestLevel = 0)
