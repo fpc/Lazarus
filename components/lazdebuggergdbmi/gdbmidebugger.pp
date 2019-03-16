@@ -3015,10 +3015,11 @@ begin
       end;
   end;
 
+  {$PUSH}
   {$WARNINGS off}
   if DirectorySeparator <> '/' then
     Result := StringReplace(Result, DirectorySeparator, '/', [rfReplaceAll]);
-  {$WARNINGS on}
+  {$POP}
   if esc = gdfeEscSpace
   then Result := StringReplace(Result, ' ', '\ ', [rfReplaceAll]);
   if esc = gdfeQuote

@@ -4303,6 +4303,7 @@ begin
   ScrollBox1.VertScrollBar.Range := ScrollBox1.VertScrollBar.Range + 10;
 end;
 
+{$PUSH}
 {$HINTS OFF}
 {$ifdef sbod}
 procedure TfrDesignerForm.DrawStatusPanel(const ACanvas: TCanvas;
@@ -4708,7 +4709,7 @@ begin
   Result:=AppendPathDelim(lrConfigFolderName(false))+'lrDesigner.cfg';
 end;
 
-{$HINTS ON}
+{$POP}
 
 function TfrDesignerForm.RectTypEnabled: Boolean;
 begin

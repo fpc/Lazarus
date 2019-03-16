@@ -37,7 +37,7 @@ interface
 uses Dialogs;
 {$ELSE}
 {$IFDEF WIN32}
- uses {$WARNINGS OFF} FileCtrl {$WARNINGS ON};
+ uses {$PUSH} {$WARNINGS OFF} FileCtrl {$POP};
  {$ENDIF}
 {$ENDIF}
 
@@ -56,10 +56,11 @@ uses SysUtils;
     liAttr: integer;
   begin
     Assert(FileExists(ps));
+  {$PUSH}
   {$WARNINGS OFF}
     liAttr := FileGetAttr(ps);
     Result := ((liAttr and faReadOnly) <> 0);
-  {$WARNINGS ON}
+  {$POP}
   end;
 
 {$ELSE}
@@ -71,10 +72,11 @@ uses SysUtils;
     liAttr: integer;
   begin
     Assert(FileExists(ps));
+  {$PUSH}
   {$WARNINGS OFF}
     liAttr := FileGetAttr(ps);
     Result := ((liAttr and faReadOnly) <> 0);
-  {$WARNINGS ON}
+  {$POP}
   end;
 
   {$ENDIF}

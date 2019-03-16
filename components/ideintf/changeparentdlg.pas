@@ -110,6 +110,7 @@ begin
   IDEDialogLayoutList.ApplyLayout(Self);
 end;
 
+{$PUSH}
 {$HINTS OFF}
 procedure TChangeParentDlg.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
@@ -118,7 +119,7 @@ begin
   FSavedShowClasses := chShowClasses.Checked;
   IDEDialogLayoutList.SaveLayout(Self);
 end;
-{$HINTS ON}
+{$POP}
 
 procedure TChangeParentDlg.chShowClassesClick(Sender: TObject);
 begin
@@ -131,12 +132,13 @@ begin
   ButtonPanel.OKButton.Click;
 end;
 
+{$PUSH}
 {$HINTS OFF}
 procedure TChangeParentDlg.ListBoxSelectionChange(Sender: TObject; User: boolean);
 begin
   UpdateOKButtonState;
 end;
-{$HINTS ON}
+{$POP}
 
 procedure TChangeParentDlg.ListFilterEditAfterFilter(Sender: TObject);
 begin

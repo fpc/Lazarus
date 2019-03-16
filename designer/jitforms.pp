@@ -696,10 +696,11 @@ begin
   Result := SizeOf(TTypeKind)
            + 1 + length(AClassName)  // packed shortstring: length byte + chars
            + CalculateTypeDataSize(PropInfoCount);
+  {$push}
   {$warnings off}
   if SizeOf(TTypeKind)<>1 then
     raise Exception.Create('CalculateTypeInfoSize SizeOf(TTypeInfo^.Kind)<>1');
-  {$warnings on}
+  {$pop}
 end;
 
 function GetTypeDataPropCountAddr(TypeData: PTypeData): PWord;

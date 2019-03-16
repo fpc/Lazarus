@@ -728,6 +728,7 @@ end;
 
 { TFreeTypeGlyph }
 
+{$push}
 {$hints off}
 function TFreeTypeGlyph.GetBounds: TRect;
 var metrics: TT_Glyph_Metrics;
@@ -737,18 +738,14 @@ begin
     result := rect(IncludeFullGrainMin(xMin,64) div 64,IncludeFullGrainMin(-yMax,64) div 64,
        (IncludeFullGrainMax(xMax,64)+1) div 64,(IncludeFullGrainMax(-yMin,64)+1) div 64);
 end;
-{$hints on}
 
-{$hints off}
 function TFreeTypeGlyph.GetAdvance: single;
 var metrics: TT_Glyph_Metrics;
 begin
   TT_Get_Glyph_Metrics(FGlyphData, metrics);
   result := metrics.advance/64;
 end;
-{$hints on}
 
-{$hints off}
 function TFreeTypeGlyph.GetBoundsWithOffset(x, y: single): TRect;
 var metrics: TT_Glyph_Metrics;
 begin
@@ -757,7 +754,7 @@ begin
     result := rect(IncludeFullGrainMin(xMin+round(x*64),64) div 64,IncludeFullGrainMin(-yMax+round(y*64),64) div 64,
        (IncludeFullGrainMax(xMax+round(x*64),64)+1) div 64,(IncludeFullGrainMax(-yMin+round(y*64),64)+1) div 64);
 end;
-{$hints on}
+{$pop}
 
 constructor TFreeTypeGlyph.Create(AFont: TFreeTypeFont; AIndex: integer);
 begin
@@ -887,6 +884,7 @@ begin
   FaceChanged;
 end;
 
+{$push}
 {$hints off}
 function TFreeTypeFont.GetDPI: integer;
 var metrics: TT_Instance_Metrics;
@@ -903,7 +901,7 @@ begin
       result := FDPI;
   end;
 end;
-{$hints on}
+{$pop}
 
 function TFreeTypeFont.GetFamily: string;
 begin
@@ -997,6 +995,7 @@ begin
   result := lGlyph;
 end;
 
+{$push}
 {$hints off}
 function TFreeTypeFont.GetGlyphCount: integer;
 var prop : TT_Face_Properties;
@@ -1020,8 +1019,7 @@ begin
   else
     result := FNamesArray[ord(AIndex)];
 end;
-
-{$hints on}
+{$pop}
 
 function TFreeTypeFont.GetLineFullHeight: single;
 begin

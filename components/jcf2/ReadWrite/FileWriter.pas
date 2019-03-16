@@ -36,7 +36,7 @@ unit FileWriter;
 
 interface
 
-uses CodeWriter;
+uses SysUtils, CodeWriter;
 
 type
   TFileWriter = class(TCodeWriter)
@@ -57,15 +57,11 @@ type
 
 implementation
 
-uses
- { delphi }SysUtils;
-
 constructor TFileWriter.Create;
 begin
   inherited;
   FOutputFileName := '';
 end;
-
 
 procedure TFileWriter.SetOutputFileName(const Value: string);
 begin
@@ -89,9 +85,10 @@ begin
   { write the file }
   AssignFile(lfOutput, OutputFileName);
   Rewrite(lfOutput, 1);
+  {$PUSH}
   {$WARNINGS OFF}
   BlockWrite(lfOutput, pChars^, Length(fsDestText));
-  {$WARNINGS ON}
+  {$POP}
   CloseFile(lfOutput);
 
   { reset state }

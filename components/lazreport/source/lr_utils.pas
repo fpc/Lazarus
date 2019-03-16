@@ -587,6 +587,7 @@ begin
   end;
 end;
 
+{$PUSH}
 {$HINTS OFF}
 procedure frGetComponents(Owner: TComponent; ClassRef: TClass;
   List: TStrings; Skip: TComponent);
@@ -711,7 +712,7 @@ begin
     end;
   end;
 end;
-{$HINTS ON}  
+{$POP}
 
 function frGetWindowsVersion: String;
 {$IFDEF WIN32}

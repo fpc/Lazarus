@@ -387,6 +387,7 @@ begin
   fCairoPrinter.Canvas.LineTo(X2,Y2);
 end;
 
+{$PUSH}
 {$HINTS OFF}
 {$NOTES OFF}
 function isNumeric(St: String): Boolean;
@@ -397,8 +398,7 @@ begin
   Val(St, R, E);
   Result := (E = 0);
 end;
-{$NOTES ON}
-{$HINTS ON}
+{$POP}
 
 procedure TlrCairoExportFilter.ShowBarCode(View: TfrCustomBarCodeView; x, y, h,
   w: integer);

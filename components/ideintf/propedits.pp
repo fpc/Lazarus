@@ -6061,12 +6061,13 @@ procedure TURLPropertyEditor.SetFilename(const Filename: string);
     i: Integer;
   begin
     Result:=Filename;
+    {$push}
     {$warnings off}
     if PathDelim<>'/' then
       for i:=1 to length(Result) do
         if Result[i]=PathDelim then
           Result[i]:='/';
-    {$warnings on}
+    {$pop}
     if Result<>'' then
       Result:='file://'+Result;
   end;

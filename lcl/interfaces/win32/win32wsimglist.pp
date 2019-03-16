@@ -253,11 +253,12 @@ begin
       FLAGS := ILC_COLOR or ILC_MASK;
     end;
   end;
+  {$PUSH}
   {$WARNINGS OFF}
   Result._Init(ImageList_Create(AWidth, AHeight, Flags, ACount, AGrow));
   if Result.Allocated and (ACount > 0) then
     AddData(Result._Handle, ACount, -1, AWidth, AHeight, AData);
-  {$WARNINGS ON}
+  {$POP}
 end;
 
 class procedure TWin32WSCustomImageListResolution.Delete(

@@ -1184,9 +1184,10 @@ type
 
     property UTF8Decode: Boolean read FUtf8Decode write FUtf8Decode;
 
+    {$PUSH}
     {$WARNINGS OFF}
     property UnitName: tbtString read FUnitName;
-    {$WARNINGS ON}
+    {$POP}
   end;
   TIFPSPascalCompiler = TPSPascalCompiler;
 

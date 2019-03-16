@@ -2532,6 +2532,7 @@ var
     Result := True;
   end;
 
+{$PUSH}
 {$WARNINGS OFF}
 
   function LoadTypes: Boolean;
@@ -2932,7 +2933,7 @@ var
       FProcs.Add(Curr);
     end;
   end;
-{$WARNINGS ON}
+{$POP}
 
   function LoadVars: Boolean;
   var
