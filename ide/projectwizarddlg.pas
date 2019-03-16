@@ -85,10 +85,10 @@ begin
     btnConvertProject.caption:=lisPWConvertProject;
     gbRecent.Caption:=lisPWOpenRecentProject;
     btnCloseIDE.caption:=lisQuitLazarus;
-    IDEImages.AssignImage(btnNewProject, 'item_project');
+    IDEImages.AssignImage(btnNewProject, 'menu_project_new');
     IDEImages.AssignImage(btnOpenProject, 'menu_project_open');
     IDEImages.AssignImage(btnExamples, 'camera');
-    IDEImages.AssignImage(btnConvertProject, 'laz_wand');
+    IDEImages.AssignImage(btnConvertProject, 'menu_tool_del_to_laz_project');
     IDEImages.AssignImage(btnCloseIDE, 'menu_exit');
     cbRecentProjects.Items.AddStrings(EnvironmentOptions.RecentProjectFiles);
   end;
