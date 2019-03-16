@@ -1407,7 +1407,7 @@ begin
     StartPascalCodeFoldBlock(cfbtRecord);
     fRange := fRange - [rsVarTypeInSpecification];
     if CompilerMode = pcmDelphi then
-      fRange := fRange + [rsAtClass] - [rsAfterEqual]; // highlight helper
+      fRange := fRange + [rsAtClass] - [rsAfterEqual, rsAfterEqualOrColon]; // highlight helper
     Result := tkKey;
   end
   else if KeyComp('Array') then Result := tkKey
@@ -1600,15 +1600,17 @@ begin
     if rsProperty in fRange then Result := tkKey else Result := tkIdentifier;
   end
   else if KeyComp('Interface') then begin
-    if (rsAfterEqualOrColon in fRange) and (PasCodeFoldRange.BracketNestLevel = 0)
+    if (rsAfterEqual in fRange) and (PasCodeFoldRange.BracketNestLevel = 0)
     then begin
-      fRange := fRange + [rsAtClass];
+      // type IFoo = INTERFACE
+      fRange := fRange + [rsAtClass] - [rsVarTypeInSpecification, rsAfterEqual];
       StartPascalCodeFoldBlock(cfbtClass);
     end
     else
     if not(rsAfterEqualOrColon in fRange) and
        (fRange * [rsInterface, rsImplementation] = []) then
     begin
+      // unit section INTERFACE
       CloseBeginEndBlocksBeforeProc;
       if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
         EndPascalCodeFoldBlockLastLine;

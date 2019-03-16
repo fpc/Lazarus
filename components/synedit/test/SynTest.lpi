@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="11"/>
+    <Version Value="12"/>
     <PathDelim Value="\"/>
     <General>
       <SessionStorage Value="InIDEConfig"/>
@@ -12,8 +12,8 @@
       <Language Value=""/>
       <CharSet Value=""/>
     </VersionInfo>
-    <BuildModes Count="1">
-      <Item1 Name="default" Default="True"/>
+    <BuildModes>
+      <Item Name="default" Default="True"/>
     </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
@@ -48,121 +48,121 @@
         <PackageName Value="FCL"/>
       </Item5>
     </RequiredPackages>
-    <Units Count="23">
-      <Unit0>
+    <Units>
+      <Unit>
         <Filename Value="SynTest.lpr"/>
         <IsPartOfProject Value="True"/>
-      </Unit0>
-      <Unit1>
+      </Unit>
+      <Unit>
         <Filename Value="testsynselection.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestSynSelection"/>
-      </Unit1>
-      <Unit2>
+      </Unit>
+      <Unit>
         <Filename Value="testbase.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestBase"/>
-      </Unit2>
-      <Unit3>
+      </Unit>
+      <Unit>
         <Filename Value="testsynbeautifier.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestSynBeautifier"/>
-      </Unit3>
-      <Unit4>
+      </Unit>
+      <Unit>
         <Filename Value="testsyncroedit.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestSyncroEdit"/>
-      </Unit4>
-      <Unit5>
+      </Unit>
+      <Unit>
         <Filename Value="testtrimspace.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestTrimSpace"/>
-      </Unit5>
-      <Unit6>
+      </Unit>
+      <Unit>
         <Filename Value="testhighlightxml.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestHighlightXml"/>
-      </Unit6>
-      <Unit7>
+      </Unit>
+      <Unit>
         <Filename Value="testhighlightmulti.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestHighlightMulti"/>
-      </Unit7>
-      <Unit8>
+      </Unit>
+      <Unit>
         <Filename Value="testbasicsynedit.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestBasicSynEdit"/>
-      </Unit8>
-      <Unit9>
+      </Unit>
+      <Unit>
         <Filename Value="testfoldedview.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestFoldedView"/>
-      </Unit9>
-      <Unit10>
+      </Unit>
+      <Unit>
         <Filename Value="testhighlightpas.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestHighlightPas"/>
-      </Unit10>
-      <Unit11>
+      </Unit>
+      <Unit>
         <Filename Value="testmarkupwordgroup.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestMarkupwordGroup"/>
-      </Unit11>
-      <Unit12>
+      </Unit>
+      <Unit>
         <Filename Value="testbookmarks.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestBookMarks"/>
-      </Unit12>
-      <Unit13>
+      </Unit>
+      <Unit>
         <Filename Value="testsynsharededits.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestSynSharedEdits"/>
-      </Unit13>
-      <Unit14>
+      </Unit>
+      <Unit>
         <Filename Value="testblockindent.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestBlockIndent"/>
-      </Unit14>
-      <Unit15>
+      </Unit>
+      <Unit>
         <Filename Value="testhighlighterlfm.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestHighlighterLfm"/>
-      </Unit15>
-      <Unit16>
+      </Unit>
+      <Unit>
         <Filename Value="testhighlightfoldbase.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestHighlightFoldBase"/>
-      </Unit16>
-      <Unit17>
+      </Unit>
+      <Unit>
         <Filename Value="testsyntextarea.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestSynTextArea"/>
-      </Unit17>
-      <Unit18>
+      </Unit>
+      <Unit>
         <Filename Value="testnavigation.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestNavigation"/>
-      </Unit18>
-      <Unit19>
+      </Unit>
+      <Unit>
         <Filename Value="testmarkupifdef.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestMarkupIfDef"/>
-      </Unit19>
-      <Unit20>
+      </Unit>
+      <Unit>
         <Filename Value="testpaintcolormerging.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestPaintColorMerging"/>
-      </Unit20>
-      <Unit21>
+      </Unit>
+      <Unit>
         <Filename Value="testmarkupfoldcoloring.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestMarkupFoldColoring"/>
-      </Unit21>
-      <Unit22>
+      </Unit>
+      <Unit>
         <Filename Value="testsynmulticaret.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestSynMultiCaret"/>
-      </Unit22>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
