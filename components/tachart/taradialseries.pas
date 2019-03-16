@@ -87,6 +87,7 @@ type
   protected
     function CalcInnerRadius: Integer; inline;
     procedure GetLegendItems(AItems: TChartLegendItems); override;
+    procedure SortSlices;
     property InnerRadiusPercent: Integer
       read FInnerRadiusPercent write SetInnerRadiusPercent default 0;
     property MarkPositionCentered: Boolean
@@ -190,6 +191,13 @@ uses
   Math,
   TAChartStrConsts, TATypes, TACustomSource, TAGeometry, TAGraph;
 
+const
+  TWO_PI = 2 * pi;
+  PI_1_4 = pi / 4;
+  PI_3_4 = (3 / 4) * pi;
+  PI_5_4 = (5 / 4) * pi;
+  PI_7_4 = (7 / 4) * pi;
+
 { TPieSlice }
 
 function TPieSlice.Angle: Double;
@@ -284,30 +292,31 @@ end;
 procedure TCustomPieSeries.Draw(ADrawer: IChartDrawer);
 const
   STEP = 4;
-  TWO_PI = 2 * pi;
-  PI_1_4 = pi / 4;
-  PI_3_4 = (3 / 4) * pi;
-  PI_5_4 = (5 / 4) * pi;
-  PI_7_4 = (7 / 4) * pi;
 var
   ps: TPieSlice;
   scaled_depth: Integer;
   innerRadius: Integer;
 
   function PrevSlice(ASlice: TPieSlice): TPieSlice;
+  var
+    slice: TPieSlice;
   begin
-    if ASlice.FOrigIndex = 0 then
-      Result := FSlices[High(FSlices)]
-    else
-      Result := FSlices[ASlice.FOrigIndex - 1];
+    for slice in FSlices do
+      if slice.FNextAngle = ASlice.FPrevAngle then begin
+        Result := slice;
+        exit;
+      end;
   end;
 
   function NextSlice(ASlice: TPieSlice): TPieSlice;
+  var
+    slice: TPieSlice;
   begin
-    if ASlice.FOrigIndex = High(FSlices) then
-      Result := FSlices[0]
-    else
-      Result := FSlices[ASlice.FOrigIndex + 1]
+    for slice in FSlices do
+      if slice.FPrevAngle = ASlice.FNextAngle then begin
+        Result := slice;
+        exit;
+      end;
   end;
 
   function SliceExploded(ASlice: TPieSlice): Boolean;
@@ -316,15 +325,25 @@ var
   end;
 
   function StartEdgeVisible(ASlice: TPieSlice): Boolean;
+  var
+    prev: TPieSlice;
   begin
-    Result := InRange(ASlice.FPrevAngle, PI_1_4, PI_5_4) and
-      (SliceExploded(ASlice) or (SliceExploded(PrevSlice(ASlice))));
+    Result := InRange(ASlice.FPrevAngle, PI_1_4, PI_5_4);
+    if Result then begin
+      prev := PrevSlice(ASlice);
+      Result := SliceExploded(ASlice) or SliceExploded(prev) or not prev.FVisible;
+    end;
   end;
 
   function EndEdgeVisible(ASlice: TPieSlice): Boolean;
+  var
+    next: TPieSlice;
   begin
-    Result := not InRange(ASlice.FNextAngle, PI_1_4, PI_5_4) and
-      (SliceExploded(ASlice) or SliceExploded(NextSlice(ASlice)));
+    Result := not InRange(ASlice.FNextAngle, PI_1_4, PI_5_4);
+    if Result then begin
+      next := NextSlice(ASlice);
+      Result := SliceExploded(ASlice) or SliceExploded(next) or not next.FVisible;
+    end;
   end;
 
   procedure DrawArc3D(ASlice: TPieSlice; AInside: Boolean);
@@ -464,51 +483,14 @@ begin
   ADrawer.SetPen(EdgePen);
   if Depth > 0 then begin
     scaled_depth := ADrawer.Scale(Depth);
-    FindLeftMostIndex(iL);
-    FindRegionIndexes(i14);
-
-    if FSlices[iL].FVisible then begin
-      if StartEdgeVisible(FSlices[iL]) then
-        DrawStartEdge3D(FSlices[iL]);
-      if EndEdgeVisible(FSlices[iL]) then
-        DrawEndEdge3D(FSlices[iL]);
-      DrawArc3D(FSlices[iL], false);
-      DrawArc3D(FSlices[iL], true);
+    for i:=0 to High(FSlices) do begin
+      ps := FSlices[i];
+      if EndEdgeVisible(ps) then
+        DrawEndEdge3D(ps);
+      DrawVisibleArc3D(ps);
+      if StartEdgeVisible(ps) then
+        DrawStartEdge3D(ps);
     end;
-
-    for i:=iL+1 to High(FSlices) do
-      if FSlices[i].FVisible then begin
-        if StartEdgeVisible(FSlices[i]) then
-          DrawStartEdge3D(FSlices[i]);
-        if EndEdgeVisible(FSlices[i]) then
-          DrawEndEdge3D(FSlices[i]);
-        DrawArc3D(FSlices[i], false);
-        DrawArc3d(FSlices[i], true);
-      end;
-
-    if iL <> 0 then
-      for i:= iL downto 0 do
-        if FSlices[i].FVisible then begin
-          if StartEdgeVisible(FSlices[i]) then
-            DrawStartEdge3D(FSlices[i]);
-          if (i <> iL) and EndEdgeVisible(FSlices[i]) then
-            DrawEndEdge3D(FSlices[i]);
-        end;
-
-    // Draw arcs
-    if FSlices[iL].FNextAngle > PI_7_4 then dec(iL);
-    if FSlices[i14].FNextAngle > PI_7_4 then dec(i14);
-    for i := iL downto i14 do
-      DrawVisibleArc3D(FSlices[i]);
-
-    for i := 0 to i14 do begin
-      if EndEdgeVisible(FSlices[i]) then DrawEndEdge3D(FSlices[i]);
-      DrawVisibleArc3D(FSlices[i]);
-    end;
-      {
-    for i:= iL downto 0 do
-      DrawVisibleArc3D(FSlices[i]);
-      }
   end;
 
   ADrawer.SetPen(EdgePen);
@@ -724,6 +706,44 @@ begin
   Result := ColorDef(Result, SLICE_COLORS[AIndex mod Length(SLICE_COLORS)]);
 end;
 
+procedure TCustomPieSeries.SortSlices;
+
+  function CompareSlices(ASlice1, ASlice2: TPieSlice): Integer;
+  var
+    angle1, angle2: Double;
+  begin
+    angle1 := Max(cos(ASlice1.FPrevAngle - PI_1_4), cos(ASlice1.FNextAngle - PI_1_4));
+    angle2 := Max(cos(ASlice2.FPrevAngle - PI_1_4), cos(ASlice2.FNextAngle - PI_1_4));
+    Result := CompareValue(angle1, angle2);
+  end;
+
+  procedure QuickSort(const L, R: Integer);
+  var
+    i, j, m: Integer;
+    ps: TPieSlice;
+  begin
+    i := L;
+    j := R;
+    m := (L + R) div 2;
+    while (i <= j) do begin
+      while CompareSlices(FSlices[i], FSlices[m]) < 0 do inc(i);
+      while CompareSlices(FSlices[j], FSlices[m]) > 0 do dec(j);
+      if i <= j then begin
+        ps := FSlices[i];
+        FSlices[i] := FSlices[j];
+        FSlices[j] := ps;
+        inc(i);
+        dec(j);
+      end;
+      if L < j then QuickSort(L, j);
+      if i < R then QuickSort(i, R);
+    end;
+  end;
+
+begin
+  QuickSort(0, High(FSlices));
+end;
+
 function TCustomPieSeries.TryRadius(ADrawer: IChartDrawer): TRect;
 
   function EndPoint(AAngle, ARadius: Double): TPoint;
@@ -850,6 +870,7 @@ begin
   end;
   SetLength(FSlices, j);
   InflateRect(Result, MARGIN, MARGIN);
+  SortSlices;
 end;
 
 
