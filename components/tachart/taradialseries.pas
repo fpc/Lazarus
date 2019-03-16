@@ -107,7 +107,6 @@ type
       const ANewPos: TDoublePoint); override;
 
     property EdgePen: TPen read FEdgePen write SetEdgePen;
-    // Offset slices away from center based on X value.
     property Exploded: Boolean read FExploded write SetExploded default false;
     property FixedRadius: TChartDistance
       read FFixedRadius write SetFixedRadius default 0;
@@ -870,7 +869,7 @@ begin
   end;
   SetLength(FSlices, j);
   InflateRect(Result, MARGIN, MARGIN);
-  SortSlices;
+  if FDepth > 0 then SortSlices;
 end;
 
 

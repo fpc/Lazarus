@@ -190,6 +190,11 @@ per data points than specified by <link id="TChartSeriesGetXYCountNeeded"><var>G
           </ul>
         </errors>
       </element>
+    <element name="TCustomChartSeries.DepthBrightnessDelta"><short>Defines amount of brightness change applied to series side areas in 3D mode.</short><descr><p>The extrudes sides of a series in 3D mode can be painted darker or brighter than the series itself when the property
+<var>DepthBrightnessDelta</var> has a negative or positive value, respectively.</p><p>The value specified is added to the rgb color components of the series color.</p><p>Use a negative value, such as -32, to moderately darken the series sides. </p><p/>
+By default, i.e. <var>DepthBrightnessDelta=0</var>, the series sides have the same color as the series itself.
+</descr>
+      </element>
     </module>
   </package>
 </fpdoc-descriptions>
