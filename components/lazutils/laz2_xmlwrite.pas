@@ -170,13 +170,14 @@ end;
 
 const
   AttrSpecialChars : array[boolean] of TSetOfChar = (
-    ['<', '"', '&', #0..#31], // false: default
-    ['<', '"', '&']  // true: write special characters
+    ['<', '"', '''', '&', #0..#31], // false: default
+    ['<', '"', '''', '&']  // true: write special characters
     );
   TextSpecialChars = ['<', '>', '&', #0..#31];
   CDSectSpecialChars = [']'];
   LineEndingChars = [#13, #10];
   QuotStr = '&quot;';
+  AposStr = '&apos;';
   AmpStr = '&amp;';
   ltStr = '&lt;';
   gtStr = '&gt;';
@@ -358,6 +359,7 @@ procedure AttrSpecialCharCallback(Sender: TXMLWriter; const s: DOMString;
 begin
   case s[idx] of
     '"': Sender.wrtStr(QuotStr);
+    '''': Sender.wrtStr(AposStr);
     '&': Sender.wrtStr(AmpStr);
     '<': Sender.wrtStr(ltStr);
     // Escape whitespace using CharRefs to be consistent with W3 spec § 3.3.3
