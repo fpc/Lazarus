@@ -615,7 +615,7 @@ end;
 
 function TXMLConfig.IsLegacyList(const APath: string): Boolean;
 begin
-  Result := GetValue(APath+'Count',-1)>1;
+  Result := GetValue(APath+'Count',-1)>=0;
 end;
 
 function TXMLConfig.ExtendedToStr(const e: extended): string;
