@@ -10133,7 +10133,7 @@ begin
           begin
             Result := TimeToStr(v);
             if Result='' then
-              Result := FormatDateTime('hh:nn:ss', v);
+              Result := FormatDateTime('hh:nn:ss', v, [fdoInterval]);
           end
           else
             Result := v;
@@ -10159,14 +10159,14 @@ begin
           Result := ''  // date is null
         else
         if f2 = 4 then
-          Result := SysToUTF8(FormatDateTime(AFormatStr, v))
+          Result := SysToUTF8(FormatDateTime(AFormatStr, v, [fdoInterval]))
         else
-          Result := FormatDateTime(frDateFormats[f2], v);
+          Result := FormatDateTime(frDateFormats[f2], v, [fdoInterval]);
       fmtTime:
          if f2 = 4 then
-           Result := FormatDateTime(AFormatStr, v)
+           Result := FormatDateTime(AFormatStr, v, [fdoInterval])
          else
-           Result := FormatDateTime(frTimeFormats[f2], v);
+           Result := FormatDateTime(frTimeFormats[f2], v, [fdoInterval]);
       fmtBoolean :
          begin
            if f2 = 4 then
@@ -12586,7 +12586,7 @@ begin
     0: dk := dkAvg;                                           //Add('AVG');               {0}
     1: dk := dkCount;                                         //Add('COUNT');             {1}
     2: val := DayOf(frParser.Calc(p1));                       //Add('DAYOF');             {2}
-    3: val := FormatDateTime(frParser.Calc(p1), frParser.Calc(p2)); //Add('FORMATDATETIME');    {3}
+    3: val := FormatDateTime(frParser.Calc(p1), frParser.Calc(p2), [fdoInterval]); //Add('FORMATDATETIME');    {3}
     4: val := FormatFloat(frParser.Calc(p1), lrVarToFloatDef(frParser.Calc(p2))); //Add('FORMATFLOAT');       {4}
     5: val := FormatMaskText(frParser.Calc(p1) + ';0; ', frParser.Calc(p2));  //Add('FORMATTEXT');        {5}
     6:begin                                                   //Add('INPUT');             {6}
