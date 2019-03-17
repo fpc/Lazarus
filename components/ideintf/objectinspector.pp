@@ -3579,7 +3579,7 @@ begin
 
   // Get hint
   OkToShow := True;
-  HintType := GetHintTypeAt(Index, Position.X);
+  HintType := GetHintTypeAt(Index, ClientPosition.X);
   if (HintType = pehName) and Assigned(OnPropertyHint) then
     OkToShow := OnPropertyHint(Self, PointedRow, AHint)
   else
