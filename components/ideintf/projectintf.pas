@@ -632,7 +632,9 @@ const
                          pfRunnable,
                          pfLRSFilesInOutputDirectory,
                          pfSaveJumpHistory,
-                         pfSaveFoldState];
+                         pfSaveFoldState,
+                         pfCompatibilityMode {ToDo: Remove this after everything works.}
+                         ];
   DefaultProjectFlags = DefaultProjectNoApplicationFlags+[
                          pfMainUnitHasCreateFormStatements,
                          pfMainUnitHasTitleStatement,
