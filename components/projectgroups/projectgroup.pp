@@ -729,7 +729,6 @@ begin
     RaiseGDBException(AFileName);
   if CompareFilenames(AFileName,FileName)=0 then
     raise Exception.Create(lisInvalidCycleAProjectGroupCannotHaveItselfAsTarget);
-  if not FileExistsCached(AFileName) then exit;
   Result:=TIDECompileTarget.Create(CompileTarget);
   Result.FileName:=AFileName;
   FTargets.Add(Result);
@@ -870,6 +869,7 @@ begin
              begin
                Target:=TIDECompileTarget(AddTarget(TargetFileName));
                Target.Removed:=True;
+               Include(Options,pgloRemoveInvalid);
              end;
           else
             exit;
