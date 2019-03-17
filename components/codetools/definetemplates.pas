@@ -2089,6 +2089,7 @@ begin
 
         if FPMSourcePath<>'' then begin
           //debugln(['GatherUnitsInFPMSources ',FPMFilename,' ',FPMSourcePath]);
+          FreeAndNil(FPM.UnitToSrc);
           FPM.UnitToSrc:=GatherUnitSourcesInDirectory(FPMSourcePath,3);
         end;
       end;
@@ -8144,7 +8145,7 @@ begin
   FreeAndNil(Units);
   FreeAndNil(Includes);
   FreeAndNil(UnitToFPM);
-  FreeAndNil(FPMNameToFPM);
+  FreeAndNil(FPMNameToFPM); // this frees the FPMs
 end;
 
 function TPCTargetConfigCache.Equals(Item: TPCTargetConfigCache;
