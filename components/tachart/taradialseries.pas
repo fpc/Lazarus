@@ -59,6 +59,8 @@ type
 
   { TCustomPieSeries }
 
+  TSliceArray = array of TPieSlice;
+
   TCustomPieSeries = class(TChartSeries)
   private
     FCenter: TPoint;
@@ -87,7 +89,7 @@ type
   protected
     function CalcInnerRadius: Integer; inline;
     procedure GetLegendItems(AItems: TChartLegendItems); override;
-    procedure SortSlices;
+    procedure SortSlices(out ASlices: TSliceArray);
     property InnerRadiusPercent: Integer
       read FInnerRadiusPercent write SetInnerRadiusPercent default 0;
     property MarkPositionCentered: Boolean
@@ -292,15 +294,15 @@ procedure TCustomPieSeries.Draw(ADrawer: IChartDrawer);
 const
   STEP = 4;
 var
-  ps: TPieSlice;
   scaled_depth: Integer;
   innerRadius: Integer;
+  drawslices: array of TPieSlice;
 
   function PrevSlice(ASlice: TPieSlice): TPieSlice;
   var
     slice: TPieSlice;
   begin
-    for slice in FSlices do
+    for slice in drawSlices do
       if slice.FNextAngle = ASlice.FPrevAngle then begin
         Result := slice;
         exit;
@@ -311,7 +313,7 @@ var
   var
     slice: TPieSlice;
   begin
-    for slice in FSlices do
+    for slice in drawSlices do
       if slice.FPrevAngle = ASlice.FNextAngle then begin
         Result := slice;
         exit;
@@ -354,8 +356,6 @@ var
     clr: TColor;
     r: Integer;
     isVisible: Boolean;
-    outsideVisible: Boolean;
-    insideVisible: Boolean;
   begin
     if AInside and (FInnerRadiusPercent = 0) then
       exit;
@@ -425,53 +425,33 @@ var
 
   procedure DrawStartEdge3D(ASlice: TPieSlice);
   begin
-    ADrawer.SetBrushParams(
-      bsSolid, GetDepthColor(SliceColor(ASlice.FOrigIndex)));
-    ADrawer.DrawLineDepth(
-      ASlice.FBase + RotatePointX(innerRadius, -ASlice.FPrevAngle),
-      ASlice.FBase + RotatePointX(FRadius, -ASlice.FPrevAngle),
-      scaled_depth
-    );
+    if StartEdgeVisible(ASlice) then begin
+      ADrawer.SetBrushParams(
+        bsSolid, GetDepthColor(SliceColor(ASlice.FOrigIndex)));
+      ADrawer.DrawLineDepth(
+        ASlice.FBase + RotatePointX(innerRadius, -ASlice.FPrevAngle),
+        ASlice.FBase + RotatePointX(FRadius, -ASlice.FPrevAngle),
+        scaled_depth
+      );
+    end;
   end;
 
   procedure DrawEndEdge3D(ASlice: TPieSlice);
   begin
-    ADrawer.SetBrushParams(
-      bsSolid, GetDepthColor(SliceColor(ASlice.FOrigIndex)));
-    ADrawer.DrawLineDepth(
-      ASlice.FBase + RotatePointX(innerRadius, -ASlice.FNextAngle),
-      ASlice.FBase + RotatePointX(FRadius, -ASlice.FNextAngle),
-      scaled_depth
-    );
-  end;
-
-  procedure FindLeftMostIndex(out AIndex: Integer);
-  var
-    j: Integer;
-  begin
-    for j := 0 to High(FSlices) do
-      if InRange(pi, FSlices[j].FPrevAngle, FSlices[j].FNextAngle) then begin
-        AIndex := j;
-        exit;
-      end;
-    AIndex := 0;
-  end;
-
-  procedure FindRegionIndexes(out AIndex14: Integer);
-  var
-    j: Integer;
-  begin
-    AIndex14 := 0;
-    for j := 0 to High(FSlices) do
-      if FSlices[j].FPrevAngle > PI_1_4 then begin
-        AIndex14 := j;
-        break;
-      end;
+    if EndEdgeVisible(ASlice) then begin
+      ADrawer.SetBrushParams(
+        bsSolid, GetDepthColor(SliceColor(ASlice.FOrigIndex)));
+      ADrawer.DrawLineDepth(
+        ASlice.FBase + RotatePointX(innerRadius, -ASlice.FNextAngle),
+        ASlice.FBase + RotatePointX(FRadius, -ASlice.FNextAngle),
+        scaled_depth
+      );
+    end;
   end;
 
 var
   prevLabelPoly: TPointArray = nil;
-  i, iL, i14: Integer;
+  ps: TPieSlice;
 begin
   if IsEmpty then exit;
 
@@ -482,14 +462,18 @@ begin
   ADrawer.SetPen(EdgePen);
   if Depth > 0 then begin
     scaled_depth := ADrawer.Scale(Depth);
-    for i:=0 to High(FSlices) do begin
-      ps := FSlices[i];
-      if EndEdgeVisible(ps) then
-        DrawEndEdge3D(ps);
+    SortSlices(drawSlices);
+    for ps in drawSlices do begin
+      DrawEndEdge3D(ps);
       DrawVisibleArc3D(ps);
-      if StartEdgeVisible(ps) then
-        DrawStartEdge3D(ps);
+      DrawStartEdge3D(ps);
     end;
+    // Fix edge of ulta-long slice
+    for ps in FSlices do
+      if ps.FNextAngle - ps.FPrevAngle > pi then begin;
+        DrawVisibleArc3D(ps);
+        break;
+      end;
   end;
 
   ADrawer.SetPen(EdgePen);
@@ -705,15 +689,21 @@ begin
   Result := ColorDef(Result, SLICE_COLORS[AIndex mod Length(SLICE_COLORS)]);
 end;
 
-procedure TCustomPieSeries.SortSlices;
+procedure TCustomPieSeries.SortSlices(out ASlices: TSliceArray);
 
   function CompareSlices(ASlice1, ASlice2: TPieSlice): Integer;
   var
     angle1, angle2: Double;
   begin
-    angle1 := Max(cos(ASlice1.FPrevAngle - PI_1_4), cos(ASlice1.FNextAngle - PI_1_4));
-    angle2 := Max(cos(ASlice2.FPrevAngle - PI_1_4), cos(ASlice2.FNextAngle - PI_1_4));
-    Result := CompareValue(angle1, angle2);
+    if (ASlice1.FPrevAngle >= PI_3_4) and (ASlice1.FNextAngle >= PI_5_4) then
+      angle1 := ASlice1.FNextAngle
+    else
+      angle1 := IfThen(InRange(ASlice1.FPrevAngle, PI_1_4, PI_5_4), ASlice1.FPrevAngle, ASlice1.FNextAngle);
+    if (ASlice2.FPrevAngle >= PI_3_4) and (ASlice2.FNextAngle >= PI_5_4) then
+      angle2 := ASlice2.FNextAngle
+    else
+      angle2 := IfThen(InRange(ASlice2.FPrevAngle, PI_1_4, PI_5_4), ASlice2.FPrevAngle, ASlice2.FNextAngle);
+    Result := CompareValue(cos(angle1 - PI_1_4), cos(angle2 - PI_1_4));
   end;
 
   procedure QuickSort(const L, R: Integer);
@@ -725,12 +715,12 @@ procedure TCustomPieSeries.SortSlices;
     j := R;
     m := (L + R) div 2;
     while (i <= j) do begin
-      while CompareSlices(FSlices[i], FSlices[m]) < 0 do inc(i);
-      while CompareSlices(FSlices[j], FSlices[m]) > 0 do dec(j);
+      while CompareSlices(ASlices[i], ASlices[m]) < 0 do inc(i);
+      while CompareSlices(ASlices[j], ASlices[m]) > 0 do dec(j);
       if i <= j then begin
-        ps := FSlices[i];
-        FSlices[i] := FSlices[j];
-        FSlices[j] := ps;
+        ps := ASlices[i];
+        ASlices[i] := ASlices[j];
+        ASlices[j] := ps;
         inc(i);
         dec(j);
       end;
@@ -739,8 +729,25 @@ procedure TCustomPieSeries.SortSlices;
     end;
   end;
 
+var
+  i, j: Integer;
 begin
-  QuickSort(0, High(FSlices));
+  SetLength(ASlices, Length(FSlices) + 1);
+  j := 0;
+  for i:=0 to High(FSlices) do begin
+    if FSlices[i].FNextAngle - FSlices[i].FPrevAngle >= pi then begin
+      ASlices[j] := FSlices[i];
+      ASlices[j].FNextAngle := (FSlices[i].FPrevAngle + FSlices[i].FNextAngle) * 0.5;
+      ASlices[j+1] := FSlices[i];
+      ASlices[j+1].FPrevAngle := ASlices[j].FNextAngle;
+      inc(j, 2);
+    end else begin
+      ASlices[j] := FSlices[i];
+      inc(j);
+    end;
+  end;
+  SetLength(ASlices, j);
+  QuickSort(0, High(ASlices));
 end;
 
 function TCustomPieSeries.TryRadius(ADrawer: IChartDrawer): TRect;
@@ -869,7 +876,6 @@ begin
   end;
   SetLength(FSlices, j);
   InflateRect(Result, MARGIN, MARGIN);
-  if FDepth > 0 then SortSlices;
 end;
 
 
