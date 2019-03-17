@@ -433,6 +433,12 @@ type
   private
     FAttribType: TPSAttributeType;
     FValues: TPSList;
+    {$IFDEF PS_USESSUPPORT}
+    FDeclareUnit: tbtString;
+    {$ENDIF}
+    FDeclarePos: Cardinal;
+    FDeclareRow: Cardinal;
+    FDeclareCol: Cardinal;
     function GetValueCount: Longint;
     function GetValue(I: Longint): PIfRVariant;
   public
@@ -446,6 +452,16 @@ type
     property Count: Longint read GetValueCount;
 
     property Values[i: Longint]: PIfRVariant read GetValue; default;
+
+    {$IFDEF PS_USESSUPPORT}
+    property DeclareUnit: tbtString read FDeclareUnit write FDeclareUnit;
+    {$ENDIF}
+
+    property DeclarePos: Cardinal read FDeclarePos write FDeclarePos;
+
+    property DeclareRow: Cardinal read FDeclareRow write FDeclareRow;
+
+    property DeclareCol: Cardinal read FDeclareCol write FDeclareCol;
 
     procedure DeleteValue(i: Longint);
 
@@ -761,6 +777,7 @@ type
     ecUnitNotFoundOrContainsErrors,
     ecCrossReference
     {$ENDIF}
+    , ecUnClosedAttributes
     );
 
   TPSPascalCompilerHintType = (
@@ -881,7 +898,9 @@ type
   TPSUnOperatorType = (otNot, otMinus, otCast);
 
   TPSOnUseVariable = procedure (Sender: TPSPascalCompiler; VarType: TPSVariableType; VarNo: Longint; ProcNo, Position: Cardinal; const PropData: tbtString);
-
+  
+  TPSOnUseRegProc = procedure (Sender: TPSPascalCompiler; Position: Cardinal; const Name: tbtString);
+  
   TPSOnUses = function(Sender: TPSPascalCompiler; const Name: tbtString): Boolean;
 
   TPSOnExportCheck = function(Sender: TPSPascalCompiler; Proc: TPSInternalProcedure; const ProcDecl: tbtString): Boolean;
@@ -903,6 +922,7 @@ type
   TPSPascalCompiler = class
   protected
     FAnyString: TPSType;
+    FAnyMethod: TPSType;
     FUnitName: tbtString;
     FID: Pointer;
     FOnExportCheck: TPSOnExportCheck;
@@ -928,6 +948,7 @@ type
     FDebugOutput: tbtString;
     FOnExternalProc: TPSOnExternalProc;
     FOnUseVariable: TPSOnUseVariable;
+    FOnUseRegProc: TPSOnUseRegProc;
     FOnBeforeOutput: TPSOnNotify;
     FOnBeforeCleanup: TPSOnNotify;
     FOnWriteLine: TPSOnWriteLineEvent;
@@ -937,7 +958,7 @@ type
     FClasses: TPSList;
     FOnFunctionStart: TPSOnFunction;
     FOnFunctionEnd: TPSOnFunction;
-
+    FAttributesOpenTokenID, FAttributesCloseTokenID: TPsPasToken;
 
 		FWithCount: Integer;
 		FTryCount: Integer;
@@ -1162,6 +1183,8 @@ type
 	
     property OnUseVariable: TPSOnUseVariable read FOnUseVariable write FOnUseVariable;
 
+    property OnUseRegProc: TPSOnUseRegProc read FOnUseRegProc write FOnUseRegProc;
+
     property OnBeforeOutput: TPSOnNotify read FOnBeforeOutput write FOnBeforeOutput;
 
     property OnBeforeCleanup: TPSOnNotify read FOnBeforeCleanup write FOnBeforeCleanup;
@@ -1183,6 +1206,10 @@ type
     property BooleanShortCircuit: Boolean read FBooleanShortCircuit write FBooleanShortCircuit;
 
     property UTF8Decode: Boolean read FUtf8Decode write FUtf8Decode;
+
+    property AttributesOpenTokenID: TPSPasToken read FAttributesOpenTokenID write FAttributesOpenTokenID;
+
+    property AttributesCloseTokenID: TPSPasToken read FAttributesCloseTokenID write FAttributesCloseTokenID;
 
     {$PUSH}
     {$WARNINGS OFF}
@@ -1723,6 +1750,7 @@ function ParseMethodEx(Owner: TPSPascalCompiler; const FClassName: tbtString; De
 function DeclToBits(const Decl: TPSParametersDecl): tbtString;
 
 function NewVariant(FType: TPSType): PIfRVariant;
+function GetString(Src: PIfRVariant; var s: Boolean): tbtString;
 procedure DisposeVariant(p: PIfRVariant);
 
 implementation
@@ -1793,7 +1821,7 @@ const
   RPS_UnitNotFound = 'Unit ''%s'' not found or contains errors';
   RPS_CrossReference = 'Cross-Reference error of ''%s''';
   {$ENDIF}
-
+  RPS_UnClosedAttributes = 'Attributes not closed';
 
   RPS_Hint = 'Hint';
   RPS_VariableNotUsed = 'Variable ''%s'' never used';
@@ -2290,6 +2318,8 @@ begin
       x := TPSExternalProcedure.Create;
       TPSExternalProcedure(x).RegProc := xr;
       FProcs.Add(x);
+      if @FOnUseRegProc <> nil then
+        FOnUseRegProc(Self, FParser.CurrTokenPos, Name);
       Result := FProcs.Count - 1;
       exit;
     end;
@@ -2435,7 +2465,9 @@ begin
   Parser := TPSPascalParser.Create;
   Parser.SetText(Header);
   Decl := TPSParametersDecl.Create;
+{$IFNDEF DELPHI_TOKYO_UP}
   x := nil;
+{$ENDIF}
   try
     if Parser.CurrTokenId = CSTII_Function then
       IsFunction := True
@@ -5294,8 +5326,11 @@ begin
     FType.Attributes.Assign(Attr, True);
     for i := 0 to FType.Attributes.Count -1 do
     begin
-      if @FType.Attributes[i].FAttribType.FAAType <> nil then
-        FType.Attributes[i].FAttribType.FAAType(Self, FType, Attr[i]);
+      if (@FType.Attributes[i].FAttribType.OnApplyAttributeToType <> nil) and
+          not FType.Attributes[i].FAttribType.OnApplyAttributeToType(Self, FType, FType.Attributes[i]) then begin
+        Attr.Free;
+        Exit;
+    end;
     end;
     Attr.Free;
     if FParser.CurrTokenID <> CSTI_Semicolon then
@@ -5304,7 +5339,7 @@ begin
       Exit;
     end;
     FParser.Next;
-  until (FParser.CurrTokenId <> CSTI_Identifier) and (FParser.CurrTokenID <> CSTI_OpenBlock);
+  until (FParser.CurrTokenId <> CSTI_Identifier) and (FParser.CurrTokenID <> FAttributesOpenTokenID);
   Result := True;
 end;
 
@@ -12071,7 +12106,7 @@ begin
         exit;
       end;
     end else if (FParser.CurrTokenId = CSTII_Procedure) or
-      (FParser.CurrTokenId = CSTII_Function) or (FParser.CurrTokenID = CSTI_OpenBlock) then
+      (FParser.CurrTokenId = CSTII_Function) or (FParser.CurrTokenID = FAttributesOpenTokenID) then
     begin
       if (Position = csInterface) or (position = csInterfaceUses) then
       begin
@@ -12294,6 +12329,8 @@ begin
   FAllowUnit := true;
   {$ENDIF}
   FMessages := TPSList.Create;
+  FAttributesOpenTokenID := CSTI_OpenBlock;
+  FAttributesCloseTokenID := CSTI_CloseBlock;
 end;
 
 destructor TPSPascalCompiler.Destroy;
@@ -12370,6 +12407,7 @@ begin
   AddType('NativeString', btString);
   {$ENDIF}
   FAnyString := AddType('AnyString', btString);
+  FAnyMethod := AddTypeS('AnyMethod', 'procedure');
   AddType('ShortInt', btS8);
   AddType('Word', btU16);
   AddType('SmallInt', btS16);
@@ -12464,7 +12502,7 @@ var
   h, i: Longint;
   s: tbtString;
 begin
-  if FParser.CurrTokenID <> CSTI_OpenBlock then begin Result := true; exit; end;
+  if FParser.CurrTokenID <> FAttributesOpenTokenID then begin Result := true; exit; end;
   FParser.Next;
   if FParser.CurrTokenID <> CSTI_Identifier then
   begin
@@ -12484,13 +12522,19 @@ begin
   end;
   if att = nil then
   begin
-    MakeError('', ecUnknownIdentifier, '');
+    MakeError('', ecUnknownIdentifier, FParser.OriginalToken);
     Result := False;
     exit;
   end;
   FParser.Next;
   i := 0;
   at := Dest.Add(att);
+  {$IFDEF PS_USESSUPPORT}
+  at.DeclareUnit:=fModule;
+  {$ENDIF}
+  at.DeclarePos := FParser.CurrTokenPos;
+  at.DeclareRow := FParser.Row;
+  at.DeclareCol := FParser.Col;
   while att.Fields[i].Hidden do
   begin
     at.AddValue(NewVariant(at2ut(att.Fields[i].FieldType)));
@@ -12548,9 +12592,9 @@ begin
     exit;
   end;
   FParser.Next;
-  if FParser.CurrTokenID <> CSTI_CloseBlock then
+  if FParser.CurrTokenID <> FAttributesCloseTokenID then
   begin
-    MakeError('', ecCloseBlockExpected, '');
+    MakeError('', ecUnClosedAttributes, '');
     Result := False;
     exit;
   end;
@@ -13436,6 +13480,11 @@ begin
     Exit;
   end;
 
+  if p = FAnyMethod then begin
+    Result := True;
+    Exit;
+  end;
+
   S1 := TPSProceduralType(p).ProcDef;
 
   if TPSProcedure(FProcs[ProcNo]).ClassType = TPSInternalProcedure then
@@ -13512,7 +13561,9 @@ var
 
 begin
   pDecl := TPSParametersDecl.Create;
+{$IFNDEF DELPHI_TOKYO_UP}
   p := nil;
+{$ENDIF}
   try
     if not ParseMethod(Self, '', Decl, DOrgName, pDecl, FT) then
       Raise EPSCompilerException.CreateFmt(RPS_UnableToRegisterFunction, [Decl]);
@@ -14166,6 +14217,7 @@ begin
     ecUnitNotFoundOrContainsErrors: Result:=tbtstring(Format(RPS_UnitNotFound,[Param]));
     ecCrossReference: Result:=tbtstring(Format(RPS_CrossReference,[Param]));
     {$ENDIF}
+    ecUnClosedAttributes: Result:=tbtstring(RPS_UnClosedAttributes);
   else
     Result := tbtstring(RPS_UnknownError);
   end;
