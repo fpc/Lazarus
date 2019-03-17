@@ -1407,7 +1407,9 @@ begin
       then begin
         CastName := '';
         if FMemManager.ReadAddress(ResValue.DataAddress, AContext.SizeOfAddress, ClassAddr) then begin
-          ClassAddr.Address := ClassAddr.Address + 3 * AContext.SizeOfAddress;
+          {$PUSH}{$Q-}
+          ClassAddr.Address := ClassAddr.Address + TDBGPtr(3 * AContext.SizeOfAddress);
+          {$POP}
           if FMemManager.ReadAddress(ClassAddr, AContext.SizeOfAddress, CNameAddr) then begin
             if (FMemManager.ReadUnsignedInt(CNameAddr, 1, NameLen)) then
               if NameLen > 0 then begin
