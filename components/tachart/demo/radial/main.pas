@@ -30,6 +30,7 @@ type
     cbShowLabels: TCheckBox;
     cbMarkPositionsCentered: TCheckBox;
     lblDistance: TLabel;
+    lblStartAngle: TLabel;
     seDepth: TSpinEdit;
     seDepthBrightnessDelta: TSpinEdit;
     lblInnerRadius: TLabel;
@@ -44,6 +45,7 @@ type
     pnlPolar: TPanel;
     RandomChartSource1: TRandomChartSource;
     sbTransparency: TScrollBar;
+    seStartAngle: TSpinEdit;
     seWords: TSpinEdit;
     seLabelAngle: TSpinEdit;
     seInnerRadius: TSpinEdit;
@@ -67,6 +69,7 @@ type
     procedure seInnerRadiusChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure sbTransparencyChange(Sender: TObject);
+    procedure seStartAngleChange(Sender: TObject);
     procedure seWordsChange(Sender: TObject);
     procedure seLabelAngleChange(Sender: TObject);
   end;
@@ -192,6 +195,11 @@ begin
   ChartPolarSeries1.Transparency := sbTransparency.Position;
   ChartPolarSeries2.Transparency := sbTransparency.Position;
   lblTransparency.Caption := 'Transparency (' + IntToStr(sbTransparency.Position) + ')';
+end;
+
+procedure TForm1.seStartAngleChange(Sender: TObject);
+begin
+  ChartPiePieSeries1.StartAngle := seStartAngle.Value;
 end;
 
 procedure TForm1.seLabelAngleChange(Sender: TObject);

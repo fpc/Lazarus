@@ -24,8 +24,8 @@ object Form1: TForm1
       ClientWidth = 572
       object ChartPie: TChart
         Left = 0
-        Height = 384
-        Top = 147
+        Height = 407
+        Top = 124
         Width = 572
         AxisList = <        
           item
@@ -44,11 +44,13 @@ object Form1: TForm1
           end>
         Foot.Brush.Color = clBtnFace
         Foot.Font.Color = clBlue
-        Title.Brush.Color = clBtnFace
+        Title.Alignment = taLeftJustify
+        Title.Brush.Color = clNone
         Title.Font.Color = clBlue
         Title.Text.Strings = (
-          'TAChart'
+          '  Click on a slice to explode/unexplode it'
         )
+        Title.Visible = True
         Toolset = ChartToolset1
         Align = alClient
         Color = clDefault
@@ -58,6 +60,8 @@ object Form1: TForm1
           Exploded = True
           Marks.Distance = 40
           Marks.Format = '%2:s'
+          Marks.Frame.Color = clSilver
+          Marks.LinkPen.Color = clSilver
           Marks.Style = smsLabel
           Source = ListChartSource1
         end
@@ -65,25 +69,27 @@ object Form1: TForm1
       object Panel1: TPanel
         AnchorSideTop.Side = asrCenter
         Left = 0
-        Height = 147
+        Height = 124
         Top = 0
         Width = 572
         Align = alTop
         Alignment = taLeftJustify
         Anchors = [akTop, akRight]
         AutoSize = True
-        Caption = '  Click on a slice to explode/unexplode it'
-        ClientHeight = 147
+        BevelOuter = bvNone
+        ClientHeight = 124
         ClientWidth = 572
         TabOrder = 1
         object seWords: TSpinEdit
-          AnchorSideTop.Control = Panel1
+          AnchorSideLeft.Control = lblWords
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = cbShowLabels
+          AnchorSideTop.Side = asrCenter
           AnchorSideRight.Control = lblInnerRadius
-          Left = 324
+          Left = 222
           Height = 23
-          Top = 7
+          Top = 6
           Width = 72
-          Anchors = [akTop, akRight]
           BorderSpacing.Top = 6
           BorderSpacing.Right = 24
           MaxValue = 10
@@ -92,14 +98,16 @@ object Form1: TForm1
           Value = 1
         end
         object lblWords: TLabel
+          AnchorSideLeft.Control = cbMarkPositions
+          AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = seWords
           AnchorSideTop.Side = asrCenter
           AnchorSideRight.Control = seWords
-          Left = 253
+          Left = 151
           Height = 15
-          Top = 11
+          Top = 10
           Width = 63
-          Anchors = [akTop, akRight]
+          BorderSpacing.Left = 16
           BorderSpacing.Right = 8
           Caption = 'Label words'
           ParentColor = False
@@ -110,12 +118,12 @@ object Form1: TForm1
           AnchorSideTop.Side = asrBottom
           AnchorSideRight.Control = seWords
           AnchorSideRight.Side = asrBottom
-          Left = 324
+          Left = 222
           Height = 23
-          Top = 34
+          Top = 35
           Width = 72
           Anchors = [akTop, akLeft, akRight]
-          BorderSpacing.Top = 4
+          BorderSpacing.Top = 6
           Increment = 5
           MaxValue = 360
           MinValue = -360
@@ -126,9 +134,9 @@ object Form1: TForm1
           AnchorSideTop.Control = seLabelAngle
           AnchorSideTop.Side = asrCenter
           AnchorSideRight.Control = seLabelAngle
-          Left = 256
+          Left = 154
           Height = 15
-          Top = 38
+          Top = 39
           Width = 60
           Anchors = [akTop, akRight]
           BorderSpacing.Right = 8
@@ -136,16 +144,14 @@ object Form1: TForm1
           ParentColor = False
         end
         object cbRotate: TCheckBox
-          AnchorSideTop.Control = cbMarkAttachment
-          AnchorSideTop.Side = asrBottom
-          AnchorSideRight.Control = cbMarkAttachment
+          AnchorSideLeft.Control = cbShowLabels
+          AnchorSideTop.Control = seLabelAngle
+          AnchorSideTop.Side = asrCenter
           AnchorSideRight.Side = asrBottom
-          Left = 309
+          Left = 8
           Height = 19
-          Top = 121
+          Top = 37
           Width = 87
-          Alignment = taLeftJustify
-          Anchors = [akTop, akRight]
           BorderSpacing.Top = 6
           BorderSpacing.Bottom = 6
           Caption = 'Rotate labels'
@@ -153,16 +159,17 @@ object Form1: TForm1
           TabOrder = 2
         end
         object cbMarkPositions: TComboBox
+          AnchorSideLeft.Control = cbShowLabels
           AnchorSideTop.Control = cbMarkAttachment
+          AnchorSideTop.Side = asrBottom
           AnchorSideRight.Control = seDepthBrightnessDelta
           AnchorSideRight.Side = asrBottom
-          Left = 438
+          Left = 8
           Height = 23
-          Top = 92
+          Top = 93
           Width = 127
-          Anchors = [akTop, akRight]
           AutoSize = False
-          BorderSpacing.Bottom = 6
+          BorderSpacing.Bottom = 8
           ItemHeight = 15
           ItemIndex = 0
           Items.Strings = (
@@ -177,26 +184,25 @@ object Form1: TForm1
         end
         object Cb3D: TCheckBox
           AnchorSideLeft.Control = lblInnerRadius
-          AnchorSideTop.Control = seLabelAngle
+          AnchorSideTop.Control = seDepth
           AnchorSideTop.Side = asrCenter
-          Left = 420
+          Left = 327
           Height = 19
-          Top = 36
+          Top = 66
           Width = 34
           Caption = '3D'
           OnChange = Cb3DChange
           TabOrder = 4
         end
         object seInnerRadius: TSpinEdit
+          AnchorSideLeft.Control = seDepthBrightnessDelta
           AnchorSideTop.Control = seWords
-          AnchorSideRight.Control = Panel1
           AnchorSideRight.Side = asrBottom
-          Left = 503
+          Left = 410
           Height = 23
-          Top = 7
+          Top = 6
           Width = 62
-          Anchors = [akTop, akRight]
-          BorderSpacing.Right = 6
+          BorderSpacing.Right = 8
           OnChange = seInnerRadiusChange
           TabOrder = 5
         end
@@ -204,9 +210,9 @@ object Form1: TForm1
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = lblWords
           AnchorSideRight.Control = seInnerRadius
-          Left = 420
+          Left = 327
           Height = 15
-          Top = 11
+          Top = 10
           Width = 75
           Anchors = [akTop, akRight]
           BorderSpacing.Right = 8
@@ -216,12 +222,12 @@ object Form1: TForm1
         object lblDepth: TLabel
           AnchorSideLeft.Control = Cb3D
           AnchorSideLeft.Side = asrBottom
-          AnchorSideTop.Control = Cb3D
+          AnchorSideTop.Control = seDepth
           AnchorSideTop.Side = asrCenter
           AnchorSideRight.Control = seDepth
-          Left = 463
+          Left = 370
           Height = 15
-          Top = 38
+          Top = 68
           Width = 32
           Anchors = [akTop, akRight]
           BorderSpacing.Left = 12
@@ -231,16 +237,14 @@ object Form1: TForm1
           ParentColor = False
         end
         object seDepth: TSpinEdit
-          AnchorSideLeft.Control = seInnerRadius
-          AnchorSideTop.Control = seLabelAngle
+          AnchorSideLeft.Control = seDepthBrightnessDelta
+          AnchorSideTop.Control = seDistance
           AnchorSideTop.Side = asrCenter
-          AnchorSideRight.Control = Panel1
           AnchorSideRight.Side = asrBottom
-          Left = 503
+          Left = 410
           Height = 23
-          Top = 34
+          Top = 64
           Width = 62
-          Anchors = [akTop, akRight]
           BorderSpacing.Right = 6
           Enabled = False
           OnChange = seDepthChange
@@ -248,17 +252,17 @@ object Form1: TForm1
           Value = 20
         end
         object seDepthBrightnessDelta: TSpinEdit
-          AnchorSideLeft.Control = seInnerRadius
+          AnchorSideLeft.Control = lblDepthBrightnessDelta
+          AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = seDepth
           AnchorSideTop.Side = asrBottom
           AnchorSideRight.Control = Panel1
           AnchorSideRight.Side = asrBottom
-          Left = 503
+          Left = 410
           Height = 23
-          Top = 61
+          Top = 93
           Width = 62
-          Anchors = [akTop, akRight]
-          BorderSpacing.Top = 4
+          BorderSpacing.Top = 6
           BorderSpacing.Right = 6
           Enabled = False
           MaxValue = 255
@@ -268,16 +272,17 @@ object Form1: TForm1
           Value = -32
         end
         object lblDepthBrightnessDelta: TLabel
-          AnchorSideLeft.Control = cbMarkPositions
+          AnchorSideLeft.Control = seDistance
+          AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = seDepthBrightnessDelta
           AnchorSideTop.Side = asrCenter
           AnchorSideRight.Control = seDepthBrightnessDelta
-          Left = 411
+          Left = 318
           Height = 15
-          Top = 65
+          Top = 97
           Width = 84
           Alignment = taRightJustify
-          Anchors = [akTop, akRight]
+          BorderSpacing.Left = 24
           BorderSpacing.Right = 8
           Caption = 'Brightness delta'
           Enabled = False
@@ -285,14 +290,15 @@ object Form1: TForm1
           WordWrap = True
         end
         object cbShowLabels: TCheckBox
-          AnchorSideTop.Control = seWords
-          AnchorSideTop.Side = asrCenter
+          AnchorSideLeft.Control = Panel1
+          AnchorSideTop.Control = Panel1
           AnchorSideRight.Control = lblWords
-          Left = 155
+          Left = 8
           Height = 19
-          Top = 9
+          Top = 8
           Width = 82
-          Anchors = [akTop, akRight]
+          BorderSpacing.Left = 8
+          BorderSpacing.Top = 8
           BorderSpacing.Right = 16
           Caption = 'Show labels'
           Checked = True
@@ -304,9 +310,9 @@ object Form1: TForm1
           AnchorSideTop.Control = seDistance
           AnchorSideTop.Side = asrCenter
           AnchorSideRight.Control = seDistance
-          Left = 271
+          Left = 169
           Height = 15
-          Top = 67
+          Top = 68
           Width = 45
           Anchors = [akTop, akRight]
           BorderSpacing.Right = 8
@@ -318,9 +324,9 @@ object Form1: TForm1
           AnchorSideTop.Side = asrBottom
           AnchorSideRight.Control = seLabelAngle
           AnchorSideRight.Side = asrBottom
-          Left = 324
+          Left = 222
           Height = 23
-          Top = 63
+          Top = 64
           Width = 72
           Anchors = [akTop, akRight]
           BorderSpacing.Top = 6
@@ -329,16 +335,15 @@ object Form1: TForm1
           Value = 40
         end
         object cbMarkAttachment: TComboBox
-          AnchorSideLeft.Control = lblDistance
+          AnchorSideLeft.Control = cbShowLabels
           AnchorSideTop.Control = seDistance
-          AnchorSideTop.Side = asrBottom
+          AnchorSideTop.Side = asrCenter
           AnchorSideRight.Control = seDistance
           AnchorSideRight.Side = asrBottom
-          Left = 271
+          Left = 8
           Height = 23
-          Top = 92
+          Top = 64
           Width = 125
-          Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Top = 6
           BorderSpacing.Bottom = 6
           ItemHeight = 15
@@ -354,18 +359,46 @@ object Form1: TForm1
           Text = 'Default'
         end
         object cbMarkPositionsCentered: TCheckBox
-          AnchorSideTop.Control = cbRotate
+          AnchorSideLeft.Control = lblWords
+          AnchorSideTop.Control = cbMarkPositions
+          AnchorSideTop.Side = asrCenter
           AnchorSideRight.Control = cbMarkPositions
           AnchorSideRight.Side = asrBottom
-          Left = 418
+          Left = 151
           Height = 19
-          Top = 121
+          Top = 95
           Width = 147
-          Alignment = taLeftJustify
-          Anchors = [akTop, akRight]
           Caption = 'Mark positions centered'
           OnChange = cbMarkPositionsCenteredChange
           TabOrder = 11
+        end
+        object lblStartAngle: TLabel
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = seStartAngle
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = seStartAngle
+          Left = 346
+          Height = 15
+          Top = 39
+          Width = 56
+          Anchors = [akTop, akRight]
+          BorderSpacing.Right = 8
+          Caption = 'Start angle'
+          ParentColor = False
+        end
+        object seStartAngle: TSpinEdit
+          AnchorSideLeft.Control = seDepthBrightnessDelta
+          AnchorSideTop.Control = seLabelAngle
+          AnchorSideRight.Side = asrBottom
+          Left = 410
+          Height = 23
+          Top = 35
+          Width = 62
+          BorderSpacing.Right = 6
+          MaxValue = 180
+          MinValue = -180
+          OnChange = seStartAngleChange
+          TabOrder = 12
         end
       end
     end

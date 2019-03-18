@@ -63,6 +63,7 @@ function IsLineIntersectsLine(const AA, AB, AC, AD: TPoint): Boolean;
 function IsPolygonIntersectsPolygon(const AP1, AP2: array of TPoint): Boolean;
 function LineIntersectsRect(
   var AA, AB: TDoublePoint; const ARect: TDoubleRect): Boolean;
+function NormalizeAngle(Angle: Double): Double;
 procedure NormalizeRect(var ARect: TRect); overload;
 procedure NormalizeRect(var ARect: TDoubleRect); overload;
 function MakeSquare(const ARect: TRect): TRect;
@@ -497,6 +498,16 @@ begin
   pt2 := RotatePoint(Point(ASize.X, -ASize.Y), AAngle);
   Result.cx := Max(Abs(pt1.X), Abs(pt2.X));
   Result.cy := Max(Abs(pt1.Y), Abs(pt2.Y));
+end;
+
+// Normalizes an angle to be in the interval 0 .. 2 pi
+function NormalizeAngle(Angle: Double): Double;
+const
+  TWO_PI = 2.0 * pi;
+begin
+  Result := Angle;
+  while Result > TWO_PI do Result -= TWO_PI;
+  while Result < 0 do Result += TWO_PI;
 end;
 
 procedure NormalizeRect(var ARect: TRect);

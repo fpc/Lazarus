@@ -134,6 +134,7 @@ type
     property MarkPositions;
     property Marks;
     property RotateLabels;
+    property StartAngle;
     property Source;
   end;
 
