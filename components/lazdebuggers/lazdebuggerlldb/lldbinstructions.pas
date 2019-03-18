@@ -119,10 +119,13 @@ type
   { TLldbInstructionProcessLaunch }
 
   TLldbInstructionProcessLaunch = class(TLldbInstruction)
+  private
+    FErrors: String;
   protected
     function ProcessInputFromDbg(const AData: String): Boolean; override;
   public
     constructor Create(AOpenTerminal: Boolean);
+    property Errors: String read FErrors;
   end;
 
   { TLldbInstructionProcessStep }
@@ -692,6 +695,15 @@ function TLldbInstructionProcessLaunch.ProcessInputFromDbg(const AData: String
 begin
   if StrStartsWith(AData, 'Process ') and (pos(' launched:', AData) > 8) then begin
     SetContentReceieved;
+  end
+  else
+  if LeftStr(AData, 7) = 'error: ' then begin
+    if StrContains(LowerCase(AData), 'launch failed') or
+       StrContains(LowerCase(AData), 'process')
+    then
+      Result := inherited
+    else
+      FErrors := FErrors + AData + LineEnding;
   end
   else
     Result := inherited;

@@ -3999,8 +3999,7 @@ function FindNextIncludeDirective(const ASource: string; StartPos: integer;
   NestedComments: boolean; out FilenameStartPos, FileNameEndPos,
   CommentStartPos, CommentEndPos: integer): integer;
 var
-  MaxPos: Integer;
-  Offset: Integer;
+  MaxPos, Offset: Integer;
 begin
   Result:=StartPos;
   MaxPos:=length(ASource);
@@ -4015,7 +4014,7 @@ begin
       Offset:=-1;
     if (Offset>0) then begin
       if ((UpChars[ASource[Result+Offset]]='I')
-           and (ASource[Result+Offset+1]=' '))
+              and (ASource[Result+Offset+1]=' '))
       or (CompareIdentifiers('include',@ASource[Result+Offset])=0) then begin
         CommentEndPos:=FindCommentEnd(ASource,Result,NestedComments);
         if ASource[Result]='{' then
@@ -4033,30 +4032,31 @@ begin
         and (IsSpaceChar[ASource[FilenameStartPos]]) do
           inc(FilenameStartPos);
         // find end of filename
-        FilenameEndPos:=FilenameStartPos;
-        if (FilenameEndPos<=CommentEndPos) and (ASource[FilenameEndPos]='''')
+        if (FilenameStartPos<=CommentEndPos) and (ASource[FilenameStartPos]='''')
         then begin
           // quoted filename
           inc(FilenameStartPos);
+          FilenameEndPos:=FilenameStartPos;
           while (FilenameEndPos<=CommentEndPos) do begin
             if (ASource[FilenameEndPos]<>'''') then
               inc(FilenameEndPos)
-            else begin
-              inc(FilenameEndPos);
+            else
               break;
-            end;
           end;
+          CommentStartPos:=FilenameEndPos+1;
         end else begin
           // normal filename
+          FilenameEndPos:=FilenameStartPos;
           while (FilenameEndPos<=CommentEndPos)
           and (not IsSpaceChar[ASource[FilenameEndPos]])
           and (not (ASource[FilenameEndPos] in ['*','}'])) do
             inc(FilenameEndPos);
+          CommentStartPos:=FilenameEndPos;
         end;
         // skip space behind filename
-        CommentStartPos:=FilenameEndPos;
         while (CommentStartPos<=CommentEndPos)
-        and (IsSpaceChar[ASource[CommentStartPos]]) do inc(CommentStartPos);
+        and (IsSpaceChar[ASource[CommentStartPos]]) do
+          inc(CommentStartPos);
         // success
         exit;
       end;

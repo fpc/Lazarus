@@ -652,7 +652,7 @@ end;
 
 procedure TSynGutterPartBase.SetWidth(const AValue : integer);
 begin
-  if (FWidth=AValue) or (FAutoSize) then exit;
+  if (FWidth=AValue) or ((FAutoSize) and not(csLoading in ComponentState)) then exit;
   FWidth:=AValue;
   VisibilityOrSize;
 end;
@@ -700,6 +700,7 @@ end;
 
 procedure TSynGutterPartBase.VisibilityOrSize(aCallDoChange: Boolean);
 begin
+  if (csLoading in ComponentState) then exit;
   Gutter.IncChangeLock;
   try
     if Gutter.AutoSize then

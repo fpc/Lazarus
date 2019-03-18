@@ -89,6 +89,7 @@ type
   private
     FImage64Bit: Boolean;
     FImageBase: QWord;
+    FReaderErrors: String;
     FUUID: TGuid;
   protected
     function GetSubFiles: TStrings; virtual;
@@ -97,6 +98,7 @@ type
     procedure SetUUID(AGuid: TGuid);
     procedure SetImageBase(ABase: QWord);
     procedure SetImage64Bit(AValue: Boolean);
+    procedure AddReaderError(AnError: String);
   public
     class function isValid(ASource: TDbgFileLoader): Boolean; virtual; abstract;
     class function UserName: AnsiString; virtual; abstract;
@@ -110,6 +112,7 @@ type
     property Section[const AName: String]: PDbgImageSection read GetSection;
     property SubFiles: TStrings read GetSubFiles;
     property AddressMapList: TDbgAddressMapList read GetAddressMapList;
+    property ReaderErrors: String read FReaderErrors;
   end;
   TDbgImageReaderClass = class of TDbgImageReader;
 
@@ -329,6 +332,13 @@ end;
 procedure TDbgImageReader.SetImage64Bit(AValue: Boolean);
 begin
   FImage64Bit := AValue;
+end;
+
+procedure TDbgImageReader.AddReaderError(AnError: String);
+begin
+  if FReaderErrors <> '' then
+    FReaderErrors := FReaderErrors + LineEnding;
+  FReaderErrors := FReaderErrors + AnError;
 end;
 
 procedure TDbgImageReader.ParseSymbolTable(AFpSymbolInfo: TfpSymbolList);

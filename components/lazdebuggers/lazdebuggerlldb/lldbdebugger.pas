@@ -52,6 +52,7 @@ type
     constructor Create(ADebugger: TLldbDebugger);
     destructor Destroy; override;
     procedure CancelAll;
+    procedure CancelForRun;
     procedure LockQueueRun;
     procedure UnLockQueueRun;
     property Items[Index: Integer]: TLldbDebuggerCommand read Get write Put; default;
@@ -64,6 +65,7 @@ type
 
   TLldbDebuggerCommand = class(TRefCountedObject)
   private
+    FCancelableForRun: Boolean;
     FOwner: TLldbDebugger;
     FIsRunning: Boolean;
     function GetDebuggerState: TDBGState;
@@ -89,6 +91,7 @@ type
     destructor Destroy; override;
     procedure Execute;
     procedure Cancel;
+    property CancelableForRun: Boolean read FCancelableForRun write FCancelableForRun;
   end;
 
   { TLldbDebuggerCommandInit }
@@ -166,6 +169,7 @@ type
   private
     FRunInstr: TLldbInstruction;
     procedure ExceptBreakInstructionFinished(Sender: TObject);
+    procedure LaunchInstructionSucceeded(Sender: TObject);
     procedure TargetCreated(Sender: TObject);
   protected
     procedure DoInitialExecute; override;
@@ -252,6 +256,7 @@ type
     procedure RegisterInstructionFinished(Sender: TObject);
   protected
     procedure DoExecute; override;
+    procedure DoCancel; override;
   public
     constructor Create(AOwner: TLldbDebugger; ARegisters: TRegisters);
     destructor Destroy; override;
@@ -269,12 +274,14 @@ type
   private
     FLaunchNewTerminal: Boolean;
     FSkipGDBDetection: Boolean;
+    FIgnoreLaunchWarnings: Boolean;
   public
     constructor Create; override;
     procedure Assign(Source: TPersistent); override;
   published
     property LaunchNewTerminal: Boolean read FLaunchNewTerminal write FLaunchNewTerminal default False;
     property SkipGDBDetection: Boolean read FSkipGDBDetection write FSkipGDBDetection default False;
+    property IgnoreLaunchWarnings: Boolean read FIgnoreLaunchWarnings write FIgnoreLaunchWarnings default False;
   end;
 
   TLldbDebugger = class(TDebuggerIntf)
@@ -316,6 +323,7 @@ type
     procedure TerminateLldb;          // Kills external debugger
   protected
     procedure DoBeforeLaunch; virtual;
+    procedure DoAfterLaunch(var LaunchWarnings: string); virtual;
     procedure DoBeginReceivingLines(Sender: TObject);
     procedure DoEndReceivingLines(Sender: TObject);
     procedure LockRelease; override;
@@ -388,6 +396,7 @@ type
   private
     procedure ThreadInstructionSucceeded(Sender: TObject);
   protected
+    constructor Create(AOwner: TLldbDebugger);
     procedure DoExecute; override;
   end;
 
@@ -533,6 +542,7 @@ begin
   inherited Create;
   FLaunchNewTerminal := False;
   FSkipGDBDetection := False;
+  FIgnoreLaunchWarnings := False;
 end;
 
 procedure TLldbDebuggerProperties.Assign(Source: TPersistent);
@@ -540,6 +550,7 @@ begin
   inherited Assign(Source);
   FLaunchNewTerminal := TLldbDebuggerProperties(Source).FLaunchNewTerminal;
   FSkipGDBDetection := TLldbDebuggerProperties(Source).FSkipGDBDetection;
+  FIgnoreLaunchWarnings := TLldbDebuggerProperties(Source).FIgnoreLaunchWarnings;
 end;
 
 { TLldbDebuggerCommandRun }
@@ -1322,6 +1333,7 @@ constructor TLldbDebuggerCommandLocals.Create(AOwner: TLldbDebugger;
 begin
   FLocals := ALocals;
   FLocals.AddFreeNotification(@DoLocalsFreed);
+  CancelableForRun := True;
   inherited Create(AOwner);
 end;
 
@@ -1349,6 +1361,12 @@ procedure TLldbDebuggerCommandThreads.ThreadInstructionSucceeded(Sender: TObject
 begin
   TLldbThreads(Debugger.Threads).ReadFromThreadInstruction(TLldbInstructionThreadList(Sender));
   Finished;
+end;
+
+constructor TLldbDebuggerCommandThreads.Create(AOwner: TLldbDebugger);
+begin
+  CancelableForRun := True;
+  inherited Create(AOwner);
 end;
 
 procedure TLldbDebuggerCommandThreads.DoExecute;
@@ -1540,6 +1558,7 @@ begin
   inherited Create(AOwner);
   FCurrentCallStack := ACurrentCallStack;
   FCurrentCallStack.AddFreeNotification(@DoCallstackFreed);
+  CancelableForRun := True;
 end;
 
 destructor TLldbDebuggerCommandCallStack.Destroy;
@@ -1934,11 +1953,19 @@ begin
   Instr.ReleaseReference;
 end;
 
+procedure TLldbDebuggerCommandRegister.DoCancel;
+begin
+  if FRegisters <> nil then
+    FRegisters.DataValidity := ddsInvalid;
+  inherited DoCancel;
+end;
+
 constructor TLldbDebuggerCommandRegister.Create(AOwner: TLldbDebugger;
   ARegisters: TRegisters);
 begin
   FRegisters := ARegisters;
   FRegisters.AddReference;
+  CancelableForRun := True;
   inherited Create(AOwner);
 end;
 
@@ -2065,6 +2092,22 @@ begin
     FRunningCommand.Cancel;
 end;
 
+procedure TLldbDebuggerCommandQueue.CancelForRun;
+var
+  i: Integer;
+begin
+  i := Count - 1;
+  while i >= 0 do begin
+    if Items[i].CancelableForRun then
+      Items[i].Cancel;
+    dec(i);
+    if i > Count then
+      i := Count - 1;
+  end;
+  if (FRunningCommand <> nil) and (FRunningCommand.CancelableForRun) then
+    FRunningCommand.Cancel;
+end;
+
 procedure TLldbDebuggerCommandQueue.LockQueueRun;
 begin
   inc(FLockQueueRun);
@@ -2144,18 +2187,22 @@ begin
   FIsRunning := True;
   d := Debugger;
   try
+    AddReference;
     d.LockRelease;
     DoExecute;  // may call Finished and Destroy Self
   finally
     d.UnlockRelease;
+    ReleaseReference;
   end;
 end;
 
 procedure TLldbDebuggerCommand.Cancel;
 begin
+  AddReference;
   Debugger.CommandQueue.Remove(Self); // current running command is not on queue // dec refcount, may call destroy
   if FIsRunning then
     DoCancel;  // should call CommandQueue.CommandFinished
+  ReleaseReference;
 end;
 
 procedure TLldbDebuggerCommand.DoLineDataReceived(var ALine: String);
@@ -2383,10 +2430,37 @@ begin
   // the state change allows breakpoints to be set, before the run command is issued.
 
   FRunInstr := TLldbInstructionProcessLaunch.Create(TLldbDebuggerProperties(Debugger.GetProperties).LaunchNewTerminal);
-  FRunInstr.OnSuccess := @RunInstructionSucceeded;
+  FRunInstr.OnSuccess := @LaunchInstructionSucceeded;
   FRunInstr.OnFailure := @InstructionFailed;
   QueueInstruction(FRunInstr);
   FRunInstr.ReleaseReference;
+end;
+
+procedure TLldbDebuggerCommandRunLaunch.LaunchInstructionSucceeded(Sender: TObject);
+var
+  LaunchWarnings: String;
+begin
+  LaunchWarnings := TLldbInstructionProcessLaunch(Sender).Errors;
+  Debugger.DoAfterLaunch(LaunchWarnings);
+  if (not TLldbDebuggerProperties(Debugger.GetProperties).IgnoreLaunchWarnings) and
+     (LaunchWarnings <> '') and
+     assigned(Debugger.OnFeedback)
+  then begin
+    case Debugger.OnFeedback(self,
+             Format('The debugger encountered some errors/warnings while launching the target application.%0:s'
+               + 'Press "Ok" to continue debugging.%0:s'
+               + 'Press "Stop" to end the debug session.',
+               [LineEnding]),
+             LaunchWarnings, ftWarning, [frOk, frStop]
+         ) of
+      frOk: begin
+        end;
+      frStop: begin
+          Debugger.Stop;
+        end;
+    end;
+  end;
+  RunInstructionSucceeded(Sender);
 end;
 
 procedure TLldbDebuggerCommandRunLaunch.DoInitialExecute;
@@ -2487,6 +2561,7 @@ constructor TLldbDebuggerCommandEvaluate.Create(AOwner: TLldbDebugger;
 begin
   FWatchValue := AWatchValue;
   FWatchValue.AddFreeNotification(@DoWatchFreed);
+  CancelableForRun := True;
   inherited Create(AOwner);
 end;
 
@@ -2497,6 +2572,7 @@ begin
   FExpr := AnExpr;
   FFlags := AFlags;
   FCallback := ACallback;
+  CancelableForRun := True;
   inherited Create(AOwner);
 end;
 
@@ -2607,6 +2683,7 @@ begin
   Result := True;
 
   if State in [dsPause, dsInternalPause, dsRun] then begin // dsRun in case of exception
+    CommandQueue.CancelForRun;
     LldbStep(saContinue);
     exit;
   end;
@@ -2681,6 +2758,7 @@ var
   Cmd: TLldbDebuggerCommandRunStep;
 begin
   Result := True;
+  CommandQueue.CancelForRun;
   Cmd := TLldbDebuggerCommandRunStep.Create(Self, AStepAction);
   QueueCommand(Cmd);
   Cmd.ReleaseReference;
@@ -2752,6 +2830,11 @@ begin
 end;
 
 procedure TLldbDebugger.DoBeforeLaunch;
+begin
+  //
+end;
+
+procedure TLldbDebugger.DoAfterLaunch(var LaunchWarnings: string);
 begin
   //
 end;

@@ -45,10 +45,12 @@ type
     //FThreadId: Integer;
     //FStackFrame: Integer;
     FDebugger: TFpLldbDebugger;
+    FEnabled: Boolean;
     //FCmd: TLldbDebuggerCommandMemReader;
   protected
     // TODO: needs to be handled by memory manager
     //FThreadId, FStackFrame: Integer;
+    property Enabled: Boolean read FEnabled write FEnabled;
   public
     constructor Create(ADebugger: TFpLldbDebugger);
     destructor Destroy; override;
@@ -96,6 +98,7 @@ type
     FDwarfInfo: TFpDwarfInfo;
     FMemReader: TFpLldbDbgMemReader;
     FMemManager: TFpDbgMemManager;
+    FReaderErrors: String;
   public
     procedure Execute; override;
     constructor Create(AFileName: String; ADebugger: TFpLldbDebugger);
@@ -106,6 +109,7 @@ type
     property DwarfInfo: TFpDwarfInfo read FDwarfInfo;
     property MemReader: TFpLldbDbgMemReader read FMemReader;
     property MemManager: TFpDbgMemManager read FMemManager;
+    property ReaderErrors: String read FReaderErrors;
   end;
 
 const
@@ -129,13 +133,14 @@ type
     procedure DoEndReceivingLines(Sender: TObject);
   protected
     procedure DoBeforeLaunch; override;
+    procedure DoAfterLaunch(var LaunchWarnings: string); override;
     function CreateLineInfo: TDBGLineInfo; override;
     function  CreateWatches: TWatchesSupplier; override;
     function  CreateLocals: TLocalsSupplier; override;
     function CreateDisassembler: TDBGDisassembler; override;
     procedure DoState(const OldState: TDBGState); override;
     function  HasDwarf: Boolean;
-    procedure LoadDwarf;
+    function LoadDwarf: String;
     procedure UnLoadDwarf;
     function  RequestCommand(const ACommand: TDBGCommand;
               const AParams: array of const;
@@ -149,6 +154,7 @@ type
     property TargetPID;
     {$EndIf}
     property DebugInstructionQueue;
+    property MemReader: TFpLldbDbgMemReader read FMemReader;
   protected
     procedure DoWatchFreed(Sender: TObject);
     function EvaluateExpression(AWatchValue: TWatchValue;
@@ -185,7 +191,7 @@ type
   protected
     procedure DoExecute; override;
     procedure DoFree; override;
-//    procedure DoCancel; override;
+    procedure DoCancel; override;
   public
     constructor Create(AOwner: TFPLldbWatches);
   end;
@@ -196,9 +202,10 @@ type
   private
     FWatchEvalLock: Integer;
     FEvaluationCmdObj: TFpLldbDebuggerCommandEvaluate;
+    FWatchEvalCancel: Boolean;
   protected
     function  FpDebugger: TFpLldbDebugger;
-    //procedure DoStateChange(const AOldState: TDBGState); override;
+    procedure DoStateChange(const AOldState: TDBGState); override;
     procedure ProcessEvalList;
     procedure QueueCommand;
     procedure InternalRequestData(AWatchValue: TWatchValue); override;
@@ -216,6 +223,7 @@ type
     procedure DoLocalsFreed(Sender: TObject);
   protected
     procedure DoExecute; override;
+    procedure DoCancel; override;
   public
     constructor Create(AOwner: TFPLldbLocals; ALocals: TLocals);
   end;
@@ -224,9 +232,11 @@ type
 
   TFPLldbLocals = class(TLocalsSupplier)
   private
+    FLocalsEvalCancel: Boolean;
     procedure ProcessLocals(ALocals: TLocals);
   protected
     function  FpDebugger: TFpLldbDebugger;
+    procedure DoStateChange(const AOldState: TDBGState); override;
   public
     procedure RequestData(ALocals: TLocals); override;
   end;
@@ -299,6 +309,7 @@ begin
 
   FImageLoaderList := TDbgImageLoaderList.Create(True);
   AnImageLoader.AddToLoaderList(FImageLoaderList);
+  FReaderErrors := AnImageLoader.ReaderErrors;
   if Terminated then
     exit;
 
@@ -360,7 +371,17 @@ begin
     FOwner.ProcessLocals(FLocals);
     FLocals.RemoveFreeNotification(@DoLocalsFreed);
   end;
+  if TFpLldbDebugger(Debugger).MemReader <> nil then
+    TFpLldbDebugger(Debugger).MemReader.Enabled := True;
   Finished;
+end;
+
+procedure TFpLldbDebuggerCommandLocals.DoCancel;
+begin
+  inherited DoCancel;
+  FOwner.FLocalsEvalCancel := True;
+  if TFpLldbDebugger(Debugger).MemReader <> nil then
+    TFpLldbDebugger(Debugger).MemReader.Enabled := False;
 end;
 
 constructor TFpLldbDebuggerCommandLocals.Create(AOwner: TFPLldbLocals; ALocals: TLocals);
@@ -369,6 +390,7 @@ begin
   FOwner := AOwner;
   FLocals := ALocals;
   FLocals.AddFreeNotification(@DoLocalsFreed);
+  CancelableForRun := True;
 //////  Priority := 1; // before watches
 end;
 
@@ -382,6 +404,11 @@ var
   m: TFpDbgValue;
   n, v: String;
 begin
+  if FLocalsEvalCancel then begin
+    ALocals.SetDataValidity(ddsInvalid);
+    exit;
+  end;
+
   Ctx := FpDebugger.GetInfoContextForContext(ALocals.ThreadId, ALocals.StackFrame);
   try
     if (Ctx = nil) or (Ctx.SymbolAtAddress = nil) then begin
@@ -400,6 +427,10 @@ begin
 
     ALocals.Clear;
     for i := 0 to ProcVal.MemberCount - 1 do begin
+      if FLocalsEvalCancel then begin
+        ALocals.SetDataValidity(ddsInvalid);
+        exit;
+      end;
       m := ProcVal.Member[i];
       if m <> nil then begin
         if m.DbgSymbol <> nil then
@@ -419,6 +450,12 @@ end;
 function TFPLldbLocals.FpDebugger: TFpLldbDebugger;
 begin
   Result := TFpLldbDebugger(Debugger);
+end;
+
+procedure TFPLldbLocals.DoStateChange(const AOldState: TDBGState);
+begin
+  inherited DoStateChange(AOldState);
+  FLocalsEvalCancel := False;
 end;
 
 procedure TFPLldbLocals.RequestData(ALocals: TLocals);
@@ -448,12 +485,22 @@ begin
   FOwner.FEvaluationCmdObj := nil;
   FOwner.ProcessEvalList;
   Finished;
+  if TFpLldbDebugger(Debugger).FMemReader <> nil then
+    TFpLldbDebugger(Debugger).FMemReader.Enabled := True;
 end;
 
 procedure TFpLldbDebuggerCommandEvaluate.DoFree;
 begin
   FOwner.FEvaluationCmdObj := nil;
   inherited DoFree;
+end;
+
+procedure TFpLldbDebuggerCommandEvaluate.DoCancel;
+begin
+  inherited DoCancel;
+  FOwner.FWatchEvalCancel := True;
+  if TFpLldbDebugger(Debugger).FMemReader <> nil then
+    TFpLldbDebugger(Debugger).FMemReader.Enabled := False;
 end;
 
 //procedure TFpLldbDebuggerCommandEvaluate.DoCancel;
@@ -467,6 +514,7 @@ constructor TFpLldbDebuggerCommandEvaluate.Create(AOwner: TFPLldbWatches);
 begin
   inherited Create(AOwner.FpDebugger);
   FOwner := AOwner;
+  CancelableForRun := True;
   //Priority := 0;
 end;
 
@@ -520,6 +568,7 @@ end;
 constructor TFpLldbDbgMemReader.Create(ADebugger: TFpLldbDebugger);
 begin
   FDebugger := ADebugger;
+  FEnabled := True;
   //FCmd := TLldbDebuggerCommandMemReader.Create(ADebugger);
 end;
 
@@ -536,6 +585,8 @@ var
   InStr: TLldbInstructionMemory;
 begin
   Result := False;
+  if not Enabled then
+    Exit;
   InStr := TLldbInstructionMemory.Create(AnAddress, ASize);
   try
     FDebugger.DebugInstructionQueue.QueueInstruction(InStr);
@@ -577,6 +628,8 @@ var
   QItem: TLldbDebuggerCommand;
 begin
   Result := False;
+  if not Enabled then
+    Exit;
 
 
   // WINDOWS gdb dwarf names
@@ -719,6 +772,12 @@ begin
   Result := TFpLldbDebugger(Debugger);
 end;
 
+procedure TFPLldbWatches.DoStateChange(const AOldState: TDBGState);
+begin
+  inherited DoStateChange(AOldState);
+  FWatchEvalCancel := False;
+end;
+
 procedure TFPLldbWatches.ProcessEvalList;
 var
   WatchValue: TWatchValue;
@@ -730,13 +789,14 @@ var
     Result := (FpDebugger.FWatchEvalList.Count > 0) and (FpDebugger.FWatchEvalList[0] = Pointer(WatchValue));
   end;
 begin
-  if (FpDebugger.FWatchEvalList.Count = 0) or (FWatchEvalLock > 0) then
+  if (FpDebugger.FWatchEvalList.Count = 0) or (FWatchEvalLock > 0) or FWatchEvalCancel then
     exit;
 
 debugln(['ProcessEvalList ']);
   inc(FWatchEvalLock);
   try // TODO: if the stack/thread is changed, registers will be wrong
-    while (FpDebugger.FWatchEvalList.Count > 0) and (FEvaluationCmdObj = nil) do begin
+    while (FpDebugger.FWatchEvalList.Count > 0) and (FEvaluationCmdObj = nil) and (not FWatchEvalCancel)
+    do begin
       WatchValue := TWatchValue(FpDebugger.FWatchEvalList[0]);
     if FpDebugger.Registers.CurrentRegistersList[WatchValue.ThreadId, WatchValue.StackFrame].Count = 0 then begin
       // trigger register
@@ -885,6 +945,7 @@ begin
   FAddr := AnAddr;
   FBeforeAddr := FAddr - Min(ALinesBefore * DAssBytesPerCommandAvg, DAssMaxRangeSize);
   FLinesAfter := ALinesAfter;
+  CancelableForRun := True;
 end;
 
 procedure TFpLldbDebuggerCommandDisassemble.CmdFinished(Sender: TObject);
@@ -1045,16 +1106,11 @@ procedure TFpLldbDebugger.DoState(const OldState: TDBGState);
 var
   i: Integer;
 begin
+  if FMemReader <> nil then
+    FMemReader.Enabled := True;
   inherited DoState(OldState);
   if State in [dsStop, dsError, dsNone] then
-    UnLoadDwarf
-  else
-  if (State = dsRun) and (OldState = dsInit) then begin
-    LoadDwarf;
-    {$IFdef WithWinMemReader}
-    TFpLldbAndWin32DbgMemReader(FMemReader).OpenProcess(TargetPid);
-    {$ENDIF}
-  end;
+    UnLoadDwarf;
 
   if OldState in [dsPause, dsInternalPause] then begin
     for i := 0 to MAX_CTX_CACHE-1 do
@@ -1067,7 +1123,7 @@ begin
       FWatchEvalList.Clear;
     end;
   end;
-  if (State = dsRun) then
+  if (State = dsRun) and (FMemManager <> nil) then
     TFpLldbDbgMemCacheManagerSimple(FMemManager.CacheManager).Clear;
 end;
 
@@ -1076,11 +1132,12 @@ begin
   Result := FDwarfInfo <> nil;
 end;
 
-procedure TFpLldbDebugger.LoadDwarf;
+function TFpLldbDebugger.LoadDwarf: String;
 var
   AnImageLoader: TDbgImageLoader;
   Loader: TDwarfLoaderThread;
 begin
+  Result := ''; // no errors/warnings
   Loader := FDwarfLoaderThread;
   FDwarfLoaderThread := nil;
 
@@ -1093,6 +1150,7 @@ begin
     FMemReader := Loader.MemReader;
     FMemManager := Loader.MemManager;
     FDwarfInfo := Loader.DwarfInfo;
+    Result := Loader.ReaderErrors;
     Loader.Free;
 
     if FDwarfInfo.Image64Bit then
@@ -1110,6 +1168,7 @@ begin
   end;
   FImageLoaderList := TDbgImageLoaderList.Create(True);
   AnImageLoader.AddToLoaderList(FImageLoaderList);
+  Result := AnImageLoader.ReaderErrors;
 {$IFdef WithWinMemReader}
   FMemReader := TFpLldbAndWin32DbgMemReader.Create(Self);
 {$Else}
@@ -1527,6 +1586,15 @@ begin
   if FDwarfInfo = nil then begin
     FDwarfLoaderThread := TDwarfLoaderThread.Create(FileName, Self);
   end;
+end;
+
+procedure TFpLldbDebugger.DoAfterLaunch(var LaunchWarnings: string);
+begin
+  inherited DoAfterLaunch(LaunchWarnings);
+  LaunchWarnings := LaunchWarnings + LoadDwarf;
+  {$IFdef WithWinMemReader}
+  TFpLldbAndWin32DbgMemReader(FMemReader).OpenProcess(TargetPid);
+  {$ENDIF}
 end;
 
 function TFpLldbDebugger.CreateLineInfo: TDBGLineInfo;
