@@ -8464,14 +8464,17 @@ msgstr "(默认)"
 msgid "Default section of methods"
 msgstr "默认"
 
+#: lazarusidestrconsts.lisdelayforcompletionbox
+msgid "Delay for completion box"
+msgstr ""
+
 #: lazarusidestrconsts.lisdelayforcompletionlonglinehint
 msgid "Delay for long line hints in completion box"
 msgstr ""
 
-#: lazarusidestrconsts.lisdelayforhintsandcompletionbox
-#, fuzzy
-msgid "Delay for hints and completion box"
-msgstr "补全和提示"
+#: lazarusidestrconsts.lisdelayforhints
+msgid "Delay for hints"
+msgstr ""
 
 #: lazarusidestrconsts.lisdelete
 msgctxt "lazarusidestrconsts.lisdelete"
@@ -12191,6 +12194,14 @@ msgstr "小写字符串"
 #, fuzzy
 msgid "Lowercase string given as parameter."
 msgstr "小写字符串"
+
+#: lazarusidestrconsts.lislpicompatibilitymodecheckbox
+msgid "Maximize compatibility of project files (LPI and LPS)"
+msgstr ""
+
+#: lazarusidestrconsts.lislpicompatibilitymodecheckboxhint
+msgid "Check this if you want to open your project in legacy (2.0 and older) Lazarus versions."
+msgstr ""
 
 #: lazarusidestrconsts.lislpkhasvanishedondiskusingasalternative
 msgid "lpk has vanished on disk. Using as alternative%s"

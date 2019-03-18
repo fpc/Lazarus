@@ -8201,13 +8201,17 @@ msgstr "(типово)"
 msgid "Default section of methods"
 msgstr "Типовий розділ методів"
 
+#: lazarusidestrconsts.lisdelayforcompletionbox
+msgid "Delay for completion box"
+msgstr ""
+
 #: lazarusidestrconsts.lisdelayforcompletionlonglinehint
 msgid "Delay for long line hints in completion box"
 msgstr "Затримка виведення довгих підказок у вікні автозавершення"
 
-#: lazarusidestrconsts.lisdelayforhintsandcompletionbox
-msgid "Delay for hints and completion box"
-msgstr "Затримка виведення підказок і вікна автозавершення"
+#: lazarusidestrconsts.lisdelayforhints
+msgid "Delay for hints"
+msgstr ""
 
 #: lazarusidestrconsts.lisdelete
 msgctxt "lazarusidestrconsts.lisdelete"
@@ -11837,6 +11841,14 @@ msgstr "рядок в нижньому регістрі"
 #: lazarusidestrconsts.lislowercasestringgivenasparameter
 msgid "Lowercase string given as parameter."
 msgstr "Рядок у нижньому регістрі, поданий як параметр"
+
+#: lazarusidestrconsts.lislpicompatibilitymodecheckbox
+msgid "Maximize compatibility of project files (LPI and LPS)"
+msgstr ""
+
+#: lazarusidestrconsts.lislpicompatibilitymodecheckboxhint
+msgid "Check this if you want to open your project in legacy (2.0 and older) Lazarus versions."
+msgstr ""
 
 #: lazarusidestrconsts.lislpkhasvanishedondiskusingasalternative
 msgid "lpk has vanished on disk. Using as alternative%s"

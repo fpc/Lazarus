@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2019-03-04 01:37+0300\n"
+"PO-Revision-Date: 2019-03-19 01:30+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -8196,13 +8196,17 @@ msgstr "(по умолчанию)"
 msgid "Default section of methods"
 msgstr "Секция по умолчанию для методов"
 
+#: lazarusidestrconsts.lisdelayforcompletionbox
+msgid "Delay for completion box"
+msgstr "Задержка вывода окна автозавершения"
+
 #: lazarusidestrconsts.lisdelayforcompletionlonglinehint
 msgid "Delay for long line hints in completion box"
 msgstr "Задержка вывода длинных подсказок в окне автозавершения"
 
-#: lazarusidestrconsts.lisdelayforhintsandcompletionbox
-msgid "Delay for hints and completion box"
-msgstr "Задержка вывода подсказок и окна автозавершения"
+#: lazarusidestrconsts.lisdelayforhints
+msgid "Delay for hints"
+msgstr "Задержка вывода подсказок"
 
 #: lazarusidestrconsts.lisdelete
 msgctxt "lazarusidestrconsts.lisdelete"
@@ -11833,6 +11837,14 @@ msgstr "Преобразовать регистр строки в нижний"
 #: lazarusidestrconsts.lislowercasestringgivenasparameter
 msgid "Lowercase string given as parameter."
 msgstr "Преобразовать регистр строки, переданной в качестве параметра, в нижний."
+
+#: lazarusidestrconsts.lislpicompatibilitymodecheckbox
+msgid "Maximize compatibility of project files (LPI and LPS)"
+msgstr "Сохранять файлы проекта (LPI и LPS) в режиме расширенной совместимости"
+
+#: lazarusidestrconsts.lislpicompatibilitymodecheckboxhint
+msgid "Check this if you want to open your project in legacy (2.0 and older) Lazarus versions."
+msgstr "Включите этот параметр, если хотите открывать проект в старых (2.0 и более ранних) версиях Lazarus."
 
 #: lazarusidestrconsts.lislpkhasvanishedondiskusingasalternative
 msgid "lpk has vanished on disk. Using as alternative%s"

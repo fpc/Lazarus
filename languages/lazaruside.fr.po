@@ -8200,13 +8200,17 @@ msgstr "(par défaut)"
 msgid "Default section of methods"
 msgstr "Section par défaut des méthodes"
 
+#: lazarusidestrconsts.lisdelayforcompletionbox
+msgid "Delay for completion box"
+msgstr ""
+
 #: lazarusidestrconsts.lisdelayforcompletionlonglinehint
 msgid "Delay for long line hints in completion box"
 msgstr "Durée pour les conseils sur une longue ligne dans la boîte de complétion"
 
-#: lazarusidestrconsts.lisdelayforhintsandcompletionbox
-msgid "Delay for hints and completion box"
-msgstr "Durée pour les conseils et la boîte de complétion de code"
+#: lazarusidestrconsts.lisdelayforhints
+msgid "Delay for hints"
+msgstr ""
 
 #: lazarusidestrconsts.lisdelete
 msgctxt "lazarusidestrconsts.lisdelete"
@@ -11838,6 +11842,14 @@ msgstr "chaîne en minuscules"
 #: lazarusidestrconsts.lislowercasestringgivenasparameter
 msgid "Lowercase string given as parameter."
 msgstr "Chaîne de caractères en minuscules donnée en paramètre."
+
+#: lazarusidestrconsts.lislpicompatibilitymodecheckbox
+msgid "Maximize compatibility of project files (LPI and LPS)"
+msgstr ""
+
+#: lazarusidestrconsts.lislpicompatibilitymodecheckboxhint
+msgid "Check this if you want to open your project in legacy (2.0 and older) Lazarus versions."
+msgstr ""
 
 #: lazarusidestrconsts.lislpkhasvanishedondiskusingasalternative
 msgid "lpk has vanished on disk. Using as alternative%s"
