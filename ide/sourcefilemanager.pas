@@ -5424,7 +5424,11 @@ begin
 
     // set new codebuffer in unitinfo and sourceeditor
     AnUnitInfo.Source:=NewSource;
-    AnUnitInfo.ClearModifieds;
+    if AnUnitInfo.IsPartOfProject then
+      Project1.Modified:=true
+    else
+      Project1.SessionModified:=true;
+     AnUnitInfo.ClearModifieds;
     for i := 0 to AnUnitInfo.EditorInfoCount -1 do
       if AnUnitInfo.EditorInfo[i].EditorComponent <> nil then
         TSourceEditor(AnUnitInfo.EditorInfo[i].EditorComponent).CodeBuffer := NewSource;
