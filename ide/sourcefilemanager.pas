@@ -7685,8 +7685,9 @@ begin
         or (Project1.ProjectInfoFile='') ) then
     begin
       // target file is default => change to all build modes, but keep sub directories
-      // Note: Extension is appended automatically => do not add it
-      NewTargetFN:=ExtractFilePath(Project1.TargetFilename)+ExtractFileNameOnly(NewProgramFN);
+      // And keep old extension.
+      NewTargetFN:=ExtractFilePath(Project1.TargetFilename)+ExtractFileNameOnly(NewProgramFN)
+        +ExtractFileExt(Project1.TargetFilename);
       for i := 0 to Project1.BuildModes.Count-1 do
         Project1.BuildModes[i].CompilerOptions.TargetFilename:=NewTargetFN;
       //DebugLn(['ShowSaveProjectAsDialog changed targetfilename to ',Project1.TargetFilename]);
