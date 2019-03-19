@@ -43,6 +43,8 @@ uses
   frmfpreportvariables,
   frmfpreportproperties,
   frmfpreportpreviewdata,
+  frmfpreportimageedit,
+
   frmlazreportimportlog,
   cfgfpreportpdfexport,
   cfgfpreportimageexport,
