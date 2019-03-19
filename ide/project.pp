@@ -3435,9 +3435,10 @@ begin
     end else begin
       WriteLPS:=WriteLPI or SomeSessionModified or (not FileExistsUTF8(SessFilename));
     end;
+    //debugln(['TProject.WriteProject WriteLPI=',WriteLPI,' WriteLPS=',WriteLPS]);
     if not (WriteLPI or WriteLPS) then exit(mrOk);
   end;
-  //debugln(['TProject.WriteProject WriteLPI=',WriteLPI,' WriteLPS=',WriteLPS,' Modifed=',Modified,' SessionModified=',SessionModified]);
+  //debugln(['TProject.WriteProject WriteLPI=',WriteLPI,' WriteLPS=',WriteLPS,' Modified=',Modified,' SessionModified=',SessionModified]);
 
   // increase usage counters
   UpdateUsageCounts(CfgFilename);

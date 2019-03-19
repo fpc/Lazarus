@@ -6884,7 +6884,10 @@ begin
         Result:=IDEQuestionDialog(lisInvalidFileName,
             lisTheTargetFileNameIsADirectory,
             mtWarning, [mrCancel,mrIgnore]);
-        if Result<>mrIgnore then exit(mrCancel);
+        if Result<>mrIgnore then begin
+          debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] invalid TargetExeName="',TargetExeName,'"']);
+          exit(mrCancel);
+        end;
       end;
 
       // create application bundle
@@ -6984,6 +6987,8 @@ begin
     DoCheckFilesOnDisk;
   end;
   IDEWindowCreators.ShowForm(MessagesView,EnvironmentOptions.MsgViewFocus);
+  if ConsoleVerbosity>=0 then
+    debugln(['Info: (lazarus) [TMainIDE.DoBuildProject] Success']);
   Result:=mrOk;
 end;
 
@@ -7137,17 +7142,20 @@ begin
 
   // Build project first
   if ConsoleVerbosity>0 then
-    debugln('Hint: (lazarus) TMainIDE.DoInitProjectRun Check build ...');
-  if DoBuildProject(crRun,[]) <> mrOk then
+    debugln('Hint: (lazarus) [TMainIDE.DoInitProjectRun] Check build ...');
+  if DoBuildProject(crRun,[]) <> mrOk then begin
+    debugln(['Info: (lazarus) [TMainIDE.DoInitProjectRun] DoBuildProject failed']);
     Exit;
+  end;
 
   // Check project build
   ProgramFilename := MainBuildBoss.GetProjectTargetFilename(Project1);
   if ConsoleVerbosity>0 then
-    DebugLn(['Hint: (lazarus) TMainIDE.DoInitProjectRun ProgramFilename=',ProgramFilename]);
+    DebugLn(['Hint: (lazarus) [TMainIDE.DoInitProjectRun] ProgramFilename=',ProgramFilename]);
   if ((DebugClass = nil) or DebugClass.RequiresLocalExecutable)
      and not FileExistsUTF8(ProgramFilename)
   then begin
+    debugln(['Info: (lazarus) [TMainIDE.DoInitProjectRun] File TargetFile found: "',ProgramFilename,'"']);
     IDEMessageDialog(lisFileNotFound,
       Format(lisNoProgramFileSFound, [ProgramFilename]),
       mtError,[mbCancel]);
@@ -7155,8 +7163,13 @@ begin
   end;
 
   // Setup debugger
-  if not DebugBoss.InitDebugger then Exit;
+  if not DebugBoss.InitDebugger then begin
+    debugln(['Info: (lazarus) [TMainIDE.DoInitProjectRun] DebugBoss.InitDebugger failed']);
+    Exit;
+  end;
 
+  if ConsoleVerbosity>0 then
+    debugln(['Info: (lazarus) [TMainIDE.DoInitProjectRun] Success']);
   Result := mrOK;
   ToolStatus := itDebugger;
 end;
@@ -7177,7 +7190,11 @@ begin
 
   Handled:=false;
   Result:=DoCallRunDebug(Handled);
-  if Handled then exit;
+  if Handled then begin
+    if Result<>mrOk then
+      ToolStatus:=itNone;
+    exit;
+  end;
 
   Result := DebugBoss.StartDebugging;
 
