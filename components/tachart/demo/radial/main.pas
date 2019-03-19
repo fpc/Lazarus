@@ -15,6 +15,7 @@ type
 
   TForm1 = class(TForm)
     cbMarkAttachment: TComboBox;
+    cmbOrientation: TComboBox;
     ChartPolar: TChart;
     ChartPolarSeries1: TPolarSeries;
     ChartPolarSeries2: TPolarSeries;
@@ -29,9 +30,11 @@ type
     Cb3D: TCheckBox;
     cbShowLabels: TCheckBox;
     cbMarkPositionsCentered: TCheckBox;
+    lblViewAngle: TLabel;
     lblDistance: TLabel;
     lblStartAngle: TLabel;
     seDepth: TSpinEdit;
+    seViewAngle: TSpinEdit;
     seDepthBrightnessDelta: TSpinEdit;
     lblInnerRadius: TLabel;
     lblDepth: TLabel;
@@ -63,6 +66,7 @@ type
       Shift: TShiftState; X, Y: Integer);
     procedure cbShowPointsChange(Sender: TObject);
     procedure Cb3DChange(Sender: TObject);
+    procedure cmbOrientationChange(Sender: TObject);
     procedure seDepthBrightnessDeltaChange(Sender: TObject);
     procedure seDepthChange(Sender: TObject);
     procedure seDistanceChange(Sender: TObject);
@@ -70,6 +74,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure sbTransparencyChange(Sender: TObject);
     procedure seStartAngleChange(Sender: TObject);
+    procedure seViewAngleChange(Sender: TObject);
     procedure seWordsChange(Sender: TObject);
     procedure seLabelAngleChange(Sender: TObject);
   end;
@@ -152,6 +157,14 @@ begin
   lblDepth.Enabled := cb3D.Checked;
   seDepthBrightnessDelta.Enabled := cb3D.Checked;
   lblDepthBrightnessDelta.Enabled := cb3D.Checked;
+  lblViewAngle.Enabled := cb3D.Checked;
+  seViewAngle.Enabled := cb3D.Checked;
+  cmbOrientation.Enabled := cb3D.Checked;
+end;
+
+procedure TForm1.cmbOrientationChange(Sender: TObject);
+begin
+  ChartPiePieSeries1.Orientation := TPieOrientation(cmbOrientation.ItemIndex);
 end;
 
 procedure TForm1.seDepthBrightnessDeltaChange(Sender: TObject);
@@ -200,6 +213,11 @@ end;
 procedure TForm1.seStartAngleChange(Sender: TObject);
 begin
   ChartPiePieSeries1.StartAngle := seStartAngle.Value;
+end;
+
+procedure TForm1.seViewAngleChange(Sender: TObject);
+begin
+  ChartPiePieSeries1.ViewAngle := seViewAngle.Value;
 end;
 
 procedure TForm1.seLabelAngleChange(Sender: TObject);

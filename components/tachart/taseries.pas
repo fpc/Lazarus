@@ -133,9 +133,11 @@ type
     property MarkPositionCentered;
     property MarkPositions;
     property Marks;
+    property Orientation;
     property RotateLabels;
     property StartAngle;
     property Source;
+    property ViewAngle;
   end;
 
   TConnectType = (ctLine, ctStepXY, ctStepYX);

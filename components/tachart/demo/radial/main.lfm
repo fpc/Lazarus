@@ -2,10 +2,10 @@ object Form1: TForm1
   Left = 443
   Height = 559
   Top = 340
-  Width = 580
+  Width = 659
   Caption = 'Form1'
   ClientHeight = 559
-  ClientWidth = 580
+  ClientWidth = 659
   OnCreate = FormCreate
   Position = poScreenCenter
   LCLVersion = '2.1.0.0'
@@ -13,7 +13,7 @@ object Form1: TForm1
     Left = 0
     Height = 559
     Top = 0
-    Width = 580
+    Width = 659
     ActivePage = tsPie
     Align = alClient
     TabIndex = 0
@@ -21,12 +21,12 @@ object Form1: TForm1
     object tsPie: TTabSheet
       Caption = 'Pie'
       ClientHeight = 531
-      ClientWidth = 572
+      ClientWidth = 651
       object ChartPie: TChart
         Left = 0
         Height = 407
         Top = 124
-        Width = 572
+        Width = 651
         AxisList = <        
           item
             Visible = False
@@ -71,14 +71,14 @@ object Form1: TForm1
         Left = 0
         Height = 124
         Top = 0
-        Width = 572
+        Width = 651
         Align = alTop
         Alignment = taLeftJustify
         Anchors = [akTop, akRight]
         AutoSize = True
         BevelOuter = bvNone
         ClientHeight = 124
-        ClientWidth = 572
+        ClientWidth = 651
         TabOrder = 1
         object seWords: TSpinEdit
           AnchorSideLeft.Control = lblWords
@@ -399,6 +399,64 @@ object Form1: TForm1
           MinValue = -180
           OnChange = seStartAngleChange
           TabOrder = 12
+        end
+        object seViewAngle: TSpinEdit
+          AnchorSideLeft.Control = lblViewAngle
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = seDistance
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Side = asrBottom
+          Left = 549
+          Height = 23
+          Top = 64
+          Width = 62
+          BorderSpacing.Right = 6
+          Enabled = False
+          MaxValue = 89
+          OnChange = seViewAngleChange
+          TabOrder = 13
+          Value = 60
+        end
+        object lblViewAngle: TLabel
+          AnchorSideLeft.Control = seDepth
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = seViewAngle
+          AnchorSideTop.Side = asrCenter
+          Left = 484
+          Height = 15
+          Top = 68
+          Width = 57
+          BorderSpacing.Left = 12
+          BorderSpacing.Right = 8
+          Caption = 'View angle'
+          Enabled = False
+          ParentColor = False
+        end
+        object cmbOrientation: TComboBox
+          AnchorSideLeft.Control = lblViewAngle
+          AnchorSideTop.Control = cbMarkAttachment
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = seViewAngle
+          AnchorSideRight.Side = asrBottom
+          Left = 484
+          Height = 23
+          Top = 93
+          Width = 127
+          Anchors = [akTop, akLeft, akRight]
+          AutoSize = False
+          BorderSpacing.Bottom = 8
+          Enabled = False
+          ItemHeight = 15
+          ItemIndex = 0
+          Items.Strings = (
+            'normal'
+            'horizontal'
+            'vertical'
+          )
+          OnChange = cmbOrientationChange
+          Style = csDropDownList
+          TabOrder = 14
+          Text = 'normal'
         end
       end
     end
