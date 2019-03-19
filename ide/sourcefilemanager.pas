@@ -3945,17 +3945,25 @@ begin
   SaveEditorChangesToCodeCache(nil);
   //DebugLn('SaveProject A SaveAs=',dbgs(sfSaveAs in Flags),' SaveToTestDir=',dbgs(sfSaveToTestDir in Flags),' ProjectInfoFile=',Project1.ProjectInfoFile);
   Result:=MainIDE.DoCheckFilesOnDisk(true);
-  if Result in [mrCancel,mrAbort] then exit;
+  if Result in [mrCancel,mrAbort] then begin
+    debugln(['Info: (lazarus) [SaveProject] MainIDE.DoCheckFilesOnDisk failed']);
+    exit;
+  end;
 
-  if CheckMainSrcLCLInterfaces(sfQuietUnitCheck in Flags)<>mrOk then
+  if CheckMainSrcLCLInterfaces(sfQuietUnitCheck in Flags)<>mrOk then begin
+    debugln(['Info: (lazarus) [SaveProject] CheckMainSrcLCLInterfaces failed']);
     exit(mrCancel);
+  end;
 
   // if this is a virtual project then save first the project info file
   // to get a project directory
   if Project1.IsVirtual and ([sfSaveToTestDir,sfDoNotSaveVirtualFiles]*Flags=[])
   then begin
     Result:=SaveProjectInfo(Flags);
-    if Result in [mrCancel,mrAbort] then exit;
+    if Result in [mrCancel,mrAbort] then begin
+      debugln(['Info: (lazarus) [SaveProject] SaveProjectInfo failed']);
+      exit;
+    end;
   end;
 
   // save virtual files
@@ -3975,13 +3983,19 @@ begin
           Include(SaveFileFlags,sfSaveToTestDir);
         end;
         Result:=SaveEditorFile(AnUnitInfo.OpenEditorInfo[0].EditorComponent, SaveFileFlags);
-        if Result in [mrCancel,mrAbort] then exit;
+        if Result in [mrCancel,mrAbort] then begin
+          debugln(['Info: (lazarus) [SaveProject] SaveEditorFile "',AnUnitInfo.Filename,'" failed']);
+          exit;
+        end;
       end;
     end;
   end;
 
   Result:=SaveProjectInfo(Flags);
-  if Result in [mrCancel,mrAbort] then exit;
+  if Result in [mrCancel,mrAbort] then begin
+    debugln(['Info: (lazarus) [SaveProject] SaveProjectInfo failed']);
+    exit;
+  end;
 
   // save all editor files
   for i:=0 to SourceEditorManager.SourceEditorCount-1 do begin
@@ -4015,8 +4029,11 @@ begin
           continue;
       end;
     end;
-    Result:=SaveEditorFile(SourceEditorManager.SourceEditors[i], SaveFileFlags);
-    if Result=mrAbort then exit;
+    Result:=SaveEditorFile(SrcEdit, SaveFileFlags);
+    if Result=mrAbort then begin
+      debugln(['Info: (lazarus) [SaveProject] SaveEditorFile "',SrcEdit.FileName,'" failed']);
+      exit;
+    end;
     // mrCancel: continue saving other files
   end;
 
@@ -7379,7 +7396,10 @@ begin
   if ([sfSaveAs,sfSaveToTestDir]*Flags=[sfSaveAs]) then begin
     // let user choose a filename
     Result:=ShowSaveProjectAsDialog(sfSaveMainSourceAs in Flags);
-    if Result<>mrOk then exit;
+    if Result<>mrOk then begin
+      debugln(['Info: (lazarus) [SaveProjectInfo] ShowSaveProjectAsDialog failed']);
+      exit;
+    end;
     Flags:=Flags-[sfSaveAs,sfSaveMainSourceAs];
   end;
 
@@ -7387,10 +7407,14 @@ begin
   UpdateProjectResourceInfo;
 
   // save project info file
+  //debugln(['SaveProjectInfo ',Project1.ProjectInfoFile,' Test=',sfSaveToTestDir in Flags,' Virt=',Project1.IsVirtual]);
   if (not (sfSaveToTestDir in Flags))
   and (not Project1.IsVirtual) then begin
     Result:=Project1.WriteProject([],'',EnvironmentOptions.BuildMatrixOptions);
-    if Result=mrAbort then exit;
+    if Result=mrAbort then begin
+      debugln(['Info: (lazarus) [SaveProjectInfo] Project1.WriteProject failed']);
+      exit;
+    end;
     EnvironmentOptions.LastSavedProjectFile:=Project1.ProjectInfoFile;
     IDEProtocolOpts.LastProjectLoadingCrashed := False;
     AddRecentProjectFile(Project1.ProjectInfoFile);
@@ -7411,7 +7435,10 @@ begin
       // loaded in source editor
       Result:=SaveEditorFile(MainUnitInfo.OpenEditorInfo[0].EditorComponent,
                [sfProjectSaving]+[sfSaveToTestDir,sfCheckAmbiguousFiles]*Flags);
-      if Result=mrAbort then exit;
+      if Result=mrAbort then begin
+        debugln(['Info: (lazarus) [SaveProjectInfo] SaveEditorFile MainUnitInfo failed "',DestFilename,'"']);
+        exit;
+      end;
     end else
     begin
       // not loaded in source editor (hidden)
@@ -7421,7 +7448,10 @@ begin
       if (not SkipSavingMainSource) and (MainUnitInfo.Source<>nil) then
       begin
         Result:=SaveCodeBufferToFile(MainUnitInfo.Source, DestFilename);
-        if Result=mrAbort then exit;
+        if Result=mrAbort then begin
+          debugln(['Info: (lazarus) [SaveProjectInfo] SaveEditorFile failed "',DestFilename,'"']);
+          exit;
+        end;
       end;
     end;
 
