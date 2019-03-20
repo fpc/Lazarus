@@ -863,9 +863,28 @@ begin
     end;
 end;
 
+function CompareDataItemY(AItem1, AItem2: Pointer): Integer;
+var
+  i: Integer;
+  item1: PChartDataItem absolute AItem1;
+  item2: PChartDataItem absolute AItem2;
+begin
+  Result := CompareFloat(item1^.Y, item2^.Y);
+  if Result = 0 then
+    for i := 0 to Min(High(item1^.YList), High(item2^.YList)) do begin
+      Result := CompareFloat(item1^.YList[i], item2^.YList[i]);
+      if Result <> 0 then
+        exit;
+    end;
+end;
+
 procedure TListChartSource.Sort;
 begin
-  FData.Sort(@CompareDataItemX);
+  if XCount > 0 then
+    FData.Sort(@CompareDataItemX)
+  else
+  if YCount > 0 then
+    FData.Sort(@CompareDataItemY);
 end;
 
 procedure TListChartSource.UpdateCachesAfterAdd(AX, AY: Double);
