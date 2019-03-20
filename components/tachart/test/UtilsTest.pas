@@ -118,12 +118,12 @@ begin
   r := 6.0;
   AssertTrue(FIList.Intersect(l, r, hint));
   AssertEquals(2.0, r);
-  FIList.Epsilon := 0.1;
+  FIList.Epsilon := 0.1;  // Meaning 10% of max exclusion edge, i.e. 0.2
   l := 0.5;
   r := 2.5;
   AssertTrue(FIList.Intersect(l, r, hint));
-  AssertEquals(0.9, l);
-  AssertEquals(2.1, r);
+  AssertEquals(0.8, l);
+  AssertEquals(2.2, r);
 end;
 
 procedure TIntervalListTest.Merge;

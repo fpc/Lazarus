@@ -450,8 +450,6 @@ begin
 end;
 
 procedure TListSourceTest.Multi;
-var
-  L: TStrings;
 begin
   FSource.Clear;
   AssertEquals(1, FSource.YCount);

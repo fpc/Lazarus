@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <ProjectOptions>
-    <Version Value="11"/>
+  <ProjectOptions BuildModesCount="1">
+    <Version Value="12"/>
     <PathDelim Value="\"/>
     <General>
       <Flags>
         <MainUnitHasCreateFormStatements Value="False"/>
       </Flags>
       <SessionStorage Value="InProjectDir"/>
-      <MainUnit Value="0"/>
       <Title Value="TAChart tests"/>
       <ResourceType Value="res"/>
     </General>
@@ -19,7 +18,7 @@
       <Language Value=""/>
       <CharSet Value=""/>
     </VersionInfo>
-    <BuildModes Count="1">
+    <BuildModes>
       <Item1 Name="default" Default="True"/>
     </BuildModes>
     <PublishOptions>
