@@ -30,18 +30,17 @@ type
     ButtonPanel1: TButtonPanel;
     EditCompName: TEdit;
     Label7: TLabel;
+    Label8: TLabel;
+    Label9: TLabel;
     NoteLbl: TLabel;
-    Panel2: TPanel;
     GroupBox1: TGroupBox;
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
     EditName: TEdit;
-    Panel1: TPanel;
     RadioGroup1: TRadioGroup;
     SelectType: TComboBox;
     EditSize: TEdit;
-    Panel3: TPanel;
     GroupBox2: TGroupBox;
     Label4: TLabel;
     Label5: TLabel;
@@ -134,6 +133,7 @@ begin
   AddLookupDatasetProc := @AddLookupDataset;
   UpdateFieldsTypes;
   UpdateLookupDatasets(Self);
+  RadioGroup1Click(nil);
 end;
 
 destructor TNewFieldFrm.Destroy;
@@ -172,7 +172,7 @@ begin
     except
       on E:Exception do begin
         NoteLbl.visible := true;
-        Panel1.Height := 100;
+        //Panel1.Height := 100;
       end;
     end;
   end;
@@ -350,14 +350,14 @@ begin
   try
     case RadioGroup1.ItemIndex of
       0..1: begin //data,calculated field
-        Panel3.Visible := False;
-        Panel2.Visible := True;
-        ClientHeight := Panel1.Height + Panel2.Height + ButtonPanel1.Height;
+        GroupBox2.Visible := False;
+        GroupBox1.Visible := True;
+        ClientHeight := RadioGroup1.Height + NoteLbl.Height + GroupBox1.Height + ButtonPanel1.Height;
       end;
       2: begin //lookup field
-        Panel3.Visible := True;
-        Panel2.Visible := False;
-        ClientHeight := Panel1.Height + Panel3.Height + ButtonPanel1.Height;
+        GroupBox2.Visible := True;
+        GroupBox1.Visible := False;
+        ClientHeight := RadioGroup1.Height + NoteLbl.Height + GroupBox2.Height + ButtonPanel1.Height;
       end;
     end;
     SetButtons;

@@ -1,290 +1,23 @@
 object NewFieldFrm: TNewFieldFrm
   Left = 447
-  Height = 439
+  Height = 461
   Top = 271
-  Width = 383
+  Width = 510
   HorzScrollBar.Page = 261
   VertScrollBar.Page = 375
-  BorderStyle = bsDialog
   Caption = 'Dialog'
-  ClientHeight = 439
-  ClientWidth = 383
+  ClientHeight = 461
+  ClientWidth = 510
   OnClose = FormClose
   OnCreate = FormCreate
   ParentFont = True
   Position = poScreenCenter
-  LCLVersion = '1.9.0.0'
-  object Panel2: TPanel
-    Left = 0
-    Height = 145
-    Top = 110
-    Width = 383
-    Align = alTop
-    ClientHeight = 145
-    ClientWidth = 383
-    FullRepaint = False
-    TabOrder = 0
-    object GroupBox1: TGroupBox
-      Left = 8
-      Height = 132
-      Top = 8
-      Width = 365
-      Anchors = [akTop, akLeft, akRight]
-      Caption = 'Field properties'
-      ClientHeight = 105
-      ClientWidth = 361
-      TabOrder = 0
-      object Label1: TLabel
-        Left = 6
-        Height = 15
-        Top = 11
-        Width = 40
-        Caption = '&Name:'
-        FocusControl = EditName
-        ParentColor = False
-      end
-      object Label2: TLabel
-        Left = 6
-        Height = 15
-        Top = 59
-        Width = 32
-        Caption = '&Type:'
-        FocusControl = SelectType
-        ParentColor = False
-      end
-      object Label3: TLabel
-        Left = 6
-        Height = 15
-        Top = 83
-        Width = 29
-        Caption = '&Size:'
-        FocusControl = EditSize
-        ParentColor = False
-      end
-      object EditName: TEdit
-        Left = 158
-        Height = 29
-        Top = 8
-        Width = 168
-        OnChange = EditNameChange
-        ParentShowHint = False
-        ShowHint = True
-        TabOrder = 0
-      end
-      object SelectType: TComboBox
-        Left = 158
-        Height = 29
-        Top = 56
-        Width = 168
-        ItemHeight = 21
-        Items.Strings = (
-          'String'
-          'Integer'
-          'SmallInt'
-          'Word'
-          'Float'
-          'Currency'
-          'Boolean'
-          'Date'
-          'Time'
-          'DateTime'
-          'Blob'
-          'Memo'
-          'Graphic'
-          'LargeInt'
-        )
-        OnChange = SelectTypeChange
-        Style = csDropDownList
-        TabOrder = 2
-      end
-      object EditSize: TEdit
-        Left = 158
-        Height = 29
-        Top = 80
-        Width = 168
-        Color = clBtnFace
-        Enabled = False
-        TabOrder = 3
-      end
-      object Label7: TLabel
-        Left = 6
-        Height = 15
-        Top = 35
-        Width = 113
-        Caption = 'Co&mponent Name:'
-        FocusControl = EditCompName
-        ParentColor = False
-      end
-      object EditCompName: TEdit
-        Left = 158
-        Height = 29
-        Top = 32
-        Width = 168
-        OnChange = EditCompNameChange
-        ParentShowHint = False
-        ShowHint = True
-        TabOrder = 1
-      end
-    end
-  end
-  object Panel3: TPanel
-    Left = 0
-    Height = 144
-    Top = 255
-    Width = 383
-    Align = alTop
-    ClientHeight = 144
-    ClientWidth = 383
-    FullRepaint = False
-    TabOrder = 1
-    Visible = False
-    object GroupBox2: TGroupBox
-      Left = 8
-      Height = 129
-      Top = 8
-      Width = 365
-      Anchors = [akTop, akLeft, akRight, akBottom]
-      Caption = 'Lookup definition'
-      ClientHeight = 102
-      ClientWidth = 361
-      TabOrder = 0
-      object Label4: TLabel
-        Left = 6
-        Height = 15
-        Top = 10
-        Width = 58
-        Caption = '&Key fields'
-        FocusControl = SelectKeyFields
-        ParentColor = False
-      end
-      object Label5: TLabel
-        Left = 6
-        Height = 15
-        Top = 58
-        Width = 75
-        Caption = 'L&ookup keys'
-        FocusControl = SelectLookupKeys
-        ParentColor = False
-      end
-      object Label6: TLabel
-        Left = 6
-        Height = 15
-        Top = 82
-        Width = 75
-        Caption = '&Result Fields'
-        FocusControl = SelectResultField
-        ParentColor = False
-      end
-      object Label10: TLabel
-        Left = 6
-        Height = 15
-        Top = 34
-        Width = 47
-        Caption = 'Dataset'
-        ParentColor = False
-      end
-      object SelectKeyFields: TComboBox
-        Left = 158
-        Height = 29
-        Top = 7
-        Width = 168
-        ItemHeight = 21
-        OnChange = SelectKeyFieldsChange
-        ParentShowHint = False
-        ShowHint = True
-        TabOrder = 0
-      end
-      object SelectLookupKeys: TComboBox
-        Left = 158
-        Height = 29
-        Top = 55
-        Width = 168
-        Enabled = False
-        ItemHeight = 21
-        OnChange = SelectLookupKeysChange
-        TabOrder = 2
-      end
-      object SelectResultField: TComboBox
-        Left = 158
-        Height = 29
-        Top = 79
-        Width = 168
-        Enabled = False
-        ItemHeight = 21
-        OnChange = SelectResultFieldChange
-        TabOrder = 3
-      end
-      object DataSetsCombo: TComboBox
-        Left = 158
-        Height = 29
-        Top = 31
-        Width = 168
-        ItemHeight = 15
-        OnChange = DataSetsComboChange
-        ParentShowHint = False
-        ShowHint = True
-        Style = csDropDownList
-        TabOrder = 1
-      end
-    end
-  end
-  object Panel1: TPanel
-    Left = 0
-    Height = 110
-    Top = 0
-    Width = 383
-    Align = alTop
-    ClientHeight = 110
-    ClientWidth = 383
-    FullRepaint = False
-    TabOrder = 2
-    object NoteLbl: TLabel
-      Left = 7
-      Height = 15
-      Top = 61
-      Width = 369
-      Align = alTop
-      BorderSpacing.Around = 6
-      Caption = 'NoteLbl'
-      ParentColor = False
-      Visible = False
-      WordWrap = True
-    end
-    object RadioGroup1: TRadioGroup
-      Left = 7
-      Height = 48
-      Top = 7
-      Width = 369
-      Align = alTop
-      AutoFill = True
-      BorderSpacing.Around = 6
-      Caption = 'Field Type'
-      ChildSizing.LeftRightSpacing = 6
-      ChildSizing.TopBottomSpacing = 6
-      ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
-      ChildSizing.EnlargeVertical = crsHomogenousChildResize
-      ChildSizing.ShrinkHorizontal = crsScaleChilds
-      ChildSizing.ShrinkVertical = crsScaleChilds
-      ChildSizing.Layout = cclLeftToRightThenTopToBottom
-      ChildSizing.ControlsPerLine = 3
-      ClientHeight = 21
-      ClientWidth = 365
-      Columns = 3
-      ItemIndex = 0
-      Items.Strings = (
-        '&Data'
-        '&Calculated'
-        '&Lookup'
-      )
-      OnClick = RadioGroup1Click
-      TabOrder = 0
-    end
-  end
+  LCLVersion = '2.1.0.0'
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 35
-    Top = 398
-    Width = 371
+    Height = 42
+    Top = 413
+    Width = 498
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
@@ -293,7 +26,373 @@ object NewFieldFrm: TNewFieldFrm
     CloseButton.DefaultCaption = True
     CancelButton.Name = 'CancelButton'
     CancelButton.DefaultCaption = True
-    TabOrder = 3
+    TabOrder = 0
     ShowButtons = [pbOK, pbCancel]
+  end
+  object RadioGroup1: TRadioGroup
+    Left = 0
+    Height = 55
+    Top = 0
+    Width = 510
+    Align = alTop
+    AutoFill = True
+    AutoSize = True
+    Caption = 'Field Type'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 3
+    ClientHeight = 35
+    ClientWidth = 508
+    Columns = 3
+    ItemIndex = 0
+    Items.Strings = (
+      '&Data'
+      '&Calculated'
+      '&Lookup'
+    )
+    OnClick = RadioGroup1Click
+    TabOrder = 1
+  end
+  object NoteLbl: TLabel
+    Left = 0
+    Height = 19
+    Top = 55
+    Width = 510
+    Align = alTop
+    Caption = 'NoteLbl'
+    ParentColor = False
+    Visible = False
+    WordWrap = True
+  end
+  object GroupBox1: TGroupBox
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 170
+    Top = 248
+    Width = 510
+    Align = alTop
+    AutoSize = True
+    Caption = 'Field properties'
+    ClientHeight = 150
+    ClientWidth = 508
+    TabOrder = 2
+    object Label1: TLabel
+      AnchorSideLeft.Control = GroupBox1
+      AnchorSideBottom.Control = EditName
+      AnchorSideBottom.Side = asrBottom
+      Left = 6
+      Height = 19
+      Top = 18
+      Width = 44
+      Anchors = [akLeft, akBottom]
+      BorderSpacing.Left = 6
+      Caption = '&Name:'
+      FocusControl = EditName
+      ParentColor = False
+    end
+    object Label2: TLabel
+      AnchorSideLeft.Control = GroupBox1
+      AnchorSideBottom.Control = SelectType
+      AnchorSideBottom.Side = asrBottom
+      Left = 6
+      Height = 19
+      Top = 88
+      Width = 36
+      Anchors = [akLeft, akBottom]
+      BorderSpacing.Left = 6
+      Caption = '&Type:'
+      FocusControl = SelectType
+      ParentColor = False
+    end
+    object Label3: TLabel
+      AnchorSideLeft.Control = GroupBox1
+      AnchorSideRight.Control = Label8
+      AnchorSideBottom.Control = EditSize
+      AnchorSideBottom.Side = asrBottom
+      Left = 6
+      Height = 19
+      Top = 125
+      Width = 32
+      Anchors = [akLeft, akBottom]
+      BorderSpacing.Left = 6
+      BorderSpacing.Right = 6
+      Caption = '&Size:'
+      FocusControl = EditSize
+      ParentColor = False
+    end
+    object EditName: TEdit
+      AnchorSideLeft.Control = Label8
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = GroupBox1
+      AnchorSideRight.Control = GroupBox1
+      AnchorSideRight.Side = asrBottom
+      Left = 255
+      Height = 31
+      Top = 6
+      Width = 247
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      OnChange = EditNameChange
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 0
+    end
+    object SelectType: TComboBox
+      AnchorSideLeft.Control = Label8
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = EditCompName
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = GroupBox1
+      AnchorSideRight.Side = asrBottom
+      Left = 255
+      Height = 27
+      Top = 80
+      Width = 247
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      ItemHeight = 0
+      Items.Strings = (
+        'String'
+        'Integer'
+        'SmallInt'
+        'Word'
+        'Float'
+        'Currency'
+        'Boolean'
+        'Date'
+        'Time'
+        'DateTime'
+        'Blob'
+        'Memo'
+        'Graphic'
+        'LargeInt'
+      )
+      OnChange = SelectTypeChange
+      Style = csDropDownList
+      TabOrder = 2
+    end
+    object EditSize: TEdit
+      AnchorSideLeft.Control = Label8
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = SelectType
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = GroupBox1
+      AnchorSideRight.Side = asrBottom
+      Left = 255
+      Height = 31
+      Top = 113
+      Width = 247
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 6
+      Color = clBtnFace
+      Enabled = False
+      TabOrder = 3
+    end
+    object Label7: TLabel
+      AnchorSideLeft.Control = GroupBox1
+      AnchorSideBottom.Control = EditCompName
+      AnchorSideBottom.Side = asrBottom
+      Left = 6
+      Height = 19
+      Top = 55
+      Width = 123
+      Anchors = [akLeft, akBottom]
+      BorderSpacing.Left = 6
+      Caption = 'Co&mponent Name:'
+      FocusControl = EditCompName
+      ParentColor = False
+    end
+    object EditCompName: TEdit
+      AnchorSideLeft.Control = Label8
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = EditName
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = GroupBox1
+      AnchorSideRight.Side = asrBottom
+      Left = 255
+      Height = 31
+      Top = 43
+      Width = 247
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      OnChange = EditCompNameChange
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 1
+    end
+    object Label8: TLabel
+      AnchorSideLeft.Control = GroupBox1
+      AnchorSideLeft.Side = asrCenter
+      AnchorSideTop.Control = GroupBox1
+      Left = 254
+      Height = 1
+      Top = 0
+      Width = 1
+      ParentColor = False
+    end
+  end
+  object GroupBox2: TGroupBox
+    Left = 0
+    Height = 174
+    Top = 74
+    Width = 510
+    Align = alTop
+    AutoSize = True
+    Caption = 'Lookup definition'
+    ClientHeight = 154
+    ClientWidth = 508
+    TabOrder = 3
+    object Label4: TLabel
+      AnchorSideLeft.Control = GroupBox2
+      AnchorSideBottom.Control = SelectKeyFields
+      AnchorSideBottom.Side = asrBottom
+      Left = 6
+      Height = 19
+      Top = 18
+      Width = 63
+      Anchors = [akLeft, akBottom]
+      BorderSpacing.Left = 6
+      Caption = '&Key fields'
+      FocusControl = SelectKeyFields
+      ParentColor = False
+    end
+    object Label5: TLabel
+      AnchorSideLeft.Control = GroupBox2
+      AnchorSideBottom.Control = SelectLookupKeys
+      AnchorSideBottom.Side = asrBottom
+      Left = 6
+      Height = 19
+      Top = 92
+      Width = 79
+      Anchors = [akLeft, akBottom]
+      BorderSpacing.Left = 6
+      Caption = 'L&ookup keys'
+      FocusControl = SelectLookupKeys
+      ParentColor = False
+    end
+    object Label6: TLabel
+      AnchorSideLeft.Control = GroupBox2
+      AnchorSideBottom.Control = SelectResultField
+      AnchorSideBottom.Side = asrBottom
+      Left = 6
+      Height = 19
+      Top = 129
+      Width = 84
+      Anchors = [akLeft, akBottom]
+      BorderSpacing.Left = 6
+      Caption = '&Result Fields'
+      FocusControl = SelectResultField
+      ParentColor = False
+    end
+    object Label10: TLabel
+      AnchorSideLeft.Control = GroupBox2
+      AnchorSideBottom.Control = DataSetsCombo
+      AnchorSideBottom.Side = asrBottom
+      Left = 6
+      Height = 19
+      Top = 55
+      Width = 52
+      Anchors = [akLeft, akBottom]
+      BorderSpacing.Left = 6
+      Caption = 'Dataset'
+      ParentColor = False
+    end
+    object SelectKeyFields: TComboBox
+      AnchorSideLeft.Control = Label9
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = GroupBox2
+      AnchorSideRight.Control = GroupBox2
+      AnchorSideRight.Side = asrBottom
+      Left = 255
+      Height = 31
+      Top = 6
+      Width = 247
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      ItemHeight = 0
+      OnChange = SelectKeyFieldsChange
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 0
+    end
+    object SelectLookupKeys: TComboBox
+      AnchorSideLeft.Control = DataSetsCombo
+      AnchorSideTop.Control = DataSetsCombo
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = GroupBox2
+      AnchorSideRight.Side = asrBottom
+      Left = 255
+      Height = 31
+      Top = 80
+      Width = 247
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      Enabled = False
+      ItemHeight = 0
+      OnChange = SelectLookupKeysChange
+      TabOrder = 2
+    end
+    object SelectResultField: TComboBox
+      AnchorSideLeft.Control = Label9
+      AnchorSideTop.Control = SelectLookupKeys
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = GroupBox2
+      AnchorSideRight.Side = asrBottom
+      Left = 254
+      Height = 31
+      Top = 117
+      Width = 248
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 6
+      Enabled = False
+      ItemHeight = 0
+      OnChange = SelectResultFieldChange
+      TabOrder = 3
+    end
+    object DataSetsCombo: TComboBox
+      AnchorSideLeft.Control = Label9
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = SelectKeyFields
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = GroupBox2
+      AnchorSideRight.Side = asrBottom
+      Left = 255
+      Height = 31
+      Top = 43
+      Width = 247
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      ItemHeight = 0
+      OnChange = DataSetsComboChange
+      ParentShowHint = False
+      ShowHint = True
+      Style = csDropDownList
+      TabOrder = 1
+    end
+    object Label9: TLabel
+      AnchorSideLeft.Control = GroupBox2
+      AnchorSideLeft.Side = asrCenter
+      AnchorSideTop.Control = GroupBox2
+      Left = 254
+      Height = 1
+      Top = 0
+      Width = 1
+      ParentColor = False
+    end
   end
 end
