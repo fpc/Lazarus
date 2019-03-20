@@ -15,6 +15,7 @@ uses
 {$R *.res}
 
 begin
+  Application.Scaled:=True;
   Application.Title:='Lazarus Data Desktop';
   Application.Initialize;
   Application.CreateForm(TMainForm, MainForm);

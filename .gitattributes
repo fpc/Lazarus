@@ -12284,6 +12284,7 @@ tools/lazdatadesktop/languages/lazdatadesktop.ru.po svneol=native#text/plain
 tools/lazdatadesktop/languages/lazdatadesktop.uk.po svneol=native#text/plain
 tools/lazdatadesktop/languages/lazdatadesktop.zh_CN.po svneol=native#text/plain
 tools/lazdatadesktop/lazdatadeskstr.pas svneol=native#text/plain
+tools/lazdatadesktop/lazdatadesktop.ico -text
 tools/lazdatadesktop/lazdatadesktop.lpi svneol=native#text/plain
 tools/lazdatadesktop/lazdatadesktop.lpr svneol=native#text/plain
 tools/lazdatadesktop/lazdatadesktop.res -text

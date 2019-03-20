@@ -11,7 +11,9 @@
       <MainUnit Value="0"/>
       <AutoCreateForms Value="False"/>
       <Title Value="Lazarus Data Desktop"/>
+      <Scaled Value="True"/>
       <UseXPManifest Value="True"/>
+      <Icon Value="0"/>
     </General>
     <i18n>
       <EnableI18N Value="True" LFM="False"/>
