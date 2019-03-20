@@ -122,6 +122,8 @@ type
   TIntervalList = class
   private
     FEpsilon: Double;
+    FEpsilonScale: Double;
+    FAbsoluteEpsilon: Double;
     FIntervals: array of TDoubleInterval;
     FOnChange: TNotifyEvent;
     procedure Changed;
@@ -731,6 +733,11 @@ begin
       FIntervals[k] := FIntervals[k - 1];
   end;
   FIntervals[i] := DoubleInterval(AStart, AEnd);
+  if (abs(FIntervals[i].FStart) <> Infinity) and (abs(FIntervals[i].FStart) > FEpsilonScale) then
+    FEpsilonScale := abs(FIntervals[i].FStart);
+  if (abs(FIntervals[i].FEnd) <> Infinity) and (abs(FIntervals[i].FEnd) > FEpsilonScale) then
+    FEpsilonScale := abs(FIntervals[i].FEnd);
+  FAbsoluteEpsilon := IfThen(FEpsilonScale = 0, FEpsilon, FEpsilon * FEpsilonScale);
   Changed;
 end;
 
@@ -755,6 +762,7 @@ end;
 constructor TIntervalList.Create;
 begin
   FEpsilon := DEFAULT_EPSILON;
+  FEpsilonScale := 0.0
 end;
 
 function TIntervalList.GetInterval(AIndex: Integer): TDoubleInterval;
@@ -776,11 +784,11 @@ begin
   if Length(FIntervals) = 0 then exit;
 
   AHint := EnsureRange(AHint, 0, High(FIntervals));
-  while (AHint > 0) and (FIntervals[AHint].FStart > ARight) do
+  while (AHint > 0) and (FIntervals[AHint].FStart - FAbsoluteEpsilon > ARight) do
     Dec(AHint);
 
   while
-    (AHint <= High(FIntervals)) and (FIntervals[AHint].FStart <= ARight)
+    (AHint <= High(FIntervals)) and (FIntervals[AHint].FStart - FAbsoluteEpsilon <= ARight)
   do begin
     if FIntervals[AHint].FEnd >= ALeft then begin
       if not Result then fi := AHint;
@@ -791,8 +799,8 @@ begin
   end;
 
   if Result then begin
-    ALeft := FIntervals[fi].FStart - Epsilon;
-    ARight := FIntervals[li].FEnd + Epsilon;
+    ALeft := FIntervals[fi].FStart - FAbsoluteEpsilon;
+    ARight := FIntervals[li].FEnd + FAbsoluteEpsilon;
   end;
 end;
 
@@ -802,6 +810,10 @@ begin
   if AValue <= 0 then
     raise EChartIntervalError.Create('Epsilon <= 0');
   FEpsilon := AValue;
+  if FEpsilonScale = 0 then
+    FAbsoluteEpsilon := FEpsilon
+  else
+    FAbsoluteEpsilon := FEpsilon * FEpsilonScale;
   Changed;
 end;
 
