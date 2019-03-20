@@ -39,6 +39,7 @@ type
   published
     class function GetEditorBoundsFromCellRect(ACanvas: TCanvas;
       const ACellRect: TRect; const AColumnLayout: TTextLayout): TRect; override;
+    class procedure Invalidate(sender: TCustomGrid); override;
   end;
 
 implementation
@@ -63,6 +64,11 @@ begin
   end;
   if EditorTop>Result.Top then Result.Top:=EditorTop;
   Result.Bottom:=Result.Top+TextHeight;
+end;
+
+class procedure TGtk2WSCustomGrid.Invalidate(sender: TCustomGrid);
+begin
+  Sender.Invalidate;
 end;
 
 end.

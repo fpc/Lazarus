@@ -1003,6 +1003,7 @@ type
     procedure DoOPMoveColRow(IsColumn: Boolean; FromIndex, ToIndex: Integer);
     procedure DoPasteFromClipboard; virtual;
     procedure DoPrepareCanvas(aCol,aRow:Integer; aState: TGridDrawState); virtual;
+    procedure DoOnResize; override;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
     function  DoUTF8KeyPress(var UTF8Key: TUTF8Char): boolean; override;
     procedure DrawBorder;
@@ -7177,6 +7178,13 @@ procedure TCustomGrid.DoPrepareCanvas(aCol,aRow:Integer; aState: TGridDrawState)
 begin
   if Assigned(OnPrepareCanvas) then
     OnPrepareCanvas(Self, aCol, aRow, aState);
+end;
+
+procedure TCustomGrid.DoOnResize;
+begin
+  inherited DoOnResize;
+  if FUpdateCount=0 then
+    TWSCustomGridClass(WidgetSetClass).Invalidate(Self);
 end;
 
 procedure TCustomGrid.DoSetBounds(ALeft, ATop, AWidth, AHeight: integer);
