@@ -10242,6 +10242,10 @@ msgstr ""
 msgid "there is a problem with the Free Pascal compiler executable, "
 msgstr ""
 
+#: lazarusidestrconsts.lisfppkgcreatefilefailed
+msgid "Failed to generate the configuration file \"%s\"."
+msgstr ""
+
 #: lazarusidestrconsts.lisfppkginstallationpath
 msgid "The prefix of the Free Pascal Compiler installation is required to create new configuration files for Fppkg. For example it has the units \"%s\" and/or \"%s\""
 msgstr ""

@@ -9823,6 +9823,10 @@ msgstr "Є синтаксична помилка  в елементі fpdoc \"%s
 msgid "there is a problem with the Free Pascal compiler executable, "
 msgstr "виникла проблема з виконуваним файлом компілятора Free Pascal, "
 
+#: lazarusidestrconsts.lisfppkgcreatefilefailed
+msgid "Failed to generate the configuration file \"%s\"."
+msgstr ""
+
 #: lazarusidestrconsts.lisfppkginstallationpath
 msgid "The prefix of the Free Pascal Compiler installation is required to create new configuration files for Fppkg. For example it has the units \"%s\" and/or \"%s\""
 msgstr "Для створення файлів нової конфігурації Fppkg потрібен префікс встановлення компілятора Free Pascal. Наприклад, він містить модулі \"%s\" і/або \"%s\""

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2019-03-19 01:30+0300\n"
+"PO-Revision-Date: 2019-03-22 01:45+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -9817,6 +9817,10 @@ msgstr "В элементе FPDoc \"%s\" имеется синтаксическ
 #: lazarusidestrconsts.lisfppkgcompilerproblem
 msgid "there is a problem with the Free Pascal compiler executable, "
 msgstr "проблема с исполнимым файлом компилятора Free Pascal, "
+
+#: lazarusidestrconsts.lisfppkgcreatefilefailed
+msgid "Failed to generate the configuration file \"%s\"."
+msgstr "Невозможно создать файл настройки \"%s\"."
 
 #: lazarusidestrconsts.lisfppkginstallationpath
 msgid "The prefix of the Free Pascal Compiler installation is required to create new configuration files for Fppkg. For example it has the units \"%s\" and/or \"%s\""

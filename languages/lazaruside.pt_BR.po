@@ -9852,6 +9852,10 @@ msgstr "Há um erro de sintaxe no elemento fpdoc \"%s\":%s%s"
 msgid "there is a problem with the Free Pascal compiler executable, "
 msgstr "há um problema com o executável do compilador Free Pascal,"
 
+#: lazarusidestrconsts.lisfppkgcreatefilefailed
+msgid "Failed to generate the configuration file \"%s\"."
+msgstr ""
+
 #: lazarusidestrconsts.lisfppkginstallationpath
 msgid "The prefix of the Free Pascal Compiler installation is required to create new configuration files for Fppkg. For example it has the units \"%s\" and/or \"%s\""
 msgstr "O prefixo da instalação do compilador Free Pascal é requerido ao criar novos arquivos de configuração para o Fppkg. Por exemplo, ele tem as unidades \"%s\" e/ou \"%s\""
