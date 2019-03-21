@@ -1053,6 +1053,7 @@ resourcestring
   lisFppkgWriteConfFailed = 'Failed to create a new Fppkg configuration. You ' +
     'will have to fix the configuration manually or reinstall Free Pascal.';
   lisNoFppkgPrefix = 'empty Free Pascal compiler prefix.';
+  lisFppkgCreateFileFailed = 'Failed to generate the configuration file "%s".';
 
   // file dialogs
   lisOpenFile = 'Open File';

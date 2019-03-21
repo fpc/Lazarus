@@ -43,7 +43,7 @@ uses
   // RTL + FCL + LCL
   Classes, SysUtils,
   Forms, Controls, Buttons, Dialogs, Graphics, ComCtrls, ExtCtrls, StdCtrls, LCLProc,
-  pkgglobals,
+  pkgglobals, process,
   {$IF FPC_FULLVERSION>30100}UTF8Process,{$ENDIF}
   fpmkunit,
   // CodeTools
@@ -1598,6 +1598,7 @@ begin
     begin
       Proc := TProcessUTF8.Create(nil);
       try
+        Proc.Options := proc.Options + [poWaitOnExit];
         // Write fppkg.cfg
         Proc.Executable := FpcmkcfgExecutable;
         proc.Parameters.Add('-p');
@@ -1615,20 +1616,30 @@ begin
         proc.Execute;
 
         Fppkg:=TFppkgHelper.Instance;
-        Fppkg.ReInitialize;
 
-        // Write default compiler configuration file
-        CompConfigFilename := Fppkg.GetCompilerConfigurationFileName;
-        if CompConfigFilename <> '' then
+        if proc.ExitStatus <> 0 then
+          IDEMessageDialog(lisFppkgProblem, Format(lisFppkgCreateFileFailed, [GetFppkgConfigFile(False, False)]), mtWarning, [mbOK])
+        else
           begin
-          proc.Parameters.Clear;
-          proc.Parameters.Add('-p');
-          proc.Parameters.Add('-4');
-          proc.Parameters.Add('-o');
-          proc.Parameters.Add(CompConfigFilename);
-          proc.Parameters.Add('-d');
-          proc.Parameters.Add('fpcbin='+EnvironmentOptions.GetParsedCompilerFilename);
-          proc.Execute;
+          Fppkg:=TFppkgHelper.Instance;
+          Fppkg.ReInitialize;
+
+          // Write default compiler configuration file
+          CompConfigFilename := Fppkg.GetCompilerConfigurationFileName;
+          if CompConfigFilename <> '' then
+            begin
+            proc.Parameters.Clear;
+            proc.Parameters.Add('-p');
+            proc.Parameters.Add('-4');
+            proc.Parameters.Add('-o');
+            proc.Parameters.Add(CompConfigFilename);
+            proc.Parameters.Add('-d');
+            proc.Parameters.Add('fpcbin='+EnvironmentOptions.GetParsedCompilerFilename);
+            proc.Execute;
+
+            if proc.ExitStatus <> 0 then
+              IDEMessageDialog(lisFppkgProblem, Format(lisFppkgCreateFileFailed, [CompConfigFilename]), mtWarning, [mbOK]);
+            end;
           end;
 
         Fppkg.ReInitialize;
