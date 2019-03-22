@@ -101,6 +101,9 @@ type
     smsLabelPercentTotal, { Cars 12 % of 1234 }
     smsXValue);        { 21/6/1996 }
 
+  TIntervalOption = (ioOpenStart, ioOpenEnd);
+  TIntervalOptions = set of TIntervalOption;
+
   TDoubleInterval = record
     FStart, FEnd: Double;
   end;
@@ -122,26 +125,23 @@ type
   TIntervalList = class
   private
     FEpsilon: Double;
-    FEpsilonScale: Double;
-    FAbsoluteEpsilon: Double;
     FIntervals: array of TDoubleInterval;
     FOnChange: TNotifyEvent;
     procedure Changed;
     function GetInterval(AIndex: Integer): TDoubleInterval;
     function GetIntervalCount: Integer;
-    procedure SetEpsilon(AValue: Double);
     procedure SetOnChange(AValue: TNotifyEvent);
   public
     procedure Assign(ASource: TIntervalList);
     constructor Create;
   public
     procedure AddPoint(APoint: Double); inline;
-    procedure AddRange(AStart, AEnd: Double);
+    procedure AddRange(AStart, AEnd: Double; ALimits: TIntervalOptions = []);
     procedure Clear;
     function Intersect(
       var ALeft, ARight: Double; var AHint: Integer): Boolean;
   public
-    property Epsilon: Double read FEpsilon write SetEpsilon;
+    property Epsilon: Double read FEpsilon write FEpsilon;
     property Interval[AIndex: Integer]: TDoubleInterval read GetInterval;
     property IntervalCount: Integer read GetIntervalCount;
     property OnChange: TNotifyEvent read FOnChange write SetOnChange;
@@ -706,12 +706,15 @@ begin
   AddRange(APoint, APoint);
 end;
 
-procedure TIntervalList.AddRange(AStart, AEnd: Double);
+procedure TIntervalList.AddRange(AStart, AEnd: Double; ALimits: TIntervalOptions = []);
 var
   i: Integer;
   j: Integer;
   k: Integer;
 begin
+  if not (ioOpenStart in ALimits) then AStart -= FEpsilon;
+  if not (ioOpenEnd in ALimits) then AEnd += FEpsilon;
+  if AStart > AEnd then exit;
   i := 0;
   while (i <= High(FIntervals)) and (FIntervals[i].FEnd < AStart) do
     i += 1;
@@ -733,11 +736,6 @@ begin
       FIntervals[k] := FIntervals[k - 1];
   end;
   FIntervals[i] := DoubleInterval(AStart, AEnd);
-  if (abs(FIntervals[i].FStart) <> Infinity) and (abs(FIntervals[i].FStart) > FEpsilonScale) then
-    FEpsilonScale := abs(FIntervals[i].FStart);
-  if (abs(FIntervals[i].FEnd) <> Infinity) and (abs(FIntervals[i].FEnd) > FEpsilonScale) then
-    FEpsilonScale := abs(FIntervals[i].FEnd);
-  FAbsoluteEpsilon := IfThen(FEpsilonScale = 0, FEpsilon, FEpsilon * FEpsilonScale);
   Changed;
 end;
 
@@ -762,7 +760,6 @@ end;
 constructor TIntervalList.Create;
 begin
   FEpsilon := DEFAULT_EPSILON;
-  FEpsilonScale := 0.0
 end;
 
 function TIntervalList.GetInterval(AIndex: Integer): TDoubleInterval;
@@ -784,13 +781,13 @@ begin
   if Length(FIntervals) = 0 then exit;
 
   AHint := EnsureRange(AHint, 0, High(FIntervals));
-  while (AHint > 0) and (FIntervals[AHint].FStart - FAbsoluteEpsilon > ARight) do
+  while (AHint > 0) and (FIntervals[AHint].FStart >= ARight) do
     Dec(AHint);
 
   while
-    (AHint <= High(FIntervals)) and (FIntervals[AHint].FStart - FAbsoluteEpsilon <= ARight)
+    (AHint <= High(FIntervals)) and (FIntervals[AHint].FStart < ARight)
   do begin
-    if FIntervals[AHint].FEnd >= ALeft then begin
+    if FIntervals[AHint].FEnd > ALeft then begin
       if not Result then fi := AHint;
       li := AHint;
       Result := true;
@@ -799,22 +796,9 @@ begin
   end;
 
   if Result then begin
-    ALeft := FIntervals[fi].FStart - FAbsoluteEpsilon;
-    ARight := FIntervals[li].FEnd + FAbsoluteEpsilon;
+    ALeft := FIntervals[fi].FStart;
+    ARight := FIntervals[li].FEnd;
   end;
-end;
-
-procedure TIntervalList.SetEpsilon(AValue: Double);
-begin
-  if FEpsilon = AValue then exit;
-  if AValue <= 0 then
-    raise EChartIntervalError.Create('Epsilon <= 0');
-  FEpsilon := AValue;
-  if FEpsilonScale = 0 then
-    FAbsoluteEpsilon := FEpsilon
-  else
-    FAbsoluteEpsilon := FEpsilon * FEpsilonScale;
-  Changed;
 end;
 
 procedure TIntervalList.SetOnChange(AValue: TNotifyEvent);

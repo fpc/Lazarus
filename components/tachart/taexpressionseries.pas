@@ -89,7 +89,6 @@ type
   TExpressionSeries = class(TCustomFuncSeries)
   private
     FDomain: String;
-    FDomainEpsilon: Double;
     FDomainScanner: TChartDomainScanner;
     FExpression: String;
     FParams: TChartExprParams;
@@ -97,6 +96,7 @@ type
     FVariable: String;
     FX: TFPExprIdentifierDef;
     FDirty: Boolean;
+    function GetDomainEpsilon: Double;
     procedure SetDomain(const AValue: String);
     procedure SetDomainEpsilon(const AValue: Double);
     procedure SetExpression(const AValue: string);
@@ -115,7 +115,7 @@ type
     function IsEmpty: Boolean; override;
     procedure RequestParserUpdate; inline;
   published
-    property DomainEpsilon: Double read FDomainEpsilon write SetDomainEpsilon;
+    property DomainEpsilon: Double read GetDomainEpsilon write SetDomainEpsilon;
     property Params: TChartExprParams read FParams write SetParams;
     property Variable: String read FVariable write SetVariable;
     property Domain: String read FDomain write SetDomain;
@@ -271,6 +271,7 @@ constructor TChartDomainScanner.Create(ASeries: TExpressionSeries);
 begin
   FSeries := ASeries;
   FParser := ASeries.FParser;
+  FEpsilon := DEFAULT_EPSILON;
 end;
 
 { Analyzes the parts of the domain expression and extract the intervals on
@@ -280,68 +281,67 @@ end;
 procedure TChartDomainScanner.Analyze(AList, ADomain: TIntervalList;
   const AParts: TDomainParts);
 var
+  SaveListEpsilon, SaveDomainEpsilon: Double;
   a, b: Double;
 begin
-  // two-sided interval, e.g. "0 < x <= 1", or "2 > x >= 1"
-  if (AParts[2] = Variable) and (AParts[3] <> '') and (AParts[4] <> '') then
-  begin
-    FParser.Expression := AParts[0];
-    a := ArgToFloat(FParser.Evaluate);
-    FParser.Expression := AParts[4];
-    b := ArgToFloat(FParser.Evaluate);
-    if (AParts[1][1] = '<') and (AParts[3][1] = '<') and (a < b) then
-      ADomain.AddRange(a, b)
-    else
-    if (AParts[1][1] = '>') and (AParts[3][1] = '>') and (a > b) then
-      ADomain.AddRange(b, a);
-  end else
-  // one-sided interval, variable is at left
-  if (AParts[0] = Variable) and (AParts[3] = '') and (AParts[4] = '') then
-  begin
-    FParser.Expression := AParts[2];
-    a := ArgToFloat(FParser.Evaluate);
-    case AParts[1] of
-      '<>'      : AList.AddPoint(a);                    //  x <> a
-      '<', '<=' : ADomain.AddRange(-Infinity, a);       //  x < a, x <= a
-      '>', '>=' : ADomain.AddRange(a, Infinity);        //  x > a, x >= a
-      else  Expressionerror;
-    end;
-  end else
-  // one-sided interval, variable is at right
-  if (AParts[2] = Variable) and (AParts[3] = '') and (AParts[4] = '') then
-  begin
-    FParser.Expression := AParts[0];
-    a := ArgToFloat(FParser.Evaluate);
-    case AParts[1] of
-      '<>'      : AList.AddPoint(a);                    //  a <> x
-      '<', '<=' : ADomain.AddRange(a, Infinity);        //  a < x, a <= x
-      '>', '>=' : ADomain.AddRange(-Infinity, a);       //  a > x, a >= x
-      else   ExpressionError;
-    end;
-  end else
-    ExpressionError;
+  SaveListEpsilon := AList.Epsilon;
+  SaveDomainEpsilon := ADomain.Epsilon;
+  try
+    AList.Epsilon := FEpsilon; // list of excluded ranges should be widened by Epsilon
+    ADomain.Epsilon := -FEpsilon; // list of included ranges should be narrowed by Epsilon
+
+    // two-sided interval, e.g. "0 < x <= 1", or "2 > x >= 1"
+    if (AParts[2] = Variable) and (AParts[3] <> '') and (AParts[4] <> '') then
+    begin
+      FParser.Expression := AParts[0];
+      a := ArgToFloat(FParser.Evaluate);
+      FParser.Expression := AParts[4];
+      b := ArgToFloat(FParser.Evaluate);
+      if (AParts[1][1] = '<') and (AParts[3][1] = '<') and (a < b) then
+        ADomain.AddRange(a, b)
+      else
+      if (AParts[1][1] = '>') and (AParts[3][1] = '>') and (a > b) then
+        ADomain.AddRange(b, a);
+    end else
+    // one-sided interval, variable is at left
+    if (AParts[0] = Variable) and (AParts[3] = '') and (AParts[4] = '') then
+    begin
+      FParser.Expression := AParts[2];
+      a := ArgToFloat(FParser.Evaluate);
+      case AParts[1] of
+        '<>'      : AList.AddPoint(a);                    //  x <> a
+        '<', '<=' : ADomain.AddRange(-Infinity, a);       //  x < a, x <= a
+        '>', '>=' : ADomain.AddRange(a, Infinity);        //  x > a, x >= a
+        else  Expressionerror;
+      end;
+    end else
+    // one-sided interval, variable is at right
+    if (AParts[2] = Variable) and (AParts[3] = '') and (AParts[4] = '') then
+    begin
+      FParser.Expression := AParts[0];
+      a := ArgToFloat(FParser.Evaluate);
+      case AParts[1] of
+        '<>'      : AList.AddPoint(a);                    //  a <> x
+        '<', '<=' : ADomain.AddRange(a, Infinity);        //  a < x, a <= x
+        '>', '>=' : ADomain.AddRange(-Infinity, a);       //  a > x, a >= x
+        else   ExpressionError;
+      end;
+    end else
+      ExpressionError;
+  finally
+    AList.Epsilon := SaveListEpsilon;
+    ADomain.Epsilon := SaveDomainEpsilon;
+  end;
 end;
 
 { Converts the intervals in ADomain on which the function is defined to
   intervals in AList in which the function is NOT defined (= DomainExclusion) }
 procedure TChartDomainScanner.ConvertToExclusions(AList, ADomain: TIntervalList);
-
-  function IsPoint(i: Integer): Boolean;
-  begin
-    Result := (i >= 0) and (i < ADomain.IntervalCount) and
-      (ADomain.Interval[i].FStart = ADomain.Interval[i].FEnd);
-  end;
-
-type
-  TIntervalPoint = record
-    Value: Double;
-    Contained: Boolean;
-  end;
-
 var
+  SaveListEpsilon: Double;
   a, b: Double;
   i, j: Integer;
-  points: array of TIntervalPoint;
+  points: array of Double;
 begin
   if ADomain.IntervalCount = 0 then
     exit;
@@ -350,52 +350,49 @@ begin
   SetLength(points, ADomain.IntervalCount*2);
 
   for i:=0 to ADomain.IntervalCount-1 do begin
-    if IsPoint(i) then
-      Continue;
     if ADomain.Interval[i].FStart <> -Infinity then begin
-      points[j].Value := ADomain.Interval[i].FStart;
-      points[j].Contained := IsPoint(i-1);
+      points[j] := ADomain.Interval[i].FStart;
       inc(j);
     end;
     if ADomain.Interval[i].FEnd <> +Infinity then begin
-      points[j].Value := ADomain.Interval[i].FEnd;
-      points[j].Contained := IsPoint(i+1);
+      points[j] := ADomain.Interval[i].FEnd;
       inc(j);
     end;
   end;
   SetLength(points, j);
 
-  // Case 1: domain extends to neg infinity
-  // -INF <---------|xxxxxxxx|------|xxxx> INF     with - = allowed, x = forbidden
-  //                0        1      2
-  if ADomain.Interval[0].FStart = -Infinity then
-    j := 0
-  else
-  // Case 2: domain begins at finite value
-  // -INF <xxxxxxxxx|--------|xxxxxx|------>INF
-  //                0        1      2
-  begin
-    a := -Infinity;
-    b := points[0].Value;
-    AList.AddRange(a, b);
-    if not points[0].Contained then
-      AList.AddPoint(b);
-    j := 1;
-  end;
-  while j < Length(points) do begin
-    a := points[j].Value;
-    if not points[j].Contained then
-      AList.AddPoint(a);
-    if j = High(points) then begin
-      AList.AddRange(a, Infinity);
-    end else
+  SaveListEpsilon := AList.Epsilon;
+  try
+    AList.Epsilon := 0; // provide direct ADomain to AList conversion - all the
+                        // required epsilons have already been applied earlier,
+                        // in the Analyze() call
+
+    // Case 1: domain extends to neg infinity
+    // -INF <---------|xxxxxxxx|------|xxxx> INF     with - = allowed, x = forbidden
+    //                0        1      2
+    if ADomain.Interval[0].FStart = -Infinity then
+      j := 0
+    else
+    // Case 2: domain begins at finite value
+    // -INF <xxxxxxxxx|--------|xxxxxx|------>INF
+    //                0        1      2
     begin
-      b := points[j+1].Value;
+      a := -Infinity;
+      b := points[0];
       AList.AddRange(a, b);
-      if not points[j+1].Contained then
-        AList.AddPoint(b);
+      j := 1;
     end;
-    inc(j, 2);
+    while j < Length(points) do begin
+      a := points[j];
+      if j = High(points) then
+        b := Infinity
+      else
+        b := points[j+1];
+      AList.AddRange(a, b);
+      inc(j, 2);
+    end;
+  finally
+    AList.Epsilon := SaveListEpsilon;
   end;
 end;
 
@@ -418,8 +415,6 @@ begin
   savedExpr := FParser.Expression;
   domains := TIntervalList.Create;
   try
-    AList.Epsilon := FEpsilon;
-    domains.Epsilon := FEpsilon;
     ParseExpression(AList, domains);
     ConvertToExclusions(AList, domains);
   finally
@@ -500,7 +495,6 @@ begin
   FX := FParser.Identifiers.AddFloatVariable(FVariable, 0.0);
 
   FDomainScanner := TChartDomainScanner.Create(self);
-  FDomainEpsilon := DEFAULT_EPSILON;
 
   FParams := TChartExprParams.Create(FParser, @OnChangedHandler);
 end;
@@ -577,9 +571,17 @@ begin
   UpdateParentChart;
 end;
 
+function TExpressionSeries.GetDomainEpsilon: Double;
+begin
+  Result := FDomainScanner.Epsilon;
+end;
+
 procedure TExpressionSeries.SetDomainEpsilon(const AValue: Double);
 begin
-  FDomainScanner.Epsilon := AValue;
+  if FDomainScanner.Epsilon = abs(AValue) then exit;
+  FDomainScanner.Epsilon := abs(AValue);
+  RequestParserUpdate;
+  UpdateParentChart;
 end;
 
 procedure TExpressionSeries.SetExpression(const AValue: String);
@@ -613,7 +615,6 @@ begin
     FParser.Identifiers.AddFloatVariable(p.Name, p.Value);
   end;
 
-  FDomainScanner.Epsilon := FDomainEpsilon;
   FDomainScanner.Expression := FDomain;
   FDomainScanner.ExtractDomainExclusions(DomainExclusions);
 

@@ -327,7 +327,7 @@ type
     procedure InvalidateFitResults; virtual;
     procedure Loaded; override;
     function PrepareFitParams: boolean;
-    function PrepareIntervals: TIntervalList;
+    function PrepareIntervals: TIntervalList; virtual;
     procedure SourceChanged(ASender: TObject); override;
   public
     procedure Assign(ASource: TPersistent); override;
@@ -1316,9 +1316,9 @@ begin
   FIntervals := TIntervalList.Create;
   try
     if not (csoExtrapolateLeft in FOwner.Options) then
-      FIntervals.AddRange(NegInfinity, FX[0]);
+      FIntervals.AddRange(NegInfinity, FX[0], [ioOpenStart, ioOpenEnd]);
     if not (csoExtrapolateRight in FOwner.Options) then
-      FIntervals.AddRange(FX[High(FX)], SafeInfinity);
+      FIntervals.AddRange(FX[High(FX)], SafeInfinity, [ioOpenStart, ioOpenEnd]);
   except
     FreeAndNil(FIntervals);
     raise;
@@ -2162,8 +2162,8 @@ begin
   try
     CalcXRange(xmin, xmax);
     if DrawFitRangeOnly then begin
-      Result.AddRange(NegInfinity, xmin);
-      Result.AddRange(xmax, SafeInfinity);
+      Result.AddRange(NegInfinity, xmin, [ioOpenStart, ioOpenEnd]);
+      Result.AddRange(xmax, SafeInfinity, [ioOpenStart, ioOpenEnd]);
     end;
   except
     Result.Free;
