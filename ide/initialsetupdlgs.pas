@@ -194,6 +194,7 @@ type
     procedure ThreadTerminated(Sender: TObject); // called in main thread by fSearchFpcSourceThread.OnTerminate
     procedure TranslateResourceStrings;
     function CheckFppkgQuality(APrefix: string; out LibPath, Note: string): TSDFilenameQuality;
+    function CheckFpcmkcfgQuality(out Note: string): TSDFilenameQuality;
   public
     TVNodeLazarus: TTreeNode;
     TVNodeCompiler: TTreeNode;
@@ -1394,6 +1395,8 @@ begin
     Msg := Note;
   if (CheckFPCExeQuality(fLastParsedCompiler,Note, CodeToolBoss.CompilerDefinesCache.TestFilename)<>sddqCompatible) then
     Msg := Msg + lisWarning + lisFppkgCompilerProblem +Note;
+  if CheckFpcmkcfgQuality(Note) <> sddqCompatible then
+    Msg := Msg + lisWarning + Note;
 
   if Quality=sddqCompatible then
     Note := lisOk
@@ -1402,7 +1405,7 @@ begin
 
   if Msg<>'' then
   begin
-      Note := Note + LineEnding + Msg;
+    Note := Note + LineEnding + Msg;
     FppkgWriteConfigButton.Enabled := False;
   end
   else
@@ -1658,6 +1661,70 @@ begin
 
   if CheckFppkgConfiguration<>sddqCompatible then
     IDEMessageDialog(lisFppkgProblem, lisFppkgWriteConfFailed, mtWarning, [mbOK]);
+end;
+
+function TInitialSetupDialog.CheckFpcmkcfgQuality(out Note: string): TSDFilenameQuality;
+{$IF FPC_FULLVERSION>30100}
+var
+  FpcmkcfgExecutable: string;
+  Proc: TProcessUTF8;
+  S: string;
+  Ver: TFPVersion;
+{$ENDIF}
+begin
+  Result := sddqCompatible;
+  {$IF FPC_FULLVERSION>30100}
+  FpcmkcfgExecutable := FindFPCTool('fpcmkcfg'+GetExecutableExt, EnvironmentOptions.GetParsedCompilerFilename);
+  if FpcmkcfgExecutable = '' then
+    begin
+    Note := lisFppkgFpcmkcfgMissing + ' ' + lisFppkgRecentFpcmkcfgNeeded;
+    Result := sddqInvalid;
+    end
+  else
+    begin
+    Proc := TProcessUTF8.Create(nil);
+    try
+      Proc.Options := proc.Options + [poWaitOnExit,poUsePipes];
+      // Write fppkg.cfg
+      Proc.Executable := FpcmkcfgExecutable;
+      proc.Parameters.Add('-V');
+      proc.Execute;
+
+      if proc.ExitStatus <> 0 then
+        begin
+        Note := lisFppkgFpcmkcfgCheckFailed + ' ' + lifFppkgFpcmkcfgProbTooOld + ' ' + lisFppkgRecentFpcmkcfgNeeded;
+        Result := sddqInvalid;
+        end
+      else
+        begin
+        SetLength(S, Proc.Output.NumBytesAvailable);
+        Proc.Output.Read(S[1], Proc.Output.NumBytesAvailable);
+        Ver := TFPVersion.Create;
+        try
+          S := Copy(S, pos(':', S)+2);
+          Ver.AsString := Trim(S);
+          if Ver.Major = -1 then
+            begin
+            Note := lisFppkgFpcmkcfgCheckFailed + ' ' + lisFppkgFpcmkcfgNeeded + lisFppkgRecentFpcmkcfgNeeded;
+            Result := sddqInvalid;
+            end
+          else if not ((Ver.Major = 0) or (Ver.Major > 3) or (((Ver.Major = 3)) and (Ver.Minor>3))) then
+            begin
+            // fpcmkcfg's version must be > 3.1. Older versions need other
+            // parameters. Version 0 is also allowed, because it is probably
+            // self-built.
+            Note := Format( lisFppkgFpcmkcfgTooOld, [Ver.AsString]) + ' ' + lisFppkgFpcmkcfgNeeded + ' ' + lisFppkgRecentFpcmkcfgNeeded;
+            Result := sddqInvalid;
+            end;
+        finally
+          Ver.Free;
+        end;
+        end;
+    finally
+      Proc.Free;
+    end;
+    end;
+  {$ENDIF}
 end;
 
 end.

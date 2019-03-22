@@ -1054,6 +1054,16 @@ resourcestring
     'will have to fix the configuration manually or reinstall Free Pascal.';
   lisNoFppkgPrefix = 'empty Free Pascal compiler prefix.';
   lisFppkgCreateFileFailed = 'Failed to generate the configuration file "%s".';
+  lisFppkgRecentFpcmkcfgNeeded = 'Make sure a recent version is installed and ' +
+    'available in the path or alongside the compiler-executable.';
+  lisFppkgFpcmkcfgCheckFailed = 'Failed to retrieve the version of the fpcmkcfg ' +
+    'configuration tool.';
+  lisFppkgFpcmkcfgNeeded = 'An up-to-date version is needed to create the ' +
+    'configuration files.';
+  lisFppkgFpcmkcfgTooOld = 'The fpcmkcfg configuration tool it too old [%s].';
+  lifFppkgFpcmkcfgProbTooOld = 'It is probably too old to create the configuration files.';
+  lisFppkgFpcmkcfgMissing = 'Could not find the fpcmkcfg configuration tool, ' +
+    'which is needed to create the configuration files.';
 
   // file dialogs
   lisOpenFile = 'Open File';
