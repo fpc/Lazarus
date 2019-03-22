@@ -5057,12 +5057,8 @@ begin
       ShowNextPage(1);
   end;
 
-  //Allow combobox navigation while it has focus
-  if not Handled then
-    Handled := AvailPersistentComboBox.Focused;
-
   //CTRL-ArrowDown will dropdown the component combobox
-  if (not Handled) and (Key=VK_DOWN) and (ssCtrl in Shift) then
+  if (not Handled) and ((Key=VK_DOWN) or (Key=VK_UP)) and (ssCtrl in Shift) then
   begin
     Handled := true;
     if AvailPersistentComboBox.Canfocus then
