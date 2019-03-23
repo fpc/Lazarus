@@ -39,7 +39,11 @@ type
   TBeforeDrawBarEvent = procedure (
     ASender: TBarSeries; ACanvas: TCanvas; const ARect: TRect;
     APointIndex, AStackIndex: Integer; var ADoDefaultDrawing: Boolean
-  ) of object;
+  ) of object; deprecated;
+
+  TCustomDrawBarEvent = procedure (
+    ASeries: TBarSeries; ADrawer: IChartDrawer; const ARect: TRect;
+    APointIndex, AStackIndex: Integer) of object;
 
   { TBarSeries }
 
@@ -51,6 +55,7 @@ type
     FBarWidthPercent: Integer;
     FBarWidthStyle: TBarWidthStyle;
     FOnBeforeDrawBar: TBeforeDrawBarEvent;
+    FOnCustomDrawBar: TCustomDrawBarEvent;
     FUseZeroLevel: Boolean;
     FZeroLevel: Double;
 
@@ -61,6 +66,7 @@ type
     procedure SetBarWidthPercent(Value: Integer);
     procedure SetBarWidthStyle(AValue: TBarWidthStyle);
     procedure SetOnBeforeDrawBar(AValue: TBeforeDrawBarEvent);
+    procedure SetOnCustomDrawBar(AValue: TCustomDrawBarEvent);
     procedure SetSeriesColor(AValue: TColor);
     procedure SetUseZeroLevel(AValue: Boolean);
     procedure SetZeroLevel(AValue: Double);
@@ -113,7 +119,9 @@ type
       read FZeroLevel write SetZeroLevel stored IsZeroLevelStored;
   published
     property OnBeforeDrawBar: TBeforeDrawBarEvent
-      read FOnBeforeDrawBar write SetOnBeforeDrawBar;
+      read FOnBeforeDrawBar write SetOnBeforeDrawBar; deprecated 'Use OnCustomDrawBar instead';
+    property OnCustomDrawBar: TCustomDrawBarEvent
+      read FOnCustomDrawBar write SetOnCustomDrawBar;
   end;
 
 
@@ -138,7 +146,7 @@ type
     property StartAngle;
     property Source;
     property ViewAngle;
-    property OnDrawPie;
+    property OnCustomDrawPie;
   end;
 
   TConnectType = (ctLine, ctStepXY, ctStepYX);
@@ -1154,6 +1162,11 @@ var
       ADrawer.SetPenParams(psSolid, ADrawer.BrushColor);
     end;
 
+    if Assigned(FOnCustomDrawBar) then begin
+      FOnCustomDrawBar(Self, ADrawer, AR, pointIndex, stackIndex);
+      exit;
+    end;
+
     if Supports(ADrawer, IChartTCanvasDrawer, ic) and Assigned(OnBeforeDrawBar) then
       OnBeforeDrawBar(Self, ic.Canvas, AR, pointIndex, stackIndex, defaultDrawing);
     if not defaultDrawing then exit;
@@ -1442,6 +1455,13 @@ procedure TBarSeries.SetOnBeforeDrawBar(AValue: TBeforeDrawBarEvent);
 begin
   if TMethod(FOnBeforeDrawBar) = TMethod(AValue) then exit;
   FOnBeforeDrawBar := AValue;
+  UpdateParentChart;
+end;
+
+procedure TBarSeries.SetOnCustomDrawBar(AValue: TCustomDrawBarEvent);
+begin
+  if TMethod(FOnCustomDrawBar) = TMethod(AValue) then exit;
+  FOnCustomDrawBar := AValue;
   UpdateParentChart;
 end;
 

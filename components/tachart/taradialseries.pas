@@ -66,7 +66,7 @@ type
   TSliceArray = array of TPieSlice;
   TPieOrientation = (poNormal, poHorizontal, poVertical);
   TSlicePart = (spTop, spOuterArcSide, spInnerArcSide, spStartSide, spEndSide);
-  TDrawPieEvent = procedure(ASeries: TCustomPieSeries; ADrawer: IChartDrawer;
+  TCustomDrawPieEvent = procedure(ASeries: TCustomPieSeries; ADrawer: IChartDrawer;
     ASlice: TPieSlice; APart: TSlicePart; const APoints: TPointArray) of object;
 
   TCustomPieSeries = class(TChartSeries)
@@ -81,12 +81,11 @@ type
     FInnerRadiusPercent: Integer;
     FSlices: array of TPieSlice;
     FStartAngle: Integer;
-    FOnDrawPie: TDrawPieEvent;
-  private
     FEdgePen: TPen;
     FExploded: Boolean;
     FFixedRadius: TChartDistance;
     FRotateLabels: Boolean;
+    FOnCustomDrawPie: TCustomDrawPieEvent;
     function FixAspectRatio(P: TPoint): TPoint;
     function GetViewAngle: Integer;
     procedure Measure(ADrawer: IChartDrawer);
@@ -97,7 +96,7 @@ type
     procedure SetMarkDistancePercent(AValue: Boolean);
     procedure SetMarkPositionCentered(AValue: Boolean);
     procedure SetMarkPositions(AValue: TPieMarkPositions);
-    procedure SetOnDrawPie(AValue: TDrawPieEvent);
+    procedure SetOnCustomDrawPie(AValue: TCustomDrawPieEvent);
     procedure SetOrientation(AValue: TPieOrientation);
     procedure SetRotateLabels(AValue: Boolean);
     procedure SetStartAngle(AValue: Integer);
@@ -118,8 +117,8 @@ type
       read FStartAngle write SetStartAngle default 0;
     property ViewAngle: Integer
       read GetViewAngle write SetViewAngle default 60;
-    property OnDrawPie: TDrawPieEvent
-      read FOnDrawPie write SetOnDrawPie;
+    property OnCustomDrawPie: TCustomDrawPieEvent
+      read FOnCustomDrawPie write SetOnCustomDrawPie;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -562,10 +561,10 @@ var
     clr := GetDepthColor(SliceColor(ASlice.FOrigIndex));
     ADrawer.SetBrushParams(bsSolid, clr);
     ADrawer.SetPenParams(psSolid, clr);
-    if Assigned(FOnDrawPie) then
+    if Assigned(FOnCustomDrawPie) then
       case AInside of
-        false: FOnDrawPie(Self, ADrawer, ASlice, spOuterArcSide, p);
-        true: FOnDrawPie(self, ADrawer, ASlice, spInnerArcSide, p);
+        false: FOnCustomDrawPie(Self, ADrawer, ASlice, spOuterArcSide, p);
+        true: FOnCustomDrawPie(self, ADrawer, ASlice, spInnerArcSide, p);
       end
     else
       ADrawer.Polygon(p, 0, Length(p));
@@ -589,13 +588,13 @@ var
     P1 := ASlice.FBase + FixAspectRatio(RotatePointX(innerRadius, -Angle));
     P2 := ASlice.FBase + FixAspectRatio(RotatePointX(FRadius, -Angle));
     ofs := Displacement;
-    if Assigned(FOnDrawPie) then begin
+    if Assigned(FOnCustomDrawPie) then begin
       SetLength(p, 4);
       p[0] := P1;
       p[1] := P1 + ofs;
       p[2] := P2 + ofs;
       P[3] := P2;
-      FOnDrawPie(Self, ADrawer, ASlice, APart, p)
+      FOnCustomDrawPie(Self, ADrawer, ASlice, APart, p)
     end else
       ADrawer.Polygon([P1, P1 + ofs, P2 + ofs, P2], 0, 4);
   end;
@@ -619,8 +618,8 @@ var
     p: TPointArray;
   begin
     CalcSlicePoints(ASlice, p);
-    if Assigned(FOnDrawPie) then
-      FOnDrawPie(Self, ADrawer, ASlice, spTop, p)
+    if Assigned(FOnCustomDrawPie) then
+      FOnCustomDrawPie(Self, ADrawer, ASlice, spTop, p)
     else
       ADrawer.Polygon(p, 0, Length(p));
   end;
@@ -865,10 +864,10 @@ begin
   UpdateParentChart;
 end;
 
-procedure TCustomPieSeries.SetOnDrawPie(AValue: TDrawPieEvent);
+procedure TCustomPieSeries.SetOnCustomDrawPie(AValue: TCustomDrawPieEvent);
 begin
-  if TMethod(FOnDrawPie) = TMethod(AValue) then exit;
-  FOnDrawPie := AValue;
+  if TMethod(FOnCustomDrawPie) = TMethod(AValue) then exit;
+  FOnCustomDrawPie := AValue;
   UpdateParentChart;
 end;
 

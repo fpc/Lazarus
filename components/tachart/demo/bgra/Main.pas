@@ -7,7 +7,7 @@ interface
 uses
   Classes, ComCtrls, ExtCtrls, StdCtrls, SysUtils, FileUtil, Forms, Controls,
   Graphics, Dialogs, TAGraph, TAGUIConnectorBGRA, TASeries, TASources,
-  TAAnimatedSource, TACustomSource, BGRASliceScaling;
+  TAAnimatedSource, TACustomSource, BGRASliceScaling, Types, TADrawUtils;
 
 type
 
@@ -42,6 +42,9 @@ type
     procedure cbAntialiasingChange(Sender: TObject);
     procedure cbPieChange(Sender: TObject);
     procedure cbUseConnectorChange(Sender: TObject);
+    procedure chBarEffectsBarSeries1CustomDrawBar(ASeries: TBarSeries;
+      ADrawer: IChartDrawer; const ARect: TREct; APointIndex,
+      AStackIndex: Integer);
     procedure chSimpleAfterPaint(ASender: TChart);
     procedure chBarEffectsBarSeries1BeforeDrawBar(ASender: TBarSeries;
       ACanvas: TCanvas; const ARect: TRect; APointIndex, AStackIndex: Integer;
@@ -68,7 +71,7 @@ implementation
 
 uses
   Math, BGRABitmap, BGRABitmapTypes, BGRAGradients,
-  TABGRAUtils, TAChartUtils, TADrawerBGRA, TADrawerCanvas, TADrawUtils,
+  TABGRAUtils, TAChartUtils, TADrawerBGRA, TADrawerCanvas,
   TAGeometry;
 
 { TForm1 }
@@ -138,6 +141,41 @@ begin
     end;
     1: DrawChocolateBar(ASender, ACanvas, ARect, APointIndex, false);
     2: DrawPhong3DBar(ASender, ACanvas, ARect, APointIndex);
+  end;
+end;
+
+procedure TForm1.chBarEffectsBarSeries1CustomDrawBar(ASeries: TBarSeries;
+  ADrawer: IChartDrawer; const ARect: TRect; APointIndex, AStackIndex: Integer);
+var
+  temp, stretched: TBGRABitmap;
+  sz: TPoint;
+  ic: IChartTCanvasDrawer;
+begin
+  Unused(ASeries);
+  Unused(APointIndex, AStackIndex);
+
+  if not Supports(ADrawer, IChartTCanvasDrawer, ic) then
+    raise Exception.Create('This program require a canvas drawer.');
+
+  sz := ARect.BottomRight - ARect.TopLeft;
+  case rgStyle.ItemIndex of
+    0: begin
+      temp := TBGRABitmap.Create(
+        FSliceScaling.BitmapWidth,
+        Round(FSliceScaling.BitmapWidth * sz.Y / sz.X));
+      stretched := nil;
+      try
+        FSliceScaling.Draw(temp, 0, 0, temp.Width, temp.Height);
+        temp.ResampleFilter := rfLinear;
+        stretched := temp.Resample(sz.x, sz.Y, rmFineResample) as TBGRABitmap;
+        stretched.Draw(ic.Canvas, ARect, False);
+      finally
+        temp.Free;
+        stretched.Free;
+      end;
+    end;
+    1: DrawChocolateBar(ASeries, ic.Canvas, ARect, APointIndex, false);
+    2: DrawPhong3DBar(ASeries, ic.Canvas, ARect, APointIndex);
   end;
 end;
 
