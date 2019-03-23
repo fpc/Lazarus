@@ -105,7 +105,6 @@ type
     function SliceExploded(ASlice: TPieSlice): Boolean; inline;
     function TryRadius(ADrawer: IChartDrawer): TRect;
   protected
-    function CalcInnerRadius: Integer; inline;
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     procedure SortSlices(out ASlices: TSliceArray);
     property InnerRadiusPercent: Integer
@@ -127,6 +126,7 @@ type
   public
     function AddPie(AValue: Double; AText: String; AColor: TColor): Integer;
     procedure Assign(ASource: TPersistent); override;
+    function CalcInnerRadius: Integer; inline;
     procedure Draw(ADrawer: IChartDrawer); override;
     function FindContainingSlice(const APoint: TPoint): Integer;
     function GetNearestPoint(const AParams: TNearestPointParams;
