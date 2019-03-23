@@ -4616,9 +4616,10 @@ begin
       SaveDialog.InitialDir:=APath;
 
     repeat
+      Result:=mrCancel;
       // show save dialog
       if (not SaveDialog.Execute) or (ExtractFileName(SaveDialog.Filename)='') then
-        exit(mrCancel);  // user cancels
+        exit;  // user cancels
       NewFilename:=ExpandFileNameUTF8(SaveDialog.Filename);
 
       // check file extension
@@ -7586,11 +7587,8 @@ begin
         NewProgramName:='';     // the pascal program identifier
         NewProgramFN:='';       // the program source filename
 
-        if not SaveDialog.Execute then begin
-          // user cancels
-          Result:=mrCancel;
-          exit;
-        end;
+        if not SaveDialog.Execute then
+          exit;   // user cancels
         AFilename:=ExpandFileNameUTF8(SaveDialog.FileName);
         Assert(FilenameIsAbsolute(AFilename),'ShowSaveProjectAsDialog: buggy ExpandFileNameUTF8');
 
