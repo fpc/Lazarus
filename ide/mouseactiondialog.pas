@@ -49,7 +49,7 @@ type
     procedure PaintBox1MouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer;
       {%H-}MousePos: TPoint; var {%H-}Handled: Boolean);
     procedure PaintBox1MouseWheelHorz(Sender: TObject; Shift: TShiftState;
-      WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+      WheelDelta: Integer; {%H-}MousePos: TPoint; var {%H-}Handled: Boolean);
   private
     FKeyMap: TKeyCommandRelationList;
     procedure AddMouseCmd(const S: string);

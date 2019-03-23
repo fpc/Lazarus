@@ -1673,6 +1673,7 @@ var
 {$ENDIF}
 begin
   Result := sddqCompatible;
+  Note:='';
   {$IF FPC_FULLVERSION>30100}
   FpcmkcfgExecutable := FindFPCTool('fpcmkcfg'+GetExecutableExt, EnvironmentOptions.GetParsedCompilerFilename);
   if FpcmkcfgExecutable = '' then
