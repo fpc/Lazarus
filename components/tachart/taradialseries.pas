@@ -126,6 +126,7 @@ type
   public
     function AddPie(AValue: Double; AText: String; AColor: TColor): Integer;
     procedure Assign(ASource: TPersistent); override;
+    function CalcBorderPoint(ASlice: TPieSlice; ARadius, AAngle: Double): TPoint; inline;
     function CalcInnerRadius: Integer; inline;
     procedure Draw(ADrawer: IChartDrawer); override;
     function FindContainingSlice(const APoint: TPoint): Integer;
@@ -318,6 +319,12 @@ begin
   inherited Assign(ASource);
 end;
 
+function TCustomPieSeries.CalcBorderPoint(ASlice: TPieSlice;
+  ARadius, AAngle: Double): TPoint;
+begin
+  result := ASlice.FBase + FixAspectRatio(RotatePointX(ARadius, -AAngle));
+end;
+
 function TCustomPieSeries.CalcInnerRadius: Integer;
 begin
   Result := Round(0.01 * FRadius * FInnerRadiusPercent);
@@ -431,7 +438,7 @@ var
     end;
     for i := 0 to n - 1 do begin
       a := WeightedAverage(Angle1, Angle2, i / (n - 1));
-      APoints[j] := ASlice.FBase + FixAspectRatio(RotatePointX(ARadius, -a));
+      APoints[j] := CalcBorderpoint(ASlice, ARadius, a);
       inc(j, dj);
     end;
   end;
