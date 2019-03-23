@@ -1209,17 +1209,15 @@ begin
       if lowercase(NewPkgName) <> NewPkgName then
       begin
         LowerFilename:=ExtractFilePath(NewFilename)+lowercase(ExtractFileName(NewFilename));
-        if EnvironmentOptions.CharcaseFileAction = ccfaAsk then
-        begin
+        case EnvironmentOptions.CharcaseFileAction of
+        ccfaAsk:
           if IDEMessageDialog(lisPkgMangRenameFileLowercase,
             Format(lisPkgMangShouldTheFileRenamedLowercaseTo,[LineEnding, LowerFilename]),
             mtConfirmation,[mbYes,mbNo])=mrYes
           then
             NewFileName:=LowerFilename;
-        end
-        else
-        begin
-          if EnvironmentOptions.CharcaseFileAction = ccfaAutoRename then NewFileName:=LowerFilename;
+        ccfaAutoRename: NewFileName:=LowerFilename;
+        ccfaIgnore: ;
         end;
       end;
 

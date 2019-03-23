@@ -4359,8 +4359,7 @@ begin
     if NewUnitName='' then
       NewUnitName:=ExtractFileNameOnly(NewFilename);
     if EnvironmentOptions.CharcaseFileAction in [ccfaAsk, ccfaAutoRename] then
-      NewFilename:=ExtractFilePath(NewFilename)
-                   +lowercase(ExtractFileName(NewFilename));
+      NewFilename:=ExtractFilePath(NewFilename)+lowercase(ExtractFileName(NewFilename));
   end;
 
   NewCodeBuffer:=CodeToolBoss.CreateFile(NewFilename);
@@ -4682,7 +4681,8 @@ begin
   if FilenameIsPascalUnit(NewFilename) then begin
     AText:=ExtractFileName(NewFilename);
     // check if file should be auto renamed
-    if EnvironmentOptions.CharcaseFileAction = ccfaAsk then begin
+    case EnvironmentOptions.CharcaseFileAction of
+    ccfaAsk:
       if LowerCase(AText)<>AText then begin
         Result:=IDEQuestionDialogAb(lisRenameFile,
             Format(lisThisLooksLikeAPascalFileItIsRecommendedToUseLowerC,
@@ -4696,9 +4696,9 @@ begin
         end;
         Result:=mrOk;
       end;
-    end else begin
-      if EnvironmentOptions.CharcaseFileAction = ccfaAutoRename then
-        NewFileName:=ExtractFilePath(NewFilename)+LowerCase(AText);
+    ccfaAutoRename:
+      NewFileName:=ExtractFilePath(NewFilename)+LowerCase(AText);
+    ccfaIgnore: ;
     end;
   end;
 
