@@ -2609,6 +2609,7 @@ begin
   for i := 0 to AnUnitInfo.OpenEditorInfoCount-1 do begin
     Result:=SaveEditorFile(AnUnitInfo.OpenEditorInfo[i].EditorComponent, Flags);
     if Result <> mrOK then Break;
+    Flags:=Flags-[sfSaveAs,sfCheckAmbiguousFiles];
   end;
 end;
 
