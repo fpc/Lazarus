@@ -62,9 +62,12 @@ type
 
   { TCustomPieSeries }
 
+  TCustomPieSeries = class;
   TSliceArray = array of TPieSlice;
   TPieOrientation = (poNormal, poHorizontal, poVertical);
-//  TOnBeforeDrawPie = procedure
+  TSlicePart = (spTop, spOuterArcSide, spInnerArcSide, spStartSide, spEndSide);
+  TDrawPieEvent = procedure(ASeries: TCustomPieSeries; ADrawer: IChartDrawer;
+    ASlice: TPieSlice; APart: TSlicePart; const APoints: TPointArray) of object;
 
   TCustomPieSeries = class(TChartSeries)
   private
@@ -78,6 +81,7 @@ type
     FInnerRadiusPercent: Integer;
     FSlices: array of TPieSlice;
     FStartAngle: Integer;
+    FOnDrawPie: TDrawPieEvent;
   private
     FEdgePen: TPen;
     FExploded: Boolean;
@@ -93,11 +97,11 @@ type
     procedure SetMarkDistancePercent(AValue: Boolean);
     procedure SetMarkPositionCentered(AValue: Boolean);
     procedure SetMarkPositions(AValue: TPieMarkPositions);
+    procedure SetOnDrawPie(AValue: TDrawPieEvent);
     procedure SetOrientation(AValue: TPieOrientation);
     procedure SetRotateLabels(AValue: Boolean);
     procedure SetStartAngle(AValue: Integer);
     procedure SetViewAngle(AValue: Integer);
-    function SliceColor(AIndex: Integer): TColor;
     function SliceExploded(ASlice: TPieSlice): Boolean; inline;
     function TryRadius(ADrawer: IChartDrawer): TRect;
   protected
@@ -115,6 +119,8 @@ type
       read FStartAngle write SetStartAngle default 0;
     property ViewAngle: Integer
       read GetViewAngle write SetViewAngle default 60;
+    property OnDrawPie: TDrawPieEvent
+      read FOnDrawPie write SetOnDrawPie;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -127,6 +133,7 @@ type
       out AResults: TNearestPointResults): Boolean; override;
     procedure MovePointEx(var AIndex: Integer; AXIndex, AYIndex: Integer;
       const ANewPos: TDoublePoint); override;
+    function SliceColor(AIndex: Integer): TColor;
 
     property EdgePen: TPen read FEdgePen write SetEdgePen;
     property Exploded: Boolean read FExploded write SetExploded default false;
@@ -548,7 +555,13 @@ var
     clr := GetDepthColor(SliceColor(ASlice.FOrigIndex));
     ADrawer.SetBrushParams(bsSolid, clr);
     ADrawer.SetPenParams(psSolid, clr);
-    ADrawer.Polygon(p, 0, Length(p));
+    if Assigned(FOnDrawPie) then
+      case AInside of
+        false: FOnDrawPie(Self, ADrawer, ASlice, spOuterArcSide, p);
+        true: FOnDrawPie(self, ADrawer, ASlice, spInnerArcSide, p);
+      end
+    else
+      ADrawer.Polygon(p, 0, Length(p));
     // then draw the border separately to suppress the lines of divided slices.
     ADrawer.SetPen(EdgePen);
     case ASlice.FFlags of
@@ -559,29 +572,38 @@ var
   end;
 
   { Draws the radial edge of a 3D slice }
-  procedure DrawEdge3D(ASlice: TPieSlice; Angle: Double);
+  procedure DrawEdge3D(ASlice: TPieSlice; Angle: Double; APart: TSlicePart);
   var
     P1, P2, ofs: TPoint;
+    p: TPointArray;
   begin
     ADrawer.SetBrushParams(
       bsSolid, GetDepthColor(SliceColor(ASlice.FOrigIndex)));
     P1 := ASlice.FBase + FixAspectRatio(RotatePointX(innerRadius, -Angle));
     P2 := ASlice.FBase + FixAspectRatio(RotatePointX(FRadius, -Angle));
     ofs := Displacement;
-    ADrawer.Polygon([P1, P1 + ofs, P2 + ofs, P2], 0, 4);
+    if Assigned(FOnDrawPie) then begin
+      SetLength(p, 4);
+      p[0] := P1;
+      p[1] := P1 + ofs;
+      p[2] := P2 + ofs;
+      P[3] := P2;
+      FOnDrawPie(Self, ADrawer, ASlice, APart, p)
+    end else
+      ADrawer.Polygon([P1, P1 + ofs, P2 + ofs, P2], 0, 4);
   end;
 
   { Draws the 3D parts of the slice: the radial edges and the arc }
   procedure DrawSlice3D(ASlice: TPieSlice);
   begin
     if EndEdgeVisible(ASlice) then
-      DrawEdge3D(ASlice, ASlice.FNextAngle);
+      DrawEdge3D(ASlice, ASlice.FNextAngle, spEndSide);
     if ASlice.FVisible then begin
       DrawArc3D(ASlice, false);
       DrawArc3D(ASlice, true);
     end;
     if StartEdgeVisible(ASlice) then
-      DrawEdge3D(ASlice, ASlice.FPrevAngle);
+      DrawEdge3D(ASlice, ASlice.FPrevAngle, spStartSide);
   end;
 
   { Draws the top part of the slice which is visible also in 2D mode. }
@@ -590,7 +612,10 @@ var
     p: TPointArray;
   begin
     CalcSlicePoints(ASlice, p);
-    ADrawer.Polygon(p, 0, Length(p));
+    if Assigned(FOnDrawPie) then
+      FOnDrawPie(Self, ADrawer, ASlice, spTop, p)
+    else
+      ADrawer.Polygon(p, 0, Length(p));
   end;
 
 var
@@ -830,6 +855,13 @@ procedure TCustomPieSeries.SetMarkDistancePercent(AValue: Boolean);
 begin
   if FMarkDistancePercent = AValue then exit;
   FMarkDistancePercent := AVAlue;
+  UpdateParentChart;
+end;
+
+procedure TCustomPieSeries.SetOnDrawPie(AValue: TDrawPieEvent);
+begin
+  if TMethod(FOnDrawPie) = TMethod(AValue) then exit;
+  FOnDrawPie := AValue;
   UpdateParentChart;
 end;
 

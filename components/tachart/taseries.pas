@@ -138,6 +138,7 @@ type
     property StartAngle;
     property Source;
     property ViewAngle;
+    property OnDrawPie;
   end;
 
   TConnectType = (ctLine, ctStepXY, ctStepYX);
