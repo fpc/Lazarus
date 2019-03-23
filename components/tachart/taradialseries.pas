@@ -47,10 +47,11 @@ type
 
   TPieSlice = object
     FBase: TPoint;
+    FFlags: Integer;  // 1: 1st part, 2: 2nd part of diviced slice
     FLabel: TLabelParams;
     FOrigIndex: Integer;
-    FPrevAngle, FNextAngle: Double;   // in CCW direction
-    // FNextAngle may become less than FPrevAngle when crossing 360°
+    FPrevAngle, FNextAngle: Double; // in CCW direction
+                                    // FNextAngle may become < FPrevAngle when crossing 360°
     FVisible: Boolean;
     function Angle: Double; inline;
     function CenterAngle: Double; inline;
@@ -63,6 +64,7 @@ type
 
   TSliceArray = array of TPieSlice;
   TPieOrientation = (poNormal, poHorizontal, poVertical);
+//  TOnBeforeDrawPie = procedure
 
   TCustomPieSeries = class(TChartSeries)
   private
@@ -397,6 +399,56 @@ var
     end;
   end;
 
+  procedure CalcArcPoints(ASlice: TPieSlice; Angle1, Angle2, ARadius: Double;
+    var APoints: TPointArray);
+  var
+    a: Double;
+    i, j, dj, n: Integer;
+    isInnerArc: Boolean;
+  begin
+    isInnerArc := Length(APoints) > 0;
+    if (innerRadius = 0) and isInnerArc then begin
+      SetLength(APoints, Length(APoints) + 1);
+      APoints[High(APoints)] := ASlice.FBase;
+      exit;
+    end;
+
+    n := Max(Round(TWO_PI * (Angle2 - Angle1) * ARadius / STEP), 2);
+    SetLength(APoints, Length(APoints) + n);
+    if isInnerArc then begin
+      j := Length(APoints) - 1;
+      dj := -1;
+    end else begin
+      j := 0;
+      dj := 1;
+    end;
+    for i := 0 to n - 1 do begin
+      a := WeightedAverage(Angle1, Angle2, i / (n - 1));
+      APoints[j] := ASlice.FBase + FixAspectRatio(RotatePointX(ARadius, -a));
+      inc(j, dj);
+    end;
+  end;
+
+  procedure CalcSlicePoints(ASlice: TPieSlice; out APoints: TPointArray);
+  var
+    next_angle: Double;
+  begin
+    SetLength(APoints, 0);
+    next_angle := ASlice.FixedNextAngle;
+    CalcArcPoints(ASlice, ASlice.FPrevAngle, next_angle, FRadius, APoints);
+    CalcArcPoints(ASlice, ASlice.FPrevAngle, next_angle, innerRadius, APoints);
+  end;
+
+  function Displacement: TPoint;
+  begin
+    case FOrientation of
+      poNormal: Result := Point(scaled_depth, -scaled_depth);
+      poHorizontal: Result := Point(0, scaled_depth);
+      poVertical: Result := Point(scaled_depth, 0);
+    end;
+  end;
+
+  { Draws the arc of a 3D slice }
   procedure DrawArc3D(ASlice: TPieSlice; AInside: Boolean);
   var
     i, numSteps: Integer;
@@ -412,7 +464,7 @@ var
       exit;
 
     if ASlice.Angle >= pi then
-      isVisible := true
+      isVisible := true        // this case should not happen with drawslices
     else
     if AInside then
       case FOrientation of
@@ -482,125 +534,63 @@ var
     end;
     if angle2 < angle1 then angle2 += TWO_PI;
 
-    numSteps := Max(Round(TWO_PI * (angle2 - angle1) * r / STEP), 2);
-    SetLength(p, 2 * numSteps + 1);
-    case FOrientation of
-      poNormal: ofs := Point(scaled_depth, -scaled_depth);
-      poHorizontal: ofs := Point(0, scaled_depth);
-      poVertical: ofs := Point(scaled_depth, 0);
-    end;
-    for i := 0 to numSteps - 1 do begin
-      a := WeightedAverage(angle1, angle2, i / (numSteps - 1));
-      p[i] := ASlice.FBase + FixAspectRatio(RotatePointX(r, -a));
+    SetLength(p, 0);
+    CalcArcPoints(ASlice, angle1, angle2, r, p);
+    numSteps := Length(p);
+    ofs := Displacement;
+
+    SetLength(p, numSteps * 2 + 1);
+    for i:=0 to numSteps - 1 do
       p[High(p) - i - 1] := p[i] + ofs;
-    end;
     p[High(p)] := p[0];
+
+    // Fill the polygon first...
     clr := GetDepthColor(SliceColor(ASlice.FOrigIndex));
     ADrawer.SetBrushParams(bsSolid, clr);
     ADrawer.SetPenParams(psSolid, clr);
     ADrawer.Polygon(p, 0, Length(p));
+    // then draw the border separately to suppress the lines of divided slices.
     ADrawer.SetPen(EdgePen);
-    ADrawer.PolyLine(p, numSteps-1, numSteps+2);
-  end;
-
-  procedure DrawVisibleArc3D(ASlice: TPieSlice);
-  begin
-    if ASlice.FVisible then begin
-      DrawArc3D(ASlice, false);
-      DrawArc3D(ASlice, true);
+    case ASlice.FFlags of
+      0: ADrawer.PolyLine(p, numSteps-1, numSteps+2);  // not divided
+      1: ADrawer.Polyline(p, numSteps, numSteps);      // 1st part of divided slice
+      2: ADrawer.PolyLine(p, numSteps-1, numsteps+1);  // 2nd part of divided slice
     end;
   end;
 
-  procedure DrawRing(ASlice: TPieSlice);
-  var
-    i: Integer;
-    a, angle1, angle2: Double;
-    ni, no: Integer;
-    p: Array of TPoint;
-  begin
-    angle1 := ASlice.FPrevAngle;
-    angle2 := ASlice.FixedNextAngle;
-    ni := Max(Round(TWO_PI * (angle2 - angle1) * innerRadius / STEP), 2);
-    no := Max(Round(TWO_PI * (angle2 - angle1) * FRadius / STEP), 2);
-    SetLength(p, ni + no);
-    for i := 0 to no - 1 do begin
-      a := WeightedAverage(angle1, angle2, i / (no - 1));
-      p[i] := ASlice.FBase + FixAspectRatio(RotatePointX(FRadius, -a));
-    end;
-    for i := 0 to ni - 1 do begin
-      a := WeightedAverage(angle1, angle2, i / (ni - 1));
-      p[no + ni - 1 - i] := ASlice.FBase + FixAspectRatio(RotatePointX(innerRadius , -a));
-    end;
-    ADrawer.Polygon(p, 0, Length(p));
-  end;
-
+  { Draws the radial edge of a 3D slice }
   procedure DrawEdge3D(ASlice: TPieSlice; Angle: Double);
   var
-    P1, P2, d: TPoint;
+    P1, P2, ofs: TPoint;
   begin
     ADrawer.SetBrushParams(
       bsSolid, GetDepthColor(SliceColor(ASlice.FOrigIndex)));
     P1 := ASlice.FBase + FixAspectRatio(RotatePointX(innerRadius, -Angle));
     P2 := ASlice.FBase + FixAspectRatio(RotatePointX(FRadius, -Angle));
-    case FOrientation of
-      poNormal:
-        ADrawer.DrawLineDepth(P1, P2, scaled_depth);
-      poHorizontal:
-        begin
-          d := Point(0, scaled_depth);
-          ADrawer.Polygon([P1, P1 + d, P2 + d, P2], 0, 4);
-        end;
-      poVertical:
-        begin
-          d := Point(scaled_depth, 0);
-          ADrawer.Polygon([P1, P1 + d, P2 + d, P2], 0, 4);
-        end;
-    end;
+    ofs := Displacement;
+    ADrawer.Polygon([P1, P1 + ofs, P2 + ofs, P2], 0, 4);
   end;
 
-  procedure DrawStartEdge3D(ASlice: TPieSlice);
+  { Draws the 3D parts of the slice: the radial edges and the arc }
+  procedure DrawSlice3D(ASlice: TPieSlice);
   begin
+    if EndEdgeVisible(ASlice) then
+      DrawEdge3D(ASlice, ASlice.FNextAngle);
+    if ASlice.FVisible then begin
+      DrawArc3D(ASlice, false);
+      DrawArc3D(ASlice, true);
+    end;
     if StartEdgeVisible(ASlice) then
       DrawEdge3D(ASlice, ASlice.FPrevAngle);
   end;
 
-  procedure DrawEndEdge3D(ASlice: TPieSlice);
-  begin
-    if EndEdgeVisible(ASlice) then
-      DrawEdge3D(ASlice, ASlice.FNextAngle);
-  end;
-
-  procedure FixJoin(ASlice: TPieSlice);
+  { Draws the top part of the slice which is visible also in 2D mode. }
+  procedure DrawSlice(ASlice: TPieSlice);
   var
-    P1, P2: TPoint;
-    angle: Double;
-    r: Integer;
-    d: TPoint;
+    p: TPointArray;
   begin
-    if not ASlice.FVisible then
-      exit;
-    Angle := (ASlice.FPrevAngle + ASlice.FixedNextAngle) * 0.5;
-    case FOrientation of
-      poNormal:
-        begin
-          if not InRange(angle, PI_3_4, PI_7_4) then r := FRadius else r := CalcInnerRadius;
-          d := Point(scaled_depth, -scaled_depth);
-        end;
-      poHorizontal:
-        begin
-          if angle > pi then r := FRadius else r := CalcInnerRadius;
-          d := Point(0, scaled_depth);
-        end;
-      poVertical:
-        begin
-          if not InRange(angle, PI_1_2, PI_3_2) then r := FRadius else r := CalcInnerRadius;
-          d := Point(scaled_depth, 0);
-        end;
-    end;
-    P1 := ASlice.FBase + FixAspectRatio(RotatePointX(r, -Angle));
-    P2 := P1 + d;
-    ADrawer.SetPenParams(psSolid, GetDepthColor(SliceColor(ASlice.FOrigIndex)));
-    ADrawer.Line(P1, P2);
+    CalcSlicePoints(ASlice, p);
+    ADrawer.Polygon(p, 0, Length(p));
   end;
 
 var
@@ -615,34 +605,26 @@ begin
   innerRadius := CalcInnerRadius;
   r := FixAspectRatio(Point(FRadius, FRadius));
 
-  ADrawer.SetPen(EdgePen);
   if Depth > 0 then begin
     scaled_depth := ADrawer.Scale(Depth);
     SortSlices(drawSlices);
-    for ps in drawSlices do begin
-      DrawEndEdge3D(ps);
-      DrawVisibleArc3D(ps);
-      DrawStartEdge3D(ps);
-    end;
-    // Fix edge of ulta-long slice
-    for ps in FSlices do
-      if ps.Angle >= pi then begin
-        //DrawVisibleArc3D(ps);
-        FixJoin(ps);
-      end;
+    ADrawer.SetPen(EdgePen);
+    for ps in drawSlices do
+      DrawSlice3D(ps);
   end;
 
   ADrawer.SetPen(EdgePen);
   for ps in FSlices do begin
     if not ps.FVisible then continue;
     ADrawer.SetBrushParams(bsSolid, SliceColor(ps.FOrigIndex));
+    //DrawSlice(ps);
     if FInnerRadiusPercent = 0 then
       ADrawer.RadialPie(
         ps.FBase.X - r.x, ps.FBase.Y - r.y,
         ps.FBase.X + r.x, ps.FBase.Y + r.y,
         RadToDeg16(ps.FPrevAngle), RadToDeg16(ps.Angle))
     else
-      DrawRing(ps);
+      DrawSlice(ps);
   end;
 
   if not Marks.IsMarkLabelsVisible then exit;
@@ -989,7 +971,7 @@ procedure TCustomPieSeries.SortSlices(out ASlices: TSliceArray);
 
 var
   i, j: Integer;
-  f: TAngleFunc;
+  compareFunc: TAngleFunc;
 begin
   SetLength(ASlices, Length(FSlices) + 1);
   j := 0;
@@ -997,8 +979,10 @@ begin
     if FSlices[i].Angle >= pi then begin
       ASlices[j] := FSlices[i];
       ASlices[j].FNextAngle := FSlices[i].CenterAngle;
+      ASlices[j].FFlags := 1;    // 1st piece of divided slice
       ASlices[j+1] := FSlices[i];
       ASlices[j+1].FPrevAngle := ASlices[j].FNextAngle;
+      ASlices[j+1].FFlags := 2;   // 2nd piece of divided slice
       inc(j, 2);
     end else begin
       ASlices[j] := FSlices[i];
@@ -1006,12 +990,12 @@ begin
     end;
   end;
   case FOrientation of
-    poNormal: f := @GetAngleForSortingNormal;
-    poHorizontal: f := @GetAngleForSortingHoriz;
-    poVertical: f := @GetAngleForSortingVert;
+    poNormal: compareFunc := @GetAngleForSortingNormal;
+    poHorizontal: compareFunc := @GetAngleForSortingHoriz;
+    poVertical: compareFunc := @GetAngleForSortingVert;
   end;
   SetLength(ASlices, j);
-  QuickSort(0, High(ASlices), f);
+  QuickSort(0, High(ASlices), compareFunc);
 end;
 
 function TCustomPieSeries.TryRadius(ADrawer: IChartDrawer): TRect;
