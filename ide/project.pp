@@ -2797,6 +2797,11 @@ begin
     SetFlag(pfMainUnitHasScaledStatement,OldProjectType in [ptApplication]);
     SetFlag(pfRunnable, OldProjectType in [ptProgram,ptApplication,ptCustomProgram]);
   end;
+  if FFileVersion<=11 then begin
+    // set CompatibilityMode flag for legacy projects (this flag was added in FFileVersion=12 that changed
+    // item format so that LPI cannot be opened in legacy Lazarus unless pfCompatibilityMode is set)
+    SetFlag(pfCompatibilityMode, True);
+  end;
   Flags:=Flags-[pfUseDefaultCompilerOptions];
 end;
 
