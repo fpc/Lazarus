@@ -6768,58 +6768,6 @@ begin
         end;
       end;
 
-      // warn for ambiguous files
-      Result:=DoWarnAmbiguousFiles;
-      if Result<>mrOk then
-      begin
-        debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] DoWarnAmbiguousFiles negative']);
-        exit;
-      end;
-
-      // check if build is needed (only if we will call the compiler)
-      // and check if a 'build all' is needed
-      NeedBuildAllFlag:=false;
-      NoBuildNeeded:= false;
-      aCompileHint:='';
-      if (AReason in Project1.CompilerOptions.CompileReasons) then begin
-        Result:=MainBuildBoss.DoCheckIfProjectNeedsCompilation(Project1,
-                                                   NeedBuildAllFlag,aCompileHint);
-        if  (AReason = crRun)
-        and (not (pfAlwaysBuild in Project1.Flags)) then begin
-          if Result=mrNo then begin
-            debugln(['Note: (lazarus) [TMainIDE.DoBuildProject] MainBuildBoss.DoCheckIfProjectNeedsCompilation nothing to be done']);
-            Result:=mrOk;
-            // continue for now, check if 'Before' tool is required
-            NoBuildNeeded:= true;
-          end
-          else
-          if Result<>mrYes then
-          begin
-            debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] MainBuildBoss.DoCheckIfProjectNeedsCompilation failed']);
-            exit;
-          end;
-        end;
-      end;
-      if aCompileHint<>'' then
-        aCompileHint:='Compile Reason: '+aCompileHint;
-
-      // execute compilation tool 'Before'
-      if not (pbfSkipTools in Flags)
-      and (AReason in Project1.CompilerOptions.ExecuteBefore.CompileReasons) then
-      begin
-        Result:=Project1.CompilerOptions.ExecuteBefore.Execute(WorkingDir,
-                            lisProject2+lisExecutingCommandBefore, aCompileHint);
-        if Result<>mrOk then
-        begin
-          debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] CompilerOptions.ExecuteBefore.Execute failed']);
-          exit;
-        end;
-      end;
-
-      // leave if no further action is needed
-      if NoBuildNeeded then
-        exit;
-
       // create unit output directory
       UnitOutputDirectory:=Project1.CompilerOptions.GetUnitOutPath(false);
       if Project1.IsVirtual and (not FilenameIsAbsolute(UnitOutputDirectory)) then
@@ -6889,6 +6837,58 @@ begin
           exit(mrCancel);
         end;
       end;
+
+      // warn for ambiguous files
+      Result:=DoWarnAmbiguousFiles;
+      if Result<>mrOk then
+      begin
+        debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] DoWarnAmbiguousFiles negative']);
+        exit;
+      end;
+
+      // check if build is needed (only if we will call the compiler)
+      // and check if a 'build all' is needed
+      NeedBuildAllFlag:=false;
+      NoBuildNeeded:= false;
+      aCompileHint:='';
+      if (AReason in Project1.CompilerOptions.CompileReasons) then begin
+        Result:=MainBuildBoss.DoCheckIfProjectNeedsCompilation(Project1,
+                                                   NeedBuildAllFlag,aCompileHint);
+        if  (AReason = crRun)
+        and (not (pfAlwaysBuild in Project1.Flags)) then begin
+          if Result=mrNo then begin
+            debugln(['Note: (lazarus) [TMainIDE.DoBuildProject] MainBuildBoss.DoCheckIfProjectNeedsCompilation nothing to be done']);
+            Result:=mrOk;
+            // continue for now, check if 'Before' tool is required
+            NoBuildNeeded:= true;
+          end
+          else
+          if Result<>mrYes then
+          begin
+            debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] MainBuildBoss.DoCheckIfProjectNeedsCompilation failed']);
+            exit;
+          end;
+        end;
+      end;
+      if aCompileHint<>'' then
+        aCompileHint:='Compile Reason: '+aCompileHint;
+
+      // execute compilation tool 'Before'
+      if not (pbfSkipTools in Flags)
+      and (AReason in Project1.CompilerOptions.ExecuteBefore.CompileReasons) then
+      begin
+        Result:=Project1.CompilerOptions.ExecuteBefore.Execute(WorkingDir,
+                            lisProject2+lisExecutingCommandBefore, aCompileHint);
+        if Result<>mrOk then
+        begin
+          debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] CompilerOptions.ExecuteBefore.Execute failed']);
+          exit;
+        end;
+      end;
+
+      // leave if no further action is needed
+      if NoBuildNeeded then
+        exit;
 
       // create application bundle
       if Project1.UseAppBundle and (Project1.MainUnitID>=0)
