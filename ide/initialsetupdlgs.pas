@@ -1661,7 +1661,10 @@ begin
   {$ENDIF}
 
   if CheckFppkgConfiguration(Msg)<>sddqCompatible then
-    IDEMessageDialog(lisFppkgProblem, Format(lisFppkgWriteConfFailed, [Msg], mtWarning, [mbOK]);
+  begin
+    IDEMessageDialog(lisFppkgProblem, Format(lisFppkgWriteConfFailed, [Msg]),
+      mtWarning, [mbOK]);
+  end;
 end;
 
 function TInitialSetupDialog.CheckFpcmkcfgQuality(out Note: string): TSDFilenameQuality;

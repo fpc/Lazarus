@@ -9,11 +9,11 @@ uses
   SysUtils,
   {$IF FPC_FULLVERSION>30100}
   pkgFppkg,
-  {$ENDIF}
   fprepos,
+  LazarusIDEStrConsts,
+  {$ENDIF}
   LazLogger,
   LazFileCache,
-  LazarusIDEStrConsts,
   FileUtil,
   LazFileUtils;
 
@@ -111,8 +111,10 @@ begin
 end;
 
 function TFppkgHelper.HasPackage(const PackageName: string): Boolean;
+{$IF FPC_FULLVERSION>30100}
 var
   Msg: string;
+{$ENDIF}
 begin
 {$IF NOT (FPC_FULLVERSION>30100)}
   Result := HasFPCPackagesOnly(PackageName);
@@ -317,7 +319,7 @@ begin
     end;
   result := FIsProperlyConfigured=fpcYes;
   {$ELSE}
-  result := True
+  result := True;
   {$ENDIF FPC_FULLVERSION>30100}
   Message := FConfStatusMessage;
 end;
