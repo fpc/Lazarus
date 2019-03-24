@@ -1710,7 +1710,7 @@ begin
             Note := lisFppkgFpcmkcfgCheckFailed + ' ' + lisFppkgFpcmkcfgNeeded + lisFppkgRecentFpcmkcfgNeeded;
             Result := sddqInvalid;
             end
-          else if not ((Ver.Major = 0) or (Ver.Major > 3) or (((Ver.Major = 3)) and (Ver.Minor>3))) then
+          else if not ((Ver.Major = 0) or (Ver.Major > 3) or (((Ver.Major = 3)) and (Ver.Minor>1))) then
             begin
             // fpcmkcfg's version must be > 3.1. Older versions need other
             // parameters. Version 0 is also allowed, because it is probably
