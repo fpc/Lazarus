@@ -50,7 +50,7 @@ type
     TDataPointMode = (dpmFree, dpmSnap, dpmLock);
 
     TOptions = set of (
-      dpdoRotateLabel, dpdoLabelAbove, dpdoPermanent, dpdoFlipLabel);
+      dpdoRotateLabel, dpdoLabelAbove, dpdoPermanent, dpdoFlipLabel, dpdoClipping);
 
   strict private
     // Workaround for FPC 2.6 bug. Remove after migration to 2.8.
@@ -230,6 +230,7 @@ var
   flip: Boolean;
 begin
   if not (IsActive or (FChart <> nil) and (dpdoPermanent in Options)) then exit;
+
   p1 := FChart.GraphToImage(PointStart.GraphPos);
   p2 := FChart.GraphToImage(PointEnd.GraphPos);
   case MeasureMode of
@@ -238,23 +239,33 @@ begin
   end;
   if p1 = p2 then exit;
   StartTransparency;
-  if LinePen.Visible then begin
-    FChart.Drawer.Pen := LinePen;
-    FChart.Drawer.Line(p1, p2);
+
+  if dpdoClipping in FOptions then
+    FChart.Drawer.ClippingStart(FChart.ClipRect);
+  try
+    if LinePen.Visible then begin
+      FChart.Drawer.Pen := LinePen;
+      FChart.Drawer.Line(p1, p2);
+    end;
+    a := ArcTan2(p2.Y - p1.Y, p2.X - p1.X);
+    DrawPointer(PointerStart, p1);
+    DrawPointer(PointerEnd, p2);
+
+    if Marks.Visible then begin
+      flip := (dpdoFlipLabel in Options) and ((a > Pi /2) or (a < -Pi / 2));
+      Marks.SetAdditionalAngle(
+        IfThen(dpdoRotateLabel in Options, IfThen(flip, Pi - a, -a), 0));
+      p1 := (p1 + p2) div 2;
+      a += IfThen((dpdoLabelAbove in Options) xor flip, -Pi / 2, Pi / 2);
+      p2 := p1 + RotatePointX(Marks.Distance, a);
+      Marks.DrawLabel(FChart.Drawer, p1, p2, GetDistanceText, dummy);
+    end;
+  finally
+    if dpdoClipping in FOptions then FChart.Drawer.ClippingStop;
   end;
-  a := ArcTan2(p2.Y - p1.Y, p2.X - p1.X);
-  DrawPointer(PointerStart, p1);
-  DrawPointer(PointerEnd, p2);
-  if Marks.Visible then begin
-    flip := (dpdoFlipLabel in Options) and ((a > Pi /2) or (a < -Pi / 2));
-    Marks.SetAdditionalAngle(
-      IfThen(dpdoRotateLabel in Options, IfThen(flip, Pi - a, -a), 0));
-    p1 := (p1 + p2) div 2;
-    a += IfThen((dpdoLabelAbove in Options) xor flip, -Pi / 2, Pi / 2);
-    p2 := p1 + RotatePointX(Marks.Distance, a);
-    Marks.DrawLabel(FChart.Drawer, p1, p2, GetDistanceText, dummy);
-  end;
+
   inherited;
+
   Chart.Drawer.SetTransparency(0);
 end;
 

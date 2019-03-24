@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <ProjectOptions>
-    <Version Value="11"/>
+  <ProjectOptions BuildModesCount="1">
+    <Version Value="12"/>
     <PathDelim Value="\"/>
     <General>
       <SessionStorage Value="InProjectDir"/>
-      <MainUnit Value="0"/>
       <Title Value="distancedemo"/>
       <Scaled Value="True"/>
       <ResourceType Value="res"/>
@@ -17,7 +16,7 @@
     <i18n>
       <EnableI18N LFM="False"/>
     </i18n>
-    <BuildModes Count="1">
+    <BuildModes>
       <Item1 Name="Default" Default="True"/>
     </BuildModes>
     <PublishOptions>

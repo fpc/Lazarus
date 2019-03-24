@@ -27,6 +27,7 @@ type
     ChartAxisTransformations1LogarithmAxisTransform1: TLogarithmAxisTransform;
     ChartAxisTransformations3: TChartAxisTransformations;
     ChartAxisTransformations3AutoScaleAxisTransform1: TAutoScaleAxisTransform;
+    cbClipping: TCheckBox;
     chFit: TChart;
     chFitFitSeries1: TFitSeries;
     chFitLineSeries1: TLineSeries;
@@ -60,6 +61,7 @@ type
     StatusBar1: TStatusBar;
     tsMain: TTabSheet;
     tsFit: TTabSheet;
+    procedure cbClippingChange(Sender: TObject);
     procedure cbFlipLabelClick(Sender: TObject);
     procedure cbHideClick(Sender: TObject);
     procedure cbRotateLabelClick(Sender: TObject);
@@ -105,6 +107,11 @@ uses
 procedure TForm1.cbFlipLabelClick(Sender: TObject);
 begin
   SwitchOptions([dpdoFlipLabel], cbFlipLabel.Checked);
+end;
+
+procedure TForm1.cbClippingChange(Sender: TObject);
+begin
+  SwitchOptions([dpdoClipping], cbClipping.Checked);
 end;
 
 procedure TForm1.cbHideClick(Sender: TObject);

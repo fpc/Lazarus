@@ -339,8 +339,7 @@ chart margin and the space reserved for series marks.
 <var>Drawer</var>. Unlike 
 <var>PaintOnCanvas</var> the chart can be drawn on non-canvas devices, such as a svg file.
 </descr>
-        <seealso>
-          <link id=""/>
+        <seealso><link id=""/>
         </seealso>
       </element>
       <element name="TChart.Create">
