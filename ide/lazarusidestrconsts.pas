@@ -1039,7 +1039,7 @@ resourcestring
   lisInvalidFileName = 'Invalid file name';
   lisTheTargetFileNameIsADirectory = 'The target file name is a directory.';
   lisNotAValidFppkgPrefix ='Free Pascal compiler not found at the given prefix.';
-  lisIncorrectFppkgConfiguration = 'the Fppkg configuration is corrupt.';
+  lisIncorrectFppkgConfiguration = 'there is a problem with the Fppkg configuration. (%s)';
   lisFppkgCompilerProblem = 'there is a problem with the Free Pascal compiler executable, ';
   lisFppkgInstallationPath = 'The prefix of the Free Pascal Compiler installation ' +
     'is required to create new configuration files for Fppkg. For example it has ' +
@@ -1050,7 +1050,7 @@ resourcestring
   lisFreePascalPrefix = 'Free Pascal compiler prefix';
   lisFppkgWriteConfException = 'A problem occurred while trying to create a new ' +
     'Fppkg configuration: %s';
-  lisFppkgWriteConfFailed = 'Failed to create a new Fppkg configuration. You ' +
+  lisFppkgWriteConfFailed = 'Failed to create a new Fppkg configuration (%s) You ' +
     'will have to fix the configuration manually or reinstall Free Pascal.';
   lisNoFppkgPrefix = 'empty Free Pascal compiler prefix.';
   lisFppkgCreateFileFailed = 'Failed to generate the configuration file "%s".';
@@ -1064,6 +1064,10 @@ resourcestring
   lifFppkgFpcmkcfgProbTooOld = 'It is probably too old to create the configuration files.';
   lisFppkgFpcmkcfgMissing = 'Could not find the fpcmkcfg configuration tool, ' +
     'which is needed to create the configuration files.';
+  lisFppkgRtlNotFound = 'Fppkg reports that the RTL is not installed.';
+  lisFppkgCompilerNotFound = 'Could not find the compiler [%s] configured for Fppkg.';
+  lisFppkgCompilerNotExists = 'The compiler [%s] configured for Fppkg does not exist.';
+  lisFppkgCompilerNotExecutable = 'The compiler [%s] configured for Fppkg is not an executable.';
 
   // file dialogs
   lisOpenFile = 'Open File';

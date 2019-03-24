@@ -1377,7 +1377,7 @@ end;
 procedure TInitialSetupDialog.UpdateFppkgNote;
 var
   CurCaption: String;
-  Msg, Note: string;
+  Msg, FppkgMsg, Note: string;
   Quality: TSDFilenameQuality;
   {$IF FPC_FULLVERSION>30100}
   ImageIndex: Integer;
@@ -1388,7 +1388,7 @@ begin
   if (fLastParsedFppkgPrefix=CurCaption) and (CurCaption<>'') then exit;
   fLastParsedFppkgPrefix:=CurCaption;
 
-  Quality := CheckFppkgConfiguration();
+  Quality := CheckFppkgConfiguration(FppkgMsg);
 
   Msg := '';
   if CheckFppkgQuality(CurCaption,fLastParsedFppkgLibPath,Note)<>sddqCompatible then
@@ -1401,7 +1401,7 @@ begin
   if Quality=sddqCompatible then
     Note := lisOk
   else
-    Note := lisError + lisIncorrectFppkgConfiguration + LineEnding;
+    Note := lisError + Format(lisIncorrectFppkgConfiguration, [FppkgMsg]) + LineEnding;
 
   if Msg<>'' then
   begin
@@ -1587,8 +1587,9 @@ begin
 end;
 
 procedure TInitialSetupDialog.FppkgWriteConfigButtonClick(Sender: TObject);
-{$IF FPC_FULLVERSION>30100}
 var
+  Msg: string;
+{$IF FPC_FULLVERSION>30100}
   FpcmkcfgExecutable, CompConfigFilename: string;
   Proc: TProcessUTF8;
   Fppkg: TFppkgHelper;
@@ -1659,8 +1660,8 @@ begin
   UpdateFppkgNote;
   {$ENDIF}
 
-  if CheckFppkgConfiguration<>sddqCompatible then
-    IDEMessageDialog(lisFppkgProblem, lisFppkgWriteConfFailed, mtWarning, [mbOK]);
+  if CheckFppkgConfiguration(Msg)<>sddqCompatible then
+    IDEMessageDialog(lisFppkgProblem, Format(lisFppkgWriteConfFailed, [Msg], mtWarning, [mbOK]);
 end;
 
 function TInitialSetupDialog.CheckFpcmkcfgQuality(out Note: string): TSDFilenameQuality;

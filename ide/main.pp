@@ -1446,7 +1446,7 @@ begin
 
   // check fppkg configuration
   if (not ShowSetupDialog)
-  and (CheckFppkgConfiguration()<>sddqCompatible)
+  and (CheckFppkgConfiguration(Note)<>sddqCompatible)
   then begin
     debugln('Warning: (lazarus) fppkg not properly configured.');
     ShowSetupDialog:=true;

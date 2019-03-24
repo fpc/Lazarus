@@ -13,6 +13,7 @@ uses
   fprepos,
   LazLogger,
   LazFileCache,
+  LazarusIDEStrConsts,
   FileUtil,
   LazFileUtils;
 
@@ -30,6 +31,7 @@ type
     FFPpkg: TpkgFPpkg;
     {$ENDIF}
     FIsProperlyConfigured: TFppkgPropConfigured;
+    FConfStatusMessage: string;
     function HasFPCPackagesOnly(const PackageName: string): Boolean;
     procedure InitializeFppkg;
   public
@@ -39,7 +41,7 @@ type
     function HasPackage(const PackageName: string): Boolean;
     procedure ListPackages(AList: TStringList);
     function GetPackageUnitPath(const PackageName: string): string;
-    function IsProperlyConfigured: Boolean;
+    function IsProperlyConfigured(out Message: string): Boolean;
     function GetCompilerFilename: string;
     function GetCompilerConfigurationFileName: string;
     // Temporary solution, because fpc 3.2.0 does not has support for package-variants
@@ -109,11 +111,13 @@ begin
 end;
 
 function TFppkgHelper.HasPackage(const PackageName: string): Boolean;
+var
+  Msg: string;
 begin
 {$IF NOT (FPC_FULLVERSION>30100)}
   Result := HasFPCPackagesOnly(PackageName);
 {$ELSE }
-  if IsProperlyConfigured() then
+  if IsProperlyConfigured(Msg) then
     begin
     Result :=
       Assigned(FFPpkg.FindPackage(PackageName,pkgpkInstalled)) or
@@ -261,36 +265,53 @@ begin
   {$ENDIF FPC_FULLVERSION>30100}
 end;
 
-function TFppkgHelper.IsProperlyConfigured: Boolean;
+function TFppkgHelper.IsProperlyConfigured(out Message: string): Boolean;
 {$IF FPC_FULLVERSION>30100}
 var
   CompilerFilename: string;
 {$ENDIF FPC_FULLVERSION>30100}
 begin
+  Message := '';
   {$IF FPC_FULLVERSION>30100}
   if Assigned(FFPpkg) and (FIsProperlyConfigured=fpcUnknown) then
     begin
     FIsProperlyConfigured := fpcYes;
+    FConfStatusMessage := '';
 
     if not HasPackage('rtl') then
-      FIsProperlyConfigured := fpcNo
+      begin
+      FIsProperlyConfigured := fpcNo;
+      FConfStatusMessage := lisFppkgRtlNotFound;
+      end
     else
       begin
       CompilerFilename := FFPpkg.CompilerOptions.Compiler;
       if Pos(PathDelim, CompilerFilename) > 0 then
         begin
         if not FileExistsCached(CompilerFilename) then
-          FIsProperlyConfigured := fpcNo
+          begin
+          FIsProperlyConfigured := fpcNo;
+          FConfStatusMessage := Format(lisFppkgCompilerNotExists, [CompilerFilename]);
+          end
         else if not FileIsExecutableCached(CompilerFilename) then
-          FIsProperlyConfigured := fpcNo
+          begin
+          FIsProperlyConfigured := fpcNo;
+          FConfStatusMessage := Format(lisFppkgCompilerNotExecutable, [CompilerFilename]);
+          end;
         end
       else
         begin
         CompilerFilename := ExeSearch(CompilerFilename);
         if CompilerFilename = '' then
-          FIsProperlyConfigured := fpcNo
+          begin
+          FIsProperlyConfigured := fpcNo;
+          FConfStatusMessage := Format(lisFppkgCompilerNotFound, [FFPpkg.CompilerOptions.Compiler]);
+          end
         else if not FileIsExecutableCached(CompilerFilename) then
-          FIsProperlyConfigured := fpcNo
+          begin
+          FIsProperlyConfigured := fpcNo;
+          FConfStatusMessage := Format(lisFppkgCompilerNotExecutable, [CompilerFilename]);
+          end;
         end
       end;
     end;
@@ -298,6 +319,7 @@ begin
   {$ELSE}
   result := True
   {$ENDIF FPC_FULLVERSION>30100}
+  Message := FConfStatusMessage;
 end;
 
 function TFppkgHelper.HasFPCPackagesOnly(const PackageName: string): Boolean;

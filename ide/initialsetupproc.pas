@@ -107,7 +107,7 @@ function SearchFPCSrcDirCandidates(StopIfFits: boolean;
   const FPCVer: string): TSDFileInfoList;
 
 // Fppkg
-function CheckFppkgConfiguration(): TSDFilenameQuality;
+function CheckFppkgConfiguration(out Msg: string): TSDFilenameQuality;
 
 // Make
 // Checks a given file to see if it is a valid make executable
@@ -832,12 +832,12 @@ begin
   end;
 end;
 
-function CheckFppkgConfiguration(): TSDFilenameQuality;
+function CheckFppkgConfiguration(out Msg: string): TSDFilenameQuality;
 var
   Fppkg: TFppkgHelper;
 begin
   Fppkg := TFppkgHelper.Instance;
-  if Fppkg.IsProperlyConfigured then
+  if Fppkg.IsProperlyConfigured(Msg) then
     Result := sddqCompatible
   else
     Result := sddqInvalid;
