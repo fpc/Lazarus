@@ -645,18 +645,11 @@ begin
   end;
 
   ADrawer.SetPen(EdgePen);
-  for ps in FSlices do begin
-    if not ps.FVisible then continue;
-    ADrawer.SetBrushParams(bsSolid, SliceColor(ps.FOrigIndex));
-    //DrawSlice(ps);
-    if FInnerRadiusPercent = 0 then
-      ADrawer.RadialPie(
-        ps.FBase.X - r.x, ps.FBase.Y - r.y,
-        ps.FBase.X + r.x, ps.FBase.Y + r.y,
-        RadToDeg16(ps.FPrevAngle), RadToDeg16(ps.Angle))
-    else
+  for ps in FSlices do
+    if ps.FVisible then begin
+      ADrawer.SetBrushParams(bsSolid, SliceColor(ps.FOrigIndex));
       DrawSlice(ps);
-  end;
+    end;
 
   if not Marks.IsMarkLabelsVisible then exit;
   for ps in FSlices do begin
