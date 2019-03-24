@@ -99,7 +99,7 @@ type
     function GetAxisX: TChartAxis;
     function GetAxisY: TChartAxis;
     function GetAxisBounds(AAxis: TChartAxis; out AMin, AMax: Double): Boolean; override;
-    function GetDepthColor(AColor: Integer): Integer; virtual;
+    function GetDepthColor(AColor: Integer; Opposite: boolean = false): Integer; virtual;
     function GetGraphBounds: TDoubleRect; override;
     function GraphToAxis(APoint: TDoublePoint): TDoublePoint;
     function GraphToAxisX(AX: Double): Double; override;
@@ -363,7 +363,7 @@ type
 implementation
 
 uses
-  Math, PropEdits, StrUtils, LResources, Types,
+  Math, PropEdits, StrUtils, LResources, Types, GraphUtil,
   TAChartStrConsts, TAGeometry, TAMath;
 
 function CreateLazIntfImage(
@@ -473,16 +473,16 @@ begin
     Result := FChart.LeftAxis;
 end;
 
-function TCustomChartSeries.GetDepthColor(AColor: Integer): Integer;
-type
-  TBytes = packed array [1..4] of Byte;
+function TCustomChartSeries.GetDepthColor(AColor: Integer;
+  Opposite: Boolean = false): Integer;
 var
-  c: TBytes absolute AColor;
-  r: TBytes absolute Result;
-  i: Integer;
+  h, l, s: Byte;
 begin
-  for i := 1 to 4 do
-    r[i] := EnsureRange(c[i] + FDepthBrightnessDelta, 0, 255);
+  ColorToHLS(AColor, h, l, s);
+  if Opposite then
+    Result := HLSToColor(h, EnsureRange(Integer(l) - FDepthBrightnessDelta, 0, 255), s)
+  else
+    Result := HLSToColor(h, EnsureRange(Integer(l) + FDepthBrightnessDelta, 0, 255), s);
 end;
 
 function TCustomChartSeries.GetGraphBounds: TDoubleRect;

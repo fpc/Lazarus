@@ -101,14 +101,12 @@ use
       </element>
       <element name="TChart.Margins">
         <short>Margins around the chart sides in default extent, in pixels.</short>
-        <seealso>
-          <link id="TChart.BorderSpacing">BorderSpacing</link>
-          <link id="TChart.ExpandPercentage">ExpandPercentage</link>
-          <link id="TChart.Extent">Extent</link>
+        <seealso><link id="TChart.BorderSpacing">BorderSpacing</link><link id="TChart.ExpandPercentage">ExpandPercentage</link><link id="TChart.Extent">Extent</link>
         </seealso>
         <descr>Note that the margins set by this property have effect only on the default extent.
 Use <link id="TChart.BorderSpacing">BorderSpacing</link> property to set margins
-independently of zoom level.</descr>
+independently of zoom level.
+</descr>
       </element>
       <element name="TChart.Extent">
         <short>Manual overrides for the chart extent borders.</short>
