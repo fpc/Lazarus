@@ -5,7 +5,7 @@ unit dmRestBridge;
 interface
 
 uses
-  Classes, SysUtils, sqldbrestbridge, sqldbrestschema, pqconnection, sqldbrestauth,db,
+  Classes, SysUtils, sqldbrestbridge, sqldbrestschema, pqconnection, ibconnection, sqldbrestauth,db,
   // Register formats
   sqldbrestcsv ,sqldbrestxml, sqldbrestcds, sqldbrestado;
 
@@ -19,6 +19,8 @@ type
     ExpensesSchema: TSQLDBRestSchema;
     BPProjects: TSQLDBRestBusinessProcessor;
     procedure DataModuleCreate(Sender: TObject);
+    procedure DispatcherLog(Sender: TObject; aType: TRestDispatcherLogOption;
+      const aMessage: UTF8String);
     procedure DoAllowedOperations(aSender: TObject; aContext: TBaseRestContext; var aOperations: TRestOperations);
     procedure DoAllowedRecord(aSender: TObject; aContext: TBaseRestContext; aDataSet: TDataset; var allowRecord: Boolean);
     procedure DoAllowResource(aSender: TObject; aContext: TBaseRestContext; var allowResource: Boolean);
@@ -36,35 +38,72 @@ implementation
 
 {$R *.lfm}
 
-uses sqldbrestini;
+uses sqldbrestini, custapp;
 
 { TRestDataModule }
 
 procedure TRestDataModule.DataModuleCreate(Sender: TObject);
+
+Var
+  D,Cfg : String;
+
 begin
-  if FileExists('connection.ini') then
+  D:=ExtractFilePath(ParamStr(0));
+  if CustomApplication.Hasoption('c','connection') then
+    Cfg:=CustomApplication.GetoptionValue('c','connection')
+  else
+    Cfg:=D+'connection.ini';
+  if FileExists(Cfg) then
     Dispatcher.Connections[0].LoadFromFile('connection.ini');
+  if CustomApplication.Hasoption('c','connection') then
+    Cfg:=CustomApplication.GetoptionValue('i','ini')
+  else
+    Cfg:=D+'server.ini';
+  if FileExists(Cfg) then
+    Dispatcher.LoadFromFile('server.ini',[]);
+  // Manual config
+  if CustomApplication.Hasoption('b','basedir') then
+    Dispatcher.BasePath:=CustomApplication.GetoptionValue('b','basedir');
+  if CustomApplication.HasOption('q','quiet') then
+    begin
+    Dispatcher.OnLog:=Nil;
+    Dispatcher.LogOptions:=[];
+    end
+  else if CustomApplication.HasOption('v','verbose') then
+    Dispatcher.LogOptions:=Dispatcher.LogOptions+[rloSQL];
+  // Activate
+  Dispatcher.Active:=True;
+end;
+
+procedure TRestDataModule.DispatcherLog(Sender: TObject;
+  aType: TRestDispatcherLogOption; const aMessage: UTF8String);
+begin
+  if isConsole then
+    Writeln('['+LogNames[aType]+'] '+aMessage)
+  else if Assigned(CustomApplication) then
+    CustomApplication.Log(etInfo,'['+LogNames[aType]+'] '+aMessage);
 end;
 
 procedure TRestDataModule.DoAllowedOperations(aSender: TObject;
   aContext: TBaseRestContext; var aOperations: TRestOperations);
 begin
   if IsConsole then
-    Writeln('AllowedOperations for ',aContext.UserID);
+    Writeln('[Debug] AllowedOperations for ',aContext.UserID);
 end;
 
 procedure TRestDataModule.DoAllowedRecord(aSender: TObject;
   aContext: TBaseRestContext; aDataSet: TDataset; var allowRecord: Boolean);
 begin
   if IsConsole then
-    Writeln('AllowedRecord for ',aContext.UserID);
+    Writeln('[Debug] AllowedRecord for ',aContext.UserID);
+  AllowRecord:=True;
 end;
 
 procedure TRestDataModule.DoAllowResource(aSender: TObject;
   aContext: TBaseRestContext; var allowResource: Boolean);
 begin
   if IsConsole then
-    Writeln('AllowedResource for ',aContext.UserID);
+    Writeln('[Debug]  AllowedResource for ',aContext.UserID);
 end;
 
 procedure TRestDataModule.DoCheckParams(aSender: TObject;

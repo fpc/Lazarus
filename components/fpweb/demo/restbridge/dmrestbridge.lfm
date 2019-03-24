@@ -7,7 +7,7 @@ object RestDataModule: TRestDataModule
   Width = 407
   PPI = 96
   object Dispatcher: TSQLDBRestDispatcher
-    Active = True
+    Active = False
     Connections = <    
       item
         ConnectionType = 'PostgreSQL'
@@ -23,9 +23,15 @@ object RestDataModule: TRestDataModule
       item
         Schema = ExpensesSchema
       end>
-    DispatchOptions = [rdoExposeMetadata, rdoAccessCheckNeedsDB]
+    DefaultConnection = 'Expenses'
+    DispatchOptions = [rdoConnectionInURL, rdoExposeMetadata, rdoCustomView, rdoAccessCheckNeedsDB, rdoConnectionResource]
     Authenticator = AuthBasic
     EnforceLimit = 0
+    CORSMaxAge = 86400
+    CORSAllowCredentials = True
+    LogOptions = [rloUser, rtloHTTP, rloResource, rloConnection, rloAuthentication, rloResultStatus]
+    LogSQLOptions = [detCustom, detPrepare, detExecute, detFetch, detCommit, detRollBack, detActualSQL]
+    OnLog = DispatcherLog
     left = 72
     top = 32
   end
@@ -242,6 +248,9 @@ object RestDataModule: TRestDataModule
     AuthenticateUserSQL.Strings = (
       'select uID from users where (uLogin=:UserName) and (uPassword=:Password)'
     )
+    DefaultUserName = 'me'
+    DefaultPassword = 'secret'
+    DefaultUserID = 'me'
     left = 136
     top = 104
   end
