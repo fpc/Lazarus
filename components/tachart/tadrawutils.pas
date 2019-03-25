@@ -83,6 +83,7 @@ type
     function GetFontName: String;
     function GetFontSize: Integer;
     function GetFontStyle: TChartFontStyles;
+    function GetPenColor: TChartColor;
     procedure SetDoChartColorToFPColorFunc(AValue: TChartColorToFPColorFunc);
     procedure Line(AX1, AY1, AX2, AY2: Integer);
     procedure Line(const AP1, AP2: TPoint);
@@ -105,13 +106,14 @@ type
     procedure ResetFont;
     function Scale(ADistance: Integer): Integer;
     procedure SetAntialiasingMode(AValue: TChartAntialiasingMode);
-    procedure SetBrushColor(AColor: TChartColor);
     procedure SetBrush(ABrush: TFPCustomBrush);
+    procedure SetBrushColor(AColor: TChartColor);
     procedure SetBrushParams(AStyle: TFPBrushStyle; AColor: TChartColor);
     procedure SetFont(AValue: TFPCustomFont);
     procedure SetGetFontOrientationFunc(AValue: TGetFontOrientationFunc);
     procedure SetMonochromeColor(AColor: TChartColor);
     procedure SetPen(APen: TFPCustomPen);
+    procedure SetPenColor(AColor: TChartColor);
     procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
     function GetRightToLeft: Boolean;
     procedure SetRightToLeft(AValue: Boolean);

@@ -60,6 +60,7 @@ type
     function GetFontName: String; override;
     function GetFontSize: Integer; override;
     function GetFontStyle: TChartFontStyles; override;
+    function GetPenColor: TChartColor;
     procedure Line(AX1, AY1, AX2, AY2: Integer);
     procedure Line(const AP1, AP2: TPoint); overload;
     procedure LineTo(AX, AY: Integer); override;
@@ -78,6 +79,7 @@ type
     procedure ResetFont;
     procedure SetBrushColor(AColor: TChartColor);
     procedure SetBrushParams(AStyle: TFPBrushStyle; AColor: TChartColor);
+    procedure SetPenColor(AColor: TChartColor);
     procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
   end experimental;
 
@@ -207,6 +209,11 @@ begin
   if FFont.Italic then Include(Result, cfsItalic);
   if FFont.Underline then Include(Result, cfsUnderline);
   if FFont.StrikeThrough then Include(Result, cfsStrikeout);
+end;
+
+function TFPVectorialDrawer.GetPenColor: TChartColor;
+begin
+  Result := FPColorToChartColor(FPenColor);
 end;
 
 function TFPVectorialDrawer.InvertY(AY: Integer): Integer;
@@ -412,6 +419,11 @@ begin
     FPenColor := APen.FPColor;
   FPenStyle := APen.Style;
   FPenWidth := APen.Width;
+end;
+
+procedure TFPVectorialDrawer.SetPenColor(AColor: TChartColor);
+begin
+  FPenColor := FChartColorToFPColorFunc(AColor);
 end;
 
 procedure TFPVectorialDrawer.SetPenParams(

@@ -45,6 +45,7 @@ type
     function GetFontName: String; override;
     function GetFontSize: Integer; override;
     function GetFontStyle: TChartFontStyles; override;
+    function GetPenColor: TChartColor;
     procedure Line(AX1, AY1, AX2, AY2: Integer);
     procedure Line(const AP1, AP2: TPoint);
     procedure LineTo(AX, AY: Integer); override;
@@ -63,6 +64,7 @@ type
     procedure ResetFont;
     procedure SetBrushColor(AColor: TChartColor);
     procedure SetBrushParams(AStyle: TFPBrushStyle; AColor: TChartColor);
+    procedure SetPenColor(AColor: TChartColor);
     procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
   end;
 
@@ -153,6 +155,11 @@ begin
   if FCanvas.Font.Italic then Include(Result, cfsItalic);
   if FCanvas.Font.Underline then Include(Result, cfsUnderline);
   if FCanvas.Font.StrikeThrough then Include(Result, cfsStrikeout);
+end;
+
+function TAggPasDrawer.GetPenColor: TChartColor;
+begin
+  Result := FCanvas.Pen.Color;
 end;
 
 procedure TAggPasDrawer.Line(AX1, AY1, AX2, AY2: Integer);
@@ -278,6 +285,12 @@ procedure TAggPasDrawer.SetPen(APen: TFPCustomPen);
 begin
   TAggLCLPenCrack(FCanvas.Pen).DoCopyProps(APen);
   FCanvas.Pen.FPColor := ApplyTransparency(FPColorOrMono(APen.FPColor));
+end;
+
+procedure TAggPasDrawer.SetPenColor(AColor: TChartColor);
+begin
+  FCanvas.Pen.FPColor :=
+    ApplyTransparency(ChartColorToFPColor(ColorOrMono(AColor)));
 end;
 
 procedure TAggPasDrawer.SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);

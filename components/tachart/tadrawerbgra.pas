@@ -48,6 +48,7 @@ type
     function GetFontName: String; override;
     function GetFontSize: Integer; override;
     function GetFontStyle: TChartFontStyles; override;
+    function GetPenColor: TChartColor;
     procedure Line(AX1, AY1, AX2, AY2: Integer);
     procedure Line(const AP1, AP2: TPoint);
     procedure LineTo(AX, AY: Integer); override;
@@ -67,6 +68,7 @@ type
     procedure ResetFont;
     procedure SetBrushColor(AColor: TChartColor);
     procedure SetBrushParams(AStyle: TFPBrushStyle; AColor: TChartColor);
+    procedure SetPenColor(AColor: TChartColor);
     procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
     procedure SetTransparency(ATransparency: TChartTransparency);
   end;
@@ -163,6 +165,11 @@ end;
 function TBGRABitmapDrawer.GetFontStyle: TChartFontStyles;
 begin
   Result := TChartFontStyles(Canvas.Font.Style);
+end;
+
+function TBGRABitmapDrawer.GetPenColor: TChartColor;
+begin
+  Result := TChartColor(Canvas.Pen.Color);
 end;
 
 procedure TBGRABitmapDrawer.Line(AX1, AY1, AX2, AY2: Integer);
@@ -303,6 +310,11 @@ begin
     BGRAColor := BGRAColorOrMono(APen.FPColor);
     Opacity := Self.Opacity;
   end;
+end;
+
+procedure TBGRABitmapDrawer.SetPenColor(AColor: TChartColor);
+begin
+  Canvas.Pen.Color := ColorOrMono(AColor);
 end;
 
 procedure TBGRABitmapDrawer.SetPenParams(

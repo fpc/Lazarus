@@ -67,6 +67,7 @@ type
     function GetFontName: String; override;
     function GetFontSize: Integer; override;
     function GetFontStyle: TChartFontStyles; override;
+    function GetPenColor: TChartColor;
     procedure Line(AX1, AY1, AX2, AY2: Integer);
     procedure Line(const AP1, AP2: TPoint);
     procedure LineTo(AX, AY: Integer); override;
@@ -86,6 +87,7 @@ type
     procedure SetAntialiasingMode(AValue: TChartAntialiasingMode);
     procedure SetBrushColor(AColor: TChartColor);
     procedure SetBrushParams(AStyle: TFPBrushStyle; AColor: TChartColor);
+    procedure SetPenColor(AColor: TChartColor);
     procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
     procedure SetTransparency(ATransparency: TChartTransparency);
   end;
@@ -244,6 +246,11 @@ end;
 function TOpenGLDrawer.GetFontStyle: TChartFontStyles;
 begin
   Result := FFontStyle;
+end;
+
+function TOpenGLDrawer.GetPenColor: TChartColor;
+begin
+  Result := FPColorToChartColor(FPenColor);
 end;
 
 procedure TOpenGLDrawer.InternalPolyline(
@@ -410,6 +417,11 @@ begin
   FPenStyle := APen.Style;
   glLineWidth(FPenWidth);
   ChartGLPenStyle(FPenStyle);
+end;
+
+procedure TOpenGLDrawer.SetPenColor(AColor: TChartColor);
+begin
+  FPenColor := FChartColorToFPColorFunc(AColor);
 end;
 
 procedure TOpenGLDrawer.SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);

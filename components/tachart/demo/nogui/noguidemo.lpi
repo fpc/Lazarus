@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <ProjectOptions>
-    <Version Value="11"/>
+  <ProjectOptions BuildModesCount="1">
+    <Version Value="12"/>
     <PathDelim Value="\"/>
     <General>
       <Flags>
@@ -9,7 +9,6 @@
         <MainUnitHasTitleStatement Value="False"/>
       </Flags>
       <SessionStorage Value="InProjectDir"/>
-      <MainUnit Value="0"/>
       <ResourceType Value="res"/>
     </General>
     <i18n>
@@ -18,7 +17,7 @@
     <MacroValues Count="1">
       <Macro1 Name="LCLWidgetType" Value="nogui"/>
     </MacroValues>
-    <BuildModes Count="1">
+    <BuildModes>
       <Item1 Name="Default" Default="True"/>
       <SharedMatrixOptions Count="1">
         <Item1 ID="909616661520" Modes="Default" Type="IDEMacro" MacroName="LCLWidgetType" Value="nogui"/>
@@ -60,6 +59,9 @@
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>
+      <Debugging>
+        <UseExternalDbgSyms Value="True"/>
+      </Debugging>
       <Options>
         <Win32>
           <GraphicApplication Value="True"/>

@@ -58,6 +58,7 @@ type
     function GetFontName: String; override;
     function GetFontSize: Integer; override;
     function GetFontStyle: TChartFontStyles; override;
+    function GetPenColor: TChartColor;
     procedure Line(AX1, AY1, AX2, AY2: Integer);
     procedure Line(const AP1, AP2: TPoint);
     procedure LineTo(AX, AY: Integer); override;
@@ -76,6 +77,7 @@ type
     procedure ResetFont;
     procedure SetBrushColor(AColor: TChartColor);
     procedure SetBrushParams(AStyle: TFPBrushStyle; AColor: TChartColor);
+    procedure SetPenColor(AColor: TChartColor);
     procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
   end;
 
@@ -209,6 +211,11 @@ begin
   if FCanvas.Font.Strikethrough then Include(Result, cfsStrikeout);
 end;
 
+function TFPCanvasDrawer.GetPenColor: TChartColor;
+begin
+  Result := FPColorToChartColor(FCanvas.Pen.FPColor);
+end;
+
 procedure TFPCanvasDrawer.Line(AX1, AY1, AX2, AY2: Integer);
 begin
   FCanvas.Line(AX1, AY1, AX2, AY2);
@@ -322,6 +329,11 @@ end;
 procedure TFPCanvasDrawer.SetPen(APen: TFPCustomPen);
 begin
   AssignFPCanvasHelper(FCanvas.Pen, APen);
+end;
+
+procedure TFPCanvasDrawer.SetPenColor(AColor: TChartColor);
+begin
+  FCanvas.Pen.FPColor := FChartColorToFPColorFunc(AColor);
 end;
 
 procedure TFPCanvasDrawer.SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);

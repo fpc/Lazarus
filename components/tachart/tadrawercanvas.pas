@@ -54,6 +54,7 @@ type
     function GetFontName: String; override;
     function GetFontSize: Integer; override;
     function GetFontStyle: TChartFontStyles; override;
+    function GetPenColor: TChartColor;
     procedure Line(AX1, AY1, AX2, AY2: Integer);
     procedure Line(const AP1, AP2: TPoint);
     procedure LineTo(AX, AY: Integer); override;
@@ -74,6 +75,7 @@ type
     procedure SetAntialiasingMode(AValue: TChartAntialiasingMode);
     procedure SetBrushColor(AColor: TChartColor);
     procedure SetBrushParams(AStyle: TFPBrushStyle; AColor: TChartColor);
+    procedure SetPenColor(AColor: TChartColor);
     procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
     procedure SetTransparency(ATransparency: TChartTransparency);
   end;
@@ -203,6 +205,11 @@ end;
 function TCanvasDrawer.GetFontStyle: TChartFontStyles;
 begin
   Result := TChartFontStyles(GetCanvas.Font.Style);
+end;
+
+function TCanvasDrawer.GetPenColor: TChartColor;
+begin
+  Result := GetCanvas.Pen.Color;
 end;
 
 procedure TCanvasDrawer.Line(AX1, AY1, AX2, AY2: Integer);
@@ -415,6 +422,12 @@ begin
     if scalePen in FScaleItems then
       Pen.Width := Scale(Pen.Width);
   end;
+end;
+
+procedure TCanvasDrawer.SetPenColor(AColor: TChartColor);
+begin
+  if not FXor then
+    GetCanvas.Pen.Color := ColorOrMono(AColor);
 end;
 
 procedure TCanvasDrawer.SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);

@@ -68,6 +68,7 @@ type
     function GetFontName: String; override;
     function GetFontSize: Integer; override;
     function GetFontStyle: TChartFontStyles; override;
+    function GetPenColor: TChartColor;
     procedure Line(AX1, AY1, AX2, AY2: Integer);
     procedure Line(const AP1, AP2: TPoint);
     procedure LineTo(AX, AY: Integer); override;
@@ -88,6 +89,7 @@ type
     procedure SetAntialiasingMode(AValue: TChartAntialiasingMode);
     procedure SetBrushColor(AColor: TChartColor);
     procedure SetBrushParams(AStyle: TFPBrushStyle; AColor: TChartColor);
+    procedure SetPenColor(AColor: TChartColor);
     procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);
   end;
 
@@ -289,6 +291,11 @@ begin
   if ftsItalic in FFont.Style then Include(Result, cfsItalic);
   if FFont.UnderlineDecoration then Include(Result, cfsUnderline);
   if FFont.StrikeoutDecoration then Include(Result, cfsStrikeout);
+end;
+
+function TSVGDrawer.GetPenColor: TChartColor;
+begin
+  Result := FPColorToChartColor(FPen.FPColor);
 end;
 
 procedure TSVGDrawer.Line(AX1, AY1, AX2, AY2: Integer);
@@ -501,6 +508,11 @@ begin
     FPen.FPColor := FPColorOrMono(APen.FPColor);
   FPen.Style := APen.Style;
   FPen.Width := APen.Width;
+end;
+
+procedure TSVGDrawer.SetPenColor(AColor: TChartColor);
+begin
+  FPen.FPColor := FChartColorToFPColorFunc(ColorOrMono(AColor));
 end;
 
 procedure TSVGDrawer.SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor);

@@ -7,7 +7,7 @@ object Form1: TForm1
   ClientHeight = 342
   ClientWidth = 422
   Position = poScreenCenter
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '2.1.0.0'
   object Chart1: TChart
     Left = 0
     Height = 306
@@ -22,6 +22,7 @@ object Form1: TForm1
         Marks.LabelFont.Name = 'Arial Narrow'
         Marks.LabelFont.Pitch = fpVariable
         Marks.LabelFont.Quality = fqDraft
+        Marks.LabelBrush.Style = bsClear
         Minors = <>
         Title.LabelFont.CharSet = ANSI_CHARSET
         Title.LabelFont.Color = clRed
@@ -33,6 +34,7 @@ object Form1: TForm1
         Title.LabelFont.Style = [fsItalic]
         Title.Visible = True
         Title.Caption = 'y axis'
+        Title.LabelBrush.Style = bsClear
       end    
       item
         Grid.Color = clSilver
@@ -42,6 +44,7 @@ object Form1: TForm1
         Marks.LabelFont.Name = 'Arial Narrow'
         Marks.LabelFont.Pitch = fpVariable
         Marks.LabelFont.Quality = fqDraft
+        Marks.LabelBrush.Style = bsClear
         Minors = <>
         Title.LabelFont.CharSet = ANSI_CHARSET
         Title.LabelFont.Color = clGreen
@@ -52,6 +55,7 @@ object Form1: TForm1
         Title.LabelFont.Style = [fsItalic]
         Title.Visible = True
         Title.Caption = 'x axis'
+        Title.LabelBrush.Style = bsClear
       end>
     BackColor = clWhite
     Foot.Alignment = taLeftJustify
@@ -82,7 +86,8 @@ object Form1: TForm1
     Title.Visible = True
     Align = alClient
     object Chart1LineSeries1: TLineSeries
-      LinePen.Color = clFuchsia
+      LinePen.Color = clBlue
+      LinePen.Width = 2
       Source = RandomChartSource1
     end
     object Chart1BarSeries1: TBarSeries
