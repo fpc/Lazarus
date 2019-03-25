@@ -51,6 +51,9 @@ type
 
   TBarSeries = class(TBasicPointSeries)
   private
+    type
+       TDrawBarProc = procedure (ADrawer: IChartDrawer; const ARect: TRect; ADepth: Integer) of object;
+  private
     FBarBrush: TBrush;
     FBarOffsetPercent: Integer;
     FBarPen: TPen;
@@ -61,6 +64,7 @@ type
     FOnCustomDrawBar: TCustomDrawBarEvent;
     FUseZeroLevel: Boolean;
     FZeroLevel: Double;
+    FDrawBarProc: TDrawBarProc;
 
     function IsZeroLevelStored: boolean;
     procedure SetBarBrush(Value: TBrush);
@@ -81,9 +85,15 @@ type
   protected
     procedure BarOffsetWidth(
       AX: Double; AIndex: Integer; out AOffset, AWidth: Double);
+    procedure DrawConicalBar(ADrawer: IChartDrawer; const ARect: TRect; ADepth: Integer);
+    procedure DrawCylinderBar(ADrawer: IChartDrawer; const ARect: TRect; ADepth: Integer);
+    procedure DrawHexPrism(ADrawer: IChartDrawer; const ARect: TRect; ADepth: Integer);
+    procedure DrawPyramidBar(ADrawer: IChartDrawer; const ARect: TRect; ADepth: Integer);
+    procedure DrawRectBar(ADrawer: IChartDrawer; const ARect: TRect; ADepth: Integer);
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
     function GetZeroLevel: Double; override;
+    procedure UpdateMargins(ADrawer: IChartDrawer; var AMargins: TRect); override;
   public
     procedure Assign(ASource: TPersistent); override;
     constructor Create(AOwner: TComponent); override;
@@ -1118,6 +1128,7 @@ constructor TBarSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ToolTargets := [nptPoint, nptYList, nptCustom];
+  FDrawBarProc := @DrawRectBar;
 
   FBarWidthPercent := DEF_BAR_WIDTH_PERCENT;
 
@@ -1180,241 +1191,7 @@ var
       OnBeforeDrawBar(Self, ic.Canvas, AR, pointIndex, stackIndex, defaultDrawing);
     if not defaultDrawing then exit;
 
-    case FBarShape of
-      bsRectangular:
-        begin
-          ADrawer.Rectangle(AR);
-          if Depth > 0 then begin
-            c := ADrawer.BrushColor;
-            ADrawer.BrushColor := GetDepthColor(c, true);
-            ADrawer.DrawLineDepth(
-              AR.Left, AR.Top, AR.Right - 1, AR.Top, scaled_depth);
-            ADrawer.BrushColor := GetDepthColor(c, false);
-            ADrawer.DrawLineDepth(
-              AR.Right - 1, AR.Top, AR.Right - 1, AR.Bottom - 1, scaled_depth);
-          end;
-        end;
-      bsPyramid:
-        begin
-          c := ADrawer.BrushColor;
-          SetLength(pts, 3);
-          if Depth = 0 then begin
-            pts[0] := Point(AR.Left, AR.Bottom);
-            if IsRotated then begin
-              pts[1] := Point(AR.Left, AR.Top);
-              pts[2] := Point(AR.Right, (AR.Top + AR.Bottom) div 2);
-            end else begin
-              pts[1] := Point(AR.Right, AR.Bottom);
-              pts[2] := Point((AR.Left + AR.Right) div 2, AR.Top);
-            end;
-            ADrawer.Polygon(pts, 0, 3);
-          end else
-          if IsRotated then begin
-            pts[0] := Point(AR.Left + scaled_depth, AR.Bottom - scaled_depth);
-            pts[1] := Point(AR.Left + scaled_depth, AR.Top - scaled_depth);
-            pts[2] := Point(AR.Right + scaled_depth2, (AR.Top + AR.Bottom - scaled_depth) div 2);
-            ADrawer.BrushColor := GetDepthColor(c);
-            ADrawer.Polygon(pts, 0, 3);
-            pts[1] := Point(AR.Left, AR.Bottom);
-            ADrawer.Polygon(pts, 0, 3);
-            pts[0] := Point(AR.Left + scaled_depth, AR.Top - scaled_depth);
-            pts[1] := Point(AR.Left, AR.Top);
-            ADrawer.Polygon(pts, 0, 3);
-            ADrawer.BrushColor := c;
-            pts[0] := Point(AR.Left, AR.Bottom);
-            ADrawer.Polygon(pts, 0, 3);
-          end else begin
-            // rear side
-            pts[0] := Point(AR.Left + scaled_depth, AR.Bottom - scaled_depth);
-            pts[1] := Point(AR.Right + scaled_depth, AR.Bottom - scaled_depth);
-            pts[2] := Point((AR.Left + AR.Right + scaled_depth) div 2, AR.Top - scaled_depth2);
-            ADrawer.BrushColor := GetDepthColor(c);
-            ADrawer.Polygon(pts, 0, 3);
-            // left side
-            pts[1] := Point(AR.Left, AR.Bottom);
-            ADrawer.Polygon(pts, 0, 3);
-            // right side
-            pts[0] := Point(AR.Right + scaled_depth, AR.Bottom - scaled_depth);
-            pts[1] := Point(AR.Right, AR.Bottom);
-            ADrawer.Polygon(pts, 0, 3);
-            // front face
-            ADrawer.BrushColor := c;
-            pts[0] := Point(AR.Left, AR.Bottom);
-            ADrawer.Polygon(pts, 0, 3);
-          end;
-        end;
-      bsCylindrical:
-        begin
-          if Depth = 0 then
-            ADrawer.Rectangle(AR)
-          else
-          if IsRotated then begin
-            ADrawer.Ellipse(AR.Left, AR.Top, AR.Left + scaled_depth, AR.Bottom);
-            ADrawer.FillRect(AR.Left + scaled_depth2, AR.Top, AR.Right + scaled_depth2, AR.Bottom);
-            ADrawer.Line(AR.Left + scaled_depth2, AR.Top, AR.Right + scaled_depth2, AR.Top);
-            ADrawer.Line(AR.Left + scaled_depth2, AR.Bottom, AR.Right + scaled_depth2, AR.Bottom);
-            ADrawer.BrushColor := GetDepthColor(ADrawer.BrushColor, false);
-            ADrawer.Ellipse(AR.Right, AR.Top, AR.Right + scaled_depth, AR.Bottom);
-          end else begin
-            ADrawer.Ellipse(AR.Left, AR.Bottom, AR.Right, AR.Bottom - scaled_depth);
-            ADrawer.FillRect(AR.Left, AR.Bottom - scaled_depth2, AR.Right, AR.Top - scaled_depth2);
-            ADrawer.Line(AR.Left, AR.Bottom - scaled_depth2, AR.Left, AR.Top - scaled_depth2);
-            ADrawer.Line(AR.Right, AR.Bottom - scaled_depth2, AR.Right, AR.Top - scaled_depth2);
-            ADrawer.BrushColor := GetDepthColor(ADrawer.BrushColor, true);
-            ADrawer.Ellipse(AR.Left, AR.Top, AR.Right, AR.Top - scaled_depth);
-          end;
-        end;
-      bsConical:
-        begin
-          SetLength(pts, 3);
-          if Depth = 0 then begin
-            pts[0] := Point(AR.Left, AR.Bottom);
-            if IsRotated then begin
-              pts[1] := Point(AR.Left, AR.Top);
-              pts[2] := Point(AR.Right, (AR.Top + AR.Bottom) div 2);
-            end else begin
-              pts[1] := Point(AR.Right, AR.Bottom);
-              pts[2] := Point((AR.Left + AR.Right) div 2, AR.Top);
-            end;
-            ADrawer.Polygon(pts, 0, 3);
-          end else begin
-            if IsRotated then begin
-              ADrawer.Ellipse(AR.Left, AR.Top, AR.Left + scaled_depth, AR.Bottom);
-              h := AR.Right - AR.Left;
-              if h <= scaled_depth2 then
-                exit;
-              a := (AR.Bottom - AR.Top) * 0.5;
-              b := scaled_depth2;
-              cx := (AR.Top + AR.Bottom) * 0.5;
-              cy := AR.Left + scaled_depth2;
-              factor := sqrt(1 - sqr(b/h));
-              pts[0] := Point(round(cy + sqr(b)/h), round(cx - a*factor));
-              pts[1] := Point(AR.Right + scaled_depth2, round(cx));
-              pts[2] := Point(round(cy + sqr(b)/h), round(cx + a*factor));
-            end else begin
-              ADrawer.Ellipse(AR.Left, AR.Bottom, AR.Right, AR.Bottom - scaled_depth);
-              // https://www.emathzone.com/tutorials/geometry/equation-of-tangent-and-normal-to-ellipse.html
-              // tangent to ellipse (x/a)² + (y/b)² = 1 at ellipse point (x1, y1):
-              //    (x1 x) / a² + (y1 x) / b² = 1
-              h := AR.Bottom - AR.Top;      // height of cone
-              if h <= scaled_depth2 then
-                exit;
-              a := (AR.Right - AR.Left) * 0.5;
-              b := scaled_depth2;
-              cx := (AR.Left + AR.Right) * 0.5;    // center of cone ground area
-              cy := AR.Bottom - scaled_depth2;
-              factor := sqrt(1 - sqr(b/h));
-              pts[0] := Point(round(cx - a*factor), round(cy - sqr(b) / h));
-              pts[1] := Point(round(cx), AR.Top - scaled_depth2);
-              pts[2] := Point(round(cx + a*factor), round(cy - sqr(b) / h));
-            end;
-            ADrawer.SetPenParams(psClear, clTAColor);
-            ADrawer.Polygon(pts, 0, 3);
-            ADrawer.Pen := BarPen;
-            if Styles <> nil then
-              Styles.Apply(ADrawer, stackIndex);
-            ADrawer.PolyLine(pts, 0, 3);
-          end;
-        end;
-      bsHexPrism:
-        begin
-          a := IfThen(IsRotated, AR.Bottom - AR.Top, AR.Right - AR.Left) * 0.5;
-          cx := IfThen(IsRotated, AR.Top + AR.Bottom, AR.Left + AR.Right) * 0.5;
-          cy := scaled_depth2;
-          SetLength(pts, 4);
-          factor := sin(pi * 30 / 180);
-          if Depth = 0 then begin
-            pts[0] := Point(AR.Left, AR.Bottom);
-            if IsRotated then begin
-              pts[1] := Point(AR.Left, round(cx + a*factor));
-              pts[2] := Point(AR.Right, pts[1].Y);
-              pts[3] := Point(AR.Right, AR.Bottom);
-              ADrawer.Polygon(pts, 0, 4);
-              pts[0] := pts[1];
-              pts[3] := pts[2];
-              pts[1] := Point(AR.Left, round(cx - a*factor));
-              pts[2] := Point(AR.Right, pts[1].Y);
-              ADrawer.Polygon(pts, 0, 4);
-              pts[0] := pts[1];
-              pts[3] := pts[2];
-              pts[1] := Point(AR.Left, AR.Top);
-              pts[2] := Point(AR.Right, AR.Top);
-              ADrawer.Polygon(pts, 0, 4);
-            end else begin
-              pts[1] := Point(round(cx - a*factor), AR.Bottom);
-              pts[2] := Point(pts[1].X, AR.Top);
-              pts[3] := Point(AR.Left, AR.Top);
-              ADrawer.Polygon(pts, 0, 4);
-              pts[0] := pts[1];
-              pts[3] := pts[2];
-              pts[1] := Point(round(cx + a*factor), AR.Bottom);
-              pts[2] := Point(pts[1].X, AR.Top);
-              ADrawer.Polygon(pts, 0, 4);
-              pts[0] := pts[1];
-              pts[3] := pts[2];
-              pts[1] := Point(AR.Right, AR.Bottom);
-              pts[2] := Point(AR.Right, AR.Top);
-              ADrawer.Polygon(pts, 0, 4);
-            end;
-          end else begin
-            c := ADrawer.BrushColor;
-            ADrawer.BrushColor := GetDepthColor(c);
-            if IsRotated then begin
-              pts[0] := Point(AR.Left + scaled_depth2, AR.Bottom);
-              pts[1] := Point(AR.Left, round(cx + a*factor));
-              pts[2] := Point(AR.Right, pts[1].Y);
-              pts[3] := Point(AR.Right + scaled_depth2, AR.Bottom);
-              ADrawer.Polygon(pts, 0, 4);
-              pts[0] := pts[1];
-              pts[3] := pts[2];
-              pts[1] := Point(AR.Left, round(cx - a*factor));
-              pts[2] := Point(AR.Right, pts[1].Y);
-              ADrawer.BrushColor := c;
-              ADrawer.Polygon(pts, 0, 4);
-              pts[0] := pts[1];
-              pts[3] := pts[2];
-              pts[1] := Point(AR.Left + scaled_depth2, AR.Top);
-              pts[2] := Point(AR.Right + scaled_depth2, pts[1].Y);
-              ADrawer.BrushColor := GetDepthColor(c);
-              ADrawer.Polygon(pts, 0, 4);
-              SetLength(pts, 6);
-              pts[0] := Point(AR.Right + scaled_depth2, AR.Bottom);
-              pts[1] := Point(AR.Right, round(cx + a*factor));
-              pts[2] := Point(AR.Right, round(cx - a*factor));
-              pts[3] := Point(AR.Right + scaled_depth2, AR.Top);
-              pts[4] := Point(AR.Right + scaled_depth, round(cx - a*factor));
-              pts[5] := Point(AR.Right + scaled_depth, round(cx + a*factor));
-            end else begin
-              pts[0] := Point(AR.Left, AR.Bottom - scaled_depth2);
-              pts[1] := Point(round(cx - a*factor), AR.Bottom);
-              pts[2] := Point(pts[1].X, AR.Top);
-              pts[3] := Point(AR.Left, AR.Top - scaled_depth2);
-              ADrawer.Polygon(pts, 0, 4);
-              pts[0] := pts[1];
-              pts[3] := pts[2];
-              pts[1] := Point(round(cx + a*factor), AR.Bottom);
-              pts[2] := Point(pts[1].X, AR.Top);
-              ADrawer.BrushColor := c;
-              ADrawer.Polygon(pts, 0, 4);
-              pts[0] := pts[1];
-              pts[3] := pts[2];
-              pts[1] := Point(AR.Right, AR.Bottom - scaled_depth2);
-              pts[2] := Point(AR.Right, AR.Top - scaled_depth2);
-              ADrawer.BrushColor := GetDepthColor(c);
-              ADrawer.Polygon(pts, 0, 4);
-              SetLength(pts, 6);
-              pts[0] := Point(AR.Left, AR.Top - scaled_depth2);
-              pts[1] := Point(round(cx - a*factor), AR.Top);
-              pts[2] := Point(round(cx + a*factor), AR.Top);
-              pts[3] := Point(AR.Right, AR.Top - scaled_depth2);
-              pts[4] := Point(round(cx + a*factor), AR.Top - scaled_depth);
-              pts[5] := Point(round(cx - a*factor), AR.Top - scaled_depth);
-            end;
-            ADrawer.BrushColor := GetDepthColor(c, true);
-            ADrawer.Polygon(pts, 0, 6);
-          end;
-        end;
-    end;
+    FDrawBarProc(ADrawer, AR, scaled_depth);
   end;
 
 var
@@ -1507,6 +1284,231 @@ begin
   end;
 
   DrawLabels(ADrawer);
+end;
+
+procedure TBarSeries.DrawConicalBar(ADrawer: IChartDrawer; const ARect: TRect;
+  ADepth: Integer);
+var
+  depth2: Integer;
+  pts: array[0..2] of TPoint;
+  w, h: Integer;
+  a, b, factor: Double;
+  x1, x2, cx: Integer;
+  i: Integer;
+  c: TChartColor;
+begin
+  if Depth = 0 then begin
+    pts[0] := Point(ARect.Left, ARect.Bottom);
+    if IsRotated then begin
+      pts[1] := Point(ARect.Left, ARect.Top);
+      pts[2] := Point(ARect.Right, (ARect.Top + ARect.Bottom) div 2);
+    end else begin
+      pts[1] := Point(ARect.Right, ARect.Bottom);
+      pts[2] := Point((ARect.Left + ARect.Right) div 2, ARect.Top);
+    end;
+    ADrawer.Polygon(pts, 0, 3);
+    exit;
+  end;
+
+  depth2 := ADepth div 2;
+  if IsRotated then begin
+    ADrawer.Ellipse(ARect.Left, ARect.Top, ARect.Left + ADepth, ARect.Bottom);
+    h := ARect.Right - ARect.Left;
+    if h <= depth2 then
+      exit;
+    x1 := ARect.Top;
+    x2 := ARect.Bottom;
+  end else begin
+    ADrawer.Ellipse(ARect.Left, ARect.Bottom, ARect.Right, ARect.Bottom - ADepth);
+    h := ARect.Bottom - ARect.Top;
+    if h <= depth2 then
+      exit;
+    x1 := ARect.Left;
+    x2 := ARect.Right;
+  end;
+
+  // Calculate the tangent points (x1, y1) of a line to an ellipse with
+  // half axes a, b through a point (0, h) outside the ellipse
+  // https://www.emathzone.com/tutorials/geometry/equation-of-tangent-and-normal-to-ellipse.html
+  //    (x1 x) / a² + (y1 x) / b² = 1       (x, y are points on line)
+  //       --> x1 = +/- a sqrt(1 - (b/h)²),  y1 = b² / h
+  w := x2 - x1;
+  cx := (x1 + x2) div 2;
+  a := w * 0.5;
+  b := depth2;
+  factor := sqrt(1.0 - sqr(b / h));
+  pts[0] := Point(round(-a*factor), round(sqr(b) / h));
+  pts[1] := Point(0, h);
+  pts[2] := Point(round(+a*factor), pts[0].Y);
+  if IsRotated then
+    for i := 0 to 2 do
+      pts[i] := Point(ARect.Left + depth2 + pts[i].Y, cx - pts[i].X)
+  else
+    for i := 0 to 2 do
+      pts[i] := Point(cx + pts[i].X, ARect.Bottom - depth2 - pts[i].Y);
+
+  c := ADrawer.GetPenColor;
+  ADrawer.SetPenColor(ADrawer.BrushColor);
+  ADrawer.Polygon(pts, 0, 3);
+  ADrawer.SetPenColor(c);
+  ADrawer.PolyLine(pts, 0, 3);
+end;
+
+procedure TBarSeries.DrawCylinderBar(ADrawer: IChartDrawer;
+  const ARect: TRect; ADepth: Integer);
+var
+  depth2: Integer;
+begin
+  if ADepth = 0 then begin
+    ADrawer.Rectangle(ARect);
+    exit;
+  end;
+
+  depth2 := ADepth div 2;
+  if IsRotated then begin
+    ADrawer.Ellipse(ARect.Left, ARect.Top, ARect.Left + ADepth, ARect.Bottom);
+    ADrawer.FillRect(ARect.Left + depth2, ARect.Top, ARect.Right + depth2, ARect.Bottom);
+    ADrawer.Line(ARect.Left + depth2, ARect.Top, ARect.Right + depth2, ARect.Top);
+    ADrawer.Line(ARect.Left + depth2, ARect.Bottom, ARect.Right + depth2, ARect.Bottom);
+    ADrawer.BrushColor := GetDepthColor(ADrawer.BrushColor, false);
+    ADrawer.Ellipse(ARect.Right, ARect.Top, ARect.Right + ADepth, ARect.Bottom);
+  end else begin
+    ADrawer.Ellipse(ARect.Left, ARect.Bottom, ARect.Right, ARect.Bottom - ADepth);
+    ADrawer.FillRect(ARect.Left, ARect.Bottom - depth2, ARect.Right, ARect.Top - depth2);
+    ADrawer.Line(ARect.Left, ARect.Bottom - depth2, ARect.Left, ARect.Top - depth2);
+    ADrawer.Line(ARect.Right, ARect.Bottom - depth2, ARect.Right, ARect.Top - depth2);
+    ADrawer.BrushColor := GetDepthColor(ADrawer.BrushColor, true);
+    ADrawer.Ellipse(ARect.Left, ARect.Top, ARect.Right, ARect.Top - depth);
+  end;
+end;
+
+procedure TBarSeries.DrawHexPrism(ADrawer: IChartDrawer;
+  const ARect: TRect; ADepth: Integer);
+const
+  HEXAGON: array[0..5] of TDoublePoint = (                         {    5  4    }
+    (X: -1; Y: 0.5), (X: -sin(pi/6); Y: 0), (X: +sin(pi/6); Y: 0), { 0        3 }
+    (x: +1; Y: 0.5), (X: +sin(pi/6); Y: 1), (X: -sin(pi/6); Y: 1)  {    1  2    }
+  );
+var
+  a, b: double;
+  cx, cy: Integer;
+  w, h: Integer;
+  c: TColor;
+  pts: array of TPoint;
+  i, j: Integer;
+begin
+  if IsRotated then begin
+    w := ARect.Bottom - ARect.Top;
+    h := ARect.Right - ARect.Left;
+    cx := (ARect.Top + ARect.Bottom) div 2;
+    cy := ARect.Left;
+  end else begin
+    w := ARect.Right - ARect.Left;
+    h := ARect.Bottom - ARect.Top;
+    cx := (ARect.Left + ARect.Right) div 2;
+    cy := ARect.Top;
+  end;
+  a := w div 2;
+  b := IfThen(ADepth = 0, 0, ADepth div 2);
+  if IsRotated then b := -b;
+
+  c := ADrawer.BrushColor;
+  SetLength(pts, 4);
+  for i:=0 to 2 do begin
+    ADrawer.BrushColor := c;
+    if (ADepth > 0) then begin
+      if IsRotated then begin
+        if i <> 1 then ADrawer.BrushColor := GetDepthColor(c, i = 0);
+      end else
+        if i <> 1 then ADrawer.BrushColor := GetDepthColor(c);
+    end;
+    pts[0] := Point(cx + round(HEXAGON[i].X * a + HEXAGON[i].Y * b), cy - round(HEXAGON[i].Y * b));
+    pts[1] := Point(cx + round(HEXAGON[i+1].X * a + HEXAGON[i+1].Y * b), cy - round(HEXAGON[i+1].Y * b));
+    pts[2] := Point(pts[1].X, pts[1].Y + h);
+    pts[3] := Point(pts[0].X, pts[0].Y + h);
+    if IsRotated then
+      for j := 0 to High(pts) do Exchange(pts[j].X, pts[j].Y);
+    ADrawer.Polygon(pts, 0, 4);
+  end;
+  if ADepth > 0 then begin
+    SetLength(pts, 6);
+    ADrawer.BrushColor := GetDepthColor(c, not IsRotated);
+    if IsRotated then cy := cy + h;
+    for i := 0 to 5 do begin
+      pts[i] := Point(cx + round(HEXAGON[i].X * a + HEXAGON[i].Y * b), cy - round(HEXAGON[i].Y * b));
+      if IsRotated then Exchange(pts[i].X, pts[i].Y);
+    end;
+    ADrawer.Polygon(pts, 0, 6);
+  end;
+end;
+
+procedure TBarSeries.DrawPyramidBar(ADrawer: IChartDrawer;
+  const ARect: TRect; ADepth: Integer);
+const
+  PYRAMID_2D: array[0..2] of TDoublePoint = ((X:0; Y:0), (X:1; Y:0), (X:0.5; Y:1));
+  PYRAMID_3D: array[0..3] of TPoint = ((X:0; Y:0), (X:1; Y:0), (X:1; Y:1), (X:0; Y:1));
+var
+  c: TColor;
+  pts: TPointArray;
+  i: Integer;
+  depth2: Integer;
+  w, h: Integer;
+begin
+  w := ARect.Right - ARect.Left;
+  h := ARect.Bottom - ARect.Top;
+
+  if ADepth = 0 then begin
+    SetLength(pts, 3);
+    for i := 0 to High(pts) do
+      pts[i] := Point(
+        ARect.Left + round(TDoublePointBoolArr(PYRAMID_2D[i])[IsRotated] * w),
+        ARect.Bottom - round(TDoublePointBoolArr(PYRAMID_2D[i])[not IsRotated] * h)
+      );
+    ADrawer.Polygon(pts, 0, 3);
+    exit;
+  end;
+
+  c := ADrawer.BrushColor;
+  depth2 := ADepth div 2;
+  SetLength(pts, 5);
+  if IsRotated then begin
+    for i := 0 to High(pts) - 1 do
+      pts[i] := Point(
+        ARect.Left + PYRAMID_3D[i].Y * ADepth,
+        ARect.Bottom - PYRAMID_3D[i].X * h - PYRAMID_3D[i].Y * ADepth
+      );
+    pts[High(pts)] := Point(ARect.Right + depth2, (pts[0].Y + pts[2].Y) div 2);
+  end else begin
+    for i := 0 to High(pts) - 1 do
+      pts[i] := Point(
+        ARect.Left + PYRAMID_3D[i].X * w + PYRAMID_3D[i].Y * ADepth,
+        ARect.Bottom - PYRAMID_3D[i].Y * ADepth
+      );
+    pts[High(pts)] := Point((pts[0].X + pts[2].X) div 2, ARect.Top - depth2);
+  end;
+  ADrawer.BrushColor := GetDepthColor(c);
+  ADrawer.Polygon([pts[2], pts[3], pts[4]], 0, 3);
+  ADrawer.Polygon([pts[3], pts[0], pts[4]], 0, 3);
+  ADrawer.Polygon([pts[1], pts[2], pts[4]], 0, 3);
+  ADrawer.BrushColor := c;
+  ADrawer.Polygon([pts[0], pts[1], pts[4]], 0, 3);
+end;
+
+procedure TBarSeries.DrawRectBar(ADrawer: IChartDrawer;
+  const ARect: TRect; ADepth: Integer);
+var
+  c: TColor;
+begin
+  ADrawer.Rectangle(ARect);
+  if ADepth > 0 then begin
+    c := ADrawer.BrushColor;
+    ADrawer.BrushColor := GetDepthColor(c, true);
+    ADrawer.DrawLineDepth(
+      ARect.Left, ARect.Top, ARect.Right - 1, ARect.Top, ADepth);
+    ADrawer.BrushColor := GetDepthColor(c, false);
+    ADrawer.DrawLineDepth(
+      ARect.Right - 1, ARect.Top, ARect.Right - 1, ARect.Bottom - 1, ADepth);
+  end;
 end;
 
 function TBarSeries.Extent: TDoubleRect;
@@ -1677,6 +1679,20 @@ procedure TBarSeries.SetBarShape(AValue: TBarshape);
 begin
   if FBarshape = AValue then exit;
   FBarShape := AValue;
+  case FBarShape of
+    bsRectangular:
+      FDrawBarProc := @DrawRectBar;
+    bsPyramid:
+      FDrawBarProc := @DrawPyramidBar;
+    bsCylindrical:
+      FDrawBarProc := @DrawCylinderBar;
+    bsConical:
+      FDrawBarProc := @DrawConicalBar;
+    bsHexPrism:
+      FDrawBarProc := @DrawHexPrism;
+    else
+      raise EBarError.Create('[TBarSeries.SetBarShape] No drawing procedure for bar shape.');
+  end;
   UpdateParentChart;
 end;
 
@@ -1728,6 +1744,29 @@ begin
   FZeroLevel := AValue;
   UpdateParentChart;
 end;
+
+procedure TBarSeries.UpdateMargins(
+  ADrawer: IChartDrawer; var AMargins: TRect);
+const
+  // bsRectangular, bsCylindrical, bsHexPrism, bsPyramid, bsConical
+  DELTA: array[TBarShape] of TDoublePoint = (
+    (X:1; Y:1), (X:0; Y:1), (X:0.5; Y:0.5), (X:1; Y:0.5), (X:0; Y:0.5)
+  );
+var
+  scaled_depth: Integer;
+begin
+  inherited UpdateMargins(ADrawer, AMargins);
+  if FDepth <> 0 then begin
+    scaled_depth := ADrawer.Scale(FDepth);
+    if IsRotated then begin
+      AMargins.Right += round(DELTA[FBarShape].Y * scaled_depth);
+      AMargins.Top += round(DELTA[FBarShape].X * scaled_depth);
+    end else begin
+      AMargins.Right += round(DELTA[FBarShape].X * scaled_depth);
+      AMargins.Top += round(DELTA[FBarShape].Y * scaled_depth);
+    end;
+  end;
+ end;
 
 function TBarSeries.ToolTargetDistance(const AParams: TNearestPointParams;
   AGraphPt: TDoublePoint; APointIdx, AXIdx, AYIdx: Integer): Integer;

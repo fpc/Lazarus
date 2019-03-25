@@ -1,25 +1,27 @@
 object Form1: TForm1
   Left = 332
-  Height = 317
+  Height = 370
   Top = 127
   Width = 495
   Caption = 'Form1'
-  ClientHeight = 317
+  ClientHeight = 370
   ClientWidth = 495
   LCLVersion = '2.1.0.0'
   object Chart1: TChart
     Left = 0
-    Height = 282
+    Height = 335
     Top = 0
     Width = 495
     AxisList = <    
       item
+        Grid.Color = clSilver
         Marks.LabelBrush.Style = bsClear
         Minors = <>
         Title.LabelFont.Orientation = 900
         Title.LabelBrush.Style = bsClear
       end    
       item
+        Grid.Visible = False
         Intervals.MaxLength = 150
         Intervals.MinLength = 50
         Alignment = calBottom
@@ -27,10 +29,9 @@ object Form1: TForm1
         Minors = <>
         Title.LabelBrush.Style = bsClear
       end>
+    BackColor = clWhite
     Foot.Brush.Color = clBtnFace
     Foot.Font.Color = clBlue
-    Margins.Top = 24
-    Margins.Right = 24
     Title.Brush.Color = clBtnFace
     Title.Font.Color = clBlue
     Title.Text.Strings = (
@@ -50,7 +51,7 @@ object Form1: TForm1
   object Panel1: TPanel
     Left = 0
     Height = 35
-    Top = 282
+    Top = 335
     Width = 495
     Align = alBottom
     AutoSize = True

@@ -52,13 +52,6 @@ begin
     BarSeries.Depth := 20
   else
     BarSeries.Depth := 0;
-  if BarSeries.IsRotated then begin
-    Chart1.Margins.Top := 4 + IfThen(BarSeries.BarShape in [bsRectangular, bsPyramid], Barseries.Depth, 0);
-    Chart1.Margins.Right := 4 + BarSeries.Depth;
-  end else begin
-    Chart1.Margins.Top := 4 + Barseries.Depth;
-    Chart1.Margins.Right := 4 + IfThen(BarSeries.BarShape in [bsRectangular, bsPyramid], Barseries.Depth, 0);
-  end;
 end;
 
 procedure TForm1.cbRotatedChange(Sender: TObject);
