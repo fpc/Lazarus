@@ -132,6 +132,8 @@ var
 
 procedure IncreaseCompilerParseStamp;
 begin
+  if IDEMacros<>nil then
+    IDEMacros.IncreaseBaseStamp;
   CTIncreaseChangeStamp(CompilerParseStamp);
   if Assigned(CompilerParseStampIncreased) then
     CompilerParseStampIncreased();
@@ -139,6 +141,8 @@ end;
 
 procedure IncreaseBuildMacroChangeStamp;
 begin
+  if IDEMacros<>Nil then
+    IDEMacros.IncreaseGraphStamp;
   IncreaseCompilerParseStamp;
   CTIncreaseChangeStamp(BuildMacroChangeStamp);
 end;
